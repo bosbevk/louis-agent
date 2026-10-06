@@ -103,10 +103,19 @@ durable storage, memory, or retrieval. The diagram above is the target shape; br
       surface, which means switching from `AnthropicClient.AsIChatClient` to the beta client, not just a config flag.
       Neither would replace the engine's existing `SummariseToolResultAsync` (which shrinks one oversized tool result
       before it enters history) — they solve long-session accumulation, a different problem, so would supplement it.
-- [ ] Rewrite tool `[Description]` attributes to the current bar (3+ sentences, explicit when-*not*-to-use, precise
-      behavior). Checked across `WorkspaceTools.cs`, `GitTools.cs`, `DevOpsTools.cs`: every sampled description is a
-      single short clause (e.g. `GitTools.cs`'s `Push`: "Push commits to a remote branch.") — correct but under-specified,
-      which is the single biggest lever for tool-selection accuracy per Anthropic's current tool-use guidance.
+- [x] Rewrite tool `[Description]` attributes to the current bar (3+ sentences, explicit when-*not*-to-use, precise
+      behavior). Done across all 10 tool files (108 method-level descriptions: `WorkspaceTools` 14, `GitTools` 35,
+      `DevOpsTools` 17, `DotNetTools` 10, `PaymoTools` 18, `AgentEngine` 5, `BashTools`/`PowerShellTools`/
+      `PythonTools`/`WebTools` 9) — grounded in each method's actual behavior, not generic text; build and the full
+      test suite (438 passed) confirm nothing broke.
+- [ ] Add the sensitive-file check to `WorkspaceTools.DeleteDirectory` and `WorkspaceTools.CopyFile` — found while
+      rewriting descriptions above: every other write/delete tool in the class (`ReadWorkspaceFile`, `DeleteFile`,
+      `WriteWorkspaceFile`, etc.) blocks `.env`/keys/certs, but these two don't, so a recursive delete or a copy can
+      touch a secret file the read/write tools would refuse.
+- [ ] Fix `DevOpsTools.GetBlockersBySprint` — found while rewriting descriptions above: it filters on a work item
+      type literally named `'Blocker'`, which isn't a standard Azure DevOps process-template type, so the tool
+      likely always returns empty against a real org. Needs the actual blocker signal (a tag, a field, or whatever
+      the team's process template actually uses) instead of an assumed type name.
 
 ### Web app
 

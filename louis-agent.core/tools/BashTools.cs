@@ -19,7 +19,15 @@ public sealed class BashTools
         _workspaceRoot = Path.GetFullPath(workspaceRoot);
     }
 
-    [Description("Run a bash script. Pass either an inline 'script' or a workspace-relative 'scriptPath' (.sh). Arguments are available as $1, $2, ... / \"$@\". Runs with 'set -euo pipefail' unless strict is false. Returns exit code and output.")]
+    [Description("Runs a bash script, either inline via 'script' or an existing workspace-relative '.sh' file via " +
+        "'scriptPath' — pass exactly one of the two. On Windows this always runs Git Bash, never the WSL bash.exe in " +
+        "System32, which starts a separate Linux environment with its own filesystem; on Linux/macOS it runs /bin/bash. " +
+        "Script arguments arrive as $1, $2, ... and \"$@\", and the script runs under 'set -euo pipefail' by default so " +
+        "the first failing command stops it immediately (set strict to false to disable that). Output is capped at " +
+        "12,000 characters and the process is killed after timeoutSeconds (default 60, max 600). Use this for shell " +
+        "scripting, piping, and Unix-style text processing (grep/sed/awk/jq); for dotnet build/test/run use the " +
+        "dedicated DotNet tools instead, and for file reads/writes use the WorkspaceTools file tools rather than " +
+        "cat/echo through bash.")]
     public string BashRun(
         [Description("Inline bash script to run (leave empty when using scriptPath)")] string script = "",
         [Description("Workspace-relative path to a .sh file to run (leave empty when using script)")] string scriptPath = "",
@@ -56,7 +64,12 @@ public sealed class BashTools
         return ProcessRunner.Truncate(sb.ToString(), MaxOutputChars);
     }
 
-    [Description("Show which bash is used (Git Bash on Windows, /bin/bash elsewhere), its version and which common command-line tools are available.")]
+    [Description("Reports which bash executable BashRun will use — Git Bash on Windows (found via BASH_PATH/SKILL_SHELL, " +
+        "the Program Files install, or next to git.exe on PATH) or /bin/bash on Linux/macOS — along with its version " +
+        "string and whether common command-line tools (git, curl, jq, grep, find, sed, awk, python3, pwsh, dotnet) are " +
+        "present on PATH. Use this to diagnose a BashRun failure caused by a missing interpreter or missing tool before " +
+        "retrying the same script. It makes no changes and has no side effects; it runs only a fixed version/tool-" +
+        "presence probe, never arbitrary commands.")]
     public string BashInfo()
     {
         if (FindBash() is not { } bash) return NotInstalledMessage;

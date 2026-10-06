@@ -35,7 +35,14 @@ public sealed class PowerShellTools
         _workspaceRoot = Path.GetFullPath(workspaceRoot);
     }
 
-    [Description("Run PowerShell. Pass either an inline 'script' or a workspace-relative 'scriptPath' (.ps1). Returns output, exit code and errors. Uses pwsh (PowerShell 7) when installed, else Windows PowerShell 5.1.")]
+    [Description("Runs a PowerShell script, either inline via 'script' or an existing workspace-relative '.ps1' file via " +
+        "'scriptPath' — pass exactly one of the two. Prefers PowerShell 7 (pwsh) when installed and falls back to " +
+        "Windows PowerShell 5.1 on Windows; it always runs without a profile, without prompts, and with UTF-8 console " +
+        "output so non-ASCII text round-trips correctly on 5.1. An uncaught error inside the script sets exit code 1 " +
+        "and its message is captured; an explicit 'exit n' is honored as-is. Output is capped at 12,000 characters and " +
+        "the process is killed after timeoutSeconds (default 60, max 600). Use this for Windows-specific automation, " +
+        ".NET object pipelines, or PowerShell cmdlets; for portable shell scripting or Unix text tools use BashRun " +
+        "instead.")]
     public string PowerShellRun(
         [Description("Inline PowerShell script to run (leave empty when using scriptPath)")] string script = "",
         [Description("Workspace-relative path to a .ps1 file to run (leave empty when using script)")] string scriptPath = "",
@@ -69,7 +76,11 @@ public sealed class PowerShellTools
         return ProcessRunner.Truncate(sb.ToString(), MaxOutputChars);
     }
 
-    [Description("Show which PowerShell is used (pwsh 7 or Windows PowerShell 5.1), its version, edition and OS.")]
+    [Description("Reports which PowerShell interpreter PowerShellRun will use — pwsh (PowerShell 7, preferred) or " +
+        "Windows PowerShell 5.1 — along with its edition, version, and operating system. Use this to diagnose a " +
+        "PowerShellRun failure caused by a missing interpreter before retrying the same script, or to confirm which " +
+        "PowerShell edition's cmdlets are actually available. It makes no changes and runs only a fixed version probe, " +
+        "not arbitrary commands.")]
     public string PowerShellInfo()
     {
         var result = RunScript("""

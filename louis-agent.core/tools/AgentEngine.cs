@@ -514,7 +514,13 @@ public partial class AgentEngine
         return chatOptions;
     }
 
-    [Description("Executes a markdown skill (e.g. code review helpers, Paymo listing) using JSON key-value arguments. Prefer dedicated tools when one exists.")]
+    [Description("Runs a named markdown skill — a reusable bash/PowerShell/Python procedure loaded from the Skills " +
+        "folder — passing jsonArgs as key-value pairs that the skill receives as SKILL_ARG_* environment variables, " +
+        "never spliced into the script text, so model-supplied values can't be interpreted as shell syntax. Skills " +
+        "are for repeatable, pre-authored procedures (e.g. Paymo lookups, code-review checklists); if a dedicated " +
+        "tool already exists for what you're trying to do, call that tool directly instead of going through a skill " +
+        "with the same effect. If the named skill isn't found, the error lists every skill name currently loaded so " +
+        "you can pick a valid one.")]
     public string ExecuteSkill(
         [Description("The exact name of the skill to execute (e.g., 'ListParentTasks').")] string skillName,
         [Description("JSON object of arguments for the skill (e.g., {\"project_id\":\"123\"}).")] string jsonArgs = "{}")
@@ -603,8 +609,12 @@ public partial class AgentEngine
     }
 
     [Description("""
-        Create (or update) a reusable skills file and load it immediately so its skills can be run with ExecuteSkill.
-        Use when the user asks to save a repeatable procedure as a skill. Markdown format, one section per skill:
+        Creates (or updates, with overwrite=true) a reusable *-skills.md file under the Skills folder and loads it
+        immediately so its skills become callable via ExecuteSkill in this same session — the file is saved to disk
+        right away, but only becomes part of every future session's skill set if the agent's AGENT_FUNCTION setting
+        loads it (e.g. 'louis', which loads every skill file). Use this when the user asks to save a repeatable
+        procedure as a skill, not for a one-off action that only needs to happen once. A built-in skills file name
+        (including 'default') cannot be overwritten with this tool. Markdown format, one section per skill:
         # <Title>
         <guidance for when/how to use these skills>
         ## Skill: <PascalCaseName>
@@ -659,7 +669,12 @@ public partial class AgentEngine
         return $"Saved {path} — {skills}.\n{reload}";
     }
 
-    [Description("Reload all skills files from disk (e.g. after a skills file was edited) and return the available skill names.")]
+    [Description("Re-reads every skill file from disk — including any created earlier this session with " +
+        "CreateSkillFile — rebuilding the full skill set and the system prompt's skill documentation from scratch, " +
+        "then returns the names of every skill now available. Use this after a skills file has been edited outside " +
+        "the agent (e.g. by the user, or by another tool) so the change takes effect without restarting the " +
+        "session; CreateSkillFile already reloads automatically, so there's no need to call this right after it. " +
+        "Returns an error if the host wasn't configured with a skill reloader.")]
     public string ReloadSkills()
     {
         if (SkillReloader is null) return "Error: skill reloading is not available in this host.";
@@ -679,9 +694,12 @@ public partial class AgentEngine
     }
 
     [Description("""
-        Build a new tool you can call directly, when no existing tool can do what you need and the capability is reusable.
-        It is usable immediately in this session; it is kept for future sessions only after the user approves it.
-        Definition format (markdown):
+        Builds a new, typed tool from a markdown definition when no existing tool — built-in or already agent-built —
+        can do what's needed and the capability is worth keeping, not for a single one-off action a skill or an
+        inline script could handle just as well. The tool becomes callable immediately in this session; it is only
+        saved for future sessions once the user explicitly approves it with '/approve <Name>' (reject with
+        '/reject <Name>' to discard it). A name already used by a built-in tool, or an existing approved tool, is
+        rejected. Definition format (markdown):
         # Tool: <PascalCaseName>
         - Description: <what it does and when to use it>
         - Timeout: <seconds, optional, default 60, max 600>
@@ -728,7 +746,11 @@ public partial class AgentEngine
                $"It is pending: tell the user to type '/approve {parsed.Name}' to keep it for future sessions (or '/reject {parsed.Name}').";
     }
 
-    [Description("List agent-built tools: approved ones and ones pending the user's approval.")]
+    [Description("Lists every agent-built tool known right now: approved ones that load in every session, ones " +
+        "pending approval that are only active for this session, and — separately — pending tool files left on " +
+        "disk from an earlier session that never got approved and aren't currently loaded. Each entry shows its " +
+        "approval state and its own description. Use this before CreateTool to check whether a similar tool already " +
+        "exists, or when the user asks what tools the agent has built for itself; it makes no changes.")]
     public string ListAgentTools()
     {
         var pendingOnDisk = PendingToolsDirectory is not null && Directory.Exists(PendingToolsDirectory)

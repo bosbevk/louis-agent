@@ -26,7 +26,7 @@ public sealed class DotNetTools
         _workspaceRoot = Path.GetFullPath(workspaceRoot);
     }
 
-    [Description("List .sln/.slnx and .csproj/.fsproj files in the workspace, to pick a target for build/test/run.")]
+    [Description("Lists every .sln/.slnx solution and .csproj/.fsproj project file found anywhere in the workspace, excluding build output directories (bin, obj, node_modules, .git). Solutions are listed before projects, both sorted alphabetically. Use this first to discover a valid target path before calling DotNetBuild, DotNetTest or DotNetRun -- it does not inspect project contents or installed SDKs, only locate files.")]
     public string DotNetListProjects()
     {
         string root = WorkingDirectory;
@@ -40,7 +40,7 @@ public sealed class DotNetTools
         return files.Count == 0 ? "No .NET solutions or projects found." : string.Join('\n', files);
     }
 
-    [Description("Show installed .NET SDKs and runtimes.")]
+    [Description("Reports the .NET SDKs and runtimes installed on the machine running the agent, via `dotnet --list-sdks` and `dotnet --list-runtimes`. Use this to check whether a specific SDK or runtime version is available before a build fails with a version-mismatch error, or when asked what .NET version is installed. It reports nothing about the workspace's own projects -- use DotNetListProjects for that.")]
     public string DotNetSdkInfo()
     {
         var sdks = RunDotNet(["--list-sdks"], TimeSpan.FromSeconds(30));
@@ -48,7 +48,7 @@ public sealed class DotNetTools
         return $"SDKs:\n{sdks.Output.Trim()}\n\nRuntimes:\n{runtimes.Output.Trim()}";
     }
 
-    [Description("Build a .NET solution or project and return a summary of errors and warnings (file(line,col): code: message).")]
+    [Description("Builds a .NET solution, project or folder (or the whole workspace root if `project` is empty) with `dotnet build`, and returns a condensed summary of errors and warnings in `file(line,col): code: message` form, with raw MSBuild noise filtered out. Only the first 50 errors and 30 warnings are included; set `includeWarnings` to false to see errors only. Times out after 5 minutes. Use this to check whether code compiles -- it does not run tests (use DotNetTest) or execute the program (use DotNetRun, which builds internally anyway).")]
     public string DotNetBuild(
         [Description("Relative path to a .sln/.csproj or folder; empty = workspace root")] string project = "",
         [Description("Build configuration, e.g. Debug or Release")] string configuration = "Debug",
@@ -60,7 +60,7 @@ public sealed class DotNetTools
         return SummarizeBuild(result, includeWarnings);
     }
 
-    [Description("Restore NuGet packages for a solution or project.")]
+    [Description("Restores NuGet package dependencies for a solution, project or folder via `dotnet restore`, returning the same condensed error/warning summary as DotNetBuild. Needed before a build or test run only when packages have changed or a restore error is suspected -- DotNetBuild and DotNetTest already restore implicitly as part of the build. Times out after 5 minutes.")]
     public string DotNetRestore(
         [Description("Relative path to a .sln/.csproj or folder; empty = workspace root")] string project = "")
     {
@@ -69,7 +69,7 @@ public sealed class DotNetTools
         return SummarizeBuild(result, includeWarnings: true);
     }
 
-    [Description("Clean build outputs for a solution or project.")]
+    [Description("Removes build output (bin/obj) for a solution, project or folder via `dotnet clean`, returning a condensed summary with warnings always omitted. Use this to force a full rebuild when stale build artifacts are suspected of causing incorrect behavior -- it does not rebuild afterward, so follow it with DotNetBuild if fresh output is needed. Times out after 5 minutes.")]
     public string DotNetClean(
         [Description("Relative path to a .sln/.csproj or folder; empty = workspace root")] string project = "",
         [Description("Build configuration, e.g. Debug or Release")] string configuration = "Debug")
@@ -79,7 +79,7 @@ public sealed class DotNetTools
         return SummarizeBuild(result, includeWarnings: false);
     }
 
-    [Description("Run tests and return the pass/fail summary plus details (message and stack trace) of failed tests. Builds first unless noBuild is true.")]
+    [Description("Runs the test suite for a solution, test project or folder via `dotnet test`, building first unless `noBuild` is true, and returns the pass/fail summary plus the failure message and stack trace for each failed test (up to 20). If compilation fails before any test runs, the build-error summary is returned instead of a test summary. Use `filter` to scope to specific tests (e.g. `FullyQualifiedName~ParserTests`) rather than running the whole suite. Times out after 10 minutes -- a hanging test is killed and reported as a timeout rather than left to run indefinitely.")]
     public string DotNetTest(
         [Description("Relative path to a .sln/test .csproj or folder; empty = workspace root")] string project = "",
         [Description("Optional test filter, e.g. 'FullyQualifiedName~ParserTests' or 'Name=MyTest'")] string filter = "",
@@ -96,7 +96,7 @@ public sealed class DotNetTools
         return SummarizeTests(result);
     }
 
-    [Description("Run a .NET project (console app) with optional arguments and return its output, exit code and any unhandled exception stack trace. Use to reproduce and debug runtime errors.")]
+    [Description("Builds the given project and, if the build succeeds, runs it via `dotnet run --no-build` with the given command-line arguments and standard input, returning the exit code and captured output (or the compile-error summary instead, if the build failed). Use this specifically to reproduce and debug a runtime error or unexpected program output -- for checking whether code merely compiles, use DotNetBuild instead, and for automated tests use DotNetTest. The program is killed and reported as timed out if it runs longer than `timeoutSeconds` (default 60, max 600); stdin is closed after the given input is sent, so a prompt expecting more input will hang until the timeout.")]
     public string DotNetRun(
         [Description("Relative path to the .csproj or its folder")] string project,
         [Description("Arguments passed to the program, space separated; wrap an argument in double quotes to keep spaces")] string arguments = "",
@@ -125,7 +125,7 @@ public sealed class DotNetTools
         return Truncate(sb.ToString());
     }
 
-    [Description("List NuGet packages referenced by a project, optionally only outdated or vulnerable ones.")]
+    [Description("Lists the NuGet packages referenced by a project via `dotnet list package`, optionally filtered to only outdated packages or only vulnerable ones (the vulnerability scan includes transitive dependencies). Use this to audit dependencies before deciding whether to upgrade or patch a package -- it only reports, it does not change anything (use DotNetAddPackage or DotNetRemovePackage for that).")]
     public string DotNetListPackages(
         [Description("Relative path to a .sln/.csproj or folder; empty = workspace root")] string project = "",
         [Description("Filter: '' for all, 'outdated' or 'vulnerable'")] string filter = "")
@@ -145,7 +145,7 @@ public sealed class DotNetTools
         return Truncate(FormatResult(result));
     }
 
-    [Description("Add a NuGet package reference to a project.")]
+    [Description("Adds a NuGet package reference to a project's .csproj via `dotnet add package`, installing the latest stable version unless a specific `version` is given. This modifies the project file and restores the package; use DotNetListPackages first if the current or latest version needs checking before deciding, since this tool does not report available versions.")]
     public string DotNetAddPackage(
         [Description("Relative path to the .csproj or its folder")] string project,
         [Description("Package id, e.g. Newtonsoft.Json")] string packageId,
@@ -157,7 +157,7 @@ public sealed class DotNetTools
         return Truncate(FormatResult(RunDotNet(args, TimeSpan.FromMinutes(2))));
     }
 
-    [Description("Remove a NuGet package reference from a project.")]
+    [Description("Removes a NuGet package reference from a project's .csproj via `dotnet remove package`. This only removes the reference -- it does not remove any using-directives or code that depends on the package, so a build or test afterward may reveal compile errors that still need fixing by hand.")]
     public string DotNetRemovePackage(
         [Description("Relative path to the .csproj or its folder")] string project,
         [Description("Package id to remove")] string packageId)

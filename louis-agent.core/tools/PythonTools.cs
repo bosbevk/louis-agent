@@ -38,7 +38,14 @@ public sealed partial class PythonTools
             ? configured
             : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "louis-agent", "python-venv");
 
-    [Description("Run Python code. Pass either inline 'code' or a workspace-relative 'scriptPath'. Returns output, exit code and any traceback. Packages installed with PythonInstallPackages are available.")]
+    [Description("Runs Python code, either inline via 'code' or an existing workspace-relative '.py' file via " +
+        "'scriptPath' — pass exactly one of the two. Uses the agent's own virtual environment once " +
+        "PythonInstallPackages has created one (so installed packages are isolated from the system Python and never " +
+        "touch the repository), otherwise the first Python 3 interpreter found on the machine; it never uses a " +
+        "Windows Store Python stub. Output is capped at 12,000 characters, and the process is killed after " +
+        "timeoutSeconds (default 60, max 600) with its exit code and any traceback included in the result. Use this " +
+        "for data processing, calculations, or anything needing a Python package; for simple file reads/writes " +
+        "prefer the WorkspaceTools file tools, and for shell commands prefer BashRun.")]
     public string PythonRun(
         [Description("Inline Python source to run (leave empty when using scriptPath)")] string code = "",
         [Description("Workspace-relative path to a .py file to run (leave empty when using code)")] string scriptPath = "",
@@ -115,7 +122,13 @@ public sealed partial class PythonTools
         }
     }
 
-    [Description("Install Python packages with pip into the agent's virtual environment (created on first use). Example: 'requests pandas==2.2.2'.")]
+    [Description("Installs one or more packages with pip into the agent's dedicated virtual environment, creating that " +
+        "environment on first use so installs never affect the system Python or any other project. Takes " +
+        "space-separated pip requirement specifiers only (e.g. 'requests' or 'numpy>=2 pandas==2.2.2') — pip options " +
+        "like --index-url or -r requirements.txt are rejected, and each specifier is validated against a strict " +
+        "pattern before anything runs. Installation can take up to 5 minutes for large packages; call PythonInfo " +
+        "afterward to confirm what actually got installed. Use this before PythonRun needs a package that isn't " +
+        "already present — check PythonInfo first if unsure what's installed.")]
     public string PythonInstallPackages(
         [Description("Space-separated pip requirement specifiers, e.g. 'requests' or 'numpy>=2 pandas==2.2.2'")] string packages)
     {
@@ -137,7 +150,12 @@ public sealed partial class PythonTools
             : $"pip install FAILED (exit code {result.ExitCode}).\n{ProcessRunner.Tail(result.Output)}";
     }
 
-    [Description("Show the Python interpreter in use, its version, the virtual environment location and installed packages.")]
+    [Description("Reports which Python interpreter PythonRun will use, its version, the virtual environment's " +
+        "location, and the full list of packages currently installed in it (via pip list). If the virtual " +
+        "environment hasn't been created yet, says so rather than listing packages. Use this to check whether a " +
+        "package is already available before calling PythonInstallPackages, or to diagnose a PythonRun failure caused " +
+        "by a missing interpreter or package. It makes no changes and runs only version/package-listing probes, not " +
+        "arbitrary commands.")]
     public string PythonInfo()
     {
         if (ResolveInterpreter() is not { } python) return NotInstalledMessage;

@@ -25,7 +25,7 @@ public sealed class PaymoTools
             "Basic", Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes($"{_apiKey}:x")));
     }
 
-    [Description("Search for tasks by name, status, or project.")]
+    [Description("Search Paymo tasks by a name/keyword substring match, optionally narrowed by status. Read-only; calls GET /tasks and returns up to maxResults matches as formatted JSON. Use this to find a task's numeric ID from a partial name before calling GetTaskDetails or LogTimeByTaskName; use ListTasks instead when browsing all tasks in a project rather than searching by keyword.")]
     public async Task<string> SearchTasks(
         [Description("Task name or keyword to search for")] string query,
         [Description("Filter by status (e.g., 'active', 'completed')")] string status = "",
@@ -67,7 +67,7 @@ public sealed class PaymoTools
         }
     }
 
-    [Description("Get a list of all tasks, optionally filtered by project or status.")]
+    [Description("List tasks, optionally filtered by project ID and/or status (active, completed, on_hold). Read-only; calls GET /tasks and returns up to maxResults tasks as formatted JSON. Use this to browse a project's tasks; use SearchTasks instead when you only have a partial task name to look up.")]
     public async Task<string> ListTasks(
         [Description("Filter by project ID (optional)")] string projectId = "",
         [Description("Filter by status: active, completed, on_hold (optional)")] string status = "",
@@ -114,7 +114,7 @@ public sealed class PaymoTools
         }
     }
 
-    [Description("Get detailed information about a specific task.")]
+    [Description("Fetch full details for one task by its numeric Paymo task ID. Read-only; calls GET /tasks/{id} and returns the raw task JSON, or an error if the ID doesn't exist. Use SearchTasks or ListTasks first if you only have a task name, since this requires the numeric ID.")]
     public async Task<string> GetTaskDetails(
         [Description("Task ID")] string taskId)
     {
@@ -140,7 +140,7 @@ public sealed class PaymoTools
         }
     }
 
-    [Description("Get list of all projects.")]
+    [Description("List projects in the Paymo workspace, optionally filtered by status (active, archived). Read-only; calls GET /projects and returns up to maxResults projects as formatted JSON. Use this to find a project's numeric ID before calling GetProjectDetails, ListTasks with a project filter, or GetProjectSummary.")]
     public async Task<string> ListProjects(
         [Description("Filter by status: active, archived (optional)")] string status = "",
         [Description("Maximum results (1-100)")] int maxResults = 30)
@@ -175,7 +175,7 @@ public sealed class PaymoTools
         }
     }
 
-    [Description("Get detailed information about a specific project.")]
+    [Description("Fetch full details for one project by its numeric Paymo project ID. Read-only; calls GET /projects/{id} and returns the raw project JSON, or an error if the ID doesn't exist. Use ListProjects first if you only have a project name.")]
     public async Task<string> GetProjectDetails(
         [Description("Project ID")] string projectId)
     {
@@ -201,7 +201,7 @@ public sealed class PaymoTools
         }
     }
 
-    [Description("Get list of all clients.")]
+    [Description("List all clients (companies/customers) configured in the Paymo workspace. Read-only; calls GET /clients and returns up to maxResults clients as formatted JSON. This is for client/customer records, not for team members — use ListUsers to look up staff.")]
     public async Task<string> ListClients(
         [Description("Maximum results (1-100)")] int maxResults = 30)
     {
@@ -228,7 +228,7 @@ public sealed class PaymoTools
         }
     }
 
-    [Description("Get list of team members/users.")]
+    [Description("List team members/users in the Paymo workspace. Read-only; calls GET /users and returns up to maxResults users as formatted JSON. Use this to find a user's numeric ID before filtering ListTimeEntries by user or reading GetUserSummary — it is not for client/customer records, use ListClients for those.")]
     public async Task<string> ListUsers(
         [Description("Maximum results (1-100)")] int maxResults = 30)
     {
@@ -255,7 +255,7 @@ public sealed class PaymoTools
         }
     }
 
-    [Description("Get list of time entries, optionally filtered by date range or user.")]
+    [Description("List logged time entries, optionally filtered by an inclusive date range (startDate/endDate, YYYY-MM-DD) and/or a specific numeric user ID. Read-only; calls GET /entries with an optional where filter and returns up to maxResults entries as formatted JSON. For a quick today/this-week lookup, use GetTimeEntriesForToday or GetTimeEntriesForThisWeek instead of constructing the range yourself; for aggregate hours by day, user, or project, use GetDailySummary, GetUserSummary, or GetProjectSummary instead of summing these entries by hand.")]
     public async Task<string> ListTimeEntries(
         [Description("Start date in YYYY-MM-DD format (optional)")] string startDate = "",
         [Description("End date in YYYY-MM-DD format (optional)")] string endDate = "",
@@ -308,13 +308,13 @@ public sealed class PaymoTools
         }
     }
 
-    [Description("Get time entries logged today.")]
+    [Description("Shortcut that calls ListTimeEntries for today's date only, across all users, returning up to 100 entries. Read-only. Prefer this over ListTimeEntries with manually-computed dates whenever the request is explicitly about \"today\".")]
     public async Task<string> GetTimeEntriesForToday()
     {
         return await ListTimeEntries(DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("yyyy-MM-dd"), "", 100);
     }
 
-    [Description("Get time entries logged this week (Monday to Sunday).")]
+    [Description("Shortcut that calls ListTimeEntries for the current Monday-to-Sunday week, across all users, returning up to 100 entries. Read-only. Prefer this over ListTimeEntries with manually-computed dates whenever the request is explicitly about \"this week\".")]
     public async Task<string> GetTimeEntriesForThisWeek()
     {
         var today = DateTime.Now;
@@ -323,7 +323,7 @@ public sealed class PaymoTools
         return await ListTimeEntries(startOfWeek.ToString("yyyy-MM-dd"), endOfWeek.ToString("yyyy-MM-dd"), "", 100);
     }
 
-    [Description("Get a specific time entry by ID.")]
+    [Description("Fetch full details for one logged time entry by its numeric entry ID. Read-only; calls GET /entries/{id} and returns the raw entry JSON, or an error if the ID doesn't exist. Use this to confirm an entry's details before calling the destructive DeleteTimeEntry.")]
     public async Task<string> GetTimeEntryDetails(
         [Description("Time entry ID")] string entryId)
     {
@@ -349,7 +349,7 @@ public sealed class PaymoTools
         }
     }
 
-    [Description("Get time entry summary by day for a date range.")]
+    [Description("Return total logged hours grouped by date for a required inclusive date range (startDate to endDate, YYYY-MM-DD). Read-only; calls the Paymo reports endpoint grouped by date. Use this instead of ListTimeEntries plus manual summation when the goal is aggregate hours per day rather than individual entries; use GetUserSummary or GetProjectSummary instead if the grouping should be by person or project.")]
     public async Task<string> GetDailySummary(
         [Description("Start date in YYYY-MM-DD format")] string startDate,
         [Description("End date in YYYY-MM-DD format")] string endDate)
@@ -377,7 +377,7 @@ public sealed class PaymoTools
         }
     }
 
-    [Description("Get time entry summary by user for a date range.")]
+    [Description("Return total logged hours grouped by user for a required inclusive date range (startDate to endDate, YYYY-MM-DD). Read-only; calls the Paymo reports endpoint grouped by user_id. Use this instead of GetDailySummary when the grouping should be by person rather than by date, or instead of GetProjectSummary when it should be by person rather than by project.")]
     public async Task<string> GetUserSummary(
         [Description("Start date in YYYY-MM-DD format")] string startDate,
         [Description("End date in YYYY-MM-DD format")] string endDate)
@@ -405,7 +405,7 @@ public sealed class PaymoTools
         }
     }
 
-    [Description("Get time entry summary by project for a date range.")]
+    [Description("Return total logged hours grouped by project for a required inclusive date range (startDate to endDate, YYYY-MM-DD). Read-only; calls the Paymo reports endpoint grouped by project_id. Use this instead of GetDailySummary when the grouping should be by project rather than by date, or instead of GetUserSummary when it should be by project rather than by person.")]
     public async Task<string> GetProjectSummary(
         [Description("Start date in YYYY-MM-DD format")] string startDate,
         [Description("End date in YYYY-MM-DD format")] string endDate)
@@ -433,7 +433,7 @@ public sealed class PaymoTools
         }
     }
 
-    [Description("Delete a time entry by ID.")]
+    [Description("Permanently delete one logged time entry by its numeric ID. This is the only destructive tool in this class and the deletion cannot be undone — there is no update/edit tool to recover a wrong delete, so confirm the entry via GetTimeEntryDetails first if there is any doubt about which entry it is.")]
     public async Task<string> DeleteTimeEntry(
         [Description("Time entry ID to delete")] string entryId)
     {
@@ -458,7 +458,7 @@ public sealed class PaymoTools
         }
     }
 
-    [Description("Get current authenticated user's information.")]
+    [Description("Return Paymo account info for the user the configured PAYMO_API_KEY belongs to. Read-only; calls GET /me. Use this to confirm which account time will be logged against by LogTimeByTaskName, not to look up a different person — use ListUsers for that.")]
     public async Task<string> GetCurrentUser()
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
@@ -483,7 +483,7 @@ public sealed class PaymoTools
         }
     }
 
-    [Description("Get company/workspace information.")]
+    [Description("Return workspace/company-level account info for the configured Paymo account (e.g. company name, settings). Read-only; calls GET /company. This is account-level metadata, not a list of clients or users — use ListClients or ListUsers for those.")]
     public async Task<string> GetCompanyInfo()
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
@@ -508,7 +508,7 @@ public sealed class PaymoTools
         }
     }
 
-    [Description("Log time to a Paymo task by name or ID, supporting both duration and time range input.")]
+    [Description("Create a new time entry against a task, identified by name or numeric ID — the only tool in this class that writes data (POST /entries). Accepts duration as either an explicit start_time/end_time pair or a decimal hours value; at least one must be provided, and if both are given the start_time/end_time pair takes priority over the hours value. When given a task name instead of a numeric ID, it resolves the task by name match and uses the first result — if several tasks could share a similar name, pass the numeric task ID (found via SearchTasks or ListTasks) instead to avoid logging against the wrong task. Defaults the date to today when omitted.")]
     public async Task<string> LogTimeByTaskName(
         [Description("Task name (e.g., 'Ticket 1234567: Fix login page') or numeric task ID")] string taskName = "",
         [Description("Start time in HH:MM format (e.g., '08:00')")] string startTime = "",

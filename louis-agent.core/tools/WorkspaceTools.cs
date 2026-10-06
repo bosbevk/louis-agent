@@ -34,7 +34,7 @@ public sealed class WorkspaceTools
         _root = Path.GetFullPath(root);
     }
 
-    [Description("List files and directories in the user's project workspace. Paths must be relative to the workspace root.")]
+    [Description("List the immediate files and directories inside one workspace folder, each entry marked [file] or [dir]. This is not recursive — it only shows one level deep, and results are capped at 200 entries with a truncation notice beyond that. Paths must be relative to the workspace root. Use FindFiles for a recursive filename-pattern search or ListDirectoryTree for a recursive visual tree; use this when you just need the contents of a single known folder.")]
     public string ListWorkspaceFiles(
         [Description("Relative directory path to list; use '.' for the project root.")] string relativePath = ".")
     {
@@ -64,7 +64,7 @@ public sealed class WorkspaceTools
         return entries.Count == 0 ? "Directory is empty." : string.Join(Environment.NewLine, entries);
     }
 
-    [Description("Read a UTF-8 text file from the project workspace. Sensitive files such as .env and private keys are blocked.")]
+    [Description("Read the full UTF-8 text content of one file in the workspace. Reading is blocked for secret files (.env*, *.pem, *.key, *.pfx, credentials.json, private SSH keys, etc.) and for any file over 1 MB — both return an explanatory message instead of content rather than an error. Use SearchWorkspace instead when you only need to find where a term appears without reading an entire file.")]
     public string ReadWorkspaceFile(
         [Description("Workspace-relative file path.")] string relativePath)
     {
@@ -87,7 +87,7 @@ public sealed class WorkspaceTools
         return File.ReadAllText(path, Encoding.UTF8);
     }
 
-    [Description("Search source and documentation files in the project workspace for a case-insensitive text match.")]
+    [Description("Recursively search source and documentation files under the workspace root for a case-insensitive literal text match, returning each hit as path:line: text. Only a fixed set of extensions is searched (code, config, markdown, etc.), and sensitive files, files over 1 MB, and excluded directories (.git, node_modules, bin, obj, etc.) are skipped. Results stop at maxResults (1-100, default 30) even if more matches exist, so a \"no matches\" result does not prove the term is absent from excluded files. Use FindFiles instead when you're matching file names rather than file content.")]
     public string SearchWorkspace(
         [Description("Text to find.")] string query,
         [Description("Maximum number of matching lines to return (1-100).")] int maxResults = 30)
@@ -143,7 +143,7 @@ public sealed class WorkspaceTools
         return matches.Count == 0 ? "No matches found." : string.Join(Environment.NewLine, matches);
     }
 
-    [Description("Create or replace a UTF-8 text file in the project workspace. Only use this to make changes requested by the user; never write outside the workspace. For a large file (over ~300 lines) pass only the first chunk here, then add the rest with AppendToFile.")]
+    [Description("Create a file or fully overwrite an existing one with the given UTF-8 content — this replaces the whole file, it does not merge or patch. Writing is blocked for secret files (.env*, *.pem, *.key, etc.), and parent directories are created automatically if missing. For a file longer than ~300 lines, write only the first chunk here and add the rest with AppendToFile in order; calling this again on the same path discards whatever was written before. Only use this to make changes requested by the user; never write outside the workspace.")]
     public string WriteWorkspaceFile(
         [Description("Workspace-relative file path to create or update.")] string relativePath,
         [Description("UTF-8 file contents: the whole file, or the first chunk of a large one.")] string content)
@@ -210,7 +210,7 @@ public sealed class WorkspaceTools
                name.EndsWith(".pfx", StringComparison.OrdinalIgnoreCase);
     }
 
-    [Description("Create a new directory in the workspace.")]
+    [Description("Create a new directory at the given workspace-relative path, including any missing parent directories. If the directory already exists this is a no-op that reports it already exists rather than an error. Use this before writing files into a path that may not exist yet, though WriteWorkspaceFile and AppendToFile already create missing parent directories on their own.")]
     public string CreateDirectory(
         [Description("Workspace-relative directory path to create.")] string relativePath)
     {
@@ -224,7 +224,7 @@ public sealed class WorkspaceTools
         return $"Created directory: {Path.GetRelativePath(_root, path)}";
     }
 
-    [Description("Delete a file from the workspace.")]
+    [Description("Permanently delete a single file from the workspace — there is no undo and the file is not moved to a trash or recycle bin. Deletion is blocked for secret files (.env*, *.pem, *.key, etc.). Use DeleteDirectory instead to remove a whole directory and everything inside it.")]
     public string DeleteFile(
         [Description("Workspace-relative file path to delete.")] string relativePath)
     {
@@ -243,7 +243,7 @@ public sealed class WorkspaceTools
         return $"Deleted file: {relativePath}";
     }
 
-    [Description("Delete a directory and all its contents from the workspace.")]
+    [Description("Permanently delete a directory and everything inside it, recursively — there is no undo, no confirmation prompt, and no per-file sensitive-file check the way DeleteFile has. Use this only when the user has clearly asked to remove an entire folder; prefer DeleteFile for a single file so sibling files aren't lost by accident.")]
     public string DeleteDirectory(
         [Description("Workspace-relative directory path to delete.")] string relativePath)
     {
@@ -257,7 +257,7 @@ public sealed class WorkspaceTools
         return $"Deleted directory: {relativePath}";
     }
 
-    [Description("Rename a file or directory in the workspace.")]
+    [Description("Rename or move a file or directory within the workspace by resolving both the current and new path and performing the move. It fails if the destination path already exists (no overwrite) or if the source is a blocked sensitive file; missing parent directories for the destination are created automatically. Works on both files and directories — the same tool handles either.")]
     public string RenameFileOrDirectory(
         [Description("Workspace-relative path of the file/directory to rename.")] string currentPath,
         [Description("New name (can be relative path with directories, e.g., 'newdir/newname.txt').")] string newPath)
@@ -298,7 +298,7 @@ public sealed class WorkspaceTools
         return $"Renamed {(Directory.Exists(renamedPath) ? "directory" : "file")} from {currentPath} to {newPath}";
     }
 
-    [Description("Copy a file to a new location in the workspace.")]
+    [Description("Copy a single file to a new workspace-relative location, creating missing parent directories for the destination automatically. It fails if the destination already exists (no overwrite) or if the source file is missing. This only copies files, not directories — there is no recursive directory-copy tool.")]
     public string CopyFile(
         [Description("Workspace-relative path of the file to copy.")] string sourcePath,
         [Description("Workspace-relative path for the copy (can include subdirectories).")] string destinationPath)
@@ -326,7 +326,7 @@ public sealed class WorkspaceTools
         return $"Copied {sourcePath} to {destinationPath}";
     }
 
-    [Description("Append text to an existing file (or create it if it doesn't exist). Use it to write a large file in chunks of at most ~300 lines after WriteWorkspaceFile wrote the first one.")]
+    [Description("Append text to the end of an existing file, or create it if it doesn't exist yet, without touching what's already there. This is the companion to WriteWorkspaceFile for files too long to send in one call: write the first ~300-line chunk with WriteWorkspaceFile, then add further chunks in order with this tool. Writing is blocked for secret files (.env*, *.pem, *.key, etc.), the same as the other write tools.")]
     public string AppendToFile(
         [Description("Workspace-relative file path.")] string relativePath,
         [Description("Text content to append.")] string content)
@@ -347,7 +347,7 @@ public sealed class WorkspaceTools
         return $"Appended to {Path.GetRelativePath(_root, path)} ({content.Length} characters).";
     }
 
-    [Description("Get detailed information about a file (size, created/modified dates, attributes).")]
+    [Description("Return a file's metadata — size in bytes and a human-readable unit, creation time, last-modified time, and OS attributes — without reading its content. Use ReadWorkspaceFile instead when you need what's actually inside the file. Returns an error message if the path doesn't exist.")]
     public string GetFileInfo(
         [Description("Workspace-relative file path.")] string relativePath)
     {
@@ -365,7 +365,7 @@ public sealed class WorkspaceTools
                $"Attributes: {info.Attributes}";
     }
 
-    [Description("Find files matching a pattern (wildcards: * for any chars, ? for single char).")]
+    [Description("Recursively search the workspace for files whose name matches a wildcard pattern (* for any characters, ? for a single character), such as '*.cs' or 'test*.txt' — this matches file names only, not file content. Excluded directories (.git, node_modules, bin, obj, etc.) are skipped and results are capped at 500 files. Use SearchWorkspace instead when you're looking for a piece of text inside files rather than files by name.")]
     public string FindFiles(
         [Description("File name pattern (e.g., '*.cs', 'test*.txt'). Use '*' for all files.")] string pattern,
         [Description("Workspace-relative directory to search in; use '.' for entire workspace.")] string searchPath = ".")
@@ -410,7 +410,7 @@ public sealed class WorkspaceTools
         }
     }
 
-    [Description("Get a tree view of directory structure up to a specified depth.")]
+    [Description("Render a visual tree of a directory's structure, recursively, down to a maximum depth (1-5, default 3) — useful for getting an overview of a folder's layout at a glance. Excluded directories (.git, node_modules, bin, obj, etc.) are skipped, the same as the other listing tools. Use ListWorkspaceFiles instead for a flat, single-level listing, or FindFiles when you need the actual matching file paths rather than a visual layout.")]
     public string ListDirectoryTree(
         [Description("Workspace-relative path; use '.' for the project root.")] string relativePath = ".",
         [Description("Maximum depth to display (1-5; default 3).")] int maxDepth = 3)
@@ -428,7 +428,7 @@ public sealed class WorkspaceTools
         return sb.ToString();
     }
 
-    [Description("Check if a file or directory exists in the workspace.")]
+    [Description("Check whether a workspace-relative path exists and report back whether it's a file, a directory, or doesn't exist at all. This is a cheap existence check only — it returns no metadata. Use GetFileInfo instead once you know a path exists and need its size or timestamps.")]
     public string PathExists(
         [Description("Workspace-relative path to check.")] string relativePath)
     {
