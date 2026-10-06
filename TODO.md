@@ -171,11 +171,17 @@ shared-system actions.
 
 Out of scope for `louis-agent` itself — a store-ops orchestrator is a different kind of agent (owns business state
 and deploy/rollback decisions, runs on a schedule, watches metrics) that calls `louis-agent` as a sub-agent for
-anything that's actually a code change. `louis-agent.mcp-server` already publishes the full toolset to any MCP
-client, so that's the natural integration point rather than growing business-domain tools into this repo.
+anything that's actually a code change. The integration point is `louis-agent.api`'s session endpoint
+(`AgentSessions.cs`) over HTTP/SSE, **not** `louis-agent.mcp-server`: the MCP server has no `IChatClient`/
+`AgentEngine` of its own (`Program.cs`: *"The MCP client brings its own model; this server publishes the agent's
+tools... so that client can call them"*) — it hands over raw tools for whatever model is on the calling end to
+drive itself. Going through MCP would mean the orchestrator's own model does the fix reasoning one tool call at a
+time, with no `kohde-agent` judgment involved at all. Going through the API session endpoint means `kohde-agent`'s
+own `AgentEngine` runs the full triage → fix → test → PR loop server-side, and the orchestrator just gets back a
+result — which is what "calls `louis-agent` to fix and PR" actually requires.
 
 - [ ] Design the orchestrator agent: watches store health (errors, uptime, performance), decides code-fix vs.
-      ops-action vs. escalate-to-human, and calls `louis-agent` over MCP for code-fix work
+      ops-action vs. escalate-to-human, and calls `louis-agent.api`'s session endpoint for code-fix work
 - [ ] Add catalog/inventory/pricing tools (stock sync, price updates) to the orchestrator so it can act on business
       state directly, without routing non-code actions through `louis-agent`
 - [ ] Define the approval/deploy-gate boundary between the two agents: orchestrator decides *when* to ship,
@@ -203,18 +209,31 @@ orchestrator watching the whole store, and rather than embedding the watcher ins
       misconfigured orchestrator can't touch another service's repo or credentials) at the cost of more deployments.
 - [ ] **Triggering**: scheduled polling (reuse the cron/schedule mechanism) and/or a webhook receiver for
       Exceptionless/uptime alerts, per microservice.
-- [ ] **The call into `louis-agent` is an MCP call, not a shared process**: orchestrator picks up an issue for
-      `order-service`, calls `louis-agent.mcp-server` with `WORKSPACE_ROOT` pointed at `order-service`'s repo and the
-      issue details (stack trace, endpoint, frequency). `louis-agent` runs its existing triage → fix → test → PR
-      loop with the tools it already has (`WorkspaceTools`, `GitTools`, `DotNetTools`) — it needs no new tools for
-      this, only the `ExceptionlessTools` triage-loop work above to turn "an error" into "a prompt."
+- [ ] **The call into `louis-agent` is an `louis-agent.api` session call, not a shared process and not MCP**:
+      `louis-agent.mcp-server` has no model of its own — it only hands over raw tools (see the correction above) —
+      so autonomously running the fix loop needs the API's session endpoint instead. Each microservice gets its own
+      `louis-agent.api` instance with `WORKSPACE_ROOT` fixed at startup to that microservice's repo (consistent with
+      `WORKSPACE_ROOT` being read once at process start, not changeable per-call). Orchestrator picks up an issue for
+      `order-service`, POSTs a new session to `order-service`'s `louis-agent.api` instance with the issue details
+      (stack trace, endpoint, frequency) as the prompt, and streams the SSE response until the session ends.
+      `louis-agent` runs its existing triage → fix → test → PR loop with the tools it already has (`WorkspaceTools`,
+      `GitTools`, `DotNetTools`) — it needs no new tools for this, only the `ExceptionlessTools` triage-loop work
+      above to turn "an error" into "a prompt."
+- [ ] **Orchestrator implementation tier: Anthropic Tool Runner (`BetaToolRunner`, C#)**, not a hand-rolled loop.
+      Unlike `louis-agent` core, the orchestrator has no stated multi-provider requirement, so being Anthropic-only
+      is an acceptable trade for not hand-writing the tool loop/retry/streaming plumbing. It also matches the stack
+      already in place — `Axiz.Adobe` is a .NET/C# repo (`Axiz.Adobe.sln`), and the Anthropic .NET SDK ships
+      `BetaToolRunner`. Each orchestrator tool (`CallKohdeAgentFix`, `EscalateToGoogleAgent`, etc.) wraps a plain
+      HTTP/MCP call — these are RPC calls to independent services, not Agents-SDK-style "handoffs" (Tool Runner has
+      none); there's no shared in-process conversation to hand off between three separately-deployed agents anyway.
 - [ ] **Credential separation follows the process split**: the orchestrator holds Exceptionless, deploy and
       business-system (catalog/pricing) credentials; the `louis-agent` MCP instance it calls holds only
       `WORKSPACE_ROOT`-scoped git/build access to that one repo. A compromised or misconfigured orchestrator skill
       can't push to prod directly (it can only ask `louis-agent` to open a PR); `louis-agent` never needs deploy
       access at all.
 - [ ] **Worked example**: `order-service` throws a new exception → orchestrator's scheduled check (or webhook) picks
-      it up from Exceptionless → `order-service-skills.md` says this error pattern is auto-fixable → orchestrator
-      calls `louis-agent` over MCP against the `order-service` repo with the stack trace → `louis-agent` locates the
-      failing code, fixes it, runs tests, opens a PR → orchestrator (not `louis-agent`) decides whether to
-      auto-merge/deploy per `order-service`'s own escalation rules, or wait for human approval.
+      it up from Exceptionless → `order-service-skills.md` says this error pattern is auto-fixable → orchestrator's
+      `CallKohdeAgentFix` tool POSTs a new session to `order-service`'s `louis-agent.api` instance with the stack
+      trace → `louis-agent` locates the failing code, fixes it, runs tests, opens a PR, and the session result flows
+      back over SSE → orchestrator (not `louis-agent`) decides whether to auto-merge/deploy per `order-service`'s
+      own escalation rules, or wait for human approval.
