@@ -116,7 +116,8 @@ curl -N -X POST http://127.0.0.1:5080/sessions/$SID/messages \
 
 Built-in tools cover workspace files, git, `dotnet` build/test/run, Python, PowerShell, bash, web search and page fetching,
 Azure DevOps work items and Paymo time tracking. Markdown **skills** in [`Skills/`](Skills) add guidance and repeatable
-procedures; the agent can write new skills, and can build its own typed tools, which wait in `Skills/tools/pending`
+procedures: `personality.md` gives the agent its character (edit or delete it to change who the agent is), `default.md`
+holds its operating instructions; the agent can write new skills, and can build its own typed tools, which wait in `Skills/tools/pending`
 until you approve them (`/tools`, `/approve <Name>`, `/reject <Name>`).
 
 ## Safety

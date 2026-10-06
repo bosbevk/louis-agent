@@ -31,7 +31,7 @@ louis-agent.core/
 ├── providers/
 │   ├── LlmClientFactory.cs   # Provider → IChatClient (Anthropic thinking-budget wrapper lives here)
 │   ├── CompositeSkillProvider.cs, MarkdownSkillProvider.cs, ISkillProvider.cs
-│   └── Default/DotNet/DevOps/Paymo/CodeReview/TimeLogging SkillsProvider.cs
+│   └── Personality/Default/DotNet/DevOps/Paymo/CodeReview/TimeLogging SkillsProvider.cs
 ├── tools/
 │   ├── AgentEngine.cs        # Tools, system prompt, streaming turn loop, tool-result guards, /approve commands
 │   ├── WorkspaceTools.cs     # Files; ResolvePath/IsSensitive are internal and reused by the API
@@ -57,7 +57,7 @@ src/
 tests/louis-agent.core.tests/ # NUnit; Config, Loaders, Providers, Tools, mcp
 docker/                       # Dockerfile.{acp-server,api,agent,mcp-server}, docker-compose.yml
 config/                       # .env and .env.secrets (both ignored), their examples, Rider config examples
-Skills/                       # default.md + *-skills.md (system prompt), tools/ (agent-built tools)
+Skills/                       # personality.md + default.md + *-skills.md (system prompt), tools/ (agent-built tools)
 docs/                         # This guide and the other docs
 ```
 

@@ -106,10 +106,12 @@ User message
 ## Skills
 
 `AgentHost.LoadSkills` builds a `CompositeSkillProvider` whose combined documentation is the system prompt:
-1. `default.md` (`DefaultSkillsProvider`)
-2. `dotnet-skills.md`, `python-skills.md`, `powershell-skills.md`, `bash-skills.md`, `web-skills.md`,
+1. `personality.md` (`PersonalitySkillsProvider`) — who the agent is and how it talks; optional, and kept apart so it
+   can be changed without touching how the agent works
+2. `default.md` (`DefaultSkillsProvider`) — tools, rules and workflows
+3. `dotnet-skills.md`, `python-skills.md`, `powershell-skills.md`, `bash-skills.md`, `web-skills.md`,
    `self-extension-skills.md` — always loaded, because their tools are always registered
-3. the `AGENT_FUNCTION` skill file (`code-review`, `devops`, `paymo`, `time-logging`, or any `{name}-skills.md`);
+4. the `AGENT_FUNCTION` skill file (`code-review`, `devops`, `paymo`, `time-logging`, or any `{name}-skills.md`);
    `louis` loads all of them plus any other `*-skills.md` in the folder
 
 Skill files are found in `SKILLS_DIRECTORY`, the working directory and its parents (also their `Skills/` folders),

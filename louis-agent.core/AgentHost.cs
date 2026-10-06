@@ -143,6 +143,10 @@ public static class AgentHost
     {
         var composite = new CompositeSkillProvider();
 
+        // Personality first, so who the agent is frames everything after it; default.md stays purely operational
+        composite.AddProvider(new PersonalitySkillsProvider(FindSkillFile(agent, "personality.md")));
+        Console.Error.WriteLine($"[INFO] Loaded PersonalitySkillsProvider");
+
         // Always include default instructions
         var defaultProvider = new DefaultSkillsProvider(FindSkillFile(agent, "default.md"));
         composite.AddProvider(defaultProvider);
