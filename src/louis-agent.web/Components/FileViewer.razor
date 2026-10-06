@@ -1,0 +1,80 @@
+@* A workspace file with line numbers and syntax highlighting, and actions to hand it to the agent. *@
+@inject IJSRuntime JS
+
+<div class="file-viewer">
+    <header class="file-header">
+        <div class="file-title">
+            <span class="file-path" title="@File.Path">@File.Path</span>
+            <span class="file-meta">@LineCount lines · @FormatSize(File.Size)@(_language is null ? "" : $" · {_language}")</span>
+        </div>
+        <div class="file-actions">
+            <button class="send" disabled="@Busy" @onclick="OnReview">Ask agent to review</button>
+            <button class="secondary" disabled="@Busy" @onclick="OnAsk">Ask about this file</button>
+            <button class="icon" title="Close file" @onclick="OnClose">×</button>
+        </div>
+    </header>
+    <div class="file-body">
+        <pre class="gutter">@_gutter</pre>
+        @* Filled by louisChat.renderCode; Blazor renders no children here so it never overwrites the highlighting. *@
+        <pre class="code"><code @ref="_code"></code></pre>
+    </div>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public WorkspaceFile File { get; set; } = default!;
+    [Parameter] public bool Busy { get; set; }
+    [Parameter] public EventCallback OnReview { get; set; }
+    [Parameter] public EventCallback OnAsk { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    private ElementReference _code;
+    private WorkspaceFile? _renderedFile;
+    private string _gutter = "";
+    private string? _language;
+    private int LineCount { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        LineCount = File.Content.Length == 0 ? 0 : File.Content.TrimEnd('\n').Split('\n').Length;
+        _gutter = string.Join('\n', Enumerable.Range(1, Math.Max(LineCount, 1)));
+        _language = LanguageFor(File.Name);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (ReferenceEquals(_renderedFile, File)) return;
+        _renderedFile = File;
+        await JS.InvokeVoidAsync("louisChat.renderCode", _code, File.Content, _language);
+    }
+
+    /// <summary>highlight.js language for a file name; null shows it as plain text.</summary>
+    private static string? LanguageFor(string fileName)
+    {
+        if (fileName.StartsWith("Dockerfile", StringComparison.OrdinalIgnoreCase)) return "dockerfile";
+        return Path.GetExtension(fileName).ToLowerInvariant() switch
+        {
+            ".cs" or ".csx" => "csharp",
+            // Razor is mostly markup; highlighting it as HTML reads better than as C#.
+            ".razor" or ".cshtml" or ".html" or ".htm" or ".xml" or ".csproj" or ".props" or ".targets" or ".svg" => "xml",
+            ".json" => "json",
+            ".yml" or ".yaml" => "yaml",
+            ".md" => "markdown",
+            ".ps1" or ".psm1" or ".psd1" => "powershell",
+            ".sh" or ".bash" => "bash",
+            ".py" => "python",
+            ".js" or ".mjs" => "javascript",
+            ".ts" => "typescript",
+            ".css" => "css",
+            ".scss" => "scss",
+            ".sql" => "sql",
+            ".toml" or ".ini" or ".editorconfig" => "ini",
+            ".go" => "go",
+            ".java" => "java",
+            ".diff" or ".patch" => "diff",
+            _ => null,
+        };
+    }
+
+    private static string FormatSize(long bytes) =>
+        bytes < 1024 ? $"{bytes} B" : bytes < 1024 * 1024 ? $"{bytes / 1024.0:0.#} KB" : $"{bytes / 1024.0 / 1024.0:0.#} MB";
+}

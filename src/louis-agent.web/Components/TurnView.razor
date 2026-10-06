@@ -1,0 +1,106 @@
+@inject IJSRuntime JS
+
+<div class="turn @(Streaming ? "streaming" : "")">
+    <div class="user-message">
+        @if (Turn.UserText.Length > 0)
+        {
+            <div class="user-text">@Turn.UserText</div>
+        }
+        @if (Turn.AttachmentNames.Count > 0)
+        {
+            <div class="attachments">
+                @foreach (var name in Turn.AttachmentNames)
+                {
+                    <span class="chip">📄 @name</span>
+                }
+            </div>
+        }
+    </div>
+
+    <div class="assistant-message" @ref="_answer">
+        @foreach (var block in Turn.Blocks)
+        {
+            switch (block.Kind)
+            {
+                case BlockKind.Thinking:
+                    <details class="thinking" open="@(Streaming && block.ThinkingSeconds is null)">
+                        <summary>@(block.ThinkingSeconds is { } seconds ? $"Thought for {Math.Max(1, Math.Round(seconds))}s" : "Thinking…")</summary>
+                        <div class="thinking-text">@block.Text</div>
+                    </details>
+                    break;
+
+                case BlockKind.Text:
+                    <div class="markdown">@Markdown.ToHtml(block.Text)</div>
+                    break;
+
+                case BlockKind.Tool:
+                    <details class="tool @(block.ToolFailed ? "failed" : "")">
+                        <summary>
+                            <span class="tool-status">@(block.ToolResult is null ? "⋯" : block.ToolFailed ? "✗" : "✓")</span>
+                            <span class="tool-name">@block.ToolName</span>
+                            @if (block.ToolInput is not null)
+                            {
+                                <span class="tool-args">@Summarise(block.ToolInput)</span>
+                            }
+                        </summary>
+                        @if (block.ToolInput is not null)
+                        {
+                            <div class="tool-label">Input</div>
+                            <pre>@block.ToolInput</pre>
+                        }
+                        @if (block.ToolResult is not null)
+                        {
+                            <div class="tool-label">Result</div>
+                            <pre>@block.ToolResult</pre>
+                        }
+                    </details>
+                    break;
+            }
+        }
+
+        @if (Streaming && (Turn.Blocks.Count == 0 || Turn.Blocks[^1] is { Kind: BlockKind.Tool }))
+        {
+            <div class="working">PROCESSING<span class="cursor"></span></div>
+        }
+        @if (Turn.StopReason == "cancelled")
+        {
+            <div class="stopped">Stopped</div>
+        }
+        @if (Turn.Error is not null)
+        {
+            <div class="error">@Turn.Error</div>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public Turn Turn { get; set; } = default!;
+    [Parameter] public bool Streaming { get; set; }
+
+    private Turn? _renderedTurn;
+    private bool _wasStreaming;
+    private bool _shouldRender = true;
+
+    // Finished turns don't change, so only the streaming one (and its final render) is redrawn; markdown isn't
+    // re-parsed for the whole conversation on every streamed word.
+    protected override void OnParametersSet()
+    {
+        _shouldRender = Streaming || _wasStreaming || !ReferenceEquals(Turn, _renderedTurn);
+        _renderedTurn = Turn;
+        _wasStreaming = Streaming;
+    }
+
+    protected override bool ShouldRender() => _shouldRender;
+
+    private ElementReference _answer;
+
+    // Only runs after this turn actually re-rendered (see ShouldRender), so finished turns aren't rescanned.
+    protected override async Task OnAfterRenderAsync(bool firstRender) =>
+        await JS.InvokeVoidAsync("louisChat.highlightBlocks", _answer);
+
+    private static string Summarise(string json)
+    {
+        string flat = string.Join(" ", json.Split('\n', StringSplitOptions.TrimEntries)).Trim('{', '}', ' ');
+        return flat.Length > 80 ? flat[..80] + "…" : flat;
+    }
+}

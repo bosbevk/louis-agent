@@ -1,0 +1,73 @@
+@* One folder of the workspace; sub-folders load when first expanded. *@
+@inject AgentApi Api
+
+@if (_error is not null)
+{
+    <div class="tree-error">@_error</div>
+}
+else if (_entries is null)
+{
+    <div class="tree-loading">Loading…</div>
+}
+else
+{
+    <ul class="tree">
+        @foreach (var entry in _entries)
+        {
+            <li>
+                @if (entry.IsDirectory)
+                {
+                    bool open = _open.Contains(entry.Path);
+                    <button class="tree-row folder" style="padding-left:@(Depth * 14 + 6)px" @onclick="() => Toggle(entry)">
+                        <span class="caret">@(open ? "▾" : "▸")</span> @entry.Name
+                    </button>
+                    @if (open)
+                    {
+                        <FileTree Path="@entry.Path" Depth="Depth + 1" SelectedPath="@SelectedPath" OnOpenFile="OnOpenFile" />
+                    }
+                }
+                else if (entry.Sensitive)
+                {
+                    <span class="tree-row file locked" style="padding-left:@(Depth * 14 + 20)px" title="Secret files can't be opened">🔒 @entry.Name</span>
+                }
+                else
+                {
+                    <button class="tree-row file @(entry.Path == SelectedPath ? "selected" : "")" style="padding-left:@(Depth * 14 + 20)px"
+                            title="@entry.Path" @onclick="() => OnOpenFile.InvokeAsync(entry.Path)">
+                        @entry.Name
+                    </button>
+                }
+            </li>
+        }
+    </ul>
+}
+
+@code {
+    [Parameter] public string Path { get; set; } = "";
+    [Parameter] public int Depth { get; set; }
+    [Parameter] public string? SelectedPath { get; set; }
+    [Parameter] public EventCallback<string> OnOpenFile { get; set; }
+
+    private List<WorkspaceEntry>? _entries;
+    private string? _error;
+    private readonly HashSet<string> _open = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _entries = (await Api.ListFolderAsync(Path)).Entries;
+        }
+        catch (Exception ex)
+        {
+            _error = ex is AgentApiException { Status: System.Net.HttpStatusCode.Unauthorized }
+                ? "Enter the API key below to browse files."
+                : ex.Message;
+        }
+    }
+
+    private void Toggle(WorkspaceEntry folder)
+    {
+        if (!_open.Remove(folder.Path)) _open.Add(folder.Path);
+    }
+}

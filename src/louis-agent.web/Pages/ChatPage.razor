@@ -1,0 +1,500 @@
+@page "/"
+@page "/chat/{SessionId}"
+@using System.Net
+@using System.Text.Json
+@using louis_agent.web.Services
+@inject AgentApi Api
+@inject ChatStore Store
+@inject NavigationManager Nav
+@inject IJSRuntime JS
+@inject GitState Git
+@implements IDisposable
+
+<PageTitle>@(_chat?.Title ?? "Louis Agent")</PageTitle>
+
+<div class="app">
+    <aside class="sidebar">
+        <button class="new-chat" @onclick="NewChat">+ New chat</button>
+        <div class="tabs">
+            <button class="@(_tab == SidebarTab.Chats ? "active" : "")" @onclick="() => _tab = SidebarTab.Chats">Chats</button>
+            <button class="@(_tab == SidebarTab.Files ? "active" : "")" @onclick="() => _tab = SidebarTab.Files">Files</button>
+            <button class="@(_tab == SidebarTab.Changes ? "active" : "")" @onclick="() => _tab = SidebarTab.Changes">
+                <span>Changes</span>
+                @if (Git.ChangeCount > 0)
+                {
+                    <span class="tab-count">@Git.ChangeCount</span>
+                }
+            </button>
+        </div>
+        @if (_tab == SidebarTab.Files)
+        {
+            <nav class="file-tree">
+                <FileTree SelectedPath="@_openFile?.Path" OnOpenFile="OpenFile" />
+            </nav>
+        }
+        else if (_tab == SidebarTab.Changes)
+        {
+            <nav class="file-tree">
+                <ChangesPanel OpenKey="@_openDiffKey" OnOpenDiff="OpenDiff" OnReviewAll="ReviewAllChanges" />
+            </nav>
+        }
+        else
+        {
+            <nav class="chat-list">
+                @foreach (var chat in Store.Chats)
+                {
+                    <div class="chat-item @(chat.SessionId == SessionId && !ViewerOpen ? "active" : "")">
+                        <a href="chat/@chat.SessionId" title="@chat.Title" @onclick="CloseFile">@chat.Title</a>
+                        <button class="icon" title="Delete chat" @onclick="() => DeleteChat(chat)">×</button>
+                    </div>
+                }
+            </nav>
+        }
+        <ThemeSwitcher />
+        <label class="settings">
+            API key
+            <input type="password" value="@Store.ApiKeyDraft" @onchange="SaveApiKey" placeholder="only if AGENT_API_KEY is set" />
+        </label>
+    </aside>
+
+    <main class="conversation">
+        @if (_openDiff is not null)
+        {
+            <DiffViewer Diff="_openDiff" Busy="@(_streaming || Git.Busy)" OnStage="() => ChangeOpenDiff(Git.StageAsync)"
+                        OnUnstage="() => ChangeOpenDiff(Git.UnstageAsync)" OnDiscard="() => ChangeOpenDiff(Git.DiscardAsync)"
+                        OnReview="ReviewOpenDiff" OnClose="CloseFile" />
+        }
+        else if (_openFile is not null)
+        {
+            <FileViewer File="_openFile" Busy="_streaming" OnReview="ReviewFile" OnAsk="AskAboutFile" OnClose="CloseFile" />
+        }
+        <div class="messages @(ViewerOpen ? "hidden" : "")" @ref="_messages">
+            @if (_chat is null || _chat.Turns.Count == 0)
+            {
+                <div class="empty">
+                    <h1>LOUIS AGENT</h1>
+                    @* Each line types out after the previous one (--i staggers the animation). *@
+                    <div class="boot">
+                        <p style="--i:0">LOUIS AGENT BIOS v1.0 (C) LOUIS</p>
+                        <p style="--i:1">MEMORY CHECK ............ OK</p>
+                        <p style="--i:2">LOADING SKILLS .......... OK</p>
+                        <p style="--i:3">WORKSPACE MOUNTED ....... OK</p>
+                        <p style="--i:4">READY.<span class="cursor"></span></p>
+                    </div>
+                    <p class="hint">Ask about your code, run tools in the workspace, or attach a file.</p>
+                </div>
+            }
+            else
+            {
+                @foreach (var turn in _chat.Turns)
+                {
+                    <TurnView Turn="turn" Streaming="@(_streaming && turn == _chat.Turns[^1])" />
+                }
+            }
+        </div>
+
+        @if (_notice is not null)
+        {
+            <div class="notice">@_notice <button class="icon" @onclick="() => _notice = null">×</button></div>
+        }
+
+        <div class="composer @(ViewerOpen ? "hidden" : "")">
+            @if (_attachments.Count > 0)
+            {
+                <div class="attachments">
+                    @foreach (var attachment in _attachments)
+                    {
+                        <span class="chip">@attachment.Name <button class="icon" @onclick="() => _attachments.Remove(attachment)">×</button></span>
+                    }
+                </div>
+            }
+            <div class="input-row">
+                <label class="attach" title="Attach text files">
+                    📎
+                    <InputFile OnChange="AddFiles" multiple />
+                </label>
+                <span class="prompt" aria-hidden="true">&gt;</span>
+                <textarea id="composer-input" rows="1" @bind="_draft" @bind:event="oninput"
+                          disabled="@(_chat?.Ended == true)"
+                          placeholder="@(_chat?.Ended == true ? "This chat ended when the API restarted - start a new chat" : "Message Louis Agent (Enter to send, Shift+Enter for a new line)")"></textarea>
+                @if (_streaming)
+                {
+                    <button class="stop" @onclick="Stop">Stop</button>
+                }
+                else
+                {
+                    <button id="send-button" class="send" @onclick="Send" disabled="@(!CanSend)">Send</button>
+                }
+            </div>
+        </div>
+    </main>
+</div>
+
+@code {
+    [Parameter] public string? SessionId { get; set; }
+
+    private const long MaxAttachmentBytes = 1_000_000;
+
+    private Chat? _chat;
+    private string _draft = "";
+    private readonly List<Attachment> _attachments = [];
+    private bool _streaming;
+    private string? _notice;
+    private ElementReference _messages;
+    private DateTime _lastRender;
+    private bool _scrollToEnd;
+    private enum SidebarTab { Chats, Files, Changes }
+
+    private SidebarTab _tab = SidebarTab.Chats;
+    private WorkspaceFile? _openFile;
+    private GitDiff? _openDiff;
+    private string? _openDiffKey;
+
+    private bool ViewerOpen => _openFile is not null || _openDiff is not null;
+
+    private bool CanSend => !_streaming && _chat?.Ended != true && (_draft.Trim().Length > 0 || _attachments.Count > 0);
+
+    protected override async Task OnInitializedAsync()
+    {
+        Git.Changed += OnGitChanged;
+        if (!Store.Loaded) await Store.LoadAsync();
+        _ = Git.RefreshAsync();
+    }
+
+    protected override void OnParametersSet()
+    {
+        var chat = Store.Find(SessionId);
+        if (!ReferenceEquals(chat, _chat)) _scrollToEnd = true;
+        _chat = chat;
+        if (SessionId is not null && chat is null && !_streaming)
+            _notice = "That chat isn't saved in this browser.";
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (_streaming || _scrollToEnd)
+        {
+            await JS.InvokeVoidAsync("louisChat.scrollToBottom", _messages, _scrollToEnd);
+            _scrollToEnd = false;
+        }
+    }
+
+    private void NewChat()
+    {
+        _notice = null;
+        _openFile = null;
+        Nav.NavigateTo("");
+    }
+
+    private async Task Send()
+    {
+        if (!CanSend) return;
+
+        string text = _draft.Trim();
+        var attachments = _attachments.ToList();
+        _draft = "";
+        _attachments.Clear();
+        await StartTurnAsync(text, attachments);
+    }
+
+    private async Task OpenFile(string path)
+    {
+        try
+        {
+            _openDiff = null;
+            _openDiffKey = null;
+            _openFile = await Api.ReadFileAsync(path);
+            _notice = null;
+        }
+        catch (Exception ex)
+        {
+            _notice = Describe(ex);
+        }
+    }
+
+    private void CloseFile()
+    {
+        _openFile = null;
+        _openDiff = null;
+        _openDiffKey = null;
+        _scrollToEnd = true;
+    }
+
+    // A review gets its own chat, so it doesn't mix with whatever the current chat is about.
+    private async Task ReviewFile()
+    {
+        if (_openFile is null || _streaming) return;
+        string path = _openFile.Path;
+        CloseFile();
+        _chat = null;
+        await StartTurnAsync(
+            $"Review `{path}` from the workspace. Read it with your tools, then list bugs, risks and improvements, most important first, with line numbers.",
+            [], $"Review {FileName(path)}");
+    }
+
+    private async Task AskAboutFile()
+    {
+        if (_openFile is null) return;
+        _draft = $"About `{_openFile.Path}`: ";
+        CloseFile();
+        StateHasChanged();
+        await JS.InvokeVoidAsync("louisChat.focusComposer");
+    }
+
+    private static string FileName(string path) => path[(path.LastIndexOf('/') + 1)..];
+
+    private async Task OpenDiff((GitFile File, bool Staged) change)
+    {
+        try
+        {
+            _openDiff = await Api.GitDiffAsync(change.File.Path, change.Staged);
+            _openDiffKey = ChangesPanel.Key(change.File, change.Staged);
+            _openFile = null;
+            _notice = null;
+        }
+        catch (Exception ex)
+        {
+            _notice = Describe(ex);
+        }
+    }
+
+    // After staging, unstaging or discarding the open file, show what is left of it: the same side if it still has
+    // changes there, otherwise the other side (e.g. staged after Stage), otherwise close the viewer.
+    private async Task ChangeOpenDiff(Func<IEnumerable<string>, Task> change)
+    {
+        if (_openDiff is null) return;
+        string path = _openDiff.Path;
+        bool staged = _openDiff.Staged;
+        await change([path]);
+        if (Git.Error is not null)
+        {
+            _notice = Git.Error;
+            return;
+        }
+
+        var file = Git.Status?.Files.FirstOrDefault(f => f.Path == path);
+        if (file is not null && (staged ? file.Staged : file.Unstaged)) await OpenDiff((file, staged));
+        else if (file is not null) await OpenDiff((file, !staged));
+        else CloseFile();
+    }
+
+    private async Task ReviewOpenDiff()
+    {
+        if (_openDiff is null || _streaming) return;
+        string path = _openDiff.Path;
+        string which = _openDiff.Untracked ? "new, untracked file" : _openDiff.Staged ? "staged changes to" : "uncommitted changes to";
+        CloseFile();
+        _chat = null;
+        await StartTurnAsync(
+            $"Review the {which} `{path}`. Use your git tools to read the diff (and the file if you need context), then list bugs, " +
+            "risks and improvements in the changed lines, most important first.",
+            [], $"Review changes {FileName(path)}");
+    }
+
+    private async Task ReviewAllChanges()
+    {
+        if (_streaming) return;
+        CloseFile();
+        _chat = null;
+        await StartTurnAsync(
+            "Review all my uncommitted changes. Use your git tools for the status and the staged and unstaged diffs, then for each " +
+            "file list bugs, risks and improvements in the changed lines, most important first, and say whether it looks ready to commit.",
+            [], "Review all changes");
+    }
+
+    private void OnGitChanged() => InvokeAsync(StateHasChanged);
+
+    public void Dispose() => Git.Changed -= OnGitChanged;
+
+    private async Task StartTurnAsync(string text, List<Attachment> attachments, string? title = null)
+    {
+        _notice = null;
+        if (_chat is null)
+        {
+            try
+            {
+                string sessionId = await Api.CreateSessionAsync();
+                _chat = new Chat { SessionId = sessionId, Title = title ?? TitleFor(text, attachments) };
+                Store.Chats.Insert(0, _chat);
+                Nav.NavigateTo($"chat/{sessionId}");
+            }
+            catch (Exception ex)
+            {
+                _chat = Store.Find(SessionId);
+                _draft = text;
+                _attachments.AddRange(attachments);
+                _notice = Describe(ex);
+                return;
+            }
+        }
+
+        var chat = _chat;
+        var turn = new Turn { UserText = text, AttachmentNames = attachments.Select(a => a.Name).ToList() };
+        chat.Turns.Add(turn);
+        chat.UpdatedAt = DateTimeOffset.Now;
+        _streaming = true;
+        _scrollToEnd = true;
+        StateHasChanged();
+
+        try
+        {
+            await foreach (var streamEvent in Api.StreamMessageAsync(chat.SessionId, text, attachments))
+            {
+                Apply(turn, streamEvent);
+                RenderThrottled();
+            }
+        }
+        catch (AgentApiException ex) when (ex.Status == HttpStatusCode.NotFound)
+        {
+            chat.Ended = true;
+            turn.Error = "This chat's session no longer exists on the server (the API was restarted). Start a new chat to continue.";
+        }
+        catch (Exception ex)
+        {
+            turn.Error = Describe(ex);
+        }
+        finally
+        {
+            _streaming = false;
+            // The agent may have edited files; keep the Changes badge and panel current.
+            _ = Git.RefreshAsync();
+            await Store.SaveAsync();
+            StateHasChanged();
+        }
+    }
+
+    private static void Apply(Turn turn, AgentStreamEvent streamEvent)
+    {
+        var data = streamEvent.Data;
+        switch (streamEvent.Type)
+        {
+            case "content_block_start":
+                var block = data.GetProperty("content_block");
+                switch (block.GetProperty("type").GetString())
+                {
+                    case "thinking":
+                        turn.Blocks.Add(new Block { Kind = BlockKind.Thinking });
+                        break;
+                    case "text":
+                        turn.Blocks.Add(new Block { Kind = BlockKind.Text });
+                        break;
+                    case "tool_use":
+                        turn.Blocks.Add(new Block
+                        {
+                            Kind = BlockKind.Tool,
+                            ToolUseId = block.GetProperty("id").GetString(),
+                            ToolName = block.GetProperty("name").GetString(),
+                            ToolInput = FormatInput(block.GetProperty("input")),
+                        });
+                        break;
+                    case "tool_result":
+                        string? toolUseId = block.GetProperty("tool_use_id").GetString();
+                        if (turn.Blocks.LastOrDefault(b => b.ToolUseId == toolUseId) is { } tool)
+                        {
+                            tool.ToolResult = block.GetProperty("content").GetString() ?? "";
+                            tool.ToolFailed = block.GetProperty("is_error").GetBoolean();
+                        }
+                        break;
+                }
+                break;
+
+            case "content_block_delta":
+                var delta = data.GetProperty("delta");
+                if (turn.Blocks.LastOrDefault() is not { } current) break;
+                if (delta.TryGetProperty("thinking", out var thinking)) current.Text += thinking.GetString();
+                else if (delta.TryGetProperty("text", out var text)) current.Text += text.GetString();
+                break;
+
+            case "content_block_stop":
+                if (turn.Blocks.LastOrDefault() is { Kind: BlockKind.Thinking, ThinkingSeconds: null } finished)
+                    finished.ThinkingSeconds = (DateTimeOffset.Now - finished.StartedAt).TotalSeconds;
+                break;
+
+            case "message_delta":
+                turn.StopReason = data.GetProperty("delta").GetProperty("stop_reason").GetString();
+                break;
+
+            case "error":
+                turn.Error = data.GetProperty("error").GetProperty("message").GetString();
+                break;
+        }
+    }
+
+    private static string? FormatInput(JsonElement input) =>
+        input.ValueKind == JsonValueKind.Object && !input.EnumerateObject().Any()
+            ? null
+            : JsonSerializer.Serialize(input, new JsonSerializerOptions { WriteIndented = true });
+
+    // Text arrives a few words at a time; re-rendering every 50 ms is smooth without redrawing on every token.
+    private void RenderThrottled()
+    {
+        if ((DateTime.UtcNow - _lastRender).TotalMilliseconds < 50) return;
+        _lastRender = DateTime.UtcNow;
+        StateHasChanged();
+    }
+
+    private async Task Stop()
+    {
+        if (_chat is null) return;
+        try
+        {
+            await Api.CancelAsync(_chat.SessionId);
+        }
+        catch (Exception ex)
+        {
+            _notice = Describe(ex);
+        }
+    }
+
+    private async Task AddFiles(InputFileChangeEventArgs e)
+    {
+        foreach (var file in e.GetMultipleFiles(maximumFileCount: 10))
+        {
+            if (file.Size > MaxAttachmentBytes)
+            {
+                _notice = $"{file.Name} is larger than 1 MB and was not attached.";
+                continue;
+            }
+
+            using var reader = new StreamReader(file.OpenReadStream(MaxAttachmentBytes));
+            _attachments.Add(new Attachment(file.Name, await reader.ReadToEndAsync()));
+        }
+    }
+
+    private async Task DeleteChat(Chat chat)
+    {
+        try
+        {
+            await Api.DeleteSessionAsync(chat.SessionId);
+        }
+        catch (Exception)
+        {
+            // The local copy is removed either way.
+        }
+
+        Store.Chats.Remove(chat);
+        await Store.SaveAsync();
+        if (chat.SessionId == SessionId) Nav.NavigateTo("");
+    }
+
+    private async Task SaveApiKey(ChangeEventArgs e)
+    {
+        await Store.SaveApiKeyAsync(e.Value?.ToString());
+        _notice = null;
+    }
+
+    private static string TitleFor(string text, List<Attachment> attachments)
+    {
+        string title = text.Length > 0 ? text.ReplaceLineEndings(" ") : attachments.FirstOrDefault()?.Name ?? "New chat";
+        return title.Length > 50 ? title[..50] + "…" : title;
+    }
+
+    private static string Describe(Exception ex) => ex switch
+    {
+        AgentApiException { Status: HttpStatusCode.Unauthorized } => "The API needs a key: enter AGENT_API_KEY under API key in the sidebar.",
+        AgentApiException { Status: HttpStatusCode.Conflict } => "This chat is still answering; wait for it or press Stop.",
+        AgentApiException api => api.Message,
+        HttpRequestException => "Can't reach the agent API. Is the api container running?",
+        _ => ex.Message,
+    };
+}

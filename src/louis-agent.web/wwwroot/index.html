@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Louis Agent</title>
+    <base href="/" />
+    <link rel="icon" type="image/png" href="icon-192.png" />
+    <!-- Retro terminal fonts; the CSS falls back to the system monospace font if they can't load. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=VT323&display=swap" />
+    <link rel="stylesheet" href="css/app.css" />
+    <!-- The active theme (css/themes/<id>.css, listed in themes.json). The saved choice is applied before the app starts so
+         the page never flashes the default; the id is checked so storage can only ever pick a file from that folder. -->
+    <link id="theme-css" rel="stylesheet" href="css/themes/retro.css" />
+    <script>
+        try {
+            const theme = localStorage.getItem("louis-agent.theme");
+            if (theme && /^[a-z0-9-]+$/.test(theme)) {
+                document.getElementById("theme-css").href = "css/themes/" + theme + ".css";
+                document.documentElement.dataset.theme = theme;
+            }
+        } catch { }
+    </script>
+</head>
+
+<body>
+    <div id="app">
+        <div class="loading">BOOTING LOUIS AGENT<span class="cursor"></span></div>
+    </div>
+
+    <div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="." class="reload">Reload</a>
+        <span class="dismiss">🗙</span>
+    </div>
+    <!-- Syntax highlighting (file viewer and chat code blocks): pinned version with integrity hashes; its colours come from app.css. -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.2/highlight.min.js"
+            integrity="sha512-VSPLUv/n1Bmn+4zoxBNwpuFAO3//79I0Aax/qHDx24R47vylPcc9PrHDCqlePwHnh3joiM7/YTQhcXyQAAxvPQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.2/languages/powershell.min.js"
+            integrity="sha512-I2sYcyooqG4MUbNURH1azVlcuwqA4uxCFT9tLOXIhrvwrosPpNrE0Zz0AYdjRaGPacIrJTwnTut5CzB6VNc6Hw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.2/languages/dockerfile.min.js"
+            integrity="sha512-h1yykn3jz+UWHMFSt9H1vNOT8fgC1i7uYBpAckqwcuhoWL16s9Xzsja7blR8SXEul1dOc6kc7AFGuEFfEyk9cw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="js/chat.js"></script>
+    <script src="_framework/blazor.webassembly.js"></script>
+</body>
+
+</html>

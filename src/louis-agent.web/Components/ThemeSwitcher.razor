@@ -1,0 +1,43 @@
+@* Lists the themes from css/themes/themes.json; adding a theme is a new CSS file plus one line there. *@
+@inject HttpClient Http
+@inject IJSRuntime JS
+
+@if (_themes.Count > 1)
+{
+    <label class="settings">
+        Theme
+        <select value="@_current" @onchange="Change">
+            @foreach (var theme in _themes)
+            {
+                <option value="@theme.Id">@theme.Name</option>
+            }
+        </select>
+    </label>
+}
+
+@code {
+    private sealed record Theme(string Id, string Name);
+
+    private List<Theme> _themes = [];
+    private string _current = "retro";
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _themes = await Http.GetFromJsonAsync<List<Theme>>("css/themes/themes.json") ?? [];
+            _current = await JS.InvokeAsync<string>("louisChat.getTheme");
+        }
+        catch (Exception)
+        {
+            // No list, no switcher: the default theme stays.
+        }
+    }
+
+    private async Task Change(ChangeEventArgs e)
+    {
+        if (e.Value?.ToString() is not { } id || _themes.All(t => t.Id != id)) return;
+        _current = id;
+        await JS.InvokeVoidAsync("louisChat.setTheme", id);
+    }
+}

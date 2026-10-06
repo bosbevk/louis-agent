@@ -1,0 +1,151 @@
+name: louis-agent
+
+services:
+  mcp-server:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.mcp-server
+    container_name: rider_mcp_server
+    env_file:
+      - path: ../config/.env
+      - path: ../config/.env.secrets
+        required: false
+    environment:
+      WORKSPACE_ROOT: /workspace
+      # Skills and agent-built tools live in the repo, so anything created or approved in a container is kept
+      SKILLS_DIRECTORY: /skills
+      # The repo is a Windows checkout (CRLF); match Git for Windows so git in the container doesn't see every file as changed
+      GIT_CONFIG_COUNT: "1"
+      GIT_CONFIG_KEY_0: core.autocrlf
+      GIT_CONFIG_VALUE_0: "true"
+      # Run logs and oversized-tool-result records, kept on the host after --rm containers exit
+      LOG_DIRECTORY: /logs
+    volumes:
+      - ../:/workspace
+      - ../Skills:/skills
+      - ../logs:/logs
+      - ${REPOSITORIES_PATH}:/repositories
+    stdin_open: true
+    tty: true
+    networks:
+      - default
+
+  acp-server:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.acp-server
+    image: louis-agent-acp:latest
+    env_file:
+      - path: ../config/.env
+      - path: ../config/.env.secrets
+        required: false
+    environment:
+      WORKSPACE_ROOT: /workspace
+      # Skills and agent-built tools live in the repo, so anything created or approved in a container is kept
+      SKILLS_DIRECTORY: /skills
+      # The repo is a Windows checkout (CRLF); match Git for Windows so git in the container doesn't see every file as changed
+      GIT_CONFIG_COUNT: "1"
+      GIT_CONFIG_KEY_0: core.autocrlf
+      GIT_CONFIG_VALUE_0: "true"
+      # Run logs and oversized-tool-result records, kept on the host after --rm containers exit
+      LOG_DIRECTORY: /logs
+      LLM_PROVIDER: ${LLM_PROVIDER:-anthropic}
+      LLM_MODEL: ${LLM_MODEL:-claude-haiku-4-5-20251001}
+    volumes:
+      - ../:/workspace
+      - ../Skills:/skills
+      - ../logs:/logs
+      - ${REPOSITORIES_PATH}:/repositories
+    stdin_open: true
+    networks:
+      - default
+
+  api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.api
+    image: louis-agent-api:latest
+    container_name: louis_agent_api
+    env_file:
+      - path: ../config/.env
+      - path: ../config/.env.secrets
+        required: false
+    environment:
+      WORKSPACE_ROOT: /workspace
+      # Skills and agent-built tools live in the repo, so anything created or approved in a container is kept
+      SKILLS_DIRECTORY: /skills
+      # The repo is a Windows checkout (CRLF); match Git for Windows so git in the container doesn't see every file as changed
+      GIT_CONFIG_COUNT: "1"
+      GIT_CONFIG_KEY_0: core.autocrlf
+      GIT_CONFIG_VALUE_0: "true"
+      # Run logs and oversized-tool-result records, kept on the host after the container is removed
+      LOG_DIRECTORY: /logs
+      LLM_PROVIDER: ${LLM_PROVIDER:-anthropic}
+      LLM_MODEL: ${LLM_MODEL:-claude-haiku-4-5-20251001}
+    # Localhost only: the agent can run shell commands and write files. Set AGENT_API_KEY in .env.secrets to require a key.
+    ports:
+      - "127.0.0.1:${API_PORT:-5080}:8080"
+    volumes:
+      - ../:/workspace
+      - ../Skills:/skills
+      - ../logs:/logs
+      - ${REPOSITORIES_PATH}:/repositories
+    networks:
+      - default
+
+  local-agent:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.agent
+    container_name: rider_csharp_agent
+    env_file:
+      - path: ../config/.env
+      - path: ../config/.env.secrets
+        required: false
+    environment:
+      WORKSPACE_ROOT: /workspace
+      # Skills and agent-built tools live in the repo, so anything created or approved in a container is kept
+      SKILLS_DIRECTORY: /skills
+      # The repo is a Windows checkout (CRLF); match Git for Windows so git in the container doesn't see every file as changed
+      GIT_CONFIG_COUNT: "1"
+      GIT_CONFIG_KEY_0: core.autocrlf
+      GIT_CONFIG_VALUE_0: "true"
+      # Run logs and oversized-tool-result records, kept on the host after --rm containers exit
+      LOG_DIRECTORY: /logs
+      LLM_PROVIDER: ${LLM_PROVIDER:-anthropic}
+      LLM_MODEL: ${LLM_MODEL:-claude-haiku-4-5-20251001}
+    volumes:
+      - ../:/workspace
+      - ../Skills:/skills
+      - ../logs:/logs
+      - ${REPOSITORIES_PATH}:/repositories
+    stdin_open: true
+    tty: true
+    networks:
+      - default
+
+  ollama:
+    build:
+      context: ../services
+      dockerfile: Dockerfile.ollama
+    container_name: louis_ollama
+    ports:
+      - "11434:11434"
+    environment:
+      - OLLAMA_HOST=0.0.0.0:11434
+      - OLLAMA_MODEL=${LLM_MODEL:-qwen2.5-coder}  # Auto-pull model from .env
+    volumes:
+      - ollama_data:/root/.ollama
+    networks:
+      - default
+    profiles:
+      - ollama  # Only starts with: docker-compose --profile ollama up
+    # Just update .env with LLM_PROVIDER=ollama and run:
+    # docker-compose --profile ollama up
+
+volumes:
+  ollama_data:
+
+networks:
+  default:
+    driver: bridge

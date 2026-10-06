@@ -1,0 +1,46 @@
+# Build outputs
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+
+# .NET / NuGet
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.pidb
+*.svclog
+*.pdb
+*.cache
+packages/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Rider / IntelliJ
+.idea/
+.idea/**
+*.iml
+*.iws
+*.ipr
+
+# VS Code
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Secrets and local configuration (see config/.env.secrets.example)
+config/.env
+config/.env.secrets
+config/.env.secrets.local
+config/.env.local
+
+# Agent-built tools awaiting /approve (approved ones in Skills/tools/ are committed)
+Skills/tools/pending/

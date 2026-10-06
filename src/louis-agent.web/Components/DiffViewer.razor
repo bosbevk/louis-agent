@@ -1,0 +1,126 @@
+@* One file's staged or unstaged diff, with old/new line numbers, and the actions for that file. *@
+
+<div class="file-viewer">
+    <header class="file-header">
+        <div class="file-title">
+            <span class="file-path" title="@Diff.Path">@Diff.Path</span>
+            <span class="file-meta">
+                @(Diff.Untracked ? "New file" : Diff.Staged ? "Staged changes" : "Unstaged changes")
+                · <span class="added">+@_added</span> <span class="removed">−@_removed</span>
+                @if (Diff.Truncated) { <text> · diff truncated</text> }
+            </span>
+        </div>
+        <div class="file-actions">
+            @if (_confirmDiscard)
+            {
+                <span class="confirm">Discard these changes? This can't be undone.</span>
+                <button class="danger" disabled="@Busy" @onclick="ConfirmDiscard">Discard</button>
+                <button class="secondary" @onclick="() => _confirmDiscard = false">Cancel</button>
+            }
+            else
+            {
+                <button class="send" disabled="@Busy" @onclick="OnReview">Ask agent to review</button>
+                @if (Diff.Staged)
+                {
+                    <button class="secondary" disabled="@Busy" @onclick="OnUnstage">Unstage</button>
+                }
+                else
+                {
+                    <button class="secondary" disabled="@Busy" @onclick="OnStage">Stage</button>
+                    <button class="secondary" disabled="@Busy" @onclick="() => _confirmDiscard = true">Discard</button>
+                }
+                <button class="icon" title="Close diff" @onclick="OnClose">×</button>
+            }
+        </div>
+    </header>
+    <div class="diff-body">
+        @if (_rows.Count == 0)
+        {
+            <div class="diff-note">No differences.</div>
+        }
+        @foreach (var row in _rows)
+        {
+            <div class="diff-row diff-@row.Kind">
+                <span class="ln">@row.Old</span><span class="ln">@row.New</span><span class="diff-text">@row.Text</span>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public GitDiff Diff { get; set; } = default!;
+    [Parameter] public bool Busy { get; set; }
+    [Parameter] public EventCallback OnStage { get; set; }
+    [Parameter] public EventCallback OnUnstage { get; set; }
+    [Parameter] public EventCallback OnDiscard { get; set; }
+    [Parameter] public EventCallback OnReview { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    private sealed record Row(string Kind, string Old, string New, string Text);
+
+    private GitDiff? _parsed;
+    private List<Row> _rows = [];
+    private int _added, _removed;
+    private bool _confirmDiscard;
+
+    protected override void OnParametersSet()
+    {
+        if (ReferenceEquals(_parsed, Diff)) return;
+        _parsed = Diff;
+        _confirmDiscard = false;
+        (_rows, _added, _removed) = Parse(Diff.Diff);
+    }
+
+    private async Task ConfirmDiscard()
+    {
+        _confirmDiscard = false;
+        await OnDiscard.InvokeAsync();
+    }
+
+    /// <summary>Unified diff to rows: hunk headers, context, additions and removals with their line numbers.</summary>
+    private static (List<Row> Rows, int Added, int Removed) Parse(string diff)
+    {
+        var rows = new List<Row>();
+        int oldLine = 0, newLine = 0, added = 0, removed = 0;
+        bool inHunk = false;
+        foreach (string raw in diff.Replace("\r\n", "\n").Split('\n'))
+        {
+            if (raw.StartsWith("@@"))
+            {
+                inHunk = true;
+                var match = System.Text.RegularExpressions.Regex.Match(raw, @"^@@ -(\d+)(?:,\d+)? \+(\d+)(?:,\d+)? @@(.*)$");
+                if (match.Success)
+                {
+                    oldLine = int.Parse(match.Groups[1].Value);
+                    newLine = int.Parse(match.Groups[2].Value);
+                }
+                rows.Add(new Row("hunk", "", "", raw));
+            }
+            else if (!inHunk)
+            {
+                // File headers (diff --git, index, ---/+++) are summarised in the title; binary diffs have no hunks.
+                if (raw.StartsWith("Binary files")) rows.Add(new Row("note", "", "", raw));
+            }
+            else if (raw.StartsWith('+'))
+            {
+                rows.Add(new Row("add", "", (newLine++).ToString(), raw[1..]));
+                added++;
+            }
+            else if (raw.StartsWith('-'))
+            {
+                rows.Add(new Row("del", (oldLine++).ToString(), "", raw[1..]));
+                removed++;
+            }
+            else if (raw.StartsWith('\\'))
+            {
+                rows.Add(new Row("note", "", "", raw));
+            }
+            else if (raw.StartsWith(' '))
+            {
+                rows.Add(new Row("ctx", (oldLine++).ToString(), (newLine++).ToString(), raw[1..]));
+            }
+        }
+
+        return (rows, added, removed);
+    }
+}

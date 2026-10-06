@@ -1,0 +1,23 @@
+{
+  "default_mcp_settings": {
+    "use_custom_mcp": false,
+    "use_idea_mcp": false
+  },
+  "agent_servers": {
+    "Louis Agent": {
+      "command": "C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.exe",
+      "args": [
+        "compose",
+        "-f",
+        "C:\\path\\to\\louis-agent-solution\\docker\\docker-compose.yml",
+        "--env-file",
+        "C:\\path\\to\\louis-agent-solution\\config\\.env",
+        "run",
+        "--rm",
+        "-T",
+        "acp-server"
+      ],
+      "env": {}
+    }
+  }
+}

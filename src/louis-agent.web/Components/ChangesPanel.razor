@@ -1,0 +1,164 @@
+@* Source-control view: review each changed file, tick the ones you want, then stage, unstage, discard or commit. *@
+@implements IDisposable
+@inject GitState Git
+
+<div class="changes-panel">
+    <div class="changes-head">
+        <span class="branch" title="Current branch">⎇ @(Git.Status?.Branch ?? "…")</span>
+        <button class="icon" title="Refresh" disabled="@Git.Busy" @onclick="Git.RefreshAsync">⟳</button>
+    </div>
+
+    @if (Git.Error is not null)
+    {
+        <div class="tree-error">@Git.Error</div>
+    }
+
+    @if (Git.Status is { } status)
+    {
+        <div class="commit-box">
+            <textarea rows="2" placeholder="Commit message" @bind="_message" @bind:event="oninput"></textarea>
+            <button class="send" disabled="@(Git.Busy || string.IsNullOrWhiteSpace(_message) || !status.Files.Any(f => f.Staged))" @onclick="Commit">
+                Commit @status.Files.Count(f => f.Staged) staged
+            </button>
+            @if (status.Committed is not null)
+            {
+                <div class="committed">Committed @status.Committed</div>
+            }
+        </div>
+
+        @if (status.Files.Count == 0)
+        {
+            <div class="tree-loading">No changes.</div>
+        }
+        else
+        {
+            <div class="selection-bar">
+                @if (_confirmDiscard)
+                {
+                    <span class="confirm">Discard changes to @SelectedUnstaged.Count file(s)? This can't be undone.</span>
+                    <button class="danger" disabled="@Git.Busy" @onclick="Discard">Discard</button>
+                    <button class="secondary" @onclick="() => _confirmDiscard = false">Cancel</button>
+                }
+                else
+                {
+                    <button class="secondary" disabled="@(Git.Busy || SelectedUnstaged.Count == 0)" @onclick="Stage">Stage</button>
+                    <button class="secondary" disabled="@(Git.Busy || SelectedStaged.Count == 0)" @onclick="Unstage">Unstage</button>
+                    <button class="secondary" disabled="@(Git.Busy || SelectedUnstaged.Count == 0)" @onclick="() => _confirmDiscard = true">Discard</button>
+                    <button class="secondary" disabled="@Git.Busy" title="Ask the agent to review all uncommitted changes" @onclick="OnReviewAll">Review all</button>
+                }
+            </div>
+
+            @FileGroup("Staged", staged: true, status.Files.Where(f => f.Staged).ToList())
+            @FileGroup("Changes", staged: false, status.Files.Where(f => f.Unstaged).ToList())
+        }
+    }
+    else if (Git.Error is null)
+    {
+        <div class="tree-loading">Loading…</div>
+    }
+</div>
+
+@code {
+    [Parameter] public string? OpenKey { get; set; }
+    [Parameter] public EventCallback<(GitFile File, bool Staged)> OnOpenDiff { get; set; }
+    [Parameter] public EventCallback OnReviewAll { get; set; }
+
+    private readonly HashSet<string> _selected = [];
+    private string _message = "";
+    private bool _confirmDiscard;
+
+    public static string Key(GitFile file, bool staged) => $"{(staged ? "s" : "u")}:{file.Path}";
+
+    private List<string> SelectedStaged => Selected(staged: true);
+    private List<string> SelectedUnstaged => Selected(staged: false);
+
+    // Only paths still present in that group count, so a refresh never acts on files that have moved on.
+    private List<string> Selected(bool staged) =>
+        (Git.Status?.Files ?? []).Where(f => (staged ? f.Staged : f.Unstaged) && _selected.Contains(Key(f, staged))).Select(f => f.Path).ToList();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Git.Changed += OnGitChanged;
+        await Git.RefreshAsync();
+    }
+
+    private void OnGitChanged() => InvokeAsync(StateHasChanged);
+
+    private async Task Stage()
+    {
+        var paths = SelectedUnstaged;
+        await Git.StageAsync(paths);
+        if (Git.Error is null) ForgetSelection(paths, staged: false);
+    }
+
+    private async Task Unstage()
+    {
+        var paths = SelectedStaged;
+        await Git.UnstageAsync(paths);
+        if (Git.Error is null) ForgetSelection(paths, staged: true);
+    }
+
+    private async Task Discard()
+    {
+        var paths = SelectedUnstaged;
+        _confirmDiscard = false;
+        await Git.DiscardAsync(paths);
+        if (Git.Error is null) ForgetSelection(paths, staged: false);
+    }
+
+    private async Task Commit()
+    {
+        await Git.CommitAsync(_message);
+        if (Git.Error is null)
+        {
+            _message = "";
+            _selected.RemoveWhere(k => k.StartsWith("s:"));
+        }
+    }
+
+    private void ForgetSelection(IEnumerable<string> paths, bool staged)
+    {
+        foreach (string path in paths) _selected.Remove($"{(staged ? "s" : "u")}:{path}");
+    }
+
+    private void Toggle(string key)
+    {
+        if (!_selected.Remove(key)) _selected.Add(key);
+    }
+
+    private void ToggleAll(List<GitFile> files, bool staged, bool select)
+    {
+        foreach (var file in files)
+        {
+            if (select) _selected.Add(Key(file, staged));
+            else _selected.Remove(Key(file, staged));
+        }
+    }
+
+    public void Dispose() => Git.Changed -= OnGitChanged;
+
+    // A titled group of files (Staged / Changes) with a select-all box.
+    private RenderFragment FileGroup(string title, bool staged, List<GitFile> files) => __builder =>
+    {
+        if (files.Count == 0) return;
+        bool allSelected = files.All(f => _selected.Contains(Key(f, staged)));
+        <div class="change-group">
+            <label class="group-head">
+                <input type="checkbox" checked="@allSelected" @onchange="e => ToggleAll(files, staged, (bool)e.Value!)" />
+                @title <span class="count">@files.Count</span>
+            </label>
+            @foreach (var file in files)
+            {
+                string key = Key(file, staged);
+                <div class="change-row @(key == OpenKey ? "selected" : "")">
+                    <input type="checkbox" checked="@_selected.Contains(key)" @onchange="() => Toggle(key)" />
+                    <button class="change-file" title="@file.Path" @onclick="() => OnOpenDiff.InvokeAsync((file, staged))">
+                        <span class="change-name">@file.FileName</span>
+                        <span class="change-folder">@file.Folder</span>
+                    </button>
+                    <span class="letter letter-@file.Letter(staged)">@file.Letter(staged)</span>
+                </div>
+            }
+        </div>
+    };
+}

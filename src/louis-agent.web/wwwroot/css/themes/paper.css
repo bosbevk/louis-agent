@@ -1,0 +1,33 @@
+/* Paper: a soft, low-glare light theme - warm linen greys instead of white, dark-grey text instead of black, and a muted
+   terracotta accent. Text, links, status colours and button labels all clear WCAG AA contrast (4.5:1) on every
+   surface; only the faintest hints (--dim) are lighter. */
+
+:root {
+    color-scheme: light;
+    --bg: #e8e4dc;
+    --panel: #e1ddd4;
+    --surface: #eeebe4;
+    --hover: #d9d4ca;
+    --border: #cfc9be;
+    --text: #3d3a35;
+    --bright: #2c2a26;
+    --muted: #5f5a53;
+    --dim: #8c867c;
+    --accent: #7f4c36;
+    --accent-text: #f4f1ea;
+    --amber: #7a531c;
+    --cyan: #335e6a;
+    --danger: #8c3f3a;
+    --code-bg: #e3dfd6;
+    --syn-number: #7a5a14;
+    --syn-attr: #5d527e;
+    --font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --font-code: ui-monospace, "Cascadia Code", Consolas, monospace;
+    --font-display: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --radius: 8px;
+}
+
+.user-text { background: var(--hover); }
+.composer { background: var(--surface); }
+.tool { background: var(--surface); }
+.file-header { background: var(--surface); }

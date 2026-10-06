@@ -1,0 +1,136 @@
+/* Retro terminal: soft mint on dark green-grey, monospace type, a hint of scanlines, a boot screen and a CRT power-on.
+   Glow is limited to the title and the cursor so body text stays crisp. */
+
+:root {
+    color-scheme: dark;
+    --bg: #111714;
+    --panel: #151d19;
+    --surface: #1a241f;
+    --hover: #1f2b25;
+    --border: #2a3a32;
+    --text: #a8d8b4;
+    --bright: #dcefe2;
+    --muted: #7fa48c;
+    --dim: #5c7a67;
+    --accent: #8fd6a4;
+    --accent-text: #111714;
+    --amber: #d9b26f;
+    --cyan: #82c8cc;
+    --danger: #e08c8c;
+    --code-bg: #0d1210;
+    --syn-number: #d6cf8f;
+    --syn-attr: #b5dcc0;
+    --font: "IBM Plex Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
+    --font-display: "VT323", "IBM Plex Mono", ui-monospace, monospace;
+    --radius: 4px;
+    --glow: 0 0 6px rgba(143, 214, 164, .35);
+}
+
+/* A faint hint of scanlines and a light vignette over everything; they never catch clicks. */
+body::before, body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2000;
+}
+body::before { background: repeating-linear-gradient(to bottom, rgba(0, 0, 0, .07) 0 1px, transparent 1px 3px); }
+body::after { background: radial-gradient(ellipse at center, transparent 65%, rgba(0, 0, 0, .3) 100%); }
+
+.app { animation: crt-on .55s var(--ease) both; }
+
+.cursor::after, .turn.streaming .markdown:last-child > :last-child::after { content: "█"; text-shadow: var(--glow); }
+
+/* Bracketed, uppercase terminal buttons that fill on hover. */
+.new-chat, .send, .secondary, .stop, .danger {
+    border-color: var(--accent);
+    background: transparent;
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .03em;
+    text-transform: uppercase;
+}
+.new-chat::before, .send::before, .secondary::before, .stop::before, .danger::before { content: "[ "; }
+.new-chat::after, .send::after, .secondary::after, .stop::after, .danger::after { content: " ]"; }
+.new-chat:not(:disabled):hover, .send:not(:disabled):hover, .secondary:not(:disabled):hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-text);
+    filter: none;
+    box-shadow: 0 0 10px rgba(143, 214, 164, .25);
+}
+.secondary { border-color: var(--dim); color: var(--muted); }
+.stop { border-color: var(--amber); color: var(--amber); }
+.danger { border-color: var(--danger); background: transparent; color: var(--danger); }
+.danger:not(:disabled):hover { background: var(--danger); color: var(--accent-text); filter: none; }
+
+.tabs button { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; }
+.tab-count { border-radius: var(--radius); }
+
+.chat-item a::before { content: "> "; color: var(--dim); }
+.chat-item.active a::before { color: var(--accent); }
+
+.file-path::before { content: "FILE: "; color: var(--dim); font-weight: 400; }
+.tool-name::before { content: "RUN "; color: var(--dim); font-weight: 400; }
+.thinking summary::before { content: "[+] "; }
+.thinking[open] summary::before { content: "[-] "; }
+.stopped { font-style: normal; text-transform: uppercase; letter-spacing: .08em; }
+.stopped::before { content: "^C "; }
+.error::before { content: "ERROR: "; font-weight: 600; }
+.working { letter-spacing: .1em; }
+.chip { border-style: dashed; border-color: var(--dim); background: none; border-radius: var(--radius); }
+
+/* Your messages read like typed commands, the answer is indented beneath. */
+.user-message { align-items: stretch; }
+.user-text { max-width: none; padding: 0; border-radius: 0; background: none; }
+.user-text::before { content: "C:\\LOUIS> "; color: var(--muted); }
+.assistant-message { padding-left: 14px; border-left: 2px solid var(--border); }
+
+.prompt { display: inline; }
+.composer { border-radius: 8px; }
+
+/* Boot screen: the title glows and each line types out after the previous one (--i staggers them). */
+.empty { margin-top: 12vh; text-align: left; }
+.empty h1 {
+    margin-bottom: 16px;
+    font: 72px/1 var(--font-display);
+    letter-spacing: .06em;
+    text-shadow: 0 0 10px rgba(143, 214, 164, .35);
+    animation-duration: .6s;
+}
+.boot { display: block; }
+.boot p {
+    margin: 0;
+    width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    animation: type-line .5s steps(32, end) forwards;
+    animation-delay: calc(.2s + var(--i) * .45s);
+}
+.boot p:last-child { color: var(--bright); }
+.hint { margin-top: 24px; color: var(--dim); opacity: 0; animation: fade-in .5s 2.6s forwards; }
+
+.markdown h1, .markdown h2, .markdown h3 { font-size: 28px; line-height: 1.1; font-weight: 400; letter-spacing: .04em; }
+.markdown h1 { font-size: 34px; }
+
+.attach { filter: grayscale(1) brightness(1.4); }
+.loading { color: var(--text); letter-spacing: .1em; }
+
+@keyframes crt-on {
+    0% { transform: scale(1, .004); filter: brightness(4); opacity: .4; }
+    45% { transform: scale(1, .004); filter: brightness(4); opacity: 1; }
+    75% { transform: scale(1, 1.02); filter: brightness(1.6); }
+    100% { transform: none; filter: none; }
+}
+@keyframes type-line { to { width: 100%; } }
+
+@media (max-width: 720px) {
+    .empty h1 { font-size: 48px; }
+}
+
+/* With motion reduced the boot text can't type out, so show it straight away. */
+@media (prefers-reduced-motion: reduce) {
+    .boot p { width: auto; }
+    .hint { opacity: 1; }
+}
