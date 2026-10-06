@@ -1,0 +1,337 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1200" viewBox="0 0 1600 1200" font-family="DejaVu Sans, Segoe UI, Helvetica, Arial, sans-serif" xmlns:c2pa="http://c2pa.org/manifest"><metadata><c2pa:manifest>AAAWgmp1bWIAAAAeanVtZGMycGEAEQAQgAAAqgA4m3EDYzJwYQAAABZcanVtYgAAAEdqdW1kYzJtYQARABCAAACqADibcQN1cm46YzJwYTpiYWZlMjVkMC02ZDBhLTRkOWQtYjhlNy00NTZmMjkyMWYyYTEAAAADl2p1bWIAAAApanVtZGMyYXMAEQAQgAAAqgA4m3EDYzJwYS5hc3NlcnRpb25zAAAAALxqdW1iAAAARGp1bWRjYm9yABEAEIAAAKoAOJtxE2MycGEuaW5ncmVkaWVudC52MwAAAAAYYzJzaC2KXdLk1od+kOwQ/2DZXbAAAABwY2JvcqNpZGM6Zm9ybWF0bWltYWdlL3N2Zyt4bWxqaW5zdGFuY2VJRHgseG1wOmlpZDpjODU4MDJlOS00NzE0LTRmYTItODc2Zi04NWIzMDQ3MmY0MzdscmVsYXRpb25zaGlwaHBhcmVudE9mAAAB4mp1bWIAAABBanVtZGNib3IAEQAQgAAAqgA4m3ETYzJwYS5hY3Rpb25zLnYyAAAAABhjMnNoA9s3sfel7ULn4TqL15MQ5QAAAZljYm9yomdhY3Rpb25zgqJmYWN0aW9ua2MycGEub3BlbmVkanBhcmFtZXRlcnOha2luZ3JlZGllbnRzgaJjdXJseC1zZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmluZ3JlZGllbnQudjNkaGFzaFgg7UvFlSg+/sDHEddqmYwiXz2eGnLEE6b4y47vOM9ysSKkZmFjdGlvbngdY29tLmFudGhyb3BpYy5jbGF1ZGUucHJvdmlkZWRqcGFyYW1ldGVyc6F4H2NvbS5hbnRocm9waWMub3JpZ2luLWNvbmZpZGVuY2VndW5rbm93bmtkZXNjcmlwdGlvbnhmQ2xhdWRlIHByb3ZpZGVkIHRoaXMgZmlsZSBhdCB0aGUgcmVxdWVzdCBvZiBhIHVzZXIgYW5kIG1heSBoYXZlIGNyZWF0ZWQgb3IgbW9kaWZpZWQgdGhlIGZpbGUgY29udGVudHMubXNvZnR3YXJlQWdlbnShZG5hbWVmQ2xhdWRlcmFsbEFjdGlvbnNJbmNsdWRlZPUAAADIanVtYgAAAEBqdW1kY2JvcgARABCAAACqADibcRNjMnBhLmhhc2guZGF0YQAAAAAYYzJzaAA+DTyogENtJ0mETa67L8IAAACAY2JvcqVjYWxnZnNoYTI1NmNwYWRNAAAAAAAAAAAAAAAAAGRoYXNoWCAzaeRilqV9RO24ouLhXEfYmCg2xjtD/DC037E3JXqo12RuYW1lbmp1bWJmIG1hbmlmZXN0amV4Y2x1c2lvbnOBomVzdGFydBjcZmxlbmd0aBkeBAAAAj5qdW1iAAAAJ2p1bWRjMmNsABEAEIAAAKoAOJtxA2MycGEuY2xhaW0udjIAAAACD2Nib3KlY2FsZ2ZzaGEyNTZpc2lnbmF0dXJleE1zZWxmI2p1bWJmPS9jMnBhL3VybjpjMnBhOmJhZmUyNWQwLTZkMGEtNGQ5ZC1iOGU3LTQ1NmYyOTIxZjJhMS9jMnBhLnNpZ25hdHVyZWppbnN0YW5jZUlEeCx4bXA6aWlkOmUxMDI3ZDA3LTBkZjMtNGE5MS05Mzc3LTM0NmFhOTIwYjVhZXJjcmVhdGVkX2Fzc2VydGlvbnODomN1cmx4LXNlbGYjanVtYmY9YzJwYS5hc3NlcnRpb25zL2MycGEuaW5ncmVkaWVudC52M2RoYXNoWCDtS8WVKD7+wMcR12qZjCJfPZ4acsQTpvjLju84z3KxIqJjdXJseCpzZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmFjdGlvbnMudjJkaGFzaFggEVzunZVGwR10g60HQCclX0bzTBxtLD6P/4hjxn5mhgqiY3VybHgpc2VsZiNqdW1iZj1jMnBhLmFzc2VydGlvbnMvYzJwYS5oYXNoLmRhdGFkaGFzaFggHvD7z/I2nYwLwE0dFuIUKfeJA+i4IIFd5zS/Wt6AlCN0Y2xhaW1fZ2VuZXJhdG9yX2luZm+jZG5hbWVvQW50aHJvcGljIEZpbGVzZ3ZlcnNpb25lMS4wLjBrc3BlY1ZlcnNpb25lMi40LjAAABA4anVtYgAAAChqdW1kYzJjcwARABCAAACqADibcQNjMnBhLnNpZ25hdHVyZQAAABAIY2JvctKEWQISogEmGCFZAgowggIGMIIBjaADAgECAhRA5aAK7sI50L64g/oGQgU9Z1UTADAKBggqhkjOPQQDAzBJMRcwFQYDVQQKEw5BbnRocm9waWMsIFBCQzEuMCwGA1UEAxMlQW50aHJvcGljIENvbnRlbnQgQ3JlZGVudGlhbHMgUm9vdCBDQTAeFw0yNjA4MDcxODQzNTZaFw0yODA4MDYxOTQzNTZaMEQxFzAVBgNVBAoTDkFudGhyb3BpYywgUEJDMSkwJwYDVQQDEyBBbnRocm9waWMgQ2xhdWRlIENvbnRlbnQgU2lnbmluZzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABJh6CmvLUBgFFNU0vUKlOVtE6djd17L5SuwX0LemFisBM3dkd/3cyjxFA3Qo5S46fX0/ihY0VZ7mfb9KF703t5OjWDBWMA4GA1UdDwEB/wQEAwIHgDAVBgNVHSUEDjAMBgorBgEEAYPoXgIBMAwGA1UdEwEB/wQCMAAwHwYDVR0jBBgwFoAUzlHiBIFOZFsj+OPEz5o+nMHXXMIwCgYIKoZIzj0EAwMDZwAwZAIwMXMdFJ4BetLLVY7ORuE9noqbbAZOZn/aArXyTwFAZfKrPzxF2vPoJNf1+UCdg1XGAjBwX1zd9WGqYkqmL5SFqw1QySjr1zJfpJM9+1rdDwSPLMOPOjKuiXjoU/pUUeG9RwmhY3BhZFkNngAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPZYQA0lbjNrwEX7UeiuNqETSoXZscf33dCiTjAS7NgtR8QnDitvla5WxhVM2+PzT++8t5qDJwChMDTUG2qMJC92PCo=</c2pa:manifest></metadata>
+<defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker></defs>
+<rect x="0" y="0" width="1600" height="1200" rx="0" fill="#ffffff" stroke="none" stroke-width="1.5"/>
+<text x="800.0" y="50" font-size="34" font-weight="800" fill="#0f172a" text-anchor="middle">AgentSession Architecture</text>
+<text x="800.0" y="80" font-size="17" font-weight="400" fill="#475569" text-anchor="middle">Managing conversation state, context and memory for AI agents</text>
+<circle cx="1250" cy="74" r="9" fill="#f59e0b"/><text x="1250" y="78.5" font-size="12" font-weight="700" fill="#fff" text-anchor="middle">★</text>
+<text x="1264" y="79" font-size="13" font-weight="400" fill="#92400e" text-anchor="start">= corrected or added vs. original</text>
+<rect x="20" y="110" width="180" height="400" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="1.8"/>
+<circle cx="44" cy="134" r="13" fill="#2563eb"/>
+<text x="44" y="139" font-size="14" font-weight="700" fill="#fff" text-anchor="middle">1</text>
+<text x="64" y="140" font-size="16" font-weight="700" fill="#0f172a" text-anchor="start">User</text>
+<circle cx="110" cy="180" r="18" fill="#2563eb"/><path d="M78,235 a32,28 0 0 1 64,0 z" fill="#2563eb"/>
+<rect x="32" y="248" width="156" height="52" rx="10" fill="#fff" stroke="#93c5fd" stroke-width="1.5"/>
+<text x="110" y="270" font-size="12" font-weight="600" fill="#1e3a8a" text-anchor="middle">“What do you remember</text>
+<text x="110" y="286" font-size="12" font-weight="600" fill="#1e3a8a" text-anchor="middle">about me?”</text>
+<rect x="32" y="318" width="156" height="34" rx="8" fill="#fff" stroke="#bfdbfe" stroke-width="1.5"/>
+<text x="110" y="340" font-size="12.5" font-weight="500" fill="#1e3a8a" text-anchor="middle">Web / App</text>
+<rect x="32" y="362" width="156" height="34" rx="8" fill="#fff" stroke="#bfdbfe" stroke-width="1.5"/>
+<text x="110" y="384" font-size="12.5" font-weight="500" fill="#1e3a8a" text-anchor="middle">Chat / Copilot UI</text>
+<rect x="32" y="406" width="156" height="34" rx="8" fill="#fff" stroke="#bfdbfe" stroke-width="1.5"/>
+<text x="110" y="428" font-size="12.5" font-weight="500" fill="#1e3a8a" text-anchor="middle">API / Client</text>
+<rect x="32" y="450" width="156" height="34" rx="8" fill="#fff" stroke="#bfdbfe" stroke-width="1.5"/>
+<text x="110" y="472" font-size="12.5" font-weight="500" fill="#1e3a8a" text-anchor="middle">Multi-turn conversation</text>
+<rect x="215" y="110" width="230" height="400" rx="14" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.8"/>
+<circle cx="239" cy="134" r="13" fill="#16a34a"/>
+<text x="239" y="139" font-size="14" font-weight="700" fill="#fff" text-anchor="middle">2</text>
+<text x="259" y="140" font-size="16" font-weight="700" fill="#0f172a" text-anchor="start">Agent Runtime</text>
+<rect x="230" y="150" width="200" height="345" rx="10" fill="#fff" stroke="#16a34a" stroke-width="1.5"/>
+<rect x="230" y="150" width="200" height="36" rx="10" fill="#16a34a" stroke="none" stroke-width="1.5"/>
+<rect x="230" y="170" width="200" height="16" rx="0" fill="#16a34a" stroke="none" stroke-width="1.5"/>
+<text x="330" y="174" font-size="15" font-weight="700" fill="#fff" text-anchor="middle">AgentSession</text>
+<circle cx="250" cy="212" r="5" fill="#16a34a"/>
+<text x="264" y="217" font-size="12.5" font-weight="400" fill="#1f2937" text-anchor="start">Session ID &amp; metadata</text>
+<circle cx="250" cy="252" r="5" fill="#16a34a"/>
+<text x="264" y="257" font-size="12.5" font-weight="400" fill="#1f2937" text-anchor="start">Lifecycle state</text>
+<circle cx="250" cy="292" r="5" fill="#16a34a"/>
+<text x="264" y="297" font-size="12.5" font-weight="400" fill="#1f2937" text-anchor="start">Conversation history (ref)</text>
+<circle cx="250" cy="332" r="5" fill="#16a34a"/>
+<text x="264" y="337" font-size="12.5" font-weight="400" fill="#1f2937" text-anchor="start">User profile / preferences</text>
+<circle cx="250" cy="372" r="5" fill="#16a34a"/>
+<text x="264" y="377" font-size="12.5" font-weight="400" fill="#1f2937" text-anchor="start">Task state (goals)</text>
+<circle cx="250" cy="412" r="5" fill="#16a34a"/>
+<text x="264" y="417" font-size="12.5" font-weight="400" fill="#1f2937" text-anchor="start">Memory references</text>
+<circle cx="250" cy="452" r="5" fill="#16a34a"/>
+<text x="264" y="457" font-size="12.5" font-weight="400" fill="#1f2937" text-anchor="start">Tool state</text>
+<rect x="460" y="110" width="640" height="400" rx="14" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.8"/>
+<circle cx="484" cy="134" r="13" fill="#7c3aed"/>
+<text x="484" y="139" font-size="14" font-weight="700" fill="#fff" text-anchor="middle">3</text>
+<text x="504" y="140" font-size="16" font-weight="700" fill="#0f172a" text-anchor="start">Context Engineering (context-building pipeline)</text>
+<rect x="474" y="150" width="112" height="104" rx="10" fill="#fff" stroke="#a78bfa" stroke-width="1.5"/>
+<text x="530" y="178" font-size="12.5" font-weight="600" fill="#3b0764" text-anchor="middle">Retrieve</text>
+<text x="530" y="194" font-size="12.5" font-weight="600" fill="#3b0764" text-anchor="middle">relevant</text>
+<text x="530" y="210" font-size="12.5" font-weight="600" fill="#3b0764" text-anchor="middle">context</text>
+<polyline points="587,202 599,202" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#ah)"/>
+<rect x="600" y="150" width="112" height="104" rx="10" fill="#fff" stroke="#a78bfa" stroke-width="1.5"/>
+<text x="656" y="172" font-size="12.5" font-weight="600" fill="#3b0764" text-anchor="middle">Rank &amp;</text>
+<text x="656" y="188" font-size="12.5" font-weight="600" fill="#3b0764" text-anchor="middle">filter</text>
+<text x="656" y="204" font-size="12.5" font-weight="600" fill="#3b0764" text-anchor="middle">(heuristic +</text>
+<text x="656" y="220" font-size="12.5" font-weight="600" fill="#3b0764" text-anchor="middle">semantic)</text>
+<polyline points="713,202 725,202" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#ah)"/>
+<rect x="726" y="150" width="112" height="104" rx="10" fill="#fff" stroke="#a78bfa" stroke-width="1.5"/>
+<text x="782" y="172" font-size="12.5" font-weight="600" fill="#3b0764" text-anchor="middle">Token</text>
+<text x="782" y="188" font-size="12.5" font-weight="600" fill="#3b0764" text-anchor="middle">budgeting</text>
+<text x="782" y="204" font-size="12.5" font-weight="600" fill="#3b0764" text-anchor="middle">(allocate per</text>
+<text x="782" y="220" font-size="12.5" font-weight="600" fill="#3b0764" text-anchor="middle">source)</text>
+<circle cx="830" cy="152" r="9" fill="#f59e0b"/><text x="830" y="156.5" font-size="12" font-weight="700" fill="#fff" text-anchor="middle">★</text>
+<polyline points="839,202 851,202" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#ah)"/>
+<rect x="852" y="150" width="112" height="104" rx="10" fill="#fff" stroke="#a78bfa" stroke-width="1.5"/>
+<text x="908" y="172" font-size="12.5" font-weight="600" fill="#3b0764" text-anchor="middle">Compress &amp;</text>
+<text x="908" y="188" font-size="12.5" font-weight="600" fill="#3b0764" text-anchor="middle">summarize</text>
+<text x="908" y="204" font-size="12.5" font-weight="600" fill="#3b0764" text-anchor="middle">(only if over</text>
+<text x="908" y="220" font-size="12.5" font-weight="600" fill="#3b0764" text-anchor="middle">budget)</text>
+<circle cx="956" cy="152" r="9" fill="#f59e0b"/><text x="956" y="156.5" font-size="12" font-weight="700" fill="#fff" text-anchor="middle">★</text>
+<polyline points="965,202 977,202" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#ah)"/>
+<rect x="978" y="150" width="112" height="104" rx="10" fill="#fff" stroke="#a78bfa" stroke-width="1.5"/>
+<text x="1034" y="178" font-size="12.5" font-weight="600" fill="#3b0764" text-anchor="middle">Build</text>
+<text x="1034" y="194" font-size="12.5" font-weight="600" fill="#3b0764" text-anchor="middle">prompt</text>
+<rect x="474" y="285" width="612" height="212" rx="10" fill="#fff" stroke="#c4b5fd" stroke-width="1.2" stroke-dasharray="5,4"/>
+<text x="490" y="308" font-size="13" font-weight="700" fill="#4c1d95" text-anchor="start">Context sources (from AgentSession and external systems)</text>
+<rect x="486" y="322" width="110" height="90" rx="8" fill="#dbeafe" stroke="none" stroke-width="1.5"/>
+<text x="541" y="350" font-size="12" font-weight="700" fill="#1f2937" text-anchor="middle">Recent</text>
+<text x="541" y="365" font-size="12" font-weight="700" fill="#1f2937" text-anchor="middle">conversation</text>
+<text x="541" y="394" font-size="10.5" font-weight="400" fill="#475569" text-anchor="middle">history provider</text>
+<rect x="606" y="322" width="110" height="90" rx="8" fill="#dcfce7" stroke="none" stroke-width="1.5"/>
+<text x="661" y="350" font-size="12" font-weight="700" fill="#1f2937" text-anchor="middle">Relevant past</text>
+<text x="661" y="365" font-size="12" font-weight="700" fill="#1f2937" text-anchor="middle">conversations</text>
+<text x="661" y="394" font-size="10.5" font-weight="400" fill="#475569" text-anchor="middle">vector search</text>
+<rect x="726" y="322" width="110" height="90" rx="8" fill="#fce7f3" stroke="none" stroke-width="1.5"/>
+<text x="781" y="350" font-size="12" font-weight="700" fill="#1f2937" text-anchor="middle">Long-term</text>
+<text x="781" y="365" font-size="12" font-weight="700" fill="#1f2937" text-anchor="middle">memory</text>
+<text x="781" y="394" font-size="10.5" font-weight="400" fill="#475569" text-anchor="middle">user facts, prefs</text>
+<rect x="846" y="322" width="110" height="90" rx="8" fill="#ffedd5" stroke="none" stroke-width="1.5"/>
+<text x="901" y="350" font-size="12" font-weight="700" fill="#1f2937" text-anchor="middle">External</text>
+<text x="901" y="365" font-size="12" font-weight="700" fill="#1f2937" text-anchor="middle">knowledge</text>
+<text x="901" y="394" font-size="10.5" font-weight="400" fill="#475569" text-anchor="middle">RAG / enterprise</text>
+<rect x="966" y="322" width="110" height="90" rx="8" fill="#e0f2fe" stroke="none" stroke-width="1.5"/>
+<text x="1021" y="350" font-size="12" font-weight="700" fill="#1f2937" text-anchor="middle">Task &amp; tool</text>
+<text x="1021" y="365" font-size="12" font-weight="700" fill="#1f2937" text-anchor="middle">state</text>
+<text x="1021" y="394" font-size="10.5" font-weight="400" fill="#475569" text-anchor="middle">ongoing workflow</text>
+<text x="780" y="445" font-size="12" font-weight="400" fill="#4c1d95" text-anchor="middle">Sources are read by Retrieve; Rank, Budget and Compress decide what survives.</text>
+<polyline points="530,285 530,256" fill="none" stroke="#7c3aed" stroke-width="2" marker-end="url(#ah)"/>
+<rect x="1115" y="110" width="230" height="400" rx="14" fill="#fff1f2" stroke="#e11d48" stroke-width="1.8"/>
+<circle cx="1139" cy="134" r="13" fill="#e11d48"/>
+<text x="1139" y="139" font-size="14" font-weight="700" fill="#fff" text-anchor="middle">4</text>
+<text x="1159" y="140" font-size="16" font-weight="700" fill="#0f172a" text-anchor="start">LLM Invocation</text>
+<circle cx="1230" cy="178" r="28" fill="#e11d48"/>
+<text x="1230" y="184" font-size="15" font-weight="800" fill="#fff" text-anchor="middle">LLM</text>
+<rect x="1130" y="218" width="200" height="24" rx="6" fill="#fff" stroke="#fecdd3" stroke-width="1.5"/>
+<text x="1142" y="235" font-size="12" font-weight="400" fill="#1f2937" text-anchor="start">System instructions</text>
+<rect x="1130" y="248" width="200" height="24" rx="6" fill="#fff" stroke="#fecdd3" stroke-width="1.5"/>
+<text x="1142" y="265" font-size="12" font-weight="400" fill="#1f2937" text-anchor="start">Selected context</text>
+<rect x="1130" y="278" width="200" height="24" rx="6" fill="#fff" stroke="#fecdd3" stroke-width="1.5"/>
+<text x="1142" y="295" font-size="12" font-weight="400" fill="#1f2937" text-anchor="start">Current user query</text>
+<rect x="1130" y="308" width="200" height="24" rx="6" fill="#fff" stroke="#fecdd3" stroke-width="1.5"/>
+<text x="1142" y="325" font-size="12" font-weight="400" fill="#1f2937" text-anchor="start">Tool definitions</text>
+<rect x="1130" y="338" width="200" height="24" rx="6" fill="#fff" stroke="#fecdd3" stroke-width="1.5"/>
+<text x="1142" y="355" font-size="12" font-weight="400" fill="#1f2937" text-anchor="start">Output format / schema</text>
+<rect x="1130" y="372" width="200" height="124" rx="10" fill="#fff" stroke="#e11d48" stroke-width="1.6"/>
+<circle cx="1322" cy="374" r="9" fill="#f59e0b"/><text x="1322" y="378.5" font-size="12" font-weight="700" fill="#fff" text-anchor="middle">★</text>
+<text x="1230" y="392" font-size="13" font-weight="700" fill="#9f1239" text-anchor="middle">Agent loop</text>
+<text x="1144" y="412" font-size="11.5" font-weight="400" fill="#1f2937" text-anchor="start">1. LLM returns tool call?</text>
+<text x="1144" y="428" font-size="11.5" font-weight="400" fill="#1f2937" text-anchor="start">2. Execute tool</text>
+<text x="1144" y="444" font-size="11.5" font-weight="400" fill="#1f2937" text-anchor="start">3. Append result to context</text>
+<text x="1144" y="460" font-size="11.5" font-weight="400" fill="#1f2937" text-anchor="start">4. Re-invoke LLM</text>
+<text x="1144" y="476" font-size="11.5" font-weight="400" fill="#1f2937" text-anchor="start">Repeat until final answer</text>
+<rect x="1360" y="110" width="220" height="400" rx="14" fill="#f0f9ff" stroke="#0284c7" stroke-width="1.8"/>
+<circle cx="1384" cy="134" r="13" fill="#0284c7"/>
+<text x="1384" y="139" font-size="14" font-weight="700" fill="#fff" text-anchor="middle">5</text>
+<text x="1404" y="140" font-size="16" font-weight="700" fill="#0f172a" text-anchor="start">Response &amp; Update</text>
+<rect x="1374" y="152" width="192" height="70" rx="10" fill="#fff" stroke="#7dd3fc" stroke-width="1.5"/>
+<circle cx="1396" cy="187" r="12" fill="#0284c7"/>
+<text x="1396" y="192" font-size="12" font-weight="700" fill="#fff" text-anchor="middle">1</text>
+<text x="1416" y="183" font-size="12" font-weight="700" fill="#0c4a6e" text-anchor="start">Return response</text>
+<text x="1416" y="202" font-size="11" font-weight="400" fill="#475569" text-anchor="start">streamed to the user</text>
+<polyline points="1470,223 1470,237" fill="none" stroke="#0284c7" stroke-width="2" marker-end="url(#ah)"/>
+<rect x="1374" y="238" width="192" height="70" rx="10" fill="#fff" stroke="#7dd3fc" stroke-width="1.5"/>
+<circle cx="1396" cy="273" r="12" fill="#0284c7"/>
+<text x="1396" y="278" font-size="12" font-weight="700" fill="#fff" text-anchor="middle">2</text>
+<text x="1416" y="269" font-size="12" font-weight="700" fill="#0c4a6e" text-anchor="start">Update session state</text>
+<text x="1416" y="288" font-size="11" font-weight="400" fill="#475569" text-anchor="start">tasks, tool state, refs</text>
+<polyline points="1470,309 1470,323" fill="none" stroke="#0284c7" stroke-width="2" marker-end="url(#ah)"/>
+<rect x="1374" y="324" width="192" height="70" rx="10" fill="#fff" stroke="#7dd3fc" stroke-width="1.5"/>
+<circle cx="1396" cy="359" r="12" fill="#0284c7"/>
+<text x="1396" y="364" font-size="12" font-weight="700" fill="#fff" text-anchor="middle">3</text>
+<text x="1416" y="355" font-size="12" font-weight="700" fill="#0c4a6e" text-anchor="start">Persist history</text>
+<text x="1416" y="374" font-size="11" font-weight="400" fill="#475569" text-anchor="start">append turn transcript</text>
+<polyline points="1470,395 1470,409" fill="none" stroke="#0284c7" stroke-width="2" marker-end="url(#ah)"/>
+<rect x="1374" y="410" width="192" height="70" rx="10" fill="#fff" stroke="#7dd3fc" stroke-width="1.5"/>
+<circle cx="1396" cy="445" r="12" fill="#0284c7"/>
+<text x="1396" y="450" font-size="12" font-weight="700" fill="#fff" text-anchor="middle">4</text>
+<text x="1416" y="441" font-size="12" font-weight="700" fill="#0c4a6e" text-anchor="start">Extract memory</text>
+<text x="1416" y="460" font-size="11" font-weight="400" fill="#475569" text-anchor="start">async: long-term facts</text>
+<circle cx="1558" cy="412" r="9" fill="#f59e0b"/><text x="1558" y="416.5" font-size="12" font-weight="700" fill="#fff" text-anchor="middle">★</text>
+<polyline points="201,230 214,230" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#ah)" marker-start="url(#ah)"/>
+<polyline points="446,230 459,230" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#ah)"/>
+<polyline points="1101,230 1114,230" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#ah)"/>
+<polyline points="1346,230 1359,230" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#ah)"/>
+<polyline points="1470,510 1470,527 110,527 110,511" fill="none" stroke="#0284c7" stroke-width="2" marker-end="url(#ah)"/>
+<text x="800" y="522" font-size="12" font-weight="600" fill="#0369a1" text-anchor="middle">final response returned to user</text>
+<rect x="20" y="555" width="1560" height="215" rx="14" fill="#f8fafc" stroke="#334155" stroke-width="1.8"/>
+<circle cx="44" cy="579" r="13" fill="#334155"/>
+<text x="44" y="584" font-size="14" font-weight="700" fill="#fff" text-anchor="middle">6</text>
+<text x="64" y="585" font-size="16" font-weight="700" fill="#0f172a" text-anchor="start">Session Data Persistence Layer</text>
+<rect x="36" y="598" width="370" height="158" rx="10" fill="#fff" stroke="#cbd5e1" stroke-width="1.5"/>
+<rect x="36" y="598" width="8" height="158" rx="4" fill="#dc2626" stroke="none" stroke-width="1.5"/>
+<text x="60" y="624" font-size="15" font-weight="700" fill="#0f172a" text-anchor="start">In-memory / Redis</text>
+<text x="60" y="643" font-size="12" font-weight="400" fill="#dc2626" text-anchor="start">Hot session state</text>
+<circle cx="66" cy="666" r="3" fill="#dc2626"/>
+<text x="76" y="670" font-size="12" font-weight="400" fill="#1f2937" text-anchor="start">Fast lookup</text>
+<circle cx="66" cy="687" r="3" fill="#dc2626"/>
+<text x="76" y="691" font-size="12" font-weight="400" fill="#1f2937" text-anchor="start">Active session state</text>
+<circle cx="66" cy="708" r="3" fill="#dc2626"/>
+<text x="76" y="712" font-size="12" font-weight="400" fill="#1f2937" text-anchor="start">TTL / expiry</text>
+<circle cx="66" cy="729" r="3" fill="#dc2626"/>
+<text x="76" y="733" font-size="12" font-weight="400" fill="#1f2937" text-anchor="start">Distributed &amp; scalable</text>
+<rect x="422" y="598" width="370" height="158" rx="10" fill="#fff" stroke="#cbd5e1" stroke-width="1.5"/>
+<rect x="422" y="598" width="8" height="158" rx="4" fill="#2563eb" stroke="none" stroke-width="1.5"/>
+<text x="446" y="624" font-size="15" font-weight="700" fill="#0f172a" text-anchor="start">Database</text>
+<text x="446" y="643" font-size="12" font-weight="400" fill="#2563eb" text-anchor="start">Durable history &amp; memory</text>
+<circle cx="452" cy="666" r="3" fill="#2563eb"/>
+<text x="462" y="670" font-size="12" font-weight="400" fill="#1f2937" text-anchor="start">Full conversation transcript</text>
+<circle cx="452" cy="687" r="3" fill="#2563eb"/>
+<text x="462" y="691" font-size="12" font-weight="400" fill="#1f2937" text-anchor="start">Session metadata</text>
+<circle cx="452" cy="708" r="3" fill="#2563eb"/>
+<text x="462" y="712" font-size="12" font-weight="400" fill="#1f2937" text-anchor="start">Long-term memory records</text>
+<circle cx="452" cy="729" r="3" fill="#2563eb"/>
+<text x="462" y="733" font-size="12" font-weight="400" fill="#1f2937" text-anchor="start">Audit, compliance, retention</text>
+<rect x="808" y="598" width="370" height="158" rx="10" fill="#fff" stroke="#cbd5e1" stroke-width="1.5"/>
+<rect x="808" y="598" width="8" height="158" rx="4" fill="#7c3aed" stroke="none" stroke-width="1.5"/>
+<text x="832" y="624" font-size="15" font-weight="700" fill="#0f172a" text-anchor="start">Vector store</text>
+<text x="832" y="643" font-size="12" font-weight="400" fill="#7c3aed" text-anchor="start">Semantic index</text>
+<circle cx="838" cy="666" r="3" fill="#7c3aed"/>
+<text x="848" y="670" font-size="12" font-weight="400" fill="#1f2937" text-anchor="start">Embeddings of messages</text>
+<circle cx="838" cy="687" r="3" fill="#7c3aed"/>
+<text x="848" y="691" font-size="12" font-weight="400" fill="#1f2937" text-anchor="start">Embeddings of memories</text>
+<circle cx="838" cy="708" r="3" fill="#7c3aed"/>
+<text x="848" y="712" font-size="12" font-weight="400" fill="#1f2937" text-anchor="start">Semantic search</text>
+<circle cx="838" cy="729" r="3" fill="#7c3aed"/>
+<text x="848" y="733" font-size="12" font-weight="400" fill="#1f2937" text-anchor="start">Retrieve relevant past context</text>
+<rect x="1194" y="598" width="370" height="158" rx="10" fill="#fff" stroke="#cbd5e1" stroke-width="1.5"/>
+<rect x="1194" y="598" width="8" height="158" rx="4" fill="#16a34a" stroke="none" stroke-width="1.5"/>
+<text x="1218" y="624" font-size="15" font-weight="700" fill="#0f172a" text-anchor="start">Blob / external storage</text>
+<text x="1218" y="643" font-size="12" font-weight="400" fill="#16a34a" text-anchor="start">Large artifacts</text>
+<circle cx="1224" cy="666" r="3" fill="#16a34a"/>
+<text x="1234" y="670" font-size="12" font-weight="400" fill="#1f2937" text-anchor="start">Files, images, tool outputs</text>
+<circle cx="1224" cy="687" r="3" fill="#16a34a"/>
+<text x="1234" y="691" font-size="12" font-weight="400" fill="#1f2937" text-anchor="start">Long documents</text>
+<circle cx="1224" cy="708" r="3" fill="#16a34a"/>
+<text x="1234" y="712" font-size="12" font-weight="400" fill="#1f2937" text-anchor="start">Referenced by link / ID</text>
+<circle cx="1224" cy="729" r="3" fill="#16a34a"/>
+<text x="1234" y="733" font-size="12" font-weight="400" fill="#1f2937" text-anchor="start">Kept out of the prompt</text>
+<circle cx="447" cy="707" r="9" fill="#f59e0b"/><text x="447" y="711.5" font-size="12" font-weight="700" fill="#fff" text-anchor="middle">★</text>
+<polyline points="330,511 330,554" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#ah)" marker-start="url(#ah)"/>
+<polyline points="780,498 780,554" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#ah)" marker-start="url(#ah)"/>
+<rect x="20" y="790" width="380" height="390" rx="14" fill="#f0fdfa" stroke="#0f766e" stroke-width="1.8"/>
+<text x="36" y="820" font-size="16" font-weight="700" fill="#0f172a" text-anchor="start">Session Lifecycle</text>
+<rect x="70" y="830" width="130" height="48" rx="10" fill="#ccfbf1" stroke="#0f766e" stroke-width="1.2"/>
+<text x="135" y="851" font-size="13" font-weight="700" fill="#134e4a" text-anchor="middle">Create</text>
+<text x="135" y="868" font-size="10.5" font-weight="400" fill="#475569" text-anchor="middle">session initialized</text>
+<rect x="70" y="930" width="130" height="48" rx="10" fill="#a7f3d0" stroke="#0f766e" stroke-width="1.2"/>
+<text x="135" y="951" font-size="13" font-weight="700" fill="#134e4a" text-anchor="middle">Active</text>
+<text x="135" y="968" font-size="10.5" font-weight="400" fill="#475569" text-anchor="middle">conversation ongoing</text>
+<rect x="250" y="930" width="130" height="48" rx="10" fill="#fef3c7" stroke="#0f766e" stroke-width="1.2"/>
+<text x="315" y="951" font-size="13" font-weight="700" fill="#134e4a" text-anchor="middle">Idle</text>
+<text x="315" y="968" font-size="10.5" font-weight="400" fill="#475569" text-anchor="middle">no activity</text>
+<rect x="70" y="1040" width="130" height="48" rx="10" fill="#fecaca" stroke="#0f766e" stroke-width="1.2"/>
+<text x="135" y="1061" font-size="13" font-weight="700" fill="#134e4a" text-anchor="middle">Ended</text>
+<text x="135" y="1078" font-size="10.5" font-weight="400" fill="#475569" text-anchor="middle">closed or TTL expired</text>
+<rect x="250" y="1040" width="130" height="48" rx="10" fill="#e9d5ff" stroke="#0f766e" stroke-width="1.2"/>
+<text x="315" y="1061" font-size="13" font-weight="700" fill="#134e4a" text-anchor="middle">Archived</text>
+<text x="315" y="1078" font-size="10.5" font-weight="400" fill="#475569" text-anchor="middle">history retained</text>
+<polyline points="135,879 135,929" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#ah)"/>
+<polyline points="201,945 249,945" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#ah)"/>
+<polyline points="249,965 201,965" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#ah)"/>
+<text x="225" y="938" font-size="9.5" font-weight="400" fill="#475569" text-anchor="middle">inactive</text>
+<text x="225" y="988" font-size="9.5" font-weight="400" fill="#475569" text-anchor="middle">new msg</text>
+<polyline points="135,979 135,1039" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#ah)"/>
+<text x="140" y="1015" font-size="9.5" font-weight="400" fill="#475569" text-anchor="start">close</text>
+<polyline points="300,979 190,1039" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#ah)"/>
+<text x="262" y="1020" font-size="9.5" font-weight="400" fill="#475569" text-anchor="start">TTL</text>
+<polyline points="201,1064 249,1064" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#ah)"/>
+<polyline points="315,1089 315,1130 45,1130 45,955 69,955" fill="none" stroke="#0f766e" stroke-width="2" stroke-dasharray="5,4" marker-end="url(#ah)"/>
+<text x="180" y="1147" font-size="11" font-weight="400" fill="#0f766e" text-anchor="middle">resume / rehydrate (optional)</text>
+<circle cx="388" cy="802" r="9" fill="#f59e0b"/><text x="388" y="806.5" font-size="12" font-weight="700" fill="#fff" text-anchor="middle">★</text>
+<rect x="415" y="790" width="400" height="390" rx="14" fill="#faf5ff" stroke="#7c3aed" stroke-width="1.8"/>
+<text x="431" y="820" font-size="16" font-weight="700" fill="#0f172a" text-anchor="start">Prompt Construction Strategy</text>
+<rect x="430" y="830" width="370" height="38" rx="8" fill="#fff" stroke="#ddd6fe" stroke-width="1.5"/>
+<circle cx="452" cy="849" r="12" fill="#7c3aed"/>
+<text x="452" y="854" font-size="12" font-weight="700" fill="#fff" text-anchor="middle">1</text>
+<text x="472" y="854" font-size="11.8" font-weight="400" fill="#1f2937" text-anchor="start">Intent detection (optional)</text>
+<rect x="430" y="876" width="370" height="38" rx="8" fill="#fff" stroke="#ddd6fe" stroke-width="1.5"/>
+<circle cx="452" cy="895" r="12" fill="#7c3aed"/>
+<text x="452" y="900" font-size="12" font-weight="700" fill="#fff" text-anchor="middle">2</text>
+<text x="472" y="900" font-size="11.8" font-weight="400" fill="#1f2937" text-anchor="start">Retrieve: recent + semantic + memory + RAG</text>
+<rect x="430" y="922" width="370" height="38" rx="8" fill="#fff" stroke="#ddd6fe" stroke-width="1.5"/>
+<circle cx="452" cy="941" r="12" fill="#7c3aed"/>
+<text x="452" y="946" font-size="12" font-weight="700" fill="#fff" text-anchor="middle">3</text>
+<text x="472" y="946" font-size="11.8" font-weight="400" fill="#1f2937" text-anchor="start">Rank &amp; filter (relevance, recency, importance)</text>
+<rect x="430" y="968" width="370" height="38" rx="8" fill="#fff" stroke="#ddd6fe" stroke-width="1.5"/>
+<circle cx="452" cy="987" r="12" fill="#7c3aed"/>
+<text x="452" y="992" font-size="12" font-weight="700" fill="#fff" text-anchor="middle">4</text>
+<text x="472" y="992" font-size="11.8" font-weight="400" fill="#1f2937" text-anchor="start">Token budget: allocate window per source</text>
+<circle cx="792" cy="970" r="9" fill="#f59e0b"/><text x="792" y="974.5" font-size="12" font-weight="700" fill="#fff" text-anchor="middle">★</text>
+<rect x="430" y="1014" width="370" height="38" rx="8" fill="#fff" stroke="#ddd6fe" stroke-width="1.5"/>
+<circle cx="452" cy="1033" r="12" fill="#7c3aed"/>
+<text x="452" y="1038" font-size="12" font-weight="700" fill="#fff" text-anchor="middle">5</text>
+<text x="472" y="1038" font-size="11.8" font-weight="400" fill="#1f2937" text-anchor="start">Compress / summarize what exceeds budget</text>
+<circle cx="792" cy="1016" r="9" fill="#f59e0b"/><text x="792" y="1020.5" font-size="12" font-weight="700" fill="#fff" text-anchor="middle">★</text>
+<rect x="430" y="1060" width="370" height="38" rx="8" fill="#fff" stroke="#ddd6fe" stroke-width="1.5"/>
+<circle cx="452" cy="1079" r="12" fill="#7c3aed"/>
+<text x="452" y="1084" font-size="12" font-weight="700" fill="#fff" text-anchor="middle">6</text>
+<text x="472" y="1084" font-size="11.8" font-weight="400" fill="#1f2937" text-anchor="start">Assemble: system + tools + context + query</text>
+<circle cx="792" cy="1062" r="9" fill="#f59e0b"/><text x="792" y="1066.5" font-size="12" font-weight="700" fill="#fff" text-anchor="middle">★</text>
+<rect x="430" y="1106" width="370" height="38" rx="8" fill="#fff" stroke="#ddd6fe" stroke-width="1.5"/>
+<circle cx="452" cy="1125" r="12" fill="#7c3aed"/>
+<text x="452" y="1130" font-size="12" font-weight="700" fill="#fff" text-anchor="middle">7</text>
+<text x="472" y="1130" font-size="11.8" font-weight="400" fill="#1f2937" text-anchor="start">Invoke LLM; loop on tool calls until done</text>
+<circle cx="792" cy="1108" r="9" fill="#f59e0b"/><text x="792" y="1112.5" font-size="12" font-weight="700" fill="#fff" text-anchor="middle">★</text>
+<rect x="830" y="790" width="400" height="390" rx="14" fill="#f7fee7" stroke="#16a34a" stroke-width="1.8"/>
+<text x="846" y="820" font-size="16" font-weight="700" fill="#0f172a" text-anchor="start">Key Considerations</text>
+<circle cx="852" cy="834" r="4" fill="#16a34a"/>
+<text x="866" y="838" font-size="12" font-weight="400" fill="#1f2937" text-anchor="start">Conversation history vs. long-term memory</text>
+<circle cx="852" cy="867" r="4" fill="#16a34a"/>
+<text x="866" y="871" font-size="12" font-weight="400" fill="#1f2937" text-anchor="start">Storage: in-memory, Redis, DB, service-managed</text>
+<circle cx="852" cy="900" r="4" fill="#16a34a"/>
+<text x="866" y="904" font-size="12" font-weight="400" fill="#1f2937" text-anchor="start">How much history to include (token budget)</text>
+<circle cx="852" cy="933" r="4" fill="#16a34a"/>
+<text x="866" y="937" font-size="12" font-weight="400" fill="#1f2937" text-anchor="start">Regular summarization / compaction</text>
+<circle cx="852" cy="966" r="4" fill="#16a34a"/>
+<text x="866" y="970" font-size="12" font-weight="400" fill="#1f2937" text-anchor="start">Query history: recent, semantic, metadata</text>
+<circle cx="852" cy="999" r="4" fill="#16a34a"/>
+<text x="866" y="1003" font-size="12" font-weight="400" fill="#1f2937" text-anchor="start">Errors: retries, idempotency, consistency</text>
+<circle cx="852" cy="1032" r="4" fill="#16a34a"/>
+<text x="866" y="1036" font-size="12" font-weight="400" fill="#1f2937" text-anchor="start">Scaling: stateless agents, distributed stores</text>
+<circle cx="852" cy="1065" r="4" fill="#16a34a"/>
+<text x="866" y="1069" font-size="12" font-weight="400" fill="#1f2937" text-anchor="start">Security &amp; tenant isolation</text>
+<circle cx="852" cy="1098" r="4" fill="#16a34a"/>
+<text x="866" y="1102" font-size="12" font-weight="400" fill="#1f2937" text-anchor="start">Privacy: PII redaction, retention, deletion</text>
+<circle cx="1214" cy="1097" r="9" fill="#f59e0b"/><text x="1214" y="1101.5" font-size="12" font-weight="700" fill="#fff" text-anchor="middle">★</text>
+<circle cx="852" cy="1131" r="4" fill="#16a34a"/>
+<text x="866" y="1135" font-size="12" font-weight="400" fill="#1f2937" text-anchor="start">Memory quality: dedupe, conflicts, staleness</text>
+<circle cx="1214" cy="1130" r="9" fill="#f59e0b"/><text x="1214" y="1134.5" font-size="12" font-weight="700" fill="#fff" text-anchor="middle">★</text>
+<rect x="1245" y="790" width="335" height="390" rx="14" fill="#fffbeb" stroke="#d97706" stroke-width="1.8"/>
+<text x="1261" y="820" font-size="16" font-weight="700" fill="#0f172a" text-anchor="start">Short vs Long Sessions</text>
+<rect x="1258" y="826" width="152" height="340" rx="10" fill="#fff" stroke="#fcd34d" stroke-width="1.5"/>
+<rect x="1258" y="826" width="152" height="34" rx="10" fill="#fde68a" stroke="none" stroke-width="1.5"/>
+<text x="1334" y="848" font-size="13" font-weight="700" fill="#78350f" text-anchor="middle">Short session</text>
+<circle cx="1272" cy="882" r="3" fill="#d97706"/>
+<text x="1282" y="886" font-size="11.5" font-weight="400" fill="#1f2937" text-anchor="start">Few turns (~5–20)</text>
+<circle cx="1272" cy="918" r="3" fill="#d97706"/>
+<text x="1282" y="922" font-size="11.5" font-weight="400" fill="#1f2937" text-anchor="start">Recent history only</text>
+<circle cx="1272" cy="954" r="3" fill="#d97706"/>
+<text x="1282" y="958" font-size="11.5" font-weight="400" fill="#1f2937" text-anchor="start">Minimal memory</text>
+<circle cx="1272" cy="990" r="3" fill="#d97706"/>
+<text x="1282" y="994" font-size="11.5" font-weight="400" fill="#1f2937" text-anchor="start">Simple retrieval</text>
+<circle cx="1272" cy="1026" r="3" fill="#d97706"/>
+<text x="1282" y="1030" font-size="11.5" font-weight="400" fill="#1f2937" text-anchor="start">Fits in context</text>
+<circle cx="1272" cy="1062" r="3" fill="#d97706"/>
+<text x="1282" y="1066" font-size="11.5" font-weight="400" fill="#1f2937" text-anchor="start">Q&amp;A, support</text>
+<rect x="1418" y="826" width="152" height="340" rx="10" fill="#fff" stroke="#fcd34d" stroke-width="1.5"/>
+<rect x="1418" y="826" width="152" height="34" rx="10" fill="#fed7aa" stroke="none" stroke-width="1.5"/>
+<text x="1494" y="848" font-size="13" font-weight="700" fill="#78350f" text-anchor="middle">Long session</text>
+<circle cx="1432" cy="882" r="3" fill="#d97706"/>
+<text x="1442" y="886" font-size="11.5" font-weight="400" fill="#1f2937" text-anchor="start">Days / weeks</text>
+<circle cx="1432" cy="918" r="3" fill="#d97706"/>
+<text x="1442" y="922" font-size="11.5" font-weight="400" fill="#1f2937" text-anchor="start">Recent + summary</text>
+<circle cx="1432" cy="954" r="3" fill="#d97706"/>
+<text x="1442" y="958" font-size="11.5" font-weight="400" fill="#1f2937" text-anchor="start">+ semantic search</text>
+<circle cx="1432" cy="990" r="3" fill="#d97706"/>
+<text x="1442" y="994" font-size="11.5" font-weight="400" fill="#1f2937" text-anchor="start">Long-term memory</text>
+<circle cx="1432" cy="1026" r="3" fill="#d97706"/>
+<text x="1442" y="1030" font-size="11.5" font-weight="400" fill="#1f2937" text-anchor="start">Regular compaction</text>
+<circle cx="1432" cy="1062" r="3" fill="#d97706"/>
+<text x="1442" y="1066" font-size="11.5" font-weight="400" fill="#1f2937" text-anchor="start">Budgeting critical</text>
+<circle cx="1432" cy="1098" r="3" fill="#d97706"/>
+<text x="1442" y="1102" font-size="11.5" font-weight="400" fill="#1f2937" text-anchor="start">Copilots, workflows</text>
+</svg>
