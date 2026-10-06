@@ -103,3 +103,23 @@ durable storage, memory, or retrieval. The diagram above is the target shape; br
       multiple repos, but every tool call is scoped to a single workspace root
 - [ ] Add a marketplace/sharing mechanism for agent-built tools (`Skills/tools/pending`) between projects or
       teammates — each repo builds its own from scratch today
+
+### Autonomous operations / self-healing
+
+Scope jump from "coding agent" to "business-ops agent" — worth deciding explicitly whether this project should grow
+this surface or whether it's a separate service that calls into this one. Default to the guarded path (PR + approval)
+before any auto-deploy path, since deploys are hard-to-reverse, shared-system actions.
+
+- [ ] Add `ExceptionlessTools` wrapping the Exceptionless API (new/trending errors, stack trace, affected
+      endpoint, frequency) — same pattern as `PaymoTools`/`DevOpsTools`
+- [ ] Build an exception-driven triage loop: pull an error → locate the failing code → write a fix → run tests →
+      open a PR (default), with full auto-deploy-on-green as an explicit opt-in per environment rather than the default
+- [ ] Add a rollback/kill-switch tool: auto-revert to the previous release if error rate spikes right after an
+      agent-triggered deploy, instead of waiting for a human to notice
+- [ ] Add synthetic monitoring / uptime + performance-regression checks feeding the same triage loop — not every
+      production problem throws an exception (slow checkout, broken layout)
+- [ ] Add a scheduled maintenance agent (dependency bumps, security patch sweeps) using the existing cron/schedule
+      mechanism — proactive, not just reactive
+- [ ] Add a dependency/CVE watcher that fires the same fix → test → PR pipeline when a package advisory lands
+- [ ] Add catalog/inventory/pricing tools (stock sync, price updates) so the agent can act on business state, not
+      just code, if this project takes on managing a store end-to-end
