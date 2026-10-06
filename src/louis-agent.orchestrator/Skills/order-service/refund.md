@@ -1,7 +1,7 @@
 ## Method: refund
 
 **What it does:** `POST /orders/{id}/refund` — refunds the order's total to the card it was paid with
-(`payment_ref`) and marks it refunded (`OrderApi.RefundOrder`). This moves money.
+(`payment_ref`) and marks it refunded (`Api/Refund.cs`). This moves money.
 
 **Expected (acknowledge, no action):**
 - `System.InvalidOperationException` with a message containing "already been refunded" — a duplicate refund

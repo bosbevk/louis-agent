@@ -13,5 +13,6 @@ builder.Services.AddSingleton<Settings>();
 builder.Services.AddSingleton<ChatStore>();
 builder.Services.AddScoped<AgentApi>();
 builder.Services.AddScoped<GitState>();
+builder.Services.AddScoped<GitHistory>();
 
 await builder.Build().RunAsync();

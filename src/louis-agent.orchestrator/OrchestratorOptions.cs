@@ -27,6 +27,11 @@ internal sealed class OrchestratorOptions
     /// <summary>ORCHESTRATOR_STATE_DIRECTORY: processed error ids, decisions and escalations (default logs/orchestrator/{service}).</summary>
     public required string StateDirectory { get; init; }
 
+    /// <summary>ORCHESTRATOR_COMMS_LOG: the Markdown log of everything the agents said to each other (default {state}/agent-comms.md).</summary>
+    public string CommsLogPath => _commsLogPath ?? Path.Combine(StateDirectory, "agent-comms.md");
+    private string? _commsLogPath;
+    public string? CommsLogOverride { init => _commsLogPath = value is null ? null : Path.GetFullPath(value); }
+
     /// <summary>Folder holding orchestrator.md and the per-service skill folders.</summary>
     public required string SkillsDirectory { get; init; }
 
@@ -51,6 +56,7 @@ internal sealed class OrchestratorOptions
             LouisAgentUrl = new Uri(Get("LOUIS_AGENT_URL") ?? "http://127.0.0.1:5081"),
             LouisAgentApiKey = Get("LOUIS_AGENT_API_KEY") ?? Get("AGENT_API_KEY"),
             StateDirectory = Path.GetFullPath(Get("ORCHESTRATOR_STATE_DIRECTORY") ?? Path.Combine("logs", "orchestrator", service)),
+            CommsLogOverride = Get("ORCHESTRATOR_COMMS_LOG"),
             SkillsDirectory = Path.Combine(AppContext.BaseDirectory, "Skills"),
             Once = args.Contains("--once"),
             PollInterval = TimeSpan.FromSeconds(interval),

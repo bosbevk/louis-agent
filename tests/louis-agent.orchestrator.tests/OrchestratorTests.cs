@@ -69,7 +69,11 @@ public class OrchestratorTests
         string skills = Path.Combine(AppContext.BaseDirectory, "Skills");
         var (provider, methods) = OrchestratorSkills.Load(skills, "order-service");
 
-        Assert.That(methods, Is.EquivalentTo(new[] { "get-order", "order-total", "refund" }));
+        Assert.That(methods, Is.EquivalentTo(new[]
+        {
+            "customer-initials", "delivery-estimate", "discount-label", "get-order", "invoice-number", "loyalty-points",
+            "order-total", "packing-slip", "refund", "shipping-cost", "vat",
+        }));
         Assert.That(provider.Documentation, Does.StartWith("# Orchestrator"));
         Assert.That(provider.Documentation, Does.Contain("## Method: refund").And.Contain("# Service: order-service"));
     }
@@ -111,13 +115,7 @@ public class OrchestratorTests
     public void VerifyFixCommit_PassesForACommitOnTheFixBranch_AndFailsForOneOnMain()
     {
         if (!GitAvailable()) Assert.Ignore("git is not installed");
-        Git("init", "-b", "main");
-        Git("config", "user.email", "test@localhost");
-        Git("config", "user.name", "test");
-        File.WriteAllText(Path.Combine(_dir, "a.txt"), "one");
-        File.WriteAllText(Path.Combine(_dir, ".gitignore"), "errors.jsonl\nstate/\n"); // like the service's ignored logs/
-        Git("add", ".");
-        Git("commit", "-m", "initial");
+        InitRepo();
         string mainCommit = Git("rev-parse", "HEAD");
         Git("switch", "-c", "fix/order-total-abc123");
         File.WriteAllText(Path.Combine(_dir, "a.txt"), "two");
@@ -129,6 +127,62 @@ public class OrchestratorTests
         Assert.That(tools.VerifyFixCommit(mainCommit, "fix/order-total-abc123"), Does.Contain("FAIL commit is not on main").And.Contain("NOT VERIFIED"));
         Assert.That(tools.VerifyFixCommit("deadbeef", "fix/order-total-abc123"), Does.Contain("FAIL commit exists"));
         Assert.That(tools.VerifyFixCommit("--all", "fix/x"), Does.StartWith("Error"));
+    }
+
+    [Test]
+    public void ReturnToMain_StashesLeftoversAndChecksOutMain()
+    {
+        if (!GitAvailable()) Assert.Ignore("git is not installed");
+        InitRepo();
+        Git("switch", "-c", "fix/half-done");
+        File.WriteAllText(Path.Combine(_dir, "a.txt"), "unfinished");
+
+        Assert.That(Tools(FeedWith()).ReturnToMain(), Is.Null);
+        Assert.That(Git("rev-parse", "--abbrev-ref", "HEAD"), Is.EqualTo("main"));
+        Assert.That(Git("stash", "list"), Does.Contain("uncommitted changes left on fix/half-done"));
+    }
+
+    [Test]
+    public void CommsLog_RecordsMessagesRepliesChecksAndARunSummary()
+    {
+        var feed = FeedWith(Event("abc123"));
+        string path = Path.Combine(_dir, "comms.md");
+        var comms = new CommsLog(path);
+        var call = new AgentToolCall("t1", "CreateBranch", "{\"branchName\":\"fix/order-total-abc123\"}") { Result = "Success | done" };
+        var reply = new AgentReply("Fixed.\nFIX-RESULT: {\"status\":\"fixed\",\"commit\":\"abc1234\",\"branch\":\"fix/order-total-abc123\",\"tests\":\"5/5 passed\"}",
+            [call], "end_turn", null);
+
+        comms.StartRun("order-service", new Uri("http://127.0.0.1:5081"), "claude-test");
+        comms.StartEvent(1, 1, feed.Find("abc123")!);
+        comms.Sent("sess_1", "Please fix ```json {} ``` this");
+        comms.Received(reply, LouisAgentClient.ParseFixResult(reply.Text));
+        comms.Check("ReplayRequest(order-total 1003)", "`200 order-total 1003: 35.00`");
+        comms.EndEvent("fixed", "verified", "All checks passed.\nDECISION: fixed - verified");
+        comms.EndRun();
+
+        string md = File.ReadAllText(path);
+        Assert.That(md, Does.Contain("# Agent communications: order-service"));
+        Assert.That(md, Does.Contain("### Orchestrator → louis-agent · message 1 · session `sess_1`"));
+        Assert.That(md, Does.Contain("````text\nPlease fix ```json {} ``` this\n````"), "a message with its own fences stays intact");
+        Assert.That(md, Does.Contain("| 1 | CreateBranch |"));
+        Assert.That(md, Does.Contain("Success \\| done"), "pipes in a result don't break the table");
+        Assert.That(md, Does.Contain("> Fixed."));
+        Assert.That(md, Does.Contain("FIX-RESULT: status **fixed** · commit `abc1234`"));
+        Assert.That(md, Does.Contain("- **ReplayRequest(order-total 1003)** → `200 order-total 1003: 35.00`"));
+        Assert.That(md, Does.Contain("## Run summary"));
+        Assert.That(md, Does.Contain("| 1 | `order-total 1003` | KeyNotFoundException | **fixed** | fixed (1 msg, 1 tools) | `fix/order-total-abc123` | `abc1234` |"));
+        Assert.That(md, Does.Contain("Branches ready to review and merge (1)"));
+    }
+
+    private void InitRepo()
+    {
+        Git("init", "-b", "main");
+        Git("config", "user.email", "test@localhost");
+        Git("config", "user.name", "test");
+        File.WriteAllText(Path.Combine(_dir, "a.txt"), "one");
+        File.WriteAllText(Path.Combine(_dir, ".gitignore"), "errors.jsonl\nstate/\n"); // like the service's ignored logs/
+        Git("add", ".");
+        Git("commit", "-m", "initial");
     }
 
     private ErrorFeed FeedWith(params string[] events)
@@ -149,7 +203,8 @@ public class OrchestratorTests
             SkillsDirectory = Path.Combine(AppContext.BaseDirectory, "Skills"),
         };
         var client = new LouisAgentClient(new HttpClient { BaseAddress = new Uri("http://127.0.0.1:1") }, null);
-        return new ServiceTools(options, feed, client, new HashSet<string> { "get-order", "order-total", "refund" }, _ => { });
+        return new ServiceTools(options, feed, client, new HashSet<string> { "get-order", "order-total", "refund" },
+            new CommsLog(Path.Combine(_dir, "state", "agent-comms.md")), _ => { });
     }
 
     private string Git(params string[] args)

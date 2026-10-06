@@ -1,0 +1,66 @@
+@* A multi-file patch (a commit or a branch): one section per file, each with its own line-numbered diff. *@
+
+@if (_files.Count == 0)
+{
+    <div class="diff-note">No file changes.</div>
+}
+@foreach (var file in _files)
+{
+    <section class="patch-file">
+        <div class="patch-file-head">
+            <span class="change-name" title="@file.Path">@file.Path</span>
+            <span class="file-meta">
+                @if (file.Status is not null) { <text>@file.Status · </text> }
+                <span class="added">+@file.Added</span> <span class="removed">−@file.Removed</span>
+            </span>
+        </div>
+        @foreach (var row in file.Rows)
+        {
+            <div class="diff-row diff-@row.Kind">
+                <span class="ln">@row.Old</span><span class="ln">@row.New</span><span class="diff-text">@row.Text</span>
+            </div>
+        }
+    </section>
+}
+@if (Truncated)
+{
+    <div class="diff-note">Diff truncated.</div>
+}
+
+@code {
+    [Parameter, EditorRequired] public string Diff { get; set; } = "";
+    [Parameter] public bool Truncated { get; set; }
+
+    private sealed record PatchFile(string Path, string? Status, List<DiffViewer.Row> Rows, int Added, int Removed);
+
+    private string? _parsed;
+    private List<PatchFile> _files = [];
+
+    protected override void OnParametersSet()
+    {
+        if (ReferenceEquals(_parsed, Diff)) return;
+        _parsed = Diff;
+        _files = Split(Diff);
+    }
+
+    /// <summary>Splits "diff --git a/x b/y" sections and parses each one's hunks.</summary>
+    private static List<PatchFile> Split(string patch)
+    {
+        var files = new List<PatchFile>();
+        var sections = System.Text.RegularExpressions.Regex.Split(patch.Replace("\r\n", "\n"), "(?=^diff --git )",
+            System.Text.RegularExpressions.RegexOptions.Multiline);
+        foreach (string section in sections.Where(s => s.StartsWith("diff --git ")))
+        {
+            string header = section[..(section.IndexOf('\n') is var end and >= 0 ? end : section.Length)];
+            int b = header.LastIndexOf(" b/", StringComparison.Ordinal);
+            string path = b >= 0 ? header[(b + 3)..] : header;
+            string? status = section.Contains("\nnew file mode") ? "new file"
+                : section.Contains("\ndeleted file mode") ? "deleted"
+                : section.Contains("\nrename from") ? "renamed" : null;
+            var (rows, added, removed) = DiffViewer.Parse(section);
+            files.Add(new PatchFile(path, status, rows, added, removed));
+        }
+
+        return files;
+    }
+}

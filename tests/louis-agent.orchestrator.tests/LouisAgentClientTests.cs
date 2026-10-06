@@ -39,7 +39,9 @@ public class LouisAgentClientTests
         var progress = new List<string>();
         var reply = await LouisAgentClient.ReadStreamAsync(new StringReader(Stream), progress.Add);
 
-        Assert.That(reply.ToolCalls, Is.EqualTo(new[] { "DotNetTest" }));
+        Assert.That(reply.ToolCalls.Select(t => t.Name), Is.EqualTo(new[] { "DotNetTest" }));
+        Assert.That(reply.ToolCalls[0].Result, Is.EqualTo("Error: 1 failed"));
+        Assert.That(reply.ToolCalls[0].IsError, Is.True);
         Assert.That(reply.StopReason, Is.EqualTo("end_turn"));
         Assert.That(reply.Error, Is.Null);
         Assert.That(reply.Text, Does.StartWith("Fixed it."));

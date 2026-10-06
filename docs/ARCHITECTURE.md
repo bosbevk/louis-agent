@@ -39,7 +39,8 @@ OpenAI-compatible endpoints.
   `thinking`, `text`, `tool_use` and `tool_result`, `message_delta` (stop reason), `message_stop`. Errors use Claude's
   `{ "type": "error", "error": { "type", "message" } }` shape.
 - Read-only workspace browsing (`/workspace/entries`, `/workspace/file`) and a git interface (`/git/status`, `/git/diff`,
-  `/git/stage`, `unstage`, `discard`, `commit`) for the web app. They reuse `WorkspaceTools`' path and secret-file checks.
+  `/git/stage`, `unstage`, `discard`, `commit`, plus history: `/git/branches`, `/git/log`, `/git/commit`, `/git/branch`,
+  `/git/merge`, `/git/branch/delete`) for the web app. They reuse `WorkspaceTools`' path and secret-file checks.
 - `AGENT_API_KEY`, when set, is required for `/sessions`, `/workspace` and `/git`; the app's own files stay public.
 - The web app (Blazor WebAssembly) is served by the API with `MapStaticAssets` and an `index.html` fallback. It keeps
   chats in the browser's `localStorage`. Themes are CSS files in `wwwroot/css/themes/` listed in `themes.json`.

@@ -47,6 +47,7 @@ app.MapGet("/health", () => Results.Json(new { status = "ok" }));
 
 app.MapWorkspace();
 app.MapGit();
+app.MapHistory();
 
 app.MapPost("/sessions", (AgentSessions sessions) =>
 {

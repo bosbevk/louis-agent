@@ -1,40 +1,15 @@
 namespace OrderService;
 
-/// <summary>The service's API methods. Each one is what a client calls; exceptions are caught and logged by the host.</summary>
-public sealed class OrderApi(OrderRepository orders)
+/// <summary>
+/// The service's API. Each method lives in its own file under Api/ (one per route); exceptions are caught and logged by
+/// the host, the way a web framework would turn them into 500 responses.
+/// </summary>
+public sealed partial class OrderApi
 {
-    private static readonly Dictionary<string, decimal> DiscountRates = new()
-    {
-        ["WELCOME10"] = 0.10m,
-        ["VIP20"] = 0.20m,
-    };
+    private readonly OrderRepository _orders;
 
-    /// <summary>GET /orders/{id}</summary>
-    public string GetOrder(int id)
-    {
-        Order order = orders.Get(id);
-        return $"Order {order.Id} for {order.Customer}: {order.Items.Count} item(s)";
-    }
+    public OrderApi(OrderRepository orders) => _orders = orders;
 
-    /// <summary>GET /orders/{id}/total - the amount to charge, after any discount code.</summary>
-    public decimal GetOrderTotal(int id)
-    {
-        Order order = orders.Get(id);
-        decimal subtotal = order.Items.Sum(item => item.Quantity * item.UnitPrice);
-        if (string.IsNullOrEmpty(order.DiscountCode)) return subtotal;
-
-        decimal rate = DiscountRates[order.DiscountCode];
-        return Math.Round(subtotal * (1 - rate), 2);
-    }
-
-    /// <summary>POST /orders/{id}/refund - refunds the order total to the card it was paid with.</summary>
-    public string RefundOrder(int id)
-    {
-        Order order = orders.Get(id);
-        if (order.Refunded) throw new InvalidOperationException($"Order {id} has already been refunded");
-
-        decimal amount = GetOrderTotal(id);
-        string cardSuffix = order.PaymentRef[^4..];
-        return $"Refunded {amount:0.00} to card ending {cardSuffix}";
-    }
+    /// <summary>Sum of quantity times unit price, before any discount.</summary>
+    internal static decimal Subtotal(Order order) => order.Items.Sum(item => item.Quantity * item.UnitPrice);
 }

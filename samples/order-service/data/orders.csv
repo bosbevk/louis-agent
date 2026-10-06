@@ -1,6 +1,13 @@
-id,customer,items,discount_code,payment_ref,refunded
-1001,Ada Lovelace,BOOK-1:2:12.50|PEN-3:1:4.00,WELCOME10,card_4242,false
-1002,Alan Turing,LAPTOP-9:1:899.00,,card_1881,true
-1003,Grace Hopper,MUG-2:3:8.00|TEA-7:2:5.50,SUMMER25,card_5555,false
-1004,Linus Torvalds,KEYB-4:1:79.90,VIP20,card_0007,false
-1005,Margaret Hamilton,LAMP-1:1:45.00,,,false
+id,customer,items,discount_code,payment_ref,refunded,created,country,gift_message
+1001,Ada Lovelace,BOOK-1:2:12.50|PEN-3:1:4.00,WELCOME10,card_4242,false,2026-09-28,NL,
+1002,Alan Turing,LAPTOP-9:1:899.00,,card_1881,true,2026-09-29,DE,Happy birthday
+1003,Grace Hopper,MUG-2:3:8.00|TEA-7:2:5.50,SUMMER25,card_5555,false,2026-09-30,FR,
+1004,Linus Torvalds,KEYB-4:1:79.90,VIP20,card_0007,false,2026-10-01,DE,Enjoy the clicks
+1005,Margaret Hamilton,LAMP-1:1:45.00,,,false,2026-10-01,NL,
+1006,Barbara Liskov,,,card_3131,false,2026-10-01,NL,
+1007,Ken Thompson,DESK-2:1:249.00,,card_7777,false,2026-10-02T14:05:00Z,DE,
+1008,Mega Corp,SERVER-1:1000:25000.00,,card_9999,false,2026-10-02,NL,
+1009,Edsger Dijkstra,PEN-3:4:4.00,,card_1930,false,2026-10-03,nl,
+1010,Donald Knuth,BOOK-7:1:180.00,,card_3141,false,2026-10-04,FR,
+1011,Tim Berners-Lee,CABLE-2:2:9.99,FREESHIP,card_8080,false,2026-10-03,FR,
+1012,Cher,VINYL-5:1:29.99,,card_1946,false,2026-10-03,FR,

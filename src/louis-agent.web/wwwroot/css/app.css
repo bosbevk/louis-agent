@@ -264,6 +264,54 @@ textarea:focus-visible, input:focus-visible, select:focus-visible { outline: non
 .letter-D { color: var(--danger); }
 .letter-R { color: var(--cyan); }
 
+/* Branches and history */
+.history-row { align-items: flex-start; }
+.history-item { flex-direction: column; gap: 0; min-width: 0; }
+.history-item .change-name { max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+.history-item .change-folder { max-width: 100%; }
+.change-name.merged { color: var(--muted); }
+button.small { padding: 2px 8px; font-size: 12px; align-self: center; }
+.sha { color: var(--amber); font-family: var(--font-code, var(--font)); font-size: .92em; }
+.ref {
+    display: inline-block;
+    margin-left: 4px;
+    padding: 0 5px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--cyan);
+    font-size: 10px;
+    line-height: 1.5;
+}
+.history-commits { display: flex; flex-direction: column; padding: 8px 12px; border-bottom: 1px solid var(--border); background: var(--panel); font-family: var(--font); }
+.history-commit {
+    display: flex;
+    gap: 8px;
+    align-items: baseline;
+    padding: 3px 6px;
+    border: none;
+    border-radius: var(--radius);
+    background: none;
+    color: var(--text);
+    text-align: left;
+}
+.history-commit:hover { background: var(--hover); }
+.commit-body { margin: 0; padding: 10px 16px; border-bottom: 1px solid var(--border); color: var(--muted); white-space: pre-wrap; font: inherit; }
+.patch-file { border-bottom: 1px solid var(--border); }
+.patch-file-head {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    align-items: baseline;
+    padding: 6px 12px;
+    background: var(--panel);
+    border-bottom: 1px solid var(--border);
+    font-family: var(--font);
+}
+.patch-file-head .change-name { color: var(--bright); font-weight: 600; overflow-wrap: anywhere; white-space: normal; }
+
 input[type=checkbox] { accent-color: var(--accent); }
 
 .hidden { display: none !important; }

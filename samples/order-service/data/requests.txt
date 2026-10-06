@@ -1,8 +1,28 @@
 # Simulated traffic: one API call per line, "<method> <order id>". Run with: dotnet run --project src/OrderService -- serve data/requests.txt
+# Healthy calls
 get-order 1001
 order-total 1001
 order-total 1004
+shipping-cost 1003
+invoice-number 1001
+packing-slip 1002
+loyalty-points 1001
+vat 1001
+delivery-estimate 1001
+discount-label 1001
+customer-initials 1001
+# Ten bugs, one per API method (auto-fixable per the runbooks)
+get-order 1006
 order-total 1003
+shipping-cost 1006
+invoice-number 1007
+packing-slip 1001
+loyalty-points 1008
+vat 1009
+delivery-estimate 1010
+discount-label 1011
+customer-initials 1012
+# Not for fixing: an expected rejection, a payments crash (escalate), and a 404
 refund 1002
 refund 1005
 get-order 9999

@@ -80,6 +80,27 @@ public sealed class AgentApi(HttpClient http, Settings settings)
         return (await response.Content.ReadFromJsonAsync<GitStatus>())!;
     }
 
+    public Task<GitBranches> GitBranchesAsync() => GetAsync<GitBranches>("git/branches");
+
+    public Task<GitLog> GitLogAsync(int count = 200) => GetAsync<GitLog>($"git/log?count={count}");
+
+    public Task<GitCommitDetail> GitShowCommitAsync(string sha) => GetAsync<GitCommitDetail>($"git/commit?sha={Uri.EscapeDataString(sha)}");
+
+    public Task<GitBranchDetail> GitBranchAsync(string name) => GetAsync<GitBranchDetail>($"git/branch?name={Uri.EscapeDataString(name)}");
+
+    /// <summary>merge | branch/delete; returns the branches afterwards, with a message saying what happened.</summary>
+    public async Task<GitBranches> GitBranchActionAsync(string action, string branch)
+    {
+        using var response = await SendAsync(new HttpRequestMessage(HttpMethod.Post, $"git/{action}") { Content = JsonContent.Create(new { branch }) });
+        return (await response.Content.ReadFromJsonAsync<GitBranches>())!;
+    }
+
+    private async Task<T> GetAsync<T>(string url)
+    {
+        using var response = await SendAsync(new HttpRequestMessage(HttpMethod.Get, url));
+        return (await response.Content.ReadFromJsonAsync<T>())!;
+    }
+
     /// <summary>Sends a message and yields the answer's events as they arrive.</summary>
     public async IAsyncEnumerable<AgentStreamEvent> StreamMessageAsync(
         string sessionId, string message, IReadOnlyList<Attachment> attachments,

@@ -8,6 +8,7 @@
 @inject NavigationManager Nav
 @inject IJSRuntime JS
 @inject GitState Git
+@inject GitHistory History
 @implements IDisposable
 
 <PageTitle>@(_chat?.Title ?? "Louis Agent")</PageTitle>
@@ -25,6 +26,13 @@
                     <span class="tab-count">@Git.ChangeCount</span>
                 }
             </button>
+            <button class="@(_tab == SidebarTab.Branches ? "active" : "")" @onclick="() => _tab = SidebarTab.Branches">
+                <span>Branches</span>
+                @if (History.UnmergedCount > 0)
+                {
+                    <span class="tab-count" title="Branches to merge">@History.UnmergedCount</span>
+                }
+            </button>
         </div>
         @if (_tab == SidebarTab.Files)
         {
@@ -36,6 +44,12 @@
         {
             <nav class="file-tree">
                 <ChangesPanel OpenKey="@_openDiffKey" OnOpenDiff="OpenDiff" OnReviewAll="ReviewAllChanges" />
+            </nav>
+        }
+        else if (_tab == SidebarTab.Branches)
+        {
+            <nav class="file-tree">
+                <BranchesPanel OpenKey="@_openHistoryKey" OnOpenBranch="OpenBranch" OnOpenCommit="OpenCommit" />
             </nav>
         }
         else
@@ -58,7 +72,12 @@
     </aside>
 
     <main class="conversation">
-        @if (_openDiff is not null)
+        @if (_openBranch is not null || _openCommit is not null)
+        {
+            <HistoryViewer Branch="_openBranch" Commit="_openCommit" Busy="@History.Busy" OnMerge="MergeBranch"
+                           OnDelete="DeleteBranch" OnOpenCommit="OpenCommit" OnClose="CloseFile" />
+        }
+        else if (_openDiff is not null)
         {
             <DiffViewer Diff="_openDiff" Busy="@(_streaming || Git.Busy)" OnStage="() => ChangeOpenDiff(Git.StageAsync)"
                         OnUnstage="() => ChangeOpenDiff(Git.UnstageAsync)" OnDiscard="() => ChangeOpenDiff(Git.DiscardAsync)"
@@ -143,22 +162,27 @@
     private ElementReference _messages;
     private DateTime _lastRender;
     private bool _scrollToEnd;
-    private enum SidebarTab { Chats, Files, Changes }
+    private enum SidebarTab { Chats, Files, Changes, Branches }
 
     private SidebarTab _tab = SidebarTab.Chats;
     private WorkspaceFile? _openFile;
     private GitDiff? _openDiff;
     private string? _openDiffKey;
+    private GitBranchDetail? _openBranch;
+    private GitCommitDetail? _openCommit;
+    private string? _openHistoryKey;
 
-    private bool ViewerOpen => _openFile is not null || _openDiff is not null;
+    private bool ViewerOpen => _openFile is not null || _openDiff is not null || _openBranch is not null || _openCommit is not null;
 
     private bool CanSend => !_streaming && _chat?.Ended != true && (_draft.Trim().Length > 0 || _attachments.Count > 0);
 
     protected override async Task OnInitializedAsync()
     {
         Git.Changed += OnGitChanged;
+        History.Changed += OnGitChanged;
         if (!Store.Loaded) await Store.LoadAsync();
         _ = Git.RefreshAsync();
+        _ = History.RefreshAsync();
     }
 
     protected override void OnParametersSet()
@@ -204,6 +228,7 @@
             _openDiff = null;
             _openDiffKey = null;
             _openFile = await Api.ReadFileAsync(path);
+            CloseHistory();
             _notice = null;
         }
         catch (Exception ex)
@@ -217,7 +242,62 @@
         _openFile = null;
         _openDiff = null;
         _openDiffKey = null;
+        CloseHistory();
         _scrollToEnd = true;
+    }
+
+    private void CloseHistory()
+    {
+        _openBranch = null;
+        _openCommit = null;
+        _openHistoryKey = null;
+    }
+
+    private async Task OpenBranch(string name)
+    {
+        try
+        {
+            var detail = await Api.GitBranchAsync(name);
+            CloseFile();
+            _openBranch = detail;
+            _openHistoryKey = BranchesPanel.BranchKey(name);
+            _notice = null;
+        }
+        catch (Exception ex)
+        {
+            _notice = Describe(ex);
+        }
+    }
+
+    private async Task OpenCommit(string sha)
+    {
+        try
+        {
+            var detail = await Api.GitShowCommitAsync(sha);
+            CloseFile();
+            _openCommit = detail;
+            _openHistoryKey = BranchesPanel.CommitKey(sha);
+            _notice = null;
+        }
+        catch (Exception ex)
+        {
+            _notice = Describe(ex);
+        }
+    }
+
+    // After a merge the branch has nothing left to show, so the viewer closes; the panel says what was merged.
+    private async Task MergeBranch(string name)
+    {
+        await History.MergeAsync(name);
+        if (History.Error is not null) _notice = History.Error;
+        else CloseFile();
+    }
+
+    private async Task DeleteBranch(string name)
+    {
+        await History.DeleteAsync(name);
+        if (History.Error is not null) _notice = History.Error;
+        else CloseFile();
     }
 
     // A review gets its own chat, so it doesn't mix with whatever the current chat is about.
@@ -250,6 +330,7 @@
             _openDiff = await Api.GitDiffAsync(change.File.Path, change.Staged);
             _openDiffKey = ChangesPanel.Key(change.File, change.Staged);
             _openFile = null;
+            CloseHistory();
             _notice = null;
         }
         catch (Exception ex)
@@ -304,7 +385,11 @@
 
     private void OnGitChanged() => InvokeAsync(StateHasChanged);
 
-    public void Dispose() => Git.Changed -= OnGitChanged;
+    public void Dispose()
+    {
+        Git.Changed -= OnGitChanged;
+        History.Changed -= OnGitChanged;
+    }
 
     private async Task StartTurnAsync(string text, List<Attachment> attachments, string? title = null)
     {
@@ -356,8 +441,9 @@
         finally
         {
             _streaming = false;
-            // The agent may have edited files; keep the Changes badge and panel current.
+            // The agent may have edited files or committed; keep the Changes and Branches badges and panels current.
             _ = Git.RefreshAsync();
+            _ = History.RefreshAsync();
             await Store.SaveAsync();
             StateHasChanged();
         }

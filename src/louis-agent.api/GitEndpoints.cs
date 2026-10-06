@@ -146,13 +146,13 @@ internal static class GitEndpoints
         return null;
     }
 
-    private static IResult GitError(GitResult result) =>
+    internal static IResult GitError(GitResult result) =>
         ApiErrors.Result(StatusCodes.Status400BadRequest, "git_error",
             string.IsNullOrWhiteSpace(result.Error) ? $"git exited with code {result.ExitCode}." : result.Error.Trim());
 
     // stdout and stderr are kept apart: git prints warnings (e.g. about line endings) on stderr that would corrupt
     // the porcelain and diff output.
-    private static async Task<GitResult> RunAsync(AgentEngine engine, IEnumerable<string> args)
+    internal static async Task<GitResult> RunAsync(AgentEngine engine, IEnumerable<string> args)
     {
         var psi = new ProcessStartInfo("git")
         {
@@ -186,7 +186,7 @@ internal static class GitEndpoints
         return new GitResult(process.ExitCode, await output, await error);
     }
 
-    private sealed record GitResult(int ExitCode, string Output, string Error);
+    internal sealed record GitResult(int ExitCode, string Output, string Error);
 }
 
 /// <summary>One changed file. Index/WorkTree are git's X/Y status letters (" " = unchanged, "?" = untracked).</summary>

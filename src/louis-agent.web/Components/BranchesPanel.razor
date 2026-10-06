@@ -1,0 +1,112 @@
+@* Branches and history: what's waiting to be merged into the checked-out branch, what's merged, and every commit. *@
+@implements IDisposable
+@inject GitHistory History
+
+<div class="changes-panel">
+    <div class="changes-head">
+        <span class="branch" title="Checked-out branch: merges go into it">⎇ @(History.Branches?.Current ?? "…")</span>
+        <button class="icon" title="Refresh" disabled="@History.Busy" @onclick="History.RefreshAsync">⟳</button>
+    </div>
+
+    @if (History.Error is not null)
+    {
+        <div class="tree-error">@History.Error</div>
+    }
+    @if (History.Message is not null)
+    {
+        <div class="committed">@History.Message</div>
+    }
+
+    @if (History.Branches is { } branches)
+    {
+        var unmerged = branches.Branches.Where(b => !b.Current && !b.Merged).ToList();
+        var merged = branches.Branches.Where(b => b.Merged).ToList();
+
+        <div class="change-group">
+            <div class="group-head">To merge <span class="count">@unmerged.Count</span></div>
+            @if (unmerged.Count == 0)
+            {
+                <div class="tree-loading">Nothing to merge into @branches.Current.</div>
+            }
+            @foreach (var branch in unmerged)
+            {
+                <div class="change-row history-row @(OpenKey == BranchKey(branch.Name) ? "selected" : "")">
+                    <button class="change-file history-item" title="@branch.Subject" @onclick="() => OnOpenBranch.InvokeAsync(branch.Name)">
+                        <span class="change-name">@branch.Name</span>
+                        <span class="change-folder">@branch.Ahead commit@(branch.Ahead == 1 ? "" : "s") · @branch.Subject</span>
+                    </button>
+                    <button class="secondary small" disabled="@History.Busy" title="Merge into @branches.Current" @onclick="() => History.MergeAsync(branch.Name)">Merge</button>
+                </div>
+            }
+        </div>
+
+        @if (merged.Count > 0)
+        {
+            <div class="change-group">
+                <div class="group-head">Merged <span class="count">@merged.Count</span></div>
+                @foreach (var branch in merged)
+                {
+                    <div class="change-row history-row @(OpenKey == BranchKey(branch.Name) ? "selected" : "")">
+                        <button class="change-file history-item" title="@branch.Subject" @onclick="() => OnOpenBranch.InvokeAsync(branch.Name)">
+                            <span class="change-name merged">✓ @branch.Name</span>
+                        </button>
+                        <button class="icon" disabled="@History.Busy" title="Delete this merged branch" @onclick="() => History.DeleteAsync(branch.Name)">×</button>
+                    </div>
+                }
+            </div>
+        }
+
+        <div class="change-group">
+            <div class="group-head">All commits <span class="count">@History.Commits.Count</span></div>
+            @foreach (var commit in History.Commits)
+            {
+                <div class="change-row history-row @(OpenKey == CommitKey(commit.Sha) ? "selected" : "")">
+                    <button class="change-file history-item" title="@commit.Subject" @onclick="() => OnOpenCommit.InvokeAsync(commit.Sha)">
+                        <span class="change-name"><span class="sha">@commit.ShortSha</span> @commit.Subject</span>
+                        <span class="change-folder">
+                            @commit.Author · @Ago(commit.Date)
+                            @foreach (string reference in commit.Refs)
+                            {
+                                <span class="ref">@reference</span>
+                            }
+                        </span>
+                    </button>
+                </div>
+            }
+        </div>
+    }
+    else if (History.Error is null)
+    {
+        <div class="tree-loading">Loading…</div>
+    }
+</div>
+
+@code {
+    [Parameter] public string? OpenKey { get; set; }
+    [Parameter] public EventCallback<string> OnOpenBranch { get; set; }
+    [Parameter] public EventCallback<string> OnOpenCommit { get; set; }
+
+    public static string BranchKey(string name) => $"b:{name}";
+    public static string CommitKey(string sha) => $"c:{sha}";
+
+    protected override async Task OnInitializedAsync()
+    {
+        History.Changed += OnChanged;
+        await History.RefreshAsync();
+    }
+
+    private void OnChanged() => InvokeAsync(StateHasChanged);
+
+    public void Dispose() => History.Changed -= OnChanged;
+
+    public static string Ago(string isoDate)
+    {
+        if (!DateTimeOffset.TryParse(isoDate, out var date)) return isoDate;
+        var age = DateTimeOffset.Now - date;
+        return age.TotalMinutes < 1 ? "just now"
+            : age.TotalHours < 1 ? $"{(int)age.TotalMinutes}m ago"
+            : age.TotalDays < 1 ? $"{(int)age.TotalHours}h ago"
+            : age.TotalDays < 30 ? $"{(int)age.TotalDays}d ago"
+            : date.ToString("yyyy-MM-dd");
+    }
+}

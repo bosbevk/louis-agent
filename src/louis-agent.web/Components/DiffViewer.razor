@@ -56,7 +56,7 @@
     [Parameter] public EventCallback OnReview { get; set; }
     [Parameter] public EventCallback OnClose { get; set; }
 
-    private sealed record Row(string Kind, string Old, string New, string Text);
+    public sealed record Row(string Kind, string Old, string New, string Text);
 
     private GitDiff? _parsed;
     private List<Row> _rows = [];
@@ -78,7 +78,7 @@
     }
 
     /// <summary>Unified diff to rows: hunk headers, context, additions and removals with their line numbers.</summary>
-    private static (List<Row> Rows, int Added, int Removed) Parse(string diff)
+    public static (List<Row> Rows, int Added, int Removed) Parse(string diff)
     {
         var rows = new List<Row>();
         int oldLine = 0, newLine = 0, added = 0, removed = 0;

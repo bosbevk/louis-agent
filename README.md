@@ -94,6 +94,9 @@ Sessions live in memory. Every reply is JSON; a message's answer streams as Serv
 | `GET /workspace/entries?path=` · `GET /workspace/file?path=` | Browse the workspace (read-only) |
 | `GET /git/status` · `GET /git/diff?path=&staged=` | Changed files and diffs |
 | `POST /git/stage` · `unstage` · `discard` · `commit` | `{ "paths": [...] }` (commit: `{ "message" }`) |
+| `GET /git/branches` · `GET /git/log?count=` | Branches (ahead/behind the checked-out branch) and the log across all branches |
+| `GET /git/commit?sha=` · `GET /git/branch?name=` | A commit's diff; a branch's commits and what merging it would bring |
+| `POST /git/merge` · `POST /git/branch/delete` | `{ "branch" }`: merge into the checked-out branch (`--no-ff`, aborted on conflict); delete a merged branch |
 | `GET /health` | Liveness (no key needed) |
 
 ```bash
@@ -108,6 +111,8 @@ curl -N -X POST http://127.0.0.1:5080/sessions/$SID/messages \
 - **Files** — browse the repo, view files with syntax highlighting, ask the agent to review one.
 - **Changes** — see what the agent (or you) changed, read each diff, tick files to stage / unstage / discard, commit,
   or ask the agent to review the changes. Pushing stays with you.
+- **Branches** — every branch and how far it is ahead, all commits across branches, each commit's or branch's diff;
+  merge a branch into the checked-out one, or delete a merged branch.
 - **Themes** — *Retro terminal* and *Paper (soft light)*. A theme is one CSS file in
   `src/louis-agent.web/wwwroot/css/themes/` plus a line in `themes.json`; the variables it must set are listed at the top
   of `css/app.css`.

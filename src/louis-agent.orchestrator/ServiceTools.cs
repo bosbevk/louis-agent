@@ -12,11 +12,13 @@ namespace louis_agent.orchestrator;
 /// Every public method is a tool; helpers stay private.
 /// </summary>
 internal sealed partial class ServiceTools(
-    OrchestratorOptions options, ErrorFeed feed, LouisAgentClient louisAgent, IReadOnlySet<string> methods, Action<string> log)
+    OrchestratorOptions options, ErrorFeed feed, LouisAgentClient louisAgent, IReadOnlySet<string> methods, CommsLog comms,
+    Action<string> log)
 {
     private static readonly TimeSpan GitTimeout = TimeSpan.FromSeconds(30);
     private static readonly TimeSpan DotNetTimeout = TimeSpan.FromMinutes(5);
-    private const int MaxFixFollowUps = 2;
+    private const int MaxFixFollowUps = 3;
+    internal const string ContinueMessage = "Continue the fix from where you stopped. Finish with the FIX-RESULT line.";
 
     private readonly HashSet<string> _fixRequested = [];
 
@@ -35,22 +37,32 @@ internal sealed partial class ServiceTools(
 
         // The method comes from the error log, so only a known one goes into a branch name (ids are checked by ErrorFeed).
         string branch = $"fix/{(methods.Contains(error.Method) ? error.Method : "unknown")}-{error.Id}";
+        // Every fix starts from main, so each branch holds one fix and can be merged on its own.
+        if (ReturnToMain() is { } notReady) return $"Error: can't start the fix: {notReady}";
+
         log($"Calling louis-agent at {options.LouisAgentUrl} to fix {error.ExceptionType} in {error.Method} (branch {branch})");
         string sessionId = await louisAgent.CreateSessionAsync(cancellationToken);
         try
         {
-            AgentReply reply = await louisAgent.SendAsync(sessionId, FixPrompt(error, expectedBehaviour, branch), Progress, cancellationToken);
-            var toolCalls = new List<string>(reply.ToolCalls);
+            var toolCalls = new List<AgentToolCall>();
+            AgentReply reply = await SendAsync(FixPrompt(error, expectedBehaviour, branch));
             FixResult? result = LouisAgentClient.ParseFixResult(reply.Text);
 
             // A fix can need more tool rounds than one message allows; the session keeps the context, so ask it to carry on.
             for (int i = 0; result is null && reply.Error is null && i < MaxFixFollowUps; i++)
             {
                 log("louis-agent stopped without a FIX-RESULT; asking it to continue");
-                reply = await louisAgent.SendAsync(sessionId,
-                    "Continue the fix from where you stopped. Finish with the FIX-RESULT line.", Progress, cancellationToken);
-                toolCalls.AddRange(reply.ToolCalls);
+                reply = await SendAsync(ContinueMessage);
                 result = LouisAgentClient.ParseFixResult(reply.Text);
+            }
+
+            async Task<AgentReply> SendAsync(string message)
+            {
+                comms.Sent(sessionId, message);
+                var answer = await louisAgent.SendAsync(sessionId, message, Progress, cancellationToken);
+                comms.Received(answer, LouisAgentClient.ParseFixResult(answer.Text));
+                toolCalls.AddRange(answer.ToolCalls);
+                return answer;
             }
 
             var outcome = new
@@ -79,9 +91,9 @@ internal sealed partial class ServiceTools(
     }
 
     [Description("Checks a commit louis-agent says it made, directly in the service's git repository: the commit exists, " +
-        "it is on the reported branch, that branch is checked out, the commit is NOT on the main branch (fixes go " +
-        "through review), it changed files, and the working tree is clean. Returns each check as PASS/FAIL plus the " +
-        "commit's author, message and changed files, ending with VERIFIED or NOT VERIFIED.")]
+        "it is on the reported branch, that branch is checked out and starts from the tip of main, the commit is NOT on " +
+        "main (fixes go through review), it changed files, and the working tree is clean. Returns each check as " +
+        "PASS/FAIL plus the commit's author, message and changed files, ending with VERIFIED or NOT VERIFIED.")]
     public string VerifyFixCommit(
         [Description("The commit hash louis-agent reported (7-40 hex characters).")] string commit,
         [Description("The branch louis-agent reported, e.g. fix/order-total-abc123.")] string branch)
@@ -106,6 +118,8 @@ internal sealed partial class ServiceTools(
         Check("fix branch is checked out", head == branch, $"HEAD is {head}");
         Check($"commit is on {branch}", Git("merge-base", "--is-ancestor", commit, branch).ExitCode == 0);
         Check($"commit is not on {options.MainBranch}", Git("merge-base", "--is-ancestor", commit, options.MainBranch).ExitCode == 1);
+        string mainTip = Git("rev-parse", options.MainBranch).Output.Trim();
+        Check($"branch starts from the tip of {options.MainBranch}", Git("merge-base", options.MainBranch, branch).Output.Trim() == mainTip);
 
         string files = Git("show", "--name-only", "--format=", commit).Output.Trim();
         Check("commit changes files", files.Length > 0, files.ReplaceLineEndings(", "));
@@ -120,6 +134,7 @@ internal sealed partial class ServiceTools(
         {
             report.AppendLine(ok ? "VERIFIED" : "NOT VERIFIED");
             foreach (string line in report.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries)) log($"  {line.TrimEnd()}");
+            comms.Check($"VerifyFixCommit({commit}, {branch})", ok ? "**VERIFIED**" : "**NOT VERIFIED**", report.ToString());
             return report.ToString();
         }
     }
@@ -141,6 +156,7 @@ internal sealed partial class ServiceTools(
             options.ServiceRoot, DotNetTimeout, environment: new Dictionary<string, string> { ["ERROR_LOG_PATH"] = replayLog });
         string response = LastLine(run.Output, "200 ", "500 ") ?? ProcessRunner.Tail(run.Output, 2000);
         log($"  {response}");
+        comms.Check($"ReplayRequest({method} {orderId})", $"`{response.ReplaceLineEndings(" ")}`");
         return $"exit code {run.ExitCode}{(run.TimedOut ? " (timed out)" : "")}\n{response}";
     }
 
@@ -150,7 +166,9 @@ internal sealed partial class ServiceTools(
     {
         log("Running the service's tests");
         var run = ProcessRunner.Run("dotnet", ["test"], options.ServiceRoot, DotNetTimeout);
-        log($"  {LastLine(run.Output, "Passed!", "Failed!") ?? $"exit code {run.ExitCode}"}");
+        string summary = LastLine(run.Output, "Passed!", "Failed!") ?? $"exit code {run.ExitCode}";
+        log($"  {summary}");
+        comms.Check("RunServiceTests", $"`{summary}`");
         return $"exit code {run.ExitCode}{(run.TimedOut ? " (timed out)" : "")}\n{ProcessRunner.Tail(run.Output, 2500)}";
     }
 
@@ -169,6 +187,7 @@ internal sealed partial class ServiceTools(
             at = DateTimeOffset.UtcNow,
         });
         log($"ESCALATED {errorId} to {team}: {reason}");
+        comms.Check("EscalateToHuman", $"**{team}**: {reason}");
         return $"Escalated {errorId} to the {team} team.";
     }
 
@@ -181,6 +200,7 @@ internal sealed partial class ServiceTools(
         if (feed.Find(errorId) is null) return $"Error: unknown error id '{errorId}'.";
         Append("acknowledged.jsonl", new { error_id = errorId, reason, at = DateTimeOffset.UtcNow });
         log($"Acknowledged {errorId}: {reason}");
+        comms.Check("AcknowledgeError", reason);
         return $"Acknowledged {errorId}; no action.";
     }
 
@@ -198,10 +218,13 @@ internal sealed partial class ServiceTools(
         Expected behaviour of `{{error.Method}}` (from the orchestrator's runbook): {{expectedBehaviour}}
 
         Steps:
-        1. CreateBranch "{{branch}}" from {{options.MainBranch}} and SwitchBranch to it.
+        1. You are on {{options.MainBranch}}. CreateBranch "{{branch}}" and SwitchBranch to it.
         2. Find the failing code from the stack trace (file paths in it are from the machine that ran the service; open the
-           same file in the workspace) and make the smallest change that gives the expected behaviour.
-        3. Add a regression test in the tests project that reproduces this failure and passes with your fix.
+           same file in the workspace) and make the smallest change that gives the expected behaviour. Change only the
+           code this error needs; other fixes are made on other branches.
+        3. Add a regression test that reproduces this failure and passes with your fix, in a NEW file in the tests project
+           named after this error (e.g. Regression/Error{{error.Id}}Tests.cs). Don't edit existing test files, so every
+           fix branch can be merged without conflicts.
         4. DotNetBuild and DotNetTest the solution; keep fixing until every test passes.
         5. Stage and Commit with the message "fix({{error.Method}}): <what you fixed> (error {{error.Id}})". Do not push,
            merge, or touch {{options.MainBranch}}: the orchestrator verifies the commit and a human merges it.
@@ -211,6 +234,25 @@ internal sealed partial class ServiceTools(
         """;
 
     private static readonly JsonSerializerOptions IndentedJson = new() { WriteIndented = true };
+
+    /// <summary>
+    /// Checks out main between fixes. Leftovers of an unfinished fix are stashed, not thrown away. Returns null when
+    /// main is checked out, otherwise why it couldn't be.
+    /// </summary>
+    internal string? ReturnToMain()
+    {
+        if (Git("status", "--porcelain").Output.Trim().Length > 0)
+        {
+            string head = Git("rev-parse", "--abbrev-ref", "HEAD").Output.Trim();
+            var stash = Git("stash", "push", "--include-untracked", "-m", $"orchestrator: uncommitted changes left on {head}");
+            log($"Stashed uncommitted changes left on {head}");
+            if (stash.ExitCode != 0) return $"could not stash the uncommitted changes on {head}: {stash.Output.Trim()}";
+        }
+
+        if (Git("rev-parse", "--abbrev-ref", "HEAD").Output.Trim() == options.MainBranch) return null;
+        var main = Git("switch", options.MainBranch);
+        return main.ExitCode == 0 ? null : $"could not check out {options.MainBranch}: {main.Output.Trim()}";
+    }
 
     private static string? LastLine(string output, params string[] prefixes) =>
         output.Split('\n').Select(l => l.Trim()).LastOrDefault(l => prefixes.Any(p => l.StartsWith(p, StringComparison.Ordinal)));

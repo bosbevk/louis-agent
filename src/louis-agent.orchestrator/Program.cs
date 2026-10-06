@@ -20,7 +20,8 @@ var (skills, methods) = OrchestratorSkills.Load(options.SkillsDirectory, options
 var feed = new ErrorFeed(options.ErrorLogPath, options.StateDirectory);
 using var http = new HttpClient { BaseAddress = options.LouisAgentUrl, Timeout = TimeSpan.FromMinutes(30) };
 var louisAgent = new LouisAgentClient(http, options.LouisAgentApiKey);
-var tools = new ServiceTools(options, feed, louisAgent, methods, Log);
+var comms = new CommsLog(options.CommsLogPath);
+var tools = new ServiceTools(options, feed, louisAgent, methods, comms, Log);
 
 var engine = new AgentEngine(skills, new LlmClientFactory().Create(llm),
     new AgentOptions { WorkspaceRoot = options.ServiceRoot, AgentFunction = "orchestrator" }, llm.ResolveSupportsTools(), toolsets: [tools])
@@ -30,6 +31,7 @@ var engine = new AgentEngine(skills, new LlmClientFactory().Create(llm),
 
 Log($"Watching {options.Service}: {options.ErrorLogPath}");
 Log($"Runbooks for: {string.Join(", ", methods)}; louis-agent at {options.LouisAgentUrl}; model {llm.Model}");
+Log($"Agent communications log: {comms.Path}");
 try
 {
     using var health = await http.GetAsync("health");
@@ -46,12 +48,18 @@ Console.CancelKeyPress += (_, e) => { e.Cancel = true; stop.Cancel(); };
 while (!stop.IsCancellationRequested)
 {
     var events = feed.ReadNew();
-    if (events.Count > 0) Log($"{events.Count} new error event(s)");
-
-    foreach (var error in events)
+    if (events.Count > 0)
     {
+        Log($"{events.Count} new error event(s)");
+        comms.StartRun(options.Service, options.LouisAgentUrl, llm.Model);
+    }
+
+    for (int i = 0; i < events.Count; i++)
+    {
+        var error = events[i];
         if (stop.IsCancellationRequested) break;
-        Log($"--- {error.Id}: {error.Method} {error.Arguments} -> {error.ExceptionType}: {error.Message}");
+        Log($"--- {i + 1}/{events.Count} {error.Id}: {error.Method} {error.Arguments} -> {error.ExceptionType}: {error.Message.ReplaceLineEndings(" ")}");
+        comms.StartEvent(i + 1, events.Count, error);
 
         string answer;
         try
@@ -66,15 +74,28 @@ while (!stop.IsCancellationRequested)
         {
             // Left unprocessed, so the next poll retries it.
             Log($"Triage of {error.Id} failed: {ex.Message}");
+            comms.EndEvent("failed", $"triage failed: {ex.Message}", "");
             continue;
+        }
+        finally
+        {
+            // The next fix must start from main, whatever happened to this one.
+            if (tools.ReturnToMain() is { } problem) Log($"WARNING: {problem}");
         }
 
         var decision = Decision.Parse(answer);
         Log($"DECISION {error.Id}: {decision.Outcome} - {decision.Reason}");
+        comms.EndEvent(decision.Outcome, decision.Reason, answer);
         Directory.CreateDirectory(options.StateDirectory);
         await File.AppendAllTextAsync(Path.Combine(options.StateDirectory, "decisions.jsonl"),
             JsonSerializer.Serialize(new { error_id = error.Id, error.Method, decision.Outcome, decision.Reason, at = DateTimeOffset.UtcNow }) + Environment.NewLine);
         feed.MarkProcessed(error.Id);
+    }
+
+    if (events.Count > 0)
+    {
+        comms.EndRun();
+        Log($"Agent communications written to {comms.Path}");
     }
 
     if (options.Once) break;

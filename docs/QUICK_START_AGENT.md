@@ -21,6 +21,8 @@ Open **http://127.0.0.1:5080**.
 - **Files** — browse the repo, open a file, **Ask agent to review**.
 - **Changes** — see what changed, open a diff, tick files to **Stage**, **Unstage** or **Discard**, write a message and
   **Commit**, or **Review all** with the agent. Pushing stays with you.
+- **Branches** — see every branch and all commits, open a commit or a branch to read its diff, **Merge** a branch into
+  the checked-out one, and delete merged branches.
 - **Theme** — switch between *Retro terminal* and *Paper (soft light)* at the bottom of the sidebar.
 
 ### Rider

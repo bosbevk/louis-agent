@@ -5,8 +5,18 @@ using System.Text.RegularExpressions;
 
 namespace louis_agent.orchestrator;
 
+/// <summary>One tool louis-agent called while answering: its input (JSON) and the result it got back.</summary>
+internal sealed class AgentToolCall(string id, string name, string input)
+{
+    public string Id { get; } = id;
+    public string Name { get; } = name;
+    public string Input { get; } = input;
+    public string? Result { get; set; }
+    public bool IsError { get; set; }
+}
+
 /// <summary>What louis-agent answered in one message: its text, the tools it called, and how the turn ended.</summary>
-internal sealed record AgentReply(string Text, IReadOnlyList<string> ToolCalls, string? StopReason, string? Error);
+internal sealed record AgentReply(string Text, IReadOnlyList<AgentToolCall> ToolCalls, string? StopReason, string? Error);
 
 /// <summary>The machine-readable line louis-agent is asked to end a fix with.</summary>
 internal sealed record FixResult(string Status, string? Commit, string? Branch, string? Tests, string? Summary, string? Reason);
@@ -61,7 +71,7 @@ internal sealed partial class LouisAgentClient(HttpClient http, string? apiKey)
         CancellationToken cancellationToken = default)
     {
         var text = new StringBuilder();
-        var tools = new List<string>();
+        var tools = new List<AgentToolCall>();
         string? stopReason = null, error = null, eventName = null;
         var data = new StringBuilder();
 
@@ -90,13 +100,23 @@ internal sealed partial class LouisAgentClient(HttpClient http, string? apiKey)
                     string type = block.GetProperty("type").GetString() ?? "";
                     if (type == "tool_use")
                     {
-                        string tool = block.GetProperty("name").GetString() ?? "?";
-                        tools.Add(tool);
-                        onProgress?.Invoke($"-> {tool}");
+                        var call = new AgentToolCall(
+                            block.GetProperty("id").GetString() ?? "",
+                            block.GetProperty("name").GetString() ?? "?",
+                            block.TryGetProperty("input", out var input) ? input.GetRawText() : "{}");
+                        tools.Add(call);
+                        onProgress?.Invoke($"-> {call.Name}");
                     }
-                    else if (type == "tool_result" && block.TryGetProperty("is_error", out var isError) && isError.GetBoolean())
+                    else if (type == "tool_result")
                     {
-                        onProgress?.Invoke("   (tool reported an error)");
+                        string? id = block.TryGetProperty("tool_use_id", out var useId) ? useId.GetString() : null;
+                        bool failed = block.TryGetProperty("is_error", out var isError) && isError.GetBoolean();
+                        if (tools.LastOrDefault(t => t.Id == id) is { } call)
+                        {
+                            call.Result = block.TryGetProperty("content", out var content) ? content.GetString() : null;
+                            call.IsError = failed;
+                        }
+                        if (failed) onProgress?.Invoke("   (tool reported an error)");
                     }
                     break;
                 case "content_block_delta" when root.GetProperty("delta") is var delta &&
