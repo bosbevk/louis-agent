@@ -81,12 +81,14 @@ static async Task RunHttpAsync(string[] args, AgentEngine engine)
 
     var app = builder.Build();
 
-    // The published tools run shell commands and write files, same as louis-agent.api - gate every request the
-    // same way (AGENT_API_KEY) since this is now reachable over the network instead of only a local stdio pipe.
-    string? apiKey = Environment.GetEnvironmentVariable("AGENT_API_KEY");
+    // The published tools run shell commands and write files - gate every request since this is now reachable
+    // over the network instead of only a local stdio pipe. MCP_API_KEY is separate from AGENT_API_KEY (the
+    // louis-agent.api key) so access to one can be rotated/revoked without affecting the other; it falls back to
+    // AGENT_API_KEY when unset, so a single shared key still works for anyone who hasn't split them.
+    string? apiKey = Environment.GetEnvironmentVariable("MCP_API_KEY") ?? Environment.GetEnvironmentVariable("AGENT_API_KEY");
     if (string.IsNullOrWhiteSpace(apiKey))
     {
-        Console.Error.WriteLine("[WARN] AGENT_API_KEY not set; the MCP HTTP endpoint accepts unauthenticated requests. Only expose it on localhost or behind your own auth.");
+        Console.Error.WriteLine("[WARN] MCP_API_KEY (or AGENT_API_KEY) not set; the MCP HTTP endpoint accepts unauthenticated requests. Only expose it on localhost or behind your own auth.");
     }
     else
     {

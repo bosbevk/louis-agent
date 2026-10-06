@@ -208,8 +208,9 @@ agent wants `louis-agent` to autonomously do the whole job and report back.
 
 `MCP_TRANSPORT` picks the transport: `stdio` (default, unchanged) is for a local client that launches this as a
 subprocess, like Rider or Claude Desktop. `http` serves Streamable HTTP instead via `MapMcp()`, for a remote client
-that isn't local — set `AGENT_API_KEY` too, since this exposes the same shell/git/file-write tools over the
-network that `stdio` only ever exposed to a local pipe.
+that isn't local — set `MCP_API_KEY` too, since this exposes the same shell/git/file-write tools over the network
+that `stdio` only ever exposed to a local pipe. `MCP_API_KEY` is separate from `louis-agent.api`'s `AGENT_API_KEY`
+(falls back to it when unset) so the two services' access can be rotated independently.
 
 ## Known limitations
 

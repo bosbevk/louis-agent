@@ -140,6 +140,10 @@ durable storage, memory, or retrieval. The diagram above is the target shape; br
       401 and the right key gets 200. Needed `<FrameworkReference Include="Microsoft.AspNetCore.App" />` added to
       the csproj (plain console `Sdk`, not `Sdk.Web`). `docker-compose.yml`'s `mcp-server` service now passes
       through `MCP_TRANSPORT`/`MCP_PORT` and binds the port to `127.0.0.1` by default, matching `api`'s posture.
+      Auth key is `MCP_API_KEY`, separate from `louis-agent.api`'s `AGENT_API_KEY` so each service's access can be
+      rotated/revoked independently, falling back to `AGENT_API_KEY` when unset so one key still covers both if
+      that's all that's configured; verified all three cases (distinct key rejects the other service's key, wrong
+      key still 401s, fallback alone still 200s) with curl.
 
 ### Web app
 
