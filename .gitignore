@@ -44,3 +44,6 @@ config/.env.local
 
 # Agent-built tools awaiting /approve (approved ones in Skills/tools/ are committed)
 Skills/tools/pending/
+
+# Working copy and state created by samples/run-demo.ps1
+.demo/

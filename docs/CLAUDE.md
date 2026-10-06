@@ -52,9 +52,12 @@ src/
 ├── louis-agent.web/          # Blazor WebAssembly app (chat, Files, Changes, themes)
 │   ├── Pages/ChatPage.razor, Components/*.razor, Services/*.cs
 │   └── wwwroot/css/app.css + css/themes/*.css + themes.json
-└── louis-agent.mcp-server/   # Publishes the toolset over MCP (no LLM) - stdio by default, MCP_TRANSPORT=http for remote clients
+├── louis-agent.mcp-server/   # Publishes the toolset over MCP (no LLM) - stdio by default, MCP_TRANSPORT=http for remote clients
+└── louis-agent.orchestrator/ # POC: watches a service's errors, runbook per API method, delegates fixes to louis-agent.api
 
 tests/louis-agent.core.tests/ # NUnit; Config, Loaders, Providers, Tools, mcp
+tests/louis-agent.orchestrator.tests/ # NUnit; error feed, SSE client, verification tools
+samples/                      # order-service (demo microservice) + run-demo.ps1, see samples/README.md
 docker/                       # Dockerfile.{acp-server,api,agent,mcp-server}, docker-compose.yml
 config/                       # .env and .env.secrets (both ignored), their examples, Rider config examples
 Skills/                       # personality.md + default.md + *-skills.md (system prompt), tools/ (agent-built tools)

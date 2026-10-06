@@ -36,6 +36,20 @@ public class AgentEngineTests
     }
 
     [Test]
+    public void Constructor_WithToolsets_RegistersOnlyThoseAndExecuteSkill()
+    {
+        var engine = new AgentEngine(HelloSkills(), new FakeChatClient(), TestPaths.Agent(), toolsets: [new PingTools()]);
+
+        Assert.That(engine.Tools.Select(t => t.Name), Is.EquivalentTo(new[] { "ExecuteSkill", "Ping" }));
+    }
+
+    private sealed class PingTools
+    {
+        [System.ComponentModel.Description("Replies pong")]
+        public string Ping() => "pong";
+    }
+
+    [Test]
     public void PaymoTool_UsesExactParameterNames()
     {
         var engine = Engine(new FakeChatClient(), paymoKey: "test-key");

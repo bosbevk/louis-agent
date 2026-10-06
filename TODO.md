@@ -205,6 +205,11 @@ result — which is what "calls `louis-agent` to fix and PR" actually requires.
 
 #### Design: one orchestrator per microservice
 
+A working proof of concept lives in [samples/](samples/README.md): `samples/order-service` (a demo service) and
+`src/louis-agent.orchestrator` (an orchestrator with one runbook per API method that hands fixes to `louis-agent.api`
+and verifies the commit, a replay and the tests itself). It differs from the items below in two ways: it is built on
+`louis-agent.core` rather than Tool Runner, and it reads a JSON-lines error log instead of Exceptionless.
+
 For a store built as several microservices, scope one orchestrator *configuration* per microservice rather than one
 orchestrator watching the whole store, and rather than embedding the watcher inside each microservice's own process.
 

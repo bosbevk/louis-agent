@@ -1,4 +1,4 @@
-
+﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.core", "louis-agent.core\louis-agent.core.csproj", "{D75EE941-E529-4772-A167-BAB95713163A}"
 EndProject
@@ -18,6 +18,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.api", "src\louis-agent.api\louis-agent.api.csproj", "{00E53CA6-5EF8-4D7A-8928-6749C7C0B942}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.web", "src\louis-agent.web\louis-agent.web.csproj", "{D77B32E0-6DCF-4CBF-8268-EB7FAC492052}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.orchestrator", "src\louis-agent.orchestrator\louis-agent.orchestrator.csproj", "{99135CF2-B1A3-40D9-89B4-802289451175}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.orchestrator.tests", "tests\louis-agent.orchestrator.tests\louis-agent.orchestrator.tests.csproj", "{D89F7C1A-D1E8-405E-AE71-1F3BAFA6F687}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -113,6 +117,30 @@ Global
 		{D77B32E0-6DCF-4CBF-8268-EB7FAC492052}.Release|x64.Build.0 = Release|Any CPU
 		{D77B32E0-6DCF-4CBF-8268-EB7FAC492052}.Release|x86.ActiveCfg = Release|Any CPU
 		{D77B32E0-6DCF-4CBF-8268-EB7FAC492052}.Release|x86.Build.0 = Release|Any CPU
+		{99135CF2-B1A3-40D9-89B4-802289451175}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99135CF2-B1A3-40D9-89B4-802289451175}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99135CF2-B1A3-40D9-89B4-802289451175}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{99135CF2-B1A3-40D9-89B4-802289451175}.Debug|x64.Build.0 = Debug|Any CPU
+		{99135CF2-B1A3-40D9-89B4-802289451175}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{99135CF2-B1A3-40D9-89B4-802289451175}.Debug|x86.Build.0 = Debug|Any CPU
+		{99135CF2-B1A3-40D9-89B4-802289451175}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99135CF2-B1A3-40D9-89B4-802289451175}.Release|Any CPU.Build.0 = Release|Any CPU
+		{99135CF2-B1A3-40D9-89B4-802289451175}.Release|x64.ActiveCfg = Release|Any CPU
+		{99135CF2-B1A3-40D9-89B4-802289451175}.Release|x64.Build.0 = Release|Any CPU
+		{99135CF2-B1A3-40D9-89B4-802289451175}.Release|x86.ActiveCfg = Release|Any CPU
+		{99135CF2-B1A3-40D9-89B4-802289451175}.Release|x86.Build.0 = Release|Any CPU
+		{D89F7C1A-D1E8-405E-AE71-1F3BAFA6F687}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D89F7C1A-D1E8-405E-AE71-1F3BAFA6F687}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D89F7C1A-D1E8-405E-AE71-1F3BAFA6F687}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D89F7C1A-D1E8-405E-AE71-1F3BAFA6F687}.Debug|x64.Build.0 = Debug|Any CPU
+		{D89F7C1A-D1E8-405E-AE71-1F3BAFA6F687}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D89F7C1A-D1E8-405E-AE71-1F3BAFA6F687}.Debug|x86.Build.0 = Debug|Any CPU
+		{D89F7C1A-D1E8-405E-AE71-1F3BAFA6F687}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D89F7C1A-D1E8-405E-AE71-1F3BAFA6F687}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D89F7C1A-D1E8-405E-AE71-1F3BAFA6F687}.Release|x64.ActiveCfg = Release|Any CPU
+		{D89F7C1A-D1E8-405E-AE71-1F3BAFA6F687}.Release|x64.Build.0 = Release|Any CPU
+		{D89F7C1A-D1E8-405E-AE71-1F3BAFA6F687}.Release|x86.ActiveCfg = Release|Any CPU
+		{D89F7C1A-D1E8-405E-AE71-1F3BAFA6F687}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -125,5 +153,7 @@ Global
 		{5377CA27-525C-4228-ABAB-88D1C63C2A46} = {DCC1CE0E-F809-478D-B076-F2C64A71CDFB}
 		{00E53CA6-5EF8-4D7A-8928-6749C7C0B942} = {DCC1CE0E-F809-478D-B076-F2C64A71CDFB}
 		{D77B32E0-6DCF-4CBF-8268-EB7FAC492052} = {DCC1CE0E-F809-478D-B076-F2C64A71CDFB}
+		{99135CF2-B1A3-40D9-89B4-802289451175} = {DCC1CE0E-F809-478D-B076-F2C64A71CDFB}
+		{D89F7C1A-D1E8-405E-AE71-1F3BAFA6F687} = {DCC1CE0E-F809-478D-B076-F2C64A71CDFB}
 	EndGlobalSection
 EndGlobal

@@ -1,0 +1,6 @@
+id,customer,items,discount_code,payment_ref,refunded
+1001,Ada Lovelace,BOOK-1:2:12.50|PEN-3:1:4.00,WELCOME10,card_4242,false
+1002,Alan Turing,LAPTOP-9:1:899.00,,card_1881,true
+1003,Grace Hopper,MUG-2:3:8.00|TEA-7:2:5.50,SUMMER25,card_5555,false
+1004,Linus Torvalds,KEYB-4:1:79.90,VIP20,card_0007,false
+1005,Margaret Hamilton,LAMP-1:1:45.00,,,false

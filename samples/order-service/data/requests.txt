@@ -1,0 +1,8 @@
+# Simulated traffic: one API call per line, "<method> <order id>". Run with: dotnet run --project src/OrderService -- serve data/requests.txt
+get-order 1001
+order-total 1001
+order-total 1004
+order-total 1003
+refund 1002
+refund 1005
+get-order 9999

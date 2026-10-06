@@ -81,8 +81,13 @@ public partial class AgentEngine
     private readonly Dictionary<string, ScriptTool> _scriptTools = new(StringComparer.OrdinalIgnoreCase);
 
     /// <param name="webSearch">Search engine for WebSearch; null selects one from configuration (see <see cref="WebSearchProviderFactory"/>).</param>
+    /// <param name="toolsets">
+    /// Objects whose public methods become the agent's only tools (plus <see cref="ExecuteSkill"/>), for agents that aren't
+    /// coding agents, such as an orchestrator. Null registers the built-in coding toolsets (files, git, dotnet, shells, web,
+    /// Paymo, DevOps) and the self-extension tools.
+    /// </param>
     public AgentEngine(ISkillProvider skillProvider, IChatClient chatClient, AgentOptions options, bool supportsTools = true,
-        IWebSearchProvider? webSearch = null)
+        IWebSearchProvider? webSearch = null, IEnumerable<object>? toolsets = null)
     {
         _skills = ToSkillMap(skillProvider);
         SkillDocumentation = skillProvider.Documentation;
@@ -112,6 +117,12 @@ public partial class AgentEngine
         }
 
         _tools.Add(AIFunctionFactory.Create(ExecuteSkill, nameof(ExecuteSkill)));
+        if (toolsets is not null)
+        {
+            foreach (object toolset in toolsets) AddPublicMethodsAsTools(toolset);
+            return;
+        }
+
         _tools.Add(AIFunctionFactory.Create(CreateSkillFile, nameof(CreateSkillFile)));
         _tools.Add(AIFunctionFactory.Create(ReloadSkills, nameof(ReloadSkills)));
         _tools.Add(AIFunctionFactory.Create(CreateTool, nameof(CreateTool)));
