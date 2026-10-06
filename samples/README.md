@@ -40,7 +40,9 @@ on the host. A shared `nuget` volume means the service's packages are restored o
 `docker compose -f docker/docker-compose.demo.yml stop demo-api`.
 
 To see the result without running it, look at [sample-output/](sample-output/README.md): the comms log, logs and
-branches from one clean run.
+branches from one clean run, and a recording of merging its ten fixes in the web app:
+
+![Merging the ten fix branches in the web app](sample-output/merge_10_fix_branches.gif)
 
 ## The pieces
 
