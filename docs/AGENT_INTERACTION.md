@@ -31,8 +31,9 @@ documentation. Keep helpers `internal` or `private`.
 
 ### How skills are loaded
 
-`AgentHost.LoadSkills` combines `default.md`, the always-loaded guides (`dotnet`, `python`, `powershell`, `bash`, `web`,
-`self-extension`) and the `AGENT_FUNCTION` file (`louis` loads them all). The combined text is the system prompt.
+`AgentHost.LoadSkills` combines `personality.md` (first, optional), `default.md`, the always-loaded guides (`dotnet`,
+`python`, `powershell`, `bash`, `web`, `self-extension`) and the `AGENT_FUNCTION` file (`louis` loads them all). The
+combined text is the system prompt.
 
 ## A turn, step by step
 

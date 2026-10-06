@@ -67,6 +67,7 @@ docker compose -f docker/docker-compose.yml --env-file config/.env up -d --build
 | `ACP_MOUNT_MAPPINGS` | `HOST_PATH=/container/path` pairs, so Rider's Windows paths (attachments, open file) resolve in the container |
 | `RIDER_MCP_ENDPOINT`, `RIDER_MCP_AUTO_DISCOVER` | Rider MCP discovery (off by default; it only logs Rider's tools for now) |
 | `API_PORT` | Host port for the API and web app (default `5080`, always bound to `127.0.0.1`) |
+| `MCP_TRANSPORT`, `MCP_PORT` | MCP server transport: `stdio` (default) or `http`; host port in HTTP mode (default `5090`, bound to `127.0.0.1`) |
 | `WEB_SEARCH_PROVIDER` | `google` or `duckduckgo` (default: Google when its key and engine id are set) |
 | `DEVOPS_ORGANIZATION`, `DEVOPS_PROJECT` | Azure DevOps organisation (`dev.azure.com/<organisation>`) and project for the DevOps tools |
 | `DEVOPS_TEAM` | Optional team: sprints are looked up under it, and an empty sprint means its current sprint |
@@ -80,6 +81,7 @@ Set by compose for the containers, so normally not in `.env`: `WORKSPACE_ROOT`, 
 | `ANTHROPIC_API_KEY` | Claude API key (required for the default provider) |
 | `ANTHROPIC_WORKSPACE_ID` | Only if the key isn't scoped to a workspace |
 | `AGENT_API_KEY` | When set, required for the HTTP API (`x-api-key` or `Authorization: Bearer`) |
+| `MCP_API_KEY` | Key for the MCP server in HTTP mode, same header rules; falls back to `AGENT_API_KEY`. With neither set, HTTP mode is unauthenticated |
 | `GIT_AUTHOR_NAME`, `GIT_AUTHOR_EMAIL`, `GIT_COMMITTER_NAME`, `GIT_COMMITTER_EMAIL` | Identity for commits made from the web app's Changes view |
 | `PAYMO_API_KEY` | Enables the Paymo tools |
 | `DEVOPS_API_KEY` | Azure DevOps personal access token; enables the DevOps tools (with the settings below) |

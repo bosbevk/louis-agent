@@ -17,7 +17,7 @@ OpenAI-compatible endpoints.
 | CLI | `src/louis-agent.cli` | `AgentHost.Build()` | Terminal; interactive or one-shot (`louis-agent.cli [prompt]`) |
 | ACP server | `src/louis-agent.acp-server` | `AgentHost.Build()` | [Agent Client Protocol](https://agentclientprotocol.com) JSON-RPC over stdio, for Rider's AI chat |
 | HTTP API + web app | `src/louis-agent.api`, `src/louis-agent.web` | `AgentHost.Build()` | ASP.NET Core minimal API; Server-Sent Events; serves the Blazor WebAssembly app |
-| MCP server | `src/louis-agent.mcp-server` | `AgentHost.BuildToolHost()` | Model Context Protocol over stdio; publishes the tools, the client brings its own model |
+| MCP server | `src/louis-agent.mcp-server` | `AgentHost.BuildToolHost()` | Model Context Protocol over stdio (default) or Streamable HTTP (`MCP_TRANSPORT=http`); publishes the tools, the client brings its own model |
 
 ### CLI
 - Streams the answer as it is written, thinking in grey, one status line per tool call; Ctrl+C stops the current reply.
@@ -49,6 +49,10 @@ OpenAI-compatible endpoints.
   tools, and Paymo/DevOps when their keys are set) plus read-only `list_skills`, `get_skill_info`, `get_skill_documentation`.
 - Stays in sync with the engine (`AgentEngine.ToolsChanged` → `notifications/tools/list_changed`).
 - Approving agent-built tools is user-only and not exposed over MCP.
+- Transport: stdio by default, for a local client that launches it as a subprocess (Rider, Claude Desktop).
+  `MCP_TRANSPORT=http` serves Streamable HTTP instead (`MapMcp()`), for remote clients. That exposes the shell, git
+  and file-write tools over the network, so set `MCP_API_KEY` (`x-api-key` or `Authorization: Bearer`; falls back to
+  `AGENT_API_KEY`). With neither set it only logs a warning and accepts unauthenticated requests.
 
 ## Core abstractions
 
@@ -160,7 +164,7 @@ startup and failures only log.
   never by splicing model text into a command line.
 - **Web:** `FetchUrl` blocks private, loopback and metadata addresses on every redirect and at connect time; fetched
   content is treated as untrusted. The web app renders markdown without raw HTML and only allows http(s)/mailto links.
-- **Network exposure:** the API and web app are published on `127.0.0.1` only.
+- **Network exposure:** the API and web app, and the MCP server in HTTP mode, are published on `127.0.0.1` only.
 
 ## Logging
 
@@ -188,7 +192,7 @@ installed and `Skills/` copied in.
 |---|---|---|
 | `acp-server` | `Dockerfile.acp-server` | Run per Rider chat with `docker compose run --rm -T acp-server` |
 | `api` | `Dockerfile.api` | API + web app on `127.0.0.1:${API_PORT:-5080}`; health check on `/health` |
-| `mcp-server` | `Dockerfile.mcp-server` | stdio; also run per client with `run --rm -T mcp-server` |
+| `mcp-server` | `Dockerfile.mcp-server` | stdio: run per client with `run --rm -T mcp-server`; with `MCP_TRANSPORT=http`, on `127.0.0.1:${MCP_PORT:-5090}` |
 | `local-agent` | `Dockerfile.agent` | The CLI |
 | `ollama` | `services/Dockerfile.ollama` | Only with `--profile ollama` |
 

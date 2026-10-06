@@ -201,7 +201,7 @@ agent's tools... so that client can call them"*). That's why `AgentEngine` never
 the tools and the loop already live in the same process; routing an in-process call through MCP would only add a
 round-trip for nothing. It's also why calling `louis-agent.mcp-server` is a different thing from calling
 `louis-agent.api`'s session endpoint: MCP hands over raw tools for the caller's model to drive one at a time;
-the API session endpoint runs `kohde-agent`'s own full triage → fix → test → PR loop server-side and hands back a
+the API session endpoint runs `louis-agent`'s own full triage → fix → test → PR loop server-side and hands back a
 result. Use MCP when another agent should reason with `louis-agent`'s tools itself (any MCP-compliant client works,
 regardless of which model is behind it — OpenAI's Agents SDK included); use the API session endpoint when another
 agent wants `louis-agent` to autonomously do the whole job and report back.
