@@ -263,7 +263,7 @@ public sealed class DevOpsTools
         return await ExecuteWiqlQuery(query);
     }
 
-    [Description("List work items in one sprint whose work item type is literally named 'Blocker'. This only returns results if the project actually has a work item type called 'Blocker' — most Azure DevOps process templates don't ship one by default, so an empty result here may mean there's no such type rather than no blockers. For a project that tracks blocking relationships via tags or links instead, use QueryWorkItems with a custom WIQL filter.")]
+    [Description("List work items in one sprint tagged 'Blocker', regardless of work item type (Bug, Task, User Story, etc.). Matches on the System.Tags field containing 'Blocker', since most Azure DevOps process templates have no dedicated 'Blocker' work item type — tagging is the common convention for flagging a blocking item across types. If a project uses a different tag or field for this, use QueryWorkItems with a custom WIQL filter instead.")]
     public async Task<string> GetBlockersBySprint(
         [Description("Sprint name (e.g., 'Sprint 42'); leave empty for the team's current sprint")] string sprint = "")
     {
@@ -278,9 +278,9 @@ public sealed class DevOpsTools
             return sprintError;
         }
 
-        string query = $"SELECT [System.Id], [System.Title], [System.State], [System.AssignedTo] " +
+        string query = $"SELECT [System.Id], [System.Title], [System.State], [System.WorkItemType], [System.AssignedTo] " +
                       $"FROM workitems WHERE [System.TeamProject]='{_project}' " +
-                      $"AND [System.WorkItemType]='Blocker' " +
+                      $"AND [System.Tags] CONTAINS 'Blocker' " +
                       $"AND [System.IterationPath] Under '{iteration}'";
         return await ExecuteWiqlQuery(query);
     }

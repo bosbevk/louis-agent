@@ -711,6 +711,50 @@ public class WorkspaceToolsTests
     }
 
     [Test]
+    public void CopyFile_SensitiveSource_BlocksCopy()
+    {
+        string root = Path.Combine(Path.GetTempPath(), $"louis-agent-{Guid.NewGuid():N}");
+        Directory.CreateDirectory(root);
+        File.WriteAllText(Path.Combine(root, ".env"), "SECRET=value");
+
+        try
+        {
+            var tools = new WorkspaceTools(root);
+
+            string result = tools.CopyFile(".env", "copy.env");
+
+            Assert.That(result, Does.Contain("not allowed"));
+            Assert.That(File.Exists(Path.Combine(root, "copy.env")), Is.False);
+        }
+        finally
+        {
+            Directory.Delete(root, recursive: true);
+        }
+    }
+
+    [Test]
+    public void CopyFile_SensitiveDestination_BlocksCopy()
+    {
+        string root = Path.Combine(Path.GetTempPath(), $"louis-agent-{Guid.NewGuid():N}");
+        Directory.CreateDirectory(root);
+        File.WriteAllText(Path.Combine(root, "source.txt"), "content");
+
+        try
+        {
+            var tools = new WorkspaceTools(root);
+
+            string result = tools.CopyFile("source.txt", ".env");
+
+            Assert.That(result, Does.Contain("not allowed"));
+            Assert.That(File.Exists(Path.Combine(root, ".env")), Is.False);
+        }
+        finally
+        {
+            Directory.Delete(root, recursive: true);
+        }
+    }
+
+    [Test]
     public void DeleteDirectory_WithSubdirectories_DeletesRecursively()
     {
         string root = Path.Combine(Path.GetTempPath(), $"louis-agent-{Guid.NewGuid():N}");
@@ -725,6 +769,29 @@ public class WorkspaceToolsTests
             tools.DeleteDirectory("parent");
 
             Assert.That(Directory.Exists(Path.Combine(root, "parent")), Is.False);
+        }
+        finally
+        {
+            Directory.Delete(root, recursive: true);
+        }
+    }
+
+    [Test]
+    public void DeleteDirectory_ContainingSensitiveFile_BlocksDeletion()
+    {
+        string root = Path.Combine(Path.GetTempPath(), $"louis-agent-{Guid.NewGuid():N}");
+        Directory.CreateDirectory(root);
+        Directory.CreateDirectory(Path.Combine(root, "parent", "child"));
+        File.WriteAllText(Path.Combine(root, "parent", "child", ".env"), "SECRET=value");
+
+        try
+        {
+            var tools = new WorkspaceTools(root);
+
+            string result = tools.DeleteDirectory("parent");
+
+            Assert.That(result, Does.Contain("sensitive"));
+            Assert.That(Directory.Exists(Path.Combine(root, "parent")), Is.True);
         }
         finally
         {

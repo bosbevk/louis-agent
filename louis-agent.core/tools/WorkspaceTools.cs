@@ -243,7 +243,7 @@ public sealed class WorkspaceTools
         return $"Deleted file: {relativePath}";
     }
 
-    [Description("Permanently delete a directory and everything inside it, recursively — there is no undo, no confirmation prompt, and no per-file sensitive-file check the way DeleteFile has. Use this only when the user has clearly asked to remove an entire folder; prefer DeleteFile for a single file so sibling files aren't lost by accident.")]
+    [Description("Permanently delete a directory and everything inside it, recursively — there is no undo and no confirmation prompt. Deletion is blocked if the directory contains any secret file anywhere inside it (.env*, *.pem, *.key, etc.), the same protection DeleteFile applies to a single file. Use this only when the user has clearly asked to remove an entire folder; prefer DeleteFile for a single file so sibling files aren't lost by accident.")]
     public string DeleteDirectory(
         [Description("Workspace-relative directory path to delete.")] string relativePath)
     {
@@ -251,6 +251,14 @@ public sealed class WorkspaceTools
         if (!Directory.Exists(path))
         {
             return $"Directory not found: {relativePath}";
+        }
+
+        foreach (string file in Directory.EnumerateFiles(path, "*", SearchOption.AllDirectories))
+        {
+            if (IsSensitive(file))
+            {
+                return "This directory contains a sensitive file and cannot be deleted.";
+            }
         }
 
         Directory.Delete(path, recursive: true);
@@ -298,13 +306,18 @@ public sealed class WorkspaceTools
         return $"Renamed {(Directory.Exists(renamedPath) ? "directory" : "file")} from {currentPath} to {newPath}";
     }
 
-    [Description("Copy a single file to a new workspace-relative location, creating missing parent directories for the destination automatically. It fails if the destination already exists (no overwrite) or if the source file is missing. This only copies files, not directories — there is no recursive directory-copy tool.")]
+    [Description("Copy a single file to a new workspace-relative location, creating missing parent directories for the destination automatically. It fails if the destination already exists (no overwrite) or if the source file is missing. Copying is blocked if either the source or the destination is a secret file (.env*, *.pem, *.key, etc.), the same protection the other write tools apply. This only copies files, not directories — there is no recursive directory-copy tool.")]
     public string CopyFile(
         [Description("Workspace-relative path of the file to copy.")] string sourcePath,
         [Description("Workspace-relative path for the copy (can include subdirectories).")] string destinationPath)
     {
         string source = ResolvePath(sourcePath);
         string destination = ResolvePath(destinationPath);
+
+        if (IsSensitive(source) || IsSensitive(destination))
+        {
+            return "Copying this sensitive file is not allowed.";
+        }
 
         if (!File.Exists(source))
         {

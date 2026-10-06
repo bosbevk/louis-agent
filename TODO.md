@@ -108,14 +108,14 @@ durable storage, memory, or retrieval. The diagram above is the target shape; br
       `DevOpsTools` 17, `DotNetTools` 10, `PaymoTools` 18, `AgentEngine` 5, `BashTools`/`PowerShellTools`/
       `PythonTools`/`WebTools` 9) — grounded in each method's actual behavior, not generic text; build and the full
       test suite (438 passed) confirm nothing broke.
-- [ ] Add the sensitive-file check to `WorkspaceTools.DeleteDirectory` and `WorkspaceTools.CopyFile` — found while
-      rewriting descriptions above: every other write/delete tool in the class (`ReadWorkspaceFile`, `DeleteFile`,
-      `WriteWorkspaceFile`, etc.) blocks `.env`/keys/certs, but these two don't, so a recursive delete or a copy can
-      touch a secret file the read/write tools would refuse.
-- [ ] Fix `DevOpsTools.GetBlockersBySprint` — found while rewriting descriptions above: it filters on a work item
-      type literally named `'Blocker'`, which isn't a standard Azure DevOps process-template type, so the tool
-      likely always returns empty against a real org. Needs the actual blocker signal (a tag, a field, or whatever
-      the team's process template actually uses) instead of an assumed type name.
+- [x] Add the sensitive-file check to `WorkspaceTools.DeleteDirectory` and `WorkspaceTools.CopyFile`. `DeleteDirectory`
+      now walks the tree and refuses if any file inside matches `IsSensitive`; `CopyFile` now blocks on either the
+      source or the destination being sensitive, matching the other write tools. Covered by three new tests
+      (`DeleteDirectory_ContainingSensitiveFile_BlocksDeletion`, `CopyFile_SensitiveSource_BlocksCopy`,
+      `CopyFile_SensitiveDestination_BlocksCopy`); full suite (441 passed) confirms nothing else broke.
+- [x] Fix `DevOpsTools.GetBlockersBySprint`. Replaced the `[System.WorkItemType]='Blocker'` filter (a type that
+      doesn't exist in standard process templates) with `[System.Tags] CONTAINS 'Blocker'`, matching Azure DevOps'
+      actual common convention for flagging a blocker across any work item type.
 
 ### Web app
 
