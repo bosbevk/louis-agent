@@ -1,4 +1,4 @@
-# .NET Development Skills
+# .NET Skills
 
 How to build, test, run and debug .NET code with the native `DotNet*` tools. Always use these tools for .NET work instead of guessing whether code compiles or tests pass.
 

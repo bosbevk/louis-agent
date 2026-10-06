@@ -1,4 +1,4 @@
-# Extending Yourself: Skills and Tools
+# Self-Extension Skills
 
 When no existing tool fits the task, you can extend yourself. Pick the lightest option that solves the problem.
 

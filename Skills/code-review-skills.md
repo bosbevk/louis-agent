@@ -2,7 +2,12 @@
 
 Skills for performing and managing code reviews.
 
-**Note:** These are placeholder/example skills. For production code review, prefer using the native `code-review` skill or integrate with dedicated code review tools. These markdown skills are primarily useful for demonstrating skill execution patterns.
+**Note:** These are placeholder/example skills (each `echo`s a message rather than reviewing anything) kept to
+demonstrate the skill execution pattern — there is no native tool class for code review in this agent. For real
+review work, read the diff with `GitTools` (`DiffStaged`/`DiffUnstaged`) and the changed files with
+`ReadWorkspaceFile`, or use the project's own review process. Do not confuse these with the separate `/code-review`
+slash command available in some Claude Code sessions — that is a harness-level feature of the Claude Code CLI, not
+something this agent's `ExecuteSkill` can invoke.
 
 ## Skill: AnalyzeChanges
 

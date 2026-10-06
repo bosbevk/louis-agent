@@ -1,19 +1,21 @@
-# DevOps Skills - Work Item Retrieval
+# DevOps Skills
 
-Skills for querying Azure Boards work items using Python.
+Legacy Python-based skills for querying Azure Boards work items, kept for backwards compatibility via `ExecuteSkill`.
+They call the real Azure DevOps REST API with live credentials — prefer the native `DevOpsTools` methods below,
+which are faster, have no subprocess overhead, and default to the team's current sprint.
 
-**Note:** These are legacy Python-based skills. Prefer the native **DevOpsTools** methods, which are faster, have no
-subprocess overhead, and default to the team's current sprint:
-- `QueryWorkItems()` - Execute WIQL queries
-- `GetWorkItemsByAssignee()` - Get items by assignee (empty assignee = you)
-- `GetUserStoriesBySprint()` - Get user stories
-- `GetTasksBySprint()` - Get tasks
-- `GetBugsBySprint()` - Get bugs
-- `GetWorkItemById()` - Get single item details
-- `GetSprintSummary()` - Sprint overview
-- `GetTeamWorkloadBySprint()` - Team workload analysis
-- `GetAvailableSprints()` - Sprint names
-- And 10+ more native DevOps tools
+## Tools
+
+| Tool | Use it to |
+|------|-----------|
+| `QueryWorkItems` | Execute a custom WIQL query |
+| `GetWorkItemsByAssignee` | Get items by assignee (empty assignee = you) |
+| `GetUserStoriesBySprint` / `GetTasksBySprint` / `GetBugsBySprint` | Get items of one type in a sprint |
+| `GetWorkItemById` | Get single item details |
+| `GetSprintSummary` | Sprint overview |
+| `GetTeamWorkloadBySprint` | Team workload analysis |
+| `GetAvailableSprints` | List sprint names |
+| ...and 10+ more native DevOps tools | |
 
 The organisation and project come from `DEVOPS_ORGANIZATION` and `DEVOPS_PROJECT`; sprints are iterations under the
 project, or under `DEVOPS_TEAM` when it is set. The personal access token is `DEVOPS_API_KEY`.
@@ -26,8 +28,7 @@ project, or under `DEVOPS_TEAM` when it is set. The personal access token is `DE
   - `assignee` (optional): Display name or email; empty means you (the token's owner)
 - Execution:
 
-```bash
-python3 << 'PYTHON_EOF'
+```python
 import os
 import json
 import urllib.request
@@ -50,7 +51,7 @@ if not sprint:
     sys.stdout.write(json.dumps({"error": "sprint is required (GetAvailableSprints lists them)"}))
     sys.exit(1)
 
-iteration = "\\\\".join(part for part in (project, team, sprint) if part)
+iteration = "\\".join(part for part in (project, team, sprint) if part)
 assigned = "[System.AssignedTo] = @Me" if not assignee else f"[System.AssignedTo]='{assignee}'"
 query = {
     "query": f"SELECT [System.Id], [System.Title], [System.State], [System.IterationPath] FROM workitems WHERE [System.TeamProject]='{project}' AND [System.WorkItemType]='User Story' AND [System.IterationPath] Under '{iteration}' AND {assigned}"
@@ -77,7 +78,6 @@ except urllib.error.HTTPError as e:
     sys.stdout.write(json.dumps({"error": error_body, "code": e.code}, ensure_ascii=False))
 except Exception as e:
     sys.stdout.write(json.dumps({"error": str(e)}, ensure_ascii=False))
-PYTHON_EOF
 ```
 
 ## Skill: GetAllWorkItems
@@ -88,8 +88,7 @@ PYTHON_EOF
   - `assignee` (optional): Display name or email; empty means you (the token's owner)
 - Execution:
 
-```bash
-python3 << 'PYTHON_EOF'
+```python
 import os
 import json
 import urllib.request
@@ -112,7 +111,7 @@ if not sprint:
     sys.stdout.write(json.dumps({"error": "sprint is required (GetAvailableSprints lists them)"}))
     sys.exit(1)
 
-iteration = "\\\\".join(part for part in (project, team, sprint) if part)
+iteration = "\\".join(part for part in (project, team, sprint) if part)
 assigned = "[System.AssignedTo] = @Me" if not assignee else f"[System.AssignedTo]='{assignee}'"
 query = {
     "query": f"SELECT [System.Id], [System.Title], [System.State], [System.WorkItemType], [System.IterationPath] FROM workitems WHERE [System.TeamProject]='{project}' AND [System.IterationPath] Under '{iteration}' AND {assigned}"
@@ -139,7 +138,6 @@ except urllib.error.HTTPError as e:
     sys.stdout.write(json.dumps({"error": error_body, "code": e.code}, ensure_ascii=False))
 except Exception as e:
     sys.stdout.write(json.dumps({"error": str(e)}, ensure_ascii=False))
-PYTHON_EOF
 ```
 
 ## Skill: GetWorkItemById
@@ -149,8 +147,7 @@ PYTHON_EOF
   - `id` (required): Work item ID
 - Execution:
 
-```bash
-python3 << 'PYTHON_EOF'
+```python
 import os
 import json
 import urllib.request
@@ -190,5 +187,4 @@ except urllib.error.HTTPError as e:
     sys.stdout.write(json.dumps({"error": error_body, "code": e.code}, ensure_ascii=False))
 except Exception as e:
     sys.stdout.write(json.dumps({"error": str(e)}, ensure_ascii=False))
-PYTHON_EOF
 ```

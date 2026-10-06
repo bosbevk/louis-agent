@@ -1,4 +1,4 @@
-# Louis Agent - Hello World Test Skills
+# Hello World Skills
 
 Example skills for testing agent skill execution.
 

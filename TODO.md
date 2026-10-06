@@ -116,6 +116,19 @@ durable storage, memory, or retrieval. The diagram above is the target shape; br
 - [x] Fix `DevOpsTools.GetBlockersBySprint`. Replaced the `[System.WorkItemType]='Blocker'` filter (a type that
       doesn't exist in standard process templates) with `[System.Tags] CONTAINS 'Blocker'`, matching Azure DevOps'
       actual common convention for flagging a blocker across any work item type.
+- [x] Standardize `Skills/*.md`. `devops-skills.md`'s 3 skills wrapped a full Python script in a
+      `python3 << 'PYTHON_EOF' ... PYTHON_EOF` heredoc inside a ```bash fence — rewritten to direct ```python
+      fences (confirmed fully supported by `MarkdownSkillLoader`/`ExecuteSkill`'s language dispatch). Normalized
+      every file's H1 to the same `# <Topic> Skills` convention (`"Louis Agent - Hello World Test Skills"`,
+      `".NET Development Skills"`, `"Web Research Skills"`, `"Paymo Skills - Time Tracking"`,
+      `"DevOps Skills - Work Item Retrieval"`, and the outlier `"Extending Yourself: Skills and Tools"` all
+      collapsed to the plain `<Topic> Skills` form already used by `bash-skills.md`/`powershell-skills.md`/
+      `python-skills.md`). Converted `paymo-skills.md` and `time-logging-skills.md`'s informal "prefer native
+      tools" bullet lists into the same `## Tools` table format the guide-style files use, and clarified
+      `code-review-skills.md`'s ambiguous "native `code-review` skill" reference, which conflated this agent's
+      own markdown-skill system with the unrelated Claude Code CLI `/code-review` slash command. Updated one test
+      (`DotNetSkillsProviderTests.AgentHostLoadSkills_IncludesDotNetGuidanceOnce`) that asserted the old title
+      text; full suite (441 passed) confirms nothing else broke.
 
 ### Web app
 

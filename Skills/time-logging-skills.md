@@ -1,16 +1,18 @@
 # Time Logging Skills
 
-Skills for time entry management and time tracking workflows.
+Skills for time entry management and time tracking workflows. These are placeholder/example skills (each `echo`s
+a message rather than logging real time) kept to demonstrate the skill format — prefer the native `PaymoTools`
+methods below, which are faster and more reliable.
 
-**Note:** These are placeholder/example skills. For production use, prefer the native **PaymoTools** methods which are faster and more reliable:
-- `LogTimeByTaskName()` - Log time with flexible input (duration or time range)
-- `GetTimeEntriesForToday()` - Get today's entries
-- `GetTimeEntriesForThisWeek()` - Get week's entries  
-- `ListTimeEntries()` - List entries with date/user filters
-- `GetDailySummary()` - Time summary grouped by day
-- `GetUserSummary()` - Time summary grouped by user
-- `GetProjectSummary()` - Time summary grouped by project
-- `DeleteTimeEntry()` - Remove a time entry
+## Tools
+
+| Tool | Use it to |
+|------|-----------|
+| `LogTimeByTaskName` | Log time with flexible input (duration or time range) |
+| `GetTimeEntriesForToday` / `GetTimeEntriesForThisWeek` | Get today's / this week's entries |
+| `ListTimeEntries` | List entries with date/user filters |
+| `GetDailySummary` / `GetUserSummary` / `GetProjectSummary` | Time summary grouped by day / user / project |
+| `DeleteTimeEntry` | Remove a time entry |
 
 ## Skill: LogWorkEntry
 

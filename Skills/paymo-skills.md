@@ -1,15 +1,20 @@
-# Paymo Skills - Time Tracking
+# Paymo Skills
 
-Skills for managing time entries and tasks in Paymo.
+Skills for managing time entries and tasks in Paymo. These are placeholder/example skills (each `echo`s a message
+rather than calling the Paymo API) kept to demonstrate the skill format — prefer the native `PaymoTools` methods
+below, which are faster and don't require subprocess calls.
 
-**Note:** These are placeholder/example skills. For production use, prefer the native **PaymoTools** methods which are faster and don't require subprocess calls:
-- `SearchTasks()` - Search for tasks by name/keyword
-- `ListTasks()` - List all tasks with filters
-- `GetTaskDetails()` - Get task information
-- `ListProjects()` - List all projects
-- `LogTimeByTaskName()` - Log time to a task (supports duration or time range)
-- `ListTimeEntries()` - Get time entries with filters
-- And 10+ more native tools for time tracking, users, and analytics
+## Tools
+
+| Tool | Use it to |
+|------|-----------|
+| `SearchTasks` | Search for tasks by name/keyword |
+| `ListTasks` | List all tasks with filters |
+| `GetTaskDetails` | Get task information |
+| `ListProjects` | List all projects |
+| `LogTimeByTaskName` | Log time to a task (supports duration or time range) |
+| `ListTimeEntries` | Get time entries with filters |
+| ...and 10+ more native tools for time tracking, users, and analytics | |
 
 ## Skill: LogTime
 

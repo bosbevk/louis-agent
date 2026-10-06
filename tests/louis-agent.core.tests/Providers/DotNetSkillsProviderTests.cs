@@ -57,6 +57,6 @@ public class DotNetSkillsProviderTests
 
         string docs = AgentHost.LoadSkills(options).Documentation;
 
-        Assert.That(Regex.Matches(docs, "# .NET Development Skills").Count, Is.EqualTo(1));
+        Assert.That(Regex.Matches(docs, "# .NET Skills").Count, Is.EqualTo(1));
     }
 }
