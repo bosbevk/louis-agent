@@ -129,6 +129,17 @@ durable storage, memory, or retrieval. The diagram above is the target shape; br
       own markdown-skill system with the unrelated Claude Code CLI `/code-review` slash command. Updated one test
       (`DotNetSkillsProviderTests.AgentHostLoadSkills_IncludesDotNetGuidanceOnce`) that asserted the old title
       text; full suite (441 passed) confirms nothing else broke.
+- [x] Add a remote transport to `louis-agent.mcp-server` for non-local MCP clients (e.g. an agent built on another
+      provider's SDK, such as an orchestrator written against OpenAI's Agents SDK). It only had
+      `.WithStdioServerTransport()`, which needs the client to spawn it as a local subprocess. `MCP_TRANSPORT=http`
+      now switches to `WebApplication`/`MapMcp()` (Streamable HTTP, `ModelContextProtocol.AspNetCore` — already
+      referenced but unused) while leaving the stdio default byte-for-byte unchanged (verified: default run still
+      logs the same stdio-transport startup lines as before). HTTP mode reuses the `api` host's `AGENT_API_KEY`
+      gate (constant-time comparison, `x-api-key`/`Authorization: Bearer`) since it exposes the same shell/git/
+      file-write tools over the network instead of only a local pipe; verified with curl that no/wrong key gets
+      401 and the right key gets 200. Needed `<FrameworkReference Include="Microsoft.AspNetCore.App" />` added to
+      the csproj (plain console `Sdk`, not `Sdk.Web`). `docker-compose.yml`'s `mcp-server` service now passes
+      through `MCP_TRANSPORT`/`MCP_PORT` and binds the port to `127.0.0.1` by default, matching `api`'s posture.
 
 ### Web app
 

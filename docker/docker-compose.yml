@@ -20,6 +20,14 @@ services:
       GIT_CONFIG_VALUE_0: "true"
       # Run logs and oversized-tool-result records, kept on the host after --rm containers exit
       LOG_DIRECTORY: /logs
+      # stdio (default): a local client launches this container and speaks over stdin/stdout, e.g. `docker compose run`.
+      # http: serves Streamable HTTP instead, for a remote MCP client (an agent on another provider's SDK) - needs
+      # AGENT_API_KEY set in .env.secrets, since the same shell/git/file-write tools are then reachable over the network.
+      MCP_TRANSPORT: ${MCP_TRANSPORT:-stdio}
+    ports:
+      # No-op unless MCP_TRANSPORT=http. Bound to localhost by default, like the api service - only widen this
+      # deliberately, and only with AGENT_API_KEY set.
+      - "127.0.0.1:${MCP_PORT:-5090}:8080"
     volumes:
       - ../:/workspace
       - ../Skills:/skills

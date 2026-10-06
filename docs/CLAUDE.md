@@ -52,7 +52,7 @@ src/
 ├── louis-agent.web/          # Blazor WebAssembly app (chat, Files, Changes, themes)
 │   ├── Pages/ChatPage.razor, Components/*.razor, Services/*.cs
 │   └── wwwroot/css/app.css + css/themes/*.css + themes.json
-└── louis-agent.mcp-server/   # Publishes the toolset over MCP (no LLM)
+└── louis-agent.mcp-server/   # Publishes the toolset over MCP (no LLM) - stdio by default, MCP_TRANSPORT=http for remote clients
 
 tests/louis-agent.core.tests/ # NUnit; Config, Loaders, Providers, Tools, mcp
 docker/                       # Dockerfile.{acp-server,api,agent,mcp-server}, docker-compose.yml
@@ -191,6 +191,25 @@ flowchart LR
     end
     AC --> API["Claude Messages API"]
 ```
+
+### MCP exposes tools, not a model
+
+`louis-agent.mcp-server` republishes `AgentEngine`'s tools (`WorkspaceTools`, `GitTools`, `DotNetTools`, ...) for
+an *external* client's own model to call — it has no `IChatClient`/`AgentEngine` of its own
+(`src/louis-agent.mcp-server/Program.cs`: *"The MCP client brings its own model; this server publishes the
+agent's tools... so that client can call them"*). That's why `AgentEngine` never calls its own tools through it —
+the tools and the loop already live in the same process; routing an in-process call through MCP would only add a
+round-trip for nothing. It's also why calling `louis-agent.mcp-server` is a different thing from calling
+`louis-agent.api`'s session endpoint: MCP hands over raw tools for the caller's model to drive one at a time;
+the API session endpoint runs `kohde-agent`'s own full triage → fix → test → PR loop server-side and hands back a
+result. Use MCP when another agent should reason with `louis-agent`'s tools itself (any MCP-compliant client works,
+regardless of which model is behind it — OpenAI's Agents SDK included); use the API session endpoint when another
+agent wants `louis-agent` to autonomously do the whole job and report back.
+
+`MCP_TRANSPORT` picks the transport: `stdio` (default, unchanged) is for a local client that launches this as a
+subprocess, like Rider or Claude Desktop. `http` serves Streamable HTTP instead via `MapMcp()`, for a remote client
+that isn't local — set `AGENT_API_KEY` too, since this exposes the same shell/git/file-write tools over the
+network that `stdio` only ever exposed to a local pipe.
 
 ## Known limitations
 
