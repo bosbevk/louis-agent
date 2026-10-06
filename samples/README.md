@@ -3,7 +3,7 @@
 A proof of concept for the "one orchestrator per microservice" design in [TODO.md](../TODO.md#design-one-orchestrator-per-microservice):
 an orchestrator agent watches a service's errors, decides what each one needs from a runbook per API method, hands
 code fixes to louis-agent, and then checks louis-agent's work itself. Each fix lands as one commit on its own branch;
-you review and merge the branches in the web app. Nothing is pushed.
+you review and merge the branches in the web app. Nothing is pushed, and everything runs in Docker.
 
 ```
 order-service ──errors.jsonl──▶ orchestrator ──POST /sessions (SSE)──▶ louis-agent.api ──▶ fix/<method>-<id> branch
@@ -17,25 +17,39 @@ order-service ──errors.jsonl──▶ orchestrator ──POST /sessions (SSE
 ## Run it
 
 ```powershell
-.\samples\run-demo.ps1            # about 10-15 minutes; add -StopApi to stop louis-agent.api at the end
+.\samples\run-demo.ps1             # a clean run: about 15 minutes (the first run also builds the images)
+.\samples\run-demo.ps1 -Resume     # keep .demo; triage only the errors not handled yet (e.g. after running out of credits)
+.\samples\run-demo.ps1 -ApiOnly    # keep .demo; just (re)start the web app
+.\samples\run-demo.ps1 -StopApi    # stop demo-api at the end instead of leaving it up
 ```
 
-Needs the .NET 10 SDK, git, and `ANTHROPIC_API_KEY` in `config/.env.secrets`. The script:
+Needs Docker Desktop and `ANTHROPIC_API_KEY` in `config/.env.secrets`; nothing else runs on the host. The script drives
+[`docker/docker-compose.demo.yml`](../docker/docker-compose.demo.yml):
 
-1. copies `samples/order-service` to `.demo/order-service` (git-ignored) as a fresh git repository on `main`;
-2. replays `data/requests.txt` against the service, which logs 13 exceptions to `logs/errors.jsonl`;
-3. starts `louis-agent.api` on `http://127.0.0.1:5081` with that repository as its workspace;
-4. runs the orchestrator once over the new errors and prints the fix branches and decisions;
-5. leaves `louis-agent.api` running, so you can open **http://127.0.0.1:5081** and merge the fixes (below).
+1. **demo-setup** (orchestrator image) copies `samples/order-service` to `.demo/order-service` (git-ignored) as a fresh
+   git repository on `main`, then replays `data/requests.txt`, which logs 13 exceptions to `logs/errors.jsonl`;
+2. **demo-api** (the louis-agent api image) runs louis-agent.api and the web app on `http://127.0.0.1:5081`, with that
+   repository as its workspace;
+3. **orchestrator** triages every new error once (`--once`), calling demo-api over the compose network for fixes;
+4. the fix branches and the run summary are printed, and demo-api is left running, so you can open
+   **http://127.0.0.1:5081** and merge the fixes (below).
+
+All three containers mount the host's `.demo/` at `/demo`, so the repository has the same path everywhere (stack
+traces in the error log match louis-agent's workspace), and `agent-comms.md`, the logs and the repository can be read
+on the host. A shared `nuget` volume means the service's packages are restored once. Stop the web app with
+`docker compose -f docker/docker-compose.demo.yml stop demo-api`.
+
+To see the result without running it, look at [sample-output/](sample-output/README.md): the comms log, logs and
+branches from one clean run.
 
 ## The pieces
 
 | Piece | Where | Role |
 |---|---|---|
-| order-service | `samples/order-service` | A console stand-in for a microservice: 11 API methods over `data/orders.csv`, one file each in `src/OrderService/Api/`. Unhandled exceptions go to `logs/errors.jsonl`, standing in for Exceptionless. |
-| Orchestrator | `src/louis-agent.orchestrator` | An `AgentEngine` from `louis-agent.core` whose system prompt is the runbooks and whose only tools are `ServiceTools` (no file, git or shell tools). |
+| order-service | `samples/order-service` (runs in the demo-setup container; replays run in the orchestrator's) | A console stand-in for a microservice: 11 API methods over `data/orders.csv`, one file each in `src/OrderService/Api/`. Unhandled exceptions go to `logs/errors.jsonl`, standing in for Exceptionless. |
+| Orchestrator | `src/louis-agent.orchestrator` (`docker/Dockerfile.orchestrator`) | An `AgentEngine` from `louis-agent.core` whose system prompt is the runbooks and whose only tools are `ServiceTools` (no file, git or shell tools). |
 | Runbooks | `src/louis-agent.orchestrator/Skills/` | `orchestrator.md` (workflow), `order-service/service.md` (owners, deploy policy) and one file per API method: what it does, which exceptions are expected, auto-fixable or escalated, and the correct behaviour. |
-| louis-agent | `src/louis-agent.api` | Does each fix with its usual tools: branch from `main`, edit, regression test in a new file, build, test, commit, then a `FIX-RESULT` line. |
+| louis-agent | `src/louis-agent.api` (the demo-api container) | Does each fix with its usual tools: branch from `main`, edit, regression test in a new file, build, test, commit, then a `FIX-RESULT` line. |
 
 ## What the demo traffic triggers
 
@@ -104,21 +118,21 @@ Merges stay local: pushing is left to you. The web app refuses to merge while `m
 
 ## Outputs
 
-`.demo/` holds everything: `agent-comms.md`, `louis-agent-api.log`, and `orchestrator-state/` with
-`decisions.jsonl`, `fixes.jsonl` (louis-agent's replies), `escalations.jsonl`, `acknowledged.jsonl` and
-`processed.txt` (so an error is triaged once).
+`.demo/` on the host holds everything: `agent-comms.md`, the repository (`order-service/`), louis-agent.api's logs
+(`logs/`), and `orchestrator-state/` with `decisions.jsonl`, `fixes.jsonl` (louis-agent's replies),
+`escalations.jsonl`, `acknowledged.jsonl` and `processed.txt` (so an error is triaged once). Container output:
+`docker compose -f docker/docker-compose.demo.yml logs demo-api`.
 
 ## Running the parts yourself
 
 ```powershell
-# louis-agent.api (and the web app) on the service repository
-$env:WORKSPACE_ROOT = "$PWD\.demo\order-service"; $env:ASPNETCORE_URLS = 'http://127.0.0.1:5081'
-dotnet run --no-launch-profile --project src/louis-agent.api
-
-# the orchestrator, polling every 15 s (ORCHESTRATOR_POLL_SECONDS), or once with --once
-$env:ORCHESTRATOR_SERVICE_ROOT = "$PWD\.demo\order-service"; $env:LOUIS_AGENT_URL = 'http://127.0.0.1:5081'
-dotnet run --project src/louis-agent.orchestrator
+docker compose -f docker/docker-compose.demo.yml --env-file config/.env run --rm demo-setup    # fresh repo + traffic
+docker compose -f docker/docker-compose.demo.yml --env-file config/.env up -d --wait demo-api  # louis-agent.api + web app
+docker compose -f docker/docker-compose.demo.yml --env-file config/.env run --rm orchestrator  # triage new errors once
 ```
+
+`DEMO_RESET=0` makes demo-setup keep `.demo` as it is; `DEMO_PORT` changes the web app's port (default 5081). The
+compose file sets the orchestrator's settings below; outside Docker they are plain environment variables.
 
 | Setting | Default | Meaning |
 |---|---|---|

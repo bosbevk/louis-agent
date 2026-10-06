@@ -48,17 +48,25 @@ src/
 ├── louis-agent.cli/          # Terminal host
 ├── louis-agent.acp-server/   # Rider (Agent Client Protocol over stdio)
 ├── louis-agent.api/          # Minimal API: sessions + SSE, /workspace, /git; serves the web app
-│   ├── Program.cs, AgentSessions.cs, WorkspaceEndpoints.cs, GitEndpoints.cs
-├── louis-agent.web/          # Blazor WebAssembly app (chat, Files, Changes, themes)
+│   ├── Program.cs, AgentSessions.cs, WorkspaceEndpoints.cs
+│   ├── GitEndpoints.cs       # status, diff, stage/unstage/discard, commit
+│   └── HistoryEndpoints.cs   # branches, log, commit/branch diffs, merge, delete merged branch
+├── louis-agent.web/          # Blazor WebAssembly app (chat, Files, Changes, Branches, themes)
 │   ├── Pages/ChatPage.razor, Components/*.razor, Services/*.cs
 │   └── wwwroot/css/app.css + css/themes/*.css + themes.json
 ├── louis-agent.mcp-server/   # Publishes the toolset over MCP (no LLM) - stdio by default, MCP_TRANSPORT=http for remote clients
 └── louis-agent.orchestrator/ # POC: watches a service's errors, runbook per API method, delegates fixes to louis-agent.api
+    ├── Program.cs            # poll loop: triage each error event with an AgentEngine (own toolset, runbooks as skills)
+    ├── ServiceTools.cs       # its only tools: CallLouisAgentFix, VerifyFixCommit, ReplayRequest, RunServiceTests, Escalate/Acknowledge
+    ├── LouisAgentClient.cs   # louis-agent.api sessions + SSE parsing, FIX-RESULT
+    ├── CommsLog.cs           # Markdown log of every message between the agents
+    └── Skills/               # orchestrator.md + {service}/service.md + one runbook per API method
 
 tests/louis-agent.core.tests/ # NUnit; Config, Loaders, Providers, Tools, mcp
 tests/louis-agent.orchestrator.tests/ # NUnit; error feed, SSE client, verification tools
 samples/                      # order-service (demo microservice) + run-demo.ps1, see samples/README.md
-docker/                       # Dockerfile.{acp-server,api,agent,mcp-server}, docker-compose.yml
+docker/                       # Dockerfile.{acp-server,api,agent,mcp-server,orchestrator}, docker-compose.yml,
+                              # docker-compose.demo.yml (orchestrator demo); the build context's .dockerignore is at the repo root
 config/                       # .env and .env.secrets (both ignored), their examples, Rider config examples
 Skills/                       # personality.md + default.md + *-skills.md (system prompt), tools/ (agent-built tools)
 docs/                         # This guide and the other docs
@@ -92,6 +100,12 @@ Create `Skills/{name}-skills.md`. With `AGENT_FUNCTION=louis` every skill file i
 `AgentHost.AlwaysLoadedSkillFiles` and `BuiltInSkillFiles`. Procedures use `## Skill: Name` with an `Execution:` fence
 (bash, powershell or python); arguments arrive as `SKILL_ARG_*` environment variables.
 
+### Building another agent on core
+
+Pass `toolsets:` to the `AgentEngine` constructor to give an agent only your tool objects (plus `ExecuteSkill`) instead
+of the built-in coding tools, and build its system prompt from your own skill files (`CompositeSkillProvider` +
+`MarkdownSkillProvider`). `louis-agent.orchestrator` does exactly this; its `Program.cs` is the example.
+
 ### Adding a web theme
 
 Copy `src/louis-agent.web/wwwroot/css/themes/paper.css` to `{id}.css`, set the variables listed at the top of
@@ -115,13 +129,16 @@ Configuration only — see [MODELS.md](MODELS.md). Provider differences belong i
 ```bash
 dotnet test tests/louis-agent.core.tests
 dotnet test tests/louis-agent.core.tests --filter "FullyQualifiedName~AgentEngineTests"
+dotnet test tests/louis-agent.orchestrator.tests
 ```
 
 Tests use `FakeChatClient` (a scripted `IChatClient` that also streams) and `StubHandler` for HTTP — no network, model or
 Docker. A few tests skip themselves when git, pip or the network isn't available. The agent runs tests on Linux inside
 its containers, so keep them platform-neutral (forward slashes, no Windows-only paths).
 
-The API and web app have no automated tests yet; check them by hand (curl and a browser) after changes.
+The API and web app have no automated tests yet; check them by hand (curl and a browser) after changes. The
+orchestrator demo (`samples/run-demo.ps1`, in Docker; see [samples/README.md](../samples/README.md)) exercises the
+whole loop against a real model: API sessions, the fix flow, and the web app's Branches view.
 
 ## Key design decisions
 
@@ -222,6 +239,10 @@ that `stdio` only ever exposed to a local pipe. `MCP_API_KEY` is separate from `
 3. **Ollama tool support is a name heuristic** (`LlmOptions.KnownNoToolsPrefixes`).
 4. **Paymo task lookup takes the first match** for a name; ambiguous names can hit the wrong task.
 5. **No rate limiting or audit log** beyond the file logs.
+6. **10 tool rounds per message** (`MaximumIterationsPerRequest`): a long task stops mid-way and needs a follow-up
+   message to continue. The orchestrator does this automatically ("Continue the fix…"); most demo fixes take 2-3 messages.
+7. **Running the API with `dotnet run` (unpublished)** only serves the web app in the `Development` environment
+   (`ASPNETCORE_ENVIRONMENT=Development`); otherwise `/` returns 404. The Docker images are published, so they're fine.
 
 ## Common errors
 

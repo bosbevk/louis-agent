@@ -132,6 +132,18 @@ Register it in the `AgentEngine` constructor with `AddPublicMethodsAsTools(new M
 skill file, and add tests in `tests/louis-agent.core.tests/Tools/`. Tool names must stay unique — the Anthropic API
 rejects duplicates.
 
+### An agent with its own tools
+
+Not every agent should get the coding tools. Pass your own tool objects as `toolsets`; their public methods become the
+only tools, plus `ExecuteSkill` (no files, git or shells):
+
+```csharp
+var engine = new AgentEngine(skills, chatClient, options, supportsTools: true, toolsets: [new ServiceTools(...)]);
+```
+
+The orchestrator (`src/louis-agent.orchestrator`) is built this way: its runbooks are the skills, and its tools triage
+errors, call louis-agent.api for fixes and verify the results. See [samples/README.md](../samples/README.md).
+
 ### A new skill file
 
 Drop `Skills/{name}-skills.md` in the folder. With `AGENT_FUNCTION=louis` it is picked up automatically; otherwise set

@@ -1,0 +1,12 @@
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+WORKDIR /src
+COPY . .
+RUN dotnet publish "src/louis-agent.orchestrator/louis-agent.orchestrator.csproj" -c Release -o /app/publish
+
+# The SDK image is kept for the final stage: the orchestrator replays requests (dotnet run) and runs the watched
+# service's tests (dotnet test), and checks louis-agent's commits with git. The demo's setup step uses this image too.
+FROM mcr.microsoft.com/dotnet/sdk:10.0
+RUN apt-get update && apt-get install -y --no-install-recommends git && rm -rf /var/lib/apt/lists/*
+WORKDIR /app
+COPY --from=build /app/publish/ .
+ENTRYPOINT ["dotnet", "louis-agent.orchestrator.dll"]

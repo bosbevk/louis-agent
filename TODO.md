@@ -207,7 +207,9 @@ result — which is what "calls `louis-agent` to fix and PR" actually requires.
 
 A working proof of concept lives in [samples/](samples/README.md): `samples/order-service` (a demo service) and
 `src/louis-agent.orchestrator` (an orchestrator with one runbook per API method that hands fixes to `louis-agent.api`
-and verifies the commit, a replay and the tests itself). It differs from the items below in two ways: it is built on
+and verifies the commit, a replay and the tests itself). It runs entirely in Docker (`docker/docker-compose.demo.yml`):
+ten bugs become ten fix branches, every message between the agents is logged to Markdown, and the fixes are reviewed
+and merged in the web app's Branches tab. It differs from the items below in two ways: it is built on
 `louis-agent.core` rather than Tool Runner, and it reads a JSON-lines error log instead of Exceptionless.
 
 For a store built as several microservices, scope one orchestrator *configuration* per microservice rather than one

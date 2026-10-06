@@ -1,0 +1,108 @@
+# The orchestrator demo, entirely in Docker (see samples/README.md). samples/run-demo.ps1 drives it:
+#   docker compose -f docker/docker-compose.demo.yml --env-file config/.env run --rm demo-setup   # fresh repo + traffic
+#   docker compose -f docker/docker-compose.demo.yml --env-file config/.env up -d --wait demo-api
+#   docker compose -f docker/docker-compose.demo.yml --env-file config/.env run --rm orchestrator
+# All three share the host's .demo/ folder at /demo, so the service's repository has the same path everywhere (stack
+# traces match the workspace) and agent-comms.md, the logs and the repository can be read on the host.
+name: louis-agent-demo
+
+x-git-in-containers: &git-in-containers
+  # Bind-mounted repositories aren't owned by the container's user; tell git they're safe to use.
+  GIT_CONFIG_COUNT: "1"
+  GIT_CONFIG_KEY_0: safe.directory
+  GIT_CONFIG_VALUE_0: "*"
+
+x-orchestrator-image: &orchestrator-image
+  build:
+    context: ..
+    dockerfile: docker/Dockerfile.orchestrator
+  image: louis-agent-orchestrator:latest
+
+services:
+  # One-off: a fresh order-service repository in /demo/order-service, then one round of production traffic that logs
+  # its exceptions to logs/errors.jsonl. DEMO_RESET=0 keeps /demo as it is (resume).
+  demo-setup:
+    <<: *orchestrator-image
+    entrypoint: ["bash", "/samples/docker/demo-setup.sh"]
+    environment:
+      <<: *git-in-containers
+      DEMO_RESET: ${DEMO_RESET:-1}
+    volumes:
+      - ../samples:/samples:ro
+      - ../.demo:/demo
+      - nuget:/root/.nuget/packages
+    profiles: [tools]
+
+  # louis-agent.api and the web app, with the demo repository as its workspace.
+  demo-api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.api
+    image: louis-agent-api:latest
+    container_name: louis_agent_demo_api
+    env_file:
+      - path: ../config/.env
+        required: false
+      - path: ../config/.env.secrets
+        required: false
+    environment:
+      <<: *git-in-containers
+      WORKSPACE_ROOT: /demo/order-service
+      SKILLS_DIRECTORY: /skills
+      LOG_DIRECTORY: /demo/logs
+      LLM_PROVIDER: ${LLM_PROVIDER:-anthropic}
+      LLM_MODEL: ${LLM_MODEL:-claude-haiku-4-5-20251001}
+      # louis-agent's commits (and merges made in the web app) are recorded under this name.
+      GIT_AUTHOR_NAME: louis-agent
+      GIT_AUTHOR_EMAIL: louis-agent@localhost
+      GIT_COMMITTER_NAME: louis-agent
+      GIT_COMMITTER_EMAIL: louis-agent@localhost
+    # Localhost only: the agent can run shell commands and write files.
+    ports:
+      - "127.0.0.1:${DEMO_PORT:-5081}:8080"
+    healthcheck:
+      test: ["CMD", "curl", "-fs", "http://localhost:8080/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 10s
+    volumes:
+      - ../.demo:/demo
+      - ../Skills:/skills
+      - nuget:/root/.nuget/packages
+
+  # The orchestrator: triages every new error in /demo/order-service/logs/errors.jsonl once (--once), calling demo-api
+  # for fixes, and writes every message between the agents to /demo/agent-comms.md.
+  orchestrator:
+    <<: *orchestrator-image
+    command: ["--once"]
+    env_file:
+      - path: ../config/.env
+        required: false
+      - path: ../config/.env.secrets
+        required: false
+    environment:
+      <<: *git-in-containers
+      ORCHESTRATOR_SERVICE: order-service
+      ORCHESTRATOR_SERVICE_ROOT: /demo/order-service
+      ORCHESTRATOR_STATE_DIRECTORY: /demo/orchestrator-state
+      ORCHESTRATOR_COMMS_LOG: /demo/agent-comms.md
+      LOUIS_AGENT_URL: http://demo-api:8080
+      LLM_PROVIDER: ${LLM_PROVIDER:-anthropic}
+      LLM_MODEL: ${LLM_MODEL:-claude-haiku-4-5-20251001}
+      # Only used to stash what an unfinished fix left behind before returning to main.
+      GIT_AUTHOR_NAME: orchestrator
+      GIT_AUTHOR_EMAIL: orchestrator@localhost
+      GIT_COMMITTER_NAME: orchestrator
+      GIT_COMMITTER_EMAIL: orchestrator@localhost
+    depends_on:
+      demo-api:
+        condition: service_healthy
+    volumes:
+      - ../.demo:/demo
+      - nuget:/root/.nuget/packages
+    profiles: [tools]
+
+volumes:
+  # NuGet packages shared by the three containers, so the service restores once rather than in every container.
+  nuget:

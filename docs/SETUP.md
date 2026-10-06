@@ -91,6 +91,9 @@ Set by compose for the containers, so normally not in `.env`: `WORKSPACE_ROOT`, 
 After changing a secret, restart the container that uses it (for the API:
 `docker compose -f docker/docker-compose.yml --env-file config/.env up -d api`).
 
+The orchestrator demo (`samples/run-demo.ps1`) reads the same two files; its own settings are set in
+`docker/docker-compose.demo.yml` (see [samples/README.md](../samples/README.md)).
+
 ## Adding a setting
 
 - **Non-secret:** add it to `config/.env.example` (documented) and `config/.env`.

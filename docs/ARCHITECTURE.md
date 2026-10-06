@@ -157,7 +157,7 @@ startup and failures only log.
 
 - **Secrets:** settings (`config/.env`) and secrets (`config/.env.secrets`) are both git-ignored, created from their
   `.example` files.
-  `LlmOptions.ToString()` never prints the key. No `.env` file is copied into images (`docker/.dockerignore`).
+  `LlmOptions.ToString()` never prints the key. No `.env` file is copied into images (the root `.dockerignore`).
 - **Workspace boundary:** paths must be relative and stay inside the workspace; symbolic links are not followed.
   Secret files (`.env*`, `*.pem`, `*.key`, `*.pfx`, `credentials.json`, `secrets.json`, `appsettings.development.json`,
   SSH keys) can't be read or written, are skipped by search, and their git diffs are never shown in the web app.
@@ -196,6 +196,17 @@ installed and `Skills/` copied in.
 | `mcp-server` | `Dockerfile.mcp-server` | stdio: run per client with `run --rm -T mcp-server`; with `MCP_TRANSPORT=http`, on `127.0.0.1:${MCP_PORT:-5090}` |
 | `local-agent` | `Dockerfile.agent` | The CLI |
 | `ollama` | `services/Dockerfile.ollama` | Only with `--profile ollama` |
+
+The orchestrator demo has its own compose file, `docker/docker-compose.demo.yml` (project `louis-agent-demo`):
+
+| Service | Dockerfile | Notes |
+|---|---|---|
+| `demo-setup` | `Dockerfile.orchestrator` | One-off: fresh demo repository in `.demo/order-service` and its production traffic |
+| `demo-api` | `Dockerfile.api` | louis-agent.api and the web app on `127.0.0.1:${DEMO_PORT:-5081}`, workspace `/demo/order-service` |
+| `orchestrator` | `Dockerfile.orchestrator` | Triages new errors once and calls `demo-api` for fixes; SDK image, as it replays requests and runs tests |
+
+All three mount the host's `.demo/` at `/demo` and share a `nuget` volume. `samples/run-demo.ps1` drives them; see
+[samples/README.md](../samples/README.md).
 
 Every agent service mounts the repo at `/workspace`, `Skills/` at `/skills`, `logs/` at `/logs` and
 `REPOSITORIES_PATH` at `/repositories`, reads `config/.env` and `config/.env.secrets`, and sets `core.autocrlf=true`

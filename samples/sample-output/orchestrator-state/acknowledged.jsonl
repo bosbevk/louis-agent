@@ -1,0 +1,2 @@
+{"error_id":"17917761ce77","reason":"System.InvalidOperationException with message \u0022already been refunded\u0022 is expected: a duplicate refund request was correctly rejected.","at":"2026-10-06T19:07:17.9709981+00:00"}
+{"error_id":"112ac0fb1d72","reason":"OrderNotFoundException is expected behaviour for get-order: the client asked for an order id that doesn\u0027t exist (a 404).","at":"2026-10-06T19:07:31.0085397+00:00"}

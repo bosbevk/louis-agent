@@ -12,12 +12,19 @@ Runs on Claude (Anthropic) by default; Ollama and OpenAI-compatible endpoints wo
 | Host | Project | What it is |
 |---|---|---|
 | **Rider** | `src/louis-agent.acp-server` | [Agent Client Protocol](https://agentclientprotocol.com) server for Rider's AI chat: streamed answers, thinking, tool cards, file attachments |
-| **Web app** | `src/louis-agent.web` | Blazor WebAssembly chat with a file browser, a git Changes view (review diffs, stage, discard, commit) and switchable themes |
+| **Web app** | `src/louis-agent.web` | Blazor WebAssembly chat with a file browser, a git Changes view (review diffs, stage, discard, commit), a Branches view (all commits, branch diffs, merge) and switchable themes |
 | **HTTP API** | `src/louis-agent.api` | JSON API with Claude-style streamed events (SSE); also serves the web app |
 | **CLI** | `src/louis-agent.cli` | Interactive or one-shot prompts in the terminal |
 | **MCP server** | `src/louis-agent.mcp-server` | Publishes the agent's tools to any MCP client (the client brings its own model) |
 
 All hosts share `louis-agent.core` (engine, tools, skills, providers). See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+
+**Orchestrator demo (proof of concept).** `src/louis-agent.orchestrator` is a second agent, also built on
+`louis-agent.core`, that watches a microservice's errors, decides per API method what each needs, has louis-agent fix
+the fixable ones (one branch and commit each, never pushed) and verifies every fix itself. `samples/run-demo.ps1` runs
+it in Docker (`docker/docker-compose.demo.yml`) against a demo service with ten bugs, logs every message between the
+agents to a Markdown file, and leaves the web app up on http://127.0.0.1:5081 for you to review and merge the fixes.
+See [samples/README.md](samples/README.md).
 
 ## Quick start (Docker)
 
@@ -143,11 +150,12 @@ results and truncated tool calls for spotting where the agent needs narrower too
 ```bash
 dotnet build louis-agent-solution.sln
 dotnet test tests/louis-agent.core.tests
+dotnet test tests/louis-agent.orchestrator.tests
 ```
 
 Requires the .NET 10 SDK. More docs: [Architecture](docs/ARCHITECTURE.md) · [Setup](docs/SETUP.md) ·
 [Models](docs/MODELS.md) · [Agent quick start](docs/QUICK_START_AGENT.md) · [Agent interaction](docs/AGENT_INTERACTION.md) ·
-[TODO](TODO.md).
+[Orchestrator demo](samples/README.md) · [TODO](TODO.md).
 
 ## License
 
