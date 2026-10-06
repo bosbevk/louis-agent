@@ -76,4 +76,30 @@ durable storage, memory, or retrieval. The diagram above is the target shape; br
 
 ## Ideas / backlog
 
-- [ ]
+### Ops / CI
+
+- [ ] Add CI (`.github/workflows`) to run `dotnet build` / `dotnet test` on push/PR — there's no CI at all today, so
+      regressions are only caught locally
+- [ ] Track token usage / cost per session — useful given this proxies to paid Anthropic calls
+- [ ] Add metrics/tracing (e.g. OpenTelemetry) beyond the stderr + JSONL file logs (`AgentLog`) — no
+      latency/error dashboards today
+- [ ] Add model fallback: retry against a secondary provider/model if the configured one errors or rate-limits
+
+### Web app
+
+- [ ] Add automated tests for `louis-agent.web` (bUnit/Playwright) — currently hand-checked only
+- [ ] Sync chat history across devices/browsers instead of only `localStorage` (lost on clearing site data)
+- [ ] Add a UI for managing skills (`Skills/*.md`) and for reviewing/approving agent-built tools — `/approve` is
+      CLI-only today
+
+### CLI
+
+- [ ] Let the CLI resume a previous session's history across restarts (the web app keeps it in `localStorage`; the
+      CLI and ACP server don't persist it)
+
+### Tooling / multi-repo
+
+- [ ] Add a tool for searching/operating across more than one mounted repo at once — `REPOSITORIES_PATH` mounts
+      multiple repos, but every tool call is scoped to a single workspace root
+- [ ] Add a marketplace/sharing mechanism for agent-built tools (`Skills/tools/pending`) between projects or
+      teammates — each repo builds its own from scratch today
