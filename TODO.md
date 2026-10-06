@@ -83,13 +83,30 @@ durable storage, memory, or retrieval. The diagram above is the target shape; br
 - [ ] Track token usage / cost per session — useful given this proxies to paid Anthropic calls
 - [ ] Add metrics/tracing (e.g. OpenTelemetry) beyond the stderr + JSONL file logs (`AgentLog`) — no
       latency/error dashboards today
-- [ ] Add model fallback: retry against a secondary provider/model if the configured one errors or rate-limits
+- [ ] Add model fallback: retry against a secondary provider/model if the configured one errors or rate-limits.
+      Checked: Anthropic's native `fallbacks` parameter (`Anthropic.Models.Beta.Messages.MessageCreateParams`) doesn't
+      satisfy this — it only fires on a policy *refusal*, is Anthropic-model-only (no fallback to Ollama/openai-compatible),
+      and needs the beta client surface this repo doesn't use. Hand-rolled retry/fallback logic is still required for
+      the error/rate-limit case this item actually wants.
 - [ ] Wire up Anthropic prompt caching on the system prompt — confirmed available on the exact call path already in
       use (`Anthropic` NuGet 12.53.0's `AsIChatClient`, in `LlmClientFactory.cs`): `TextContent.WithCacheControl(...)`
       for messages/system content and `Tool.CacheControl` via `AIFunctionFactoryOptions.AdditionalProperties` for
       tools, both documented in the package's own XML docs. Not wired up anywhere today. The system prompt (composed
       skill docs) is rebuilt identically every turn, making it a strong candidate — cached reads are ~0.1× the
       uncached input price.
+- [ ] Wire up structured outputs (`output_config.format` / `JsonOutputFormat`) where the engine needs a model response
+      shaped as JSON — confirmed present on the repo's existing **non-beta** call path (no client switch needed), via
+      `Anthropic.Models.Messages.OutputConfig`/`JsonOutputFormat`, and currently unused anywhere in `AgentEngine.cs`.
+- [ ] Consider context editing (`clear_tool_uses_20250919`, clears stale tool results from a long conversation) and
+      compaction (`compact_20260112`, server-side summarization of old history) for long-running sessions — both are
+      confirmed present in the installed Anthropic SDK, but only on the **beta** `MessageCreateParams.ContextManagement`
+      surface, which means switching from `AnthropicClient.AsIChatClient` to the beta client, not just a config flag.
+      Neither would replace the engine's existing `SummariseToolResultAsync` (which shrinks one oversized tool result
+      before it enters history) — they solve long-session accumulation, a different problem, so would supplement it.
+- [ ] Rewrite tool `[Description]` attributes to the current bar (3+ sentences, explicit when-*not*-to-use, precise
+      behavior). Checked across `WorkspaceTools.cs`, `GitTools.cs`, `DevOpsTools.cs`: every sampled description is a
+      single short clause (e.g. `GitTools.cs`'s `Push`: "Push commits to a remote branch.") — correct but under-specified,
+      which is the single biggest lever for tool-selection accuracy per Anthropic's current tool-use guidance.
 
 ### Web app
 
