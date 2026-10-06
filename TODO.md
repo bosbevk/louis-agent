@@ -84,6 +84,12 @@ durable storage, memory, or retrieval. The diagram above is the target shape; br
 - [ ] Add metrics/tracing (e.g. OpenTelemetry) beyond the stderr + JSONL file logs (`AgentLog`) — no
       latency/error dashboards today
 - [ ] Add model fallback: retry against a secondary provider/model if the configured one errors or rate-limits
+- [ ] Wire up Anthropic prompt caching on the system prompt — confirmed available on the exact call path already in
+      use (`Anthropic` NuGet 12.53.0's `AsIChatClient`, in `LlmClientFactory.cs`): `TextContent.WithCacheControl(...)`
+      for messages/system content and `Tool.CacheControl` via `AIFunctionFactoryOptions.AdditionalProperties` for
+      tools, both documented in the package's own XML docs. Not wired up anywhere today. The system prompt (composed
+      skill docs) is rebuilt identically every turn, making it a strong candidate — cached reads are ~0.1× the
+      uncached input price.
 
 ### Web app
 
