@@ -136,3 +136,40 @@ client, so that's the natural integration point rather than growing business-dom
 - [ ] Define the approval/deploy-gate boundary between the two agents: orchestrator decides *when* to ship,
       `louis-agent` only produces the *fix* — keeps blast radius of agent-written code changes separate from
       business-critical deploy/rollback decisions
+
+#### Design: one orchestrator per microservice
+
+For a store built as several microservices, scope one orchestrator *configuration* per microservice rather than one
+orchestrator watching the whole store, and rather than embedding the watcher inside each microservice's own process.
+
+- [ ] **Scoping = a skill file per microservice**, the same mechanism `AGENT_FUNCTION` already uses to select a skill
+      set per run (`docs/CLAUDE.md` → "Adding a skill"). One orchestrator engine/codebase, N skill files
+      (`order-service-skills.md`, `payment-service-skills.md`, `catalog-service-skills.md`, ...), each declaring:
+      its microservice's Exceptionless project id, its repo location, its escalation rules (what counts as
+      auto-fixable vs. needs-a-human), and any business actions specific to that service (e.g. payment-service might
+      never auto-deploy, order-service might auto-restart a stuck worker).
+- [ ] **Don't run the watcher inside the microservice it watches** — if the service crashes, its own watchdog
+      shouldn't crash with it. Run the orchestrator as its own process/deployment per microservice (or per group of
+      related microservices), not as a library loaded into the microservice's runtime.
+- [ ] **Process topology is a deploy choice, not an architecture one** — either one shared orchestrator process
+      loaded with the right skill file per scheduled run, or one deployed instance per microservice. Mirrors how this
+      repo already runs `acp-server` per Rider chat and `mcp-server` per client (`docker/docker-compose.yml`) rather
+      than one shared instance; the per-microservice variant gives stronger blast-radius isolation (one
+      misconfigured orchestrator can't touch another service's repo or credentials) at the cost of more deployments.
+- [ ] **Triggering**: scheduled polling (reuse the cron/schedule mechanism) and/or a webhook receiver for
+      Exceptionless/uptime alerts, per microservice.
+- [ ] **The call into `louis-agent` is an MCP call, not a shared process**: orchestrator picks up an issue for
+      `order-service`, calls `louis-agent.mcp-server` with `WORKSPACE_ROOT` pointed at `order-service`'s repo and the
+      issue details (stack trace, endpoint, frequency). `louis-agent` runs its existing triage → fix → test → PR
+      loop with the tools it already has (`WorkspaceTools`, `GitTools`, `DotNetTools`) — it needs no new tools for
+      this, only the `ExceptionlessTools` triage-loop work above to turn "an error" into "a prompt."
+- [ ] **Credential separation follows the process split**: the orchestrator holds Exceptionless, deploy and
+      business-system (catalog/pricing) credentials; the `louis-agent` MCP instance it calls holds only
+      `WORKSPACE_ROOT`-scoped git/build access to that one repo. A compromised or misconfigured orchestrator skill
+      can't push to prod directly (it can only ask `louis-agent` to open a PR); `louis-agent` never needs deploy
+      access at all.
+- [ ] **Worked example**: `order-service` throws a new exception → orchestrator's scheduled check (or webhook) picks
+      it up from Exceptionless → `order-service-skills.md` says this error pattern is auto-fixable → orchestrator
+      calls `louis-agent` over MCP against the `order-service` repo with the stack trace → `louis-agent` locates the
+      failing code, fixes it, runs tests, opens a PR → orchestrator (not `louis-agent`) decides whether to
+      auto-merge/deploy per `order-service`'s own escalation rules, or wait for human approval.
