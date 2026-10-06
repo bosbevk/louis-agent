@@ -104,11 +104,11 @@ durable storage, memory, or retrieval. The diagram above is the target shape; br
 - [ ] Add a marketplace/sharing mechanism for agent-built tools (`Skills/tools/pending`) between projects or
       teammates — each repo builds its own from scratch today
 
-### Autonomous operations / self-healing
+### Self-healing (within `louis-agent`)
 
-Scope jump from "coding agent" to "business-ops agent" — worth deciding explicitly whether this project should grow
-this surface or whether it's a separate service that calls into this one. Default to the guarded path (PR + approval)
-before any auto-deploy path, since deploys are hard-to-reverse, shared-system actions.
+This is in scope for `louis-agent` as-is — it's the normal fix/test/PR loop, just triggered by an error instead of a
+prompt. Default to the guarded path (PR + approval) before any auto-deploy path, since deploys are hard-to-reverse,
+shared-system actions.
 
 - [ ] Add `ExceptionlessTools` wrapping the Exceptionless API (new/trending errors, stack trace, affected
       endpoint, frequency) — same pattern as `PaymoTools`/`DevOpsTools`
@@ -121,5 +121,18 @@ before any auto-deploy path, since deploys are hard-to-reverse, shared-system ac
 - [ ] Add a scheduled maintenance agent (dependency bumps, security patch sweeps) using the existing cron/schedule
       mechanism — proactive, not just reactive
 - [ ] Add a dependency/CVE watcher that fires the same fix → test → PR pipeline when a package advisory lands
-- [ ] Add catalog/inventory/pricing tools (stock sync, price updates) so the agent can act on business state, not
-      just code, if this project takes on managing a store end-to-end
+
+### Autonomous store operations (separate orchestrator agent)
+
+Out of scope for `louis-agent` itself — a store-ops orchestrator is a different kind of agent (owns business state
+and deploy/rollback decisions, runs on a schedule, watches metrics) that calls `louis-agent` as a sub-agent for
+anything that's actually a code change. `louis-agent.mcp-server` already publishes the full toolset to any MCP
+client, so that's the natural integration point rather than growing business-domain tools into this repo.
+
+- [ ] Design the orchestrator agent: watches store health (errors, uptime, performance), decides code-fix vs.
+      ops-action vs. escalate-to-human, and calls `louis-agent` over MCP for code-fix work
+- [ ] Add catalog/inventory/pricing tools (stock sync, price updates) to the orchestrator so it can act on business
+      state directly, without routing non-code actions through `louis-agent`
+- [ ] Define the approval/deploy-gate boundary between the two agents: orchestrator decides *when* to ship,
+      `louis-agent` only produces the *fix* — keeps blast radius of agent-written code changes separate from
+      business-critical deploy/rollback decisions
