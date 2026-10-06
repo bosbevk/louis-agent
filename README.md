@@ -141,7 +141,8 @@ dotnet test tests/louis-agent.core.tests
 ```
 
 Requires the .NET 10 SDK. More docs: [Architecture](docs/ARCHITECTURE.md) · [Setup](docs/SETUP.md) ·
-[Models](docs/MODELS.md) · [Agent quick start](docs/QUICK_START_AGENT.md) · [Agent interaction](docs/AGENT_INTERACTION.md).
+[Models](docs/MODELS.md) · [Agent quick start](docs/QUICK_START_AGENT.md) · [Agent interaction](docs/AGENT_INTERACTION.md) ·
+[TODO](TODO.md).
 
 ## License
 
