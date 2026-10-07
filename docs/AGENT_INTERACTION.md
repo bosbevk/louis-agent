@@ -1,7 +1,8 @@
 # Louis Agent: How a Turn Works
 
-How the agent turns your message into tool calls and an answer. For the components themselves see
-[ARCHITECTURE.md](ARCHITECTURE.md).
+How the agent turns your message into tool calls and an answer. For how clients and other agents connect to it
+(HTTP API, Rider, MCP, the orchestrator) see [AGENT_COMMUNICATION.md](AGENT_COMMUNICATION.md); for the components
+themselves see [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ## Two kinds of capability
 
@@ -28,6 +29,9 @@ AddPublicMethodsAsTools(new DotNetTools(WorkspaceRoot));
 
 Every **public** instance method becomes a tool, named after the method, with its `[Description]` attributes as the
 documentation. Keep helpers `internal` or `private`.
+
+An agent that isn't a coding agent can get a different toolset: pass `toolsets:` to the constructor and only those
+objects' public methods (plus `ExecuteSkill`) are registered — see "An agent with its own tools" below.
 
 ### How skills are loaded
 
@@ -163,3 +167,6 @@ echo "Hello, ${SKILL_ARG_name}"
 ````
 
 Arguments arrive as `SKILL_ARG_*` environment variables; quote them and never build commands from them.
+
+---
+[Docs index](README.md) · Previous: [Paymo prompts](PAYMO-PROMPTS.md) · Next: [How the agents and endpoints talk](AGENT_COMMUNICATION.md)

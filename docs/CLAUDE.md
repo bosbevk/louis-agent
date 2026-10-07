@@ -214,23 +214,11 @@ flowchart LR
 
 ### MCP exposes tools, not a model
 
-`louis-agent.mcp-server` republishes `AgentEngine`'s tools (`WorkspaceTools`, `GitTools`, `DotNetTools`, ...) for
-an *external* client's own model to call — it has no `IChatClient`/`AgentEngine` of its own
-(`src/louis-agent.mcp-server/Program.cs`: *"The MCP client brings its own model; this server publishes the
-agent's tools... so that client can call them"*). That's why `AgentEngine` never calls its own tools through it —
-the tools and the loop already live in the same process; routing an in-process call through MCP would only add a
-round-trip for nothing. It's also why calling `louis-agent.mcp-server` is a different thing from calling
-`louis-agent.api`'s session endpoint: MCP hands over raw tools for the caller's model to drive one at a time;
-the API session endpoint runs `louis-agent`'s own full triage → fix → test → PR loop server-side and hands back a
-result. Use MCP when another agent should reason with `louis-agent`'s tools itself (any MCP-compliant client works,
-regardless of which model is behind it — OpenAI's Agents SDK included); use the API session endpoint when another
-agent wants `louis-agent` to autonomously do the whole job and report back.
-
-`MCP_TRANSPORT` picks the transport: `stdio` (default, unchanged) is for a local client that launches this as a
-subprocess, like Rider or Claude Desktop. `http` serves Streamable HTTP instead via `MapMcp()`, for a remote client
-that isn't local — set `MCP_API_KEY` too, since this exposes the same shell/git/file-write tools over the network
-that `stdio` only ever exposed to a local pipe. `MCP_API_KEY` is separate from `louis-agent.api`'s `AGENT_API_KEY`
-(falls back to it when unset) so the two services' access can be rotated independently.
+`louis-agent.mcp-server` hands an *external* client's model the raw tools, one call at a time; it has no model of its
+own, so `AgentEngine` never calls its own tools through it. To have louis-agent do a whole task and report back (as the
+orchestrator does), call `louis-agent.api`'s session endpoint instead. `MCP_TRANSPORT=http` serves MCP over the network
+and needs `MCP_API_KEY` (falls back to `AGENT_API_KEY`). The full comparison, both transports and the agent-to-agent
+flow are in [AGENT_COMMUNICATION.md](AGENT_COMMUNICATION.md).
 
 ## Known limitations
 
@@ -258,3 +246,6 @@ that `stdio` only ever exposed to a local pipe. `MCP_API_KEY` is separate from `
 Branch off `main`, keep changes focused, run `dotnet build` and `dotnet test`, and write commit messages that explain
 why. See [ARCHITECTURE.md](ARCHITECTURE.md) for the design, `config/.env.example` for settings, and
 [Skills/default.md](../Skills/default.md) for how the agent is instructed to behave.
+
+---
+[Docs index](README.md) · Previous: [Architecture](ARCHITECTURE.md) · Next: [Orchestrator demo](../samples/README.md)

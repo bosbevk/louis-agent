@@ -270,6 +270,8 @@ textarea:focus-visible, input:focus-visible, select:focus-visible { outline: non
 .history-item .change-name { max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
 .history-item .change-folder { max-width: 100%; }
 .change-name.merged { color: var(--muted); }
+.pending-label { align-self: center; padding: 0 6px; color: var(--amber); font-size: 11px; white-space: nowrap; }
+.changes-panel .tree-error { white-space: pre-line; }
 button.small { padding: 2px 8px; font-size: 12px; align-self: center; }
 .sha { color: var(--amber); font-family: var(--font-code, var(--font)); font-size: .92em; }
 .ref {

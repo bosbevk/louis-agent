@@ -119,10 +119,5 @@ These commands work in the CLI, Rider and the web app, and are never sent to the
   `config/.env.secrets` and restart the api container.
 - **A Rider chat behaves like old code** — start a **New Chat**; existing chats keep their container until closed.
 
-## More
-
-- [ARCHITECTURE.md](ARCHITECTURE.md) — how it fits together
-- [AGENT_INTERACTION.md](AGENT_INTERACTION.md) — tools, skills and a turn step by step
-- [MODELS.md](MODELS.md) — choosing a model
-- [CLAUDE.md](CLAUDE.md) — development guide
-- [samples/README.md](../samples/README.md) — the orchestrator demo: a second agent that has louis-agent fix ten bugs, in Docker
+---
+[Docs index](README.md) · Previous: [Project README](../README.md) · Next: [Setup](SETUP.md)

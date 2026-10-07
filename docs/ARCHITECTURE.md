@@ -4,7 +4,9 @@
 
 Louis Agent is a multi-host LLM agent for working on code. One engine (`louis-agent.core`) holds the tools, skills and
 the tool-call loop; several thin hosts put it in front of you: Rider (ACP), a web app and HTTP API, a CLI, and an MCP
-server.
+server. A second agent, the orchestrator (a proof of concept), is built on the same core and talks to louis-agent
+through the HTTP API. How all of them connect, and what goes over the wire, is in
+[AGENT_COMMUNICATION.md](AGENT_COMMUNICATION.md).
 
 **Key principle:** the LLM provider is configuration only (`LLM_PROVIDER`, `LLM_MODEL`). Everything goes through
 `Microsoft.Extensions.AI`'s `IChatClient`, so tool calling, streaming and skills work the same on Anthropic, Ollama and
@@ -18,6 +20,7 @@ OpenAI-compatible endpoints.
 | ACP server | `src/louis-agent.acp-server` | `AgentHost.Build()` | [Agent Client Protocol](https://agentclientprotocol.com) JSON-RPC over stdio, for Rider's AI chat |
 | HTTP API + web app | `src/louis-agent.api`, `src/louis-agent.web` | `AgentHost.Build()` | ASP.NET Core minimal API; Server-Sent Events; serves the Blazor WebAssembly app |
 | MCP server | `src/louis-agent.mcp-server` | `AgentHost.BuildToolHost()` | Model Context Protocol over stdio (default) or Streamable HTTP (`MCP_TRANSPORT=http`); publishes the tools, the client brings its own model |
+| Orchestrator (POC) | `src/louis-agent.orchestrator` | Own `AgentEngine` with `toolsets:` | Not a host for users: an agent that reads a service's error log and calls louis-agent.api for fixes ([samples/README.md](../samples/README.md)) |
 
 ### CLI
 - Streams the answer as it is written, thinking in grey, one status line per tool call; Ctrl+C stops the current reply.
@@ -44,6 +47,8 @@ OpenAI-compatible endpoints.
 - `AGENT_API_KEY`, when set, is required for `/sessions`, `/workspace` and `/git`; the app's own files stay public.
 - The web app (Blazor WebAssembly) is served by the API with `MapStaticAssets` and an `index.html` fallback. It keeps
   chats in the browser's `localStorage`. Themes are CSS files in `wwwroot/css/themes/` listed in `themes.json`.
+- The Branches tab queues merges and deletes (`GitHistory`): every click is kept and they run one at a time, in click
+  order; only the branch being worked on is marked busy ("Merging…", "Queued").
 
 ### MCP server
 - Publishes the full toolset (workspace, git, `DotNet*`, `Python*`, `PowerShell*`, `Bash*`, web, skills, agent-built
@@ -86,6 +91,8 @@ Provider-agnostic. Owns the tools, the system prompt (skill documentation) and t
   results) and records the finished turn in `history`; `ProcessPromptAsync` is the non-streaming form.
 - `FunctionInvokingChatClient` runs the loop: up to 10 tool rounds per request, detailed errors returned to the model.
 - Output limit 16,000 tokens per reply; `LLM_THINKING` sets `ChatOptions.Reasoning`.
+- `toolsets:` (optional) replaces the built-in coding tools with the given objects' public methods (plus
+  `ExecuteSkill`), for agents that aren't coding agents; the orchestrator uses it.
 
 ## A chat turn
 
@@ -197,6 +204,14 @@ installed and `Skills/` copied in.
 | `local-agent` | `Dockerfile.agent` | The CLI |
 | `ollama` | `services/Dockerfile.ollama` | Only with `--profile ollama` |
 
+Every agent service above mounts the repo at `/workspace`, `Skills/` at `/skills`, `logs/` at `/logs` and
+`REPOSITORIES_PATH` at `/repositories`, reads `config/.env` and `config/.env.secrets`, and sets `core.autocrlf=true`
+for git (the repo is a Windows checkout). Always pass the env file:
+
+```bash
+docker compose -f docker/docker-compose.yml --env-file config/.env up -d --build api
+```
+
 The orchestrator demo has its own compose file, `docker/docker-compose.demo.yml` (project `louis-agent-demo`):
 
 | Service | Dockerfile | Notes |
@@ -205,16 +220,9 @@ The orchestrator demo has its own compose file, `docker/docker-compose.demo.yml`
 | `demo-api` | `Dockerfile.api` | louis-agent.api and the web app on `127.0.0.1:${DEMO_PORT:-5081}`, workspace `/demo/order-service` |
 | `orchestrator` | `Dockerfile.orchestrator` | Triages new errors once and calls `demo-api` for fixes; SDK image, as it replays requests and runs tests |
 
-All three mount the host's `.demo/` at `/demo` and share a `nuget` volume. `samples/run-demo.ps1` drives them; see
-[samples/README.md](../samples/README.md).
+All three mount the host's `.demo/` at `/demo` (the demo repository is LF, so no `core.autocrlf`) and share a `nuget`
+volume. `samples/run-demo.ps1` drives them; see [samples/README.md](../samples/README.md).
 
-Every agent service mounts the repo at `/workspace`, `Skills/` at `/skills`, `logs/` at `/logs` and
-`REPOSITORIES_PATH` at `/repositories`, reads `config/.env` and `config/.env.secrets`, and sets `core.autocrlf=true`
-for git (the repo is a Windows checkout). Always pass the env file:
-
-```bash
-docker compose -f docker/docker-compose.yml --env-file config/.env up -d --build api
-```
 
 ## Testing
 
@@ -223,9 +231,16 @@ loop, streaming, thinking, summarising, cut-off guards) with a scripted fake `IC
 fetch with stubbed HTTP, and Rider MCP discovery with mocked HTTP. No network or Docker needed; a few tests skip
 themselves when an external tool (git, pip, live network) isn't available.
 
+`tests/louis-agent.orchestrator.tests` (NUnit): the error feed, the louis-agent API client (event stream and
+`FIX-RESULT` parsing), the decision line, runbook loading, the comms log, and the verification tools against a
+throwaway git repository.
+
 ```bash
 dotnet test tests/louis-agent.core.tests
+dotnet test tests/louis-agent.orchestrator.tests
 ```
+
+The API and web app have no automated tests; the orchestrator demo exercises them end to end against a real model.
 
 ## Configuration reference
 
@@ -246,3 +261,6 @@ LLM_PROVIDER=openai-compatible
 LLM_MODEL=your-model
 LLM_ENDPOINT=http://localhost:8000/v1
 ```
+
+---
+[Docs index](README.md) · Previous: [How the agents and endpoints talk](AGENT_COMMUNICATION.md) · Next: [Development guide](CLAUDE.md)

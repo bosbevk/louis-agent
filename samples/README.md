@@ -164,3 +164,6 @@ The model is louis-agent's usual `LLM_*` configuration.
   (the demo repository has no remote) instead of a pull request; you merge it in the web app.
 - In the demo, louis-agent.api runs with a `louis-agent` git identity, so merges made from the web app are also
   recorded under that name.
+
+---
+[Docs index](../docs/README.md) · Previous: [Development guide](../docs/CLAUDE.md) · Next: [Sample output](sample-output/README.md)

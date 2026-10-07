@@ -98,6 +98,8 @@ internal sealed partial class LouisAgentClient(HttpClient http, string? apiKey)
             {
                 case "content_block_start" when root.GetProperty("content_block") is var block:
                     string type = block.GetProperty("type").GetString() ?? "";
+                    // Text blocks are separated by tool calls; keep them apart instead of running sentences together.
+                    if (type == "text" && text.Length > 0 && !text.ToString().EndsWith('\n')) text.Append("\n\n");
                     if (type == "tool_use")
                     {
                         var call = new AgentToolCall(

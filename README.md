@@ -26,6 +26,20 @@ it in Docker (`docker/docker-compose.demo.yml`) against a demo service with ten 
 agents to a Markdown file, and leaves the web app up on http://127.0.0.1:5081 for you to review and merge the fixes.
 See [samples/README.md](samples/README.md).
 
+## Documentation
+
+All docs, in reading order, are listed in **[docs/README.md](docs/README.md)**. The main ones:
+
+| To… | Read |
+|---|---|
+| Start using it (web app, Rider, CLI) and try prompts | [Quick start](docs/QUICK_START_AGENT.md) |
+| Configure settings and secrets, or pick a model | [Setup](docs/SETUP.md) · [Models](docs/MODELS.md) |
+| Understand what happens when you send a message | [How a turn works](docs/AGENT_INTERACTION.md) |
+| Connect another program or agent: HTTP API and its event stream, Rider, MCP, agent-to-agent | [How the agents and endpoints talk](docs/AGENT_COMMUNICATION.md) |
+| Know the components, security and deployment | [Architecture](docs/ARCHITECTURE.md) |
+| Change the code | [Development guide](docs/CLAUDE.md) |
+| Watch two agents fix ten bugs, then merge the fixes | [Orchestrator demo](samples/README.md) · [sample output](samples/sample-output/README.md) |
+
 ## Quick start (Docker)
 
 Prerequisites: Docker Desktop and an [Anthropic API key](https://console.anthropic.com).
@@ -92,6 +106,8 @@ Settings live in `config/.env` and secrets in `config/.env.secrets`; both are gi
 
 Sessions live in memory. Every reply is JSON; a message's answer streams as Server-Sent Events shaped like Claude's
 (`message_start`, `content_block_start/delta/stop` for `thinking`, `text`, `tool_use` and `tool_result`, `message_stop`).
+The full reference — authentication, errors, the event stream with an example, and how other agents use it — is in
+[docs/AGENT_COMMUNICATION.md](docs/AGENT_COMMUNICATION.md).
 
 | Endpoint | |
 |---|---|
@@ -128,15 +144,17 @@ curl -N -X POST http://127.0.0.1:5080/sessions/$SID/messages \
 
 Built-in tools cover workspace files, git, `dotnet` build/test/run, Python, PowerShell, bash, web search and page fetching,
 Azure DevOps work items and Paymo time tracking. Markdown **skills** in [`Skills/`](Skills) add guidance and repeatable
-procedures: `personality.md` gives the agent its character (edit or delete it to change who the agent is), `default.md`
-holds its operating instructions; the agent can write new skills, and can build its own typed tools, which wait in `Skills/tools/pending`
-until you approve them (`/tools`, `/approve <Name>`, `/reject <Name>`).
+procedures: `personality.md` gives the agent its character (edit or delete it to change who the agent is), and
+`default.md` holds its operating instructions. The agent can write new skills, and can build its own typed tools, which
+wait in `Skills/tools/pending` until you approve them (`/tools`, `/approve <Name>`, `/reject <Name>`).
 
 ## Safety
 
 - File tools stay inside the workspace, refuse secret files (`.env`, keys, certificates) and don't follow symbolic links.
 - Scripts and git run without a shell, with arguments passed as a list.
-- The API and web app are published on `127.0.0.1` only; set `AGENT_API_KEY` to require a key.
+- The API and web app are published on `127.0.0.1` only; set `AGENT_API_KEY` to require a key. The MCP server in HTTP
+  mode is also local-only and takes `MCP_API_KEY`.
+- The web app never pushes (its commits and merges stay local), and the agent only pushes when you ask it to.
 - Oversized tool output is summarised instead of flooding the model's context, and a tool call cut off by the output
   limit is never run.
 
@@ -153,9 +171,7 @@ dotnet test tests/louis-agent.core.tests
 dotnet test tests/louis-agent.orchestrator.tests
 ```
 
-Requires the .NET 10 SDK. More docs: [Architecture](docs/ARCHITECTURE.md) · [Setup](docs/SETUP.md) ·
-[Models](docs/MODELS.md) · [Agent quick start](docs/QUICK_START_AGENT.md) · [Agent interaction](docs/AGENT_INTERACTION.md) ·
-[Orchestrator demo](samples/README.md) · [TODO](TODO.md).
+Requires the .NET 10 SDK. See the [development guide](docs/CLAUDE.md) and the [docs index](docs/README.md).
 
 ## License
 

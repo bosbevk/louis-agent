@@ -50,6 +50,31 @@ public class LouisAgentClientTests
     }
 
     [Test]
+    public async Task ReadStream_KeepsTextBlocksApart()
+    {
+        const string stream = """
+            event: content_block_start
+            data: {"type":"content_block_start","index":0,"content_block":{"type":"text","text":""}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Let me look at the code:"}}
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":1,"content_block":{"type":"tool_use","id":"t1","name":"ReadWorkspaceFile","input":{}}}
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":2,"content_block":{"type":"text","text":""}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":"Now the fix."}}
+
+            """;
+        var reply = await LouisAgentClient.ReadStreamAsync(new StringReader(stream));
+
+        Assert.That(reply.Text, Is.EqualTo("Let me look at the code:\n\nNow the fix."));
+    }
+
+    [Test]
     public async Task ReadStream_ReportsAnErrorEvent()
     {
         const string stream = """

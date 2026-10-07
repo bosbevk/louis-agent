@@ -9,6 +9,9 @@ Open items for Louis Agent. Add to this list as new work comes up; check items o
 - [ ] Ollama tool support is a name heuristic (`LlmOptions.KnownNoToolsPrefixes`)
 - [ ] Paymo task lookup takes the first match for a name; ambiguous names can hit the wrong task
 - [ ] No rate limiting or audit log beyond the file logs
+- [ ] 10 tool rounds per message: long tasks need a follow-up message to continue (the orchestrator sends one
+      automatically); consider making `MaximumIterationsPerRequest` configurable per host
+- [ ] An unpublished API (`dotnet run`) only serves the web app in the `Development` environment
 
 ## Testing
 
@@ -145,12 +148,36 @@ durable storage, memory, or retrieval. The diagram above is the target shape; br
       that's all that's configured; verified all three cases (distinct key rejects the other service's key, wrong
       key still 401s, fallback alone still 200s) with curl.
 
+### Orchestrator demo (POC) — follow-ups
+
+Delivered (2026-10-06): the demo service with ten bugs, the orchestrator with a runbook per API method, the Markdown
+agent-communications log, the Docker demo (`samples/run-demo.ps1`), the web app's Branches tab with the history and
+merge endpoints, and `AgentEngine`'s `toolsets:` option. Details in [samples/README.md](samples/README.md) and
+[docs/AGENT_COMMUNICATION.md](docs/AGENT_COMMUNICATION.md).
+
+- [x] Root `.dockerignore`: `docker/.dockerignore` was never read (Docker only reads the one at the context root), so
+      every image build sent `config/.env.secrets` and `.git` into the build context
+- [x] Web app Branches tab: clicks made while a merge or delete was running were silently dropped; actions are now
+      queued and run in click order, with "Merging…"/"Queued" per row
+- [x] Comms log: louis-agent's text blocks ran together across tool calls; they are now kept apart
+- [ ] Add a pull-request tool (GitHub / Azure DevOps) so a fix ends as a PR instead of a local branch
+- [ ] Retry and back off when the model API refuses (rate limit, credit or usage limit): today a triage just fails and
+      the error stays unprocessed until the next run (`-Resume` picks it up)
+- [ ] Record merges made in the web app under the person who clicked, not the server's git identity (in the demo
+      every merge is recorded as `louis-agent`)
+- [ ] Per-service louis-agent.api instances must not mount other repositories (`REPOSITORIES_PATH`): `BashRun` and
+      `PythonRun` can reach anything mounted, not just the workspace (the demo compose file already leaves it out)
+- [ ] Automated tests for the orchestrator against a scripted louis-agent.api (today only its parts are unit-tested;
+      the whole loop is only exercised by the demo, against a real model)
+- [ ] Regenerate `samples/sample-output/` with the current build (its comms log predates the text-block fix)
+
 ### Web app
 
-- [ ] Add automated tests for `louis-agent.web` (bUnit/Playwright) — currently hand-checked only
+- [ ] Add automated tests for `louis-agent.web` (bUnit/Playwright) — currently hand-checked only; the Branches queue
+      (several clicks in a row, a conflict partway through) is a good first case
 - [ ] Sync chat history across devices/browsers instead of only `localStorage` (lost on clearing site data)
-- [ ] Add a UI for managing skills (`Skills/*.md`) and for reviewing/approving agent-built tools — `/approve` is
-      CLI-only today
+- [ ] Add a UI for managing skills (`Skills/*.md`) and for reviewing/approving agent-built tools — today they are
+      managed by typing `/tools`, `/approve <Name>` and `/reject <Name>` in a chat
 
 ### CLI
 
@@ -173,7 +200,10 @@ shared-system actions.
 - [ ] Add `ExceptionlessTools` wrapping the Exceptionless API (new/trending errors, stack trace, affected
       endpoint, frequency) — same pattern as `PaymoTools`/`DevOpsTools`
 - [ ] Build an exception-driven triage loop: pull an error → locate the failing code → write a fix → run tests →
-      open a PR (default), with full auto-deploy-on-green as an explicit opt-in per environment rather than the default
+      open a PR (default), with full auto-deploy-on-green as an explicit opt-in per environment rather than the default.
+      **POC done** (`src/louis-agent.orchestrator`, see below): error → runbook triage → louis-agent fixes on a branch →
+      verified commit, replay and tests. Still missing for real use: a pull request instead of a local branch (no PR
+      tool yet), Exceptionless instead of a JSON-lines log, and the auto-deploy opt-in.
 - [ ] Add a rollback/kill-switch tool: auto-revert to the previous release if error rate spikes right after an
       agent-triggered deploy, instead of waiting for a human to notice
 - [ ] Add synthetic monitoring / uptime + performance-regression checks feeding the same triage loop — not every
@@ -221,16 +251,20 @@ orchestrator watching the whole store, and rather than embedding the watcher ins
       its microservice's Exceptionless project id, its repo location, its escalation rules (what counts as
       auto-fixable vs. needs-a-human), and any business actions specific to that service (e.g. payment-service might
       never auto-deploy, order-service might auto-restart a stuck worker).
+      **POC:** done as a folder per service (`Skills/order-service/service.md`) with one runbook per API method, which
+      kept each method's rules small and specific; selected with `ORCHESTRATOR_SERVICE`.
 - [ ] **Don't run the watcher inside the microservice it watches** — if the service crashes, its own watchdog
       shouldn't crash with it. Run the orchestrator as its own process/deployment per microservice (or per group of
       related microservices), not as a library loaded into the microservice's runtime.
+      **POC:** done — the orchestrator is its own container (`docker/docker-compose.demo.yml`).
 - [ ] **Process topology is a deploy choice, not an architecture one** — either one shared orchestrator process
       loaded with the right skill file per scheduled run, or one deployed instance per microservice. Mirrors how this
       repo already runs `acp-server` per Rider chat and `mcp-server` per client (`docker/docker-compose.yml`) rather
       than one shared instance; the per-microservice variant gives stronger blast-radius isolation (one
       misconfigured orchestrator can't touch another service's repo or credentials) at the cost of more deployments.
 - [ ] **Triggering**: scheduled polling (reuse the cron/schedule mechanism) and/or a webhook receiver for
-      Exceptionless/uptime alerts, per microservice.
+      Exceptionless/uptime alerts, per microservice. **POC:** polling only (`ORCHESTRATOR_POLL_SECONDS`, or `--once`);
+      no webhook receiver yet.
 - [ ] **The call into `louis-agent` is an `louis-agent.api` session call, not a shared process and not MCP**:
       `louis-agent.mcp-server` has no model of its own — it only hands over raw tools (see the correction above) —
       so autonomously running the fix loop needs the API's session endpoint instead. Each microservice gets its own
@@ -241,6 +275,9 @@ orchestrator watching the whole store, and rather than embedding the watcher ins
       `louis-agent` runs its existing triage → fix → test → PR loop with the tools it already has (`WorkspaceTools`,
       `GitTools`, `DotNetTools`) — it needs no new tools for this, only the `ExceptionlessTools` triage-loop work
       above to turn "an error" into "a prompt."
+      **POC:** done — `CallLouisAgentFix` opens one session per fix, streams the reply, sends "continue" follow-ups when
+      louis-agent runs out of tool rounds, and reads a `FIX-RESULT` line (see docs/AGENT_COMMUNICATION.md). Opening a
+      PR still needs a PR tool.
 - [ ] **Orchestrator implementation tier: Anthropic Tool Runner (`BetaToolRunner`, C#)**, not a hand-rolled loop.
       Unlike `louis-agent` core, the orchestrator has no stated multi-provider requirement, so being Anthropic-only
       is an acceptable trade for not hand-writing the tool loop/retry/streaming plumbing. It also matches the stack
@@ -248,14 +285,22 @@ orchestrator watching the whole store, and rather than embedding the watcher ins
       `BetaToolRunner`. Each orchestrator tool (`CallLouisAgentFix`, `EscalateToGoogleAgent`, etc.) wraps a plain
       HTTP/MCP call — these are RPC calls to independent services, not Agents-SDK-style "handoffs" (Tool Runner has
       none); there's no shared in-process conversation to hand off between three separately-deployed agents anyway.
+      **POC:** built on `louis-agent.core` instead (an `AgentEngine` with its own `toolsets:`), which reused the
+      providers, skills loader and tool loop with no new dependency. Decide which to keep before building the real one.
 - [ ] **Credential separation follows the process split**: the orchestrator holds Exceptionless, deploy and
       business-system (catalog/pricing) credentials; the `louis-agent.api` instance it calls holds only
       `WORKSPACE_ROOT`-scoped git/build access to that one repo. A compromised or misconfigured orchestrator skill
       can't push to prod directly (it can only ask `louis-agent` to open a PR); `louis-agent` never needs deploy
       access at all.
+      **POC:** the tool split holds (the orchestrator has no file-editing, git-write or shell tools; louis-agent has no
+      error-tracker or deploy access), but there are no real credentials in the demo yet. Caveat for the real setup:
+      the "can't push to prod" guarantee rests on branch protection, because the token louis-agent needs to push a PR
+      branch can usually push to `main` too.
 - [ ] **Worked example**: `order-service` throws a new exception → orchestrator's scheduled check (or webhook) picks
       it up from Exceptionless → `order-service-skills.md` says this error pattern is auto-fixable → orchestrator's
       `CallLouisAgentFix` tool POSTs a new session to `order-service`'s `louis-agent.api` instance with the stack
       trace → `louis-agent` locates the failing code, fixes it, runs tests, opens a PR, and the session result flows
       back over SSE → orchestrator (not `louis-agent`) decides whether to auto-merge/deploy per `order-service`'s
       own escalation rules, or wait for human approval.
+      **POC:** demonstrated end to end with ten bugs (samples/sample-output): a branch and commit instead of a PR, and a
+      human merges in the web app's Branches tab.

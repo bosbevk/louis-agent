@@ -74,7 +74,7 @@
     <main class="conversation">
         @if (_openBranch is not null || _openCommit is not null)
         {
-            <HistoryViewer Branch="_openBranch" Commit="_openCommit" Busy="@History.Busy" OnMerge="MergeBranch"
+            <HistoryViewer Branch="_openBranch" Commit="_openCommit" Busy="@(_openBranch is { } open && History.Pending(open.Branch.Name) is not null)" OnMerge="MergeBranch"
                            OnDelete="DeleteBranch" OnOpenCommit="OpenCommit" OnClose="CloseFile" />
         }
         else if (_openDiff is not null)
@@ -285,19 +285,23 @@
         }
     }
 
-    // After a merge the branch has nothing left to show, so the viewer closes; the panel says what was merged.
+    // After a merge the branch has nothing left to show, so the viewer closes; the panel says what was merged. The action
+    // may wait in the queue behind others, so the outcome is judged by this branch alone, and the viewer only closes if
+    // it still shows this branch.
     private async Task MergeBranch(string name)
     {
         await History.MergeAsync(name);
-        if (History.Error is not null) _notice = History.Error;
-        else CloseFile();
+        bool merged = History.Branches?.Branches.FirstOrDefault(b => b.Name == name) is null or { Merged: true };
+        if (!merged) _notice = History.Error ?? $"{name} was not merged.";
+        else if (_openBranch?.Branch.Name == name) CloseFile();
     }
 
     private async Task DeleteBranch(string name)
     {
         await History.DeleteAsync(name);
-        if (History.Error is not null) _notice = History.Error;
-        else CloseFile();
+        bool deleted = History.Branches?.Branches.All(b => b.Name != name) ?? false;
+        if (!deleted) _notice = History.Error ?? $"{name} was not deleted.";
+        else if (_openBranch?.Branch.Name == name) CloseFile();
     }
 
     // A review gets its own chat, so it doesn't mix with whatever the current chat is about.

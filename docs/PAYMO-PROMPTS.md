@@ -59,3 +59,6 @@ Log 2 hours on the second one
 - `PAYMO_API_KEY` in `config/.env.secrets` (create an API key in your Paymo account settings). Without it the Paymo tools aren't loaded.
 - Optional: `AGENT_FUNCTION` in `config/.env` adds guidance to the agent's instructions — `time-logging` for
   `time-logging-skills.md`, `paymo` for `paymo-skills.md`, or `louis` for every skill file.
+
+---
+[Docs index](README.md) · Previous: [Models](MODELS.md) · Next: [How a turn works](AGENT_INTERACTION.md)

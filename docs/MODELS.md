@@ -97,3 +97,6 @@ Works with anything that speaks the OpenAI Chat Completions API. Tool calling de
   service only runs with `--profile ollama`.
 - **The agent talks about tools instead of using them** — the model can't call tools well; switch model or check
   `tools=on` in the startup line.
+
+---
+[Docs index](README.md) · Previous: [Setup](SETUP.md) · Next: [Paymo prompts](PAYMO-PROMPTS.md)

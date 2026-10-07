@@ -126,3 +126,6 @@ The unit tests need no secrets, network or Docker.
 `docker/docker-compose.yml` wins over the env files. `docker compose ... config` shows the resolved values.
 
 **"must include the anthropic-workspace-id header"** — set `ANTHROPIC_WORKSPACE_ID` in `config/.env.secrets`.
+
+---
+[Docs index](README.md) · Previous: [Quick start](QUICK_START_AGENT.md) · Next: [Models](MODELS.md)
