@@ -20,6 +20,10 @@ Always pass `--env-file config/.env`; compose needs it for `REPOSITORIES_PATH`. 
 
 ## Project structure
 
+One design doc per project — purpose, structure, key types, settings, extension points, tests and limits — is in
+[projects/](projects/README.md).
+
+
 ```
 louis-agent.core/
 ├── AgentHost.cs              # Bootstrap for every host: env files, options, skills, LLM client, engine, logging

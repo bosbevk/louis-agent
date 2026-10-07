@@ -14,6 +14,9 @@ OpenAI-compatible endpoints.
 
 ## Hosts
 
+Each project also has its own design doc in [projects/](projects/README.md).
+
+
 | Host | Project | Bootstrap | Transport |
 |---|---|---|---|
 | CLI | `src/louis-agent.cli` | `AgentHost.Build()` | Terminal; interactive or one-shot (`louis-agent.cli [prompt]`) |

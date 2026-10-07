@@ -36,7 +36,7 @@ All docs, in reading order, are listed in **[docs/README.md](docs/README.md)**. 
 | Configure settings and secrets, or pick a model | [Setup](docs/SETUP.md) · [Models](docs/MODELS.md) |
 | Understand what happens when you send a message | [How a turn works](docs/AGENT_INTERACTION.md) |
 | Connect another program or agent: HTTP API and its event stream, Rider, MCP, agent-to-agent | [How the agents and endpoints talk](docs/AGENT_COMMUNICATION.md) |
-| Know the components, security and deployment | [Architecture](docs/ARCHITECTURE.md) |
+| Know the components, security and deployment | [Architecture](docs/ARCHITECTURE.md) · [project by project](docs/projects/README.md) |
 | Change the code | [Development guide](docs/CLAUDE.md) |
 | Watch two agents fix ten bugs, then merge the fixes | [Orchestrator demo](samples/README.md) · [sample output](samples/sample-output/README.md) |
 | Learn how the orchestrator decides, and write runbooks | [Runbooks](docs/RUNBOOKS.md) |

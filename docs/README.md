@@ -35,7 +35,13 @@ you need otherwise.
 | [Runbooks](RUNBOOKS.md) | Understand how the orchestrator decides what each error needs, with real examples, and write your own runbook |
 | [Sample output](../samples/sample-output/README.md) | See one real run without running it: the agents' full conversation, logs, branches and a recording of the merges |
 
-## 5. What's next: plans and designs
+## 5. Project by project
+
+| Doc | Read it to… |
+|---|---|
+| [Project design docs](projects/README.md) | Before changing one project: its purpose, how it works, files, key types, settings, extension points, tests and limits — core, CLI, ACP server, API, web app, MCP server, orchestrator, tests, and the demo service |
+
+## 6. What's next: plans and designs
 
 Start with the TODO: it lists everything planned, next and in the backlog, and links to the rest.
 
