@@ -1,8 +1,10 @@
 # F4 · Prompt caching (Anthropic)
 
-> **Status:** planned · **Milestone:** M2 · **Depends on:** F1 (to prove it works) ·
-> **Spec:** [Optimisation §B](../specs/RESPONSE_OPTIMISATION.md) · **TODO:** *Wire up Anthropic prompt caching on the
-> system prompt*
+> **Status:** planned · **Milestone:** M2 · **Depends on:** F1
+>
+> **Spec:** [Optimisation §B](../specs/RESPONSE_OPTIMISATION.md)
+>
+> **In the TODO:** tick **F4 Prompt caching** under *Now* ([TODO](../../TODO.md)) · **Replaces:** "Wire up Anthropic prompt caching on the system prompt"
 
 Every request re-sends ~26,000 tokens of tool definitions and system prompt that never change. With cache markers the API
 serves them at ~0.1× the input price after the first request. The biggest single saving in the plan.
@@ -81,6 +83,8 @@ the message cache from there (marker 1 is unaffected) — measure it in step 6.
 
 - Stories' criteria pass; tests added; suites pass.
 - Benchmark: input cost ≥ 60% lower than M1, 10/10 fixes confirmed; numbers recorded.
+- **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)): tick **F4** in the TODO,
+  set *Status* to done here and in the features table, and note it in the spec's implementation map.
 
 ## Risks
 

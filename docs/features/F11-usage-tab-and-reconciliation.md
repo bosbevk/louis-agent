@@ -1,7 +1,10 @@
 # F11 · Usage tab, usage API and reconciliation with the bill
 
-> **Status:** planned · **Milestone:** M5 · **Depends on:** F1–F3, F6, F7 ·
-> **Spec:** [Usage §7.1–7.2, §4.4](../specs/USAGE_AND_BUDGETS.md) · **TODO:** *Track token usage / cost per session*
+> **Status:** planned · **Milestone:** M5 · **Depends on:** F1–F3, F6, F7
+>
+> **Spec:** [Usage §7.1–7.2, §4.4](../specs/USAGE_AND_BUDGETS.md)
+>
+> **In the TODO:** tick **F11 Usage tab and reconciliation** under *Now* ([TODO](../../TODO.md)) · **Replaces:** "Track token usage / cost per session" (together with F1–F3, F6, F7)
 
 F3 shows usage where you're working; F11 adds the overview — what was spent today and this month, where, and against
 which budgets — plus a check that louis-agent's numbers match what the provider actually bills.
@@ -56,6 +59,8 @@ provider's own usage and cost reports, so that I trust the numbers.
 
 - Stories' criteria pass; tests added; suites pass.
 - Where an admin key exists: a benchmark day's ledger is within 5% of the provider's report (spec §9).
+- **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)): tick **F11** in the TODO,
+  set *Status* to done here and in the features table, and note it in the spec's implementation map.
 
 ---
 [Features](README.md) · Previous: [F10 Route settings](F10-route-settings.md)

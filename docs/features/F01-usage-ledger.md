@@ -1,8 +1,10 @@
 # F1 · Usage ledger: record every model request
 
-> **Status:** planned · **Milestone:** M1 · **Depends on:** — ·
-> **Spec:** [Usage §4.1, §4.3](../specs/USAGE_AND_BUDGETS.md) · [Optimisation §A](../specs/RESPONSE_OPTIMISATION.md) ·
-> **TODO:** *Track token usage / cost per session*
+> **Status:** planned · **Milestone:** M1 · **Depends on:** —
+>
+> **Spec:** [Usage §4.1, §4.3](../specs/USAGE_AND_BUDGETS.md) · [Optimisation §A](../specs/RESPONSE_OPTIMISATION.md)
+>
+> **In the TODO:** tick **F1 Usage ledger** under *Now* ([TODO](../../TODO.md))
 
 Today `ChatResponse.Usage` is ignored everywhere, so nobody knows what a turn, a fix or a run used. F1 records one line per
 model request, attributed to who made it and what for. Every other feature in this plan reads from it.
@@ -94,6 +96,8 @@ Where it plugs in:
 - A demo run produces a ledger in which every fix's records carry its task and run, and the orchestrator's triage
   records are present.
 - **The M1 baseline is recorded** (after F2): total tokens and cost per fix for the current demo.
+- **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)): tick **F1** in the TODO,
+  set *Status* to done here and in the features table, and note it in the spec's implementation map.
 
 ## Not in this feature
 

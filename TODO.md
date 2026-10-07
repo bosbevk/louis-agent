@@ -1,385 +1,189 @@
 # TODO
 
-Open items for Louis Agent. Add to this list as new work comes up; check items off (or delete them) once done.
+What's planned, what's next, and the ideas not planned yet — in that order.
 
-## Known limitations ([docs/CLAUDE.md](docs/CLAUDE.md#known-limitations))
+**How this list works**
 
-- [ ] Rider MCP discovery only logs Rider's tools; they aren't callable yet (needs a full MCP client)
-- [ ] Sessions are in memory in the API and ACP server; a restart ends them (the web app keeps the transcript)
-- [ ] Ollama tool support is a name heuristic (`LlmOptions.KnownNoToolsPrefixes`)
-- [ ] Paymo task lookup takes the first match for a name; ambiguous names can hit the wrong task
-- [ ] No rate limiting or audit log beyond the file logs
-- [ ] (feature [F10](docs/features/F10-route-settings.md)) 10 tool rounds per message: long tasks need a follow-up message to continue (the orchestrator sends one
-      automatically); consider making `MaximumIterationsPerRequest` configurable per host
-- [ ] An unpublished API (`dotnet run`) only serves the web app in the `Development` environment
+- **Planned work is a feature.** Each feature has a design doc in [docs/features/](docs/features/README.md) with user
+  stories and steps, and exactly **one line under *Now***. When a feature's *Done when* is met, tick that line — it's
+  the only place to tick — and the feature doc says what else to update.
+- **Each line says what it replaces.** Older backlog items that a feature covers were folded into it, so nothing
+  appears twice.
+- **Bigger designs live in [docs/specs/](docs/specs/).** This list keeps only their open items.
+- **When something is finished**, tick it, then move it to *Done* as one line (newest first).
 
-## Testing
+## Now: usage, budgets and cheaper responses
 
-- [ ] The API and web app have no automated tests yet; only checked by hand (curl and a browser)
+From the specs [Usage, estimates and budgets](docs/specs/USAGE_AND_BUDGETS.md) and
+[Response optimisation](docs/specs/RESPONSE_OPTIMISATION.md). Work through the milestones in order; each is useful on
+its own.
 
-## Session architecture (AgentSession)
+**M1 — See it:** every request's tokens and cost recorded and visible.
 
-![AgentSession Architecture](docs/todo/agentsession-architecture.png)
+- [ ] [F1 Usage ledger](docs/features/F01-usage-ledger.md) — record every model request, attributed to session, task
+      and run
+- [ ] [F2 Prices and cost](docs/features/F02-prices-and-cost.md) — a price table; cost on every record
+- [ ] [F3 Show usage](docs/features/F03-usage-display.md) — cost per answer (web, CLI, Rider), in the API stream, and
+      per fix in the comms log
 
-Current `AgentSession` (`src/louis-agent.api/AgentSessions.cs`) is just an in-memory `List<ChatMessage>` per session
-id, dropped on idle timeout or restart. It conflates "conversation history" with "what the model sees" and has no
-durable storage, memory, or retrieval. The diagram above is the target shape; broken down into workstreams:
+**M2 — Cheaper:** stop paying full price for the same tokens.
 
-### AgentSession (runtime state)
+- [ ] [F4 Prompt caching](docs/features/F04-prompt-caching.md) — cache the ~26,000-token prefix every request re-sends.
+      *Replaces:* "Wire up Anthropic prompt caching on the system prompt"
+- [ ] [F5 Toolset profiles](docs/features/F05-toolset-profiles.md) — load only the tools a session needs (the demo:
+      coding tools only)
 
-- [ ] Separate **session state** (identity, task state, memory references) from **LLM context** (what actually goes
-      in the prompt) — session ≠ model memory
-- [ ] Extend `AgentSession` beyond id + history: lifecycle state, user profile/preferences, task state (goals), memory
-      references, tool state — currently only id, history and the turn lock exist
-- [ ] Give the session durable storage instead of only the in-process `ConcurrentDictionary`: a DB for full
-      conversation history, so a restart doesn't lose it (ties into the existing "sessions are in memory" limitation)
+**M3 — In control:** know the cost before, stop cleanly at a limit.
 
-### Context engineering pipeline
+- [ ] [F6 Estimates](docs/features/F06-estimates.md) — estimate a run before it starts; estimate vs actual per fix
+- [ ] [F7 Budgets](docs/features/F07-budgets.md) — budgets that warn, ask or stop; the orchestrator defers what it can't
+      afford
+- [ ] [F8 Reliability](docs/features/F08-reliability.md) — retries with backoff, stop at the first account-limit
+      refusal, fallback model, results as tool calls. *Replaces:* "Retry and back off when the model API refuses",
+      "Add model fallback", "Wire up structured outputs"
 
-First slice specified in [docs/specs/RESPONSE_OPTIMISATION.md](docs/specs/RESPONSE_OPTIMISATION.md) § D: clear stale
-tool results, then compact old turns, at token thresholds.
+**M4 — Long sessions:** long chats and tasks don't grow without limit.
 
+- [ ] [F9 Bounded history](docs/features/F09-context-management.md) — clear stale tool results, then compact old turns.
+      *Replaces:* "Consider context editing and compaction"; first slice of the
+      [session architecture](docs/specs/SESSION_ARCHITECTURE.md)'s context pipeline
+- [ ] [F10 Route settings](docs/features/F10-route-settings.md) — thinking, tool rounds and summary model per route.
+      *Removes the limitation:* 10 tool rounds per message
 
-- [ ] Introduce a context-building step between session and LLM call: retrieve → rank & filter → token budget →
-      compress/summarize (only if over budget) → build prompt, instead of sending the full/raw history every turn
-- [ ] Distinguish the context sources currently blurred into one history list: recent conversation, relevant past
-      conversations (semantic search), long-term memory (user facts/prefs), external knowledge (RAG), task & tool
-      state — each has a different retrieval method
-- [ ] Replace "send the last N messages" with ranked retrieval: recent + semantic search + keyword search + metadata
-      filters + recency/importance, then select only the most relevant before assembling the prompt
-- [ ] Add a token budget allocator that assigns a window per context source before compression kicks in
-- [ ] Add history compaction for long conversations: recent messages verbatim + summarized/compacted older history +
-      selective retrieval, instead of unbounded growth or a hard cutoff
+**M5 — Reporting:** an overview and a check against the bill.
 
-### LLM invocation & response
+- [ ] [F11 Usage tab and reconciliation](docs/features/F11-usage-tab-and-reconciliation.md) — the web app's Usage tab,
+      usage API, comparison with the provider's reports. *With F1–F3, F6 and F7, replaces:* "Track token usage / cost
+      per session"
 
-- [ ] Formalize the assembled prompt's shape: system instructions, selected context, current query, tool
-      definitions, output format/schema — as an explicit object, not ad hoc message construction
-- [ ] After the turn: persist the new turn to history, update session state (tasks/tool state/refs), and extract
-      long-term memory facts asynchronously (none of this happens today — the session is mutated in place only)
+## Next: build-mode POC — build a whole microservice from runbooks
 
-### Persistence layer
+Show that runbooks can *build* a service, not just fix one: each runbook is the spec for a method, louis-agent builds it
+on its own branch, the orchestrator checks it against the runbook's examples, and a person merges it in the web app.
+**A new, separate sample** — the current fix demo (`samples/order-service`, `run-demo.ps1`, `sample-output/`) keeps
+working unchanged. Start after M2 (F4, F5) and F6, so each build is cached, lean and estimated.
 
-- [ ] Split storage by access pattern instead of one in-memory dictionary for everything: Redis/in-memory for hot
-      session state (fast lookup, TTL), DB for durable transcript + long-term memory + audit/retention, vector store
-      for embeddings/semantic search, blob storage for large artifacts (files, images, tool outputs) kept out of the
-      prompt
+Set-up, separate from the fix demo:
 
-### Session lifecycle
-
-- [ ] Model explicit lifecycle states (create → active ⇄ idle → ended → archived) instead of only "exists until idle
-      timeout removes it"; consider resume/rehydrate from archived state
-
-### Open design questions (from "Key Considerations")
-
-- [ ] How much history to include (token budget) and when to trigger summarization/compaction
-- [ ] Error handling for the context pipeline: retries, idempotency, consistency across storage layers
-- [ ] Scaling: keep agent runtime stateless, push state into distributed stores
-- [ ] Security & tenant isolation between sessions/users
-- [ ] Privacy: PII redaction, retention policy, deletion
-- [ ] Memory quality: dedupe, conflict resolution, staleness of long-term memory facts
-- [ ] Decide the short-session vs. long-session tradeoff explicitly (few turns/recent-only vs. days-long with
-      summarization + semantic search) rather than one fixed strategy for every session
-
-## Planned features: usage, budgets and cheaper responses
-
-The two specs ([usage, estimates and budgets](docs/specs/USAGE_AND_BUDGETS.md),
-[response optimisation](docs/specs/RESPONSE_OPTIMISATION.md)) are broken into features with user stories and
-step-by-step tasks in [docs/features/](docs/features/README.md). Tick a feature when its definition of done is met.
-
-- [ ] **M1 — See it:** [F1 Usage ledger](docs/features/F01-usage-ledger.md) ·
-      [F2 Prices and cost](docs/features/F02-prices-and-cost.md) · [F3 Show usage](docs/features/F03-usage-display.md)
-- [ ] **M2 — Cheaper:** [F4 Prompt caching](docs/features/F04-prompt-caching.md) ·
-      [F5 Toolset profiles](docs/features/F05-toolset-profiles.md)
-- [ ] **M3 — In control:** [F6 Estimates](docs/features/F06-estimates.md) · [F7 Budgets](docs/features/F07-budgets.md) ·
-      [F8 Reliability](docs/features/F08-reliability.md)
-- [ ] **M4 — Long sessions:** [F9 Bounded history](docs/features/F09-context-management.md) ·
-      [F10 Route settings](docs/features/F10-route-settings.md)
-- [ ] **M5 — Reporting:** [F11 Usage tab and reconciliation](docs/features/F11-usage-tab-and-reconciliation.md)
-
-## Ideas / backlog
-
-### Ops / CI
-
-Cost and speed items below (usage tracking, prompt caching, context editing/compaction, structured outputs, model
-fallback) are planned together in [docs/specs/RESPONSE_OPTIMISATION.md](docs/specs/RESPONSE_OPTIMISATION.md),
-with measured numbers and an order to do them in.
-
-
-- [ ] Add CI (`.github/workflows`) to run `dotnet build` / `dotnet test` on push/PR — there's no CI at all today, so
-      regressions are only caught locally
-- [ ] Track token usage / cost per session (specified in
-      [docs/specs/USAGE_AND_BUDGETS.md](docs/specs/USAGE_AND_BUDGETS.md): ledger, estimates, budgets; features F1–F3,
-      F6, F7, F11) — useful given this proxies to paid Anthropic calls
-- [ ] Add metrics/tracing (e.g. OpenTelemetry) beyond the stderr + JSONL file logs (`AgentLog`) — no
-      latency/error dashboards today
-- [ ] (feature [F8](docs/features/F08-reliability.md)) Add model fallback: retry against a secondary provider/model if the configured one errors or rate-limits.
-      Checked: Anthropic's native `fallbacks` parameter (`Anthropic.Models.Beta.Messages.MessageCreateParams`) doesn't
-      satisfy this — it only fires on a policy *refusal*, is Anthropic-model-only (no fallback to Ollama/openai-compatible),
-      and needs the beta client surface this repo doesn't use. Hand-rolled retry/fallback logic is still required for
-      the error/rate-limit case this item actually wants.
-- [ ] (feature [F4](docs/features/F04-prompt-caching.md)) Wire up Anthropic prompt caching on the system prompt — confirmed available on the exact call path already in
-      use (`Anthropic` NuGet 12.53.0's `AsIChatClient`, in `LlmClientFactory.cs`): `TextContent.WithCacheControl(...)`
-      for messages/system content and `Tool.CacheControl` via `AIFunctionFactoryOptions.AdditionalProperties` for
-      tools, both documented in the package's own XML docs. Not wired up anywhere today. The system prompt (composed
-      skill docs) is rebuilt identically every turn, making it a strong candidate — cached reads are ~0.1× the
-      uncached input price.
-- [ ] (feature [F8](docs/features/F08-reliability.md), via result tools) Wire up structured outputs (`output_config.format` / `JsonOutputFormat`) where the engine needs a model response
-      shaped as JSON — confirmed present on the repo's existing **non-beta** call path (no client switch needed), via
-      `Anthropic.Models.Messages.OutputConfig`/`JsonOutputFormat`, and currently unused anywhere in `AgentEngine.cs`.
-- [ ] (feature [F9](docs/features/F09-context-management.md)) Consider context editing (`clear_tool_uses_20250919`, clears stale tool results from a long conversation) and
-      compaction (`compact_20260112`, server-side summarization of old history) for long-running sessions — both are
-      confirmed present in the installed Anthropic SDK, but only on the **beta** `MessageCreateParams.ContextManagement`
-      surface, which means switching from `AnthropicClient.AsIChatClient` to the beta client, not just a config flag.
-      Neither would replace the engine's existing `SummariseToolResultAsync` (which shrinks one oversized tool result
-      before it enters history) — they solve long-session accumulation, a different problem, so would supplement it.
-- [x] Rewrite tool `[Description]` attributes to the current bar (3+ sentences, explicit when-*not*-to-use, precise
-      behavior). Done across all 10 tool files (108 method-level descriptions: `WorkspaceTools` 14, `GitTools` 35,
-      `DevOpsTools` 17, `DotNetTools` 10, `PaymoTools` 18, `AgentEngine` 5, `BashTools`/`PowerShellTools`/
-      `PythonTools`/`WebTools` 9) — grounded in each method's actual behavior, not generic text; build and the full
-      test suite (438 passed) confirm nothing broke.
-- [x] Add the sensitive-file check to `WorkspaceTools.DeleteDirectory` and `WorkspaceTools.CopyFile`. `DeleteDirectory`
-      now walks the tree and refuses if any file inside matches `IsSensitive`; `CopyFile` now blocks on either the
-      source or the destination being sensitive, matching the other write tools. Covered by three new tests
-      (`DeleteDirectory_ContainingSensitiveFile_BlocksDeletion`, `CopyFile_SensitiveSource_BlocksCopy`,
-      `CopyFile_SensitiveDestination_BlocksCopy`); full suite (441 passed) confirms nothing else broke.
-- [x] Fix `DevOpsTools.GetBlockersBySprint`. Replaced the `[System.WorkItemType]='Blocker'` filter (a type that
-      doesn't exist in standard process templates) with `[System.Tags] CONTAINS 'Blocker'`, matching Azure DevOps'
-      actual common convention for flagging a blocker across any work item type.
-- [x] Standardize `Skills/*.md`. `devops-skills.md`'s 3 skills wrapped a full Python script in a
-      `python3 << 'PYTHON_EOF' ... PYTHON_EOF` heredoc inside a ```bash fence — rewritten to direct ```python
-      fences (confirmed fully supported by `MarkdownSkillLoader`/`ExecuteSkill`'s language dispatch). Normalized
-      every file's H1 to the same `# <Topic> Skills` convention (`"Louis Agent - Hello World Test Skills"`,
-      `".NET Development Skills"`, `"Web Research Skills"`, `"Paymo Skills - Time Tracking"`,
-      `"DevOps Skills - Work Item Retrieval"`, and the outlier `"Extending Yourself: Skills and Tools"` all
-      collapsed to the plain `<Topic> Skills` form already used by `bash-skills.md`/`powershell-skills.md`/
-      `python-skills.md`). Converted `paymo-skills.md` and `time-logging-skills.md`'s informal "prefer native
-      tools" bullet lists into the same `## Tools` table format the guide-style files use, and clarified
-      `code-review-skills.md`'s ambiguous "native `code-review` skill" reference, which conflated this agent's
-      own markdown-skill system with the unrelated Claude Code CLI `/code-review` slash command. Updated one test
-      (`DotNetSkillsProviderTests.AgentHostLoadSkills_IncludesDotNetGuidanceOnce`) that asserted the old title
-      text; full suite (441 passed) confirms nothing else broke.
-- [x] Add a remote transport to `louis-agent.mcp-server` for non-local MCP clients (e.g. an agent built on another
-      provider's SDK, such as an orchestrator written against OpenAI's Agents SDK). It only had
-      `.WithStdioServerTransport()`, which needs the client to spawn it as a local subprocess. `MCP_TRANSPORT=http`
-      now switches to `WebApplication`/`MapMcp()` (Streamable HTTP, `ModelContextProtocol.AspNetCore` — already
-      referenced but unused) while leaving the stdio default byte-for-byte unchanged (verified: default run still
-      logs the same stdio-transport startup lines as before). HTTP mode reuses the `api` host's `AGENT_API_KEY`
-      gate (constant-time comparison, `x-api-key`/`Authorization: Bearer`) since it exposes the same shell/git/
-      file-write tools over the network instead of only a local pipe; verified with curl that no/wrong key gets
-      401 and the right key gets 200. Needed `<FrameworkReference Include="Microsoft.AspNetCore.App" />` added to
-      the csproj (plain console `Sdk`, not `Sdk.Web`). `docker-compose.yml`'s `mcp-server` service now passes
-      through `MCP_TRANSPORT`/`MCP_PORT` and binds the port to `127.0.0.1` by default, matching `api`'s posture.
-      Auth key is `MCP_API_KEY`, separate from `louis-agent.api`'s `AGENT_API_KEY` so each service's access can be
-      rotated/revoked independently, falling back to `AGENT_API_KEY` when unset so one key still covers both if
-      that's all that's configured; verified all three cases (distinct key rejects the other service's key, wrong
-      key still 401s, fallback alone still 200s) with curl.
-
-### Orchestrator demo (POC) — follow-ups
-
-Delivered (2026-10-06): the demo service with ten bugs, the orchestrator with a runbook per API method, the Markdown
-agent-communications log, the Docker demo (`samples/run-demo.ps1`), the web app's Branches tab with the history and
-merge endpoints, and `AgentEngine`'s `toolsets:` option. Details in [samples/README.md](samples/README.md) and
-[docs/AGENT_COMMUNICATION.md](docs/AGENT_COMMUNICATION.md).
-
-- [x] Root `.dockerignore`: `docker/.dockerignore` was never read (Docker only reads the one at the context root), so
-      every image build sent `config/.env.secrets` and `.git` into the build context
-- [x] Web app Branches tab: clicks made while a merge or delete was running were silently dropped; actions are now
-      queued and run in click order, with "Merging…"/"Queued" per row
-- [x] Comms log: louis-agent's text blocks ran together across tool calls; they are now kept apart
-- [ ] Add a pull-request tool (GitHub / Azure DevOps) so a fix ends as a PR instead of a local branch
-- [ ] (features [F7](docs/features/F07-budgets.md), [F8](docs/features/F08-reliability.md)) Retry and back off when the model API refuses (rate limit, credit or usage limit): today a triage just fails and
-      the error stays unprocessed until the next run (`-Resume` picks it up). Budgets that stop a run *before* the
-      account's limit, and stopping at the first account-limit refusal, are in
-      [docs/specs/USAGE_AND_BUDGETS.md](docs/specs/USAGE_AND_BUDGETS.md) § 6
-- [ ] Record merges made in the web app under the person who clicked, not the server's git identity (in the demo
-      every merge is recorded as `louis-agent`)
-- [ ] Per-service louis-agent.api instances must not mount other repositories (`REPOSITORIES_PATH`): `BashRun` and
-      `PythonRun` can reach anything mounted, not just the workspace (the demo compose file already leaves it out)
-- [ ] Automated tests for the orchestrator against a scripted louis-agent.api (today only its parts are unit-tested;
-      the whole loop is only exercised by the demo, against a real model)
-- [ ] Regenerate `samples/sample-output/` with the current build (its comms log predates the text-block fix)
-
-### Build-mode POC: build a whole microservice from runbooks (new sample)
-
-Show that the same runbook approach can *build* a microservice, not just fix one: each runbook becomes the spec for a
-method, louis-agent implements it on its own branch, the orchestrator verifies it against the runbook's examples, and
-a person reviews and merges in the web app. This is a **new, separate sample**: the current fix demo
-(`samples/order-service`, `samples/run-demo.ps1`, `samples/sample-output/`) must keep working unchanged.
-
-Separation from the existing sample:
-
-- [ ] Own folder, e.g. `samples/build-service/`: a near-empty starting repository (solution, empty project, test
-      project) plus the runbooks that specify its methods
-- [ ] Own run script (e.g. `samples/run-build-demo.ps1`), own compose project (separate project name, port, `.demo`
-      sub-folder and state directory), so both demos can run side by side and neither overwrites the other's output
-- [ ] Own sample output folder (comms log, branches, recording), next to `samples/sample-output/`
-- [ ] Decide: extend `louis-agent.orchestrator` with a build mode (e.g. `ORCHESTRATOR_MODE=build`, reusing
-      `LouisAgentClient`, `CommsLog`, the verification tools and the runbook loader) or create a separate orchestrator
-      project. Reuse is likely cheaper; either way the fix mode's behaviour and tests must not change
+- [ ] Own folder `samples/build-service/`: a near-empty starting repository (solution, empty project, test project) and
+      the runbooks that specify its methods
+- [ ] Own run script (`samples/run-build-demo.ps1`), compose project, port, `.demo` sub-folder, state directory and
+      sample output, so both demos can run side by side
+- [ ] Decide: a build mode in `louis-agent.orchestrator` (`ORCHESTRATOR_MODE=build`, reusing `LouisAgentClient`,
+      `CommsLog`, the checks and the runbook loader) or a separate orchestrator. Reuse is likely cheaper; either way the
+      fix mode must not change
 
 The build flow:
 
-- [ ] **Runbook as spec**: extend the runbook format for methods that don't exist yet: route, inputs, outputs,
-      business rules, and worked examples (input → expected output) that double as acceptance tests
-- [ ] **Scaffold first**: one branch that sets up the service skeleton (project, data access, routing that lets each
-      method register its own route in its own file, test project), merged before any method is built
-- [ ] **One method per branch**: for each runbook, a build request to louis-agent (implement in `Api/<Method>.cs`,
-      tests covering the runbook's examples, build, test, commit on `feature/<method>`, end with a `BUILD-RESULT`
-      line), with the same "continue" follow-ups the fixes use
-- [ ] **Verify against the spec**: the orchestrator checks the commit in git, calls the new method with every runbook
-      example and compares the answers, and runs the whole suite; anything that fails is escalated, not merged
-- [ ] **Avoid merge conflicts by design**: no shared route table to edit; each method and its tests in their own files,
-      so the method branches merge independently in any order
-- [ ] **Order and dependencies**: let a runbook name methods it depends on (e.g. `vat` uses `order-total`) and build
-      them in that order, each new branch starting from a `main` that already has its dependencies merged
-- [ ] **Review and merge** in the web app's Branches tab, as with the fixes; the comms log records every build request,
-      reply and check
-- [ ] Optional first step: have louis-agent **draft runbooks** from a written service description (or from an
-      existing service's code), for a person to review and approve before anything is built
+- [ ] **Runbook as spec:** add route, inputs, outputs, business rules and worked examples (input → expected output) that
+      double as acceptance tests
+- [ ] **Scaffold first:** one branch for the skeleton (project, data access, routing where each method registers its own
+      route in its own file, test project), merged before any method
+- [ ] **One method per branch:** a build request per runbook (implement in `Api/<Method>.cs`, tests for the runbook's
+      examples, build, test, commit on `feature/<method>`, report the result), with "continue" follow-ups as for fixes
+- [ ] **Check against the spec:** verify the commit, call the method with every runbook example, run the whole suite;
+      anything failing is escalated, not merged
+- [ ] **Dependencies:** a runbook can name methods it needs (e.g. `vat` uses `order-total`); build in that order, each
+      branch from a `main` that already has them
+- [ ] **Review and merge** in the web app's Branches tab; the comms log records every request, reply and check
+- [ ] Optional: louis-agent **drafts the runbooks** from a written description (or an existing service's code) for a
+      person to approve first
+- [ ] Docs: a README for the sample, a section in [RUNBOOKS.md](docs/RUNBOOKS.md) on runbooks as specs, links from the
+      docs index
 
-Things to watch:
+Keep in mind: one method per task (louis-agent has 10 tool rounds per message, and a long conversation re-sends a
+growing history every round, so smaller tasks are cheaper); make runs resumable after a usage limit, as the fix demo's
+`-Resume` is; and tests only prove what the runbook examples cover, so the human review stays essential.
 
-- [ ] Size: louis-agent has 10 tool rounds per message, so keep each task to one method; a whole service in one request
-      won't fit
-- [ ] Cost: a service is many model runs; estimate it per method, and make the run resumable after a usage limit (as
-      `-Resume` does for the fix demo). Keep each task to one method (cheaper: a long conversation re-sends a growing
-      history every round), and apply the response-optimisation spec first: prompt caching and a coding-only toolset
-      cut the ~26,000-token prefix every request re-sends
-- [ ] Quality: tests only prove what the runbook examples cover; the human review before merging stays essential
-- [ ] Docs: a README for the new sample, a section in docs/RUNBOOKS.md on runbooks as specs, and links from the docs
-      index
+## Backlog: not planned yet
+
+### Quality and CI
+
+- [ ] CI (`.github/workflows`): `dotnet build` and `dotnet test` on every push and pull request — today regressions are
+      only caught locally
+- [ ] Automated tests for the API and the web app (bUnit or Playwright); start with the Branches queue (several clicks in
+      a row, a conflict partway through)
+- [ ] End-to-end tests for the orchestrator against a scripted louis-agent.api (today only its parts are unit-tested;
+      the whole loop runs only in the demo, against a real model)
+
+### Orchestrator and agents
+
+Design and open decisions: [docs/specs/ORCHESTRATOR_DESIGN.md](docs/specs/ORCHESTRATOR_DESIGN.md).
+
+- [ ] A pull-request tool (GitHub / Azure DevOps), so a fix ends as a PR instead of a local branch
+- [ ] Decide the orchestrator's implementation tier: keep `louis-agent.core` (as the POC) or move to Anthropic's Tool
+      Runner
+- [ ] Error-tracker tools (e.g. Exceptionless) instead of the demo's JSON-lines log
+- [ ] A webhook trigger for error-tracker and uptime alerts, next to polling
+- [ ] Branch protection on `main` wherever louis-agent can push (its PR token can usually push to `main` too)
+- [ ] Per-service louis-agent.api instances must not mount other repositories (`REPOSITORIES_PATH`): `BashRun` and
+      `PythonRun` reach anything mounted (the demo compose file already leaves it out)
+- [ ] Record merges made in the web app under the person who clicked, not the server's git identity
+- [ ] Regenerate `samples/sample-output/` with the current build (its comms log predates the text-block fix)
+- [ ] Self-healing beyond the POC: rollback / kill switch after a bad deploy, synthetic monitoring, a scheduled
+      maintenance agent, a dependency / CVE watcher
+- [ ] Store operations: a separate orchestrator with catalogue, inventory and pricing tools, and the deploy-gate
+      boundary between it and louis-agent
+
+### Sessions and memory
+
+Design: [docs/specs/SESSION_ARCHITECTURE.md](docs/specs/SESSION_ARCHITECTURE.md) (F9 is its first slice).
+
+- [ ] Durable sessions: keep conversations across restarts (removes the *sessions are in memory* limitation)
+- [ ] Separate session state from the model's context, with a context-building step (retrieve, rank, budget, compress)
+- [ ] Long-term memory and retrieval (past conversations, user facts, external knowledge)
+- [ ] Storage by access pattern (hot state, transcripts, vectors, large artifacts) and explicit session lifecycle states
 
 ### Web app
 
-- [ ] Add automated tests for `louis-agent.web` (bUnit/Playwright) — currently hand-checked only; the Branches queue
-      (several clicks in a row, a conflict partway through) is a good first case
-- [ ] Sync chat history across devices/browsers instead of only `localStorage` (lost on clearing site data)
-- [ ] Add a UI for managing skills (`Skills/*.md`) and for reviewing/approving agent-built tools — today they are
-      managed by typing `/tools`, `/approve <Name>` and `/reject <Name>` in a chat
+- [ ] Sync chat history across devices and browsers instead of only `localStorage`
+- [ ] A UI for skills (`Skills/*.md`) and for reviewing and approving agent-built tools — today that's typing `/tools`,
+      `/approve <Name>` and `/reject <Name>` in a chat
 
 ### CLI
 
-- [ ] Let the CLI resume a previous session's history across restarts (the web app keeps it in `localStorage`; the
-      CLI and ACP server don't persist it)
+- [ ] Resume a previous session after a restart (the web app keeps its chats; the CLI and ACP server don't)
 
-### Tooling / multi-repo
+### Tooling and repositories
 
-- [ ] Add a tool for searching/operating across more than one mounted repo at once — `REPOSITORIES_PATH` mounts
-      multiple repos, but every tool call is scoped to a single workspace root
-- [ ] Add a marketplace/sharing mechanism for agent-built tools (`Skills/tools/pending`) between projects or
-      teammates — each repo builds its own from scratch today
+- [ ] Search and work across more than one mounted repository at once (`REPOSITORIES_PATH` mounts several, but every
+      tool is scoped to one workspace)
+- [ ] Share agent-built tools between projects or teammates (each repository builds its own today)
 
-### Self-healing (within `louis-agent`)
+### Observability
 
-This is in scope for `louis-agent` as-is — it's the normal fix/test/PR loop, just triggered by an error instead of a
-prompt. Default to the guarded path (PR + approval) before any auto-deploy path, since deploys are hard-to-reverse,
-shared-system actions.
+- [ ] Metrics and tracing (e.g. OpenTelemetry) beyond the stderr and JSON-lines logs: latency and error dashboards
+      (usage and cost are covered by F1–F3 and F11)
 
-- [ ] Add `ExceptionlessTools` wrapping the Exceptionless API (new/trending errors, stack trace, affected
-      endpoint, frequency) — same pattern as `PaymoTools`/`DevOpsTools`
-- [ ] Build an exception-driven triage loop: pull an error → locate the failing code → write a fix → run tests →
-      open a PR (default), with full auto-deploy-on-green as an explicit opt-in per environment rather than the default.
-      **POC done** (`src/louis-agent.orchestrator`, see below): error → runbook triage → louis-agent fixes on a branch →
-      verified commit, replay and tests. Still missing for real use: a pull request instead of a local branch (no PR
-      tool yet), Exceptionless instead of a JSON-lines log, and the auto-deploy opt-in.
-- [ ] Add a rollback/kill-switch tool: auto-revert to the previous release if error rate spikes right after an
-      agent-triggered deploy, instead of waiting for a human to notice
-- [ ] Add synthetic monitoring / uptime + performance-regression checks feeding the same triage loop — not every
-      production problem throws an exception (slow checkout, broken layout)
-- [ ] Add a scheduled maintenance agent (dependency bumps, security patch sweeps) using the existing cron/schedule
-      mechanism — proactive, not just reactive
-- [ ] Add a dependency/CVE watcher that fires the same fix → test → PR pipeline when a package advisory lands
+## Known limitations
 
-### Autonomous store operations (separate orchestrator agent)
+The same list as [docs/CLAUDE.md](docs/CLAUDE.md#known-limitations); facts about today, not tasks. Where a feature or
+backlog item removes one, it says so.
 
-Out of scope for `louis-agent` itself — a store-ops orchestrator is a different kind of agent (owns business state
-and deploy/rollback decisions, runs on a schedule, watches metrics) that calls `louis-agent` as a sub-agent for
-anything that's actually a code change. The integration point is `louis-agent.api`'s session endpoint
-(`AgentSessions.cs`) over HTTP/SSE, **not** `louis-agent.mcp-server`: the MCP server has no `IChatClient`/
-`AgentEngine` of its own (`Program.cs`: *"The MCP client brings its own model; this server publishes the agent's
-tools... so that client can call them"*) — it hands over raw tools for whatever model is on the calling end to
-drive itself. Going through MCP would mean the orchestrator's own model does the fix reasoning one tool call at a
-time, with no `louis-agent` judgment involved at all. Going through the API session endpoint means `louis-agent`'s
-own `AgentEngine` runs the full triage → fix → test → PR loop server-side, and the orchestrator just gets back a
-result — which is what "calls `louis-agent` to fix and PR" actually requires.
+- Rider MCP discovery only logs Rider's tools; they aren't callable yet (needs a full MCP client).
+- Sessions are in memory in the API and ACP server; a restart ends them → *Sessions and memory: durable sessions*.
+- Ollama tool support is a name heuristic (`LlmOptions.KnownNoToolsPrefixes`).
+- Paymo task lookup takes the first match for a name; an ambiguous name can hit the wrong task.
+- No rate limiting or audit log beyond the file logs.
+- 10 tool rounds per message: long tasks need a follow-up message → **F10**.
+- An unpublished API (`dotnet run`) only serves the web app in the `Development` environment.
 
-- [ ] Design the orchestrator agent: watches store health (errors, uptime, performance), decides code-fix vs.
-      ops-action vs. escalate-to-human, and calls `louis-agent.api`'s session endpoint for code-fix work
-- [ ] Add catalog/inventory/pricing tools (stock sync, price updates) to the orchestrator so it can act on business
-      state directly, without routing non-code actions through `louis-agent`
-- [ ] Define the approval/deploy-gate boundary between the two agents: orchestrator decides *when* to ship,
-      `louis-agent` only produces the *fix* — keeps blast radius of agent-written code changes separate from
-      business-critical deploy/rollback decisions
+## Done
 
-#### Design: one orchestrator per microservice
+Newest first; details in the git history.
 
-A working proof of concept lives in [samples/](samples/README.md): `samples/order-service` (a demo service) and
-`src/louis-agent.orchestrator` (an orchestrator with one runbook per API method that hands fixes to `louis-agent.api`
-and verifies the commit, a replay and the tests itself). It runs entirely in Docker (`docker/docker-compose.demo.yml`):
-ten bugs become ten fix branches, every message between the agents is logged to Markdown, and the fixes are reviewed
-and merged in the web app's Branches tab. It differs from the items below in two ways: it is built on
-`louis-agent.core` rather than Tool Runner, and it reads a JSON-lines error log instead of Exceptionless.
-
-For a store built as several microservices, scope one orchestrator *configuration* per microservice rather than one
-orchestrator watching the whole store, and rather than embedding the watcher inside each microservice's own process.
-
-- [ ] **Scoping = a skill file per microservice**, the same mechanism `AGENT_FUNCTION` already uses to select a skill
-      set per run (`docs/CLAUDE.md` → "Adding a skill"). One orchestrator engine/codebase, N skill files
-      (`order-service-skills.md`, `payment-service-skills.md`, `catalog-service-skills.md`, ...), each declaring:
-      its microservice's Exceptionless project id, its repo location, its escalation rules (what counts as
-      auto-fixable vs. needs-a-human), and any business actions specific to that service (e.g. payment-service might
-      never auto-deploy, order-service might auto-restart a stuck worker).
-      **POC:** done as a folder per service (`Skills/order-service/service.md`) with one runbook per API method, which
-      kept each method's rules small and specific; selected with `ORCHESTRATOR_SERVICE`.
-- [ ] **Don't run the watcher inside the microservice it watches** — if the service crashes, its own watchdog
-      shouldn't crash with it. Run the orchestrator as its own process/deployment per microservice (or per group of
-      related microservices), not as a library loaded into the microservice's runtime.
-      **POC:** done — the orchestrator is its own container (`docker/docker-compose.demo.yml`).
-- [ ] **Process topology is a deploy choice, not an architecture one** — either one shared orchestrator process
-      loaded with the right skill file per scheduled run, or one deployed instance per microservice. Mirrors how this
-      repo already runs `acp-server` per Rider chat and `mcp-server` per client (`docker/docker-compose.yml`) rather
-      than one shared instance; the per-microservice variant gives stronger blast-radius isolation (one
-      misconfigured orchestrator can't touch another service's repo or credentials) at the cost of more deployments.
-- [ ] **Triggering**: scheduled polling (reuse the cron/schedule mechanism) and/or a webhook receiver for
-      Exceptionless/uptime alerts, per microservice. **POC:** polling only (`ORCHESTRATOR_POLL_SECONDS`, or `--once`);
-      no webhook receiver yet.
-- [ ] **The call into `louis-agent` is an `louis-agent.api` session call, not a shared process and not MCP**:
-      `louis-agent.mcp-server` has no model of its own — it only hands over raw tools (see the correction above) —
-      so autonomously running the fix loop needs the API's session endpoint instead. Each microservice gets its own
-      `louis-agent.api` instance with `WORKSPACE_ROOT` fixed at startup to that microservice's repo (consistent with
-      `WORKSPACE_ROOT` being read once at process start, not changeable per-call). Orchestrator picks up an issue for
-      `order-service`, POSTs a new session to `order-service`'s `louis-agent.api` instance with the issue details
-      (stack trace, endpoint, frequency) as the prompt, and streams the SSE response until the session ends.
-      `louis-agent` runs its existing triage → fix → test → PR loop with the tools it already has (`WorkspaceTools`,
-      `GitTools`, `DotNetTools`) — it needs no new tools for this, only the `ExceptionlessTools` triage-loop work
-      above to turn "an error" into "a prompt."
-      **POC:** done — `CallLouisAgentFix` opens one session per fix, streams the reply, sends "continue" follow-ups when
-      louis-agent runs out of tool rounds, and reads a `FIX-RESULT` line (see docs/AGENT_COMMUNICATION.md). Opening a
-      PR still needs a PR tool.
-- [ ] **Orchestrator implementation tier: Anthropic Tool Runner (`BetaToolRunner`, C#)**, not a hand-rolled loop.
-      Unlike `louis-agent` core, the orchestrator has no stated multi-provider requirement, so being Anthropic-only
-      is an acceptable trade for not hand-writing the tool loop/retry/streaming plumbing. It also matches the stack
-      already in place — `Axiz.Adobe` is a .NET/C# repo (`Axiz.Adobe.sln`), and the Anthropic .NET SDK ships
-      `BetaToolRunner`. Each orchestrator tool (`CallLouisAgentFix`, `EscalateToGoogleAgent`, etc.) wraps a plain
-      HTTP/MCP call — these are RPC calls to independent services, not Agents-SDK-style "handoffs" (Tool Runner has
-      none); there's no shared in-process conversation to hand off between three separately-deployed agents anyway.
-      **POC:** built on `louis-agent.core` instead (an `AgentEngine` with its own `toolsets:`), which reused the
-      providers, skills loader and tool loop with no new dependency. Decide which to keep before building the real one.
-- [ ] **Credential separation follows the process split**: the orchestrator holds Exceptionless, deploy and
-      business-system (catalog/pricing) credentials; the `louis-agent.api` instance it calls holds only
-      `WORKSPACE_ROOT`-scoped git/build access to that one repo. A compromised or misconfigured orchestrator skill
-      can't push to prod directly (it can only ask `louis-agent` to open a PR); `louis-agent` never needs deploy
-      access at all.
-      **POC:** the tool split holds (the orchestrator has no file-editing, git-write or shell tools; louis-agent has no
-      error-tracker or deploy access), but there are no real credentials in the demo yet. Caveat for the real setup:
-      the "can't push to prod" guarantee rests on branch protection, because the token louis-agent needs to push a PR
-      branch can usually push to `main` too.
-- [ ] **Worked example**: `order-service` throws a new exception → orchestrator's scheduled check (or webhook) picks
-      it up from Exceptionless → `order-service-skills.md` says this error pattern is auto-fixable → orchestrator's
-      `CallLouisAgentFix` tool POSTs a new session to `order-service`'s `louis-agent.api` instance with the stack
-      trace → `louis-agent` locates the failing code, fixes it, runs tests, opens a PR, and the session result flows
-      back over SSE → orchestrator (not `louis-agent`) decides whether to auto-merge/deploy per `order-service`'s
-      own escalation rules, or wait for human approval.
-      **POC:** demonstrated end to end with ten bugs (samples/sample-output): a branch and commit instead of a PR, and a
-      human merges in the web app's Branches tab.
+- 2026-10-07 — Specs and feature plan for usage, budgets and cheaper responses (`docs/specs/`, `docs/features/`); the
+  session-architecture and orchestrator designs moved from this list into `docs/specs/`
+- 2026-10-07 — Docs: [how the agents and endpoints talk](docs/AGENT_COMMUNICATION.md), [runbooks](docs/RUNBOOKS.md), a
+  docs index in reading order
+- 2026-10-07 — Web app Branches tab: merges and deletes are queued instead of silently dropped while another runs
+- 2026-10-07 — Comms log keeps louis-agent's text blocks apart
+- 2026-10-06 — Orchestrator demo in Docker: ten bugs → ten fix branches, Markdown comms log, sample output with a
+  recording of the merges
+- 2026-10-06 — Web app Branches tab and history endpoints: all commits, branch and commit diffs, merge, delete merged
+- 2026-10-06 — Root `.dockerignore`: builds no longer send `config/.env.secrets` or `.git` into the build context
+- 2026-10-06 — Orchestrator POC: runbook per API method, fixes delegated to louis-agent.api and verified; `AgentEngine`
+  `toolsets:` option
+- 2026-10-06 — MCP server: Streamable HTTP transport (`MCP_TRANSPORT=http`) with its own `MCP_API_KEY`
+- Earlier — Skill files standardised (titles, tool tables, Python fences); DevOps blockers query fixed (tag, not type);
+  sensitive-file checks added to `DeleteDirectory` and `CopyFile`; all 108 tool descriptions rewritten

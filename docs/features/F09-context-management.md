@@ -1,8 +1,10 @@
 # F9 · Bounded history: clear stale tool results, compact old turns
 
-> **Status:** planned · **Milestone:** M4 · **Depends on:** F1 (token counts), F4 (to keep cache losses rare) ·
-> **Spec:** [Optimisation §D](../specs/RESPONSE_OPTIMISATION.md) · **TODO:** *Context engineering pipeline* (first
-> slice); *Consider context editing and compaction*
+> **Status:** planned · **Milestone:** M4 · **Depends on:** F1, F4
+>
+> **Spec:** [Optimisation §D](../specs/RESPONSE_OPTIMISATION.md) · [Session architecture §2](../specs/SESSION_ARCHITECTURE.md)
+>
+> **In the TODO:** tick **F9 Bounded history** under *Now* ([TODO](../../TODO.md)) · **Replaces:** "Consider context editing and compaction"
 
 History only grows: every file read and test output stays in the conversation and is re-sent every round until the
 session ends. F9 bounds it in two steps — first replacing stale tool results with short stubs, then summarising old
@@ -74,6 +76,8 @@ quality trade.
 
 - Stories' criteria pass; tests added; suites pass.
 - Benchmark chat passes recall under the threshold; demo 10/10 with cost per fix ≤ M2.
+- **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)): tick **F9** in the TODO,
+  set *Status* to done here and in the features table, and note it in the spec's implementation map.
 
 ---
 [Features](README.md) · Previous: [F8 Reliability](F08-reliability.md) · Next: [F10 Route settings](F10-route-settings.md)

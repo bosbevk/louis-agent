@@ -1,13 +1,21 @@
 # Spec: Cheaper, Faster Responses — Caching, Context and Usage
 
-**Status:** proposal · **Date:** 2026-10-07 · **Covers TODO items:** usage/cost tracking, prompt caching, context
-editing and compaction, the context-engineering pipeline (token budget, history compaction), structured outputs,
-model fallback, the 10-tool-round limit, and the build-mode cost concerns.
+**Status:** planned · **Date:** 2026-10-07 · **Related:** [Usage, estimates and budgets](USAGE_AND_BUDGETS.md)
 
-**Implementation:** broken into features in [docs/features/](../features/README.md) — §A → F1–F3, §B →
-[F4](../features/F04-prompt-caching.md), §C → [F5](../features/F05-toolset-profiles.md), §D →
-[F9](../features/F09-context-management.md), §E → [F10](../features/F10-route-settings.md), §F →
-[F8](../features/F08-reliability.md).
+## Implementation
+
+Built as features in [docs/features/](../features/README.md); each is one line under *Now* in the
+[TODO](../../TODO.md). When a feature is done, mark it here too.
+
+| Section | Feature | Status |
+|---|---|---|
+| §A Measure usage | [F1 Usage ledger](../features/F01-usage-ledger.md), [F2 Prices and cost](../features/F02-prices-and-cost.md), [F3 Show usage](../features/F03-usage-display.md) | planned |
+| §B Prompt caching | [F4 Prompt caching](../features/F04-prompt-caching.md) | planned |
+| §C Toolset profiles | [F5 Toolset profiles](../features/F05-toolset-profiles.md) | planned |
+| §D Bounded history | [F9 Bounded history](../features/F09-context-management.md) | planned |
+| §E Settings per route | [F10 Route settings](../features/F10-route-settings.md) | planned |
+| §F Reliability | [F8 Reliability](../features/F08-reliability.md) | planned |
+| §G Later | not planned yet | — |
 
 ## 1. Goal
 

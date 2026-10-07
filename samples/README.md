@@ -1,6 +1,6 @@
 # Orchestrator demo: one agent watching a microservice
 
-A proof of concept for the "one orchestrator per microservice" design in [TODO.md](../TODO.md#design-one-orchestrator-per-microservice):
+A proof of concept for the "one orchestrator per microservice" design in [docs/specs/ORCHESTRATOR_DESIGN.md](../docs/specs/ORCHESTRATOR_DESIGN.md):
 an orchestrator agent watches a service's errors, decides what each one needs from a runbook per API method, hands
 code fixes to louis-agent, and then checks louis-agent's work itself. Each fix lands as one commit on its own branch;
 you review and merge the branches in the web app. Nothing is pushed, and everything runs in Docker.
@@ -159,7 +159,7 @@ How to write a good runbook, with a template, is in [docs/RUNBOOKS.md](../docs/R
 - **A service:** add `Skills/{service}/service.md` plus its method runbooks, run one orchestrator per service with
   `ORCHESTRATOR_SERVICE={service}`, and point it at that service's own louis-agent.api instance.
 
-## Differences from the design in TODO.md
+## Differences from the orchestrator design
 
 - The orchestrator is built on `louis-agent.core` (`AgentEngine` with a custom toolset) rather than Anthropic's Tool
   Runner, so it reuses louis-agent's providers, skills loader and tool loop.

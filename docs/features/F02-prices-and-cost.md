@@ -1,7 +1,10 @@
 # F2 · Prices and cost
 
-> **Status:** planned · **Milestone:** M1 · **Depends on:** F1 ·
-> **Spec:** [Usage §4.2](../specs/USAGE_AND_BUDGETS.md) · **TODO:** *Track token usage / cost per session*
+> **Status:** planned · **Milestone:** M1 · **Depends on:** F1
+>
+> **Spec:** [Usage §4.2](../specs/USAGE_AND_BUDGETS.md)
+>
+> **In the TODO:** tick **F2 Prices and cost** under *Now* ([TODO](../../TODO.md))
 
 F1 records tokens; F2 turns them into money using a price table the operator keeps, and stores the cost on each record
 so later price changes don't rewrite history.
@@ -61,6 +64,8 @@ New, in `louis-agent.core/usage/`:
 
 - Stories' criteria pass; tests added; suites pass.
 - The M1 baseline (tokens and cost per fix) is written down.
+- **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)): tick **F2** in the TODO,
+  set *Status* to done here and in the features table, and note it in the spec's implementation map.
 
 ---
 [Features](README.md) · Previous: [F1 Usage ledger](F01-usage-ledger.md) · Next: [F3 Show usage](F03-usage-display.md)

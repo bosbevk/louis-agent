@@ -1,7 +1,10 @@
 # F3 · Show usage: chat, CLI, Rider, API, comms log
 
-> **Status:** planned · **Milestone:** M1 · **Depends on:** F1, F2 ·
-> **Spec:** [Usage §7.2–7.4, SSE row of §7.1](../specs/USAGE_AND_BUDGETS.md) · **TODO:** *Track token usage / cost per session*
+> **Status:** planned · **Milestone:** M1 · **Depends on:** F1, F2
+>
+> **Spec:** [Usage §7.2–7.4, §7.1 (stream)](../specs/USAGE_AND_BUDGETS.md)
+>
+> **In the TODO:** tick **F3 Show usage** under *Now* ([TODO](../../TODO.md))
 
 Recording is only useful if people see it where they already work. F3 adds a usage line to every answer and cost per fix
 to the orchestrator's comms log. (The Usage tab and reporting endpoints are F11.)
@@ -67,6 +70,8 @@ the comms log, so that I know what the demo (and any real run) cost.
 
 - Stories' criteria pass; tests added; suites pass.
 - A demo run's comms log shows cost per fix and a run total that matches the ledger's sum for that run.
+- **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)): tick **F3** in the TODO,
+  set *Status* to done here and in the features table, and note it in the spec's implementation map.
 
 ---
 [Features](README.md) · Previous: [F2 Prices and cost](F02-prices-and-cost.md) · Next: [F4 Prompt caching](F04-prompt-caching.md)

@@ -11,19 +11,22 @@ Work through them in milestone order: each milestone is useful on its own, and l
 
 ## Features
 
-| ID | Feature | Spec | TODO item | Depends on | Milestone |
-|---|---|---|---|---|---|
-| [F1](F01-usage-ledger.md) | Usage ledger: record every model request | U §4.1, §4.3 · R §A | Track token usage / cost per session | — | M1 |
-| [F2](F02-prices-and-cost.md) | Prices and cost | U §4.2 | Track token usage / cost per session | F1 | M1 |
-| [F3](F03-usage-display.md) | Show usage: chat, CLI, Rider, API, comms log | U §7 | Track token usage / cost per session | F1, F2 | M1 |
-| [F4](F04-prompt-caching.md) | Prompt caching (Anthropic) | R §B | Wire up Anthropic prompt caching | F1 | M2 |
-| [F5](F05-toolset-profiles.md) | Toolset profiles | R §C | Build-mode POC: cost | F1 | M2 |
-| [F6](F06-estimates.md) | Cost estimates before a run | U §5 | Build-mode POC: cost | F1, F2 | M3 |
-| [F7](F07-budgets.md) | Budgets: warn, ask, stop | U §6 | Retry and back off… / budgets | F1, F2, F6 | M3 |
-| [F8](F08-reliability.md) | Reliability: retries, account limits, fallback, structured results | R §F | Retry and back off…; Add model fallback; Wire up structured outputs | F1 | M3 |
-| [F9](F09-context-management.md) | Bounded history: clear stale tool results, compact old turns | R §D | Context engineering pipeline; Consider context editing and compaction | F1, F4 | M4 |
-| [F10](F10-route-settings.md) | Settings per route: thinking, tool rounds, summary model | R §E | 10 tool rounds per message | F1 | M4 |
-| [F11](F11-usage-tab-and-reconciliation.md) | Usage tab, usage API, reconciliation with the bill | U §7.1–7.2, §4.4 | Track token usage / cost per session | F1–F3, F6, F7 | M5 |
+Each feature is **one line under *Now* in the [TODO](../../TODO.md)** — tick it there when the feature is done. Where a
+feature replaces older backlog wording, that wording no longer appears anywhere else in the TODO.
+
+| ID | Feature | Status | Spec | Replaces in the TODO | Depends on | Milestone |
+|---|---|---|---|---|---|---|
+| [F1](F01-usage-ledger.md) | Usage ledger: record every model request | planned | U §4.1, §4.3 · R §A | *Track token usage / cost per session* (with F2, F3, F6, F7, F11) | — | M1 |
+| [F2](F02-prices-and-cost.md) | Prices and cost | planned | U §4.2 | (as F1) | F1 | M1 |
+| [F3](F03-usage-display.md) | Show usage: chat, CLI, Rider, API, comms log | planned | U §7.2–7.4 | (as F1) | F1, F2 | M1 |
+| [F4](F04-prompt-caching.md) | Prompt caching (Anthropic) | planned | R §B | *Wire up Anthropic prompt caching* | F1 | M2 |
+| [F5](F05-toolset-profiles.md) | Toolset profiles | planned | R §C | — | F1 | M2 |
+| [F6](F06-estimates.md) | Cost estimates before a run | planned | U §5 | (as F1) | F1, F2 | M3 |
+| [F7](F07-budgets.md) | Budgets: warn, ask, stop | planned | U §6 | (as F1) | F1, F2, F6 | M3 |
+| [F8](F08-reliability.md) | Reliability: retries, account limits, fallback, structured results | planned | R §F · U §6.2 | *Retry and back off…*, *Add model fallback*, *Wire up structured outputs* | F1 | M3 |
+| [F9](F09-context-management.md) | Bounded history: clear stale tool results, compact old turns | planned | R §D | *Consider context editing and compaction*; first slice of the session architecture | F1, F4 | M4 |
+| [F10](F10-route-settings.md) | Settings per route: thinking, tool rounds, summary model | planned | R §E | Known limitation *10 tool rounds per message* | F1 | M4 |
+| [F11](F11-usage-tab-and-reconciliation.md) | Usage tab, usage API, reconciliation with the bill | planned | U §7.1–7.2, §4.4 | (as F1) | F1–F3, F6, F7 | M5 |
 
 ## Milestones
 
@@ -71,8 +74,23 @@ The M1 run is the baseline. A change lands only if quality holds: 10/10 fixes co
 - **Tasks** are small enough for one commit each and name their test.
 - **Definition of done** for every feature: its stories' criteria pass; unit tests added and the existing suites pass
   (`tests/louis-agent.core.tests`, `tests/louis-agent.orchestrator.tests`); the benchmark rerun where the feature
-  touches cost; docs updated (README settings table, `docs/SETUP.md`, the spec's status); the TODO item ticked.
-- **Status** of each feature is kept at the top of its doc: *planned → in progress → done*.
+  touches cost; and the steps in *Finishing a feature* below.
+- **Status** of each feature is kept in two places that must agree: the top of its doc and the table above
+  (*planned → in progress → done*).
+
+## Finishing a feature
+
+When a feature's *Done when* is met, do all of this in the same commit, so the TODO, the specs and these docs never
+drift apart:
+
+1. **TODO:** tick the feature's line under *Now*, and add a one-line entry at the top of *Done*.
+2. **This folder:** set *Status* to **done** at the top of the feature's doc and in the table above.
+3. **Spec:** in the spec's *Implementation* map, mark the feature done; change anything the build proved different
+   (for example F4's two cache markers instead of three).
+4. **Limitations:** if the feature removes a known limitation (F10: tool rounds), delete it from both
+   [docs/CLAUDE.md](../CLAUDE.md#known-limitations) and the TODO's *Known limitations*.
+5. **Benchmark:** for features that change cost, add the measured numbers to *The benchmark* below.
+6. **User docs:** settings in README / [SETUP](../SETUP.md), and anything the feature changes for users.
 
 ---
 [Docs index](../README.md) · Specs: [Usage, estimates and budgets](../specs/USAGE_AND_BUDGETS.md) ·

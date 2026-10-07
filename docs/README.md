@@ -26,10 +26,6 @@ you need otherwise.
 | Doc | Read it to… |
 |---|---|
 | [Development guide](CLAUDE.md) | Build and test, find your way around the code, add a tool, a skill, a theme or another agent; design decisions, known limitations, common errors |
-| [TODO](../TODO.md) | See what is open: known limitations, the session-architecture plan, backlog ideas |
-| [Features: usage and optimisation](features/README.md) | The step-by-step plan for both specs: 11 features in 5 milestones, each with user stories, design, tasks and a definition of done |
-| [Spec: usage, estimates and budgets](specs/USAGE_AND_BUDGETS.md) | The plan for recording what every request costs, estimating runs before they start, and budgets that warn, ask or stop |
-| [Spec: response optimisation](specs/RESPONSE_OPTIMISATION.md) | The plan for cheaper, faster responses: usage tracking, prompt caching, smaller toolsets, clearing and summarising history |
 
 ## 4. See it work: the orchestrator demo
 
@@ -38,6 +34,19 @@ you need otherwise.
 | [Orchestrator demo](../samples/README.md) | Run a second agent that watches a demo microservice, has louis-agent fix its ten bugs (one branch each), verifies every fix, and lets you merge them in the web app — all in Docker |
 | [Runbooks](RUNBOOKS.md) | Understand how the orchestrator decides what each error needs, with real examples, and write your own runbook |
 | [Sample output](../samples/sample-output/README.md) | See one real run without running it: the agents' full conversation, logs, branches and a recording of the merges |
+
+## 5. What's next: plans and designs
+
+Start with the TODO: it lists everything planned, next and in the backlog, and links to the rest.
+
+| Doc | Read it to… |
+|---|---|
+| [TODO](../TODO.md) | See what's planned now (features to tick), next (the build-mode POC), the backlog by area, known limitations and what's done |
+| [Features](features/README.md) | Follow the step-by-step plan for the usage and optimisation specs: 11 features in 5 milestones, with user stories, design, tasks, and what to update when one is finished |
+| [Spec: usage, estimates and budgets](specs/USAGE_AND_BUDGETS.md) | Read the design for recording what every request costs, estimating runs before they start, and budgets that warn, ask or stop |
+| [Spec: response optimisation](specs/RESPONSE_OPTIMISATION.md) | Read the design for cheaper, faster responses: prompt caching, smaller toolsets, clearing and summarising history, reliability |
+| [Design: session architecture](specs/SESSION_ARCHITECTURE.md) | Read the longer-term idea for durable sessions, a context-building pipeline and memory (not planned yet) |
+| [Design: orchestrators and self-healing](specs/ORCHESTRATOR_DESIGN.md) | See the orchestrator design decisions, what the POC proved, and what's still open |
 
 ---
 Next: [Quick start](QUICK_START_AGENT.md)

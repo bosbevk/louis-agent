@@ -1,8 +1,10 @@
 # F5 · Toolset profiles: send only the tools a session needs
 
-> **Status:** planned · **Milestone:** M2 · **Depends on:** F1 (to measure) ·
-> **Spec:** [Optimisation §C](../specs/RESPONSE_OPTIMISATION.md) · **TODO:** *Build-mode POC: cost* (and the demo's
-> follow-ups)
+> **Status:** planned · **Milestone:** M2 · **Depends on:** F1
+>
+> **Spec:** [Optimisation §C](../specs/RESPONSE_OPTIMISATION.md)
+>
+> **In the TODO:** tick **F5 Toolset profiles** under *Now* ([TODO](../../TODO.md))
 
 Every engine registers every toolset whose keys are set: in the demo, 108 tools (68,162 characters of definitions)
 including 35 Paymo and DevOps tools a code-fixing container never uses. Their guidance in the system prompt is sent too
@@ -73,6 +75,8 @@ Changes:
 
 - Stories' criteria pass; tests added; suites pass.
 - Benchmark: prefix ≥ 25% smaller, cache still hits, 10/10 fixes confirmed; numbers recorded.
+- **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)): tick **F5** in the TODO,
+  set *Status* to done here and in the features table, and note it in the spec's implementation map.
 
 ---
 [Features](README.md) · Previous: [F4 Prompt caching](F04-prompt-caching.md) · Next: [F6 Estimates](F06-estimates.md)

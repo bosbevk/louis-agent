@@ -1,8 +1,10 @@
 # F8 · Reliability: retries, account limits, fallback, structured results
 
-> **Status:** planned · **Milestone:** M3 · **Depends on:** F1 ·
-> **Spec:** [Optimisation §F](../specs/RESPONSE_OPTIMISATION.md), [Usage §6.2](../specs/USAGE_AND_BUDGETS.md) ·
-> **TODO:** *Retry and back off when the model API refuses…*; *Add model fallback*; *Wire up structured outputs*
+> **Status:** planned · **Milestone:** M3 · **Depends on:** F1
+>
+> **Spec:** [Optimisation §F](../specs/RESPONSE_OPTIMISATION.md) · [Usage §6.2](../specs/USAGE_AND_BUDGETS.md)
+>
+> **In the TODO:** tick **F8 Reliability** under *Now* ([TODO](../../TODO.md)) · **Replaces:** "Retry and back off when the model API refuses", "Add model fallback", "Wire up structured outputs"
 
 Failures cost money twice: the work done before the failure is lost and has to be redone. The demo showed both kinds —
 the account's credit and then its usage limit ran out mid-run, and every remaining error failed one by one. F8 makes
@@ -73,6 +75,8 @@ structured data, so that a malformed text line never costs a "continue" round-tr
 - Stories' criteria pass; tests added; suites pass.
 - Acceptance: with the account's limit artificially low (a test key or stub), the run stops at the first refusal with
   the message, and `-Resume` completes it after.
+- **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)): tick **F8** in the TODO,
+  set *Status* to done here and in the features table, and note it in the spec's implementation map.
 
 ---
 [Features](README.md) · Previous: [F7 Budgets](F07-budgets.md) · Next: [F9 Bounded history](F09-context-management.md)

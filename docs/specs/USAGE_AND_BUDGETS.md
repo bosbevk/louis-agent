@@ -1,14 +1,20 @@
 # Spec: Usage, Estimates and Budgets
 
-**Status:** proposal · **Date:** 2026-10-07 · **Builds on:** [Response optimisation](RESPONSE_OPTIMISATION.md),
-workstream A (measuring usage) · **Covers TODO items:** track token usage / cost per session; build-mode cost
-estimates; resuming after a usage limit.
+**Status:** planned · **Date:** 2026-10-07 · **Builds on:** [Response optimisation](RESPONSE_OPTIMISATION.md) §A (measuring usage)
 
-**Implementation:** broken into features in [docs/features/](../features/README.md) — §4.1/4.3 →
-[F1](../features/F01-usage-ledger.md), §4.2 → [F2](../features/F02-prices-and-cost.md), §7.2–7.4 →
-[F3](../features/F03-usage-display.md), §5 → [F6](../features/F06-estimates.md), §6 → [F7](../features/F07-budgets.md)
-(account limits: [F8](../features/F08-reliability.md)), §7.1–7.2 and §4.4 →
-[F11](../features/F11-usage-tab-and-reconciliation.md).
+## Implementation
+
+Built as features in [docs/features/](../features/README.md); each is one line under *Now* in the
+[TODO](../../TODO.md). When a feature is done, mark it here too.
+
+| Section | Feature | Status |
+|---|---|---|
+| §4.1, §4.3 Recording | [F1 Usage ledger](../features/F01-usage-ledger.md) | planned |
+| §4.2 Prices | [F2 Prices and cost](../features/F02-prices-and-cost.md) | planned |
+| §7.2–7.4 Showing it (and the stream in §7.1) | [F3 Show usage](../features/F03-usage-display.md) | planned |
+| §5 Estimates | [F6 Estimates](../features/F06-estimates.md) | planned |
+| §6 Budgets | [F7 Budgets](../features/F07-budgets.md) (account-limit refusals: [F8](../features/F08-reliability.md)) | planned |
+| §7.1–7.2 Usage tab and API, §4.4 Reconciliation | [F11 Usage tab and reconciliation](../features/F11-usage-tab-and-reconciliation.md) | planned |
 
 ## 1. Goal
 

@@ -1,7 +1,10 @@
 # F6 · Cost estimates before a run
 
-> **Status:** planned · **Milestone:** M3 · **Depends on:** F1, F2 ·
-> **Spec:** [Usage §5](../specs/USAGE_AND_BUDGETS.md) · **TODO:** *Build-mode POC: cost* (estimate per method)
+> **Status:** planned · **Milestone:** M3 · **Depends on:** F1, F2
+>
+> **Spec:** [Usage §5](../specs/USAGE_AND_BUDGETS.md)
+>
+> **In the TODO:** tick **F6 Estimates** under *Now* ([TODO](../../TODO.md))
 
 Cost is only known afterwards today. F6 predicts it — always as a range with its basis — for an orchestrator run, a
 single fix, and (later) each method of a build-mode service, and checks itself against what actually happened.
@@ -69,6 +72,8 @@ Uses:
 
 - Stories' criteria pass; tests added; suites pass.
 - After two benchmark runs, the second run's estimate comes from history and the run's actual cost falls within its range.
+- **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)): tick **F6** in the TODO,
+  set *Status* to done here and in the features table, and note it in the spec's implementation map.
 
 ---
 [Features](README.md) · Previous: [F5 Toolset profiles](F05-toolset-profiles.md) · Next: [F7 Budgets](F07-budgets.md)
