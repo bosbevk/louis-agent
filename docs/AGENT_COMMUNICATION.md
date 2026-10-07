@@ -247,8 +247,8 @@ Approving agent-built tools is never possible over MCP: that stays with the user
 ## Agent to agent: the orchestrator and louis-agent
 
 The orchestrator ([samples/README.md](../samples/README.md)) is a second agent built on `louis-agent.core`. It reads a
-service's error log, decides what each error needs from a runbook per API method, and has louis-agent fix the ones the
-runbook allows — over the same session API any client uses. It then checks louis-agent's work itself.
+service's error log, decides what each error needs from a runbook per API method ([RUNBOOKS.md](RUNBOOKS.md)), and has
+louis-agent fix the ones the runbook allows — over the same session API any client uses. It then checks louis-agent's work itself.
 
 ```mermaid
 sequenceDiagram

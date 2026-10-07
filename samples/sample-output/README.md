@@ -45,4 +45,4 @@ louis-agent's regression tests), and every request that crashed now answers `200
 Your own run will differ in error ids, commit hashes and wording: the model writes each fix and reply anew.
 
 ---
-[Docs index](../../docs/README.md) · Previous: [Orchestrator demo](../README.md)
+[Docs index](../../docs/README.md) · Previous: [Runbooks](../../docs/RUNBOOKS.md)

@@ -39,6 +39,7 @@ All docs, in reading order, are listed in **[docs/README.md](docs/README.md)**. 
 | Know the components, security and deployment | [Architecture](docs/ARCHITECTURE.md) |
 | Change the code | [Development guide](docs/CLAUDE.md) |
 | Watch two agents fix ten bugs, then merge the fixes | [Orchestrator demo](samples/README.md) · [sample output](samples/sample-output/README.md) |
+| Learn how the orchestrator decides, and write runbooks | [Runbooks](docs/RUNBOOKS.md) |
 
 ## Quick start (Docker)
 

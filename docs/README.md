@@ -33,6 +33,7 @@ you need otherwise.
 | Doc | Read it to… |
 |---|---|
 | [Orchestrator demo](../samples/README.md) | Run a second agent that watches a demo microservice, has louis-agent fix its ten bugs (one branch each), verifies every fix, and lets you merge them in the web app — all in Docker |
+| [Runbooks](RUNBOOKS.md) | Understand how the orchestrator decides what each error needs, with real examples, and write your own runbook |
 | [Sample output](../samples/sample-output/README.md) | See one real run without running it: the agents' full conversation, logs, branches and a recording of the merges |
 
 ---
