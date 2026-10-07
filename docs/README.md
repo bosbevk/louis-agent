@@ -27,6 +27,9 @@ you need otherwise.
 |---|---|
 | [Development guide](CLAUDE.md) | Build and test, find your way around the code, add a tool, a skill, a theme or another agent; design decisions, known limitations, common errors |
 | [TODO](../TODO.md) | See what is open: known limitations, the session-architecture plan, backlog ideas |
+| [Features: usage and optimisation](features/README.md) | The step-by-step plan for both specs: 11 features in 5 milestones, each with user stories, design, tasks and a definition of done |
+| [Spec: usage, estimates and budgets](specs/USAGE_AND_BUDGETS.md) | The plan for recording what every request costs, estimating runs before they start, and budgets that warn, ask or stop |
+| [Spec: response optimisation](specs/RESPONSE_OPTIMISATION.md) | The plan for cheaper, faster responses: usage tracking, prompt caching, smaller toolsets, clearing and summarising history |
 
 ## 4. See it work: the orchestrator demo
 

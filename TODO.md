@@ -9,7 +9,7 @@ Open items for Louis Agent. Add to this list as new work comes up; check items o
 - [ ] Ollama tool support is a name heuristic (`LlmOptions.KnownNoToolsPrefixes`)
 - [ ] Paymo task lookup takes the first match for a name; ambiguous names can hit the wrong task
 - [ ] No rate limiting or audit log beyond the file logs
-- [ ] 10 tool rounds per message: long tasks need a follow-up message to continue (the orchestrator sends one
+- [ ] (feature [F10](docs/features/F10-route-settings.md)) 10 tool rounds per message: long tasks need a follow-up message to continue (the orchestrator sends one
       automatically); consider making `MaximumIterationsPerRequest` configurable per host
 - [ ] An unpublished API (`dotnet run`) only serves the web app in the `Development` environment
 
@@ -35,6 +35,10 @@ durable storage, memory, or retrieval. The diagram above is the target shape; br
       conversation history, so a restart doesn't lose it (ties into the existing "sessions are in memory" limitation)
 
 ### Context engineering pipeline
+
+First slice specified in [docs/specs/RESPONSE_OPTIMISATION.md](docs/specs/RESPONSE_OPTIMISATION.md) § D: clear stale
+tool results, then compact old turns, at token thresholds.
+
 
 - [ ] Introduce a context-building step between session and LLM call: retrieve → rank & filter → token budget →
       compress/summarize (only if over budget) → build prompt, instead of sending the full/raw history every turn
@@ -77,30 +81,53 @@ durable storage, memory, or retrieval. The diagram above is the target shape; br
 - [ ] Decide the short-session vs. long-session tradeoff explicitly (few turns/recent-only vs. days-long with
       summarization + semantic search) rather than one fixed strategy for every session
 
+## Planned features: usage, budgets and cheaper responses
+
+The two specs ([usage, estimates and budgets](docs/specs/USAGE_AND_BUDGETS.md),
+[response optimisation](docs/specs/RESPONSE_OPTIMISATION.md)) are broken into features with user stories and
+step-by-step tasks in [docs/features/](docs/features/README.md). Tick a feature when its definition of done is met.
+
+- [ ] **M1 — See it:** [F1 Usage ledger](docs/features/F01-usage-ledger.md) ·
+      [F2 Prices and cost](docs/features/F02-prices-and-cost.md) · [F3 Show usage](docs/features/F03-usage-display.md)
+- [ ] **M2 — Cheaper:** [F4 Prompt caching](docs/features/F04-prompt-caching.md) ·
+      [F5 Toolset profiles](docs/features/F05-toolset-profiles.md)
+- [ ] **M3 — In control:** [F6 Estimates](docs/features/F06-estimates.md) · [F7 Budgets](docs/features/F07-budgets.md) ·
+      [F8 Reliability](docs/features/F08-reliability.md)
+- [ ] **M4 — Long sessions:** [F9 Bounded history](docs/features/F09-context-management.md) ·
+      [F10 Route settings](docs/features/F10-route-settings.md)
+- [ ] **M5 — Reporting:** [F11 Usage tab and reconciliation](docs/features/F11-usage-tab-and-reconciliation.md)
+
 ## Ideas / backlog
 
 ### Ops / CI
 
+Cost and speed items below (usage tracking, prompt caching, context editing/compaction, structured outputs, model
+fallback) are planned together in [docs/specs/RESPONSE_OPTIMISATION.md](docs/specs/RESPONSE_OPTIMISATION.md),
+with measured numbers and an order to do them in.
+
+
 - [ ] Add CI (`.github/workflows`) to run `dotnet build` / `dotnet test` on push/PR — there's no CI at all today, so
       regressions are only caught locally
-- [ ] Track token usage / cost per session — useful given this proxies to paid Anthropic calls
+- [ ] Track token usage / cost per session (specified in
+      [docs/specs/USAGE_AND_BUDGETS.md](docs/specs/USAGE_AND_BUDGETS.md): ledger, estimates, budgets; features F1–F3,
+      F6, F7, F11) — useful given this proxies to paid Anthropic calls
 - [ ] Add metrics/tracing (e.g. OpenTelemetry) beyond the stderr + JSONL file logs (`AgentLog`) — no
       latency/error dashboards today
-- [ ] Add model fallback: retry against a secondary provider/model if the configured one errors or rate-limits.
+- [ ] (feature [F8](docs/features/F08-reliability.md)) Add model fallback: retry against a secondary provider/model if the configured one errors or rate-limits.
       Checked: Anthropic's native `fallbacks` parameter (`Anthropic.Models.Beta.Messages.MessageCreateParams`) doesn't
       satisfy this — it only fires on a policy *refusal*, is Anthropic-model-only (no fallback to Ollama/openai-compatible),
       and needs the beta client surface this repo doesn't use. Hand-rolled retry/fallback logic is still required for
       the error/rate-limit case this item actually wants.
-- [ ] Wire up Anthropic prompt caching on the system prompt — confirmed available on the exact call path already in
+- [ ] (feature [F4](docs/features/F04-prompt-caching.md)) Wire up Anthropic prompt caching on the system prompt — confirmed available on the exact call path already in
       use (`Anthropic` NuGet 12.53.0's `AsIChatClient`, in `LlmClientFactory.cs`): `TextContent.WithCacheControl(...)`
       for messages/system content and `Tool.CacheControl` via `AIFunctionFactoryOptions.AdditionalProperties` for
       tools, both documented in the package's own XML docs. Not wired up anywhere today. The system prompt (composed
       skill docs) is rebuilt identically every turn, making it a strong candidate — cached reads are ~0.1× the
       uncached input price.
-- [ ] Wire up structured outputs (`output_config.format` / `JsonOutputFormat`) where the engine needs a model response
+- [ ] (feature [F8](docs/features/F08-reliability.md), via result tools) Wire up structured outputs (`output_config.format` / `JsonOutputFormat`) where the engine needs a model response
       shaped as JSON — confirmed present on the repo's existing **non-beta** call path (no client switch needed), via
       `Anthropic.Models.Messages.OutputConfig`/`JsonOutputFormat`, and currently unused anywhere in `AgentEngine.cs`.
-- [ ] Consider context editing (`clear_tool_uses_20250919`, clears stale tool results from a long conversation) and
+- [ ] (feature [F9](docs/features/F09-context-management.md)) Consider context editing (`clear_tool_uses_20250919`, clears stale tool results from a long conversation) and
       compaction (`compact_20260112`, server-side summarization of old history) for long-running sessions — both are
       confirmed present in the installed Anthropic SDK, but only on the **beta** `MessageCreateParams.ContextManagement`
       surface, which means switching from `AnthropicClient.AsIChatClient` to the beta client, not just a config flag.
@@ -161,8 +188,10 @@ merge endpoints, and `AgentEngine`'s `toolsets:` option. Details in [samples/REA
       queued and run in click order, with "Merging…"/"Queued" per row
 - [x] Comms log: louis-agent's text blocks ran together across tool calls; they are now kept apart
 - [ ] Add a pull-request tool (GitHub / Azure DevOps) so a fix ends as a PR instead of a local branch
-- [ ] Retry and back off when the model API refuses (rate limit, credit or usage limit): today a triage just fails and
-      the error stays unprocessed until the next run (`-Resume` picks it up)
+- [ ] (features [F7](docs/features/F07-budgets.md), [F8](docs/features/F08-reliability.md)) Retry and back off when the model API refuses (rate limit, credit or usage limit): today a triage just fails and
+      the error stays unprocessed until the next run (`-Resume` picks it up). Budgets that stop a run *before* the
+      account's limit, and stopping at the first account-limit refusal, are in
+      [docs/specs/USAGE_AND_BUDGETS.md](docs/specs/USAGE_AND_BUDGETS.md) § 6
 - [ ] Record merges made in the web app under the person who clicked, not the server's git identity (in the demo
       every merge is recorded as `louis-agent`)
 - [ ] Per-service louis-agent.api instances must not mount other repositories (`REPOSITORIES_PATH`): `BashRun` and
@@ -170,6 +199,56 @@ merge endpoints, and `AgentEngine`'s `toolsets:` option. Details in [samples/REA
 - [ ] Automated tests for the orchestrator against a scripted louis-agent.api (today only its parts are unit-tested;
       the whole loop is only exercised by the demo, against a real model)
 - [ ] Regenerate `samples/sample-output/` with the current build (its comms log predates the text-block fix)
+
+### Build-mode POC: build a whole microservice from runbooks (new sample)
+
+Show that the same runbook approach can *build* a microservice, not just fix one: each runbook becomes the spec for a
+method, louis-agent implements it on its own branch, the orchestrator verifies it against the runbook's examples, and
+a person reviews and merges in the web app. This is a **new, separate sample**: the current fix demo
+(`samples/order-service`, `samples/run-demo.ps1`, `samples/sample-output/`) must keep working unchanged.
+
+Separation from the existing sample:
+
+- [ ] Own folder, e.g. `samples/build-service/`: a near-empty starting repository (solution, empty project, test
+      project) plus the runbooks that specify its methods
+- [ ] Own run script (e.g. `samples/run-build-demo.ps1`), own compose project (separate project name, port, `.demo`
+      sub-folder and state directory), so both demos can run side by side and neither overwrites the other's output
+- [ ] Own sample output folder (comms log, branches, recording), next to `samples/sample-output/`
+- [ ] Decide: extend `louis-agent.orchestrator` with a build mode (e.g. `ORCHESTRATOR_MODE=build`, reusing
+      `LouisAgentClient`, `CommsLog`, the verification tools and the runbook loader) or create a separate orchestrator
+      project. Reuse is likely cheaper; either way the fix mode's behaviour and tests must not change
+
+The build flow:
+
+- [ ] **Runbook as spec**: extend the runbook format for methods that don't exist yet: route, inputs, outputs,
+      business rules, and worked examples (input → expected output) that double as acceptance tests
+- [ ] **Scaffold first**: one branch that sets up the service skeleton (project, data access, routing that lets each
+      method register its own route in its own file, test project), merged before any method is built
+- [ ] **One method per branch**: for each runbook, a build request to louis-agent (implement in `Api/<Method>.cs`,
+      tests covering the runbook's examples, build, test, commit on `feature/<method>`, end with a `BUILD-RESULT`
+      line), with the same "continue" follow-ups the fixes use
+- [ ] **Verify against the spec**: the orchestrator checks the commit in git, calls the new method with every runbook
+      example and compares the answers, and runs the whole suite; anything that fails is escalated, not merged
+- [ ] **Avoid merge conflicts by design**: no shared route table to edit; each method and its tests in their own files,
+      so the method branches merge independently in any order
+- [ ] **Order and dependencies**: let a runbook name methods it depends on (e.g. `vat` uses `order-total`) and build
+      them in that order, each new branch starting from a `main` that already has its dependencies merged
+- [ ] **Review and merge** in the web app's Branches tab, as with the fixes; the comms log records every build request,
+      reply and check
+- [ ] Optional first step: have louis-agent **draft runbooks** from a written service description (or from an
+      existing service's code), for a person to review and approve before anything is built
+
+Things to watch:
+
+- [ ] Size: louis-agent has 10 tool rounds per message, so keep each task to one method; a whole service in one request
+      won't fit
+- [ ] Cost: a service is many model runs; estimate it per method, and make the run resumable after a usage limit (as
+      `-Resume` does for the fix demo). Keep each task to one method (cheaper: a long conversation re-sends a growing
+      history every round), and apply the response-optimisation spec first: prompt caching and a coding-only toolset
+      cut the ~26,000-token prefix every request re-sends
+- [ ] Quality: tests only prove what the runbook examples cover; the human review before merging stays essential
+- [ ] Docs: a README for the new sample, a section in docs/RUNBOOKS.md on runbooks as specs, and links from the docs
+      index
 
 ### Web app
 
