@@ -168,6 +168,7 @@ feature when its turn comes; remove its line here and update the map's *Missing*
 - [ ] **Multi-agent:** compare handoff patterns (tool call, session, MCP); parallel sub-agents
 - [ ] **Protocols:** a full MCP client (also removes the Rider MCP limitation)
 - [ ] **Reliability:** timeouts, idempotency and resumable runs in the core
+- [ ] **Shipping:** a deploy pipeline for the Docker images, with the eval suite as a release gate
 - [ ] **Safety:** prompt-injection defences and red-team tests, output guardrails, rate limiting, an audit log
 - [ ] **Human in the loop:** approval policies per action and risk level
 - [ ] **Multimodal and computer use:** images and documents as input; browser or computer-use tools
@@ -182,11 +183,12 @@ feature when its turn comes; remove its line here and update the map's *Missing*
 The same list as [docs/CLAUDE.md](docs/CLAUDE.md#known-limitations); facts about today, not tasks. Where a feature or
 backlog item removes one, it says so.
 
-- Rider MCP discovery only logs Rider's tools; they aren't callable yet (needs a full MCP client).
+- Rider MCP discovery only logs Rider's tools; they aren't callable yet (needs a full MCP client) → *Agent architecture
+  gaps: Protocols*.
 - Sessions are in memory in the API and ACP server; a restart ends them → *Sessions and memory: durable sessions*.
 - Ollama tool support is a name heuristic (`LlmOptions.KnownNoToolsPrefixes`).
 - Paymo task lookup takes the first match for a name; an ambiguous name can hit the wrong task.
-- No rate limiting or audit log beyond the file logs.
+- No rate limiting or audit log beyond the file logs → *Agent architecture gaps: Safety*.
 - 10 tool rounds per message: long tasks need a follow-up message → **F10**.
 - An unpublished API (`dotnet run`) only serves the web app in the `Development` environment.
 
