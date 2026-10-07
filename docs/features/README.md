@@ -1,6 +1,6 @@
 # Features: implementing the usage and optimisation specs
 
-The two specs say **what** to build and why:
+The [goal](../GOAL.md) these features serve: measurable outcomes per milestone. The two specs say **what** to build and why:
 
 - [Usage, estimates and budgets](../specs/USAGE_AND_BUDGETS.md) (`U §n` below)
 - [Response optimisation](../specs/RESPONSE_OPTIMISATION.md) (`R §n` below)

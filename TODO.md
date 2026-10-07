@@ -2,6 +2,9 @@
 
 What's planned, what's next, and the ideas not planned yet — in that order.
 
+**The goal it all works toward:** [docs/GOAL.md](docs/GOAL.md) — from software engineer to AI engineer, by making
+louis-agent a production-grade, cost-aware agent platform, with measurable outcomes for every milestone below.
+
 **How this list works**
 
 - **Planned work is a feature.** Each feature has a design doc in [docs/features/](docs/features/README.md) with user

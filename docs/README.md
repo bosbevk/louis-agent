@@ -43,10 +43,12 @@ you need otherwise.
 
 ## 6. What's next: plans and designs
 
-Start with the TODO: it lists everything planned, next and in the backlog, and links to the rest.
+Start with the goal and the TODO: the goal says what the work is for and when it's done; the TODO lists everything
+planned, next and in the backlog, and links to the rest.
 
 | Doc | Read it to… |
 |---|---|
+| [Goal](GOAL.md) | See the outcome the whole plan works toward, with measurable targets per milestone and how the work is done |
 | [TODO](../TODO.md) | See what's planned now (features to tick), next (the build-mode POC), the backlog by area, known limitations and what's done |
 | [Features](features/README.md) | Follow the step-by-step plan for the usage and optimisation specs: 11 features in 5 milestones, with user stories, design, tasks, and what to update when one is finished |
 | [Spec: usage, estimates and budgets](specs/USAGE_AND_BUDGETS.md) | Read the design for recording what every request costs, estimating runs before they start, and budgets that warn, ask or stop |
