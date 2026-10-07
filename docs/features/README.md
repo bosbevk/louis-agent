@@ -91,8 +91,8 @@ drift apart:
    [docs/CLAUDE.md](../CLAUDE.md#known-limitations) and the TODO's *Known limitations*.
 5. **Benchmark:** for features that change cost, add the measured numbers to *The benchmark* below.
 6. **User docs:** settings in README / [SETUP](../SETUP.md), and anything the feature changes for users.
-7. **Write-up:** when a milestone's last feature finishes, add its write-up to [docs/learning/](../learning/) (see the
-   [goal](../GOAL.md#a-skill-counts-as-learned-when)).
+7. **Write-up:** when a skill in the [goal](../GOAL.md#what-im-learning-the-whole-agent-architecture) has nothing left
+   missing (usually at a milestone's last feature), add or update its write-up in [docs/learning/](../learning/).
 
 ---
 [Docs index](../README.md) · Specs: [Usage, estimates and budgets](../specs/USAGE_AND_BUDGETS.md) ·

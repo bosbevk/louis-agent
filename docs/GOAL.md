@@ -42,9 +42,10 @@ A skill can be added, dropped or reworded at any time; that is a change to this 
 
 1. **It's built.** Its *Missing* column is empty: the work that covers it is shipped and meets its *Done when* in the
    feature doc or TODO.
-2. **It's measured.** Before and after numbers on the benchmark (see [features](features/README.md#the-benchmark)),
-   with quality held: the targets themselves are set in the feature docs.
-3. **It's written up.** A short write-up in [docs/learning/](learning/): what was measured before and after, what
+2. **It's measured.** Before and after numbers on the benchmark (see [features](features/README.md#the-benchmark)) or,
+   where the benchmark can't show it (retrieval, multimodal, protocols), on the eval suite (skill 12), with quality held:
+   the targets themselves are set in the feature docs.
+3. **It's written up.** A short write-up per skill in [docs/learning/](learning/): what was measured before and after, what
    changed, the trade-offs, and what didn't work. Together the write-ups form a portfolio of AI-engineering practice.
 4. **I can explain it.** The write-up answers *why this design and not the alternatives*, without needing the code open.
 
