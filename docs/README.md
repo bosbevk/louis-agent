@@ -48,7 +48,7 @@ planned, next and in the backlog, and links to the rest.
 
 | Doc | Read it to… |
 |---|---|
-| [Goal](GOAL.md) | See the outcome the whole plan works toward, with measurable targets per milestone and how the work is done |
+| [Goal](GOAL.md) | See what the whole plan is for: the skills it teaches, when one counts as learned, and how the work is done |
 | [TODO](../TODO.md) | See what's planned now (features to tick), next (the build-mode POC), the backlog by area, known limitations and what's done |
 | [Features](features/README.md) | Follow the step-by-step plan for the usage and optimisation specs: 11 features in 5 milestones, with user stories, design, tasks, and what to update when one is finished |
 | [Spec: usage, estimates and budgets](specs/USAGE_AND_BUDGETS.md) | Read the design for recording what every request costs, estimating runs before they start, and budgets that warn, ask or stop |

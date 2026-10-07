@@ -2,8 +2,8 @@
 
 What's planned, what's next, and the ideas not planned yet — in that order.
 
-**The goal it all works toward:** [docs/GOAL.md](docs/GOAL.md) — from software engineer to AI engineer, by making
-louis-agent a production-grade, cost-aware agent platform, with measurable outcomes for every milestone below.
+**The goal it all works toward:** [docs/GOAL.md](docs/GOAL.md) — become an AI engineer by building louis-agent. This
+list is the current plan for getting there and will change as I learn; the goal names the skills it should cover.
 
 **How this list works**
 

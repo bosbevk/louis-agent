@@ -1,6 +1,6 @@
 # Features: implementing the usage and optimisation specs
 
-The [goal](../GOAL.md) these features serve: measurable outcomes per milestone. The two specs say **what** to build and why:
+The [goal](../GOAL.md) these features serve: learning AI engineering, one measured skill per milestone. The two specs say **what** to build and why:
 
 - [Usage, estimates and budgets](../specs/USAGE_AND_BUDGETS.md) (`U §n` below)
 - [Response optimisation](../specs/RESPONSE_OPTIMISATION.md) (`R §n` below)
@@ -91,6 +91,8 @@ drift apart:
    [docs/CLAUDE.md](../CLAUDE.md#known-limitations) and the TODO's *Known limitations*.
 5. **Benchmark:** for features that change cost, add the measured numbers to *The benchmark* below.
 6. **User docs:** settings in README / [SETUP](../SETUP.md), and anything the feature changes for users.
+7. **Write-up:** when a milestone's last feature finishes, add its write-up to [docs/learning/](../learning/) (see the
+   [goal](../GOAL.md#a-skill-counts-as-learned-when)).
 
 ---
 [Docs index](../README.md) · Specs: [Usage, estimates and budgets](../specs/USAGE_AND_BUDGETS.md) ·
