@@ -2,8 +2,8 @@
 
 What's planned, what's next, and the ideas not planned yet — in that order.
 
-**The goal it all works toward:** [docs/GOAL.md](docs/GOAL.md) — from software engineer to AI engineer, by making
-louis-agent a production-grade, cost-aware agent platform, with measurable outcomes for every milestone below.
+**The goal it all works toward:** [docs/GOAL.md](docs/GOAL.md) — become an AI engineer by building louis-agent. This
+list is the current plan for getting there and will change as I learn; the goal names the skills it should cover.
 
 **How this list works**
 
@@ -152,6 +152,25 @@ Design: [docs/specs/SESSION_ARCHITECTURE.md](docs/specs/SESSION_ARCHITECTURE.md)
 - [ ] Search and work across more than one mounted repository at once (`REPOSITORIES_PATH` mounts several, but every
       tool is scoped to one workspace)
 - [ ] Share agent-built tools between projects or teammates (each repository builds its own today)
+
+### Agent architecture gaps
+
+From the [goal](docs/GOAL.md)'s architecture map: skills it requires that nothing above plans yet. Promote one to a
+feature when its turn comes; remove its line here and update the map's *Missing* column.
+
+- [ ] **Evaluation:** an eval suite (task datasets, graded scoring incl. LLM-as-judge) run in CI as a regression gate
+- [ ] **Thinking:** measure quality vs tokens per thinking level on the evals; interleaved thinking between tool calls
+- [ ] **Models:** choose models per task from measured quality and cost
+- [ ] **Prompts:** version prompts and compare changes on the evals
+- [ ] **Tools:** tool search / on-demand loading for large toolsets; schema-validated structured outputs
+- [ ] **Agent loop:** explicit planning, a self-check before answering, stop conditions beyond a round count
+- [ ] **Memory and retrieval:** embeddings, a vector store, retrieval over code and past sessions, measured
+- [ ] **Multi-agent:** compare handoff patterns (tool call, session, MCP); parallel sub-agents
+- [ ] **Protocols:** a full MCP client (also removes the Rider MCP limitation)
+- [ ] **Reliability:** timeouts, idempotency and resumable runs in the core
+- [ ] **Safety:** prompt-injection defences and red-team tests, output guardrails, rate limiting, an audit log
+- [ ] **Human in the loop:** approval policies per action and risk level
+- [ ] **Multimodal and computer use:** images and documents as input; browser or computer-use tools
 
 ### Observability
 
