@@ -91,7 +91,10 @@ drift apart:
    [docs/CLAUDE.md](../CLAUDE.md#known-limitations) and the TODO's *Known limitations*.
 5. **Benchmark:** for features that change cost, add the measured numbers to *The benchmark* below.
 6. **User docs:** settings in README / [SETUP](../SETUP.md), and anything the feature changes for users.
-7. **Write-up:** when a skill in the [goal](../GOAL.md#what-im-learning-the-whole-agent-architecture) has nothing left
+7. **Goal map:** in [docs/GOAL.md](../GOAL.md#what-im-learning-the-whole-agent-architecture), move what the feature
+   delivered into *Have today* and drop it from *Planned* or *Missing*; if it closes a TODO *Agent architecture gaps*
+   line, remove that line.
+8. **Write-up:** when a skill in the [goal](../GOAL.md#what-im-learning-the-whole-agent-architecture) has nothing left
    missing (usually at a milestone's last feature), add or update its write-up in [docs/learning/](../learning/).
 
 ---

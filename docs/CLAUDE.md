@@ -230,11 +230,12 @@ The same list as the TODO's *Known limitations*: when work removes one, delete i
 [Finishing a feature](features/README.md#finishing-a-feature)).
 
 1. **Rider MCP discovery only logs** Rider's tools; they aren't callable yet (needs a full MCP client).
+   Removed by a full MCP client (TODO *Agent architecture gaps: Protocols*, backlog).
 2. **Sessions are in memory** in the API and ACP server; a restart ends them (the web app keeps the transcript).
    Removed by durable sessions ([session architecture](specs/SESSION_ARCHITECTURE.md), backlog).
 3. **Ollama tool support is a name heuristic** (`LlmOptions.KnownNoToolsPrefixes`).
 4. **Paymo task lookup takes the first match** for a name; ambiguous names can hit the wrong task.
-5. **No rate limiting or audit log** beyond the file logs.
+5. **No rate limiting or audit log** beyond the file logs. Removed by TODO *Agent architecture gaps: Safety* (backlog).
 6. **10 tool rounds per message** (`MaximumIterationsPerRequest`): a long task stops mid-way and needs a follow-up
    message to continue. The orchestrator does this automatically ("Continue the fix…"); most demo fixes take 2-3 messages.
    Removed by [F10 Route settings](features/F10-route-settings.md).
