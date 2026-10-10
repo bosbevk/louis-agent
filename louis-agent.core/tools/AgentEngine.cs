@@ -856,10 +856,15 @@ public partial class AgentEngine
     }
 
     /// <summary>
-    /// Handles commands typed by the user (never exposed to the model): /tools, /approve &lt;Name&gt;, /reject &lt;Name&gt;.
-    /// Returns the reply, or null when the input is not one of these commands.
+    /// Handles commands typed by the user (never exposed to the model): /tools, /approve &lt;Name&gt;, /reject &lt;Name&gt;,
+    /// /usage. Returns the reply, or null when the input is not one of these commands.
     /// </summary>
-    public string? HandleUserCommand(string input)
+    /// <param name="input">What the user typed.</param>
+    /// <param name="sessionUsage">
+    /// The session's usage records so far, for /usage (F3). The host keeps them: the engine serves every session of a host
+    /// and doesn't know which one is asking. Null when the host doesn't track usage.
+    /// </param>
+    public string? HandleUserCommand(string input, IReadOnlyList<UsageRecord>? sessionUsage = null)
     {
         string[] parts = (input ?? "").Trim().Split(' ', 2, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
         if (parts.Length == 0) return null;
@@ -871,6 +876,7 @@ public partial class AgentEngine
             "/tools" => ListAgentTools() + "\n\nApprove with /approve <Name>, discard with /reject <Name>.",
             "/approve" => ApproveTool(argument),
             "/reject" => RejectTool(argument),
+            "/usage" => sessionUsage is null ? "Usage isn't tracked in this session." : UsageText.Summary(sessionUsage),
             _ => null,
         };
     }
