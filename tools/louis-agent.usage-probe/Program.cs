@@ -80,7 +80,15 @@ async Task NonStreaming(string label, bool cache)
     ChatResponse response = await client.GetResponseAsync(Messages(cache), Options());
     int usageContents = response.Messages.SelectMany(m => m.Contents).OfType<UsageContent>().Count();
     Console.WriteLine($"--- {label}: finish={response.FinishReason} model={response.ModelId} UsageContent items={usageContents}");
+    PrintThinking(response.Messages.SelectMany(m => m.Contents));
     Print("ChatResponse.Usage", response.Usage);
+}
+
+// Some models think but return empty thinking text unless asked for a summary; hosts would then show nothing.
+void PrintThinking(IEnumerable<AIContent> contents)
+{
+    var thinking = contents.OfType<TextReasoningContent>().ToList();
+    Console.WriteLine($"  thinking: {thinking.Count} block(s), {thinking.Sum(t => t.Text.Length)} chars of text");
 }
 
 async Task Streaming(string label, bool cache)
@@ -93,6 +101,7 @@ async Task Streaming(string label, bool cache)
         .Select(x => $"{x.Index + 1}{(x.Update.FinishReason is { } f ? $"(finish={f})" : "")}")
         .ToList();
     Console.WriteLine($"--- {label}: {updates.Count} updates; UsageContent in update(s) {(carriers.Count == 0 ? "none" : string.Join(", ", carriers))} of {updates.Count}");
+    PrintThinking(updates.SelectMany(u => u.Contents));
     Print("ToChatResponse().Usage", updates.ToChatResponse().Usage);
 }
 

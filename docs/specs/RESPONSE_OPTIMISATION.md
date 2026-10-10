@@ -116,6 +116,24 @@ Microsoft.Extensions.AI 10.10.0, `claude-haiku-4-5-20251001`, thinking medium, a
 - `TextContent.WithCacheControl(new CacheControlEphemeral())` on the system message reaches the API: the second
   request read 10,227 cached tokens.
 
+**Claude Haiku 5.5** (measured 2026-10-10 with `tools/louis-agent.usage-probe`, `claude-haiku-5-5`, the same prompt and
+adapter versions): reported exactly as Haiku 4.5 above, so `AnthropicUsageMapper` holds unchanged.
+
+| Request | `InputTokenCount` | `CachedInputTokenCount` | `AdditionalCounts` |
+|---|---|---|---|
+| No cache marker | 15,649 | 0 | null |
+| Cache write | 15,649 | 0 | `CacheCreationInputTokens` = 15,638 |
+| Cache read | 15,649 | 15,638 | null |
+
+- **Tokenizer:** the same prompt is 15,649 tokens on Haiku 5.5 against 10,266 on Haiku 4.5, **+52%** (the migration guide
+  says about 30%; this prompt is one repeated sentence, so measure real prompts before trusting either figure).
+- **Price:** the 6 requests cost about $0.007, against about $0.054 on Haiku 4.5: about 7.5× cheaper even after the
+  extra tokens. Haiku 5.5 is priced by prompt length: over 100,000 tokens (cache included) the whole request costs 5×.
+- **Thinking:** `LlmClientFactory`'s adaptive thinking is accepted (no 400). At effort `medium` the model skipped
+  thinking on this one-line question, so whether thinking *text* comes back (the guide says it is empty unless
+  `display: "summarized"`) is still to be checked with a harder prompt.
+- `ReasoningTokenCount` is still null; streaming usage still arrives in the last update.
+
 **What the Ollama adapter reports** (measured 2026-10-10 with `tools/louis-agent.usage-probe`: OllamaSharp's
 `OllamaApiClient`, `qwen2.5:0.5b`, a 686-token prompt sent twice, streaming and not):
 
