@@ -62,6 +62,8 @@ services:
       GIT_CONFIG_VALUE_0: "true"
       # Run logs and oversized-tool-result records, kept on the host after --rm containers exit
       LOG_DIRECTORY: /logs
+      # The price table for the usage ledger's costs (the repository is mounted at /workspace)
+      PRICES_FILE: /workspace/config/prices.json
     volumes:
       - ../:/workspace
       - ../Skills:/skills
@@ -93,6 +95,8 @@ services:
       GIT_CONFIG_VALUE_0: "true"
       # Run logs and oversized-tool-result records, kept on the host after the container is removed
       LOG_DIRECTORY: /logs
+      # The price table for the usage ledger's costs (the repository is mounted at /workspace)
+      PRICES_FILE: /workspace/config/prices.json
     # Localhost only: the agent can run shell commands and write files. Set AGENT_API_KEY in .env.secrets to require a key.
     ports:
       - "127.0.0.1:${API_PORT:-5080}:8080"
@@ -125,6 +129,8 @@ services:
       GIT_CONFIG_VALUE_0: "true"
       # Run logs and oversized-tool-result records, kept on the host after --rm containers exit
       LOG_DIRECTORY: /logs
+      # The price table for the usage ledger's costs (the repository is mounted at /workspace)
+      PRICES_FILE: /workspace/config/prices.json
     volumes:
       - ../:/workspace
       - ../Skills:/skills

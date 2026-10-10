@@ -87,22 +87,29 @@ Out of scope: billing users, and anything that changes *how much* a request cost
 
 ### 4.2 Prices
 
-A price table in `config/prices.json` (not secret; an example ships as `config/prices.example.json`):
+A price table in `config/prices.json`, **tracked** (prices aren't secret, so every clone and container prices the same
+way; `PRICES_FILE` points elsewhere). Comments are allowed in the file:
 
 ```json
 {
-  "as_of": "2026-10-01",
+  "as_of": "2026-10-10",
   "currency": "USD",
   "models": {
+    "claude-haiku-5-5": {
+      "input": 0.10, "output": 0.50, "cache_read": 0.01, "cache_write_5m": 0.125, "cache_write_1h": 0.20,
+      "long_prompt": { "above_tokens": 100000, "input": 0.50, "output": 2.50, "cache_read": 0.05, "cache_write_5m": 0.625, "cache_write_1h": 1.00 }
+    },
     "claude-haiku-4-5": { "input": 1.00, "output": 5.00, "cache_read": 0.10, "cache_write_5m": 1.25, "cache_write_1h": 2.00 }
   }
 }
 ```
 
-Prices are per million tokens and are matched by model prefix (`claude-haiku-4-5` also matches
-`claude-haiku-4-5-20251001`). The example values are illustrative: **copy current prices from Anthropic's pricing page
-when setting it up**, and update `as_of` when they change. Local models (Ollama) can be priced at 0 or left out; a
-model without a price records tokens with `cost: null`, and every view says "price unknown" instead of showing $0.
+Prices are per million tokens and are matched by the longest model prefix (`claude-haiku-4-5` also matches
+`claude-haiku-4-5-20251001`). **Copy them from Anthropic's pricing page** and update `as_of` when they change. A
+`long_prompt` tier prices the whole request once its prompt (input + cache reads + cache writes) is over `above_tokens`
+(Claude Haiku 5.5: 5× above 100,000). Every price must be given: a missing or negative one stops the host rather than
+read as free. Local models (Ollama) are priced at 0 on purpose; a model without a price records tokens with
+`cost: null`, and every view says "price unknown" instead of showing $0.
 
 ### 4.3 Attributing usage to tasks
 
