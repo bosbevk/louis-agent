@@ -80,8 +80,8 @@ The full design — the usage ledger, prices, estimates, budgets and how they ar
 [USAGE_AND_BUDGETS.md](USAGE_AND_BUDGETS.md). This section is the minimum the optimisation work needs.
 
 **What:** record `ChatResponse.Usage` (`UsageDetails`) for every model request: `InputTokenCount`,
-`OutputTokenCount`, `CachedInputTokenCount`, `ReasoningTokenCount`, and `AdditionalCounts` (check which key the
-Anthropic adapter uses for cache *writes*).
+`OutputTokenCount`, `CachedInputTokenCount`, `ReasoningTokenCount`, and `AdditionalCounts["CacheCreationInputTokens"]`
+for cache *writes* (see *What the Anthropic adapter reports* below).
 
 - `AgentEngine` accumulates usage per turn and per session; the streaming path reads usage from the final updates.
 - `AgentLog` writes one JSON line per request to `logs/usage.jsonl`: host, session, round, model, input, cached
@@ -94,6 +94,27 @@ Anthropic adapter uses for cache *writes*).
   per million tokens), not in code; without them, show tokens only.
 
 **Accept when:** a demo run produces `usage.jsonl`, and the comms log's run summary shows tokens per fix.
+
+**What the Anthropic adapter reports** (measured 2026-10-10, F1 step 1 spike: Anthropic 12.53.0,
+Microsoft.Extensions.AI 10.10.0, `claude-haiku-4-5-20251001`, thinking medium, a 10,266-token prompt):
+
+| Request | `InputTokenCount` | `CachedInputTokenCount` | `AdditionalCounts` | `ReasoningTokenCount` |
+|---|---|---|---|---|
+| No cache marker | 10,266 | 0 | null | null |
+| Cache write (first request with the marker) | 10,266 | 0 | `CacheCreationInputTokens` = 10,227 | null |
+| Cache read (same prefix again) | 10,266 | 10,227 | null | null |
+
+- **`InputTokenCount` is the total prompt**, cache reads and writes included. (Anthropic's own `input_tokens`
+  excludes them; the adapter adds them back.) Uncached input = `InputTokenCount − CachedInputTokenCount −
+  CacheCreationInputTokens`; pricing `InputTokenCount` at the input rate and the cache counts as well would charge
+  the cached part twice.
+- **Cache writes:** `AdditionalCounts["CacheCreationInputTokens"]`, present only on a request that wrote the cache.
+- **Reasoning:** always null; thinking tokens are only inside `OutputTokenCount`.
+- **Streaming:** one `UsageContent` in the **last** update (the one with the finish reason), with the same values as
+  non-streaming; `ToChatResponse()` carries it into `ChatResponse.Usage`. Non-streaming responses contain no
+  `UsageContent`; read `ChatResponse.Usage`.
+- `TextContent.WithCacheControl(new CacheControlEphemeral())` on the system message reaches the API: the second
+  request read 10,227 cached tokens.
 
 ### B. Prompt caching (Anthropic)
 
@@ -254,7 +275,9 @@ Each step lands only if quality holds: 10/10 demo fixes confirmed by the orchest
 
 ## 8. Open questions
 
-- Which `AdditionalCounts` key does the Anthropic adapter use for cache writes? (Determines how A reports write costs.)
+- ~~Which `AdditionalCounts` key does the Anthropic adapter use for cache writes?~~ Answered:
+  `CacheCreationInputTokens`, and `InputTokenCount` includes the cached tokens (see *What the Anthropic adapter
+  reports* under A).
 - Should the web app show cost in money, or tokens only? (Prices are per account and change.)
 - Do Rider chats benefit from the 1-hour cache lifetime? (Depends on measured gaps between messages.)
 - Should the orchestrator, which only needs a short system prompt and 7 tools, use a cheaper model than louis-agent?

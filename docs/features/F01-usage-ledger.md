@@ -1,6 +1,6 @@
 # F1 · Usage ledger: record every model request
 
-> **Status:** planned · **Milestone:** M1 · **Depends on:** —
+> **Status:** in progress · **Milestone:** M1 · **Depends on:** —
 >
 > **Spec:** [Usage §4.1, §4.3](../specs/USAGE_AND_BUDGETS.md) · [Optimisation §A](../specs/RESPONSE_OPTIMISATION.md)
 >
@@ -53,7 +53,7 @@ New, in `louis-agent.core/usage/`:
 |---|---|
 | `UsageRecord` | The record in U §4.1 (immutable `record`); `Tokens` with nullable counts; `Cost` filled by F2 |
 | `UsageScope` | Ambient context (`AsyncLocal`) a host opens per turn: host, session, turn, purpose, task, run, service; tracks the round counter |
-| `UsageRecordingChatClient` | `DelegatingChatClient`. Non-streaming: reads `ChatResponse.Usage`. Streaming: collects the `UsageContent` items from the updates. Writes one `UsageRecord` per request |
+| `UsageRecordingChatClient` | `DelegatingChatClient`. Non-streaming: reads `ChatResponse.Usage`. Streaming: collects the `UsageContent` items from the updates (Anthropic sends one, in the last update). Maps `UsageDetails` to the four non-overlapping kinds: `input` = `InputTokenCount − CachedInputTokenCount − AdditionalCounts["CacheCreationInputTokens"]`, because the adapter's input count includes cached tokens. Writes one `UsageRecord` per request |
 | `IUsageSink` / `JsonlUsageSink` | Appends records via `AgentLog` to a monthly file; raises `UsageRecorded` for hosts that show live totals (F3) |
 
 Where it plugs in:
@@ -74,11 +74,14 @@ Where it plugs in:
 
 1. **Spike — what the adapter reports.** Log `UsageDetails` (all properties, and every `AdditionalCounts` key) for one
    streaming and one non-streaming Anthropic request with caching off and on. Record which key holds cache writes in
-   the optimisation spec's open questions. *No production code.*
+   the optimisation spec's open questions. *No production code.* **Done:** cache writes are
+   `AdditionalCounts["CacheCreationInputTokens"]`, `InputTokenCount` includes cached tokens, reasoning is null, and
+   streaming usage arrives in the last update (optimisation spec, *What the Anthropic adapter reports*).
 2. **`UsageRecord` and `UsageScope`.** *Test:* nested scopes restore the outer one; the round counter increments per
    request and resets per turn; scope values flow across `await`.
 3. **`UsageRecordingChatClient`, non-streaming.** *Test:* with `FakeChatClient` returning `UsageDetails`, one record
-   with the right counts and scope; `null` counts stay `null`.
+   with the right counts and scope; `null` counts stay `null`; Anthropic-shaped usage (input 10,266, cached 10,227)
+   records `input` 39 and `cache_read` 10,227.
 4. **Streaming support.** *Test:* a fake stream carrying `UsageContent` produces one record when the stream ends;
    a cancelled stream records what was reported so far, with `stop: "cancelled"`.
 5. **Wire into `AgentEngine`** (pipeline + summary client + continuation purpose). *Test:* a scripted 3-round tool loop
