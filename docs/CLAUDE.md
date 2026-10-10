@@ -304,8 +304,9 @@ The same list as the TODO's *Known limitations*: when work removes one, delete i
 - **bash not found on Windows** — install Git for Windows or set `BASH_PATH` to `bash.exe`; WSL's bash is never used.
 - **400 "Invalid `signature` in `thinking` block … bound to a different conversation"** — the system prompt or tool list
   changed under earlier thinking (known limitation 9); start a new chat. See [FX4](fixes/FX04-append-only-history.md).
-- **"Price table … is not valid"** at start-up — fix `config/prices.json` (or the `PRICES_FILE` / `PRICES_URL` table):
-  every model needs all five prices, none negative. **"[WARN] No price table"** means costs are recorded as unknown.
+- **"Price table …"** stopping start-up (not valid, empty, a negative price, or a bad `long_prompt.above_tokens`) — fix
+  `config/prices.json` (or the `PRICES_FILE` / `PRICES_URL` table): every model needs all five prices, none negative.
+  **"[WARN] No price table"** means costs are recorded as unknown.
 - **"Model '…' isn't pulled into Ollama"** (usage probe) or a 404 from Ollama — `docker exec louis_ollama ollama pull <model>`.
 
 ## Contributing
