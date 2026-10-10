@@ -1,6 +1,6 @@
 # Spec: Cheaper, Faster Responses — Caching, Context and Usage
 
-**Status:** planned · **Date:** 2026-10-07 · **Related:** [Usage, estimates and budgets](USAGE_AND_BUDGETS.md)
+**Status:** in progress (§A: F1, F2 done) · **Date:** 2026-10-07 · **Related:** [Usage, estimates and budgets](USAGE_AND_BUDGETS.md)
 
 ## Implementation
 
@@ -44,14 +44,18 @@ system prompt, and the whole conversation so far.
 | **Fixed prefix, demo configuration** | **~104,000 chars** | **~26,000** |
 | Conversation so far (files read, tool results, answers) | grows each round | 0 → 100,000+ |
 
-\* Characters ÷ 4 — an estimate. Workstream A replaces it with the real numbers the API reports.
+\* Characters ÷ 4 — an estimate. **Measured since** (M1 baseline, 2026-10-10, Claude Haiku 5.5, whose tokenizer counts
+more tokens for the same text): the fixed prefix is **~48,000 tokens**, and the largest request 57,710; see the
+features' [Benchmark](../features/README.md#the-benchmark).
 
 **Consequences:**
 
 - A demo fix takes 18–29 tool calls (`samples/sample-output/orchestrator-state/fixes.jsonl`), so ~20 requests that
   each re-send the ~26,000-token prefix: **~500,000 input tokens per fix on the prefix alone**, before any history.
+  (Measured in M1: 8–16 requests per fix, several tool calls each, and **608,000 input tokens per fix** on average.)
 - Nothing is cached: there are no `cache_control` markers anywhere.
-- Nothing is counted: `ChatResponse.Usage` is ignored, so neither the user nor the orchestrator knows what a turn cost.
+- Nothing is shown: since F1 and F2 every request is recorded and priced in the usage ledger, but no host displays it
+  yet (F3).
 - History only grows. The one guard is that a single tool result over 50,000 characters is summarised
   (`AgentEngine.SummariseToolResultAsync`); everything else stays verbatim until the session ends.
 - Every session gets all tools, including Paymo and DevOps in a code-fixing container that will never use them.
@@ -83,17 +87,18 @@ The full design — the usage ledger, prices, estimates, budgets and how they ar
 `OutputTokenCount`, `CachedInputTokenCount`, `ReasoningTokenCount`, and `AdditionalCounts["CacheCreationInputTokens"]`
 for cache *writes* (see *What the Anthropic adapter reports* below).
 
-- `AgentEngine` accumulates usage per turn and per session; the streaming path reads usage from the final updates.
-- `AgentLog` writes one JSON line per request to `logs/usage.jsonl`: host, session, round, model, input, cached
-  input, cache writes, output, reasoning, duration.
+- A recording middleware inside the tool loop reads usage from each request (from the last update when streaming), and
+  writes one JSON line per request to `{LOG_DIRECTORY}/usage-YYYY-MM.jsonl`: host, session, turn, round, model, the
+  four token kinds, reasoning, duration. *(Built in F1.)*
 - The HTTP API adds a `usage` object to `message_delta` (Claude's own event shape already has it), so the web app can
   show tokens per reply and per chat; the CLI prints a one-line summary after each answer.
 - The orchestrator adds tokens and an estimated cost per fix to `agent-comms.md` and `fixes.jsonl`, and a total to the
   run summary.
-- Prices live in configuration (`LLM_PRICE_INPUT`, `LLM_PRICE_OUTPUT`, `LLM_PRICE_CACHE_READ`, `LLM_PRICE_CACHE_WRITE`
-  per million tokens), not in code; without them, show tokens only.
+- Prices live in configuration, not in code: the tracked price table `config/prices.json` (or `PRICES_FILE` /
+  `PRICES_URL`); without it, show tokens only. *(Built in F2; see the usage spec §4.2.)*
 
-**Accept when:** a demo run produces `usage.jsonl`, and the comms log's run summary shows tokens per fix.
+**Accept when:** a demo run produces the usage ledger *(met, F1)*, and the comms log's run summary shows tokens per fix
+*(F3)*.
 
 **What the Anthropic adapter reports** (measured 2026-10-10, F1 step 1 spike: Anthropic 12.53.0,
 Microsoft.Extensions.AI 10.10.0, `claude-haiku-4-5-20251001`, thinking medium, a 10,266-token prompt):
@@ -150,16 +155,16 @@ adapter versions): reported exactly as Haiku 4.5 above, so `AnthropicUsageMapper
 
 ### B. Prompt caching (Anthropic)
 
-**What:** mark the stable parts of each request so the API serves them from cache. Reading cached tokens costs about
-**0.1×** the normal input price; writing them costs **1.25×** (5-minute lifetime) or **2×** (1-hour). With the
-5-minute lifetime, two requests already break even.
+**What:** mark the stable parts of each request so the API serves them from cache. Reading cached tokens costs **0.1×**
+the normal input price on Haiku (**0.05×** on Sonnet 5.5 and Opus 5.5); writing them costs **1.25×** (5-minute
+lifetime) or **2×** (1-hour). With the 5-minute lifetime, two requests already break even.
 
 **Breakpoints** (the API allows 4 per request; markers go at the *end* of the block they cover):
 
 | # | Where | Covers | How (Anthropic SDK 12.53, already referenced) |
 |---|---|---|---|
 | 1 | The last tool definition | All tool definitions | `AIFunctionFactoryOptions.AdditionalProperties[nameof(Tool.CacheControl)] = new CacheControlEphemeral()` on the last registered tool |
-| 2 | The system prompt | Tools + system prompt (~26,000 tokens in the demo) | System message built as `new TextContent(prompt).WithCacheControl(...)` |
+| 2 | The system prompt | Tools + system prompt (~48,000 tokens in the demo on Haiku 5.5, measured in M1) | System message built as `new TextContent(prompt).WithCacheControl(...)` |
 | 3 | The last block of the newest message | The whole conversation so far | Set on each request; the API reuses earlier prefixes, so hits grow round by round |
 
 **Where it lives:** a `CachingChatClient` (a `DelegatingChatClient`) that `LlmClientFactory` adds for the Anthropic
@@ -179,15 +184,18 @@ where measurement shows those gaps.
 - Keep thinking and effort fixed for a session; changing them invalidates the message cache.
 - Approving or creating an agent-built tool changes the tool list: expected, a one-off rebuild.
 
-**Model-specific traps** (the default model is Claude Haiku 4.5):
+**Model-specific traps** (the default model is Claude Haiku 5.5; checked against Anthropic's docs 2026-10-10):
 
-- **Minimum cacheable prefix: 4,096 tokens on Haiku 4.5** (512–2,048 on newer models). Our ~26,000-token prefix is
-  well above it; a much smaller toolset must stay above it too, or nothing caches and no error is raised.
-- **Haiku 4.5 with thinking on:** a new user message after a tool loop strips the earlier thinking blocks, and the
-  message cache is lost from that point. Tool rounds within one turn are unaffected, and so are breakpoints 1–2.
-  Measure it; if it matters, keep thinking low for chat or accept one message-cache rebuild per user message.
+- **Minimum cacheable prefix: 512 tokens on Haiku 5.5** (4,096 on Haiku 4.5). Our ~48,000-token prefix is far above
+  it; on Haiku 4.5 a much smaller toolset must stay above 4,096, or nothing caches and no error is raised.
+- **Thinking blocks stay in the history on Haiku 5.5** (models numbered 4.6 and later keep earlier turns' thinking and
+  bill it as input), so a new user message doesn't lose the message cache. Haiku 4.5 strips them, and loses the
+  message cache from that point; tool rounds within one turn and breakpoints 1–2 are unaffected on both.
+- **Changing the thinking settings between requests invalidates the cache**: keep thinking and effort fixed for a
+  session (see the list above).
 
-**Estimated effect on one demo fix** (~20 requests, ~26,000-token prefix):
+**Estimated effect on one demo fix** (~20 requests, ~26,000-token prefix; the 2026-10-07 estimate, before M1 measured
+11.4 requests and ~48,000 tokens, which gives about −80%; F4 measures the real figure):
 
 | | Prefix tokens billed (as full-price equivalents) |
 |---|---:|
@@ -228,8 +236,8 @@ message cache from that point, so they run **rarely, at thresholds** — not eve
    everything before the last `CONTEXT_KEEP_TURNS` user turns (default 3) with one summary message, written by a
    separate tool-less call — the same pattern as `SummariseToolResultAsync`. Keep thinking blocks that later tool
    rounds still need. Write the original turns to the session log before replacing them, so nothing is lost for
-   debugging. (Anthropic's server-side compaction is beta and not offered for Haiku 4.5, so a hand-rolled step is
-   needed for the default model anyway.)
+   debugging. (Anthropic's server-side compaction is beta and Anthropic-only; it supports Haiku 5.5 but not Haiku 4.5,
+   so a hand-rolled step keeps the core provider-neutral.)
 
 This is the first slice of the TODO's context-engineering pipeline (token budget → compress → build prompt); ranked
 retrieval and long-term memory stay in that plan.
@@ -274,7 +282,7 @@ Check whether it replaces the repo's own thinking-budget wrapper in `LlmClientFa
 
 | Setting | Default | Workstream |
 |---|---|---|
-| `LLM_PRICE_INPUT`, `LLM_PRICE_OUTPUT`, `LLM_PRICE_CACHE_READ`, `LLM_PRICE_CACHE_WRITE` | unset (tokens only) | A |
+| `PRICES_FILE`, `PRICES_URL` (built in F2; replaced the planned `LLM_PRICE_*` settings) | `config/prices.json` | A |
 | `LLM_CACHE` | `on` for Anthropic | B |
 | `LLM_CACHE_TTL` | `5m` | B |
 | `AGENT_TOOLSETS` | all with keys | C |

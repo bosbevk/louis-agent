@@ -1,6 +1,6 @@
 # Spec: Usage, Estimates and Budgets
 
-**Status:** planned · **Date:** 2026-10-07 · **Builds on:** [Response optimisation](RESPONSE_OPTIMISATION.md) §A (measuring usage)
+**Status:** in progress (F1, F2 done) · **Date:** 2026-10-07 · **Builds on:** [Response optimisation](RESPONSE_OPTIMISATION.md) §A (measuring usage)
 
 ## Implementation
 
@@ -31,12 +31,15 @@ Out of scope: billing users, and anything that changes *how much* a request cost
 
 ## 2. What exists today
 
-- Nothing is recorded: `ChatResponse.Usage` is ignored by every host.
+- **Recorded (F1, F2):** every model request is one line in the usage ledger (§4.1), priced from `config/prices.json`
+  (§4.2), and tagged with its task and run (§4.3). The M1 baseline is in the features'
+  [Benchmark](../features/README.md#the-benchmark).
+- **Not yet shown:** no host displays usage or cost (F3); totals come from `usage-probe -- --ledger`.
 - The only limit is the Anthropic account's own: a credit balance and a monthly spend limit, set in the Anthropic
   Console. When either is hit, every request fails with a 400 ("credit balance is too low" / "reached your specified
   API usage limits") and the orchestrator marks each remaining error as failed. `-Resume` recovers afterwards, but
   nothing warned beforehand.
-- Cost is only known after the fact, from the Anthropic Console.
+- No estimates and no louis-agent budgets yet (F6, F7).
 
 ## 3. Concepts
 
@@ -53,8 +56,10 @@ Out of scope: billing users, and anything that changes *how much* a request cost
 
 ### 4.1 The record
 
-`AgentEngine` writes one record per model request (including the separate summarisation calls), appended to
-`logs/usage.jsonl` by `AgentLog` — one JSON line, no prompt text, no tool output:
+`UsageRecordingChatClient`, a middleware inside the engine's tool loop, writes one record per model request (including
+the separate summarisation calls), streaming or not. `PricingUsageSink` adds the cost, and `JsonlUsageSink` appends it to
+`{LOG_DIRECTORY}/usage-YYYY-MM.jsonl`: one JSON line, no prompt text, no tool output. Without `LOG_DIRECTORY` the ledger
+is off, with a warning.
 
 ```json
 {
@@ -82,7 +87,8 @@ Out of scope: billing users, and anything that changes *how much* a request cost
   reports*). Reasoning (thinking) tokens are part of the output count and billed as output; they are recorded
   separately only to show how much of the output was thinking. The Anthropic adapter doesn't report them, so
   `reasoning` is `null` there. Providers that report nothing (some Ollama models) record counts as `null`, never as 0.
-- The file is append-only and rotates monthly (`usage-2026-10.jsonl`); it is the source for every total below.
+- The file is append-only and rotates monthly (`usage-2026-10.jsonl`, by UTC month); it is the source for every total
+  below. Several processes can append to it at once (the API and the orchestrator share one in the demo).
 - Sessions are in memory, but the ledger is not: totals survive restarts.
 
 ### 4.2 Prices
@@ -119,8 +125,8 @@ A session can be tagged so its usage rolls up to a task and a run:
 
 - `POST /sessions` accepts optional `{ "task": "fix:<error id>", "run": "<run id>", "service": "<name>" }`; the
   orchestrator sets them for every fix (and build, in the build-mode POC).
-- The orchestrator's own triage requests are recorded with `purpose: "triage"` and the same run id, so a run's total
-  includes both agents.
+- The orchestrator's own triage requests are recorded with `host: "orchestrator"`, `purpose: "triage"`, session
+  `triage_{error id}` and the same run id (no task), so a run's total includes both agents.
 
 ### 4.4 Reconciling with the real bill (optional)
 
@@ -144,8 +150,9 @@ fixes)"* — never a single figure presented as certain.
 | **Model** (fallback) | No or too little history | `rounds × (prefix + avg history) × price`, with the prefix measured from the last request (or counted with the provider's token-counting endpoint) and cache effects applied: first round at write price, later rounds at read price |
 | **Calibration** | After every run | Compare each task's estimate with its actual; show the error in the run summary; the history basis improves itself as the ledger grows |
 
-Defaults for the model-based estimate come from the demo's measured profile (~20 rounds per fix, ~26,000-token prefix;
-see the optimisation spec) until history replaces them.
+Defaults for the model-based estimate come from the M1 baseline on Claude Haiku 5.5 (8–16 requests per fix, 11.4 on
+average; a ~48,000-token prefix; see the features' [Benchmark](../features/README.md#the-benchmark)) until history
+replaces them.
 
 ### 5.2 Where estimates appear
 
@@ -200,8 +207,9 @@ The Anthropic Console's credit balance and spend limits remain the **hard backst
 sum of louis-agent's monthly budgets.
 
 Some newer Claude models also accept an advisory per-task token budget in the request itself (so the model paces
-itself); Claude Haiku 4.5, the default, doesn't. Where the configured model supports it, the task budget can be passed
-through as a hint — it never replaces the checks above.
+itself). Claude Haiku 5.5, the default, supports it as a beta (`task-budgets-2026-03-13` header, `task_budget` in
+`output_config`, at least 20,000 tokens); Claude Haiku 4.5 doesn't. Where the configured model supports it, the task
+budget can be passed through as a hint — it never replaces the checks above.
 
 ## 7. Showing it
 
@@ -245,16 +253,18 @@ Same `AGENT_API_KEY` rules as the other endpoints.
 
 | Setting | Default | Meaning |
 |---|---|---|
-| `USAGE_LEDGER` | `on` | Write `logs/usage.jsonl` |
-| `PRICES_FILE` | `config/prices.json` | Price table (missing file → tokens only) |
+| `USAGE_LEDGER` | `on` | Write `{LOG_DIRECTORY}/usage-YYYY-MM.jsonl` (needs `LOG_DIRECTORY`; off with a warning without it) |
+| `PRICES_FILE` | `config/prices.json` | Price table (missing file → tokens only, with a warning; a malformed one stops the host) |
+| `PRICES_URL` | unset | Fetch the price table over HTTP, e.g. louis-agent.api's `GET /prices`; unreachable → `PRICES_FILE` |
 | `BUDGETS_FILE` | `config/budgets.json` | Budgets (missing file → no louis-agent budgets; the account's limits still apply) |
 | `USAGE_IN_CHAT` | `true` web/CLI, `false` Rider | Show the per-answer usage line |
 | `ADMIN_API_KEY` *(secret)* | unset | Enables daily reconciliation with Anthropic's Usage and Cost reports (4.4) |
 
 ## 9. Rollout
 
-1. **Ledger + prices** (with the optimisation spec's workstream A): records, cost, `usage.jsonl`, the per-answer line,
-   comms-log totals. Baseline: one demo run.
+1. **Ledger + prices** (with the optimisation spec's workstream A): records, cost, the monthly ledger, the per-answer
+   line, comms-log totals. Baseline: one demo run. *Ledger, prices and baseline done (F1, F2); the per-answer line and
+   comms-log totals are F3.*
 2. **Estimates**: model-based first, history-based once the ledger has enough tasks; shown in the demo script and run
    summary with estimate-vs-actual.
 3. **Budgets**: `warn` and `stop` first (session, run, day, month), then `ask` with the web app's continue button.

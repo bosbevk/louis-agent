@@ -56,8 +56,8 @@ quality trade.
 - **Archive** through `AgentLog` before each rewrite (S3).
 - **Benchmark chat:** a script (`samples/benchmarks/long-chat.ps1` or a test harness) that drives 30 turns against
   louis-agent.api on the demo repository, then asks recall questions with known answers.
-- **Provider-native alternatives** (Anthropic context editing / compaction) stay out: they need the beta client, and
-  server-side compaction isn't offered for Haiku 4.5.
+- **Provider-native alternatives** (Anthropic context editing / compaction) stay out: they need the beta client and work
+  only on Anthropic (server-side compaction supports Haiku 5.5, not Haiku 4.5).
 
 ## Implementation steps
 
