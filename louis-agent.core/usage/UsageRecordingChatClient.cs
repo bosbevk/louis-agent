@@ -21,12 +21,13 @@ public sealed class UsageRecordingChatClient(
     public override async Task<ChatResponse> GetResponseAsync(
         IEnumerable<ChatMessage> messages, ChatOptions? options = null, CancellationToken cancellationToken = default)
     {
-        int round = NextRound();
+        UsageScope? scope = UsageScope.Current;
+        int round = NextRound(scope);
         var stopwatch = Stopwatch.StartNew();
         ChatResponse response = await base.GetResponseAsync(messages, options, cancellationToken);
 
         // Non-streaming responses carry their usage on ChatResponse.Usage, not as UsageContent.
-        sink.Record(CreateRecord(round, response.Usage, response.ModelId, response.FinishReason?.Value, stopwatch.Elapsed));
+        sink.Record(CreateRecord(scope, round, response.Usage, response.ModelId, response.FinishReason?.Value, stopwatch.Elapsed));
         return response;
     }
 
@@ -34,7 +35,9 @@ public sealed class UsageRecordingChatClient(
         IEnumerable<ChatMessage> messages, ChatOptions? options = null,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        int round = NextRound();
+        // Taken when the request starts: the stream may end where the scope isn't current (disposed by the host).
+        UsageScope? scope = UsageScope.Current;
+        int round = NextRound(scope);
         var stopwatch = Stopwatch.StartNew();
         UsageDetails? usage = null;
         string? model = null, stop = null;
@@ -77,7 +80,7 @@ public sealed class UsageRecordingChatClient(
         {
             // Reached on normal completion, an exception, or the caller disposing the stream early (a cancelled turn).
             if (!failed)
-                sink.Record(CreateRecord(round, usage, model, completed ? stop : Cancelled, stopwatch.Elapsed));
+                sink.Record(CreateRecord(scope, round, usage, model, completed ? stop : Cancelled, stopwatch.Elapsed));
         }
     }
 
@@ -88,18 +91,18 @@ public sealed class UsageRecordingChatClient(
     /// Numbers a request when it starts, so overlapping requests are numbered in the order they were made. Outside any
     /// scope every request is round 1.
     /// </summary>
-    private static int NextRound() => UsageScope.Current?.NextRound() ?? 1;
+    private static int NextRound(UsageScope? scope) => scope?.NextRound() ?? 1;
 
-    /// <summary>Builds the record for a finished request from the current scope.</summary>
-    internal UsageRecord CreateRecord(int round, UsageDetails? usage, string? model, string? stop, TimeSpan duration) =>
-        // Host, Session, Turn, Task, Run and Service come with F1-S2 and F1-S3.
+    /// <summary>Builds the record for a finished request from the scope it started in.</summary>
+    internal UsageRecord CreateRecord(UsageScope? scope, int round, UsageDetails? usage, string? model, string? stop, TimeSpan duration) =>
+        // Task, Run and Service come with F1-S3.
         new(
             At: DateTimeOffset.UtcNow,
             Round: round,
-            Purpose: UsageScope.Current?.Purpose ?? UsagePurpose.Turn,
-            Host: null,
-            Session: null,
-            Turn: null,
+            Purpose: scope?.Purpose ?? UsagePurpose.Turn,
+            Host: scope?.Host,
+            Session: scope?.Session,
+            Turn: scope?.Turn,
             Task: null,
             Run: null,
             Service: null,

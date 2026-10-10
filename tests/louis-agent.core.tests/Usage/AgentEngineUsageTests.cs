@@ -71,7 +71,7 @@ public class AgentEngineUsageTests
                 _ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "It's all x.")));
             var engine = Engine(client, sink);
 
-            using (UsageScope.Begin())
+            using (UsageScope.Begin(host: "api", session: "sess_1", turn: 4))
                 await engine.ProcessPromptAsync(engine.NewHistory(), "what is in the file?");
 
             Assert.That(sink.Records.Select(r => (r.Purpose, r.Round)), Is.EqualTo(new[]
@@ -81,6 +81,8 @@ public class AgentEngineUsageTests
                 // The summary has its own scope, so the turn's next request is still round 2.
                 (UsagePurpose.Turn, 2),
             }));
+            Assert.That(sink.Records.Select(r => (r.Host, r.Session, r.Turn)), Is.All.EqualTo(("api", "sess_1", (int?)4)),
+                "the summary is attributed to the turn it served");
         }
         finally
         {

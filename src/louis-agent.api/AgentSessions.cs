@@ -16,6 +16,9 @@ internal sealed class AgentSession(string id, List<ChatMessage> history)
     public DateTimeOffset LastActivity { get; private set; } = DateTimeOffset.UtcNow;
     public bool IsBusy => _turnLock.CurrentCount == 0;
 
+    /// <summary>Messages started in this session; the current one's number is the usage ledger's turn.</summary>
+    public int Turns { get; private set; }
+
     /// <summary>Starts a turn unless one is already running; the turn stops if the client disconnects.</summary>
     public bool TryStartTurn(CancellationToken requestAborted, out CancellationTokenSource turn)
     {
@@ -24,6 +27,7 @@ internal sealed class AgentSession(string id, List<ChatMessage> history)
 
         turn = CancellationTokenSource.CreateLinkedTokenSource(requestAborted);
         _activeTurn = turn;
+        Turns++;
         LastActivity = DateTimeOffset.UtcNow;
         return true;
     }

@@ -315,6 +315,9 @@ public partial class AgentEngine
     public async Task RunAsync()
     {
         var history = NewHistory();
+        // One CLI run is one session in the usage ledger.
+        string session = $"cli_{Guid.NewGuid():N}";
+        int turns = 0;
 
         // Ctrl+C stops the reply in progress; with no reply running it exits as usual.
         CancellationTokenSource? turn = null;
@@ -353,6 +356,7 @@ public partial class AgentEngine
 
             using var cancellation = new CancellationTokenSource();
             Volatile.Write(ref turn, cancellation);
+            using var usage = UsageScope.Begin(host: "cli", session: session, turn: ++turns);
             try
             {
                 Console.Write("\nAssistant: ");
@@ -377,6 +381,7 @@ public partial class AgentEngine
     /// <summary>Run a single prompt and exit (non-interactive mode).</summary>
     public async Task RunSinglePromptAsync(string userInput)
     {
+        using var usage = UsageScope.Begin(host: "cli", session: $"cli_{Guid.NewGuid():N}", turn: 1);
         try
         {
             await StreamToConsoleAsync(NewHistory(), userInput);

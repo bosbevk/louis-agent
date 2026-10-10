@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using System.Text.Json;
 using louis_agent.core.tools;
+using louis_agent.core.usage;
 using Microsoft.Extensions.AI;
 
 namespace louis_agent.acp_server;
@@ -222,6 +223,8 @@ internal sealed class AcpServer(AgentEngine agent)
             }
             else
             {
+                // Every model request of this turn is recorded in the usage ledger under this session and turn.
+                using var usage = UsageScope.Begin(host: "acp", session: sessionId, turn: Interlocked.Increment(ref session.Turns));
                 await StreamTurnAsync(sessionId, session, prompt, turnCancellation.Token, serverCancellationToken);
             }
 
@@ -694,5 +697,8 @@ internal sealed class AcpServer(AgentEngine agent)
         public object SyncRoot { get; } = new();
         public CancellationTokenSource? ActiveTurn { get; set; }
         public string WorkingDirectory { get; set; } = cwd;
+
+        /// <summary>Prompts answered by the model so far; the usage ledger's turn number.</summary>
+        public int Turns;
     }
 }

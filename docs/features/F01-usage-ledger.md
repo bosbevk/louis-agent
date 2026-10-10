@@ -95,6 +95,12 @@ Where it plugs in:
    rather than through `AgentLog`, whose directory is set once per process; the month is taken in UTC.
    `AgentHost.CreateUsageSink` is public so the orchestrator can use it in step 7.
 7. **Host scopes:** API, ACP, CLI, orchestrator. *Test:* API-level test (or manual curl) shows `host`/`session`/`turn`.
+   **Done:** the API's SSE endpoint is an async iterator, and a scope it makes current is lost at its first `yield`
+   (pinned by a test), so it activates the turn's scope around each `MoveNextAsync` of the engine's stream
+   (`UsageScope.Activate`). The recorder keeps the scope a request started in, and nested scopes (summaries) inherit
+   host, session and turn. Orchestrator triage is `host: orchestrator`, `purpose: triage`, session `triage_{error id}`,
+   in the same ledger as the fixes (`LOG_DIRECTORY: /demo/logs`). Checked by hand: two messages to one API session
+   recorded as turns 1 and 2.
 8. **Session tags** on `POST /sessions` and in `LouisAgentClient`. *Test:* orchestrator test with a stub API asserts the
    create-session body; core test asserts tags reach the records.
 9. **Docs:** settings in README / SETUP; spec status.

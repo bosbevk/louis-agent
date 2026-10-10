@@ -100,6 +100,93 @@ public class UsageScopeTests
         Assert.That(UsageScope.Current, Is.SameAs(outer));
     }
 
+    [Test]
+    public async Task Begin_InsideAnAsyncIterator_IsLostAfterItsFirstYield()
+    {
+        // Why hosts that stream from an iterator (the API's SSE endpoint) can't just call Begin: each MoveNextAsync runs
+        // in the caller's context, so the scope the iterator opened is gone after it yields.
+        var seen = new List<UsageScope?>();
+        await foreach (var _ in ScopeInIterator(seen)) { }
+
+        Assert.That(seen[0], Is.Not.Null);
+        Assert.That(seen[1], Is.Null);
+    }
+
+    private static async IAsyncEnumerable<int> ScopeInIterator(List<UsageScope?> seen)
+    {
+        using var scope = UsageScope.Begin();
+        seen.Add(UsageScope.Current);
+        yield return 1;
+        await Task.Yield();
+        seen.Add(UsageScope.Current);
+    }
+
+    [Test]
+    public void Begin_Nested_InheritsHostSessionAndTurn()
+    {
+        // A summary opens its own scope inside the turn's; its records must still say whose turn it was.
+        using var turn = UsageScope.Begin(host: "api", session: "sess_1", turn: 3);
+        using var summary = UsageScope.Begin(UsagePurpose.Summary);
+
+        Assert.That((summary.Host, summary.Session, summary.Turn, summary.Purpose), Is.EqualTo(("api", "sess_1", (int?)3, UsagePurpose.Summary)));
+    }
+
+    [Test]
+    public void Begin_Nested_GivenValuesWinOverTheOuterOnes()
+    {
+        using var outer = UsageScope.Begin(host: "api", session: "sess_1", turn: 3);
+        using var inner = UsageScope.Begin(session: "sess_2", turn: 1);
+
+        Assert.That((inner.Host, inner.Session, inner.Turn), Is.EqualTo(("api", "sess_2", (int?)1)));
+    }
+
+    [Test]
+    public void Activate_MakesTheScopeCurrentAndRestoresThePreviousOne()
+    {
+        using var outer = UsageScope.Begin();
+        var other = UsageScope.Begin(host: "api");
+        other.Dispose();
+
+        using (other.Activate())
+            Assert.That(UsageScope.Current, Is.SameAs(other));
+
+        Assert.That(UsageScope.Current, Is.SameAs(outer));
+    }
+
+    [Test]
+    public async Task Activate_AroundEachStep_ReachesTheInnerStreamFromAnIterator()
+    {
+        // The API's pattern: an SSE iterator activates the turn's scope around each MoveNextAsync of the engine's stream,
+        // so every model request inside it, including those after a yield, sees the scope.
+        var seen = new List<string?>();
+        await foreach (var _ in OuterIterator(seen)) { }
+
+        Assert.That(seen, Is.EqualTo(new[] { "api", "api", "api" }));
+    }
+
+    private static async IAsyncEnumerable<int> OuterIterator(List<string?> seen)
+    {
+        var usage = UsageScope.Begin(host: "api");
+        await using var inner = InnerStream(seen).GetAsyncEnumerator();
+        while (true)
+        {
+            bool more;
+            using (usage.Activate()) more = await inner.MoveNextAsync();
+            if (!more) break;
+            yield return inner.Current;
+        }
+    }
+
+    private static async IAsyncEnumerable<int> InnerStream(List<string?> seen)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            await Task.Yield();
+            seen.Add(UsageScope.Current?.Host);
+            yield return i;
+        }
+    }
+
     private static async Task OpenScopeWithoutDisposingAsync()
     {
         await Task.Yield();

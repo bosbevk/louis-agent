@@ -175,6 +175,36 @@ public class UsageRecordingChatClientTests
     }
 
     [Test]
+    public async Task GetResponse_RecordCarriesTheScopesHostSessionAndTurn()
+    {
+        var sink = new ListUsageSink();
+        using var client = new UsageRecordingChatClient(new FakeChatClient(_ => Reply("hi")), sink);
+
+        using (UsageScope.Begin(host: "acp", session: "sess_7", turn: 2))
+            await client.GetResponseAsync("hi");
+
+        UsageRecord record = sink.Records.Single();
+        Assert.That((record.Host, record.Session, record.Turn), Is.EqualTo(("acp", "sess_7", (int?)2)));
+    }
+
+    [Test]
+    public async Task GetStreamingResponse_DisposedOutsideTheScope_KeepsTheScopeItStartedIn()
+    {
+        // A host may dispose the stream after its scope is gone (the API's await using); the record still says whose it was.
+        var sink = new ListUsageSink();
+        using var client = new UsageRecordingChatClient(new FakeChatClient(_ => Reply("partial")), sink);
+        var usage = UsageScope.Begin(host: "api", session: "sess_9", turn: 1);
+        usage.Dispose();
+
+        var stream = client.GetStreamingResponseAsync("hi").GetAsyncEnumerator();
+        using (usage.Activate()) await stream.MoveNextAsync();
+        await stream.DisposeAsync();
+
+        UsageRecord record = sink.Records.Single();
+        Assert.That((record.Host, record.Session, record.Stop), Is.EqualTo(("api", "sess_9", UsageRecordingChatClient.Cancelled)));
+    }
+
+    [Test]
     public async Task Record_ContainsNoMessageText()
     {
         const string marker = "SECRET-PROMPT-MARKER-7f3a";

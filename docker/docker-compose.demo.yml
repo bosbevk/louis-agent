@@ -89,6 +89,8 @@ services:
       ORCHESTRATOR_SERVICE_ROOT: /demo/order-service
       ORCHESTRATOR_STATE_DIRECTORY: /demo/orchestrator-state
       ORCHESTRATOR_COMMS_LOG: /demo/agent-comms.md
+      # The same usage ledger as demo-api, so a run's triage and fixes are in one file.
+      LOG_DIRECTORY: /demo/logs
       LOUIS_AGENT_URL: http://demo-api:8080
       # Only used to stash what an unfinished fix left behind before returning to main.
       GIT_AUTHOR_NAME: orchestrator

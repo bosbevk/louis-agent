@@ -5,6 +5,7 @@ using System.Text.Json;
 using louis_agent.api;
 using louis_agent.core;
 using louis_agent.core.tools;
+using louis_agent.core.usage;
 using Microsoft.Extensions.AI;
 
 // HTTP version of the ACP server, which also serves the web app: every API reply is JSON, and a message's answer streams as Server-Sent Events shaped
@@ -131,6 +132,9 @@ static async IAsyncEnumerable<SseItem<string>> StreamTurnAsync(
             yield break;
         }
 
+        // This is an async iterator, so a scope it makes current is lost at its first yield: the scope is activated
+        // around each step of the engine's stream instead, which is where the model requests run.
+        using var usage = UsageScope.Begin(host: "api", session: session.Id, turn: session.Turns);
         await using var updates = engine.StreamPromptAsync(session.History, prompt, turn.Token).GetAsyncEnumerator(turn.Token);
         string stopReason = "end_turn";
         string? error = null;
@@ -138,7 +142,9 @@ static async IAsyncEnumerable<SseItem<string>> StreamTurnAsync(
         {
             try
             {
-                if (!await updates.MoveNextAsync()) break;
+                bool more;
+                using (usage.Activate()) more = await updates.MoveNextAsync();
+                if (!more) break;
             }
             catch (OperationCanceledException)
             {

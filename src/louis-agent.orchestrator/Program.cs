@@ -4,6 +4,7 @@ using louis_agent.core;
 using louis_agent.core.config;
 using louis_agent.core.providers;
 using louis_agent.core.tools;
+using louis_agent.core.usage;
 using louis_agent.orchestrator;
 
 // Watches one service's error feed. Each new exception is triaged by an agent built on louis-agent.core whose system
@@ -23,8 +24,13 @@ var louisAgent = new LouisAgentClient(http, options.LouisAgentApiKey);
 var comms = new CommsLog(options.CommsLogPath);
 var tools = new ServiceTools(options, feed, louisAgent, methods, comms, Log);
 
-var engine = new AgentEngine(skills, new LlmClientFactory().Create(llm),
-    new AgentOptions { WorkspaceRoot = options.ServiceRoot, AgentFunction = "orchestrator" }, llm.ResolveSupportsTools(), toolsets: [tools])
+// LOG_DIRECTORY and USAGE_LEDGER come from the environment, so triage lands in the same usage ledger as the fixes.
+var agentOptions = AgentOptions.FromEnvironment();
+agentOptions.WorkspaceRoot = options.ServiceRoot;
+agentOptions.AgentFunction = "orchestrator";
+var clientFactory = new LlmClientFactory();
+var engine = new AgentEngine(skills, clientFactory.Create(llm), agentOptions, llm.ResolveSupportsTools(), toolsets: [tools],
+    usageSink: AgentHost.CreateUsageSink(agentOptions), usageMapper: clientFactory.CreateUsageMapper(llm))
 {
     Thinking = llm.ResolveThinking(),
 };
@@ -64,6 +70,8 @@ while (!stop.IsCancellationRequested)
         string answer;
         try
         {
+            // One triage conversation per error event; the run id that ties it to the fixes comes with F1 step 8.
+            using var usage = UsageScope.Begin(UsagePurpose.Triage, host: "orchestrator", session: $"triage_{error.Id}", turn: 1);
             answer = await engine.ProcessPromptAsync(engine.NewHistory(), TriagePrompt(error), stop.Token);
         }
         catch (OperationCanceledException)
