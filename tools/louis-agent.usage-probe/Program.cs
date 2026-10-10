@@ -10,11 +10,28 @@ using Microsoft.Extensions.AI;
 //
 //   dotnet run --project tools/louis-agent.usage-probe [-- --lines N]
 //   dotnet run --project tools/louis-agent.usage-probe -- --think     (2 requests that need reasoning: is thinking text returned?)
+//   dotnet run --project tools/louis-agent.usage-probe -- --ledger <usage-YYYY-MM.jsonl>   (price and total a ledger; no model call)
 //
 // Uses LLM_PROVIDER / LLM_MODEL / LLM_ENDPOINT from config/.env; variables set in the shell win. Every request goes to the
-// real provider, so with Anthropic this costs money (about $0.05 on Haiku 4.5 with the default prompt).
+// real provider, so with Anthropic this costs money (about $0.05 on Haiku 4.5 with the default prompt). --ledger only
+// reads the file and the price table (PRICES_URL / PRICES_FILE / config/prices.json).
 
 AgentHost.LoadEnvironment();
+// The same numbers on every machine ($0.0546, 531,265), whatever its locale.
+System.Globalization.CultureInfo.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
+
+if (Array.IndexOf(args, "--ledger") is var ledgerArg and >= 0)
+{
+    if (ledgerArg + 1 >= args.Length)
+    {
+        Console.Error.WriteLine("--ledger needs a file: --ledger logs/usage-2026-10.jsonl");
+        return 2;
+    }
+
+    PrintLedger(args[ledgerArg + 1], AgentHost.LoadPrices(AgentOptions.FromEnvironment()));
+    return 0;
+}
+
 var llm = LlmOptions.FromEnvironment();
 var factory = new LlmClientFactory();
 IChatClient client = factory.Create(llm);
@@ -152,3 +169,25 @@ void Print(string source, UsageDetails? usage)
 }
 
 static string Show(long? count) => count?.ToString() ?? "null";
+
+// Prices a ledger (records written before F2 have no cost) and totals it per piece of work, per purpose, per run and in all.
+static void PrintLedger(string path, PriceTable prices)
+{
+    var records = UsageReport.Price(UsageReport.Read(path), prices).ToList();
+    var models = records.Select(r => r.Model).Distinct().ToList();
+    Console.WriteLine($"{path}: {records.Count} requests; models {string.Join(", ", models)}; prices as of {prices.AsOf ?? "(none)"}");
+
+    Section("Per piece of work (a fix's task, a triage or a chat session)", UsageReport.Totals(records, UsageReport.WorkOf));
+    Section("Per purpose", UsageReport.Totals(records, r => r.Purpose));
+    Section("Per run", UsageReport.Totals(records, r => r.Run ?? "(no run)"));
+    Section("All", [UsageReport.Total("all", records)]);
+
+    void Section(string title, IReadOnlyList<UsageTotal> totals)
+    {
+        Console.WriteLine($"\n{title}");
+        Console.WriteLine($"  {"",-34} {"requests",8} {"input",11} {"cache w",9} {"cache r",9} {"output",8} {"cost",10}");
+        foreach (UsageTotal t in totals)
+            Console.WriteLine($"  {t.Key,-34} {t.Requests,8} {t.Input,11:N0} {t.CacheWrite,9:N0} {t.CacheRead,9:N0} {t.Output,8:N0} " +
+                              $"{(t.Cost is { } cost ? $"${cost:0.0000}" : "unknown"),10}{(t.Unpriced > 0 ? $"  ({t.Unpriced} unpriced)" : "")}");
+    }
+}
