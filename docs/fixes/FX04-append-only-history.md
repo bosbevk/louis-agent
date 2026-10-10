@@ -2,7 +2,7 @@
 
 > **Status:** open · **Area:** core, the conversation history and tool list (`AgentEngine`) · **Found:** 2026-10-10
 >
-> **Removes the limitation:** "Reloading skills or approving a tool mid-chat can break the chat on Claude Haiku 5.5"
+> **Removes the limitation:** "Changing the tools or skills during a chat can break it on Claude Haiku 5.5"
 > ([docs/CLAUDE.md](../CLAUDE.md#known-limitations) #9)
 
 ## Symptom (expected from the code and Anthropic's docs; not yet seen in a run)
@@ -36,8 +36,15 @@ The first and last rows were found by reading the code (the first from a PR revi
 - **Tools:** a conversation keeps a copy of the tool list from its first request; `BeginTurn` sends that copy, never the
   engine's live `_tools`. Tools created, approved or rejected later apply to **new** conversations. `CreateTool`'s reply
   changes accordingly ("available in your next chat"), so the model doesn't promise what it can't call.
+- **FX1's final-request middleware** must restore the **conversation's** tool list, not the engine's: today
+  `KeepToolsOnFinalRequest` sets `final.Tools = _tools`, the live list, so after freezing, a message that hits the round
+  limit after a tool changed elsewhere would send a different list on its final request and fail with FX1's 400 again.
+  `BeginTurn` puts the frozen list in `ChatOptions.AdditionalProperties` as well; `FunctionInvokingChatClient` clears
+  `Tools` on the final request but keeps the rest of the cloned options, so the middleware reads the list from there.
 - **System prompt:** keep `history[0]` as it was; after a skill reload, append a short system message saying what
-  changed (Haiku 5.5 accepts mid-conversation system messages, and they don't touch the checked prefix).
+  changed (Haiku 5.5 accepts mid-conversation system messages). An appended message doesn't invalidate the thinking
+  written before it; it becomes part of the checked prefix for thinking written after it, which is what append-only
+  means.
 - **F9 (compaction)** must be designed the same way: summarise by appending, never by editing earlier turns.
 
 **Alternatives considered:**
@@ -53,6 +60,9 @@ The first and last rows were found by reading the code (the first from a PR revi
 - `CreateTool` mid-message: the requests after it in the same message send the same tool list as before it.
 - `/approve` or `/reject` between two messages leaves the open conversation's tool list (names and descriptions) unchanged.
 - A tool created in one session doesn't change the tool list another open session sends.
+- A message that hits the round limit after a tool changed elsewhere: its final request carries the conversation's frozen
+  tool list (same as its earlier requests) with `tool_choice: none`, not the engine's current one
+  (`AgentEngineRoundLimitTests`, extended).
 - A skill reload between two messages leaves `history[0]` unchanged and appends a system message.
 
 ## Confirm
