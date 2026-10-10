@@ -30,7 +30,8 @@ never mistake missing prices for zero cost.
 **F2-S4 — Works in Docker.** As an *operator*, I want the same prices file used by the containers, so that Docker and
 local runs agree.
 - *Given* the main compose file *then* the api reads `/workspace/config/prices.json`; *given* the demo compose file
-  *then* `demo-api` and the orchestrator read a read-only mount of `config/`.
+  *then* `demo-api` and the orchestrator read a read-only mount of `config/prices.json` alone (not the folder with its
+  secrets), and the orchestrator fetches the API's `GET /prices` first.
 
 ## Design
 
@@ -62,10 +63,14 @@ As built, in `louis-agent.core/usage/` (the original plan, and how it changed, i
 1. **`PriceTable` loading and prefix matching.** *Test:* exact and dated ids match; longest prefix wins; missing file →
    empty table with one warning; malformed file → clear error naming the file.
 2. **`CostCalculator`.** *Test:* the worked example in U §4.1 (1,840 input + 26,110 cache-write + 412 output on Haiku
-   prices = $0.0365); cache reads at the read price; 1-hour writes at the 1-hour price; unpriced → `null`; priced at 0 → 0.
-3. **Attach cost in `UsageRecordingChatClient`.** *Test:* records written by the F1 tests now carry `cost` and
-   `price_table`.
-4. **Example file, `.gitignore`, compose mounts, settings docs.** *Test (manual):* demo run → ledger has costs.
+   prices = $0.0365); cache reads at the read price; the long-prompt tier above its threshold; unpriced → `null`;
+   priced at 0 → 0. (1-hour cache writes at the 1-hour price wait for F4, which records a write's lifetime; until then
+   every write is priced at the 5-minute rate.)
+3. **Attach cost to every record** (as built: `PricingUsageSink`, wrapping the ledger in `AgentHost.CreateUsageSink`,
+   rather than inside `UsageRecordingChatClient`). *Test:* a record reaches the ledger with `cost` and `price_table`, end
+   to end through `AgentHost.Build`.
+4. **The tracked `config/prices.json`, compose settings, settings docs** (as built: tracked, not an example file plus a
+   `.gitignore`d copy). *Test (manual):* demo run → ledger has costs.
    **Done:** both demos on Haiku 5.5 wrote a cost on every record (`samples/sample-output*/usage-2026-10.jsonl`), the
    API from its mounted file and the orchestrator from the API's `GET /prices` (`PRICES_URL`, added on request with a
    fallback to the file).
