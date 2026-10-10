@@ -114,13 +114,13 @@ Where it plugs in:
 
 - All stories' criteria pass; unit tests added; existing suites pass. **Met:** core 511, orchestrator 26 tests.
 - A demo run produces a ledger in which every fix's records carry its task and run, and the orchestrator's triage
-  records are present. **Met:** `run-demo.ps1 -Short` on Claude Haiku 5.5 (2026-10-10, run `run-20261010-165434`):
-  53 records, every fix's tagged `fix:<error id>` and the run id, all five triages present with the same run id
-  ([saved ledger](../../samples/sample-output-short/usage-2026-10.jsonl)). The same run lost two of four fixes to a Haiku
-  5.5 limitation that isn't F1's (see the sample's README).
+  records are present. **Met:** `run-demo.ps1 -Short` on Claude Haiku 5.5 (2026-10-10, run `run-20261010-171318`):
+  61 records, every fix's tagged `fix:<error id>` and the run id, all five triages present with the same run id
+  ([saved ledger](../../samples/sample-output-short/usage-2026-10.jsonl)); 4/4 fixes confirmed. (A first run lost two
+  fixes to a Haiku 5.5 round-limit problem the ledger helped find, since fixed in the engine.)
 - **The M1 baseline is recorded** (after F2): total tokens and cost per fix for the current demo. *Tokens recorded
-  now* (about 475,000–545,000 input tokens per fix, about $0.05 at Haiku 5.5 prices); F2 records the priced baseline,
-  on a full run once the Haiku 5.5 issue is fixed.
+  now* (about 525,000–584,000 input tokens per one-message fix, about $0.05–0.06 at Haiku 5.5 prices); F2 records the
+  priced baseline on a full run.
 - **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)): tick **F1** in the TODO,
   set *Status* to done here and in the features table, and note it in the spec's implementation map.
 

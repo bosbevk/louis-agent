@@ -44,9 +44,9 @@ on the host. A shared `nuget` volume means the service's packages are restored o
 `docker compose -f docker/docker-compose.demo.yml stop demo-api`.
 
 To see the result without running it, look at [sample-output-short/](sample-output-short/README.md) (a `-Short` run on
-Claude Haiku 5.5, with the usage ledger: about $0.23 for five errors, and two fixes lost to a Haiku 5.5 limitation it
-explains) or [sample-output/](sample-output/README.md): the comms log, logs and branches from one clean full run on
-Haiku 4.5, and a recording of merging its ten fixes in the web app:
+Claude Haiku 5.5 with the usage ledger: four fixes and one escalation for about $0.27) or
+[sample-output/](sample-output/README.md): the comms log, logs and branches from one clean full run on Haiku 4.5, and a
+recording of merging its ten fixes in the web app:
 
 ![Merging the ten fix branches in the web app](sample-output/merge_10_fix_branches.gif)
 

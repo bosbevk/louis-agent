@@ -272,10 +272,6 @@ The same list as the TODO's *Known limitations*: when work removes one, delete i
    rejects a changed system prompt or tool list once thinking blocks are in the history (enforced for accounts created
    on or after 2026-08-31), and `BeginTurn` rewrites the system prompt after a reload. Start a new chat afterwards.
    Removed by keeping conversations append-only (TODO *Models*, backlog).
-10. **On Claude Haiku 5.5 a message that uses all 10 tool rounds fails with a 400** instead of stopping (limitation 6):
-   `FunctionInvokingChatClient` sends its final request after the limit without tools, which the model rejects. The
-   short demo lost two of four fixes to it ([samples/sample-output-short](../samples/sample-output-short/README.md)).
-   Removed by keeping the tools on that request (TODO *Models*, backlog).
 
 ## Common errors
 

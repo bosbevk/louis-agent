@@ -1,32 +1,29 @@
 # Sample output: the short demo on Claude Haiku 5.5, with the usage ledger
 
 What one clean run of `samples/run-demo.ps1 -Short` produced (in Docker, model `claude-haiku-5-5`, 2026-10-10, run id
-`run-20261010-165434`): five production errors, four of them auto-fixable per the runbooks. It is the first saved run
-with the **usage ledger** (F1), so every model request of both agents is in [usage-2026-10.jsonl](usage-2026-10.jsonl).
-The full thirteen-error run on Haiku 4.5 is in [sample-output/](../sample-output/README.md). Times are UTC.
+`run-20261010-171318`): five production errors became **4 fixed and 1 escalated**, four fix branches with one commit
+each, nothing pushed. It is the first saved run with the **usage ledger** (F1): every model request of both agents is in
+[usage-2026-10.jsonl](usage-2026-10.jsonl). The full thirteen-error run on Haiku 4.5 is in
+[sample-output/](../sample-output/README.md). Times are UTC.
 
-| # | Request | Decision | What happened |
+| # | Request | Decision | louis-agent |
 |---|---|---|---|
-| 1 | `order-total 1003` | **fixed** | louis-agent fixed it in 10 model requests; verified, replayed, tests pass |
-| 2 | `shipping-cost 1006` | escalated | louis-agent committed a fix (`23d96fb`), then its turn **failed with a 400** before it could report |
-| 3 | `packing-slip 1001` | **fixed** | fixed in 9 requests; verified, replayed, tests pass |
-| 4 | `vat 1009` | escalated | the turn **failed with a 400** before louis-agent committed; the orchestrator stashed its work |
+| 1 | `order-total 1003` | **fixed** | 1 message, 10 model requests |
+| 2 | `shipping-cost 1006` | **fixed** | 1 message, 10 requests |
+| 3 | `packing-slip 1001` | **fixed** | 1 message, 11 requests: it used all 10 tool rounds and reported on the final request |
+| 4 | `vat 1009` | **fixed** | 2 messages, 16 requests: it hit the round limit, and the orchestrator asked it to continue |
 | 5 | `refund 1005` | escalated | correct: refunds move money and are never auto-fixed (handed to payments) |
 
-## Why two fixes failed
+Every fix was confirmed by the orchestrator: the commit is on its branch and touches the right files, the crashing
+request now answers `200`, and the service's tests pass.
 
-Both failed fixes used all **10 tool rounds** of a message and still wanted to go on (the ledger shows 10 requests
-ending in `tool_calls`). `FunctionInvokingChatClient` then sends one last request **without the tools** to get a final
-answer. On Haiku 4.5 that returns a reply without a `FIX-RESULT`, and the orchestrator asks louis-agent to continue.
-Haiku 5.5 binds its thinking blocks to the conversation, tool list included, and rejects that request:
+## The round limit on Haiku 5.5
 
-```text
-400 invalid_request_error: messages.1.content.0: Invalid `signature` in `thinking` block. The block is bound to a
-different conversation. ... The `tools` list differs from the one this block was created with.
-```
-
-So the 10-round limit (a known limitation) turns from "needs a follow-up message" into a failed fix on Haiku 5.5. See
-`louis-agent-api-log.txt` (search for `Turn failed`) and the TODO's *Models* items.
+Fixes 3 and 4 used all 10 tool rounds of a message. After the limit, `FunctionInvokingChatClient` sends one last
+request without tools; Haiku 5.5 rejects a changed tool list once its thinking blocks are in the history, so the first
+run of this demo (commit `57833e5`) lost both of those fixes to a 400. The engine now puts the tools back on that request
+with `tool_choice: none` (commit `d9c7c45`), and the ledger shows the result: fix 3's eleventh request and fix 4's
+follow-up message both went through.
 
 ## What the ledger shows
 
@@ -36,12 +33,13 @@ per million tokens; F2 will price records itself). Fix records carry `task: fix:
 
 | Work | Requests | Input tokens | Output tokens | Cost |
 |---|---|---|---|---|
-| A fix (louis-agent, host `api`) | 9–10 | 474,000–544,000 | 2,400–3,900 | $0.049–0.056 |
-| A triage (orchestrator, `purpose: triage`) | 2–3 | 15,000–25,000 | 600–1,000 | $0.002–0.003 |
-| **The run** (5 errors) | **53** | **2,193,193** | **16,880** | **≈ $0.23** |
+| A fix in one message (louis-agent, host `api`) | 10–11 | 525,000–584,000 | 2,800–3,600 | $0.054–0.060 |
+| The fix that needed a follow-up (`vat`) | 16 | 900,494 | 4,521 | $0.092 |
+| A triage (orchestrator, `purpose: triage`) | 2–3 | 15,000–25,000 | 550–920 | $0.002–0.003 |
+| **The run** (5 errors) | **61** | **2,656,923** | **17,515** | **≈ $0.27** |
 
 Nothing is cached yet ([F4](../../docs/features/F04-prompt-caching.md)): every request re-sends the ~48,000-token
-system prompt and tools, which is nearly all of the input. The largest request was 57,879 tokens, under Haiku 5.5's
+system prompt and tools, which is nearly all of the input. The largest request was 60,064 tokens, under Haiku 5.5's
 100,000-token price step. `reasoning` is null throughout: Claude's thinking is counted inside `output`.
 
 ## Files
@@ -51,10 +49,10 @@ system prompt and tools, which is nearly all of the input. The largest request w
 | [agent-comms.md](agent-comms.md) | Everything the agents said to each other, per error, and the run summary at the end |
 | [usage-2026-10.jsonl](usage-2026-10.jsonl) | The usage ledger: one line per model request of both agents (counts and ids only, no prompt text) |
 | [branches.txt](branches.txt) | The demo repository after the run: `git log --all --graph` and each fix branch's changed files |
-| [louis-agent-api-log.txt](louis-agent-api-log.txt) | louis-agent.api's log: every tool call, and the two failed turns |
+| [louis-agent-api-log.txt](louis-agent-api-log.txt) | louis-agent.api's log: every tool call it made, with arguments and results |
 | [orchestrator-state/decisions.jsonl](orchestrator-state/decisions.jsonl) | One line per error: the decision and why |
-| [orchestrator-state/fixes.jsonl](orchestrator-state/fixes.jsonl) | louis-agent's result for each fix attempt |
-| [orchestrator-state/escalations.jsonl](orchestrator-state/escalations.jsonl) | The three errors handed to a human team |
+| [orchestrator-state/fixes.jsonl](orchestrator-state/fixes.jsonl) | louis-agent's result for each fix |
+| [orchestrator-state/escalations.jsonl](orchestrator-state/escalations.jsonl) | The refund error handed to payments |
 | [orchestrator-state/processed.txt](orchestrator-state/processed.txt) | Error ids already triaged |
 
 Your own run will differ in error ids, hashes, wording and token counts: the model writes each fix and reply anew.
