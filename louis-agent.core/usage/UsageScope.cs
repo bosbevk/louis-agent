@@ -29,7 +29,10 @@ public sealed class UsageScope : IDisposable
     /// <summary>The innermost open scope, or null outside any scope.</summary>
     public static UsageScope? Current => CurrentScope.Value;
 
-    /// <summary>Purpose of the requests made in this scope; <see cref="UsagePurpose.Continue"/> is set per request in F1-S2.</summary>
+    /// <summary>
+    /// Purpose of the requests made in this scope. <c>AgentEngine.StreamPromptAsync</c> switches it to
+    /// <see cref="UsagePurpose.Continue"/> after a cut-off reply, for the rest of the turn.
+    /// </summary>
     public string Purpose { get; set; }
 
     // TODO F1-S2: Host, Session, Turn. TODO F1-S3: Task, Run, Service.
