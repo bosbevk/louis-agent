@@ -78,6 +78,7 @@ docker compose -f docker/docker-compose.yml --env-file config/.env up -d --build
 | `DEVOPS_TEAM` | Optional team: sprints are looked up under it, and an empty sprint means its current sprint |
 | `USAGE_LEDGER` | `on` (default) records every model request's tokens and cost to `{LOG_DIRECTORY}/usage-YYYY-MM.jsonl`; `off` disables it |
 | `PRICES_FILE` | The price table for those costs (default `config/prices.json`, found like `config/.env`; compose sets it for the containers). Without one, costs are recorded as unknown (`null`); a malformed one stops the host |
+| `PRICES_URL` | Fetch the price table over HTTP instead, e.g. louis-agent.api's public `GET /prices` (the demo's orchestrator uses `http://demo-api:8080/prices`). If it can't be reached at start-up, the host warns and uses the file above |
 | `LOG_DIRECTORY` | Run logs and the usage ledger. Compose sets it for the containers (`logs/` on the host); for `dotnet run`, set it (for example `LOG_DIRECTORY=logs`) or the ledger is off, with a warning |
 
 Set by compose for the containers, so normally not in `.env`: `WORKSPACE_ROOT`, `SKILLS_DIRECTORY`, `LOG_DIRECTORY`.

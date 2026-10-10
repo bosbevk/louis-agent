@@ -88,7 +88,9 @@ Out of scope: billing users, and anything that changes *how much* a request cost
 ### 4.2 Prices
 
 A price table in `config/prices.json`, **tracked** (prices aren't secret, so every clone and container prices the same
-way; `PRICES_FILE` points elsewhere). Comments are allowed in the file:
+way; `PRICES_FILE` points elsewhere). A host can also fetch it over HTTP with `PRICES_URL`, e.g. from louis-agent.api's
+public `GET /prices`, so several hosts price with one table; if the URL can't be reached at start-up it falls back to the
+file. Comments are allowed in the file:
 
 ```json
 {

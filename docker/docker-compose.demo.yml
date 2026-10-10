@@ -96,7 +96,8 @@ services:
       ORCHESTRATOR_COMMS_LOG: /demo/agent-comms.md
       # The same usage ledger as demo-api, so a run's triage and fixes are in one file.
       LOG_DIRECTORY: /demo/logs
-      # The price table, mounted on its own (read-only), not the whole config folder with its secrets
+      # Prices from demo-api, so both agents price with one table; the mounted file is the fallback if it can't be reached
+      PRICES_URL: http://demo-api:8080/prices
       PRICES_FILE: /config/prices.json
       LOUIS_AGENT_URL: http://demo-api:8080
       # Only used to stash what an unfinished fix left behind before returning to main.
