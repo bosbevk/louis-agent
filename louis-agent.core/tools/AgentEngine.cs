@@ -55,6 +55,12 @@ public partial class AgentEngine
     public string SkillDocumentation { get; private set; }
     public string WorkspaceRoot { get; }
     public bool SupportsTools { get; }
+
+    /// <summary>
+    /// Whether model requests are recorded (a usage sink was given). Hosts show usage only then; otherwise /usage says
+    /// usage isn't tracked rather than "nothing yet".
+    /// </summary>
+    public bool RecordsUsage { get; }
     public IReadOnlyList<AITool> Tools => _tools;
 
     /// <summary>The currently loaded skills (refreshed by <see cref="ReloadSkills"/>).</summary>
@@ -103,6 +109,7 @@ public partial class AgentEngine
         _bash = new BashTools(WorkspaceRoot);
 
         // Summaries call the model directly, outside the tool loop, so they are recorded by their own recorder.
+        RecordsUsage = usageSink is not null;
         _innerChatClient = usageSink is null ? chatClient : new UsageRecordingChatClient(chatClient, usageSink, mapper: usageMapper);
         var pipeline = new ChatClientBuilder(chatClient)
             .UseFunctionInvocation(configure: c =>
@@ -345,6 +352,7 @@ public partial class AgentEngine
         // One CLI run is one session in the usage ledger.
         string session = $"cli_{Guid.NewGuid():N}";
         int turns = 0;
+        var sessionUsage = new UsageSession();
 
         // Ctrl+C stops the reply in progress; with no reply running it exits as usual.
         CancellationTokenSource? turn = null;
@@ -356,7 +364,8 @@ public partial class AgentEngine
         };
 
         Console.WriteLine("=== Louis Agent CLI ===");
-        Console.WriteLine("Type 'exit' to quit; Ctrl+C stops a reply; /tools, /approve <Name>, /reject <Name> manage agent-built tools\n");
+        Console.WriteLine("Type 'exit' to quit; Ctrl+C stops a reply; /usage shows this session's tokens and cost;");
+        Console.WriteLine("/tools, /approve <Name>, /reject <Name> manage agent-built tools\n");
 
         while (true)
         {
@@ -374,8 +383,8 @@ public partial class AgentEngine
                 continue;
             }
 
-            // Approval commands come from the user only; they never reach the model.
-            if (HandleUserCommand(userInput) is { } commandReply)
+            // Approval commands and /usage come from the user only; they never reach the model.
+            if (HandleUserCommand(userInput, RecordsUsage ? sessionUsage.Records : null) is { } commandReply)
             {
                 Console.WriteLine($"\n{commandReply}\n");
                 continue;
@@ -401,6 +410,8 @@ public partial class AgentEngine
             finally
             {
                 Volatile.Write(ref turn, null);
+                // After a stopped or failed reply too: what its requests used was still charged.
+                WriteUsageLine(sessionUsage.EndTurn(usage.Records));
             }
         }
     }
@@ -413,12 +424,28 @@ public partial class AgentEngine
         {
             await StreamToConsoleAsync(NewHistory(), userInput);
             Console.WriteLine();
+            // One prompt is the whole session, so the line has no session total.
+            if (usage.Records.Count > 0) WriteUsageLine(UsageText.Line(usage.Records));
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error: {ex.Message}");
             Environment.Exit(1);
         }
+    }
+
+    /// <summary>
+    /// The usage line, in grey on stderr: stdout stays the answer alone, so a script reading a single prompt's answer
+    /// isn't given usage text.
+    /// </summary>
+    private static void WriteUsageLine(string? line)
+    {
+        if (line is null) return;
+        var previous = Console.ForegroundColor;
+        Console.ForegroundColor = ConsoleColor.DarkGray;
+        Console.Error.WriteLine(line);
+        Console.Error.WriteLine();
+        Console.ForegroundColor = previous;
     }
 
     /// <summary>Writes the reply as it streams (thinking in grey), with a one-line status for each tool call.</summary>
