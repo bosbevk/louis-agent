@@ -1,5 +1,23 @@
 # Louis Agent: Development Guide
 
+## How to work with Louis
+
+Louis is a software engineer learning to become an AI engineer through this project; learning matters more than speed.
+The goal and the skill map are in [GOAL.md](GOAL.md).
+
+1. **Louis drives the code.** Implement only what Louis asks for, one step at a time; planning, reviews and learning
+   write-ups happen in the Claude project, so don't start the next feature on your own.
+2. **Small steps.** Follow the steps in the feature doc. Each step is one commit (or PR) with its test, small enough to
+   review in about ten minutes.
+3. **Explain every change:** what changed, why this design and not the alternatives, and what to look at closely.
+4. **Stop after each step** and wait for Louis to review and understand it before starting the next one.
+5. **Teach, don't just do.** Name the AI-engineering concept behind each step and where it sits in the GOAL.md skill map.
+6. **Measure, don't assume.** Ask before anything that spends real money (benchmark or demo runs against the API) and
+   before pushing.
+7. **Write it up.** When a skill or feature finishes, help write its learning write-up in [learning/](learning/).
+8. **Source of truth:** [TODO.md](../TODO.md) (what's next), [features/](features/README.md) (how) and [specs/](specs/)
+   (why). Update them rather than duplicating them.
+
 ## Quick start
 
 ```bash
