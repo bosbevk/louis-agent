@@ -13,6 +13,8 @@ list is the current plan for getting there and will change as I learn; the goal 
 - **Each line says what it replaces.** Older backlog items that a feature covers were folded into it, so nothing
   appears twice.
 - **Bigger designs live in [docs/specs/](docs/specs/).** This list keeps only their open items.
+- **Bugs are fixes.** Each has a doc in [docs/fixes/](docs/fixes/README.md) (symptom, cause, fix, how it was confirmed);
+  an open one has one backlog line here that links to it.
 - **When something is finished**, tick it, then move it to *Done* as one line (newest first).
 
 ## Now: usage, budgets and cheaper responses
@@ -183,12 +185,10 @@ feature when its turn comes; remove its line here and update the map's *Missing*
 
 ### Models
 
-- [ ] Keep conversations append-only for models that bind thinking blocks to the history (Claude Haiku 5.5, Sonnet 5.5,
-      Opus 5.5): they return a 400 when `system`, `tools` or earlier messages change while thinking blocks are sent back
-      (enforced for accounts created on or after 2026-08-31). Known edits today: `AgentEngine.BeginTurn` rewrites
-      `history[0]` when skills are reloaded, and approving an agent-built tool changes the tool list mid-session. F9
-      (compaction) must be designed append-only too. *Removes the limitation:* reloading skills or approving a tool
-      mid-chat can break the chat on Haiku 5.5
+- [ ] [FX4](docs/fixes/FX04-append-only-history.md) Keep conversations append-only for models that bind thinking blocks
+      to the history (Haiku 5.5, Sonnet 5.5, Opus 5.5): freeze each conversation's tool list and system prompt, since
+      `CreateTool`, `/approve`, `/reject`, a skill reload, or another session change them today. *Removes the
+      limitation:* changing the tools or skills during a chat can break it on Haiku 5.5
 
 ### Observability
 
@@ -210,10 +210,11 @@ backlog item removes one, it says so.
 - An unpublished API (`dotnet run`) only serves the web app in the `Development` environment.
 - Local models get a truncated prompt: Ollama's context window is 2,048 tokens by default and the agent sends ~26,000+
   (system prompt and tools); Ollama drops the rest without an error (the ledger shows `input: 2050`) → **F13**.
-- On Claude Haiku 5.5 (the default), reloading skills or approving an agent-built tool in the middle of a chat can make
-  the chat's next message fail with a 400: the model rejects a changed system prompt or tool list once thinking blocks
-  are in the history (enforced for accounts created on or after 2026-08-31). Start a new chat afterwards → *Models:
-  keep conversations append-only*.
+- On Claude Haiku 5.5 (the default), changing the tools or skills during a chat can make its next request fail with a
+  400: the model rejects a changed system prompt or tool list once thinking blocks are in the history (enforced for
+  accounts created on or after 2026-08-31). That happens when the model creates a tool (`CreateTool`, mid-message),
+  on `/approve`, `/reject` or a skill reload, and in the API for every open chat, since all sessions share one tool
+  list. Start a new chat afterwards → [**FX4**](docs/fixes/FX04-append-only-history.md).
 
 ## Done
 
@@ -224,8 +225,8 @@ Newest first; details in the git history.
   ledger; M1 baseline $0.6586 for the full demo ($0.0625 a fix), both sample runs rerun with priced ledgers
 - 2026-10-10 — Full demo on Claude Haiku 5.5 with the usage ledger: 10/10 fixes confirmed, 2 ignored, 1 escalated, ≈ $0.66
   (`samples/sample-output/`, now with `usage-2026-10.jsonl`); F2 prices that ledger for the M1 baseline
-- 2026-10-10 — The engine keeps the tools on the request after the 10-round limit (`tool_choice: none`), which Haiku
-  5.5 otherwise rejects; the short demo went from 2/4 to 4/4 fixes
+- 2026-10-10 — [FX1](docs/fixes/FX01-round-limit-tools.md): the engine keeps the tools on the request after the
+  10-round limit (`tool_choice: none`), which Haiku 5.5 otherwise rejects; the short demo went from 2/4 to 4/4 fixes
 - 2026-10-10 — **F1 Usage ledger**: every model request of every host in `{LOG_DIRECTORY}/usage-YYYY-MM.jsonl`, with
   host, session, turn, purpose and the orchestrator's fix and run; `tools/louis-agent.usage-probe`; a short demo
   (`run-demo.ps1 -Short`) saved with its ledger in `samples/sample-output-short/` (4/4 fixes, ≈ $0.27 on Haiku 5.5)
