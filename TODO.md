@@ -181,6 +181,19 @@ feature when its turn comes; remove its line here and update the map's *Missing*
 - [ ] **Human in the loop:** approval policies per action and risk level
 - [ ] **Multimodal and computer use:** images and documents as input; browser or computer-use tools
 
+### Models
+
+- [ ] Keep conversations append-only for models that bind thinking blocks to the history (Claude Haiku 5.5, Sonnet 5.5,
+      Opus 5.5): they return a 400 when `system`, `tools` or earlier messages change while thinking blocks are sent back
+      (enforced for accounts created on or after 2026-08-31). Known edits today: `AgentEngine.BeginTurn` rewrites
+      `history[0]` when skills are reloaded, and approving an agent-built tool changes the tool list mid-session. F9
+      (compaction) must be designed append-only too. Blocks the switch below
+- [ ] Switch the default Anthropic model to Claude Haiku 5.5: about 7.5× cheaper than Haiku 4.5 on the probe even with
+      its +52% tokenizer; usage recording, adaptive thinking and thinking text checked with `usage-probe` (see the
+      optimisation spec, *Claude Haiku 5.5*). Before switching: the append-only item above, F2's price table with Haiku
+      5.5's over-100K-token tier, and a demo run that still confirms 10/10 fixes; take the M1 baseline on the model we
+      keep
+
 ### Observability
 
 - [ ] Metrics and tracing (e.g. OpenTelemetry) beyond the stderr and JSON-lines logs: latency and error dashboards
