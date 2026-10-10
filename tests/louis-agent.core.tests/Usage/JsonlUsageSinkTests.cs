@@ -163,7 +163,9 @@ public class JsonlUsageSinkTests
     [Test]
     public void CreateUsageSink_FollowsUsageLedgerAndLogDirectory()
     {
-        Assert.That(AgentHost.CreateUsageSink(new AgentOptions { LogDirectory = _directory }), Is.TypeOf<JsonlUsageSink>());
+        string noPrices = Path.Combine(_directory, "no-prices.json");
+        Assert.That(AgentHost.CreateUsageSink(new AgentOptions { LogDirectory = _directory, PricesFile = noPrices }),
+            Is.TypeOf<PricingUsageSink>().With.Property(nameof(PricingUsageSink.Inner)).TypeOf<JsonlUsageSink>());
         Assert.That(AgentHost.CreateUsageSink(new AgentOptions { LogDirectory = _directory, UsageLedger = false }), Is.Null);
         Assert.That(AgentHost.CreateUsageSink(new AgentOptions { LogDirectory = null }), Is.Null);
     }

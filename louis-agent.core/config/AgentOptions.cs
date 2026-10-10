@@ -49,6 +49,9 @@ public sealed class AgentOptions
     /// <summary>USAGE_LEDGER: on (default) records every model request to {LOG_DIRECTORY}/usage-YYYY-MM.jsonl; off disables it.</summary>
     public bool UsageLedger { get; set; } = true;
 
+    /// <summary>PRICES_FILE: the price table for the ledger's costs; null means config/prices.json, found like config/.env.</summary>
+    public string? PricesFile { get; set; }
+
     public static AgentOptions FromEnvironment(Func<string, string?>? getVariable = null)
     {
         getVariable ??= Environment.GetEnvironmentVariable;
@@ -70,6 +73,7 @@ public sealed class AgentOptions
             RiderMcpProjectPath = Get("RIDER_MCP_PROJECT_PATH"),
             LogDirectory = Get("LOG_DIRECTORY"),
             UsageLedger = !string.Equals(Get("USAGE_LEDGER"), "off", StringComparison.OrdinalIgnoreCase),
+            PricesFile = Get("PRICES_FILE"),
         };
         if (Get("AGENT_FUNCTION") is { } function) options.AgentFunction = function;
         if (Get("WORKSPACE_ROOT") is { } root) options.WorkspaceRoot = root;

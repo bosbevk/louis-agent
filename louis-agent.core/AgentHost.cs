@@ -155,8 +155,9 @@ public static partial class AgentHost
     }
 
     /// <summary>
-    /// The usage ledger, {LOG_DIRECTORY}/usage-YYYY-MM.jsonl, or null when USAGE_LEDGER=off or there is no
-    /// LOG_DIRECTORY (with a warning, since the ledger was wanted).
+    /// The usage ledger, {LOG_DIRECTORY}/usage-YYYY-MM.jsonl, with each record priced from the price table; or null when
+    /// USAGE_LEDGER=off or there is no LOG_DIRECTORY (with a warning, since the ledger was wanted). A malformed price table
+    /// throws, so a host doesn't start on wrong prices.
     /// </summary>
     public static IUsageSink? CreateUsageSink(AgentOptions agent)
     {
@@ -168,7 +169,20 @@ public static partial class AgentHost
         }
 
         Console.Error.WriteLine($"[INFO] Usage ledger: {Path.Combine(agent.LogDirectory, "usage-YYYY-MM.jsonl")}");
-        return new JsonlUsageSink(agent.LogDirectory);
+        return new PricingUsageSink(new JsonlUsageSink(agent.LogDirectory), LoadPrices(agent));
+    }
+
+    /// <summary>The price table from PRICES_FILE, or config/prices.json found like config/.env; empty, with a warning, if there's none.</summary>
+    internal static PriceTable LoadPrices(AgentOptions agent)
+    {
+        string? path = agent.PricesFile
+                       ?? (FindConfigDirectory(Environment.CurrentDirectory) is { } configDir ? Path.Combine(configDir, "prices.json") : null);
+        PriceTable prices = path is null ? PriceTable.Empty : PriceTable.Load(path);
+        if (prices.IsEmpty)
+            Console.Error.WriteLine($"[WARN] No price table at {path ?? "config/prices.json"}: usage is recorded without cost. Set PRICES_FILE to price it.");
+        else
+            Console.Error.WriteLine($"[INFO] Prices: {path} (as of {prices.AsOf}, {prices.Models.Count} models)");
+        return prices;
     }
 
     /// <summary>
