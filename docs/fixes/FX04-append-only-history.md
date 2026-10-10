@@ -46,7 +46,9 @@ The first and last rows were found by reading the code (the first from a PR revi
   Anthropic adapter (12.53.0) does **not** (the body had only `max_tokens`, `messages`, `model`, `tools`), but the Ollama
   and OpenAI-compatible adapters aren't checked, and a later version could change. So the middleware **removes the key**
   before passing the request on (or the frozen list lives in an `AsyncLocal`, as `UsageScope` does), and a test asserts
-  the key never reaches the inner client.
+  the key never reaches the inner client. It removes it from a **copy** of the options on every request:
+  `FunctionInvokingChatClient` reuses one options object for all the rounds and copies it only for the final one, so
+  removing the key from the shared object on round 1 would leave the final request without the frozen list.
 - **System prompt:** keep `history[0]` as it was; after a skill reload, append a short system message saying what
   changed (Haiku 5.5 accepts mid-conversation system messages). An appended message doesn't invalidate the thinking
   written before it; it becomes part of the checked prefix for thinking written after it, which is what append-only
@@ -69,6 +71,8 @@ The first and last rows were found by reading the code (the first from a PR revi
 - A message that hits the round limit after a tool changed elsewhere: its final request carries the conversation's frozen
   tool list (same as its earlier requests) with `tool_choice: none`, not the engine's current one
   (`AgentEngineRoundLimitTests`, extended).
+- The frozen-list key never reaches the provider on any round, and the options object the tool loop reuses still has it
+  when the final request is made.
 - A skill reload between two messages leaves `history[0]` unchanged and appends a system message.
 
 ## Confirm
