@@ -113,16 +113,16 @@ public class UsageTextTests
 
         Assert.That(UsageText.Summary(session), Is.EqualTo(
             "Session usage: 3 requests · 4.3k tokens · $0.0053\n" +
-            "  turn        2 requests · 2.2k tokens · $0.003\n" +
-            "  summary     1 request · 2.1k tokens · $0.0023\n" +
-            "Tokens: 4k input · 0 cache write · 0 cache read · 250 output"));
+            "- turn: 2 requests · 2.2k tokens · $0.003\n" +
+            "- summary: 1 request · 2.1k tokens · $0.0023\n" +
+            "- tokens: 4k input · 0 cache write · 0 cache read · 250 output"));
     }
 
     [Test]
     public void Summary_Unpriced_ExplainsWhy()
     {
         Assert.That(UsageText.Summary([Record(1_000, 0, 100, null)]),
-            Does.EndWith("\nPrice unknown for 1 request: the model isn't in the price table."));
+            Does.EndWith("\n- price unknown for 1 request: the model isn't in the price table"));
     }
 
     [Test]

@@ -31,12 +31,14 @@ public static class UsageText
 
         string currency = CurrencyOf(session);
         UsageTotal total = UsageReport.Total("session", session);
+        // A markdown list: the web app and Rider render replies as markdown, where single line breaks would run the lines
+        // into one paragraph; a terminal shows the list as it is.
         var lines = new List<string> { $"Session usage: {Describe(total, currency)}" };
-        lines.AddRange(UsageReport.Totals(session, r => r.Purpose).Select(p => $"  {p.Key,-12}{Describe(p, currency)}"));
-        lines.Add($"Tokens: {Tokens(total.Input)} input · {Tokens(total.CacheWrite)} cache write · " +
+        lines.AddRange(UsageReport.Totals(session, r => r.Purpose).Select(p => $"- {p.Key}: {Describe(p, currency)}"));
+        lines.Add($"- tokens: {Tokens(total.Input)} input · {Tokens(total.CacheWrite)} cache write · " +
                   $"{Tokens(total.CacheRead)} cache read · {Tokens(total.Output)} output");
         if (total.Unpriced > 0)
-            lines.Add($"Price unknown for {Requests(total.Unpriced)}: the model isn't in the price table.");
+            lines.Add($"- price unknown for {Requests(total.Unpriced)}: the model isn't in the price table");
         // "\n", not Environment.NewLine: the same text on every OS and over the API.
         return string.Join("\n", lines);
     }

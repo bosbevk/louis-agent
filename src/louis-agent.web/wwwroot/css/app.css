@@ -404,6 +404,17 @@ details > summary::-webkit-details-marker { display: none; }
 .working { color: var(--amber); font-size: 12px; letter-spacing: .06em; }
 
 .stopped { color: var(--amber); font-size: 12px; font-style: italic; }
+/* F3: what an answer and the whole chat used. Quiet, so it's there when wanted and out of the way otherwise. */
+.usage { color: var(--dim); font-size: 11px; margin-top: 6px; cursor: default; }
+.chat-usage {
+    max-width: 820px;
+    width: calc(100% - 32px);
+    margin: 0 auto 6px;
+    color: var(--dim);
+    font-size: 11px;
+    text-align: right;
+    cursor: default;
+}
 .error, .notice { padding: 8px 12px; border: 1px solid var(--danger); border-radius: var(--radius); color: var(--danger); font-size: 13px; }
 .notice {
     display: flex;

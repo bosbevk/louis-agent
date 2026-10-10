@@ -82,6 +82,14 @@ the comms log, so that I know what the demo (and any real run) cost.
   while another request of the same turn is still in flight.
 - **`UsageScope.Total()` has the key `"scope"`.** One scope has nothing to group by; its `Purpose` would mislabel the
   total, since it changes to `continue` partway through a cut-off turn.
+- **`message_delta.usage` also has `requests` and `unpriced`** (step 4): a turn's figure is summed over its model
+  requests, unlike Claude's per-request usage, and `unpriced` tells "$0.002 for all of it" from "for 2 of 3 requests".
+- **The web app's chat total sits above the message box**, not in a header (step 5): the conversation pane has none,
+  and above the composer it's always in view.
+- **`/usage` replies are a markdown list** (step 5): the web app and Rider render replies as markdown, which ran the
+  plain lines into one paragraph.
+- **A turn that ends in an error has no usage in the web app**: the API sends an `error` event, not `message_delta`, so
+  the browser's chat total can be below the session's on the server (`GET /sessions/{id}`, `/usage`), which count it.
 - **A `?.` skipped the ledger write** for requests outside a scope while step 1 was being built; F1's tests caught it
   before the commit ([FX5](../fixes/FX05-null-conditional-ledger.md)).
 
