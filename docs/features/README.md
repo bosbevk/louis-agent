@@ -104,6 +104,8 @@ Full demo on Claude Haiku 5.5 (`run-20261010-193730`, ledger in
 - **Roles:** *user* (chats in the web app, Rider or CLI), *operator* (runs louis-agent and the orchestrator, sets
   budgets and prices), *developer* (works on this repo), *orchestrator* (the agent itself, where it is the one acting).
 - **Tasks** are small enough for one commit each and name their test.
+- **Plans:** before step 1, the plan approved for building the feature now is saved in [plans/](../plans/README.md)
+  (`Fnn-name.md`) and committed on the feature's branch. This doc stays the *what and why*; the plan is the *how, now*.
 - **Definition of done** for every feature: its stories' criteria pass; unit tests added and the existing suites pass
   (`tests/louis-agent.core.tests`, `tests/louis-agent.orchestrator.tests`); the benchmark rerun where the feature
   touches cost; and the steps in *Finishing a feature* below.

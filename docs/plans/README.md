@@ -1,0 +1,29 @@
+# Plans: how each feature or fix is going to be built
+
+A feature doc ([features/](../features/README.md)) or a fix doc ([fixes/](../fixes/README.md)) says *what* and *why*.
+A plan says **how we'll build it now**: written and approved before the first step, with what it changes from the doc
+(the code has usually moved on since the doc was written), the steps, and how the result is checked. Plans are kept as
+they were approved, so the reasoning at the time stays readable; what the build then changed is recorded in the feature
+or fix doc (*What the build changed*), not here.
+
+## Plans
+
+| Plan | For | Approved | Notes |
+|---|---|---|---|
+| [F01-usage-ledger.md](F01-usage-ledger.md) | [F1 Usage ledger](../features/F01-usage-ledger.md) | 2026-10-10 | Recreated on 2026-10-11 from the plans approved in the session |
+| [F02-prices-and-cost.md](F02-prices-and-cost.md) | [F2 Prices and cost](../features/F02-prices-and-cost.md) | 2026-10-10 | Recreated on 2026-10-11; includes the `PRICES_URL` addition approved during the build |
+| [F03-usage-display.md](F03-usage-display.md) | [F3 Show usage](../features/F03-usage-display.md) | 2026-10-11 | |
+
+## Conventions
+
+- **One file per plan**, named like what it plans: `Fnn-name.md` for a feature, `FXnn-name.md` for a fix.
+- **Sections:** *Context* (why now, what the doc says), *Design* (what changes from the doc, and why), *Steps* (one
+  commit each, with its test; the review stop after each), *Verification* (tests, free manual checks, and any paid run,
+  which needs approval first), and the *Concepts* each step teaches, with their skill in the [goal](../GOAL.md).
+- **Saved and committed before step 1**, on the feature's branch, so the plan is in the same PR as the work.
+- **Changes during the build:** a change that is asked for and approved during the build (F2's `PRICES_URL`) is added to
+  the plan under *Approved during the build*, with the date; everything else the build learns goes in the feature or fix
+  doc.
+
+---
+[Docs index](../README.md) · Related: [Features](../features/README.md) · [Fixes](../fixes/README.md)

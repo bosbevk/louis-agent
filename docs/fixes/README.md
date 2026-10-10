@@ -21,6 +21,8 @@ record (most fixes so far taught something about a model's API).
   *Fix* (what changed and why this way), *Tests*, *Confirmed* (the real run that shows it works), and *Lesson* (the
   concept behind it and its skill in the goal's map).
 - **Status** is *open* or *done*, the same here and at the top of the fix's doc.
+- **Plans:** a fix that takes more than one step gets its approved plan in [plans/](../plans/README.md)
+  (`FXnn-name.md`), committed before its first step.
 - **An open fix** also has one line in the [TODO](../../TODO.md)'s backlog that links here; a fix that removes a known
   limitation names it.
 
@@ -35,4 +37,4 @@ In the commit that fixes it, or the one right after:
 4. **Docs:** anything the fix changes for users (settings, MODELS, SETUP).
 
 ---
-[Docs index](../README.md) · Related: [Features](../features/README.md) · [TODO](../../TODO.md)
+[Docs index](../README.md) · Related: [Features](../features/README.md) · [Plans](../plans/README.md) · [TODO](../../TODO.md)

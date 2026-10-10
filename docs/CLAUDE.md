@@ -9,14 +9,17 @@ The goal and the skill map are in [GOAL.md](GOAL.md).
    write-ups happen in the Claude project, so don't start the next feature on your own.
 2. **Small steps.** Follow the steps in the feature doc. Each step is one commit (or PR) with its test, small enough to
    review in about ten minutes.
-3. **Explain every change:** what changed, why this design and not the alternatives, and what to look at closely.
-4. **Stop after each step** and wait for Louis to review and understand it before starting the next one.
-5. **Teach, don't just do.** Name the AI-engineering concept behind each step and where it sits in the GOAL.md skill map.
-6. **Measure, don't assume.** Ask before anything that spends real money (benchmark or demo runs against the API) and
+3. **Plan first, and keep the plan.** Before a feature's or fix's first step, its approved plan is saved to
+   [plans/](plans/README.md) (`Fnn-name.md` or `FXnn-name.md`) and committed on its branch; it is kept as approved.
+4. **Explain every change:** what changed, why this design and not the alternatives, and what to look at closely.
+5. **Stop after each step** and wait for Louis to review and understand it before starting the next one.
+6. **Teach, don't just do.** Name the AI-engineering concept behind each step and where it sits in the GOAL.md skill map.
+7. **Measure, don't assume.** Ask before anything that spends real money (benchmark or demo runs against the API) and
    before pushing.
-7. **Write it up.** When a skill or feature finishes, help write its learning write-up in [learning/](learning/).
-8. **Source of truth:** [TODO.md](../TODO.md) (what's next), [features/](features/README.md) (how), [fixes/](fixes/README.md)
-   (what broke and why) and [specs/](specs/) (why). Update them rather than duplicating them.
+8. **Write it up.** When a skill or feature finishes, help write its learning write-up in [learning/](learning/).
+9. **Source of truth:** [TODO.md](../TODO.md) (what's next), [features/](features/README.md) (how), [plans/](plans/README.md)
+   (how we're building it now), [fixes/](fixes/README.md) (what broke and why) and [specs/](specs/) (why). Update them
+   rather than duplicating them.
 
 ## Quick start
 
@@ -103,7 +106,8 @@ docker/                       # Dockerfile.{acp-server,api,agent,mcp-server,orch
 config/                       # .env and .env.secrets (both ignored), their examples, LLM profiles (.env.anthropic,
                               # .env.ollama), prices.json (model prices), Rider config examples
 Skills/                       # personality.md + default.md + *-skills.md (system prompt), tools/ (agent-built tools)
-docs/                         # This guide, features/ (planned work), fixes/ (what broke and why), specs/, projects/
+docs/                         # This guide, features/ (planned work), plans/ (approved build plans),
+                              # fixes/ (what broke and why), specs/, projects/
 ```
 
 ## Development workflow
