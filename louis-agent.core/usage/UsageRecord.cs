@@ -17,6 +17,7 @@ namespace louis_agent.core.usage;
 /// <param name="Tokens">The four non-overlapping token kinds plus reasoning.</param>
 /// <param name="DurationMs">Wall time of the request, from the call to the last streamed update.</param>
 /// <param name="Stop">Finish reason (stop, tool_calls, length, …), or "cancelled".</param>
+/// <param name="Cost">What the request cost from the price table (F2); null means "price unknown", never free.</param>
 public sealed record UsageRecord(
     DateTimeOffset At,
     int Round,
@@ -30,8 +31,16 @@ public sealed record UsageRecord(
     string? Model,
     UsageTokens Tokens,
     long DurationMs,
-    string? Stop);
-// TODO F2: add Cost.
+    string? Stop,
+    UsageCost? Cost = null);
+
+/// <summary>
+/// A record's cost, stored with it so a later price change doesn't rewrite history (Usage spec §4.1).
+/// </summary>
+/// <param name="Currency">The price table's currency, e.g. "USD".</param>
+/// <param name="Amount">Rounded to 6 decimals; round further only for display.</param>
+/// <param name="PriceTable">The table's <c>as_of</c> date: which prices this cost used.</param>
+public sealed record UsageCost(string Currency, decimal Amount, string? PriceTable);
 
 /// <summary>
 /// Token counts for one request. The four kinds don't overlap, so they can be added up and priced separately. A count
