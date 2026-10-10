@@ -111,7 +111,8 @@ public partial class AgentEngine
                 c.FunctionInvoker = LogAndInvokeAsync;
                 // Lets the model see why a call failed (e.g. a missing argument) instead of a generic failure.
                 c.IncludeDetailedErrors = true;
-            });
+            })
+            .Use(KeepToolsOnFinalRequestAsync, KeepToolsOnFinalRequestStreamingAsync);
         // Inside the tool loop, so each round is its own request and record; outside it would see one call per turn.
         if (usageSink is not null)
             pipeline.Use(inner => new UsageRecordingChatClient(inner, usageSink, mapper: usageMapper));
@@ -199,6 +200,32 @@ public partial class AgentEngine
         string? request = context.Messages.LastOrDefault(m => m.Role == ChatRole.User)?.Text;
         return await SummariseToolResultAsync(context.Function.Name, arguments, text, request, cancellationToken);
     }
+
+    /// <summary>
+    /// Sits inside the tool-call loop. After <c>MaximumIterationsPerRequest</c> rounds, <see cref="FunctionInvokingChatClient"/>
+    /// sends one last request with no tools, so the model has to answer in text. Models that bind their thinking blocks to
+    /// the tool list (Claude Haiku 5.5 and later) reject that request with a 400, which loses the whole turn. This puts the
+    /// tools back unchanged with <see cref="ChatToolMode.None"/> (Anthropic: <c>tool_choice: none</c>): the tool list
+    /// matches every earlier request, and the model still can't call a tool.
+    /// </summary>
+    internal ChatOptions? KeepToolsOnFinalRequest(ChatOptions? options)
+    {
+        // Every request of a turn carries the tools (BeginTurn), so one without them is the loop's final request.
+        if (_tools.Count == 0 || options?.Tools is { Count: > 0 }) return options;
+
+        ChatOptions final = options?.Clone() ?? new ChatOptions();
+        final.Tools = _tools;
+        final.ToolMode = ChatToolMode.None;
+        return final;
+    }
+
+    private Task<ChatResponse> KeepToolsOnFinalRequestAsync(
+        IEnumerable<ChatMessage> messages, ChatOptions? options, IChatClient next, CancellationToken cancellationToken) =>
+        next.GetResponseAsync(messages, KeepToolsOnFinalRequest(options), cancellationToken);
+
+    private IAsyncEnumerable<ChatResponseUpdate> KeepToolsOnFinalRequestStreamingAsync(
+        IEnumerable<ChatMessage> messages, ChatOptions? options, IChatClient next, CancellationToken cancellationToken) =>
+        next.GetStreamingResponseAsync(messages, KeepToolsOnFinalRequest(options), cancellationToken);
 
     /// <summary>
     /// Sits inside the tool-call loop: when the model stopped at the output limit, any tool calls it was writing are
