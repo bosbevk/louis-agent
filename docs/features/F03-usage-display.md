@@ -73,5 +73,17 @@ the comms log, so that I know what the demo (and any real run) cost.
 - **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)): tick **F3** in the TODO,
   set *Status* to done here and in the features table, and note it in the spec's implementation map.
 
+## What the build changed from this plan
+
+- **The turn's scope collects the priced record.** The cost is added after the recorder (`PricingUsageSink`), so
+  `IUsageSink.Record` returns the record as stored and the recorder adds that one to the scope the request started in;
+  `UsageScope.Add` also passes it to the outer scope, so a summary counts toward its turn (step 1).
+- **`UsageScope.Add` locks its list**, for the same reason `NextRound` is `Interlocked`: a summary request can finish
+  while another request of the same turn is still in flight.
+- **`UsageScope.Total()` has the key `"scope"`.** One scope has nothing to group by; its `Purpose` would mislabel the
+  total, since it changes to `continue` partway through a cut-off turn.
+- **A `?.` skipped the ledger write** for requests outside a scope while step 1 was being built; F1's tests caught it
+  before the commit ([FX5](../fixes/FX05-null-conditional-ledger.md)).
+
 ---
 [Features](README.md) · Previous: [F2 Prices and cost](F02-prices-and-cost.md) · Next: [F4 Prompt caching](F04-prompt-caching.md)
