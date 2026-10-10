@@ -23,7 +23,7 @@ its own.
 
 **M1 — See it:** every request's tokens and cost recorded and visible.
 
-- [ ] [F1 Usage ledger](docs/features/F01-usage-ledger.md) — record every model request, attributed to session, task
+- [x] [F1 Usage ledger](docs/features/F01-usage-ledger.md) — record every model request, attributed to session, task
       and run
 - [ ] [F2 Prices and cost](docs/features/F02-prices-and-cost.md) — a price table; cost on every record
 - [ ] [F3 Show usage](docs/features/F03-usage-display.md) — cost per answer (web, CLI, Rider), in the API stream, and
@@ -189,8 +189,14 @@ feature when its turn comes; remove its line here and update the map's *Missing*
       `history[0]` when skills are reloaded, and approving an agent-built tool changes the tool list mid-session. F9
       (compaction) must be designed append-only too. *Removes the limitation:* reloading skills or approving a tool
       mid-chat can break the chat on Haiku 5.5
-- [ ] Confirm Haiku 5.5 on the demo: a run that still confirms 10/10 fixes; take F1's M1 baseline on it, and give F2's
-      price table its over-100K-token tier
+- [ ] Keep the tools on the request `FunctionInvokingChatClient` sends after the 10-round limit: it drops them to force
+      a final answer, which Haiku 5.5 rejects with a 400 (thinking blocks are bound to the tool list). This lost two of
+      four fixes in the short demo (`samples/sample-output-short/`). Options: a middleware inside the tool loop that puts
+      the tools back with `tool_choice: none`, or raising the limit ([F10](docs/features/F10-route-settings.md)).
+      *Removes the limitation:* a message that uses all 10 tool rounds fails on Haiku 5.5
+- [ ] Confirm Haiku 5.5 on the demo: the short run confirmed 2 of 4 fixes (the other two hit the item above); after
+      that fix, a full run that confirms 10/10; take F1's M1 baseline on it, and give F2's price table its
+      over-100K-token tier
 
 ### Observability
 
@@ -216,11 +222,17 @@ backlog item removes one, it says so.
   the chat's next message fail with a 400: the model rejects a changed system prompt or tool list once thinking blocks
   are in the history (enforced for accounts created on or after 2026-08-31). Start a new chat afterwards → *Models:
   keep conversations append-only*.
+- On Claude Haiku 5.5, a message that uses all 10 tool rounds fails with a 400 instead of stopping, because the final
+  request after the limit is sent without tools; in the demo that loses the fix → *Models: keep the tools on the request
+  after the 10-round limit*.
 
 ## Done
 
 Newest first; details in the git history.
 
+- 2026-10-10 — **F1 Usage ledger**: every model request of every host in `{LOG_DIRECTORY}/usage-YYYY-MM.jsonl`, with
+  host, session, turn, purpose and the orchestrator's fix and run; `tools/louis-agent.usage-probe`; a short demo
+  (`run-demo.ps1 -Short`) saved with its ledger in `samples/sample-output-short/` (≈ $0.23 for five errors on Haiku 5.5)
 - 2026-10-10 — Default Anthropic model is Claude Haiku 5.5 (about 7.5× cheaper than Haiku 4.5; usage, thinking and
   thinking text checked with `tools/louis-agent.usage-probe`); LLM profiles `config/.env.anthropic` / `.env.ollama`
 - 2026-10-07 — Specs and feature plan for usage, budgets and cheaper responses (`docs/specs/`, `docs/features/`); the

@@ -1,6 +1,6 @@
 # F1 · Usage ledger: record every model request
 
-> **Status:** in progress · **Milestone:** M1 · **Depends on:** —
+> **Status:** done (2026-10-10) · **Milestone:** M1 · **Depends on:** —
 >
 > **Spec:** [Usage §4.1, §4.3](../specs/USAGE_AND_BUDGETS.md) · [Optimisation §A](../specs/RESPONSE_OPTIMISATION.md)
 >
@@ -107,14 +107,20 @@ Where it plugs in:
    none) and limited to 200 printable characters. The orchestrator makes one run id per batch of new errors (as its
    comms log does a run), on the triage records and sent with every fix; `ServiceTools.RunId` is `internal`, since a
    public property's accessors would become tools. Checked by hand: a tagged session's record carries all three tags.
-9. **Docs:** settings in README / SETUP; spec status.
+9. **Docs:** settings in README / SETUP; spec status. **Done**, with the project tree, the core design doc, and a saved
+   demo run ([samples/sample-output-short/](../../samples/sample-output-short/README.md)).
 
 ## Done when
 
-- All stories' criteria pass; unit tests added; existing suites pass.
+- All stories' criteria pass; unit tests added; existing suites pass. **Met:** core 511, orchestrator 26 tests.
 - A demo run produces a ledger in which every fix's records carry its task and run, and the orchestrator's triage
-  records are present.
-- **The M1 baseline is recorded** (after F2): total tokens and cost per fix for the current demo.
+  records are present. **Met:** `run-demo.ps1 -Short` on Claude Haiku 5.5 (2026-10-10, run `run-20261010-165434`):
+  53 records, every fix's tagged `fix:<error id>` and the run id, all five triages present with the same run id
+  ([saved ledger](../../samples/sample-output-short/usage-2026-10.jsonl)). The same run lost two of four fixes to a Haiku
+  5.5 limitation that isn't F1's (see the sample's README).
+- **The M1 baseline is recorded** (after F2): total tokens and cost per fix for the current demo. *Tokens recorded
+  now* (about 475,000–545,000 input tokens per fix, about $0.05 at Haiku 5.5 prices); F2 records the priced baseline,
+  on a full run once the Haiku 5.5 issue is fixed.
 - **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)): tick **F1** in the TODO,
   set *Status* to done here and in the features table, and note it in the spec's implementation map.
 

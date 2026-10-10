@@ -18,16 +18,20 @@ order-service ──errors.jsonl──▶ orchestrator ──POST /sessions (SSE
 
 ```powershell
 .\samples\run-demo.ps1             # a clean run: about 15 minutes (the first run also builds the images)
+.\samples\run-demo.ps1 -Short      # a clean run with 5 errors (4 fixes, 1 escalation): quicker and cheaper
 .\samples\run-demo.ps1 -Resume     # keep .demo; triage only the errors not handled yet (e.g. after running out of credits)
 .\samples\run-demo.ps1 -ApiOnly    # keep .demo; just (re)start the web app
 .\samples\run-demo.ps1 -StopApi    # stop demo-api at the end instead of leaving it up
 ```
 
-Needs Docker Desktop and `ANTHROPIC_API_KEY` in `config/.env.secrets`; nothing else runs on the host. The script drives
+Needs Docker Desktop and `ANTHROPIC_API_KEY` in `config/.env.secrets`; nothing else runs on the host. The demo uses the
+LLM profile in `config/.env`; if that is `ollama`, run it on Claude with `$env:LLM_PROFILE = 'anthropic'` first (the
+shell wins over the file). The script drives
 [`docker/docker-compose.demo.yml`](../docker/docker-compose.demo.yml):
 
 1. **demo-setup** (orchestrator image) copies `samples/order-service` to `.demo/order-service` (git-ignored) as a fresh
-   git repository on `main`, then replays `data/requests.txt`, which logs 13 exceptions to `logs/errors.jsonl`;
+   git repository on `main`, then replays `data/requests.txt`, which logs 13 exceptions to `logs/errors.jsonl`
+   (`-Short`: `data/requests-short.txt`, 5 exceptions);
 2. **demo-api** (the louis-agent api image) runs louis-agent.api and the web app on `http://127.0.0.1:5081`, with that
    repository as its workspace;
 3. **orchestrator** triages every new error once (`--once`), calling demo-api over the compose network for fixes;
@@ -39,8 +43,10 @@ traces in the error log match louis-agent's workspace), and `agent-comms.md`, th
 on the host. A shared `nuget` volume means the service's packages are restored once. Stop the web app with
 `docker compose -f docker/docker-compose.demo.yml stop demo-api`.
 
-To see the result without running it, look at [sample-output/](sample-output/README.md): the comms log, logs and
-branches from one clean run, and a recording of merging its ten fixes in the web app:
+To see the result without running it, look at [sample-output-short/](sample-output-short/README.md) (a `-Short` run on
+Claude Haiku 5.5, with the usage ledger: about $0.23 for five errors, and two fixes lost to a Haiku 5.5 limitation it
+explains) or [sample-output/](sample-output/README.md): the comms log, logs and branches from one clean full run on
+Haiku 4.5, and a recording of merging its ten fixes in the web app:
 
 ![Merging the ten fix branches in the web app](sample-output/merge_10_fix_branches.gif)
 
@@ -121,7 +127,9 @@ Merges stay local: pushing is left to you. The web app refuses to merge while `m
 ## Outputs
 
 `.demo/` on the host holds everything: `agent-comms.md`, the repository (`order-service/`), louis-agent.api's logs
-(`logs/`), and `orchestrator-state/` with `decisions.jsonl`, `fixes.jsonl` (louis-agent's replies),
+and the usage ledger (`logs/`, `usage-YYYY-MM.jsonl`: one line per model request from both agents, each fix's tagged
+`fix:<error id>` and every line of the run tagged with its run id), and `orchestrator-state/` with `decisions.jsonl`,
+`fixes.jsonl` (louis-agent's replies),
 `escalations.jsonl`, `acknowledged.jsonl` and `processed.txt` (so an error is triaged once). Container output:
 `docker compose -f docker/docker-compose.demo.yml logs demo-api`.
 

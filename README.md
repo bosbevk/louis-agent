@@ -91,7 +91,8 @@ Settings live in `config/.env` and secrets in `config/.env.secrets`; both are gi
 
 | Setting | Purpose |
 |---|---|
-| `LLM_PROVIDER`, `LLM_MODEL` | `anthropic` (default, `claude-haiku-5-5`), `ollama` or `openai-compatible` |
+| `LLM_PROFILE` | Which LLM profile to load: `anthropic` (`config/.env.anthropic`, Claude Haiku 5.5) or `ollama` (`config/.env.ollama`) |
+| `LLM_PROVIDER`, `LLM_MODEL` | Set by the profile: `anthropic` (default, `claude-haiku-5-5`), `ollama` or `openai-compatible` |
 | `LLM_THINKING` | Visible reasoning: `off` / `low` / `medium` / `high` (default `medium` for Anthropic) |
 | `ANTHROPIC_API_KEY` | Claude API key *(secret)* |
 | `AGENT_FUNCTION` | Which `Skills/{name}-skills.md` to load; `louis` loads all |
@@ -102,6 +103,7 @@ Settings live in `config/.env` and secrets in `config/.env.secrets`; both are gi
 | `DEVOPS_ORGANIZATION`, `DEVOPS_PROJECT`, `DEVOPS_TEAM` | Which Azure DevOps project (and optional team) the DevOps tools work on |
 | `GOOGLE_SEARCH_API_KEY`, `GOOGLE_SEARCH_ENGINE_ID` | Google for web search; without them it uses DuckDuckGo *(secret)* |
 | `REPOSITORIES_PATH`, `ACP_MOUNT_MAPPINGS` | Extra repositories mounted into the containers, and how Rider's Windows paths map to them |
+| `USAGE_LEDGER`, `LOG_DIRECTORY` | Usage ledger (on by default): one JSON line per model request in `{LOG_DIRECTORY}/usage-YYYY-MM.jsonl` (`logs/` from Docker) |
 
 ## HTTP API
 

@@ -21,6 +21,8 @@ flowchart LR
     Engine --> Loop["FunctionInvokingChatClient<br/>(≤ 10 tool rounds per message)"]
     Loop --> Guards["LogAndInvokeAsync<br/>log · run · guard result"]
     Guards --> Tools["Tool classes<br/>(files, git, dotnet, scripts, web, Paymo, DevOps, skills)"]
+    Loop --> Rec["UsageRecordingChatClient<br/>one record per model request"]
+    Rec --> Ledger["JsonlUsageSink<br/>{LOG_DIRECTORY}/usage-YYYY-MM.jsonl"]
 ```
 
 1. **Bootstrap** (`AgentHost.Build()`): load `config/.env.secrets` then `config/.env` (searching upward from the working
@@ -33,6 +35,10 @@ flowchart LR
 3. **Guards** around every tool call: results over 50,000 characters are summarised by a separate tool-less call; a call
    cut off by the output limit is never run (and when streaming, the model is asked to continue, up to 3 times);
    exceptions go back to the model with their message.
+4. **Usage** (F1): `UsageRecordingChatClient` sits inside the tool loop, so every model request (each tool round, each
+   summary) writes one line to the usage ledger: token counts mapped by the provider's `IUsageMapper`, model, duration,
+   stop reason, and the `UsageScope` the host opened for the turn (host, session, turn, purpose, task/run/service tags).
+   Counts and ids only, never prompt text.
 
 The full step-by-step is in [How a turn works](../AGENT_INTERACTION.md).
 
@@ -57,12 +63,17 @@ The full step-by-step is in [How a turn works](../AGENT_INTERACTION.md).
 | `tools/ScriptTool.cs` | Agent-built tools from `*.tool.md`: typed parameters, arguments validated and passed as JSON on stdin |
 | `tools/ProcessRunner.cs` | The one way to start processes: argument lists, no shell, timeouts, bounded output |
 | `mcp/RiderMcpClient.cs`, `RiderMcpToolDiscovery.cs` | Lists Rider's MCP tools (logged only; not callable yet) |
+| `usage/UsageRecordingChatClient.cs` | Middleware that records one `UsageRecord` per model request, streaming or not; a cancelled stream is recorded as `cancelled`, a provider error isn't |
+| `usage/UsageScope.cs` | The turn's context in an `AsyncLocal`: host, session, turn, purpose, `UsageTags` (task, run, service); `Activate()` for hosts that stream from an async iterator |
+| `usage/IUsageMapper.cs` | Provider usage → input / cache write / cache read / output / reasoning: `StandardUsageMapper` (the Microsoft.Extensions.AI contract), `AnthropicUsageMapper` (cache writes) |
+| `usage/UsageRecord.cs`, `IUsageSink.cs`, `JsonlUsageSink.cs` | The record, and the monthly JSONL file it's written to (shared append, UTC month) |
 
 ## Key types
 
 | Type | Role |
 |---|---|
-| `AgentHost` | Static bootstrap: `LoadEnvironment`, `Build`, `BuildToolHost`, `LoadSkills` |
+| `AgentHost` | Static bootstrap: `LoadEnvironment`, `Build`, `BuildToolHost`, `LoadSkills`, `CreateUsageSink` |
+| `UsageScope` | Open one per turn in a host (`Begin(host:, session:, turn:, tags:)`); every request inside it is attributed to it |
 | `AgentEngine` | `StreamPromptAsync`, `ProcessPromptAsync`, `NewHistory`, `HandleUserCommand` (`/tools`, `/approve`, `/reject`), `Tools` and `ToolsChanged`, `RunAsync` / `RunSinglePromptAsync` (the CLI loop). Optional `toolsets:` replaces the coding tools with your own objects (used by the orchestrator) |
 | `ISkillProvider` | `Documentation` (system prompt text) + `Skills` (runnable procedures) |
 | `ILlmClientFactory` | Builds the `IChatClient`; tests inject a fake |
@@ -74,7 +85,8 @@ attributes (108 tools with Paymo and DevOps enabled). Helpers must be `internal`
 ## Configuration
 
 `LLM_PROVIDER`, `LLM_MODEL`, `LLM_ENDPOINT`, `LLM_API_KEY` / `ANTHROPIC_API_KEY`, `ANTHROPIC_WORKSPACE_ID`,
-`LLM_SUPPORTS_TOOLS`, `LLM_THINKING`, `WORKSPACE_ROOT`, `SKILLS_DIRECTORY`, `AGENT_FUNCTION`, `LOG_DIRECTORY`,
+`LLM_SUPPORTS_TOOLS`, `LLM_THINKING`, `LLM_PROFILE`, `WORKSPACE_ROOT`, `SKILLS_DIRECTORY`, `AGENT_FUNCTION`,
+`LOG_DIRECTORY`, `USAGE_LEDGER`,
 `PAYMO_API_KEY`, `DEVOPS_API_KEY`, `DEVOPS_ORGANIZATION`, `DEVOPS_PROJECT`, `DEVOPS_TEAM`, `WEB_SEARCH_PROVIDER`,
 `GOOGLE_SEARCH_API_KEY`, `GOOGLE_SEARCH_ENGINE_ID`, `RIDER_MCP_*`, `BASH_PATH`. All read once at start-up in
 `LlmOptions` / `AgentOptions` — tools never read the environment themselves. Details: [Setup](../SETUP.md),
@@ -86,7 +98,11 @@ attributes (108 tools with Paymo and DevOps enabled). Helpers must be `internal`
   constructor; mention it in a skill file; test it in `tests/louis-agent.core.tests/Tools/`.
 - **A skill:** `Skills/{name}-skills.md`; loaded with `AGENT_FUNCTION={name}` or `louis`.
 - **A provider:** a branch in `LlmClientFactory`; provider differences never go into `AgentEngine` or the tools.
-- **Another agent:** `new AgentEngine(skills, client, options, toolsets: [yourTools])`, as the orchestrator does.
+- **Another agent:** `new AgentEngine(skills, client, options, toolsets: [yourTools])`, as the orchestrator does; pass
+  `usageSink: AgentHost.CreateUsageSink(options)` and the factory's `CreateUsageMapper` to record its usage.
+- **A host:** open a `UsageScope` per turn, or its records have no host, session or turn.
+- **A provider's usage:** if `tools/louis-agent.usage-probe` shows it reports differently, add an `IUsageMapper` and pick
+  it in `LlmClientFactory.CreateUsageMapper`.
 
 Details: [Development guide](../CLAUDE.md#development-workflow).
 
@@ -103,7 +119,7 @@ variables, never model text spliced into a command line; `FetchUrl` blocks priva
 ## Limits and plans
 
 - 10 tool rounds per message → [F10](../features/F10-route-settings.md); nothing cached → [F4](../features/F04-prompt-caching.md);
-  usage not recorded → [F1](../features/F01-usage-ledger.md); history grows unbounded → [F9](../features/F09-context-management.md);
+  usage recorded but not priced → [F2](../features/F02-prices-and-cost.md); history grows unbounded → [F9](../features/F09-context-management.md);
   every toolset always loaded → [F5](../features/F05-toolset-profiles.md).
 - Rider MCP discovery only logs; Ollama tool support is a name heuristic; Paymo task lookup takes the first match
   ([known limitations](../CLAUDE.md#known-limitations)).

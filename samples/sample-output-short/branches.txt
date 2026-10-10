@@ -1,0 +1,35 @@
+# git log --all --graph of .demo/order-service after the run (before any merge)
+
+*-.   78872ad orchestrator    (refs/stash) On fix/vat-4cab13e76559: orchestrator: uncommitted changes left on fix/vat-4cab13e76559
+|\ \  
+| | * 372a699 orchestrator    untracked files on fix/vat-4cab13e76559: fc6fbfb order-service as deployed
+| * 0c46e53 orchestrator    index on fix/vat-4cab13e76559: fc6fbfb order-service as deployed
+|/  
+| * b488e21 louis-agent    (fix/packing-slip-6fc424703ccd) fix(packing-slip): omit the gift part when an order has no gift message (error 6fc424703ccd)
+|/  
+| * 23d96fb louis-agent    (fix/shipping-cost-943868fea060) fix(shipping-cost): return 0.00 for orders without items instead of dividing by zero (error 943868fea060)
+|/  
+| * 1877534 louis-agent    (fix/order-total-9cc3f400de9b) fix(order-total): treat unknown discount codes as no discount instead of throwing (error 9cc3f400de9b)
+|/  
+* fc6fbfb demo-setup    (HEAD -> main, fix/vat-4cab13e76559) order-service as deployed
+
+# Each fix branch's changed files
+
+## fix/order-total-9cc3f400de9b
+ src/OrderService/Api/OrderTotal.cs                          |  4 +++-
+ .../OrderService.Tests/Regression/Error9cc3f400de9bTests.cs | 13 +++++++++++++
+ 2 files changed, 16 insertions(+), 1 deletion(-)
+
+## fix/packing-slip-6fc424703ccd
+ src/OrderService/Api/PackingSlip.cs                       |  9 +++++++--
+ .../Regression/Error6fc424703ccdTests.cs                  | 15 +++++++++++++++
+ 2 files changed, 22 insertions(+), 2 deletions(-)
+
+## fix/shipping-cost-943868fea060
+ src/OrderService/Api/ShippingCost.cs                          |  2 ++
+ tests/OrderService.Tests/Regression/Error943868fea060Tests.cs | 11 +++++++++++
+ 2 files changed, 13 insertions(+)
+
+## fix/vat-4cab13e76559
+   (no commit: the turn failed before louis-agent committed; the orchestrator stashed its uncommitted work, see refs/stash above)
+

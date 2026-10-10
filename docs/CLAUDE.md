@@ -49,7 +49,7 @@ louis-agent.core/
 ├── MarkdownSkillLoader.cs    # Parses "## Skill:" procedures from markdown
 ├── config/
 │   ├── LlmOptions.cs         # LLM_* settings, tool-support and thinking resolution
-│   └── AgentOptions.cs       # Workspace, skills, keys, Rider MCP, LOG_DIRECTORY
+│   └── AgentOptions.cs       # Workspace, skills, keys, Rider MCP, LOG_DIRECTORY, USAGE_LEDGER
 ├── providers/
 │   ├── LlmClientFactory.cs   # Provider → IChatClient (Anthropic thinking-budget wrapper lives here)
 │   ├── CompositeSkillProvider.cs, MarkdownSkillProvider.cs, ISkillProvider.cs
@@ -62,6 +62,11 @@ louis-agent.core/
 │   ├── PaymoTools.cs, DevOpsTools.cs        # Loaded only when their API keys are set
 │   ├── ScriptTool.cs         # Agent-built tools (*.tool.md)
 │   └── ProcessRunner.cs      # Process runner: argument lists, no shell, timeouts
+├── usage/                    # Usage ledger (F1): one JSON line per model request in {LOG_DIRECTORY}/usage-YYYY-MM.jsonl
+│   ├── UsageRecordingChatClient.cs  # Middleware inside the tool loop: records each request, streaming or not
+│   ├── UsageScope.cs         # Per-turn context (AsyncLocal): host, session, turn, purpose, task/run/service tags
+│   ├── IUsageMapper.cs       # Provider usage → the ledger's token kinds (Standard / Anthropic mappers)
+│   └── UsageRecord.cs, IUsageSink.cs, JsonlUsageSink.cs
 └── mcp/
     ├── RiderMcpClient.cs     # Lists tools from Rider's MCP server
     └── RiderMcpToolDiscovery.cs
@@ -267,6 +272,10 @@ The same list as the TODO's *Known limitations*: when work removes one, delete i
    rejects a changed system prompt or tool list once thinking blocks are in the history (enforced for accounts created
    on or after 2026-08-31), and `BeginTurn` rewrites the system prompt after a reload. Start a new chat afterwards.
    Removed by keeping conversations append-only (TODO *Models*, backlog).
+10. **On Claude Haiku 5.5 a message that uses all 10 tool rounds fails with a 400** instead of stopping (limitation 6):
+   `FunctionInvokingChatClient` sends its final request after the limit without tools, which the model rejects. The
+   short demo lost two of four fixes to it ([samples/sample-output-short](../samples/sample-output-short/README.md)).
+   Removed by keeping the tools on that request (TODO *Models*, backlog).
 
 ## Common errors
 

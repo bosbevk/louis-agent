@@ -9,7 +9,7 @@ Built as features in [docs/features/](../features/README.md); each is one line u
 
 | Section | Feature | Status |
 |---|---|---|
-| §4.1, §4.3 Recording | [F1 Usage ledger](../features/F01-usage-ledger.md) | planned |
+| §4.1, §4.3 Recording | [F1 Usage ledger](../features/F01-usage-ledger.md) | **done** (2026-10-10): `input` is uncached input (the adapter's count minus cache reads and writes); `reasoning` is null on Claude; triage records are tied to their run, not to a task |
 | §4.2 Prices | [F2 Prices and cost](../features/F02-prices-and-cost.md) | planned |
 | §7.2–7.4 Showing it (and the stream in §7.1) | [F3 Show usage](../features/F03-usage-display.md) | planned |
 | §5 Estimates | [F6 Estimates](../features/F06-estimates.md) | planned |
