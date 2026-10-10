@@ -40,7 +40,13 @@ The first and last rows were found by reading the code (the first from a PR revi
   `KeepToolsOnFinalRequest` sets `final.Tools = _tools`, the live list, so after freezing, a message that hits the round
   limit after a tool changed elsewhere would send a different list on its final request and fail with FX1's 400 again.
   `BeginTurn` puts the frozen list in `ChatOptions.AdditionalProperties` as well; `FunctionInvokingChatClient` clears
-  `Tools` on the final request but keeps the rest of the cloned options, so the middleware reads the list from there.
+  `Tools` on the final request but keeps the rest of the cloned options, so the middleware reads the list from there
+  (confirmed in the Microsoft.Extensions.AI 10.10.0 source by the PR #9 review). An adapter may forward
+  `AdditionalProperties` into the request body, where the API would reject an unknown field: captured locally, the
+  Anthropic adapter (12.53.0) does **not** (the body had only `max_tokens`, `messages`, `model`, `tools`), but the Ollama
+  and OpenAI-compatible adapters aren't checked, and a later version could change. So the middleware **removes the key**
+  before passing the request on (or the frozen list lives in an `AsyncLocal`, as `UsageScope` does), and a test asserts
+  the key never reaches the inner client.
 - **System prompt:** keep `history[0]` as it was; after a skill reload, append a short system message saying what
   changed (Haiku 5.5 accepts mid-conversation system messages). An appended message doesn't invalidate the thinking
   written before it; it becomes part of the checked prefix for thinking written after it, which is what append-only
