@@ -9,34 +9,51 @@ public class UsageTokensTests
     [Test]
     public void From_NullUsage_AllCountsNull()
     {
-        Assert.Ignore("TODO F1 step 3");
+        Assert.That(UsageTokens.From(null), Is.EqualTo(new UsageTokens(null, null, null, null, null)));
+    }
+
+    [Test]
+    public void From_NoCache_InputUnchanged()
+    {
+        var usage = new UsageDetails { InputTokenCount = 10_266, CachedInputTokenCount = 0, OutputTokenCount = 277 };
+
+        Assert.That(UsageTokens.From(usage), Is.EqualTo(new UsageTokens(10_266, null, 0, 277, null)));
     }
 
     [Test]
     public void From_CacheRead_SubtractsCachedTokensFromInput()
     {
-        // InputTokenCount 10,266, CachedInputTokenCount 10,227 => Input 39, CacheRead 10,227, CacheWrite null.
-        Assert.Ignore("TODO F1 step 3");
+        var usage = new UsageDetails { InputTokenCount = 10_266, CachedInputTokenCount = 10_227, OutputTokenCount = 206 };
+
+        Assert.That(UsageTokens.From(usage), Is.EqualTo(new UsageTokens(39, null, 10_227, 206, null)));
     }
 
     [Test]
     public void From_CacheWrite_ReadsCacheCreationKeyAndSubtractsIt()
     {
-        // InputTokenCount 10,266, AdditionalCounts["CacheCreationInputTokens"] 10,227 => Input 39, CacheWrite 10,227.
-        Assert.Ignore("TODO F1 step 3");
+        var usage = new UsageDetails
+        {
+            InputTokenCount = 10_266,
+            CachedInputTokenCount = 0,
+            OutputTokenCount = 144,
+            AdditionalCounts = new AdditionalPropertiesDictionary<long> { ["CacheCreationInputTokens"] = 10_227 },
+        };
+
+        Assert.That(UsageTokens.From(usage), Is.EqualTo(new UsageTokens(39, 10_227, 0, 144, null)));
     }
 
     [Test]
-    public void From_NoReasoningCount_ReasoningStaysNull()
+    public void From_ReasoningCount_IsKept()
     {
-        Assert.Ignore("TODO F1 step 3");
+        var usage = new UsageDetails { InputTokenCount = 100, OutputTokenCount = 50, ReasoningTokenCount = 30 };
+
+        Assert.That(UsageTokens.From(usage).Reasoning, Is.EqualTo(30));
     }
 
     [Test]
     public void From_ProviderReportsNothing_CountsAreNullNotZero()
     {
-        // new UsageDetails() with every property unset, as some Ollama models return.
-        _ = new UsageDetails();
-        Assert.Ignore("TODO F1 step 3");
+        // Some Ollama models return usage with every count unset.
+        Assert.That(UsageTokens.From(new UsageDetails()), Is.EqualTo(new UsageTokens(null, null, null, null, null)));
     }
 }

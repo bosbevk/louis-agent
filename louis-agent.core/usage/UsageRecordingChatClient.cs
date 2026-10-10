@@ -17,11 +17,12 @@ public sealed class UsageRecordingChatClient(IChatClient innerClient, IUsageSink
     public override async Task<ChatResponse> GetResponseAsync(
         IEnumerable<ChatMessage> messages, ChatOptions? options = null, CancellationToken cancellationToken = default)
     {
-        // TODO F1 step 3: time the call, then record ChatResponse.Usage (non-streaming responses carry no UsageContent).
-        //   Round and purpose come from UsageScope.Current; with no scope, record round 1 and purpose "turn".
+        int round = NextRound();
         var stopwatch = Stopwatch.StartNew();
         ChatResponse response = await base.GetResponseAsync(messages, options, cancellationToken);
-        _ = stopwatch;
+
+        // Non-streaming responses carry their usage on ChatResponse.Usage, not as UsageContent.
+        sink.Record(CreateRecord(round, response.Usage, response.ModelId, response.FinishReason?.Value, stopwatch.Elapsed));
         return response;
     }
 
@@ -36,12 +37,27 @@ public sealed class UsageRecordingChatClient(IChatClient innerClient, IUsageSink
             yield return update;
     }
 
+    /// <summary>
+    /// Numbers a request when it starts, so overlapping requests are numbered in the order they were made. Outside any
+    /// scope every request is round 1.
+    /// </summary>
+    private static int NextRound() => UsageScope.Current?.NextRound() ?? 1;
+
     /// <summary>Builds the record for a finished request from the current scope.</summary>
-    internal UsageRecord CreateRecord(UsageDetails? usage, string? model, string? stop, TimeSpan duration)
-    {
-        // TODO F1 step 3: take Round/Purpose from UsageScope.Current, tokens from UsageTokens.From(usage),
-        //   model ?? defaultModel. Leave Host/Session/Turn/Task/Run/Service null until F1-S2 and F1-S3.
-        _ = sink;
-        throw new NotImplementedException();
-    }
+    internal UsageRecord CreateRecord(int round, UsageDetails? usage, string? model, string? stop, TimeSpan duration) =>
+        // Host, Session, Turn, Task, Run and Service come with F1-S2 and F1-S3.
+        new(
+            At: DateTimeOffset.UtcNow,
+            Round: round,
+            Purpose: UsageScope.Current?.Purpose ?? UsagePurpose.Turn,
+            Host: null,
+            Session: null,
+            Turn: null,
+            Task: null,
+            Run: null,
+            Service: null,
+            Model: model ?? defaultModel,
+            Tokens: UsageTokens.From(usage),
+            DurationMs: (long)duration.TotalMilliseconds,
+            Stop: stop);
 }

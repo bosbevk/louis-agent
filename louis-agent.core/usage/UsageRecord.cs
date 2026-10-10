@@ -50,9 +50,13 @@ public sealed record UsageTokens(long? Input, long? CacheWrite, long? CacheRead,
     /// </summary>
     public static UsageTokens From(Microsoft.Extensions.AI.UsageDetails? usage)
     {
-        // TODO F1 step 3: null usage => every count null. Otherwise map each field, subtracting the cache counts from
-        // the input, and keep a missing count null rather than treating it as 0.
-        throw new NotImplementedException();
+        if (usage is null) return new UsageTokens(null, null, null, null, null);
+
+        long? cacheRead = usage.CachedInputTokenCount;
+        long? cacheWrite = usage.AdditionalCounts?.TryGetValue(CacheCreationKey, out long written) == true ? written : null;
+        long? input = usage.InputTokenCount - (cacheRead ?? 0) - (cacheWrite ?? 0);
+
+        return new UsageTokens(input, cacheWrite, cacheRead, usage.OutputTokenCount, usage.ReasoningTokenCount);
     }
 }
 
