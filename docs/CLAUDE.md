@@ -15,8 +15,8 @@ The goal and the skill map are in [GOAL.md](GOAL.md).
 6. **Measure, don't assume.** Ask before anything that spends real money (benchmark or demo runs against the API) and
    before pushing.
 7. **Write it up.** When a skill or feature finishes, help write its learning write-up in [learning/](learning/).
-8. **Source of truth:** [TODO.md](../TODO.md) (what's next), [features/](features/README.md) (how) and [specs/](specs/)
-   (why). Update them rather than duplicating them.
+8. **Source of truth:** [TODO.md](../TODO.md) (what's next), [features/](features/README.md) (how), [fixes/](fixes/README.md)
+   (what broke and why) and [specs/](specs/) (why). Update them rather than duplicating them.
 
 ## Quick start
 
@@ -274,7 +274,7 @@ The same list as the TODO's *Known limitations*: when work removes one, delete i
 9. **Reloading skills or approving a tool mid-chat can break the chat on Claude Haiku 5.5** (the default). The model
    rejects a changed system prompt or tool list once thinking blocks are in the history (enforced for accounts created
    on or after 2026-08-31), and `BeginTurn` rewrites the system prompt after a reload. Start a new chat afterwards.
-   Removed by keeping conversations append-only (TODO *Models*, backlog).
+   Removed by [FX4 Append-only history](fixes/FX04-append-only-history.md).
 
 ## Common errors
 

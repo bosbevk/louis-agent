@@ -50,7 +50,8 @@ planned, next and in the backlog, and links to the rest.
 |---|---|
 | [Goal](GOAL.md) | See what the whole plan is for: the skills it teaches, when one counts as learned, and how the work is done |
 | [TODO](../TODO.md) | See what's planned now (features to tick), next (the build-mode POC), the backlog by area, known limitations and what's done |
-| [Features](features/README.md) | Follow the step-by-step plan for the usage and optimisation specs: 11 features in 5 milestones, with user stories, design, tasks, and what to update when one is finished |
+| [Features](features/README.md) | Follow the step-by-step plan for the usage and optimisation specs: 13 features in 6 milestones, with user stories, design, tasks, and what to update when one is finished |
+| [Fixes](fixes/README.md) | See what broke, why and how it was fixed (symptom, cause, fix, how it was confirmed), and the fixes still open |
 | [Spec: usage, estimates and budgets](specs/USAGE_AND_BUDGETS.md) | Read the design for recording what every request costs, estimating runs before they start, and budgets that warn, ask or stop |
 | [Spec: response optimisation](specs/RESPONSE_OPTIMISATION.md) | Read the design for cheaper, faster responses: prompt caching, smaller toolsets, clearing and summarising history, reliability |
 | [Design: session architecture](specs/SESSION_ARCHITECTURE.md) | Read the longer-term idea for durable sessions, a context-building pipeline and memory (not planned yet) |
