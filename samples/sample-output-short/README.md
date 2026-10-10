@@ -2,8 +2,8 @@
 
 What one clean run of `samples/run-demo.ps1 -Short` produced (in Docker, model `claude-haiku-5-5`, 2026-10-10, run id
 `run-20261010-171318`): five production errors became **4 fixed and 1 escalated**, four fix branches with one commit
-each, nothing pushed. It is the first saved run with the **usage ledger** (F1): every model request of both agents is in
-[usage-2026-10.jsonl](usage-2026-10.jsonl). The full thirteen-error run on Haiku 4.5 is in
+each, nothing pushed. Every model request of both agents is in the **usage ledger** (F1),
+[usage-2026-10.jsonl](usage-2026-10.jsonl). The full thirteen-error run, also on Haiku 5.5 with its ledger, is in
 [sample-output/](../sample-output/README.md). Times are UTC.
 
 | # | Request | Decision | louis-agent |
@@ -58,4 +58,4 @@ system prompt and tools, which is nearly all of the input. The largest request w
 Your own run will differ in error ids, hashes, wording and token counts: the model writes each fix and reply anew.
 
 ---
-[Orchestrator demo](../README.md) · [Full run on Haiku 4.5](../sample-output/README.md)
+[Orchestrator demo](../README.md) · [Full run](../sample-output/README.md)
