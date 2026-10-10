@@ -34,24 +34,28 @@ local runs agree.
 
 ## Design
 
-New, in `louis-agent.core/usage/`:
+As built, in `louis-agent.core/usage/` (the original plan, and how it changed, is under *What the build changed*):
 
 | Type | Responsibility |
 |---|---|
-| `PriceTable` | Loads `PRICES_FILE` (default `config/prices.json`, found the same way as `config/.env`); `Find(modelId)` by longest prefix; exposes `AsOf` and `Currency` |
-| `CostCalculator` | `Cost? For(UsageRecord, PriceTable)`; cache writes priced by lifetime (`cache_write_5m` / `cache_write_1h`), the lifetime taken from the record (set by F4; 5 minutes by default) |
+| `UsageCost` | On `UsageRecord` as `Cost`: `{ currency, amount, price_table }`, `price_table` being the table's `as_of`; null means "price unknown" |
+| `PriceTable` | Loads the table from a file or a URL (one parser, the same checks); `Find(modelId)` by longest prefix; `AsOf`, `Currency`; a model may carry a `long_prompt` tier (`above_tokens` plus the five prices) |
+| `CostCalculator` | `UsageCost? For(UsageRecord, PriceTable)`: picks the tier from the prompt (`input + cache_read + cache_write`), sums each kind × its price per million, rounds to 6 decimals (away from zero) |
+| `PricingUsageSink` | Wraps the JSONL ledger in `AgentHost.CreateUsageSink`: prices each record, then writes it; a record that has a cost keeps it |
+| `UsageReport` | Reads a ledger back, prices records written before F2, totals them by any key (used by `usage-probe -- --ledger`) |
 
-- `UsageRecordingChatClient` (F1) calls `CostCalculator` before handing the record to the sink.
-- Ship `config/prices.example.json` (tracked) with the format and illustrative values plus a comment line telling the
-  operator to copy current prices from the provider's pricing page; `config/prices.json` is the operator's copy,
-  git-ignored like `config/.env`.
-- Compose: `docker-compose.demo.yml` mounts `../config:/config:ro` on `demo-api` and `orchestrator` with
-  `PRICES_FILE=/config/prices.json`; the main compose file already mounts the repository at `/workspace`.
-- Rounding: store the amount with 6 decimals; round only for display.
+- **Where the prices come from** (`AgentHost.LoadPrices`, once per host in `Build`): `PRICES_URL` if set and reachable
+  (e.g. the API's public `GET /prices`), else `PRICES_FILE`, else `config/prices.json` found like `config/.env`. No table
+  → one warning, costs `null`; a malformed table or a non-http `PRICES_URL` stops the host.
+- **The table** `config/prices.json` is tracked, with comments saying where the prices came from. Compose sets
+  `PRICES_FILE` for the main services; the demo mounts only that file, read-only, into `demo-api` and the orchestrator,
+  and the orchestrator reads `PRICES_URL=http://demo-api:8080/prices` with the file as its fallback.
 - **Prices that depend on prompt length.** Claude Haiku 5.5, the default model, charges 5× per token when a request's
-  prompt is over 100,000 tokens (cache reads and writes included), for the whole request. The table needs a tier per
-  model (`over_100k` prices) and `CostCalculator` the request's total prompt (`input + cache_read + cache_write`) to pick
-  one. Today's requests are 48,000–60,000 tokens, so they stay in the lower tier.
+  prompt is over 100,000 tokens (cache reads and writes included), for the whole request: its `long_prompt` tier. Today's
+  requests are 48,000–60,000 tokens, so they stay in the lower tier.
+- **Cache writes are always priced at the 5-minute rate** (`cache_write_5m`); `cache_write_1h` is in the table but unused
+  until F4 records which lifetime a request's cache entries have. Today nothing is cached, so no write is priced at all.
+- Reasoning isn't added to the cost: Claude counts thinking inside `output`.
 
 ## Implementation steps
 
@@ -84,7 +88,10 @@ New, in `louis-agent.core/usage/`:
 - **Pricing is a sink decorator** (`PricingUsageSink` in `AgentHost.CreateUsageSink`), not a call inside
   `UsageRecordingChatClient`: every host's records already pass through that sink, so neither the engine nor any host
   changed.
-- **A `long_prompt` tier** for Claude Haiku 5.5, which costs 5× for a whole request above 100,000 prompt tokens.
+- **A `long_prompt` tier** for Claude Haiku 5.5, which costs 5× for a whole request above 100,000 prompt tokens, instead
+  of the planned `over_100k` prices.
+- **Cache writes at the 5-minute price only.** The plan priced writes by the lifetime on the record, but nothing records
+  a lifetime until F4, so `CostCalculator` uses `cache_write_5m` for every write; F4 adds the lifetime.
 - **`PRICES_URL` and `GET /prices`** (asked for during the build): a host can fetch the table from louis-agent.api's
   public endpoint, falling back to the file when it can't be reached; the demo's orchestrator does.
 - **`UsageReport` and `usage-probe -- --ledger`**: reading, pricing and totalling a ledger live in core, for F3 and F11.
