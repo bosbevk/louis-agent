@@ -69,4 +69,4 @@ when the adapter exposes them, so that a local model's load time and prompt proc
 Tracing spans per turn and tool call (OpenTelemetry), latency dashboards and alerts: skill-map #17's later stage.
 
 ---
-[Features](README.md) · Previous: [F11 Usage tab and reconciliation](F11-usage-tab-and-reconciliation.md)
+[Features](README.md) · Previous: [F11 Usage tab and reconciliation](F11-usage-tab-and-reconciliation.md) · Next: [F13 Local models](F13-local-models.md)

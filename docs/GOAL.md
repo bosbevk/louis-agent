@@ -16,7 +16,7 @@ and gets a line in the TODO's backlog (*Agent architecture gaps*) until it is pl
 
 | # | Skill | Have today | Planned (TODO) | Missing |
 |---|---|---|---|---|
-| 1 | **Models and providers** | One `IChatClient` over Anthropic and Ollama (`LlmClientFactory`, [MODELS](MODELS.md)) | Fallback model (F8), summary model per route (F10) | Model choice by measured quality and cost per task (routing on evals) |
+| 1 | **Models and providers** | One `IChatClient` over Anthropic and Ollama (`LlmClientFactory`, [MODELS](MODELS.md)) | Fallback model (F8), summary model per route (F10), local models within a small context window (F13) | Model choice by measured quality and cost per task (routing on evals) |
 | 2 | **Reasoning and extended thinking** | Thinking resolved per model (adaptive, or budget for pre-4.6), streamed to every host, kept in history across tool calls | Thinking level per route (F10) | Measuring what thinking buys: quality vs tokens per level on the evals; interleaved thinking between tool calls; when not to think |
 | 3 | **Prompt design** | System prompt built from `Skills/*.md` | Cache-friendly prefix (F4) | Prompt versioning, and A/B comparison of prompt changes on the evals |
 | 4 | **Tool design** | ~108 described tools, agent-built tools with approval, guarded results | Toolset profiles (F5), results as tool calls (F8) | Tool search / on-demand tool loading for large toolsets |

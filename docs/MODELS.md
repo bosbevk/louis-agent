@@ -79,6 +79,10 @@ Local models are slower than Claude and need memory roughly in line with their s
 8 GB of VRAM; larger ones need more). The first request after start is slow while the model loads.
 `LLM_THINKING` is off for Ollama unless you set it.
 
+**Today the prompt doesn't fit.** Ollama's context window is 2,048 tokens by default and the agent sends ~26,000+
+(system prompt and tools); Ollama keeps the start and drops the rest without an error. Local models therefore run on
+a fragment of their instructions. [F13](features/F13-local-models.md) fits every request into the window.
+
 ## OpenAI-compatible servers
 
 ```bash

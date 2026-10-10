@@ -260,6 +260,9 @@ The same list as the TODO's *Known limitations*: when work removes one, delete i
    Removed by [F10 Route settings](features/F10-route-settings.md).
 7. **Running the API with `dotnet run` (unpublished)** only serves the web app in the `Development` environment
    (`ASPNETCORE_ENVIRONMENT=Development`); otherwise `/` returns 404. The Docker images are published, so they're fine.
+8. **Local models get a truncated prompt.** Ollama's context window is 2,048 tokens by default and the agent sends
+   ~26,000+ (system prompt and tools); Ollama drops the rest without an error, so the ledger shows `input: 2050`.
+   Removed by [F13 Local models](features/F13-local-models.md).
 
 ## Common errors
 

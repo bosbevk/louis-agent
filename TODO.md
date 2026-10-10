@@ -61,6 +61,12 @@ its own.
 - [ ] [F12 Response speed](docs/features/F12-response-speed.md) — time to first token and tokens per second on every
       usage record, for every provider (Ollama's own timings too); shown with the usage
 
+**Local — Local models:** a local model gets everything it is sent.
+
+- [ ] [F13 Local models](docs/features/F13-local-models.md) — fit every request into the model's context window
+      (2,048 tokens on Ollama): compact prompt, a few tools, trimmed history, `num_ctx` sent. *Removes the limitation:*
+      local models get a truncated prompt
+
 ## Next: build-mode POC — build a whole microservice from runbooks
 
 Show that runbooks can *build* a service, not just fix one: each runbook is the spec for a method, louis-agent builds it
@@ -193,6 +199,8 @@ backlog item removes one, it says so.
 - No rate limiting or audit log beyond the file logs → *Agent architecture gaps: Safety*.
 - 10 tool rounds per message: long tasks need a follow-up message → **F10**.
 - An unpublished API (`dotnet run`) only serves the web app in the `Development` environment.
+- Local models get a truncated prompt: Ollama's context window is 2,048 tokens by default and the agent sends ~26,000+
+  (system prompt and tools); Ollama drops the rest without an error (the ledger shows `input: 2050`) → **F13**.
 
 ## Done
 
