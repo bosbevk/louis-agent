@@ -25,7 +25,7 @@ its own.
 
 - [x] [F1 Usage ledger](docs/features/F01-usage-ledger.md) — record every model request, attributed to session, task
       and run
-- [ ] [F2 Prices and cost](docs/features/F02-prices-and-cost.md) — a price table; cost on every record
+- [x] [F2 Prices and cost](docs/features/F02-prices-and-cost.md) — a price table; cost on every record
 - [ ] [F3 Show usage](docs/features/F03-usage-display.md) — cost per answer (web, CLI, Rider), in the API stream, and
       per fix in the comms log
 
@@ -219,6 +219,9 @@ backlog item removes one, it says so.
 
 Newest first; details in the git history.
 
+- 2026-10-10 — **F2 Prices and cost**: every ledger record priced from a tracked `config/prices.json` (Haiku 5.5's
+  long-prompt tier included), or from the API's `GET /prices` with `PRICES_URL`; `usage-probe -- --ledger` totals a
+  ledger; M1 baseline $0.6586 for the full demo ($0.0625 a fix), both sample runs rerun with priced ledgers
 - 2026-10-10 — Full demo on Claude Haiku 5.5 with the usage ledger: 10/10 fixes confirmed, 2 ignored, 1 escalated, ≈ $0.66
   (`samples/sample-output/`, now with `usage-2026-10.jsonl`); F2 prices that ledger for the M1 baseline
 - 2026-10-10 — The engine keeps the tools on the request after the 10-round limit (`tool_choice: none`), which Haiku

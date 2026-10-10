@@ -10,7 +10,7 @@ Built as features in [docs/features/](../features/README.md); each is one line u
 | Section | Feature | Status |
 |---|---|---|
 | §4.1, §4.3 Recording | [F1 Usage ledger](../features/F01-usage-ledger.md) | **done** (2026-10-10): `input` is uncached input (the adapter's count minus cache reads and writes); `reasoning` is null on Claude; triage records are tied to their run, not to a task |
-| §4.2 Prices | [F2 Prices and cost](../features/F02-prices-and-cost.md) | planned |
+| §4.2 Prices | [F2 Prices and cost](../features/F02-prices-and-cost.md) | **done** (2026-10-10): `config/prices.json` is tracked; a `long_prompt` tier (Haiku 5.5); also served at the API's `GET /prices` and read with `PRICES_URL` |
 | §7.2–7.4 Showing it (and the stream in §7.1) | [F3 Show usage](../features/F03-usage-display.md) | planned |
 | §5 Estimates | [F6 Estimates](../features/F06-estimates.md) | planned |
 | §6 Budgets | [F7 Budgets](../features/F07-budgets.md) (account-limit refusals: [F8](../features/F08-reliability.md)) | planned |

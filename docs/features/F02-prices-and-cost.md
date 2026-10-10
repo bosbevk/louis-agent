@@ -1,6 +1,6 @@
 # F2 · Prices and cost
 
-> **Status:** planned · **Milestone:** M1 · **Depends on:** F1
+> **Status:** done (2026-10-10) · **Milestone:** M1 · **Depends on:** F1
 >
 > **Spec:** [Usage §4.2](../specs/USAGE_AND_BUDGETS.md)
 >
@@ -71,10 +71,23 @@ New, in `louis-agent.core/usage/`:
 
 ## Done when
 
-- Stories' criteria pass; tests added; suites pass.
-- The M1 baseline (tokens and cost per fix) is written down.
+- Stories' criteria pass; tests added; suites pass. **Met:** 568 core tests (52 new for F2), orchestrator 26.
+- The M1 baseline (tokens and cost per fix) is written down. **Met:** features README, *Benchmark*: $0.6586 for the
+  full demo, $0.0625 a fix on average.
 - **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)): tick **F2** in the TODO,
-  set *Status* to done here and in the features table, and note it in the spec's implementation map.
+  set *Status* to done here and in the features table, and note it in the spec's implementation map. **Done.**
+
+## What the build changed from this plan
+
+- **The price file is tracked** (`config/prices.json`), not an example plus an ignored copy: prices aren't secret, so a
+  clone and every container price the same way.
+- **Pricing is a sink decorator** (`PricingUsageSink` in `AgentHost.CreateUsageSink`), not a call inside
+  `UsageRecordingChatClient`: every host's records already pass through that sink, so neither the engine nor any host
+  changed.
+- **A `long_prompt` tier** for Claude Haiku 5.5, which costs 5× for a whole request above 100,000 prompt tokens.
+- **`PRICES_URL` and `GET /prices`** (asked for during the build): a host can fetch the table from louis-agent.api's
+  public endpoint, falling back to the file when it can't be reached; the demo's orchestrator does.
+- **`UsageReport` and `usage-probe -- --ledger`**: reading, pricing and totalling a ledger live in core, for F3 and F11.
 
 ---
 [Features](README.md) · Previous: [F1 Usage ledger](F01-usage-ledger.md) · Next: [F3 Show usage](F03-usage-display.md)

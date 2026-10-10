@@ -17,7 +17,7 @@ feature replaces older backlog wording, that wording no longer appears anywhere 
 | ID | Feature | Status | Spec | Replaces in the TODO | Depends on | Milestone |
 |---|---|---|---|---|---|---|
 | [F1](F01-usage-ledger.md) | Usage ledger: record every model request | done | U §4.1, §4.3 · R §A | *Track token usage / cost per session* (with F2, F3, F6, F7, F11) | — | M1 |
-| [F2](F02-prices-and-cost.md) | Prices and cost | planned | U §4.2 | (as F1) | F1 | M1 |
+| [F2](F02-prices-and-cost.md) | Prices and cost | done | U §4.2 | (as F1) | F1 | M1 |
 | [F3](F03-usage-display.md) | Show usage: chat, CLI, Rider, API, comms log | planned | U §7.2–7.4 | (as F1) | F1, F2 | M1 |
 | [F4](F04-prompt-caching.md) | Prompt caching (Anthropic) | planned | R §B | *Wire up Anthropic prompt caching* | F1 | M2 |
 | [F5](F05-toolset-profiles.md) | Toolset profiles | planned | R §C | — | F1 | M2 |
