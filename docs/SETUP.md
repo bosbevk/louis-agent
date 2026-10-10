@@ -9,6 +9,7 @@ templates.
 |---|---|---|
 | `config/.env` | ❌ git-ignored | Your non-secret settings: model, agent function, paths, DevOps project |
 | `config/.env.example` | ✅ tracked | Template for `config/.env`, with explanations |
+| `config/.env.anthropic`, `config/.env.ollama` | ✅ tracked | LLM profiles: the model settings `LLM_PROFILE` picks ([MODELS.md](MODELS.md)) |
 | `config/.env.secrets` | ❌ git-ignored | Your API keys and other secrets |
 | `config/.env.secrets.example` | ✅ tracked | Template listing every secret |
 | `config/rider-acp.example.json` | ✅ tracked | Rider agent-server entry for the ACP server (replace `C:\path\to`) |
@@ -23,11 +24,10 @@ cp config/.env.secrets.example config/.env.secrets
 ```
 
 In `config/.env`, point `REPOSITORIES_PATH` and `ACP_MOUNT_MAPPINGS` at the folder that holds your repositories (for
-example `C:\Users\you\RiderProjects` and `C:\Users\you\RiderProjects=/repositories`), and pick your model:
+example `C:\Users\you\RiderProjects` and `C:\Users\you\RiderProjects=/repositories`), and pick your LLM profile:
 
 ```bash
-LLM_PROVIDER=anthropic
-LLM_MODEL=claude-haiku-4-5-20251001
+LLM_PROFILE=anthropic   # or ollama: config/.env.anthropic / config/.env.ollama
 ```
 
 See [MODELS.md](MODELS.md) for other providers.
@@ -35,16 +35,19 @@ See [MODELS.md](MODELS.md) for other providers.
 ## How settings are loaded
 
 **Outside Docker** (CLI, `dotnet run`): `AgentHost.LoadEnvironment()` searches upward from the working directory for a
-`config/` folder and loads, in order, `config/.env.secrets`, `config/.env`, then a legacy `./.env` if present. A
-variable that is already set is never overwritten, so the precedence is:
+`config/` folder and loads, in order, `config/.env.secrets`, `config/.env`, a legacy `./.env` if present, then the LLM
+profile `config/.env.{LLM_PROFILE}`. A variable that is already set is never overwritten, so the precedence is:
 
-1. Variables already in the process environment (shell, CI) — highest
+1. Variables already in the process environment (shell, CI) — highest, so `LLM_PROFILE=ollama dotnet run …` switches
+   one run
 2. `config/.env.secrets`
 3. `config/.env`
 4. `./.env` (legacy)
+5. `config/.env.{LLM_PROFILE}` — lowest, so a `LLM_*` line in `config/.env` pins that setting
 
-**In Docker** compose reads `config/.env` then `config/.env.secrets` as `env_file`s (a key in `.env.secrets` overrides the
-same key in `.env`), and the service's own `environment:` entries win over both. Always pass the env file so compose can
+**In Docker** compose reads `config/.env.${LLM_PROFILE}`, `config/.env` and `config/.env.secrets` as `env_file`s, in that
+order (a later file overrides the same key in an earlier one), and the service's own `environment:` entries win over all
+of them. `LLM_PROFILE` comes from the `--env-file`, or from the shell for one command. Always pass the env file so compose can
 fill in paths such as `REPOSITORIES_PATH`:
 
 ```bash
@@ -59,7 +62,8 @@ docker compose -f docker/docker-compose.yml --env-file config/.env up -d --build
 
 | Setting | Meaning |
 |---|---|
-| `LLM_PROVIDER`, `LLM_MODEL`, `LLM_ENDPOINT` | Model and where it runs ([MODELS.md](MODELS.md)) |
+| `LLM_PROFILE` | Which LLM profile to load: `anthropic` (`config/.env.anthropic`) or `ollama` (`config/.env.ollama`) |
+| `LLM_PROVIDER`, `LLM_MODEL`, `LLM_ENDPOINT` | Model and where it runs; normally set by the profile, and a line here overrides it ([MODELS.md](MODELS.md)) |
 | `LLM_THINKING` | Visible reasoning: `off` / `low` / `medium` / `high` (default `medium` for Anthropic, `off` otherwise) |
 | `LLM_SUPPORTS_TOOLS` | Force tool calling on or off (normally inferred from the model) |
 | `AGENT_FUNCTION` | Which `Skills/{name}-skills.md` to load; `louis` loads every skill file |
@@ -71,6 +75,8 @@ docker compose -f docker/docker-compose.yml --env-file config/.env up -d --build
 | `WEB_SEARCH_PROVIDER` | `google` or `duckduckgo` (default: Google when its key and engine id are set) |
 | `DEVOPS_ORGANIZATION`, `DEVOPS_PROJECT` | Azure DevOps organisation (`dev.azure.com/<organisation>`) and project for the DevOps tools |
 | `DEVOPS_TEAM` | Optional team: sprints are looked up under it, and an empty sprint means its current sprint |
+| `USAGE_LEDGER` | `on` (default) records every model request's tokens to `{LOG_DIRECTORY}/usage-YYYY-MM.jsonl`; `off` disables it |
+| `LOG_DIRECTORY` | Run logs and the usage ledger. Compose sets it for the containers (`logs/` on the host); for `dotnet run`, set it (for example `LOG_DIRECTORY=logs`) or the ledger is off, with a warning |
 
 Set by compose for the containers, so normally not in `.env`: `WORKSPACE_ROOT`, `SKILLS_DIRECTORY`, `LOG_DIRECTORY`.
 

@@ -17,7 +17,8 @@ for i in {1..30}; do
   sleep 1
 done
 
-# Pull model if specified and not already present
+# Pull the profile's model (config/.env.ollama) if not already present; OLLAMA_MODEL overrides it
+OLLAMA_MODEL="${OLLAMA_MODEL:-$LLM_MODEL}"
 if [ -n "$OLLAMA_MODEL" ]; then
   echo "Checking for model: $OLLAMA_MODEL"
 

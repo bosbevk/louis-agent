@@ -9,6 +9,7 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using louis_agent.core.config;
 using louis_agent.core.providers;
+using louis_agent.core.usage;
 using Microsoft.Extensions.AI;
 
 /// <summary>
@@ -86,8 +87,11 @@ public partial class AgentEngine
     /// coding agents, such as an orchestrator. Null registers the built-in coding toolsets (files, git, dotnet, shells, web,
     /// Paymo, DevOps) and the self-extension tools.
     /// </param>
+    /// <param name="usageSink">Where one usage record per model request goes; null records nothing.</param>
+    /// <param name="usageMapper">The provider's usage mapping (<c>LlmClientFactory.CreateUsageMapper</c>); null uses the standard one.</param>
     public AgentEngine(ISkillProvider skillProvider, IChatClient chatClient, AgentOptions options, bool supportsTools = true,
-        IWebSearchProvider? webSearch = null, IEnumerable<object>? toolsets = null)
+        IWebSearchProvider? webSearch = null, IEnumerable<object>? toolsets = null,
+        IUsageSink? usageSink = null, IUsageMapper? usageMapper = null)
     {
         _skills = ToSkillMap(skillProvider);
         SkillDocumentation = skillProvider.Documentation;
@@ -98,8 +102,9 @@ public partial class AgentEngine
         _powerShell = new PowerShellTools(WorkspaceRoot);
         _bash = new BashTools(WorkspaceRoot);
 
-        _innerChatClient = chatClient;
-        _chatClient = new ChatClientBuilder(chatClient)
+        // Summaries call the model directly, outside the tool loop, so they are recorded by their own recorder.
+        _innerChatClient = usageSink is null ? chatClient : new UsageRecordingChatClient(chatClient, usageSink, mapper: usageMapper);
+        var pipeline = new ChatClientBuilder(chatClient)
             .UseFunctionInvocation(configure: c =>
             {
                 c.MaximumIterationsPerRequest = 10;
@@ -107,6 +112,11 @@ public partial class AgentEngine
                 // Lets the model see why a call failed (e.g. a missing argument) instead of a generic failure.
                 c.IncludeDetailedErrors = true;
             })
+            .Use(KeepToolsOnFinalRequestAsync, KeepToolsOnFinalRequestStreamingAsync);
+        // Inside the tool loop, so each round is its own request and record; outside it would see one call per turn.
+        if (usageSink is not null)
+            pipeline.Use(inner => new UsageRecordingChatClient(inner, usageSink, mapper: usageMapper));
+        _chatClient = pipeline
             .Use(MarkTruncatedToolCallsAsync, MarkTruncatedToolCallsStreamingAsync)
             .Build();
 
@@ -192,6 +202,32 @@ public partial class AgentEngine
     }
 
     /// <summary>
+    /// Sits inside the tool-call loop. After <c>MaximumIterationsPerRequest</c> rounds, <see cref="FunctionInvokingChatClient"/>
+    /// sends one last request with no tools, so the model has to answer in text. Models that bind their thinking blocks to
+    /// the tool list (Claude Haiku 5.5 and later) reject that request with a 400, which loses the whole turn. This puts the
+    /// tools back unchanged with <see cref="ChatToolMode.None"/> (Anthropic: <c>tool_choice: none</c>): the tool list
+    /// matches every earlier request, and the model still can't call a tool.
+    /// </summary>
+    internal ChatOptions? KeepToolsOnFinalRequest(ChatOptions? options)
+    {
+        // Every request of a turn carries the tools (BeginTurn), so one without them is the loop's final request.
+        if (_tools.Count == 0 || options?.Tools is { Count: > 0 }) return options;
+
+        ChatOptions final = options?.Clone() ?? new ChatOptions();
+        final.Tools = _tools;
+        final.ToolMode = ChatToolMode.None;
+        return final;
+    }
+
+    private Task<ChatResponse> KeepToolsOnFinalRequestAsync(
+        IEnumerable<ChatMessage> messages, ChatOptions? options, IChatClient next, CancellationToken cancellationToken) =>
+        next.GetResponseAsync(messages, KeepToolsOnFinalRequest(options), cancellationToken);
+
+    private IAsyncEnumerable<ChatResponseUpdate> KeepToolsOnFinalRequestStreamingAsync(
+        IEnumerable<ChatMessage> messages, ChatOptions? options, IChatClient next, CancellationToken cancellationToken) =>
+        next.GetStreamingResponseAsync(messages, KeepToolsOnFinalRequest(options), cancellationToken);
+
+    /// <summary>
     /// Sits inside the tool-call loop: when the model stopped at the output limit, any tool calls it was writing are
     /// incomplete, so they are flagged for <see cref="LogAndInvokeAsync"/> to reject instead of run.
     /// </summary>
@@ -247,8 +283,11 @@ public partial class AgentEngine
                 new(ChatRole.User,
                     $"User's request: {userRequest ?? "(unknown)"}\nTool: {toolName}({arguments})\n\nOutput:\n{input}"),
             };
-            ChatResponse response = await _innerChatClient.GetResponseAsync(
-                messages, new ChatOptions { MaxOutputTokens = MaxOutputTokens }, cancellationToken);
+            ChatResponse response;
+            // Its own scope: recorded as "summary", numbered apart from the turn's rounds.
+            using (UsageScope.Begin(UsagePurpose.Summary))
+                response = await _innerChatClient.GetResponseAsync(
+                    messages, new ChatOptions { MaxOutputTokens = MaxOutputTokens }, cancellationToken);
             if (!string.IsNullOrWhiteSpace(response.Text))
             {
                 string summary = $"{note}\nSummary:\n{response.Text}";
@@ -303,6 +342,9 @@ public partial class AgentEngine
     public async Task RunAsync()
     {
         var history = NewHistory();
+        // One CLI run is one session in the usage ledger.
+        string session = $"cli_{Guid.NewGuid():N}";
+        int turns = 0;
 
         // Ctrl+C stops the reply in progress; with no reply running it exits as usual.
         CancellationTokenSource? turn = null;
@@ -341,6 +383,7 @@ public partial class AgentEngine
 
             using var cancellation = new CancellationTokenSource();
             Volatile.Write(ref turn, cancellation);
+            using var usage = UsageScope.Begin(host: "cli", session: session, turn: ++turns);
             try
             {
                 Console.Write("\nAssistant: ");
@@ -365,6 +408,7 @@ public partial class AgentEngine
     /// <summary>Run a single prompt and exit (non-interactive mode).</summary>
     public async Task RunSinglePromptAsync(string userInput)
     {
+        using var usage = UsageScope.Begin(host: "cli", session: $"cli_{Guid.NewGuid():N}", turn: 1);
         try
         {
             await StreamToConsoleAsync(NewHistory(), userInput);
@@ -495,6 +539,8 @@ public partial class AgentEngine
             Console.Error.WriteLine($"[WARN] Reply cut off by the output limit ({MaxOutputTokens} tokens); asking the model to continue");
             AgentLog.RecordTruncatedToolCall("(streamed reply)", string.Empty, MaxOutputTokens);
             history.Add(new ChatMessage(ChatRole.User, ContinueAfterCutOffMessage));
+            // The rest of this turn's requests exist only because of the cut-off; the host's scope says so.
+            if (UsageScope.Current is { } scope) scope.Purpose = UsagePurpose.Continue;
         }
     }
 

@@ -1,0 +1,33 @@
+# git log --all --graph of .demo/order-service after the run (before any merge)
+
+* 0555ea7 louis-agent    (fix/vat-85bc138f9c0e) fix(vat): match country codes case-insensitively in the VAT rate lookup (error 85bc138f9c0e)
+| * 56bd602 louis-agent    (fix/packing-slip-71e42a0bca41) fix(packing-slip): skip the gift part when an order has no gift message (error 71e42a0bca41)
+|/  
+| * 9e3a3ae louis-agent    (fix/shipping-cost-7bb0e63b488c) fix(shipping-cost): return 0.00 for orders without items instead of dividing by zero (error 7bb0e63b488c)
+|/  
+| * bf294c6 louis-agent    (fix/order-total-4e8a2acb366f) fix(order-total): treat unknown discount codes as no discount instead of throwing (error 4e8a2acb366f)
+|/  
+* 0772df9 demo-setup    (HEAD -> main) order-service as deployed
+
+# Each fix branch's changed files
+
+## fix/order-total-4e8a2acb366f
+ src/OrderService/Api/OrderTotal.cs                            |  3 ++-
+ tests/OrderService.Tests/Regression/Error4e8a2acb366fTests.cs | 11 +++++++++++
+ 2 files changed, 13 insertions(+), 1 deletion(-)
+
+## fix/packing-slip-71e42a0bca41
+ src/OrderService/Api/PackingSlip.cs                   |  9 +++++++--
+ .../Regression/Error71e42a0bca41Tests.cs              | 19 +++++++++++++++++++
+ 2 files changed, 26 insertions(+), 2 deletions(-)
+
+## fix/shipping-cost-7bb0e63b488c
+ src/OrderService/Api/ShippingCost.cs                          |  2 ++
+ tests/OrderService.Tests/Regression/Error7bb0e63b488cTests.cs | 11 +++++++++++
+ 2 files changed, 13 insertions(+)
+
+## fix/vat-85bc138f9c0e
+ src/OrderService/Api/Vat.cs                                 |  3 ++-
+ .../OrderService.Tests/Regression/Error85bc138f9c0eTests.cs | 13 +++++++++++++
+ 2 files changed, 15 insertions(+), 1 deletion(-)
+

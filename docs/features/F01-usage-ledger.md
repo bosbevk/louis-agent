@@ -1,6 +1,6 @@
 # F1 · Usage ledger: record every model request
 
-> **Status:** planned · **Milestone:** M1 · **Depends on:** —
+> **Status:** done (2026-10-10) · **Milestone:** M1 · **Depends on:** —
 >
 > **Spec:** [Usage §4.1, §4.3](../specs/USAGE_AND_BUDGETS.md) · [Optimisation §A](../specs/RESPONSE_OPTIMISATION.md)
 >
@@ -53,8 +53,9 @@ New, in `louis-agent.core/usage/`:
 |---|---|
 | `UsageRecord` | The record in U §4.1 (immutable `record`); `Tokens` with nullable counts; `Cost` filled by F2 |
 | `UsageScope` | Ambient context (`AsyncLocal`) a host opens per turn: host, session, turn, purpose, task, run, service; tracks the round counter |
-| `UsageRecordingChatClient` | `DelegatingChatClient`. Non-streaming: reads `ChatResponse.Usage`. Streaming: collects the `UsageContent` items from the updates. Writes one `UsageRecord` per request |
-| `IUsageSink` / `JsonlUsageSink` | Appends records via `AgentLog` to a monthly file; raises `UsageRecorded` for hosts that show live totals (F3) |
+| `UsageRecordingChatClient` | `DelegatingChatClient`. Non-streaming: reads `ChatResponse.Usage`. Streaming: collects the `UsageContent` items from the updates (Anthropic sends one, in the last update). Maps `UsageDetails` through the provider's `IUsageMapper`. Writes one `UsageRecord` per request |
+| `IUsageMapper` | Maps `UsageDetails` to the four non-overlapping kinds. `StandardUsageMapper` follows the Microsoft.Extensions.AI contract (cached tokens are part of `InputTokenCount`, so `input` = `InputTokenCount − cache reads − cache writes`); `AnthropicUsageMapper` also reads cache writes from `AdditionalCounts["CacheCreationInputTokens"]`. `LlmClientFactory.CreateUsageMapper` picks one per provider |
+| `IUsageSink` / `JsonlUsageSink` | Appends records to a monthly file in `LOG_DIRECTORY` (shared append, snake_case names); raises `UsageRecorded` for hosts that show live totals (F3) |
 
 Where it plugs in:
 
@@ -74,28 +75,52 @@ Where it plugs in:
 
 1. **Spike — what the adapter reports.** Log `UsageDetails` (all properties, and every `AdditionalCounts` key) for one
    streaming and one non-streaming Anthropic request with caching off and on. Record which key holds cache writes in
-   the optimisation spec's open questions. *No production code.*
+   the optimisation spec's open questions. *No production code.* **Done:** cache writes are
+   `AdditionalCounts["CacheCreationInputTokens"]`, `InputTokenCount` includes cached tokens, reasoning is null, and
+   streaming usage arrives in the last update (optimisation spec, *What the Anthropic adapter reports*).
 2. **`UsageRecord` and `UsageScope`.** *Test:* nested scopes restore the outer one; the round counter increments per
    request and resets per turn; scope values flow across `await`.
 3. **`UsageRecordingChatClient`, non-streaming.** *Test:* with `FakeChatClient` returning `UsageDetails`, one record
-   with the right counts and scope; `null` counts stay `null`.
+   with the right counts and scope; `null` counts stay `null`; Anthropic-shaped usage (input 10,266, cached 10,227)
+   records `input` 39 and `cache_read` 10,227.
 4. **Streaming support.** *Test:* a fake stream carrying `UsageContent` produces one record when the stream ends;
    a cancelled stream records what was reported so far, with `stop: "cancelled"`.
 5. **Wire into `AgentEngine`** (pipeline + summary client + continuation purpose). *Test:* a scripted 3-round tool loop
-   yields 3 records with rounds 1–3; an oversized result adds one `summary` record.
-6. **`JsonlUsageSink` + `USAGE_LEDGER`.** *Test:* writes one JSON line per record to `usage-YYYY-MM.jsonl` in the log
-   directory; contains no message text (assert on a prompt marker string).
+   yields 3 records with rounds 1–3; an oversized result adds one `summary` record. **Done:** `AgentEngine` takes an
+   optional `IUsageSink` and `IUsageMapper`; with no sink nothing is recorded, so hosts are unchanged until step 6.
+6. **`JsonlUsageSink` + `USAGE_LEDGER`.** `AgentHost.Build` passes the sink and `clientFactory.CreateUsageMapper(llm)` to
+   the engine. *Test:* writes one JSON line per record to `usage-YYYY-MM.jsonl` in the log directory; contains no
+   message text (assert on a prompt marker string); `AgentHost.Build` with an Anthropic provider gives the Anthropic
+   mapper. **Done:** the sink writes its own file (shared append, so the API and orchestrator can write the same month)
+   rather than through `AgentLog`, whose directory is set once per process; the month is taken in UTC.
+   `AgentHost.CreateUsageSink` is public so the orchestrator can use it in step 7.
 7. **Host scopes:** API, ACP, CLI, orchestrator. *Test:* API-level test (or manual curl) shows `host`/`session`/`turn`.
+   **Done:** the API's SSE endpoint is an async iterator, and a scope it makes current is lost at its first `yield`
+   (pinned by a test), so it activates the turn's scope around each `MoveNextAsync` of the engine's stream
+   (`UsageScope.Activate`). The recorder keeps the scope a request started in, and nested scopes (summaries) inherit
+   host, session and turn. Orchestrator triage is `host: orchestrator`, `purpose: triage`, session `triage_{error id}`,
+   in the same ledger as the fixes (`LOG_DIRECTORY: /demo/logs`). Checked by hand: two messages to one API session
+   recorded as turns 1 and 2.
 8. **Session tags** on `POST /sessions` and in `LouisAgentClient`. *Test:* orchestrator test with a stub API asserts the
-   create-session body; core test asserts tags reach the records.
-9. **Docs:** settings in README / SETUP; spec status.
+   create-session body; core test asserts tags reach the records. **Done:** `UsageTags(Task, Run, Service)` on the
+   scope, inherited and merged like host/session/turn, so summaries keep them. Tags are optional (the web app sends
+   none) and limited to 200 printable characters. The orchestrator makes one run id per batch of new errors (as its
+   comms log does a run), on the triage records and sent with every fix; `ServiceTools.RunId` is `internal`, since a
+   public property's accessors would become tools. Checked by hand: a tagged session's record carries all three tags.
+9. **Docs:** settings in README / SETUP; spec status. **Done**, with the project tree, the core design doc, and a saved
+   demo run ([samples/sample-output-short/](../../samples/sample-output-short/README.md)).
 
 ## Done when
 
-- All stories' criteria pass; unit tests added; existing suites pass.
+- All stories' criteria pass; unit tests added; existing suites pass. **Met:** core 511, orchestrator 26 tests.
 - A demo run produces a ledger in which every fix's records carry its task and run, and the orchestrator's triage
-  records are present.
-- **The M1 baseline is recorded** (after F2): total tokens and cost per fix for the current demo.
+  records are present. **Met:** `run-demo.ps1 -Short` on Claude Haiku 5.5 (2026-10-10, run `run-20261010-171318`):
+  61 records, every fix's tagged `fix:<error id>` and the run id, all five triages present with the same run id
+  ([saved ledger](../../samples/sample-output-short/usage-2026-10.jsonl)); 4/4 fixes confirmed. (A first run lost two
+  fixes to a Haiku 5.5 round-limit problem the ledger helped find, since fixed in the engine.)
+- **The M1 baseline is recorded** (after F2): total tokens and cost per fix for the current demo. *Tokens recorded
+  now* (about 525,000–584,000 input tokens per one-message fix, about $0.05–0.06 at Haiku 5.5 prices); F2 records the
+  priced baseline on a full run.
 - **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)): tick **F1** in the TODO,
   set *Status* to done here and in the features table, and note it in the spec's implementation map.
 

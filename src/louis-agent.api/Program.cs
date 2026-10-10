@@ -5,6 +5,7 @@ using System.Text.Json;
 using louis_agent.api;
 using louis_agent.core;
 using louis_agent.core.tools;
+using louis_agent.core.usage;
 using Microsoft.Extensions.AI;
 
 // HTTP version of the ACP server, which also serves the web app: every API reply is JSON, and a message's answer streams as Server-Sent Events shaped
@@ -49,15 +50,29 @@ app.MapWorkspace();
 app.MapGit();
 app.MapHistory();
 
-app.MapPost("/sessions", (AgentSessions sessions) =>
+// The body is optional: { "task", "run", "service" } tag every usage record of the session (the orchestrator sends them
+// for a fix; the web app sends none).
+app.MapPost("/sessions", (CreateSessionRequest? request, AgentSessions sessions) =>
 {
-    var session = sessions.Create();
-    return Results.Json(new { session_id = session.Id, created_at = session.CreatedAt }, statusCode: StatusCodes.Status201Created);
+    if (request?.InvalidTag() is { } invalid)
+        return Results.Json(Error("invalid_request_error", $"'{invalid}' must be at most {CreateSessionRequest.MaxTagLength} printable characters."),
+            statusCode: StatusCodes.Status400BadRequest);
+
+    var session = sessions.Create(request is null ? null : new UsageTags(request.Task, request.Run, request.Service));
+    return Results.Json(new
+    {
+        session_id = session.Id, created_at = session.CreatedAt,
+        task = session.Tags.Task, run = session.Tags.Run, service = session.Tags.Service,
+    }, statusCode: StatusCodes.Status201Created);
 });
 
 app.MapGet("/sessions/{id}", (string id, AgentSessions sessions) =>
     sessions.Get(id) is { } session
-        ? Results.Json(new { session_id = session.Id, created_at = session.CreatedAt, last_activity = session.LastActivity, busy = session.IsBusy })
+        ? Results.Json(new
+        {
+            session_id = session.Id, created_at = session.CreatedAt, last_activity = session.LastActivity, busy = session.IsBusy,
+            task = session.Tags.Task, run = session.Tags.Run, service = session.Tags.Service,
+        })
         : UnknownSession(id));
 
 app.MapDelete("/sessions/{id}", (string id, AgentSessions sessions) =>
@@ -131,6 +146,9 @@ static async IAsyncEnumerable<SseItem<string>> StreamTurnAsync(
             yield break;
         }
 
+        // This is an async iterator, so a scope it makes current is lost at its first yield: the scope is activated
+        // around each step of the engine's stream instead, which is where the model requests run.
+        using var usage = UsageScope.Begin(host: "api", session: session.Id, turn: session.Turns, tags: session.Tags);
         await using var updates = engine.StreamPromptAsync(session.History, prompt, turn.Token).GetAsyncEnumerator(turn.Token);
         string stopReason = "end_turn";
         string? error = null;
@@ -138,7 +156,9 @@ static async IAsyncEnumerable<SseItem<string>> StreamTurnAsync(
         {
             try
             {
-                if (!await updates.MoveNextAsync()) break;
+                bool more;
+                using (usage.Activate()) more = await updates.MoveNextAsync();
+                if (!more) break;
             }
             catch (OperationCanceledException)
             {
@@ -174,6 +194,17 @@ static async IAsyncEnumerable<SseItem<string>> StreamTurnAsync(
 }
 
 internal sealed record SendMessageRequest(string? Message, List<AttachmentRequest>? Attachments);
+
+/// <summary>Optional tags for a new session; they end up in the usage ledger, so they're kept short and printable.</summary>
+internal sealed record CreateSessionRequest(string? Task, string? Run, string? Service)
+{
+    internal const int MaxTagLength = 200;
+
+    /// <summary>The name of the first tag that is too long or holds control characters, or null when all are fine.</summary>
+    public string? InvalidTag() =>
+        new[] { ("task", Task), ("run", Run), ("service", Service) }
+            .FirstOrDefault(t => t.Item2 is { } value && (value.Length > MaxTagLength || value.Any(char.IsControl))).Item1;
+}
 
 internal sealed record AttachmentRequest(string Name, string? Content);
 

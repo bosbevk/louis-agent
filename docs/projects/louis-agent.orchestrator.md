@@ -83,4 +83,4 @@ against a real model.
 [Orchestrator design](../specs/ORCHESTRATOR_DESIGN.md)
 
 ---
-[Projects](README.md) · Previous: [louis-agent.mcp-server](louis-agent.mcp-server.md) · Next: [Tests](tests.md)
+[Projects](README.md) · Previous: [louis-agent.mcp-server](louis-agent.mcp-server.md) · Next: [louis-agent.usage-probe](louis-agent.usage-probe.md)

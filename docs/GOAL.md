@@ -16,7 +16,7 @@ and gets a line in the TODO's backlog (*Agent architecture gaps*) until it is pl
 
 | # | Skill | Have today | Planned (TODO) | Missing |
 |---|---|---|---|---|
-| 1 | **Models and providers** | One `IChatClient` over Anthropic and Ollama (`LlmClientFactory`, [MODELS](MODELS.md)) | Fallback model (F8), summary model per route (F10) | Model choice by measured quality and cost per task (routing on evals) |
+| 1 | **Models and providers** | One `IChatClient` over Anthropic and Ollama (`LlmClientFactory`, [MODELS](MODELS.md)) | Fallback model (F8), summary model per route (F10), local models within a small context window (F13) | Model choice by measured quality and cost per task (routing on evals) |
 | 2 | **Reasoning and extended thinking** | Thinking resolved per model (adaptive, or budget for pre-4.6), streamed to every host, kept in history across tool calls | Thinking level per route (F10) | Measuring what thinking buys: quality vs tokens per level on the evals; interleaved thinking between tool calls; when not to think |
 | 3 | **Prompt design** | System prompt built from `Skills/*.md` | Cache-friendly prefix (F4) | Prompt versioning, and A/B comparison of prompt changes on the evals |
 | 4 | **Tool design** | ~108 described tools, agent-built tools with approval, guarded results | Toolset profiles (F5), results as tool calls (F8) | Tool search / on-demand tool loading for large toolsets |
@@ -32,7 +32,7 @@ and gets a line in the TODO's backlog (*Agent architecture gaps*) until it is pl
 | 14 | **Reliability** | Cut-off calls never run, failures carry reasons | Retries, account limits, fallback (F8) | Timeouts and idempotency for long tasks; resumable runs in the core |
 | 15 | **Safety and security** | No shell for model text, sensitive-file blocking, SSRF-guarded fetch, tool approval | — (backlog: repo isolation, branch protection) | Prompt-injection defences and red-team tests, guardrails on outputs, rate limiting, an audit log |
 | 16 | **Human in the loop** | Approve agent-built tools; a person merges branches | Budgets that ask (F7) | Approval policies per action and risk level |
-| 17 | **Observability** | stderr and JSON-lines logs | Usage ledger and Usage tab (F1, F11) | Tracing per turn and tool call (OpenTelemetry), latency and error dashboards |
+| 17 | **Observability** | stderr and JSON-lines logs | Usage ledger and Usage tab (F1, F11), response speed (F12) | Tracing per turn and tool call (OpenTelemetry), latency and error dashboards |
 | 18 | **Testing and shipping** | Core and orchestrator unit tests, Docker images | — (backlog: CI, API/web/e2e tests) | CI, deploy pipeline, evals as a release gate |
 | 19 | **Multimodal and computer use** | — | — | Images and documents as input; browser or computer-use tools |
 

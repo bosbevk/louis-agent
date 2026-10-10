@@ -9,7 +9,7 @@ Built as features in [docs/features/](../features/README.md); each is one line u
 
 | Section | Feature | Status |
 |---|---|---|
-| §4.1, §4.3 Recording | [F1 Usage ledger](../features/F01-usage-ledger.md) | planned |
+| §4.1, §4.3 Recording | [F1 Usage ledger](../features/F01-usage-ledger.md) | **done** (2026-10-10): `input` is uncached input (the adapter's count minus cache reads and writes); `reasoning` is null on Claude; triage records are tied to their run, not to a task |
 | §4.2 Prices | [F2 Prices and cost](../features/F02-prices-and-cost.md) | planned |
 | §7.2–7.4 Showing it (and the stream in §7.1) | [F3 Show usage](../features/F03-usage-display.md) | planned |
 | §5 Estimates | [F6 Estimates](../features/F06-estimates.md) | planned |
@@ -75,11 +75,13 @@ Out of scope: billing users, and anything that changes *how much* a request cost
 }
 ```
 
-- Token counts come from `UsageDetails` (`InputTokenCount`, `CachedInputTokenCount`, `OutputTokenCount`,
-  `ReasoningTokenCount`, and the adapter's `AdditionalCounts` for cache writes — see the optimisation spec's open
-  question). Reasoning (thinking) tokens are part of the output count and billed as output; they are recorded
-  separately only to show how much of the output was thinking. Providers that report nothing (some Ollama models)
-  record counts as `null`, never as 0.
+- Token counts come from `UsageDetails`: `cache_read` = `CachedInputTokenCount`, `cache_write` =
+  `AdditionalCounts["CacheCreationInputTokens"]`, `output` = `OutputTokenCount`, `reasoning` = `ReasoningTokenCount`.
+  The four kinds don't overlap: the Anthropic adapter's `InputTokenCount` is the whole prompt, so `input` =
+  `InputTokenCount − cache_read − cache_write` (measured; see the optimisation spec's *What the Anthropic adapter
+  reports*). Reasoning (thinking) tokens are part of the output count and billed as output; they are recorded
+  separately only to show how much of the output was thinking. The Anthropic adapter doesn't report them, so
+  `reasoning` is `null` there. Providers that report nothing (some Ollama models) record counts as `null`, never as 0.
 - The file is append-only and rotates monthly (`usage-2026-10.jsonl`); it is the source for every total below.
 - Sessions are in memory, but the ledger is not: totals survive restarts.
 
@@ -264,7 +266,8 @@ Same `AGENT_API_KEY` rules as the other endpoints.
 | Risk / question | Note |
 |---|---|
 | Prices go stale | `as_of` is shown wherever cost is shown; reconciliation (4.4) catches drift where it is available |
-| Cache-write tokens not exposed by the adapter | Falls back to counting them as input (overstates cost slightly) until the key is known — tracked in the optimisation spec |
+| Cache-write tokens not exposed by the adapter | Resolved: the Anthropic adapter reports them as `AdditionalCounts["CacheCreationInputTokens"]` (measured in F1 step 1) |
+| Adapter changes how it counts input | The adapter's `InputTokenCount` includes cached tokens today; an upgrade that changes this would double-count or undercount. A unit test pins the subtraction, and reconciliation (4.4) catches drift |
 | Estimates mislead on new task kinds | Always a range with its basis; history-based only after ≥ 5 similar tasks |
 | The ledger as a privacy concern | Counts and ids only — no prompts, file contents or tool output |
 | Shared API key blends usage | Recommend a dedicated key or workspace for louis-agent |

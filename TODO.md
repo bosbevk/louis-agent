@@ -23,7 +23,7 @@ its own.
 
 **M1 — See it:** every request's tokens and cost recorded and visible.
 
-- [ ] [F1 Usage ledger](docs/features/F01-usage-ledger.md) — record every model request, attributed to session, task
+- [x] [F1 Usage ledger](docs/features/F01-usage-ledger.md) — record every model request, attributed to session, task
       and run
 - [ ] [F2 Prices and cost](docs/features/F02-prices-and-cost.md) — a price table; cost on every record
 - [ ] [F3 Show usage](docs/features/F03-usage-display.md) — cost per answer (web, CLI, Rider), in the API stream, and
@@ -53,11 +53,19 @@ its own.
 - [ ] [F10 Route settings](docs/features/F10-route-settings.md) — thinking, tool rounds and summary model per route.
       *Removes the limitation:* 10 tool rounds per message
 
-**M5 — Reporting:** an overview and a check against the bill.
+**M5 — Reporting:** an overview, a check against the bill, and how fast each model is.
 
 - [ ] [F11 Usage tab and reconciliation](docs/features/F11-usage-tab-and-reconciliation.md) — the web app's Usage tab,
       usage API, comparison with the provider's reports. *With F1–F3, F6 and F7, replaces:* "Track token usage / cost
       per session"
+- [ ] [F12 Response speed](docs/features/F12-response-speed.md) — time to first token and tokens per second on every
+      usage record, for every provider (Ollama's own timings too); shown with the usage
+
+**Local — Local models:** a local model gets everything it is sent.
+
+- [ ] [F13 Local models](docs/features/F13-local-models.md) — fit every request into the model's context window
+      (2,048 tokens on Ollama): compact prompt, a few tools, trimmed history, `num_ctx` sent. *Removes the limitation:*
+      local models get a truncated prompt
 
 ## Next: build-mode POC — build a whole microservice from runbooks
 
@@ -173,6 +181,17 @@ feature when its turn comes; remove its line here and update the map's *Missing*
 - [ ] **Human in the loop:** approval policies per action and risk level
 - [ ] **Multimodal and computer use:** images and documents as input; browser or computer-use tools
 
+### Models
+
+- [ ] Keep conversations append-only for models that bind thinking blocks to the history (Claude Haiku 5.5, Sonnet 5.5,
+      Opus 5.5): they return a 400 when `system`, `tools` or earlier messages change while thinking blocks are sent back
+      (enforced for accounts created on or after 2026-08-31). Known edits today: `AgentEngine.BeginTurn` rewrites
+      `history[0]` when skills are reloaded, and approving an agent-built tool changes the tool list mid-session. F9
+      (compaction) must be designed append-only too. *Removes the limitation:* reloading skills or approving a tool
+      mid-chat can break the chat on Haiku 5.5
+- [ ] Confirm Haiku 5.5 on the full demo: the short run confirms 4/4 fixes (`samples/sample-output-short/`); a full run
+      that confirms 10/10, taken as F1's M1 baseline, and F2's price table with Haiku 5.5's over-100K-token tier
+
 ### Observability
 
 - [ ] Metrics and tracing (e.g. OpenTelemetry) beyond the stderr and JSON-lines logs: latency and error dashboards
@@ -191,11 +210,24 @@ backlog item removes one, it says so.
 - No rate limiting or audit log beyond the file logs → *Agent architecture gaps: Safety*.
 - 10 tool rounds per message: long tasks need a follow-up message → **F10**.
 - An unpublished API (`dotnet run`) only serves the web app in the `Development` environment.
+- Local models get a truncated prompt: Ollama's context window is 2,048 tokens by default and the agent sends ~26,000+
+  (system prompt and tools); Ollama drops the rest without an error (the ledger shows `input: 2050`) → **F13**.
+- On Claude Haiku 5.5 (the default), reloading skills or approving an agent-built tool in the middle of a chat can make
+  the chat's next message fail with a 400: the model rejects a changed system prompt or tool list once thinking blocks
+  are in the history (enforced for accounts created on or after 2026-08-31). Start a new chat afterwards → *Models:
+  keep conversations append-only*.
 
 ## Done
 
 Newest first; details in the git history.
 
+- 2026-10-10 — The engine keeps the tools on the request after the 10-round limit (`tool_choice: none`), which Haiku
+  5.5 otherwise rejects; the short demo went from 2/4 to 4/4 fixes
+- 2026-10-10 — **F1 Usage ledger**: every model request of every host in `{LOG_DIRECTORY}/usage-YYYY-MM.jsonl`, with
+  host, session, turn, purpose and the orchestrator's fix and run; `tools/louis-agent.usage-probe`; a short demo
+  (`run-demo.ps1 -Short`) saved with its ledger in `samples/sample-output-short/` (4/4 fixes, ≈ $0.27 on Haiku 5.5)
+- 2026-10-10 — Default Anthropic model is Claude Haiku 5.5 (about 7.5× cheaper than Haiku 4.5; usage, thinking and
+  thinking text checked with `tools/louis-agent.usage-probe`); LLM profiles `config/.env.anthropic` / `.env.ollama`
 - 2026-10-07 — Specs and feature plan for usage, budgets and cheaper responses (`docs/specs/`, `docs/features/`); the
   session-architecture and orchestrator designs moved from this list into `docs/specs/`
 - 2026-10-07 — Docs: [how the agents and endpoints talk](docs/AGENT_COMMUNICATION.md), [runbooks](docs/RUNBOOKS.md), a

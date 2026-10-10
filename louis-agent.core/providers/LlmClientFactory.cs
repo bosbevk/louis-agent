@@ -6,6 +6,7 @@ using Anthropic.Core;
 using Anthropic.Models.Messages;
 using louis_agent.core.config;
 using louis_agent.core.tools;
+using louis_agent.core.usage;
 using Microsoft.Extensions.AI;
 using OllamaSharp;
 using OpenAI;
@@ -13,6 +14,9 @@ using OpenAI;
 public interface ILlmClientFactory
 {
     IChatClient Create(LlmOptions options);
+
+    /// <summary>How this provider's usage maps to the ledger's token kinds.</summary>
+    IUsageMapper CreateUsageMapper(LlmOptions options) => new StandardUsageMapper();
 }
 
 /// <summary>Maps <see cref="LlmOptions.Provider"/> to an <see cref="IChatClient"/>. Add a provider by adding one entry.</summary>
@@ -40,6 +44,12 @@ public sealed class LlmClientFactory : ILlmClientFactory
 
         return create(options);
     }
+
+    /// <summary>Anthropic reports cache writes outside the standard fields; every other provider follows the contract.</summary>
+    public IUsageMapper CreateUsageMapper(LlmOptions options) =>
+        string.Equals(options.Provider, LlmOptions.Anthropic, StringComparison.OrdinalIgnoreCase)
+            ? new AnthropicUsageMapper()
+            : new StandardUsageMapper();
 
     private static IChatClient CreateAnthropic(LlmOptions o)
     {

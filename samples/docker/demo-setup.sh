@@ -29,7 +29,14 @@ git config core.autocrlf false
 git add .
 git -c user.name=demo-setup -c user.email=demo@localhost commit -q -m "order-service as deployed"
 
-echo "=== 2. Production traffic (data/requests.txt) ==="
-dotnet run --project src/OrderService -- serve data/requests.txt
+# DEMO_REQUESTS picks the traffic file in data/ (run-demo.ps1 -Short: requests-short.txt, five errors).
+requests="${DEMO_REQUESTS:-requests.txt}"
+case "$requests" in
+    *[!A-Za-z0-9._-]* | .*) echo "DEMO_REQUESTS must be a file name in data/, got '$requests'." >&2; exit 1 ;;
+esac
+[ -f "data/$requests" ] || { echo "No traffic file data/$requests." >&2; exit 1; }
+
+echo "=== 2. Production traffic (data/$requests) ==="
+dotnet run --project src/OrderService -- serve "data/$requests"
 [ -s logs/errors.jsonl ] || { echo "The traffic run logged no errors; nothing to demo." >&2; exit 1; }
 echo "$(wc -l < logs/errors.jsonl) exceptions logged to logs/errors.jsonl"

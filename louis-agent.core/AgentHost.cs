@@ -5,6 +5,7 @@ using louis_agent.core.config;
 using louis_agent.core.tools;
 using louis_agent.core.providers;
 using louis_agent.core.mcp;
+using louis_agent.core.usage;
 
 /// <summary>Everything an entry point needs after bootstrap.</summary>
 public sealed record AgentHostContext(AgentEngine Engine, LlmOptions Llm, AgentOptions Agent);
@@ -13,28 +14,47 @@ public sealed record AgentHostContext(AgentEngine Engine, LlmOptions Llm, AgentO
 /// Single bootstrap shared by the CLI, ACP and MCP entry points: dotenv load, option binding,
 /// skill discovery and composite wiring.
 /// </summary>
-public static class AgentHost
+public static partial class AgentHost
 {
     /// <summary>
     /// Loads config/.env.secrets and config/.env (plus a legacy ./.env), searching upward from the working
-    /// directory so the CLI works from any folder in the repo. Variables already set in the process
-    /// (shell, Docker env_file) win; secrets are loaded before .env so they take precedence over it.
+    /// directory so the CLI works from any folder in the repo, then the LLM profile config/.env.{LLM_PROFILE}
+    /// (.env.anthropic, .env.ollama). Variables already set in the process (shell, Docker env_file) win; each file
+    /// only fills what the ones before it left unset, so the order is secrets, .env, then the profile.
     /// </summary>
-    public static void LoadEnvironment()
+    public static void LoadEnvironment() => LoadEnvironment(Environment.CurrentDirectory);
+
+    internal static void LoadEnvironment(string startDirectory)
     {
         var files = new List<string>();
-        if (FindConfigDirectory(Environment.CurrentDirectory) is { } configDir)
+        string? configDir = FindConfigDirectory(startDirectory);
+        if (configDir is not null)
         {
             files.Add(Path.Combine(configDir, ".env.secrets"));
             files.Add(Path.Combine(configDir, ".env"));
         }
-        files.Add(Path.Combine(Environment.CurrentDirectory, ".env"));
+        files.Add(Path.Combine(startDirectory, ".env"));
+        Load(files);
 
-        DotEnv.Load(options: new DotEnvOptions(
+        // Read after .env is loaded, since that is where it is usually set.
+        if (Environment.GetEnvironmentVariable("LLM_PROFILE") is not { Length: > 0 } profile || configDir is null) return;
+        string profileFile = Path.Combine(configDir, $".env.{profile}");
+        if (!LlmProfileName().IsMatch(profile) || !File.Exists(profileFile))
+        {
+            Console.Error.WriteLine($"[WARN] LLM_PROFILE '{profile}' has no config/.env.{profile}; using the LLM settings from .env and the defaults.");
+            return;
+        }
+        Load([profileFile]);
+
+        static void Load(IEnumerable<string> paths) => DotEnv.Load(options: new DotEnvOptions(
             ignoreExceptions: true,
-            envFilePaths: files.Where(File.Exists).ToArray(),
+            envFilePaths: paths.Where(File.Exists).ToArray(),
             overwriteExistingVars: false));
     }
+
+    /// <summary>Profile names are file-name parts (anthropic, ollama), never paths.</summary>
+    [System.Text.RegularExpressions.GeneratedRegex("^[a-z0-9-]+$")]
+    private static partial System.Text.RegularExpressions.Regex LlmProfileName();
 
     internal static string? FindConfigDirectory(string startDirectory)
     {
@@ -97,7 +117,8 @@ public static class AgentHost
     {
         var skills = LoadSkills(agent);
         var chatClient = clientFactory.Create(llm);
-        var engine = new AgentEngine(skills, chatClient, agent, llm.ResolveSupportsTools())
+        var engine = new AgentEngine(skills, chatClient, agent, llm.ResolveSupportsTools(),
+            usageSink: CreateUsageSink(agent), usageMapper: clientFactory.CreateUsageMapper(llm))
         {
             SkillsDirectory = FindSkillsDirectory(agent),
             SkillReloader = () => LoadSkills(agent),
@@ -131,6 +152,23 @@ public static class AgentHost
         }
 
         return new AgentHostContext(engine, llm, agent);
+    }
+
+    /// <summary>
+    /// The usage ledger, {LOG_DIRECTORY}/usage-YYYY-MM.jsonl, or null when USAGE_LEDGER=off or there is no
+    /// LOG_DIRECTORY (with a warning, since the ledger was wanted).
+    /// </summary>
+    public static IUsageSink? CreateUsageSink(AgentOptions agent)
+    {
+        if (!agent.UsageLedger) return null;
+        if (agent.LogDirectory is null)
+        {
+            Console.Error.WriteLine("[WARN] Usage ledger off: LOG_DIRECTORY is not set. Set it to record token usage, or USAGE_LEDGER=off to silence this.");
+            return null;
+        }
+
+        Console.Error.WriteLine($"[INFO] Usage ledger: {Path.Combine(agent.LogDirectory, "usage-YYYY-MM.jsonl")}");
+        return new JsonlUsageSink(agent.LogDirectory);
     }
 
     /// <summary>

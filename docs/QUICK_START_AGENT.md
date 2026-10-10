@@ -83,7 +83,7 @@ Every tool call is visible: as a card in the web app and Rider, as a grey `> Too
 in the logs:
 
 ```
-[INFO] LLM: anthropic:claude-haiku-4-5-20251001 (endpoint=default, apiKey=set); tools=on; thinking=medium
+[INFO] LLM: anthropic:claude-haiku-5-5 (endpoint=default, apiKey=set); tools=on; thinking=medium
 [TOOL] -> GetCurrentBranch({})
 [TOOL] <- GetCurrentBranch: main
 ```

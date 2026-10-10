@@ -2,6 +2,7 @@ using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using louis_agent.core.usage;
 
 namespace louis_agent.orchestrator;
 
@@ -27,9 +28,11 @@ internal sealed record FixResult(string Status, string? Commit, string? Branch, 
 /// </summary>
 internal sealed partial class LouisAgentClient(HttpClient http, string? apiKey)
 {
-    public async Task<string> CreateSessionAsync(CancellationToken cancellationToken = default)
+    /// <param name="tags">Task, run and service for louis-agent's usage ledger, so a fix's cost can be added to its run's.</param>
+    public async Task<string> CreateSessionAsync(UsageTags? tags = null, CancellationToken cancellationToken = default)
     {
         using var request = new HttpRequestMessage(HttpMethod.Post, "sessions");
+        if (tags is not null) request.Content = JsonContent.Create(new { task = tags.Task, run = tags.Run, service = tags.Service });
         AddKey(request);
         using var response = await http.SendAsync(request, cancellationToken);
         response.EnsureSuccessStatusCode();

@@ -284,6 +284,7 @@ public class ThinkingTests
     }
 
     [TestCase("claude-haiku-4-5-20251001", true)]
+    [TestCase("claude-haiku-5-5", false)]
     [TestCase("claude-sonnet-4-5", true)]
     [TestCase("claude-opus-4-6", false)]
     [TestCase("claude-opus-5-5", false)]

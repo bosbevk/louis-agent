@@ -49,7 +49,7 @@ louis-agent.core/
 ├── MarkdownSkillLoader.cs    # Parses "## Skill:" procedures from markdown
 ├── config/
 │   ├── LlmOptions.cs         # LLM_* settings, tool-support and thinking resolution
-│   └── AgentOptions.cs       # Workspace, skills, keys, Rider MCP, LOG_DIRECTORY
+│   └── AgentOptions.cs       # Workspace, skills, keys, Rider MCP, LOG_DIRECTORY, USAGE_LEDGER
 ├── providers/
 │   ├── LlmClientFactory.cs   # Provider → IChatClient (Anthropic thinking-budget wrapper lives here)
 │   ├── CompositeSkillProvider.cs, MarkdownSkillProvider.cs, ISkillProvider.cs
@@ -62,6 +62,11 @@ louis-agent.core/
 │   ├── PaymoTools.cs, DevOpsTools.cs        # Loaded only when their API keys are set
 │   ├── ScriptTool.cs         # Agent-built tools (*.tool.md)
 │   └── ProcessRunner.cs      # Process runner: argument lists, no shell, timeouts
+├── usage/                    # Usage ledger (F1): one JSON line per model request in {LOG_DIRECTORY}/usage-YYYY-MM.jsonl
+│   ├── UsageRecordingChatClient.cs  # Middleware inside the tool loop: records each request, streaming or not
+│   ├── UsageScope.cs         # Per-turn context (AsyncLocal): host, session, turn, purpose, task/run/service tags
+│   ├── IUsageMapper.cs       # Provider usage → the ledger's token kinds (Standard / Anthropic mappers)
+│   └── UsageRecord.cs, IUsageSink.cs, JsonlUsageSink.cs
 └── mcp/
     ├── RiderMcpClient.cs     # Lists tools from Rider's MCP server
     └── RiderMcpToolDiscovery.cs
@@ -84,6 +89,7 @@ src/
     ├── CommsLog.cs           # Markdown log of every message between the agents
     └── Skills/               # orchestrator.md + {service}/service.md + one runbook per API method
 
+tools/louis-agent.usage-probe/ # Prints a provider's raw token usage and the ledger's mapping (calls the real provider)
 tests/louis-agent.core.tests/ # NUnit; Config, Loaders, Providers, Tools, mcp
 tests/louis-agent.orchestrator.tests/ # NUnit; error feed, SSE client, verification tools
 samples/                      # order-service (demo microservice) + run-demo.ps1, see samples/README.md
@@ -259,6 +265,13 @@ The same list as the TODO's *Known limitations*: when work removes one, delete i
    Removed by [F10 Route settings](features/F10-route-settings.md).
 7. **Running the API with `dotnet run` (unpublished)** only serves the web app in the `Development` environment
    (`ASPNETCORE_ENVIRONMENT=Development`); otherwise `/` returns 404. The Docker images are published, so they're fine.
+8. **Local models get a truncated prompt.** Ollama's context window is 2,048 tokens by default and the agent sends
+   ~26,000+ (system prompt and tools); Ollama drops the rest without an error, so the ledger shows `input: 2050`.
+   Removed by [F13 Local models](features/F13-local-models.md).
+9. **Reloading skills or approving a tool mid-chat can break the chat on Claude Haiku 5.5** (the default). The model
+   rejects a changed system prompt or tool list once thinking blocks are in the history (enforced for accounts created
+   on or after 2026-08-31), and `BeginTurn` rewrites the system prompt after a reload. Start a new chat afterwards.
+   Removed by keeping conversations append-only (TODO *Models*, backlog).
 
 ## Common errors
 
