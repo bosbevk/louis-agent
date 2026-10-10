@@ -9,8 +9,10 @@ The goal and the skill map are in [GOAL.md](GOAL.md).
    write-ups happen in the Claude project, so don't start the next feature on your own.
 2. **Small steps.** Follow the steps in the feature doc. Each step is one commit (or PR) with its test, small enough to
    review in about ten minutes.
-3. **Plan first, and keep the plan.** Before a feature's or fix's first step, its approved plan is saved to
-   [plans/](plans/README.md) (`Fnn-name.md` or `FXnn-name.md`) and committed on its branch; it is kept as approved.
+3. **Plan first, and keep the plan.** Before the first step of a feature, or of a fix that takes more than one step,
+   the plan Louis approved (made here or in the Claude project) is saved to [plans/](plans/README.md) as `Fnn-name.md`
+   or `FXnn-name.md` and committed on its branch. Don't rewrite it afterwards: a change Louis approves during the build
+   is added under *Approved during the build*; anything else the build learns goes in the feature or fix doc.
 4. **Explain every change:** what changed, why this design and not the alternatives, and what to look at closely.
 5. **Stop after each step** and wait for Louis to review and understand it before starting the next one.
 6. **Teach, don't just do.** Name the AI-engineering concept behind each step and where it sits in the GOAL.md skill map.
