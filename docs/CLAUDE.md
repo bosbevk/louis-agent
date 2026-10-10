@@ -66,6 +66,8 @@ louis-agent.core/
 │   ├── UsageRecordingChatClient.cs  # Middleware inside the tool loop: records each request, streaming or not
 │   ├── UsageScope.cs         # Per-turn context (AsyncLocal): host, session, turn, purpose, task/run/service tags
 │   ├── IUsageMapper.cs       # Provider usage → the ledger's token kinds (Standard / Anthropic mappers)
+│   ├── PriceTable.cs, CostCalculator.cs  # Prices (config/prices.json) and a record's cost (F2)
+│   ├── PricingUsageSink.cs   # Puts the cost on each record before the ledger writes it
 │   └── UsageRecord.cs, IUsageSink.cs, JsonlUsageSink.cs
 └── mcp/
     ├── RiderMcpClient.cs     # Lists tools from Rider's MCP server
@@ -95,7 +97,8 @@ tests/louis-agent.orchestrator.tests/ # NUnit; error feed, SSE client, verificat
 samples/                      # order-service (demo microservice) + run-demo.ps1, see samples/README.md
 docker/                       # Dockerfile.{acp-server,api,agent,mcp-server,orchestrator}, docker-compose.yml,
                               # docker-compose.demo.yml (orchestrator demo); the build context's .dockerignore is at the repo root
-config/                       # .env and .env.secrets (both ignored), their examples, Rider config examples
+config/                       # .env and .env.secrets (both ignored), their examples, LLM profiles (.env.anthropic,
+                              # .env.ollama), prices.json (model prices), Rider config examples
 Skills/                       # personality.md + default.md + *-skills.md (system prompt), tools/ (agent-built tools)
 docs/                         # This guide and the other docs
 ```

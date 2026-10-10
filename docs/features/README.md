@@ -17,7 +17,7 @@ feature replaces older backlog wording, that wording no longer appears anywhere 
 | ID | Feature | Status | Spec | Replaces in the TODO | Depends on | Milestone |
 |---|---|---|---|---|---|---|
 | [F1](F01-usage-ledger.md) | Usage ledger: record every model request | done | U §4.1, §4.3 · R §A | *Track token usage / cost per session* (with F2, F3, F6, F7, F11) | — | M1 |
-| [F2](F02-prices-and-cost.md) | Prices and cost | planned | U §4.2 | (as F1) | F1 | M1 |
+| [F2](F02-prices-and-cost.md) | Prices and cost | done | U §4.2 | (as F1) | F1 | M1 |
 | [F3](F03-usage-display.md) | Show usage: chat, CLI, Rider, API, comms log | planned | U §7.2–7.4 | (as F1) | F1, F2 | M1 |
 | [F4](F04-prompt-caching.md) | Prompt caching (Anthropic) | planned | R §B | *Wire up Anthropic prompt caching* | F1 | M2 |
 | [F5](F05-toolset-profiles.md) | Toolset profiles | planned | R §C | — | F1 | M2 |
@@ -69,6 +69,33 @@ Every milestone is measured the same way, so changes can be compared:
    per turn, and whether the last turns can still answer questions about the first.
 
 The M1 run is the baseline. A change lands only if quality holds: 10/10 fixes confirmed, and the chat recall check passes.
+
+To measure a run: `dotnet run --project tools/louis-agent.usage-probe -- --ledger .demo/logs/usage-YYYY-MM.jsonl` prices
+the ledger with `config/prices.json` and totals it per fix, triage, purpose and run.
+
+### M1 baseline (2026-10-10)
+
+Full demo on Claude Haiku 5.5 (`run-20261010-193730`, ledger in
+[samples/sample-output/](../../samples/sample-output/README.md)), every record priced as it was written, with the
+2026-10-10 table. **10/10 fixes confirmed**, 2 ignored, 1 escalated; four fixes needed a second message after using all
+10 tool rounds.
+
+| | Requests | Input tokens | Output tokens | Cost |
+|---|---|---|---|---|
+| A fix (louis-agent): fewest / average / most | 8 / 11.4 / 16 | 425,547 / 608,135 / 863,893 | 2,555 / 3,274 / 3,722 | $0.0442 / $0.0625 / $0.0879 |
+| A triage (orchestrator), 13 of them | 2–3 | 14,365–25,453 | 313–967 | $0.0016–0.0030 |
+| All fixes | 114 | 6,081,347 | 32,742 | $0.6245 |
+| All triage | 36 | 292,935 | 9,502 | $0.0340 |
+| **The run** | **150** | **6,374,282** | **42,244** | **$0.6586** |
+
+- **Cache-hit rate: 0%.** Nothing is cached yet, so every request re-sends the ~48,000-token system prompt and tools;
+  that is most of the input, and what F4 (prompt caching) and F5 (toolset profiles) go after in M2.
+- **Largest request: 57,710 tokens**, under Haiku 5.5's 100,000-token price step.
+- **Run-to-run variation:** an earlier run of the same code (`run-20261010-174312`) cost $0.6569 for 149 requests, also
+  10/10; a single fix varies more ($0.044–0.088) than the whole run does (0.3%), mostly with whether it needs a second
+  message. Compare M2 against the run total, not one fix.
+- The short run (`run-demo.ps1 -Short`, 4 fixes): 65 requests, $0.2920
+  ([samples/sample-output-short/](../../samples/sample-output-short/README.md)).
 
 ## Conventions
 

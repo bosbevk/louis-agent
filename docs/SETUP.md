@@ -10,6 +10,7 @@ templates.
 | `config/.env` | ❌ git-ignored | Your non-secret settings: model, agent function, paths, DevOps project |
 | `config/.env.example` | ✅ tracked | Template for `config/.env`, with explanations |
 | `config/.env.anthropic`, `config/.env.ollama` | ✅ tracked | LLM profiles: the model settings `LLM_PROFILE` picks ([MODELS.md](MODELS.md)) |
+| `config/prices.json` | ✅ tracked | Model prices per million tokens for the usage ledger's costs; update it (and its `as_of`) when prices change |
 | `config/.env.secrets` | ❌ git-ignored | Your API keys and other secrets |
 | `config/.env.secrets.example` | ✅ tracked | Template listing every secret |
 | `config/rider-acp.example.json` | ✅ tracked | Rider agent-server entry for the ACP server (replace `C:\path\to`) |
@@ -75,7 +76,9 @@ docker compose -f docker/docker-compose.yml --env-file config/.env up -d --build
 | `WEB_SEARCH_PROVIDER` | `google` or `duckduckgo` (default: Google when its key and engine id are set) |
 | `DEVOPS_ORGANIZATION`, `DEVOPS_PROJECT` | Azure DevOps organisation (`dev.azure.com/<organisation>`) and project for the DevOps tools |
 | `DEVOPS_TEAM` | Optional team: sprints are looked up under it, and an empty sprint means its current sprint |
-| `USAGE_LEDGER` | `on` (default) records every model request's tokens to `{LOG_DIRECTORY}/usage-YYYY-MM.jsonl`; `off` disables it |
+| `USAGE_LEDGER` | `on` (default) records every model request's tokens and cost to `{LOG_DIRECTORY}/usage-YYYY-MM.jsonl`; `off` disables it |
+| `PRICES_FILE` | The price table for those costs (default `config/prices.json`, found like `config/.env`; compose sets it for the containers). Without one, costs are recorded as unknown (`null`); a malformed one stops the host |
+| `PRICES_URL` | Fetch the price table over HTTP instead, e.g. louis-agent.api's public `GET /prices` (the demo's orchestrator uses `http://demo-api:8080/prices`). If it can't be reached at start-up, the host warns and uses the file above |
 | `LOG_DIRECTORY` | Run logs and the usage ledger. Compose sets it for the containers (`logs/` on the host); for `dotnet run`, set it (for example `LOG_DIRECTORY=logs`) or the ledger is off, with a warning |
 
 Set by compose for the containers, so normally not in `.env`: `WORKSPACE_ROOT`, `SKILLS_DIRECTORY`, `LOG_DIRECTORY`.

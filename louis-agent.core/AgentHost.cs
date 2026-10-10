@@ -8,7 +8,8 @@ using louis_agent.core.mcp;
 using louis_agent.core.usage;
 
 /// <summary>Everything an entry point needs after bootstrap.</summary>
-public sealed record AgentHostContext(AgentEngine Engine, LlmOptions Llm, AgentOptions Agent);
+/// <param name="Prices">The price table the usage ledger prices with (louis-agent.api also serves it at GET /prices).</param>
+public sealed record AgentHostContext(AgentEngine Engine, LlmOptions Llm, AgentOptions Agent, PriceTable Prices);
 
 /// <summary>
 /// Single bootstrap shared by the CLI, ACP and MCP entry points: dotenv load, option binding,
@@ -117,8 +118,9 @@ public static partial class AgentHost
     {
         var skills = LoadSkills(agent);
         var chatClient = clientFactory.Create(llm);
+        PriceTable prices = LoadPrices(agent);
         var engine = new AgentEngine(skills, chatClient, agent, llm.ResolveSupportsTools(),
-            usageSink: CreateUsageSink(agent), usageMapper: clientFactory.CreateUsageMapper(llm))
+            usageSink: CreateUsageSink(agent, prices), usageMapper: clientFactory.CreateUsageMapper(llm))
         {
             SkillsDirectory = FindSkillsDirectory(agent),
             SkillReloader = () => LoadSkills(agent),
@@ -151,14 +153,16 @@ public static partial class AgentHost
             Console.Error.WriteLine($"[INFO] MCP discovery disabled or not configured");
         }
 
-        return new AgentHostContext(engine, llm, agent);
+        return new AgentHostContext(engine, llm, agent, prices);
     }
 
     /// <summary>
-    /// The usage ledger, {LOG_DIRECTORY}/usage-YYYY-MM.jsonl, or null when USAGE_LEDGER=off or there is no
-    /// LOG_DIRECTORY (with a warning, since the ledger was wanted).
+    /// The usage ledger, {LOG_DIRECTORY}/usage-YYYY-MM.jsonl, with each record priced from the price table; or null when
+    /// USAGE_LEDGER=off or there is no LOG_DIRECTORY (with a warning, since the ledger was wanted). A malformed price table
+    /// throws, so a host doesn't start on wrong prices.
     /// </summary>
-    public static IUsageSink? CreateUsageSink(AgentOptions agent)
+    /// <param name="prices">Already loaded prices (<see cref="Build(LlmOptions, AgentOptions, ILlmClientFactory)"/> loads them once); null loads them here.</param>
+    public static IUsageSink? CreateUsageSink(AgentOptions agent, PriceTable? prices = null)
     {
         if (!agent.UsageLedger) return null;
         if (agent.LogDirectory is null)
@@ -168,7 +172,47 @@ public static partial class AgentHost
         }
 
         Console.Error.WriteLine($"[INFO] Usage ledger: {Path.Combine(agent.LogDirectory, "usage-YYYY-MM.jsonl")}");
-        return new JsonlUsageSink(agent.LogDirectory);
+        return new PricingUsageSink(new JsonlUsageSink(agent.LogDirectory), prices ?? LoadPrices(agent));
+    }
+
+    private static readonly TimeSpan PricesUrlTimeout = TimeSpan.FromSeconds(10);
+
+    /// <summary>
+    /// The price table: from PRICES_URL when set and reachable, otherwise from PRICES_FILE or config/prices.json (found like
+    /// config/.env); empty, with a warning, if there's none. A response or file that isn't a valid table throws.
+    /// </summary>
+    /// <param name="handler">For tests: answers the PRICES_URL request.</param>
+    public static PriceTable LoadPrices(AgentOptions agent, HttpMessageHandler? handler = null)
+    {
+        if (agent.PricesUrl is { } pricesUrl)
+        {
+            if (!Uri.TryCreate(pricesUrl, UriKind.Absolute, out Uri? url) || url.Scheme is not ("http" or "https"))
+                throw new InvalidDataException($"PRICES_URL must be an http or https URL, got '{pricesUrl}'.");
+
+            using var http = handler is null ? new HttpClient() : new HttpClient(handler, disposeHandler: false);
+            http.Timeout = PricesUrlTimeout;
+            try
+            {
+                // Start-up is synchronous in every host; the call is bounded by the timeout above.
+                PriceTable fromUrl = PriceTable.LoadAsync(http, url).GetAwaiter().GetResult();
+                Console.Error.WriteLine($"[INFO] Prices: {url} (as of {fromUrl.AsOf}, {fromUrl.Models.Count} models)");
+                return fromUrl;
+            }
+            catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException)
+            {
+                // Pricing being unreachable never stops an agent: the local table keeps costs flowing.
+                Console.Error.WriteLine($"[WARN] Prices: {url} can't be reached ({ex.Message}); using the price file instead.");
+            }
+        }
+
+        string? path = agent.PricesFile
+                       ?? (FindConfigDirectory(Environment.CurrentDirectory) is { } configDir ? Path.Combine(configDir, "prices.json") : null);
+        PriceTable prices = path is null ? PriceTable.Empty : PriceTable.Load(path);
+        if (prices.IsEmpty)
+            Console.Error.WriteLine($"[WARN] No price table at {path ?? "config/prices.json"}: usage is recorded without cost. Set PRICES_FILE to price it.");
+        else
+            Console.Error.WriteLine($"[INFO] Prices: {path} (as of {prices.AsOf}, {prices.Models.Count} models)");
+        return prices;
     }
 
     /// <summary>

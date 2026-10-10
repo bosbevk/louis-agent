@@ -46,6 +46,14 @@ app.MapFallbackToFile("index.html");
 
 app.MapGet("/health", () => Results.Json(new { status = "ok" }));
 
+// The price table this API's usage ledger prices with, for other hosts' PRICES_URL (the orchestrator in the demo). Public
+// like /health: prices aren't secret, and a host fetches them without the API key. 404 when there is no table, so a
+// caller falls back to its own file.
+app.MapGet("/prices", () => host.Prices.IsEmpty
+    ? Results.Json(Error("not_found_error", "No price table loaded: set PRICES_FILE or add config/prices.json."),
+        statusCode: StatusCodes.Status404NotFound)
+    : Results.Json(host.Prices, PriceTable.Json));
+
 app.MapWorkspace();
 app.MapGit();
 app.MapHistory();

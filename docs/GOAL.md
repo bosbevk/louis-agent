@@ -28,11 +28,11 @@ and gets a line in the TODO's backlog (*Agent architecture gaps*) until it is pl
 | 10 | **Multi-agent orchestration** | Orchestrator delegates fixes and verifies them | Build mode (Next) | Agent-to-agent handoff patterns compared (tool call vs session vs MCP); parallel sub-agents |
 | 11 | **Protocols** | MCP server (stdio, HTTP), ACP for Rider | — | A full MCP client (use other servers' tools) |
 | 12 | **Evaluation** | The orchestrator demo: 10 fixes, each verified | Benchmark with baseline (M1), long-chat recall check (F9) | An eval suite: task datasets, graded scoring (including LLM-as-judge), regression gates in CI |
-| 13 | **Cost and token economics** | — | Ledger, prices, display, caching, estimates, budgets, reconciliation (M1–M5) | — |
+| 13 | **Cost and token economics** | Usage ledger with a cost on every record (F1, F2: `config/prices.json` or the API's `GET /prices`, a price table versioned by `as_of`); the M1 baseline, $0.66 a demo run | Display, caching, estimates, budgets, reconciliation (F3–F11) | — |
 | 14 | **Reliability** | Cut-off calls never run, failures carry reasons | Retries, account limits, fallback (F8) | Timeouts and idempotency for long tasks; resumable runs in the core |
 | 15 | **Safety and security** | No shell for model text, sensitive-file blocking, SSRF-guarded fetch, tool approval | — (backlog: repo isolation, branch protection) | Prompt-injection defences and red-team tests, guardrails on outputs, rate limiting, an audit log |
 | 16 | **Human in the loop** | Approve agent-built tools; a person merges branches | Budgets that ask (F7) | Approval policies per action and risk level |
-| 17 | **Observability** | stderr and JSON-lines logs | Usage ledger and Usage tab (F1, F11), response speed (F12) | Tracing per turn and tool call (OpenTelemetry), latency and error dashboards |
+| 17 | **Observability** | stderr and JSON-lines logs; a usage ledger of every model request, attributed to host, session, turn, fix and run (F1); `usage-probe` to check a provider's usage reporting | Usage tab (F11), response speed (F12) | Tracing per turn and tool call (OpenTelemetry), latency and error dashboards |
 | 18 | **Testing and shipping** | Core and orchestrator unit tests, Docker images | — (backlog: CI, API/web/e2e tests) | CI, deploy pipeline, evals as a release gate |
 | 19 | **Multimodal and computer use** | — | — | Images and documents as input; browser or computer-use tools |
 

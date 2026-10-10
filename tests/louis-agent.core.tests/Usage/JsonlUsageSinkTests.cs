@@ -52,6 +52,31 @@ public class JsonlUsageSinkTests
     }
 
     [Test]
+    public void Record_WithCost_WritesTheSpecsCostShape()
+    {
+        var at = new DateTimeOffset(2026, 10, 10, 9, 0, 0, TimeSpan.Zero);
+        new JsonlUsageSink(_directory).Record(Record(at) with { Cost = new UsageCost("USD", 0.036503m, "2026-10-10") });
+
+        using var json = JsonDocument.Parse(Lines("usage-2026-10.jsonl").Single());
+        JsonElement cost = json.RootElement.GetProperty("cost");
+        Assert.That(cost.GetProperty("currency").GetString(), Is.EqualTo("USD"));
+        Assert.That(cost.GetProperty("amount").GetDecimal(), Is.EqualTo(0.036503m));
+        Assert.That(cost.GetProperty("price_table").GetString(), Is.EqualTo("2026-10-10"));
+    }
+
+    [Test]
+    public void Record_LineWrittenBeforeF2_ReadsBackWithNoCost()
+    {
+        // Ledgers written before prices existed have no "cost"; they must still read back, unpriced.
+        const string line = """{"at":"2026-10-10T17:43:20+00:00","round":1,"purpose":"turn","host":"api","session":"sess_1","turn":1,"task":null,"run":null,"service":null,"model":"claude-haiku-5-5","tokens":{"input":47605,"cache_write":null,"cache_read":0,"output":470,"reasoning":null},"duration_ms":3730,"stop":"tool_calls"}""";
+
+        UsageRecord record = JsonSerializer.Deserialize<UsageRecord>(line, JsonlUsageSink.Json)!;
+
+        Assert.That(record.Cost, Is.Null);
+        Assert.That(record.Tokens.Input, Is.EqualTo(47_605));
+    }
+
+    [Test]
     public void Record_FileNamedByRecordMonth()
     {
         var sink = new JsonlUsageSink(_directory);
@@ -138,7 +163,9 @@ public class JsonlUsageSinkTests
     [Test]
     public void CreateUsageSink_FollowsUsageLedgerAndLogDirectory()
     {
-        Assert.That(AgentHost.CreateUsageSink(new AgentOptions { LogDirectory = _directory }), Is.TypeOf<JsonlUsageSink>());
+        string noPrices = Path.Combine(_directory, "no-prices.json");
+        Assert.That(AgentHost.CreateUsageSink(new AgentOptions { LogDirectory = _directory, PricesFile = noPrices }),
+            Is.TypeOf<PricingUsageSink>().With.Property(nameof(PricingUsageSink.Inner)).TypeOf<JsonlUsageSink>());
         Assert.That(AgentHost.CreateUsageSink(new AgentOptions { LogDirectory = _directory, UsageLedger = false }), Is.Null);
         Assert.That(AgentHost.CreateUsageSink(new AgentOptions { LogDirectory = null }), Is.Null);
     }

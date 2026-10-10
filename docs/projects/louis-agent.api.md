@@ -22,8 +22,10 @@ flowchart LR
 ```
 
 - **Start-up** (`Program.cs`): `AgentHost.Build()`, register the engine, `AgentSessions` and a `WorkspaceTools` for path
-  checks; add the API-key middleware when `AGENT_API_KEY` is set; map static assets, `/health`, workspace, git and
-  history endpoints, and the session endpoints.
+  checks; add the API-key middleware when `AGENT_API_KEY` is set; map static assets, `/health`, `/prices`, workspace,
+  git and history endpoints, and the session endpoints.
+- **Prices** (`GET /prices`, public): the price table `AgentHost.Build` loaded for this API's usage ledger, so other
+  hosts can set `PRICES_URL` to it and price with the same table (the demo's orchestrator does); `404` without one.
 - **Sessions** (`AgentSessions`): in memory, one turn at a time per session (a second message gets `409`), cancelled by
   `POST /sessions/{id}/cancel` or by the client disconnecting; idle sessions are dropped after 4 hours.
 - **Streaming** (`ClaudeStyleStream`): engine updates become `message_start`, `content_block_start/delta/stop`
@@ -41,7 +43,7 @@ The full endpoint and event reference: [How the agents and endpoints talk](../AG
 
 | File | What's in it |
 |---|---|
-| `Program.cs` | Start-up, API-key middleware, session endpoints, `StreamTurnAsync`, `ClaudeStyleStream` |
+| `Program.cs` | Start-up, API-key middleware, `/health` and `/prices`, session endpoints, `StreamTurnAsync`, `ClaudeStyleStream` |
 | `AgentSessions.cs` | `AgentSession` (id, history, turn lock, cancellation) and the in-memory session store |
 | `WorkspaceEndpoints.cs` | `GET /workspace/entries`, `GET /workspace/file` (text ≤ 1 MB; secret files listed but not readable) |
 | `GitEndpoints.cs` | `GET /git/status`, `GET /git/diff`, `POST /git/stage` · `unstage` · `discard` · `commit`; the git runner |

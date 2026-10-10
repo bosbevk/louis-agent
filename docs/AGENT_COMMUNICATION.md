@@ -66,8 +66,8 @@ Base URL: `http://127.0.0.1:5080` for the main Docker setup, `http://127.0.0.1:5
 to `127.0.0.1` only.
 
 **Authentication.** When `AGENT_API_KEY` is set, every `/sessions`, `/workspace` and `/git` call must send it as
-`x-api-key: <key>` or `Authorization: Bearer <key>`; otherwise the reply is `401`. `/health` and the web app's own
-files never need a key.
+`x-api-key: <key>` or `Authorization: Bearer <key>`; otherwise the reply is `401`. `/health`, `/prices` and the web
+app's own files never need a key.
 
 **Errors** are JSON in Claude's shape, with a matching status code:
 
@@ -198,6 +198,7 @@ checked against the workspace, and secret files are never shown.
 | `POST /git/merge` | `{ "branch" }` | Merge into the checked-out branch (`--no-ff`); a conflict aborts it (`409`) |
 | `POST /git/branch/delete` | `{ "branch" }` | Delete a merged branch |
 | `GET /health` | — | `{ "status": "ok" }` |
+| `GET /prices` | — | The price table the API's usage ledger prices with (`config/prices.json`'s format, comments removed), for other hosts' `PRICES_URL`; `404` when it has none. No key needed |
 
 Nothing here pushes: pushing is always left to you.
 

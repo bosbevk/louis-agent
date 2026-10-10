@@ -40,7 +40,8 @@ tokens for prompts up to 100,000 tokens, 5× that above), and good at tool calli
 It counts the same text as more tokens than Haiku 4.5 (+52% on the usage probe), and is still about 7.5× cheaper for
 the same work. `claude-haiku-4-5-20251001` still works. Any current Claude model id works in `LLM_MODEL` (Sonnet or Opus
 for harder work, at a higher price per token); check Anthropic's documentation (https://docs.claude.com) for ids and
-pricing, and run `tools/louis-agent.usage-probe` before relying on a new model's usage numbers.
+pricing, and run `tools/louis-agent.usage-probe` before relying on a new model's usage numbers. A model also needs its
+prices in `config/prices.json` (matched by longest prefix); until then the usage ledger records its cost as unknown.
 
 **Thinking.** `LLM_THINKING` (`off` / `low` / `medium` / `high`, default `medium` for Anthropic) sets how much the model
 reasons; the reasoning is streamed to Rider, the web app and the CLI. Thinking uses output tokens and adds a short

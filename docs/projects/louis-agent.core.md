@@ -66,7 +66,10 @@ The full step-by-step is in [How a turn works](../AGENT_INTERACTION.md).
 | `usage/UsageRecordingChatClient.cs` | Middleware that records one `UsageRecord` per model request, streaming or not; a cancelled stream is recorded as `cancelled`, a provider error isn't |
 | `usage/UsageScope.cs` | The turn's context in an `AsyncLocal`: host, session, turn, purpose, `UsageTags` (task, run, service); `Activate()` for hosts that stream from an async iterator |
 | `usage/IUsageMapper.cs` | Provider usage → input / cache write / cache read / output / reasoning: `StandardUsageMapper` (the Microsoft.Extensions.AI contract), `AnthropicUsageMapper` (cache writes) |
-| `usage/UsageRecord.cs`, `IUsageSink.cs`, `JsonlUsageSink.cs` | The record, and the monthly JSONL file it's written to (shared append, UTC month) |
+| `usage/UsageRecord.cs`, `IUsageSink.cs`, `JsonlUsageSink.cs` | The record (with its `UsageCost`), and the monthly JSONL file it's written to (shared append, UTC month) |
+| `usage/PriceTable.cs`, `CostCalculator.cs` | `config/prices.json` (longest-prefix match, a `long_prompt` tier) and a record's cost; no price → `null`, never 0 |
+| `usage/PricingUsageSink.cs` | Wraps the ledger in `AgentHost.CreateUsageSink`: prices each record before it's written |
+| `usage/UsageReport.cs` | Reads a ledger back, prices records written before F2, totals by any key (`WorkOf`: a fix, a triage, a session) |
 
 ## Key types
 
@@ -86,7 +89,7 @@ attributes (108 tools with Paymo and DevOps enabled). Helpers must be `internal`
 
 `LLM_PROVIDER`, `LLM_MODEL`, `LLM_ENDPOINT`, `LLM_API_KEY` / `ANTHROPIC_API_KEY`, `ANTHROPIC_WORKSPACE_ID`,
 `LLM_SUPPORTS_TOOLS`, `LLM_THINKING`, `LLM_PROFILE`, `WORKSPACE_ROOT`, `SKILLS_DIRECTORY`, `AGENT_FUNCTION`,
-`LOG_DIRECTORY`, `USAGE_LEDGER`,
+`LOG_DIRECTORY`, `USAGE_LEDGER`, `PRICES_FILE`, `PRICES_URL`,
 `PAYMO_API_KEY`, `DEVOPS_API_KEY`, `DEVOPS_ORGANIZATION`, `DEVOPS_PROJECT`, `DEVOPS_TEAM`, `WEB_SEARCH_PROVIDER`,
 `GOOGLE_SEARCH_API_KEY`, `GOOGLE_SEARCH_ENGINE_ID`, `RIDER_MCP_*`, `BASH_PATH`. All read once at start-up in
 `LlmOptions` / `AgentOptions` — tools never read the environment themselves. Details: [Setup](../SETUP.md),
