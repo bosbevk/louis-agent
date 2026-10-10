@@ -9,6 +9,7 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using louis_agent.core.config;
 using louis_agent.core.providers;
+using louis_agent.core.usage;
 using Microsoft.Extensions.AI;
 
 /// <summary>
@@ -86,8 +87,11 @@ public partial class AgentEngine
     /// coding agents, such as an orchestrator. Null registers the built-in coding toolsets (files, git, dotnet, shells, web,
     /// Paymo, DevOps) and the self-extension tools.
     /// </param>
+    /// <param name="usageSink">Where one usage record per model request goes; null records nothing.</param>
+    /// <param name="usageMapper">The provider's usage mapping (<c>LlmClientFactory.CreateUsageMapper</c>); null uses the standard one.</param>
     public AgentEngine(ISkillProvider skillProvider, IChatClient chatClient, AgentOptions options, bool supportsTools = true,
-        IWebSearchProvider? webSearch = null, IEnumerable<object>? toolsets = null)
+        IWebSearchProvider? webSearch = null, IEnumerable<object>? toolsets = null,
+        IUsageSink? usageSink = null, IUsageMapper? usageMapper = null)
     {
         _skills = ToSkillMap(skillProvider);
         SkillDocumentation = skillProvider.Documentation;
@@ -98,15 +102,20 @@ public partial class AgentEngine
         _powerShell = new PowerShellTools(WorkspaceRoot);
         _bash = new BashTools(WorkspaceRoot);
 
-        _innerChatClient = chatClient;
-        _chatClient = new ChatClientBuilder(chatClient)
+        // Summaries call the model directly, outside the tool loop, so they are recorded by their own recorder.
+        _innerChatClient = usageSink is null ? chatClient : new UsageRecordingChatClient(chatClient, usageSink, mapper: usageMapper);
+        var pipeline = new ChatClientBuilder(chatClient)
             .UseFunctionInvocation(configure: c =>
             {
                 c.MaximumIterationsPerRequest = 10;
                 c.FunctionInvoker = LogAndInvokeAsync;
                 // Lets the model see why a call failed (e.g. a missing argument) instead of a generic failure.
                 c.IncludeDetailedErrors = true;
-            })
+            });
+        // Inside the tool loop, so each round is its own request and record; outside it would see one call per turn.
+        if (usageSink is not null)
+            pipeline.Use(inner => new UsageRecordingChatClient(inner, usageSink, mapper: usageMapper));
+        _chatClient = pipeline
             .Use(MarkTruncatedToolCallsAsync, MarkTruncatedToolCallsStreamingAsync)
             .Build();
 
@@ -247,8 +256,11 @@ public partial class AgentEngine
                 new(ChatRole.User,
                     $"User's request: {userRequest ?? "(unknown)"}\nTool: {toolName}({arguments})\n\nOutput:\n{input}"),
             };
-            ChatResponse response = await _innerChatClient.GetResponseAsync(
-                messages, new ChatOptions { MaxOutputTokens = MaxOutputTokens }, cancellationToken);
+            ChatResponse response;
+            // Its own scope: recorded as "summary", numbered apart from the turn's rounds.
+            using (UsageScope.Begin(UsagePurpose.Summary))
+                response = await _innerChatClient.GetResponseAsync(
+                    messages, new ChatOptions { MaxOutputTokens = MaxOutputTokens }, cancellationToken);
             if (!string.IsNullOrWhiteSpace(response.Text))
             {
                 string summary = $"{note}\nSummary:\n{response.Text}";
@@ -495,6 +507,8 @@ public partial class AgentEngine
             Console.Error.WriteLine($"[WARN] Reply cut off by the output limit ({MaxOutputTokens} tokens); asking the model to continue");
             AgentLog.RecordTruncatedToolCall("(streamed reply)", string.Empty, MaxOutputTokens);
             history.Add(new ChatMessage(ChatRole.User, ContinueAfterCutOffMessage));
+            // The rest of this turn's requests exist only because of the cut-off; the host's scope says so.
+            if (UsageScope.Current is { } scope) scope.Purpose = UsagePurpose.Continue;
         }
     }
 

@@ -86,9 +86,12 @@ Where it plugs in:
 4. **Streaming support.** *Test:* a fake stream carrying `UsageContent` produces one record when the stream ends;
    a cancelled stream records what was reported so far, with `stop: "cancelled"`.
 5. **Wire into `AgentEngine`** (pipeline + summary client + continuation purpose). *Test:* a scripted 3-round tool loop
-   yields 3 records with rounds 1–3; an oversized result adds one `summary` record.
-6. **`JsonlUsageSink` + `USAGE_LEDGER`.** *Test:* writes one JSON line per record to `usage-YYYY-MM.jsonl` in the log
-   directory; contains no message text (assert on a prompt marker string).
+   yields 3 records with rounds 1–3; an oversized result adds one `summary` record. **Done:** `AgentEngine` takes an
+   optional `IUsageSink` and `IUsageMapper`; with no sink nothing is recorded, so hosts are unchanged until step 6.
+6. **`JsonlUsageSink` + `USAGE_LEDGER`.** `AgentHost.Build` passes the sink and `clientFactory.CreateUsageMapper(llm)` to
+   the engine. *Test:* writes one JSON line per record to `usage-YYYY-MM.jsonl` in the log directory; contains no
+   message text (assert on a prompt marker string); `AgentHost.Build` with an Anthropic provider gives the Anthropic
+   mapper.
 7. **Host scopes:** API, ACP, CLI, orchestrator. *Test:* API-level test (or manual curl) shows `host`/`session`/`turn`.
 8. **Session tags** on `POST /sessions` and in `LouisAgentClient`. *Test:* orchestrator test with a stub API asserts the
    create-session body; core test asserts tags reach the records.
