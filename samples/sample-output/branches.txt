@@ -1,75 +1,75 @@
 # git log --all --graph of .demo/order-service after the run (before any merge)
 
-* e1d598b louis-agent    (fix/customer-initials-597db8f176cd) fix(customer-initials): handle single-word names and use first+last word for initials (error 597db8f176cd)
-| * 9fe9c1f louis-agent    (fix/discount-label-33b61f713371) fix(discount-label): show non-percentage codes as-is instead of parsing their last two letters (error 33b61f713371)
+* 56d8c67 louis-agent    (fix/customer-initials-643a0d420da7) fix(customer-initials): single-word names give one initial, multi-word use first and last word (error 643a0d420da7)
+| * d2effe4 louis-agent    (fix/discount-label-99346988a96f) fix(discount-label): show codes without trailing digits as-is instead of parsing them (error 99346988a96f)
 |/  
-| * 89eaa1a louis-agent    (fix/delivery-estimate-685a70fc5da1) fix(delivery-estimate): map Sunday orders to the Monday dispatch slot instead of index -1 (error 685a70fc5da1)
+| * 262f7dc louis-agent    (fix/delivery-estimate-637db99418c8) fix(delivery-estimate): handle Sunday orders instead of indexing DispatchDays[-1] (error 637db99418c8)
 |/  
-| * 5fbd533 louis-agent    (fix/vat-8cb4d02d1449) fix(vat): match country codes case-insensitively so 'nl' gets the NL rate (error 8cb4d02d1449)
+| * 5a72ce1 louis-agent    (fix/vat-4fa4313ccad7) fix(vat): match country codes case-insensitively (error 4fa4313ccad7)
 |/  
-| * 9b4b3f8 louis-agent    (fix/loyalty-points-9c0137263834) fix(loyalty-points): compute cents in Int64 so large orders don't overflow (error 9c0137263834)
+| * f18da46 louis-agent    (fix/loyalty-points-fc685e2a2c36) fix(loyalty-points): divide in decimal before narrowing to int so large orders don't overflow (error fc685e2a2c36)
 |/  
-| * 9848047 louis-agent    (fix/packing-slip-6480d6711aff) fix(packing-slip): omit the gift part when an order has no gift message (error 6480d6711aff)
+| * 2a92853 louis-agent    (fix/packing-slip-992e43739ff7) fix(packing-slip): omit the gift part when an order has no gift message (error 992e43739ff7)
 |/  
-| * df4142f louis-agent    (fix/invoice-number-ffae70e1a684) fix(invoice-number): accept created timestamps with time and zone, not only dates (error ffae70e1a684)
+| * 92ee2f3 louis-agent    (fix/invoice-number-ababe62539b8) fix(invoice-number): accept ISO 8601 created timestamps by parsing the date part (error ababe62539b8)
 |/  
-| * 3b196a2 louis-agent    (fix/shipping-cost-0291d1b03d99) fix(shipping-cost): return 0.00 for orders without items instead of dividing by zero (error 0291d1b03d99)
+| * 31064eb louis-agent    (fix/shipping-cost-2869d93baa27) fix(shipping-cost): return 0.00 for an order without items instead of dividing by zero (error 2869d93baa27)
 |/  
-| * 479fa52 louis-agent    (fix/order-total-fc7e2bb962d7) fix(order-total): treat unknown discount codes as no discount instead of throwing (error fc7e2bb962d7)
+| * 82f8d8a louis-agent    (fix/order-total-f5b2e6555932) fix(order-total): treat unknown discount codes as no discount, not a KeyNotFound (error f5b2e6555932)
 |/  
-| * b614471 louis-agent    (fix/get-order-83d0c740e900) fix(get-order): summarise orders without items instead of indexing the first SKU (error 83d0c740e900)
+| * cd5fe58 louis-agent    (fix/get-order-51c9a5b34be8) fix(get-order): summarise orders without items instead of indexing the empty list (error 51c9a5b34be8)
 |/  
-* 57fe3bd demo-setup    (HEAD -> main) order-service as deployed
+* b42cc02 demo-setup    (HEAD -> main) order-service as deployed
 
 # Each fix branch's changed files
 
-## fix/customer-initials-597db8f176cd
- src/OrderService/Api/CustomerInitials.cs           |  6 +++--
- .../Regression/Error597db8f176cdTests.cs           | 29 ++++++++++++++++++++++
- 2 files changed, 33 insertions(+), 2 deletions(-)
+## fix/customer-initials-643a0d420da7
+ src/OrderService/Api/CustomerInitials.cs                      |  5 ++++-
+ tests/OrderService.Tests/Regression/Error643a0d420da7Tests.cs | 11 +++++++++++
+ 2 files changed, 15 insertions(+), 1 deletion(-)
 
-## fix/delivery-estimate-685a70fc5da1
- src/OrderService/Api/DeliveryEstimate.cs                   |  4 +++-
- .../Regression/Error685a70fc5da1Tests.cs                   | 14 ++++++++++++++
- 2 files changed, 17 insertions(+), 1 deletion(-)
+## fix/delivery-estimate-637db99418c8
+ src/OrderService/Api/DeliveryEstimate.cs             |  7 ++++---
+ .../Regression/Error637db99418c8Tests.cs             | 20 ++++++++++++++++++++
+ 2 files changed, 24 insertions(+), 3 deletions(-)
 
-## fix/discount-label-33b61f713371
- src/OrderService/Api/DiscountLabel.cs                         |  3 +++
- tests/OrderService.Tests/Regression/Error33b61f713371Tests.cs | 11 +++++++++++
- 2 files changed, 14 insertions(+)
+## fix/discount-label-99346988a96f
+ src/OrderService/Api/DiscountLabel.cs                |  3 +++
+ .../Regression/Error99346988a96fTests.cs             | 20 ++++++++++++++++++++
+ 2 files changed, 23 insertions(+)
 
-## fix/get-order-83d0c740e900
- src/OrderService/Api/GetOrder.cs                              |  3 ++-
- tests/OrderService.Tests/Regression/Error83d0c740e900Tests.cs | 11 +++++++++++
+## fix/get-order-51c9a5b34be8
+ src/OrderService/Api/GetOrder.cs                          |  4 ++++
+ .../Regression/Error51c9a5b34be8Tests.cs                  | 15 +++++++++++++++
+ 2 files changed, 19 insertions(+)
+
+## fix/invoice-number-ababe62539b8
+ src/OrderService/Api/InvoiceNumber.cs                 |  4 +++-
+ .../Regression/Errorababe62539b8Tests.cs              | 19 +++++++++++++++++++
+ 2 files changed, 22 insertions(+), 1 deletion(-)
+
+## fix/loyalty-points-fc685e2a2c36
+ src/OrderService/Api/LoyaltyPoints.cs                         |  4 ++--
+ tests/OrderService.Tests/Regression/Errorfc685e2a2c36Tests.cs | 11 +++++++++++
+ 2 files changed, 13 insertions(+), 2 deletions(-)
+
+## fix/order-total-f5b2e6555932
+ src/OrderService/Api/OrderTotal.cs                        |  4 +++-
+ .../Regression/Errorf5b2e6555932Tests.cs                  | 15 +++++++++++++++
+ 2 files changed, 18 insertions(+), 1 deletion(-)
+
+## fix/packing-slip-992e43739ff7
+ src/OrderService/Api/PackingSlip.cs                           |  8 ++++++--
+ tests/OrderService.Tests/Regression/Error992e43739ff7Tests.cs | 11 +++++++++++
+ 2 files changed, 17 insertions(+), 2 deletions(-)
+
+## fix/shipping-cost-2869d93baa27
+ src/OrderService/Api/ShippingCost.cs                          |  4 +++-
+ tests/OrderService.Tests/Regression/Error2869d93baa27Tests.cs | 11 +++++++++++
+ 2 files changed, 14 insertions(+), 1 deletion(-)
+
+## fix/vat-4fa4313ccad7
+ src/OrderService/Api/Vat.cs                                  |  2 +-
+ .../OrderService.Tests/Regression/Error4fa4313ccad7Tests.cs  | 12 ++++++++++++
  2 files changed, 13 insertions(+), 1 deletion(-)
-
-## fix/invoice-number-ffae70e1a684
- src/OrderService/Api/InvoiceNumber.cs              |  8 +++++-
- .../Regression/Errorffae70e1a684Tests.cs           | 33 ++++++++++++++++++++++
- 2 files changed, 40 insertions(+), 1 deletion(-)
-
-## fix/loyalty-points-9c0137263834
- src/OrderService/Api/LoyaltyPoints.cs                         | 4 ++--
- tests/OrderService.Tests/Regression/Error9c0137263834Tests.cs | 9 +++++++++
- 2 files changed, 11 insertions(+), 2 deletions(-)
-
-## fix/order-total-fc7e2bb962d7
- src/OrderService/Api/OrderTotal.cs                            |  3 ++-
- tests/OrderService.Tests/Regression/Errorfc7e2bb962d7Tests.cs | 11 +++++++++++
- 2 files changed, 13 insertions(+), 1 deletion(-)
-
-## fix/packing-slip-6480d6711aff
- src/OrderService/Api/PackingSlip.cs                       |  9 ++++++---
- .../Regression/Error6480d6711affTests.cs                  | 15 +++++++++++++++
- 2 files changed, 21 insertions(+), 3 deletions(-)
-
-## fix/shipping-cost-0291d1b03d99
- src/OrderService/Api/ShippingCost.cs                       |  3 +++
- .../Regression/Error0291d1b03d99Tests.cs                   | 14 ++++++++++++++
- 2 files changed, 17 insertions(+)
-
-## fix/vat-8cb4d02d1449
- src/OrderService/Api/Vat.cs                                 |  4 +++-
- .../OrderService.Tests/Regression/Error8cb4d02d1449Tests.cs | 13 +++++++++++++
- 2 files changed, 16 insertions(+), 1 deletion(-)
 

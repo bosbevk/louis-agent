@@ -75,22 +75,26 @@ the ledger with `config/prices.json` and totals it per fix, triage, purpose and 
 
 ### M1 baseline (2026-10-10)
 
-Full demo on Claude Haiku 5.5 (`run-20261010-174312`, ledger in
-[samples/sample-output/](../../samples/sample-output/README.md)), priced at the 2026-10-10 table. **10/10 fixes
-confirmed**, 2 ignored, 1 escalated; three fixes needed a second message after using all 10 tool rounds.
+Full demo on Claude Haiku 5.5 (`run-20261010-193730`, ledger in
+[samples/sample-output/](../../samples/sample-output/README.md)), every record priced as it was written, with the
+2026-10-10 table. **10/10 fixes confirmed**, 2 ignored, 1 escalated; four fixes needed a second message after using all
+10 tool rounds.
 
 | | Requests | Input tokens | Output tokens | Cost |
 |---|---|---|---|---|
-| A fix (louis-agent): fewest / average / most | 9 / 11.3 / 14 | 471,605 / 606,811 / 768,266 | 2,515 / 3,219 / 4,008 | $0.0485 / $0.0623 / $0.0785 |
-| A triage (orchestrator), 13 of them | 2–3 | 14,356–25,345 | 328–941 | $0.0016–0.0030 |
-| All fixes | 113 | 6,068,107 | 32,187 | $0.6229 |
-| All triage | 36 | 293,462 | 9,374 | $0.0340 |
-| **The run** | **149** | **6,361,569** | **41,561** | **$0.6569** |
+| A fix (louis-agent): fewest / average / most | 8 / 11.4 / 16 | 425,547 / 608,135 / 863,893 | 2,555 / 3,274 / 3,722 | $0.0442 / $0.0625 / $0.0879 |
+| A triage (orchestrator), 13 of them | 2–3 | 14,365–25,453 | 313–967 | $0.0016–0.0030 |
+| All fixes | 114 | 6,081,347 | 32,742 | $0.6245 |
+| All triage | 36 | 292,935 | 9,502 | $0.0340 |
+| **The run** | **150** | **6,374,282** | **42,244** | **$0.6586** |
 
 - **Cache-hit rate: 0%.** Nothing is cached yet, so every request re-sends the ~48,000-token system prompt and tools;
   that is most of the input, and what F4 (prompt caching) and F5 (toolset profiles) go after in M2.
-- **Largest request: 58,315 tokens**, under Haiku 5.5's 100,000-token price step.
-- The short run (`run-demo.ps1 -Short`, 4 fixes): 61 requests, $0.2745
+- **Largest request: 57,710 tokens**, under Haiku 5.5's 100,000-token price step.
+- **Run-to-run variation:** an earlier run of the same code (`run-20261010-174312`) cost $0.6569 for 149 requests, also
+  10/10; a single fix varies more ($0.044–0.088) than the whole run does (0.3%), mostly with whether it needs a second
+  message. Compare M2 against the run total, not one fix.
+- The short run (`run-demo.ps1 -Short`, 4 fixes): 65 requests, $0.2920
   ([samples/sample-output-short/](../../samples/sample-output-short/README.md)).
 
 ## Conventions

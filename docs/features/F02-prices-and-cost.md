@@ -62,9 +62,12 @@ New, in `louis-agent.core/usage/`:
 3. **Attach cost in `UsageRecordingChatClient`.** *Test:* records written by the F1 tests now carry `cost` and
    `price_table`.
 4. **Example file, `.gitignore`, compose mounts, settings docs.** *Test (manual):* demo run → ledger has costs.
+   **Done:** both demos on Haiku 5.5 wrote a cost on every record (`samples/sample-output*/usage-2026-10.jsonl`), the
+   API from its mounted file and the orchestrator from the API's `GET /prices` (`PRICES_URL`, added on request with a
+   fallback to the file).
 5. **M1 baseline:** run the demo, record tokens and cost per fix and in total in `docs/features/README.md` (Benchmark).
-   The ledger of the full run on Haiku 5.5 is already saved (`samples/sample-output/usage-2026-10.jsonl`: 10/10 fixes,
-   149 requests, about $0.66 priced by hand); pricing it with the finished table gives the baseline without a new run.
+   **Done:** `usage-probe -- --ledger` (totals from core's `UsageReport`) on the full run: $0.6586 for 150 requests,
+   $0.0625 a fix on average; the stored costs add up to the same total.
 
 ## Done when
 
