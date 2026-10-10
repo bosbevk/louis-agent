@@ -62,7 +62,8 @@ docker compose -f docker/docker-compose.yml --env-file config/.env up -d --build
 
 | Setting | Meaning |
 |---|---|
-| `LLM_PROVIDER`, `LLM_MODEL`, `LLM_ENDPOINT` | Model and where it runs ([MODELS.md](MODELS.md)) |
+| `LLM_PROFILE` | Which LLM profile to load: `anthropic` (`config/.env.anthropic`) or `ollama` (`config/.env.ollama`) |
+| `LLM_PROVIDER`, `LLM_MODEL`, `LLM_ENDPOINT` | Model and where it runs; normally set by the profile, and a line here overrides it ([MODELS.md](MODELS.md)) |
 | `LLM_THINKING` | Visible reasoning: `off` / `low` / `medium` / `high` (default `medium` for Anthropic, `off` otherwise) |
 | `LLM_SUPPORTS_TOOLS` | Force tool calling on or off (normally inferred from the model) |
 | `AGENT_FUNCTION` | Which `Skills/{name}-skills.md` to load; `louis` loads every skill file |
@@ -74,6 +75,8 @@ docker compose -f docker/docker-compose.yml --env-file config/.env up -d --build
 | `WEB_SEARCH_PROVIDER` | `google` or `duckduckgo` (default: Google when its key and engine id are set) |
 | `DEVOPS_ORGANIZATION`, `DEVOPS_PROJECT` | Azure DevOps organisation (`dev.azure.com/<organisation>`) and project for the DevOps tools |
 | `DEVOPS_TEAM` | Optional team: sprints are looked up under it, and an empty sprint means its current sprint |
+| `USAGE_LEDGER` | `on` (default) records every model request's tokens to `{LOG_DIRECTORY}/usage-YYYY-MM.jsonl`; `off` disables it |
+| `LOG_DIRECTORY` | Run logs and the usage ledger. Compose sets it for the containers (`logs/` on the host); for `dotnet run`, set it (for example `LOG_DIRECTORY=logs`) or the ledger is off, with a warning |
 
 Set by compose for the containers, so normally not in `.env`: `WORKSPACE_ROOT`, `SKILLS_DIRECTORY`, `LOG_DIRECTORY`.
 

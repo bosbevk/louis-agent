@@ -55,7 +55,7 @@ New, in `louis-agent.core/usage/`:
 | `UsageScope` | Ambient context (`AsyncLocal`) a host opens per turn: host, session, turn, purpose, task, run, service; tracks the round counter |
 | `UsageRecordingChatClient` | `DelegatingChatClient`. Non-streaming: reads `ChatResponse.Usage`. Streaming: collects the `UsageContent` items from the updates (Anthropic sends one, in the last update). Maps `UsageDetails` through the provider's `IUsageMapper`. Writes one `UsageRecord` per request |
 | `IUsageMapper` | Maps `UsageDetails` to the four non-overlapping kinds. `StandardUsageMapper` follows the Microsoft.Extensions.AI contract (cached tokens are part of `InputTokenCount`, so `input` = `InputTokenCount − cache reads − cache writes`); `AnthropicUsageMapper` also reads cache writes from `AdditionalCounts["CacheCreationInputTokens"]`. `LlmClientFactory.CreateUsageMapper` picks one per provider |
-| `IUsageSink` / `JsonlUsageSink` | Appends records via `AgentLog` to a monthly file; raises `UsageRecorded` for hosts that show live totals (F3) |
+| `IUsageSink` / `JsonlUsageSink` | Appends records to a monthly file in `LOG_DIRECTORY` (shared append, snake_case names); raises `UsageRecorded` for hosts that show live totals (F3) |
 
 Where it plugs in:
 
@@ -91,7 +91,9 @@ Where it plugs in:
 6. **`JsonlUsageSink` + `USAGE_LEDGER`.** `AgentHost.Build` passes the sink and `clientFactory.CreateUsageMapper(llm)` to
    the engine. *Test:* writes one JSON line per record to `usage-YYYY-MM.jsonl` in the log directory; contains no
    message text (assert on a prompt marker string); `AgentHost.Build` with an Anthropic provider gives the Anthropic
-   mapper.
+   mapper. **Done:** the sink writes its own file (shared append, so the API and orchestrator can write the same month)
+   rather than through `AgentLog`, whose directory is set once per process; the month is taken in UTC.
+   `AgentHost.CreateUsageSink` is public so the orchestrator can use it in step 7.
 7. **Host scopes:** API, ACP, CLI, orchestrator. *Test:* API-level test (or manual curl) shows `host`/`session`/`turn`.
 8. **Session tags** on `POST /sessions` and in `LouisAgentClient`. *Test:* orchestrator test with a stub API asserts the
    create-session body; core test asserts tags reach the records.

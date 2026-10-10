@@ -5,6 +5,7 @@ using louis_agent.core.config;
 using louis_agent.core.tools;
 using louis_agent.core.providers;
 using louis_agent.core.mcp;
+using louis_agent.core.usage;
 
 /// <summary>Everything an entry point needs after bootstrap.</summary>
 public sealed record AgentHostContext(AgentEngine Engine, LlmOptions Llm, AgentOptions Agent);
@@ -116,7 +117,8 @@ public static partial class AgentHost
     {
         var skills = LoadSkills(agent);
         var chatClient = clientFactory.Create(llm);
-        var engine = new AgentEngine(skills, chatClient, agent, llm.ResolveSupportsTools())
+        var engine = new AgentEngine(skills, chatClient, agent, llm.ResolveSupportsTools(),
+            usageSink: CreateUsageSink(agent), usageMapper: clientFactory.CreateUsageMapper(llm))
         {
             SkillsDirectory = FindSkillsDirectory(agent),
             SkillReloader = () => LoadSkills(agent),
@@ -150,6 +152,23 @@ public static partial class AgentHost
         }
 
         return new AgentHostContext(engine, llm, agent);
+    }
+
+    /// <summary>
+    /// The usage ledger, {LOG_DIRECTORY}/usage-YYYY-MM.jsonl, or null when USAGE_LEDGER=off or there is no
+    /// LOG_DIRECTORY (with a warning, since the ledger was wanted).
+    /// </summary>
+    public static IUsageSink? CreateUsageSink(AgentOptions agent)
+    {
+        if (!agent.UsageLedger) return null;
+        if (agent.LogDirectory is null)
+        {
+            Console.Error.WriteLine("[WARN] Usage ledger off: LOG_DIRECTORY is not set. Set it to record token usage, or USAGE_LEDGER=off to silence this.");
+            return null;
+        }
+
+        Console.Error.WriteLine($"[INFO] Usage ledger: {Path.Combine(agent.LogDirectory, "usage-YYYY-MM.jsonl")}");
+        return new JsonlUsageSink(agent.LogDirectory);
     }
 
     /// <summary>

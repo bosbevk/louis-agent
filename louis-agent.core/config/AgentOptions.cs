@@ -46,6 +46,9 @@ public sealed class AgentOptions
     /// <summary>LOG_DIRECTORY: where run logs and oversized-tool-result records are written; null disables file logging.</summary>
     public string? LogDirectory { get; set; }
 
+    /// <summary>USAGE_LEDGER: on (default) records every model request to {LOG_DIRECTORY}/usage-YYYY-MM.jsonl; off disables it.</summary>
+    public bool UsageLedger { get; set; } = true;
+
     public static AgentOptions FromEnvironment(Func<string, string?>? getVariable = null)
     {
         getVariable ??= Environment.GetEnvironmentVariable;
@@ -66,6 +69,7 @@ public sealed class AgentOptions
             RiderMcpAutoDiscover = bool.TryParse(Get("RIDER_MCP_AUTO_DISCOVER"), out var result) ? result : true,
             RiderMcpProjectPath = Get("RIDER_MCP_PROJECT_PATH"),
             LogDirectory = Get("LOG_DIRECTORY"),
+            UsageLedger = !string.Equals(Get("USAGE_LEDGER"), "off", StringComparison.OrdinalIgnoreCase),
         };
         if (Get("AGENT_FUNCTION") is { } function) options.AgentFunction = function;
         if (Get("WORKSPACE_ROOT") is { } root) options.WorkspaceRoot = root;
