@@ -11,9 +11,13 @@ using Microsoft.Extensions.AI;
 /// <param name="innerClient">The provider client (or the next middleware).</param>
 /// <param name="sink">Where records go.</param>
 /// <param name="defaultModel">Recorded when the response doesn't name its model.</param>
-public sealed class UsageRecordingChatClient(IChatClient innerClient, IUsageSink sink, string? defaultModel = null)
+/// <param name="mapper">The provider's usage mapping; <see cref="StandardUsageMapper"/> when null.</param>
+public sealed class UsageRecordingChatClient(
+    IChatClient innerClient, IUsageSink sink, string? defaultModel = null, IUsageMapper? mapper = null)
     : DelegatingChatClient(innerClient)
 {
+    private readonly IUsageMapper _mapper = mapper ?? new StandardUsageMapper();
+
     public override async Task<ChatResponse> GetResponseAsync(
         IEnumerable<ChatMessage> messages, ChatOptions? options = null, CancellationToken cancellationToken = default)
     {
@@ -100,7 +104,7 @@ public sealed class UsageRecordingChatClient(IChatClient innerClient, IUsageSink
             Run: null,
             Service: null,
             Model: model ?? defaultModel,
-            Tokens: UsageTokens.From(usage),
+            Tokens: _mapper.Map(usage),
             DurationMs: (long)duration.TotalMilliseconds,
             Stop: stop);
 }

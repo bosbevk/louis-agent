@@ -53,7 +53,8 @@ New, in `louis-agent.core/usage/`:
 |---|---|
 | `UsageRecord` | The record in U §4.1 (immutable `record`); `Tokens` with nullable counts; `Cost` filled by F2 |
 | `UsageScope` | Ambient context (`AsyncLocal`) a host opens per turn: host, session, turn, purpose, task, run, service; tracks the round counter |
-| `UsageRecordingChatClient` | `DelegatingChatClient`. Non-streaming: reads `ChatResponse.Usage`. Streaming: collects the `UsageContent` items from the updates (Anthropic sends one, in the last update). Maps `UsageDetails` to the four non-overlapping kinds: `input` = `InputTokenCount − CachedInputTokenCount − AdditionalCounts["CacheCreationInputTokens"]`, because the adapter's input count includes cached tokens. Writes one `UsageRecord` per request |
+| `UsageRecordingChatClient` | `DelegatingChatClient`. Non-streaming: reads `ChatResponse.Usage`. Streaming: collects the `UsageContent` items from the updates (Anthropic sends one, in the last update). Maps `UsageDetails` through the provider's `IUsageMapper`. Writes one `UsageRecord` per request |
+| `IUsageMapper` | Maps `UsageDetails` to the four non-overlapping kinds. `StandardUsageMapper` follows the Microsoft.Extensions.AI contract (cached tokens are part of `InputTokenCount`, so `input` = `InputTokenCount − cache reads − cache writes`); `AnthropicUsageMapper` also reads cache writes from `AdditionalCounts["CacheCreationInputTokens"]`. `LlmClientFactory.CreateUsageMapper` picks one per provider |
 | `IUsageSink` / `JsonlUsageSink` | Appends records via `AgentLog` to a monthly file; raises `UsageRecorded` for hosts that show live totals (F3) |
 
 Where it plugs in:

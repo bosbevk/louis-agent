@@ -37,28 +37,8 @@ public sealed record UsageRecord(
 /// Token counts for one request. The four kinds don't overlap, so they can be added up and priced separately. A count
 /// the provider didn't report is null, never 0 (F1-S1).
 /// </summary>
-public sealed record UsageTokens(long? Input, long? CacheWrite, long? CacheRead, long? Output, long? Reasoning)
-{
-    /// <summary>The <see cref="Microsoft.Extensions.AI.UsageDetails"/> key the Anthropic adapter uses for cache writes.</summary>
-    internal const string CacheCreationKey = "CacheCreationInputTokens";
-
-    /// <summary>
-    /// Maps the adapter's <see cref="Microsoft.Extensions.AI.UsageDetails"/> to the ledger's kinds. The Anthropic
-    /// adapter's <c>InputTokenCount</c> is the whole prompt, so the uncached input is
-    /// <c>InputTokenCount − CachedInputTokenCount − AdditionalCounts["CacheCreationInputTokens"]</c>
-    /// (measured in F1 step 1; see the optimisation spec, "What the Anthropic adapter reports").
-    /// </summary>
-    public static UsageTokens From(Microsoft.Extensions.AI.UsageDetails? usage)
-    {
-        if (usage is null) return new UsageTokens(null, null, null, null, null);
-
-        long? cacheRead = usage.CachedInputTokenCount;
-        long? cacheWrite = usage.AdditionalCounts?.TryGetValue(CacheCreationKey, out long written) == true ? written : null;
-        long? input = usage.InputTokenCount - (cacheRead ?? 0) - (cacheWrite ?? 0);
-
-        return new UsageTokens(input, cacheWrite, cacheRead, usage.OutputTokenCount, usage.ReasoningTokenCount);
-    }
-}
+/// <remarks>Built from a provider's usage by an <see cref="IUsageMapper"/>.</remarks>
+public sealed record UsageTokens(long? Input, long? CacheWrite, long? CacheRead, long? Output, long? Reasoning);
 
 /// <summary>Why a request was made. Strings, so the ledger stays readable as JSON.</summary>
 public static class UsagePurpose
