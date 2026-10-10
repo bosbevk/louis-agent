@@ -7,11 +7,11 @@ namespace louis_agent.core.usage;
 /// <param name="At">When the request finished.</param>
 /// <param name="Round">Model request number within the turn, 1-based (F1-S1).</param>
 /// <param name="Purpose">One of <see cref="UsagePurpose"/>.</param>
-/// <param name="Host">cli | acp | api | orchestrator. Set from the scope in F1-S2; null until then.</param>
+/// <param name="Host">cli | acp | api | orchestrator, from the host's <see cref="UsageScope"/>; null outside one (F1-S2).</param>
 /// <param name="Session">Session id (F1-S2).</param>
 /// <param name="Turn">User message number in the session (F1-S2).</param>
 /// <param name="Task">For example "fix:e8b0b572223d", set by the caller through the API (F1-S3).</param>
-/// <param name="Run">Orchestrator run id (F1-S3).</param>
+/// <param name="Run">Orchestrator run id, on both the triage and the fix records (F1-S3).</param>
 /// <param name="Service">Service the run is fixing (F1-S3).</param>
 /// <param name="Model">Model id from the response, falling back to the client's configured model.</param>
 /// <param name="Tokens">The four non-overlapping token kinds plus reasoning.</param>

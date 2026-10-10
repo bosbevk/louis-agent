@@ -114,10 +114,10 @@ sequenceDiagram
 
 | Endpoint | Request | Reply |
 |---|---|---|
-| `POST /sessions` | — | `201 { "session_id", "created_at" }` |
+| `POST /sessions` | Optional `{ "task", "run", "service" }`: tags every usage record of the session (the orchestrator sends `fix:<error id>`, its run id and the service); each at most 200 printable characters | `201 { "session_id", "created_at", "task", "run", "service" }` |
 | `POST /sessions/{id}/messages` | `{ "message": "…", "attachments": [{ "name", "content" }] }` | Server-Sent Events (below) |
 | `POST /sessions/{id}/cancel` | — | `{ "cancelled": true }`; the stream ends with stop reason `cancelled` |
-| `GET /sessions/{id}` | — | `{ "session_id", "created_at", "last_activity", "busy" }` |
+| `GET /sessions/{id}` | — | `{ "session_id", "created_at", "last_activity", "busy", "task", "run", "service" }` |
 | `DELETE /sessions/{id}` | — | `{ "deleted": true }` |
 
 Closing the connection also cancels the reply. A message of `/tools`, `/approve <Name>` or `/reject <Name>` is answered
@@ -262,7 +262,7 @@ sequenceDiagram
     O->>O: triage with the method's runbook:<br/>expected / auto-fixable / escalate
     alt auto-fixable
         O->>G: check out main
-        O->>A: POST /sessions
+        O->>A: POST /sessions { task: fix:<error id>, run, service }
         O->>A: POST /sessions/{id}/messages (the fix request)
         A->>L: run the task
         L->>G: branch, edit, test, build, commit

@@ -20,6 +20,15 @@ namespace louis_agent.core.usage;
 /// using (usage.Activate()) more = await updates.MoveNextAsync();
 /// </code>
 /// </example>
+/// <summary>
+/// Who the work is for, beyond the session: the task (e.g. "fix:e8b0b572223d"), the orchestrator run it belongs to, and
+/// the service. Lets a ledger total a fix or a whole run across both agents (F1-S3).
+/// </summary>
+public sealed record UsageTags(string? Task, string? Run, string? Service)
+{
+    public static readonly UsageTags None = new(null, null, null);
+}
+
 public sealed class UsageScope : IDisposable
 {
     private static readonly AsyncLocal<UsageScope?> CurrentScope = new();
@@ -27,13 +36,14 @@ public sealed class UsageScope : IDisposable
     private readonly UsageScope? _outer;
     private int _round;
 
-    private UsageScope(UsageScope? outer, string purpose, string? host, string? session, int? turn)
+    private UsageScope(UsageScope? outer, string purpose, string? host, string? session, int? turn, UsageTags tags)
     {
         _outer = outer;
         Purpose = purpose;
         Host = host;
         Session = session;
         Turn = turn;
+        Tags = tags;
     }
 
     /// <summary>The innermost open scope, or null outside any scope.</summary>
@@ -54,16 +64,22 @@ public sealed class UsageScope : IDisposable
     /// <summary>User message number in the session, from 1.</summary>
     public int? Turn { get; }
 
-    // TODO F1-S3: Task, Run, Service.
+    /// <summary>What the work is for (task, run, service), set by whoever started it, e.g. the orchestrator for a fix.</summary>
+    public UsageTags Tags { get; }
 
     /// <summary>
     /// Opens a scope inside the current one. What isn't given is taken from the outer scope, so a summary's scope keeps
-    /// the turn's host, session and turn. Dispose it to restore the outer scope.
+    /// the turn's host, session, turn and tags. Dispose it to restore the outer scope.
     /// </summary>
-    public static UsageScope Begin(string purpose = UsagePurpose.Turn, string? host = null, string? session = null, int? turn = null)
+    public static UsageScope Begin(string purpose = UsagePurpose.Turn, string? host = null, string? session = null, int? turn = null,
+        UsageTags? tags = null)
     {
         UsageScope? outer = Current;
-        var scope = new UsageScope(outer, purpose, host ?? outer?.Host, session ?? outer?.Session, turn ?? outer?.Turn);
+        UsageTags outerTags = outer?.Tags ?? UsageTags.None;
+        UsageTags merged = tags is null
+            ? outerTags
+            : new UsageTags(tags.Task ?? outerTags.Task, tags.Run ?? outerTags.Run, tags.Service ?? outerTags.Service);
+        var scope = new UsageScope(outer, purpose, host ?? outer?.Host, session ?? outer?.Session, turn ?? outer?.Turn, merged);
         CurrentScope.Value = scope;
         return scope;
     }

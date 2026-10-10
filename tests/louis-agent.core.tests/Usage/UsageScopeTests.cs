@@ -141,6 +141,25 @@ public class UsageScopeTests
     }
 
     [Test]
+    public void Begin_Nested_InheritsTagsAndMergesGivenOnes()
+    {
+        using var turn = UsageScope.Begin(tags: new UsageTags("fix:e8b0", "run-1", "order-service"));
+        using var summary = UsageScope.Begin(UsagePurpose.Summary);
+        using var retagged = UsageScope.Begin(tags: new UsageTags("fix:other", null, null));
+
+        Assert.That(summary.Tags, Is.EqualTo(new UsageTags("fix:e8b0", "run-1", "order-service")));
+        Assert.That(retagged.Tags, Is.EqualTo(new UsageTags("fix:other", "run-1", "order-service")), "a given tag wins, the rest are inherited");
+    }
+
+    [Test]
+    public void Begin_NoTags_HasNone()
+    {
+        using var scope = UsageScope.Begin();
+
+        Assert.That(scope.Tags, Is.EqualTo(UsageTags.None));
+    }
+
+    [Test]
     public void Activate_MakesTheScopeCurrentAndRestoresThePreviousOne()
     {
         using var outer = UsageScope.Begin();

@@ -95,7 +95,6 @@ public sealed class UsageRecordingChatClient(
 
     /// <summary>Builds the record for a finished request from the scope it started in.</summary>
     internal UsageRecord CreateRecord(UsageScope? scope, int round, UsageDetails? usage, string? model, string? stop, TimeSpan duration) =>
-        // Task, Run and Service come with F1-S3.
         new(
             At: DateTimeOffset.UtcNow,
             Round: round,
@@ -103,9 +102,9 @@ public sealed class UsageRecordingChatClient(
             Host: scope?.Host,
             Session: scope?.Session,
             Turn: scope?.Turn,
-            Task: null,
-            Run: null,
-            Service: null,
+            Task: scope?.Tags.Task,
+            Run: scope?.Tags.Run,
+            Service: scope?.Tags.Service,
             Model: model ?? defaultModel,
             Tokens: _mapper.Map(usage),
             DurationMs: (long)duration.TotalMilliseconds,

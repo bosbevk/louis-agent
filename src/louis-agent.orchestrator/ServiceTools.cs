@@ -3,6 +3,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using louis_agent.core.tools;
+using louis_agent.core.usage;
 
 namespace louis_agent.orchestrator;
 
@@ -21,6 +22,15 @@ internal sealed partial class ServiceTools(
     internal const string ContinueMessage = "Continue the fix from where you stopped. Finish with the FIX-RESULT line.";
 
     private readonly HashSet<string> _fixRequested = [];
+
+    /// <summary>
+    /// The current run's id, sent with every fix so louis-agent's usage records carry it. Internal on purpose: every public
+    /// member of this class becomes a tool, property accessors included.
+    /// </summary>
+    internal string? RunId { get; set; }
+
+    /// <summary>Tags for louis-agent's usage ledger: which error this fix is for, in which run, of which service.</summary>
+    internal UsageTags FixTags(string errorId) => new($"fix:{errorId}", RunId, options.Service);
 
     [Description("Asks louis-agent (the coding agent that owns this service's repository) to fix the exception with this " +
         "error id: it creates a fix branch, changes the code, adds a regression test, runs the tests and commits, then " +
@@ -41,7 +51,7 @@ internal sealed partial class ServiceTools(
         if (ReturnToMain() is { } notReady) return $"Error: can't start the fix: {notReady}";
 
         log($"Calling louis-agent at {options.LouisAgentUrl} to fix {error.ExceptionType} in {error.Method} (branch {branch})");
-        string sessionId = await louisAgent.CreateSessionAsync(cancellationToken);
+        string sessionId = await louisAgent.CreateSessionAsync(FixTags(error.Id), cancellationToken);
         try
         {
             var toolCalls = new List<AgentToolCall>();

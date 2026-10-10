@@ -188,6 +188,19 @@ public class UsageRecordingChatClientTests
     }
 
     [Test]
+    public async Task GetResponse_RecordCarriesTheScopesTags()
+    {
+        var sink = new ListUsageSink();
+        using var client = new UsageRecordingChatClient(new FakeChatClient(_ => Reply("hi")), sink);
+
+        using (UsageScope.Begin(host: "api", tags: new UsageTags("fix:e8b0b572223d", "run-20261010-160000", "order-service")))
+            await client.GetResponseAsync("hi");
+
+        UsageRecord record = sink.Records.Single();
+        Assert.That((record.Task, record.Run, record.Service), Is.EqualTo(("fix:e8b0b572223d", "run-20261010-160000", "order-service")));
+    }
+
+    [Test]
     public async Task GetStreamingResponse_DisposedOutsideTheScope_KeepsTheScopeItStartedIn()
     {
         // A host may dispose the stream after its scope is gone (the API's await using); the record still says whose it was.

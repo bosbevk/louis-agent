@@ -1,17 +1,21 @@
 using System.Collections.Concurrent;
 using louis_agent.core.tools;
+using louis_agent.core.usage;
 using Microsoft.Extensions.AI;
 
 namespace louis_agent.api;
 
 /// <summary>One conversation: its history and the turn in progress, if any.</summary>
-internal sealed class AgentSession(string id, List<ChatMessage> history)
+internal sealed class AgentSession(string id, List<ChatMessage> history, UsageTags tags)
 {
     private readonly SemaphoreSlim _turnLock = new(1, 1);
     private CancellationTokenSource? _activeTurn;
 
     public string Id { get; } = id;
     public List<ChatMessage> History { get; } = history;
+
+    /// <summary>What the caller said the session is for (e.g. the orchestrator's fix and run); on every usage record.</summary>
+    public UsageTags Tags { get; } = tags;
     public DateTimeOffset CreatedAt { get; } = DateTimeOffset.UtcNow;
     public DateTimeOffset LastActivity { get; private set; } = DateTimeOffset.UtcNow;
     public bool IsBusy => _turnLock.CurrentCount == 0;
@@ -56,12 +60,12 @@ internal sealed class AgentSessions(AgentEngine engine)
     private static readonly TimeSpan IdleTimeout = TimeSpan.FromHours(4);
     private readonly ConcurrentDictionary<string, AgentSession> _sessions = new();
 
-    public AgentSession Create()
+    public AgentSession Create(UsageTags? tags = null)
     {
         foreach (var idle in _sessions.Values.Where(s => !s.IsBusy && DateTimeOffset.UtcNow - s.LastActivity > IdleTimeout))
             _sessions.TryRemove(idle.Id, out _);
 
-        var session = new AgentSession($"sess_{Guid.NewGuid():N}", engine.NewHistory());
+        var session = new AgentSession($"sess_{Guid.NewGuid():N}", engine.NewHistory(), tags ?? UsageTags.None);
         _sessions[session.Id] = session;
         return session;
     }

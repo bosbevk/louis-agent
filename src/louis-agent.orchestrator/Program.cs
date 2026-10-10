@@ -56,7 +56,9 @@ while (!stop.IsCancellationRequested)
     var events = feed.ReadNew();
     if (events.Count > 0)
     {
-        Log($"{events.Count} new error event(s)");
+        // One run per batch of new errors, like the comms log; its id is on every usage record of the batch, triage and fixes.
+        tools.RunId = $"run-{DateTime.UtcNow:yyyyMMdd-HHmmss}";
+        Log($"{events.Count} new error event(s); usage run id {tools.RunId}");
         comms.StartRun(options.Service, options.LouisAgentUrl, llm.Model);
     }
 
@@ -70,8 +72,9 @@ while (!stop.IsCancellationRequested)
         string answer;
         try
         {
-            // One triage conversation per error event; the run id that ties it to the fixes comes with F1 step 8.
-            using var usage = UsageScope.Begin(UsagePurpose.Triage, host: "orchestrator", session: $"triage_{error.Id}", turn: 1);
+            // One triage conversation per error event, in the same run as the fixes it asks for.
+            using var usage = UsageScope.Begin(UsagePurpose.Triage, host: "orchestrator", session: $"triage_{error.Id}", turn: 1,
+                tags: new UsageTags(null, tools.RunId, options.Service));
             answer = await engine.ProcessPromptAsync(engine.NewHistory(), TriagePrompt(error), stop.Token);
         }
         catch (OperationCanceledException)

@@ -102,7 +102,11 @@ Where it plugs in:
    in the same ledger as the fixes (`LOG_DIRECTORY: /demo/logs`). Checked by hand: two messages to one API session
    recorded as turns 1 and 2.
 8. **Session tags** on `POST /sessions` and in `LouisAgentClient`. *Test:* orchestrator test with a stub API asserts the
-   create-session body; core test asserts tags reach the records.
+   create-session body; core test asserts tags reach the records. **Done:** `UsageTags(Task, Run, Service)` on the
+   scope, inherited and merged like host/session/turn, so summaries keep them. Tags are optional (the web app sends
+   none) and limited to 200 printable characters. The orchestrator makes one run id per batch of new errors (as its
+   comms log does a run), on the triage records and sent with every fix; `ServiceTools.RunId` is `internal`, since a
+   public property's accessors would become tools. Checked by hand: a tagged session's record carries all three tags.
 9. **Docs:** settings in README / SETUP; spec status.
 
 ## Done when

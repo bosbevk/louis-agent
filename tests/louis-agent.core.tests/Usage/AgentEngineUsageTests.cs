@@ -71,7 +71,7 @@ public class AgentEngineUsageTests
                 _ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "It's all x.")));
             var engine = Engine(client, sink);
 
-            using (UsageScope.Begin(host: "api", session: "sess_1", turn: 4))
+            using (UsageScope.Begin(host: "api", session: "sess_1", turn: 4, tags: new UsageTags("fix:e8b0", "run-1", "order-service")))
                 await engine.ProcessPromptAsync(engine.NewHistory(), "what is in the file?");
 
             Assert.That(sink.Records.Select(r => (r.Purpose, r.Round)), Is.EqualTo(new[]
@@ -83,6 +83,8 @@ public class AgentEngineUsageTests
             }));
             Assert.That(sink.Records.Select(r => (r.Host, r.Session, r.Turn)), Is.All.EqualTo(("api", "sess_1", (int?)4)),
                 "the summary is attributed to the turn it served");
+            Assert.That(sink.Records.Select(r => (r.Task, r.Run, r.Service)), Is.All.EqualTo(("fix:e8b0", "run-1", "order-service")),
+                "and to the fix and run it was part of");
         }
         finally
         {
