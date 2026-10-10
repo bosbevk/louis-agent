@@ -13,7 +13,7 @@ protocol to and from `AgentEngine`; behaviour changes belong here.
 
 ```mermaid
 flowchart LR
-    Env["config/.env + .env.secrets<br/>(AgentHost.LoadEnvironment)"] --> Opts["LlmOptions + AgentOptions"]
+    Env["config/.env + .env.secrets<br/>+ LLM profile .env.{LLM_PROFILE}<br/>(AgentHost.LoadEnvironment)"] --> Opts["LlmOptions + AgentOptions"]
     Opts --> Skills["AgentHost.LoadSkills<br/>→ CompositeSkillProvider<br/>(system prompt + skills)"]
     Opts --> Factory["LlmClientFactory<br/>→ IChatClient"]
     Skills --> Engine["AgentEngine"]

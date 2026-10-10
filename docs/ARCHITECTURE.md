@@ -247,17 +247,20 @@ The API and web app have no automated tests; the orchestrator demo exercises the
 
 ## Configuration reference
 
-See [SETUP.md](SETUP.md) and `config/.env.example`. Typical model settings:
+See [SETUP.md](SETUP.md) and `config/.env.example`. The model settings live in LLM profiles, picked by `LLM_PROFILE`
+in `config/.env` ([MODELS.md](MODELS.md)):
 
 ```bash
-# Anthropic (default)
+# config/.env.anthropic (LLM_PROFILE=anthropic, the default)
 LLM_PROVIDER=anthropic
 LLM_MODEL=claude-haiku-4-5-20251001     # ANTHROPIC_API_KEY in config/.env.secrets
 
-# Ollama (docker compose --profile ollama)
+# config/.env.ollama (LLM_PROFILE=ollama; docker compose --profile ollama)
 LLM_PROVIDER=ollama
 LLM_MODEL=llama3.1
-LLM_ENDPOINT=http://ollama:11434
+LLM_ENDPOINT=http://host.docker.internal:11434
+
+# no profile yet; set these in config/.env
 
 # OpenAI-compatible (LM Studio, vLLM, ...)
 LLM_PROVIDER=openai-compatible

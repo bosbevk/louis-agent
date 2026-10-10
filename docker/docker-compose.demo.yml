@@ -41,6 +41,8 @@ services:
     image: louis-agent-api:latest
     container_name: louis_agent_demo_api
     env_file:
+      # LLM settings: config/.env.anthropic or .env.ollama, chosen by LLM_PROFILE in config/.env
+      - path: ../config/.env.${LLM_PROFILE:-anthropic}
       - path: ../config/.env
         required: false
       - path: ../config/.env.secrets
@@ -50,8 +52,6 @@ services:
       WORKSPACE_ROOT: /demo/order-service
       SKILLS_DIRECTORY: /skills
       LOG_DIRECTORY: /demo/logs
-      LLM_PROVIDER: ${LLM_PROVIDER:-anthropic}
-      LLM_MODEL: ${LLM_MODEL:-claude-haiku-4-5-20251001}
       # louis-agent's commits (and merges made in the web app) are recorded under this name.
       GIT_AUTHOR_NAME: louis-agent
       GIT_AUTHOR_EMAIL: louis-agent@localhost
@@ -77,6 +77,8 @@ services:
     <<: *orchestrator-image
     command: ["--once"]
     env_file:
+      # LLM settings: config/.env.anthropic or .env.ollama, chosen by LLM_PROFILE in config/.env
+      - path: ../config/.env.${LLM_PROFILE:-anthropic}
       - path: ../config/.env
         required: false
       - path: ../config/.env.secrets
@@ -88,8 +90,6 @@ services:
       ORCHESTRATOR_STATE_DIRECTORY: /demo/orchestrator-state
       ORCHESTRATOR_COMMS_LOG: /demo/agent-comms.md
       LOUIS_AGENT_URL: http://demo-api:8080
-      LLM_PROVIDER: ${LLM_PROVIDER:-anthropic}
-      LLM_MODEL: ${LLM_MODEL:-claude-haiku-4-5-20251001}
       # Only used to stash what an unfinished fix left behind before returning to main.
       GIT_AUTHOR_NAME: orchestrator
       GIT_AUTHOR_EMAIL: orchestrator@localhost

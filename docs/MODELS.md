@@ -1,12 +1,29 @@
 # Models
 
-The model is configuration only: set `LLM_PROVIDER` and `LLM_MODEL` in `config/.env` (and `LLM_ENDPOINT` /
-keys where needed), then restart the host. No code changes.
+The model is configuration only, no code changes. The LLM settings (`LLM_PROVIDER`, `LLM_MODEL`, `LLM_ENDPOINT`,
+`LLM_THINKING`) live in a **profile** file, and `LLM_PROFILE` in `config/.env` picks one:
+
+| Profile | File | Model |
+|---|---|---|
+| `anthropic` (default) | `config/.env.anthropic` | Claude Haiku 4.5; needs `ANTHROPIC_API_KEY` in `config/.env.secrets` |
+| `ollama` | `config/.env.ollama` | `llama3.1` on a local Ollama, free |
+
+```bash
+# config/.env
+LLM_PROFILE=ollama
+
+# or for one run, without editing .env
+LLM_PROFILE=ollama dotnet run --project src/louis-agent.cli
+```
+
+The profiles are tracked in git (they hold no secrets). Precedence, highest first: the shell, `config/.env.secrets`,
+`config/.env`, the profile; so a `LLM_*` line in `config/.env` pins that one setting over the profile. A new profile
+is a new `config/.env.{name}` file (lowercase letters, digits and dashes).
 
 | Provider | `LLM_PROVIDER` | Needs |
 |---|---|---|
 | Anthropic Claude (default) | `anthropic` | `ANTHROPIC_API_KEY` in `config/.env.secrets` |
-| Ollama (local) | `ollama` | `LLM_ENDPOINT` (`http://ollama:11434` in Docker); the model pulled |
+| Ollama (local) | `ollama` | `LLM_ENDPOINT` (the profile uses `http://host.docker.internal:11434`); the model pulled |
 | OpenAI-compatible (LM Studio, vLLM, …) | `openai-compatible` | `LLM_ENDPOINT` (e.g. `http://localhost:8000/v1`), `LLM_API_KEY` if the server wants one |
 
 If `LLM_PROVIDER` is unset it is inferred from the model: `claude*` → Anthropic, anything else → Ollama.
@@ -35,19 +52,16 @@ that hits the limit mid tool call is handled (the call is not run and the model 
 
 ## Ollama (local)
 
-Run models on your own machine; nothing leaves it. Compose has an `ollama` service behind a profile, which pulls
-`LLM_MODEL` on first start:
+Run models on your own machine; nothing leaves it. Set `LLM_PROFILE=ollama` (`config/.env.ollama`). Compose has an
+`ollama` service behind a compose profile, which pulls the Ollama profile's `LLM_MODEL` on first start:
 
 ```bash
-# config/.env
-LLM_PROVIDER=ollama
-LLM_MODEL=llama3.1
-LLM_ENDPOINT=http://ollama:11434
-
 docker compose -f docker/docker-compose.yml --env-file config/.env --profile ollama up -d ollama
 ```
 
-Outside Docker use `LLM_ENDPOINT=http://localhost:11434` (port 11434 is published).
+The profile's endpoint, `http://host.docker.internal:11434`, reaches the published port 11434 both from the host
+(Docker Desktop adds the name to the hosts file) and from the agent containers, so `dotnet run` and Docker use the same
+setting. With Ollama installed natively and no Docker Desktop, set `LLM_ENDPOINT=http://localhost:11434`.
 
 **Tool calling decides how useful a local model is.** The agent works by calling tools, so pick a model whose
 Ollama page lists tool support (for example `llama3.1`, `qwen3`, `mistral`). Models known to reject tools, or to answer
@@ -78,7 +92,7 @@ Works with anything that speaks the OpenAI Chat Completions API. Tool calling de
 
 ## Switching models
 
-1. Edit `config/.env` (and `config/.env.secrets` for a new key).
+1. Set `LLM_PROFILE` in `config/.env` (or edit the profile file; `config/.env.secrets` for a new key).
 2. Restart what you use:
    - Rider: start a **New Chat** (each chat starts a fresh container with the new settings).
    - Web app / API: `docker compose -f docker/docker-compose.yml --env-file config/.env up -d api`
@@ -93,8 +107,10 @@ Works with anything that speaks the OpenAI Chat Completions API. Tool calling de
   and report the model id.
 - **Ollama "model not found"** — pull it: `docker exec louis_ollama ollama pull <model>` (or restart the ollama
   service, which pulls `LLM_MODEL`).
-- **Ollama connection refused** — inside Docker the endpoint is `http://ollama:11434`, not `localhost`, and the
-  service only runs with `--profile ollama`.
+- **Ollama connection refused** — the service only runs with `--profile ollama`; check
+  `curl http://host.docker.internal:11434/api/tags` from the host. Inside Docker `localhost` is the container itself.
+- **`[WARN] LLM_PROFILE 'x' has no config/.env.x`** — a typo in `LLM_PROFILE`, or the profile file is missing; the
+  settings fall back to `config/.env` and the defaults (Claude Haiku 4.5).
 - **The agent talks about tools instead of using them** — the model can't call tools well; switch model or check
   `tools=on` in the startup line.
 

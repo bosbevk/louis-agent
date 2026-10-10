@@ -13,28 +13,47 @@ public sealed record AgentHostContext(AgentEngine Engine, LlmOptions Llm, AgentO
 /// Single bootstrap shared by the CLI, ACP and MCP entry points: dotenv load, option binding,
 /// skill discovery and composite wiring.
 /// </summary>
-public static class AgentHost
+public static partial class AgentHost
 {
     /// <summary>
     /// Loads config/.env.secrets and config/.env (plus a legacy ./.env), searching upward from the working
-    /// directory so the CLI works from any folder in the repo. Variables already set in the process
-    /// (shell, Docker env_file) win; secrets are loaded before .env so they take precedence over it.
+    /// directory so the CLI works from any folder in the repo, then the LLM profile config/.env.{LLM_PROFILE}
+    /// (.env.anthropic, .env.ollama). Variables already set in the process (shell, Docker env_file) win; each file
+    /// only fills what the ones before it left unset, so the order is secrets, .env, then the profile.
     /// </summary>
-    public static void LoadEnvironment()
+    public static void LoadEnvironment() => LoadEnvironment(Environment.CurrentDirectory);
+
+    internal static void LoadEnvironment(string startDirectory)
     {
         var files = new List<string>();
-        if (FindConfigDirectory(Environment.CurrentDirectory) is { } configDir)
+        string? configDir = FindConfigDirectory(startDirectory);
+        if (configDir is not null)
         {
             files.Add(Path.Combine(configDir, ".env.secrets"));
             files.Add(Path.Combine(configDir, ".env"));
         }
-        files.Add(Path.Combine(Environment.CurrentDirectory, ".env"));
+        files.Add(Path.Combine(startDirectory, ".env"));
+        Load(files);
 
-        DotEnv.Load(options: new DotEnvOptions(
+        // Read after .env is loaded, since that is where it is usually set.
+        if (Environment.GetEnvironmentVariable("LLM_PROFILE") is not { Length: > 0 } profile || configDir is null) return;
+        string profileFile = Path.Combine(configDir, $".env.{profile}");
+        if (!LlmProfileName().IsMatch(profile) || !File.Exists(profileFile))
+        {
+            Console.Error.WriteLine($"[WARN] LLM_PROFILE '{profile}' has no config/.env.{profile}; using the LLM settings from .env and the defaults.");
+            return;
+        }
+        Load([profileFile]);
+
+        static void Load(IEnumerable<string> paths) => DotEnv.Load(options: new DotEnvOptions(
             ignoreExceptions: true,
-            envFilePaths: files.Where(File.Exists).ToArray(),
+            envFilePaths: paths.Where(File.Exists).ToArray(),
             overwriteExistingVars: false));
     }
+
+    /// <summary>Profile names are file-name parts (anthropic, ollama), never paths.</summary>
+    [System.Text.RegularExpressions.GeneratedRegex("^[a-z0-9-]+$")]
+    private static partial System.Text.RegularExpressions.Regex LlmProfileName();
 
     internal static string? FindConfigDirectory(string startDirectory)
     {

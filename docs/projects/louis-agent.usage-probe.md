@@ -26,8 +26,8 @@ few one-word requests with a long system prompt, both non-streaming and streamin
 
 ```bash
 dotnet run --project tools/louis-agent.usage-probe                          # provider from config/.env
-LLM_PROVIDER=ollama LLM_MODEL=qwen2.5:0.5b LLM_ENDPOINT=http://localhost:11434 \
-  dotnet run --project tools/louis-agent.usage-probe                        # another provider for one run
+LLM_PROFILE=ollama dotnet run --project tools/louis-agent.usage-probe     # another LLM profile for one run
+LLM_PROFILE=ollama LLM_MODEL=qwen2.5:0.5b dotnet run --project tools/louis-agent.usage-probe   # and another model
 dotnet run --project tools/louis-agent.usage-probe -- --lines 100           # prompt size (default 600 Anthropic, 40 others)
 ```
 
