@@ -29,22 +29,36 @@ string prompt = NewPrompt();
 
 Console.WriteLine($"provider={llm.Provider} model={llm.Model} thinking={thinking?.ToString() ?? "off"} mapper={mapper.GetType().Name} lines={lines}");
 
-await NonStreaming("1 non-streaming", cache: false);
-await Streaming("2 streaming", cache: false);
-if (anthropic)
+try
 {
-    await NonStreaming("3 non-streaming, cache marker (expect write)", cache: true);
-    await NonStreaming("4 non-streaming, cache marker (expect read)", cache: true);
-    prompt = NewPrompt();
-    await Streaming("5 streaming, cache marker (expect write)", cache: true);
-    await Streaming("6 streaming, cache marker (expect read)", cache: true);
+    await NonStreaming("1 non-streaming", cache: false);
+    await Streaming("2 streaming", cache: false);
+    if (anthropic)
+    {
+        await NonStreaming("3 non-streaming, cache marker (expect write)", cache: true);
+        await NonStreaming("4 non-streaming, cache marker (expect read)", cache: true);
+        prompt = NewPrompt();
+        await Streaming("5 streaming, cache marker (expect write)", cache: true);
+        await Streaming("6 streaming, cache marker (expect read)", cache: true);
+    }
+    else
+    {
+        // No cache markers outside Anthropic; repeating the prompt shows whether the provider reports its own caching.
+        await NonStreaming("3 non-streaming, same prompt again", cache: false);
+        await Streaming("4 streaming, same prompt again", cache: false);
+    }
 }
-else
+catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound &&
+                                      string.Equals(llm.Provider, LlmOptions.Ollama, StringComparison.OrdinalIgnoreCase))
 {
-    // No cache markers outside Anthropic; repeating the prompt shows whether the provider reports its own caching.
-    await NonStreaming("3 non-streaming, same prompt again", cache: false);
-    await Streaming("4 streaming, same prompt again", cache: false);
+    // Ollama answers 404 for a model it hasn't pulled; the stack trace doesn't say so.
+    Console.Error.WriteLine($"Model '{llm.Model}' isn't pulled into Ollama at {llm.Endpoint ?? "http://localhost:11434"}. Pull it with:");
+    Console.Error.WriteLine($"  docker exec louis_ollama ollama pull {llm.Model}    (the compose ollama service)");
+    Console.Error.WriteLine($"  ollama pull {llm.Model}                             (Ollama installed natively)");
+    return 1;
 }
+
+return 0;
 
 // A per-run nonce keeps runs from reading each other's cache.
 string NewPrompt() => $"Run {Guid.NewGuid():N}. You answer in one word.\n{filler}";
