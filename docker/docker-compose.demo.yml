@@ -27,6 +27,8 @@ services:
     environment:
       <<: *git-in-containers
       DEMO_RESET: ${DEMO_RESET:-1}
+      # The traffic file in order-service/data/ (run-demo.ps1 -Short: requests-short.txt).
+      DEMO_REQUESTS: ${DEMO_REQUESTS:-requests.txt}
     volumes:
       - ../samples:/samples:ro
       - ../.demo:/demo

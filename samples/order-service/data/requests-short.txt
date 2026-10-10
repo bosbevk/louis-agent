@@ -1,0 +1,20 @@
+# Short simulated traffic for a quicker, cheaper demo (run-demo.ps1 -Short): the same healthy calls, five of the errors.
+# Healthy calls
+get-order 1001
+order-total 1001
+order-total 1004
+shipping-cost 1003
+invoice-number 1001
+packing-slip 1002
+loyalty-points 1001
+vat 1001
+delivery-estimate 1001
+discount-label 1001
+customer-initials 1001
+# Four bugs (auto-fixable per the runbooks)
+order-total 1003
+shipping-cost 1006
+packing-slip 1001
+vat 1009
+# Not for fixing: a payments crash (escalate)
+refund 1005

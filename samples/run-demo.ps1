@@ -27,12 +27,17 @@
 
 .PARAMETER ApiOnly
     Keep .demo as it is and only (re)start demo-api for the web app; the orchestrator doesn't run.
+
+.PARAMETER Short
+    Replay data/requests-short.txt instead: five errors (four fixes and one escalation) instead of thirteen, for a
+    quicker, cheaper run.
 #>
 param(
     [int]$Port = 5081,
     [switch]$StopApi,
     [switch]$Resume,
-    [switch]$ApiOnly
+    [switch]$ApiOnly,
+    [switch]$Short
 )
 
 $ErrorActionPreference = 'Stop'
@@ -41,6 +46,7 @@ $composeArgs = @('compose', '-f', (Join-Path $repo 'docker/docker-compose.demo.y
 $envFile = Join-Path $repo 'config/.env'
 if (Test-Path $envFile) { $composeArgs += @('--env-file', $envFile) }
 $env:DEMO_PORT = $Port
+$env:DEMO_REQUESTS = if ($Short) { 'requests-short.txt' } else { 'requests.txt' }
 $url = "http://127.0.0.1:$Port"
 
 function Step([string]$text) { Write-Host "`n=== $text ===" -ForegroundColor Cyan }
