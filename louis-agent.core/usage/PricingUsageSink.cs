@@ -10,7 +10,7 @@ public sealed class PricingUsageSink(IUsageSink inner, PriceTable prices) : IUsa
     /// <summary>The sink the priced records go to, e.g. the JSONL ledger with its <c>UsageRecorded</c> event.</summary>
     public IUsageSink Inner => inner;
 
-    public void Record(UsageRecord record) =>
+    public UsageRecord Record(UsageRecord record) =>
         // A record that already has a cost keeps it: a cost is stored with the prices it was charged at.
         inner.Record(record.Cost is null ? record with { Cost = CostCalculator.For(record, prices) } : record);
 }
