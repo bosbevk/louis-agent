@@ -63,29 +63,42 @@ public sealed class PriceTable
     /// Loads the table at <paramref name="path"/>; a missing file gives <see cref="Empty"/>. A malformed file throws
     /// <see cref="InvalidDataException"/> naming the file, since running with wrong prices is worse than not starting.
     /// </summary>
-    public static PriceTable Load(string path)
-    {
-        if (!File.Exists(path)) return Empty;
+    public static PriceTable Load(string path) => File.Exists(path) ? Parse(File.ReadAllText(path), path) : Empty;
 
+    /// <summary>
+    /// Fetches the table from <paramref name="url"/> (e.g. louis-agent.api's <c>GET /prices</c>). Throws
+    /// <see cref="HttpRequestException"/> when it can't be fetched (unreachable, or not a success status), so the caller
+    /// can fall back to the file; a body that isn't a valid table throws <see cref="InvalidDataException"/>.
+    /// </summary>
+    public static async Task<PriceTable> LoadAsync(HttpClient http, Uri url, CancellationToken cancellationToken = default)
+    {
+        using HttpResponseMessage response = await http.GetAsync(url, cancellationToken);
+        response.EnsureSuccessStatusCode();
+        return Parse(await response.Content.ReadAsStringAsync(cancellationToken), url.ToString());
+    }
+
+    /// <summary>The table in <paramref name="json"/>, checked the same way wherever it came from (<paramref name="source"/>).</summary>
+    internal static PriceTable Parse(string json, string source)
+    {
         PriceTable? table;
         try
         {
-            table = JsonSerializer.Deserialize<PriceTable>(File.ReadAllText(path), Json);
+            table = JsonSerializer.Deserialize<PriceTable>(json, Json);
         }
         catch (JsonException ex)
         {
-            throw new InvalidDataException($"Price table {path} is not valid: {ex.Message}", ex);
+            throw new InvalidDataException($"Price table {source} is not valid: {ex.Message}", ex);
         }
 
-        if (table is null) throw new InvalidDataException($"Price table {path} is empty.");
+        if (table is null) throw new InvalidDataException($"Price table {source} is empty.");
         foreach (var (model, price) in table.Models)
         {
             IEnumerable<(string Name, decimal Value)> prices = price.All().Concat(
                 price.LongPrompt?.All().Select(p => (Name: $"long_prompt.{p.Name}", p.Value)) ?? []);
             if (prices.FirstOrDefault(p => p.Value < 0) is { Name: { } negative })
-                throw new InvalidDataException($"Price table {path}: '{model}' has a negative {negative} price.");
+                throw new InvalidDataException($"Price table {source}: '{model}' has a negative {negative} price.");
             if (price.LongPrompt is { AboveTokens: <= 0 })
-                throw new InvalidDataException($"Price table {path}: '{model}' long_prompt.above_tokens must be positive.");
+                throw new InvalidDataException($"Price table {source}: '{model}' long_prompt.above_tokens must be positive.");
         }
 
         return table;
