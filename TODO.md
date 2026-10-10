@@ -53,11 +53,13 @@ its own.
 - [ ] [F10 Route settings](docs/features/F10-route-settings.md) — thinking, tool rounds and summary model per route.
       *Removes the limitation:* 10 tool rounds per message
 
-**M5 — Reporting:** an overview and a check against the bill.
+**M5 — Reporting:** an overview, a check against the bill, and how fast each model is.
 
 - [ ] [F11 Usage tab and reconciliation](docs/features/F11-usage-tab-and-reconciliation.md) — the web app's Usage tab,
       usage API, comparison with the provider's reports. *With F1–F3, F6 and F7, replaces:* "Track token usage / cost
       per session"
+- [ ] [F12 Response speed](docs/features/F12-response-speed.md) — time to first token and tokens per second on every
+      usage record, for every provider (Ollama's own timings too); shown with the usage
 
 ## Next: build-mode POC — build a whole microservice from runbooks
 

@@ -63,4 +63,4 @@ provider's own usage and cost reports, so that I trust the numbers.
   set *Status* to done here and in the features table, and note it in the spec's implementation map.
 
 ---
-[Features](README.md) · Previous: [F10 Route settings](F10-route-settings.md)
+[Features](README.md) · Previous: [F10 Route settings](F10-route-settings.md) · Next: [F12 Response speed](F12-response-speed.md)
