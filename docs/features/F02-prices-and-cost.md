@@ -48,6 +48,10 @@ New, in `louis-agent.core/usage/`:
 - Compose: `docker-compose.demo.yml` mounts `../config:/config:ro` on `demo-api` and `orchestrator` with
   `PRICES_FILE=/config/prices.json`; the main compose file already mounts the repository at `/workspace`.
 - Rounding: store the amount with 6 decimals; round only for display.
+- **Prices that depend on prompt length.** Claude Haiku 5.5, the default model, charges 5× per token when a request's
+  prompt is over 100,000 tokens (cache reads and writes included), for the whole request. The table needs a tier per
+  model (`over_100k` prices) and `CostCalculator` the request's total prompt (`input + cache_read + cache_write`) to pick
+  one. Today's requests are 48,000–60,000 tokens, so they stay in the lower tier.
 
 ## Implementation steps
 
@@ -59,6 +63,8 @@ New, in `louis-agent.core/usage/`:
    `price_table`.
 4. **Example file, `.gitignore`, compose mounts, settings docs.** *Test (manual):* demo run → ledger has costs.
 5. **M1 baseline:** run the demo, record tokens and cost per fix and in total in `docs/features/README.md` (Benchmark).
+   The ledger of the full run on Haiku 5.5 is already saved (`samples/sample-output/usage-2026-10.jsonl`: 10/10 fixes,
+   149 requests, about $0.66 priced by hand); pricing it with the finished table gives the baseline without a new run.
 
 ## Done when
 

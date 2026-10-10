@@ -189,8 +189,6 @@ feature when its turn comes; remove its line here and update the map's *Missing*
       `history[0]` when skills are reloaded, and approving an agent-built tool changes the tool list mid-session. F9
       (compaction) must be designed append-only too. *Removes the limitation:* reloading skills or approving a tool
       mid-chat can break the chat on Haiku 5.5
-- [ ] Confirm Haiku 5.5 on the full demo: the short run confirms 4/4 fixes (`samples/sample-output-short/`); a full run
-      that confirms 10/10, taken as F1's M1 baseline, and F2's price table with Haiku 5.5's over-100K-token tier
 
 ### Observability
 
@@ -221,6 +219,8 @@ backlog item removes one, it says so.
 
 Newest first; details in the git history.
 
+- 2026-10-10 — Full demo on Claude Haiku 5.5 with the usage ledger: 10/10 fixes confirmed, 2 ignored, 1 escalated, ≈ $0.66
+  (`samples/sample-output/`, now with `usage-2026-10.jsonl`); F2 prices that ledger for the M1 baseline
 - 2026-10-10 — The engine keeps the tools on the request after the 10-round limit (`tool_choice: none`), which Haiku
   5.5 otherwise rejects; the short demo went from 2/4 to 4/4 fixes
 - 2026-10-10 — **F1 Usage ledger**: every model request of every host in `{LOG_DIRECTORY}/usage-YYYY-MM.jsonl`, with
