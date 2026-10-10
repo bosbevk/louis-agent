@@ -52,4 +52,4 @@ Both are in the TODO backlog (*Quality and CI*), along with CI to run these suit
 [Development guide § Tests](../CLAUDE.md#tests) · [Architecture § Testing](../ARCHITECTURE.md#testing)
 
 ---
-[Projects](README.md) · Previous: [louis-agent.orchestrator](louis-agent.orchestrator.md) · Next: [order-service](order-service.md)
+[Projects](README.md) · Previous: [louis-agent.usage-probe](louis-agent.usage-probe.md) · Next: [order-service](order-service.md)

@@ -15,6 +15,7 @@ when you're about to change a particular project.
 | `src/louis-agent.web` | Blazor WebAssembly | The browser app: chats, files, changes, branches | [web](louis-agent.web.md) |
 | `src/louis-agent.mcp-server` | Console / ASP.NET Core | Hands the agent's tools to any MCP client (no model of its own) | [mcp-server](louis-agent.mcp-server.md) |
 | `src/louis-agent.orchestrator` | Console app | A second agent that watches a service's errors and has louis-agent fix them (POC) | [orchestrator](louis-agent.orchestrator.md) |
+| `tools/louis-agent.usage-probe` | Console app (developer tool) | Prints what a provider reports as token usage and what the ledger makes of it | [usage-probe](louis-agent.usage-probe.md) |
 | `tests/louis-agent.core.tests`, `tests/louis-agent.orchestrator.tests` | NUnit | Unit tests for core and the orchestrator | [tests](tests.md) |
 | `samples/order-service` | Console app + tests | The demo microservice with ten planted bugs (not in the solution) | [order-service](order-service.md) |
 
@@ -29,6 +30,7 @@ flowchart BT
     API --> Web["louis-agent.web<br/>(served by the API)"]
     MCP["louis-agent.mcp-server"] --> Core
     Orch["louis-agent.orchestrator"] --> Core
+    Probe["louis-agent.usage-probe"] --> Core
     Orch -. "HTTP + SSE<br/>(sessions)" .-> API
     Orch -. "git, dotnet<br/>(verify, replay, test)" .-> Svc["samples/order-service<br/>(its own repository)"]
     CoreTests["louis-agent.core.tests"] --> Core

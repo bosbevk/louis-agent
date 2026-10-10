@@ -84,6 +84,7 @@ src/
     ├── CommsLog.cs           # Markdown log of every message between the agents
     └── Skills/               # orchestrator.md + {service}/service.md + one runbook per API method
 
+tools/louis-agent.usage-probe/ # Prints a provider's raw token usage and the ledger's mapping (calls the real provider)
 tests/louis-agent.core.tests/ # NUnit; Config, Loaders, Providers, Tools, mcp
 tests/louis-agent.orchestrator.tests/ # NUnit; error feed, SSE client, verification tools
 samples/                      # order-service (demo microservice) + run-demo.ps1, see samples/README.md

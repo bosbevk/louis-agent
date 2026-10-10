@@ -116,6 +116,16 @@ Microsoft.Extensions.AI 10.10.0, `claude-haiku-4-5-20251001`, thinking medium, a
 - `TextContent.WithCacheControl(new CacheControlEphemeral())` on the system message reaches the API: the second
   request read 10,227 cached tokens.
 
+**What the Ollama adapter reports** (measured 2026-10-10 with `tools/louis-agent.usage-probe`: OllamaSharp's
+`OllamaApiClient`, `qwen2.5:0.5b`, a 686-token prompt sent twice, streaming and not):
+
+- `InputTokenCount` = 686 and `OutputTokenCount` on every request, including the repeat: Ollama reports the whole
+  prompt even when it reuses its own prompt cache. `CachedInputTokenCount` and `ReasoningTokenCount` are null;
+  `AdditionalCounts` is empty.
+- **Streaming:** one `UsageContent` in the last update, as with Anthropic.
+- `StandardUsageMapper` is right for it: input 686, output as reported, the cache and reasoning counts null.
+- Not yet measured: `openai-compatible`. Rerun the probe for it before relying on its ledger numbers.
+
 ### B. Prompt caching (Anthropic)
 
 **What:** mark the stable parts of each request so the API serves them from cache. Reading cached tokens costs about
