@@ -62,6 +62,9 @@ its own.
       per session"
 - [ ] [F12 Response speed](docs/features/F12-response-speed.md) — time to first token and tokens per second on every
       usage record, for every provider (Ollama's own timings too); shown with the usage
+- [ ] [F14 Display currency](docs/features/F14-display-currency.md) — show costs in a chosen currency (server default
+      and per web user), with the rate's date; the ledger stays in the bill's currency. Rate source to decide: fixed in
+      config, live, or both
 
 **Local — Local models:** a local model gets everything it is sent.
 
