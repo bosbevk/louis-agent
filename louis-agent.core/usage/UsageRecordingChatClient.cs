@@ -30,12 +30,55 @@ public sealed class UsageRecordingChatClient(IChatClient innerClient, IUsageSink
         IEnumerable<ChatMessage> messages, ChatOptions? options = null,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        // TODO F1 step 4: pass every update through unchanged, and remember the UsageContent (Anthropic sends one, in the
-        //   last update), the finish reason and the model id. Record once when the stream ends; if it is cancelled,
-        //   record what was reported so far with Stop = "cancelled" (a try/finally around the loop).
-        await foreach (var update in base.GetStreamingResponseAsync(messages, options, cancellationToken))
-            yield return update;
+        int round = NextRound();
+        var stopwatch = Stopwatch.StartNew();
+        UsageDetails? usage = null;
+        string? model = null, stop = null;
+        bool completed = false, failed = false;
+
+        // Enumerated by hand rather than with await foreach: C# allows no catch around a yield, and the catch is what
+        // tells a provider error (not recorded, like a failed non-streaming call) from a cancellation (recorded).
+        await using var updates = base.GetStreamingResponseAsync(messages, options, cancellationToken)
+            .GetAsyncEnumerator(cancellationToken);
+        try
+        {
+            while (true)
+            {
+                try
+                {
+                    if (!await updates.MoveNextAsync()) break;
+                }
+                catch (Exception ex) when (ex is not OperationCanceledException)
+                {
+                    failed = true;
+                    throw;
+                }
+
+                ChatResponseUpdate update = updates.Current;
+                // Anthropic sends one UsageContent, in the last update; adding them up also covers providers that split it.
+                foreach (var content in update.Contents.OfType<UsageContent>())
+                {
+                    usage ??= new UsageDetails();
+                    usage.Add(content.Details);
+                }
+                model ??= update.ModelId;
+                if (update.FinishReason is { } finishReason) stop = finishReason.Value;
+
+                yield return update;
+            }
+
+            completed = true;
+        }
+        finally
+        {
+            // Reached on normal completion, an exception, or the caller disposing the stream early (a cancelled turn).
+            if (!failed)
+                sink.Record(CreateRecord(round, usage, model, completed ? stop : Cancelled, stopwatch.Elapsed));
+        }
     }
+
+    /// <summary>Stop reason for a stream that ended before the provider finished it.</summary>
+    internal const string Cancelled = "cancelled";
 
     /// <summary>
     /// Numbers a request when it starts, so overlapping requests are numbered in the order they were made. Outside any
