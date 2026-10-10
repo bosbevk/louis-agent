@@ -129,9 +129,13 @@ adapter versions): reported exactly as Haiku 4.5 above, so `AnthropicUsageMapper
   says about 30%; this prompt is one repeated sentence, so measure real prompts before trusting either figure).
 - **Price:** the 6 requests cost about $0.007, against about $0.054 on Haiku 4.5: about 7.5× cheaper even after the
   extra tokens. Haiku 5.5 is priced by prompt length: over 100,000 tokens (cache included) the whole request costs 5×.
-- **Thinking:** `LlmClientFactory`'s adaptive thinking is accepted (no 400). At effort `medium` the model skipped
-  thinking on this one-line question, so whether thinking *text* comes back (the guide says it is empty unless
-  `display: "summarized"`) is still to be checked with a harder prompt.
+- **Thinking:** `LlmClientFactory`'s adaptive thinking is accepted (no 400). At effort `medium` the model skips
+  thinking on a one-line question. On a puzzle (`usage-probe -- --think`) it thinks, and the thinking **text comes back**
+  as a summary (662 chars non-streaming; 27 streamed chunks, 292 chars), each block signed: the agent's
+  `ReasoningOutput.Full` already gets summarized thinking, so the hosts show it without a change. The guide's empty
+  default doesn't apply to us.
+- **Thinking is most of the output and can't be told apart:** a two-sentence answer used 805 output tokens, and
+  `ReasoningTokenCount` is null, so the ledger records thinking and answer together. Effort is the lever on that cost.
 - `ReasoningTokenCount` is still null; streaming usage still arrives in the last update.
 
 **What the Ollama adapter reports** (measured 2026-10-10 with `tools/louis-agent.usage-probe`: OllamaSharp's

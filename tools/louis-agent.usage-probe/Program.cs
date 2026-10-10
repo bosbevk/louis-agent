@@ -9,6 +9,7 @@ using Microsoft.Extensions.AI;
 // Run it before trusting the usage ledger for a new provider or after upgrading an adapter (F1 step 1).
 //
 //   dotnet run --project tools/louis-agent.usage-probe [-- --lines N]
+//   dotnet run --project tools/louis-agent.usage-probe -- --think     (2 requests that need reasoning: is thinking text returned?)
 //
 // Uses LLM_PROVIDER / LLM_MODEL / LLM_ENDPOINT from config/.env; variables set in the shell win. Every request goes to the
 // real provider, so with Anthropic this costs money (about $0.05 on Haiku 4.5 with the default prompt).
@@ -28,6 +29,28 @@ string filler = string.Join("\n", Enumerable.Range(1, lines).Select(i => $"Refer
 string prompt = NewPrompt();
 
 Console.WriteLine($"provider={llm.Provider} model={llm.Model} thinking={thinking?.ToString() ?? "off"} mapper={mapper.GetType().Name} lines={lines}");
+
+if (args.Contains("--think"))
+{
+    // A question a model won't answer without working it out, so adaptive thinking actually thinks.
+    List<ChatMessage> puzzle =
+    [
+        new(ChatRole.User,
+            "Three boxes are labelled 'apples', 'oranges' and 'mixed', and every label is wrong. You may take one fruit " +
+            "from one box. Which box do you pick from, and how do you then relabel all three? Answer in two sentences."),
+    ];
+    ChatResponse response = await client.GetResponseAsync(puzzle, Options());
+    Console.WriteLine($"--- think, non-streaming: finish={response.FinishReason}");
+    PrintThinking(response.Messages.SelectMany(m => m.Contents));
+    Print("ChatResponse.Usage", response.Usage);
+
+    var updates = new List<ChatResponseUpdate>();
+    await foreach (var update in client.GetStreamingResponseAsync(puzzle, Options())) updates.Add(update);
+    Console.WriteLine($"--- think, streaming: {updates.Count} updates");
+    PrintThinking(updates.SelectMany(u => u.Contents));
+    Print("ToChatResponse().Usage", updates.ToChatResponse().Usage);
+    return 0;
+}
 
 try
 {
@@ -88,7 +111,10 @@ async Task NonStreaming(string label, bool cache)
 void PrintThinking(IEnumerable<AIContent> contents)
 {
     var thinking = contents.OfType<TextReasoningContent>().ToList();
-    Console.WriteLine($"  thinking: {thinking.Count} block(s), {thinking.Sum(t => t.Text.Length)} chars of text");
+    Console.WriteLine($"  thinking: {thinking.Count} block(s), {thinking.Sum(t => t.Text.Length)} chars of text, " +
+                      $"{thinking.Count(t => !string.IsNullOrEmpty(t.ProtectedData))} with a signature");
+    string text = string.Concat(thinking.Select(t => t.Text)).ReplaceLineEndings(" ");
+    if (text.Length > 0) Console.WriteLine($"  thinking starts: {text[..Math.Min(160, text.Length)]}");
 }
 
 async Task Streaming(string label, bool cache)
