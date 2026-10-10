@@ -187,12 +187,10 @@ feature when its turn comes; remove its line here and update the map's *Missing*
       Opus 5.5): they return a 400 when `system`, `tools` or earlier messages change while thinking blocks are sent back
       (enforced for accounts created on or after 2026-08-31). Known edits today: `AgentEngine.BeginTurn` rewrites
       `history[0]` when skills are reloaded, and approving an agent-built tool changes the tool list mid-session. F9
-      (compaction) must be designed append-only too. Blocks the switch below
-- [ ] Switch the default Anthropic model to Claude Haiku 5.5: about 7.5× cheaper than Haiku 4.5 on the probe even with
-      its +52% tokenizer; usage recording, adaptive thinking and thinking text checked with `usage-probe` (see the
-      optimisation spec, *Claude Haiku 5.5*). Before switching: the append-only item above, F2's price table with Haiku
-      5.5's over-100K-token tier, and a demo run that still confirms 10/10 fixes; take the M1 baseline on the model we
-      keep
+      (compaction) must be designed append-only too. *Removes the limitation:* reloading skills or approving a tool
+      mid-chat can break the chat on Haiku 5.5
+- [ ] Confirm Haiku 5.5 on the demo: a run that still confirms 10/10 fixes; take F1's M1 baseline on it, and give F2's
+      price table its over-100K-token tier
 
 ### Observability
 
@@ -214,11 +212,17 @@ backlog item removes one, it says so.
 - An unpublished API (`dotnet run`) only serves the web app in the `Development` environment.
 - Local models get a truncated prompt: Ollama's context window is 2,048 tokens by default and the agent sends ~26,000+
   (system prompt and tools); Ollama drops the rest without an error (the ledger shows `input: 2050`) → **F13**.
+- On Claude Haiku 5.5 (the default), reloading skills or approving an agent-built tool in the middle of a chat can make
+  the chat's next message fail with a 400: the model rejects a changed system prompt or tool list once thinking blocks
+  are in the history (enforced for accounts created on or after 2026-08-31). Start a new chat afterwards → *Models:
+  keep conversations append-only*.
 
 ## Done
 
 Newest first; details in the git history.
 
+- 2026-10-10 — Default Anthropic model is Claude Haiku 5.5 (about 7.5× cheaper than Haiku 4.5; usage, thinking and
+  thinking text checked with `tools/louis-agent.usage-probe`); LLM profiles `config/.env.anthropic` / `.env.ollama`
 - 2026-10-07 — Specs and feature plan for usage, budgets and cheaper responses (`docs/specs/`, `docs/features/`); the
   session-architecture and orchestrator designs moved from this list into `docs/specs/`
 - 2026-10-07 — Docs: [how the agents and endpoints talk](docs/AGENT_COMMUNICATION.md), [runbooks](docs/RUNBOOKS.md), a

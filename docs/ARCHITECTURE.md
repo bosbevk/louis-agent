@@ -68,7 +68,7 @@ Each project also has its own design doc in [projects/](projects/README.md).
 ### `LlmOptions` (`config/LlmOptions.cs`)
 - `LLM_PROVIDER`: `anthropic` | `ollama` | `openai-compatible`. If unset it is inferred: `claude*` → `anthropic`, other
   models → `ollama`, no model → `anthropic`.
-- `LLM_MODEL` (default `claude-haiku-4-5-20251001`), `LLM_ENDPOINT`, `LLM_API_KEY` (falls back to `ANTHROPIC_API_KEY`),
+- `LLM_MODEL` (default `claude-haiku-5-5`), `LLM_ENDPOINT`, `LLM_API_KEY` (falls back to `ANTHROPIC_API_KEY`),
   `ANTHROPIC_WORKSPACE_ID` (for keys not scoped to a workspace).
 - `LLM_SUPPORTS_TOOLS`: override; otherwise Ollama models starting with `llama2`, `codellama`, `deepseek-r1`,
   `deepseek-coder` or `qwen2` run without tools.
@@ -253,7 +253,7 @@ in `config/.env` ([MODELS.md](MODELS.md)):
 ```bash
 # config/.env.anthropic (LLM_PROFILE=anthropic, the default)
 LLM_PROVIDER=anthropic
-LLM_MODEL=claude-haiku-4-5-20251001     # ANTHROPIC_API_KEY in config/.env.secrets
+LLM_MODEL=claude-haiku-5-5              # ANTHROPIC_API_KEY in config/.env.secrets
 
 # config/.env.ollama (LLM_PROFILE=ollama; docker compose --profile ollama)
 LLM_PROVIDER=ollama

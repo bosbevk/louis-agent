@@ -32,17 +32,26 @@ If `LLM_PROVIDER` is unset it is inferred from the model: `claude*` → Anthropi
 
 ```bash
 LLM_PROVIDER=anthropic
-LLM_MODEL=claude-haiku-4-5-20251001
+LLM_MODEL=claude-haiku-5-5
 ```
 
-Claude Haiku 4.5 is the default: fast, cheap, and reliable at tool calling, which is what this agent does most. Any
-current Claude model id works in `LLM_MODEL` (Sonnet or Opus for harder work, at a higher price per token); check
-Anthropic's documentation (https://docs.claude.com) for ids and pricing.
+Claude Haiku 5.5 is the default: fast, the cheapest current Claude model ($0.10 / $0.50 per million input / output
+tokens for prompts up to 100,000 tokens, 5× that above), and good at tool calling, which is what this agent does most.
+It counts the same text as more tokens than Haiku 4.5 (+52% on the usage probe), and is still about 7.5× cheaper for
+the same work. `claude-haiku-4-5-20251001` still works. Any current Claude model id works in `LLM_MODEL` (Sonnet or Opus
+for harder work, at a higher price per token); check Anthropic's documentation (https://docs.claude.com) for ids and
+pricing, and run `tools/louis-agent.usage-probe` before relying on a new model's usage numbers.
 
-**Thinking.** `LLM_THINKING` (`off` / `low` / `medium` / `high`, default `medium` for Anthropic) turns on visible
-reasoning, streamed to Rider, the web app and the CLI. Thinking uses output tokens and adds a short pause before the
-answer; use `low` or `off` for speed. Claude models before 4.6 (including Haiku 4.5) get a fixed thinking budget
-(2,048 / 4,096 / 8,192 tokens); newer ones use adaptive thinking.
+**Thinking.** `LLM_THINKING` (`off` / `low` / `medium` / `high`, default `medium` for Anthropic) sets how much the model
+reasons; the reasoning is streamed to Rider, the web app and the CLI. Thinking uses output tokens and adds a short
+pause before the answer; use `low` for speed. Haiku 5.5 and other current models use adaptive thinking: they decide per
+request whether to think at all, and `off` leaves the model's own default rather than turning thinking off. Claude
+models before 4.6 (including Haiku 4.5) get a fixed thinking budget (2,048 / 4,096 / 8,192 tokens) instead.
+
+**History must stay append-only on Haiku 5.5.** It rejects a request whose system prompt, tools or earlier messages
+changed while thinking blocks are sent back (enforced for accounts created on or after 2026-08-31). Reloading skills or
+approving an agent-built tool in the middle of a chat does that today: start a new chat afterwards (see the known
+limitations).
 
 **Output limit.** Each reply is capped at 16,000 tokens (thinking included). Large files are written in chunks; a reply
 that hits the limit mid tool call is handled (the call is not run and the model continues).
@@ -102,7 +111,7 @@ Works with anything that speaks the OpenAI Chat Completions API. Tool calling de
    - Web app / API: `docker compose -f docker/docker-compose.yml --env-file config/.env up -d api`
    - CLI: just run it again.
 3. Check the startup line in the logs (`logs/agent-*.log`):
-   `[INFO] LLM: anthropic:claude-haiku-4-5-20251001 (...); tools=on; thinking=medium`
+   `[INFO] LLM: anthropic:claude-haiku-5-5 (...); tools=on; thinking=medium`
 
 ## Troubleshooting
 

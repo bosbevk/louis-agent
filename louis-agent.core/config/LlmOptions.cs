@@ -17,7 +17,7 @@ public sealed class LlmOptions
     /// <summary>anthropic | ollama | openai-compatible</summary>
     public string Provider { get; set; } = Anthropic;
 
-    public string Model { get; set; } = "claude-haiku-4-5-20251001";
+    public string Model { get; set; } = "claude-haiku-5-5";
 
     /// <summary>Base URL. Defaults per provider when empty.</summary>
     public string? Endpoint { get; set; }

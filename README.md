@@ -91,7 +91,7 @@ Settings live in `config/.env` and secrets in `config/.env.secrets`; both are gi
 
 | Setting | Purpose |
 |---|---|
-| `LLM_PROVIDER`, `LLM_MODEL` | `anthropic` (default, `claude-haiku-4-5-20251001`), `ollama` or `openai-compatible` |
+| `LLM_PROVIDER`, `LLM_MODEL` | `anthropic` (default, `claude-haiku-5-5`), `ollama` or `openai-compatible` |
 | `LLM_THINKING` | Visible reasoning: `off` / `low` / `medium` / `high` (default `medium` for Anthropic) |
 | `ANTHROPIC_API_KEY` | Claude API key *(secret)* |
 | `AGENT_FUNCTION` | Which `Skills/{name}-skills.md` to load; `louis` loads all |
