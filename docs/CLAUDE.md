@@ -49,7 +49,7 @@ louis-agent.core/
 ├── MarkdownSkillLoader.cs    # Parses "## Skill:" procedures from markdown
 ├── config/
 │   ├── LlmOptions.cs         # LLM_* settings, tool-support and thinking resolution
-│   └── AgentOptions.cs       # Workspace, skills, keys, Rider MCP, LOG_DIRECTORY, USAGE_LEDGER
+│   └── AgentOptions.cs       # Workspace, skills, keys, Rider MCP, LOG_DIRECTORY, USAGE_LEDGER, PRICES_FILE/_URL
 ├── providers/
 │   ├── LlmClientFactory.cs   # Provider → IChatClient (Anthropic thinking-budget wrapper lives here)
 │   ├── CompositeSkillProvider.cs, MarkdownSkillProvider.cs, ISkillProvider.cs
@@ -68,6 +68,7 @@ louis-agent.core/
 │   ├── IUsageMapper.cs       # Provider usage → the ledger's token kinds (Standard / Anthropic mappers)
 │   ├── PriceTable.cs, CostCalculator.cs  # Prices (config/prices.json) and a record's cost (F2)
 │   ├── PricingUsageSink.cs   # Puts the cost on each record before the ledger writes it
+│   ├── UsageReport.cs        # Reads a ledger back, prices old records, totals per fix / triage / run
 │   └── UsageRecord.cs, IUsageSink.cs, JsonlUsageSink.cs
 └── mcp/
     ├── RiderMcpClient.cs     # Lists tools from Rider's MCP server
@@ -76,7 +77,7 @@ louis-agent.core/
 src/
 ├── louis-agent.cli/          # Terminal host
 ├── louis-agent.acp-server/   # Rider (Agent Client Protocol over stdio)
-├── louis-agent.api/          # Minimal API: sessions + SSE, /workspace, /git; serves the web app
+├── louis-agent.api/          # Minimal API: sessions + SSE, /workspace, /git, /prices; serves the web app
 │   ├── Program.cs, AgentSessions.cs, WorkspaceEndpoints.cs
 │   ├── GitEndpoints.cs       # status, diff, stage/unstage/discard, commit
 │   └── HistoryEndpoints.cs   # branches, log, commit/branch diffs, merge, delete merged branch
@@ -91,16 +92,18 @@ src/
     ├── CommsLog.cs           # Markdown log of every message between the agents
     └── Skills/               # orchestrator.md + {service}/service.md + one runbook per API method
 
-tools/louis-agent.usage-probe/ # Prints a provider's raw token usage and the ledger's mapping (calls the real provider)
-tests/louis-agent.core.tests/ # NUnit; Config, Loaders, Providers, Tools, mcp
+tools/louis-agent.usage-probe/ # Prints a provider's raw token usage and the ledger's mapping (calls the real provider);
+                              # --ledger <file> prices and totals a usage ledger (no model call)
+tests/louis-agent.core.tests/ # NUnit; Config, Loaders, Providers, Tools, Usage, mcp
 tests/louis-agent.orchestrator.tests/ # NUnit; error feed, SSE client, verification tools
-samples/                      # order-service (demo microservice) + run-demo.ps1, see samples/README.md
+samples/                      # order-service (demo microservice), run-demo.ps1 [-Short], sample-output/ and
+                              # sample-output-short/ (real runs with their priced usage ledgers), see samples/README.md
 docker/                       # Dockerfile.{acp-server,api,agent,mcp-server,orchestrator}, docker-compose.yml,
                               # docker-compose.demo.yml (orchestrator demo); the build context's .dockerignore is at the repo root
 config/                       # .env and .env.secrets (both ignored), their examples, LLM profiles (.env.anthropic,
                               # .env.ollama), prices.json (model prices), Rider config examples
 Skills/                       # personality.md + default.md + *-skills.md (system prompt), tools/ (agent-built tools)
-docs/                         # This guide and the other docs
+docs/                         # This guide, features/ (planned work), fixes/ (what broke and why), specs/, projects/
 ```
 
 ## Development workflow
@@ -135,7 +138,9 @@ Create `Skills/{name}-skills.md`. With `AGENT_FUNCTION=louis` every skill file i
 
 Pass `toolsets:` to the `AgentEngine` constructor to give an agent only your tool objects (plus `ExecuteSkill`) instead
 of the built-in coding tools, and build its system prompt from your own skill files (`CompositeSkillProvider` +
-`MarkdownSkillProvider`). `louis-agent.orchestrator` does exactly this; its `Program.cs` is the example.
+`MarkdownSkillProvider`). To record its usage, pass `usageSink: AgentHost.CreateUsageSink(options)` and
+`usageMapper: clientFactory.CreateUsageMapper(llm)`, and open a `UsageScope` per turn (with a `UsageTags` run id if it
+has one). `louis-agent.orchestrator` does exactly this; its `Program.cs` is the example.
 
 ### Adding a web theme
 
@@ -144,14 +149,19 @@ Copy `src/louis-agent.web/wwwroot/css/themes/paper.css` to `{id}.css`, set the v
 
 ### Changing the LLM
 
-Configuration only — see [MODELS.md](MODELS.md). Provider differences belong in `LlmClientFactory`, never in
-`AgentEngine` or the tools.
+Configuration only — see [MODELS.md](MODELS.md): `LLM_PROFILE` picks `config/.env.anthropic` or `config/.env.ollama`.
+A new model also needs its prices in `config/prices.json` (else its cost is recorded as unknown); run
+`tools/louis-agent.usage-probe` before trusting a new provider's usage numbers. Provider differences belong in
+`LlmClientFactory` (the client, and `CreateUsageMapper` for how it reports usage), never in `AgentEngine` or the tools.
 
 ### Running and debugging
 
 - Tool calls are logged to stderr: `[TOOL] -> Name(args)` and `[TOOL] <- Name: result` (or `failed: …`).
 - In Docker, logs persist in `logs/`; `docker logs louis_agent_api` shows the API.
 - Write debug output to `Console.Error`, never `Console.Out`: stdout carries the ACP and MCP protocols.
+- Every model request is in the usage ledger, `{LOG_DIRECTORY}/usage-YYYY-MM.jsonl` (tokens, cost, host, session,
+  turn, fix and run; no prompt text). Total one with
+  `dotnet run --project tools/louis-agent.usage-probe -- --ledger logs/usage-YYYY-MM.jsonl`.
 - After changing the web app or API, rebuild the `api` image; after changing core, rebuild every image you use. Rider
   chats keep their container until you start a **New Chat**.
 
@@ -161,6 +171,7 @@ Configuration only — see [MODELS.md](MODELS.md). Provider differences belong i
 dotnet test tests/louis-agent.core.tests
 dotnet test tests/louis-agent.core.tests --filter "FullyQualifiedName~AgentEngineTests"
 dotnet test tests/louis-agent.orchestrator.tests
+dotnet test louis-agent-solution.sln          # everything, including the order-service sample's tests
 ```
 
 Tests use `FakeChatClient` (a scripted `IChatClient` that also streams) and `StubHandler` for HTTP — no network, model or
@@ -180,6 +191,11 @@ whole loop against a real model: API sessions, the fix flow, and the web app's B
   shell, so model text can't become commands.
 - **Guard the context** — oversized results are summarised, cut-off calls are never run, failures carry their reason.
 - **Hosts stay thin** — each host maps the same stream to its protocol; behaviour lives in core.
+- **Measure every request** — the usage ledger records each model request with its tokens and its cost, priced from a
+  table dated by `as_of`, so later price changes never rewrite history; unknown prices are `null`, never 0.
+- **History is append-only** — newer Claude models (Haiku 5.5 and later) bind thinking blocks to the system prompt,
+  tools and earlier messages, so nothing may edit them mid-conversation ([FX1](fixes/FX01-round-limit-tools.md);
+  [FX4](fixes/FX04-append-only-history.md) is still open).
 
 ## Anthropic integration tiers (reference)
 
@@ -286,6 +302,12 @@ The same list as the TODO's *Known limitations*: when work removes one, delete i
   `LlmClientFactory.ThinkingBudgetModelPrefixes`; add its prefix.
 - **Skill not found** — the file isn't loaded for this `AGENT_FUNCTION`, or the name differs (case-sensitive).
 - **bash not found on Windows** — install Git for Windows or set `BASH_PATH` to `bash.exe`; WSL's bash is never used.
+- **400 "Invalid `signature` in `thinking` block … bound to a different conversation"** — the system prompt or tool list
+  changed under earlier thinking (known limitation 9); start a new chat. See [FX4](fixes/FX04-append-only-history.md).
+- **"Price table …"** stopping start-up (not valid, empty, a negative price, or a bad `long_prompt.above_tokens`) — fix
+  `config/prices.json` (or the `PRICES_FILE` / `PRICES_URL` table): every model needs all five prices, none negative.
+  **"[WARN] No price table"** means costs are recorded as unknown.
+- **"Model '…' isn't pulled into Ollama"** (usage probe) or a 404 from Ollama — `docker exec louis_ollama ollama pull <model>`.
 
 ## Contributing
 
