@@ -39,8 +39,15 @@ unchanged, with **`ChatToolMode.None`**. The tool list then matches every earlie
 a tool. Captured locally (no real call), the Anthropic adapter sends that as the same `tools` with
 `tool_choice: {"type": "none"}`. Models without tool support, and every request that already has tools, are untouched.
 
+**Why it works:** Anthropic's [preserved thinking](https://platform.claude.com/docs/en/build-with-claude/preserved-thinking)
+page lists what the check covers: the `system` prompt, the set of `tools`, and every message before the block.
+"Request parameters outside those three fields, such as `effort`, `max_tokens`, `output_config`, `tool_choice`, and
+`metadata`, aren't part of the prefix check." So the same tools with a different `tool_choice` pass.
+
 **Rejected:** raising the round limit (that's [F10](../features/F10-route-settings.md), and only makes the limit rarer, not
-safe); turning thinking off for the final request (Haiku 5.5's thinking can't be turned off).
+safe); turning thinking off for the final request (Haiku 5.5 accepts `thinking: {"type": "disabled"}`, but the earlier
+turns' thinking blocks are still sent back and still checked against the changed tool list, so the request fails the
+same way).
 
 ## Tests
 

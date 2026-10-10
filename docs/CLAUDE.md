@@ -271,10 +271,12 @@ The same list as the TODO's *Known limitations*: when work removes one, delete i
 8. **Local models get a truncated prompt.** Ollama's context window is 2,048 tokens by default and the agent sends
    ~26,000+ (system prompt and tools); Ollama drops the rest without an error, so the ledger shows `input: 2050`.
    Removed by [F13 Local models](features/F13-local-models.md).
-9. **Reloading skills or approving a tool mid-chat can break the chat on Claude Haiku 5.5** (the default). The model
-   rejects a changed system prompt or tool list once thinking blocks are in the history (enforced for accounts created
-   on or after 2026-08-31), and `BeginTurn` rewrites the system prompt after a reload. Start a new chat afterwards.
-   Removed by [FX4 Append-only history](fixes/FX04-append-only-history.md).
+9. **Changing the tools or skills during a chat can break it on Claude Haiku 5.5** (the default). The model rejects a
+   changed system prompt or tool list once thinking blocks are in the history (enforced for accounts created on or
+   after 2026-08-31). `BeginTurn` sends the engine's live tool list, so a tool the model creates (`CreateTool`) breaks
+   the rest of that message; `/approve`, `/reject` and a skill reload break the next one; and in the API every open
+   chat shares one tool list. Start a new chat afterwards. Removed by
+   [FX4 Append-only history](fixes/FX04-append-only-history.md).
 
 ## Common errors
 

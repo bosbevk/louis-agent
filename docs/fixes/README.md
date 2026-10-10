@@ -12,7 +12,7 @@ record (most fixes so far taught something about a model's API).
 | [FX1](FX01-round-limit-tools.md) | Keep the tools on the request after the 10-round limit | done | core: tool loop | Short demo on Haiku 5.5 lost 2 of 4 fixes (2026-10-10) | `d9c7c45` | A message that uses all 10 tool rounds fails on Haiku 5.5 |
 | [FX2](FX02-probe-ollama-404.md) | The usage probe says which model to pull on an Ollama 404 | done | tools: usage probe | Probe run on the Ollama profile (2026-10-10) | `a4e9f7f` | — |
 | [FX3](FX03-ollama-container.md) | The Ollama container starts and pulls the profile's model | done | Docker: ollama service | Starting Ollama for the usage probe (2026-10-10) | `882fdde` | — |
-| [FX4](FX04-append-only-history.md) | Keep conversations append-only, so a mid-chat skill reload or tool approval doesn't break Haiku 5.5 chats | open | core: history | Haiku 5.5 migration guide; FX1 is the same rule (2026-10-10) | — | Reloading skills or approving a tool mid-chat can break the chat on Haiku 5.5 |
+| [FX4](FX04-append-only-history.md) | Keep conversations append-only, so changing the tools or skills mid-chat doesn't break Haiku 5.5 chats | open | core: history, tool list | Haiku 5.5 migration guide and the code (`CreateTool` mid-message, from the PR #9 review) (2026-10-10) | — | Changing the tools or skills during a chat can break it on Haiku 5.5 |
 
 ## Conventions
 
