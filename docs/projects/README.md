@@ -17,7 +17,7 @@ when you're about to change a particular project.
 | `src/louis-agent.orchestrator` | Console app | A second agent that watches a service's errors and has louis-agent fix them (POC) | [orchestrator](louis-agent.orchestrator.md) |
 | `tools/louis-agent.usage-probe` | Console app (developer tool) | Prints what a provider reports as token usage and what the ledger makes of it | [usage-probe](louis-agent.usage-probe.md) |
 | `tests/louis-agent.core.tests`, `tests/louis-agent.orchestrator.tests` | NUnit | Unit tests for core and the orchestrator | [tests](tests.md) |
-| `samples/order-service` | Console app + tests | The demo microservice with ten planted bugs (not in the solution) | [order-service](order-service.md) |
+| `samples/order-service` | Console app + tests | The demo microservice with ten planted bugs (in the solution's `samples` folder; also has its own `OrderService.slnx`) | [order-service](order-service.md) |
 
 ## How they depend on each other
 

@@ -1,6 +1,6 @@
 # samples/order-service — design
 
-> **Kind:** console app + NUnit tests, its own solution (`OrderService.slnx`), **not** in the louis-agent solution ·
+> **Kind:** console app + NUnit tests, in the louis-agent solution's `samples` folder, and its own solution (`OrderService.slnx`) for the demo repository ·
 > **Path:** `samples/order-service/` · **Runs in:** the demo containers, as its own git repository in
 > `.demo/order-service`
 
@@ -50,6 +50,10 @@ Plus three that must not be fixed: a correctly rejected duplicate refund, a paym
 - A new method also needs a runbook in `src/louis-agent.orchestrator/Skills/order-service/`
   ([Runbooks](../RUNBOOKS.md)) and, for the demo, a line in `data/requests.txt`.
 - The demo copies this folder into a fresh repository on every clean run, so edits here take effect on the next run.
+  The copy drops `bin/`, `obj/` and `logs/`, so building it from the louis-agent solution doesn't leak into the demo.
+- Keep `OrderService.slnx`: inside the demo repository it is the solution louis-agent and the orchestrator build and
+  test. Its 14 baseline tests also run with `dotnet test louis-agent-solution.sln`, and must keep passing with the
+  planted bugs in place.
 
 ## Related docs
 
