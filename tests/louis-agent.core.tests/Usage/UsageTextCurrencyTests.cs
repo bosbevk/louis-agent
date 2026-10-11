@@ -2,7 +2,7 @@ using System.Globalization;
 using LouisAgent.Core.Usage;
 using LouisAgent.Core.Pricing;
 
-namespace LouisAgent.Core.Tests;
+namespace LouisAgent.Core.Tests.Usage;
 
 // F14 step 3: the usage text in the display currency, always with '.' decimals; the ledger keeps what was charged.
 public class UsageTextCurrencyTests

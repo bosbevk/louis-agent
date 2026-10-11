@@ -1,6 +1,7 @@
 using LouisAgent.Core.Config;
 using Microsoft.Extensions.AI;
 using LouisAgent.Core.Hosting;
+using LouisAgent.Core.Usage;
 
 namespace LouisAgent.Core.Tests;
 
@@ -57,5 +58,37 @@ internal sealed class StubHandler(Func<HttpRequestMessage, HttpResponseMessage> 
         string? body = request.Content is null ? null : await request.Content.ReadAsStringAsync(cancellationToken);
         Requests.Add((request.Method, request.RequestUri!.ToString(), body));
         return respond(request);
+    }
+}
+
+/// <summary>Streams one text update, then throws the given exception, as a provider does when a stream breaks.</summary>
+internal sealed class FailingStreamClient(Exception exception) : IChatClient
+{
+    public Task<ChatResponse> GetResponseAsync(
+        IEnumerable<ChatMessage> messages, ChatOptions? options = null, CancellationToken cancellationToken = default) =>
+        throw exception;
+
+    public async IAsyncEnumerable<ChatResponseUpdate> GetStreamingResponseAsync(
+        IEnumerable<ChatMessage> messages, ChatOptions? options = null,
+        [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        yield return new ChatResponseUpdate(ChatRole.Assistant, "partial");
+        await Task.Yield();
+        throw exception;
+    }
+
+    public object? GetService(Type serviceType, object? serviceKey = null) => null;
+    public void Dispose() { }
+}
+
+/// <summary>Collects records in memory for assertions.</summary>
+internal sealed class ListUsageSink : IUsageSink
+{
+    public List<UsageRecord> Records { get; } = [];
+
+    public UsageRecord Record(UsageRecord record)
+    {
+        Records.Add(record);
+        return record;
     }
 }

@@ -1,7 +1,7 @@
 using System.Reflection;
 using LouisAgent.Core.Messages;
 
-namespace LouisAgent.Core.Tests;
+namespace LouisAgent.Core.Tests.Messages;
 
 // docs/CLAUDE.md, "Messages and logging": every message is an enum member whose [Description] is its template, with
 // named holes. This checks every message enum in core, so a member added without text, or with a broken hole, fails here.

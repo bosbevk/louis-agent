@@ -1,19 +1,4 @@
 using System.Text.RegularExpressions;
-using LouisAgent.Core.Pricing;
-using LouisAgent.Core.Llm;
-using LouisAgent.Core.Llm.AnthropicProvider;
-using LouisAgent.Core.Skills;
-using LouisAgent.Core.Hosting;
-using LouisAgent.Core.Tools;
-using LouisAgent.Core.Tools.DotNet;
-using LouisAgent.Core.Tools.Git;
-using LouisAgent.Core.Tools.Integrations.DevOps;
-using LouisAgent.Core.Tools.Integrations.Paymo;
-using LouisAgent.Core.Tools.Scripts;
-using LouisAgent.Core.Tools.Shell;
-using LouisAgent.Core.Tools.Web;
-using LouisAgent.Core.Tools.Workspace;
-using LouisAgent.Core.Logging;
 
 namespace LouisAgent.Core.Tests;
 

@@ -3,7 +3,7 @@ using LouisAgent.Core.Usage;
 using LouisAgent.Core.Pricing;
 using LouisAgent.Core.Llm;
 
-namespace LouisAgent.Core.Tests;
+namespace LouisAgent.Core.Tests.Usage;
 
 // F4-S4: which lifetime the prefix should have, replayed on the ledger's own request times. Every request here is a
 // 1,000,000-token prompt, so costs read straight off Haiku 5.5's per-million prices: write 0.125 (5 min) or 0.20
