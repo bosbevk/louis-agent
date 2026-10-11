@@ -10,7 +10,7 @@ Built as features in [docs/features/](../features/README.md); each is one line u
 | Section | Feature | Status |
 |---|---|---|
 | §A Measure usage | [F1 Usage ledger](../features/F01-usage-ledger.md), [F2 Prices and cost](../features/F02-prices-and-cost.md), [F3 Show usage](../features/F03-usage-display.md) | F1, F2 **done** (2026-10-10; a monthly `usage-YYYY-MM.jsonl`, not `usage.jsonl`; prices in a tracked `config/prices.json`, not `LLM_PRICE_*` settings); F3 planned |
-| §B Prompt caching | [F4 Prompt caching](../features/F04-prompt-caching.md) | planned |
+| §B Prompt caching | [F4 Prompt caching](../features/F04-prompt-caching.md) | **done** (2026-10-11; two markers, the second automatic, instead of three; input cost −87% on the demo) |
 | §C Toolset profiles | [F5 Toolset profiles](../features/F05-toolset-profiles.md) | planned |
 | §D Bounded history | [F9 Bounded history](../features/F09-context-management.md) | planned |
 | §E Settings per route | [F10 Route settings](../features/F10-route-settings.md) | planned |
@@ -160,22 +160,28 @@ adapter versions): reported exactly as Haiku 4.5 above, so `AnthropicUsageMapper
 the normal input price on Haiku (**0.05×** on Sonnet 5.5 and Opus 5.5); writing them costs **1.25×** (5-minute
 lifetime) or **2×** (1-hour). With the 5-minute lifetime, two requests already break even.
 
-**Breakpoints** (the API allows 4 per request; markers go at the *end* of the block they cover):
+**Breakpoints, as built in F4** (the API allows 4 per request; a marker goes at the *end* of the block it covers; the
+order is tools → system → messages, so a marker on the system prompt also covers the tools):
 
-| # | Where | Covers | How (Anthropic SDK 12.53, already referenced) |
-|---|---|---|---|
-| 1 | The last tool definition | All tool definitions | `AIFunctionFactoryOptions.AdditionalProperties[nameof(Tool.CacheControl)] = new CacheControlEphemeral()` on the last registered tool |
-| 2 | The system prompt | Tools + system prompt (~48,000 tokens in the demo on Haiku 5.5, measured in M1) | System message built as `new TextContent(prompt).WithCacheControl(...)` |
-| 3 | The last block of the newest message | The whole conversation so far | Set on each request; the API reuses earlier prefixes, so hits grow round by round |
+| # | Where | Covers | How (Anthropic SDK 12.53) | Lifetime |
+|---|---|---|---|---|
+| 1 | The system prompt's last block | Tools + system prompt (47,424 tokens in the demo on Haiku 5.5) | A copy of the block, `new TextContent(text).WithCacheControl(ttl)` | `LLM_CACHE_TTL` (5m default, 1h) |
+| 2 | Automatic: the request's top-level `cache_control` | The whole conversation so far; the API puts it on the last block and moves it forward | `MessageCreateParams.CacheControl` through `RawRepresentationFactory` | Always 5 minutes |
 
-**Where it lives:** a `CachingChatClient` (a `DelegatingChatClient`) that `LlmClientFactory` adds for the Anthropic
-provider only. It places markers on a **per-request copy** of the message list, never on the stored history:
-markers left on history objects would pile up past the 4-breakpoint limit (a 400 error) and leak into other
-providers' requests.
+*Planned, not built:* a separate marker on the last tool (it only helps when the system prompt changes but the tools
+don't, which is rare), and an explicit marker on a clone of the newest message (automatic caching does it without
+touching history).
 
-**Lifetime:** 5 minutes by default (`LLM_CACHE_TTL=5m`): tool rounds start seconds apart, and every read renews the
-entry. `1h` is for chats where people pause 5–60 minutes between messages; it costs more to write, so use it only
-where measurement shows those gaps.
+**Where it lives:** `PromptCachingChatClient` (a provider-neutral `DelegatingChatClient`) asks the provider's
+`IPromptCachingStrategy` for each request: `AnthropicPromptCaching` marks a **per-request copy**, never the stored
+history (`WithCacheControl` changes the block it is called on), and `NoPromptCaching` sends Ollama's and
+OpenAI-compatible requests unchanged. `LlmClientFactory` picks the strategy (`LLM_CACHE=on`, the default) and wraps
+every provider's client with it, innermost, so every tool round is marked. Summary requests go unmarked.
+
+**Lifetime:** per marker. The conversation's (marker 2) is always 5 minutes: only the next round, seconds later, reads
+it. The prefix's (marker 1) is `LLM_CACHE_TTL`, chosen from the measured gaps between requests that share it:
+`usage-probe -- --cache-gaps <ledger>` replays a ledger against both lifetimes per host and model. Under 5 minutes or
+over an hour, 5m is cheaper; between, 1h. The longer lifetime always comes first, as the API requires.
 
 **Keep the prefix byte-stable** (each item below silently breaks caching):
 
@@ -205,8 +211,26 @@ where measurement shows those gaps.
 
 Breakpoint 3 adds savings on the growing history on top of that.
 
+**Measured** (F4, 2026-10-11, the full demo): the prefix per fix about **−88%** ($0.054 to about $0.0063), louis-agent's
+input cost **−87%**, the run **−80%** against M1 with 10/10 fixes; the prefix was written once per run and read by every
+later fix in its own session ([F4 benchmark](../features/README.md#f4-benchmark-2026-10-11)).
+
 **Accept when:** from the second request of a session, `CachedInputTokenCount` ≥ the prefix size; the benchmark's
 input cost falls by at least 60%; Ollama and OpenAI-compatible runs are unchanged (no markers sent).
+
+**What the adapter sends** (F4 step 1 spike, 2026-10-11: Anthropic 12.53 with its Microsoft.Extensions.AI adapter;
+captured request bodies, no model call; kept as `AnthropicCachingWireTests`):
+
+| Question | Answer |
+|---|---|
+| Does `TextContent.WithCacheControl(ttl)` on the system message reach the wire? | Yes: `"system":[{"text":…,"cache_control":{"type":"ephemeral","ttl":"1h"}}]` |
+| Does a top-level `cache_control` (automatic caching) set through `RawRepresentationFactory` reach it? | Yes, beside the system marker, with its own TTL; no marker lands on the messages |
+| Does it keep thinking and tools? | Yes, including through `WithThinkingBudget`, which chains to the previous factory |
+| Are writes split by lifetime reported? | Not in `UsageDetails` (only the total `CacheCreationInputTokens`, as F1 found); the SDK's own `Message` (`ChatResponse.RawRepresentation`) has `Usage.CacheCreation.Ephemeral5mInputTokens` / `Ephemeral1hInputTokens` |
+
+Checked against Anthropic's prompt-caching page the same day: a read refreshes the lifetime at no cost; 5-minute and
+1-hour entries can be mixed if the 1-hour one comes first; automatic caching uses one of the 4 breakpoint slots; the
+lookback is 20 blocks; Haiku 5.5 caches from 512 tokens.
 
 ### C. Send only the tools a session needs
 
@@ -309,7 +333,7 @@ Each step lands only if quality holds: 10/10 demo fixes confirmed by the orchest
 
 | Risk | Mitigation |
 |---|---|
-| Cache markers accumulate on stored history → more than 4 breakpoints → 400 | Mark a per-request copy only (B); a unit test asserts at most 4 markers per request |
+| Cache markers accumulate on stored history → more than 4 breakpoints → 400 | Mark a per-request copy only (B); tests assert the caller's messages and blocks are unchanged and no message carries a marker (`PromptCachingTests`) |
 | Prefix changes silently between requests → no hits, higher cost (writes at 1.25×) | Usage logging shows `CachedInputTokenCount` = 0; deterministic tool order; no dynamic text in the prefix |
 | Clearing or compacting loses something the model needs | Stubs say how to get it back; originals go to the log; thresholds tuned against the benchmark |
 | History rewrites break the message cache | Run them rarely, at thresholds; tools and system caches are unaffected |

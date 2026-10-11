@@ -95,6 +95,7 @@ Settings live in `config/.env` and secrets in `config/.env.secrets`; both are gi
 | `LLM_PROFILE` | Which LLM profile to load: `anthropic` (`config/.env.anthropic`, Claude Haiku 5.5) or `ollama` (`config/.env.ollama`) |
 | `LLM_PROVIDER`, `LLM_MODEL` | Set by the profile: `anthropic` (default, `claude-haiku-5-5`), `ollama` or `openai-compatible` |
 | `LLM_THINKING` | Visible reasoning: `off` / `low` / `medium` / `high` (default `medium` for Anthropic) |
+| `LLM_CACHE`, `LLM_CACHE_TTL` | Prompt caching (Anthropic): `on` by default; the prefix's lifetime, `5m` (default) or `1h` |
 | `ANTHROPIC_API_KEY` | Claude API key *(secret)* |
 | `AGENT_FUNCTION` | Which `Skills/{name}-skills.md` to load; `louis` loads all |
 | `AGENT_API_KEY` | When set, required (as `x-api-key` or `Authorization: Bearer`) for the HTTP API *(secret)* |

@@ -141,6 +141,13 @@ and the usage ledger (`logs/`, `usage-YYYY-MM.jsonl`: one line per model request
 `escalations.jsonl`, `acknowledged.jsonl` and `processed.txt` (so an error is triaged once). Container output:
 `docker compose -f docker/docker-compose.demo.yml logs demo-api`.
 
+With prompt caching (F4, on by default since): [sample-output-cached/](sample-output-cached/README.md) ($0.13 against
+$0.72, −81%) and [sample-output-short-cached/](sample-output-short-cached/README.md) ($0.049 against $0.29, −83%), the
+same fixes for a fifth of the cost; the two samples above are their "before".
+
+Not from the demo: [smoke-f4-caching/](smoke-f4-caching/README.md) is F4's smoke check, one CLI message with prompt
+caching on ($0.0070), kept as a reference for what a cached turn looks like in the ledger.
+
 ## Running the parts yourself
 
 ```powershell

@@ -19,7 +19,7 @@ feature replaces older backlog wording, that wording no longer appears anywhere 
 | [F1](F01-usage-ledger.md) | Usage ledger: record every model request | done | U §4.1, §4.3 · R §A | *Track token usage / cost per session* (with F2, F3, F6, F7, F11) | — | M1 |
 | [F2](F02-prices-and-cost.md) | Prices and cost | done | U §4.2 | (as F1) | F1 | M1 |
 | [F3](F03-usage-display.md) | Show usage: chat, CLI, Rider, API, comms log | done | U §7.2–7.4 | (as F1) | F1, F2 | M1 |
-| [F4](F04-prompt-caching.md) | Prompt caching (Anthropic) | planned | R §B | *Wire up Anthropic prompt caching* | F1 | M2 |
+| [F4](F04-prompt-caching.md) | Prompt caching (Anthropic) | **done** | R §B | *Wire up Anthropic prompt caching* | F1 | M2 |
 | [F5](F05-toolset-profiles.md) | Toolset profiles | planned | R §C | — | F1 | M2 |
 | [F6](F06-estimates.md) | Cost estimates before a run | planned | U §5 | (as F1) | F1, F2 | M3 |
 | [F7](F07-budgets.md) | Budgets: warn, ask, stop | planned | U §6 | (as F1) | F1, F2, F6 | M3 |
@@ -118,6 +118,34 @@ Full demo on Claude Haiku 5.5 (`run-20261010-193730`, ledger in
   requests (`run-20261011-083646`, 10/10 fixes; 8.7% above the baseline, mostly one fix's needless follow-ups, fixed
   as [FX8](../fixes/FX08-fix-result-quotes.md)), the short run $0.2884 for 64 (`run-20261011-085011`). Both are now
   the saved samples; the M1 baseline stays `run-20261010-193730`.
+
+### F4 benchmark (2026-10-11)
+
+The full demo with prompt caching on for louis-agent (`run-20261011-183104`, saved in
+[samples/sample-output-cached/](../../samples/sample-output-cached/README.md)); the orchestrator's triage is not
+cached (F17). **10/10 fixes confirmed**, 2 ignored, 1 escalated, as in M1.
+
+| | M1 baseline | Uncached rerun (F14) | Cached (F4) | F4 vs M1 |
+|---|---:|---:|---:|---:|
+| louis-agent: input cost | $0.6081 | $0.6641 | $0.0820 | **−87%** |
+| louis-agent: cost | $0.6245 | $0.6818 | $0.0991 | −84% |
+| A fix: fewest / average / most | $0.0442 / $0.0625 / $0.0879 | | $0.0075 / $0.0099 / $0.0146 | −84% (average) |
+| Triage (not cached) | $0.0340 | $0.0340 | $0.0343 | +1% |
+| **The run** | **$0.6586** | **$0.7157** | **$0.1334** | **−80%** |
+| Cache-hit rate (louis-agent) | 0% | 0% | 98% | |
+
+- **Targets met:** input cost −87% against the ≥ 60% of F4's *Done when*. The prefix per fix: about 12 requests ×
+  47,424 tokens at $0.10 per million was $0.054 a fix; it is now read at $0.01 per million and written once a run
+  (47,424 at $0.125), about $0.0063 a fix: **−88%**, against the write-up's −80%.
+- **The prefix is written once per run, not per fix:** the nine fixes after the first opened in new sessions by reading
+  it (marker 1 is shared across sessions); each wrote only its first message, about 1,100 tokens.
+- **Continue messages read the whole conversation** and wrote only the new message (30–312 tokens).
+- **Short run** (`run-20261011-184153`, [samples/sample-output-short-cached/](../../samples/sample-output-short-cached/README.md)):
+  4/4 fixes, $0.0488 against $0.2884 uncached (−83%); louis-agent's input cost −89%.
+- **The lifetime:** every gap is under 5 minutes in both agents (`usage-probe -- --cache-gaps`), so the default 5m is
+  right for the demo; 1 hour would cost more.
+- The smoke check before it is kept in [samples/smoke-f4-caching/](../../samples/smoke-f4-caching/README.md).
+- The three paid runs together cost $0.19.
 
 ## Conventions
 

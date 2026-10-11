@@ -55,8 +55,10 @@ louis-agent.core/
 ├── config/
 │   ├── LlmOptions.cs         # LLM_* settings, tool-support and thinking resolution
 │   └── AgentOptions.cs       # Workspace, skills, keys, Rider MCP, LOG_DIRECTORY, USAGE_LEDGER, PRICES_FILE/_URL
+├── messages/                 # Message enums ([Description] templates) and Messages.Format (see Messages and logging)
 ├── providers/
-│   ├── LlmClientFactory.cs   # Provider → IChatClient (Anthropic thinking-budget wrapper lives here)
+│   ├── LlmClientFactory.cs   # Provider → IChatClient (Anthropic thinking-budget wrapper lives here), wrapped for caching
+│   ├── IPromptCachingStrategy.cs, AnthropicPromptCaching.cs, NoPromptCaching.cs, PromptCachingChatClient.cs  # F4
 │   ├── CompositeSkillProvider.cs, MarkdownSkillProvider.cs, ISkillProvider.cs
 │   └── Personality/Default/DotNet/DevOps/Paymo/CodeReview/TimeLogging SkillsProvider.cs
 ├── tools/
@@ -76,6 +78,7 @@ louis-agent.core/
 │   │                         # currency costs are shown in, from HOST_CULTURE (F14); the ledger keeps what was charged
 │   ├── PricingUsageSink.cs   # Puts the cost on each record before the ledger writes it
 │   ├── UsageReport.cs        # Reads a ledger back, prices old records, totals per fix / triage / run
+│   ├── CacheGaps.cs          # The prefix's cache lifetime from a ledger's request gaps (F4, usage-probe --cache-gaps)
 │   ├── UsageText.cs, UsageSession.cs  # The usage line and /usage text every host shows (F3); a session's turns
 │   └── UsageRecord.cs, IUsageSink.cs, JsonlUsageSink.cs
 └── mcp/
@@ -101,11 +104,12 @@ src/
     └── Skills/               # orchestrator.md + {service}/service.md + one runbook per API method
 
 tools/louis-agent.usage-probe/ # Prints a provider's raw token usage and the ledger's mapping (calls the real provider);
-                              # --ledger <file> prices and totals a usage ledger (no model call)
+                              # --ledger <file> prices and totals a usage ledger, --cache-gaps <file> recommends
+                              # LLM_CACHE_TTL (neither calls a model)
 tests/louis-agent.core.tests/ # NUnit; Config, Loaders, Providers, Tools, Usage, mcp
 tests/louis-agent.orchestrator.tests/ # NUnit; error feed, SSE client, verification tools
-samples/                      # order-service (demo microservice), run-demo.ps1 [-Short], sample-output/ and
-                              # sample-output-short/ (real runs with their priced usage ledgers), see samples/README.md
+samples/                      # order-service (demo microservice), run-demo.ps1 [-Short], sample-output*/ (real runs
+                              # with their priced ledgers, uncached and -cached), smoke-f4-caching/, see samples/README.md
 docker/                       # Dockerfile.{acp-server,api,agent,mcp-server,orchestrator}, docker-compose.yml,
                               # docker-compose.demo.yml (orchestrator demo); the build context's .dockerignore is at the repo root
 config/                       # .env and .env.secrets (both ignored), their examples, LLM profiles (.env.anthropic,
@@ -131,10 +135,74 @@ docs/                         # This guide, features/ (planned work), plans/ (ap
 4. Test it in `tests/louis-agent.core.tests/Tools/`.
 
 **Every public method on a tool class becomes a tool.** Helpers must be `internal` or `private` (the test project and
-`louis-agent.api` can see internals). Tool names must be unique across all classes.
+`louis-agent.api` can see internals). Tool names must be unique across all classes: a duplicate stops the engine at
+start-up.
 
 Return strings the model can act on: say what went wrong and what to do instead. Keep output bounded — results over
 50,000 characters get summarised; most toolsets cap their own output at 12,000.
+
+### Project layout
+
+**Folders split the code by concern, and the namespace is the folder path.** Each concern of an agent has one home, so
+a change to one (a new provider, a new tool, a new guard) touches one folder:
+
+| Folder (core) | Concern | Today |
+|---|---|---|
+| `Agent/` | The loop: turns, history, system prompt assembly, round limits, `/approve` | `tools/AgentEngine.cs` |
+| `Llm/` + `Llm/{Provider}/` | The model: client factory, `IChatClient` middleware (thinking, caching, usage recording), one folder per provider | `providers/LlmClientFactory.cs`, `usage/UsageRecordingChatClient.cs` |
+| `Tools/{Toolset}/` | What the model can do: one folder per toolset (`Workspace`, `Git`, `Shell`, `Web`, `Integrations/Paymo`, …) | `tools/*.cs` |
+| `Skills/` | Loading the markdown skills and personality into the prompt | `MarkdownSkillLoader.cs`, `providers/*SkillsProvider.cs` |
+| `Guardrails/` | Safety checks: path resolution, sensitive files, SSRF, tool-result size guards | spread over `WorkspaceTools`, `WebTools`, `AgentEngine` |
+| `Usage/` and `Pricing/` | The ledger (records, sinks, scopes); prices, cost, rates and the display currency | `usage/` (both) |
+| `Protocols/Mcp/` | Talking to other agents and tools over MCP | `mcp/` |
+| `Hosting/` | Bootstrap shared by every host: `AgentHost`, logging | root `AgentHost.cs`, `AgentLog.cs` |
+| `Config/`, `Messages/` | Settings; message enums | `config/`, `messages/` |
+
+The rules:
+
+1. **Namespace = folder path**, PascalCase (`LouisAgent.Core.Llm.Anthropic`), one top-level type per file, the file
+   named after the type. No `Helpers/`, `Utils/`, `Common/` or `Interfaces/` folders: an interface lives beside its
+   implementations, a helper beside its one user.
+2. **Dependencies point one way:** hosts → `Hosting` → `Agent` → `Llm`, `Tools`, `Skills`, `Usage` → `Guardrails`,
+   `Config`, `Messages`. A tool never references the agent loop or a model; `Agent` never references a provider's SDK
+   (provider differences stay in `Llm/{Provider}/`, as in *Changing the LLM*).
+3. **Prompts are content, not code:** system prompt text and procedures stay in `Skills/*.md`; C# only loads them.
+4. **Hosts stay thin:** a host project maps the agent's stream to its protocol (`Endpoints/`, `Services/`) and holds no
+   agent behaviour; another agent on core (the orchestrator) keeps its own `Tools/` and `Skills/` the same way.
+5. **Tests mirror the source:** `tests/louis-agent.core.tests/Llm/Anthropic/…` tests `Llm/Anthropic/…`.
+6. **An architecture test enforces 1 and 2:** namespaces match folders, and no type depends against the arrow.
+
+**Moving there:** the table's *Today* column is the current layout. One refactor after F4 (TODO, *Quality and CI*),
+before the messages refactor, moves the files with `git mv` (so history follows them), renames the namespaces, splits
+`AgentEngine` (1,000+ lines) along the concerns above, and adds the architecture test. Until it lands, new files go in
+the folder their concern has today.
+
+### Messages and logging
+
+**No message text inline in C#.** Every message is a member of a message enum, and its `[Description]` is the text, a
+template with **named** holes:
+
+```csharp
+public enum ErrorMessage
+{
+    [Description("Unknown LLM_CACHE_TTL '{Value}'. Use 5m or 1h.")]
+    UnknownCacheTtl,
+}
+
+throw new ArgumentException(Messages.Format(ErrorMessage.UnknownCacheTtl, new { Value = other }));
+logger.LogWarning(Messages.Template(LogMessage.RatesFallback), url, reason);   // NLog fills the holes, as structured fields
+```
+
+- **What counts:** exception messages, log lines, the error strings tools return to the model, and user-facing text
+  (`/usage`, the usage line, CLI help, comms log headings). Enums by kind (`ErrorMessage`, `LogMessage`, `ToolMessage`,
+  `UserText`), each member named for what happened, not for its wording.
+- **Logging goes through `ILogger` (Microsoft.Extensions.Logging) with NLog as the provider:** levels and targets in
+  `nlog.config`, console output to **stderr only** (stdout carries the ACP and MCP protocols), run files and JSON-lines
+  records as NLog targets. Holes are named (`{Url}`), so NLog stores them as fields.
+- **A unit test checks every message enum:** each member has a `[Description]`, and its template's holes are well formed.
+- **Moving there:** the existing ~230 messages (35 files), `Console.Error` and `AgentLog` move in one refactor after F4
+  (TODO, *Quality and CI*). Until it lands, new code defines its messages as enum members but still writes logs with
+  `Console.Error.WriteLine(Messages.Format(...))`; the refactor switches those calls to `ILogger`.
 
 ### Adding a skill
 
@@ -171,7 +239,8 @@ anywhere else.
 
 - Tool calls are logged to stderr: `[TOOL] -> Name(args)` and `[TOOL] <- Name: result` (or `failed: …`).
 - In Docker, logs persist in `logs/`; `docker logs louis_agent_api` shows the API.
-- Write debug output to `Console.Error`, never `Console.Out`: stdout carries the ACP and MCP protocols.
+- Write debug output to `Console.Error` (through NLog's stderr target once *Messages and logging* is in place), never
+  `Console.Out`: stdout carries the ACP and MCP protocols.
 - Every model request is in the usage ledger, `{LOG_DIRECTORY}/usage-YYYY-MM.jsonl` (tokens, cost, host, session,
   turn, fix and run; no prompt text). Total one with
   `dotnet run --project tools/louis-agent.usage-probe -- --ledger logs/usage-YYYY-MM.jsonl`.

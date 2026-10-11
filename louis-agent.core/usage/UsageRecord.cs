@@ -1,5 +1,7 @@
 namespace louis_agent.core.usage;
 
+using System.Text.Json.Serialization;
+
 /// <summary>
 /// One model request in the usage ledger (Usage spec §4.1). Holds counts, ids, names and timings only: never prompt text
 /// or tool output (F1-S4).
@@ -47,7 +49,14 @@ public sealed record UsageCost(string Currency, decimal Amount, string? PriceTab
 /// the provider didn't report is null, never 0 (F1-S1).
 /// </summary>
 /// <remarks>Built from a provider's usage by an <see cref="IUsageMapper"/>.</remarks>
-public sealed record UsageTokens(long? Input, long? CacheWrite, long? CacheRead, long? Output, long? Reasoning);
+/// <param name="CacheWrite1h">
+/// Of <paramref name="CacheWrite"/>, the tokens written with a 1-hour lifetime (F4); the rest were written for 5 minutes.
+/// Not a fifth kind: a split of the writes, priced at its own rate. Null when the provider doesn't report the split, and
+/// on records from before F4: all writes are then priced at the 5-minute rate, as they were.
+/// </param>
+public sealed record UsageTokens(
+    long? Input, long? CacheWrite, long? CacheRead, long? Output, long? Reasoning,
+    [property: JsonPropertyName("cache_write_1h")] long? CacheWrite1h = null);
 
 /// <summary>Why a request was made. Strings, so the ledger stays readable as JSON.</summary>
 public static class UsagePurpose

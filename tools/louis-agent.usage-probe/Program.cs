@@ -1,6 +1,9 @@
 using Anthropic.Models.Messages;
 using louis_agent.core;
 using louis_agent.core.config;
+using louis_agent.core.messages;
+// This file has its own Messages(bool) helper.
+using MessageText = louis_agent.core.messages.Messages;
 using louis_agent.core.providers;
 using louis_agent.core.usage;
 using Microsoft.Extensions.AI;
@@ -11,6 +14,7 @@ using Microsoft.Extensions.AI;
 //   dotnet run --project tools/louis-agent.usage-probe [-- --lines N]
 //   dotnet run --project tools/louis-agent.usage-probe -- --think     (2 requests that need reasoning: is thinking text returned?)
 //   dotnet run --project tools/louis-agent.usage-probe -- --ledger <usage-YYYY-MM.jsonl>   (price and total a ledger; no model call)
+//   dotnet run --project tools/louis-agent.usage-probe -- --cache-gaps <usage-YYYY-MM.jsonl>   (which LLM_CACHE_TTL; F4; no model call)
 //   dotnet run --project tools/louis-agent.usage-probe -- --host-culture [en-ZA]   (write the PC's culture to config/.env; F14)
 //
 // Uses LLM_PROVIDER / LLM_MODEL / LLM_ENDPOINT from config/.env; variables set in the shell win. Every request goes to the
@@ -38,6 +42,18 @@ if (Array.IndexOf(args, "--ledger") is var ledgerArg and >= 0)
     }
 
     PrintLedger(args[ledgerArg + 1], AgentHost.LoadPrices(AgentOptions.FromEnvironment()));
+    return 0;
+}
+
+if (Array.IndexOf(args, "--cache-gaps") is var gapsArg and >= 0)
+{
+    if (gapsArg + 1 >= args.Length)
+    {
+        Console.Error.WriteLine(MessageText.Format(ErrorMessage.CacheGapsNeedsFile));
+        return 2;
+    }
+
+    PrintCacheGaps(args[gapsArg + 1], AgentHost.LoadPrices(AgentOptions.FromEnvironment()));
     return 0;
 }
 
@@ -227,6 +243,34 @@ static int WriteHostCulture(string name)
         Console.WriteLine($"Note: DISPLAY_CURRENCY={other} is set and overrides it.");
     Console.WriteLine("Restart the hosts to use it: the containers (docker compose ... up -d), and a New Chat in Rider.");
     return 0;
+}
+
+// F4-S4: the gaps between requests that share the prefix, and what each lifetime would have cost on them.
+static void PrintCacheGaps(string path, PriceTable prices)
+{
+    IReadOnlyList<CacheGapGroup> groups = CacheGaps.Analyse(UsageReport.Read(path), prices);
+    Console.WriteLine(MessageText.Format(UserText.CacheGapsHeader, new { Path = path, AsOf = prices.AsOf ?? "(none)" }));
+    if (groups.Count == 0) Console.WriteLine(MessageText.Format(UserText.CacheGapsNone, new { Path = path }));
+
+    foreach (CacheGapGroup g in groups)
+    {
+        Console.WriteLine();
+        Console.WriteLine(MessageText.Format(UserText.CacheGapsGroup, new { g.Host, g.Model, g.Requests, Prefix = g.PrefixTokens.ToString("N0") }));
+        Console.WriteLine(MessageText.Format(UserText.CacheGapsGaps, new { g.Under5m, g.From5To60m, g.Over60m }));
+        foreach (var (lifetime, cost) in new[] { ("5 minutes", g.FiveMinutes), ("1 hour   ", g.OneHour) })
+            Console.WriteLine(MessageText.Format(UserText.CacheGapsLifetime,
+                new { Lifetime = lifetime, cost.Writes, cost.Reads, Cost = cost.Cost is { } c ? Money(c) : "price unknown" }));
+
+        if (g is not { FiveMinutes.Cost: { } five, OneHour.Cost: { } hour })
+            Console.WriteLine(MessageText.Format(UserText.CacheGapsNoPrice, new { g.Model }));
+        else if (g.Recommended == CacheLifetime.OneHour)
+            Console.WriteLine(MessageText.Format(UserText.CacheGapsRecommendOneHour,
+                new { Saving = Money(five - hour), Percent = (five - hour) / five is var share ? share.ToString("0%") : "" }));
+        else
+            Console.WriteLine(MessageText.Format(UserText.CacheGapsRecommendFiveMinutes, new { Extra = Money(hour - five) }));
+    }
+
+    string Money(decimal amount) => prices.Currency == "USD" ? $"${amount:0.0000}" : $"{amount:0.0000} {prices.Currency}";
 }
 
 static void PrintLedger(string path, PriceTable prices)

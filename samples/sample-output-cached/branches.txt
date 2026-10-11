@@ -1,0 +1,74 @@
+# git log --all --graph of .demo/order-service after the run (before any merge)
+
+* 28e913c louis-agent      (fix/customer-initials-e838d85bdc26) fix(customer-initials): handle single-word names without indexing past the array (error e838d85bdc26)
+| * b3b954f louis-agent      (fix/discount-label-6f7fdd89c7be) fix(discount-label): show codes without trailing digits as-is instead of parsing them (error 6f7fdd89c7be)
+|/  
+| * 98d501a louis-agent      (fix/delivery-estimate-f80ce9f7bba7) fix(delivery-estimate): map Sunday orders to a 1-day dispatch instead of indexing with -1 (error f80ce9f7bba7)
+|/  
+| * 837474b louis-agent      (fix/vat-f9306c0fbdcc) fix(vat): match VAT country codes case-insensitively so 'nl' finds NL (error f9306c0fbdcc)
+|/  
+| * 7705c5a louis-agent      (fix/loyalty-points-b53b772b7e81) fix(loyalty-points): compute points in decimal to avoid Int32 overflow on large orders (error b53b772b7e81)
+|/  
+| * 97ad855 louis-agent      (fix/packing-slip-fb0cbf600099) fix(packing-slip): omit the gift suffix when an order has no gift message (error fb0cbf600099)
+|/  
+| * 346dd14 louis-agent      (fix/invoice-number-ae61d736f8d9) fix(invoice-number): accept date with time and zone in created, not only date-only (error ae61d736f8d9)
+|/  
+| * c69edcc louis-agent      (fix/shipping-cost-1d909b349f43) fix(shipping-cost): return 0 for orders without items instead of dividing by zero (error 1d909b349f43)
+|/  
+| * 6385680 louis-agent      (fix/order-total-f47c2696c6ab) fix(order-total): treat unknown discount codes as no discount instead of throwing (error f47c2696c6ab)
+|/  
+| * b1e5fc7 louis-agent      (fix/get-order-46d3cc51903d) fix(get-order): summarise orders without items as 0 item(s) instead of indexing the empty list (error 46d3cc51903d)
+|/  
+* 38ec899 demo-setup       (HEAD -> main) order-service as deployed
+
+# Each fix branch's changed files
+
+## fix/customer-initials-e838d85bdc26
+ src/OrderService/Api/CustomerInitials.cs           |  5 ++++-
+ .../Regression/Errore838d85bdc26Tests.cs           | 24 ++++++++++++++++++++++
+ 2 files changed, 28 insertions(+), 1 deletion(-)
+
+## fix/delivery-estimate-f80ce9f7bba7
+ src/OrderService/Api/DeliveryEstimate.cs           |  3 ++-
+ .../Regression/Errorf80ce9f7bba7Tests.cs           | 24 ++++++++++++++++++++++
+ 2 files changed, 26 insertions(+), 1 deletion(-)
+
+## fix/discount-label-6f7fdd89c7be
+ src/OrderService/Api/DiscountLabel.cs                         |  3 +++
+ tests/OrderService.Tests/Regression/Error6f7fdd89c7beTests.cs | 11 +++++++++++
+ 2 files changed, 14 insertions(+)
+
+## fix/get-order-46d3cc51903d
+ src/OrderService/Api/GetOrder.cs                              |  2 ++
+ tests/OrderService.Tests/Regression/Error46d3cc51903dTests.cs | 11 +++++++++++
+ 2 files changed, 13 insertions(+)
+
+## fix/invoice-number-ae61d736f8d9
+ src/OrderService/Api/InvoiceNumber.cs                 |  8 +++++++-
+ .../Regression/Errorae61d736f8d9Tests.cs              | 19 +++++++++++++++++++
+ 2 files changed, 26 insertions(+), 1 deletion(-)
+
+## fix/loyalty-points-b53b772b7e81
+ src/OrderService/Api/LoyaltyPoints.cs                         |  4 ++--
+ tests/OrderService.Tests/Regression/Errorb53b772b7e81Tests.cs | 11 +++++++++++
+ 2 files changed, 13 insertions(+), 2 deletions(-)
+
+## fix/order-total-f47c2696c6ab
+ src/OrderService/Api/OrderTotal.cs                           |  4 +++-
+ .../OrderService.Tests/Regression/Errorf47c2696c6abTests.cs  | 12 ++++++++++++
+ 2 files changed, 15 insertions(+), 1 deletion(-)
+
+## fix/packing-slip-fb0cbf600099
+ src/OrderService/Api/PackingSlip.cs                       |  9 ++++++---
+ .../Regression/Errorfb0cbf600099Tests.cs                  | 15 +++++++++++++++
+ 2 files changed, 21 insertions(+), 3 deletions(-)
+
+## fix/shipping-cost-1d909b349f43
+ src/OrderService/Api/ShippingCost.cs                       |  3 +++
+ .../Regression/Error1d909b349f43Tests.cs                   | 14 ++++++++++++++
+ 2 files changed, 17 insertions(+)
+
+## fix/vat-f9306c0fbdcc
+ src/OrderService/Api/Vat.cs                               |  3 ++-
+ .../Regression/Errorf9306c0fbdccTests.cs                  | 15 +++++++++++++++
+ 2 files changed, 17 insertions(+), 1 deletion(-)

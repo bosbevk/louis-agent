@@ -33,7 +33,7 @@ its own.
 
 **M2 — Cheaper:** stop paying full price for the same tokens.
 
-- [ ] [F4 Prompt caching](docs/features/F04-prompt-caching.md) — cache the ~26,000-token prefix every request re-sends.
+- [x] [F4 Prompt caching](docs/features/F04-prompt-caching.md) — cache the ~48,000-token prefix every request re-sends.
       *Replaces:* "Wire up Anthropic prompt caching on the system prompt"
 - [ ] [F5 Toolset profiles](docs/features/F05-toolset-profiles.md) — load only the tools a session needs (the demo:
       coding tools only)
@@ -127,6 +127,17 @@ growing history every round, so smaller tasks are cheaper); make runs resumable 
 
 ### Quality and CI
 
+- [ ] **Project layout, after F4, first of two cleanups** (the rules are in
+      [docs/CLAUDE.md](docs/CLAUDE.md#project-layout)): folders by concern (`Agent`, `Llm/{Provider}`, `Tools/{Toolset}`,
+      `Skills`, `Guardrails`, `Usage`, `Pricing`, `Protocols/Mcp`, `Hosting`), namespace = folder path in PascalCase,
+      `git mv` so history follows, split `AgentEngine` along those concerns, tests mirror the source, and an
+      architecture test (namespaces match folders, dependencies point one way). Its own branch and PR, with a plan;
+      behaviour unchanged, so every test passes untouched apart from namespaces
+- [ ] **Messages and logging, after F4, second of two cleanups** (the rule is in [docs/CLAUDE.md](docs/CLAUDE.md#messages-and-logging)): move
+      the ~230 inline messages in 35 files (exceptions, log lines, tool results, user-facing text) into message enums
+      with `[Description]` templates and a `Messages` helper, with a test over every enum; switch logging from
+      `Console.Error` and `AgentLog`'s files to `ILogger` with NLog (stderr only, run files and JSON-lines as targets).
+      Its own branch and PR, with a plan
 - [ ] CI (`.github/workflows`): `dotnet build` and `dotnet test` on every push and pull request — today regressions are
       only caught locally
 - [ ] Automated tests for the API and the web app (bUnit or Playwright); start with the Branches queue (several clicks in
@@ -195,6 +206,18 @@ feature when its turn comes; remove its line here and update the map's *Missing*
 - [ ] **Multi-agent:** compare handoff patterns (tool call, session, MCP); parallel sub-agents
 - [ ] **Protocols:** a full MCP client (also removes the Rider MCP limitation)
 - [ ] **Reliability:** timeouts, idempotency and resumable runs in the core
+- [ ] **Redis: the fast, short-lived layer.** A response cache: return the stored answer to an *exactly* repeated request
+      (key: a hash of model, messages, tools and settings) instead of calling the model, $0 and recorded as a cache hit
+      in the ledger, with Redis's own key expiry. Pays off where requests repeat exactly (F16's summaries of the same
+      output, F17's triage of a recurring error, re-running F18's evals), hardly in the fix loop, whose context is new
+      every round. Also the home for other hot, disposable state (the session architecture's *hot state*: a running
+      turn, locks, later rate limits). Not a replacement for F4: Anthropic's prompt cache is on their servers and is what
+      bills cached input at 0.1×; ours can only skip whole requests
+- [ ] **MongoDB: the durable layer.** Documents that must survive restarts: sessions and their transcripts (removes the
+      *sessions are in memory* limitation; the durable-sessions line under *Sessions and memory*), and long-term memory.
+      Its vector search can hold a later *semantic* cache (similar, not identical, requests) and retrieval, which need a
+      strict similarity threshold and evals, since a near-miss returns a wrong answer. Together with Redis this is the
+      session architecture's *storage by access pattern*
 - [ ] **Shipping:** a deploy pipeline for the Docker images, with the eval suite as a release gate
 - [ ] **Safety:** prompt-injection defences and red-team tests, output guardrails, rate limiting, an audit log
 - [ ] **Human in the loop:** approval policies per action and risk level
@@ -238,6 +261,10 @@ backlog item removes one, it says so.
 
 Newest first; details in the git history.
 
+- 2026-10-11 — **F4 Prompt caching**: two cache markers on Anthropic (the system prompt with `LLM_CACHE_TTL`, the
+  conversation by automatic caching, 5 minutes), as a provider strategy; tools sorted; writes priced at their lifetime
+  (`cache_write_1h`); `usage-probe --cache-gaps` recommends the lifetime from the ledger. Full demo $0.13 against M1's
+  $0.66 (−80%), louis-agent's input cost −87%, 10/10 fixes; samples in `samples/sample-output-cached/`
 - 2026-10-11 — **F14 Display currency**: costs in the PC's currency in every host (rands from `HOST_CULTURE=en-ZA`,
   written by `usage-probe --host-culture`; `R0.034`, `.` decimals), at a dated rate (Frankfurter mapped into our
   `rates.json`, `config/rates.json` as the fallback, served at `GET /rates`), with the rate and the USD charged beside
