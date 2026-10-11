@@ -1,7 +1,7 @@
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace louis_agent.core;
+namespace LouisAgent.Core.Skills;
 
 public class MarkdownSkillLoader
 {

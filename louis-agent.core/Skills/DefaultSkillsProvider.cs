@@ -1,4 +1,4 @@
-namespace louis_agent.core.providers;
+namespace LouisAgent.Core.Skills;
 
 /// <summary>
 /// Provides default system instructions and agent guidelines.

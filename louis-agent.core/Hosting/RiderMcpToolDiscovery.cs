@@ -1,6 +1,7 @@
-namespace louis_agent.core.mcp;
+namespace LouisAgent.Core.Hosting;
 
 using louis_agent.core.tools;
+using LouisAgent.Core.Protocols.Mcp;
 
 /// <summary>
 /// Orchestrates tool discovery from Rider's MCP server and registers them with AgentEngine.

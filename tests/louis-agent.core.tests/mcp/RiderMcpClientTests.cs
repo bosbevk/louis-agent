@@ -1,4 +1,4 @@
-using louis_agent.core.mcp;
+using LouisAgent.Core.Protocols.Mcp;
 
 namespace LouisAgent.Core.Tests;
 

@@ -1,10 +1,10 @@
-namespace louis_agent.core.providers;
+namespace LouisAgent.Core.Skills;
 
 /// <summary>
-/// Provides code review and analysis skills.
-/// Loads skills from code-review-skills.md for code quality assessment.
+/// Provides DevOps and work item management skills.
+/// Loads skills from devops-skills.md for Azure Boards integration.
 /// </summary>
-public class CodeReviewSkillsProvider : ISkillProvider
+public class DevOpsSkillsProvider : ISkillProvider
 {
     private List<MarkdownSkillLoader.SkillDef>? _skills;
     private string? _documentation;
@@ -13,22 +13,22 @@ public class CodeReviewSkillsProvider : ISkillProvider
     public List<MarkdownSkillLoader.SkillDef> Skills => _skills ??= LoadSkills();
     public string Documentation => _documentation ??= LoadDocumentation();
 
-    /// <param name="filePath">Path to code-review-skills.md file. Searches standard locations if not provided.</param>
-    public CodeReviewSkillsProvider(string? filePath = null)
+    /// <param name="filePath">Path to devops-skills.md file. Searches standard locations if not provided.</param>
+    public DevOpsSkillsProvider(string? filePath = null)
     {
-        _filePath = ResolveFilePath(filePath ?? "code-review-skills.md");
+        _filePath = ResolveFilePath(filePath ?? "devops-skills.md");
     }
 
     private List<MarkdownSkillLoader.SkillDef> LoadSkills()
     {
         if (!File.Exists(_filePath))
         {
-            Console.Error.WriteLine($"[WARN] code-review-skills.md not found at: {_filePath}");
+            Console.Error.WriteLine($"[WARN] devops-skills.md not found at: {_filePath}");
             return [];
         }
 
         var skills = MarkdownSkillLoader.Load(_filePath);
-        Console.Error.WriteLine($"[INFO] Loaded {skills.Count} code review skills from: {_filePath}");
+        Console.Error.WriteLine($"[INFO] Loaded {skills.Count} DevOps skills from: {_filePath}");
         return skills;
     }
 
@@ -36,7 +36,7 @@ public class CodeReviewSkillsProvider : ISkillProvider
     {
         if (!File.Exists(_filePath))
         {
-            Console.Error.WriteLine($"[WARN] code-review-skills.md not found at: {_filePath}");
+            Console.Error.WriteLine($"[WARN] devops-skills.md not found at: {_filePath}");
             return "";
         }
 
@@ -46,7 +46,7 @@ public class CodeReviewSkillsProvider : ISkillProvider
         }
         catch (Exception ex)
         {
-            Console.Error.WriteLine($"[ERROR] Failed to load code-review-skills.md: {ex.Message}");
+            Console.Error.WriteLine($"[ERROR] Failed to load devops-skills.md: {ex.Message}");
             return "";
         }
     }

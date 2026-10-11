@@ -1,4 +1,4 @@
-namespace louis_agent.core.mcp;
+namespace LouisAgent.Core.Protocols.Mcp;
 
 using System.Text.Json;
 
@@ -191,9 +191,3 @@ public sealed class RiderMcpClient : IDisposable
 
     public void Dispose() => _httpClient.Dispose();
 }
-
-/// <summary>Tool discovered from an MCP server.</summary>
-public sealed record DiscoveredTool(
-    string Name,
-    string Description,
-    JsonElement InputSchema);

@@ -1,6 +1,6 @@
 using louis_agent.core.tools;
 using LouisAgent.Core.Config;
-using louis_agent.core.providers;
+using LouisAgent.Core.Skills;
 using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Core.Tests;

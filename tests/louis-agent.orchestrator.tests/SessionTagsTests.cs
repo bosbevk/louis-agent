@@ -1,7 +1,7 @@
 using System.Net;
 using System.Text.Json;
 using LouisAgent.Core.Config;
-using louis_agent.core.providers;
+using LouisAgent.Core.Skills;
 using louis_agent.core.tools;
 using LouisAgent.Core.Usage;
 using LouisAgent.Orchestrator.Tools;

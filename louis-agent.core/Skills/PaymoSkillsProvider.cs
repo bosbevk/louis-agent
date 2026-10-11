@@ -1,10 +1,10 @@
-namespace louis_agent.core.providers;
+namespace LouisAgent.Core.Skills;
 
 /// <summary>
-/// Provides guidance for the native DotNet* tools (build, test, run, debug workflows).
-/// Loads dotnet-skills.md; always included because the DotNet* tools are always registered.
+/// Provides time tracking and project management skills for Paymo integration.
+/// Loads skills from paymo-skills.md for time entry management.
 /// </summary>
-public class DotNetSkillsProvider : ISkillProvider
+public class PaymoSkillsProvider : ISkillProvider
 {
     private List<MarkdownSkillLoader.SkillDef>? _skills;
     private string? _documentation;
@@ -13,22 +13,22 @@ public class DotNetSkillsProvider : ISkillProvider
     public List<MarkdownSkillLoader.SkillDef> Skills => _skills ??= LoadSkills();
     public string Documentation => _documentation ??= LoadDocumentation();
 
-    /// <param name="filePath">Path to dotnet-skills.md file. Searches standard locations if not provided.</param>
-    public DotNetSkillsProvider(string? filePath = null)
+    /// <param name="filePath">Path to paymo-skills.md file. Searches standard locations if not provided.</param>
+    public PaymoSkillsProvider(string? filePath = null)
     {
-        _filePath = ResolveFilePath(filePath ?? "dotnet-skills.md");
+        _filePath = ResolveFilePath(filePath ?? "paymo-skills.md");
     }
 
     private List<MarkdownSkillLoader.SkillDef> LoadSkills()
     {
         if (!File.Exists(_filePath))
         {
-            Console.Error.WriteLine($"[WARN] dotnet-skills.md not found at: {_filePath}");
+            Console.Error.WriteLine($"[WARN] paymo-skills.md not found at: {_filePath}");
             return [];
         }
 
         var skills = MarkdownSkillLoader.Load(_filePath);
-        Console.Error.WriteLine($"[INFO] Loaded {skills.Count} .NET skills from: {_filePath}");
+        Console.Error.WriteLine($"[INFO] Loaded {skills.Count} Paymo skills from: {_filePath}");
         return skills;
     }
 
@@ -36,7 +36,7 @@ public class DotNetSkillsProvider : ISkillProvider
     {
         if (!File.Exists(_filePath))
         {
-            Console.Error.WriteLine($"[WARN] dotnet-skills.md not found at: {_filePath}");
+            Console.Error.WriteLine($"[WARN] paymo-skills.md not found at: {_filePath}");
             return "";
         }
 
@@ -46,7 +46,7 @@ public class DotNetSkillsProvider : ISkillProvider
         }
         catch (Exception ex)
         {
-            Console.Error.WriteLine($"[ERROR] Failed to load dotnet-skills.md: {ex.Message}");
+            Console.Error.WriteLine($"[ERROR] Failed to load paymo-skills.md: {ex.Message}");
             return "";
         }
     }

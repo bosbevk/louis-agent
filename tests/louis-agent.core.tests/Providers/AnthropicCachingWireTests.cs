@@ -4,7 +4,7 @@ using System.Text.Json.Nodes;
 using Anthropic;
 using Anthropic.Core;
 using Anthropic.Models.Messages;
-using louis_agent.core.providers;
+using LouisAgent.Core.Skills;
 using Microsoft.Extensions.AI;
 using LouisAgent.Core.Llm;
 

@@ -2,7 +2,7 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using louis_agent.core;
 using LouisAgent.Core.Config;
-using louis_agent.core.providers;
+using LouisAgent.Core.Skills;
 using louis_agent.core.tools;
 using LouisAgent.Core.Usage;
 using LouisAgent.Orchestrator;

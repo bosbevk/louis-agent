@@ -1,4 +1,4 @@
-namespace louis_agent.core.providers;
+namespace LouisAgent.Core.Skills;
 
 /// <summary>
 /// Interface for providing skills to the agent engine.

@@ -1,4 +1,4 @@
-namespace louis_agent.core.providers;
+namespace LouisAgent.Core.Skills;
 
 /// <summary>
 /// Loads skills from a markdown file and combines with default instructions.

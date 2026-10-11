@@ -1,4 +1,4 @@
-namespace louis_agent.core.providers;
+namespace LouisAgent.Core.Skills;
 
 /// <summary>
 /// Provides time entry and time tracking workflow skills.

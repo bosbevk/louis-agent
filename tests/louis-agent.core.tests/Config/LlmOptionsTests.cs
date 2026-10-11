@@ -1,7 +1,7 @@
 using Anthropic.Models.Messages;
 using LouisAgent.Core.Config;
 using louis_agent.core.tools;
-using louis_agent.core.providers;
+using LouisAgent.Core.Skills;
 using Microsoft.Extensions.AI;
 using LouisAgent.Core.Llm;
 

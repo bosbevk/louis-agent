@@ -3,6 +3,8 @@ using louis_agent.core;
 using LouisAgent.Core.Pricing;
 using LouisAgent.Core.Llm;
 using LouisAgent.Core.Llm.AnthropicProvider;
+using LouisAgent.Core.Skills;
+using LouisAgent.Core.Hosting;
 
 namespace LouisAgent.Core.Tests;
 
@@ -33,33 +35,6 @@ public partial class ArchitectureTests
         "AgentHost.cs: '(root)' isn't a concern folder",
         "AgentLog.cs: namespace louis_agent.core, expected LouisAgent.Core",
         "AgentLog.cs: '(root)' isn't a concern folder",
-        "MarkdownSkillLoader.cs: namespace louis_agent.core, expected LouisAgent.Core",
-        "MarkdownSkillLoader.cs: '(root)' isn't a concern folder",
-        "mcp/RiderMcpClient.cs: namespace louis_agent.core.mcp, expected LouisAgent.Core.mcp",
-        "mcp/RiderMcpClient.cs: 2 top-level types, one per file",
-        "mcp/RiderMcpClient.cs: 'mcp' isn't a concern folder",
-        "mcp/RiderMcpToolDiscovery.cs: namespace louis_agent.core.mcp, expected LouisAgent.Core.mcp",
-        "mcp/RiderMcpToolDiscovery.cs: 'mcp' isn't a concern folder",
-        "providers/CodeReviewSkillsProvider.cs: namespace louis_agent.core.providers, expected LouisAgent.Core.providers",
-        "providers/CodeReviewSkillsProvider.cs: 'providers' isn't a concern folder",
-        "providers/CompositeSkillProvider.cs: namespace louis_agent.core.providers, expected LouisAgent.Core.providers",
-        "providers/CompositeSkillProvider.cs: 'providers' isn't a concern folder",
-        "providers/DefaultSkillsProvider.cs: namespace louis_agent.core.providers, expected LouisAgent.Core.providers",
-        "providers/DefaultSkillsProvider.cs: 'providers' isn't a concern folder",
-        "providers/DevOpsSkillsProvider.cs: namespace louis_agent.core.providers, expected LouisAgent.Core.providers",
-        "providers/DevOpsSkillsProvider.cs: 'providers' isn't a concern folder",
-        "providers/DotNetSkillsProvider.cs: namespace louis_agent.core.providers, expected LouisAgent.Core.providers",
-        "providers/DotNetSkillsProvider.cs: 'providers' isn't a concern folder",
-        "providers/ISkillProvider.cs: namespace louis_agent.core.providers, expected LouisAgent.Core.providers",
-        "providers/ISkillProvider.cs: 'providers' isn't a concern folder",
-        "providers/MarkdownSkillProvider.cs: namespace louis_agent.core.providers, expected LouisAgent.Core.providers",
-        "providers/MarkdownSkillProvider.cs: 'providers' isn't a concern folder",
-        "providers/PaymoSkillsProvider.cs: namespace louis_agent.core.providers, expected LouisAgent.Core.providers",
-        "providers/PaymoSkillsProvider.cs: 'providers' isn't a concern folder",
-        "providers/PersonalitySkillsProvider.cs: namespace louis_agent.core.providers, expected LouisAgent.Core.providers",
-        "providers/PersonalitySkillsProvider.cs: 'providers' isn't a concern folder",
-        "providers/TimeLoggingSkillsProvider.cs: namespace louis_agent.core.providers, expected LouisAgent.Core.providers",
-        "providers/TimeLoggingSkillsProvider.cs: 'providers' isn't a concern folder",
         "tools/AgentEngine.cs: namespace louis_agent.core.tools, expected LouisAgent.Core.tools",
         "tools/AgentEngine.cs: 'tools' isn't a concern folder",
         "tools/BashTools.cs: namespace louis_agent.core.tools, expected LouisAgent.Core.tools",

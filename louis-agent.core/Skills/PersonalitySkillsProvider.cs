@@ -1,4 +1,4 @@
-namespace louis_agent.core.providers;
+namespace LouisAgent.Core.Skills;
 
 /// <summary>
 /// The agent's personality: who it is and how it talks and thinks, kept apart from the operational instructions in

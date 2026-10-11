@@ -3,7 +3,7 @@ using System.Text.Json.Nodes;
 using Anthropic;
 using Anthropic.Core;
 using LouisAgent.Core.Config;
-using louis_agent.core.providers;
+using LouisAgent.Core.Skills;
 using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
 using LouisAgent.Core.Llm;

@@ -2,7 +2,7 @@ using Anthropic.Models.Messages;
 using louis_agent.core;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Messages;
-using louis_agent.core.providers;
+using LouisAgent.Core.Skills;
 using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
 using LouisAgent.Core.Pricing;
