@@ -1,5 +1,6 @@
 namespace louis_agent.core.config;
 
+using louis_agent.core.messages;
 using Microsoft.Extensions.AI;
 
 /// <summary>
@@ -53,7 +54,7 @@ public sealed class LlmOptions
     {
         "on" or "true" => true,
         "off" or "false" => false,
-        var other => throw new ArgumentException($"Unknown LLM_CACHE '{other}'. Use on or off."),
+        var other => throw new ArgumentException(Messages.Format(ErrorMessage.UnknownCacheSetting, new { Value = other })),
     };
 
     /// <summary>
@@ -68,7 +69,7 @@ public sealed class LlmOptions
     {
         "5m" => CacheLifetime.FiveMinutes,
         "1h" => CacheLifetime.OneHour,
-        var other => throw new ArgumentException($"Unknown LLM_CACHE_TTL '{other}'. Use 5m or 1h."),
+        var other => throw new ArgumentException(Messages.Format(ErrorMessage.UnknownCacheTtl, new { Value = other })),
     };
 
     public bool ResolveSupportsTools()
