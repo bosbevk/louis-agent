@@ -162,6 +162,10 @@ Configuration only — see [MODELS.md](MODELS.md): `LLM_PROFILE` picks `config/.
 A new model also needs its prices in `config/prices.json` (else its cost is recorded as unknown); run
 `tools/louis-agent.usage-probe` before trusting a new provider's usage numbers. Provider differences belong in
 `LlmClientFactory` (the client, and `CreateUsageMapper` for how it reports usage), never in `AgentEngine` or the tools.
+Where providers need different logic for the same concern, write it as a **strategy**: an interface, one implementation
+per provider that differs (plus a default), chosen once in `LlmClientFactory`, as `IUsageMapper` is
+([Architecture: Provider strategies](ARCHITECTURE.md#provider-strategies)). Never branch on the provider's name
+anywhere else.
 
 ### Running and debugging
 
@@ -194,6 +198,9 @@ whole loop against a real model: API sessions, the fix flow, and the web app's B
 ## Key design decisions
 
 - **Microsoft.Extensions.AI** — one `IChatClient` across providers; `FunctionInvokingChatClient` runs the tool loop.
+- **Provider strategies** — where Anthropic, OpenAI-compatible and Ollama differ (usage, caching, thinking, limits),
+  one interface with an implementation per provider, picked in `LlmClientFactory`
+  ([Architecture](ARCHITECTURE.md#provider-strategies)).
 - **Streaming everywhere** — hosts render `StreamPromptAsync` updates; the finished turn is appended to the history,
   thinking blocks included (Anthropic requires them when continuing after tool calls).
 - **Arguments as data** — skill and tool arguments travel as environment variables or argument lists, never through a

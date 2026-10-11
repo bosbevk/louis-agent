@@ -6,6 +6,7 @@
 > **Spec:** [Optimisation §B](../specs/RESPONSE_OPTIMISATION.md)
 >
 > **In the TODO:** tick **F4 Prompt caching** under *Now* ([TODO](../../TODO.md)) · **Replaces:** "Wire up Anthropic prompt caching on the system prompt"
+> · **Plan:** [plans/F04](../plans/F04-prompt-caching.md)
 
 Every request re-sends ~26,000 tokens of tool definitions and system prompt that never change. With cache markers the API
 serves them at ~0.1× the input price after the first request. The biggest single saving in the plan.

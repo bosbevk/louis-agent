@@ -63,7 +63,8 @@ A skill can be added, dropped or reworded at any time; that is a change to this 
   [Finishing a feature](features/README.md#finishing-a-feature).
 - **Ask first** before anything that spends real money (benchmark or demo runs against the API), before pushing, and
   on open design decisions listed in the TODO.
-- **Provider-neutral core:** keep provider-specific code in `LlmClientFactory`.
+- **Provider-neutral core:** keep provider-specific code in `LlmClientFactory`, as a strategy per concern where providers
+  differ ([Architecture: Provider strategies](ARCHITECTURE.md#provider-strategies)).
 - **Stop and report** rather than guess when a result can't be verified.
 
 ---
