@@ -38,17 +38,18 @@ the ledger **exactly**, $0.252605, 57 requests, the same token counts.
 - **Most of that input is the same text, again.** Each request re-sends the ~48,000-token system prompt and tool list,
   with a 0% cache-hit rate. A fix is ~11 requests, so the same 48K is paid for ~11 times per fix. This is M2's target:
   prompt caching (F4) reads it at a tenth of the price, and toolset profiles (F5) send less of it. The optimisation
-  spec estimates caching at **about −80%** of that prefix's cost per fix (11.4 requests × 48K: ~547K full-price tokens
-  down to ~110K, one cache write and then reads); that is the number F4's measurement has to meet.
+  spec estimates caching at **about −80%** of that prefix's cost per fix (11.4 requests × 48K: ~547K full-price
+  tokens down to ~110K, one cache write and then reads); that is the number F4's measurement has to meet.
 - **The tool loop multiplies everything.** A turn isn't one request: each tool round is one, so a fix that uses its 10
   rounds and continues in a second message costs about 1.5× a one-message fix on average ($0.077 against $0.053;
-  1.44× in the full run, 1.49× in the short one), and up to twice at the extremes ($0.044 to $0.088). The whole run varies far less
-  (0.3% between two runs), so M2 is measured on the run total, not on one fix.
+  1.44× in the full run, 1.49× in the short one), and up to twice at the extremes ($0.044 to $0.088). The whole run
+  varies far less (0.3% between two runs), so M2 is measured on the run total, not on one fix.
 - **Triage is cheap; fixes are not.** In the short demo, triage was $0.013 of $0.25. Saving on the orchestrator's
   model would barely show; saving on louis-agent's prompt would.
 - **The tokenizer changes the bill, not just the price.** The same prompt was 10,266 tokens on Haiku 4.5 and 15,649 on
-  Haiku 5.5 (+52%). Comparing models on price per million tokens alone misses this; comparing them on a run's cost
-  doesn't.
+  Haiku 5.5 (+52%, measured in the optimisation spec,
+  [§A](../specs/RESPONSE_OPTIMISATION.md#a-measure-usage-prerequisite-for-everything-else)). Comparing models on price
+  per million tokens alone misses this; comparing them on a run's cost doesn't.
 
 ## What was built, and why this way
 
@@ -61,8 +62,8 @@ providers report usage per request anyway.
 printed every field the Anthropic adapter fills in. It found that `InputTokenCount` *includes* cache reads and writes
 (Anthropic's own `input_tokens` doesn't; the adapter adds them back), that cache writes are only in
 `AdditionalCounts["CacheCreationInputTokens"]`, and that reasoning is never reported separately. So the ledger stores
-four kinds that **don't overlap** (uncached input = input − cache reads − cache writes), and a provider's quirks live in
-an `IUsageMapper` (Standard, Anthropic). *Alternative:* store what the adapter gives. That would have priced cached
+four kinds that **don't overlap** (uncached input = input − cache reads − cache writes), and a provider's quirks live
+in an `IUsageMapper` (Standard, Anthropic). *Alternative:* store what the adapter gives. That would have priced cached
 tokens twice, once as input and once as cache, which would only have shown up once caching was on.
 
 **3. Unknown is never zero (F2).** A model missing from the price table gets `cost: null`, shown as "price unknown"; a
@@ -76,8 +77,9 @@ month's runs stop matching last month's bill.
 **5. Price in a sink decorator, not in the recorder (F2).** `PricingUsageSink` wraps the ledger in
 `AgentHost.CreateUsageSink`, where every host's records already pass. Neither the engine nor any host knows about
 prices. *Alternative:* price inside the recorder (the feature doc's first idea). Then the engine, and every host that
-builds one, would need the price table, and pricing could never be added or changed without touching the tool loop. The cost of that choice showed in F3: the turn's totals need the *priced* record, so `IUsageSink.Record` had
-to return what it stored.
+builds one, would need the price table, and pricing could never be added or changed without touching the tool loop.
+The cost of that choice showed in F3: the turn's totals need the *priced* record, so `IUsageSink.Record` had to return
+what it stored.
 
 **6. One totalling rule for every view (F3).** The CLI line, `/usage`, the API, Rider and the comms log all total with
 `UsageReport.Total`; the web app (which can't reference core) repeats the same rules in `UsageFormat`. *Alternative:*
