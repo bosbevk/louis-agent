@@ -224,6 +224,9 @@ backlog item removes one, it says so.
 
 Newest first; details in the git history.
 
+- 2026-10-11 — [FX8](docs/fixes/FX08-fix-result-quotes.md): a FIX-RESULT whose summary quotes without escaping
+  ("Cher") is still read, instead of asking louis-agent to continue three times; found by F14's full demo rerun
+
 - 2026-10-11 — **F3 Show usage** (M1 done): every answer says what it used and cost — a line on the CLI's stderr,
   under each answer in the web app (with the chat's total), in Rider with `USAGE_IN_CHAT=true` — `/usage` in every
   host, `usage` on the API's `message_delta` and `GET /sessions/{id}`, and cost per reply, per error and per run in the

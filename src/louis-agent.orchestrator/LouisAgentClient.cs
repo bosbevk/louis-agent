@@ -169,17 +169,37 @@ internal sealed partial class LouisAgentClient(HttpClient http, string? apiKey)
     {
         var match = FixResultLine().Matches(text).LastOrDefault();
         if (match is null) return null;
+        string json = match.Groups[1].Value;
         try
         {
-            using var doc = JsonDocument.Parse(match.Groups[1].Value);
+            using var doc = JsonDocument.Parse(json);
             var root = doc.RootElement;
             string? Get(string name) => root.TryGetProperty(name, out var v) && v.ValueKind != JsonValueKind.Null ? v.ToString() : null;
             return Get("status") is { } status ? new FixResult(status, Get("commit"), Get("branch"), Get("tests"), Get("summary"), Get("reason")) : null;
         }
         catch (JsonException)
         {
-            return null;
+            // FX8: the model sometimes quotes inside a sentence without escaping ("Cher"), which isn't valid JSON. The fix
+            // still happened, so read the fields from the text rather than asking louis-agent to "continue" (and pay for it).
+            return ReadLoosely(json);
         }
+    }
+
+    /// <summary>
+    /// The fields of a FIX-RESULT line that isn't valid JSON: the short ones (status, commit, branch, tests) are quote-free
+    /// values; the free-text ones (summary, reason) run to the next field or the closing brace. Null without a status.
+    /// </summary>
+    private static FixResult? ReadLoosely(string json)
+    {
+        string? Short(string name) =>
+            Regex.Match(json, $"\"{name}\"\\s*:\\s*\"([^\"\\\\]*)\"") is { Success: true } m ? m.Groups[1].Value : null;
+        string? Free(string name) =>
+            Regex.Match(json, $"\"{name}\"\\s*:\\s*\"(.*?)\"\\s*(?=,\\s*\"(?:status|commit|branch|tests|summary|reason)\"\\s*:|\\}}\\s*$)",
+                RegexOptions.Singleline) is { Success: true } m ? m.Groups[1].Value : null;
+
+        return Short("status") is { } status
+            ? new FixResult(status, Short("commit"), Short("branch"), Short("tests"), Free("summary"), Free("reason"))
+            : null;
     }
 
     [GeneratedRegex(@"FIX-RESULT:\s*`?(\{.*\})`?\s*$", RegexOptions.Multiline)]

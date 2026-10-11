@@ -61,4 +61,4 @@ them apart by the token that was cancelled, never by the type alone (skill map #
 tasks; #18, testing and shipping).
 
 ---
-[Fixes](README.md) · Previous: [FX6](FX06-usage-on-failed-turns.md)
+[Fixes](README.md) · Previous: [FX6](FX06-usage-on-failed-turns.md) · Next: [FX8](FX08-fix-result-quotes.md)

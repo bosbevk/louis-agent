@@ -109,6 +109,9 @@ Branch `feature/f14-display-currency` off `main` (after PR #12).
 - **Rerun both demos and update both samples** in step 8, after the docs (about $0.91 on Haiku 5.5: full about $0.66,
   `-Short` about $0.25): their comms logs are then in rands with the rate line, while the ledger and the jsonl files
   stay in USD; each run also re-checks F3 (comms log total against the ledger).
+- **[FX8](../fixes/FX08-fix-result-quotes.md), built in F14** (found by the full rerun): a FIX-RESULT with unescaped
+  quotes was read as none. The full run is kept as the sample as it was, with a note; only the `-Short` demo is run
+  again, on the fixed code.
 
 ## Verification
 - `dotnet test louis-agent-solution.sln` after every step.
