@@ -8,7 +8,7 @@ themselves see [ARCHITECTURE.md](ARCHITECTURE.md).
 
 | | **Tools** | **Skills** |
 |---|---|---|
-| What | Public C# methods on the tool classes in `louis-agent.core/tools/` | Markdown in `Skills/*.md` |
+| What | Public C# methods on the tool classes in `louis-agent.core/Tools/{Toolset}/` | Markdown in `Skills/*.md` |
 | The model sees | A function with typed parameters and a description | Text in the system prompt; named procedures it can run |
 | How it's used | The model calls it; the result comes back | The model follows the guidance, or runs a procedure with `ExecuteSkill` |
 | Examples | `ReadWorkspaceFile`, `GetStatus`, `DotNetTest`, `WebSearch`, `LogTimeByTaskName` | `default.md` (behaviour, tool overview), `dotnet-skills.md`, `code-review-skills.md` |
@@ -121,7 +121,7 @@ To see what the model is offered, inspect `engine.Tools` (name, description, JSO
 ### A new C# tool
 
 ```csharp
-namespace louis_agent.core.tools;
+namespace LouisAgent.Core.Tools.MyToolset;   // the file is louis-agent.core/Tools/MyToolset/MyTools.cs
 
 using System.ComponentModel;
 
@@ -133,8 +133,8 @@ public sealed class MyTools
 ```
 
 Register it in the `AgentEngine` constructor with `AddPublicMethodsAsTools(new MyTools())`, mention it in the relevant
-skill file, and add tests in `tests/louis-agent.core.tests/Tools/`. Tool names must stay unique — the Anthropic API
-rejects duplicates.
+skill file, and add tests in `tests/louis-agent.core.tests/Tools/MyToolset/`. Tool names must stay unique: a
+duplicate stops the engine at start-up.
 
 ### An agent with its own tools
 

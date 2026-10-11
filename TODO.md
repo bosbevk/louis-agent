@@ -127,7 +127,7 @@ growing history every round, so smaller tasks are cheaper); make runs resumable 
 
 ### Quality and CI
 
-- [ ] **Project layout, after F4, first of two cleanups** (the rules are in
+- [x] **Project layout, after F4, first of two cleanups** (the rules are in
       [docs/CLAUDE.md](docs/CLAUDE.md#project-layout)): folders by concern (`Agent`, `Llm/{Provider}`, `Tools/{Toolset}`,
       `Skills`, `Guardrails`, `Usage`, `Pricing`, `Protocols/Mcp`, `Hosting`), namespace = folder path in PascalCase,
       `git mv` so history follows, split `AgentEngine` along those concerns, tests mirror the source, and an
@@ -264,6 +264,11 @@ backlog item removes one, it says so.
 
 Newest first; details in the git history.
 
+- 2026-10-11 — **CL1 Project layout**: core in folders by concern (`Agent`, `Llm/{Name}Provider`, `Tools/{Toolset}`,
+  `Skills`, `Usage`, `Pricing`, `Protocols/Mcp`, `Hosting`, `Config`, `Messages`, `Logging`), the namespace the folder
+  path, one type per file; PascalCase namespaces in every project; the tests mirror the source; `ArchitectureTests`
+  fails on a namespace off its folder, two types in a file or a dependency against the layers. Behaviour unchanged:
+  the same 779 tests pass. Moved with `git mv`, so history follows
 - 2026-10-11 — **F4 Prompt caching**: two cache markers on Anthropic (the system prompt with `LLM_CACHE_TTL`, the
   conversation by automatic caching, 5 minutes), as a provider strategy; tools sorted; writes priced at their lifetime
   (`cache_write_1h`); `usage-probe --cache-gaps` recommends the lifetime from the ledger. Full demo $0.13 against M1's

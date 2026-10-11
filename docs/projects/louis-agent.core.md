@@ -46,37 +46,44 @@ The full step-by-step is in [How a turn works](../AGENT_INTERACTION.md).
 
 | Path | What's in it |
 |---|---|
-| `AgentHost.cs` | Bootstrap for every host: env files, options, skills, client, engine; skill-file discovery |
-| `AgentLog.cs` | Optional file logging (`LOG_DIRECTORY`): stderr copied per run, `oversized-tool-results.jsonl`, `truncated-tool-calls.jsonl` |
-| `MarkdownSkillLoader.cs` | Parses `## Skill:` procedures (description, parameters, a bash / PowerShell / Python fence) from Markdown |
-| `config/LlmOptions.cs` | `LLM_*`: provider (inferred from the model when unset), model, endpoint, key, tool support, thinking |
-| `config/AgentOptions.cs` | Workspace, skills directory, `AGENT_FUNCTION`, keys for Paymo / DevOps / web search, Rider MCP, `LOG_DIRECTORY` |
-| `providers/LlmClientFactory.cs` | Options → `IChatClient`: Anthropic (`AsIChatClient`, 16,000 output tokens, a fixed thinking budget for pre-4.6 models), Ollama, OpenAI-compatible; every client wrapped in `PromptCachingChatClient` with the provider's strategy (`CreatePromptCaching`) |
-| `providers/*PromptCaching*.cs` | F4: `IPromptCachingStrategy`; `AnthropicPromptCaching` (marker 1 on a copy of the system prompt with `LLM_CACHE_TTL`, marker 2 the top-level `cache_control`, 5 minutes); `NoPromptCaching`; `PromptCachingChatClient` (skips summary requests) |
-| `messages/` | Message enums (`ErrorMessage`, `LogMessage`, `ToolMessage`, `UserText`) and `Messages.Format` |
-| `providers/*SkillsProvider.cs` | One provider per skill file kind; `CompositeSkillProvider` joins them into the system prompt |
-| `tools/AgentEngine.cs` | The engine: tool registration, system prompt, turn loop, guards, skills (`ExecuteSkill`, `CreateSkillFile`, `ReloadSkills`), agent-built tools (`CreateTool`, `/approve`) |
-| `tools/WorkspaceTools.cs` | Files: read (≤ 1 MB), write, append, list, tree, search, find, copy, rename, delete; workspace boundary and secret-file checks |
-| `tools/GitTools.cs` | 35 git operations, run without a shell, 30-second timeout |
-| `tools/DotNetTools.cs` | Build, test, run, restore, clean, packages, SDK info — parsed into compact results |
-| `tools/PythonTools.cs`, `PowerShellTools.cs`, `BashTools.cs` | Run scripts with arguments as data (Python in its own venv; bash is Git Bash on Windows, never WSL) |
-| `tools/WebTools.cs`, `WebSearchProviders.cs` | `WebSearch` (Google or DuckDuckGo) and `FetchUrl` (HTML → text; private addresses blocked on every hop) |
-| `tools/PaymoTools.cs`, `DevOpsTools.cs` | Paymo time tracking and Azure DevOps work items — only registered when their keys are set |
-| `tools/ScriptTool.cs` | Agent-built tools from `*.tool.md`: typed parameters, arguments validated and passed as JSON on stdin |
-| `tools/ProcessRunner.cs` | The one way to start processes: argument lists, no shell, timeouts, bounded output |
-| `mcp/RiderMcpClient.cs`, `RiderMcpToolDiscovery.cs` | Lists Rider's MCP tools (logged only; not callable yet) |
-| `usage/UsageRecordingChatClient.cs` | Middleware that records one `UsageRecord` per model request, streaming or not; a cancelled stream is recorded as `cancelled`, a provider error isn't |
-| `usage/UsageScope.cs` | The turn's context in an `AsyncLocal`: host, session, turn, purpose, `UsageTags` (task, run, service); `Activate()` for hosts that stream from an async iterator; `Add` / `Records` / `Total()` collect the turn's stored (priced) records, passing them to the outer scope (F3) |
-| `usage/IUsageMapper.cs` | Provider usage → input / cache write / cache read / output / reasoning: `StandardUsageMapper` (the Microsoft.Extensions.AI contract), `AnthropicUsageMapper` (cache writes, and the 1-hour part from the raw response or the stream's `message_start`) |
-| `usage/CacheGaps.cs` | The prefix's cache lifetime from a ledger: gaps per host and model, both lifetimes replayed and priced (F4) |
-| `usage/UsageRecord.cs`, `IUsageSink.cs`, `JsonlUsageSink.cs` | The record (with its `UsageCost`), and the monthly JSONL file it's written to (shared append, UTC month) |
-| `usage/PriceTable.cs`, `CostCalculator.cs` | `config/prices.json` (longest-prefix match, a `long_prompt` tier) and a record's cost; no price → `null`, never 0 |
-| `usage/PricingUsageSink.cs` | Wraps the ledger in `AgentHost.CreateUsageSink`: prices each record before it's written |
-| `usage/UsageReport.cs` | Reads a ledger back, prices records written before F2, totals by any key (`WorkOf`: a fix, a triage, a session) |
-| `usage/UsageText.cs`, `UsageSession.cs` | The usage text every host shows (F3): the line after an answer and the `/usage` summary (k/M tokens, two significant digits below $1, "price unknown" never $0); a host session's finished turns |
-| `usage/ExchangeRates.cs`, `IRatesMapper.cs` | Exchange rates in our `rates.json` format, the only one read; a mapper per provider turns its reply into it (`FrankfurterRatesMapper`, `RatesJsonMapper`), chosen by `RATES_FORMAT` (F14) |
-| `usage/DisplayCurrency.cs` | The currency costs are shown in, with its symbol, rate and date: `DISPLAY_CURRENCY` → `HOST_CULTURE`'s region → the process's culture → as charged (F14) |
-| `config/EnvFile.cs` | Sets one line in `config/.env` (`usage-probe --host-culture`), keeping the rest of the file |
+| `Agent/AgentEngine.cs` | The engine: tool registration, system prompt, turn loop, guards, skills (`ExecuteSkill`, `CreateSkillFile`, `ReloadSkills`), agent-built tools (`CreateTool`, `/approve`) |
+| `Hosting/AgentHost.cs`, `AgentHostContext.cs` | Bootstrap for every host: env files, options, skills, client, engine; skill-file discovery |
+| `Hosting/RiderMcpToolDiscovery.cs` | At start-up, registers Rider's MCP tools with the engine (logged only; not callable yet) |
+| `Logging/AgentLog.cs` | Optional file logging (`LOG_DIRECTORY`): stderr copied per run, `oversized-tool-results.jsonl`, `truncated-tool-calls.jsonl` |
+| `Config/LlmOptions.cs`, `CacheLifetime.cs` | `LLM_*`: provider (inferred from the model when unset), model, endpoint, key, tool support, thinking, `LLM_CACHE` and `LLM_CACHE_TTL` |
+| `Config/AgentOptions.cs` | Workspace, skills directory, `AGENT_FUNCTION`, keys for Paymo / DevOps / web search, Rider MCP, `LOG_DIRECTORY` |
+| `Config/EnvFile.cs` | Finds the `config/` folder; sets one line in `config/.env` (`usage-probe --host-culture`), keeping the rest of the file |
+| `Messages/` | Message enums (`ErrorMessage`, `LogMessage`, `ToolMessage`, `UserText`, one file each) and `MessageText.Format` |
+| `Llm/LlmClientFactory.cs`, `ILlmClientFactory.cs` | Options → `IChatClient`: Anthropic (`AsIChatClient`, `MaxOutputTokens` 16,000, a fixed thinking budget for pre-4.6 models), Ollama, OpenAI-compatible; every client wrapped in `PromptCachingChatClient` with the provider's strategy (`CreatePromptCaching`) |
+| `Llm/IPromptCachingStrategy.cs`, `NoPromptCaching.cs`, `PromptCachingChatClient.cs` | F4: how a provider marks a request for its prompt cache, the no-op default, and the client that applies it (skips summary requests) |
+| `Llm/IUsageMapper.cs`, `StandardUsageMapper.cs` | Provider usage → input / cache write / cache read / output / reasoning, by the Microsoft.Extensions.AI contract |
+| `Llm/UsageRecordingChatClient.cs` | Middleware that records one `UsageRecord` per model request, streaming or not; a cancelled stream is recorded as `cancelled`, a provider error isn't |
+| `Llm/AnthropicProvider/` | `AnthropicUsageMapper` (cache writes, and the 1-hour part from the raw response or the stream's `message_start`) and `AnthropicPromptCaching` (marker 1 on a copy of the system prompt with `LLM_CACHE_TTL`, marker 2 the top-level `cache_control`, 5 minutes) |
+| `Skills/MarkdownSkillLoader.cs` | Parses `## Skill:` procedures (description, parameters, a bash / PowerShell / Python fence) from Markdown |
+| `Skills/*SkillsProvider.cs`, `CompositeSkillProvider.cs` | One provider per skill file kind; `CompositeSkillProvider` joins them into the system prompt; `SkillFiles.BuiltIn` names the files they load |
+| `Tools/Workspace/WorkspaceTools.cs` | Files: read (≤ 1 MB), write, append, list, tree, search, find, copy, rename, delete; workspace boundary and secret-file checks |
+| `Tools/Git/GitTools.cs` | 35 git operations, run without a shell, 30-second timeout |
+| `Tools/DotNet/DotNetTools.cs` | Build, test, run, restore, clean, packages, SDK info — parsed into compact results |
+| `Tools/Shell/` | `PythonTools`, `PowerShellTools`, `BashTools`: run scripts with arguments as data (Python in its own venv; bash is Git Bash on Windows, never WSL) |
+| `Tools/Web/` | `WebTools`: `WebSearch` (Google or DuckDuckGo, one `IWebSearchProvider` each) and `FetchUrl` (HTML → text; private addresses blocked on every hop) |
+| `Tools/Integrations/Paymo/`, `Integrations/DevOps/` | Paymo time tracking and Azure DevOps work items — only registered when their keys are set |
+| `Tools/Scripts/` | Agent-built tools from `*.tool.md` (`ScriptTool`, its definition and parameters): typed parameters, arguments validated and passed as JSON on stdin |
+| `Tools/ProcessRunner.cs` | The one way to start processes: argument lists, no shell, timeouts, bounded output |
+| `Protocols/Mcp/` | `RiderMcpClient` and `DiscoveredTool`: lists Rider's MCP tools |
+| `Usage/UsageScope.cs`, `UsageTags.cs` | The turn's context in an `AsyncLocal`: host, session, turn, purpose, tags (task, run, service); `Activate()` for hosts that stream from an async iterator; `Add` / `Records` / `Total()` collect the turn's stored (priced) records, passing them to the outer scope (F3) |
+| `Usage/UsageRecord.cs`, `UsageTokens.cs`, `UsageCost.cs`, `UsagePurpose.cs` | The record, its token counts and cost, and why it was made |
+| `Usage/IUsageSink.cs`, `JsonlUsageSink.cs` | Where records go: the monthly JSONL file (shared append, UTC month) |
+| `Usage/UsageReport.cs`, `UsageTotal.cs` | Reads a ledger back, prices records written before F2, totals by any key (`WorkOf`: a fix, a triage, a session) |
+| `Usage/UsageText.cs`, `UsageSession.cs` | The usage text every host shows (F3): the line after an answer and the `/usage` summary (k/M tokens, two significant digits below $1, "price unknown" never $0); a host session's finished turns |
+| `Usage/CacheGaps.cs`, `CacheGapGroup.cs`, `LifetimeCost.cs` | The prefix's cache lifetime from a ledger: gaps per host and model, both lifetimes replayed and priced (F4) |
+| `Pricing/PriceTable.cs`, `ModelPrice.cs`, `TokenPrices.cs`, `LongPromptPrices.cs`, `CostCalculator.cs` | `config/prices.json` (longest-prefix match, a `long_prompt` tier) and a record's cost; no price → `null`, never 0 |
+| `Pricing/PricingUsageSink.cs` | Wraps the ledger in `AgentHost.CreateUsageSink`: prices each record before it's written |
+| `Pricing/ExchangeRates.cs`, `IRatesMapper.cs` and its mappers | Exchange rates in our `rates.json` format, the only one read; a mapper per provider turns its reply into it (`FrankfurterRatesMapper`, `RatesJsonMapper`), chosen by `RATES_FORMAT` (F14) |
+| `Pricing/DisplayCurrency.cs` | The currency costs are shown in, with its symbol, rate and date: `DISPLAY_CURRENCY` → `HOST_CULTURE`'s region → the process's culture → as charged (F14) |
+
+Folders split the code by concern and the namespace is the folder path (`LouisAgent.Core.Tools.Web`); dependencies
+point one way (Hosting → Agent → Llm, Tools, Skills, Usage, Pricing, Protocols → Guardrails → Config, Messages,
+Logging). `ArchitectureTests` holds both rules ([docs/CLAUDE.md, Project layout](../CLAUDE.md#project-layout)).
 
 ## Key types
 
@@ -105,11 +112,12 @@ attributes (108 tools with Paymo and DevOps enabled). Helpers must be `internal`
 
 ## Extending it
 
-- **A tool:** a public method with `[Description]`s on a tool class; a new class is registered in the `AgentEngine`
-  constructor; mention it in a skill file; test it in `tests/louis-agent.core.tests/Tools/`.
+- **A tool:** a public method with `[Description]`s on a tool class in `Tools/{Toolset}/`; a new class is registered in
+  the `AgentEngine` constructor; mention it in a skill file; test it in `tests/louis-agent.core.tests/Tools/{Toolset}/`.
 - **A skill:** `Skills/{name}-skills.md`; loaded with `AGENT_FUNCTION={name}` or `louis`.
 - **A provider:** a branch in `LlmClientFactory`; provider differences never go into `AgentEngine` or the tools. Where
-  it needs its own logic for a concern (usage, caching, …), add its implementation of that concern's strategy
+  it needs its own logic for a concern (usage, caching, …), add its implementation of that concern's strategy, in
+  `Llm/{Name}Provider/`
   ([Architecture: Provider strategies](../ARCHITECTURE.md#provider-strategies)).
 - **Another agent:** `new AgentEngine(skills, client, options, toolsets: [yourTools])`, as the orchestrator does; pass
   `usageSink: AgentHost.CreateUsageSink(options)` and the factory's `CreateUsageMapper` to record its usage.
