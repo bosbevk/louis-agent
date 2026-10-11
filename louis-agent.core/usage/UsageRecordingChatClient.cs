@@ -27,7 +27,8 @@ public sealed class UsageRecordingChatClient(
         ChatResponse response = await base.GetResponseAsync(messages, options, cancellationToken);
 
         // Non-streaming responses carry their usage on ChatResponse.Usage, not as UsageContent.
-        Store(scope, CreateRecord(scope, round, response.Usage, response.ModelId, response.FinishReason?.Value, stopwatch.Elapsed));
+        object[] raw = response.RawRepresentation is { } r && _mapper.Keeps(r) ? [r] : [];
+        Store(scope, CreateRecord(scope, round, response.Usage, response.ModelId, response.FinishReason?.Value, stopwatch.Elapsed, raw));
         return response;
     }
 
@@ -40,6 +41,7 @@ public sealed class UsageRecordingChatClient(
         int round = NextRound(scope);
         var stopwatch = Stopwatch.StartNew();
         UsageDetails? usage = null;
+        List<object> raw = [];
         string? model = null, stop = null;
         bool completed = false, failed = false;
 
@@ -68,6 +70,8 @@ public sealed class UsageRecordingChatClient(
                     usage ??= new UsageDetails();
                     usage.Add(content.Details);
                 }
+                // Only what the mapper asks for (on Anthropic, one event per request), not the whole stream.
+                if (update.RawRepresentation is { } r && _mapper.Keeps(r)) raw.Add(r);
                 model ??= update.ModelId;
                 if (update.FinishReason is { } finishReason) stop = finishReason.Value;
 
@@ -80,7 +84,7 @@ public sealed class UsageRecordingChatClient(
         {
             // Reached on normal completion, an exception, or the caller disposing the stream early (a cancelled turn).
             if (!failed)
-                Store(scope, CreateRecord(scope, round, usage, model, completed ? stop : Cancelled, stopwatch.Elapsed));
+                Store(scope, CreateRecord(scope, round, usage, model, completed ? stop : Cancelled, stopwatch.Elapsed, raw));
         }
     }
 
@@ -105,7 +109,8 @@ public sealed class UsageRecordingChatClient(
     private static int NextRound(UsageScope? scope) => scope?.NextRound() ?? 1;
 
     /// <summary>Builds the record for a finished request from the scope it started in.</summary>
-    internal UsageRecord CreateRecord(UsageScope? scope, int round, UsageDetails? usage, string? model, string? stop, TimeSpan duration) =>
+    internal UsageRecord CreateRecord(
+        UsageScope? scope, int round, UsageDetails? usage, string? model, string? stop, TimeSpan duration, IReadOnlyList<object>? raw = null) =>
         new(
             At: DateTimeOffset.UtcNow,
             Round: round,
@@ -117,7 +122,7 @@ public sealed class UsageRecordingChatClient(
             Run: scope?.Tags.Run,
             Service: scope?.Tags.Service,
             Model: model ?? defaultModel,
-            Tokens: _mapper.Map(usage),
+            Tokens: _mapper.Map(usage, raw ?? []),
             DurationMs: (long)duration.TotalMilliseconds,
             Stop: stop);
 }

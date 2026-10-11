@@ -19,15 +19,16 @@ public static class CostCalculator
 
         long cacheRead = record.Tokens.CacheRead ?? 0;
         long cacheWrite = record.Tokens.CacheWrite ?? 0;
+        // F4: the 1-hour part of the writes, when the provider reported the split; the rest are 5-minute writes.
+        long cacheWrite1h = record.Tokens.CacheWrite1h ?? 0;
 
         // A long-prompt tier prices the whole request, cache included, once the prompt is over its threshold.
         long prompt = input + cacheRead + cacheWrite;
         TokenPrices tier = price.LongPrompt is { } longPrompt && prompt > longPrompt.AboveTokens ? longPrompt : price;
 
-        // Cache writes at the 5-minute price: the only lifetime used until F4 records which one a request asked for.
-        // Reasoning isn't added: it is already part of the output count.
+        // Each write at its lifetime's price. Reasoning isn't added: it is already part of the output count.
         decimal amount = (input * tier.Input + output * tier.Output + cacheRead * tier.CacheRead +
-                          cacheWrite * tier.CacheWrite5m) / TokensPerPrice;
+                          (cacheWrite - cacheWrite1h) * tier.CacheWrite5m + cacheWrite1h * tier.CacheWrite1h) / TokensPerPrice;
 
         return new UsageCost(prices.Currency, Math.Round(amount, 6, MidpointRounding.AwayFromZero), prices.AsOf);
     }

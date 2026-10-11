@@ -212,6 +212,15 @@ step 6.
    new user message (the Haiku thinking note). Write the numbers into the features README.
 7. **Docs:** MODELS.md (caching, TTL), SETUP settings, spec status and the breakpoint-table update.
 
+## What the build found
+
+- **Writes split by lifetime reach the ledger on both paths** (step 6, measured on captured replies through the
+  adapter). `UsageDetails` carries only the total (`CacheCreationInputTokens`); the split is on the SDK's own usage: the
+  response's `Message` when not streaming, and the `message_start` event when streaming (the closing `message_delta`
+  has the total only). The mapper asks the recorder to keep just those objects. So the plan's fallback (every write at
+  the 1-hour rate under `LLM_CACHE_TTL=1h`) isn't built; step 7's smoke check confirms the real API sends the split
+  on a stream, and a record without it (`cache_write_1h: null`) is priced at 5 minutes, as before F4.
+
 ## Done when
 
 - Stories' criteria pass; tests added; suites pass.

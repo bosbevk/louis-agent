@@ -1,5 +1,6 @@
 namespace louis_agent.core.usage;
 
+using Anthropic.Models.Messages;
 using Microsoft.Extensions.AI;
 
 /// <summary>
@@ -10,6 +11,15 @@ public interface IUsageMapper
 {
     /// <summary>Maps one request's usage. Null usage, or a count the provider didn't report, maps to null, never 0.</summary>
     UsageTokens Map(UsageDetails? usage);
+
+    /// <summary>
+    /// Whether the recorder should keep this raw object (the provider's own response, or one of its stream events) for
+    /// <see cref="Map(UsageDetails?, IReadOnlyList{object})"/>: for counts <see cref="UsageDetails"/> has no field for.
+    /// </summary>
+    bool Keeps(object raw);
+
+    /// <summary>Maps one request's usage with the raw objects <see cref="Keeps"/> chose, in the order they came.</summary>
+    UsageTokens Map(UsageDetails? usage, IReadOnlyList<object> raw);
 }
 
 /// <summary>
@@ -32,6 +42,11 @@ public class StandardUsageMapper : IUsageMapper
         return new UsageTokens(input, cacheWrite, cacheRead, usage.OutputTokenCount, usage.ReasoningTokenCount);
     }
 
+    /// <summary>Keeps nothing: the contract's counts are all there is.</summary>
+    public virtual bool Keeps(object raw) => false;
+
+    public virtual UsageTokens Map(UsageDetails? usage, IReadOnlyList<object> raw) => Map(usage);
+
     /// <summary>Tokens written to the cache by this request, or null when the provider doesn't report them.</summary>
     protected virtual long? CacheWriteTokens(UsageDetails usage) => null;
 }
@@ -46,4 +61,21 @@ public sealed class AnthropicUsageMapper : StandardUsageMapper
 
     protected override long? CacheWriteTokens(UsageDetails usage) =>
         usage.AdditionalCounts?.TryGetValue(CacheCreationKey, out long written) == true ? written : null;
+
+    /// <summary>
+    /// The writes split by lifetime (F4) are only on the SDK's own usage: the <see cref="Message"/> of a response, and on
+    /// a stream the <c>message_start</c> event's message (the closing <c>message_delta</c> has the total only; measured
+    /// in F4 step 6).
+    /// </summary>
+    public override bool Keeps(object raw) => Usage(raw) is not null;
+
+    public override UsageTokens Map(UsageDetails? usage, IReadOnlyList<object> raw) =>
+        Map(usage) with { CacheWrite1h = raw.Select(r => Usage(r)?.CacheCreation).OfType<CacheCreation>().FirstOrDefault()?.Ephemeral1hInputTokens };
+
+    private static Usage? Usage(object raw) => raw switch
+    {
+        Message message => message.Usage,
+        RawMessageStreamEvent e when e.TryPickStart(out RawMessageStartEvent? start) => start.Message.Usage,
+        _ => null,
+    };
 }

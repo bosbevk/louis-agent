@@ -47,6 +47,33 @@ public class CostCalculatorTests
     }
 
     [Test]
+    public void For_OneHourWrites_AtTheOneHourPrice_TheRestAtFiveMinutes()
+    {
+        // F4: 248 written, 100 of them for an hour. 10 × 0.10 + 148 × 0.125 + 100 × 0.20 + 2 × 0.50 = 40.5 per million.
+        UsageCost? cost = CostCalculator.For(Record("claude-haiku-5-5", new UsageTokens(10, 248, 0, 2, null, CacheWrite1h: 100)), Table);
+
+        Assert.That(cost!.Amount, Is.EqualTo(0.000041m));
+    }
+
+    [Test]
+    public void For_AllWritesForAnHour_CostTheOneHourPrice()
+    {
+        // 1,000,000 written, all for an hour, on Haiku 4.5: exactly the cache_write_1h price, not cache_write_5m.
+        UsageCost? cost = CostCalculator.For(Record("claude-haiku-4-5", new UsageTokens(0, 1_000_000, 0, 0, null, CacheWrite1h: 1_000_000)), Table);
+
+        Assert.That(cost!.Amount, Is.EqualTo(2.00m));
+    }
+
+    [Test]
+    public void For_WritesWithoutTheSplit_AtTheFiveMinutePrice_AsBeforeF4()
+    {
+        // Old records, and providers that don't report lifetimes, have no split: priced as they always were.
+        UsageCost? cost = CostCalculator.For(Record("claude-haiku-4-5", new UsageTokens(0, 1_000_000, 0, 0, null)), Table);
+
+        Assert.That(cost!.Amount, Is.EqualTo(1.25m));
+    }
+
+    [Test]
     public void For_CacheReads_AtTheReadPrice()
     {
         // 39 uncached + 10,227 read + 206 output: the F1 spike's cache-read request.
