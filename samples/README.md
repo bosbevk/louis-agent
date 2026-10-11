@@ -141,6 +141,9 @@ and the usage ledger (`logs/`, `usage-YYYY-MM.jsonl`: one line per model request
 `escalations.jsonl`, `acknowledged.jsonl` and `processed.txt` (so an error is triaged once). Container output:
 `docker compose -f docker/docker-compose.demo.yml logs demo-api`.
 
+Not from the demo: [smoke-f4-caching/](smoke-f4-caching/README.md) is F4's smoke check, one CLI message with prompt
+caching on ($0.0070), kept as a reference for what a cached turn looks like in the ledger.
+
 ## Running the parts yourself
 
 ```powershell
