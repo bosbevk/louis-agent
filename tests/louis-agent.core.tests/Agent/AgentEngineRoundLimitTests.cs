@@ -64,7 +64,7 @@ public class AgentEngineRoundLimitTests
         var engine = Engine(new FakeChatClient(), supportsTools: false);
         var options = new ChatOptions { MaxOutputTokens = 100 };
 
-        Assert.That(engine.KeepToolsOnFinalRequest(options), Is.SameAs(options));
+        Assert.That(engine.Guards.KeepToolsOnFinalRequest(options), Is.SameAs(options));
     }
 
     [Test]
@@ -73,7 +73,7 @@ public class AgentEngineRoundLimitTests
         var engine = Engine(new FakeChatClient());
         var options = new ChatOptions { MaxOutputTokens = 100 };
 
-        ChatOptions? final = engine.KeepToolsOnFinalRequest(options);
+        ChatOptions? final = engine.Guards.KeepToolsOnFinalRequest(options);
 
         Assert.That(final, Is.Not.SameAs(options));
         Assert.That(options.Tools, Is.Null);

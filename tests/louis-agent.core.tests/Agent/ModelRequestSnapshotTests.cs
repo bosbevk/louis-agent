@@ -54,7 +54,7 @@ public class ModelRequestSnapshotTests
                 .Select(t => new { t.Name, t.Description, Schema = JsonDocument.Parse(t.JsonSchema.GetRawText()).RootElement }),
             SystemPrompt = engine.SkillDocumentation,
             NoToolsHistory = Engine(supportsTools: false).NewHistory().Select(m => new { Role = m.Role.Value, m.Text }),
-            AgentEngine.TruncatedCallMessage,
+            ToolCallGuards.TruncatedCallMessage,
             AgentEngine.ContinueAfterCutOffMessage,
         };
         return JsonSerializer.Serialize(snapshot, Json)
