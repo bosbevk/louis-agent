@@ -74,6 +74,7 @@ louis-agent.core/
 │   ├── PriceTable.cs, CostCalculator.cs  # Prices (config/prices.json) and a record's cost (F2)
 │   ├── PricingUsageSink.cs   # Puts the cost on each record before the ledger writes it
 │   ├── UsageReport.cs        # Reads a ledger back, prices old records, totals per fix / triage / run
+│   ├── UsageText.cs, UsageSession.cs  # The usage line and /usage text every host shows (F3); a session's turns
 │   └── UsageRecord.cs, IUsageSink.cs, JsonlUsageSink.cs
 └── mcp/
     ├── RiderMcpClient.cs     # Lists tools from Rider's MCP server
@@ -197,8 +198,10 @@ whole loop against a real model: API sessions, the fix flow, and the web app's B
   shell, so model text can't become commands.
 - **Guard the context** — oversized results are summarised, cut-off calls are never run, failures carry their reason.
 - **Hosts stay thin** — each host maps the same stream to its protocol; behaviour lives in core.
-- **Measure every request** — the usage ledger records each model request with its tokens and its cost, priced from a
-  table dated by `as_of`, so later price changes never rewrite history; unknown prices are `null`, never 0.
+- **Measure every request, and show it** — the usage ledger records each model request with its tokens and its cost,
+  priced from a table dated by `as_of`, so later price changes never rewrite history; unknown prices are `null`, never
+  0. Every host shows a turn's usage from the same records and totals (`UsageReport.Total`), so the views and the
+  ledger agree.
 - **History is append-only** — newer Claude models (Haiku 5.5 and later) bind thinking blocks to the system prompt,
   tools and earlier messages, so nothing may edit them mid-conversation ([FX1](fixes/FX01-round-limit-tools.md);
   [FX4](fixes/FX04-append-only-history.md) is still open).

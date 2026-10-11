@@ -4,7 +4,7 @@ One short write-up per skill in the [goal](../GOAL.md)'s architecture map: what 
 changed, the trade-offs, and what didn't work. Name each file after the skill's number and name, e.g.
 `13-cost-and-token-economics.md`.
 
-None yet: the first one comes when M1 finishes.
+None yet. M1 finished on 2026-10-11 (F1–F3), so the first is due: 13, cost and token economics.
 
 ---
 [Docs index](../README.md) · [Goal](../GOAL.md)

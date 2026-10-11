@@ -28,7 +28,7 @@ its own.
 - [x] [F1 Usage ledger](docs/features/F01-usage-ledger.md) — record every model request, attributed to session, task
       and run
 - [x] [F2 Prices and cost](docs/features/F02-prices-and-cost.md) — a price table; cost on every record
-- [ ] [F3 Show usage](docs/features/F03-usage-display.md) — cost per answer (web, CLI, Rider), in the API stream, and
+- [x] [F3 Show usage](docs/features/F03-usage-display.md) — cost per answer (web, CLI, Rider), in the API stream, and
       per fix in the comms log
 
 **M2 — Cheaper:** stop paying full price for the same tokens.
@@ -222,6 +222,13 @@ backlog item removes one, it says so.
 ## Done
 
 Newest first; details in the git history.
+
+- 2026-10-11 — **F3 Show usage** (M1 done): every answer says what it used and cost — a line on the CLI's stderr,
+  under each answer in the web app (with the chat's total), in Rider with `USAGE_IN_CHAT=true` — `/usage` in every
+  host, `usage` on the API's `message_delta` and `GET /sessions/{id}`, and cost per reply, per error and per run in the
+  orchestrator's comms log. The short demo's comms log total equals its ledger's exactly ($0.2526, 57 requests)
+- 2026-10-11 — [FX7](docs/fixes/FX07-timeout-ends-run.md): a timed-out request fails that error, not the
+  orchestrator's whole run; found with the new `run-demo.ps1 -OrchestratorProfile`
 
 - 2026-10-11 — [FX6](docs/fixes/FX06-usage-on-failed-turns.md): a failed louis-agent turn still reports its usage (on
   the API's `error` event), so the web app's chat total and the orchestrator's comms log match the ledger; built in F3

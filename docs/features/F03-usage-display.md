@@ -1,6 +1,6 @@
 # F3 · Show usage: chat, CLI, Rider, API, comms log
 
-> **Status:** planned · **Milestone:** M1 · **Depends on:** F1, F2
+> **Status:** done (2026-10-11) · **Milestone:** M1 · **Depends on:** F1, F2
 >
 > **Spec:** [Usage §7.2–7.4, §7.1 (stream)](../specs/USAGE_AND_BUDGETS.md)
 >
