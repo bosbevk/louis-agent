@@ -65,6 +65,22 @@ public class ToolOrderTests
     }
 
     [Test]
+    public void TwoToolsWithOneName_Throw()
+    {
+        // A toolset whose method has the name of a built-in tool: the model couldn't tell them apart.
+        var options = new AgentOptions { WorkspaceRoot = _skillsDir, SkillsDirectory = _skillsDir, RatesUrl = null };
+
+        Assert.That(() => new AgentEngine(AgentHost.LoadSkills(options), new FakeChatClient(), options, toolsets: [new Clash(), new Clash()]),
+            Throws.InvalidOperationException.With.Message.Contain("Two tools are named 'Ping'"));
+    }
+
+    private sealed class Clash
+    {
+        [System.ComponentModel.Description("Answers pong")]
+        public string Ping() => "pong";
+    }
+
+    [Test]
     public void AnAgentBuiltTool_TakesItsPlaceInNameOrder()
     {
         // It sorts first, so it lands at the start, not appended at the end.

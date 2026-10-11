@@ -318,15 +318,21 @@ public partial class AgentEngine
         return truncated;
     }
 
+    private static readonly Comparer<AITool> ByName = Comparer<AITool>.Create((a, b) => string.CompareOrdinal(a.Name, b.Name));
+
     /// <summary>
     /// Adds a tool at its place in name order (ordinal), so the tool list, and with it the start of every request, is the
     /// same bytes from one run to the next (F4: the prompt cache is keyed by the exact prefix, and reflection's method
     /// order isn't guaranteed). A tool added later (an agent-built one) still changes the list, as any change must.
+    /// Tool names must be unique across all toolsets: a second tool with a name already in the list throws.
     /// </summary>
     private void AddTool(AITool tool)
     {
-        int at = _tools.FindIndex(t => string.CompareOrdinal(t.Name, tool.Name) > 0);
-        _tools.Insert(at < 0 ? _tools.Count : at, tool);
+        int at = _tools.BinarySearch(tool, ByName);
+        if (at >= 0)
+            throw new InvalidOperationException(
+                $"Two tools are named '{tool.Name}'; tool names must be unique across all toolsets.");
+        _tools.Insert(~at, tool);
     }
 
     private void AddPublicMethodsAsTools(object target)
