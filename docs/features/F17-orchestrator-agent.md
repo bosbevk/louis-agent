@@ -59,6 +59,10 @@ apart from louis-agent's, so that each agent is tuned to its own work.
 - *And* its prompt prefix (`orchestrator.md` + runbooks) is cached with the provider's caching strategy (F4); the
   lifetime (5 minutes or 1 hour) is chosen from the measured gaps between triages, and the demo drops F4's
   `LLM_CACHE=off` override.
+- *And* that lifetime is the orchestrator's own, per marker as in F4 ([diagrams 4 and 5](F04-prompt-caching.md#how-caching-works)):
+  its prefix's lifetime comes from `usage-probe -- --cache-gaps` for the `orchestrator` host (its gaps are the waits
+  for louis-agent's fixes: about a minute in the demo, so 5 minutes; 10–30 minutes in production, so 1 hour), and its
+  tail stays 5 minutes. louis-agent's lifetime is set separately, from its own gaps.
 
 **F17-S5 — Measured against today.** As a *developer*, I want the new orchestrator compared with today's on the same
 cases, so that the change is kept only when decisions hold and cost falls.

@@ -105,6 +105,34 @@ flowchart LR
 - **A chat in Rider or the web app:** rounds within a turn are seconds apart (the tail stays 5 minutes) but there are
   minutes between your messages, so the prefix on 1 hour keeps its 48k at 0.1× after every pause.
 
+### 6. Two agents, two lifetimes
+
+Each agent caches its own prefix (the orchestrator's tools and runbooks are a different entry from louis-agent's coding
+tools and skills), so each gets its own lifetime, from its own gaps. What decides it is **the gap between requests that
+reuse the entry**, not how long the run takes: an orchestrator busy every minute for hours is still cheapest on
+5 minutes.
+
+```mermaid
+flowchart LR
+    subgraph ORC["Orchestrator: triage"]
+        O1["triage error 1<br/>rounds seconds apart"] -->|"waits while louis-agent fixes:<br/>~1 min in the demo,<br/>10–30 min in production"| O2["triage error 2"]
+    end
+    subgraph LA["louis-agent: one fix"]
+        L1["round 1"] -->|"seconds"| L2["round 2"] -->|"seconds"| L3["… round 11"]
+    end
+```
+
+| Agent | Gaps between its requests | Prefix (marker 1) | Tail (marker 2) |
+|---|---|---|---|
+| Orchestrator in the demo | rounds seconds apart; ~1 minute between errors while a fix runs | 5 minutes | 5 minutes |
+| Orchestrator in production (errors trickle in, fixes take 10+ minutes) | 5–60 minutes between errors | **1 hour** | 5 minutes |
+| louis-agent during a fix | seconds between rounds; the next fix within 5 minutes | 5 minutes | 5 minutes |
+| louis-agent with fixes spread out (one every 20 minutes) | 5–60 minutes between fixes | **1 hour**: its 48k prefix is shared across fixes | 5 minutes |
+
+`usage-probe -- --cache-gaps` measures each agent separately, since the ledger records each request's host
+(`orchestrator`, `api`) and time. F4 caches louis-agent; the orchestrator's caching and its own lifetime are
+[F17](F17-orchestrator-agent.md)'s (until then the demo sets `LLM_CACHE=off` for it).
+
 *To confirm in step 1 (spike) before building on them:* a read refreshes the lifetime; mixed lifetimes are allowed with
 the longer one first.
 
