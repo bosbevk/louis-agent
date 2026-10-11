@@ -316,4 +316,37 @@ public class ThinkingTests
         var options = new ChatOptions { MaxOutputTokens = 16_000 };
         Assert.That(LlmClientFactory.WithThinkingBudget(options, "claude-haiku-4-5"), Is.SameAs(options));
     }
+
+    // F4 step 3: the prompt-cache settings.
+    [TestCase(null, true)]
+    [TestCase("on", true)]
+    [TestCase("ON", true)]
+    [TestCase("off", false)]
+    [TestCase("false", false)]
+    public void ResolveCache_OnUnlessOff(string? setting, bool expected) =>
+        Assert.That(new LlmOptions { Cache = setting }.ResolveCache(), Is.EqualTo(expected));
+
+    [TestCase(null, CacheLifetime.FiveMinutes)]
+    [TestCase("5m", CacheLifetime.FiveMinutes)]
+    [TestCase("1h", CacheLifetime.OneHour)]
+    [TestCase("1H", CacheLifetime.OneHour)]
+    public void ResolveCacheTtl_FiveMinutesUnlessAnHour(string? setting, CacheLifetime expected) =>
+        Assert.That(new LlmOptions { CacheTtl = setting }.ResolveCacheTtl(), Is.EqualTo(expected));
+
+    [Test]
+    public void CacheSettings_BadValues_SayWhatIsAllowed()
+    {
+        Assert.That(() => new LlmOptions { Cache = "maybe" }.ResolveCache(),
+            Throws.ArgumentException.With.Message.Contain("LLM_CACHE 'maybe'").And.Message.Contain("on or off"));
+        Assert.That(() => new LlmOptions { CacheTtl = "10m" }.ResolveCacheTtl(),
+            Throws.ArgumentException.With.Message.Contain("LLM_CACHE_TTL '10m'").And.Message.Contain("5m or 1h"));
+    }
+
+    [Test]
+    public void CacheSettings_AreReadFromTheEnvironment()
+    {
+        var o = LlmOptions.FromEnvironment(name => name switch { "LLM_CACHE" => "off", "LLM_CACHE_TTL" => "1h", _ => null });
+
+        Assert.That((o.ResolveCache(), o.ResolveCacheTtl()), Is.EqualTo((false, CacheLifetime.OneHour)));
+    }
 }

@@ -45,6 +45,32 @@ public sealed class LlmOptions
             var other => throw new ArgumentException($"Unknown LLM_THINKING '{other}'. Use off, low, medium or high."),
         };
 
+    /// <summary>LLM_CACHE: on | off. Null means on. Only providers with a caching strategy act on it (F4: Anthropic).</summary>
+    public string? Cache { get; set; }
+
+    /// <summary>Whether to mark requests for the provider's prompt cache (F4).</summary>
+    public bool ResolveCache() => (Cache ?? "on").ToLowerInvariant() switch
+    {
+        "on" or "true" => true,
+        "off" or "false" => false,
+        var other => throw new ArgumentException($"Unknown LLM_CACHE '{other}'. Use on or off."),
+    };
+
+    /// <summary>
+    /// LLM_CACHE_TTL: 5m | 1h. Null means 5m. The lifetime of the cached prefix (tools + system prompt, F4's marker 1),
+    /// chosen from the measured gaps between requests that share it; the conversation's own entry (marker 2) is always
+    /// 5 minutes.
+    /// </summary>
+    public string? CacheTtl { get; set; }
+
+    /// <summary>The prefix's cache lifetime (F4).</summary>
+    public CacheLifetime ResolveCacheTtl() => (CacheTtl ?? "5m").ToLowerInvariant() switch
+    {
+        "5m" => CacheLifetime.FiveMinutes,
+        "1h" => CacheLifetime.OneHour,
+        var other => throw new ArgumentException($"Unknown LLM_CACHE_TTL '{other}'. Use 5m or 1h."),
+    };
+
     public bool ResolveSupportsTools()
     {
         if (SupportsTools is { } explicitValue) return explicitValue;
@@ -79,9 +105,21 @@ public sealed class LlmOptions
         options.WorkspaceId = Get("ANTHROPIC_WORKSPACE_ID");
         if (bool.TryParse(Get("LLM_SUPPORTS_TOOLS"), out bool supportsTools)) options.SupportsTools = supportsTools;
         options.Thinking = Get("LLM_THINKING");
+        options.Cache = Get("LLM_CACHE");
+        options.CacheTtl = Get("LLM_CACHE_TTL");
         return options;
     }
 
     public override string ToString() =>
         $"{Provider}:{Model} (endpoint={Endpoint ?? "default"}, apiKey={(string.IsNullOrEmpty(ApiKey) ? "unset" : "set")})";
+}
+
+/// <summary>How long a prompt-cache entry lives after its last use (F4). Provider-neutral: a caching strategy maps it.</summary>
+public enum CacheLifetime
+{
+    /// <summary>5 minutes: cheaper to write (1.25× on Anthropic); right when requests come less than 5 minutes apart.</summary>
+    FiveMinutes,
+
+    /// <summary>1 hour: dearer to write (2×); pays off when requests sharing the entry come 5–60 minutes apart.</summary>
+    OneHour,
 }
