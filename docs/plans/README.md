@@ -14,6 +14,7 @@ or fix doc (*What the build changed*), not here.
 | [F02-prices-and-cost.md](F02-prices-and-cost.md) | [F2 Prices and cost](../features/F02-prices-and-cost.md) | 2026-10-10 | Recreated on 2026-10-11; includes the `PRICES_URL` addition approved during the build |
 | [F03-usage-display.md](F03-usage-display.md) | [F3 Show usage](../features/F03-usage-display.md) | 2026-10-11 | |
 | [F14-display-currency.md](F14-display-currency.md) | [F14 Display currency](../features/F14-display-currency.md) | 2026-10-11 | Built before M2 by choice |
+| [CL3-messages-and-logging.md](CL3-messages-and-logging.md) | TODO: *Messages and logging* (cleanup) | 2026-10-12 | Serilog behind `ILogger`, not NLog; tool texts pinned by a golden file; the comms log unchanged |
 | [CL2-split-agent-engine.md](CL2-split-agent-engine.md) | TODO: *Split `AgentEngine`* (cleanup) | 2026-10-11 | Classes with the engine as façade; console UI to the CLI; pure checks in `Guardrails/` |
 | [CL1-project-layout.md](CL1-project-layout.md) | TODO: *Project layout* (cleanup) | 2026-10-11 | PascalCase in every project, one type per file; `AgentEngine` moved whole, its split next |
 | [F04-prompt-caching.md](F04-prompt-caching.md) | [F4 Prompt caching](../features/F04-prompt-caching.md) | 2026-10-11 | Conversation marker by automatic caching (option B); orchestrator and summariser left to their own features |

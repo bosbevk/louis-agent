@@ -136,10 +136,10 @@ growing history every round, so smaller tasks are cheaper); make runs resumable 
 - [x] **Split `AgentEngine`, right after the project layout** (its plan comes first): the loop, history and prompt in
       `Agent/`, the tool registry beside it, and the tool-result guards, `ResolvePath`/`IsSensitive` and the SSRF check
       in `Guardrails/`. CL1 moves the class whole; this splits it. Behaviour unchanged
-- [ ] **Messages and logging, after F4, second of two cleanups** (the rule is in [docs/CLAUDE.md](docs/CLAUDE.md#messages-and-logging)): move
+- [ ] **Messages and logging, after F4, second of two cleanups** — in progress as CL3 ([plan](docs/plans/CL3-messages-and-logging.md); the rule is in [docs/CLAUDE.md](docs/CLAUDE.md#messages-and-logging)): move
       the ~230 inline messages in 35 files (exceptions, log lines, tool results, user-facing text) into message enums
       with `[Description]` templates and a `MessageText` helper, with a test over every enum; switch logging from
-      `Console.Error` and `AgentLog`'s files to `ILogger` with NLog (stderr only, run files and JSON-lines as targets).
+      `Console.Error` and `AgentLog`'s files to `ILogger` with Serilog (stderr only, run files and JSON-lines as sinks).
       Its own branch and PR, with a plan
 - [ ] CI (`.github/workflows`): `dotnet build` and `dotnet test` on every push and pull request — today regressions are
       only caught locally
@@ -232,6 +232,10 @@ feature when its turn comes; remove its line here and update the map's *Missing*
       to the history (Haiku 5.5, Sonnet 5.5, Opus 5.5): freeze each conversation's tool list and system prompt, since
       `CreateTool`, `/approve`, `/reject`, a skill reload, or another session change them today. *Removes the
       limitation:* changing the tools or skills during a chat can break it on Haiku 5.5
+- [ ] **Structured results between agents, after FX4 and before F5** (F8-S4 pulled forward; its design is in
+      [F8](docs/features/F08-reliability.md)): louis-agent ends a fix with a `ReportFixResult` tool call and the
+      orchestrator decides with a tool call, validated against their schemas, instead of `FIX-RESULT` / `DECISION` text
+      lines a regex has to find (FX8); the text lines stay as a fallback. Its own feature doc and plan
 
 ### Observability
 
