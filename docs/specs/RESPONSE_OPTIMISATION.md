@@ -208,6 +208,20 @@ Breakpoint 3 adds savings on the growing history on top of that.
 **Accept when:** from the second request of a session, `CachedInputTokenCount` ≥ the prefix size; the benchmark's
 input cost falls by at least 60%; Ollama and OpenAI-compatible runs are unchanged (no markers sent).
 
+**What the adapter sends** (F4 step 1 spike, 2026-10-11: Anthropic 12.53 with its Microsoft.Extensions.AI adapter;
+captured request bodies, no model call; kept as `AnthropicCachingWireTests`):
+
+| Question | Answer |
+|---|---|
+| Does `TextContent.WithCacheControl(ttl)` on the system message reach the wire? | Yes: `"system":[{"text":…,"cache_control":{"type":"ephemeral","ttl":"1h"}}]` |
+| Does a top-level `cache_control` (automatic caching) set through `RawRepresentationFactory` reach it? | Yes, beside the system marker, with its own TTL; no marker lands on the messages |
+| Does it keep thinking and tools? | Yes, including through `WithThinkingBudget`, which chains to the previous factory |
+| Are writes split by lifetime reported? | Not in `UsageDetails` (only the total `CacheCreationInputTokens`, as F1 found); the SDK's own `Message` (`ChatResponse.RawRepresentation`) has `Usage.CacheCreation.Ephemeral5mInputTokens` / `Ephemeral1hInputTokens` |
+
+Checked against Anthropic's prompt-caching page the same day: a read refreshes the lifetime at no cost; 5-minute and
+1-hour entries can be mixed if the 1-hour one comes first; automatic caching uses one of the 4 breakpoint slots; the
+lookback is 20 blocks; Haiku 5.5 caches from 512 tokens.
+
 ### C. Send only the tools a session needs
 
 **What:** a toolset profile per host or session, fixed for its lifetime (varying it per request would break the
