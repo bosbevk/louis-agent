@@ -1,6 +1,6 @@
 # F14 · Display currency: show costs in your own currency
 
-> **Status:** in progress · **Milestone:** M5 (built early, by choice) · **Depends on:** F2, F3
+> **Status:** done (2026-10-11) · **Milestone:** M5 (built early, by choice) · **Depends on:** F2, F3
 >
 > **Spec:** [Usage §4.2 (prices), §7 (showing usage)](../specs/USAGE_AND_BUDGETS.md)
 >
@@ -100,6 +100,27 @@ sketch.
 - With `DISPLAY_CURRENCY` set, the CLI line, `/usage`, Rider, the web app and the comms log all show converted costs
   with the rate's date available, and the ledger is byte-for-byte what it would have been without F14.
 - **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)).
+
+## What the build changed from this plan
+
+- **The currency comes from the PC's Windows culture** (`HOST_CULTURE`, written by `usage-probe --host-culture`), with
+  `DISPLAY_CURRENCY` as the override, rather than `DISPLAY_CURRENCY` alone. The containers can't see the region, and
+  running them in en-ZA would have changed every tool's number format (`35,00`), so the culture is passed as a value.
+- **Code and symbol from .NET's `RegionInfo`** instead of a symbol table of ours; a symbol that clashes with the price
+  table's own (`$` for AUD, CAD, NZD, MXN) is written as the code (`0.1 AUD`).
+- **Rates: our own `rates.json` format, the only one read**, with a mapper per provider (`IRatesMapper`; Frankfurter's
+  reply is mapped), `RATES_URL` / `RATES_FORMAT` / `RATES_FILE`, a tracked `config/rates.json`, and `GET /rates` on the
+  API like the price table; the demo's orchestrator reads demo-api's, so both agents use one rate. An outage or an
+  unmappable reply falls back to the file; rates from the wrong currency stop start-up.
+- **The API's usage object always carries `display_*`** (the charged figures when not converting), and
+  `GET /rates/display` gives the web app the server's currency and a symbol per currency. The web app converts the
+  stored charged cost when drawing, so changing its currency re-labels every saved chat.
+- **Amounts always use `.`** (`R35.00`), whatever the culture; converted totals carry the rate and the USD charged
+  (`/usage`, the comms log's run total).
+- **Both demos were rerun for the samples** (comms logs in rands; both matched their ledgers exactly in USD). The full
+  run found [FX8](../fixes/FX08-fix-result-quotes.md), fixed in F14; the full sample is kept as it was, with a note.
+- **Checked by hand:** the CLI, Rider (over stdio), the API and the web app (Chrome) on Ollama with a priced test
+  table, and the orchestrator in both demos.
 
 ## Not in this feature
 

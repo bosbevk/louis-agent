@@ -62,10 +62,10 @@ its own.
       per session"
 - [ ] [F12 Response speed](docs/features/F12-response-speed.md) — time to first token and tokens per second on every
       usage record, for every provider (Ollama's own timings too); shown with the usage
-- [ ] [F14 Display currency](docs/features/F14-display-currency.md) — show costs in the PC's currency (from the Windows
+- [x] [F14 Display currency](docs/features/F14-display-currency.md) — show costs in the PC's currency (from the Windows
       region, `HOST_CULTURE`) or a chosen one, with the rate's date; rates live from `RATES_URL` (frankfurter) with a
-      `config/rates.json` fallback, served at `GET /rates`; the ledger stays in the bill's currency. *In progress, built
-      before M2 by choice* ([plan](docs/plans/F14-display-currency.md))
+      `config/rates.json` fallback, served at `GET /rates`; the ledger stays in the bill's currency. *Built before
+      M2 by choice* ([plan](docs/plans/F14-display-currency.md))
 
 **Local — Local models:** a local model gets everything it is sent.
 
@@ -223,6 +223,11 @@ backlog item removes one, it says so.
 ## Done
 
 Newest first; details in the git history.
+
+- 2026-10-11 — **F14 Display currency**: costs in the PC's currency in every host (rands from `HOST_CULTURE=en-ZA`,
+  written by `usage-probe --host-culture`; `R0.034`, `.` decimals), at a dated rate (Frankfurter mapped into our
+  `rates.json`, `config/rates.json` as the fallback, served at `GET /rates`), with the rate and the USD charged beside
+  converted totals; a currency picker in the web app. The ledger stays in USD. Both demo samples rerun in rands
 
 - 2026-10-11 — [FX8](docs/fixes/FX08-fix-result-quotes.md): a FIX-RESULT whose summary quotes without escaping
   ("Cher") is still read, instead of asking louis-agent to continue three times; found by F14's full demo rerun
