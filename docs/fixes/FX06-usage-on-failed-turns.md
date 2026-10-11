@@ -1,7 +1,7 @@
 # FX6 · A turn that fails still reports what it used
 
 > **Status:** done (2026-10-11) · **Area:** louis-agent.api stream, web app, orchestrator · **Found:** F3 steps 5 and 7
-> (2026-10-11), while writing them; never seen in a run · **Built:** as part of F3 (see its plan)
+> (2026-10-11), while writing them; never seen in a run · **Commit:** `75de390` (built in F3; see its plan)
 
 ## Symptom
 
