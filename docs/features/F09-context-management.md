@@ -1,7 +1,8 @@
 # F9 · Bounded history: clear stale tool results, compact old turns
 
 > **Status:** planned · **Milestone:** M4 · **Depends on:** F1, F4, [F15](F15-model-limits.md) (the compaction point per
-> model: below the smaller of a share of its window and its price step)
+> model: below the smaller of a share of its window and its price step), [F16](F16-summariser.md) (the summariser
+> compaction uses), [F18](F18-evaluation.md) (the recall check)
 >
 > **Spec:** [Optimisation §D](../specs/RESPONSE_OPTIMISATION.md) · [Session architecture §2](../specs/SESSION_ARCHITECTURE.md)
 >
@@ -53,12 +54,13 @@ quality trade.
   history:
   1. `ClearStaleToolResults(history, keepRounds)` — rebuilds old `FunctionResultContent` items with stub results
      (tool name and argument summary from the matching `FunctionCallContent`, original size).
-  2. `CompactAsync(history, keepTurns)` — summarises the older part with `_innerChatClient` (tool-less, like
-     `SummariseToolResultAsync`; F10 can route it to a cheaper model) into one user-role message labelled as a summary
-     of earlier conversation; thinking blocks in the replaced part go with it.
+  2. `CompactAsync(history, keepTurns)` — summarises the older part with F16's `Summariser` (job `compaction`, its
+     own prompt section, model and no caching) into one user-role message labelled as a summary of earlier
+     conversation; thinking blocks in the replaced part go with it.
 - **Archive** through `AgentLog` before each rewrite (S3).
 - **Benchmark chat:** a script (`samples/benchmarks/long-chat.ps1` or a test harness) that drives 30 turns against
-  louis-agent.api on the demo repository, then asks recall questions with known answers.
+  louis-agent.api on the demo repository; its recall questions with known answers are an F18 suite (`recall`), so
+  they are scored, priced and compared with a baseline like any other eval.
 - **Provider-native alternatives** (Anthropic context editing / compaction) stay out: they need the beta client and work
   only on Anthropic (server-side compaction supports Haiku 5.5, not Haiku 4.5).
 
@@ -67,8 +69,8 @@ quality trade.
 1. **`ClearStaleToolResults`.** *Test:* rounds older than the window get stubs; recent ones untouched; call/result pairs
    intact; stub text names tool, target and size.
 2. **Archive** to `logs/sessions/…`. *Test:* replaced messages appear in the archive before the rewrite.
-3. **`CompactAsync`.** *Test (fake client):* older part replaced by one summary message; kept part starts at a user
-   message; the summary request has no tools; usage recorded as `compaction`.
+3. **`CompactAsync`** with F16's `Summariser` (adds the `compaction` job). *Test (fake summariser):* older part
+   replaced by one summary message; kept part starts at a user message; usage recorded as `compaction`.
 4. **Thresholds + wiring in `BeginTurn` and before continuations.** *Test:* below thresholds nothing changes; above, the
    right step runs once.
 5. **Benchmark chat script + recall check.** *Test:* runs against the demo API; prints tokens per turn and recall result.

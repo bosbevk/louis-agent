@@ -50,13 +50,21 @@ its own.
       refusal, fallback model, results as tool calls. *Replaces:* "Retry and back off when the model API refuses",
       "Add model fallback", "Wire up structured outputs"
 
-**M4 — Long sessions:** long chats and tasks don't grow without limit.
+**M4 — Long sessions:** long chats and tasks don't grow without limit; the parts that summarise and orchestrate are
+measured.
 
+- [ ] [F18 Evaluation](docs/features/F18-evaluation.md) — a small shared eval harness: cases as data, exact and
+      LLM-judge scorers, cost and a baseline per run; built with F16, its first suite. *Replaces:* the first part of the
+      backlog's *Evaluation* gap
+- [ ] [F16 Summariser](docs/features/F16-summariser.md) — fewer oversized results, then one measured summariser with its
+      own model, prompt and no caching, reused by F9's compaction. *Takes over:* F10's summary model
 - [ ] [F9 Bounded history](docs/features/F09-context-management.md) — clear stale tool results, then compact old turns.
       *Replaces:* "Consider context editing and compaction"; first slice of the
       [session architecture](docs/specs/SESSION_ARCHITECTURE.md)'s context pipeline
-- [ ] [F10 Route settings](docs/features/F10-route-settings.md) — thinking, tool rounds and summary model per route.
+- [ ] [F10 Route settings](docs/features/F10-route-settings.md) — thinking and tool rounds per route.
       *Removes the limitation:* 10 tool rounds per message
+- [ ] [F17 Orchestrator agent](docs/features/F17-orchestrator-agent.md) — classification by a model, the known paths as
+      code, the agent for the exceptions; its own settings and cache policy; measured against today's orchestrator
 
 **M5 — Reporting:** an overview, a check against the bill, and how fast each model is.
 
@@ -177,7 +185,7 @@ Design: [docs/specs/SESSION_ARCHITECTURE.md](docs/specs/SESSION_ARCHITECTURE.md)
 From the [goal](docs/GOAL.md)'s architecture map: skills it requires that nothing above plans yet. Promote one to a
 feature when its turn comes; remove its line here and update the map's *Missing* column.
 
-- [ ] **Evaluation:** an eval suite (task datasets, graded scoring incl. LLM-as-judge) run in CI as a regression gate
+- [ ] **Evaluation:** run F18's eval suites in CI as a regression gate (the harness itself is F18)
 - [ ] **Thinking:** measure quality vs tokens per thinking level on the evals; interleaved thinking between tool calls
 - [ ] **Models:** choose models per task from measured quality and cost
 - [ ] **Prompts:** version prompts and compare changes on the evals
@@ -185,10 +193,6 @@ feature when its turn comes; remove its line here and update the map's *Missing*
 - [ ] **Agent loop:** explicit planning, a self-check before answering, stop conditions beyond a round count
 - [ ] **Memory and retrieval:** embeddings, a vector store, retrieval over code and past sessions, measured
 - [ ] **Multi-agent:** compare handoff patterns (tool call, session, MCP); parallel sub-agents
-- [ ] **Orchestrator agent:** design the orchestrator as a proper agent of its own, including its prompt caching and
-      cache lifetime (left out of F4 on purpose: [plan](docs/plans/F04-prompt-caching.md), design point 4)
-- [ ] **Summariser:** a proper summariser for oversized tool results (and later F9's compaction), with its own prompt,
-      model, prompt caching and cache lifetime (left out of F4 on purpose, as above)
 - [ ] **Protocols:** a full MCP client (also removes the Rider MCP limitation)
 - [ ] **Reliability:** timeouts, idempotency and resumable runs in the core
 - [ ] **Shipping:** a deploy pipeline for the Docker images, with the eval suite as a release gate

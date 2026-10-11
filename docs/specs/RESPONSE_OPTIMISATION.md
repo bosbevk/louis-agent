@@ -257,7 +257,7 @@ Fixed per session, so they don't break the cache:
 | Interactive chat (web, Rider, CLI) | `LLM_THINKING` (medium) | 10 | Quick feedback; the user continues if needed |
 | API task sessions (orchestrator fix / build) | medium | `AGENT_MAX_TOOL_ROUNDS` (e.g. 30) | Fewer "continue" round-trips per fix |
 | Orchestrator triage | low | 10 | Its job is classification against a runbook |
-| Summaries (oversized results, compaction) | off | 0 | Plain summarisation; use the cheapest configured model (`LLM_SUMMARY_MODEL`) |
+| Summaries (oversized results, compaction) | off | 0 | Plain summarisation; use the cheapest configured model (`SUMMARY_MODEL`, [F16](../features/F16-summariser.md)) |
 
 A higher round limit doesn't make a fix cheaper by itself — the history is re-sent either way — but it removes the
 follow-up messages and their latency.
@@ -292,7 +292,7 @@ Check whether it replaces the repo's own thinking-budget wrapper in `LlmClientFa
 | `CONTEXT_CLEAR_AT`, `CONTEXT_KEEP_ROUNDS` | 60,000 · 4 | D |
 | `CONTEXT_COMPACT_AT`, `CONTEXT_KEEP_TURNS` | per model (F15; under 100,000 on Haiku 5.5) · 3 | D |
 | `AGENT_MAX_TOOL_ROUNDS` | 10 | E |
-| `LLM_SUMMARY_MODEL` | the main model | E |
+| `SUMMARY_MODEL` | the main model | E ([F16](../features/F16-summariser.md)) |
 
 ## 6. Rollout and measurement
 

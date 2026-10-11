@@ -1,4 +1,4 @@
-# F10 · Settings per route: thinking, tool rounds, summary model
+# F10 · Settings per route: thinking and tool rounds
 
 > **Status:** planned · **Milestone:** M4 · **Depends on:** F1
 >
@@ -6,9 +6,9 @@
 >
 > **In the TODO:** tick **F10 Route settings** under *Now* ([TODO](../../TODO.md)) · **Replaces:** the known limitation "10 tool rounds per message"
 
-One set of settings serves very different work today: a quick chat, a 20-round fix, the orchestrator's triage, and
-summaries. F10 lets each route have its own thinking level, tool-round limit and model — fixed per session, so caching
-isn't affected.
+One set of settings serves very different work today: a quick chat, a 20-round fix and the orchestrator's triage. F10
+lets each route have its own thinking level and tool-round limit, fixed per session, so caching isn't affected.
+(Summaries get their own model in [F16](F16-summariser.md).)
 
 ## User stories
 
@@ -24,10 +24,8 @@ doesn't pay for deep reasoning.
   keep `LLM_THINKING`.
 - *And* a session's thinking level never changes mid-session.
 
-**F10-S3 — A cheaper model for summaries.** As an *operator*, I want oversized-result summaries and compaction (F9) to
-use a cheaper model, so that housekeeping doesn't cost main-model prices.
-- *Given* `LLM_SUMMARY_MODEL` *then* `SummariseToolResultAsync` and compaction use it (same provider), recorded in the
-  ledger with that model; unset → the main model, as today.
+**F10-S3 — Moved to [F16 Summariser](F16-summariser.md)** (2026-10-11): the summary model is the summariser's own
+setting (`SUMMARY_MODEL`), and F16 comes before F9.
 
 **F10-S4 — Less custom code.** As a *developer*, I want to use the SDK's own thinking mode if it covers our needs, so that
 `LlmClientFactory` keeps less provider-specific code.
@@ -42,22 +40,21 @@ use a cheaper model, so that housekeeping doesn't cost main-model prices.
 - **Per-profile pipelines:** `FunctionInvokingChatClient.MaximumIterationsPerRequest` is set per client instance, so
   `AgentEngine` builds one pipeline per profile (lazily, cached by profile) instead of one; `StreamPromptAsync` /
   `ProcessPromptAsync` take the profile. Thinking per profile is applied in `BeginTurn`.
-- **Summary client:** `LlmClientFactory.CreateSummaryClient(options)` when `LLM_SUMMARY_MODEL` is set; `AgentEngine`
-  takes it as an optional constructor argument and uses it for summaries and compaction.
+- **Room for more per-route settings:** [F17](F17-orchestrator-agent.md) adds the orchestrator's model and cache policy
+  to its route, so `RouteProfile` should be easy to extend.
 - **Orchestrator:** its own engine's `Thinking` from `ORCHESTRATOR_THINKING`.
 
 ## Implementation steps
 
-1. **Settings:** `AGENT_MAX_TOOL_ROUNDS`, `AGENT_TASK_MAX_TOOL_ROUNDS`, `ORCHESTRATOR_THINKING`, `LLM_SUMMARY_MODEL`.
+1. **Settings:** `AGENT_MAX_TOOL_ROUNDS`, `AGENT_TASK_MAX_TOOL_ROUNDS`, `ORCHESTRATOR_THINKING`.
    *Test:* parsing and defaults.
 2. **Per-profile pipelines.** *Test:* a scripted loop of 15 rounds stops at 10 under `chat` and completes under `task`.
 3. **`POST /sessions` profile + `LouisAgentClient` sends `task`.** *Test:* tags/profile reach the session.
-4. **Summary client.** *Test:* summaries go to the summary client; usage records its model.
-5. **Orchestrator thinking.** *Test:* triage requests carry the low reasoning effort (recording fake client).
-6. **Thinking-mode spike** (S4): compare request bodies for each `LLM_THINKING` level with the wrapper vs the SDK mode;
+4. **Orchestrator thinking.** *Test:* triage requests carry the low reasoning effort (recording fake client).
+5. **Thinking-mode spike** (S4): compare request bodies for each `LLM_THINKING` level with the wrapper vs the SDK mode;
    replace or document.
-7. **Benchmark:** continues per fix, cost per fix, fix rate; record against M3.
-8. **Docs:** SETUP, MODELS (thinking per route), AGENT_COMMUNICATION (`profile` on `POST /sessions`), CLAUDE.md known
+6. **Benchmark:** continues per fix, cost per fix, fix rate; record against M3.
+7. **Docs:** SETUP, MODELS (thinking per route), AGENT_COMMUNICATION (`profile` on `POST /sessions`), CLAUDE.md known
    limitation 6 updated.
 
 ## Done when

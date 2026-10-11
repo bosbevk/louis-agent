@@ -48,7 +48,7 @@ F4 doesn't wait for F15: Haiku 5.5's cache minimum is 512 tokens and our prefix 
    lands, so sorting is about the same order across processes and restarts, not about where new tools go.
 4. **Scope: louis-agent's own chat turns only** (decided 2026-10-11). The orchestrator's triage engine and the
    tool-result summariser are not cached in F4: each gets its caching, and its choice of cache lifetime, in its own
-   feature (TODO backlog: *Orchestrator agent* and *Summariser*), built when those are designed properly.
+   feature ([F17 Orchestrator agent](../features/F17-orchestrator-agent.md), [F16 Summariser](../features/F16-summariser.md)).
    - The orchestrator builds its engine from the same factory and reads the same `config/.env.anthropic`, so the demo's
      orchestrator service sets `LLM_CACHE=off` in `docker-compose.demo.yml`.
    - The summariser calls the engine's own client, so the caching client skips requests made in a `summary`

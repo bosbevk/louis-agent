@@ -1,7 +1,8 @@
 # Design: Orchestrators and Self-Healing
 
 **Status:** partly proven by the orchestrator POC ([samples/README.md](../../samples/README.md)) · **Date:** moved here
-from the TODO on 2026-10-07
+from the TODO on 2026-10-07 · **Next:** [F17 Orchestrator agent](../features/F17-orchestrator-agent.md) (a routing
+workflow with an agent for the exceptions, measured against the POC)
 
 How louis-agent fits into a self-healing setup: an **orchestrator** agent per microservice watches it, decides what each
 problem needs, and calls louis-agent for anything that is a code change. Each decision below says what the POC showed
