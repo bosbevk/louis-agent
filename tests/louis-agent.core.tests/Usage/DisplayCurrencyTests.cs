@@ -3,6 +3,7 @@ using LouisAgent.Core.Config;
 using LouisAgent.Core.Usage;
 using louis_agent.core;
 using LouisAgent.Core.Pricing;
+using LouisAgent.Core.Llm;
 
 namespace LouisAgent.Core.Tests;
 
@@ -148,7 +149,7 @@ public class DisplayCurrencyTests
         Assert.That(host.Engine.HandleUserCommand("/usage", [charged]), Does.Contain($"- rate: {rate.ToString("0.####", CultureInfo.InvariantCulture)} ZAR/USD"));
     }
 
-    private sealed class NoModelFactory : louis_agent.core.providers.ILlmClientFactory
+    private sealed class NoModelFactory : LouisAgent.Core.Llm.ILlmClientFactory
     {
         public Microsoft.Extensions.AI.IChatClient Create(LlmOptions options) => new FakeChatClient();
         public IUsageMapper CreateUsageMapper(LlmOptions options) => new StandardUsageMapper();

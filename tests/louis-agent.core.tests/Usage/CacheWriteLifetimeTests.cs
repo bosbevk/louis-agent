@@ -4,6 +4,8 @@ using Anthropic;
 using Anthropic.Core;
 using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
+using LouisAgent.Core.Llm;
+using LouisAgent.Core.Llm.AnthropicProvider;
 
 namespace LouisAgent.Core.Tests;
 

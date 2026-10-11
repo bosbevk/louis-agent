@@ -1,9 +1,10 @@
-namespace LouisAgent.Core.Usage;
+namespace LouisAgent.Core.Llm;
 
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Microsoft.Extensions.AI;
 using LouisAgent.Core.Pricing;
+using LouisAgent.Core.Usage;
 
 /// <summary>
 /// Writes one <see cref="UsageRecord"/> per model request. Sits inside <c>UseFunctionInvocation</c> in

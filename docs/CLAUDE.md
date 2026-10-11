@@ -149,7 +149,7 @@ a change to one (a new provider, a new tool, a new guard) touches one folder:
 | Folder (core) | Concern | Today |
 |---|---|---|
 | `Agent/` | The loop: turns, history, system prompt assembly, round limits, `/approve` | `tools/AgentEngine.cs` |
-| `Llm/` + `Llm/{Provider}/` | The model: client factory, `IChatClient` middleware (thinking, caching, usage recording), one folder per provider | `providers/LlmClientFactory.cs`, `usage/UsageRecordingChatClient.cs` |
+| `Llm/` + `Llm/{Name}Provider/` | The model: client factory, `IChatClient` middleware (thinking, caching, usage recording), one folder per provider (`AnthropicProvider/`: a folder named `Anthropic` would hide the SDK's own `Anthropic` namespace) | `providers/LlmClientFactory.cs`, `usage/UsageRecordingChatClient.cs` |
 | `Tools/{Toolset}/` | What the model can do: one folder per toolset (`Workspace`, `Git`, `Shell`, `Web`, `Integrations/Paymo`, …) | `tools/*.cs` |
 | `Skills/` | Loading the markdown skills and personality into the prompt | `MarkdownSkillLoader.cs`, `providers/*SkillsProvider.cs` |
 | `Guardrails/` | Safety checks: path resolution, sensitive files, SSRF, tool-result size guards | spread over `WorkspaceTools`, `WebTools`, `AgentEngine` |
@@ -160,16 +160,16 @@ a change to one (a new provider, a new tool, a new guard) touches one folder:
 
 The rules:
 
-1. **Namespace = folder path**, PascalCase (`LouisAgent.Core.Llm.Anthropic`), one top-level type per file, the file
+1. **Namespace = folder path**, PascalCase (`LouisAgent.Core.Llm.AnthropicProvider`), one top-level type per file, the file
    named after the type. No `Helpers/`, `Utils/`, `Common/` or `Interfaces/` folders: an interface lives beside its
    implementations, a helper beside its one user.
 2. **Dependencies point one way:** hosts → `Hosting` → `Agent` → `Llm`, `Tools`, `Skills`, `Usage` → `Guardrails`,
    `Config`, `Messages`. A tool never references the agent loop or a model; `Agent` never references a provider's SDK
-   (provider differences stay in `Llm/{Provider}/`, as in *Changing the LLM*).
+   (provider differences stay in `Llm/{Name}Provider/`, as in *Changing the LLM*).
 3. **Prompts are content, not code:** system prompt text and procedures stay in `Skills/*.md`; C# only loads them.
 4. **Hosts stay thin:** a host project maps the agent's stream to its protocol (`Endpoints/`, `Services/`) and holds no
    agent behaviour; another agent on core (the orchestrator) keeps its own `Tools/` and `Skills/` the same way.
-5. **Tests mirror the source:** `tests/louis-agent.core.tests/Llm/Anthropic/…` tests `Llm/Anthropic/…`.
+5. **Tests mirror the source:** `tests/louis-agent.core.tests/Llm/AnthropicProvider/…` tests `Llm/AnthropicProvider/…`.
 6. **An architecture test enforces 1 and 2:** namespaces match folders, and no type depends against the arrow.
 
 **Moving there:** the table's *Today* column is the current layout. One refactor after F4 (TODO, *Quality and CI*),

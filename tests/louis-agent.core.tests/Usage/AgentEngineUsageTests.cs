@@ -2,6 +2,8 @@ using louis_agent.core.providers;
 using louis_agent.core.tools;
 using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
+using LouisAgent.Core.Llm;
+using LouisAgent.Core.Llm.AnthropicProvider;
 
 namespace LouisAgent.Core.Tests;
 

@@ -1,31 +1,21 @@
-namespace louis_agent.core.providers;
+namespace LouisAgent.Core.Llm;
 
 using System.ClientModel;
 using Anthropic;
 using Anthropic.Core;
 using Anthropic.Models.Messages;
 using LouisAgent.Core.Config;
-using louis_agent.core.tools;
-using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
 using OllamaSharp;
 using OpenAI;
-
-public interface ILlmClientFactory
-{
-    IChatClient Create(LlmOptions options);
-
-    /// <summary>How this provider's usage maps to the ledger's token kinds.</summary>
-    IUsageMapper CreateUsageMapper(LlmOptions options) => new StandardUsageMapper();
-
-    /// <summary>How this provider marks requests for its prompt cache (F4).</summary>
-    IPromptCachingStrategy CreatePromptCaching(LlmOptions options) => NoPromptCaching.Instance;
-}
+using LouisAgent.Core.Llm.AnthropicProvider;
 
 /// <summary>Maps <see cref="LlmOptions.Provider"/> to an <see cref="IChatClient"/>. Add a provider by adding one entry.</summary>
 public sealed class LlmClientFactory : ILlmClientFactory
 {
-    private const int DefaultMaxOutputTokens = AgentEngine.MaxOutputTokens;
+    /// <summary>Output limit per reply, thinking included: room for a sizeable file in one tool call; larger files are
+    /// written in chunks (see default.md). The engine asks for it on every request.</summary>
+    internal const int MaxOutputTokens = 16_000;
 
     private readonly Dictionary<string, Func<LlmOptions, IChatClient>> _providers =
         new(StringComparer.OrdinalIgnoreCase)
@@ -64,7 +54,7 @@ public sealed class LlmClientFactory : ILlmClientFactory
         bool cache = options.ResolveCache();
         CacheLifetime prefixLifetime = options.ResolveCacheTtl();
         return cache && string.Equals(options.Provider, LlmOptions.Anthropic, StringComparison.OrdinalIgnoreCase)
-            ? new AnthropicPromptCaching(prefixLifetime, options.Model, DefaultMaxOutputTokens)
+            ? new AnthropicPromptCaching(prefixLifetime, options.Model, MaxOutputTokens)
             : NoPromptCaching.Instance;
     }
 
@@ -78,7 +68,7 @@ public sealed class LlmClientFactory : ILlmClientFactory
         // Keys not scoped to a workspace are rejected unless the request names one.
         if (!string.IsNullOrWhiteSpace(o.WorkspaceId))
             clientOptions.ExtraHeaders = new Dictionary<string, string> { ["anthropic-workspace-id"] = o.WorkspaceId };
-        IChatClient client = new AnthropicClient(clientOptions).AsIChatClient(o.Model, DefaultMaxOutputTokens);
+        IChatClient client = new AnthropicClient(clientOptions).AsIChatClient(o.Model, MaxOutputTokens);
         return UsesThinkingBudget(o.Model)
             ? new ChatClientBuilder(client).Use(
                 (messages, options, next, ct) => next.GetResponseAsync(messages, WithThinkingBudget(options, o.Model), ct),
@@ -118,7 +108,7 @@ public sealed class LlmClientFactory : ILlmClientFactory
             // The adapter keeps model and max_tokens from this object, then adds the messages, tools and options.
             var raw = previousFactory?.Invoke(client) as MessageCreateParams ?? new MessageCreateParams
             {
-                Model = model, MaxTokens = options.MaxOutputTokens ?? DefaultMaxOutputTokens, Messages = [],
+                Model = model, MaxTokens = options.MaxOutputTokens ?? MaxOutputTokens, Messages = [],
             };
             return raw with { Thinking = new ThinkingConfigEnabled { BudgetTokens = ThinkingBudget(effort) } };
         };

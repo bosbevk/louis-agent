@@ -6,6 +6,7 @@ using louis_agent.core.providers;
 using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
 using LouisAgent.Core.Pricing;
+using LouisAgent.Core.Llm;
 
 // Prints what a provider's adapter reports in UsageDetails, streaming and not, and what its IUsageMapper makes of it.
 // Run it before trusting the usage ledger for a new provider or after upgrading an adapter (F1 step 1).

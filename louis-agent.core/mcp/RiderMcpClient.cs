@@ -1,7 +1,6 @@
 namespace louis_agent.core.mcp;
 
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
 /// <summary>
 /// MCP client for discovering tools from Rider's MCP server.

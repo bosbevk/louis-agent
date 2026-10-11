@@ -13,6 +13,7 @@ using louis_agent.core.providers;
 using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
 using LouisAgent.Core.Pricing;
+using LouisAgent.Core.Llm;
 
 /// <summary>
 /// Orchestrates one chat turn: the model is given the agent's tools and
@@ -22,7 +23,7 @@ using LouisAgent.Core.Pricing;
 public partial class AgentEngine
 {
     // Room for a sizeable file in one tool call; larger files are written in chunks (see default.md).
-    internal const int MaxOutputTokens = 16_000;
+    internal const int MaxOutputTokens = LlmClientFactory.MaxOutputTokens;
     private const int ShellTimeoutMs = 30_000;
 
     // Tool results above this are summarised before reaching the model; normal source files stay verbatim.

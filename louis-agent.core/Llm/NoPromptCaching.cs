@@ -1,4 +1,4 @@
-namespace louis_agent.core.providers;
+namespace LouisAgent.Core.Llm;
 
 using Microsoft.Extensions.AI;
 

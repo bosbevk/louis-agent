@@ -91,6 +91,15 @@ which Windows needs.
 
 The review stop: after step 3, when the pattern is set, and at the end before pushing.
 
+## Approved during the build (2026-10-11)
+
+- **`Messages` → `MessageText`:** a type can't share its namespace's name (`LouisAgent.Core.Messages.Messages` makes
+  `Messages.Format` resolve to the namespace wherever usings sit before the namespace line), so the class is
+  `MessageText`; the folder stays `Messages/`.
+- **`Llm/AnthropicProvider/`, not `Llm/Anthropic/`:** a namespace `LouisAgent.Core.Llm.Anthropic` hides the Anthropic
+  SDK's root namespace inside `LouisAgent.Core.Llm`, so `using Anthropic.Models.Messages;` there would not compile. A
+  provider's folder is `Llm/{Name}Provider/`; the rule in docs/CLAUDE.md says so.
+
 ## Verification
 
 - `dotnet build louis-agent-solution.sln` and `dotnet test louis-agent-solution.sln` after every step.

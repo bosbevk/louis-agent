@@ -1,6 +1,7 @@
 using System.Text.Json;
 using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
+using LouisAgent.Core.Llm;
 
 namespace LouisAgent.Core.Tests;
 

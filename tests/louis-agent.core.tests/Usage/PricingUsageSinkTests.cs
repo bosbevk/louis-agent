@@ -6,6 +6,8 @@ using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
 using louis_agent.core;
 using LouisAgent.Core.Pricing;
+using LouisAgent.Core.Llm;
+using LouisAgent.Core.Llm.AnthropicProvider;
 
 namespace LouisAgent.Core.Tests;
 

@@ -1,6 +1,7 @@
 namespace LouisAgent.Core.Usage;
 
 using System.Text.Json.Serialization;
+using LouisAgent.Core.Llm;
 
 /// <summary>
 /// Token counts for one request. The four kinds don't overlap, so they can be added up and priced separately. A count

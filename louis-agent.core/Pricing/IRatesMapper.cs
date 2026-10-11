@@ -1,6 +1,6 @@
 namespace LouisAgent.Core.Pricing;
 
-using LouisAgent.Core.Usage;
+using LouisAgent.Core.Llm;
 
 /// <summary>
 /// Turns an exchange-rate provider's reply into louis-agent's own <c>rates.json</c> format (<see cref="ExchangeRates"/>),

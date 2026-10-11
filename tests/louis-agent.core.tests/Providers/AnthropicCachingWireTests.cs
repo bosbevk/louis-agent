@@ -6,6 +6,7 @@ using Anthropic.Core;
 using Anthropic.Models.Messages;
 using louis_agent.core.providers;
 using Microsoft.Extensions.AI;
+using LouisAgent.Core.Llm;
 
 namespace LouisAgent.Core.Tests;
 
