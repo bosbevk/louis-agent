@@ -70,6 +70,10 @@ Branch `feature/f3-usage-display` off `main`.
 - **[FX6](../fixes/FX06-usage-on-failed-turns.md) built as part of F3**, before step 8: a failed turn's usage on the
   API's `error` event, read by the web app and the orchestrator, so the demo's "comms log total equals the ledger"
   check can't fail just because a reply failed.
+- **A split demo test** (triage on Ollama, fixes on Haiku 5.5): `run-demo.ps1 -OrchestratorProfile`, kept for when
+  local models can triage (F13). It found [FX7](../fixes/FX07-timeout-ends-run.md), built in F3: a timed-out request
+  ended the orchestrator's whole run.
+- **Step 8's paid `-Short` run** with both agents on Haiku 5.5, approved.
 
 ## Verification
 

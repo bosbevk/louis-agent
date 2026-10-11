@@ -26,7 +26,11 @@ You: exit
 - Thinking is printed in grey, the answer as it's written, and one status line per tool call (`> Name args`, then
   `done:` or `failed:`).
 - **Ctrl+C** stops the reply in progress; with no reply running it exits. `exit` (or end of input) quits.
-- `/tools`, `/approve <Name>` and `/reject <Name>` are answered locally and never sent to the model.
+- `/tools`, `/approve <Name>`, `/reject <Name>` and `/usage` (the session's tokens and cost, by purpose) are answered
+  locally and never sent to the model.
+- **Usage** (F3): after each answer, stopped and failed ones too, a grey line on **stderr**:
+  `turn: 3 requests · 28k tokens (26k cached) · $0.006 · session $0.04`. A single prompt (`-- "…"`) prints it without
+  the session total, so stdout stays the answer alone for scripts. Only with the ledger on (`LOG_DIRECTORY` set).
 - Outside Docker, `config/.env` and the repository root are found from any folder inside the repository.
 
 ## Structure
@@ -52,7 +56,7 @@ No CLI-specific tests; the loop and commands are covered through `AgentEngine` i
 ## Limits and plans
 
 - History is lost on exit → backlog *CLI: resume a previous session* ([TODO](../../TODO.md)).
-- A usage line after each answer and a `/usage` command → [F3](../features/F03-usage-display.md).
+- Costs in another currency → [F14](../features/F14-display-currency.md).
 
 ## Related docs
 

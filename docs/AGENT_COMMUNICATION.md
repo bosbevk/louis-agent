@@ -108,7 +108,7 @@ sequenceDiagram
         A-->>C: SSE events as they happen
         E->>E: run each tool call, add the result
     end
-    A-->>C: message_delta (stop_reason), message_stop
+    A-->>C: message_delta (stop_reason, usage), message_stop
     C->>A: DELETE /sessions/{id} (when done)
 ```
 
@@ -117,11 +117,11 @@ sequenceDiagram
 | `POST /sessions` | Optional `{ "task", "run", "service" }`: tags every usage record of the session (the orchestrator sends `fix:<error id>`, its run id and the service); each at most 200 printable characters | `201 { "session_id", "created_at", "task", "run", "service" }` |
 | `POST /sessions/{id}/messages` | `{ "message": "…", "attachments": [{ "name", "content" }] }` | Server-Sent Events (below) |
 | `POST /sessions/{id}/cancel` | — | `{ "cancelled": true }`; the stream ends with stop reason `cancelled` |
-| `GET /sessions/{id}` | — | `{ "session_id", "created_at", "last_activity", "busy", "task", "run", "service" }` |
+| `GET /sessions/{id}` | — | `{ "session_id", "created_at", "last_activity", "busy", "task", "run", "service", "usage" }`: `usage` totals the session's finished turns (the object below), `null` when the API records no usage |
 | `DELETE /sessions/{id}` | — | `{ "deleted": true }` |
 
-Closing the connection also cancels the reply. A message of `/tools`, `/approve <Name>` or `/reject <Name>` is answered
-by the API itself and never reaches the model.
+Closing the connection also cancels the reply. A message of `/tools`, `/approve <Name>`, `/reject <Name>` or `/usage` (the
+session's tokens and cost, by purpose) is answered by the API itself and never reaches the model.
 
 ### The event stream
 
@@ -154,7 +154,7 @@ event: content_block_stop
 data: {"type":"content_block_stop","index":2}
 
 event: message_delta
-data: {"type":"message_delta","delta":{"stop_reason":"end_turn"}}
+data: {"type":"message_delta","delta":{"stop_reason":"end_turn"},"usage":{"input_tokens":1900,"cache_creation_input_tokens":0,"cache_read_input_tokens":26000,"output_tokens":412,"requests":3,"cost":0.0061,"currency":"USD","unpriced":0}}
 
 event: message_stop
 data: {"type":"message_stop"}
@@ -166,9 +166,16 @@ data: {"type":"message_stop"}
 | `content_block_start` | A new block: `thinking`, `text`, `tool_use` (name and input) or `tool_result` (content, `is_error`) |
 | `content_block_delta` | More `thinking_delta` or `text_delta` for the open block |
 | `content_block_stop` | The block is complete |
-| `message_delta` | The stop reason: `end_turn` or `cancelled` |
+| `message_delta` | The stop reason (`end_turn` or `cancelled`) and the turn's `usage` (below) |
 | `message_stop` | The stream is complete |
-| `error` | The turn failed; the data is the error shape above |
+| `error` | The turn failed; the data is the error shape above, plus the turn's `usage` when a model request had returned before the failure |
+
+**Usage** (F3) is Claude's usage object with the same four token fields, summed over every model request of the turn
+(a turn can be several: one per tool round, plus any summary). As in Claude's, the four kinds don't overlap:
+`input_tokens` is the uncached input. Added: `requests`, `cost` and `currency` (`null` when no request was priced:
+"price unknown", never 0), and `unpriced`, the requests without a price. It is left out for commands (`/usage`,
+`/tools`), when the API records no usage (`USAGE_LEDGER=off` or no `LOG_DIRECTORY`), and on an `error` before any
+request returned. Claude clients ignore the extra fields.
 
 Try it:
 
@@ -333,7 +340,10 @@ or escalate. A human merges the fix branches (in the web app's Branches tab).
 
 Everything the two agents say is written to one Markdown file, `agent-comms.md`: per error, each message the
 orchestrator sent (verbatim), each reply (a table of louis-agent's tool calls, its text and the `FIX-RESULT`), the
-orchestrator's checks, and a summary — ending with a run summary table. A real one from a demo run is in
+orchestrator's checks, and a summary — ending with a run summary table. Since F3 it also says what each part cost:
+louis-agent's usage under each reply, triage + louis-agent + total in each error's summary, *Tokens* and *Cost*
+columns in the run summary, and a run total split by agent (the figure to compare with the usage ledger's total for
+the run id, `usage-probe -- --ledger`). A real one from a demo run is in
 [samples/sample-output/agent-comms.md](../samples/sample-output/agent-comms.md); a shortened excerpt:
 
 ```text

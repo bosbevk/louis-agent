@@ -158,7 +158,8 @@ internal sealed class CommsLog(string path)
         e.Reason = reason;
 
         if (triage is not null && triage.Any(r => r.Cost is not null)) _currency = UsageText.CurrencyOf(triage);
-        UsageTotal? triageTotal = triage is null ? null : UsageReport.Total("triage", triage);
+        // A triage whose requests all failed (e.g. timed out) measured nothing: "-", not "0 · price unknown".
+        UsageTotal? triageTotal = triage is null || triage.Count == 0 ? null : UsageReport.Total("triage", triage);
         UsageTotal? fixTotal = e.LouisAgentReplies.Count == 0 ? null : UsageReport.Sum("louis-agent", e.LouisAgentReplies);
         UsageTotal?[] parts = [triageTotal, fixTotal];
         e.Usage = new EventUsage(triageTotal, fixTotal,
@@ -209,8 +210,10 @@ internal sealed class CommsLog(string path)
         var totals = _events.Select(e => e.Usage).ToList();
         if (totals.Any(u => u.Total is not null))
         {
-            UsageTotal Sum(string key, Func<EventUsage, UsageTotal?> part) => UsageReport.Sum(key, totals.Select(part).OfType<UsageTotal>());
-            md.AppendLine().AppendLine($"**Run total:** {UsageText.Describe(Sum("total", u => u.Total), _currency)} " +
+            // A part no event measured (no fix asked for, say) is "-", not the "price unknown" of an empty sum.
+            UsageTotal? Sum(string key, Func<EventUsage, UsageTotal?> part) =>
+                totals.Select(part).OfType<UsageTotal>().ToList() is { Count: > 0 } parts ? UsageReport.Sum(key, parts) : null;
+            md.AppendLine().AppendLine($"**Run total:** {UsageText.Describe(Sum("total", u => u.Total)!, _currency)} " +
                                        $"(triage {Cost(Sum("triage", u => u.Triage))}, louis-agent {Cost(Sum("louis-agent", u => u.LouisAgent))}).");
         }
 

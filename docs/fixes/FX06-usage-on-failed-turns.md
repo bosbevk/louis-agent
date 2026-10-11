@@ -58,4 +58,4 @@ happy path drifts from the ledger, quietly, exactly when something went wrong (s
 cost).
 
 ---
-[Fixes](README.md) · Previous: [FX5](FX05-null-conditional-ledger.md)
+[Fixes](README.md) · Previous: [FX5](FX05-null-conditional-ledger.md) · Next: [FX7](FX07-timeout-ends-run.md)

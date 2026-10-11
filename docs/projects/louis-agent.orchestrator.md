@@ -36,6 +36,9 @@ flowchart TD
    the failing request now returns 200; the whole test suite passes.
 5. **Record**: the `DECISION` line, `fixes.jsonl` / `escalations.jsonl` / `acknowledged.jsonl`, and every message both
    ways in the Markdown `agent-comms.md`.
+6. **Cost** (F3): louis-agent's usage per reply (from `message_delta`), the triage's from its own `UsageScope`; the comms
+   log shows both per error and a run total split by agent, and `fixes.jsonl` / `decisions.jsonl` carry them. A
+   timed-out request fails that error, not the run (FX7): only Ctrl+C ends a run early.
 
 ## Structure
 
@@ -72,8 +75,8 @@ against a real model.
 
 - POC choices: a JSON-lines error log instead of an error tracker, a local branch instead of a pull request, polling
   only → [orchestrator design](../specs/ORCHESTRATOR_DESIGN.md) and the TODO backlog.
-- Cost per fix, estimates, budgets, stopping at account limits, results as tool calls →
-  [F3](../features/F03-usage-display.md), [F6](../features/F06-estimates.md), [F7](../features/F07-budgets.md),
+- Estimates, budgets, stopping at account limits, results as tool calls →
+  [F6](../features/F06-estimates.md), [F7](../features/F07-budgets.md),
   [F8](../features/F08-reliability.md).
 
 ## Related docs

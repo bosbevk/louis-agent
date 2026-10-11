@@ -94,6 +94,10 @@ the comms log, so that I know what the demo (and any real run) cost.
 - **The orchestrator's triage scope opens before its `try`** (step 7), so a failed triage still reports what it used;
   `using var` inside the loop disposes it at the end of each pass, `continue` and `break` included. With no triage
   ledger, the comms log shows "-", not "0 requests".
+- **Nothing measured shows "-", not "price unknown"** (found by the split demo): an empty sum has no cost, which read as
+  "price unknown" for a triage that completed no request and for louis-agent in a run with no fixes.
+- **The split demo** (`run-demo.ps1 -OrchestratorProfile ollama`, $0) found [FX7](../fixes/FX07-timeout-ends-run.md)
+  and checked the comms log against the ledger for its run: 4 requests, 9.9k tokens, $0 in both.
 - **`CommsLog.EndEvent` returns the error's `EventUsage`** (step 7), which `Program` writes to `decisions.jsonl`: the
   comms log already holds each reply's usage, so there is one copy of that bookkeeping.
 - **A `?.` skipped the ledger write** for requests outside a scope while step 1 was being built; F1's tests caught it

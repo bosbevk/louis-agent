@@ -42,8 +42,9 @@ Each project also has its own design doc in [projects/](projects/README.md).
 - In-memory sessions (`AgentSessions`); one reply at a time per session (409 while busy); a client disconnect or
   `POST /sessions/{id}/cancel` stops the reply; idle sessions are dropped after 4 hours.
 - A message's answer streams as SSE shaped like Claude's: `message_start`, `content_block_start/delta/stop` for
-  `thinking`, `text`, `tool_use` and `tool_result`, `message_delta` (stop reason), `message_stop`. Errors use Claude's
-  `{ "type": "error", "error": { "type", "message" } }` shape.
+  `thinking`, `text`, `tool_use` and `tool_result`, `message_delta` (stop reason and the turn's usage and cost),
+  `message_stop`. Errors use Claude's `{ "type": "error", "error": { "type", "message" } }` shape (plus the turn's
+  usage, when a request had returned).
 - Read-only workspace browsing (`/workspace/entries`, `/workspace/file`) and a git interface (`/git/status`, `/git/diff`,
   `/git/stage`, `unstage`, `discard`, `commit`, plus history: `/git/branches`, `/git/log`, `/git/commit`, `/git/branch`,
   `/git/merge`, `/git/branch/delete`) for the web app. They reuse `WorkspaceTools`' path and secret-file checks.

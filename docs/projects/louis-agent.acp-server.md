@@ -41,7 +41,11 @@ sequenceDiagram
 - **Tool cards:** each tool call becomes a `tool_call` (in progress) and a `tool_call_update` (completed or failed, with
   an output preview); the card's kind (read, edit, execute, search, fetch…) is guessed from the tool's name so Rider shows
   a fitting icon.
-- `/tools`, `/approve`, `/reject` are answered by the engine without the model.
+- `/tools`, `/approve`, `/reject` and `/usage` are answered by the engine without the model.
+- **Usage** (F3): every turn's usage line goes to stderr (`[ACP] Usage: …`, in Rider's `idea.log`); with
+  `USAGE_IN_CHAT=true` it is also added to the chat after the answer, in italics, as its own message chunk. Off by
+  default, since in Rider it becomes part of the conversation. A cancelled or failed turn counts toward the session
+  but adds nothing to the chat.
 
 ## Structure
 
@@ -52,7 +56,7 @@ sequenceDiagram
 
 ## Configuration
 
-Core settings plus `ACP_MOUNT_MAPPINGS`. Rider's agent-server entry: `config/rider-acp.example.json`.
+Core settings plus `ACP_MOUNT_MAPPINGS` and `USAGE_IN_CHAT`. Rider's agent-server entry: `config/rider-acp.example.json`.
 
 **stdout carries the protocol:** anything written to `Console.Out` corrupts it — all logging goes to stderr.
 
@@ -69,7 +73,6 @@ to get a container with the new build.
 ## Limits and plans
 
 - Sessions end with the container → [session architecture](../specs/SESSION_ARCHITECTURE.md) (backlog).
-- An optional usage line at the end of answers → [F3](../features/F03-usage-display.md).
 
 ## Related docs
 

@@ -29,6 +29,10 @@ flowchart TB
 - **Chats** stream from `POST /sessions/{id}/messages`: `ChatPage.Apply` turns each SSE event into `Turn` / `Block`
   objects (thinking, text, tool card); `TurnView` renders them, re-rendering at most every 50 ms while streaming.
   Answers are rendered from Markdown **without raw HTML** (`Markdown.cs`), and code is highlighted.
+- **Usage** (F3): `message_delta.usage` (or an `error`'s, FX6) becomes `Turn.Usage`, shown as a quiet line under the
+  answer (`1.9k in · 26k cached · 412 out · $0.004`, exact figures on hover), and the chat's total sits above the
+  message box. `UsageFormat` follows core's `UsageText` rules (the app doesn't reference core). The total is summed in
+  the browser and saved with the chat, since the chat outlives the API's session.
 - **Chats are kept in the browser** (`ChatStore`, `localStorage`); the server only holds the session, so after an API
   restart a chat can be read but not continued.
 - **Shared state services** raise `Changed` events so panels, viewers and tab badges stay in step:
@@ -74,8 +78,8 @@ None automated yet (backlog: *Automated tests for the API and the web app*, Bran
 
 - Chats live in one browser only → backlog *Sync chat history across devices*.
 - Skills and agent-built tools are managed by typing commands → backlog *A UI for skills*.
-- Cost per answer and chat totals → [F3](../features/F03-usage-display.md); a Usage tab →
-  [F11](../features/F11-usage-tab-and-reconciliation.md); a budget "continue?" prompt → [F7](../features/F07-budgets.md).
+- A Usage tab → [F11](../features/F11-usage-tab-and-reconciliation.md); costs in your own currency →
+  [F14](../features/F14-display-currency.md); a budget "continue?" prompt → [F7](../features/F07-budgets.md).
 
 ## Related docs
 

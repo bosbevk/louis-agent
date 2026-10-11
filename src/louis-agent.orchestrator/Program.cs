@@ -79,13 +79,13 @@ while (!stop.IsCancellationRequested)
         {
             answer = await engine.ProcessPromptAsync(engine.NewHistory(), TriagePrompt(error), stop.Token);
         }
-        catch (OperationCanceledException)
+        catch (Exception ex) when (Stopping.ByUser(ex, stop.Token))
         {
             break;
         }
         catch (Exception ex)
         {
-            // Left unprocessed, so the next poll retries it.
+            // Left unprocessed, so the next poll retries it. A timed-out model request ends up here too (FX7).
             Log($"Triage of {error.Id} failed: {ex.Message}");
             comms.EndEvent("failed", $"triage failed: {ex.Message}", "", TriageUsage());
             continue;
@@ -132,6 +132,17 @@ string TriagePrompt(ErrorEvent error) =>
     ```
     Triage it with the runbook for method `{error.Method}` and act on it, following your workflow.
     """;
+
+/// <summary>Tells the user stopping the orchestrator (Ctrl+C) from a request that was cancelled for another reason.</summary>
+internal static class Stopping
+{
+    /// <summary>
+    /// True only when the run's own stop token was cancelled. An HTTP timeout is also an
+    /// <see cref="OperationCanceledException"/> (<see cref="TaskCanceledException"/>), but it is one error's failure,
+    /// not a reason to end the run (FX7).
+    /// </summary>
+    public static bool ByUser(Exception ex, CancellationToken stop) => ex is OperationCanceledException && stop.IsCancellationRequested;
+}
 
 /// <summary>The orchestrator's closing "DECISION: outcome - reason" line.</summary>
 internal sealed partial record Decision(string Outcome, string Reason)

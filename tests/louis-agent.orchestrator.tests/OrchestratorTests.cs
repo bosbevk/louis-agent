@@ -217,6 +217,47 @@ public class OrchestratorTests
     }
 
     [Test]
+    public void CommsLog_NothingMeasured_ShowsDashesNotPriceUnknown()
+    {
+        // Seen in the split demo: a triage that timed out completed no request, and no fix was asked for.
+        var feed = FeedWith(Event("abc123"), Event("def456"));
+        string path = Path.Combine(_dir, "comms.md");
+        var comms = new CommsLog(path);
+        var local = new UsageRecord(DateTimeOffset.UtcNow, 1, UsagePurpose.Triage, "orchestrator", "triage_x", 1, null, "run-1",
+            "order-service", "llama3.1", new UsageTokens(2_050, 0, 0, 3, null), 1, "stop", new UsageCost("USD", 0m, "2026-10-10"));
+
+        comms.StartRun("order-service", new Uri("http://127.0.0.1:5081"), "llama3.1");
+        comms.StartEvent(1, 2, feed.Find("abc123")!);
+        EventUsage timedOut = comms.EndEvent("failed", "triage failed: timeout", "", []);
+        comms.StartEvent(2, 2, feed.Find("def456")!);
+        comms.EndEvent("acknowledged", "expected", "DECISION: acknowledged - expected", [local]);
+        comms.EndRun();
+
+        string md = File.ReadAllText(path);
+        Assert.That(timedOut.Total, Is.Null);
+        Assert.That(md, Does.Contain("| **failed** | - | - | - | - | - |"), "row 1: nothing measured");
+        Assert.That(md, Does.Contain("| 2.1k | $0 |"), "row 2: a local model is free");
+        Assert.That(md, Does.Contain("**Run total:** 1 request · 2.1k tokens · $0 (triage $0, louis-agent -)."));
+    }
+
+    [Test]
+    public void Stopping_OnlyTheUsersStopEndsTheRun()
+    {
+        // FX7: a model request that times out throws TaskCanceledException, an OperationCanceledException; it must count
+        // as that error's failure, not end the run as Ctrl+C does.
+        var timeout = new TaskCanceledException("The request was canceled due to the configured HttpClient.Timeout of 100 seconds elapsing.",
+            new TimeoutException());
+        using var stop = new CancellationTokenSource();
+
+        Assert.That(Stopping.ByUser(timeout, stop.Token), Is.False, "a timeout while the run goes on");
+        Assert.That(Stopping.ByUser(new InvalidOperationException(), stop.Token), Is.False);
+
+        stop.Cancel();
+        Assert.That(Stopping.ByUser(new OperationCanceledException(stop.Token), stop.Token), Is.True, "Ctrl+C");
+        Assert.That(Stopping.ByUser(new InvalidOperationException(), stop.Token), Is.False, "another error while stopping");
+    }
+
+    [Test]
     public void CommsLog_Json_UsesTheApisFieldNames()
     {
         var usage = new UsageTotal("total", 7, 5_500, 0, 30_000, 700, 0.019m, 0);
