@@ -10,7 +10,9 @@ using louis_agent.core.usage;
 /// <summary>Everything an entry point needs after bootstrap.</summary>
 /// <param name="Prices">The price table the usage ledger prices with (louis-agent.api also serves it at GET /prices).</param>
 /// <param name="Rates">Exchange rates from the price table's currency, for showing costs in another currency (F14).</param>
-public sealed record AgentHostContext(AgentEngine Engine, LlmOptions Llm, AgentOptions Agent, PriceTable Prices, ExchangeRates Rates);
+/// <param name="Display">The currency costs are shown in (F14): HOST_CULTURE's region, DISPLAY_CURRENCY, or as charged.</param>
+public sealed record AgentHostContext(
+    AgentEngine Engine, LlmOptions Llm, AgentOptions Agent, PriceTable Prices, ExchangeRates Rates, DisplayCurrency Display);
 
 /// <summary>
 /// Single bootstrap shared by the CLI, ACP and MCP entry points: dotenv load, option binding,
@@ -121,12 +123,15 @@ public static partial class AgentHost
         var chatClient = clientFactory.Create(llm);
         PriceTable prices = LoadPrices(agent);
         ExchangeRates rates = LoadRates(agent, prices.Currency);
+        DisplayCurrency display = DisplayCurrency.Resolve(agent, prices.Currency, rates);
+        Console.Error.WriteLine($"[INFO] Display currency: {display}");
         var engine = new AgentEngine(skills, chatClient, agent, llm.ResolveSupportsTools(),
             usageSink: CreateUsageSink(agent, prices), usageMapper: clientFactory.CreateUsageMapper(llm))
         {
             SkillsDirectory = FindSkillsDirectory(agent),
             SkillReloader = () => LoadSkills(agent),
             Thinking = llm.ResolveThinking(),
+            Display = display,
         };
         engine.LoadApprovedTools();
         Console.Error.WriteLine($"[INFO] LLM: {llm}; tools={(engine.SupportsTools ? "on" : "off")}; thinking={engine.Thinking?.ToString().ToLowerInvariant() ?? "off"}");
@@ -155,7 +160,7 @@ public static partial class AgentHost
             Console.Error.WriteLine($"[INFO] MCP discovery disabled or not configured");
         }
 
-        return new AgentHostContext(engine, llm, agent, prices, rates);
+        return new AgentHostContext(engine, llm, agent, prices, rates, display);
     }
 
     /// <summary>

@@ -61,6 +61,12 @@ public partial class AgentEngine
     /// usage isn't tracked rather than "nothing yet".
     /// </summary>
     public bool RecordsUsage { get; }
+
+    /// <summary>
+    /// The currency usage lines and /usage show costs in (F14), set by <c>AgentHost.Build</c>; null shows them as charged.
+    /// Hosts give it to their <see cref="UsageSession"/>s.
+    /// </summary>
+    public DisplayCurrency? Display { get; set; }
     public IReadOnlyList<AITool> Tools => _tools;
 
     /// <summary>The currently loaded skills (refreshed by <see cref="ReloadSkills"/>).</summary>
@@ -352,7 +358,7 @@ public partial class AgentEngine
         // One CLI run is one session in the usage ledger.
         string session = $"cli_{Guid.NewGuid():N}";
         int turns = 0;
-        var sessionUsage = new UsageSession();
+        var sessionUsage = new UsageSession(Display);
 
         // Ctrl+C stops the reply in progress; with no reply running it exits as usual.
         CancellationTokenSource? turn = null;
@@ -425,7 +431,7 @@ public partial class AgentEngine
             await StreamToConsoleAsync(NewHistory(), userInput);
             Console.WriteLine();
             // One prompt is the whole session, so the line has no session total.
-            if (usage.Records.Count > 0) WriteUsageLine(UsageText.Line(usage.Records));
+            if (usage.Records.Count > 0) WriteUsageLine(UsageText.Line(usage.Records, display: Display));
         }
         catch (Exception ex)
         {
@@ -903,7 +909,7 @@ public partial class AgentEngine
             "/tools" => ListAgentTools() + "\n\nApprove with /approve <Name>, discard with /reject <Name>.",
             "/approve" => ApproveTool(argument),
             "/reject" => RejectTool(argument),
-            "/usage" => sessionUsage is null ? "Usage isn't tracked in this session." : UsageText.Summary(sessionUsage),
+            "/usage" => sessionUsage is null ? "Usage isn't tracked in this session." : UsageText.Summary(sessionUsage, Display),
             _ => null,
         };
     }

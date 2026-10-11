@@ -46,8 +46,17 @@ public sealed partial record DisplayCurrency(string Code, string Symbol, decimal
             return Charged(baseCurrency);
         }
 
-        return new DisplayCurrency(choice.Code, choice.Symbol, rate, rates.AsOf, baseCurrency, choice.Source);
+        return new DisplayCurrency(choice.Code, DistinctSymbol(choice.Code, choice.Symbol, baseCurrency), rate, rates.AsOf,
+            baseCurrency, choice.Source);
     }
+
+    /// <summary>
+    /// <paramref name="symbol"/>, unless it's the price table's own symbol for another currency: .NET writes AUD, CAD and
+    /// NZD as "$" too, and "$0.10" in Australian dollars beside "$0.0021 charged" would read as US dollars. Then the code
+    /// is used instead ("0.10 AUD").
+    /// </summary>
+    public static string DistinctSymbol(string code, string symbol, string baseCurrency) =>
+        !string.Equals(code, baseCurrency, StringComparison.OrdinalIgnoreCase) && symbol == SymbolFor(baseCurrency) ? code : symbol;
 
     /// <summary>The start-up log line, e.g. "ZAR (R) from HOST_CULTURE en-ZA at 16.5331 ZAR/USD, as of 2026-10-09".</summary>
     public override string ToString() => Converts

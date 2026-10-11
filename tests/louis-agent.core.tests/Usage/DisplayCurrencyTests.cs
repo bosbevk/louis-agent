@@ -123,6 +123,58 @@ public class DisplayCurrencyTests
     }
 
     [Test]
+    public void AgentHostBuild_HostCultureEnZa_EveryLineInRands()
+    {
+        // Step 4, end to end: AgentHost.Build resolves the display currency from HOST_CULTURE and the tracked
+        // config/rates.json (the fetch is off in tests), and the engine's lines and /usage use it.
+        AgentOptions agent = TestPaths.Agent();
+        agent.HostCulture = "en-ZA";
+        agent.UsageLedger = false;
+
+        AgentHostContext host = AgentHost.Build(new LlmOptions(), agent, new NoModelFactory());
+
+        Assert.That((host.Display.Code, host.Display.Symbol, host.Display.Base), Is.EqualTo(("ZAR", "R", "USD")));
+        Assert.That(host.Engine.Display, Is.SameAs(host.Display));
+
+        UsageRecord charged = new(DateTimeOffset.UtcNow, 1, UsagePurpose.Turn, "cli", "s", 1, null, null, null, "claude-haiku-5-5",
+            new UsageTokens(1_000, 0, 0, 100, null), 1, "stop", new UsageCost("USD", 0.0066m, "2026-10-10"));
+        var session = new UsageSession(host.Engine.Display);
+        decimal rate = host.Display.Rate;
+
+        Assert.That(session.EndTurn([charged]), Does.EndWith($"· {UsageText.Money(0.0066m, "USD", host.Display)} · session {UsageText.Money(0.0066m, "USD", host.Display)}")
+            .And.Contain("· R"));
+        Assert.That(host.Engine.HandleUserCommand("/usage", [charged]), Does.Contain($"- rate: {rate.ToString("0.####", CultureInfo.InvariantCulture)} ZAR/USD"));
+    }
+
+    private sealed class NoModelFactory : louis_agent.core.providers.ILlmClientFactory
+    {
+        public Microsoft.Extensions.AI.IChatClient Create(LlmOptions options) => new FakeChatClient();
+        public IUsageMapper CreateUsageMapper(LlmOptions options) => new StandardUsageMapper();
+    }
+
+    [TestCase("AUD", "$", "AUD")]
+    [TestCase("CAD", "$", "CAD")]
+    [TestCase("ZAR", "R", "R")]
+    [TestCase("EUR", "€", "€")]
+    [TestCase("USD", "$", "$")]
+    public void DistinctSymbol_AnotherDollarIsWrittenAsItsCode(string code, string symbol, string expected)
+    {
+        // "$0.10" in Australian dollars beside "$0.0021 charged" would read as US dollars.
+        Assert.That(DisplayCurrency.DistinctSymbol(code, symbol, "USD"), Is.EqualTo(expected));
+    }
+
+    [Test]
+    public void HostCulture_EnAu_IsAudByCode()
+    {
+        var rates = ExchangeRates.Parse("""{ "as_of": "2026-10-09", "base": "USD", "rates": { "AUD": 1.4324 } }""", "test");
+
+        var (display, _) = Resolve(new AgentOptions { HostCulture = "en-AU" }, rates: rates);
+
+        Assert.That((display.Code, display.Symbol), Is.EqualTo(("AUD", "AUD")));
+        Assert.That(UsageText.Money(0.07m, "USD", display), Is.EqualTo("0.1 AUD"));
+    }
+
+    [Test]
     public void Settings_AreRead()
     {
         var options = AgentOptions.FromEnvironment(name => name switch
