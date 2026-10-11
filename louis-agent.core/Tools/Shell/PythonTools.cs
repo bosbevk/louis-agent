@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using LouisAgent.Core.Tools.DotNet;
 using LouisAgent.Core.Tools.Workspace;
+using LouisAgent.Core.Messages;
 
 /// <summary>
 /// Python toolset: run inline code or workspace scripts and manage packages in a dedicated virtual environment,
@@ -57,13 +58,13 @@ public sealed partial class PythonTools
     {
         bool hasCode = !string.IsNullOrWhiteSpace(code);
         bool hasScript = !string.IsNullOrWhiteSpace(scriptPath);
-        if (hasCode == hasScript) return "Error: pass exactly one of 'code' or 'scriptPath'.";
+        if (hasCode == hasScript) return MessageText.Format(ToolMessage.PassCodeOrScriptPath);
 
         string? script = null;
         if (hasScript)
         {
             if (!TryResolveWorkspacePath(scriptPath, out script, out var error)) return error;
-            if (!File.Exists(script)) return $"Error: script '{scriptPath}' not found.";
+            if (!File.Exists(script)) return MessageText.Format(ToolMessage.ScriptNotFound, new { Path = scriptPath });
         }
 
         var result = RunScript(hasCode ? code : null, script, DotNetTools.SplitArguments(arguments), standardInput,
@@ -135,10 +136,10 @@ public sealed partial class PythonTools
         [Description("Space-separated pip requirement specifiers, e.g. 'requests' or 'numpy>=2 pandas==2.2.2'")] string packages)
     {
         var specs = (packages ?? "").Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-        if (specs.Length == 0) return "Error: specify at least one package.";
+        if (specs.Length == 0) return MessageText.Format(ToolMessage.PackagesRequired);
         // Requirement specifiers only — no pip options such as --index-url or -r.
         if (specs.FirstOrDefault(s => !RequirementSpec().IsMatch(s)) is { } invalid)
-            return $"Error: '{invalid}' is not a valid package specifier.";
+            return MessageText.Format(ToolMessage.PackageSpecifierInvalid, new { Specifier = invalid });
 
         if (EnsureVirtualEnvironment() is { } venvError) return venvError;
 
@@ -181,9 +182,7 @@ public sealed partial class PythonTools
 
     internal sealed record Interpreter(string FileName, string[] PrefixArgs);
 
-    private const string NotInstalledMessage =
-        "Python 3 is not installed or not on PATH. Install it (https://www.python.org/downloads/ or 'winget install Python.Python.3.12'), " +
-        "or set PYTHON_PATH to the interpreter. On Windows, the 'python' Microsoft Store alias does not count as an install.";
+    private static string NotInstalledMessage => MessageText.Format(ToolMessage.PythonNotInstalled);
 
     private string WorkingDirectory =>
         Environment.GetEnvironmentVariable("AGENT_WORKING_DIRECTORY") is { Length: > 0 } dir ? dir : _workspaceRoot;
@@ -220,8 +219,7 @@ public sealed partial class PythonTools
         var result = ProcessRunner.Run(python.FileName, [.. python.PrefixArgs, "-m", "venv", _venvDirectory],
             WorkingDirectory, InstallTimeout, environment: PythonEnvironment);
         if (result.ExitCode != 0 || !File.Exists(VenvPython))
-            return $"Error: could not create the virtual environment at {_venvDirectory} " +
-                   $"(on Debian/Ubuntu install the 'python3-venv' package).\n{ProcessRunner.Tail(result.Output)}";
+            return MessageText.Format(ToolMessage.VenvNotCreated, new { Directory = _venvDirectory, Output = ProcessRunner.Tail(result.Output) });
 
         _baseInterpreter = null;
         return null;
@@ -238,7 +236,7 @@ public sealed partial class PythonTools
             fullPath.StartsWith(rootWithSeparator, StringComparison.OrdinalIgnoreCase))
             return true;
 
-        error = $"Error: '{relativePath}' is outside the workspace.";
+        error = MessageText.Format(ToolMessage.PathOutsideWorkspaceNamed, new { Path = relativePath });
         return false;
     }
 

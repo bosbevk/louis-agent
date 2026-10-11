@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Text;
 using LouisAgent.Core.Tools.DotNet;
 using LouisAgent.Core.Tools.Workspace;
+using LouisAgent.Core.Messages;
 
 /// <summary>
 /// Bash toolset: run inline scripts or workspace .sh files with Git Bash on Windows or /bin/bash elsewhere.
@@ -40,13 +41,13 @@ public sealed class BashTools
     {
         bool hasScript = !string.IsNullOrWhiteSpace(script);
         bool hasPath = !string.IsNullOrWhiteSpace(scriptPath);
-        if (hasScript == hasPath) return "Error: pass exactly one of 'script' or 'scriptPath'.";
+        if (hasScript == hasPath) return MessageText.Format(ToolMessage.PassScriptOrScriptPath);
 
         string? file = null;
         if (hasPath)
         {
             if (!TryResolveWorkspacePath(scriptPath, out file, out var error)) return error;
-            if (!File.Exists(file)) return $"Error: script '{scriptPath}' not found.";
+            if (!File.Exists(file)) return MessageText.Format(ToolMessage.ScriptNotFound, new { Path = scriptPath });
         }
 
         var result = RunScript(hasScript ? script : null, file, DotNetTools.SplitArguments(arguments), standardInput,
@@ -143,9 +144,7 @@ public sealed class BashTools
         """__a=(); for ((__i = 0; __i < LOUIS_AGENT_ARGC; __i++)); do __v="LOUIS_AGENT_ARG_$__i"; __a+=("${!__v}"); done; """ +
         """unset __i __v; source "$0" "${__a[@]+"${__a[@]}"}" """;
 
-    private const string NotInstalledMessage =
-        "Bash is not available. On Windows install Git for Windows (https://git-scm.com, includes Git Bash) " +
-        "or set BASH_PATH to bash.exe. WSL's bash.exe in System32 is deliberately not used.";
+    private static string NotInstalledMessage => MessageText.Format(ToolMessage.BashNotInstalled);
 
     private static string? _bash;
     private static bool _searched;
@@ -212,7 +211,7 @@ public sealed class BashTools
             fullPath.StartsWith(rootWithSeparator, StringComparison.OrdinalIgnoreCase))
             return true;
 
-        error = $"Error: '{relativePath}' is outside the workspace.";
+        error = MessageText.Format(ToolMessage.PathOutsideWorkspaceNamed, new { Path = relativePath });
         return false;
     }
 }

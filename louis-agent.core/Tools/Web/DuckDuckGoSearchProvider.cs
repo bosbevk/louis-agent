@@ -2,6 +2,7 @@ namespace LouisAgent.Core.Tools.Web;
 
 using System.Net;
 using System.Text.RegularExpressions;
+using LouisAgent.Core.Messages;
 
 /// <summary>Keyless search through DuckDuckGo's HTML endpoint. Convenient, but it may refuse automated traffic.</summary>
 public sealed partial class DuckDuckGoSearchProvider(HttpClient? http = null) : IWebSearchProvider
@@ -22,8 +23,7 @@ public sealed partial class DuckDuckGoSearchProvider(HttpClient? http = null) : 
         using var response = await _http.SendAsync(request, cancellationToken);
         string html = await response.Content.ReadAsStringAsync(cancellationToken);
         if (!response.IsSuccessStatusCode || html.Contains("anomaly-modal", StringComparison.Ordinal))
-            throw new WebSearchException("DuckDuckGo refused the automated search. For reliable search set WEB_SEARCH_PROVIDER=google " +
-                                         "with GOOGLE_SEARCH_API_KEY and GOOGLE_SEARCH_ENGINE_ID.");
+            throw new WebSearchException(MessageText.Format(ToolMessage.DuckDuckGoRefused));
 
         return ParseResults(html, query.MaxResults);
     }

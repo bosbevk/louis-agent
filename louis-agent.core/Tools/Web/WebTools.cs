@@ -5,6 +5,7 @@ using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using LouisAgent.Core.Guardrails;
+using LouisAgent.Core.Messages;
 
 /// <summary>
 /// Web toolset: search through a pluggable <see cref="IWebSearchProvider"/> (Google, DuckDuckGo, or any injected engine)
@@ -51,7 +52,7 @@ public sealed partial class WebTools
         [Description("Optional domain to restrict to, e.g. 'learn.microsoft.com'")] string site = "",
         [Description("Optional recency filter: day, week, month or year")] string freshness = "")
     {
-        if (string.IsNullOrWhiteSpace(query)) return "Error: query cannot be empty.";
+        if (string.IsNullOrWhiteSpace(query)) return MessageText.Format(ToolMessage.SearchQueryEmpty);
         maxResults = Math.Clamp(maxResults, 1, 10);
 
         string? recency = (freshness ?? "").Trim().ToLowerInvariant() switch
@@ -63,7 +64,7 @@ public sealed partial class WebTools
             "year" or "y" => "year",
             _ => "invalid",
         };
-        if (recency == "invalid") return "Error: freshness must be day, week, month or year.";
+        if (recency == "invalid") return MessageText.Format(ToolMessage.SearchFreshnessInvalid);
 
         var request = new WebSearchQuery(query.Trim(), maxResults, string.IsNullOrWhiteSpace(site) ? null : site.Trim(), recency);
         string described = request.Site is null ? $"'{request.Text}'" : $"'{request.Text}' on {request.Site}";
@@ -84,11 +85,11 @@ public sealed partial class WebTools
         }
         catch (WebSearchException ex)
         {
-            return $"Error: {ex.Message}";
+            return MessageText.Format(ToolMessage.ErrorWithReason, new { Reason = ex.Message });
         }
         catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException or System.Text.Json.JsonException)
         {
-            return $"Error: web search via {_search.Name} failed ({ex.Message}). Check the internet connection and try again.";
+            return MessageText.Format(ToolMessage.SearchFailed, new { Provider = _search.Name, Reason = ex.Message });
         }
     }
 
@@ -108,7 +109,7 @@ public sealed partial class WebTools
         [Description("Character offset to continue from, as given in a previous truncated result (default 0)")] int startIndex = 0)
     {
         if (!Uri.TryCreate((url ?? "").Trim(), UriKind.Absolute, out var uri) || uri.Scheme is not ("http" or "https"))
-            return "Error: url must be an absolute http:// or https:// URL.";
+            return MessageText.Format(ToolMessage.FetchUrlInvalid);
         maxChars = Math.Clamp(maxChars, 500, 30_000);
         startIndex = Math.Max(0, startIndex);
 
@@ -117,7 +118,7 @@ public sealed partial class WebTools
             var (response, finalUri) = await GetFollowingRedirectsAsync(uri);
             using var _ = response;
             if (!response.IsSuccessStatusCode)
-                return $"Error: {finalUri} returned HTTP {(int)response.StatusCode} {response.ReasonPhrase}.";
+                return MessageText.Format(ToolMessage.FetchHttpError, new { Url = finalUri, Status = (int)response.StatusCode, Reason = response.ReasonPhrase });
 
             string mediaType = response.Content.Headers.ContentType?.MediaType?.ToLowerInvariant() ?? "text/html";
             string body = await response.Content.ReadAsStringAsync();
@@ -129,10 +130,10 @@ public sealed partial class WebTools
             else if (mediaType.StartsWith("text/") || mediaType.Contains("json") || mediaType.Contains("xml"))
                 text = body.Trim();
             else
-                return $"Error: {finalUri} is '{mediaType}', which cannot be read as text.";
+                return MessageText.Format(ToolMessage.FetchNotText, new { Url = finalUri, MediaType = mediaType });
 
             if (startIndex >= text.Length && text.Length > 0)
-                return $"Error: startIndex {startIndex} is past the end of the content ({text.Length} characters).";
+                return MessageText.Format(ToolMessage.FetchStartPastEnd, new { StartIndex = startIndex, text.Length });
 
             int end = Math.Min(text.Length, startIndex + maxChars);
             var sb = new StringBuilder();
@@ -147,19 +148,19 @@ public sealed partial class WebTools
         }
         catch (BlockedAddressException ex)
         {
-            return $"Error: {ex.Message}";
+            return MessageText.Format(ToolMessage.ErrorWithReason, new { Reason = ex.Message });
         }
         catch (HttpRequestException ex) when (ex.InnerException is BlockedAddressException blocked)
         {
-            return $"Error: {blocked.Message}";
+            return MessageText.Format(ToolMessage.ErrorWithReason, new { Reason = blocked.Message });
         }
         catch (HttpRequestException ex) when (ex.Message.Contains("buffer", StringComparison.OrdinalIgnoreCase))
         {
-            return $"Error: the response is larger than {MaxResponseBytes / (1024 * 1024)} MB.";
+            return MessageText.Format(ToolMessage.FetchTooLarge, new { Megabytes = MaxResponseBytes / (1024 * 1024) });
         }
         catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException)
         {
-            return $"Error: could not fetch {uri} ({ex.Message}).";
+            return MessageText.Format(ToolMessage.FetchFailed, new { Url = uri, Reason = ex.Message });
         }
     }
 
@@ -176,9 +177,9 @@ public sealed partial class WebTools
             if ((int)response.StatusCode is < 300 or >= 400 || response.Headers.Location is null) return (response, uri);
 
             response.Dispose();
-            if (hop == MaxRedirects) throw new HttpRequestException($"more than {MaxRedirects} redirects");
+            if (hop == MaxRedirects) throw new HttpRequestException(MessageText.Format(ToolMessage.FetchTooManyRedirects, new { Count = MaxRedirects }));
             var next = response.Headers.Location.IsAbsoluteUri ? response.Headers.Location : new Uri(uri, response.Headers.Location);
-            if (next.Scheme is not ("http" or "https")) throw new BlockedAddressException($"redirect to unsupported scheme '{next.Scheme}'.");
+            if (next.Scheme is not ("http" or "https")) throw new BlockedAddressException(MessageText.Format(ToolMessage.FetchRedirectScheme, new { next.Scheme }));
             uri = next;
         }
     }

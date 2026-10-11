@@ -3,6 +3,7 @@ namespace LouisAgent.Core.Tools.DotNet;
 using System.ComponentModel;
 using System.Text;
 using System.Text.RegularExpressions;
+using LouisAgent.Core.Messages;
 
 /// <summary>
 /// .NET SDK toolset: build, test, run and inspect projects inside the workspace.
@@ -104,7 +105,7 @@ public sealed class DotNetTools
         [Description("Maximum seconds to let the program run before it is killed (default 60)")] int timeoutSeconds = 60,
         [Description("Build configuration, e.g. Debug or Release")] string configuration = "Debug")
     {
-        if (string.IsNullOrWhiteSpace(project)) return "Error: specify the project to run (see DotNetListProjects).";
+        if (string.IsNullOrWhiteSpace(project)) return MessageText.Format(ToolMessage.DotNetProjectRequired);
         if (!TryResolveTarget(project, out var target, out var error)) return error;
 
         // Build separately so compile errors come back as a clean diagnostic summary.
@@ -138,7 +139,7 @@ public sealed class DotNetTools
             case "": break;
             case "outdated": args.Add("--outdated"); break;
             case "vulnerable": args.AddRange(["--vulnerable", "--include-transitive"]); break;
-            default: return "Error: filter must be '', 'outdated' or 'vulnerable'.";
+            default: return MessageText.Format(ToolMessage.DotNetPackageFilterInvalid);
         }
 
         var result = RunDotNet(args, TimeSpan.FromMinutes(2));
@@ -181,13 +182,13 @@ public sealed class DotNetTools
         if (!full.Equals(root, StringComparison.OrdinalIgnoreCase) &&
             !full.StartsWith(rootWithSeparator, StringComparison.OrdinalIgnoreCase))
         {
-            error = $"Error: '{project}' is outside the workspace.";
+            error = MessageText.Format(ToolMessage.PathOutsideWorkspaceNamed, new { Path = project });
             return false;
         }
 
         if (!File.Exists(full) && !Directory.Exists(full))
         {
-            error = $"Error: '{project}' not found. Use DotNetListProjects to see available projects.";
+            error = MessageText.Format(ToolMessage.DotNetProjectNotFound, new { Project = project });
             return false;
         }
 
@@ -297,7 +298,7 @@ public sealed class DotNetTools
     private static string FormatResult(ProcessRunner.Result result) =>
         result.TimedOut ? $"Timed out.\n{Tail(result.Output)}"
         : result.ExitCode == 0 ? (string.IsNullOrWhiteSpace(result.Output) ? "Success (no output)." : result.Output.Trim())
-        : $"[Exit Code {result.ExitCode}] {result.Output.Trim()}";
+        : MessageText.Format(ToolMessage.ExitCode, new { Code = result.ExitCode, Output = result.Output.Trim() });
 
     private static bool IsBuildOutput(string path) =>
         path.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)

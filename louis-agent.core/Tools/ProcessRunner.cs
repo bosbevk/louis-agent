@@ -2,6 +2,7 @@ namespace LouisAgent.Core.Tools;
 
 using System.Diagnostics;
 using System.Text;
+using LouisAgent.Core.Messages;
 
 /// <summary>
 /// Runs an external process without a shell: arguments are passed verbatim, stdout/stderr are captured
@@ -61,7 +62,7 @@ internal static class ProcessRunner
         }
         catch (Exception ex)
         {
-            return new Result(-1, $"Error running {fileName}: {ex.Message}", TimedOut: false);
+            return new Result(-1, MessageText.Format(ToolMessage.ProcessStartFailed, new { Program = fileName, Reason = ex.Message }), TimedOut: false);
         }
     }
 

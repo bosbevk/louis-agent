@@ -3,6 +3,7 @@ namespace LouisAgent.Core.Tools.Git;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Text;
+using LouisAgent.Core.Messages;
 
 public sealed class GitTools
 {
@@ -304,7 +305,7 @@ public sealed class GitTools
             if (!process.WaitForExit(30_000))
             {
                 process.Kill(entireProcessTree: true);
-                return "[Timeout] Git command exceeded 30s limit.";
+                return MessageText.Format(ToolMessage.GitTimeout);
             }
 
             string output = stdout.GetAwaiter().GetResult();
@@ -312,14 +313,14 @@ public sealed class GitTools
 
             if (process.ExitCode != 0)
             {
-                return $"[Exit Code {process.ExitCode}] {(string.IsNullOrWhiteSpace(error) ? output : error)}".Trim();
+                return MessageText.Format(ToolMessage.ExitCode, new { Code = process.ExitCode, Output = (string.IsNullOrWhiteSpace(error) ? output : error) }).Trim();
             }
 
             return string.IsNullOrWhiteSpace(output) ? "Success (no output)." : output.Trim();
         }
         catch (Exception ex)
         {
-            return $"Error running git: {ex.Message}";
+            return MessageText.Format(ToolMessage.GitFailed, new { Reason = ex.Message });
         }
     }
 

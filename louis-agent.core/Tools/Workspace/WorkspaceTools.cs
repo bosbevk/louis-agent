@@ -3,6 +3,7 @@ namespace LouisAgent.Core.Tools.Workspace;
 using System.ComponentModel;
 using System.Text;
 using LouisAgent.Core.Guardrails;
+using LouisAgent.Core.Messages;
 
 public sealed class WorkspaceTools
 {
@@ -149,7 +150,7 @@ public sealed class WorkspaceTools
         string? directory = Path.GetDirectoryName(path);
         if (directory is null)
         {
-            return "Invalid file path.";
+            return MessageText.Format(ToolMessage.InvalidFilePath);
         }
 
         Directory.CreateDirectory(directory);
@@ -372,7 +373,7 @@ public sealed class WorkspaceTools
         }
         catch (Exception ex)
         {
-            return $"Error searching for files: {ex.Message}";
+            return MessageText.Format(ToolMessage.FileSearchFailed, new { Reason = ex.Message });
         }
     }
 

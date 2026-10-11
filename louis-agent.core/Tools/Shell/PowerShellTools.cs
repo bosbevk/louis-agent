@@ -3,6 +3,7 @@ namespace LouisAgent.Core.Tools.Shell;
 using System.ComponentModel;
 using System.Text;
 using LouisAgent.Core.Tools.DotNet;
+using LouisAgent.Core.Messages;
 
 /// <summary>
 /// PowerShell toolset: run inline scripts or workspace .ps1 files with PowerShell 7 (pwsh) or, on Windows,
@@ -53,14 +54,14 @@ public sealed class PowerShellTools
     {
         bool hasScript = !string.IsNullOrWhiteSpace(script);
         bool hasPath = !string.IsNullOrWhiteSpace(scriptPath);
-        if (hasScript == hasPath) return "Error: pass exactly one of 'script' or 'scriptPath'.";
+        if (hasScript == hasPath) return MessageText.Format(ToolMessage.PassScriptOrScriptPath);
 
         string target;
         if (hasPath)
         {
             if (!TryResolveWorkspacePath(scriptPath, out target, out var error)) return error;
-            if (!File.Exists(target)) return $"Error: script '{scriptPath}' not found.";
-            if (!target.EndsWith(".ps1", StringComparison.OrdinalIgnoreCase)) return "Error: scriptPath must be a .ps1 file.";
+            if (!File.Exists(target)) return MessageText.Format(ToolMessage.ScriptNotFound, new { Path = scriptPath });
+            if (!target.EndsWith(".ps1", StringComparison.OrdinalIgnoreCase)) return MessageText.Format(ToolMessage.ScriptPathNotPs1);
         }
         else target = "";
 
@@ -139,9 +140,7 @@ public sealed class PowerShellTools
 
     internal sealed record Interpreter(string FileName, string[] BaseArgs);
 
-    private const string NotInstalledMessage =
-        "PowerShell is not available. Install PowerShell 7 (https://aka.ms/powershell or 'winget install Microsoft.PowerShell'), " +
-        "or set POWERSHELL_PATH to pwsh/powershell.exe.";
+    private static string NotInstalledMessage => MessageText.Format(ToolMessage.PowerShellNotInstalled);
 
     private string WorkingDirectory =>
         Environment.GetEnvironmentVariable("AGENT_WORKING_DIRECTORY") is { Length: > 0 } dir ? dir : _workspaceRoot;
@@ -179,7 +178,7 @@ public sealed class PowerShellTools
             fullPath.StartsWith(rootWithSeparator, StringComparison.OrdinalIgnoreCase))
             return true;
 
-        error = $"Error: '{relativePath}' is outside the workspace.";
+        error = MessageText.Format(ToolMessage.PathOutsideWorkspaceNamed, new { Path = relativePath });
         return false;
     }
 
