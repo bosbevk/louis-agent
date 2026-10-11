@@ -33,7 +33,7 @@ its own.
 
 **M2 — Cheaper:** stop paying full price for the same tokens.
 
-- [ ] [F4 Prompt caching](docs/features/F04-prompt-caching.md) — cache the ~26,000-token prefix every request re-sends.
+- [x] [F4 Prompt caching](docs/features/F04-prompt-caching.md) — cache the ~48,000-token prefix every request re-sends.
       *Replaces:* "Wire up Anthropic prompt caching on the system prompt"
 - [ ] [F5 Toolset profiles](docs/features/F05-toolset-profiles.md) — load only the tools a session needs (the demo:
       coding tools only)
@@ -261,6 +261,10 @@ backlog item removes one, it says so.
 
 Newest first; details in the git history.
 
+- 2026-10-11 — **F4 Prompt caching**: two cache markers on Anthropic (the system prompt with `LLM_CACHE_TTL`, the
+  conversation by automatic caching, 5 minutes), as a provider strategy; tools sorted; writes priced at their lifetime
+  (`cache_write_1h`); `usage-probe --cache-gaps` recommends the lifetime from the ledger. Full demo $0.13 against M1's
+  $0.66 (−80%), louis-agent's input cost −87%, 10/10 fixes; samples in `samples/sample-output-cached/`
 - 2026-10-11 — **F14 Display currency**: costs in the PC's currency in every host (rands from `HOST_CULTURE=en-ZA`,
   written by `usage-probe --host-culture`; `R0.034`, `.` decimals), at a dated rate (Frankfurter mapped into our
   `rates.json`, `config/rates.json` as the fallback, served at `GET /rates`), with the rate and the USD charged beside

@@ -1,6 +1,6 @@
 # F4 · Prompt caching (Anthropic)
 
-> **Status:** planned · **Milestone:** M2 · **Depends on:** F1 (the cache minimum it needs, 512 tokens on Haiku 5.5, is
+> **Status:** done (2026-10-11) · **Milestone:** M2 · **Depends on:** F1 (the cache minimum it needs, 512 tokens on Haiku 5.5, is
 > noted below; [F15](F15-model-limits.md) records it per model later)
 >
 > **Spec:** [Optimisation §B](../specs/RESPONSE_OPTIMISATION.md)
@@ -213,6 +213,31 @@ step 6.
 7. **Docs:** MODELS.md (caching, TTL), SETUP settings, spec status and the breakpoint-table update.
 
 ## What the build found
+
+**Result** ([benchmark](README.md#f4-benchmark-2026-10-11)): the full demo cost **$0.1334 against $0.6586 for M1
+(−80%)**, louis-agent's input cost **−87%** (target ≥ 60%), cache-hit rate 98%, **10/10 fixes confirmed**; the prefix
+per fix about −88%. The short demo: $0.0488 against $0.2884 uncached (−83%). Saved in
+[samples/sample-output-cached/](../../samples/sample-output-cached/README.md) and
+[-short-cached/](../../samples/sample-output-short-cached/README.md); the smoke check in
+[samples/smoke-f4-caching/](../../samples/smoke-f4-caching/README.md).
+
+**What was built, against the design above:**
+
+- **Two markers, the second automatic** (plan, option B): marker 1 explicit on a *copy* of the system prompt's last
+  block, marker 2 the request's top-level `cache_control`, which the API places on the last block and moves forward.
+  No message is marked, so stored history is never touched (`WithCacheControl` changes the block it is called on).
+- **A provider strategy:** `IPromptCachingStrategy` with `AnthropicPromptCaching` and `NoPromptCaching`, applied by
+  the provider-neutral `PromptCachingChatClient`, which `LlmClientFactory.CreatePromptCaching` picks and `Create` wraps
+  around every provider's client (innermost, so every tool round is marked). Summary requests go unmarked.
+- **A lifetime per marker:** marker 1 takes `LLM_CACHE_TTL` (`5m` default, `1h`), marker 2 is always 5 minutes, so the
+  longer one always comes first. `usage-probe -- --cache-gaps <ledger>` replays a ledger's request times against both
+  lifetimes per host and model and recommends one; on the demo every gap is under 5 minutes, so 5m.
+- **Tools sorted by name** (`AgentEngine.AddTool`, a binary search; a duplicate name stops start-up), so every process
+  sends the same bytes.
+- **Writes priced at their lifetime** (F2): the ledger's `cache_write_1h` is the 1-hour part of `cache_write`.
+- **The orchestrator's triage is not cached** (`LLM_CACHE=off` in the demo): its caching and lifetime are F17's.
+- **Marker 1 is shared across sessions:** in the benchmark the prefix (47,424 tokens) was written once per run, and
+  every later fix read it in its own session.
 
 - **Writes split by lifetime reach the ledger on both paths** (step 6, measured on captured replies through the
   adapter). `UsageDetails` carries only the total (`CacheCreationInputTokens`); the split is on the SDK's own usage: the

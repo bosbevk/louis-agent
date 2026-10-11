@@ -1,7 +1,8 @@
-# 13 · Cost and token economics: what M1 taught
+# 13 · Cost and token economics: what M1 and F4 taught
 
-> **Skill:** #13 in the [goal](../GOAL.md)'s map · **Stage:** M1 "See it" (F1–F3, 2026-10-10 to 2026-10-11) · **Next
-> stage:** M2 "Cheaper" (F4 caching, F5 toolsets), then estimates, budgets and reconciliation (F6, F7, F11)
+> **Skill:** #13 in the [goal](../GOAL.md)'s map · **Stages:** M1 "See it" (F1–F3, 2026-10-10 to 2026-10-11), then
+> the first of M2 "Cheaper": F4 prompt caching (2026-10-11) · **Next:** F5 toolsets, then estimates, budgets and
+> reconciliation (F6, F7, F11)
 
 ## Before and after
 
@@ -92,6 +93,55 @@ ours; the additions say how ours differs (a turn is several requests). *Alternat
 `input`, `cache_read`…). Every Claude-compatible client would need a mapping, and a bare `input` invites the very
 mistake the spike found: is the cached part inside it or not?
 
+## F4: the first measured change
+
+M1 made the cost visible; F4 is the first change measured against it, with quality held:
+
+| Full demo, Claude Haiku 5.5 | M1 baseline | With caching (F4) | Change |
+|---|---:|---:|---:|
+| Fixes confirmed | 10/10 | 10/10 | held |
+| louis-agent's input cost | $0.6081 | $0.0820 | **−87%** |
+| Average fix | $0.0625 | $0.0099 | −84% |
+| The run (triage not cached) | $0.6586 | $0.1334 | **−80%** |
+| Share of louis-agent's prompt read from the cache | 0% | 98% | |
+
+The target was −60% on input; the spec's estimate for the prefix was −80%, and the measurement says −88%. The run is
+the unit, as M1 taught: one fix still varies ($0.0075 to $0.0146), the run total doesn't move much.
+
+**What made the difference, and why this way:**
+
+**8. Two markers, and the second one placed by the API.** Marker 1 sits at the end of the system prompt and covers
+tools and system (the order is tools → system → messages); marker 2 is automatic caching, a field on the request that
+the API puts on the last block and moves forward every round. *Alternative:* an explicit marker on a clone of the
+newest message (the feature doc's first design). More control, but the clone is where bugs hide, and it is code we
+don't need: the API already knows where the last block is.
+
+**9. Mark a copy, never the history.** The SDK's `WithCacheControl` changes the block it is called on. Called on the
+history's system prompt, every request would add another marker (past the API's limit of 4) and, worse, edit history
+that Haiku 5.5 binds its thinking to. A test fails if the history's own blocks are marked.
+
+**10. A lifetime per marker, calculated.** A cache entry lives 5 minutes or 1 hour after its last use; writing a 1-hour
+entry costs 2× instead of 1.25×. Which is cheaper depends only on the gaps between requests that reuse the entry, so
+the ledger, which records every request's time, decides it: `usage-probe -- --cache-gaps` replays the real timeline
+against both lifetimes. The conversation is always 5 minutes (only the next round reads it); the prefix takes
+`LLM_CACHE_TTL`, 5 minutes for the demo (every gap is under 5 minutes) and 1 hour for a chat with pauses. *Alternative:*
+pick one lifetime by feel. A 1-hour default would have cost the demo more on every write.
+
+**11. Caching as a provider strategy.** `IPromptCachingStrategy` (Anthropic's markers, or none) chosen once in the
+factory, as `IUsageMapper` is. The client that applies it doesn't know which provider it is talking to.
+
+**What the measurements showed that the design didn't predict:**
+
+- **The prefix is shared across sessions.** It was written once per run (47,424 tokens), then *read* by each of the
+  nine later fixes, each in its own session. The cache key is the bytes, not the conversation.
+- **The split of writes by lifetime is only in the raw response.** Microsoft.Extensions.AI's `UsageDetails` has the
+  total; the 5-minute and 1-hour parts are on the SDK's own message, and on a stream only in the first event
+  (`message_start`). Pricing 1-hour writes correctly needed the mapper to see that event.
+- **The tool order had to be fixed first.** Tools were registered in reflection order; any difference in order between
+  processes would have been a different prefix and a silent miss. They are now sorted by name.
+- **A miss raises no error.** Caching that silently stops looks like a normal, more expensive run, so the smoke check is
+  kept as a sample to compare `cache_read` against.
+
 ## Trade-offs accepted
 
 - **A ledger file per month, not a database.** JSON lines are append-only, readable and easy to total with one tool
@@ -101,7 +151,10 @@ mistake the spike found: is the cached part inside it or not?
 - **The web line splits cache writes from "in"**, against F3's own story: they are priced differently, so hiding them
   would hide why one answer cost more than another.
 - **Rider's chat line is opt-in** (`USAGE_IN_CHAT`): in Rider it becomes part of the transcript.
-- **Cache writes are priced at the 5-minute rate** until F4 records which lifetime a write used.
+- **Triage is not cached yet** (F17): about a quarter of the cached run's cost is now the orchestrator's triage,
+  because louis-agent's share fell so far.
+- **`--cache-gaps` estimates the prefix** as a host's smallest prompt: an upper bound, about 1,000 tokens high on the
+  demo, close enough to choose a lifetime.
 
 ## What didn't work (and what it taught)
 
@@ -119,15 +172,14 @@ mistake the spike found: is the cached part inside it or not?
 
 Against the goal's four criteria for a learned skill:
 
-1. **Built:** the first stage is (ledger, prices, showing it); caching, estimates, budgets and reconciliation are still
-   planned (F4, F6, F7, F11).
-2. **Measured:** not yet. M1 gives a **baseline**, not a before/after: nothing was cheaper at the end of M1, only
-   visible. This baseline is the "before" that F4 is measured against.
-3. **Written up:** this page, for M1; extended at M2 and M3.
+1. **Built:** seeing the cost (ledger, prices, showing it, M1) and cutting it (prompt caching, F4); toolsets, estimates,
+   budgets and reconciliation are still planned (F5, F6, F7, F11).
+2. **Measured:** yes. F4 against the M1 baseline: −80% on the run, −87% on louis-agent's input, with 10/10 fixes held.
+3. **Written up:** this page, for M1 and F4; extended at the rest of M2 and at M3.
 4. **Explained:** the list below.
 
-So skill 13 is **not learned yet**: it becomes so when a change is measured against this baseline with quality held,
-first F4's caching at M2.
+So skill 13 is **learned at its first measured change**, by this page's own test. The later stages (spend less of the
+prompt, estimate before spending, stop at a budget, reconcile with the bill) extend it.
 
 ## What I can now explain
 
@@ -136,6 +188,10 @@ first F4's caching at M2.
 - Why a cost is stored with the prices it was charged at, and why "unknown" must never read as "free".
 - How to attribute cost across two agents (a fix, its triage, a run) so the totals agree at every level.
 - Why the run, not a single fix, is the unit to compare when measuring a change.
+- How prompt caching prices a request: what a marker covers, why the order tools → system → messages matters, and why
+  a write costs more than a read.
+- Why a cache lifetime is chosen from the gaps between requests, not from how long a run takes, and how to measure it.
+- Why a cache key is bytes, so a stable tool order and an untouched history are what make the cache hit.
 
 ---
 [Learning write-ups](README.md) · [Goal](../GOAL.md)

@@ -49,6 +49,15 @@ pause before the answer; use `low` for speed. Haiku 5.5 and other current models
 request whether to think at all, and `off` leaves the model's own default rather than turning thinking off. Claude
 models before 4.6 (including Haiku 4.5) get a fixed thinking budget (2,048 / 4,096 / 8,192 tokens) instead.
 
+**Prompt caching** (Anthropic, on by default; `LLM_CACHE=off` turns it off). Every request re-sends the tools and
+system prompt (~48,000 tokens); with caching the API reads them at a tenth of the input price after the first request,
+and each tool round reads the round before. On the demo it cut the input cost by 87%. Two markers: the system prompt,
+whose lifetime is `LLM_CACHE_TTL` (`5m` default; `1h` when requests sharing it come 5–60 minutes apart, as in a chat
+with pauses), and the conversation, always 5 minutes. To choose the lifetime from your own traffic:
+`dotnet run --project tools/louis-agent.usage-probe -- --cache-gaps logs/usage-YYYY-MM.jsonl`. A cache miss raises no
+error; the ledger shows `cache_read: 0` (compare with `samples/smoke-f4-caching/`). Ollama and OpenAI-compatible
+endpoints get no markers. Haiku 5.5 caches from 512 tokens, Haiku 4.5 from 4,096.
+
 **History must stay append-only on Haiku 5.5.** It rejects a request whose system prompt, tools or earlier messages
 changed while thinking blocks are sent back (enforced for accounts created on or after 2026-08-31). Reloading skills or
 approving an agent-built tool in the middle of a chat does that today: start a new chat afterwards (see the known

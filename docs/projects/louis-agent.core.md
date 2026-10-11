@@ -51,7 +51,9 @@ The full step-by-step is in [How a turn works](../AGENT_INTERACTION.md).
 | `MarkdownSkillLoader.cs` | Parses `## Skill:` procedures (description, parameters, a bash / PowerShell / Python fence) from Markdown |
 | `config/LlmOptions.cs` | `LLM_*`: provider (inferred from the model when unset), model, endpoint, key, tool support, thinking |
 | `config/AgentOptions.cs` | Workspace, skills directory, `AGENT_FUNCTION`, keys for Paymo / DevOps / web search, Rider MCP, `LOG_DIRECTORY` |
-| `providers/LlmClientFactory.cs` | Options → `IChatClient`: Anthropic (`AsIChatClient`, 16,000 output tokens, a fixed thinking budget for pre-4.6 models), Ollama, OpenAI-compatible |
+| `providers/LlmClientFactory.cs` | Options → `IChatClient`: Anthropic (`AsIChatClient`, 16,000 output tokens, a fixed thinking budget for pre-4.6 models), Ollama, OpenAI-compatible; every client wrapped in `PromptCachingChatClient` with the provider's strategy (`CreatePromptCaching`) |
+| `providers/*PromptCaching*.cs` | F4: `IPromptCachingStrategy`; `AnthropicPromptCaching` (marker 1 on a copy of the system prompt with `LLM_CACHE_TTL`, marker 2 the top-level `cache_control`, 5 minutes); `NoPromptCaching`; `PromptCachingChatClient` (skips summary requests) |
+| `messages/` | Message enums (`ErrorMessage`, `LogMessage`, `ToolMessage`, `UserText`) and `Messages.Format` |
 | `providers/*SkillsProvider.cs` | One provider per skill file kind; `CompositeSkillProvider` joins them into the system prompt |
 | `tools/AgentEngine.cs` | The engine: tool registration, system prompt, turn loop, guards, skills (`ExecuteSkill`, `CreateSkillFile`, `ReloadSkills`), agent-built tools (`CreateTool`, `/approve`) |
 | `tools/WorkspaceTools.cs` | Files: read (≤ 1 MB), write, append, list, tree, search, find, copy, rename, delete; workspace boundary and secret-file checks |
@@ -65,7 +67,8 @@ The full step-by-step is in [How a turn works](../AGENT_INTERACTION.md).
 | `mcp/RiderMcpClient.cs`, `RiderMcpToolDiscovery.cs` | Lists Rider's MCP tools (logged only; not callable yet) |
 | `usage/UsageRecordingChatClient.cs` | Middleware that records one `UsageRecord` per model request, streaming or not; a cancelled stream is recorded as `cancelled`, a provider error isn't |
 | `usage/UsageScope.cs` | The turn's context in an `AsyncLocal`: host, session, turn, purpose, `UsageTags` (task, run, service); `Activate()` for hosts that stream from an async iterator; `Add` / `Records` / `Total()` collect the turn's stored (priced) records, passing them to the outer scope (F3) |
-| `usage/IUsageMapper.cs` | Provider usage → input / cache write / cache read / output / reasoning: `StandardUsageMapper` (the Microsoft.Extensions.AI contract), `AnthropicUsageMapper` (cache writes) |
+| `usage/IUsageMapper.cs` | Provider usage → input / cache write / cache read / output / reasoning: `StandardUsageMapper` (the Microsoft.Extensions.AI contract), `AnthropicUsageMapper` (cache writes, and the 1-hour part from the raw response or the stream's `message_start`) |
+| `usage/CacheGaps.cs` | The prefix's cache lifetime from a ledger: gaps per host and model, both lifetimes replayed and priced (F4) |
 | `usage/UsageRecord.cs`, `IUsageSink.cs`, `JsonlUsageSink.cs` | The record (with its `UsageCost`), and the monthly JSONL file it's written to (shared append, UTC month) |
 | `usage/PriceTable.cs`, `CostCalculator.cs` | `config/prices.json` (longest-prefix match, a `long_prompt` tier) and a record's cost; no price → `null`, never 0 |
 | `usage/PricingUsageSink.cs` | Wraps the ledger in `AgentHost.CreateUsageSink`: prices each record before it's written |

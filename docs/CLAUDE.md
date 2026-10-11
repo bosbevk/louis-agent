@@ -55,8 +55,10 @@ louis-agent.core/
 ├── config/
 │   ├── LlmOptions.cs         # LLM_* settings, tool-support and thinking resolution
 │   └── AgentOptions.cs       # Workspace, skills, keys, Rider MCP, LOG_DIRECTORY, USAGE_LEDGER, PRICES_FILE/_URL
+├── messages/                 # Message enums ([Description] templates) and Messages.Format (see Messages and logging)
 ├── providers/
-│   ├── LlmClientFactory.cs   # Provider → IChatClient (Anthropic thinking-budget wrapper lives here)
+│   ├── LlmClientFactory.cs   # Provider → IChatClient (Anthropic thinking-budget wrapper lives here), wrapped for caching
+│   ├── IPromptCachingStrategy.cs, AnthropicPromptCaching.cs, NoPromptCaching.cs, PromptCachingChatClient.cs  # F4
 │   ├── CompositeSkillProvider.cs, MarkdownSkillProvider.cs, ISkillProvider.cs
 │   └── Personality/Default/DotNet/DevOps/Paymo/CodeReview/TimeLogging SkillsProvider.cs
 ├── tools/
@@ -76,6 +78,7 @@ louis-agent.core/
 │   │                         # currency costs are shown in, from HOST_CULTURE (F14); the ledger keeps what was charged
 │   ├── PricingUsageSink.cs   # Puts the cost on each record before the ledger writes it
 │   ├── UsageReport.cs        # Reads a ledger back, prices old records, totals per fix / triage / run
+│   ├── CacheGaps.cs          # The prefix's cache lifetime from a ledger's request gaps (F4, usage-probe --cache-gaps)
 │   ├── UsageText.cs, UsageSession.cs  # The usage line and /usage text every host shows (F3); a session's turns
 │   └── UsageRecord.cs, IUsageSink.cs, JsonlUsageSink.cs
 └── mcp/
@@ -101,11 +104,12 @@ src/
     └── Skills/               # orchestrator.md + {service}/service.md + one runbook per API method
 
 tools/louis-agent.usage-probe/ # Prints a provider's raw token usage and the ledger's mapping (calls the real provider);
-                              # --ledger <file> prices and totals a usage ledger (no model call)
+                              # --ledger <file> prices and totals a usage ledger, --cache-gaps <file> recommends
+                              # LLM_CACHE_TTL (neither calls a model)
 tests/louis-agent.core.tests/ # NUnit; Config, Loaders, Providers, Tools, Usage, mcp
 tests/louis-agent.orchestrator.tests/ # NUnit; error feed, SSE client, verification tools
-samples/                      # order-service (demo microservice), run-demo.ps1 [-Short], sample-output/ and
-                              # sample-output-short/ (real runs with their priced usage ledgers), see samples/README.md
+samples/                      # order-service (demo microservice), run-demo.ps1 [-Short], sample-output*/ (real runs
+                              # with their priced ledgers, uncached and -cached), smoke-f4-caching/, see samples/README.md
 docker/                       # Dockerfile.{acp-server,api,agent,mcp-server,orchestrator}, docker-compose.yml,
                               # docker-compose.demo.yml (orchestrator demo); the build context's .dockerignore is at the repo root
 config/                       # .env and .env.secrets (both ignored), their examples, LLM profiles (.env.anthropic,

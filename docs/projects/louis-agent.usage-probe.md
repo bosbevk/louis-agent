@@ -32,7 +32,14 @@ dotnet run --project tools/louis-agent.usage-probe -- --think           # 2 reas
 dotnet run --project tools/louis-agent.usage-probe -- --lines 100           # prompt size (default 600 Anthropic, 40 others)
 dotnet run --project tools/louis-agent.usage-probe -- --ledger .demo/logs/usage-2026-10.jsonl   # price and total a ledger
 dotnet run --project tools/louis-agent.usage-probe -- --host-culture   # write the PC's culture to config/.env (F14)
+dotnet run --project tools/louis-agent.usage-probe -- --cache-gaps .demo/logs/usage-2026-10.jsonl   # which LLM_CACHE_TTL (F4)
 ```
+
+**`--cache-gaps <file>` makes no model call either** (F4). Per host and model (each its own cached prefix, shared by
+every session on that host) it shows the gaps between requests (under 5 minutes, 5–60, over an hour), replays both
+lifetimes on them (a request within the lifetime of the last one reads and restarts the clock, any other writes),
+prices each with the table, using the group's smallest prompt as the prefix size, and recommends `LLM_CACHE_TTL`. The
+logic is `CacheGaps` in core, tested in `CacheGapsTests`.
 
 **`--ledger <file>` makes no model call.** It reads a usage ledger, prices the records that have no cost yet (ledgers
 written before F2) with the current price table (`PRICES_URL` / `PRICES_FILE` / `config/prices.json`), and prints totals

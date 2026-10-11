@@ -67,6 +67,7 @@ docker compose -f docker/docker-compose.yml --env-file config/.env up -d --build
 | `LLM_PROFILE` | Which LLM profile to load: `anthropic` (`config/.env.anthropic`) or `ollama` (`config/.env.ollama`) |
 | `LLM_PROVIDER`, `LLM_MODEL`, `LLM_ENDPOINT` | Model and where it runs; normally set by the profile, and a line here overrides it ([MODELS.md](MODELS.md)) |
 | `LLM_THINKING` | Visible reasoning: `off` / `low` / `medium` / `high` (default `medium` for Anthropic, `off` otherwise) |
+| `LLM_CACHE`, `LLM_CACHE_TTL` | Prompt caching on Anthropic: `on` (default) / `off`, and the cached prefix's lifetime, `5m` (default) or `1h`, chosen with `usage-probe -- --cache-gaps` ([MODELS.md](MODELS.md)) |
 | `LLM_SUPPORTS_TOOLS` | Force tool calling on or off (normally inferred from the model) |
 | `AGENT_FUNCTION` | Which `Skills/{name}-skills.md` to load; `louis` loads every skill file |
 | `REPOSITORIES_PATH` | Host folder mounted at `/repositories` in the containers |
