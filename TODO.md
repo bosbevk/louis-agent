@@ -195,13 +195,18 @@ feature when its turn comes; remove its line here and update the map's *Missing*
 - [ ] **Multi-agent:** compare handoff patterns (tool call, session, MCP); parallel sub-agents
 - [ ] **Protocols:** a full MCP client (also removes the Rider MCP limitation)
 - [ ] **Reliability:** timeouts, idempotency and resumable runs in the core
-- [ ] **Response cache (our own, MongoDB):** return a stored response for an exactly repeated request instead of calling
-      the model ($0, recorded as a cache hit in the ledger). Feasible, but not a replacement for F4: Anthropic's prompt
-      cache is on their servers and is what bills cached input at 0.1×; ours can only skip whole requests. Pays off where
-      requests repeat exactly (F16's summaries of the same output, F17's triage of a recurring error, re-running F18's
-      evals), hardly in the fix loop, whose context is new every round. Mongo fits: TTL indexes for expiry, the same
-      store as durable sessions, and vector search if a *semantic* cache (similar, not identical, requests) is tried
-      later, which needs a strict threshold and evals, since a near-miss returns a wrong answer
+- [ ] **Redis: the fast, short-lived layer.** A response cache: return the stored answer to an *exactly* repeated request
+      (key: a hash of model, messages, tools and settings) instead of calling the model, $0 and recorded as a cache hit
+      in the ledger, with Redis's own key expiry. Pays off where requests repeat exactly (F16's summaries of the same
+      output, F17's triage of a recurring error, re-running F18's evals), hardly in the fix loop, whose context is new
+      every round. Also the home for other hot, disposable state (the session architecture's *hot state*: a running
+      turn, locks, later rate limits). Not a replacement for F4: Anthropic's prompt cache is on their servers and is what
+      bills cached input at 0.1×; ours can only skip whole requests
+- [ ] **MongoDB: the durable layer.** Documents that must survive restarts: sessions and their transcripts (removes the
+      *sessions are in memory* limitation; the durable-sessions line under *Sessions and memory*), and long-term memory.
+      Its vector search can hold a later *semantic* cache (similar, not identical, requests) and retrieval, which need a
+      strict similarity threshold and evals, since a near-miss returns a wrong answer. Together with Redis this is the
+      session architecture's *storage by access pattern*
 - [ ] **Shipping:** a deploy pipeline for the Docker images, with the eval suite as a release gate
 - [ ] **Safety:** prompt-injection defences and red-team tests, output guardrails, rate limiting, an audit log
 - [ ] **Human in the loop:** approval policies per action and risk level
