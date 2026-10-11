@@ -20,10 +20,10 @@ a new skill file, and `CreateTool` writes a script-backed tool that waits for yo
 
 ```csharp
 // AgentEngine constructor (simplified)
-_tools.Add(AIFunctionFactory.Create(ExecuteSkill, nameof(ExecuteSkill)));
-AddPublicMethodsAsTools(new WorkspaceTools(WorkspaceRoot));
-AddPublicMethodsAsTools(new GitTools(WorkspaceRoot));
-AddPublicMethodsAsTools(new DotNetTools(WorkspaceRoot));
+_registry.Add(Function(_skillTools.ExecuteSkill, nameof(ExecuteSkill)));   // the engine's own tools, LF descriptions
+_registry.AddPublicMethods(new WorkspaceTools(WorkspaceRoot));            // ToolRegistry keeps them in name order
+_registry.AddPublicMethods(new GitTools(WorkspaceRoot));
+_registry.AddPublicMethods(new DotNetTools(WorkspaceRoot));
 // ... Python, PowerShell, Bash, Web; Paymo and DevOps only when their keys are set
 ```
 
@@ -60,7 +60,7 @@ await foreach (var update in engine.StreamPromptAsync(history, message, cancella
 **3. The model thinks and decides.** With thinking on, it first reasons (streamed to you), then either answers or calls
 one or more tools.
 
-**4. Tools run.** `FunctionInvokingChatClient` runs each call through `AgentEngine.LogAndInvokeAsync`, which logs it,
+**4. Tools run.** `FunctionInvokingChatClient` runs each call through `ToolCallGuards.InvokeAsync`, which logs it,
 runs it, and guards the result:
 - a result over 50,000 characters is summarised by a separate model call instead of filling the context;
 - a call cut off by the output limit is not run, and the model is told to write large content in chunks;
@@ -132,7 +132,7 @@ public sealed class MyTools
 }
 ```
 
-Register it in the `AgentEngine` constructor with `AddPublicMethodsAsTools(new MyTools())`, mention it in the relevant
+Register it in the `AgentEngine` constructor with `_registry.AddPublicMethods(new MyTools())`, mention it in the relevant
 skill file, and add tests in `tests/louis-agent.core.tests/Tools/MyToolset/`. Tool names must stay unique: a
 duplicate stops the engine at start-up.
 

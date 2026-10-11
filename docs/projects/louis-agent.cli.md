@@ -10,9 +10,9 @@ which also makes it the quickest host for trying a change to core.
 
 ## How it works
 
-`Program.cs` is 13 lines: `AgentHost.Build()`, then either `engine.RunSinglePromptAsync(args[0])` when a prompt is
-passed, or `engine.RunAsync()` for the interactive loop. The loop itself lives in `AgentEngine` (core), so it shares
-everything with the other hosts:
+`Program.cs` is 13 lines: `AgentHost.Build()`, then `ConsoleChat` runs either `RunSinglePromptAsync(args[0])` when a
+prompt is passed, or `RunAsync()` for the interactive loop. `ConsoleChat` only maps the engine's stream to the
+terminal; the turn itself is `AgentEngine.StreamPromptAsync` (core), shared with the other hosts:
 
 ```text
 You: What branch am I on?
@@ -46,8 +46,8 @@ The core settings ([Setup](../SETUP.md)); nothing CLI-specific.
 
 ## Extending it
 
-CLI behaviour (rendering, commands) lives in `AgentEngine.RunAsync` / `RunSinglePromptAsync` and `HandleUserCommand` in
-core. Keep `Program.cs` a bootstrap.
+Rendering lives in `ConsoleChat` (this project); commands (`/tools`, `/approve`, `/reject`, `/usage`) are core's
+`AgentEngine.HandleUserCommand`, shared with Rider and the API. Keep `Program.cs` a bootstrap.
 
 ## Tests
 

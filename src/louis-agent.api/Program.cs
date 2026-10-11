@@ -10,6 +10,7 @@ using LouisAgent.Api.Endpoints;
 using LouisAgent.Core.Pricing;
 using LouisAgent.Core.Tools.Workspace;
 using LouisAgent.Core.Hosting;
+using LouisAgent.Core.Guardrails;
 
 // HTTP version of the ACP server, which also serves the web app: every API reply is JSON, and a message's answer streams as Server-Sent Events shaped
 // like Claude's (message_start, content_block_start/delta/stop for thinking, text, tool_use and tool_result, message_stop).
@@ -18,7 +19,7 @@ var host = AgentHost.Build();
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton(host.Engine);
 builder.Services.AddSingleton<AgentSessions>();
-builder.Services.AddSingleton(new WorkspaceTools(host.Engine.WorkspaceRoot));
+builder.Services.AddSingleton(new WorkspaceBoundary(host.Engine.WorkspaceRoot));
 var app = builder.Build();
 
 // The agent can run shell commands and write files, so when AGENT_API_KEY is set every /sessions, /workspace and /git

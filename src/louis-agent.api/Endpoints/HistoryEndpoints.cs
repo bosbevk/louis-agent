@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using LouisAgent.Core.Agent;
 using static LouisAgent.Api.Endpoints.GitEndpoints;
 using LouisAgent.Core.Tools.Workspace;
+using LouisAgent.Core.Guardrails;
 
 namespace LouisAgent.Api.Endpoints;
 
@@ -177,7 +178,7 @@ internal static partial class HistoryEndpoints
         foreach (string section in Regex.Split(patch, "(?=^diff --git )", RegexOptions.Multiline))
         {
             var header = DiffHeader().Match(section);
-            if (!header.Success || !WorkspaceTools.IsSensitive(header.Groups[1].Value))
+            if (!header.Success || !SensitiveFiles.IsSensitive(header.Groups[1].Value))
             {
                 result.Append(section);
                 continue;

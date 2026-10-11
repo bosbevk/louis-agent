@@ -133,7 +133,7 @@ growing history every round, so smaller tasks are cheaper); make runs resumable 
       `git mv` so history follows, split `AgentEngine` along those concerns, tests mirror the source, and an
       architecture test (namespaces match folders, dependencies point one way). Its own branch and PR, with a plan;
       behaviour unchanged, so every test passes untouched apart from namespaces
-- [ ] **Split `AgentEngine`, right after the project layout** (its plan comes first): the loop, history and prompt in
+- [x] **Split `AgentEngine`, right after the project layout** (its plan comes first): the loop, history and prompt in
       `Agent/`, the tool registry beside it, and the tool-result guards, `ResolvePath`/`IsSensitive` and the SSRF check
       in `Guardrails/`. CL1 moves the class whole; this splits it. Behaviour unchanged
 - [ ] **Messages and logging, after F4, second of two cleanups** (the rule is in [docs/CLAUDE.md](docs/CLAUDE.md#messages-and-logging)): move
@@ -264,6 +264,10 @@ backlog item removes one, it says so.
 
 Newest first; details in the git history.
 
+- 2026-10-12 — **CL2 Split AgentEngine**: 1,078 lines become the engine (the turn loop, 360) and `ToolRegistry`,
+  `ToolCallGuards`, `SkillTools`, `AgentBuiltTools` in `Agent/`; pure checks in `Guardrails/` (`WorkspaceBoundary`,
+  `SensitiveFiles`, `SsrfGuard`); the console chat in the CLI. A golden file pins what the model is sent; it found that
+  the prompt and two descriptions took the checkout's line endings, now always LF
 - 2026-10-11 — **CL1 Project layout**: core in folders by concern (`Agent`, `Llm/{Name}Provider`, `Tools/{Toolset}`,
   `Skills`, `Usage`, `Pricing`, `Protocols/Mcp`, `Hosting`, `Config`, `Messages`, `Logging`), the namespace the folder
   path, one type per file; PascalCase namespaces in every project; the tests mirror the source; `ArchitectureTests`

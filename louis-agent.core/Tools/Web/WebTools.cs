@@ -2,9 +2,9 @@ namespace LouisAgent.Core.Tools.Web;
 
 using System.ComponentModel;
 using System.Net;
-using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
+using LouisAgent.Core.Guardrails;
 
 /// <summary>
 /// Web toolset: search through a pluggable <see cref="IWebSearchProvider"/> (Google, DuckDuckGo, or any injected engine)
@@ -30,7 +30,7 @@ public sealed partial class WebTools
     {
         _search = search ?? new DuckDuckGoSearchProvider();
         _resolve = resolve ?? ((host, ct) => Dns.GetHostAddressesAsync(host, ct));
-        _http = new HttpClient(handler ?? CreateGuardedHandler(), disposeHandler: true)
+        _http = new HttpClient(handler ?? SsrfGuard.CreateGuardedHandler(), disposeHandler: true)
         {
             Timeout = TimeSpan.FromSeconds(20),
             MaxResponseContentBufferSize = MaxResponseBytes,
@@ -171,7 +171,7 @@ public sealed partial class WebTools
     {
         for (int hop = 0; ; hop++)
         {
-            await EnsurePublicHostAsync(uri);
+            await SsrfGuard.EnsurePublicHostAsync(uri, _resolve);
             var response = await _http.SendAsync(new HttpRequestMessage(HttpMethod.Get, uri));
             if ((int)response.StatusCode is < 300 or >= 400 || response.Headers.Location is null) return (response, uri);
 
@@ -182,82 +182,6 @@ public sealed partial class WebTools
             uri = next;
         }
     }
-
-    private async Task EnsurePublicHostAsync(Uri uri)
-    {
-        if (uri.IsLoopback || uri.Host.Equals("localhost", StringComparison.OrdinalIgnoreCase))
-            throw new BlockedAddressException($"refusing to fetch {uri.Host}: local addresses are not allowed.");
-
-        IPAddress[] addresses = IPAddress.TryParse(uri.Host.Trim('[', ']'), out var literal)
-            ? [literal]
-            : await _resolve(uri.DnsSafeHost, CancellationToken.None);
-        if (addresses.Length == 0) throw new HttpRequestException($"could not resolve {uri.Host}");
-        if (addresses.FirstOrDefault(a => !IsPublicAddress(a)) is { } blocked)
-            throw new BlockedAddressException($"refusing to fetch {uri.Host}: it resolves to a private or local address ({blocked}).");
-    }
-
-    /// <summary>
-    /// True for globally routable unicast addresses. Rejects loopback, private (10/8, 172.16/12, 192.168/16),
-    /// carrier-grade NAT, link-local (incl. 169.254.169.254 cloud metadata), multicast, reserved and IPv6 local ranges.
-    /// </summary>
-    internal static bool IsPublicAddress(IPAddress address)
-    {
-        if (address.IsIPv4MappedToIPv6) address = address.MapToIPv4();
-        if (IPAddress.IsLoopback(address) || address.Equals(IPAddress.Any) || address.Equals(IPAddress.IPv6Any) ||
-            address.Equals(IPAddress.None))
-            return false;
-
-        if (address.AddressFamily == AddressFamily.InterNetwork)
-        {
-            byte[] b = address.GetAddressBytes();
-            return !(b[0] == 0 || b[0] == 10 || b[0] == 127 ||
-                     (b[0] == 100 && b[1] >= 64 && b[1] <= 127) ||
-                     (b[0] == 169 && b[1] == 254) ||
-                     (b[0] == 172 && b[1] >= 16 && b[1] <= 31) ||
-                     (b[0] == 192 && b[1] == 168) ||
-                     (b[0] == 192 && b[1] == 0 && b[2] == 0) ||
-                     (b[0] == 198 && (b[1] == 18 || b[1] == 19)) ||
-                     b[0] >= 224);
-        }
-
-        if (address.AddressFamily == AddressFamily.InterNetworkV6)
-        {
-            byte[] b = address.GetAddressBytes();
-            return !(address.IsIPv6LinkLocal || address.IsIPv6SiteLocal || address.IsIPv6Multicast ||
-                     (b[0] & 0xFE) == 0xFC); // fc00::/7 unique local
-        }
-
-        return false;
-    }
-
-    // Re-checks the address actually connected to, so DNS changing between the check and the request cannot bypass it.
-    private static SocketsHttpHandler CreateGuardedHandler() => new()
-    {
-        AllowAutoRedirect = false,
-        AutomaticDecompression = DecompressionMethods.All,
-        ConnectTimeout = TimeSpan.FromSeconds(10),
-        ConnectCallback = async (context, ct) =>
-        {
-            IPAddress[] addresses = IPAddress.TryParse(context.DnsEndPoint.Host, out var literal)
-                ? [literal]
-                : await Dns.GetHostAddressesAsync(context.DnsEndPoint.Host, ct);
-            var allowed = addresses.Where(IsPublicAddress).ToArray();
-            if (allowed.Length == 0)
-                throw new BlockedAddressException($"refusing to connect to {context.DnsEndPoint.Host}: private or local address.");
-
-            var socket = new Socket(SocketType.Stream, ProtocolType.Tcp) { NoDelay = true };
-            try
-            {
-                await socket.ConnectAsync(allowed, context.DnsEndPoint.Port, ct);
-                return new NetworkStream(socket, ownsSocket: true);
-            }
-            catch
-            {
-                socket.Dispose();
-                throw;
-            }
-        },
-    };
 
     /// <summary>Converts HTML to readable text: main content only, markdown-style headings, lists, links and code.</summary>
     internal static (string? Title, string Text) HtmlToText(string html, Uri baseUri)
@@ -304,7 +228,6 @@ public sealed partial class WebTools
         return (title, BlankLines().Replace(text, "\n\n").Trim());
     }
 
-    private sealed class BlockedAddressException(string message) : Exception(message);
 
     [GeneratedRegex(@"<title[^>]*>(.*?)</title>", RegexOptions.IgnoreCase | RegexOptions.Singleline)]
     private static partial Regex TitleTag();

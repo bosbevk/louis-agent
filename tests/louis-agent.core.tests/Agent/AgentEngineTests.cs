@@ -146,7 +146,7 @@ public class AgentEngineTests
     {
         string relative = $"big-{Guid.NewGuid():N}.txt";
         string path = Path.Combine(TestPaths.RepoRoot, relative);
-        File.WriteAllText(path, new string('x', AgentEngine.MaxToolResultChars + 1));
+        File.WriteAllText(path, new string('x', ToolCallGuards.MaxToolResultChars + 1));
         try
         {
             var client = new FakeChatClient(
@@ -181,12 +181,12 @@ public class AgentEngineTests
     {
         var client = new FakeChatClient(_ => throw new HttpRequestException("boom"));
         var engine = Engine(client);
-        string output = new('y', AgentEngine.MaxToolResultChars * 3);
+        string output = new('y', ToolCallGuards.MaxToolResultChars * 3);
 
-        string result = await engine.SummariseToolResultAsync("DiffUnstaged", "{}", output, "show my changes");
+        string result = await engine.Guards.SummariseToolResultAsync("DiffUnstaged", "{}", output, "show my changes");
 
         Assert.That(result, Does.Contain("too large").And.Contain("[truncated"));
-        Assert.That(result.Length, Is.LessThan(AgentEngine.MaxToolResultChars + 500));
+        Assert.That(result.Length, Is.LessThan(ToolCallGuards.MaxToolResultChars + 500));
     }
 
     [Test]
@@ -208,7 +208,7 @@ public class AgentEngineTests
 
         string answer = await engine.ProcessPromptAsync(engine.NewHistory(), "make me a web page");
 
-        Assert.That(answer, Is.EqualTo(AgentEngine.TruncatedCallMessage));
+        Assert.That(answer, Is.EqualTo(ToolCallGuards.TruncatedCallMessage));
         Assert.That(File.Exists(Path.Combine(TestPaths.RepoRoot, relative)), Is.False, "the partial call never ran");
     }
 
@@ -275,7 +275,7 @@ public class AgentEngineTests
         await foreach (var update in engine.StreamPromptAsync(engine.NewHistory(), "make me a web page"))
             results.AddRange(update.Contents.OfType<FunctionResultContent>());
 
-        Assert.That(results.Single().Result, Is.EqualTo(AgentEngine.TruncatedCallMessage));
+        Assert.That(results.Single().Result, Is.EqualTo(ToolCallGuards.TruncatedCallMessage));
         Assert.That(File.Exists(Path.Combine(TestPaths.RepoRoot, relative)), Is.False, "the partial call never ran");
     }
 

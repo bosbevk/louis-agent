@@ -1,6 +1,7 @@
 using System.Text;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Tools.Workspace;
+using LouisAgent.Core.Guardrails;
 
 namespace LouisAgent.Api.Endpoints;
 
@@ -24,7 +25,7 @@ internal static class WorkspaceEndpoints
 
     public static void MapWorkspace(this WebApplication app)
     {
-        app.MapGet("/workspace/entries", (string? path, WorkspaceTools workspace, AgentEngine engine) =>
+        app.MapGet("/workspace/entries", (string? path, WorkspaceBoundary workspace, AgentEngine engine) =>
         {
             if (Resolve(workspace, path ?? "", out string? fullPath) is { } invalid) return invalid;
             if (!Directory.Exists(fullPath))
@@ -38,12 +39,12 @@ internal static class WorkspaceEndpoints
             var files = directory.EnumerateFiles()
                 .Where(f => !f.Attributes.HasFlag(FileAttributes.ReparsePoint))
                 .OrderBy(f => f.Name, StringComparer.OrdinalIgnoreCase)
-                .Select(f => new { name = f.Name, path = Relative(engine, f.FullName), type = "file", size = (long?)f.Length, sensitive = WorkspaceTools.IsSensitive(f.FullName) });
+                .Select(f => new { name = f.Name, path = Relative(engine, f.FullName), type = "file", size = (long?)f.Length, sensitive = SensitiveFiles.IsSensitive(f.FullName) });
 
             return Results.Json(new { path = Relative(engine, fullPath!), entries = folders.Concat(files) });
         });
 
-        app.MapGet("/workspace/file", (string? path, WorkspaceTools workspace, AgentEngine engine) =>
+        app.MapGet("/workspace/file", (string? path, WorkspaceBoundary workspace, AgentEngine engine) =>
         {
             if (string.IsNullOrWhiteSpace(path))
                 return ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error", "Pass the file's workspace-relative 'path'.");
@@ -52,7 +53,7 @@ internal static class WorkspaceEndpoints
             var file = new FileInfo(fullPath!);
             if (!file.Exists)
                 return ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error", $"No file at '{path}'.");
-            if (WorkspaceTools.IsSensitive(file.FullName))
+            if (SensitiveFiles.IsSensitive(file.FullName))
                 return ApiErrors.Result(StatusCodes.Status403Forbidden, "permission_error", "Secret files (.env, keys, certificates) can't be opened.");
             if (file.Length > MaxFileBytes)
                 return ApiErrors.Result(StatusCodes.Status413PayloadTooLarge, "request_too_large", $"{file.Name} is larger than 1 MB.");
@@ -71,11 +72,11 @@ internal static class WorkspaceEndpoints
         });
     }
 
-    private static IResult? Resolve(WorkspaceTools workspace, string path, out string? fullPath)
+    private static IResult? Resolve(WorkspaceBoundary workspace, string path, out string? fullPath)
     {
         try
         {
-            fullPath = workspace.ResolvePath(path);
+            fullPath = workspace.Resolve(path);
             return null;
         }
         catch (ArgumentException ex)

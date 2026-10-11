@@ -59,7 +59,7 @@ public class AgentEngineUsageTests
     {
         string relative = $"big-{Guid.NewGuid():N}.txt";
         string path = Path.Combine(TestPaths.RepoRoot, relative);
-        File.WriteAllText(path, new string('x', AgentEngine.MaxToolResultChars + 1));
+        File.WriteAllText(path, new string('x', ToolCallGuards.MaxToolResultChars + 1));
         try
         {
             var sink = new ListUsageSink();

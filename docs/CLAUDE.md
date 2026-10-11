@@ -49,7 +49,9 @@ One design doc per project — purpose, structure, key types, settings, extensio
 
 ```
 louis-agent.core/             # Namespace = folder path (LouisAgent.Core.Tools.Web); see Project layout
-├── Agent/AgentEngine.cs      # Tools, system prompt, streaming turn loop, tool-result guards, /approve commands
+├── Agent/                    # AgentEngine: the turn loop, history and system prompt, a façade over the rest:
+│                             # ToolRegistry, ToolCallGuards (cut-off calls, oversized results), SkillTools, AgentBuiltTools
+├── Guardrails/               # WorkspaceBoundary, SensitiveFiles, SsrfGuard: pure safety checks (tools and API use them)
 ├── Hosting/                  # AgentHost (+ AgentHostContext): bootstrap for every host; RiderMcpToolDiscovery
 ├── Config/                   # LlmOptions (+ CacheLifetime), AgentOptions, EnvFile (finds config/, sets a .env line)
 ├── Messages/                 # ErrorMessage, LogMessage, ToolMessage, UserText ([Description] templates), MessageText
@@ -63,7 +65,7 @@ louis-agent.core/             # Namespace = folder path (LouisAgent.Core.Tools.W
 ├── Skills/                   # MarkdownSkillLoader ("## Skill:" procedures), the skill providers, SkillFiles
 ├── Tools/
 │   ├── ProcessRunner.cs      # Process runner: argument lists, no shell, timeouts
-│   ├── Workspace/            # Files; ResolvePath/IsSensitive are internal and reused by the API
+│   ├── Workspace/            # Files, inside the WorkspaceBoundary, never SensitiveFiles
 │   ├── Git/, DotNet/, Shell/ # GitTools; DotNetTools; BashTools, PowerShellTools, PythonTools
 │   ├── Web/                  # WebTools: WebSearch (Google / DuckDuckGo providers) and FetchUrl (SSRF-guarded)
 │   ├── Scripts/              # Agent-built tools (*.tool.md)
@@ -82,7 +84,7 @@ louis-agent.core/             # Namespace = folder path (LouisAgent.Core.Tools.W
                               # currency costs are shown in, from HOST_CULTURE (F14); the ledger keeps what was charged
 
 src/
-├── louis-agent.cli/          # Terminal host
+├── louis-agent.cli/          # Terminal host: ConsoleChat (the interactive loop and single-prompt mode)
 ├── louis-agent.acp-server/   # Rider (Agent Client Protocol over stdio)
 ├── louis-agent.api/          # Minimal API: sessions + SSE, /workspace, /git, /prices; serves the web app
 │   ├── Program.cs, AgentSessions.cs
@@ -126,7 +128,7 @@ docs/                         # This guide, features/ (planned work), plans/ (ap
    public string MyTool([Description("What the parameter is")] string input, int limit = 10) => "result";
    ```
 
-2. For a new class, register it in the `AgentEngine` constructor: `AddPublicMethodsAsTools(new MyTools(WorkspaceRoot));`
+2. For a new class, register it in the `AgentEngine` constructor: `_registry.AddPublicMethods(new MyTools(WorkspaceRoot));`
 3. Mention it in the relevant `Skills/*.md` so the model knows when to use it.
 4. Test it in `tests/louis-agent.core.tests/Tools/{Toolset}/`.
 
@@ -144,11 +146,11 @@ a change to one (a new provider, a new tool, a new guard) touches one folder:
 
 | Folder (core) | Concern |
 |---|---|
-| `Agent/` | The loop: turns, history, system prompt assembly, round limits, `/approve` |
+| `Agent/` | The loop: turns, history, system prompt, round limits; the tool registry, the tool-call guards that call the model (cut-off calls, oversized results summarised), the skill tools and the agent-built tools (`/approve`) |
 | `Llm/` + `Llm/{Name}Provider/` | The model: client factory, `IChatClient` middleware (thinking, caching, usage recording), one folder per provider (`AnthropicProvider/`: a folder named `Anthropic` would hide the SDK's own `Anthropic` namespace) |
 | `Tools/{Toolset}/` | What the model can do: one folder per toolset (`Workspace`, `Git`, `DotNet`, `Shell`, `Web`, `Scripts`, `Integrations/Paymo`, `Integrations/DevOps`); `ProcessRunner` beside them |
 | `Skills/` | Loading the markdown skills and personality into the prompt |
-| `Guardrails/` | Safety checks: path resolution, sensitive files, SSRF, tool-result size guards (filled by the `AgentEngine` split, next in the TODO) |
+| `Guardrails/` | Pure safety checks, no model: the workspace boundary, sensitive files, the SSRF guard (the guards that call a model are in `Agent/`) |
 | `Usage/` and `Pricing/` | The ledger (records, sinks, scopes, reports); prices, cost, rates and the display currency |
 | `Protocols/Mcp/` | Talking to other agents and tools over MCP |
 | `Hosting/` | Bootstrap shared by every host: `AgentHost`, and wiring done at start-up (Rider's MCP tools) |
@@ -253,6 +255,11 @@ dotnet test tests/louis-agent.core.tests --filter "FullyQualifiedName~AgentEngin
 dotnet test tests/louis-agent.orchestrator.tests
 dotnet test louis-agent-solution.sln          # everything, including the order-service sample's tests
 ```
+
+**What the model is sent is pinned by a golden file:** `ModelRequestSnapshotTests` compares the tools, the system
+prompt and the engine's fixed texts with `Agent/ModelRequestSnapshot.json`. A deliberate change (a new tool, an edited
+description or skill file) regenerates it: `LOUIS_UPDATE_GOLDEN=1 dotnet test tests/louis-agent.core.tests --filter
+ModelRequestSnapshotTests`, then review the file's diff before committing.
 
 Tests use `FakeChatClient` (a scripted `IChatClient` that also streams) and `StubHandler` for HTTP — no network, model or
 Docker. A few tests skip themselves when git, pip or the network isn't available. The agent runs tests on Linux inside
