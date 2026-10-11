@@ -2,6 +2,7 @@ namespace LouisAgent.Core.Pricing;
 
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using LouisAgent.Core.Messages;
 
 /// <summary>
 /// The operator's price table (<c>config/prices.json</c>, Usage spec §4.2): prices per million tokens, matched to a
@@ -59,18 +60,18 @@ public sealed class PriceTable
         }
         catch (JsonException ex)
         {
-            throw new InvalidDataException($"Price table {source} is not valid: {ex.Message}", ex);
+            throw new InvalidDataException(MessageText.Format(ErrorMessage.PriceTableNotValid, new { Source = source, Reason = ex.Message }), ex);
         }
 
-        if (table is null) throw new InvalidDataException($"Price table {source} is empty.");
+        if (table is null) throw new InvalidDataException(MessageText.Format(ErrorMessage.PriceTableEmpty, new { Source = source }));
         foreach (var (model, price) in table.Models)
         {
             IEnumerable<(string Name, decimal Value)> prices = price.All().Concat(
                 price.LongPrompt?.All().Select(p => (Name: $"long_prompt.{p.Name}", p.Value)) ?? []);
             if (prices.FirstOrDefault(p => p.Value < 0) is { Name: { } negative })
-                throw new InvalidDataException($"Price table {source}: '{model}' has a negative {negative} price.");
+                throw new InvalidDataException(MessageText.Format(ErrorMessage.PriceTableNegativePrice, new { Source = source, Model = model, Price = negative }));
             if (price.LongPrompt is { AboveTokens: <= 0 })
-                throw new InvalidDataException($"Price table {source}: '{model}' long_prompt.above_tokens must be positive.");
+                throw new InvalidDataException(MessageText.Format(ErrorMessage.PriceTableLongPromptNotPositive, new { Source = source, Model = model }));
         }
 
         return table;

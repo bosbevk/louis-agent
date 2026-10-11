@@ -3,6 +3,7 @@ namespace LouisAgent.Core.Pricing;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
+using LouisAgent.Core.Messages;
 
 /// <summary>
 /// Exchange rates for showing costs in another currency (F14), in louis-agent's own <c>rates.json</c> format, the only
@@ -79,18 +80,18 @@ public sealed partial class ExchangeRates
         }
         catch (JsonException ex)
         {
-            throw new InvalidDataException($"Exchange rates {source} are not in rates.json format: {ex.Message}", ex);
+            throw new InvalidDataException(MessageText.Format(ErrorMessage.RatesNotRatesJson, new { Source = source, Reason = ex.Message }), ex);
         }
 
-        if (rates is null) throw new InvalidDataException($"Exchange rates {source} are empty.");
+        if (rates is null) throw new InvalidDataException(MessageText.Format(ErrorMessage.RatesEmpty, new { Source = source }));
         if (!CurrencyCode().IsMatch(rates.Base))
-            throw new InvalidDataException($"Exchange rates {source}: base '{rates.Base}' is not a currency code.");
+            throw new InvalidDataException(MessageText.Format(ErrorMessage.RatesBaseNotACurrency, new { Source = source, rates.Base }));
         foreach (var (code, rate) in rates.Rates)
         {
             if (!CurrencyCode().IsMatch(code))
-                throw new InvalidDataException($"Exchange rates {source}: '{code}' is not a currency code.");
+                throw new InvalidDataException(MessageText.Format(ErrorMessage.RatesCodeNotACurrency, new { Source = source, Code = code }));
             if (rate <= 0)
-                throw new InvalidDataException($"Exchange rates {source}: the {code} rate must be positive.");
+                throw new InvalidDataException(MessageText.Format(ErrorMessage.RateNotPositive, new { Source = source, Code = code }));
         }
 
         return rates;

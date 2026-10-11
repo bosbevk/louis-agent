@@ -26,4 +26,49 @@ public enum ErrorMessage
 
     [Description("--cache-gaps needs a file: --cache-gaps logs/usage-2026-10.jsonl")]
     CacheGapsNeedsFile,
+
+    [Description("Unknown LLM_THINKING '{Value}'. Use off, low, medium or high.")]
+    UnknownThinking,
+
+    [Description("'{Key}' is not a setting name.")]
+    NotASettingName,
+
+    [Description("A setting's value is one line.")]
+    SettingValueNotOneLine,
+
+    [Description("Exchange rates {Source} are not in rates.json format: {Reason}")]
+    RatesNotRatesJson,
+
+    [Description("Exchange rates {Source} are empty.")]
+    RatesEmpty,
+
+    [Description("Exchange rates {Source}: base '{Base}' is not a currency code.")]
+    RatesBaseNotACurrency,
+
+    [Description("Exchange rates {Source}: '{Code}' is not a currency code.")]
+    RatesCodeNotACurrency,
+
+    [Description("Exchange rates {Source}: the {Code} rate must be positive.")]
+    RateNotPositive,
+
+    [Description("Frankfurter rates {Source}: amount must be positive.")]
+    FrankfurterAmountNotPositive,
+
+    [Description("Frankfurter rates {Source} are not in Frankfurter's format: {Reason}")]
+    FrankfurterNotItsFormat,
+
+    [Description("Price table {Source} is not valid: {Reason}")]
+    PriceTableNotValid,
+
+    [Description("Price table {Source} is empty.")]
+    PriceTableEmpty,
+
+    [Description("Price table {Source}: '{Model}' has a negative {Price} price.")]
+    PriceTableNegativePrice,
+
+    [Description("Price table {Source}: '{Model}' long_prompt.above_tokens must be positive.")]
+    PriceTableLongPromptNotPositive,
+
+    [Description("{Path} line {Number} is not a usage record: {Reason}")]
+    NotAUsageRecord,
 }

@@ -1,8 +1,14 @@
 namespace LouisAgent.Core.Config;
 
+using LouisAgent.Core.Logging;
+using LouisAgent.Core.Messages;
+using Microsoft.Extensions.Logging;
+
 /// <summary>Agent runtime settings, resolved once at startup instead of read from the environment inside core.</summary>
 public sealed class AgentOptions
 {
+    private static readonly ILogger Log = AgentLogging.For<AgentOptions>();
+
     public string WorkspaceRoot { get; set; } = Environment.CurrentDirectory;
 
     /// <summary>Directory searched for *-skills.md and default.md; null means the working dir, then /app.</summary>
@@ -130,9 +136,9 @@ public sealed class AgentOptions
         else if (FindRepositoryRoot(Environment.CurrentDirectory) is { } repoRoot)
         {
             options.WorkspaceRoot = repoRoot;
-            Console.Error.WriteLine($"[INFO] WORKSPACE_ROOT not set, using repository root: {repoRoot}");
+            Log.Log(LogLevel.Information, LogMessage.WorkspaceRootFromRepository, new { Path = repoRoot });
         }
-        else Console.Error.WriteLine($"[WARN] WORKSPACE_ROOT not set, using current directory: {options.WorkspaceRoot}");
+        else Log.Log(LogLevel.Warning, LogMessage.WorkspaceRootFromCurrentDirectory, new { Path = options.WorkspaceRoot });
         options.WorkspaceRoot = Path.GetFullPath(options.WorkspaceRoot);
         return options;
     }

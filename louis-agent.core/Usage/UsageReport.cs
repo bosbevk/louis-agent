@@ -2,6 +2,7 @@ namespace LouisAgent.Core.Usage;
 
 using System.Text.Json;
 using LouisAgent.Core.Pricing;
+using LouisAgent.Core.Messages;
 
 /// <summary>Reads a usage ledger back, prices records written before F2, and totals them (the M1 baseline; F3 and F11 later).</summary>
 public static class UsageReport
@@ -22,7 +23,7 @@ public static class UsageReport
             }
             catch (JsonException ex)
             {
-                throw new InvalidDataException($"{path} line {number} is not a usage record: {ex.Message}", ex);
+                throw new InvalidDataException(MessageText.Format(ErrorMessage.NotAUsageRecord, new { Path = path, Number = number, Reason = ex.Message }), ex);
             }
 
             if (record is not null) yield return record;

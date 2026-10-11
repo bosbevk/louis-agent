@@ -2,6 +2,9 @@ namespace LouisAgent.Core.Usage;
 
 using System.Text;
 using System.Text.Json;
+using LouisAgent.Core.Logging;
+using LouisAgent.Core.Messages;
+using Microsoft.Extensions.Logging;
 
 /// <summary>
 /// Appends each record as one JSON line to <c>{directory}/usage-YYYY-MM.jsonl</c> (monthly, append-only), and raises
@@ -14,6 +17,8 @@ using System.Text.Json;
 /// </remarks>
 public sealed class JsonlUsageSink(string directory) : IUsageSink
 {
+    private static readonly ILogger Log = AgentLogging.For<JsonlUsageSink>();
+
     // The usage spec's field names: duration_ms, cache_write, ... Nulls are written, since null means "not reported".
     internal static readonly JsonSerializerOptions Json = new() { PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower };
 
@@ -38,7 +43,7 @@ public sealed class JsonlUsageSink(string directory) : IUsageSink
         }
         catch (Exception ex)
         {
-            Console.Error.WriteLine($"[WARN] Could not write {fileName}: {ex.Message}");
+            Log.Log(LogLevel.Warning, LogMessage.LedgerWriteFailed, new { File = fileName, Reason = ex.Message });
         }
 
         UsageRecorded?.Invoke(record);

@@ -32,4 +32,46 @@ public enum UserText
 
     [Description("  no price for {Model}: no recommendation")]
     CacheGapsNoPrice,
+
+    [Description("turn: {Usage}")]
+    UsageTurn,
+
+    [Description("{Line} · session {Cost}")]
+    UsageWithSession,
+
+    [Description("No model requests in this session yet.")]
+    UsageNoneYet,
+
+    [Description("Session usage: {Usage}")]
+    UsageSessionHeading,
+
+    [Description("- {Purpose}: {Usage}")]
+    UsagePurpose,
+
+    [Description("- tokens: {Input} input · {CacheWrite} cache write · {CacheRead} cache read · {Output} output")]
+    UsageTokensByKind,
+
+    [Description("- rate: {Rate} on {AsOf} · {Charged} charged")]
+    UsageRate,
+
+    [Description("- price unknown for {Requests}: the model isn't in the price table")]
+    UsageUnpriced,
+
+    [Description("{Requests} · {Tokens} tokens{Cached} · {Cost}")]
+    UsageTotal,
+
+    [Description(" ({Tokens} cached)")]
+    UsageCached,
+
+    [Description("price unknown")]
+    UsagePriceUnknown,
+
+    [Description("{Amount} + {Unpriced} unpriced")]
+    UsagePartlyPriced,
+
+    [Description("1 request")]
+    UsageOneRequest,
+
+    [Description("{Count} requests")]
+    UsageRequests,
 }

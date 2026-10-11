@@ -14,4 +14,25 @@ public enum LogMessage
 
     [Description("{Tool} was cut off by the output limit ({MaxOutputTokens} tokens); arguments {Arguments}")]
     TruncatedToolCall,
+
+    [Description("WORKSPACE_ROOT not set, using repository root: {Path}")]
+    WorkspaceRootFromRepository,
+
+    [Description("WORKSPACE_ROOT not set, using current directory: {Path}")]
+    WorkspaceRootFromCurrentDirectory,
+
+    [Description("Display currency: no {Code} rate (from {Source}); costs are shown in {Base}.")]
+    DisplayCurrencyHasNoRate,
+
+    [Description("DISPLAY_CURRENCY '{Code}' is not a currency code (e.g. ZAR); ignoring it.")]
+    DisplayCurrencyNotACode,
+
+    [Description("{Setting} '{Name}' names no region (use a specific culture such as en-ZA); ignoring it.")]
+    CultureHasNoRegion,
+
+    [Description("{Setting} '{Name}' is not a culture .NET knows; ignoring it.")]
+    CultureUnknown,
+
+    [Description("Could not write {File}: {Reason}")]
+    LedgerWriteFailed,
 }
