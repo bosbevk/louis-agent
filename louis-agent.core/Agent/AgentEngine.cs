@@ -62,7 +62,7 @@ public partial class AgentEngine
     private readonly IChatClient _chatClient;
     private readonly IChatClient _innerChatClient;
     private readonly AgentOptions _options;
-    private readonly List<AITool> _tools = [];
+    private readonly ToolRegistry _registry = new();
 
     /// <summary>Combined default instructions and skill documentation used as the system prompt.</summary>
     public string SkillDocumentation { get; private set; }
@@ -80,7 +80,7 @@ public partial class AgentEngine
     /// Hosts give it to their <see cref="UsageSession"/>s.
     /// </summary>
     public DisplayCurrency? Display { get; set; }
-    public IReadOnlyList<AITool> Tools => _tools;
+    public IReadOnlyList<AITool> Tools => _registry.Live;
 
     /// <summary>The currently loaded skills (refreshed by <see cref="ReloadSkills"/>).</summary>
     public IReadOnlyCollection<MarkdownSkillLoader.SkillDef> Skills => _skills.Values;
@@ -152,31 +152,31 @@ public partial class AgentEngine
             return;
         }
 
-        AddTool(Function(ExecuteSkill, nameof(ExecuteSkill)));
+        _registry.Add(Function(ExecuteSkill, nameof(ExecuteSkill)));
         if (toolsets is not null)
         {
-            foreach (object toolset in toolsets) AddPublicMethodsAsTools(toolset);
+            foreach (object toolset in toolsets) _registry.AddPublicMethods(toolset);
             return;
         }
 
-        AddTool(Function(CreateSkillFile, nameof(CreateSkillFile)));
-        AddTool(Function(ReloadSkills, nameof(ReloadSkills)));
-        AddTool(Function(CreateTool, nameof(CreateTool)));
-        AddTool(Function(ListAgentTools, nameof(ListAgentTools)));
-        AddPublicMethodsAsTools(new WorkspaceTools(WorkspaceRoot));
-        AddPublicMethodsAsTools(new GitTools(WorkspaceRoot));
-        AddPublicMethodsAsTools(new DotNetTools(WorkspaceRoot));
-        AddPublicMethodsAsTools(_python);
-        AddPublicMethodsAsTools(_powerShell);
-        AddPublicMethodsAsTools(_bash);
-        AddPublicMethodsAsTools(new WebTools(webSearch ?? WebSearchProviderFactory.Create(options)));
+        _registry.Add(Function(CreateSkillFile, nameof(CreateSkillFile)));
+        _registry.Add(Function(ReloadSkills, nameof(ReloadSkills)));
+        _registry.Add(Function(CreateTool, nameof(CreateTool)));
+        _registry.Add(Function(ListAgentTools, nameof(ListAgentTools)));
+        _registry.AddPublicMethods(new WorkspaceTools(WorkspaceRoot));
+        _registry.AddPublicMethods(new GitTools(WorkspaceRoot));
+        _registry.AddPublicMethods(new DotNetTools(WorkspaceRoot));
+        _registry.AddPublicMethods(_python);
+        _registry.AddPublicMethods(_powerShell);
+        _registry.AddPublicMethods(_bash);
+        _registry.AddPublicMethods(new WebTools(webSearch ?? WebSearchProviderFactory.Create(options)));
         if (string.IsNullOrWhiteSpace(options.PaymoApiKey))
         {
             Console.Error.WriteLine("[WARN] PAYMO_API_KEY not set; Paymo tool disabled.");
         }
         else
         {
-            AddPublicMethodsAsTools(new PaymoTools(options));
+            _registry.AddPublicMethods(new PaymoTools(options));
         }
 
         if (string.IsNullOrWhiteSpace(options.DevopsApiKey))
@@ -189,7 +189,7 @@ public partial class AgentEngine
         }
         else
         {
-            AddPublicMethodsAsTools(new DevOpsTools(options.DevopsApiKey, options.DevopsOrganization, options.DevopsProject, options.DevopsTeam));
+            _registry.AddPublicMethods(new DevOpsTools(options.DevopsApiKey, options.DevopsOrganization, options.DevopsProject, options.DevopsTeam));
         }
     }
 
@@ -237,10 +237,10 @@ public partial class AgentEngine
     internal ChatOptions? KeepToolsOnFinalRequest(ChatOptions? options)
     {
         // Every request of a turn carries the tools (BeginTurn), so one without them is the loop's final request.
-        if (_tools.Count == 0 || options?.Tools is { Count: > 0 }) return options;
+        if (_registry.Count == 0 || options?.Tools is { Count: > 0 }) return options;
 
         ChatOptions final = options?.Clone() ?? new ChatOptions();
-        final.Tools = _tools;
+        final.Tools = _registry.Live;
         final.ToolMode = ChatToolMode.None;
         return final;
     }
@@ -331,30 +331,6 @@ public partial class AgentEngine
         return truncated;
     }
 
-    private static readonly Comparer<AITool> ByName = Comparer<AITool>.Create((a, b) => string.CompareOrdinal(a.Name, b.Name));
-
-    /// <summary>
-    /// Adds a tool at its place in name order (ordinal), so the tool list, and with it the start of every request, is the
-    /// same bytes from one run to the next (F4: the prompt cache is keyed by the exact prefix, and reflection's method
-    /// order isn't guaranteed). A tool added later (an agent-built one) still changes the list, as any change must.
-    /// Tool names must be unique across all toolsets: a second tool with a name already in the list throws.
-    /// </summary>
-    private void AddTool(AITool tool)
-    {
-        int at = _tools.BinarySearch(tool, ByName);
-        if (at >= 0)
-            throw new InvalidOperationException(MessageText.Format(ErrorMessage.DuplicateToolName, new { tool.Name }));
-        _tools.Insert(~at, tool);
-    }
-
-    private void AddPublicMethodsAsTools(object target)
-    {
-        foreach (MethodInfo method in target.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly))
-        {
-            AddTool(AIFunctionFactory.Create(method, target));
-        }
-    }
-
     /// <summary>
     /// Register a tool discovered from an external source (e.g., Rider MCP).
     /// Currently logs the discovery; full invocation requires MCP protocol implementation.
@@ -368,16 +344,7 @@ public partial class AgentEngine
             return false;
         }
 
-        if (_tools.Any(t => t.Name == name))
-        {
-            Console.Error.WriteLine($"[MCP] Tool '{name}' already registered; skipping");
-            return false;
-        }
-
-        // Log discovered tool for informational purposes
-        // Full MCP tool invocation would require a complete MCP protocol client
-        Console.Error.WriteLine($"[MCP] Discovered tool from Rider: {name} - {description}");
-        return true;
+        return _registry.RegisterDiscovered(name, description);
     }
 
     /// <summary>Run the interactive chat loop.</summary>
@@ -626,7 +593,7 @@ public partial class AgentEngine
             chatOptions.Reasoning = new ReasoningOptions { Effort = effort, Output = ReasoningOutput.Full };
         if (SupportsTools)
         {
-            chatOptions.Tools = _tools;
+            chatOptions.Tools = _registry.Live;
             chatOptions.ToolMode = ChatToolMode.Auto;
         }
 
@@ -849,7 +816,7 @@ public partial class AgentEngine
             if (existing.Approved) return $"Error: an approved tool named '{parsed.Name}' already exists; choose another name.";
             if (!overwrite) return $"Error: a pending tool named '{parsed.Name}' already exists. Pass overwrite=true to replace it.";
         }
-        else if (_tools.Any(t => t.Name.Equals(parsed.Name, StringComparison.OrdinalIgnoreCase)))
+        else if (_registry.Contains(parsed.Name, StringComparison.OrdinalIgnoreCase))
         {
             return $"Error: '{parsed.Name}' is the name of a built-in tool; choose another name.";
         }
@@ -903,7 +870,7 @@ public partial class AgentEngine
                 continue;
             }
 
-            if (_tools.Any(t => t.Name.Equals(parsed.Name, StringComparison.OrdinalIgnoreCase)))
+            if (_registry.Contains(parsed.Name, StringComparison.OrdinalIgnoreCase))
             {
                 Console.Error.WriteLine($"[WARN] Skipping tool {Path.GetFileName(file)}: name '{parsed.Name}' is already in use.");
                 continue;
@@ -963,7 +930,7 @@ public partial class AgentEngine
             tool.Approved = true;
             ToolsChanged?.Invoke();
         }
-        else if (SupportsTools && !_tools.Any(t => t.Name.Equals(parsed.Name, StringComparison.OrdinalIgnoreCase)))
+        else if (SupportsTools && !_registry.Contains(parsed.Name, StringComparison.OrdinalIgnoreCase))
             RegisterScriptTool(parsed, approved: true);
 
         return $"Approved '{parsed.Name}'. Saved to {approvedPath}; it will load in every future session.";
@@ -982,7 +949,7 @@ public partial class AgentEngine
         if (wasActive)
         {
             _scriptTools.Remove(name);
-            _tools.Remove(tool!);
+            _registry.Remove(tool!);
             ToolsChanged?.Invoke();
         }
 
@@ -993,11 +960,11 @@ public partial class AgentEngine
 
     private void RegisterScriptTool(ScriptToolDefinition definition, bool approved)
     {
-        if (_scriptTools.Remove(definition.Name, out var previous)) _tools.Remove(previous);
+        if (_scriptTools.Remove(definition.Name, out var previous)) _registry.Remove(previous);
 
         var tool = new ScriptTool(definition, approved, RunScriptTool);
         _scriptTools[definition.Name] = tool;
-        AddTool(tool);
+        _registry.Add(tool);
         ToolsChanged?.Invoke();
     }
 
