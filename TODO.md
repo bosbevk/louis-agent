@@ -33,6 +33,9 @@ its own.
 
 **M2 — Cheaper:** stop paying full price for the same tokens.
 
+- [ ] [F15 Model limits](docs/features/F15-model-limits.md) — each model's context window, output limit and cache
+      minimum beside its prices, and each feature's target per model (F4's saving, F9's compaction point, F13's
+      budget) instead of one number for all models
 - [ ] [F4 Prompt caching](docs/features/F04-prompt-caching.md) — cache the ~26,000-token prefix every request re-sends.
       *Replaces:* "Wire up Anthropic prompt caching on the system prompt"
 - [ ] [F5 Toolset profiles](docs/features/F05-toolset-profiles.md) — load only the tools a session needs (the demo:

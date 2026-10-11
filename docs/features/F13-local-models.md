@@ -1,6 +1,7 @@
 # F13 · Local models: fit every request into a small context window
 
-> **Status:** planned · **Milestone:** Local · **Depends on:** F1, F5
+> **Status:** planned · **Milestone:** Local · **Depends on:** F1, F5, [F15](F15-model-limits.md) (the model's window,
+> `num_ctx`, sets the budget)
 >
 > **Spec:** [Optimisation §C](../specs/RESPONSE_OPTIMISATION.md) (toolsets) · [MODELS.md](../MODELS.md) (Ollama)
 >

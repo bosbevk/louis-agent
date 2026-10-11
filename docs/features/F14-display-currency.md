@@ -133,4 +133,4 @@ Pricing in another currency (the price table stays in the bill's currency); budg
 in the table's currency; showing a budget converted comes for free from S1).
 
 ---
-[Features](README.md) · Previous: [F13 Local models](F13-local-models.md)
+[Features](README.md) · Previous: [F13 Local models](F13-local-models.md) · Next: [F15 Model limits](F15-model-limits.md)

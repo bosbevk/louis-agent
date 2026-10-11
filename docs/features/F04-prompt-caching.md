@@ -1,6 +1,7 @@
 # F4 · Prompt caching (Anthropic)
 
-> **Status:** planned · **Milestone:** M2 · **Depends on:** F1
+> **Status:** planned · **Milestone:** M2 · **Depends on:** F1, [F15](F15-model-limits.md) (each model's cache minimum
+> and its own saving target, from its cache prices)
 >
 > **Spec:** [Optimisation §B](../specs/RESPONSE_OPTIMISATION.md)
 >

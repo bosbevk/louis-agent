@@ -1,6 +1,7 @@
 # F9 · Bounded history: clear stale tool results, compact old turns
 
-> **Status:** planned · **Milestone:** M4 · **Depends on:** F1, F4
+> **Status:** planned · **Milestone:** M4 · **Depends on:** F1, F4, [F15](F15-model-limits.md) (compact at a share of
+> each model's window instead of a fixed 120,000)
 >
 > **Spec:** [Optimisation §D](../specs/RESPONSE_OPTIMISATION.md) · [Session architecture §2](../specs/SESSION_ARCHITECTURE.md)
 >
