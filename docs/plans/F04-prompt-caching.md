@@ -1,6 +1,6 @@
 # Plan: F4 Prompt caching
 
-> **For:** [F4 Prompt caching](../features/F04-prompt-caching.md) · **Approved:** 2026-10-11 (option B for marker 2)
+> **For:** [F4 Prompt caching](../features/F04-prompt-caching.md) · **Approved:** 2026-10-11 (option B for marker 2; louis-agent's chat turns only)
 
 ## Context
 
@@ -40,11 +40,23 @@ F4 doesn't wait for F15: Haiku 5.5's cache minimum is 512 tokens and our prefix 
    - *Rejected:* **A**, the doc's explicit marker on a clone of the newest message's last block. Full control, but the
      clone is the risky part (the doc's own Risks table) and it's more code to test.
    - *Fallback:* if the spike (step 1) shows the adapter drops the top-level field, use A and say so in the feature doc.
+   - The lifetime is 5 minutes by default: requests in a fix loop start seconds apart and every read resets the timer,
+     so the 1-hour lifetime (2× to write) would buy nothing there.
    - Marker 1 stays explicit on the system prompt either way, so the expensive prefix has a guaranteed read point that is
      also shared **across sessions** (every demo fix opens a new session with the same tools and prompt).
 3. **Tool order** is sorted, as the doc says. Note: any change to `tools` invalidates the whole cache wherever the tool
    lands, so sorting is about the same order across processes and restarts, not about where new tools go.
-4. **FX4 stays separate.** Its triggers (CreateTool, `/approve`, `/reject`, a skill reload, the API's shared tool list)
+4. **Scope: louis-agent's own chat turns only** (decided 2026-10-11). The orchestrator's triage engine and the
+   tool-result summariser are not cached in F4: each gets its caching, and its choice of cache lifetime, in its own
+   feature (TODO backlog: *Orchestrator agent* and *Summariser*), built when those are designed properly.
+   - The orchestrator builds its engine from the same factory and reads the same `config/.env.anthropic`, so the demo's
+     orchestrator service sets `LLM_CACHE=off` in `docker-compose.demo.yml`.
+   - The summariser calls the engine's own client, so the caching client skips requests made in a `summary`
+     `UsageScope`. This matters for cost, not just scope: a summary request sends up to `MaxSummaryInputChars` of tool
+     output, which is over 512 tokens, so the automatic marker would write it at 1.25× and nothing would ever read it.
+   - Effect on the benchmark: triage was about 5% of the short demo's cost ($0.013 of $0.25), so leaving it uncached
+     barely moves the comparison with M1. The report gives louis-agent's cost and the run total separately.
+5. **FX4 stays separate.** Its triggers (CreateTool, `/approve`, `/reject`, a skill reload, the API's shared tool list)
    break the cache as well as the thinking signatures, but the demo hits none of them, so F4's measurement is valid
    without it. Recommendation: build FX4 right after F4, before F5 (F5 also gives sessions their own tool lists).
 
@@ -65,12 +77,12 @@ Branch `feature/f4-prompt-caching` off `main`.
 4. **`AnthropicCachingChatClient`.** A `DelegatingChatClient` in `providers/`: marker 1 on the system text, and the
    top-level `cache_control` for the conversation. *Tests (recording fake):* the system marker and the top-level field
    carry the same TTL (a 1-hour entry may not follow a 5-minute one); no message after the system prompt gets a marker;
-   the caller's message list and messages are unchanged afterwards; a request with no system message still works (the
-   summariser's short prompt is under 512 tokens and simply won't cache). *Concept:* breakpoints, render order, the
+   the caller's message list and messages are unchanged afterwards; a request with no system message still works; a
+   request in a `summary` scope gets no marker and no top-level field. *Concept:* breakpoints, render order, the
    4-marker limit, automatic vs explicit placement. *Skill:* #13, #7 context engineering.
 5. **Factory wiring.** `LlmClientFactory` adds the client only for `LLM_PROVIDER=anthropic` with `LLM_CACHE=on`.
-   *Tests:* Ollama and OpenAI-compatible clients unchanged; caching off leaves Anthropic unchanged. The orchestrator's own
-   engine gets caching too, since it uses the same factory. *Concept:* provider-neutral core. *Skill:* #1.
+   *Tests:* Ollama and OpenAI-compatible clients unchanged; caching off leaves Anthropic unchanged. The demo's
+   orchestrator service gets `LLM_CACHE=off` (design point 4). *Concept:* provider-neutral core. *Skill:* #1.
 6. **Price writes at their lifetime (F2).** The record carries the TTL the request asked for; `CostCalculator` uses
    `cache_write_1h` for 1-hour writes (today it always uses 5 min). *Tests:* the cost of a 1-hour write; a 5-minute one
    unchanged; old records without a TTL priced as before. *Concept:* write premium and break-even. *Skill:* #13.
@@ -78,8 +90,8 @@ Branch `feature/f4-prompt-caching` off `main`.
    second request's `cache_read` is at least the prefix (F4-S1), and each later round reads the round before (F4-S2).
    If `cache_read` is 0, diff two consecutive request bodies before anything else.
 8. **Benchmark (needs your go-ahead; the M1 run cost $0.66, this one should cost less).** The full demo with caching on.
-   Compare with M1: run cost, input cost, cost per fix, cache-hit rate, writes vs reads per round and on the "Continue
-   the fix…" messages, and **10/10 fixes confirmed**. Targets: input cost ≥ 60% lower (F4's *Done when*) and about
+   Compare with M1, for louis-agent and for the whole run: run cost, input cost, cost per fix, cache-hit rate, writes
+   vs reads per round and on the "Continue the fix…" messages, and **10/10 fixes confirmed**. Targets: input cost ≥ 60% lower (F4's *Done when*) and about
    −80% on the prefix per fix (the write-up's target). Record the numbers in the features README.
 9. **Docs and finish.** MODELS.md (caching, TTL), SETUP settings, the spec's breakpoint table and implementation map,
    F4 status and the TODO tick, GOAL.md's map; extend the skill-13 write-up with the before/after, which is what makes

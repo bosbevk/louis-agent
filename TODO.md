@@ -185,6 +185,10 @@ feature when its turn comes; remove its line here and update the map's *Missing*
 - [ ] **Agent loop:** explicit planning, a self-check before answering, stop conditions beyond a round count
 - [ ] **Memory and retrieval:** embeddings, a vector store, retrieval over code and past sessions, measured
 - [ ] **Multi-agent:** compare handoff patterns (tool call, session, MCP); parallel sub-agents
+- [ ] **Orchestrator agent:** design the orchestrator as a proper agent of its own, including its prompt caching and
+      cache lifetime (left out of F4 on purpose: [plan](docs/plans/F04-prompt-caching.md), design point 4)
+- [ ] **Summariser:** a proper summariser for oversized tool results (and later F9's compaction), with its own prompt,
+      model, prompt caching and cache lifetime (left out of F4 on purpose, as above)
 - [ ] **Protocols:** a full MCP client (also removes the Rider MCP limitation)
 - [ ] **Reliability:** timeouts, idempotency and resumable runs in the core
 - [ ] **Shipping:** a deploy pipeline for the Docker images, with the eval suite as a release gate
