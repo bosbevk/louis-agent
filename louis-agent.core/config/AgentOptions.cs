@@ -79,6 +79,16 @@ public sealed class AgentOptions
     /// <summary>RATES_FILE: the fallback rates, in our rates.json format; null means config/rates.json, found like config/.env.</summary>
     public string? RatesFile { get; set; }
 
+    /// <summary>
+    /// HOST_CULTURE: the PC's Windows culture (e.g. en-ZA), whose region decides the currency costs are shown in (F14).
+    /// Containers can't see the PC's region, so it's written to config/.env once (usage-probe --host-culture) and passed
+    /// as a value: their own culture stays invariant, so tools and tests format numbers the same everywhere.
+    /// </summary>
+    public string? HostCulture { get; set; }
+
+    /// <summary>DISPLAY_CURRENCY: show costs in this currency (an ISO code, e.g. EUR) instead of the region's.</summary>
+    public string? DisplayCurrency { get; set; }
+
     public static AgentOptions FromEnvironment(Func<string, string?>? getVariable = null)
     {
         getVariable ??= Environment.GetEnvironmentVariable;
@@ -111,6 +121,8 @@ public sealed class AgentOptions
             },
             RatesFormat = Get("RATES_FORMAT") ?? "frankfurter",
             RatesFile = Get("RATES_FILE"),
+            HostCulture = Get("HOST_CULTURE"),
+            DisplayCurrency = Get("DISPLAY_CURRENCY"),
         };
         if (Get("AGENT_FUNCTION") is { } function) options.AgentFunction = function;
         if (Get("WORKSPACE_ROOT") is { } root) options.WorkspaceRoot = root;
