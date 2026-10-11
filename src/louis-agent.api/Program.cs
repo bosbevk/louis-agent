@@ -11,6 +11,9 @@ using LouisAgent.Core.Pricing;
 using LouisAgent.Core.Tools.Workspace;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Guardrails;
+using LouisAgent.Api.Messages;
+using LouisAgent.Core.Logging;
+using Microsoft.Extensions.Logging;
 
 // HTTP version of the ACP server, which also serves the web app: every API reply is JSON, and a message's answer streams as Server-Sent Events shaped
 // like Claude's (message_start, content_block_start/delta/stop for thinking, text, tool_use and tool_result, message_stop).
@@ -27,7 +30,7 @@ var app = builder.Build();
 // The web app's files stay public: they hold no data, and the app sends the key the user enters in its settings.
 string? apiKey = Environment.GetEnvironmentVariable("AGENT_API_KEY");
 if (string.IsNullOrWhiteSpace(apiKey))
-    Console.Error.WriteLine("[WARN] AGENT_API_KEY not set; the API accepts unauthenticated requests. Only expose it on localhost.");
+    AgentLogging.LoggerFactory.CreateLogger("LouisAgent.Api").Log(LogLevel.Warning, ApiLogMessage.NoApiKey);
 else
     app.Use(async (context, next) =>
     {
@@ -207,7 +210,7 @@ static async IAsyncEnumerable<SseItem<string>> StreamTurnAsync(
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine($"[API] Turn failed in {session.Id}: {ex}");
+                AgentLogging.LoggerFactory.CreateLogger("LouisAgent.Api").Log(LogLevel.Error, ApiLogMessage.TurnFailed, new { Session = session.Id }, exception: ex, tag: "API");
                 error = $"{ex.GetType().Name}: {ex.Message}";
                 break;
             }
