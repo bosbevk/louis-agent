@@ -139,17 +139,17 @@ public partial class AgentEngine
             return;
         }
 
-        _tools.Add(AIFunctionFactory.Create(ExecuteSkill, nameof(ExecuteSkill)));
+        AddTool(AIFunctionFactory.Create(ExecuteSkill, nameof(ExecuteSkill)));
         if (toolsets is not null)
         {
             foreach (object toolset in toolsets) AddPublicMethodsAsTools(toolset);
             return;
         }
 
-        _tools.Add(AIFunctionFactory.Create(CreateSkillFile, nameof(CreateSkillFile)));
-        _tools.Add(AIFunctionFactory.Create(ReloadSkills, nameof(ReloadSkills)));
-        _tools.Add(AIFunctionFactory.Create(CreateTool, nameof(CreateTool)));
-        _tools.Add(AIFunctionFactory.Create(ListAgentTools, nameof(ListAgentTools)));
+        AddTool(AIFunctionFactory.Create(CreateSkillFile, nameof(CreateSkillFile)));
+        AddTool(AIFunctionFactory.Create(ReloadSkills, nameof(ReloadSkills)));
+        AddTool(AIFunctionFactory.Create(CreateTool, nameof(CreateTool)));
+        AddTool(AIFunctionFactory.Create(ListAgentTools, nameof(ListAgentTools)));
         AddPublicMethodsAsTools(new WorkspaceTools(WorkspaceRoot));
         AddPublicMethodsAsTools(new GitTools(WorkspaceRoot));
         AddPublicMethodsAsTools(new DotNetTools(WorkspaceRoot));
@@ -318,11 +318,22 @@ public partial class AgentEngine
         return truncated;
     }
 
+    /// <summary>
+    /// Adds a tool at its place in name order (ordinal), so the tool list, and with it the start of every request, is the
+    /// same bytes from one run to the next (F4: the prompt cache is keyed by the exact prefix, and reflection's method
+    /// order isn't guaranteed). A tool added later (an agent-built one) still changes the list, as any change must.
+    /// </summary>
+    private void AddTool(AITool tool)
+    {
+        int at = _tools.FindIndex(t => string.CompareOrdinal(t.Name, tool.Name) > 0);
+        _tools.Insert(at < 0 ? _tools.Count : at, tool);
+    }
+
     private void AddPublicMethodsAsTools(object target)
     {
         foreach (MethodInfo method in target.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly))
         {
-            _tools.Add(AIFunctionFactory.Create(method, target));
+            AddTool(AIFunctionFactory.Create(method, target));
         }
     }
 
@@ -968,7 +979,7 @@ public partial class AgentEngine
 
         var tool = new ScriptTool(definition, approved, RunScriptTool);
         _scriptTools[definition.Name] = tool;
-        _tools.Add(tool);
+        AddTool(tool);
         ToolsChanged?.Invoke();
     }
 
