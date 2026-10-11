@@ -154,6 +154,9 @@ public sealed class BashTools
     /// Locates bash: BASH_PATH/SKILL_SHELL override, then /bin/bash, or Git Bash on Windows. Never the WSL stub in
     /// System32, which starts a separate Linux environment and drops the process environment.
     /// </summary>
+    // Shared with BashRun so skills, agent-built tools and the bash toolset all use the same (Git) bash, never the WSL stub.
+    internal static string ResolveShell() => FindBash() ?? (OperatingSystem.IsWindows() ? "bash" : "/bin/bash");
+
     internal static string? FindBash()
     {
         if (_searched) return _bash;
