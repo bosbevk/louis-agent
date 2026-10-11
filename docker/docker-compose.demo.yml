@@ -56,6 +56,8 @@ services:
       LOG_DIRECTORY: /demo/logs
       # The price table, mounted on its own (read-only), not the whole config folder with its secrets
       PRICES_FILE: /config/prices.json
+      # Exchange rates' fallback when RATES_URL (Frankfurter by default) can't be reached; served at GET /rates (F14)
+      RATES_FILE: /config/rates.json
       # louis-agent's commits (and merges made in the web app) are recorded under this name.
       GIT_AUTHOR_NAME: louis-agent
       GIT_AUTHOR_EMAIL: louis-agent@localhost
@@ -73,6 +75,7 @@ services:
     volumes:
       - ../.demo:/demo
       - ../config/prices.json:/config/prices.json:ro
+      - ../config/rates.json:/config/rates.json:ro
       - ../Skills:/skills
       - nuget:/root/.nuget/packages
 
@@ -100,6 +103,10 @@ services:
       # Prices from demo-api, so both agents price with one table; the mounted file is the fallback if it can't be reached
       PRICES_URL: http://demo-api:8080/prices
       PRICES_FILE: /config/prices.json
+      # Exchange rates from demo-api too (already in our rates.json format), so both agents convert with one rate
+      RATES_URL: http://demo-api:8080/rates
+      RATES_FORMAT: rates-json
+      RATES_FILE: /config/rates.json
       LOUIS_AGENT_URL: http://demo-api:8080
       # Only used to stash what an unfinished fix left behind before returning to main.
       GIT_AUTHOR_NAME: orchestrator
@@ -112,6 +119,7 @@ services:
     volumes:
       - ../.demo:/demo
       - ../config/prices.json:/config/prices.json:ro
+      - ../config/rates.json:/config/rates.json:ro
       - nuget:/root/.nuget/packages
     profiles: [tools]
 

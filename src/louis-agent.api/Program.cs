@@ -54,6 +54,13 @@ app.MapGet("/prices", () => host.Prices.IsEmpty
         statusCode: StatusCodes.Status404NotFound)
     : Results.Json(host.Prices, PriceTable.Json));
 
+// The exchange rates this API loaded (F14), in our rates.json format, for other hosts' RATES_URL (with
+// RATES_FORMAT=rates-json; the demo's orchestrator) and the web app. Public like /prices; 404 when it has none.
+app.MapGet("/rates", () => host.Rates.IsEmpty
+    ? Results.Json(Error("not_found_error", "No exchange rates loaded: RATES_URL couldn't be used and there is no config/rates.json."),
+        statusCode: StatusCodes.Status404NotFound)
+    : Results.Text(host.Rates.ToJson(), "application/json"));
+
 app.MapWorkspace();
 app.MapGit();
 app.MapHistory();
