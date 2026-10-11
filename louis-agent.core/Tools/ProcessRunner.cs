@@ -1,4 +1,4 @@
-namespace louis_agent.core.tools;
+namespace LouisAgent.Core.Tools;
 
 using System.Diagnostics;
 using System.Text;

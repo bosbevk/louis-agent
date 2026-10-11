@@ -1,8 +1,10 @@
-namespace louis_agent.core.tools;
+namespace LouisAgent.Core.Tools.Shell;
 
 using System.ComponentModel;
 using System.Text;
 using System.Text.RegularExpressions;
+using LouisAgent.Core.Tools.DotNet;
+using LouisAgent.Core.Tools.Workspace;
 
 /// <summary>
 /// Python toolset: run inline code or workspace scripts and manage packages in a dedicated virtual environment,

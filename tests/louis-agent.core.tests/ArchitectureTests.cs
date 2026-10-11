@@ -5,6 +5,15 @@ using LouisAgent.Core.Llm;
 using LouisAgent.Core.Llm.AnthropicProvider;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Hosting;
+using LouisAgent.Core.Tools;
+using LouisAgent.Core.Tools.DotNet;
+using LouisAgent.Core.Tools.Git;
+using LouisAgent.Core.Tools.Integrations.DevOps;
+using LouisAgent.Core.Tools.Integrations.Paymo;
+using LouisAgent.Core.Tools.Scripts;
+using LouisAgent.Core.Tools.Shell;
+using LouisAgent.Core.Tools.Web;
+using LouisAgent.Core.Tools.Workspace;
 
 namespace LouisAgent.Core.Tests;
 
@@ -35,34 +44,8 @@ public partial class ArchitectureTests
         "AgentHost.cs: '(root)' isn't a concern folder",
         "AgentLog.cs: namespace louis_agent.core, expected LouisAgent.Core",
         "AgentLog.cs: '(root)' isn't a concern folder",
-        "tools/AgentEngine.cs: namespace louis_agent.core.tools, expected LouisAgent.Core.tools",
-        "tools/AgentEngine.cs: 'tools' isn't a concern folder",
-        "tools/BashTools.cs: namespace louis_agent.core.tools, expected LouisAgent.Core.tools",
-        "tools/BashTools.cs: 'tools' isn't a concern folder",
-        "tools/DevOpsTools.cs: namespace louis_agent.core.tools, expected LouisAgent.Core.tools",
-        "tools/DevOpsTools.cs: 'tools' isn't a concern folder",
-        "tools/DotNetTools.cs: namespace louis_agent.core.tools, expected LouisAgent.Core.tools",
-        "tools/DotNetTools.cs: 'tools' isn't a concern folder",
-        "tools/GitTools.cs: namespace louis_agent.core.tools, expected LouisAgent.Core.tools",
-        "tools/GitTools.cs: 'tools' isn't a concern folder",
-        "tools/PaymoTools.cs: namespace louis_agent.core.tools, expected LouisAgent.Core.tools",
-        "tools/PaymoTools.cs: 'tools' isn't a concern folder",
-        "tools/PowerShellTools.cs: namespace louis_agent.core.tools, expected LouisAgent.Core.tools",
-        "tools/PowerShellTools.cs: 'tools' isn't a concern folder",
-        "tools/ProcessRunner.cs: namespace louis_agent.core.tools, expected LouisAgent.Core.tools",
-        "tools/ProcessRunner.cs: 'tools' isn't a concern folder",
-        "tools/PythonTools.cs: namespace louis_agent.core.tools, expected LouisAgent.Core.tools",
-        "tools/PythonTools.cs: 'tools' isn't a concern folder",
-        "tools/ScriptTool.cs: namespace louis_agent.core.tools, expected LouisAgent.Core.tools",
-        "tools/ScriptTool.cs: 3 top-level types, one per file",
-        "tools/ScriptTool.cs: 'tools' isn't a concern folder",
-        "tools/WebSearchProviders.cs: namespace louis_agent.core.tools, expected LouisAgent.Core.tools",
-        "tools/WebSearchProviders.cs: 8 top-level types, one per file",
-        "tools/WebSearchProviders.cs: 'tools' isn't a concern folder",
-        "tools/WebTools.cs: namespace louis_agent.core.tools, expected LouisAgent.Core.tools",
-        "tools/WebTools.cs: 'tools' isn't a concern folder",
-        "tools/WorkspaceTools.cs: namespace louis_agent.core.tools, expected LouisAgent.Core.tools",
-        "tools/WorkspaceTools.cs: 'tools' isn't a concern folder",
+        "Tools/AgentEngine.cs: namespace louis_agent.core.tools, expected LouisAgent.Core.Tools",
+        "Tools/AgentEngine.cs: Tools uses Llm",
     ];
 
     [Test]

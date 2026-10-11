@@ -1,5 +1,6 @@
 using louis_agent.core.tools;
 using LouisAgent.Core.Skills;
+using LouisAgent.Core.Tools.Workspace;
 
 namespace LouisAgent.Core.Tests;
 

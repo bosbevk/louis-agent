@@ -1,4 +1,5 @@
 using louis_agent.core.tools;
+using LouisAgent.Core.Tools.Shell;
 
 namespace LouisAgent.Core.Tests;
 

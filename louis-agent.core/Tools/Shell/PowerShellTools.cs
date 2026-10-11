@@ -1,7 +1,8 @@
-namespace louis_agent.core.tools;
+namespace LouisAgent.Core.Tools.Shell;
 
 using System.ComponentModel;
 using System.Text;
+using LouisAgent.Core.Tools.DotNet;
 
 /// <summary>
 /// PowerShell toolset: run inline scripts or workspace .ps1 files with PowerShell 7 (pwsh) or, on Windows,

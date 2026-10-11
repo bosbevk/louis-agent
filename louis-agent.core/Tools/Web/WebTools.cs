@@ -1,4 +1,4 @@
-namespace louis_agent.core.tools;
+namespace LouisAgent.Core.Tools.Web;
 
 using System.ComponentModel;
 using System.Net;

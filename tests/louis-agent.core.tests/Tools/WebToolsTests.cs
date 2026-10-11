@@ -4,6 +4,7 @@ using LouisAgent.Core.Config;
 using LouisAgent.Core.Skills;
 using louis_agent.core.tools;
 using Microsoft.Extensions.AI;
+using LouisAgent.Core.Tools.Web;
 
 namespace LouisAgent.Core.Tests;
 

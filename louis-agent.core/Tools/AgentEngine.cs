@@ -14,6 +14,15 @@ using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
 using LouisAgent.Core.Pricing;
 using LouisAgent.Core.Llm;
+using LouisAgent.Core.Tools;
+using LouisAgent.Core.Tools.DotNet;
+using LouisAgent.Core.Tools.Git;
+using LouisAgent.Core.Tools.Integrations.DevOps;
+using LouisAgent.Core.Tools.Integrations.Paymo;
+using LouisAgent.Core.Tools.Scripts;
+using LouisAgent.Core.Tools.Shell;
+using LouisAgent.Core.Tools.Web;
+using LouisAgent.Core.Tools.Workspace;
 
 /// <summary>
 /// Orchestrates one chat turn: the model is given the agent's tools and

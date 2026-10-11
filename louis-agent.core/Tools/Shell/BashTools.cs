@@ -1,7 +1,9 @@
-namespace louis_agent.core.tools;
+namespace LouisAgent.Core.Tools.Shell;
 
 using System.ComponentModel;
 using System.Text;
+using LouisAgent.Core.Tools.DotNet;
+using LouisAgent.Core.Tools.Workspace;
 
 /// <summary>
 /// Bash toolset: run inline scripts or workspace .sh files with Git Bash on Windows or /bin/bash elsewhere.

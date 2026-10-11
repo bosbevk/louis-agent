@@ -3,6 +3,7 @@ using LouisAgent.Core.Skills;
 using louis_agent.core.tools;
 using Microsoft.Extensions.AI;
 using louis_agent.core;
+using LouisAgent.Core.Tools.Shell;
 
 namespace LouisAgent.Core.Tests;
 

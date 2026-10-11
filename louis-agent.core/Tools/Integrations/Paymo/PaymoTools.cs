@@ -1,4 +1,4 @@
-namespace louis_agent.core.tools;
+namespace LouisAgent.Core.Tools.Integrations.Paymo;
 
 using System.ComponentModel;
 using System.Net.Http.Json;
