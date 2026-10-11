@@ -6,7 +6,9 @@ using Microsoft.Extensions.AI;
 
 namespace louis_agent.acp_server;
 
-internal sealed class AcpServer(AgentEngine agent)
+/// <param name="agent">The engine every session shares.</param>
+/// <param name="usageInChat">USAGE_IN_CHAT: add each turn's usage line to the chat after the answer (F3).</param>
+internal sealed class AcpServer(AgentEngine agent, bool usageInChat = false)
 {
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
     private readonly ConcurrentDictionary<string, SessionState> _sessions = new();
@@ -216,8 +218,8 @@ internal sealed class AcpServer(AgentEngine agent)
 
         try
         {
-            // /tools, /approve and /reject typed by the user are answered directly, never by the model.
-            if (agent.HandleUserCommand(prompt) is { } commandReply)
+            // /tools, /approve, /reject and /usage typed by the user are answered directly, never by the model.
+            if (agent.HandleUserCommand(prompt, agent.RecordsUsage ? session.Usage.Records : null) is { } commandReply)
             {
                 await WriteMessageChunkAsync(sessionId, $"msg_{Guid.NewGuid():N}", commandReply, serverCancellationToken);
             }
@@ -225,7 +227,21 @@ internal sealed class AcpServer(AgentEngine agent)
             {
                 // Every model request of this turn is recorded in the usage ledger under this session and turn.
                 using var usage = UsageScope.Begin(host: "acp", session: sessionId, turn: Interlocked.Increment(ref session.Turns));
-                await StreamTurnAsync(sessionId, session, prompt, turnCancellation.Token, serverCancellationToken);
+                string? usageLine;
+                try
+                {
+                    await StreamTurnAsync(sessionId, session, prompt, turnCancellation.Token, serverCancellationToken);
+                }
+                finally
+                {
+                    // A cancelled or failed turn still counts toward the session: its requests were charged.
+                    usageLine = session.Usage.EndTurn(usage.Records);
+                    if (usageLine is not null) Console.Error.WriteLine($"[ACP] Usage: {usageLine}");
+                }
+
+                // After a finished answer only: a cancelled turn's reply is "cancelled", with nothing added to it.
+                if (usageInChat && usageLine is not null)
+                    await WriteMessageChunkAsync(sessionId, $"msg_{Guid.NewGuid():N}", $"\n\n*{usageLine}*", serverCancellationToken);
             }
 
             await WriteResultAsync(id, new { stopReason = "end_turn" }, serverCancellationToken);
@@ -700,5 +716,8 @@ internal sealed class AcpServer(AgentEngine agent)
 
         /// <summary>Prompts answered by the model so far; the usage ledger's turn number.</summary>
         public int Turns;
+
+        /// <summary>The usage of the session's finished turns, for the usage line's session total and /usage (F3).</summary>
+        public UsageSession Usage { get; } = new();
     }
 }

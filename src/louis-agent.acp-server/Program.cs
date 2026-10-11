@@ -4,7 +4,7 @@ using louis_agent.core;
 try
 {
     var host = AgentHost.Build();
-    await new AcpServer(host.Engine).RunAsync();
+    await new AcpServer(host.Engine, usageInChat: host.Agent.UsageInChat).RunAsync();
 }
 catch (Exception ex)
 {

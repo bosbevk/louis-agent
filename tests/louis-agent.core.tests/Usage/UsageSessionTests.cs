@@ -72,6 +72,19 @@ public class UsageSessionTests
         Assert.That(engine.HandleUserCommand("/usage", session.Records), Does.StartWith("Session usage: 2 requests · 2.2k tokens"));
     }
 
+    [TestCase(null, false)]
+    [TestCase("true", true)]
+    [TestCase("True", true)]
+    [TestCase("false", false)]
+    [TestCase("yes", false)]
+    public void UsageInChatSetting_IsOffUnlessTrue(string? value, bool expected)
+    {
+        // Step 6: Rider's chat gets the usage line only when asked for; anything but "true" leaves it out.
+        var options = louis_agent.core.config.AgentOptions.FromEnvironment(name => name == "USAGE_IN_CHAT" ? value : null);
+
+        Assert.That(options.UsageInChat, Is.EqualTo(expected));
+    }
+
     [Test]
     public void RecordsUsage_OnlyWithASink()
     {
