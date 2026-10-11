@@ -137,6 +137,42 @@ start-up.
 Return strings the model can act on: say what went wrong and what to do instead. Keep output bounded — results over
 50,000 characters get summarised; most toolsets cap their own output at 12,000.
 
+### Project layout
+
+**Folders split the code by concern, and the namespace is the folder path.** Each concern of an agent has one home, so
+a change to one (a new provider, a new tool, a new guard) touches one folder:
+
+| Folder (core) | Concern | Today |
+|---|---|---|
+| `Agent/` | The loop: turns, history, system prompt assembly, round limits, `/approve` | `tools/AgentEngine.cs` |
+| `Llm/` + `Llm/{Provider}/` | The model: client factory, `IChatClient` middleware (thinking, caching, usage recording), one folder per provider | `providers/LlmClientFactory.cs`, `usage/UsageRecordingChatClient.cs` |
+| `Tools/{Toolset}/` | What the model can do: one folder per toolset (`Workspace`, `Git`, `Shell`, `Web`, `Integrations/Paymo`, …) | `tools/*.cs` |
+| `Skills/` | Loading the markdown skills and personality into the prompt | `MarkdownSkillLoader.cs`, `providers/*SkillsProvider.cs` |
+| `Guardrails/` | Safety checks: path resolution, sensitive files, SSRF, tool-result size guards | spread over `WorkspaceTools`, `WebTools`, `AgentEngine` |
+| `Usage/` and `Pricing/` | The ledger (records, sinks, scopes); prices, cost, rates and the display currency | `usage/` (both) |
+| `Protocols/Mcp/` | Talking to other agents and tools over MCP | `mcp/` |
+| `Hosting/` | Bootstrap shared by every host: `AgentHost`, logging | root `AgentHost.cs`, `AgentLog.cs` |
+| `Config/`, `Messages/` | Settings; message enums | `config/`, `messages/` |
+
+The rules:
+
+1. **Namespace = folder path**, PascalCase (`LouisAgent.Core.Llm.Anthropic`), one top-level type per file, the file
+   named after the type. No `Helpers/`, `Utils/`, `Common/` or `Interfaces/` folders: an interface lives beside its
+   implementations, a helper beside its one user.
+2. **Dependencies point one way:** hosts → `Hosting` → `Agent` → `Llm`, `Tools`, `Skills`, `Usage` → `Guardrails`,
+   `Config`, `Messages`. A tool never references the agent loop or a model; `Agent` never references a provider's SDK
+   (provider differences stay in `Llm/{Provider}/`, as in *Changing the LLM*).
+3. **Prompts are content, not code:** system prompt text and procedures stay in `Skills/*.md`; C# only loads them.
+4. **Hosts stay thin:** a host project maps the agent's stream to its protocol (`Endpoints/`, `Services/`) and holds no
+   agent behaviour; another agent on core (the orchestrator) keeps its own `Tools/` and `Skills/` the same way.
+5. **Tests mirror the source:** `tests/louis-agent.core.tests/Llm/Anthropic/…` tests `Llm/Anthropic/…`.
+6. **An architecture test enforces 1 and 2:** namespaces match folders, and no type depends against the arrow.
+
+**Moving there:** the table's *Today* column is the current layout. One refactor after F4 (TODO, *Quality and CI*),
+before the messages refactor, moves the files with `git mv` (so history follows them), renames the namespaces, splits
+`AgentEngine` (1,000+ lines) along the concerns above, and adds the architecture test. Until it lands, new files go in
+the folder their concern has today.
+
 ### Messages and logging
 
 **No message text inline in C#.** Every message is a member of a message enum, and its `[Description]` is the text, a

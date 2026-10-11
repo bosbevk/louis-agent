@@ -127,7 +127,13 @@ growing history every round, so smaller tasks are cheaper); make runs resumable 
 
 ### Quality and CI
 
-- [ ] **Messages and logging, after F4** (the rule is in [docs/CLAUDE.md](docs/CLAUDE.md#messages-and-logging)): move
+- [ ] **Project layout, after F4, first of two cleanups** (the rules are in
+      [docs/CLAUDE.md](docs/CLAUDE.md#project-layout)): folders by concern (`Agent`, `Llm/{Provider}`, `Tools/{Toolset}`,
+      `Skills`, `Guardrails`, `Usage`, `Pricing`, `Protocols/Mcp`, `Hosting`), namespace = folder path in PascalCase,
+      `git mv` so history follows, split `AgentEngine` along those concerns, tests mirror the source, and an
+      architecture test (namespaces match folders, dependencies point one way). Its own branch and PR, with a plan;
+      behaviour unchanged, so every test passes untouched apart from namespaces
+- [ ] **Messages and logging, after F4, second of two cleanups** (the rule is in [docs/CLAUDE.md](docs/CLAUDE.md#messages-and-logging)): move
       the ~230 inline messages in 35 files (exceptions, log lines, tool results, user-facing text) into message enums
       with `[Description]` templates and a `Messages` helper, with a test over every enum; switch logging from
       `Console.Error` and `AgentLog`'s files to `ILogger` with NLog (stderr only, run files and JSON-lines as targets).
