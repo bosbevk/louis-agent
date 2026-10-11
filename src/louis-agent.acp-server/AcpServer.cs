@@ -4,6 +4,10 @@ using LouisAgent.Core.Agent;
 using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
 using LouisAgent.Core.Pricing;
+using LouisAgent.Core.Messages;
+using LouisAgent.AcpServer.Messages;
+using LouisAgent.Core.Logging;
+using Microsoft.Extensions.Logging;
 
 namespace LouisAgent.AcpServer;
 
@@ -11,6 +15,9 @@ namespace LouisAgent.AcpServer;
 /// <param name="usageInChat">USAGE_IN_CHAT: add each turn's usage line to the chat after the answer (F3).</param>
 internal sealed class AcpServer(AgentEngine agent, bool usageInChat = false)
 {
+    private static readonly ILogger Log = AgentLogging.For<AcpServer>();
+    private const string Tag = "ACP";
+
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
     private readonly ConcurrentDictionary<string, SessionState> _sessions = new();
     private readonly SemaphoreSlim _writeLock = new(1, 1);
@@ -38,7 +45,7 @@ internal sealed class AcpServer(AgentEngine agent, bool usageInChat = false)
             }
             catch (JsonException ex)
             {
-                await WriteErrorAsync(null, -32700, $"Parse error: {ex.Message}", cancellationToken);
+                await WriteErrorAsync(null, -32700, MessageText.Format(AcpUserText.ParseError, new { Reason = ex.Message }), cancellationToken);
                 continue;
             }
 
@@ -89,13 +96,13 @@ internal sealed class AcpServer(AgentEngine agent, bool usageInChat = false)
                     await PromptAsync(id, parameters, cancellationToken);
                     break;
                 default:
-                    await WriteErrorAsync(id, -32601, $"Method not found: {method}", cancellationToken);
+                    await WriteErrorAsync(id, -32601, MessageText.Format(AcpUserText.MethodNotFound, new { Method = method }), cancellationToken);
                     break;
             }
         }
         catch (Exception ex)
         {
-            Console.Error.WriteLine(ex);
+            Log.Log(LogLevel.Error, AcpLogMessage.RequestFailed, exception: ex, tag: Tag);
             await WriteErrorAsync(id, -32603, ex.Message, cancellationToken);
         }
     }
@@ -111,7 +118,7 @@ internal sealed class AcpServer(AgentEngine agent, bool usageInChat = false)
 
         if (requestedVersion != 1)
         {
-            await WriteErrorAsync(id, -32602, $"Unsupported ACP protocol version: {requestedVersion}", cancellationToken);
+            await WriteErrorAsync(id, -32602, MessageText.Format(AcpUserText.UnsupportedProtocol, new { Version = requestedVersion }), cancellationToken);
             return;
         }
 
@@ -155,8 +162,7 @@ internal sealed class AcpServer(AgentEngine agent, bool usageInChat = false)
         string sessionId = $"sess_{Guid.NewGuid():N}";
         var history = agent.NewHistory();
         history.Add(new ChatMessage(ChatRole.System,
-            $"The Rider project workspace is mounted at '{agent.WorkspaceRoot}'. " +
-            "Use the workspace tools to inspect and edit project files. All file paths passed to those tools must be relative to that workspace."));
+            MessageText.Format(AcpModelText.WorkspaceNotice, new { Root = agent.WorkspaceRoot })));
 
         _sessions[sessionId] = new SessionState(cwd, history, agent.Display);
         await WriteResultAsync(id, new { sessionId }, cancellationToken);
@@ -170,44 +176,44 @@ internal sealed class AcpServer(AgentEngine agent, bool usageInChat = false)
         string sessionId = GetRequiredString(parameters, "sessionId");
         if (!_sessions.TryGetValue(sessionId, out SessionState? session))
         {
-            await WriteErrorAsync(id, -32602, $"Unknown session: {sessionId}", serverCancellationToken);
+            await WriteErrorAsync(id, -32602, MessageText.Format(AcpUserText.UnknownSession, new { Session = sessionId }), serverCancellationToken);
             return;
         }
 
         // Extract resource_link (active file in IDE) to detect repository context
         string? resourceLinkPath = ExtractResourceLinkPath(parameters);
-        Console.Error.WriteLine($"[ACP] Resource link path extracted: {resourceLinkPath ?? "(null)"}");
+        Log.Log(LogLevel.Information, AcpLogMessage.ResourceLinkPath, new { Path = resourceLinkPath ?? "(null)" }, tag: Tag);
 
         if (!string.IsNullOrEmpty(resourceLinkPath))
         {
-            Console.Error.WriteLine($"[ACP] Searching for git root from: {resourceLinkPath}");
+            Log.Log(LogLevel.Information, AcpLogMessage.SearchingGitRoot, new { Path = resourceLinkPath }, tag: Tag);
             string gitRoot = FindGitRoot(resourceLinkPath);
-            Console.Error.WriteLine($"[ACP] FindGitRoot returned: {gitRoot ?? "(empty)"}");
+            Log.Log(LogLevel.Information, AcpLogMessage.FindGitRootReturned, new { Root = gitRoot ?? "(empty)" }, tag: Tag);
 
             if (!string.IsNullOrEmpty(gitRoot))
             {
                 session.WorkingDirectory = gitRoot;
-                Console.Error.WriteLine($"[ACP] ✓ Detected git root from resource_link: {gitRoot}");
+                Log.Log(LogLevel.Information, AcpLogMessage.GitRootDetected, new { Root = gitRoot }, tag: Tag);
 
                 // Set environment variable so git tools use this directory
                 Environment.SetEnvironmentVariable("AGENT_WORKING_DIRECTORY", gitRoot);
-                Console.Error.WriteLine($"[ACP] ✓ Set AGENT_WORKING_DIRECTORY to: {gitRoot}");
+                Log.Log(LogLevel.Information, AcpLogMessage.WorkingDirectorySet, new { Root = gitRoot }, tag: Tag);
             }
             else
             {
-                Console.Error.WriteLine($"[ACP] ✗ No git root found for: {resourceLinkPath}");
+                Log.Log(LogLevel.Warning, AcpLogMessage.NoGitRoot, new { Path = resourceLinkPath }, tag: Tag);
             }
         }
         else
         {
-            Console.Error.WriteLine($"[ACP] ✗ No resource_link found in parameters");
+            Log.Log(LogLevel.Information, AcpLogMessage.NoResourceLink, tag: Tag);
             // Clear the working directory override if no resource_link
             Environment.SetEnvironmentVariable("AGENT_WORKING_DIRECTORY", null);
         }
 
         string prompt = ExtractPrompt(parameters);
-        Console.Error.WriteLine($"[ACP] Raw parameters:\n{parameters.GetRawText()}\n");
-        Console.Error.WriteLine($"[ACP] Prompt: {prompt.Length} chars: {(prompt.Length > 300 ? prompt[..300] + "..." : prompt)}");
+        Log.Log(LogLevel.Information, AcpLogMessage.RawParameters, new { Parameters = parameters.GetRawText() }, tag: Tag);
+        Log.Log(LogLevel.Information, AcpLogMessage.PromptReceived, new { Chars = prompt.Length, Prompt = (prompt.Length > 300 ? prompt[..300] + "..." : prompt) }, tag: Tag);
 
         using var turnCancellation = CancellationTokenSource.CreateLinkedTokenSource(serverCancellationToken);
 
@@ -237,7 +243,7 @@ internal sealed class AcpServer(AgentEngine agent, bool usageInChat = false)
                 {
                     // A cancelled or failed turn still counts toward the session: its requests were charged.
                     usageLine = session.Usage.EndTurn(usage.Records);
-                    if (usageLine is not null) Console.Error.WriteLine($"[ACP] Usage: {usageLine}");
+                    if (usageLine is not null) Log.Log(LogLevel.Information, AcpLogMessage.UsageLine, new { Line = usageLine }, tag: Tag);
                 }
 
                 // After a finished answer only: a cancelled turn's reply is "cancelled", with nothing added to it.
@@ -249,18 +255,18 @@ internal sealed class AcpServer(AgentEngine agent, bool usageInChat = false)
         }
         catch (Exception ex) when (ex is OperationCanceledException)
         {
-            Console.Error.WriteLine($"[ACP] Agent operation cancelled: {ex.Message}");
+            Log.Log(LogLevel.Warning, AcpLogMessage.OperationCancelled, new { Reason = ex.Message }, tag: Tag);
             if (ex.InnerException != null)
             {
-                Console.Error.WriteLine($"[ACP] Inner exception: {ex.InnerException.GetType().Name}: {ex.InnerException.Message}");
-                Console.Error.WriteLine($"[ACP] Stack trace: {ex.InnerException.StackTrace}");
+                Log.Log(LogLevel.Warning, AcpLogMessage.InnerException, new { ErrorType = ex.InnerException.GetType().Name, Reason = ex.InnerException.Message }, tag: Tag);
+                Log.Log(LogLevel.Warning, AcpLogMessage.StackTrace, new { Trace = ex.InnerException.StackTrace }, tag: Tag);
             }
             await WriteResultAsync(id, new { stopReason = "cancelled" }, serverCancellationToken);
         }
         catch (Exception ex)
         {
-            Console.Error.WriteLine($"[ACP] Unexpected error in PromptAsync: {ex.GetType().Name}: {ex.Message}");
-            Console.Error.WriteLine($"[ACP] Stack trace: {ex.StackTrace}");
+            Log.Log(LogLevel.Error, AcpLogMessage.PromptFailed, new { ErrorType = ex.GetType().Name, Reason = ex.Message }, tag: Tag);
+            Log.Log(LogLevel.Error, AcpLogMessage.StackTrace, new { Trace = ex.StackTrace }, tag: Tag);
             await WriteErrorAsync(id, -32603, $"{ex.GetType().Name}: {ex.Message}", serverCancellationToken);
         }
         finally
@@ -426,7 +432,7 @@ internal sealed class AcpServer(AgentEngine agent, bool usageInChat = false)
                     string embeddedUri = resource.TryGetProperty("uri", out JsonElement u) ? u.GetString() ?? "" : "";
                     if (resource.TryGetProperty("text", out JsonElement embedded) && embedded.GetString() is { } embeddedText)
                     {
-                        Console.Error.WriteLine($"[ACP] Embedded resource {embeddedUri}: {embeddedText.Length} chars");
+                        Log.Log(LogLevel.Information, AcpLogMessage.EmbeddedResource, new { Uri = embeddedUri, Chars = embeddedText.Length }, tag: Tag);
                         promptParts.Add(FormatAttachment(Path.GetFileName(embeddedUri), embeddedText));
                     }
                     break;
@@ -456,14 +462,14 @@ internal sealed class AcpServer(AgentEngine agent, bool usageInChat = false)
         string? path = uri.StartsWith("file:///") ? ResolveHostPath(Uri.UnescapeDataString(uri[8..])) : null;
         if (path is null)
         {
-            Console.Error.WriteLine($"[ACP] Attached file not found in the container: {uri}");
+            Log.Log(LogLevel.Warning, AcpLogMessage.AttachedFileMissing, new { Uri = uri }, tag: Tag);
             return $"[Attached file: {name} could not be read - it is not inside a folder mounted into the agent ({uri})]";
         }
 
         try
         {
             string content = File.ReadAllText(path);
-            Console.Error.WriteLine($"[ACP] Attached file {name} read from {path}: {content.Length} chars");
+            Log.Log(LogLevel.Information, AcpLogMessage.AttachedFileRead, new { Name = name, Path = path, Chars = content.Length }, tag: Tag);
             return content.Length <= MaxAttachmentChars
                 ? FormatAttachment(name, content, path)
                 : FormatAttachment(name, content[..MaxAttachmentChars], path) +
@@ -471,7 +477,7 @@ internal sealed class AcpServer(AgentEngine agent, bool usageInChat = false)
         }
         catch (Exception ex)
         {
-            Console.Error.WriteLine($"[ACP] Error reading attached file {path}: {ex.Message}");
+            Log.Log(LogLevel.Warning, AcpLogMessage.AttachedFileReadFailed, new { Path = path, Reason = ex.Message }, tag: Tag);
             return $"[Attached file: {name} could not be read: {ex.Message}]";
         }
     }
@@ -491,7 +497,7 @@ internal sealed class AcpServer(AgentEngine agent, bool usageInChat = false)
         if (!element.TryGetProperty(propertyName, out JsonElement property) ||
             string.IsNullOrWhiteSpace(property.GetString()))
         {
-            throw new InvalidOperationException($"Missing required property '{propertyName}'.");
+            throw new InvalidOperationException(MessageText.Format(AcpUserText.MissingProperty, new { Property = propertyName }));
         }
 
         return property.GetString()!;
@@ -559,40 +565,40 @@ internal sealed class AcpServer(AgentEngine agent, bool usageInChat = false)
     {
         // Normalize path separators
         string workingPath = filePath.Replace("\\", "/");
-        Console.Error.WriteLine($"[ACP] FindGitRoot: normalized path = {workingPath}");
+        Log.Log(LogLevel.Information, AcpLogMessage.FindGitRootNormalized, new { Path = workingPath }, tag: Tag);
 
         // Try direct path first (works for local dev, not Docker)
-        Console.Error.WriteLine($"[ACP] Trying direct path...");
+        Log.Log(LogLevel.Information, AcpLogMessage.TryingDirectPath, tag: Tag);
         var dirInfo = new DirectoryInfo(Path.GetDirectoryName(workingPath) ?? workingPath);
         while (dirInfo != null)
         {
             string gitPath = Path.Combine(dirInfo.FullName, ".git");
             if (Directory.Exists(gitPath))
             {
-                Console.Error.WriteLine($"[ACP]   ✓ Found .git (direct path): {dirInfo.FullName}");
+                Log.Log(LogLevel.Information, AcpLogMessage.FoundGitDirect, new { Path = dirInfo.FullName }, tag: Tag);
                 return dirInfo.FullName;
             }
-            Console.Error.WriteLine($"[ACP]   - No .git at: {dirInfo.FullName}");
+            Log.Log(LogLevel.Information, AcpLogMessage.NoGitAt, new { Path = dirInfo.FullName }, tag: Tag);
             dirInfo = dirInfo.Parent;
         }
 
         // Path not found directly - we're in Docker, need to map Windows paths to container paths
-        Console.Error.WriteLine($"[ACP] Direct path search exhausted. Generating container path candidates...");
+        Log.Log(LogLevel.Information, AcpLogMessage.DirectPathExhausted, tag: Tag);
         var containerPaths = GenerateContainerPathCandidates(workingPath);
-        Console.Error.WriteLine($"[ACP] Generated {containerPaths.Count} container path candidates");
+        Log.Log(LogLevel.Information, AcpLogMessage.CandidatesGenerated, new { containerPaths.Count }, tag: Tag);
 
         foreach (var containerPath in containerPaths)
         {
-            Console.Error.WriteLine($"[ACP] Trying container path: {containerPath}");
+            Log.Log(LogLevel.Information, AcpLogMessage.TryingContainerPath, new { Path = containerPath }, tag: Tag);
             dirInfo = new DirectoryInfo(Path.GetDirectoryName(containerPath) ?? containerPath);
             int depth = 0;
             while (dirInfo != null && depth < 10)
             {
                 string gitPath = Path.Combine(dirInfo.FullName, ".git");
-                Console.Error.WriteLine($"[ACP]   Depth {depth}: checking {dirInfo.FullName}");
+                Log.Log(LogLevel.Information, AcpLogMessage.CheckingDepth, new { Depth = depth, Path = dirInfo.FullName }, tag: Tag);
                 if (Directory.Exists(gitPath))
                 {
-                    Console.Error.WriteLine($"[ACP]   ✓ Found .git (mapped path): {dirInfo.FullName}");
+                    Log.Log(LogLevel.Information, AcpLogMessage.FoundGitMapped, new { Path = dirInfo.FullName }, tag: Tag);
                     return dirInfo.FullName;
                 }
                 dirInfo = dirInfo.Parent;
@@ -600,7 +606,7 @@ internal sealed class AcpServer(AgentEngine agent, bool usageInChat = false)
             }
         }
 
-        Console.Error.WriteLine($"[ACP] ✗ No .git found in any candidate paths");
+        Log.Log(LogLevel.Warning, AcpLogMessage.NoGitFound, tag: Tag);
         return "";
     }
 
@@ -623,7 +629,7 @@ internal sealed class AcpServer(AgentEngine agent, bool usageInChat = false)
                     {
                         string relativePath = windowsPath.Substring(hostPath.Length);
                         candidates.Add(containerPath + relativePath);
-                        Console.Error.WriteLine($"[ACP] Added candidate from ACP_MOUNT_MAPPINGS: {containerPath + relativePath}");
+                        Log.Log(LogLevel.Information, AcpLogMessage.CandidateFromMappings, new { Path = containerPath + relativePath }, tag: Tag);
                     }
                 }
             }
@@ -693,7 +699,7 @@ internal sealed class AcpServer(AgentEngine agent, bool usageInChat = false)
 
                     if (matchCount >= 2)
                     {
-                        Console.Error.WriteLine($"[ACP] Found matching file in {containerRoot}: {file}");
+                        Log.Log(LogLevel.Information, AcpLogMessage.MatchingFile, new { Root = containerRoot, File = file }, tag: Tag);
                         return file;
                     }
                 }
