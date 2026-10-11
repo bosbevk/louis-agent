@@ -1,7 +1,8 @@
 using louis_agent.core.config;
 using Microsoft.Extensions.AI;
+using louis_agent.core;
 
-namespace louis_agent.core.tests;
+namespace LouisAgent.Core.Tests;
 
 internal static class TestPaths
 {

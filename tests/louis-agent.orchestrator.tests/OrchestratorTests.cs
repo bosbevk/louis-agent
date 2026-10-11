@@ -1,7 +1,8 @@
 using System.Diagnostics;
 using louis_agent.core.usage;
+using LouisAgent.Orchestrator.Tools;
 
-namespace louis_agent.orchestrator.tests;
+namespace LouisAgent.Orchestrator.Tests;
 
 public class OrchestratorTests
 {

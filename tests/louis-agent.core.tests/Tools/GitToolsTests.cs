@@ -1,6 +1,6 @@
 using louis_agent.core.tools;
 
-namespace louis_agent.core.tests;
+namespace LouisAgent.Core.Tests;
 
 public class GitToolsTests
 {

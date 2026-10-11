@@ -1,6 +1,6 @@
 using louis_agent.core.usage;
 
-namespace louis_agent.core.tests;
+namespace LouisAgent.Core.Tests;
 
 // F2-S2: cost on every record from the price table. F2-S3: unknown is not free.
 public class CostCalculatorTests

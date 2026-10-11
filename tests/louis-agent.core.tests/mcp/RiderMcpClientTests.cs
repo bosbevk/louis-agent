@@ -1,6 +1,6 @@
 using louis_agent.core.mcp;
 
-namespace louis_agent.core.tests;
+namespace LouisAgent.Core.Tests;
 
 public class RiderMcpClientTests
 {

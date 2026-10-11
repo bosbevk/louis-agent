@@ -2,7 +2,7 @@ using louis_agent.core.providers;
 using louis_agent.core.tools;
 using Microsoft.Extensions.AI;
 
-namespace louis_agent.core.tests;
+namespace LouisAgent.Core.Tests;
 
 // After 10 tool rounds FunctionInvokingChatClient sends one last request without tools. Claude Haiku 5.5 rejects a
 // changed tool list once its thinking blocks are in the history, so the engine puts the tools back with tool mode None.

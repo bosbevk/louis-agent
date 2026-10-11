@@ -1,6 +1,6 @@
 using Microsoft.JSInterop;
 
-namespace louis_agent.web.Services;
+namespace LouisAgent.Web.Services;
 
 /// <summary>
 /// The currency this browser shows costs in (F14). By default the server's: the PC's region, sent by the API, since the

@@ -4,7 +4,7 @@ using louis_agent.core.tools;
 using louis_agent.core.providers;
 using Microsoft.Extensions.AI;
 
-namespace louis_agent.core.tests;
+namespace LouisAgent.Core.Tests;
 
 public class LlmOptionsTests
 {

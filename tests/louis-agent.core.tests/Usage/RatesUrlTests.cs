@@ -1,8 +1,9 @@
 using System.Net;
 using louis_agent.core.config;
 using louis_agent.core.usage;
+using louis_agent.core;
 
-namespace louis_agent.core.tests;
+namespace LouisAgent.Core.Tests;
 
 // F14 step 1: RATES_URL (Frankfurter by default, or another louis-agent's GET /rates), mapped by RATES_FORMAT, falling back
 // to RATES_FILE when it can't be used; like PRICES_URL and the price file.

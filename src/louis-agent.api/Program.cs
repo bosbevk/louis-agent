@@ -2,11 +2,12 @@ using System.Net.ServerSentEvents;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
-using louis_agent.api;
+using LouisAgent.Api;
 using louis_agent.core;
 using louis_agent.core.tools;
 using louis_agent.core.usage;
 using Microsoft.Extensions.AI;
+using LouisAgent.Api.Endpoints;
 
 // HTTP version of the ACP server, which also serves the web app: every API reply is JSON, and a message's answer streams as Server-Sent Events shaped
 // like Claude's (message_start, content_block_start/delta/stop for thinking, text, tool_use and tool_result, message_stop).

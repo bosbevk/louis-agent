@@ -1,9 +1,9 @@
 using System.Text;
 using System.Text.RegularExpressions;
 using louis_agent.core.tools;
-using static louis_agent.api.GitEndpoints;
+using static LouisAgent.Api.Endpoints.GitEndpoints;
 
-namespace louis_agent.api;
+namespace LouisAgent.Api.Endpoints;
 
 /// <summary>
 /// History for the web app's Branches tab: every branch with how far it is ahead of the checked-out branch, the commit

@@ -4,8 +4,9 @@ using louis_agent.core.config;
 using louis_agent.core.providers;
 using louis_agent.core.tools;
 using louis_agent.core.usage;
+using LouisAgent.Orchestrator.Tools;
 
-namespace louis_agent.orchestrator.tests;
+namespace LouisAgent.Orchestrator.Tests;
 
 // F1-S3: the orchestrator tags each fix session, so louis-agent's usage records carry the fix, the run and the service.
 public class SessionTagsTests

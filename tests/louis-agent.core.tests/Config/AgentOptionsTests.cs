@@ -1,6 +1,6 @@
 using louis_agent.core.config;
 
-namespace louis_agent.core.tests;
+namespace LouisAgent.Core.Tests;
 
 public class AgentOptionsTests
 {

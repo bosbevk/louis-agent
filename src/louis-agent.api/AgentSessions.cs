@@ -3,7 +3,7 @@ using louis_agent.core.tools;
 using louis_agent.core.usage;
 using Microsoft.Extensions.AI;
 
-namespace louis_agent.api;
+namespace LouisAgent.Api;
 
 /// <summary>One conversation: its history and the turn in progress, if any.</summary>
 internal sealed class AgentSession(string id, List<ChatMessage> history, UsageTags tags, DisplayCurrency? display = null)

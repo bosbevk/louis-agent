@@ -4,8 +4,9 @@ using louis_agent.core.providers;
 using louis_agent.core.tools;
 using louis_agent.core.usage;
 using Microsoft.Extensions.AI;
+using louis_agent.core;
 
-namespace louis_agent.core.tests;
+namespace LouisAgent.Core.Tests;
 
 // F2-S2: every ledger record carries its cost. F2-S1: prices come from one file (PRICES_FILE or config/prices.json).
 public class PricingUsageSinkTests

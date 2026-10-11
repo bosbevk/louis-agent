@@ -2,8 +2,9 @@ using System.Text.Json;
 using louis_agent.core.config;
 using louis_agent.core.tools;
 using Microsoft.Extensions.AI;
+using louis_agent.core;
 
-namespace louis_agent.core.tests;
+namespace LouisAgent.Core.Tests;
 
 // F4 step 2: a byte-stable prefix. The prompt cache is keyed by the exact bytes of tools + system prompt, so two engines
 // built from the same options must send the same tools in the same order, whatever order reflection returns methods in.

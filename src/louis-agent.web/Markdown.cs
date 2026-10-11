@@ -3,7 +3,7 @@ using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 using Microsoft.AspNetCore.Components;
 
-namespace louis_agent.web;
+namespace LouisAgent.Web;
 
 public static class Markdown
 {

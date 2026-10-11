@@ -4,7 +4,7 @@ using louis_agent.core.tools;
 using louis_agent.core.usage;
 using Microsoft.Extensions.AI;
 
-namespace louis_agent.acp_server;
+namespace LouisAgent.AcpServer;
 
 /// <param name="agent">The engine every session shares.</param>
 /// <param name="usageInChat">USAGE_IN_CHAT: add each turn's usage line to the chat after the answer (F3).</param>

@@ -2,8 +2,9 @@ using System.Net;
 using System.Text.Json;
 using louis_agent.core.config;
 using louis_agent.core.usage;
+using louis_agent.core;
 
-namespace louis_agent.core.tests;
+namespace LouisAgent.Core.Tests;
 
 // PRICES_URL: the price table over HTTP (e.g. louis-agent.api's GET /prices), falling back to the file when unreachable.
 public class PricesUrlTests

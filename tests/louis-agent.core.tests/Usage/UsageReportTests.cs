@@ -1,6 +1,6 @@
 using louis_agent.core.usage;
 
-namespace louis_agent.core.tests;
+namespace LouisAgent.Core.Tests;
 
 // Reading a ledger back, pricing records written before F2, and totalling them (the M1 baseline).
 public class UsageReportTests

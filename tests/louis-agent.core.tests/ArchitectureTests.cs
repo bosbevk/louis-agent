@@ -1,6 +1,7 @@
 using System.Text.RegularExpressions;
+using louis_agent.core;
 
-namespace louis_agent.core.tests;
+namespace LouisAgent.Core.Tests;
 
 // docs/CLAUDE.md, "Project layout": core's folders split the code by concern, a file's namespace is its folder path,
 // a file holds one top-level type, and dependencies point one way (rule 2). Read from the source files, so it checks

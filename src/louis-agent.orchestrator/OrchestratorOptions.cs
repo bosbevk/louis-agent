@@ -1,4 +1,4 @@
-namespace louis_agent.orchestrator;
+namespace LouisAgent.Orchestrator;
 
 /// <summary>Which service this orchestrator watches and where louis-agent is; resolved once at startup.</summary>
 internal sealed class OrchestratorOptions

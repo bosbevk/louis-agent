@@ -2,7 +2,7 @@ using louis_agent.core.config;
 using louis_agent.core.providers;
 using Microsoft.Extensions.AI;
 
-namespace louis_agent.core.tests;
+namespace LouisAgent.Core.Tests;
 
 // F4 step 5: LlmClientFactory picks the caching strategy once, as it picks the usage mapper.
 public class PromptCachingFactoryTests

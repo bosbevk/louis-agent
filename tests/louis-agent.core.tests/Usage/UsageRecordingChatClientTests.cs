@@ -2,7 +2,7 @@ using System.Text.Json;
 using louis_agent.core.usage;
 using Microsoft.Extensions.AI;
 
-namespace louis_agent.core.tests;
+namespace LouisAgent.Core.Tests;
 
 // F1-S1: one record per request, streaming or not. F1-S4: no message text in a record.
 public class UsageRecordingChatClientTests

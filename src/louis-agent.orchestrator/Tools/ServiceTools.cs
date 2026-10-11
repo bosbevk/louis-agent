@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 using louis_agent.core.tools;
 using louis_agent.core.usage;
 
-namespace louis_agent.orchestrator;
+namespace LouisAgent.Orchestrator.Tools;
 
 /// <summary>
 /// The orchestrator's tools for one service. It never edits code: fixes are delegated to louis-agent, and everything

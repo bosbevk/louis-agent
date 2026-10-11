@@ -3,7 +3,7 @@ using louis_agent.core.tools;
 using louis_agent.core.usage;
 using Microsoft.Extensions.AI;
 
-namespace louis_agent.core.tests;
+namespace LouisAgent.Core.Tests;
 
 // F1-S1 through AgentEngine: every request of the tool loop, summaries and continuations are recorded.
 // Hosts open the turn's scope (F1 step 7); these tests do it the same way.

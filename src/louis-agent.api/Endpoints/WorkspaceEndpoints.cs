@@ -1,7 +1,7 @@
 using System.Text;
 using louis_agent.core.tools;
 
-namespace louis_agent.api;
+namespace LouisAgent.Api.Endpoints;
 
 /// <summary>Errors in Claude's shape: { "type": "error", "error": { "type", "message" } }.</summary>
 internal static class ApiErrors

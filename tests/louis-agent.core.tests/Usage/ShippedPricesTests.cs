@@ -1,6 +1,6 @@
 using louis_agent.core.usage;
 
-namespace louis_agent.core.tests;
+namespace LouisAgent.Core.Tests;
 
 // The tracked config/prices.json must load and price the models the profiles use.
 public class ShippedPricesTests

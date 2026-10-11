@@ -1,6 +1,6 @@
 using louis_agent.core.usage;
 
-namespace louis_agent.core.tests;
+namespace LouisAgent.Core.Tests;
 
 // F14 step 1: our rates.json format is the only one read; a mapper turns a provider's reply into it.
 public class ExchangeRatesTests

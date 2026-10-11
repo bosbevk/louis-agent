@@ -3,7 +3,7 @@ using louis_agent.core.providers;
 using louis_agent.core.usage;
 using Microsoft.Extensions.AI;
 
-namespace louis_agent.core.tests;
+namespace LouisAgent.Core.Tests;
 
 // F1-S1: counts mapped from UsageDetails; missing counts stay null. Numbers are from the F1 step 1 spike.
 public class UsageMapperTests

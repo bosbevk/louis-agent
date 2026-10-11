@@ -1,6 +1,6 @@
 using louis_agent.core.config;
 
-namespace louis_agent.core.tests;
+namespace LouisAgent.Core.Tests;
 
 // F14 step 5: usage-probe --host-culture writes HOST_CULTURE into config/.env; only that line may change.
 public class EnvFileTests

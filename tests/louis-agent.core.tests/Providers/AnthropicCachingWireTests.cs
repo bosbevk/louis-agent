@@ -7,7 +7,7 @@ using Anthropic.Models.Messages;
 using louis_agent.core.providers;
 using Microsoft.Extensions.AI;
 
-namespace louis_agent.core.tests;
+namespace LouisAgent.Core.Tests;
 
 // F4 step 1, the spike: what the Anthropic adapter (Microsoft.Extensions.AI over Anthropic 12.53) puts on the wire for
 // cache markers, checked on the captured request body; no model call. Kept as a regression test: if an SDK update stops

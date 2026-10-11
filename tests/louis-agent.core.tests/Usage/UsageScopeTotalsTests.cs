@@ -3,7 +3,7 @@ using louis_agent.core.tools;
 using louis_agent.core.usage;
 using Microsoft.Extensions.AI;
 
-namespace louis_agent.core.tests;
+namespace LouisAgent.Core.Tests;
 
 // F3-S1 (step 1): a turn's scope collects its requests' records, as the ledger stored them (with their cost), so a host
 // can show what the turn used.

@@ -3,7 +3,7 @@ using louis_agent.core.tools;
 using louis_agent.core.usage;
 using Microsoft.Extensions.AI;
 
-namespace louis_agent.core.tests;
+namespace LouisAgent.Core.Tests;
 
 // F3 step 3: a host session sums its turns for the usage line's session total and for /usage (F3-S3).
 public class UsageSessionTests

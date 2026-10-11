@@ -1,6 +1,6 @@
 using louis_agent.core.usage;
 
-namespace louis_agent.core.tests;
+namespace LouisAgent.Core.Tests;
 
 // F2-S1: prices in one config file, matched to the model by longest prefix.
 public class PriceTableTests

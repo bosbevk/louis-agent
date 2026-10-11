@@ -1,8 +1,9 @@
 using System.Globalization;
 using louis_agent.core.config;
 using louis_agent.core.usage;
+using louis_agent.core;
 
-namespace louis_agent.core.tests;
+namespace LouisAgent.Core.Tests;
 
 // F14 step 2: the currency costs are shown in, chosen from DISPLAY_CURRENCY, then HOST_CULTURE (the PC's Windows
 // culture, passed to containers as a value), then the process's own culture, then the price table's.

@@ -2,7 +2,7 @@ using louis_agent.core.providers;
 using louis_agent.core.tools;
 using louis_agent.core.usage;
 
-namespace louis_agent.core.tests;
+namespace LouisAgent.Core.Tests;
 
 // F3 step 2: the usage line after an answer (F3-S1, S3, S4) and the /usage reply (F3-S3), one format for every host.
 public class UsageTextTests

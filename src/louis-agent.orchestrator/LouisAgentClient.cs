@@ -4,7 +4,7 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using louis_agent.core.usage;
 
-namespace louis_agent.orchestrator;
+namespace LouisAgent.Orchestrator;
 
 /// <summary>One tool louis-agent called while answering: its input (JSON) and the result it got back.</summary>
 internal sealed class AgentToolCall(string id, string name, string input)

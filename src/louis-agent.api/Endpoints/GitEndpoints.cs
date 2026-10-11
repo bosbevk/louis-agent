@@ -2,7 +2,7 @@ using System.Diagnostics;
 using System.Text;
 using louis_agent.core.tools;
 
-namespace louis_agent.api;
+namespace LouisAgent.Api.Endpoints;
 
 /// <summary>
 /// A small git interface for the web app: see what changed, read each diff, then stage, unstage, discard or commit.

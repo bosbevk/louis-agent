@@ -1,4 +1,6 @@
-namespace louis_agent.core.tests;
+namespace LouisAgent.Core.Tests;
+
+using louis_agent.core;
 
 // LLM profiles: config/.env.{LLM_PROFILE} fills in what the shell, .env.secrets and .env left unset.
 // The fake config files use their own variable names, so the real LLM_* settings of other tests are never touched.

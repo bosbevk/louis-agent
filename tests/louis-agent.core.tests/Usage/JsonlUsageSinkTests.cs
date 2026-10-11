@@ -4,8 +4,9 @@ using louis_agent.core.providers;
 using louis_agent.core.tools;
 using louis_agent.core.usage;
 using Microsoft.Extensions.AI;
+using louis_agent.core;
 
-namespace louis_agent.core.tests;
+namespace LouisAgent.Core.Tests;
 
 // F1-S1: records land in {LOG_DIRECTORY}/usage-YYYY-MM.jsonl. F1-S4: no prompt text in the file.
 public class JsonlUsageSinkTests

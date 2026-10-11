@@ -1,6 +1,6 @@
 using louis_agent.core.usage;
 
-namespace louis_agent.core.tests;
+namespace LouisAgent.Core.Tests;
 
 // F1-S1: rounds numbered per turn; the scope flows across await and nests.
 public class UsageScopeTests

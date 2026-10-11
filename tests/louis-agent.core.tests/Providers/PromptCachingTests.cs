@@ -7,7 +7,7 @@ using louis_agent.core.providers;
 using louis_agent.core.usage;
 using Microsoft.Extensions.AI;
 
-namespace louis_agent.core.tests;
+namespace LouisAgent.Core.Tests;
 
 // F4 step 4: the caching strategy and its client. Anthropic's markers are checked on the captured request body, through
 // the real adapter (as in AnthropicCachingWireTests), so the test sees what the API would see.

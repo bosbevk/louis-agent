@@ -5,7 +5,7 @@ using Anthropic.Core;
 using louis_agent.core.usage;
 using Microsoft.Extensions.AI;
 
-namespace louis_agent.core.tests;
+namespace LouisAgent.Core.Tests;
 
 // F4 step 6: cache writes split by lifetime reach the ledger, from the real Anthropic adapter (a captured reply, no
 // model call), streaming and not. UsageDetails has only the total; the split comes from the SDK's own usage.
