@@ -62,9 +62,10 @@ its own.
       per session"
 - [ ] [F12 Response speed](docs/features/F12-response-speed.md) — time to first token and tokens per second on every
       usage record, for every provider (Ollama's own timings too); shown with the usage
-- [ ] [F14 Display currency](docs/features/F14-display-currency.md) — show costs in a chosen currency (server default
-      and per web user), with the rate's date; the ledger stays in the bill's currency. Rate source to decide: fixed in
-      config, live, or both
+- [x] [F14 Display currency](docs/features/F14-display-currency.md) — show costs in the PC's currency (from the Windows
+      region, `HOST_CULTURE`) or a chosen one, with the rate's date; rates live from `RATES_URL` (frankfurter) with a
+      `config/rates.json` fallback, served at `GET /rates`; the ledger stays in the bill's currency. *Built before
+      M2 by choice* ([plan](docs/plans/F14-display-currency.md))
 
 **Local — Local models:** a local model gets everything it is sent.
 
@@ -155,6 +156,8 @@ Design: [docs/specs/SESSION_ARCHITECTURE.md](docs/specs/SESSION_ARCHITECTURE.md)
 - [ ] Sync chat history across devices and browsers instead of only `localStorage`
 - [ ] A UI for skills (`Skills/*.md`) and for reviewing and approving agent-built tools — today that's typing `/tools`,
       `/approve <Name>` and `/reject <Name>` in a chat
+- [ ] Tests for the web app's `UsageFormat`, which repeats core's `UsageText` number and currency rules (F3, F14) with
+      no tests of its own: share the rules (a small project both reference) or test both against the same strings
 
 ### CLI
 
@@ -222,6 +225,14 @@ backlog item removes one, it says so.
 ## Done
 
 Newest first; details in the git history.
+
+- 2026-10-11 — **F14 Display currency**: costs in the PC's currency in every host (rands from `HOST_CULTURE=en-ZA`,
+  written by `usage-probe --host-culture`; `R0.034`, `.` decimals), at a dated rate (Frankfurter mapped into our
+  `rates.json`, `config/rates.json` as the fallback, served at `GET /rates`), with the rate and the USD charged beside
+  converted totals; a currency picker in the web app. The ledger stays in USD. Both demo samples rerun in rands
+
+- 2026-10-11 — [FX8](docs/fixes/FX08-fix-result-quotes.md): a FIX-RESULT whose summary quotes without escaping
+  ("Cher") is still read, instead of asking louis-agent to continue three times; found by F14's full demo rerun
 
 - 2026-10-11 — **F3 Show usage** (M1 done): every answer says what it used and cost — a line on the CLI's stderr,
   under each answer in the web app (with the chat's total), in Rider with `USAGE_IN_CHAT=true` — `/usage` in every

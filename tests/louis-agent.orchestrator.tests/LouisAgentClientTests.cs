@@ -170,6 +170,33 @@ public class LouisAgentClientTests
         Assert.That(result.Reason, Is.EqualTo("tests keep failing"));
     }
 
+    [Test]
+    public void ParseFixResult_UnescapedQuotesInTheSummary_StillReadsTheResult()
+    {
+        // FX8, from the full demo of 2026-10-11: valid in every way but the quotes around "Cher", so not valid JSON. The
+        // orchestrator read "none" and asked louis-agent to continue three times.
+        const string text = """
+            Committed the fix.
+            FIX-RESULT: {"status":"fixed","commit":"13eb2b0","branch":"fix/customer-initials-9c8637c0128d","tests":"16/16 passed","summary":"Single-word names now return one initial and multi-word names use the first and last word, so order 1012 ("Cher") no longer throws IndexOutOfRangeException."}
+            """;
+
+        FixResult? result = LouisAgentClient.ParseFixResult(text);
+
+        Assert.That(result, Is.EqualTo(new FixResult("fixed", "13eb2b0", "fix/customer-initials-9c8637c0128d", "16/16 passed",
+            "Single-word names now return one initial and multi-word names use the first and last word, so order 1012 (\"Cher\") no longer throws IndexOutOfRangeException.",
+            null)));
+    }
+
+    [Test]
+    public void ParseFixResult_UnescapedQuotesInAReason_StillReadsTheFailure()
+    {
+        const string text = """FIX-RESULT: {"status":"failed","reason":"the "Cher" case needs a product decision","tests":"15/16 passed"}""";
+
+        FixResult? result = LouisAgentClient.ParseFixResult(text);
+
+        Assert.That((result!.Status, result.Reason, result.Tests), Is.EqualTo(("failed", "the \"Cher\" case needs a product decision", "15/16 passed")));
+    }
+
     [TestCase("All done, no result line.")]
     [TestCase("FIX-RESULT: {not json}")]
     [TestCase("FIX-RESULT: {\"commit\":\"abc1234\"}")]

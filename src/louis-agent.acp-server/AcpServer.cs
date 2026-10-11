@@ -157,7 +157,7 @@ internal sealed class AcpServer(AgentEngine agent, bool usageInChat = false)
             $"The Rider project workspace is mounted at '{agent.WorkspaceRoot}'. " +
             "Use the workspace tools to inspect and edit project files. All file paths passed to those tools must be relative to that workspace."));
 
-        _sessions[sessionId] = new SessionState(cwd, history);
+        _sessions[sessionId] = new SessionState(cwd, history, agent.Display);
         await WriteResultAsync(id, new { sessionId }, cancellationToken);
     }
 
@@ -706,7 +706,7 @@ internal sealed class AcpServer(AgentEngine agent, bool usageInChat = false)
         return null;
     }
 
-    private sealed class SessionState(string cwd, List<ChatMessage> history)
+    private sealed class SessionState(string cwd, List<ChatMessage> history, DisplayCurrency? display)
     {
         public string Cwd { get; } = cwd;
         public List<ChatMessage> History { get; } = history;
@@ -717,7 +717,7 @@ internal sealed class AcpServer(AgentEngine agent, bool usageInChat = false)
         /// <summary>Prompts answered by the model so far; the usage ledger's turn number.</summary>
         public int Turns;
 
-        /// <summary>The usage of the session's finished turns, for the usage line's session total and /usage (F3).</summary>
-        public UsageSession Usage { get; } = new();
+        /// <summary>The usage of the session's finished turns, for the usage line's session total and /usage (F3), in the display currency (F14).</summary>
+        public UsageSession Usage { get; } = new(display);
     }
 }

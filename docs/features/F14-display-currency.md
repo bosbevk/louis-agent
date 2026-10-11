@@ -1,10 +1,11 @@
 # F14 · Display currency: show costs in your own currency
 
-> **Status:** planned · **Milestone:** M5 · **Depends on:** F2, F3
+> **Status:** done (2026-10-11) · **Milestone:** M5 (built early, by choice) · **Depends on:** F2, F3
 >
 > **Spec:** [Usage §4.2 (prices), §7 (showing usage)](../specs/USAGE_AND_BUDGETS.md)
 >
-> **In the TODO:** tick **F14 Display currency** under *Now* ([TODO](../../TODO.md))
+> **In the TODO:** tick **F14 Display currency** under *Now* ([TODO](../../TODO.md)) · **Plan:**
+> [plans/F14](../plans/F14-display-currency.md)
 
 F2 prices every request in the price table's currency (USD: what Anthropic bills in), and F3 shows those amounts
 everywhere: `turn: 3 requests · 28k tokens · $0.006`. For someone who thinks in another currency, every figure needs a
@@ -20,7 +21,8 @@ ledger with the bill in the bill's currency.
 CLI, Rider, `/usage` and the orchestrator's comms log all show the same one.
 - *Given* `DISPLAY_CURRENCY=ZAR` and a rate for ZAR *when* a turn ends *then* the usage line shows
   `turn: 3 requests · 28k tokens · R0.11 · session R0.73`.
-- *Given* no `DISPLAY_CURRENCY` *then* everything is shown in the price table's currency, as in F3.
+- *Given* no `DISPLAY_CURRENCY` *then* the PC's region decides (Windows `en-ZA` → ZAR, passed to the containers as
+  `HOST_CULTURE`), and with no region either, the price table's currency, as in F3.
 - *Given* `DISPLAY_CURRENCY` names a currency with no rate *then* start-up logs one `[WARN]` and costs are shown in the
   table's currency (never a guessed rate).
 
@@ -54,7 +56,17 @@ hand every day, so that converted figures stay close to the truth. *How*: the op
 - **Totals convert per record, not per total**: rates change over time, so a session that crosses a rate update adds up
   each record at the rate shown with it. (With one rate per run this is the same; it matters for F11's longer reports.)
 
-### Open decision: where rates come from (decide when planning F14)
+### Decided when planning (2026-10-11)
+
+- **Which currency:** the Windows region, read on the PC and written once to `config/.env` as `HOST_CULTURE=en-ZA`
+  (containers can't see it, and running them *in* en-ZA would change every tool's number format); `DISPLAY_CURRENCY`
+  overrides it. The browser's locale isn't used: it reports the display language (`en-US`), not the region.
+- **Format:** the culture's symbol with `.` decimals (`R35.00`, `R0.11`), never `35,00`.
+- **Rates: A + B below.** Live from `RATES_URL` (default frankfurter, ECB reference rates), mapped by a small
+  strategy (`IRatesMapper`) into our own `rates.json` format, the only one the code reads; the tracked
+  `config/rates.json` as the fallback; and served by the API at `GET /rates`, like the price table.
+
+The options as they were weighed:
 
 | Option | How | For | Against |
 |---|---|---|---|
@@ -67,7 +79,10 @@ table's currency, never to a guess.
 
 ## Implementation steps
 
-1. **Decide the rate source** (above) and write the plan in [plans/](../plans/README.md).
+The approved [plan](../plans/F14-display-currency.md) has the steps as they will be built; these were the first
+sketch.
+
+1. **Decide the rate source** (above) and write the plan in [plans/](../plans/README.md). *Done.*
 2. **`ExchangeRates` and its loading.** *Test:* convert with a dated rate; unknown currency → null; malformed rates file
    fails start-up naming the file (like prices).
 3. **`UsageText` and the web app's `UsageFormat` in a display currency.** *Test:* exact strings for USD, ZAR, EUR and an unknown code; partial-priced
@@ -85,6 +100,32 @@ table's currency, never to a guess.
 - With `DISPLAY_CURRENCY` set, the CLI line, `/usage`, Rider, the web app and the comms log all show converted costs
   with the rate's date available, and the ledger is byte-for-byte what it would have been without F14.
 - **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)).
+
+## What the build changed from this plan
+
+- **The currency comes from the PC's Windows culture** (`HOST_CULTURE`, written by `usage-probe --host-culture`), with
+  `DISPLAY_CURRENCY` as the override, rather than `DISPLAY_CURRENCY` alone. The containers can't see the region, and
+  running them in en-ZA would have changed every tool's number format (`35,00`), so the culture is passed as a value.
+- **Code and symbol from .NET's `RegionInfo`** instead of a symbol table of ours; a symbol that clashes with the price
+  table's own (`$` for AUD, CAD, NZD, MXN) is written as the code (`0.1 AUD`).
+- **Rates: our own `rates.json` format, the only one read**, with a mapper per provider (`IRatesMapper`; Frankfurter's
+  reply is mapped), `RATES_URL` / `RATES_FORMAT` / `RATES_FILE`, a tracked `config/rates.json`, and `GET /rates` on the
+  API like the price table; the demo's orchestrator reads demo-api's, so both agents use one rate. An outage or an
+  unmappable reply falls back to the file, and so does a reply in the wrong currency (the provider's change, found in
+  the PR #13 review); only a `RATES_FILE` in the wrong currency, our own configuration, stops start-up. The default URL
+  is `?base=USD`, v1's documented parameter (`?from=` means a date in Frankfurter v2).
+- **Totals are converted at the one rate the host loaded,** not record by record as the design above says. A host loads
+  its rates once at start-up, so the numbers are the same; F11, whose reports cover months, must convert each record
+  at the rate of its own date instead of relying on this.
+- **The API's usage object always carries `display_*`** (the charged figures when not converting), and
+  `GET /rates/display` gives the web app the server's currency and a symbol per currency. The web app converts the
+  stored charged cost when drawing, so changing its currency re-labels every saved chat.
+- **Amounts always use `.`** (`R35.00`), whatever the culture; converted totals carry the rate and the USD charged
+  (`/usage`, the comms log's run total).
+- **Both demos were rerun for the samples** (comms logs in rands; both matched their ledgers exactly in USD). The full
+  run found [FX8](../fixes/FX08-fix-result-quotes.md), fixed in F14; the full sample is kept as it was, with a note.
+- **Checked by hand:** the CLI, Rider (over stdio), the API and the web app (Chrome) on Ollama with a priced test
+  table, and the orchestrator in both demos.
 
 ## Not in this feature
 

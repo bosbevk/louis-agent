@@ -64,6 +64,32 @@ public sealed class AgentOptions
     /// </summary>
     public string? PricesUrl { get; set; }
 
+    /// <summary>Where exchange rates come from by default: Frankfurter, the ECB's daily reference rates (free, no key).</summary>
+    /// <remarks><c>base</c> is v1's documented parameter (<c>from</c> works as an alias today, but means a date in v2).</remarks>
+    public const string DefaultRatesUrl = "https://api.frankfurter.dev/v1/latest?base=USD";
+
+    /// <summary>
+    /// RATES_URL: where a host fetches exchange rates for showing costs in another currency (F14), e.g. Frankfurter (the
+    /// default) or louis-agent.api's GET /rates; "off" skips the fetch. If it can't be reached, RATES_FILE is used.
+    /// </summary>
+    public string? RatesUrl { get; set; } = DefaultRatesUrl;
+
+    /// <summary>RATES_FORMAT: the format of RATES_URL's reply, turned into ours by its mapper: frankfurter (default) or rates-json.</summary>
+    public string RatesFormat { get; set; } = "frankfurter";
+
+    /// <summary>RATES_FILE: the fallback rates, in our rates.json format; null means config/rates.json, found like config/.env.</summary>
+    public string? RatesFile { get; set; }
+
+    /// <summary>
+    /// HOST_CULTURE: the PC's Windows culture (e.g. en-ZA), whose region decides the currency costs are shown in (F14).
+    /// Containers can't see the PC's region, so it's written to config/.env once (usage-probe --host-culture) and passed
+    /// as a value: their own culture stays invariant, so tools and tests format numbers the same everywhere.
+    /// </summary>
+    public string? HostCulture { get; set; }
+
+    /// <summary>DISPLAY_CURRENCY: show costs in this currency (an ISO code, e.g. EUR) instead of the region's.</summary>
+    public string? DisplayCurrency { get; set; }
+
     public static AgentOptions FromEnvironment(Func<string, string?>? getVariable = null)
     {
         getVariable ??= Environment.GetEnvironmentVariable;
@@ -88,6 +114,16 @@ public sealed class AgentOptions
             UsageInChat = bool.TryParse(Get("USAGE_IN_CHAT"), out bool usageInChat) && usageInChat,
             PricesFile = Get("PRICES_FILE"),
             PricesUrl = Get("PRICES_URL"),
+            RatesUrl = Get("RATES_URL") switch
+            {
+                null => DefaultRatesUrl,
+                { } off when off.Equals("off", StringComparison.OrdinalIgnoreCase) => null,
+                { } url => url,
+            },
+            RatesFormat = Get("RATES_FORMAT") ?? "frankfurter",
+            RatesFile = Get("RATES_FILE"),
+            HostCulture = Get("HOST_CULTURE"),
+            DisplayCurrency = Get("DISPLAY_CURRENCY"),
         };
         if (Get("AGENT_FUNCTION") is { } function) options.AgentFunction = function;
         if (Get("WORKSPACE_ROOT") is { } root) options.WorkspaceRoot = root;

@@ -11,14 +11,23 @@ using Microsoft.Extensions.AI;
 //   dotnet run --project tools/louis-agent.usage-probe [-- --lines N]
 //   dotnet run --project tools/louis-agent.usage-probe -- --think     (2 requests that need reasoning: is thinking text returned?)
 //   dotnet run --project tools/louis-agent.usage-probe -- --ledger <usage-YYYY-MM.jsonl>   (price and total a ledger; no model call)
+//   dotnet run --project tools/louis-agent.usage-probe -- --host-culture [en-ZA]   (write the PC's culture to config/.env; F14)
 //
 // Uses LLM_PROVIDER / LLM_MODEL / LLM_ENDPOINT from config/.env; variables set in the shell win. Every request goes to the
 // real provider, so with Anthropic this costs money (about $0.05 on Haiku 4.5 with the default prompt). --ledger only
 // reads the file and the price table (PRICES_URL / PRICES_FILE / config/prices.json).
 
 AgentHost.LoadEnvironment();
+// Read before the line below makes it invariant: --host-culture writes this machine's culture (the Windows region's).
+System.Globalization.CultureInfo machineCulture = System.Globalization.CultureInfo.CurrentCulture;
 // The same numbers on every machine ($0.0546, 531,265), whatever its locale.
 System.Globalization.CultureInfo.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
+
+if (Array.IndexOf(args, "--host-culture") is var cultureArg and >= 0)
+{
+    string? given = cultureArg + 1 < args.Length && !args[cultureArg + 1].StartsWith("--") ? args[cultureArg + 1] : null;
+    Environment.Exit(WriteHostCulture(given ?? machineCulture.Name));
+}
 
 if (Array.IndexOf(args, "--ledger") is var ledgerArg and >= 0)
 {
@@ -171,6 +180,55 @@ void Print(string source, UsageDetails? usage)
 static string Show(long? count) => count?.ToString() ?? "null";
 
 // Prices a ledger (records written before F2 have no cost) and totals it per piece of work, per purpose, per run and in all.
+// F14: the containers can't see the PC's region, so its culture is written once into config/.env, which they all read.
+static int WriteHostCulture(string name)
+{
+    if (name.Length == 0)
+    {
+        Console.Error.WriteLine("This machine has no culture of its own (a container?). Run this on the PC, or name one: --host-culture en-ZA");
+        return 1;
+    }
+
+    System.Globalization.RegionInfo region;
+    try
+    {
+        var culture = System.Globalization.CultureInfo.GetCultureInfo(name);
+        if (culture.IsNeutralCulture) throw new ArgumentException("a language without a region");
+        region = new System.Globalization.RegionInfo(culture.Name);
+    }
+    catch (Exception ex) when (ex is ArgumentException or System.Globalization.CultureNotFoundException)
+    {
+        Console.Error.WriteLine($"'{name}' names no region ({ex.Message}). Use a culture such as en-ZA.");
+        return 1;
+    }
+
+    var agent = AgentOptions.FromEnvironment();
+    agent.HostCulture = name;
+    agent.DisplayCurrency = null;
+    PriceTable prices = AgentHost.LoadPrices(agent);
+    ExchangeRates rates = AgentHost.LoadRates(agent, prices.Currency);
+    DisplayCurrency display = DisplayCurrency.Resolve(agent, prices.Currency, rates);
+
+    Console.WriteLine($"Culture: {name} -> region {region.TwoLetterISORegionName}, currency {region.ISOCurrencySymbol} ({region.CurrencySymbol})");
+    Console.WriteLine(display.Converts
+        ? $"Rate: 1 {display.Base} = {display.Rate} {display.Code} (as of {display.RateAsOf}, {rates.Source})"
+        : $"Costs are shown as charged, in {display.Base}.");
+
+    if (EnvFile.Find(Environment.CurrentDirectory) is not { } envFile)
+    {
+        Console.Error.WriteLine("No config/.env found: copy config/.env.example to config/.env first.");
+        return 1;
+    }
+
+    bool replaced = EnvFile.Write(envFile, "HOST_CULTURE", name,
+        "The PC's culture (F14): costs are shown in its region's currency. Written by usage-probe --host-culture.");
+    Console.WriteLine($"{(replaced ? "Updated" : "Added")} HOST_CULTURE={name} in {envFile}");
+    if (Environment.GetEnvironmentVariable("DISPLAY_CURRENCY") is { Length: > 0 } other)
+        Console.WriteLine($"Note: DISPLAY_CURRENCY={other} is set and overrides it.");
+    Console.WriteLine("Restart the hosts to use it: the containers (docker compose ... up -d), and a New Chat in Rider.");
+    return 0;
+}
+
 static void PrintLedger(string path, PriceTable prices)
 {
     var records = UsageReport.Price(UsageReport.Read(path), prices).ToList();

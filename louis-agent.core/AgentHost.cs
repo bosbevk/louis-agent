@@ -9,7 +9,10 @@ using louis_agent.core.usage;
 
 /// <summary>Everything an entry point needs after bootstrap.</summary>
 /// <param name="Prices">The price table the usage ledger prices with (louis-agent.api also serves it at GET /prices).</param>
-public sealed record AgentHostContext(AgentEngine Engine, LlmOptions Llm, AgentOptions Agent, PriceTable Prices);
+/// <param name="Rates">Exchange rates from the price table's currency, for showing costs in another currency (F14).</param>
+/// <param name="Display">The currency costs are shown in (F14): HOST_CULTURE's region, DISPLAY_CURRENCY, or as charged.</param>
+public sealed record AgentHostContext(
+    AgentEngine Engine, LlmOptions Llm, AgentOptions Agent, PriceTable Prices, ExchangeRates Rates, DisplayCurrency Display);
 
 /// <summary>
 /// Single bootstrap shared by the CLI, ACP and MCP entry points: dotenv load, option binding,
@@ -119,12 +122,16 @@ public static partial class AgentHost
         var skills = LoadSkills(agent);
         var chatClient = clientFactory.Create(llm);
         PriceTable prices = LoadPrices(agent);
+        ExchangeRates rates = LoadRates(agent, prices.Currency);
+        DisplayCurrency display = DisplayCurrency.Resolve(agent, prices.Currency, rates);
+        Console.Error.WriteLine($"[INFO] Display currency: {display}");
         var engine = new AgentEngine(skills, chatClient, agent, llm.ResolveSupportsTools(),
             usageSink: CreateUsageSink(agent, prices), usageMapper: clientFactory.CreateUsageMapper(llm))
         {
             SkillsDirectory = FindSkillsDirectory(agent),
             SkillReloader = () => LoadSkills(agent),
             Thinking = llm.ResolveThinking(),
+            Display = display,
         };
         engine.LoadApprovedTools();
         Console.Error.WriteLine($"[INFO] LLM: {llm}; tools={(engine.SupportsTools ? "on" : "off")}; thinking={engine.Thinking?.ToString().ToLowerInvariant() ?? "off"}");
@@ -153,7 +160,7 @@ public static partial class AgentHost
             Console.Error.WriteLine($"[INFO] MCP discovery disabled or not configured");
         }
 
-        return new AgentHostContext(engine, llm, agent, prices);
+        return new AgentHostContext(engine, llm, agent, prices, rates, display);
     }
 
     /// <summary>
@@ -214,6 +221,72 @@ public static partial class AgentHost
             Console.Error.WriteLine($"[INFO] Prices: {path} (as of {prices.AsOf}, {prices.Models.Count} models)");
         return prices;
     }
+
+    private static readonly TimeSpan RatesUrlTimeout = TimeSpan.FromSeconds(5);
+
+    /// <summary>
+    /// Exchange rates for showing costs in another currency (F14): from RATES_URL (Frankfurter by default), turned into our
+    /// rates.json format by RATES_FORMAT's mapper; if that can't be fetched or read, from RATES_FILE or config/rates.json;
+    /// empty, with a warning, if there's neither. Failures are sorted by who can fix them: anything wrong with RATES_URL's
+    /// reply (down, a new shape, or rates from another currency) is the provider's, so it warns and uses the file; a rates
+    /// file that isn't valid, or whose base isn't <paramref name="baseCurrency"/>, is our own configuration, so it throws:
+    /// costs converted at a wrong rate are worse than not starting.
+    /// </summary>
+    /// <param name="baseCurrency">The price table's currency; the rates must be from it.</param>
+    /// <param name="handler">For tests: answers the RATES_URL request.</param>
+    public static ExchangeRates LoadRates(AgentOptions agent, string baseCurrency = "USD", HttpMessageHandler? handler = null)
+    {
+        IRatesMapper mapper = RatesMappers.For(agent.RatesFormat);
+        if (agent.RatesUrl is { } ratesUrl)
+        {
+            if (!Uri.TryCreate(ratesUrl, UriKind.Absolute, out Uri? url) || url.Scheme is not ("http" or "https"))
+                throw new InvalidDataException($"RATES_URL must be an http or https URL (or off), got '{ratesUrl}'.");
+
+            using var http = handler is null ? new HttpClient() : new HttpClient(handler, disposeHandler: false);
+            http.Timeout = RatesUrlTimeout;
+            try
+            {
+                // Start-up is synchronous in every host; the call is bounded by the timeout above.
+                ExchangeRates fromUrl = ExchangeRates.LoadAsync(http, url, mapper).GetAwaiter().GetResult();
+                CheckBase(fromUrl, baseCurrency, url.ToString());
+                Console.Error.WriteLine($"[INFO] Rates: {url} (as of {fromUrl.AsOf}, {fromUrl.Rates.Count} currencies)");
+                return fromUrl;
+            }
+            catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException or InvalidDataException or WrongBaseException)
+            {
+                // A third party's reply changing shape, its currency, or being down, never stops an agent: the rates file keeps
+                // working. (Frankfurter's v2 reads ?from= as a date, so a v1 alias dropped would answer in EUR.)
+                Console.Error.WriteLine($"[WARN] Rates: {url} can't be used ({ex.Message}); using the rates file instead.");
+            }
+        }
+
+        string? path = agent.RatesFile
+                       ?? (FindConfigDirectory(Environment.CurrentDirectory) is { } configDir ? Path.Combine(configDir, "rates.json") : null);
+        ExchangeRates rates = path is null ? ExchangeRates.Empty : ExchangeRates.Load(path);
+        if (rates.IsEmpty)
+        {
+            Console.Error.WriteLine($"[WARN] No exchange rates at {path ?? "config/rates.json"}: costs are shown in {baseCurrency}.");
+            return rates;
+        }
+
+        CheckBase(rates, baseCurrency, path!);
+        Console.Error.WriteLine($"[INFO] Rates: {path} (as of {rates.AsOf}, {rates.Rates.Count} currencies)");
+        return rates;
+    }
+
+    /// <summary>Rates from another currency than the price table's would convert every cost wrongly.</summary>
+    private static void CheckBase(ExchangeRates rates, string baseCurrency, string source)
+    {
+        if (!string.Equals(rates.Base, baseCurrency, StringComparison.OrdinalIgnoreCase))
+            throw new WrongBaseException(
+                $"Exchange rates {source} are from {rates.Base}, but the price table is in {baseCurrency}: set RATES_URL to rates from {baseCurrency}.");
+    }
+
+    /// <summary>
+    /// Rates from another currency than the price table's. From RATES_FILE, our own configuration, it stops start-up; from
+    /// RATES_URL it falls back to the file, since a provider changing its reply is not something the operator can fix.
+    /// </summary>
+    internal sealed class WrongBaseException(string message) : Exception(message);
 
     /// <summary>
     /// Loads skills using typed providers.

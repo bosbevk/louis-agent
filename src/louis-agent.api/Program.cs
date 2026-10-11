@@ -54,6 +54,31 @@ app.MapGet("/prices", () => host.Prices.IsEmpty
         statusCode: StatusCodes.Status404NotFound)
     : Results.Json(host.Prices, PriceTable.Json));
 
+// The exchange rates this API loaded (F14), in our rates.json format, for other hosts' RATES_URL (with
+// RATES_FORMAT=rates-json; the demo's orchestrator) and the web app. Public like /prices; 404 when it has none.
+app.MapGet("/rates", () => host.Rates.IsEmpty
+    ? Results.Json(Error("not_found_error", "No exchange rates loaded: RATES_URL couldn't be used and there is no config/rates.json."),
+        statusCode: StatusCodes.Status404NotFound)
+    : Results.Text(host.Rates.ToJson(), "application/json"));
+
+// Worked out once: looking a symbol up goes through every culture .NET knows.
+var Symbols = new Lazy<Dictionary<string, string>>(() =>
+    host.Rates.Rates.Keys.Append(host.Prices.Currency).Distinct().Order(StringComparer.Ordinal)
+        .ToDictionary(code => code, code => DisplayCurrency.DistinctSymbol(code, DisplayCurrency.SymbolFor(code), host.Prices.Currency)));
+
+// What the web app needs to show costs in another currency (F14): the server's display currency (from HOST_CULTURE or
+// DISPLAY_CURRENCY; the browser's own locale is the display language, not the region) and a symbol for every currency
+// in /rates, worked out here, since the browser's .NET carries little culture data. Public like /rates.
+app.MapGet("/rates/display", () => Results.Json(new
+{
+    display_currency = host.Display.Code,
+    display_symbol = host.Display.Symbol,
+    @base = host.Display.Base,
+    rate_as_of = host.Display.RateAsOf ?? host.Rates.AsOf,
+    symbols = Symbols.Value,
+}));
+
+
 app.MapWorkspace();
 app.MapGit();
 app.MapHistory();
@@ -81,7 +106,7 @@ app.MapGet("/sessions/{id}", (string id, AgentSessions sessions, AgentEngine eng
         {
             session_id = session.Id, created_at = session.CreatedAt, last_activity = session.LastActivity, busy = session.IsBusy,
             task = session.Tags.Task, run = session.Tags.Run, service = session.Tags.Service,
-            usage = engine.RecordsUsage ? ClaudeStyleStream.Usage(session.Usage.Records) : null,
+            usage = engine.RecordsUsage ? ClaudeStyleStream.Usage(session.Usage.Records, engine.Display) : null,
         })
         : UnknownSession(id));
 
@@ -191,7 +216,7 @@ static async IAsyncEnumerable<SseItem<string>> StreamTurnAsync(
         // The stream has ended (or thrown), so every request of the turn, a cancelled or failed one too, is in the scope.
         // None when no request returned (e.g. the first one failed): there is nothing to report.
         IReadOnlyList<UsageRecord> turnRecords = usage.Records;
-        object? turnUsage = engine.RecordsUsage && turnRecords.Count > 0 ? ClaudeStyleStream.Usage(turnRecords) : null;
+        object? turnUsage = engine.RecordsUsage && turnRecords.Count > 0 ? ClaudeStyleStream.Usage(turnRecords, engine.Display) : null;
         if (error is not null)
         {
             foreach (var item in stream.CloseBlock()) yield return item;
@@ -287,9 +312,13 @@ internal sealed class ClaudeStyleStream(string sessionId)
     /// kinds don't overlap (F1), as in Claude's own usage: <c>input_tokens</c> is the uncached input. Cost is null when
     /// no request was priced ("price unknown", never 0); <c>unpriced</c> counts the requests without a price.
     /// </summary>
-    public static object Usage(IReadOnlyList<UsageRecord> records)
+    public static object Usage(IReadOnlyList<UsageRecord> records, DisplayCurrency? display = null)
     {
         UsageTotal total = UsageReport.Total("usage", records);
+        string? currency = total.Cost is null ? null : records.First(r => r.Cost is not null).Cost!.Currency;
+        // F14: the cost in the display currency too, beside what was charged; the same as the charged cost when not
+        // converting, so a client can always show display_* and never needs the rates itself.
+        bool converts = display is { Converts: true } && string.Equals(currency, display.Base, StringComparison.OrdinalIgnoreCase);
         return new
         {
             input_tokens = total.Input,
@@ -298,8 +327,12 @@ internal sealed class ClaudeStyleStream(string sessionId)
             output_tokens = total.Output,
             requests = total.Requests,
             cost = total.Cost,
-            currency = total.Cost is null ? null : records.First(r => r.Cost is not null).Cost!.Currency,
+            currency,
             unpriced = total.Unpriced,
+            display_cost = converts ? Math.Round(total.Cost!.Value * display!.Rate, 6, MidpointRounding.AwayFromZero) : total.Cost,
+            display_currency = converts ? display!.Code : currency,
+            display_symbol = converts ? display!.Symbol : currency is null ? null : DisplayCurrency.SymbolFor(currency),
+            rate_as_of = converts ? display!.RateAsOf : null,
         };
     }
 

@@ -21,18 +21,26 @@ var (skills, methods) = OrchestratorSkills.Load(options.SkillsDirectory, options
 var feed = new ErrorFeed(options.ErrorLogPath, options.StateDirectory);
 using var http = new HttpClient { BaseAddress = options.LouisAgentUrl, Timeout = TimeSpan.FromMinutes(30) };
 var louisAgent = new LouisAgentClient(http, options.LouisAgentApiKey);
-var comms = new CommsLog(options.CommsLogPath);
-var tools = new ServiceTools(options, feed, louisAgent, methods, comms, Log);
 
 // LOG_DIRECTORY and USAGE_LEDGER come from the environment, so triage lands in the same usage ledger as the fixes.
 var agentOptions = AgentOptions.FromEnvironment();
 agentOptions.WorkspaceRoot = options.ServiceRoot;
 agentOptions.AgentFunction = "orchestrator";
+// Prices and rates as louis-agent's (in the demo, from demo-api's /prices and /rates), so both agents' costs, and the
+// comms log's sums of them, are in one currency at one rate (F14).
+PriceTable prices = AgentHost.LoadPrices(agentOptions);
+ExchangeRates rates = AgentHost.LoadRates(agentOptions, prices.Currency);
+DisplayCurrency display = DisplayCurrency.Resolve(agentOptions, prices.Currency, rates);
+Log($"Costs shown in {display}");
+
+var comms = new CommsLog(options.CommsLogPath, display);
+var tools = new ServiceTools(options, feed, louisAgent, methods, comms, Log);
 var clientFactory = new LlmClientFactory();
 var engine = new AgentEngine(skills, clientFactory.Create(llm), agentOptions, llm.ResolveSupportsTools(), toolsets: [tools],
-    usageSink: AgentHost.CreateUsageSink(agentOptions), usageMapper: clientFactory.CreateUsageMapper(llm))
+    usageSink: AgentHost.CreateUsageSink(agentOptions, prices), usageMapper: clientFactory.CreateUsageMapper(llm))
 {
     Thinking = llm.ResolveThinking(),
+    Display = display,
 };
 
 Log($"Watching {options.Service}: {options.ErrorLogPath}");
@@ -99,7 +107,7 @@ while (!stop.IsCancellationRequested)
         var decision = Decision.Parse(answer);
         Log($"DECISION {error.Id}: {decision.Outcome} - {decision.Reason}");
         EventUsage used = comms.EndEvent(decision.Outcome, decision.Reason, answer, TriageUsage());
-        if (used.Total is { } total) Log($"USAGE {error.Id}: {UsageText.Describe(total, comms.Currency)}");
+        if (used.Total is { } total) Log($"USAGE {error.Id}: {UsageText.Describe(total, comms.Currency, display)}");
         Directory.CreateDirectory(options.StateDirectory);
         await File.AppendAllTextAsync(Path.Combine(options.StateDirectory, "decisions.jsonl"),
             JsonSerializer.Serialize(new

@@ -9,6 +9,7 @@
 @inject IJSRuntime JS
 @inject GitState Git
 @inject GitHistory History
+@inject CurrencyState Currency
 @implements IDisposable
 
 <PageTitle>@(_chat?.Title ?? "Louis Agent")</PageTitle>
@@ -65,6 +66,7 @@
             </nav>
         }
         <ThemeSwitcher />
+        <CurrencySwitcher />
         <label class="settings">
             API key
             <input type="password" value="@Store.ApiKeyDraft" @onchange="SaveApiKey" placeholder="only if AGENT_API_KEY is set" />
@@ -107,7 +109,7 @@
             {
                 @foreach (var turn in _chat.Turns)
                 {
-                    <TurnView Turn="turn" Streaming="@(_streaming && turn == _chat.Turns[^1])" />
+                    <TurnView Turn="turn" Streaming="@(_streaming && turn == _chat.Turns[^1])" Currency="Currency.Current" />
                 }
             }
         </div>
@@ -119,7 +121,7 @@
 
         @if (!ViewerOpen && _chat?.Usage() is { } chatUsage)
         {
-            <div class="chat-usage" title="@UsageFormat.Detail(chatUsage)">@UsageFormat.Total(chatUsage)</div>
+            <div class="chat-usage" title="@UsageFormat.Detail(chatUsage, Currency.Current)">@UsageFormat.Total(chatUsage, Currency.Current)</div>
         }
 
         <div class="composer @(ViewerOpen ? "hidden" : "")">
@@ -185,6 +187,7 @@
     {
         Git.Changed += OnGitChanged;
         History.Changed += OnGitChanged;
+        Currency.Changed += OnGitChanged;
         if (!Store.Loaded) await Store.LoadAsync();
         _ = Git.RefreshAsync();
         _ = History.RefreshAsync();
@@ -398,6 +401,7 @@
     {
         Git.Changed -= OnGitChanged;
         History.Changed -= OnGitChanged;
+        Currency.Changed -= OnGitChanged;
     }
 
     private async Task StartTurnAsync(string text, List<Attachment> attachments, string? title = null)

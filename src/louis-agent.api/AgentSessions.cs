@@ -6,7 +6,7 @@ using Microsoft.Extensions.AI;
 namespace louis_agent.api;
 
 /// <summary>One conversation: its history and the turn in progress, if any.</summary>
-internal sealed class AgentSession(string id, List<ChatMessage> history, UsageTags tags)
+internal sealed class AgentSession(string id, List<ChatMessage> history, UsageTags tags, DisplayCurrency? display = null)
 {
     private readonly SemaphoreSlim _turnLock = new(1, 1);
     private CancellationTokenSource? _activeTurn;
@@ -23,8 +23,8 @@ internal sealed class AgentSession(string id, List<ChatMessage> history, UsageTa
     /// <summary>Messages started in this session; the current one's number is the usage ledger's turn.</summary>
     public int Turns { get; private set; }
 
-    /// <summary>The usage of the session's finished turns, for /usage and GET /sessions/{id} (F3).</summary>
-    public UsageSession Usage { get; } = new();
+    /// <summary>The usage of the session's finished turns, for /usage and GET /sessions/{id} (F3), in the display currency (F14).</summary>
+    public UsageSession Usage { get; } = new(display);
 
     /// <summary>Starts a turn unless one is already running; the turn stops if the client disconnects.</summary>
     public bool TryStartTurn(CancellationToken requestAborted, out CancellationTokenSource turn)
@@ -68,7 +68,7 @@ internal sealed class AgentSessions(AgentEngine engine)
         foreach (var idle in _sessions.Values.Where(s => !s.IsBusy && DateTimeOffset.UtcNow - s.LastActivity > IdleTimeout))
             _sessions.TryRemove(idle.Id, out _);
 
-        var session = new AgentSession($"sess_{Guid.NewGuid():N}", engine.NewHistory(), tags ?? UsageTags.None);
+        var session = new AgentSession($"sess_{Guid.NewGuid():N}", engine.NewHistory(), tags ?? UsageTags.None, engine.Display);
         _sessions[session.Id] = session;
         return session;
     }

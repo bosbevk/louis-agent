@@ -75,6 +75,28 @@ public sealed class Block
 
 public sealed record Attachment(string Name, string Content);
 
+/// <summary>The API's <c>GET /rates</c> (F14), in louis-agent's rates.json format: one <see cref="Base"/> in each currency.</summary>
+public sealed record RatesTable(
+    [property: System.Text.Json.Serialization.JsonPropertyName("as_of")] string AsOf,
+    string Base,
+    Dictionary<string, decimal> Rates);
+
+/// <summary>The API's <c>GET /rates/display</c> (F14): the server's display currency (the PC's region) and a symbol per currency.</summary>
+public sealed record RatesDisplay(
+    [property: System.Text.Json.Serialization.JsonPropertyName("display_currency")] string DisplayCurrency,
+    [property: System.Text.Json.Serialization.JsonPropertyName("display_symbol")] string DisplaySymbol,
+    string Base,
+    Dictionary<string, string> Symbols);
+
+/// <summary>
+/// The currency this browser shows costs in (F14): costs are stored as charged (in <see cref="Base"/>) and converted at
+/// <see cref="Rate"/> only when shown, so changing it re-labels every saved chat.
+/// </summary>
+public sealed record CurrencyChoice(string Code, string Symbol, decimal Rate, string? AsOf, string Base)
+{
+    public bool Converts => Code != Base;
+}
+
 /// <summary>A file or folder in the agent's workspace; <see cref="Path"/> is workspace-relative with forward slashes.</summary>
 public sealed record WorkspaceEntry(string Name, string Path, string Type, long? Size, bool Sensitive)
 {

@@ -31,12 +31,18 @@ LLM_PROFILE=ollama LLM_MODEL=qwen2.5:0.5b dotnet run --project tools/louis-agent
 dotnet run --project tools/louis-agent.usage-probe -- --think           # 2 reasoning requests: is thinking text returned?
 dotnet run --project tools/louis-agent.usage-probe -- --lines 100           # prompt size (default 600 Anthropic, 40 others)
 dotnet run --project tools/louis-agent.usage-probe -- --ledger .demo/logs/usage-2026-10.jsonl   # price and total a ledger
+dotnet run --project tools/louis-agent.usage-probe -- --host-culture   # write the PC's culture to config/.env (F14)
 ```
 
 **`--ledger <file>` makes no model call.** It reads a usage ledger, prices the records that have no cost yet (ledgers
 written before F2) with the current price table (`PRICES_URL` / `PRICES_FILE` / `config/prices.json`), and prints totals
 per piece of work (a fix's task, a triage, a chat session), per purpose, per run and in all. It's how the M1 baseline was
 measured; the reading and totalling live in core (`UsageReport`), for F3 and F11 to reuse.
+
+**`--host-culture [name]` makes no model call** (F14). It reads this PC's culture (read before the probe makes its own
+invariant), checks it names a region, prints the currency and today's rate, and writes `HOST_CULTURE=en-ZA` into
+`config/.env` with core's `EnvFile` (only that line changes; comments and CRLF endings are kept). Every container reads
+`config/.env`, so costs are then shown in rands everywhere after a restart. Name a culture to override the PC's.
 
 **Every request goes to the real provider.** With Anthropic and the default prompt that is about 62,000 input tokens,
 roughly $0.05 on Haiku 4.5. Anthropic only caches a prompt above a minimum size (4,096 tokens on Haiku 4.5), which is

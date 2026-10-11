@@ -15,7 +15,8 @@ internal sealed record EventUsage(UsageTotal? Triage, UsageTotal? LouisAgent, Us
 /// sent louis-agent (verbatim), each reply (its text verbatim, plus every tool call it made), the orchestrator's own
 /// checks, and a summary; then a run summary table for testing. Written as it happens, so a half-finished run is readable.
 /// </summary>
-internal sealed class CommsLog(string path)
+/// <param name="display">The currency costs are shown in (F14); null shows them as charged. jsonl files keep what was charged.</param>
+internal sealed class CommsLog(string path, DisplayCurrency? display = null)
 {
     private const int MaxCellChars = 160;
 
@@ -107,7 +108,7 @@ internal sealed class CommsLog(string path)
         var md = new StringBuilder();
         md.AppendLine($"### louis-agent → orchestrator · reply {_current?.Messages ?? 0} · {reply.ToolCalls.Count} tool call(s) · stop: {reply.StopReason ?? "none"}");
         md.AppendLine();
-        if (reply.Usage is { } usage) md.AppendLine($"Usage: {UsageText.Describe(usage, _currency)}").AppendLine();
+        if (reply.Usage is { } usage) md.AppendLine($"Usage: {UsageText.Describe(usage, _currency, display)}").AppendLine();
         if (reply.ToolCalls.Count > 0)
         {
             md.AppendLine("| # | Tool | Input | Result |");
@@ -180,7 +181,7 @@ internal sealed class CommsLog(string path)
         {
             md.AppendLine($"| Usage: triage | {Describe(e.Usage.Triage)} |");
             md.AppendLine($"| Usage: louis-agent | {Describe(e.Usage.LouisAgent)} |");
-            md.AppendLine($"| Usage: total | **{UsageText.Describe(total, _currency)}** |");
+            md.AppendLine($"| Usage: total | **{UsageText.Describe(total, _currency, display)}** |");
         }
         md.AppendLine().AppendLine("Orchestrator's closing answer:").AppendLine();
         md.AppendLine(Quote(orchestratorAnswer.Trim()));
@@ -213,8 +214,13 @@ internal sealed class CommsLog(string path)
             // A part no event measured (no fix asked for, say) is "-", not the "price unknown" of an empty sum.
             UsageTotal? Sum(string key, Func<EventUsage, UsageTotal?> part) =>
                 totals.Select(part).OfType<UsageTotal>().ToList() is { Count: > 0 } parts ? UsageReport.Sum(key, parts) : null;
-            md.AppendLine().AppendLine($"**Run total:** {UsageText.Describe(Sum("total", u => u.Total)!, _currency)} " +
+            UsageTotal runTotal = Sum("total", u => u.Total)!;
+            md.AppendLine().AppendLine($"**Run total:** {UsageText.Describe(runTotal, _currency, display)} " +
                                        $"(triage {Cost(Sum("triage", u => u.Triage))}, louis-agent {Cost(Sum("louis-agent", u => u.LouisAgent))}).");
+            // F14: a converted total says the rate it used and what was charged, so it's never taken for the bill.
+            if (display is { Converts: true } && runTotal.Cost is { } charged)
+                md.AppendLine().AppendLine($"Shown in {display.Code} at {UsageText.Rate(display)} on {display.RateAsOf}; " +
+                                           $"charged {UsageText.Money(charged, _currency)} (the ledger, fixes.jsonl and decisions.jsonl keep {_currency}).");
         }
 
         var branches = _events.Where(e => e.Outcome == "fixed" && e.Fix?.Branch is not null).Select(e => e.Fix!.Branch!).ToList();
@@ -242,12 +248,12 @@ internal sealed class CommsLog(string path)
 
     private static string Code(string? value) => value is null ? "-" : $"`{value}`";
 
-    private string Describe(UsageTotal? usage) => usage is null ? "-" : UsageText.Describe(usage, _currency);
+    private string Describe(UsageTotal? usage) => usage is null ? "-" : UsageText.Describe(usage, _currency, display);
 
     private static string Tokens(UsageTotal? usage) =>
         usage is null ? "-" : UsageText.Tokens(usage.Input + usage.CacheWrite + usage.CacheRead + usage.Output);
 
-    private string Cost(UsageTotal? usage) => usage is null ? "-" : UsageText.Cost(usage, _currency);
+    private string Cost(UsageTotal? usage) => usage is null ? "-" : UsageText.Cost(usage, _currency, display);
 
     /// <summary>
     /// A usage total for the jsonl files, with louis-agent.api's field names so every file reads alike; null when not

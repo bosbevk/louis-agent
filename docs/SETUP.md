@@ -10,6 +10,7 @@ templates.
 | `config/.env` | ❌ git-ignored | Your non-secret settings: model, agent function, paths, DevOps project |
 | `config/.env.example` | ✅ tracked | Template for `config/.env`, with explanations |
 | `config/.env.anthropic`, `config/.env.ollama` | ✅ tracked | LLM profiles: the model settings `LLM_PROFILE` picks ([MODELS.md](MODELS.md)) |
+| `config/rates.json` | ✅ tracked | Exchange rates for showing costs in your currency (F14), in our own format: the fallback when `RATES_URL` can't be reached |
 | `config/prices.json` | ✅ tracked | Model prices per million tokens for the usage ledger's costs; update it (and its `as_of`) when prices change |
 | `config/.env.secrets` | ❌ git-ignored | Your API keys and other secrets |
 | `config/.env.secrets.example` | ✅ tracked | Template listing every secret |
@@ -78,6 +79,11 @@ docker compose -f docker/docker-compose.yml --env-file config/.env up -d --build
 | `DEVOPS_TEAM` | Optional team: sprints are looked up under it, and an empty sprint means its current sprint |
 | `USAGE_LEDGER` | `on` (default) records every model request's tokens and cost to `{LOG_DIRECTORY}/usage-YYYY-MM.jsonl`; `off` disables it, and with it every usage line (CLI, web app, Rider, the API's `usage` fields, the comms log's costs): `/usage` then says usage isn't tracked. No `LOG_DIRECTORY` has the same effect |
 | `PRICES_FILE` | The price table for those costs (default `config/prices.json`, found like `config/.env`; compose sets it for the containers). Without one, costs are recorded as unknown (`null`); a malformed one stops the host |
+| `HOST_CULTURE` | The PC's Windows culture (e.g. `en-ZA`): costs are shown in its region's currency (ZAR, `R0.11`). Containers can't see the PC's region, so write it once with `dotnet run --project tools/louis-agent.usage-probe -- --host-culture`. Outside a container, the process's own culture is used when it's unset |
+| `DISPLAY_CURRENCY` | Show costs in this currency instead (an ISO code, e.g. `EUR`); the web app can also pick one per browser |
+| `RATES_URL` | Where exchange rates come from (default `https://api.frankfurter.dev/v1/latest?base=USD`, the ECB's reference rates); `off` uses `RATES_FILE` only. If it can't be reached, or answers with rates from another currency, the file is used. The demo's orchestrator reads demo-api's `GET /rates` |
+| `RATES_FORMAT` | The format of `RATES_URL`'s reply, turned into ours by its mapper: `frankfurter` (default) or `rates-json` (another louis-agent's `GET /rates`) |
+| `RATES_FILE` | The fallback rates (default `config/rates.json`; compose sets it). Costs are only converted for display: the ledger always keeps what was charged |
 | `PRICES_URL` | Fetch the price table over HTTP instead, e.g. louis-agent.api's public `GET /prices` (the demo's orchestrator uses `http://demo-api:8080/prices`). If it can't be reached at start-up, the host warns and uses the file above |
 | `USAGE_IN_CHAT` | `true` adds each turn's usage line to the chat in Rider (ACP), after the answer; off by default. The CLI and web app always show it beside the answer |
 | `LOG_DIRECTORY` | Run logs and the usage ledger. Compose sets it for the containers (`logs/` on the host); for `dotnet run`, set it (for example `LOG_DIRECTORY=logs`) or the ledger is off, with a warning |

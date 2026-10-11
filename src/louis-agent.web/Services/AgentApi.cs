@@ -95,6 +95,12 @@ public sealed class AgentApi(HttpClient http, Settings settings)
         return (await response.Content.ReadFromJsonAsync<GitBranches>())!;
     }
 
+    /// <summary>The exchange rates the API loaded (F14).</summary>
+    public Task<RatesTable> GetRatesAsync() => GetAsync<RatesTable>("rates");
+
+    /// <summary>The server's display currency and a symbol for each currency (F14).</summary>
+    public Task<RatesDisplay> GetRatesDisplayAsync() => GetAsync<RatesDisplay>("rates/display");
+
     private async Task<T> GetAsync<T>(string url)
     {
         using var response = await SendAsync(new HttpRequestMessage(HttpMethod.Get, url));

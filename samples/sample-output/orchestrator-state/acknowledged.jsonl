@@ -1,3 +1,2 @@
-{"error_id":"1b7d0ef78b4a","reason":"Runbook (method refund), expected: System.InvalidOperationException with a message containing \u0022already been refunded\u0022. A duplicate refund request for order 1002 was correctly rejected. No money moved a second time, no action needed.","at":"2026-10-10T19:46:06.0391397+00:00"}
-{"error_id":"478c25ef1774","reason":"placeholder","at":"2026-10-10T19:46:10.2735666+00:00"}
-{"error_id":"86604d43d146","reason":"Runbook for get-order: OrderService.OrderNotFoundException is expected (unknown order id, a 404). Order 9999 was requested and does not exist.","at":"2026-10-10T19:46:15.6675592+00:00"}
+{"error_id":"326c45aaad44","reason":"Runbook (method refund, expected): System.InvalidOperationException whose message contains \u0022already been refunded\u0022 is a duplicate refund request correctly rejected. Message here is \u0022Order 1002 has already been refunded\u0022.","at":"2026-10-11T08:45:48.8648318+00:00"}
+{"error_id":"6dedc539e9f3","reason":"Runbook get-order: OrderService.OrderNotFoundException is expected. The client asked for order id 9999, which doesn\u0027t exist (404).","at":"2026-10-11T08:45:57.6971747+00:00"}

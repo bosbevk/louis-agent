@@ -106,6 +106,8 @@ Settings live in `config/.env` and secrets in `config/.env.secrets`; both are gi
 | `REPOSITORIES_PATH`, `ACP_MOUNT_MAPPINGS` | Extra repositories mounted into the containers, and how Rider's Windows paths map to them |
 | `USAGE_LEDGER`, `LOG_DIRECTORY` | Usage ledger (on by default): one JSON line per model request in `{LOG_DIRECTORY}/usage-YYYY-MM.jsonl` (`logs/` from Docker) |
 | `USAGE_IN_CHAT` | `true` adds the usage line to Rider's chat after each answer (off by default; the CLI and web app always show it) |
+| `HOST_CULTURE`, `DISPLAY_CURRENCY` | Show costs in your currency (F14): `HOST_CULTURE=en-ZA` (written by `usage-probe -- --host-culture`) gives rands, `R0.11`; `DISPLAY_CURRENCY` overrides it. The ledger stays in USD |
+| `RATES_URL`, `RATES_FORMAT`, `RATES_FILE` | Exchange rates: Frankfurter by default, `config/rates.json` (tracked) as the fallback, served at the API's `GET /rates` |
 | `PRICES_FILE`, `PRICES_URL` | Price table for the ledger's costs: default `config/prices.json` (tracked, with today's Claude prices; local models at 0), or fetched from the API's `GET /prices` |
 
 ## HTTP API

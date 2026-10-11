@@ -5,7 +5,8 @@ namespace louis_agent.core.usage;
 /// <c>/usage</c> (F3). The host keeps one per session (the CLI per run, the API and Rider per chat), because the engine
 /// serves every session and can't tell them apart.
 /// </summary>
-public sealed class UsageSession
+/// <param name="display">The currency its lines show costs in (F14); null shows them as charged.</param>
+public sealed class UsageSession(DisplayCurrency? display = null)
 {
     private readonly List<UsageRecord> _records = [];
 
@@ -29,6 +30,6 @@ public sealed class UsageSession
             _records.AddRange(turn);
             session = [.. _records];
         }
-        return UsageText.Line(turn, session);
+        return UsageText.Line(turn, session, display);
     }
 }

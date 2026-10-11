@@ -217,6 +217,35 @@ public class OrchestratorTests
     }
 
     [Test]
+    public void CommsLog_InRands_ShowsTheRateAndWhatWasCharged()
+    {
+        // F14: the comms log in the display currency, with the rate and the charged total; the jsonl figures stay in USD.
+        var rands = new DisplayCurrency("ZAR", "R", 16.5331m, "2026-10-09", "USD", "HOST_CULTURE en-ZA");
+        var feed = FeedWith(Event("abc123"));
+        string path = Path.Combine(_dir, "comms.md");
+        var comms = new CommsLog(path, rands);
+        var reply = new AgentReply("Working.", [], "end_turn", null, new UsageTotal("louis-agent", 3, 1_000, 0, 20_000, 300, 0.01m, 0), "USD");
+        var triage = new UsageRecord(DateTimeOffset.UtcNow, 1, UsagePurpose.Triage, "orchestrator", "triage_x", 1, null, "run-1",
+            "order-service", "claude-haiku-5-5", new UsageTokens(2_000, 0, 0, 100, null), 1, "stop", new UsageCost("USD", 0.002m, "2026-10-10"));
+
+        comms.StartRun("order-service", new Uri("http://127.0.0.1:5081"), "claude-test");
+        comms.StartEvent(1, 1, feed.Find("abc123")!);
+        comms.Sent("sess_1", "Please fix it");
+        comms.Received(reply, null);
+        EventUsage used = comms.EndEvent("fixed", "verified", "DECISION: fixed - verified", [triage]);
+        comms.EndRun();
+
+        string md = File.ReadAllText(path);
+        Assert.That(md, Does.Contain("Usage: 3 requests · 21k tokens (20k cached) · R0.17"), "each reply");
+        Assert.That(md, Does.Contain("| Usage: total | **4 requests · 23k tokens (20k cached) · R0.2** |"));
+        Assert.That(md, Does.Contain("| 23k | R0.2 |"));
+        Assert.That(md, Does.Contain("**Run total:** 4 requests · 23k tokens (20k cached) · R0.2 (triage R0.033, louis-agent R0.17)."));
+        Assert.That(md, Does.Contain("Shown in ZAR at 16.5331 ZAR/USD on 2026-10-09; charged $0.012 (the ledger, fixes.jsonl and decisions.jsonl keep USD)."));
+        Assert.That((used.Total!.Cost, CommsLog.Json(used.Total, comms.Currency)!.ToString()), Is.EqualTo(((decimal?)0.012m, CommsLog.Json(used.Total, "USD")!.ToString())),
+            "decisions.jsonl gets the charged USD figures");
+    }
+
+    [Test]
     public void CommsLog_NothingMeasured_ShowsDashesNotPriceUnknown()
     {
         // Seen in the split demo: a triage that timed out completed no request, and no fix was asked for.

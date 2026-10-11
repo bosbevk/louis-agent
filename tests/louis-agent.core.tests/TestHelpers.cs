@@ -12,6 +12,8 @@ internal static class TestPaths
     {
         WorkspaceRoot = RepoRoot,
         PaymoApiKey = paymoKey,
+        // No network in tests: AgentHost.Build would otherwise fetch exchange rates from Frankfurter (F14).
+        RatesUrl = null,
     };
 }
 
