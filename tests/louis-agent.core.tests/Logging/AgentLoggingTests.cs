@@ -55,6 +55,19 @@ public class AgentLoggingTests
     }
 
     [Test]
+    public void TheBrackets_ReadAsTheyAlwaysHave_OrCarryTheCallsTag()
+    {
+        AgentLogging.Configure(null);
+        var logger = AgentLogging.For<AgentLoggingTests>();
+
+        logger.Log(LogLevel.Error, LogMessage.SkillFileLoadFailed, new { File = "devops-skills.md", Reason = "locked" });
+        logger.Log(LogLevel.Information, LogMessage.McpToolsDiscovered, new { Count = 3 }, tag: "MCP");
+
+        Assert.That(_stderr.ToString(), Does.Contain("[ERROR] Failed to load devops-skills.md: locked"), "not Serilog's EROR");
+        Assert.That(_stderr.ToString(), Does.Contain("[MCP] Discovered 3 tools from Rider"));
+    }
+
+    [Test]
     public void ALogMessage_MissingAValue_Throws()
     {
         Assert.That(() => AgentLogging.For<AgentLoggingTests>().Log(LogLevel.Information, LogMessage.TruncatedToolCall, new { Tool = "x" }),

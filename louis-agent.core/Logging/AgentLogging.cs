@@ -18,8 +18,11 @@ using SerilogConfiguration = Serilog.LoggerConfiguration;
 /// </summary>
 public static class AgentLogging
 {
-    /// <summary>Console lines read as they always have: <c>[INFO] …</c>, <c>[WARN] …</c>.</summary>
-    internal const string ConsoleTemplate = "[{Level:u4}] {Message:lj}{NewLine}{Exception}";
+    /// <summary>Console lines read as they always have: <c>[INFO] …</c>, <c>[ERROR] …</c>, <c>[MCP] …</c>.</summary>
+    internal const string ConsoleTemplate = "[{Tag}] {Message:lj}{NewLine}{Exception}";
+
+    /// <summary>The bracketed tag on a console line; <see cref="LevelTagEnricher"/> sets it from the level unless the call did.</summary>
+    public const string TagProperty = "Tag";
 
     /// <summary>The property that marks an event as a record for a JSON-lines file, its value the record's kind.</summary>
     public const string RecordProperty = "Record";
@@ -53,6 +56,7 @@ public static class AgentLogging
         var configuration = new SerilogConfiguration()
             .MinimumLevel.Verbose()
             .Enrich.FromLogContext()
+            .Enrich.With(new LevelTagEnricher())
             .WriteTo.Logger(console => console
                 .Filter.ByExcluding(Matching.WithProperty(RecordProperty))
                 .WriteTo.Console(outputTemplate: ConsoleTemplate, formatProvider: CultureInfo.InvariantCulture,

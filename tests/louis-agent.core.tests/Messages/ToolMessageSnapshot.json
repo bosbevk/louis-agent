@@ -1,1 +1,9 @@
-{}
+{
+  "ConnectPrivateAddress": "refusing to connect to <Host>: private or local address.",
+  "FetchLocalAddress": "refusing to fetch <Host>: local addresses are not allowed.",
+  "FetchPrivateAddress": "refusing to fetch <Host>: it resolves to a private or local address (<Address>).",
+  "FetchUnresolvable": "could not resolve <Host>",
+  "PathNotRelative": "Workspace paths must be relative.",
+  "PathOutsideWorkspace": "Path must stay inside the workspace.",
+  "PathThroughSymbolicLink": "Workspace paths cannot traverse symbolic links."
+}

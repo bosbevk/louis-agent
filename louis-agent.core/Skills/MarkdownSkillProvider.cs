@@ -1,10 +1,16 @@
 namespace LouisAgent.Core.Skills;
 
+using LouisAgent.Core.Logging;
+using LouisAgent.Core.Messages;
+using Microsoft.Extensions.Logging;
+
 /// <summary>
 /// Loads skills from a markdown file and combines with default instructions.
 /// </summary>
 public class MarkdownSkillProvider : ISkillProvider
 {
+    private static readonly ILogger Log = AgentLogging.For<MarkdownSkillProvider>();
+
     private readonly List<MarkdownSkillLoader.SkillDef> _skills;
     private readonly string _documentation;
 
@@ -29,7 +35,7 @@ public class MarkdownSkillProvider : ISkillProvider
                 try
                 {
                     defaultDocs = File.ReadAllText(searchPath);
-                    Console.Error.WriteLine($"[INFO] Loaded default instructions from: {searchPath}");
+                    Log.Log(LogLevel.Information, LogMessage.DefaultInstructionsLoaded, new { Path = searchPath });
                     break;
                 }
                 catch { }
@@ -38,7 +44,7 @@ public class MarkdownSkillProvider : ISkillProvider
 
         if (includeDefaultInstructions && string.IsNullOrEmpty(defaultDocs))
         {
-            Console.Error.WriteLine($"[WARN] Could not find default.md in standard locations");
+            Log.Log(LogLevel.Warning, LogMessage.DefaultInstructionsNotFound);
         }
 
         string skillsetDocs = File.Exists(filePath) ? File.ReadAllText(filePath) : "";

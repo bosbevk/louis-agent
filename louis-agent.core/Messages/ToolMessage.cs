@@ -9,4 +9,24 @@ using System.ComponentModel;
 /// <summary>Strings tools return to the model: what went wrong and what to do instead.</summary>
 public enum ToolMessage
 {
+    [Description("refusing to fetch {Host}: local addresses are not allowed.")]
+    FetchLocalAddress,
+
+    [Description("could not resolve {Host}")]
+    FetchUnresolvable,
+
+    [Description("refusing to fetch {Host}: it resolves to a private or local address ({Address}).")]
+    FetchPrivateAddress,
+
+    [Description("refusing to connect to {Host}: private or local address.")]
+    ConnectPrivateAddress,
+
+    [Description("Workspace paths must be relative.")]
+    PathNotRelative,
+
+    [Description("Path must stay inside the workspace.")]
+    PathOutsideWorkspace,
+
+    [Description("Workspace paths cannot traverse symbolic links.")]
+    PathThroughSymbolicLink,
 }

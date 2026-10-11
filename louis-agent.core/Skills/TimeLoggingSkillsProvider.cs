@@ -1,11 +1,17 @@
 namespace LouisAgent.Core.Skills;
 
+using LouisAgent.Core.Logging;
+using LouisAgent.Core.Messages;
+using Microsoft.Extensions.Logging;
+
 /// <summary>
 /// Provides time entry and time tracking workflow skills.
 /// Loads skills from time-logging-skills.md for time management guidance.
 /// </summary>
 public class TimeLoggingSkillsProvider : ISkillProvider
 {
+    private static readonly ILogger Log = AgentLogging.For<TimeLoggingSkillsProvider>();
+
     private List<MarkdownSkillLoader.SkillDef>? _skills;
     private string? _documentation;
     private readonly string _filePath;
@@ -23,12 +29,12 @@ public class TimeLoggingSkillsProvider : ISkillProvider
     {
         if (!File.Exists(_filePath))
         {
-            Console.Error.WriteLine($"[WARN] time-logging-skills.md not found at: {_filePath}");
+            Log.Log(LogLevel.Warning, LogMessage.SkillFileNotFound, new { File = "time-logging-skills.md", Path = _filePath });
             return [];
         }
 
         var skills = MarkdownSkillLoader.Load(_filePath);
-        Console.Error.WriteLine($"[INFO] Loaded {skills.Count} time logging skills from: {_filePath}");
+        Log.Log(LogLevel.Information, LogMessage.SkillsLoaded, new { skills.Count, Kind = "time logging", Path = _filePath });
         return skills;
     }
 
@@ -36,7 +42,7 @@ public class TimeLoggingSkillsProvider : ISkillProvider
     {
         if (!File.Exists(_filePath))
         {
-            Console.Error.WriteLine($"[WARN] time-logging-skills.md not found at: {_filePath}");
+            Log.Log(LogLevel.Warning, LogMessage.SkillFileNotFound, new { File = "time-logging-skills.md", Path = _filePath });
             return "";
         }
 
@@ -46,7 +52,7 @@ public class TimeLoggingSkillsProvider : ISkillProvider
         }
         catch (Exception ex)
         {
-            Console.Error.WriteLine($"[ERROR] Failed to load time-logging-skills.md: {ex.Message}");
+            Log.Log(LogLevel.Error, LogMessage.SkillFileLoadFailed, new { File = "time-logging-skills.md", Reason = ex.Message });
             return "";
         }
     }

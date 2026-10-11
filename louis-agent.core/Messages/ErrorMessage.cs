@@ -71,4 +71,19 @@ public enum ErrorMessage
 
     [Description("{Path} line {Number} is not a usage record: {Reason}")]
     NotAUsageRecord,
+
+    [Description("LLM_MODEL is required.")]
+    LlmModelRequired,
+
+    [Description("Unknown LLM_PROVIDER '{Provider}'. Supported: {Supported}.")]
+    UnknownProvider,
+
+    [Description("ANTHROPIC_API_KEY (or LLM_API_KEY) is required for provider 'anthropic'.")]
+    AnthropicKeyRequired,
+
+    [Description("LLM_ENDPOINT is required for provider 'openai-compatible'.")]
+    OpenAiEndpointRequired,
+
+    [Description("Workspace root cannot be empty.")]
+    WorkspaceRootEmpty,
 }

@@ -35,4 +35,49 @@ public enum LogMessage
 
     [Description("Could not write {File}: {Reason}")]
     LedgerWriteFailed,
+
+    [Description("{File} not found at: {Path}")]
+    SkillFileNotFound,
+
+    [Description("Loaded {Count} {Kind} skills from: {Path}")]
+    SkillsLoaded,
+
+    [Description("Failed to load {File}: {Reason}")]
+    SkillFileLoadFailed,
+
+    [Description("Loaded default instructions from: {Path}")]
+    DefaultInstructionsLoaded,
+
+    [Description("Could not find default.md in standard locations")]
+    DefaultInstructionsNotFound,
+
+    [Description("No personality.md found; running without a personality.")]
+    NoPersonality,
+
+    [Description("Failed to connect to Rider at {Endpoint}: {Reason}")]
+    McpConnectFailed,
+
+    [Description("Tool discovery error: {Reason}")]
+    McpDiscoveryError,
+
+    [Description("Initialize failed: {Status}")]
+    McpInitializeFailed,
+
+    [Description("Response: {Body}")]
+    McpResponse,
+
+    [Description("Session established: {Session}")]
+    McpSessionEstablished,
+
+    [Description("Discovered {Count} tools from Rider")]
+    McpToolsDiscovered,
+
+    [Description("Stream discovery failed: {Reason}")]
+    McpStreamDiscoveryFailed,
+
+    [Description("SSE response (partial): {Text}")]
+    McpSsePartial,
+
+    [Description("SSE discovery failed: {Reason}")]
+    McpSseDiscoveryFailed,
 }

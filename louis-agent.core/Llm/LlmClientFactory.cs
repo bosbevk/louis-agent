@@ -9,6 +9,7 @@ using Microsoft.Extensions.AI;
 using OllamaSharp;
 using OpenAI;
 using LouisAgent.Core.Llm.AnthropicProvider;
+using LouisAgent.Core.Messages;
 
 /// <summary>Maps <see cref="LlmOptions.Provider"/> to an <see cref="IChatClient"/>. Add a provider by adding one entry.</summary>
 public sealed class LlmClientFactory : ILlmClientFactory
@@ -28,11 +29,11 @@ public sealed class LlmClientFactory : ILlmClientFactory
     public IChatClient Create(LlmOptions options)
     {
         if (string.IsNullOrWhiteSpace(options.Model))
-            throw new ArgumentException("LLM_MODEL is required.", nameof(options));
+            throw new ArgumentException(MessageText.Format(ErrorMessage.LlmModelRequired), nameof(options));
 
         if (!_providers.TryGetValue(options.Provider ?? string.Empty, out var create))
             throw new ArgumentException(
-                $"Unknown LLM_PROVIDER '{options.Provider}'. Supported: {string.Join(", ", _providers.Keys)}.",
+                MessageText.Format(ErrorMessage.UnknownProvider, new { options.Provider, Supported = string.Join(", ", _providers.Keys) }),
                 nameof(options));
 
         // Innermost in the engine's pipeline, under the tool loop, so every round is marked.
@@ -61,7 +62,7 @@ public sealed class LlmClientFactory : ILlmClientFactory
     private static IChatClient CreateAnthropic(LlmOptions o)
     {
         if (string.IsNullOrWhiteSpace(o.ApiKey))
-            throw new InvalidOperationException("ANTHROPIC_API_KEY (or LLM_API_KEY) is required for provider 'anthropic'.");
+            throw new InvalidOperationException(MessageText.Format(ErrorMessage.AnthropicKeyRequired));
 
         var clientOptions = new ClientOptions { ApiKey = o.ApiKey };
         if (!string.IsNullOrWhiteSpace(o.Endpoint)) clientOptions.BaseUrl = o.Endpoint;
@@ -122,7 +123,7 @@ public sealed class LlmClientFactory : ILlmClientFactory
     private static IChatClient CreateOpenAiCompatible(LlmOptions o)
     {
         if (string.IsNullOrWhiteSpace(o.Endpoint))
-            throw new InvalidOperationException("LLM_ENDPOINT is required for provider 'openai-compatible'.");
+            throw new InvalidOperationException(MessageText.Format(ErrorMessage.OpenAiEndpointRequired));
 
         // Local servers (LM Studio, vLLM, ...) often need no key, but the SDK requires a non-empty credential.
         var client = new OpenAIClient(

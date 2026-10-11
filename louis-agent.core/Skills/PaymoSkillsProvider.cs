@@ -1,11 +1,17 @@
 namespace LouisAgent.Core.Skills;
 
+using LouisAgent.Core.Logging;
+using LouisAgent.Core.Messages;
+using Microsoft.Extensions.Logging;
+
 /// <summary>
 /// Provides time tracking and project management skills for Paymo integration.
 /// Loads skills from paymo-skills.md for time entry management.
 /// </summary>
 public class PaymoSkillsProvider : ISkillProvider
 {
+    private static readonly ILogger Log = AgentLogging.For<PaymoSkillsProvider>();
+
     private List<MarkdownSkillLoader.SkillDef>? _skills;
     private string? _documentation;
     private readonly string _filePath;
@@ -23,12 +29,12 @@ public class PaymoSkillsProvider : ISkillProvider
     {
         if (!File.Exists(_filePath))
         {
-            Console.Error.WriteLine($"[WARN] paymo-skills.md not found at: {_filePath}");
+            Log.Log(LogLevel.Warning, LogMessage.SkillFileNotFound, new { File = "paymo-skills.md", Path = _filePath });
             return [];
         }
 
         var skills = MarkdownSkillLoader.Load(_filePath);
-        Console.Error.WriteLine($"[INFO] Loaded {skills.Count} Paymo skills from: {_filePath}");
+        Log.Log(LogLevel.Information, LogMessage.SkillsLoaded, new { skills.Count, Kind = "Paymo", Path = _filePath });
         return skills;
     }
 
@@ -36,7 +42,7 @@ public class PaymoSkillsProvider : ISkillProvider
     {
         if (!File.Exists(_filePath))
         {
-            Console.Error.WriteLine($"[WARN] paymo-skills.md not found at: {_filePath}");
+            Log.Log(LogLevel.Warning, LogMessage.SkillFileNotFound, new { File = "paymo-skills.md", Path = _filePath });
             return "";
         }
 
@@ -46,7 +52,7 @@ public class PaymoSkillsProvider : ISkillProvider
         }
         catch (Exception ex)
         {
-            Console.Error.WriteLine($"[ERROR] Failed to load paymo-skills.md: {ex.Message}");
+            Log.Log(LogLevel.Error, LogMessage.SkillFileLoadFailed, new { File = "paymo-skills.md", Reason = ex.Message });
             return "";
         }
     }
