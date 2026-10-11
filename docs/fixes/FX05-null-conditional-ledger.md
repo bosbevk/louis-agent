@@ -48,4 +48,4 @@ The tests that caught it were written for F1, which is why every step keeps its 
 #18, testing and shipping).
 
 ---
-[Fixes](README.md) · Previous: [FX4](FX04-append-only-history.md)
+[Fixes](README.md) · Previous: [FX4](FX04-append-only-history.md) · Next: [FX6](FX06-usage-on-failed-turns.md)

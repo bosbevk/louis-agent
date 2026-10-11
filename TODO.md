@@ -197,6 +197,8 @@ feature when its turn comes; remove its line here and update the map's *Missing*
 
 - [ ] Metrics and tracing (e.g. OpenTelemetry) beyond the stderr and JSON-lines logs: latency and error dashboards
       (usage and cost are covered by F1–F3 and F11)
+- [ ] [FX6](docs/fixes/FX06-usage-on-failed-turns.md) A turn that fails still reports what it used: usage on the API's
+      `error` event, read by the web app and the orchestrator, so their totals match the ledger
 
 ## Known limitations
 
