@@ -80,4 +80,55 @@ public enum LogMessage
 
     [Description("SSE discovery failed: {Reason}")]
     McpSseDiscoveryFailed,
+
+    [Description("-> {Tool}({Arguments})")]
+    ToolCall,
+
+    [Description("<- {Tool}: skipped, call was cut off by the output limit ({MaxOutputTokens} tokens)")]
+    ToolCallSkipped,
+
+    [Description("<- {Tool} failed: {ErrorType}: {Reason}")]
+    ToolCallFailed,
+
+    [Description("<- {Tool}: {Result}")]
+    ToolCallResult,
+
+    [Description("summarising {Tool} output ({Chars} chars)")]
+    ToolResultSummarising,
+
+    [Description("Could not summarise {Tool} output: {Reason}")]
+    SummaryFailed,
+
+    [Description("Model does not support tools; running without them.")]
+    ModelWithoutTools,
+
+    [Description("PAYMO_API_KEY not set; Paymo tool disabled.")]
+    PaymoKeyMissing,
+
+    [Description("DEVOPS_API_KEY not set; DevOps tool disabled.")]
+    DevOpsKeyMissing,
+
+    [Description("DEVOPS_ORGANIZATION and DEVOPS_PROJECT must be set; DevOps tool disabled.")]
+    DevOpsSettingsMissing,
+
+    [Description("Cannot register tool '{Name}': model does not support tools")]
+    McpCannotRegister,
+
+    [Description("Reply cut off by the output limit ({MaxOutputTokens} tokens); asking the model to continue")]
+    ReplyCutOff,
+
+    [Description("Tool '{Name}' already registered; skipping")]
+    McpToolAlreadyRegistered,
+
+    [Description("Discovered tool from Rider: {Name} - {Description}")]
+    McpToolDiscovered,
+
+    [Description("Skipping invalid tool {File}: {Errors}")]
+    AgentToolInvalid,
+
+    [Description("Skipping tool {File}: name '{Name}' is already in use.")]
+    AgentToolNameInUse,
+
+    [Description("Loaded {Count} agent-built tool(s) from {Directory}")]
+    AgentToolsLoaded,
 }

@@ -74,4 +74,34 @@ public enum UserText
 
     [Description("{Count} requests")]
     UsageRequests,
+
+    [Description(" and removed it from this session")]
+    ToolRejectedFromSession,
+
+    [Description("Tool building is not available.")]
+    ToolBuildingNotAvailable,
+
+    [Description("Usage: /approve <ToolName>")]
+    ApproveUsage,
+
+    [Description("Usage: /reject <ToolName>")]
+    RejectUsage,
+
+    [Description("No pending tool named '{Name}'. Use /tools to see pending tools.")]
+    NoPendingToolSeeTools,
+
+    [Description("Cannot approve '{Name}': the definition is invalid ({Errors}).")]
+    CannotApprove,
+
+    [Description("An approved tool '{Name}' already exists; remove {Path} first.")]
+    ApprovedToolAlreadyThere,
+
+    [Description("Approved '{Name}'. Saved to {Path}; it will load in every future session.")]
+    ToolApproved,
+
+    [Description("Rejected '{Name}': deleted the pending definition{Removed}.")]
+    ToolRejected,
+
+    [Description("No pending tool named '{Name}'.")]
+    NoPendingTool,
 }

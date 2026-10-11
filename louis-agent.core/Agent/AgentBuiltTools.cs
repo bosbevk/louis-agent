@@ -4,6 +4,9 @@ using System.ComponentModel;
 using LouisAgent.Core.Tools;
 using LouisAgent.Core.Tools.Scripts;
 using LouisAgent.Core.Tools.Shell;
+using LouisAgent.Core.Logging;
+using LouisAgent.Core.Messages;
+using Microsoft.Extensions.Logging;
 
 /// <summary>
 /// Tools the agent builds for itself (<c>*.tool.md</c>): <see cref="CreateTool"/> makes one, active at once but only
@@ -17,6 +20,8 @@ internal sealed class AgentBuiltTools(
     ToolRegistry registry, bool supportsTools, string workspaceRoot, PythonTools python, PowerShellTools powerShell,
     Func<string?> skillsDirectory)
 {
+    private static readonly ILogger Log = AgentLogging.For<AgentBuiltTools>();
+
     private readonly Dictionary<string, ScriptTool> _scriptTools = new(StringComparer.OrdinalIgnoreCase);
 
     /// <summary>Raised after agent-built tools are added or removed, so hosts that publish the tools can resync.</summary>
@@ -52,20 +57,20 @@ internal sealed class AgentBuiltTools(
         [Description("The full tool definition markdown")] string definition,
         [Description("Set true to replace a pending tool you created earlier with the same name")] bool overwrite = false)
     {
-        if (!supportsTools) return "Error: tools are not supported by the current model.";
-        if (PendingToolsDirectory is null) return "Error: tool building is not available (no skills folder was found).";
+        if (!supportsTools) return MessageText.Format(ToolMessage.ToolsNotSupported);
+        if (PendingToolsDirectory is null) return MessageText.Format(ToolMessage.ToolBuildingUnavailable);
 
         var (parsed, errors) = ScriptToolDefinition.Parse(definition);
-        if (parsed is null) return "Error: invalid tool definition:\n- " + string.Join("\n- ", errors);
+        if (parsed is null) return MessageText.Format(ToolMessage.ToolDefinitionInvalid, new { Errors = string.Join("\n- ", errors) });
 
         if (_scriptTools.TryGetValue(parsed.Name, out var existing))
         {
-            if (existing.Approved) return $"Error: an approved tool named '{parsed.Name}' already exists; choose another name.";
-            if (!overwrite) return $"Error: a pending tool named '{parsed.Name}' already exists. Pass overwrite=true to replace it.";
+            if (existing.Approved) return MessageText.Format(ToolMessage.ApprovedToolExists, new { parsed.Name });
+            if (!overwrite) return MessageText.Format(ToolMessage.PendingToolExists, new { parsed.Name });
         }
         else if (registry.Contains(parsed.Name, StringComparison.OrdinalIgnoreCase))
         {
-            return $"Error: '{parsed.Name}' is the name of a built-in tool; choose another name.";
+            return MessageText.Format(ToolMessage.BuiltInToolName, new { parsed.Name });
         }
 
         Directory.CreateDirectory(PendingToolsDirectory);
@@ -113,13 +118,13 @@ internal sealed class AgentBuiltTools(
             var (parsed, errors) = ScriptToolDefinition.Parse(File.ReadAllText(file));
             if (parsed is null)
             {
-                Console.Error.WriteLine($"[WARN] Skipping invalid tool {Path.GetFileName(file)}: {string.Join("; ", errors)}");
+                Log.Log(LogLevel.Warning, LogMessage.AgentToolInvalid, new { File = Path.GetFileName(file), Errors = string.Join("; ", errors) });
                 continue;
             }
 
             if (registry.Contains(parsed.Name, StringComparison.OrdinalIgnoreCase))
             {
-                Console.Error.WriteLine($"[WARN] Skipping tool {Path.GetFileName(file)}: name '{parsed.Name}' is already in use.");
+                Log.Log(LogLevel.Warning, LogMessage.AgentToolNameInUse, new { File = Path.GetFileName(file), parsed.Name });
                 continue;
             }
 
@@ -127,24 +132,24 @@ internal sealed class AgentBuiltTools(
             loaded++;
         }
 
-        if (loaded > 0) Console.Error.WriteLine($"[INFO] Loaded {loaded} agent-built tool(s) from {ToolsDirectory}");
+        if (loaded > 0) Log.Log(LogLevel.Information, LogMessage.AgentToolsLoaded, new { Count = loaded, Directory = ToolsDirectory });
         return loaded;
     }
 
 
     internal string ApproveTool(string name)
     {
-        if (PendingToolsDirectory is null || ToolsDirectory is null) return "Tool building is not available.";
-        if (string.IsNullOrWhiteSpace(name)) return "Usage: /approve <ToolName>";
+        if (PendingToolsDirectory is null || ToolsDirectory is null) return MessageText.Format(UserText.ToolBuildingNotAvailable);
+        if (string.IsNullOrWhiteSpace(name)) return MessageText.Format(UserText.ApproveUsage);
 
         string pending = Path.Combine(PendingToolsDirectory, $"{name}.tool.md");
-        if (!File.Exists(pending)) return $"No pending tool named '{name}'. Use /tools to see pending tools.";
+        if (!File.Exists(pending)) return MessageText.Format(UserText.NoPendingToolSeeTools, new { Name = name });
 
         var (parsed, errors) = ScriptToolDefinition.Parse(File.ReadAllText(pending));
-        if (parsed is null) return $"Cannot approve '{name}': the definition is invalid ({string.Join("; ", errors)}).";
+        if (parsed is null) return MessageText.Format(UserText.CannotApprove, new { Name = name, Errors = string.Join("; ", errors) });
 
         string approvedPath = Path.Combine(ToolsDirectory, $"{parsed.Name}.tool.md");
-        if (File.Exists(approvedPath)) return $"An approved tool '{parsed.Name}' already exists; remove {approvedPath} first.";
+        if (File.Exists(approvedPath)) return MessageText.Format(UserText.ApprovedToolAlreadyThere, new { parsed.Name, Path = approvedPath });
 
         File.Move(pending, approvedPath);
         if (_scriptTools.TryGetValue(parsed.Name, out var tool))
@@ -155,13 +160,13 @@ internal sealed class AgentBuiltTools(
         else if (supportsTools && !registry.Contains(parsed.Name, StringComparison.OrdinalIgnoreCase))
             RegisterScriptTool(parsed, approved: true);
 
-        return $"Approved '{parsed.Name}'. Saved to {approvedPath}; it will load in every future session.";
+        return MessageText.Format(UserText.ToolApproved, new { parsed.Name, Path = approvedPath });
     }
 
     internal string RejectTool(string name)
     {
-        if (PendingToolsDirectory is null) return "Tool building is not available.";
-        if (string.IsNullOrWhiteSpace(name)) return "Usage: /reject <ToolName>";
+        if (PendingToolsDirectory is null) return MessageText.Format(UserText.ToolBuildingNotAvailable);
+        if (string.IsNullOrWhiteSpace(name)) return MessageText.Format(UserText.RejectUsage);
 
         string pending = Path.Combine(PendingToolsDirectory, $"{name}.tool.md");
         bool hadFile = File.Exists(pending);
@@ -176,8 +181,8 @@ internal sealed class AgentBuiltTools(
         }
 
         return hadFile || wasActive
-            ? $"Rejected '{name}': deleted the pending definition{(wasActive ? " and removed it from this session" : "")}."
-            : $"No pending tool named '{name}'.";
+            ? MessageText.Format(UserText.ToolRejected, new { Name = name, Removed = (wasActive ? MessageText.Format(UserText.ToolRejectedFromSession) : "") })
+            : MessageText.Format(UserText.NoPendingTool, new { Name = name });
     }
 
     private void RegisterScriptTool(ScriptToolDefinition definition, bool approved)
@@ -201,11 +206,11 @@ internal sealed class AgentBuiltTools(
             _ => ProcessRunner.Run(BashTools.ResolveShell(), ["-c", definition.Code], workspaceRoot, timeout, inputJson, env),
         };
 
-        if (notInstalled is not null) return $"Error: {notInstalled}";
-        if (result!.TimedOut) return $"[Timeout] {definition.Name} exceeded {definition.TimeoutSeconds}s and was killed.\n{ProcessRunner.Tail(result.Output)}";
+        if (notInstalled is not null) return MessageText.Format(ToolMessage.ErrorWithReason, new { Reason = notInstalled });
+        if (result!.TimedOut) return MessageText.Format(ToolMessage.AgentToolTimeout, new { definition.Name, Seconds = definition.TimeoutSeconds, Output = ProcessRunner.Tail(result.Output) });
 
         string output = ProcessRunner.Truncate(result.Output.Trim());
-        if (result.ExitCode != 0) return $"[Exit Code {result.ExitCode}] {output}";
+        if (result.ExitCode != 0) return MessageText.Format(ToolMessage.ExitCode, new { Code = result.ExitCode, Output = output });
         return string.IsNullOrWhiteSpace(output) ? "Tool ran successfully (no output)." : output;
     }
 

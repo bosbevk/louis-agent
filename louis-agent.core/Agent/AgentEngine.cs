@@ -17,6 +17,8 @@ using LouisAgent.Core.Tools.Shell;
 using LouisAgent.Core.Tools.Web;
 using LouisAgent.Core.Tools.Workspace;
 using LouisAgent.Core.Logging;
+using LouisAgent.Core.Messages;
+using Microsoft.Extensions.Logging;
 
 /// <summary>
 /// Orchestrates one chat turn: the model is given the agent's tools and
@@ -25,14 +27,12 @@ using LouisAgent.Core.Logging;
 /// </summary>
 public class AgentEngine
 {
+    private static readonly ILogger Log = AgentLogging.For<AgentEngine>();
+
     // Room for a sizeable file in one tool call; larger files are written in chunks (see default.md).
     internal const int MaxOutputTokens = LlmClientFactory.MaxOutputTokens;
 
-    internal const string NoToolsNotice =
-        "No tools are available in this session because the configured model does not support tool calling. " +
-        "If the user asks you to perform an action (log time, run a skill, read or write files), say plainly that the " +
-        "current model cannot do that and suggest switching LLM_MODEL to a tool-capable model. " +
-        "Never pretend to have performed an action.";
+    internal static string NoToolsNotice => MessageText.Format(ToolMessage.NoToolsNotice);
 
     private readonly SkillTools _skillTools;
     private readonly PythonTools _python;
@@ -132,7 +132,7 @@ public class AgentEngine
 
         if (!supportsTools)
         {
-            Console.Error.WriteLine("[WARN] Model does not support tools; running without them.");
+            Log.Log(LogLevel.Warning, LogMessage.ModelWithoutTools);
             return;
         }
 
@@ -156,7 +156,7 @@ public class AgentEngine
         _registry.AddPublicMethods(new WebTools(webSearch ?? WebSearchProviderFactory.Create(options)));
         if (string.IsNullOrWhiteSpace(options.PaymoApiKey))
         {
-            Console.Error.WriteLine("[WARN] PAYMO_API_KEY not set; Paymo tool disabled.");
+            Log.Log(LogLevel.Warning, LogMessage.PaymoKeyMissing);
         }
         else
         {
@@ -165,11 +165,11 @@ public class AgentEngine
 
         if (string.IsNullOrWhiteSpace(options.DevopsApiKey))
         {
-            Console.Error.WriteLine("[WARN] DEVOPS_API_KEY not set; DevOps tool disabled.");
+            Log.Log(LogLevel.Warning, LogMessage.DevOpsKeyMissing);
         }
         else if (string.IsNullOrWhiteSpace(options.DevopsOrganization) || string.IsNullOrWhiteSpace(options.DevopsProject))
         {
-            Console.Error.WriteLine("[WARN] DEVOPS_ORGANIZATION and DEVOPS_PROJECT must be set; DevOps tool disabled.");
+            Log.Log(LogLevel.Warning, LogMessage.DevOpsSettingsMissing);
         }
         else
         {
@@ -186,7 +186,7 @@ public class AgentEngine
     {
         if (!SupportsTools)
         {
-            Console.Error.WriteLine($"[MCP] Cannot register tool '{name}': model does not support tools");
+            Log.Log(LogLevel.Warning, LogMessage.McpCannotRegister, new { Name = name }, tag: "MCP");
             return false;
         }
 
@@ -256,7 +256,7 @@ public class AgentEngine
             bool cutOff = updates.LastOrDefault(u => u.FinishReason is not null)?.FinishReason == ChatFinishReason.Length;
             if (!cutOff || continuation >= MaxCutOffContinuations) yield break;
 
-            Console.Error.WriteLine($"[WARN] Reply cut off by the output limit ({MaxOutputTokens} tokens); asking the model to continue");
+            Log.Log(LogLevel.Warning, LogMessage.ReplyCutOff, new { MaxOutputTokens });
             AgentLog.RecordTruncatedToolCall("(streamed reply)", string.Empty, MaxOutputTokens);
             history.Add(new ChatMessage(ChatRole.User, ContinueAfterCutOffMessage));
             // The rest of this turn's requests exist only because of the cut-off; the host's scope says so.
@@ -266,10 +266,7 @@ public class AgentEngine
 
     private const int MaxCutOffContinuations = 3;
 
-    internal const string ContinueAfterCutOffMessage =
-        "[automatic notice] Your previous reply was cut off by the output limit, so any tool call you were writing was " +
-        "lost and NOT run. Continue the task from where it stopped, writing large content in smaller chunks " +
-        "(AppendToFile, at most ~300 lines per call).";
+    internal static string ContinueAfterCutOffMessage => MessageText.Format(ToolMessage.ContinueAfterCutOff);
 
     private ChatOptions BeginTurn(List<ChatMessage> history, string userInput)
     {

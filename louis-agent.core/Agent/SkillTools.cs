@@ -9,6 +9,7 @@ using LouisAgent.Core.Config;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Tools;
 using LouisAgent.Core.Tools.Shell;
+using LouisAgent.Core.Messages;
 
 /// <summary>
 /// The skill tools (<see cref="ExecuteSkill"/>, <see cref="CreateSkillFile"/>, <see cref="ReloadSkills"/>) and the skill
@@ -63,14 +64,14 @@ internal sealed partial class SkillTools
     {
         if (string.IsNullOrWhiteSpace(skillName))
         {
-            return "Error: Skill name cannot be empty.";
+            return MessageText.Format(ToolMessage.SkillNameEmpty);
         }
 
         skillName = skillName.Trim();
 
         if (!_skills.TryGetValue(skillName, out var skill))
         {
-            return $"Error: Skill '{skillName}' was not found in the loaded skill definitions. Available skills: {string.Join(", ", _skills.Keys)}";
+            return MessageText.Format(ToolMessage.SkillNotFound, new { Name = skillName, Available = string.Join(", ", _skills.Keys) });
         }
 
         try
@@ -96,7 +97,7 @@ internal sealed partial class SkillTools
                     using var doc = JsonDocument.Parse(jsonArgs);
                     if (doc.RootElement.ValueKind != JsonValueKind.Object)
                     {
-                        return "Error: Invalid JSON arguments: expected an object.";
+                        return MessageText.Format(ToolMessage.SkillArgumentsNotObject);
                     }
 
                     foreach (var prop in doc.RootElement.EnumerateObject())
@@ -107,7 +108,7 @@ internal sealed partial class SkillTools
                 }
                 catch (JsonException jsonEx)
                 {
-                    return $"Error: Invalid JSON arguments: {jsonEx.Message}";
+                    return MessageText.Format(ToolMessage.SkillArgumentsInvalid, new { Reason = jsonEx.Message });
                 }
             }
 
@@ -126,7 +127,7 @@ internal sealed partial class SkillTools
 
             if (string.IsNullOrWhiteSpace(resolvedCommand))
             {
-                return $"Error: Skill '{skillName}' template is empty after substitution.";
+                return MessageText.Format(ToolMessage.SkillTemplateEmpty, new { Name = skillName });
             }
 
             return skill.Language switch
@@ -140,7 +141,7 @@ internal sealed partial class SkillTools
         }
         catch (Exception ex)
         {
-            return $"Failed to execute skill '{skillName}': {ex.Message}";
+            return MessageText.Format(ToolMessage.SkillFailed, new { Name = skillName, Reason = ex.Message });
         }
     }
 
@@ -171,19 +172,19 @@ internal sealed partial class SkillTools
         [Description("Full markdown content of the skills file")] string markdown,
         [Description("Set true to replace an existing file previously created with this name")] bool overwrite = false)
     {
-        if (SkillsDirectory is null) return "Error: skill authoring is not available (no skills folder was found).";
+        if (SkillsDirectory is null) return MessageText.Format(ToolMessage.SkillAuthoringUnavailable);
         name = (name ?? "").Trim().ToLowerInvariant();
         if (name.EndsWith("-skills")) name = name[..^"-skills".Length];
-        if (!SkillFileName().IsMatch(name)) return "Error: name must be kebab-case letters/digits, e.g. 'csv-reports'.";
-        if (string.IsNullOrWhiteSpace(markdown)) return "Error: markdown content is empty.";
+        if (!SkillFileName().IsMatch(name)) return MessageText.Format(ToolMessage.SkillFileNameInvalid);
+        if (string.IsNullOrWhiteSpace(markdown)) return MessageText.Format(ToolMessage.SkillMarkdownEmpty);
 
         string fileName = $"{name}-skills.md";
         if (name == "default" || SkillFiles.BuiltIn.Contains(fileName))
-            return $"Error: '{fileName}' is a built-in skills file and cannot be replaced; choose another name.";
+            return MessageText.Format(ToolMessage.SkillFileBuiltIn, new { File = fileName });
 
         string path = Path.Combine(SkillsDirectory, fileName);
         if (File.Exists(path) && !overwrite)
-            return $"Error: '{fileName}' already exists. Pass overwrite=true to replace it, or pick another name.";
+            return MessageText.Format(ToolMessage.SkillFileExists, new { File = fileName });
 
         // Validate before saving so a malformed section is reported instead of silently skipped.
         string tempPath = Path.Combine(Path.GetTempPath(), $"skill-check-{Guid.NewGuid():N}.md");
@@ -194,8 +195,7 @@ internal sealed partial class SkillTools
 
         int declared = SkillHeader().Matches(markdown).Count;
         if (parsed.Count < declared)
-            return $"Error: {declared} '## Skill:' section(s) found but only {parsed.Count} are valid. " +
-                   "Each needs a '- Description:' line and an '- Execution:' line followed by a ```bash code block.";
+            return MessageText.Format(ToolMessage.SkillSectionsInvalid, new { Declared = declared, Valid = parsed.Count });
 
         File.WriteAllText(path, markdown);
         if (!_createdSkillFiles.Contains(path, StringComparer.OrdinalIgnoreCase)) _createdSkillFiles.Add(path);
@@ -213,7 +213,7 @@ internal sealed partial class SkillTools
         "Returns an error if the host wasn't configured with a skill reloader.")]
     public string ReloadSkills()
     {
-        if (SkillReloader is null) return "Error: skill reloading is not available in this host.";
+        if (SkillReloader is null) return MessageText.Format(ToolMessage.SkillReloadUnavailable);
 
         var provider = new CompositeSkillProvider(SkillReloader());
         string loadedDocs = provider.Documentation;
@@ -236,11 +236,11 @@ internal sealed partial class SkillTools
     /// <summary>Same result shape as <see cref="RunShellCommand"/> so skills read alike whatever their language.</summary>
     private static string FormatSkillResult(ProcessRunner.Result? result, string? notInstalled)
     {
-        if (notInstalled is not null) return $"Error: {notInstalled}";
-        if (result!.TimedOut) return $"[Timeout] Command execution exceeded {ShellTimeoutMs}ms limit.";
+        if (notInstalled is not null) return MessageText.Format(ToolMessage.ErrorWithReason, new { Reason = notInstalled });
+        if (result!.TimedOut) return MessageText.Format(ToolMessage.CommandTimeout, new { Milliseconds = ShellTimeoutMs });
 
         string output = result.Output.Trim();
-        if (result.ExitCode != 0) return $"[Exit Code {result.ExitCode}] Error: {output}";
+        if (result.ExitCode != 0) return MessageText.Format(ToolMessage.ExitCodeError, new { Code = result.ExitCode, Output = output });
         return string.IsNullOrWhiteSpace(output) ? "Command executed successfully (no output returned)." : output;
     }
 
@@ -277,7 +277,7 @@ internal sealed partial class SkillTools
         if (!process.WaitForExit(ShellTimeoutMs))
         {
             process.Kill(entireProcessTree: true);
-            return $"[Timeout] Command execution exceeded {ShellTimeoutMs}ms limit.";
+            return MessageText.Format(ToolMessage.CommandTimeout, new { Milliseconds = ShellTimeoutMs });
         }
 
         string output = stdout.GetAwaiter().GetResult();
@@ -285,7 +285,7 @@ internal sealed partial class SkillTools
 
         if (process.ExitCode != 0 && !string.IsNullOrWhiteSpace(error))
         {
-            return $"[Exit Code {process.ExitCode}] Error: {error.Trim()}";
+            return MessageText.Format(ToolMessage.ExitCodeError, new { Code = process.ExitCode, Output = error.Trim() });
         }
 
         return string.IsNullOrWhiteSpace(output) ? "Command executed successfully (no output returned)." : output.Trim();
