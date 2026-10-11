@@ -98,6 +98,8 @@ services:
       ORCHESTRATOR_SERVICE_ROOT: /demo/order-service
       ORCHESTRATOR_STATE_DIRECTORY: /demo/orchestrator-state
       ORCHESTRATOR_COMMS_LOG: /demo/agent-comms.md
+      # F4 caches louis-agent's own turns only; triage gets its caching, and its lifetime, in F17
+      LLM_CACHE: "off"
       # The same usage ledger as demo-api, so a run's triage and fixes are in one file.
       LOG_DIRECTORY: /demo/logs
       # Prices from demo-api, so both agents price with one table; the mounted file is the fallback if it can't be reached

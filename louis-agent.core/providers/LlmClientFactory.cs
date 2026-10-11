@@ -17,6 +17,9 @@ public interface ILlmClientFactory
 
     /// <summary>How this provider's usage maps to the ledger's token kinds.</summary>
     IUsageMapper CreateUsageMapper(LlmOptions options) => new StandardUsageMapper();
+
+    /// <summary>How this provider marks requests for its prompt cache (F4).</summary>
+    IPromptCachingStrategy CreatePromptCaching(LlmOptions options) => NoPromptCaching.Instance;
 }
 
 /// <summary>Maps <see cref="LlmOptions.Provider"/> to an <see cref="IChatClient"/>. Add a provider by adding one entry.</summary>
@@ -42,7 +45,8 @@ public sealed class LlmClientFactory : ILlmClientFactory
                 $"Unknown LLM_PROVIDER '{options.Provider}'. Supported: {string.Join(", ", _providers.Keys)}.",
                 nameof(options));
 
-        return create(options);
+        // Innermost in the engine's pipeline, under the tool loop, so every round is marked.
+        return new PromptCachingChatClient(create(options), CreatePromptCaching(options));
     }
 
     /// <summary>Anthropic reports cache writes outside the standard fields; every other provider follows the contract.</summary>
@@ -50,6 +54,19 @@ public sealed class LlmClientFactory : ILlmClientFactory
         string.Equals(options.Provider, LlmOptions.Anthropic, StringComparison.OrdinalIgnoreCase)
             ? new AnthropicUsageMapper()
             : new StandardUsageMapper();
+
+    /// <summary>
+    /// Anthropic's markers when <c>LLM_CACHE</c> is on; every other provider sends requests as they are. Both settings are
+    /// read for every provider, so a mistyped value fails at start-up wherever it is set.
+    /// </summary>
+    public IPromptCachingStrategy CreatePromptCaching(LlmOptions options)
+    {
+        bool cache = options.ResolveCache();
+        CacheLifetime prefixLifetime = options.ResolveCacheTtl();
+        return cache && string.Equals(options.Provider, LlmOptions.Anthropic, StringComparison.OrdinalIgnoreCase)
+            ? new AnthropicPromptCaching(prefixLifetime, options.Model, DefaultMaxOutputTokens)
+            : NoPromptCaching.Instance;
+    }
 
     private static IChatClient CreateAnthropic(LlmOptions o)
     {
