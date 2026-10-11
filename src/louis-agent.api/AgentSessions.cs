@@ -1,7 +1,8 @@
 using System.Collections.Concurrent;
 using louis_agent.core.tools;
-using louis_agent.core.usage;
+using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
+using LouisAgent.Core.Pricing;
 
 namespace LouisAgent.Api;
 

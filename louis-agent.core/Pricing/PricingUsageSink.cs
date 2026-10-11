@@ -1,4 +1,6 @@
-namespace louis_agent.core.usage;
+namespace LouisAgent.Core.Pricing;
+
+using LouisAgent.Core.Usage;
 
 /// <summary>
 /// Puts the cost on each record (<see cref="CostCalculator"/>), then hands it to the inner sink. Pricing happens here,

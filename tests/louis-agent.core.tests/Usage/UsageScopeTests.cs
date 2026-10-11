@@ -1,4 +1,4 @@
-using louis_agent.core.usage;
+using LouisAgent.Core.Usage;
 
 namespace LouisAgent.Core.Tests;
 

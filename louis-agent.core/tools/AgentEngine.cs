@@ -10,8 +10,9 @@ using System.Text.RegularExpressions;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Messages;
 using louis_agent.core.providers;
-using louis_agent.core.usage;
+using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
+using LouisAgent.Core.Pricing;
 
 /// <summary>
 /// Orchestrates one chat turn: the model is given the agent's tools and

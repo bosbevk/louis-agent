@@ -1,4 +1,4 @@
-namespace louis_agent.core.usage;
+namespace LouisAgent.Core.Pricing;
 
 using System.Globalization;
 using System.Text.RegularExpressions;

@@ -1,6 +1,6 @@
 namespace louis_agent.core.providers;
 
-using louis_agent.core.usage;
+using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
 
 /// <summary>

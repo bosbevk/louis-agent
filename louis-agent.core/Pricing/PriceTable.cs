@@ -1,35 +1,7 @@
-namespace louis_agent.core.usage;
+namespace LouisAgent.Core.Pricing;
 
 using System.Text.Json;
 using System.Text.Json.Serialization;
-
-/// <summary>Prices for one kind of token use, in the table's currency per million tokens.</summary>
-public class TokenPrices
-{
-    [JsonRequired] public decimal Input { get; init; }
-    [JsonRequired] public decimal Output { get; init; }
-    [JsonRequired] public decimal CacheRead { get; init; }
-    [JsonRequired, JsonPropertyName("cache_write_5m")] public decimal CacheWrite5m { get; init; }
-    [JsonRequired, JsonPropertyName("cache_write_1h")] public decimal CacheWrite1h { get; init; }
-
-    internal IEnumerable<(string Name, decimal Value)> All() =>
-    [
-        ("input", Input), ("output", Output), ("cache_read", CacheRead), ("cache_write_5m", CacheWrite5m),
-        ("cache_write_1h", CacheWrite1h),
-    ];
-}
-
-/// <summary>Higher prices for a request whose prompt (input, cache reads and writes) is over <see cref="AboveTokens"/>.</summary>
-public sealed class LongPromptPrices : TokenPrices
-{
-    [JsonRequired] public int AboveTokens { get; init; }
-}
-
-/// <summary>One model's prices, optionally with a long-prompt tier (Claude Haiku 5.5: 5× above 100,000 tokens).</summary>
-public sealed class ModelPrice : TokenPrices
-{
-    public LongPromptPrices? LongPrompt { get; init; }
-}
 
 /// <summary>
 /// The operator's price table (<c>config/prices.json</c>, Usage spec §4.2): prices per million tokens, matched to a

@@ -1,7 +1,8 @@
 using System.Net;
 using LouisAgent.Core.Config;
-using louis_agent.core.usage;
+using LouisAgent.Core.Usage;
 using louis_agent.core;
+using LouisAgent.Core.Pricing;
 
 namespace LouisAgent.Core.Tests;
 

@@ -2,7 +2,7 @@ using System.Net;
 using System.Text.Json;
 using Anthropic;
 using Anthropic.Core;
-using louis_agent.core.usage;
+using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Core.Tests;

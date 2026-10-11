@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 using louis_agent.core;
+using LouisAgent.Core.Pricing;
 
 namespace LouisAgent.Core.Tests;
 
@@ -32,6 +33,7 @@ public partial class ArchitectureTests
         "AgentLog.cs: '(root)' isn't a concern folder",
         "MarkdownSkillLoader.cs: namespace louis_agent.core, expected LouisAgent.Core",
         "MarkdownSkillLoader.cs: '(root)' isn't a concern folder",
+        "Usage/IUsageMapper.cs: 3 top-level types, one per file",
         "mcp/RiderMcpClient.cs: namespace louis_agent.core.mcp, expected LouisAgent.Core.mcp",
         "mcp/RiderMcpClient.cs: 2 top-level types, one per file",
         "mcp/RiderMcpClient.cs: 'mcp' isn't a concern folder",
@@ -96,45 +98,6 @@ public partial class ArchitectureTests
         "tools/WebTools.cs: 'tools' isn't a concern folder",
         "tools/WorkspaceTools.cs: namespace louis_agent.core.tools, expected LouisAgent.Core.tools",
         "tools/WorkspaceTools.cs: 'tools' isn't a concern folder",
-        "usage/CacheGaps.cs: namespace louis_agent.core.usage, expected LouisAgent.Core.usage",
-        "usage/CacheGaps.cs: 3 top-level types, one per file",
-        "usage/CacheGaps.cs: 'usage' isn't a concern folder",
-        "usage/CostCalculator.cs: namespace louis_agent.core.usage, expected LouisAgent.Core.usage",
-        "usage/CostCalculator.cs: 'usage' isn't a concern folder",
-        "usage/DisplayCurrency.cs: namespace louis_agent.core.usage, expected LouisAgent.Core.usage",
-        "usage/DisplayCurrency.cs: 'usage' isn't a concern folder",
-        "usage/ExchangeRates.cs: namespace louis_agent.core.usage, expected LouisAgent.Core.usage",
-        "usage/ExchangeRates.cs: 'usage' isn't a concern folder",
-        "usage/IRatesMapper.cs: namespace louis_agent.core.usage, expected LouisAgent.Core.usage",
-        "usage/IRatesMapper.cs: 4 top-level types, one per file",
-        "usage/IRatesMapper.cs: 'usage' isn't a concern folder",
-        "usage/IUsageMapper.cs: namespace louis_agent.core.usage, expected LouisAgent.Core.usage",
-        "usage/IUsageMapper.cs: 3 top-level types, one per file",
-        "usage/IUsageMapper.cs: 'usage' isn't a concern folder",
-        "usage/IUsageSink.cs: namespace louis_agent.core.usage, expected LouisAgent.Core.usage",
-        "usage/IUsageSink.cs: 'usage' isn't a concern folder",
-        "usage/JsonlUsageSink.cs: namespace louis_agent.core.usage, expected LouisAgent.Core.usage",
-        "usage/JsonlUsageSink.cs: 'usage' isn't a concern folder",
-        "usage/PriceTable.cs: namespace louis_agent.core.usage, expected LouisAgent.Core.usage",
-        "usage/PriceTable.cs: 4 top-level types, one per file",
-        "usage/PriceTable.cs: 'usage' isn't a concern folder",
-        "usage/PricingUsageSink.cs: namespace louis_agent.core.usage, expected LouisAgent.Core.usage",
-        "usage/PricingUsageSink.cs: 'usage' isn't a concern folder",
-        "usage/UsageRecord.cs: namespace louis_agent.core.usage, expected LouisAgent.Core.usage",
-        "usage/UsageRecord.cs: 4 top-level types, one per file",
-        "usage/UsageRecord.cs: 'usage' isn't a concern folder",
-        "usage/UsageRecordingChatClient.cs: namespace louis_agent.core.usage, expected LouisAgent.Core.usage",
-        "usage/UsageRecordingChatClient.cs: 'usage' isn't a concern folder",
-        "usage/UsageReport.cs: namespace louis_agent.core.usage, expected LouisAgent.Core.usage",
-        "usage/UsageReport.cs: 2 top-level types, one per file",
-        "usage/UsageReport.cs: 'usage' isn't a concern folder",
-        "usage/UsageScope.cs: namespace louis_agent.core.usage, expected LouisAgent.Core.usage",
-        "usage/UsageScope.cs: 2 top-level types, one per file",
-        "usage/UsageScope.cs: 'usage' isn't a concern folder",
-        "usage/UsageSession.cs: namespace louis_agent.core.usage, expected LouisAgent.Core.usage",
-        "usage/UsageSession.cs: 'usage' isn't a concern folder",
-        "usage/UsageText.cs: namespace louis_agent.core.usage, expected LouisAgent.Core.usage",
-        "usage/UsageText.cs: 'usage' isn't a concern folder",
     ];
 
     [Test]

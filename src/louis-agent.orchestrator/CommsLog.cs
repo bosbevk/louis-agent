@@ -1,6 +1,7 @@
 using System.Text;
 using System.Text.Json;
-using louis_agent.core.usage;
+using LouisAgent.Core.Usage;
+using LouisAgent.Core.Pricing;
 
 namespace LouisAgent.Orchestrator;
 

@@ -3,8 +3,9 @@ using louis_agent.core;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Messages;
 using louis_agent.core.providers;
-using louis_agent.core.usage;
+using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
+using LouisAgent.Core.Pricing;
 
 // Prints what a provider's adapter reports in UsageDetails, streaming and not, and what its IUsageMapper makes of it.
 // Run it before trusting the usage ledger for a new provider or after upgrading an adapter (F1 step 1).

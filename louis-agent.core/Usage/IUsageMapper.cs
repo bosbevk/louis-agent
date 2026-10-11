@@ -1,4 +1,4 @@
-namespace louis_agent.core.usage;
+namespace LouisAgent.Core.Usage;
 
 using Anthropic.Models.Messages;
 using Microsoft.Extensions.AI;

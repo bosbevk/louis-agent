@@ -1,4 +1,4 @@
-namespace louis_agent.core.usage;
+namespace LouisAgent.Core.Usage;
 
 using System.Text;
 using System.Text.Json;

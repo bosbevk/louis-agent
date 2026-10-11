@@ -5,9 +5,10 @@ using System.Text.Json;
 using LouisAgent.Api;
 using louis_agent.core;
 using louis_agent.core.tools;
-using louis_agent.core.usage;
+using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
 using LouisAgent.Api.Endpoints;
+using LouisAgent.Core.Pricing;
 
 // HTTP version of the ACP server, which also serves the web app: every API reply is JSON, and a message's answer streams as Server-Sent Events shaped
 // like Claude's (message_start, content_block_start/delta/stop for thinking, text, tool_use and tool_result, message_stop).

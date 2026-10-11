@@ -1,6 +1,7 @@
 using System.Diagnostics;
-using louis_agent.core.usage;
+using LouisAgent.Core.Usage;
 using LouisAgent.Orchestrator.Tools;
+using LouisAgent.Core.Pricing;
 
 namespace LouisAgent.Orchestrator.Tests;
 

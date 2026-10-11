@@ -1,6 +1,6 @@
-namespace louis_agent.core.usage;
+namespace LouisAgent.Core.Usage;
 
-using LouisAgent.Core.Config;
+using LouisAgent.Core.Pricing;
 
 /// <summary>
 /// Which cache lifetime the prefix (tools + system prompt, F4's marker 1) should have, measured from the ledger (F4-S4):
@@ -62,17 +62,3 @@ public static class CacheGaps
         return new LifetimeCost(writes, reads, cost);
     }
 }
-
-/// <summary>One prefix (a host and model): its requests, the gaps between them, and each lifetime replayed on them.</summary>
-/// <param name="PrefixTokens">Estimated: the group's smallest prompt (input + cache read + cache write).</param>
-public sealed record CacheGapGroup(
-    string Host, string Model, int Requests, long PrefixTokens, int Under5m, int From5To60m, int Over60m,
-    LifetimeCost FiveMinutes, LifetimeCost OneHour)
-{
-    /// <summary>The cheaper lifetime; 5 minutes on a tie (the default). Null when the model has no price.</summary>
-    public CacheLifetime? Recommended =>
-        FiveMinutes.Cost is { } five && OneHour.Cost is { } hour ? (hour < five ? CacheLifetime.OneHour : CacheLifetime.FiveMinutes) : null;
-}
-
-/// <summary>What one lifetime would have cost the prefix: its writes, its reads and their price (null: no price).</summary>
-public sealed record LifetimeCost(int Writes, int Reads, decimal? Cost);

@@ -1,4 +1,6 @@
-namespace louis_agent.core.usage;
+namespace LouisAgent.Core.Usage;
+
+using LouisAgent.Core.Pricing;
 
 /// <summary>
 /// A host session's usage so far: each finished turn's records, for the session total on the usage line and for

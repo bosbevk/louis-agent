@@ -1,12 +1,7 @@
-namespace louis_agent.core.usage;
+namespace LouisAgent.Core.Usage;
 
 using System.Text.Json;
-
-/// <summary>Totals of a group of usage records: tokens by kind, requests, and cost.</summary>
-/// <param name="Cost">The sum of the priced records; null when none of them has a cost.</param>
-/// <param name="Unpriced">Records without a cost ("price unknown"); their tokens are in the totals, their cost isn't.</param>
-public sealed record UsageTotal(
-    string Key, int Requests, long Input, long CacheWrite, long CacheRead, long Output, decimal? Cost, int Unpriced);
+using LouisAgent.Core.Pricing;
 
 /// <summary>Reads a usage ledger back, prices records written before F2, and totals them (the M1 baseline; F3 and F11 later).</summary>
 public static class UsageReport

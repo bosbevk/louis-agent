@@ -2,9 +2,10 @@ using System.Text.Json;
 using LouisAgent.Core.Config;
 using louis_agent.core.providers;
 using louis_agent.core.tools;
-using louis_agent.core.usage;
+using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
 using louis_agent.core;
+using LouisAgent.Core.Pricing;
 
 namespace LouisAgent.Core.Tests;
 

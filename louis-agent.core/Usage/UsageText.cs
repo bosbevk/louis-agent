@@ -1,6 +1,7 @@
-namespace louis_agent.core.usage;
+namespace LouisAgent.Core.Usage;
 
 using System.Globalization;
+using LouisAgent.Core.Pricing;
 
 /// <summary>
 /// The usage text every host shows (F3): the line after an answer and the <c>/usage</c> reply. One format in core, so the

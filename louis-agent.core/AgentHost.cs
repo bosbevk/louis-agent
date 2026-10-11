@@ -5,7 +5,8 @@ using LouisAgent.Core.Config;
 using louis_agent.core.tools;
 using louis_agent.core.providers;
 using louis_agent.core.mcp;
-using louis_agent.core.usage;
+using LouisAgent.Core.Usage;
+using LouisAgent.Core.Pricing;
 
 /// <summary>Everything an entry point needs after bootstrap.</summary>
 /// <param name="Prices">The price table the usage ledger prices with (louis-agent.api also serves it at GET /prices).</param>

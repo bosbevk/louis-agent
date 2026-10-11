@@ -1,4 +1,6 @@
-namespace louis_agent.core.usage;
+namespace LouisAgent.Core.Usage;
+
+using LouisAgent.Core.Pricing;
 
 /// <summary>Where usage records go. The JSONL ledger in production; a list in tests.</summary>
 public interface IUsageSink

@@ -1,4 +1,5 @@
-using louis_agent.core.usage;
+using LouisAgent.Core.Usage;
+using LouisAgent.Core.Pricing;
 
 namespace LouisAgent.Core.Tests;
 

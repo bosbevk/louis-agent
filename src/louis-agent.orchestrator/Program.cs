@@ -4,9 +4,10 @@ using louis_agent.core;
 using LouisAgent.Core.Config;
 using louis_agent.core.providers;
 using louis_agent.core.tools;
-using louis_agent.core.usage;
+using LouisAgent.Core.Usage;
 using LouisAgent.Orchestrator;
 using LouisAgent.Orchestrator.Tools;
+using LouisAgent.Core.Pricing;
 
 // Watches one service's error feed. Each new exception is triaged by an agent built on louis-agent.core whose system
 // prompt is the service's runbooks (one skill file per API method) and whose only tools are ServiceTools: it ignores,

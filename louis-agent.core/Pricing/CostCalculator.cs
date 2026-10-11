@@ -1,4 +1,6 @@
-namespace louis_agent.core.usage;
+namespace LouisAgent.Core.Pricing;
+
+using LouisAgent.Core.Usage;
 
 /// <summary>
 /// Prices a usage record (Usage spec §4.2): each token kind times its price per million tokens. The kinds don't overlap
