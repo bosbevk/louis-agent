@@ -1,4 +1,4 @@
-namespace louis_agent.core.config;
+namespace LouisAgent.Core.Config;
 
 /// <summary>Agent runtime settings, resolved once at startup instead of read from the environment inside core.</summary>
 public sealed class AgentOptions

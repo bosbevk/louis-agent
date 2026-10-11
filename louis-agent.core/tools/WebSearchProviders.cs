@@ -3,7 +3,7 @@ namespace louis_agent.core.tools;
 using System.Net;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using louis_agent.core.config;
+using LouisAgent.Core.Config;
 
 /// <summary>A search request: <see cref="Recency"/> is null or one of day, week, month, year.</summary>
 public sealed record WebSearchQuery(string Text, int MaxResults, string? Site = null, string? Recency = null);

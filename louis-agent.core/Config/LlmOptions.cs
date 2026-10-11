@@ -1,6 +1,6 @@
-namespace louis_agent.core.config;
+namespace LouisAgent.Core.Config;
 
-using louis_agent.core.messages;
+using LouisAgent.Core.Messages;
 using Microsoft.Extensions.AI;
 
 /// <summary>
@@ -54,7 +54,7 @@ public sealed class LlmOptions
     {
         "on" or "true" => true,
         "off" or "false" => false,
-        var other => throw new ArgumentException(Messages.Format(ErrorMessage.UnknownCacheSetting, new { Value = other })),
+        var other => throw new ArgumentException(MessageText.Format(ErrorMessage.UnknownCacheSetting, new { Value = other })),
     };
 
     /// <summary>
@@ -69,7 +69,7 @@ public sealed class LlmOptions
     {
         "5m" => CacheLifetime.FiveMinutes,
         "1h" => CacheLifetime.OneHour,
-        var other => throw new ArgumentException(Messages.Format(ErrorMessage.UnknownCacheTtl, new { Value = other })),
+        var other => throw new ArgumentException(MessageText.Format(ErrorMessage.UnknownCacheTtl, new { Value = other })),
     };
 
     public bool ResolveSupportsTools()
@@ -113,14 +113,4 @@ public sealed class LlmOptions
 
     public override string ToString() =>
         $"{Provider}:{Model} (endpoint={Endpoint ?? "default"}, apiKey={(string.IsNullOrEmpty(ApiKey) ? "unset" : "set")})";
-}
-
-/// <summary>How long a prompt-cache entry lives after its last use (F4). Provider-neutral: a caching strategy maps it.</summary>
-public enum CacheLifetime
-{
-    /// <summary>5 minutes: cheaper to write (1.25× on Anthropic); right when requests come less than 5 minutes apart.</summary>
-    FiveMinutes,
-
-    /// <summary>1 hour: dearer to write (2×); pays off when requests sharing the entry come 5–60 minutes apart.</summary>
-    OneHour,
 }

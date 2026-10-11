@@ -80,7 +80,7 @@ public class UsageSessionTests
     public void UsageInChatSetting_IsOffUnlessTrue(string? value, bool expected)
     {
         // Step 6: Rider's chat gets the usage line only when asked for; anything but "true" leaves it out.
-        var options = louis_agent.core.config.AgentOptions.FromEnvironment(name => name == "USAGE_IN_CHAT" ? value : null);
+        var options = LouisAgent.Core.Config.AgentOptions.FromEnvironment(name => name == "USAGE_IN_CHAT" ? value : null);
 
         Assert.That(options.UsageInChat, Is.EqualTo(expected));
     }

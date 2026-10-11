@@ -55,7 +55,7 @@ louis-agent.core/
 ├── config/
 │   ├── LlmOptions.cs         # LLM_* settings, tool-support and thinking resolution
 │   └── AgentOptions.cs       # Workspace, skills, keys, Rider MCP, LOG_DIRECTORY, USAGE_LEDGER, PRICES_FILE/_URL
-├── messages/                 # Message enums ([Description] templates) and Messages.Format (see Messages and logging)
+├── messages/                 # Message enums ([Description] templates) and MessageText.Format (see Messages and logging)
 ├── providers/
 │   ├── LlmClientFactory.cs   # Provider → IChatClient (Anthropic thinking-budget wrapper lives here), wrapped for caching
 │   ├── IPromptCachingStrategy.cs, AnthropicPromptCaching.cs, NoPromptCaching.cs, PromptCachingChatClient.cs  # F4
@@ -189,8 +189,8 @@ public enum ErrorMessage
     UnknownCacheTtl,
 }
 
-throw new ArgumentException(Messages.Format(ErrorMessage.UnknownCacheTtl, new { Value = other }));
-logger.LogWarning(Messages.Template(LogMessage.RatesFallback), url, reason);   // NLog fills the holes, as structured fields
+throw new ArgumentException(MessageText.Format(ErrorMessage.UnknownCacheTtl, new { Value = other }));
+logger.LogWarning(MessageText.Template(LogMessage.RatesFallback), url, reason);   // NLog fills the holes, as structured fields
 ```
 
 - **What counts:** exception messages, log lines, the error strings tools return to the model, and user-facing text
@@ -202,7 +202,7 @@ logger.LogWarning(Messages.Template(LogMessage.RatesFallback), url, reason);   /
 - **A unit test checks every message enum:** each member has a `[Description]`, and its template's holes are well formed.
 - **Moving there:** the existing ~230 messages (35 files), `Console.Error` and `AgentLog` move in one refactor after F4
   (TODO, *Quality and CI*). Until it lands, new code defines its messages as enum members but still writes logs with
-  `Console.Error.WriteLine(Messages.Format(...))`; the refactor switches those calls to `ILogger`.
+  `Console.Error.WriteLine(MessageText.Format(...))`; the refactor switches those calls to `ILogger`.
 
 ### Adding a skill
 

@@ -1,6 +1,6 @@
 using System.Net;
 using System.Text;
-using louis_agent.core.config;
+using LouisAgent.Core.Config;
 using louis_agent.core.providers;
 using louis_agent.core.tools;
 using Microsoft.Extensions.AI;

@@ -1,5 +1,5 @@
 using louis_agent.core;
-using louis_agent.core.config;
+using LouisAgent.Core.Config;
 using louis_agent.core.providers;
 
 namespace LouisAgent.Core.Tests;

@@ -4,7 +4,7 @@ using System.ClientModel;
 using Anthropic;
 using Anthropic.Core;
 using Anthropic.Models.Messages;
-using louis_agent.core.config;
+using LouisAgent.Core.Config;
 using louis_agent.core.tools;
 using louis_agent.core.usage;
 using Microsoft.Extensions.AI;

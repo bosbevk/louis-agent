@@ -1,4 +1,4 @@
-using louis_agent.core.config;
+using LouisAgent.Core.Config;
 using Microsoft.Extensions.AI;
 using louis_agent.core;
 

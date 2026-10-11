@@ -1,9 +1,7 @@
 using Anthropic.Models.Messages;
 using louis_agent.core;
-using louis_agent.core.config;
-using louis_agent.core.messages;
-// This file has its own Messages(bool) helper.
-using MessageText = louis_agent.core.messages.Messages;
+using LouisAgent.Core.Config;
+using LouisAgent.Core.Messages;
 using louis_agent.core.providers;
 using louis_agent.core.usage;
 using Microsoft.Extensions.AI;

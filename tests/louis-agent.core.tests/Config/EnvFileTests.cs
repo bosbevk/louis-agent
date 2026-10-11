@@ -1,4 +1,4 @@
-using louis_agent.core.config;
+using LouisAgent.Core.Config;
 
 namespace LouisAgent.Core.Tests;
 

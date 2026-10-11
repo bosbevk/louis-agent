@@ -1,4 +1,4 @@
-namespace louis_agent.core.config;
+namespace LouisAgent.Core.Config;
 
 using System.Text.RegularExpressions;
 
@@ -11,9 +11,22 @@ public static partial class EnvFile
 {
     /// <summary><c>config/.env</c>, searched for upward from <paramref name="startDirectory"/> like the hosts do; null if none.</summary>
     public static string? Find(string startDirectory) =>
-        AgentHost.FindConfigDirectory(startDirectory) is { } dir && File.Exists(Path.Combine(dir, ".env"))
+        FindConfigDirectory(startDirectory) is { } dir && File.Exists(Path.Combine(dir, ".env"))
             ? Path.Combine(dir, ".env")
             : null;
+
+    /// <summary>The nearest <c>config/</c> folder with a <c>.env</c> or <c>.env.secrets</c>, searched upward; null if none.</summary>
+    internal static string? FindConfigDirectory(string startDirectory)
+    {
+        for (var dir = new DirectoryInfo(startDirectory); dir is not null; dir = dir.Parent)
+        {
+            var candidate = Path.Combine(dir.FullName, "config");
+            if (File.Exists(Path.Combine(candidate, ".env")) || File.Exists(Path.Combine(candidate, ".env.secrets")))
+                return candidate;
+        }
+
+        return null;
+    }
 
     /// <summary>Sets <paramref name="key"/> to <paramref name="value"/> in the file at <paramref name="path"/>.</summary>
     /// <returns>True when an existing line was replaced, false when the setting was added.</returns>

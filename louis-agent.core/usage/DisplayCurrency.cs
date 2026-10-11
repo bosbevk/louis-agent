@@ -2,7 +2,7 @@ namespace louis_agent.core.usage;
 
 using System.Globalization;
 using System.Text.RegularExpressions;
-using louis_agent.core.config;
+using LouisAgent.Core.Config;
 
 /// <summary>
 /// The currency costs are shown in (F14), with the rate from the price table's currency and that rate's date. Costs are

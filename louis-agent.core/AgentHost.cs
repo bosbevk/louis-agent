@@ -1,7 +1,7 @@
 namespace louis_agent.core;
 
 using dotenv.net;
-using louis_agent.core.config;
+using LouisAgent.Core.Config;
 using louis_agent.core.tools;
 using louis_agent.core.providers;
 using louis_agent.core.mcp;
@@ -31,7 +31,7 @@ public static partial class AgentHost
     internal static void LoadEnvironment(string startDirectory)
     {
         var files = new List<string>();
-        string? configDir = FindConfigDirectory(startDirectory);
+        string? configDir = EnvFile.FindConfigDirectory(startDirectory);
         if (configDir is not null)
         {
             files.Add(Path.Combine(configDir, ".env.secrets"));
@@ -59,18 +59,6 @@ public static partial class AgentHost
     /// <summary>Profile names are file-name parts (anthropic, ollama), never paths.</summary>
     [System.Text.RegularExpressions.GeneratedRegex("^[a-z0-9-]+$")]
     private static partial System.Text.RegularExpressions.Regex LlmProfileName();
-
-    internal static string? FindConfigDirectory(string startDirectory)
-    {
-        for (var dir = new DirectoryInfo(startDirectory); dir is not null; dir = dir.Parent)
-        {
-            var candidate = Path.Combine(dir.FullName, "config");
-            if (File.Exists(Path.Combine(candidate, ".env")) || File.Exists(Path.Combine(candidate, ".env.secrets")))
-                return candidate;
-        }
-
-        return null;
-    }
 
     /// <summary>
     /// Builds an engine for hosts that only publish its tools (the MCP server): the calling client brings its own
@@ -213,7 +201,7 @@ public static partial class AgentHost
         }
 
         string? path = agent.PricesFile
-                       ?? (FindConfigDirectory(Environment.CurrentDirectory) is { } configDir ? Path.Combine(configDir, "prices.json") : null);
+                       ?? (EnvFile.FindConfigDirectory(Environment.CurrentDirectory) is { } configDir ? Path.Combine(configDir, "prices.json") : null);
         PriceTable prices = path is null ? PriceTable.Empty : PriceTable.Load(path);
         if (prices.IsEmpty)
             Console.Error.WriteLine($"[WARN] No price table at {path ?? "config/prices.json"}: usage is recorded without cost. Set PRICES_FILE to price it.");
@@ -261,7 +249,7 @@ public static partial class AgentHost
         }
 
         string? path = agent.RatesFile
-                       ?? (FindConfigDirectory(Environment.CurrentDirectory) is { } configDir ? Path.Combine(configDir, "rates.json") : null);
+                       ?? (EnvFile.FindConfigDirectory(Environment.CurrentDirectory) is { } configDir ? Path.Combine(configDir, "rates.json") : null);
         ExchangeRates rates = path is null ? ExchangeRates.Empty : ExchangeRates.Load(path);
         if (rates.IsEmpty)
         {

@@ -1,5 +1,5 @@
 using System.Text.Json;
-using louis_agent.core.config;
+using LouisAgent.Core.Config;
 using louis_agent.core.tools;
 using Microsoft.Extensions.AI;
 using louis_agent.core;

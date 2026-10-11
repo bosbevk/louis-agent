@@ -5,7 +5,7 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Globalization;
-using louis_agent.core.config;
+using LouisAgent.Core.Config;
 
 /// <summary>
 /// Native C# client for Paymo API, replacing bash curl scripts.

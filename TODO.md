@@ -138,7 +138,7 @@ growing history every round, so smaller tasks are cheaper); make runs resumable 
       in `Guardrails/`. CL1 moves the class whole; this splits it. Behaviour unchanged
 - [ ] **Messages and logging, after F4, second of two cleanups** (the rule is in [docs/CLAUDE.md](docs/CLAUDE.md#messages-and-logging)): move
       the ~230 inline messages in 35 files (exceptions, log lines, tool results, user-facing text) into message enums
-      with `[Description]` templates and a `Messages` helper, with a test over every enum; switch logging from
+      with `[Description]` templates and a `MessageText` helper, with a test over every enum; switch logging from
       `Console.Error` and `AgentLog`'s files to `ILogger` with NLog (stderr only, run files and JSON-lines as targets).
       Its own branch and PR, with a plan
 - [ ] CI (`.github/workflows`): `dotnet build` and `dotnet test` on every push and pull request — today regressions are

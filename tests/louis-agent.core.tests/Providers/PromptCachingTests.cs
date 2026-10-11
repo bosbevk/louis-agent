@@ -2,7 +2,7 @@ using System.Net;
 using System.Text.Json.Nodes;
 using Anthropic;
 using Anthropic.Core;
-using louis_agent.core.config;
+using LouisAgent.Core.Config;
 using louis_agent.core.providers;
 using louis_agent.core.usage;
 using Microsoft.Extensions.AI;

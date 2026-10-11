@@ -1,6 +1,6 @@
 namespace louis_agent.core.usage;
 
-using louis_agent.core.config;
+using LouisAgent.Core.Config;
 
 /// <summary>
 /// Which cache lifetime the prefix (tools + system prompt, F4's marker 1) should have, measured from the ledger (F4-S4):

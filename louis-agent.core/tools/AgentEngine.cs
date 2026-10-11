@@ -7,8 +7,8 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using louis_agent.core.config;
-using louis_agent.core.messages;
+using LouisAgent.Core.Config;
+using LouisAgent.Core.Messages;
 using louis_agent.core.providers;
 using louis_agent.core.usage;
 using Microsoft.Extensions.AI;
@@ -331,7 +331,7 @@ public partial class AgentEngine
     {
         int at = _tools.BinarySearch(tool, ByName);
         if (at >= 0)
-            throw new InvalidOperationException(Messages.Format(ErrorMessage.DuplicateToolName, new { tool.Name }));
+            throw new InvalidOperationException(MessageText.Format(ErrorMessage.DuplicateToolName, new { tool.Name }));
         _tools.Insert(~at, tool);
     }
 

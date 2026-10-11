@@ -1,4 +1,4 @@
-namespace louis_agent.core.messages;
+namespace LouisAgent.Core.Messages;
 
 using System.Collections.Concurrent;
 using System.ComponentModel;
@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 /// <see cref="ToolMessage"/>, <see cref="UserText"/>): each member's <see cref="DescriptionAttribute"/> is a template with
 /// named holes, e.g. <c>"Unknown LLM_CACHE_TTL '{Value}'. Use 5m or 1h."</c> (docs/CLAUDE.md, *Messages and logging*).
 /// </summary>
-public static partial class Messages
+public static partial class MessageText
 {
     private static readonly ConcurrentDictionary<Enum, string> Templates = new();
 

@@ -1,7 +1,7 @@
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using louis_agent.core;
-using louis_agent.core.config;
+using LouisAgent.Core.Config;
 using louis_agent.core.providers;
 using louis_agent.core.tools;
 using louis_agent.core.usage;

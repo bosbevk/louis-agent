@@ -1,7 +1,7 @@
 namespace louis_agent.core.providers;
 
 using Anthropic.Models.Messages;
-using louis_agent.core.config;
+using LouisAgent.Core.Config;
 using Microsoft.Extensions.AI;
 
 /// <summary>
