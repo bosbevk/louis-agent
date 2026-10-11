@@ -48,7 +48,8 @@ baseline, so that a change is kept only when quality holds and the cost is known
 ## Design
 
 - **`tools/louis-agent.evals`**, a console app next to the usage probe, referencing core (and the orchestrator for
-  F17's target). Not in core: evals are a developer tool, not something an agent does.
+  F17's target; its types are `internal`, so the orchestrator grants `InternalsVisibleTo` to the evals tool, as it
+  does to its tests). Not in core: evals are a developer tool, not something an agent does.
 - **Suites** in `evals/<suite>/`: `cases.jsonl`, `suite.json` (target, pass bar, judge rubric), `baseline.json`.
   Cases are checked in, so a change and its eval result are reviewed together.
 - **`IEvalTarget`** (`Task<string> RunAsync(EvalCase, CancellationToken)`) per suite; **`IEvalScorer`** per scorer

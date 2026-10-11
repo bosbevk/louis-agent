@@ -6,9 +6,9 @@
 >
 > **In the TODO:** tick **F10 Route settings** under *Now* ([TODO](../../TODO.md)) · **Replaces:** the known limitation "10 tool rounds per message"
 
-One set of settings serves very different work today: a quick chat, a 20-round fix, the orchestrator's triage, and
-summaries. F10 lets each route have its own thinking level, tool-round limit and model — fixed per session, so caching
-isn't affected.
+One set of settings serves very different work today: a quick chat, a 20-round fix and the orchestrator's triage. F10
+lets each route have its own thinking level and tool-round limit, fixed per session, so caching isn't affected.
+(Summaries get their own model in [F16](F16-summariser.md).)
 
 ## User stories
 

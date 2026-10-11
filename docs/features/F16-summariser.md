@@ -3,6 +3,8 @@
 > **Status:** planned · **Milestone:** M4 (with [F18](F18-evaluation.md), before F9) · **Depends on:** F1, F4 (the
 > caching strategy), F18 (its eval)
 >
+> **Spec:** [Optimisation §D (bounded history), §E (summary model)](../specs/RESPONSE_OPTIMISATION.md)
+>
 > **In the TODO:** tick **F16 Summariser** under *Now* ([TODO](../../TODO.md)) · **Takes over:** F10-S3 (a cheaper
 > model for summaries)
 

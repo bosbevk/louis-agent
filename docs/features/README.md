@@ -24,7 +24,7 @@ feature replaces older backlog wording, that wording no longer appears anywhere 
 | [F6](F06-estimates.md) | Cost estimates before a run | planned | U §5 | (as F1) | F1, F2 | M3 |
 | [F7](F07-budgets.md) | Budgets: warn, ask, stop | planned | U §6 | (as F1) | F1, F2, F6 | M3 |
 | [F8](F08-reliability.md) | Reliability: retries, account limits, fallback, structured results | planned | R §F · U §6.2 | *Retry and back off…*, *Add model fallback*, *Wire up structured outputs* | F1 | M3 |
-| [F9](F09-context-management.md) | Bounded history: clear stale tool results, compact old turns | planned | R §D | *Consider context editing and compaction*; first slice of the session architecture | F1, F4 | M4 |
+| [F9](F09-context-management.md) | Bounded history: clear stale tool results, compact old turns | planned | R §D | *Consider context editing and compaction*; first slice of the session architecture | F1, F4, F15, F16, F18 | M4 |
 | [F10](F10-route-settings.md) | Settings per route: thinking and tool rounds (the summary model moved to F16) | planned | R §E | Known limitation *10 tool rounds per message* | F1 | M4 |
 | [F11](F11-usage-tab-and-reconciliation.md) | Usage tab, usage API, reconciliation with the bill | planned | U §7.1–7.2, §4.4 | (as F1) | F1–F3, F6, F7 | M5 |
 | [F12](F12-response-speed.md) | Response speed: time to first token and tokens per second, every provider | planned | U §4.1 · R §A | — | F1 (F3, F11 to show it) | M5 |
