@@ -195,6 +195,13 @@ feature when its turn comes; remove its line here and update the map's *Missing*
 - [ ] **Multi-agent:** compare handoff patterns (tool call, session, MCP); parallel sub-agents
 - [ ] **Protocols:** a full MCP client (also removes the Rider MCP limitation)
 - [ ] **Reliability:** timeouts, idempotency and resumable runs in the core
+- [ ] **Response cache (our own, MongoDB):** return a stored response for an exactly repeated request instead of calling
+      the model ($0, recorded as a cache hit in the ledger). Feasible, but not a replacement for F4: Anthropic's prompt
+      cache is on their servers and is what bills cached input at 0.1×; ours can only skip whole requests. Pays off where
+      requests repeat exactly (F16's summaries of the same output, F17's triage of a recurring error, re-running F18's
+      evals), hardly in the fix loop, whose context is new every round. Mongo fits: TTL indexes for expiry, the same
+      store as durable sessions, and vector search if a *semantic* cache (similar, not identical, requests) is tried
+      later, which needs a strict threshold and evals, since a near-miss returns a wrong answer
 - [ ] **Shipping:** a deploy pipeline for the Docker images, with the eval suite as a release gate
 - [ ] **Safety:** prompt-injection defences and red-team tests, output guardrails, rate limiting, an audit log
 - [ ] **Human in the loop:** approval policies per action and risk level
