@@ -26,6 +26,10 @@ flowchart LR
   git and history endpoints, and the session endpoints.
 - **Prices** (`GET /prices`, public): the price table `AgentHost.Build` loaded for this API's usage ledger, so other
   hosts can set `PRICES_URL` to it and price with the same table (the demo's orchestrator does); `404` without one.
+- **Rates** (`GET /rates`, public, F14): the exchange rates `AgentHost.Build` loaded, in our `rates.json` format, for
+  other hosts' `RATES_URL` (`RATES_FORMAT=rates-json`); `GET /rates/display` gives the web app the server's display
+  currency and a symbol per currency. Usage objects add `display_cost`, `display_currency`, `display_symbol`,
+  `rate_as_of` beside the charged `cost`.
 - **Sessions** (`AgentSessions`): in memory, one turn at a time per session (a second message gets `409`), cancelled by
   `POST /sessions/{id}/cancel` or by the client disconnecting; idle sessions are dropped after 4 hours.
 - **Streaming** (`ClaudeStyleStream`): engine updates become `message_start`, `content_block_start/delta/stop`

@@ -104,6 +104,12 @@ Branch `feature/f14-display-currency` off `main` (after PR #12).
 8. **Docs and finish:** SETUP (`HOST_CULTURE`, `DISPLAY_CURRENCY`, `RATES_URL`, `RATES_FORMAT`, `RATES_FILE`), README,
    the probe's doc, F14 doc *What the build changed*, finishing checklist, GOAL (#13 / #17).
 
+## Approved during the build (2026-10-11)
+
+- **Rerun both demos and update both samples** in step 8, after the docs (about $0.91 on Haiku 5.5: full about $0.66,
+  `-Short` about $0.25): their comms logs are then in rands with the rate line, while the ledger and the jsonl files
+  stay in USD; each run also re-checks F3 (comms log total against the ledger).
+
 ## Verification
 - `dotnet test louis-agent-solution.sln` after every step.
 - Free, by hand on Ollama with a test price table that prices `qwen2.5:0.5b` above 0 (so conversion shows): the CLI

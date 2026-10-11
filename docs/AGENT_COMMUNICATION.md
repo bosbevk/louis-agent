@@ -170,6 +170,10 @@ data: {"type":"message_stop"}
 | `message_stop` | The stream is complete |
 | `error` | The turn failed; the data is the error shape above, plus the turn's `usage` when a model request had returned before the failure |
 
+**In another currency** (F14): the usage object keeps `cost` and `currency` as charged and adds `display_cost`,
+`display_currency`, `display_symbol` and `rate_as_of`, the cost in the server's display currency (`HOST_CULTURE` /
+`DISPLAY_CURRENCY`); when nothing is converted they repeat the charged figures, so a client can always show them.
+
 **Usage** (F3) is Claude's usage object with the same four token fields, summed over every model request of the turn
 (a turn can be several: one per tool round, plus any summary). As in Claude's, the four kinds don't overlap:
 `input_tokens` is the uncached input. Added: `requests`, `cost` and `currency` (`null` when no request was priced:
@@ -206,6 +210,8 @@ checked against the workspace, and secret files are never shown.
 | `POST /git/branch/delete` | `{ "branch" }` | Delete a merged branch |
 | `GET /health` | — | `{ "status": "ok" }` |
 | `GET /prices` | — | The price table the API's usage ledger prices with (`config/prices.json`'s format, comments removed), for other hosts' `PRICES_URL`; `404` when it has none. No key needed |
+| `GET /rates` | — | The exchange rates the API loaded (F14), in our `rates.json` format (`{as_of, base, source, rates}`), for other hosts' `RATES_URL` with `RATES_FORMAT=rates-json`; `404` when it has none. No key needed |
+| `GET /rates/display` | — | `{ display_currency, display_symbol, base, rate_as_of, symbols }`: the server's display currency and a symbol per currency, for the web app's currency picker. No key needed |
 
 Nothing here pushes: pushing is always left to you.
 

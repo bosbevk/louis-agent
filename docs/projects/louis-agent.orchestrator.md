@@ -38,7 +38,9 @@ flowchart TD
    ways in the Markdown `agent-comms.md`.
 6. **Cost** (F3): louis-agent's usage per reply (from `message_delta`), the triage's from its own `UsageScope`; the comms
    log shows both per error and a run total split by agent, and `fixes.jsonl` / `decisions.jsonl` carry them. A
-   timed-out request fails that error, not the run (FX7): only Ctrl+C ends a run early.
+   timed-out request fails that error, not the run (FX7): only Ctrl+C ends a run early. Costs are shown in the display
+   currency (F14: rates from demo-api's `/rates`, one rate for both agents), with the rate and the USD charged under the
+   run total; the jsonl files keep USD.
 
 ## Structure
 

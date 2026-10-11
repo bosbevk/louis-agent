@@ -33,6 +33,10 @@ flowchart TB
   answer (`1.9k in · 26k cached · 412 out · $0.004`, exact figures on hover), and the chat's total sits above the
   message box. `UsageFormat` follows core's `UsageText` rules (the app doesn't reference core). The total is summed in
   the browser and saved with the chat, since the chat outlives the API's session.
+- **Currency** (F14): `CurrencyState` loads `GET /rates` and `/rates/display` and starts with the server's currency
+  (the PC's region; the browser's locale is the display language, not the region). The sidebar's Currency select
+  changes it for this browser (`localStorage`, like the theme). Chats keep their costs as charged and `UsageFormat`
+  converts when drawing, so a change re-labels every saved chat.
 - **Chats are kept in the browser** (`ChatStore`, `localStorage`); the server only holds the session, so after an API
   restart a chat can be read but not continued.
 - **Shared state services** raise `Changed` events so panels, viewers and tab badges stay in step:

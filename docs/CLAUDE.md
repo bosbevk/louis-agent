@@ -72,6 +72,8 @@ louis-agent.core/
 │   ├── UsageScope.cs         # Per-turn context (AsyncLocal): host, session, turn, purpose, task/run/service tags
 │   ├── IUsageMapper.cs       # Provider usage → the ledger's token kinds (Standard / Anthropic mappers)
 │   ├── PriceTable.cs, CostCalculator.cs  # Prices (config/prices.json) and a record's cost (F2)
+│   ├── ExchangeRates.cs, IRatesMapper.cs, DisplayCurrency.cs  # Rates (config/rates.json, RATES_URL) and the
+│   │                         # currency costs are shown in, from HOST_CULTURE (F14); the ledger keeps what was charged
 │   ├── PricingUsageSink.cs   # Puts the cost on each record before the ledger writes it
 │   ├── UsageReport.cs        # Reads a ledger back, prices old records, totals per fix / triage / run
 │   ├── UsageText.cs, UsageSession.cs  # The usage line and /usage text every host shows (F3); a session's turns
@@ -107,7 +109,7 @@ samples/                      # order-service (demo microservice), run-demo.ps1 
 docker/                       # Dockerfile.{acp-server,api,agent,mcp-server,orchestrator}, docker-compose.yml,
                               # docker-compose.demo.yml (orchestrator demo); the build context's .dockerignore is at the repo root
 config/                       # .env and .env.secrets (both ignored), their examples, LLM profiles (.env.anthropic,
-                              # .env.ollama), prices.json (model prices), Rider config examples
+                              # .env.ollama), prices.json (model prices), rates.json (exchange rates), Rider config
 Skills/                       # personality.md + default.md + *-skills.md (system prompt), tools/ (agent-built tools)
 docs/                         # This guide, features/ (planned work), plans/ (approved build plans),
                               # fixes/ (what broke and why), specs/, projects/

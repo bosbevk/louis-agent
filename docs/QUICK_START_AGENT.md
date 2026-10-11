@@ -112,7 +112,10 @@ the chat's total above the message box), and in Rider when `USAGE_IN_CHAT=true`:
 turn: 3 requests · 28k tokens (26k cached) · $0.006 · session $0.04
 ```
 
-`/usage` gives the session's totals by purpose and by token kind. Local models are priced at $0; a model missing from
+Costs are shown in your PC's currency once `HOST_CULTURE` is set (run
+`dotnet run --project tools/louis-agent.usage-probe -- --host-culture` once): `R0.11`, with the rate and the dollars
+charged in `/usage`; the web app's sidebar can pick another currency. `/usage` gives the session's totals by purpose and
+by token kind. Local models are priced at $0; a model missing from
 `config/prices.json` shows "price unknown". Every request is also in the usage ledger
 (`{LOG_DIRECTORY}/usage-YYYY-MM.jsonl`); outside Docker, set `LOG_DIRECTORY` (an absolute path) to see the line at all.
 
