@@ -1,10 +1,11 @@
 # F14 · Display currency: show costs in your own currency
 
-> **Status:** planned · **Milestone:** M5 · **Depends on:** F2, F3
+> **Status:** in progress · **Milestone:** M5 (built early, by choice) · **Depends on:** F2, F3
 >
 > **Spec:** [Usage §4.2 (prices), §7 (showing usage)](../specs/USAGE_AND_BUDGETS.md)
 >
-> **In the TODO:** tick **F14 Display currency** under *Now* ([TODO](../../TODO.md))
+> **In the TODO:** tick **F14 Display currency** under *Now* ([TODO](../../TODO.md)) · **Plan:**
+> [plans/F14](../plans/F14-display-currency.md)
 
 F2 prices every request in the price table's currency (USD: what Anthropic bills in), and F3 shows those amounts
 everywhere: `turn: 3 requests · 28k tokens · $0.006`. For someone who thinks in another currency, every figure needs a
@@ -20,7 +21,8 @@ ledger with the bill in the bill's currency.
 CLI, Rider, `/usage` and the orchestrator's comms log all show the same one.
 - *Given* `DISPLAY_CURRENCY=ZAR` and a rate for ZAR *when* a turn ends *then* the usage line shows
   `turn: 3 requests · 28k tokens · R0.11 · session R0.73`.
-- *Given* no `DISPLAY_CURRENCY` *then* everything is shown in the price table's currency, as in F3.
+- *Given* no `DISPLAY_CURRENCY` *then* the PC's region decides (Windows `en-ZA` → ZAR, passed to the containers as
+  `HOST_CULTURE`), and with no region either, the price table's currency, as in F3.
 - *Given* `DISPLAY_CURRENCY` names a currency with no rate *then* start-up logs one `[WARN]` and costs are shown in the
   table's currency (never a guessed rate).
 
@@ -54,7 +56,17 @@ hand every day, so that converted figures stay close to the truth. *How*: the op
 - **Totals convert per record, not per total**: rates change over time, so a session that crosses a rate update adds up
   each record at the rate shown with it. (With one rate per run this is the same; it matters for F11's longer reports.)
 
-### Open decision: where rates come from (decide when planning F14)
+### Decided when planning (2026-10-11)
+
+- **Which currency:** the Windows region, read on the PC and written once to `config/.env` as `HOST_CULTURE=en-ZA`
+  (containers can't see it, and running them *in* en-ZA would change every tool's number format); `DISPLAY_CURRENCY`
+  overrides it. The browser's locale isn't used: it reports the display language (`en-US`), not the region.
+- **Format:** the culture's symbol with `.` decimals (`R35.00`, `R0.11`), never `35,00`.
+- **Rates: A + B below.** Live from `RATES_URL` (default frankfurter, ECB reference rates), mapped by a small
+  strategy (`IRatesMapper`) into our own `rates.json` format, the only one the code reads; the tracked
+  `config/rates.json` as the fallback; and served by the API at `GET /rates`, like the price table.
+
+The options as they were weighed:
 
 | Option | How | For | Against |
 |---|---|---|---|
@@ -67,7 +79,10 @@ table's currency, never to a guess.
 
 ## Implementation steps
 
-1. **Decide the rate source** (above) and write the plan in [plans/](../plans/README.md).
+The approved [plan](../plans/F14-display-currency.md) has the steps as they will be built; these were the first
+sketch.
+
+1. **Decide the rate source** (above) and write the plan in [plans/](../plans/README.md). *Done.*
 2. **`ExchangeRates` and its loading.** *Test:* convert with a dated rate; unknown currency → null; malformed rates file
    fails start-up naming the file (like prices).
 3. **`UsageText` and the web app's `UsageFormat` in a display currency.** *Test:* exact strings for USD, ZAR, EUR and an unknown code; partial-priced

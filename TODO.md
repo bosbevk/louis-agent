@@ -62,9 +62,10 @@ its own.
       per session"
 - [ ] [F12 Response speed](docs/features/F12-response-speed.md) — time to first token and tokens per second on every
       usage record, for every provider (Ollama's own timings too); shown with the usage
-- [ ] [F14 Display currency](docs/features/F14-display-currency.md) — show costs in a chosen currency (server default
-      and per web user), with the rate's date; the ledger stays in the bill's currency. Rate source to decide: fixed in
-      config, live, or both
+- [ ] [F14 Display currency](docs/features/F14-display-currency.md) — show costs in the PC's currency (from the Windows
+      region, `HOST_CULTURE`) or a chosen one, with the rate's date; rates live from `RATES_URL` (frankfurter) with a
+      `config/rates.json` fallback, served at `GET /rates`; the ledger stays in the bill's currency. *In progress, built
+      before M2 by choice* ([plan](docs/plans/F14-display-currency.md))
 
 **Local — Local models:** a local model gets everything it is sent.
 

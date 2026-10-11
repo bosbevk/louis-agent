@@ -29,7 +29,7 @@ feature replaces older backlog wording, that wording no longer appears anywhere 
 | [F11](F11-usage-tab-and-reconciliation.md) | Usage tab, usage API, reconciliation with the bill | planned | U §7.1–7.2, §4.4 | (as F1) | F1–F3, F6, F7 | M5 |
 | [F12](F12-response-speed.md) | Response speed: time to first token and tokens per second, every provider | planned | U §4.1 · R §A | — | F1 (F3, F11 to show it) | M5 |
 | [F13](F13-local-models.md) | Local models: fit every request into a small context window (2,048 tokens) | planned | R §C | Known limitation *local models get a truncated prompt* | F1, F5 | Local |
-| [F14](F14-display-currency.md) | Display currency: show costs in a chosen currency (the ledger stays in the bill's) | planned | U §4.2, §7 | — | F2, F3 | M5 |
+| [F14](F14-display-currency.md) | Display currency: show costs in a chosen currency (the ledger stays in the bill's) | in progress | U §4.2, §7 | — | F2, F3 | M5 |
 
 ## Milestones
 
