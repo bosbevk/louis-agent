@@ -86,4 +86,13 @@ public enum ErrorMessage
 
     [Description("Workspace root cannot be empty.")]
     WorkspaceRootEmpty,
+
+    [Description("This host only exposes tools; it has no language model.")]
+    ToolHostHasNoModel,
+
+    [Description("PRICES_URL must be an http or https URL, got '{Url}'.")]
+    PricesUrlInvalid,
+
+    [Description("RATES_URL must be an http or https URL (or off), got '{Url}'.")]
+    RatesUrlInvalid,
 }

@@ -131,4 +131,76 @@ public enum LogMessage
 
     [Description("Loaded {Count} agent-built tool(s) from {Directory}")]
     AgentToolsLoaded,
+
+    [Description("LLM_PROFILE '{Profile}' has no {File}; using the LLM settings from .env and the defaults.")]
+    LlmProfileMissing,
+
+    [Description("Display currency: {Display}")]
+    DisplayCurrencyChosen,
+
+    [Description("LLM: {Llm}; tools={Tools}; thinking={Thinking}")]
+    LlmChosen,
+
+    [Description("Starting MCP tool discovery from {Endpoint}")]
+    McpDiscoveryStarting,
+
+    [Description("Startup task exception: {Error}")]
+    McpStartupFailed,
+
+    [Description("MCP discovery disabled or not configured")]
+    McpDiscoveryDisabled,
+
+    [Description("Usage ledger off: LOG_DIRECTORY is not set. Set it to record token usage, or USAGE_LEDGER=off to silence this.")]
+    LedgerOff,
+
+    [Description("Usage ledger: {Path}")]
+    LedgerAt,
+
+    [Description("Prices: {Source} (as of {AsOf}, {Count} models)")]
+    PricesLoaded,
+
+    [Description("Prices: {Url} can't be reached ({Reason}); using the price file instead.")]
+    PricesUrlUnreachable,
+
+    [Description("No price table at {Path}: usage is recorded without cost. Set PRICES_FILE to price it.")]
+    NoPriceTable,
+
+    [Description("Rates: {Source} (as of {AsOf}, {Count} currencies)")]
+    RatesLoaded,
+
+    [Description("Rates: {Url} can't be used ({Reason}); using the rates file instead.")]
+    RatesUrlUnusable,
+
+    [Description("No exchange rates at {Path}: costs are shown in {Base}.")]
+    NoRates,
+
+    [Description("Loaded {Provider}")]
+    SkillProviderLoaded,
+
+    [Description("Loaded {Function} skills provider")]
+    AgentFunctionLoaded,
+
+    [Description("Loaded {File} via MarkdownSkillProvider")]
+    MainSkillsFileLoaded,
+
+    [Description("Skills file '{File}' not found; using default skills only.")]
+    MainSkillsFileMissing,
+
+    [Description("Loading ALL skill providers (louis function)")]
+    LoadingAllSkills,
+
+    [Description("Discovered skills file: {File}")]
+    SkillsFileDiscovered,
+
+    [Description("No tools discovered from Rider MCP server")]
+    McpNoToolsDiscovered,
+
+    [Description("Failed to register tool '{Name}': {Reason}")]
+    McpRegisterFailed,
+
+    [Description("Discovered and registered {Registered}/{Count} tools from Rider")]
+    McpRegistered,
+
+    [Description("Tool discovery failed: {Reason}")]
+    McpDiscoveryFailed,
 }

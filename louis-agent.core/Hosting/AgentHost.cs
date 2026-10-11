@@ -9,6 +9,8 @@ using LouisAgent.Core.Pricing;
 using LouisAgent.Core.Llm;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Logging;
+using LouisAgent.Core.Messages;
+using Microsoft.Extensions.Logging;
 
 /// <summary>
 /// Single bootstrap shared by the CLI, ACP and MCP entry points: dotenv load, option binding,
@@ -16,6 +18,8 @@ using LouisAgent.Core.Logging;
 /// </summary>
 public static partial class AgentHost
 {
+    private static readonly ILogger Log = AgentLogging.LoggerFactory.CreateLogger(typeof(AgentHost));
+
     /// <summary>
     /// Loads config/.env.secrets and config/.env (plus a legacy ./.env), searching upward from the working
     /// directory so the CLI works from any folder in the repo, then the LLM profile config/.env.{LLM_PROFILE}
@@ -41,7 +45,7 @@ public static partial class AgentHost
         string profileFile = Path.Combine(configDir, $".env.{profile}");
         if (!LlmProfileName().IsMatch(profile) || !File.Exists(profileFile))
         {
-            Console.Error.WriteLine($"[WARN] LLM_PROFILE '{profile}' has no config/.env.{profile}; using the LLM settings from .env and the defaults.");
+            Log.Log(LogLevel.Warning, LogMessage.LlmProfileMissing, new { Profile = profile, File = $"config/.env.{profile}" });
             return;
         }
         Load([profileFile]);
@@ -81,12 +85,12 @@ public static partial class AgentHost
         public Task<Microsoft.Extensions.AI.ChatResponse> GetResponseAsync(
             IEnumerable<Microsoft.Extensions.AI.ChatMessage> messages, Microsoft.Extensions.AI.ChatOptions? options = null,
             CancellationToken cancellationToken = default) =>
-            throw new InvalidOperationException("This host only exposes tools; it has no language model.");
+            throw new InvalidOperationException(MessageText.Format(ErrorMessage.ToolHostHasNoModel));
 
         public IAsyncEnumerable<Microsoft.Extensions.AI.ChatResponseUpdate> GetStreamingResponseAsync(
             IEnumerable<Microsoft.Extensions.AI.ChatMessage> messages, Microsoft.Extensions.AI.ChatOptions? options = null,
             CancellationToken cancellationToken = default) =>
-            throw new InvalidOperationException("This host only exposes tools; it has no language model.");
+            throw new InvalidOperationException(MessageText.Format(ErrorMessage.ToolHostHasNoModel));
 
         public object? GetService(Type serviceType, object? serviceKey = null) => null;
         public void Dispose() { }
@@ -110,7 +114,7 @@ public static partial class AgentHost
         PriceTable prices = LoadPrices(agent);
         ExchangeRates rates = LoadRates(agent, prices.Currency);
         DisplayCurrency display = DisplayCurrency.Resolve(agent, prices.Currency, rates);
-        Console.Error.WriteLine($"[INFO] Display currency: {display}");
+        Log.Log(LogLevel.Information, LogMessage.DisplayCurrencyChosen, new { Display = display });
         var engine = new AgentEngine(skills, chatClient, agent, llm.ResolveSupportsTools(),
             usageSink: CreateUsageSink(agent, prices), usageMapper: clientFactory.CreateUsageMapper(llm))
         {
@@ -120,12 +124,13 @@ public static partial class AgentHost
             Display = display,
         };
         engine.LoadApprovedTools();
-        Console.Error.WriteLine($"[INFO] LLM: {llm}; tools={(engine.SupportsTools ? "on" : "off")}; thinking={engine.Thinking?.ToString().ToLowerInvariant() ?? "off"}");
+        Log.Log(LogLevel.Information, LogMessage.LlmChosen,
+            new { Llm = llm, Tools = engine.SupportsTools ? "on" : "off", Thinking = engine.Thinking?.ToString().ToLowerInvariant() ?? "off" });
 
         // Auto-discover and register tools from Rider's MCP server (async, non-blocking)
         if (agent.RiderMcpAutoDiscover && !string.IsNullOrWhiteSpace(agent.RiderMcpEndpoint))
         {
-            Console.Error.WriteLine($"[INFO] Starting MCP tool discovery from {agent.RiderMcpEndpoint}");
+            Log.Log(LogLevel.Information, LogMessage.McpDiscoveryStarting, new { Endpoint = agent.RiderMcpEndpoint });
             _ = Task.Run(async () =>
             {
                 try
@@ -137,13 +142,13 @@ public static partial class AgentHost
                 }
                 catch (Exception ex)
                 {
-                    Console.Error.WriteLine($"[MCP] Startup task exception: {ex}");
+                    Log.Log(LogLevel.Warning, LogMessage.McpStartupFailed, new { Error = ex.ToString() }, tag: "MCP");
                 }
             });
         }
         else
         {
-            Console.Error.WriteLine($"[INFO] MCP discovery disabled or not configured");
+            Log.Log(LogLevel.Information, LogMessage.McpDiscoveryDisabled);
         }
 
         return new AgentHostContext(engine, llm, agent, prices, rates, display);
@@ -160,11 +165,11 @@ public static partial class AgentHost
         if (!agent.UsageLedger) return null;
         if (agent.LogDirectory is null)
         {
-            Console.Error.WriteLine("[WARN] Usage ledger off: LOG_DIRECTORY is not set. Set it to record token usage, or USAGE_LEDGER=off to silence this.");
+            Log.Log(LogLevel.Warning, LogMessage.LedgerOff);
             return null;
         }
 
-        Console.Error.WriteLine($"[INFO] Usage ledger: {Path.Combine(agent.LogDirectory, "usage-YYYY-MM.jsonl")}");
+        Log.Log(LogLevel.Information, LogMessage.LedgerAt, new { Path = Path.Combine(agent.LogDirectory, "usage-YYYY-MM.jsonl") });
         return new PricingUsageSink(new JsonlUsageSink(agent.LogDirectory), prices ?? LoadPrices(agent));
     }
 
@@ -180,7 +185,7 @@ public static partial class AgentHost
         if (agent.PricesUrl is { } pricesUrl)
         {
             if (!Uri.TryCreate(pricesUrl, UriKind.Absolute, out Uri? url) || url.Scheme is not ("http" or "https"))
-                throw new InvalidDataException($"PRICES_URL must be an http or https URL, got '{pricesUrl}'.");
+                throw new InvalidDataException(MessageText.Format(ErrorMessage.PricesUrlInvalid, new { Url = pricesUrl }));
 
             using var http = handler is null ? new HttpClient() : new HttpClient(handler, disposeHandler: false);
             http.Timeout = PricesUrlTimeout;
@@ -188,13 +193,13 @@ public static partial class AgentHost
             {
                 // Start-up is synchronous in every host; the call is bounded by the timeout above.
                 PriceTable fromUrl = PriceTable.LoadAsync(http, url).GetAwaiter().GetResult();
-                Console.Error.WriteLine($"[INFO] Prices: {url} (as of {fromUrl.AsOf}, {fromUrl.Models.Count} models)");
+                Log.Log(LogLevel.Information, LogMessage.PricesLoaded, new { Source = url, fromUrl.AsOf, fromUrl.Models.Count });
                 return fromUrl;
             }
             catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException)
             {
                 // Pricing being unreachable never stops an agent: the local table keeps costs flowing.
-                Console.Error.WriteLine($"[WARN] Prices: {url} can't be reached ({ex.Message}); using the price file instead.");
+                Log.Log(LogLevel.Warning, LogMessage.PricesUrlUnreachable, new { Url = url, Reason = ex.Message });
             }
         }
 
@@ -202,9 +207,9 @@ public static partial class AgentHost
                        ?? (EnvFile.FindConfigDirectory(Environment.CurrentDirectory) is { } configDir ? Path.Combine(configDir, "prices.json") : null);
         PriceTable prices = path is null ? PriceTable.Empty : PriceTable.Load(path);
         if (prices.IsEmpty)
-            Console.Error.WriteLine($"[WARN] No price table at {path ?? "config/prices.json"}: usage is recorded without cost. Set PRICES_FILE to price it.");
+            Log.Log(LogLevel.Warning, LogMessage.NoPriceTable, new { Path = path ?? "config/prices.json" });
         else
-            Console.Error.WriteLine($"[INFO] Prices: {path} (as of {prices.AsOf}, {prices.Models.Count} models)");
+            Log.Log(LogLevel.Information, LogMessage.PricesLoaded, new { Source = path, prices.AsOf, prices.Models.Count });
         return prices;
     }
 
@@ -226,7 +231,7 @@ public static partial class AgentHost
         if (agent.RatesUrl is { } ratesUrl)
         {
             if (!Uri.TryCreate(ratesUrl, UriKind.Absolute, out Uri? url) || url.Scheme is not ("http" or "https"))
-                throw new InvalidDataException($"RATES_URL must be an http or https URL (or off), got '{ratesUrl}'.");
+                throw new InvalidDataException(MessageText.Format(ErrorMessage.RatesUrlInvalid, new { Url = ratesUrl }));
 
             using var http = handler is null ? new HttpClient() : new HttpClient(handler, disposeHandler: false);
             http.Timeout = RatesUrlTimeout;
@@ -235,14 +240,14 @@ public static partial class AgentHost
                 // Start-up is synchronous in every host; the call is bounded by the timeout above.
                 ExchangeRates fromUrl = ExchangeRates.LoadAsync(http, url, mapper).GetAwaiter().GetResult();
                 CheckBase(fromUrl, baseCurrency, url.ToString());
-                Console.Error.WriteLine($"[INFO] Rates: {url} (as of {fromUrl.AsOf}, {fromUrl.Rates.Count} currencies)");
+                Log.Log(LogLevel.Information, LogMessage.RatesLoaded, new { Source = url, fromUrl.AsOf, fromUrl.Rates.Count });
                 return fromUrl;
             }
             catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException or InvalidDataException or WrongBaseException)
             {
                 // A third party's reply changing shape, its currency, or being down, never stops an agent: the rates file keeps
                 // working. (Frankfurter's v2 reads ?from= as a date, so a v1 alias dropped would answer in EUR.)
-                Console.Error.WriteLine($"[WARN] Rates: {url} can't be used ({ex.Message}); using the rates file instead.");
+                Log.Log(LogLevel.Warning, LogMessage.RatesUrlUnusable, new { Url = url, Reason = ex.Message });
             }
         }
 
@@ -251,12 +256,12 @@ public static partial class AgentHost
         ExchangeRates rates = path is null ? ExchangeRates.Empty : ExchangeRates.Load(path);
         if (rates.IsEmpty)
         {
-            Console.Error.WriteLine($"[WARN] No exchange rates at {path ?? "config/rates.json"}: costs are shown in {baseCurrency}.");
+            Log.Log(LogLevel.Warning, LogMessage.NoRates, new { Path = path ?? "config/rates.json", Base = baseCurrency });
             return rates;
         }
 
         CheckBase(rates, baseCurrency, path!);
-        Console.Error.WriteLine($"[INFO] Rates: {path} (as of {rates.AsOf}, {rates.Rates.Count} currencies)");
+        Log.Log(LogLevel.Information, LogMessage.RatesLoaded, new { Source = path, rates.AsOf, rates.Rates.Count });
         return rates;
     }
 
@@ -286,23 +291,23 @@ public static partial class AgentHost
 
         // Personality first, so who the agent is frames everything after it; default.md stays purely operational
         composite.AddProvider(new PersonalitySkillsProvider(FindSkillFile(agent, "personality.md")));
-        Console.Error.WriteLine($"[INFO] Loaded PersonalitySkillsProvider");
+        Log.Log(LogLevel.Information, LogMessage.SkillProviderLoaded, new { Provider = "PersonalitySkillsProvider" });
 
         // Always include default instructions
         var defaultProvider = new DefaultSkillsProvider(FindSkillFile(agent, "default.md"));
         composite.AddProvider(defaultProvider);
-        Console.Error.WriteLine($"[INFO] Loaded DefaultSkillsProvider");
+        Log.Log(LogLevel.Information, LogMessage.SkillProviderLoaded, new { Provider = "DefaultSkillsProvider" });
 
         // DotNet* tools are registered for every function, so their guidance is too
         composite.AddProvider(new DotNetSkillsProvider(FindSkillFile(agent, "dotnet-skills.md")));
-        Console.Error.WriteLine($"[INFO] Loaded DotNetSkillsProvider");
+        Log.Log(LogLevel.Information, LogMessage.SkillProviderLoaded, new { Provider = "DotNetSkillsProvider" });
 
         // Same for the other always-registered toolsets; plain markdown, so no dedicated provider class is needed
         foreach (string fileName in AlwaysLoadedSkillFiles)
         {
             if (FindSkillFile(agent, fileName) is not { } path) continue;
             composite.AddProvider(new MarkdownSkillProvider(path, includeDefaultInstructions: false));
-            Console.Error.WriteLine($"[INFO] Loaded {fileName}");
+            Log.Log(LogLevel.Information, LogMessage.SkillProviderLoaded, new { Provider = fileName });
         }
 
         // Load function-specific provider based on AgentFunction
@@ -320,7 +325,7 @@ public static partial class AgentHost
         if (functionProvider != null && agent.AgentFunction != "louis")
         {
             composite.AddProvider(functionProvider);
-            Console.Error.WriteLine($"[INFO] Loaded {agent.AgentFunction} skills provider");
+            Log.Log(LogLevel.Information, LogMessage.AgentFunctionLoaded, new { Function = agent.AgentFunction });
         }
         else if (agent.AgentFunction != null && agent.AgentFunction != "louis" && !AlwaysLoadedFunctions.Contains(agent.AgentFunction))
         {
@@ -331,11 +336,11 @@ public static partial class AgentHost
             {
                 var customProvider = new MarkdownSkillProvider(mainPath, includeDefaultInstructions: false);
                 composite.AddProvider(customProvider);
-                Console.Error.WriteLine($"[INFO] Loaded {mainFile} via MarkdownSkillProvider");
+                Log.Log(LogLevel.Information, LogMessage.MainSkillsFileLoaded, new { File = mainFile });
             }
             else
             {
-                Console.Error.WriteLine($"[WARN] Skills file '{mainFile}' not found; using default skills only.");
+                Log.Log(LogLevel.Warning, LogMessage.MainSkillsFileMissing, new { File = mainFile });
             }
         }
 
@@ -344,29 +349,29 @@ public static partial class AgentHost
 
     private static ISkillProvider? LoadAllSkillProviders(AgentOptions agent, CompositeSkillProvider composite)
     {
-        Console.Error.WriteLine($"[INFO] Loading ALL skill providers (louis function)");
+        Log.Log(LogLevel.Information, LogMessage.LoadingAllSkills);
 
         var devopsProvider = new DevOpsSkillsProvider(FindSkillFile(agent, "devops-skills.md"));
         composite.AddProvider(devopsProvider);
-        Console.Error.WriteLine($"[INFO] Loaded DevOpsSkillsProvider");
+        Log.Log(LogLevel.Information, LogMessage.SkillProviderLoaded, new { Provider = "DevOpsSkillsProvider" });
 
         var paymoProvider = new PaymoSkillsProvider(FindSkillFile(agent, "paymo-skills.md"));
         composite.AddProvider(paymoProvider);
-        Console.Error.WriteLine($"[INFO] Loaded PaymoSkillsProvider");
+        Log.Log(LogLevel.Information, LogMessage.SkillProviderLoaded, new { Provider = "PaymoSkillsProvider" });
 
         var codeReviewProvider = new CodeReviewSkillsProvider(FindSkillFile(agent, "code-review-skills.md"));
         composite.AddProvider(codeReviewProvider);
-        Console.Error.WriteLine($"[INFO] Loaded CodeReviewSkillsProvider");
+        Log.Log(LogLevel.Information, LogMessage.SkillProviderLoaded, new { Provider = "CodeReviewSkillsProvider" });
 
         var timeLoggingProvider = new TimeLoggingSkillsProvider(FindSkillFile(agent, "time-logging-skills.md"));
         composite.AddProvider(timeLoggingProvider);
-        Console.Error.WriteLine($"[INFO] Loaded TimeLoggingSkillsProvider");
+        Log.Log(LogLevel.Information, LogMessage.SkillProviderLoaded, new { Provider = "TimeLoggingSkillsProvider" });
 
         // Any other *-skills.md dropped into the skills folder (including ones the agent created) loads without code changes
         foreach (string file in DiscoverSkillFiles(agent).Where(f => !SkillFiles.BuiltIn.Contains(Path.GetFileName(f))))
         {
             composite.AddProvider(new MarkdownSkillProvider(file, includeDefaultInstructions: false));
-            Console.Error.WriteLine($"[INFO] Discovered skills file: {Path.GetFileName(file)}");
+            Log.Log(LogLevel.Information, LogMessage.SkillsFileDiscovered, new { File = Path.GetFileName(file) });
         }
 
         return null; // Already added to composite in this method
