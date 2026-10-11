@@ -11,7 +11,7 @@ Built as features in [docs/features/](../features/README.md); each is one line u
 |---|---|---|
 | §4.1, §4.3 Recording | [F1 Usage ledger](../features/F01-usage-ledger.md) | **done** (2026-10-10): `input` is uncached input (the adapter's count minus cache reads and writes); `reasoning` is null on Claude; triage records are tied to their run, not to a task |
 | §4.2 Prices | [F2 Prices and cost](../features/F02-prices-and-cost.md) | **done** (2026-10-10): `config/prices.json` is tracked; a `long_prompt` tier (Haiku 5.5); also served at the API's `GET /prices` and read with `PRICES_URL` |
-| §7.2–7.4 Showing it (and the stream in §7.1) | [F3 Show usage](../features/F03-usage-display.md) | done |
+| §7.2–7.4 Showing it (and the stream in §7.1) | [F3 Show usage](../features/F03-usage-display.md) | **done** (2026-10-11): the stream's `usage` is Claude's four token fields summed over the turn, plus `requests`, `cost`, `currency` and `unpriced`, also on `error` (FX6); every view totals with `UsageReport.Total`, and the short demo's comms log equals its ledger exactly ($0.252605); Rider's chat line is opt-in (`USAGE_IN_CHAT`); the web line shows cache writes on their own |
 | §5 Estimates | [F6 Estimates](../features/F06-estimates.md) | planned |
 | §6 Budgets | [F7 Budgets](../features/F07-budgets.md) (account-limit refusals: [F8](../features/F08-reliability.md)) | planned |
 | §7.1–7.2 Usage tab and API, §4.4 Reconciliation | [F11 Usage tab and reconciliation](../features/F11-usage-tab-and-reconciliation.md) | planned |

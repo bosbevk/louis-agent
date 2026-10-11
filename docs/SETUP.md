@@ -76,7 +76,7 @@ docker compose -f docker/docker-compose.yml --env-file config/.env up -d --build
 | `WEB_SEARCH_PROVIDER` | `google` or `duckduckgo` (default: Google when its key and engine id are set) |
 | `DEVOPS_ORGANIZATION`, `DEVOPS_PROJECT` | Azure DevOps organisation (`dev.azure.com/<organisation>`) and project for the DevOps tools |
 | `DEVOPS_TEAM` | Optional team: sprints are looked up under it, and an empty sprint means its current sprint |
-| `USAGE_LEDGER` | `on` (default) records every model request's tokens and cost to `{LOG_DIRECTORY}/usage-YYYY-MM.jsonl`; `off` disables it |
+| `USAGE_LEDGER` | `on` (default) records every model request's tokens and cost to `{LOG_DIRECTORY}/usage-YYYY-MM.jsonl`; `off` disables it, and with it every usage line (CLI, web app, Rider, the API's `usage` fields, the comms log's costs): `/usage` then says usage isn't tracked. No `LOG_DIRECTORY` has the same effect |
 | `PRICES_FILE` | The price table for those costs (default `config/prices.json`, found like `config/.env`; compose sets it for the containers). Without one, costs are recorded as unknown (`null`); a malformed one stops the host |
 | `PRICES_URL` | Fetch the price table over HTTP instead, e.g. louis-agent.api's public `GET /prices` (the demo's orchestrator uses `http://demo-api:8080/prices`). If it can't be reached at start-up, the host warns and uses the file above |
 | `USAGE_IN_CHAT` | `true` adds each turn's usage line to the chat in Rider (ACP), after the answer; off by default. The CLI and web app always show it beside the answer |

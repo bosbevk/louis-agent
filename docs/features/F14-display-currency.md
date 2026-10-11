@@ -45,6 +45,8 @@ hand every day, so that converted figures stay close to the truth. *How*: the op
 
 - **`ExchangeRates`** (core, `usage/`): rates from the price table's currency to others, each with an `as_of` date;
   `Convert(UsageCost, currency)` returns the converted amount and the rate used, or null when there is no rate.
+- **Two formatters to change:** core's `UsageText` and the web app's `UsageFormat` (which can't reference core) share
+  the number rules, so both get the currency, the symbols and the conversion, with the same test strings.
 - **`UsageText`** takes a display currency and the rates: `Money` converts, then formats with the currency's symbol
   where it's unambiguous (`$`, `€`, `£`, `R`; otherwise the code, `0.04 CHF`) and F3's significant-digit rule.
 - **Hosts** pass `DISPLAY_CURRENCY` (`AgentOptions`) and the loaded rates; the web app gets them from the API (with the
@@ -68,7 +70,7 @@ table's currency, never to a guess.
 1. **Decide the rate source** (above) and write the plan in [plans/](../plans/README.md).
 2. **`ExchangeRates` and its loading.** *Test:* convert with a dated rate; unknown currency → null; malformed rates file
    fails start-up naming the file (like prices).
-3. **`UsageText` in a display currency.** *Test:* exact strings for USD, ZAR, EUR and an unknown code; partial-priced
+3. **`UsageText` and the web app's `UsageFormat` in a display currency.** *Test:* exact strings for USD, ZAR, EUR and an unknown code; partial-priced
    totals still say how many are unpriced; `/usage` names the rate and its date.
 4. **`DISPLAY_CURRENCY` in the CLI and Rider.** *Test:* the setting parses; manual check on Ollama (costs 0 convert to
    0, so check with a priced model's saved ledger or a test price table).

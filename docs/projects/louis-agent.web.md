@@ -78,6 +78,8 @@ None automated yet (backlog: *Automated tests for the API and the web app*, Bran
 
 - Chats live in one browser only → backlog *Sync chat history across devices*.
 - Skills and agent-built tools are managed by typing commands → backlog *A UI for skills*.
+- `UsageFormat` repeats core's `UsageText` number rules (k/M tokens, two significant digits below $1, "price
+  unknown"): a change to one (e.g. [F14](../features/F14-display-currency.md)'s currencies) must be made in both.
 - A Usage tab → [F11](../features/F11-usage-tab-and-reconciliation.md); costs in your own currency →
   [F14](../features/F14-display-currency.md); a budget "continue?" prompt → [F7](../features/F07-budgets.md).
 
