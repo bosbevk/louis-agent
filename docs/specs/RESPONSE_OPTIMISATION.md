@@ -15,6 +15,7 @@ Built as features in [docs/features/](../features/README.md); each is one line u
 | §D Bounded history | [F9 Bounded history](../features/F09-context-management.md) | planned |
 | §E Settings per route | [F10 Route settings](../features/F10-route-settings.md) | planned |
 | §F Reliability | [F8 Reliability](../features/F08-reliability.md) | planned |
+| §B–D Model limits (cache minimum, window, price step per model) | [F15 Model limits](../features/F15-model-limits.md) | planned |
 | §G Later | not planned yet | — |
 
 ## 1. Goal
@@ -232,7 +233,9 @@ message cache from that point, so they run **rarely, at thresholds** — not eve
    File reads, directory listings and test output are the bulk of a fix's history and are cheap to fetch again.
    Provider-neutral, in `AgentEngine`. (Anthropic's server-side context editing does the same, but needs the beta
    client, so it is an option later, not the plan.)
-2. **Compact old turns.** When the conversation still passes `CONTEXT_COMPACT_AT` (default 120,000 tokens), replace
+2. **Compact old turns.** When the conversation still passes `CONTEXT_COMPACT_AT` (default: the model's compaction
+   point from F15, below the smaller of a share of its window and its price step: under 100,000 tokens on Haiku 5.5),
+   replace
    everything before the last `CONTEXT_KEEP_TURNS` user turns (default 3) with one summary message, written by a
    separate tool-less call — the same pattern as `SummariseToolResultAsync`. Keep thinking blocks that later tool
    rounds still need. Write the original turns to the session log before replacing them, so nothing is lost for
@@ -287,7 +290,7 @@ Check whether it replaces the repo's own thinking-budget wrapper in `LlmClientFa
 | `LLM_CACHE_TTL` | `5m` | B |
 | `AGENT_TOOLSETS` | all with keys | C |
 | `CONTEXT_CLEAR_AT`, `CONTEXT_KEEP_ROUNDS` | 60,000 · 4 | D |
-| `CONTEXT_COMPACT_AT`, `CONTEXT_KEEP_TURNS` | 120,000 · 3 | D |
+| `CONTEXT_COMPACT_AT`, `CONTEXT_KEEP_TURNS` | per model (F15; under 100,000 on Haiku 5.5) · 3 | D |
 | `AGENT_MAX_TOOL_ROUNDS` | 10 | E |
 | `LLM_SUMMARY_MODEL` | the main model | E |
 
@@ -310,7 +313,7 @@ Each step lands only if quality holds: 10/10 demo fixes confirmed by the orchest
 | Prefix changes silently between requests → no hits, higher cost (writes at 1.25×) | Usage logging shows `CachedInputTokenCount` = 0; deterministic tool order; no dynamic text in the prefix |
 | Clearing or compacting loses something the model needs | Stubs say how to get it back; originals go to the log; thresholds tuned against the benchmark |
 | History rewrites break the message cache | Run them rarely, at thresholds; tools and system caches are unaffected |
-| A smaller toolset falls below Haiku's 4,096-token cache minimum | Check prefix size in the usage log after changing profiles |
+| A smaller toolset falls below the model's cache minimum (F15; 512 tokens on Haiku 5.5) | Check prefix size in the usage log after changing profiles |
 | Provider features leak into the core | Markers only in the Anthropic `CachingChatClient`; core tests run with the fake client |
 
 ## 8. Open questions

@@ -37,6 +37,9 @@ its own.
       *Replaces:* "Wire up Anthropic prompt caching on the system prompt"
 - [ ] [F5 Toolset profiles](docs/features/F05-toolset-profiles.md) — load only the tools a session needs (the demo:
       coding tools only)
+- [ ] [F15 Model limits](docs/features/F15-model-limits.md) — each model's context window and cache minimum beside its
+      prices, `num_ctx` sent to local models, and F9's compaction point (below the price step: under 100k on Haiku 5.5)
+      and F13's budget per model instead of one number for all
 
 **M3 — In control:** know the cost before, stop cleanly at a limit.
 
@@ -214,8 +217,9 @@ backlog item removes one, it says so.
 - No rate limiting or audit log beyond the file logs → *Agent architecture gaps: Safety*.
 - 10 tool rounds per message: long tasks need a follow-up message → **F10**.
 - An unpublished API (`dotnet run`) only serves the web app in the `Development` environment.
-- Local models get a truncated prompt: Ollama's context window is 2,048 tokens by default and the agent sends ~26,000+
-  (system prompt and tools); Ollama drops the rest without an error (the ledger shows `input: 2050`) → **F13**.
+- Local models get a truncated prompt: the agent sends ~26,000+ tokens (system prompt and tools) without telling Ollama
+  the window, so Ollama uses its own default (2,048 on the version measured here) and drops the rest without an error
+  (the ledger showed `input: 2050`) → **F15** (`num_ctx`) and **F13**.
 - On Claude Haiku 5.5 (the default), changing the tools or skills during a chat can make its next request fail with a
   400: the model rejects a changed system prompt or tool list once thinking blocks are in the history (enforced for
   accounts created on or after 2026-08-31). That happens when the model creates a tool (`CreateTool`, mid-message),
