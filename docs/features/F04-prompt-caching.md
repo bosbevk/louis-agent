@@ -8,8 +8,105 @@
 > **In the TODO:** tick **F4 Prompt caching** under *Now* ([TODO](../../TODO.md)) · **Replaces:** "Wire up Anthropic prompt caching on the system prompt"
 > · **Plan:** [plans/F04](../plans/F04-prompt-caching.md)
 
-Every request re-sends ~26,000 tokens of tool definitions and system prompt that never change. With cache markers the API
-serves them at ~0.1× the input price after the first request. The biggest single saving in the plan.
+Every request re-sends ~48,000 tokens (measured in M1) of tool definitions and system prompt that never change. With
+cache markers the API serves them at ~0.1× the input price after the first request. The biggest single saving in the
+plan.
+
+## How caching works
+
+Prices below are multiples of the model's normal input price, on Claude Haiku 5.5: a cache **write** costs **1.25×**
+(5-minute lifetime) or **2×** (1-hour), a **read** costs **0.1×**.
+
+### 1. What a request contains, and where the markers go
+
+Every request re-sends the whole conversation from the start, always in this order. The cache stores "everything up to a
+marker", keyed by its **exact bytes**: the next request reads that part back at 0.1× only if it starts with exactly the
+same bytes (so the tools must be in a fixed order and the system prompt must not change).
+
+```mermaid
+flowchart LR
+    subgraph PREFIX["PREFIX: the same in every request and every session (~48k tokens)"]
+        T["tool definitions"] --> S["system prompt"]
+    end
+    subgraph TAIL["TAIL: grows every round"]
+        U["your message"] --> C["tool call"] --> R["tool result"] --> N["…"]
+    end
+    S --> U
+    S -.- M1(["marker 1, explicit:<br/>cache tools + system up to here"])
+    N -.- M2(["marker 2, automatic:<br/>the API puts it on the last block<br/>and moves it forward each round"])
+```
+
+### 2. One fix, round by round
+
+Each block is **written once, then read** by every later round. With M1's numbers (a ~48k prefix, 11.4 requests a fix)
+the prefix alone goes from ~547k token-equivalents to ~110k: about **−80%**.
+
+```mermaid
+flowchart TB
+    R1["round 1: prefix WRITE 1.25× · your message WRITE"]
+    R2["round 2: prefix READ 0.1× · message READ · new call + result WRITE 1.25×"]
+    R3["round 3: prefix READ 0.1× · everything so far READ · new call + result WRITE 1.25×"]
+    RN["… round 11: prefix READ · everything before READ · newest WRITE"]
+    R1 --> R2 --> R3 --> RN
+```
+
+| | Without caching | With caching |
+|---|---:|---:|
+| The prefix over one fix (11.4 requests) | 11.4 × 48k ≈ **547k** | 48k × 1.25 + 10.4 × 48k × 0.1 ≈ **110k** |
+
+### 3. What a lifetime is
+
+A lifetime is how long an entry survives **after it was last used**: every read restarts the clock, at no extra cost.
+When it runs out, the next request writes the entry again.
+
+```mermaid
+flowchart LR
+    subgraph FIVE["5-minute entry"]
+        direction LR
+        W5["0s write"] --> A5["12s read"] --> B5["40s read"] --> X5["5 min idle: expired"] --> Y5["8 min: write again 1.25×"]
+    end
+    subgraph HOUR["1-hour entry"]
+        direction LR
+        W1["0s write 2×"] --> A1["8 min read 0.1×"] --> B1["45 min read 0.1×"] --> C1["still alive"]
+    end
+```
+
+### 4. Which lifetime is cheaper depends on the gap between requests
+
+```mermaid
+flowchart TD
+    G{"gap between two requests<br/>that share the entry"}
+    G -->|"under 5 min"| F1["5 min: both lifetimes read at 0.1×,<br/>and 5 min wrote at 1.25× instead of 2×"]
+    G -->|"5 to 60 min"| H1["1 hour: 5 min has expired and rewrites at 1.25× every time;<br/>1 hour reads at 0.1×"]
+    G -->|"over 60 min"| F2["5 min: both expired and rewrite;<br/>1.25× is less than 2×"]
+```
+
+For N requests in a session whose pauses are 5–60 minutes: 5 minutes costs **N × 1.25**, 1 hour costs
+**2 + (N − 1) × 0.1**. At N = 2 that's 2.50 against 2.10, so 1 hour already pays from the second request after a
+pause. The gaps aren't guessed: the usage ledger records every request's time, session and host (F1), so they are
+measured.
+
+### 5. A lifetime per marker
+
+The prefix and the tail are reused on different time scales, so each marker gets its own lifetime. Anthropic allows
+mixing them in one request as long as **the longer lifetime comes first**, which is the order here.
+
+```mermaid
+flowchart LR
+    P["PREFIX: tools + system<br/>marker 1: lifetime calculated from the ledger<br/>(1 hour if the gaps are 5–60 min)"]
+    T["TAIL: the conversation<br/>marker 2: always 5 minutes"]
+    P --> T
+    P -.- WP["reused across messages, pauses and sessions:<br/>1 hour survives a coffee break and is paid 2× once an hour,<br/>not 1.25× after every pause"]
+    T -.- WT["reused only by the next round, seconds later:<br/>5 minutes keeps every round's writes at 1.25×, not 2×"]
+```
+
+- **A demo fix:** rounds are seconds apart and the next fix starts within a minute, so every gap is under 5 minutes:
+  5 minutes for both markers.
+- **A chat in Rider or the web app:** rounds within a turn are seconds apart (the tail stays 5 minutes) but there are
+  minutes between your messages, so the prefix on 1 hour keeps its 48k at 0.1× after every pause.
+
+*To confirm in step 1 (spike) before building on them:* a read refreshes the lifetime; mixed lifetimes are allowed with
+the longer one first.
 
 ## User stories
 
@@ -28,9 +125,13 @@ never left on stored history, so that other providers are unaffected and request
 - *Given* Ollama or an OpenAI-compatible provider *then* no request carries cache markers.
 - *Given* any request *then* it carries at most 4 markers, and the session's stored history carries none.
 
-**F4-S4 — Choose the lifetime.** As an *operator*, I want to choose a 5-minute or 1-hour cache lifetime, so that I can
-match how people actually pause.
-- *Given* `LLM_CACHE_TTL=1h` *then* markers use the 1-hour lifetime and F2 prices writes at the 1-hour rate.
+**F4-S4 — The lifetime is calculated, per marker.** As an *operator*, I want the prefix's cache lifetime chosen from how
+long the gaps between requests really are, so that I don't pay to rewrite it after every pause, or 2× for an hour
+nobody uses.
+- *Given* the usage ledger *when* I run `usage-probe -- --cache-gaps` *then* it shows, per host, the gaps between
+  requests that share the prefix and what 5 minutes and 1 hour would cost on them (diagram 4), and recommends one.
+- *Given* `LLM_CACHE_TTL=1h` *then* marker 1 (the prefix) uses the 1-hour lifetime; marker 2 (the tail) always uses
+  5 minutes (diagram 5); F2 prices each write at its own lifetime's rate.
 
 ## Design
 

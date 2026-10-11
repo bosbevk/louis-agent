@@ -110,6 +110,29 @@ Branch `feature/f4-prompt-caching` off `main`.
    F4 status and the TODO tick, GOAL.md's map; extend the skill-13 write-up with the before/after, which is what makes
    skill 13 learned.
 
+## Approved during the build (2026-10-11)
+
+- **"How caching works" in F4's feature doc,** with mermaid diagrams: the prefix and the two markers, a fix round by
+  round, what a lifetime is, which lifetime the gap between requests favours, and a lifetime per marker.
+- **The lifetime is per marker and calculated,** replacing design point 2's single 5-minute lifetime for both markers:
+  - **Marker 2 (the tail) is always 5 minutes.** Its blocks are reused only by the next round, seconds later, and a
+    1-hour lifetime would make every round's new blocks cost 2× to write instead of 1.25×.
+  - **Marker 1 (the prefix) takes `LLM_CACHE_TTL`** (`5m` default), chosen from the measured gaps between requests that
+    share the prefix: across messages, pauses and sessions. Under 5 minutes or over an hour, 5 minutes is cheaper;
+    between, 1 hour pays from the second request after a pause (N × 1.25 against 2 + (N − 1) × 0.1).
+  - **A new step after 6: `usage-probe -- --cache-gaps`** reads the ledger, measures those gaps per host and prints what
+    5 minutes and 1 hour would cost on them, with a recommendation. *Test:* the costs and the recommendation on a small
+    ledger with known gaps.
+- **What this changes in the steps:**
+  - Step 1 also confirms, against Anthropic's docs and the captured request, that a read refreshes the lifetime, that
+    mixed lifetimes are allowed with the longer first, and whether the adapter reports writes split by lifetime
+    (`cache_creation.ephemeral_5m_input_tokens` / `ephemeral_1h_input_tokens`).
+  - Step 4's test becomes: marker 1 carries `LLM_CACHE_TTL`, the top-level `cache_control` 5 minutes, and never a
+    shorter lifetime before a longer one (instead of "the same TTL").
+  - Step 6 prices each write at its own lifetime's rate. One request can now hold writes of both, so it needs the split
+    from step 1; without it, writes are priced at the 1-hour rate when `LLM_CACHE_TTL=1h` (an upper bound, said so in
+    the record).
+
 ## Verification
 
 - `dotnet test louis-agent-solution.sln` after every step (on your machine; the cloud containers can't run .NET).
