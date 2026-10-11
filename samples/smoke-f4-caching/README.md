@@ -23,7 +23,7 @@ The model read both files in one round (parallel tool calls), so the turn took 2
 |---|---|
 | [usage-2026-10.jsonl](usage-2026-10.jsonl) | The usage ledger: one line per request, with tokens and cost |
 | [cli-output.txt](cli-output.txt) | What the CLI printed (stdout): the tool calls, thinking summary and answer |
-| [agent-cli-20261011-202607-196.log](agent-cli-20261011-202607-196.log) | The run's log (stderr copy) |
+| [agent-cli-log.txt](agent-cli-log.txt) | The run's log (stderr copy; `agent-cli-20261011-202607-196.log` in `LOG_DIRECTORY`) |
 
 ## What the ledger shows
 
