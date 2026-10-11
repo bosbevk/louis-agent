@@ -75,7 +75,7 @@ public static class UsageText
     /// Money for reading, not accounting (the ledger keeps 6 decimals): cents from 1 up, else two significant digits, so a
     /// cheap turn still shows a number: $0.006, $0.037, $0.66, $12.35. Always <c>.</c> as the decimal mark (35.00, never
     /// 35,00), whatever the culture. With a <paramref name="display"/> currency the amount is converted at its rate and
-    /// written with its symbol (R0.11); a currency without a symbol is written after the number (0.04 EUR).
+    /// written with its symbol (R0.11); a currency without a symbol is written after the number (0.04 CHF).
     /// </summary>
     internal static string Money(decimal amount, string currency, DisplayCurrency? display = null)
     {

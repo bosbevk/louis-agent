@@ -156,6 +156,8 @@ Design: [docs/specs/SESSION_ARCHITECTURE.md](docs/specs/SESSION_ARCHITECTURE.md)
 - [ ] Sync chat history across devices and browsers instead of only `localStorage`
 - [ ] A UI for skills (`Skills/*.md`) and for reviewing and approving agent-built tools — today that's typing `/tools`,
       `/approve <Name>` and `/reject <Name>` in a chat
+- [ ] Tests for the web app's `UsageFormat`, which repeats core's `UsageText` number and currency rules (F3, F14) with
+      no tests of its own: share the rules (a small project both reference) or test both against the same strings
 
 ### CLI
 

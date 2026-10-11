@@ -105,13 +105,22 @@ public class RatesUrlTests
     }
 
     [Test]
-    public void LoadRates_UrlFromAnotherCurrency_StopsStartUp()
+    public void LoadRates_UrlAnswersInAnotherCurrency_FallsBackToTheFile()
     {
-        // A configuration mistake, not an outage: converting USD costs with EUR rates would show wrong figures.
+        // The provider's change, not the operator's mistake (e.g. Frankfurter v2 reading ?from= as a date and answering in
+        // EUR): warn and use the file, never stop every host from starting. Converting with EUR rates would be wrong.
         const string fromEur = """{"amount":1.0,"base":"EUR","date":"2026-10-09","rates":{"ZAR":18.53}}""";
 
-        Assert.That(() => Load(Options("https://api.frankfurter.dev/v1/latest?from=EUR"), Answer(HttpStatusCode.OK, fromEur)),
-            Throws.TypeOf<AgentHost.WrongBaseException>().With.Message.Contain("are from EUR").And.Message.Contain("in USD"));
+        var (rates, stderr) = Load(Options(AgentOptions.DefaultRatesUrl), Answer(HttpStatusCode.OK, fromEur));
+
+        Assert.That((rates.Source, rates.Base), Is.EqualTo(("file", "USD")));
+        Assert.That(stderr, Does.Contain("[WARN] Rates:").And.Contain("are from EUR").And.Contain("using the rates file instead"));
+    }
+
+    [Test]
+    public void DefaultRatesUrl_UsesV1sDocumentedBaseParameter()
+    {
+        Assert.That(AgentOptions.DefaultRatesUrl, Is.EqualTo("https://api.frankfurter.dev/v1/latest?base=USD"));
     }
 
     [Test]

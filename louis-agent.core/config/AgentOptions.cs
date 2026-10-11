@@ -65,7 +65,8 @@ public sealed class AgentOptions
     public string? PricesUrl { get; set; }
 
     /// <summary>Where exchange rates come from by default: Frankfurter, the ECB's daily reference rates (free, no key).</summary>
-    public const string DefaultRatesUrl = "https://api.frankfurter.dev/v1/latest?from=USD";
+    /// <remarks><c>base</c> is v1's documented parameter (<c>from</c> works as an alias today, but means a date in v2).</remarks>
+    public const string DefaultRatesUrl = "https://api.frankfurter.dev/v1/latest?base=USD";
 
     /// <summary>
     /// RATES_URL: where a host fetches exchange rates for showing costs in another currency (F14), e.g. Frankfurter (the

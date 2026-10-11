@@ -47,7 +47,7 @@ public static class UsageFormat
 
     /// <summary>
     /// The amount, converted to <paramref name="choice"/> when it was charged in its base; written with the symbol in
-    /// front (R0.11, $0.006) or, for a currency without one, the code after the number (0.04 EUR).
+    /// front (R0.11, $0.006) or, for a currency without one, the code after the number (0.04 CHF).
     /// </summary>
     public static string Money(decimal amount, string? currency, CurrencyChoice? choice = null)
     {

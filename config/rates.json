@@ -2,7 +2,7 @@
 // fallback when RATES_URL can't be reached, so a clone or a container offline still converts. This is louis-agent's own
 // rates.json format, the only one read; a provider's reply is turned into it by RATES_FORMAT's mapper.
 //
-// Copied from https://api.frankfurter.dev/v1/latest?from=USD (the ECB's reference rates) on the as_of date. Update it
+// Copied from https://api.frankfurter.dev/v1/latest?base=USD (the ECB's reference rates) on the as_of date. Update it
 // now and then (the live rates are used whenever RATES_URL answers): costs are only converted for display, and the
 // usage ledger always keeps what was charged, in USD.
 {

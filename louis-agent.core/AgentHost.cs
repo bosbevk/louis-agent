@@ -227,8 +227,10 @@ public static partial class AgentHost
     /// <summary>
     /// Exchange rates for showing costs in another currency (F14): from RATES_URL (Frankfurter by default), turned into our
     /// rates.json format by RATES_FORMAT's mapper; if that can't be fetched or read, from RATES_FILE or config/rates.json;
-    /// empty, with a warning, if there's neither. A rates file that isn't valid, or rates whose base isn't
-    /// <paramref name="baseCurrency"/>, throw: costs converted at a wrong rate are worse than not starting.
+    /// empty, with a warning, if there's neither. Failures are sorted by who can fix them: anything wrong with RATES_URL's
+    /// reply (down, a new shape, or rates from another currency) is the provider's, so it warns and uses the file; a rates
+    /// file that isn't valid, or whose base isn't <paramref name="baseCurrency"/>, is our own configuration, so it throws:
+    /// costs converted at a wrong rate are worse than not starting.
     /// </summary>
     /// <param name="baseCurrency">The price table's currency; the rates must be from it.</param>
     /// <param name="handler">For tests: answers the RATES_URL request.</param>
@@ -250,9 +252,10 @@ public static partial class AgentHost
                 Console.Error.WriteLine($"[INFO] Rates: {url} (as of {fromUrl.AsOf}, {fromUrl.Rates.Count} currencies)");
                 return fromUrl;
             }
-            catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException or InvalidDataException)
+            catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException or InvalidDataException or WrongBaseException)
             {
-                // A third party's reply changing shape, or being down, never stops an agent: the rates file keeps working.
+                // A third party's reply changing shape, its currency, or being down, never stops an agent: the rates file keeps
+                // working. (Frankfurter's v2 reads ?from= as a date, so a v1 alias dropped would answer in EUR.)
                 Console.Error.WriteLine($"[WARN] Rates: {url} can't be used ({ex.Message}); using the rates file instead.");
             }
         }
@@ -280,8 +283,8 @@ public static partial class AgentHost
     }
 
     /// <summary>
-    /// A configuration mistake (RATES_URL or RATES_FILE from the wrong currency), unlike a provider being down or
-    /// changing its reply, so it stops start-up instead of falling back to the file.
+    /// Rates from another currency than the price table's. From RATES_FILE, our own configuration, it stops start-up; from
+    /// RATES_URL it falls back to the file, since a provider changing its reply is not something the operator can fix.
     /// </summary>
     internal sealed class WrongBaseException(string message) : Exception(message);
 

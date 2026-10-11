@@ -5,7 +5,7 @@ namespace louis_agent.core.tests;
 // F14 step 1: our rates.json format is the only one read; a mapper turns a provider's reply into it.
 public class ExchangeRatesTests
 {
-    // A real reply from https://api.frankfurter.dev/v1/latest?from=USD (2026-10-11), trimmed to four currencies.
+    // A real reply from https://api.frankfurter.dev/v1/latest?base=USD (2026-10-11), trimmed to four currencies.
     private const string FrankfurterReply =
         """{"amount":1.0,"base":"USD","date":"2026-10-09","rates":{"EUR":0.89238,"GBP":0.75641,"JPY":158.25,"ZAR":16.5331}}""";
 

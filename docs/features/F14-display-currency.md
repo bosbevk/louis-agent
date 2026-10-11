@@ -111,7 +111,12 @@ sketch.
 - **Rates: our own `rates.json` format, the only one read**, with a mapper per provider (`IRatesMapper`; Frankfurter's
   reply is mapped), `RATES_URL` / `RATES_FORMAT` / `RATES_FILE`, a tracked `config/rates.json`, and `GET /rates` on the
   API like the price table; the demo's orchestrator reads demo-api's, so both agents use one rate. An outage or an
-  unmappable reply falls back to the file; rates from the wrong currency stop start-up.
+  unmappable reply falls back to the file, and so does a reply in the wrong currency (the provider's change, found in
+  the PR #13 review); only a `RATES_FILE` in the wrong currency, our own configuration, stops start-up. The default URL
+  is `?base=USD`, v1's documented parameter (`?from=` means a date in Frankfurter v2).
+- **Totals are converted at the one rate the host loaded,** not record by record as the design above says. A host loads
+  its rates once at start-up, so the numbers are the same; F11, whose reports cover months, must convert each record
+  at the rate of its own date instead of relying on this.
 - **The API's usage object always carries `display_*`** (the charged figures when not converting), and
   `GET /rates/display` gives the web app the server's currency and a symbol per currency. The web app converts the
   stored charged cost when drawing, so changing its currency re-labels every saved chat.
