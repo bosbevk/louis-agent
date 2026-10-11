@@ -109,7 +109,12 @@ The same pattern is used outside the providers: `IRatesMapper` (exchange-rate so
 (Google, DuckDuckGo).
 
 ### `AgentEngine` (`Agent/AgentEngine.cs`)
-Provider-agnostic. Owns the tools, the system prompt (skill documentation) and the tool-call loop:
+Provider-agnostic. Owns the turn loop, the history rules and the client pipeline, and is the façade hosts use; the
+rest is in its own classes in `Agent/`: `ToolRegistry` (the tools, in name order), `ToolCallGuards` (the guards around
+each call, below), `SkillTools` (`ExecuteSkill`, `CreateSkillFile`, `ReloadSkills` and the skill set the system
+prompt is built from) and `AgentBuiltTools` (`CreateTool`, `/approve`, `/reject`). Pure safety checks are in
+`Guardrails/` (workspace boundary, sensitive files, SSRF), and the console chat is the CLI's (`ConsoleChat`).
+Everything it sends uses LF line endings, whatever the checkout:
 - `StreamPromptAsync(history, input)` streams `ChatResponseUpdate`s (text, `TextReasoningContent`, tool calls and
   results) and records the finished turn in `history`; `ProcessPromptAsync` is the non-streaming form.
 - `FunctionInvokingChatClient` runs the loop: up to 10 tool rounds per request, detailed errors returned to the model.
@@ -125,7 +130,7 @@ User message
   ↓ system prompt = skill documentation; ChatOptions: tools, reasoning, 16k output limit
   ↓ FunctionInvokingChatClient loop
   │   model streams thinking + text, then tool calls
-  │   each call → LogAndInvokeAsync (log, run, guard the result) → result back to the model
+  │   each call → ToolCallGuards.InvokeAsync (log, run, guard the result) → result back to the model
   ↓ answer streams to the host as it is written
   ↓ the whole turn (thinking blocks, calls, results, answer) is appended to the history
 ```

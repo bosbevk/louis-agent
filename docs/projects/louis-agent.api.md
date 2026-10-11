@@ -38,7 +38,7 @@ flowchart LR
   `/tools`, `/approve`, `/reject` and `/usage` are answered without the model.
 - **Usage** (F3): each session keeps its finished turns' records (`UsageSession`) for `/usage` and the `usage` of
   `GET /sessions/{id}`; the turn is added in the stream's `finally`, so a disconnected or failed turn still counts.
-- **Workspace and git:** every path goes through core's `WorkspaceTools.ResolvePath` and `IsSensitive`, so the API applies
+- **Workspace and git:** every path goes through core's `WorkspaceBoundary` and `SensitiveFiles` (`Guardrails/`), so the API applies
   the same boundary and secret-file rules as the agent; git runs without a shell with a 30-second timeout.
 - **History and merging** (`HistoryEndpoints`): branches with ahead/behind counts, the log across branches, commit and
   branch diffs (secret files' content removed), `--no-ff` merges that abort cleanly on conflict, deletion of merged

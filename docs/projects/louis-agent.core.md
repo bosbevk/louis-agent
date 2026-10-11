@@ -19,7 +19,7 @@ flowchart LR
     Skills --> Engine["AgentEngine"]
     Factory --> Engine
     Engine --> Loop["FunctionInvokingChatClient<br/>(≤ 10 tool rounds per message)"]
-    Loop --> Guards["LogAndInvokeAsync<br/>log · run · guard result"]
+    Loop --> Guards["ToolCallGuards.InvokeAsync<br/>log · run · guard result"]
     Guards --> Tools["Tool classes<br/>(files, git, dotnet, scripts, web, Paymo, DevOps, skills)"]
     Loop --> Rec["UsageRecordingChatClient<br/>one record per model request"]
     Rec --> Ledger["JsonlUsageSink<br/>{LOG_DIRECTORY}/usage-YYYY-MM.jsonl"]
@@ -46,7 +46,12 @@ The full step-by-step is in [How a turn works](../AGENT_INTERACTION.md).
 
 | Path | What's in it |
 |---|---|
-| `Agent/AgentEngine.cs` | The engine: tool registration, system prompt, turn loop, guards, skills (`ExecuteSkill`, `CreateSkillFile`, `ReloadSkills`), agent-built tools (`CreateTool`, `/approve`) |
+| `Agent/AgentEngine.cs` | The engine: turn loop, history, system prompt, the client pipeline; the façade hosts call |
+| `Agent/ToolRegistry.cs` | The tools in name order (one name each), public methods as tools, discovered tools |
+| `Agent/ToolCallGuards.cs` | Around each call: logging, cut-off calls never run, oversized results summarised (a model call), tools kept on the final request |
+| `Agent/SkillTools.cs` | `ExecuteSkill`, `CreateSkillFile`, `ReloadSkills`, and the skill set the system prompt is built from |
+| `Agent/AgentBuiltTools.cs` | `CreateTool`, `ListAgentTools`, `LoadApprovedTools`, `/approve`, `/reject`, running their scripts |
+| `Guardrails/` | `WorkspaceBoundary` (relative, inside the root, no symbolic links), `SensitiveFiles`, `SsrfGuard` (public addresses only, every hop and at connect time) |
 | `Hosting/AgentHost.cs`, `AgentHostContext.cs` | Bootstrap for every host: env files, options, skills, client, engine; skill-file discovery |
 | `Hosting/RiderMcpToolDiscovery.cs` | At start-up, registers Rider's MCP tools with the engine (logged only; not callable yet) |
 | `Logging/AgentLog.cs` | Optional file logging (`LOG_DIRECTORY`): stderr copied per run, `oversized-tool-results.jsonl`, `truncated-tool-calls.jsonl` |
@@ -91,10 +96,10 @@ Logging). `ArchitectureTests` holds both rules ([docs/CLAUDE.md, Project layout]
 |---|---|
 | `AgentHost` | Static bootstrap: `LoadEnvironment`, `Build`, `BuildToolHost`, `LoadSkills`, `CreateUsageSink` |
 | `UsageScope` | Open one per turn in a host (`Begin(host:, session:, turn:, tags:)`); every request inside it is attributed to it |
-| `AgentEngine` | `StreamPromptAsync`, `ProcessPromptAsync`, `NewHistory`, `HandleUserCommand` (`/tools`, `/approve`, `/reject`, `/usage` from the session records the host passes), `RecordsUsage`, `Tools` and `ToolsChanged`, `RunAsync` / `RunSinglePromptAsync` (the CLI loop). Optional `toolsets:` replaces the coding tools with your own objects (used by the orchestrator) |
+| `AgentEngine` | `StreamPromptAsync`, `ProcessPromptAsync`, `NewHistory`, `HandleUserCommand` (`/tools`, `/approve`, `/reject`, `/usage` from the session records the host passes), `RecordsUsage`, `Tools` and `ToolsChanged`. Optional `toolsets:` replaces the coding tools with your own objects (used by the orchestrator) |
 | `ISkillProvider` | `Documentation` (system prompt text) + `Skills` (runnable procedures) |
 | `ILlmClientFactory` | Builds the `IChatClient`; tests inject a fake |
-| `WorkspaceTools.ResolvePath` / `IsSensitive` | Internal, also used by the API's file and git endpoints so the same rules apply |
+| `WorkspaceBoundary` / `SensitiveFiles` | Internal (`Guardrails/`), used by the file tools and the API's file and git endpoints, so the same rules apply |
 
 **Every public method on a tool class becomes a tool**, named after the method, described by its `[Description]`
 attributes (108 tools with Paymo and DevOps enabled). Helpers must be `internal` or `private`.

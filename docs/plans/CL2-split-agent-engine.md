@@ -58,6 +58,16 @@ folder.
 8. **Docs and finish:** CLAUDE.md (tree, `Guardrails/` row, *Adding a C# tool* if registration moved), ARCHITECTURE's
    `AgentEngine` section, the core project doc; TODO tick and Done line.
 
+## Approved during the build (2026-10-12)
+
+- **Line endings, fixed first (its own commit):** the golden file showed that what the model is sent took the
+  checkout's line endings (the system prompt from `Skills/*.md`, two multi-line `[Description]`s). The engine now
+  normalises both to LF (`Normalise`, `Function`), so every machine sends the same bytes; on Windows the requests
+  changed once.
+- **`HandleUserCommand` stays on the engine:** it also answers `/usage`; it hands `/tools`, `/approve` and `/reject` to
+  `AgentBuiltTools`.
+- **`ResolveShell` moved to `BashTools`** beside `FindBash`: the skills and the agent-built tools both use it.
+
 ## Verification
 - `dotnet build` and `dotnet test louis-agent-solution.sln` after every step; the snapshot test and `ArchitectureTests`
   pass throughout; the test count only grows.
