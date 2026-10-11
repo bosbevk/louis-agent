@@ -315,22 +315,6 @@ public class WebToolsTests
         Assert.That(await tools.FetchUrl("https://example.com/a.png"), Does.Contain("cannot be read as text"));
     }
 
-    [TestCase("8.8.8.8", true)]
-    [TestCase("2606:4700:4700::1111", true)]
-    [TestCase("10.1.2.3", false)]
-    [TestCase("172.20.0.1", false)]
-    [TestCase("192.168.0.1", false)]
-    [TestCase("100.64.0.1", false)]
-    [TestCase("169.254.169.254", false)]
-    [TestCase("0.0.0.0", false)]
-    [TestCase("224.0.0.1", false)]
-    [TestCase("::1", false)]
-    [TestCase("fe80::1", false)]
-    [TestCase("fd00::1", false)]
-    [TestCase("::ffff:127.0.0.1", false)]
-    public void IsPublicAddress_ClassifiesRanges(string address, bool expected) =>
-        Assert.That(WebTools.IsPublicAddress(IPAddress.Parse(address)), Is.EqualTo(expected));
-
     [Test]
     [Explicit("Hits the real internet")]
     public async Task Live_SearchAndFetch()

@@ -2,6 +2,7 @@ namespace LouisAgent.Core.Tools.Workspace;
 
 using System.ComponentModel;
 using System.Text;
+using LouisAgent.Core.Guardrails;
 
 public sealed class WorkspaceTools
 {
@@ -10,28 +11,19 @@ public sealed class WorkspaceTools
         ".git", ".idea", ".vs", "bin", "obj", "node_modules", "packages"
     };
 
-    private static readonly HashSet<string> SensitiveFileNames = new(StringComparer.OrdinalIgnoreCase)
-    {
-        "credentials.json", "secrets.json", "appsettings.development.json",
-        "id_rsa", "id_ed25519"
-    };
-
     private static readonly HashSet<string> SearchableExtensions = new(StringComparer.OrdinalIgnoreCase)
     {
         ".cs", ".csproj", ".sln", ".props", ".targets", ".json", ".md", ".yml", ".yaml",
         ".ts", ".tsx", ".js", ".jsx", ".py", ".go", ".rs", ".java", ".xml", ".config", ".txt"
     };
 
+    private readonly WorkspaceBoundary _boundary;
     private readonly string _root;
 
     public WorkspaceTools(string root)
     {
-        if (string.IsNullOrWhiteSpace(root))
-        {
-            throw new ArgumentException("Workspace root cannot be empty.", nameof(root));
-        }
-
-        _root = Path.GetFullPath(root);
+        _boundary = new WorkspaceBoundary(root);
+        _root = _boundary.Root;
     }
 
     [Description("List the immediate files and directories inside one workspace folder, each entry marked [file] or [dir]. This is not recursive — it only shows one level deep, and results are capped at 200 entries with a truncation notice beyond that. Paths must be relative to the workspace root. Use FindFiles for a recursive filename-pattern search or ListDirectoryTree for a recursive visual tree; use this when you just need the contents of a single known folder.")]
@@ -69,7 +61,7 @@ public sealed class WorkspaceTools
         [Description("Workspace-relative file path.")] string relativePath)
     {
         string path = ResolvePath(relativePath);
-        if (IsSensitive(path))
+        if (SensitiveFiles.IsSensitive(path))
         {
             return "Reading this sensitive file is not allowed.";
         }
@@ -118,7 +110,7 @@ public sealed class WorkspaceTools
                     continue;
                 }
 
-                if (!SearchableExtensions.Contains(Path.GetExtension(path)) || IsSensitive(path) ||
+                if (!SearchableExtensions.Contains(Path.GetExtension(path)) || SensitiveFiles.IsSensitive(path) ||
                     new FileInfo(path).Length > 1_000_000)
                 {
                     continue;
@@ -149,7 +141,7 @@ public sealed class WorkspaceTools
         [Description("UTF-8 file contents: the whole file, or the first chunk of a large one.")] string content)
     {
         string path = ResolvePath(relativePath);
-        if (IsSensitive(path))
+        if (SensitiveFiles.IsSensitive(path))
         {
             return "Writing this sensitive file is not allowed.";
         }
@@ -165,50 +157,11 @@ public sealed class WorkspaceTools
         return $"Wrote {Path.GetRelativePath(_root, path)} ({content.Length} characters).";
     }
 
-    internal string ResolvePath(string relativePath)
-    {
-        if (Path.IsPathRooted(relativePath))
-        {
-            throw new ArgumentException("Workspace paths must be relative.", nameof(relativePath));
-        }
-
-        string fullPath = Path.GetFullPath(Path.Combine(_root, relativePath));
-        string relativeToRoot = Path.GetRelativePath(_root, fullPath);
-        if (relativeToRoot == ".." ||
-            relativeToRoot.StartsWith($"..{Path.DirectorySeparatorChar}", StringComparison.Ordinal) ||
-            Path.IsPathRooted(relativeToRoot))
-        {
-            throw new ArgumentException("Path must stay inside the workspace.", nameof(relativePath));
-        }
-
-        string? current = fullPath;
-        while (current is not null && !current.Equals(_root, StringComparison.OrdinalIgnoreCase))
-        {
-            if ((Directory.Exists(current) || File.Exists(current)) &&
-                (File.GetAttributes(current) & FileAttributes.ReparsePoint) != 0)
-            {
-                throw new ArgumentException("Workspace paths cannot traverse symbolic links.", nameof(relativePath));
-            }
-
-            current = Path.GetDirectoryName(current);
-        }
-
-        return fullPath;
-    }
+    private string ResolvePath(string relativePath) => _boundary.Resolve(relativePath);
 
     private bool IsExcluded(string path) =>
         (File.GetAttributes(path) & FileAttributes.ReparsePoint) != 0 ||
         (Directory.Exists(path) && ExcludedDirectories.Contains(Path.GetFileName(path)));
-
-    internal static bool IsSensitive(string path)
-    {
-        string name = Path.GetFileName(path);
-        return name.StartsWith(".env", StringComparison.OrdinalIgnoreCase) ||
-               SensitiveFileNames.Contains(name) ||
-               name.EndsWith(".pem", StringComparison.OrdinalIgnoreCase) ||
-               name.EndsWith(".key", StringComparison.OrdinalIgnoreCase) ||
-               name.EndsWith(".pfx", StringComparison.OrdinalIgnoreCase);
-    }
 
     [Description("Create a new directory at the given workspace-relative path, including any missing parent directories. If the directory already exists this is a no-op that reports it already exists rather than an error. Use this before writing files into a path that may not exist yet, though WriteWorkspaceFile and AppendToFile already create missing parent directories on their own.")]
     public string CreateDirectory(
@@ -229,7 +182,7 @@ public sealed class WorkspaceTools
         [Description("Workspace-relative file path to delete.")] string relativePath)
     {
         string path = ResolvePath(relativePath);
-        if (IsSensitive(path))
+        if (SensitiveFiles.IsSensitive(path))
         {
             return "Deleting this sensitive file is not allowed.";
         }
@@ -255,7 +208,7 @@ public sealed class WorkspaceTools
 
         foreach (string file in Directory.EnumerateFiles(path, "*", SearchOption.AllDirectories))
         {
-            if (IsSensitive(file))
+            if (SensitiveFiles.IsSensitive(file))
             {
                 return "This directory contains a sensitive file and cannot be deleted.";
             }
@@ -273,7 +226,7 @@ public sealed class WorkspaceTools
         string oldPath = ResolvePath(currentPath);
         string renamedPath = ResolvePath(newPath);
 
-        if (IsSensitive(oldPath))
+        if (SensitiveFiles.IsSensitive(oldPath))
         {
             return "Renaming this sensitive file is not allowed.";
         }
@@ -314,7 +267,7 @@ public sealed class WorkspaceTools
         string source = ResolvePath(sourcePath);
         string destination = ResolvePath(destinationPath);
 
-        if (IsSensitive(source) || IsSensitive(destination))
+        if (SensitiveFiles.IsSensitive(source) || SensitiveFiles.IsSensitive(destination))
         {
             return "Copying this sensitive file is not allowed.";
         }
@@ -345,7 +298,7 @@ public sealed class WorkspaceTools
         [Description("Text content to append.")] string content)
     {
         string path = ResolvePath(relativePath);
-        if (IsSensitive(path))
+        if (SensitiveFiles.IsSensitive(path))
         {
             return "Writing to this sensitive file is not allowed.";
         }

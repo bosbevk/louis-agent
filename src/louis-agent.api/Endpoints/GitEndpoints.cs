@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Text;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Tools.Workspace;
+using LouisAgent.Core.Guardrails;
 
 namespace LouisAgent.Api.Endpoints;
 
@@ -19,12 +20,12 @@ internal static class GitEndpoints
     {
         app.MapGet("/git/status", async (AgentEngine engine) => await StatusResultAsync(engine));
 
-        app.MapGet("/git/diff", async (string? path, bool? staged, AgentEngine engine, WorkspaceTools workspace) =>
+        app.MapGet("/git/diff", async (string? path, bool? staged, AgentEngine engine, WorkspaceBoundary workspace) =>
         {
             if (string.IsNullOrWhiteSpace(path))
                 return ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error", "Pass the file's workspace-relative 'path'.");
             if (CheckPaths(workspace, [path]) is { } invalid) return invalid;
-            if (WorkspaceTools.IsSensitive(path))
+            if (SensitiveFiles.IsSensitive(path))
                 return ApiErrors.Result(StatusCodes.Status403Forbidden, "permission_error", "Diffs of secret files (.env, keys, certificates) aren't shown.");
 
             var status = await RunAsync(engine, ["status", "--porcelain=v1", "-z", "--untracked-files=all", "--", path]);
@@ -42,21 +43,21 @@ internal static class GitEndpoints
             return Results.Json(new { path, staged = staged == true, untracked, diff = truncated ? text[..MaxDiffChars] : text, truncated });
         });
 
-        app.MapPost("/git/stage", async (GitPathsRequest request, AgentEngine engine, WorkspaceTools workspace) =>
+        app.MapPost("/git/stage", async (GitPathsRequest request, AgentEngine engine, WorkspaceBoundary workspace) =>
             await OnPathsAsync(request, engine, workspace, paths => RunAsync(engine, ["add", "--", .. paths])));
 
-        app.MapPost("/git/unstage", async (GitPathsRequest request, AgentEngine engine, WorkspaceTools workspace) =>
+        app.MapPost("/git/unstage", async (GitPathsRequest request, AgentEngine engine, WorkspaceBoundary workspace) =>
             await OnPathsAsync(request, engine, workspace, paths => RunAsync(engine, ["restore", "--staged", "--", .. paths])));
 
         // Throws away working-tree changes: tracked files go back to their staged/committed content, untracked files are
         // deleted. Staged changes are kept (unstage first to drop those too). The web app asks for confirmation.
-        app.MapPost("/git/discard", async (GitPathsRequest request, AgentEngine engine, WorkspaceTools workspace) =>
+        app.MapPost("/git/discard", async (GitPathsRequest request, AgentEngine engine, WorkspaceBoundary workspace) =>
             await OnPathsAsync(request, engine, workspace, async paths =>
             {
                 var status = ParseStatus((await RunAsync(engine, ["status", "--porcelain=v1", "-z", "--untracked-files=all"])).Output);
                 var untracked = status.Where(f => f.Untracked).Select(f => f.Path).ToHashSet();
                 foreach (string path in paths.Where(untracked.Contains))
-                    File.Delete(workspace.ResolvePath(path));
+                    File.Delete(workspace.Resolve(path));
 
                 var tracked = paths.Where(p => !untracked.Contains(p)).ToList();
                 return tracked.Count == 0 ? new GitResult(0, "", "") : await RunAsync(engine, ["restore", "--worktree", "--", .. tracked]);
@@ -85,7 +86,7 @@ internal static class GitEndpoints
     }
 
     private static async Task<IResult> OnPathsAsync(
-        GitPathsRequest request, AgentEngine engine, WorkspaceTools workspace, Func<List<string>, Task<GitResult>> run)
+        GitPathsRequest request, AgentEngine engine, WorkspaceBoundary workspace, Func<List<string>, Task<GitResult>> run)
     {
         var paths = (request.Paths ?? []).Where(p => !string.IsNullOrWhiteSpace(p)).Distinct().ToList();
         if (paths.Count == 0)
@@ -129,13 +130,13 @@ internal static class GitEndpoints
         return files;
     }
 
-    private static IResult? CheckPaths(WorkspaceTools workspace, IEnumerable<string> paths)
+    private static IResult? CheckPaths(WorkspaceBoundary workspace, IEnumerable<string> paths)
     {
         foreach (string path in paths)
         {
             try
             {
-                workspace.ResolvePath(path);
+                workspace.Resolve(path);
             }
             catch (ArgumentException ex)
             {
