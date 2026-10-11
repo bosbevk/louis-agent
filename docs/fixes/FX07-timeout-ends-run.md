@@ -1,7 +1,7 @@
 # FX7 · A timed-out request no longer ends the orchestrator's run
 
 > **Status:** done (2026-10-11) · **Area:** orchestrator, triage loop · **Found:** F3's split demo test (triage on
-> Ollama, fixes on Haiku 5.5) (2026-10-11) · **Commit:** (built in F3; see its plan)
+> Ollama, fixes on Haiku 5.5) (2026-10-11) · **Commit:** `f2d38d2` (built in F3; see its plan)
 
 ## Symptom
 

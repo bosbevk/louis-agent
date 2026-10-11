@@ -15,7 +15,7 @@ record (most fixes so far taught something about a model's API).
 | [FX4](FX04-append-only-history.md) | Keep conversations append-only, so changing the tools or skills mid-chat doesn't break Haiku 5.5 chats | open | core: history, tool list | Haiku 5.5 migration guide and the code (`CreateTool` mid-message, from the PR #9 review) (2026-10-10) | — | Changing the tools or skills during a chat can break it on Haiku 5.5 |
 | [FX5](FX05-null-conditional-ledger.md) | Requests outside a usage scope are written to the ledger again (a `?.` skipped the write) | done | core: usage recorder | F1's tests while building F3 step 1 (2026-10-11) | `3269fea` | — |
 | [FX6](FX06-usage-on-failed-turns.md) | A turn that fails still reports what it used (usage on the `error` event) | done | API stream, web app, orchestrator | Writing F3 steps 5 and 7 (2026-10-11) | `75de390` | — |
-| [FX7](FX07-timeout-ends-run.md) | A timed-out request no longer ends the orchestrator's run (only the user's stop does) | done | orchestrator: triage loop | F3's split demo test, triage on Ollama (2026-10-11) | FX7_COMMIT | — |
+| [FX7](FX07-timeout-ends-run.md) | A timed-out request no longer ends the orchestrator's run (only the user's stop does) | done | orchestrator: triage loop | F3's split demo test, triage on Ollama (2026-10-11) | `f2d38d2` | — |
 
 ## Conventions
 
