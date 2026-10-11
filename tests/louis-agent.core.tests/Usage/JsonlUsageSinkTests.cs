@@ -1,11 +1,14 @@
 using System.Text.Json;
-using louis_agent.core.config;
-using louis_agent.core.providers;
-using louis_agent.core.tools;
-using louis_agent.core.usage;
+using LouisAgent.Core.Config;
+using LouisAgent.Core.Agent;
+using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
+using LouisAgent.Core.Pricing;
+using LouisAgent.Core.Llm;
+using LouisAgent.Core.Llm.AnthropicProvider;
+using LouisAgent.Core.Hosting;
 
-namespace louis_agent.core.tests;
+namespace LouisAgent.Core.Tests.Usage;
 
 // F1-S1: records land in {LOG_DIRECTORY}/usage-YYYY-MM.jsonl. F1-S4: no prompt text in the file.
 public class JsonlUsageSinkTests

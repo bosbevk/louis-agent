@@ -1,7 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace louis_agent.orchestrator;
+namespace LouisAgent.Orchestrator;
 
 /// <summary>One exception reported by the service (the shape an error tracker such as Exceptionless would give).</summary>
 internal sealed record ErrorEvent(

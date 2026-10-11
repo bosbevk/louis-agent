@@ -1,7 +1,7 @@
 using System.Text.Json;
 using Microsoft.JSInterop;
 
-namespace louis_agent.web.Services;
+namespace LouisAgent.Web.Services;
 
 /// <summary>The API key for louis-agent.api, if it requires one (kept in this browser only).</summary>
 public sealed class Settings

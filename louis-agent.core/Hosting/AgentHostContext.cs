@@ -1,0 +1,14 @@
+namespace LouisAgent.Core.Hosting;
+
+using dotenv.net;
+using LouisAgent.Core.Config;
+using LouisAgent.Core.Agent;
+using LouisAgent.Core.Pricing;
+using LouisAgent.Core.Hosting;
+
+/// <summary>Everything an entry point needs after bootstrap.</summary>
+/// <param name="Prices">The price table the usage ledger prices with (louis-agent.api also serves it at GET /prices).</param>
+/// <param name="Rates">Exchange rates from the price table's currency, for showing costs in another currency (F14).</param>
+/// <param name="Display">The currency costs are shown in (F14): HOST_CULTURE's region, DISPLAY_CURRENCY, or as charged.</param>
+public sealed record AgentHostContext(
+    AgentEngine Engine, LlmOptions Llm, AgentOptions Agent, PriceTable Prices, ExchangeRates Rates, DisplayCurrency Display);

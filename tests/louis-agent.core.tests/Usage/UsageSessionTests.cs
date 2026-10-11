@@ -1,9 +1,9 @@
-using louis_agent.core.providers;
-using louis_agent.core.tools;
-using louis_agent.core.usage;
+using LouisAgent.Core.Skills;
+using LouisAgent.Core.Agent;
+using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
 
-namespace louis_agent.core.tests;
+namespace LouisAgent.Core.Tests.Usage;
 
 // F3 step 3: a host session sums its turns for the usage line's session total and for /usage (F3-S3).
 public class UsageSessionTests
@@ -80,7 +80,7 @@ public class UsageSessionTests
     public void UsageInChatSetting_IsOffUnlessTrue(string? value, bool expected)
     {
         // Step 6: Rider's chat gets the usage line only when asked for; anything but "true" leaves it out.
-        var options = louis_agent.core.config.AgentOptions.FromEnvironment(name => name == "USAGE_IN_CHAT" ? value : null);
+        var options = LouisAgent.Core.Config.AgentOptions.FromEnvironment(name => name == "USAGE_IN_CHAT" ? value : null);
 
         Assert.That(options.UsageInChat, Is.EqualTo(expected));
     }

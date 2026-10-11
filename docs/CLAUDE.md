@@ -48,57 +48,53 @@ One design doc per project — purpose, structure, key types, settings, extensio
 
 
 ```
-louis-agent.core/
-├── AgentHost.cs              # Bootstrap for every host: env files, options, skills, LLM client, engine, logging
-├── AgentLog.cs               # File logging (LOG_DIRECTORY): stderr copy per run + JSONL records
-├── MarkdownSkillLoader.cs    # Parses "## Skill:" procedures from markdown
-├── config/
-│   ├── LlmOptions.cs         # LLM_* settings, tool-support and thinking resolution
-│   └── AgentOptions.cs       # Workspace, skills, keys, Rider MCP, LOG_DIRECTORY, USAGE_LEDGER, PRICES_FILE/_URL
-├── messages/                 # Message enums ([Description] templates) and Messages.Format (see Messages and logging)
-├── providers/
+louis-agent.core/             # Namespace = folder path (LouisAgent.Core.Tools.Web); see Project layout
+├── Agent/AgentEngine.cs      # Tools, system prompt, streaming turn loop, tool-result guards, /approve commands
+├── Hosting/                  # AgentHost (+ AgentHostContext): bootstrap for every host; RiderMcpToolDiscovery
+├── Config/                   # LlmOptions (+ CacheLifetime), AgentOptions, EnvFile (finds config/, sets a .env line)
+├── Messages/                 # ErrorMessage, LogMessage, ToolMessage, UserText ([Description] templates), MessageText
+├── Logging/AgentLog.cs       # File logging (LOG_DIRECTORY): stderr copy per run + JSONL records
+├── Llm/
 │   ├── LlmClientFactory.cs   # Provider → IChatClient (Anthropic thinking-budget wrapper lives here), wrapped for caching
-│   ├── IPromptCachingStrategy.cs, AnthropicPromptCaching.cs, NoPromptCaching.cs, PromptCachingChatClient.cs  # F4
-│   ├── CompositeSkillProvider.cs, MarkdownSkillProvider.cs, ISkillProvider.cs
-│   └── Personality/Default/DotNet/DevOps/Paymo/CodeReview/TimeLogging SkillsProvider.cs
-├── tools/
-│   ├── AgentEngine.cs        # Tools, system prompt, streaming turn loop, tool-result guards, /approve commands
-│   ├── WorkspaceTools.cs     # Files; ResolvePath/IsSensitive are internal and reused by the API
-│   ├── GitTools.cs, DotNetTools.cs, PythonTools.cs, PowerShellTools.cs, BashTools.cs
-│   ├── WebTools.cs, WebSearchProviders.cs   # WebSearch (Google / DuckDuckGo) and FetchUrl (SSRF-guarded)
-│   ├── PaymoTools.cs, DevOpsTools.cs        # Loaded only when their API keys are set
-│   ├── ScriptTool.cs         # Agent-built tools (*.tool.md)
-│   └── ProcessRunner.cs      # Process runner: argument lists, no shell, timeouts
-├── usage/                    # Usage ledger (F1): one JSON line per model request in {LOG_DIRECTORY}/usage-YYYY-MM.jsonl
+│   ├── IPromptCachingStrategy.cs, NoPromptCaching.cs, PromptCachingChatClient.cs  # F4
+│   ├── IUsageMapper.cs, StandardUsageMapper.cs   # Provider usage → the ledger's token kinds
 │   ├── UsageRecordingChatClient.cs  # Middleware inside the tool loop: records each request, streaming or not
-│   ├── UsageScope.cs         # Per-turn context (AsyncLocal): host, session, turn, purpose, task/run/service tags
-│   ├── IUsageMapper.cs       # Provider usage → the ledger's token kinds (Standard / Anthropic mappers)
-│   ├── PriceTable.cs, CostCalculator.cs  # Prices (config/prices.json) and a record's cost (F2)
-│   ├── ExchangeRates.cs, IRatesMapper.cs, DisplayCurrency.cs  # Rates (config/rates.json, RATES_URL) and the
-│   │                         # currency costs are shown in, from HOST_CULTURE (F14); the ledger keeps what was charged
-│   ├── PricingUsageSink.cs   # Puts the cost on each record before the ledger writes it
+│   └── AnthropicProvider/    # AnthropicUsageMapper, AnthropicPromptCaching (Llm/{Name}Provider/ per provider)
+├── Skills/                   # MarkdownSkillLoader ("## Skill:" procedures), the skill providers, SkillFiles
+├── Tools/
+│   ├── ProcessRunner.cs      # Process runner: argument lists, no shell, timeouts
+│   ├── Workspace/            # Files; ResolvePath/IsSensitive are internal and reused by the API
+│   ├── Git/, DotNet/, Shell/ # GitTools; DotNetTools; BashTools, PowerShellTools, PythonTools
+│   ├── Web/                  # WebTools: WebSearch (Google / DuckDuckGo providers) and FetchUrl (SSRF-guarded)
+│   ├── Scripts/              # Agent-built tools (*.tool.md)
+│   └── Integrations/         # Paymo/, DevOps/: loaded only when their API keys are set
+├── Protocols/Mcp/            # RiderMcpClient: lists tools from Rider's MCP server
+├── Usage/                    # Usage ledger (F1): one JSON line per model request in {LOG_DIRECTORY}/usage-YYYY-MM.jsonl
+│   ├── UsageRecord.cs, UsageTokens.cs, UsageCost.cs, UsagePurpose.cs, IUsageSink.cs, JsonlUsageSink.cs
+│   ├── UsageScope.cs, UsageTags.cs  # Per-turn context (AsyncLocal): host, session, turn, purpose, task/run/service
 │   ├── UsageReport.cs        # Reads a ledger back, prices old records, totals per fix / triage / run
-│   ├── CacheGaps.cs          # The prefix's cache lifetime from a ledger's request gaps (F4, usage-probe --cache-gaps)
 │   ├── UsageText.cs, UsageSession.cs  # The usage line and /usage text every host shows (F3); a session's turns
-│   └── UsageRecord.cs, IUsageSink.cs, JsonlUsageSink.cs
-└── mcp/
-    ├── RiderMcpClient.cs     # Lists tools from Rider's MCP server
-    └── RiderMcpToolDiscovery.cs
+│   └── CacheGaps.cs          # The prefix's cache lifetime from a ledger's request gaps (F4, usage-probe --cache-gaps)
+└── Pricing/
+    ├── PriceTable.cs, ModelPrice.cs, CostCalculator.cs  # Prices (config/prices.json) and a record's cost (F2)
+    ├── PricingUsageSink.cs   # Puts the cost on each record before the ledger writes it
+    └── ExchangeRates.cs, IRatesMapper.cs, DisplayCurrency.cs  # Rates (config/rates.json, RATES_URL) and the
+                              # currency costs are shown in, from HOST_CULTURE (F14); the ledger keeps what was charged
 
 src/
 ├── louis-agent.cli/          # Terminal host
 ├── louis-agent.acp-server/   # Rider (Agent Client Protocol over stdio)
 ├── louis-agent.api/          # Minimal API: sessions + SSE, /workspace, /git, /prices; serves the web app
-│   ├── Program.cs, AgentSessions.cs, WorkspaceEndpoints.cs
-│   ├── GitEndpoints.cs       # status, diff, stage/unstage/discard, commit
-│   └── HistoryEndpoints.cs   # branches, log, commit/branch diffs, merge, delete merged branch
+│   ├── Program.cs, AgentSessions.cs
+│   └── Endpoints/            # Workspace; Git (status, diff, stage/unstage/discard, commit); History (branches, log,
+│                             # commit/branch diffs, merge, delete merged branch)
 ├── louis-agent.web/          # Blazor WebAssembly app (chat, Files, Changes, Branches, themes)
 │   ├── Pages/ChatPage.razor, Components/*.razor, Services/*.cs
 │   └── wwwroot/css/app.css + css/themes/*.css + themes.json
 ├── louis-agent.mcp-server/   # Publishes the toolset over MCP (no LLM) - stdio by default, MCP_TRANSPORT=http for remote clients
 └── louis-agent.orchestrator/ # POC: watches a service's errors, runbook per API method, delegates fixes to louis-agent.api
     ├── Program.cs            # poll loop: triage each error event with an AgentEngine (own toolset, runbooks as skills)
-    ├── ServiceTools.cs       # its only tools: CallLouisAgentFix, VerifyFixCommit, ReplayRequest, RunServiceTests, Escalate/Acknowledge
+    ├── Tools/ServiceTools.cs # its only tools: CallLouisAgentFix, VerifyFixCommit, ReplayRequest, RunServiceTests, Escalate/Acknowledge
     ├── LouisAgentClient.cs   # louis-agent.api sessions + SSE parsing, FIX-RESULT
     ├── CommsLog.cs           # Markdown log of every message between the agents
     └── Skills/               # orchestrator.md + {service}/service.md + one runbook per API method
@@ -106,7 +102,7 @@ src/
 tools/louis-agent.usage-probe/ # Prints a provider's raw token usage and the ledger's mapping (calls the real provider);
                               # --ledger <file> prices and totals a usage ledger, --cache-gaps <file> recommends
                               # LLM_CACHE_TTL (neither calls a model)
-tests/louis-agent.core.tests/ # NUnit; Config, Loaders, Providers, Tools, Usage, mcp
+tests/louis-agent.core.tests/ # NUnit; folders mirror core's, plus ArchitectureTests (the layout rules)
 tests/louis-agent.orchestrator.tests/ # NUnit; error feed, SSE client, verification tools
 samples/                      # order-service (demo microservice), run-demo.ps1 [-Short], sample-output*/ (real runs
                               # with their priced ledgers, uncached and -cached), smoke-f4-caching/, see samples/README.md
@@ -123,7 +119,7 @@ docs/                         # This guide, features/ (planned work), plans/ (ap
 
 ### Adding a C# tool
 
-1. Add a public method with `[Description]`s to a tool class (or a new class in `louis-agent.core/tools/`):
+1. Add a public method with `[Description]`s to a tool class (or a new class in `louis-agent.core/Tools/{Toolset}/`):
 
    ```csharp
    [Description("What this tool does")]
@@ -132,7 +128,7 @@ docs/                         # This guide, features/ (planned work), plans/ (ap
 
 2. For a new class, register it in the `AgentEngine` constructor: `AddPublicMethodsAsTools(new MyTools(WorkspaceRoot));`
 3. Mention it in the relevant `Skills/*.md` so the model knows when to use it.
-4. Test it in `tests/louis-agent.core.tests/Tools/`.
+4. Test it in `tests/louis-agent.core.tests/Tools/{Toolset}/`.
 
 **Every public method on a tool class becomes a tool.** Helpers must be `internal` or `private` (the test project and
 `louis-agent.api` can see internals). Tool names must be unique across all classes: a duplicate stops the engine at
@@ -146,36 +142,38 @@ Return strings the model can act on: say what went wrong and what to do instead.
 **Folders split the code by concern, and the namespace is the folder path.** Each concern of an agent has one home, so
 a change to one (a new provider, a new tool, a new guard) touches one folder:
 
-| Folder (core) | Concern | Today |
-|---|---|---|
-| `Agent/` | The loop: turns, history, system prompt assembly, round limits, `/approve` | `tools/AgentEngine.cs` |
-| `Llm/` + `Llm/{Provider}/` | The model: client factory, `IChatClient` middleware (thinking, caching, usage recording), one folder per provider | `providers/LlmClientFactory.cs`, `usage/UsageRecordingChatClient.cs` |
-| `Tools/{Toolset}/` | What the model can do: one folder per toolset (`Workspace`, `Git`, `Shell`, `Web`, `Integrations/Paymo`, …) | `tools/*.cs` |
-| `Skills/` | Loading the markdown skills and personality into the prompt | `MarkdownSkillLoader.cs`, `providers/*SkillsProvider.cs` |
-| `Guardrails/` | Safety checks: path resolution, sensitive files, SSRF, tool-result size guards | spread over `WorkspaceTools`, `WebTools`, `AgentEngine` |
-| `Usage/` and `Pricing/` | The ledger (records, sinks, scopes); prices, cost, rates and the display currency | `usage/` (both) |
-| `Protocols/Mcp/` | Talking to other agents and tools over MCP | `mcp/` |
-| `Hosting/` | Bootstrap shared by every host: `AgentHost`, logging | root `AgentHost.cs`, `AgentLog.cs` |
-| `Config/`, `Messages/` | Settings; message enums | `config/`, `messages/` |
+| Folder (core) | Concern |
+|---|---|
+| `Agent/` | The loop: turns, history, system prompt assembly, round limits, `/approve` |
+| `Llm/` + `Llm/{Name}Provider/` | The model: client factory, `IChatClient` middleware (thinking, caching, usage recording), one folder per provider (`AnthropicProvider/`: a folder named `Anthropic` would hide the SDK's own `Anthropic` namespace) |
+| `Tools/{Toolset}/` | What the model can do: one folder per toolset (`Workspace`, `Git`, `DotNet`, `Shell`, `Web`, `Scripts`, `Integrations/Paymo`, `Integrations/DevOps`); `ProcessRunner` beside them |
+| `Skills/` | Loading the markdown skills and personality into the prompt |
+| `Guardrails/` | Safety checks: path resolution, sensitive files, SSRF, tool-result size guards (filled by the `AgentEngine` split, next in the TODO) |
+| `Usage/` and `Pricing/` | The ledger (records, sinks, scopes, reports); prices, cost, rates and the display currency |
+| `Protocols/Mcp/` | Talking to other agents and tools over MCP |
+| `Hosting/` | Bootstrap shared by every host: `AgentHost`, and wiring done at start-up (Rider's MCP tools) |
+| `Config/`, `Messages/`, `Logging/` | Settings; message enums; file logging (`AgentLog`, later the NLog setup) |
 
 The rules:
 
-1. **Namespace = folder path**, PascalCase (`LouisAgent.Core.Llm.Anthropic`), one top-level type per file, the file
+1. **Namespace = folder path**, PascalCase (`LouisAgent.Core.Llm.AnthropicProvider`), one top-level type per file, the file
    named after the type. No `Helpers/`, `Utils/`, `Common/` or `Interfaces/` folders: an interface lives beside its
    implementations, a helper beside its one user.
-2. **Dependencies point one way:** hosts → `Hosting` → `Agent` → `Llm`, `Tools`, `Skills`, `Usage` → `Guardrails`,
-   `Config`, `Messages`. A tool never references the agent loop or a model; `Agent` never references a provider's SDK
-   (provider differences stay in `Llm/{Provider}/`, as in *Changing the LLM*).
+2. **Dependencies point one way:** hosts → `Hosting` → `Agent` → `Llm`, `Tools`, `Skills`, `Usage`, `Pricing`,
+   `Protocols` → `Guardrails` → `Config`, `Messages`, `Logging`. A tool never references the agent loop or a model;
+   `Agent` never references a provider's SDK (provider differences stay in `Llm/{Name}Provider/`, as in *Changing the
+   LLM*).
 3. **Prompts are content, not code:** system prompt text and procedures stay in `Skills/*.md`; C# only loads them.
 4. **Hosts stay thin:** a host project maps the agent's stream to its protocol (`Endpoints/`, `Services/`) and holds no
    agent behaviour; another agent on core (the orchestrator) keeps its own `Tools/` and `Skills/` the same way.
-5. **Tests mirror the source:** `tests/louis-agent.core.tests/Llm/Anthropic/…` tests `Llm/Anthropic/…`.
+5. **Tests mirror the source:** `tests/louis-agent.core.tests/Llm/AnthropicProvider/…` tests `Llm/AnthropicProvider/…`.
 6. **An architecture test enforces 1 and 2:** namespaces match folders, and no type depends against the arrow.
 
-**Moving there:** the table's *Today* column is the current layout. One refactor after F4 (TODO, *Quality and CI*),
-before the messages refactor, moves the files with `git mv` (so history follows them), renames the namespaces, splits
-`AgentEngine` (1,000+ lines) along the concerns above, and adds the architecture test. Until it lands, new files go in
-the folder their concern has today.
+**Held by a test:** `tests/louis-agent.core.tests/ArchitectureTests.cs` reads core's source and fails on a file whose
+namespace isn't its folder path, a file with two top-level types, a folder that isn't in the table, or a `using` against
+the arrow. A new concern is a new row here and in the test's layers. Every other project's namespace is PascalCase too
+(`LouisAgent.Api`, `LouisAgent.Orchestrator.Tools`); a type never shares its namespace's name (hence `MessageText` in
+`Messages/`). The move was CL1 ([plan](plans/CL1-project-layout.md)).
 
 ### Messages and logging
 
@@ -189,8 +187,8 @@ public enum ErrorMessage
     UnknownCacheTtl,
 }
 
-throw new ArgumentException(Messages.Format(ErrorMessage.UnknownCacheTtl, new { Value = other }));
-logger.LogWarning(Messages.Template(LogMessage.RatesFallback), url, reason);   // NLog fills the holes, as structured fields
+throw new ArgumentException(MessageText.Format(ErrorMessage.UnknownCacheTtl, new { Value = other }));
+logger.LogWarning(MessageText.Template(LogMessage.RatesFallback), url, reason);   // NLog fills the holes, as structured fields
 ```
 
 - **What counts:** exception messages, log lines, the error strings tools return to the model, and user-facing text
@@ -202,13 +200,13 @@ logger.LogWarning(Messages.Template(LogMessage.RatesFallback), url, reason);   /
 - **A unit test checks every message enum:** each member has a `[Description]`, and its template's holes are well formed.
 - **Moving there:** the existing ~230 messages (35 files), `Console.Error` and `AgentLog` move in one refactor after F4
   (TODO, *Quality and CI*). Until it lands, new code defines its messages as enum members but still writes logs with
-  `Console.Error.WriteLine(Messages.Format(...))`; the refactor switches those calls to `ILogger`.
+  `Console.Error.WriteLine(MessageText.Format(...))`; the refactor switches those calls to `ILogger`.
 
 ### Adding a skill
 
 Create `Skills/{name}-skills.md`. With `AGENT_FUNCTION=louis` every skill file is loaded; otherwise set
 `AGENT_FUNCTION={name}`. For a guide that must always load (like `bash-skills.md`), add it to
-`AgentHost.AlwaysLoadedSkillFiles` and `BuiltInSkillFiles`. Procedures use `## Skill: Name` with an `Execution:` fence
+`AgentHost.AlwaysLoadedSkillFiles` and `SkillFiles.BuiltIn`. Procedures use `## Skill: Name` with an `Execution:` fence
 (bash, powershell or python); arguments arrive as `SKILL_ARG_*` environment variables.
 
 ### Building another agent on core

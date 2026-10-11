@@ -1,4 +1,4 @@
-namespace louis_agent.web;
+namespace LouisAgent.Web;
 
 /// <summary>A chat as the browser keeps it; the server only holds the session (and loses it on restart).</summary>
 public sealed class Chat

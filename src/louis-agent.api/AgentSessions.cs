@@ -1,9 +1,10 @@
 using System.Collections.Concurrent;
-using louis_agent.core.tools;
-using louis_agent.core.usage;
+using LouisAgent.Core.Agent;
+using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
+using LouisAgent.Core.Pricing;
 
-namespace louis_agent.api;
+namespace LouisAgent.Api;
 
 /// <summary>One conversation: its history and the turn in progress, if any.</summary>
 internal sealed class AgentSession(string id, List<ChatMessage> history, UsageTags tags, DisplayCurrency? display = null)

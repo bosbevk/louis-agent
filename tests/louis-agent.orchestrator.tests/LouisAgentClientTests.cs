@@ -1,6 +1,6 @@
-using louis_agent.core.usage;
+using LouisAgent.Core.Usage;
 
-namespace louis_agent.orchestrator.tests;
+namespace LouisAgent.Orchestrator.Tests;
 
 public class LouisAgentClientTests
 {

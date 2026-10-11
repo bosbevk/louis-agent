@@ -66,7 +66,7 @@ Each project also has its own design doc in [projects/](projects/README.md).
 
 ## Core abstractions
 
-### `LlmOptions` (`config/LlmOptions.cs`)
+### `LlmOptions` (`Config/LlmOptions.cs`)
 - `LLM_PROVIDER`: `anthropic` | `ollama` | `openai-compatible`. If unset it is inferred: `claude*` → `anthropic`, other
   models → `ollama`, no model → `anthropic`.
 - `LLM_MODEL` (default `claude-haiku-5-5`), `LLM_ENDPOINT`, `LLM_API_KEY` (falls back to `ANTHROPIC_API_KEY`),
@@ -75,14 +75,14 @@ Each project also has its own design doc in [projects/](projects/README.md).
   `deepseek-coder` or `qwen2` run without tools.
 - `LLM_THINKING`: `off` | `low` | `medium` | `high`; default `medium` for Anthropic, `off` otherwise.
 
-### `AgentOptions` (`config/AgentOptions.cs`)
+### `AgentOptions` (`Config/AgentOptions.cs`)
 - `WORKSPACE_ROOT` (default: the repository root found from the working directory), `SKILLS_DIRECTORY`,
   `AGENT_FUNCTION` (default `code-review`; `louis` loads every skill file), `LOG_DIRECTORY`.
 - Keys: `PAYMO_API_KEY`, `DEVOPS_API_KEY`, `WEB_SEARCH_PROVIDER`, `GOOGLE_SEARCH_API_KEY`, `GOOGLE_SEARCH_ENGINE_ID`.
 - Azure DevOps: `DEVOPS_ORGANIZATION`, `DEVOPS_PROJECT`, optional `DEVOPS_TEAM` (sprints live under the team).
 - Rider MCP: `RIDER_MCP_ENDPOINT` (default `http://127.0.0.1:64482`), `RIDER_MCP_AUTO_DISCOVER`, `RIDER_MCP_PROJECT_PATH`.
 
-### `LlmClientFactory` (`providers/LlmClientFactory.cs`)
+### `LlmClientFactory` (`Llm/LlmClientFactory.cs`)
 Maps `LlmOptions` to an `IChatClient`:
 - **Anthropic:** `AnthropicClient.AsIChatClient(model, 16000)`. For models before Claude 4.6 (including Haiku 4.5),
   which reject adaptive thinking, a small wrapper turns `ChatOptions.Reasoning` into a fixed thinking budget
@@ -108,7 +108,7 @@ editing callers. Use one only when providers really differ; a concern every prov
 The same pattern is used outside the providers: `IRatesMapper` (exchange-rate sources) and `IWebSearchProvider`
 (Google, DuckDuckGo).
 
-### `AgentEngine` (`tools/AgentEngine.cs`)
+### `AgentEngine` (`Agent/AgentEngine.cs`)
 Provider-agnostic. Owns the tools, the system prompt (skill documentation) and the tool-call loop:
 - `StreamPromptAsync(history, input)` streams `ChatResponseUpdate`s (text, `TextReasoningContent`, tool calls and
   results) and records the finished turn in `history`; `ProcessPromptAsync` is the non-streaming form.

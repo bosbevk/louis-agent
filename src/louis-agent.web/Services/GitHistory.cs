@@ -1,4 +1,4 @@
-namespace louis_agent.web.Services;
+namespace LouisAgent.Web.Services;
 
 /// <summary>
 /// Branches and the commit log across all branches, shared by the Branches panel and the branch/commit viewer.

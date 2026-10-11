@@ -1,10 +1,9 @@
 using Anthropic.Models.Messages;
-using louis_agent.core.config;
-using louis_agent.core.tools;
-using louis_agent.core.providers;
+using LouisAgent.Core.Config;
 using Microsoft.Extensions.AI;
+using LouisAgent.Core.Llm;
 
-namespace louis_agent.core.tests;
+namespace LouisAgent.Core.Tests.Config;
 
 public class LlmOptionsTests
 {

@@ -1,8 +1,9 @@
 using System.Text;
 using System.Text.Json;
-using louis_agent.core.usage;
+using LouisAgent.Core.Usage;
+using LouisAgent.Core.Pricing;
 
-namespace louis_agent.orchestrator;
+namespace LouisAgent.Orchestrator;
 
 /// <summary>
 /// What one error event used (F3): the orchestrator's triage (its own requests), louis-agent's fix (the usage it reported

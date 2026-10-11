@@ -1,5 +1,5 @@
-using louis_agent.acp_server;
-using louis_agent.core;
+using LouisAgent.AcpServer;
+using LouisAgent.Core.Hosting;
 
 try
 {

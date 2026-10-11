@@ -1,4 +1,4 @@
-namespace louis_agent.web.Services;
+namespace LouisAgent.Web.Services;
 
 /// <summary>
 /// The workspace's git status, shared by the Changes panel, the diff viewer and the tab badge. Every change returns
