@@ -14,11 +14,13 @@ or fix doc (*What the build changed*), not here.
 | [F02-prices-and-cost.md](F02-prices-and-cost.md) | [F2 Prices and cost](../features/F02-prices-and-cost.md) | 2026-10-10 | Recreated on 2026-10-11; includes the `PRICES_URL` addition approved during the build |
 | [F03-usage-display.md](F03-usage-display.md) | [F3 Show usage](../features/F03-usage-display.md) | 2026-10-11 | |
 | [F14-display-currency.md](F14-display-currency.md) | [F14 Display currency](../features/F14-display-currency.md) | 2026-10-11 | Built before M2 by choice |
+| [CL1-project-layout.md](CL1-project-layout.md) | TODO: *Project layout* (cleanup) | 2026-10-11 | PascalCase in every project, one type per file; `AgentEngine` moved whole, its split next |
 | [F04-prompt-caching.md](F04-prompt-caching.md) | [F4 Prompt caching](../features/F04-prompt-caching.md) | 2026-10-11 | Conversation marker by automatic caching (option B); orchestrator and summariser left to their own features |
 
 ## Conventions
 
-- **One file per plan**, named like what it plans: `Fnn-name.md` for a feature, `FXnn-name.md` for a fix.
+- **One file per plan**, named like what it plans: `Fnn-name.md` for a feature, `FXnn-name.md` for a fix, `CLn-name.md` for a
+  cleanup (a TODO line with no feature or fix doc).
 - **Sections:** *Context* (why now, what the doc says), *Design* (what changes from the doc, and why), *Steps* (one
   commit each, with its test; the review stop after each), *Verification* (tests, free manual checks, and any paid run,
   which needs approval first), and the *Concepts* each step teaches, with their skill in the [goal](../GOAL.md).

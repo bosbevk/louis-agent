@@ -133,6 +133,9 @@ growing history every round, so smaller tasks are cheaper); make runs resumable 
       `git mv` so history follows, split `AgentEngine` along those concerns, tests mirror the source, and an
       architecture test (namespaces match folders, dependencies point one way). Its own branch and PR, with a plan;
       behaviour unchanged, so every test passes untouched apart from namespaces
+- [ ] **Split `AgentEngine`, right after the project layout** (its plan comes first): the loop, history and prompt in
+      `Agent/`, the tool registry beside it, and the tool-result guards, `ResolvePath`/`IsSensitive` and the SSRF check
+      in `Guardrails/`. CL1 moves the class whole; this splits it. Behaviour unchanged
 - [ ] **Messages and logging, after F4, second of two cleanups** (the rule is in [docs/CLAUDE.md](docs/CLAUDE.md#messages-and-logging)): move
       the ~230 inline messages in 35 files (exceptions, log lines, tool results, user-facing text) into message enums
       with `[Description]` templates and a `Messages` helper, with a test over every enum; switch logging from
