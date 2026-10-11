@@ -119,7 +119,7 @@ public partial class AgentEngine
         IUsageSink? usageSink = null, IUsageMapper? usageMapper = null)
     {
         _skills = ToSkillMap(skillProvider);
-        SkillDocumentation = skillProvider.Documentation;
+        SkillDocumentation = Normalise(skillProvider.Documentation);
         _options = options;
         SupportsTools = supportsTools;
         WorkspaceRoot = Path.GetFullPath(options.WorkspaceRoot);
@@ -152,17 +152,17 @@ public partial class AgentEngine
             return;
         }
 
-        AddTool(AIFunctionFactory.Create(ExecuteSkill, nameof(ExecuteSkill)));
+        AddTool(Function(ExecuteSkill, nameof(ExecuteSkill)));
         if (toolsets is not null)
         {
             foreach (object toolset in toolsets) AddPublicMethodsAsTools(toolset);
             return;
         }
 
-        AddTool(AIFunctionFactory.Create(CreateSkillFile, nameof(CreateSkillFile)));
-        AddTool(AIFunctionFactory.Create(ReloadSkills, nameof(ReloadSkills)));
-        AddTool(AIFunctionFactory.Create(CreateTool, nameof(CreateTool)));
-        AddTool(AIFunctionFactory.Create(ListAgentTools, nameof(ListAgentTools)));
+        AddTool(Function(CreateSkillFile, nameof(CreateSkillFile)));
+        AddTool(Function(ReloadSkills, nameof(ReloadSkills)));
+        AddTool(Function(CreateTool, nameof(CreateTool)));
+        AddTool(Function(ListAgentTools, nameof(ListAgentTools)));
         AddPublicMethodsAsTools(new WorkspaceTools(WorkspaceRoot));
         AddPublicMethodsAsTools(new GitTools(WorkspaceRoot));
         AddPublicMethodsAsTools(new DotNetTools(WorkspaceRoot));
@@ -808,7 +808,7 @@ public partial class AgentEngine
         }
 
         _skills = ToSkillMap(provider);
-        SkillDocumentation = provider.Documentation;
+        SkillDocumentation = Normalise(provider.Documentation);
         return $"Skills reloaded. Available skills: {(_skills.Count == 0 ? "(none)" : string.Join(", ", _skills.Keys.Order()))}";
     }
 
@@ -1019,6 +1019,21 @@ public partial class AgentEngine
         if (result.ExitCode != 0) return $"[Exit Code {result.ExitCode}] {output}";
         return string.IsNullOrWhiteSpace(output) ? "Tool ran successfully (no output)." : output;
     }
+
+    /// <summary>
+    /// What the model is sent must be the same bytes on every machine. Text read from the skill files, and a
+    /// [Description] written as a multi-line raw string, take the line endings of the checkout (CRLF on Windows with
+    /// autocrlf, LF on Linux); everything the engine sends uses LF.
+    /// </summary>
+    internal static string Normalise(string text) => text.ReplaceLineEndings("\n");
+
+    /// <summary>One of the engine's own methods as a tool, its [Description] with LF line endings (see <see cref="Normalise"/>).</summary>
+    private static AIFunction Function(Delegate method, string name) =>
+        AIFunctionFactory.Create(method, new AIFunctionFactoryOptions
+        {
+            Name = name,
+            Description = method.Method.GetCustomAttribute<DescriptionAttribute>() is { } description ? Normalise(description.Description) : null,
+        });
 
     private static Dictionary<string, MarkdownSkillLoader.SkillDef> ToSkillMap(ISkillProvider provider) =>
         provider.Skills.ToDictionary(s => s.Name, StringComparer.OrdinalIgnoreCase);
