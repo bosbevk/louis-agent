@@ -215,6 +215,69 @@ public static partial class AgentHost
         return prices;
     }
 
+    private static readonly TimeSpan RatesUrlTimeout = TimeSpan.FromSeconds(5);
+
+    /// <summary>
+    /// Exchange rates for showing costs in another currency (F14): from RATES_URL (Frankfurter by default), turned into our
+    /// rates.json format by RATES_FORMAT's mapper; if that can't be fetched or read, from RATES_FILE or config/rates.json;
+    /// empty, with a warning, if there's neither. A rates file that isn't valid, or rates whose base isn't
+    /// <paramref name="baseCurrency"/>, throw: costs converted at a wrong rate are worse than not starting.
+    /// </summary>
+    /// <param name="baseCurrency">The price table's currency; the rates must be from it.</param>
+    /// <param name="handler">For tests: answers the RATES_URL request.</param>
+    public static ExchangeRates LoadRates(AgentOptions agent, string baseCurrency = "USD", HttpMessageHandler? handler = null)
+    {
+        IRatesMapper mapper = RatesMappers.For(agent.RatesFormat);
+        if (agent.RatesUrl is { } ratesUrl)
+        {
+            if (!Uri.TryCreate(ratesUrl, UriKind.Absolute, out Uri? url) || url.Scheme is not ("http" or "https"))
+                throw new InvalidDataException($"RATES_URL must be an http or https URL (or off), got '{ratesUrl}'.");
+
+            using var http = handler is null ? new HttpClient() : new HttpClient(handler, disposeHandler: false);
+            http.Timeout = RatesUrlTimeout;
+            try
+            {
+                // Start-up is synchronous in every host; the call is bounded by the timeout above.
+                ExchangeRates fromUrl = ExchangeRates.LoadAsync(http, url, mapper).GetAwaiter().GetResult();
+                CheckBase(fromUrl, baseCurrency, url.ToString());
+                Console.Error.WriteLine($"[INFO] Rates: {url} (as of {fromUrl.AsOf}, {fromUrl.Rates.Count} currencies)");
+                return fromUrl;
+            }
+            catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException or InvalidDataException)
+            {
+                // A third party's reply changing shape, or being down, never stops an agent: the rates file keeps working.
+                Console.Error.WriteLine($"[WARN] Rates: {url} can't be used ({ex.Message}); using the rates file instead.");
+            }
+        }
+
+        string? path = agent.RatesFile
+                       ?? (FindConfigDirectory(Environment.CurrentDirectory) is { } configDir ? Path.Combine(configDir, "rates.json") : null);
+        ExchangeRates rates = path is null ? ExchangeRates.Empty : ExchangeRates.Load(path);
+        if (rates.IsEmpty)
+        {
+            Console.Error.WriteLine($"[WARN] No exchange rates at {path ?? "config/rates.json"}: costs are shown in {baseCurrency}.");
+            return rates;
+        }
+
+        CheckBase(rates, baseCurrency, path!);
+        Console.Error.WriteLine($"[INFO] Rates: {path} (as of {rates.AsOf}, {rates.Rates.Count} currencies)");
+        return rates;
+    }
+
+    /// <summary>Rates from another currency than the price table's would convert every cost wrongly.</summary>
+    private static void CheckBase(ExchangeRates rates, string baseCurrency, string source)
+    {
+        if (!string.Equals(rates.Base, baseCurrency, StringComparison.OrdinalIgnoreCase))
+            throw new WrongBaseException(
+                $"Exchange rates {source} are from {rates.Base}, but the price table is in {baseCurrency}: set RATES_URL to rates from {baseCurrency}.");
+    }
+
+    /// <summary>
+    /// A configuration mistake (RATES_URL or RATES_FILE from the wrong currency), unlike a provider being down or
+    /// changing its reply, so it stops start-up instead of falling back to the file.
+    /// </summary>
+    internal sealed class WrongBaseException(string message) : Exception(message);
+
     /// <summary>
     /// Loads skills using typed providers.
     /// Always includes DefaultSkillsProvider, and loads function-specific providers based on AgentFunction.
