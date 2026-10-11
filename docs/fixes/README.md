@@ -16,7 +16,7 @@ record (most fixes so far taught something about a model's API).
 | [FX5](FX05-null-conditional-ledger.md) | Requests outside a usage scope are written to the ledger again (a `?.` skipped the write) | done | core: usage recorder | F1's tests while building F3 step 1 (2026-10-11) | `3269fea` | — |
 | [FX6](FX06-usage-on-failed-turns.md) | A turn that fails still reports what it used (usage on the `error` event) | done | API stream, web app, orchestrator | Writing F3 steps 5 and 7 (2026-10-11) | `75de390` | — |
 | [FX7](FX07-timeout-ends-run.md) | A timed-out request no longer ends the orchestrator's run (only the user's stop does) | done | orchestrator: triage loop | F3's split demo test, triage on Ollama (2026-10-11) | `f2d38d2` | — |
-| [FX8](FX08-fix-result-quotes.md) | A FIX-RESULT with quotes in its summary is still read (not answered with "continue") | done | orchestrator: FIX-RESULT parsing | F14's full demo rerun, error 10 (2026-10-11) | FX8_COMMIT | — |
+| [FX8](FX08-fix-result-quotes.md) | A FIX-RESULT with quotes in its summary is still read (not answered with "continue") | done | orchestrator: FIX-RESULT parsing | F14's full demo rerun, error 10 (2026-10-11) | `6307226` | — |
 
 ## Conventions
 

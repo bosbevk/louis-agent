@@ -1,7 +1,7 @@
 # FX8 · A FIX-RESULT with quotes in its summary is still read
 
 > **Status:** done (2026-10-11) · **Area:** orchestrator, `LouisAgentClient.ParseFixResult` · **Found:** the full demo
-> rerun for F14 (2026-10-11, `run-20261011-083646`) · **Commit:** (built in F14; see its plan)
+> rerun for F14 (2026-10-11, `run-20261011-083646`) · **Commit:** `6307226` (built in F14; see its plan)
 
 ## Symptom
 
