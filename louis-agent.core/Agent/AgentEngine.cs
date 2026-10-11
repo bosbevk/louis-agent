@@ -76,7 +76,11 @@ public partial class AgentEngine
     public IReadOnlyCollection<MarkdownSkillLoader.SkillDef> Skills => _skillTools.Skills;
 
     /// <summary>Raised after agent-built tools are added or removed, so hosts that publish <see cref="Tools"/> can resync.</summary>
-    public event Action? ToolsChanged;
+    public event Action? ToolsChanged
+    {
+        add => _agentBuiltTools.ToolsChanged += value;
+        remove => _agentBuiltTools.ToolsChanged -= value;
+    }
 
     /// <summary>Folder where <see cref="CreateSkillFile"/> writes new *-skills.md files; null disables skill authoring.</summary>
     public string? SkillsDirectory { get => _skillTools.SkillsDirectory; init => _skillTools.SkillsDirectory = value; }
@@ -88,10 +92,9 @@ public partial class AgentEngine
     public Func<ISkillProvider>? SkillReloader { get => _skillTools.SkillReloader; init => _skillTools.SkillReloader = value; }
 
     /// <summary>Approved agent-built tools live here (*.tool.md); new ones wait in its 'pending' subfolder.</summary>
-    public string? ToolsDirectory => SkillsDirectory is null ? null : Path.Combine(SkillsDirectory, "tools");
-    private string? PendingToolsDirectory => ToolsDirectory is null ? null : Path.Combine(ToolsDirectory, "pending");
+    public string? ToolsDirectory => _agentBuiltTools.ToolsDirectory;
 
-    private readonly Dictionary<string, ScriptTool> _scriptTools = new(StringComparer.OrdinalIgnoreCase);
+    private readonly AgentBuiltTools _agentBuiltTools;
 
     /// <param name="webSearch">Search engine for WebSearch; null selects one from configuration (see <see cref="WebSearchProviderFactory"/>).</param>
     /// <param name="toolsets">
@@ -112,6 +115,7 @@ public partial class AgentEngine
         _powerShell = new PowerShellTools(WorkspaceRoot);
         _bash = new BashTools(WorkspaceRoot);
         _skillTools = new SkillTools(skillProvider, options, WorkspaceRoot, _python, _powerShell);
+        _agentBuiltTools = new AgentBuiltTools(_registry, supportsTools, WorkspaceRoot, _python, _powerShell, () => SkillsDirectory);
 
         // Summaries call the model directly, outside the tool loop, so they are recorded by their own recorder.
         RecordsUsage = usageSink is not null;
@@ -148,8 +152,8 @@ public partial class AgentEngine
 
         _registry.Add(Function(_skillTools.CreateSkillFile, nameof(CreateSkillFile)));
         _registry.Add(Function(_skillTools.ReloadSkills, nameof(ReloadSkills)));
-        _registry.Add(Function(CreateTool, nameof(CreateTool)));
-        _registry.Add(Function(ListAgentTools, nameof(ListAgentTools)));
+        _registry.Add(Function(_agentBuiltTools.CreateTool, nameof(CreateTool)));
+        _registry.Add(Function(_agentBuiltTools.ListAgentTools, nameof(ListAgentTools)));
         _registry.AddPublicMethods(new WorkspaceTools(WorkspaceRoot));
         _registry.AddPublicMethods(new GitTools(WorkspaceRoot));
         _registry.AddPublicMethods(new DotNetTools(WorkspaceRoot));
@@ -459,110 +463,14 @@ public partial class AgentEngine
     /// <summary>Re-reads the skills from disk (the <c>ReloadSkills</c> tool; see <see cref="SkillTools.ReloadSkills"/>).</summary>
     public string ReloadSkills() => _skillTools.ReloadSkills();
 
-    [Description("""
-        Builds a new, typed tool from a markdown definition when no existing tool — built-in or already agent-built —
-        can do what's needed and the capability is worth keeping, not for a single one-off action a skill or an
-        inline script could handle just as well. The tool becomes callable immediately in this session; it is only
-        saved for future sessions once the user explicitly approves it with '/approve <Name>' (reject with
-        '/reject <Name>' to discard it). A name already used by a built-in tool, or an existing approved tool, is
-        rejected. Definition format (markdown):
-        # Tool: <PascalCaseName>
-        - Description: <what it does and when to use it>
-        - Timeout: <seconds, optional, default 60, max 600>
-        - Parameters:
-          - `argName` (string|integer|number|boolean, required|optional): <meaning>
-        - Implementation:
-        ```python
-        import json, sys
-        args = json.load(sys.stdin)   # validated arguments as a JSON object
-        print(json.dumps({"result": ...}))
-        ```
-        Language: ```python, ```powershell (read input with [Console]::In.ReadToEnd() | ConvertFrom-Json) or ```bash.
-        Arguments arrive as JSON on stdin (also as TOOL_ARG_<name> env vars) — never interpolate them into code or commands.
-        Runs from the workspace root. Print the result (JSON preferred); exit non-zero with a message on failure.
-        """)]
-    public string CreateTool(
-        [Description("The full tool definition markdown")] string definition,
-        [Description("Set true to replace a pending tool you created earlier with the same name")] bool overwrite = false)
-    {
-        if (!SupportsTools) return "Error: tools are not supported by the current model.";
-        if (PendingToolsDirectory is null) return "Error: tool building is not available (no skills folder was found).";
+    /// <summary>Builds an agent tool (the <c>CreateTool</c> tool; see <see cref="AgentBuiltTools.CreateTool"/>).</summary>
+    public string CreateTool(string definition, bool overwrite = false) => _agentBuiltTools.CreateTool(definition, overwrite);
 
-        var (parsed, errors) = ScriptToolDefinition.Parse(definition);
-        if (parsed is null) return "Error: invalid tool definition:\n- " + string.Join("\n- ", errors);
+    /// <summary>The agent-built tools (the <c>ListAgentTools</c> tool; see <see cref="AgentBuiltTools.ListAgentTools"/>).</summary>
+    public string ListAgentTools() => _agentBuiltTools.ListAgentTools();
 
-        if (_scriptTools.TryGetValue(parsed.Name, out var existing))
-        {
-            if (existing.Approved) return $"Error: an approved tool named '{parsed.Name}' already exists; choose another name.";
-            if (!overwrite) return $"Error: a pending tool named '{parsed.Name}' already exists. Pass overwrite=true to replace it.";
-        }
-        else if (_registry.Contains(parsed.Name, StringComparison.OrdinalIgnoreCase))
-        {
-            return $"Error: '{parsed.Name}' is the name of a built-in tool; choose another name.";
-        }
-
-        Directory.CreateDirectory(PendingToolsDirectory);
-        File.WriteAllText(Path.Combine(PendingToolsDirectory, $"{parsed.Name}.tool.md"), definition);
-        RegisterScriptTool(parsed, approved: false);
-
-        string parameters = parsed.Parameters.Count == 0
-            ? "no parameters"
-            : string.Join(", ", parsed.Parameters.Select(p => $"{p.Name}: {p.Type}{(p.Required ? "" : "?")}"));
-        return $"Created tool '{parsed.Name}' ({parsed.Language}; {parameters}). You can call it now. " +
-               $"It is pending: tell the user to type '/approve {parsed.Name}' to keep it for future sessions (or '/reject {parsed.Name}').";
-    }
-
-    [Description("Lists every agent-built tool known right now: approved ones that load in every session, ones " +
-        "pending approval that are only active for this session, and — separately — pending tool files left on " +
-        "disk from an earlier session that never got approved and aren't currently loaded. Each entry shows its " +
-        "approval state and its own description. Use this before CreateTool to check whether a similar tool already " +
-        "exists, or when the user asks what tools the agent has built for itself; it makes no changes.")]
-    public string ListAgentTools()
-    {
-        var pendingOnDisk = PendingToolsDirectory is not null && Directory.Exists(PendingToolsDirectory)
-            ? Directory.EnumerateFiles(PendingToolsDirectory, "*.tool.md").Select(f => Path.GetFileName(f)[..^".tool.md".Length]).ToList()
-            : [];
-
-        var lines = _scriptTools.Values.OrderBy(t => t.Name)
-            .Select(t => $"- {t.Name} [{(t.Approved ? "approved" : "pending, active this session")}]: {t.Definition.Description}")
-            .Concat(pendingOnDisk.Where(n => !_scriptTools.ContainsKey(n)).Order()
-                .Select(n => $"- {n} [pending from an earlier session, not loaded]"))
-            .ToList();
-
-        return lines.Count == 0 ? "No agent-built tools yet." : string.Join('\n', lines);
-    }
-
-    /// <summary>
-    /// Loads approved tools from <see cref="ToolsDirectory"/>. Called once by the host after construction.
-    /// Pending tools are deliberately not loaded: they only last for the session that created them.
-    /// </summary>
-    public int LoadApprovedTools()
-    {
-        if (!SupportsTools || ToolsDirectory is null || !Directory.Exists(ToolsDirectory)) return 0;
-
-        int loaded = 0;
-        foreach (string file in Directory.EnumerateFiles(ToolsDirectory, "*.tool.md").Order())
-        {
-            var (parsed, errors) = ScriptToolDefinition.Parse(File.ReadAllText(file));
-            if (parsed is null)
-            {
-                Console.Error.WriteLine($"[WARN] Skipping invalid tool {Path.GetFileName(file)}: {string.Join("; ", errors)}");
-                continue;
-            }
-
-            if (_registry.Contains(parsed.Name, StringComparison.OrdinalIgnoreCase))
-            {
-                Console.Error.WriteLine($"[WARN] Skipping tool {Path.GetFileName(file)}: name '{parsed.Name}' is already in use.");
-                continue;
-            }
-
-            RegisterScriptTool(parsed, approved: true);
-            loaded++;
-        }
-
-        if (loaded > 0) Console.Error.WriteLine($"[INFO] Loaded {loaded} agent-built tool(s) from {ToolsDirectory}");
-        return loaded;
-    }
+    /// <summary>Loads approved tools from <see cref="ToolsDirectory"/>. Called once by the host after construction.</summary>
+    public int LoadApprovedTools() => _agentBuiltTools.LoadApprovedTools();
 
     /// <summary>
     /// Handles commands typed by the user (never exposed to the model): /tools, /approve &lt;Name&gt;, /reject &lt;Name&gt;,
@@ -583,88 +491,11 @@ public partial class AgentEngine
         return command switch
         {
             "/tools" => ListAgentTools() + "\n\nApprove with /approve <Name>, discard with /reject <Name>.",
-            "/approve" => ApproveTool(argument),
-            "/reject" => RejectTool(argument),
+            "/approve" => _agentBuiltTools.ApproveTool(argument),
+            "/reject" => _agentBuiltTools.RejectTool(argument),
             "/usage" => sessionUsage is null ? "Usage isn't tracked in this session." : UsageText.Summary(sessionUsage, Display),
             _ => null,
         };
-    }
-
-    private string ApproveTool(string name)
-    {
-        if (PendingToolsDirectory is null || ToolsDirectory is null) return "Tool building is not available.";
-        if (string.IsNullOrWhiteSpace(name)) return "Usage: /approve <ToolName>";
-
-        string pending = Path.Combine(PendingToolsDirectory, $"{name}.tool.md");
-        if (!File.Exists(pending)) return $"No pending tool named '{name}'. Use /tools to see pending tools.";
-
-        var (parsed, errors) = ScriptToolDefinition.Parse(File.ReadAllText(pending));
-        if (parsed is null) return $"Cannot approve '{name}': the definition is invalid ({string.Join("; ", errors)}).";
-
-        string approvedPath = Path.Combine(ToolsDirectory, $"{parsed.Name}.tool.md");
-        if (File.Exists(approvedPath)) return $"An approved tool '{parsed.Name}' already exists; remove {approvedPath} first.";
-
-        File.Move(pending, approvedPath);
-        if (_scriptTools.TryGetValue(parsed.Name, out var tool))
-        {
-            tool.Approved = true;
-            ToolsChanged?.Invoke();
-        }
-        else if (SupportsTools && !_registry.Contains(parsed.Name, StringComparison.OrdinalIgnoreCase))
-            RegisterScriptTool(parsed, approved: true);
-
-        return $"Approved '{parsed.Name}'. Saved to {approvedPath}; it will load in every future session.";
-    }
-
-    private string RejectTool(string name)
-    {
-        if (PendingToolsDirectory is null) return "Tool building is not available.";
-        if (string.IsNullOrWhiteSpace(name)) return "Usage: /reject <ToolName>";
-
-        string pending = Path.Combine(PendingToolsDirectory, $"{name}.tool.md");
-        bool hadFile = File.Exists(pending);
-        if (hadFile) File.Delete(pending);
-
-        bool wasActive = _scriptTools.TryGetValue(name, out var tool) && !tool.Approved;
-        if (wasActive)
-        {
-            _scriptTools.Remove(name);
-            _registry.Remove(tool!);
-            ToolsChanged?.Invoke();
-        }
-
-        return hadFile || wasActive
-            ? $"Rejected '{name}': deleted the pending definition{(wasActive ? " and removed it from this session" : "")}."
-            : $"No pending tool named '{name}'.";
-    }
-
-    private void RegisterScriptTool(ScriptToolDefinition definition, bool approved)
-    {
-        if (_scriptTools.Remove(definition.Name, out var previous)) _registry.Remove(previous);
-
-        var tool = new ScriptTool(definition, approved, RunScriptTool);
-        _scriptTools[definition.Name] = tool;
-        _registry.Add(tool);
-        ToolsChanged?.Invoke();
-    }
-
-    private string RunScriptTool(ScriptToolDefinition definition, string inputJson, IReadOnlyDictionary<string, string> env)
-    {
-        var timeout = TimeSpan.FromSeconds(definition.TimeoutSeconds);
-        string? notInstalled = null;
-        ProcessRunner.Result? result = definition.Language switch
-        {
-            "python" => _python.RunScript(definition.Code, null, [], inputJson, timeout, out notInstalled, env),
-            "powershell" => _powerShell.RunScript(definition.Code, null, [], inputJson, timeout, out notInstalled, env),
-            _ => ProcessRunner.Run(BashTools.ResolveShell(), ["-c", definition.Code], WorkspaceRoot, timeout, inputJson, env),
-        };
-
-        if (notInstalled is not null) return $"Error: {notInstalled}";
-        if (result!.TimedOut) return $"[Timeout] {definition.Name} exceeded {definition.TimeoutSeconds}s and was killed.\n{ProcessRunner.Tail(result.Output)}";
-
-        string output = ProcessRunner.Truncate(result.Output.Trim());
-        if (result.ExitCode != 0) return $"[Exit Code {result.ExitCode}] {output}";
-        return string.IsNullOrWhiteSpace(output) ? "Tool ran successfully (no output)." : output;
     }
 
     /// <summary>
