@@ -1,0 +1,107 @@
+using System.Text.Json;
+using LouisAgent.Core.Logging;
+using LouisAgent.Core.Messages;
+using Microsoft.Extensions.Logging;
+
+namespace LouisAgent.Core.Tests.Logging;
+
+// CL3 step 1: ILogger with Serilog behind it. stdout carries the ACP and MCP protocols, so nothing may log there.
+[NonParallelizable]
+public class AgentLoggingTests
+{
+    private TextWriter _out = null!, _error = null!;
+    private StringWriter _stdout = null!, _stderr = null!;
+    private string _directory = null!;
+
+    [SetUp]
+    public void SetUp()
+    {
+        (_out, _error) = (Console.Out, Console.Error);
+        Console.SetOut(_stdout = new StringWriter());
+        Console.SetError(_stderr = new StringWriter());
+        _directory = Directory.CreateTempSubdirectory("logging-").FullName;
+    }
+
+    [TearDown]
+    public void TearDown()
+    {
+        AgentLogging.Configure(null);   // flushes and closes the files
+        Console.SetOut(_out);
+        Console.SetError(_error);
+        Directory.Delete(_directory, recursive: true);
+    }
+
+    [Test]
+    public void ALogLine_GoesToStderr_AsBefore_AndNeverToStdout()
+    {
+        AgentLogging.Configure(null);
+
+        AgentLogging.For<AgentLoggingTests>().LogWarning("Rates from {Url} unavailable", "https://example.com");
+
+        Assert.That(_stderr.ToString(), Does.Contain("[WARN] Rates from https://example.com unavailable"), "values read as plain text, as today");
+        Assert.That(_stdout.ToString(), Is.Empty);
+    }
+
+    [Test]
+    public void ALogMessage_BindsValuesByHoleName_NotByOrder()
+    {
+        AgentLogging.Configure(null);
+
+        AgentLogging.For<AgentLoggingTests>().Log(LogLevel.Information, LogMessage.TruncatedToolCall,
+            new { Arguments = "{}", MaxOutputTokens = 16000, Tool = "WriteWorkspaceFile" });
+
+        Assert.That(_stderr.ToString(),
+            Does.Contain("[INFO] WriteWorkspaceFile was cut off by the output limit (16000 tokens); arguments {}"));
+    }
+
+    [Test]
+    public void ALogMessage_MissingAValue_Throws()
+    {
+        Assert.That(() => AgentLogging.For<AgentLoggingTests>().Log(LogLevel.Information, LogMessage.TruncatedToolCall, new { Tool = "x" }),
+            Throws.ArgumentException.With.Message.Contain("LogMessage.TruncatedToolCall needs a value for '{MaxOutputTokens}'"));
+    }
+
+    [Test]
+    public void ARecord_GoesToItsJsonLinesFile_NotToTheConsole()
+    {
+        AgentLogging.Configure(_directory);
+
+        AgentLog.RecordTruncatedToolCall("WriteWorkspaceFile", "{\"path\":\"a.cs\"}", 16000);
+        AgentLogging.Configure(null);   // flush
+
+        string[] lines = File.ReadAllLines(Path.Combine(_directory, "truncated-tool-calls.jsonl"));
+        Assert.That(lines, Has.Length.EqualTo(1));
+        using var record = JsonDocument.Parse(lines[0]);
+        Assert.That(record.RootElement.GetProperty("Record").GetString(), Is.EqualTo("truncated-tool-call"));
+        Assert.That(record.RootElement.GetProperty("Tool").GetString(), Is.EqualTo("WriteWorkspaceFile"));
+        Assert.That(record.RootElement.GetProperty("MaxOutputTokens").GetInt32(), Is.EqualTo(16000));
+        Assert.That(_stderr.ToString(), Does.Not.Contain("cut off"), "records stay out of the console");
+        // Each kind has its own file (Serilog opens it when configured, so it exists, empty).
+        Assert.That(File.ReadAllText(Path.Combine(_directory, "oversized-tool-results.jsonl")), Is.Empty);
+    }
+
+    [Test]
+    public void ALoggerMadeBeforeConfigure_StillWritesWhereConfigureSays()
+    {
+        // Static loggers are made when their type is first used, often before the host configures logging.
+        ILogger early = AgentLogging.For<AgentLoggingTests>();
+        AgentLogging.Configure(_directory);
+
+        using (early.BeginScope(new Dictionary<string, object> { [AgentLogging.RecordProperty] = "truncated-tool-call" }))
+            early.Log(LogLevel.Information, LogMessage.TruncatedToolCall, new { Tool = "Early", MaxOutputTokens = 1, Arguments = "{}" });
+        AgentLogging.Configure(null);   // flush
+
+        Assert.That(File.ReadAllLines(Path.Combine(_directory, "truncated-tool-calls.jsonl")), Has.Length.EqualTo(1));
+    }
+
+    [Test]
+    public void WithoutALogDirectory_RecordsAreDropped()
+    {
+        AgentLogging.Configure(null);
+
+        AgentLog.RecordOversizedToolResult("GetDiff", "{}", 120_000, "review", "summarised", 900);
+
+        Assert.That(_stderr.ToString(), Is.Empty);
+        Assert.That(Directory.EnumerateFiles(_directory), Is.Empty);
+    }
+}

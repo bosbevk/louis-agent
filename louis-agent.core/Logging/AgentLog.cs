@@ -2,16 +2,17 @@ namespace LouisAgent.Core.Logging;
 
 using System.Reflection;
 using System.Text;
-using System.Text.Json;
+using LouisAgent.Core.Messages;
+using Microsoft.Extensions.Logging;
 
 /// <summary>
 /// Optional file logging under <see cref="config.AgentOptions.LogDirectory"/>: stderr is copied to one file per run
-/// (containers run with --rm, so their own logs disappear on exit) and notable events are appended as JSON lines.
+/// (containers run with --rm, so their own logs disappear on exit). Records (oversized results, cut-off calls) are
+/// written by <see cref="AgentLogging"/>'s JSON-lines sinks.
 /// Everything is a no-op until <see cref="Initialize"/> is called with a directory.
 /// </summary>
 public static class AgentLog
 {
-    private static readonly object Gate = new();
     private static string? _directory;
 
     public static string? Directory => _directory;
@@ -39,40 +40,26 @@ public static class AgentLog
         }
     }
 
-    /// <summary>Appends one record to oversized-tool-results.jsonl, to spot tools that need narrower output.</summary>
+    private static readonly ILogger Records = AgentLogging.LoggerFactory.CreateLogger("Records");
+
+    /// <summary>One record in oversized-tool-results.jsonl, to spot tools that need narrower output.</summary>
     public static void RecordOversizedToolResult(
         string tool, string arguments, int chars, string? userRequest, string outcome, int returnedChars)
     {
-        AppendJsonLine("oversized-tool-results.jsonl", new
-        {
-            timestamp = DateTimeOffset.Now,
-            tool,
-            arguments,
-            chars,
-            returnedChars,
-            outcome,
-            userRequest = userRequest is { Length: > 500 } ? userRequest[..500] + "..." : userRequest,
-        });
+        using (Records.BeginScope(new Dictionary<string, object> { [AgentLogging.RecordProperty] = "oversized-tool-result" }))
+            Records.Log(LogLevel.Information, LogMessage.OversizedToolResult, new
+            {
+                Tool = tool, Chars = chars, Outcome = outcome, ReturnedChars = returnedChars, Arguments = arguments,
+                UserRequest = userRequest is { Length: > 500 } ? userRequest[..500] + "..." : userRequest,
+            });
     }
 
-    /// <summary>Appends one record to truncated-tool-calls.jsonl: calls the model could not finish within the output limit.</summary>
+    /// <summary>One record in truncated-tool-calls.jsonl: calls the model could not finish within the output limit.</summary>
     public static void RecordTruncatedToolCall(string tool, string arguments, int maxOutputTokens)
     {
-        AppendJsonLine("truncated-tool-calls.jsonl", new { timestamp = DateTimeOffset.Now, tool, arguments, maxOutputTokens });
-    }
-
-    private static void AppendJsonLine(string fileName, object record)
-    {
-        if (_directory is null) return;
-        try
-        {
-            string line = JsonSerializer.Serialize(record) + Environment.NewLine;
-            lock (Gate) File.AppendAllText(Path.Combine(_directory, fileName), line, Encoding.UTF8);
-        }
-        catch (Exception ex)
-        {
-            Console.Error.WriteLine($"[WARN] Could not write {fileName}: {ex.Message}");
-        }
+        using (Records.BeginScope(new Dictionary<string, object> { [AgentLogging.RecordProperty] = "truncated-tool-call" }))
+            Records.Log(LogLevel.Information, LogMessage.TruncatedToolCall,
+                new { Tool = tool, MaxOutputTokens = maxOutputTokens, Arguments = arguments });
     }
 
     /// <summary>Writes to the original stderr and the log file; a failing file never breaks the console.</summary>

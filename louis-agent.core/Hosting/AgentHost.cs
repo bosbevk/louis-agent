@@ -65,6 +65,7 @@ public static partial class AgentHost
         LoadEnvironment();
         var agent = AgentOptions.FromEnvironment();
         AgentLog.Initialize(agent.LogDirectory);
+        AgentLogging.Configure(agent.LogDirectory);
         var engine = new AgentEngine(LoadSkills(agent), new ToolsOnlyChatClient(), agent)
         {
             SkillsDirectory = FindSkillsDirectory(agent),
@@ -98,6 +99,7 @@ public static partial class AgentHost
         var llm = LlmOptions.FromEnvironment();
         var agent = AgentOptions.FromEnvironment();
         AgentLog.Initialize(agent.LogDirectory);
+        AgentLogging.Configure(agent.LogDirectory);
         return Build(llm, agent, clientFactory ?? new LlmClientFactory());
     }
 

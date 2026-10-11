@@ -9,4 +9,9 @@ using System.ComponentModel;
 /// <summary>Log lines ([INFO], [WARN]); written to stderr, never stdout.</summary>
 public enum LogMessage
 {
+    [Description("{Tool} returned {Chars} characters, {Outcome} to {ReturnedChars}; arguments {Arguments}; request: {UserRequest}")]
+    OversizedToolResult,
+
+    [Description("{Tool} was cut off by the output limit ({MaxOutputTokens} tokens); arguments {Arguments}")]
+    TruncatedToolCall,
 }
