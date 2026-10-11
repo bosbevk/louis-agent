@@ -103,6 +103,13 @@ window and price step, so that F9 and F13 use the right number for each model.
   limit per model.
 - **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)).
 
+## To settle when planning F15
+
+- **Look the limits up by each request's model**, not once per host: a fallback model (F8) or a cheaper summary model
+  (F10) must get its own window and price step, not the main model's.
+- **Define F13's output reserve.** The budget is the window minus what the reply may use, and that can't be the
+  engine's 16,000-token output limit on a 2,048-token window; it has to be set per model (or as a share of the window).
+
 ## Not in this feature
 
 Changing F9's or F13's behaviour (each uses its limit when it's built); cost targets and estimates (F4, F6); an output

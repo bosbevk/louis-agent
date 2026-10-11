@@ -295,9 +295,10 @@ The same list as the TODO's *Known limitations*: when work removes one, delete i
    Removed by [F10 Route settings](features/F10-route-settings.md).
 7. **Running the API with `dotnet run` (unpublished)** only serves the web app in the `Development` environment
    (`ASPNETCORE_ENVIRONMENT=Development`); otherwise `/` returns 404. The Docker images are published, so they're fine.
-8. **Local models get a truncated prompt.** Ollama's context window is 2,048 tokens by default and the agent sends
-   ~26,000+ (system prompt and tools); Ollama drops the rest without an error, so the ledger shows `input: 2050`.
-   Removed by [F13 Local models](features/F13-local-models.md).
+8. **Local models get a truncated prompt.** The agent sends ~26,000+ tokens (system prompt and tools) and doesn't tell
+   Ollama the window, so Ollama uses its own default (2,048 on the version measured here; newer ones pick 4k–256k by
+   memory) and drops the rest without an error: the ledger showed `input: 2050`. Removed by
+   [F15 Model limits](features/F15-model-limits.md) (sends `num_ctx`) and [F13 Local models](features/F13-local-models.md).
 9. **Changing the tools or skills during a chat can break it on Claude Haiku 5.5** (the default). The model rejects a
    changed system prompt or tool list once thinking blocks are in the history (enforced for accounts created on or
    after 2026-08-31). `BeginTurn` sends the engine's live tool list, so a tool the model creates (`CreateTool`) breaks

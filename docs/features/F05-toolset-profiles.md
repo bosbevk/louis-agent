@@ -32,7 +32,7 @@ coding tools, so that every fix sends a smaller prefix.
 
 **F5-S4 — Stays cacheable.** As an *operator*, I want to know a smaller prefix is still cached, so that F4's savings hold.
 - *Then* the startup log prints the prefix size estimate; F1 records show `cache_read` > 0 from the second request (the
-  model's cache minimum, from [F15](F15-model-limits.md): 512 tokens on Haiku 5.5).
+  model's cache minimum: 512 tokens on Haiku 5.5; [F15](F15-model-limits.md) records it per model later).
 
 ## Design
 

@@ -233,8 +233,9 @@ message cache from that point, so they run **rarely, at thresholds** — not eve
    File reads, directory listings and test output are the bulk of a fix's history and are cheap to fetch again.
    Provider-neutral, in `AgentEngine`. (Anthropic's server-side context editing does the same, but needs the beta
    client, so it is an option later, not the plan.)
-2. **Compact old turns.** When the conversation still passes `CONTEXT_COMPACT_AT` (default: the model's compaction point from F15, below the
-   smaller of a share of its window and its price step: under 100,000 tokens on Haiku 5.5), replace
+2. **Compact old turns.** When the conversation still passes `CONTEXT_COMPACT_AT` (default: the model's compaction
+   point from F15, below the smaller of a share of its window and its price step: under 100,000 tokens on Haiku 5.5),
+   replace
    everything before the last `CONTEXT_KEEP_TURNS` user turns (default 3) with one summary message, written by a
    separate tool-less call — the same pattern as `SummariseToolResultAsync`. Keep thinking blocks that later tool
    rounds still need. Write the original turns to the session log before replacing them, so nothing is lost for
