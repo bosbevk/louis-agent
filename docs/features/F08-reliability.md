@@ -37,6 +37,8 @@ structured data, so that a malformed text line never costs a "continue" round-tr
   branch, tests, summary, reason); the orchestrator reads it from the `tool_use` block in the stream.
 - *Given* a triage *then* the orchestrator records its decision by calling `RecordDecision` (outcome, reason).
 - *And* the `FIX-RESULT` / `DECISION` text lines are still accepted as a fallback, so older runs and providers work.
+- *Note:* [F17](F17-orchestrator-agent.md) makes `RecordDecision` the result of its classification request, which then
+  drives a coded workflow; build `RecordDecision` so it can be called from a request with no other tools.
 
 ## Design
 

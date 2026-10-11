@@ -25,12 +25,15 @@ feature replaces older backlog wording, that wording no longer appears anywhere 
 | [F7](F07-budgets.md) | Budgets: warn, ask, stop | planned | U §6 | (as F1) | F1, F2, F6 | M3 |
 | [F8](F08-reliability.md) | Reliability: retries, account limits, fallback, structured results | planned | R §F · U §6.2 | *Retry and back off…*, *Add model fallback*, *Wire up structured outputs* | F1 | M3 |
 | [F9](F09-context-management.md) | Bounded history: clear stale tool results, compact old turns | planned | R §D | *Consider context editing and compaction*; first slice of the session architecture | F1, F4 | M4 |
-| [F10](F10-route-settings.md) | Settings per route: thinking, tool rounds, summary model | planned | R §E | Known limitation *10 tool rounds per message* | F1 | M4 |
+| [F10](F10-route-settings.md) | Settings per route: thinking and tool rounds (the summary model moved to F16) | planned | R §E | Known limitation *10 tool rounds per message* | F1 | M4 |
 | [F11](F11-usage-tab-and-reconciliation.md) | Usage tab, usage API, reconciliation with the bill | planned | U §7.1–7.2, §4.4 | (as F1) | F1–F3, F6, F7 | M5 |
 | [F12](F12-response-speed.md) | Response speed: time to first token and tokens per second, every provider | planned | U §4.1 · R §A | — | F1 (F3, F11 to show it) | M5 |
 | [F13](F13-local-models.md) | Local models: fit every request into a small context window (2,048 tokens) | planned | R §C | Known limitation *local models get a truncated prompt* | F1, F5, F15 | Local |
 | [F14](F14-display-currency.md) | Display currency: show costs in a chosen currency (the ledger stays in the bill's) | done | U §4.2, §7 | — | F2, F3 | M5 |
 | [F15](F15-model-limits.md) | Model limits: each model's context window and cache minimum, `num_ctx` for local models, and F9's and F13's limits per model | planned | R §B–D | — | F2 | M2 |
+| [F16](F16-summariser.md) | Summariser: one measured component for oversized tool results and (later) compaction, with its own model, prompt and no caching | planned | R §D | F10-S3 (summary model) | F1, F4, F18 | M4 |
+| [F17](F17-orchestrator-agent.md) | Orchestrator agent: a routing workflow with an agent for the exceptions, its own settings and cache policy, measured against today's | planned | Orchestrator design | — | F4, F8, F10, F18 | M4 |
+| [F18](F18-evaluation.md) | Evaluation: a small shared eval harness (cases as data, scorers incl. an LLM judge, cost and baseline per run) | planned | — | Backlog *Evaluation* (first part) | F1, F2 | M4 |
 
 ## Milestones
 
@@ -39,7 +42,7 @@ feature replaces older backlog wording, that wording no longer appears anywhere 
 | **M1 — See it** | Every request's tokens and cost recorded and visible | F1, F2, F3 | A demo run produces `logs/usage.jsonl` and a comms log with cost per fix; the web app shows cost per answer |
 | **M2 — Cheaper** | Stop paying full price for the same tokens | F4, F5, F15 | Benchmark (demo run) input cost down ≥ 60% against the M1 baseline; 10/10 fixes still confirmed |
 | **M3 — In control** | Know the cost before, stop cleanly at a limit | F6, F7, F8 | The demo script estimates the run; a run budget stops it cleanly and `-Resume` finishes it; an account-limit refusal stops the run at once |
-| **M4 — Long sessions** | Long chats and tasks don't grow without limit | F9, F10 | A 30-turn chat stays under the compaction threshold and still recalls its first turns |
+| **M4 — Long sessions** | Long chats and tasks don't grow without limit; the parts that summarise and orchestrate are measured | F18, F16, F9, F10, F17 | A 30-turn chat stays under the compaction threshold and still recalls its first turns; the summariser and triage suites hold their baselines at lower cost |
 | **M5 — Reporting** | Usage overview, reconciliation and speed | F11, F12, F14 | The Usage tab matches the ledger; the ledger is within 5% of the provider's report; Claude and llama3.1 speeds compared |
 | **Local — Local models** | A local model gets everything it is sent | F13 | No ledger record of a local turn has `input` above 2,048; "What branch am I on?" works on `llama3.1` |
 
@@ -63,6 +66,13 @@ flowchart LR
     F1 --> F12[F12 Response speed]
     F5 --> F13[F13 Local models]
     F3 --> F14[F14 Display currency]
+    F1 --> F18[F18 Evaluation]
+    F18 --> F16[F16 Summariser]
+    F4 --> F16
+    F16 --> F9
+    F8 --> F17[F17 Orchestrator agent]
+    F10 --> F17
+    F18 --> F17
 ```
 
 ## The benchmark

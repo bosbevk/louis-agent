@@ -116,4 +116,4 @@ Changing F9's or F13's behaviour (each uses its limit when it's built); cost tar
 limit per model (until something uses it); choosing a model by its limits (routing, F10 and later).
 
 ---
-[Features](README.md) · Previous: [F14 Display currency](F14-display-currency.md)
+[Features](README.md) · Previous: [F14 Display currency](F14-display-currency.md) · Next: [F16 Summariser](F16-summariser.md)
