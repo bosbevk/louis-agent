@@ -1,33 +1,32 @@
 # git log --all --graph of .demo/order-service after the run (before any merge)
 
-* ced8793 louis-agent    (fix/vat-b78c60c43442) fix(vat): match country codes case-insensitively so lowercase 'nl' no longer throws (error b78c60c43442)
-| * 45de437 louis-agent    (fix/packing-slip-dd0d99a0f370) fix(packing-slip): omit the gift part when an order has no gift message (error dd0d99a0f370)
+* 9eb8b8a louis-agent    (fix/vat-02f2cfb74518) fix(vat): match country codes case-insensitively so 'nl' gets the NL rate (error 02f2cfb74518)
+| * 72d0061 louis-agent    (fix/packing-slip-a4e9e1b059b9) fix(packing-slip): skip the gift part when an order has no gift message (error a4e9e1b059b9)
 |/  
-| * 6634c42 louis-agent    (fix/shipping-cost-ab68153321c8) fix(shipping-cost): return 0.00 for an order without items instead of dividing by zero (error ab68153321c8)
+| * 08f1d64 louis-agent    (fix/shipping-cost-604ebc192901) fix(shipping-cost): return 0.00 for an order without items instead of dividing by zero (error 604ebc192901)
 |/  
-| * 3b5099f louis-agent    (fix/order-total-e53a828263db) fix(order-total): treat unknown discount codes as no discount instead of throwing (error e53a828263db)
+| * 7ec568a louis-agent    (fix/order-total-017f10139c2c) fix(order-total): treat unknown discount codes as no discount instead of throwing (error 017f10139c2c)
 |/  
-* d9959e1 demo-setup    (HEAD -> main) order-service as deployed
+* 289dcf1 demo-setup    (HEAD -> main) order-service as deployed
 
 # Each fix branch's changed files
 
-## fix/order-total-e53a828263db
- src/OrderService/Api/OrderTotal.cs                            |  4 +++-
- tests/OrderService.Tests/Regression/Errore53a828263dbTests.cs | 11 +++++++++++
- 2 files changed, 14 insertions(+), 1 deletion(-)
+## fix/order-total-017f10139c2c
+ src/OrderService/Api/OrderTotal.cs                           |  4 +++-
+ .../OrderService.Tests/Regression/Error017f10139c2cTests.cs  | 12 ++++++++++++
+ 2 files changed, 15 insertions(+), 1 deletion(-)
 
-## fix/packing-slip-dd0d99a0f370
- src/OrderService/Api/PackingSlip.cs                       |  9 ++++++---
- .../Regression/Errordd0d99a0f370Tests.cs                  | 15 +++++++++++++++
- 2 files changed, 21 insertions(+), 3 deletions(-)
+## fix/packing-slip-a4e9e1b059b9
+ src/OrderService/Api/PackingSlip.cs                        |  7 +++++--
+ .../Regression/Errora4e9e1b059b9Tests.cs                   | 14 ++++++++++++++
+ 2 files changed, 19 insertions(+), 2 deletions(-)
 
-## fix/shipping-cost-ab68153321c8
- src/OrderService/Api/ShippingCost.cs                          |  2 ++
- tests/OrderService.Tests/Regression/Errorab68153321c8Tests.cs | 11 +++++++++++
- 2 files changed, 13 insertions(+)
+## fix/shipping-cost-604ebc192901
+ src/OrderService/Api/ShippingCost.cs                       |  2 ++
+ .../Regression/Error604ebc192901Tests.cs                   | 14 ++++++++++++++
+ 2 files changed, 16 insertions(+)
 
-## fix/vat-b78c60c43442
- src/OrderService/Api/Vat.cs                                |  4 +++-
- .../Regression/Errorb78c60c43442Tests.cs                   | 14 ++++++++++++++
- 2 files changed, 17 insertions(+), 1 deletion(-)
-
+## fix/vat-02f2cfb74518
+ src/OrderService/Api/Vat.cs                                   |  3 ++-
+ tests/OrderService.Tests/Regression/Error02f2cfb74518Tests.cs | 11 +++++++++++
+ 2 files changed, 13 insertions(+), 1 deletion(-)

@@ -13,6 +13,9 @@ record (most fixes so far taught something about a model's API).
 | [FX2](FX02-probe-ollama-404.md) | The usage probe says which model to pull on an Ollama 404 | done | tools: usage probe | Probe run on the Ollama profile (2026-10-10) | `a4e9f7f` | — |
 | [FX3](FX03-ollama-container.md) | The Ollama container starts and pulls the profile's model | done | Docker: ollama service | Starting Ollama for the usage probe (2026-10-10) | `882fdde` | — |
 | [FX4](FX04-append-only-history.md) | Keep conversations append-only, so changing the tools or skills mid-chat doesn't break Haiku 5.5 chats | open | core: history, tool list | Haiku 5.5 migration guide and the code (`CreateTool` mid-message, from the PR #9 review) (2026-10-10) | — | Changing the tools or skills during a chat can break it on Haiku 5.5 |
+| [FX5](FX05-null-conditional-ledger.md) | Requests outside a usage scope are written to the ledger again (a `?.` skipped the write) | done | core: usage recorder | F1's tests while building F3 step 1 (2026-10-11) | `3269fea` | — |
+| [FX6](FX06-usage-on-failed-turns.md) | A turn that fails still reports what it used (usage on the `error` event) | done | API stream, web app, orchestrator | Writing F3 steps 5 and 7 (2026-10-11) | `75de390` | — |
+| [FX7](FX07-timeout-ends-run.md) | A timed-out request no longer ends the orchestrator's run (only the user's stop does) | done | orchestrator: triage loop | F3's split demo test, triage on Ollama (2026-10-11) | `f2d38d2` | — |
 
 ## Conventions
 
@@ -21,6 +24,8 @@ record (most fixes so far taught something about a model's API).
   *Fix* (what changed and why this way), *Tests*, *Confirmed* (the real run that shows it works), and *Lesson* (the
   concept behind it and its skill in the goal's map).
 - **Status** is *open* or *done*, the same here and at the top of the fix's doc.
+- **Plans:** a fix that takes more than one step gets its approved plan in [plans/](../plans/README.md)
+  (`FXnn-name.md`), committed before its first step.
 - **An open fix** also has one line in the [TODO](../../TODO.md)'s backlog that links here; a fix that removes a known
   limitation names it.
 
@@ -35,4 +40,4 @@ In the commit that fixes it, or the one right after:
 4. **Docs:** anything the fix changes for users (settings, MODELS, SETUP).
 
 ---
-[Docs index](../README.md) · Related: [Features](../features/README.md) · [TODO](../../TODO.md)
+[Docs index](../README.md) · Related: [Features](../features/README.md) · [Plans](../plans/README.md) · [TODO](../../TODO.md)

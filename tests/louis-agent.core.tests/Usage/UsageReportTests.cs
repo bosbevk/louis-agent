@@ -89,4 +89,16 @@ public class UsageReportTests
 
         Assert.That(UsageReport.Price([record], Prices).Single().Cost, Is.SameAs(charged));
     }
+
+    [Test]
+    public void Sum_AddsTotals_CostUnknownOnlyWhenNoneHasOne()
+    {
+        // F3: the orchestrator adds up the usage louis-agent reports per reply, and triage + fix per error.
+        var priced = new UsageTotal("a", 3, 100, 10, 1_000, 50, 0.01m, 0);
+        var unpriced = new UsageTotal("b", 1, 200, 0, 0, 20, null, 1);
+
+        Assert.That(UsageReport.Sum("sum", [priced, unpriced]), Is.EqualTo(new UsageTotal("sum", 4, 300, 10, 1_000, 70, 0.01m, 1)));
+        Assert.That(UsageReport.Sum("sum", [unpriced, unpriced]).Cost, Is.Null);
+        Assert.That(UsageReport.Sum("sum", []), Is.EqualTo(new UsageTotal("sum", 0, 0, 0, 0, 0, null, 0)));
+    }
 }

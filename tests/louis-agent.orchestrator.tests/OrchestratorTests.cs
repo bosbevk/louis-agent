@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using louis_agent.core.usage;
 
 namespace louis_agent.orchestrator.tests;
 
@@ -172,6 +173,100 @@ public class OrchestratorTests
         Assert.That(md, Does.Contain("## Run summary"));
         Assert.That(md, Does.Contain("| 1 | `order-total 1003` | KeyNotFoundException | **fixed** | fixed (1 msg, 1 tools) | `fix/order-total-abc123` | `abc1234` |"));
         Assert.That(md, Does.Contain("Branches ready to review and merge (1)"));
+        Assert.That(md, Does.Not.Contain("Run total"), "nothing measured: no usage in the log");
+    }
+
+    [Test]
+    public void CommsLog_ShowsUsagePerReplyPerErrorAndForTheRun()
+    {
+        // F3 step 7: louis-agent's usage per reply, triage + louis-agent per error, and the run's total, which is the
+        // figure to compare with the usage ledger's total for the run.
+        var feed = FeedWith(Event("abc123"), Event("def456"));
+        string path = Path.Combine(_dir, "comms.md");
+        var comms = new CommsLog(path);
+        static AgentReply Reply(int requests, long input, long cacheRead, long output, decimal cost) =>
+            new("Working.", [], "end_turn", null, new UsageTotal("louis-agent", requests, input, 0, cacheRead, output, cost, 0), "USD");
+        static UsageRecord Triage(long input, long output, decimal cost) => new(
+            DateTimeOffset.UtcNow, 1, UsagePurpose.Triage, "orchestrator", "triage_x", 1, null, "run-1", "order-service",
+            "claude-haiku-5-5", new UsageTokens(input, 0, 0, output, null), 1, "stop", new UsageCost("USD", cost, "2026-10-10"));
+
+        comms.StartRun("order-service", new Uri("http://127.0.0.1:5081"), "claude-test");
+        comms.StartEvent(1, 2, feed.Find("abc123")!);
+        comms.Sent("sess_1", "Please fix it");
+        comms.Received(Reply(3, 1_000, 20_000, 300, 0.01m), null);
+        comms.Sent("sess_1", "Continue");
+        comms.Received(Reply(2, 500, 10_000, 200, 0.005m), null);
+        EventUsage first = comms.EndEvent("fixed", "verified", "DECISION: fixed - verified", [Triage(2_000, 100, 0.002m), Triage(2_000, 100, 0.002m)]);
+        comms.StartEvent(2, 2, feed.Find("def456")!);
+        EventUsage second = comms.EndEvent("ignored", "expected", "DECISION: ignored - expected", [Triage(3_000, 50, 0.001m)]);
+        comms.EndRun();
+
+        string md = File.ReadAllText(path);
+        Assert.That(md, Does.Contain("Usage: 3 requests · 21k tokens (20k cached) · $0.01"), "each reply");
+        Assert.That(md, Does.Contain("| Usage: triage | 2 requests · 4.2k tokens · $0.004 |"));
+        Assert.That(md, Does.Contain("| Usage: louis-agent | 5 requests · 32k tokens (30k cached) · $0.015 |"));
+        Assert.That(md, Does.Contain("| Usage: total | **7 requests · 36k tokens (30k cached) · $0.019** |"));
+        Assert.That(md, Does.Contain("| Usage: louis-agent | - |"), "no fix for the second error");
+        Assert.That(md, Does.Contain("| Branch | Commit | Tokens | Cost |"));
+        Assert.That(md, Does.Contain("| 36k | $0.019 |"));
+        Assert.That(md, Does.Contain("| 3.1k | $0.001 |"));
+        Assert.That(md, Does.Contain("**Run total:** 8 requests · 39k tokens (30k cached) · $0.02 (triage $0.005, louis-agent $0.015)."));
+
+        Assert.That((first.Total!.Requests, first.Total.Cost, first.LouisAgent!.Cost, first.Triage!.Cost), Is.EqualTo((7, 0.019m, 0.015m, 0.004m)));
+        Assert.That((second.LouisAgent, second.Total!.Cost), Is.EqualTo(((UsageTotal?)null, 0.001m)));
+    }
+
+    [Test]
+    public void CommsLog_NothingMeasured_ShowsDashesNotPriceUnknown()
+    {
+        // Seen in the split demo: a triage that timed out completed no request, and no fix was asked for.
+        var feed = FeedWith(Event("abc123"), Event("def456"));
+        string path = Path.Combine(_dir, "comms.md");
+        var comms = new CommsLog(path);
+        var local = new UsageRecord(DateTimeOffset.UtcNow, 1, UsagePurpose.Triage, "orchestrator", "triage_x", 1, null, "run-1",
+            "order-service", "llama3.1", new UsageTokens(2_050, 0, 0, 3, null), 1, "stop", new UsageCost("USD", 0m, "2026-10-10"));
+
+        comms.StartRun("order-service", new Uri("http://127.0.0.1:5081"), "llama3.1");
+        comms.StartEvent(1, 2, feed.Find("abc123")!);
+        EventUsage timedOut = comms.EndEvent("failed", "triage failed: timeout", "", []);
+        comms.StartEvent(2, 2, feed.Find("def456")!);
+        comms.EndEvent("acknowledged", "expected", "DECISION: acknowledged - expected", [local]);
+        comms.EndRun();
+
+        string md = File.ReadAllText(path);
+        Assert.That(timedOut.Total, Is.Null);
+        Assert.That(md, Does.Contain("| **failed** | - | - | - | - | - |"), "row 1: nothing measured");
+        Assert.That(md, Does.Contain("| 2.1k | $0 |"), "row 2: a local model is free");
+        Assert.That(md, Does.Contain("**Run total:** 1 request · 2.1k tokens · $0 (triage $0, louis-agent -)."));
+    }
+
+    [Test]
+    public void Stopping_OnlyTheUsersStopEndsTheRun()
+    {
+        // FX7: a model request that times out throws TaskCanceledException, an OperationCanceledException; it must count
+        // as that error's failure, not end the run as Ctrl+C does.
+        var timeout = new TaskCanceledException("The request was canceled due to the configured HttpClient.Timeout of 100 seconds elapsing.",
+            new TimeoutException());
+        using var stop = new CancellationTokenSource();
+
+        Assert.That(Stopping.ByUser(timeout, stop.Token), Is.False, "a timeout while the run goes on");
+        Assert.That(Stopping.ByUser(new InvalidOperationException(), stop.Token), Is.False);
+
+        stop.Cancel();
+        Assert.That(Stopping.ByUser(new OperationCanceledException(stop.Token), stop.Token), Is.True, "Ctrl+C");
+        Assert.That(Stopping.ByUser(new InvalidOperationException(), stop.Token), Is.False, "another error while stopping");
+    }
+
+    [Test]
+    public void CommsLog_Json_UsesTheApisFieldNames()
+    {
+        var usage = new UsageTotal("total", 7, 5_500, 0, 30_000, 700, 0.019m, 0);
+
+        string json = System.Text.Json.JsonSerializer.Serialize(CommsLog.Json(usage, "USD"));
+
+        Assert.That(json, Is.EqualTo("{\"requests\":7,\"input_tokens\":5500,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":30000," +
+                                     "\"output_tokens\":700,\"cost\":0.019,\"currency\":\"USD\",\"unpriced\":0}"));
+        Assert.That(CommsLog.Json(null, "USD"), Is.Null);
     }
 
     private void InitRepo()

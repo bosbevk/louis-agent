@@ -87,4 +87,4 @@ list) leaks into every conversation's checked prefix. Skill map #2 (reasoning an
 and state).
 
 ---
-[Fixes](README.md) · Previous: [FX3](FX03-ollama-container.md)
+[Fixes](README.md) · Previous: [FX3](FX03-ollama-container.md) · Next: [FX5](FX05-null-conditional-ledger.md)

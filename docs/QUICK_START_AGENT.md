@@ -103,6 +103,19 @@ The agent can write its own small tools. New ones wait for you:
 
 These commands work in the CLI, Rider and the web app, and are never sent to the model.
 
+## What it costs
+
+Every answer says what it used: a grey line on stderr in the CLI, a quiet line under the answer in the web app (with
+the chat's total above the message box), and in Rider when `USAGE_IN_CHAT=true`:
+
+```
+turn: 3 requests · 28k tokens (26k cached) · $0.006 · session $0.04
+```
+
+`/usage` gives the session's totals by purpose and by token kind. Local models are priced at $0; a model missing from
+`config/prices.json` shows "price unknown". Every request is also in the usage ledger
+(`{LOG_DIRECTORY}/usage-YYYY-MM.jsonl`); outside Docker, set `LOG_DIRECTORY` (an absolute path) to see the line at all.
+
 ## Tips
 
 1. **Be specific** — "Review GitEndpoints.cs for path-handling bugs" beats "check my code".

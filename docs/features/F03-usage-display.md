@@ -1,6 +1,6 @@
 # F3 · Show usage: chat, CLI, Rider, API, comms log
 
-> **Status:** planned · **Milestone:** M1 · **Depends on:** F1, F2
+> **Status:** done (2026-10-11) · **Milestone:** M1 · **Depends on:** F1, F2
 >
 > **Spec:** [Usage §7.2–7.4, §7.1 (stream)](../specs/USAGE_AND_BUDGETS.md)
 >
@@ -72,6 +72,41 @@ the comms log, so that I know what the demo (and any real run) cost.
 - A demo run's comms log shows cost per fix and a run total that matches the ledger's sum for that run.
 - **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)): tick **F3** in the TODO,
   set *Status* to done here and in the features table, and note it in the spec's implementation map.
+
+## What the build changed from this plan
+
+- **The turn's scope collects the priced record.** The cost is added after the recorder (`PricingUsageSink`), so
+  `IUsageSink.Record` returns the record as stored and the recorder adds that one to the scope the request started in;
+  `UsageScope.Add` also passes it to the outer scope, so a summary counts toward its turn (step 1).
+- **`UsageScope.Add` locks its list**, for the same reason `NextRound` is `Interlocked`: a summary request can finish
+  while another request of the same turn is still in flight.
+- **`UsageScope.Total()` has the key `"scope"`.** One scope has nothing to group by; its `Purpose` would mislabel the
+  total, since it changes to `continue` partway through a cut-off turn.
+- **`message_delta.usage` also has `requests` and `unpriced`** (step 4): a turn's figure is summed over its model
+  requests, unlike Claude's per-request usage, and `unpriced` tells "$0.002 for all of it" from "for 2 of 3 requests".
+- **The web line shows cache writes on their own** (step 5), not inside "in" as F3-S1 says:
+  `1.9k in · 3k cache write · 26k cached · 412 out · $0.004`, with each kind left out when it's zero. The four kinds
+  are priced differently (a cache write costs 1.25× input for 5 minutes, 2× for an hour), so folding writes into "in"
+  would hide why one answer cost more than another; the API sends them separately anyway
+  (`cache_creation_input_tokens`).
+- **The web app's chat total sits above the message box**, not in a header (step 5): the conversation pane has none,
+  and above the composer it's always in view.
+- **`/usage` replies are a markdown list** (step 5): the web app and Rider render replies as markdown, which ran the
+  plain lines into one paragraph.
+- **A failed turn's usage goes on the `error` event** ([FX6](../fixes/FX06-usage-on-failed-turns.md), built in F3
+  before step 8): without it, the web app's chat total and the comms log left a failed turn out while the ledger
+  counted it.
+- **The orchestrator's triage scope opens before its `try`** (step 7), so a failed triage still reports what it used;
+  `using var` inside the loop disposes it at the end of each pass, `continue` and `break` included. With no triage
+  ledger, the comms log shows "-", not "0 requests".
+- **Nothing measured shows "-", not "price unknown"** (found by the split demo): an empty sum has no cost, which read as
+  "price unknown" for a triage that completed no request and for louis-agent in a run with no fixes.
+- **The split demo** (`run-demo.ps1 -OrchestratorProfile ollama`, $0) found [FX7](../fixes/FX07-timeout-ends-run.md)
+  and checked the comms log against the ledger for its run: 4 requests, 9.9k tokens, $0 in both.
+- **`CommsLog.EndEvent` returns the error's `EventUsage`** (step 7), which `Program` writes to `decisions.jsonl`: the
+  comms log already holds each reply's usage, so there is one copy of that bookkeeping.
+- **A `?.` skipped the ledger write** for requests outside a scope while step 1 was being built; F1's tests caught it
+  before the commit ([FX5](../fixes/FX05-null-conditional-ledger.md)).
 
 ---
 [Features](README.md) · Previous: [F2 Prices and cost](F02-prices-and-cost.md) · Next: [F4 Prompt caching](F04-prompt-caching.md)

@@ -255,5 +255,9 @@ internal sealed class ListUsageSink : IUsageSink
 {
     public List<UsageRecord> Records { get; } = [];
 
-    public void Record(UsageRecord record) => Records.Add(record);
+    public UsageRecord Record(UsageRecord record)
+    {
+        Records.Add(record);
+        return record;
+    }
 }

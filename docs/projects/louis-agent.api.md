@@ -29,8 +29,11 @@ flowchart LR
 - **Sessions** (`AgentSessions`): in memory, one turn at a time per session (a second message gets `409`), cancelled by
   `POST /sessions/{id}/cancel` or by the client disconnecting; idle sessions are dropped after 4 hours.
 - **Streaming** (`ClaudeStyleStream`): engine updates become `message_start`, `content_block_start/delta/stop`
-  (thinking, text, tool_use, tool_result), `message_delta` (stop reason) and `message_stop`; failures become an `error`
-  event in Claude's shape. `/tools`, `/approve`, `/reject` are answered without the model.
+  (thinking, text, tool_use, tool_result), `message_delta` (stop reason and the turn's `usage`, F3) and `message_stop`;
+  failures become an `error` event in Claude's shape, with the turn's `usage` when a request had returned (FX6).
+  `/tools`, `/approve`, `/reject` and `/usage` are answered without the model.
+- **Usage** (F3): each session keeps its finished turns' records (`UsageSession`) for `/usage` and the `usage` of
+  `GET /sessions/{id}`; the turn is added in the stream's `finally`, so a disconnected or failed turn still counts.
 - **Workspace and git:** every path goes through core's `WorkspaceTools.ResolvePath` and `IsSensitive`, so the API applies
   the same boundary and secret-file rules as the agent; git runs without a shell with a 30-second timeout.
 - **History and merging** (`HistoryEndpoints`): branches with ahead/behind counts, the log across branches, commit and
@@ -71,8 +74,9 @@ orchestrator demo exercises sessions, streaming and the git endpoints end to end
 ## Limits and plans
 
 - Sessions are in memory → [session architecture](../specs/SESSION_ARCHITECTURE.md).
-- Usage in `message_delta` and session totals → [F3](../features/F03-usage-display.md); `/usage`, `/budgets`,
-  `/estimates` → [F11](../features/F11-usage-tab-and-reconciliation.md); budget and account-limit errors →
+- A usage API over the ledger (`/usage` endpoints, `/budgets`, `/estimates`) →
+  [F11](../features/F11-usage-tab-and-reconciliation.md); costs in another currency →
+  [F14](../features/F14-display-currency.md); budget and account-limit errors →
   [F7](../features/F07-budgets.md), [F8](../features/F08-reliability.md); session tags and profiles →
   [F1](../features/F01-usage-ledger.md), [F10](../features/F10-route-settings.md).
 

@@ -27,7 +27,7 @@ public sealed class UsageRecordingChatClient(
         ChatResponse response = await base.GetResponseAsync(messages, options, cancellationToken);
 
         // Non-streaming responses carry their usage on ChatResponse.Usage, not as UsageContent.
-        sink.Record(CreateRecord(scope, round, response.Usage, response.ModelId, response.FinishReason?.Value, stopwatch.Elapsed));
+        Store(scope, CreateRecord(scope, round, response.Usage, response.ModelId, response.FinishReason?.Value, stopwatch.Elapsed));
         return response;
     }
 
@@ -80,8 +80,19 @@ public sealed class UsageRecordingChatClient(
         {
             // Reached on normal completion, an exception, or the caller disposing the stream early (a cancelled turn).
             if (!failed)
-                sink.Record(CreateRecord(scope, round, usage, model, completed ? stop : Cancelled, stopwatch.Elapsed));
+                Store(scope, CreateRecord(scope, round, usage, model, completed ? stop : Cancelled, stopwatch.Elapsed));
         }
+    }
+
+    /// <summary>
+    /// Writes the record, then adds it as stored (priced by <see cref="PricingUsageSink"/>) to the scope the request started
+    /// in, so the turn's totals include its cost.
+    /// </summary>
+    private void Store(UsageScope? scope, UsageRecord record)
+    {
+        // Not scope?.Add(sink.Record(record)): ?. skips evaluating the argument too, so outside a scope nothing would be written.
+        UsageRecord stored = sink.Record(record);
+        scope?.Add(stored);
     }
 
     /// <summary>Stop reason for a stream that ended before the provider finished it.</summary>

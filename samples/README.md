@@ -22,6 +22,7 @@ order-service ──errors.jsonl──▶ orchestrator ──POST /sessions (SSE
 .\samples\run-demo.ps1 -Resume     # keep .demo; triage only the errors not handled yet (e.g. after running out of credits)
 .\samples\run-demo.ps1 -ApiOnly    # keep .demo; just (re)start the web app
 .\samples\run-demo.ps1 -StopApi    # stop demo-api at the end instead of leaving it up
+.\samples\run-demo.ps1 -Short -OrchestratorProfile ollama   # triage on the local model, fixes on LLM_PROFILE's
 ```
 
 Needs Docker Desktop and `ANTHROPIC_API_KEY` in `config/.env.secrets`; nothing else runs on the host. The demo uses the
@@ -45,7 +46,7 @@ on the host. A shared `nuget` volume means the service's packages are restored o
 
 To see the result without running it, look at [sample-output/](sample-output/README.md): the comms log, logs, branches
 and priced usage ledger from one clean full run on Claude Haiku 5.5 (10 fixes for $0.66), and a recording of merging ten
-fixes in the web app. [sample-output-short/](sample-output-short/README.md) is a `-Short` run (four fixes, $0.29):
+fixes in the web app. [sample-output-short/](sample-output-short/README.md) is a `-Short` run (four fixes, $0.25, with the cost per error and per run in its comms log):
 
 ![Merging the ten fix branches in the web app](sample-output/merge_10_fix_branches.gif)
 
@@ -106,10 +107,18 @@ fix left behind), so every fix branch starts from `main` and holds exactly one f
 - **louis-agent → orchestrator**: every reply: a table of the tools it called (inputs and results, shortened), its
   text verbatim, and the `FIX-RESULT` it ended with;
 - **Orchestrator actions and checks**: verify, replay and test results, or the acknowledgement/escalation;
-- **Summary**: the decision, louis-agent's claim, branch, commit, and the orchestrator's closing answer.
+- **Summary**: the decision, louis-agent's claim, branch, commit, what the error cost (triage, louis-agent and the
+  total), and the orchestrator's closing answer. louis-agent's usage is also under each of its replies.
 
-It ends with a **run summary** table (one row per error: decision, louis-agent's result, branch, commit) and the list
-of branches ready to merge, which is the part to check when testing.
+It ends with a **run summary** table (one row per error: decision, louis-agent's result, branch, commit, tokens and
+cost), the **run total** split by agent, and the list of branches ready to merge, which is the part to check when
+testing. The run total should equal the usage ledger's total for the run id:
+`dotnet run --project tools/louis-agent.usage-probe -- --ledger .demo/logs/usage-YYYY-MM.jsonl`.
+
+`-OrchestratorProfile ollama` runs the triage on the local model and the fixes on Claude, but llama3.1 can't triage yet:
+its 2,048-token window cuts off the runbooks and CPU requests can pass the 100-second timeout, so each error fails
+(FX7 keeps that from ending the run). It's there for when local models can triage
+([F13](../docs/features/F13-local-models.md)).
 
 ## Reviewing and merging the fixes in the web app
 

@@ -70,6 +70,10 @@
         {
             <div class="error">@Turn.Error</div>
         }
+        @if (Turn.Usage is { } usage)
+        {
+            <div class="usage" title="@UsageFormat.Detail(usage)">@UsageFormat.Line(usage)</div>
+        }
     </div>
 </div>
 

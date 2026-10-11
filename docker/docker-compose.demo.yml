@@ -82,8 +82,9 @@ services:
     <<: *orchestrator-image
     command: ["--once"]
     env_file:
-      # LLM settings: config/.env.anthropic or .env.ollama, chosen by LLM_PROFILE in config/.env
-      - path: ../config/.env.${LLM_PROFILE:-anthropic}
+      # LLM settings: config/.env.anthropic or .env.ollama, chosen by ORCHESTRATOR_LLM_PROFILE if set (run-demo.ps1
+      # -OrchestratorProfile), else LLM_PROFILE in config/.env, so triage can run on another model than the fixes.
+      - path: ../config/.env.${ORCHESTRATOR_LLM_PROFILE:-${LLM_PROFILE:-anthropic}}
       - path: ../config/.env
         required: false
       - path: ../config/.env.secrets

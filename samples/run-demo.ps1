@@ -31,13 +31,20 @@
 .PARAMETER Short
     Replay data/requests-short.txt instead: five errors (four fixes and one escalation) instead of thirteen, for a
     quicker, cheaper run.
+
+.PARAMETER OrchestratorProfile
+    Run the orchestrator's triage on another LLM profile than louis-agent's fixes (config/.env.{profile}), e.g.
+    -OrchestratorProfile ollama with LLM_PROFILE=anthropic: triage on the local model, fixes on Claude. Unset, both
+    use LLM_PROFILE.
 #>
 param(
     [int]$Port = 5081,
     [switch]$StopApi,
     [switch]$Resume,
     [switch]$ApiOnly,
-    [switch]$Short
+    [switch]$Short,
+    [ValidatePattern('^[a-z0-9-]+$')]
+    [string]$OrchestratorProfile
 )
 
 $ErrorActionPreference = 'Stop'
@@ -47,6 +54,8 @@ $envFile = Join-Path $repo 'config/.env'
 if (Test-Path $envFile) { $composeArgs += @('--env-file', $envFile) }
 $env:DEMO_PORT = $Port
 $env:DEMO_REQUESTS = if ($Short) { 'requests-short.txt' } else { 'requests.txt' }
+# Empty = the orchestrator uses LLM_PROFILE like demo-api (compose's ${ORCHESTRATOR_LLM_PROFILE:-...} treats empty as unset).
+$env:ORCHESTRATOR_LLM_PROFILE = $OrchestratorProfile
 $url = "http://127.0.0.1:$Port"
 
 function Step([string]$text) { Write-Host "`n=== $text ===" -ForegroundColor Cyan }

@@ -28,7 +28,7 @@ its own.
 - [x] [F1 Usage ledger](docs/features/F01-usage-ledger.md) — record every model request, attributed to session, task
       and run
 - [x] [F2 Prices and cost](docs/features/F02-prices-and-cost.md) — a price table; cost on every record
-- [ ] [F3 Show usage](docs/features/F03-usage-display.md) — cost per answer (web, CLI, Rider), in the API stream, and
+- [x] [F3 Show usage](docs/features/F03-usage-display.md) — cost per answer (web, CLI, Rider), in the API stream, and
       per fix in the comms log
 
 **M2 — Cheaper:** stop paying full price for the same tokens.
@@ -62,6 +62,9 @@ its own.
       per session"
 - [ ] [F12 Response speed](docs/features/F12-response-speed.md) — time to first token and tokens per second on every
       usage record, for every provider (Ollama's own timings too); shown with the usage
+- [ ] [F14 Display currency](docs/features/F14-display-currency.md) — show costs in a chosen currency (server default
+      and per web user), with the rate's date; the ledger stays in the bill's currency. Rate source to decide: fixed in
+      config, live, or both
 
 **Local — Local models:** a local model gets everything it is sent.
 
@@ -219,6 +222,19 @@ backlog item removes one, it says so.
 ## Done
 
 Newest first; details in the git history.
+
+- 2026-10-11 — **F3 Show usage** (M1 done): every answer says what it used and cost — a line on the CLI's stderr,
+  under each answer in the web app (with the chat's total), in Rider with `USAGE_IN_CHAT=true` — `/usage` in every
+  host, `usage` on the API's `message_delta` and `GET /sessions/{id}`, and cost per reply, per error and per run in the
+  orchestrator's comms log. The short demo's comms log total equals its ledger's exactly ($0.2526, 57 requests)
+- 2026-10-11 — [FX7](docs/fixes/FX07-timeout-ends-run.md): a timed-out request fails that error, not the
+  orchestrator's whole run; found with the new `run-demo.ps1 -OrchestratorProfile`
+
+- 2026-10-11 — [FX6](docs/fixes/FX06-usage-on-failed-turns.md): a failed louis-agent turn still reports its usage (on
+  the API's `error` event), so the web app's chat total and the orchestrator's comms log match the ledger; built in F3
+
+- 2026-10-11 — [FX5](docs/fixes/FX05-null-conditional-ledger.md): a `?.` in F3's first step skipped the ledger write for
+  requests outside a usage scope; F1's tests caught it before the commit
 
 - 2026-10-10 — **F2 Prices and cost**: every ledger record priced from a tracked `config/prices.json` (Haiku 5.5's
   long-prompt tier included), or from the API's `GET /prices` with `PRICES_URL`; `usage-probe -- --ledger` totals a

@@ -62,6 +62,25 @@ public static class UsageReport
     }
 
     /// <summary>
+    /// Adds totals up, e.g. the usage louis-agent reports for each reply of a fix (F3): requests and tokens add, and the
+    /// cost is null only when none of them has one, as in <see cref="Total"/>.
+    /// </summary>
+    public static UsageTotal Sum(string key, IEnumerable<UsageTotal> totals)
+    {
+        var list = totals.ToList();
+        var priced = list.Where(t => t.Cost is not null).ToList();
+        return new UsageTotal(
+            key,
+            list.Sum(t => t.Requests),
+            list.Sum(t => t.Input),
+            list.Sum(t => t.CacheWrite),
+            list.Sum(t => t.CacheRead),
+            list.Sum(t => t.Output),
+            priced.Count == 0 ? null : priced.Sum(t => t.Cost!.Value),
+            list.Sum(t => t.Unpriced));
+    }
+
+    /// <summary>
     /// The piece of work a record belongs to: its task (e.g. <c>fix:e8b0b572223d</c>), else its triage or chat session.
     /// </summary>
     public static string WorkOf(UsageRecord record) =>

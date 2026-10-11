@@ -17,7 +17,14 @@ internal sealed class AgentToolCall(string id, string name, string input)
 }
 
 /// <summary>What louis-agent answered in one message: its text, the tools it called, and how the turn ended.</summary>
-internal sealed record AgentReply(string Text, IReadOnlyList<AgentToolCall> ToolCalls, string? StopReason, string? Error);
+/// <param name="Usage">
+/// What the message's model requests used and cost, from <c>message_delta.usage</c> (F3); null when louis-agent doesn't
+/// record usage or the turn ended in an error.
+/// </param>
+/// <param name="Currency">The cost's currency; null when nothing was priced.</param>
+internal sealed record AgentReply(
+    string Text, IReadOnlyList<AgentToolCall> ToolCalls, string? StopReason, string? Error,
+    UsageTotal? Usage = null, string? Currency = null);
 
 /// <summary>The machine-readable line louis-agent is asked to end a fix with.</summary>
 internal sealed record FixResult(string Status, string? Commit, string? Branch, string? Tests, string? Summary, string? Reason);
@@ -75,7 +82,8 @@ internal sealed partial class LouisAgentClient(HttpClient http, string? apiKey)
     {
         var text = new StringBuilder();
         var tools = new List<AgentToolCall>();
-        string? stopReason = null, error = null, eventName = null;
+        string? stopReason = null, error = null, eventName = null, currency = null;
+        UsageTotal? usage = null;
         var data = new StringBuilder();
 
         while (await reader.ReadLineAsync(cancellationToken) is { } line)
@@ -91,7 +99,7 @@ internal sealed partial class LouisAgentClient(HttpClient http, string? apiKey)
         }
         if (data.Length > 0) Dispatch(eventName, data.ToString());
 
-        return new AgentReply(text.ToString(), tools, stopReason, error);
+        return new AgentReply(text.ToString(), tools, stopReason, error, usage, currency);
 
         void Dispatch(string? name, string json)
         {
@@ -130,12 +138,30 @@ internal sealed partial class LouisAgentClient(HttpClient http, string? apiKey)
                     break;
                 case "message_delta":
                     stopReason = root.GetProperty("delta").GetProperty("stop_reason").GetString();
+                    if (root.TryGetProperty("usage", out var used) && used.ValueKind == JsonValueKind.Object)
+                        (usage, currency) = ReadUsage(used);
                     break;
                 case "error":
                     error = root.GetProperty("error").GetProperty("message").GetString();
+                    // FX6: a failed reply still reports what it used, so the fix's cost isn't under-counted.
+                    if (root.TryGetProperty("usage", out var failedUsage) && failedUsage.ValueKind == JsonValueKind.Object)
+                        (usage, currency) = ReadUsage(failedUsage);
                     break;
             }
         }
+    }
+
+    /// <summary>
+    /// louis-agent.api's usage object (Claude's four token fields, plus requests, cost, currency and unpriced) as a
+    /// <see cref="UsageTotal"/>, so it adds up with the triage's own records.
+    /// </summary>
+    internal static (UsageTotal Usage, string? Currency) ReadUsage(JsonElement usage)
+    {
+        long Count(string name) => usage.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.Number ? v.GetInt64() : 0;
+        decimal? cost = usage.TryGetProperty("cost", out var c) && c.ValueKind == JsonValueKind.Number ? c.GetDecimal() : null;
+        string? currency = usage.TryGetProperty("currency", out var cur) && cur.ValueKind == JsonValueKind.String ? cur.GetString() : null;
+        return (new UsageTotal("louis-agent", (int)Count("requests"), Count("input_tokens"), Count("cache_creation_input_tokens"),
+            Count("cache_read_input_tokens"), Count("output_tokens"), cost, (int)Count("unpriced")), currency);
     }
 
     /// <summary>The last FIX-RESULT line in louis-agent's answer, or null when it didn't write one.</summary>

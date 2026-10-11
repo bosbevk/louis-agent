@@ -49,6 +49,12 @@ public sealed class AgentOptions
     /// <summary>USAGE_LEDGER: on (default) records every model request to {LOG_DIRECTORY}/usage-YYYY-MM.jsonl; off disables it.</summary>
     public bool UsageLedger { get; set; } = true;
 
+    /// <summary>
+    /// USAGE_IN_CHAT: true adds each turn's usage line to the chat in Rider (F3), after the answer; off by default, since
+    /// it is part of the conversation there rather than beside it. The line always goes to the ACP server's stderr log.
+    /// </summary>
+    public bool UsageInChat { get; set; }
+
     /// <summary>PRICES_FILE: the price table for the ledger's costs; null means config/prices.json, found like config/.env.</summary>
     public string? PricesFile { get; set; }
 
@@ -79,6 +85,7 @@ public sealed class AgentOptions
             RiderMcpProjectPath = Get("RIDER_MCP_PROJECT_PATH"),
             LogDirectory = Get("LOG_DIRECTORY"),
             UsageLedger = !string.Equals(Get("USAGE_LEDGER"), "off", StringComparison.OrdinalIgnoreCase),
+            UsageInChat = bool.TryParse(Get("USAGE_IN_CHAT"), out bool usageInChat) && usageInChat,
             PricesFile = Get("PRICES_FILE"),
             PricesUrl = Get("PRICES_URL"),
         };

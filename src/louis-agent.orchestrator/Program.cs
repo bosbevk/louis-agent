@@ -70,22 +70,24 @@ while (!stop.IsCancellationRequested)
         comms.StartEvent(i + 1, events.Count, error);
 
         string answer;
+        // One triage conversation per error event, in the same run as the fixes it asks for. Opened before the try, so a
+        // failed triage still reports what it used: those requests were charged.
+        using var triage = UsageScope.Begin(UsagePurpose.Triage, host: "orchestrator", session: $"triage_{error.Id}", turn: 1,
+            tags: new UsageTags(null, tools.RunId, options.Service));
+        IReadOnlyList<UsageRecord>? TriageUsage() => engine.RecordsUsage ? triage.Records : null;
         try
         {
-            // One triage conversation per error event, in the same run as the fixes it asks for.
-            using var usage = UsageScope.Begin(UsagePurpose.Triage, host: "orchestrator", session: $"triage_{error.Id}", turn: 1,
-                tags: new UsageTags(null, tools.RunId, options.Service));
             answer = await engine.ProcessPromptAsync(engine.NewHistory(), TriagePrompt(error), stop.Token);
         }
-        catch (OperationCanceledException)
+        catch (Exception ex) when (Stopping.ByUser(ex, stop.Token))
         {
             break;
         }
         catch (Exception ex)
         {
-            // Left unprocessed, so the next poll retries it.
+            // Left unprocessed, so the next poll retries it. A timed-out model request ends up here too (FX7).
             Log($"Triage of {error.Id} failed: {ex.Message}");
-            comms.EndEvent("failed", $"triage failed: {ex.Message}", "");
+            comms.EndEvent("failed", $"triage failed: {ex.Message}", "", TriageUsage());
             continue;
         }
         finally
@@ -96,10 +98,18 @@ while (!stop.IsCancellationRequested)
 
         var decision = Decision.Parse(answer);
         Log($"DECISION {error.Id}: {decision.Outcome} - {decision.Reason}");
-        comms.EndEvent(decision.Outcome, decision.Reason, answer);
+        EventUsage used = comms.EndEvent(decision.Outcome, decision.Reason, answer, TriageUsage());
+        if (used.Total is { } total) Log($"USAGE {error.Id}: {UsageText.Describe(total, comms.Currency)}");
         Directory.CreateDirectory(options.StateDirectory);
         await File.AppendAllTextAsync(Path.Combine(options.StateDirectory, "decisions.jsonl"),
-            JsonSerializer.Serialize(new { error_id = error.Id, error.Method, decision.Outcome, decision.Reason, at = DateTimeOffset.UtcNow }) + Environment.NewLine);
+            JsonSerializer.Serialize(new
+            {
+                error_id = error.Id, error.Method, decision.Outcome, decision.Reason, at = DateTimeOffset.UtcNow,
+                // F3: what the error cost, triage and fix together, and each part.
+                usage = CommsLog.Json(used.Total, comms.Currency),
+                triage_usage = CommsLog.Json(used.Triage, comms.Currency),
+                louis_agent_usage = CommsLog.Json(used.LouisAgent, comms.Currency),
+            }) + Environment.NewLine);
         feed.MarkProcessed(error.Id);
     }
 
@@ -122,6 +132,17 @@ string TriagePrompt(ErrorEvent error) =>
     ```
     Triage it with the runbook for method `{error.Method}` and act on it, following your workflow.
     """;
+
+/// <summary>Tells the user stopping the orchestrator (Ctrl+C) from a request that was cancelled for another reason.</summary>
+internal static class Stopping
+{
+    /// <summary>
+    /// True only when the run's own stop token was cancelled. An HTTP timeout is also an
+    /// <see cref="OperationCanceledException"/> (<see cref="TaskCanceledException"/>), but it is one error's failure,
+    /// not a reason to end the run (FX7).
+    /// </summary>
+    public static bool ByUser(Exception ex, CancellationToken stop) => ex is OperationCanceledException && stop.IsCancellationRequested;
+}
 
 /// <summary>The orchestrator's closing "DECISION: outcome - reason" line.</summary>
 internal sealed partial record Decision(string Outcome, string Reason)

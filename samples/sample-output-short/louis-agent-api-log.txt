@@ -1,37 +1,32 @@
-﻿19:32:10.022 [INFO] Logging to /demo/logs/agent-api-20261010-193209-1.log
-19:32:10.027 [INFO] Loaded PersonalitySkillsProvider
-19:32:10.029 [INFO] Loaded DefaultSkillsProvider
-19:32:10.030 [INFO] Loaded DotNetSkillsProvider
-19:32:10.043 [INFO] Loaded python-skills.md
-19:32:10.051 [INFO] Loaded powershell-skills.md
-19:32:10.059 [INFO] Loaded bash-skills.md
-19:32:10.066 [INFO] Loaded web-skills.md
-19:32:10.072 [INFO] Loaded self-extension-skills.md
-19:32:10.074 [INFO] Loading ALL skill providers (louis function)
-19:32:10.075 [INFO] Loaded DevOpsSkillsProvider
-19:32:10.077 [INFO] Loaded PaymoSkillsProvider
-19:32:10.079 [INFO] Loaded CodeReviewSkillsProvider
-19:32:10.081 [INFO] Loaded TimeLoggingSkillsProvider
-19:32:10.138 [INFO] Prices: /config/prices.json (as of 2026-10-10, 6 models)
-19:32:10.139 [INFO] Usage ledger: /demo/logs/usage-YYYY-MM.jsonl
-19:32:10.145 [INFO] Loaded 0 default skills from: /skills/default.md
-19:32:10.149 [INFO] Loaded 0 .NET skills from: /skills/dotnet-skills.md
-19:32:10.155 [INFO] Loaded 3 DevOps skills from: /skills/devops-skills.md
-19:32:10.159 [INFO] Loaded 3 Paymo skills from: /skills/paymo-skills.md
-19:32:10.163 [INFO] Loaded 3 code review skills from: /skills/code-review-skills.md
-19:32:10.166 [INFO] Loaded 3 time logging skills from: /skills/time-logging-skills.md
-19:32:10.238 [INFO] LLM: anthropic:claude-haiku-5-5 (endpoint=default, apiKey=set); tools=on; thinking=medium
-19:32:10.239 [INFO] MCP discovery disabled or not configured
-19:32:10.320 [WARN] AGENT_API_KEY not set; the API accepts unauthenticated requests. Only expose it on localhost.
-19:32:27.506 [TOOL] -> GetCurrentBranch({})
-19:32:27.574 [TOOL] <- GetCurrentBranch: main
-19:32:27.574 [TOOL] -> FindFiles({"pattern":"OrderTotal.cs"})
-19:32:27.770 [TOOL] <- FindFiles: Found 1 file(s) matching 'OrderTotal.cs':
-
-src/OrderService/Api/OrderTotal.cs (634 B)
-
-19:32:29.124 [TOOL] -> ReadWorkspaceFile({"relativePath":"src/OrderService/Api/OrderTotal.cs"})
-19:32:29.152 [TOOL] <- ReadWorkspaceFile: namespace OrderService;
+﻿00:53:32.242 [INFO] Logging to /demo/logs/agent-api-20261011-005332-1.log
+00:53:32.251 [INFO] Loaded PersonalitySkillsProvider
+00:53:32.254 [INFO] Loaded DefaultSkillsProvider
+00:53:32.256 [INFO] Loaded DotNetSkillsProvider
+00:53:32.280 [INFO] Loaded python-skills.md
+00:53:32.293 [INFO] Loaded powershell-skills.md
+00:53:32.301 [INFO] Loaded bash-skills.md
+00:53:32.309 [INFO] Loaded web-skills.md
+00:53:32.317 [INFO] Loaded self-extension-skills.md
+00:53:32.318 [INFO] Loading ALL skill providers (louis function)
+00:53:32.322 [INFO] Loaded DevOpsSkillsProvider
+00:53:32.324 [INFO] Loaded PaymoSkillsProvider
+00:53:32.326 [INFO] Loaded CodeReviewSkillsProvider
+00:53:32.328 [INFO] Loaded TimeLoggingSkillsProvider
+00:53:32.438 [INFO] Prices: /config/prices.json (as of 2026-10-10, 6 models)
+00:53:32.439 [INFO] Usage ledger: /demo/logs/usage-YYYY-MM.jsonl
+00:53:32.451 [INFO] Loaded 0 default skills from: /skills/default.md
+00:53:32.457 [INFO] Loaded 0 .NET skills from: /skills/dotnet-skills.md
+00:53:32.466 [INFO] Loaded 3 DevOps skills from: /skills/devops-skills.md
+00:53:32.472 [INFO] Loaded 3 Paymo skills from: /skills/paymo-skills.md
+00:53:32.478 [INFO] Loaded 3 code review skills from: /skills/code-review-skills.md
+00:53:32.483 [INFO] Loaded 3 time logging skills from: /skills/time-logging-skills.md
+00:53:32.609 [INFO] LLM: anthropic:claude-haiku-5-5 (endpoint=default, apiKey=set); tools=on; thinking=medium
+00:53:32.609 [INFO] MCP discovery disabled or not configured
+00:53:32.726 [WARN] AGENT_API_KEY not set; the API accepts unauthenticated requests. Only expose it on localhost.
+00:53:44.496 [TOOL] -> GetCurrentBranch({})
+00:53:44.565 [TOOL] <- GetCurrentBranch: main
+00:53:44.565 [TOOL] -> ReadWorkspaceFile({"relativePath":"src/OrderService/Api/OrderTotal.cs"})
+00:53:44.593 [TOOL] <- ReadWorkspaceFile: namespace OrderService;
 
 public sealed partial class OrderApi
 {
@@ -42,13 +37,24 @@ public sealed partial class OrderApi
     };
 
     /// <summary>GET /orders/{id}/total - the amount to charge, after any discount cod...
-19:32:29.153 [TOOL] -> FindFiles({"pattern":"*.cs","searchPath":"tests"})
-19:32:29.168 [TOOL] <- FindFiles: Found 1 file(s) matching '*.cs':
+00:53:46.170 [TOOL] -> DotNetListProjects({})
+00:53:46.349 [TOOL] <- DotNetListProjects: OrderService.slnx
+src/OrderService/OrderService.csproj
+tests/OrderService.Tests/OrderService.Tests.csproj
+00:53:46.349 [TOOL] -> SearchWorkspace({"query":"DiscountRates"})
+00:53:46.479 [TOOL] <- SearchWorkspace: src/OrderService/Api/OrderTotal.cs:5: private static readonly Dictionary<string, decimal> DiscountRates = new()
+src/OrderService/Api/OrderTotal.cs:18: decimal rate = DiscountRates[order.DiscountCode];
+00:53:46.480 [TOOL] -> FindFiles({"pattern":"*.cs"})
+00:53:46.812 [TOOL] <- FindFiles: Found 19 file(s) matching '*.cs':
 
-tests/OrderService.Tests/OrderApiTests.cs (2.46 KB)
-
-19:32:31.359 [TOOL] -> ReadWorkspaceFile({"relativePath":"tests/OrderService.Tests/OrderApiTests.cs"})
-19:32:31.379 [TOOL] <- ReadWorkspaceFile: using OrderService;
+src/OrderService/Api/CustomerInitials.cs (378 B)
+src/OrderService/Api/DeliveryEstimate.cs (778 B)
+src/OrderService/Api/DiscountLabel.cs (527 B)
+src/OrderService/Api/GetOrder.cs (353 B)
+src/OrderService/Api/InvoiceNumber.cs (463 B)
+src/OrderService/Api/LoyaltyPoints...
+00:53:48.111 [TOOL] -> ReadWorkspaceFile({"relativePath":"tests/OrderService.Tests/OrderApiTests.cs"})
+00:53:48.133 [TOOL] <- ReadWorkspaceFile: using OrderService;
 
 namespace OrderService.Tests;
 
@@ -58,57 +64,81 @@ public class OrderApiTests
     internal static OrderApi Api()
     {
         string csv = Path.Combine(TestContext.Curr...
-19:32:31.379 [TOOL] -> CreateBranch({"branchName":"fix/order-total-e53a828263db"})
-19:32:31.580 [TOOL] <- CreateBranch: Success (no output).
-19:32:34.531 [TOOL] -> SearchWorkspace({"query":"DiscountRates"})
-19:32:34.665 [TOOL] <- SearchWorkspace: src/OrderService/Api/OrderTotal.cs:5: private static readonly Dictionary<string, decimal> DiscountRates = new()
-src/OrderService/Api/OrderTotal.cs:18: decimal rate = DiscountRates[order.DiscountCode];
-19:32:34.666 [TOOL] -> ReadWorkspaceFile({"relativePath":"data/orders.csv"})
-19:32:34.680 [TOOL] <- ReadWorkspaceFile: id,customer,items,discount_code,payment_ref,refunded,created,country,gift_message
+00:53:48.133 [TOOL] -> ReadWorkspaceFile({"relativePath":"src/OrderService/Orders.cs"})
+00:53:48.152 [TOOL] <- ReadWorkspaceFile: using System.Globalization;
+
+namespace OrderService;
+
+public sealed record OrderItem(string Sku, int Quantity, decimal UnitPrice);
+
+/// <summary>An order as stored. <see cref="Created"/> is kept as written (an ISO date, sometimes with a time).</summary>
+public sealed record Order(
+    int Id, string...
+00:53:48.153 [TOOL] -> ReadWorkspaceFile({"relativePath":"src/OrderService/Api/DiscountLabel.cs"})
+00:53:48.179 [TOOL] <- ReadWorkspaceFile: using System.Globalization;
+
+namespace OrderService;
+
+public sealed partial class OrderApi
+{
+    /// <summary>GET /orders/{id}/discount-label - how the receipt shows the code, e.g. "WELCOME (10% off)".</summary>
+    public string GetDiscountLabel(int id)
+    {
+        Order order = _orders.Get(id);
+...
+00:53:50.903 [TOOL] -> ReadWorkspaceFile({"relativePath":"data/orders.csv"})
+00:53:50.915 [TOOL] <- ReadWorkspaceFile: id,customer,items,discount_code,payment_ref,refunded,created,country,gift_message
 1001,Ada Lovelace,BOOK-1:2:12.50|PEN-3:1:4.00,WELCOME10,card_4242,false,2026-09-28,NL,
 1002,Alan Turing,LAPTOP-9:1:899.00,,card_1881,true,2026-09-29,DE,Happy birthday
 1003,Grace Hopper,MUG-2:3:8.00|TEA-7:2:5.50,SUMMER2...
-19:32:39.025 [TOOL] -> WriteWorkspaceFile({"relativePath":"src/OrderService/Api/OrderTotal.cs","content":"namespace OrderService;\n\npublic sealed partial class OrderApi\n{\n    private static readonly Dictionary\u003Cstring, decimal\u003E DiscountRates = new()\n    {\n        [\u0022WELCOME10\u0022] = 0.10m,\n        [\u0022VIP20\u0022] = 0.20m,\n    };\n\n    /// \u003Csummary\u003EGET /orders/{id}/total - the amount to charge, after any discount code.\u003C/summary\u003E\n    public decimal GetOrderTotal(int id)\n    {\n        Order order = _orders.Get(id);\n        decimal subtotal = Subtotal(order);\n        if (string.IsNullOrEmpty(order.DiscountCode)) return subtotal;\n\n        // Unknown or retired codes give no discount rather than failing the request.\n        if (!DiscountRates.TryGetValue(order.DiscountCode, out decimal rate)) return subtotal;\n\n        return Math.Round(subtotal * (1 - rate), 2);\n    }\n}\n"})
-19:32:39.051 [TOOL] <- WriteWorkspaceFile: Wrote src/OrderService/Api/OrderTotal.cs (758 characters).
-19:32:39.052 [TOOL] -> ReadWorkspaceFile({"relativePath":"tests/OrderService.Tests/OrderService.Tests.csproj"})
-19:32:39.071 [TOOL] <- ReadWorkspaceFile: <Project Sdk="Microsoft.NET.Sdk">
-
-  <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <IsPackable>false</IsPackable>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" ...
-19:32:40.937 [TOOL] -> WriteWorkspaceFile({"relativePath":"tests/OrderService.Tests/Regression/Errore53a828263dbTests.cs","content":"using OrderService;\n\nnamespace OrderService.Tests.Regression;\n\n// Regression for error e53a828263db: order-total threw KeyNotFoundException for an unknown discount code (SUMMER25).\npublic class Errore53a828263dbTests\n{\n    [Test]\n    public void GetOrderTotal_UnknownDiscountCode_IsTheSubtotal() =\u003E\n        Assert.That(OrderApiTests.Api().GetOrderTotal(1003), Is.EqualTo(35.00m));\n}\n"})
-19:32:40.953 [TOOL] <- WriteWorkspaceFile: Wrote tests/OrderService.Tests/Regression/Errore53a828263dbTests.cs (383 characters).
-19:32:41.942 [TOOL] -> DotNetBuild({})
-19:32:47.846 [TOOL] <- DotNetBuild: Succeeded.
+00:53:50.915 [TOOL] -> CreateBranch({"branchName":"fix/order-total-017f10139c2c"})
+00:53:51.108 [TOOL] <- CreateBranch: Success (no output).
+00:53:54.207 [TOOL] -> SwitchBranch({"branchName":"fix/order-total-017f10139c2c"})
+00:53:54.441 [TOOL] <- SwitchBranch: Success (no output).
+00:53:54.441 [TOOL] -> WriteWorkspaceFile({"relativePath":"src/OrderService/Api/OrderTotal.cs","content":"namespace OrderService;\n\npublic sealed partial class OrderApi\n{\n    private static readonly Dictionary\u003Cstring, decimal\u003E DiscountRates = new()\n    {\n        [\u0022WELCOME10\u0022] = 0.10m,\n        [\u0022VIP20\u0022] = 0.20m,\n    };\n\n    /// \u003Csummary\u003EGET /orders/{id}/total - the amount to charge, after any discount code.\u003C/summary\u003E\n    public decimal GetOrderTotal(int id)\n    {\n        Order order = _orders.Get(id);\n        decimal subtotal = Subtotal(order);\n        if (string.IsNullOrEmpty(order.DiscountCode)) return subtotal;\n\n        // Unknown or retired codes give no discount rather than failing the order.\n        if (!DiscountRates.TryGetValue(order.DiscountCode, out decimal rate)) return subtotal;\n\n        return Math.Round(subtotal * (1 - rate), 2);\n    }\n}\n"})
+00:53:54.467 [TOOL] <- WriteWorkspaceFile: Wrote src/OrderService/Api/OrderTotal.cs (756 characters).
+00:53:57.885 [TOOL] -> WriteWorkspaceFile({"relativePath":"tests/OrderService.Tests/Regression/Error017f10139c2cTests.cs","content":"using OrderService;\n\nnamespace OrderService.Tests.Regression;\n\n/// \u003Csummary\u003EError 017f10139c2c: order 1003 used the unknown code SUMMER25 and GetOrderTotal threw KeyNotFoundException.\u003C/summary\u003E\npublic class Error017f10139c2cTests\n{\n    [Test]\n    public void GetOrderTotal_UnknownDiscountCode_IsTheSubtotal() =\u003E\n        // 3 x 8.00 \u002B 2 x 5.50 = 35.00, and SUMMER25 is not a known code, so no discount applies.\n        Assert.That(OrderApiTests.Api().GetOrderTotal(1003), Is.EqualTo(35.00m));\n}\n"})
+00:53:57.906 [TOOL] <- WriteWorkspaceFile: Wrote tests/OrderService.Tests/Regression/Error017f10139c2cTests.cs (494 characters).
+00:53:58.897 [TOOL] -> DotNetBuild({})
+00:54:05.888 [TOOL] <- DotNetBuild: Succeeded.
 0 error(s), 0 warning(s).
-19:32:47.846 [TOOL] -> DotNetTest({})
-19:32:51.660 [TOOL] <- DotNetTest: Passed!  - Failed:     0, Passed:    15, Skipped:     0, Total:    15, Duration: 69 ms - OrderService.Tests.dll (net10.0)
-19:32:53.782 [TOOL] -> Stage({"pathSpec":"."})
-19:32:53.919 [TOOL] <- Stage: Success (no output).
-19:32:53.920 [TOOL] -> GetStatus({})
-19:32:54.086 [TOOL] <- GetStatus: M  src/OrderService/Api/OrderTotal.cs
-A  tests/OrderService.Tests/Regression/Errore53a828263dbTests.cs
-19:32:55.299 [TOOL] -> Commit({"message":"fix(order-total): treat unknown discount codes as no discount instead of throwing (error e53a828263db)"})
-19:32:55.785 [TOOL] <- Commit: [fix/order-total-e53a828263db 3b5099f] fix(order-total): treat unknown discount codes as no discount instead of throwing (error e53a828263db)
- 2 files changed, 14 insertions(+), 1 deletion(-)
- create mode 100644 tests/OrderService.Tests/Regression/Errore53a828263dbTests.cs
-19:32:55.785 [TOOL] -> GetLog({"count":1})
-19:32:55.852 [TOOL] <- GetLog: 3b5099f fix(order-total): treat unknown discount codes as no discount instead of throwing (error e53a828263db)
-19:33:17.361 [TOOL] -> GetRepositoryInfo({})
-19:33:17.591 [TOOL] <- GetRepositoryInfo: === Repository Info ===
-Current Branch: main
-Remote(s): Success (no output).
-Status:
-Success (no output).
+00:54:05.889 [TOOL] -> DotNetTest({})
+00:54:09.851 [TOOL] <- DotNetTest: Passed!  - Failed:     0, Passed:    15, Skipped:     0, Total:    15, Duration: 66 ms - OrderService.Tests.dll (net10.0)
+00:54:11.920 [TOOL] -> Stage({"pathSpec":"src/OrderService/Api/OrderTotal.cs tests/OrderService.Tests/Regression/Error017f10139c2cTests.cs"})
+00:54:12.017 [TOOL] <- Stage: Success (no output).
+00:54:12.017 [TOOL] -> GetStatus({})
+00:54:12.171 [TOOL] <- GetStatus: M  src/OrderService/Api/OrderTotal.cs
+A  tests/OrderService.Tests/Regression/Error017f10139c2cTests.cs
+00:54:13.360 [TOOL] -> Commit({"message":"fix(order-total): treat unknown discount codes as no discount instead of throwing (error 017f10139c2c)"})
+00:54:13.813 [TOOL] <- Commit: [fix/order-total-017f10139c2c 7ec568a] fix(order-total): treat unknown discount codes as no discount instead of throwing (error 017f10139c2c)
+ 2 files changed, 15 insertions(+), 1 deletion(-)
+ create mode 100644 tests/OrderService.Tests/Regression/Error017f10139c2cTests.cs
+00:54:13.813 [TOOL] -> GetLog({"count":1})
+00:54:13.882 [TOOL] <- GetLog: 7ec568a fix(order-total): treat unknown discount codes as no discount instead of throwing (error 017f10139c2c)
+00:54:34.631 [TOOL] -> GetCurrentBranch({})
+00:54:34.698 [TOOL] <- GetCurrentBranch: main
+00:54:34.698 [TOOL] -> ListWorkspaceFiles({"relativePath":"."})
+00:54:34.727 [TOOL] <- ListWorkspaceFiles: [file] .gitignore
+[dir] data
+[dir] logs
+[file] OrderService.slnx
+[dir] src
+[dir] tests
+00:54:35.942 [TOOL] -> CreateBranch({"branchName":"fix/shipping-cost-604ebc192901"})
+00:54:36.126 [TOOL] <- CreateBranch: Success (no output).
+00:54:36.126 [TOOL] -> SwitchBranch({"branchName":"fix/shipping-cost-604ebc192901"})
+00:54:36.348 [TOOL] <- SwitchBranch: Success (no output).
+00:54:36.350 [TOOL] -> FindFiles({"pattern":"*.cs"})
+00:54:36.814 [TOOL] <- FindFiles: Found 22 file(s) matching '*.cs':
 
-19:33:17.591 [TOOL] -> ReadWorkspaceFile({"relativePath":"src/OrderService/Api/ShippingCost.cs"})
-19:33:17.618 [TOOL] <- ReadWorkspaceFile: namespace OrderService;
+src/OrderService/Api/CustomerInitials.cs (378 B)
+src/OrderService/Api/DeliveryEstimate.cs (778 B)
+src/OrderService/Api/DiscountLabel.cs (527 B)
+src/OrderService/Api/GetOrder.cs (353 B)
+src/OrderService/Api/InvoiceNumber.cs (463 B)
+src/OrderService/Api/LoyaltyPoints...
+00:54:38.165 [TOOL] -> ReadWorkspaceFile({"relativePath":"src/OrderService/Api/ShippingCost.cs"})
+00:54:38.193 [TOOL] <- ReadWorkspaceFile: namespace OrderService;
 
 public sealed partial class OrderApi
 {
@@ -118,150 +148,8 @@ public sealed partial class OrderApi
     public decimal GetShippingCost(int id)
     {
    ...
-19:33:20.957 [TOOL] -> SearchWorkspace({"query":"Subtotal("})
-19:33:21.101 [TOOL] <- SearchWorkspace: tests/OrderService.Tests/OrderApiTests.cs:23: public void GetOrderTotal_WithoutDiscount_IsTheSubtotal() =>
-src/OrderService/OrderApi.cs:14: internal static decimal Subtotal(Order order) => order.Items.Sum(item => item.Quantity * item.UnitPrice);
-src/OrderService/Api/LoyaltyPoints.cs:9: int cents = c...
-19:33:21.101 [TOOL] -> FindFiles({"pattern":"*.csproj"})
-19:33:21.414 [TOOL] <- FindFiles: Found 2 file(s) matching '*.csproj':
-
-src/OrderService/OrderService.csproj (326 B)
-tests/OrderService.Tests/OrderService.Tests.csproj (652 B)
-
-19:33:21.414 [TOOL] -> FindFiles({"pattern":"*Tests.cs"})
-19:33:21.714 [TOOL] <- FindFiles: Found 1 file(s) matching '*Tests.cs':
-
-tests/OrderService.Tests/OrderApiTests.cs (2.46 KB)
-
-19:33:23.249 [TOOL] -> ReadWorkspaceFile({"relativePath":"tests/OrderService.Tests/OrderApiTests.cs"})
-19:33:23.270 [TOOL] <- ReadWorkspaceFile: using OrderService;
-
-namespace OrderService.Tests;
-
-/// <summary>The behaviour that works today. Regression tests for fixed bugs go in their own files under Regression/.</summary>
-public class OrderApiTests
-{
-    internal static OrderApi Api()
-    {
-        string csv = Path.Combine(TestContext.Curr...
-19:33:23.271 [TOOL] -> ReadWorkspaceFile({"relativePath":"src/OrderService/OrderApi.cs"})
-19:33:23.291 [TOOL] <- ReadWorkspaceFile: namespace OrderService;
-
-/// <summary>
-/// The service's API. Each method lives in its own file under Api/ (one per route); exceptions are caught and logged by
-/// the host, the way a web framework would turn them into 500 responses.
-/// </summary>
-public sealed partial class OrderApi
-{
-    private ...
-19:33:23.291 [TOOL] -> ReadWorkspaceFile({"relativePath":"tests/OrderService.Tests/OrderService.Tests.csproj"})
-19:33:23.311 [TOOL] <- ReadWorkspaceFile: <Project Sdk="Microsoft.NET.Sdk">
-
-  <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <IsPackable>false</IsPackable>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" ...
-19:33:25.716 [TOOL] -> SearchWorkspace({"query":"1006"})
-19:33:25.849 [TOOL] <- SearchWorkspace: data/requests-short.txt:16: shipping-cost 1006
-data/requests.txt:15: get-order 1006
-data/requests.txt:17: shipping-cost 1006
-19:33:25.849 [TOOL] -> FindFiles({"pattern":"orders.csv"})
-19:33:26.149 [TOOL] <- FindFiles: Found 1 file(s) matching 'orders.csv':
-
-data/orders.csv (947 B)
-
-19:33:27.927 [TOOL] -> ReadWorkspaceFile({"relativePath":"data/orders.csv"})
-19:33:27.940 [TOOL] <- ReadWorkspaceFile: id,customer,items,discount_code,payment_ref,refunded,created,country,gift_message
-1001,Ada Lovelace,BOOK-1:2:12.50|PEN-3:1:4.00,WELCOME10,card_4242,false,2026-09-28,NL,
-1002,Alan Turing,LAPTOP-9:1:899.00,,card_1881,true,2026-09-29,DE,Happy birthday
-1003,Grace Hopper,MUG-2:3:8.00|TEA-7:2:5.50,SUMMER2...
-19:33:30.083 [TOOL] -> CreateBranch({"branchName":"fix/shipping-cost-ab68153321c8"})
-19:33:30.263 [TOOL] <- CreateBranch: Success (no output).
-19:33:31.983 [TOOL] -> WriteWorkspaceFile({"relativePath":"src/OrderService/Api/ShippingCost.cs","content":"namespace OrderService;\n\npublic sealed partial class OrderApi\n{\n    private const decimal FreeShippingFrom = 100m;\n\n    /// \u003Csummary\u003EGET /orders/{id}/shipping - free from 100.00; otherwise the parcel class follows the average item price.\u003C/summary\u003E\n    public decimal GetShippingCost(int id)\n    {\n        Order order = _orders.Get(id);\n        if (order.Items.Count == 0) return 0m; // nothing to ship\n\n        decimal subtotal = Subtotal(order);\n        if (subtotal \u003E= FreeShippingFrom) return 0m;\n\n        decimal averageItemPrice = subtotal / order.Items.Count;\n        return averageItemPrice \u003E 50m ? 9.95m : 4.95m;\n    }\n}\n"})
-19:33:32.007 [TOOL] <- WriteWorkspaceFile: Wrote src/OrderService/Api/ShippingCost.cs (629 characters).
-19:33:34.834 [TOOL] -> WriteWorkspaceFile({"relativePath":"tests/OrderService.Tests/Regression/Errorab68153321c8Tests.cs","content":"using OrderService;\n\nnamespace OrderService.Tests.Regression;\n\n/// \u003Csummary\u003EError ab68153321c8: GetShippingCost threw DivideByZeroException for an order without items (order 1006).\u003C/summary\u003E\npublic class Errorab68153321c8Tests\n{\n    [Test]\n    public void GetShippingCost_OrderWithoutItems_CostsZero() =\u003E\n        Assert.That(OrderApiTests.Api().GetShippingCost(1006), Is.EqualTo(0.00m));\n}\n"})
-19:33:34.854 [TOOL] <- WriteWorkspaceFile: Wrote tests/OrderService.Tests/Regression/Errorab68153321c8Tests.cs (390 characters).
-19:33:35.832 [TOOL] -> DotNetBuild({})
-19:33:39.103 [TOOL] <- DotNetBuild: Succeeded.
-0 error(s), 0 warning(s).
-19:33:39.104 [TOOL] -> DotNetTest({})
-19:33:43.062 [TOOL] <- DotNetTest: Passed!  - Failed:     0, Passed:    15, Skipped:     0, Total:    15, Duration: 62 ms - OrderService.Tests.dll (net10.0)
-19:33:45.370 [TOOL] -> Stage({"pathSpec":"."})
-19:33:45.496 [TOOL] <- Stage: Success (no output).
-19:33:45.496 [TOOL] -> DiffStaged({})
-19:33:45.623 [TOOL] <- DiffStaged: diff --git a/src/OrderService/Api/ShippingCost.cs b/src/OrderService/Api/ShippingCost.cs
-index 7e06efa..617f7e7 100755
---- a/src/OrderService/Api/ShippingCost.cs
-+++ b/src/OrderService/Api/ShippingCost.cs
-@@ -8,6 +8,8 @@ public sealed partial class OrderApi
-     public decimal GetShippingCost(int id...
-19:33:48.492 [TOOL] -> Commit({"message":"fix(shipping-cost): return 0.00 for an order without items instead of dividing by zero (error ab68153321c8)"})
-19:33:48.971 [TOOL] <- Commit: [fix/shipping-cost-ab68153321c8 6634c42] fix(shipping-cost): return 0.00 for an order without items instead of dividing by zero (error ab68153321c8)
- 2 files changed, 13 insertions(+)
- create mode 100644 tests/OrderService.Tests/Regression/Errorab68153321c8Tests.cs
-19:33:48.971 [TOOL] -> GetLog({"count":1})
-19:33:49.044 [TOOL] <- GetLog: 6634c42 fix(shipping-cost): return 0.00 for an order without items instead of dividing by zero (error ab68153321c8)
-19:34:09.126 [TOOL] -> GetCurrentBranch({})
-19:34:09.197 [TOOL] <- GetCurrentBranch: main
-19:34:09.198 [TOOL] -> FindFiles({"pattern":"PackingSlip.cs"})
-19:34:09.550 [TOOL] <- FindFiles: Found 1 file(s) matching 'PackingSlip.cs':
-
-src/OrderService/Api/PackingSlip.cs (492 B)
-
-19:34:10.712 [TOOL] -> ReadWorkspaceFile({"relativePath":"src/OrderService/Api/PackingSlip.cs"})
-19:34:10.746 [TOOL] <- ReadWorkspaceFile: namespace OrderService;
-
-public sealed partial class OrderApi
-{
-    /// <summary>GET /orders/{id}/packing-slip - what the warehouse prints: items, then the gift message in capitals.</summary>
-    public string GetPackingSlip(int id)
-    {
-        Order order = _orders.Get(id);
-        string items =...
-19:34:10.746 [TOOL] -> ReadWorkspaceFile({"relativePath":"src/OrderService/Program.cs"})
-19:34:10.768 [TOOL] <- ReadWorkspaceFile: using System.Globalization;
-using OrderService;
-
-// A tiny stand-in for a microservice: each "request" is an API method name and an order id.
-//   dotnet run -- <method> <order id>      one call, e.g. "order-total 1003"
-//   dotnet run -- serve data/requests.txt  replay a traffic file, one call per ...
-19:34:13.652 [TOOL] -> SearchWorkspace({"query":"GiftMessage"})
-19:34:13.804 [TOOL] <- SearchWorkspace: tests/OrderService.Tests/OrderApiTests.cs:43: public void GetPackingSlip_ShowsTheGiftMessageInCapitals() =>
-src/OrderService/Orders.cs:10: string Created, string Country, string? GiftMessage);
-src/OrderService/Api/PackingSlip.cs:10: string gift = order.GiftMessage!.ToUpperInvariant();
-19:34:13.804 [TOOL] -> FindFiles({"pattern":"*.cs"})
-19:34:14.362 [TOOL] <- FindFiles: Found 22 file(s) matching '*.cs':
-
-src/OrderService/Api/CustomerInitials.cs (378 B)
-src/OrderService/Api/DeliveryEstimate.cs (778 B)
-src/OrderService/Api/DiscountLabel.cs (527 B)
-src/OrderService/Api/GetOrder.cs (353 B)
-src/OrderService/Api/InvoiceNumber.cs (463 B)
-src/OrderService/Api/LoyaltyPoints...
-19:34:14.362 [TOOL] -> FindFiles({"pattern":"*.csproj"})
-19:34:14.736 [TOOL] <- FindFiles: Found 2 file(s) matching '*.csproj':
-
-src/OrderService/OrderService.csproj (326 B)
-tests/OrderService.Tests/OrderService.Tests.csproj (652 B)
-
-19:34:16.048 [TOOL] -> ReadWorkspaceFile({"relativePath":"tests/OrderService.Tests/OrderApiTests.cs"})
-19:34:16.068 [TOOL] <- ReadWorkspaceFile: using OrderService;
-
-namespace OrderService.Tests;
-
-/// <summary>The behaviour that works today. Regression tests for fixed bugs go in their own files under Regression/.</summary>
-public class OrderApiTests
-{
-    internal static OrderApi Api()
-    {
-        string csv = Path.Combine(TestContext.Curr...
-19:34:16.069 [TOOL] -> ReadWorkspaceFile({"relativePath":"src/OrderService/Orders.cs"})
-19:34:16.090 [TOOL] <- ReadWorkspaceFile: using System.Globalization;
+00:54:38.193 [TOOL] -> ReadWorkspaceFile({"relativePath":"src/OrderService/Orders.cs"})
+00:54:38.218 [TOOL] <- ReadWorkspaceFile: using System.Globalization;
 
 namespace OrderService;
 
@@ -270,17 +158,46 @@ public sealed record OrderItem(string Sku, int Quantity, decimal UnitPrice);
 /// <summary>An order as stored. <see cref="Created"/> is kept as written (an ISO date, sometimes with a time).</summary>
 public sealed record Order(
     int Id, string...
-19:34:18.603 [TOOL] -> CreateBranch({"branchName":"fix/packing-slip-dd0d99a0f370"})
-19:34:18.793 [TOOL] <- CreateBranch: Success (no output).
-19:34:20.595 [TOOL] -> WriteWorkspaceFile({"relativePath":"src/OrderService/Api/PackingSlip.cs","content":"namespace OrderService;\n\npublic sealed partial class OrderApi\n{\n    /// \u003Csummary\u003EGET /orders/{id}/packing-slip - what the warehouse prints: items, then the gift message in capitals (if there is one).\u003C/summary\u003E\n    public string GetPackingSlip(int id)\n    {\n        Order order = _orders.Get(id);\n        string items = string.Join(\u0022; \u0022, order.Items.Select(item =\u003E $\u0022{item.Quantity} x {item.Sku}\u0022));\n        if (order.GiftMessage is null)\n        {\n            return items;\n        }\n        return $\u0022{items} | GIFT: {order.GiftMessage.ToUpperInvariant()}\u0022;\n    }\n}\n"})
-19:34:20.620 [TOOL] <- WriteWorkspaceFile: Wrote src/OrderService/Api/PackingSlip.cs (566 characters).
-19:34:22.768 [TOOL] -> ReadWorkspaceFile({"relativePath":"data/orders.csv"})
-19:34:22.784 [TOOL] <- ReadWorkspaceFile: id,customer,items,discount_code,payment_ref,refunded,created,country,gift_message
+00:54:38.218 [TOOL] -> ReadWorkspaceFile({"relativePath":"tests/OrderService.Tests/OrderApiTests.cs"})
+00:54:38.237 [TOOL] <- ReadWorkspaceFile: using OrderService;
+
+namespace OrderService.Tests;
+
+/// <summary>The behaviour that works today. Regression tests for fixed bugs go in their own files under Regression/.</summary>
+public class OrderApiTests
+{
+    internal static OrderApi Api()
+    {
+        string csv = Path.Combine(TestContext.Curr...
+00:54:41.351 [TOOL] -> ReadWorkspaceFile({"relativePath":"src/OrderService/OrderApi.cs"})
+00:54:41.371 [TOOL] <- ReadWorkspaceFile: namespace OrderService;
+
+/// <summary>
+/// The service's API. Each method lives in its own file under Api/ (one per route); exceptions are caught and logged by
+/// the host, the way a web framework would turn them into 500 responses.
+/// </summary>
+public sealed partial class OrderApi
+{
+    private ...
+00:54:41.372 [TOOL] -> SearchWorkspace({"query":"Subtotal("})
+00:54:41.509 [TOOL] <- SearchWorkspace: tests/OrderService.Tests/OrderApiTests.cs:23: public void GetOrderTotal_WithoutDiscount_IsTheSubtotal() =>
+src/OrderService/OrderApi.cs:14: internal static decimal Subtotal(Order order) => order.Items.Sum(item => item.Quantity * item.UnitPrice);
+src/OrderService/Api/LoyaltyPoints.cs:9: int cents = c...
+00:54:41.510 [TOOL] -> ReadWorkspaceFile({"relativePath":"data/orders.csv"})
+00:54:41.524 [TOOL] <- ReadWorkspaceFile: id,customer,items,discount_code,payment_ref,refunded,created,country,gift_message
 1001,Ada Lovelace,BOOK-1:2:12.50|PEN-3:1:4.00,WELCOME10,card_4242,false,2026-09-28,NL,
 1002,Alan Turing,LAPTOP-9:1:899.00,,card_1881,true,2026-09-29,DE,Happy birthday
 1003,Grace Hopper,MUG-2:3:8.00|TEA-7:2:5.50,SUMMER2...
-19:34:22.784 [TOOL] -> ReadWorkspaceFile({"relativePath":"tests/OrderService.Tests/OrderService.Tests.csproj"})
-19:34:22.804 [TOOL] <- ReadWorkspaceFile: <Project Sdk="Microsoft.NET.Sdk">
+00:54:41.525 [TOOL] -> FindFiles({"pattern":"*.csproj"})
+00:54:41.820 [TOOL] <- FindFiles: Found 2 file(s) matching '*.csproj':
+
+src/OrderService/OrderService.csproj (326 B)
+tests/OrderService.Tests/OrderService.Tests.csproj (652 B)
+
+00:54:46.477 [TOOL] -> WriteWorkspaceFile({"relativePath":"src/OrderService/Api/ShippingCost.cs","content":"namespace OrderService;\n\npublic sealed partial class OrderApi\n{\n    private const decimal FreeShippingFrom = 100m;\n\n    /// \u003Csummary\u003EGET /orders/{id}/shipping - free from 100.00; otherwise the parcel class follows the average item price.\u003C/summary\u003E\n    public decimal GetShippingCost(int id)\n    {\n        Order order = _orders.Get(id);\n        if (order.Items.Count == 0) return 0m; // nothing to ship\n\n        decimal subtotal = Subtotal(order);\n        if (subtotal \u003E= FreeShippingFrom) return 0m;\n\n        decimal averageItemPrice = subtotal / order.Items.Count;\n        return averageItemPrice \u003E 50m ? 9.95m : 4.95m;\n    }\n}\n"})
+00:54:46.506 [TOOL] <- WriteWorkspaceFile: Wrote src/OrderService/Api/ShippingCost.cs (629 characters).
+00:54:46.506 [TOOL] -> ReadWorkspaceFile({"relativePath":"tests/OrderService.Tests/OrderService.Tests.csproj"})
+00:54:46.530 [TOOL] <- ReadWorkspaceFile: <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
@@ -291,29 +208,135 @@ public sealed record Order(
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" ...
-19:34:25.750 [TOOL] -> WriteWorkspaceFile({"relativePath":"tests/OrderService.Tests/Regression/Errordd0d99a0f370Tests.cs","content":"using OrderService;\n\nnamespace OrderService.Tests.Regression;\n\n/// \u003Csummary\u003EError dd0d99a0f370: packing-slip threw NullReferenceException for an order without a gift message.\u003C/summary\u003E\npublic class Errordd0d99a0f370Tests\n{\n    [Test]\n    public void GetPackingSlip_WithoutGiftMessage_PrintsOnlyTheItems() =\u003E\n        Assert.That(OrderApiTests.Api().GetPackingSlip(1001), Is.EqualTo(\u00222 x BOOK-1; 1 x PEN-3\u0022));\n\n    [Test]\n    public void GetPackingSlip_WithoutGiftMessage_HasNoGiftPart() =\u003E\n        Assert.That(OrderApiTests.Api().GetPackingSlip(1001), Does.Not.Contain(\u0022| GIFT:\u0022));\n}\n"})
-19:34:25.770 [TOOL] <- WriteWorkspaceFile: Wrote tests/OrderService.Tests/Regression/Errordd0d99a0f370Tests.cs (583 characters).
-19:34:26.749 [TOOL] -> DotNetBuild({})
-19:34:29.844 [TOOL] <- DotNetBuild: Succeeded.
+00:54:48.304 [TOOL] -> WriteWorkspaceFile({"relativePath":"tests/OrderService.Tests/Regression/Error604ebc192901Tests.cs","content":"using OrderService;\n\nnamespace OrderService.Tests.Regression;\n\n/// \u003Csummary\u003E\n/// Error 604ebc192901: shipping-cost for an order without items threw DivideByZeroException.\n/// Order 1006 (Barbara Liskov) has no items in data/orders.csv; it has nothing to ship, so it costs 0.00.\n/// \u003C/summary\u003E\npublic class Error604ebc192901Tests\n{\n    [Test]\n    public void GetShippingCost_OrderWithoutItems_IsZero() =\u003E\n        Assert.That(OrderApiTests.Api().GetShippingCost(1006), Is.EqualTo(0m));\n}\n"})
+00:54:48.323 [TOOL] <- WriteWorkspaceFile: Wrote tests/OrderService.Tests/Regression/Error604ebc192901Tests.cs (486 characters).
+00:54:49.520 [TOOL] -> DotNetBuild({"project":"OrderService.slnx"})
+00:54:52.765 [TOOL] <- DotNetBuild: Succeeded.
 0 error(s), 0 warning(s).
-19:34:29.844 [TOOL] -> DotNetTest({})
-19:34:33.764 [TOOL] <- DotNetTest: Passed!  - Failed:     0, Passed:    16, Skipped:     0, Total:    16, Duration: 69 ms - OrderService.Tests.dll (net10.0)
-19:34:35.829 [TOOL] -> Stage({"pathSpec":"."})
-19:34:35.964 [TOOL] <- Stage: Success (no output).
-19:34:35.964 [TOOL] -> GetStatus({})
-19:34:36.123 [TOOL] <- GetStatus: M  src/OrderService/Api/PackingSlip.cs
-A  tests/OrderService.Tests/Regression/Errordd0d99a0f370Tests.cs
-19:34:39.322 [TOOL] -> Commit({"message":"fix(packing-slip): omit the gift part when an order has no gift message (error dd0d99a0f370)"})
-19:34:39.794 [TOOL] <- Commit: [fix/packing-slip-dd0d99a0f370 45de437] fix(packing-slip): omit the gift part when an order has no gift message (error dd0d99a0f370)
- 2 files changed, 21 insertions(+), 3 deletions(-)
- create mode 100644 tests/OrderService.Tests/Regression/Errordd0d99a0f370Tests.cs
-19:34:39.794 [TOOL] -> GetLog({"count":3})
-19:34:39.865 [TOOL] <- GetLog: 45de437 fix(packing-slip): omit the gift part when an order has no gift message (error dd0d99a0f370)
-d9959e1 order-service as deployed
-19:34:59.818 [TOOL] -> GetCurrentBranch({})
-19:34:59.879 [TOOL] <- GetCurrentBranch: main
-19:34:59.880 [TOOL] -> ReadWorkspaceFile({"relativePath":"src/OrderService/Api/Vat.cs"})
-19:34:59.908 [TOOL] <- ReadWorkspaceFile: namespace OrderService;
+00:54:52.765 [TOOL] -> DotNetTest({"project":"OrderService.slnx"})
+00:54:56.576 [TOOL] <- DotNetTest: Passed!  - Failed:     0, Passed:    15, Skipped:     0, Total:    15, Duration: 63 ms - OrderService.Tests.dll (net10.0)
+00:54:58.852 [TOOL] -> Stage({"pathSpec":"."})
+00:54:59.003 [TOOL] <- Stage: Success (no output).
+00:54:59.003 [TOOL] -> GetStatus({})
+00:54:59.174 [TOOL] <- GetStatus: M  src/OrderService/Api/ShippingCost.cs
+A  tests/OrderService.Tests/Regression/Error604ebc192901Tests.cs
+00:55:00.317 [TOOL] -> Commit({"message":"fix(shipping-cost): return 0.00 for an order without items instead of dividing by zero (error 604ebc192901)"})
+00:55:00.760 [TOOL] <- Commit: [fix/shipping-cost-604ebc192901 08f1d64] fix(shipping-cost): return 0.00 for an order without items instead of dividing by zero (error 604ebc192901)
+ 2 files changed, 16 insertions(+)
+ create mode 100644 tests/OrderService.Tests/Regression/Error604ebc192901Tests.cs
+00:55:00.760 [TOOL] -> GetLog({"count":1})
+00:55:00.822 [TOOL] <- GetLog: 08f1d64 fix(shipping-cost): return 0.00 for an order without items instead of dividing by zero (error 604ebc192901)
+00:55:21.867 [TOOL] -> GetRepositoryInfo({})
+00:55:22.103 [TOOL] <- GetRepositoryInfo: === Repository Info ===
+Current Branch: main
+Remote(s): Success (no output).
+Status:
+Success (no output).
+
+00:55:22.103 [TOOL] -> ReadWorkspaceFile({"relativePath":"src/OrderService/Api/PackingSlip.cs"})
+00:55:22.129 [TOOL] <- ReadWorkspaceFile: namespace OrderService;
+
+public sealed partial class OrderApi
+{
+    /// <summary>GET /orders/{id}/packing-slip - what the warehouse prints: items, then the gift message in capitals.</summary>
+    public string GetPackingSlip(int id)
+    {
+        Order order = _orders.Get(id);
+        string items =...
+00:55:25.523 [TOOL] -> FindFiles({"pattern":"*.cs"})
+00:55:26.013 [TOOL] <- FindFiles: Found 22 file(s) matching '*.cs':
+
+src/OrderService/Api/CustomerInitials.cs (378 B)
+src/OrderService/Api/DeliveryEstimate.cs (778 B)
+src/OrderService/Api/DiscountLabel.cs (527 B)
+src/OrderService/Api/GetOrder.cs (353 B)
+src/OrderService/Api/InvoiceNumber.cs (463 B)
+src/OrderService/Api/LoyaltyPoints...
+00:55:26.013 [TOOL] -> FindFiles({"pattern":"*.csproj"})
+00:55:26.331 [TOOL] <- FindFiles: Found 2 file(s) matching '*.csproj':
+
+src/OrderService/OrderService.csproj (326 B)
+tests/OrderService.Tests/OrderService.Tests.csproj (652 B)
+
+00:55:27.680 [TOOL] -> ReadWorkspaceFile({"relativePath":"tests/OrderService.Tests/OrderApiTests.cs"})
+00:55:27.702 [TOOL] <- ReadWorkspaceFile: using OrderService;
+
+namespace OrderService.Tests;
+
+/// <summary>The behaviour that works today. Regression tests for fixed bugs go in their own files under Regression/.</summary>
+public class OrderApiTests
+{
+    internal static OrderApi Api()
+    {
+        string csv = Path.Combine(TestContext.Curr...
+00:55:27.702 [TOOL] -> ReadWorkspaceFile({"relativePath":"src/OrderService/Orders.cs"})
+00:55:27.725 [TOOL] <- ReadWorkspaceFile: using System.Globalization;
+
+namespace OrderService;
+
+public sealed record OrderItem(string Sku, int Quantity, decimal UnitPrice);
+
+/// <summary>An order as stored. <see cref="Created"/> is kept as written (an ISO date, sometimes with a time).</summary>
+public sealed record Order(
+    int Id, string...
+00:55:27.725 [TOOL] -> ReadWorkspaceFile({"relativePath":"src/OrderService/OrderApi.cs"})
+00:55:27.747 [TOOL] <- ReadWorkspaceFile: namespace OrderService;
+
+/// <summary>
+/// The service's API. Each method lives in its own file under Api/ (one per route); exceptions are caught and logged by
+/// the host, the way a web framework would turn them into 500 responses.
+/// </summary>
+public sealed partial class OrderApi
+{
+    private ...
+00:55:30.741 [TOOL] -> CreateBranch({"branchName":"fix/packing-slip-a4e9e1b059b9"})
+00:55:30.946 [TOOL] <- CreateBranch: Success (no output).
+00:55:30.946 [TOOL] -> ReadWorkspaceFile({"relativePath":"data/orders.csv"})
+00:55:30.961 [TOOL] <- ReadWorkspaceFile: id,customer,items,discount_code,payment_ref,refunded,created,country,gift_message
+1001,Ada Lovelace,BOOK-1:2:12.50|PEN-3:1:4.00,WELCOME10,card_4242,false,2026-09-28,NL,
+1002,Alan Turing,LAPTOP-9:1:899.00,,card_1881,true,2026-09-29,DE,Happy birthday
+1003,Grace Hopper,MUG-2:3:8.00|TEA-7:2:5.50,SUMMER2...
+00:55:30.961 [TOOL] -> ReadWorkspaceFile({"relativePath":"tests/OrderService.Tests/OrderService.Tests.csproj"})
+00:55:30.988 [TOOL] <- ReadWorkspaceFile: <Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" ...
+00:55:34.609 [TOOL] -> WriteWorkspaceFile({"relativePath":"src/OrderService/Api/PackingSlip.cs","content":"namespace OrderService;\n\npublic sealed partial class OrderApi\n{\n    /// \u003Csummary\u003EGET /orders/{id}/packing-slip - what the warehouse prints: items, then the gift message in capitals.\u003C/summary\u003E\n    public string GetPackingSlip(int id)\n    {\n        Order order = _orders.Get(id);\n        string items = string.Join(\u0022; \u0022, order.Items.Select(item =\u003E $\u0022{item.Quantity} x {item.Sku}\u0022));\n        if (string.IsNullOrWhiteSpace(order.GiftMessage))\n        {\n            return items;\n        }\n        return $\u0022{items} | GIFT: {order.GiftMessage.ToUpperInvariant()}\u0022;\n    }\n}\n"})
+00:55:34.636 [TOOL] <- WriteWorkspaceFile: Wrote src/OrderService/Api/PackingSlip.cs (567 characters).
+00:55:34.637 [TOOL] -> WriteWorkspaceFile({"relativePath":"tests/OrderService.Tests/Regression/Errora4e9e1b059b9Tests.cs","content":"using OrderService;\n\nnamespace OrderService.Tests.Regression;\n\n/// \u003Csummary\u003E\n/// Error a4e9e1b059b9: NullReferenceException in GetPackingSlip for order 1001, which has no gift message.\n/// Expected: the slip lists only the items, with no \u0022| GIFT:\u0022 part.\n/// \u003C/summary\u003E\npublic class Errora4e9e1b059b9Tests\n{\n    [Test]\n    public void GetPackingSlip_WithoutGiftMessage_PrintsOnlyTheItems() =\u003E\n        Assert.That(OrderApiTests.Api().GetPackingSlip(1001), Is.EqualTo(\u00222 x BOOK-1; 1 x PEN-3\u0022));\n}\n"})
+00:55:34.657 [TOOL] <- WriteWorkspaceFile: Wrote tests/OrderService.Tests/Regression/Errora4e9e1b059b9Tests.cs (494 characters).
+00:55:36.664 [TOOL] -> DotNetBuild({})
+00:55:40.320 [TOOL] <- DotNetBuild: Succeeded.
+0 error(s), 0 warning(s).
+00:55:40.320 [TOOL] -> DotNetTest({})
+00:55:44.228 [TOOL] <- DotNetTest: Passed!  - Failed:     0, Passed:    15, Skipped:     0, Total:    15, Duration: 66 ms - OrderService.Tests.dll (net10.0)
+00:55:46.335 [TOOL] -> Stage({})
+00:55:46.471 [TOOL] <- Stage: Success (no output).
+00:55:46.471 [TOOL] -> DiffStaged({})
+00:55:46.597 [TOOL] <- DiffStaged: diff --git a/src/OrderService/Api/PackingSlip.cs b/src/OrderService/Api/PackingSlip.cs
+index dbae67c..1d42dc4 100755
+--- a/src/OrderService/Api/PackingSlip.cs
++++ b/src/OrderService/Api/PackingSlip.cs
+@@ -7,7 +7,10 @@ public sealed partial class OrderApi
+     {
+         Order order = _orders.Get(id)...
+00:55:48.101 [TOOL] -> Commit({"message":"fix(packing-slip): skip the gift part when an order has no gift message (error a4e9e1b059b9)\n\nGetPackingSlip dereferenced GiftMessage with the null-forgiving operator, so\norders without a gift message (empty gift_message in the CSV, parsed as null)\nthrew NullReferenceException. Such slips now print only the items. Slips with\na gift message are unchanged."})
+00:55:48.582 [TOOL] <- Commit: [fix/packing-slip-a4e9e1b059b9 72d0061] fix(packing-slip): skip the gift part when an order has no gift message (error a4e9e1b059b9)
+ 2 files changed, 19 insertions(+), 2 deletions(-)
+ create mode 100644 tests/OrderService.Tests/Regression/Errora4e9e1b059b9Tests.cs
+00:55:48.583 [TOOL] -> GetLog({"count":1})
+00:55:48.647 [TOOL] <- GetLog: 72d0061 fix(packing-slip): skip the gift part when an order has no gift message (error a4e9e1b059b9)
+00:56:21.874 [TOOL] -> GetCurrentBranch({})
+00:56:21.938 [TOOL] <- GetCurrentBranch: main
+00:56:21.938 [TOOL] -> ReadWorkspaceFile({"relativePath":"src/OrderService/Api/Vat.cs"})
+00:56:21.965 [TOOL] <- ReadWorkspaceFile: namespace OrderService;
 
 public sealed partial class OrderApi
 {
@@ -325,16 +348,27 @@ public sealed partial class OrderApi
     };
 
     /// <summary>GET /orders/{id}/vat - the VAT included in the order total, ...
-19:35:05.251 [TOOL] -> DotNetListProjects({})
-19:35:05.612 [TOOL] <- DotNetListProjects: OrderService.slnx
-src/OrderService/OrderService.csproj
-tests/OrderService.Tests/OrderService.Tests.csproj
-19:35:05.612 [TOOL] -> SearchWorkspace({"query":"Country","maxResults":30})
-19:35:05.754 [TOOL] <- SearchWorkspace: tests/OrderService.Tests/OrderApiTests.cs:51: public void GetVat_UsesTheCountryRate() =>
-src/OrderService/Orders.cs:10: string Created, string Country, string? GiftMessage);
-src/OrderService/Orders.cs:15: /// <summary>Reads orders from data/orders.csv: id,customer,items,discount_code,payment_ref,ref...
-19:35:06.983 [TOOL] -> ReadWorkspaceFile({"relativePath":"tests/OrderService.Tests/OrderApiTests.cs"})
-19:35:07.004 [TOOL] <- ReadWorkspaceFile: using OrderService;
+00:56:21.966 [TOOL] -> FindFiles({"pattern":"*.cs"})
+00:56:22.476 [TOOL] <- FindFiles: Found 22 file(s) matching '*.cs':
+
+src/OrderService/Api/CustomerInitials.cs (378 B)
+src/OrderService/Api/DeliveryEstimate.cs (778 B)
+src/OrderService/Api/DiscountLabel.cs (527 B)
+src/OrderService/Api/GetOrder.cs (353 B)
+src/OrderService/Api/InvoiceNumber.cs (463 B)
+src/OrderService/Api/LoyaltyPoints...
+00:56:24.644 [TOOL] -> ReadWorkspaceFile({"relativePath":"src/OrderService/Orders.cs"})
+00:56:24.666 [TOOL] <- ReadWorkspaceFile: using System.Globalization;
+
+namespace OrderService;
+
+public sealed record OrderItem(string Sku, int Quantity, decimal UnitPrice);
+
+/// <summary>An order as stored. <see cref="Created"/> is kept as written (an ISO date, sometimes with a time).</summary>
+public sealed record Order(
+    int Id, string...
+00:56:24.666 [TOOL] -> ReadWorkspaceFile({"relativePath":"tests/OrderService.Tests/OrderApiTests.cs"})
+00:56:24.688 [TOOL] <- ReadWorkspaceFile: using OrderService;
 
 namespace OrderService.Tests;
 
@@ -344,57 +378,68 @@ public class OrderApiTests
     internal static OrderApi Api()
     {
         string csv = Path.Combine(TestContext.Curr...
-19:35:07.004 [TOOL] -> ReadWorkspaceFile({"relativePath":"src/OrderService/Orders.cs"})
-19:35:07.025 [TOOL] <- ReadWorkspaceFile: using System.Globalization;
+00:56:24.688 [TOOL] -> ReadWorkspaceFile({"relativePath":"src/OrderService/Program.cs"})
+00:56:24.708 [TOOL] <- ReadWorkspaceFile: using System.Globalization;
+using OrderService;
 
-namespace OrderService;
+// A tiny stand-in for a microservice: each "request" is an API method name and an order id.
+//   dotnet run -- <method> <order id>      one call, e.g. "order-total 1003"
+//   dotnet run -- serve data/requests.txt  replay a traffic file, one call per ...
+00:56:27.437 [TOOL] -> SearchWorkspace({"query":"1009,"})
+00:56:27.581 [TOOL] <- SearchWorkspace: No matches found.
+00:56:27.582 [TOOL] -> ReadWorkspaceFile({"relativePath":"src/OrderService/OrderApi.cs"})
+00:56:27.601 [TOOL] <- ReadWorkspaceFile: namespace OrderService;
 
-public sealed record OrderItem(string Sku, int Quantity, decimal UnitPrice);
+/// <summary>
+/// The service's API. Each method lives in its own file under Api/ (one per route); exceptions are caught and logged by
+/// the host, the way a web framework would turn them into 500 responses.
+/// </summary>
+public sealed partial class OrderApi
+{
+    private ...
+00:56:28.706 [TOOL] -> FindFiles({"pattern":"orders.csv"})
+00:56:29.071 [TOOL] <- FindFiles: Found 1 file(s) matching 'orders.csv':
 
-/// <summary>An order as stored. <see cref="Created"/> is kept as written (an ISO date, sometimes with a time).</summary>
-public sealed record Order(
-    int Id, string...
-19:35:08.905 [TOOL] -> SearchWorkspace({"query":"1009,"})
-19:35:09.050 [TOOL] <- SearchWorkspace: No matches found.
-19:35:09.050 [TOOL] -> FindFiles({"pattern":"*.cs","searchPath":"tests"})
-19:35:09.190 [TOOL] <- FindFiles: Found 4 file(s) matching '*.cs':
+data/orders.csv (947 B)
 
-tests/OrderService.Tests/obj/Debug/net10.0/.NETCoreApp,Version=v10.0.AssemblyAttributes.cs (196 B)
-tests/OrderService.Tests/obj/Debug/net10.0/OrderService.Tests.AssemblyInfo.cs (1006 B)
-tests/OrderService.Tests/obj/Debug/net10.0/OrderService.Tests.GlobalUsings.g.cs ...
-19:35:10.600 [TOOL] -> ReadWorkspaceFile({"relativePath":"data/orders.csv"})
-19:35:10.614 [TOOL] <- ReadWorkspaceFile: id,customer,items,discount_code,payment_ref,refunded,created,country,gift_message
+00:56:29.072 [TOOL] -> FindFiles({"pattern":"*.csproj"})
+00:56:29.429 [TOOL] <- FindFiles: Found 2 file(s) matching '*.csproj':
+
+src/OrderService/OrderService.csproj (326 B)
+tests/OrderService.Tests/OrderService.Tests.csproj (652 B)
+
+00:56:30.418 [TOOL] -> ReadWorkspaceFile({"relativePath":"data/orders.csv"})
+00:56:30.432 [TOOL] <- ReadWorkspaceFile: id,customer,items,discount_code,payment_ref,refunded,created,country,gift_message
 1001,Ada Lovelace,BOOK-1:2:12.50|PEN-3:1:4.00,WELCOME10,card_4242,false,2026-09-28,NL,
 1002,Alan Turing,LAPTOP-9:1:899.00,,card_1881,true,2026-09-29,DE,Happy birthday
 1003,Grace Hopper,MUG-2:3:8.00|TEA-7:2:5.50,SUMMER2...
-19:35:14.941 [TOOL] -> CreateBranch({"branchName":"fix/vat-b78c60c43442"})
-19:35:15.125 [TOOL] <- CreateBranch: Success (no output).
-19:35:17.346 [TOOL] -> SwitchBranch({"branchName":"fix/vat-b78c60c43442"})
-19:35:17.571 [TOOL] <- SwitchBranch: Success (no output).
-19:35:17.571 [TOOL] -> WriteWorkspaceFile({"relativePath":"src/OrderService/Api/Vat.cs","content":"namespace OrderService;\n\npublic sealed partial class OrderApi\n{\n    // Country codes are matched case-insensitively (the CSV holds e.g. \u0022nl\u0022 for NL). Unknown countries still throw:\n    // we never invent a rate.\n    private static readonly Dictionary\u003Cstring, decimal\u003E VatRates = new(StringComparer.OrdinalIgnoreCase)\n    {\n        [\u0022NL\u0022] = 0.21m,\n        [\u0022DE\u0022] = 0.19m,\n        [\u0022FR\u0022] = 0.20m,\n    };\n\n    /// \u003Csummary\u003EGET /orders/{id}/vat - the VAT included in the order total, at the rate of the order\u0027s country.\u003C/summary\u003E\n    public decimal GetVat(int id)\n    {\n        Order order = _orders.Get(id);\n        decimal rate = VatRates[order.Country];\n        decimal total = GetOrderTotal(id);\n        return Math.Round(total - total / (1 \u002B rate), 2);\n    }\n}\n"})
-19:35:17.597 [TOOL] <- WriteWorkspaceFile: Wrote src/OrderService/Api/Vat.cs (762 characters).
-19:35:20.429 [TOOL] -> WriteWorkspaceFile({"relativePath":"tests/OrderService.Tests/Regression/Errorb78c60c43442Tests.cs","content":"using OrderService;\n\nnamespace OrderService.Tests.Regression;\n\n/// \u003Csummary\u003E\n/// Regression for error b78c60c43442: GET /orders/1009/vat threw KeyNotFoundException for key \u0027nl\u0027.\n/// The order\u0027s country is stored in lowercase (\u0022nl\u0022), and the VAT rate lookup must match case-insensitively.\n/// \u003C/summary\u003E\npublic class Errorb78c60c43442Tests\n{\n    [Test]\n    public void GetVat_LowercaseCountryCode_UsesTheNlRate() =\u003E\n        Assert.That(OrderApiTests.Api().GetVat(1009), Is.EqualTo(2.78m));\n}\n"})
-19:35:20.448 [TOOL] <- WriteWorkspaceFile: Wrote tests/OrderService.Tests/Regression/Errorb78c60c43442Tests.cs (491 characters).
-19:35:21.465 [TOOL] -> DotNetBuild({})
-19:35:24.709 [TOOL] <- DotNetBuild: Succeeded.
+00:56:37.326 [TOOL] -> CreateBranch({"branchName":"fix/vat-02f2cfb74518"})
+00:56:37.512 [TOOL] <- CreateBranch: Success (no output).
+00:56:39.557 [TOOL] -> WriteWorkspaceFile({"relativePath":"src/OrderService/Api/Vat.cs","content":"namespace OrderService;\n\npublic sealed partial class OrderApi\n{\n    // Country codes are case-insensitive: order 1009 is stored as \u0022nl\u0022 and must get the NL rate.\n    private static readonly Dictionary\u003Cstring, decimal\u003E VatRates = new(StringComparer.OrdinalIgnoreCase)\n    {\n        [\u0022NL\u0022] = 0.21m,\n        [\u0022DE\u0022] = 0.19m,\n        [\u0022FR\u0022] = 0.20m,\n    };\n\n    /// \u003Csummary\u003EGET /orders/{id}/vat - the VAT included in the order total, at the rate of the order\u0027s country.\u003C/summary\u003E\n    public decimal GetVat(int id)\n    {\n        Order order = _orders.Get(id);\n        decimal rate = VatRates[order.Country];\n        decimal total = GetOrderTotal(id);\n        return Math.Round(total - total / (1 \u002B rate), 2);\n    }\n}\n"})
+00:56:39.583 [TOOL] <- WriteWorkspaceFile: Wrote src/OrderService/Api/Vat.cs (712 characters).
+00:56:44.223 [TOOL] -> WriteWorkspaceFile({"relativePath":"tests/OrderService.Tests/Regression/Error02f2cfb74518Tests.cs","content":"namespace OrderService.Tests.Regression;\n\n// Regression test for error 02f2cfb74518: GET vat for order 1009 threw KeyNotFoundException for country \u0027nl\u0027.\n// Order 1009 is 4 x PEN-3 at 4.00 = 16.00, no discount, country NL (21%): VAT = 16.00 - 16.00 / 1.21 = 2.78.\n[TestFixture]\npublic class Error02f2cfb74518Tests\n{\n    [Test]\n    public void GetVat_LowercaseCountryCode_UsesTheCountryRate() =\u003E\n        Assert.That(OrderApiTests.Api().GetVat(1009), Is.EqualTo(2.78m));\n}\n"})
+00:56:44.242 [TOOL] <- WriteWorkspaceFile: Wrote tests/OrderService.Tests/Regression/Error02f2cfb74518Tests.cs (470 characters).
+00:56:47.092 [TOOL] -> DotNetBuild({})
+00:56:50.126 [TOOL] <- DotNetBuild: Succeeded.
 0 error(s), 0 warning(s).
-19:35:25.686 [TOOL] -> DotNetTest({})
-19:35:29.401 [TOOL] <- DotNetTest: Passed!  - Failed:     0, Passed:    15, Skipped:     0, Total:    15, Duration: 61 ms - OrderService.Tests.dll (net10.0)
-19:35:33.253 [TOOL] -> Stage({})
-19:35:33.376 [TOOL] <- Stage: Success (no output).
-19:35:33.376 [TOOL] -> DiffStaged({})
-19:35:33.510 [TOOL] <- DiffStaged: diff --git a/src/OrderService/Api/Vat.cs b/src/OrderService/Api/Vat.cs
-index c9cb55a..df934b3 100755
+00:56:50.126 [TOOL] -> DotNetTest({})
+00:56:53.885 [TOOL] <- DotNetTest: Passed!  - Failed:     0, Passed:    15, Skipped:     0, Total:    15, Duration: 60 ms - OrderService.Tests.dll (net10.0)
+00:56:56.349 [TOOL] -> Stage({"pathSpec":"."})
+00:56:56.479 [TOOL] <- Stage: Success (no output).
+00:56:56.479 [TOOL] -> DiffStaged({})
+00:56:56.606 [TOOL] <- DiffStaged: diff --git a/src/OrderService/Api/Vat.cs b/src/OrderService/Api/Vat.cs
+index c9cb55a..ec8bf47 100755
 --- a/src/OrderService/Api/Vat.cs
 +++ b/src/OrderService/Api/Vat.cs
-@@ -2,7 +2,9 @@ namespace OrderService;
+@@ -2,7 +2,8 @@ namespace OrderService;
  
  public sealed partial class OrderApi
  {
 -    private static readonly Dictionary<string, ...
-19:35:35.199 [TOOL] -> Commit({"message":"fix(vat): match country codes case-insensitively so lowercase \u0027nl\u0027 no longer throws (error b78c60c43442)"})
-19:35:35.646 [TOOL] <- Commit: [fix/vat-b78c60c43442 ced8793] fix(vat): match country codes case-insensitively so lowercase 'nl' no longer throws (error b78c60c43442)
- 2 files changed, 17 insertions(+), 1 deletion(-)
- create mode 100644 tests/OrderService.Tests/Regression/Errorb78c60c43442Tests.cs
-19:35:36.608 [TOOL] -> GetLog({"count":1})
-19:35:36.675 [TOOL] <- GetLog: ced8793 fix(vat): match country codes case-insensitively so lowercase 'nl' no longer throws (error b78c60c43442)
+00:56:58.437 [TOOL] -> Commit({"message":"fix(vat): match country codes case-insensitively so \u0027nl\u0027 gets the NL rate (error 02f2cfb74518)"})
+00:56:58.944 [TOOL] <- Commit: [fix/vat-02f2cfb74518 9eb8b8a] fix(vat): match country codes case-insensitively so 'nl' gets the NL rate (error 02f2cfb74518)
+ 2 files changed, 13 insertions(+), 1 deletion(-)
+ create mode 100644 tests/OrderService.Tests/Regression/Error02f2cfb74518Tests.cs
+00:56:59.849 [TOOL] -> GetLog({"count":2})
+00:56:59.919 [TOOL] <- GetLog: 9eb8b8a fix(vat): match country codes case-insensitively so 'nl' gets the NL rate (error 02f2cfb74518)
+289dcf1 order-service as deployed

@@ -11,7 +11,7 @@ Built as features in [docs/features/](../features/README.md); each is one line u
 |---|---|---|
 | §4.1, §4.3 Recording | [F1 Usage ledger](../features/F01-usage-ledger.md) | **done** (2026-10-10): `input` is uncached input (the adapter's count minus cache reads and writes); `reasoning` is null on Claude; triage records are tied to their run, not to a task |
 | §4.2 Prices | [F2 Prices and cost](../features/F02-prices-and-cost.md) | **done** (2026-10-10): `config/prices.json` is tracked; a `long_prompt` tier (Haiku 5.5); also served at the API's `GET /prices` and read with `PRICES_URL` |
-| §7.2–7.4 Showing it (and the stream in §7.1) | [F3 Show usage](../features/F03-usage-display.md) | planned |
+| §7.2–7.4 Showing it (and the stream in §7.1) | [F3 Show usage](../features/F03-usage-display.md) | **done** (2026-10-11): the stream's `usage` is Claude's four token fields summed over the turn, plus `requests`, `cost`, `currency` and `unpriced`, also on `error` (FX6); every view totals with `UsageReport.Total`, and the short demo's comms log equals its ledger exactly ($0.252605); Rider's chat line is opt-in (`USAGE_IN_CHAT`); the web line shows cache writes on their own |
 | §5 Estimates | [F6 Estimates](../features/F06-estimates.md) | planned |
 | §6 Budgets | [F7 Budgets](../features/F07-budgets.md) (account-limit refusals: [F8](../features/F08-reliability.md)) | planned |
 | §7.1–7.2 Usage tab and API, §4.4 Reconciliation | [F11 Usage tab and reconciliation](../features/F11-usage-tab-and-reconciliation.md) | planned |
@@ -34,7 +34,11 @@ Out of scope: billing users, and anything that changes *how much* a request cost
 - **Recorded (F1, F2):** every model request is one line in the usage ledger (§4.1), priced from `config/prices.json`
   (§4.2), and tagged with its task and run (§4.3). The M1 baseline is in the features'
   [Benchmark](../features/README.md#the-benchmark).
-- **Not yet shown:** no host displays usage or cost (F3); totals come from `usage-probe -- --ledger`.
+- **Shown (F3):** a usage line after every answer (CLI on stderr, the web app with the chat's total, Rider with
+  `USAGE_IN_CHAT=true`), `/usage` in every host, `usage` on the API's `message_delta` (Claude's four token fields,
+  summed over the turn, plus `requests`, `cost`, `currency`, `unpriced`) and on `error` when a request had returned,
+  and cost per reply, per error and per run in the orchestrator's comms log, which equals the ledger's total for the
+  run. A usage tab and API over the whole ledger are F11.
 - The only limit is the Anthropic account's own: a credit balance and a monthly spend limit, set in the Anthropic
   Console. When either is hit, every request fails with a 400 ("credit balance is too low" / "reached your specified
   API usage limits") and the orchestrator marks each remaining error as failed. `-Resume` recovers afterwards, but
@@ -263,8 +267,8 @@ Same `AGENT_API_KEY` rules as the other endpoints.
 ## 9. Rollout
 
 1. **Ledger + prices** (with the optimisation spec's workstream A): records, cost, the monthly ledger, the per-answer
-   line, comms-log totals. Baseline: one demo run. *Ledger, prices and baseline done (F1, F2); the per-answer line and
-   comms-log totals are F3.*
+   line, comms-log totals. Baseline: one demo run. *Done: ledger, prices and baseline (F1, F2), the per-answer line and
+   comms-log totals (F3).*
 2. **Estimates**: model-based first, history-based once the ledger has enough tasks; shown in the demo script and run
    summary with estimate-vs-actual.
 3. **Budgets**: `warn` and `stop` first (session, run, day, month), then `ask` with the web app's continue button.

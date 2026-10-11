@@ -1,3 +1,5 @@
+using louis_agent.core.usage;
+
 namespace louis_agent.orchestrator.tests;
 
 public class LouisAgentClientTests
@@ -47,6 +49,61 @@ public class LouisAgentClientTests
         Assert.That(reply.Text, Does.StartWith("Fixed it."));
         Assert.That(progress, Has.Some.Contains("DotNetTest"));
         Assert.That(progress, Has.Some.Contains("error"));
+    }
+
+    [Test]
+    public async Task ReadStream_ReadsTheTurnsUsageFromMessageDelta()
+    {
+        // F3: louis-agent.api puts the turn's usage on message_delta, with Claude's field names.
+        const string stream = """
+            event: message_delta
+            data: {"type":"message_delta","delta":{"stop_reason":"end_turn"},"usage":{"input_tokens":1900,"cache_creation_input_tokens":3000,"cache_read_input_tokens":26000,"output_tokens":412,"requests":3,"cost":0.0061,"currency":"USD","unpriced":0}}
+
+            """;
+
+        var reply = await LouisAgentClient.ReadStreamAsync(new StringReader(stream));
+
+        Assert.That(reply.Usage, Is.EqualTo(new UsageTotal("louis-agent", 3, 1_900, 3_000, 26_000, 412, 0.0061m, 0)));
+        Assert.That(reply.Currency, Is.EqualTo("USD"));
+    }
+
+    [Test]
+    public async Task ReadStream_UnpricedUsage_HasNoCost()
+    {
+        const string stream = """
+            event: message_delta
+            data: {"type":"message_delta","delta":{"stop_reason":"end_turn"},"usage":{"input_tokens":2050,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":2,"requests":1,"cost":null,"currency":null,"unpriced":1}}
+
+            """;
+
+        var reply = await LouisAgentClient.ReadStreamAsync(new StringReader(stream));
+
+        Assert.That((reply.Usage!.Cost, reply.Usage.Unpriced, reply.Currency), Is.EqualTo(((decimal?)null, 1, (string?)null)));
+    }
+
+    [Test]
+    public async Task ReadStream_FailedReply_KeepsTheErrorAndItsUsage()
+    {
+        // FX6: the requests made before a failure were charged; the error event carries them.
+        const string stream = """
+            event: error
+            data: {"type":"error","error":{"type":"api_error","message":"HttpRequestException: 529 overloaded"},"usage":{"input_tokens":1200,"cache_creation_input_tokens":0,"cache_read_input_tokens":24000,"output_tokens":300,"requests":2,"cost":0.004,"currency":"USD","unpriced":0}}
+
+            """;
+
+        var reply = await LouisAgentClient.ReadStreamAsync(new StringReader(stream));
+
+        Assert.That(reply.Error, Is.EqualTo("HttpRequestException: 529 overloaded"));
+        Assert.That(reply.Usage, Is.EqualTo(new UsageTotal("louis-agent", 2, 1_200, 0, 24_000, 300, 0.004m, 0)));
+    }
+
+    [Test]
+    public async Task ReadStream_NoUsage_IsNull()
+    {
+        // An API that doesn't record usage, or an older one: the orchestrator works as before.
+        var reply = await LouisAgentClient.ReadStreamAsync(new StringReader(Stream));
+
+        Assert.That(reply.Usage, Is.Null);
     }
 
     [Test]

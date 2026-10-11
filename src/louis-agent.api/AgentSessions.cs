@@ -23,6 +23,9 @@ internal sealed class AgentSession(string id, List<ChatMessage> history, UsageTa
     /// <summary>Messages started in this session; the current one's number is the usage ledger's turn.</summary>
     public int Turns { get; private set; }
 
+    /// <summary>The usage of the session's finished turns, for /usage and GET /sessions/{id} (F3).</summary>
+    public UsageSession Usage { get; } = new();
+
     /// <summary>Starts a turn unless one is already running; the turn stops if the client disconnects.</summary>
     public bool TryStartTurn(CancellationToken requestAborted, out CancellationTokenSource turn)
     {

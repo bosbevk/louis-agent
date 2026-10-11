@@ -74,12 +74,14 @@ app.MapPost("/sessions", (CreateSessionRequest? request, AgentSessions sessions)
     }, statusCode: StatusCodes.Status201Created);
 });
 
-app.MapGet("/sessions/{id}", (string id, AgentSessions sessions) =>
+// usage: the session's finished turns, like message_delta's (null when the API doesn't record usage).
+app.MapGet("/sessions/{id}", (string id, AgentSessions sessions, AgentEngine engine) =>
     sessions.Get(id) is { } session
         ? Results.Json(new
         {
             session_id = session.Id, created_at = session.CreatedAt, last_activity = session.LastActivity, busy = session.IsBusy,
             task = session.Tags.Task, run = session.Tags.Run, service = session.Tags.Service,
+            usage = engine.RecordsUsage ? ClaudeStyleStream.Usage(session.Usage.Records) : null,
         })
         : UnknownSession(id));
 
@@ -142,12 +144,13 @@ static async IAsyncEnumerable<SseItem<string>> StreamTurnAsync(
     AgentEngine engine, AgentSession session, string prompt, CancellationTokenSource turn)
 {
     var stream = new ClaudeStyleStream(session.Id);
+    UsageScope? usage = null;
     try
     {
         yield return stream.MessageStart();
 
-        // /tools, /approve and /reject are answered directly, never by the model.
-        if (engine.HandleUserCommand(prompt) is { } commandReply)
+        // /tools, /approve, /reject and /usage are answered directly, never by the model (so they have no usage).
+        if (engine.HandleUserCommand(prompt, engine.RecordsUsage ? session.Usage.Records : null) is { } commandReply)
         {
             foreach (var item in stream.Text(commandReply)) yield return item;
             foreach (var item in stream.Stop("end_turn")) yield return item;
@@ -156,7 +159,7 @@ static async IAsyncEnumerable<SseItem<string>> StreamTurnAsync(
 
         // This is an async iterator, so a scope it makes current is lost at its first yield: the scope is activated
         // around each step of the engine's stream instead, which is where the model requests run.
-        using var usage = UsageScope.Begin(host: "api", session: session.Id, turn: session.Turns, tags: session.Tags);
+        usage = UsageScope.Begin(host: "api", session: session.Id, turn: session.Turns, tags: session.Tags);
         await using var updates = engine.StreamPromptAsync(session.History, prompt, turn.Token).GetAsyncEnumerator(turn.Token);
         string stopReason = "end_turn";
         string? error = null;
@@ -185,18 +188,33 @@ static async IAsyncEnumerable<SseItem<string>> StreamTurnAsync(
                 yield return item;
         }
 
+        // The stream has ended (or thrown), so every request of the turn, a cancelled or failed one too, is in the scope.
+        // None when no request returned (e.g. the first one failed): there is nothing to report.
+        IReadOnlyList<UsageRecord> turnRecords = usage.Records;
+        object? turnUsage = engine.RecordsUsage && turnRecords.Count > 0 ? ClaudeStyleStream.Usage(turnRecords) : null;
         if (error is not null)
         {
             foreach (var item in stream.CloseBlock()) yield return item;
-            yield return ClaudeStyleStream.Event("error", Error("api_error", error));
+            // FX6: the requests made before the failure were charged, so the error carries the turn's usage too (an
+            // extra field: Claude's error event has none, and its clients ignore what they don't know).
+            yield return ClaudeStyleStream.Event("error", turnUsage is null
+                ? Error("api_error", error)
+                : new { type = "error", error = new { type = "api_error", message = error }, usage = turnUsage });
         }
         else
         {
-            foreach (var item in stream.Stop(stopReason)) yield return item;
+            foreach (var item in stream.Stop(stopReason, turnUsage)) yield return item;
         }
     }
     finally
     {
+        // Here rather than after the loop: if the client disconnects, the SSE writer stops reading and the code after
+        // the last yield never runs, but what the turn used still counts toward the session.
+        if (usage is not null)
+        {
+            session.Usage.EndTurn(usage.Records);
+            usage.Dispose();
+        }
         session.EndTurn(turn);
     }
 }
@@ -252,11 +270,37 @@ internal sealed class ClaudeStyleStream(string sessionId)
 
     public IEnumerable<SseItem<string>> Text(string text) => Delta("text", new { type = "text_delta", text });
 
-    public IEnumerable<SseItem<string>> Stop(string stopReason)
+    /// <param name="stopReason">end_turn, cancelled, …</param>
+    /// <param name="usage">The turn's <see cref="Usage"/>; left out of the event when null (a command, or no ledger).</param>
+    public IEnumerable<SseItem<string>> Stop(string stopReason, object? usage = null)
     {
         foreach (var item in CloseBlock()) yield return item;
-        yield return Event("message_delta", new { type = "message_delta", delta = new { stop_reason = stopReason } });
+        yield return Event("message_delta", usage is null
+            ? (object)new { type = "message_delta", delta = new { stop_reason = stopReason } }
+            : new { type = "message_delta", delta = new { stop_reason = stopReason }, usage });
         yield return Event("message_stop", new { type = "message_stop" });
+    }
+
+    /// <summary>
+    /// What a turn (or a session) used, as the usage object on Claude's <c>message_delta</c>: the same four token fields,
+    /// summed over every model request of the turn, plus our <c>requests</c>, <c>cost</c> and <c>currency</c>. The four
+    /// kinds don't overlap (F1), as in Claude's own usage: <c>input_tokens</c> is the uncached input. Cost is null when
+    /// no request was priced ("price unknown", never 0); <c>unpriced</c> counts the requests without a price.
+    /// </summary>
+    public static object Usage(IReadOnlyList<UsageRecord> records)
+    {
+        UsageTotal total = UsageReport.Total("usage", records);
+        return new
+        {
+            input_tokens = total.Input,
+            cache_creation_input_tokens = total.CacheWrite,
+            cache_read_input_tokens = total.CacheRead,
+            output_tokens = total.Output,
+            requests = total.Requests,
+            cost = total.Cost,
+            currency = total.Cost is null ? null : records.First(r => r.Cost is not null).Cost!.Currency,
+            unpriced = total.Unpriced,
+        };
     }
 
     public IEnumerable<SseItem<string>> CloseBlock()

@@ -117,6 +117,11 @@
             <div class="notice">@_notice <button class="icon" @onclick="() => _notice = null">×</button></div>
         }
 
+        @if (!ViewerOpen && _chat?.Usage() is { } chatUsage)
+        {
+            <div class="chat-usage" title="@UsageFormat.Detail(chatUsage)">@UsageFormat.Total(chatUsage)</div>
+        }
+
         <div class="composer @(ViewerOpen ? "hidden" : "")">
             @if (_attachments.Count > 0)
             {
@@ -502,12 +507,29 @@
 
             case "message_delta":
                 turn.StopReason = data.GetProperty("delta").GetProperty("stop_reason").GetString();
+                // Only on turns that called the model, and only from an API that records usage.
+                if (data.TryGetProperty("usage", out var usage) && usage.ValueKind == JsonValueKind.Object)
+                    turn.Usage = ReadUsage(usage);
                 break;
 
             case "error":
                 turn.Error = data.GetProperty("error").GetProperty("message").GetString();
+                // FX6: a failed turn still reports what its requests used, so the chat total matches the server's.
+                if (data.TryGetProperty("usage", out var used) && used.ValueKind == JsonValueKind.Object)
+                    turn.Usage = ReadUsage(used);
                 break;
         }
+    }
+
+    private static TurnUsage ReadUsage(JsonElement usage)
+    {
+        long Count(string name) => usage.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.Number ? value.GetInt64() : 0;
+        return new TurnUsage(
+            Count("input_tokens"), Count("cache_creation_input_tokens"), Count("cache_read_input_tokens"), Count("output_tokens"),
+            (int)Count("requests"),
+            usage.TryGetProperty("cost", out var cost) && cost.ValueKind == JsonValueKind.Number ? cost.GetDecimal() : null,
+            usage.TryGetProperty("currency", out var currency) && currency.ValueKind == JsonValueKind.String ? currency.GetString() : null,
+            (int)Count("unpriced"));
     }
 
     private static string? FormatInput(JsonElement input) =>

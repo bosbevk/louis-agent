@@ -3,7 +3,8 @@
 A self-hosted AI coding agent for .NET, built on [Microsoft.Extensions.AI](https://learn.microsoft.com/dotnet/ai/microsoft-extensions-ai).
 It works on your repository with real tools — files, git, `dotnet`, Python, PowerShell, bash, web search, Azure DevOps and
 Paymo — and talks to you through JetBrains Rider, a web app, an HTTP API or the terminal. Answers stream as they are
-written, including the model's thinking and every tool call.
+written, including the model's thinking and every tool call, and each answer says what it used and cost
+(`turn: 3 requests · 28k tokens (26k cached) · $0.006`; `/usage` for the whole session).
 
 Runs on Claude (Anthropic) by default; Ollama and OpenAI-compatible endpoints work too.
 
@@ -104,6 +105,7 @@ Settings live in `config/.env` and secrets in `config/.env.secrets`; both are gi
 | `GOOGLE_SEARCH_API_KEY`, `GOOGLE_SEARCH_ENGINE_ID` | Google for web search; without them it uses DuckDuckGo *(secret)* |
 | `REPOSITORIES_PATH`, `ACP_MOUNT_MAPPINGS` | Extra repositories mounted into the containers, and how Rider's Windows paths map to them |
 | `USAGE_LEDGER`, `LOG_DIRECTORY` | Usage ledger (on by default): one JSON line per model request in `{LOG_DIRECTORY}/usage-YYYY-MM.jsonl` (`logs/` from Docker) |
+| `USAGE_IN_CHAT` | `true` adds the usage line to Rider's chat after each answer (off by default; the CLI and web app always show it) |
 | `PRICES_FILE`, `PRICES_URL` | Price table for the ledger's costs: default `config/prices.json` (tracked, with today's Claude prices; local models at 0), or fetched from the API's `GET /prices` |
 
 ## HTTP API

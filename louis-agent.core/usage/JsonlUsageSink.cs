@@ -22,7 +22,7 @@ public sealed class JsonlUsageSink(string directory) : IUsageSink
     /// <summary>Raised after each record is written, or after a write failed.</summary>
     public event Action<UsageRecord>? UsageRecorded;
 
-    public void Record(UsageRecord record)
+    public UsageRecord Record(UsageRecord record)
     {
         string fileName = FileNameFor(record.At);
         try
@@ -42,6 +42,8 @@ public sealed class JsonlUsageSink(string directory) : IUsageSink
         }
 
         UsageRecorded?.Invoke(record);
+        // Returned even when the write failed: the request still happened, so the turn's totals still count it.
+        return record;
     }
 
     /// <summary>One file per month, named by when the request finished (UTC), e.g. usage-2026-10.jsonl.</summary>
