@@ -1,20 +1,14 @@
-namespace louis_agent.core;
+namespace LouisAgent.Core.Hosting;
 
 using dotenv.net;
 using LouisAgent.Core.Config;
-using louis_agent.core.tools;
+using LouisAgent.Core.Agent;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Usage;
 using LouisAgent.Core.Pricing;
 using LouisAgent.Core.Llm;
 using LouisAgent.Core.Hosting;
-
-/// <summary>Everything an entry point needs after bootstrap.</summary>
-/// <param name="Prices">The price table the usage ledger prices with (louis-agent.api also serves it at GET /prices).</param>
-/// <param name="Rates">Exchange rates from the price table's currency, for showing costs in another currency (F14).</param>
-/// <param name="Display">The currency costs are shown in (F14): HOST_CULTURE's region, DISPLAY_CURRENCY, or as charged.</param>
-public sealed record AgentHostContext(
-    AgentEngine Engine, LlmOptions Llm, AgentOptions Agent, PriceTable Prices, ExchangeRates Rates, DisplayCurrency Display);
+using LouisAgent.Core.Logging;
 
 /// <summary>
 /// Single bootstrap shared by the CLI, ACP and MCP entry points: dotenv load, option binding,
@@ -367,7 +361,7 @@ public static partial class AgentHost
         Console.Error.WriteLine($"[INFO] Loaded TimeLoggingSkillsProvider");
 
         // Any other *-skills.md dropped into the skills folder (including ones the agent created) loads without code changes
-        foreach (string file in DiscoverSkillFiles(agent).Where(f => !BuiltInSkillFiles.Contains(Path.GetFileName(f))))
+        foreach (string file in DiscoverSkillFiles(agent).Where(f => !SkillFiles.BuiltIn.Contains(Path.GetFileName(f))))
         {
             composite.AddProvider(new MarkdownSkillProvider(file, includeDefaultInstructions: false));
             Console.Error.WriteLine($"[INFO] Discovered skills file: {Path.GetFileName(file)}");
@@ -381,13 +375,6 @@ public static partial class AgentHost
 
     /// <summary>Functions whose skills file is loaded for every agent, so it must not be loaded a second time.</summary>
     private static readonly HashSet<string> AlwaysLoadedFunctions = new(StringComparer.OrdinalIgnoreCase) { "dotnet", "python", "powershell", "bash", "web" };
-
-    /// <summary>Skill files loaded by a dedicated provider; discovery skips them to avoid loading them twice.</summary>
-    internal static readonly HashSet<string> BuiltInSkillFiles = new(StringComparer.OrdinalIgnoreCase)
-    {
-        "devops-skills.md", "paymo-skills.md", "code-review-skills.md", "time-logging-skills.md",
-        "dotnet-skills.md", "python-skills.md", "powershell-skills.md", "bash-skills.md", "web-skills.md", "self-extension-skills.md",
-    };
 
     /// <summary>The folder holding default.md and the *-skills.md files, or null if none was found.</summary>
     public static string? FindSkillsDirectory(AgentOptions agent) =>

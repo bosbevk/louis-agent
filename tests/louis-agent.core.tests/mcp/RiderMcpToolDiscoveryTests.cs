@@ -1,5 +1,5 @@
 using LouisAgent.Core.Protocols.Mcp;
-using louis_agent.core.tools;
+using LouisAgent.Core.Agent;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Skills;
 using Microsoft.Extensions.AI;

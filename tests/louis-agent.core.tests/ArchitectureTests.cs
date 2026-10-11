@@ -1,5 +1,4 @@
 using System.Text.RegularExpressions;
-using louis_agent.core;
 using LouisAgent.Core.Pricing;
 using LouisAgent.Core.Llm;
 using LouisAgent.Core.Llm.AnthropicProvider;
@@ -14,6 +13,7 @@ using LouisAgent.Core.Tools.Scripts;
 using LouisAgent.Core.Tools.Shell;
 using LouisAgent.Core.Tools.Web;
 using LouisAgent.Core.Tools.Workspace;
+using LouisAgent.Core.Logging;
 
 namespace LouisAgent.Core.Tests;
 
@@ -27,7 +27,7 @@ public partial class ArchitectureTests
     // A folder may use its own layer and the ones below; Tools never uses Llm (a tool doesn't call a model).
     private static readonly Dictionary<string, int> Layers = new()
     {
-        ["Config"] = 0, ["Messages"] = 0,
+        ["Config"] = 0, ["Messages"] = 0, ["Logging"] = 0,
         ["Guardrails"] = 1,
         ["Llm"] = 2, ["Tools"] = 2, ["Skills"] = 2, ["Usage"] = 2, ["Pricing"] = 2, ["Protocols"] = 2,
         ["Agent"] = 3,
@@ -39,13 +39,6 @@ public partial class ArchitectureTests
     // that no longer violates, so the list can only shrink.
     private static readonly HashSet<string> Pending =
     [
-        "AgentHost.cs: namespace louis_agent.core, expected LouisAgent.Core",
-        "AgentHost.cs: 2 top-level types, one per file",
-        "AgentHost.cs: '(root)' isn't a concern folder",
-        "AgentLog.cs: namespace louis_agent.core, expected LouisAgent.Core",
-        "AgentLog.cs: '(root)' isn't a concern folder",
-        "Tools/AgentEngine.cs: namespace louis_agent.core.tools, expected LouisAgent.Core.Tools",
-        "Tools/AgentEngine.cs: Tools uses Llm",
     ];
 
     [Test]

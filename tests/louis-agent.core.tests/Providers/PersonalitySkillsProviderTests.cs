@@ -1,6 +1,6 @@
-using louis_agent.core;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Skills;
+using LouisAgent.Core.Hosting;
 
 namespace LouisAgent.Core.Tests;
 

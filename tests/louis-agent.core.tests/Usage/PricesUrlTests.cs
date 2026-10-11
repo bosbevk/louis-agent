@@ -2,8 +2,8 @@ using System.Net;
 using System.Text.Json;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Usage;
-using louis_agent.core;
 using LouisAgent.Core.Pricing;
+using LouisAgent.Core.Hosting;
 
 namespace LouisAgent.Core.Tests;
 

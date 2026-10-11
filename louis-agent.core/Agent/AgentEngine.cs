@@ -1,4 +1,4 @@
-namespace louis_agent.core.tools;
+namespace LouisAgent.Core.Agent;
 
 using System.ComponentModel;
 using System.Diagnostics;
@@ -23,6 +23,7 @@ using LouisAgent.Core.Tools.Scripts;
 using LouisAgent.Core.Tools.Shell;
 using LouisAgent.Core.Tools.Web;
 using LouisAgent.Core.Tools.Workspace;
+using LouisAgent.Core.Logging;
 
 /// <summary>
 /// Orchestrates one chat turn: the model is given the agent's tools and
@@ -760,7 +761,7 @@ public partial class AgentEngine
         if (string.IsNullOrWhiteSpace(markdown)) return "Error: markdown content is empty.";
 
         string fileName = $"{name}-skills.md";
-        if (name == "default" || AgentHost.BuiltInSkillFiles.Contains(fileName))
+        if (name == "default" || SkillFiles.BuiltIn.Contains(fileName))
             return $"Error: '{fileName}' is a built-in skills file and cannot be replaced; choose another name.";
 
         string path = Path.Combine(SkillsDirectory, fileName);

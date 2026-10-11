@@ -99,6 +99,13 @@ The review stop: after step 3, when the pattern is set, and at the end before pu
 - **`Llm/AnthropicProvider/`, not `Llm/Anthropic/`:** a namespace `LouisAgent.Core.Llm.Anthropic` hides the Anthropic
   SDK's root namespace inside `LouisAgent.Core.Llm`, so `using Anthropic.Models.Messages;` there would not compile. A
   provider's folder is `Llm/{Name}Provider/`; the rule in docs/CLAUDE.md says so.
+- **`RiderMcpToolDiscovery` in `Hosting/`, not `Protocols/Mcp/`:** it registers Rider's tools with the engine at
+  start-up and only `AgentHost` calls it, so in `Protocols/` it would use `Agent`, a layer above. `Protocols/Mcp/` holds
+  the client.
+- **A `Logging/` folder at layer 0 for `AgentLog`, not `Hosting/`:** the agent loop and the usage ledger both write to
+  it, so it must sit below them. The messages-and-NLog cleanup puts its `ILogger` setup there too.
+- **`BuiltInSkillFiles` moves to `Skills/SkillFiles`:** the engine refuses to overwrite those files, and the list lived
+  in `AgentHost`, a layer above the engine.
 
 ## Verification
 

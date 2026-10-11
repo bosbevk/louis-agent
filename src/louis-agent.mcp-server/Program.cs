@@ -1,8 +1,7 @@
 using System.ComponentModel;
 using System.Security.Cryptography;
 using System.Text;
-using louis_agent.core;
-using louis_agent.core.tools;
+using LouisAgent.Core.Agent;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.AI;
@@ -10,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using ModelContextProtocol.Server;
+using LouisAgent.Core.Hosting;
 
 // The MCP client brings its own model; this server publishes the agent's tools (workspace, git, DotNet*, Python*,
 // PowerShell*, Bash*, skills, agent-built tools, ...) so that client can call them.

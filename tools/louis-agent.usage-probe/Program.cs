@@ -1,5 +1,4 @@
 using Anthropic.Models.Messages;
-using louis_agent.core;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Skills;
@@ -7,6 +6,7 @@ using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
 using LouisAgent.Core.Pricing;
 using LouisAgent.Core.Llm;
+using LouisAgent.Core.Hosting;
 
 // Prints what a provider's adapter reports in UsageDetails, streaming and not, and what its IUsageMapper makes of it.
 // Run it before trusting the usage ledger for a new provider or after upgrading an adapter (F1 step 1).

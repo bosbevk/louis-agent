@@ -1,6 +1,6 @@
 namespace LouisAgent.Core.Hosting;
 
-using louis_agent.core.tools;
+using LouisAgent.Core.Agent;
 using LouisAgent.Core.Protocols.Mcp;
 
 /// <summary>

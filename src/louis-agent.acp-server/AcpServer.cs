@@ -1,6 +1,6 @@
 using System.Collections.Concurrent;
 using System.Text.Json;
-using louis_agent.core.tools;
+using LouisAgent.Core.Agent;
 using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
 using LouisAgent.Core.Pricing;

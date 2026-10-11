@@ -1,13 +1,13 @@
 using System.Text.Json;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Skills;
-using louis_agent.core.tools;
+using LouisAgent.Core.Agent;
 using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
-using louis_agent.core;
 using LouisAgent.Core.Pricing;
 using LouisAgent.Core.Llm;
 using LouisAgent.Core.Llm.AnthropicProvider;
+using LouisAgent.Core.Hosting;
 
 namespace LouisAgent.Core.Tests;
 

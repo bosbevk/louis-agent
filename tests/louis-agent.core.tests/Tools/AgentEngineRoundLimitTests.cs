@@ -1,5 +1,5 @@
 using LouisAgent.Core.Skills;
-using louis_agent.core.tools;
+using LouisAgent.Core.Agent;
 using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Core.Tests;

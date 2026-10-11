@@ -5,7 +5,6 @@ using Anthropic;
 using Anthropic.Core;
 using Anthropic.Models.Messages;
 using LouisAgent.Core.Config;
-using louis_agent.core.tools;
 using Microsoft.Extensions.AI;
 using OllamaSharp;
 using OpenAI;

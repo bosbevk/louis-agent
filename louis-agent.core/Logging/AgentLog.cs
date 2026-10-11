@@ -1,4 +1,4 @@
-namespace louis_agent.core;
+namespace LouisAgent.Core.Logging;
 
 using System.Reflection;
 using System.Text;
