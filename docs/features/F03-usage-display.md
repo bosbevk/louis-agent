@@ -86,8 +86,9 @@ the comms log, so that I know what the demo (and any real run) cost.
   requests, unlike Claude's per-request usage, and `unpriced` tells "$0.002 for all of it" from "for 2 of 3 requests".
 - **The web line shows cache writes on their own** (step 5), not inside "in" as F3-S1 says:
   `1.9k in · 3k cache write · 26k cached · 412 out · $0.004`, with each kind left out when it's zero. The four kinds
-  are priced differently (a cache write costs 1.25× input), so folding writes into "in" would hide why one answer cost
-  more than another; the API sends them separately anyway (`cache_creation_input_tokens`).
+  are priced differently (a cache write costs 1.25× input for 5 minutes, 2× for an hour), so folding writes into "in"
+  would hide why one answer cost more than another; the API sends them separately anyway
+  (`cache_creation_input_tokens`).
 - **The web app's chat total sits above the message box**, not in a header (step 5): the conversation pane has none,
   and above the composer it's always in view.
 - **`/usage` replies are a markdown list** (step 5): the web app and Rider render replies as markdown, which ran the
