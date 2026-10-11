@@ -1,7 +1,7 @@
 # FX6 · A turn that fails still reports what it used
 
-> **Status:** open · **Area:** louis-agent.api stream, web app, orchestrator · **Found:** F3 steps 5 and 7 (2026-10-11),
-> while writing them; not yet seen in a run
+> **Status:** done (2026-10-11) · **Area:** louis-agent.api stream, web app, orchestrator · **Found:** F3 steps 5 and 7
+> (2026-10-11), while writing them; never seen in a run · **Built:** as part of F3 (see its plan)
 
 ## Symptom
 
@@ -23,11 +23,12 @@ The usage of a turn travels on `message_delta` (F3 step 4). A turn that fails en
 The requests that ran before the failure were charged and are in the ledger: the recorder writes every request that
 returned (F1), and the API adds the turn to the session in its `finally`.
 
-## Fix (proposed)
+## Fix
 
-Send the turn's usage with the error too, as an extra `usage` field on the `error` event, the same object as on
-`message_delta`; `null` when the turn made no request. Claude's own `error` event has no usage, but extra fields are
-ignored by Claude clients, as with `requests` and `cost` on `message_delta`. Then:
+The turn's usage goes with the error too, as an extra `usage` field on the `error` event, the same object as on
+`message_delta`, left out when no request of the turn returned (the first one failed: nothing to report). Claude's own
+`error` event has no usage, but extra fields are ignored by Claude clients, as with `requests` and `cost` on
+`message_delta`. Then:
 
 - the web app reads `usage` from `error` as well as from `message_delta`;
 - `LouisAgentClient` does the same, so the comms log's per-reply line, the error's totals and `fixes.jsonl` include it.
@@ -37,13 +38,18 @@ stop reason Claude doesn't have, and clients that treat `message_delta` as succe
 
 ## Tests
 
-- Orchestrator: `ReadStreamAsync` reads `usage` from an `error` event (`LouisAgentClientTests`).
-- API and web app: by hand, by making a turn fail after a model request (e.g. stopping Ollama mid-turn) and checking
-  the `error` event and the chat total.
+- Orchestrator: `ReadStream_FailedReply_KeepsTheErrorAndItsUsage` (`LouisAgentClientTests`) reads the error and its
+  usage from an `error` event.
+- API: by hand on Ollama. A model that doesn't exist fails before any request returns, and its `error` event has no
+  `usage`; a working model's turn still ends with `message_delta` and its usage.
+- Not checked by hand: a turn failing *after* a request returned (it needs Ollama stopped mid-turn, and qwen makes one
+  request). The API builds that event from the same `usage` object as `message_delta`, and both clients' reading of it
+  is the code above.
 
 ## Confirmed
 
-Not yet.
+The whole solution's tests pass (core 623, orchestrator 32, order-service 14), and the two API cases above. F3's
+step 8 demo is the run that would show it, if a fix reply fails.
 
 ## Lesson
 

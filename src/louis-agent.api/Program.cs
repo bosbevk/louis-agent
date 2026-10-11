@@ -188,15 +188,21 @@ static async IAsyncEnumerable<SseItem<string>> StreamTurnAsync(
                 yield return item;
         }
 
+        // The stream has ended (or thrown), so every request of the turn, a cancelled or failed one too, is in the scope.
+        // None when no request returned (e.g. the first one failed): there is nothing to report.
+        IReadOnlyList<UsageRecord> turnRecords = usage.Records;
+        object? turnUsage = engine.RecordsUsage && turnRecords.Count > 0 ? ClaudeStyleStream.Usage(turnRecords) : null;
         if (error is not null)
         {
             foreach (var item in stream.CloseBlock()) yield return item;
-            yield return ClaudeStyleStream.Event("error", Error("api_error", error));
+            // FX6: the requests made before the failure were charged, so the error carries the turn's usage too (an
+            // extra field: Claude's error event has none, and its clients ignore what they don't know).
+            yield return ClaudeStyleStream.Event("error", turnUsage is null
+                ? Error("api_error", error)
+                : new { type = "error", error = new { type = "api_error", message = error }, usage = turnUsage });
         }
         else
         {
-            // The stream has ended (or thrown), so every request of the turn, a cancelled one too, is in the scope.
-            object? turnUsage = engine.RecordsUsage ? ClaudeStyleStream.Usage(usage.Records) : null;
             foreach (var item in stream.Stop(stopReason, turnUsage)) yield return item;
         }
     }

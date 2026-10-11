@@ -197,8 +197,6 @@ feature when its turn comes; remove its line here and update the map's *Missing*
 
 - [ ] Metrics and tracing (e.g. OpenTelemetry) beyond the stderr and JSON-lines logs: latency and error dashboards
       (usage and cost are covered by F1–F3 and F11)
-- [ ] [FX6](docs/fixes/FX06-usage-on-failed-turns.md) A turn that fails still reports what it used: usage on the API's
-      `error` event, read by the web app and the orchestrator, so their totals match the ledger
 
 ## Known limitations
 
@@ -224,6 +222,9 @@ backlog item removes one, it says so.
 ## Done
 
 Newest first; details in the git history.
+
+- 2026-10-11 — [FX6](docs/fixes/FX06-usage-on-failed-turns.md): a failed louis-agent turn still reports its usage (on
+  the API's `error` event), so the web app's chat total and the orchestrator's comms log match the ledger; built in F3
 
 - 2026-10-11 — [FX5](docs/fixes/FX05-null-conditional-ledger.md): a `?.` in F3's first step skipped the ledger write for
   requests outside a usage scope; F1's tests caught it before the commit

@@ -514,6 +514,9 @@
 
             case "error":
                 turn.Error = data.GetProperty("error").GetProperty("message").GetString();
+                // FX6: a failed turn still reports what its requests used, so the chat total matches the server's.
+                if (data.TryGetProperty("usage", out var used) && used.ValueKind == JsonValueKind.Object)
+                    turn.Usage = ReadUsage(used);
                 break;
         }
     }

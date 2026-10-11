@@ -143,6 +143,9 @@ internal sealed partial class LouisAgentClient(HttpClient http, string? apiKey)
                     break;
                 case "error":
                     error = root.GetProperty("error").GetProperty("message").GetString();
+                    // FX6: a failed reply still reports what it used, so the fix's cost isn't under-counted.
+                    if (root.TryGetProperty("usage", out var failedUsage) && failedUsage.ValueKind == JsonValueKind.Object)
+                        (usage, currency) = ReadUsage(failedUsage);
                     break;
             }
         }

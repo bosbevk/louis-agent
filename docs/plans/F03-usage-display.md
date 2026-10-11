@@ -64,6 +64,13 @@ Branch `feature/f3-usage-display` off `main`.
    log run total equals `usage-probe -- --ledger` for that run (F3's *Done when*), saved as the short sample. Finish per
    the checklist: TODO, status, spec map, GOAL map (skills 13 and 17: usage visible; M1 complete).
 
+## Approved during the build (2026-10-11)
+
+- **F14 Display currency** written as a feature doc for after F3 (not built in F3).
+- **[FX6](../fixes/FX06-usage-on-failed-turns.md) built as part of F3**, before step 8: a failed turn's usage on the
+  API's `error` event, read by the web app and the orchestrator, so the demo's "comms log total equals the ledger"
+  check can't fail just because a reply failed.
+
 ## Verification
 
 - `dotnet test louis-agent-solution.sln` (core, orchestrator, order-service) after every step.

@@ -88,8 +88,9 @@ the comms log, so that I know what the demo (and any real run) cost.
   and above the composer it's always in view.
 - **`/usage` replies are a markdown list** (step 5): the web app and Rider render replies as markdown, which ran the
   plain lines into one paragraph.
-- **A turn that ends in an error has no usage in the web app or the comms log**: the API sends an `error` event, not
-  `message_delta`, so those totals can be below the ledger's ([FX6](../fixes/FX06-usage-on-failed-turns.md), open).
+- **A failed turn's usage goes on the `error` event** ([FX6](../fixes/FX06-usage-on-failed-turns.md), built in F3
+  before step 8): without it, the web app's chat total and the comms log left a failed turn out while the ledger
+  counted it.
 - **The orchestrator's triage scope opens before its `try`** (step 7), so a failed triage still reports what it used;
   `using var` inside the loop disposes it at the end of each pass, `continue` and `break` included. With no triage
   ledger, the comms log shows "-", not "0 requests".

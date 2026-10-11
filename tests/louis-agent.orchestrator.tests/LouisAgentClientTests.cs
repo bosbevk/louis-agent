@@ -82,6 +82,22 @@ public class LouisAgentClientTests
     }
 
     [Test]
+    public async Task ReadStream_FailedReply_KeepsTheErrorAndItsUsage()
+    {
+        // FX6: the requests made before a failure were charged; the error event carries them.
+        const string stream = """
+            event: error
+            data: {"type":"error","error":{"type":"api_error","message":"HttpRequestException: 529 overloaded"},"usage":{"input_tokens":1200,"cache_creation_input_tokens":0,"cache_read_input_tokens":24000,"output_tokens":300,"requests":2,"cost":0.004,"currency":"USD","unpriced":0}}
+
+            """;
+
+        var reply = await LouisAgentClient.ReadStreamAsync(new StringReader(stream));
+
+        Assert.That(reply.Error, Is.EqualTo("HttpRequestException: 529 overloaded"));
+        Assert.That(reply.Usage, Is.EqualTo(new UsageTotal("louis-agent", 2, 1_200, 0, 24_000, 300, 0.004m, 0)));
+    }
+
+    [Test]
     public async Task ReadStream_NoUsage_IsNull()
     {
         // An API that doesn't record usage, or an older one: the orchestrator works as before.
