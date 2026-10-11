@@ -97,6 +97,6 @@ public static class UsageText
     private static string Requests(int count) => count == 1 ? "1 request" : $"{count} requests";
 
     /// <summary>The currency of the priced records; USD when none is priced (then no amount is shown anyway).</summary>
-    private static string CurrencyOf(IEnumerable<UsageRecord> records) =>
+    internal static string CurrencyOf(IEnumerable<UsageRecord> records) =>
         records.FirstOrDefault(r => r.Cost is not null)?.Cost!.Currency ?? "USD";
 }

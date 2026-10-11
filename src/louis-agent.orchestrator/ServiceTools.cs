@@ -55,6 +55,8 @@ internal sealed partial class ServiceTools(
         try
         {
             var toolCalls = new List<AgentToolCall>();
+            var usage = new List<UsageTotal>();
+            string? currency = null;
             AgentReply reply = await SendAsync(FixPrompt(error, expectedBehaviour, branch));
             FixResult? result = LouisAgentClient.ParseFixResult(reply.Text);
 
@@ -72,6 +74,8 @@ internal sealed partial class ServiceTools(
                 var answer = await louisAgent.SendAsync(sessionId, message, Progress, cancellationToken);
                 comms.Received(answer, LouisAgentClient.ParseFixResult(answer.Text));
                 toolCalls.AddRange(answer.ToolCalls);
+                if (answer.Usage is { } used) usage.Add(used);
+                currency ??= answer.Currency;
                 return answer;
             }
 
@@ -86,6 +90,8 @@ internal sealed partial class ServiceTools(
                 summary = result?.Summary,
                 reason = result?.Reason ?? reply.Error,
                 tool_calls = toolCalls.Count,
+                // What louis-agent reported for every reply of this fix (F3); null when it doesn't record usage.
+                usage = CommsLog.Json(usage.Count == 0 ? null : UsageReport.Sum("louis-agent", usage), currency),
                 louis_agent_said = ProcessRunner.Tail(reply.Text, 1500),
             };
             Append("fixes.jsonl", outcome);

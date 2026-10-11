@@ -1,7 +1,14 @@
 using System.Text;
 using System.Text.Json;
+using louis_agent.core.usage;
 
 namespace louis_agent.orchestrator;
+
+/// <summary>
+/// What one error event used (F3): the orchestrator's triage (its own requests), louis-agent's fix (the usage it reported
+/// for each reply), and both together. A part is null when it wasn't measured: no triage ledger, or no fix requested.
+/// </summary>
+internal sealed record EventUsage(UsageTotal? Triage, UsageTotal? LouisAgent, UsageTotal? Total);
 
 /// <summary>
 /// One Markdown file with everything the agents said to each other: per error event, each message the orchestrator
@@ -16,6 +23,9 @@ internal sealed class CommsLog(string path)
     private EventSummary? _current;
     private bool _checksHeaderWritten;
 
+    // One currency per run: both agents price from the same table (the demo's orchestrator reads louis-agent's /prices).
+    private string _currency = "USD";
+
     public string Path { get; } = System.IO.Path.GetFullPath(path);
 
     private sealed class EventSummary(int number, ErrorEvent error)
@@ -28,6 +38,10 @@ internal sealed class CommsLog(string path)
         public List<string> Checks { get; } = [];
         public string Outcome { get; set; } = "unknown";
         public string Reason { get; set; } = "";
+
+        /// <summary>The usage louis-agent reported for each reply of this event's fix.</summary>
+        public List<UsageTotal> LouisAgentReplies { get; } = [];
+        public EventUsage Usage { get; set; } = new(null, null, null);
     }
 
     public void StartRun(string service, Uri louisAgentUrl, string model)
@@ -86,11 +100,14 @@ internal sealed class CommsLog(string path)
         {
             e.ToolCalls += reply.ToolCalls.Count;
             if (result is not null) e.Fix = result;
+            if (reply.Usage is { } used) e.LouisAgentReplies.Add(used);
         }
+        if (reply.Currency is { } currency) _currency = currency;
 
         var md = new StringBuilder();
         md.AppendLine($"### louis-agent → orchestrator · reply {_current?.Messages ?? 0} · {reply.ToolCalls.Count} tool call(s) · stop: {reply.StopReason ?? "none"}");
         md.AppendLine();
+        if (reply.Usage is { } usage) md.AppendLine($"Usage: {UsageText.Describe(usage, _currency)}").AppendLine();
         if (reply.ToolCalls.Count > 0)
         {
             md.AppendLine("| # | Tool | Input | Result |");
@@ -132,11 +149,20 @@ internal sealed class CommsLog(string path)
         Append(md.ToString());
     }
 
-    public void EndEvent(string outcome, string reason, string orchestratorAnswer)
+    /// <param name="triage">The triage's own usage (its <see cref="UsageScope"/>'s records); null when it isn't recorded.</param>
+    /// <returns>What the event used, for <c>decisions.jsonl</c>.</returns>
+    public EventUsage EndEvent(string outcome, string reason, string orchestratorAnswer, IReadOnlyList<UsageRecord>? triage = null)
     {
-        if (_current is not { } e) return;
+        if (_current is not { } e) return new EventUsage(null, null, null);
         e.Outcome = outcome;
         e.Reason = reason;
+
+        if (triage is not null && triage.Any(r => r.Cost is not null)) _currency = UsageText.CurrencyOf(triage);
+        UsageTotal? triageTotal = triage is null ? null : UsageReport.Total("triage", triage);
+        UsageTotal? fixTotal = e.LouisAgentReplies.Count == 0 ? null : UsageReport.Sum("louis-agent", e.LouisAgentReplies);
+        UsageTotal?[] parts = [triageTotal, fixTotal];
+        e.Usage = new EventUsage(triageTotal, fixTotal,
+            parts.Any(p => p is not null) ? UsageReport.Sum("total", parts.OfType<UsageTotal>()) : null);
 
         var md = new StringBuilder();
         md.AppendLine().AppendLine("### Summary").AppendLine();
@@ -149,11 +175,18 @@ internal sealed class CommsLog(string path)
             md.AppendLine($"| Commit | {Code(e.Fix?.Commit)} |");
         }
         md.AppendLine($"| Orchestrator checked | {(e.Checks.Count == 0 ? "-" : Cell(string.Join(" · ", e.Checks), 600))} |");
+        if (e.Usage.Total is { } total)
+        {
+            md.AppendLine($"| Usage: triage | {Describe(e.Usage.Triage)} |");
+            md.AppendLine($"| Usage: louis-agent | {Describe(e.Usage.LouisAgent)} |");
+            md.AppendLine($"| Usage: total | **{UsageText.Describe(total, _currency)}** |");
+        }
         md.AppendLine().AppendLine("Orchestrator's closing answer:").AppendLine();
         md.AppendLine(Quote(orchestratorAnswer.Trim()));
         md.AppendLine();
         Append(md.ToString());
         _current = null;
+        return e.Usage;
     }
 
     public void EndRun()
@@ -164,12 +197,21 @@ internal sealed class CommsLog(string path)
         md.AppendLine($"Finished {DateTimeOffset.Now:yyyy-MM-dd HH:mm:ss zzz}. " +
                       string.Join(", ", _events.GroupBy(e => e.Outcome).OrderBy(g => g.Key).Select(g => $"{g.Count()} {g.Key}")) + ".");
         md.AppendLine();
-        md.AppendLine("| # | Request | Exception | Decision | louis-agent | Branch | Commit |");
-        md.AppendLine("|---|---------|-----------|----------|-------------|--------|--------|");
+        md.AppendLine("| # | Request | Exception | Decision | louis-agent | Branch | Commit | Tokens | Cost |");
+        md.AppendLine("|---|---------|-----------|----------|-------------|--------|--------|--------|------|");
         foreach (var e in _events)
         {
             string agent = e.Messages == 0 ? "-" : $"{e.Fix?.Status ?? "no result"} ({e.Messages} msg, {e.ToolCalls} tools)";
-            md.AppendLine($"| {e.Number} | `{e.Error.Method} {e.Error.Arguments}` | {ShortType(e.Error.ExceptionType)} | **{e.Outcome}** | {agent} | {Code(e.Fix?.Branch)} | {Code(e.Fix?.Commit)} |");
+            md.AppendLine($"| {e.Number} | `{e.Error.Method} {e.Error.Arguments}` | {ShortType(e.Error.ExceptionType)} | **{e.Outcome}** | {agent} | {Code(e.Fix?.Branch)} | {Code(e.Fix?.Commit)} | {Tokens(e.Usage.Total)} | {Cost(e.Usage.Total)} |");
+        }
+
+        // The run's total, split by agent: the figure to compare with the usage ledger's for this run id.
+        var totals = _events.Select(e => e.Usage).ToList();
+        if (totals.Any(u => u.Total is not null))
+        {
+            UsageTotal Sum(string key, Func<EventUsage, UsageTotal?> part) => UsageReport.Sum(key, totals.Select(part).OfType<UsageTotal>());
+            md.AppendLine().AppendLine($"**Run total:** {UsageText.Describe(Sum("total", u => u.Total), _currency)} " +
+                                       $"(triage {Cost(Sum("triage", u => u.Triage))}, louis-agent {Cost(Sum("louis-agent", u => u.LouisAgent))}).");
         }
 
         var branches = _events.Where(e => e.Outcome == "fixed" && e.Fix?.Branch is not null).Select(e => e.Fix!.Branch!).ToList();
@@ -196,6 +238,32 @@ internal sealed class CommsLog(string path)
     private static string Field(string name, string? value) => value is null ? "" : $" · {name} `{value}`";
 
     private static string Code(string? value) => value is null ? "-" : $"`{value}`";
+
+    private string Describe(UsageTotal? usage) => usage is null ? "-" : UsageText.Describe(usage, _currency);
+
+    private static string Tokens(UsageTotal? usage) =>
+        usage is null ? "-" : UsageText.Tokens(usage.Input + usage.CacheWrite + usage.CacheRead + usage.Output);
+
+    private string Cost(UsageTotal? usage) => usage is null ? "-" : UsageText.Cost(usage, _currency);
+
+    /// <summary>
+    /// A usage total for the jsonl files, with louis-agent.api's field names so every file reads alike; null when not
+    /// measured.
+    /// </summary>
+    internal static object? Json(UsageTotal? usage, string? currency) => usage is null ? null : new
+    {
+        requests = usage.Requests,
+        input_tokens = usage.Input,
+        cache_creation_input_tokens = usage.CacheWrite,
+        cache_read_input_tokens = usage.CacheRead,
+        output_tokens = usage.Output,
+        cost = usage.Cost,
+        currency = usage.Cost is null ? null : currency,
+        unpriced = usage.Unpriced,
+    };
+
+    /// <summary>The run's currency so far, for the jsonl files.</summary>
+    internal string Currency => _currency;
 
     private static string Quote(string text) =>
         string.Join("\n", text.ReplaceLineEndings("\n").Split('\n').Select(line => line.Length == 0 ? ">" : "> " + line));
