@@ -8,7 +8,7 @@
 > **In the TODO:** tick **F16 Summariser** under *Now* ([TODO](../../TODO.md)) · **Takes over:** F10-S3 (a cheaper
 > model for summaries)
 
-When a tool result passes 50,000 characters, `AgentEngine.SummariseToolResultAsync` sends up to 200,000 characters of
+When a tool result passes 50,000 characters, `ToolCallGuards.SummariseToolResultAsync` (`Agent/`) sends up to 200,000 characters of
 it to the main model with an inline prompt and a 16,000-token output cap, the same as a whole turn. Nobody knows how
 often it fires, which tools cause it, or whether a summary keeps what the next step needed. F9 will need the same skill
 again to compact old turns. F16 makes the summariser one component with its own settings, prompt and policy, and
@@ -56,7 +56,7 @@ instructions, so that there is one summariser, one place to tune it, and one eva
 
 - **`Summariser`** (`louis-agent.core/context/`): `Task<string?> SummariseAsync(SummaryJob job, string text, string?
   request, CancellationToken)`, returning null on failure so the engine keeps today's fallback (truncation).
-  `AgentEngine` takes it as a constructor argument and calls it where it calls `SummariseToolResultAsync` today.
+  `AgentEngine` takes it as a constructor argument and calls it where `ToolCallGuards` calls `SummariseToolResultAsync` today.
 - **Its client** comes from `LlmClientFactory.CreateSummaryClient(options)`: `SUMMARY_MODEL` or the main model, with
   `NoPromptCaching` and its own usage recorder (as summaries are recorded today, outside the tool loop).
 - **Output cap** 2,000 tokens by default, in line with Anthropic's 1,000–2,000-token guidance for condensed returns.

@@ -1,5 +1,6 @@
 namespace LouisAgent.Core.Agent;
 
+using System.ComponentModel;
 using System.Reflection;
 using LouisAgent.Core.Messages;
 using Microsoft.Extensions.AI;
@@ -31,12 +32,20 @@ internal sealed class ToolRegistry
         Live.Insert(~at, tool);
     }
 
-    /// <summary>Adds every public instance method the object declares as a tool, named and described by the method.</summary>
+    /// <summary>
+    /// Adds every public instance method the object declares as a tool, named and described by the method; the
+    /// description with LF line endings, whatever the checkout (<see cref="AgentEngine.Normalise"/>).
+    /// </summary>
     public void AddPublicMethods(object target)
     {
         foreach (MethodInfo method in target.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly))
         {
-            Add(AIFunctionFactory.Create(method, target));
+            Add(AIFunctionFactory.Create(method, target, new AIFunctionFactoryOptions
+            {
+                Description = method.GetCustomAttribute<DescriptionAttribute>() is { } description
+                    ? AgentEngine.Normalise(description.Description)
+                    : null,
+            }));
         }
     }
 

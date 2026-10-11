@@ -52,7 +52,7 @@ coding tools, so that every fix sends a smaller prefix.
 Changes:
 
 - **`AgentOptions.Toolsets`** from `AGENT_TOOLSETS` (null = all available).
-- **`AgentEngine` constructor:** each `AddPublicMethodsAsTools(...)` guarded by its toolset; key checks unchanged.
+- **`AgentEngine` constructor:** each `_registry.AddPublicMethods(...)` guarded by its toolset; key checks unchanged.
 - **`AgentHost.LoadSkills`:** always-loaded guides become "loaded when their toolset is"; `default.md` is split so its
   tool sections are per toolset — either separate files (`default.md` keeps rules and workflows only) or headings the
   loader filters. Prefer separate files: simpler to load and to read.

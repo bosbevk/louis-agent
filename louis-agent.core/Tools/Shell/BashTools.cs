@@ -151,12 +151,15 @@ public sealed class BashTools
     private static bool _searched;
 
     /// <summary>
+    /// The bash to start: <see cref="FindBash"/>, else the name the OS would find. Skills and agent-built tools use it,
+    /// so they run the same (Git) bash as BashRun, never the WSL stub.
+    /// </summary>
+    internal static string ResolveShell() => FindBash() ?? (OperatingSystem.IsWindows() ? "bash" : "/bin/bash");
+
+    /// <summary>
     /// Locates bash: BASH_PATH/SKILL_SHELL override, then /bin/bash, or Git Bash on Windows. Never the WSL stub in
     /// System32, which starts a separate Linux environment and drops the process environment.
     /// </summary>
-    // Shared with BashRun so skills, agent-built tools and the bash toolset all use the same (Git) bash, never the WSL stub.
-    internal static string ResolveShell() => FindBash() ?? (OperatingSystem.IsWindows() ? "bash" : "/bin/bash");
-
     internal static string? FindBash()
     {
         if (_searched) return _bash;

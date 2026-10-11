@@ -58,7 +58,7 @@ features' [Benchmark](../features/README.md#the-benchmark).
 - Nothing is shown: since F1 and F2 every request is recorded and priced in the usage ledger, but no host displays it
   yet (F3).
 - History only grows. The one guard is that a single tool result over 50,000 characters is summarised
-  (`AgentEngine.SummariseToolResultAsync`); everything else stays verbatim until the session ends.
+  (`ToolCallGuards.SummariseToolResultAsync`); everything else stays verbatim until the session ends.
 - Every session gets all tools, including Paymo and DevOps in a code-fixing container that will never use them.
 
 **What already works and stays:** streaming everywhere; oversized-result summarisation; cut-off tool calls are never
@@ -261,7 +261,7 @@ message cache from that point, so they run **rarely, at thresholds** — not eve
    point from F15, below the smaller of a share of its window and its price step: under 100,000 tokens on Haiku 5.5),
    replace
    everything before the last `CONTEXT_KEEP_TURNS` user turns (default 3) with one summary message, written by a
-   separate tool-less call — the same pattern as `SummariseToolResultAsync`. Keep thinking blocks that later tool
+   separate tool-less call — the same pattern as `ToolCallGuards.SummariseToolResultAsync`. Keep thinking blocks that later tool
    rounds still need. Write the original turns to the session log before replacing them, so nothing is lost for
    debugging. (Anthropic's server-side compaction is beta and Anthropic-only; it supports Haiku 5.5 but not Haiku 4.5,
    so a hand-rolled step keeps the core provider-neutral.)

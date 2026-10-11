@@ -1,25 +1,18 @@
 namespace LouisAgent.Core.Agent;
 
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Text.Json;
-using System.Text.RegularExpressions;
 using LouisAgent.Core.Config;
-using LouisAgent.Core.Messages;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
 using LouisAgent.Core.Pricing;
 using LouisAgent.Core.Llm;
-using LouisAgent.Core.Tools;
 using LouisAgent.Core.Tools.DotNet;
 using LouisAgent.Core.Tools.Git;
 using LouisAgent.Core.Tools.Integrations.DevOps;
 using LouisAgent.Core.Tools.Integrations.Paymo;
-using LouisAgent.Core.Tools.Scripts;
 using LouisAgent.Core.Tools.Shell;
 using LouisAgent.Core.Tools.Web;
 using LouisAgent.Core.Tools.Workspace;
@@ -30,7 +23,7 @@ using LouisAgent.Core.Logging;
 /// <see cref="FunctionInvokingChatClient"/> runs the tool-call loop until the model produces a final answer.
 /// Provider specifics live entirely behind <see cref="IChatClient"/>.
 /// </summary>
-public partial class AgentEngine
+public class AgentEngine
 {
     // Room for a sizeable file in one tool call; larger files are written in chunks (see default.md).
     internal const int MaxOutputTokens = LlmClientFactory.MaxOutputTokens;

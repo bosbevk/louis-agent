@@ -45,6 +45,21 @@ public class ToolRegistryTests
     }
 
     [Test]
+    public void AddPublicMethods_GivesDescriptionsLfLineEndings()
+    {
+        // A multi-line [Description] takes the checkout's line endings; the model must get the same bytes everywhere.
+        var registry = new ToolRegistry();
+        registry.AddPublicMethods(new CrlfToolset());
+
+        Assert.That(registry.Live.Single().Description, Is.EqualTo("Line one\nline two"));
+    }
+
+    private sealed class CrlfToolset
+    {
+        [System.ComponentModel.Description("Line one\r\nline two")] public string Multi() => "ok";
+    }
+
+    [Test]
     public void Contains_IsOrdinal_UnlessAskedOtherwise()
     {
         var registry = new ToolRegistry();
