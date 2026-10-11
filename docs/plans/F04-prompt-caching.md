@@ -132,6 +132,18 @@ Branch `feature/f4-prompt-caching` off `main`.
   - Step 6 prices each write at its own lifetime's rate. One request can now hold writes of both, so it needs the split
     from step 1; without it, writes are priced at the 1-hour rate when `LLM_CACHE_TTL=1h` (an upper bound, said so in
     the record).
+- **Also on this branch, approved during the build but not part of F4** (2026-10-11):
+  - **Tool registration with `BinarySearch`** (step 2, after review): `AddTool` keeps the list sorted with a binary
+    search, and a duplicate tool name throws at start-up instead of being sent twice.
+  - **Messages and logging:** the rule in docs/CLAUDE.md (message text in enums with `[Description]` templates, logging
+    through `ILogger` with NLog), the `Messages` helper and the four enums with a test over every member; F4's new
+    messages use them, and the ~230 existing ones move in a cleanup after F4.
+  - **Project layout:** the rule in docs/CLAUDE.md (folders by concern, namespace = folder path, one-way dependencies,
+    an architecture test); the move is the first of the two cleanups after F4.
+  - **Two backlog lines in the TODO:** Redis (the fast, short-lived layer: an exact-match response cache, hot state) and
+    MongoDB (the durable layer: sessions and transcripts, long-term memory, vector search for a semantic cache).
+  - **The paid runs kept as samples:** the smoke check in `samples/smoke-f4-caching/`, and both benchmark runs in
+    `samples/sample-output-cached/` and `-short-cached/`, with the uncached samples as their "before".
 
 ## Verification
 

@@ -82,6 +82,21 @@ public class CacheWriteLifetimeTests
     }
 
     [Test]
+    public async Task NoWritesReported_LeavesTheSplitNullToo()
+    {
+        // An uncached request (the demo's triage): the API still sends cache_creation with zeros, but the adapter reports
+        // no cache_creation_input_tokens, so cache_write is null; its split must be null as well, not 0 (F1).
+        string uncached = Reply(split: ""","cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0}""")
+            .Replace("\"cache_creation_input_tokens\":248", "\"cache_creation_input_tokens\":0");
+        var (client, sink) = Recorder(uncached, "application/json", new AnthropicUsageMapper());
+
+        await client.GetResponseAsync([new ChatMessage(ChatRole.User, "hi")]);
+
+        UsageTokens tokens = sink.Records.Single().Tokens;
+        Assert.That((tokens.CacheWrite, tokens.CacheWrite1h), Is.EqualTo(((long?)null, (long?)null)));
+    }
+
+    [Test]
     public async Task TheStandardMapper_KeepsNothing()
     {
         var (client, sink) = Recorder(Stream, "text/event-stream", new StandardUsageMapper());

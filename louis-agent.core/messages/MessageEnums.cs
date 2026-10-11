@@ -15,6 +15,9 @@ public enum ErrorMessage
     [Description("{Message} has no [Description].")]
     MessageHasNoTemplate,
 
+    [Description("Two tools are named '{Name}'; tool names must be unique across all toolsets.")]
+    DuplicateToolName,
+
     [Description("Unknown LLM_CACHE '{Value}'. Use on or off.")]
     UnknownCacheSetting,
 

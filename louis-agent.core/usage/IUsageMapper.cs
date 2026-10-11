@@ -69,8 +69,13 @@ public sealed class AnthropicUsageMapper : StandardUsageMapper
     /// </summary>
     public override bool Keeps(object raw) => Usage(raw) is not null;
 
-    public override UsageTokens Map(UsageDetails? usage, IReadOnlyList<object> raw) =>
-        Map(usage) with { CacheWrite1h = raw.Select(r => Usage(r)?.CacheCreation).OfType<CacheCreation>().FirstOrDefault()?.Ephemeral1hInputTokens };
+    public override UsageTokens Map(UsageDetails? usage, IReadOnlyList<object> raw)
+    {
+        UsageTokens tokens = Map(usage);
+        // Not reported is null, never 0 (F1): with no writes reported there is nothing to split.
+        if (tokens.CacheWrite is null) return tokens;
+        return tokens with { CacheWrite1h = raw.Select(r => Usage(r)?.CacheCreation).OfType<CacheCreation>().FirstOrDefault()?.Ephemeral1hInputTokens };
+    }
 
     private static Usage? Usage(object raw) => raw switch
     {

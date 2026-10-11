@@ -238,6 +238,14 @@ per fix about −88%. The short demo: $0.0488 against $0.2884 uncached (−83%).
 - **The orchestrator's triage is not cached** (`LLM_CACHE=off` in the demo): its caching and lifetime are F17's.
 - **Marker 1 is shared across sessions:** in the benchmark the prefix (47,424 tokens) was written once per run, and
   every later fix read it in its own session.
+- **`tool_choice: none` didn't break the conversation's cache, though Anthropic's docs say a change of `tool_choice`
+  invalidates it.** A message that reaches the 10-round limit ends with one more request that keeps the tools but sets
+  `tool_choice: none` (FX1: Haiku 5.5 rejects a request without the tools). In both benchmark runs, all 8 of those
+  round-11 requests read everything round 10 sent (55,611–59,434 tokens, the prompt minus 2) and wrote only what was
+  new. So today the change costs nothing. If the API starts enforcing the documented rule, each such request would
+  rewrite the conversation instead: about 56,000 tokens at 1.25× instead of 0.1×, about $0.006 more per round-limited
+  message on Haiku 5.5. The ledger would show it as `cache_read` at about the prefix size on round 11; F10 (more rounds
+  per route) makes those requests rarer either way.
 
 - **Writes split by lifetime reach the ledger on both paths** (step 6, measured on captured replies through the
   adapter). `UsageDetails` carries only the total (`CacheCreationInputTokens`); the split is on the SDK's own usage: the
