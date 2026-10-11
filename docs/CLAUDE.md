@@ -131,10 +131,38 @@ docs/                         # This guide, features/ (planned work), plans/ (ap
 4. Test it in `tests/louis-agent.core.tests/Tools/`.
 
 **Every public method on a tool class becomes a tool.** Helpers must be `internal` or `private` (the test project and
-`louis-agent.api` can see internals). Tool names must be unique across all classes.
+`louis-agent.api` can see internals). Tool names must be unique across all classes: a duplicate stops the engine at
+start-up.
 
 Return strings the model can act on: say what went wrong and what to do instead. Keep output bounded — results over
 50,000 characters get summarised; most toolsets cap their own output at 12,000.
+
+### Messages and logging
+
+**No message text inline in C#.** Every message is a member of a message enum, and its `[Description]` is the text, a
+template with **named** holes:
+
+```csharp
+public enum ErrorMessage
+{
+    [Description("Unknown LLM_CACHE_TTL '{Value}'. Use 5m or 1h.")]
+    UnknownCacheTtl,
+}
+
+throw new ArgumentException(Messages.Format(ErrorMessage.UnknownCacheTtl, new { Value = other }));
+logger.LogWarning(Messages.Template(LogMessage.RatesFallback), url, reason);   // NLog fills the holes, as structured fields
+```
+
+- **What counts:** exception messages, log lines, the error strings tools return to the model, and user-facing text
+  (`/usage`, the usage line, CLI help, comms log headings). Enums by kind (`ErrorMessage`, `LogMessage`, `ToolMessage`,
+  `UserText`), each member named for what happened, not for its wording.
+- **Logging goes through `ILogger` (Microsoft.Extensions.Logging) with NLog as the provider:** levels and targets in
+  `nlog.config`, console output to **stderr only** (stdout carries the ACP and MCP protocols), run files and JSON-lines
+  records as NLog targets. Holes are named (`{Url}`), so NLog stores them as fields.
+- **A unit test checks every message enum:** each member has a `[Description]`, and its template's holes are well formed.
+- **Moving there:** the existing ~230 messages (35 files), `Console.Error` and `AgentLog` move in one refactor after F4
+  (TODO, *Quality and CI*). Until it lands, new code defines its messages as enum members but still writes logs with
+  `Console.Error.WriteLine(Messages.Format(...))`; the refactor switches those calls to `ILogger`.
 
 ### Adding a skill
 
@@ -171,7 +199,8 @@ anywhere else.
 
 - Tool calls are logged to stderr: `[TOOL] -> Name(args)` and `[TOOL] <- Name: result` (or `failed: …`).
 - In Docker, logs persist in `logs/`; `docker logs louis_agent_api` shows the API.
-- Write debug output to `Console.Error`, never `Console.Out`: stdout carries the ACP and MCP protocols.
+- Write debug output to `Console.Error` (through NLog's stderr target once *Messages and logging* is in place), never
+  `Console.Out`: stdout carries the ACP and MCP protocols.
 - Every model request is in the usage ledger, `{LOG_DIRECTORY}/usage-YYYY-MM.jsonl` (tokens, cost, host, session,
   turn, fix and run; no prompt text). Total one with
   `dotnet run --project tools/louis-agent.usage-probe -- --ledger logs/usage-YYYY-MM.jsonl`.
