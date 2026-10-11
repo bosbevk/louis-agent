@@ -89,6 +89,25 @@ Maps `LlmOptions` to an `IChatClient`:
   (low 2,048 / medium 4,096 / high 8,192 tokens).
 - **Ollama:** `OllamaApiClient`. **OpenAI-compatible:** `OpenAIClient(...).GetChatClient(model).AsIChatClient()`.
 
+### Provider strategies
+
+When Anthropic, OpenAI-compatible endpoints and Ollama each need different logic for the same concern, that concern is
+a **strategy**: one interface, one implementation per provider that differs (plus a default for the rest, often a
+no-op), chosen once by `LlmClientFactory` from `LLM_PROVIDER`. Callers depend only on the interface, so `AgentEngine`,
+the tools and the hosts never branch on a provider's name, and adding a provider means adding implementations, not
+editing callers. Use one only when providers really differ; a concern every provider handles the same way needs none.
+
+| Concern | Interface | Implementations | Status |
+|---|---|---|---|
+| How usage is reported | `IUsageMapper` | `StandardUsageMapper` (default), `AnthropicUsageMapper` (cache writes) | Built (F1) |
+| Prompt caching | `IPromptCachingStrategy` | Anthropic (cache markers), none for OpenAI-compatible (it caches prefixes on its own) and Ollama | Planned ([F4](plans/F04-prompt-caching.md)) |
+| Thinking settings | to be extracted | Anthropic's fixed budget for pre-4.6 models is an inline wrapper in `LlmClientFactory` today | Candidate ([F10](features/F10-route-settings.md) S4) |
+| Context window | to be designed | Ollama needs `num_ctx` sent; Claude's window is fixed | Planned ([F15](features/F15-model-limits.md)) |
+| Errors, retries and limits | to be designed | Each provider reports rate and account limits differently | Planned ([F8](features/F08-reliability.md)) |
+
+The same pattern is used outside the providers: `IRatesMapper` (exchange-rate sources) and `IWebSearchProvider`
+(Google, DuckDuckGo).
+
 ### `AgentEngine` (`tools/AgentEngine.cs`)
 Provider-agnostic. Owns the tools, the system prompt (skill documentation) and the tool-call loop:
 - `StreamPromptAsync(history, input)` streams `ChatResponseUpdate`s (text, `TextReasoningContent`, tool calls and

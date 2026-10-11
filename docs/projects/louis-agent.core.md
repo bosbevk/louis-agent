@@ -105,7 +105,9 @@ attributes (108 tools with Paymo and DevOps enabled). Helpers must be `internal`
 - **A tool:** a public method with `[Description]`s on a tool class; a new class is registered in the `AgentEngine`
   constructor; mention it in a skill file; test it in `tests/louis-agent.core.tests/Tools/`.
 - **A skill:** `Skills/{name}-skills.md`; loaded with `AGENT_FUNCTION={name}` or `louis`.
-- **A provider:** a branch in `LlmClientFactory`; provider differences never go into `AgentEngine` or the tools.
+- **A provider:** a branch in `LlmClientFactory`; provider differences never go into `AgentEngine` or the tools. Where
+  it needs its own logic for a concern (usage, caching, …), add its implementation of that concern's strategy
+  ([Architecture: Provider strategies](../ARCHITECTURE.md#provider-strategies)).
 - **Another agent:** `new AgentEngine(skills, client, options, toolsets: [yourTools])`, as the orchestrator does; pass
   `usageSink: AgentHost.CreateUsageSink(options)` and the factory's `CreateUsageMapper` to record its usage.
 - **A host:** open a `UsageScope` per turn, or its records have no host, session or turn.

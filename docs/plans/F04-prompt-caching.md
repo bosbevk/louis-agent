@@ -1,6 +1,6 @@
 # Plan: F4 Prompt caching
 
-> **For:** [F4 Prompt caching](../features/F04-prompt-caching.md) · **Approved:** 2026-10-11 (option B for marker 2; louis-agent's chat turns only)
+> **For:** [F4 Prompt caching](../features/F04-prompt-caching.md) · **Approved:** 2026-10-11 (option B for marker 2; louis-agent's chat turns only; caching as a provider strategy)
 
 ## Context
 
@@ -56,7 +56,18 @@ F4 doesn't wait for F15: Haiku 5.5's cache minimum is 512 tokens and our prefix 
      output, which is over 512 tokens, so the automatic marker would write it at 1.25× and nothing would ever read it.
    - Effect on the benchmark: triage was about 5% of the short demo's cost ($0.013 of $0.25), so leaving it uncached
      barely moves the comparison with M1. The report gives louis-agent's cost and the run total separately.
-5. **FX4 stays separate.** Its triggers (CreateTool, `/approve`, `/reject`, a skill reload, the API's shared tool list)
+5. **Caching is a provider strategy** (decided 2026-10-11; [Architecture: Provider strategies](../ARCHITECTURE.md#provider-strategies)).
+   Instead of an Anthropic-only client added by an `if` in the factory:
+   - `IPromptCachingStrategy` (`providers/`): given a request's messages and options, returns what to send.
+   - `AnthropicPromptCaching`: the system marker and the top-level `cache_control` (design point 2).
+   - `NoPromptCaching`: the default, for Ollama and OpenAI-compatible endpoints (OpenAI caches long prefixes on its
+     own and reports the cached tokens, which F1's `StandardUsageMapper` already reads; nothing to send).
+   - `PromptCachingChatClient`: one provider-neutral `DelegatingChatClient` that asks its strategy for each request
+     (and skips `summary` scopes, design point 4). `LlmClientFactory` picks the strategy once, as it picks the
+     `IUsageMapper`.
+   *Why:* the provider logic stays in one class per provider, nothing outside the factory names a provider, and a
+   provider that later needs markers (or a per-agent policy from F16/F17) adds an implementation, not a branch.
+6. **FX4 stays separate.** Its triggers (CreateTool, `/approve`, `/reject`, a skill reload, the API's shared tool list)
    break the cache as well as the thinking signatures, but the demo hits none of them, so F4's measurement is valid
    without it. Recommendation: build FX4 right after F4, before F5 (F5 also gives sessions their own tool lists).
 
@@ -74,15 +85,17 @@ Branch `feature/f4-prompt-caching` off `main`.
    same tool JSON and system prompt. *Concept:* the cache key is the exact bytes; silent invalidators. *Skill:* #3, #13.
 3. **Settings:** `LLM_CACHE` (on/off) and `LLM_CACHE_TTL` (`5m` default, `1h`) in `LlmOptions`, with `.env.example`.
    *Tests:* parsing, defaults, a bad value is rejected with a clear message. *Skill:* #13.
-4. **`AnthropicCachingChatClient`.** A `DelegatingChatClient` in `providers/`: marker 1 on the system text, and the
-   top-level `cache_control` for the conversation. *Tests (recording fake):* the system marker and the top-level field
-   carry the same TTL (a 1-hour entry may not follow a 5-minute one); no message after the system prompt gets a marker;
-   the caller's message list and messages are unchanged afterwards; a request with no system message still works; a
-   request in a `summary` scope gets no marker and no top-level field. *Concept:* breakpoints, render order, the
-   4-marker limit, automatic vs explicit placement. *Skill:* #13, #7 context engineering.
-5. **Factory wiring.** `LlmClientFactory` adds the client only for `LLM_PROVIDER=anthropic` with `LLM_CACHE=on`.
-   *Tests:* Ollama and OpenAI-compatible clients unchanged; caching off leaves Anthropic unchanged. The demo's
-   orchestrator service gets `LLM_CACHE=off` (design point 4). *Concept:* provider-neutral core. *Skill:* #1.
+4. **The caching strategy and its client.** `IPromptCachingStrategy`, `AnthropicPromptCaching`, `NoPromptCaching`
+   and `PromptCachingChatClient` (design point 5). *Tests:* with Anthropic's strategy (recording fake inner client), the
+   system marker and the top-level field carry the same TTL (a 1-hour entry may not follow a 5-minute one); no message
+   after the system prompt gets a marker; the caller's message list and messages are unchanged afterwards; a request
+   with no system message still works; a request in a `summary` scope gets no marker and no top-level field. With
+   `NoPromptCaching`, the request reaches the inner client unchanged. *Concept:* breakpoints, render order, the
+   4-marker limit, automatic vs explicit placement; the strategy pattern. *Skill:* #13, #7 context engineering.
+5. **Factory wiring.** `LlmClientFactory` picks the strategy from `LLM_PROVIDER` (`AnthropicPromptCaching` only for
+   Anthropic with `LLM_CACHE=on`, else `NoPromptCaching`), as it picks the usage mapper. *Tests:* each provider gets
+   the right strategy; caching off gives `NoPromptCaching` on Anthropic too. The demo's orchestrator service gets
+   `LLM_CACHE=off` (design point 4). *Concept:* provider-neutral core, one place that picks the strategy. *Skill:* #1.
 6. **Price writes at their lifetime (F2).** The record carries the TTL the request asked for; `CostCalculator` uses
    `cache_write_1h` for 1-hour writes (today it always uses 5 min). *Tests:* the cost of a 1-hour write; a 5-minute one
    unchanged; old records without a TTL priced as before. *Concept:* write premium and break-even. *Skill:* #13.
