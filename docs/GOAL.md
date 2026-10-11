@@ -22,7 +22,7 @@ and gets a line in the TODO's backlog (*Agent architecture gaps*) until it is pl
 | 4 | **Tool design** | ~108 described tools, agent-built tools with approval, guarded results | Toolset profiles (F5), results as tool calls (F8) | Tool search / on-demand tool loading for large toolsets |
 | 5 | **Structured outputs** | — | Results between agents as tool calls (F8) | Schema-validated outputs across the toolset |
 | 6 | **The agent loop and planning** | Streaming tool loop, 10 rounds per message | Rounds per route (F10) | Explicit planning, self-check before answering, stop conditions beyond a round count |
-| 7 | **Context engineering** | Oversized results summarised | Clear stale results, compaction (F9) | Context building per turn: retrieve, rank, budget (session architecture) |
+| 7 | **Context engineering** | Oversized results summarised | Clear stale results, compaction (F9); each model's window and price step as the limits (F15) | Context building per turn: retrieve, rank, budget (session architecture) |
 | 8 | **Memory and retrieval (RAG)** | — | — (backlog: long-term memory) | Embeddings, a vector store, retrieval over code and past sessions, and measuring retrieval quality |
 | 9 | **Sessions and state** | In-memory sessions | — (backlog: durable sessions) | Durable sessions, lifecycle states, resume after restart |
 | 10 | **Multi-agent orchestration** | Orchestrator delegates fixes and verifies them | Build mode (Next) | Agent-to-agent handoff patterns compared (tool call vs session vs MCP); parallel sub-agents |

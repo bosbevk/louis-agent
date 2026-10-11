@@ -1,7 +1,7 @@
 # F4 · Prompt caching (Anthropic)
 
-> **Status:** planned · **Milestone:** M2 · **Depends on:** F1, [F15](F15-model-limits.md) (each model's cache minimum
-> and its own saving target, from its cache prices)
+> **Status:** planned · **Milestone:** M2 · **Depends on:** F1 (the cache minimum it needs, 512 tokens on Haiku 5.5, is
+> noted below; [F15](F15-model-limits.md) records it per model later)
 >
 > **Spec:** [Optimisation §B](../specs/RESPONSE_OPTIMISATION.md)
 >
@@ -60,9 +60,11 @@ Prefix stability (each of these silently disables caching):
 - **No volatile text** in the system prompt or tool descriptions (no dates, ids, counters).
 - **Thinking and effort fixed per session** (they already are: `AgentEngine.Thinking` is init-only).
 
-Model notes for the default (Claude Haiku 4.5): minimum cacheable prefix **4,096 tokens** — ours is ~26,000, but F5's
-smaller toolsets must stay above it. With thinking on, a *new user message* after a tool loop drops cached thinking and
-the message cache from there (marker 1 is unaffected) — measure it in step 6.
+Model notes for the default (Claude Haiku 5.5): minimum cacheable prefix **512 tokens** (each model's is in
+[F15](F15-model-limits.md); Haiku 4.5's is 4,096) — ours is ~48,000 (M1), and F5's smaller toolsets must stay above it.
+Haiku 5.5 keeps earlier turns' thinking in the history, so a *new user message* after a tool loop keeps the message cache
+(Haiku 4.5 drops cached thinking and the message cache from there; marker 1 is unaffected on both) — measure it in
+step 6.
 
 ## Implementation steps
 

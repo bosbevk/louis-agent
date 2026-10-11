@@ -1,7 +1,7 @@
 # F9 · Bounded history: clear stale tool results, compact old turns
 
-> **Status:** planned · **Milestone:** M4 · **Depends on:** F1, F4, [F15](F15-model-limits.md) (compact at a share of
-> each model's window instead of a fixed 120,000)
+> **Status:** planned · **Milestone:** M4 · **Depends on:** F1, F4, [F15](F15-model-limits.md) (the compaction point per
+> model: below the smaller of a share of its window and its price step)
 >
 > **Spec:** [Optimisation §D](../specs/RESPONSE_OPTIMISATION.md) · [Session architecture §2](../specs/SESSION_ARCHITECTURE.md)
 >
@@ -22,7 +22,9 @@ conversation is large, so that later rounds don't keep paying for files the mode
 
 **F9-S2 — Compact old turns.** As a *user* in a long chat, I want older turns summarised once the chat is very large, so
 that it keeps working and stays affordable.
-- *Given* the conversation still passes `CONTEXT_COMPACT_AT` (default 120,000) *when* a turn starts *then* everything
+- *Given* the conversation still passes `CONTEXT_COMPACT_AT` (default: the model's compaction point from F15, below
+  the smaller of a share of its window and its price step; on Haiku 5.5 under 100,000, where every token starts to
+  cost 5×; a fixed 120,000 would be past that step) *when* a turn starts *then* everything
   before the last `CONTEXT_KEEP_TURNS` user turns (default 3) is replaced by one summary message written by a separate
   call (`purpose: "compaction"`), and the kept part starts at a user message.
 

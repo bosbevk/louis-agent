@@ -19,7 +19,7 @@ feature replaces older backlog wording, that wording no longer appears anywhere 
 | [F1](F01-usage-ledger.md) | Usage ledger: record every model request | done | U §4.1, §4.3 · R §A | *Track token usage / cost per session* (with F2, F3, F6, F7, F11) | — | M1 |
 | [F2](F02-prices-and-cost.md) | Prices and cost | done | U §4.2 | (as F1) | F1 | M1 |
 | [F3](F03-usage-display.md) | Show usage: chat, CLI, Rider, API, comms log | done | U §7.2–7.4 | (as F1) | F1, F2 | M1 |
-| [F4](F04-prompt-caching.md) | Prompt caching (Anthropic) | planned | R §B | *Wire up Anthropic prompt caching* | F1, F15 | M2 |
+| [F4](F04-prompt-caching.md) | Prompt caching (Anthropic) | planned | R §B | *Wire up Anthropic prompt caching* | F1 | M2 |
 | [F5](F05-toolset-profiles.md) | Toolset profiles | planned | R §C | — | F1 | M2 |
 | [F6](F06-estimates.md) | Cost estimates before a run | planned | U §5 | (as F1) | F1, F2 | M3 |
 | [F7](F07-budgets.md) | Budgets: warn, ask, stop | planned | U §6 | (as F1) | F1, F2, F6 | M3 |
@@ -30,14 +30,14 @@ feature replaces older backlog wording, that wording no longer appears anywhere 
 | [F12](F12-response-speed.md) | Response speed: time to first token and tokens per second, every provider | planned | U §4.1 · R §A | — | F1 (F3, F11 to show it) | M5 |
 | [F13](F13-local-models.md) | Local models: fit every request into a small context window (2,048 tokens) | planned | R §C | Known limitation *local models get a truncated prompt* | F1, F5, F15 | Local |
 | [F14](F14-display-currency.md) | Display currency: show costs in a chosen currency (the ledger stays in the bill's) | done | U §4.2, §7 | — | F2, F3 | M5 |
-| [F15](F15-model-limits.md) | Model limits: each model's context window, output limit and cache minimum, and each feature's target per model | planned | R §B–D | — | F2 | M2 |
+| [F15](F15-model-limits.md) | Model limits: each model's context window and cache minimum, `num_ctx` for local models, and F9's and F13's limits per model | planned | R §B–D | — | F2 | M2 |
 
 ## Milestones
 
 | Milestone | Goal | Features | Proof it worked |
 |---|---|---|---|
 | **M1 — See it** | Every request's tokens and cost recorded and visible | F1, F2, F3 | A demo run produces `logs/usage.jsonl` and a comms log with cost per fix; the web app shows cost per answer |
-| **M2 — Cheaper** | Stop paying full price for the same tokens | F15, F4, F5 | Benchmark (demo run) input cost down ≥ 60% against the M1 baseline; 10/10 fixes still confirmed |
+| **M2 — Cheaper** | Stop paying full price for the same tokens | F4, F5, F15 | Benchmark (demo run) input cost down ≥ 60% against the M1 baseline; 10/10 fixes still confirmed |
 | **M3 — In control** | Know the cost before, stop cleanly at a limit | F6, F7, F8 | The demo script estimates the run; a run budget stops it cleanly and `-Resume` finishes it; an account-limit refusal stops the run at once |
 | **M4 — Long sessions** | Long chats and tasks don't grow without limit | F9, F10 | A 30-turn chat stays under the compaction threshold and still recalls its first turns |
 | **M5 — Reporting** | Usage overview, reconciliation and speed | F11, F12, F14 | The Usage tab matches the ledger; the ledger is within 5% of the provider's report; Claude and llama3.1 speeds compared |
@@ -47,7 +47,6 @@ feature replaces older backlog wording, that wording no longer appears anywhere 
 flowchart LR
     F1[F1 Usage ledger] --> F2[F2 Prices and cost]
     F2 --> F15[F15 Model limits]
-    F15 --> F4
     F15 --> F9
     F15 --> F13
     F1 --> F4[F4 Prompt caching]

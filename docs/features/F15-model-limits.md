@@ -1,106 +1,112 @@
-# F15 · Model limits: each model's context window, output limit and cache minimum
+# F15 · Model limits: each model's context window and cache minimum, and the limits that follow
 
-> **Status:** planned · **Milestone:** M2 (first: F4, F9 and F13 take their targets from it) · **Depends on:** F2
+> **Status:** planned · **Milestone:** M2 (after F4 and F5; F9 and F13 take their limits from it) · **Depends on:** F2
 >
 > **Spec:** [Optimisation §B (cache minimums), §C, §D](../specs/RESPONSE_OPTIMISATION.md) · [MODELS.md](../MODELS.md)
 >
 > **In the TODO:** tick **F15 Model limits** under *Now* ([TODO](../../TODO.md))
 
 Every limit the agent works against is a single number today, the same for every model: F9 compacts at 120,000 tokens,
-F13's budget is a per-profile setting (2,048 for Ollama), F4's target is "input cost down 60%". But models differ: a
-local llama3.1 on Ollama's default sees 2,048 tokens, the Claude models far more; Haiku 5.5 caches a prefix from 512
-tokens, Haiku 4.5 only from 4,096; Haiku reads its cache at 0.1× the input price, Sonnet 5.5 and Opus 5.5 at 0.05×. A
-limit that is right for one model is wrong for another, and nothing records which model has which.
+F13's budget is a per-profile setting. But models differ. The default, Claude Haiku 5.5, has a 1M-token window and
+caches a prefix from 512 tokens; Haiku 4.5 only from 4,096; a local model has whatever window it's given. And the window
+isn't the only ceiling: on Haiku 5.5 every token of a request costs 5× once its prompt passes 100,000 tokens (the price
+table's `long_prompt` step, F2), far below the window. A limit that's right for one model is wrong for another, and
+nothing records which model has which.
 
-F15 gives each model its own limits, in one table matched by model id like the prices (F2), and works out each
-feature's target from them. The idea is standard: model gateways keep prices and context windows per model in one
+F15 gives each model its own limits, in one table matched by model id like the prices, and works out the limits the
+other features use from them. The idea is standard: model gateways keep prices and context windows per model in one
 table (LiteLLM's `model_prices_and_context_window.json`, for example).
 
-**A window is a ceiling, not a target.** Filling it costs more with every token and models tend to use very long
-contexts less well, so the window is what F9 compacts *before* and what F13 must fit *within*. F4's target is a saving,
-worked out from each model's cache prices; its limit is the model's cache minimum.
+**A window is a ceiling, not a target.** Filling it costs more with every token, and models tend to use very long
+contexts less well. So F15 gives F9 the point to compact *before* and F13 the budget to fit *within*; it sets no cost
+targets (F4's saving and M2's proof are F4's, estimates are F6's).
 
 ## User stories
 
-**F15-S1 — Each model's limits, in one place.** As an *operator*, I want each model's context window, output limit and
-cache minimum recorded beside its prices, so that every feature uses the right limit for the model it runs on.
-- *Given* the limits table *when* a host starts on `claude-haiku-5-5` *then* it logs that model's limits, e.g.
-  `Model claude-haiku-5-5: window N tokens, output up to M, caches from 512 tokens (limits as of …)`.
+**F15-S1 — Each model's limits, in one place.** As an *operator*, I want each model's context window and cache minimum
+recorded beside its prices, so that every feature uses the right limit for the model it runs on.
+- *Given* the limits table *when* a host starts on `claude-haiku-5-5` *then* it logs that model's limits:
+  `Model claude-haiku-5-5: window 1M tokens, caches from 512 tokens, 5× above 100k prompt tokens (limits as of …)`.
 - *Given* a model id the table doesn't list *then* its limits are unknown: one `[WARN]`, and every feature behaves as it
   does today (no budget), never a guessed limit.
 - *Given* the table *then* it is matched by longest prefix and dated by `as_of`, like the price table, and copied from
-  the provider's documentation (Anthropic's models overview; Ollama's `num_ctx`).
+  the provider's documentation (or, where a model isn't documented, from the provider's Models API).
 
-**F15-S2 — A local model's window is what it's given.** As a *user* of a local model, I want its window to be the one
-Ollama actually uses, so that the agent's limit and the server's agree.
-- *Given* the Ollama profile *then* the window is `num_ctx` (2,048 by Ollama's default, or `LLM_CONTEXT_TOKENS` when
-  set), not the model's theoretical maximum: Ollama cuts anything beyond `num_ctx` without an error.
+**F15-S2 — A local model's window is the one the agent sets.** As a *user* of a local model, I want the agent to tell
+Ollama the window, so that the agent's limit and the server's agree whatever the server's own default is.
+- *Given* `LLM_CONTEXT_TOKENS` (the Ollama profile sets 2,048, to fit a small machine) *then* every request to Ollama
+  carries it as `num_ctx`, and it is the model's window for every other feature.
+- Ollama's own default no longer matters: it was 2,048 on the version that truncated our prompt (the ledger showed
+  `input: 2050`); current Ollama picks 4k, 32k or 256k by available memory. Sending `num_ctx` makes it the same
+  everywhere.
 
-**F15-S3 — See how full the window is.** As a *user*, I want to see how much of the window a turn used, so that I notice
-a chat getting long before it breaks or gets expensive.
-- *Given* a turn *then* `/usage` shows the largest prompt of the session against the window
-  (`largest prompt: 58k of N tokens (x%)`).
+**F15-S3 — See how full the window is, and warn before it overflows.** As a *user*, I want to see how much of the window
+a turn used, so that I notice a chat getting long or expensive before it breaks.
+- *Given* a session *then* `/usage` shows its largest prompt against the window and the price step
+  (`largest prompt: 58k tokens · 6% of the window · under the 100k price step`).
 - *Given* a request whose prompt reaches 90% of the window *then* the host logs a `[WARN]` naming the model and the
-  share (for local models this is F13's truncation warning, generalised).
+  share. On a local model that's the request Ollama is about to truncate, which replaces F13's truncation warning.
 
-**F15-S4 — Each feature's target, per model.** As a *developer*, I want each model's targets worked out from its limits
-and prices, so that F4, F9 and F13 measure against the right number for each model.
-- *Given* `usage-probe -- --targets` *then* it prints, per model in the tables:
-  - **F9:** compact at a share of the window (`CONTEXT_COMPACT_SHARE`, e.g. 60%) instead of a fixed 120,000;
-  - **F13:** the request budget = the window minus the output reserve;
-  - **F4:** the expected saving on the repeated prefix from that model's cache read and write prices, using M1's
-    measured shape (a ~48,000-token prefix, 11.4 requests per fix), and whether that prefix clears the cache minimum;
-    "no caching" for local models.
-- *Given* a model whose prefix is below its cache minimum *then* the target says so (caching would do nothing, with no
-  error from the API).
+**F15-S4 — Each limit worked out per model.** As a *developer*, I want each feature's limit worked out from the model's
+window and price step, so that F9 and F13 use the right number for each model.
+- *Given* `usage-probe -- --limits` *then* it prints, per model in the tables:
+  - **F9:** the compaction point: below the **smaller** of a share of the window (`CONTEXT_COMPACT_SHARE`, e.g. 60%) and
+    the model's price step, with a margin. On Haiku 5.5 that's under 100,000 (60% of 1M would be 600,000, every token
+    of it at 5×); a model without a price step uses the share alone.
+  - **F13:** the request budget: the window minus the output reserve.
+  - **F4:** whether the measured prefix (~48,000 tokens in M1) clears the model's cache minimum (on Haiku 5.5, 512:
+    easily). No saving figure: that's F4's own measurement against the M1 baseline.
 
 ## Design
 
-- **`ModelLimits`** (core, `usage/` beside `PriceTable`): `ContextWindow`, `MaxOutput`, `CacheMinimum` (all optional:
-  unknown is null, never 0), with the table's `as_of`. Looked up by longest model-id prefix, like prices.
+- **`ModelLimits`** (core, `usage/` beside `PriceTable`): `ContextWindow` and `CacheMinimum` (optional: unknown is null,
+  never 0), with the table's `as_of`; the price step comes from the model's price entry (`long_prompt.above_tokens`).
+  Looked up by longest model-id prefix, like prices. No output limit until something reads it.
 - **Where the table lives** (decide when planning F15):
 
   | Option | For | Against |
   |---|---|---|
-  | **A. A `limits` block per model in `config/prices.json`** | One table per model id, as gateways keep it; `PRICES_URL` / `GET /prices` already carry it to other hosts | The file is no longer only prices; the name says less than it holds |
+  | **A. A `limits` block per model in `config/prices.json`** | One table per model id, as gateways keep it; the price step is already there; `PRICES_URL` / `GET /prices` already carry it to other hosts | The file is no longer only prices; the name says less than it holds |
   | **B. A separate `config/models.json`** (`MODELS_FILE` / `MODELS_URL`, `GET /models`) | Each file does one thing; limits can change without touching prices | A second table matched by the same ids, kept in step by hand; another URL and endpoint |
 
   Either way: our own format, the only one read, a tracked fallback file, and served on the API, as for prices
   ([F2](F02-prices-and-cost.md)) and exchange rates ([F14](F14-display-currency.md)).
-- **Local models:** the window comes from `num_ctx` (the profile's `LLM_CONTEXT_TOKENS`, Ollama's 2,048 by default),
-  not from the table: that's the window Ollama really applies.
-- **Targets** (`ModelTargets`, core): pure functions of a model's limits, prices and the measured shape, so they're
-  unit-tested and the same in the probe and in the features that use them.
-- **The consumers change in their own features:** F4 checks the cache minimum and reports its saving against the
-  model's own target; F9's threshold becomes a share of the window; F13's budget comes from the window. F15 only
-  provides the limits and the targets.
+- **Local models** (taken over from F13): `LLM_CONTEXT_TOKENS` in `LlmOptions` (unset = the table's window, or none);
+  `LlmClientFactory` sends it to Ollama as `num_ctx` on every request. Provider differences stay in the factory.
+- **Limits** (`ModelTargets`, core): pure functions of a model's limits, its price step and the measured prefix, so
+  they're unit-tested and the same in the probe and in the features that use them.
+- **The consumers change in their own features:** F9's threshold becomes the per-model compaction point; F13's budget
+  comes from the window. F15 provides the limits, sends `num_ctx` and warns at 90%.
 
 ## Implementation steps
 
-1. **Gather the limits** for every model in `config/prices.json` from the providers' documentation (dated), and
-   Ollama's `num_ctx` default. *Output:* the values with their sources, and the table/file decision.
+1. **Gather the limits** for every model in `config/prices.json` from Anthropic's documentation (dated); for a model it
+   doesn't document (Haiku 4.5, if it stays in the table), from the Models API. *Output:* the values with their
+   sources, and the table/file decision.
 2. **`ModelLimits` and its table** (the decided option) with loading, prefix matching and the fallback file. *Test:*
-   dated ids match; unknown model → null limits with a warning; a negative or zero limit fails start-up naming the
+   dated ids match; unknown model → null limits with a warning; a zero or negative limit fails start-up naming the
    source.
-3. **Hosts load the limits and log them** (`AgentHostContext.Limits`); local models take `num_ctx`. *Test:* the Ollama
-   profile's window is 2,048; Haiku's is the table's.
-4. **`/usage` shows the largest prompt against the window; the 90% warning.** *Test:* exact strings; the warning at 90%
-   and not at 89%.
-5. **`ModelTargets` and `usage-probe -- --targets`.** *Test:* the F4 saving per model from its cache prices (Haiku's
-   0.1× read against Sonnet's 0.05×), the cache-minimum check, F9's share and F13's budget.
-6. **Docs and the consumers' docs:** F4, F9 and F13 take their targets from F15 (their docs, not their code: each
-   changes its code when it's built).
+3. **`LLM_CONTEXT_TOKENS` and `num_ctx`** (from F13). *Test:* the Ollama client's requests carry `num_ctx`; Anthropic's
+   don't; the setting is the model's window.
+4. **Hosts load the limits and log them** (`AgentHostContext.Limits`). *Test:* the Ollama profile's window is
+   `LLM_CONTEXT_TOKENS`; Haiku 5.5's is the table's.
+5. **`/usage` against the window and the price step; the 90% warning** (replaces F13's truncation warning). *Test:*
+   exact strings; the warning at 90% and not at 89%; a local model's 2,040 of 2,048 warns.
+6. **`ModelTargets` and `usage-probe -- --limits`.** *Test:* Haiku 5.5's compaction point is under its 100k price step,
+   not 60% of 1M; a model with no price step uses the share; F13's budget; the cache-minimum check.
+7. **Docs:** F9 and F13 take their limits from F15 (their docs; each changes its code when it's built).
 
 ## Done when
 
-- Every model in the price table has its limits (or is marked unknown), every host logs its model's limits, `/usage`
-  shows how full the window got, and `usage-probe -- --targets` prints each feature's target per model.
+- Every model in the price table has its limits (or is marked unknown), every host logs its model's limits, requests to
+  Ollama carry `num_ctx`, `/usage` shows how full the window got, and `usage-probe -- --limits` prints each feature's
+  limit per model.
 - **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)).
 
 ## Not in this feature
 
-Changing F4, F9 or F13's behaviour (each uses the targets when it's built); choosing a model by its limits (routing,
-F10 and later).
+Changing F9's or F13's behaviour (each uses its limit when it's built); cost targets and estimates (F4, F6); an output
+limit per model (until something uses it); choosing a model by its limits (routing, F10 and later).
 
 ---
 [Features](README.md) · Previous: [F14 Display currency](F14-display-currency.md)

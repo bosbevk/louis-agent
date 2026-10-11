@@ -1,7 +1,7 @@
 # F13 · Local models: fit every request into a small context window
 
-> **Status:** planned · **Milestone:** Local · **Depends on:** F1, F5, [F15](F15-model-limits.md) (the model's window,
-> `num_ctx`, sets the budget)
+> **Status:** planned · **Milestone:** Local · **Depends on:** F1, F5, [F15](F15-model-limits.md) (the window: F15 owns
+> `LLM_CONTEXT_TOKENS`, sends it to Ollama as `num_ctx` and warns at 90% of it)
 >
 > **Spec:** [Optimisation §C](../specs/RESPONSE_OPTIMISATION.md) (toolsets) · [MODELS.md](../MODELS.md) (Ollama)
 >
@@ -9,13 +9,15 @@
 > models get a truncated prompt
 
 The first ledger record from a local model (F1 step 6, `llama3.1` on Ollama) showed `input: 2050` for a one-word
-question. The agent's system prompt alone is about 26,000 tokens, before the tool definitions. Ollama's default context
-window is 2,048 tokens, and Ollama drops whatever doesn't fit **without an error**, so the model has been running on a
-fragment of its instructions, which goes a long way to explain poor tool use on local models.
+question. The agent's system prompt alone is about 26,000 tokens, before the tool definitions. The Ollama measured here
+had a 2,048-token default window (newer versions pick 4k, 32k or 256k by available memory), and Ollama drops whatever
+doesn't fit **without an error**, so the model has been running on a fragment of its instructions, which goes a long way
+to explain poor tool use on local models.
 
-F13 makes the agent work *within* that window instead: every request to a local model is built to fit 2,048 tokens, so
-nothing is cut off silently, and memory use stays what a small machine can afford. Raising the window is still possible
-(one setting), but the default is to fit.
+[F15](F15-model-limits.md) makes the window explicit: the agent sends it to Ollama as `num_ctx` (2,048 in the Ollama
+profile, to fit a small machine), so the server's default stops mattering. F13 makes the agent work *within* that
+window: every request to a local model is built to fit it, so nothing is cut off silently, and memory use stays what a
+small machine can afford. Raising the window is one setting (`LLM_CONTEXT_TOKENS`), but the default is to fit.
 
 ## User stories
 
@@ -24,10 +26,7 @@ model's context window, so that the model sees all of what it is sent.
 - *Given* `LLM_CONTEXT_TOKENS=2048` (the Ollama profile's default) *when* a turn is sent *then* the estimated request
   (system prompt + tool definitions + history + the output reserve) is ≤ 2,048 tokens, and the ledger's `input` for it
   is ≤ 2,048 minus the output reserve.
-- *Given* the same setting *then* Ollama is sent `num_ctx` = 2,048, so the server's window and the agent's budget agree
-  whatever the server's default is.
-- *Given* a provider reports `input` within 2% of `LLM_CONTEXT_TOKENS` *then* a `[WARN]` says the request was probably
-  truncated (the guard for anything the estimate misses).
+- Sending `num_ctx` and warning when a request nears the window are [F15](F15-model-limits.md)'s (S2, S3), built first.
 
 **F13-S2 — A compact prompt and a few tools.** As a *user*, I want a local model to get short instructions and only the
 tools it needs, so that they fit and a small model can follow them.
@@ -50,8 +49,8 @@ so that it doesn't break or truncate on the fifth message.
 
 ## Design
 
-- **`LLM_CONTEXT_TOKENS`** in `LlmOptions` (unset = no budget, today's behaviour; `.env.ollama` sets `2048`). For
-  Ollama, `LlmClientFactory` passes it as `num_ctx` on every request. Provider differences stay in the factory.
+- **The window** is F15's: `LLM_CONTEXT_TOKENS` (`.env.ollama` sets `2048`), sent to Ollama as `num_ctx`. F13's budget
+  is F15's per-model limit for it (the window minus the output reserve).
 - **`LLM_PROMPT=compact`** (set by `.env.ollama`) makes `AgentHost.LoadSkills` build the system prompt from
   `Skills/local.md` and a generated one-line-per-tool list, instead of every skill file.
 - **Toolset** from F5's `AGENT_TOOLSETS`, set in `.env.ollama`.
@@ -67,15 +66,13 @@ so that it doesn't break or truncate on the fifth message.
    `input` ≈ 2,048?), how to send `num_ctx` through OllamaSharp's `IChatClient` (`ChatOptions.AdditionalProperties`?),
    the token size of today's system prompt and of each toolset's definitions, and how far characters ÷ 4 is from
    Ollama's count. Record it in MODELS.md. *No production code.*
-2. **`LLM_CONTEXT_TOKENS` and `num_ctx`.** *Test:* the Ollama client's requests carry `num_ctx`; Anthropic's don't.
-3. **Compact prompt.** `Skills/local.md`, `LLM_PROMPT=compact`. *Test:* the compact prompt is under 500 tokens
+2. **Compact prompt.** `Skills/local.md`, `LLM_PROMPT=compact`. *Test:* the compact prompt is under 500 tokens
    (estimated) and lists exactly the loaded tools.
-4. **Toolset for local** through F5 (`AGENT_TOOLSETS` in `.env.ollama`) and the start-up size check. *Test:* over
+3. **Toolset for local** through F5 (`AGENT_TOOLSETS` in `.env.ollama`) and the start-up size check. *Test:* over
    budget fails start-up with the sizes; under budget logs them.
-5. **`ContextBudget`: fit the history.** *Test:* a long scripted history is trimmed to the budget, tool results before
+4. **`ContextBudget`: fit the history.** *Test:* a long scripted history is trimmed to the budget, tool results before
    turns, system prompt and latest message kept; no budget = untouched.
-6. **Truncation warning** from the ledger's `input`. *Test:* `input` at 2,040 of 2,048 warns; 1,500 doesn't.
-7. **Measure and document.** The two S4 tasks on `llama3.1`, ledger lines in MODELS.md; remove the known limitation.
+5. **Measure and document.** The two S4 tasks on `llama3.1`, ledger lines in MODELS.md; remove the known limitation.
 
 ## Done when
 
