@@ -57,7 +57,7 @@ quality trade.
   2. `CompactAsync(history, keepTurns)` — summarises the older part with F16's `Summariser` (job `compaction`, its
      own prompt section, model and no caching) into one user-role message labelled as a summary of earlier
      conversation; thinking blocks in the replaced part go with it.
-- **Archive** through `AgentLog` before each rewrite (S3).
+- **Archive** as a record (like `ToolCallRecords`, a JSON-lines file under `LOG_DIRECTORY`) before each rewrite (S3).
 - **Benchmark chat:** a script (`samples/benchmarks/long-chat.ps1` or a test harness) that drives 30 turns against
   louis-agent.api on the demo repository; its recall questions with known answers are an F18 suite (`recall`), so
   they are scored, priced and compared with a baseline like any other eval.

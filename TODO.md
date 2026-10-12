@@ -136,7 +136,7 @@ growing history every round, so smaller tasks are cheaper); make runs resumable 
 - [x] **Split `AgentEngine`, right after the project layout** (its plan comes first): the loop, history and prompt in
       `Agent/`, the tool registry beside it, and the tool-result guards, `ResolvePath`/`IsSensitive` and the SSRF check
       in `Guardrails/`. CL1 moves the class whole; this splits it. Behaviour unchanged
-- [ ] **Messages and logging, after F4, second of two cleanups** — in progress as CL3 ([plan](docs/plans/CL3-messages-and-logging.md); the rule is in [docs/CLAUDE.md](docs/CLAUDE.md#messages-and-logging)): move
+- [x] **Messages and logging, after F4, second of two cleanups** — CL3 ([plan](docs/plans/CL3-messages-and-logging.md); the rule is in [docs/CLAUDE.md](docs/CLAUDE.md#messages-and-logging)): move
       the ~230 inline messages in 35 files (exceptions, log lines, tool results, user-facing text) into message enums
       with `[Description]` templates and a `MessageText` helper, with a test over every enum; switch logging from
       `Console.Error` and `AgentLog`'s files to `ILogger` with Serilog (stderr only, run files and JSON-lines as sinks).
@@ -268,6 +268,11 @@ backlog item removes one, it says so.
 
 Newest first; details in the git history.
 
+- 2026-10-12 — **CL3 Messages and logging**: every exception, log line, tool error and user text is a message enum
+  member with a `[Description]` template (357: 220 in core, the rest in each host's own `Messages/`), proved to render
+  as before; `ToolMessageSnapshot.json` pins the 101 texts tools return to the model. Logging is `ILogger` with
+  Serilog: stderr only, the run file and the JSON-lines records as sinks, holes kept as fields; `AgentLog` is gone.
+  The orchestrator logs to stderr too, and `decisions.jsonl` is snake_case like its other records
 - 2026-10-12 — **CL2 Split AgentEngine**: 1,078 lines become the engine (the turn loop, 360) and `ToolRegistry`,
   `ToolCallGuards`, `SkillTools`, `AgentBuiltTools` in `Agent/`; pure checks in `Guardrails/` (`WorkspaceBoundary`,
   `SensitiveFiles`, `SsrfGuard`); the console chat in the CLI. A golden file pins what the model is sent; it found that

@@ -60,6 +60,33 @@ throughout.
 10. **Docs and finish:** CLAUDE.md (Serilog instead of NLog, *Moving there* removed, *Running and debugging*), the
     project docs, TODO tick and Done line.
 
+## Approved during the build (2026-10-12)
+
+- **A tag instead of `[{Level:u4}]`:** Serilog's four-letter codes print `EROR`, and some lines always had their own
+  bracket (`[TOOL]`, `[MCP]`, `[ACP]`). `LevelTagEnricher` fills a `Tag` property from the level (`INFO`, `WARN`,
+  `ERROR`) unless the call passed `tag:`; the console template is `[{Tag}] {Message:lj}`.
+- **One root logger with a forwarding sink:** a logger made before `Configure` (a static field) stayed bound to the
+  old configuration. The root's only sink forwards to the current one, so `Configure` can replace it any time; a test
+  holds it.
+- **`MessageLogging.Log` takes any `Enum`,** not only `LogMessage`, so a host logs its own members the same way.
+- **Host enums named per host** (`AcpLogMessage`, `AcpUserText`, `AcpModelText`, `ApiLogMessage`,
+  `McpServerLogMessage`, `CliUserText`, `ProbeUserText`, `OrchestratorToolMessage`, `OrchestratorLogMessage`,
+  `OrchestratorErrorMessage`), in each project's `Messages/`; `HostMessageEnumTests` checks them from source, since
+  most hosts have no test project. The probe's cache-gaps texts (written into core's enums in F4) moved to
+  `ProbeUserText`.
+- **The stderr tee kept until step 8d,** when nothing wrote to `Console.Error` directly any more: the run file then
+  became a Serilog file sink and `AgentLog` went, its records to `ToolCallRecords`. The run file uses `{Message:l}`,
+  not `:lj`: the file formatter writes a non-string value (a `Uri`) as JSON, in quotes.
+- **Numbers in messages are invariant:** an oversized result's count reads `12,345` on every machine (it was the
+  culture's, `12 345` on en-ZA).
+- **Step 8 in four commits (8a ACP server, 8b API/MCP/CLI, 8c usage probe, 8d run file) and step 9 in three** (9a the
+  orchestrator's tool strings and exceptions, 9b its log lines, 9c `decisions.jsonl`'s keys).
+- **The orchestrator logs through `ILogger`:** stderr instead of stdout, `[orchestrator]` (louis-agent's progress
+  `[louis-agent]`), `[WARN]` instead of a `WARNING:` prefix, the time in the run file it now configures.
+- **Not converted:** the comms log stays as it is (Louis, 2026-10-12: "drop it for now"); the prompts (`TriagePrompt`,
+  `FixPrompt`) are content, not messages; `PASS`/`FAIL`/`VERIFIED`, `FIX-RESULT` and `DECISION` are keywords another
+  program matches on, so they stay in code.
+
 ## Verification
 - `dotnet build` and `dotnet test louis-agent-solution.sln` after every step; the model-request snapshot, the
   tool-message snapshot, the message-enum tests and `ArchitectureTests` pass throughout.
