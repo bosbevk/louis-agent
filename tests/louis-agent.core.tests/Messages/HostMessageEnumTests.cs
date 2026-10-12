@@ -21,7 +21,8 @@ public partial class HostMessageEnumTests
     public void TheHostsHaveMessageEnums()
     {
         Assert.That(HostMessageFiles().Select(Path.GetFileNameWithoutExtension),
-            Is.SupersetOf(new[] { "AcpLogMessage", "AcpUserText", "AcpModelText", "ApiLogMessage", "McpServerLogMessage", "CliUserText" }));
+            Is.SupersetOf(new[] { "AcpLogMessage", "AcpUserText", "AcpModelText", "ApiLogMessage", "McpServerLogMessage", "CliUserText",
+                "OrchestratorToolMessage", "OrchestratorErrorMessage" }));
     }
 
     [Test]

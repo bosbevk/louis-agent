@@ -3,6 +3,8 @@ using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using LouisAgent.Core.Usage;
+using LouisAgent.Core.Messages;
+using LouisAgent.Orchestrator.Messages;
 
 namespace LouisAgent.Orchestrator;
 
@@ -57,7 +59,10 @@ internal sealed partial class LouisAgentClient(HttpClient http, string? apiKey)
         AddKey(request);
         using var response = await http.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
         if (!response.IsSuccessStatusCode)
-            return new AgentReply("", [], null, $"HTTP {(int)response.StatusCode}: {await response.Content.ReadAsStringAsync(cancellationToken)}");
+            {
+            string body = await response.Content.ReadAsStringAsync(cancellationToken);
+            return new AgentReply("", [], null, MessageText.Format(OrchestratorToolMessage.HttpFailed, new { Status = (int)response.StatusCode, Body = body }));
+        }
 
         using var reader = new StreamReader(await response.Content.ReadAsStreamAsync(cancellationToken));
         return await ReadStreamAsync(reader, onProgress, cancellationToken);

@@ -202,4 +202,28 @@ public class LouisAgentClientTests
     [TestCase("FIX-RESULT: {\"commit\":\"abc1234\"}")]
     public void ParseFixResult_WithoutAValidLine_IsNull(string text) =>
         Assert.That(LouisAgentClient.ParseFixResult(text), Is.Null);
+
+    // CL3: the texts that reach the models moved into OrchestratorToolMessage; these pin the ones no other test reads.
+    [Test]
+    public async Task AFailedRequest_IsReportedWithItsStatusAndBody()
+    {
+        using var http = new HttpClient(new Failing()) { BaseAddress = new Uri("http://louis-agent/") };
+
+        AgentReply reply = await new LouisAgentClient(http, null).SendAsync("sess_1", "Fix it");
+
+        Assert.That(reply.Error, Is.EqualTo("HTTP 404: no session sess_1"));
+    }
+
+    [Test]
+    public void TheFollowUp_AsksForTheFixResult()
+    {
+        Assert.That(Tools.ServiceTools.ContinueMessage,
+            Is.EqualTo("Continue the fix from where you stopped. Finish with the FIX-RESULT line."));
+    }
+
+    private sealed class Failing : HttpMessageHandler
+    {
+        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) =>
+            Task.FromResult(new HttpResponseMessage(System.Net.HttpStatusCode.NotFound) { Content = new StringContent("no session sess_1") });
+    }
 }

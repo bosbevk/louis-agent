@@ -9,6 +9,8 @@ using LouisAgent.Orchestrator.Tools;
 using LouisAgent.Core.Pricing;
 using LouisAgent.Core.Llm;
 using LouisAgent.Core.Hosting;
+using LouisAgent.Core.Messages;
+using LouisAgent.Orchestrator.Messages;
 
 // Watches one service's error feed. Each new exception is triaged by an agent built on louis-agent.core whose system
 // prompt is the service's runbooks (one skill file per API method) and whose only tools are ServiceTools: it ignores,
@@ -177,7 +179,7 @@ internal static class OrchestratorSkills
     {
         string serviceDirectory = Path.Combine(skillsDirectory, service);
         if (!Directory.Exists(serviceDirectory))
-            throw new InvalidOperationException($"No runbooks for '{service}': {serviceDirectory} does not exist.");
+            throw new InvalidOperationException(MessageText.Format(OrchestratorErrorMessage.NoRunbooks, new { Service = service, Directory = serviceDirectory }));
 
         var composite = new CompositeSkillProvider();
         composite.AddProvider(new MarkdownSkillProvider(Path.Combine(skillsDirectory, "orchestrator.md"), includeDefaultInstructions: false));
