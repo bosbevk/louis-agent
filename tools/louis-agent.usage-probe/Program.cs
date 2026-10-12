@@ -7,6 +7,7 @@ using Microsoft.Extensions.AI;
 using LouisAgent.Core.Pricing;
 using LouisAgent.Core.Llm;
 using LouisAgent.Core.Hosting;
+using LouisAgent.UsageProbe.Messages;
 
 // Prints what a provider's adapter reports in UsageDetails, streaming and not, and what its IUsageMapper makes of it.
 // Run it before trusting the usage ledger for a new provider or after upgrading an adapter (F1 step 1).
@@ -37,7 +38,7 @@ if (Array.IndexOf(args, "--ledger") is var ledgerArg and >= 0)
 {
     if (ledgerArg + 1 >= args.Length)
     {
-        Console.Error.WriteLine("--ledger needs a file: --ledger logs/usage-2026-10.jsonl");
+        Console.Error.WriteLine(MessageText.Format(ProbeUserText.LedgerNeedsFile));
         return 2;
     }
 
@@ -49,7 +50,7 @@ if (Array.IndexOf(args, "--cache-gaps") is var gapsArg and >= 0)
 {
     if (gapsArg + 1 >= args.Length)
     {
-        Console.Error.WriteLine(MessageText.Format(ErrorMessage.CacheGapsNeedsFile));
+        Console.Error.WriteLine(MessageText.Format(ProbeUserText.CacheGapsNeedsFile));
         return 2;
     }
 
@@ -117,9 +118,9 @@ catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode
                                       string.Equals(llm.Provider, LlmOptions.Ollama, StringComparison.OrdinalIgnoreCase))
 {
     // Ollama answers 404 for a model it hasn't pulled; the stack trace doesn't say so.
-    Console.Error.WriteLine($"Model '{llm.Model}' isn't pulled into Ollama at {llm.Endpoint ?? "http://localhost:11434"}. Pull it with:");
-    Console.Error.WriteLine($"  docker exec louis_ollama ollama pull {llm.Model}    (the compose ollama service)");
-    Console.Error.WriteLine($"  ollama pull {llm.Model}                             (Ollama installed natively)");
+    Console.Error.WriteLine(MessageText.Format(ProbeUserText.ModelNotPulled, new { llm.Model, Endpoint = llm.Endpoint ?? "http://localhost:11434" }));
+    Console.Error.WriteLine(MessageText.Format(ProbeUserText.PullInCompose, new { llm.Model }));
+    Console.Error.WriteLine(MessageText.Format(ProbeUserText.PullNative, new { llm.Model }));
     return 1;
 }
 
@@ -201,7 +202,7 @@ static int WriteHostCulture(string name)
 {
     if (name.Length == 0)
     {
-        Console.Error.WriteLine("This machine has no culture of its own (a container?). Run this on the PC, or name one: --host-culture en-ZA");
+        Console.Error.WriteLine(MessageText.Format(ProbeUserText.NoMachineCulture));
         return 1;
     }
 
@@ -209,12 +210,12 @@ static int WriteHostCulture(string name)
     try
     {
         var culture = System.Globalization.CultureInfo.GetCultureInfo(name);
-        if (culture.IsNeutralCulture) throw new ArgumentException("a language without a region");
+        if (culture.IsNeutralCulture) throw new ArgumentException(MessageText.Format(ProbeUserText.LanguageWithoutRegion));
         region = new System.Globalization.RegionInfo(culture.Name);
     }
     catch (Exception ex) when (ex is ArgumentException or System.Globalization.CultureNotFoundException)
     {
-        Console.Error.WriteLine($"'{name}' names no region ({ex.Message}). Use a culture such as en-ZA.");
+        Console.Error.WriteLine(MessageText.Format(ProbeUserText.CultureNamesNoRegion, new { Name = name, Reason = ex.Message }));
         return 1;
     }
 
@@ -225,23 +226,23 @@ static int WriteHostCulture(string name)
     ExchangeRates rates = AgentHost.LoadRates(agent, prices.Currency);
     DisplayCurrency display = DisplayCurrency.Resolve(agent, prices.Currency, rates);
 
-    Console.WriteLine($"Culture: {name} -> region {region.TwoLetterISORegionName}, currency {region.ISOCurrencySymbol} ({region.CurrencySymbol})");
+    Console.WriteLine(MessageText.Format(ProbeUserText.CultureFound, new { Name = name, Region = region.TwoLetterISORegionName, Code = region.ISOCurrencySymbol, Symbol = region.CurrencySymbol }));
     Console.WriteLine(display.Converts
-        ? $"Rate: 1 {display.Base} = {display.Rate} {display.Code} (as of {display.RateAsOf}, {rates.Source})"
-        : $"Costs are shown as charged, in {display.Base}.");
+        ? MessageText.Format(ProbeUserText.RateFound, new { display.Base, display.Rate, display.Code, AsOf = display.RateAsOf, rates.Source })
+        : MessageText.Format(ProbeUserText.ShownAsCharged, new { display.Base }));
 
     if (EnvFile.Find(Environment.CurrentDirectory) is not { } envFile)
     {
-        Console.Error.WriteLine("No config/.env found: copy config/.env.example to config/.env first.");
+        Console.Error.WriteLine(MessageText.Format(ProbeUserText.NoEnvFile));
         return 1;
     }
 
     bool replaced = EnvFile.Write(envFile, "HOST_CULTURE", name,
-        "The PC's culture (F14): costs are shown in its region's currency. Written by usage-probe --host-culture.");
-    Console.WriteLine($"{(replaced ? "Updated" : "Added")} HOST_CULTURE={name} in {envFile}");
+        MessageText.Format(ProbeUserText.HostCultureComment));
+    Console.WriteLine(MessageText.Format(replaced ? ProbeUserText.HostCultureUpdated : ProbeUserText.HostCultureAdded, new { Name = name, File = envFile }));
     if (Environment.GetEnvironmentVariable("DISPLAY_CURRENCY") is { Length: > 0 } other)
-        Console.WriteLine($"Note: DISPLAY_CURRENCY={other} is set and overrides it.");
-    Console.WriteLine("Restart the hosts to use it: the containers (docker compose ... up -d), and a New Chat in Rider.");
+        Console.WriteLine(MessageText.Format(ProbeUserText.DisplayCurrencyOverrides, new { Code = other }));
+    Console.WriteLine(MessageText.Format(ProbeUserText.RestartHosts));
     return 0;
 }
 
@@ -249,25 +250,25 @@ static int WriteHostCulture(string name)
 static void PrintCacheGaps(string path, PriceTable prices)
 {
     IReadOnlyList<CacheGapGroup> groups = CacheGaps.Analyse(UsageReport.Read(path), prices);
-    Console.WriteLine(MessageText.Format(UserText.CacheGapsHeader, new { Path = path, AsOf = prices.AsOf ?? "(none)" }));
-    if (groups.Count == 0) Console.WriteLine(MessageText.Format(UserText.CacheGapsNone, new { Path = path }));
+    Console.WriteLine(MessageText.Format(ProbeUserText.CacheGapsHeader, new { Path = path, AsOf = prices.AsOf ?? "(none)" }));
+    if (groups.Count == 0) Console.WriteLine(MessageText.Format(ProbeUserText.CacheGapsNone, new { Path = path }));
 
     foreach (CacheGapGroup g in groups)
     {
         Console.WriteLine();
-        Console.WriteLine(MessageText.Format(UserText.CacheGapsGroup, new { g.Host, g.Model, g.Requests, Prefix = g.PrefixTokens.ToString("N0") }));
-        Console.WriteLine(MessageText.Format(UserText.CacheGapsGaps, new { g.Under5m, g.From5To60m, g.Over60m }));
+        Console.WriteLine(MessageText.Format(ProbeUserText.CacheGapsGroup, new { g.Host, g.Model, g.Requests, Prefix = g.PrefixTokens.ToString("N0") }));
+        Console.WriteLine(MessageText.Format(ProbeUserText.CacheGapsGaps, new { g.Under5m, g.From5To60m, g.Over60m }));
         foreach (var (lifetime, cost) in new[] { ("5 minutes", g.FiveMinutes), ("1 hour   ", g.OneHour) })
-            Console.WriteLine(MessageText.Format(UserText.CacheGapsLifetime,
+            Console.WriteLine(MessageText.Format(ProbeUserText.CacheGapsLifetime,
                 new { Lifetime = lifetime, cost.Writes, cost.Reads, Cost = cost.Cost is { } c ? Money(c) : "price unknown" }));
 
         if (g is not { FiveMinutes.Cost: { } five, OneHour.Cost: { } hour })
-            Console.WriteLine(MessageText.Format(UserText.CacheGapsNoPrice, new { g.Model }));
+            Console.WriteLine(MessageText.Format(ProbeUserText.CacheGapsNoPrice, new { g.Model }));
         else if (g.Recommended == CacheLifetime.OneHour)
-            Console.WriteLine(MessageText.Format(UserText.CacheGapsRecommendOneHour,
+            Console.WriteLine(MessageText.Format(ProbeUserText.CacheGapsRecommendOneHour,
                 new { Saving = Money(five - hour), Percent = (five - hour) / five is var share ? share.ToString("0%") : "" }));
         else
-            Console.WriteLine(MessageText.Format(UserText.CacheGapsRecommendFiveMinutes, new { Extra = Money(hour - five) }));
+            Console.WriteLine(MessageText.Format(ProbeUserText.CacheGapsRecommendFiveMinutes, new { Extra = Money(hour - five) }));
     }
 
     string Money(decimal amount) => prices.Currency == "USD" ? $"${amount:0.0000}" : $"{amount:0.0000} {prices.Currency}";
@@ -277,12 +278,12 @@ static void PrintLedger(string path, PriceTable prices)
 {
     var records = UsageReport.Price(UsageReport.Read(path), prices).ToList();
     var models = records.Select(r => r.Model).Distinct().ToList();
-    Console.WriteLine($"{path}: {records.Count} requests; models {string.Join(", ", models)}; prices as of {prices.AsOf ?? "(none)"}");
+    Console.WriteLine(MessageText.Format(ProbeUserText.LedgerSummary, new { Path = path, records.Count, Models = string.Join(", ", models), AsOf = prices.AsOf ?? "(none)" }));
 
-    Section("Per piece of work (a fix's task, a triage or a chat session)", UsageReport.Totals(records, UsageReport.WorkOf));
-    Section("Per purpose", UsageReport.Totals(records, r => r.Purpose));
-    Section("Per run", UsageReport.Totals(records, r => r.Run ?? "(no run)"));
-    Section("All", [UsageReport.Total("all", records)]);
+    Section(MessageText.Format(ProbeUserText.SectionPerWork), UsageReport.Totals(records, UsageReport.WorkOf));
+    Section(MessageText.Format(ProbeUserText.SectionPerPurpose), UsageReport.Totals(records, r => r.Purpose));
+    Section(MessageText.Format(ProbeUserText.SectionPerRun), UsageReport.Totals(records, r => r.Run ?? "(no run)"));
+    Section(MessageText.Format(ProbeUserText.SectionAll), [UsageReport.Total("all", records)]);
 
     void Section(string title, IReadOnlyList<UsageTotal> totals)
     {

@@ -24,9 +24,6 @@ public enum ErrorMessage
     [Description("Unknown LLM_CACHE_TTL '{Value}'. Use 5m or 1h.")]
     UnknownCacheTtl,
 
-    [Description("--cache-gaps needs a file: --cache-gaps logs/usage-2026-10.jsonl")]
-    CacheGapsNeedsFile,
-
     [Description("Unknown LLM_THINKING '{Value}'. Use off, low, medium or high.")]
     UnknownThinking,
 
