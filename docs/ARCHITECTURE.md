@@ -211,7 +211,8 @@ host's own in its `Messages/`), its holes kept as fields:
 - with `LOG_DIRECTORY` (`/logs` in compose → `logs/` on the host), a run file per process,
   `agent-{host}-{timestamp}-{pid}.log`, the same lines with the time (containers run with `--rm`);
 - and, there too, the records `oversized-tool-results.jsonl` and `truncated-tool-calls.jsonl` (`ToolCallRecords`), as
-  JSON lines, to show which tools need narrower output.
+  JSON lines in their own shape (`timestamp` and camelCase fields, `RecordFormatter`), to show which tools need
+  narrower output.
 
 The usage ledger is data, not logs: `JsonlUsageSink` writes it in its own format.
 

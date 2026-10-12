@@ -269,8 +269,8 @@ backlog item removes one, it says so.
 Newest first; details in the git history.
 
 - 2026-10-12 — **CL3 Messages and logging**: every exception, log line, tool error and user text is a message enum
-  member with a `[Description]` template (357: 220 in core, the rest in each host's own `Messages/`), proved to render
-  as before; `ToolMessageSnapshot.json` pins the 101 texts tools return to the model. Logging is `ILogger` with
+  member with a `[Description]` template (486: 313 in core, the rest in each host's own `Messages/`), proved to render
+  as before; `ToolMessageSnapshot.json` pins the 190 texts tools return to the model. Logging is `ILogger` with
   Serilog: stderr only, the run file and the JSON-lines records as sinks, holes kept as fields; `AgentLog` is gone.
   The orchestrator logs to stderr too, and `decisions.jsonl` is snake_case like its other records
 - 2026-10-12 — **CL2 Split AgentEngine**: 1,078 lines become the engine (the turn loop, 360) and `ToolRegistry`,

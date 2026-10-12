@@ -86,6 +86,13 @@ throughout.
 - **Not converted:** the comms log stays as it is (Louis, 2026-10-12: "drop it for now"); the prompts (`TriagePrompt`,
   `FixPrompt`) are content, not messages; `PASS`/`FAIL`/`VERIFIED`, `FIX-RESULT` and `DECISION` are keywords another
   program matches on, so they stay in code.
+- **From the PR #20 review:** steps 5b and 5c convert what step 5 left inline, so the rule holds everywhere: core's
+  tool results and refusals (85 more `ToolMessage`), `/tools` and `/usage` replies, the hosts' attachment notes, the
+  API's answers (`ApiUserText`, `ApiModelText`), the MCP server's (`McpServerText`) and the last literal exceptions.
+  Delimiters (the web content markers) and patterns matched in git's output stay in code.
+- **The record files keep the shape `AgentLog` wrote** (`RecordFormatter`: `timestamp` and camelCase fields), not
+  CompactJsonFormatter's (`@t`, `@mt`, `Tag`, `SourceContext`), because F16 reads them; Serilog.Formatting.Compact is
+  dropped.
 
 ## Verification
 - `dotnet build` and `dotnet test louis-agent-solution.sln` after every step; the model-request snapshot, the

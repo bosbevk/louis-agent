@@ -140,6 +140,13 @@ start-up.
 Return strings the model can act on: say what went wrong and what to do instead. Keep output bounded — results over
 50,000 characters get summarised; most toolsets cap their own output at 12,000.
 
+**The texts a tool returns are `ToolMessage` members** (*Messages and logging*), errors and results alike:
+`return MessageText.Format(ToolMessage.FileNotFound, new { Path = relativePath });`. Its descriptions are attributes.
+Two golden files pin what the model reads: `ModelRequestSnapshot.json` (tools, descriptions, system prompt) and
+`ToolMessageSnapshot.json` (every `ToolMessage` template). A new tool or text changes them on purpose: regenerate with
+`LOUIS_UPDATE_GOLDEN=1 dotnet test tests/louis-agent.core.tests --filter "ModelRequestSnapshotTests|ToolMessageSnapshotTests"`
+and review the diff.
+
 ### Project layout
 
 **Folders split the code by concern, and the namespace is the folder path.** Each concern of an agent has one home, so
@@ -215,7 +222,8 @@ Log.Log(LogLevel.Information, McpServerLogMessage.ToolNameTaken, new { Name = na
     call's `tag:` (`[TOOL]`, `[MCP]`, `[orchestrator]`).
   - **With `LOG_DIRECTORY`:** a run file per process (`agent-{host}-{time}-{pid}.log`, the console's lines with the
     time) and the records (`oversized-tool-results.jsonl`, `truncated-tool-calls.jsonl`, written by `ToolCallRecords`)
-    as JSON lines.
+    as JSON lines in their own shape (`RecordFormatter`: `timestamp` and the record's fields in camelCase, nothing of
+    Serilog's), since tools read them (F16).
 - **A unit test checks every message enum:** each member has a `[Description]`, and its template's holes are well formed.
 - **Screen text is not logging:** the CLI's usage line and the usage probe's errors are written to `Console.Error`
   directly (from their enums), so they stay out of the run file.

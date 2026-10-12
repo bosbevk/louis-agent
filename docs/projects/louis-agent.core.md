@@ -55,7 +55,7 @@ The full step-by-step is in [How a turn works](../AGENT_INTERACTION.md).
 | `Hosting/AgentHost.cs`, `AgentHostContext.cs` | Bootstrap for every host: env files, options, skills, client, engine; skill-file discovery |
 | `Hosting/RiderMcpToolDiscovery.cs` | At start-up, registers Rider's MCP tools with the engine (logged only; not callable yet) |
 | `Logging/AgentLogging.cs` | Serilog behind `ILogger`, configured once per process: the console on stderr (`[INFO]`, or a tag such as `[TOOL]`), and with `LOG_DIRECTORY` a run file per process and the JSON-lines records |
-| `Logging/MessageLogging.cs`, `ToolCallRecords.cs` | `logger.Log(level, Member, new { Hole = value })` for a message enum member; the two records (`oversized-tool-results.jsonl`, `truncated-tool-calls.jsonl`) |
+| `Logging/MessageLogging.cs`, `ToolCallRecords.cs`, `RecordFormatter.cs` | `logger.Log(level, Member, new { Hole = value })` for a message enum member; the two records (`oversized-tool-results.jsonl`, `truncated-tool-calls.jsonl`), written as `timestamp` and camelCase fields |
 | `Config/LlmOptions.cs`, `CacheLifetime.cs` | `LLM_*`: provider (inferred from the model when unset), model, endpoint, key, tool support, thinking, `LLM_CACHE` and `LLM_CACHE_TTL` |
 | `Config/AgentOptions.cs` | Workspace, skills directory, `AGENT_FUNCTION`, keys for Paymo / DevOps / web search, Rider MCP, `LOG_DIRECTORY` |
 | `Config/EnvFile.cs` | Finds the `config/` folder; sets one line in `config/.env` (`usage-probe --host-culture`), keeping the rest of the file |
