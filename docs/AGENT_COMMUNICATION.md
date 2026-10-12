@@ -29,7 +29,7 @@ flowchart LR
 
     Browser -- "REST + SSE" --> Api
     Script -- "REST + SSE" --> Api
-    Orch -- "sessions + SSE<br/>(one session per fix)" --> Api
+    Orch -- "sessions + SSE<br/>(one session per fix);<br/>/prices, /rates" --> Api
     Rider -- "ACP (stdio)" --> Acp
     McpClient -- "tools/list, tools/call" --> Mcp
     Api --> Engine
@@ -79,7 +79,7 @@ app's own files never need a key.
 |---|---|
 | `400` | Bad input: empty message, a path outside the workspace, nothing staged to commit, a branch that is already merged |
 | `401` | `AGENT_API_KEY` is set and the request didn't send it |
-| `403` | The diff of a secret file (`.env`, keys) was asked for |
+| `403` | A secret file (`.env`, keys) or its diff was asked for |
 | `404` | Unknown session or branch |
 | `409` | The session is still answering; a merge would conflict (it is aborted); uncommitted changes block a merge |
 | `413` / `415` | A workspace file is over 1 MB or binary |
@@ -115,7 +115,7 @@ sequenceDiagram
 | Endpoint | Request | Reply |
 |---|---|---|
 | `POST /sessions` | Optional `{ "task", "run", "service" }`: tags every usage record of the session (the orchestrator sends `fix:<error id>`, its run id and the service); each at most 200 printable characters | `201 { "session_id", "created_at", "task", "run", "service" }` |
-| `POST /sessions/{id}/messages` | `{ "message": "…", "attachments": [{ "name", "content" }] }` | Server-Sent Events (below) |
+| `POST /sessions/{id}/messages` | `{ "message": "…", "attachments": [{ "name", "content" }] }`; each attachment is cut at 100,000 characters | Server-Sent Events (below) |
 | `POST /sessions/{id}/cancel` | — | `{ "cancelled": true }`; the stream ends with stop reason `cancelled` |
 | `GET /sessions/{id}` | — | `{ "session_id", "created_at", "last_activity", "busy", "task", "run", "service", "usage" }`: `usage` totals the session's finished turns (the object below), `null` when the API records no usage |
 | `DELETE /sessions/{id}` | — | `{ "deleted": true }` |
@@ -126,7 +126,8 @@ session's tokens and cost, by purpose) is answered by the API itself and never r
 ### The event stream
 
 The answer streams as Server-Sent Events shaped like Claude's Messages API. Thinking and text arrive as deltas inside a
-block; a tool call and its result each arrive as one whole block. A trimmed real example:
+block; a tool call and its result each arrive as one whole block. A trimmed example; the usage is the real total of the
+order-total fix in [the cached demo run](../samples/sample-output-cached/agent-comms.md) (11 requests):
 
 ```text
 event: message_start
@@ -154,7 +155,7 @@ event: content_block_stop
 data: {"type":"content_block_stop","index":2}
 
 event: message_delta
-data: {"type":"message_delta","delta":{"stop_reason":"end_turn"},"usage":{"input_tokens":1900,"cache_creation_input_tokens":0,"cache_read_input_tokens":26000,"output_tokens":412,"requests":3,"cost":0.0061,"currency":"USD","unpriced":0}}
+data: {"type":"message_delta","delta":{"stop_reason":"end_turn"},"usage":{"input_tokens":24,"cache_creation_input_tokens":8899,"cache_read_input_tokens":578353,"output_tokens":2907,"requests":11,"cost":0.008351,"currency":"USD","unpriced":0,"display_cost":0.138068,"display_currency":"ZAR","display_symbol":"R","rate_as_of":"2026-10-09"}}
 
 event: message_stop
 data: {"type":"message_stop"}
@@ -168,7 +169,7 @@ data: {"type":"message_stop"}
 | `content_block_stop` | The block is complete |
 | `message_delta` | The stop reason (`end_turn` or `cancelled`) and the turn's `usage` (below) |
 | `message_stop` | The stream is complete |
-| `error` | The turn failed; the data is the error shape above, plus the turn's `usage` when a model request had returned before the failure |
+| `error` | The turn failed; the data is the error shape above (type `api_error`), plus the turn's `usage` when a model request had returned before the failure ([FX6](fixes/FX06-usage-on-failed-turns.md)) |
 
 **In another currency** (F14): the usage object keeps `cost` and `currency` as charged and adds `display_cost`,
 `display_currency`, `display_symbol` and `rate_as_of`, the cost in the server's display currency (`HOST_CULTURE` /
@@ -243,6 +244,11 @@ JSON-RPC over its stdin/stdout:
 | Rider → agent | `session/cancel` | Stop the reply |
 | agent → Rider | `session/update` | `agent_thought_chunk` (thinking), `agent_message_chunk` (text), `tool_call` and `tool_call_update` (in progress → completed or failed) |
 
+The file open in Rider's editor arrives as a `resource_link` too: the server uses it to find that file's git repository
+and works there, but reads into the prompt only the files you attached. As in the API, `/tools`, `/approve <Name>`,
+`/reject <Name>` and `/usage` are answered by the server itself; with `USAGE_IN_CHAT` on, each answer ends with its
+usage line (F3).
+
 Because stdout carries the protocol, all logging goes to stderr.
 
 ## MCP clients and the MCP server
@@ -264,6 +270,11 @@ The orchestrator ([samples/README.md](../samples/README.md)) is a second agent b
 service's error log, decides what each error needs from a runbook per API method ([RUNBOOKS.md](RUNBOOKS.md)), and has
 louis-agent fix the ones the runbook allows — over the same session API any client uses. It then checks louis-agent's work itself.
 
+Besides the sessions, it calls `GET /health` at start-up and, in the demo, takes its prices and exchange rates from
+louis-agent.api's `/prices` and `/rates` (`PRICES_URL`, `RATES_URL`), so both agents' costs are priced with one table
+and shown at one rate. Its triage can run on another model than the fixes, a local one included
+(`ORCHESTRATOR_LLM_PROFILE`; see [Local triage](features/README.md#local-triage-2026-10-12)).
+
 ```mermaid
 sequenceDiagram
     participant Log as Service error log<br/>(logs/errors.jsonl)
@@ -275,7 +286,7 @@ sequenceDiagram
     O->>Log: read new error events
     O->>O: triage with the method's runbook:<br/>expected / auto-fixable / escalate
     alt auto-fixable
-        O->>G: check out main
+        O->>G: check out main (stash any leftovers)
         O->>A: POST /sessions { task: fix:<error id>, run, service }
         O->>A: POST /sessions/{id}/messages (the fix request)
         A->>L: run the task
@@ -304,7 +315,7 @@ All of it is plain text in the session's messages; the structure comes from fixe
 input), so it is always fenced and labelled as data, never instructions:
 
 ```json
-{ "id": "e8b0b572223d", "service": "order-service", "method": "order-total", "arguments": "1003",
+{ "id": "f47c2696c6ab", "service": "order-service", "method": "order-total", "arguments": "1003",
   "exception_type": "System.Collections.Generic.KeyNotFoundException",
   "message": "The given key 'SUMMER25' was not present in the dictionary.",
   "stack_trace": "   at OrderService.OrderApi.GetOrderTotal(Int32 id) in /demo/order-service/src/OrderService/Api/OrderTotal.cs:line 18 …" }
@@ -317,13 +328,18 @@ a regression test in a new file, build and test, commit (never push or merge), t
 **3. The result line** (louis-agent → orchestrator), the last line of its reply:
 
 ```text
-FIX-RESULT: {"status":"fixed","commit":"9375e0a","branch":"fix/order-total-e8b0b572223d","tests":"15/15 passed","summary":"…"}
+FIX-RESULT: {"status":"fixed","commit":"6385680","branch":"fix/order-total-f47c2696c6ab","tests":"15/15 passed","summary":"…"}
 FIX-RESULT: {"status":"failed","reason":"…"}
 ```
 
+The orchestrator reads the last such line. A model sometimes writes an unescaped quote inside `summary` or `reason`,
+which makes the line invalid JSON; it is then read field by field instead of being lost
+([FX8](fixes/FX08-fix-result-quotes.md)).
+
 **4. The follow-up**, when a reply ends without a `FIX-RESULT` (louis-agent has 10 tool rounds per message, and a fix
-usually needs more): `Continue the fix from where you stopped. Finish with the FIX-RESULT line.` The session keeps the
-context, so louis-agent carries on where it stopped. The orchestrator sends up to three.
+can need more): `Continue the fix from where you stopped. Finish with the FIX-RESULT line.` The session keeps the
+context, so louis-agent carries on where it stopped. The orchestrator sends up to three; in the cached demo run 4 of
+the 10 fixes needed one, and none needed more.
 
 **5. The decision** (the orchestrator's own model, last line of its triage):
 `DECISION: <fixed|ignored|escalated|failed> - <one sentence>`.
@@ -338,7 +354,8 @@ The `FIX-RESULT` is louis-agent's claim. The orchestrator only reports `fixed` a
 | `ReplayRequest` | Runs the failing API call again on the fix branch: it must answer `200` |
 | `RunServiceTests` | The whole test suite, including louis-agent's regression test, must pass |
 
-Each agent also only has the tools its role needs: louis-agent has the coding tools but no access to the error tracker
+`CallLouisAgentFix` runs at most once per error: asked again, it says a fix was already requested and to verify that
+one. Each agent also only has the tools its role needs: louis-agent has the coding tools but no access to the error tracker
 or deployments; the orchestrator has no file, git-write or shell tools — it can only ask louis-agent, check, acknowledge
 or escalate. A human merges the fix branches (in the web app's Branches tab).
 
@@ -349,30 +366,52 @@ orchestrator sent (verbatim), each reply (a table of louis-agent's tool calls, i
 orchestrator's checks, and a summary — ending with a run summary table. Since F3 it also says what each part cost:
 louis-agent's usage under each reply, triage + louis-agent + total in each error's summary, *Tokens* and *Cost*
 columns in the run summary, and a run total split by agent (the figure to compare with the usage ledger's total for
-the run id, `usage-probe -- --ledger`). A real one from a demo run is in
-[samples/sample-output/agent-comms.md](../samples/sample-output/agent-comms.md); a shortened excerpt:
+the run id, `usage-probe -- --ledger`). Since F14 the costs are shown in the display currency, with the rate and the
+USD charged under the run total. A real one from the cached demo run is in
+[samples/sample-output-cached/agent-comms.md](../samples/sample-output-cached/agent-comms.md) (the uncached "before"
+is in [samples/sample-output/](../samples/sample-output/agent-comms.md)); a shortened excerpt:
 
 ```text
 ## 2/13 · `order-total 1003` · KeyNotFoundException
-### Orchestrator → louis-agent · message 1        (the fix request)
-### louis-agent → orchestrator · reply 1 · 12 tool call(s)
-| 4 | CreateBranch  | {"branchName":"fix/order-total-e8b0b572223d"} | Success (no output). |
-| 11 | WriteWorkspaceFile | {"relativePath":"src/OrderService/Api/OrderTotal.cs", …} | Wrote … |
-FIX-RESULT: none in this reply
-### Orchestrator → louis-agent · message 2        Continue the fix from where you stopped. …
-### louis-agent → orchestrator · reply 2 · 6 tool call(s)
-| 2 | DotNetTest | {"project":"OrderService.slnx"} | Passed! - Failed: 0, Passed: 15 … |
-| 5 | Commit     | {"message":"fix(order-total): handle unknown discount codes gracefully …"} | [fix/order-total-… 9375e0a] … |
-FIX-RESULT: status fixed · commit 9375e0a · branch fix/order-total-e8b0b572223d · tests 15/15 passed
+### Orchestrator → louis-agent · message 1 · session `sess_71d9…`        (the fix request)
+### louis-agent → orchestrator · reply 1 · 18 tool call(s) · stop: end_turn
+Usage: 11 requests · 590k tokens (578k cached) · R0.14
+| 3 | CreateBranch       | {"branchName":"fix/order-total-f47c2696c6ab"} | Success (no output). |
+| 10 | WriteWorkspaceFile | {"relativePath":"src/OrderService/Api/OrderTotal.cs", …} | Wrote … |
+| 14 | DotNetTest         | {"noBuild":true} | Passed!  - Failed: 0, Passed: 15 … |
+| 17 | Commit             | {"message":"fix(order-total): treat unknown discount codes as no discount …"} | [fix/order-total-… 6385680] … |
+FIX-RESULT: status fixed · commit 6385680 · branch fix/order-total-f47c2696c6ab · tests 15/15 passed
 ### Orchestrator actions and checks
-- VerifyFixCommit(9375e0a, fix/order-total-e8b0b572223d) → VERIFIED
+- VerifyFixCommit(6385680, fix/order-total-f47c2696c6ab) → VERIFIED
 - ReplayRequest(order-total 1003) → 200 order-total 1003: 35.00
 - RunServiceTests → Passed! - Failed: 0, Passed: 15
 ### Summary   Decision: fixed
+| Usage: triage      | 3 requests · 26k tokens · R0.049 |
+| Usage: louis-agent | 11 requests · 590k tokens (578k cached) · R0.14 |
+| Usage: total       | 14 requests · 616k tokens (578k cached) · R0.19 |
 ```
 
 The orchestrator also keeps machine-readable records next to it (`decisions.jsonl`, `fixes.jsonl`,
-`escalations.jsonl`, `acknowledged.jsonl`), and louis-agent.api logs every tool call it ran.
+`escalations.jsonl`, `acknowledged.jsonl`, with costs in USD), and louis-agent.api logs every tool call it ran. Both
+agents write to the same usage ledger: the orchestrator's triage requests under `host: orchestrator`, louis-agent's
+under the session the orchestrator opened, tagged `task: fix:<error id>`, the run id and the service, so one run's
+cost can be totalled across both.
+
+A failed or timed-out request fails that error, not the run: the error stays unprocessed and is triaged again on the
+next poll ([FX7](fixes/FX07-timeout-ends-run.md)). Only Ctrl+C ends a run early.
+
+## What changes next
+
+Planned features change parts of this page; each one's doc lists updating it in its *Docs* step.
+
+| Feature | What changes here |
+|---|---|
+| [F8 Reliability](features/F08-reliability.md) (S4) | Results become tool calls: louis-agent reports with a `ReportFixResult` tool and the orchestrator decides with `RecordDecision`, read from the `tool_use` block in the stream; the `FIX-RESULT` and `DECISION` lines stay as a fallback |
+| [F10 Route settings](features/F10-route-settings.md) | `POST /sessions` takes a `profile` (`chat` or `task`, with its own tool rounds and thinking); the orchestrator asks for `task`, so most "continue" follow-ups go away |
+| [F5 Toolset profiles](features/F05-toolset-profiles.md) | The demo's louis-agent.api loads only the coding tools, so each fix session sends a smaller prefix |
+| [F7 Budgets](features/F07-budgets.md) | A turn can stop at a budget: a `budget` stop reason and a `budget_error` event, `POST /sessions/{id}/budget` to raise the limit; the orchestrator defers a fix it can't afford |
+| [F11 Usage tab](features/F11-usage-tab-and-reconciliation.md) | New endpoints: `GET /usage`, `GET /usage/sessions/{id}`, `GET /budgets`, `POST /estimates` |
+| [F17 Orchestrator agent](features/F17-orchestrator-agent.md) | Triage becomes a routing workflow: a model classifies each error, the known paths (fix and verify, acknowledge, escalate) run as code, and an agent handles only the exceptions; the three checks become one `ConfirmFix` tool; the fix still goes to louis-agent.api the same way, and the comms log names the path |
 
 ---
 [Docs index](README.md) · Previous: [How a turn works](AGENT_INTERACTION.md) · Next: [Architecture](ARCHITECTURE.md)
