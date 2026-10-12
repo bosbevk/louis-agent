@@ -39,7 +39,9 @@ its own.
       coding tools only)
 - [ ] [F15 Model limits](docs/features/F15-model-limits.md) — each model's context window and cache minimum beside its
       prices, `num_ctx` sent to local models, and F9's compaction point (below the price step: under 100k on Haiku 5.5)
-      and F13's budget per model instead of one number for all
+      and F13's budget per model instead of one number for all. *From the local triage runs:* `num_ctx` and `num_gpu`
+      per request for the orchestrator (8k fits fully on a 4 GB GPU, 32k doesn't), and `think: false` sent when
+      thinking is off ([Local triage](docs/features/README.md#local-triage-2026-10-12))
 
 **M3 — In control:** know the cost before, stop cleanly at a limit.
 
@@ -64,7 +66,9 @@ measured.
 - [ ] [F10 Route settings](docs/features/F10-route-settings.md) — thinking and tool rounds per route.
       *Removes the limitation:* 10 tool rounds per message
 - [ ] [F17 Orchestrator agent](docs/features/F17-orchestrator-agent.md) — classification by a model, the known paths as
-      code, the agent for the exceptions; its own settings and cache policy; measured against today's orchestrator
+      code, the agent for the exceptions; its own settings and cache policy; measured against today's orchestrator.
+      *From the local triage runs:* `EscalateToHuman` idempotent per error, and contradicting decisions in one reply
+      (acknowledge and fix) rejected
 
 **M5 — Reporting:** an overview, a check against the bill, and how fast each model is.
 
@@ -239,6 +243,8 @@ feature when its turn comes; remove its line here and update the map's *Missing*
 
 ### Observability
 
+- [ ] [FX9](docs/fixes/FX09-cancelled-request-usage.md) Write a request cancelled without streaming (the orchestrator's
+      triage, timed out) to the ledger, as a cancelled stream already is
 - [ ] Metrics and tracing (e.g. OpenTelemetry) beyond the stderr and JSON-lines logs: latency and error dashboards
       (usage and cost are covered by F1–F3 and F11)
 
@@ -257,7 +263,8 @@ backlog item removes one, it says so.
 - An unpublished API (`dotnet run`) only serves the web app in the `Development` environment.
 - Local models get a truncated prompt: the agent sends ~26,000+ tokens (system prompt and tools) without telling Ollama
   the window, so Ollama uses its own default (2,048 on the version measured here) and drops the rest without an error
-  (the ledger showed `input: 2050`) → **F15** (`num_ctx`) and **F13**.
+  (the ledger showed `input: 2050`), except in the `ollama-nvidia` and `ollama-amd` containers, which default to 32k;
+  the CPU `ollama` service still uses Ollama's default → **F15** (`num_ctx`) and **F13**.
 - On Claude Haiku 5.5 (the default), changing the tools or skills during a chat can make its next request fail with a
   400: the model rejects a changed system prompt or tool list once thinking blocks are in the history (enforced for
   accounts created on or after 2026-08-31). That happens when the model creates a tool (`CreateTool`, mid-message),
@@ -268,6 +275,12 @@ backlog item removes one, it says so.
 
 Newest first; details in the git history.
 
+- 2026-10-12 — **Ollama on the GPU and local triage**: `ollama-nvidia` and `ollama-amd` services sized for a 4 GB card
+  (32k context, flash attention, 8-bit KV cache); Ollama's client waits 10 minutes, not 100 seconds. The short demo's
+  triage on `qwen3:4b-instruct-2507` (profile `.env.ollama-triage`): 4 fixed, 1 escalated, as on Claude, triage $0, the
+  run $0.042 against $0.049, 2.4× slower; llama3.1 and qwen3's thinking variant failed
+  ([Local triage](docs/features/README.md#local-triage-2026-10-12),
+  `samples/sample-output-short-local-triage/`)
 - 2026-10-12 — **CL3 Messages and logging**: every exception, log line, tool error and user text is a message enum
   member with a `[Description]` template (486: 313 in core, the rest in each host's own `Messages/`), proved to render
   as before; `ToolMessageSnapshot.json` pins the 190 texts tools return to the model. Logging is `ILogger` with

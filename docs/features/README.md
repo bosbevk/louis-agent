@@ -175,13 +175,14 @@ Can the orchestrator's triage run on a free local model while louis-agent's fixe
 - **.NET's 100-second default timeout** cancelled replies Ollama was still writing: the prompt (~4,600 tokens) was
   read in time, the answer wasn't. Ollama's client now waits 10 minutes (`LlmClientFactory.OllamaTimeout`).
 - **The ledger misses a cancelled request:** llama3.1's run made five requests and the ledger has four. Free on
-  Ollama, but a cancelled Claude request is still charged.
+  Ollama; on Claude a request the client gave up on may still be charged, and the ledger wouldn't show it
+  ([FX9](../fixes/FX09-cancelled-request-usage.md)).
 - **The cost:** triage was 28% of the cached short run and is now $0; the fixes are the rest. The run took 2.4 times as
   long (8.4 minutes against 3.5).
 
 **Follow-ups** (not built): send `num_ctx` and `num_gpu` per request for the orchestrator (F15); send `think: false`
 when thinking is off (F15); make `EscalateToHuman` idempotent per error and reject contradicting decisions in one
-reply (F17); record cancelled requests in the ledger (a fix).
+reply (F17); record cancelled requests in the ledger ([FX9](../fixes/FX09-cancelled-request-usage.md)).
 
 ## Conventions
 

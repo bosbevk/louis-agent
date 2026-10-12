@@ -16,7 +16,7 @@ and gets a line in the TODO's backlog (*Agent architecture gaps*) until it is pl
 
 | # | Skill | Have today | Planned (TODO) | Missing |
 |---|---|---|---|---|
-| 1 | **Models and providers** | One `IChatClient` over Anthropic and Ollama (`LlmClientFactory`, [MODELS](MODELS.md)) | Fallback model (F8), summary model (F16), local models within a small context window (F13) | Model choice by measured quality and cost per task (routing on evals) |
+| 1 | **Models and providers** | One `IChatClient` over Anthropic and Ollama (`LlmClientFactory`, [MODELS](MODELS.md)); a local model for the orchestrator's triage (`qwen3:4b-instruct-2507` on a 4 GB GPU), measured against Claude: the same fixes, triage free, 2.4× slower ([Local triage](features/README.md#local-triage-2026-10-12)) | Fallback model (F8), summary model (F16), local models within a small context window (F13) | Model choice by measured quality and cost per task (routing on evals) |
 | 2 | **Reasoning and extended thinking** | Thinking resolved per model (adaptive, or budget for pre-4.6), streamed to every host, kept in history across tool calls | Thinking level per route (F10) | Measuring what thinking buys: quality vs tokens per level on the evals; interleaved thinking between tool calls; when not to think |
 | 3 | **Prompt design** | System prompt built from `Skills/*.md`; a cache-friendly prefix: tools sorted, nothing per-request in the system prompt (F4) | — | Prompt versioning, and A/B comparison of prompt changes on the evals |
 | 4 | **Tool design** | ~108 described tools, agent-built tools with approval, guarded results | Toolset profiles (F5), results as tool calls (F8) | Tool search / on-demand tool loading for large toolsets |
