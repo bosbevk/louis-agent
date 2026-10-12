@@ -82,6 +82,23 @@ The profile's endpoint, `http://host.docker.internal:11434`, reaches the publish
 (Docker Desktop adds the name to the hosts file) and from the agent containers, so `dotnet run` and Docker use the same
 setting. With Ollama installed natively and no Docker Desktop, set `LLM_ENDPOINT=http://localhost:11434`.
 
+**On a GPU,** start `ollama-nvidia` or `ollama-amd` instead (one Ollama at a time: they share port 11434 and the
+models volume):
+
+```bash
+docker compose -f docker/docker-compose.yml --env-file config/.env --profile ollama-nvidia up -d ollama-nvidia
+docker compose -f docker/docker-compose.yml --env-file config/.env --profile ollama-amd up -d ollama-amd
+```
+
+- **NVIDIA** reserves the GPU in compose (needs an NVIDIA driver; Docker Desktop's WSL 2 backend passes it through).
+- **AMD** uses the `ollama/ollama:rocm` image with `/dev/kfd` and `/dev/dri`: Linux hosts with ROCm only, since Docker
+  Desktop on Windows doesn't pass AMD GPUs to containers.
+- **Both are sized for a 4 GB card, split between VRAM and RAM:** a 32k-token context (`OLLAMA_CONTEXT_LENGTH=32768`,
+  above the agent's ~26k-token prompt), flash attention and an 8-bit KV cache (`OLLAMA_FLASH_ATTENTION=1`,
+  `OLLAMA_KV_CACHE_TYPE=q8_0`), which halve the context's memory. llama3.1 (8B, ~4.9 GB) and its context don't fit in
+  4 GB, so Ollama runs part of the model on the CPU from system RAM: slower than all-GPU, but the prompt isn't cut.
+  `docker exec louis_ollama_nvidia ollama ps` shows the split in its PROCESSOR column.
+
 **Tool calling decides how useful a local model is.** The agent works by calling tools, so pick a model whose
 Ollama page lists tool support (for example `llama3.1`, `qwen3`, `mistral`). Models known to reject tools, or to answer
 with tool-call JSON as plain text, run **without tools** automatically — chat and analysis only:

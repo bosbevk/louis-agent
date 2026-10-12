@@ -168,6 +168,59 @@ services:
     # Set LLM_PROFILE=ollama in config/.env, then:
     # docker compose -f docker/docker-compose.yml --env-file config/.env --profile ollama up -d ollama
 
+  # The same Ollama on a GPU, sized for a 4 GB card (32k-token context, see their Dockerfiles). Run one of
+  # ollama, ollama-nvidia and ollama-amd at a time: they share the port and the models volume.
+  ollama-nvidia:
+    build:
+      context: ../services
+      dockerfile: Dockerfile.ollama-nvidia
+    container_name: louis_ollama_nvidia
+    ports:
+      - "11434:11434"
+    env_file:
+      - path: ../config/.env.ollama
+    environment:
+      - OLLAMA_HOST=0.0.0.0:11434
+    volumes:
+      - ollama_data:/root/.ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    networks:
+      - default
+    profiles:
+      - ollama-nvidia
+    # docker compose -f docker/docker-compose.yml --env-file config/.env --profile ollama-nvidia up -d ollama-nvidia
+
+  ollama-amd:
+    build:
+      context: ../services
+      dockerfile: Dockerfile.ollama-amd
+    container_name: louis_ollama_amd
+    ports:
+      - "11434:11434"
+    env_file:
+      - path: ../config/.env.ollama
+    environment:
+      - OLLAMA_HOST=0.0.0.0:11434
+    volumes:
+      - ollama_data:/root/.ollama
+    # ROCm reaches the GPU through these devices (Linux hosts only; Docker Desktop on Windows has no AMD passthrough).
+    devices:
+      - /dev/kfd
+      - /dev/dri
+    group_add:
+      - video
+    networks:
+      - default
+    profiles:
+      - ollama-amd
+    # docker compose -f docker/docker-compose.yml --env-file config/.env --profile ollama-amd up -d ollama-amd
+
 volumes:
   ollama_data:
 
