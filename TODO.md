@@ -205,9 +205,13 @@ feature when its turn comes; remove its line here and update the map's *Missing*
 
 - [ ] **Evaluation:** run F18's eval suites in CI as a regression gate (the harness itself is F18)
 - [ ] **Thinking:** measure quality vs tokens per thinking level on the evals; interleaved thinking between tool calls
-- [ ] **Models:** choose models per task from measured quality and cost
+- [ ] **Models:** choose models per task from measured quality and cost; check each model's capabilities (real tool
+      calls, thinking) by measuring them, not from its name (`LlmOptions.KnownNoToolsPrefixes`; the local triage runs
+      showed llama3.1 writing tool calls as text and qwen3's thinking variant timing out)
 - [ ] **Prompts:** version prompts and compare changes on the evals
-- [ ] **Tools:** tool search / on-demand loading for large toolsets; schema-validated structured outputs
+- [ ] **Tools:** tool search / on-demand loading for large toolsets; schema-validated structured outputs; add a tool
+      mid-conversation without breaking thinking or the cache (Anthropic's inline `tool_addition` blocks, behind
+      `LlmClientFactory`; an option [FX4](docs/fixes/FX04-append-only-history.md) leaves for later)
 - [ ] **Agent loop:** explicit planning, a self-check before answering, stop conditions beyond a round count
 - [ ] **Memory and retrieval:** embeddings, a vector store, retrieval over code and past sessions, measured
 - [ ] **Multi-agent:** compare handoff patterns (tool call, session, MCP); parallel sub-agents
