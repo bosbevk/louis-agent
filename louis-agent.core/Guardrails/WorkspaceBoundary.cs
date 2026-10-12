@@ -1,5 +1,7 @@
 namespace LouisAgent.Core.Guardrails;
 
+using LouisAgent.Core.Messages;
+
 /// <summary>
 /// Keeps paths inside the workspace: relative only, never above the root, never through a symbolic link. The agent's
 /// file tools and the API's workspace and git endpoints resolve every path through it.
@@ -10,7 +12,7 @@ internal sealed class WorkspaceBoundary
     {
         if (string.IsNullOrWhiteSpace(root))
         {
-            throw new ArgumentException("Workspace root cannot be empty.", nameof(root));
+            throw new ArgumentException(MessageText.Format(ErrorMessage.WorkspaceRootEmpty), nameof(root));
         }
 
         Root = Path.GetFullPath(root);
@@ -24,7 +26,7 @@ internal sealed class WorkspaceBoundary
     {
         if (Path.IsPathRooted(relativePath))
         {
-            throw new ArgumentException("Workspace paths must be relative.", nameof(relativePath));
+            throw new ArgumentException(MessageText.Format(ToolMessage.PathNotRelative), nameof(relativePath));
         }
 
         string fullPath = Path.GetFullPath(Path.Combine(Root, relativePath));
@@ -33,7 +35,7 @@ internal sealed class WorkspaceBoundary
             relativeToRoot.StartsWith($"..{Path.DirectorySeparatorChar}", StringComparison.Ordinal) ||
             Path.IsPathRooted(relativeToRoot))
         {
-            throw new ArgumentException("Path must stay inside the workspace.", nameof(relativePath));
+            throw new ArgumentException(MessageText.Format(ToolMessage.PathOutsideWorkspace), nameof(relativePath));
         }
 
         string? current = fullPath;
@@ -42,7 +44,7 @@ internal sealed class WorkspaceBoundary
             if ((Directory.Exists(current) || File.Exists(current)) &&
                 (File.GetAttributes(current) & FileAttributes.ReparsePoint) != 0)
             {
-                throw new ArgumentException("Workspace paths cannot traverse symbolic links.", nameof(relativePath));
+                throw new ArgumentException(MessageText.Format(ToolMessage.PathThroughSymbolicLink), nameof(relativePath));
             }
 
             current = Path.GetDirectoryName(current);

@@ -3,6 +3,8 @@ namespace LouisAgent.Cli;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
+using LouisAgent.Core.Messages;
+using LouisAgent.Cli.Messages;
 
 /// <summary>
 /// The CLI's chat on the console: the interactive loop and single-prompt mode. It maps the engine's stream to the
@@ -29,13 +31,13 @@ internal sealed class ConsoleChat(AgentEngine engine)
             active.Cancel();
         };
 
-        Console.WriteLine("=== Louis Agent CLI ===");
-        Console.WriteLine("Type 'exit' to quit; Ctrl+C stops a reply; /usage shows this session's tokens and cost;");
-        Console.WriteLine("/tools, /approve <Name>, /reject <Name> manage agent-built tools\n");
+        Console.WriteLine(MessageText.Format(CliUserText.Banner));
+        Console.WriteLine(MessageText.Format(CliUserText.BannerHelp));
+        Console.WriteLine(MessageText.Format(CliUserText.BannerCommands));
 
         while (true)
         {
-            Console.Write("You: ");
+            Console.Write(MessageText.Format(CliUserText.YouPrompt));
             string? userInput = Console.ReadLine();
 
             // null = stdin closed (EOF); blank lines are ignored rather than ending the session.
@@ -61,17 +63,17 @@ internal sealed class ConsoleChat(AgentEngine engine)
             using var usage = UsageScope.Begin(host: "cli", session: session, turn: ++turns);
             try
             {
-                Console.Write("\nAssistant: ");
+                Console.Write(MessageText.Format(CliUserText.AssistantPrompt));
                 await StreamToConsoleAsync(history, userInput, cancellation.Token);
                 Console.WriteLine("\n");
             }
             catch (OperationCanceledException)
             {
-                Console.WriteLine("\n[stopped]\n");
+                Console.WriteLine(MessageText.Format(CliUserText.Stopped));
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"\nError: {ex.Message}\n");
+                Console.WriteLine(MessageText.Format(CliUserText.TurnError, new { Reason = ex.Message }));
             }
             finally
             {
@@ -95,7 +97,7 @@ internal sealed class ConsoleChat(AgentEngine engine)
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error: {ex.Message}");
+            Console.WriteLine(MessageText.Format(CliUserText.PromptError, new { Reason = ex.Message }));
             Environment.Exit(1);
         }
     }
@@ -145,11 +147,11 @@ internal sealed class ConsoleChat(AgentEngine engine)
                     case FunctionCallContent call:
                         if (midLine) Console.WriteLine();
                         inThinking = false;
-                        WriteStatus($"  > {call.Name} {AgentEngine.DescribeArguments(call.Arguments)}");
+                        WriteStatus(MessageText.Format(CliUserText.ToolCallStatus, new { call.Name, Arguments = AgentEngine.DescribeArguments(call.Arguments) }));
                         midLine = false;
                         break;
                     case FunctionResultContent result:
-                        WriteStatus($"    {(result.Exception is null ? "done" : "failed")}: {FirstLine(result.Result?.ToString())}");
+                        WriteStatus(MessageText.Format(CliUserText.ToolResultStatus, new { Outcome = (result.Exception is null ? MessageText.Format(CliUserText.ToolDone) : MessageText.Format(CliUserText.ToolFailed)), Result = FirstLine(result.Result?.ToString()) }));
                         break;
                 }
             }

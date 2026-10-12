@@ -24,6 +24,78 @@ public enum ErrorMessage
     [Description("Unknown LLM_CACHE_TTL '{Value}'. Use 5m or 1h.")]
     UnknownCacheTtl,
 
-    [Description("--cache-gaps needs a file: --cache-gaps logs/usage-2026-10.jsonl")]
-    CacheGapsNeedsFile,
+    [Description("Unknown LLM_THINKING '{Value}'. Use off, low, medium or high.")]
+    UnknownThinking,
+
+    [Description("'{Key}' is not a setting name.")]
+    NotASettingName,
+
+    [Description("A setting's value is one line.")]
+    SettingValueNotOneLine,
+
+    [Description("Exchange rates {Source} are not in rates.json format: {Reason}")]
+    RatesNotRatesJson,
+
+    [Description("Exchange rates {Source} are empty.")]
+    RatesEmpty,
+
+    [Description("Exchange rates {Source}: base '{Base}' is not a currency code.")]
+    RatesBaseNotACurrency,
+
+    [Description("Exchange rates {Source}: '{Code}' is not a currency code.")]
+    RatesCodeNotACurrency,
+
+    [Description("Exchange rates {Source}: the {Code} rate must be positive.")]
+    RateNotPositive,
+
+    [Description("Frankfurter rates {Source}: amount must be positive.")]
+    FrankfurterAmountNotPositive,
+
+    [Description("Frankfurter rates {Source} are not in Frankfurter's format: {Reason}")]
+    FrankfurterNotItsFormat,
+
+    [Description("Price table {Source} is not valid: {Reason}")]
+    PriceTableNotValid,
+
+    [Description("Price table {Source} is empty.")]
+    PriceTableEmpty,
+
+    [Description("Price table {Source}: '{Model}' has a negative {Price} price.")]
+    PriceTableNegativePrice,
+
+    [Description("Price table {Source}: '{Model}' long_prompt.above_tokens must be positive.")]
+    PriceTableLongPromptNotPositive,
+
+    [Description("{Path} line {Number} is not a usage record: {Reason}")]
+    NotAUsageRecord,
+
+    [Description("LLM_MODEL is required.")]
+    LlmModelRequired,
+
+    [Description("Unknown LLM_PROVIDER '{Provider}'. Supported: {Supported}.")]
+    UnknownProvider,
+
+    [Description("ANTHROPIC_API_KEY (or LLM_API_KEY) is required for provider 'anthropic'.")]
+    AnthropicKeyRequired,
+
+    [Description("LLM_ENDPOINT is required for provider 'openai-compatible'.")]
+    OpenAiEndpointRequired,
+
+    [Description("Workspace root cannot be empty.")]
+    WorkspaceRootEmpty,
+
+    [Description("This host only exposes tools; it has no language model.")]
+    ToolHostHasNoModel,
+
+    [Description("PRICES_URL must be an http or https URL, got '{Url}'.")]
+    PricesUrlInvalid,
+
+    [Description("RATES_URL must be an http or https URL (or off), got '{Url}'.")]
+    RatesUrlInvalid,
+
+    [Description("Exchange rates {Source} are from {Base}, but the price table is in {Currency}: set RATES_URL to rates from {Currency}.")]
+    RatesWrongBase,
+
+    [Description("RATES_FORMAT must be '{Frankfurter}' or '{Json}', got '{Format}'.")]
+    RatesFormatUnknown,
 }

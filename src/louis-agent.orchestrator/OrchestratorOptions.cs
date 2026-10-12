@@ -1,5 +1,8 @@
 namespace LouisAgent.Orchestrator;
 
+using LouisAgent.Core.Messages;
+using LouisAgent.Orchestrator.Messages;
+
 /// <summary>Which service this orchestrator watches and where louis-agent is; resolved once at startup.</summary>
 internal sealed class OrchestratorOptions
 {
@@ -45,7 +48,7 @@ internal sealed class OrchestratorOptions
 
         string service = Get("ORCHESTRATOR_SERVICE") ?? "order-service";
         string serviceRoot = Get("ORCHESTRATOR_SERVICE_ROOT")
-                             ?? throw new InvalidOperationException("ORCHESTRATOR_SERVICE_ROOT is required: the service's git repository.");
+                             ?? throw new InvalidOperationException(MessageText.Format(OrchestratorErrorMessage.ServiceRootRequired));
         int interval = int.TryParse(Get("ORCHESTRATOR_POLL_SECONDS"), out int seconds) && seconds > 0 ? seconds : 15;
 
         return new OrchestratorOptions

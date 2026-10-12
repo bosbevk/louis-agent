@@ -3,6 +3,9 @@ namespace LouisAgent.Core.Pricing;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using LouisAgent.Core.Config;
+using LouisAgent.Core.Logging;
+using LouisAgent.Core.Messages;
+using Microsoft.Extensions.Logging;
 
 /// <summary>
 /// The currency costs are shown in (F14), with the rate from the price table's currency and that rate's date. Costs are
@@ -16,6 +19,8 @@ using LouisAgent.Core.Config;
 /// <param name="Source">What chose the currency, for the start-up log: e.g. "HOST_CULTURE en-ZA".</param>
 public sealed partial record DisplayCurrency(string Code, string Symbol, decimal Rate, string? RateAsOf, string Base, string Source)
 {
+    private static readonly ILogger Log = AgentLogging.For<DisplayCurrency>();
+
     /// <summary>Whether costs are converted, i.e. shown in another currency than they were charged in.</summary>
     public bool Converts => !string.Equals(Code, Base, StringComparison.OrdinalIgnoreCase);
 
@@ -42,7 +47,7 @@ public sealed partial record DisplayCurrency(string Code, string Symbol, decimal
 
         if (rates.RateFor(choice.Code) is not { } rate)
         {
-            Console.Error.WriteLine($"[WARN] Display currency: no {choice.Code} rate (from {choice.Source}); costs are shown in {baseCurrency}.");
+            Log.Log(LogLevel.Warning, LogMessage.DisplayCurrencyHasNoRate, new { choice.Code, choice.Source, Base = baseCurrency });
             return Charged(baseCurrency);
         }
 
@@ -69,7 +74,7 @@ public sealed partial record DisplayCurrency(string Code, string Symbol, decimal
         string upper = code.Trim().ToUpperInvariant();
         if (CurrencyCode().IsMatch(upper)) return (upper, SymbolFor(upper), "DISPLAY_CURRENCY");
 
-        Console.Error.WriteLine($"[WARN] DISPLAY_CURRENCY '{code}' is not a currency code (e.g. ZAR); ignoring it.");
+        Log.Log(LogLevel.Warning, LogMessage.DisplayCurrencyNotACode, new { Code = code });
         return null;
     }
 
@@ -79,16 +84,16 @@ public sealed partial record DisplayCurrency(string Code, string Symbol, decimal
         try
         {
             return FromCulture(CultureInfo.GetCultureInfo(name.Trim()), $"{setting} {name.Trim()}")
-                   ?? Warn("names no region (use a specific culture such as en-ZA)");
+                   ?? Warn(LogMessage.CultureHasNoRegion);
         }
         catch (CultureNotFoundException)
         {
-            return Warn("is not a culture .NET knows");
+            return Warn(LogMessage.CultureUnknown);
         }
 
-        (string, string, string)? Warn(string why)
+        (string, string, string)? Warn(LogMessage why)
         {
-            Console.Error.WriteLine($"[WARN] {setting} '{name}' {why}; ignoring it.");
+            Log.Log(LogLevel.Warning, why, new { Setting = setting, Name = name });
             return null;
         }
     }

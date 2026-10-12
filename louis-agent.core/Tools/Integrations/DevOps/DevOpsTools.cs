@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
+using LouisAgent.Core.Messages;
 
 /// <summary>
 /// Azure DevOps work items for one project (DEVOPS_ORGANIZATION / DEVOPS_PROJECT, optional DEVOPS_TEAM). Sprints are
@@ -44,7 +45,7 @@ public sealed class DevOpsTools
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return "Error: DEVOPS_API_KEY is not set.";
+            return MessageText.Format(ToolMessage.DevOpsKeyNotSet);
         }
 
         return await ExecuteWiqlQuery(wiqlQuery);
@@ -57,7 +58,7 @@ public sealed class DevOpsTools
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return "Error: DEVOPS_API_KEY is not set.";
+            return MessageText.Format(ToolMessage.DevOpsKeyNotSet);
         }
 
         var (iteration, sprintError) = await ResolveIterationPathAsync(sprint);
@@ -79,7 +80,7 @@ public sealed class DevOpsTools
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return "Error: DEVOPS_API_KEY is not set.";
+            return MessageText.Format(ToolMessage.DevOpsKeyNotSet);
         }
 
         var (iteration, sprintError) = await ResolveIterationPathAsync(sprint);
@@ -101,7 +102,7 @@ public sealed class DevOpsTools
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return "Error: DEVOPS_API_KEY is not set.";
+            return MessageText.Format(ToolMessage.DevOpsKeyNotSet);
         }
 
         var (iteration, sprintError) = await ResolveIterationPathAsync(sprint);
@@ -123,7 +124,7 @@ public sealed class DevOpsTools
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return "Error: DEVOPS_API_KEY is not set.";
+            return MessageText.Format(ToolMessage.DevOpsKeyNotSet);
         }
 
         var (iteration, sprintError) = await ResolveIterationPathAsync(sprint);
@@ -145,7 +146,7 @@ public sealed class DevOpsTools
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return "Error: DEVOPS_API_KEY is not set.";
+            return MessageText.Format(ToolMessage.DevOpsKeyNotSet);
         }
 
         try
@@ -156,7 +157,7 @@ public sealed class DevOpsTools
 
             if (!response.IsSuccessStatusCode)
             {
-                return $"Error {response.StatusCode}: {content}";
+                return MessageText.Format(ToolMessage.DevOpsHttpError, new { Status = response.StatusCode, Content = content });
             }
 
             var json = JsonDocument.Parse(content);
@@ -164,7 +165,7 @@ public sealed class DevOpsTools
         }
         catch (Exception ex)
         {
-            return $"Error retrieving work item {id}: {ex.Message}";
+            return MessageText.Format(ToolMessage.DevOpsWorkItemFailed, new { Id = id, Reason = ex.Message });
         }
     }
 
@@ -175,7 +176,7 @@ public sealed class DevOpsTools
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return "Error: DEVOPS_API_KEY is not set.";
+            return MessageText.Format(ToolMessage.DevOpsKeyNotSet);
         }
 
         var (iteration, sprintError) = await ResolveIterationPathAsync(sprint);
@@ -199,7 +200,7 @@ public sealed class DevOpsTools
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return "Error: DEVOPS_API_KEY is not set.";
+            return MessageText.Format(ToolMessage.DevOpsKeyNotSet);
         }
 
         var (iteration, sprintError) = await ResolveIterationPathAsync(sprint);
@@ -223,7 +224,7 @@ public sealed class DevOpsTools
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return "Error: DEVOPS_API_KEY is not set.";
+            return MessageText.Format(ToolMessage.DevOpsKeyNotSet);
         }
 
         var (iteration, sprintError) = await ResolveIterationPathAsync(sprint);
@@ -246,7 +247,7 @@ public sealed class DevOpsTools
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return "Error: DEVOPS_API_KEY is not set.";
+            return MessageText.Format(ToolMessage.DevOpsKeyNotSet);
         }
 
         var (iteration, sprintError) = await ResolveIterationPathAsync(sprint);
@@ -268,7 +269,7 @@ public sealed class DevOpsTools
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return "Error: DEVOPS_API_KEY is not set.";
+            return MessageText.Format(ToolMessage.DevOpsKeyNotSet);
         }
 
         var (iteration, sprintError) = await ResolveIterationPathAsync(sprint);
@@ -291,7 +292,7 @@ public sealed class DevOpsTools
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return "Error: DEVOPS_API_KEY is not set.";
+            return MessageText.Format(ToolMessage.DevOpsKeyNotSet);
         }
 
         var (iteration, sprintError) = await ResolveIterationPathAsync(sprint);
@@ -315,7 +316,7 @@ public sealed class DevOpsTools
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return "Error: DEVOPS_API_KEY is not set.";
+            return MessageText.Format(ToolMessage.DevOpsKeyNotSet);
         }
 
         var (iteration, sprintError) = await ResolveIterationPathAsync(sprint);
@@ -336,7 +337,7 @@ public sealed class DevOpsTools
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return "Error: DEVOPS_API_KEY is not set.";
+            return MessageText.Format(ToolMessage.DevOpsKeyNotSet);
         }
 
         try
@@ -347,7 +348,7 @@ public sealed class DevOpsTools
 
             if (!response.IsSuccessStatusCode)
             {
-                return $"Error {response.StatusCode}: {content}";
+                return MessageText.Format(ToolMessage.DevOpsHttpError, new { Status = response.StatusCode, Content = content });
             }
 
             var json = JsonDocument.Parse(content);
@@ -365,12 +366,12 @@ public sealed class DevOpsTools
             }
 
             return sprints.Count == 0
-                ? "No sprints found."
+                ? MessageText.Format(ToolMessage.NoSprints)
                 : "Available sprints:\n" + string.Join("\n", sprints.OrderBy(s => s));
         }
         catch (Exception ex)
         {
-            return $"Error retrieving sprints: {ex.Message}";
+            return MessageText.Format(ToolMessage.DevOpsSprintsFailed, new { Reason = ex.Message });
         }
     }
 
@@ -380,7 +381,7 @@ public sealed class DevOpsTools
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return "Error: DEVOPS_API_KEY is not set.";
+            return MessageText.Format(ToolMessage.DevOpsKeyNotSet);
         }
 
         var (iteration, sprintError) = await ResolveIterationPathAsync(sprint);
@@ -407,14 +408,13 @@ public sealed class DevOpsTools
             return ($"{_iterationRoot}\\\\{sprint}", null);
         }
 
-        const string hint = "Pass a sprint name (GetAvailableSprints lists them).";
         try
         {
             using var response = await _httpClient.GetAsync($"{_teamBaseUrl}/work/teamsettings/iterations?$timeframe=current&api-version=7.0");
             string content = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode)
             {
-                return ("", $"Error {response.StatusCode} looking up the current sprint: {content} {hint}");
+                return ("", MessageText.Format(ToolMessage.DevOpsCurrentSprintHttpError, new { Status = response.StatusCode, Content = content }));
             }
 
             using var json = JsonDocument.Parse(content);
@@ -424,11 +424,11 @@ public sealed class DevOpsTools
                 return (iterationPath.Replace("\\", "\\\\"), null);
             }
 
-            return ("", $"Error: the team has no current sprint. {hint}");
+            return ("", MessageText.Format(ToolMessage.DevOpsNoCurrentSprint));
         }
         catch (Exception ex)
         {
-            return ("", $"Error looking up the current sprint: {ex.Message} {hint}");
+            return ("", MessageText.Format(ToolMessage.DevOpsCurrentSprintFailed, new { Reason = ex.Message }));
         }
     }
 
@@ -446,7 +446,7 @@ public sealed class DevOpsTools
 
             if (!response.IsSuccessStatusCode)
             {
-                return $"Error {response.StatusCode}: {responseContent}";
+                return MessageText.Format(ToolMessage.DevOpsHttpError, new { Status = response.StatusCode, Content = responseContent });
             }
 
             var jsonDoc = JsonDocument.Parse(responseContent);
@@ -454,7 +454,7 @@ public sealed class DevOpsTools
         }
         catch (Exception ex)
         {
-            return $"Error executing WIQL query: {ex.Message}";
+            return MessageText.Format(ToolMessage.DevOpsQueryFailed, new { Reason = ex.Message });
         }
     }
 
@@ -466,7 +466,7 @@ public sealed class DevOpsTools
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return "Error: DEVOPS_API_KEY is not set.";
+            return MessageText.Format(ToolMessage.DevOpsKeyNotSet);
         }
 
         try
@@ -490,20 +490,20 @@ public sealed class DevOpsTools
 
             if (!response.IsSuccessStatusCode)
             {
-                return $"Error {response.StatusCode}: {responseContent}";
+                return MessageText.Format(ToolMessage.DevOpsHttpError, new { Status = response.StatusCode, Content = responseContent });
             }
 
             var jsonDoc = JsonDocument.Parse(responseContent);
             if (jsonDoc.RootElement.TryGetProperty("id", out var idElement))
             {
-                return $"Created {workItemType} #{idElement.GetInt32()} - {title}";
+                return MessageText.Format(ToolMessage.WorkItemCreated, new { Type = workItemType, Id = idElement.GetInt32(), Title = title });
             }
 
-            return $"Created work item: {responseContent}";
+            return MessageText.Format(ToolMessage.WorkItemCreatedRaw, new { Response = responseContent });
         }
         catch (Exception ex)
         {
-            return $"Error creating work item: {ex.Message}";
+            return MessageText.Format(ToolMessage.DevOpsCreateFailed, new { Reason = ex.Message });
         }
     }
 
@@ -515,7 +515,7 @@ public sealed class DevOpsTools
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return "Error: DEVOPS_API_KEY is not set.";
+            return MessageText.Format(ToolMessage.DevOpsKeyNotSet);
         }
 
         try
@@ -534,14 +534,14 @@ public sealed class DevOpsTools
 
             if (!response.IsSuccessStatusCode)
             {
-                return $"Error {response.StatusCode}: {responseContent}";
+                return MessageText.Format(ToolMessage.DevOpsHttpError, new { Status = response.StatusCode, Content = responseContent });
             }
 
-            return $"Updated work item #{id}: {fieldName} = {fieldValue}";
+            return MessageText.Format(ToolMessage.WorkItemUpdated, new { Id = id, Field = fieldName, Value = fieldValue });
         }
         catch (Exception ex)
         {
-            return $"Error updating work item: {ex.Message}";
+            return MessageText.Format(ToolMessage.DevOpsUpdateFailed, new { Reason = ex.Message });
         }
     }
 }

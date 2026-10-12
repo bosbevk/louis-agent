@@ -9,6 +9,10 @@ using LouisAgent.Orchestrator.Tools;
 using LouisAgent.Core.Pricing;
 using LouisAgent.Core.Llm;
 using LouisAgent.Core.Hosting;
+using LouisAgent.Core.Messages;
+using LouisAgent.Orchestrator.Messages;
+using LouisAgent.Core.Logging;
+using Microsoft.Extensions.Logging;
 
 // Watches one service's error feed. Each new exception is triaged by an agent built on louis-agent.core whose system
 // prompt is the service's runbooks (one skill file per API method) and whose only tools are ServiceTools: it ignores,
@@ -18,7 +22,6 @@ AgentHost.LoadEnvironment();
 var options = OrchestratorOptions.FromEnvironment(args);
 var llm = LlmOptions.FromEnvironment();
 
-void Log(string message) => Console.WriteLine($"[orchestrator {DateTime.Now:HH:mm:ss}] {message}");
 
 var (skills, methods) = OrchestratorSkills.Load(options.SkillsDirectory, options.Service);
 var feed = new ErrorFeed(options.ErrorLogPath, options.StateDirectory);
@@ -29,15 +32,20 @@ var louisAgent = new LouisAgentClient(http, options.LouisAgentApiKey);
 var agentOptions = AgentOptions.FromEnvironment();
 agentOptions.WorkspaceRoot = options.ServiceRoot;
 agentOptions.AgentFunction = "orchestrator";
+AgentLogging.Configure(agentOptions.LogDirectory);
+var log = AgentLogging.LoggerFactory.CreateLogger("LouisAgent.Orchestrator");
+void Log(OrchestratorLogMessage message, object? values = null) =>
+    log.Log(LogLevel.Information, message, values, tag: "orchestrator");
+void Warn(OrchestratorLogMessage message, object? values = null) => log.Log(LogLevel.Warning, message, values);
 // Prices and rates as louis-agent's (in the demo, from demo-api's /prices and /rates), so both agents' costs, and the
 // comms log's sums of them, are in one currency at one rate (F14).
 PriceTable prices = AgentHost.LoadPrices(agentOptions);
 ExchangeRates rates = AgentHost.LoadRates(agentOptions, prices.Currency);
 DisplayCurrency display = DisplayCurrency.Resolve(agentOptions, prices.Currency, rates);
-Log($"Costs shown in {display}");
+Log(OrchestratorLogMessage.CostsShownIn, new { Display = display });
 
 var comms = new CommsLog(options.CommsLogPath, display);
-var tools = new ServiceTools(options, feed, louisAgent, methods, comms, Log);
+var tools = new ServiceTools(options, feed, louisAgent, methods, comms);
 var clientFactory = new LlmClientFactory();
 var engine = new AgentEngine(skills, clientFactory.Create(llm), agentOptions, llm.ResolveSupportsTools(), toolsets: [tools],
     usageSink: AgentHost.CreateUsageSink(agentOptions, prices), usageMapper: clientFactory.CreateUsageMapper(llm))
@@ -46,17 +54,17 @@ var engine = new AgentEngine(skills, clientFactory.Create(llm), agentOptions, ll
     Display = display,
 };
 
-Log($"Watching {options.Service}: {options.ErrorLogPath}");
-Log($"Runbooks for: {string.Join(", ", methods)}; louis-agent at {options.LouisAgentUrl}; model {llm.Model}");
-Log($"Agent communications log: {comms.Path}");
+Log(OrchestratorLogMessage.Watching, new { options.Service, ErrorLog = options.ErrorLogPath });
+Log(OrchestratorLogMessage.Runbooks, new { Methods = string.Join(", ", methods), Url = options.LouisAgentUrl, llm.Model });
+Log(OrchestratorLogMessage.CommsLogAt, new { comms.Path });
 try
 {
     using var health = await http.GetAsync("health");
-    if (!health.IsSuccessStatusCode) Log($"WARNING: louis-agent health check returned {(int)health.StatusCode}");
+    if (!health.IsSuccessStatusCode) Warn(OrchestratorLogMessage.HealthCheckFailed, new { Status = (int)health.StatusCode });
 }
 catch (HttpRequestException ex)
 {
-    Log($"WARNING: louis-agent is not reachable ({ex.Message}); fixes will fail until it is started");
+    Warn(OrchestratorLogMessage.LouisAgentUnreachable, new { Reason = ex.Message });
 }
 
 using var stop = new CancellationTokenSource();
@@ -69,7 +77,7 @@ while (!stop.IsCancellationRequested)
     {
         // One run per batch of new errors, like the comms log; its id is on every usage record of the batch, triage and fixes.
         tools.RunId = $"run-{DateTime.UtcNow:yyyyMMdd-HHmmss}";
-        Log($"{events.Count} new error event(s); usage run id {tools.RunId}");
+        Log(OrchestratorLogMessage.NewEvents, new { events.Count, tools.RunId });
         comms.StartRun(options.Service, options.LouisAgentUrl, llm.Model);
     }
 
@@ -77,7 +85,11 @@ while (!stop.IsCancellationRequested)
     {
         var error = events[i];
         if (stop.IsCancellationRequested) break;
-        Log($"--- {i + 1}/{events.Count} {error.Id}: {error.Method} {error.Arguments} -> {error.ExceptionType}: {error.Message.ReplaceLineEndings(" ")}");
+        Log(OrchestratorLogMessage.EventStarted, new
+        {
+            Number = i + 1, events.Count, ErrorId = error.Id, error.Method, error.Arguments, error.ExceptionType,
+            Message = error.Message.ReplaceLineEndings(" "),
+        });
         comms.StartEvent(i + 1, events.Count, error);
 
         string answer;
@@ -97,37 +109,31 @@ while (!stop.IsCancellationRequested)
         catch (Exception ex)
         {
             // Left unprocessed, so the next poll retries it. A timed-out model request ends up here too (FX7).
-            Log($"Triage of {error.Id} failed: {ex.Message}");
+            log.Log(LogLevel.Error, OrchestratorLogMessage.TriageFailed, new { ErrorId = error.Id, Reason = ex.Message });
             comms.EndEvent("failed", $"triage failed: {ex.Message}", "", TriageUsage());
             continue;
         }
         finally
         {
             // The next fix must start from main, whatever happened to this one.
-            if (tools.ReturnToMain() is { } problem) Log($"WARNING: {problem}");
+            if (tools.ReturnToMain() is { } problem) Warn(OrchestratorLogMessage.NotBackOnMain, new { Problem = problem });
         }
 
         var decision = Decision.Parse(answer);
-        Log($"DECISION {error.Id}: {decision.Outcome} - {decision.Reason}");
+        Log(OrchestratorLogMessage.Decision, new { ErrorId = error.Id, decision.Outcome, decision.Reason });
         EventUsage used = comms.EndEvent(decision.Outcome, decision.Reason, answer, TriageUsage());
-        if (used.Total is { } total) Log($"USAGE {error.Id}: {UsageText.Describe(total, comms.Currency, display)}");
+        if (used.Total is { } total)
+            Log(OrchestratorLogMessage.EventUsage, new { ErrorId = error.Id, Usage = UsageText.Describe(total, comms.Currency, display) });
         Directory.CreateDirectory(options.StateDirectory);
         await File.AppendAllTextAsync(Path.Combine(options.StateDirectory, "decisions.jsonl"),
-            JsonSerializer.Serialize(new
-            {
-                error_id = error.Id, error.Method, decision.Outcome, decision.Reason, at = DateTimeOffset.UtcNow,
-                // F3: what the error cost, triage and fix together, and each part.
-                usage = CommsLog.Json(used.Total, comms.Currency),
-                triage_usage = CommsLog.Json(used.Triage, comms.Currency),
-                louis_agent_usage = CommsLog.Json(used.LouisAgent, comms.Currency),
-            }) + Environment.NewLine);
+            JsonSerializer.Serialize(decision.ToRecord(error, used, comms.Currency, DateTimeOffset.UtcNow)) + Environment.NewLine);
         feed.MarkProcessed(error.Id);
     }
 
     if (events.Count > 0)
     {
         comms.EndRun();
-        Log($"Agent communications written to {comms.Path}");
+        Log(OrchestratorLogMessage.CommsWritten, new { comms.Path });
     }
 
     if (options.Once) break;
@@ -166,6 +172,22 @@ internal sealed partial record Decision(string Outcome, string Reason)
             : new Decision(match.Groups[1].Value.ToLowerInvariant(), match.Groups[2].Value.Trim());
     }
 
+    /// <summary>
+    /// The decision's line in decisions.jsonl, snake_case like every orchestrator record (fixes.jsonl, escalations.jsonl):
+    /// what was decided, and (F3) what the error cost, triage and fix together, and each part.
+    /// </summary>
+    public object ToRecord(ErrorEvent error, EventUsage used, string currency, DateTimeOffset at) => new
+    {
+        error_id = error.Id,
+        method = error.Method,
+        outcome = Outcome,
+        reason = Reason,
+        at,
+        usage = CommsLog.Json(used.Total, currency),
+        triage_usage = CommsLog.Json(used.Triage, currency),
+        louis_agent_usage = CommsLog.Json(used.LouisAgent, currency),
+    };
+
     [GeneratedRegex(@"DECISION:\s*\**\s*([A-Za-z-]+)\s*\**\s*[-–—:]\s*(.+)$", RegexOptions.Multiline)]
     private static partial Regex DecisionLine();
 }
@@ -177,7 +199,7 @@ internal static class OrchestratorSkills
     {
         string serviceDirectory = Path.Combine(skillsDirectory, service);
         if (!Directory.Exists(serviceDirectory))
-            throw new InvalidOperationException($"No runbooks for '{service}': {serviceDirectory} does not exist.");
+            throw new InvalidOperationException(MessageText.Format(OrchestratorErrorMessage.NoRunbooks, new { Service = service, Directory = serviceDirectory }));
 
         var composite = new CompositeSkillProvider();
         composite.AddProvider(new MarkdownSkillProvider(Path.Combine(skillsDirectory, "orchestrator.md"), includeDefaultInstructions: false));

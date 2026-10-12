@@ -6,6 +6,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Globalization;
 using LouisAgent.Core.Config;
+using LouisAgent.Core.Messages;
 
 /// <summary>
 /// Native C# client for Paymo API, replacing bash curl scripts.
@@ -33,7 +34,7 @@ public sealed class PaymoTools
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return "ERROR: Paymo API key not configured.";
+            return MessageText.Format(ToolMessage.PaymoKeyNotConfigured);
         }
 
         try
@@ -55,7 +56,7 @@ public sealed class PaymoTools
             using var response = await _httpClient.GetAsync(url);
             if (!response.IsSuccessStatusCode)
             {
-                return $"ERROR: Failed to search tasks (HTTP {(int)response.StatusCode})";
+                return MessageText.Format(ToolMessage.PaymoRequestHttpFailed, new { Action = "search tasks", Status = (int)response.StatusCode });
             }
 
             string content = await response.Content.ReadAsStringAsync();
@@ -63,7 +64,7 @@ public sealed class PaymoTools
         }
         catch (Exception ex)
         {
-            return $"ERROR: Failed to search tasks: {ex.Message}";
+            return MessageText.Format(ToolMessage.PaymoRequestFailed, new { Action = "search tasks", Reason = ex.Message });
         }
     }
 
@@ -75,7 +76,7 @@ public sealed class PaymoTools
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return "ERROR: Paymo API key not configured.";
+            return MessageText.Format(ToolMessage.PaymoKeyNotConfigured);
         }
 
         try
@@ -102,7 +103,7 @@ public sealed class PaymoTools
             using var response = await _httpClient.GetAsync(url);
             if (!response.IsSuccessStatusCode)
             {
-                return $"ERROR: Failed to list tasks (HTTP {(int)response.StatusCode})";
+                return MessageText.Format(ToolMessage.PaymoRequestHttpFailed, new { Action = "list tasks", Status = (int)response.StatusCode });
             }
 
             string content = await response.Content.ReadAsStringAsync();
@@ -110,7 +111,7 @@ public sealed class PaymoTools
         }
         catch (Exception ex)
         {
-            return $"ERROR: Failed to list tasks: {ex.Message}";
+            return MessageText.Format(ToolMessage.PaymoRequestFailed, new { Action = "list tasks", Reason = ex.Message });
         }
     }
 
@@ -120,7 +121,7 @@ public sealed class PaymoTools
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return "ERROR: Paymo API key not configured.";
+            return MessageText.Format(ToolMessage.PaymoKeyNotConfigured);
         }
 
         try
@@ -128,7 +129,7 @@ public sealed class PaymoTools
             using var response = await _httpClient.GetAsync($"{BaseUrl}/tasks/{taskId}");
             if (!response.IsSuccessStatusCode)
             {
-                return $"ERROR: Task not found (HTTP {(int)response.StatusCode})";
+                return MessageText.Format(ToolMessage.PaymoNotFound, new { Item = "Task", Status = (int)response.StatusCode });
             }
 
             string content = await response.Content.ReadAsStringAsync();
@@ -136,7 +137,7 @@ public sealed class PaymoTools
         }
         catch (Exception ex)
         {
-            return $"ERROR: Failed to get task details: {ex.Message}";
+            return MessageText.Format(ToolMessage.PaymoRequestFailed, new { Action = "get task details", Reason = ex.Message });
         }
     }
 
@@ -147,7 +148,7 @@ public sealed class PaymoTools
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return "ERROR: Paymo API key not configured.";
+            return MessageText.Format(ToolMessage.PaymoKeyNotConfigured);
         }
 
         try
@@ -163,7 +164,7 @@ public sealed class PaymoTools
             using var response = await _httpClient.GetAsync(url);
             if (!response.IsSuccessStatusCode)
             {
-                return $"ERROR: Failed to list projects (HTTP {(int)response.StatusCode})";
+                return MessageText.Format(ToolMessage.PaymoRequestHttpFailed, new { Action = "list projects", Status = (int)response.StatusCode });
             }
 
             string content = await response.Content.ReadAsStringAsync();
@@ -171,7 +172,7 @@ public sealed class PaymoTools
         }
         catch (Exception ex)
         {
-            return $"ERROR: Failed to list projects: {ex.Message}";
+            return MessageText.Format(ToolMessage.PaymoRequestFailed, new { Action = "list projects", Reason = ex.Message });
         }
     }
 
@@ -181,7 +182,7 @@ public sealed class PaymoTools
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return "ERROR: Paymo API key not configured.";
+            return MessageText.Format(ToolMessage.PaymoKeyNotConfigured);
         }
 
         try
@@ -189,7 +190,7 @@ public sealed class PaymoTools
             using var response = await _httpClient.GetAsync($"{BaseUrl}/projects/{projectId}");
             if (!response.IsSuccessStatusCode)
             {
-                return $"ERROR: Project not found (HTTP {(int)response.StatusCode})";
+                return MessageText.Format(ToolMessage.PaymoNotFound, new { Item = "Project", Status = (int)response.StatusCode });
             }
 
             string content = await response.Content.ReadAsStringAsync();
@@ -197,7 +198,7 @@ public sealed class PaymoTools
         }
         catch (Exception ex)
         {
-            return $"ERROR: Failed to get project details: {ex.Message}";
+            return MessageText.Format(ToolMessage.PaymoRequestFailed, new { Action = "get project details", Reason = ex.Message });
         }
     }
 
@@ -207,7 +208,7 @@ public sealed class PaymoTools
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return "ERROR: Paymo API key not configured.";
+            return MessageText.Format(ToolMessage.PaymoKeyNotConfigured);
         }
 
         try
@@ -216,7 +217,7 @@ public sealed class PaymoTools
             using var response = await _httpClient.GetAsync($"{BaseUrl}/clients");
             if (!response.IsSuccessStatusCode)
             {
-                return $"ERROR: Failed to list clients (HTTP {(int)response.StatusCode})";
+                return MessageText.Format(ToolMessage.PaymoRequestHttpFailed, new { Action = "list clients", Status = (int)response.StatusCode });
             }
 
             string content = await response.Content.ReadAsStringAsync();
@@ -224,7 +225,7 @@ public sealed class PaymoTools
         }
         catch (Exception ex)
         {
-            return $"ERROR: Failed to list clients: {ex.Message}";
+            return MessageText.Format(ToolMessage.PaymoRequestFailed, new { Action = "list clients", Reason = ex.Message });
         }
     }
 
@@ -234,7 +235,7 @@ public sealed class PaymoTools
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return "ERROR: Paymo API key not configured.";
+            return MessageText.Format(ToolMessage.PaymoKeyNotConfigured);
         }
 
         try
@@ -243,7 +244,7 @@ public sealed class PaymoTools
             using var response = await _httpClient.GetAsync($"{BaseUrl}/users");
             if (!response.IsSuccessStatusCode)
             {
-                return $"ERROR: Failed to list users (HTTP {(int)response.StatusCode})";
+                return MessageText.Format(ToolMessage.PaymoRequestHttpFailed, new { Action = "list users", Status = (int)response.StatusCode });
             }
 
             string content = await response.Content.ReadAsStringAsync();
@@ -251,7 +252,7 @@ public sealed class PaymoTools
         }
         catch (Exception ex)
         {
-            return $"ERROR: Failed to list users: {ex.Message}";
+            return MessageText.Format(ToolMessage.PaymoRequestFailed, new { Action = "list users", Reason = ex.Message });
         }
     }
 
@@ -264,7 +265,7 @@ public sealed class PaymoTools
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return "ERROR: Paymo API key not configured.";
+            return MessageText.Format(ToolMessage.PaymoKeyNotConfigured);
         }
 
         try
@@ -296,7 +297,7 @@ public sealed class PaymoTools
             using var response = await _httpClient.GetAsync(url);
             if (!response.IsSuccessStatusCode)
             {
-                return $"ERROR: Failed to list time entries (HTTP {(int)response.StatusCode})";
+                return MessageText.Format(ToolMessage.PaymoRequestHttpFailed, new { Action = "list time entries", Status = (int)response.StatusCode });
             }
 
             string content = await response.Content.ReadAsStringAsync();
@@ -304,7 +305,7 @@ public sealed class PaymoTools
         }
         catch (Exception ex)
         {
-            return $"ERROR: Failed to list time entries: {ex.Message}";
+            return MessageText.Format(ToolMessage.PaymoRequestFailed, new { Action = "list time entries", Reason = ex.Message });
         }
     }
 
@@ -329,7 +330,7 @@ public sealed class PaymoTools
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return "ERROR: Paymo API key not configured.";
+            return MessageText.Format(ToolMessage.PaymoKeyNotConfigured);
         }
 
         try
@@ -337,7 +338,7 @@ public sealed class PaymoTools
             using var response = await _httpClient.GetAsync($"{BaseUrl}/entries/{entryId}");
             if (!response.IsSuccessStatusCode)
             {
-                return $"ERROR: Time entry not found (HTTP {(int)response.StatusCode})";
+                return MessageText.Format(ToolMessage.PaymoNotFound, new { Item = "Time entry", Status = (int)response.StatusCode });
             }
 
             string content = await response.Content.ReadAsStringAsync();
@@ -345,7 +346,7 @@ public sealed class PaymoTools
         }
         catch (Exception ex)
         {
-            return $"ERROR: Failed to get time entry details: {ex.Message}";
+            return MessageText.Format(ToolMessage.PaymoRequestFailed, new { Action = "get time entry details", Reason = ex.Message });
         }
     }
 
@@ -356,7 +357,7 @@ public sealed class PaymoTools
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return "ERROR: Paymo API key not configured.";
+            return MessageText.Format(ToolMessage.PaymoKeyNotConfigured);
         }
 
         try
@@ -365,7 +366,7 @@ public sealed class PaymoTools
             using var response = await _httpClient.GetAsync(url);
             if (!response.IsSuccessStatusCode)
             {
-                return $"ERROR: Failed to get daily summary (HTTP {(int)response.StatusCode})";
+                return MessageText.Format(ToolMessage.PaymoRequestHttpFailed, new { Action = "get daily summary", Status = (int)response.StatusCode });
             }
 
             string content = await response.Content.ReadAsStringAsync();
@@ -373,7 +374,7 @@ public sealed class PaymoTools
         }
         catch (Exception ex)
         {
-            return $"ERROR: Failed to get daily summary: {ex.Message}";
+            return MessageText.Format(ToolMessage.PaymoRequestFailed, new { Action = "get daily summary", Reason = ex.Message });
         }
     }
 
@@ -384,7 +385,7 @@ public sealed class PaymoTools
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return "ERROR: Paymo API key not configured.";
+            return MessageText.Format(ToolMessage.PaymoKeyNotConfigured);
         }
 
         try
@@ -393,7 +394,7 @@ public sealed class PaymoTools
             using var response = await _httpClient.GetAsync(url);
             if (!response.IsSuccessStatusCode)
             {
-                return $"ERROR: Failed to get user summary (HTTP {(int)response.StatusCode})";
+                return MessageText.Format(ToolMessage.PaymoRequestHttpFailed, new { Action = "get user summary", Status = (int)response.StatusCode });
             }
 
             string content = await response.Content.ReadAsStringAsync();
@@ -401,7 +402,7 @@ public sealed class PaymoTools
         }
         catch (Exception ex)
         {
-            return $"ERROR: Failed to get user summary: {ex.Message}";
+            return MessageText.Format(ToolMessage.PaymoRequestFailed, new { Action = "get user summary", Reason = ex.Message });
         }
     }
 
@@ -412,7 +413,7 @@ public sealed class PaymoTools
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return "ERROR: Paymo API key not configured.";
+            return MessageText.Format(ToolMessage.PaymoKeyNotConfigured);
         }
 
         try
@@ -421,7 +422,7 @@ public sealed class PaymoTools
             using var response = await _httpClient.GetAsync(url);
             if (!response.IsSuccessStatusCode)
             {
-                return $"ERROR: Failed to get project summary (HTTP {(int)response.StatusCode})";
+                return MessageText.Format(ToolMessage.PaymoRequestHttpFailed, new { Action = "get project summary", Status = (int)response.StatusCode });
             }
 
             string content = await response.Content.ReadAsStringAsync();
@@ -429,7 +430,7 @@ public sealed class PaymoTools
         }
         catch (Exception ex)
         {
-            return $"ERROR: Failed to get project summary: {ex.Message}";
+            return MessageText.Format(ToolMessage.PaymoRequestFailed, new { Action = "get project summary", Reason = ex.Message });
         }
     }
 
@@ -439,7 +440,7 @@ public sealed class PaymoTools
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return "ERROR: Paymo API key not configured.";
+            return MessageText.Format(ToolMessage.PaymoKeyNotConfigured);
         }
 
         try
@@ -447,14 +448,14 @@ public sealed class PaymoTools
             using var response = await _httpClient.DeleteAsync($"{BaseUrl}/entries/{entryId}");
             if (!response.IsSuccessStatusCode)
             {
-                return $"ERROR: Failed to delete time entry (HTTP {(int)response.StatusCode})";
+                return MessageText.Format(ToolMessage.PaymoRequestHttpFailed, new { Action = "delete time entry", Status = (int)response.StatusCode });
             }
 
-            return $"✓ Time entry {entryId} deleted successfully";
+            return MessageText.Format(ToolMessage.PaymoEntryDeleted, new { Id = entryId });
         }
         catch (Exception ex)
         {
-            return $"ERROR: Failed to delete time entry: {ex.Message}";
+            return MessageText.Format(ToolMessage.PaymoRequestFailed, new { Action = "delete time entry", Reason = ex.Message });
         }
     }
 
@@ -463,7 +464,7 @@ public sealed class PaymoTools
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return "ERROR: Paymo API key not configured.";
+            return MessageText.Format(ToolMessage.PaymoKeyNotConfigured);
         }
 
         try
@@ -471,7 +472,7 @@ public sealed class PaymoTools
             using var response = await _httpClient.GetAsync($"{BaseUrl}/me");
             if (!response.IsSuccessStatusCode)
             {
-                return $"ERROR: Failed to get current user (HTTP {(int)response.StatusCode})";
+                return MessageText.Format(ToolMessage.PaymoRequestHttpFailed, new { Action = "get current user", Status = (int)response.StatusCode });
             }
 
             string content = await response.Content.ReadAsStringAsync();
@@ -479,7 +480,7 @@ public sealed class PaymoTools
         }
         catch (Exception ex)
         {
-            return $"ERROR: Failed to get current user: {ex.Message}";
+            return MessageText.Format(ToolMessage.PaymoRequestFailed, new { Action = "get current user", Reason = ex.Message });
         }
     }
 
@@ -488,7 +489,7 @@ public sealed class PaymoTools
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return "ERROR: Paymo API key not configured.";
+            return MessageText.Format(ToolMessage.PaymoKeyNotConfigured);
         }
 
         try
@@ -496,7 +497,7 @@ public sealed class PaymoTools
             using var response = await _httpClient.GetAsync($"{BaseUrl}/company");
             if (!response.IsSuccessStatusCode)
             {
-                return $"ERROR: Failed to get company info (HTTP {(int)response.StatusCode})";
+                return MessageText.Format(ToolMessage.PaymoRequestHttpFailed, new { Action = "get company info", Status = (int)response.StatusCode });
             }
 
             string content = await response.Content.ReadAsStringAsync();
@@ -504,7 +505,7 @@ public sealed class PaymoTools
         }
         catch (Exception ex)
         {
-            return $"ERROR: Failed to get company info: {ex.Message}";
+            return MessageText.Format(ToolMessage.PaymoRequestFailed, new { Action = "get company info", Reason = ex.Message });
         }
     }
 
@@ -521,12 +522,12 @@ public sealed class PaymoTools
         {
             if (string.IsNullOrWhiteSpace(_apiKey))
             {
-                return "ERROR: Paymo API key not configured. Set PAYMO_API_KEY environment variable.";
+                return MessageText.Format(ToolMessage.PaymoKeyNotConfiguredSetIt);
             }
 
             if (string.IsNullOrWhiteSpace(taskName))
             {
-                return "ERROR: Task name or ID is required.";
+                return MessageText.Format(ToolMessage.PaymoTaskRequired);
             }
 
             ValidateTimeInput(startTime, endTime, hours);
@@ -534,14 +535,14 @@ public sealed class PaymoTools
             string? taskId = await ResolveTaskId(taskName);
             if (string.IsNullOrEmpty(taskId))
             {
-                return $"ERROR: Could not find task '{taskName}'. Try using the numeric task ID instead.";
+                return MessageText.Format(ToolMessage.PaymoTaskNotFoundByName, new { Task = taskName });
             }
 
             string finalDate = string.IsNullOrWhiteSpace(date) ? DateTime.Now.ToString("yyyy-MM-dd") : date;
             int durationSeconds = CalculateDuration(startTime, endTime, hours);
             if (durationSeconds <= 0)
             {
-                return "ERROR: Duration must be greater than zero.";
+                return MessageText.Format(ToolMessage.PaymoDurationNotPositive);
             }
 
             var entry = new TimeEntryRequest
@@ -557,7 +558,7 @@ public sealed class PaymoTools
             if (!response.IsSuccessStatusCode)
             {
                 string error = await response.Content.ReadAsStringAsync();
-                return $"ERROR: Failed to create time entry (HTTP {(int)response.StatusCode}). Response: {error}";
+                return MessageText.Format(ToolMessage.PaymoCreateEntryFailed, new { Status = (int)response.StatusCode, Response = error });
             }
 
             string hours_display = (durationSeconds / 3600).ToString();
@@ -565,7 +566,7 @@ public sealed class PaymoTools
 
             var summary = new List<string>
             {
-                "✓ Time entry created successfully",
+                MessageText.Format(ToolMessage.PaymoEntryCreated),
                 $"  Task: {taskName}",
                 $"  Date: {finalDate}",
                 $"  Duration: {hours_display} hours" + (mins_display != "0" ? $" {mins_display} minutes" : "")
@@ -580,11 +581,11 @@ public sealed class PaymoTools
         }
         catch (ArgumentException ex)
         {
-            return $"ERROR: {ex.Message}";
+            return MessageText.Format(ToolMessage.PaymoError, new { Reason = ex.Message });
         }
         catch (Exception ex)
         {
-            return $"ERROR: Unexpected error: {ex.Message}";
+            return MessageText.Format(ToolMessage.PaymoUnexpectedError, new { Reason = ex.Message });
         }
     }
 
@@ -594,7 +595,7 @@ public sealed class PaymoTools
 
         if (string.IsNullOrEmpty(taskInput))
         {
-            throw new ArgumentException("Task name or ID cannot be empty.");
+            throw new ArgumentException(MessageText.Format(ToolMessage.PaymoTaskEmpty));
         }
 
         if (int.TryParse(taskInput, NumberStyles.None, CultureInfo.InvariantCulture, out _))
@@ -649,7 +650,7 @@ public sealed class PaymoTools
         }
         catch (Exception ex)
         {
-            throw new InvalidOperationException($"Failed to resolve task ID for '{taskInput}': {ex.Message}", ex);
+            throw new InvalidOperationException(MessageText.Format(ToolMessage.PaymoTaskResolveFailed, new { Task = taskInput, Reason = ex.Message }), ex);
         }
     }
 
@@ -694,19 +695,19 @@ public sealed class PaymoTools
 
         if (!hasTimeRange && !hasHours)
         {
-            throw new ArgumentException("Must provide either start_time/end_time OR hours parameter.");
+            throw new ArgumentException(MessageText.Format(ToolMessage.PaymoTimeOrHoursRequired));
         }
 
         if (hasTimeRange)
         {
             if (!IsValidTimeFormat(startTime))
             {
-                throw new ArgumentException($"Invalid start_time format: '{startTime}'. Use HH:MM (e.g., '08:00').");
+                throw new ArgumentException(MessageText.Format(ToolMessage.PaymoStartTimeInvalid, new { Time = startTime }));
             }
 
             if (!IsValidTimeFormat(endTime))
             {
-                throw new ArgumentException($"Invalid end_time format: '{endTime}'. Use HH:MM (e.g., '09:00').");
+                throw new ArgumentException(MessageText.Format(ToolMessage.PaymoEndTimeInvalid, new { Time = endTime }));
             }
         }
 
@@ -714,7 +715,7 @@ public sealed class PaymoTools
         {
             if (!decimal.TryParse(hours, NumberStyles.Number, CultureInfo.InvariantCulture, out var hoursValue) || hoursValue <= 0)
             {
-                throw new ArgumentException($"Invalid hours value: '{hours}'. Use a positive number (e.g., '2' or '1.5').");
+                throw new ArgumentException(MessageText.Format(ToolMessage.PaymoHoursInvalid, new { Hours = hours }));
             }
         }
     }

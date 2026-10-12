@@ -4,6 +4,8 @@ using LouisAgent.Core.Agent;
 using static LouisAgent.Api.Endpoints.GitEndpoints;
 using LouisAgent.Core.Tools.Workspace;
 using LouisAgent.Core.Guardrails;
+using LouisAgent.Core.Messages;
+using LouisAgent.Api.Messages;
 
 namespace LouisAgent.Api.Endpoints;
 
@@ -34,7 +36,7 @@ internal static partial class HistoryEndpoints
         app.MapGet("/git/commit", async (string? sha, AgentEngine engine) =>
         {
             if (sha is null || !CommitHash().IsMatch(sha))
-                return ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error", "Pass the commit's 'sha' (7-40 hex characters).");
+                return ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error", MessageText.Format(ApiUserText.ShaRequired));
 
             var meta = await RunAsync(engine, ["show", "-s", $"--format={CommitFormat}{Field}%B", sha]);
             if (meta.ExitCode != 0) return GitError(meta);
@@ -54,7 +56,7 @@ internal static partial class HistoryEndpoints
             var branches = await ListBranchesAsync(engine);
             if (branches.Error is { } error) return error;
             if (branches.Items.FirstOrDefault(b => b.Name == name) is not { } branch)
-                return ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error", $"No branch named '{name}'.");
+                return ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error", MessageText.Format(ApiUserText.NoBranch, new { Name = name }));
 
             string reference = $"refs/heads/{branch.Name}";
             var log = await RunAsync(engine, ["log", $"--format={CommitFormat}{Record}", $"HEAD..{reference}"]);
@@ -71,7 +73,7 @@ internal static partial class HistoryEndpoints
             var branches = await ListBranchesAsync(engine);
             if (branches.Error is { } error) return error;
             if (branches.Items.FirstOrDefault(b => b.Name == request.Branch) is not { } branch)
-                return ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error", $"No branch named '{request.Branch}'.");
+                return ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error", MessageText.Format(ApiUserText.NoBranch, new { Name = request.Branch }));
             if (branch.Current)
                 return ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error", $"'{branch.Name}' is the checked-out branch.");
             if (branch.Ahead == 0)
@@ -83,7 +85,7 @@ internal static partial class HistoryEndpoints
                 return ApiErrors.Result(StatusCodes.Status409Conflict, "conflict_error",
                     $"{branches.Current} has uncommitted changes: commit, unstage or discard them in Changes before merging.");
 
-            var merge = await RunAsync(engine, ["merge", "--no-ff", "--no-edit", "-m", $"Merge branch '{branch.Name}' into {branches.Current}", $"refs/heads/{branch.Name}"]);
+            var merge = await RunAsync(engine, ["merge", "--no-ff", "--no-edit", "-m", MessageText.Format(ApiUserText.MergeCommitMessage, new { Branch = branch.Name, branches.Current }), $"refs/heads/{branch.Name}"]);
             if (merge.ExitCode != 0)
             {
                 var conflicts = (await RunAsync(engine, ["diff", "--name-only", "--diff-filter=U"])).Output
@@ -91,14 +93,14 @@ internal static partial class HistoryEndpoints
                 await RunAsync(engine, ["merge", "--abort"]);
                 string detail = (merge.Error + merge.Output).Trim();
                 if (detail.Contains("Please tell me who you are", StringComparison.Ordinal) || detail.Contains("empty ident", StringComparison.Ordinal))
-                    detail = "git has no author identity: set GIT_AUTHOR_NAME, GIT_AUTHOR_EMAIL, GIT_COMMITTER_NAME and GIT_COMMITTER_EMAIL and restart the api.";
+                    detail = MessageText.Format(ApiUserText.MergeNoIdentity);
                 return ApiErrors.Result(StatusCodes.Status409Conflict, "conflict_error", conflicts.Length > 0
-                    ? $"Merging '{branch.Name}' conflicts in {string.Join(", ", conflicts)}; the merge was aborted, nothing changed."
-                    : $"git could not merge '{branch.Name}': {detail}");
+                    ? MessageText.Format(ApiUserText.MergeConflicts, new { Branch = branch.Name, Files = string.Join(", ", conflicts) })
+                    : MessageText.Format(ApiUserText.MergeFailed, new { Branch = branch.Name, Detail = detail }));
             }
 
             var head = await RunAsync(engine, ["log", "-1", "--format=%h %s"]);
-            return await BranchesResultAsync(engine, message: $"Merged {branch.Name} into {branches.Current}: {head.Output.Trim()}");
+            return await BranchesResultAsync(engine, message: MessageText.Format(ApiUserText.Merged, new { Branch = branch.Name, branches.Current, Head = head.Output.Trim() }));
         });
 
         // Only merged branches: git branch -d refuses to delete unmerged work.
@@ -107,13 +109,13 @@ internal static partial class HistoryEndpoints
             var branches = await ListBranchesAsync(engine);
             if (branches.Error is { } error) return error;
             if (branches.Items.FirstOrDefault(b => b.Name == request.Branch) is not { } branch)
-                return ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error", $"No branch named '{request.Branch}'.");
+                return ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error", MessageText.Format(ApiUserText.NoBranch, new { Name = request.Branch }));
             if (branch.Current || branch.Ahead > 0)
                 return ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error",
-                    branch.Current ? "Can't delete the checked-out branch." : $"'{branch.Name}' isn't merged yet; merge it first.");
+                    branch.Current ? MessageText.Format(ApiUserText.DeleteCurrentBranch) : MessageText.Format(ApiUserText.BranchNotMerged, new { Branch = branch.Name }));
 
             var delete = await RunAsync(engine, ["branch", "-d", branch.Name]);
-            return delete.ExitCode == 0 ? await BranchesResultAsync(engine, message: $"Deleted {branch.Name}") : GitError(delete);
+            return delete.ExitCode == 0 ? await BranchesResultAsync(engine, message: MessageText.Format(ApiUserText.BranchDeleted, new { Branch = branch.Name })) : GitError(delete);
         });
     }
 
@@ -186,7 +188,7 @@ internal static partial class HistoryEndpoints
 
             // Keep the "diff --git" line so the file is still listed, but none of its content.
             int end = section.IndexOf('\n');
-            result.Append(end < 0 ? section + "\n" : section[..(end + 1)]).Append("Binary files differ (secret file: diff not shown)\n");
+            result.Append(end < 0 ? section + "\n" : section[..(end + 1)]).Append(MessageText.Format(ApiUserText.SecretDiffBinary));
         }
 
         string text = result.ToString();

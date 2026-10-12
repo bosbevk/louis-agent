@@ -18,7 +18,8 @@ The folders mirror `louis-agent.core`'s, and each test's namespace is its folder
 | `Config/` | `LlmOptions` (provider inference, tool support, thinking, caching), `AgentOptions` (env binding, repository root), `EnvFile` |
 | `Hosting/` | `AgentHost`: environment loading, price and rate loading from a URL with the file fallback; Rider MCP discovery |
 | `Llm/`, `Llm/AnthropicProvider/` | The factory's caching strategy, `PromptCachingChatClient`, the usage mappers and recorder; Anthropic's wire format and cache-write lifetimes on captured bodies |
-| `Messages/` | Every message enum member has a template with well-formed holes |
+| `Logging/` | Serilog behind `ILogger`: stderr only, holes bound by name, tags, the run file and the JSON-lines records |
+| `Messages/` | Every message enum member, core's and each host's (from source), has a template with well-formed holes; `ToolMessageSnapshot.json` pins every text tools return to the model |
 | `Pricing/` | The price table and the shipped `config/prices.json`, costs, the pricing sink, exchange rates, the display currency |
 | `Protocols/Mcp/` | The Rider MCP client with mocked HTTP |
 | `Skills/` | `MarkdownSkillLoader` (procedures, parameters, fence languages), each skill provider and the composite (order, de-duplication, personality first) |

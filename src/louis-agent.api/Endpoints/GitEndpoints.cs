@@ -3,6 +3,8 @@ using System.Text;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Tools.Workspace;
 using LouisAgent.Core.Guardrails;
+using LouisAgent.Core.Messages;
+using LouisAgent.Api.Messages;
 
 namespace LouisAgent.Api.Endpoints;
 
@@ -23,10 +25,10 @@ internal static class GitEndpoints
         app.MapGet("/git/diff", async (string? path, bool? staged, AgentEngine engine, WorkspaceBoundary workspace) =>
         {
             if (string.IsNullOrWhiteSpace(path))
-                return ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error", "Pass the file's workspace-relative 'path'.");
+                return ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error", MessageText.Format(ApiUserText.PathRequired));
             if (CheckPaths(workspace, [path]) is { } invalid) return invalid;
             if (SensitiveFiles.IsSensitive(path))
-                return ApiErrors.Result(StatusCodes.Status403Forbidden, "permission_error", "Diffs of secret files (.env, keys, certificates) aren't shown.");
+                return ApiErrors.Result(StatusCodes.Status403Forbidden, "permission_error", MessageText.Format(ApiUserText.SecretDiffHidden));
 
             var status = await RunAsync(engine, ["status", "--porcelain=v1", "-z", "--untracked-files=all", "--", path]);
             bool untracked = status.Output.StartsWith("??", StringComparison.Ordinal);
@@ -66,17 +68,16 @@ internal static class GitEndpoints
         app.MapPost("/git/commit", async (GitCommitRequest request, AgentEngine engine) =>
         {
             if (string.IsNullOrWhiteSpace(request.Message))
-                return ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error", "Write a commit message.");
+                return ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error", MessageText.Format(ApiUserText.CommitMessageRequired));
 
             var commit = await RunAsync(engine, ["commit", "-m", request.Message.Trim()]);
             if (commit.ExitCode != 0)
             {
                 string error = (commit.Error + commit.Output).Trim();
                 if (error.Contains("Please tell me who you are", StringComparison.Ordinal) || error.Contains("empty ident", StringComparison.Ordinal))
-                    error = "git has no author identity in the container: set GIT_AUTHOR_NAME, GIT_AUTHOR_EMAIL, GIT_COMMITTER_NAME and " +
-                            "GIT_COMMITTER_EMAIL in config/.env.secrets and restart the api container.";
+                    error = MessageText.Format(ApiUserText.CommitNoIdentity);
                 else if (error.Contains("nothing to commit", StringComparison.Ordinal) || error.Contains("no changes added", StringComparison.Ordinal))
-                    error = "Nothing is staged: stage the changes you want to commit first.";
+                    error = MessageText.Format(ApiUserText.NothingStaged);
                 return ApiErrors.Result(StatusCodes.Status400BadRequest, "git_error", error);
             }
 
@@ -90,7 +91,7 @@ internal static class GitEndpoints
     {
         var paths = (request.Paths ?? []).Where(p => !string.IsNullOrWhiteSpace(p)).Distinct().ToList();
         if (paths.Count == 0)
-            return ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error", "Pass at least one path in 'paths'.");
+            return ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error", MessageText.Format(ApiUserText.PathsRequired));
         if (CheckPaths(workspace, paths) is { } invalid) return invalid;
 
         var result = await run(paths);
@@ -150,7 +151,7 @@ internal static class GitEndpoints
 
     internal static IResult GitError(GitResult result) =>
         ApiErrors.Result(StatusCodes.Status400BadRequest, "git_error",
-            string.IsNullOrWhiteSpace(result.Error) ? $"git exited with code {result.ExitCode}." : result.Error.Trim());
+            string.IsNullOrWhiteSpace(result.Error) ? MessageText.Format(ApiUserText.GitExited, new { result.ExitCode }) : result.Error.Trim());
 
     // stdout and stderr are kept apart: git prints warnings (e.g. about line endings) on stderr that would corrupt
     // the porcelain and diff output.

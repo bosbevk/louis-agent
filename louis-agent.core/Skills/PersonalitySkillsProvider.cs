@@ -1,5 +1,9 @@
 namespace LouisAgent.Core.Skills;
 
+using LouisAgent.Core.Logging;
+using LouisAgent.Core.Messages;
+using Microsoft.Extensions.Logging;
+
 /// <summary>
 /// The agent's personality: who it is and how it talks and thinks, kept apart from the operational instructions in
 /// default.md so it can be changed (or left out) without touching how the agent works.
@@ -7,6 +11,8 @@ namespace LouisAgent.Core.Skills;
 /// </summary>
 public class PersonalitySkillsProvider : ISkillProvider
 {
+    private static readonly ILogger Log = AgentLogging.For<PersonalitySkillsProvider>();
+
     private string? _documentation;
     private readonly string? _filePath;
 
@@ -24,7 +30,7 @@ public class PersonalitySkillsProvider : ISkillProvider
     {
         if (_filePath is null || !File.Exists(_filePath))
         {
-            Console.Error.WriteLine("[INFO] No personality.md found; running without a personality.");
+            Log.Log(LogLevel.Information, LogMessage.NoPersonality);
             return "";
         }
 
@@ -34,7 +40,7 @@ public class PersonalitySkillsProvider : ISkillProvider
         }
         catch (Exception ex)
         {
-            Console.Error.WriteLine($"[ERROR] Failed to load personality.md: {ex.Message}");
+            Log.Log(LogLevel.Error, LogMessage.SkillFileLoadFailed, new { File = "personality.md", Reason = ex.Message });
             return "";
         }
     }

@@ -1,6 +1,7 @@
 namespace LouisAgent.Core.Config;
 
 using System.Text.RegularExpressions;
+using LouisAgent.Core.Messages;
 
 /// <summary>
 /// Writes one setting into <c>config/.env</c>, the file every host and container reads (F14: <c>HOST_CULTURE</c>, written
@@ -45,8 +46,8 @@ public static partial class EnvFile
     /// </summary>
     public static string SetValue(string content, string key, string value, string comment, out bool replaced)
     {
-        if (!SettingName().IsMatch(key)) throw new ArgumentException($"'{key}' is not a setting name.", nameof(key));
-        if (value.Contains('\n') || value.Contains('\r')) throw new ArgumentException("A setting's value is one line.", nameof(value));
+        if (!SettingName().IsMatch(key)) throw new ArgumentException(MessageText.Format(ErrorMessage.NotASettingName, new { Key = key }), nameof(key));
+        if (value.Contains('\n') || value.Contains('\r')) throw new ArgumentException(MessageText.Format(ErrorMessage.SettingValueNotOneLine), nameof(value));
 
         string newline = content.Contains("\r\n") ? "\r\n" : "\n";
         string setting = $"{key}={value}";

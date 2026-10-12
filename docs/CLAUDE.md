@@ -55,7 +55,8 @@ louis-agent.core/             # Namespace = folder path (LouisAgent.Core.Tools.W
 ├── Hosting/                  # AgentHost (+ AgentHostContext): bootstrap for every host; RiderMcpToolDiscovery
 ├── Config/                   # LlmOptions (+ CacheLifetime), AgentOptions, EnvFile (finds config/, sets a .env line)
 ├── Messages/                 # ErrorMessage, LogMessage, ToolMessage, UserText ([Description] templates), MessageText
-├── Logging/AgentLog.cs       # File logging (LOG_DIRECTORY): stderr copy per run + JSONL records
+├── Logging/                  # AgentLogging (Serilog behind ILogger: stderr, run file, JSON-lines records),
+│                             # MessageLogging (log a message member), ToolCallRecords
 ├── Llm/
 │   ├── LlmClientFactory.cs   # Provider → IChatClient (Anthropic thinking-budget wrapper lives here), wrapped for caching
 │   ├── IPromptCachingStrategy.cs, NoPromptCaching.cs, PromptCachingChatClient.cs  # F4
@@ -139,6 +140,13 @@ start-up.
 Return strings the model can act on: say what went wrong and what to do instead. Keep output bounded — results over
 50,000 characters get summarised; most toolsets cap their own output at 12,000.
 
+**The texts a tool returns are `ToolMessage` members** (*Messages and logging*), errors and results alike:
+`return MessageText.Format(ToolMessage.FileNotFound, new { Path = relativePath });`. Its descriptions are attributes.
+Two golden files pin what the model reads: `ModelRequestSnapshot.json` (tools, descriptions, system prompt) and
+`ToolMessageSnapshot.json` (every `ToolMessage` template). A new tool or text changes them on purpose: regenerate with
+`LOUIS_UPDATE_GOLDEN=1 dotnet test tests/louis-agent.core.tests --filter "ModelRequestSnapshotTests|ToolMessageSnapshotTests"`
+and review the diff.
+
 ### Project layout
 
 **Folders split the code by concern, and the namespace is the folder path.** Each concern of an agent has one home, so
@@ -154,7 +162,7 @@ a change to one (a new provider, a new tool, a new guard) touches one folder:
 | `Usage/` and `Pricing/` | The ledger (records, sinks, scopes, reports); prices, cost, rates and the display currency |
 | `Protocols/Mcp/` | Talking to other agents and tools over MCP |
 | `Hosting/` | Bootstrap shared by every host: `AgentHost`, and wiring done at start-up (Rider's MCP tools) |
-| `Config/`, `Messages/`, `Logging/` | Settings; message enums; file logging (`AgentLog`, later the NLog setup) |
+| `Config/`, `Messages/`, `Logging/` | Settings; message enums; logging (`AgentLogging`: Serilog behind `ILogger`) |
 
 The rules:
 
@@ -190,19 +198,35 @@ public enum ErrorMessage
 }
 
 throw new ArgumentException(MessageText.Format(ErrorMessage.UnknownCacheTtl, new { Value = other }));
-logger.LogWarning(MessageText.Template(LogMessage.RatesFallback), url, reason);   // NLog fills the holes, as structured fields
+Log.Log(LogLevel.Warning, LogMessage.RatesUrlUnusable, new { Url = url, Reason = ex.Message });   // holes kept as fields
+Log.Log(LogLevel.Information, McpServerLogMessage.ToolNameTaken, new { Name = name }, tag: "MCP");   // [MCP] …
 ```
 
 - **What counts:** exception messages, log lines, the error strings tools return to the model, and user-facing text
-  (`/usage`, the usage line, CLI help, comms log headings). Enums by kind (`ErrorMessage`, `LogMessage`, `ToolMessage`,
-  `UserText`), each member named for what happened, not for its wording.
-- **Logging goes through `ILogger` (Microsoft.Extensions.Logging) with NLog as the provider:** levels and targets in
-  `nlog.config`, console output to **stderr only** (stdout carries the ACP and MCP protocols), run files and JSON-lines
-  records as NLog targets. Holes are named (`{Url}`), so NLog stores them as fields.
+  (`/usage`, the usage line, CLI help). Enums by kind (`ErrorMessage`, `LogMessage`, `ToolMessage`, `UserText`), each
+  member named for what happened, not for its wording.
+- **Each host keeps its own texts** in its project's `Messages/` folder, named for the host (`AcpLogMessage`,
+  `CliUserText`, `OrchestratorToolMessage`, `ProbeUserText`…): core can't know them. `HostMessageEnumTests` checks them
+  from source.
+- **Not messages:** prompts (system prompt and procedures in `Skills/*.md`; the orchestrator's triage and fix prompts),
+  keywords another program matches on (`FIX-RESULT`, `DECISION`, `PASS`/`FAIL`, `VERIFIED`), the comms log's Markdown
+  layout, and key=value or table formatting.
+- **Text the model reads is pinned:** `ToolMessageSnapshotTests` renders every `ToolMessage` template into
+  `Messages/ToolMessageSnapshot.json`, as the model-request snapshot does for the tools and prompt; a deliberate change
+  regenerates it (`LOUIS_UPDATE_GOLDEN=1`) and is reviewed in the diff. Numbers in messages are invariant (`12,345`).
+- **Logging goes through `ILogger` (Microsoft.Extensions.Logging) with Serilog behind it**, configured in code by
+  `Logging/AgentLogging` (`AgentHost` calls `Configure`; another agent on core calls it itself). Get a logger with
+  `AgentLogging.For<T>()` and log a message member with `logger.Log(level, Member, new { Hole = value })`
+  (`MessageLogging`): values bind to holes by name, and a missing one throws.
+  - **Console: stderr only** (stdout carries the ACP and MCP protocols), `[INFO] …`, `[WARN] …`, `[ERROR] …`, or the
+    call's `tag:` (`[TOOL]`, `[MCP]`, `[orchestrator]`).
+  - **With `LOG_DIRECTORY`:** a run file per process (`agent-{host}-{time}-{pid}.log`, the console's lines with the
+    time) and the records (`oversized-tool-results.jsonl`, `truncated-tool-calls.jsonl`, written by `ToolCallRecords`)
+    as JSON lines in their own shape (`RecordFormatter`: `timestamp` and the record's fields in camelCase, nothing of
+    Serilog's), since tools read them (F16).
 - **A unit test checks every message enum:** each member has a `[Description]`, and its template's holes are well formed.
-- **Moving there:** the existing ~230 messages (35 files), `Console.Error` and `AgentLog` move in one refactor after F4
-  (TODO, *Quality and CI*). Until it lands, new code defines its messages as enum members but still writes logs with
-  `Console.Error.WriteLine(MessageText.Format(...))`; the refactor switches those calls to `ILogger`.
+- **Screen text is not logging:** the CLI's usage line and the usage probe's errors are written to `Console.Error`
+  directly (from their enums), so they stay out of the run file.
 
 ### Adding a skill
 
@@ -239,8 +263,9 @@ anywhere else.
 
 - Tool calls are logged to stderr: `[TOOL] -> Name(args)` and `[TOOL] <- Name: result` (or `failed: …`).
 - In Docker, logs persist in `logs/`; `docker logs louis_agent_api` shows the API.
-- Write debug output to `Console.Error` (through NLog's stderr target once *Messages and logging* is in place), never
-  `Console.Out`: stdout carries the ACP and MCP protocols.
+- Log through `ILogger` (*Messages and logging*), never `Console.Out`: stdout carries the ACP and MCP protocols. With
+  `LOG_DIRECTORY` set, each process writes `agent-{host}-{time}-{pid}.log` there (the stderr lines with the time); the
+  orchestrator's lines are tagged `[orchestrator]`, louis-agent's progress under it `[louis-agent]`.
 - Every model request is in the usage ledger, `{LOG_DIRECTORY}/usage-YYYY-MM.jsonl` (tokens, cost, host, session,
   turn, fix and run; no prompt text). Total one with
   `dotnet run --project tools/louis-agent.usage-probe -- --ledger logs/usage-YYYY-MM.jsonl`.

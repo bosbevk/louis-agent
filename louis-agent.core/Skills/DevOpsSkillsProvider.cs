@@ -1,11 +1,17 @@
 namespace LouisAgent.Core.Skills;
 
+using LouisAgent.Core.Logging;
+using LouisAgent.Core.Messages;
+using Microsoft.Extensions.Logging;
+
 /// <summary>
 /// Provides DevOps and work item management skills.
 /// Loads skills from devops-skills.md for Azure Boards integration.
 /// </summary>
 public class DevOpsSkillsProvider : ISkillProvider
 {
+    private static readonly ILogger Log = AgentLogging.For<DevOpsSkillsProvider>();
+
     private List<MarkdownSkillLoader.SkillDef>? _skills;
     private string? _documentation;
     private readonly string _filePath;
@@ -23,12 +29,12 @@ public class DevOpsSkillsProvider : ISkillProvider
     {
         if (!File.Exists(_filePath))
         {
-            Console.Error.WriteLine($"[WARN] devops-skills.md not found at: {_filePath}");
+            Log.Log(LogLevel.Warning, LogMessage.SkillFileNotFound, new { File = "devops-skills.md", Path = _filePath });
             return [];
         }
 
         var skills = MarkdownSkillLoader.Load(_filePath);
-        Console.Error.WriteLine($"[INFO] Loaded {skills.Count} DevOps skills from: {_filePath}");
+        Log.Log(LogLevel.Information, LogMessage.SkillsLoaded, new { skills.Count, Kind = "DevOps", Path = _filePath });
         return skills;
     }
 
@@ -36,7 +42,7 @@ public class DevOpsSkillsProvider : ISkillProvider
     {
         if (!File.Exists(_filePath))
         {
-            Console.Error.WriteLine($"[WARN] devops-skills.md not found at: {_filePath}");
+            Log.Log(LogLevel.Warning, LogMessage.SkillFileNotFound, new { File = "devops-skills.md", Path = _filePath });
             return "";
         }
 
@@ -46,7 +52,7 @@ public class DevOpsSkillsProvider : ISkillProvider
         }
         catch (Exception ex)
         {
-            Console.Error.WriteLine($"[ERROR] Failed to load devops-skills.md: {ex.Message}");
+            Log.Log(LogLevel.Error, LogMessage.SkillFileLoadFailed, new { File = "devops-skills.md", Reason = ex.Message });
             return "";
         }
     }

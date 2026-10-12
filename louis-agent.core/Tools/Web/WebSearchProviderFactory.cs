@@ -2,6 +2,7 @@ namespace LouisAgent.Core.Tools.Web;
 
 using System.Net;
 using LouisAgent.Core.Config;
+using LouisAgent.Core.Messages;
 
 /// <summary>
 /// Picks the search engine from configuration: WEB_SEARCH_PROVIDER = google | duckduckgo. When unset, Google is
@@ -22,9 +23,9 @@ public static class WebSearchProviderFactory
             "" => hasGoogle ? new GoogleSearchProvider(options.GoogleSearchApiKey!, options.GoogleSearchEngineId!, http) : new DuckDuckGoSearchProvider(http),
             "google" => hasGoogle
                 ? new GoogleSearchProvider(options.GoogleSearchApiKey!, options.GoogleSearchEngineId!, http)
-                : new UnavailableSearchProvider("Google", "WEB_SEARCH_PROVIDER=google needs both GOOGLE_SEARCH_API_KEY and GOOGLE_SEARCH_ENGINE_ID in config/.env.secrets."),
+                : new UnavailableSearchProvider("Google", MessageText.Format(ToolMessage.GoogleNotConfigured)),
             "duckduckgo" or "ddg" => new DuckDuckGoSearchProvider(http),
-            _ => new UnavailableSearchProvider(choice, $"Unknown WEB_SEARCH_PROVIDER '{choice}'. Supported: {string.Join(", ", SupportedProviders)}."),
+            _ => new UnavailableSearchProvider(choice, MessageText.Format(ToolMessage.UnknownSearchProvider, new { Provider = choice, Supported = string.Join(", ", SupportedProviders) })),
         };
     }
 }

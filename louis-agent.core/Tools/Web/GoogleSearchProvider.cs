@@ -2,6 +2,7 @@ namespace LouisAgent.Core.Tools.Web;
 
 using System.Net;
 using System.Text.Json;
+using LouisAgent.Core.Messages;
 
 /// <summary>
 /// Google Programmable Search Engine via the Custom Search JSON API. Needs an API key and a search engine ID (cx)
@@ -33,10 +34,10 @@ public sealed class GoogleSearchProvider(string apiKey, string searchEngineId, H
             string detail = TryReadError(json) ?? response.ReasonPhrase ?? "";
             throw new WebSearchException(response.StatusCode switch
             {
-                HttpStatusCode.TooManyRequests => $"Google search quota exceeded ({detail}). Try again later or raise the quota in Google Cloud.",
+                HttpStatusCode.TooManyRequests => MessageText.Format(ToolMessage.GoogleQuotaExceeded, new { Detail = detail }),
                 HttpStatusCode.BadRequest or HttpStatusCode.Forbidden or HttpStatusCode.Unauthorized =>
-                    $"Google rejected the request ({detail}). Check GOOGLE_SEARCH_API_KEY, GOOGLE_SEARCH_ENGINE_ID and that the Custom Search API is enabled.",
-                _ => $"Google search failed: HTTP {(int)response.StatusCode} {detail}",
+                    MessageText.Format(ToolMessage.GoogleRejected, new { Detail = detail }),
+                _ => MessageText.Format(ToolMessage.GoogleFailed, new { Status = (int)response.StatusCode, Detail = detail }),
             });
         }
 

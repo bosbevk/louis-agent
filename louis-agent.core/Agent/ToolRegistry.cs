@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Reflection;
 using LouisAgent.Core.Messages;
 using Microsoft.Extensions.AI;
+using LouisAgent.Core.Logging;
+using Microsoft.Extensions.Logging;
 
 /// <summary>
 /// The agent's tools, kept in name order (ordinal), so the tool list, and with it the start of every request, is the
@@ -13,6 +15,8 @@ using Microsoft.Extensions.AI;
 /// </summary>
 internal sealed class ToolRegistry
 {
+    private static readonly ILogger Log = AgentLogging.For<ToolRegistry>();
+
     private static readonly Comparer<AITool> ByName = Comparer<AITool>.Create((a, b) => string.CompareOrdinal(a.Name, b.Name));
 
     /// <summary>
@@ -64,13 +68,13 @@ internal sealed class ToolRegistry
     {
         if (Contains(name))
         {
-            Console.Error.WriteLine($"[MCP] Tool '{name}' already registered; skipping");
+            Log.Log(LogLevel.Information, LogMessage.McpToolAlreadyRegistered, new { Name = name }, tag: "MCP");
             return false;
         }
 
         // Log discovered tool for informational purposes
         // Full MCP tool invocation would require a complete MCP protocol client
-        Console.Error.WriteLine($"[MCP] Discovered tool from Rider: {name} - {description}");
+        Log.Log(LogLevel.Information, LogMessage.McpToolDiscovered, new { Name = name, Description = description }, tag: "MCP");
         return true;
     }
 }

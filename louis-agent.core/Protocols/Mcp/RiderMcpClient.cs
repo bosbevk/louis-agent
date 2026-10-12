@@ -1,6 +1,9 @@
 namespace LouisAgent.Core.Protocols.Mcp;
 
 using System.Text.Json;
+using LouisAgent.Core.Logging;
+using LouisAgent.Core.Messages;
+using Microsoft.Extensions.Logging;
 
 /// <summary>
 /// MCP client for discovering tools from Rider's MCP server.
@@ -10,6 +13,9 @@ using System.Text.Json;
 /// </summary>
 public sealed class RiderMcpClient : IDisposable
 {
+    private static readonly ILogger Log = AgentLogging.For<RiderMcpClient>();
+    private const string Tag = "MCP";
+
     private readonly HttpClient _httpClient;
     private readonly string _endpoint;
     private readonly string? _projectPath;
@@ -59,12 +65,12 @@ public sealed class RiderMcpClient : IDisposable
         }
         catch (HttpRequestException ex)
         {
-            Console.Error.WriteLine($"[MCP] Failed to connect to Rider at {_endpoint}: {ex.Message}");
+            Log.Log(LogLevel.Warning, LogMessage.McpConnectFailed, new { Endpoint = _endpoint, Reason = ex.Message }, tag: Tag);
             return [];
         }
         catch (Exception ex)
         {
-            Console.Error.WriteLine($"[MCP] Tool discovery error: {ex.Message}");
+            Log.Log(LogLevel.Warning, LogMessage.McpDiscoveryError, new { Reason = ex.Message }, tag: Tag);
             return [];
         }
     }
@@ -105,8 +111,8 @@ public sealed class RiderMcpClient : IDisposable
             if (!initResponse.IsSuccessStatusCode)
             {
                 var errorBody = await initResponse.Content.ReadAsStringAsync(ct);
-                Console.Error.WriteLine($"[MCP] Initialize failed: {initResponse.StatusCode}");
-                Console.Error.WriteLine($"[MCP] Response: {errorBody}");
+                Log.Log(LogLevel.Warning, LogMessage.McpInitializeFailed, new { Status = initResponse.StatusCode }, tag: Tag);
+                Log.Log(LogLevel.Warning, LogMessage.McpResponse, new { Body = errorBody }, tag: Tag);
                 return tools;
             }
 
@@ -114,7 +120,7 @@ public sealed class RiderMcpClient : IDisposable
             if (initResponse.Headers.TryGetValues("mcp-session-id", out var sessionValues))
             {
                 _sessionId = sessionValues.FirstOrDefault();
-                Console.Error.WriteLine($"[MCP] Session established: {_sessionId}");
+                Log.Log(LogLevel.Information, LogMessage.McpSessionEstablished, new { Session = _sessionId }, tag: Tag);
             }
 
             // Step 2: Send tools/list request (now with session ID)
@@ -154,12 +160,12 @@ public sealed class RiderMcpClient : IDisposable
                         tools.Add(new DiscoveredTool(name, description, inputSchema));
                     }
                 }
-                Console.Error.WriteLine($"[MCP] Discovered {tools.Count} tools from Rider");
+                Log.Log(LogLevel.Information, LogMessage.McpToolsDiscovered, new { tools.Count }, tag: Tag);
             }
         }
         catch (Exception ex)
         {
-            Console.Error.WriteLine($"[MCP] Stream discovery failed: {ex.Message}");
+            Log.Log(LogLevel.Warning, LogMessage.McpStreamDiscoveryFailed, new { Reason = ex.Message }, tag: Tag);
         }
 
         return tools;
@@ -179,11 +185,11 @@ public sealed class RiderMcpClient : IDisposable
             // Note: Full SSE implementation would require streaming line-by-line parsing
             // For now, we'll attempt a basic response read
             var sseText = await sseResponse.Content.ReadAsStringAsync(ct);
-            Console.Error.WriteLine($"[MCP] SSE response (partial): {sseText[..Math.Min(100, sseText.Length)]}");
+            Log.Log(LogLevel.Information, LogMessage.McpSsePartial, new { Text = sseText[..Math.Min(100, sseText.Length)] }, tag: Tag);
         }
         catch (Exception ex)
         {
-            Console.Error.WriteLine($"[MCP] SSE discovery failed: {ex.Message}");
+            Log.Log(LogLevel.Warning, LogMessage.McpSseDiscoveryFailed, new { Reason = ex.Message }, tag: Tag);
         }
 
         return tools;

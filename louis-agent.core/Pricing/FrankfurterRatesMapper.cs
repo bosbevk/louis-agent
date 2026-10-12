@@ -1,6 +1,7 @@
 namespace LouisAgent.Core.Pricing;
 
 using System.Text.Json;
+using LouisAgent.Core.Messages;
 
 /// <summary>
 /// <a href="https://frankfurter.dev">Frankfurter</a>'s reply (the ECB's daily reference rates, free, no key):
@@ -20,7 +21,7 @@ public sealed class FrankfurterRatesMapper : IRatesMapper
             using JsonDocument reply = JsonDocument.Parse(body);
             JsonElement root = reply.RootElement;
             decimal amount = root.TryGetProperty("amount", out JsonElement a) ? a.GetDecimal() : 1m;
-            if (amount <= 0) throw new InvalidDataException($"Frankfurter rates {source}: amount must be positive.");
+            if (amount <= 0) throw new InvalidDataException(MessageText.Format(ErrorMessage.FrankfurterAmountNotPositive, new { Source = source }));
 
             var rates = new ExchangeRates
             {
@@ -34,7 +35,7 @@ public sealed class FrankfurterRatesMapper : IRatesMapper
         }
         catch (Exception ex) when (ex is JsonException or KeyNotFoundException or InvalidOperationException or FormatException)
         {
-            throw new InvalidDataException($"Frankfurter rates {source} are not in Frankfurter's format: {ex.Message}", ex);
+            throw new InvalidDataException(MessageText.Format(ErrorMessage.FrankfurterNotItsFormat, new { Source = source, Reason = ex.Message }), ex);
         }
     }
 }

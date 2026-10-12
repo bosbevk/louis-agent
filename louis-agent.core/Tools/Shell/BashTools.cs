@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Text;
 using LouisAgent.Core.Tools.DotNet;
 using LouisAgent.Core.Tools.Workspace;
+using LouisAgent.Core.Messages;
 
 /// <summary>
 /// Bash toolset: run inline scripts or workspace .sh files with Git Bash on Windows or /bin/bash elsewhere.
@@ -40,13 +41,13 @@ public sealed class BashTools
     {
         bool hasScript = !string.IsNullOrWhiteSpace(script);
         bool hasPath = !string.IsNullOrWhiteSpace(scriptPath);
-        if (hasScript == hasPath) return "Error: pass exactly one of 'script' or 'scriptPath'.";
+        if (hasScript == hasPath) return MessageText.Format(ToolMessage.PassScriptOrScriptPath);
 
         string? file = null;
         if (hasPath)
         {
             if (!TryResolveWorkspacePath(scriptPath, out file, out var error)) return error;
-            if (!File.Exists(file)) return $"Error: script '{scriptPath}' not found.";
+            if (!File.Exists(file)) return MessageText.Format(ToolMessage.ScriptNotFound, new { Path = scriptPath });
         }
 
         var result = RunScript(hasScript ? script : null, file, DotNetTools.SplitArguments(arguments), standardInput,
@@ -55,14 +56,14 @@ public sealed class BashTools
 
         var sb = new StringBuilder();
         sb.AppendLine(result!.TimedOut
-            ? $"Script was still running after {timeoutSeconds}s and was killed."
-            : $"Exit code: {result.ExitCode}");
+            ? MessageText.Format(ToolMessage.ScriptKilled, new { Seconds = timeoutSeconds })
+            : MessageText.Format(ToolMessage.ProcessExitCode, new { result.ExitCode }));
         sb.AppendLine("--- output ---");
         sb.Append(result.Output.Trim());
         // Linux bash treats the \r of Windows line endings as part of each command ("$'\r': command not found",
         // "syntax error near unexpected token"); Git Bash tolerates it, so only hint when the script failed.
         if (file is not null && result.ExitCode != 0 && File.ReadAllText(file).Contains('\r'))
-            sb.Append("\nHint: the script has Windows (CRLF) line endings; convert it to LF.");
+            sb.Append(MessageText.Format(ToolMessage.BashCrlfHint));
         return ProcessRunner.Truncate(sb.ToString(), MaxOutputChars);
     }
 
@@ -143,9 +144,7 @@ public sealed class BashTools
         """__a=(); for ((__i = 0; __i < LOUIS_AGENT_ARGC; __i++)); do __v="LOUIS_AGENT_ARG_$__i"; __a+=("${!__v}"); done; """ +
         """unset __i __v; source "$0" "${__a[@]+"${__a[@]}"}" """;
 
-    private const string NotInstalledMessage =
-        "Bash is not available. On Windows install Git for Windows (https://git-scm.com, includes Git Bash) " +
-        "or set BASH_PATH to bash.exe. WSL's bash.exe in System32 is deliberately not used.";
+    private static string NotInstalledMessage => MessageText.Format(ToolMessage.BashNotInstalled);
 
     private static string? _bash;
     private static bool _searched;
@@ -212,7 +211,7 @@ public sealed class BashTools
             fullPath.StartsWith(rootWithSeparator, StringComparison.OrdinalIgnoreCase))
             return true;
 
-        error = $"Error: '{relativePath}' is outside the workspace.";
+        error = MessageText.Format(ToolMessage.PathOutsideWorkspaceNamed, new { Path = relativePath });
         return false;
     }
 }

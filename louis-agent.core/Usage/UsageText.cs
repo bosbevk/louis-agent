@@ -2,6 +2,7 @@ namespace LouisAgent.Core.Usage;
 
 using System.Globalization;
 using LouisAgent.Core.Pricing;
+using LouisAgent.Core.Messages;
 
 /// <summary>
 /// The usage text every host shows (F3): the line after an answer and the <c>/usage</c> reply. One format in core, so the
@@ -22,11 +23,11 @@ public static class UsageText
     public static string Line(IReadOnlyList<UsageRecord> turn, IReadOnlyList<UsageRecord>? session = null,
         DisplayCurrency? display = null)
     {
-        string line = "turn: " + Describe(UsageReport.Total("turn", turn), CurrencyOf(turn), display);
+        string line = MessageText.Format(UserText.UsageTurn, new { Usage = Describe(UsageReport.Total("turn", turn), CurrencyOf(turn), display) });
         if (session is null) return line;
 
         UsageTotal total = UsageReport.Total("session", session);
-        return $"{line} · session {Cost(total, CurrencyOf(session), display)}";
+        return MessageText.Format(UserText.UsageWithSession, new { Line = line, Cost = Cost(total, CurrencyOf(session), display) });
     }
 
     /// <summary>
@@ -35,20 +36,24 @@ public static class UsageText
     /// </summary>
     public static string Summary(IReadOnlyList<UsageRecord> session, DisplayCurrency? display = null)
     {
-        if (session.Count == 0) return "No model requests in this session yet.";
+        if (session.Count == 0) return MessageText.Format(UserText.UsageNoneYet);
 
         // A markdown list: the web app and Rider render replies as markdown, where single line breaks would run the lines
         // into one paragraph; a terminal shows the list as it is.
         string currency = CurrencyOf(session);
         UsageTotal total = UsageReport.Total("session", session);
-        var lines = new List<string> { $"Session usage: {Describe(total, currency, display)}" };
-        lines.AddRange(UsageReport.Totals(session, r => r.Purpose).Select(p => $"- {p.Key}: {Describe(p, currency, display)}"));
-        lines.Add($"- tokens: {Tokens(total.Input)} input · {Tokens(total.CacheWrite)} cache write · " +
-                  $"{Tokens(total.CacheRead)} cache read · {Tokens(total.Output)} output");
+        var lines = new List<string> { MessageText.Format(UserText.UsageSessionHeading, new { Usage = Describe(total, currency, display) }) };
+        lines.AddRange(UsageReport.Totals(session, r => r.Purpose)
+            .Select(p => MessageText.Format(UserText.UsagePurpose, new { Purpose = p.Key, Usage = Describe(p, currency, display) })));
+        lines.Add(MessageText.Format(UserText.UsageTokensByKind, new
+        {
+            Input = Tokens(total.Input), CacheWrite = Tokens(total.CacheWrite), CacheRead = Tokens(total.CacheRead),
+            Output = Tokens(total.Output),
+        }));
         if (display is { Converts: true } && total.Cost is { } charged)
-            lines.Add($"- rate: {Rate(display)} on {display.RateAsOf} · {Money(charged, currency)} charged");
+            lines.Add(MessageText.Format(UserText.UsageRate, new { Rate = Rate(display), AsOf = display.RateAsOf, Charged = Money(charged, currency) }));
         if (total.Unpriced > 0)
-            lines.Add($"- price unknown for {Requests(total.Unpriced)}: the model isn't in the price table");
+            lines.Add(MessageText.Format(UserText.UsageUnpriced, new { Requests = Requests(total.Unpriced) }));
         // "\n", not Environment.NewLine: the same text on every OS and over the API.
         return string.Join("\n", lines);
     }
@@ -57,8 +62,9 @@ public static class UsageText
     internal static string Describe(UsageTotal total, string currency, DisplayCurrency? display = null)
     {
         long tokens = total.Input + total.CacheWrite + total.CacheRead + total.Output;
-        string cached = total.CacheRead > 0 ? $" ({Tokens(total.CacheRead)} cached)" : "";
-        return $"{Requests(total.Requests)} · {Tokens(tokens)} tokens{cached} · {Cost(total, currency, display)}";
+        string cached = total.CacheRead > 0 ? MessageText.Format(UserText.UsageCached, new { Tokens = Tokens(total.CacheRead) }) : "";
+        return MessageText.Format(UserText.UsageTotal,
+            new { Requests = Requests(total.Requests), Tokens = Tokens(tokens), Cached = cached, Cost = Cost(total, currency, display) });
     }
 
     /// <summary>
@@ -67,8 +73,9 @@ public static class UsageText
     /// </summary>
     internal static string Cost(UsageTotal total, string currency, DisplayCurrency? display = null) => total.Cost switch
     {
-        null => "price unknown",
-        { } amount when total.Unpriced > 0 => $"{Money(amount, currency, display)} + {total.Unpriced} unpriced",
+        null => MessageText.Format(UserText.UsagePriceUnknown),
+        { } amount when total.Unpriced > 0 =>
+            MessageText.Format(UserText.UsagePartlyPriced, new { Amount = Money(amount, currency, display), total.Unpriced }),
         { } amount => Money(amount, currency, display),
     };
 
@@ -118,7 +125,8 @@ public static class UsageText
         return Math.Round(amount, decimals, MidpointRounding.AwayFromZero).ToString("0.######", Invariant);
     }
 
-    private static string Requests(int count) => count == 1 ? "1 request" : $"{count} requests";
+    private static string Requests(int count) =>
+        count == 1 ? MessageText.Format(UserText.UsageOneRequest) : MessageText.Format(UserText.UsageRequests, new { Count = count });
 
     /// <summary>The currency of the priced records; USD when none is priced (then no amount is shown anyway).</summary>
     internal static string CurrencyOf(IEnumerable<UsageRecord> records) =>

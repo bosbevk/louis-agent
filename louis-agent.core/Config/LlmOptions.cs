@@ -43,7 +43,7 @@ public sealed class LlmOptions
             "medium" => ReasoningEffort.Medium,
             "high" => ReasoningEffort.High,
             "off" or "none" or "false" => null,
-            var other => throw new ArgumentException($"Unknown LLM_THINKING '{other}'. Use off, low, medium or high."),
+            var other => throw new ArgumentException(MessageText.Format(ErrorMessage.UnknownThinking, new { Value = other })),
         };
 
     /// <summary>LLM_CACHE: on | off. Null means on. Only providers with a caching strategy act on it (F4: Anthropic).</summary>

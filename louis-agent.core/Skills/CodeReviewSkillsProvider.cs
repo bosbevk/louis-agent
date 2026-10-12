@@ -1,11 +1,17 @@
 namespace LouisAgent.Core.Skills;
 
+using LouisAgent.Core.Logging;
+using LouisAgent.Core.Messages;
+using Microsoft.Extensions.Logging;
+
 /// <summary>
 /// Provides code review and analysis skills.
 /// Loads skills from code-review-skills.md for code quality assessment.
 /// </summary>
 public class CodeReviewSkillsProvider : ISkillProvider
 {
+    private static readonly ILogger Log = AgentLogging.For<CodeReviewSkillsProvider>();
+
     private List<MarkdownSkillLoader.SkillDef>? _skills;
     private string? _documentation;
     private readonly string _filePath;
@@ -23,12 +29,12 @@ public class CodeReviewSkillsProvider : ISkillProvider
     {
         if (!File.Exists(_filePath))
         {
-            Console.Error.WriteLine($"[WARN] code-review-skills.md not found at: {_filePath}");
+            Log.Log(LogLevel.Warning, LogMessage.SkillFileNotFound, new { File = "code-review-skills.md", Path = _filePath });
             return [];
         }
 
         var skills = MarkdownSkillLoader.Load(_filePath);
-        Console.Error.WriteLine($"[INFO] Loaded {skills.Count} code review skills from: {_filePath}");
+        Log.Log(LogLevel.Information, LogMessage.SkillsLoaded, new { skills.Count, Kind = "code review", Path = _filePath });
         return skills;
     }
 
@@ -36,7 +42,7 @@ public class CodeReviewSkillsProvider : ISkillProvider
     {
         if (!File.Exists(_filePath))
         {
-            Console.Error.WriteLine($"[WARN] code-review-skills.md not found at: {_filePath}");
+            Log.Log(LogLevel.Warning, LogMessage.SkillFileNotFound, new { File = "code-review-skills.md", Path = _filePath });
             return "";
         }
 
@@ -46,7 +52,7 @@ public class CodeReviewSkillsProvider : ISkillProvider
         }
         catch (Exception ex)
         {
-            Console.Error.WriteLine($"[ERROR] Failed to load code-review-skills.md: {ex.Message}");
+            Log.Log(LogLevel.Error, LogMessage.SkillFileLoadFailed, new { File = "code-review-skills.md", Reason = ex.Message });
             return "";
         }
     }

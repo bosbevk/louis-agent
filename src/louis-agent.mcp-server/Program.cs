@@ -10,6 +10,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using ModelContextProtocol.Server;
 using LouisAgent.Core.Hosting;
+using LouisAgent.McpServer.Messages;
+using LouisAgent.Core.Logging;
+using LouisAgent.Core.Messages;
 
 // The MCP client brings its own model; this server publishes the agent's tools (workspace, git, DotNet*, Python*,
 // PowerShell*, Bash*, skills, agent-built tools, ...) so that client can call them.
@@ -88,7 +91,7 @@ static async Task RunHttpAsync(string[] args, AgentEngine engine)
     string? apiKey = Environment.GetEnvironmentVariable("MCP_API_KEY") ?? Environment.GetEnvironmentVariable("AGENT_API_KEY");
     if (string.IsNullOrWhiteSpace(apiKey))
     {
-        Console.Error.WriteLine("[WARN] MCP_API_KEY (or AGENT_API_KEY) not set; the MCP HTTP endpoint accepts unauthenticated requests. Only expose it on localhost or behind your own auth.");
+        AgentLogging.LoggerFactory.CreateLogger("LouisAgent.McpServer").Log(LogLevel.Warning, McpServerLogMessage.NoApiKey);
     }
     else
     {
@@ -101,7 +104,7 @@ static async Task RunHttpAsync(string[] args, AgentEngine engine)
             }
 
             context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-            await context.Response.WriteAsync("Missing or invalid API key (x-api-key or Authorization: Bearer).");
+            await context.Response.WriteAsync(MessageText.Format(McpServerText.InvalidApiKey));
         });
     }
 
@@ -154,7 +157,7 @@ internal static class EngineToolSync
 
                     var tool = McpServerTool.Create(function);
                     if (collection.TryAdd(tool)) published[name] = (function, tool, function.Description);
-                    else Console.Error.WriteLine($"[MCP] Tool name '{name}' is already published; skipping.");
+                    else AgentLogging.LoggerFactory.CreateLogger("LouisAgent.McpServer").Log(LogLevel.Information, McpServerLogMessage.ToolNameTaken, new { Name = name }, tag: "MCP");
                 }
             }
         }
@@ -195,7 +198,7 @@ public class SkillsToolProvider
 
         if (skill == null)
         {
-            return $"Unknown skill: '{skillName}'";
+            return MessageText.Format(McpServerText.UnknownSkill, new { Name = skillName });
         }
 
         return $"Skill: {skill.Name}\nDescription: {skill.Description}\nLanguage: {skill.Language}\nCommand: {skill.Command}";

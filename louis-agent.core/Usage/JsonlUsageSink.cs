@@ -2,6 +2,9 @@ namespace LouisAgent.Core.Usage;
 
 using System.Text;
 using System.Text.Json;
+using LouisAgent.Core.Logging;
+using LouisAgent.Core.Messages;
+using Microsoft.Extensions.Logging;
 
 /// <summary>
 /// Appends each record as one JSON line to <c>{directory}/usage-YYYY-MM.jsonl</c> (monthly, append-only), and raises
@@ -9,11 +12,13 @@ using System.Text.Json;
 /// the model call.
 /// </summary>
 /// <remarks>
-/// Writes its own file rather than through <see cref="AgentLog"/>: AgentLog's directory is set once per process, which a
-/// test can't point at a temporary folder.
+/// Writes its own file rather than through <see cref="AgentLogging"/>: the ledger is data, not logs, its directory is
+/// set per sink (a test points it at a temporary folder), and its field names are the usage spec's, not Serilog's.
 /// </remarks>
 public sealed class JsonlUsageSink(string directory) : IUsageSink
 {
+    private static readonly ILogger Log = AgentLogging.For<JsonlUsageSink>();
+
     // The usage spec's field names: duration_ms, cache_write, ... Nulls are written, since null means "not reported".
     internal static readonly JsonSerializerOptions Json = new() { PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower };
 
@@ -38,7 +43,7 @@ public sealed class JsonlUsageSink(string directory) : IUsageSink
         }
         catch (Exception ex)
         {
-            Console.Error.WriteLine($"[WARN] Could not write {fileName}: {ex.Message}");
+            Log.Log(LogLevel.Warning, LogMessage.LedgerWriteFailed, new { File = fileName, Reason = ex.Message });
         }
 
         UsageRecorded?.Invoke(record);

@@ -63,6 +63,19 @@ public class OrchestratorTests
     }
 
     [Test]
+    public void Decision_Record_UsesSnakeCaseKeys_LikeTheOtherRecords()
+    {
+        var error = FeedWith(Event("abc123")).Find("abc123")!;
+        var used = new EventUsage(null, null, null);
+
+        string json = System.Text.Json.JsonSerializer.Serialize(
+            Decision.Parse("DECISION: fixed - verified").ToRecord(error, used, "USD", new DateTimeOffset(2026, 10, 12, 8, 0, 0, TimeSpan.Zero)));
+
+        Assert.That(json, Does.StartWith("""{"error_id":"abc123","method":"order-total","outcome":"fixed","reason":"verified","at":"2026-10-12T08:00:00+00:00","""));
+        Assert.That(json, Does.EndWith(""","usage":null,"triage_usage":null,"louis_agent_usage":null}"""));
+    }
+
+    [Test]
     public void Decision_WithoutALine_IsUnknown() =>
         Assert.That(Decision.Parse("I looked at it.").Outcome, Is.EqualTo("unknown"));
 
@@ -102,6 +115,32 @@ public class OrchestratorTests
     [Test]
     public void ReplayRequest_RejectsMethodsWithoutARunbook() =>
         Assert.That(Tools(FeedWith()).ReplayRequest("delete-everything", 1), Does.StartWith("Error: unknown method"));
+
+    [Test]
+    public void ATool_LogsToStderr_WithTheOrchestratorTag_NeverToStdout()
+    {
+        var tools = Tools(FeedWith(Event("abc123")));
+        var (stdout, stderr) = (Console.Out, Console.Error);
+        using var output = new StringWriter();
+        using var errors = new StringWriter();
+        try
+        {
+            Console.SetOut(output);
+            Console.SetError(errors);
+            LouisAgent.Core.Logging.AgentLogging.Configure(null);
+
+            tools.AcknowledgeError("abc123", "a 404 is expected");
+        }
+        finally
+        {
+            Console.SetOut(stdout);
+            Console.SetError(stderr);
+            LouisAgent.Core.Logging.AgentLogging.Configure(null);
+        }
+
+        Assert.That(errors.ToString(), Does.Contain("[orchestrator] Acknowledged abc123: a 404 is expected"));
+        Assert.That(output.ToString(), Is.Empty);
+    }
 
     [Test]
     public void EscalateAndAcknowledge_OnlyAcceptKnownEvents()
@@ -330,7 +369,7 @@ public class OrchestratorTests
         };
         var client = new LouisAgentClient(new HttpClient { BaseAddress = new Uri("http://127.0.0.1:1") }, null);
         return new ServiceTools(options, feed, client, new HashSet<string> { "get-order", "order-total", "refund" },
-            new CommsLog(Path.Combine(_dir, "state", "agent-comms.md")), _ => { });
+            new CommsLog(Path.Combine(_dir, "state", "agent-comms.md")));
     }
 
     private string Git(params string[] args)

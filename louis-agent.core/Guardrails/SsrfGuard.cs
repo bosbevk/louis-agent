@@ -2,6 +2,7 @@ namespace LouisAgent.Core.Guardrails;
 
 using System.Net;
 using System.Net.Sockets;
+using LouisAgent.Core.Messages;
 
 /// <summary>
 /// Server-side request forgery guard for fetching URLs: only public addresses, checked before every request (and every
@@ -13,14 +14,14 @@ internal static class SsrfGuard
     internal static async Task EnsurePublicHostAsync(Uri uri, Func<string, CancellationToken, Task<IPAddress[]>> resolve)
     {
         if (uri.IsLoopback || uri.Host.Equals("localhost", StringComparison.OrdinalIgnoreCase))
-            throw new BlockedAddressException($"refusing to fetch {uri.Host}: local addresses are not allowed.");
+            throw new BlockedAddressException(MessageText.Format(ToolMessage.FetchLocalAddress, new { uri.Host }));
 
         IPAddress[] addresses = IPAddress.TryParse(uri.Host.Trim('[', ']'), out var literal)
             ? [literal]
             : await resolve(uri.DnsSafeHost, CancellationToken.None);
-        if (addresses.Length == 0) throw new HttpRequestException($"could not resolve {uri.Host}");
+        if (addresses.Length == 0) throw new HttpRequestException(MessageText.Format(ToolMessage.FetchUnresolvable, new { uri.Host }));
         if (addresses.FirstOrDefault(a => !IsPublicAddress(a)) is { } blocked)
-            throw new BlockedAddressException($"refusing to fetch {uri.Host}: it resolves to a private or local address ({blocked}).");
+            throw new BlockedAddressException(MessageText.Format(ToolMessage.FetchPrivateAddress, new { uri.Host, Address = blocked }));
     }
 
     /// <summary>
@@ -73,7 +74,7 @@ internal static class SsrfGuard
                 : await Dns.GetHostAddressesAsync(context.DnsEndPoint.Host, ct);
             var allowed = addresses.Where(IsPublicAddress).ToArray();
             if (allowed.Length == 0)
-                throw new BlockedAddressException($"refusing to connect to {context.DnsEndPoint.Host}: private or local address.");
+                throw new BlockedAddressException(MessageText.Format(ToolMessage.ConnectPrivateAddress, new { context.DnsEndPoint.Host }));
 
             var socket = new Socket(SocketType.Stream, ProtocolType.Tcp) { NoDelay = true };
             try

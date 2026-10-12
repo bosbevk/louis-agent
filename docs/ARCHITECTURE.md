@@ -204,16 +204,24 @@ startup and failures only log.
 
 ## Logging
 
-`AgentLog` (when `LOG_DIRECTORY` is set; `/logs` in compose → `logs/` on the host):
-- each run's stderr copied to `agent-{host}-{timestamp}-{pid}.log` with timestamps (containers run with `--rm`);
-- `oversized-tool-results.jsonl` and `truncated-tool-calls.jsonl`, to show which tools need narrower output.
+`ILogger` with Serilog behind it (`Logging/AgentLogging`), every line from a message enum (`LogMessage` in core, each
+host's own in its `Messages/`), its holes kept as fields:
+- the console on **stderr only** (stdout carries ACP and MCP), `[INFO]`, `[WARN]`, `[ERROR]` or the call's tag
+  (`[TOOL]`, `[MCP]`, `[orchestrator]`);
+- with `LOG_DIRECTORY` (`/logs` in compose → `logs/` on the host), a run file per process,
+  `agent-{host}-{timestamp}-{pid}.log`, the same lines with the time (containers run with `--rm`);
+- and, there too, the records `oversized-tool-results.jsonl` and `truncated-tool-calls.jsonl` (`ToolCallRecords`), as
+  JSON lines in their own shape (`timestamp` and camelCase fields, `RecordFormatter`), to show which tools need
+  narrower output.
+
+The usage ledger is data, not logs: `JsonlUsageSink` writes it in its own format.
 
 ## Bootstrap: `AgentHost`
 
 `AgentHost.Build()` (CLI, ACP, API):
 1. Load `config/.env.secrets` then `config/.env` (searching upward from the working directory) and a legacy `./.env`;
    variables already set in the process win.
-2. Bind `LlmOptions` and `AgentOptions`; start file logging.
+2. Bind `LlmOptions` and `AgentOptions`; configure logging (`AgentLogging.Configure(LOG_DIRECTORY)`).
 3. Load the composite skills, create the `IChatClient`, create `AgentEngine` (with `LLM_THINKING`), load approved tools.
 4. Start Rider MCP discovery in the background if enabled.
 

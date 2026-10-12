@@ -2,6 +2,9 @@ namespace LouisAgent.Core.Hosting;
 
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Protocols.Mcp;
+using LouisAgent.Core.Logging;
+using LouisAgent.Core.Messages;
+using Microsoft.Extensions.Logging;
 
 /// <summary>
 /// Orchestrates tool discovery from Rider's MCP server and registers them with AgentEngine.
@@ -10,6 +13,8 @@ using LouisAgent.Core.Protocols.Mcp;
 /// </summary>
 public sealed class RiderMcpToolDiscovery
 {
+    private static readonly ILogger Log = AgentLogging.For<RiderMcpToolDiscovery>();
+
     private readonly RiderMcpClient _client;
     private readonly AgentEngine _agentEngine;
 
@@ -31,7 +36,7 @@ public sealed class RiderMcpToolDiscovery
 
             if (tools.Count == 0)
             {
-                Console.Error.WriteLine("[MCP] No tools discovered from Rider MCP server");
+                Log.Log(LogLevel.Information, LogMessage.McpNoToolsDiscovered, tag: "MCP");
                 return;
             }
 
@@ -50,15 +55,15 @@ public sealed class RiderMcpToolDiscovery
                 }
                 catch (Exception ex)
                 {
-                    Console.Error.WriteLine($"[MCP] Failed to register tool '{tool.Name}': {ex.Message}");
+                    Log.Log(LogLevel.Warning, LogMessage.McpRegisterFailed, new { tool.Name, Reason = ex.Message }, tag: "MCP");
                 }
             }
 
-            Console.Error.WriteLine($"[MCP] Discovered and registered {registeredCount}/{tools.Count} tools from Rider");
+            Log.Log(LogLevel.Information, LogMessage.McpRegistered, new { Registered = registeredCount, tools.Count }, tag: "MCP");
         }
         catch (Exception ex)
         {
-            Console.Error.WriteLine($"[MCP] Tool discovery failed: {ex.Message}");
+            Log.Log(LogLevel.Warning, LogMessage.McpDiscoveryFailed, new { Reason = ex.Message }, tag: "MCP");
             if (throwOnError)
                 throw;
         }

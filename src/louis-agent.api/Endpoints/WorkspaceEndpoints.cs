@@ -2,6 +2,8 @@ using System.Text;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Tools.Workspace;
 using LouisAgent.Core.Guardrails;
+using LouisAgent.Core.Messages;
+using LouisAgent.Api.Messages;
 
 namespace LouisAgent.Api.Endpoints;
 
@@ -29,7 +31,7 @@ internal static class WorkspaceEndpoints
         {
             if (Resolve(workspace, path ?? "", out string? fullPath) is { } invalid) return invalid;
             if (!Directory.Exists(fullPath))
-                return ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error", $"No folder at '{path}'.");
+                return ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error", MessageText.Format(ApiUserText.NoFolder, new { Path = path }));
 
             var directory = new DirectoryInfo(fullPath!);
             var folders = directory.EnumerateDirectories()
@@ -47,14 +49,14 @@ internal static class WorkspaceEndpoints
         app.MapGet("/workspace/file", (string? path, WorkspaceBoundary workspace, AgentEngine engine) =>
         {
             if (string.IsNullOrWhiteSpace(path))
-                return ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error", "Pass the file's workspace-relative 'path'.");
+                return ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error", MessageText.Format(ApiUserText.PathRequired));
             if (Resolve(workspace, path, out string? fullPath) is { } invalid) return invalid;
 
             var file = new FileInfo(fullPath!);
             if (!file.Exists)
-                return ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error", $"No file at '{path}'.");
+                return ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error", MessageText.Format(ApiUserText.NoFile, new { Path = path }));
             if (SensitiveFiles.IsSensitive(file.FullName))
-                return ApiErrors.Result(StatusCodes.Status403Forbidden, "permission_error", "Secret files (.env, keys, certificates) can't be opened.");
+                return ApiErrors.Result(StatusCodes.Status403Forbidden, "permission_error", MessageText.Format(ApiUserText.SecretFileHidden));
             if (file.Length > MaxFileBytes)
                 return ApiErrors.Result(StatusCodes.Status413PayloadTooLarge, "request_too_large", $"{file.Name} is larger than 1 MB.");
 

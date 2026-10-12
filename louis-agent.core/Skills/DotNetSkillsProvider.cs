@@ -1,11 +1,17 @@
 namespace LouisAgent.Core.Skills;
 
+using LouisAgent.Core.Logging;
+using LouisAgent.Core.Messages;
+using Microsoft.Extensions.Logging;
+
 /// <summary>
 /// Provides guidance for the native DotNet* tools (build, test, run, debug workflows).
 /// Loads dotnet-skills.md; always included because the DotNet* tools are always registered.
 /// </summary>
 public class DotNetSkillsProvider : ISkillProvider
 {
+    private static readonly ILogger Log = AgentLogging.For<DotNetSkillsProvider>();
+
     private List<MarkdownSkillLoader.SkillDef>? _skills;
     private string? _documentation;
     private readonly string _filePath;
@@ -23,12 +29,12 @@ public class DotNetSkillsProvider : ISkillProvider
     {
         if (!File.Exists(_filePath))
         {
-            Console.Error.WriteLine($"[WARN] dotnet-skills.md not found at: {_filePath}");
+            Log.Log(LogLevel.Warning, LogMessage.SkillFileNotFound, new { File = "dotnet-skills.md", Path = _filePath });
             return [];
         }
 
         var skills = MarkdownSkillLoader.Load(_filePath);
-        Console.Error.WriteLine($"[INFO] Loaded {skills.Count} .NET skills from: {_filePath}");
+        Log.Log(LogLevel.Information, LogMessage.SkillsLoaded, new { skills.Count, Kind = ".NET", Path = _filePath });
         return skills;
     }
 
@@ -36,7 +42,7 @@ public class DotNetSkillsProvider : ISkillProvider
     {
         if (!File.Exists(_filePath))
         {
-            Console.Error.WriteLine($"[WARN] dotnet-skills.md not found at: {_filePath}");
+            Log.Log(LogLevel.Warning, LogMessage.SkillFileNotFound, new { File = "dotnet-skills.md", Path = _filePath });
             return "";
         }
 
@@ -46,7 +52,7 @@ public class DotNetSkillsProvider : ISkillProvider
         }
         catch (Exception ex)
         {
-            Console.Error.WriteLine($"[ERROR] Failed to load dotnet-skills.md: {ex.Message}");
+            Log.Log(LogLevel.Error, LogMessage.SkillFileLoadFailed, new { File = "dotnet-skills.md", Reason = ex.Message });
             return "";
         }
     }
