@@ -79,7 +79,7 @@ public class AgentLoggingTests
     {
         AgentLogging.Configure(_directory);
 
-        AgentLog.RecordTruncatedToolCall("WriteWorkspaceFile", "{\"path\":\"a.cs\"}", 16000);
+        ToolCallRecords.TruncatedToolCall("WriteWorkspaceFile", "{\"path\":\"a.cs\"}", 16000);
         AgentLogging.Configure(null);   // flush
 
         string[] lines = File.ReadAllLines(Path.Combine(_directory, "truncated-tool-calls.jsonl"));
@@ -108,11 +108,44 @@ public class AgentLoggingTests
     }
 
     [Test]
+    public void WithALogDirectory_TheRunFileCopiesTheConsole_WithTheTime_AndKeepsItsFileWhenConfiguredAgain()
+    {
+        AgentLogging.Configure(_directory);
+        string runFile = AgentLogging.RunFile!;
+        AgentLogging.For<AgentLoggingTests>().LogWarning("Rates unavailable");
+        ToolCallRecords.TruncatedToolCall("WriteWorkspaceFile", "{}", 16000);
+        AgentLogging.Configure(_directory);   // AgentHost may configure twice: same file, announced once
+        AgentLogging.For<AgentLoggingTests>().LogInformation("Second configuration");
+        AgentLogging.Configure(null);   // flush
+
+        Assert.That(Path.GetFileName(runFile), Does.Match(@"^agent-.+-\d{8}-\d{6}-\d+\.log$"));
+        string[] lines = File.ReadAllLines(runFile);
+        Assert.That(lines, Has.Length.EqualTo(3), string.Join("\n", lines));
+        Assert.That(lines[0], Does.Match(@"^\d\d:\d\d:\d\d\.\d{3} \[INFO\] Logging to .+\.log$"));
+        Assert.That(lines[1], Does.Match(@"^\d\d:\d\d:\d\d\.\d{3} \[WARN\] Rates unavailable$"));
+        Assert.That(lines[2], Does.EndWith("[INFO] Second configuration"));
+        Assert.That(_stderr.ToString(), Does.Contain("[INFO] Logging to " + runFile));
+        Assert.That(_stdout.ToString(), Is.Empty);
+    }
+
+    [Test]
+    public void AnUnusableLogDirectory_WarnsAndKeepsTheConsole()
+    {
+        string file = Path.Combine(_directory, "not-a-directory");
+        File.WriteAllText(file, "");
+
+        AgentLogging.Configure(file);
+
+        Assert.That(AgentLogging.RunFile, Is.Null);
+        Assert.That(_stderr.ToString(), Does.Contain($"[WARN] File logging disabled; could not use '{file}': "));
+    }
+
+    [Test]
     public void WithoutALogDirectory_RecordsAreDropped()
     {
         AgentLogging.Configure(null);
 
-        AgentLog.RecordOversizedToolResult("GetDiff", "{}", 120_000, "review", "summarised", 900);
+        ToolCallRecords.OversizedToolResult("GetDiff", "{}", 120_000, "review", "summarised", 900);
 
         Assert.That(_stderr.ToString(), Is.Empty);
         Assert.That(Directory.EnumerateFiles(_directory), Is.Empty);

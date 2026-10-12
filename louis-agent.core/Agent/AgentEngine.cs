@@ -257,7 +257,7 @@ public class AgentEngine
             if (!cutOff || continuation >= MaxCutOffContinuations) yield break;
 
             Log.Log(LogLevel.Warning, LogMessage.ReplyCutOff, new { MaxOutputTokens });
-            AgentLog.RecordTruncatedToolCall("(streamed reply)", string.Empty, MaxOutputTokens);
+            ToolCallRecords.TruncatedToolCall("(streamed reply)", string.Empty, MaxOutputTokens);
             history.Add(new ChatMessage(ChatRole.User, ContinueAfterCutOffMessage));
             // The rest of this turn's requests exist only because of the cut-off; the host's scope says so.
             if (UsageScope.Current is { } scope) scope.Purpose = UsagePurpose.Continue;

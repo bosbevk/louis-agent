@@ -43,7 +43,7 @@ internal sealed class ToolCallGuards(ToolRegistry registry, IChatClient summaryC
         {
             // Running it would act on partial input, e.g. half a script or a file missing its content.
             Log.Log(LogLevel.Information, LogMessage.ToolCallSkipped, new { Tool = context.Function.Name, LlmClientFactory.MaxOutputTokens }, tag: Tag);
-            AgentLog.RecordTruncatedToolCall(context.Function.Name, arguments, LlmClientFactory.MaxOutputTokens);
+            ToolCallRecords.TruncatedToolCall(context.Function.Name, arguments, LlmClientFactory.MaxOutputTokens);
             return TruncatedCallMessage;
         }
 
@@ -154,7 +154,7 @@ internal sealed class ToolCallGuards(ToolRegistry registry, IChatClient summaryC
             if (!string.IsNullOrWhiteSpace(response.Text))
             {
                 string summary = MessageText.Format(ToolMessage.SummarisedResult, new { Note = note, Summary = response.Text });
-                AgentLog.RecordOversizedToolResult(toolName, arguments, output.Length, userRequest, "summarised", summary.Length);
+                ToolCallRecords.OversizedToolResult(toolName, arguments, output.Length, userRequest, "summarised", summary.Length);
                 return summary;
             }
         }
@@ -164,7 +164,7 @@ internal sealed class ToolCallGuards(ToolRegistry registry, IChatClient summaryC
         }
 
         string truncated = $"{note}\n{ProcessRunner.Truncate(output, MaxToolResultChars)}";
-        AgentLog.RecordOversizedToolResult(toolName, arguments, output.Length, userRequest, "truncated", truncated.Length);
+        ToolCallRecords.OversizedToolResult(toolName, arguments, output.Length, userRequest, "truncated", truncated.Length);
         return truncated;
     }
 }

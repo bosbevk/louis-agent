@@ -12,8 +12,8 @@ using Microsoft.Extensions.Logging;
 /// the model call.
 /// </summary>
 /// <remarks>
-/// Writes its own file rather than through <see cref="AgentLog"/>: AgentLog's directory is set once per process, which a
-/// test can't point at a temporary folder.
+/// Writes its own file rather than through <see cref="AgentLogging"/>: the ledger is data, not logs, its directory is
+/// set per sink (a test points it at a temporary folder), and its field names are the usage spec's, not Serilog's.
 /// </remarks>
 public sealed class JsonlUsageSink(string directory) : IUsageSink
 {

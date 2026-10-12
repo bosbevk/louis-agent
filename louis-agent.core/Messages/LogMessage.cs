@@ -203,4 +203,10 @@ public enum LogMessage
 
     [Description("Tool discovery failed: {Reason}")]
     McpDiscoveryFailed,
+
+    [Description("Logging to {Path}")]
+    LoggingTo,
+
+    [Description("File logging disabled; could not use '{Directory}': {Reason}")]
+    FileLoggingDisabled,
 }
