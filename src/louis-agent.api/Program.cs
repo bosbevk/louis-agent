@@ -14,6 +14,8 @@ using LouisAgent.Core.Guardrails;
 using LouisAgent.Api.Messages;
 using LouisAgent.Core.Logging;
 using Microsoft.Extensions.Logging;
+using LouisAgent.Core.Messages;
+using System.Globalization;
 
 // HTTP version of the ACP server, which also serves the web app: every API reply is JSON, and a message's answer streams as Server-Sent Events shaped
 // like Claude's (message_start, content_block_start/delta/stop for thinking, text, tool_use and tool_result, message_stop).
@@ -43,7 +45,7 @@ else
         }
 
         context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-        await context.Response.WriteAsJsonAsync(Error("authentication_error", "Missing or invalid API key (x-api-key or Authorization: Bearer)."));
+        await context.Response.WriteAsJsonAsync(Error("authentication_error", MessageText.Format(ApiUserText.InvalidApiKey)));
     });
 
 // The Blazor web app (louis-agent.web): MapStaticAssets serves its files (including _framework/, compressed), and any
@@ -57,14 +59,14 @@ app.MapGet("/health", () => Results.Json(new { status = "ok" }));
 // like /health: prices aren't secret, and a host fetches them without the API key. 404 when there is no table, so a
 // caller falls back to its own file.
 app.MapGet("/prices", () => host.Prices.IsEmpty
-    ? Results.Json(Error("not_found_error", "No price table loaded: set PRICES_FILE or add config/prices.json."),
+    ? Results.Json(Error("not_found_error", MessageText.Format(ApiUserText.NoPriceTable)),
         statusCode: StatusCodes.Status404NotFound)
     : Results.Json(host.Prices, PriceTable.Json));
 
 // The exchange rates this API loaded (F14), in our rates.json format, for other hosts' RATES_URL (with
 // RATES_FORMAT=rates-json; the demo's orchestrator) and the web app. Public like /prices; 404 when it has none.
 app.MapGet("/rates", () => host.Rates.IsEmpty
-    ? Results.Json(Error("not_found_error", "No exchange rates loaded: RATES_URL couldn't be used and there is no config/rates.json."),
+    ? Results.Json(Error("not_found_error", MessageText.Format(ApiUserText.NoRates)),
         statusCode: StatusCodes.Status404NotFound)
     : Results.Text(host.Rates.ToJson(), "application/json"));
 
@@ -131,10 +133,10 @@ app.MapPost("/sessions/{id}/messages", (string id, SendMessageRequest request, A
 
     string prompt = BuildPrompt(request);
     if (string.IsNullOrWhiteSpace(prompt))
-        return Results.Json(Error("invalid_request_error", "Send a non-empty 'message' and/or 'attachments'."), statusCode: StatusCodes.Status400BadRequest);
+        return Results.Json(Error("invalid_request_error", MessageText.Format(ApiUserText.EmptyMessage)), statusCode: StatusCodes.Status400BadRequest);
 
     if (!session.TryStartTurn(http.RequestAborted, out var turn))
-        return Results.Json(Error("conflict_error", "This session is still answering a message; wait for it or POST /sessions/{id}/cancel."),
+        return Results.Json(Error("conflict_error", MessageText.Format(ApiUserText.SessionBusy, new { Id = "{id}" })),
             statusCode: StatusCodes.Status409Conflict);
 
     return TypedResults.ServerSentEvents(StreamTurnAsync(engine, session, prompt, turn));
@@ -143,7 +145,7 @@ app.MapPost("/sessions/{id}/messages", (string id, SendMessageRequest request, A
 app.Run();
 
 static IResult UnknownSession(string id) =>
-    Results.Json(Error("not_found_error", $"Unknown session: {id}"), statusCode: StatusCodes.Status404NotFound);
+    Results.Json(Error("not_found_error", MessageText.Format(ApiUserText.UnknownSession, new { Id = id })), statusCode: StatusCodes.Status404NotFound);
 
 static object Error(string type, string message) => ApiErrors.Body(type, message);
 
@@ -165,8 +167,12 @@ static string BuildPrompt(SendMessageRequest request)
     {
         string content = attachment.Content ?? string.Empty;
         string body = content.Length <= maxAttachmentChars ? content : content[..maxAttachmentChars];
-        parts.Add($"[Attached file: {attachment.Name}]\n```\n{body}\n```" +
-                  (content.Length <= maxAttachmentChars ? "" : $"\n[Attachment truncated: showing {maxAttachmentChars:N0} of {content.Length:N0} chars]"));
+        parts.Add(MessageText.Format(ApiModelText.Attachment, new { attachment.Name, Content = body }) +
+                  (content.Length <= maxAttachmentChars ? "" : MessageText.Format(ApiModelText.AttachmentTruncated, new
+                  {
+                      Shown = maxAttachmentChars.ToString("N0", CultureInfo.InvariantCulture),
+                      Length = content.Length.ToString("N0", CultureInfo.InvariantCulture),
+                  })));
     }
 
     return string.Join("\n\n", parts);

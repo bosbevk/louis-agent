@@ -566,4 +566,16 @@ public enum ToolMessage
 
     [Description("- {Name} [pending, active this session]: {Description}")]
     AgentToolPending,
+
+    [Description("WEB_SEARCH_PROVIDER=google needs both GOOGLE_SEARCH_API_KEY and GOOGLE_SEARCH_ENGINE_ID in config/.env.secrets.")]
+    GoogleNotConfigured,
+
+    [Description("[truncated at 200 entries]")]
+    ListTruncated,
+
+    [Description("\n[results truncated at 500 files]")]
+    FindTruncated,
+
+    [Description("Directory tree for {Path} (depth: {Depth}):\n")]
+    DirectoryTree,
 }

@@ -92,4 +92,10 @@ public enum ErrorMessage
 
     [Description("RATES_URL must be an http or https URL (or off), got '{Url}'.")]
     RatesUrlInvalid,
+
+    [Description("Exchange rates {Source} are from {Base}, but the price table is in {Currency}: set RATES_URL to rates from {Currency}.")]
+    RatesWrongBase,
+
+    [Description("RATES_FORMAT must be '{Frankfurter}' or '{Json}', got '{Format}'.")]
+    RatesFormatUnknown,
 }

@@ -49,7 +49,7 @@ public sealed class WorkspaceTools
             entries.Add($"{(Directory.Exists(path) ? "[dir] " : "[file] ")}{Path.GetRelativePath(_root, path)}");
             if (entries.Count == 200)
             {
-                entries.Add("[truncated at 200 entries]");
+                entries.Add(MessageText.Format(ToolMessage.ListTruncated));
                 break;
             }
         }
@@ -367,7 +367,7 @@ public sealed class WorkspaceTools
 
             if (files.Count == 500)
             {
-                result.AppendLine("\n[results truncated at 500 files]");
+                result.AppendLine(MessageText.Format(ToolMessage.FindTruncated));
             }
 
             return result.ToString();
@@ -391,7 +391,7 @@ public sealed class WorkspaceTools
         }
 
         var sb = new StringBuilder();
-        sb.AppendLine($"Directory tree for {Path.GetRelativePath(_root, path)} (depth: {maxDepth}):\n");
+        sb.AppendLine(MessageText.Format(ToolMessage.DirectoryTree, new { Path = Path.GetRelativePath(_root, path), Depth = maxDepth }));
         BuildTreeRecursive(path, "", 0, maxDepth, sb);
         return sb.ToString();
     }

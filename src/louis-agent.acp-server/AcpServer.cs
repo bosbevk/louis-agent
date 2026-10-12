@@ -8,6 +8,7 @@ using LouisAgent.Core.Messages;
 using LouisAgent.AcpServer.Messages;
 using LouisAgent.Core.Logging;
 using Microsoft.Extensions.Logging;
+using System.Globalization;
 
 namespace LouisAgent.AcpServer;
 
@@ -463,7 +464,7 @@ internal sealed class AcpServer(AgentEngine agent, bool usageInChat = false)
         if (path is null)
         {
             Log.Log(LogLevel.Warning, AcpLogMessage.AttachedFileMissing, new { Uri = uri }, tag: Tag);
-            return $"[Attached file: {name} could not be read - it is not inside a folder mounted into the agent ({uri})]";
+            return MessageText.Format(AcpModelText.AttachmentNotMounted, new { Name = name, Uri = uri });
         }
 
         try
@@ -473,17 +474,22 @@ internal sealed class AcpServer(AgentEngine agent, bool usageInChat = false)
             return content.Length <= MaxAttachmentChars
                 ? FormatAttachment(name, content, path)
                 : FormatAttachment(name, content[..MaxAttachmentChars], path) +
-                  $"\n[Attachment truncated: showing {MaxAttachmentChars:N0} of {content.Length:N0} chars]";
+                  MessageText.Format(AcpModelText.AttachmentTruncated, new
+                  {
+                      Shown = MaxAttachmentChars.ToString("N0", CultureInfo.InvariantCulture),
+                      Length = content.Length.ToString("N0", CultureInfo.InvariantCulture),
+                  });
         }
         catch (Exception ex)
         {
             Log.Log(LogLevel.Warning, AcpLogMessage.AttachedFileReadFailed, new { Path = path, Reason = ex.Message }, tag: Tag);
-            return $"[Attached file: {name} could not be read: {ex.Message}]";
+            return MessageText.Format(AcpModelText.AttachmentUnreadable, new { Name = name, Reason = ex.Message });
         }
     }
 
     private static string FormatAttachment(string name, string content, string? containerPath = null) =>
-        $"[Attached file: {name}{(containerPath is null ? "" : $" ({containerPath})")}]\n```\n{content}\n```";
+        MessageText.Format(containerPath is null ? AcpModelText.Attachment : AcpModelText.AttachmentAt,
+            new { Name = name, Path = containerPath, Content = content });
 
     /// <summary>Maps a host (Windows) path from the IDE to the same file inside the container, or null if it isn't mounted.</summary>
     private static string? ResolveHostPath(string hostPath)

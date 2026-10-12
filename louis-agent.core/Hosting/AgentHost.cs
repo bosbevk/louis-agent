@@ -268,7 +268,7 @@ public static partial class AgentHost
     {
         if (!string.Equals(rates.Base, baseCurrency, StringComparison.OrdinalIgnoreCase))
             throw new WrongBaseException(
-                $"Exchange rates {source} are from {rates.Base}, but the price table is in {baseCurrency}: set RATES_URL to rates from {baseCurrency}.");
+                MessageText.Format(ErrorMessage.RatesWrongBase, new { Source = source, rates.Base, Currency = baseCurrency }));
     }
 
     /// <summary>

@@ -12,6 +12,7 @@ using ModelContextProtocol.Server;
 using LouisAgent.Core.Hosting;
 using LouisAgent.McpServer.Messages;
 using LouisAgent.Core.Logging;
+using LouisAgent.Core.Messages;
 
 // The MCP client brings its own model; this server publishes the agent's tools (workspace, git, DotNet*, Python*,
 // PowerShell*, Bash*, skills, agent-built tools, ...) so that client can call them.
@@ -103,7 +104,7 @@ static async Task RunHttpAsync(string[] args, AgentEngine engine)
             }
 
             context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-            await context.Response.WriteAsync("Missing or invalid API key (x-api-key or Authorization: Bearer).");
+            await context.Response.WriteAsync(MessageText.Format(McpServerText.InvalidApiKey));
         });
     }
 
@@ -197,7 +198,7 @@ public class SkillsToolProvider
 
         if (skill == null)
         {
-            return $"Unknown skill: '{skillName}'";
+            return MessageText.Format(McpServerText.UnknownSkill, new { Name = skillName });
         }
 
         return $"Skill: {skill.Name}\nDescription: {skill.Description}\nLanguage: {skill.Language}\nCommand: {skill.Command}";
