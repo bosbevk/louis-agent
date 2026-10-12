@@ -123,7 +123,7 @@ internal sealed partial class LouisAgentClient(HttpClient http, string? apiKey)
                             block.GetProperty("name").GetString() ?? "?",
                             block.TryGetProperty("input", out var input) ? input.GetRawText() : "{}");
                         tools.Add(call);
-                        onProgress?.Invoke($"-> {call.Name}");
+                        onProgress?.Invoke(MessageText.Format(OrchestratorLogMessage.LouisAgentToolCall, new { Tool = call.Name }));
                     }
                     else if (type == "tool_result")
                     {
@@ -134,7 +134,7 @@ internal sealed partial class LouisAgentClient(HttpClient http, string? apiKey)
                             call.Result = block.TryGetProperty("content", out var content) ? content.GetString() : null;
                             call.IsError = failed;
                         }
-                        if (failed) onProgress?.Invoke("   (tool reported an error)");
+                        if (failed) onProgress?.Invoke(MessageText.Format(OrchestratorLogMessage.LouisAgentToolFailed));
                     }
                     break;
                 case "content_block_delta" when root.GetProperty("delta") is var delta &&

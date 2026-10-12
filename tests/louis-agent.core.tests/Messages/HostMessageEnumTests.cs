@@ -22,7 +22,7 @@ public partial class HostMessageEnumTests
     {
         Assert.That(HostMessageFiles().Select(Path.GetFileNameWithoutExtension),
             Is.SupersetOf(new[] { "AcpLogMessage", "AcpUserText", "AcpModelText", "ApiLogMessage", "McpServerLogMessage", "CliUserText",
-                "OrchestratorToolMessage", "OrchestratorErrorMessage" }));
+                "OrchestratorToolMessage", "OrchestratorErrorMessage", "OrchestratorLogMessage" }));
     }
 
     [Test]

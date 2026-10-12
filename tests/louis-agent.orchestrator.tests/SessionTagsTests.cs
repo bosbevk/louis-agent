@@ -73,7 +73,7 @@ public class SessionTagsTests
         };
         var client = new LouisAgentClient(new HttpClient { BaseAddress = new Uri("http://127.0.0.1:1") }, null);
         return new ServiceTools(options, new ErrorFeed(Path.Combine(_dir, "errors.jsonl"), options.StateDirectory), client,
-            new HashSet<string> { "order-total" }, new CommsLog(Path.Combine(_dir, "agent-comms.md")), _ => { });
+            new HashSet<string> { "order-total" }, new CommsLog(Path.Combine(_dir, "agent-comms.md")));
     }
 
     /// <summary>Answers POST /sessions like louis-agent.api and keeps what was sent.</summary>

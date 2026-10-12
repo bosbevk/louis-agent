@@ -7,6 +7,8 @@ using LouisAgent.Core.Usage;
 using LouisAgent.Core.Tools;
 using LouisAgent.Core.Messages;
 using LouisAgent.Orchestrator.Messages;
+using LouisAgent.Core.Logging;
+using Microsoft.Extensions.Logging;
 
 namespace LouisAgent.Orchestrator.Tools;
 
@@ -16,9 +18,9 @@ namespace LouisAgent.Orchestrator.Tools;
 /// Every public method is a tool; helpers stay private.
 /// </summary>
 internal sealed partial class ServiceTools(
-    OrchestratorOptions options, ErrorFeed feed, LouisAgentClient louisAgent, IReadOnlySet<string> methods, CommsLog comms,
-    Action<string> log)
+    OrchestratorOptions options, ErrorFeed feed, LouisAgentClient louisAgent, IReadOnlySet<string> methods, CommsLog comms)
 {
+    private static readonly ILogger Log = AgentLogging.For<ServiceTools>();
     private static readonly TimeSpan GitTimeout = TimeSpan.FromSeconds(30);
     private static readonly TimeSpan DotNetTimeout = TimeSpan.FromMinutes(5);
     private const int MaxFixFollowUps = 3;
@@ -55,7 +57,7 @@ internal sealed partial class ServiceTools(
         // Every fix starts from main, so each branch holds one fix and can be merged on its own.
         if (ReturnToMain() is { } notReady) return MessageText.Format(OrchestratorToolMessage.FixCannotStart, new { Reason = notReady });
 
-        log($"Calling louis-agent at {options.LouisAgentUrl} to fix {error.ExceptionType} in {error.Method} (branch {branch})");
+        Info(OrchestratorLogMessage.CallingLouisAgent, new { Url = options.LouisAgentUrl, error.ExceptionType, error.Method, Branch = branch });
         string sessionId = await louisAgent.CreateSessionAsync(FixTags(error.Id), cancellationToken);
         try
         {
@@ -68,7 +70,7 @@ internal sealed partial class ServiceTools(
             // A fix can need more tool rounds than one message allows; the session keeps the context, so ask it to carry on.
             for (int i = 0; result is null && reply.Error is null && i < MaxFixFollowUps; i++)
             {
-                log("louis-agent stopped without a FIX-RESULT; asking it to continue");
+                Info(OrchestratorLogMessage.AskingToContinue);
                 reply = await SendAsync(ContinueMessage);
                 result = LouisAgentClient.ParseFixResult(reply.Text);
             }
@@ -100,7 +102,8 @@ internal sealed partial class ServiceTools(
                 louis_agent_said = ProcessRunner.Tail(reply.Text, 1500),
             };
             Append("fixes.jsonl", outcome);
-            log($"louis-agent replied: {outcome.status}{(outcome.commit is null ? "" : $", commit {outcome.commit} on {outcome.branch}")}");
+            if (outcome.commit is null) Info(OrchestratorLogMessage.LouisAgentReplied, new { Status = outcome.status });
+            else Info(OrchestratorLogMessage.LouisAgentCommitted, new { Status = outcome.status, Commit = outcome.commit, Branch = outcome.branch });
             return JsonSerializer.Serialize(outcome);
         }
         finally
@@ -108,7 +111,7 @@ internal sealed partial class ServiceTools(
             await louisAgent.DeleteSessionAsync(sessionId);
         }
 
-        void Progress(string line) => log($"  [louis-agent] {line}");
+        void Progress(string line) => Log.Log(LogLevel.Information, OrchestratorLogMessage.LouisAgentProgress, new { Line = line }, tag: "louis-agent");
     }
 
     [Description("Checks a commit louis-agent says it made, directly in the service's git repository: the commit exists, " +
@@ -122,7 +125,7 @@ internal sealed partial class ServiceTools(
         if (!CommitHash().IsMatch(commit)) return MessageText.Format(OrchestratorToolMessage.InvalidCommitHash);
         if (!BranchName().IsMatch(branch)) return MessageText.Format(OrchestratorToolMessage.InvalidBranchName);
 
-        log($"Verifying commit {commit} on {branch}");
+        Info(OrchestratorLogMessage.VerifyingCommit, new { Commit = commit, Branch = branch });
         var report = new StringBuilder();
         bool ok = true;
         void Check(string name, bool passed, string detail = "")
@@ -158,7 +161,7 @@ internal sealed partial class ServiceTools(
         string Finish()
         {
             report.AppendLine(ok ? "VERIFIED" : "NOT VERIFIED");
-            foreach (string line in report.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries)) log($"  {line.TrimEnd()}");
+            foreach (string line in report.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries)) Info(OrchestratorLogMessage.Result, new { Line = line.TrimEnd() });
             comms.Check($"VerifyFixCommit({commit}, {branch})", ok ? "**VERIFIED**" : "**NOT VERIFIED**", report.ToString());
             return report.ToString();
         }
@@ -175,13 +178,13 @@ internal sealed partial class ServiceTools(
         if (!methods.Contains(method))
             return MessageText.Format(OrchestratorToolMessage.UnknownMethod, new { Method = method, Known = string.Join(", ", methods) });
 
-        log($"Replaying {method} {orderId}");
+        Info(OrchestratorLogMessage.Replaying, new { Method = method, OrderId = orderId });
         Directory.CreateDirectory(options.StateDirectory);
         var replayLog = Path.Combine(options.StateDirectory, "replay-errors.jsonl");
         var run = ProcessRunner.Run("dotnet", ["run", "--project", options.ServiceProject, "--", method, orderId.ToString()],
             options.ServiceRoot, DotNetTimeout, environment: new Dictionary<string, string> { ["ERROR_LOG_PATH"] = replayLog });
         string response = LastLine(run.Output, "200 ", "500 ") ?? ProcessRunner.Tail(run.Output, 2000);
-        log($"  {response}");
+        Info(OrchestratorLogMessage.Result, new { Line = response });
         comms.Check($"ReplayRequest({method} {orderId})", $"`{response.ReplaceLineEndings(" ")}`");
         return ExitCodeAnd(run, response);
     }
@@ -190,10 +193,10 @@ internal sealed partial class ServiceTools(
         "checked out. Returns the exit code and the end of the output with the pass/fail summary.")]
     public string RunServiceTests()
     {
-        log("Running the service's tests");
+        Info(OrchestratorLogMessage.RunningTests);
         var run = ProcessRunner.Run("dotnet", ["test"], options.ServiceRoot, DotNetTimeout);
         string summary = LastLine(run.Output, "Passed!", "Failed!") ?? MessageText.Format(OrchestratorToolMessage.ExitCode, new { run.ExitCode });
-        log($"  {summary}");
+        Info(OrchestratorLogMessage.Result, new { Line = summary });
         comms.Check("RunServiceTests", $"`{summary}`");
         return ExitCodeAnd(run, ProcessRunner.Tail(run.Output, 2500));
     }
@@ -213,7 +216,7 @@ internal sealed partial class ServiceTools(
             error_id = errorId, team, reason, method = error.Method, exception_type = error.ExceptionType, message = error.Message,
             at = DateTimeOffset.UtcNow,
         });
-        log($"ESCALATED {errorId} to {team}: {reason}");
+        Info(OrchestratorLogMessage.Escalated, new { ErrorId = errorId, Team = team, Reason = reason });
         comms.Check("EscalateToHuman", $"**{team}**: {reason}");
         return MessageText.Format(OrchestratorToolMessage.Escalated, new { ErrorId = errorId, Team = team });
     }
@@ -226,7 +229,7 @@ internal sealed partial class ServiceTools(
     {
         if (feed.Find(errorId) is null) return MessageText.Format(OrchestratorToolMessage.UnknownErrorId, new { ErrorId = errorId });
         Append("acknowledged.jsonl", new { error_id = errorId, reason, at = DateTimeOffset.UtcNow });
-        log($"Acknowledged {errorId}: {reason}");
+        Info(OrchestratorLogMessage.Acknowledged, new { ErrorId = errorId, Reason = reason });
         comms.Check("AcknowledgeError", reason);
         return MessageText.Format(OrchestratorToolMessage.Acknowledged, new { ErrorId = errorId });
     }
@@ -273,7 +276,7 @@ internal sealed partial class ServiceTools(
             string head = Git("rev-parse", "--abbrev-ref", "HEAD").Output.Trim();
             var stash = Git("stash", "push", "--include-untracked", "-m",
                 MessageText.Format(OrchestratorToolMessage.StashMessage, new { Branch = head }));
-            log($"Stashed uncommitted changes left on {head}");
+            Info(OrchestratorLogMessage.Stashed, new { Branch = head });
             if (stash.ExitCode != 0)
                 return MessageText.Format(OrchestratorToolMessage.StashFailed, new { Branch = head, Output = stash.Output.Trim() });
         }
@@ -291,6 +294,9 @@ internal sealed partial class ServiceTools(
         {
             run.ExitCode, TimedOut = run.TimedOut ? MessageText.Format(OrchestratorToolMessage.TimedOutSuffix) : "", Output = output,
         });
+
+    private static void Info(OrchestratorLogMessage message, object? values = null) =>
+        Log.Log(LogLevel.Information, message, values, tag: "orchestrator");
 
     private static string? LastLine(string output, params string[] prefixes) =>
         output.Split('\n').Select(l => l.Trim()).LastOrDefault(l => prefixes.Any(p => l.StartsWith(p, StringComparison.Ordinal)));

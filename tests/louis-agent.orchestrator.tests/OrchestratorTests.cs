@@ -104,6 +104,32 @@ public class OrchestratorTests
         Assert.That(Tools(FeedWith()).ReplayRequest("delete-everything", 1), Does.StartWith("Error: unknown method"));
 
     [Test]
+    public void ATool_LogsToStderr_WithTheOrchestratorTag_NeverToStdout()
+    {
+        var tools = Tools(FeedWith(Event("abc123")));
+        var (stdout, stderr) = (Console.Out, Console.Error);
+        using var output = new StringWriter();
+        using var errors = new StringWriter();
+        try
+        {
+            Console.SetOut(output);
+            Console.SetError(errors);
+            LouisAgent.Core.Logging.AgentLogging.Configure(null);
+
+            tools.AcknowledgeError("abc123", "a 404 is expected");
+        }
+        finally
+        {
+            Console.SetOut(stdout);
+            Console.SetError(stderr);
+            LouisAgent.Core.Logging.AgentLogging.Configure(null);
+        }
+
+        Assert.That(errors.ToString(), Does.Contain("[orchestrator] Acknowledged abc123: a 404 is expected"));
+        Assert.That(output.ToString(), Is.Empty);
+    }
+
+    [Test]
     public void EscalateAndAcknowledge_OnlyAcceptKnownEvents()
     {
         var tools = Tools(FeedWith(Event("abc123")));
@@ -330,7 +356,7 @@ public class OrchestratorTests
         };
         var client = new LouisAgentClient(new HttpClient { BaseAddress = new Uri("http://127.0.0.1:1") }, null);
         return new ServiceTools(options, feed, client, new HashSet<string> { "get-order", "order-total", "refund" },
-            new CommsLog(Path.Combine(_dir, "state", "agent-comms.md")), _ => { });
+            new CommsLog(Path.Combine(_dir, "state", "agent-comms.md")));
     }
 
     private string Git(params string[] args)
