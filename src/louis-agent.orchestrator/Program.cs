@@ -126,14 +126,7 @@ while (!stop.IsCancellationRequested)
             Log(OrchestratorLogMessage.EventUsage, new { ErrorId = error.Id, Usage = UsageText.Describe(total, comms.Currency, display) });
         Directory.CreateDirectory(options.StateDirectory);
         await File.AppendAllTextAsync(Path.Combine(options.StateDirectory, "decisions.jsonl"),
-            JsonSerializer.Serialize(new
-            {
-                error_id = error.Id, error.Method, decision.Outcome, decision.Reason, at = DateTimeOffset.UtcNow,
-                // F3: what the error cost, triage and fix together, and each part.
-                usage = CommsLog.Json(used.Total, comms.Currency),
-                triage_usage = CommsLog.Json(used.Triage, comms.Currency),
-                louis_agent_usage = CommsLog.Json(used.LouisAgent, comms.Currency),
-            }) + Environment.NewLine);
+            JsonSerializer.Serialize(decision.ToRecord(error, used, comms.Currency, DateTimeOffset.UtcNow)) + Environment.NewLine);
         feed.MarkProcessed(error.Id);
     }
 
@@ -178,6 +171,22 @@ internal sealed partial record Decision(string Outcome, string Reason)
             ? new Decision("unknown", answer.ReplaceLineEndings(" ").Trim() is { Length: > 200 } text ? text[..200] + "..." : answer.Trim())
             : new Decision(match.Groups[1].Value.ToLowerInvariant(), match.Groups[2].Value.Trim());
     }
+
+    /// <summary>
+    /// The decision's line in decisions.jsonl, snake_case like every orchestrator record (fixes.jsonl, escalations.jsonl):
+    /// what was decided, and (F3) what the error cost, triage and fix together, and each part.
+    /// </summary>
+    public object ToRecord(ErrorEvent error, EventUsage used, string currency, DateTimeOffset at) => new
+    {
+        error_id = error.Id,
+        method = error.Method,
+        outcome = Outcome,
+        reason = Reason,
+        at,
+        usage = CommsLog.Json(used.Total, currency),
+        triage_usage = CommsLog.Json(used.Triage, currency),
+        louis_agent_usage = CommsLog.Json(used.LouisAgent, currency),
+    };
 
     [GeneratedRegex(@"DECISION:\s*\**\s*([A-Za-z-]+)\s*\**\s*[-–—:]\s*(.+)$", RegexOptions.Multiline)]
     private static partial Regex DecisionLine();

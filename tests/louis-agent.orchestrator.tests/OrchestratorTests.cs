@@ -63,6 +63,19 @@ public class OrchestratorTests
     }
 
     [Test]
+    public void Decision_Record_UsesSnakeCaseKeys_LikeTheOtherRecords()
+    {
+        var error = FeedWith(Event("abc123")).Find("abc123")!;
+        var used = new EventUsage(null, null, null);
+
+        string json = System.Text.Json.JsonSerializer.Serialize(
+            Decision.Parse("DECISION: fixed - verified").ToRecord(error, used, "USD", new DateTimeOffset(2026, 10, 12, 8, 0, 0, TimeSpan.Zero)));
+
+        Assert.That(json, Does.StartWith("""{"error_id":"abc123","method":"order-total","outcome":"fixed","reason":"verified","at":"2026-10-12T08:00:00+00:00","""));
+        Assert.That(json, Does.EndWith(""","usage":null,"triage_usage":null,"louis_agent_usage":null}"""));
+    }
+
+    [Test]
     public void Decision_WithoutALine_IsUnknown() =>
         Assert.That(Decision.Parse("I looked at it.").Outcome, Is.EqualTo("unknown"));
 
