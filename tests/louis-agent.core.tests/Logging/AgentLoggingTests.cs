@@ -112,7 +112,7 @@ public class AgentLoggingTests
     {
         AgentLogging.Configure(_directory);
         string runFile = AgentLogging.RunFile!;
-        AgentLogging.For<AgentLoggingTests>().LogWarning("Rates unavailable");
+        AgentLogging.For<AgentLoggingTests>().LogWarning("Rates from {Url} unavailable", new Uri("https://example.com/rates"));
         ToolCallRecords.TruncatedToolCall("WriteWorkspaceFile", "{}", 16000);
         AgentLogging.Configure(_directory);   // AgentHost may configure twice: same file, announced once
         AgentLogging.For<AgentLoggingTests>().LogInformation("Second configuration");
@@ -122,7 +122,8 @@ public class AgentLoggingTests
         string[] lines = File.ReadAllLines(runFile);
         Assert.That(lines, Has.Length.EqualTo(3), string.Join("\n", lines));
         Assert.That(lines[0], Does.Match(@"^\d\d:\d\d:\d\d\.\d{3} \[INFO\] Logging to .+\.log$"));
-        Assert.That(lines[1], Does.Match(@"^\d\d:\d\d:\d\d\.\d{3} \[WARN\] Rates unavailable$"));
+        Assert.That(lines[1], Does.Match(@"^\d\d:\d\d:\d\d\.\d{3} \[WARN\] Rates from https://example.com/rates unavailable$"),
+            "values read as plain text, as on the console: no JSON quotes around a Uri");
         Assert.That(lines[2], Does.EndWith("[INFO] Second configuration"));
         Assert.That(_stderr.ToString(), Does.Contain("[INFO] Logging to " + runFile));
         Assert.That(_stdout.ToString(), Is.Empty);

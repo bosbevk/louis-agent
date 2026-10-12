@@ -49,8 +49,11 @@ public static class AgentLogging
 
     public static ILogger<T> For<T>() => new Logger<T>(Factory);
 
-    /// <summary>A run file's lines: the console's, with the time first, as the stderr copy per run always read.</summary>
-    internal const string FileTemplate = "{Timestamp:HH:mm:ss.fff} [{Tag}] {Message:lj}{NewLine}{Exception}";
+    /// <summary>
+    /// A run file's lines: the console's, with the time first, as the stderr copy per run always read. <c>:l</c>, not
+    /// <c>:lj</c>: the file's formatter would write a non-string value (a Uri) as JSON, in quotes; the console's doesn't.
+    /// </summary>
+    internal const string FileTemplate = "{Timestamp:HH:mm:ss.fff} [{Tag}] {Message:l}{NewLine}{Exception}";
 
     // The run file per log directory: a second Configure with the same directory keeps writing to the same file.
     private static (string Directory, string File)? _runFile;
