@@ -117,8 +117,17 @@ public sealed class LlmClientFactory : ILlmClientFactory
     }
 
 
-    private static IChatClient CreateOllama(LlmOptions o) =>
-        new OllamaApiClient(new Uri(string.IsNullOrWhiteSpace(o.Endpoint) ? "http://localhost:11434" : o.Endpoint), o.Model);
+    /// <summary>A local model on a small GPU writes ~5 tokens a second, so one reply can take minutes; HttpClient's
+    /// default 100 seconds cancelled replies Ollama was still writing.</summary>
+    internal static readonly TimeSpan OllamaTimeout = TimeSpan.FromMinutes(10);
+
+    private static IChatClient CreateOllama(LlmOptions o) => new OllamaApiClient(CreateOllamaHttpClient(o), o.Model);
+
+    internal static HttpClient CreateOllamaHttpClient(LlmOptions o) => new()
+    {
+        BaseAddress = new Uri(string.IsNullOrWhiteSpace(o.Endpoint) ? "http://localhost:11434" : o.Endpoint),
+        Timeout = OllamaTimeout,
+    };
 
     private static IChatClient CreateOpenAiCompatible(LlmOptions o)
     {

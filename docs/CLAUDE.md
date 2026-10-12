@@ -112,7 +112,8 @@ samples/                      # order-service (demo microservice), run-demo.ps1 
 docker/                       # Dockerfile.{acp-server,api,agent,mcp-server,orchestrator}, docker-compose.yml,
                               # docker-compose.demo.yml (orchestrator demo); the build context's .dockerignore is at the repo root
 config/                       # .env and .env.secrets (both ignored), their examples, LLM profiles (.env.anthropic,
-                              # .env.ollama), prices.json (model prices), rates.json (exchange rates), Rider config
+                              # .env.ollama, .env.ollama-triage for the orchestrator), prices.json (model prices),
+                              # rates.json (exchange rates), Rider config
 Skills/                       # personality.md + default.md + *-skills.md (system prompt), tools/ (agent-built tools)
 docs/                         # This guide, features/ (planned work), plans/ (approved build plans),
                               # fixes/ (what broke and why), specs/, projects/
@@ -403,7 +404,8 @@ The same list as the TODO's *Known limitations*: when work removes one, delete i
    (`ASPNETCORE_ENVIRONMENT=Development`); otherwise `/` returns 404. The Docker images are published, so they're fine.
 8. **Local models get a truncated prompt.** The agent sends ~26,000+ tokens (system prompt and tools) and doesn't tell
    Ollama the window, so Ollama uses its own default (2,048 on the version measured here; newer ones pick 4k–256k by
-   memory) and drops the rest without an error: the ledger showed `input: 2050`. Removed by
+   memory) and drops the rest without an error: the ledger showed `input: 2050`. The `ollama-nvidia` and `ollama-amd`
+   containers default to 32k, which covers it; the CPU `ollama` service still uses Ollama's default. Removed by
    [F15 Model limits](features/F15-model-limits.md) (sends `num_ctx`) and [F13 Local models](features/F13-local-models.md).
 9. **Changing the tools or skills during a chat can break it on Claude Haiku 5.5** (the default). The model rejects a
    changed system prompt or tool list once thinking blocks are in the history (enforced for accounts created on or

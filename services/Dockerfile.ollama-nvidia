@@ -1,0 +1,12 @@
+# Ollama on an NVIDIA GPU (CUDA is in the standard image; compose's `ollama-nvidia` service reserves the GPU).
+FROM ollama/ollama:latest
+
+# Sized for a 4 GB card, hybrid VRAM/RAM: a 32k-token default context (the agent's prompt is ~26k tokens; a request's
+# own num_ctx overrides it), with flash attention and an 8-bit KV cache to halve the context's memory (~2 GB instead
+# of ~4 GB for llama3.1). Ollama puts as many layers on the GPU as fit and runs the rest on the CPU from system RAM.
+ENV OLLAMA_CONTEXT_LENGTH=32768     OLLAMA_FLASH_ATTENTION=1     OLLAMA_KV_CACHE_TYPE=q8_0
+
+COPY ollama-entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
