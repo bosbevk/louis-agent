@@ -112,7 +112,8 @@ samples/                      # order-service (demo microservice), run-demo.ps1 
 docker/                       # Dockerfile.{acp-server,api,agent,mcp-server,orchestrator}, docker-compose.yml,
                               # docker-compose.demo.yml (orchestrator demo); the build context's .dockerignore is at the repo root
 config/                       # .env and .env.secrets (both ignored), their examples, LLM profiles (.env.anthropic,
-                              # .env.ollama), prices.json (model prices), rates.json (exchange rates), Rider config
+                              # .env.ollama, .env.ollama-triage for the orchestrator), prices.json (model prices),
+                              # rates.json (exchange rates), Rider config
 Skills/                       # personality.md + default.md + *-skills.md (system prompt), tools/ (agent-built tools)
 docs/                         # This guide, features/ (planned work), plans/ (approved build plans),
                               # fixes/ (what broke and why), specs/, projects/

@@ -147,6 +147,42 @@ cached (F17). **10/10 fixes confirmed**, 2 ignored, 1 escalated, as in M1.
 - The smoke check before it is kept in [samples/smoke-f4-caching/](../../samples/smoke-f4-caching/README.md).
 - The three paid runs together cost $0.19.
 
+### Local triage (2026-10-12)
+
+Can the orchestrator's triage run on a free local model while louis-agent's fixes stay on Claude? The short demo with
+`-OrchestratorProfile`, Ollama in the `ollama-nvidia` container on a 4 GB laptop GPU (RTX 3050), three models in turn.
+**Yes, with the right model:** the third run matched Claude's result for $0 of triage
+([samples/sample-output-short-local-triage/](../../samples/sample-output-short-local-triage/README.md)).
+
+| | `llama3.1` (8B) | `qwen3:4b` (thinking) | `qwen3:4b-instruct-2507` |
+|---|---|---|---|
+| Result | 1 failed, 4 unknown, 0 fixes | stopped after 2 errors, both failed | **4 fixed, 1 escalated** |
+| What went wrong | Timed out once; then wrote the tool call as text (1) or described the workflow instead of acting (3) | Thought for 440+ tokens per reply and timed out every time | Two contradicting calls once; an escalation sent twice |
+| Where it ran (32k context) | 8 of 33 layers on the GPU | 14 of 37 layers on the GPU, 5.4 GB | CPU and GPU, ~5 tokens/s |
+| Triage cost | $0 | $0 | $0 (the run: $0.0418 against $0.0488 with Claude triage) |
+
+- **Thinking decides speed more than size.** Asked "17 × 3, the number only", `qwen3:4b` wrote 279 tokens (thinking
+  left on, which is what the agent sends today: `LLM_THINKING=off` sends nothing, so the model's default applies) and
+  454 with `think: false` (the reasoning moved into the answer). The instruct model wrote 3. `ollama show` lists
+  `thinking` for both, so measure it.
+- **Tool calling decides whether it works at all.** llama3.1 picked the right tool and arguments for shipping-cost and
+  wrote them as JSON text; the agent can't act on that. qwen3-instruct made real calls and followed the runbook's
+  workflow: fix, verify the commit, replay the request, run the tests, then decide.
+- **The context window is memory.** The KV cache costs about 76 KiB a token for qwen3:4b (8-bit cache), so the
+  container's 32k-token default needs 2.4 GB on top of 2.4 GB of weights and spills to the CPU. At 8k (the
+  orchestrator's prompt is ~4,600 tokens) it fits: 3.2 GB, 100% GPU, ~54 tokens/s, but only with `num_gpu=99`;
+  Ollama's own estimate left 1.6 GB of VRAM unused.
+- **.NET's 100-second default timeout** cancelled replies Ollama was still writing: the prompt (~4,600 tokens) was
+  read in time, the answer wasn't. Ollama's client now waits 10 minutes (`LlmClientFactory.OllamaTimeout`).
+- **The ledger misses a cancelled request:** llama3.1's run made five requests and the ledger has four. Free on
+  Ollama, but a cancelled Claude request is still charged.
+- **The cost:** triage was 28% of the cached short run and is now $0; the fixes are the rest. The run took 2.4 times as
+  long (8.4 minutes against 3.5).
+
+**Follow-ups** (not built): send `num_ctx` and `num_gpu` per request for the orchestrator (F15); send `think: false`
+when thinking is off (F15); make `EscalateToHuman` idempotent per error and reject contradicting decisions in one
+reply (F17); record cancelled requests in the ledger (a fix).
+
 ## Conventions
 
 - **Stories** are `Fn-Sm`: "As a *role*, I want *something*, so that *benefit*", each with acceptance criteria written

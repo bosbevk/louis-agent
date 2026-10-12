@@ -23,6 +23,8 @@ order-service ──errors.jsonl──▶ orchestrator ──POST /sessions (SSE
 .\samples\run-demo.ps1 -ApiOnly    # keep .demo; just (re)start the web app
 .\samples\run-demo.ps1 -StopApi    # stop demo-api at the end instead of leaving it up
 .\samples\run-demo.ps1 -Short -OrchestratorProfile ollama   # triage on the local model, fixes on LLM_PROFILE's
+.\samples\run-demo.ps1 -Short -OrchestratorProfile ollama-triage   # the same with a local model that can triage
+                                   # (qwen3 instruct; llama3.1 can't): see sample-output-short-local-triage
 ```
 
 Needs Docker Desktop and `ANTHROPIC_API_KEY` in `config/.env.secrets`; nothing else runs on the host. The demo uses the
@@ -144,6 +146,11 @@ and the usage ledger (`logs/`, `usage-YYYY-MM.jsonl`: one line per model request
 With prompt caching (F4, on by default since): [sample-output-cached/](sample-output-cached/README.md) ($0.13 against
 $0.72, −81%) and [sample-output-short-cached/](sample-output-short-cached/README.md) ($0.049 against $0.29, −83%), the
 same fixes for a fifth of the cost; the two samples above are their "before".
+
+With triage on a local model: [sample-output-short-local-triage/](sample-output-short-local-triage/README.md) is a
+`-Short` run whose orchestrator ran on `qwen3:4b-instruct-2507` in Ollama on a 4 GB GPU, fixes on Claude: the same
+4 fixes and 1 escalation, triage free ($0.042 against $0.049), 2.4 times slower. Its README has the steps to run it
+yourself.
 
 Not from the demo: [smoke-f4-caching/](smoke-f4-caching/README.md) is F4's smoke check, one CLI message with prompt
 caching on ($0.0070), kept as a reference for what a cached turn looks like in the ledger.
