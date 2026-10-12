@@ -258,7 +258,7 @@ public sealed class GitTools
     public string HasUncommittedChanges()
     {
         string status = RunGit("status --porcelain");
-        return string.IsNullOrWhiteSpace(status) ? "No uncommitted changes." : $"Uncommitted changes found:\n{status}";
+        return string.IsNullOrWhiteSpace(status) ? MessageText.Format(ToolMessage.NoUncommittedChanges) : MessageText.Format(ToolMessage.UncommittedChanges, new { Status = status });
     }
 
     [Description("Read git configuration values (git config). With no key, returns the full configuration list (git config --list); with a key such as user.name, returns just that value. Read-only; use SetConfig to change a value.")]
@@ -316,7 +316,7 @@ public sealed class GitTools
                 return MessageText.Format(ToolMessage.ExitCode, new { Code = process.ExitCode, Output = (string.IsNullOrWhiteSpace(error) ? output : error) }).Trim();
             }
 
-            return string.IsNullOrWhiteSpace(output) ? "Success (no output)." : output.Trim();
+            return string.IsNullOrWhiteSpace(output) ? MessageText.Format(ToolMessage.SucceededNoOutput) : output.Trim();
         }
         catch (Exception ex)
         {

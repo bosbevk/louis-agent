@@ -31,7 +31,9 @@ public sealed class ScriptTool : AIFunction
     public bool Approved { get; set; }
 
     public override string Name => Definition.Name;
-    public override string Description => $"{Definition.Description} (Agent-built tool{(Approved ? "" : ", pending user approval")}.)";
+    public override string Description =>
+        MessageText.Format(Approved ? ToolMessage.ScriptToolDescription : ToolMessage.ScriptToolDescriptionPending,
+            new { Definition.Description });
     public override JsonElement JsonSchema => _schema;
 
     protected override ValueTask<object?> InvokeCoreAsync(AIFunctionArguments arguments, CancellationToken cancellationToken)

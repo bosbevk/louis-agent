@@ -80,4 +80,10 @@ public enum UserText
 
     [Description("No pending tool named '{Name}'.")]
     NoPendingTool,
+
+    [Description("\n\nApprove with /approve <Name>, discard with /reject <Name>.")]
+    ToolsHint,
+
+    [Description("Usage isn't tracked in this session.")]
+    UsageNotTracked,
 }

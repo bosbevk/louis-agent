@@ -34,7 +34,7 @@ public sealed class WorkspaceTools
         string directory = ResolvePath(relativePath);
         if (!Directory.Exists(directory))
         {
-            return $"Directory not found: {relativePath}";
+            return MessageText.Format(ToolMessage.DirectoryNotFound, new { Path = relativePath });
         }
 
         var entries = new List<string>();
@@ -54,7 +54,7 @@ public sealed class WorkspaceTools
             }
         }
 
-        return entries.Count == 0 ? "Directory is empty." : string.Join(Environment.NewLine, entries);
+        return entries.Count == 0 ? MessageText.Format(ToolMessage.DirectoryEmpty) : string.Join(Environment.NewLine, entries);
     }
 
     [Description("Read the full UTF-8 text content of one file in the workspace. Reading is blocked for secret files (.env*, *.pem, *.key, *.pfx, credentials.json, private SSH keys, etc.) and for any file over 1 MB — both return an explanatory message instead of content rather than an error. Use SearchWorkspace instead when you only need to find where a term appears without reading an entire file.")]
@@ -64,17 +64,17 @@ public sealed class WorkspaceTools
         string path = ResolvePath(relativePath);
         if (SensitiveFiles.IsSensitive(path))
         {
-            return "Reading this sensitive file is not allowed.";
+            return MessageText.Format(ToolMessage.SensitiveRead);
         }
 
         if (!File.Exists(path))
         {
-            return $"File not found: {relativePath}";
+            return MessageText.Format(ToolMessage.FileNotFound, new { Path = relativePath });
         }
 
         if (new FileInfo(path).Length > 1_000_000)
         {
-            return "File is larger than the 1 MB reading limit.";
+            return MessageText.Format(ToolMessage.FileTooLarge);
         }
 
         return File.ReadAllText(path, Encoding.UTF8);
@@ -87,7 +87,7 @@ public sealed class WorkspaceTools
     {
         if (string.IsNullOrWhiteSpace(query))
         {
-            return "Search query cannot be empty.";
+            return MessageText.Format(ToolMessage.WorkspaceSearchQueryEmpty);
         }
 
         maxResults = Math.Clamp(maxResults, 1, 100);
@@ -133,7 +133,7 @@ public sealed class WorkspaceTools
             }
         }
 
-        return matches.Count == 0 ? "No matches found." : string.Join(Environment.NewLine, matches);
+        return matches.Count == 0 ? MessageText.Format(ToolMessage.NoMatches) : string.Join(Environment.NewLine, matches);
     }
 
     [Description("Create a file or fully overwrite an existing one with the given UTF-8 content — this replaces the whole file, it does not merge or patch. Writing is blocked for secret files (.env*, *.pem, *.key, etc.), and parent directories are created automatically if missing. For a file longer than ~300 lines, write only the first chunk here and add the rest with AppendToFile in order; calling this again on the same path discards whatever was written before. Only use this to make changes requested by the user; never write outside the workspace.")]
@@ -144,7 +144,7 @@ public sealed class WorkspaceTools
         string path = ResolvePath(relativePath);
         if (SensitiveFiles.IsSensitive(path))
         {
-            return "Writing this sensitive file is not allowed.";
+            return MessageText.Format(ToolMessage.SensitiveWrite);
         }
 
         string? directory = Path.GetDirectoryName(path);
@@ -155,7 +155,7 @@ public sealed class WorkspaceTools
 
         Directory.CreateDirectory(directory);
         File.WriteAllText(path, content, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
-        return $"Wrote {Path.GetRelativePath(_root, path)} ({content.Length} characters).";
+        return MessageText.Format(ToolMessage.FileWritten, new { Path = Path.GetRelativePath(_root, path), content.Length });
     }
 
     private string ResolvePath(string relativePath) => _boundary.Resolve(relativePath);
@@ -171,11 +171,11 @@ public sealed class WorkspaceTools
         string path = ResolvePath(relativePath);
         if (Directory.Exists(path))
         {
-            return $"Directory already exists: {relativePath}";
+            return MessageText.Format(ToolMessage.DirectoryExistsAlready, new { Path = relativePath });
         }
 
         Directory.CreateDirectory(path);
-        return $"Created directory: {Path.GetRelativePath(_root, path)}";
+        return MessageText.Format(ToolMessage.DirectoryCreated, new { Path = Path.GetRelativePath(_root, path) });
     }
 
     [Description("Permanently delete a single file from the workspace — there is no undo and the file is not moved to a trash or recycle bin. Deletion is blocked for secret files (.env*, *.pem, *.key, etc.). Use DeleteDirectory instead to remove a whole directory and everything inside it.")]
@@ -185,16 +185,16 @@ public sealed class WorkspaceTools
         string path = ResolvePath(relativePath);
         if (SensitiveFiles.IsSensitive(path))
         {
-            return "Deleting this sensitive file is not allowed.";
+            return MessageText.Format(ToolMessage.SensitiveDelete);
         }
 
         if (!File.Exists(path))
         {
-            return $"File not found: {relativePath}";
+            return MessageText.Format(ToolMessage.FileNotFound, new { Path = relativePath });
         }
 
         File.Delete(path);
-        return $"Deleted file: {relativePath}";
+        return MessageText.Format(ToolMessage.FileDeleted, new { Path = relativePath });
     }
 
     [Description("Permanently delete a directory and everything inside it, recursively — there is no undo and no confirmation prompt. Deletion is blocked if the directory contains any secret file anywhere inside it (.env*, *.pem, *.key, etc.), the same protection DeleteFile applies to a single file. Use this only when the user has clearly asked to remove an entire folder; prefer DeleteFile for a single file so sibling files aren't lost by accident.")]
@@ -204,19 +204,19 @@ public sealed class WorkspaceTools
         string path = ResolvePath(relativePath);
         if (!Directory.Exists(path))
         {
-            return $"Directory not found: {relativePath}";
+            return MessageText.Format(ToolMessage.DirectoryNotFound, new { Path = relativePath });
         }
 
         foreach (string file in Directory.EnumerateFiles(path, "*", SearchOption.AllDirectories))
         {
             if (SensitiveFiles.IsSensitive(file))
             {
-                return "This directory contains a sensitive file and cannot be deleted.";
+                return MessageText.Format(ToolMessage.SensitiveDirectoryDelete);
             }
         }
 
         Directory.Delete(path, recursive: true);
-        return $"Deleted directory: {relativePath}";
+        return MessageText.Format(ToolMessage.DirectoryDeleted, new { Path = relativePath });
     }
 
     [Description("Rename or move a file or directory within the workspace by resolving both the current and new path and performing the move. It fails if the destination path already exists (no overwrite) or if the source is a blocked sensitive file; missing parent directories for the destination are created automatically. Works on both files and directories — the same tool handles either.")]
@@ -229,17 +229,17 @@ public sealed class WorkspaceTools
 
         if (SensitiveFiles.IsSensitive(oldPath))
         {
-            return "Renaming this sensitive file is not allowed.";
+            return MessageText.Format(ToolMessage.SensitiveRename);
         }
 
         if (!File.Exists(oldPath) && !Directory.Exists(oldPath))
         {
-            return $"Path not found: {currentPath}";
+            return MessageText.Format(ToolMessage.PathNotFound, new { Path = currentPath });
         }
 
         if (File.Exists(renamedPath) || Directory.Exists(renamedPath))
         {
-            return $"Destination already exists: {newPath}";
+            return MessageText.Format(ToolMessage.DestinationExists, new { Path = newPath });
         }
 
         string? parentDir = Path.GetDirectoryName(renamedPath);
@@ -257,7 +257,8 @@ public sealed class WorkspaceTools
             File.Move(oldPath, renamedPath);
         }
 
-        return $"Renamed {(Directory.Exists(renamedPath) ? "directory" : "file")} from {currentPath} to {newPath}";
+        return MessageText.Format(Directory.Exists(renamedPath) ? ToolMessage.DirectoryRenamed : ToolMessage.FileRenamed,
+            new { From = currentPath, To = newPath });
     }
 
     [Description("Copy a single file to a new workspace-relative location, creating missing parent directories for the destination automatically. It fails if the destination already exists (no overwrite) or if the source file is missing. Copying is blocked if either the source or the destination is a secret file (.env*, *.pem, *.key, etc.), the same protection the other write tools apply. This only copies files, not directories — there is no recursive directory-copy tool.")]
@@ -270,17 +271,17 @@ public sealed class WorkspaceTools
 
         if (SensitiveFiles.IsSensitive(source) || SensitiveFiles.IsSensitive(destination))
         {
-            return "Copying this sensitive file is not allowed.";
+            return MessageText.Format(ToolMessage.SensitiveCopy);
         }
 
         if (!File.Exists(source))
         {
-            return $"Source file not found: {sourcePath}";
+            return MessageText.Format(ToolMessage.SourceFileNotFound, new { Path = sourcePath });
         }
 
         if (File.Exists(destination))
         {
-            return $"Destination already exists: {destinationPath}";
+            return MessageText.Format(ToolMessage.DestinationExists, new { Path = destinationPath });
         }
 
         string? parentDir = Path.GetDirectoryName(destination);
@@ -290,7 +291,7 @@ public sealed class WorkspaceTools
         }
 
         File.Copy(source, destination);
-        return $"Copied {sourcePath} to {destinationPath}";
+        return MessageText.Format(ToolMessage.FileCopied, new { Source = sourcePath, Destination = destinationPath });
     }
 
     [Description("Append text to the end of an existing file, or create it if it doesn't exist yet, without touching what's already there. This is the companion to WriteWorkspaceFile for files too long to send in one call: write the first ~300-line chunk with WriteWorkspaceFile, then add further chunks in order with this tool. Writing is blocked for secret files (.env*, *.pem, *.key, etc.), the same as the other write tools.")]
@@ -301,7 +302,7 @@ public sealed class WorkspaceTools
         string path = ResolvePath(relativePath);
         if (SensitiveFiles.IsSensitive(path))
         {
-            return "Writing to this sensitive file is not allowed.";
+            return MessageText.Format(ToolMessage.SensitiveAppend);
         }
 
         string? directory = Path.GetDirectoryName(path);
@@ -311,7 +312,7 @@ public sealed class WorkspaceTools
         }
 
         File.AppendAllText(path, content, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
-        return $"Appended to {Path.GetRelativePath(_root, path)} ({content.Length} characters).";
+        return MessageText.Format(ToolMessage.FileAppended, new { Path = Path.GetRelativePath(_root, path), content.Length });
     }
 
     [Description("Return a file's metadata — size in bytes and a human-readable unit, creation time, last-modified time, and OS attributes — without reading its content. Use ReadWorkspaceFile instead when you need what's actually inside the file. Returns an error message if the path doesn't exist.")]
@@ -321,7 +322,7 @@ public sealed class WorkspaceTools
         string path = ResolvePath(relativePath);
         if (!File.Exists(path))
         {
-            return $"File not found: {relativePath}";
+            return MessageText.Format(ToolMessage.FileNotFound, new { Path = relativePath });
         }
 
         var info = new FileInfo(path);
@@ -340,7 +341,7 @@ public sealed class WorkspaceTools
         string directory = ResolvePath(searchPath);
         if (!Directory.Exists(directory))
         {
-            return $"Directory not found: {searchPath}";
+            return MessageText.Format(ToolMessage.DirectoryNotFound, new { Path = searchPath });
         }
 
         try
@@ -353,7 +354,7 @@ public sealed class WorkspaceTools
 
             if (files.Count == 0)
             {
-                return $"No files matching pattern '{pattern}' found.";
+                return MessageText.Format(ToolMessage.NoFilesMatching, new { Pattern = pattern });
             }
 
             var result = new StringBuilder();
@@ -386,7 +387,7 @@ public sealed class WorkspaceTools
         string path = ResolvePath(relativePath);
         if (!Directory.Exists(path))
         {
-            return $"Directory not found: {relativePath}";
+            return MessageText.Format(ToolMessage.DirectoryNotFound, new { Path = relativePath });
         }
 
         var sb = new StringBuilder();
@@ -402,15 +403,15 @@ public sealed class WorkspaceTools
         string path = ResolvePath(relativePath);
         if (File.Exists(path))
         {
-            return $"File exists: {relativePath}";
+            return MessageText.Format(ToolMessage.FileExists, new { Path = relativePath });
         }
 
         if (Directory.Exists(path))
         {
-            return $"Directory exists: {relativePath}";
+            return MessageText.Format(ToolMessage.DirectoryExists, new { Path = relativePath });
         }
 
-        return $"Path does not exist: {relativePath}";
+        return MessageText.Format(ToolMessage.PathDoesNotExist, new { Path = relativePath });
     }
 
     private static string FormatFileSize(long bytes)

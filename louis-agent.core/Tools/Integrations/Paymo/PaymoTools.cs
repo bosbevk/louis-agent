@@ -451,7 +451,7 @@ public sealed class PaymoTools
                 return MessageText.Format(ToolMessage.PaymoRequestHttpFailed, new { Action = "delete time entry", Status = (int)response.StatusCode });
             }
 
-            return $"✓ Time entry {entryId} deleted successfully";
+            return MessageText.Format(ToolMessage.PaymoEntryDeleted, new { Id = entryId });
         }
         catch (Exception ex)
         {
@@ -566,7 +566,7 @@ public sealed class PaymoTools
 
             var summary = new List<string>
             {
-                "✓ Time entry created successfully",
+                MessageText.Format(ToolMessage.PaymoEntryCreated),
                 $"  Task: {taskName}",
                 $"  Date: {finalDate}",
                 $"  Duration: {hours_display} hours" + (mins_display != "0" ? $" {mins_display} minutes" : "")

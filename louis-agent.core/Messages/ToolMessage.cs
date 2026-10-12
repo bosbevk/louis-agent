@@ -311,4 +311,259 @@ public enum ToolMessage
 
     [Description("[Exit Code {Code}] Error: {Output}")]
     ExitCodeError,
+
+    [Description("Directory not found: {Path}")]
+    DirectoryNotFound,
+
+    [Description("Directory is empty.")]
+    DirectoryEmpty,
+
+    [Description("Reading this sensitive file is not allowed.")]
+    SensitiveRead,
+
+    [Description("File not found: {Path}")]
+    FileNotFound,
+
+    [Description("File is larger than the 1 MB reading limit.")]
+    FileTooLarge,
+
+    [Description("Search query cannot be empty.")]
+    WorkspaceSearchQueryEmpty,
+
+    [Description("No matches found.")]
+    NoMatches,
+
+    [Description("Writing this sensitive file is not allowed.")]
+    SensitiveWrite,
+
+    [Description("Wrote {Path} ({Length} characters).")]
+    FileWritten,
+
+    [Description("Directory already exists: {Path}")]
+    DirectoryExistsAlready,
+
+    [Description("Created directory: {Path}")]
+    DirectoryCreated,
+
+    [Description("Deleting this sensitive file is not allowed.")]
+    SensitiveDelete,
+
+    [Description("Deleted file: {Path}")]
+    FileDeleted,
+
+    [Description("This directory contains a sensitive file and cannot be deleted.")]
+    SensitiveDirectoryDelete,
+
+    [Description("Deleted directory: {Path}")]
+    DirectoryDeleted,
+
+    [Description("Renaming this sensitive file is not allowed.")]
+    SensitiveRename,
+
+    [Description("Path not found: {Path}")]
+    PathNotFound,
+
+    [Description("Destination already exists: {Path}")]
+    DestinationExists,
+
+    [Description("Copying this sensitive file is not allowed.")]
+    SensitiveCopy,
+
+    [Description("Source file not found: {Path}")]
+    SourceFileNotFound,
+
+    [Description("Copied {Source} to {Destination}")]
+    FileCopied,
+
+    [Description("Writing to this sensitive file is not allowed.")]
+    SensitiveAppend,
+
+    [Description("Appended to {Path} ({Length} characters).")]
+    FileAppended,
+
+    [Description("No files matching pattern '{Pattern}' found.")]
+    NoFilesMatching,
+
+    [Description("File exists: {Path}")]
+    FileExists,
+
+    [Description("Directory exists: {Path}")]
+    DirectoryExists,
+
+    [Description("Path does not exist: {Path}")]
+    PathDoesNotExist,
+
+    [Description("No uncommitted changes.")]
+    NoUncommittedChanges,
+
+    [Description("Uncommitted changes found:\n{Status}")]
+    UncommittedChanges,
+
+    [Description("Success (no output).")]
+    SucceededNoOutput,
+
+    [Description("No .NET solutions or projects found.")]
+    NoDotNetProjects,
+
+    [Description("Timed out.\n{Output}")]
+    TimedOutWithOutput,
+
+    [Description("Succeeded.")]
+    BuildSucceeded,
+
+    [Description("FAILED (exit code {ExitCode}).")]
+    BuildFailed,
+
+    [Description("... {Count} more warning(s)")]
+    MoreWarnings,
+
+    [Description("Test run timed out.\n{Output}")]
+    TestRunTimedOut,
+
+    [Description("... more failures omitted")]
+    MoreFailures,
+
+    [Description("Tests passed.")]
+    TestsPassed,
+
+    [Description("Program was still running after {Seconds}s and was killed.")]
+    ProgramKilled,
+
+    [Description("Exit code: {ExitCode}")]
+    ProcessExitCode,
+
+    [Description("Script was still running after {Seconds}s and was killed.")]
+    ScriptKilled,
+
+    [Description("\nHint: the script has Windows (CRLF) line endings; convert it to LF.")]
+    BashCrlfHint,
+
+    [Description("pip install timed out.\n{Output}")]
+    PipTimedOut,
+
+    [Description("pip install FAILED (exit code {ExitCode}).\n{Output}")]
+    PipFailed,
+
+    [Description("created")]
+    VenvCreated,
+
+    [Description("not created yet; PythonInstallPackages creates it")]
+    VenvNotCreatedYet,
+
+    [Description("Google search quota exceeded ({Detail}). Try again later or raise the quota in Google Cloud.")]
+    GoogleQuotaExceeded,
+
+    [Description("Google rejected the request ({Detail}). Check GOOGLE_SEARCH_API_KEY, GOOGLE_SEARCH_ENGINE_ID and that the Custom Search API is enabled.")]
+    GoogleRejected,
+
+    [Description("Google search failed: HTTP {Status} {Detail}")]
+    GoogleFailed,
+
+    [Description("No results for {Query} (via {Provider}). Try broader or different keywords.")]
+    NoSearchResults,
+
+    [Description("Search results for {Query} (via {Provider}):\n")]
+    SearchResults,
+
+    [Description("(no readable text)")]
+    NoReadableText,
+
+    [Description("\n[Showing characters {Start}-{End} of {Length}. Call FetchUrl with startIndex={End} to continue.]")]
+    PageContinues,
+
+    [Description("No sprints found.")]
+    NoSprints,
+
+    [Description("Created {Type} #{Id} - {Title}")]
+    WorkItemCreated,
+
+    [Description("Created work item: {Response}")]
+    WorkItemCreatedRaw,
+
+    [Description("Updated work item #{Id}: {Field} = {Value}")]
+    WorkItemUpdated,
+
+    [Description("✓ Time entry {Id} deleted successfully")]
+    PaymoEntryDeleted,
+
+    [Description("✓ Time entry created successfully")]
+    PaymoEntryCreated,
+
+    [Description("Timeout must be a number of seconds between 1 and 600, got '{Value}'.")]
+    ScriptTimeoutInvalid,
+
+    [Description("Parameter '{Name}' has unsupported type '{Type}' (use {Supported}).")]
+    ScriptParameterTypeUnsupported,
+
+    [Description("Cannot parse parameter line: '{Line}'. Expected: - `name` (string|integer|number|boolean, required|optional): description")]
+    ScriptParameterLineInvalid,
+
+    [Description("Tool name '{Name}' must be PascalCase letters/digits (3-64 chars), e.g. 'CsvSummary'.")]
+    ScriptToolNameInvalid,
+
+    [Description("Missing '- Implementation:' line followed by a fenced code block.")]
+    ScriptImplementationMissing,
+
+    [Description("Parameter '{Name}' is declared more than once.")]
+    ScriptParameterDuplicate,
+
+    [Description("'- Implementation:' must be followed by a fenced code block (```python, ```powershell or ```bash).")]
+    ScriptImplementationNotFenced,
+
+    [Description("Unsupported implementation language '{Language}' (use python, powershell or bash).")]
+    ScriptLanguageUnsupported,
+
+    [Description("The implementation code block is not closed with ```.")]
+    ScriptFenceNotClosed,
+
+    [Description("The implementation code block is empty.")]
+    ScriptCodeEmpty,
+
+    [Description("no parameters")]
+    NoParameters,
+
+    [Description("- {Name} [pending from an earlier session, not loaded]")]
+    AgentToolNotLoaded,
+
+    [Description("No agent-built tools yet.")]
+    NoAgentTools,
+
+    [Description("Tool ran successfully (no output).")]
+    ToolRanNoOutput,
+
+    [Description("guidance only (no executable skills)")]
+    SkillGuidanceOnly,
+
+    [Description("Saved {Path} — {Skills}.\n{Reload}")]
+    SkillFileSaved,
+
+    [Description("Skills reloaded. Available skills: {Skills}")]
+    SkillsReloaded,
+
+    [Description("Command executed successfully (no output returned).")]
+    CommandRanNoOutput,
+
+    [Description("Renamed file from {From} to {To}")]
+    FileRenamed,
+
+    [Description("Renamed directory from {From} to {To}")]
+    DirectoryRenamed,
+
+    [Description("Build failed before tests ran.\n{Build}")]
+    BuildFailedBeforeTests,
+
+    [Description("{Description} (Agent-built tool.)")]
+    ScriptToolDescription,
+
+    [Description("{Description} (Agent-built tool, pending user approval.)")]
+    ScriptToolDescriptionPending,
+
+    [Description("Created tool '{Name}' ({Language}; {Parameters}). You can call it now. It is pending: tell the user to type '/approve {Name}' to keep it for future sessions (or '/reject {Name}').")]
+    ToolCreated,
+
+    [Description("- {Name} [approved]: {Description}")]
+    AgentToolApproved,
+
+    [Description("- {Name} [pending, active this session]: {Description}")]
+    AgentToolPending,
 }

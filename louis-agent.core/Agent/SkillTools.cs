@@ -201,8 +201,8 @@ internal sealed partial class SkillTools
         if (!_createdSkillFiles.Contains(path, StringComparer.OrdinalIgnoreCase)) _createdSkillFiles.Add(path);
 
         string reload = ReloadSkills();
-        string skills = parsed.Count == 0 ? "guidance only (no executable skills)" : string.Join(", ", parsed.Select(s => s.Name));
-        return $"Saved {path} — {skills}.\n{reload}";
+        string skills = parsed.Count == 0 ? MessageText.Format(ToolMessage.SkillGuidanceOnly) : string.Join(", ", parsed.Select(s => s.Name));
+        return MessageText.Format(ToolMessage.SkillFileSaved, new { Path = path, Skills = skills, Reload = reload });
     }
 
     [Description("Re-reads every skill file from disk — including any created earlier this session with " +
@@ -226,7 +226,7 @@ internal sealed partial class SkillTools
 
         _skills = ToSkillMap(provider);
         Documentation = AgentEngine.Normalise(provider.Documentation);
-        return $"Skills reloaded. Available skills: {(_skills.Count == 0 ? "(none)" : string.Join(", ", _skills.Keys.Order()))}";
+        return MessageText.Format(ToolMessage.SkillsReloaded, new { Skills = _skills.Count == 0 ? "(none)" : string.Join(", ", _skills.Keys.Order()) });
     }
 
     private static Dictionary<string, MarkdownSkillLoader.SkillDef> ToSkillMap(ISkillProvider provider) =>
@@ -241,7 +241,7 @@ internal sealed partial class SkillTools
 
         string output = result.Output.Trim();
         if (result.ExitCode != 0) return MessageText.Format(ToolMessage.ExitCodeError, new { Code = result.ExitCode, Output = output });
-        return string.IsNullOrWhiteSpace(output) ? "Command executed successfully (no output returned)." : output;
+        return string.IsNullOrWhiteSpace(output) ? MessageText.Format(ToolMessage.CommandRanNoOutput) : output;
     }
 
 
@@ -288,7 +288,7 @@ internal sealed partial class SkillTools
             return MessageText.Format(ToolMessage.ExitCodeError, new { Code = process.ExitCode, Output = error.Trim() });
         }
 
-        return string.IsNullOrWhiteSpace(output) ? "Command executed successfully (no output returned)." : output.Trim();
+        return string.IsNullOrWhiteSpace(output) ? MessageText.Format(ToolMessage.CommandRanNoOutput) : output.Trim();
     }
 
 

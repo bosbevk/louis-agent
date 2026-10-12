@@ -78,10 +78,9 @@ internal sealed class AgentBuiltTools(
         RegisterScriptTool(parsed, approved: false);
 
         string parameters = parsed.Parameters.Count == 0
-            ? "no parameters"
+            ? MessageText.Format(ToolMessage.NoParameters)
             : string.Join(", ", parsed.Parameters.Select(p => $"{p.Name}: {p.Type}{(p.Required ? "" : "?")}"));
-        return $"Created tool '{parsed.Name}' ({parsed.Language}; {parameters}). You can call it now. " +
-               $"It is pending: tell the user to type '/approve {parsed.Name}' to keep it for future sessions (or '/reject {parsed.Name}').";
+        return MessageText.Format(ToolMessage.ToolCreated, new { parsed.Name, parsed.Language, Parameters = parameters });
     }
 
     [Description("Lists every agent-built tool known right now: approved ones that load in every session, ones " +
@@ -96,12 +95,13 @@ internal sealed class AgentBuiltTools(
             : [];
 
         var lines = _scriptTools.Values.OrderBy(t => t.Name)
-            .Select(t => $"- {t.Name} [{(t.Approved ? "approved" : "pending, active this session")}]: {t.Definition.Description}")
+            .Select(t => MessageText.Format(t.Approved ? ToolMessage.AgentToolApproved : ToolMessage.AgentToolPending,
+                new { t.Name, t.Definition.Description }))
             .Concat(pendingOnDisk.Where(n => !_scriptTools.ContainsKey(n)).Order()
-                .Select(n => $"- {n} [pending from an earlier session, not loaded]"))
+                .Select(n => MessageText.Format(ToolMessage.AgentToolNotLoaded, new { Name = n })))
             .ToList();
 
-        return lines.Count == 0 ? "No agent-built tools yet." : string.Join('\n', lines);
+        return lines.Count == 0 ? MessageText.Format(ToolMessage.NoAgentTools) : string.Join('\n', lines);
     }
 
     /// <summary>
@@ -211,7 +211,7 @@ internal sealed class AgentBuiltTools(
 
         string output = ProcessRunner.Truncate(result.Output.Trim());
         if (result.ExitCode != 0) return MessageText.Format(ToolMessage.ExitCode, new { Code = result.ExitCode, Output = output });
-        return string.IsNullOrWhiteSpace(output) ? "Tool ran successfully (no output)." : output;
+        return string.IsNullOrWhiteSpace(output) ? MessageText.Format(ToolMessage.ToolRanNoOutput) : output;
     }
 
 }

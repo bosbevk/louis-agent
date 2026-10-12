@@ -56,14 +56,14 @@ public sealed class BashTools
 
         var sb = new StringBuilder();
         sb.AppendLine(result!.TimedOut
-            ? $"Script was still running after {timeoutSeconds}s and was killed."
-            : $"Exit code: {result.ExitCode}");
+            ? MessageText.Format(ToolMessage.ScriptKilled, new { Seconds = timeoutSeconds })
+            : MessageText.Format(ToolMessage.ProcessExitCode, new { result.ExitCode }));
         sb.AppendLine("--- output ---");
         sb.Append(result.Output.Trim());
         // Linux bash treats the \r of Windows line endings as part of each command ("$'\r': command not found",
         // "syntax error near unexpected token"); Git Bash tolerates it, so only hint when the script failed.
         if (file is not null && result.ExitCode != 0 && File.ReadAllText(file).Contains('\r'))
-            sb.Append("\nHint: the script has Windows (CRLF) line endings; convert it to LF.");
+            sb.Append(MessageText.Format(ToolMessage.BashCrlfHint));
         return ProcessRunner.Truncate(sb.ToString(), MaxOutputChars);
     }
 

@@ -73,8 +73,8 @@ public sealed partial class PythonTools
 
         var sb = new StringBuilder();
         sb.AppendLine(result!.TimedOut
-            ? $"Program was still running after {timeoutSeconds}s and was killed."
-            : $"Exit code: {result.ExitCode}");
+            ? MessageText.Format(ToolMessage.ProgramKilled, new { Seconds = timeoutSeconds })
+            : MessageText.Format(ToolMessage.ProcessExitCode, new { result.ExitCode }));
         sb.AppendLine("--- output ---");
         sb.Append(result.Output.Trim());
         return ProcessRunner.Truncate(sb.ToString(), MaxOutputChars);
@@ -145,12 +145,12 @@ public sealed partial class PythonTools
 
         var result = ProcessRunner.Run(VenvPython, ["-m", "pip", "install", "--disable-pip-version-check", .. specs],
             WorkingDirectory, InstallTimeout, environment: PythonEnvironment);
-        if (result.TimedOut) return $"pip install timed out.\n{ProcessRunner.Tail(result.Output)}";
+        if (result.TimedOut) return MessageText.Format(ToolMessage.PipTimedOut, new { Output = ProcessRunner.Tail(result.Output) });
 
         // pip is chatty; the final lines say what was installed or why it failed.
         return result.ExitCode == 0
             ? ProcessRunner.Tail(result.Output, 1500)
-            : $"pip install FAILED (exit code {result.ExitCode}).\n{ProcessRunner.Tail(result.Output)}";
+            : MessageText.Format(ToolMessage.PipFailed, new { result.ExitCode, Output = ProcessRunner.Tail(result.Output) });
     }
 
     [Description("Reports which Python interpreter PythonRun will use, its version, the virtual environment's " +
@@ -167,7 +167,7 @@ public sealed partial class PythonTools
         var sb = new StringBuilder();
         sb.AppendLine($"Interpreter: {python.FileName} {string.Join(' ', python.PrefixArgs)}".TrimEnd());
         sb.AppendLine($"Version: {version.Output.Trim()}");
-        sb.AppendLine($"Virtual environment: {_venvDirectory} ({(File.Exists(VenvPython) ? "created" : "not created yet; PythonInstallPackages creates it")})");
+        sb.AppendLine($"Virtual environment: {_venvDirectory} ({(File.Exists(VenvPython) ? MessageText.Format(ToolMessage.VenvCreated) : MessageText.Format(ToolMessage.VenvNotCreatedYet))})");
 
         if (File.Exists(VenvPython))
         {

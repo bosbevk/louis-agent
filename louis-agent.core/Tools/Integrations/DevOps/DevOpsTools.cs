@@ -366,7 +366,7 @@ public sealed class DevOpsTools
             }
 
             return sprints.Count == 0
-                ? "No sprints found."
+                ? MessageText.Format(ToolMessage.NoSprints)
                 : "Available sprints:\n" + string.Join("\n", sprints.OrderBy(s => s));
         }
         catch (Exception ex)
@@ -496,10 +496,10 @@ public sealed class DevOpsTools
             var jsonDoc = JsonDocument.Parse(responseContent);
             if (jsonDoc.RootElement.TryGetProperty("id", out var idElement))
             {
-                return $"Created {workItemType} #{idElement.GetInt32()} - {title}";
+                return MessageText.Format(ToolMessage.WorkItemCreated, new { Type = workItemType, Id = idElement.GetInt32(), Title = title });
             }
 
-            return $"Created work item: {responseContent}";
+            return MessageText.Format(ToolMessage.WorkItemCreatedRaw, new { Response = responseContent });
         }
         catch (Exception ex)
         {
@@ -537,7 +537,7 @@ public sealed class DevOpsTools
                 return MessageText.Format(ToolMessage.DevOpsHttpError, new { Status = response.StatusCode, Content = responseContent });
             }
 
-            return $"Updated work item #{id}: {fieldName} = {fieldValue}";
+            return MessageText.Format(ToolMessage.WorkItemUpdated, new { Id = id, Field = fieldName, Value = fieldValue });
         }
         catch (Exception ex)
         {

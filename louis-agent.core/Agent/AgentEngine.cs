@@ -325,10 +325,10 @@ public class AgentEngine
         string argument = parts.Length > 1 ? parts[1] : "";
         return command switch
         {
-            "/tools" => ListAgentTools() + "\n\nApprove with /approve <Name>, discard with /reject <Name>.",
+            "/tools" => ListAgentTools() + MessageText.Format(UserText.ToolsHint),
             "/approve" => _agentBuiltTools.ApproveTool(argument),
             "/reject" => _agentBuiltTools.RejectTool(argument),
-            "/usage" => sessionUsage is null ? "Usage isn't tracked in this session." : UsageText.Summary(sessionUsage, Display),
+            "/usage" => sessionUsage is null ? MessageText.Format(UserText.UsageNotTracked) : UsageText.Summary(sessionUsage, Display),
             _ => null,
         };
     }

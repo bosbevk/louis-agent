@@ -71,8 +71,8 @@ public sealed class PowerShellTools
 
         var sb = new StringBuilder();
         sb.AppendLine(result!.TimedOut
-            ? $"Script was still running after {timeoutSeconds}s and was killed."
-            : $"Exit code: {result.ExitCode}");
+            ? MessageText.Format(ToolMessage.ScriptKilled, new { Seconds = timeoutSeconds })
+            : MessageText.Format(ToolMessage.ProcessExitCode, new { result.ExitCode }));
         sb.AppendLine("--- output ---");
         sb.Append(result.Output.Trim());
         return ProcessRunner.Truncate(sb.ToString(), MaxOutputChars);
