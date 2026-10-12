@@ -8,7 +8,6 @@ using Serilog;
 using Serilog.Events;
 using Serilog.Extensions.Logging;
 using Serilog.Filters;
-using Serilog.Formatting.Compact;
 using Serilog.Sinks.SystemConsole.Themes;
 using SerilogConfiguration = Serilog.LoggerConfiguration;
 
@@ -92,7 +91,7 @@ public static class AgentLogging
                 {
                     configuration.WriteTo.Logger(records => records
                         .Filter.ByIncludingOnly(Matching.WithProperty<string>(RecordProperty, kind => kind == record))
-                        .WriteTo.File(new CompactJsonFormatter(), Path.Combine(logDirectory, file), shared: true));
+                        .WriteTo.File(new RecordFormatter(), Path.Combine(logDirectory, file), shared: true));
                 }
             }
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or ArgumentException)

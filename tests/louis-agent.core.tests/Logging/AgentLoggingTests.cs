@@ -85,12 +85,31 @@ public class AgentLoggingTests
         string[] lines = File.ReadAllLines(Path.Combine(_directory, "truncated-tool-calls.jsonl"));
         Assert.That(lines, Has.Length.EqualTo(1));
         using var record = JsonDocument.Parse(lines[0]);
-        Assert.That(record.RootElement.GetProperty("Record").GetString(), Is.EqualTo("truncated-tool-call"));
-        Assert.That(record.RootElement.GetProperty("Tool").GetString(), Is.EqualTo("WriteWorkspaceFile"));
-        Assert.That(record.RootElement.GetProperty("MaxOutputTokens").GetInt32(), Is.EqualTo(16000));
+        Assert.That(record.RootElement.GetProperty("tool").GetString(), Is.EqualTo("WriteWorkspaceFile"));
+        Assert.That(record.RootElement.GetProperty("maxOutputTokens").GetInt32(), Is.EqualTo(16000));
         Assert.That(_stderr.ToString(), Does.Not.Contain("cut off"), "records stay out of the console");
         // Each kind has its own file (Serilog opens it when configured, so it exists, empty).
         Assert.That(File.ReadAllText(Path.Combine(_directory, "oversized-tool-results.jsonl")), Is.Empty);
+    }
+
+    [Test]
+    public void ARecord_KeepsTheShapeTheFilesAlwaysHad_NothingOfSerilogs()
+    {
+        // F16's report reads oversized-tool-results.jsonl: the keys AgentLog wrote before CL3, camelCase, and no @mt,
+        // Tag, SourceContext or Record marker.
+        AgentLogging.Configure(_directory);
+
+        ToolCallRecords.OversizedToolResult("GetDiff", "{}", 120_000, "review", "summarised", 900);
+        ToolCallRecords.OversizedToolResult("ReadWorkspaceFile", "{}", 60_000, null, "truncated", 50_000);
+        AgentLogging.Configure(null);   // flush
+
+        string[] lines = File.ReadAllLines(Path.Combine(_directory, "oversized-tool-results.jsonl"));
+        using var record = JsonDocument.Parse(lines[0]);
+        Assert.That(record.RootElement.EnumerateObject().Select(p => p.Name).Order(),
+            Is.EqualTo(new[] { "arguments", "chars", "outcome", "returnedChars", "timestamp", "tool", "userRequest" }));
+        Assert.That(DateTimeOffset.TryParse(record.RootElement.GetProperty("timestamp").GetString(), out _), Is.True);
+        Assert.That(record.RootElement.GetProperty("chars").GetInt32(), Is.EqualTo(120_000), "numbers stay numbers");
+        Assert.That(lines[1], Does.Contain("\"userRequest\":null"));
     }
 
     [Test]
