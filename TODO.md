@@ -5,6 +5,10 @@ What's planned, what's next, and the ideas not planned yet — in that order.
 **The goal it all works toward:** [docs/GOAL.md](docs/GOAL.md) — become an AI engineer by building louis-agent. This
 list is the current plan for getting there and will change as I learn; the goal names the skills it should cover.
 
+**The end product:** a general AI agent with a South African flavour, released to the public (aimed at 2027). It knows
+where its users are (SAST, rands, local context) and looks up what changes (scores, SARS, load-shedding) instead of
+relying on training. What that needs beyond the skills is under *Backlog: South African general AI*.
+
 **How this list works**
 
 - **Planned work is a feature.** Each feature has a design doc in [docs/features/](docs/features/README.md) with user
@@ -128,6 +132,31 @@ growing history every round, so smaller tasks are cheaper); make runs resumable 
 `-Resume` is; and tests only prove what the runbook examples cover, so the human review stays essential.
 
 ## Backlog: not planned yet
+
+### South African general AI (the end product)
+
+A public, culture-specific general agent for the South African market. Not planned yet: each line becomes a feature
+when its turn comes. Check demand first (what people would pay for, and which local part matters most) before building
+the product parts.
+
+- [ ] **Validate demand:** ask 10-20 likely users what they'd pay and which local part matters most (language, price,
+      local tools, WhatsApp); let that pick the first launch feature
+- [ ] **SA context in the prompt:** a `Skills/` file that sets the user's place (South Africa, SAST, rands, "the game"
+      means the Springboks or Bafana) so the agent asks less and assumes right; measured on the evals (F18)
+- [ ] **Local tools:** live lookups for what training can't know: sports results, SARS dates, load-shedding schedules,
+      municipal services, rand prices (a general toolset profile, F5, instead of today's coding tools)
+- [ ] **All 11 official languages, measured:** eval cases per language; route to a local model where it beats the
+      general one (Lelapa AI's Vulavula, UCT's MzansiLM as a base to fine-tune)
+- [ ] **Voice:** speech-to-text and text-to-speech, including local languages (add to the goal's skill map, skill 19)
+- [ ] **WhatsApp as a host**, next to the CLI, web app and Rider
+- [ ] **Accounts and multi-tenancy:** sign-in, a user per session, durable sessions and per-user memory (*Sessions and
+      memory*)
+- [ ] **A sandbox per user** for tools that run code or touch files, so one user can't reach another's data
+- [ ] **Rand pricing and billing:** plans below ChatGPT's R149/month, kept safe by the ledger, caching and per-user
+      budgets (F7)
+- [ ] **POPIA:** consent, retention and deletion of user data, and data kept in South Africa
+- [ ] **Abuse handling and moderation**, plus the *Safety* gaps below (rate limiting, prompt-injection defences)
+- [ ] **Hosting:** uptime, monitoring and running cost for public traffic (with *Shipping* below)
 
 ### Quality and CI
 
