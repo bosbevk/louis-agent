@@ -1,4 +1,5 @@
-/* Puls: sleek and minimal in orange, green and charcoal on light grey, set in Montserrat. One theme; the shared components only emit
+/* Puls: calm and minimal in four colours, set in Montserrat: a soft charcoal-white to rest the eyes on, charcoal for
+   text, orange for actions, green for your messages and what's done. One theme; the shared components only emit
    class names (TurnView, BlocksView, DelegationCard, CurrencySwitcher), and this file styles them. Motion is smooth and
    purposeful, and turned off for people who ask their system for less motion. */
 
@@ -12,20 +13,21 @@
     --green-deep: #13612e;
     --green-light: #38b449;
     --green-soft: #e6f3ec;
-    --navy: #373c42;            /* charcoal: the sidebar and the top bar (the name is kept for the rules that use it) */
+    --navy: #373c42;            /* charcoal: text, the sidebar's footer (the name is kept for the rules that use it) */
     --navy-deep: #24282c;
     --blue: #00723a;
     --blue-soft: #e6f3ec;
-    --cream: #f7f7f8;
+    --cream: #f3f3f0;
     --ink: #24282c;
     --text: #373c42;
     --muted: #717880;
     --dim: #a3a8b0;
-    --bg: #f7f7f8;
-    --surface: #ffffff;
-    --border: #e7e7f0;
+    --bg: #f3f3f0;              /* the fourth colour: white softened with charcoal, easy on the eyes */
+    --surface: #fafaf8;         /* cards and the composer: a step lighter, never pure white */
+    --sidebar: #ebebe7;
+    --border: #e0e0db;
     --danger: #b82105;
-    --code-bg: #f3f4f6;
+    --code-bg: #ecece8;
     --tricolour: linear-gradient(90deg, var(--orange) 0 50%, var(--green) 50% 100%);
     --cta: linear-gradient(135deg, #f7952f 0%, var(--orange) 45%, var(--orange-deep) 100%);
     --shadow-sm: 0 1px 2px rgba(36, 40, 44, .06), 0 1px 1px rgba(36, 40, 44, .04);
@@ -46,7 +48,7 @@ body { background: var(--bg); color: var(--text); font: 14.5px/1.7 var(--font); 
 button { font: inherit; cursor: pointer; }
 button:disabled { cursor: default; opacity: .4; }
 a { color: var(--blue); text-decoration-thickness: 1px; text-underline-offset: 2px; }
-* { scrollbar-width: thin; scrollbar-color: #d6ccbb transparent; }
+* { scrollbar-width: thin; scrollbar-color: #cfcfc9 transparent; }
 
 /* The wordmark (Components/PulsLogo.razor): the pulse line draws itself in, the dot beats like a heart, and a hover
    draws the line again. */
@@ -62,7 +64,7 @@ a { color: var(--blue); text-decoration-thickness: 1px; text-underline-offset: 2
 /* Loading and errors */
 .loading { height: 100vh; display: flex; align-items: center; justify-content: center; gap: 12px; font-weight: 700; font-size: 26px; letter-spacing: -.5px; color: var(--ink); }
 .loading img { animation: logo-beat 3.6s ease-in-out infinite; }
-#blazor-error-ui { display: none; position: fixed; inset: auto 16px 16px 16px; padding: 12px 18px; background: #fff; border: 1px solid var(--border); border-left: 4px solid var(--orange); border-radius: 12px; box-shadow: var(--shadow-md); z-index: 10; }
+#blazor-error-ui { display: none; position: fixed; inset: auto 16px 16px 16px; padding: 12px 18px; background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--orange); border-radius: 12px; box-shadow: var(--shadow-md); z-index: 10; }
 #blazor-error-ui .dismiss { float: right; cursor: pointer; }
 
 /* Layout */
@@ -72,15 +74,15 @@ a { color: var(--blue); text-decoration-thickness: 1px; text-underline-offset: 2
 }
 .resizing .app { transition: none; }
 .resizing, .resizing * { cursor: col-resize !important; user-select: none !important; }
-.sidebar { background: linear-gradient(180deg, var(--navy) 0%, var(--navy-deep) 100%); color: #dfe5f4; display: flex; flex-direction: column; padding: 20px 14px 16px; gap: 14px; min-height: 0; }
-.brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 21px; letter-spacing: -.6px; color: #fff; padding: 2px 8px; }
+.sidebar { background: var(--sidebar); color: var(--text); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 20px 14px 16px; gap: 14px; min-height: 0; }
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 21px; letter-spacing: -.6px; color: var(--ink); padding: 2px 8px; }
 .sidebar-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-bottom: 4px; }
-.sidebar-top .icon { color: #c3cce6; width: 32px; height: 32px; place-items: center; }
-.sidebar-top .icon:hover { background: rgba(255, 255, 255, .1); color: #fff; }
+.sidebar-top .icon { color: var(--muted); width: 32px; height: 32px; place-items: center; }
+.sidebar-top .icon:hover { background: rgba(36, 40, 44, .07); color: var(--ink); }
 .new-chat {
     position: relative; border: 0; border-radius: 12px; padding: 11px 14px; font-weight: 600; color: #fff; text-align: left;
     background: var(--cta); background-size: 200% 100%; background-position: 0% 0;
-    box-shadow: 0 8px 20px -8px rgba(245, 130, 32, .75);
+    box-shadow: 0 6px 16px -8px rgba(245, 130, 32, .7);
     transition: transform .25s var(--spring), box-shadow .25s var(--ease), background-position .6s var(--ease);
 }
 .new-chat::before { content: "+"; margin-right: 8px; font-weight: 700; }
@@ -88,45 +90,35 @@ a { color: var(--blue); text-decoration-thickness: 1px; text-underline-offset: 2
 .new-chat:active { transform: translateY(0) scale(.98); }
 .chat-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 2px; min-height: 0; margin: 0 -4px; padding: 0 4px; }
 .chat-item { display: flex; align-items: center; border-radius: 10px; position: relative; transition: background .2s var(--ease); }
-.chat-item a { flex: 1; min-width: 0; padding: 9px 12px; color: #d3dbef; text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 14px; }
-.chat-item:hover { background: rgba(255, 255, 255, .07); }
-.chat-item.active { background: rgba(255, 255, 255, .12); }
+.chat-item a { flex: 1; min-width: 0; padding: 9px 12px; color: var(--text); text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 14px; }
+.chat-item:hover { background: rgba(36, 40, 44, .05); }
+.chat-item.active { background: var(--surface); box-shadow: var(--shadow-sm); }
 .chat-item.active::before { content: ""; position: absolute; left: 0; top: 9px; bottom: 9px; width: 3px; border-radius: 3px; background: var(--orange); }
-.chat-item.active a { color: #fff; font-weight: 600; }
-.chat-item .icon { opacity: 0; transition: opacity .15s; color: #c3cce6; }
+.chat-item.active a { color: var(--ink); font-weight: 600; }
+.chat-item .icon { opacity: 0; transition: opacity .15s; color: var(--muted); }
 .chat-item:hover .icon { opacity: 1; }
-.sidebar-settings { border-top: 1px solid rgba(255, 255, 255, .12); padding-top: 10px; font-size: 13px; }
-.sidebar-settings summary { cursor: pointer; color: #aeb9d9; list-style: none; padding: 4px 8px; border-radius: 8px; }
-.sidebar-settings summary:hover { background: rgba(255, 255, 255, .07); }
+.sidebar-settings { margin: 0 -14px -16px; padding: 12px 18px 14px; background: var(--navy); color: #e4e4df; font-size: 13px; }
+.sidebar-settings summary { cursor: pointer; color: #c9c9c3; list-style: none; padding: 4px 8px; border-radius: 8px; }
 .sidebar-settings summary::before { content: "⚙  "; }
-.settings { display: flex; flex-direction: column; gap: 5px; margin: 10px 8px 0; color: #aeb9d9; }
+.settings { display: flex; flex-direction: column; gap: 5px; margin: 10px 8px 0; color: #c9c9c3; }
 .settings input, .settings select { background: rgba(255, 255, 255, .08); border: 1px solid rgba(255, 255, 255, .18); color: #fff; border-radius: 10px; padding: 8px 10px; font: inherit; transition: border-color .2s, box-shadow .2s; }
 .settings input:focus, .settings select:focus { outline: 0; border-color: var(--orange); box-shadow: 0 0 0 3px rgba(245, 130, 32, .25); }
 .settings select option { color: var(--ink); }
 .icon { background: none; border: 0; color: var(--muted); font-size: 16px; line-height: 1; padding: 5px 9px; border-radius: 8px; transition: background .15s, color .15s; }
 .icon:hover { background: rgba(127, 127, 127, .14); color: var(--ink); }
-.sidebar .icon:hover { color: #fff; }
+.sidebar .icon:hover { color: var(--ink); }
 
 /* Conversation */
 .conversation { display: flex; flex-direction: column; min-height: 0; min-width: 0; position: relative; background: var(--bg); }
-.conversation::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; background: var(--tricolour); z-index: 2; }
 .messages { flex: 1; overflow-y: auto; padding: clamp(20px, 4vw, 44px) clamp(14px, 3.5vw, 32px) 16px; scroll-behavior: smooth; }
 .messages > * { max-width: 800px; margin: 0 auto; }
 
-/* Empty state: a soft aurora behind an animated gradient headline, and suggestions to start with. */
+/* Empty state: a charcoal headline over a faint orange pulse, and suggestions to start with. */
 .empty { min-height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; position: relative; isolation: isolate; }
-.empty::before {
-    content: ""; position: absolute; width: 520px; height: 520px; border-radius: 50%; z-index: -1; filter: blur(70px); opacity: .5;
-    background: radial-gradient(circle at 30% 40%, rgba(245, 130, 32, .42), transparent 55%), radial-gradient(circle at 72% 62%, rgba(0, 114, 58, .32), transparent 55%);
-    animation: aurora 14s var(--ease) infinite alternate;
-}
-@keyframes aurora { from { transform: translate(-30px, -10px) rotate(0deg) scale(1); } to { transform: translate(30px, 20px) rotate(25deg) scale(1.1); } }
 .empty h1 {
     font-size: clamp(30px, 4.6vw, 54px); font-weight: 800; letter-spacing: -1.2px; margin: 0 0 10px; line-height: 1.1;
-    background: linear-gradient(120deg, var(--orange) 0%, var(--orange-deep) 35%, var(--green) 70%, var(--orange) 100%); background-size: 220% 100%; -webkit-background-clip: text; background-clip: text; color: transparent;
-    animation: sheen 6s var(--ease) infinite alternate, rise .7s var(--ease) both;
+    color: var(--ink); animation: rise .7s var(--ease) both;
 }
-@keyframes sheen { from { background-position: 0% 0; } to { background-position: 100% 0; } }
 .empty .hint { color: var(--muted); font-size: 16px; max-width: 460px; margin: 0 0 26px; animation: rise .7s .08s var(--ease) both; }
 .suggestions { display: grid; grid-template-columns: repeat(2, minmax(0, 260px)); gap: 10px; }
 .suggestion {
@@ -136,7 +128,7 @@ a { color: var(--blue); text-decoration-thickness: 1px; text-underline-offset: 2
 }
 .suggestion:nth-child(1) { animation-delay: .14s; } .suggestion:nth-child(2) { animation-delay: .2s; }
 .suggestion:nth-child(3) { animation-delay: .26s; } .suggestion:nth-child(4) { animation-delay: .32s; }
-.suggestion strong { display: block; color: var(--ink); font-size: 14px; }
+.suggestion strong { color: var(--ink); font-size: 14px; }
 .suggestion span { color: var(--muted); font-size: 13px; }
 .suggestion:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border-color: rgba(245, 130, 32, .55); }
 .suggestion:hover strong { color: var(--orange-deep); }
@@ -160,7 +152,7 @@ a { color: var(--blue); text-decoration-thickness: 1px; text-underline-offset: 2
 .thinking[open] > summary { color: var(--ink); }
 .thinking-text { white-space: pre-wrap; color: var(--muted); font-size: 13.5px; border-left: 2px solid var(--orange); padding: 6px 0 6px 14px; margin: 6px 0 0 4px; animation: rise .35s var(--ease) both; }
 .tool { border: 1px solid var(--border); border-radius: 12px; background: var(--surface); padding: 9px 13px; box-shadow: var(--shadow-sm); transition: border-color .2s, box-shadow .2s; }
-.tool:hover { border-color: #d6c8b1; box-shadow: var(--shadow-md); }
+.tool:hover { border-color: #d0d0c9; box-shadow: var(--shadow-md); }
 .tool-status { color: var(--orange); margin-right: 6px; font-weight: 700; }
 .tool.failed .tool-status { color: var(--danger); }
 .tool-name { font-weight: 600; color: var(--ink); margin-right: 6px; }
@@ -233,11 +225,11 @@ a { color: var(--blue); text-decoration-thickness: 1px; text-underline-offset: 2
 .notice { max-width: 800px; margin: 0 auto 10px; background: var(--orange-soft); border: 1px solid #ffd2ad; border-radius: 12px; padding: 9px 14px; display: flex; justify-content: space-between; align-items: center; animation: rise .3s var(--ease) both; }
 
 /* Composer: frosted glass with a glowing focus ring */
-.composer { padding: 10px clamp(12px, 3.5vw, 32px) clamp(14px, 2.5vw, 26px); background: linear-gradient(to top, var(--bg) 60%, rgba(243, 238, 229, 0)); }
+.composer { padding: 10px clamp(12px, 3.5vw, 32px) clamp(14px, 2.5vw, 26px); background: linear-gradient(to top, var(--bg) 60%, rgba(243, 243, 240, 0)); }
 .composer > * { max-width: 800px; margin: 0 auto; }
 .composer .attachments { margin-bottom: 8px; }
 .input-row {
-    display: flex; align-items: flex-end; gap: 8px; background: rgba(255, 253, 249, .9); backdrop-filter: blur(14px);
+    display: flex; align-items: flex-end; gap: 8px; background: rgba(250, 250, 248, .92); backdrop-filter: blur(14px);
     border: 1px solid var(--border); border-radius: 22px; padding: 9px 9px 9px 12px; box-shadow: var(--shadow-md);
     transition: border-color .25s var(--ease), box-shadow .25s var(--ease);
 }
@@ -285,14 +277,10 @@ a { color: var(--blue); text-decoration-thickness: 1px; text-underline-offset: 2
 
 /* ---- Responsive layout and depth ---- */
 
-/* The sidebar casts a soft shadow on the chat; a glow sits behind the conversation. */
+/* On a wide screen the sidebar is a plain column beside the chat. */
 @media (min-width: 992px) {
-    .sidebar { position: relative; z-index: 3; box-shadow: 8px 0 32px -12px rgba(36, 40, 44, .45); overflow: hidden; }
+    .sidebar { position: relative; z-index: 3; overflow: hidden; }
 }
-.conversation { background:
-    radial-gradient(1200px 500px at 85% -10%, rgba(245, 130, 32, .10), transparent 60%),
-    radial-gradient(900px 500px at -10% 110%, rgba(0, 114, 58, .10), transparent 60%),
-    var(--bg); }
 
 /* The resize handle: invisible until hovered, then an orange grip. */
 .resizer { position: relative; cursor: col-resize; z-index: 4; background: transparent; touch-action: none; }
@@ -304,8 +292,8 @@ a { color: var(--blue); text-decoration-thickness: 1px; text-underline-offset: 2
 .sidebar-hidden .sidebar { visibility: hidden; padding-left: 0; padding-right: 0; min-width: 0; }
 .sidebar-tab {
     position: absolute; top: 14px; left: 14px; z-index: 5; width: 38px; height: 38px; border: 0; border-radius: 12px;
-    place-items: center; color: #fff; background: linear-gradient(135deg, var(--navy), var(--navy-deep));
-    box-shadow: 0 10px 24px -8px rgba(36, 40, 44, .6); opacity: 0; pointer-events: none; transform: translateX(-8px);
+    place-items: center; color: var(--ink); background: var(--surface); border: 1px solid var(--border);
+    box-shadow: var(--shadow-md); opacity: 0; pointer-events: none; transform: translateX(-8px);
     transition: opacity .25s var(--ease), transform .3s var(--spring);
 }
 .sidebar-hidden .sidebar-tab { opacity: 1; pointer-events: auto; transform: none; }
@@ -313,11 +301,11 @@ a { color: var(--blue); text-decoration-thickness: 1px; text-underline-offset: 2
 
 /* More depth: layered, tinted shadows that lift on hover. */
 .user-message { box-shadow: 0 1px 0 rgba(255, 255, 255, .12) inset, 0 12px 28px -12px rgba(36, 40, 44, .75), 0 2px 6px rgba(36, 40, 44, .15); }
-.delegation { box-shadow: 0 1px 0 #fff inset, 0 14px 34px -14px rgba(36, 40, 44, .28), 0 3px 8px rgba(36, 40, 44, .06); transition: box-shadow .3s var(--ease), transform .3s var(--ease); }
-.delegation:not([open]):hover { transform: translateY(-2px); box-shadow: 0 1px 0 #fff inset, 0 18px 40px -14px rgba(36, 40, 44, .34), 0 4px 10px rgba(36, 40, 44, .08); }
+.delegation { box-shadow: 0 1px 0 rgba(255, 255, 255, .7) inset, 0 14px 34px -14px rgba(36, 40, 44, .28), 0 3px 8px rgba(36, 40, 44, .06); transition: box-shadow .3s var(--ease), transform .3s var(--ease); }
+.delegation:not([open]):hover { transform: translateY(-2px); box-shadow: 0 1px 0 rgba(255, 255, 255, .7) inset, 0 18px 40px -14px rgba(36, 40, 44, .34), 0 4px 10px rgba(36, 40, 44, .08); }
 .tool:hover, .suggestion:hover { box-shadow: 0 16px 34px -14px rgba(36, 40, 44, .3), 0 3px 8px rgba(36, 40, 44, .06); }
-.input-row { box-shadow: 0 1px 0 #fff inset, 0 18px 40px -18px rgba(36, 40, 44, .35), 0 4px 12px rgba(36, 40, 44, .06); }
-.markdown pre { box-shadow: 0 1px 0 #fff inset, 0 8px 20px -14px rgba(36, 40, 44, .25); }
+.input-row { box-shadow: 0 1px 0 rgba(255, 255, 255, .7) inset, 0 18px 40px -18px rgba(36, 40, 44, .35), 0 4px 12px rgba(36, 40, 44, .06); }
+.markdown pre { box-shadow: 0 1px 0 rgba(255, 255, 255, .7) inset, 0 8px 20px -14px rgba(36, 40, 44, .25); }
 
 /* Below Bootstrap's lg breakpoint: a frosted top bar, and the sidebar slides in as an offcanvas. */
 .topbar { display: none; }
@@ -326,16 +314,15 @@ a { color: var(--blue); text-decoration-thickness: 1px; text-underline-offset: 2
     .sidebar-hidden .app { grid-template-columns: minmax(0, 1fr); }
     .topbar {
         display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 14px;
-        background: rgba(36, 40, 44, .94); backdrop-filter: blur(14px); color: #fff; position: sticky; top: 0; z-index: 6;
-        box-shadow: 0 8px 24px -12px rgba(36, 40, 44, .6);
+        background: rgba(243, 243, 240, .88); backdrop-filter: blur(14px); color: var(--ink); position: sticky; top: 0; z-index: 6;
+        border-bottom: 1px solid var(--border);
     }
     .topbar .brand { padding: 0; }
     .topbar .puls-logo { height: 28px; }
-    .topbar .icon { color: #dfe5f4; width: 38px; height: 38px; display: grid; place-items: center; font-size: 18px; }
-    .topbar .icon:hover { background: rgba(255, 255, 255, .1); color: #fff; }
+    .topbar .icon { color: var(--text); width: 38px; height: 38px; display: grid; place-items: center; font-size: 18px; }
+    .topbar .icon:hover { background: rgba(36, 40, 44, .07); color: var(--ink); }
     .sidebar.offcanvas-lg { --bs-offcanvas-width: min(320px, 86vw); --bs-offcanvas-transition: transform .35s cubic-bezier(.2, .8, .2, 1); border-right: 0; }
     .sidebar-hidden .sidebar { visibility: visible; }
-    .conversation::before { display: none; }
 }
 @media (min-width: 992px) {
     /* At lg Bootstrap makes the offcanvas a plain element again; keep it a full-height column. */
@@ -357,7 +344,7 @@ a { color: var(--blue); text-decoration-thickness: 1px; text-underline-offset: 2
 .chat-item { transition: background .2s var(--ease), transform .25s var(--spring); }
 .chat-item:hover { transform: translateX(3px); }
 .chat-item:hover::before { content: ""; position: absolute; left: 0; top: 11px; bottom: 11px; width: 2px; border-radius: 2px; background: rgba(245, 130, 32, .7); }
-.chat-item .icon:hover { background: rgba(214, 69, 69, .25); color: #fff; }
+.chat-item .icon:hover { background: #f6e3df; color: var(--danger); }
 .new-chat { overflow: hidden; }
 .new-chat::after {
     content: ""; position: absolute; inset: 0; transform: translateX(-120%) skewX(-20deg);
@@ -365,15 +352,19 @@ a { color: var(--blue); text-decoration-thickness: 1px; text-underline-offset: 2
 }
 .new-chat:hover::after { transition: transform .7s var(--ease); transform: translateX(120%) skewX(-20deg); }
 .sidebar-settings summary { transition: background .2s, color .2s; }
-.sidebar-settings summary:hover { color: #fff; }
+.sidebar-settings summary:hover { color: #fff; background: rgba(255, 255, 255, .08); }
 
 /* Suggestions: an icon each, and an arrow that slides in. */
 .suggestion { padding-right: 34px; }
-.suggestion strong::before { margin-right: 8px; }
-.suggestion:nth-child(1) strong::before { content: "🔎"; }
-.suggestion:nth-child(2) strong::before { content: "📄"; }
-.suggestion:nth-child(3) strong::before { content: "🕘"; }
-.suggestion:nth-child(4) strong::before { content: "📊"; }
+.suggestion strong { display: flex; align-items: center; gap: 9px; }
+.suggestion strong::before {
+    content: ""; width: 16px; height: 16px; flex: none; background: var(--orange);
+    -webkit-mask: var(--icon) center / contain no-repeat; mask: var(--icon) center / contain no-repeat;
+}
+.suggestion:nth-child(1) strong::before { --icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='10.5' cy='10.5' r='6.5'/><path d='M15.5 15.5 21 21'/></svg>"); }
+.suggestion:nth-child(2) strong::before { --icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M6 3h8l5 5v13H6z'/><path d='M14 3v5h5M9 13h7M9 17h7'/></svg>"); }
+.suggestion:nth-child(3) strong::before { --icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='9'/><path d='M12 7v5l3 2'/></svg>"); }
+.suggestion:nth-child(4) strong::before { --icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M4 20V10M10 20V4M16 20v-7M22 20H2'/></svg>"); }
 .suggestion > span::after {
     content: "→"; position: absolute; right: 14px; top: 50%; transform: translate(-6px, -50%); opacity: 0;
     color: var(--orange); font-weight: 700; transition: transform .3s var(--spring), opacity .2s;
@@ -389,7 +380,7 @@ a { color: var(--blue); text-decoration-thickness: 1px; text-underline-offset: 2
 .markdown tr { transition: background .15s; }
 .markdown tbody tr:hover { background: var(--orange-soft); }
 .markdown pre { transition: border-color .2s, box-shadow .2s; }
-.markdown pre:hover { border-color: #d6c8b1; }
+.markdown pre:hover { border-color: #d0d0c9; }
 .thinking summary { transition: background .2s, color .2s; }
 .thinking summary:hover { color: var(--ink); }
 
@@ -405,40 +396,69 @@ a { color: var(--blue); text-decoration-thickness: 1px; text-underline-offset: 2
 .delegation-task summary:hover, .delegation-work summary:hover { color: var(--orange-deep); }
 
 /* Composer: the send button breathes once there's something to send. */
-.input-row:hover { border-color: #d6c8b1; }
+.input-row:hover { border-color: #d0d0c9; }
 .send:not(:disabled) { animation: breathe 2.4s var(--ease) infinite; }
 @keyframes breathe { 0%, 100% { box-shadow: 0 8px 18px -6px rgba(245, 130, 32, .8); } 50% { box-shadow: 0 8px 26px -4px rgba(245, 130, 32, 1); } }
 .chat-usage { transition: color .2s; }
 .chat-usage:hover { color: var(--muted); }
 
 
-/* The aurora and the suggestions fit any width: no sideways scroll, and full-width cards on a phone. */
+/* The pulse and the suggestions fit any width: no sideways scroll, and full-width cards on a phone. */
 .messages { overflow-x: hidden; }
-.empty::before { width: min(520px, 90vw); height: min(520px, 90vw); }
 .suggestions { width: min(540px, 100%); grid-template-columns: repeat(2, minmax(0, 1fr)); }
 @media (max-width: 600px) { .suggestions { grid-template-columns: minmax(0, 1fr); } }
 
-/* ---- The slow pulse behind an empty chat: soft orange and green rings that ripple out from the headline, like a
-   heartbeat (the name). Behind everything, and off for reduced motion. ---- */
+/* ---- The slow pulse behind an empty chat: faint orange rings that ripple out from the headline, and a soft orange
+   core beating in time, like the logo's line. Behind everything, and off for reduced motion. ---- */
 .pulse-bg { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; z-index: -2; overflow: hidden; }
 .pulse-bg span {
     position: absolute; width: min(240px, 50vw); aspect-ratio: 1; border-radius: 50%;
-    border: 2px solid rgba(245, 130, 32, .35); box-shadow: 0 0 40px rgba(245, 130, 32, .18) inset;
+    border: 1.5px solid rgba(245, 130, 32, .22);
     opacity: 0; transform: scale(.4); animation: pulse-ring 7.2s cubic-bezier(.25, .6, .3, 1) infinite;
 }
-.pulse-bg span:nth-child(2) { animation-delay: 1.8s; border-color: rgba(0, 114, 58, .3); box-shadow: 0 0 40px rgba(0, 114, 58, .14) inset; }
+.pulse-bg span:nth-child(2) { animation-delay: 1.8s; }
 .pulse-bg span:nth-child(3) { animation-delay: 3.6s; }
-.pulse-bg span:nth-child(4) { animation-delay: 5.4s; border-color: rgba(0, 114, 58, .3); box-shadow: 0 0 40px rgba(0, 114, 58, .14) inset; }
+.pulse-bg span:nth-child(4) { animation-delay: 5.4s; }
 @keyframes pulse-ring {
     0% { opacity: 0; transform: scale(.4); }
-    12% { opacity: .9; }
-    100% { opacity: 0; transform: scale(3.6); }
+    12% { opacity: 1; }
+    100% { opacity: 0; transform: scale(3.4); }
 }
-/* A soft core that beats in time behind the headline. */
 .pulse-bg::before {
-    content: ""; position: absolute; width: min(320px, 70vw); aspect-ratio: 1; border-radius: 50%;
-    background: radial-gradient(circle, rgba(245, 130, 32, .22), rgba(0, 114, 58, .10) 45%, transparent 70%);
+    content: ""; position: absolute; width: min(360px, 76vw); aspect-ratio: 1; border-radius: 50%;
+    background: radial-gradient(circle, rgba(245, 130, 32, .16), rgba(245, 130, 32, .05) 45%, transparent 70%);
     animation: heartbeat 3.6s ease-in-out infinite;
 }
-@keyframes heartbeat { 0%, 100% { transform: scale(.92); opacity: .75; } 18% { transform: scale(1.06); opacity: 1; } 32% { transform: scale(.98); } 46% { transform: scale(1.03); } }
+@keyframes heartbeat { 0%, 100% { transform: scale(.94); opacity: .8; } 18% { transform: scale(1.05); opacity: 1; } 32% { transform: scale(.98); } 46% { transform: scale(1.02); } }
 
+/* ---- Finish: the details that make it feel made. ---- */
+
+/* A faint paper grain over the soft background, so large areas never look flat or digital (fixed, under everything). */
+body::before {
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: .045; mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+.app { position: relative; z-index: 1; }
+.conversation { background: transparent; }
+.sidebar { background: color-mix(in srgb, var(--sidebar) 92%, transparent); }
+
+/* Type: balanced headline lines, no lone last words in answers, figures that line up. */
+.empty h1 { text-wrap: balance; letter-spacing: -1.6px; font-weight: 800; }
+.empty .hint { text-wrap: balance; }
+.markdown p, .markdown li { text-wrap: pretty; }
+.markdown { font-variant-numeric: tabular-nums; }
+
+/* Hairlines, not borders: a touch of charcoal mixed into the background, and an inner light on raised surfaces. */
+.suggestion, .tool, .delegation, .input-row, .markdown pre, .chip { border-color: color-mix(in srgb, var(--ink) 10%, var(--bg)); }
+.suggestion { border-radius: 16px; padding: 14px 36px 14px 16px; background: color-mix(in srgb, var(--surface) 85%, transparent); backdrop-filter: blur(6px); }
+.suggestion:hover { border-color: color-mix(in srgb, var(--orange) 45%, var(--bg)); }
+
+/* The sidebar: a small label over the chats, as in a well-made app. */
+.sidebar-label { font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--dim); padding: 6px 12px 0; }
+
+/* Focus is always visible, in orange, and never a browser default. */
+:focus-visible { outline: 2px solid color-mix(in srgb, var(--orange) 70%, transparent); outline-offset: 3px; }
+.input-row:focus-within { border-color: color-mix(in srgb, var(--orange) 55%, var(--bg)); box-shadow: 0 0 0 4px color-mix(in srgb, var(--orange) 12%, transparent), 0 18px 40px -18px rgba(36, 40, 44, .3); }
+
+/* Scrolling never shifts the layout. */
+.messages, .chat-list { scrollbar-gutter: stable; }

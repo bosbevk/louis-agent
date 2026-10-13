@@ -26,6 +26,10 @@
             <button class="icon d-lg-none" type="button" data-bs-dismiss="offcanvas" data-bs-target="#sidebar" aria-label="Close the menu">×</button>
         </div>
         <button class="new-chat" @onclick="NewChat">New chat</button>
+        @if (Store.Chats.Count > 0)
+        {
+            <div class="sidebar-label">Recent</div>
+        }
         <nav class="chat-list">
             @foreach (var chat in Store.Chats)
             {
