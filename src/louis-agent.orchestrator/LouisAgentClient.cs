@@ -38,10 +38,13 @@ internal sealed record FixResult(string Status, string? Commit, string? Branch, 
 internal sealed partial class LouisAgentClient(HttpClient http, string? apiKey)
 {
     /// <param name="tags">Task, run and service for louis-agent's usage ledger, so a fix's cost can be added to its run's.</param>
-    public async Task<string> CreateSessionAsync(UsageTags? tags = null, CancellationToken cancellationToken = default)
+    /// <param name="toolsets">The session's toolsets (F5); null lets louis-agent choose its default.</param>
+    public async Task<string> CreateSessionAsync(UsageTags? tags = null, CancellationToken cancellationToken = default,
+        IReadOnlyList<string>? toolsets = null)
     {
         using var request = new HttpRequestMessage(HttpMethod.Post, "sessions");
-        if (tags is not null) request.Content = JsonContent.Create(new { task = tags.Task, run = tags.Run, service = tags.Service });
+        if (tags is not null || toolsets is not null)
+            request.Content = JsonContent.Create(new { task = tags?.Task, run = tags?.Run, service = tags?.Service, toolsets });
         AddKey(request);
         using var response = await http.SendAsync(request, cancellationToken);
         response.EnsureSuccessStatusCode();

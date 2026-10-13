@@ -26,6 +26,12 @@ internal sealed partial class ServiceTools(
     private const int MaxFixFollowUps = 3;
     internal static string ContinueMessage => MessageText.Format(OrchestratorToolMessage.ContinueFix);
 
+    /// <summary>
+    /// The coding profile a fix session loads on louis-agent (F5-S4): files, git, dotnet and skills, nothing else, so
+    /// every fix sends a smaller prefix and every fix session shares one cached engine.
+    /// </summary>
+    internal static readonly IReadOnlyList<string> FixToolsets = ["dotnet", "files", "git", "skills"];
+
     private readonly HashSet<string> _fixRequested = [];
 
     /// <summary>
@@ -58,7 +64,7 @@ internal sealed partial class ServiceTools(
         if (ReturnToMain() is { } notReady) return MessageText.Format(OrchestratorToolMessage.FixCannotStart, new { Reason = notReady });
 
         Info(OrchestratorLogMessage.CallingLouisAgent, new { Url = options.LouisAgentUrl, error.ExceptionType, error.Method, Branch = branch });
-        string sessionId = await louisAgent.CreateSessionAsync(FixTags(error.Id), cancellationToken);
+        string sessionId = await louisAgent.CreateSessionAsync(FixTags(error.Id), cancellationToken, FixToolsets);
         try
         {
             var toolCalls = new List<AgentToolCall>();
