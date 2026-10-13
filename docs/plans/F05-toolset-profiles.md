@@ -143,6 +143,15 @@ Update `ARCHITECTURE.md` (sessions and skills sections), `SETUP.md`, and the sam
   - **As built:** files, not folders (F19 moves to skill folders); `SkillFileSource.Read(name, diskPaths)` and
     `MarkdownSkillProvider.FromText`; `AgentHost` reads personality, default, guides and function files through it, so
     `DefaultSkillsProvider` and `PersonalitySkillsProvider` are left to tests until F19 rewrites the loaders.
+- **Step 5 as built** *(decided unattended, to confirm)*:
+  - `AgentEngineFactory` lives in `Hosting/`, not `Agent/`: it loads skills through `AgentHost`, a layer above the engine.
+  - Its key is the normalised list; `Lazy` engines in a `ConcurrentDictionary`, so a profile is built once; the cap (16)
+    refuses a new profile with a `ToolsetException`, never an existing one.
+  - Approved agent-built tools load only with the `skills` toolset, which owns `CreateTool` and `/approve`.
+  - **The CLI, the ACP server and the MCP server get every toolset this instance can load** (`Available`): one session
+    per process, and that was their behaviour before F5. `AgentHostContext` carries the factory (`Engines`) for the API.
+  - Each profile logs its toolsets, tool count, prompt size and a fixed-prefix estimate (≈ characters / 4), which is
+    step 12's start-up line.
 
 ## Open decisions
 

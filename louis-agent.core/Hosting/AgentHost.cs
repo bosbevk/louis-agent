@@ -62,20 +62,16 @@ public static partial class AgentHost
 
     /// <summary>
     /// Builds an engine for hosts that only publish its tools (the MCP server): the calling client brings its own
-    /// model, so no LLM provider or API key is needed. Skills, agent-built tools and approval work as usual.
+    /// model, so no LLM provider or API key is needed. It has every toolset this instance can load (F5); skills,
+    /// agent-built tools and approval work as usual.
     /// </summary>
     public static AgentEngine BuildToolHost()
     {
         LoadEnvironment();
         var agent = AgentOptions.FromEnvironment();
         AgentLogging.Configure(agent.LogDirectory);
-        var engine = new AgentEngine(LoadSkills(agent), new ToolsOnlyChatClient(), agent)
-        {
-            SkillsDirectory = FindSkillsDirectory(agent),
-            SkillReloader = () => LoadSkills(agent),
-        };
-        engine.LoadApprovedTools();
-        return engine;
+        var engines = new AgentEngineFactory(new ToolsOnlyChatClient(), agent);
+        return engines.GetOrCreate(engines.Available);
     }
 
     /// <summary>Stand-in for hosts that never prompt a model themselves.</summary>
@@ -105,23 +101,22 @@ public static partial class AgentHost
         return Build(llm, agent, clientFactory ?? new LlmClientFactory());
     }
 
+    /// <summary>
+    /// Bootstraps a host: the model client, prices, rates, the usage ledger and an <see cref="AgentEngineFactory"/> that
+    /// builds one engine per toolset profile (F5). <see cref="AgentHostContext.Engine"/> is the host's own engine, with
+    /// every toolset this instance can load: what the CLI and the ACP server use, one session per process. The API
+    /// builds each session's engine from <see cref="AgentHostContext.Engines"/>.
+    /// </summary>
     public static AgentHostContext Build(LlmOptions llm, AgentOptions agent, ILlmClientFactory clientFactory)
     {
-        var skills = LoadSkills(agent);
         var chatClient = clientFactory.Create(llm);
         PriceTable prices = LoadPrices(agent);
         ExchangeRates rates = LoadRates(agent, prices.Currency);
         DisplayCurrency display = DisplayCurrency.Resolve(agent, prices.Currency, rates);
         Log.Log(LogLevel.Information, LogMessage.DisplayCurrencyChosen, new { Display = display });
-        var engine = new AgentEngine(skills, chatClient, agent, llm.ResolveSupportsTools(),
-            usageSink: CreateUsageSink(agent, prices), usageMapper: clientFactory.CreateUsageMapper(llm))
-        {
-            SkillsDirectory = FindSkillsDirectory(agent),
-            SkillReloader = () => LoadSkills(agent),
-            Thinking = llm.ResolveThinking(),
-            Display = display,
-        };
-        engine.LoadApprovedTools();
+        var engines = new AgentEngineFactory(chatClient, agent, llm.ResolveSupportsTools(), CreateUsageSink(agent, prices),
+            clientFactory.CreateUsageMapper(llm), display, llm.ResolveThinking());
+        var engine = engines.GetOrCreate(engines.Available);
         Log.Log(LogLevel.Information, LogMessage.LlmChosen,
             new { Llm = llm, Tools = engine.SupportsTools ? "on" : "off", Thinking = engine.Thinking?.ToString().ToLowerInvariant() ?? "off" });
 
@@ -149,7 +144,7 @@ public static partial class AgentHost
             Log.Log(LogLevel.Information, LogMessage.McpDiscoveryDisabled);
         }
 
-        return new AgentHostContext(engine, llm, agent, prices, rates, display);
+        return new AgentHostContext(engine, llm, agent, prices, rates, display, engines);
     }
 
     /// <summary>

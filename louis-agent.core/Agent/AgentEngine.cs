@@ -85,15 +85,15 @@ public class AgentEngine
     private readonly AgentBuiltTools _agentBuiltTools;
 
     /// <param name="toolsets">
-    /// Objects whose public methods become the agent's only tools (plus <see cref="ExecuteSkill"/>), for agents that aren't
-    /// coding agents, such as an orchestrator. Null registers the built-in coding toolsets (files, git, dotnet, shells, web,
-    /// Paymo, DevOps) and the self-extension tools.
+    /// Objects whose public methods become the agent's tools (plus <see cref="ExecuteSkill"/>): a session's catalogue
+    /// toolsets (<c>AgentEngineFactory</c>), or another agent's own tools, such as the orchestrator's. Null registers no
+    /// tool object, only <see cref="ExecuteSkill"/> and the self-extension tools.
     /// </param>
     /// <param name="usageSink">Where one usage record per model request goes; null records nothing.</param>
     /// <param name="usageMapper">The provider's usage mapping (<c>LlmClientFactory.CreateUsageMapper</c>); null uses the standard one.</param>
     /// <param name="selfExtension">
     /// On a toolsets engine, also register the self-extension tools (CreateSkillFile, ReloadSkills, CreateTool,
-    /// ListAgentTools). Ignored on the built-in path, which always registers them.
+    /// ListAgentTools): the <c>skills</c> toolset. Ignored when <paramref name="toolsets"/> is null, which always registers them.
     /// </param>
     public AgentEngine(ISkillProvider skillProvider, IChatClient chatClient, AgentOptions options, bool supportsTools = true,
         IEnumerable<object>? toolsets = null,

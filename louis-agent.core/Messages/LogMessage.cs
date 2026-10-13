@@ -180,6 +180,9 @@ public enum LogMessage
     [Description("Loaded {Provider} (built in: no copy on disk)")]
     SkillFileEmbedded,
 
+    [Description("Toolsets {Toolsets}: {Tools} tools, a {PromptChars}-character system prompt, about {PrefixTokens} tokens of fixed prefix")]
+    ToolsetProfileBuilt,
+
 
     [Description("Loaded {File} via MarkdownSkillProvider")]
     MainSkillsFileLoaded,
