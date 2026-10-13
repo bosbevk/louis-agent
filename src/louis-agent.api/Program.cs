@@ -44,7 +44,7 @@ else
     {
         bool isApi = context.Request.Path.StartsWithSegments("/sessions") || context.Request.Path.StartsWithSegments("/workspace") ||
                      context.Request.Path.StartsWithSegments("/git") || context.Request.Path.StartsWithSegments("/toolsets") ||
-                     context.Request.Path.StartsWithSegments("/personalities");
+                     context.Request.Path.StartsWithSegments("/personalities") || context.Request.Path.StartsWithSegments("/model");
         if (!isApi || HasApiKey(context.Request, apiKey))
         {
             await next(context);
@@ -110,6 +110,9 @@ app.MapGet("/toolsets", (AgentEngineFactory engines) => Results.Json(new
         missing_settings = t.MissingSettings(engines.Context),
     }),
 }));
+
+// The model this instance answers with (F20: Puls's model picker shows it).
+app.MapGet("/model", () => Results.Json(new { provider = host.Llm.Provider, model = host.Llm.Model }));
 
 // The personalities a session can choose (F21): null is personality.md, the default.
 app.MapGet("/personalities", (AgentEngineFactory engines) => Results.Json(new

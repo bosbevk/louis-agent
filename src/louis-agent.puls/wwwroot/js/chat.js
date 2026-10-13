@@ -154,3 +154,13 @@ pulsUi.locate = () => new Promise((resolve) => {
     }), { timeout: 10000, maximumAge: 600000 });
 });
 
+// A starter in the message box (F20): focus it with the cursor at the end, and grow the box to fit.
+pulsUi.focusEnd = (selector) => {
+    const box = document.querySelector(selector);
+    if (!box) return;
+    box.focus();
+    box.setSelectionRange(box.value.length, box.value.length);
+    box.style.height = "auto";
+    box.style.height = Math.min(box.scrollHeight, 240) + "px";
+};
+

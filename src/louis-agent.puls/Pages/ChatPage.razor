@@ -180,8 +180,18 @@
                         <div class="pulse-bg"><span></span><span></span><span></span><span></span></div>
                         <img src="brand/puls-icon-tile.svg" alt="" width="76" height="76" />
                     </div>
+                    <button class="news-pill" type="button" @onclick='() => SetDraft("Lees die dokument wat ek aanheg en som dit in vyf punte op.")'>
+                        <span class="news-tag">Nuut</span> Puls lees PDF's, Word en Excel <span aria-hidden="true">→</span>
+                    </button>
                     <h1>Hoe kan ek help?</h1>
                     <p class="hint">Vra enigiets. Puls stuur elke taak na 'n spesialis met net die gereedskap wat dit nodig het, en jy kan sien hoe dit werk.</p>
+                    <div class="composer composer-centred">@Composer()</div>
+                    <div class="topics">
+                        @foreach (var (topic, starter) in Topics)
+                        {
+                            <button class="topic" type="button" @onclick="() => SetDraft(starter)">@topic</button>
+                        }
+                    </div>
                     <div class="suggestions">
                         @foreach (var (title, detail, prompt) in Suggestions)
                         {
@@ -209,37 +219,15 @@
 
         @if (_chat?.Usage() is { } chatUsage)
         {
-            <div class="chat-usage" title="@UsageFormat.Detail(chatUsage, Currency.Current)">@UsageFormat.Total(chatUsage, Currency.Current)</div>
+            <div class="chat-usage" title="@UsageFormat.Detail(chatUsage, Currency.Current)">
+                Hierdie gesprek: @chatUsage.Requests versoeke · @UsageFormat.Tokens(chatUsage.TotalTokens) tokens · @UsageFormat.Cost(chatUsage, Currency.Current)
+            </div>
         }
 
-        <div class="composer">
-            @if (_attachments.Count > 0)
-            {
-                <div class="attachments">
-                    @foreach (var attachment in _attachments)
-                    {
-                        <span class="chip">@attachment.Name <button class="icon" @onclick="() => _attachments.Remove(attachment)">×</button></span>
-                    }
-                </div>
-            }
-            <div class="input-row">
-                <label class="attach" title="Heg tekslêers aan">
-                    +
-                    <InputFile OnChange="AddFiles" multiple />
-                </label>
-                <textarea id="composer-input" rows="1" @bind="_draft" @bind:event="oninput"
-                          disabled="@(_chat?.Ended == true)"
-                          placeholder="@(_chat?.Ended == true ? "Hierdie gesprek het geëindig toe die API herbegin het - begin 'n nuwe gesprek" : "Boodskap aan Puls")"></textarea>
-                @if (_streaming)
-                {
-                    <button class="stop" @onclick="Stop" title="Stop">■</button>
-                }
-                else
-                {
-                    <button id="send-button" class="send" @onclick="Send" disabled="@(!CanSend)" title="Stuur (Enter)">↑</button>
-                }
-            </div>
-        </div>
+        @if (_chat is { Turns.Count: > 0 })
+        {
+            <div class="composer">@Composer()</div>
+        }
     </main>
 
     <ChatSearch @bind-Open="_searchOpen" Chats="Store.Chats" />
@@ -291,6 +279,106 @@
     private const string Personality = "puls";
 
     private static readonly string[] Languages = ["English", "Nederlands", "Deutsch", "isiZulu"];
+
+    /// <summary>
+    /// The message box: attachments, the text, and a toolbar (Media and Tools on the left; the model, voice and send on the
+    /// right). In the middle of an empty chat, at the bottom once it has turns.
+    /// </summary>
+    private RenderFragment Composer() => __builder =>
+    {
+        @if (_attachments.Count > 0)
+        {
+            <div class="attachments">
+                @foreach (var attachment in _attachments)
+                {
+                    <span class="chip">@attachment.Name <button class="icon" @onclick="() => _attachments.Remove(attachment)">×</button></span>
+                }
+            </div>
+        }
+        <div class="input-box">
+            <textarea id="composer-input" rows="1" @bind="_draft" @bind:event="oninput"
+                      disabled="@(_chat?.Ended == true)"
+                      placeholder="@(_chat?.Ended == true ? "Hierdie gesprek het geëindig toe die API herbegin het - begin 'n nuwe gesprek" : "Vra enigiets…")"></textarea>
+            <div class="composer-tools">
+                <div class="dropdown dropup">
+                    <button class="tool-button" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Voeg by">
+                        <span class="ic i-plus" aria-hidden="true"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <label class="dropdown-item file-item">
+                                <span class="ic i-file" aria-hidden="true"></span>Laai 'n lêer op
+                                <InputFile OnChange="AddFiles" multiple />
+                            </label>
+                        </li>
+                        <li><button class="dropdown-item" type="button" @onclick='() => ComingSoon("Skermskote")'><span class="ic i-screen" aria-hidden="true"></span>Voeg 'n skermskoot by</button></li>
+                    </ul>
+                </div>
+                <div class="dropdown dropup">
+                    <button class="tool-button tool-button-label" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class="ic i-sliders" aria-hidden="true"></span>Gereedskap
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><button class="dropdown-item" type="button" @onclick='() => SetDraft("Soek aanlyn: ")'><span class="ic i-search" aria-hidden="true"></span>Soek op die web</button></li>
+                        <li><button class="dropdown-item" type="button" @onclick='() => SetDraft("Lees die lêer ")'><span class="ic i-file" aria-hidden="true"></span>Lees 'n lêer</button></li>
+                        <li><button class="dropdown-item" type="button" @onclick='() => ComingSoon("Skep \u0027n prent")'><span class="ic i-image" aria-hidden="true"></span>Skep 'n prent</button></li>
+                        <li><button class="dropdown-item" type="button" @onclick='() => ComingSoon("Diep navorsing")'><span class="ic i-compass" aria-hidden="true"></span>Diep navorsing</button></li>
+                        <li><button class="dropdown-item" type="button" @onclick='() => ComingSoon("Dink langer")'><span class="ic i-sparkle" aria-hidden="true"></span>Dink langer</button></li>
+                    </ul>
+                </div>
+                <span class="composer-spacer"></span>
+                <div class="dropdown dropup">
+                    <button class="tool-button tool-button-label model-button" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Model">
+                        @(_model ?? "Model") <span class="ic i-chevron" aria-hidden="true"></span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><h6 class="dropdown-header">Model</h6></li>
+                        <li><button class="dropdown-item active" type="button">@(_model ?? "Die bediener se model") <span class="ic i-check ms-auto" aria-hidden="true"></span></button></li>
+                        <li><button class="dropdown-item" type="button" @onclick='() => ComingSoon("Ander modelle")'>Ander modelle…</button></li>
+                    </ul>
+                </div>
+                <button class="tool-button" type="button" title="Stemboodskap" @onclick='() => ComingSoon("Stemboodskappe")'><span class="ic i-mic" aria-hidden="true"></span></button>
+                @if (_streaming)
+                {
+                    <button class="stop" @onclick="Stop" title="Stop">■</button>
+                }
+                else
+                {
+                    <button id="send-button" class="send" @onclick="Send" disabled="@(!CanSend)" title="Stuur (Enter)">↑</button>
+                }
+            </div>
+        </div>
+    };
+
+    // Topics under the empty chat's message box: each puts a starter in the box to finish and send.
+    private static readonly (string Topic, string Starter)[] Topics =
+    [
+        ("Gesondheid", "Ek wil gesonder eet. Gee my 'n eenvoudige weekplan vir "),
+        ("Leer", "Verduidelik vir my, eenvoudig en met 'n voorbeeld: "),
+        ("Tegnologie", "Wat is die verskil tussen "),
+        ("Lewe", "Help my om te besluit: "),
+        ("Wetenskap", "Hoe werk "),
+        ("Taal", "Help my om hierdie teks in beter Afrikaans te skryf: "),
+    ];
+
+    private string? _model;
+
+    /// <summary>Puts <paramref name="text"/> in the message box, for the user to finish and send.</summary>
+    private async Task SetDraft(string text)
+    {
+        _draft = text;
+        StateHasChanged();
+        await JS.InvokeVoidAsync("pulsUi.focusEnd", "#composer-input");
+    }
+
+    private static string? Pretty(string? id)
+    {
+        if (string.IsNullOrWhiteSpace(id)) return null;
+        var words = id.Split('-', StringSplitOptions.RemoveEmptyEntries);
+        var named = words.TakeWhile(w => !char.IsDigit(w[0])).Select(w => char.ToUpperInvariant(w[0]) + w[1..]);
+        string version = string.Join(".", words.SkipWhile(w => !char.IsDigit(w[0])));
+        return string.Join(" ", named) + (version.Length > 0 ? " " + version : "");
+    }
 
     private bool _searchOpen;
     private bool _renameInHeader;
@@ -426,6 +514,15 @@
         Currency.Changed += Redraw;
         if (!Store.Loaded) await Store.LoadAsync();
         _location = await JS.InvokeAsync<string?>("pulsUi.loadLocation");
+        try
+        {
+            var model = await Api.GetAsync<System.Text.Json.JsonElement>("model");
+            _model = Pretty(model.GetProperty("model").GetString());
+        }
+        catch (Exception)
+        {
+            _model = null;   // An older API without /model: the picker says "Model".
+        }
     }
 
     protected override void OnParametersSet()
