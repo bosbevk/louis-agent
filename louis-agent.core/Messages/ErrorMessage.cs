@@ -107,4 +107,10 @@ public enum ErrorMessage
 
     [Description("This instance already has {Capacity} toolset profiles; reuse one of their toolset lists.")]
     TooManyToolsetProfiles,
+
+    [Description("depth must be between 0 and {Max}: sub-sessions are one level deep.")]
+    SessionDepthInvalid,
+
+    [Description("A sub-session can't load the '{Toolset}' toolset: sub-sessions are one level deep.")]
+    SubSessionCannotDelegate,
 }

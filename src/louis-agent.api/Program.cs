@@ -22,7 +22,9 @@ using System.Globalization;
 var host = AgentHost.Build();
 
 var builder = WebApplication.CreateBuilder(args);
+// host.Engine (every toolset this instance can load) serves /workspace and /git; sessions get their own (F5).
 builder.Services.AddSingleton(host.Engine);
+builder.Services.AddSingleton(host.Engines);
 builder.Services.AddSingleton<AgentSessions>();
 builder.Services.AddSingleton(new WorkspaceBoundary(host.Engine.WorkspaceRoot));
 var app = builder.Build();
@@ -37,7 +39,7 @@ else
     app.Use(async (context, next) =>
     {
         bool isApi = context.Request.Path.StartsWithSegments("/sessions") || context.Request.Path.StartsWithSegments("/workspace") ||
-                     context.Request.Path.StartsWithSegments("/git");
+                     context.Request.Path.StartsWithSegments("/git") || context.Request.Path.StartsWithSegments("/toolsets");
         if (!isApi || HasApiKey(context.Request, apiKey))
         {
             await next(context);
@@ -92,30 +94,55 @@ app.MapWorkspace();
 app.MapGit();
 app.MapHistory();
 
-// The body is optional: { "task", "run", "service" } tag every usage record of the session (the orchestrator sends them
-// for a fix; the web app sends none).
+// The toolsets a session can load (F5-S3): names, what each is for and whether this instance has its settings. Never
+// the tool definitions, so a general agent can choose without loading them.
+app.MapGet("/toolsets", (AgentEngineFactory engines) => Results.Json(new
+{
+    @default = AgentSessions.DefaultToolsets,
+    toolsets = ToolsetCatalog.All.Select(t => new
+    {
+        name = t.Name, description = t.Description, available = t.IsAvailable(engines.Context),
+        missing_settings = t.MissingSettings(engines.Context),
+    }),
+}));
+
+// The body is optional: { "toolsets": [...] } chooses the session's tools for its lifetime (F5; none sent: skills only);
+// { "task", "run", "service" } tag every usage record of the session (the orchestrator sends them for a fix); "depth" is
+// set by an agent opening a sub-session.
 app.MapPost("/sessions", (CreateSessionRequest? request, AgentSessions sessions) =>
 {
     if (request?.InvalidTag() is { } invalid)
-        return Results.Json(Error("invalid_request_error", $"'{invalid}' must be at most {CreateSessionRequest.MaxTagLength} printable characters."),
+        return Results.Json(Error("invalid_request_error",
+                MessageText.Format(ApiUserText.InvalidTag, new { Tag = invalid, Max = CreateSessionRequest.MaxTagLength })),
             statusCode: StatusCodes.Status400BadRequest);
 
-    var session = sessions.Create(request is null ? null : new UsageTags(request.Task, request.Run, request.Service));
+    AgentSession session;
+    try
+    {
+        session = sessions.Create(request?.Toolsets, request is null ? null : new UsageTags(request.Task, request.Run, request.Service),
+            request?.Depth ?? 0);
+    }
+    catch (ToolsetException ex)
+    {
+        return Results.Json(Error("invalid_request_error", ex.Message), statusCode: StatusCodes.Status400BadRequest);
+    }
+
     return Results.Json(new
     {
-        session_id = session.Id, created_at = session.CreatedAt,
+        session_id = session.Id, created_at = session.CreatedAt, toolsets = session.Toolsets, depth = session.Depth,
         task = session.Tags.Task, run = session.Tags.Run, service = session.Tags.Service,
     }, statusCode: StatusCodes.Status201Created);
 });
 
 // usage: the session's finished turns, like message_delta's (null when the API doesn't record usage).
-app.MapGet("/sessions/{id}", (string id, AgentSessions sessions, AgentEngine engine) =>
+app.MapGet("/sessions/{id}", (string id, AgentSessions sessions) =>
     sessions.Get(id) is { } session
         ? Results.Json(new
         {
             session_id = session.Id, created_at = session.CreatedAt, last_activity = session.LastActivity, busy = session.IsBusy,
+            toolsets = session.Toolsets, depth = session.Depth, tools = session.Engine.Tools.Count,
             task = session.Tags.Task, run = session.Tags.Run, service = session.Tags.Service,
-            usage = engine.RecordsUsage ? ClaudeStyleStream.Usage(session.Usage.Records, engine.Display) : null,
+            usage = session.Engine.RecordsUsage ? ClaudeStyleStream.Usage(session.Usage.Records, session.Engine.Display) : null,
         })
         : UnknownSession(id));
 
@@ -127,7 +154,7 @@ app.MapPost("/sessions/{id}/cancel", (string id, AgentSessions sessions) =>
         ? Results.Json(new { session_id = id, cancelled = session.Cancel() })
         : UnknownSession(id));
 
-app.MapPost("/sessions/{id}/messages", (string id, SendMessageRequest request, AgentSessions sessions, AgentEngine engine, HttpContext http) =>
+app.MapPost("/sessions/{id}/messages", (string id, SendMessageRequest request, AgentSessions sessions, HttpContext http) =>
 {
     if (sessions.Get(id) is not { } session) return UnknownSession(id);
 
@@ -139,7 +166,7 @@ app.MapPost("/sessions/{id}/messages", (string id, SendMessageRequest request, A
         return Results.Json(Error("conflict_error", MessageText.Format(ApiUserText.SessionBusy, new { Id = "{id}" })),
             statusCode: StatusCodes.Status409Conflict);
 
-    return TypedResults.ServerSentEvents(StreamTurnAsync(engine, session, prompt, turn));
+    return TypedResults.ServerSentEvents(StreamTurnAsync(session.Engine, session, prompt, turn));
 });
 
 app.Run();
@@ -259,8 +286,11 @@ static async IAsyncEnumerable<SseItem<string>> StreamTurnAsync(
 
 internal sealed record SendMessageRequest(string? Message, List<AttachmentRequest>? Attachments);
 
-/// <summary>Optional tags for a new session; they end up in the usage ledger, so they're kept short and printable.</summary>
-internal sealed record CreateSessionRequest(string? Task, string? Run, string? Service)
+/// <summary>
+/// A new session's options: its toolsets (F5), and optional tags for the usage ledger, kept short and printable. Depth is
+/// 1 when another agent opens it as a sub-session.
+/// </summary>
+internal sealed record CreateSessionRequest(string? Task, string? Run, string? Service, List<string>? Toolsets = null, int Depth = 0)
 {
     internal const int MaxTagLength = 200;
 
