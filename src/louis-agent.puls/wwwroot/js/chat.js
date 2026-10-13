@@ -114,3 +114,12 @@ document.addEventListener("keydown", (e) => {
     }
 });
 
+// The profile menu's Instellings: show the sidebar if it's hidden, then open its settings.
+pulsUi.openSettings = () => {
+    if (document.documentElement.classList.contains("sidebar-hidden")) pulsUi.toggleSidebar();
+    const settings = document.querySelector(".sidebar-settings");
+    if (!settings) return;
+    settings.open = true;
+    settings.scrollIntoView({ block: "end", behavior: "smooth" });
+};
+
