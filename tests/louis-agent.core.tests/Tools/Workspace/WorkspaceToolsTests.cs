@@ -52,6 +52,28 @@ public class WorkspaceToolsTests
     }
 
     [Test]
+    public void ReadFile_AllowsAnEnvTemplate()
+    {
+        // FX12: the delegation check couldn't answer "which settings in config/.env.example are about the LLM?".
+        string root = Path.Combine(Path.GetTempPath(), $"louis-agent-{Guid.NewGuid():N}");
+        Directory.CreateDirectory(Path.Combine(root, "config"));
+        File.WriteAllText(Path.Combine(root, "config", ".env.example"), "LLM_PROFILE=anthropic");
+        File.WriteAllText(Path.Combine(root, "config", ".env"), "SECRET=value");
+
+        try
+        {
+            var tools = new WorkspaceTools(root);
+
+            Assert.That(tools.ReadWorkspaceFile("config/.env.example"), Does.Contain("LLM_PROFILE=anthropic"));
+            Assert.That(tools.ReadWorkspaceFile("config/.env"), Does.Contain("not allowed"), "the real file stays blocked");
+        }
+        finally
+        {
+            Directory.Delete(root, recursive: true);
+        }
+    }
+
+    [Test]
     public void ReadAndWriteFile_BlocksSensitiveFiles()
     {
         string root = Path.Combine(Path.GetTempPath(), $"louis-agent-{Guid.NewGuid():N}");

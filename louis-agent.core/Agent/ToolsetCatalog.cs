@@ -59,7 +59,7 @@ public static class ToolsetCatalog
             GuideFile: "web-skills.md",
             MissingSettings: _ => [],
             ToolType: typeof(WebTools),
-            CreateTools: ctx => [new WebTools(ctx.WebSearch)]),
+            CreateTools: ctx => [new WebTools(ctx.WebSearch, rates: ctx.Rates)]),
 
         new("paymo", "Paymo time tracking: time entries, tasks, projects and summaries",
             GuideFile: "paymo-skills.md",
@@ -91,7 +91,6 @@ public static class ToolsetCatalog
             CreateTools: null),
     ];
 
-    /// <summary>Looks a toolset up by name (case-insensitive); null when there is none.</summary>
     /// <summary>
     /// Every tool name a catalogue toolset can register, loaded in this engine or not: an agent-built tool may not take
     /// one, or it would collide when a session loads that toolset.
@@ -102,6 +101,7 @@ public static class ToolsetCatalog
         .Select(m => m.Name)
         .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
+    /// <summary>Looks a toolset up by name (case-insensitive); null when there is none.</summary>
     public static ToolsetDefinition? Find(string name) =>
         All.FirstOrDefault(t => string.Equals(t.Name, name, StringComparison.OrdinalIgnoreCase));
 

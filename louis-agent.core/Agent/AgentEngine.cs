@@ -1,5 +1,6 @@
 namespace LouisAgent.Core.Agent;
 
+using LouisAgent.Core.Tools.Clock;
 using LouisAgent.Core.Agent.Tools;
 using System.ComponentModel;
 using System.Reflection;
@@ -111,7 +112,7 @@ public class AgentEngine
         // Summaries call the model directly, outside the tool loop, so they are recorded by their own recorder.
         RecordsUsage = usageSink is not null;
         _innerChatClient = usageSink is null ? chatClient : new UsageRecordingChatClient(chatClient, usageSink, mapper: usageMapper);
-        _guards = new ToolCallGuards(_registry, _innerChatClient);
+        _guards = new ToolCallGuards(_registry, _innerChatClient, options.SubSessionPromptBudget);
         var pipeline = new ChatClientBuilder(chatClient)
             .UseFunctionInvocation(configure: c =>
             {
@@ -135,6 +136,8 @@ public class AgentEngine
         }
 
         _registry.Add(Function(_skillTools.ExecuteSkill, nameof(ExecuteSkill)));
+        // Today's date and time (F22): every session, whatever its toolsets, since a model doesn't know what day it is.
+        _registry.AddPublicMethods(new ClockTools());
         if (toolsets is not null)
         {
             foreach (object toolset in toolsets) _registry.AddPublicMethods(toolset);

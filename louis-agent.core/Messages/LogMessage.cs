@@ -186,6 +186,9 @@ public enum LogMessage
     [Description("Toolsets {Toolsets}: dropped from the cache, the least recently used of {Capacity} profiles")]
     ToolsetProfileDropped,
 
+    [Description("Sub-session prompt budget: the last request's prompt was {Last} tokens and the next is expected at {Next}, over the budget of {Budget}; the next request answers without tools")]
+    SubSessionPromptBudgetReached,
+
 
     [Description("Loaded {File} via MarkdownSkillProvider")]
     MainSkillsFileLoaded,

@@ -2,6 +2,7 @@ using System.Collections.Concurrent;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Tools.Clock;
 using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
 
@@ -11,7 +12,8 @@ namespace LouisAgent.Api;
 /// One conversation: its engine (the toolsets it chose, fixed for its lifetime, F5), its history and the turn in
 /// progress, if any.
 /// </summary>
-internal sealed class AgentSession(string id, AgentEngine engine, IReadOnlyList<string> toolsets, int depth, UsageTags tags)
+internal sealed class AgentSession(string id, AgentEngine engine, IReadOnlyList<string> toolsets, int depth, UsageTags tags,
+    string? personality = null, UserPlace? place = null)
 {
     private readonly SemaphoreSlim _turnLock = new(1, 1);
     private CancellationTokenSource? _activeTurn;
@@ -26,6 +28,27 @@ internal sealed class AgentSession(string id, AgentEngine engine, IReadOnlyList<
 
     /// <summary>0 for a session a client opened; 1 for a sub-session another agent opened (F5-S5).</summary>
     public int Depth { get; } = depth;
+
+    /// <summary>The personality the session chose (F21), or null for personality.md.</summary>
+    public string? Personality { get; } = personality;
+
+    /// <summary>Where the user is, when they shared it (F22): set for every turn; the first message says it.</summary>
+    public UserPlace? Place { get; } = place;
+
+    /// <summary>The longest attachment kept, as in the prompt: one file can't fill a specialist's context.</summary>
+    public const int MaxAttachmentChars = 100_000;
+
+    private readonly ConcurrentDictionary<string, string> _attachments = new(StringComparer.OrdinalIgnoreCase);
+
+    /// <summary>The files attached in this conversation, by name, for a specialist (F22, <see cref="Core.Tools.Agents.SessionAttachments"/>).</summary>
+    public IReadOnlyDictionary<string, string> Attachments => _attachments;
+
+    /// <summary>Keeps an attachment for later turns; the same name again replaces it.</summary>
+    public void Remember(string name, string? content)
+    {
+        string text = content ?? string.Empty;
+        _attachments[name] = text.Length <= MaxAttachmentChars ? text : text[..MaxAttachmentChars];
+    }
 
     public List<ChatMessage> History { get; } = engine.NewHistory();
 
@@ -91,23 +114,29 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
     private readonly ConcurrentDictionary<string, AgentSession> _sessions = new();
 
     /// <summary>
-    /// Opens a session with <paramref name="toolsets"/> (null: <see cref="DefaultToolsets"/>; empty: none). Throws
-    /// <see cref="ToolsetException"/> for an unknown or unavailable toolset, a depth outside 0..<see cref="MaxDepth"/>, or a
-    /// sub-session asking for <see cref="AgentsToolset"/>, before anything is created.
+    /// Opens a session with <paramref name="toolsets"/> (null: <see cref="DefaultToolsets"/>; empty: none) and
+    /// <paramref name="personality"/> (null: personality.md). A sub-session gets no router (default.md): its toolsets were
+    /// chosen for it and it can't delegate (F21). Throws <see cref="ToolsetException"/> for an unknown or unavailable
+    /// toolset, a depth outside 0..<see cref="MaxDepth"/>, or a sub-session asking for <see cref="AgentsToolset"/>, and
+    /// <see cref="Core.Skills.PersonalityException"/> for an unknown personality, before anything is created.
     /// </summary>
-    public AgentSession Create(IEnumerable<string>? toolsets = null, UsageTags? tags = null, int depth = 0)
+    public AgentSession Create(IEnumerable<string>? toolsets = null, UsageTags? tags = null, int depth = 0, string? personality = null,
+        UserPlace? place = null)
     {
         if (depth is < 0 or > MaxDepth)
             throw new ToolsetException(MessageText.Format(ErrorMessage.SessionDepthInvalid, new { Max = MaxDepth }));
         var names = ToolsetCatalog.Normalise(toolsets ?? DefaultToolsets);
         if (depth > 0 && names.Contains(AgentsToolset))
             throw new ToolsetException(MessageText.Format(ErrorMessage.SubSessionCannotDelegate, new { Toolset = AgentsToolset }));
-        var engine = engines.GetOrCreate(names);
+        if (string.IsNullOrEmpty(personality)) personality = null;
+        // A sub-session its parent gave no role gets one from its toolsets (roles.json): roles in code, not left to the prompt.
+        if (depth > 0 && personality is null) personality = engines.RoleFor(names);
+        var engine = engines.GetOrCreate(names, personality, router: depth == 0);
 
         foreach (var idle in _sessions.Values.Where(s => !s.IsBusy && DateTimeOffset.UtcNow - s.LastActivity > IdleTimeout))
             _sessions.TryRemove(idle.Id, out _);
 
-        var session = new AgentSession($"sess_{Guid.NewGuid():N}", engine, names, depth, tags ?? UsageTags.None);
+        var session = new AgentSession($"sess_{Guid.NewGuid():N}", engine, names, depth, tags ?? UsageTags.None, personality, place);
         _sessions[session.Id] = session;
         return session;
     }

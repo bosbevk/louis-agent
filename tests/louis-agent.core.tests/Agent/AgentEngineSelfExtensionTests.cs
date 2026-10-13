@@ -19,7 +19,7 @@ public sealed class AgentEngineSelfExtensionTests
     {
         var engine = Build(toolsets: [], selfExtension: false);
 
-        Assert.That(Names(engine), Is.EqualTo(new[] { "ExecuteSkill" }));
+        Assert.That(Names(engine), Is.EquivalentTo(new[] { "ExecuteSkill", "GetToday" }), "the tools every session has");
     }
 
     [Test]
@@ -27,7 +27,7 @@ public sealed class AgentEngineSelfExtensionTests
     {
         var engine = Build(toolsets: [], selfExtension: true);
 
-        Assert.That(Names(engine), Is.EquivalentTo(SelfExtensionTools.Append("ExecuteSkill")));
+        Assert.That(Names(engine), Is.EquivalentTo(SelfExtensionTools.Append("ExecuteSkill").Append("GetToday")));
     }
 
     [Test]
@@ -37,7 +37,7 @@ public sealed class AgentEngineSelfExtensionTests
 
         var expected = PublicMethodNames(typeof(WorkspaceTools))
             .Concat(SelfExtensionTools)
-            .Append("ExecuteSkill");
+            .Append("ExecuteSkill").Append("GetToday");
         Assert.That(Names(engine), Is.EquivalentTo(expected));
     }
 
@@ -56,7 +56,7 @@ public sealed class AgentEngineSelfExtensionTests
         // toolsets: null is the default path: ExecuteSkill and the self-extension tools, no built-in toolsets.
         var engine = Build(toolsets: null, selfExtension: false);
 
-        Assert.That(Names(engine), Is.EquivalentTo(SelfExtensionTools.Append("ExecuteSkill")));
+        Assert.That(Names(engine), Is.EquivalentTo(SelfExtensionTools.Append("ExecuteSkill").Append("GetToday")));
     }
 
     private static AgentEngine Build(IEnumerable<object>? toolsets, bool selfExtension) =>

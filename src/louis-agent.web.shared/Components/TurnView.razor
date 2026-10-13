@@ -17,6 +17,10 @@
             </div>
         }
     </div>
+    @if (UserActions is not null && !Streaming)
+    {
+        <div class="message-actions user-actions">@UserActions(Turn)</div>
+    }
 
     <div class="assistant-message" @ref="_answer">
         <BlocksView Blocks="Turn.Blocks" Streaming="Streaming" Currency="Currency" />
@@ -37,12 +41,22 @@
         {
             <div class="usage" title="@UsageFormat.Detail(usage, Currency)">@UsageFormat.Line(usage, Currency)</div>
         }
+        @if (AnswerActions is not null && !Streaming)
+        {
+            <div class="message-actions">@AnswerActions(Turn)</div>
+        }
     </div>
 </div>
 
 @code {
     [Parameter, EditorRequired] public Turn Turn { get; set; } = default!;
     [Parameter] public bool Streaming { get; set; }
+
+    /// <summary>An app's actions under the user's message (Puls: copy, edit); none by default.</summary>
+    [Parameter] public RenderFragment<Turn>? UserActions { get; set; }
+
+    /// <summary>An app's actions under a finished answer (Puls: copy, regenerate, good/bad, share, sources); none by default.</summary>
+    [Parameter] public RenderFragment<Turn>? AnswerActions { get; set; }
 
     /// <summary>The currency costs are shown in (F14); a change re-draws finished turns too.</summary>
     [Parameter] public CurrencyChoice? Currency { get; set; }

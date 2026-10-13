@@ -6,6 +6,8 @@ Guidance for the `files` toolset: reading, writing and managing files in the wor
 
 ### Reading & Searching
 - `ReadWorkspaceFile(path)` — Read a UTF-8 text file (max 1 MB)
+- `ReadTable(path, sheet, startRow, maxRows)` — A spreadsheet or CSV as a table, a page of rows at a time, with its size and sheets
+- `ReadDocument(path)` — Read a PDF, Word document (.docx) or spreadsheet (.xlsx, .xls, .csv) as text, with page and sheet markers; long ones come in parts (`startIndex`). Scanned PDFs have no text (no OCR)
 - `ListWorkspaceFiles(relativePath)` — List files and directories in a folder
 - `ListDirectoryTree(relativePath, maxDepth)` — Show directory tree structure (depth 1-5)
 - `SearchWorkspace(query, maxResults)` — Search files for text patterns
@@ -37,5 +39,5 @@ trying another tool.
 ## Rules
 
 - Stay inside the workspace root. Don't reach outside that boundary.
-- Secrets stay secret (.env, .pem, credentials). Don't read or write them.
+- Secrets stay secret (.env, .pem, credentials). Don't read or write them. Templates such as `.env.example` hold no secrets and can be read.
 - File operations are bounded: 1 MB reads, 500 files maximum.

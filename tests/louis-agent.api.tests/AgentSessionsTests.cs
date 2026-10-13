@@ -38,7 +38,7 @@ public class AgentSessionsTests
     [Test]
     public void AnEmptyList_GivesNoToolsets()
     {
-        Assert.That(Names(Sessions().Create([])), Is.EqualTo(new[] { "ExecuteSkill" }));
+        Assert.That(Names(Sessions().Create([])), Is.EquivalentTo(new[] { "ExecuteSkill", "GetToday" }));
     }
 
     [Test]
@@ -96,5 +96,74 @@ public class AgentSessionsTests
 
         public object? GetService(Type serviceType, object? serviceKey = null) => null;
         public void Dispose() { }
+    }
+
+    [Test]
+    public void ASubSession_HasNoRouter_ATopLevelOneHas()
+    {
+        // F21: default.md picks toolsets and delegates; a sub-session's toolsets were chosen for it and it can't delegate.
+        var sessions = Sessions();
+
+        var top = sessions.Create(["files"]);
+        var sub = sessions.Create(["files"], depth: 1);
+
+        Assert.That(top.Engine.SkillDocumentation, Does.Contain("# Louis Agent - Default Instructions"));
+        Assert.That(sub.Engine.SkillDocumentation, Does.Not.Contain("# Louis Agent - Default Instructions"));
+        Assert.That(sub.Engine.SkillDocumentation, Does.Contain("# Files Skills"), "its toolsets' guides stay");
+    }
+
+    [Test]
+    public void AnUnknownPersonality_IsRefused()
+    {
+        Assert.Throws<LouisAgent.Core.Skills.PersonalityException>(() => Sessions().Create(["files"], personality: "nobody-here"));
+    }
+
+    [Test]
+    public void NoPersonality_IsTheDefault()
+    {
+        var session = Sessions().Create(["files"], personality: "");
+
+        Assert.That(session.Personality, Is.Null);
+        Assert.That(session.Engine.SkillDocumentation, Does.Contain("Louis's Minion"));
+    }
+
+    [Test]
+    public void ASession_RemembersItsAttachments_ByName_Capped()
+    {
+        // F22: a later turn can still hand an earlier attachment to a specialist.
+        var session = Sessions().Create(["files"]);
+
+        session.Remember("Verslag.txt", "eerste");
+        session.Remember("verslag.txt", "tweede");
+        session.Remember("groot.txt", new string('x', AgentSession.MaxAttachmentChars + 10));
+
+        Assert.That(session.Attachments["VERSLAG.TXT"], Is.EqualTo("tweede"), "names ignore case; the newest wins");
+        Assert.That(session.Attachments["groot.txt"], Has.Length.EqualTo(AgentSession.MaxAttachmentChars));
+    }
+
+    [Test]
+    public void ThePlace_HasTheLocationWhenShared_AndTheTimeZoneAlways()
+    {
+        // F22 step 2b, and PR #28's review: a time zone sent without a location is kept (GetToday in the user's time).
+        Assert.That(new CreateSessionRequest(null, null, null, Location: " Pretoria ", TimeZone: "Africa/Johannesburg").Place(),
+            Is.EqualTo(new LouisAgent.Core.Tools.Clock.UserPlace("Pretoria", "Africa/Johannesburg")));
+        Assert.That(new CreateSessionRequest(null, null, null, TimeZone: "Europe/London").Place(),
+            Is.EqualTo(new LouisAgent.Core.Tools.Clock.UserPlace(null, "Europe/London")));
+        Assert.That(new CreateSessionRequest(null, null, null).Place(), Is.Null);
+
+        var session = Sessions().Create(["files"], place: new LouisAgent.Core.Tools.Clock.UserPlace("Pretoria", null));
+        Assert.That(session.Place!.Location, Is.EqualTo("Pretoria"));
+    }
+
+    [Test]
+    public void ASubSessionWithoutARole_GetsOneFromItsToolsets_AndAGivenOneIsKept()
+    {
+        // The delegation check's option 4: the role in code, on the peer, not left to the parent's prompt.
+        var sessions = Sessions();
+
+        Assert.That(sessions.Create(["web"], depth: 1).Personality, Is.EqualTo("puls-researcher"));
+        Assert.That(sessions.Create(["files", "python"], depth: 1).Personality, Is.EqualTo("puls-analyst"));
+        Assert.That(sessions.Create(["web"], depth: 1, personality: "puls-specialist").Personality, Is.EqualTo("puls-specialist"));
+        Assert.That(sessions.Create(["web"]).Personality, Is.Null, "a top-level session keeps personality.md");
     }
 }

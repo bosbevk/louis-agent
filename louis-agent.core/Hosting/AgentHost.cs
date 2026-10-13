@@ -115,7 +115,7 @@ public static partial class AgentHost
         DisplayCurrency display = DisplayCurrency.Resolve(agent, prices.Currency, rates);
         Log.Log(LogLevel.Information, LogMessage.DisplayCurrencyChosen, new { Display = display });
         var engines = new AgentEngineFactory(chatClient, agent, llm.ResolveSupportsTools(), CreateUsageSink(agent, prices),
-            clientFactory.CreateUsageMapper(llm), display, llm.ResolveThinking());
+            clientFactory.CreateUsageMapper(llm), display, llm.ResolveThinking(), rates: rates);
         var engine = engines.GetOrCreate(engines.Available);
         Log.Log(LogLevel.Information, LogMessage.LlmChosen,
             new { Llm = llm, Tools = engine.SupportsTools ? "on" : "off", Thinking = engine.Thinking?.ToString().ToLowerInvariant() ?? "off" });
@@ -277,23 +277,33 @@ public static partial class AgentHost
 
     /// <summary>
     /// Loads the system prompt for a toolset profile (F5): personality, default.md (the router), the guide of each of
-    /// <paramref name="toolsets"/> and no other (docs/CLAUDE.md, *Adding a toolset*), then the function's own skill file
-    /// ({AgentFunction}-skills.md); "louis" loads every skill file. Our own skill files are plain markdown read by
+    /// <paramref name="toolsets"/> and no other (docs/CLAUDE.md, *Adding a toolset*), then, when the profile has the skills
+    /// toolset, the function's own skill file ({AgentFunction}-skills.md; "louis" loads every skill file). Our own skill files are plain markdown read by
     /// <see cref="MarkdownSkillProvider"/>; a provider class of its own is only for skills we don't control.
     /// Built-in files are read from disk when there (<see cref="AgentOptions.SkillsDirectory"/>, the working directory
     /// and its parents, /app), else from the copy embedded in the assembly (<see cref="SkillFileSource"/>).
     /// </summary>
-    public static ISkillProvider LoadSkills(AgentOptions agent, IEnumerable<ToolsetDefinition> toolsets)
+    /// <param name="personality">The session's personality (F21): a name in <c>Skills/personalities/</c>, or null for
+    /// <c>personality.md</c>. <see cref="PersonalityException"/> for a name that isn't valid or has no file.</param>
+    /// <param name="router">Whether the prompt has default.md, the router that picks a toolset and delegates. A sub-session
+    /// gets none (F21): its toolsets were chosen for it and it can't delegate.</param>
+    public static ISkillProvider LoadSkills(AgentOptions agent, IEnumerable<ToolsetDefinition> toolsets, string? personality = null,
+        bool router = true)
     {
         var composite = new CompositeSkillProvider();
 
         // Personality first, so who the agent is frames everything after it; default.md (the router) after it
-        AddBuiltIn(agent, composite, "personality.md");
-        AddBuiltIn(agent, composite, "default.md");
+        AddBuiltIn(agent, composite, PersonalityFile(agent, personality));
+        if (router) AddBuiltIn(agent, composite, "default.md");
 
         // The guides of this profile's toolsets only, so the prompt never describes tools the session doesn't have
-        foreach (string fileName in ToolsetCatalog.GuideFiles(toolsets))
+        var profile = toolsets.ToList();
+        foreach (string fileName in ToolsetCatalog.GuideFiles(profile))
             AddBuiltIn(agent, composite, fileName);
+
+        // Function skill files are procedures ExecuteSkill runs: they come with the skills toolset, like a guide with its
+        // tools. A profile without it (Puls's chats: agents only) gets the router and its guides, not every skill file.
+        if (profile.All(t => t.Name != SkillsToolset)) return composite;
 
         if (agent.AgentFunction == "louis")
         {
@@ -336,6 +346,9 @@ public static partial class AgentHost
     /// <summary>Skill files of functions that aren't toolsets, loaded by "louis" (and by their own AGENT_FUNCTION).</summary>
     private static readonly string[] FunctionSkillFiles = ["code-review-skills.md", "time-logging-skills.md"];
 
+    /// <summary>The toolset the function skill files come with (ExecuteSkill runs their procedures).</summary>
+    private const string SkillsToolset = "skills";
+
     /// <summary>The folder holding default.md and the *-skills.md files, or null if none was found.</summary>
     public static string? FindSkillsDirectory(AgentOptions agent) =>
         FindSkillFile(agent, "default.md") is { } defaultFile ? Path.GetDirectoryName(defaultFile) : null;
@@ -350,6 +363,22 @@ public static partial class AgentHost
     /// <summary>A skill file's text from disk (which overrides) or the assembly; null when neither has it.</summary>
     internal static (string Text, bool FromDisk)? ReadSkillFile(AgentOptions agent, string fileName) =>
         SkillFileSource.Read(fileName, SkillFilePaths(agent, fileName));
+
+    /// <summary>
+    /// The skill file of <paramref name="personality"/>: <see cref="Personalities.DefaultFile"/> when none is named, else
+    /// its file in <c>personalities/</c>, which must exist on disk or in the assembly.
+    /// </summary>
+    internal static string PersonalityFile(AgentOptions agent, string? personality)
+    {
+        if (string.IsNullOrEmpty(personality)) return Personalities.DefaultFile;
+        if (!Personalities.IsValidName(personality))
+            throw new PersonalityException(MessageText.Format(ErrorMessage.PersonalityNameInvalid, new { Name = personality }));
+        string file = Personalities.FileName(personality);
+        if (ReadSkillFile(agent, file) is null)
+            throw new PersonalityException(MessageText.Format(ErrorMessage.UnknownPersonality,
+                new { Name = personality, Available = string.Join(", ", Personalities.Available(agent.SkillsDirectory)) }));
+        return file;
+    }
 
     /// <summary>Adds a built-in skill file to the prompt, from disk or the assembly; a missing one is skipped.</summary>
     private static void AddBuiltIn(AgentOptions agent, CompositeSkillProvider composite, string fileName)

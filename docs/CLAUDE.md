@@ -73,7 +73,9 @@ louis-agent.core/             # Namespace = folder path (LouisAgent.Core.Tools.W
 │   ├── Git/, DotNet/, Shell/ # GitTools; DotNetTools; BashTools, PowerShellTools, PythonTools
 │   ├── Web/                  # WebTools: WebSearch (Google / DuckDuckGo providers) and FetchUrl (SSRF-guarded)
 │   ├── Scripts/              # Agent-built tools (*.tool.md)
-│   ├── Agents/               # AgentPeerTools: StartSubSession on a peer agent (AGENT_PEERS, F5)
+│   ├── Agents/               # AgentPeerTools: StartSubSession on a peer agent (AGENT_PEERS, F5); SessionAttachments (F22)
+│   ├── Clock/                # ClockTools (GetToday, every session) and UserPlace: where the user is (F22)
+│   ├── Documents/            # DocumentText: PDF, Word, spreadsheets for ReadDocument, ReadTable, FetchUrl (F22)
 │   └── Integrations/         # Paymo/, DevOps/: loaded only when their API keys are set
 ├── Protocols/Mcp/            # RiderMcpClient: lists tools from Rider's MCP server
 ├── Usage/                    # Usage ledger (F1): one JSON line per model request in {LOG_DIRECTORY}/usage-YYYY-MM.jsonl
@@ -123,7 +125,8 @@ docker/                       # Dockerfile.{acp-server,api,agent,mcp-server,orch
 config/                       # .env and .env.secrets (both ignored), their examples, LLM profiles (.env.anthropic,
                               # .env.ollama, .env.ollama-triage for the orchestrator), prices.json (model prices),
                               # rates.json (exchange rates), Rider config
-Skills/                       # personality.md + default.md + *-skills.md (system prompt), tools/ (agent-built tools)
+Skills/                       # personality.md + default.md + *-skills.md (system prompt), personalities/ (a session's own,
+                              # F21: puls and its specialists' roles), tools/ (agent-built tools)
 docs/                         # This guide, features/ (planned work), plans/ (approved build plans),
                               # fixes/ (what broke and why), specs/, projects/
 ```
@@ -193,7 +196,7 @@ a change to one (a new provider, a new tool, a new guard) touches one folder:
 |---|---|
 | `Agent/` | The loop: turns, history, system prompt, round limits; the tool registry, the tool-call guards that call the model (cut-off calls, oversized results summarised), the skill tools and the agent-built tools (`/approve`) |
 | `Llm/` + `Llm/{Name}Provider/` | The model: client factory, `IChatClient` middleware (thinking, caching, usage recording), one folder per provider (`AnthropicProvider/`: a folder named `Anthropic` would hide the SDK's own `Anthropic` namespace) |
-| `Tools/{Toolset}/` | What the model can do: one folder per toolset (`Workspace`, `Git`, `DotNet`, `Shell`, `Web`, `Scripts`, `Agents`, `Integrations/Paymo`, `Integrations/DevOps`); `ProcessRunner` beside them |
+| `Tools/{Toolset}/` | What the model can do: one folder per toolset (`Workspace`, `Git`, `DotNet`, `Shell`, `Web`, `Scripts`, `Agents`, `Integrations/Paymo`, `Integrations/DevOps`), plus `Clock` (every session) and `Documents` (shared by two toolsets); `ProcessRunner` beside them |
 | `Skills/` | Loading the markdown skills and personality into the prompt |
 | `Guardrails/` | Pure safety checks, no model: the workspace boundary, sensitive files, the SSRF guard (the guards that call a model are in `Agent/`) |
 | `Usage/` and `Pricing/` | The ledger (records, sinks, scopes, reports); prices, cost, rates and the display currency |
@@ -268,10 +271,24 @@ Log.Log(LogLevel.Information, McpServerLogMessage.ToolNameTaken, new { Name = na
 ### Adding a skill
 
 Create `Skills/{name}-skills.md`. With `AGENT_FUNCTION=louis` every skill file is loaded; otherwise set
-`AGENT_FUNCTION={name}`. For a guide that must always load (like `bash-skills.md`), add it to
+`AGENT_FUNCTION={name}`. Skill files come with the **skills** toolset: a session without it (Puls's chats, agents
+only) gets the router and its toolsets' guides, not the skill files. For a guide that must always load (like `bash-skills.md`), add it to
 `AgentHost.AlwaysLoadedSkillFiles` and `SkillFiles.BuiltIn`. Procedures use `## Skill: Name` with an `Execution:` fence
 (bash, powershell or python); arguments arrive as `SKILL_ARG_*` environment variables. A toolset's guide follows
 *Adding a toolset*: plain markdown, no provider class of its own.
+
+### Adding a personality
+
+A session names its personality when it opens (`POST /sessions` with `"personality": "{name}"`; a sub-session through
+`StartSubSession(…, personality)`), and keeps it, as it keeps its toolsets (F21). Without one it gets `personality.md`.
+
+1. Create `Skills/personalities/{name}.md`: lowercase letters, digits and dashes. It's embedded in core like the other
+   built-in files; a file of that name on disk wins, so wording can change without a rebuild (restart the container).
+2. **A voice** (`puls.md`) says who the agent is and how it talks. **A role** for a specialist (`puls-researcher.md`)
+   says its function and how it reports to the agent that called it, on the shared base the `puls-*` roles use.
+3. A role a parent should pass goes in `agents-skills.md`'s table (toolsets → personality), and in
+   `Skills/personalities/roles.json`: a sub-session opened without a role gets the first rule whose toolsets it has.
+4. `GET /personalities` lists them; an unknown or invalid name is a 400 before any engine is built.
 
 ### Building another agent on core
 
@@ -336,6 +353,8 @@ whole loop against a real model: API sessions, the fix flow, and the web app's B
 
 ## Key design decisions
 
+- **Reuse before building** — reuse the repo's components and maintained third-party packages (MIT, Apache or BSD);
+  write our own only when nothing fits, and say in the plan which were considered.
 - **Microsoft.Extensions.AI** — one `IChatClient` across providers; `FunctionInvokingChatClient` runs the tool loop.
 - **Provider strategies** — where Anthropic, OpenAI-compatible and Ollama differ (usage, caching, thinking, limits),
   one interface with an implementation per provider, picked in `LlmClientFactory`

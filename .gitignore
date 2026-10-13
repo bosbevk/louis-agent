@@ -47,3 +47,6 @@ Skills/tools/pending/
 
 # Working copy and state created by samples/run-demo.ps1
 .demo/
+
+# Python bytecode (the sample scripts)
+__pycache__/

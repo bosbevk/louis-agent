@@ -141,11 +141,13 @@ Everything it sends uses LF line endings, whatever the checkout:
 Every toolset is a catalogue entry: a name, a one-line description, the settings it needs, its tool class and factory,
 and its guide (docs/CLAUDE.md, *Adding a toolset*). `files`, `git`, `dotnet`, `python`, `powershell`, `bash`, `web`,
 `paymo`, `devops`, `agents` (sub-sessions on a peer, `AGENT_PEERS`) and `skills` (engine-provided). `AgentEngineFactory`
-builds one engine per normalised list (cached; past 16 the least recently used is dropped), with only those tools and only their guides in the system
-prompt, and logs each profile's tool count and fixed-prefix estimate. The CLI, ACP server and MCP server use every
+builds one engine per profile, cached by its normalised toolset list, its personality and whether it has the router (F21;
+past 16 the least recently used is dropped), with only those tools and only their guides in the system prompt, and logs
+each profile's tool count and fixed-prefix estimate. The CLI, ACP server and MCP server use every
 toolset the instance can load; the API's sessions choose theirs. A sub-session (`AgentPeerTools.StartSubSession`) runs
-on a peer with its own toolsets, at most 3 per turn and 5 minutes each, and only its answer and a usage line come back;
-its usage records carry the parent turn (`parent`).
+on a peer with its own toolsets and, optionally, its role (`personality`), at most 3 per turn and 5 minutes each, and
+only its answer and a usage line come back; its usage records carry the parent turn (`parent`). A sub-session gets no
+router (`default.md`): its toolsets were chosen for it and it can't delegate.
 
 ## A chat turn
 
@@ -170,14 +172,18 @@ User message
 
 ## Skills
 
-`AgentHost.LoadSkills(agent, toolsets)` builds a `CompositeSkillProvider` whose combined documentation is the system
-prompt; every file is plain markdown read by `MarkdownSkillProvider`:
-1. `personality.md` — who the agent is and how it talks; kept apart so it can change without touching how the agent works
-2. `default.md` — the router: which toolset a task needs, and how sessions and sub-sessions work
+`AgentHost.LoadSkills(agent, toolsets, personality, router)` builds a `CompositeSkillProvider` whose combined
+documentation is the system prompt; every file is plain markdown read by `MarkdownSkillProvider`:
+1. the personality — who the agent is and how it talks, kept apart so it can change without touching how the agent
+   works: `personality.md` by default, or the session's own from `Skills/personalities/{name}.md` (F21: `POST /sessions`
+   with `personality`, `GET /personalities`). Puls speaks as `puls`; its specialists get a role (`puls-researcher`,
+   `puls-reader`, `puls-historian`, `puls-analyst`, `puls-specialist`) that says their function and how to report
+2. `default.md` — the router: which toolset a task needs, and how sessions and sub-sessions work (top-level sessions
+   only: a sub-session gets none)
 3. the guide of each of the profile's toolsets (`files-skills.md`, `git-skills.md`, …) and no other, so the prompt never
    describes tools the session doesn't have
-4. the `AGENT_FUNCTION` skill file (`code-review`, `time-logging`, or any `{name}-skills.md`); `louis` loads them all plus
-   any other `*-skills.md` in the folder
+4. with the `skills` toolset only, the `AGENT_FUNCTION` skill file (`code-review`, `time-logging`, or any
+   `{name}-skills.md`); `louis` loads them all plus any other `*-skills.md` in the folder
 
 The built-in files are embedded in `louis-agent.core` (`SkillFileSource`); a file of the same name on disk wins
 (`SKILLS_DIRECTORY`, the working directory and its parents, also their `Skills/` folders, `/app`, the app's base
@@ -188,6 +194,11 @@ runs it with `ExecuteSkill(name, jsonArgs)`; arguments are passed as `SKILL_ARG_
 spliced into the script text.
 
 ## Tools
+
+Every session also has `GetToday` (`Tools/Clock`, F22): the date and time in the user's time zone when they shared it
+(`UserPlace`), else South African time. `Tools/Documents/DocumentText` reads PDF, Word and spreadsheets for
+`ReadDocument`, `ReadTable` and `FetchUrl` (PdfPig, DocumentFormat.OpenXml, ExcelDataReader). A sub-session gets the
+user's attachments by name (`SessionAttachments`) and their place (`UserPlace`), both set by the API for each turn.
 
 Public methods on the tool classes become tools via `AIFunctionFactory.Create` (so **every public method on a tool class
 is exposed to the model** — helpers must be `internal` or `private`). Names and parameter names are exact.

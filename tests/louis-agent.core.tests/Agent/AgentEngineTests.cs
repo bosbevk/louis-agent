@@ -58,7 +58,7 @@ public class AgentEngineTests
     {
         var engine = new AgentEngine(HelloSkills(), new FakeChatClient(), TestPaths.Agent(), toolsets: [new PingTools()]);
 
-        Assert.That(engine.Tools.Select(t => t.Name), Is.EquivalentTo(new[] { "ExecuteSkill", "Ping" }));
+        Assert.That(engine.Tools.Select(t => t.Name), Is.EquivalentTo(new[] { "ExecuteSkill", "GetToday", "Ping" }));
     }
 
     private sealed class PingTools

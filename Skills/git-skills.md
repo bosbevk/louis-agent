@@ -46,6 +46,9 @@ Guidance for the `git` toolset: status, diffs, branches, staging, commits, merge
 - `GetStatus()` — Get current git status (short format)
 - `GetLog(count)` — Show recent commits (default: 10)
 - `ShowCommit(commitRef)` — Show details of a specific commit
+- `FileHistory(path, count)` — The commits that changed one file, following renames
+- `Blame(path, startLine, endLine)` — Who last changed each line, with the commit and date
+- `SearchCommits(text, author, since, until, count)` — Find commits by message words, author or date range
 - `HasUncommittedChanges()` — Check for uncommitted changes
 - `GetRepositoryInfo()` — Show branch, remotes, and status summary
 

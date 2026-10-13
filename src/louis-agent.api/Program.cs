@@ -8,6 +8,7 @@ using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
 using LouisAgent.Api.Endpoints;
 using LouisAgent.Core.Pricing;
+using LouisAgent.Core.Skills;
 using LouisAgent.Core.Tools.Workspace;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Guardrails;
@@ -18,6 +19,7 @@ using LouisAgent.Core.Messages;
 using System.Globalization;
 using System.Threading.Channels;
 using LouisAgent.Core.Tools.Agents;
+using LouisAgent.Core.Tools.Clock;
 
 // HTTP version of the ACP server, which also serves the web app: every API reply is JSON, and a message's answer streams as Server-Sent Events shaped
 // like Claude's (message_start, content_block_start/delta/stop for thinking, text, tool_use and tool_result, message_stop).
@@ -41,7 +43,8 @@ else
     app.Use(async (context, next) =>
     {
         bool isApi = context.Request.Path.StartsWithSegments("/sessions") || context.Request.Path.StartsWithSegments("/workspace") ||
-                     context.Request.Path.StartsWithSegments("/git") || context.Request.Path.StartsWithSegments("/toolsets");
+                     context.Request.Path.StartsWithSegments("/git") || context.Request.Path.StartsWithSegments("/toolsets") ||
+                     context.Request.Path.StartsWithSegments("/personalities") || context.Request.Path.StartsWithSegments("/model");
         if (!isApi || HasApiKey(context.Request, apiKey))
         {
             await next(context);
@@ -108,7 +111,18 @@ app.MapGet("/toolsets", (AgentEngineFactory engines) => Results.Json(new
     }),
 }));
 
+// The model this instance answers with (F20: Puls's model picker shows it).
+app.MapGet("/model", () => Results.Json(new { provider = host.Llm.Provider, model = host.Llm.Model }));
+
+// The personalities a session can choose (F21): null is personality.md, the default.
+app.MapGet("/personalities", (AgentEngineFactory engines) => Results.Json(new
+{
+    @default = (string?)null,
+    personalities = engines.AvailablePersonalities,
+}));
+
 // The body is optional: { "toolsets": [...] } chooses the session's tools for its lifetime (F5; none sent: skills only);
+// "personality" its personality (F21; none sent: personality.md);
 // { "task", "run", "service" } tag every usage record of the session (the orchestrator sends them for a fix); "depth" is
 // set by an agent opening a sub-session.
 app.MapPost("/sessions", (CreateSessionRequest? request, AgentSessions sessions) =>
@@ -117,14 +131,18 @@ app.MapPost("/sessions", (CreateSessionRequest? request, AgentSessions sessions)
         return Results.Json(Error("invalid_request_error",
                 MessageText.Format(ApiUserText.InvalidTag, new { Tag = invalid, Max = CreateSessionRequest.MaxTagLength })),
             statusCode: StatusCodes.Status400BadRequest);
+    if (!string.IsNullOrWhiteSpace(request?.TimeZone) && UserPlace.FindTimeZone(request.TimeZone) is null)
+        return Results.Json(Error("invalid_request_error", MessageText.Format(ApiUserText.UnknownTimeZone, new { request.TimeZone })),
+            statusCode: StatusCodes.Status400BadRequest);
 
     AgentSession session;
     try
     {
         session = sessions.Create(request?.Toolsets,
-            request is null ? null : new UsageTags(request.Task, request.Run, request.Service, request.Parent), request?.Depth ?? 0);
+            request is null ? null : new UsageTags(request.Task, request.Run, request.Service, request.Parent), request?.Depth ?? 0,
+            request?.Personality, request?.Place());
     }
-    catch (ToolsetException ex)
+    catch (Exception ex) when (ex is ToolsetException or PersonalityException)
     {
         return Results.Json(Error("invalid_request_error", ex.Message), statusCode: StatusCodes.Status400BadRequest);
     }
@@ -132,7 +150,7 @@ app.MapPost("/sessions", (CreateSessionRequest? request, AgentSessions sessions)
     return Results.Json(new
     {
         session_id = session.Id, created_at = session.CreatedAt, toolsets = session.Toolsets, depth = session.Depth,
-        task = session.Tags.Task, run = session.Tags.Run, service = session.Tags.Service, parent = session.Tags.Parent,
+        personality = session.Personality, task = session.Tags.Task, run = session.Tags.Run, service = session.Tags.Service, parent = session.Tags.Parent,
     }, statusCode: StatusCodes.Status201Created);
 });
 
@@ -142,7 +160,7 @@ app.MapGet("/sessions/{id}", (string id, AgentSessions sessions) =>
         ? Results.Json(new
         {
             session_id = session.Id, created_at = session.CreatedAt, last_activity = session.LastActivity, busy = session.IsBusy,
-            toolsets = session.Toolsets, depth = session.Depth, tools = session.Engine.Tools.Count,
+            toolsets = session.Toolsets, depth = session.Depth, personality = session.Personality, tools = session.Engine.Tools.Count,
             task = session.Tags.Task, run = session.Tags.Run, service = session.Tags.Service,
             usage = session.Engine.RecordsUsage ? ClaudeStyleStream.Usage(session.Usage.Records, session.Engine.Display) : null,
         })
@@ -167,6 +185,13 @@ app.MapPost("/sessions/{id}/messages", (string id, SendMessageRequest request, A
     if (!session.TryStartTurn(http.RequestAborted, out var turn))
         return Results.Json(Error("conflict_error", MessageText.Format(ApiUserText.SessionBusy, new { Id = "{id}" })),
             statusCode: StatusCodes.Status409Conflict);
+
+    // The session keeps its attachments, so a later turn can still hand them to a specialist (F22).
+    foreach (var attachment in request.Attachments ?? []) session.Remember(attachment.Name, attachment.Content);
+
+    // Where the user is, said once, in the first message: per session, so not in the shared system prompt (F22).
+    if (session.Turns == 1 && session.Place is { Location: { } location } place)
+        prompt = MessageText.Format(ApiModelText.UserPlace, new { Location = location, TimeZone = place.TimeZone ?? "Africa/Johannesburg" }) + "\n\n" + prompt;
 
     return TypedResults.ServerSentEvents(StreamTurnAsync(session.Engine, session, prompt, turn));
 });
@@ -238,6 +263,8 @@ static async IAsyncEnumerable<SseItem<string>> StreamTurnAsync(
         {
             Task<bool> next;
             using (usage.Activate())
+            using (SessionAttachments.Use(session.Attachments))
+            using (UserPlace.Use(session.Place))
             using (SubSessionFeed.Observe(e => subSessions.Writer.TryWrite(e)))
                 next = updates.MoveNextAsync().AsTask();
 
@@ -303,17 +330,24 @@ static async IAsyncEnumerable<SseItem<string>> StreamTurnAsync(
 internal sealed record SendMessageRequest(string? Message, List<AttachmentRequest>? Attachments);
 
 /// <summary>
-/// A new session's options: its toolsets (F5), and optional tags for the usage ledger, kept short and printable. Depth is
-/// 1 when another agent opens it as a sub-session.
+/// A new session's options: its toolsets (F5), its personality (F21), and optional tags for the usage ledger, kept short
+/// and printable. Depth is 1 when another agent opens it as a sub-session.
 /// </summary>
 internal sealed record CreateSessionRequest(
-    string? Task, string? Run, string? Service, List<string>? Toolsets = null, int Depth = 0, string? Parent = null)
+    string? Task, string? Run, string? Service, List<string>? Toolsets = null, int Depth = 0, string? Parent = null,
+    string? Personality = null, string? Location = null,
+    [property: System.Text.Json.Serialization.JsonPropertyName("time_zone")] string? TimeZone = null)
 {
     internal const int MaxTagLength = 200;
 
+    /// <summary>Where the user is (F22): their location when they shared it, their time zone when sent; null with neither.</summary>
+    public UserPlace? Place() => string.IsNullOrWhiteSpace(Location) && string.IsNullOrWhiteSpace(TimeZone)
+        ? null
+        : new UserPlace(string.IsNullOrWhiteSpace(Location) ? null : Location.Trim(), string.IsNullOrWhiteSpace(TimeZone) ? null : TimeZone.Trim());
+
     /// <summary>The name of the first tag that is too long or holds control characters, or null when all are fine.</summary>
     public string? InvalidTag() =>
-        new[] { ("task", Task), ("run", Run), ("service", Service), ("parent", Parent) }
+        new[] { ("task", Task), ("run", Run), ("service", Service), ("parent", Parent), ("location", Location) }
             .FirstOrDefault(t => t.Item2 is { } value && (value.Length > MaxTagLength || value.Any(char.IsControl))).Item1;
 }
 

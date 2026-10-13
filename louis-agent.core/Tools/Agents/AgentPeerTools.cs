@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.Json;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Tools.Clock;
 using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
 
@@ -51,12 +52,30 @@ public sealed class AgentPeerTools(IReadOnlyDictionary<string, Uri> peers, strin
         "sends it the task, waits for its final answer and closes the session. Returns the answer and a usage line. " +
         "At most 3 per turn, 5 minutes each. See agents-skills.md for when to delegate.")]
     public async Task<string> StartSubSession(
-        [Description("The peer's name from AGENT_PEERS. Leave it empty when this instance has one peer (the usual case); " +
-            "it is then used.")] string agent,
         [Description("The toolsets the sub-session loads, e.g. [\"files\",\"git\",\"dotnet\"]. Never \"agents\".")] string[] toolsets,
         [Description("The whole task, self-contained: the sub-session sees nothing of this conversation.")] string message,
+        // Optional, so a call without it is valid: the delegation check saw Puls leave it out (the call failed) and guess "default".
+        [Description("The peer's name from AGENT_PEERS. Leave it out when this instance has one peer (the usual case); " +
+            "it is then used.")] string? agent = null,
+        [Description("The sub-session's personality: its role on the peer (agents-skills.md says which goes with which toolsets). " +
+            "Empty: the peer's default.")] string? personality = null,
+        [Description("Names of files the user attached in this conversation that the task needs; they are sent with the task " +
+            "(the sub-session sees nothing else of the conversation).")] string[]? attachments = null,
         CancellationToken cancellationToken = default)
     {
+        // The model names the attachments; their contents come from the session, never through the model's output.
+        var available = SessionAttachments.Current;
+        var forwarded = new List<object>();
+        foreach (string name in attachments ?? [])
+        {
+            if (!available.TryGetValue(name.Trim(), out string? content))
+                return MessageText.Format(ToolMessage.AttachmentUnknown, new
+                {
+                    Name = name, Attached = available.Count == 0 ? "(none)" : string.Join(", ", available.Keys.Order()),
+                });
+            forwarded.Add(new { name = name.Trim(), content });
+        }
+
         string peerNames = peers.Count == 0 ? "(none)" : string.Join(", ", peers.Keys.Order());
         // An empty name means the only peer, so the model never has to guess one (it used to try an example name first).
         if (string.IsNullOrWhiteSpace(agent))
@@ -82,6 +101,9 @@ public sealed class AgentPeerTools(IReadOnlyDictionary<string, Uri> peers, strin
             using var create = Request(HttpMethod.Post, new Uri(peer, "sessions"), new
             {
                 toolsets, depth = 1, task = $"sub-session:{agent}", run = scope?.Tags.Run, service = scope?.Tags.Service, parent,
+                personality = string.IsNullOrWhiteSpace(personality) ? null : personality.Trim(),
+                // The user's place, when they shared it, so the specialist's time and "near me" are theirs (F22).
+                location = UserPlace.Current?.Location, time_zone = UserPlace.Current?.TimeZone,
             });
             using var created = await _http.SendAsync(create, timeout.Token);
             string createdBody = await created.Content.ReadAsStringAsync(timeout.Token);
@@ -90,19 +112,24 @@ public sealed class AgentPeerTools(IReadOnlyDictionary<string, Uri> peers, strin
             sessionId = JsonDocument.Parse(createdBody).RootElement.GetProperty("session_id").GetString()
                 ?? throw new JsonException("no session_id");
 
-            using var send = Request(HttpMethod.Post, new Uri(peer, $"sessions/{Uri.EscapeDataString(sessionId!)}/messages"), new { message });
-            using var reply = await _http.SendAsync(send, HttpCompletionOption.ResponseHeadersRead, timeout.Token);
-            if (!reply.IsSuccessStatusCode)
-                return MessageText.Format(ToolMessage.SubSessionRefused,
-                    new { Agent = agent, Status = (int)reply.StatusCode, Reason = ErrorText(await reply.Content.ReadAsStringAsync(timeout.Token)) });
-
-            var (text, usage, error) = await ReadStreamAsync(await reply.Content.ReadAsStreamAsync(timeout.Token),
-                (type, data) => SubSessionFeed.Report(new SubSessionEvent(toolUseId, agent, type, data)), timeout.Token);
-            if (error is not null)
-                return MessageText.Format(ToolMessage.SubSessionFailed, new { Agent = agent, Reason = error });
+            var (text, usage, failure) = await SendAsync(peer, sessionId, new { message, attachments = forwarded }, agent, toolUseId, timeout.Token);
+            if (failure is not null) return failure;
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                // A specialist that used all its tool rounds can end with no text (FX11): ask once, in the same session,
+                // for the answer from what it found. Its context and cached prefix stay; a new sub-session would start over.
+                var (again, againUsage, againFailure) = await SendAsync(peer, sessionId,
+                    new { message = MessageText.Format(ToolMessage.SubSessionAskForAnswer) }, agent, toolUseId, timeout.Token);
+                if (againFailure is not null) return againFailure;
+                text = again;
+                usage = string.Join(" + ", new[] { usage, againUsage }.OfType<string>());
+                if (string.IsNullOrWhiteSpace(text))
+                    return MessageText.Format(ToolMessage.SubSessionNoAnswer, new { Agent = agent, Usage = usage.Length > 0 ? usage : MessageText.Format(ToolMessage.SubSessionNoUsage) });
+            }
             return MessageText.Format(ToolMessage.SubSessionAnswer, new
             {
-                Answer = text.Trim(), Agent = agent, Toolsets = string.Join(", ", toolsets), Usage = usage ?? MessageText.Format(ToolMessage.SubSessionNoUsage),
+                Answer = text.Trim(), Agent = agent, Toolsets = string.Join(", ", toolsets),
+                Usage = string.IsNullOrEmpty(usage) ? MessageText.Format(ToolMessage.SubSessionNoUsage) : usage,
             });
         }
         catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
@@ -131,6 +158,24 @@ public sealed class AgentPeerTools(IReadOnlyDictionary<string, Uri> peers, strin
                 catch (HttpRequestException) { }
             }
         }
+    }
+
+    /// <summary>
+    /// Sends one message to the sub-session and reads its reply: the answer's text and usage line, or the failure the
+    /// model gets instead (refused, or an error event).
+    /// </summary>
+    private async Task<(string Text, string? Usage, string? Failure)> SendAsync(Uri peer, string sessionId, object body,
+        string agent, string? toolUseId, CancellationToken cancellationToken)
+    {
+        using var send = Request(HttpMethod.Post, new Uri(peer, $"sessions/{Uri.EscapeDataString(sessionId)}/messages"), body);
+        using var reply = await _http.SendAsync(send, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+        if (!reply.IsSuccessStatusCode)
+            return ("", null, MessageText.Format(ToolMessage.SubSessionRefused,
+                new { Agent = agent, Status = (int)reply.StatusCode, Reason = ErrorText(await reply.Content.ReadAsStringAsync(cancellationToken)) }));
+
+        var (text, usage, error) = await ReadStreamAsync(await reply.Content.ReadAsStreamAsync(cancellationToken),
+            (type, data) => SubSessionFeed.Report(new SubSessionEvent(toolUseId, agent, type, data)), cancellationToken);
+        return error is null ? (text, usage, null) : ("", usage, MessageText.Format(ToolMessage.SubSessionFailed, new { Agent = agent, Reason = error }));
     }
 
     /// <summary>Outside a turn there's nothing to count against, so a rolling window: at most MaxPerTurn a minute.</summary>
