@@ -471,3 +471,16 @@ body::before {
 .brand-stack { flex-direction: column; align-items: flex-start; gap: 6px; flex: 1; min-width: 0; }
 .sidebar .puls-logo { height: 44px; }
 .tagline { font-size: 11px; font-weight: 600; letter-spacing: 0; color: var(--muted); text-wrap: balance; animation: rise .7s .9s var(--ease) both; }
+
+/* ---- The app icon tiles (wwwroot/brand/puls-icon-tile*.svg) ---- */
+
+/* The empty chat: the light tile above the headline, the slow pulse spreading out from it. The chat's scroll area
+   clips it (.messages), not the empty state, whose top edge would cut the glow off in a straight line. */
+.hero-mark { position: relative; width: 76px; height: 76px; display: grid; place-items: center; margin-bottom: 26px; animation: rise .6s var(--ease) both; }
+.hero-mark img { position: relative; z-index: 1; display: block; border-radius: 17px; box-shadow: 0 1px 0 rgba(255, 255, 255, .7) inset, 0 16px 34px -14px rgba(36, 40, 44, .35), 0 3px 8px rgba(36, 40, 44, .06); }
+.hero-mark .pulse-bg { overflow: visible; z-index: 0; }
+.hero-mark .pulse-bg::before { width: min(300px, 70vw); }
+
+/* A delegation comes from Puls: its avatar is the charcoal tile instead of an initial. */
+.delegation-avatar { background: url("../brand/puls-icon-tile.svg") center / cover no-repeat; color: transparent; font-size: 0; }
+
