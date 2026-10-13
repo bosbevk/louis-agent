@@ -286,7 +286,8 @@ A session names its personality when it opens (`POST /sessions` with `"personali
    built-in files; a file of that name on disk wins, so wording can change without a rebuild (restart the container).
 2. **A voice** (`puls.md`) says who the agent is and how it talks. **A role** for a specialist (`puls-researcher.md`)
    says its function and how it reports to the agent that called it, on the shared base the `puls-*` roles use.
-3. A role a parent should pass goes in `agents-skills.md`'s table (toolsets → personality).
+3. A role a parent should pass goes in `agents-skills.md`'s table (toolsets → personality), and in
+   `Skills/personalities/roles.json`: a sub-session opened without a role gets the first rule whose toolsets it has.
 4. `GET /personalities` lists them; an unknown or invalid name is a 400 before any engine is built.
 
 ### Building another agent on core

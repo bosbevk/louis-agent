@@ -1,5 +1,6 @@
 namespace LouisAgent.Core.Skills;
 
+using System.Text.Json;
 using System.Text.RegularExpressions;
 
 /// <summary>
@@ -16,6 +17,33 @@ public static partial class Personalities
     public const string Folder = "personalities";
 
     private const int MaxNameLength = 40;
+
+    /// <summary>The file of the rules that give a sub-session its role from its toolsets (<see cref="RoleFor"/>).</summary>
+    public const string RolesFile = Folder + "/roles.json";
+
+    /// <summary>
+    /// The role for a sub-session with <paramref name="toolsets"/> when its parent named none (the delegation check
+    /// found Puls passing a role in one delegation of four): the first rule in <paramref name="rolesJson"/> whose
+    /// toolsets the session has, in the file's order (so files + python is the analyst), else its default; null when the
+    /// file can't be read or names no role.
+    /// </summary>
+    public static string? RoleFor(string rolesJson, IEnumerable<string> toolsets)
+    {
+        var loaded = toolsets.Select(t => t.Trim().ToLowerInvariant()).ToHashSet();
+        try
+        {
+            using var document = JsonDocument.Parse(rolesJson);
+            var root = document.RootElement;
+            foreach (var rule in root.GetProperty("roles").EnumerateArray())
+                if (rule.GetProperty("toolsets").EnumerateArray().Any(t => loaded.Contains(t.GetString()?.ToLowerInvariant() ?? "")))
+                    return rule.GetProperty("personality").GetString();
+            return root.TryGetProperty("default", out var fallback) ? fallback.GetString() : null;
+        }
+        catch (Exception ex) when (ex is JsonException or KeyNotFoundException or InvalidOperationException)
+        {
+            return null;
+        }
+    }
 
     /// <summary>Whether <paramref name="name"/> can name a personality (and so can be turned into a path safely).</summary>
     public static bool IsValidName(string? name) => name is { Length: > 0 and <= MaxNameLength } && NamePattern().IsMatch(name);

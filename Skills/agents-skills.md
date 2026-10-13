@@ -32,8 +32,9 @@ toolsets you give it:
 | `python` (with `files` when the data is the user's) | `puls-analyst` | counts and calculates with a script; reports the method |
 | anything else, or a mix | `puls-specialist` | does one piece of work and reports the evidence |
 
-For a mix led by one kind (`files` and `git` to explain a change), pass the role of the main part. If the peer doesn't
-know a role, the call is refused with the ones it has: call again with one of those, or with none.
+For a mix led by one kind (`files` and `git` to explain a change), pass the role of the main part. If you pass none,
+the peer picks one from the toolsets (its `roles.json`). If the peer doesn't know a role, the call is refused with the
+ones it has: call again with one of those, or with none.
 
 ## Writing the message
 

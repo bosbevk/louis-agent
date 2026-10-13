@@ -154,4 +154,16 @@ public class AgentSessionsTests
         var session = Sessions().Create(["files"], place: new LouisAgent.Core.Tools.Clock.UserPlace("Pretoria", null));
         Assert.That(session.Place!.Location, Is.EqualTo("Pretoria"));
     }
+
+    [Test]
+    public void ASubSessionWithoutARole_GetsOneFromItsToolsets_AndAGivenOneIsKept()
+    {
+        // The delegation check's option 4: the role in code, on the peer, not left to the parent's prompt.
+        var sessions = Sessions();
+
+        Assert.That(sessions.Create(["web"], depth: 1).Personality, Is.EqualTo("puls-researcher"));
+        Assert.That(sessions.Create(["files", "python"], depth: 1).Personality, Is.EqualTo("puls-analyst"));
+        Assert.That(sessions.Create(["web"], depth: 1, personality: "puls-specialist").Personality, Is.EqualTo("puls-specialist"));
+        Assert.That(sessions.Create(["web"]).Personality, Is.Null, "a top-level session keeps personality.md");
+    }
 }

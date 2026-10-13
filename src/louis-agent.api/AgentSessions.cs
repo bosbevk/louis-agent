@@ -129,6 +129,8 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
         if (depth > 0 && names.Contains(AgentsToolset))
             throw new ToolsetException(MessageText.Format(ErrorMessage.SubSessionCannotDelegate, new { Toolset = AgentsToolset }));
         if (string.IsNullOrEmpty(personality)) personality = null;
+        // A sub-session its parent gave no role gets one from its toolsets (roles.json): roles in code, not left to the prompt.
+        if (depth > 0 && personality is null) personality = engines.RoleFor(names);
         var engine = engines.GetOrCreate(names, personality, router: depth == 0);
 
         foreach (var idle in _sessions.Values.Where(s => !s.IsBusy && DateTimeOffset.UtcNow - s.LastActivity > IdleTimeout))

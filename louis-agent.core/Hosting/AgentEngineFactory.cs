@@ -71,6 +71,19 @@ public sealed class AgentEngineFactory
     /// <summary>The named personalities a session can choose (F21), built in and in the skills folder.</summary>
     public IReadOnlyList<string> AvailablePersonalities => Personalities.Available(_agent.SkillsDirectory ?? AgentHost.FindSkillsDirectory(_agent));
 
+    /// <summary>
+    /// The role for a sub-session with <paramref name="toolsets"/> when its parent named none: from
+    /// <c>Skills/personalities/roles.json</c> (disk, else built in), and only a personality this instance has; null otherwise.
+    /// </summary>
+    public string? RoleFor(IEnumerable<string> toolsets)
+    {
+        if (AgentHost.ReadSkillFile(_agent, Personalities.RolesFile) is not { } roles) return null;
+        string? role = Personalities.RoleFor(roles.Text, toolsets);
+        if (role is null || !Personalities.IsValidName(role)) return null;
+        try { AgentHost.PersonalityFile(_agent, role); return role; }
+        catch (PersonalityException) { return null; }
+    }
+
     /// <summary>The profiles built so far: each its toolsets joined with commas, then |personality and |no-router when set.</summary>
     public IReadOnlyCollection<string> Profiles => _engines.Keys.ToList();
 

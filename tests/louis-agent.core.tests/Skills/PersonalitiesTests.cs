@@ -75,4 +75,23 @@ public class PersonalitiesTests
             { "puls", "puls-researcher", "puls-reader", "puls-historian", "puls-analyst", "puls-specialist" }));
         Assert.That(AgentHost.LoadSkills(new AgentOptions(), [], "puls").Documentation, Does.Contain("# Puls - Persoonlikheid"));
     }
+
+    [TestCase(new[] { "web" }, "puls-researcher")]
+    [TestCase(new[] { "files", "python" }, "puls-analyst")]
+    [TestCase(new[] { "files", "git" }, "puls-historian")]
+    [TestCase(new[] { "files" }, "puls-reader")]
+    [TestCase(new[] { "dotnet" }, "puls-specialist")]
+    public void ARoleComesFromTheToolsets_TheFirstRuleThatMatches(string[] toolsets, string role)
+    {
+        // The delegation check: Puls passed a role in one delegation of four; the peer now derives one (roles.json).
+        string rules = SkillFileSource.ReadEmbedded(Personalities.RolesFile)!;
+
+        Assert.That(Personalities.RoleFor(rules, toolsets), Is.EqualTo(role));
+    }
+
+    [Test]
+    public void UnreadableRules_GiveNoRole()
+    {
+        Assert.That(Personalities.RoleFor("not json", ["web"]), Is.Null);
+    }
 }
