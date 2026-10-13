@@ -1,4 +1,5 @@
-@page "/"
+@page "/gesels"
+@page "/gesels/{SessionId}"
 @page "/chat/{SessionId}"
 @using System.Net
 @using System.Text.Json
@@ -21,7 +22,7 @@
 
     <aside class="sidebar offcanvas-lg offcanvas-start" id="sidebar" tabindex="-1" aria-label="Gesprekke">
         <div class="sidebar-top">
-            <div class="brand brand-stack"><PulsLogo /><span class="tagline">Elke vraag op pad na 'n antwoord</span></div>
+            <a class="brand brand-stack" href="./" title="Puls se tuisblad"><PulsLogo /><span class="tagline">Elke vraag op pad na 'n antwoord</span></a>
             <button class="icon d-none d-lg-inline-grid" type="button" onclick="pulsUi.toggleSidebar()" title="Versteek die kantbalk" aria-label="Versteek die kantbalk">⇤</button>
             <button class="icon d-lg-none" type="button" data-bs-dismiss="offcanvas" data-bs-target="#sidebar" aria-label="Maak die kieslys toe">×</button>
         </div>
@@ -34,7 +35,7 @@
             @foreach (var chat in Store.Chats)
             {
                 <div class="chat-item @(chat.SessionId == SessionId ? "active" : "")">
-                    <a href="chat/@chat.SessionId" title="@chat.Title">@chat.Title</a>
+                    <a href="gesels/@chat.SessionId" title="@chat.Title">@chat.Title</a>
                     <button class="icon" title="Vee die gesprek uit" @onclick="() => DeleteChat(chat)">×</button>
                 </div>
             }
@@ -165,6 +166,12 @@
 
     protected override void OnParametersSet()
     {
+        // The chat moved to /gesels (F20); an old /chat/{id} link lands on the same chat at its new address.
+        if (SessionId is not null && Nav.ToBaseRelativePath(Nav.Uri).StartsWith("chat/", StringComparison.Ordinal))
+        {
+            Nav.NavigateTo($"gesels/{SessionId}", replace: true);
+            return;
+        }
         var chat = Store.Find(SessionId);
         if (!ReferenceEquals(chat, _chat)) _scrollToEnd = true;
         _chat = chat;
@@ -184,7 +191,7 @@
     private void NewChat()
     {
         _notice = null;
-        Nav.NavigateTo("");
+        Nav.NavigateTo("gesels");
     }
 
     private async Task Send()
@@ -215,7 +222,7 @@
                 string sessionId = await Api.CreateSessionAsync(available.Contains("agents") ? ["agents"] : available);
                 _chat = new Chat { SessionId = sessionId, Title = TitleFor(text, attachments) };
                 Store.Chats.Insert(0, _chat);
-                Nav.NavigateTo($"chat/{sessionId}");
+                Nav.NavigateTo($"gesels/{sessionId}");
             }
             catch (Exception ex)
             {
@@ -309,7 +316,7 @@
 
         Store.Chats.Remove(chat);
         await Store.SaveAsync();
-        if (chat.SessionId == SessionId) Nav.NavigateTo("");
+        if (chat.SessionId == SessionId) Nav.NavigateTo("gesels");
     }
 
     private async Task SaveApiKey(ChangeEventArgs e)
