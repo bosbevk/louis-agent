@@ -8,6 +8,7 @@ using LouisAgent.Core.Llm;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Pricing;
+using LouisAgent.Core.Skills;
 using LouisAgent.Core.Tools.Web;
 using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
@@ -15,8 +16,8 @@ using Microsoft.Extensions.Logging;
 
 /// <summary>
 /// One engine per toolset profile (F5): a session names its toolsets, and gets an engine with only those tools and
-/// only their guides in its system prompt. Engines are cached by their normalised list, so every session with the same
-/// toolsets shares one engine, one tool list and one cacheable prefix. Everything else (the model client, the usage
+/// only their guides in its system prompt. Engines are cached by their normalised list, its personality and whether it has
+/// the router (F21), so every session with the same three shares one engine, one tool list and one cacheable prefix. Everything else (the model client, the usage
 /// ledger, the display currency, thinking) is shared by all of them.
 /// </summary>
 /// <remarks>
@@ -60,34 +61,42 @@ public sealed class AgentEngineFactory
     /// <summary>Every toolset this instance can load: those whose settings are all set.</summary>
     public IReadOnlyList<string> Available => ToolsetCatalog.All.Where(t => t.IsAvailable(Context)).Select(t => t.Name).ToList();
 
-    /// <summary>The profiles built so far, each its toolsets joined with commas.</summary>
+    /// <summary>The named personalities a session can choose (F21), built in and in the skills folder.</summary>
+    public IReadOnlyList<string> AvailablePersonalities => Personalities.Available(_agent.SkillsDirectory ?? AgentHost.FindSkillsDirectory(_agent));
+
+    /// <summary>The profiles built so far: each its toolsets joined with commas, then |personality and |no-router when set.</summary>
     public IReadOnlyCollection<string> Profiles => _engines.Keys.ToList();
 
     /// <summary>
-    /// The engine for <paramref name="toolsets"/> (any order or case; duplicates ignored), built on first use. Throws
+    /// The engine for <paramref name="toolsets"/> (any order or case; duplicates ignored), <paramref name="personality"/>
+    /// (null: personality.md) and <paramref name="router"/> (default.md in the prompt), built on first use. Throws
     /// <see cref="ToolsetException"/> for an unknown or unavailable toolset, or when <see cref="DefaultCapacity"/>
-    /// profiles exist already, before anything is built.
+    /// profiles exist already, and <see cref="PersonalityException"/> for an unknown personality, before anything is built.
     /// </summary>
-    public AgentEngine GetOrCreate(IEnumerable<string>? toolsets)
+    public AgentEngine GetOrCreate(IEnumerable<string>? toolsets, string? personality = null, bool router = true)
     {
         var resolved = ToolsetCatalog.Resolve(toolsets, Context);
-        string key = string.Join(",", resolved.Select(t => t.Name));
+        if (string.IsNullOrEmpty(personality)) personality = null;
+        // Checked here, not in Build: a Lazy that throws keeps the exception, and the key would stay broken.
+        AgentHost.PersonalityFile(_agent, personality);
+
+        string key = string.Join(",", resolved.Select(t => t.Name)) + (personality is null ? "" : "|" + personality) + (router ? "" : "|no-router");
         if (_engines.TryGetValue(key, out var existing)) return existing.Value;
         if (_engines.Count >= _capacity)
             throw new ToolsetException(MessageText.Format(ErrorMessage.TooManyToolsetProfiles, new { Capacity = _capacity }));
 
-        return _engines.GetOrAdd(key, _ => new Lazy<AgentEngine>(() => Build(resolved))).Value;
+        return _engines.GetOrAdd(key, _ => new Lazy<AgentEngine>(() => Build(resolved, personality, router))).Value;
     }
 
-    private AgentEngine Build(IReadOnlyList<ToolsetDefinition> resolved)
+    private AgentEngine Build(IReadOnlyList<ToolsetDefinition> resolved, string? personality, bool router)
     {
         bool selfExtension = resolved.Any(t => t.IsEngineProvided);
-        var engine = new AgentEngine(AgentHost.LoadSkills(_agent, resolved), _chatClient, _agent, _supportsTools,
+        var engine = new AgentEngine(AgentHost.LoadSkills(_agent, resolved, personality, router), _chatClient, _agent, _supportsTools,
             toolsets: ToolsetCatalog.BuildTools(resolved, Context), _usageSink, _usageMapper, selfExtension)
         {
             SkillsDirectory = AgentHost.FindSkillsDirectory(_agent),
-            // ReloadSkills reloads this profile's guides, never another's.
-            SkillReloader = () => AgentHost.LoadSkills(_agent, resolved),
+            // ReloadSkills reloads this profile's prompt (its guides, personality and router), never another's.
+            SkillReloader = () => AgentHost.LoadSkills(_agent, resolved, personality, router),
             Thinking = _thinking,
             Display = _display,
         };
@@ -97,7 +106,8 @@ public sealed class AgentEngineFactory
         string toolsJson = JsonSerializer.Serialize(engine.Tools.OfType<AIFunction>().Select(t => new { t.Name, t.Description, t.JsonSchema }));
         Log.Log(LogLevel.Information, LogMessage.ToolsetProfileBuilt, new
         {
-            Toolsets = resolved.Count == 0 ? "(none)" : string.Join(", ", resolved.Select(t => t.Name)),
+            Toolsets = (resolved.Count == 0 ? "(none)" : string.Join(", ", resolved.Select(t => t.Name)))
+                + (personality is null ? "" : $" · personality {personality}") + (router ? "" : " · no router"),
             Tools = engine.Tools.Count,
             PromptChars = engine.SkillDocumentation.Length,
             // About four characters a token: an estimate of the fixed prefix every request of this profile sends.

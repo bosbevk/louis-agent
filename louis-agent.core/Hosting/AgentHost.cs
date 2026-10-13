@@ -285,13 +285,16 @@ public static partial class AgentHost
     /// </summary>
     /// <param name="personality">The session's personality (F21): a name in <c>Skills/personalities/</c>, or null for
     /// <c>personality.md</c>. <see cref="PersonalityException"/> for a name that isn't valid or has no file.</param>
-    public static ISkillProvider LoadSkills(AgentOptions agent, IEnumerable<ToolsetDefinition> toolsets, string? personality = null)
+    /// <param name="router">Whether the prompt has default.md, the router that picks a toolset and delegates. A sub-session
+    /// gets none (F21): its toolsets were chosen for it and it can't delegate.</param>
+    public static ISkillProvider LoadSkills(AgentOptions agent, IEnumerable<ToolsetDefinition> toolsets, string? personality = null,
+        bool router = true)
     {
         var composite = new CompositeSkillProvider();
 
         // Personality first, so who the agent is frames everything after it; default.md (the router) after it
         AddBuiltIn(agent, composite, PersonalityFile(agent, personality));
-        AddBuiltIn(agent, composite, "default.md");
+        if (router) AddBuiltIn(agent, composite, "default.md");
 
         // The guides of this profile's toolsets only, so the prompt never describes tools the session doesn't have
         var profile = toolsets.ToList();
@@ -365,7 +368,7 @@ public static partial class AgentHost
     /// The skill file of <paramref name="personality"/>: <see cref="Personalities.DefaultFile"/> when none is named, else
     /// its file in <c>personalities/</c>, which must exist on disk or in the assembly.
     /// </summary>
-    private static string PersonalityFile(AgentOptions agent, string? personality)
+    internal static string PersonalityFile(AgentOptions agent, string? personality)
     {
         if (string.IsNullOrEmpty(personality)) return Personalities.DefaultFile;
         if (!Personalities.IsValidName(personality))

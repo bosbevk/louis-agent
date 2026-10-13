@@ -8,6 +8,7 @@ using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
 using LouisAgent.Api.Endpoints;
 using LouisAgent.Core.Pricing;
+using LouisAgent.Core.Skills;
 using LouisAgent.Core.Tools.Workspace;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Guardrails;
@@ -41,7 +42,8 @@ else
     app.Use(async (context, next) =>
     {
         bool isApi = context.Request.Path.StartsWithSegments("/sessions") || context.Request.Path.StartsWithSegments("/workspace") ||
-                     context.Request.Path.StartsWithSegments("/git") || context.Request.Path.StartsWithSegments("/toolsets");
+                     context.Request.Path.StartsWithSegments("/git") || context.Request.Path.StartsWithSegments("/toolsets") ||
+                     context.Request.Path.StartsWithSegments("/personalities");
         if (!isApi || HasApiKey(context.Request, apiKey))
         {
             await next(context);
@@ -108,7 +110,15 @@ app.MapGet("/toolsets", (AgentEngineFactory engines) => Results.Json(new
     }),
 }));
 
+// The personalities a session can choose (F21): null is personality.md, the default.
+app.MapGet("/personalities", (AgentEngineFactory engines) => Results.Json(new
+{
+    @default = (string?)null,
+    personalities = engines.AvailablePersonalities,
+}));
+
 // The body is optional: { "toolsets": [...] } chooses the session's tools for its lifetime (F5; none sent: skills only);
+// "personality" its personality (F21; none sent: personality.md);
 // { "task", "run", "service" } tag every usage record of the session (the orchestrator sends them for a fix); "depth" is
 // set by an agent opening a sub-session.
 app.MapPost("/sessions", (CreateSessionRequest? request, AgentSessions sessions) =>
@@ -122,9 +132,10 @@ app.MapPost("/sessions", (CreateSessionRequest? request, AgentSessions sessions)
     try
     {
         session = sessions.Create(request?.Toolsets,
-            request is null ? null : new UsageTags(request.Task, request.Run, request.Service, request.Parent), request?.Depth ?? 0);
+            request is null ? null : new UsageTags(request.Task, request.Run, request.Service, request.Parent), request?.Depth ?? 0,
+            request?.Personality);
     }
-    catch (ToolsetException ex)
+    catch (Exception ex) when (ex is ToolsetException or PersonalityException)
     {
         return Results.Json(Error("invalid_request_error", ex.Message), statusCode: StatusCodes.Status400BadRequest);
     }
@@ -132,7 +143,7 @@ app.MapPost("/sessions", (CreateSessionRequest? request, AgentSessions sessions)
     return Results.Json(new
     {
         session_id = session.Id, created_at = session.CreatedAt, toolsets = session.Toolsets, depth = session.Depth,
-        task = session.Tags.Task, run = session.Tags.Run, service = session.Tags.Service, parent = session.Tags.Parent,
+        personality = session.Personality, task = session.Tags.Task, run = session.Tags.Run, service = session.Tags.Service, parent = session.Tags.Parent,
     }, statusCode: StatusCodes.Status201Created);
 });
 
@@ -142,7 +153,7 @@ app.MapGet("/sessions/{id}", (string id, AgentSessions sessions) =>
         ? Results.Json(new
         {
             session_id = session.Id, created_at = session.CreatedAt, last_activity = session.LastActivity, busy = session.IsBusy,
-            toolsets = session.Toolsets, depth = session.Depth, tools = session.Engine.Tools.Count,
+            toolsets = session.Toolsets, depth = session.Depth, personality = session.Personality, tools = session.Engine.Tools.Count,
             task = session.Tags.Task, run = session.Tags.Run, service = session.Tags.Service,
             usage = session.Engine.RecordsUsage ? ClaudeStyleStream.Usage(session.Usage.Records, session.Engine.Display) : null,
         })
@@ -303,11 +314,12 @@ static async IAsyncEnumerable<SseItem<string>> StreamTurnAsync(
 internal sealed record SendMessageRequest(string? Message, List<AttachmentRequest>? Attachments);
 
 /// <summary>
-/// A new session's options: its toolsets (F5), and optional tags for the usage ledger, kept short and printable. Depth is
-/// 1 when another agent opens it as a sub-session.
+/// A new session's options: its toolsets (F5), its personality (F21), and optional tags for the usage ledger, kept short
+/// and printable. Depth is 1 when another agent opens it as a sub-session.
 /// </summary>
 internal sealed record CreateSessionRequest(
-    string? Task, string? Run, string? Service, List<string>? Toolsets = null, int Depth = 0, string? Parent = null)
+    string? Task, string? Run, string? Service, List<string>? Toolsets = null, int Depth = 0, string? Parent = null,
+    string? Personality = null)
 {
     internal const int MaxTagLength = 200;
 

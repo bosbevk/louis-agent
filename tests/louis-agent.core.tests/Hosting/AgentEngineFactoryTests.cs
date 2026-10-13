@@ -18,6 +18,18 @@ public class AgentEngineFactoryTests
 
     private static string[] Names(AgentEngine engine) => engine.Tools.Select(t => t.Name).ToArray();
 
+    /// <summary>A factory whose skills folder is a temp one holding personalities/factory-voice.md (F21); the guides and
+    /// the router come from the embedded copies.</summary>
+    private static AgentEngineFactory FactoryWithVoice(out string skills)
+    {
+        skills = Path.Combine(Path.GetTempPath(), "factory-voice-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(Path.Combine(skills, "personalities"));
+        File.WriteAllText(Path.Combine(skills, "personalities", "factory-voice.md"), "# Factory Voice");
+        var options = Options();
+        options.SkillsDirectory = skills;
+        return new AgentEngineFactory(new FakeChatClient(), options);
+    }
+
     [Test]
     public void TheSameList_InAnyOrderOrCase_GivesTheSameEngine()
     {
@@ -28,6 +40,40 @@ public class AgentEngineFactoryTests
 
         Assert.That(second, Is.SameAs(first));
         Assert.That(factory.Profiles, Is.EqualTo(new[] { "files,git" }));
+    }
+
+    [Test]
+    public void APersonality_IsItsOwnProfile_WithItsOwnPrompt()
+    {
+        // F21: the same toolsets with another personality, or without the router, is another engine.
+        var factory = FactoryWithVoice(out string skills);
+        try
+        {
+            var plain = factory.GetOrCreate(["files"]);
+            var voiced = factory.GetOrCreate(["files"], "factory-voice");
+            var noRouter = factory.GetOrCreate(["files"], router: false);
+
+            Assert.That(voiced, Is.Not.SameAs(plain));
+            Assert.That(factory.GetOrCreate(["files"], "factory-voice"), Is.SameAs(voiced));
+            Assert.That(voiced.SkillDocumentation, Does.Contain("# Factory Voice").And.Not.Contain("Louis's Minion"));
+            Assert.That(noRouter.SkillDocumentation, Does.Not.Contain("# Louis Agent - Default Instructions"));
+            Assert.That(plain.SkillDocumentation, Does.Contain("# Louis Agent - Default Instructions"));
+            Assert.That(factory.Profiles, Is.EquivalentTo(new[] { "files", "files|factory-voice", "files|no-router" }));
+            Assert.That(factory.AvailablePersonalities, Does.Contain("factory-voice"));
+        }
+        finally
+        {
+            Directory.Delete(skills, recursive: true);
+        }
+    }
+
+    [Test]
+    public void AnUnknownPersonality_IsRefused_BeforeAnythingIsBuilt()
+    {
+        var factory = Factory();
+
+        Assert.Throws<LouisAgent.Core.Skills.PersonalityException>(() => factory.GetOrCreate(["files"], "nobody-here"));
+        Assert.That(factory.Profiles, Is.Empty);
     }
 
     [Test]

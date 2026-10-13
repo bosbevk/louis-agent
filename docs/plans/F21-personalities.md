@@ -44,4 +44,6 @@ router, toolset guides), each part a stable prefix for caching; persona design f
 
 ## Approved during the build
 
-(None yet.)
+- **2026-10-13, sub-sessions without the router** (Louis: "sub agents do not need to read the default.md"): a session
+  opened at depth 1 gets no `default.md`; its toolsets were chosen for it and it can't delegate. Built in step 2: the
+  engine key is toolsets, personality and router.

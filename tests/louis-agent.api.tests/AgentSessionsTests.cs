@@ -97,4 +97,33 @@ public class AgentSessionsTests
         public object? GetService(Type serviceType, object? serviceKey = null) => null;
         public void Dispose() { }
     }
+
+    [Test]
+    public void ASubSession_HasNoRouter_ATopLevelOneHas()
+    {
+        // F21: default.md picks toolsets and delegates; a sub-session's toolsets were chosen for it and it can't delegate.
+        var sessions = Sessions();
+
+        var top = sessions.Create(["files"]);
+        var sub = sessions.Create(["files"], depth: 1);
+
+        Assert.That(top.Engine.SkillDocumentation, Does.Contain("# Louis Agent - Default Instructions"));
+        Assert.That(sub.Engine.SkillDocumentation, Does.Not.Contain("# Louis Agent - Default Instructions"));
+        Assert.That(sub.Engine.SkillDocumentation, Does.Contain("# Files Skills"), "its toolsets' guides stay");
+    }
+
+    [Test]
+    public void AnUnknownPersonality_IsRefused()
+    {
+        Assert.Throws<LouisAgent.Core.Skills.PersonalityException>(() => Sessions().Create(["files"], personality: "nobody-here"));
+    }
+
+    [Test]
+    public void NoPersonality_IsTheDefault()
+    {
+        var session = Sessions().Create(["files"], personality: "");
+
+        Assert.That(session.Personality, Is.Null);
+        Assert.That(session.Engine.SkillDocumentation, Does.Contain("Louis's Minion"));
+    }
 }
