@@ -119,8 +119,8 @@ app.MapPost("/sessions", (CreateSessionRequest? request, AgentSessions sessions)
     AgentSession session;
     try
     {
-        session = sessions.Create(request?.Toolsets, request is null ? null : new UsageTags(request.Task, request.Run, request.Service),
-            request?.Depth ?? 0);
+        session = sessions.Create(request?.Toolsets,
+            request is null ? null : new UsageTags(request.Task, request.Run, request.Service, request.Parent), request?.Depth ?? 0);
     }
     catch (ToolsetException ex)
     {
@@ -130,7 +130,7 @@ app.MapPost("/sessions", (CreateSessionRequest? request, AgentSessions sessions)
     return Results.Json(new
     {
         session_id = session.Id, created_at = session.CreatedAt, toolsets = session.Toolsets, depth = session.Depth,
-        task = session.Tags.Task, run = session.Tags.Run, service = session.Tags.Service,
+        task = session.Tags.Task, run = session.Tags.Run, service = session.Tags.Service, parent = session.Tags.Parent,
     }, statusCode: StatusCodes.Status201Created);
 });
 
@@ -290,13 +290,14 @@ internal sealed record SendMessageRequest(string? Message, List<AttachmentReques
 /// A new session's options: its toolsets (F5), and optional tags for the usage ledger, kept short and printable. Depth is
 /// 1 when another agent opens it as a sub-session.
 /// </summary>
-internal sealed record CreateSessionRequest(string? Task, string? Run, string? Service, List<string>? Toolsets = null, int Depth = 0)
+internal sealed record CreateSessionRequest(
+    string? Task, string? Run, string? Service, List<string>? Toolsets = null, int Depth = 0, string? Parent = null)
 {
     internal const int MaxTagLength = 200;
 
     /// <summary>The name of the first tag that is too long or holds control characters, or null when all are fine.</summary>
     public string? InvalidTag() =>
-        new[] { ("task", Task), ("run", Run), ("service", Service) }
+        new[] { ("task", Task), ("run", Run), ("service", Service), ("parent", Parent) }
             .FirstOrDefault(t => t.Item2 is { } value && (value.Length > MaxTagLength || value.Any(char.IsControl))).Item1;
 }
 

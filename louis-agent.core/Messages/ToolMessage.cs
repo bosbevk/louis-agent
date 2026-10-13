@@ -578,4 +578,31 @@ public enum ToolMessage
 
     [Description("Directory tree for {Path} (depth: {Depth}):\n")]
     DirectoryTree,
+
+    [Description("Error: no peer agent named '{Agent}'. Peers (AGENT_PEERS): {Peers}.")]
+    UnknownPeer,
+
+    [Description("Error: this turn has already started {Max} sub-sessions, the most one turn may. Finish with what you have, or ask the user.")]
+    SubSessionLimit,
+
+    [Description("Error: {Agent} refused the sub-session (HTTP {Status}): {Reason}")]
+    SubSessionRefused,
+
+    [Description("Error: the sub-session on {Agent} failed: {Reason}")]
+    SubSessionFailed,
+
+    [Description("Error: the sub-session on {Agent} didn't finish within {Minutes} minutes and was stopped. Try a smaller task.")]
+    SubSessionTimedOut,
+
+    [Description("{Answer}\n\n[Sub-session on {Agent} ({Toolsets}): {Usage}]")]
+    SubSessionAnswer,
+
+    [Description("{Requests} requests, {Tokens} tokens, {Cost}")]
+    SubSessionUsage,
+
+    [Description("usage not reported")]
+    SubSessionNoUsage,
+
+    [Description("cost unknown")]
+    SubSessionCostUnknown,
 }

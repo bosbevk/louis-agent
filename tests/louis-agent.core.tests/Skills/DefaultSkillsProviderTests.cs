@@ -109,7 +109,7 @@ public class DefaultSkillsProviderTests
         var provider = new DefaultSkillsProvider(_defaultMdPath);
         string doc = provider.Documentation;
 
-        string[] toolsets = ["files", "git", "dotnet", "python", "powershell", "bash", "web", "skills", "paymo", "devops"];
+        string[] toolsets = ["files", "git", "dotnet", "python", "powershell", "bash", "web", "skills", "paymo", "devops", "agents"];
         foreach (string toolset in toolsets)
             Assert.That(doc, Does.Contain($"`{toolset}`"), $"default.md should name the '{toolset}' toolset");
 

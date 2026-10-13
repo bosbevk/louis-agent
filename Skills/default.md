@@ -17,6 +17,7 @@ loaded with it, and that guide is the reference for its tools.
 | Create skills, or build and list agent-built tools | `skills` |
 | Paymo time entries, tasks, projects and summaries | `paymo` |
 | Azure DevOps work items, sprints and team queries | `devops` |
+| Hand a separate task to a specialist agent (a sub-session) | `agents` |
 
 `GET /toolsets` lists these with a one-line description and whether this instance can use each one.
 

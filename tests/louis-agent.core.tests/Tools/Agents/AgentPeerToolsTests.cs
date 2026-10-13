@@ -1,0 +1,165 @@
+using System.Net;
+using System.Text;
+using System.Text.Json;
+using LouisAgent.Core.Config;
+using LouisAgent.Core.Tools.Agents;
+using LouisAgent.Core.Usage;
+
+namespace LouisAgent.Core.Tests.Tools.Agents;
+
+// F5 step 8 (F5-S5): a sub-session on a peer, with its limits in code. The peer is a stub: no network.
+public class AgentPeerToolsTests
+{
+    private static readonly Dictionary<string, Uri> Peers = new() { ["coder"] = new Uri("http://coder.test/") };
+
+    private const string Stream = """
+        event: message_start
+        data: {"type":"message_start","message":{"session_id":"sess_child"}}
+
+        event: content_block_delta
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Fixed the null check; "}}
+
+        event: content_block_delta
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"14/14 tests pass."}}
+
+        event: message_delta
+        data: {"type":"message_delta","delta":{"stop_reason":"end_turn"},"usage":{"input_tokens":1000,"cache_creation_input_tokens":0,"cache_read_input_tokens":9000,"output_tokens":200,"requests":3,"cost":0.0123,"currency":"USD"}}
+
+        event: message_stop
+        data: {"type":"message_stop"}
+
+        """;
+
+    private static HttpResponseMessage Json(HttpStatusCode status, string json) =>
+        new(status) { Content = new StringContent(json, Encoding.UTF8, "application/json") };
+
+    /// <summary>A peer that creates sess_child, answers with <paramref name="answer"/> and accepts the delete.</summary>
+    private static StubHandler Peer(Func<HttpResponseMessage>? answer = null) => new(request => request.Method.Method switch
+    {
+        "POST" when request.RequestUri!.AbsolutePath == "/sessions" => Json(HttpStatusCode.Created, """{"session_id":"sess_child"}"""),
+        "POST" => answer?.Invoke() ?? new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(Stream, Encoding.UTF8, "text/event-stream") },
+        "DELETE" => Json(HttpStatusCode.OK, """{"deleted":true}"""),
+        _ => new HttpResponseMessage(HttpStatusCode.NotFound),
+    });
+
+    private static AgentPeerTools Tools(StubHandler handler, TimeSpan? timeout = null) =>
+        new(Peers, "the-key", new HttpClient(handler), timeout);
+
+    [Test]
+    public async Task ASubSession_ReturnsTheAnswerAndUsage_AndIsDeleted()
+    {
+        var handler = Peer();
+
+        string result = await Tools(handler).StartSubSession("coder", ["files", "git"], "Fix order 1006.");
+
+        Assert.That(result, Does.StartWith("Fixed the null check; 14/14 tests pass."));
+        Assert.That(result, Does.Contain("[Sub-session on coder (files, git): 3 requests, 10,200 tokens, 0.0123 USD]"));
+        Assert.That(handler.Requests.Select(r => $"{r.Method} {new Uri(r.Url).AbsolutePath}"),
+            Is.EqualTo(new[] { "POST /sessions", "POST /sessions/sess_child/messages", "DELETE /sessions/sess_child" }));
+        using var create = JsonDocument.Parse(handler.Requests[0].Body!);
+        Assert.That(create.RootElement.GetProperty("depth").GetInt32(), Is.EqualTo(1), "one level deep");
+        Assert.That(create.RootElement.GetProperty("toolsets").EnumerateArray().Select(t => t.GetString()), Is.EqualTo(new[] { "files", "git" }));
+    }
+
+    [Test]
+    public async Task AnUnknownPeer_FailsWithoutANetworkCall()
+    {
+        var handler = Peer();
+
+        string result = await Tools(handler).StartSubSession("nobody", ["files"], "x");
+
+        Assert.That(result, Does.StartWith("Error: no peer agent named 'nobody'").And.Contain("coder"));
+        Assert.That(handler.Requests, Is.Empty);
+    }
+
+    [Test]
+    public async Task AFailedMessage_StillDeletesTheChild()
+    {
+        var handler = Peer(() => Json(HttpStatusCode.InternalServerError, """{"type":"error","error":{"type":"api_error","message":"boom"}}"""));
+
+        string result = await Tools(handler).StartSubSession("coder", ["files"], "x");
+
+        Assert.That(result, Does.Contain("refused the sub-session (HTTP 500): boom"));
+        Assert.That(handler.Requests.Last().Method, Is.EqualTo(HttpMethod.Delete));
+    }
+
+    [Test]
+    public async Task ARefusedSession_ReportsThePeersReason()
+    {
+        var handler = new StubHandler(_ => Json(HttpStatusCode.BadRequest,
+            """{"type":"error","error":{"type":"invalid_request_error","message":"A sub-session can't load the 'agents' toolset"}}"""));
+
+        string result = await Tools(handler).StartSubSession("coder", ["agents"], "x");
+
+        Assert.That(result, Does.Contain("HTTP 400").And.Contain("can't load the 'agents' toolset"));
+        Assert.That(handler.Requests, Has.Count.EqualTo(1), "nothing was created, so nothing to delete");
+    }
+
+    [Test]
+    public async Task TheFourthCallInATurn_IsRefused()
+    {
+        var handler = Peer();
+        var tools = Tools(handler);
+
+        using (UsageScope.Begin(session: "sess_parent", turn: 2))
+        {
+            for (int i = 0; i < AgentPeerTools.MaxPerTurn; i++)
+                Assert.That(await tools.StartSubSession("coder", ["files"], "x"), Does.Not.StartWith("Error"));
+
+            Assert.That(await tools.StartSubSession("coder", ["files"], "x"), Does.Contain("already started 3 sub-sessions"));
+        }
+
+        using (UsageScope.Begin(session: "sess_parent", turn: 3))
+            Assert.That(await tools.StartSubSession("coder", ["files"], "x"), Does.Not.StartWith("Error"), "a new turn starts again");
+    }
+
+    [Test]
+    public async Task ATimeout_ReturnsAnErrorTheParentCanHandle_AndDeletesTheChild()
+    {
+        var handler = new SlowPeer();
+
+        string result = await new AgentPeerTools(Peers, null, new HttpClient(handler), TimeSpan.FromMilliseconds(200))
+            .StartSubSession("coder", ["files"], "x");
+
+        Assert.That(result, Does.Contain("didn't finish within"));
+        Assert.That(handler.Deleted, Is.True);
+    }
+
+    [Test]
+    public async Task TheParentTurn_IsSentSoTheChildsUsageLinksToIt()
+    {
+        // Step 9: the child's records carry parent = "{session}#{turn}" of the turn that opened it.
+        var handler = Peer();
+
+        using (UsageScope.Begin(session: "sess_parent", turn: 4, tags: new UsageTags(null, "run-1", "order-service")))
+            await Tools(handler).StartSubSession("coder", ["files"], "x");
+
+        using var create = JsonDocument.Parse(handler.Requests[0].Body!);
+        Assert.That(create.RootElement.GetProperty("parent").GetString(), Is.EqualTo("sess_parent#4"));
+        Assert.That(create.RootElement.GetProperty("run").GetString(), Is.EqualTo("run-1"));
+    }
+
+    [Test]
+    public void Peers_AreParsedFromAgentPeers()
+    {
+        var peers = AgentOptions.ParsePeers("coder=http://coder:8080, Writer = https://w.example/api ,bad,=http://x,ftp=ftp://x");
+
+        Assert.That(peers.Keys, Is.EquivalentTo(new[] { "coder", "writer" }));
+        Assert.That(peers["coder"].ToString(), Is.EqualTo("http://coder:8080/"));
+        Assert.That(peers["writer"].ToString(), Is.EqualTo("https://w.example/api/"));
+    }
+
+    /// <summary>Creates the child, then never answers the message until cancelled; records the delete.</summary>
+    private sealed class SlowPeer : HttpMessageHandler
+    {
+        public bool Deleted { get; private set; }
+
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        {
+            if (request.Method == HttpMethod.Delete) { Deleted = true; return new HttpResponseMessage(HttpStatusCode.OK); }
+            if (request.RequestUri!.AbsolutePath == "/sessions") return Json(HttpStatusCode.Created, """{"session_id":"sess_child"}""");
+            await Task.Delay(Timeout.Infinite, cancellationToken);
+            return new HttpResponseMessage(HttpStatusCode.OK);
+        }
+    }
+}

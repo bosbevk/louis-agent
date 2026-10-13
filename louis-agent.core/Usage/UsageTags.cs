@@ -24,7 +24,11 @@ namespace LouisAgent.Core.Usage;
 /// Who the work is for, beyond the session: the task (e.g. "fix:e8b0b572223d"), the orchestrator run it belongs to, and
 /// the service. Lets a ledger total a fix or a whole run across both agents (F1-S3).
 /// </summary>
-public sealed record UsageTags(string? Task, string? Run, string? Service)
+/// <param name="Parent">
+/// For a sub-session (F5-S5): the turn that opened it, <c>{session}#{turn}</c>, so a parent turn's records and its
+/// children's can be added up together.
+/// </param>
+public sealed record UsageTags(string? Task, string? Run, string? Service, string? Parent = null)
 {
     public static readonly UsageTags None = new(null, null, null);
 }

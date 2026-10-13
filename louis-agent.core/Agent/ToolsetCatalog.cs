@@ -1,6 +1,7 @@
 namespace LouisAgent.Core.Agent;
 
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Tools.Agents;
 using LouisAgent.Core.Tools.DotNet;
 using LouisAgent.Core.Tools.Git;
 using LouisAgent.Core.Tools.Integrations.DevOps;
@@ -75,6 +76,12 @@ public static class ToolsetCatalog
             ToolType: typeof(DevOpsTools),
             CreateTools: ctx => [new DevOpsTools(
                 ctx.Options.DevopsApiKey!, ctx.Options.DevopsOrganization!, ctx.Options.DevopsProject!, ctx.Options.DevopsTeam)]),
+
+        new("agents", "Hand a separate task to a specialist agent: a sub-session on a peer with only the toolsets it needs",
+            GuideFile: "agents-skills.md",
+            MissingSettings: ctx => ctx.Options.AgentPeers.Count == 0 ? ["AGENT_PEERS"] : [],
+            ToolType: typeof(AgentPeerTools),
+            CreateTools: ctx => [new AgentPeerTools(ctx.Options)]),
 
         // Engine-provided: CreateSkillFile, ReloadSkills, CreateTool and ListAgentTools are registered by AgentEngine
         // when this name is in the resolved list (step 3), because they need the engine's own registry and skill set.

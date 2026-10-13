@@ -96,6 +96,24 @@ public sealed class AgentOptions
     /// <summary>DISPLAY_CURRENCY: show costs in this currency (an ISO code, e.g. EUR) instead of the region's.</summary>
     public string? DisplayCurrency { get; set; }
 
+    /// <summary>
+    /// AGENT_PEERS: other louis-agent APIs this agent may open sub-sessions on (F5-S5), as <c>name=url</c> pairs separated by
+    /// commas, e.g. <c>coder=http://louis-agent-coder:8080</c>. Empty disables the <c>agents</c> toolset.
+    /// </summary>
+    public IReadOnlyDictionary<string, Uri> AgentPeers { get; set; } = new Dictionary<string, Uri>();
+
+    /// <summary>AGENT_API_KEY: this deployment's API key, sent to peers as x-api-key (never taken from the model's arguments).</summary>
+    public string? AgentApiKey { get; set; }
+
+    /// <summary>Parses AGENT_PEERS; an entry without a name or an absolute http(s) URL is skipped.</summary>
+    internal static IReadOnlyDictionary<string, Uri> ParsePeers(string? value) =>
+        (value ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Select(entry => entry.Split('=', 2, StringSplitOptions.TrimEntries))
+            .Where(pair => pair.Length == 2 && pair[0].Length > 0
+                && Uri.TryCreate(pair[1], UriKind.Absolute, out var uri) && uri.Scheme is "http" or "https")
+            .GroupBy(pair => pair[0].ToLowerInvariant())
+            .ToDictionary(g => g.Key, g => new Uri(g.Last()[1].TrimEnd('/') + "/"), StringComparer.OrdinalIgnoreCase);
+
     public static AgentOptions FromEnvironment(Func<string, string?>? getVariable = null)
     {
         getVariable ??= Environment.GetEnvironmentVariable;
@@ -130,6 +148,8 @@ public sealed class AgentOptions
             RatesFile = Get("RATES_FILE"),
             HostCulture = Get("HOST_CULTURE"),
             DisplayCurrency = Get("DISPLAY_CURRENCY"),
+            AgentPeers = ParsePeers(Get("AGENT_PEERS")),
+            AgentApiKey = Get("AGENT_API_KEY"),
         };
         if (Get("AGENT_FUNCTION") is { } function) options.AgentFunction = function;
         if (Get("WORKSPACE_ROOT") is { } root) options.WorkspaceRoot = root;
