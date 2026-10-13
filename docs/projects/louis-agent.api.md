@@ -1,7 +1,8 @@
 # louis-agent.api — design
 
-> **Kind:** ASP.NET Core minimal API · **Path:** `src/louis-agent.api/` · **References:** louis-agent.core,
-> louis-agent.web (served as static files) · **Docker service:** `api` (http://127.0.0.1:5080); `demo-api` in the demo
+> **Kind:** ASP.NET Core minimal API · **Path:** `src/louis-agent.api/` · **References:** louis-agent.core, and the web
+> app it serves as static files: louis-agent.web by default, louis-agent.puls when built with `-p:WebApp=puls` ·
+> **Docker services:** `api` (http://127.0.0.1:5080); `demo-api` in the demo; `puls` and `puls-agent` (5070, 5071)
 
 ## Purpose
 
@@ -35,8 +36,17 @@ flowchart LR
 - **Toolsets per session** (F5): `POST /sessions` takes `toolsets` (none: `skills` only) and gets that profile's engine
   from core's `AgentEngineFactory`, kept for the session's life; unknown or unavailable names, a `depth` other than 0
   or 1, or `agents` at depth 1 are a `400`. `parent` tags a sub-session's usage records with the turn that opened it.
-  `GET /toolsets` lists names, descriptions and availability, never tool definitions. The web app opens chats with
-  only `agents` and delegates every task to the specialist (`api-coder`); without a peer, with every available toolset.
+  `GET /toolsets` lists names, descriptions and availability, never tool definitions. The code-review web app opens
+  chats with every available toolset; Puls opens them with `agents` only and delegates every task to its peer.
+  Engines are shared by every session with the same toolsets, personality and router, and the least recently used of
+  16 is dropped (a session keeps its own).
+- **Personalities** (F21): `POST /sessions` takes `personality`, a file in `Skills/personalities/` (`puls`, or a
+  specialist's role such as `puls-researcher`); none gives `personality.md`; an invalid or unknown name is a `400`
+  before an engine is built. `GET /personalities` lists them. A sub-session (depth 1) gets no router (`default.md`),
+  and when its parent named no role, one is taken from its toolsets (`roles.json`).
+- **The user's place** (F22): `location` (only when the user shared it) and `time_zone` (IANA; an unknown one is a
+  `400`) are kept with the session, so `GetToday` and "near me" are the user's. Files attached to a message are
+  remembered by name, so `StartSubSession` can forward them to a specialist without the model copying them.
 - **Streaming** (`ClaudeStyleStream`): engine updates become `message_start`, `content_block_start/delta/stop`
   (thinking, text, tool_use, tool_result), `message_delta` (stop reason and the turn's `usage`, F3) and `message_stop`;
   failures become an `error` event in Claude's shape, with the turn's `usage` when a request had returned (FX6).
@@ -55,8 +65,8 @@ The full endpoint and event reference: [How the agents and endpoints talk](../AG
 
 | File | What's in it |
 |---|---|
-| `Program.cs` | Start-up, API-key middleware, `/health` and `/prices`, session endpoints, `StreamTurnAsync`, `ClaudeStyleStream` |
-| `AgentSessions.cs` | `AgentSession` (id, engine, toolsets, depth, history, turn lock, cancellation) and the in-memory session store, which picks each session's engine |
+| `Program.cs` | Start-up, API-key middleware, `/health`, `/prices`, `/rates`, `/toolsets`, `/personalities`, `/model`, session endpoints, `StreamTurnAsync`, `ClaudeStyleStream` |
+| `AgentSessions.cs` | `AgentSession` (id, engine, toolsets, depth, personality, place, attachments, history, turn lock, cancellation) and the in-memory session store, which picks each session's engine |
 | `WorkspaceEndpoints.cs` | `GET /workspace/entries`, `GET /workspace/file` (text ≤ 1 MB; secret files listed but not readable) |
 | `GitEndpoints.cs` | `GET /git/status`, `GET /git/diff`, `POST /git/stage` · `unstage` · `discard` · `commit`; the git runner |
 | `HistoryEndpoints.cs` | `GET /git/branches`, `/git/log`, `/git/commit`, `/git/branch`; `POST /git/merge`, `/git/branch/delete` |
@@ -78,7 +88,8 @@ Docker, bound to `127.0.0.1`), `GIT_AUTHOR_*` / `GIT_COMMITTER_*` (identity for 
 ## Tests
 
 `tests/louis-agent.api.tests`: the sessions' toolsets, the default, unknown names, depth and the `agents` rule, shared
-engines and separate histories (a model client that is never called). The endpoints and the web app are checked with
+engines and separate histories, personalities and the role a sub-session gets from its toolsets (a model client that is
+never called). The endpoints and the web app are checked with
 curl and the browser (backlog: *Automated tests for the API and the web app*); the orchestrator demo exercises
 sessions, streaming and the git endpoints end to end.
 
