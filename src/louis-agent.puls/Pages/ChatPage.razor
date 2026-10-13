@@ -1,4 +1,6 @@
 @page "/gesels"
+@page "/verken"
+@page "/studio"
 @page "/gesels/{SessionId}"
 @page "/chat/{SessionId}"
 @using System.Net
@@ -32,8 +34,8 @@
         </button>
         <nav class="side-nav">
             <a class="side-link" href="./"><span class="ic i-home" aria-hidden="true"></span>Tuis</a>
-            <button class="side-link" type="button" @onclick='() => ComingSoon("Verken")'><span class="ic i-compass" aria-hidden="true"></span>Verken</button>
-            <button class="side-link" type="button" @onclick='() => ComingSoon("Studio")'><span class="ic i-sparkle" aria-hidden="true"></span>Studio</button>
+            <a class="side-link @(View == "verken" ? "active" : "")" href="verken"><span class="ic i-compass" aria-hidden="true"></span>Verken</a>
+            <a class="side-link @(View == "studio" ? "active" : "")" href="studio"><span class="ic i-sparkle" aria-hidden="true"></span>Studio</a>
         </nav>
 
         <div class="chat-list">
@@ -109,7 +111,11 @@
         <header class="chat-header d-none d-lg-flex">
             <button class="icon header-sidebar" type="button" onclick="pulsUi.toggleSidebar()" title="Wys die kantbalk" aria-label="Wys die kantbalk">⇥</button>
             <div class="chat-heading">
-                @if (_chat is null)
+                @if (View is "verken" or "studio")
+                {
+                    <span class="chat-title">@(View == "verken" ? "Verken" : "Studio")</span>
+                }
+                else if (_chat is null)
                 {
                     <span class="chat-title muted">Nuwe gesprek</span>
                 }
@@ -172,7 +178,15 @@
         @* Below lg the Werk panel slides in from this tab (the phone's top bar has the menu and New chat). *@
         <button class="work-tab work-tab-open d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#work" aria-controls="work" title="Wys die werkpaneel">Werk</button>
         <div class="messages" @ref="_messages">
-            @if (_chat is null || _chat.Turns.Count == 0)
+            @if (View == "verken")
+            {
+                <ExploreView OnStart="StartTemplate" />
+            }
+            else if (View == "studio")
+            {
+                <StudioView Recent="Store.Chats.Where(c => !c.Archived).Take(5).ToList()" OnStart="StartTemplate" OnNewProject='() => ComingSoon("Projekte")' />
+            }
+            else if (_chat is null || _chat.Turns.Count == 0)
             {
                 <div class="empty">
                     @* The app icon, with the slow pulse spreading out from it. *@
@@ -218,14 +232,14 @@
             <div class="notice">@_notice <button class="icon" @onclick="() => _notice = null">×</button></div>
         }
 
-        @if (_chat?.Usage() is { } chatUsage)
+        @if (View == "chat" && _chat?.Usage() is { } chatUsage)
         {
             <div class="chat-usage" title="@UsageFormat.Detail(chatUsage, Currency.Current)">
                 Hierdie gesprek: @chatUsage.Requests versoeke · @UsageFormat.Tokens(chatUsage.TotalTokens) tokens · @UsageFormat.Cost(chatUsage, Currency.Current)
             </div>
         }
 
-        @if (_chat is { Turns.Count: > 0 })
+        @if (View == "chat" && _chat is { Turns.Count: > 0 })
         {
             <div class="composer">@Composer()</div>
         }
@@ -404,13 +418,32 @@
 
     private string? _model;
 
+    /// <summary>Which view the shell shows (F20): the chat, Verken or Studio, from the address.</summary>
+    private string View => Nav.ToBaseRelativePath(Nav.Uri).Split('?', '#')[0] switch
+    {
+        "verken" => "verken",
+        "studio" => "studio",
+        _ => "chat",
+    };
+
+    /// <summary>A template's card: a new chat with its starter in the message box.</summary>
+    private async Task StartTemplate(Template template)
+    {
+        Nav.NavigateTo("gesels");
+        await SetDraft(template.Starter);
+    }
+
     /// <summary>Puts <paramref name="text"/> in the message box, for the user to finish and send.</summary>
-    private async Task SetDraft(string text)
+    private Task SetDraft(string text)
     {
         _draft = text;
+        // Focused and grown once the box shows the text (after the render, possibly on another view's page).
+        _focusDraft = true;
         StateHasChanged();
-        await JS.InvokeVoidAsync("pulsUi.focusEnd", "#composer-input");
+        return Task.CompletedTask;
     }
+
+    private bool _focusDraft;
 
     private static string? Pretty(string? id)
     {
@@ -553,6 +586,8 @@
     protected override async Task OnInitializedAsync()
     {
         Currency.Changed += Redraw;
+        // /gesels, /verken and /studio are this page with the same (empty) parameters, so Blazor wouldn't redraw on its own.
+        Nav.LocationChanged += OnLocationChanged;
         if (!Store.Loaded) await Store.LoadAsync();
         _location = await JS.InvokeAsync<string?>("pulsUi.loadLocation");
         try
@@ -583,6 +618,11 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        if (_focusDraft)
+        {
+            _focusDraft = false;
+            await JS.InvokeVoidAsync("pulsUi.focusEnd", "#composer-input");
+        }
         if (_focusRename)
         {
             _focusRename = false;
@@ -614,7 +654,13 @@
 
     private void Redraw() => InvokeAsync(StateHasChanged);
 
-    public void Dispose() => Currency.Changed -= Redraw;
+    public void Dispose()
+    {
+        Currency.Changed -= Redraw;
+        Nav.LocationChanged -= OnLocationChanged;
+    }
+
+    private void OnLocationChanged(object? sender, Microsoft.AspNetCore.Components.Routing.LocationChangedEventArgs e) => InvokeAsync(StateHasChanged);
 
     private async Task StartTurnAsync(string text, List<Attachment> attachments)
     {
