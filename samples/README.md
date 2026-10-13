@@ -147,6 +147,9 @@ With prompt caching (F4, on by default since): [sample-output-cached/](sample-ou
 $0.72, −81%) and [sample-output-short-cached/](sample-output-short-cached/README.md) ($0.049 against $0.29, −83%), the
 same fixes for a fifth of the cost; the two samples above are their "before".
 
+With toolset profiles (F5): [sample-output-short-f5/](sample-output-short-f5/README.md) ($0.038 against F4's $0.049,
+−23%): each fix session loads only `dotnet`, `files`, `git` and `skills`, so its prefix halves (~48.5k → ~24.4k tokens).
+
 With triage on a local model: [sample-output-short-local-triage/](sample-output-short-local-triage/README.md) is a
 `-Short` run whose orchestrator ran on `qwen3:4b-instruct-2507` in Ollama on a 4 GB GPU, fixes on Claude: the same
 4 fixes and 1 escalation, triage free ($0.042 against $0.049), 2.4 times slower. Its README has the steps to run it

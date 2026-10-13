@@ -1,6 +1,6 @@
 # F5 · Toolset profiles: send only the tools a session needs
 
-> **Status:** built, benchmark pending · **Milestone:** M2 · **Depends on:** F1
+> **Status:** built; short benchmark done, full run pending · **Milestone:** M2 · **Depends on:** F1
 >
 > **Spec:** [Optimisation §C](../specs/RESPONSE_OPTIMISATION.md)
 >
@@ -140,11 +140,10 @@ with named toolsets, send it a task, and get the result back, so that tools are 
 
 Built on `feature/F5-toolset-profiles` (steps 1–10 and 12; [plan](../plans/F05-toolset-profiles.md)); all suites pass.
 Left, because each needs a model and so spends money:
-- **The benchmark** (step 11, S4 and S6): `samples/run-demo.ps1 -Short` with caching on, against M2's F4 run
-  (`samples/sample-output-short-cached/`). Record each profile's prefix (the `Toolsets …: N tools, … tokens of fixed
-  prefix` log line), `cache_read` from the second request, and cost per fix; target ≥ 25% smaller prefix, 10/10 (or the
-  short run's) fixes confirmed. Measured by hand without a model: files+git ≈ 10.5k tokens against ≈ 27.7k for every
-  toolset.
+- **The full benchmark** (step 11, S4 and S6): `samples/run-demo.ps1` (10 fixes) against F4's full run, to confirm 10/10.
+  The **short run is done** (2026-10-13, [sample](../../samples/sample-output-short-f5/README.md),
+  [numbers](README.md#f5-benchmark-short-run-2026-10-13)): prefix −50% (~48.5k → ~24.4k tokens), louis-agent −31%, the
+  run −23% ($0.0488 → $0.0378), 4/4 fixes confirmed, the cache still hits.
 - **A sub-session end to end:** `--profile peers`, `AGENT_PEERS=coder=http://api-coder:8080`, one task delegated from
   the web app; check the child is deleted and its ledger records carry `parent`.
 - **By hand:** the web app (a chat has its tools; `GET /toolsets`), Rider over ACP (all available toolsets).

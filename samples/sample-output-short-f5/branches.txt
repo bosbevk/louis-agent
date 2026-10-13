@@ -1,0 +1,10 @@
+# git log --all --graph of .demo/order-service after the run (before any merge)
+
+* 9faad17 louis-agent       (fix/vat-810275780ff5) fix(vat): match country codes case-insensitively in VAT rate lookup (error 810275780ff5)
+| * 214ed0f louis-agent       (fix/packing-slip-c53fa6c94ed0) fix(packing-slip): omit the gift part when an order has no gift message (error c53fa6c94ed0)
+|/  
+| * 62fbc76 louis-agent       (fix/shipping-cost-dc67b88bbea1) fix(shipping-cost): return 0.00 for orders without items instead of dividing by zero (error dc67b88bbea1)
+|/  
+| * 8b85db9 louis-agent       (fix/order-total-91d1420b8f4e) fix(order-total): treat unknown or retired discount codes as no discount (error 91d1420b8f4e)
+|/  
+* f068238 demo-setup        (HEAD -> main) order-service as deployed

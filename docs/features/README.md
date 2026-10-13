@@ -20,7 +20,7 @@ feature replaces older backlog wording, that wording no longer appears anywhere 
 | [F2](F02-prices-and-cost.md) | Prices and cost | done | U §4.2 | (as F1) | F1 | M1 |
 | [F3](F03-usage-display.md) | Show usage: chat, CLI, Rider, API, comms log | done | U §7.2–7.4 | (as F1) | F1, F2 | M1 |
 | [F4](F04-prompt-caching.md) | Prompt caching (Anthropic) | **done** | R §B | *Wire up Anthropic prompt caching* | F1 | M2 |
-| [F5](F05-toolset-profiles.md) | Toolset profiles | built, benchmark pending | R §C | — | F1 | M2 |
+| [F5](F05-toolset-profiles.md) | Toolset profiles | built; short benchmark done | R §C | — | F1 | M2 |
 | [F6](F06-estimates.md) | Cost estimates before a run | planned | U §5 | (as F1) | F1, F2 | M3 |
 | [F7](F07-budgets.md) | Budgets: warn, ask, stop | planned | U §6 | (as F1) | F1, F2, F6 | M3 |
 | [F8](F08-reliability.md) | Reliability: retries, account limits, fallback, structured results | planned | R §F · U §6.2 | *Retry and back off…*, *Add model fallback*, *Wire up structured outputs* | F1 | M3 |
@@ -146,6 +146,26 @@ cached (F17). **10/10 fixes confirmed**, 2 ignored, 1 escalated, as in M1.
   right for the demo; 1 hour would cost more.
 - The smoke check before it is kept in [samples/smoke-f4-caching/](../../samples/smoke-f4-caching/README.md).
 - The three paid runs together cost $0.19.
+
+### F5 benchmark, short run (2026-10-13)
+
+The short demo with F5's coding profile for louis-agent's fix sessions (`run-20261013-161416`, saved in
+[samples/sample-output-short-f5/](../../samples/sample-output-short-f5/README.md)), against F4's short run. **4/4 fixes
+confirmed** and 1 escalated, as before.
+
+| | F4 short (cached) | F5 short | Change |
+|---|---:|---:|---:|
+| A fix session's prefix (its first request) | ~48,500 tokens | ~24,400 tokens | **−50%** |
+| louis-agent: cost | $0.0353 | $0.0243 | −31% |
+| louis-agent: cost per fix | $0.0088 | $0.0061 | −31% |
+| Triage (not cached) | $0.0135 | $0.0135 | 0% |
+| **The run** | **$0.0488** | **$0.0378** | **−23%** |
+| Cache-hit rate (louis-agent) | 98% | 95% | |
+
+- **Targets met for the short run:** prefix −50% against F5's ≥ 25%, the cache hits from each fix's second request, every
+  fix confirmed. F4's short run never wrote its prefix (the full run before it had left it cached); this one wrote its
+  24,475 tokens once, so like for like the saving is a little larger.
+- **Left:** the full run (10 fixes) to confirm 10/10, and a sub-session end to end.
 
 ### Local triage (2026-10-12)
 
