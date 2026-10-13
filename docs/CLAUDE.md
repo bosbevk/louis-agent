@@ -73,7 +73,9 @@ louis-agent.core/             # Namespace = folder path (LouisAgent.Core.Tools.W
 │   ├── Git/, DotNet/, Shell/ # GitTools; DotNetTools; BashTools, PowerShellTools, PythonTools
 │   ├── Web/                  # WebTools: WebSearch (Google / DuckDuckGo providers) and FetchUrl (SSRF-guarded)
 │   ├── Scripts/              # Agent-built tools (*.tool.md)
-│   ├── Agents/               # AgentPeerTools: StartSubSession on a peer agent (AGENT_PEERS, F5)
+│   ├── Agents/               # AgentPeerTools: StartSubSession on a peer agent (AGENT_PEERS, F5); SessionAttachments (F22)
+│   ├── Clock/                # ClockTools (GetToday, every session) and UserPlace: where the user is (F22)
+│   ├── Documents/            # DocumentText: PDF, Word, spreadsheets for ReadDocument, ReadTable, FetchUrl (F22)
 │   └── Integrations/         # Paymo/, DevOps/: loaded only when their API keys are set
 ├── Protocols/Mcp/            # RiderMcpClient: lists tools from Rider's MCP server
 ├── Usage/                    # Usage ledger (F1): one JSON line per model request in {LOG_DIRECTORY}/usage-YYYY-MM.jsonl
@@ -194,7 +196,7 @@ a change to one (a new provider, a new tool, a new guard) touches one folder:
 |---|---|
 | `Agent/` | The loop: turns, history, system prompt, round limits; the tool registry, the tool-call guards that call the model (cut-off calls, oversized results summarised), the skill tools and the agent-built tools (`/approve`) |
 | `Llm/` + `Llm/{Name}Provider/` | The model: client factory, `IChatClient` middleware (thinking, caching, usage recording), one folder per provider (`AnthropicProvider/`: a folder named `Anthropic` would hide the SDK's own `Anthropic` namespace) |
-| `Tools/{Toolset}/` | What the model can do: one folder per toolset (`Workspace`, `Git`, `DotNet`, `Shell`, `Web`, `Scripts`, `Agents`, `Integrations/Paymo`, `Integrations/DevOps`); `ProcessRunner` beside them |
+| `Tools/{Toolset}/` | What the model can do: one folder per toolset (`Workspace`, `Git`, `DotNet`, `Shell`, `Web`, `Scripts`, `Agents`, `Integrations/Paymo`, `Integrations/DevOps`), plus `Clock` (every session) and `Documents` (shared by two toolsets); `ProcessRunner` beside them |
 | `Skills/` | Loading the markdown skills and personality into the prompt |
 | `Guardrails/` | Pure safety checks, no model: the workspace boundary, sensitive files, the SSRF guard (the guards that call a model are in `Agent/`) |
 | `Usage/` and `Pricing/` | The ledger (records, sinks, scopes, reports); prices, cost, rates and the display currency |

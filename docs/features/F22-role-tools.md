@@ -1,6 +1,6 @@
 # F22 · Role tools: what each specialist needs to do its job
 
-> **Status:** building (2026-10-13) · **Milestone:** — · **Depends on:** F21 (the specialists' roles), F5 (sub-sessions)
+> **Status:** built (2026-10-13), on `feature/F20-puls-look` · **Milestone:** — · **Depends on:** F21 (the specialists' roles), F5 (sub-sessions)
 >
 > **In the TODO:** **F22 Role tools** under *Puls* ([TODO](../../TODO.md)) · **Plan:** [plans/F22](../plans/F22-role-tools.md)
 
@@ -34,7 +34,17 @@ attachments to a sub-session is our own: nothing third-party does that for us.
 
 ## What the build changed
 
-(Filled in as the steps land.)
+- **Packages, chosen by Louis from three options each:** PdfPig (the package is `PdfPig`; `UglyToad.PdfPig` is only its
+  namespace, and that ID holds an unrelated pre-release), DocumentFormat.OpenXml, ExcelDataReader; and for tests,
+  Microsoft.Extensions.TimeProvider.Testing.
+- **Step 2b, the user's place** (approved during the build): Ligging in Puls's settings, typed or from the browser via
+  OpenStreetMap's Nominatim; the session carries it, the first message says it, `GetToday` uses the user's time zone,
+  and specialists get it.
+- **Attachments by name:** the model names a file and the session supplies it, so a file isn't copied through the model's
+  output; the session remembers attachments across turns.
+- **The new git tools use argument lists** (`ProcessRunner`); the older git tools still build one command string, a gap
+  outside F22.
+- **Roles name their tools**, and the analyst gets `python` with `files` when the data is the user's.
 
 ---
 [Features](README.md) · [Plan](../plans/F22-role-tools.md)

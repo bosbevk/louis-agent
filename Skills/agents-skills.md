@@ -29,7 +29,7 @@ toolsets you give it:
 | `web` | `puls-researcher` | finds things out on the web; reports with sources |
 | `files` | `puls-reader` | reads the user's files; reports with paths and quotes |
 | `git` | `puls-historian` | reads the repository's history; reports commits |
-| `python`, `bash` or `powershell` | `puls-analyst` | counts and calculates with a script; reports the method |
+| `python` (with `files` when the data is the user's) | `puls-analyst` | counts and calculates with a script; reports the method |
 | anything else, or a mix | `puls-specialist` | does one piece of work and reports the evidence |
 
 For a mix led by one kind (`files` and `git` to explain a change), pass the role of the main part. If the peer doesn't
