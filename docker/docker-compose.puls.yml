@@ -2,7 +2,7 @@
 #   Start:  docker compose -f docker/docker-compose.puls.yml --env-file config/.env up -d --build
 #   Stop:   docker compose -f docker/docker-compose.puls.yml --env-file config/.env stop
 #   Remove: docker compose -f docker/docker-compose.puls.yml --env-file config/.env down
-# Then open http://127.0.0.1:5070. Every chat loads only the agents toolset and hands each task to puls-coder, a
+# Then open http://127.0.0.1:5070. Every chat loads only the agents toolset and hands each task to puls-agent, a
 # specialist on the same image that loads just the toolsets the task needs (F5).
 name: puls
 
@@ -32,7 +32,7 @@ services:
       PRICES_FILE: /workspace/config/prices.json
       RATES_FILE: /workspace/config/rates.json
       # Chats delegate every task to the specialist below
-      AGENT_PEERS: puls=http://puls-coder:8080
+      AGENT_PEERS: puls=http://puls-agent:8080
     # Localhost only. Set AGENT_API_KEY in config/.env.secrets to require a key.
     ports:
       - "127.0.0.1:${PULS_PORT:-5070}:8080"
@@ -41,12 +41,12 @@ services:
       - ../Skills:/skills
       - ../logs/puls:/logs
     depends_on:
-      - puls-coder
+      - puls-agent
 
   # The specialist Puls delegates to: the same image, no peers of its own (sub-sessions are one level deep).
-  puls-coder:
+  puls-agent:
     image: louis-agent-puls:latest
-    container_name: puls_coder
+    container_name: puls_agent
     <<: *puls-env
     environment:
       WORKSPACE_ROOT: /workspace
