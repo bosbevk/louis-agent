@@ -27,27 +27,66 @@
             <button class="icon d-lg-none" type="button" data-bs-dismiss="offcanvas" data-bs-target="#sidebar" aria-label="Maak die kieslys toe">×</button>
         </div>
         <button class="new-chat" @onclick="NewChat">Nuwe gesprek</button>
-        @if (Store.Chats.Count > 0)
-        {
-            <div class="sidebar-label">Onlangs</div>
-        }
-        <nav class="chat-list">
-            @foreach (var chat in Store.Chats)
-            {
-                <div class="chat-item @(chat.SessionId == SessionId ? "active" : "")">
-                    <a href="gesels/@chat.SessionId" title="@chat.Title">@chat.Title</a>
-                    <button class="icon" title="Vee die gesprek uit" @onclick="() => DeleteChat(chat)">×</button>
-                </div>
-            }
+        <button class="side-search" id="search-button" type="button" @onclick="() => _searchOpen = true">
+            <span class="ic i-search" aria-hidden="true"></span>Soek gesprekke<kbd>Ctrl K</kbd>
+        </button>
+        <nav class="side-nav">
+            <a class="side-link" href="./"><span class="ic i-home" aria-hidden="true"></span>Tuis</a>
+            <button class="side-link" type="button" @onclick='() => ComingSoon("Verken")'><span class="ic i-compass" aria-hidden="true"></span>Verken</button>
+            <button class="side-link" type="button" @onclick='() => ComingSoon("Studio")'><span class="ic i-sparkle" aria-hidden="true"></span>Studio</button>
         </nav>
-        <details class="sidebar-settings">
-            <summary>Instellings</summary>
-            <CurrencySwitcher />
-            <label class="settings">
-                API-sleutel
-                <input type="password" value="@Store.ApiKeyDraft" @onchange="SaveApiKey" placeholder="net as AGENT_API_KEY gestel is" />
-            </label>
-        </details>
+
+        <div class="chat-list">
+            @if (Store.Chats.Any(c => c.Favourite && !c.Archived))
+            {
+                <div class="sidebar-label">Gunstelinge</div>
+                @foreach (var chat in Store.Chats.Where(c => c.Favourite && !c.Archived))
+                {
+                    @ChatItem(chat)
+                }
+            }
+
+            <div class="sidebar-label sidebar-label-row">Projekte
+                <button class="icon" type="button" title="Nuwe projek" @onclick='() => ComingSoon("Projekte")'>+</button>
+            </div>
+            <button class="side-link side-link-quiet" type="button" @onclick='() => ComingSoon("Projekte")'><span class="ic i-folder" aria-hidden="true"></span>Nuwe projek</button>
+
+            @if (Store.Chats.Any(c => !c.Favourite && !c.Archived))
+            {
+                <div class="sidebar-label">Onlangs</div>
+                @foreach (var chat in Store.Chats.Where(c => !c.Favourite && !c.Archived))
+                {
+                    @ChatItem(chat)
+                }
+            }
+
+            @if (Store.Chats.Count(c => c.Archived) is > 0 and var archived)
+            {
+                <details class="side-archive">
+                    <summary><span class="ic i-archive" aria-hidden="true"></span>Geargiveer <span class="side-count">@archived</span></summary>
+                    @foreach (var chat in Store.Chats.Where(c => c.Archived))
+                    {
+                        @ChatItem(chat)
+                    }
+                </details>
+            }
+        </div>
+
+        <div class="side-footer">
+            @* A placeholder profile until Puls has accounts (step 5 adds its menu). *@
+            <div class="profile-card">
+                <span class="profile-avatar">G</span>
+                <span class="profile-who"><strong>Gas</strong><small>Plaaslik · gratis</small></span>
+            </div>
+            <details class="sidebar-settings">
+                <summary>Instellings</summary>
+                <CurrencySwitcher />
+                <label class="settings">
+                    API-sleutel
+                    <input type="password" value="@Store.ApiKeyDraft" @onchange="SaveApiKey" placeholder="net as AGENT_API_KEY gestel is" />
+                </label>
+            </details>
+        </div>
     </aside>
 
     @* Drag to resize the sidebar; double-click to reset (pulsUi in js/chat.js). *@
@@ -129,12 +168,85 @@
         </div>
     </main>
 
+    <ChatSearch @bind-Open="_searchOpen" Chats="Store.Chats" />
+
     <aside class="work offcanvas-xl offcanvas-end" id="work" tabindex="-1" aria-label="Werk">
         <WorkPanel Chat="_chat" Streaming="_streaming" Currency="Currency.Current" />
     </aside>
 </div>
 
 @code {
+    /// <summary>One chat in the sidebar: its link (or the rename field), and its menu.</summary>
+    private RenderFragment ChatItem(Chat chat) => __builder =>
+    {
+        <div class="chat-item @(chat.SessionId == SessionId ? "active" : "")" @key="chat.SessionId">
+            @if (_renaming == chat.SessionId)
+            {
+                <input id="rename-input" class="rename-input" @bind="_renameDraft" @bind:event="oninput"
+                       @onkeydown="e => RenameKey(e, chat)" @onblur="() => FinishRename(chat)" aria-label="Nuwe naam" />
+            }
+            else
+            {
+                <a href="gesels/@chat.SessionId" title="@chat.Title">@chat.Title</a>
+                <div class="dropdown">
+                    <button class="icon item-menu" type="button" data-bs-toggle="dropdown" data-bs-popper-config='{"strategy":"fixed"}'
+                            aria-expanded="false" aria-label="Meer vir @chat.Title">⋯</button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><button class="dropdown-item" type="button" @onclick="() => ToggleFavourite(chat)"><span class="ic i-star" aria-hidden="true"></span>@(chat.Favourite ? "Haal uit gunstelinge" : "Merk as gunsteling")</button></li>
+                        <li><button class="dropdown-item" type="button" @onclick='() => ComingSoon("Deel")'><span class="ic i-share" aria-hidden="true"></span>Deel</button></li>
+                        <li><button class="dropdown-item" type="button" @onclick="() => StartRename(chat)"><span class="ic i-pencil" aria-hidden="true"></span>Hernoem</button></li>
+                        <li><button class="dropdown-item" type="button" @onclick="() => ToggleArchive(chat)"><span class="ic i-archive" aria-hidden="true"></span>@(chat.Archived ? "Haal uit argief" : "Argiveer")</button></li>
+                        <li><hr class="dropdown-divider" /></li>
+                        <li><button class="dropdown-item danger" type="button" @onclick="() => DeleteChat(chat)"><span class="ic i-trash" aria-hidden="true"></span>Vee uit</button></li>
+                    </ul>
+                </div>
+            }
+        </div>
+    };
+
+    private bool _searchOpen;
+    private string? _renaming;
+    private string _renameDraft = "";
+    private bool _focusRename;
+
+    private void ComingSoon(string what) => _notice = $"{what}: kom binnekort.";
+
+    private void StartRename(Chat chat)
+    {
+        _renaming = chat.SessionId;
+        _renameDraft = chat.Title;
+        _focusRename = true;
+    }
+
+    private async Task RenameKey(KeyboardEventArgs e, Chat chat)
+    {
+        if (e.Key == "Enter") await FinishRename(chat);
+        else if (e.Key == "Escape") _renaming = null;
+    }
+
+    private async Task FinishRename(Chat chat)
+    {
+        if (_renaming != chat.SessionId) return;
+        _renaming = null;
+        string title = _renameDraft.Trim();
+        if (title.Length == 0 || title == chat.Title) return;
+        chat.Title = title.Length > 80 ? title[..80] : title;
+        await Store.SaveAsync();
+    }
+
+    private async Task ToggleFavourite(Chat chat)
+    {
+        chat.Favourite = !chat.Favourite;
+        await Store.SaveAsync();
+    }
+
+    private async Task ToggleArchive(Chat chat)
+    {
+        chat.Archived = !chat.Archived;
+        if (chat.Archived) chat.Favourite = false;
+        await Store.SaveAsync();
+    }
+
     [Parameter] public string? SessionId { get; set; }
 
     private const long MaxAttachmentBytes = 1_000_000;
@@ -188,6 +300,11 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        if (_focusRename)
+        {
+            _focusRename = false;
+            await JS.InvokeVoidAsync("pulsUi.focus", "#rename-input", true);
+        }
         if (_streaming || _scrollToEnd)
         {
             await JS.InvokeVoidAsync("louisChat.scrollToBottom", _messages, _scrollToEnd);

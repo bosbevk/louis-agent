@@ -101,7 +101,7 @@ a { color: var(--blue); text-decoration-thickness: 1px; text-underline-offset: 2
 .chat-item.active a { color: var(--ink); font-weight: 600; }
 .chat-item .icon { opacity: 0; transition: opacity .15s; color: var(--muted); }
 .chat-item:hover .icon { opacity: 1; }
-.sidebar-settings { margin: 0 -14px -16px; padding: 12px 18px 14px; background: var(--navy); color: #e4e4df; font-size: 13px; }
+.sidebar-settings { color: #e4e4df; font-size: 13px; }
 .sidebar-settings summary { cursor: pointer; color: #c9c9c3; list-style: none; padding: 4px 8px; border-radius: 8px; }
 .sidebar-settings summary::before { content: "⚙  "; }
 .settings { display: flex; flex-direction: column; gap: 5px; margin: 10px 8px 0; color: #c9c9c3; }
@@ -689,3 +689,91 @@ html:has(.landing) { scroll-behavior: smooth; }
 @media (min-width: 1200px) { .work-tab { opacity: 0; pointer-events: none; } .work-hidden .work-tab { opacity: 1; pointer-events: auto; } }
 /* Below xl the Werk tab sits over the chat's top right: the messages start under it. */
 @media (max-width: 1199.98px) { .messages { padding-top: 64px; } }
+
+/* ---- The sidebar's contents (F20 step 4). ---- */
+/* A line icon in the text colour: .ic plus one of the .i-* icons (their --icon). */
+.ic { display: inline-block; width: 16px; height: 16px; flex: none; background: currentColor; -webkit-mask: var(--icon) center / contain no-repeat; mask: var(--icon) center / contain no-repeat; }
+
+.side-search {
+    display: flex; align-items: center; gap: 10px; width: 100%; padding: 9px 12px; border-radius: 12px; font-size: 14px; color: var(--muted);
+    background: rgba(255, 255, 255, .04); border: 1px solid var(--border); transition: border-color .2s, color .2s, background .2s;
+}
+.side-search:hover { color: var(--ink); border-color: rgba(245, 130, 32, .45); background: rgba(255, 255, 255, .06); }
+.side-search kbd, .search-dialog kbd { margin-left: auto; font: 600 11px var(--font); color: var(--dim); background: rgba(255, 255, 255, .06); border: 1px solid var(--border); border-radius: 6px; padding: 1px 6px; }
+.side-nav { display: flex; flex-direction: column; gap: 2px; }
+.side-link {
+    display: flex; align-items: center; gap: 10px; width: 100%; padding: 8px 12px; border: 0; border-radius: 10px; background: none;
+    color: var(--text); font-size: 14px; font-weight: 500; text-align: left; text-decoration: none; transition: background .2s, color .2s;
+}
+.side-link:hover { background: rgba(255, 255, 255, .06); color: var(--ink); }
+.side-link .ic { color: var(--muted); }
+.side-link:hover .ic { color: var(--orange); }
+.side-link-quiet { color: var(--muted); font-size: 13.5px; }
+.sidebar-label { padding-top: 14px; }
+.sidebar-label-row { display: flex; align-items: center; justify-content: space-between; padding-right: 4px; }
+.sidebar-label-row .icon { width: 24px; height: 24px; display: grid; place-items: center; padding: 0; font-size: 16px; color: var(--muted); }
+.chat-list { gap: 1px; }
+.chat-item .item-menu { opacity: 0; width: 30px; height: 30px; display: grid; place-items: center; padding: 0; color: var(--muted); }
+.chat-item:hover .item-menu, .chat-item.active .item-menu, .item-menu[aria-expanded="true"] { opacity: 1; }
+.chat-item .item-menu:hover { background: rgba(255, 255, 255, .08); color: var(--ink); }
+.rename-input { flex: 1; min-width: 0; margin: 3px 4px; padding: 6px 9px; font: inherit; font-size: 14px; color: var(--ink); background: var(--surface); border: 1px solid var(--orange); border-radius: 8px; outline: 0; box-shadow: 0 0 0 3px rgba(245, 130, 32, .2); }
+.side-archive { margin-top: 10px; }
+.side-archive summary { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 10px; list-style: none; cursor: pointer; color: var(--muted); font-size: 13.5px; }
+.side-archive summary::-webkit-details-marker { display: none; }
+.side-archive summary:hover { background: rgba(255, 255, 255, .05); color: var(--ink); }
+.side-count { margin-left: auto; font-size: 11px; font-weight: 700; color: var(--muted); background: rgba(255, 255, 255, .06); border-radius: 999px; padding: 0 8px; }
+
+/* The chat menus (Bootstrap dropdowns), in the theme. */
+.sidebar .dropdown-menu { --bs-dropdown-bg: #23272b; --bs-dropdown-border-color: var(--border); --bs-dropdown-link-color: var(--text); --bs-dropdown-link-hover-bg: rgba(255, 255, 255, .07); --bs-dropdown-link-hover-color: var(--ink); --bs-dropdown-link-active-bg: rgba(245, 130, 32, .2); --bs-dropdown-divider-bg: var(--border); border-radius: 14px; padding: 6px; box-shadow: 0 18px 40px -12px rgba(0, 0, 0, .7); font-size: 14px; min-width: 210px; }
+.dropdown-item { display: flex; align-items: center; gap: 10px; border-radius: 8px; padding: 7px 10px; }
+.dropdown-item .ic { color: var(--muted); }
+.dropdown-item:hover .ic { color: var(--orange); }
+.dropdown-item.danger, .dropdown-item.danger .ic { color: var(--danger); }
+
+/* The footer: a profile card, then the settings. */
+.side-footer { margin: 0 -14px -16px; background: var(--navy); }
+.side-footer .sidebar-settings { margin: 0; padding: 4px 18px 14px; }
+.profile-card { display: flex; align-items: center; gap: 10px; padding: 14px 18px 6px; }
+.profile-avatar { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; color: #fff; background: linear-gradient(135deg, var(--orange), var(--green-light)); flex: none; }
+.profile-who { display: flex; flex-direction: column; line-height: 1.25; min-width: 0; }
+.profile-who strong { color: var(--ink); font-size: 14px; }
+.profile-who small { color: var(--muted); font-size: 11.5px; }
+
+/* The chat search (Components/ChatSearch.razor). */
+.search-backdrop { position: fixed; inset: 0; z-index: 1050; background: rgba(8, 9, 10, .6); backdrop-filter: blur(4px); animation: fade .2s ease both; }
+.search-dialog {
+    position: fixed; z-index: 1051; top: min(14vh, 120px); left: 50%; transform: translateX(-50%); width: min(620px, calc(100vw - 32px));
+    display: flex; flex-direction: column; max-height: 70vh; border-radius: 18px; overflow: hidden;
+    background: #202428; border: 1px solid var(--border); box-shadow: 0 30px 80px -20px rgba(0, 0, 0, .8), 0 0 0 1px rgba(245, 130, 32, .08);
+    animation: pop .25s var(--spring) both;
+}
+@keyframes fade { from { opacity: 0; } }
+@keyframes pop { from { opacity: 0; transform: translateX(-50%) translateY(8px) scale(.98); } }
+.search-input { display: flex; align-items: center; gap: 12px; padding: 14px 18px; border-bottom: 1px solid var(--border); color: var(--muted); }
+.search-input input { flex: 1; min-width: 0; border: 0; outline: 0; background: none; font: inherit; font-size: 16px; color: var(--ink); }
+.search-input input::placeholder { color: var(--dim); }
+.search-results { overflow-y: auto; padding: 8px; }
+.search-group { font-size: 10.5px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--dim); padding: 8px 10px 4px; }
+.search-result { display: flex; align-items: center; gap: 12px; width: 100%; padding: 10px; border: 0; border-radius: 10px; background: none; text-align: left; color: var(--text); }
+.search-result .ic { color: var(--muted); }
+.search-result.selected { background: rgba(245, 130, 32, .12); }
+.search-result.selected .ic { color: var(--orange); }
+.search-text { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+.search-text strong { color: var(--ink); font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.search-text small { color: var(--muted); font-size: 12.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.search-tag { font-size: 11px; color: var(--muted); background: rgba(255, 255, 255, .06); border-radius: 999px; padding: 1px 8px; }
+.search-none { padding: 24px; text-align: center; color: var(--muted); }
+.search-foot { display: flex; align-items: center; gap: 6px; padding: 10px 18px; border-top: 1px solid var(--border); font-size: 12px; color: var(--dim); }
+.search-foot kbd { margin: 0; }
+
+/* The sidebar's icons. */
+.i-home { --icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M3 11 12 4l9 7'/><path d='M5 10v10h14V10'/></svg>"); }
+.i-compass { --icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='9'/><path d='m15.5 8.5-2 5-5 2 2-5z'/></svg>"); }
+.i-sparkle { --icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 3v4M12 17v4M3 12h4M17 12h4M6.5 6.5l2.5 2.5M15 15l2.5 2.5M6.5 17.5 9 15M15 9l2.5-2.5'/></svg>"); }
+.i-folder { --icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M3 6h6l2 2h10v11H3z'/></svg>"); }
+.i-archive { --icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M3 4h18v5H3zM5 9v11h14V9M10 13h4'/></svg>"); }
+.i-star { --icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z'/></svg>"); }
+.i-share { --icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='18' cy='5' r='3'/><circle cx='6' cy='12' r='3'/><circle cx='18' cy='19' r='3'/><path d='m8.6 13.5 6.8 4M15.4 6.5l-6.8 4'/></svg>"); }
+.i-pencil { --icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M4 20h4L20 8l-4-4L4 16z'/><path d='m14 6 4 4'/></svg>"); }
+.i-trash { --icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3'/></svg>"); }
+.i-chat { --icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M4 5h16v11H9l-5 4z'/></svg>"); }

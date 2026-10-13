@@ -98,3 +98,19 @@ document.addEventListener("pointermove", (e) => {
     card.style.setProperty("--my", (e.clientY - box.top) + "px");
 }, { passive: true });
 
+// Focus a field once Blazor has drawn it (the chat search, the rename field); select its text when asked.
+pulsUi.focus = (selector, select) => {
+    const field = document.querySelector(selector);
+    if (!field) return;
+    field.focus();
+    if (select) field.select();
+};
+
+// Ctrl K (Cmd K on a Mac) opens the chat search, wherever the focus is.
+document.addEventListener("keydown", (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        document.getElementById("search-button")?.click();
+    }
+});
+

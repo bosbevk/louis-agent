@@ -11,6 +11,12 @@ public sealed class Chat
     /// <summary>The API no longer knows this session (it was restarted), so the chat can be read but not continued.</summary>
     public bool Ended { get; set; }
 
+    /// <summary>Pinned under Gunstelinge in Puls's sidebar (F20).</summary>
+    public bool Favourite { get; set; }
+
+    /// <summary>Moved out of the recent chats into Geargiveer in Puls's sidebar (F20); still opens and continues.</summary>
+    public bool Archived { get; set; }
+
     /// <summary>
     /// The chat's usage: the sum of its turns' (F3). Added up here, not asked from the API, because the browser keeps the
     /// chat after the API's session is gone.
