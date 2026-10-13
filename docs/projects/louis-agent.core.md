@@ -110,7 +110,7 @@ Logging). `ArchitectureTests` holds both rules ([docs/CLAUDE.md, Project layout]
 | `WorkspaceBoundary` / `SensitiveFiles` | Internal (`Guardrails/`), used by the file tools and the API's file and git endpoints, so the same rules apply |
 
 **Every public method on a tool class becomes a tool**, named after the method, described by its `[Description]`
-attributes (108 tools with Paymo and DevOps enabled). Helpers must be `internal` or `private`.
+attributes (116 tools with every toolset, Paymo and DevOps included). Helpers must be `internal` or `private`.
 
 ## Configuration
 

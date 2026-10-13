@@ -21,7 +21,7 @@ Each project also has its own design doc in [projects/](projects/README.md).
 |---|---|---|---|
 | CLI | `src/louis-agent.cli` | `AgentHost.Build()` | Terminal; interactive or one-shot (`louis-agent.cli [prompt]`) |
 | ACP server | `src/louis-agent.acp-server` | `AgentHost.Build()` | [Agent Client Protocol](https://agentclientprotocol.com) JSON-RPC over stdio, for Rider's AI chat |
-| HTTP API + web app | `src/louis-agent.api`, `src/louis-agent.web` | `AgentHost.Build()` | ASP.NET Core minimal API; Server-Sent Events; serves the Blazor WebAssembly app |
+| HTTP API + web app | `src/louis-agent.api`, `src/louis-agent.web` or `src/louis-agent.puls` | `AgentHost.Build()` | ASP.NET Core minimal API; Server-Sent Events; serves one of the two Blazor WebAssembly apps |
 | MCP server | `src/louis-agent.mcp-server` | `AgentHost.BuildToolHost()` | Model Context Protocol over stdio (default) or Streamable HTTP (`MCP_TRANSPORT=http`); publishes the tools, the client brings its own model |
 | Orchestrator (POC) | `src/louis-agent.orchestrator` | Own `AgentEngine` with `toolsets:` | Not a host for users: an agent that reads a service's error log and calls louis-agent.api for fixes ([samples/README.md](../samples/README.md)) |
 
@@ -145,9 +145,11 @@ builds one engine per profile, cached by its normalised toolset list, its person
 past 16 the least recently used is dropped), with only those tools and only their guides in the system prompt, and logs
 each profile's tool count and fixed-prefix estimate. The CLI, ACP server and MCP server use every
 toolset the instance can load; the API's sessions choose theirs. A sub-session (`AgentPeerTools.StartSubSession`) runs
-on a peer with its own toolsets and, optionally, its role (`personality`), at most 3 per turn and 5 minutes each, and
-only its answer and a usage line come back; its usage records carry the parent turn (`parent`). A sub-session gets no
-router (`default.md`): its toolsets were chosen for it and it can't delegate.
+on a peer with its own toolsets and its role (`personality`; when the parent names none, the peer takes one from the
+toolsets in `Skills/personalities/roles.json`), at most 3 per turn and 5 minutes each, and only its answer and a usage
+line come back; its usage records carry the parent turn (`parent`). An empty answer (the specialist used all its tool
+rounds) is asked for once more in the same session (FX11). A sub-session gets no router (`default.md`): its toolsets
+were chosen for it and it can't delegate.
 
 ## A chat turn
 
@@ -169,6 +171,9 @@ User message
   model is told to write large content in chunks. When streaming, a cut-off call is dropped by the provider, so the
   engine asks the model to continue (up to 3 times).
 - **Failures:** exceptions reach the model with their message (e.g. a missing parameter) and are logged as failures.
+- **A sub-session's prompt budget** (FX14): in a sub-session, once the next request is expected to pass
+  `SUB_SESSION_PROMPT_BUDGET` (default 80,000 tokens, under Haiku 5.5's long-prompt price step), it keeps its tools with
+  tool mode None, so the specialist answers from what it has instead of growing its context further.
 
 ## Skills
 
@@ -231,7 +236,7 @@ startup and failures only log.
   `.example` files.
   `LlmOptions.ToString()` never prints the key. No `.env` file is copied into images (the root `.dockerignore`).
 - **Workspace boundary:** paths must be relative and stay inside the workspace; symbolic links are not followed.
-  Secret files (`.env*`, `*.pem`, `*.key`, `*.pfx`, `credentials.json`, `secrets.json`, `appsettings.development.json`,
+  Secret files (`.env*` but not templates such as `.env.example`, `*.pem`, `*.key`, `*.pfx`, `credentials.json`, `secrets.json`, `appsettings.development.json`,
   SSH keys) can't be read or written, are skipped by search, and their git diffs are never shown in the web app.
 - **No shell injection:** skills, agent-built tools, git and dotnet run with argument lists or environment variables,
   never by splicing model text into a command line.
@@ -274,7 +279,7 @@ installed and `Skills/` copied in.
 |---|---|---|
 | `acp-server` | `Dockerfile.acp-server` | Run per Rider chat with `docker compose run --rm -T acp-server` |
 | `api` | `Dockerfile.api` | API + web app on `127.0.0.1:${API_PORT:-5080}`; health check on `/health` |
-| Puls: `puls`, `puls-coder` (`docker-compose.puls.yml`) | `Dockerfile.puls` | The general assistant on `127.0.0.1:${PULS_PORT:-5070}` and the specialist it delegates to on `${PULS_CODER_PORT:-5071}`; logs in `logs/puls` |
+| Puls: `puls`, `puls-agent` (`docker-compose.puls.yml`) | `Dockerfile.puls` | The general assistant on `127.0.0.1:${PULS_PORT:-5070}` and the specialist it delegates to on `${PULS_CODER_PORT:-5071}`; logs in `logs/puls` |
 | `mcp-server` | `Dockerfile.mcp-server` | stdio: run per client with `run --rm -T mcp-server`; with `MCP_TRANSPORT=http`, on `127.0.0.1:${MCP_PORT:-5090}` |
 | `local-agent` | `Dockerfile.agent` | The CLI |
 | `ollama` | `services/Dockerfile.ollama` | Only with `--profile ollama` |
