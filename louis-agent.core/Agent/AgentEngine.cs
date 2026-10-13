@@ -1,5 +1,6 @@
 namespace LouisAgent.Core.Agent;
 
+using LouisAgent.Core.Agent.Tools;
 using System.ComponentModel;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -9,13 +10,7 @@ using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
 using LouisAgent.Core.Pricing;
 using LouisAgent.Core.Llm;
-using LouisAgent.Core.Tools.DotNet;
-using LouisAgent.Core.Tools.Git;
-using LouisAgent.Core.Tools.Integrations.DevOps;
-using LouisAgent.Core.Tools.Integrations.Paymo;
 using LouisAgent.Core.Tools.Shell;
-using LouisAgent.Core.Tools.Web;
-using LouisAgent.Core.Tools.Workspace;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
 using Microsoft.Extensions.Logging;
@@ -89,7 +84,6 @@ public class AgentEngine
 
     private readonly AgentBuiltTools _agentBuiltTools;
 
-    /// <param name="webSearch">Search engine for WebSearch; null selects one from configuration (see <see cref="WebSearchProviderFactory"/>).</param>
     /// <param name="toolsets">
     /// Objects whose public methods become the agent's only tools (plus <see cref="ExecuteSkill"/>), for agents that aren't
     /// coding agents, such as an orchestrator. Null registers the built-in coding toolsets (files, git, dotnet, shells, web,
@@ -102,7 +96,7 @@ public class AgentEngine
     /// ListAgentTools). Ignored on the built-in path, which always registers them.
     /// </param>
     public AgentEngine(ISkillProvider skillProvider, IChatClient chatClient, AgentOptions options, bool supportsTools = true,
-        IWebSearchProvider? webSearch = null, IEnumerable<object>? toolsets = null,
+        IEnumerable<object>? toolsets = null,
         IUsageSink? usageSink = null, IUsageMapper? usageMapper = null, bool selfExtension = false)
     {
         _options = options;
@@ -149,7 +143,6 @@ public class AgentEngine
         }
 
         AddSelfExtensionTools();
-        _registry.AddPublicMethods(new WorkspaceTools(WorkspaceRoot));
     }
 
     /// <summary>

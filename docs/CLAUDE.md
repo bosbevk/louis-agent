@@ -63,7 +63,7 @@ louis-agent.core/             # Namespace = folder path (LouisAgent.Core.Tools.W
 │   ├── IUsageMapper.cs, StandardUsageMapper.cs   # Provider usage → the ledger's token kinds
 │   ├── UsageRecordingChatClient.cs  # Middleware inside the tool loop: records each request, streaming or not
 │   └── AnthropicProvider/    # AnthropicUsageMapper, AnthropicPromptCaching (Llm/{Name}Provider/ per provider)
-├── Skills/                   # MarkdownSkillLoader ("## Skill:" procedures), the skill providers, SkillFiles
+├── Skills/                   # MarkdownSkillLoader ("## Skill:" procedures), MarkdownSkillProvider (every skill file we control), SkillFiles
 ├── Tools/
 │   ├── ProcessRunner.cs      # Process runner: argument lists, no shell, timeouts
 │   ├── Workspace/            # Files, inside the WorkspaceBoundary, never SensitiveFiles
@@ -163,19 +163,20 @@ guide names its tools and when to use them, and each tool's `[Description]` stay
    `SkillFiles.BuiltIn` (so the agent can't overwrite it). **No provider class per toolset.**
 4. **Router:** a row in `default.md`'s toolset table, and the name in `DefaultSkillsProviderTests`' toolset list.
 
-`web` and `devops` are the reference: tools, a catalogue entry, a plain guide.
+`web`, `devops`, `dotnet` and `paymo` are the reference: tools, a catalogue entry, a plain guide.
 
-**The one exception: a toolset with its own implementation** may differ, when a plain markdown guide and a tool
-class can't express what it needs. `skills` is one: its tools (`CreateSkillFile`, `ReloadSkills`, `CreateTool`,
-`ListAgentTools`) are registered by `AgentEngine`, because they need the engine's own registry and skill set; its
-guide is still a plain file. The difference and its reason go in the class's doc comment and in the feature's plan.
-A copy of `MarkdownSkillProvider` under another name is not its own implementation.
+**Skill files we control are plain markdown, always.** That covers every file in `Skills/`: the toolset guides, and the
+function files (`code-review-skills.md`, `time-logging-skills.md`), which `AGENT_FUNCTION={name}` loads through the same
+`{name}-skills.md` fallback as a custom file. `SkillFilesTests` fails if a provider class for one of them appears.
 
-**Not following it yet** (to move to the pattern, not to copy):
-- `DotNetSkillsProvider`, `PaymoSkillsProvider`, `CodeReviewSkillsProvider` and `TimeLoggingSkillsProvider` are four
-  identical 71-line loaders; each becomes a line in `AlwaysLoadedSkillFiles`.
-- `files` and `git` have guides (`files-skills.md`, `git-skills.md`) that nothing loads: their catalogue entries
-  still say `GuideFile: null`.
+**The exception: our own implementation.** A provider class of its own is only for skills we don't control, when we
+must read someone else's skill format; a toolset's tools may be registered differently only when a tool class can't
+express them (`skills`: `CreateSkillFile`, `ReloadSkills`, `CreateTool` and `ListAgentTools` are registered by
+`AgentEngine`, because they need its registry; its guide is still a plain file). The difference and its reason go in
+the class's doc comment and in the feature's plan. A copy of `MarkdownSkillProvider` under another name is not one.
+
+**Not following it yet:** `files` and `git` have guides (`files-skills.md`, `git-skills.md`) that nothing loads: their
+catalogue entries still say `GuideFile: null`.
 
 ### Project layout
 

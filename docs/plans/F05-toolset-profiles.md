@@ -105,10 +105,25 @@ Update `ARCHITECTURE.md` (sessions and skills sections), `SETUP.md`, and the sam
 - **The default engine has no built-in tools.** With no `toolsets`, the engine registers only `ExecuteSkill` and the
   self-extension tools (`CreateSkillFile`, `ReloadSkills`, `CreateTool`, `ListAgentTools`); the old tail (Workspace,
   Git, DotNet, Python, PowerShell, Bash, Web, Paymo, DevOps) is gone. Tests that need a toolset pass it.
-- **DevOps keeps its guide.** `devops-skills.md`, `DevOpsSkillsProvider` and `DevOpsTools` stay; the catalogue's `devops`
-  entry keeps `GuideFile: "devops-skills.md"` (Louis, 2026-10-13: "devops-skills must stay").
+- **DevOps keeps its guide.** `devops-skills.md` and `DevOpsTools` stay, and the catalogue's `devops` entry keeps
+  `GuideFile: "devops-skills.md"` (Louis, 2026-10-13: "devops-skills must stay"). It loads like `web-skills.md`:
+  plain markdown in `AgentHost.AlwaysLoadedSkillFiles` (and `devops` in `AlwaysLoadedFunctions`), so
+  `DevOpsSkillsProvider` is removed.
 - **Paymo's guide is the native tools section.** `paymo-skills.md` lists the `PaymoTools` methods and workflows; its
   placeholder `## Skill:` sections are gone.
+- **Every skill file we control is plain markdown** (Louis, 2026-10-13; docs/CLAUDE.md, *Adding a toolset*):
+  `DotNetSkillsProvider`, `PaymoSkillsProvider`, `CodeReviewSkillsProvider` and `TimeLoggingSkillsProvider` were four
+  identical loaders and are removed. The toolset guides (`dotnet`, `paymo`) load through `AlwaysLoadedSkillFiles`; the
+  function files (`code-review`, `time-logging`) through the `{function}-skills.md` fallback, and by name for
+  `louis`. A provider class of its own is only for skills we don't control. `SkillFilesTests` holds the rule.
+- **`CreateTool` refuses every catalogue tool name**, loaded or not (`ToolsetCatalog.ToolNames`, from each entry's new
+  `ToolType`): otherwise a tool built in a session without `python` could take `PythonRun` and collide later.
+- **The engine's `webSearch` parameter is removed:** it only fed the built-in Web tools; the provider reaches
+  `WebTools` through `ToolsetContext`.
+- **`devops-skills.md` loses its "Legacy Skills" section:** it showed `ExecuteSkill` calls for procedures that no
+  longer exist. A test now fails on any `ExecuteSkill("X")` example whose skill isn't defined.
+- **Layout:** `Agent/Tools/` files are in `LouisAgent.Core.Agent.Tools`; `ToolsetContext`, `ToolsetDefinition` and
+  `ToolsetException` have their own files.
 - **Step 4b · Built-in guides ship as embedded resources** (after step 4, before step 5):
   - `louis-agent.core` embeds `Skills/*.md` (`<EmbeddedResource>` with a `LogicalName` of the file name), and a new
     `Skills/SkillFileSource` reads a guide by name: a file of that name in the skills directory first (an override,

@@ -66,7 +66,7 @@ The full step-by-step is in [How a turn works](../AGENT_INTERACTION.md).
 | `Llm/UsageRecordingChatClient.cs` | Middleware that records one `UsageRecord` per model request, streaming or not; a cancelled stream is recorded as `cancelled`, a provider error isn't |
 | `Llm/AnthropicProvider/` | `AnthropicUsageMapper` (cache writes, and the 1-hour part from the raw response or the stream's `message_start`) and `AnthropicPromptCaching` (marker 1 on a copy of the system prompt with `LLM_CACHE_TTL`, marker 2 the top-level `cache_control`, 5 minutes) |
 | `Skills/MarkdownSkillLoader.cs` | Parses `## Skill:` procedures (description, parameters, a bash / PowerShell / Python fence) from Markdown |
-| `Skills/*SkillsProvider.cs`, `CompositeSkillProvider.cs` | One provider per skill file kind; `CompositeSkillProvider` joins them into the system prompt; `SkillFiles.BuiltIn` names the files they load |
+| `Skills/MarkdownSkillProvider.cs`, `DefaultSkillsProvider.cs`, `PersonalitySkillsProvider.cs`, `CompositeSkillProvider.cs` | Every skill file we control is plain markdown read by `MarkdownSkillProvider` (`default.md` and `personality.md` by their own); `CompositeSkillProvider` joins them into the system prompt; `SkillFiles.BuiltIn` names the files `AgentHost` loads by name |
 | `Tools/Workspace/WorkspaceTools.cs` | Files: read (≤ 1 MB), write, append, list, tree, search, find, copy, rename, delete; workspace boundary and secret-file checks |
 | `Tools/Git/GitTools.cs` | 35 git operations, run without a shell, 30-second timeout |
 | `Tools/DotNet/DotNetTools.cs` | Build, test, run, restore, clean, packages, SDK info — parsed into compact results |

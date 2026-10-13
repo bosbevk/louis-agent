@@ -25,17 +25,6 @@
 - `UpdateWorkItem(id, fieldName, fieldValue)` — Update a work item field
 - `QueryWorkItems(wiqlQuery)` — Execute custom WIQL (Work Item Query Language) query
 
-### Legacy Skills (via ExecuteSkill)
-For backwards compatibility, markdown skills are still available:
-
-```json
-ExecuteSkill("GetAllWorkItems", {"sprint": "Sprint 42"})
-ExecuteSkill("GetUserStories", {"sprint": "Sprint 42"})
-ExecuteSkill("GetWorkItemById", {"id": "12345"})
-```
-
-**Note:** Prefer the native DevOps tools above (faster, no subprocess overhead).
-
 ## DevOps Workflows
 
 Work item skills: pull the backlog and plan sprints. Keep work visible and tracked.

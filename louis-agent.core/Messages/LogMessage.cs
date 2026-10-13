@@ -177,8 +177,6 @@ public enum LogMessage
     [Description("Loaded {Provider}")]
     SkillProviderLoaded,
 
-    [Description("Loaded {Function} skills provider")]
-    AgentFunctionLoaded,
 
     [Description("Loaded {File} via MarkdownSkillProvider")]
     MainSkillsFileLoaded,

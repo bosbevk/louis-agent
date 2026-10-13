@@ -179,7 +179,7 @@ public class UsageScopeTotalsTests
                 _ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "Yes.")));
             var engine = new AgentEngine(
                 new MarkdownSkillProvider(Path.Combine(TestPaths.RepoRoot, "Skills", "HelloWorld.md")), client, TestPaths.Agent(),
-                usageSink: new ListUsageSink());
+                toolsets: TestPaths.Toolsets(TestPaths.Agent(), ["files"]), usageSink: new ListUsageSink());
             var history = engine.NewHistory();
 
             IReadOnlyList<UsageRecord> first, second;

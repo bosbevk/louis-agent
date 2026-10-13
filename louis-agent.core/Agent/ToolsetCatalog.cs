@@ -1,6 +1,5 @@
 namespace LouisAgent.Core.Agent;
 
-using LouisAgent.Core.Config;
 using LouisAgent.Core.Tools.DotNet;
 using LouisAgent.Core.Tools.Git;
 using LouisAgent.Core.Tools.Integrations.DevOps;
@@ -8,39 +7,6 @@ using LouisAgent.Core.Tools.Integrations.Paymo;
 using LouisAgent.Core.Tools.Shell;
 using LouisAgent.Core.Tools.Web;
 using LouisAgent.Core.Tools.Workspace;
-
-/// <summary>What a toolset needs to build its tools for one engine.</summary>
-public sealed record ToolsetContext(AgentOptions Options, IWebSearchProvider WebSearch);
-
-/// <summary>
-/// One named toolset: what it is, which settings it needs on this instance, its guide, and how to build its tools.
-/// </summary>
-/// <param name="Name">The name clients send in <c>toolsets</c>, lowercase.</param>
-/// <param name="Description">One line, shown by <c>GET /toolsets</c>.</param>
-/// <param name="GuideFile">
-/// The skill file that guides the model on these tools, or null when the guide is a section of <c>default.md</c>.
-/// </param>
-/// <param name="MissingSettings">Settings this instance lacks for the toolset; empty when it can be used.</param>
-/// <param name="CreateTools">
-/// Builds the tool objects for an engine (its public methods become tools). Null when the engine provides the tools
-/// itself (<c>skills</c>, see <see cref="AgentEngine"/>).
-/// </param>
-public sealed record ToolsetDefinition(
-    string Name,
-    string Description,
-    string? GuideFile,
-    Func<ToolsetContext, IReadOnlyList<string>> MissingSettings,
-    Func<ToolsetContext, IReadOnlyList<object>>? CreateTools)
-{
-    /// <summary>True when the engine adds these tools itself rather than from <see cref="CreateTools"/>.</summary>
-    public bool IsEngineProvided => CreateTools is null;
-
-    /// <summary>True when this instance has every setting the toolset needs.</summary>
-    public bool IsAvailable(ToolsetContext context) => MissingSettings(context).Count == 0;
-}
-
-/// <summary>A toolset request that can't be honoured: an unknown name, or a toolset whose settings are missing.</summary>
-public sealed class ToolsetException(string message) : Exception(message);
 
 /// <summary>
 /// The toolsets a session can load (F5). Nothing is loaded by default: a session names the toolsets it needs, and
@@ -54,41 +20,49 @@ public static class ToolsetCatalog
         new("files", "Read, write, search, copy, rename and delete files in the workspace",
             GuideFile: null,
             MissingSettings: _ => [],
+            ToolType: typeof(WorkspaceTools),
             CreateTools: ctx => [new WorkspaceTools(Root(ctx))]),
 
         new("git", "Status, diffs, branches, staging, commits, merges and history for the workspace repository",
             GuideFile: null,
             MissingSettings: _ => [],
+            ToolType: typeof(GitTools),
             CreateTools: ctx => [new GitTools(Root(ctx))]),
 
         new("dotnet", "Build, test, run and restore .NET projects; list packages; SDK information",
             GuideFile: "dotnet-skills.md",
             MissingSettings: _ => [],
+            ToolType: typeof(DotNetTools),
             CreateTools: ctx => [new DotNetTools(Root(ctx))]),
 
         new("python", "Run Python code or scripts and manage packages in the agent's own virtual environment",
             GuideFile: "python-skills.md",
             MissingSettings: _ => [],
+            ToolType: typeof(PythonTools),
             CreateTools: ctx => [new PythonTools(Root(ctx))]),
 
         new("powershell", "Run PowerShell scripts (PowerShell 7, or Windows PowerShell 5.1 on Windows)",
             GuideFile: "powershell-skills.md",
             MissingSettings: _ => [],
+            ToolType: typeof(PowerShellTools),
             CreateTools: ctx => [new PowerShellTools(Root(ctx))]),
 
         new("bash", "Run bash scripts (Git Bash on Windows, /bin/bash elsewhere)",
             GuideFile: "bash-skills.md",
             MissingSettings: _ => [],
+            ToolType: typeof(BashTools),
             CreateTools: ctx => [new BashTools(Root(ctx))]),
 
         new("web", "Search the web and fetch web pages",
             GuideFile: "web-skills.md",
             MissingSettings: _ => [],
+            ToolType: typeof(WebTools),
             CreateTools: ctx => [new WebTools(ctx.WebSearch)]),
 
         new("paymo", "Paymo time tracking: time entries, tasks, projects and summaries",
             GuideFile: "paymo-skills.md",
             MissingSettings: ctx => Missing(ctx, ("PAYMO_API_KEY", ctx.Options.PaymoApiKey)),
+            ToolType: typeof(PaymoTools),
             CreateTools: ctx => [new PaymoTools(ctx.Options)]),
 
         new("devops", "Azure DevOps work items, sprints and team queries",
@@ -97,6 +71,7 @@ public static class ToolsetCatalog
                 ("DEVOPS_API_KEY", ctx.Options.DevopsApiKey),
                 ("DEVOPS_ORGANIZATION", ctx.Options.DevopsOrganization),
                 ("DEVOPS_PROJECT", ctx.Options.DevopsProject)),
+            ToolType: typeof(DevOpsTools),
             CreateTools: ctx => [new DevOpsTools(
                 ctx.Options.DevopsApiKey!, ctx.Options.DevopsOrganization!, ctx.Options.DevopsProject!, ctx.Options.DevopsTeam)]),
 
@@ -109,6 +84,16 @@ public static class ToolsetCatalog
     ];
 
     /// <summary>Looks a toolset up by name (case-insensitive); null when there is none.</summary>
+    /// <summary>
+    /// Every tool name a catalogue toolset can register, loaded in this engine or not: an agent-built tool may not take
+    /// one, or it would collide when a session loads that toolset.
+    /// </summary>
+    public static IReadOnlySet<string> ToolNames { get; } = All
+        .Where(t => t.ToolType is not null)
+        .SelectMany(t => ToolRegistry.ToolMethods(t.ToolType!))
+        .Select(m => m.Name)
+        .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
     public static ToolsetDefinition? Find(string name) =>
         All.FirstOrDefault(t => string.Equals(t.Name, name, StringComparison.OrdinalIgnoreCase));
 

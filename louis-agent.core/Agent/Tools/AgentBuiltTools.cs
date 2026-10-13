@@ -1,4 +1,4 @@
-namespace LouisAgent.Core.Agent;
+namespace LouisAgent.Core.Agent.Tools;
 
 using System.ComponentModel;
 using LouisAgent.Core.Tools;
@@ -68,7 +68,7 @@ internal sealed class AgentBuiltTools(
             if (existing.Approved) return MessageText.Format(ToolMessage.ApprovedToolExists, new { parsed.Name });
             if (!overwrite) return MessageText.Format(ToolMessage.PendingToolExists, new { parsed.Name });
         }
-        else if (registry.Contains(parsed.Name, StringComparison.OrdinalIgnoreCase))
+        else if (registry.Contains(parsed.Name, StringComparison.OrdinalIgnoreCase) || ToolsetCatalog.ToolNames.Contains(parsed.Name))
         {
             return MessageText.Format(ToolMessage.BuiltInToolName, new { parsed.Name });
         }

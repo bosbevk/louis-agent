@@ -51,13 +51,12 @@ public sealed class AgentEngineSelfExtensionTests
     }
 
     [Test]
-    public void BuiltInPathStillRegistersSelfExtension()
+    public void DefaultPathRegistersSelfExtensionOnly()
     {
-        // toolsets: null is the built-in path, which registers the self-extension tools as before.
+        // toolsets: null is the default path: ExecuteSkill and the self-extension tools, no built-in toolsets.
         var engine = Build(toolsets: null, selfExtension: false);
 
-        Assert.That(Names(engine), Does.Contain("CreateTool"));
-        Assert.That(Names(engine), Does.Contain("CreateSkillFile"));
+        Assert.That(Names(engine), Is.EquivalentTo(SelfExtensionTools.Append("ExecuteSkill")));
     }
 
     private static AgentEngine Build(IEnumerable<object>? toolsets, bool selfExtension) =>

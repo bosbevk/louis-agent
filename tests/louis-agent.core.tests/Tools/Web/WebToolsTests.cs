@@ -105,10 +105,11 @@ public class WebToolsTests
         Assert.That(await Tools(_ => Html("")).WebSearch("x", freshness: "decade"), Does.Contain("day, week, month or year"));
 
     [Test]
-    public async Task AgentEngine_UsesInjectedSearchProvider()
+    public async Task WebToolset_UsesInjectedSearchProvider()
     {
         var fake = new FakeSearch(new WebSearchResult("Injected", "https://injected.example", ""));
-        var engine = new AgentEngine(new CompositeSkillProvider(), new FakeChatClient(), TestPaths.Agent(), webSearch: fake);
+        var engine = new AgentEngine(new CompositeSkillProvider(), new FakeChatClient(), TestPaths.Agent(),
+            toolsets: TestPaths.Toolsets(TestPaths.Agent(), ["web"], fake));
         var webSearch = engine.Tools.OfType<AIFunction>().Single(t => t.Name == "WebSearch");
 
         var result = await webSearch.InvokeAsync(new AIFunctionArguments { ["query"] = "anything" });
