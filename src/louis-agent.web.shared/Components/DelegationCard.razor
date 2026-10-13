@@ -1,64 +1,77 @@
 @* A delegated task (F5): the specialist, the toolsets it loaded, the task it was sent, its work as it happens (thinking,
-   tool calls, answer, folded from the sub-session's own stream) and what it cost. *@
+   tool calls and the notes between them, folded from the sub-session's own stream), its answer and what it cost. Open
+   while the specialist works; rolled up to one line when it's done (the chat's own reply carries the result), and
+   opened again with a click. *@
 
-<div class="delegation @Status">
-    <div class="delegation-head">
+<details class="delegation @Status" open="@Running">
+    <summary class="delegation-head">
         <span class="delegation-avatar" aria-hidden="true">@Initial</span>
-        <div class="delegation-title">
-            <div class="delegation-agent">Delegated to <strong>@Delegation.Agent</strong></div>
-            <div class="delegation-toolsets">
+        <span class="delegation-title">
+            <span class="delegation-agent">Delegated to <strong>@Agent</strong></span>
+            <span class="delegation-toolsets">
                 @foreach (string toolset in Delegation.Toolsets)
                 {
                     <span class="toolset-chip">@toolset</span>
                 }
-            </div>
-        </div>
+            </span>
+        </span>
+        @if (!Running && CostLine is { } cost)
+        {
+            <span class="delegation-cost">@cost</span>
+        }
         <span class="delegation-status">@StatusText</span>
+        <span class="delegation-chevron" aria-hidden="true"></span>
+    </summary>
+
+    <div class="delegation-body">
+        @if (Delegation.Task is { Length: > 0 } task)
+        {
+            <details class="delegation-task">
+                <summary>Task</summary>
+                <div class="delegation-task-text">@task</div>
+            </details>
+        }
+
+        @if (Block.SubTurn is { } sub)
+        {
+            var (work, answer) = Split(sub);
+            @if (work.Count > 0)
+            {
+                <details class="delegation-work" open="@Running">
+                    <summary>@(Running ? "Working" : "Work") · @Steps(sub)</summary>
+                    <div class="delegation-blocks">
+                        <BlocksView Blocks="work" Streaming="Running" Currency="Currency" />
+                    </div>
+                </details>
+            }
+            @if (answer.Length > 0)
+            {
+                <div class="delegation-answer markdown">@Markdown.ToHtml(answer)</div>
+            }
+            @if (sub.Error is not null)
+            {
+                <div class="error">@sub.Error</div>
+            }
+            @if (sub.Usage is { } usage)
+            {
+                <div class="usage delegation-usage" title="@UsageFormat.Detail(usage, Currency)">@Agent · @UsageFormat.Line(usage, Currency)</div>
+            }
+        }
+        else if (Block.ToolResult is not null)
+        {
+            @* No live view (an older chat, or a host that doesn't stream sub-sessions): the answer the model got. *@
+            <div class="delegation-answer markdown">@Markdown.ToHtml(Delegation.Answer ?? Block.ToolResult)</div>
+            @if (Delegation.UsageLine is { } line)
+            {
+                <div class="usage delegation-usage">@Agent · @line</div>
+            }
+        }
+        else if (Running)
+        {
+            <div class="delegation-waiting">Starting<span class="dots"></span></div>
+        }
     </div>
-
-    @if (Delegation.Task is { Length: > 0 } task)
-    {
-        <details class="delegation-task">
-            <summary>Task</summary>
-            <div class="delegation-task-text">@task</div>
-        </details>
-    }
-
-    @if (Block.SubTurn is { } sub)
-    {
-        <details class="delegation-work" open="@Running">
-            <summary>@(Running ? "Working" : "Work") · @Steps(sub)</summary>
-            <div class="delegation-blocks">
-                <BlocksView Blocks="sub.Blocks.Where(b => b.Kind != BlockKind.Text).ToList()" Streaming="Running" Currency="Currency" />
-            </div>
-        </details>
-        @if (sub.Blocks.Any(b => b.Kind == BlockKind.Text))
-        {
-            <div class="delegation-answer markdown">@Markdown.ToHtml(string.Join("\n\n", sub.Blocks.Where(b => b.Kind == BlockKind.Text).Select(b => b.Text)))</div>
-        }
-        @if (sub.Error is not null)
-        {
-            <div class="error">@sub.Error</div>
-        }
-        @if (sub.Usage is { } usage)
-        {
-            <div class="usage delegation-usage" title="@UsageFormat.Detail(usage, Currency)">@Delegation.Agent · @UsageFormat.Line(usage, Currency)</div>
-        }
-    }
-    else if (Block.ToolResult is not null)
-    {
-        @* No live view (an older chat, or a host that doesn't stream sub-sessions): the answer the model got. *@
-        <div class="delegation-answer markdown">@Markdown.ToHtml(Delegation.Answer ?? Block.ToolResult)</div>
-        @if (Delegation.UsageLine is { } line)
-        {
-            <div class="usage delegation-usage">@Delegation.Agent · @line</div>
-        }
-    }
-    else if (Running)
-    {
-        <div class="delegation-waiting">Starting<span class="dots"></span></div>
-    }
-</div>
+</details>
 
 @code {
     [Parameter, EditorRequired] public Delegation Delegation { get; set; } = default!;
@@ -72,7 +85,25 @@
 
     private string StatusText => Status switch { "running" => "Working", "failed" => "Failed", _ => "Done" };
 
-    private string Initial => Delegation.Agent.Length > 0 ? Delegation.Agent[..1].ToUpperInvariant() : "?";
+    /// <summary>The peer actually used: named in the call, else reported by its stream or its result (an empty name means the only peer).</summary>
+    private string Agent => Delegation.Agent is { Length: > 0 } named ? named : Block.SubAgent ?? Delegation.ResultAgent ?? "specialist";
+
+    private string Initial => Agent[..1].ToUpperInvariant();
+
+    /// <summary>The cost shown on the rolled-up line.</summary>
+    private string? CostLine => Block.SubTurn?.Usage is { } usage ? UsageFormat.Cost(usage, Currency) : null;
+
+    /// <summary>
+    /// The specialist's answer is its text after its last thinking or tool call; the notes it wrote between tool calls
+    /// belong to its work.
+    /// </summary>
+    private static (List<Block> Work, string Answer) Split(Turn sub)
+    {
+        int last = sub.Blocks.FindLastIndex(b => b.Kind != BlockKind.Text);
+        var work = sub.Blocks.Take(last + 1).ToList();
+        string answer = string.Join("\n\n", sub.Blocks.Skip(last + 1).Select(b => b.Text).Where(t => t.Length > 0));
+        return (work, answer);
+    }
 
     private static string Steps(Turn sub)
     {

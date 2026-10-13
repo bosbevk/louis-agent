@@ -77,6 +77,9 @@ public sealed class Block
     /// the sub-session events the API streams while the call runs. Null for other tools, and for chats from before.
     /// </summary>
     public Turn? SubTurn { get; set; }
+
+    /// <summary>The peer a sub-session ran on, from its events (the call may leave the name empty: the only peer).</summary>
+    public string? SubAgent { get; set; }
 }
 
 public sealed record Attachment(string Name, string Content);

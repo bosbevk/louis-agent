@@ -514,12 +514,13 @@ textarea::placeholder { color: var(--dim); }
 }
 
 /* Delegation card (F5): a StartSubSession call, with the specialist's live work inside it. */
-.delegation { border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: var(--radius); background: var(--panel); padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; }
+.delegation { border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: var(--radius); background: var(--panel); padding: 10px 12px; }
 .delegation.running { border-left-color: var(--amber); }
 .delegation.failed { border-left-color: var(--danger); }
-.delegation-head { display: flex; align-items: center; gap: 10px; }
+.delegation-head { display: flex; align-items: center; gap: 10px; cursor: pointer; list-style: none; }
+.delegation-head::-webkit-details-marker { display: none; }
 .delegation-avatar { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: var(--accent); color: var(--accent-text); font-weight: 600; flex: none; }
-.delegation-title { flex: 1; min-width: 0; }
+.delegation-title { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 .delegation-agent { color: var(--bright); }
 .delegation-toolsets { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 2px; }
 .toolset-chip { font-size: 11px; padding: 0 6px; border: 1px solid var(--border); border-radius: 999px; color: var(--muted); }
@@ -531,3 +532,7 @@ textarea::placeholder { color: var(--dim); }
 .delegation-blocks { display: flex; flex-direction: column; gap: 6px; margin: 6px 0 0 12px; padding-left: 10px; border-left: 1px dashed var(--border); }
 .delegation-usage { margin-top: 0; }
 .dots::after { content: "…"; }
+.delegation-body { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+.delegation-cost { font-size: 12px; color: var(--muted); }
+.delegation-chevron::before { content: "▸"; color: var(--muted); }
+.delegation[open] .delegation-chevron::before { content: "▾"; }

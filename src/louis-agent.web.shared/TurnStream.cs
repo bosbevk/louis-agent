@@ -67,6 +67,7 @@ public static class TurnStream
                            ?? turn.Blocks.LastOrDefault(b => b.ToolName == Delegation.ToolName);
                 if (call is null || !data.TryGetProperty("event", out var inner) || inner.GetString() is not { } innerType) break;
                 call.SubTurn ??= new Turn();
+                if (data.TryGetProperty("agent", out var peer)) call.SubAgent ??= peer.GetString();
                 Apply(call.SubTurn, new AgentStreamEvent(innerType, data.GetProperty("data")));
                 break;
 
