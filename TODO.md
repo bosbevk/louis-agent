@@ -210,10 +210,25 @@ feature when its turn comes; remove its line here and update the map's *Missing*
       calls, thinking) by measuring them, not from its name (`LlmOptions.KnownNoToolsPrefixes`; the local triage runs
       showed llama3.1 writing tool calls as text and qwen3's thinking variant timing out)
 - [ ] **Prompts:** version prompts and compare changes on the evals
-- [ ] **Tools:** tool search / on-demand loading for large toolsets; schema-validated structured outputs; add a tool
+- [ ] **Tools:** tool search / on-demand loading for large toolsets; add a tool
       mid-conversation without breaking thinking or the cache (Anthropic's inline `tool_addition` blocks, behind
-      `LlmClientFactory`; an option [FX4](docs/fixes/FX04-append-only-history.md) leaves for later)
+      `LlmClientFactory`; an option [FX4](docs/fixes/FX04-append-only-history.md) leaves for later); MCP tool
+      annotations (read-only, destructive, idempotent) and output schemas on `louis-agent.mcp-server`'s tools; errors
+      that report every problem at once with the valid options, so the model fixes them in one round
+- [ ] **Structured outputs:** schema-validated outputs across the toolset (results between agents come first, under
+      *Models*)
+- [ ] **Drafts:** for an action that changes something outside the workspace, the agent proposes a typed draft that code
+      validates (every issue returned with its valid options) and a person approves before it's applied; the model
+      retrying on the validation errors is an evaluator-optimizer loop with code as the evaluator. Measure on the evals
+      how often a request becomes a valid draft first time (skills 5, 16, 12)
 - [ ] **Agent loop:** explicit planning, a self-check before answering, stop conditions beyond a round count
+- [ ] **Workflows:** build and compare Anthropic's workflow patterns where they fit: prompt chaining, parallelization,
+      evaluator-optimizer (F17 already plans routing; the orchestrator is orchestrator-workers)
+- [ ] **Knowledge on demand:** curated, source-cited knowledge topics (front matter: sources, owner, last reviewed)
+      looked up through tools and MCP resources when needed, instead of loading every skill file into the system
+      prompt; measure the prompt tokens saved and that fixes still hold. Before embeddings
+- [ ] **Grounding:** reference data the agent checks values against, versioned with its provenance (source, date,
+      hashes, what's synthetic) and returned with every result that used it
 - [ ] **Memory and retrieval:** embeddings, a vector store, retrieval over code and past sessions, measured
 - [ ] **Multi-agent:** compare handoff patterns (tool call, session, MCP); parallel sub-agents
 - [ ] **Protocols:** a full MCP client (also removes the Rider MCP limitation)
