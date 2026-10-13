@@ -12,7 +12,18 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" />
+    <!-- Bootstrap 5.3 for the responsive offcanvas sidebar and breakpoints; loaded before app.css so Puls's styles win. -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
     <link rel="stylesheet" href="css/app.css" />
+    <script>
+        // The sidebar's saved width and whether it's hidden, applied before the app paints so it never jumps.
+        try {
+            const width = parseInt(localStorage.getItem("puls.sidebarWidth"), 10);
+            if (width >= 220 && width <= 480) document.documentElement.style.setProperty("--sidebar-w", width + "px");
+            if (localStorage.getItem("puls.sidebarHidden") === "1") document.documentElement.classList.add("sidebar-hidden");
+        } catch { }
+    </script>
 </head>
 
 <body>
@@ -28,6 +39,8 @@
     <!-- Syntax highlighting for code blocks in answers: pinned version with integrity hashes; its colours come from app.css. -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.2/highlight.min.js"
             integrity="sha512-VSPLUv/n1Bmn+4zoxBNwpuFAO3//79I0Aax/qHDx24R47vylPcc9PrHDCqlePwHnh3joiM7/YTQhcXyQAAxvPQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="js/chat.js"></script>
     <script src="_framework/blazor.webassembly.js"></script>
 </body>
