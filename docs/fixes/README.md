@@ -22,6 +22,7 @@ record (most fixes so far taught something about a model's API).
 | [FX11](FX11-empty-sub-session-answer.md) | A sub-session that ends without an answer is asked once more, in the same session (not started over) | done | core: `agents` toolset | Puls delegation check with roles, numbers-2 at a third of the run's cost (2026-10-13) | (this commit) | — |
 | [FX12](FX12-env-templates-readable.md) | `.env` templates (`.env.example`) can be read; the real `.env` files stay blocked | done | core: `SensitiveFiles` | Puls delegation check with roles, files-2 refused in both runs (2026-10-13) | (this commit) | — |
 | [FX13](FX13-counting-to-the-analyst.md) | Counting goes to the analyst (a script), and the reader hands it back instead of reading every file | done | skills: routing, reader role | Delegation check after FX10–FX12, numbers-2 at $0.278 (2026-10-14) | (this commit) | — |
+| [FX14](FX14-sub-session-prompt-budget.md) | A sub-session's prompt has a budget (100k tokens): past it the specialist answers from what it has | done | core: tool loop | Delegation check after FX10–FX12, a 298k-token sub-session (2026-10-14) | (this commit) | — |
 
 ## Conventions
 

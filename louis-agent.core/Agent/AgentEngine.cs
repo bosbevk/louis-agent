@@ -112,7 +112,7 @@ public class AgentEngine
         // Summaries call the model directly, outside the tool loop, so they are recorded by their own recorder.
         RecordsUsage = usageSink is not null;
         _innerChatClient = usageSink is null ? chatClient : new UsageRecordingChatClient(chatClient, usageSink, mapper: usageMapper);
-        _guards = new ToolCallGuards(_registry, _innerChatClient);
+        _guards = new ToolCallGuards(_registry, _innerChatClient, options.SubSessionPromptBudget);
         var pipeline = new ChatClientBuilder(chatClient)
             .UseFunctionInvocation(configure: c =>
             {

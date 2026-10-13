@@ -1,5 +1,6 @@
 namespace LouisAgent.Core.Config;
 
+using System.Globalization;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
 using Microsoft.Extensions.Logging;
@@ -102,6 +103,15 @@ public sealed class AgentOptions
     /// </summary>
     public IReadOnlyDictionary<string, Uri> AgentPeers { get; set; } = new Dictionary<string, Uri>();
 
+    /// <summary>The default of <see cref="SubSessionPromptBudget"/>: Claude Haiku 5.5's long-prompt threshold (config/prices.json).</summary>
+    public const int DefaultSubSessionPromptBudget = 100_000;
+
+    /// <summary>
+    /// SUB_SESSION_PROMPT_BUDGET: the most tokens a sub-session's prompt should reach (FX14). When the next request is
+    /// expected to pass it, the specialist answers from what it has instead of calling more tools. 0 turns it off.
+    /// </summary>
+    public int SubSessionPromptBudget { get; set; } = DefaultSubSessionPromptBudget;
+
     /// <summary>AGENT_API_KEY: this deployment's API key, sent to peers as x-api-key (never taken from the model's arguments).</summary>
     public string? AgentApiKey { get; set; }
 
@@ -150,6 +160,8 @@ public sealed class AgentOptions
             DisplayCurrency = Get("DISPLAY_CURRENCY"),
             AgentPeers = ParsePeers(Get("AGENT_PEERS")),
             AgentApiKey = Get("AGENT_API_KEY"),
+            SubSessionPromptBudget = int.TryParse(Get("SUB_SESSION_PROMPT_BUDGET"), NumberStyles.None, CultureInfo.InvariantCulture, out int budget)
+                ? budget : DefaultSubSessionPromptBudget,
         };
         if (Get("AGENT_FUNCTION") is { } function) options.AgentFunction = function;
         if (Get("WORKSPACE_ROOT") is { } root) options.WorkspaceRoot = root;
