@@ -10,6 +10,7 @@ or fix doc (*What the build changed*), not here.
 
 | Plan | For | Approved | Notes |
 |---|---|---|---|
+| [F20-puls-look.md](F20-puls-look.md) | [F20 Puls look](../features/F20-puls-look.md) | 2026-10-13 | Sensai's look and Preline's placeholders, in Puls's colours, dark; ten steps |
 | [F01-usage-ledger.md](F01-usage-ledger.md) | [F1 Usage ledger](../features/F01-usage-ledger.md) | 2026-10-10 | Recreated on 2026-10-11 from the plans approved in the session |
 | [F02-prices-and-cost.md](F02-prices-and-cost.md) | [F2 Prices and cost](../features/F02-prices-and-cost.md) | 2026-10-10 | Recreated on 2026-10-11; includes the `PRICES_URL` addition approved during the build |
 | [F03-usage-display.md](F03-usage-display.md) | [F3 Show usage](../features/F03-usage-display.md) | 2026-10-11 | |
