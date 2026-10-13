@@ -177,6 +177,9 @@ public enum LogMessage
     [Description("Loaded {Provider}")]
     SkillProviderLoaded,
 
+    [Description("Loaded {Provider} (built in: no copy on disk)")]
+    SkillFileEmbedded,
+
 
     [Description("Loaded {File} via MarkdownSkillProvider")]
     MainSkillsFileLoaded,

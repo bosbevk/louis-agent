@@ -140,9 +140,15 @@ Update `ARCHITECTURE.md` (sessions and skills sections), `SETUP.md`, and the sam
   - **Tests:** with an empty skills directory every catalogue guide still loads (from the assembly); a file of the
     same name on disk wins; a name that is neither on disk nor embedded is reported as missing, as today; the model
     request snapshot is unchanged.
+  - **As built:** files, not folders (F19 moves to skill folders); `SkillFileSource.Read(name, diskPaths)` and
+    `MarkdownSkillProvider.FromText`; `AgentHost` reads personality, default, guides and function files through it, so
+    `DefaultSkillsProvider` and `PersonalitySkillsProvider` are left to tests until F19 rewrites the loaders.
 
 ## Open decisions
 
 1. Default toolsets for a session with no `toolsets` (suggest `skills` only).
 2. Whether the general agent and the specialist run as two containers from the same image (suggest yes).
 3. Maximum sub-sessions per turn and timeout (suggest 3 and 5 minutes).
+4. ~~Skills as JSON?~~ **Decided (Louis, 2026-10-13):** not JSON; the Agent Skills standard (`Skills/{name}/SKILL.md`,
+   YAML front-matter, progressive disclosure), as **F19 after F5**, with hybrid disclosure (toolset guides in full,
+   other skills as a catalogue + `ActivateSkill`) and scripts run by `ExecuteSkill` with arguments as data.

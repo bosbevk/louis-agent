@@ -16,12 +16,14 @@ public class MarkdownSkillLoader
         _ => "bash",
     };
 
-    public static List<SkillDef> Load(string filePath)
+    public static List<SkillDef> Load(string filePath) => File.Exists(filePath) ? Parse(File.ReadAllLines(filePath)) : [];
+
+    /// <summary>Parses skill text already in memory, such as a built-in file embedded in the assembly (F5 step 4b).</summary>
+    public static List<SkillDef> Parse(string text) => Parse(text.ReplaceLineEndings("\n").Split('\n'));
+
+    private static List<SkillDef> Parse(string[] lines)
     {
         var skills = new List<SkillDef>();
-        if (!File.Exists(filePath)) return skills;
-
-        var lines = File.ReadAllLines(filePath);
         string? name = null;
         string? description = null;
         StringBuilder? commandBuilder = null;
