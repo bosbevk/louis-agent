@@ -135,7 +135,7 @@ Details: [Development guide](../CLAUDE.md#development-workflow).
 
 ## Security
 
-Paths stay inside the workspace (no `..`, no following symbolic links); secret files (`.env*`, keys, certificates,
+Paths stay inside the workspace (no `..`, no following symbolic links); secret files (`.env*` except templates such as `.env.example`, keys, certificates,
 `credentials.json`, …) can't be read, written, searched or diffed; processes get argument lists or environment
 variables, never model text spliced into a command line; `FetchUrl` blocks private, loopback and metadata addresses.
 

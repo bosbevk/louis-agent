@@ -20,6 +20,7 @@ record (most fixes so far taught something about a model's API).
 | [FX9](FX09-cancelled-request-usage.md) | A request cancelled without streaming is still written to the ledger | open | core: usage recorder | Short demo with triage on llama3.1, a timed-out request missing (2026-10-12) | — | — |
 | [FX10](FX10-optional-peer-name.md) | A sub-session call without `agent` uses the only peer (it was refused) | done | core: `agents` toolset | Puls delegation check with roles, 3 refused calls (2026-10-13) | (this commit) | — |
 | [FX11](FX11-empty-sub-session-answer.md) | A sub-session that ends without an answer is asked once more, in the same session (not started over) | done | core: `agents` toolset | Puls delegation check with roles, numbers-2 at a third of the run's cost (2026-10-13) | (this commit) | — |
+| [FX12](FX12-env-templates-readable.md) | `.env` templates (`.env.example`) can be read; the real `.env` files stay blocked | done | core: `SensitiveFiles` | Puls delegation check with roles, files-2 refused in both runs (2026-10-13) | (this commit) | — |
 
 ## Conventions
 

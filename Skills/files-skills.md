@@ -39,5 +39,5 @@ trying another tool.
 ## Rules
 
 - Stay inside the workspace root. Don't reach outside that boundary.
-- Secrets stay secret (.env, .pem, credentials). Don't read or write them.
+- Secrets stay secret (.env, .pem, credentials). Don't read or write them. Templates such as `.env.example` hold no secrets and can be read.
 - File operations are bounded: 1 MB reads, 500 files maximum.

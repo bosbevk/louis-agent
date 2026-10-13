@@ -330,6 +330,7 @@ backlog item removes one, it says so.
 
 Newest first; details in the git history.
 
+- 2026-10-14 — **FX12 Env templates readable**: `.env.example`, `.sample` and `.template` files are no longer treated as secrets ([FX12](docs/fixes/FX12-env-templates-readable.md)).
 - 2026-10-14 — **FX11 Empty sub-session answer**: a specialist that ends with no text (its 10 rounds used) is asked once more in the same session instead of Puls starting over ([FX11](docs/fixes/FX11-empty-sub-session-answer.md)).
 - 2026-10-14 — **FX10 Optional peer name**: `StartSubSession` without `agent` uses the only peer; Puls's calls without it were refused ([FX10](docs/fixes/FX10-optional-peer-name.md)).
 - 2026-10-12 — **Ollama on the GPU and local triage**: `ollama-nvidia` and `ollama-amd` services sized for a 4 GB card
