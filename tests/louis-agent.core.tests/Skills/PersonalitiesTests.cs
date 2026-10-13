@@ -90,6 +90,17 @@ public class PersonalitiesTests
     }
 
     [Test]
+    public void CountingGoesToTheAnalyst_AndTheReaderHandsItBack()
+    {
+        // FX13: a counting task sent to a files-only reader read every test file into a 298k-token prompt ($0.278).
+        string router = SkillFileSource.ReadEmbedded("agents-skills.md")!;
+        string reader = SkillFileSource.ReadEmbedded(Personalities.Folder + "/puls-reader.md")!;
+
+        Assert.That(router, Does.Contain("Counting is the analyst's, never the reader's"));
+        Assert.That(reader, Does.Contain("Don't count by reading").And.Contain("needs the analyst"));
+    }
+
+    [Test]
     public void UnreadableRules_GiveNoRole()
     {
         Assert.That(Personalities.RoleFor("not json", ["web"]), Is.Null);

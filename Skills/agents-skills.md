@@ -32,6 +32,10 @@ toolsets you give it:
 | `python` (with `files` when the data is the user's) | `puls-analyst` | counts and calculates with a script; reports the method |
 | anything else, or a mix | `puls-specialist` | does one piece of work and reports the evidence |
 
+**Counting is the analyst's, never the reader's.** "How many files, lines, tests or rows", totals and averages over
+more than a few files go to `puls-analyst` with `files` and `python` (or `bash`): a script counts in one call. With
+`files` alone the reader reads every file into its context, which is slow and costs many times more.
+
 For a mix led by one kind (`files` and `git` to explain a change), pass the role of the main part. If you pass none,
 the peer picks one from the toolsets (its `roles.json`). If the peer doesn't know a role, the call is refused with the
 ones it has: call again with one of those, or with none.
