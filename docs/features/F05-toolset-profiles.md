@@ -71,7 +71,7 @@ with named toolsets, send it a task, and get the result back, so that tools are 
 | `web` | `WebTools` | `web-skills.md` |
 | `skills` | `CreateSkillFile`, `ReloadSkills`, `CreateTool`, `ListAgentTools` (+ approved agent-built tools) | `self-extension-skills.md` |
 | `paymo` | `PaymoTools` (key required) | `paymo-skills.md` (moved out of `default.md`) |
-| `devops` | `DevOpsTools` (key, organisation and project required) | `devops-skills.md` (moved out of `default.md`) |
+| `devops` | `DevOpsTools` (key, organisation and project required) | none for now: the toolset's future is undecided |
 | `agents` | `AgentPeerTools`: `StartSubSession` (`AGENT_PEERS` required) | `agents-skills.md` |
 
 `ExecuteSkill` is always registered.
@@ -80,6 +80,9 @@ with named toolsets, send it a task, and get the result back, so that tools are 
 
 - **Toolset catalogue** (new `louis-agent.core/Agent/ToolsetCatalog.cs`): each name maps to a description, required
   settings, a factory for its tool object, and its guide file.
+- **Built-in guides embedded** (`Skills/SkillFileSource`): `personality.md`, `default.md` and every toolset guide are
+  embedded in `louis-agent.core`; a file of the same name in the skills directory overrides one. Files the agent
+  writes, custom `AGENT_FUNCTION` files and agent-built tools stay on disk only.
 - **Engine per profile** (new `louis-agent.core/Agent/AgentEngineFactory.cs`): built from `AgentHostContext`. Shares the
   chat client, usage sink, mapper, display, thinking and options. Caches one `AgentEngine` per sorted toolset list, up
   to a cap (16).

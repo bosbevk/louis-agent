@@ -100,6 +100,29 @@ Update `ARCHITECTURE.md` (sessions and skills sections), `SETUP.md`, and the sam
 - **Engine count:** engines are cached but never disposed. The cap in step 5 bounds memory.
 - **No API tests exist:** steps 6 to 8 need new tests, or they'll be checked by hand only.
 
+## Approved during the build (2026-10-13)
+
+- **The default engine has no built-in tools.** With no `toolsets`, the engine registers only `ExecuteSkill` and the
+  self-extension tools (`CreateSkillFile`, `ReloadSkills`, `CreateTool`, `ListAgentTools`); the old tail (Workspace,
+  Git, DotNet, Python, PowerShell, Bash, Web, Paymo, DevOps) is gone. Tests that need a toolset pass it.
+- **DevOps has no guide for now.** `devops-skills.md` and `DevOpsSkillsProvider` are removed; `DevOpsTools` stays in the
+  catalogue (`GuideFile: null`) until it's decided whether the `devops` toolset survives.
+- **Paymo's guide is the native tools section.** `paymo-skills.md` lists the `PaymoTools` methods and workflows; its
+  placeholder `## Skill:` sections are gone.
+- **Step 4b · Built-in guides ship as embedded resources** (after step 4, before step 5):
+  - `louis-agent.core` embeds `Skills/*.md` (`<EmbeddedResource>` with a `LogicalName` of the file name), and a new
+    `Skills/SkillFileSource` reads a guide by name: a file of that name in the skills directory first (an override,
+    editable without a rebuild), else the embedded copy.
+  - What is embedded: `personality.md`, `default.md` and each toolset's guide (`ToolsetCatalog.GuideFile`). What stays
+    on disk only: files the agent writes (`CreateSkillFile`), custom `AGENT_FUNCTION` files and agent-built tools
+    (`Skills/tools/`); `ReloadSkills` re-reads disk and embedded alike.
+  - Why: the guides always match the code that ships with them (step 5 loads a guide with its toolset), no upward
+    search for a `Skills/` folder is needed at start-up, images don't depend on copying `Skills/`, and the golden file
+    can't drift with the working copy.
+  - **Tests:** with an empty skills directory every catalogue guide still loads (from the assembly); a file of the
+    same name on disk wins; a name that is neither on disk nor embedded is reported as missing, as today; the model
+    request snapshot is unchanged.
+
 ## Open decisions
 
 1. Default toolsets for a session with no `toolsets` (suggest `skills` only).
