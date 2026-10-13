@@ -95,7 +95,11 @@ src/
 │   ├── Program.cs, AgentSessions.cs
 │   └── Endpoints/            # Workspace; Git (status, diff, stage/unstage/discard, commit); History (branches, log,
 │                             # commit/branch diffs, merge, delete merged branch)
-├── louis-agent.web/          # Blazor WebAssembly app (chat, Files, Changes, Branches, themes)
+├── louis-agent.web/          # Blazor WebAssembly app for code review (chat, Files, Changes, Branches, themes)
+├── louis-agent.puls/         # Puls: the general assistant's web app (chat only; delegates every task), served by the
+│                             # API built with -p:WebApp=puls (docker/docker-compose.puls.yml, port 5070)
+├── louis-agent.web.shared/   # What both web apps share: chat models, API client core, TurnView, BlocksView,
+│                             # DelegationCard (live sub-sessions), markdown, usage, currency, TurnStream
 │   ├── Pages/ChatPage.razor, Components/*.razor, Services/*.cs
 │   └── wwwroot/css/app.css + css/themes/*.css + themes.json
 ├── louis-agent.mcp-server/   # Publishes the toolset over MCP (no LLM) - stdio by default, MCP_TRANSPORT=http for remote clients

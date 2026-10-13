@@ -159,6 +159,19 @@ Update `ARCHITECTURE.md` (sessions and skills sections), `SETUP.md`, and the sam
   config/.env turns it off). Trade-offs: each sub-session starts fresh (it sees only the message it's sent), a turn may
   open 3, and until the TODO's F5 follow-up the chat's usage line shows the chat's own requests, not its sub-sessions'
   (the ledger has both, linked by `parent`).
+- **Puls, two web apps and live delegation** (Louis, 2026-10-13; supersedes the web-chats entry above):
+  - **Puls** (`src/louis-agent.puls`) is the general assistant, chat only, minimal and modern in Springbok green and
+    gold; its chats load only `agents` and delegate everything. The code-review app (`louis-agent.web`) goes back to
+    every toolset, as in the demo.
+  - **Same API code, own host:** `louis-agent.api` serves Puls when built with `-p:WebApp=puls` (`Dockerfile.puls`);
+    its own stack, `docker/docker-compose.puls.yml` (`puls` on 5070, `puls-coder` on 5071, logs in `logs/puls`). The
+    main compose no longer has a specialist.
+  - **`louis-agent.web.shared`** holds what both apps use (chat models, the API client's core, `TurnView`,
+    `BlocksView`, `DelegationCard`, markdown, usage, currency, `TurnStream`), moved with `git mv`; each app keeps its
+    pages, CSS and JavaScript.
+  - **Live delegation:** `StartSubSession` reports the specialist's stream to the turn's observer (`SubSessionFeed`),
+    the API sends it as `sub_session` events while the call runs, and the delegation card shows the specialist's
+    thinking, tool calls, answer and cost as they happen. The model still gets only the answer.
 
 ## Open decisions
 

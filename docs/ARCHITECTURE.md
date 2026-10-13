@@ -46,8 +46,12 @@ Each project also has its own design doc in [projects/](projects/README.md).
   unavailable name is a 400 listing the valid ones. Sessions with the same list share one engine and one cacheable
   prefix. `GET /toolsets` lists names, descriptions and availability (never tool definitions); `GET /sessions/{id}`
   returns a session's toolsets. A session opened by another agent (`depth: 1`) may not load `agents`.
-- The web app opens chats with only the `agents` toolset: every task is delegated with `StartSubSession` to the
-  specialist (`api-coder`), with the toolsets it needs. Without a peer it opens them with every available toolset.
+- Two web apps share one API codebase and `louis-agent.web.shared`: the code-review app (`louis-agent.web`, every
+  toolset; served by default) and **Puls** (`louis-agent.puls`, the general assistant: chats load only `agents` and
+  delegate every task; served when the API is built with `-p:WebApp=puls`).
+- **Live delegation:** while a `StartSubSession` call runs, the specialist's own events stream to the chat as
+  `sub_session` events (`SubSessionFeed` → the API's turn stream), and the delegation card shows its thinking, tool
+  calls, answer and cost as they happen; the model gets only the answer.
 - A message's answer streams as SSE shaped like Claude's: `message_start`, `content_block_start/delta/stop` for
   `thinking`, `text`, `tool_use` and `tool_result`, `message_delta` (stop reason and the turn's usage and cost),
   `message_stop`. Errors use Claude's `{ "type": "error", "error": { "type", "message" } }` shape (plus the turn's
@@ -259,7 +263,7 @@ installed and `Skills/` copied in.
 |---|---|---|
 | `acp-server` | `Dockerfile.acp-server` | Run per Rider chat with `docker compose run --rm -T acp-server` |
 | `api` | `Dockerfile.api` | API + web app on `127.0.0.1:${API_PORT:-5080}`; health check on `/health` |
-| `api-coder` | `Dockerfile.api` (same image) | The specialist the api's chats delegate to (`AGENT_PEERS=coder=http://api-coder:8080`, the default); starts with the api, on `127.0.0.1:${CODER_PORT:-5081}` |
+| Puls: `puls`, `puls-coder` (`docker-compose.puls.yml`) | `Dockerfile.puls` | The general assistant on `127.0.0.1:${PULS_PORT:-5070}` and the specialist it delegates to on `${PULS_CODER_PORT:-5071}`; logs in `logs/puls` |
 | `mcp-server` | `Dockerfile.mcp-server` | stdio: run per client with `run --rm -T mcp-server`; with `MCP_TRANSPORT=http`, on `127.0.0.1:${MCP_PORT:-5090}` |
 | `local-agent` | `Dockerfile.agent` | The CLI |
 | `ollama` | `services/Dockerfile.ollama` | Only with `--profile ollama` |
