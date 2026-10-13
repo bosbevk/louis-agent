@@ -71,6 +71,7 @@ docker compose -f docker/docker-compose.yml --env-file config/.env up -d --build
 | `LLM_SUPPORTS_TOOLS` | Force tool calling on or off (normally inferred from the model) |
 | `AGENT_FUNCTION` | Which `Skills/{name}-skills.md` to load; `louis` loads every skill file |
 | `AGENT_PEERS` | Other louis-agent APIs this one may open sub-sessions on (`StartSubSession`, the `agents` toolset): `name=url` pairs, comma separated. Empty by default for the code-review api; Puls's compose sets it to its specialist (`puls=http://puls-coder:8080`). Peers are called with this deployment's `AGENT_API_KEY` |
+| `SUB_SESSION_PROMPT_BUDGET` | The most tokens a sub-session's prompt should reach (FX14): when the next request is expected to pass it, the specialist answers from what it has instead of calling more tools. Default `80000`, under Claude Haiku 5.5's long-prompt price step at 100k; `0` turns it off |
 | `REPOSITORIES_PATH` | Host folder mounted at `/repositories` in the containers |
 | `ACP_MOUNT_MAPPINGS` | `HOST_PATH=/container/path` pairs, so Rider's Windows paths (attachments, open file) resolve in the container |
 | `RIDER_MCP_ENDPOINT`, `RIDER_MCP_AUTO_DISCOVER` | Rider MCP discovery (off by default; it only logs Rider's tools for now) |

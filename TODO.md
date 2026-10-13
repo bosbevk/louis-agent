@@ -219,7 +219,7 @@ Design: [docs/specs/SESSION_ARCHITECTURE.md](docs/specs/SESSION_ARCHITECTURE.md)
 - [ ] **F23 Credits** (to plan): buy credits with money, spend them per question at cost plus a margin, from the usage
       ledger and prices (F1, F2) — Puls's *Koop krediete*. Louis: "'n layer wat geld na ons interne krediete verander. Wil so
       bietjie geld maak as ek kan."
-- [ ] [F20 Puls look](docs/features/F20-puls-look.md) — Puls gets a landing page and a three-panel dashboard, dark, in its own colours ([plan](docs/plans/F20-puls-look.md)). Built; open: copy in a real browser, and the Werk panel during a live delegation.
+- [x] [F20 Puls look](docs/features/F20-puls-look.md) — Puls gets a landing page and a three-panel dashboard, dark, in its own colours ([plan](docs/plans/F20-puls-look.md)).
 - [ ] **F5 follow-up: roll sub-session usage up into the parent chat** ([plan](docs/plans/F05-usage-rollup.md)). Sub-session totals (`StartSubSession`) must count in the parent's turn scope (`UsageScope.Add`, summary record only, never written to the ledger) so the per-chat usage line, the chat total and `GET /sessions/{id}` include them. Child cost is converted to USD once, at the parent. Confirm in `Program.cs` that `session.Usage` takes the turn's scope records. Test: parent total = own requests + each child; a failed child's usage is included; no duplicate ledger rows.
 
 ### Web app
@@ -336,6 +336,7 @@ backlog item removes one, it says so.
 
 Newest first; details in the git history.
 
+- 2026-10-14 — **F20 Puls look**: a landing page and a dark three-panel dashboard in Puls's colours, with the Werk panel showing each delegation live (specialist, steps, sources, cost); checked in a real browser with a live delegation ([F20](docs/features/F20-puls-look.md)).
 - 2026-10-14 — **FX14 Sub-session prompt budget**: `SUB_SESSION_PROMPT_BUDGET` (80k, under the 100k price step) stops a specialist's prompt growing into long-prompt prices; it answers from what it has ([FX14](docs/fixes/FX14-sub-session-prompt-budget.md)).
 - 2026-10-14 — **FX13 Counting to the analyst**: Puls's router sends counting to `files` + a script, and the reader hands counting back instead of reading every file ([FX13](docs/fixes/FX13-counting-to-the-analyst.md)).
 - 2026-10-14 — **FX12 Env templates readable**: `.env.example`, `.sample` and `.template` files are no longer treated as secrets ([FX12](docs/fixes/FX12-env-templates-readable.md)).

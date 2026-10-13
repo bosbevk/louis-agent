@@ -1,6 +1,6 @@
 # F20 · Puls look: a landing page and a three-panel dashboard, dark, in Puls's colours
 
-> **Status:** built (2026-10-13) · **Milestone:** — (Puls, outside the cost milestones) · **Depends on:** F5 (Puls,
+> **Status:** done (2026-10-14; built 2026-10-13) · **Milestone:** — (Puls, outside the cost milestones) · **Depends on:** F5 (Puls,
 > live delegation)
 >
 > **In the TODO:** **F20 Puls look** under *Puls* ([TODO](../../TODO.md)) · **Plan:** [plans/F20](../plans/F20-puls-look.md)
@@ -47,10 +47,14 @@ per chat): each is its own feature when it's wanted.
 - **The look:** the landing page, the dark theme and the three panels match the plan at desktop (1440 px), tablet
   (1100 px) and phone (420 px) widths. *Met:* checked by headless-Chrome screenshots with sample chats at each width.
 - **Real vs placeholder as listed:** search, rename, favourite, archive, copy, topic cards, starters, sources, the model
-  name and Krediete work; every placeholder answers "kom binnekort". *Met* by hand and screenshots; copy needs a real
-  browser (headless Chrome blocks the clipboard): **open, for Louis to try**.
-- **The Werk panel shows a live delegation** (specialist, toolsets, steps, sources, cost) during a real chat. *Met* for
-  saved chats; **open** for a live one, which needs a model call (Louis's delegation check, PR #27 review).
+  name and Krediete work; every placeholder answers "kom binnekort". *Met* by hand and screenshots. Copy *met* on
+  2026-10-14 in a real Chrome (headless Chrome blocks the clipboard): the answer's copy button, then a paste into the
+  message box, gave the whole answer as markdown.
+- **The Werk panel shows a live delegation** (specialist, toolsets, steps, sources, cost) during a real chat. *Met* on
+  2026-10-14 in a real Chrome, one live question ("Wat is die nuutste weergawe van .NET…", about R0.08): while it ran
+  the panel showed the specialist (`puls`, `web`, *Besig*), its task and each step as it happened (`GetToday` ✓,
+  `WebSearch` ✗ as the search provider refused, then three `FetchUrl` ✓); when it ended, *Klaar*, the cost (R0.056,
+  4 requests), the three sources, and Puls's and the specialist's share in the footer (R0.022 and R0.056).
 - **The code-review app is unchanged:** both apps build; the shared components' new slots and words default to it.
 - Suites pass; then tick F20 in the TODO and set *Status* to done here and in the features table.
 
