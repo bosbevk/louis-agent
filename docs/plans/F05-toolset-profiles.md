@@ -152,6 +152,13 @@ Update `ARCHITECTURE.md` (sessions and skills sections), `SETUP.md`, and the sam
     per process, and that was their behaviour before F5. `AgentHostContext` carries the factory (`Engines`) for the API.
   - Each profile logs its toolsets, tool count, prompt size and a fixed-prefix estimate (≈ characters / 4), which is
     step 12's start-up line.
+- **Web chats load the bare minimum and only delegate** (Louis, 2026-10-13): the web app opens chats with `["agents"]`
+  only; every task goes to a specialist through `StartSubSession`, with the toolsets the router in `default.md` names
+  for it. Without a peer (`AGENT_PEERS` empty) a chat gets every available toolset, so it still works. Compose starts the
+  specialist (`api-coder`) with the `api` and sets `AGENT_PEERS=coder=http://api-coder:8080` by default (empty in
+  config/.env turns it off). Trade-offs: each sub-session starts fresh (it sees only the message it's sent), a turn may
+  open 3, and until the TODO's F5 follow-up the chat's usage line shows the chat's own requests, not its sub-sessions'
+  (the ledger has both, linked by `parent`).
 
 ## Open decisions
 

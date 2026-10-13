@@ -19,8 +19,9 @@ with the toolsets a task needs, and get the result back.
 - **Per session, not per instance.** Toolsets are chosen with `POST /sessions` and fixed for that session. Changing them
   mid-chat is out of scope: it breaks the cached prefix and the Haiku 5.5 history rule.
 - **Nothing at start-up.** The `AGENT_TOOLSETS` instance setting is dropped. The engine is built per profile, on demand.
-- **Default:** a session created without `toolsets` gets `skills` only. Clients that need tools (the web app) send
-  their own list.
+- **Default:** a session created without `toolsets` gets `skills` only. Clients that need tools send their own list.
+- **Web chats delegate** (2026-10-13): the web app opens chats with only `agents`, and every task runs in a sub-session
+  on the specialist (`api-coder`) with the toolsets it needs; with no peer, a chat gets every available toolset.
 - **Sub-sessions are one level deep.** A sub-session cannot open its own sub-sessions.
 
 ## User stories

@@ -46,7 +46,8 @@ Each project also has its own design doc in [projects/](projects/README.md).
   unavailable name is a 400 listing the valid ones. Sessions with the same list share one engine and one cacheable
   prefix. `GET /toolsets` lists names, descriptions and availability (never tool definitions); `GET /sessions/{id}`
   returns a session's toolsets. A session opened by another agent (`depth: 1`) may not load `agents`.
-- The web app opens every chat with every toolset the API can load (from `GET /toolsets`).
+- The web app opens chats with only the `agents` toolset: every task is delegated with `StartSubSession` to the
+  specialist (`api-coder`), with the toolsets it needs. Without a peer it opens them with every available toolset.
 - A message's answer streams as SSE shaped like Claude's: `message_start`, `content_block_start/delta/stop` for
   `thinking`, `text`, `tool_use` and `tool_result`, `message_delta` (stop reason and the turn's usage and cost),
   `message_stop`. Errors use Claude's `{ "type": "error", "error": { "type", "message" } }` shape (plus the turn's
@@ -258,7 +259,7 @@ installed and `Skills/` copied in.
 |---|---|---|
 | `acp-server` | `Dockerfile.acp-server` | Run per Rider chat with `docker compose run --rm -T acp-server` |
 | `api` | `Dockerfile.api` | API + web app on `127.0.0.1:${API_PORT:-5080}`; health check on `/health` |
-| `api-coder` | `Dockerfile.api` (same image) | Only with `--profile peers`: a specialist the api opens sub-sessions on (`AGENT_PEERS=coder=http://api-coder:8080`), on `127.0.0.1:${CODER_PORT:-5081}` |
+| `api-coder` | `Dockerfile.api` (same image) | The specialist the api's chats delegate to (`AGENT_PEERS=coder=http://api-coder:8080`, the default); starts with the api, on `127.0.0.1:${CODER_PORT:-5081}` |
 | `mcp-server` | `Dockerfile.mcp-server` | stdio: run per client with `run --rm -T mcp-server`; with `MCP_TRANSPORT=http`, on `127.0.0.1:${MCP_PORT:-5090}` |
 | `local-agent` | `Dockerfile.agent` | The CLI |
 | `ollama` | `services/Dockerfile.ollama` | Only with `--profile ollama` |

@@ -20,13 +20,15 @@ public sealed record AgentStreamEvent(string Type, JsonElement Data);
 public sealed class AgentApi(HttpClient http, Settings settings)
 {
     /// <summary>
-    /// Opens a chat with every toolset this API can load (F5: a session's tools are chosen when it opens and kept; one
-    /// sent without a list would get only the skills toolset). Every chat sends the same list, so they share one cached
-    /// prefix.
+    /// Opens a chat with the bare minimum (F5): only the <c>agents</c> toolset, so the chat delegates every task to a
+    /// specialist with the toolsets that task needs, and its own prompt stays small. When this API has no peer
+    /// (AGENT_PEERS unset), the chat gets every toolset it can load instead, so it can still work. Every chat sends the
+    /// same list, so they share one cached prefix.
     /// </summary>
     public async Task<string> CreateSessionAsync()
     {
-        string[] toolsets = await AvailableToolsetsAsync();
+        string[] available = await AvailableToolsetsAsync();
+        string[] toolsets = available.Contains(DelegateOnly) ? [DelegateOnly] : available;
         using var response = await SendAsync(new HttpRequestMessage(HttpMethod.Post, "sessions")
         {
             Content = JsonContent.Create(new { toolsets }),
@@ -34,6 +36,9 @@ public sealed class AgentApi(HttpClient http, Settings settings)
         var body = await response.Content.ReadFromJsonAsync<JsonElement>();
         return body.GetProperty("session_id").GetString()!;
     }
+
+    /// <summary>The toolset a web chat loads when it can: sub-sessions on a specialist.</summary>
+    private const string DelegateOnly = "agents";
 
     private async Task<string[]> AvailableToolsetsAsync()
     {

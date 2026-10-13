@@ -35,8 +35,8 @@ flowchart LR
 - **Toolsets per session** (F5): `POST /sessions` takes `toolsets` (none: `skills` only) and gets that profile's engine
   from core's `AgentEngineFactory`, kept for the session's life; unknown or unavailable names, a `depth` other than 0
   or 1, or `agents` at depth 1 are a `400`. `parent` tags a sub-session's usage records with the turn that opened it.
-  `GET /toolsets` lists names, descriptions and availability, never tool definitions. The web app sends every
-  available toolset.
+  `GET /toolsets` lists names, descriptions and availability, never tool definitions. The web app opens chats with
+  only `agents` and delegates every task to the specialist (`api-coder`); without a peer, with every available toolset.
 - **Streaming** (`ClaudeStyleStream`): engine updates become `message_start`, `content_block_start/delta/stop`
   (thinking, text, tool_use, tool_result), `message_delta` (stop reason and the turn's `usage`, F3) and `message_stop`;
   failures become an `error` event in Claude's shape, with the turn's `usage` when a request had returned (FX6).

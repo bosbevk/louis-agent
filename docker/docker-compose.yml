@@ -101,8 +101,9 @@ services:
       PRICES_FILE: /workspace/config/prices.json
       # Exchange rates' fallback when RATES_URL (Frankfurter by default) can't be reached (F14)
       RATES_FILE: /workspace/config/rates.json
-      # Sub-sessions (F5): the peers StartSubSession may call, from config/.env; empty disables the agents toolset
-      AGENT_PEERS: ${AGENT_PEERS:-}
+      # Sub-sessions (F5): the web app's chats load only the agents toolset and delegate every task to this peer.
+      # Override in config/.env; set it empty to give chats every toolset instead.
+      AGENT_PEERS: ${AGENT_PEERS-coder=http://api-coder:8080}
     # Localhost only: the agent can run shell commands and write files. Set AGENT_API_KEY in .env.secrets to require a key.
     ports:
       - "127.0.0.1:${API_PORT:-5080}:8080"
@@ -111,14 +112,15 @@ services:
       - ../Skills:/skills
       - ../logs:/logs
       - ${REPOSITORIES_PATH}:/repositories
+    depends_on:
+      - api-coder
     networks:
       - default
 
-  # A specialist on the same image (F5-S5): the api above opens sub-sessions on it with StartSubSession when
-  # config/.env sets AGENT_PEERS=coder=http://api-coder:8080. Opt-in: docker compose ... --profile peers up -d api-coder.
-  # It reads the same settings and key, and is bound to localhost like the api.
+  # The specialist (F5-S5), on the same image: the api's chats delegate every task to it with StartSubSession, each
+  # sub-session loading only the toolsets its task needs. Starts with the api; reads the same settings and key, and is
+  # bound to localhost like the api.
   api-coder:
-    profiles: ["peers"]
     image: louis-agent-api:latest
     container_name: louis_agent_coder
     env_file:
