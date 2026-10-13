@@ -185,6 +185,12 @@ the product parts.
 
 Design and open decisions: [docs/specs/ORCHESTRATOR_DESIGN.md](docs/specs/ORCHESTRATOR_DESIGN.md).
 
+- [ ] **Relook at how often Puls delegates (Louis, 2026-10-14):** maybe too often. In every delegation check
+      ([roles](samples/sample-output-puls-check-roles/README.md), [after FX10–FX12](samples/sample-output-puls-check-fixes/README.md),
+      the repeat run) delegating cost more than one agent answering, except plain chat and some web research: each
+      specialist starts cold and the answer is written twice. Options to measure: Puls keeps cheap read-only
+      toolsets itself (`files`, `git`, `web`) and delegates only long or risky work; a rule for when a task is worth a
+      specialist; F5's *Done when* ("delegate only where the ledger shows it is cheaper")
 - [ ] A pull-request tool (GitHub / Azure DevOps), so a fix ends as a PR instead of a local branch
 - [ ] Decide the orchestrator's implementation tier: keep `louis-agent.core` (as the POC) or move to Anthropic's Tool
       Runner
