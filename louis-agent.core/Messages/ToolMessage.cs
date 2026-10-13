@@ -582,6 +582,9 @@ public enum ToolMessage
     [Description("Error: no peer agent named '{Agent}'. Peers (AGENT_PEERS): {Peers}.")]
     UnknownPeer,
 
+    [Description("Error: this instance has more than one peer agent; name one of them: {Peers}.")]
+    PeerNameNeeded,
+
     [Description("Error: this turn has already started {Max} sub-sessions, the most one turn may. Finish with what you have, or ask the user.")]
     SubSessionLimit,
 

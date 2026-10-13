@@ -8,7 +8,7 @@ its tools or its conversation.
 
 | Tool | Use it to |
 |------|-----------|
-| `StartSubSession(agent, toolsets, message)` | Open a session on peer `agent` with `toolsets`, send `message`, wait for the answer, close the session. |
+| `StartSubSession(agent, toolsets, message)` | Open a session on a peer with `toolsets`, send `message`, wait for the answer, close the session. Leave `agent` empty when there is one peer (the usual case); never guess a name. |
 
 ## When to delegate
 

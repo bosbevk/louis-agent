@@ -112,6 +112,7 @@
   "PaymoTaskResolveFailed": "Failed to resolve task ID for '<Task>': <Reason>",
   "PaymoTimeOrHoursRequired": "Must provide either start_time/end_time OR hours parameter.",
   "PaymoUnexpectedError": "ERROR: Unexpected error: <Reason>",
+  "PeerNameNeeded": "Error: this instance has more than one peer agent; name one of them: <Peers>.",
   "PendingToolExists": "Error: a pending tool named '<Name>' already exists. Pass overwrite=true to replace it.",
   "PipFailed": "pip install FAILED (exit code <ExitCode>).\n<Output>",
   "PipTimedOut": "pip install timed out.\n<Output>",

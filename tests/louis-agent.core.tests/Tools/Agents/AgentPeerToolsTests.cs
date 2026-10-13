@@ -87,6 +87,30 @@ public class AgentPeerToolsTests
     }
 
     [Test]
+    public async Task AnEmptyName_UsesTheOnlyPeer()
+    {
+        // The model used to guess an example name ("coder") first; with one peer it needn't name it at all.
+        var handler = Peer();
+
+        string result = await Tools(handler).StartSubSession("", ["files"], "x");
+
+        Assert.That(result, Does.StartWith("Fixed the null check").And.Contain("[Sub-session on coder (files)"));
+        Assert.That(handler.Requests[0].Url, Does.StartWith("http://coder.test/"));
+    }
+
+    [Test]
+    public async Task AnEmptyName_WithSeveralPeers_AsksForOne_WithoutANetworkCall()
+    {
+        var handler = Peer();
+        var peers = new Dictionary<string, Uri> { ["coder"] = new("http://coder.test/"), ["writer"] = new("http://writer.test/") };
+
+        string result = await new AgentPeerTools(peers, null, new HttpClient(handler)).StartSubSession(" ", ["files"], "x");
+
+        Assert.That(result, Does.Contain("more than one peer").And.Contain("coder, writer"));
+        Assert.That(handler.Requests, Is.Empty);
+    }
+
+    [Test]
     public async Task AnUnknownPeer_FailsWithoutANetworkCall()
     {
         var handler = Peer();
