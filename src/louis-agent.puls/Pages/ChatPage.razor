@@ -55,6 +55,9 @@
 
     <main class="conversation">
         <button class="sidebar-tab d-none d-lg-grid" type="button" onclick="pulsUi.toggleSidebar()" title="Wys die kantbalk" aria-label="Wys die kantbalk">⇥</button>
+        @* The Werk panel: hidden and shown here on a wide screen, slid in from the right on a smaller one. *@
+        <button class="work-tab d-none d-xl-grid" type="button" onclick="pulsUi.toggleWork()" title="Wys die werkpaneel" aria-label="Wys die werkpaneel">Werk</button>
+        <button class="work-tab work-tab-open d-xl-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#work" aria-controls="work" title="Wys die werkpaneel">Werk</button>
         <div class="messages" @ref="_messages">
             @if (_chat is null || _chat.Turns.Count == 0)
             {
@@ -125,6 +128,10 @@
             </div>
         </div>
     </main>
+
+    <aside class="work offcanvas-xl offcanvas-end" id="work" tabindex="-1" aria-label="Werk">
+        <WorkPanel Chat="_chat" Streaming="_streaming" Currency="Currency.Current" />
+    </aside>
 </div>
 
 @code {

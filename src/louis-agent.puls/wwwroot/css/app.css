@@ -620,3 +620,72 @@ html:has(.landing) { scroll-behavior: smooth; }
 .i-chart { --icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M4 20V10M10 20V4M16 20v-7M22 20H2'/></svg>"); }
 .i-pulse { --icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M2 12h4l3-7 6 14 3-7h4'/></svg>"); }
 .i-coin { --icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='9'/><path d='M15 9.5c-.6-1-1.7-1.5-3-1.5-1.7 0-3 .9-3 2s1.3 1.7 3 2 3 .9 3 2-1.3 2-3 2c-1.3 0-2.4-.5-3-1.5M12 6v2M12 16v2'/></svg>"); }
+
+/* ---- The three panels (F20): sidebar, chat, Werk. From xl (1200px) the Werk panel is a fourth column that folds away
+   (.work-hidden); below it, a Bootstrap offcanvas that slides in from the right (out of the grid, so nothing moves). ---- */
+@media (min-width: 1200px) {
+    .app { grid-template-columns: var(--sidebar-w, 280px) 8px minmax(0, 1fr) var(--work-w, 330px); }
+    .sidebar-hidden .app { grid-template-columns: 0 0 minmax(0, 1fr) var(--work-w, 330px); }
+    .work-hidden .app { grid-template-columns: var(--sidebar-w, 280px) 8px minmax(0, 1fr) 0; }
+    .sidebar-hidden.work-hidden .app { grid-template-columns: 0 0 minmax(0, 1fr) 0; }
+    .work.offcanvas-xl { display: flex; flex-direction: column; visibility: visible; }
+    .work-hidden .work { visibility: hidden; }
+}
+.work {
+    display: flex; flex-direction: column; min-height: 0; min-width: 0; overflow: hidden; color: var(--text);
+    border-left: 1px solid var(--border);
+    /* A gradient, not a colour: Bootstrap makes an offcanvas's background-color transparent at its breakpoint. */
+    background-image: linear-gradient(color-mix(in srgb, var(--sidebar) 88%, transparent), color-mix(in srgb, var(--sidebar) 88%, transparent));
+}
+@media (max-width: 1199.98px) {
+    .work.offcanvas-xl { --bs-offcanvas-width: min(360px, 90vw); --bs-offcanvas-transition: transform .35s cubic-bezier(.2, .8, .2, 1); background-color: var(--sidebar); }
+}
+.work-head { display: flex; align-items: center; gap: 8px; padding: 18px 16px 12px 20px; border-bottom: 1px solid var(--border); }
+.work-title { font-weight: 800; font-size: 16px; color: var(--ink); }
+.work-count { font-size: 11px; font-weight: 700; color: var(--orange-text); background: var(--orange-soft); border-radius: 999px; padding: 1px 8px; }
+.work-head .icon { margin-left: auto; width: 32px; height: 32px; place-items: center; color: var(--muted); }
+.work-head .icon + .icon { margin-left: 0; }
+.work-head .icon:hover { background: rgba(255, 255, 255, .08); color: var(--ink); }
+.work-body { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 14px; scrollbar-gutter: stable; }
+.work-empty { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px; padding: 40px 12px; color: var(--muted); font-size: 13.5px; }
+.work-empty img { opacity: .85; filter: drop-shadow(0 10px 24px rgba(245, 130, 32, .3)); }
+.work-empty strong { color: var(--ink); font-size: 15px; }
+.work-empty p { margin: 0; }
+.work-item { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 8px; animation: rise .4s var(--ease) both; }
+.work-item.running { border: 1px solid transparent; background: linear-gradient(var(--surface), var(--surface)) padding-box, conic-gradient(from var(--angle), var(--orange), var(--green-light), var(--orange)) border-box; animation: rise .4s var(--ease) both, spin 2.6s linear infinite; }
+.work-item-head { display: flex; align-items: center; gap: 10px; }
+.work-avatar { width: 34px; height: 34px; border-radius: 10px; flex: none; }
+.work-item.running .work-avatar { animation: ring 1.8s var(--ease) infinite; }
+.work-who { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.25; }
+.work-who small { color: var(--muted); font-size: 11.5px; }
+.work-who strong { color: var(--ink); font-size: 14px; }
+.work-status { font-size: 11px; font-weight: 700; border-radius: 999px; padding: 3px 10px; background: var(--green-soft); color: var(--green-light); }
+.work-item.running .work-status { background: var(--orange-soft); color: var(--orange-text); }
+.work-item.failed .work-status { background: rgba(242, 107, 79, .14); color: var(--danger); }
+.work-chips { display: flex; flex-wrap: wrap; gap: 5px; }
+.work-task { margin: 0; font-size: 12.5px; color: var(--muted); background: var(--code-bg); border-radius: 10px; padding: 8px 10px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.work-label { font-size: 10.5px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--dim); margin-top: 4px; }
+.work-steps { list-style: none; margin: 0; padding: 0 0 0 12px; display: flex; flex-direction: column; gap: 6px; position: relative; }
+.work-steps::before { content: ""; position: absolute; left: 3px; top: 4px; bottom: 4px; width: 2px; border-radius: 2px; background: linear-gradient(var(--orange), var(--green-light)); opacity: .45; }
+.work-step { display: flex; align-items: baseline; gap: 6px; font-size: 12.5px; min-width: 0; animation: rise .3s var(--ease) both; }
+.work-step-mark { font-weight: 700; color: var(--green-light); width: 12px; flex: none; }
+.work-step.waiting, .work-step.waiting .work-step-mark { color: var(--orange-text); }
+.work-step.failed .work-step-mark { color: var(--danger); }
+.work-step-name { font-weight: 600; color: var(--ink); flex: none; }
+.work-step-args { font-family: var(--font-code); font-size: 11px; color: var(--dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.work-thoughts { font-size: 11.5px; color: var(--dim); }
+.work-cost { display: flex; align-items: baseline; gap: 8px; font-size: 12px; color: var(--muted); border-top: 1px solid var(--border); padding-top: 8px; margin-top: 2px; font-variant-numeric: tabular-nums; }
+.work-cost strong { color: var(--ink); }
+.work-foot { display: flex; justify-content: space-between; gap: 8px; padding: 12px 20px 16px; border-top: 1px solid var(--border); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.work-foot strong { color: var(--ink); font-weight: 700; margin-left: 4px; }
+
+/* The tab that brings the Werk panel back (wide screens, when hidden) or slides it in (smaller screens). */
+.work-tab {
+    position: absolute; top: 14px; right: 14px; z-index: 5; height: 36px; padding: 0 14px; border-radius: 12px; place-items: center;
+    font-weight: 700; font-size: 13px; color: var(--ink); background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow-md);
+    transition: opacity .25s var(--ease), transform .3s var(--spring), border-color .2s;
+}
+.work-tab:hover { border-color: rgba(245, 130, 32, .5); transform: translateY(-2px); }
+@media (min-width: 1200px) { .work-tab { opacity: 0; pointer-events: none; } .work-hidden .work-tab { opacity: 1; pointer-events: auto; } }
+/* Below xl the Werk tab sits over the chat's top right: the messages start under it. */
+@media (max-width: 1199.98px) { .messages { padding-top: 64px; } }

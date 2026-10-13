@@ -18,11 +18,12 @@
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
     <link rel="stylesheet" href="css/app.css" />
     <script>
-        // The sidebar's saved width and whether it's hidden, applied before the app paints so it never jumps.
+        // The sidebar's saved width, and whether it or the Werk panel is hidden: applied before the app paints so nothing jumps.
         try {
             const width = parseInt(localStorage.getItem("puls.sidebarWidth"), 10);
             if (width >= 220 && width <= 480) document.documentElement.style.setProperty("--sidebar-w", width + "px");
             if (localStorage.getItem("puls.sidebarHidden") === "1") document.documentElement.classList.add("sidebar-hidden");
+            if (localStorage.getItem("puls.workHidden") === "1") document.documentElement.classList.add("work-hidden");
         } catch { }
     </script>
 </head>

@@ -44,7 +44,9 @@ per chat): each is its own feature when it's wanted.
 
 ## What the build changed
 
-(Filled in as the steps land.)
+- **Step 3, the Werk panel's cost:** it shows Puls's own cost and the specialists' side by side, not one total. The chat's
+  usage doesn't include its sub-sessions yet (the F5 roll-up, [plan](../plans/F05-usage-rollup.md)); a sum in the panel
+  would count them twice once it does.
 
 ---
 [Features](README.md) · [Plan](../plans/F20-puls-look.md)

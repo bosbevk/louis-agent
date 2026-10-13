@@ -54,6 +54,12 @@ window.pulsUi = {
         const hidden = document.documentElement.classList.toggle("sidebar-hidden");
         try { localStorage.setItem("puls.sidebarHidden", hidden ? "1" : "0"); } catch { }
     },
+
+    // The Werk panel on a wide screen (F20): hidden or shown, remembered.
+    toggleWork() {
+        const hidden = document.documentElement.classList.toggle("work-hidden");
+        try { localStorage.setItem("puls.workHidden", hidden ? "1" : "0"); } catch { }
+    },
 };
 
 document.addEventListener("pointerdown", (e) => {
