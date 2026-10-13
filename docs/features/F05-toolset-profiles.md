@@ -1,6 +1,6 @@
 # F5 · Toolset profiles: send only the tools a session needs
 
-> **Status:** planned · **Milestone:** M2 · **Depends on:** F1
+> **Status:** built, benchmark pending · **Milestone:** M2 · **Depends on:** F1
 >
 > **Spec:** [Optimisation §C](../specs/RESPONSE_OPTIMISATION.md)
 >
@@ -134,6 +134,19 @@ with named toolsets, send it a task, and get the result back, so that tools are 
   default only for tasks where the ledger shows it is cheaper.
 - **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)): tick **F5** in the TODO, set *Status*
   to done here and in the features table, and note it in the spec's implementation map.
+
+## Left before done (2026-10-13)
+
+Built on `feature/F5-toolset-profiles` (steps 1–10 and 12; [plan](../plans/F05-toolset-profiles.md)); all suites pass.
+Left, because each needs a model and so spends money:
+- **The benchmark** (step 11, S4 and S6): `samples/run-demo.ps1 -Short` with caching on, against M2's F4 run
+  (`samples/sample-output-short-cached/`). Record each profile's prefix (the `Toolsets …: N tools, … tokens of fixed
+  prefix` log line), `cache_read` from the second request, and cost per fix; target ≥ 25% smaller prefix, 10/10 (or the
+  short run's) fixes confirmed. Measured by hand without a model: files+git ≈ 10.5k tokens against ≈ 27.7k for every
+  toolset.
+- **A sub-session end to end:** `--profile peers`, `AGENT_PEERS=coder=http://api-coder:8080`, one task delegated from
+  the web app; check the child is deleted and its ledger records carry `parent`.
+- **By hand:** the web app (a chat has its tools; `GET /toolsets`), Rider over ACP (all available toolsets).
 
 ## Out of scope
 

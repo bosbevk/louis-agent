@@ -50,9 +50,11 @@ One design doc per project — purpose, structure, key types, settings, extensio
 ```
 louis-agent.core/             # Namespace = folder path (LouisAgent.Core.Tools.Web); see Project layout
 ├── Agent/                    # AgentEngine: the turn loop, history and system prompt, a façade over the rest:
-│                             # ToolRegistry, ToolCallGuards (cut-off calls, oversized results), SkillTools, AgentBuiltTools
+│                             # ToolRegistry, ToolCallGuards (cut-off calls, oversized results), SkillTools, AgentBuiltTools;
+│                             # ToolsetCatalog (+ ToolsetDefinition, ToolsetContext): every toolset a session can load (F5)
 ├── Guardrails/               # WorkspaceBoundary, SensitiveFiles, SsrfGuard: pure safety checks (tools and API use them)
-├── Hosting/                  # AgentHost (+ AgentHostContext): bootstrap for every host; RiderMcpToolDiscovery
+├── Hosting/                  # AgentHost (+ AgentHostContext): bootstrap for every host; AgentEngineFactory (one engine
+│                             # per toolset profile, F5); RiderMcpToolDiscovery
 ├── Config/                   # LlmOptions (+ CacheLifetime), AgentOptions, EnvFile (finds config/, sets a .env line)
 ├── Messages/                 # ErrorMessage, LogMessage, ToolMessage, UserText ([Description] templates), MessageText
 ├── Logging/                  # AgentLogging (Serilog behind ILogger: stderr, run file, JSON-lines records),
@@ -63,13 +65,15 @@ louis-agent.core/             # Namespace = folder path (LouisAgent.Core.Tools.W
 │   ├── IUsageMapper.cs, StandardUsageMapper.cs   # Provider usage → the ledger's token kinds
 │   ├── UsageRecordingChatClient.cs  # Middleware inside the tool loop: records each request, streaming or not
 │   └── AnthropicProvider/    # AnthropicUsageMapper, AnthropicPromptCaching (Llm/{Name}Provider/ per provider)
-├── Skills/                   # MarkdownSkillLoader ("## Skill:" procedures), MarkdownSkillProvider (every skill file we control), SkillFiles
+├── Skills/                   # MarkdownSkillLoader ("## Skill:" procedures), MarkdownSkillProvider (every skill file we control),
+│                             # SkillFileSource (built-in files embedded; disk overrides), SkillFiles
 ├── Tools/
 │   ├── ProcessRunner.cs      # Process runner: argument lists, no shell, timeouts
 │   ├── Workspace/            # Files, inside the WorkspaceBoundary, never SensitiveFiles
 │   ├── Git/, DotNet/, Shell/ # GitTools; DotNetTools; BashTools, PowerShellTools, PythonTools
 │   ├── Web/                  # WebTools: WebSearch (Google / DuckDuckGo providers) and FetchUrl (SSRF-guarded)
 │   ├── Scripts/              # Agent-built tools (*.tool.md)
+│   ├── Agents/               # AgentPeerTools: StartSubSession on a peer agent (AGENT_PEERS, F5)
 │   └── Integrations/         # Paymo/, DevOps/: loaded only when their API keys are set
 ├── Protocols/Mcp/            # RiderMcpClient: lists tools from Rider's MCP server
 ├── Usage/                    # Usage ledger (F1): one JSON line per model request in {LOG_DIRECTORY}/usage-YYYY-MM.jsonl
@@ -106,6 +110,7 @@ tools/louis-agent.usage-probe/ # Prints a provider's raw token usage and the led
                               # --ledger <file> prices and totals a usage ledger, --cache-gaps <file> recommends
                               # LLM_CACHE_TTL (neither calls a model)
 tests/louis-agent.core.tests/ # NUnit; folders mirror core's, plus ArchitectureTests (the layout rules)
+tests/louis-agent.api.tests/  # NUnit; the API's sessions (toolsets per session, depth), no web host or model
 tests/louis-agent.orchestrator.tests/ # NUnit; error feed, SSE client, verification tools
 samples/                      # order-service (demo microservice), run-demo.ps1 [-Short], sample-output*/ (real runs
                               # with their priced ledgers, uncached and -cached), smoke-f4-caching/, see samples/README.md
@@ -184,7 +189,7 @@ a change to one (a new provider, a new tool, a new guard) touches one folder:
 |---|---|
 | `Agent/` | The loop: turns, history, system prompt, round limits; the tool registry, the tool-call guards that call the model (cut-off calls, oversized results summarised), the skill tools and the agent-built tools (`/approve`) |
 | `Llm/` + `Llm/{Name}Provider/` | The model: client factory, `IChatClient` middleware (thinking, caching, usage recording), one folder per provider (`AnthropicProvider/`: a folder named `Anthropic` would hide the SDK's own `Anthropic` namespace) |
-| `Tools/{Toolset}/` | What the model can do: one folder per toolset (`Workspace`, `Git`, `DotNet`, `Shell`, `Web`, `Scripts`, `Integrations/Paymo`, `Integrations/DevOps`); `ProcessRunner` beside them |
+| `Tools/{Toolset}/` | What the model can do: one folder per toolset (`Workspace`, `Git`, `DotNet`, `Shell`, `Web`, `Scripts`, `Agents`, `Integrations/Paymo`, `Integrations/DevOps`); `ProcessRunner` beside them |
 | `Skills/` | Loading the markdown skills and personality into the prompt |
 | `Guardrails/` | Pure safety checks, no model: the workspace boundary, sensitive files, the SSRF guard (the guards that call a model are in `Agent/`) |
 | `Usage/` and `Pricing/` | The ledger (records, sinks, scopes, reports); prices, cost, rates and the display currency |
@@ -306,6 +311,7 @@ anywhere else.
 ```bash
 dotnet test tests/louis-agent.core.tests
 dotnet test tests/louis-agent.core.tests --filter "FullyQualifiedName~AgentEngineTests"
+dotnet test tests/louis-agent.api.tests
 dotnet test tests/louis-agent.orchestrator.tests
 dotnet test louis-agent-solution.sln          # everything, including the order-service sample's tests
 ```
@@ -319,7 +325,8 @@ Tests use `FakeChatClient` (a scripted `IChatClient` that also streams) and `Stu
 Docker. A few tests skip themselves when git, pip or the network isn't available. The agent runs tests on Linux inside
 its containers, so keep them platform-neutral (forward slashes, no Windows-only paths).
 
-The API and web app have no automated tests yet; check them by hand (curl and a browser) after changes. The
+The API's sessions are tested (`tests/louis-agent.api.tests`); its endpoints and the web app have no automated tests
+yet, so check them by hand (curl and a browser) after changes. The
 orchestrator demo (`samples/run-demo.ps1`, in Docker; see [samples/README.md](../samples/README.md)) exercises the
 whole loop against a real model: API sessions, the fix flow, and the web app's Branches view.
 
@@ -335,6 +342,8 @@ whole loop against a real model: API sessions, the fix flow, and the web app's B
   shell, so model text can't become commands.
 - **Guard the context** — oversized results are summarised, cut-off calls are never run, failures carry their reason.
 - **Hosts stay thin** — each host maps the same stream to its protocol; behaviour lives in core.
+- **Toolsets per session** (F5) — a session names its toolsets when it opens and keeps them, so its prefix stays
+  cacheable; an engine per toolset list, with only those tools and their guides (docs/CLAUDE.md, *Adding a toolset*).
 - **Measure every request, and show it** — the usage ledger records each model request with its tokens and its cost,
   priced from a table dated by `as_of`, so later price changes never rewrite history; unknown prices are `null`, never
   0. Every host shows a turn's usage from the same records and totals (`UsageReport.Total`), so the views and the
@@ -439,7 +448,7 @@ The same list as the TODO's *Known limitations*: when work removes one, delete i
    changed system prompt or tool list once thinking blocks are in the history (enforced for accounts created on or
    after 2026-08-31). `BeginTurn` sends the engine's live tool list, so a tool the model creates (`CreateTool`) breaks
    the rest of that message; `/approve`, `/reject` and a skill reload break the next one; and in the API every open
-   chat shares one tool list. Start a new chat afterwards. Removed by
+   chat with the same toolsets shares one engine and its tool list (F5). Start a new chat afterwards. Removed by
    [FX4 Append-only history](fixes/FX04-append-only-history.md).
 
 ## Common errors

@@ -58,7 +58,8 @@ client and, for HTTP, with curl (no key → 401, right key → 200).
 ## Limits and plans
 
 - Without `MCP_API_KEY` the HTTP transport is unauthenticated (by design for local use; documented).
-- Toolset profiles ([F5](../features/F05-toolset-profiles.md)) would also let an MCP server publish only some tools.
+- It publishes every toolset the instance can load; choosing some, as API sessions do
+  ([F5](../features/F05-toolset-profiles.md)), would need a setting or a per-client profile.
 
 ## Related docs
 

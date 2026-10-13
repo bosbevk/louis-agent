@@ -32,6 +32,11 @@ flowchart LR
   `rate_as_of` beside the charged `cost`.
 - **Sessions** (`AgentSessions`): in memory, one turn at a time per session (a second message gets `409`), cancelled by
   `POST /sessions/{id}/cancel` or by the client disconnecting; idle sessions are dropped after 4 hours.
+- **Toolsets per session** (F5): `POST /sessions` takes `toolsets` (none: `skills` only) and gets that profile's engine
+  from core's `AgentEngineFactory`, kept for the session's life; unknown or unavailable names, a `depth` other than 0
+  or 1, or `agents` at depth 1 are a `400`. `parent` tags a sub-session's usage records with the turn that opened it.
+  `GET /toolsets` lists names, descriptions and availability, never tool definitions. The web app sends every
+  available toolset.
 - **Streaming** (`ClaudeStyleStream`): engine updates become `message_start`, `content_block_start/delta/stop`
   (thinking, text, tool_use, tool_result), `message_delta` (stop reason and the turn's `usage`, F3) and `message_stop`;
   failures become an `error` event in Claude's shape, with the turn's `usage` when a request had returned (FX6).
@@ -51,7 +56,7 @@ The full endpoint and event reference: [How the agents and endpoints talk](../AG
 | File | What's in it |
 |---|---|
 | `Program.cs` | Start-up, API-key middleware, `/health` and `/prices`, session endpoints, `StreamTurnAsync`, `ClaudeStyleStream` |
-| `AgentSessions.cs` | `AgentSession` (id, history, turn lock, cancellation) and the in-memory session store |
+| `AgentSessions.cs` | `AgentSession` (id, engine, toolsets, depth, history, turn lock, cancellation) and the in-memory session store, which picks each session's engine |
 | `WorkspaceEndpoints.cs` | `GET /workspace/entries`, `GET /workspace/file` (text ≤ 1 MB; secret files listed but not readable) |
 | `GitEndpoints.cs` | `GET /git/status`, `GET /git/diff`, `POST /git/stage` · `unstage` · `discard` · `commit`; the git runner |
 | `HistoryEndpoints.cs` | `GET /git/branches`, `/git/log`, `/git/commit`, `/git/branch`; `POST /git/merge`, `/git/branch/delete` |
@@ -72,8 +77,10 @@ Docker, bound to `127.0.0.1`), `GIT_AUTHOR_*` / `GIT_COMMITTER_*` (identity for 
 
 ## Tests
 
-No automated tests yet (backlog: *Automated tests for the API and the web app*); checked with curl and the browser. The
-orchestrator demo exercises sessions, streaming and the git endpoints end to end.
+`tests/louis-agent.api.tests`: the sessions' toolsets, the default, unknown names, depth and the `agents` rule, shared
+engines and separate histories (a model client that is never called). The endpoints and the web app are checked with
+curl and the browser (backlog: *Automated tests for the API and the web app*); the orchestrator demo exercises
+sessions, streaming and the git endpoints end to end.
 
 ## Limits and plans
 

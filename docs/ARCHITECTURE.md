@@ -41,6 +41,12 @@ Each project also has its own design doc in [projects/](projects/README.md).
 ### HTTP API and web app
 - In-memory sessions (`AgentSessions`); one reply at a time per session (409 while busy); a client disconnect or
   `POST /sessions/{id}/cancel` stops the reply; idle sessions are dropped after 4 hours.
+- **A session chooses its toolsets when it opens** (F5): `POST /sessions` with `{ "toolsets": [...] }` gets the engine of
+  that profile from `AgentEngineFactory`, fixed for the session's life; no list means `skills` only; an unknown or
+  unavailable name is a 400 listing the valid ones. Sessions with the same list share one engine and one cacheable
+  prefix. `GET /toolsets` lists names, descriptions and availability (never tool definitions); `GET /sessions/{id}`
+  returns a session's toolsets. A session opened by another agent (`depth: 1`) may not load `agents`.
+- The web app opens every chat with every toolset the API can load (from `GET /toolsets`).
 - A message's answer streams as SSE shaped like Claude's: `message_start`, `content_block_start/delta/stop` for
   `thinking`, `text`, `tool_use` and `tool_result`, `message_delta` (stop reason and the turn's usage and cost),
   `message_stop`. Errors use Claude's `{ "type": "error", "error": { "type", "message" } }` shape (plus the turn's
@@ -48,15 +54,17 @@ Each project also has its own design doc in [projects/](projects/README.md).
 - Read-only workspace browsing (`/workspace/entries`, `/workspace/file`) and a git interface (`/git/status`, `/git/diff`,
   `/git/stage`, `unstage`, `discard`, `commit`, plus history: `/git/branches`, `/git/log`, `/git/commit`, `/git/branch`,
   `/git/merge`, `/git/branch/delete`) for the web app. They reuse `WorkspaceTools`' path and secret-file checks.
-- `AGENT_API_KEY`, when set, is required for `/sessions`, `/workspace` and `/git`; the app's own files stay public.
+- `AGENT_API_KEY`, when set, is required for `/sessions`, `/toolsets`, `/workspace` and `/git`; the app's own files
+  stay public.
 - The web app (Blazor WebAssembly) is served by the API with `MapStaticAssets` and an `index.html` fallback. It keeps
   chats in the browser's `localStorage`. Themes are CSS files in `wwwroot/css/themes/` listed in `themes.json`.
 - The Branches tab queues merges and deletes (`GitHistory`): every click is kept and they run one at a time, in click
   order; only the branch being worked on is marked busy ("Merging…", "Queued").
 
 ### MCP server
-- Publishes the full toolset (workspace, git, `DotNet*`, `Python*`, `PowerShell*`, `Bash*`, web, skills, agent-built
-  tools, and Paymo/DevOps when their keys are set) plus read-only `list_skills`, `get_skill_info`, `get_skill_documentation`.
+- Publishes every toolset this instance can load (workspace, git, `DotNet*`, `Python*`, `PowerShell*`, `Bash*`, web,
+  skills and agent-built tools, and Paymo, DevOps and agents when their settings are set) plus read-only `list_skills`,
+  `get_skill_info`, `get_skill_documentation`.
 - Stays in sync with the engine (`AgentEngine.ToolsChanged` → `notifications/tools/list_changed`).
 - Approving agent-built tools is user-only and not exposed over MCP.
 - Transport: stdio by default, for a local client that launches it as a subprocess (Rider, Claude Desktop).
@@ -79,6 +87,7 @@ Each project also has its own design doc in [projects/](projects/README.md).
 - `WORKSPACE_ROOT` (default: the repository root found from the working directory), `SKILLS_DIRECTORY`,
   `AGENT_FUNCTION` (default `code-review`; `louis` loads every skill file), `LOG_DIRECTORY`.
 - Keys: `PAYMO_API_KEY`, `DEVOPS_API_KEY`, `WEB_SEARCH_PROVIDER`, `GOOGLE_SEARCH_API_KEY`, `GOOGLE_SEARCH_ENGINE_ID`.
+- Sub-sessions (F5): `AGENT_PEERS` (`name=url` pairs) and `AGENT_API_KEY`, sent to the peers.
 - Azure DevOps: `DEVOPS_ORGANIZATION`, `DEVOPS_PROJECT`, optional `DEVOPS_TEAM` (sprints live under the team).
 - Rider MCP: `RIDER_MCP_ENDPOINT` (default `http://127.0.0.1:64482`), `RIDER_MCP_AUTO_DISCOVER`, `RIDER_MCP_PROJECT_PATH`.
 
@@ -119,8 +128,19 @@ Everything it sends uses LF line endings, whatever the checkout:
   results) and records the finished turn in `history`; `ProcessPromptAsync` is the non-streaming form.
 - `FunctionInvokingChatClient` runs the loop: up to 10 tool rounds per request, detailed errors returned to the model.
 - Output limit 16,000 tokens per reply; `LLM_THINKING` sets `ChatOptions.Reasoning`.
-- `toolsets:` (optional) replaces the built-in coding tools with the given objects' public methods (plus
-  `ExecuteSkill`), for agents that aren't coding agents; the orchestrator uses it.
+- `toolsets:` gives the engine its tool objects (their public methods, plus `ExecuteSkill`): a session's catalogue
+  toolsets (`AgentEngineFactory`), or another agent's own tools (the orchestrator's `ServiceTools`); `selfExtension:`
+  adds `CreateSkillFile`, `ReloadSkills`, `CreateTool` and `ListAgentTools` (the `skills` toolset).
+
+### Toolsets (`Agent/ToolsetCatalog.cs`, `Hosting/AgentEngineFactory.cs`)
+Every toolset is a catalogue entry: a name, a one-line description, the settings it needs, its tool class and factory,
+and its guide (docs/CLAUDE.md, *Adding a toolset*). `files`, `git`, `dotnet`, `python`, `powershell`, `bash`, `web`,
+`paymo`, `devops`, `agents` (sub-sessions on a peer, `AGENT_PEERS`) and `skills` (engine-provided). `AgentEngineFactory`
+builds one engine per normalised list (cached, at most 16), with only those tools and only their guides in the system
+prompt, and logs each profile's tool count and fixed-prefix estimate. The CLI, ACP server and MCP server use every
+toolset the instance can load; the API's sessions choose theirs. A sub-session (`AgentPeerTools.StartSubSession`) runs
+on a peer with its own toolsets, at most 3 per turn and 5 minutes each, and only its answer and a usage line come back;
+its usage records carry the parent turn (`parent`).
 
 ## A chat turn
 
@@ -145,17 +165,18 @@ User message
 
 ## Skills
 
-`AgentHost.LoadSkills` builds a `CompositeSkillProvider` whose combined documentation is the system prompt:
-1. `personality.md` (`PersonalitySkillsProvider`) — who the agent is and how it talks; optional, and kept apart so it
-   can be changed without touching how the agent works
-2. `default.md` (`DefaultSkillsProvider`) — tools, rules and workflows
-3. `dotnet-skills.md`, `python-skills.md`, `powershell-skills.md`, `bash-skills.md`, `web-skills.md`,
-   `self-extension-skills.md` — always loaded, because their tools are always registered
-4. the `AGENT_FUNCTION` skill file (`code-review`, `devops`, `paymo`, `time-logging`, or any `{name}-skills.md`);
-   `louis` loads all of them plus any other `*-skills.md` in the folder
+`AgentHost.LoadSkills(agent, toolsets)` builds a `CompositeSkillProvider` whose combined documentation is the system
+prompt; every file is plain markdown read by `MarkdownSkillProvider`:
+1. `personality.md` — who the agent is and how it talks; kept apart so it can change without touching how the agent works
+2. `default.md` — the router: which toolset a task needs, and how sessions and sub-sessions work
+3. the guide of each of the profile's toolsets (`files-skills.md`, `git-skills.md`, …) and no other, so the prompt never
+   describes tools the session doesn't have
+4. the `AGENT_FUNCTION` skill file (`code-review`, `time-logging`, or any `{name}-skills.md`); `louis` loads them all plus
+   any other `*-skills.md` in the folder
 
-Skill files are found in `SKILLS_DIRECTORY`, the working directory and its parents (also their `Skills/` folders),
-`/app` and the app's base directory.
+The built-in files are embedded in `louis-agent.core` (`SkillFileSource`); a file of the same name on disk wins
+(`SKILLS_DIRECTORY`, the working directory and its parents, also their `Skills/` folders, `/app`, the app's base
+directory), so a guide can be changed without a rebuild. Files the agent writes are on disk only.
 
 A markdown **skill** is a named procedure with a fenced script (bash, PowerShell or Python by fence language). The model
 runs it with `ExecuteSkill(name, jsonArgs)`; arguments are passed as `SKILL_ARG_*` environment variables and are never
@@ -222,7 +243,8 @@ The usage ledger is data, not logs: `JsonlUsageSink` writes it in its own format
 1. Load `config/.env.secrets` then `config/.env` (searching upward from the working directory) and a legacy `./.env`;
    variables already set in the process win.
 2. Bind `LlmOptions` and `AgentOptions`; configure logging (`AgentLogging.Configure(LOG_DIRECTORY)`).
-3. Load the composite skills, create the `IChatClient`, create `AgentEngine` (with `LLM_THINKING`), load approved tools.
+3. Create the `IChatClient`, the usage ledger and an `AgentEngineFactory` (with `LLM_THINKING` and the display
+   currency); the host's own engine has every toolset this instance can load (approved agent-built tools with `skills`).
 4. Start Rider MCP discovery in the background if enabled.
 
 `AgentHost.BuildToolHost()` (MCP server) does the same without an LLM.
@@ -236,6 +258,7 @@ installed and `Skills/` copied in.
 |---|---|---|
 | `acp-server` | `Dockerfile.acp-server` | Run per Rider chat with `docker compose run --rm -T acp-server` |
 | `api` | `Dockerfile.api` | API + web app on `127.0.0.1:${API_PORT:-5080}`; health check on `/health` |
+| `api-coder` | `Dockerfile.api` (same image) | Only with `--profile peers`: a specialist the api opens sub-sessions on (`AGENT_PEERS=coder=http://api-coder:8080`), on `127.0.0.1:${CODER_PORT:-5081}` |
 | `mcp-server` | `Dockerfile.mcp-server` | stdio: run per client with `run --rm -T mcp-server`; with `MCP_TRANSPORT=http`, on `127.0.0.1:${MCP_PORT:-5090}` |
 | `local-agent` | `Dockerfile.agent` | The CLI |
 | `ollama` | `services/Dockerfile.ollama` | Only with `--profile ollama` |
@@ -269,12 +292,16 @@ loop, streaming, thinking, summarising, cut-off guards) with a scripted fake `IC
 fetch with stubbed HTTP, and Rider MCP discovery with mocked HTTP. No network or Docker needed; a few tests skip
 themselves when an external tool (git, pip, live network) isn't available.
 
+`tests/louis-agent.api.tests` (NUnit): the API's sessions (F5): toolsets per session, the default, unknown names,
+depth, shared engines and separate histories, with a model client that is never called.
+
 `tests/louis-agent.orchestrator.tests` (NUnit): the error feed, the louis-agent API client (event stream and
 `FIX-RESULT` parsing), the decision line, runbook loading, the comms log, and the verification tools against a
 throwaway git repository.
 
 ```bash
 dotnet test tests/louis-agent.core.tests
+dotnet test tests/louis-agent.api.tests
 dotnet test tests/louis-agent.orchestrator.tests
 ```
 

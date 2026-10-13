@@ -147,7 +147,7 @@ variables, never model text spliced into a command line; `FetchUrl` blocks priva
 
 - 10 tool rounds per message → [F10](../features/F10-route-settings.md); nothing cached → [F4](../features/F04-prompt-caching.md);
   usage recorded but not priced → [F2](../features/F02-prices-and-cost.md); history grows unbounded → [F9](../features/F09-context-management.md);
-  every toolset always loaded → [F5](../features/F05-toolset-profiles.md).
+  sub-session usage not yet in the parent chat's totals → the F5 follow-up in the TODO.
 - Rider MCP discovery only logs; Ollama tool support is a name heuristic; Paymo task lookup takes the first match
   ([known limitations](../CLAUDE.md#known-limitations)).
 
