@@ -59,6 +59,19 @@ public class AgentPeerToolsTests
         using var create = JsonDocument.Parse(handler.Requests[0].Body!);
         Assert.That(create.RootElement.GetProperty("depth").GetInt32(), Is.EqualTo(1), "one level deep");
         Assert.That(create.RootElement.GetProperty("toolsets").EnumerateArray().Select(t => t.GetString()), Is.EqualTo(new[] { "files", "git" }));
+        Assert.That(create.RootElement.GetProperty("personality").ValueKind, Is.EqualTo(JsonValueKind.Null), "none named: the peer's default");
+    }
+
+    [Test]
+    public async Task APersonality_IsSentToThePeer()
+    {
+        // F21: the specialist's role (its function) is the personality its session opens with.
+        var handler = Peer();
+
+        await Tools(handler).StartSubSession("coder", ["web"], "What's new in .NET 10?", personality: "puls-researcher");
+
+        using var create = JsonDocument.Parse(handler.Requests[0].Body!);
+        Assert.That(create.RootElement.GetProperty("personality").GetString(), Is.EqualTo("puls-researcher"));
     }
 
     [Test]

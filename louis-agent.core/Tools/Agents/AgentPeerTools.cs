@@ -49,6 +49,8 @@ public sealed class AgentPeerTools(IReadOnlyDictionary<string, Uri> peers, strin
             "it is then used.")] string agent,
         [Description("The toolsets the sub-session loads, e.g. [\"files\",\"git\",\"dotnet\"]. Never \"agents\".")] string[] toolsets,
         [Description("The whole task, self-contained: the sub-session sees nothing of this conversation.")] string message,
+        [Description("The sub-session's personality: its role on the peer (agents-skills.md says which goes with which toolsets). " +
+            "Empty: the peer's default.")] string? personality = null,
         CancellationToken cancellationToken = default)
     {
         string peerNames = peers.Count == 0 ? "(none)" : string.Join(", ", peers.Keys.Order());
@@ -76,6 +78,7 @@ public sealed class AgentPeerTools(IReadOnlyDictionary<string, Uri> peers, strin
             using var create = Request(HttpMethod.Post, new Uri(peer, "sessions"), new
             {
                 toolsets, depth = 1, task = $"sub-session:{agent}", run = scope?.Tags.Run, service = scope?.Tags.Service, parent,
+                personality = string.IsNullOrWhiteSpace(personality) ? null : personality.Trim(),
             });
             using var created = await _http.SendAsync(create, timeout.Token);
             string createdBody = await created.Content.ReadAsStringAsync(timeout.Token);

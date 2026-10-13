@@ -1780,6 +1780,14 @@
           "message": {
             "description": "The whole task, self-contained: the sub-session sees nothing of this conversation.",
             "type": "string"
+          },
+          "personality": {
+            "description": "The sub-session's personality: its role on the peer (agents-skills.md says which goes with which toolsets). Empty: the peer's default.",
+            "type": [
+              "string",
+              "null"
+            ],
+            "default": null
           }
         },
         "required": [
