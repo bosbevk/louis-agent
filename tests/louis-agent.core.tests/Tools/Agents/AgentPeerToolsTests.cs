@@ -5,6 +5,7 @@ using LouisAgent.Core.Config;
 using LouisAgent.Core.Tools.Agents;
 using LouisAgent.Core.Tools.Clock;
 using LouisAgent.Core.Usage;
+using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Core.Tests.Tools.Agents;
 
@@ -51,7 +52,7 @@ public class AgentPeerToolsTests
     {
         var handler = Peer();
 
-        string result = await Tools(handler).StartSubSession("coder", ["files", "git"], "Fix order 1006.");
+        string result = await Tools(handler).StartSubSession(["files", "git"], "Fix order 1006.", agent: "coder");
 
         Assert.That(result, Does.StartWith("Fixed the null check; 14/14 tests pass."));
         Assert.That(result, Does.Contain("[Sub-session on coder (files, git): 3 requests, 10,200 tokens, 0.0123 USD]"));
@@ -71,7 +72,7 @@ public class AgentPeerToolsTests
         var attached = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase) { ["verslag.txt"] = "Inkomste: R1 200 000", ["other.txt"] = "x" };
 
         using (SessionAttachments.Use(attached))
-            await Tools(handler).StartSubSession("coder", ["files"], "Som die verslag op.", attachments: ["verslag.txt"]);
+            await Tools(handler).StartSubSession(["files"], "Som die verslag op.", agent: "coder", attachments: ["verslag.txt"]);
 
         using var message = JsonDocument.Parse(handler.Requests[1].Body!);
         var sent = message.RootElement.GetProperty("attachments").EnumerateArray().ToList();
@@ -87,7 +88,7 @@ public class AgentPeerToolsTests
 
         string result;
         using (SessionAttachments.Use(new Dictionary<string, string> { ["verslag.txt"] = "x" }))
-            result = await Tools(handler).StartSubSession("coder", ["files"], "Lees dit.", attachments: ["begroting.xlsx"]);
+            result = await Tools(handler).StartSubSession(["files"], "Lees dit.", agent: "coder", attachments: ["begroting.xlsx"]);
 
         Assert.That(result, Does.Contain("No attachment named 'begroting.xlsx'").And.Contain("verslag.txt"));
         Assert.That(handler.Requests, Is.Empty);
@@ -98,7 +99,7 @@ public class AgentPeerToolsTests
     {
         var handler = Peer();
 
-        await Tools(handler).StartSubSession("coder", ["files"], "Fix order 1006.");
+        await Tools(handler).StartSubSession(["files"], "Fix order 1006.", agent: "coder");
 
         using var message = JsonDocument.Parse(handler.Requests[1].Body!);
         Assert.That(message.RootElement.GetProperty("attachments").GetArrayLength(), Is.Zero);
@@ -111,7 +112,7 @@ public class AgentPeerToolsTests
         var handler = Peer();
 
         using (UserPlace.Use(new UserPlace("Pretoria, Gauteng, Suid-Afrika", "Africa/Johannesburg")))
-            await Tools(handler).StartSubSession("coder", ["web"], "Watter restaurante is naby?");
+            await Tools(handler).StartSubSession(["web"], "Watter restaurante is naby?", agent: "coder");
 
         using var create = JsonDocument.Parse(handler.Requests[0].Body!);
         Assert.That(create.RootElement.GetProperty("location").GetString(), Is.EqualTo("Pretoria, Gauteng, Suid-Afrika"));
@@ -124,7 +125,7 @@ public class AgentPeerToolsTests
         // F21: the specialist's role (its function) is the personality its session opens with.
         var handler = Peer();
 
-        await Tools(handler).StartSubSession("coder", ["web"], "What's new in .NET 10?", personality: "puls-researcher");
+        await Tools(handler).StartSubSession(["web"], "What's new in .NET 10?", agent: "coder", personality: "puls-researcher");
 
         using var create = JsonDocument.Parse(handler.Requests[0].Body!);
         Assert.That(create.RootElement.GetProperty("personality").GetString(), Is.EqualTo("puls-researcher"));
@@ -139,7 +140,7 @@ public class AgentPeerToolsTests
 
         string result;
         using (SubSessionFeed.Observe(seen.Add))
-            result = await Tools(handler).StartSubSession("coder", ["files"], "x");
+            result = await Tools(handler).StartSubSession(["files"], "x", agent: "coder");
 
         Assert.That(seen.Select(e => e.Type), Is.EqualTo(new[]
             { "message_start", "content_block_delta", "content_block_delta", "message_delta", "message_stop" }));
@@ -152,7 +153,7 @@ public class AgentPeerToolsTests
     public async Task WithoutAnObserver_NothingIsReported()
     {
         // The default: a host that doesn't observe (the CLI) is unaffected.
-        Assert.That(await Tools(Peer()).StartSubSession("coder", ["files"], "x"), Does.StartWith("Fixed"));
+        Assert.That(await Tools(Peer()).StartSubSession(["files"], "x", agent: "coder"), Does.StartWith("Fixed"));
     }
 
     [Test]
@@ -161,10 +162,28 @@ public class AgentPeerToolsTests
         // The model used to guess an example name ("coder") first; with one peer it needn't name it at all.
         var handler = Peer();
 
-        string result = await Tools(handler).StartSubSession("", ["files"], "x");
+        string result = await Tools(handler).StartSubSession(["files"], "x", agent: "");
 
         Assert.That(result, Does.StartWith("Fixed the null check").And.Contain("[Sub-session on coder (files)"));
         Assert.That(handler.Requests[0].Url, Does.StartWith("http://coder.test/"));
+    }
+
+    [Test]
+    public async Task ACallWithoutAgent_UsesTheOnlyPeer()
+    {
+        // The delegation check: Puls left `agent` out and the tool loop refused the call ("missing a value for the
+        // required parameter 'agent'"). Called as the model calls it, through its AIFunction, with no agent at all.
+        var handler = Peer();
+        var tool = AIFunctionFactory.Create(Tools(handler).StartSubSession);
+
+        object? result = await tool.InvokeAsync(new AIFunctionArguments
+        {
+            ["toolsets"] = new[] { "files" }, ["message"] = "x",
+        });
+
+        Assert.That(result?.ToString(), Does.Contain("Fixed the null check").And.Contain("[Sub-session on coder (files)"));
+        Assert.That(tool.JsonSchema.GetProperty("required").EnumerateArray().Select(e => e.GetString()),
+            Is.EquivalentTo(new[] { "toolsets", "message" }));
     }
 
     [Test]
@@ -173,7 +192,7 @@ public class AgentPeerToolsTests
         var handler = Peer();
         var peers = new Dictionary<string, Uri> { ["coder"] = new("http://coder.test/"), ["writer"] = new("http://writer.test/") };
 
-        string result = await new AgentPeerTools(peers, null, new HttpClient(handler)).StartSubSession(" ", ["files"], "x");
+        string result = await new AgentPeerTools(peers, null, new HttpClient(handler)).StartSubSession(["files"], "x", agent: " ");
 
         Assert.That(result, Does.Contain("more than one peer").And.Contain("coder, writer"));
         Assert.That(handler.Requests, Is.Empty);
@@ -184,7 +203,7 @@ public class AgentPeerToolsTests
     {
         var handler = Peer();
 
-        string result = await Tools(handler).StartSubSession("nobody", ["files"], "x");
+        string result = await Tools(handler).StartSubSession(["files"], "x", agent: "nobody");
 
         Assert.That(result, Does.StartWith("Error: no peer agent named 'nobody'").And.Contain("coder"));
         Assert.That(handler.Requests, Is.Empty);
@@ -195,7 +214,7 @@ public class AgentPeerToolsTests
     {
         var handler = Peer(() => Json(HttpStatusCode.InternalServerError, """{"type":"error","error":{"type":"api_error","message":"boom"}}"""));
 
-        string result = await Tools(handler).StartSubSession("coder", ["files"], "x");
+        string result = await Tools(handler).StartSubSession(["files"], "x", agent: "coder");
 
         Assert.That(result, Does.Contain("refused the sub-session (HTTP 500): boom"));
         Assert.That(handler.Requests.Last().Method, Is.EqualTo(HttpMethod.Delete));
@@ -207,7 +226,7 @@ public class AgentPeerToolsTests
         var handler = new StubHandler(_ => Json(HttpStatusCode.BadRequest,
             """{"type":"error","error":{"type":"invalid_request_error","message":"A sub-session can't load the 'agents' toolset"}}"""));
 
-        string result = await Tools(handler).StartSubSession("coder", ["agents"], "x");
+        string result = await Tools(handler).StartSubSession(["agents"], "x", agent: "coder");
 
         Assert.That(result, Does.Contain("HTTP 400").And.Contain("can't load the 'agents' toolset"));
         Assert.That(handler.Requests, Has.Count.EqualTo(1), "nothing was created, so nothing to delete");
@@ -221,11 +240,11 @@ public class AgentPeerToolsTests
         var tools = Tools(Peer(), time: time);
 
         for (int i = 0; i < AgentPeerTools.MaxPerTurn; i++)
-            Assert.That(await tools.StartSubSession("coder", ["files"], "x"), Does.Not.StartWith("Error"));
-        Assert.That(await tools.StartSubSession("coder", ["files"], "x"), Does.Contain("in the last minute"));
+            Assert.That(await tools.StartSubSession(["files"], "x", agent: "coder"), Does.Not.StartWith("Error"));
+        Assert.That(await tools.StartSubSession(["files"], "x", agent: "coder"), Does.Contain("in the last minute"));
 
         time.Advance(AgentPeerTools.NoTurnWindow);
-        Assert.That(await tools.StartSubSession("coder", ["files"], "x"), Does.Not.StartWith("Error"), "a minute later it works again");
+        Assert.That(await tools.StartSubSession(["files"], "x", agent: "coder"), Does.Not.StartWith("Error"), "a minute later it works again");
     }
 
     [Test]
@@ -238,7 +257,7 @@ public class AgentPeerToolsTests
             _ => new HttpResponseMessage(HttpStatusCode.OK),
         });
 
-        string result = await Tools(handler).StartSubSession("coder", ["files"], "x");
+        string result = await Tools(handler).StartSubSession(["files"], "x", agent: "coder");
 
         Assert.That(result, Does.StartWith("Error: coder's reply couldn't be read"));
     }
@@ -252,13 +271,13 @@ public class AgentPeerToolsTests
         using (UsageScope.Begin(session: "sess_parent", turn: 2))
         {
             for (int i = 0; i < AgentPeerTools.MaxPerTurn; i++)
-                Assert.That(await tools.StartSubSession("coder", ["files"], "x"), Does.Not.StartWith("Error"));
+                Assert.That(await tools.StartSubSession(["files"], "x", agent: "coder"), Does.Not.StartWith("Error"));
 
-            Assert.That(await tools.StartSubSession("coder", ["files"], "x"), Does.Contain("already started 3 sub-sessions"));
+            Assert.That(await tools.StartSubSession(["files"], "x", agent: "coder"), Does.Contain("already started 3 sub-sessions"));
         }
 
         using (UsageScope.Begin(session: "sess_parent", turn: 3))
-            Assert.That(await tools.StartSubSession("coder", ["files"], "x"), Does.Not.StartWith("Error"), "a new turn starts again");
+            Assert.That(await tools.StartSubSession(["files"], "x", agent: "coder"), Does.Not.StartWith("Error"), "a new turn starts again");
     }
 
     [Test]
@@ -267,7 +286,7 @@ public class AgentPeerToolsTests
         var handler = new SlowPeer();
 
         string result = await new AgentPeerTools(Peers, null, new HttpClient(handler), TimeSpan.FromMilliseconds(200))
-            .StartSubSession("coder", ["files"], "x");
+            .StartSubSession(["files"], "x", agent: "coder");
 
         Assert.That(result, Does.Contain("didn't finish within"));
         Assert.That(handler.Deleted, Is.True);
@@ -280,7 +299,7 @@ public class AgentPeerToolsTests
         var handler = Peer();
 
         using (UsageScope.Begin(session: "sess_parent", turn: 4, tags: new UsageTags(null, "run-1", "order-service")))
-            await Tools(handler).StartSubSession("coder", ["files"], "x");
+            await Tools(handler).StartSubSession(["files"], "x", agent: "coder");
 
         using var create = JsonDocument.Parse(handler.Requests[0].Body!);
         Assert.That(create.RootElement.GetProperty("parent").GetString(), Is.EqualTo("sess_parent#4"));

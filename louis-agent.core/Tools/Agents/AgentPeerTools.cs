@@ -52,10 +52,11 @@ public sealed class AgentPeerTools(IReadOnlyDictionary<string, Uri> peers, strin
         "sends it the task, waits for its final answer and closes the session. Returns the answer and a usage line. " +
         "At most 3 per turn, 5 minutes each. See agents-skills.md for when to delegate.")]
     public async Task<string> StartSubSession(
-        [Description("The peer's name from AGENT_PEERS. Leave it empty when this instance has one peer (the usual case); " +
-            "it is then used.")] string agent,
         [Description("The toolsets the sub-session loads, e.g. [\"files\",\"git\",\"dotnet\"]. Never \"agents\".")] string[] toolsets,
         [Description("The whole task, self-contained: the sub-session sees nothing of this conversation.")] string message,
+        // Optional, so a call without it is valid: the delegation check saw Puls leave it out (the call failed) and guess "default".
+        [Description("The peer's name from AGENT_PEERS. Leave it out when this instance has one peer (the usual case); " +
+            "it is then used.")] string? agent = null,
         [Description("The sub-session's personality: its role on the peer (agents-skills.md says which goes with which toolsets). " +
             "Empty: the peer's default.")] string? personality = null,
         [Description("Names of files the user attached in this conversation that the task needs; they are sent with the task " +

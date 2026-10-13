@@ -18,6 +18,7 @@ record (most fixes so far taught something about a model's API).
 | [FX7](FX07-timeout-ends-run.md) | A timed-out request no longer ends the orchestrator's run (only the user's stop does) | done | orchestrator: triage loop | F3's split demo test, triage on Ollama (2026-10-11) | `f2d38d2` | — |
 | [FX8](FX08-fix-result-quotes.md) | A FIX-RESULT with quotes in its summary is still read (not answered with "continue") | done | orchestrator: FIX-RESULT parsing | F14's full demo rerun, error 10 (2026-10-11) | `6307226` | — |
 | [FX9](FX09-cancelled-request-usage.md) | A request cancelled without streaming is still written to the ledger | open | core: usage recorder | Short demo with triage on llama3.1, a timed-out request missing (2026-10-12) | — | — |
+| [FX10](FX10-optional-peer-name.md) | A sub-session call without `agent` uses the only peer (it was refused) | done | core: `agents` toolset | Puls delegation check with roles, 3 refused calls (2026-10-13) | (this commit) | — |
 
 ## Conventions
 

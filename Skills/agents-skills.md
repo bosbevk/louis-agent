@@ -8,7 +8,7 @@ its tools or its conversation.
 
 | Tool | Use it to |
 |------|-----------|
-| `StartSubSession(agent, toolsets, message, personality, attachments)` | Open a session on a peer with `toolsets` and the role `personality`, send `message` with the named `attachments`, wait for the answer, close the session. Leave `agent` empty when there is one peer (the usual case); never guess a name. |
+| `StartSubSession(toolsets, message, agent, personality, attachments)` | Open a session on a peer with `toolsets` and the role `personality`, send `message` with the named `attachments`, wait for the answer, close the session. Leave `agent` out when there is one peer (the usual case); never guess a name. |
 
 ## When to delegate
 
