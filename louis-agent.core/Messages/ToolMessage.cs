@@ -9,6 +9,21 @@ using System.ComponentModel;
 /// <summary>Strings tools return to the model: what went wrong and what to do instead.</summary>
 public enum ToolMessage
 {
+    [Description("ReadDocument reads {Supported}; '{Extension}' isn't one of them. Use ReadWorkspaceFile for text files.")]
+    DocumentTypeUnsupported,
+
+    [Description("Couldn't read {Path} as a document: {Reason}")]
+    DocumentUnreadable,
+
+    [Description("{Path} has no text to read: a scanned PDF holds only images, and this tool has no OCR.")]
+    DocumentNoText,
+
+    [Description("Document is larger than the {Megabytes} MB reading limit.")]
+    DocumentTooLarge,
+
+    [Description("\n[Showing characters {Start}-{End} of {Length}. Call ReadDocument with startIndex={End} to continue.]")]
+    DocumentContinues,
+
     [Description("No attachment named '{Name}' in this conversation. Attached: {Attached}.")]
     AttachmentUnknown,
 

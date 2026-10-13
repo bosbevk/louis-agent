@@ -30,7 +30,7 @@ public static partial class Personalities
             .Where(n => n.StartsWith(Folder + ".", StringComparison.Ordinal) && n.EndsWith(".md", StringComparison.Ordinal))
             .Select(n => n[(Folder.Length + 1)..^".md".Length]);
         if (skillsDirectory is not null && Directory.Exists(Path.Combine(skillsDirectory, Folder)))
-            names = names.Concat(Directory.EnumerateFiles(Path.Combine(skillsDirectory, Folder), "*.md").Select(Path.GetFileNameWithoutExtension)!);
+            names = names.Concat(Directory.EnumerateFiles(Path.Combine(skillsDirectory, Folder), "*.md").Select(f => Path.GetFileNameWithoutExtension(f)));
         return names.Where(IsValidName).Distinct().Order(StringComparer.Ordinal).ToList();
     }
 

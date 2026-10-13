@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Text;
 using LouisAgent.Core.Guardrails;
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Tools.Documents;
 
 public sealed class WorkspaceTools
 {
@@ -78,6 +79,45 @@ public sealed class WorkspaceTools
         }
 
         return File.ReadAllText(path, Encoding.UTF8);
+    }
+
+    private const int MaxDocumentBytes = 10_000_000;
+
+    [Description("Read the text of a PDF, Word document (.docx) or spreadsheet (.xlsx, .xls, .csv) in the workspace, with " +
+        "page and sheet markers. Long documents come in parts: pass the startIndex the result gives to read on. Scanned " +
+        "PDFs (images only) have no text. Use ReadWorkspaceFile for plain text files.")]
+    public string ReadDocument(
+        [Description("Workspace-relative file path.")] string relativePath,
+        [Description("Maximum characters to return (default 12000, max 30000)")] int maxChars = 12_000,
+        [Description("Character offset to continue from, as given in a previous result (default 0)")] int startIndex = 0)
+    {
+        string path = ResolvePath(relativePath);
+        if (SensitiveFiles.IsSensitive(path)) return MessageText.Format(ToolMessage.SensitiveRead);
+        if (!File.Exists(path)) return MessageText.Format(ToolMessage.FileNotFound, new { Path = relativePath });
+
+        string extension = Path.GetExtension(path);
+        if (!DocumentText.CanRead(extension))
+            return MessageText.Format(ToolMessage.DocumentTypeUnsupported, new { Extension = extension, Supported = string.Join(", ", DocumentText.Extensions) });
+        if (new FileInfo(path).Length > MaxDocumentBytes)
+            return MessageText.Format(ToolMessage.DocumentTooLarge, new { Megabytes = MaxDocumentBytes / 1_000_000 });
+
+        string text;
+        try
+        {
+            using var file = File.OpenRead(path);
+            text = DocumentText.Read(file, extension);
+        }
+        catch (Exception ex) when (ex is not OutOfMemoryException)
+        {
+            return MessageText.Format(ToolMessage.DocumentUnreadable, new { Path = relativePath, Reason = ex.Message });
+        }
+        if (text.Length == 0) return MessageText.Format(ToolMessage.DocumentNoText, new { Path = relativePath });
+
+        maxChars = Math.Clamp(maxChars, 500, 30_000);
+        startIndex = Math.Clamp(startIndex, 0, text.Length);
+        int end = Math.Min(text.Length, startIndex + maxChars);
+        return text[startIndex..end] +
+               (end < text.Length ? MessageText.Format(ToolMessage.DocumentContinues, new { Start = startIndex, End = end, text.Length }) : "");
     }
 
     [Description("Recursively search source and documentation files under the workspace root for a case-insensitive literal text match, returning each hit as path:line: text. Only a fixed set of extensions is searched (code, config, markdown, etc.), and sensitive files, files over 1 MB, and excluded directories (.git, node_modules, bin, obj, etc.) are skipped. Results stop at maxResults (1-100, default 30) even if more matches exist, so a \"no matches\" result does not prove the term is absent from excluded files. Use FindFiles instead when you're matching file names rather than file content.")]

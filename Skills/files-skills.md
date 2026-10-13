@@ -6,6 +6,7 @@ Guidance for the `files` toolset: reading, writing and managing files in the wor
 
 ### Reading & Searching
 - `ReadWorkspaceFile(path)` — Read a UTF-8 text file (max 1 MB)
+- `ReadDocument(path)` — Read a PDF, Word document (.docx) or spreadsheet (.xlsx, .xls, .csv) as text, with page and sheet markers; long ones come in parts (`startIndex`). Scanned PDFs have no text (no OCR)
 - `ListWorkspaceFiles(relativePath)` — List files and directories in a folder
 - `ListDirectoryTree(relativePath, maxDepth)` — Show directory tree structure (depth 1-5)
 - `SearchWorkspace(query, maxResults)` — Search files for text patterns

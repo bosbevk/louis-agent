@@ -59,6 +59,22 @@ public class WebToolsTests
     private static HttpResponseMessage Html(string html, string mediaType = "text/html") =>
         new(HttpStatusCode.OK) { Content = new StringContent(html, Encoding.UTF8, mediaType) };
 
+    [Test]
+    public async Task APdf_IsReadAsText()
+    {
+        // F22 step 3: a PDF on the web reads like a document, framed as untrusted content.
+        byte[] pdf = LouisAgent.Core.Tests.Tools.Documents.DocumentFiles.Pdf(["Jaarverslag 2026"]);
+        var tools = Tools(_ => new HttpResponseMessage(HttpStatusCode.OK)
+        {
+            Content = new ByteArrayContent(pdf) { Headers = { ContentType = new("application/pdf") } },
+        });
+
+        string result = await tools.FetchUrl("https://example.com/verslag.pdf");
+
+        Assert.That(result, Does.Contain("--- Page 1 ---").And.Contain("Jaarverslag 2026"));
+        Assert.That(result, Does.Contain("untrusted web content"));
+    }
+
     /// <summary>An injected engine: records the query and returns canned results.</summary>
     private sealed class FakeSearch(params WebSearchResult[] results) : IWebSearchProvider
     {

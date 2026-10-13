@@ -7,7 +7,7 @@ How to research on the internet with `WebSearch` and `FetchUrl`. Use the web for
 | Tool | Use it to |
 |------|-----------|
 | `WebSearch` | Find pages: returns titles, URLs and snippets. Options: `maxResults` (1-10), `site` (e.g. `learn.microsoft.com`), `freshness` (`day`, `week`, `month`, `year`). |
-| `FetchUrl` | Read a page as text (headings, lists, links, code blocks). Long pages come in chunks: call again with the `startIndex` it gives you. Also reads plain text and JSON (e.g. raw GitHub files, APIs). |
+| `FetchUrl` | Read a page as text (headings, lists, links, code blocks). Long pages come in chunks: call again with the `startIndex` it gives you. Also reads plain text, JSON (e.g. raw GitHub files, APIs) and PDFs (as text, page by page). |
 
 ## Workflow
 
