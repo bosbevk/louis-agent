@@ -130,8 +130,8 @@ docs/                         # This guide, features/ (planned work), plans/ (ap
    public string MyTool([Description("What the parameter is")] string input, int limit = 10) => "result";
    ```
 
-2. For a new class, register it in the `AgentEngine` constructor: `_registry.AddPublicMethods(new MyTools(WorkspaceRoot));`
-3. Mention it in the relevant `Skills/*.md` so the model knows when to use it.
+2. A new class is a new toolset: follow *Adding a toolset* below. The engine doesn't register tool classes itself.
+3. Name it in its toolset's guide (`Skills/{toolset}-skills.md`) so the model knows when to use it.
 4. Test it in `tests/louis-agent.core.tests/Tools/{Toolset}/`.
 
 **Every public method on a tool class becomes a tool.** Helpers must be `internal` or `private` (the test project and
@@ -147,6 +147,35 @@ Two golden files pin what the model reads: `ModelRequestSnapshot.json` (tools, d
 `ToolMessageSnapshot.json` (every `ToolMessage` template). A new tool or text changes them on purpose: regenerate with
 `LOUIS_UPDATE_GOLDEN=1 dotnet test tests/louis-agent.core.tests --filter "ModelRequestSnapshotTests|ToolMessageSnapshotTests"`
 and review the diff.
+
+### Adding a toolset
+
+**Every toolset follows one pattern: guide → tools → guide.** `default.md` routes a task to a toolset, the toolset's
+guide names its tools and when to use them, and each tool's `[Description]` stays short. Four pieces, nothing else:
+
+1. **Tools:** a class in `louis-agent.core/Tools/{Toolset}/` (*Adding a C# tool*); every public method is a tool.
+2. **Catalogue entry** in `Agent/ToolsetCatalog.cs`: the name, a one-line description, the settings it needs
+   (`MissingSettings`), the factory for its tool object (`CreateTools`) and its guide (`GuideFile`).
+3. **Guide:** `Skills/{toolset}-skills.md`, plain markdown: what the toolset is for, its tools grouped with one line
+   each, and its workflows (it may also hold `## Skill:` procedures). It is loaded by `MarkdownSkillProvider`, like
+   `web-skills.md`: list it in `AgentHost.AlwaysLoadedSkillFiles` (until guides load with their toolset, F5), its
+   name in `AgentHost.AlwaysLoadedFunctions` (so `AGENT_FUNCTION={toolset}` doesn't load it twice) and in
+   `SkillFiles.BuiltIn` (so the agent can't overwrite it). **No provider class per toolset.**
+4. **Router:** a row in `default.md`'s toolset table, and the name in `DefaultSkillsProviderTests`' toolset list.
+
+`web` and `devops` are the reference: tools, a catalogue entry, a plain guide.
+
+**The one exception: a toolset with its own implementation** may differ, when a plain markdown guide and a tool
+class can't express what it needs. `skills` is one: its tools (`CreateSkillFile`, `ReloadSkills`, `CreateTool`,
+`ListAgentTools`) are registered by `AgentEngine`, because they need the engine's own registry and skill set; its
+guide is still a plain file. The difference and its reason go in the class's doc comment and in the feature's plan.
+A copy of `MarkdownSkillProvider` under another name is not its own implementation.
+
+**Not following it yet** (to move to the pattern, not to copy):
+- `DotNetSkillsProvider`, `PaymoSkillsProvider`, `CodeReviewSkillsProvider` and `TimeLoggingSkillsProvider` are four
+  identical 71-line loaders; each becomes a line in `AlwaysLoadedSkillFiles`.
+- `files` and `git` have guides (`files-skills.md`, `git-skills.md`) that nothing loads: their catalogue entries
+  still say `GuideFile: null`.
 
 ### Project layout
 
@@ -234,7 +263,8 @@ Log.Log(LogLevel.Information, McpServerLogMessage.ToolNameTaken, new { Name = na
 Create `Skills/{name}-skills.md`. With `AGENT_FUNCTION=louis` every skill file is loaded; otherwise set
 `AGENT_FUNCTION={name}`. For a guide that must always load (like `bash-skills.md`), add it to
 `AgentHost.AlwaysLoadedSkillFiles` and `SkillFiles.BuiltIn`. Procedures use `## Skill: Name` with an `Execution:` fence
-(bash, powershell or python); arguments arrive as `SKILL_ARG_*` environment variables.
+(bash, powershell or python); arguments arrive as `SKILL_ARG_*` environment variables. A toolset's guide follows
+*Adding a toolset*: plain markdown, no provider class of its own.
 
 ### Building another agent on core
 
