@@ -336,7 +336,7 @@ backlog item removes one, it says so.
 
 Newest first; details in the git history.
 
-- 2026-10-14 — **FX14 Sub-session prompt budget**: `SUB_SESSION_PROMPT_BUDGET` (100k) stops a specialist's prompt growing into long-prompt prices; it answers from what it has ([FX14](docs/fixes/FX14-sub-session-prompt-budget.md)).
+- 2026-10-14 — **FX14 Sub-session prompt budget**: `SUB_SESSION_PROMPT_BUDGET` (80k, under the 100k price step) stops a specialist's prompt growing into long-prompt prices; it answers from what it has ([FX14](docs/fixes/FX14-sub-session-prompt-budget.md)).
 - 2026-10-14 — **FX13 Counting to the analyst**: Puls's router sends counting to `files` + a script, and the reader hands counting back instead of reading every file ([FX13](docs/fixes/FX13-counting-to-the-analyst.md)).
 - 2026-10-14 — **FX12 Env templates readable**: `.env.example`, `.sample` and `.template` files are no longer treated as secrets ([FX12](docs/fixes/FX12-env-templates-readable.md)).
 - 2026-10-14 — **FX11 Empty sub-session answer**: a specialist that ends with no text (its 10 rounds used) is asked once more in the same session instead of Puls starting over ([FX11](docs/fixes/FX11-empty-sub-session-answer.md)).

@@ -103,8 +103,12 @@ public sealed class AgentOptions
     /// </summary>
     public IReadOnlyDictionary<string, Uri> AgentPeers { get; set; } = new Dictionary<string, Uri>();
 
-    /// <summary>The default of <see cref="SubSessionPromptBudget"/>: Claude Haiku 5.5's long-prompt threshold (config/prices.json).</summary>
-    public const int DefaultSubSessionPromptBudget = 100_000;
+    /// <summary>
+    /// The default of <see cref="SubSessionPromptBudget"/>: below Claude Haiku 5.5's long-prompt threshold (100k in
+    /// config/prices.json), not at it. The request the budget forces to answer still carries the last round's tool
+    /// results, so it needs room under the price step.
+    /// </summary>
+    public const int DefaultSubSessionPromptBudget = 80_000;
 
     /// <summary>
     /// SUB_SESSION_PROMPT_BUDGET: the most tokens a sub-session's prompt should reach (FX14). When the next request is

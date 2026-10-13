@@ -20,8 +20,8 @@ limit in code.
 
 ## Fix
 
-A budget on a sub-session's prompt: `SUB_SESSION_PROMPT_BUDGET`, default **100,000** tokens (the long-prompt
-threshold); 0 turns it off. Before each request in a sub-session's tool loop, `ToolCallGuards.KeepWithinPromptBudget`
+A budget on a sub-session's prompt: `SUB_SESSION_PROMPT_BUDGET`, default **80,000** tokens, below the long-prompt
+threshold of 100,000; 0 turns it off. (It was 100,000 at first; see *Changed after review*.) Before each request in a sub-session's tool loop, `ToolCallGuards.KeepWithinPromptBudget`
 estimates the next prompt as the last prompt plus its last growth, read from the turn's usage records
 (input + cache reads + cache writes). If that estimate reaches the budget, the request keeps its tools with
 `ChatToolMode.None` (Anthropic `tool_choice: none`), the same way the loop's final request works since FX1. The model
@@ -44,6 +44,15 @@ Considered and not done:
   FX11 would then ask again at the same large prompt.
 - **Trimming old tool results.** That edits the history, which Haiku 5.5's thinking binding forbids (FX4).
 - **A cost budget in dollars.** It needs prices inside the loop. Tokens are what grows, and the threshold is in tokens.
+
+### Changed after review
+
+The first default was the threshold itself, 100,000. The PR review pointed out that the request the budget forces to
+answer still carries the last round's tool results: it is about the size the guard predicted, which is at or over
+the budget. With the budget *at* the price step, that request is always priced at the long rate. The default is now
+80,000, which leaves 20k under the step for the estimate to be wrong (one round can add more than its predecessor did).
+The test
+`TheDefaultBudget_LeavesRoomUnderTheLongPromptPrice` reads the step from `config/prices.json`.
 
 ## Tests
 

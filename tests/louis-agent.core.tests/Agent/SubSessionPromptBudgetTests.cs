@@ -1,6 +1,7 @@
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Config;
+using LouisAgent.Core.Pricing;
 using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
 
@@ -63,6 +64,17 @@ public class SubSessionPromptBudgetTests
         var client = await RunAsync(budget: 0, parent: "sess_puls#1");
 
         Assert.That(client.Requests.Select(r => r.Options?.ToolMode), Is.All.Not.EqualTo(ChatToolMode.None));
+    }
+
+    [Test]
+    public void TheDefaultBudget_LeavesRoomUnderTheLongPromptPrice()
+    {
+        // The forced last request still carries the last round's tool results, so the budget sits below the price step
+        // with room for a round (PR #28 review): at the step itself, that request would be priced at the long rate.
+        var prices = PriceTable.Load(Path.Combine(TestPaths.RepoRoot, "config", "prices.json"));
+        long step = prices.Find(new LlmOptions().Model)!.LongPrompt!.AboveTokens;
+
+        Assert.That(AgentOptions.DefaultSubSessionPromptBudget, Is.LessThanOrEqualTo(step - 20_000));
     }
 
     [TestCase(null, AgentOptions.DefaultSubSessionPromptBudget)]
