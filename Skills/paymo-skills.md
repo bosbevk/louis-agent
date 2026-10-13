@@ -1,9 +1,5 @@
 # Paymo Skills
 
-Skills for managing time entries and tasks in Paymo. These are placeholder/example skills (each `echo`s a message
-rather than calling the Paymo API) kept to demonstrate the skill format — prefer the native `PaymoTools` methods
-below, which are faster and don't require subprocess calls.
-
 ## Tools
 
 | Tool | Use it to |
