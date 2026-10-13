@@ -59,6 +59,52 @@ public class WebToolsTests
     private static HttpResponseMessage Html(string html, string mediaType = "text/html") =>
         new(HttpStatusCode.OK) { Content = new StringContent(html, Encoding.UTF8, mediaType) };
 
+    [Test]
+    public async Task APdf_IsReadAsText()
+    {
+        // F22 step 3: a PDF on the web reads like a document, framed as untrusted content.
+        byte[] pdf = LouisAgent.Core.Tests.Tools.Documents.DocumentFiles.Pdf(["Jaarverslag 2026"]);
+        var tools = Tools(_ => new HttpResponseMessage(HttpStatusCode.OK)
+        {
+            Content = new ByteArrayContent(pdf) { Headers = { ContentType = new("application/pdf") } },
+        });
+
+        string result = await tools.FetchUrl("https://example.com/verslag.pdf");
+
+        Assert.That(result, Does.Contain("--- Page 1 ---").And.Contain("Jaarverslag 2026"));
+        Assert.That(result, Does.Contain("untrusted web content"));
+    }
+
+    [Test]
+    public async Task ADamagedPdf_IsAnAnswer_NotACrash()
+    {
+        // PR #28 review: only one of PdfPig's exception types was caught.
+        var tools = Tools(_ => new HttpResponseMessage(HttpStatusCode.OK)
+        {
+            Content = new ByteArrayContent("%PDF-1.7 not really"u8.ToArray()) { Headers = { ContentType = new("application/pdf") } },
+        });
+
+        Assert.That(await tools.FetchUrl("https://example.com/stukkend.pdf"), Does.StartWith("Couldn't read https://example.com/stukkend.pdf as a document"));
+    }
+
+    [Test]
+    public void ConvertCurrency_UsesTheLoadedRates_ThroughTheBase()
+    {
+        // F22 step 5: the rates the app shows costs in (F14), base USD: 1 USD = 18 ZAR, 0.9 EUR.
+        var rates = new LouisAgent.Core.Pricing.ExchangeRates { AsOf = "2026-10-13", Base = "USD", Source = "frankfurter.app", Rates = new() { ["ZAR"] = 18m, ["EUR"] = 0.9m } };
+        var tools = new WebTools(new FakeSearch(), new StubHandler(_ => Html("")), PublicDns, rates);
+
+        Assert.That(tools.ConvertCurrency(1800m, "zar", "USD"), Is.EqualTo("1,800.00 ZAR = 100.00 USD (1 ZAR = 0.055556 USD; rates of 2026-10-13, frankfurter.app)."));
+        Assert.That(tools.ConvertCurrency(90m, "EUR", "ZAR"), Does.StartWith("90.00 EUR = 1,800.00 ZAR"), "neither is the base");
+        Assert.That(tools.ConvertCurrency(1m, "XYZ", "USD"), Does.StartWith("No rate for 'XYZ'").And.Contain("ZAR"));
+    }
+
+    [Test]
+    public void ConvertCurrency_WithoutRates_SaysSo()
+    {
+        Assert.That(Tools(_ => Html("")).ConvertCurrency(1m, "ZAR", "USD"), Does.Contain("No exchange rates are loaded"));
+    }
+
     /// <summary>An injected engine: records the query and returns canned results.</summary>
     private sealed class FakeSearch(params WebSearchResult[] results) : IWebSearchProvider
     {
@@ -105,10 +151,11 @@ public class WebToolsTests
         Assert.That(await Tools(_ => Html("")).WebSearch("x", freshness: "decade"), Does.Contain("day, week, month or year"));
 
     [Test]
-    public async Task AgentEngine_UsesInjectedSearchProvider()
+    public async Task WebToolset_UsesInjectedSearchProvider()
     {
         var fake = new FakeSearch(new WebSearchResult("Injected", "https://injected.example", ""));
-        var engine = new AgentEngine(new CompositeSkillProvider(), new FakeChatClient(), TestPaths.Agent(), webSearch: fake);
+        var engine = new AgentEngine(new CompositeSkillProvider(), new FakeChatClient(), TestPaths.Agent(),
+            toolsets: TestPaths.Toolsets(TestPaths.Agent(), ["web"], fake));
         var webSearch = engine.Tools.OfType<AIFunction>().Single(t => t.Name == "WebSearch");
 
         var result = await webSearch.InvokeAsync(new AIFunctionArguments { ["query"] = "anything" });

@@ -1,6 +1,8 @@
+using LouisAgent.Core.Agent;
 using LouisAgent.Core.Config;
 using Microsoft.Extensions.AI;
 using LouisAgent.Core.Hosting;
+using LouisAgent.Core.Tools.Web;
 using LouisAgent.Core.Usage;
 
 namespace LouisAgent.Core.Tests;
@@ -17,6 +19,16 @@ internal static class TestPaths
         // No network in tests: AgentHost.Build would otherwise fetch exchange rates from Frankfurter (F14).
         RatesUrl = null,
     };
+
+    /// <summary>
+    /// The tool objects of the named toolsets, built by the catalogue as a session's are (F5: an engine has only the
+    /// toolsets it is given). <paramref name="webSearch"/> replaces the configured search provider.
+    /// </summary>
+    public static IReadOnlyList<object> Toolsets(AgentOptions options, IEnumerable<string> names, IWebSearchProvider? webSearch = null)
+    {
+        var context = new ToolsetContext(options, webSearch ?? WebSearchProviderFactory.Create(options));
+        return ToolsetCatalog.BuildTools(ToolsetCatalog.Resolve(names, context), context);
+    }
 }
 
 /// <summary>Scripted IChatClient: each call is answered by the next delegate and the requests are recorded.</summary>

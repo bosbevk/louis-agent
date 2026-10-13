@@ -2,11 +2,18 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\louis-agent.core\louis-agent.core.csproj" />
-    <ProjectReference Include="..\louis-agent.web\louis-agent.web.csproj" />
+    <!-- The web app it serves: the code-review app (louis-agent.web) by default, Puls with -p:WebApp=puls (Dockerfile.puls).
+         Same API either way; only the static files differ. -->
+    <ProjectReference Include="..\louis-agent.web\louis-agent.web.csproj" Condition="'$(WebApp)' != 'puls'" />
+    <ProjectReference Include="..\louis-agent.puls\louis-agent.puls.csproj" Condition="'$(WebApp)' == 'puls'" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="10.0.12" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="louis-agent.api.tests" />
   </ItemGroup>
 
   <PropertyGroup>

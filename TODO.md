@@ -40,7 +40,7 @@ its own.
 - [x] [F4 Prompt caching](docs/features/F04-prompt-caching.md) — cache the ~48,000-token prefix every request re-sends.
       *Replaces:* "Wire up Anthropic prompt caching on the system prompt"
 - [ ] [F5 Toolset profiles](docs/features/F05-toolset-profiles.md) — load only the tools a session needs (the demo:
-      coding tools only)
+      coding tools only). *Built on its branch; short benchmark done (prefix −50%, run −23%, 4/4 fixes); left:* the full run and a sub-session end to end
 - [ ] [F15 Model limits](docs/features/F15-model-limits.md) — each model's context window and cache minimum beside its
       prices, `num_ctx` sent to local models, and F9's compaction point (below the price step: under 100k on Haiku 5.5)
       and F13's budget per model instead of one number for all. *From the local triage runs:* `num_ctx` and `num_gpu`
@@ -185,6 +185,12 @@ the product parts.
 
 Design and open decisions: [docs/specs/ORCHESTRATOR_DESIGN.md](docs/specs/ORCHESTRATOR_DESIGN.md).
 
+- [ ] **Relook at how often Puls delegates (Louis, 2026-10-14):** maybe too often. In every delegation check
+      ([roles](samples/sample-output-puls-check-roles/README.md), [after FX10–FX12](samples/sample-output-puls-check-fixes/README.md),
+      [three runs after FX10–FX14](samples/sample-output-puls-check-repeat/README.md): +31% on average) delegating cost more than one agent answering, except plain chat and some web research: each
+      specialist starts cold and the answer is written twice. Options to measure: Puls keeps cheap read-only
+      toolsets itself (`files`, `git`, `web`) and delegates only long or risky work; a rule for when a task is worth a
+      specialist; F5's *Done when* ("delegate only where the ledger shows it is cheaper")
 - [ ] A pull-request tool (GitHub / Azure DevOps), so a fix ends as a PR instead of a local branch
 - [ ] Decide the orchestrator's implementation tier: keep `louis-agent.core` (as the POC) or move to Anthropic's Tool
       Runner
@@ -208,7 +214,13 @@ Design: [docs/specs/SESSION_ARCHITECTURE.md](docs/specs/SESSION_ARCHITECTURE.md)
 - [ ] Separate session state from the model's context, with a context-building step (retrieve, rank, budget, compress)
 - [ ] Long-term memory and retrieval (past conversations, user facts, external knowledge)
 - [ ] Storage by access pattern (hot state, transcripts, vectors, large artifacts) and explicit session lifecycle states
-- [ ] **F5 follow-up: roll sub-session usage up into the parent chat.** Sub-session totals (`StartSubSession`) must count in the parent's turn scope (`UsageScope.Add`, summary record only, never written to the ledger) so the per-chat usage line, the chat total and `GET /sessions/{id}` include them. Child cost is converted to USD once, at the parent. Confirm in `Program.cs` that `session.Usage` takes the turn's scope records. Test: parent total = own requests + each child; a failed child's usage is included; no duplicate ledger rows.
+- [ ] [F22 Role tools](docs/features/F22-role-tools.md) — the tools Puls's specialists need: today's date, attachments, documents, git history, tables, currency ([plan](docs/plans/F22-role-tools.md)). Built; open: a specialist reading an attached PDF in a real chat.
+- [ ] [F21 Personalities](docs/features/F21-personalities.md) — each session (and sub-session) names its personality; Puls speaks everyday South African Afrikaans ([plan](docs/plans/F21-personalities.md)). Built; open: Louis's corrections to the Afrikaans (the delegation check's `answers.md`).
+- [ ] **F23 Credits** (to plan): buy credits with money, spend them per question at cost plus a margin, from the usage
+      ledger and prices (F1, F2) — Puls's *Koop krediete*. Louis: "'n layer wat geld na ons interne krediete verander. Wil so
+      bietjie geld maak as ek kan."
+- [ ] [F20 Puls look](docs/features/F20-puls-look.md) — Puls gets a landing page and a three-panel dashboard, dark, in its own colours ([plan](docs/plans/F20-puls-look.md)). Built; open: copy in a real browser, and the Werk panel during a live delegation.
+- [ ] **F5 follow-up: roll sub-session usage up into the parent chat** ([plan](docs/plans/F05-usage-rollup.md)). Sub-session totals (`StartSubSession`) must count in the parent's turn scope (`UsageScope.Add`, summary record only, never written to the ledger) so the per-chat usage line, the chat total and `GET /sessions/{id}` include them. Child cost is converted to USD once, at the parent. Confirm in `Program.cs` that `session.Usage` takes the turn's scope records. Test: parent total = own requests + each child; a failed child's usage is included; no duplicate ledger rows.
 
 ### Web app
 
@@ -324,6 +336,11 @@ backlog item removes one, it says so.
 
 Newest first; details in the git history.
 
+- 2026-10-14 — **FX14 Sub-session prompt budget**: `SUB_SESSION_PROMPT_BUDGET` (80k, under the 100k price step) stops a specialist's prompt growing into long-prompt prices; it answers from what it has ([FX14](docs/fixes/FX14-sub-session-prompt-budget.md)).
+- 2026-10-14 — **FX13 Counting to the analyst**: Puls's router sends counting to `files` + a script, and the reader hands counting back instead of reading every file ([FX13](docs/fixes/FX13-counting-to-the-analyst.md)).
+- 2026-10-14 — **FX12 Env templates readable**: `.env.example`, `.sample` and `.template` files are no longer treated as secrets ([FX12](docs/fixes/FX12-env-templates-readable.md)).
+- 2026-10-14 — **FX11 Empty sub-session answer**: a specialist that ends with no text (its 10 rounds used) is asked once more in the same session instead of Puls starting over ([FX11](docs/fixes/FX11-empty-sub-session-answer.md)).
+- 2026-10-14 — **FX10 Optional peer name**: `StartSubSession` without `agent` uses the only peer; Puls's calls without it were refused ([FX10](docs/fixes/FX10-optional-peer-name.md)).
 - 2026-10-12 — **Ollama on the GPU and local triage**: `ollama-nvidia` and `ollama-amd` services sized for a 4 GB card
   (32k context, flash attention, 8-bit KV cache); Ollama's client waits 10 minutes, not 100 seconds. The short demo's
   triage on `qwen3:4b-instruct-2507` (profile `.env.ollama-triage`): 4 fixed, 1 escalated, as on Claude, triage $0, the

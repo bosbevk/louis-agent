@@ -1,7 +1,7 @@
 # Test projects — design
 
-> **Kind:** NUnit test projects · **Paths:** `tests/louis-agent.core.tests/`, `tests/louis-agent.orchestrator.tests/` ·
-> **Run:** `dotnet test tests/louis-agent.core.tests` and `dotnet test tests/louis-agent.orchestrator.tests`
+> **Kind:** NUnit test projects · **Paths:** `tests/louis-agent.core.tests/`, `tests/louis-agent.api.tests/`,
+> `tests/louis-agent.orchestrator.tests/` · **Run:** `dotnet test louis-agent-solution.sln` (or each project)
 
 ## Purpose
 
@@ -16,7 +16,7 @@ The folders mirror `louis-agent.core`'s, and each test's namespace is its folder
 |---|---|
 | `Agent/` | `AgentEngine`: tool loop, streaming, thinking, summarising, cut-off guards, round limit, `toolsets:`, sorted and unique tool names, discovered tools, skill authoring, its usage records |
 | `Config/` | `LlmOptions` (provider inference, tool support, thinking, caching), `AgentOptions` (env binding, repository root), `EnvFile` |
-| `Hosting/` | `AgentHost`: environment loading, price and rate loading from a URL with the file fallback; Rider MCP discovery |
+| `Hosting/` | `AgentHost`: environment loading, price and rate loading from a URL with the file fallback, the system prompt per toolset profile; `AgentEngineFactory` (one engine per profile, the cap); Rider MCP discovery |
 | `Llm/`, `Llm/AnthropicProvider/` | The factory's caching strategy, `PromptCachingChatClient`, the usage mappers and recorder; Anthropic's wire format and cache-write lifetimes on captured bodies |
 | `Logging/` | Serilog behind `ILogger`: stderr only, holes bound by name, tags, the run file and the JSON-lines records |
 | `Messages/` | Every message enum member, core's and each host's (from source), has a template with well-formed holes; `ToolMessageSnapshot.json` pins every text tools return to the model |
@@ -33,6 +33,12 @@ The folders mirror `louis-agent.core`'s, and each test's namespace is its folder
 - The agent runs these tests on Linux in its containers: keep them platform-neutral (forward slashes, no Windows-only
   paths).
 
+## louis-agent.api.tests
+
+`AgentSessionsTests` (F5): a session's toolsets and tools, the `skills` default, an empty list, unknown names, depth and
+the `agents` rule, sessions sharing an engine but not a history. No web host, network or model: the sessions are built on
+an `AgentEngineFactory` with a client that throws if called.
+
 ## louis-agent.orchestrator.tests
 
 | File | Covers |
@@ -44,8 +50,9 @@ The folders mirror `louis-agent.core`'s, and each test's namespace is its folder
 
 ## What isn't covered yet
 
-- **The API, the web app, the ACP and MCP servers** have no automated tests; they're checked by hand (curl, browser,
-  Rider). The orchestrator demo exercises the API and git endpoints end to end against a real model.
+- **The API's endpoints, the web app, the ACP and MCP servers** have no automated tests (only the API's sessions do);
+  they're checked by hand (curl, browser, Rider). The orchestrator demo exercises the API and git endpoints end to end
+  against a real model.
 - **The orchestrator's whole loop** against a scripted louis-agent.api.
 
 Both are in the TODO backlog (*Quality and CI*), along with CI to run these suites on every push.

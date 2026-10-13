@@ -98,4 +98,23 @@ public enum ErrorMessage
 
     [Description("RATES_FORMAT must be '{Frankfurter}' or '{Json}', got '{Format}'.")]
     RatesFormatUnknown,
+
+    [Description("Unknown toolset(s): {Names}. Valid names: {Valid}.")]
+    UnknownToolsets,
+
+    [Description("'{Name}' isn't a personality name: use lowercase letters, digits and dashes.")]
+    PersonalityNameInvalid,
+
+    [Description("Unknown personality '{Name}'. Available: {Available}.")]
+    UnknownPersonality,
+
+    [Description("Toolset '{Name}' needs {Settings} to be set on this instance.")]
+    ToolsetSettingsMissing,
+
+
+    [Description("depth must be between 0 and {Max}: sub-sessions are one level deep.")]
+    SessionDepthInvalid,
+
+    [Description("A sub-session can't load the '{Toolset}' toolset: sub-sessions are one level deep.")]
+    SubSessionCannotDelegate,
 }

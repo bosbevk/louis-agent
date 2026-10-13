@@ -19,7 +19,8 @@ using Microsoft.Extensions.Logging;
 /// </summary>
 /// <param name="registry">The engine's tools, kept on the loop's final request.</param>
 /// <param name="summaryClient">The client for summaries: the provider's, outside the tool loop, with its own usage record.</param>
-internal sealed class ToolCallGuards(ToolRegistry registry, IChatClient summaryClient)
+/// <param name="subSessionPromptBudget">The most tokens a sub-session's prompt should reach (FX14); 0: no limit.</param>
+internal sealed class ToolCallGuards(ToolRegistry registry, IChatClient summaryClient, int subSessionPromptBudget = 0)
 {
     private static readonly ILogger Log = AgentLogging.For<ToolCallGuards>();
     private const string Tag = "TOOL";
@@ -86,13 +87,48 @@ internal sealed class ToolCallGuards(ToolRegistry registry, IChatClient summaryC
         return final;
     }
 
+    /// <summary>
+    /// A sub-session's prompt budget (FX14). Every tool result stays in the prompt, and every later request pays for it
+    /// again; past Haiku 5.5's long-prompt threshold every request costs five times as much. When the next request of a
+    /// sub-session's turn is expected to pass the budget (the last prompt plus its last growth), it keeps its tools with
+    /// <see cref="ChatToolMode.None"/>, as the loop's final request does: the specialist answers from what it has.
+    /// </summary>
+    /// <remarks>
+    /// Only a sub-session's turns (their usage tags name a parent turn): the user's own sessions may need a big context,
+    /// and nothing above a sub-session would notice the cost. Summary requests run outside the loop and aren't counted.
+    /// </remarks>
+    internal ChatOptions? KeepWithinPromptBudget(ChatOptions? options, UsageScope? scope)
+    {
+        if (subSessionPromptBudget <= 0 || scope?.Tags.Parent is null) return options;
+        if (options?.Tools is not { Count: > 0 } || options.ToolMode == ChatToolMode.None) return options;
+
+        var prompts = scope.Records.Where(r => r.Purpose != UsagePurpose.Summary).Select(r => Prompt(r.Tokens)).ToList();
+        if (prompts.Count == 0) return options;
+        long last = prompts[^1];
+        long next = last + (prompts.Count > 1 ? Math.Max(0, last - prompts[^2]) : 0);
+        if (next < subSessionPromptBudget) return options;
+
+        Log.Log(LogLevel.Information, LogMessage.SubSessionPromptBudgetReached, new
+        {
+            Last = last.ToString("N0", CultureInfo.InvariantCulture), Next = next.ToString("N0", CultureInfo.InvariantCulture),
+            Budget = subSessionPromptBudget.ToString("N0", CultureInfo.InvariantCulture),
+        }, tag: Tag);
+        ChatOptions limited = options.Clone();
+        limited.ToolMode = ChatToolMode.None;
+        return limited;
+    }
+
+    private static long Prompt(UsageTokens tokens) => (tokens.Input ?? 0) + (tokens.CacheRead ?? 0) + (tokens.CacheWrite ?? 0);
+
+    private ChatOptions? Shape(ChatOptions? options) => KeepWithinPromptBudget(KeepToolsOnFinalRequest(options), UsageScope.Current);
+
     public Task<ChatResponse> KeepToolsOnFinalRequestAsync(
         IEnumerable<ChatMessage> messages, ChatOptions? options, IChatClient next, CancellationToken cancellationToken) =>
-        next.GetResponseAsync(messages, KeepToolsOnFinalRequest(options), cancellationToken);
+        next.GetResponseAsync(messages, Shape(options), cancellationToken);
 
     public IAsyncEnumerable<ChatResponseUpdate> KeepToolsOnFinalRequestStreamingAsync(
         IEnumerable<ChatMessage> messages, ChatOptions? options, IChatClient next, CancellationToken cancellationToken) =>
-        next.GetStreamingResponseAsync(messages, KeepToolsOnFinalRequest(options), cancellationToken);
+        next.GetStreamingResponseAsync(messages, Shape(options), cancellationToken);
 
     /// <summary>
     /// Sits inside the tool-call loop: when the model stopped at the output limit, any tool calls it was writing are

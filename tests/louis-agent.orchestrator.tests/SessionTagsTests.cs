@@ -36,6 +36,19 @@ public class SessionTagsTests
     }
 
     [Test]
+    public async Task CreateSession_WithToolsets_SendsThem()
+    {
+        var handler = new CapturingHandler();
+        var client = new LouisAgentClient(new HttpClient(handler) { BaseAddress = new Uri("http://louis-agent/") }, null);
+
+        await client.CreateSessionAsync(new UsageTags("fix:1", "run-1", "order-service"), toolsets: ServiceTools.FixToolsets);
+
+        using var body = JsonDocument.Parse(handler.Body!);
+        Assert.That(body.RootElement.GetProperty("toolsets").EnumerateArray().Select(t => t.GetString()),
+            Is.EqualTo(new[] { "dotnet", "files", "git", "skills" }), "F5-S4: a fix loads the coding profile only");
+    }
+
+    [Test]
     public async Task CreateSession_WithoutTags_SendsNoBody()
     {
         var handler = new CapturingHandler();

@@ -17,6 +17,12 @@ public class MarkdownSkillProvider : ISkillProvider
     public List<MarkdownSkillLoader.SkillDef> Skills => _skills;
     public string Documentation => _documentation;
 
+    private MarkdownSkillProvider(List<MarkdownSkillLoader.SkillDef> skills, string documentation) =>
+        (_skills, _documentation) = (skills, documentation);
+
+    /// <summary>A skill file's text already read (from disk or the assembly, <see cref="SkillFileSource"/>), on its own.</summary>
+    public static MarkdownSkillProvider FromText(string text) => new(MarkdownSkillLoader.Parse(text), text);
+
     /// <param name="includeDefaultInstructions">
     /// Prepend default.md. Pass false for secondary providers in a composite so it is included only once.
     /// </param>

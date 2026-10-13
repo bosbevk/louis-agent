@@ -62,20 +62,16 @@ public static partial class AgentHost
 
     /// <summary>
     /// Builds an engine for hosts that only publish its tools (the MCP server): the calling client brings its own
-    /// model, so no LLM provider or API key is needed. Skills, agent-built tools and approval work as usual.
+    /// model, so no LLM provider or API key is needed. It has every toolset this instance can load (F5); skills,
+    /// agent-built tools and approval work as usual.
     /// </summary>
     public static AgentEngine BuildToolHost()
     {
         LoadEnvironment();
         var agent = AgentOptions.FromEnvironment();
         AgentLogging.Configure(agent.LogDirectory);
-        var engine = new AgentEngine(LoadSkills(agent), new ToolsOnlyChatClient(), agent)
-        {
-            SkillsDirectory = FindSkillsDirectory(agent),
-            SkillReloader = () => LoadSkills(agent),
-        };
-        engine.LoadApprovedTools();
-        return engine;
+        var engines = new AgentEngineFactory(new ToolsOnlyChatClient(), agent);
+        return engines.GetOrCreate(engines.Available);
     }
 
     /// <summary>Stand-in for hosts that never prompt a model themselves.</summary>
@@ -105,23 +101,22 @@ public static partial class AgentHost
         return Build(llm, agent, clientFactory ?? new LlmClientFactory());
     }
 
+    /// <summary>
+    /// Bootstraps a host: the model client, prices, rates, the usage ledger and an <see cref="AgentEngineFactory"/> that
+    /// builds one engine per toolset profile (F5). <see cref="AgentHostContext.Engine"/> is the host's own engine, with
+    /// every toolset this instance can load: what the CLI and the ACP server use, one session per process. The API
+    /// builds each session's engine from <see cref="AgentHostContext.Engines"/>.
+    /// </summary>
     public static AgentHostContext Build(LlmOptions llm, AgentOptions agent, ILlmClientFactory clientFactory)
     {
-        var skills = LoadSkills(agent);
         var chatClient = clientFactory.Create(llm);
         PriceTable prices = LoadPrices(agent);
         ExchangeRates rates = LoadRates(agent, prices.Currency);
         DisplayCurrency display = DisplayCurrency.Resolve(agent, prices.Currency, rates);
         Log.Log(LogLevel.Information, LogMessage.DisplayCurrencyChosen, new { Display = display });
-        var engine = new AgentEngine(skills, chatClient, agent, llm.ResolveSupportsTools(),
-            usageSink: CreateUsageSink(agent, prices), usageMapper: clientFactory.CreateUsageMapper(llm))
-        {
-            SkillsDirectory = FindSkillsDirectory(agent),
-            SkillReloader = () => LoadSkills(agent),
-            Thinking = llm.ResolveThinking(),
-            Display = display,
-        };
-        engine.LoadApprovedTools();
+        var engines = new AgentEngineFactory(chatClient, agent, llm.ResolveSupportsTools(), CreateUsageSink(agent, prices),
+            clientFactory.CreateUsageMapper(llm), display, llm.ResolveThinking(), rates: rates);
+        var engine = engines.GetOrCreate(engines.Available);
         Log.Log(LogLevel.Information, LogMessage.LlmChosen,
             new { Llm = llm, Tools = engine.SupportsTools ? "on" : "off", Thinking = engine.Thinking?.ToString().ToLowerInvariant() ?? "off" });
 
@@ -149,7 +144,7 @@ public static partial class AgentHost
             Log.Log(LogLevel.Information, LogMessage.McpDiscoveryDisabled);
         }
 
-        return new AgentHostContext(engine, llm, agent, prices, rates, display);
+        return new AgentHostContext(engine, llm, agent, prices, rates, display, engines);
     }
 
     /// <summary>
@@ -277,63 +272,51 @@ public static partial class AgentHost
     /// </summary>
     internal sealed class WrongBaseException(string message) : Exception(message);
 
+    /// <summary>The system prompt with every toolset's guide (hosts that load every toolset, and tests).</summary>
+    public static ISkillProvider LoadSkills(AgentOptions agent) => LoadSkills(agent, ToolsetCatalog.All);
+
     /// <summary>
-    /// Loads skills using typed providers.
-    /// Always includes DefaultSkillsProvider, and loads function-specific providers based on AgentFunction.
-    /// If AgentFunction is "louis", loads ALL available skill providers.
-    /// Files are looked up in <see cref="AgentOptions.SkillsDirectory"/>, the working directory, then /app.
+    /// Loads the system prompt for a toolset profile (F5): personality, default.md (the router), the guide of each of
+    /// <paramref name="toolsets"/> and no other (docs/CLAUDE.md, *Adding a toolset*), then, when the profile has the skills
+    /// toolset, the function's own skill file ({AgentFunction}-skills.md; "louis" loads every skill file). Our own skill files are plain markdown read by
+    /// <see cref="MarkdownSkillProvider"/>; a provider class of its own is only for skills we don't control.
+    /// Built-in files are read from disk when there (<see cref="AgentOptions.SkillsDirectory"/>, the working directory
+    /// and its parents, /app), else from the copy embedded in the assembly (<see cref="SkillFileSource"/>).
     /// </summary>
-    public static ISkillProvider LoadSkills(AgentOptions agent)
+    /// <param name="personality">The session's personality (F21): a name in <c>Skills/personalities/</c>, or null for
+    /// <c>personality.md</c>. <see cref="PersonalityException"/> for a name that isn't valid or has no file.</param>
+    /// <param name="router">Whether the prompt has default.md, the router that picks a toolset and delegates. A sub-session
+    /// gets none (F21): its toolsets were chosen for it and it can't delegate.</param>
+    public static ISkillProvider LoadSkills(AgentOptions agent, IEnumerable<ToolsetDefinition> toolsets, string? personality = null,
+        bool router = true)
     {
         var composite = new CompositeSkillProvider();
 
-        // Personality first, so who the agent is frames everything after it; default.md stays purely operational
-        composite.AddProvider(new PersonalitySkillsProvider(FindSkillFile(agent, "personality.md")));
-        Log.Log(LogLevel.Information, LogMessage.SkillProviderLoaded, new { Provider = "PersonalitySkillsProvider" });
+        // Personality first, so who the agent is frames everything after it; default.md (the router) after it
+        AddBuiltIn(agent, composite, PersonalityFile(agent, personality));
+        if (router) AddBuiltIn(agent, composite, "default.md");
 
-        // Always include default instructions
-        var defaultProvider = new DefaultSkillsProvider(FindSkillFile(agent, "default.md"));
-        composite.AddProvider(defaultProvider);
-        Log.Log(LogLevel.Information, LogMessage.SkillProviderLoaded, new { Provider = "DefaultSkillsProvider" });
+        // The guides of this profile's toolsets only, so the prompt never describes tools the session doesn't have
+        var profile = toolsets.ToList();
+        foreach (string fileName in ToolsetCatalog.GuideFiles(profile))
+            AddBuiltIn(agent, composite, fileName);
 
-        // DotNet* tools are registered for every function, so their guidance is too
-        composite.AddProvider(new DotNetSkillsProvider(FindSkillFile(agent, "dotnet-skills.md")));
-        Log.Log(LogLevel.Information, LogMessage.SkillProviderLoaded, new { Provider = "DotNetSkillsProvider" });
+        // Function skill files are procedures ExecuteSkill runs: they come with the skills toolset, like a guide with its
+        // tools. A profile without it (Puls's chats: agents only) gets the router and its guides, not every skill file.
+        if (profile.All(t => t.Name != SkillsToolset)) return composite;
 
-        // Same for the other always-registered toolsets; plain markdown, so no dedicated provider class is needed
-        foreach (string fileName in AlwaysLoadedSkillFiles)
+        if (agent.AgentFunction == "louis")
         {
-            if (FindSkillFile(agent, fileName) is not { } path) continue;
-            composite.AddProvider(new MarkdownSkillProvider(path, includeDefaultInstructions: false));
-            Log.Log(LogLevel.Information, LogMessage.SkillProviderLoaded, new { Provider = fileName });
+            LoadAllSkillFiles(agent, composite);
         }
-
-        // Load function-specific provider based on AgentFunction
-        var functionProvider = agent.AgentFunction switch
+        else if (agent.AgentFunction != null && ToolsetCatalog.Find(agent.AgentFunction) is null)
         {
-            "louis" => LoadAllSkillProviders(agent, composite),
-            "devops" => new DevOpsSkillsProvider(FindSkillFile(agent, "devops-skills.md")) as ISkillProvider,
-            "paymo" => new PaymoSkillsProvider(FindSkillFile(agent, "paymo-skills.md")) as ISkillProvider,
-            "code-review" => new CodeReviewSkillsProvider(FindSkillFile(agent, "code-review-skills.md")) as ISkillProvider,
-            "time-logging" => new TimeLoggingSkillsProvider(FindSkillFile(agent, "time-logging-skills.md")) as ISkillProvider,
-            _ => null
-        };
-
-        // If a specific provider is found, add it
-        if (functionProvider != null && agent.AgentFunction != "louis")
-        {
-            composite.AddProvider(functionProvider);
-            Log.Log(LogLevel.Information, LogMessage.AgentFunctionLoaded, new { Function = agent.AgentFunction });
-        }
-        else if (agent.AgentFunction != null && agent.AgentFunction != "louis" && !AlwaysLoadedFunctions.Contains(agent.AgentFunction))
-        {
-            // Fallback: try to load as a generic markdown file for custom agent functions
+            // The function's own skill file: code-review-skills.md, time-logging-skills.md, or a custom one (a toolset's
+            // name is not a function: its guide comes with the toolset)
             string mainFile = $"{agent.AgentFunction}-skills.md";
-            string? mainPath = FindSkillFile(agent, mainFile);
-            if (mainPath is not null)
+            if (ReadSkillFile(agent, mainFile) is { } main)
             {
-                var customProvider = new MarkdownSkillProvider(mainPath, includeDefaultInstructions: false);
-                composite.AddProvider(customProvider);
+                composite.AddProvider(MarkdownSkillProvider.FromText(main.Text));
                 Log.Log(LogLevel.Information, LogMessage.MainSkillsFileLoaded, new { File = mainFile });
             }
             else
@@ -345,25 +328,12 @@ public static partial class AgentHost
         return composite;
     }
 
-    private static ISkillProvider? LoadAllSkillProviders(AgentOptions agent, CompositeSkillProvider composite)
+    private static void LoadAllSkillFiles(AgentOptions agent, CompositeSkillProvider composite)
     {
         Log.Log(LogLevel.Information, LogMessage.LoadingAllSkills);
 
-        var devopsProvider = new DevOpsSkillsProvider(FindSkillFile(agent, "devops-skills.md"));
-        composite.AddProvider(devopsProvider);
-        Log.Log(LogLevel.Information, LogMessage.SkillProviderLoaded, new { Provider = "DevOpsSkillsProvider" });
-
-        var paymoProvider = new PaymoSkillsProvider(FindSkillFile(agent, "paymo-skills.md"));
-        composite.AddProvider(paymoProvider);
-        Log.Log(LogLevel.Information, LogMessage.SkillProviderLoaded, new { Provider = "PaymoSkillsProvider" });
-
-        var codeReviewProvider = new CodeReviewSkillsProvider(FindSkillFile(agent, "code-review-skills.md"));
-        composite.AddProvider(codeReviewProvider);
-        Log.Log(LogLevel.Information, LogMessage.SkillProviderLoaded, new { Provider = "CodeReviewSkillsProvider" });
-
-        var timeLoggingProvider = new TimeLoggingSkillsProvider(FindSkillFile(agent, "time-logging-skills.md"));
-        composite.AddProvider(timeLoggingProvider);
-        Log.Log(LogLevel.Information, LogMessage.SkillProviderLoaded, new { Provider = "TimeLoggingSkillsProvider" });
+        foreach (string fileName in FunctionSkillFiles)
+            AddBuiltIn(agent, composite, fileName);
 
         // Any other *-skills.md dropped into the skills folder (including ones the agent created) loads without code changes
         foreach (string file in DiscoverSkillFiles(agent).Where(f => !SkillFiles.BuiltIn.Contains(Path.GetFileName(f))))
@@ -371,15 +341,13 @@ public static partial class AgentHost
             composite.AddProvider(new MarkdownSkillProvider(file, includeDefaultInstructions: false));
             Log.Log(LogLevel.Information, LogMessage.SkillsFileDiscovered, new { File = Path.GetFileName(file) });
         }
-
-        return null; // Already added to composite in this method
     }
 
-    /// <summary>Guidance for toolsets registered in every session (dotnet-skills.md has its own provider).</summary>
-    private static readonly string[] AlwaysLoadedSkillFiles = ["python-skills.md", "powershell-skills.md", "bash-skills.md", "web-skills.md", "self-extension-skills.md"];
+    /// <summary>Skill files of functions that aren't toolsets, loaded by "louis" (and by their own AGENT_FUNCTION).</summary>
+    private static readonly string[] FunctionSkillFiles = ["code-review-skills.md", "time-logging-skills.md"];
 
-    /// <summary>Functions whose skills file is loaded for every agent, so it must not be loaded a second time.</summary>
-    private static readonly HashSet<string> AlwaysLoadedFunctions = new(StringComparer.OrdinalIgnoreCase) { "dotnet", "python", "powershell", "bash", "web" };
+    /// <summary>The toolset the function skill files come with (ExecuteSkill runs their procedures).</summary>
+    private const string SkillsToolset = "skills";
 
     /// <summary>The folder holding default.md and the *-skills.md files, or null if none was found.</summary>
     public static string? FindSkillsDirectory(AgentOptions agent) =>
@@ -390,23 +358,48 @@ public static partial class AgentHost
             ? Directory.EnumerateFiles(dir, "*-skills.md").Order(StringComparer.OrdinalIgnoreCase)
             : [];
 
-    internal static string? FindSkillFile(AgentOptions agent, string fileName)
+    internal static string? FindSkillFile(AgentOptions agent, string fileName) => SkillFilePaths(agent, fileName).FirstOrDefault(File.Exists);
+
+    /// <summary>A skill file's text from disk (which overrides) or the assembly; null when neither has it.</summary>
+    internal static (string Text, bool FromDisk)? ReadSkillFile(AgentOptions agent, string fileName) =>
+        SkillFileSource.Read(fileName, SkillFilePaths(agent, fileName));
+
+    /// <summary>
+    /// The skill file of <paramref name="personality"/>: <see cref="Personalities.DefaultFile"/> when none is named, else
+    /// its file in <c>personalities/</c>, which must exist on disk or in the assembly.
+    /// </summary>
+    internal static string PersonalityFile(AgentOptions agent, string? personality)
     {
-        // Working directory and its ancestors, so running from src/<project> still finds the repo's Skills/ folder.
+        if (string.IsNullOrEmpty(personality)) return Personalities.DefaultFile;
+        if (!Personalities.IsValidName(personality))
+            throw new PersonalityException(MessageText.Format(ErrorMessage.PersonalityNameInvalid, new { Name = personality }));
+        string file = Personalities.FileName(personality);
+        if (ReadSkillFile(agent, file) is null)
+            throw new PersonalityException(MessageText.Format(ErrorMessage.UnknownPersonality,
+                new { Name = personality, Available = string.Join(", ", Personalities.Available(agent.SkillsDirectory)) }));
+        return file;
+    }
+
+    /// <summary>Adds a built-in skill file to the prompt, from disk or the assembly; a missing one is skipped.</summary>
+    private static void AddBuiltIn(AgentOptions agent, CompositeSkillProvider composite, string fileName)
+    {
+        if (ReadSkillFile(agent, fileName) is not { } file) return;
+        composite.AddProvider(MarkdownSkillProvider.FromText(file.Text));
+        Log.Log(LogLevel.Information, file.FromDisk ? LogMessage.SkillProviderLoaded : LogMessage.SkillFileEmbedded,
+            new { Provider = fileName });
+    }
+
+    /// <summary>Where a skill file may be on disk, in order: the skills folder, the working directory and its parents
+    /// (so running from src/&lt;project&gt; finds the repo's Skills/), /app, the program's folder.</summary>
+    private static IEnumerable<string> SkillFilePaths(AgentOptions agent, string fileName)
+    {
         var ancestors = new List<string>();
         for (var dir = new DirectoryInfo(Environment.CurrentDirectory); dir is not null; dir = dir.Parent)
             ancestors.Add(dir.FullName);
 
-        var directories = new[] { agent.SkillsDirectory }.Concat(ancestors).Concat(["/app", AppContext.BaseDirectory]);
-        var searchPaths = directories
+        return new[] { agent.SkillsDirectory }.Concat(ancestors).Concat(["/app", AppContext.BaseDirectory])
             .Where(d => !string.IsNullOrWhiteSpace(d))
-            .SelectMany(d => new[]
-            {
-                Path.Combine(d!, fileName),
-                Path.Combine(d!, "Skills", fileName)
-            })
+            .SelectMany(d => new[] { Path.Combine(d!, fileName), Path.Combine(d!, "Skills", fileName) })
             .ToList();
-
-        return searchPaths.FirstOrDefault(File.Exists);
     }
 }

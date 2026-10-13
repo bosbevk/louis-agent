@@ -98,4 +98,28 @@ public class DefaultSkillsProviderTests
                 .Or.Contain("tool"), "Documentation should contain agent instructions");
         }
     }
+    
+    /// <summary>
+    /// default.md is a router: it names every toolset and describes no tools, so the prompt never shows a session
+    /// tools it doesn't load (F5 step 4).
+    /// </summary>
+    [Test]
+    public void Documentation_NamesEveryToolsetAndDescribesNoTools()
+    {
+        var provider = new DefaultSkillsProvider(_defaultMdPath);
+        string doc = provider.Documentation;
+
+        string[] toolsets = ["files", "git", "dotnet", "python", "powershell", "bash", "web", "skills", "paymo", "devops", "agents"];
+        foreach (string toolset in toolsets)
+            Assert.That(doc, Does.Contain($"`{toolset}`"), $"default.md should name the '{toolset}' toolset");
+
+        string[] tools =
+        [
+            "ReadWorkspaceFile", "WriteWorkspaceFile", "GetStatus", "Commit(",
+            "PythonRun", "WebSearch", "CreateSkillFile",
+            "LogTimeByTaskName", "GetWorkItemsByAssignee",
+        ];
+        foreach (string tool in tools)
+            Assert.That(doc, Does.Not.Contain(tool), $"default.md should not describe the {tool} tool");
+    }
 }

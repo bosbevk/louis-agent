@@ -100,8 +100,84 @@ Update `ARCHITECTURE.md` (sessions and skills sections), `SETUP.md`, and the sam
 - **Engine count:** engines are cached but never disposed. The cap in step 5 bounds memory.
 - **No API tests exist:** steps 6 to 8 need new tests, or they'll be checked by hand only.
 
+## Approved during the build (2026-10-13)
+
+- **The default engine has no built-in tools.** With no `toolsets`, the engine registers only `ExecuteSkill` and the
+  self-extension tools (`CreateSkillFile`, `ReloadSkills`, `CreateTool`, `ListAgentTools`); the old tail (Workspace,
+  Git, DotNet, Python, PowerShell, Bash, Web, Paymo, DevOps) is gone. Tests that need a toolset pass it.
+- **DevOps keeps its guide.** `devops-skills.md` and `DevOpsTools` stay, and the catalogue's `devops` entry keeps
+  `GuideFile: "devops-skills.md"` (Louis, 2026-10-13: "devops-skills must stay"). It loads like `web-skills.md`:
+  plain markdown in `AgentHost.AlwaysLoadedSkillFiles` (and `devops` in `AlwaysLoadedFunctions`), so
+  `DevOpsSkillsProvider` is removed.
+- **Paymo's guide is the native tools section.** `paymo-skills.md` lists the `PaymoTools` methods and workflows; its
+  placeholder `## Skill:` sections are gone.
+- **Every skill file we control is plain markdown** (Louis, 2026-10-13; docs/CLAUDE.md, *Adding a toolset*):
+  `DotNetSkillsProvider`, `PaymoSkillsProvider`, `CodeReviewSkillsProvider` and `TimeLoggingSkillsProvider` were four
+  identical loaders and are removed. The toolset guides (`dotnet`, `paymo`) load through `AlwaysLoadedSkillFiles`; the
+  function files (`code-review`, `time-logging`) through the `{function}-skills.md` fallback, and by name for
+  `louis`. A provider class of its own is only for skills we don't control. `SkillFilesTests` holds the rule.
+- **`CreateTool` refuses every catalogue tool name**, loaded or not (`ToolsetCatalog.ToolNames`, from each entry's new
+  `ToolType`): otherwise a tool built in a session without `python` could take `PythonRun` and collide later.
+- **The engine's `webSearch` parameter is removed:** it only fed the built-in Web tools; the provider reaches
+  `WebTools` through `ToolsetContext`.
+- **`devops-skills.md` loses its "Legacy Skills" section:** it showed `ExecuteSkill` calls for procedures that no
+  longer exist. A test now fails on any `ExecuteSkill("X")` example whose skill isn't defined.
+- **Layout:** `Agent/Tools/` files are in `LouisAgent.Core.Agent.Tools`; `ToolsetContext`, `ToolsetDefinition` and
+  `ToolsetException` have their own files.
+- **Step 4 as built:** `LoadSkills(agent, toolsets)` replaces `AlwaysLoadedSkillFiles`; `LoadSkills(agent)` means every
+  toolset. `files` and `git` get their guides (`files-skills.md`, `git-skills.md`), since `default.md` is the router
+  only. An `AGENT_FUNCTION` that names a toolset loads nothing of its own: the guide comes with the toolset.
+- **Step 4b · Built-in guides ship as embedded resources** (after step 4, before step 5):
+  - `louis-agent.core` embeds `Skills/*.md` (`<EmbeddedResource>` with a `LogicalName` of the file name), and a new
+    `Skills/SkillFileSource` reads a guide by name: a file of that name in the skills directory first (an override,
+    editable without a rebuild), else the embedded copy.
+  - What is embedded: `personality.md`, `default.md` and each toolset's guide (`ToolsetCatalog.GuideFile`). What stays
+    on disk only: files the agent writes (`CreateSkillFile`), custom `AGENT_FUNCTION` files and agent-built tools
+    (`Skills/tools/`); `ReloadSkills` re-reads disk and embedded alike.
+  - Why: the guides always match the code that ships with them (step 5 loads a guide with its toolset), no upward
+    search for a `Skills/` folder is needed at start-up, images don't depend on copying `Skills/`, and the golden file
+    can't drift with the working copy.
+  - **Tests:** with an empty skills directory every catalogue guide still loads (from the assembly); a file of the
+    same name on disk wins; a name that is neither on disk nor embedded is reported as missing, as today; the model
+    request snapshot is unchanged.
+  - **As built:** files, not folders (F19 moves to skill folders); `SkillFileSource.Read(name, diskPaths)` and
+    `MarkdownSkillProvider.FromText`; `AgentHost` reads personality, default, guides and function files through it, so
+    `DefaultSkillsProvider` and `PersonalitySkillsProvider` are left to tests until F19 rewrites the loaders.
+- **Step 5 as built** *(decided unattended, to confirm)*:
+  - `AgentEngineFactory` lives in `Hosting/`, not `Agent/`: it loads skills through `AgentHost`, a layer above the engine.
+  - Its key is the normalised list; `Lazy` engines in a `ConcurrentDictionary`, so a profile is built once; the cap (16)
+    refuses a new profile with a `ToolsetException`, never an existing one.
+  - Approved agent-built tools load only with the `skills` toolset, which owns `CreateTool` and `/approve`.
+  - **The CLI, the ACP server and the MCP server get every toolset this instance can load** (`Available`): one session
+    per process, and that was their behaviour before F5. `AgentHostContext` carries the factory (`Engines`) for the API.
+  - Each profile logs its toolsets, tool count, prompt size and a fixed-prefix estimate (≈ characters / 4), which is
+    step 12's start-up line.
+- **Web chats load the bare minimum and only delegate** (Louis, 2026-10-13): the web app opens chats with `["agents"]`
+  only; every task goes to a specialist through `StartSubSession`, with the toolsets the router in `default.md` names
+  for it. Without a peer (`AGENT_PEERS` empty) a chat gets every available toolset, so it still works. Compose starts the
+  specialist (`api-coder`) with the `api` and sets `AGENT_PEERS=coder=http://api-coder:8080` by default (empty in
+  config/.env turns it off). Trade-offs: each sub-session starts fresh (it sees only the message it's sent), a turn may
+  open 3, and until the TODO's F5 follow-up the chat's usage line shows the chat's own requests, not its sub-sessions'
+  (the ledger has both, linked by `parent`).
+- **Puls, two web apps and live delegation** (Louis, 2026-10-13; supersedes the web-chats entry above):
+  - **Puls** (`src/louis-agent.puls`) is the general assistant, chat only, minimal and modern in Springbok green and
+    gold; its chats load only `agents` and delegate everything. The code-review app (`louis-agent.web`) goes back to
+    every toolset, as in the demo.
+  - **Same API code, own host:** `louis-agent.api` serves Puls when built with `-p:WebApp=puls` (`Dockerfile.puls`);
+    its own stack, `docker/docker-compose.puls.yml` (`puls` on 5070, `puls-coder` on 5071, logs in `logs/puls`). The
+    main compose no longer has a specialist.
+  - **`louis-agent.web.shared`** holds what both apps use (chat models, the API client's core, `TurnView`,
+    `BlocksView`, `DelegationCard`, markdown, usage, currency, `TurnStream`), moved with `git mv`; each app keeps its
+    pages, CSS and JavaScript.
+  - **Live delegation:** `StartSubSession` reports the specialist's stream to the turn's observer (`SubSessionFeed`),
+    the API sends it as `sub_session` events while the call runs, and the delegation card shows the specialist's
+    thinking, tool calls, answer and cost as they happen. The model still gets only the answer.
+
 ## Open decisions
 
 1. Default toolsets for a session with no `toolsets` (suggest `skills` only).
 2. Whether the general agent and the specialist run as two containers from the same image (suggest yes).
 3. Maximum sub-sessions per turn and timeout (suggest 3 and 5 minutes).
+4. ~~Skills as JSON?~~ **Decided (Louis, 2026-10-13):** not JSON; the Agent Skills standard (`Skills/{name}/SKILL.md`,
+   YAML front-matter, progressive disclosure), as **F19 after F5**, with hybrid disclosure (toolset guides in full,
+   other skills as a catalogue + `ActivateSkill`) and scripts run by `ExecuteSkill` with arguments as data.

@@ -50,7 +50,8 @@ public sealed class UsageScope : IDisposable
         UsageTags outerTags = outer?.Tags ?? UsageTags.None;
         UsageTags merged = tags is null
             ? outerTags
-            : new UsageTags(tags.Task ?? outerTags.Task, tags.Run ?? outerTags.Run, tags.Service ?? outerTags.Service);
+            : new UsageTags(tags.Task ?? outerTags.Task, tags.Run ?? outerTags.Run, tags.Service ?? outerTags.Service,
+                tags.Parent ?? outerTags.Parent);
         var scope = new UsageScope(outer, purpose, host ?? outer?.Host, session ?? outer?.Session, turn ?? outer?.Turn, merged);
         CurrentScope.Value = scope;
         return scope;

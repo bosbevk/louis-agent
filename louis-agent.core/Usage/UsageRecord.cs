@@ -18,6 +18,7 @@ namespace LouisAgent.Core.Usage;
 /// <param name="DurationMs">Wall time of the request, from the call to the last streamed update.</param>
 /// <param name="Stop">Finish reason (stop, tool_calls, length, …), or "cancelled".</param>
 /// <param name="Cost">What the request cost from the price table (F2); null means "price unknown", never free.</param>
+/// <param name="Parent">For a sub-session's request, the parent turn, <c>{session}#{turn}</c> (F5); null otherwise.</param>
 public sealed record UsageRecord(
     DateTimeOffset At,
     int Round,
@@ -32,4 +33,5 @@ public sealed record UsageRecord(
     UsageTokens Tokens,
     long DurationMs,
     string? Stop,
-    UsageCost? Cost = null);
+    UsageCost? Cost = null,
+    string? Parent = null);

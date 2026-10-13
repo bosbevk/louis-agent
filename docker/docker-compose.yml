@@ -101,6 +101,9 @@ services:
       PRICES_FILE: /workspace/config/prices.json
       # Exchange rates' fallback when RATES_URL (Frankfurter by default) can't be reached (F14)
       RATES_FILE: /workspace/config/rates.json
+      # Sub-sessions (F5): peers StartSubSession may call, from config/.env (empty: none). The general assistant that
+      # delegates everything is Puls (docker-compose.puls.yml); this is the code-review app, with every toolset.
+      AGENT_PEERS: ${AGENT_PEERS:-}
     # Localhost only: the agent can run shell commands and write files. Set AGENT_API_KEY in .env.secrets to require a key.
     ports:
       - "127.0.0.1:${API_PORT:-5080}:8080"

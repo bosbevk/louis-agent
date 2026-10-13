@@ -66,7 +66,7 @@ The full step-by-step is in [How a turn works](../AGENT_INTERACTION.md).
 | `Llm/UsageRecordingChatClient.cs` | Middleware that records one `UsageRecord` per model request, streaming or not; a cancelled stream is recorded as `cancelled`, a provider error isn't |
 | `Llm/AnthropicProvider/` | `AnthropicUsageMapper` (cache writes, and the 1-hour part from the raw response or the stream's `message_start`) and `AnthropicPromptCaching` (marker 1 on a copy of the system prompt with `LLM_CACHE_TTL`, marker 2 the top-level `cache_control`, 5 minutes) |
 | `Skills/MarkdownSkillLoader.cs` | Parses `## Skill:` procedures (description, parameters, a bash / PowerShell / Python fence) from Markdown |
-| `Skills/*SkillsProvider.cs`, `CompositeSkillProvider.cs` | One provider per skill file kind; `CompositeSkillProvider` joins them into the system prompt; `SkillFiles.BuiltIn` names the files they load |
+| `Skills/MarkdownSkillProvider.cs`, `DefaultSkillsProvider.cs`, `PersonalitySkillsProvider.cs`, `CompositeSkillProvider.cs` | Every skill file we control is plain markdown read by `MarkdownSkillProvider` (`default.md` and `personality.md` by their own); `CompositeSkillProvider` joins them into the system prompt; `SkillFiles.BuiltIn` names the files `AgentHost` loads by name |
 | `Tools/Workspace/WorkspaceTools.cs` | Files: read (≤ 1 MB), write, append, list, tree, search, find, copy, rename, delete; workspace boundary and secret-file checks |
 | `Tools/Git/GitTools.cs` | 35 git operations, run without a shell, 30-second timeout |
 | `Tools/DotNet/DotNetTools.cs` | Build, test, run, restore, clean, packages, SDK info — parsed into compact results |
@@ -135,7 +135,7 @@ Details: [Development guide](../CLAUDE.md#development-workflow).
 
 ## Security
 
-Paths stay inside the workspace (no `..`, no following symbolic links); secret files (`.env*`, keys, certificates,
+Paths stay inside the workspace (no `..`, no following symbolic links); secret files (`.env*` except templates such as `.env.example`, keys, certificates,
 `credentials.json`, …) can't be read, written, searched or diffed; processes get argument lists or environment
 variables, never model text spliced into a command line; `FetchUrl` blocks private, loopback and metadata addresses.
 
@@ -147,7 +147,7 @@ variables, never model text spliced into a command line; `FetchUrl` blocks priva
 
 - 10 tool rounds per message → [F10](../features/F10-route-settings.md); nothing cached → [F4](../features/F04-prompt-caching.md);
   usage recorded but not priced → [F2](../features/F02-prices-and-cost.md); history grows unbounded → [F9](../features/F09-context-management.md);
-  every toolset always loaded → [F5](../features/F05-toolset-profiles.md).
+  sub-session usage not yet in the parent chat's totals → the F5 follow-up in the TODO.
 - Rider MCP discovery only logs; Ollama tool support is a name heuristic; Paymo task lookup takes the first match
   ([known limitations](../CLAUDE.md#known-limitations)).
 

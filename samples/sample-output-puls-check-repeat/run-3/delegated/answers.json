@@ -1,0 +1,195 @@
+[
+  {
+    "task": "web",
+    "question": "Wat is die nuutste weergawe van .NET en wanneer is dit vrygestel? Gee jou bronne.",
+    "answer": "Die nuutste stabiele weergawe van .NET is **.NET 10**. Dit is 'n LTS-weergawe (langtermyn-ondersteuning) en is op **11 November 2025** vrygestel.\n\nDaar is ook al 'n volgende een op pad: **.NET 11** is nou by release candidate-stadium (11.0.0-rc.2) en is geskeduleer vir GA op **10 November 2026**. Dit is dus nog nie die stabiele weergawe nie. Die nuutste patch vir .NET 10 is 10.0.13, wat op 13 Oktober 2026 uitgekom het.\n\nOndersteuning vir .NET 10 duur tot **November 2028**. Die amptelike bronne verskil effens oor die presiese einddatum: die launch-artikel sê 10 November 2028, terwyl die huidige aflaaibladsy en die dotnet/core-README 14 November 2028 sê. Ek sou die nuutste bladsye vertrou, maar as die presiese dag saak maak, gaan dit self op die Microsoft-bladsy na.\n\n**Bronne:**\n- https://dotnet.microsoft.com/en-us/download/dotnet (aflaaibladsy, wys 10.0.13 en 11.0.0-rc.2)\n- https://github.com/dotnet/core/tree/main/release-notes (release-notes-indeks, vir die GA-datums)\n- https://devblogs.microsoft.com/dotnet/announcing-dotnet-10/ (\"Announcing .NET 10\", 11 November 2025)",
+    "tools": [
+      "StartSubSession"
+    ],
+    "specialists": [
+      "puls"
+    ],
+    "delegations": [
+      {
+        "toolsets": [
+          "web"
+        ],
+        "personality": "puls-researcher"
+      }
+    ],
+    "error": null,
+    "seconds": 22.2
+  },
+  {
+    "task": "files",
+    "question": "Lees README.md in die werkruimte en som in drie punte op wat die projek doen.",
+    "answer": "Die projek is 'n selfgehoste KI-kodeagent vir .NET. Dit werk met regte gereedskap op 'n repository: lêers, git, `dotnet`, Python, PowerShell, bash, webssoektogte, Azure DevOps en Paymo.\n\nJy praat daarmee deur JetBrains Rider, 'n webapp, 'n HTTP API of die terminal. Standaard loop dit op Claude (Anthropic), maar Ollama en OpenAI-versoenbare eindpunte werk ook.\n\nDie projek bevat ook 'n orkestreerder-demonstrasie (proof of concept) wat foute in 'n mikrodiens kan opspoor en laat regmaak, plus dokumentasie, Docker-opstelling (`docker compose`) en 'n MCP-bediener. Sleutels en instellings staan in `config/.env` en `config/.env.secrets`.\n\nBron: `README.md` in die werkruimte. Die lêer is in Engels, so ek het die opsomming in Afrikaans gegee.",
+    "tools": [
+      "StartSubSession"
+    ],
+    "specialists": [
+      "puls"
+    ],
+    "delegations": [
+      {
+        "toolsets": [
+          "files"
+        ],
+        "personality": "puls-reader"
+      }
+    ],
+    "error": null,
+    "seconds": 10.8
+  },
+  {
+    "task": "git",
+    "question": "Wat het die laaste drie commits in hierdie repository verander?",
+    "answer": "Die laaste drie commits op die huidige branch, nuutste eerste. Al drie is deur louis marais gemaak op 14 Oktober 2026.\n\n**1. `785ea96` (00:55:22): \"TODO: relook at how often Puls delegates\"**\n- Net `TODO.md`, 6 reëls bygevoeg.\n- Dis 'n nota vir later. Die delegasie-tjek het tot dusver gevind dat delegeer duurder is as net een agent wat antwoord, behalwe vir chat en sommige webnavorsing.\n\n**2. `3c8ee04` (00:50:52): \"The delegation check runs each mode several times (--repeat N)\"**\n- `samples/puls-check/run_check.py`, +55 / −4.\n- Die toets kan nou elke modus meermaal laat loop met `--repeat N`. Elke lopie skryf na `run-N/`, en daar is 'n opsomming (`summary.json` en `summary.md`) met gemiddelde, laagste en hoogste koste per modus en vraag.\n- Die rede: een lopie per modus het die uitgangslyn met 15% laat wissel.\n\n**3. `873e94d` (00:50:06): \"FX14: a sub-session's prompt has a budget\"**\n- Voeg 'n prompt-begroting vir sub-sessies by, by verstek 100k tokens (`SUB_SESSION_PROMPT_BUDGET`; 0 skakel dit af).\n- Die kern is in `ToolCallGuards.cs` en `AgentEngine.cs`. As die volgende prompt na verwagting die begroting oorskry, hou die versoek sy gereedskap maar gaan oor na toolmodus None, sodat die spesialis met wat hy het antwoord.\n- Die rede: 'n lêer-spesialis het elke toetslêer gelees, die prompt het tot 298k tokens gegroei, en dit was duur.\n- Ook gewysig: `AgentOptions.cs`, `config/.env.example`, `LogMessage.cs`, `TODO.md`, `docs/fixes/README.md`, en nuut: `docs/fixes/FX14-sub-session-prompt-budget.md` en `SubSessionPromptBudgetTests.cs`. Totaal 9 lêers, +209 / −4.\n\nLet wel: die beskrywings is afgelei uit die commit-boodskappe en lêernaamme. Ek het nie die volledige diffs gelees nie. As jy presies wil weet wat in die kode verander het, sê net en ek kan die diff van een van die commits laat nagaan.",
+    "tools": [
+      "StartSubSession"
+    ],
+    "specialists": [
+      "puls"
+    ],
+    "delegations": [
+      {
+        "toolsets": [
+          "git"
+        ],
+        "personality": "puls-historian"
+      }
+    ],
+    "error": null,
+    "seconds": 19.7
+  },
+  {
+    "task": "numbers",
+    "question": "Hoeveel .cs-lêers is daar onder louis-agent.core, en hoeveel reëls het hulle saam?",
+    "answer": "Dit is 'n telling oor lêers, so ek gee dit aan die analis wat 'n skrip kan laat loop. Ek kry dan die getalle terug.Onder `/workspace/louis-agent.core` is daar **109 .cs-lêers**, en hulle het saam **11 125 reëls**.\n\nAs jy net die reëls tel waar daar iets staan (dus sonder leë reëls), is dit **9 384**.\n\nDie `bin`- en `obj`-gidse is uitgesluit, asook verborge gidse, sodat gegenereerde lêers nie meetel nie. Geen lêer was onleesbaar as teks nie.",
+    "tools": [
+      "StartSubSession"
+    ],
+    "specialists": [
+      "puls"
+    ],
+    "delegations": [
+      {
+        "toolsets": [
+          "files",
+          "python"
+        ],
+        "personality": "puls-analyst"
+      }
+    ],
+    "error": null,
+    "seconds": 17.7
+  },
+  {
+    "task": "chat",
+    "question": "Gee my drie name vir 'n Jack Russell, met 'n Afrikaanse knipoog.",
+    "answer": "Hier is 'n paar opsies:\n\n- **Skelm**: perfek vir 'n hond wat altyd iets uitgevreet het.\n- **Bliksem**: vinnig, energiek en 'n bietjie onbetroubaar. Die Afrikaanse slang vir \"vinnig\" pas ook.\n- **Flitsie**: vir die hond wat soos 'n flits oor die erf hardloop.\n- **Sprinkaan**: want Jack Russells spring hoog en in alle rigtings.\n- **Donner**: as hy hard blaf of by die deur instorm.\n- **Boerewors**: 'n speelse een wat by die braai hoort. Hy sal waarskynlik ook probeer om van die grond af te eet.\n- **Biltong**: as hy wit met bruin of swart kolle is en 'n bietjie taai is.\n- **Sokkie**: as hy wit voete het, of altyd by jou enkels rondhang.\n- **Boetie**: 'n maat wat altyd saam met jou rondloop.\n- **Koekie**: soet genoeg om jou te laat vergeet van die gate in die tuin.\n\nWat is hy soos? As jy my sy kleur of sy grootste kattekwaad vertel, kan ek die lys kleiner en meer persoonlik maak.",
+    "tools": [],
+    "specialists": [],
+    "delegations": [],
+    "error": null,
+    "seconds": 8.5
+  },
+  {
+    "task": "web-2",
+    "question": "Wat is die huidige prima uitleenkoers in Suid-Afrika, en wanneer het dit laas verander? Gee jou bronne.",
+    "answer": "**Die prima uitleenkoers is volgens my beste bevinding 10,75%.** Dit is 'n berekening, nie 'n direkte bevestiging nie.\n\n**Hoe ek daaraan kom**\n- Die SARB se beleidskoers (voorheen repo-rente) is volgens Moneyweb na die MPC-besluit van **23 September 2026** verhoog van 6,75% na **7,25%**, 'n verhoging van 0,50 persentasiepunt.\n- Banke bereken prima gewoonlik as repo + 3,5 persentasiepunte. 7,25% + 3,5 = **10,75%**.\n\n**Wanneer het dit laas verander?**\n- Die laaste verandering was dus die verhoging op 23 September 2026. Die koers was daarvoor 6,75% (Moneyweb, 26 Maart 2026, het bevestig dat die SARB die koers toe op 6,75% gehou het).\n- Ek kon nie bevestig op watter datum die nuwe prima koers by die banke van krag geword het nie. Gewoonlik pas banke die volgende dag aan, maar dit het ek nie in 'n bron gesien nie.\n- Ek kon ook nie seker maak of daar in Mei of Julie 2026 iets verander het nie.\n\n**Bronne**\n- Moneyweb, \"Sarb ups repo rate to 7.25%\" (23 Sep 2026): https://www.moneyweb.co.za/news/economy/sarb-ups-repo-rate-to-7-25/\n- Moneyweb, \"Sarb holds rate steady at 6.75%\" (26 Mar 2026): https://www.moneyweb.co.za/news/economy/sarb-holds-rate-steady-at-6-75/\n- Moneyweb SARB-nuusblad: https://www.moneyweb.co.za/tag/sarb/\n- SARB, monetêre beleid: https://www.resbank.co.za/en/home/what-we-do/monetary-policy\n\nDie kanse is goed dat 10,75% korrek is, maar die artikels het ek net op opskrif-vlak gesien, nie volledig gelees nie. As jy seker moet wees (vir 'n lening of 'n kontrak), kyk gerus na die SARB se persverklaring van 23 September op resbank.co.za, en vra jou bank watter prima koers hulle nou gebruik.",
+    "tools": [
+      "GetToday",
+      "StartSubSession"
+    ],
+    "specialists": [
+      "puls",
+      "puls"
+    ],
+    "delegations": [
+      {
+        "toolsets": [
+          "web"
+        ],
+        "personality": "puls-researcher"
+      }
+    ],
+    "error": null,
+    "seconds": 71.5
+  },
+  {
+    "task": "files-2",
+    "question": "Watter instellings in config/.env.example gaan oor die LLM? Lys hulle met 'n kort verduideliking.",
+    "answer": "In `config/.env.example` is er net **één** instelling wat direk oor die LLM gaan:\n\n- **`LLM_PROFILE=anthropic`** (reël 7): kies watter profiel gebruik word. `anthropic` is Claude en vereis `ANTHROPIC_API_KEY` in `.env.secrets`. `ollama` is plaaslik en gratis. Volgens die kommentaar in reël 3–6 oorskryf 'n `LLM_*`-instelling wat jy in hierdie lêer skryf die profiel s'n.\n\nModel, temperatuur, maksimum tokens, timeout, endpoint en API-sleutel staan nie in hierdie lêer nie. Die lêer verwys na:\n\n- `config/.env.anthropic` en `config/.env.ollama`, waar die werklike LLM-instellings waarskynlik is.\n- `.env.secrets`, vir `ANTHROPIC_API_KEY`.\n\nEk het daardie lêers nie gelees nie. As jy wil hê ek moet dit ook nagaan, sê net watter een, of ek kan al drie laat nagaan.\n\nDie ander instellings wat in die lêer voorkom, gaan oor gebruik en koste, nie oor die model self nie. Die belangrikste is:\n\n- **`USAGE_LEDGER`** (reël 12, uitgekommentarieer): skryf een logreël per modelversoek. Standaard aan.\n- **`SUB_SESSION_PROMPT_BUDGET=100000`** (reël 42): die maksimum tokens vir 'n sub-sessie se prompt. `0` skakel dit af. Dit is die naaste aan 'n tokenlimiet in die lêer.",
+    "tools": [
+      "StartSubSession"
+    ],
+    "specialists": [
+      "puls"
+    ],
+    "delegations": [
+      {
+        "toolsets": [
+          "files"
+        ],
+        "personality": "puls-reader"
+      }
+    ],
+    "error": null,
+    "seconds": 28.5
+  },
+  {
+    "task": "git-2",
+    "question": "Wie het die meeste aan louis-agent.core/Agent/AgentEngine.cs verander, en wanneer was die laaste verandering?",
+    "answer": "**Louis Marais** het die meeste aan `AgentEngine.cs` verander: 32 van 33 commits, as ek die drie naamvariante saamtel.\n\nDie laaste verandering was op **14 Oktober 2026**, commit `873e94d`, met die boodskap \"FX14: a sub-session's prompt has a budget\".\n\n- Louis Marais: 27 commits\n- louis marais (kleinletters): 5\n- Louis: 1\n\nEk het aangeneem dat die drie variante dieselfde persoon is, maar ek het dit nie met e-posadresse nagegaan nie. Die datums en hashes kom uit `git log`, en die hashes is kort (7 karakters). Die geskiedenis volg hernoemings, so ouer commits van voor 'n eventuele hernoeming is ingesluit.",
+    "tools": [
+      "StartSubSession"
+    ],
+    "specialists": [
+      "puls"
+    ],
+    "delegations": [
+      {
+        "toolsets": [
+          "git"
+        ],
+        "personality": "puls-historian"
+      }
+    ],
+    "error": null,
+    "seconds": 30.3
+  },
+  {
+    "task": "numbers-2",
+    "question": "Hoeveel toetsmetodes ([Test] of [TestCase]) is daar onder tests/louis-agent.core.tests?",
+    "answer": "Dit is 'n telling oor jou lêers, so ek gee dit aan 'n spesialis wat die kode kan deursoek en tel.Daar is **ongeveer 730 test-metodes** onder `tests/louis-agent.core.tests`. Die telling is nie 100% seker nie.\n\n- **673 metodes** met `[Test]`\n- **57 metodes** met `[TestCase]`, wat saam **247 `[TestCase]`-attribute** is. Elke attribute is 'n aparte geval, so die uitvoerbare toetsgevalle is 673 + 247 = **920**.\n- Geen `[TestCaseSource]`, `[Theory]` of `[Fact]` nie.\n\nOor die onsekerheid: 'n ruwe teksoutelling vind 252 `[TestCase]`-attribute, en die skrip het 247 gekoppel aan metodes. Dit beteken 5 kon nie opgespoor word nie, so die 57 metodes en die 247 kan 'n paar af wees. Die 673 `[Test]`-telling stem wel met 'n aparte regex-telling. Die skrip is ook nie perfek met elke C#-vorm nie. `obj/`-lêers is uitgesluit, en 75 `.cs`-lêers is getel, waarvan 73 toetse bevat.\n\nAs jy 'n presiese getal nodig het, sal 'n `dotnet test --list-tests` in die projek dit met die compiler bevestig. Dan kan ek ook die per-lêer-tabel gee as jy dit wil hê.",
+    "tools": [
+      "StartSubSession"
+    ],
+    "specialists": [
+      "puls",
+      "puls"
+    ],
+    "delegations": [
+      {
+        "toolsets": [
+          "files",
+          "python"
+        ],
+        "personality": "puls-analyst"
+      }
+    ],
+    "error": null,
+    "seconds": 104.3
+  },
+  {
+    "task": "chat-2",
+    "question": "Skryf 'n kort verjaardagboodskap vir my ma in Afrikaans.",
+    "answer": "Hier is 'n kort boodskap vir jou ma:\n\n*Ma, baie geluk met jou verjaardag! Dankie dat jy altyd daar is, met 'n warm hart, 'n goeie raad en die beste koskos. Ek hoop jou dag is so lekker en liefdevol soos jy vir ons almal is. Geniet elke oomblik van jou spesiale dag. Ek is lief vir jou!*\n\nWil jy dit meer persoonlik hê, met 'n herinnering of 'n grap wat net julle twee verstaan? Gee my net 'n bietjie inligting en ek pas dit aan.",
+    "tools": [],
+    "specialists": [],
+    "delegations": [],
+    "error": null,
+    "seconds": 2.4
+  }
+]

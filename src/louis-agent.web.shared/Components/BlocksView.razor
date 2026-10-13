@@ -1,0 +1,60 @@
+@* The blocks of an answer: thinking, text and tool calls, in order. A StartSubSession call is drawn as a delegation card,
+   with the specialist's own blocks inside it (F5). Used by TurnView and, nested, by DelegationCard. *@
+
+@inject ChatText Text
+
+@foreach (var block in Blocks)
+{
+    switch (block.Kind)
+    {
+        case BlockKind.Thinking:
+            <details class="thinking" open="@(Streaming && block.ThinkingSeconds is null)">
+                <summary>@(block.ThinkingSeconds is { } seconds ? string.Format(Text.ThoughtFor, Math.Max(1, Math.Round(seconds))) : Text.Thinking)</summary>
+                <div class="thinking-text">@block.Text</div>
+            </details>
+            break;
+
+        case BlockKind.Text:
+            <div class="markdown">@Markdown.ToHtml(block.Text)</div>
+            break;
+
+        case BlockKind.Tool when Delegation.From(block) is { } delegation:
+            <DelegationCard Delegation="delegation" Block="block" Streaming="Streaming" Currency="Currency" />
+            break;
+
+        case BlockKind.Tool:
+            <details class="tool @(block.ToolFailed ? "failed" : "")">
+                <summary>
+                    <span class="tool-status">@(block.ToolResult is null ? "⋯" : block.ToolFailed ? "✗" : "✓")</span>
+                    <span class="tool-name">@block.ToolName</span>
+                    @if (block.ToolInput is not null)
+                    {
+                        <span class="tool-args">@Summarise(block.ToolInput)</span>
+                    }
+                </summary>
+                @if (block.ToolInput is not null)
+                {
+                    <div class="tool-label">@Text.Input</div>
+                    <pre>@block.ToolInput</pre>
+                }
+                @if (block.ToolResult is not null)
+                {
+                    <div class="tool-label">@Text.Result</div>
+                    <pre>@block.ToolResult</pre>
+                }
+            </details>
+            break;
+    }
+}
+
+@code {
+    [Parameter, EditorRequired] public List<Block> Blocks { get; set; } = default!;
+    [Parameter] public bool Streaming { get; set; }
+    [Parameter] public CurrencyChoice? Currency { get; set; }
+
+    private static string Summarise(string json)
+    {
+        string flat = string.Join(" ", json.Split('\n', StringSplitOptions.TrimEntries)).Trim('{', '}', ' ');
+        return flat.Length > 80 ? flat[..80] + "…" : flat;
+    }
+}

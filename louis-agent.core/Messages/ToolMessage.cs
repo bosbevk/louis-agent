@@ -9,6 +9,57 @@ using System.ComponentModel;
 /// <summary>Strings tools return to the model: what went wrong and what to do instead.</summary>
 public enum ToolMessage
 {
+    [Description("ReadTable reads {Supported}; '{Extension}' isn't one of them.")]
+    TableTypeUnsupported,
+
+    [Description("No sheet named '{Sheet}'. Sheets: {Sheets}.")]
+    TableSheetUnknown,
+
+    [Description("Sheet '{Sheet}' is empty.")]
+    TableEmpty,
+
+    [Description("Sheet '{Sheet}' (sheets: {Sheets}): {Rows} rows × {Columns} columns; rows {First}-{Last} below, the first row as the header.")]
+    TableShown,
+
+    [Description("\n[More rows: call ReadTable with startRow={Next} to continue.]")]
+    TableContinues,
+
+    [Description("No exchange rates are loaded on this instance (RATES_URL or RATES_FILE), so amounts can't be converted.")]
+    RatesUnavailable,
+
+    [Description("No rate for '{Currency}'. Known currencies: {Known}.")]
+    CurrencyUnknown,
+
+    [Description("{Amount} {From} = {Result} {To} (1 {From} = {Rate} {To}; rates of {AsOf}, {Source}).")]
+    CurrencyConverted,
+
+    [Description("No commits match.")]
+    GitNoCommits,
+
+    [Description("Give at least one of text, author, since or until to search the commits.")]
+    GitSearchNeedsCriteria,
+
+    [Description("ReadDocument reads {Supported}; '{Extension}' isn't one of them. Use ReadWorkspaceFile for text files.")]
+    DocumentTypeUnsupported,
+
+    [Description("Couldn't read {Path} as a document: {Reason}")]
+    DocumentUnreadable,
+
+    [Description("{Path} has no text to read: a scanned PDF holds only images, and this tool has no OCR.")]
+    DocumentNoText,
+
+    [Description("Document is larger than the {Megabytes} MB reading limit.")]
+    DocumentTooLarge,
+
+    [Description("\n[Showing characters {Start}-{End} of {Length}. Call ReadDocument with startIndex={End} to continue.]")]
+    DocumentContinues,
+
+    [Description("No attachment named '{Name}' in this conversation. Attached: {Attached}.")]
+    AttachmentUnknown,
+
+    [Description("{Weekday} {Date}, {Time} in {Zone} (UTC{Offset}). ISO: {Iso}. Week {Week}.")]
+    Today,
+
     [Description("refusing to fetch {Host}: local addresses are not allowed.")]
     FetchLocalAddress,
 
@@ -578,4 +629,46 @@ public enum ToolMessage
 
     [Description("Directory tree for {Path} (depth: {Depth}):\n")]
     DirectoryTree,
+
+    [Description("Error: no peer agent named '{Agent}'. Peers (AGENT_PEERS): {Peers}.")]
+    UnknownPeer,
+
+    [Description("Error: this instance has more than one peer agent; name one of them: {Peers}.")]
+    PeerNameNeeded,
+
+    [Description("Error: this turn has already started {Max} sub-sessions, the most one turn may. Finish with what you have, or ask the user.")]
+    SubSessionLimit,
+
+    [Description("Error: {Max} sub-sessions have started in the last minute outside a chat turn, the most allowed. Wait a minute and try again.")]
+    SubSessionRateLimit,
+
+    [Description("Error: {Agent}'s reply couldn't be read ({Reason}). Try again once, or do the task another way.")]
+    SubSessionUnreadable,
+
+    [Description("Error: {Agent} refused the sub-session (HTTP {Status}): {Reason}")]
+    SubSessionRefused,
+
+    [Description("Error: the sub-session on {Agent} failed: {Reason}")]
+    SubSessionFailed,
+
+    [Description("Error: the sub-session on {Agent} didn't finish within {Minutes} minutes and was stopped. Try a smaller task.")]
+    SubSessionTimedOut,
+
+    [Description("{Answer}\n\n[Sub-session on {Agent} ({Toolsets}): {Usage}]")]
+    SubSessionAnswer,
+
+    [Description("You stopped without writing an answer (usually: all your tool rounds were used). Don't call any more tools: answer the task now from what you found, and say what you couldn't finish.")]
+    SubSessionAskForAnswer,
+
+    [Description("Error: the sub-session on {Agent} ended without an answer twice (usually: it used all its tool rounds). Don't send the same task again: split it into smaller tasks, or tell the user what couldn't be done. [{Usage}]")]
+    SubSessionNoAnswer,
+
+    [Description("{Requests} requests, {Tokens} tokens, {Cost}")]
+    SubSessionUsage,
+
+    [Description("usage not reported")]
+    SubSessionNoUsage,
+
+    [Description("cost unknown")]
+    SubSessionCostUnknown,
 }

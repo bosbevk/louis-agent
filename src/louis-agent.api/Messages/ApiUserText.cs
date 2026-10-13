@@ -5,6 +5,12 @@ using System.ComponentModel;
 /// <summary>What the API answers its clients and the web app: error messages, merge and delete results.</summary>
 public enum ApiUserText
 {
+    [Description("'{Tag}' must be at most {Max} printable characters.")]
+    InvalidTag,
+
+    [Description("Unknown time zone '{TimeZone}'. Use an IANA name, e.g. Africa/Johannesburg.")]
+    UnknownTimeZone,
+
     [Description("Missing or invalid API key (x-api-key or Authorization: Bearer).")]
     InvalidApiKey,
 

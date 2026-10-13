@@ -1,6 +1,8 @@
 using System.Text.Json;
 using LouisAgent.Core.Agent;
+using LouisAgent.Core.Config;
 using LouisAgent.Core.Skills;
+using LouisAgent.Core.Tools.Web;
 using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Core.Tests.Agent;
@@ -10,8 +12,12 @@ public class AgentEngineTests
     private static ISkillProvider HelloSkills() =>
         new MarkdownSkillProvider(Path.Combine(TestPaths.RepoRoot, "Skills", "HelloWorld.md"));
 
-    private static AgentEngine Engine(IChatClient client, bool supportsTools = true, string? paymoKey = null) =>
-        new(HelloSkills(), client, TestPaths.Agent(paymoKey), supportsTools);
+    private static AgentEngine Engine(IChatClient client, bool supportsTools = true, string? paymoKey = null)
+    {
+        var options = TestPaths.Agent(paymoKey);
+        string[] toolsets = paymoKey is null ? ["files"] : ["files", "paymo"];
+        return new(HelloSkills(), client, options, supportsTools, toolsets: TestPaths.Toolsets(options, toolsets), selfExtension: true);
+    }
 
     [Test]
     public void Constructor_ExposesWorkspaceAndSkillTools()
@@ -25,12 +31,24 @@ public class AgentEngineTests
     }
 
     [Test]
-    public void Constructor_RegistersUniqueToolNames()
+    public void Constructor_RegistersUniqueToolNamesAcrossEveryToolset()
     {
         // The Anthropic API rejects a request whose tool names collide.
-        var engine = Engine(new FakeChatClient(), paymoKey: "test-key");
-        var duplicates = engine.Tools.GroupBy(t => t.Name).Where(g => g.Count() > 1).Select(g => g.Key);
+        var options = new AgentOptions
+        {
+            WorkspaceRoot = Path.GetTempPath(),
+            PaymoApiKey = "test-key",
+            DevopsApiKey = "test-key",
+            DevopsOrganization = "org",
+            DevopsProject = "project",
+        };
+        var context = new ToolsetContext(options, WebSearchProviderFactory.Create(options));
+        var toolsets = ToolsetCatalog.BuildTools(ToolsetCatalog.All, context);
 
+        var engine = new AgentEngine(new CompositeSkillProvider(), new FakeChatClient(), options,
+            toolsets: toolsets, selfExtension: true);
+
+        var duplicates = engine.Tools.GroupBy(t => t.Name).Where(g => g.Count() > 1).Select(g => g.Key);
         Assert.That(duplicates, Is.Empty);
         Assert.That(engine.Tools.Select(t => t.Name), Does.Contain("DotNetBuild"));
     }
@@ -40,7 +58,7 @@ public class AgentEngineTests
     {
         var engine = new AgentEngine(HelloSkills(), new FakeChatClient(), TestPaths.Agent(), toolsets: [new PingTools()]);
 
-        Assert.That(engine.Tools.Select(t => t.Name), Is.EquivalentTo(new[] { "ExecuteSkill", "Ping" }));
+        Assert.That(engine.Tools.Select(t => t.Name), Is.EquivalentTo(new[] { "ExecuteSkill", "GetToday", "Ping" }));
     }
 
     private sealed class PingTools

@@ -1,0 +1,162 @@
+namespace LouisAgent.Core.Agent;
+
+using LouisAgent.Core.Messages;
+using LouisAgent.Core.Tools.Agents;
+using LouisAgent.Core.Tools.DotNet;
+using LouisAgent.Core.Tools.Git;
+using LouisAgent.Core.Tools.Integrations.DevOps;
+using LouisAgent.Core.Tools.Integrations.Paymo;
+using LouisAgent.Core.Tools.Shell;
+using LouisAgent.Core.Tools.Web;
+using LouisAgent.Core.Tools.Workspace;
+
+/// <summary>
+/// The toolsets a session can load (F5). Nothing is loaded by default: a session names the toolsets it needs, and
+/// <see cref="Resolve"/> checks each name before any tool is built.
+/// </summary>
+public static class ToolsetCatalog
+{
+    /// <summary>Every toolset, in the order <c>GET /toolsets</c> lists them.</summary>
+    public static IReadOnlyList<ToolsetDefinition> All { get; } =
+    [
+        new("files", "Read, write, search, copy, rename and delete files in the workspace",
+            GuideFile: "files-skills.md",
+            MissingSettings: _ => [],
+            ToolType: typeof(WorkspaceTools),
+            CreateTools: ctx => [new WorkspaceTools(Root(ctx))]),
+
+        new("git", "Status, diffs, branches, staging, commits, merges and history for the workspace repository",
+            GuideFile: "git-skills.md",
+            MissingSettings: _ => [],
+            ToolType: typeof(GitTools),
+            CreateTools: ctx => [new GitTools(Root(ctx))]),
+
+        new("dotnet", "Build, test, run and restore .NET projects; list packages; SDK information",
+            GuideFile: "dotnet-skills.md",
+            MissingSettings: _ => [],
+            ToolType: typeof(DotNetTools),
+            CreateTools: ctx => [new DotNetTools(Root(ctx))]),
+
+        new("python", "Run Python code or scripts and manage packages in the agent's own virtual environment",
+            GuideFile: "python-skills.md",
+            MissingSettings: _ => [],
+            ToolType: typeof(PythonTools),
+            CreateTools: ctx => [new PythonTools(Root(ctx))]),
+
+        new("powershell", "Run PowerShell scripts (PowerShell 7, or Windows PowerShell 5.1 on Windows)",
+            GuideFile: "powershell-skills.md",
+            MissingSettings: _ => [],
+            ToolType: typeof(PowerShellTools),
+            CreateTools: ctx => [new PowerShellTools(Root(ctx))]),
+
+        new("bash", "Run bash scripts (Git Bash on Windows, /bin/bash elsewhere)",
+            GuideFile: "bash-skills.md",
+            MissingSettings: _ => [],
+            ToolType: typeof(BashTools),
+            CreateTools: ctx => [new BashTools(Root(ctx))]),
+
+        new("web", "Search the web and fetch web pages",
+            GuideFile: "web-skills.md",
+            MissingSettings: _ => [],
+            ToolType: typeof(WebTools),
+            CreateTools: ctx => [new WebTools(ctx.WebSearch, rates: ctx.Rates)]),
+
+        new("paymo", "Paymo time tracking: time entries, tasks, projects and summaries",
+            GuideFile: "paymo-skills.md",
+            MissingSettings: ctx => Missing(ctx, ("PAYMO_API_KEY", ctx.Options.PaymoApiKey)),
+            ToolType: typeof(PaymoTools),
+            CreateTools: ctx => [new PaymoTools(ctx.Options)]),
+
+        new("devops", "Azure DevOps work items, sprints and team queries",
+            GuideFile: "devops-skills.md",
+            MissingSettings: ctx => Missing(ctx,
+                ("DEVOPS_API_KEY", ctx.Options.DevopsApiKey),
+                ("DEVOPS_ORGANIZATION", ctx.Options.DevopsOrganization),
+                ("DEVOPS_PROJECT", ctx.Options.DevopsProject)),
+            ToolType: typeof(DevOpsTools),
+            CreateTools: ctx => [new DevOpsTools(
+                ctx.Options.DevopsApiKey!, ctx.Options.DevopsOrganization!, ctx.Options.DevopsProject!, ctx.Options.DevopsTeam)]),
+
+        new("agents", "Hand a separate task to a specialist agent: a sub-session on a peer with only the toolsets it needs",
+            GuideFile: "agents-skills.md",
+            MissingSettings: ctx => ctx.Options.AgentPeers.Count == 0 ? ["AGENT_PEERS"] : [],
+            ToolType: typeof(AgentPeerTools),
+            CreateTools: ctx => [new AgentPeerTools(ctx.Options)]),
+
+        // Engine-provided: CreateSkillFile, ReloadSkills, CreateTool and ListAgentTools are registered by AgentEngine
+        // when this name is in the resolved list (step 3), because they need the engine's own registry and skill set.
+        new("skills", "Create and reload skills, and build and list agent-built tools",
+            GuideFile: "self-extension-skills.md",
+            MissingSettings: _ => [],
+            CreateTools: null),
+    ];
+
+    /// <summary>
+    /// Every tool name a catalogue toolset can register, loaded in this engine or not: an agent-built tool may not take
+    /// one, or it would collide when a session loads that toolset.
+    /// </summary>
+    public static IReadOnlySet<string> ToolNames { get; } = All
+        .Where(t => t.ToolType is not null)
+        .SelectMany(t => ToolRegistry.ToolMethods(t.ToolType!))
+        .Select(m => m.Name)
+        .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+    /// <summary>Looks a toolset up by name (case-insensitive); null when there is none.</summary>
+    public static ToolsetDefinition? Find(string name) =>
+        All.FirstOrDefault(t => string.Equals(t.Name, name, StringComparison.OrdinalIgnoreCase));
+
+    /// <summary>
+    /// Cleans a client's list: trims, lowercases, drops empty entries and duplicates, and sorts it, so the same set
+    /// always gives the same engine (the engine cache and the cached prefix both depend on that).
+    /// </summary>
+    public static IReadOnlyList<string> Normalise(IEnumerable<string>? names) =>
+        (names ?? [])
+            .Select(n => (n ?? string.Empty).Trim().ToLowerInvariant())
+            .Where(n => n.Length > 0)
+            .Distinct(StringComparer.Ordinal)
+            .Order(StringComparer.Ordinal)
+            .ToList();
+
+    /// <summary>
+    /// Resolves a client's request to definitions, in the order of <see cref="All"/>. Throws
+    /// <see cref="ToolsetException"/> for an unknown name (listing the valid ones) or a toolset whose settings are
+    /// missing on this instance (listing them), before any tool is built.
+    /// </summary>
+    public static IReadOnlyList<ToolsetDefinition> Resolve(IEnumerable<string>? names, ToolsetContext context)
+    {
+        var requested = Normalise(names);
+
+        var unknown = requested.Where(n => Find(n) is null).ToList();
+        if (unknown.Count > 0)
+            throw new ToolsetException(MessageText.Format(ErrorMessage.UnknownToolsets,
+                new { Names = string.Join(", ", unknown), Valid = string.Join(", ", All.Select(t => t.Name)) }));
+
+        var resolved = All.Where(t => requested.Contains(t.Name, StringComparer.Ordinal)).ToList();
+
+        var unavailable = resolved
+            .Select(t => (t.Name, Missing: t.MissingSettings(context)))
+            .Where(x => x.Missing.Count > 0)
+            .ToList();
+        if (unavailable.Count > 0)
+            throw new ToolsetException(string.Join(" ", unavailable.Select(x => MessageText.Format(ErrorMessage.ToolsetSettingsMissing,
+                new { x.Name, Settings = string.Join(", ", x.Missing) }))));
+
+        return resolved;
+    }
+
+    /// <summary>The tool objects for resolved toolsets. Engine-provided toolsets contribute nothing here.</summary>
+    public static IReadOnlyList<object> BuildTools(IEnumerable<ToolsetDefinition> resolved, ToolsetContext context) =>
+        resolved
+            .Where(t => t.CreateTools is not null)
+            .SelectMany(t => t.CreateTools!(context))
+            .ToList();
+
+    /// <summary>The guides the resolved toolsets need, in catalogue order.</summary>
+    public static IReadOnlyList<string> GuideFiles(IEnumerable<ToolsetDefinition> resolved) =>
+        resolved.Where(t => t.GuideFile is not null).Select(t => t.GuideFile!).Distinct(StringComparer.Ordinal).ToList();
+
+    private static string Root(ToolsetContext context) => Path.GetFullPath(context.Options.WorkspaceRoot);
+
+    private static IReadOnlyList<string> Missing(ToolsetContext context, params (string Setting, string? Value)[] settings) =>
+        settings.Where(s => string.IsNullOrWhiteSpace(s.Value)).Select(s => s.Setting).ToList();
+}

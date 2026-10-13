@@ -8,6 +8,9 @@ public enum ApiModelText
     [Description("[Attached file: {Name}]\n```\n{Content}\n```")]
     Attachment,
 
+    [Description("[The user is in {Location}; their time zone is {TimeZone}.]")]
+    UserPlace,
+
     [Description("\n[Attachment truncated: showing {Shown} of {Length} chars]")]
     AttachmentTruncated,
 }

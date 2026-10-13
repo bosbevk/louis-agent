@@ -123,6 +123,7 @@ public sealed class UsageRecordingChatClient(
             Task: scope?.Tags.Task,
             Run: scope?.Tags.Run,
             Service: scope?.Tags.Service,
+            Parent: scope?.Tags.Parent,
             Model: model ?? defaultModel,
             Tokens: _mapper.Map(usage, raw ?? []),
             DurationMs: (long)duration.TotalMilliseconds,

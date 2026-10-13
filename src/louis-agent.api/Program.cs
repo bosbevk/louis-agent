@@ -8,6 +8,7 @@ using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
 using LouisAgent.Api.Endpoints;
 using LouisAgent.Core.Pricing;
+using LouisAgent.Core.Skills;
 using LouisAgent.Core.Tools.Workspace;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Guardrails;
@@ -16,13 +17,18 @@ using LouisAgent.Core.Logging;
 using Microsoft.Extensions.Logging;
 using LouisAgent.Core.Messages;
 using System.Globalization;
+using System.Threading.Channels;
+using LouisAgent.Core.Tools.Agents;
+using LouisAgent.Core.Tools.Clock;
 
 // HTTP version of the ACP server, which also serves the web app: every API reply is JSON, and a message's answer streams as Server-Sent Events shaped
 // like Claude's (message_start, content_block_start/delta/stop for thinking, text, tool_use and tool_result, message_stop).
 var host = AgentHost.Build();
 
 var builder = WebApplication.CreateBuilder(args);
+// host.Engine (every toolset this instance can load) serves /workspace and /git; sessions get their own (F5).
 builder.Services.AddSingleton(host.Engine);
+builder.Services.AddSingleton(host.Engines);
 builder.Services.AddSingleton<AgentSessions>();
 builder.Services.AddSingleton(new WorkspaceBoundary(host.Engine.WorkspaceRoot));
 var app = builder.Build();
@@ -37,7 +43,8 @@ else
     app.Use(async (context, next) =>
     {
         bool isApi = context.Request.Path.StartsWithSegments("/sessions") || context.Request.Path.StartsWithSegments("/workspace") ||
-                     context.Request.Path.StartsWithSegments("/git");
+                     context.Request.Path.StartsWithSegments("/git") || context.Request.Path.StartsWithSegments("/toolsets") ||
+                     context.Request.Path.StartsWithSegments("/personalities") || context.Request.Path.StartsWithSegments("/model");
         if (!isApi || HasApiKey(context.Request, apiKey))
         {
             await next(context);
@@ -92,30 +99,70 @@ app.MapWorkspace();
 app.MapGit();
 app.MapHistory();
 
-// The body is optional: { "task", "run", "service" } tag every usage record of the session (the orchestrator sends them
-// for a fix; the web app sends none).
+// The toolsets a session can load (F5-S3): names, what each is for and whether this instance has its settings. Never
+// the tool definitions, so a general agent can choose without loading them.
+app.MapGet("/toolsets", (AgentEngineFactory engines) => Results.Json(new
+{
+    @default = AgentSessions.DefaultToolsets,
+    toolsets = ToolsetCatalog.All.Select(t => new
+    {
+        name = t.Name, description = t.Description, available = t.IsAvailable(engines.Context),
+        missing_settings = t.MissingSettings(engines.Context),
+    }),
+}));
+
+// The model this instance answers with (F20: Puls's model picker shows it).
+app.MapGet("/model", () => Results.Json(new { provider = host.Llm.Provider, model = host.Llm.Model }));
+
+// The personalities a session can choose (F21): null is personality.md, the default.
+app.MapGet("/personalities", (AgentEngineFactory engines) => Results.Json(new
+{
+    @default = (string?)null,
+    personalities = engines.AvailablePersonalities,
+}));
+
+// The body is optional: { "toolsets": [...] } chooses the session's tools for its lifetime (F5; none sent: skills only);
+// "personality" its personality (F21; none sent: personality.md);
+// { "task", "run", "service" } tag every usage record of the session (the orchestrator sends them for a fix); "depth" is
+// set by an agent opening a sub-session.
 app.MapPost("/sessions", (CreateSessionRequest? request, AgentSessions sessions) =>
 {
     if (request?.InvalidTag() is { } invalid)
-        return Results.Json(Error("invalid_request_error", $"'{invalid}' must be at most {CreateSessionRequest.MaxTagLength} printable characters."),
+        return Results.Json(Error("invalid_request_error",
+                MessageText.Format(ApiUserText.InvalidTag, new { Tag = invalid, Max = CreateSessionRequest.MaxTagLength })),
+            statusCode: StatusCodes.Status400BadRequest);
+    if (!string.IsNullOrWhiteSpace(request?.TimeZone) && UserPlace.FindTimeZone(request.TimeZone) is null)
+        return Results.Json(Error("invalid_request_error", MessageText.Format(ApiUserText.UnknownTimeZone, new { request.TimeZone })),
             statusCode: StatusCodes.Status400BadRequest);
 
-    var session = sessions.Create(request is null ? null : new UsageTags(request.Task, request.Run, request.Service));
+    AgentSession session;
+    try
+    {
+        session = sessions.Create(request?.Toolsets,
+            request is null ? null : new UsageTags(request.Task, request.Run, request.Service, request.Parent), request?.Depth ?? 0,
+            request?.Personality, request?.Place());
+    }
+    catch (Exception ex) when (ex is ToolsetException or PersonalityException)
+    {
+        return Results.Json(Error("invalid_request_error", ex.Message), statusCode: StatusCodes.Status400BadRequest);
+    }
+
     return Results.Json(new
     {
-        session_id = session.Id, created_at = session.CreatedAt,
-        task = session.Tags.Task, run = session.Tags.Run, service = session.Tags.Service,
+        session_id = session.Id, created_at = session.CreatedAt, toolsets = session.Toolsets, depth = session.Depth,
+        personality = session.Personality, task = session.Tags.Task, run = session.Tags.Run, service = session.Tags.Service, parent = session.Tags.Parent,
     }, statusCode: StatusCodes.Status201Created);
 });
 
 // usage: the session's finished turns, like message_delta's (null when the API doesn't record usage).
-app.MapGet("/sessions/{id}", (string id, AgentSessions sessions, AgentEngine engine) =>
+app.MapGet("/sessions/{id}", (string id, AgentSessions sessions) =>
     sessions.Get(id) is { } session
         ? Results.Json(new
         {
             session_id = session.Id, created_at = session.CreatedAt, last_activity = session.LastActivity, busy = session.IsBusy,
+            toolsets = session.Toolsets, depth = session.Depth, personality = session.Personality, tools = session.Engine.Tools.Count,
             task = session.Tags.Task, run = session.Tags.Run, service = session.Tags.Service,
-            usage = engine.RecordsUsage ? ClaudeStyleStream.Usage(session.Usage.Records, engine.Display) : null,
+            usage = session.Engine.RecordsUsage ? ClaudeStyleStream.Usage(session.Usage.Records, session.Engine.Display) : null,
         })
         : UnknownSession(id));
 
@@ -127,7 +174,7 @@ app.MapPost("/sessions/{id}/cancel", (string id, AgentSessions sessions) =>
         ? Results.Json(new { session_id = id, cancelled = session.Cancel() })
         : UnknownSession(id));
 
-app.MapPost("/sessions/{id}/messages", (string id, SendMessageRequest request, AgentSessions sessions, AgentEngine engine, HttpContext http) =>
+app.MapPost("/sessions/{id}/messages", (string id, SendMessageRequest request, AgentSessions sessions, HttpContext http) =>
 {
     if (sessions.Get(id) is not { } session) return UnknownSession(id);
 
@@ -139,7 +186,14 @@ app.MapPost("/sessions/{id}/messages", (string id, SendMessageRequest request, A
         return Results.Json(Error("conflict_error", MessageText.Format(ApiUserText.SessionBusy, new { Id = "{id}" })),
             statusCode: StatusCodes.Status409Conflict);
 
-    return TypedResults.ServerSentEvents(StreamTurnAsync(engine, session, prompt, turn));
+    // The session keeps its attachments, so a later turn can still hand them to a specialist (F22).
+    foreach (var attachment in request.Attachments ?? []) session.Remember(attachment.Name, attachment.Content);
+
+    // Where the user is, said once, in the first message: per session, so not in the shared system prompt (F22).
+    if (session.Turns == 1 && session.Place is { Location: { } location } place)
+        prompt = MessageText.Format(ApiModelText.UserPlace, new { Location = location, TimeZone = place.TimeZone ?? "Africa/Johannesburg" }) + "\n\n" + prompt;
+
+    return TypedResults.ServerSentEvents(StreamTurnAsync(session.Engine, session, prompt, turn));
 });
 
 app.Run();
@@ -201,13 +255,29 @@ static async IAsyncEnumerable<SseItem<string>> StreamTurnAsync(
         await using var updates = engine.StreamPromptAsync(session.History, prompt, turn.Token).GetAsyncEnumerator(turn.Token);
         string stopReason = "end_turn";
         string? error = null;
+        // F5: a sub-session's events (StartSubSession) arrive while its tool call runs, so the next update is awaited
+        // alongside them and they are sent as they come: the chat shows the specialist's work live. The model still
+        // gets only the sub-session's answer.
+        var subSessions = Channel.CreateUnbounded<SubSessionEvent>();
         while (true)
         {
+            Task<bool> next;
+            using (usage.Activate())
+            using (SessionAttachments.Use(session.Attachments))
+            using (UserPlace.Use(session.Place))
+            using (SubSessionFeed.Observe(e => subSessions.Writer.TryWrite(e)))
+                next = updates.MoveNextAsync().AsTask();
+
+            while (!next.IsCompleted)
+            {
+                await Task.WhenAny(next, subSessions.Reader.WaitToReadAsync().AsTask());
+                while (subSessions.Reader.TryRead(out var sub)) yield return ClaudeStyleStream.SubSession(sub);
+            }
+            while (subSessions.Reader.TryRead(out var sub)) yield return ClaudeStyleStream.SubSession(sub);
+
             try
             {
-                bool more;
-                using (usage.Activate()) more = await updates.MoveNextAsync();
-                if (!more) break;
+                if (!await next) break;
             }
             catch (OperationCanceledException)
             {
@@ -259,14 +329,25 @@ static async IAsyncEnumerable<SseItem<string>> StreamTurnAsync(
 
 internal sealed record SendMessageRequest(string? Message, List<AttachmentRequest>? Attachments);
 
-/// <summary>Optional tags for a new session; they end up in the usage ledger, so they're kept short and printable.</summary>
-internal sealed record CreateSessionRequest(string? Task, string? Run, string? Service)
+/// <summary>
+/// A new session's options: its toolsets (F5), its personality (F21), and optional tags for the usage ledger, kept short
+/// and printable. Depth is 1 when another agent opens it as a sub-session.
+/// </summary>
+internal sealed record CreateSessionRequest(
+    string? Task, string? Run, string? Service, List<string>? Toolsets = null, int Depth = 0, string? Parent = null,
+    string? Personality = null, string? Location = null,
+    [property: System.Text.Json.Serialization.JsonPropertyName("time_zone")] string? TimeZone = null)
 {
     internal const int MaxTagLength = 200;
 
+    /// <summary>Where the user is (F22): their location when they shared it, their time zone when sent; null with neither.</summary>
+    public UserPlace? Place() => string.IsNullOrWhiteSpace(Location) && string.IsNullOrWhiteSpace(TimeZone)
+        ? null
+        : new UserPlace(string.IsNullOrWhiteSpace(Location) ? null : Location.Trim(), string.IsNullOrWhiteSpace(TimeZone) ? null : TimeZone.Trim());
+
     /// <summary>The name of the first tag that is too long or holds control characters, or null when all are fine.</summary>
     public string? InvalidTag() =>
-        new[] { ("task", Task), ("run", Run), ("service", Service) }
+        new[] { ("task", Task), ("run", Run), ("service", Service), ("parent", Parent), ("location", Location) }
             .FirstOrDefault(t => t.Item2 is { } value && (value.Length > MaxTagLength || value.Any(char.IsControl))).Item1;
 }
 
@@ -286,6 +367,19 @@ internal sealed class ClaudeStyleStream(string sessionId)
     private string? _openBlock;
 
     public static SseItem<string> Event(string type, object data) => new(JsonSerializer.Serialize(data, Json), type);
+
+    /// <summary>
+    /// A sub-session's event (F5), nested: the <c>StartSubSession</c> call it belongs to, the peer, and the peer's own event
+    /// (Claude's shape), so a client can fold it into that call the way it folds the turn's own events.
+    /// </summary>
+    public static SseItem<string> SubSession(SubSessionEvent sub)
+    {
+        using var data = JsonDocument.Parse(sub.Data);
+        return Event("sub_session", new
+        {
+            type = "sub_session", tool_use_id = sub.ToolUseId, agent = sub.Agent, @event = sub.Type, data = data.RootElement.Clone(),
+        });
+    }
 
     public SseItem<string> MessageStart() =>
         Event("message_start", new { type = "message_start", message = new { session_id = sessionId, role = "assistant" } });

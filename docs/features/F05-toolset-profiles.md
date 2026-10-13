@@ -1,6 +1,6 @@
 # F5 · Toolset profiles: send only the tools a session needs
 
-> **Status:** planned · **Milestone:** M2 · **Depends on:** F1
+> **Status:** built; short benchmark done, full run pending · **Milestone:** M2 · **Depends on:** F1
 >
 > **Spec:** [Optimisation §C](../specs/RESPONSE_OPTIMISATION.md)
 >
@@ -19,8 +19,9 @@ with the toolsets a task needs, and get the result back.
 - **Per session, not per instance.** Toolsets are chosen with `POST /sessions` and fixed for that session. Changing them
   mid-chat is out of scope: it breaks the cached prefix and the Haiku 5.5 history rule.
 - **Nothing at start-up.** The `AGENT_TOOLSETS` instance setting is dropped. The engine is built per profile, on demand.
-- **Default:** a session created without `toolsets` gets `skills` only. Clients that need tools (the web app) send
-  their own list.
+- **Default:** a session created without `toolsets` gets `skills` only. Clients that need tools send their own list.
+- **Web chats delegate** (2026-10-13): the web app opens chats with only `agents`, and every task runs in a sub-session
+  on the specialist (`api-coder`) with the toolsets it needs; with no peer, a chat gets every available toolset.
 - **Sub-sessions are one level deep.** A sub-session cannot open its own sub-sessions.
 
 ## User stories
@@ -71,7 +72,7 @@ with named toolsets, send it a task, and get the result back, so that tools are 
 | `web` | `WebTools` | `web-skills.md` |
 | `skills` | `CreateSkillFile`, `ReloadSkills`, `CreateTool`, `ListAgentTools` (+ approved agent-built tools) | `self-extension-skills.md` |
 | `paymo` | `PaymoTools` (key required) | `paymo-skills.md` (moved out of `default.md`) |
-| `devops` | `DevOpsTools` (key, organisation and project required) | `devops-skills.md` (moved out of `default.md`) |
+| `devops` | `DevOpsTools` (key, organisation and project required) | `devops-skills.md` |
 | `agents` | `AgentPeerTools`: `StartSubSession` (`AGENT_PEERS` required) | `agents-skills.md` |
 
 `ExecuteSkill` is always registered.
@@ -80,6 +81,9 @@ with named toolsets, send it a task, and get the result back, so that tools are 
 
 - **Toolset catalogue** (new `louis-agent.core/Agent/ToolsetCatalog.cs`): each name maps to a description, required
   settings, a factory for its tool object, and its guide file.
+- **Built-in guides embedded** (`Skills/SkillFileSource`): `personality.md`, `default.md` and every toolset guide are
+  embedded in `louis-agent.core`; a file of the same name in the skills directory overrides one. Files the agent
+  writes, custom `AGENT_FUNCTION` files and agent-built tools stay on disk only.
 - **Engine per profile** (new `louis-agent.core/Agent/AgentEngineFactory.cs`): built from `AgentHostContext`. Shares the
   chat client, usage sink, mapper, display, thinking and options. Caches one `AgentEngine` per sorted toolset list, up
   to a cap (16).
@@ -131,6 +135,18 @@ with named toolsets, send it a task, and get the result back, so that tools are 
   default only for tasks where the ledger shows it is cheaper.
 - **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)): tick **F5** in the TODO, set *Status*
   to done here and in the features table, and note it in the spec's implementation map.
+
+## Left before done (2026-10-13)
+
+Built on `feature/F5-toolset-profiles` (steps 1–10 and 12; [plan](../plans/F05-toolset-profiles.md)); all suites pass.
+Left, because each needs a model and so spends money:
+- **The full benchmark** (step 11, S4 and S6): `samples/run-demo.ps1` (10 fixes) against F4's full run, to confirm 10/10.
+  The **short run is done** (2026-10-13, [sample](../../samples/sample-output-short-f5/README.md),
+  [numbers](README.md#f5-benchmark-short-run-2026-10-13)): prefix −50% (~48.5k → ~24.4k tokens), louis-agent −31%, the
+  run −23% ($0.0488 → $0.0378), 4/4 fixes confirmed, the cache still hits.
+- **A sub-session end to end:** `--profile peers`, `AGENT_PEERS=coder=http://api-coder:8080`, one task delegated from
+  the web app; check the child is deleted and its ledger records carry `parent`.
+- **By hand:** the web app (a chat has its tools; `GET /toolsets`), Rider over ACP (all available toolsets).
 
 ## Out of scope
 

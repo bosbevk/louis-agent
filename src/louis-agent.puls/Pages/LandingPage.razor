@@ -1,0 +1,189 @@
+@page "/"
+
+@* F20: what Puls is, before you chat. A floating pill nav, the hero with the tagline, a picture of the app, how it works,
+   the features, questions and a way in. The chat is at /gesels. *@
+
+<PageTitle>Puls · Elke vraag op pad na 'n antwoord</PageTitle>
+
+<div class="landing">
+    <div class="landing-glow" aria-hidden="true"><span></span><span></span><span></span></div>
+
+    <header class="landing-nav">
+        <a class="brand" href="./" aria-label="Puls"><PulsLogo /></a>
+        <nav class="landing-links">
+            <a href="#hoe">Hoe dit werk</a>
+            <a href="#kenmerke">Kenmerke</a>
+            <a href="#pryse">Pryse</a>
+            <a href="#vrae">Vrae</a>
+        </nav>
+        <a class="pill pill-primary" href="gesels">Begin gesels</a>
+    </header>
+
+    <section class="hero">
+        <div class="hero-mark hero-mark-lg" aria-hidden="true">
+            <div class="pulse-bg"><span></span><span></span><span></span><span></span></div>
+            <img src="brand/puls-icon-tile.svg" alt="" width="96" height="96" />
+        </div>
+        <span class="eyebrow">Jou KI-assistent, in Afrikaans</span>
+        <h1>Elke vraag op pad <span class="gradient-text">na 'n antwoord</span></h1>
+        <p class="lead">Puls stuur elke taak na 'n spesialis met net die gereedskap wat dit nodig het, en jy sien hoe dit werk: die stappe, die bronne en die koste.</p>
+        <div class="hero-actions">
+            <a class="pill pill-primary pill-lg" href="gesels">Begin 'n gesprek</a>
+            <a class="pill pill-ghost pill-lg" href="#hoe">Hoe dit werk</a>
+        </div>
+    </section>
+
+    @* A picture of the app, drawn in HTML so it stays sharp and in the theme's colours. *@
+    <section class="showcase" aria-hidden="true">
+        <div class="mock">
+            <div class="mock-side">
+                <img src="brand/puls-logo-white.svg" alt="" class="mock-logo" />
+                <span class="mock-new">+ Nuwe gesprek</span>
+                <span class="mock-label">Onlangs</span>
+                <span class="mock-chat active">Wat is nuut in .NET 10?</span>
+                <span class="mock-chat">Som die README op</span>
+                <span class="mock-chat">Laaste vyf commits</span>
+                <span class="mock-chat">Reëls kode per vouer</span>
+            </div>
+            <div class="mock-main">
+                <div class="mock-user">Wat is nuut in .NET 10?</div>
+                <div class="mock-card">
+                    <img src="brand/puls-icon-tile.svg" alt="" />
+                    <div><small>Oorgedra aan</small> <b>puls</b><div><span class="mock-chip">web</span></div></div>
+                    <span class="mock-done">Klaar</span>
+                </div>
+                <div class="mock-lines"><i style="width:92%"></i><i style="width:84%"></i><i style="width:88%"></i><i style="width:60%"></i></div>
+                <div class="mock-composer">Boodskap aan Puls <span>↑</span></div>
+            </div>
+            <div class="mock-work">
+                <b>Werk</b>
+                <span class="mock-step">✓ WebSearch</span>
+                <span class="mock-step">✓ FetchUrl · 3 bladsye</span>
+                <span class="mock-step">✓ Antwoord geskryf</span>
+                <span class="mock-label">Bronne</span>
+                <span class="mock-source">learn.microsoft.com</span>
+                <span class="mock-source">devblogs.microsoft.com</span>
+                <span class="mock-cost">R0,02 · 4 versoeke</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="hoe">
+        <span class="eyebrow">Hoe dit werk</span>
+        <h2>Een vraag, drie stappe</h2>
+        <div class="steps">
+            <div class="step">
+                <span class="step-num">1</span>
+                <h3>Vra</h3>
+                <p>Tik jou vraag in gewone taal, of heg 'n lêer aan.</p>
+            </div>
+            <div class="step">
+                <span class="step-num">2</span>
+                <h3>Puls stuur dit uit</h3>
+                <p>Puls kies 'n spesialis en gee dit net die gereedskap wat die taak nodig het.</p>
+            </div>
+            <div class="step">
+                <span class="step-num">3</span>
+                <h3>Kry die antwoord</h3>
+                <p>Jy sien die spesialis werk, sy bronne en wat dit gekos het, en kry die antwoord.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="kenmerke">
+        <span class="eyebrow">Kenmerke</span>
+        <h2>Alles wat jy nodig het, niks meer nie</h2>
+        <div class="features">
+            @foreach (var (icon, title, text) in Features)
+            {
+                <div class="feature">
+                    <span class="feature-icon i-@icon" aria-hidden="true"></span>
+                    <h3>@title</h3>
+                    <p>@text</p>
+                </div>
+            }
+        </div>
+    </section>
+
+    <section class="section" id="pryse">
+        <span class="eyebrow">Pryse</span>
+        <h2>Betaal soos jy gebruik</h2>
+        <div class="pricing">
+            <div class="price-card">
+                <span class="feature-icon i-coin" aria-hidden="true"></span>
+                <h3>Geen intekening nie</h3>
+                <p>Geen maandfooi en geen planne nie: jy betaal net vir die vrae wat jy vra.</p>
+            </div>
+            <div class="price-card price-card-main">
+                <span class="feature-icon i-pulse" aria-hidden="true"></span>
+                <h3>Sien wat elke vraag kos</h3>
+                <p>Onder elke antwoord, en vir elke spesialis wat gehelp het, in rand.</p>
+                <div class="price-example"><span>Wat is nuut in .NET 10?</span><strong>R0,47</strong></div>
+                <div class="price-example"><span>Som die README op</span><strong>R0,09</strong></div>
+            </div>
+            <div class="price-card">
+                <span class="feature-icon i-chart" aria-hidden="true"></span>
+                <h3>Krediete wanneer jy wil</h3>
+                <p>Koop krediete en gebruik dit soos jy vra; jou gebruik vir die maand is altyd een klik weg. (Kom binnekort.)</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="oor">
+        <span class="eyebrow">Oor ons</span>
+        <h2>Gebou deur een mens, oop vir almal</h2>
+        <p class="about">Puls is 'n persoonlike projek, gebou op <strong>louis-agent</strong>: 'n KI-agent wat take na spesialiste
+            stuur en elke stap en elke sent sigbaar maak. Die kode is oopbron onder die MIT-lisensie.</p>
+        <a class="pill pill-ghost" href="https://github.com/bosbevk/louis-agent" target="_blank" rel="noopener">
+            <span class="ic i-github" aria-hidden="true"></span>louis-agent op GitHub
+        </a>
+    </section>
+
+    <section class="section" id="vrae">
+        <span class="eyebrow">Vrae</span>
+        <h2>Gereelde vrae</h2>
+        <div class="faq">
+            @foreach (var (question, answer) in Questions)
+            {
+                <details>
+                    <summary>@question</summary>
+                    <p>@answer</p>
+                </details>
+            }
+        </div>
+    </section>
+
+    <section class="cta">
+        <h2>Gereed? Vra jou eerste vraag.</h2>
+        <a class="pill pill-primary pill-lg" href="gesels">Begin 'n gesprek</a>
+    </section>
+
+    <footer class="landing-footer">
+        <img src="brand/puls-logo-white.svg" alt="Puls" height="32" />
+        <span>Elke vraag op pad na 'n antwoord</span>
+        <a class="landing-footer-link" href="https://github.com/bosbevk/louis-agent" target="_blank" rel="noopener">GitHub</a>
+        <span class="landing-footer-copy">© 2026 bosbevk · MIT-lisensie</span>
+    </footer>
+</div>
+
+@code {
+    private static readonly (string Icon, string Title, string Text)[] Features =
+    [
+        ("search", "Soek aanlyn", "Die spesialis soek op die web en lees die bladsye self, met die bronne by die antwoord."),
+        ("file", "Lees lêers", "Vra oor 'n lêer of heg een aan: Puls lees dit en som dit op."),
+        ("clock", "Kyk na die geskiedenis", "Wat het verander, wie het dit gedoen en waarom: uit die repository se geskiedenis."),
+        ("chart", "Tel en reken", "Laat die spesialis tel, reken en tabelle maak met 'n skrip wat jy kan nagaan."),
+        ("pulse", "Sien hoe dit werk", "Elke taak se stappe, gedagtes en gereedskap verskyn lewendig terwyl die spesialis werk."),
+        ("coin", "Koste sigbaar", "Elke vraag wys wat dit gekos het, in jou eie geldeenheid."),
+    ];
+
+    private static readonly (string Question, string Answer)[] Questions =
+    [
+        ("Wat is Puls?", "'n KI-assistent wat jou vraag na 'n spesialis stuur: 'n tweede agent met net die gereedskap wat die taak nodig het. Jy sien die werk terwyl dit gebeur."),
+        ("Watter model gebruik Puls?", "'n Claude-model van Anthropic, soos op die bediener ingestel. Die koste van elke vraag word gewys."),
+        ("Wat kos dit?", "Jy betaal soos jy gebruik: elke vraag se koste word gewys, spesialiste ingesluit. Geen intekening nie. Krediete kom binnekort."),
+        ("Is Puls oopbron?", "Ja. Puls is gebou op louis-agent, oopbron onder die MIT-lisensie, op GitHub."),
+        ("Waar word my gesprekke gestoor?", "In jou blaaier. Die bediener hou 'n gesprek net solank dit loop; ná 'n herbegin begin jy 'n nuwe een."),
+        ("Kan ek dit in Engels gebruik?", "Ja: vra in Engels en Puls antwoord in Engels. Die skerms is in Afrikaans."),
+    ];
+}

@@ -36,6 +36,24 @@ public class UsageRecordingChatClientTests
     }
 
     [Test]
+    public async Task ASubSessionsRequests_CarryTheParentTurn_AndTheParentsOwnRecordsAreThatTurn()
+    {
+        // F5 step 9: a parent turn with one child writes both records, and both name the parent turn, so they add up.
+        var sink = new ListUsageSink();
+        using var client = new UsageRecordingChatClient(new FakeChatClient(_ => Reply("parent"), _ => Reply("child")), sink);
+
+        using (UsageScope.Begin(host: "api", session: "sess_parent", turn: 4))
+            await client.GetResponseAsync("delegate this");
+        using (UsageScope.Begin(host: "api", session: "sess_child", turn: 1, tags: new UsageTags("sub-session:coder", null, null, "sess_parent#4")))
+            await client.GetResponseAsync("the task");
+
+        var (parent, child) = (sink.Records[0], sink.Records[1]);
+        Assert.That($"{parent.Session}#{parent.Turn}", Is.EqualTo("sess_parent#4"));
+        Assert.That(child.Parent, Is.EqualTo("sess_parent#4"));
+        Assert.That(JsonSerializer.Serialize(child, JsonlUsageSink.Json), Does.Contain("\"parent\":\"sess_parent#4\""), "the ledger's field");
+    }
+
+    [Test]
     public async Task GetResponse_TwoRequestsInOneScope_AreRounds1And2()
     {
         var sink = new ListUsageSink();

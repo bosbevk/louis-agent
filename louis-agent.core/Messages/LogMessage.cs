@@ -177,8 +177,18 @@ public enum LogMessage
     [Description("Loaded {Provider}")]
     SkillProviderLoaded,
 
-    [Description("Loaded {Function} skills provider")]
-    AgentFunctionLoaded,
+    [Description("Loaded {Provider} (built in: no copy on disk)")]
+    SkillFileEmbedded,
+
+    [Description("Toolsets {Toolsets}: {Tools} tools, a {PromptChars}-character system prompt, about {PrefixTokens} tokens of fixed prefix")]
+    ToolsetProfileBuilt,
+
+    [Description("Toolsets {Toolsets}: dropped from the cache, the least recently used of {Capacity} profiles")]
+    ToolsetProfileDropped,
+
+    [Description("Sub-session prompt budget: the last request's prompt was {Last} tokens and the next is expected at {Next}, over the budget of {Budget}; the next request answers without tools")]
+    SubSessionPromptBudgetReached,
+
 
     [Description("Loaded {File} via MarkdownSkillProvider")]
     MainSkillsFileLoaded,

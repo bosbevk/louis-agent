@@ -1,0 +1,170 @@
+@* F20: the Werk panel, the dashboard's right column. The work Puls handed out in this chat, newest first: who did it,
+   with which toolsets, the task, the specialist's steps as they happen, and what it cost. The same data as the
+   delegation card in the answer (Block.SubTurn), kept beside the chat so the answer stays readable. *@
+@inject ChatText Text
+
+<div class="work-head">
+    <span class="work-title">Werk</span>
+    @if (Items.Count > 0)
+    {
+        <span class="work-count">@Items.Count</span>
+    }
+    <button class="icon d-none d-xl-inline-grid" type="button" onclick="pulsUi.toggleWork()" title="Versteek die werkpaneel" aria-label="Versteek die werkpaneel">⇥</button>
+    <button class="icon d-xl-none" type="button" data-bs-dismiss="offcanvas" data-bs-target="#work" aria-label="Maak die werkpaneel toe">×</button>
+</div>
+
+<div class="work-body">
+    @if (Items.Count == 0)
+    {
+        <div class="work-empty">
+            <img src="brand/puls-mark.svg" alt="" width="56" height="56" />
+            <strong>Nog geen werk nie</strong>
+            <p>Wanneer Puls 'n taak oordra, sien jy hier die spesialis se stappe, gereedskap en koste, terwyl dit gebeur.</p>
+        </div>
+    }
+    @foreach (var item in Items)
+    {
+        var sub = item.Block.SubTurn;
+        var steps = sub?.Blocks.Where(b => b.Kind == BlockKind.Tool).ToList() ?? [];
+        int thoughts = sub?.Blocks.Count(b => b.Kind == BlockKind.Thinking) ?? 0;
+        <section class="work-item @item.Status">
+            <div class="work-item-head">
+                <img src="brand/puls-icon-tile.svg" alt="" class="work-avatar" />
+                <div class="work-who">
+                    <small>@Text.DelegatedTo</small>
+                    <strong>@item.Agent</strong>
+                </div>
+                <span class="work-status">@(item.Status switch { "running" => Text.Working, "failed" => Text.Failed, _ => Text.Done })</span>
+            </div>
+
+            @if (item.Delegation.Toolsets.Count > 0)
+            {
+                <div class="work-chips">
+                    @foreach (string toolset in item.Delegation.Toolsets)
+                    {
+                        <span class="toolset-chip">@toolset</span>
+                    }
+                </div>
+            }
+
+            @if (item.Delegation.Task is { Length: > 0 } task)
+            {
+                <p class="work-task" title="@task">@task</p>
+            }
+
+            <div class="work-label">Stappe</div>
+            @if (steps.Count == 0 && thoughts == 0)
+            {
+                <div class="work-step waiting">@(item.Status == "running" ? Text.Starting + "…" : "—")</div>
+            }
+            <ol class="work-steps">
+                @foreach (var step in steps)
+                {
+                    <li class="work-step @(step.ToolResult is null ? "waiting" : step.ToolFailed ? "failed" : "ok")">
+                        <span class="work-step-mark">@(step.ToolResult is null ? "⋯" : step.ToolFailed ? "✗" : "✓")</span>
+                        <span class="work-step-name">@step.ToolName</span>
+                        @if (Summarise(step.ToolInput) is { Length: > 0 } args)
+                        {
+                            <span class="work-step-args">@args</span>
+                        }
+                    </li>
+                }
+            </ol>
+            @if (thoughts > 0)
+            {
+                <div class="work-thoughts">@Text.Steps(steps.Count, thoughts)</div>
+            }
+
+            @if (sub?.Usage is { } usage)
+            {
+                <div class="work-cost" title="@UsageFormat.Detail(usage, Currency)">
+                    <span>Koste</span>
+                    <strong>@UsageFormat.Cost(usage, Currency)</strong>
+                    <span>@usage.Requests versoeke</span>
+                </div>
+            }
+            else if (item.Delegation.UsageLine is { } line)
+            {
+                <div class="work-cost"><span>@line</span></div>
+            }
+        </section>
+    }
+</div>
+
+@* What the chat cost so far: Puls's own requests and its specialists', side by side. Not added up: the chat's usage
+   doesn't include the specialists' yet (the F5 roll-up), and once it does, a sum here would count them twice. *@
+@* The pages this chat used or cited (F20): the answers' links and the pages the specialists read, newest turn first. *@
+@if (ChatSources.Count > 0)
+{
+    <div class="work-sources">
+        <div class="work-label">Bronne <span class="work-count">@ChatSources.Count</span></div>
+        @foreach (var source in ChatSources)
+        {
+            <a class="work-source" href="@source.Url" target="_blank" rel="noopener noreferrer" title="@source.Url">
+                <span class="source-dot">@source.Site[..1].ToUpperInvariant()</span>
+                <span class="work-source-text"><strong>@source.Title</strong><small>@Address(source.Url)</small></span>
+            </a>
+        }
+    </div>
+}
+
+@if (Chat?.Usage() is { } own)
+{
+    <div class="work-foot">
+        <span title="@UsageFormat.Detail(own, Currency)">Puls <strong>@UsageFormat.Cost(own, Currency)</strong></span>
+        @if (SpecialistUsage is { } specialists)
+        {
+            <span title="@UsageFormat.Detail(specialists, Currency)">Spesialiste <strong>@UsageFormat.Cost(specialists, Currency)</strong></span>
+        }
+    </div>
+}
+
+@code {
+    [Parameter] public Chat? Chat { get; set; }
+    [Parameter] public bool Streaming { get; set; }
+    [Parameter] public CurrencyChoice? Currency { get; set; }
+
+    private sealed record Item(Delegation Delegation, Block Block, string Agent, string Status);
+
+    /// <summary>Every delegation in the chat, newest first; the one still running is "running".</summary>
+    private List<Item> Items
+    {
+        get
+        {
+            if (Chat is null) return [];
+            var items = new List<Item>();
+            for (int t = Chat.Turns.Count - 1; t >= 0; t--)
+            {
+                var turn = Chat.Turns[t];
+                bool live = Streaming && t == Chat.Turns.Count - 1;
+                for (int b = turn.Blocks.Count - 1; b >= 0; b--)
+                {
+                    var block = turn.Blocks[b];
+                    if (Delegation.From(block) is not { } delegation) continue;
+                    string agent = delegation.Agent is { Length: > 0 } named ? named : block.SubAgent ?? delegation.ResultAgent ?? Text.Specialist;
+                    string status = live && block.ToolResult is null ? "running" : block.ToolFailed || delegation.Failed ? "failed" : "done";
+                    items.Add(new Item(delegation, block, agent, status));
+                }
+            }
+            return items;
+        }
+    }
+
+    /// <summary>A page's address as people read it: no scheme, no www.</summary>
+    private static string Address(string url) => url.Replace("https://", "").Replace("http://", "").Replace("www.", "").TrimEnd('/');
+
+    /// <summary>Every source of the chat, newest turn first, each address once.</summary>
+    private List<Source> ChatSources =>
+        Chat is null ? [] : Chat.Turns.AsEnumerable().Reverse().SelectMany(Sources.Of).DistinctBy(s => s.Url).ToList();
+
+    /// <summary>The specialists' usage in this chat: every delegation's sub-turn, added up.</summary>
+    private TurnUsage? SpecialistUsage =>
+        Items.Select(i => i.Block.SubTurn?.Usage).OfType<TurnUsage>().Aggregate((TurnUsage?)null, (sum, u) => sum is null ? u : sum + u);
+
+    private static string Summarise(string? json)
+    {
+        if (string.IsNullOrWhiteSpace(json)) return "";
+        string flat = string.Join(" ", json.Split('\n', StringSplitOptions.TrimEntries)).Trim('{', '}', ' ');
+        return flat.Length > 60 ? flat[..60] + "…" : flat;
+    }
+}

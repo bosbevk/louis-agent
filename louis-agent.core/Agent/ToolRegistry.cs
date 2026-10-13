@@ -40,9 +40,13 @@ internal sealed class ToolRegistry
     /// Adds every public instance method the object declares as a tool, named and described by the method; the
     /// description with LF line endings, whatever the checkout (<see cref="AgentEngine.Normalise"/>).
     /// </summary>
+    /// <summary>The methods of a tool class that become tools: its public instance methods, declared on it.</summary>
+    internal static IEnumerable<MethodInfo> ToolMethods(Type type) =>
+        type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+
     public void AddPublicMethods(object target)
     {
-        foreach (MethodInfo method in target.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly))
+        foreach (MethodInfo method in ToolMethods(target.GetType()))
         {
             Add(AIFunctionFactory.Create(method, target, new AIFunctionFactoryOptions
             {

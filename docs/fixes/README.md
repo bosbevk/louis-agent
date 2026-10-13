@@ -18,6 +18,11 @@ record (most fixes so far taught something about a model's API).
 | [FX7](FX07-timeout-ends-run.md) | A timed-out request no longer ends the orchestrator's run (only the user's stop does) | done | orchestrator: triage loop | F3's split demo test, triage on Ollama (2026-10-11) | `f2d38d2` | — |
 | [FX8](FX08-fix-result-quotes.md) | A FIX-RESULT with quotes in its summary is still read (not answered with "continue") | done | orchestrator: FIX-RESULT parsing | F14's full demo rerun, error 10 (2026-10-11) | `6307226` | — |
 | [FX9](FX09-cancelled-request-usage.md) | A request cancelled without streaming is still written to the ledger | open | core: usage recorder | Short demo with triage on llama3.1, a timed-out request missing (2026-10-12) | — | — |
+| [FX10](FX10-optional-peer-name.md) | A sub-session call without `agent` uses the only peer (it was refused) | done | core: `agents` toolset | Puls delegation check with roles, 3 refused calls (2026-10-13) | (this commit) | — |
+| [FX11](FX11-empty-sub-session-answer.md) | A sub-session that ends without an answer is asked once more, in the same session (not started over) | done | core: `agents` toolset | Puls delegation check with roles, numbers-2 at a third of the run's cost (2026-10-13) | (this commit) | — |
+| [FX12](FX12-env-templates-readable.md) | `.env` templates (`.env.example`) can be read; the real `.env` files stay blocked | done | core: `SensitiveFiles` | Puls delegation check with roles, files-2 refused in both runs (2026-10-13) | (this commit) | — |
+| [FX13](FX13-counting-to-the-analyst.md) | Counting goes to the analyst (a script), and the reader hands it back instead of reading every file | done | skills: routing, reader role | Delegation check after FX10–FX12, numbers-2 at $0.278 (2026-10-14) | (this commit) | — |
+| [FX14](FX14-sub-session-prompt-budget.md) | A sub-session's prompt has a budget (80k tokens, under the 100k price step): past it the specialist answers from what it has | done | core: tool loop | Delegation check after FX10–FX12, a 298k-token sub-session (2026-10-14) | (this commit) | — |
 
 ## Conventions
 

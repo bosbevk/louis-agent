@@ -1,65 +1,68 @@
 # Paymo Skills
 
-Skills for managing time entries and tasks in Paymo. These are placeholder/example skills (each `echo`s a message
-rather than calling the Paymo API) kept to demonstrate the skill format — prefer the native `PaymoTools` methods
-below, which are faster and don't require subprocess calls.
+## Time & Project Management (Paymo)
 
-## Tools
+### Time Entry Management
+- `LogTimeByTaskName(taskName, startTime, endTime, hours, notes, date)` — Log time to a task
+- `GetTimeEntriesForToday()` — Get all time entries logged today
+- `GetTimeEntriesForThisWeek()` — Get time entries from Monday to Sunday
+- `ListTimeEntries(startDate, endDate, userId, maxResults)` — List entries with filters
+- `GetTimeEntryDetails(entryId)` — Get specific time entry details
+- `DeleteTimeEntry(entryId)` — Delete a time entry
 
-| Tool | Use it to |
-|------|-----------|
-| `SearchTasks` | Search for tasks by name/keyword |
-| `ListTasks` | List all tasks with filters |
-| `GetTaskDetails` | Get task information |
-| `ListProjects` | List all projects |
-| `LogTimeByTaskName` | Log time to a task (supports duration or time range) |
-| `ListTimeEntries` | Get time entries with filters |
-| ...and 10+ more native tools for time tracking, users, and analytics | |
+### Task Management
+- `SearchTasks(query, status, maxResults)` — Search for tasks by name/keyword
+- `ListTasks(projectId, status, maxResults)` — List all tasks (optionally filtered)
+- `GetTaskDetails(taskId)` — Get detailed information about a task
 
-## Skill: LogTime
+### Project Management
+- `ListProjects(status, maxResults)` — List all projects (active, archived)
+- `GetProjectDetails(projectId)` — Get detailed project information
 
-- Description: Log time to a task by name, hours, or time range
-- Parameters:
-  - `taskName` (required): Name or ID of the task to log time to
-  - `hours` (optional): Number of hours to log (e.g., "1.5")
-  - `startTime` (optional): Start time in HH:MM format (e.g., "09:00")
-  - `endTime` (optional): End time in HH:MM format (e.g., "10:30")
-  - `notes` (optional): Notes or description for the time entry
-  - `date` (optional): Date in YYYY-MM-DD format (default: today)
-- Execution:
+### Time Analytics & Reports
+- `GetDailySummary(startDate, endDate)` — Time entry summary grouped by day
+- `GetUserSummary(startDate, endDate)` — Time entry summary grouped by user
+- `GetProjectSummary(startDate, endDate)` — Time entry summary grouped by project
 
-```bash
-# This is a placeholder skill
-# Implementation delegates to the PaymoTools native function
-echo "Time logging for task: $SKILL_ARG_taskName"
+### Team & Organization
+- `ListClients(maxResults)` — List all clients
+- `ListUsers(maxResults)` — List team members
+- `GetCurrentUser()` — Get authenticated user's info
+- `GetCompanyInfo()` — Get company/workspace information
+
+## Paymo Workflows
+
+### Time Tracking & Reporting
+```
+# Log time to a task
+LogTimeByTaskName("Ticket 1234567: Fix login page", "09:00", "10:30", "", "Fixed report layout")
+
+# Review your time entries
+GetTimeEntriesForToday()
+GetTimeEntriesForThisWeek()
+
+# Get time analytics
+GetDailySummary("2026-10-01", "2026-10-05")
+GetUserSummary("2026-10-01", "2026-10-05")
+GetProjectSummary("2026-10-01", "2026-10-05")
 ```
 
-## Skill: GetTaskList
+### Task & Project Lookup
+```
+# Search for tasks
+SearchTasks("authentication", "active", 20)
+GetTaskDetails("12345")
 
-- Description: Search for tasks in Paymo
-- Parameters:
-  - `query` (required): Task name or keyword to search for
-  - `status` (optional): Filter by status (e.g., "active", "completed")
-  - `limit` (optional): Maximum number of results (default: 20)
-- Execution:
-
-```bash
-# This is a placeholder skill
-# Implementation delegates to the PaymoTools native function
-echo "Searching for tasks: $SKILL_ARG_query"
+# List all projects
+ListProjects("active")
+GetProjectDetails("999")
 ```
 
-## Skill: GetTimeEntries
-
-- Description: Retrieve time entries for a date range
-- Parameters:
-  - `startDate` (required): Start date in YYYY-MM-DD format
-  - `endDate` (required): End date in YYYY-MM-DD format
-  - `userId` (optional): User ID filter (default: current user)
-- Execution:
-
-```bash
-# This is a placeholder skill
-# Implementation delegates to the PaymoTools native function
-echo "Time entries from $SKILL_ARG_startDate to $SKILL_ARG_endDate"
+### Team Capacity & Workload
 ```
+# Check who's working on what
+ListUsers()
+GetUserSummary("2026-10-01", "2026-10-05")
+GetCompanyInfo()
+```
+

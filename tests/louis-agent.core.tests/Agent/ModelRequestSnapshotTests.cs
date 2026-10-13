@@ -40,8 +40,14 @@ public class ModelRequestSnapshotTests
         {
             WorkspaceRoot = _skillsDir, SkillsDirectory = _skillsDir, AgentFunction = "louis", RatesUrl = null,
             PaymoApiKey = "snapshot", DevopsApiKey = "snapshot", DevopsOrganization = "org", DevopsProject = "project",
+            AgentPeers = new Dictionary<string, Uri> { ["coder"] = new("http://coder.test/") },
         };
-        return new AgentEngine(AgentHost.LoadSkills(options), new FakeChatClient(), options, supportsTools) { SkillsDirectory = _skillsDir };
+        // F5: an engine has only the toolsets it is given, so the snapshot names them all (and self-extension).
+        var toolsets = TestPaths.Toolsets(options, ToolsetCatalog.All.Select(t => t.Name));
+        return new AgentEngine(AgentHost.LoadSkills(options), new FakeChatClient(), options, supportsTools, toolsets: toolsets, selfExtension: true)
+        {
+            SkillsDirectory = _skillsDir,
+        };
     }
 
     /// <summary>What the model sees, with this machine's temporary folder replaced so the file is the same everywhere.</summary>
