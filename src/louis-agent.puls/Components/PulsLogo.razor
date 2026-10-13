@@ -34,10 +34,10 @@
 </svg>
 
 @code {
-    /// <summary>Radius and width of each ring cut out of the disc: evenly spaced, the first the boldest and each after it thinner.</summary>
+    /// <summary>Radius and width of each ring cut out of the disc: evenly spaced, the first bold and each after it tapering away.</summary>
     private static readonly (string Radius, string Width)[] Rings =
     [
-        ("16", "6"), ("31", "4.9"), ("46", "3.9"), ("61", "3.1"), ("76", "2.4"), ("91", "1.8"), ("106", "1.3"),
+        ("20", "11"), ("37", "8.4"), ("54", "6.2"), ("71", "4.4"), ("88", "3"), ("105", "2"),
     ];
 
     private readonly string _id = "puls-" + Guid.NewGuid().ToString("N")[..8] + "-";
