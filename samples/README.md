@@ -150,6 +150,11 @@ same fixes for a fifth of the cost; the two samples above are their "before".
 With toolset profiles (F5): [sample-output-short-f5/](sample-output-short-f5/README.md) ($0.038 against F4's $0.049,
 −23%): each fix session loads only `dotnet`, `files`, `git` and `skills`, so its prefix halves (~48.5k → ~24.4k tokens).
 
+Puls's delegation, measured: [sample-output-puls-check/](sample-output-puls-check/README.md) asks five questions twice,
+first one agent with every toolset (the baseline), then Puls delegating to its specialists
+(`samples/puls-check/run_check.py`): 60% fewer tokens but 31% more cost ($0.0167 → $0.0218), as each specialist writes
+its own prefix to the cache and the answer is written twice; cheaper only for web research and plain chat.
+
 With triage on a local model: [sample-output-short-local-triage/](sample-output-short-local-triage/README.md) is a
 `-Short` run whose orchestrator ran on `qwen3:4b-instruct-2507` in Ollama on a 4 GB GPU, fixes on Claude: the same
 4 fixes and 1 escalation, triage free ($0.042 against $0.049), 2.4 times slower. Its README has the steps to run it
