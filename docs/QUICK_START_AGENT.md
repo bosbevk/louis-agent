@@ -25,6 +25,19 @@ Open **http://127.0.0.1:5080**.
   the checked-out one, and delete merged branches.
 - **Theme** — switch between *Retro terminal* and *Paper (soft light)* at the bottom of the sidebar.
 
+### Puls (the general assistant, in Afrikaans)
+
+```bash
+docker compose -f docker/docker-compose.puls.yml --env-file config/.env up -d --build
+```
+
+Open **http://127.0.0.1:5070** and ask anything, in Afrikaans or English: *"Wat is die nuutste weergawe van .NET?"*,
+*"Lees README.md en som dit op"*, *"Hoeveel .cs-lêers is daar?"*. Puls hands each task to a specialist (a researcher,
+reader, historian or analyst), and the **Werk** panel on the right shows the work as it happens: the specialist, its
+steps, the sources it read and what it cost. **Krediete** at the top shows what the chat has cost so far. Attach text
+files with **+** (PDF, Word files and spreadsheets are read from the workspace; attaching one doesn't work yet), and set
+your location under **Instellings** if you want "near me" to work.
+
 ### Rider
 
 Add the agent server from `config/rider-acp.example.json` in Rider's AI Assistant settings, then pick **Louis Agent** in

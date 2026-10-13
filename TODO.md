@@ -215,6 +215,9 @@ Design: [docs/specs/SESSION_ARCHITECTURE.md](docs/specs/SESSION_ARCHITECTURE.md)
 - [ ] Long-term memory and retrieval (past conversations, user facts, external knowledge)
 - [ ] Storage by access pattern (hot state, transcripts, vectors, large artifacts) and explicit session lifecycle states
 - [ ] [F22 Role tools](docs/features/F22-role-tools.md) — the tools Puls's specialists need: today's date, attachments, documents, git history, tables, currency ([plan](docs/plans/F22-role-tools.md)). Built; open: a specialist reading an attached PDF in a real chat.
+      - [ ] Binary attachments: an attached PDF, Word file or spreadsheet is read as text in Puls's web app and
+            carried as a string to the specialist, so it arrives mangled; send it as base64 with its media type and
+            read it with `DocumentText` (found in the docs review, 2026-10-14)
 - [ ] [F21 Personalities](docs/features/F21-personalities.md) — each session (and sub-session) names its personality; Puls speaks everyday South African Afrikaans ([plan](docs/plans/F21-personalities.md)). Built; open: Louis's corrections to the Afrikaans (the delegation check's `answers.md`).
 - [ ] **F23 Credits** (to plan): buy credits with money, spend them per question at cost plus a margin, from the usage
       ledger and prices (F1, F2) — Puls's *Koop krediete*. Louis: "'n layer wat geld na ons interne krediete verander. Wil so
