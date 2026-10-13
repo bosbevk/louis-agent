@@ -6,9 +6,12 @@ question; each delegation's toolsets and role are recorded from the tool call.
 Spends money (Claude). Run from the repo root with the Puls containers up:
     docker compose -f docker/docker-compose.puls.yml --env-file config/.env up -d --build
     python samples/puls-check/run_check.py samples/sample-output-puls-check
+Several runs per mode, since one run swings by 15-20% (each in run-N/, with summary.json and summary.md over them):
+    python samples/puls-check/run_check.py samples/sample-output-puls-check-repeat --repeat 3
 Totals again from a saved run, without model calls:
     python samples/puls-check/run_check.py --report samples/sample-output-puls-check
 """
+import statistics
 import json
 import os
 import sys
@@ -104,7 +107,48 @@ def summarise(records):
             "per_task": {key: total([r for r in records if task_of(r) == key]) for key, _ in QUESTIONS}}
 
 
-def main(out):
+def main(out, repeat=1):
+    if repeat == 1:
+        run_once(out)
+        return
+    runs = []
+    for n in range(1, repeat + 1):
+        print(f"--- run {n} of {repeat}", flush=True)
+        runs.append(run_once(os.path.join(out, f"run-{n}")))
+    summarise_runs(out, runs)
+
+
+def summarise_runs(out, runs):
+    """summary.json and summary.md: each mode's cost and tokens over the runs (mean, lowest, highest), and per question."""
+    def spread(values):
+        return {"mean": round(statistics.mean(values), 6), "min": round(min(values), 6), "max": round(max(values), 6)}
+
+    summary = {}
+    for mode in runs[0]:
+        summary[mode] = {
+            "cost": spread([r[mode]["all"]["cost"] for r in runs]),
+            "tokens": spread([r[mode]["all"]["tokens"] for r in runs]),
+            "per_task": {key: spread([r[mode]["per_task"][key]["cost"] for r in runs]) for key, _ in QUESTIONS},
+        }
+    with open(os.path.join(out, "summary.json"), "w", encoding="utf-8") as file:
+        json.dump(summary, file, indent=2)
+    modes = list(summary)
+    lines = [f"# {len(runs)} runs per mode", "", "| | " + " | ".join(modes) + " |", "|---|" + "---:|" * len(modes),
+             "| Cost, mean (lowest–highest) | " + " | ".join(
+                 f"${s['cost']['mean']:.4f} ({s['cost']['min']:.4f}–{s['cost']['max']:.4f})" for s in summary.values()) + " |",
+             "| Tokens, mean | " + " | ".join(f"{s['tokens']['mean']:,.0f}" for s in summary.values()) + " |", "",
+             "| Question | " + " | ".join(f"{m}: mean (lowest–highest)" for m in modes) + " |", "|---|" + "---:|" * len(modes)]
+    for key, _ in QUESTIONS:
+        lines.append(f"| {key} | " + " | ".join(
+            f"${s['per_task'][key]['mean']:.4f} ({s['per_task'][key]['min']:.4f}–{s['per_task'][key]['max']:.4f})"
+            for s in summary.values()) + " |")
+    with open(os.path.join(out, "summary.md"), "w", encoding="utf-8") as file:
+        file.write("\n".join(lines) + "\n")
+    print("\n".join(lines), flush=True)
+
+
+def run_once(out):
+    """One run of both modes into out: answers, transcripts, usage records, results.json and answers.md."""
     available = [t["name"] for t in call("GET", "toolsets")["toolsets"] if t["available"]]
     modes = {
         # The baseline: one agent with every toolset this instance has (not agents), no delegation.
@@ -123,7 +167,7 @@ def main(out):
             text, tools, specialists, delegations, error = ask(toolsets, run, key, question)
             answers.append({"task": key, "question": question, "answer": text, "tools": tools, "specialists": specialists,
                             "delegations": delegations, "error": error, "seconds": round(time.time() - started, 1)})
-            print(f"{mode:9} {key:8} {answers[-1]['seconds']:6.1f}s  tools={tools}  delegations={delegations}")
+            print(f"{mode:9} {key:8} {answers[-1]['seconds']:6.1f}s  tools={tools}  delegations={delegations}", flush=True)
         time.sleep(2)   # the ledger's last lines
         records = ledger(run)
         results[mode] = {"run": run, "toolsets": toolsets, **summarise(records)}
@@ -141,6 +185,7 @@ def main(out):
         json.dump(results, file, indent=2)
     side_by_side(out)
     print_results(results)
+    return results
 
 
 def side_by_side(out):
@@ -182,7 +227,7 @@ def report(out):
 
 def print_results(results):
     for mode, r in results.items():
-        print(mode, r["all"])
+        print(mode, r["all"], flush=True)
         print("   own", r["own"])
         print("   specialists", r["specialists"])
         for key, t in r["per_task"].items():
@@ -193,4 +238,10 @@ if __name__ == "__main__":
     if len(sys.argv) > 2 and sys.argv[1] == "--report":
         report(sys.argv[2])
     else:
-        main(sys.argv[1] if len(sys.argv) > 1 else "samples/sample-output-puls-check")
+        arguments = sys.argv[1:]
+        repeat = 1
+        if "--repeat" in arguments:
+            i = arguments.index("--repeat")
+            repeat = int(arguments[i + 1])
+            del arguments[i:i + 2]
+        main(arguments[0] if arguments else "samples/sample-output-puls-check", repeat)
