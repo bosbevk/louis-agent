@@ -154,6 +154,10 @@ Puls's delegation, measured: [sample-output-puls-check/](sample-output-puls-chec
 first one agent with every toolset (the baseline), then Puls delegating to its specialists
 (`samples/puls-check/run_check.py`): 60% fewer tokens but 31% more cost ($0.0167 → $0.0218), as each specialist writes
 its own prefix to the cache and the answer is written twice; cheaper only for web research and plain chat.
+[sample-output-puls-check-roles/](sample-output-puls-check-roles/README.md) runs ten questions after roles were derived
+on the peer: every delegation had a role, 40% fewer tokens and 57% more cost ($0.0324 → $0.0509), with most of the extra
+cost from a required `agent` parameter and one empty sub-session answer. Its `answers.md` shows each question's two
+answers side by side.
 
 With triage on a local model: [sample-output-short-local-triage/](sample-output-short-local-triage/README.md) is a
 `-Short` run whose orchestrator ran on `qwen3:4b-instruct-2507` in Ollama on a 4 GB GPU, fixes on Claude: the same

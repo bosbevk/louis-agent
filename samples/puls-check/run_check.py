@@ -26,6 +26,12 @@ QUESTIONS = [
     ("git", "Wat het die laaste drie commits in hierdie repository verander?"),
     ("numbers", "Hoeveel .cs-lêers is daar onder louis-agent.core, en hoeveel reëls het hulle saam?"),
     ("chat", "Gee my drie name vir 'n Jack Russell, met 'n Afrikaanse knipoog."),
+    # A second of each kind (Louis: more samples), so one odd answer doesn't decide a kind.
+    ("web-2", "Wat is die huidige prima uitleenkoers in Suid-Afrika, en wanneer het dit laas verander? Gee jou bronne."),
+    ("files-2", "Watter instellings in config/.env.example gaan oor die LLM? Lys hulle met 'n kort verduideliking."),
+    ("git-2", "Wie het die meeste aan louis-agent.core/Agent/AgentEngine.cs verander, en wanneer was die laaste verandering?"),
+    ("numbers-2", "Hoeveel toetsmetodes ([Test] of [TestCase]) is daar onder tests/louis-agent.core.tests?"),
+    ("chat-2", "Skryf 'n kort verjaardagboodskap vir my ma in Afrikaans."),
 ]
 
 TOKEN_KINDS = ["input", "cache_write", "cache_read", "output"]
@@ -44,7 +50,6 @@ def ask(toolsets, run, task, question):
     session = call("POST", "sessions", {"toolsets": toolsets, "personality": "puls", "time_zone": "Africa/Johannesburg",
                                         "task": task, "run": run})["session_id"]
     text, tools, specialists, delegations, error = [], [], [], [], None
-    calls = {}   # content block index -> [tool name, its input JSON so far]
     try:
         with call("POST", f"sessions/{session}/messages", {"message": question}, stream=True) as reply:
             event = None
@@ -58,19 +63,15 @@ def ask(toolsets, run, task, question):
                 data = json.loads(line[6:])
                 delta = data.get("delta") or {}
                 if event == "content_block_start" and data.get("content_block", {}).get("type") == "tool_use":
-                    tools.append(data["content_block"]["name"])
-                    calls[data["index"]] = [data["content_block"]["name"], ""]
+                    block = data["content_block"]
+                    tools.append(block["name"])
+                    if block["name"] == "StartSubSession":
+                        # The API sends a call's whole input here. The toolsets and the role Puls chose (none: the peer
+                        # derives it from roles.json).
+                        arguments = block.get("input") or {}
+                        delegations.append({"toolsets": arguments.get("toolsets"), "personality": arguments.get("personality")})
                 elif event == "content_block_delta" and delta.get("type") == "text_delta":
                     text.append(delta["text"])
-                elif event == "content_block_delta" and delta.get("type") == "input_json_delta" and data.get("index") in calls:
-                    calls[data["index"]][1] += delta.get("partial_json", "")
-                elif event == "content_block_stop" and calls.get(data.get("index"), [None])[0] == "StartSubSession":
-                    try:
-                        arguments = json.loads(calls[data["index"]][1] or "{}")
-                    except json.JSONDecodeError:
-                        arguments = {}
-                    # The toolsets and the role Puls chose for the task (F21: is the role passed?).
-                    delegations.append({"toolsets": arguments.get("toolsets"), "personality": arguments.get("personality")})
                 elif event == "sub_session" and data.get("event") == "message_start":
                     specialists.append(data.get("agent"))
                 elif event == "error":
@@ -138,7 +139,32 @@ def main(out):
                            f"*{a['seconds']} s*\n\n{a['answer'] or a['error']}\n\n")
     with open(os.path.join(out, "results.json"), "w", encoding="utf-8") as file:
         json.dump(results, file, indent=2)
+    side_by_side(out)
     print_results(results)
+
+
+def side_by_side(out):
+    """answers.md: each question's two answers, baseline and delegated, side by side, with room for corrections."""
+    answers = {}
+    for mode in ("baseline", "delegated"):
+        path = os.path.join(out, mode, "answers.json")
+        if os.path.exists(path):
+            with open(path, encoding="utf-8") as file:
+                answers[mode] = {a["task"]: a for a in json.load(file)}
+
+    def cell(answer):
+        text = (answer or {}).get("answer") or (answer or {}).get("error") or ""
+        return text.replace("|", "\\|").replace("\n", "<br>")
+
+    lines = ["# Antwoorde langs mekaar", "",
+             "Elke vraag se antwoord: eers deur een agent met alle gereedskap (basislyn), dan deur Puls met sy spesialiste "
+             "(gedelegeer). Skryf korreksies onder *Korreksies*: woorde wat te styf is, anglisismes, spelling.", ""]
+    for key, question in QUESTIONS:
+        lines += [f"## {key}: {question}", "", "| Basislyn | Gedelegeer |", "|---|---|",
+                  f"| {cell(answers.get('baseline', {}).get(key))} | {cell(answers.get('delegated', {}).get(key))} |", "",
+                  "**Korreksies:**", "", "- ", ""]
+    with open(os.path.join(out, "answers.md"), "w", encoding="utf-8") as file:
+        file.write("\n".join(lines))
 
 
 def report(out):
@@ -150,6 +176,7 @@ def report(out):
             results[mode].update(summarise([json.loads(line) for line in file]))
     with open(os.path.join(out, "results.json"), "w", encoding="utf-8") as file:
         json.dump(results, file, indent=2)
+    side_by_side(out)
     print_results(results)
 
 
