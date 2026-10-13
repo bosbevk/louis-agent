@@ -40,8 +40,9 @@ a template, which is ordinary editing. It still can't copy a real `.env` into on
 
 ## Confirmed
 
-Not yet. This needs the next run of the delegation check (a paid run): files-2 should list the settings from
-`config/.env.example` itself.
+2026-10-14, in the [delegation check after the fixes](../../samples/sample-output-puls-check-fixes/README.md):
+both modes read `config/.env.example` and answered files-2 from it. There were no "sensitive file" refusals in the
+log (the roles run had 2).
 
 ## Lesson
 

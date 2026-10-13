@@ -158,6 +158,9 @@ its own prefix to the cache and the answer is written twice; cheaper only for we
 on the peer: every delegation had a role, 40% fewer tokens and 57% more cost ($0.0324 → $0.0509), with most of the extra
 cost from a required `agent` parameter and one empty sub-session answer. Its `answers.md` shows each question's two
 answers side by side.
+[sample-output-puls-check-fixes/](sample-output-puls-check-fixes/README.md) is the run after FX10–FX12: no refused
+calls and `.env.example` read, but one counting task sent to a `files`-only specialist read every test file into a
+282k-token prompt at the long-prompt price, $0.278 of the run's $0.313 (baseline $0.028).
 
 With triage on a local model: [sample-output-short-local-triage/](sample-output-short-local-triage/README.md) is a
 `-Short` run whose orchestrator ran on `qwen3:4b-instruct-2507` in Ollama on a 4 GB GPU, fixes on Claude: the same

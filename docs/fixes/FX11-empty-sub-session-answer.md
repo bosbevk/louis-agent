@@ -55,7 +55,8 @@ In `AgentPeerToolsTests`:
 
 ## Confirmed
 
-Not yet. This needs the next run of the delegation check (a paid run). If a specialist hits its round limit again,
+Not yet. The [delegation check after the fixes](../../samples/sample-output-puls-check-fixes/README.md) had no
+specialist end empty, so the follow-up didn't run. It needs a run where one does (a paid run). If a specialist hits its round limit again,
 its sub-session should show two messages and one answer, and Puls should not start a second sub-session for the same
 task.
 

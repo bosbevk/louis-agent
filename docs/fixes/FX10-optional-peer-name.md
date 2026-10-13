@@ -41,8 +41,9 @@ quietly sending the task elsewhere would hide it.
 
 ## Confirmed
 
-Not yet. This needs the next run of the delegation check (`samples/puls-check/run_check.py`, a paid run): no
-`missing a value for the required parameter 'agent'` lines in the API's tool log.
+2026-10-14, in the [delegation check after the fixes](../../samples/sample-output-puls-check-fixes/README.md):
+all 8 delegations went through on the first call and none named `agent`. The API's tool log has no
+`missing a value for the required parameter 'agent'` and no `no peer agent named` lines (the roles run had 3).
 
 ## Lesson
 
