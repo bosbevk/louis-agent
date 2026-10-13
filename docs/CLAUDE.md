@@ -155,15 +155,15 @@ guide names its tools and when to use them, and each tool's `[Description]` stay
 
 1. **Tools:** a class in `louis-agent.core/Tools/{Toolset}/` (*Adding a C# tool*); every public method is a tool.
 2. **Catalogue entry** in `Agent/ToolsetCatalog.cs`: the name, a one-line description, the settings it needs
-   (`MissingSettings`), the factory for its tool object (`CreateTools`) and its guide (`GuideFile`).
+   (`MissingSettings`), its tool class (`ToolType`), the factory for its tool object (`CreateTools`) and its guide
+   (`GuideFile`).
 3. **Guide:** `Skills/{toolset}-skills.md`, plain markdown: what the toolset is for, its tools grouped with one line
-   each, and its workflows (it may also hold `## Skill:` procedures). It is loaded by `MarkdownSkillProvider`, like
-   `web-skills.md`: list it in `AgentHost.AlwaysLoadedSkillFiles` (until guides load with their toolset, F5), its
-   name in `AgentHost.AlwaysLoadedFunctions` (so `AGENT_FUNCTION={toolset}` doesn't load it twice) and in
-   `SkillFiles.BuiltIn` (so the agent can't overwrite it). **No provider class per toolset.**
+   each, and its workflows (it may also hold `## Skill:` procedures). `AgentHost.LoadSkills(agent, toolsets)` adds it
+   to the prompt, through `MarkdownSkillProvider`, only when a session loads the toolset; list it in
+   `SkillFiles.BuiltIn` too (so the agent can't overwrite it). **No provider class per toolset.**
 4. **Router:** a row in `default.md`'s toolset table, and the name in `DefaultSkillsProviderTests`' toolset list.
 
-`web`, `devops`, `dotnet` and `paymo` are the reference: tools, a catalogue entry, a plain guide.
+Every catalogue toolset follows it; `SkillFilesTests` checks that each has a guide that loads with it.
 
 **Skill files we control are plain markdown, always.** That covers every file in `Skills/`: the toolset guides, and the
 function files (`code-review-skills.md`, `time-logging-skills.md`), which `AGENT_FUNCTION={name}` loads through the same
@@ -174,9 +174,6 @@ must read someone else's skill format; a toolset's tools may be registered diffe
 express them (`skills`: `CreateSkillFile`, `ReloadSkills`, `CreateTool` and `ListAgentTools` are registered by
 `AgentEngine`, because they need its registry; its guide is still a plain file). The difference and its reason go in
 the class's doc comment and in the feature's plan. A copy of `MarkdownSkillProvider` under another name is not one.
-
-**Not following it yet:** `files` and `git` have guides (`files-skills.md`, `git-skills.md`) that nothing loads: their
-catalogue entries still say `GuideFile: null`.
 
 ### Project layout
 

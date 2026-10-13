@@ -277,14 +277,17 @@ public static partial class AgentHost
     /// </summary>
     internal sealed class WrongBaseException(string message) : Exception(message);
 
+    /// <summary>The system prompt with every toolset's guide (hosts that load every toolset, and tests).</summary>
+    public static ISkillProvider LoadSkills(AgentOptions agent) => LoadSkills(agent, ToolsetCatalog.All);
+
     /// <summary>
-    /// Loads the system prompt: personality, default.md, every toolset's guide (docs/CLAUDE.md, *Adding a toolset*), then
-    /// the function's own skill file ({AgentFunction}-skills.md); "louis" loads every skill file. Our own skill files are
-    /// plain markdown read by <see cref="MarkdownSkillProvider"/>; a provider class of its own is only for skills we
-    /// don't control.
+    /// Loads the system prompt for a toolset profile (F5): personality, default.md (the router), the guide of each of
+    /// <paramref name="toolsets"/> and no other (docs/CLAUDE.md, *Adding a toolset*), then the function's own skill file
+    /// ({AgentFunction}-skills.md); "louis" loads every skill file. Our own skill files are plain markdown read by
+    /// <see cref="MarkdownSkillProvider"/>; a provider class of its own is only for skills we don't control.
     /// Files are looked up in <see cref="AgentOptions.SkillsDirectory"/>, the working directory, then /app.
     /// </summary>
-    public static ISkillProvider LoadSkills(AgentOptions agent)
+    public static ISkillProvider LoadSkills(AgentOptions agent, IEnumerable<ToolsetDefinition> toolsets)
     {
         var composite = new CompositeSkillProvider();
 
@@ -297,8 +300,8 @@ public static partial class AgentHost
         composite.AddProvider(defaultProvider);
         Log.Log(LogLevel.Information, LogMessage.SkillProviderLoaded, new { Provider = "DefaultSkillsProvider" });
 
-        // Every toolset's guide, plain markdown (until guides load with their toolset, F5)
-        foreach (string fileName in AlwaysLoadedSkillFiles)
+        // The guides of this profile's toolsets only, so the prompt never describes tools the session doesn't have
+        foreach (string fileName in ToolsetCatalog.GuideFiles(toolsets))
         {
             if (FindSkillFile(agent, fileName) is not { } path) continue;
             composite.AddProvider(new MarkdownSkillProvider(path, includeDefaultInstructions: false));
@@ -309,9 +312,10 @@ public static partial class AgentHost
         {
             LoadAllSkillFiles(agent, composite);
         }
-        else if (agent.AgentFunction != null && !AlwaysLoadedFunctions.Contains(agent.AgentFunction))
+        else if (agent.AgentFunction != null && ToolsetCatalog.Find(agent.AgentFunction) is null)
         {
-            // The function's own skill file: code-review-skills.md, time-logging-skills.md, or a custom one
+            // The function's own skill file: code-review-skills.md, time-logging-skills.md, or a custom one (a toolset's
+            // name is not a function: its guide comes with the toolset)
             string mainFile = $"{agent.AgentFunction}-skills.md";
             string? mainPath = FindSkillFile(agent, mainFile);
             if (mainPath is not null)
@@ -347,17 +351,6 @@ public static partial class AgentHost
             Log.Log(LogLevel.Information, LogMessage.SkillsFileDiscovered, new { File = Path.GetFileName(file) });
         }
     }
-
-    /// <summary>Every toolset's guide (<c>ToolsetCatalog</c>'s <c>GuideFile</c>s), in the order the prompt shows them.</summary>
-    internal static readonly string[] AlwaysLoadedSkillFiles =
-    [
-        "dotnet-skills.md", "python-skills.md", "powershell-skills.md", "bash-skills.md", "web-skills.md",
-        "self-extension-skills.md", "devops-skills.md", "paymo-skills.md",
-    ];
-
-    /// <summary>Functions whose skills file is loaded for every agent, so it must not be loaded a second time.</summary>
-    internal static readonly HashSet<string> AlwaysLoadedFunctions = new(StringComparer.OrdinalIgnoreCase)
-        { "dotnet", "python", "powershell", "bash", "web", "devops", "paymo" };
 
     /// <summary>Skill files of functions that aren't toolsets, loaded by "louis" (and by their own AGENT_FUNCTION).</summary>
     private static readonly string[] FunctionSkillFiles = ["code-review-skills.md", "time-logging-skills.md"];

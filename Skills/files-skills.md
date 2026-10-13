@@ -1,4 +1,4 @@
-# Files
+# Files Skills
 
 Guidance for the `files` toolset: reading, writing and managing files in the workspace.
 

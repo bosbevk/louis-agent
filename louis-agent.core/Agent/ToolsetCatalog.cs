@@ -1,5 +1,6 @@
 namespace LouisAgent.Core.Agent;
 
+using LouisAgent.Core.Messages;
 using LouisAgent.Core.Tools.DotNet;
 using LouisAgent.Core.Tools.Git;
 using LouisAgent.Core.Tools.Integrations.DevOps;
@@ -18,13 +19,13 @@ public static class ToolsetCatalog
     public static IReadOnlyList<ToolsetDefinition> All { get; } =
     [
         new("files", "Read, write, search, copy, rename and delete files in the workspace",
-            GuideFile: null,
+            GuideFile: "files-skills.md",
             MissingSettings: _ => [],
             ToolType: typeof(WorkspaceTools),
             CreateTools: ctx => [new WorkspaceTools(Root(ctx))]),
 
         new("git", "Status, diffs, branches, staging, commits, merges and history for the workspace repository",
-            GuideFile: null,
+            GuideFile: "git-skills.md",
             MissingSettings: _ => [],
             ToolType: typeof(GitTools),
             CreateTools: ctx => [new GitTools(Root(ctx))]),
@@ -120,8 +121,8 @@ public static class ToolsetCatalog
 
         var unknown = requested.Where(n => Find(n) is null).ToList();
         if (unknown.Count > 0)
-            throw new ToolsetException(
-                $"Unknown toolset(s): {string.Join(", ", unknown)}. Valid names: {string.Join(", ", All.Select(t => t.Name))}.");
+            throw new ToolsetException(MessageText.Format(ErrorMessage.UnknownToolsets,
+                new { Names = string.Join(", ", unknown), Valid = string.Join(", ", All.Select(t => t.Name)) }));
 
         var resolved = All.Where(t => requested.Contains(t.Name, StringComparer.Ordinal)).ToList();
 
@@ -130,8 +131,8 @@ public static class ToolsetCatalog
             .Where(x => x.Missing.Count > 0)
             .ToList();
         if (unavailable.Count > 0)
-            throw new ToolsetException(string.Join(" ", unavailable.Select(x =>
-                $"Toolset '{x.Name}' needs {string.Join(", ", x.Missing)} to be set on this instance.")));
+            throw new ToolsetException(string.Join(" ", unavailable.Select(x => MessageText.Format(ErrorMessage.ToolsetSettingsMissing,
+                new { x.Name, Settings = string.Join(", ", x.Missing) }))));
 
         return resolved;
     }
@@ -143,7 +144,7 @@ public static class ToolsetCatalog
             .SelectMany(t => t.CreateTools!(context))
             .ToList();
 
-    /// <summary>The skill files the resolved toolsets need. Sections of <c>default.md</c> are not listed here.</summary>
+    /// <summary>The guides the resolved toolsets need, in catalogue order.</summary>
     public static IReadOnlyList<string> GuideFiles(IEnumerable<ToolsetDefinition> resolved) =>
         resolved.Where(t => t.GuideFile is not null).Select(t => t.GuideFile!).Distinct(StringComparer.Ordinal).ToList();
 

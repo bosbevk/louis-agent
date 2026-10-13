@@ -124,6 +124,9 @@ Update `ARCHITECTURE.md` (sessions and skills sections), `SETUP.md`, and the sam
   longer exist. A test now fails on any `ExecuteSkill("X")` example whose skill isn't defined.
 - **Layout:** `Agent/Tools/` files are in `LouisAgent.Core.Agent.Tools`; `ToolsetContext`, `ToolsetDefinition` and
   `ToolsetException` have their own files.
+- **Step 4 as built:** `LoadSkills(agent, toolsets)` replaces `AlwaysLoadedSkillFiles`; `LoadSkills(agent)` means every
+  toolset. `files` and `git` get their guides (`files-skills.md`, `git-skills.md`), since `default.md` is the router
+  only. An `AGENT_FUNCTION` that names a toolset loads nothing of its own: the guide comes with the toolset.
 - **Step 4b · Built-in guides ship as embedded resources** (after step 4, before step 5):
   - `louis-agent.core` embeds `Skills/*.md` (`<EmbeddedResource>` with a `LogicalName` of the file name), and a new
     `Skills/SkillFileSource` reads a guide by name: a file of that name in the skills directory first (an override,

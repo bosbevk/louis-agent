@@ -18,12 +18,16 @@ public class SkillFilesTests
         new(Path.Combine(SkillsDirectory, fileName), includeDefaultInstructions: false);
 
     [Test]
-    public void EveryToolsetGuide_Exists_IsLoaded_AndCantBeOverwritten()
+    public void EveryToolset_HasAGuide_ThatLoadsWithIt_AndCantBeOverwritten()
     {
-        foreach (string guide in ToolsetCatalog.All.Select(t => t.GuideFile).OfType<string>())
+        var options = new AgentOptions { SkillsDirectory = SkillsDirectory };
+        foreach (var toolset in ToolsetCatalog.All)
         {
+            Assert.That(toolset.GuideFile, Is.Not.Null, $"{toolset.Name} has a guide");
+            string guide = toolset.GuideFile!;
             Assert.That(File.Exists(Path.Combine(SkillsDirectory, guide)), Is.True, $"{guide} exists");
-            Assert.That(AgentHost.AlwaysLoadedSkillFiles, Does.Contain(guide), $"{guide} is loaded like web-skills.md");
+            string title = File.ReadLines(Path.Combine(SkillsDirectory, guide)).First();
+            Assert.That(AgentHost.LoadSkills(options, [toolset]).Documentation, Does.Contain(title), $"{guide} loads with {toolset.Name}");
             Assert.That(SkillFiles.BuiltIn, Does.Contain(guide), $"{guide} can't be overwritten by the agent");
         }
     }

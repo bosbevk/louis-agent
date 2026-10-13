@@ -1,4 +1,4 @@
-# Git
+# Git Skills
 
 Guidance for the `git` toolset: status, diffs, branches, staging, commits, merges and history.
 

@@ -98,4 +98,10 @@ public enum ErrorMessage
 
     [Description("RATES_FORMAT must be '{Frankfurter}' or '{Json}', got '{Format}'.")]
     RatesFormatUnknown,
+
+    [Description("Unknown toolset(s): {Names}. Valid names: {Valid}.")]
+    UnknownToolsets,
+
+    [Description("Toolset '{Name}' needs {Settings} to be set on this instance.")]
+    ToolsetSettingsMissing,
 }
