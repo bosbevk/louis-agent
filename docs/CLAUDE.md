@@ -350,6 +350,8 @@ whole loop against a real model: API sessions, the fix flow, and the web app's B
 
 ## Key design decisions
 
+- **Reuse before building** — reuse the repo's components and maintained third-party packages (MIT, Apache or BSD);
+  write our own only when nothing fits, and say in the plan which were considered.
 - **Microsoft.Extensions.AI** — one `IChatClient` across providers; `FunctionInvokingChatClient` runs the tool loop.
 - **Provider strategies** — where Anthropic, OpenAI-compatible and Ollama differ (usage, caching, thinking, limits),
   one interface with an implementation per provider, picked in `LlmClientFactory`
