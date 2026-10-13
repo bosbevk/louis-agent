@@ -47,3 +47,9 @@ router, toolset guides), each part a stable prefix for caching; persona design f
 - **2026-10-13, sub-sessions without the router** (Louis: "sub agents do not need to read the default.md"): a session
   opened at depth 1 gets no `default.md`; its toolsets were chosen for it and it can't delegate. Built in step 2: the
   engine key is toolsets, personality and router.
+- **2026-10-13, a specialist's personality is its role, one per kind** (Louis: "the personality file the subagent gets
+  must be specific to it telling it what its function is"; chose one file per kind): `puls-researcher` (web),
+  `puls-reader` (files), `puls-historian` (git), `puls-analyst` (python, bash, powershell) and `puls-specialist` as the
+  fallback for any other toolsets. Each says the specialist's function and how it reports to Puls (sources, paths,
+  commits, method), on a shared base: one task from Puls, never the user, no greeting, say what's missing, no
+  delegation, the task's language. `agents-skills.md` tells Puls which goes with which toolsets. Built in step 4.
