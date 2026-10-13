@@ -183,6 +183,9 @@ public enum LogMessage
     [Description("Toolsets {Toolsets}: {Tools} tools, a {PromptChars}-character system prompt, about {PrefixTokens} tokens of fixed prefix")]
     ToolsetProfileBuilt,
 
+    [Description("Toolsets {Toolsets}: dropped from the cache, the least recently used of {Capacity} profiles")]
+    ToolsetProfileDropped,
+
 
     [Description("Loaded {File} via MarkdownSkillProvider")]
     MainSkillsFileLoaded,

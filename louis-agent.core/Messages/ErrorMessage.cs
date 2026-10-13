@@ -111,8 +111,6 @@ public enum ErrorMessage
     [Description("Toolset '{Name}' needs {Settings} to be set on this instance.")]
     ToolsetSettingsMissing,
 
-    [Description("This instance already has {Capacity} toolset profiles; reuse one of their toolset lists.")]
-    TooManyToolsetProfiles,
 
     [Description("depth must be between 0 and {Max}: sub-sessions are one level deep.")]
     SessionDepthInvalid,

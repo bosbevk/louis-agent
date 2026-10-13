@@ -142,8 +142,8 @@ Every toolset is a catalogue entry: a name, a one-line description, the settings
 and its guide (docs/CLAUDE.md, *Adding a toolset*). `files`, `git`, `dotnet`, `python`, `powershell`, `bash`, `web`,
 `paymo`, `devops`, `agents` (sub-sessions on a peer, `AGENT_PEERS`) and `skills` (engine-provided). `AgentEngineFactory`
 builds one engine per profile, cached by its normalised toolset list, its personality and whether it has the router (F21;
-at most 16), with only those tools and only their guides in the system prompt, and logs each profile's tool count and
-fixed-prefix estimate. The CLI, ACP server and MCP server use every
+past 16 the least recently used is dropped), with only those tools and only their guides in the system prompt, and logs
+each profile's tool count and fixed-prefix estimate. The CLI, ACP server and MCP server use every
 toolset the instance can load; the API's sessions choose theirs. A sub-session (`AgentPeerTools.StartSubSession`) runs
 on a peer with its own toolsets and, optionally, its role (`personality`), at most 3 per turn and 5 minutes each, and
 only its answer and a usage line come back; its usage records carry the parent turn (`parent`). A sub-session gets no
