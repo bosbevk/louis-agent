@@ -78,7 +78,7 @@
             @* A placeholder profile until Puls has accounts (step 5 adds its menu). *@
             <div class="profile-card">
                 <span class="profile-avatar">G</span>
-                <span class="profile-who"><strong>Gas</strong><small>Plaaslik · gratis</small></span>
+                <span class="profile-who"><strong>Gas</strong><small>Betaal soos jy gebruik</small></span>
             </div>
             <details class="sidebar-settings">
                 <summary>Instellings</summary>
@@ -140,7 +140,21 @@
                 <button class="header-button d-xl-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#work" aria-controls="work" title="Wys die werkpaneel">
                     <span class="ic i-pulse" aria-hidden="true"></span>Werk
                 </button>
-                <button class="pill pill-plus" type="button" @onclick='() => ComingSoon("Puls Plus")'><span class="ic i-sparkle" aria-hidden="true"></span>Kry Plus</button>
+                @* Krediete (F20, pay as you go): what this chat and this month cost, from the chats in this browser; buying
+                   credits comes with F23. No plans. *@
+                <div class="dropdown">
+                    <button class="usage-meter" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Krediete en gebruik: @MonthCost hierdie maand">
+                        <span class="ic i-coin" aria-hidden="true"></span>Krediete
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-end usage-menu">
+                        <h6 class="dropdown-header">Krediete · betaal soos jy gebruik</h6>
+                        <div class="usage-row"><span>Hierdie gesprek</span><strong>@(_chat is null ? "—" : Money(ChatTotal(_chat)))</strong></div>
+                        <div class="usage-row"><span>Hierdie maand <small>@MonthChats.Count @(MonthChats.Count == 1 ? "gesprek" : "gesprekke")</small></span><strong>@MonthCost</strong></div>
+                        <p class="usage-note">Geen intekening nie: jy betaal net vir die vrae wat jy vra, spesialiste ingesluit. Volgens die gesprekke in hierdie blaaier.</p>
+                        <hr class="dropdown-divider" />
+                        <button class="dropdown-item" type="button" @onclick='() => ComingSoon("Krediete")'><span class="ic i-coin" aria-hidden="true"></span>Koop krediete</button>
+                    </div>
+                </div>
                 <div class="dropdown">
                     <button class="header-button" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Taal">
                         <span class="ic i-globe" aria-hidden="true"></span>AF
@@ -161,7 +175,7 @@
                             <span class="profile-avatar">G</span>
                             <span class="profile-who"><strong>Gas</strong><small>Plaaslik in hierdie blaaier</small></span>
                         </li>
-                        <li><button class="dropdown-item" type="button" @onclick='() => ComingSoon("Opgradering")'><span class="ic i-sparkle" aria-hidden="true"></span>Opgradeer plan</button></li>
+                        <li><button class="dropdown-item" type="button" @onclick='() => ComingSoon("Krediete")'><span class="ic i-coin" aria-hidden="true"></span>Koop krediete</button></li>
                         <li><hr class="dropdown-divider" /></li>
                         <li><h6 class="dropdown-header">Tema</h6></li>
                         <li><button class="dropdown-item active" type="button"><span class="ic i-moon" aria-hidden="true"></span>Donker <span class="ic i-check ms-auto" aria-hidden="true"></span></button></li>
@@ -232,10 +246,11 @@
             <div class="notice">@_notice <button class="icon" @onclick="() => _notice = null">×</button></div>
         }
 
-        @if (View == "chat" && _chat?.Usage() is { } chatUsage)
+        @* The whole cost, specialists included (pay as you go: what's shown is what's paid). *@
+        @if (View == "chat" && _chat is not null && ChatTotal(_chat) is { } chatUsage)
         {
             <div class="chat-usage" title="@UsageFormat.Detail(chatUsage, Currency.Current)">
-                Hierdie gesprek: @chatUsage.Requests versoeke · @UsageFormat.Tokens(chatUsage.TotalTokens) tokens · @UsageFormat.Cost(chatUsage, Currency.Current)
+                Hierdie gesprek: @chatUsage.Requests versoeke · @UsageFormat.Tokens(chatUsage.TotalTokens) tokens · @UsageFormat.Cost(chatUsage, Currency.Current), spesialiste ingesluit
             </div>
         }
 
@@ -417,6 +432,19 @@
     ];
 
     private string? _model;
+
+    /// <summary>A chat's whole cost: Puls's own requests and its specialists' (the chat's usage doesn't hold them yet: F5 roll-up).</summary>
+    private static TurnUsage? ChatTotal(Chat chat) =>
+        chat.Turns.SelectMany(t => t.Blocks.Select(b => b.SubTurn?.Usage).Prepend(t.Usage)).OfType<TurnUsage>()
+            .Aggregate((TurnUsage?)null, (sum, u) => sum is null ? u : sum + u);
+
+    /// <summary>The chats used this calendar month, in this browser.</summary>
+    private List<Chat> MonthChats =>
+        Store.Chats.Where(c => c.UpdatedAt.LocalDateTime.Year == DateTime.Now.Year && c.UpdatedAt.LocalDateTime.Month == DateTime.Now.Month).ToList();
+
+    private string MonthCost => Money(MonthChats.Select(ChatTotal).OfType<TurnUsage>().Aggregate((TurnUsage?)null, (sum, u) => sum is null ? u : sum + u));
+
+    private string Money(TurnUsage? usage) => usage is null ? UsageFormat.Money(0, null, Currency.Current) : UsageFormat.Cost(usage, Currency.Current);
 
     /// <summary>Which view the shell shows (F20): the chat, Verken or Studio, from the address.</summary>
     private string View => Nav.ToBaseRelativePath(Nav.Uri).Split('?', '#')[0] switch

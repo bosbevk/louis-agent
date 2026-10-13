@@ -958,3 +958,25 @@ html:has(.landing) { scroll-behavior: smooth; }
 .side-link.active { background: rgba(255, 255, 255, .07); color: var(--ink); }
 .side-link.active .ic { color: var(--orange); }
 
+/* ---- Pay as you go (F20): the top bar's usage meter, and the landing's pricing and about. ---- */
+.usage-meter { display: inline-flex; align-items: baseline; gap: 6px; height: 36px; padding: 0 14px; border-radius: 11px; font-size: 13px; font-weight: 800; color: var(--ink); background: rgba(245, 130, 32, .1); border: 1px solid rgba(245, 130, 32, .35); align-items: center; font-variant-numeric: tabular-nums; transition: background .2s, border-color .2s; }
+.usage-meter:hover, .usage-meter[aria-expanded="true"] { background: rgba(245, 130, 32, .18); border-color: var(--orange); }
+.usage-meter .ic { color: var(--orange); }
+.usage-meter small { font-size: 11px; font-weight: 600; color: var(--muted); }
+.usage-menu { min-width: 280px; padding: 8px; }
+.usage-row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 7px 10px; font-size: 13.5px; color: var(--text); font-variant-numeric: tabular-nums; }
+.usage-row small { color: var(--dim); font-size: 11.5px; margin-left: 4px; }
+.usage-row strong { color: var(--ink); }
+.usage-note { margin: 4px 10px 6px; font-size: 12px; color: var(--muted); line-height: 1.5; }
+.pricing { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; text-align: left; align-items: stretch; }
+.price-card { background: color-mix(in srgb, var(--surface) 80%, transparent); border: 1px solid rgba(255, 255, 255, .07); border-radius: 22px; padding: 26px; }
+.price-card-main { border-color: rgba(245, 130, 32, .4); box-shadow: 0 24px 50px -24px rgba(245, 130, 32, .45); }
+.price-example { display: flex; justify-content: space-between; gap: 12px; margin-top: 10px; padding: 9px 12px; border-radius: 10px; background: rgba(255, 255, 255, .04); font-size: 13px; color: var(--muted); }
+.price-example strong { color: var(--ink); font-variant-numeric: tabular-nums; }
+.about { max-width: 640px; margin: 0 auto 22px !important; text-wrap: balance; }
+.landing-footer-link { color: var(--text); }
+.i-github { --icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21'/></svg>"); }
+.pill .ic { width: 16px; height: 16px; }
+@media (max-width: 900px) { .pricing { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 1300px) and (min-width: 992px) { .usage-meter small { display: none; } }
+

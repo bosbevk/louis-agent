@@ -62,3 +62,7 @@ the answer, building on F5's live delegation view (GOAL: observability of agents
 - **2026-10-13, company information** (Louis: "ons moet net 'n company info insit: company is louis-agent website github
   project"): the landing page says Puls is a louis-agent project, with an *Oor ons* section and the footer linking to the
   GitHub project. Built when F20 resumes.
+- **2026-10-13, no company; credits** (Louis: "i do not have a company url im just me it is MIT license public.
+  Opgradeer plan --> Koop krediete"): *Oor ons* says Puls is a personal, open-source project (MIT) on louis-agent, linking
+  to github.com/bosbevk/louis-agent; the profile menu's *Opgradeer plan* is *Koop krediete* (to come). The layer that turns
+  money into internal credits, with a margin, is its own feature: F23 Credits, in the TODO.

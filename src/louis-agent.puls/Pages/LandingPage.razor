@@ -13,6 +13,7 @@
         <nav class="landing-links">
             <a href="#hoe">Hoe dit werk</a>
             <a href="#kenmerke">Kenmerke</a>
+            <a href="#pryse">Pryse</a>
             <a href="#vrae">Vrae</a>
         </nav>
         <a class="pill pill-primary" href="gesels">Begin gesels</a>
@@ -104,6 +105,40 @@
         </div>
     </section>
 
+    <section class="section" id="pryse">
+        <span class="eyebrow">Pryse</span>
+        <h2>Betaal soos jy gebruik</h2>
+        <div class="pricing">
+            <div class="price-card">
+                <span class="feature-icon i-coin" aria-hidden="true"></span>
+                <h3>Geen intekening nie</h3>
+                <p>Geen maandfooi en geen planne nie: jy betaal net vir die vrae wat jy vra.</p>
+            </div>
+            <div class="price-card price-card-main">
+                <span class="feature-icon i-pulse" aria-hidden="true"></span>
+                <h3>Sien wat elke vraag kos</h3>
+                <p>Onder elke antwoord, en vir elke spesialis wat gehelp het, in rand.</p>
+                <div class="price-example"><span>Wat is nuut in .NET 10?</span><strong>R0,47</strong></div>
+                <div class="price-example"><span>Som die README op</span><strong>R0,09</strong></div>
+            </div>
+            <div class="price-card">
+                <span class="feature-icon i-chart" aria-hidden="true"></span>
+                <h3>Krediete wanneer jy wil</h3>
+                <p>Koop krediete en gebruik dit soos jy vra; jou gebruik vir die maand is altyd een klik weg. (Kom binnekort.)</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="oor">
+        <span class="eyebrow">Oor ons</span>
+        <h2>Gebou deur een mens, oop vir almal</h2>
+        <p class="about">Puls is 'n persoonlike projek, gebou op <strong>louis-agent</strong>: 'n KI-agent wat take na spesialiste
+            stuur en elke stap en elke sent sigbaar maak. Die kode is oopbron onder die MIT-lisensie.</p>
+        <a class="pill pill-ghost" href="https://github.com/bosbevk/louis-agent" target="_blank" rel="noopener">
+            <span class="ic i-github" aria-hidden="true"></span>louis-agent op GitHub
+        </a>
+    </section>
+
     <section class="section" id="vrae">
         <span class="eyebrow">Vrae</span>
         <h2>Gereelde vrae</h2>
@@ -126,7 +161,8 @@
     <footer class="landing-footer">
         <img src="brand/puls-logo-white.svg" alt="Puls" height="32" />
         <span>Elke vraag op pad na 'n antwoord</span>
-        <span class="landing-footer-copy">© 2026 Puls</span>
+        <a class="landing-footer-link" href="https://github.com/bosbevk/louis-agent" target="_blank" rel="noopener">GitHub</a>
+        <span class="landing-footer-copy">© 2026 bosbevk · MIT-lisensie</span>
     </footer>
 </div>
 
@@ -145,6 +181,8 @@
     [
         ("Wat is Puls?", "'n KI-assistent wat jou vraag na 'n spesialis stuur: 'n tweede agent met net die gereedskap wat die taak nodig het. Jy sien die werk terwyl dit gebeur."),
         ("Watter model gebruik Puls?", "'n Claude-model van Anthropic, soos op die bediener ingestel. Die koste van elke vraag word gewys."),
+        ("Wat kos dit?", "Jy betaal soos jy gebruik: elke vraag se koste word gewys, spesialiste ingesluit. Geen intekening nie. Krediete kom binnekort."),
+        ("Is Puls oopbron?", "Ja. Puls is gebou op louis-agent, oopbron onder die MIT-lisensie, op GitHub."),
         ("Waar word my gesprekke gestoor?", "In jou blaaier. Die bediener hou 'n gesprek net solank dit loop; ná 'n herbegin begin jy 'n nuwe een."),
         ("Kan ek dit in Engels gebruik?", "Ja: vra in Engels en Puls antwoord in Engels. Die skerms is in Afrikaans."),
     ];
