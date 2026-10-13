@@ -97,9 +97,13 @@ public class AgentEngine
     /// </param>
     /// <param name="usageSink">Where one usage record per model request goes; null records nothing.</param>
     /// <param name="usageMapper">The provider's usage mapping (<c>LlmClientFactory.CreateUsageMapper</c>); null uses the standard one.</param>
+    /// <param name="selfExtension">
+    /// On a toolsets engine, also register the self-extension tools (CreateSkillFile, ReloadSkills, CreateTool,
+    /// ListAgentTools). Ignored on the built-in path, which always registers them.
+    /// </param>
     public AgentEngine(ISkillProvider skillProvider, IChatClient chatClient, AgentOptions options, bool supportsTools = true,
         IWebSearchProvider? webSearch = null, IEnumerable<object>? toolsets = null,
-        IUsageSink? usageSink = null, IUsageMapper? usageMapper = null)
+        IUsageSink? usageSink = null, IUsageMapper? usageMapper = null, bool selfExtension = false)
     {
         _options = options;
         SupportsTools = supportsTools;
@@ -140,41 +144,12 @@ public class AgentEngine
         if (toolsets is not null)
         {
             foreach (object toolset in toolsets) _registry.AddPublicMethods(toolset);
+            if (selfExtension) AddSelfExtensionTools();
             return;
         }
 
-        _registry.Add(Function(_skillTools.CreateSkillFile, nameof(CreateSkillFile)));
-        _registry.Add(Function(_skillTools.ReloadSkills, nameof(ReloadSkills)));
-        _registry.Add(Function(_agentBuiltTools.CreateTool, nameof(CreateTool)));
-        _registry.Add(Function(_agentBuiltTools.ListAgentTools, nameof(ListAgentTools)));
+        AddSelfExtensionTools();
         _registry.AddPublicMethods(new WorkspaceTools(WorkspaceRoot));
-        _registry.AddPublicMethods(new GitTools(WorkspaceRoot));
-        _registry.AddPublicMethods(new DotNetTools(WorkspaceRoot));
-        _registry.AddPublicMethods(_python);
-        _registry.AddPublicMethods(_powerShell);
-        _registry.AddPublicMethods(_bash);
-        _registry.AddPublicMethods(new WebTools(webSearch ?? WebSearchProviderFactory.Create(options)));
-        if (string.IsNullOrWhiteSpace(options.PaymoApiKey))
-        {
-            Log.Log(LogLevel.Warning, LogMessage.PaymoKeyMissing);
-        }
-        else
-        {
-            _registry.AddPublicMethods(new PaymoTools(options));
-        }
-
-        if (string.IsNullOrWhiteSpace(options.DevopsApiKey))
-        {
-            Log.Log(LogLevel.Warning, LogMessage.DevOpsKeyMissing);
-        }
-        else if (string.IsNullOrWhiteSpace(options.DevopsOrganization) || string.IsNullOrWhiteSpace(options.DevopsProject))
-        {
-            Log.Log(LogLevel.Warning, LogMessage.DevOpsSettingsMissing);
-        }
-        else
-        {
-            _registry.AddPublicMethods(new DevOpsTools(options.DevopsApiKey, options.DevopsOrganization, options.DevopsProject, options.DevopsTeam));
-        }
     }
 
     /// <summary>
@@ -347,4 +322,13 @@ public class AgentEngine
             Name = name,
             Description = method.Method.GetCustomAttribute<DescriptionAttribute>() is { } description ? Normalise(description.Description) : null,
         });
+    
+    /// <summary>The tools that let the agent extend itself: skills and agent-built tools (toolset "skills", F5).</summary>
+    private void AddSelfExtensionTools()
+    {
+        _registry.Add(Function(_skillTools.CreateSkillFile, nameof(CreateSkillFile)));
+        _registry.Add(Function(_skillTools.ReloadSkills, nameof(ReloadSkills)));
+        _registry.Add(Function(_agentBuiltTools.CreateTool, nameof(CreateTool)));
+        _registry.Add(Function(_agentBuiltTools.ListAgentTools, nameof(ListAgentTools)));
+    }
 }
