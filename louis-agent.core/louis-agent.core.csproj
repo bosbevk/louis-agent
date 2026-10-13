@@ -28,6 +28,7 @@
       <!-- F5 step 4b: the built-in skill files ship inside the assembly; a file of the same name on disk overrides one
            (Skills/SkillFileSource). HelloWorld.md is a test fixture, not a built-in. -->
       <EmbeddedResource Include="..\Skills\*.md" Exclude="..\Skills\HelloWorld.md" LogicalName="Skills.%(Filename)%(Extension)" />
+      <EmbeddedResource Include="..\Skills\personalities\*.md" LogicalName="Skills.personalities.%(Filename)%(Extension)" />
     </ItemGroup>
 
 </Project>

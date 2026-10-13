@@ -283,12 +283,14 @@ public static partial class AgentHost
     /// Built-in files are read from disk when there (<see cref="AgentOptions.SkillsDirectory"/>, the working directory
     /// and its parents, /app), else from the copy embedded in the assembly (<see cref="SkillFileSource"/>).
     /// </summary>
-    public static ISkillProvider LoadSkills(AgentOptions agent, IEnumerable<ToolsetDefinition> toolsets)
+    /// <param name="personality">The session's personality (F21): a name in <c>Skills/personalities/</c>, or null for
+    /// <c>personality.md</c>. <see cref="PersonalityException"/> for a name that isn't valid or has no file.</param>
+    public static ISkillProvider LoadSkills(AgentOptions agent, IEnumerable<ToolsetDefinition> toolsets, string? personality = null)
     {
         var composite = new CompositeSkillProvider();
 
         // Personality first, so who the agent is frames everything after it; default.md (the router) after it
-        AddBuiltIn(agent, composite, "personality.md");
+        AddBuiltIn(agent, composite, PersonalityFile(agent, personality));
         AddBuiltIn(agent, composite, "default.md");
 
         // The guides of this profile's toolsets only, so the prompt never describes tools the session doesn't have
@@ -358,6 +360,22 @@ public static partial class AgentHost
     /// <summary>A skill file's text from disk (which overrides) or the assembly; null when neither has it.</summary>
     internal static (string Text, bool FromDisk)? ReadSkillFile(AgentOptions agent, string fileName) =>
         SkillFileSource.Read(fileName, SkillFilePaths(agent, fileName));
+
+    /// <summary>
+    /// The skill file of <paramref name="personality"/>: <see cref="Personalities.DefaultFile"/> when none is named, else
+    /// its file in <c>personalities/</c>, which must exist on disk or in the assembly.
+    /// </summary>
+    private static string PersonalityFile(AgentOptions agent, string? personality)
+    {
+        if (string.IsNullOrEmpty(personality)) return Personalities.DefaultFile;
+        if (!Personalities.IsValidName(personality))
+            throw new PersonalityException(MessageText.Format(ErrorMessage.PersonalityNameInvalid, new { Name = personality }));
+        string file = Personalities.FileName(personality);
+        if (ReadSkillFile(agent, file) is null)
+            throw new PersonalityException(MessageText.Format(ErrorMessage.UnknownPersonality,
+                new { Name = personality, Available = string.Join(", ", Personalities.Available(agent.SkillsDirectory)) }));
+        return file;
+    }
 
     /// <summary>Adds a built-in skill file to the prompt, from disk or the assembly; a missing one is skipped.</summary>
     private static void AddBuiltIn(AgentOptions agent, CompositeSkillProvider composite, string fileName)
