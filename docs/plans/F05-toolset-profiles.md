@@ -105,8 +105,8 @@ Update `ARCHITECTURE.md` (sessions and skills sections), `SETUP.md`, and the sam
 - **The default engine has no built-in tools.** With no `toolsets`, the engine registers only `ExecuteSkill` and the
   self-extension tools (`CreateSkillFile`, `ReloadSkills`, `CreateTool`, `ListAgentTools`); the old tail (Workspace,
   Git, DotNet, Python, PowerShell, Bash, Web, Paymo, DevOps) is gone. Tests that need a toolset pass it.
-- **DevOps has no guide for now.** `devops-skills.md` and `DevOpsSkillsProvider` are removed; `DevOpsTools` stays in the
-  catalogue (`GuideFile: null`) until it's decided whether the `devops` toolset survives.
+- **DevOps keeps its guide.** `devops-skills.md`, `DevOpsSkillsProvider` and `DevOpsTools` stay; the catalogue's `devops`
+  entry keeps `GuideFile: "devops-skills.md"` (Louis, 2026-10-13: "devops-skills must stay").
 - **Paymo's guide is the native tools section.** `paymo-skills.md` lists the `PaymoTools` methods and workflows; its
   placeholder `## Skill:` sections are gone.
 - **Step 4b · Built-in guides ship as embedded resources** (after step 4, before step 5):

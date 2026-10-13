@@ -71,7 +71,7 @@ with named toolsets, send it a task, and get the result back, so that tools are 
 | `web` | `WebTools` | `web-skills.md` |
 | `skills` | `CreateSkillFile`, `ReloadSkills`, `CreateTool`, `ListAgentTools` (+ approved agent-built tools) | `self-extension-skills.md` |
 | `paymo` | `PaymoTools` (key required) | `paymo-skills.md` (moved out of `default.md`) |
-| `devops` | `DevOpsTools` (key, organisation and project required) | none for now: the toolset's future is undecided |
+| `devops` | `DevOpsTools` (key, organisation and project required) | `devops-skills.md` |
 | `agents` | `AgentPeerTools`: `StartSubSession` (`AGENT_PEERS` required) | `agents-skills.md` |
 
 `ExecuteSkill` is always registered.
