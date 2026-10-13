@@ -19,11 +19,30 @@ public sealed record AgentStreamEvent(string Type, JsonElement Data);
 /// <summary>Client for louis-agent.api, which serves this app from the same origin.</summary>
 public sealed class AgentApi(HttpClient http, Settings settings)
 {
+    /// <summary>
+    /// Opens a chat with every toolset this API can load (F5: a session's tools are chosen when it opens and kept; one
+    /// sent without a list would get only the skills toolset). Every chat sends the same list, so they share one cached
+    /// prefix.
+    /// </summary>
     public async Task<string> CreateSessionAsync()
     {
-        using var response = await SendAsync(new HttpRequestMessage(HttpMethod.Post, "sessions"));
+        string[] toolsets = await AvailableToolsetsAsync();
+        using var response = await SendAsync(new HttpRequestMessage(HttpMethod.Post, "sessions")
+        {
+            Content = JsonContent.Create(new { toolsets }),
+        });
         var body = await response.Content.ReadFromJsonAsync<JsonElement>();
         return body.GetProperty("session_id").GetString()!;
+    }
+
+    private async Task<string[]> AvailableToolsetsAsync()
+    {
+        using var response = await SendAsync(new HttpRequestMessage(HttpMethod.Get, "toolsets"));
+        var body = await response.Content.ReadFromJsonAsync<JsonElement>();
+        return body.GetProperty("toolsets").EnumerateArray()
+            .Where(t => t.GetProperty("available").GetBoolean())
+            .Select(t => t.GetProperty("name").GetString()!)
+            .ToArray();
     }
 
     public async Task CancelAsync(string sessionId)
