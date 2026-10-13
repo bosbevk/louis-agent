@@ -1,4 +1,5 @@
 @inject IJSRuntime JS
+@inject ChatText Text
 
 <div class="turn @(Streaming ? "streaming" : "")">
     <div class="user-message">
@@ -22,11 +23,11 @@
 
         @if (Streaming && (Turn.Blocks.Count == 0 || Turn.Blocks[^1] is { Kind: BlockKind.Tool }))
         {
-            <div class="working">PROCESSING<span class="cursor"></span></div>
+            <div class="working">@Text.Processing<span class="cursor"></span></div>
         }
         @if (Turn.StopReason == "cancelled")
         {
-            <div class="stopped">Stopped</div>
+            <div class="stopped">@Text.Stopped</div>
         }
         @if (Turn.Error is not null)
         {

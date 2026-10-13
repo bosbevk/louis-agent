@@ -3,11 +3,13 @@
    while the specialist works; rolled up to one line when it's done (the chat's own reply carries the result), and
    opened again with a click. *@
 
+@inject ChatText Text
+
 <details class="delegation @Status" open="@Running">
     <summary class="delegation-head">
         <span class="delegation-avatar" aria-hidden="true">@Initial</span>
         <span class="delegation-title">
-            <span class="delegation-agent">Delegated to <strong>@Agent</strong></span>
+            <span class="delegation-agent">@Text.DelegatedTo <strong>@Agent</strong></span>
             <span class="delegation-toolsets">
                 @foreach (string toolset in Delegation.Toolsets)
                 {
@@ -27,7 +29,7 @@
         @if (Delegation.Task is { Length: > 0 } task)
         {
             <details class="delegation-task">
-                <summary>Task</summary>
+                <summary>@Text.Task</summary>
                 <div class="delegation-task-text">@task</div>
             </details>
         }
@@ -38,7 +40,7 @@
             @if (work.Count > 0)
             {
                 <details class="delegation-work" open="@Running">
-                    <summary>@(Running ? "Working" : "Work") · @Steps(sub)</summary>
+                    <summary>@(Running ? Text.Working : Text.Work) · @Steps(sub)</summary>
                     <div class="delegation-blocks">
                         <BlocksView Blocks="work" Streaming="Running" Currency="Currency" />
                     </div>
@@ -68,7 +70,7 @@
         }
         else if (Running)
         {
-            <div class="delegation-waiting">Starting<span class="dots"></span></div>
+            <div class="delegation-waiting">@Text.Starting<span class="dots"></span></div>
         }
     </div>
 </details>
@@ -83,10 +85,10 @@
 
     private string Status => Running ? "running" : Block.ToolFailed || Delegation.Failed ? "failed" : "done";
 
-    private string StatusText => Status switch { "running" => "Working", "failed" => "Failed", _ => "Done" };
+    private string StatusText => Status switch { "running" => Text.Working, "failed" => Text.Failed, _ => Text.Done };
 
     /// <summary>The peer actually used: named in the call, else reported by its stream or its result (an empty name means the only peer).</summary>
-    private string Agent => Delegation.Agent is { Length: > 0 } named ? named : Block.SubAgent ?? Delegation.ResultAgent ?? "specialist";
+    private string Agent => Delegation.Agent is { Length: > 0 } named ? named : Block.SubAgent ?? Delegation.ResultAgent ?? Text.Specialist;
 
     private string Initial => Agent[..1].ToUpperInvariant();
 
@@ -105,10 +107,6 @@
         return (work, answer);
     }
 
-    private static string Steps(Turn sub)
-    {
-        int tools = sub.Blocks.Count(b => b.Kind == BlockKind.Tool);
-        int thoughts = sub.Blocks.Count(b => b.Kind == BlockKind.Thinking);
-        return $"{tools} tool call{(tools == 1 ? "" : "s")}, {thoughts} thought{(thoughts == 1 ? "" : "s")}";
-    }
+    private string Steps(Turn sub) =>
+        Text.Steps(sub.Blocks.Count(b => b.Kind == BlockKind.Tool), sub.Blocks.Count(b => b.Kind == BlockKind.Thinking));
 }

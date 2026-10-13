@@ -14,53 +14,53 @@
 <div class="app">
     @* Below Bootstrap's lg breakpoint (992px) the sidebar is an offcanvas, opened from this bar. *@
     <header class="topbar d-lg-none">
-        <button class="icon menu-button" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar" aria-label="Open the menu">☰</button>
+        <button class="icon menu-button" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar" aria-label="Maak die kieslys oop">☰</button>
         <div class="brand"><PulsLogo /></div>
-        <button class="icon" type="button" @onclick="NewChat" aria-label="New chat">＋</button>
+        <button class="icon" type="button" @onclick="NewChat" aria-label="Nuwe gesprek">＋</button>
     </header>
 
-    <aside class="sidebar offcanvas-lg offcanvas-start" id="sidebar" tabindex="-1" aria-label="Chats">
+    <aside class="sidebar offcanvas-lg offcanvas-start" id="sidebar" tabindex="-1" aria-label="Gesprekke">
         <div class="sidebar-top">
-            <div class="brand"><PulsLogo /></div>
-            <button class="icon d-none d-lg-inline-grid" type="button" onclick="pulsUi.toggleSidebar()" title="Hide the sidebar" aria-label="Hide the sidebar">⇤</button>
-            <button class="icon d-lg-none" type="button" data-bs-dismiss="offcanvas" data-bs-target="#sidebar" aria-label="Close the menu">×</button>
+            <div class="brand brand-stack"><PulsLogo /><span class="tagline">Elke vraag op pad na 'n antwoord</span></div>
+            <button class="icon d-none d-lg-inline-grid" type="button" onclick="pulsUi.toggleSidebar()" title="Versteek die kantbalk" aria-label="Versteek die kantbalk">⇤</button>
+            <button class="icon d-lg-none" type="button" data-bs-dismiss="offcanvas" data-bs-target="#sidebar" aria-label="Maak die kieslys toe">×</button>
         </div>
-        <button class="new-chat" @onclick="NewChat">New chat</button>
+        <button class="new-chat" @onclick="NewChat">Nuwe gesprek</button>
         @if (Store.Chats.Count > 0)
         {
-            <div class="sidebar-label">Recent</div>
+            <div class="sidebar-label">Onlangs</div>
         }
         <nav class="chat-list">
             @foreach (var chat in Store.Chats)
             {
                 <div class="chat-item @(chat.SessionId == SessionId ? "active" : "")">
                     <a href="chat/@chat.SessionId" title="@chat.Title">@chat.Title</a>
-                    <button class="icon" title="Delete chat" @onclick="() => DeleteChat(chat)">×</button>
+                    <button class="icon" title="Vee die gesprek uit" @onclick="() => DeleteChat(chat)">×</button>
                 </div>
             }
         </nav>
         <details class="sidebar-settings">
-            <summary>Settings</summary>
+            <summary>Instellings</summary>
             <CurrencySwitcher />
             <label class="settings">
-                API key
-                <input type="password" value="@Store.ApiKeyDraft" @onchange="SaveApiKey" placeholder="only if AGENT_API_KEY is set" />
+                API-sleutel
+                <input type="password" value="@Store.ApiKeyDraft" @onchange="SaveApiKey" placeholder="net as AGENT_API_KEY gestel is" />
             </label>
         </details>
     </aside>
 
     @* Drag to resize the sidebar; double-click to reset (pulsUi in js/chat.js). *@
-    <div class="resizer d-none d-lg-block" role="separator" aria-orientation="vertical" title="Drag to resize · double-click to reset"></div>
+    <div class="resizer d-none d-lg-block" role="separator" aria-orientation="vertical" title="Sleep om die breedte te verander · dubbelklik om terug te stel"></div>
 
     <main class="conversation">
-        <button class="sidebar-tab d-none d-lg-grid" type="button" onclick="pulsUi.toggleSidebar()" title="Show the sidebar" aria-label="Show the sidebar">⇥</button>
+        <button class="sidebar-tab d-none d-lg-grid" type="button" onclick="pulsUi.toggleSidebar()" title="Wys die kantbalk" aria-label="Wys die kantbalk">⇥</button>
         <div class="messages" @ref="_messages">
             @if (_chat is null || _chat.Turns.Count == 0)
             {
                 <div class="empty">
                     <div class="pulse-bg" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
-                    <h1>How can I help?</h1>
-                    <p class="hint">Ask anything. Puls hands each task to a specialist with just the tools it needs, and you can watch it work.</p>
+                    <h1>Hoe kan ek help?</h1>
+                    <p class="hint">Vra enigiets. Puls stuur elke taak na 'n spesialis met net die gereedskap wat dit nodig het, en jy kan sien hoe dit werk.</p>
                     <div class="suggestions">
                         @foreach (var (title, detail, prompt) in Suggestions)
                         {
@@ -102,20 +102,20 @@
                 </div>
             }
             <div class="input-row">
-                <label class="attach" title="Attach text files">
+                <label class="attach" title="Heg tekslêers aan">
                     +
                     <InputFile OnChange="AddFiles" multiple />
                 </label>
                 <textarea id="composer-input" rows="1" @bind="_draft" @bind:event="oninput"
                           disabled="@(_chat?.Ended == true)"
-                          placeholder="@(_chat?.Ended == true ? "This chat ended when the API restarted - start a new chat" : "Message Puls")"></textarea>
+                          placeholder="@(_chat?.Ended == true ? "Hierdie gesprek het geëindig toe die API herbegin het - begin 'n nuwe gesprek" : "Boodskap aan Puls")"></textarea>
                 @if (_streaming)
                 {
                     <button class="stop" @onclick="Stop" title="Stop">■</button>
                 }
                 else
                 {
-                    <button id="send-button" class="send" @onclick="Send" disabled="@(!CanSend)" title="Send (Enter)">↑</button>
+                    <button id="send-button" class="send" @onclick="Send" disabled="@(!CanSend)" title="Stuur (Enter)">↑</button>
                 }
             </div>
         </div>
@@ -139,10 +139,10 @@
     // Starters for an empty chat: each one shows a different kind of delegation.
     private static readonly (string Title, string Detail, string Prompt)[] Suggestions =
     [
-        ("Research online", "What's new in .NET 10?", "What's new in .NET 10? Give me the highlights with sources."),
-        ("Read a file", "Summarise the README", "Read README.md and summarise what this project does in five bullet points."),
-        ("Check the history", "What changed recently?", "What are the last five commits in this repository, and what did each change?"),
-        ("Crunch numbers", "Count lines of code", "Count the lines of C# code under louis-agent.core, per folder, and show the top five."),
+        ("Soek aanlyn", "Wat is nuut in .NET 10?", "Wat is nuut in .NET 10? Gee my die hoogtepunte, met bronne."),
+        ("Lees 'n lêer", "Som die README op", "Lees README.md en som in vyf punte op wat hierdie projek doen."),
+        ("Kyk na die geskiedenis", "Wat het onlangs verander?", "Wat is die laaste vyf commits in hierdie repository, en wat het elkeen verander?"),
+        ("Tel en reken", "Tel reëls kode", "Tel die reëls C#-kode onder louis-agent.core, per vouer, en wys die top vyf."),
     ];
 
     private async Task Suggest(string prompt)
@@ -165,7 +165,7 @@
         if (!ReferenceEquals(chat, _chat)) _scrollToEnd = true;
         _chat = chat;
         if (SessionId is not null && chat is null && !_streaming)
-            _notice = "That chat isn't saved in this browser.";
+            _notice = "Daardie gesprek is nie in hierdie blaaier gestoor nie.";
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -242,7 +242,7 @@
         catch (AgentApiException ex) when (ex.Status == HttpStatusCode.NotFound)
         {
             chat.Ended = true;
-            turn.Error = "This chat's session no longer exists on the server (the API was restarted). Start a new chat to continue.";
+            turn.Error = "Hierdie gesprek se sessie bestaan nie meer op die bediener nie (die API het herbegin). Begin 'n nuwe gesprek om voort te gaan.";
         }
         catch (Exception ex)
         {
@@ -316,16 +316,16 @@
 
     private static string TitleFor(string text, List<Attachment> attachments)
     {
-        string title = text.Length > 0 ? text.ReplaceLineEndings(" ") : attachments.FirstOrDefault()?.Name ?? "New chat";
+        string title = text.Length > 0 ? text.ReplaceLineEndings(" ") : attachments.FirstOrDefault()?.Name ?? "Nuwe gesprek";
         return title.Length > 50 ? title[..50] + "…" : title;
     }
 
     private static string Describe(Exception ex) => ex switch
     {
-        AgentApiException { Status: HttpStatusCode.Unauthorized } => "The API needs a key: open Settings and enter AGENT_API_KEY.",
-        AgentApiException { Status: HttpStatusCode.Conflict } => "This chat is still answering; wait for it or press Stop.",
+        AgentApiException { Status: HttpStatusCode.Unauthorized } => "Die API het 'n sleutel nodig: maak Instellings oop en vul AGENT_API_KEY in.",
+        AgentApiException { Status: HttpStatusCode.Conflict } => "Hierdie gesprek antwoord nog; wag daarvoor of druk Stop.",
         AgentApiException api => api.Message,
-        HttpRequestException => "Can't reach Puls's API. Is the puls container running?",
+        HttpRequestException => "Kan nie Puls se API bereik nie. Loop die puls-houer?",
         _ => ex.Message,
     };
 }

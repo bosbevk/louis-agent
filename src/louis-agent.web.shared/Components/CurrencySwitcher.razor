@@ -1,12 +1,13 @@
 @* F14: the currency costs are shown in, in this browser; the server's (the PC's region) until changed here. *@
 @using LouisAgent.Web.Shared.Services
 @inject CurrencyState Currency
+@inject ChatText Text
 @implements IDisposable
 
 @if (Currency.Choices.Count > 1 && Currency.Current is { } current)
 {
-    <label class="settings" title="@(current.Converts ? $"1 {current.Base} = {current.Rate} {current.Code} on {current.AsOf}; the ledger keeps what was charged" : "As charged")">
-        Currency
+    <label class="settings" title="@(current.Converts ? string.Format(Text.ConvertedAt, current.Base, current.Rate, current.Code, current.AsOf) : Text.AsCharged)">
+        @Text.Currency
         <select value="@current.Code" @onchange="Change">
             @foreach (var (currency, symbol) in Currency.Choices)
             {

@@ -13,5 +13,6 @@ builder.Services.AddSingleton<Settings>();
 builder.Services.AddSingleton<ChatStore>();
 builder.Services.AddScoped<AgentApi>();
 builder.Services.AddScoped<CurrencyState>();
+builder.Services.AddSingleton(PulsText.Afrikaans);   // Puls speaks Afrikaans
 
 await builder.Build().RunAsync();

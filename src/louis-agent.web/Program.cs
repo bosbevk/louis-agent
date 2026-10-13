@@ -16,5 +16,6 @@ builder.Services.AddScoped<AgentApi>();
 builder.Services.AddScoped<GitState>();
 builder.Services.AddScoped<GitHistory>();
 builder.Services.AddScoped<CurrencyState>();
+builder.Services.AddSingleton(new LouisAgent.Web.Shared.ChatText());   // the shared components' words, in English
 
 await builder.Build().RunAsync();
