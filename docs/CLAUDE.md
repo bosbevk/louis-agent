@@ -39,6 +39,12 @@ Docker (web app + API on http://127.0.0.1:5080):
 docker compose -f docker/docker-compose.yml --env-file config/.env up -d --build api
 ```
 
+Puls (its web app on http://127.0.0.1:5070, its specialist on 5071):
+
+```bash
+docker compose -f docker/docker-compose.puls.yml --env-file config/.env up -d --build
+```
+
 Always pass `--env-file config/.env`; compose needs it for `REPOSITORIES_PATH`. Requires the .NET 10 SDK.
 
 ## Project structure
@@ -50,7 +56,8 @@ One design doc per project — purpose, structure, key types, settings, extensio
 ```
 louis-agent.core/             # Namespace = folder path (LouisAgent.Core.Tools.Web); see Project layout
 ├── Agent/                    # AgentEngine: the turn loop, history and system prompt, a façade over the rest:
-│                             # ToolRegistry, ToolCallGuards (cut-off calls, oversized results), SkillTools, AgentBuiltTools;
+│                             # ToolRegistry, ToolCallGuards (cut-off calls, oversized results, a sub-session's prompt
+│                             # budget), SkillTools, AgentBuiltTools;
 │                             # ToolsetCatalog (+ ToolsetDefinition, ToolsetContext): every toolset a session can load (F5)
 ├── Guardrails/               # WorkspaceBoundary, SensitiveFiles, SsrfGuard: pure safety checks (tools and API use them)
 ├── Hosting/                  # AgentHost (+ AgentHostContext): bootstrap for every host; AgentEngineFactory (one engine
@@ -119,7 +126,9 @@ tests/louis-agent.core.tests/ # NUnit; folders mirror core's, plus ArchitectureT
 tests/louis-agent.api.tests/  # NUnit; the API's sessions (toolsets per session, depth), no web host or model
 tests/louis-agent.orchestrator.tests/ # NUnit; error feed, SSE client, verification tools
 samples/                      # order-service (demo microservice), run-demo.ps1 [-Short], sample-output*/ (real runs
-                              # with their priced ledgers, uncached and -cached), smoke-f4-caching/, see samples/README.md
+                              # with their priced ledgers, uncached and -cached), smoke-f4-caching/, puls-check/ (the
+                              # delegation check: run_check.py [--repeat N], its runs in sample-output-puls-check*/),
+                              # see samples/README.md
 docker/                       # Dockerfile.{acp-server,api,agent,mcp-server,orchestrator}, docker-compose.yml,
                               # docker-compose.demo.yml (orchestrator demo); the build context's .dockerignore is at the repo root
 config/                       # .env and .env.secrets (both ignored), their examples, LLM profiles (.env.anthropic,
