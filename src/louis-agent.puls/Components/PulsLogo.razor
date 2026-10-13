@@ -15,7 +15,6 @@
             {
                 <circle cx="30" cy="92" r="@radius" fill="none" stroke="#000" stroke-width="@width" />
             }
-            <circle cx="30" cy="92" r="10.5" fill="none" stroke="#000" stroke-width="3" />
         </mask>
         <clipPath id="@(_id)disc"><circle cx="60" cy="60" r="58" /></clipPath>
     </defs>
@@ -34,10 +33,10 @@
 </svg>
 
 @code {
-    /// <summary>Radius and width of each ring cut out of the disc: evenly spaced, the first bold and each after it tapering away.</summary>
+    /// <summary>Radius and width of each ring cut out of the disc: evenly spaced, the first bold and starting at the green source's edge, each after it tapering away.</summary>
     private static readonly (string Radius, string Width)[] Rings =
     [
-        ("20", "11"), ("37", "8.4"), ("54", "6.2"), ("71", "4.4"), ("88", "3"), ("105", "2"),
+        ("13", "11"), ("30", "8.4"), ("47", "6.2"), ("64", "4.4"), ("81", "3"), ("98", "2"),
     ];
 
     private readonly string _id = "puls-" + Guid.NewGuid().ToString("N")[..8] + "-";
