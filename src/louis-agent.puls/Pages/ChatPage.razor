@@ -40,7 +40,16 @@
             {
                 <div class="empty">
                     <h1>How can I help?</h1>
-                    <p class="hint">Ask anything. Puls hands each task to a specialist with just the tools it needs.</p>
+                    <p class="hint">Ask anything. Puls hands each task to a specialist with just the tools it needs, and you can watch it work.</p>
+                    <div class="suggestions">
+                        @foreach (var (title, detail, prompt) in Suggestions)
+                        {
+                            <button class="suggestion" @onclick="() => Suggest(prompt)" disabled="@_streaming">
+                                <strong>@title</strong>
+                                <span>@detail</span>
+                            </button>
+                        }
+                    </div>
                 </div>
             }
             else
@@ -106,6 +115,21 @@
     private ElementReference _messages;
     private DateTime _lastRender;
     private bool _scrollToEnd;
+
+    // Starters for an empty chat: each one shows a different kind of delegation.
+    private static readonly (string Title, string Detail, string Prompt)[] Suggestions =
+    [
+        ("Research online", "What's new in .NET 10?", "What's new in .NET 10? Give me the highlights with sources."),
+        ("Read a file", "Summarise the README", "Read README.md and summarise what this project does in five bullet points."),
+        ("Check the history", "What changed recently?", "What are the last five commits in this repository, and what did each change?"),
+        ("Crunch numbers", "Count lines of code", "Count the lines of C# code under louis-agent.core, per folder, and show the top five."),
+    ];
+
+    private async Task Suggest(string prompt)
+    {
+        if (_streaming) return;
+        await StartTurnAsync(prompt, []);
+    }
 
     private bool CanSend => !_streaming && _chat?.Ended != true && (_draft.Trim().Length > 0 || _attachments.Count > 0);
 
