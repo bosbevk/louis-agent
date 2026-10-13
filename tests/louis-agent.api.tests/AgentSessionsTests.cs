@@ -38,7 +38,7 @@ public class AgentSessionsTests
     [Test]
     public void AnEmptyList_GivesNoToolsets()
     {
-        Assert.That(Names(Sessions().Create([])), Is.EqualTo(new[] { "ExecuteSkill" }));
+        Assert.That(Names(Sessions().Create([])), Is.EquivalentTo(new[] { "ExecuteSkill", "GetToday" }));
     }
 
     [Test]

@@ -9,6 +9,9 @@ using System.ComponentModel;
 /// <summary>Strings tools return to the model: what went wrong and what to do instead.</summary>
 public enum ToolMessage
 {
+    [Description("{Weekday} {Date}, {Time} South African time (UTC{Offset}). ISO: {Iso}. Week {Week}.")]
+    Today,
+
     [Description("refusing to fetch {Host}: local addresses are not allowed.")]
     FetchLocalAddress,
 

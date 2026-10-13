@@ -47,4 +47,12 @@ and bounded output; and reuse over invention, so the agent's capabilities rest o
 
 ## Approved during the build
 
-(None yet.)
+- **2026-10-13, ask before any package** (Louis: "when choosing a package ask me first as a rule give me three options
+  pros and cons"): every package is chosen by Louis from three options with pros and cons. Step 1's test clock:
+  Microsoft.Extensions.TimeProvider.Testing (chosen over a hand-made fake and NodaTime.Testing). Step 3's document
+  packages get their three options before they're added.
+- **2026-10-13, Puls knows the user's location** (Louis: "I would also like puls to know my location"; chose a setting
+  with a 'use my location' button): a new step **2b** after the attachments. Instellings gets *Ligging*, typed or filled
+  from the browser's location (asked once; reverse geocoding by a service chosen from three options); the session
+  carries it (`POST /sessions` with the user's location and time zone), Puls's prompt says where the user is, and
+  `GetToday` uses the user's time zone. Nothing leaves the browser unless the user sets it.

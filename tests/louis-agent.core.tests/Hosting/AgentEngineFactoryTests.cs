@@ -136,6 +136,6 @@ public class AgentEngineFactoryTests
     [Test]
     public void NoToolsets_GivesOnlyExecuteSkill()
     {
-        Assert.That(Names(Factory().GetOrCreate([])), Is.EqualTo(new[] { "ExecuteSkill" }));
+        Assert.That(Names(Factory().GetOrCreate([])), Is.EquivalentTo(new[] { "ExecuteSkill", "GetToday" }));
     }
 }

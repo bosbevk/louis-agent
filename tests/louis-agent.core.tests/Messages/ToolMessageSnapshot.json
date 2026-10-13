@@ -183,6 +183,7 @@
   "TestRunTimedOut": "Test run timed out.\n<Output>",
   "TestsPassed": "Tests passed.",
   "TimedOutWithOutput": "Timed out.\n<Output>",
+  "Today": "<Weekday> <Date>, <Time> South African time (UTC<Offset>). ISO: <Iso>. Week <Week>.",
   "ToolBuildingUnavailable": "Error: tool building is not available (no skills folder was found).",
   "ToolCreated": "Created tool '<Name>' (<Language>; <Parameters>). You can call it now. It is pending: tell the user to type '/approve <Name>' to keep it for future sessions (or '/reject <Name>').",
   "ToolDefinitionInvalid": "Error: invalid tool definition:\n- <Errors>",
