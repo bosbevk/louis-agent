@@ -120,6 +120,59 @@ public sealed class WorkspaceTools
                (end < text.Length ? MessageText.Format(ToolMessage.DocumentContinues, new { Start = startIndex, End = end, text.Length }) : "");
     }
 
+    [Description("Read a spreadsheet (.xlsx, .xls) or CSV as a table: one sheet's rows, the first as the header, a page at a " +
+        "time. Says how many rows and columns there are and which sheets exist. For counting or calculating over the rows, " +
+        "use it to see the shape, then a script.")]
+    public string ReadTable(
+        [Description("Workspace-relative file path.")] string relativePath,
+        [Description("The sheet's name (default: the first sheet)")] string sheet = "",
+        [Description("First data row to show, after the header (default 0)")] int startRow = 0,
+        [Description("Rows to show (1-200, default 50)")] int maxRows = 50)
+    {
+        string path = ResolvePath(relativePath);
+        if (SensitiveFiles.IsSensitive(path)) return MessageText.Format(ToolMessage.SensitiveRead);
+        if (!File.Exists(path)) return MessageText.Format(ToolMessage.FileNotFound, new { Path = relativePath });
+        string extension = Path.GetExtension(path);
+        if (!DocumentText.TableExtensions.Contains(extension.ToLowerInvariant()))
+            return MessageText.Format(ToolMessage.TableTypeUnsupported, new { Extension = extension, Supported = string.Join(", ", DocumentText.TableExtensions) });
+        if (new FileInfo(path).Length > MaxDocumentBytes)
+            return MessageText.Format(ToolMessage.DocumentTooLarge, new { Megabytes = MaxDocumentBytes / 1_000_000 });
+
+        (IReadOnlyList<string> Sheets, string Sheet, List<string[]>? Rows) table;
+        try
+        {
+            using var file = File.OpenRead(path);
+            table = DocumentText.Table(file, extension, sheet);
+        }
+        catch (Exception ex) when (ex is not OutOfMemoryException)
+        {
+            return MessageText.Format(ToolMessage.DocumentUnreadable, new { Path = relativePath, Reason = ex.Message });
+        }
+        string sheets = string.Join(", ", table.Sheets);
+        if (table.Rows is null) return MessageText.Format(ToolMessage.TableSheetUnknown, new { Sheet = sheet, Sheets = sheets });
+        if (table.Rows.Count == 0) return MessageText.Format(ToolMessage.TableEmpty, new { table.Sheet });
+
+        string[] header = table.Rows[0];
+        var data = table.Rows.Skip(1).ToList();
+        int columns = table.Rows.Max(r => r.Length);
+        startRow = Math.Clamp(startRow, 0, Math.Max(0, data.Count - 1));
+        var shown = data.Skip(startRow).Take(Math.Clamp(maxRows, 1, 200)).ToList();
+
+        static string Line(IEnumerable<string> cells, int width) =>
+            "| " + string.Join(" | ", cells.Concat(Enumerable.Repeat("", width)).Take(width).Select(c => c.Replace("|", "\\|").ReplaceLineEndings(" "))) + " |";
+        var text = new StringBuilder();
+        text.AppendLine(MessageText.Format(ToolMessage.TableShown, new
+        {
+            table.Sheet, Sheets = sheets, Rows = data.Count, Columns = columns, First = shown.Count == 0 ? 0 : startRow + 1, Last = startRow + shown.Count,
+        }));
+        text.AppendLine(Line(header, columns));
+        text.AppendLine("|" + string.Concat(Enumerable.Repeat(" --- |", columns)));
+        foreach (string[] row in shown) text.AppendLine(Line(row, columns));
+        if (startRow + shown.Count < data.Count)
+            text.Append(MessageText.Format(ToolMessage.TableContinues, new { Next = startRow + shown.Count }));
+        return ProcessRunner.Truncate(text.ToString().TrimEnd());
+    }
+
     [Description("Recursively search source and documentation files under the workspace root for a case-insensitive literal text match, returning each hit as path:line: text. Only a fixed set of extensions is searched (code, config, markdown, etc.), and sensitive files, files over 1 MB, and excluded directories (.git, node_modules, bin, obj, etc.) are skipped. Results stop at maxResults (1-100, default 30) even if more matches exist, so a \"no matches\" result does not prove the term is absent from excluded files. Use FindFiles instead when you're matching file names rather than file content.")]
     public string SearchWorkspace(
         [Description("Text to find.")] string query,

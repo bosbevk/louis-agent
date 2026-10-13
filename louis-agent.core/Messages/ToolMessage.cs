@@ -9,6 +9,30 @@ using System.ComponentModel;
 /// <summary>Strings tools return to the model: what went wrong and what to do instead.</summary>
 public enum ToolMessage
 {
+    [Description("ReadTable reads {Supported}; '{Extension}' isn't one of them.")]
+    TableTypeUnsupported,
+
+    [Description("No sheet named '{Sheet}'. Sheets: {Sheets}.")]
+    TableSheetUnknown,
+
+    [Description("Sheet '{Sheet}' is empty.")]
+    TableEmpty,
+
+    [Description("Sheet '{Sheet}' (sheets: {Sheets}): {Rows} rows × {Columns} columns; rows {First}-{Last} below, the first row as the header.")]
+    TableShown,
+
+    [Description("\n[More rows: call ReadTable with startRow={Next} to continue.]")]
+    TableContinues,
+
+    [Description("No exchange rates are loaded on this instance (RATES_URL or RATES_FILE), so amounts can't be converted.")]
+    RatesUnavailable,
+
+    [Description("No rate for '{Currency}'. Known currencies: {Known}.")]
+    CurrencyUnknown,
+
+    [Description("{Amount} {From} = {Result} {To} (1 {From} = {Rate} {To}; rates of {AsOf}, {Source}).")]
+    CurrencyConverted,
+
     [Description("No commits match.")]
     GitNoCommits,
 

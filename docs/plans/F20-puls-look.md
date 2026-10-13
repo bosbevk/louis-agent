@@ -59,3 +59,6 @@ the answer, building on F5's live delegation view (GOAL: observability of agents
   with visible usage"): the landing page says *Betaal soos jy gebruik* and shows a question's cost; the top bar's
   *Kry Plus* becomes a usage meter (this chat, this month) and the profile menu's *Opgradeer plan* becomes *Gebruik*. No
   plans or subscriptions anywhere. Built when F20 resumes (after F22).
+- **2026-10-13, company information** (Louis: "ons moet net 'n company info insit: company is louis-agent website github
+  project"): the landing page says Puls is a louis-agent project, with an *Oor ons* section and the footer linking to the
+  GitHub project. Built when F20 resumes.

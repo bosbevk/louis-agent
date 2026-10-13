@@ -75,6 +75,24 @@ public class WebToolsTests
         Assert.That(result, Does.Contain("untrusted web content"));
     }
 
+    [Test]
+    public void ConvertCurrency_UsesTheLoadedRates_ThroughTheBase()
+    {
+        // F22 step 5: the rates the app shows costs in (F14), base USD: 1 USD = 18 ZAR, 0.9 EUR.
+        var rates = new LouisAgent.Core.Pricing.ExchangeRates { AsOf = "2026-10-13", Base = "USD", Source = "frankfurter.app", Rates = new() { ["ZAR"] = 18m, ["EUR"] = 0.9m } };
+        var tools = new WebTools(new FakeSearch(), new StubHandler(_ => Html("")), PublicDns, rates);
+
+        Assert.That(tools.ConvertCurrency(1800m, "zar", "USD"), Is.EqualTo("1,800.00 ZAR = 100.00 USD (1 ZAR = 0.055556 USD; rates of 2026-10-13, frankfurter.app)."));
+        Assert.That(tools.ConvertCurrency(90m, "EUR", "ZAR"), Does.StartWith("90.00 EUR = 1,800.00 ZAR"), "neither is the base");
+        Assert.That(tools.ConvertCurrency(1m, "XYZ", "USD"), Does.StartWith("No rate for 'XYZ'").And.Contain("ZAR"));
+    }
+
+    [Test]
+    public void ConvertCurrency_WithoutRates_SaysSo()
+    {
+        Assert.That(Tools(_ => Html("")).ConvertCurrency(1m, "ZAR", "USD"), Does.Contain("No exchange rates are loaded"));
+    }
+
     /// <summary>An injected engine: records the query and returns canned results.</summary>
     private sealed class FakeSearch(params WebSearchResult[] results) : IWebSearchProvider
     {

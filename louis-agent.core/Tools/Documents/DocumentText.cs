@@ -40,6 +40,41 @@ internal static class DocumentText
         };
     }
 
+    /// <summary>The extensions <see cref="Table"/> reads.</summary>
+    public static readonly IReadOnlyList<string> TableExtensions = [".xlsx", ".xls", ".csv"];
+
+    /// <summary>
+    /// The rows of one sheet of a spreadsheet or CSV: <paramref name="sheet"/>, or the first when it's empty; every sheet's
+    /// name too. <c>Rows</c> is null when there's no sheet of that name.
+    /// </summary>
+    public static (IReadOnlyList<string> Sheets, string Sheet, List<string[]>? Rows) Table(Stream stream, string extension, string? sheet)
+    {
+        using var seekable = new MemoryStream();
+        stream.CopyTo(seekable);
+        seekable.Position = 0;
+        bool csv = extension.Equals(".csv", StringComparison.OrdinalIgnoreCase);
+        using var reader = csv ? ExcelReaderFactory.CreateCsvReader(seekable) : ExcelReaderFactory.CreateReader(seekable);
+
+        var sheets = new List<string>();
+        List<string[]>? chosen = null;
+        string chosenName = "";
+        do
+        {
+            string name = csv ? "csv" : reader.Name;
+            sheets.Add(name);
+            bool wanted = chosen is null && (string.IsNullOrWhiteSpace(sheet) || name.Equals(sheet.Trim(), StringComparison.OrdinalIgnoreCase));
+            if (!wanted) continue;
+            chosenName = name;
+            chosen = [];
+            while (reader.Read())
+                chosen.Add(Enumerable.Range(0, reader.FieldCount)
+                    .Select(i => Convert.ToString(reader.GetValue(i), CultureInfo.InvariantCulture)?.Trim() ?? "").ToArray());
+            // Trailing empty rows and columns are spreadsheet padding.
+            while (chosen.Count > 0 && chosen[^1].All(c => c.Length == 0)) chosen.RemoveAt(chosen.Count - 1);
+        } while (reader.NextResult());
+        return (sheets, chosenName, chosen);
+    }
+
     private static string Pdf(Stream stream)
     {
         using var document = PdfDocument.Open(stream);
