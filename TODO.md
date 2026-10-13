@@ -214,12 +214,12 @@ Design: [docs/specs/SESSION_ARCHITECTURE.md](docs/specs/SESSION_ARCHITECTURE.md)
 - [ ] Separate session state from the model's context, with a context-building step (retrieve, rank, budget, compress)
 - [ ] Long-term memory and retrieval (past conversations, user facts, external knowledge)
 - [ ] Storage by access pattern (hot state, transcripts, vectors, large artifacts) and explicit session lifecycle states
-- [x] [F22 Role tools](docs/features/F22-role-tools.md) — the tools Puls's specialists need: today's date, attachments, documents, git history, tables, currency ([plan](docs/plans/F22-role-tools.md)).
-- [x] [F21 Personalities](docs/features/F21-personalities.md) — each session (and sub-session) names its personality; Puls speaks everyday South African Afrikaans ([plan](docs/plans/F21-personalities.md)).
+- [ ] [F22 Role tools](docs/features/F22-role-tools.md) — the tools Puls's specialists need: today's date, attachments, documents, git history, tables, currency ([plan](docs/plans/F22-role-tools.md)). Built; open: a specialist reading an attached PDF in a real chat.
+- [ ] [F21 Personalities](docs/features/F21-personalities.md) — each session (and sub-session) names its personality; Puls speaks everyday South African Afrikaans ([plan](docs/plans/F21-personalities.md)). Built; open: Louis's corrections to the Afrikaans (the delegation check's `answers.md`).
 - [ ] **F23 Credits** (to plan): buy credits with money, spend them per question at cost plus a margin, from the usage
       ledger and prices (F1, F2) — Puls's *Koop krediete*. Louis: "'n layer wat geld na ons interne krediete verander. Wil so
       bietjie geld maak as ek kan."
-- [x] [F20 Puls look](docs/features/F20-puls-look.md) — Puls gets a landing page and a three-panel dashboard, dark, in its own colours ([plan](docs/plans/F20-puls-look.md)).
+- [ ] [F20 Puls look](docs/features/F20-puls-look.md) — Puls gets a landing page and a three-panel dashboard, dark, in its own colours ([plan](docs/plans/F20-puls-look.md)). Built; open: copy in a real browser, and the Werk panel during a live delegation.
 - [ ] **F5 follow-up: roll sub-session usage up into the parent chat** ([plan](docs/plans/F05-usage-rollup.md)). Sub-session totals (`StartSubSession`) must count in the parent's turn scope (`UsageScope.Add`, summary record only, never written to the ledger) so the per-chat usage line, the chat total and `GET /sessions/{id}` include them. Child cost is converted to USD once, at the parent. Confirm in `Program.cs` that `session.Usage` takes the turn's scope records. Test: parent total = own requests + each child; a failed child's usage is included; no duplicate ledger rows.
 
 ### Web app

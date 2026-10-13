@@ -38,8 +38,9 @@ attachments to a sub-session is our own: nothing third-party does that for us.
   `FileHistory`, `SearchCommits`, `ReadTable`, `ConvertCurrency`. *Met:* unit tests for each (documents built in the
   test, git on a real repository, a fake clock), suites pass.
 - **Model text never becomes a git option:** *Met:* a test passes `--output=...` as a path and a search term.
-- **The roles use their tools** in real delegations (the researcher checks the date, the reader reads an attached PDF).
-  **Open:** needs real chats; the delegation check answers it.
+- **The roles use their tools** in real delegations. *Met* in the [three-run delegation check](../../samples/sample-output-puls-check-repeat/README.md): the
+  researcher called `GetToday` in all 6 web delegations, the historian `FileHistory`, the analyst `PythonRun` (the
+  specialist's log). **Open:** the reader reading an attached PDF, which the check doesn't ask for.
 - **The user's place:** the time zone with every new chat, the location only when set, at ~1 km. *Met* by tests and the
   live API (a 400 for an unknown time zone).
 

@@ -34,8 +34,10 @@ caches one engine per toolsets and personality. `GET /personalities` lists them,
   `../secrets`).
 - **F21-S2:** `StartSubSession` sends the role; a sub-session gets no router. *Met:* unit and API tests; a live
   researcher session opened with `puls-researcher` and no router (~1,900-token prefix).
-- **Puls speaks everyday South African Afrikaans and picks the right role for a request.** **Open:** needs real chats;
-  the delegation check (cost and the roles chosen, saved as a sample) answers it.
+- **Puls picks the right role for a request.** *Met:* in the [three-run delegation check](../../samples/sample-output-puls-check-repeat/README.md) all 24
+  delegations went to the role the router names, each with its role passed.
+- **Puls speaks everyday South African Afrikaans.** **Open:** Louis's corrections in the check's `answers.md` files
+  (both answers to each question side by side), then folded into `puls.md`.
 - Suites pass; the golden file shows only the deliberate changes.
 
 ## What the build changed
