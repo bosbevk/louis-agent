@@ -112,20 +112,24 @@ public sealed class AgentPeerTools(IReadOnlyDictionary<string, Uri> peers, strin
             sessionId = JsonDocument.Parse(createdBody).RootElement.GetProperty("session_id").GetString()
                 ?? throw new JsonException("no session_id");
 
-            using var send = Request(HttpMethod.Post, new Uri(peer, $"sessions/{Uri.EscapeDataString(sessionId!)}/messages"),
-                new { message, attachments = forwarded });
-            using var reply = await _http.SendAsync(send, HttpCompletionOption.ResponseHeadersRead, timeout.Token);
-            if (!reply.IsSuccessStatusCode)
-                return MessageText.Format(ToolMessage.SubSessionRefused,
-                    new { Agent = agent, Status = (int)reply.StatusCode, Reason = ErrorText(await reply.Content.ReadAsStringAsync(timeout.Token)) });
-
-            var (text, usage, error) = await ReadStreamAsync(await reply.Content.ReadAsStreamAsync(timeout.Token),
-                (type, data) => SubSessionFeed.Report(new SubSessionEvent(toolUseId, agent, type, data)), timeout.Token);
-            if (error is not null)
-                return MessageText.Format(ToolMessage.SubSessionFailed, new { Agent = agent, Reason = error });
+            var (text, usage, failure) = await SendAsync(peer, sessionId, new { message, attachments = forwarded }, agent, toolUseId, timeout.Token);
+            if (failure is not null) return failure;
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                // A specialist that used all its tool rounds can end with no text (FX11): ask once, in the same session,
+                // for the answer from what it found. Its context and cached prefix stay; a new sub-session would start over.
+                var (again, againUsage, againFailure) = await SendAsync(peer, sessionId,
+                    new { message = MessageText.Format(ToolMessage.SubSessionAskForAnswer) }, agent, toolUseId, timeout.Token);
+                if (againFailure is not null) return againFailure;
+                text = again;
+                usage = string.Join(" + ", new[] { usage, againUsage }.OfType<string>());
+                if (string.IsNullOrWhiteSpace(text))
+                    return MessageText.Format(ToolMessage.SubSessionNoAnswer, new { Agent = agent, Usage = usage.Length > 0 ? usage : MessageText.Format(ToolMessage.SubSessionNoUsage) });
+            }
             return MessageText.Format(ToolMessage.SubSessionAnswer, new
             {
-                Answer = text.Trim(), Agent = agent, Toolsets = string.Join(", ", toolsets), Usage = usage ?? MessageText.Format(ToolMessage.SubSessionNoUsage),
+                Answer = text.Trim(), Agent = agent, Toolsets = string.Join(", ", toolsets),
+                Usage = string.IsNullOrEmpty(usage) ? MessageText.Format(ToolMessage.SubSessionNoUsage) : usage,
             });
         }
         catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
@@ -154,6 +158,24 @@ public sealed class AgentPeerTools(IReadOnlyDictionary<string, Uri> peers, strin
                 catch (HttpRequestException) { }
             }
         }
+    }
+
+    /// <summary>
+    /// Sends one message to the sub-session and reads its reply: the answer's text and usage line, or the failure the
+    /// model gets instead (refused, or an error event).
+    /// </summary>
+    private async Task<(string Text, string? Usage, string? Failure)> SendAsync(Uri peer, string sessionId, object body,
+        string agent, string? toolUseId, CancellationToken cancellationToken)
+    {
+        using var send = Request(HttpMethod.Post, new Uri(peer, $"sessions/{Uri.EscapeDataString(sessionId)}/messages"), body);
+        using var reply = await _http.SendAsync(send, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+        if (!reply.IsSuccessStatusCode)
+            return ("", null, MessageText.Format(ToolMessage.SubSessionRefused,
+                new { Agent = agent, Status = (int)reply.StatusCode, Reason = ErrorText(await reply.Content.ReadAsStringAsync(cancellationToken)) }));
+
+        var (text, usage, error) = await ReadStreamAsync(await reply.Content.ReadAsStreamAsync(cancellationToken),
+            (type, data) => SubSessionFeed.Report(new SubSessionEvent(toolUseId, agent, type, data)), cancellationToken);
+        return error is null ? (text, usage, null) : ("", usage, MessageText.Format(ToolMessage.SubSessionFailed, new { Agent = agent, Reason = error }));
     }
 
     /// <summary>Outside a turn there's nothing to count against, so a rolling window: at most MaxPerTurn a minute.</summary>

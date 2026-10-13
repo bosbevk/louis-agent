@@ -19,6 +19,7 @@ record (most fixes so far taught something about a model's API).
 | [FX8](FX08-fix-result-quotes.md) | A FIX-RESULT with quotes in its summary is still read (not answered with "continue") | done | orchestrator: FIX-RESULT parsing | F14's full demo rerun, error 10 (2026-10-11) | `6307226` | — |
 | [FX9](FX09-cancelled-request-usage.md) | A request cancelled without streaming is still written to the ledger | open | core: usage recorder | Short demo with triage on llama3.1, a timed-out request missing (2026-10-12) | — | — |
 | [FX10](FX10-optional-peer-name.md) | A sub-session call without `agent` uses the only peer (it was refused) | done | core: `agents` toolset | Puls delegation check with roles, 3 refused calls (2026-10-13) | (this commit) | — |
+| [FX11](FX11-empty-sub-session-answer.md) | A sub-session that ends without an answer is asked once more, in the same session (not started over) | done | core: `agents` toolset | Puls delegation check with roles, numbers-2 at a third of the run's cost (2026-10-13) | (this commit) | — |
 
 ## Conventions
 

@@ -657,6 +657,12 @@ public enum ToolMessage
     [Description("{Answer}\n\n[Sub-session on {Agent} ({Toolsets}): {Usage}]")]
     SubSessionAnswer,
 
+    [Description("You stopped without writing an answer (usually: all your tool rounds were used). Don't call any more tools: answer the task now from what you found, and say what you couldn't finish.")]
+    SubSessionAskForAnswer,
+
+    [Description("Error: the sub-session on {Agent} ended without an answer twice (usually: it used all its tool rounds). Don't send the same task again: split it into smaller tasks, or tell the user what couldn't be done. [{Usage}]")]
+    SubSessionNoAnswer,
+
     [Description("{Requests} requests, {Tokens} tokens, {Cost}")]
     SubSessionUsage,
 

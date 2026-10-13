@@ -64,6 +64,53 @@ public class AgentPeerToolsTests
         Assert.That(create.RootElement.GetProperty("personality").ValueKind, Is.EqualTo(JsonValueKind.Null), "none named: the peer's default");
     }
 
+    /// <summary>A reply with usage and no text: what the delegation check's specialist sent after its tenth tool round.</summary>
+    private const string EmptyStream = """
+        event: message_delta
+        data: {"type":"message_delta","delta":{"stop_reason":"end_turn"},"usage":{"input_tokens":100,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":104,"requests":11,"cost":0.0081,"currency":"USD"}}
+
+        event: message_stop
+        data: {"type":"message_stop"}
+
+        """;
+
+    private static Func<HttpResponseMessage> Replies(params string[] streams)
+    {
+        int next = 0;
+        return () => new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(streams[next++], Encoding.UTF8, "text/event-stream") };
+    }
+
+    [Test]
+    public async Task AnEmptyAnswer_IsAskedForOnce_InTheSameSession()
+    {
+        // FX11: the specialist used its ten tool rounds and ended with no text; Puls sent the whole task again, to a new one.
+        var handler = Peer(Replies(EmptyStream, Stream));
+
+        string result = await Tools(handler).StartSubSession(["files", "python"], "Count the test methods.", agent: "coder");
+
+        Assert.That(result, Does.StartWith("Fixed the null check; 14/14 tests pass."));
+        Assert.That(result, Does.Contain("11 requests, 204 tokens, 0.0081 USD + 3 requests, 10,200 tokens, 0.0123 USD"), "both turns' usage");
+        Assert.That(handler.Requests.Select(r => $"{r.Method} {new Uri(r.Url).AbsolutePath}"), Is.EqualTo(new[]
+        {
+            "POST /sessions", "POST /sessions/sess_child/messages", "POST /sessions/sess_child/messages", "DELETE /sessions/sess_child",
+        }));
+        using var followUp = JsonDocument.Parse(handler.Requests[2].Body!);
+        Assert.That(followUp.RootElement.GetProperty("message").GetString(), Does.Contain("answer the task now from what you found"));
+    }
+
+    [Test]
+    public async Task EmptyTwice_SaysSo_AndDoesNotAskAgain()
+    {
+        var handler = Peer(Replies(EmptyStream, EmptyStream));
+
+        string result = await Tools(handler).StartSubSession(["files"], "x", agent: "coder");
+
+        Assert.That(result, Does.StartWith("Error: the sub-session on coder ended without an answer twice")
+            .And.Contain("Don't send the same task again"));
+        Assert.That(handler.Requests.Count(r => r.Url.EndsWith("/messages")), Is.EqualTo(2), "one follow-up, no more");
+        Assert.That(handler.Requests[^1].Method, Is.EqualTo(HttpMethod.Delete));
+    }
+
     [Test]
     public async Task NamedAttachments_AreSentWithTheTask()
     {
