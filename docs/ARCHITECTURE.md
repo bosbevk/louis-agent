@@ -141,7 +141,7 @@ Everything it sends uses LF line endings, whatever the checkout:
 Every toolset is a catalogue entry: a name, a one-line description, the settings it needs, its tool class and factory,
 and its guide (docs/CLAUDE.md, *Adding a toolset*). `files`, `git`, `dotnet`, `python`, `powershell`, `bash`, `web`,
 `paymo`, `devops`, `agents` (sub-sessions on a peer, `AGENT_PEERS`) and `skills` (engine-provided). `AgentEngineFactory`
-builds one engine per normalised list (cached, at most 16), with only those tools and only their guides in the system
+builds one engine per normalised list (cached; past 16 the least recently used is dropped), with only those tools and only their guides in the system
 prompt, and logs each profile's tool count and fixed-prefix estimate. The CLI, ACP server and MCP server use every
 toolset the instance can load; the API's sessions choose theirs. A sub-session (`AgentPeerTools.StartSubSession`) runs
 on a peer with its own toolsets, at most 3 per turn and 5 minutes each, and only its answer and a usage line come back;

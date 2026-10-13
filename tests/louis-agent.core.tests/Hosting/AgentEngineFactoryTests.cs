@@ -70,14 +70,20 @@ public class AgentEngineFactoryTests
     }
 
     [Test]
-    public void TheCap_RefusesANewProfile_ButNotAnExistingOne()
+    public void AFullCache_DropsTheLeastRecentlyUsed_NotTheNewList()
     {
+        // PR #27 review: on a specialist the model chooses the lists; refusing the 17th would stop it until a restart.
         var factory = Factory(capacity: 2);
-        factory.GetOrCreate(["files"]);
+        var files = factory.GetOrCreate(["files"]);
         factory.GetOrCreate(["git"]);
+        factory.GetOrCreate(["files"]);   // files is now the more recent
 
-        Assert.That(() => factory.GetOrCreate(["dotnet"]), Throws.TypeOf<ToolsetException>().With.Message.Contain("2 toolset profiles"));
-        Assert.That(factory.GetOrCreate(["files"]), Is.Not.Null);
+        var dotnet = factory.GetOrCreate(["dotnet"]);
+
+        Assert.That(dotnet, Is.Not.Null);
+        Assert.That(factory.Profiles, Is.EquivalentTo(new[] { "files", "dotnet" }), "git, the least recently used, went");
+        Assert.That(factory.GetOrCreate(["files"]), Is.SameAs(files), "a kept profile is the same engine");
+        Assert.That(factory.GetOrCreate(["git"]), Is.Not.Null, "a dropped one is built again");
     }
 
     [Test]

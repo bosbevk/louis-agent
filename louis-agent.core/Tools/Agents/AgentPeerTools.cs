@@ -22,10 +22,14 @@ using Microsoft.Extensions.AI;
 /// <c>agents</c> toolset at, so sub-sessions are one level deep. The API key comes from AGENT_API_KEY, never from the
 /// model's arguments.
 /// </remarks>
-public sealed class AgentPeerTools(IReadOnlyDictionary<string, Uri> peers, string? apiKey, HttpClient? http = null, TimeSpan? timeout = null)
+public sealed class AgentPeerTools(IReadOnlyDictionary<string, Uri> peers, string? apiKey, HttpClient? http = null, TimeSpan? timeout = null,
+    TimeProvider? time = null)
 {
-    /// <summary>Sub-sessions one turn may open.</summary>
+    /// <summary>Sub-sessions one turn may open; outside a turn (an MCP call), the most a minute may.</summary>
     public const int MaxPerTurn = 3;
+
+    /// <summary>The window of the limit outside a turn.</summary>
+    public static readonly TimeSpan NoTurnWindow = TimeSpan.FromMinutes(1);
 
     /// <summary>How long one sub-session may run.</summary>
     public static readonly TimeSpan DefaultTimeout = TimeSpan.FromMinutes(5);
@@ -36,6 +40,8 @@ public sealed class AgentPeerTools(IReadOnlyDictionary<string, Uri> peers, strin
     private readonly HttpClient _http = http ?? SharedHttp;
     private readonly TimeSpan _timeout = timeout ?? DefaultTimeout;
     private readonly ConcurrentDictionary<string, int> _perTurn = new(StringComparer.Ordinal);
+    private readonly Queue<DateTimeOffset> _noTurn = new();
+    private readonly TimeProvider _time = time ?? TimeProvider.System;
 
     public AgentPeerTools(AgentOptions options) : this(options.AgentPeers, options.AgentApiKey)
     {
@@ -65,8 +71,8 @@ public sealed class AgentPeerTools(IReadOnlyDictionary<string, Uri> peers, strin
         // The call that opened this sub-session, so a host can show its events under that call.
         string? toolUseId = FunctionInvokingChatClient.CurrentContext?.CallContent.CallId;
         string? parent = scope?.Session is { } session ? $"{session}#{scope.Turn}" : null;
-        if (!TakeTurnSlot(parent ?? "(no turn)"))
-            return MessageText.Format(ToolMessage.SubSessionLimit, new { Max = MaxPerTurn });
+        if (parent is null ? !TakeNoTurnSlot() : !TakeTurnSlot(parent))
+            return MessageText.Format(parent is null ? ToolMessage.SubSessionRateLimit : ToolMessage.SubSessionLimit, new { Max = MaxPerTurn });
 
         using var timeout = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         timeout.CancelAfter(_timeout);
@@ -81,7 +87,8 @@ public sealed class AgentPeerTools(IReadOnlyDictionary<string, Uri> peers, strin
             string createdBody = await created.Content.ReadAsStringAsync(timeout.Token);
             if (!created.IsSuccessStatusCode)
                 return MessageText.Format(ToolMessage.SubSessionRefused, new { Agent = agent, Status = (int)created.StatusCode, Reason = ErrorText(createdBody) });
-            sessionId = JsonDocument.Parse(createdBody).RootElement.GetProperty("session_id").GetString();
+            sessionId = JsonDocument.Parse(createdBody).RootElement.GetProperty("session_id").GetString()
+                ?? throw new JsonException("no session_id");
 
             using var send = Request(HttpMethod.Post, new Uri(peer, $"sessions/{Uri.EscapeDataString(sessionId!)}/messages"), new { message });
             using var reply = await _http.SendAsync(send, HttpCompletionOption.ResponseHeadersRead, timeout.Token);
@@ -106,6 +113,11 @@ public sealed class AgentPeerTools(IReadOnlyDictionary<string, Uri> peers, strin
         {
             return MessageText.Format(ToolMessage.SubSessionFailed, new { Agent = agent, Reason = ex.Message });
         }
+        catch (Exception ex) when (ex is JsonException or KeyNotFoundException or InvalidOperationException or FormatException)
+        {
+            // A peer that answers with something other than its API's JSON: an answer the model can act on, not a crash.
+            return MessageText.Format(ToolMessage.SubSessionUnreadable, new { Agent = agent, Reason = ex.Message });
+        }
         finally
         {
             // Always, success or not, so a peer never keeps a sub-session; its own idle timeout is the fallback.
@@ -118,6 +130,19 @@ public sealed class AgentPeerTools(IReadOnlyDictionary<string, Uri> peers, strin
                 }
                 catch (HttpRequestException) { }
             }
+        }
+    }
+
+    /// <summary>Outside a turn there's nothing to count against, so a rolling window: at most MaxPerTurn a minute.</summary>
+    private bool TakeNoTurnSlot()
+    {
+        lock (_noTurn)
+        {
+            DateTimeOffset now = _time.GetUtcNow();
+            while (_noTurn.Count > 0 && now - _noTurn.Peek() >= NoTurnWindow) _noTurn.Dequeue();
+            if (_noTurn.Count >= MaxPerTurn) return false;
+            _noTurn.Enqueue(now);
+            return true;
         }
     }
 

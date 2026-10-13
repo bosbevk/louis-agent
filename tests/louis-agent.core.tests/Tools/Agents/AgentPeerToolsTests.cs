@@ -42,8 +42,8 @@ public class AgentPeerToolsTests
         _ => new HttpResponseMessage(HttpStatusCode.NotFound),
     });
 
-    private static AgentPeerTools Tools(StubHandler handler, TimeSpan? timeout = null) =>
-        new(Peers, "the-key", new HttpClient(handler), timeout);
+    private static AgentPeerTools Tools(StubHandler handler, TimeSpan? timeout = null, TimeProvider? time = null) =>
+        new(Peers, "the-key", new HttpClient(handler), timeout, time);
 
     [Test]
     public async Task ASubSession_ReturnsTheAnswerAndUsage_AndIsDeleted()
@@ -142,6 +142,36 @@ public class AgentPeerToolsTests
 
         Assert.That(result, Does.Contain("HTTP 400").And.Contain("can't load the 'agents' toolset"));
         Assert.That(handler.Requests, Has.Count.EqualTo(1), "nothing was created, so nothing to delete");
+    }
+
+    [Test]
+    public async Task OutsideATurn_TheLimitIsPerMinute_NotForever()
+    {
+        // PR #27 review: MCP calls have no turn; they used to share one key that, once full, refused every later call.
+        var time = new Microsoft.Extensions.Time.Testing.FakeTimeProvider(DateTimeOffset.Parse("2026-10-13T10:00:00Z"));
+        var tools = Tools(Peer(), time: time);
+
+        for (int i = 0; i < AgentPeerTools.MaxPerTurn; i++)
+            Assert.That(await tools.StartSubSession("coder", ["files"], "x"), Does.Not.StartWith("Error"));
+        Assert.That(await tools.StartSubSession("coder", ["files"], "x"), Does.Contain("in the last minute"));
+
+        time.Advance(AgentPeerTools.NoTurnWindow);
+        Assert.That(await tools.StartSubSession("coder", ["files"], "x"), Does.Not.StartWith("Error"), "a minute later it works again");
+    }
+
+    [Test]
+    public async Task AnUnreadableReply_IsAnAnswer_NotACrash()
+    {
+        // PR #27 review: a peer replying with something other than its API's JSON used to throw past the tool.
+        var handler = new StubHandler(request => request.Method.Method switch
+        {
+            "POST" => new HttpResponseMessage(HttpStatusCode.Created) { Content = new StringContent("<html>proxy error</html>") },
+            _ => new HttpResponseMessage(HttpStatusCode.OK),
+        });
+
+        string result = await Tools(handler).StartSubSession("coder", ["files"], "x");
+
+        Assert.That(result, Does.StartWith("Error: coder's reply couldn't be read"));
     }
 
     [Test]

@@ -588,6 +588,12 @@ public enum ToolMessage
     [Description("Error: this turn has already started {Max} sub-sessions, the most one turn may. Finish with what you have, or ask the user.")]
     SubSessionLimit,
 
+    [Description("Error: {Max} sub-sessions have started in the last minute outside a chat turn, the most allowed. Wait a minute and try again.")]
+    SubSessionRateLimit,
+
+    [Description("Error: {Agent}'s reply couldn't be read ({Reason}). Try again once, or do the task another way.")]
+    SubSessionUnreadable,
+
     [Description("Error: {Agent} refused the sub-session (HTTP {Status}): {Reason}")]
     SubSessionRefused,
 

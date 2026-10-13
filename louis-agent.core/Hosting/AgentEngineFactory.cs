@@ -24,7 +24,10 @@ using Microsoft.Extensions.Logging;
 /// </remarks>
 public sealed class AgentEngineFactory
 {
-    /// <summary>How many profiles one instance keeps; engines are never disposed, so this bounds memory.</summary>
+    /// <summary>
+    /// How many profiles one instance keeps cached; past it the least recently used is dropped (a session keeps its own
+    /// engine, so dropping one never breaks a chat; the next session with that list builds it again).
+    /// </summary>
     public const int DefaultCapacity = 16;
 
     private static readonly ILogger Log = AgentLogging.For<AgentEngineFactory>();
@@ -38,6 +41,9 @@ public sealed class AgentEngineFactory
     private readonly ReasoningEffort? _thinking;
     private readonly int _capacity;
     private readonly ConcurrentDictionary<string, Lazy<AgentEngine>> _engines = new(StringComparer.Ordinal);
+    private readonly ConcurrentDictionary<string, long> _lastUsed = new(StringComparer.Ordinal);
+    private readonly Lock _evicting = new();
+    private long _clock;
 
     public AgentEngineFactory(IChatClient chatClient, AgentOptions agent, bool supportsTools = true,
         IUsageSink? usageSink = null, IUsageMapper? usageMapper = null, DisplayCurrency? display = null,
@@ -65,18 +71,29 @@ public sealed class AgentEngineFactory
 
     /// <summary>
     /// The engine for <paramref name="toolsets"/> (any order or case; duplicates ignored), built on first use. Throws
-    /// <see cref="ToolsetException"/> for an unknown or unavailable toolset, or when <see cref="DefaultCapacity"/>
-    /// profiles exist already, before anything is built.
+    /// <see cref="ToolsetException"/> for an unknown or unavailable toolset, before anything is built. A full cache drops
+    /// its least recently used profile (on a specialist the model chooses the lists, so they are many).
     /// </summary>
     public AgentEngine GetOrCreate(IEnumerable<string>? toolsets)
     {
         var resolved = ToolsetCatalog.Resolve(toolsets, Context);
         string key = string.Join(",", resolved.Select(t => t.Name));
+        _lastUsed[key] = Interlocked.Increment(ref _clock);
         if (_engines.TryGetValue(key, out var existing)) return existing.Value;
-        if (_engines.Count >= _capacity)
-            throw new ToolsetException(MessageText.Format(ErrorMessage.TooManyToolsetProfiles, new { Capacity = _capacity }));
 
-        return _engines.GetOrAdd(key, _ => new Lazy<AgentEngine>(() => Build(resolved))).Value;
+        Lazy<AgentEngine> engine;
+        lock (_evicting)
+        {
+            while (_engines.Count >= _capacity && !_engines.ContainsKey(key))
+            {
+                string oldest = _engines.Keys.Where(k => k != key).MinBy(k => _lastUsed.GetValueOrDefault(k))!;
+                _engines.TryRemove(oldest, out _);
+                _lastUsed.TryRemove(oldest, out _);
+                Log.Log(LogLevel.Information, LogMessage.ToolsetProfileDropped, new { Toolsets = oldest.Length == 0 ? "(none)" : oldest, Capacity = _capacity });
+            }
+            engine = _engines.GetOrAdd(key, _ => new Lazy<AgentEngine>(() => Build(resolved)));
+        }
+        return engine.Value;   // built outside the lock: building one profile doesn't hold up another
     }
 
     private AgentEngine Build(IReadOnlyList<ToolsetDefinition> resolved)
