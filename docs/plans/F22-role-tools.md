@@ -56,3 +56,6 @@ and bounded output; and reuse over invention, so the agent's capabilities rest o
   from the browser's location (asked once; reverse geocoding by a service chosen from three options); the session
   carries it (`POST /sessions` with the user's location and time zone), Puls's prompt says where the user is, and
   `GetToday` uses the user's time zone. Nothing leaves the browser unless the user sets it.
+- **2026-10-13, the time zone always** (PR #28 review; Louis chose "Yes, always send it"): the browser's time zone goes with
+  every new chat, so `GetToday` is in the user's time without a location; it names a region, not a place. The location
+  still goes only when set, now at two decimals (~1 km).

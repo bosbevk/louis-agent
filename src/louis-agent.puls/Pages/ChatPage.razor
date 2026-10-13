@@ -83,8 +83,8 @@
             <details class="sidebar-settings">
                 <summary>Instellings</summary>
                 <CurrencySwitcher />
-                @* Where the user is (F22): typed, or found by the browser and named by OpenStreetMap's Nominatim. Kept in this
-                   browser; sent with a new chat only when set. *@
+                @* Where the user is (F22): typed, or found by the browser (to ~1 km) and named by OpenStreetMap's Nominatim.
+                   Kept in this browser; sent with a new chat only when set (the time zone is sent always). *@
                 <label class="settings">
                     Ligging
                     <input type="text" value="@_location" @onchange="SaveLocation" placeholder="bv. Pretoria" maxlength="120" />
@@ -700,7 +700,8 @@
                 // Puls delegates (F5): its chats load only the agents toolset, and hand every task to a specialist. An API
                 // without a peer offers no agents toolset; the chat then gets every toolset there is, so it still works.
                 string[] available = await Api.AvailableToolsetsAsync();
-                string? timeZone = _location is null ? null : await JS.InvokeAsync<string?>("pulsUi.timeZone");
+                // The time zone always (GetToday in the user's own time; it names a region, not a place); the location only when set.
+                string? timeZone = await JS.InvokeAsync<string?>("pulsUi.timeZone");
                 string sessionId = await Api.CreateSessionAsync(available.Contains("agents") ? ["agents"] : available, Personality,
                     _location, timeZone);
                 _chat = new Chat { SessionId = sessionId, Title = TitleFor(text, attachments) };

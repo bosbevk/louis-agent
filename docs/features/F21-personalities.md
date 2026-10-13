@@ -27,6 +27,17 @@ neutral personality (`puls-specialist`), since their answers come back to me, no
 A session keeps its personality for its whole life (its prefix stays cacheable, as with toolsets). The engine factory
 caches one engine per toolsets and personality. `GET /personalities` lists them, as `GET /toolsets` does.
 
+## Done when
+
+- **F21-S1:** `POST /sessions` with a personality opens with it; none gives `personality.md`; an invalid or unknown name
+  is a 400 before anything is built. *Met:* unit and API tests, and live against Puls (`GET /personalities`, a 400 for
+  `../secrets`).
+- **F21-S2:** `StartSubSession` sends the role; a sub-session gets no router. *Met:* unit and API tests; a live
+  researcher session opened with `puls-researcher` and no router (~1,900-token prefix).
+- **Puls speaks everyday South African Afrikaans and picks the right role for a request.** **Open:** needs real chats;
+  the delegation check (cost and the roles chosen, saved as a sample) answers it.
+- Suites pass; the golden file shows only the deliberate changes.
+
 ## What the build changed
 
 - **Sub-sessions have no router** (approved during the build): a session at depth 1 gets no `default.md`. The engine key

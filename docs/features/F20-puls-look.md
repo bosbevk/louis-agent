@@ -42,6 +42,18 @@ profile menu's items, *Kry Plus*, language, *Verken* and *Studio*.
 A light theme switch, accounts and sign-in, and anything that needs the API to change (regenerate, edit, model choice
 per chat): each is its own feature when it's wanted.
 
+## Done when
+
+- **The look:** the landing page, the dark theme and the three panels match the plan at desktop (1440 px), tablet
+  (1100 px) and phone (420 px) widths. *Met:* checked by headless-Chrome screenshots with sample chats at each width.
+- **Real vs placeholder as listed:** search, rename, favourite, archive, copy, topic cards, starters, sources, the model
+  name and Krediete work; every placeholder answers "kom binnekort". *Met* by hand and screenshots; copy needs a real
+  browser (headless Chrome blocks the clipboard): **open, for Louis to try**.
+- **The Werk panel shows a live delegation** (specialist, toolsets, steps, sources, cost) during a real chat. *Met* for
+  saved chats; **open** for a live one, which needs a model call (Louis's delegation check, PR #27 review).
+- **The code-review app is unchanged:** both apps build; the shared components' new slots and words default to it.
+- Suites pass; then tick F20 in the TODO and set *Status* to done here and in the features table.
+
 ## What the build changed
 
 - **Step 3, the Werk panel's cost:** it shows Puls's own cost and the specialists' side by side, not one total. The chat's

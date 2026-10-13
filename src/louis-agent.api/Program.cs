@@ -340,8 +340,10 @@ internal sealed record CreateSessionRequest(
 {
     internal const int MaxTagLength = 200;
 
-    /// <summary>Where the user is (F22), when they shared a location; null otherwise.</summary>
-    public UserPlace? Place() => string.IsNullOrWhiteSpace(Location) ? null : new UserPlace(Location.Trim(), TimeZone?.Trim());
+    /// <summary>Where the user is (F22): their location when they shared it, their time zone when sent; null with neither.</summary>
+    public UserPlace? Place() => string.IsNullOrWhiteSpace(Location) && string.IsNullOrWhiteSpace(TimeZone)
+        ? null
+        : new UserPlace(string.IsNullOrWhiteSpace(Location) ? null : Location.Trim(), string.IsNullOrWhiteSpace(TimeZone) ? null : TimeZone.Trim());
 
     /// <summary>The name of the first tag that is too long or holds control characters, or null when all are fine.</summary>
     public string? InvalidTag() =>

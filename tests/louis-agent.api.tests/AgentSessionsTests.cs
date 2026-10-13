@@ -142,12 +142,14 @@ public class AgentSessionsTests
     }
 
     [Test]
-    public void ALocation_IsTheSessionsPlace_OnlyWhenShared()
+    public void ThePlace_HasTheLocationWhenShared_AndTheTimeZoneAlways()
     {
-        // F22 step 2b: no location sent, no place, even with a time zone.
+        // F22 step 2b, and PR #28's review: a time zone sent without a location is kept (GetToday in the user's time).
         Assert.That(new CreateSessionRequest(null, null, null, Location: " Pretoria ", TimeZone: "Africa/Johannesburg").Place(),
             Is.EqualTo(new LouisAgent.Core.Tools.Clock.UserPlace("Pretoria", "Africa/Johannesburg")));
-        Assert.That(new CreateSessionRequest(null, null, null, TimeZone: "Africa/Johannesburg").Place(), Is.Null);
+        Assert.That(new CreateSessionRequest(null, null, null, TimeZone: "Europe/London").Place(),
+            Is.EqualTo(new LouisAgent.Core.Tools.Clock.UserPlace(null, "Europe/London")));
+        Assert.That(new CreateSessionRequest(null, null, null).Place(), Is.Null);
 
         var session = Sessions().Create(["files"], place: new LouisAgent.Core.Tools.Clock.UserPlace("Pretoria", null));
         Assert.That(session.Place!.Location, Is.EqualTo("Pretoria"));

@@ -76,6 +76,18 @@ public class WebToolsTests
     }
 
     [Test]
+    public async Task ADamagedPdf_IsAnAnswer_NotACrash()
+    {
+        // PR #28 review: only one of PdfPig's exception types was caught.
+        var tools = Tools(_ => new HttpResponseMessage(HttpStatusCode.OK)
+        {
+            Content = new ByteArrayContent("%PDF-1.7 not really"u8.ToArray()) { Headers = { ContentType = new("application/pdf") } },
+        });
+
+        Assert.That(await tools.FetchUrl("https://example.com/stukkend.pdf"), Does.StartWith("Couldn't read https://example.com/stukkend.pdf as a document"));
+    }
+
+    [Test]
     public void ConvertCurrency_UsesTheLoadedRates_ThroughTheBase()
     {
         // F22 step 5: the rates the app shows costs in (F14), base USD: 1 USD = 18 ZAR, 0.9 EUR.

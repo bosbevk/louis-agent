@@ -131,14 +131,15 @@ pulsUi.saveLocation = (place) => {
 pulsUi.timeZone = () => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone || null; } catch { return null; } };
 
 // "Gebruik my ligging": the browser's position (it asks the user once), named by OpenStreetMap's Nominatim at town level.
-// One request per press, as Nominatim's usage policy asks; the browser sends its own Referer and User-Agent.
+// One request per press, as Nominatim's usage policy asks; the browser sends its own Referer and User-Agent. The position
+// goes to two decimals (about 1 km), all a town needs.
 pulsUi.locate = () => new Promise((resolve) => {
     if (!navigator.geolocation) return resolve({ place: null, error: "Hierdie blaaier kan nie jou ligging gee nie." });
     navigator.geolocation.getCurrentPosition(async (position) => {
         try {
             const { latitude, longitude } = position.coords;
             const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&zoom=10&accept-language=af,en`
-                + `&lat=${latitude.toFixed(4)}&lon=${longitude.toFixed(4)}`;
+                + `&lat=${latitude.toFixed(2)}&lon=${longitude.toFixed(2)}`;   // ~1 km: a town, not a street
             const response = await fetch(url, { headers: { "Accept": "application/json" } });
             if (!response.ok) return resolve({ place: null, error: "OpenStreetMap kon nie die plek benoem nie." });
             const address = (await response.json()).address || {};

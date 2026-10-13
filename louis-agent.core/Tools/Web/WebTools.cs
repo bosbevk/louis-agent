@@ -176,7 +176,15 @@ public sealed partial class WebTools
             {
                 // A PDF on the web reads as text with page markers, like ReadDocument (F22).
                 await using var pdf = await response.Content.ReadAsStreamAsync();
-                text = DocumentText.Read(pdf, ".pdf");
+                try
+                {
+                    text = DocumentText.Read(pdf, ".pdf");
+                }
+                catch (Exception ex) when (ex is not OutOfMemoryException)
+                {
+                    // PdfPig throws more than one kind for a damaged file; every one is the same answer to the model.
+                    return MessageText.Format(ToolMessage.DocumentUnreadable, new { Path = finalUri, Reason = ex.Message });
+                }
                 return Page(finalUri, null, text, startIndex, maxChars);
             }
 
@@ -189,10 +197,6 @@ public sealed partial class WebTools
                 return MessageText.Format(ToolMessage.FetchNotText, new { Url = finalUri, MediaType = mediaType });
 
             return Page(finalUri, title, text, startIndex, maxChars);
-        }
-        catch (Exception ex) when (ex is UglyToad.PdfPig.Core.PdfDocumentFormatException)
-        {
-            return MessageText.Format(ToolMessage.DocumentUnreadable, new { Path = url, Reason = ex.Message });
         }
         catch (BlockedAddressException ex)
         {

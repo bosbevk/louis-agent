@@ -32,6 +32,17 @@ Each piece reuses what exists: .NET's time zones, the API's attachment handling,
 (Word), ExcelDataReader (Excel and CSV), the git CLI, and core's exchange rates (F14). Only the plumbing that passes
 attachments to a sub-session is our own: nothing third-party does that for us.
 
+## Done when
+
+- **Each tool works and is bounded:** `GetToday`, attachments by name, `ReadDocument` and PDFs in `FetchUrl`, `Blame`,
+  `FileHistory`, `SearchCommits`, `ReadTable`, `ConvertCurrency`. *Met:* unit tests for each (documents built in the
+  test, git on a real repository, a fake clock), suites pass.
+- **Model text never becomes a git option:** *Met:* a test passes `--output=...` as a path and a search term.
+- **The roles use their tools** in real delegations (the researcher checks the date, the reader reads an attached PDF).
+  **Open:** needs real chats; the delegation check answers it.
+- **The user's place:** the time zone with every new chat, the location only when set, at ~1 km. *Met* by tests and the
+  live API (a 400 for an unknown time zone).
+
 ## What the build changed
 
 - **Packages, chosen by Louis from three options each:** PdfPig (the package is `PdfPig`; `UglyToad.PdfPig` is only its
@@ -45,6 +56,9 @@ attachments to a sub-session is our own: nothing third-party does that for us.
 - **The new git tools use argument lists** (`ProcessRunner`); the older git tools still build one command string, a gap
   outside F22.
 - **Roles name their tools**, and the analyst gets `python` with `files` when the data is the user's.
+- **PR #28 review:** any failure reading a PDF in `FetchUrl` is `DocumentUnreadable` (PdfPig throws more than one kind);
+  the browser's position goes to Nominatim at two decimals (~1 km, a town) instead of four (~11 m); the time zone is sent
+  with every new chat (Louis's choice), the location still only when set.
 
 ---
 [Features](README.md) · [Plan](../plans/F22-role-tools.md)
