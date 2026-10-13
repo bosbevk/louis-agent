@@ -275,6 +275,9 @@
         <li><button class="dropdown-item danger" type="button" @onclick="() => DeleteChat(chat)"><span class="ic i-trash" aria-hidden="true"></span>Vee uit</button></li>
     };
 
+    /// <summary>Puls's own voice (F21): Skills/personalities/puls.md.</summary>
+    private const string Personality = "puls";
+
     private static readonly string[] Languages = ["English", "Nederlands", "Deutsch", "isiZulu"];
 
     private bool _searchOpen;
@@ -428,7 +431,7 @@
                 // Puls delegates (F5): its chats load only the agents toolset, and hand every task to a specialist. An API
                 // without a peer offers no agents toolset; the chat then gets every toolset there is, so it still works.
                 string[] available = await Api.AvailableToolsetsAsync();
-                string sessionId = await Api.CreateSessionAsync(available.Contains("agents") ? ["agents"] : available);
+                string sessionId = await Api.CreateSessionAsync(available.Contains("agents") ? ["agents"] : available, Personality);
                 _chat = new Chat { SessionId = sessionId, Title = TitleFor(text, attachments) };
                 Store.Chats.Insert(0, _chat);
                 Nav.NavigateTo($"gesels/{sessionId}");

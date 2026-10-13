@@ -66,4 +66,13 @@ public class PersonalitiesTests
     {
         Assert.That(Personalities.Available(_skills), Does.Contain("test-voice"));
     }
+
+    [Test]
+    public void PulsAndItsSpecialists_AreBuiltIn()
+    {
+        // F21 step 4: embedded, so a container without Skills/ still has them; a file on disk overrides.
+        Assert.That(Personalities.Available(skillsDirectory: null), Is.SupersetOf(new[]
+            { "puls", "puls-researcher", "puls-reader", "puls-historian", "puls-analyst", "puls-specialist" }));
+        Assert.That(AgentHost.LoadSkills(new AgentOptions(), [], "puls").Documentation, Does.Contain("# Puls - Persoonlikheid"));
+    }
 }

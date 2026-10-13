@@ -8,7 +8,7 @@ its tools or its conversation.
 
 | Tool | Use it to |
 |------|-----------|
-| `StartSubSession(agent, toolsets, message)` | Open a session on a peer with `toolsets`, send `message`, wait for the answer, close the session. Leave `agent` empty when there is one peer (the usual case); never guess a name. |
+| `StartSubSession(agent, toolsets, message, personality)` | Open a session on a peer with `toolsets` and the role `personality`, send `message`, wait for the answer, close the session. Leave `agent` empty when there is one peer (the usual case); never guess a name. |
 
 ## When to delegate
 
@@ -18,6 +18,22 @@ its tools or its conversation.
   only the message you send.
 - Choose the smallest set of toolsets that does the job; `GET /toolsets` on the peer lists them. Never `agents`: a
   sub-session can't open its own.
+
+## Giving the specialist its role
+
+Pass `personality`: the specialist's role, which tells it its function and how to report back to you. Match it to the
+toolsets you give it:
+
+| Toolsets | `personality` | The specialist |
+|---|---|---|
+| `web` | `puls-researcher` | finds things out on the web; reports with sources |
+| `files` | `puls-reader` | reads the user's files; reports with paths and quotes |
+| `git` | `puls-historian` | reads the repository's history; reports commits |
+| `python`, `bash` or `powershell` | `puls-analyst` | counts and calculates with a script; reports the method |
+| anything else, or a mix | `puls-specialist` | does one piece of work and reports the evidence |
+
+For a mix led by one kind (`files` and `git` to explain a change), pass the role of the main part. If the peer doesn't
+know a role, the call is refused with the ones it has: call again with one of those, or with none.
 
 ## Writing the message
 
