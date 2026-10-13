@@ -53,3 +53,6 @@ router, toolset guides), each part a stable prefix for caching; persona design f
   fallback for any other toolsets. Each says the specialist's function and how it reports to Puls (sources, paths,
   commits, method), on a shared base: one task from Puls, never the user, no greeting, say what's missing, no
   delegation, the task's language. `agents-skills.md` tells Puls which goes with which toolsets. Built in step 4.
+- **2026-10-13, the router names the role** (Louis: "we still need to tell Puls when to ask a role"): `default.md`'s
+  table has a role column beside the toolset, so the decision Puls makes from the request gives toolsets and role
+  together, and its delegation rule passes both. Built after step 5.
