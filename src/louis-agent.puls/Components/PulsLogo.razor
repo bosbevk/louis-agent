@@ -1,23 +1,32 @@
-@* The Puls logo (wwwroot/brand/puls-logo.svg) inline: the ripple mark, then "puls" beside it in orange. In
-   Afrikaans a puls is a disturbance that travels away from its source, so the rings light up one after another, outward
-   from the green source (app.css). Ids are per instance: a page can hold two logos (the top bar and the sidebar), and a
-   gradient or clip inside a hidden copy doesn't paint. *@
+@* The Puls logo (wwwroot/brand/puls-logo.svg) inline: the ripple mark, then "puls" beside it in orange. The mark is a
+   solid orange disc with rings cut out of it (a mask), so the background shows through them. In Afrikaans a puls is a
+   disturbance that travels away from its source: a faint glow crosses each ring in turn, outward from the green
+   source (.puls-glow in app.css). Ids are per instance: a page can hold two logos (the top bar and the sidebar), and a
+   gradient or mask inside a hidden copy doesn't paint. *@
 <svg class="puls-logo" viewBox="0 0 300 120" role="img" aria-label="Puls">
     <defs>
         <linearGradient id="@(_id)bg" x1="0" y1="0" x2="1" y2="1">
             <stop offset="0" stop-color="#f7952f" />
             <stop offset="1" stop-color="#d9660b" />
         </linearGradient>
+        <mask id="@(_id)cut" maskUnits="userSpaceOnUse" x="0" y="0" width="120" height="120">
+            <circle cx="60" cy="60" r="58" fill="#fff" />
+            @foreach (var (radius, width) in Rings)
+            {
+                <circle cx="30" cy="92" r="@radius" fill="none" stroke="#000" stroke-width="@width" />
+            }
+            <circle cx="30" cy="92" r="10.5" fill="none" stroke="#000" stroke-width="3" />
+        </mask>
         <clipPath id="@(_id)disc"><circle cx="60" cy="60" r="58" /></clipPath>
     </defs>
+    <rect width="120" height="120" fill="url(#@(_id)bg)" mask="url(#@(_id)cut)" />
     <g clip-path="url(#@(_id)disc)">
-        <rect width="120" height="120" fill="url(#@(_id)bg)" />
-        @foreach (var (radius, width, opacity) in Rings)
+        @foreach (var (radius, width) in Rings)
         {
-            <circle class="puls-ring" cx="30" cy="92" r="@radius" fill="none" stroke="#efefeb" stroke-width="@width" stroke-opacity="@opacity" />
+            <circle class="puls-glow" cx="30" cy="92" r="@radius" fill="none" stroke="#fff" stroke-width="@width" />
         }
     </g>
-    <circle class="puls-source" cx="30" cy="92" r="7.5" fill="#00723a" stroke="#efefeb" stroke-width="2.5" />
+    <circle class="puls-source" cx="30" cy="92" r="7.5" fill="#00723a" />
     <g transform="translate(140 19) scale(.9)">
         <path d="M14 26V84M14 44a18 18 0 1 0 36 0a18 18 0 1 0-36 0M64 26v18a18 18 0 0 0 36 0M100 26v36M118 8v54M163 31c-4-4-9-5-13-5c-8 0-13 4-13 9c0 6 6 8 13 9c8 1 14 3 14 9c0 6-6 9-14 9c-6 0-11-2-15-6"
               fill="none" stroke="#f58220" stroke-width="15" stroke-linecap="round" stroke-linejoin="round" />
@@ -25,11 +34,10 @@
 </svg>
 
 @code {
-    /// <summary>Radius, stroke width and opacity of each ring: evenly spaced, the first the boldest and each after it thinner, all in a see-through charcoal-tinted white.</summary>
-    private static readonly (string Radius, string Width, string Opacity)[] Rings =
+    /// <summary>Radius and width of each ring cut out of the disc: evenly spaced, the first the boldest and each after it thinner.</summary>
+    private static readonly (string Radius, string Width)[] Rings =
     [
-        ("16", "6", ".5"), ("31", "4.9", ".45"), ("46", "3.9", ".4"), ("61", "3.1", ".35"),
-        ("76", "2.4", ".3"), ("91", "1.8", ".25"), ("106", "1.3", ".2"),
+        ("16", "6"), ("31", "4.9"), ("46", "3.9"), ("61", "3.1"), ("76", "2.4"), ("91", "1.8"), ("106", "1.3"),
     ];
 
     private readonly string _id = "puls-" + Guid.NewGuid().ToString("N")[..8] + "-";
