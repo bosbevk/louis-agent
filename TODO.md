@@ -5,6 +5,10 @@ What's planned, what's next, and the ideas not planned yet — in that order.
 **The goal it all works toward:** [docs/GOAL.md](docs/GOAL.md) — become an AI engineer by building louis-agent. This
 list is the current plan for getting there and will change as I learn; the goal names the skills it should cover.
 
+**The end product:** a general AI agent with a South African flavour, released to the public (aimed at 2027). It knows
+where its users are (SAST, rands, local context) and looks up what changes (scores, SARS, load-shedding) instead of
+relying on training. What that needs beyond the skills is under *Backlog: South African general AI*.
+
 **How this list works**
 
 - **Planned work is a feature.** Each feature has a design doc in [docs/features/](docs/features/README.md) with user
@@ -129,6 +133,31 @@ growing history every round, so smaller tasks are cheaper); make runs resumable 
 
 ## Backlog: not planned yet
 
+### South African general AI (the end product)
+
+A public, culture-specific general agent for the South African market. Not planned yet: each line becomes a feature
+when its turn comes. Check demand first (what people would pay for, and which local part matters most) before building
+the product parts.
+
+- [ ] **Validate demand:** ask 10-20 likely users what they'd pay and which local part matters most (language, price,
+      local tools, WhatsApp); let that pick the first launch feature
+- [ ] **SA context in the prompt:** a `Skills/` file that sets the user's place (South Africa, SAST, rands, "the game"
+      means the Springboks or Bafana) so the agent asks less and assumes right; measured on the evals (F18)
+- [ ] **Local tools:** live lookups for what training can't know: sports results, SARS dates, load-shedding schedules,
+      municipal services, rand prices (a general toolset profile, F5, instead of today's coding tools)
+- [ ] **All 11 official languages, measured:** eval cases per language; route to a local model where it beats the
+      general one (Lelapa AI's Vulavula, UCT's MzansiLM as a base to fine-tune)
+- [ ] **Voice:** speech-to-text and text-to-speech, including local languages (add to the goal's skill map, skill 19)
+- [ ] **WhatsApp as a host**, next to the CLI, web app and Rider
+- [ ] **Accounts and multi-tenancy:** sign-in, a user per session, durable sessions and per-user memory (*Sessions and
+      memory*)
+- [ ] **A sandbox per user** for tools that run code or touch files, so one user can't reach another's data
+- [ ] **Rand pricing and billing:** plans below ChatGPT's R149/month, kept safe by the ledger, caching and per-user
+      budgets (F7)
+- [ ] **POPIA:** consent, retention and deletion of user data, and data kept in South Africa
+- [ ] **Abuse handling and moderation**, plus the *Safety* gaps below (rate limiting, prompt-injection defences)
+- [ ] **Hosting:** uptime, monitoring and running cost for public traffic (with *Shipping* below)
+
 ### Quality and CI
 
 - [x] **Project layout, after F4, first of two cleanups** (the rules are in
@@ -210,10 +239,25 @@ feature when its turn comes; remove its line here and update the map's *Missing*
       calls, thinking) by measuring them, not from its name (`LlmOptions.KnownNoToolsPrefixes`; the local triage runs
       showed llama3.1 writing tool calls as text and qwen3's thinking variant timing out)
 - [ ] **Prompts:** version prompts and compare changes on the evals
-- [ ] **Tools:** tool search / on-demand loading for large toolsets; schema-validated structured outputs; add a tool
+- [ ] **Tools:** tool search / on-demand loading for large toolsets; add a tool
       mid-conversation without breaking thinking or the cache (Anthropic's inline `tool_addition` blocks, behind
-      `LlmClientFactory`; an option [FX4](docs/fixes/FX04-append-only-history.md) leaves for later)
+      `LlmClientFactory`; an option [FX4](docs/fixes/FX04-append-only-history.md) leaves for later); MCP tool
+      annotations (read-only, destructive, idempotent) and output schemas on `louis-agent.mcp-server`'s tools; errors
+      that report every problem at once with the valid options, so the model fixes them in one round
+- [ ] **Structured outputs:** schema-validated outputs across the toolset (results between agents come first, under
+      *Models*)
+- [ ] **Drafts:** for an action that changes something outside the workspace, the agent proposes a typed draft that code
+      validates (every issue returned with its valid options) and a person approves before it's applied; the model
+      retrying on the validation errors is an evaluator-optimizer loop with code as the evaluator. Measure on the evals
+      how often a request becomes a valid draft first time (skills 5, 16, 12)
 - [ ] **Agent loop:** explicit planning, a self-check before answering, stop conditions beyond a round count
+- [ ] **Workflows:** build and compare Anthropic's workflow patterns where they fit: prompt chaining, parallelization,
+      evaluator-optimizer (F17 already plans routing; the orchestrator is orchestrator-workers)
+- [ ] **Knowledge on demand:** curated, source-cited knowledge topics (front matter: sources, owner, last reviewed)
+      looked up through tools and MCP resources when needed, instead of loading every skill file into the system
+      prompt; measure the prompt tokens saved and that fixes still hold. Before embeddings
+- [ ] **Grounding:** reference data the agent checks values against, versioned with its provenance (source, date,
+      hashes, what's synthetic) and returned with every result that used it
 - [ ] **Memory and retrieval:** embeddings, a vector store, retrieval over code and past sessions, measured
 - [ ] **Multi-agent:** compare handoff patterns (tool call, session, MCP); parallel sub-agents
 - [ ] **Protocols:** a full MCP client (also removes the Rider MCP limitation)
