@@ -207,7 +207,8 @@
             {
                 @foreach (var turn in _chat.Turns)
                 {
-                    <TurnView Turn="turn" Streaming="@(_streaming && turn == _chat.Turns[^1])" Currency="Currency.Current" />
+                    <TurnView Turn="turn" Streaming="@(_streaming && turn == _chat.Turns[^1])" Currency="Currency.Current"
+                              UserActions="UserActions" AnswerActions="AnswerActions" />
                 }
             }
         </div>
@@ -349,6 +350,46 @@
             </div>
         </div>
     };
+
+    /// <summary>Under the user's message: copy it, or edit it (to come).</summary>
+    private RenderFragment<Turn> UserActions => turn => __builder =>
+    {
+        <button class="action" type="button" title="Kopieer" @onclick="() => Copy(turn.UserText)"><span class="ic i-copy" aria-hidden="true"></span></button>
+        <button class="action" type="button" title="Wysig die boodskap" @onclick='() => ComingSoon("Wysig")'><span class="ic i-pencil" aria-hidden="true"></span></button>
+    };
+
+    /// <summary>Under a finished answer: copy, regenerate, good and bad, share (to come), and its sources in the Werk panel.</summary>
+    private RenderFragment<Turn> AnswerActions => turn => __builder =>
+    {
+        <button class="action" type="button" title="Kopieer die antwoord" @onclick="() => Copy(AnswerText(turn))"><span class="ic i-copy" aria-hidden="true"></span></button>
+        <button class="action" type="button" title="Probeer weer" @onclick='() => ComingSoon("Probeer weer")'><span class="ic i-refresh" aria-hidden="true"></span></button>
+        <button class="action" type="button" title="Goeie antwoord" @onclick='() => ComingSoon("Terugvoer")'><span class="ic i-thumb-up" aria-hidden="true"></span></button>
+        <button class="action" type="button" title="Swak antwoord" @onclick='() => ComingSoon("Terugvoer")'><span class="ic i-thumb-down" aria-hidden="true"></span></button>
+        <button class="action" type="button" title="Deel" @onclick='() => ComingSoon("Deel")'><span class="ic i-share" aria-hidden="true"></span></button>
+        @if (Sources.Of(turn) is { Count: > 0 } sources)
+        {
+            <button class="action action-sources" type="button" onclick="pulsUi.showWork()" title="Wys die bronne in die werkpaneel">
+                @foreach (var site in sources.Select(s => s.Site).Distinct().Take(3))
+                {
+                    <span class="source-dot">@site[..1].ToUpperInvariant()</span>
+                }
+                @sources.Count @(sources.Count == 1 ? "bron" : "bronne")
+            </button>
+        }
+    };
+
+    /// <summary>The answer's own words: its text after the last tool call or thought (the reply the user reads).</summary>
+    private static string AnswerText(Turn turn)
+    {
+        int last = turn.Blocks.FindLastIndex(b => b.Kind != BlockKind.Text);
+        return string.Join("\n\n", turn.Blocks.Skip(last + 1).Select(b => b.Text).Where(t => t.Length > 0)).Trim();
+    }
+
+    private async Task Copy(string text)
+    {
+        bool copied = await JS.InvokeAsync<bool>("pulsUi.copy", text);
+        _ = ShowToast(copied ? "Gekopieer." : "Kon nie kopieer nie.");
+    }
 
     // Topics under the empty chat's message box: each puts a starter in the box to finish and send.
     private static readonly (string Topic, string Starter)[] Topics =

@@ -93,6 +93,21 @@
 
 @* What the chat cost so far: Puls's own requests and its specialists', side by side. Not added up: the chat's usage
    doesn't include the specialists' yet (the F5 roll-up), and once it does, a sum here would count them twice. *@
+@* The pages this chat used or cited (F20): the answers' links and the pages the specialists read, newest turn first. *@
+@if (ChatSources.Count > 0)
+{
+    <div class="work-sources">
+        <div class="work-label">Bronne <span class="work-count">@ChatSources.Count</span></div>
+        @foreach (var source in ChatSources)
+        {
+            <a class="work-source" href="@source.Url" target="_blank" rel="noopener noreferrer" title="@source.Url">
+                <span class="source-dot">@source.Site[..1].ToUpperInvariant()</span>
+                <span class="work-source-text"><strong>@source.Title</strong><small>@Address(source.Url)</small></span>
+            </a>
+        }
+    </div>
+}
+
 @if (Chat?.Usage() is { } own)
 {
     <div class="work-foot">
@@ -134,6 +149,13 @@
             return items;
         }
     }
+
+    /// <summary>A page's address as people read it: no scheme, no www.</summary>
+    private static string Address(string url) => url.Replace("https://", "").Replace("http://", "").Replace("www.", "").TrimEnd('/');
+
+    /// <summary>Every source of the chat, newest turn first, each address once.</summary>
+    private List<Source> ChatSources =>
+        Chat is null ? [] : Chat.Turns.AsEnumerable().Reverse().SelectMany(Sources.Of).DistinctBy(s => s.Url).ToList();
 
     /// <summary>The specialists' usage in this chat: every delegation's sub-turn, added up.</summary>
     private TurnUsage? SpecialistUsage =>

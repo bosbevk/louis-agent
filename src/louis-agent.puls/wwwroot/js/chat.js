@@ -164,3 +164,18 @@ pulsUi.focusEnd = (selector) => {
     box.style.height = Math.min(box.scrollHeight, 240) + "px";
 };
 
+// Copy a message (F20): true when the browser allowed it.
+pulsUi.copy = async (text) => {
+    try { await navigator.clipboard.writeText(text); return true; } catch { return false; }
+};
+
+// Show the Werk panel (an answer's sources): unhide it on a wide screen, slide it in on a smaller one.
+pulsUi.showWork = () => {
+    if (window.matchMedia("(min-width: 1200px)").matches) {
+        if (document.documentElement.classList.contains("work-hidden")) pulsUi.toggleWork();
+        document.querySelector(".work-sources")?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    } else if (window.bootstrap) {
+        window.bootstrap.Offcanvas.getOrCreateInstance(document.getElementById("work")).show();
+    }
+};
+
