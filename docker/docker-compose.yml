@@ -101,9 +101,44 @@ services:
       PRICES_FILE: /workspace/config/prices.json
       # Exchange rates' fallback when RATES_URL (Frankfurter by default) can't be reached (F14)
       RATES_FILE: /workspace/config/rates.json
+      # Sub-sessions (F5): the peers StartSubSession may call, from config/.env; empty disables the agents toolset
+      AGENT_PEERS: ${AGENT_PEERS:-}
     # Localhost only: the agent can run shell commands and write files. Set AGENT_API_KEY in .env.secrets to require a key.
     ports:
       - "127.0.0.1:${API_PORT:-5080}:8080"
+    volumes:
+      - ../:/workspace
+      - ../Skills:/skills
+      - ../logs:/logs
+      - ${REPOSITORIES_PATH}:/repositories
+    networks:
+      - default
+
+  # A specialist on the same image (F5-S5): the api above opens sub-sessions on it with StartSubSession when
+  # config/.env sets AGENT_PEERS=coder=http://api-coder:8080. Opt-in: docker compose ... --profile peers up -d api-coder.
+  # It reads the same settings and key, and is bound to localhost like the api.
+  api-coder:
+    profiles: ["peers"]
+    image: louis-agent-api:latest
+    container_name: louis_agent_coder
+    env_file:
+      - path: ../config/.env.${LLM_PROFILE:-anthropic}
+      - path: ../config/.env
+      - path: ../config/.env.secrets
+        required: false
+    environment:
+      WORKSPACE_ROOT: /workspace
+      SKILLS_DIRECTORY: /skills
+      GIT_CONFIG_COUNT: "1"
+      GIT_CONFIG_KEY_0: core.autocrlf
+      GIT_CONFIG_VALUE_0: "true"
+      LOG_DIRECTORY: /logs
+      PRICES_FILE: /workspace/config/prices.json
+      RATES_FILE: /workspace/config/rates.json
+      # A specialist never delegates further (its sub-sessions are depth 1, which refuses the agents toolset)
+      AGENT_PEERS: ""
+    ports:
+      - "127.0.0.1:${CODER_PORT:-5081}:8080"
     volumes:
       - ../:/workspace
       - ../Skills:/skills
