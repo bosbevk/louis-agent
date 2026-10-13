@@ -31,6 +31,21 @@ internal sealed class AgentSession(string id, AgentEngine engine, IReadOnlyList<
     /// <summary>The personality the session chose (F21), or null for personality.md.</summary>
     public string? Personality { get; } = personality;
 
+    /// <summary>The longest attachment kept, as in the prompt: one file can't fill a specialist's context.</summary>
+    public const int MaxAttachmentChars = 100_000;
+
+    private readonly ConcurrentDictionary<string, string> _attachments = new(StringComparer.OrdinalIgnoreCase);
+
+    /// <summary>The files attached in this conversation, by name, for a specialist (F22, <see cref="Core.Tools.Agents.SessionAttachments"/>).</summary>
+    public IReadOnlyDictionary<string, string> Attachments => _attachments;
+
+    /// <summary>Keeps an attachment for later turns; the same name again replaces it.</summary>
+    public void Remember(string name, string? content)
+    {
+        string text = content ?? string.Empty;
+        _attachments[name] = text.Length <= MaxAttachmentChars ? text : text[..MaxAttachmentChars];
+    }
+
     public List<ChatMessage> History { get; } = engine.NewHistory();
 
     /// <summary>What the caller said the session is for (e.g. the orchestrator's fix and run); on every usage record.</summary>

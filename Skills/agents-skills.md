@@ -8,7 +8,7 @@ its tools or its conversation.
 
 | Tool | Use it to |
 |------|-----------|
-| `StartSubSession(agent, toolsets, message, personality)` | Open a session on a peer with `toolsets` and the role `personality`, send `message`, wait for the answer, close the session. Leave `agent` empty when there is one peer (the usual case); never guess a name. |
+| `StartSubSession(agent, toolsets, message, personality, attachments)` | Open a session on a peer with `toolsets` and the role `personality`, send `message` with the named `attachments`, wait for the answer, close the session. Leave `agent` empty when there is one peer (the usual case); never guess a name. |
 
 ## When to delegate
 
@@ -38,7 +38,8 @@ know a role, the call is refused with the ones it has: call again with one of th
 ## Writing the message
 
 1. State the task and what "done" means (for a fix: the expected behaviour, the tests to run, the commit to make).
-2. Include every fact it needs: file paths, error text, ids. Leave out the rest of the conversation.
+2. Include every fact it needs: file paths, error text, ids. Leave out the rest of the conversation. When the task is
+   about a file the user attached, pass its name in `attachments` (it's sent whole; don't paste its content).
 3. Ask for a short final summary you can pass on, and anything you must check yourself.
 
 ## Limits and results

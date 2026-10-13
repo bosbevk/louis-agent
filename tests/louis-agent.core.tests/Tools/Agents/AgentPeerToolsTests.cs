@@ -63,6 +63,47 @@ public class AgentPeerToolsTests
     }
 
     [Test]
+    public async Task NamedAttachments_AreSentWithTheTask()
+    {
+        // F22: the model names the file; its content comes from the session, not through the model's output.
+        var handler = Peer();
+        var attached = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase) { ["verslag.txt"] = "Inkomste: R1 200 000", ["other.txt"] = "x" };
+
+        using (SessionAttachments.Use(attached))
+            await Tools(handler).StartSubSession("coder", ["files"], "Som die verslag op.", attachments: ["verslag.txt"]);
+
+        using var message = JsonDocument.Parse(handler.Requests[1].Body!);
+        var sent = message.RootElement.GetProperty("attachments").EnumerateArray().ToList();
+        Assert.That(sent, Has.Count.EqualTo(1), "only the one named");
+        Assert.That(sent[0].GetProperty("name").GetString(), Is.EqualTo("verslag.txt"));
+        Assert.That(sent[0].GetProperty("content").GetString(), Is.EqualTo("Inkomste: R1 200 000"));
+    }
+
+    [Test]
+    public async Task AnUnknownAttachment_IsRefused_WithoutANetworkCall()
+    {
+        var handler = Peer();
+
+        string result;
+        using (SessionAttachments.Use(new Dictionary<string, string> { ["verslag.txt"] = "x" }))
+            result = await Tools(handler).StartSubSession("coder", ["files"], "Lees dit.", attachments: ["begroting.xlsx"]);
+
+        Assert.That(result, Does.Contain("No attachment named 'begroting.xlsx'").And.Contain("verslag.txt"));
+        Assert.That(handler.Requests, Is.Empty);
+    }
+
+    [Test]
+    public async Task NoAttachments_SendsAnEmptyList()
+    {
+        var handler = Peer();
+
+        await Tools(handler).StartSubSession("coder", ["files"], "Fix order 1006.");
+
+        using var message = JsonDocument.Parse(handler.Requests[1].Body!);
+        Assert.That(message.RootElement.GetProperty("attachments").GetArrayLength(), Is.Zero);
+    }
+
+    [Test]
     public async Task APersonality_IsSentToThePeer()
     {
         // F21: the specialist's role (its function) is the personality its session opens with.

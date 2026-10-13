@@ -9,6 +9,9 @@ using System.ComponentModel;
 /// <summary>Strings tools return to the model: what went wrong and what to do instead.</summary>
 public enum ToolMessage
 {
+    [Description("No attachment named '{Name}' in this conversation. Attached: {Attached}.")]
+    AttachmentUnknown,
+
     [Description("{Weekday} {Date}, {Time} South African time (UTC{Offset}). ISO: {Iso}. Week {Week}.")]
     Today,
 

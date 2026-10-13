@@ -51,8 +51,23 @@ public sealed class AgentPeerTools(IReadOnlyDictionary<string, Uri> peers, strin
         [Description("The whole task, self-contained: the sub-session sees nothing of this conversation.")] string message,
         [Description("The sub-session's personality: its role on the peer (agents-skills.md says which goes with which toolsets). " +
             "Empty: the peer's default.")] string? personality = null,
+        [Description("Names of files the user attached in this conversation that the task needs; they are sent with the task " +
+            "(the sub-session sees nothing else of the conversation).")] string[]? attachments = null,
         CancellationToken cancellationToken = default)
     {
+        // The model names the attachments; their contents come from the session, never through the model's output.
+        var available = SessionAttachments.Current;
+        var forwarded = new List<object>();
+        foreach (string name in attachments ?? [])
+        {
+            if (!available.TryGetValue(name.Trim(), out string? content))
+                return MessageText.Format(ToolMessage.AttachmentUnknown, new
+                {
+                    Name = name, Attached = available.Count == 0 ? "(none)" : string.Join(", ", available.Keys.Order()),
+                });
+            forwarded.Add(new { name = name.Trim(), content });
+        }
+
         string peerNames = peers.Count == 0 ? "(none)" : string.Join(", ", peers.Keys.Order());
         // An empty name means the only peer, so the model never has to guess one (it used to try an example name first).
         if (string.IsNullOrWhiteSpace(agent))
@@ -86,7 +101,8 @@ public sealed class AgentPeerTools(IReadOnlyDictionary<string, Uri> peers, strin
                 return MessageText.Format(ToolMessage.SubSessionRefused, new { Agent = agent, Status = (int)created.StatusCode, Reason = ErrorText(createdBody) });
             sessionId = JsonDocument.Parse(createdBody).RootElement.GetProperty("session_id").GetString();
 
-            using var send = Request(HttpMethod.Post, new Uri(peer, $"sessions/{Uri.EscapeDataString(sessionId!)}/messages"), new { message });
+            using var send = Request(HttpMethod.Post, new Uri(peer, $"sessions/{Uri.EscapeDataString(sessionId!)}/messages"),
+                new { message, attachments = forwarded });
             using var reply = await _http.SendAsync(send, HttpCompletionOption.ResponseHeadersRead, timeout.Token);
             if (!reply.IsSuccessStatusCode)
                 return MessageText.Format(ToolMessage.SubSessionRefused,

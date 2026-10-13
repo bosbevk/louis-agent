@@ -126,4 +126,18 @@ public class AgentSessionsTests
         Assert.That(session.Personality, Is.Null);
         Assert.That(session.Engine.SkillDocumentation, Does.Contain("Louis's Minion"));
     }
+
+    [Test]
+    public void ASession_RemembersItsAttachments_ByName_Capped()
+    {
+        // F22: a later turn can still hand an earlier attachment to a specialist.
+        var session = Sessions().Create(["files"]);
+
+        session.Remember("Verslag.txt", "eerste");
+        session.Remember("verslag.txt", "tweede");
+        session.Remember("groot.txt", new string('x', AgentSession.MaxAttachmentChars + 10));
+
+        Assert.That(session.Attachments["VERSLAG.TXT"], Is.EqualTo("tweede"), "names ignore case; the newest wins");
+        Assert.That(session.Attachments["groot.txt"], Has.Length.EqualTo(AgentSession.MaxAttachmentChars));
+    }
 }

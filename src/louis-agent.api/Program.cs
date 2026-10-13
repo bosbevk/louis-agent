@@ -179,6 +179,9 @@ app.MapPost("/sessions/{id}/messages", (string id, SendMessageRequest request, A
         return Results.Json(Error("conflict_error", MessageText.Format(ApiUserText.SessionBusy, new { Id = "{id}" })),
             statusCode: StatusCodes.Status409Conflict);
 
+    // The session keeps its attachments, so a later turn can still hand them to a specialist (F22).
+    foreach (var attachment in request.Attachments ?? []) session.Remember(attachment.Name, attachment.Content);
+
     return TypedResults.ServerSentEvents(StreamTurnAsync(session.Engine, session, prompt, turn));
 });
 
@@ -249,6 +252,7 @@ static async IAsyncEnumerable<SseItem<string>> StreamTurnAsync(
         {
             Task<bool> next;
             using (usage.Activate())
+            using (SessionAttachments.Use(session.Attachments))
             using (SubSessionFeed.Observe(e => subSessions.Writer.TryWrite(e)))
                 next = updates.MoveNextAsync().AsTask();
 

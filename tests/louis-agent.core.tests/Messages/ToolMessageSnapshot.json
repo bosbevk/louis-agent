@@ -4,6 +4,7 @@
   "AgentToolPending": "- <Name> [pending, active this session]: <Description>",
   "AgentToolTimeout": "[Timeout] <Name> exceeded <Seconds>s and was killed.\n<Output>",
   "ApprovedToolExists": "Error: an approved tool named '<Name>' already exists; choose another name.",
+  "AttachmentUnknown": "No attachment named '<Name>' in this conversation. Attached: <Attached>.",
   "BashCrlfHint": "\nHint: the script has Windows (CRLF) line endings; convert it to LF.",
   "BashNotInstalled": "Bash is not available. On Windows install Git for Windows (https://git-scm.com, includes Git Bash) or set BASH_PATH to bash.exe. WSL's bash.exe in System32 is deliberately not used.",
   "BuildFailed": "FAILED (exit code <ExitCode>).",
