@@ -161,6 +161,9 @@ answers side by side.
 [sample-output-puls-check-fixes/](sample-output-puls-check-fixes/README.md) is the run after FX10–FX12: no refused
 calls and `.env.example` read, but one counting task sent to a `files`-only specialist read every test file into a
 282k-token prompt at the long-prompt price, $0.278 of the run's $0.313 (baseline $0.028).
+[sample-output-puls-check-repeat/](sample-output-puls-check-repeat/README.md) runs each mode three times after
+FX10–FX14: delegation +31% on average (+6%, +11%, +86%), every delegation routed by the table, the dearest question
+$0.0174; cheaper for chat and web research, 1.2–3.5× dearer for short files, git and counting questions.
 
 With triage on a local model: [sample-output-short-local-triage/](sample-output-short-local-triage/README.md) is a
 `-Short` run whose orchestrator ran on `qwen3:4b-instruct-2507` in Ollama on a 4 GB GPU, fixes on Claude: the same

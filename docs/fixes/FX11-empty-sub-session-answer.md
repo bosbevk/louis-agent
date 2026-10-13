@@ -55,8 +55,10 @@ In `AgentPeerToolsTests`:
 
 ## Confirmed
 
-Not yet. The [delegation check after the fixes](../../samples/sample-output-puls-check-fixes/README.md) had no
-specialist end empty, so the follow-up didn't run. It needs a run where one does (a paid run). If a specialist hits its round limit again,
+2026-10-14, run 3 of the [three-run delegation check](../../samples/sample-output-puls-check-repeat/README.md). The numbers-2 analyst used all ten tool rounds
+and ended its turn without text (`stop`, 170 output tokens). The follow-up in the same session (turn 2) gave the
+answer, and Puls called `StartSubSession` once. The earlier [check after FX10–FX12](../../samples/sample-output-puls-check-fixes/README.md)
+had no empty answer. If a specialist hits its round limit again,
 its sub-session should show two messages and one answer, and Puls should not start a second sub-session for the same
 task.
 

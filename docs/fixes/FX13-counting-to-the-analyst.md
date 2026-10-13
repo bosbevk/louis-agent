@@ -51,8 +51,9 @@ The golden file changed for the router's lines.
 
 ## Confirmed
 
-Not yet. This needs the next delegation check: numbers-2 should go to the analyst with a script tool, or come back
-from the reader asking for one.
+2026-10-14, in the [three-run delegation check](../../samples/sample-output-puls-check-repeat/README.md): all six counting questions (numbers and numbers-2,
+three runs each) went to `files` + `python` with `puls-analyst`, and all 24 delegations matched the router's table.
+The dearest delegated question cost $0.0174, against $0.278 before.
 
 ## Lesson
 

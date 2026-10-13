@@ -55,8 +55,9 @@ Considered and not done:
 
 ## Confirmed
 
-Not yet. This needs the next delegation check: no sub-session request over about 100k tokens. If a specialist reaches
-the budget, the log shows the budget line and its answer says what it couldn't finish.
+Partly, on 2026-10-14. In the [three-run delegation check](../../samples/sample-output-puls-check-repeat/README.md) no sub-session prompt went over 46k tokens, so
+the budget was never reached and the guard's forced answer hasn't been seen against the real model yet. The tests
+cover the mechanism. A real confirmation needs a task that grows a specialist's context past 100k.
 
 ## Lesson
 
