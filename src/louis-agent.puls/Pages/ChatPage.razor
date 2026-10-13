@@ -15,13 +15,13 @@
     @* Below Bootstrap's lg breakpoint (992px) the sidebar is an offcanvas, opened from this bar. *@
     <header class="topbar d-lg-none">
         <button class="icon menu-button" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar" aria-label="Open the menu">☰</button>
-        <div class="brand"><span class="brand-mark" aria-hidden="true"></span>Puls</div>
+        <div class="brand"><PulsLogo /></div>
         <button class="icon" type="button" @onclick="NewChat" aria-label="New chat">＋</button>
     </header>
 
     <aside class="sidebar offcanvas-lg offcanvas-start" id="sidebar" tabindex="-1" aria-label="Chats">
         <div class="sidebar-top">
-            <div class="brand"><span class="brand-mark" aria-hidden="true"></span>Puls</div>
+            <div class="brand"><PulsLogo /></div>
             <button class="icon d-none d-lg-inline-grid" type="button" onclick="pulsUi.toggleSidebar()" title="Hide the sidebar" aria-label="Hide the sidebar">⇤</button>
             <button class="icon d-lg-none" type="button" data-bs-dismiss="offcanvas" data-bs-target="#sidebar" aria-label="Close the menu">×</button>
         </div>

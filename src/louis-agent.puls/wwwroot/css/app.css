@@ -48,22 +48,20 @@ button:disabled { cursor: default; opacity: .4; }
 a { color: var(--blue); text-decoration-thickness: 1px; text-underline-offset: 2px; }
 * { scrollbar-width: thin; scrollbar-color: #d6ccbb transparent; }
 
-/* The brand orb: a gradient sphere that breathes. */
-.brand-mark {
-    width: 22px; height: 22px; border-radius: 50%; display: inline-block; flex: none;
-    background: radial-gradient(circle at 30% 30%, #fff 0 9%, transparent 10%), linear-gradient(135deg, var(--orange) 0 50%, var(--green) 50% 100%);
-    box-shadow: 0 0 0 0 rgba(255, 122, 26, .45);
-    animation: orb 3.2s var(--ease) infinite;
-}
-@keyframes orb {
-    0% { box-shadow: 0 0 0 0 rgba(255, 122, 26, .45); transform: scale(1); }
-    50% { box-shadow: 0 0 0 8px rgba(255, 122, 26, 0); transform: scale(1.06); }
-    100% { box-shadow: 0 0 0 0 rgba(255, 122, 26, 0); transform: scale(1); }
-}
+/* The wordmark (Components/PulsLogo.razor): the pulse line draws itself in, the dot beats like a heart, and a hover
+   draws the line again. */
+.puls-logo { height: 34px; width: auto; display: block; overflow: visible; }
+.puls-logo-line { stroke-dasharray: 1; stroke-dashoffset: 0; animation: logo-draw 1.6s var(--ease) both; }
+.puls-logo-dot { fill: var(--green-light); transform-box: fill-box; transform-origin: center; animation: logo-beat 3.6s ease-in-out 1.6s infinite; }
+.brand:hover .puls-logo-line { animation: logo-redraw 1.2s var(--ease); }
+@keyframes logo-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes logo-redraw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes logo-beat { 0%, 100% { transform: scale(1); } 10% { transform: scale(1.45); } 20% { transform: scale(1); } 30% { transform: scale(1.25); } 40% { transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) { .puls-logo-line, .puls-logo-dot { animation: none; } }
 
 /* Loading and errors */
 .loading { height: 100vh; display: flex; align-items: center; justify-content: center; gap: 12px; font-weight: 700; font-size: 26px; letter-spacing: -.5px; color: var(--ink); }
-.loading .brand-mark { width: 30px; height: 30px; }
+.loading img { animation: logo-beat 3.6s ease-in-out infinite; }
 #blazor-error-ui { display: none; position: fixed; inset: auto 16px 16px 16px; padding: 12px 18px; background: #fff; border: 1px solid var(--border); border-left: 4px solid var(--orange); border-radius: 12px; box-shadow: var(--shadow-md); z-index: 10; }
 #blazor-error-ui .dismiss { float: right; cursor: pointer; }
 
@@ -331,7 +329,8 @@ a { color: var(--blue); text-decoration-thickness: 1px; text-underline-offset: 2
         background: rgba(36, 40, 44, .94); backdrop-filter: blur(14px); color: #fff; position: sticky; top: 0; z-index: 6;
         box-shadow: 0 8px 24px -12px rgba(36, 40, 44, .6);
     }
-    .topbar .brand { font-size: 19px; padding: 0; }
+    .topbar .brand { padding: 0; }
+    .topbar .puls-logo { height: 28px; }
     .topbar .icon { color: #dfe5f4; width: 38px; height: 38px; display: grid; place-items: center; font-size: 18px; }
     .topbar .icon:hover { background: rgba(255, 255, 255, .1); color: #fff; }
     .sidebar.offcanvas-lg { --bs-offcanvas-width: min(320px, 86vw); --bs-offcanvas-transition: transform .35s cubic-bezier(.2, .8, .2, 1); border-right: 0; }
@@ -367,8 +366,6 @@ a { color: var(--blue); text-decoration-thickness: 1px; text-underline-offset: 2
 .new-chat:hover::after { transition: transform .7s var(--ease); transform: translateX(120%) skewX(-20deg); }
 .sidebar-settings summary { transition: background .2s, color .2s; }
 .sidebar-settings summary:hover { color: #fff; }
-.brand .brand-mark { transition: transform .5s var(--spring); }
-.brand:hover .brand-mark { transform: rotate(180deg) scale(1.1); }
 
 /* Suggestions: an icon each, and an arrow that slides in. */
 .suggestion { padding-right: 34px; }
