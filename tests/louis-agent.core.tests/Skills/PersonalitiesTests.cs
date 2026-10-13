@@ -97,7 +97,21 @@ public class PersonalitiesTests
         string reader = SkillFileSource.ReadEmbedded(Personalities.Folder + "/puls-reader.md")!;
 
         Assert.That(router, Does.Contain("Counting is the analyst's, never the reader's"));
+        Assert.That(router, Does.Contain("Every sub-session costs money"), "the one choosing is told the cost too");
         Assert.That(reader, Does.Contain("Don't count by reading").And.Contain("needs the analyst"));
+    }
+
+    [TestCase("puls-researcher")]
+    [TestCase("puls-reader")]
+    [TestCase("puls-historian")]
+    [TestCase("puls-analyst")]
+    [TestCase("puls-specialist")]
+    public void EverySpecialist_IsToldWhatItsToolCallsCost(string role)
+    {
+        // FX13: the reader that read 74 files never saw the router; the rule has to be in the role it runs with.
+        string text = SkillFileSource.ReadEmbedded($"{Personalities.Folder}/{role}.md")!;
+
+        Assert.That(text, Does.Contain("Use the fewest tool calls that answer the task").And.Contain("paid for again"));
     }
 
     [Test]

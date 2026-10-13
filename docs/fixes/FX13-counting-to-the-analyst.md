@@ -28,6 +28,15 @@ Two layers, both prompt content (rule 3 of the layout: prompts are content, not 
   the reader stops and reports that it needs the analyst, with the folder and the pattern to count. That costs one
   short sub-session when the routing goes wrong, not 298k tokens.
 
+Added the same day, at Louis's suggestion: **tell the agents what their tool calls cost**, in words that name the
+mechanism instead of a general "be efficient":
+- **Every specialist role** (all five `puls-*` files, in the shared *How every Puls specialist works*): use the fewest
+  tool calls that answer the task, one search or one script rather than reading many files, because every result stays
+  in the context and is paid for again on every later request. It goes in the roles because a specialist never loads
+  `default.md`, so the reader that read 74 files couldn't have seen a line there.
+- **The router** (`agents-skills.md`, read by Puls when it chooses): every sub-session starts cold and its answer is
+  written twice, so send one per task, not one per step, with the toolsets that answer in the fewest calls.
+
 Considered and not done:
 - **Adding `python` to every `files`-only sub-session on the peer.** Every reader would get a bigger prefix, and its
   role would change for tasks that only read.
@@ -37,7 +46,7 @@ Code doesn't enforce this, so FX14 (a context budget per sub-session) is the bac
 
 ## Tests
 
-`PersonalitiesTests.CountingGoesToTheAnalyst_AndTheReaderHandsItBack` checks that both built-in files carry the rule.
+`PersonalitiesTests.CountingGoesToTheAnalyst_AndTheReaderHandsItBack` checks that both built-in files carry the rule. `EverySpecialist_IsToldWhatItsToolCallsCost` checks the cost line in each of the five roles.
 The golden file changed for the router's lines.
 
 ## Confirmed
