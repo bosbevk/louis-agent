@@ -1,6 +1,6 @@
 using System.Globalization;
 
-namespace LouisAgent.Web.Services;
+namespace LouisAgent.Web.Shared.Services;
 
 /// <summary>
 /// The usage line under an answer and the chat's total (F3), e.g. <c>1.9k in · 26k cached · 412 out · $0.004</c>, or

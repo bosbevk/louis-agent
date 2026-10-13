@@ -1,0 +1,66 @@
+# Puls: the general assistant (chat only), its own stack beside the code-review app and the demo.
+#   Start:  docker compose -f docker/docker-compose.puls.yml --env-file config/.env up -d --build
+#   Stop:   docker compose -f docker/docker-compose.puls.yml --env-file config/.env stop
+#   Remove: docker compose -f docker/docker-compose.puls.yml --env-file config/.env down
+# Then open http://127.0.0.1:5070. Every chat loads only the agents toolset and hands each task to puls-coder, a
+# specialist on the same image that loads just the toolsets the task needs (F5).
+name: puls
+
+x-puls-env: &puls-env
+  env_file:
+    - path: ../config/.env.${LLM_PROFILE:-anthropic}
+    - path: ../config/.env
+    - path: ../config/.env.secrets
+      required: false
+
+services:
+  puls:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.puls
+    image: louis-agent-puls:latest
+    container_name: puls
+    <<: *puls-env
+    environment:
+      WORKSPACE_ROOT: /workspace
+      SKILLS_DIRECTORY: /skills
+      GIT_CONFIG_COUNT: "1"
+      GIT_CONFIG_KEY_0: core.autocrlf
+      GIT_CONFIG_VALUE_0: "true"
+      # Its own logs and usage ledger, apart from the code-review app's
+      LOG_DIRECTORY: /logs
+      PRICES_FILE: /workspace/config/prices.json
+      RATES_FILE: /workspace/config/rates.json
+      # Chats delegate every task to the specialist below
+      AGENT_PEERS: coder=http://puls-coder:8080
+    # Localhost only. Set AGENT_API_KEY in config/.env.secrets to require a key.
+    ports:
+      - "127.0.0.1:${PULS_PORT:-5070}:8080"
+    volumes:
+      - ${PULS_WORKSPACE:-../}:/workspace
+      - ../Skills:/skills
+      - ../logs/puls:/logs
+    depends_on:
+      - puls-coder
+
+  # The specialist Puls delegates to: the same image, no peers of its own (sub-sessions are one level deep).
+  puls-coder:
+    image: louis-agent-puls:latest
+    container_name: puls_coder
+    <<: *puls-env
+    environment:
+      WORKSPACE_ROOT: /workspace
+      SKILLS_DIRECTORY: /skills
+      GIT_CONFIG_COUNT: "1"
+      GIT_CONFIG_KEY_0: core.autocrlf
+      GIT_CONFIG_VALUE_0: "true"
+      LOG_DIRECTORY: /logs
+      PRICES_FILE: /workspace/config/prices.json
+      RATES_FILE: /workspace/config/rates.json
+      AGENT_PEERS: ""
+    ports:
+      - "127.0.0.1:${PULS_CODER_PORT:-5071}:8080"
+    volumes:
+      - ${PULS_WORKSPACE:-../}:/workspace
+      - ../Skills:/skills
+      - ../logs/puls:/logs

@@ -9,6 +9,7 @@ using System.Text.Json;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Usage;
+using Microsoft.Extensions.AI;
 
 /// <summary>
 /// The <c>agents</c> toolset (F5-S5): opens a session on another louis-agent (a peer in AGENT_PEERS) with only the
@@ -53,6 +54,8 @@ public sealed class AgentPeerTools(IReadOnlyDictionary<string, Uri> peers, strin
             return MessageText.Format(ToolMessage.UnknownPeer, new { Agent = agent, Peers = peers.Count == 0 ? "(none)" : string.Join(", ", peers.Keys.Order()) });
 
         UsageScope? scope = UsageScope.Current;
+        // The call that opened this sub-session, so a host can show its events under that call.
+        string? toolUseId = FunctionInvokingChatClient.CurrentContext?.CallContent.CallId;
         string? parent = scope?.Session is { } session ? $"{session}#{scope.Turn}" : null;
         if (!TakeTurnSlot(parent ?? "(no turn)"))
             return MessageText.Format(ToolMessage.SubSessionLimit, new { Max = MaxPerTurn });
@@ -78,7 +81,8 @@ public sealed class AgentPeerTools(IReadOnlyDictionary<string, Uri> peers, strin
                 return MessageText.Format(ToolMessage.SubSessionRefused,
                     new { Agent = agent, Status = (int)reply.StatusCode, Reason = ErrorText(await reply.Content.ReadAsStringAsync(timeout.Token)) });
 
-            var (text, usage, error) = await ReadStreamAsync(await reply.Content.ReadAsStreamAsync(timeout.Token), timeout.Token);
+            var (text, usage, error) = await ReadStreamAsync(await reply.Content.ReadAsStreamAsync(timeout.Token),
+                (type, data) => SubSessionFeed.Report(new SubSessionEvent(toolUseId, agent, type, data)), timeout.Token);
             if (error is not null)
                 return MessageText.Format(ToolMessage.SubSessionFailed, new { Agent = agent, Reason = error });
             return MessageText.Format(ToolMessage.SubSessionAnswer, new
@@ -130,8 +134,12 @@ public sealed class AgentPeerTools(IReadOnlyDictionary<string, Uri> peers, strin
         catch (Exception ex) when (ex is JsonException or KeyNotFoundException or InvalidOperationException) { return body.Length > 300 ? body[..300] : body; }
     }
 
-    /// <summary>The answer's text, a usage line from message_delta (or the error event), and the error, from the SSE stream.</summary>
-    private static async Task<(string Text, string? Usage, string? Error)> ReadStreamAsync(Stream stream, CancellationToken cancellationToken)
+    /// <summary>
+    /// The answer's text, a usage line from message_delta (or the error event), and the error, from the SSE stream; every
+    /// event also goes to <paramref name="onEvent"/> as it arrives (the live view of the sub-session).
+    /// </summary>
+    private static async Task<(string Text, string? Usage, string? Error)> ReadStreamAsync(Stream stream, Action<string, string> onEvent,
+        CancellationToken cancellationToken)
     {
         var text = new StringBuilder();
         string? usage = null, error = null, eventName = null;
@@ -141,7 +149,9 @@ public sealed class AgentPeerTools(IReadOnlyDictionary<string, Uri> peers, strin
             if (line.StartsWith("event:", StringComparison.Ordinal)) { eventName = line[6..].Trim(); continue; }
             if (!line.StartsWith("data:", StringComparison.Ordinal)) continue;
 
-            using var doc = JsonDocument.Parse(line[5..].Trim());
+            string json = line[5..].Trim();
+            if (eventName is not null) onEvent(eventName, json);
+            using var doc = JsonDocument.Parse(json);
             var root = doc.RootElement;
             switch (eventName)
             {

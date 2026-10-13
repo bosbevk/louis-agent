@@ -1,3 +1,4 @@
+using LouisAgent.Web.Shared.Services;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using LouisAgent.Web;

@@ -1,0 +1,83 @@
+@* A delegated task (F5): the specialist, the toolsets it loaded, the task it was sent, its work as it happens (thinking,
+   tool calls, answer, folded from the sub-session's own stream) and what it cost. *@
+
+<div class="delegation @Status">
+    <div class="delegation-head">
+        <span class="delegation-avatar" aria-hidden="true">@Initial</span>
+        <div class="delegation-title">
+            <div class="delegation-agent">Delegated to <strong>@Delegation.Agent</strong></div>
+            <div class="delegation-toolsets">
+                @foreach (string toolset in Delegation.Toolsets)
+                {
+                    <span class="toolset-chip">@toolset</span>
+                }
+            </div>
+        </div>
+        <span class="delegation-status">@StatusText</span>
+    </div>
+
+    @if (Delegation.Task is { Length: > 0 } task)
+    {
+        <details class="delegation-task">
+            <summary>Task</summary>
+            <div class="delegation-task-text">@task</div>
+        </details>
+    }
+
+    @if (Block.SubTurn is { } sub)
+    {
+        <details class="delegation-work" open="@Running">
+            <summary>@(Running ? "Working" : "Work") · @Steps(sub)</summary>
+            <div class="delegation-blocks">
+                <BlocksView Blocks="sub.Blocks.Where(b => b.Kind != BlockKind.Text).ToList()" Streaming="Running" Currency="Currency" />
+            </div>
+        </details>
+        @if (sub.Blocks.Any(b => b.Kind == BlockKind.Text))
+        {
+            <div class="delegation-answer markdown">@Markdown.ToHtml(string.Join("\n\n", sub.Blocks.Where(b => b.Kind == BlockKind.Text).Select(b => b.Text)))</div>
+        }
+        @if (sub.Error is not null)
+        {
+            <div class="error">@sub.Error</div>
+        }
+        @if (sub.Usage is { } usage)
+        {
+            <div class="usage delegation-usage" title="@UsageFormat.Detail(usage, Currency)">@Delegation.Agent · @UsageFormat.Line(usage, Currency)</div>
+        }
+    }
+    else if (Block.ToolResult is not null)
+    {
+        @* No live view (an older chat, or a host that doesn't stream sub-sessions): the answer the model got. *@
+        <div class="delegation-answer markdown">@Markdown.ToHtml(Delegation.Answer ?? Block.ToolResult)</div>
+        @if (Delegation.UsageLine is { } line)
+        {
+            <div class="usage delegation-usage">@Delegation.Agent · @line</div>
+        }
+    }
+    else if (Running)
+    {
+        <div class="delegation-waiting">Starting<span class="dots"></span></div>
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired] public Delegation Delegation { get; set; } = default!;
+    [Parameter, EditorRequired] public Block Block { get; set; } = default!;
+    [Parameter] public bool Streaming { get; set; }
+    [Parameter] public CurrencyChoice? Currency { get; set; }
+
+    private bool Running => Streaming && Block.ToolResult is null;
+
+    private string Status => Running ? "running" : Block.ToolFailed || Delegation.Failed ? "failed" : "done";
+
+    private string StatusText => Status switch { "running" => "Working", "failed" => "Failed", _ => "Done" };
+
+    private string Initial => Delegation.Agent.Length > 0 ? Delegation.Agent[..1].ToUpperInvariant() : "?";
+
+    private static string Steps(Turn sub)
+    {
+        int tools = sub.Blocks.Count(b => b.Kind == BlockKind.Tool);
+        int thoughts = sub.Blocks.Count(b => b.Kind == BlockKind.Thinking);
+        return $"{tools} tool call{(tools == 1 ? "" : "s")}, {thoughts} thought{(thoughts == 1 ? "" : "s")}";
+    }
+}

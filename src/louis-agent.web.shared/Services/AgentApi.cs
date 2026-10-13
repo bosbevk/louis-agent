@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Text.Json;
 using Microsoft.AspNetCore.Components.WebAssembly.Http;
 
-namespace LouisAgent.Web.Services;
+namespace LouisAgent.Web.Shared.Services;
 
 /// <summary>Thrown for an API error response; <see cref="Status"/> lets the UI react (401 = key, 404 = session gone).</summary>
 public sealed class AgentApiException(HttpStatusCode status, string message) : Exception(message)
@@ -16,19 +16,15 @@ public sealed class AgentApiException(HttpStatusCode status, string message) : E
 /// <summary>One streamed event: its type (content_block_delta, message_stop, ...) and its JSON data.</summary>
 public sealed record AgentStreamEvent(string Type, JsonElement Data);
 
-/// <summary>Client for louis-agent.api, which serves this app from the same origin.</summary>
+/// <summary>Client for louis-agent.api, which serves the web app from the same origin.</summary>
 public sealed class AgentApi(HttpClient http, Settings settings)
 {
     /// <summary>
-    /// Opens a chat with the bare minimum (F5): only the <c>agents</c> toolset, so the chat delegates every task to a
-    /// specialist with the toolsets that task needs, and its own prompt stays small. When this API has no peer
-    /// (AGENT_PEERS unset), the chat gets every toolset it can load instead, so it can still work. Every chat sends the
-    /// same list, so they share one cached prefix.
+    /// Opens a session with <paramref name="toolsets"/> (F5): a session's tools are chosen when it opens and kept. Each app
+    /// decides which: the code-review app every available toolset, Puls only <c>agents</c> (it delegates).
     /// </summary>
-    public async Task<string> CreateSessionAsync()
+    public async Task<string> CreateSessionAsync(IEnumerable<string> toolsets)
     {
-        string[] available = await AvailableToolsetsAsync();
-        string[] toolsets = available.Contains(DelegateOnly) ? [DelegateOnly] : available;
         using var response = await SendAsync(new HttpRequestMessage(HttpMethod.Post, "sessions")
         {
             Content = JsonContent.Create(new { toolsets }),
@@ -37,10 +33,8 @@ public sealed class AgentApi(HttpClient http, Settings settings)
         return body.GetProperty("session_id").GetString()!;
     }
 
-    /// <summary>The toolset a web chat loads when it can: sub-sessions on a specialist.</summary>
-    private const string DelegateOnly = "agents";
-
-    private async Task<string[]> AvailableToolsetsAsync()
+    /// <summary>The toolsets this API can load (<c>GET /toolsets</c>, those whose settings are set).</summary>
+    public async Task<string[]> AvailableToolsetsAsync()
     {
         using var response = await SendAsync(new HttpRequestMessage(HttpMethod.Get, "toolsets"));
         var body = await response.Content.ReadFromJsonAsync<JsonElement>();
@@ -67,65 +61,14 @@ public sealed class AgentApi(HttpClient http, Settings settings)
         }
     }
 
-    public async Task<WorkspaceFolder> ListFolderAsync(string path)
-    {
-        using var response = await SendAsync(new HttpRequestMessage(HttpMethod.Get, $"workspace/entries?path={Uri.EscapeDataString(path)}"));
-        return (await response.Content.ReadFromJsonAsync<WorkspaceFolder>())!;
-    }
-
-    public async Task<WorkspaceFile> ReadFileAsync(string path)
-    {
-        using var response = await SendAsync(new HttpRequestMessage(HttpMethod.Get, $"workspace/file?path={Uri.EscapeDataString(path)}"));
-        return (await response.Content.ReadFromJsonAsync<WorkspaceFile>())!;
-    }
-
-    public async Task<GitStatus> GitStatusAsync()
-    {
-        using var response = await SendAsync(new HttpRequestMessage(HttpMethod.Get, "git/status"));
-        return (await response.Content.ReadFromJsonAsync<GitStatus>())!;
-    }
-
-    public async Task<GitDiff> GitDiffAsync(string path, bool staged)
-    {
-        using var response = await SendAsync(new HttpRequestMessage(HttpMethod.Get, $"git/diff?path={Uri.EscapeDataString(path)}&staged={(staged ? "true" : "false")}"));
-        return (await response.Content.ReadFromJsonAsync<GitDiff>())!;
-    }
-
-    /// <summary>stage | unstage | discard; returns the new status.</summary>
-    public async Task<GitStatus> GitChangeAsync(string action, IEnumerable<string> paths)
-    {
-        using var response = await SendAsync(new HttpRequestMessage(HttpMethod.Post, $"git/{action}") { Content = JsonContent.Create(new { paths }) });
-        return (await response.Content.ReadFromJsonAsync<GitStatus>())!;
-    }
-
-    public async Task<GitStatus> GitCommitAsync(string message)
-    {
-        using var response = await SendAsync(new HttpRequestMessage(HttpMethod.Post, "git/commit") { Content = JsonContent.Create(new { message }) });
-        return (await response.Content.ReadFromJsonAsync<GitStatus>())!;
-    }
-
-    public Task<GitBranches> GitBranchesAsync() => GetAsync<GitBranches>("git/branches");
-
-    public Task<GitLog> GitLogAsync(int count = 200) => GetAsync<GitLog>($"git/log?count={count}");
-
-    public Task<GitCommitDetail> GitShowCommitAsync(string sha) => GetAsync<GitCommitDetail>($"git/commit?sha={Uri.EscapeDataString(sha)}");
-
-    public Task<GitBranchDetail> GitBranchAsync(string name) => GetAsync<GitBranchDetail>($"git/branch?name={Uri.EscapeDataString(name)}");
-
-    /// <summary>merge | branch/delete; returns the branches afterwards, with a message saying what happened.</summary>
-    public async Task<GitBranches> GitBranchActionAsync(string action, string branch)
-    {
-        using var response = await SendAsync(new HttpRequestMessage(HttpMethod.Post, $"git/{action}") { Content = JsonContent.Create(new { branch }) });
-        return (await response.Content.ReadFromJsonAsync<GitBranches>())!;
-    }
-
     /// <summary>The exchange rates the API loaded (F14).</summary>
     public Task<RatesTable> GetRatesAsync() => GetAsync<RatesTable>("rates");
 
     /// <summary>The server's display currency and a symbol for each currency (F14).</summary>
     public Task<RatesDisplay> GetRatesDisplayAsync() => GetAsync<RatesDisplay>("rates/display");
 
-    private async Task<T> GetAsync<T>(string url)
+    /// <summary>A GET returning JSON, for an app's own endpoints (the code-review app's workspace and git).</summary>
+    public async Task<T> GetAsync<T>(string url)
     {
         using var response = await SendAsync(new HttpRequestMessage(HttpMethod.Get, url));
         return (await response.Content.ReadFromJsonAsync<T>())!;
@@ -152,7 +95,8 @@ public sealed class AgentApi(HttpClient http, Settings settings)
             yield return new AgentStreamEvent(item.EventType, JsonDocument.Parse(item.Data).RootElement);
     }
 
-    private async Task<HttpResponseMessage> SendAsync(
+    /// <summary>Sends with the API key; throws <see cref="AgentApiException"/> with the API's message on an error.</summary>
+    public async Task<HttpResponseMessage> SendAsync(
         HttpRequestMessage request,
         HttpCompletionOption completion = HttpCompletionOption.ResponseContentRead,
         CancellationToken cancellationToken = default)

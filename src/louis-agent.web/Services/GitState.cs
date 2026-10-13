@@ -1,3 +1,4 @@
+using LouisAgent.Web.Shared.Services;
 namespace LouisAgent.Web.Services;
 
 /// <summary>

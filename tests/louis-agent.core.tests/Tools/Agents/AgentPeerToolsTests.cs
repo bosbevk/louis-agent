@@ -62,6 +62,31 @@ public class AgentPeerToolsTests
     }
 
     [Test]
+    public async Task EverySubSessionEvent_GoesToTheTurnsObserver_InOrder_AndTheModelStillGetsOnlyTheAnswer()
+    {
+        // F5: a host shows the specialist's work live; the model's tool result doesn't change.
+        var handler = Peer();
+        var seen = new List<SubSessionEvent>();
+
+        string result;
+        using (SubSessionFeed.Observe(seen.Add))
+            result = await Tools(handler).StartSubSession("coder", ["files"], "x");
+
+        Assert.That(seen.Select(e => e.Type), Is.EqualTo(new[]
+            { "message_start", "content_block_delta", "content_block_delta", "message_delta", "message_stop" }));
+        Assert.That(seen.All(e => e.Agent == "coder"), Is.True);
+        Assert.That(seen[1].Data, Does.Contain("Fixed the null check"));
+        Assert.That(result, Does.StartWith("Fixed the null check; 14/14 tests pass.").And.Not.Contain("content_block_delta"));
+    }
+
+    [Test]
+    public async Task WithoutAnObserver_NothingIsReported()
+    {
+        // The default: a host that doesn't observe (the CLI) is unaffected.
+        Assert.That(await Tools(Peer()).StartSubSession("coder", ["files"], "x"), Does.StartWith("Fixed"));
+    }
+
+    [Test]
     public async Task AnUnknownPeer_FailsWithoutANetworkCall()
     {
         var handler = Peer();

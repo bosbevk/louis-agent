@@ -16,6 +16,8 @@ using LouisAgent.Core.Logging;
 using Microsoft.Extensions.Logging;
 using LouisAgent.Core.Messages;
 using System.Globalization;
+using System.Threading.Channels;
+using LouisAgent.Core.Tools.Agents;
 
 // HTTP version of the ACP server, which also serves the web app: every API reply is JSON, and a message's answer streams as Server-Sent Events shaped
 // like Claude's (message_start, content_block_start/delta/stop for thinking, text, tool_use and tool_result, message_stop).
@@ -228,13 +230,27 @@ static async IAsyncEnumerable<SseItem<string>> StreamTurnAsync(
         await using var updates = engine.StreamPromptAsync(session.History, prompt, turn.Token).GetAsyncEnumerator(turn.Token);
         string stopReason = "end_turn";
         string? error = null;
+        // F5: a sub-session's events (StartSubSession) arrive while its tool call runs, so the next update is awaited
+        // alongside them and they are sent as they come: the chat shows the specialist's work live. The model still
+        // gets only the sub-session's answer.
+        var subSessions = Channel.CreateUnbounded<SubSessionEvent>();
         while (true)
         {
+            Task<bool> next;
+            using (usage.Activate())
+            using (SubSessionFeed.Observe(e => subSessions.Writer.TryWrite(e)))
+                next = updates.MoveNextAsync().AsTask();
+
+            while (!next.IsCompleted)
+            {
+                await Task.WhenAny(next, subSessions.Reader.WaitToReadAsync().AsTask());
+                while (subSessions.Reader.TryRead(out var sub)) yield return ClaudeStyleStream.SubSession(sub);
+            }
+            while (subSessions.Reader.TryRead(out var sub)) yield return ClaudeStyleStream.SubSession(sub);
+
             try
             {
-                bool more;
-                using (usage.Activate()) more = await updates.MoveNextAsync();
-                if (!more) break;
+                if (!await next) break;
             }
             catch (OperationCanceledException)
             {
@@ -317,6 +333,19 @@ internal sealed class ClaudeStyleStream(string sessionId)
     private string? _openBlock;
 
     public static SseItem<string> Event(string type, object data) => new(JsonSerializer.Serialize(data, Json), type);
+
+    /// <summary>
+    /// A sub-session's event (F5), nested: the <c>StartSubSession</c> call it belongs to, the peer, and the peer's own event
+    /// (Claude's shape), so a client can fold it into that call the way it folds the turn's own events.
+    /// </summary>
+    public static SseItem<string> SubSession(SubSessionEvent sub)
+    {
+        using var data = JsonDocument.Parse(sub.Data);
+        return Event("sub_session", new
+        {
+            type = "sub_session", tool_use_id = sub.ToolUseId, agent = sub.Agent, @event = sub.Type, data = data.RootElement.Clone(),
+        });
+    }
 
     public SseItem<string> MessageStart() =>
         Event("message_start", new { type = "message_start", message = new { session_id = sessionId, role = "assistant" } });
