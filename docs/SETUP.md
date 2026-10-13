@@ -94,6 +94,17 @@ docker compose -f docker/docker-compose.yml --env-file config/.env up -d --build
 
 Set by compose for the containers, so normally not in `.env`: `WORKSPACE_ROOT`, `SKILLS_DIRECTORY`, `LOG_DIRECTORY`.
 
+**The script tools' interpreters**, only needed when they can't be found (mostly `dotnet run` on Windows); read from the
+environment by the tools themselves:
+
+| Setting | Meaning |
+|---|---|
+| `BASH_PATH` (or `SKILL_SHELL`) | The bash for `BashRun` and bash skills. Default: `/bin/bash`, or Git Bash on Windows (Program Files, or next to `git.exe` on `PATH`); WSL's bash is never used |
+| `POWERSHELL_PATH` | The PowerShell for `PowerShellRun`. Default: `pwsh`, then `powershell.exe` on Windows |
+| `PYTHON_PATH` | The Python for `PythonRun`. Default: `py -3`, `python` or `python3` on Windows; `python3` or `python` elsewhere |
+| `PYTHON_VENV` | Where `PythonRun` keeps the virtual environment for packages it installs. Default: a per-user folder (`%LOCALAPPDATA%/louis-agent/python-venv`, `~/.local/share/louis-agent/python-venv` on Linux) |
+| `AGENT_WORKING_DIRECTORY` | The working directory for bash, PowerShell and Python scripts. Default: the workspace root |
+
 ### `config/.env.secrets`
 
 | Setting | Meaning |

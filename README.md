@@ -1,12 +1,40 @@
 # Louis Agent
 
-A self-hosted AI coding agent for .NET, built on [Microsoft.Extensions.AI](https://learn.microsoft.com/dotnet/ai/microsoft-extensions-ai).
-It works on your repository with real tools — files, git, `dotnet`, Python, PowerShell, bash, web search, Azure DevOps and
+A self-hosted AI coding agent for .NET, built on [Microsoft.Extensions.AI](https://learn.microsoft.com/dotnet/ai/microsoft-extensions-ai),
+and **Puls**, a South African assistant in everyday Afrikaans built on the same core.
+
+The coding agent works on your repository with real tools — files, git, `dotnet`, Python, PowerShell, bash, web search, Azure DevOps and
 Paymo — and talks to you through JetBrains Rider, a web app, an HTTP API or the terminal. Answers stream as they are
 written, including the model's thinking and every tool call, and each answer says what it used and cost
 (`turn: 3 requests · 28k tokens (26k cached) · $0.006`; `/usage` for the whole session).
 
 Runs on Claude (Anthropic) by default; Ollama and OpenAI-compatible endpoints work too.
+
+## Puls
+
+**Puls** (*Elke vraag op pad na 'n antwoord*) is a general AI assistant that speaks everyday South African Afrikaans.
+It doesn't answer with tools itself: it hands each task to a **specialist**, a second louis-agent that opens a
+session with only the toolsets the task needs and a role that says how to work and report back. There are five roles:
+a researcher (web), a reader (files and documents), a historian (git), an analyst (counting and calculating with a
+script) and a general specialist. Puls then writes the answer in its own voice.
+
+- **You see the work.** The Werk panel shows each delegation as it happens: the specialist, its toolsets, its task, each
+  step, the sources it read and what it cost.
+- **Pay as you go, with visible usage.** Every answer shows what it cost, Puls's part and the specialists'. Costs are
+  shown in your currency (rand in South Africa); the ledger keeps the dollars actually charged.
+- **It knows where and when you are.** It sends your time zone with every chat, and your location (about 1 km) only if
+  you share it, so "today" and "near me" are yours.
+- **Measured.** A delegation check asks the same questions with and without specialists and prices both from the usage
+  ledger ([samples](samples/sample-output-puls-check-repeat/README.md)). On average, delegating costs about a third more
+  than one agent answering everything. It is cheaper for chat and research, and dearer for short lookups.
+
+```bash
+docker compose -f docker/docker-compose.puls.yml --env-file config/.env up -d --build
+```
+
+Open **http://127.0.0.1:5070**; its specialist runs beside it on 5071. Design: [Puls's web app](docs/projects/louis-agent.puls.md),
+[F5 toolset profiles](docs/features/F05-toolset-profiles.md) (sub-sessions), [F21 personalities](docs/features/F21-personalities.md)
+(the roles), [F22 role tools](docs/features/F22-role-tools.md).
 
 ## Ways to use it
 
@@ -14,6 +42,7 @@ Runs on Claude (Anthropic) by default; Ollama and OpenAI-compatible endpoints wo
 |---|---|---|
 | **Rider** | `src/louis-agent.acp-server` | [Agent Client Protocol](https://agentclientprotocol.com) server for Rider's AI chat: streamed answers, thinking, tool cards, file attachments |
 | **Web app** | `src/louis-agent.web` | Blazor WebAssembly chat with a file browser, a git Changes view (review diffs, stage, discard, commit), a Branches view (all commits, branch diffs, merge) and switchable themes |
+| **Puls** | `src/louis-agent.puls` | The general assistant's web app: a landing page and a dark three-panel chat in Afrikaans, with the Werk panel showing each delegation live |
 | **HTTP API** | `src/louis-agent.api` | JSON API with Claude-style streamed events (SSE); also serves the web app |
 | **CLI** | `src/louis-agent.cli` | Interactive or one-shot prompts in the terminal |
 | **MCP server** | `src/louis-agent.mcp-server` | Publishes the agent's tools to any MCP client (the client brings its own model) |
@@ -40,6 +69,7 @@ All docs, in reading order, are listed in **[docs/README.md](docs/README.md)**. 
 | Know the components, security and deployment | [Architecture](docs/ARCHITECTURE.md) · [project by project](docs/projects/README.md) |
 | Change the code | [Development guide](docs/CLAUDE.md) |
 | Watch two agents fix ten bugs, then merge the fixes | [Orchestrator demo](samples/README.md) · [sample output](samples/sample-output/README.md) |
+| See what Puls's delegation costs against one agent | [Delegation check](samples/sample-output-puls-check-repeat/README.md) |
 | Learn how the orchestrator decides, and write runbooks | [Runbooks](docs/RUNBOOKS.md) |
 
 ## Quick start (Docker)
@@ -110,6 +140,9 @@ Settings live in `config/.env` and secrets in `config/.env.secrets`; both are gi
 | `HOST_CULTURE`, `DISPLAY_CURRENCY` | Show costs in your currency (F14): `HOST_CULTURE=en-ZA` (written by `usage-probe -- --host-culture`) gives rands, `R0.11`; `DISPLAY_CURRENCY` overrides it. The ledger stays in USD |
 | `RATES_URL`, `RATES_FORMAT`, `RATES_FILE` | Exchange rates: Frankfurter by default, `config/rates.json` (tracked) as the fallback, served at the API's `GET /rates` |
 | `PRICES_FILE`, `PRICES_URL` | Price table for the ledger's costs: default `config/prices.json` (tracked, with today's Claude prices; local models at 0), or fetched from the API's `GET /prices` |
+| `AGENT_PEERS` | Other louis-agent APIs this one may hand tasks to (`StartSubSession`), as `name=url` pairs; Puls's compose sets its specialist |
+| `SUB_SESSION_PROMPT_BUDGET` | The most tokens a specialist's prompt should reach before it must answer (default `80000`, under Haiku 5.5's long-prompt price step) |
+| `PULS_PORT`, `PULS_CODER_PORT`, `PULS_WORKSPACE` | Puls's port (`5070`), its specialist's (`5071`) and the folder they work in |
 
 ## HTTP API
 
@@ -120,7 +153,8 @@ The full reference — authentication, errors, the event stream with an example,
 
 | Endpoint | |
 |---|---|
-| `POST /sessions` | Start a session → `{ "session_id" }` |
+| `POST /sessions` | Start a session → `{ "session_id" }`. Optional: `toolsets` (only those tools and guides), `personality` (a voice or a specialist's role), `location` and `time_zone`, and tags for the usage ledger (`task`, `run`, `service`) |
+| `GET /toolsets` · `GET /personalities` · `GET /model` | What a session can load, the personalities it can choose, and the model this instance runs |
 | `POST /sessions/{id}/messages` | `{ "message", "attachments": [{ "name", "content" }] }` → event stream |
 | `POST /sessions/{id}/cancel` · `GET` / `DELETE /sessions/{id}` | Stop a reply, inspect, end |
 | `GET /workspace/entries?path=` · `GET /workspace/file?path=` | Browse the workspace (read-only) |
@@ -129,6 +163,7 @@ The full reference — authentication, errors, the event stream with an example,
 | `GET /git/branches` · `GET /git/log?count=` | Branches (ahead/behind the checked-out branch) and the log across all branches |
 | `GET /git/commit?sha=` · `GET /git/branch?name=` | A commit's diff; a branch's commits and what merging it would bring |
 | `POST /git/merge` · `POST /git/branch/delete` | `{ "branch" }`: merge into the checked-out branch (`--no-ff`, aborted on conflict); delete a merged branch |
+| `GET /prices` · `GET /rates` · `GET /rates/display` | The price table, the exchange rates, and the currency costs are shown in |
 | `GET /health` | Liveness (no key needed) |
 
 ```bash
@@ -154,18 +189,24 @@ curl -N -X POST http://127.0.0.1:5080/sessions/$SID/messages \
 Built-in tools cover workspace files, git, `dotnet` build/test/run, Python, PowerShell, bash, web search and page fetching,
 Azure DevOps work items and Paymo time tracking. Markdown **skills** in [`Skills/`](Skills) add guidance and repeatable
 procedures: `personality.md` gives the agent its character (edit or delete it to change who the agent is), and
-`default.md` holds its operating instructions. The agent can write new skills, and can build its own typed tools, which
+`default.md` holds its operating instructions and routes each task to a toolset. A session can load only the toolsets
+it needs (`files`, `git`, `dotnet`, `web`, `python`, …), each with its own guide (`Skills/{toolset}-skills.md`), so its
+prompt stays small and cacheable. A session can also name a personality from `Skills/personalities/`: Puls's voice
+(`puls.md`), or a specialist's role (`puls-researcher.md`, `puls-reader.md`, …). The agent can write new skills, and can build its own typed tools, which
 wait in `Skills/tools/pending` until you approve them (`/tools`, `/approve <Name>`, `/reject <Name>`).
 
 ## Safety
 
-- File tools stay inside the workspace, refuse secret files (`.env`, keys, certificates) and don't follow symbolic links.
+- File tools stay inside the workspace, refuse secret files (`.env`, keys, certificates; templates such as
+  `.env.example` are readable) and don't follow symbolic links.
 - Scripts and git run without a shell, with arguments passed as a list.
 - The API and web app are published on `127.0.0.1` only; set `AGENT_API_KEY` to require a key. The MCP server in HTTP
   mode is also local-only and takes `MCP_API_KEY`.
 - The web app never pushes (its commits and merges stay local), and the agent only pushes when you ask it to.
 - Oversized tool output is summarised instead of flooding the model's context, and a tool call cut off by the output
   limit is never run.
+- A specialist's sub-session is one level deep (it can't delegate again), limited to 3 per turn and 5 minutes each,
+  and has a prompt budget, so a badly routed task can't grow into long-context prices.
 
 ## Logs
 
@@ -177,6 +218,7 @@ results and truncated tool calls for spotting where the agent needs narrower too
 ```bash
 dotnet build louis-agent-solution.sln
 dotnet test tests/louis-agent.core.tests
+dotnet test tests/louis-agent.api.tests
 dotnet test tests/louis-agent.orchestrator.tests
 ```
 
