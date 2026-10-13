@@ -9,6 +9,12 @@ using System.ComponentModel;
 /// <summary>Strings tools return to the model: what went wrong and what to do instead.</summary>
 public enum ToolMessage
 {
+    [Description("No commits match.")]
+    GitNoCommits,
+
+    [Description("Give at least one of text, author, since or until to search the commits.")]
+    GitSearchNeedsCriteria,
+
     [Description("ReadDocument reads {Supported}; '{Extension}' isn't one of them. Use ReadWorkspaceFile for text files.")]
     DocumentTypeUnsupported,
 

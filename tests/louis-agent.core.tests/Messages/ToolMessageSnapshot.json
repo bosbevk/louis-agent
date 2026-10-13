@@ -68,6 +68,8 @@
   "FileWritten": "Wrote <Path> (<Length> characters).",
   "FindTruncated": "\n[results truncated at 500 files]",
   "GitFailed": "Error running git: <Reason>",
+  "GitNoCommits": "No commits match.",
+  "GitSearchNeedsCriteria": "Give at least one of text, author, since or until to search the commits.",
   "GitTimeout": "[Timeout] Git command exceeded 30s limit.",
   "GoogleFailed": "Google search failed: HTTP <Status> <Detail>",
   "GoogleNotConfigured": "WEB_SEARCH_PROVIDER=google needs both GOOGLE_SEARCH_API_KEY and GOOGLE_SEARCH_ENGINE_ID in config/.env.secrets.",
