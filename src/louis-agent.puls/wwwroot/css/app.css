@@ -299,7 +299,7 @@ a { color: var(--blue); text-decoration-thickness: 1px; text-underline-offset: 2
 
 /* Hidden sidebar: it folds away, and a floating tab brings it back. */
 .sidebar-hidden .app { grid-template-columns: 0 0 minmax(0, 1fr); }
-.sidebar-hidden .sidebar { visibility: hidden; }
+.sidebar-hidden .sidebar { visibility: hidden; padding-left: 0; padding-right: 0; min-width: 0; }
 .sidebar-tab {
     position: absolute; top: 14px; left: 14px; z-index: 5; width: 38px; height: 38px; border: 0; border-radius: 12px;
     place-items: center; color: #fff; background: linear-gradient(135deg, var(--navy), var(--navy-deep));
@@ -338,3 +338,81 @@ a { color: var(--blue); text-decoration-thickness: 1px; text-underline-offset: 2
     /* At lg Bootstrap makes the offcanvas a plain element again; keep it a full-height column. */
     .sidebar.offcanvas-lg { display: flex; flex-direction: column; visibility: visible; }
 }
+
+/* ---- Hover and interaction ---- */
+
+/* Spotlight: cards carry a soft orange light where the mouse is (--mx/--my set by js/chat.js). */
+.suggestion, .delegation, .tool { position: relative; isolation: isolate; }
+.suggestion::after, .delegation::after, .tool::after {
+    content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: -1; opacity: 0;
+    background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 50%), rgba(239, 122, 31, .14), transparent 60%);
+    transition: opacity .3s var(--ease);
+}
+.suggestion:hover::after, .delegation:hover::after, .tool:hover::after { opacity: 1; }
+
+/* Sidebar: items slide a little and show an orange marker; New chat gets a light sweep. */
+.chat-item { transition: background .2s var(--ease), transform .25s var(--spring); }
+.chat-item:hover { transform: translateX(3px); }
+.chat-item:hover::before { content: ""; position: absolute; left: 0; top: 11px; bottom: 11px; width: 2px; border-radius: 2px; background: rgba(239, 122, 31, .7); }
+.chat-item .icon:hover { background: rgba(214, 69, 69, .25); color: #fff; }
+.new-chat { overflow: hidden; }
+.new-chat::after {
+    content: ""; position: absolute; inset: 0; transform: translateX(-120%) skewX(-20deg);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .45), transparent);
+}
+.new-chat:hover::after { transition: transform .7s var(--ease); transform: translateX(120%) skewX(-20deg); }
+.sidebar-settings summary { transition: background .2s, color .2s; }
+.sidebar-settings summary:hover { color: #fff; }
+.brand .brand-mark { transition: transform .5s var(--spring); }
+.brand:hover .brand-mark { transform: rotate(180deg) scale(1.1); }
+
+/* Suggestions: an icon each, and an arrow that slides in. */
+.suggestion { padding-right: 34px; }
+.suggestion strong::before { margin-right: 8px; }
+.suggestion:nth-child(1) strong::before { content: "🔎"; }
+.suggestion:nth-child(2) strong::before { content: "📄"; }
+.suggestion:nth-child(3) strong::before { content: "🕘"; }
+.suggestion:nth-child(4) strong::before { content: "📊"; }
+.suggestion > span::after {
+    content: "→"; position: absolute; right: 14px; top: 50%; transform: translate(-6px, -50%); opacity: 0;
+    color: var(--orange); font-weight: 700; transition: transform .3s var(--spring), opacity .2s;
+}
+.suggestion:hover > span::after { transform: translate(0, -50%); opacity: 1; }
+.suggestion:active { transform: translateY(-1px) scale(.98); }
+
+/* Messages */
+.user-message { transition: transform .25s var(--spring), box-shadow .25s var(--ease); }
+.user-message:hover { transform: translateY(-1px); }
+.markdown a { text-decoration: none; background: linear-gradient(var(--orange), var(--orange)) 0 100% / 0 2px no-repeat; transition: background-size .3s var(--ease), color .2s; }
+.markdown a:hover { background-size: 100% 2px; color: var(--orange-deep); }
+.markdown tr { transition: background .15s; }
+.markdown tbody tr:hover { background: var(--orange-soft); }
+.markdown pre { transition: border-color .2s, box-shadow .2s; }
+.markdown pre:hover { border-color: #d6c8b1; }
+.thinking summary { transition: background .2s, color .2s; }
+.thinking summary:hover { color: var(--ink); }
+
+/* Delegation cards and tools */
+.delegation:hover { border-color: rgba(239, 122, 31, .35); }
+.delegation-head:hover .delegation-chevron { transform: translateX(2px); }
+.delegation[open] .delegation-head:hover .delegation-chevron { transform: rotate(90deg) translateX(2px); }
+.toolset-chip { transition: transform .2s var(--spring), background .2s, color .2s; }
+.toolset-chip:hover { transform: translateY(-1px); background: var(--navy); color: #fff; }
+.tool { transition: border-color .2s, box-shadow .2s, transform .25s var(--ease); }
+.tool:hover { transform: translateX(2px); border-left-color: var(--orange); }
+.delegation-task summary, .delegation-work summary { transition: color .2s; }
+.delegation-task summary:hover, .delegation-work summary:hover { color: var(--orange-deep); }
+
+/* Composer: the send button breathes once there's something to send. */
+.input-row:hover { border-color: #d6c8b1; }
+.send:not(:disabled) { animation: breathe 2.4s var(--ease) infinite; }
+@keyframes breathe { 0%, 100% { box-shadow: 0 8px 18px -6px rgba(239, 122, 31, .8); } 50% { box-shadow: 0 8px 26px -4px rgba(239, 122, 31, 1); } }
+.chat-usage { transition: color .2s; }
+.chat-usage:hover { color: var(--muted); }
+
+
+/* The aurora and the suggestions fit any width: no sideways scroll, and full-width cards on a phone. */
+.messages { overflow-x: hidden; }
+.empty::before { width: min(520px, 90vw); height: min(520px, 90vw); }
+.suggestions { width: min(540px, 100%); grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 600px) { .suggestions { grid-template-columns: minmax(0, 1fr); } }

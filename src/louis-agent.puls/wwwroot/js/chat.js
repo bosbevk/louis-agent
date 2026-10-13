@@ -82,3 +82,13 @@ document.addEventListener("click", (e) => {
     const sidebar = document.getElementById("sidebar");
     if (sidebar && window.bootstrap) window.bootstrap.Offcanvas.getInstance(sidebar)?.hide();
 });
+
+// The spotlight on cards follows the mouse (app.css reads --mx/--my).
+document.addEventListener("pointermove", (e) => {
+    const card = e.target.closest?.(".suggestion, .delegation, .tool");
+    if (!card) return;
+    const box = card.getBoundingClientRect();
+    card.style.setProperty("--mx", (e.clientX - box.left) + "px");
+    card.style.setProperty("--my", (e.clientY - box.top) + "px");
+}, { passive: true });
+
