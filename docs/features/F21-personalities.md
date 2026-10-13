@@ -1,6 +1,6 @@
 # F21 · Personalities per session
 
-> **Status:** building (2026-10-13) · **Milestone:** — · **Depends on:** F5 (sessions with their own engine, sub-sessions)
+> **Status:** built (2026-10-13), on `feature/F20-puls-look` · **Milestone:** — · **Depends on:** F5 (sessions with their own engine, sub-sessions)
 >
 > **In the TODO:** **F21 Personalities** under *Puls* ([TODO](../../TODO.md)) · **Plan:** [plans/F21](../plans/F21-personalities.md)
 
@@ -29,7 +29,14 @@ caches one engine per toolsets and personality. `GET /personalities` lists them,
 
 ## What the build changed
 
-(Filled in as the steps land.)
+- **Sub-sessions have no router** (approved during the build): a session at depth 1 gets no `default.md`. The engine key
+  is toolsets, personality and router; an agents-only Puls chat is about 2,200 tokens of prefix, a researcher about 1,900.
+- **A specialist's personality is its role**, one per kind (approved during the build): `puls-researcher`, `puls-reader`,
+  `puls-historian`, `puls-analyst` and `puls-specialist`, mapped from toolsets in `agents-skills.md`. `puls.md` is Puls's
+  own voice. All are first drafts for Louis to edit.
+- **Checked before building:** an unknown personality is refused before the engine is cached (a .NET `Lazy` that throws
+  keeps the exception).
+- **Gaps found** (tools the roles need to do their jobs): planned as [F22 Role tools](F22-role-tools.md).
 
 ---
 [Features](README.md) · [Plan](../plans/F21-personalities.md)

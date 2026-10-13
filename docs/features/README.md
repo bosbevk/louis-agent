@@ -35,7 +35,7 @@ feature replaces older backlog wording, that wording no longer appears anywhere 
 | [F17](F17-orchestrator-agent.md) | Orchestrator agent: a routing workflow with an agent for the exceptions, its own settings and cache policy, measured against today's | planned | Orchestrator design | — | F4, F8, F10, F18 | M4 |
 | [F18](F18-evaluation.md) | Evaluation: a small shared eval harness (cases as data, scorers incl. an LLM judge, cost and baseline per run) | planned | — | Backlog *Evaluation* (first part) | F1, F2 | M4 |
 | [F20](F20-puls-look.md) | Puls look: a landing page and a three-panel dashboard, dark, in Puls's colours | building | — | — | F5 | — |
-| [F21](F21-personalities.md) | Personalities per session: each session (and sub-session) names its personality | building | — | — | F5 | — |
+| [F21](F21-personalities.md) | Personalities per session: each session (and sub-session) names its personality | built | — | — | F5 | — |
 
 ## Milestones
 

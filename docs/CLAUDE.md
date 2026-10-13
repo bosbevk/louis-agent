@@ -123,7 +123,8 @@ docker/                       # Dockerfile.{acp-server,api,agent,mcp-server,orch
 config/                       # .env and .env.secrets (both ignored), their examples, LLM profiles (.env.anthropic,
                               # .env.ollama, .env.ollama-triage for the orchestrator), prices.json (model prices),
                               # rates.json (exchange rates), Rider config
-Skills/                       # personality.md + default.md + *-skills.md (system prompt), tools/ (agent-built tools)
+Skills/                       # personality.md + default.md + *-skills.md (system prompt), personalities/ (a session's own,
+                              # F21: puls and its specialists' roles), tools/ (agent-built tools)
 docs/                         # This guide, features/ (planned work), plans/ (approved build plans),
                               # fixes/ (what broke and why), specs/, projects/
 ```
@@ -273,6 +274,18 @@ only) gets the router and its toolsets' guides, not the skill files. For a guide
 `AgentHost.AlwaysLoadedSkillFiles` and `SkillFiles.BuiltIn`. Procedures use `## Skill: Name` with an `Execution:` fence
 (bash, powershell or python); arguments arrive as `SKILL_ARG_*` environment variables. A toolset's guide follows
 *Adding a toolset*: plain markdown, no provider class of its own.
+
+### Adding a personality
+
+A session names its personality when it opens (`POST /sessions` with `"personality": "{name}"`; a sub-session through
+`StartSubSession(…, personality)`), and keeps it, as it keeps its toolsets (F21). Without one it gets `personality.md`.
+
+1. Create `Skills/personalities/{name}.md`: lowercase letters, digits and dashes. It's embedded in core like the other
+   built-in files; a file of that name on disk wins, so wording can change without a rebuild (restart the container).
+2. **A voice** (`puls.md`) says who the agent is and how it talks. **A role** for a specialist (`puls-researcher.md`)
+   says its function and how it reports to the agent that called it, on the shared base the `puls-*` roles use.
+3. A role a parent should pass goes in `agents-skills.md`'s table (toolsets → personality).
+4. `GET /personalities` lists them; an unknown or invalid name is a 400 before any engine is built.
 
 ### Building another agent on core
 
