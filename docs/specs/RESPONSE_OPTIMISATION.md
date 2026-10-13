@@ -11,7 +11,7 @@ Built as features in [docs/features/](../features/README.md); each is one line u
 |---|---|---|
 | §A Measure usage | [F1 Usage ledger](../features/F01-usage-ledger.md), [F2 Prices and cost](../features/F02-prices-and-cost.md), [F3 Show usage](../features/F03-usage-display.md) | F1, F2 **done** (2026-10-10; a monthly `usage-YYYY-MM.jsonl`, not `usage.jsonl`; prices in a tracked `config/prices.json`, not `LLM_PRICE_*` settings); F3 planned |
 | §B Prompt caching | [F4 Prompt caching](../features/F04-prompt-caching.md) | **done** (2026-10-11; two markers, the second automatic, instead of three; input cost −87% on the demo) |
-| §C Toolset profiles | [F5 Toolset profiles](../features/F05-toolset-profiles.md) | planned |
+| §C Toolset profiles | [F5 Toolset profiles](../features/F05-toolset-profiles.md) | **built** (2026-10-13; short benchmark: prefix ~48.5k → ~24.4k tokens, run $0.0488 → $0.0378; full run pending). Went further than §C: a session names its toolsets when it opens, an engine per list, and sub-sessions on a peer (Puls's delegation, measured in [the delegation check](../../samples/sample-output-puls-check-repeat/README.md)) |
 | §D Bounded history | [F9 Bounded history](../features/F09-context-management.md) | planned |
 | §E Settings per route | [F10 Route settings](../features/F10-route-settings.md) | planned |
 | §F Reliability | [F8 Reliability](../features/F08-reliability.md) | planned |

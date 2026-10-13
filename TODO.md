@@ -332,8 +332,8 @@ backlog item removes one, it says so.
 - On Claude Haiku 5.5 (the default), changing the tools or skills during a chat can make its next request fail with a
   400: the model rejects a changed system prompt or tool list once thinking blocks are in the history (enforced for
   accounts created on or after 2026-08-31). That happens when the model creates a tool (`CreateTool`, mid-message),
-  on `/approve`, `/reject` or a skill reload, and in the API for every open chat, since all sessions share one tool
-  list. Start a new chat afterwards → [**FX4**](docs/fixes/FX04-append-only-history.md).
+  on `/approve`, `/reject` or a skill reload, and in the API for every open chat with the same toolsets, since they
+  share one engine and its tool list (F5). Start a new chat afterwards → [**FX4**](docs/fixes/FX04-append-only-history.md).
 
 ## Done
 
