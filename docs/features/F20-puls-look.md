@@ -1,6 +1,6 @@
 # F20 · Puls look: a landing page and a three-panel dashboard, dark, in Puls's colours
 
-> **Status:** building (2026-10-13) · **Milestone:** — (Puls, outside the cost milestones) · **Depends on:** F5 (Puls,
+> **Status:** built (2026-10-13) · **Milestone:** — (Puls, outside the cost milestones) · **Depends on:** F5 (Puls,
 > live delegation)
 >
 > **In the TODO:** **F20 Puls look** under *Puls* ([TODO](../../TODO.md)) · **Plan:** [plans/F20](../plans/F20-puls-look.md)
@@ -47,6 +47,16 @@ per chat): each is its own feature when it's wanted.
 - **Step 3, the Werk panel's cost:** it shows Puls's own cost and the specialists' side by side, not one total. The chat's
   usage doesn't include its sub-sessions yet (the F5 roll-up, [plan](../plans/F05-usage-rollup.md)); a sum in the panel
   would count them twice once it does.
+- **Built in order 0–5, then F21 and F22, then 6–9** (Louis's call): personalities and the specialists' tools came first,
+  so Puls had its voice and its roles before the rest of the UI.
+- **Pay as you go and Oor ons** (approved during the build): *Krediete* in the top bar (this chat and this month, from the
+  chats in this browser), *Koop krediete* in the profile menu, the usage line with the specialists' cost included; the
+  landing page's Pryse and Oor ons (MIT, github.com/bosbevk/louis-agent). Buying credits is F23.
+- **A `GET /model` endpoint** so the model picker shows the real model.
+- **Gotchas found by looking:** Bootstrap sets an offcanvas's background-color to transparent at its breakpoint (paint the
+  sidebar and Werk panel with a gradient); one page on three addresses with the same parameters doesn't redraw (listen
+  to `LocationChanged`); a script that resizes the message box must run after the render.
+- **Not built:** the brand's legacy folder (the logo set stayed as it was, so nothing needed to move).
 
 ---
 [Features](README.md) · [Plan](../plans/F20-puls-look.md)

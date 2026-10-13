@@ -213,7 +213,7 @@ Design: [docs/specs/SESSION_ARCHITECTURE.md](docs/specs/SESSION_ARCHITECTURE.md)
 - [ ] **F23 Credits** (to plan): buy credits with money, spend them per question at cost plus a margin, from the usage
       ledger and prices (F1, F2) — Puls's *Koop krediete*. Louis: "'n layer wat geld na ons interne krediete verander. Wil so
       bietjie geld maak as ek kan."
-- [ ] [F20 Puls look](docs/features/F20-puls-look.md) — Puls gets a landing page and a three-panel dashboard, dark, in its own colours ([plan](docs/plans/F20-puls-look.md)).
+- [x] [F20 Puls look](docs/features/F20-puls-look.md) — Puls gets a landing page and a three-panel dashboard, dark, in its own colours ([plan](docs/plans/F20-puls-look.md)).
 - [ ] **F5 follow-up: roll sub-session usage up into the parent chat** ([plan](docs/plans/F05-usage-rollup.md)). Sub-session totals (`StartSubSession`) must count in the parent's turn scope (`UsageScope.Add`, summary record only, never written to the ledger) so the per-chat usage line, the chat total and `GET /sessions/{id}` include them. Child cost is converted to USD once, at the parent. Confirm in `Program.cs` that `session.Usage` takes the turn's scope records. Test: parent total = own requests + each child; a failed child's usage is included; no duplicate ledger rows.
 
 ### Web app
