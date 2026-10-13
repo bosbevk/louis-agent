@@ -140,4 +140,16 @@ public class AgentSessionsTests
         Assert.That(session.Attachments["VERSLAG.TXT"], Is.EqualTo("tweede"), "names ignore case; the newest wins");
         Assert.That(session.Attachments["groot.txt"], Has.Length.EqualTo(AgentSession.MaxAttachmentChars));
     }
+
+    [Test]
+    public void ALocation_IsTheSessionsPlace_OnlyWhenShared()
+    {
+        // F22 step 2b: no location sent, no place, even with a time zone.
+        Assert.That(new CreateSessionRequest(null, null, null, Location: " Pretoria ", TimeZone: "Africa/Johannesburg").Place(),
+            Is.EqualTo(new LouisAgent.Core.Tools.Clock.UserPlace("Pretoria", "Africa/Johannesburg")));
+        Assert.That(new CreateSessionRequest(null, null, null, TimeZone: "Africa/Johannesburg").Place(), Is.Null);
+
+        var session = Sessions().Create(["files"], place: new LouisAgent.Core.Tools.Clock.UserPlace("Pretoria", null));
+        Assert.That(session.Place!.Location, Is.EqualTo("Pretoria"));
+    }
 }

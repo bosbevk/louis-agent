@@ -19,6 +19,7 @@ using LouisAgent.Core.Messages;
 using System.Globalization;
 using System.Threading.Channels;
 using LouisAgent.Core.Tools.Agents;
+using LouisAgent.Core.Tools.Clock;
 
 // HTTP version of the ACP server, which also serves the web app: every API reply is JSON, and a message's answer streams as Server-Sent Events shaped
 // like Claude's (message_start, content_block_start/delta/stop for thinking, text, tool_use and tool_result, message_stop).
@@ -127,13 +128,16 @@ app.MapPost("/sessions", (CreateSessionRequest? request, AgentSessions sessions)
         return Results.Json(Error("invalid_request_error",
                 MessageText.Format(ApiUserText.InvalidTag, new { Tag = invalid, Max = CreateSessionRequest.MaxTagLength })),
             statusCode: StatusCodes.Status400BadRequest);
+    if (!string.IsNullOrWhiteSpace(request?.TimeZone) && UserPlace.FindTimeZone(request.TimeZone) is null)
+        return Results.Json(Error("invalid_request_error", MessageText.Format(ApiUserText.UnknownTimeZone, new { request.TimeZone })),
+            statusCode: StatusCodes.Status400BadRequest);
 
     AgentSession session;
     try
     {
         session = sessions.Create(request?.Toolsets,
             request is null ? null : new UsageTags(request.Task, request.Run, request.Service, request.Parent), request?.Depth ?? 0,
-            request?.Personality);
+            request?.Personality, request?.Place());
     }
     catch (Exception ex) when (ex is ToolsetException or PersonalityException)
     {
@@ -181,6 +185,10 @@ app.MapPost("/sessions/{id}/messages", (string id, SendMessageRequest request, A
 
     // The session keeps its attachments, so a later turn can still hand them to a specialist (F22).
     foreach (var attachment in request.Attachments ?? []) session.Remember(attachment.Name, attachment.Content);
+
+    // Where the user is, said once, in the first message: per session, so not in the shared system prompt (F22).
+    if (session.Turns == 1 && session.Place is { Location: { } location } place)
+        prompt = MessageText.Format(ApiModelText.UserPlace, new { Location = location, TimeZone = place.TimeZone ?? "Africa/Johannesburg" }) + "\n\n" + prompt;
 
     return TypedResults.ServerSentEvents(StreamTurnAsync(session.Engine, session, prompt, turn));
 });
@@ -253,6 +261,7 @@ static async IAsyncEnumerable<SseItem<string>> StreamTurnAsync(
             Task<bool> next;
             using (usage.Activate())
             using (SessionAttachments.Use(session.Attachments))
+            using (UserPlace.Use(session.Place))
             using (SubSessionFeed.Observe(e => subSessions.Writer.TryWrite(e)))
                 next = updates.MoveNextAsync().AsTask();
 
@@ -323,13 +332,17 @@ internal sealed record SendMessageRequest(string? Message, List<AttachmentReques
 /// </summary>
 internal sealed record CreateSessionRequest(
     string? Task, string? Run, string? Service, List<string>? Toolsets = null, int Depth = 0, string? Parent = null,
-    string? Personality = null)
+    string? Personality = null, string? Location = null,
+    [property: System.Text.Json.Serialization.JsonPropertyName("time_zone")] string? TimeZone = null)
 {
     internal const int MaxTagLength = 200;
 
+    /// <summary>Where the user is (F22), when they shared a location; null otherwise.</summary>
+    public UserPlace? Place() => string.IsNullOrWhiteSpace(Location) ? null : new UserPlace(Location.Trim(), TimeZone?.Trim());
+
     /// <summary>The name of the first tag that is too long or holds control characters, or null when all are fine.</summary>
     public string? InvalidTag() =>
-        new[] { ("task", Task), ("run", Run), ("service", Service), ("parent", Parent) }
+        new[] { ("task", Task), ("run", Run), ("service", Service), ("parent", Parent), ("location", Location) }
             .FirstOrDefault(t => t.Item2 is { } value && (value.Length > MaxTagLength || value.Any(char.IsControl))).Item1;
 }
 

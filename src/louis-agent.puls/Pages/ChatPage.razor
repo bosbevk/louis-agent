@@ -81,6 +81,18 @@
             <details class="sidebar-settings">
                 <summary>Instellings</summary>
                 <CurrencySwitcher />
+                @* Where the user is (F22): typed, or found by the browser and named by OpenStreetMap's Nominatim. Kept in this
+                   browser; sent with a new chat only when set. *@
+                <label class="settings">
+                    Ligging
+                    <input type="text" value="@_location" @onchange="SaveLocation" placeholder="bv. Pretoria" maxlength="120" />
+                </label>
+                <div class="locate">
+                    <button class="locate-button" type="button" @onclick="UseMyLocation" disabled="@_locating">
+                        <span class="ic i-pin" aria-hidden="true"></span>@(_locating ? "Soek…" : "Gebruik my ligging")
+                    </button>
+                    <small>Name: © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a></small>
+                </div>
                 <label class="settings">
                     API-sleutel
                     <input type="password" value="@Store.ApiKeyDraft" @onchange="SaveApiKey" placeholder="net as AGENT_API_KEY gestel is" />
@@ -288,6 +300,50 @@
 
     private string? _toast;
 
+    // Where the user is (F22): this browser's setting, sent with a new chat only when set.
+    private string? _location;
+    private bool _locating;
+
+    private async Task SaveLocation(ChangeEventArgs e)
+    {
+        string? value = e.Value?.ToString()?.Trim();
+        _location = string.IsNullOrEmpty(value) ? null : value;
+        await JS.InvokeVoidAsync("pulsUi.saveLocation", _location);
+    }
+
+    private async Task UseMyLocation()
+    {
+        _locating = true;
+        try
+        {
+            var found = await JS.InvokeAsync<LocateResult>("pulsUi.locate");
+            if (found.Place is { Length: > 0 } place)
+            {
+                _location = place;
+                await JS.InvokeVoidAsync("pulsUi.saveLocation", place);
+                _ = ShowToast($"Ligging: {place}");
+            }
+            else
+            {
+                _ = ShowToast(found.Error ?? "Kon nie jou ligging kry nie.");
+            }
+        }
+        finally
+        {
+            _locating = false;
+        }
+    }
+
+    private sealed record LocateResult(string? Place, string? Error);
+
+    private async Task ShowToast(string text)
+    {
+        _toast = text;
+        StateHasChanged();
+        await Task.Delay(2800);
+        if (_toast == text) { _toast = null; StateHasChanged(); }
+    }
+
     /// <summary>A placeholder's answer: a toast that says what's coming, gone after a few seconds.</summary>
     private async Task ComingSoon(string what)
     {
@@ -369,6 +425,7 @@
     {
         Currency.Changed += Redraw;
         if (!Store.Loaded) await Store.LoadAsync();
+        _location = await JS.InvokeAsync<string?>("pulsUi.loadLocation");
     }
 
     protected override void OnParametersSet()
@@ -431,7 +488,9 @@
                 // Puls delegates (F5): its chats load only the agents toolset, and hand every task to a specialist. An API
                 // without a peer offers no agents toolset; the chat then gets every toolset there is, so it still works.
                 string[] available = await Api.AvailableToolsetsAsync();
-                string sessionId = await Api.CreateSessionAsync(available.Contains("agents") ? ["agents"] : available, Personality);
+                string? timeZone = _location is null ? null : await JS.InvokeAsync<string?>("pulsUi.timeZone");
+                string sessionId = await Api.CreateSessionAsync(available.Contains("agents") ? ["agents"] : available, Personality,
+                    _location, timeZone);
                 _chat = new Chat { SessionId = sessionId, Title = TitleFor(text, attachments) };
                 Store.Chats.Insert(0, _chat);
                 Nav.NavigateTo($"gesels/{sessionId}");

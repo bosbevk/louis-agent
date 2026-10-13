@@ -2,6 +2,7 @@ using System.Collections.Concurrent;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Tools.Clock;
 using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
 
@@ -12,7 +13,7 @@ namespace LouisAgent.Api;
 /// progress, if any.
 /// </summary>
 internal sealed class AgentSession(string id, AgentEngine engine, IReadOnlyList<string> toolsets, int depth, UsageTags tags,
-    string? personality = null)
+    string? personality = null, UserPlace? place = null)
 {
     private readonly SemaphoreSlim _turnLock = new(1, 1);
     private CancellationTokenSource? _activeTurn;
@@ -30,6 +31,9 @@ internal sealed class AgentSession(string id, AgentEngine engine, IReadOnlyList<
 
     /// <summary>The personality the session chose (F21), or null for personality.md.</summary>
     public string? Personality { get; } = personality;
+
+    /// <summary>Where the user is, when they shared it (F22): set for every turn; the first message says it.</summary>
+    public UserPlace? Place { get; } = place;
 
     /// <summary>The longest attachment kept, as in the prompt: one file can't fill a specialist's context.</summary>
     public const int MaxAttachmentChars = 100_000;
@@ -116,7 +120,8 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
     /// toolset, a depth outside 0..<see cref="MaxDepth"/>, or a sub-session asking for <see cref="AgentsToolset"/>, and
     /// <see cref="Core.Skills.PersonalityException"/> for an unknown personality, before anything is created.
     /// </summary>
-    public AgentSession Create(IEnumerable<string>? toolsets = null, UsageTags? tags = null, int depth = 0, string? personality = null)
+    public AgentSession Create(IEnumerable<string>? toolsets = null, UsageTags? tags = null, int depth = 0, string? personality = null,
+        UserPlace? place = null)
     {
         if (depth is < 0 or > MaxDepth)
             throw new ToolsetException(MessageText.Format(ErrorMessage.SessionDepthInvalid, new { Max = MaxDepth }));
@@ -129,7 +134,7 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
         foreach (var idle in _sessions.Values.Where(s => !s.IsBusy && DateTimeOffset.UtcNow - s.LastActivity > IdleTimeout))
             _sessions.TryRemove(idle.Id, out _);
 
-        var session = new AgentSession($"sess_{Guid.NewGuid():N}", engine, names, depth, tags ?? UsageTags.None, personality);
+        var session = new AgentSession($"sess_{Guid.NewGuid():N}", engine, names, depth, tags ?? UsageTags.None, personality, place);
         _sessions[session.Id] = session;
         return session;
     }

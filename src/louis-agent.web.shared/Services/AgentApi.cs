@@ -23,12 +23,14 @@ public sealed class AgentApi(HttpClient http, Settings settings)
     /// Opens a session with <paramref name="toolsets"/> (F5): a session's tools are chosen when it opens and kept. Each app
     /// decides which: the code-review app every available toolset, Puls only <c>agents</c> (it delegates).
     /// </summary>
-    public async Task<string> CreateSessionAsync(IEnumerable<string> toolsets, string? personality = null)
+    public async Task<string> CreateSessionAsync(IEnumerable<string> toolsets, string? personality = null,
+        string? location = null, string? timeZone = null)
     {
         using var response = await SendAsync(new HttpRequestMessage(HttpMethod.Post, "sessions")
         {
-            // personality (F21): the session's voice; null is the API's default (personality.md).
-            Content = JsonContent.Create(new { toolsets, personality }),
+            // personality (F21): the session's voice; null is the API's default (personality.md). location and time_zone
+            // (F22): where the user is, only when they shared it.
+            Content = JsonContent.Create(new { toolsets, personality, location, time_zone = timeZone }),
         });
         var body = await response.Content.ReadFromJsonAsync<JsonElement>();
         return body.GetProperty("session_id").GetString()!;

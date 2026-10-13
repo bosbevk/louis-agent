@@ -1057,7 +1057,7 @@
     },
     {
       "Name": "GetToday",
-      "Description": "Today's date and the time now in South Africa, with the weekday and the week number. Use it for anything relative to today: 'this week', 'recent', 'how long ago', a deadline.",
+      "Description": "Today's date and the time now where the user is (South Africa unless they shared another time zone), with the weekday and the week number. Use it for anything relative to today: 'this week', 'recent', 'how long ago', a deadline.",
       "Schema": {
         "type": "object",
         "properties": {}

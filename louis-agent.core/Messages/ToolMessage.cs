@@ -12,7 +12,7 @@ public enum ToolMessage
     [Description("No attachment named '{Name}' in this conversation. Attached: {Attached}.")]
     AttachmentUnknown,
 
-    [Description("{Weekday} {Date}, {Time} South African time (UTC{Offset}). ISO: {Iso}. Week {Week}.")]
+    [Description("{Weekday} {Date}, {Time} in {Zone} (UTC{Offset}). ISO: {Iso}. Week {Week}.")]
     Today,
 
     [Description("refusing to fetch {Host}: local addresses are not allowed.")]

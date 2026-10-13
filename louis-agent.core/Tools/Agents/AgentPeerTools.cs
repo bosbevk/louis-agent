@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.Json;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Tools.Clock;
 using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
 
@@ -94,6 +95,8 @@ public sealed class AgentPeerTools(IReadOnlyDictionary<string, Uri> peers, strin
             {
                 toolsets, depth = 1, task = $"sub-session:{agent}", run = scope?.Tags.Run, service = scope?.Tags.Service, parent,
                 personality = string.IsNullOrWhiteSpace(personality) ? null : personality.Trim(),
+                // The user's place, when they shared it, so the specialist's time and "near me" are theirs (F22).
+                location = UserPlace.Current?.Location, time_zone = UserPlace.Current?.TimeZone,
             });
             using var created = await _http.SendAsync(create, timeout.Token);
             string createdBody = await created.Content.ReadAsStringAsync(timeout.Token);

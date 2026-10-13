@@ -3,6 +3,7 @@ using System.Text;
 using System.Text.Json;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Tools.Agents;
+using LouisAgent.Core.Tools.Clock;
 using LouisAgent.Core.Usage;
 
 namespace LouisAgent.Core.Tests.Tools.Agents;
@@ -101,6 +102,20 @@ public class AgentPeerToolsTests
 
         using var message = JsonDocument.Parse(handler.Requests[1].Body!);
         Assert.That(message.RootElement.GetProperty("attachments").GetArrayLength(), Is.Zero);
+    }
+
+    [Test]
+    public async Task TheUsersPlace_GoesToTheSpecialist()
+    {
+        // F22 step 2b: the specialist's GetToday and "near me" are the user's.
+        var handler = Peer();
+
+        using (UserPlace.Use(new UserPlace("Pretoria, Gauteng, Suid-Afrika", "Africa/Johannesburg")))
+            await Tools(handler).StartSubSession("coder", ["web"], "Watter restaurante is naby?");
+
+        using var create = JsonDocument.Parse(handler.Requests[0].Body!);
+        Assert.That(create.RootElement.GetProperty("location").GetString(), Is.EqualTo("Pretoria, Gauteng, Suid-Afrika"));
+        Assert.That(create.RootElement.GetProperty("time_zone").GetString(), Is.EqualTo("Africa/Johannesburg"));
     }
 
     [Test]

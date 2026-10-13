@@ -55,4 +55,7 @@ the answer, building on F5's live delegation view (GOAL: observability of agents
 
 ## Approved during the build
 
-(None yet.)
+- **2026-10-13, pay as you go, with visible usage** (Louis: "on branding ... we have to advertise it as pay as you go,
+  with visible usage"): the landing page says *Betaal soos jy gebruik* and shows a question's cost; the top bar's
+  *Kry Plus* becomes a usage meter (this chat, this month) and the profile menu's *Opgradeer plan* becomes *Gebruik*. No
+  plans or subscriptions anywhere. Built when F20 resumes (after F22).
