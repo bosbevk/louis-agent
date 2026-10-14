@@ -7,7 +7,7 @@ you need otherwise.
 
 | Doc | Read it to… |
 |---|---|
-| [Project README](../README.md) | Get the overview: what Louis Agent is, the ways to use it, quick start, settings and endpoints at a glance |
+| [Project README](../README.md) | Get the overview: what Louis Agent and Puls are, the ways to use them, quick start, settings and endpoints at a glance |
 | [Quick start](QUICK_START_AGENT.md) | Start the web app, Rider or the CLI, try example prompts, approve agent-built tools, troubleshoot |
 | [Setup](SETUP.md) | Configure `config/.env` and `config/.env.secrets`: every setting, how they are loaded, keeping secrets safe |
 | [Models](MODELS.md) | Choose and switch the model: Claude (default), Ollama, OpenAI-compatible servers; thinking and limits |
@@ -35,13 +35,21 @@ you need otherwise.
 | [Runbooks](RUNBOOKS.md) | Understand how the orchestrator decides what each error needs, with real examples, and write your own runbook |
 | [Sample output](../samples/sample-output/README.md) | See one real run without running it: the agents' full conversation, logs, branches and a recording of the merges |
 
-## 5. Project by project
+## 5. See it work: Puls and its specialists
 
 | Doc | Read it to… |
 |---|---|
-| [Project design docs](projects/README.md) | Before changing one project: its purpose, how it works, files, key types, settings, extension points, tests and limits — core, CLI, ACP server, API, web app, MCP server, orchestrator, tests, and the demo service |
+| [Puls's web app](projects/louis-agent.puls.md) | Know Puls: the assistant in Afrikaans that hands each task to a specialist and shows the work in its Werk panel |
+| [Delegation check](../samples/sample-output-puls-check-repeat/README.md) | See what delegating costs against one agent answering, three runs per mode, and what the fixes changed |
+| [Multi-agent write-up](learning/10-multi-agent-orchestration.md) | Read what building Puls taught: roles, routing, measured delegation (a draft) |
 
-## 6. What's next: plans and designs
+## 6. Project by project
+
+| Doc | Read it to… |
+|---|---|
+| [Project design docs](projects/README.md) | Before changing one project: its purpose, how it works, files, key types, settings, extension points, tests and limits — core, CLI, ACP server, API, web app, Puls, MCP server, orchestrator, usage probe, tests, and the demo service |
+
+## 7. What's next: plans and designs
 
 Start with the goal and the TODO: the goal says what the work is for and when it's done; the TODO lists everything
 planned, next and in the backlog, and links to the rest.
@@ -50,7 +58,8 @@ planned, next and in the backlog, and links to the rest.
 |---|---|
 | [Goal](GOAL.md) | See what the whole plan is for: the skills it teaches, when one counts as learned, and how the work is done |
 | [TODO](../TODO.md) | See what's planned now (features to tick), next (the build-mode POC), the backlog by area, known limitations and what's done |
-| [Features](features/README.md) | Follow the step-by-step plan for the usage and optimisation specs: 15 features in 6 milestones, with user stories, design, tasks, and what to update when one is finished |
+| [Features](features/README.md) | Follow the step-by-step plan for the usage and optimisation specs and for Puls: each feature with user stories, design, tasks, and what to update when one is finished |
+| [Learning write-ups](learning/README.md) | Read what each skill in the goal taught: what was measured before and after, the trade-offs, what didn't work |
 | [Plans](plans/README.md) | Read the plan approved before each feature or fix was built: what it changed from the doc, the steps and how they were checked |
 | [Fixes](fixes/README.md) | See what broke, why and how it was fixed (symptom, cause, fix, how it was confirmed), and the fixes still open |
 | [Spec: usage, estimates and budgets](specs/USAGE_AND_BUDGETS.md) | Read the design for recording what every request costs, estimating runs before they start, and budgets that warn, ask or stop |

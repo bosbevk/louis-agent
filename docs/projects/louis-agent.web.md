@@ -1,7 +1,7 @@
 # louis-agent.web — design
 
 > **Kind:** Blazor WebAssembly app · **Path:** `src/louis-agent.web/` · **Served by:** louis-agent.api (same origin) ·
-> **References:** Markdig (Markdown), highlight.js (from a CDN)
+> **References:** louis-agent.web.shared (with Markdig), highlight.js (from a CDN)
 
 ## Purpose
 
@@ -50,17 +50,27 @@ flowchart TB
 | Path | What's in it |
 |---|---|
 | `Pages/ChatPage.razor` | The page: tabs, chat flow, stream handling, opening files / diffs / branches, merge and delete actions |
-| `Components/TurnView.razor` | One turn: user message, thinking (collapsible), text, tool cards |
 | `Components/FileTree.razor`, `FileViewer.razor` | Workspace browser and file view (with "Ask agent to review") |
 | `Components/ChangesPanel.razor`, `DiffViewer.razor` | Changed files, selection, stage / unstage / discard / commit; one file's diff |
 | `Components/BranchesPanel.razor`, `HistoryViewer.razor`, `PatchView.razor` | Branches to merge, merged branches, all commits; a branch's or commit's diff |
 | `Components/ThemeSwitcher.razor` | Theme selection |
-| `Services/AgentApi.cs` | Typed client for every API call; SSE parsing; errors as `AgentApiException` |
-| `Services/ChatStore.cs` | Chats and the API key in `localStorage` |
+| `Services/AgentApiWorkspace.cs` | The workspace and git calls, on the shared `AgentApi` |
 | `Services/GitState.cs`, `GitHistory.cs` | Shared git state with change events; the merge/delete queue |
-| `Models.cs` | `Chat`, `Turn`, `Block`, workspace and git records |
-| `Markdown.cs` | Markdig pipeline: raw HTML shown as text, only http(s)/mailto links |
+| `Models.cs` | Workspace and git records |
 | `wwwroot/` | `index.html`, `css/app.css`, themes, `js/chat.js` (scrolling, focus, cross-tab sync of chats) |
+
+**Shared with Puls** (`src/louis-agent.web.shared/`, a Razor class library both apps reference; Markdig is its package):
+
+| Path | What's in it |
+|---|---|
+| `Components/TurnView.razor`, `BlocksView.razor` | One turn: user message, thinking (collapsible), text, tool cards |
+| `Components/DelegationCard.razor` | A sub-session (F5) inside the turn: the specialist, its toolsets, its steps live, its cost |
+| `Components/CurrencySwitcher.razor` | The display currency per browser (F14) |
+| `Services/AgentApi.cs` | Typed client for the session calls; SSE parsing; errors as `AgentApiException` |
+| `Services/ChatStore.cs`, `CurrencyState.cs`, `UsageFormat.cs` | Chats and the API key in `localStorage`; the currency; usage lines |
+| `TurnStream.cs`, `Delegation.cs` | Folds the event stream, sub-session events included, into the turn the page shows |
+| `Models.cs`, `ChatText.cs` | `Chat`, `Turn`, `Block` and the words the components show (the code-review app's by default) |
+| `Markdown.cs` | Markdig pipeline: raw HTML shown as text, only http(s)/mailto links |
 
 ## Configuration
 

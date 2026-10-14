@@ -17,7 +17,8 @@ when you're about to change a particular project.
 | `src/louis-agent.mcp-server` | Console / ASP.NET Core | Hands the agent's tools to any MCP client (no model of its own) | [mcp-server](louis-agent.mcp-server.md) |
 | `src/louis-agent.orchestrator` | Console app | A second agent that watches a service's errors and has louis-agent fix them (POC) | [orchestrator](louis-agent.orchestrator.md) |
 | `tools/louis-agent.usage-probe` | Console app (developer tool) | Prints what a provider reports as token usage and what the ledger makes of it | [usage-probe](louis-agent.usage-probe.md) |
-| `tests/louis-agent.core.tests`, `tests/louis-agent.orchestrator.tests` | NUnit | Unit tests for core and the orchestrator | [tests](tests.md) |
+| `src/louis-agent.web.shared` | Razor class library | What both web apps share: chat models, the API client, the turn and delegation views, markdown, usage and currency | in [web](louis-agent.web.md) and [puls](louis-agent.puls.md) |
+| `tests/louis-agent.core.tests`, `tests/louis-agent.api.tests`, `tests/louis-agent.orchestrator.tests` | NUnit | Unit tests for core, the API's sessions and the orchestrator | [tests](tests.md) |
 | `samples/order-service` | Console app + tests | The demo microservice with ten planted bugs (in the solution's `samples` folder; also has its own `OrderService.slnx`) | [order-service](order-service.md) |
 
 ## How they depend on each other
@@ -29,6 +30,10 @@ flowchart BT
     ACP["louis-agent.acp-server"] --> Core
     API["louis-agent.api"] --> Core
     API --> Web["louis-agent.web<br/>(served by the API)"]
+    API --> Puls["louis-agent.puls<br/>(served by the API built with -p:WebApp=puls)"]
+    Web --> Shared["louis-agent.web.shared"]
+    Puls --> Shared
+    API -. "HTTP + SSE<br/>(sub-sessions on a peer)" .-> API
     MCP["louis-agent.mcp-server"] --> Core
     Orch["louis-agent.orchestrator"] --> Core
     Probe["louis-agent.usage-probe"] --> Core
@@ -36,6 +41,7 @@ flowchart BT
     Orch -. "git, dotnet<br/>(verify, replay, test)" .-> Svc["samples/order-service<br/>(its own repository)"]
     CoreTests["louis-agent.core.tests"] --> Core
     OrchTests["louis-agent.orchestrator.tests"] --> Orch
+    ApiTests["louis-agent.api.tests"] --> API
 ```
 
 Solid arrows are project references; dotted ones are runtime calls. Only `louis-agent.core` and the test projects are

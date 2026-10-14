@@ -190,7 +190,9 @@ Design and open decisions: [docs/specs/ORCHESTRATOR_DESIGN.md](docs/specs/ORCHES
       [three runs after FX10–FX14](samples/sample-output-puls-check-repeat/README.md): +31% on average) delegating cost more than one agent answering, except plain chat and some web research: each
       specialist starts cold and the answer is written twice. Options to measure: Puls keeps cheap read-only
       toolsets itself (`files`, `git`, `web`) and delegates only long or risky work; a rule for when a task is worth a
-      specialist; F5's *Done when* ("delegate only where the ledger shows it is cheaper")
+      specialist; F5's *Done when* ("delegate only where the ledger shows it is cheaper"). The next check runs on a
+      changed prompt: the docs refresh (PR #30) changed `default.md`'s `StartSubSession` line to the call without
+      `agent` (FX10), so compare it with the repeat run with that in mind
 - [ ] A pull-request tool (GitHub / Azure DevOps), so a fix ends as a PR instead of a local branch
 - [ ] Decide the orchestrator's implementation tier: keep `louis-agent.core` (as the POC) or move to Anthropic's Tool
       Runner
@@ -215,6 +217,9 @@ Design: [docs/specs/SESSION_ARCHITECTURE.md](docs/specs/SESSION_ARCHITECTURE.md)
 - [ ] Long-term memory and retrieval (past conversations, user facts, external knowledge)
 - [ ] Storage by access pattern (hot state, transcripts, vectors, large artifacts) and explicit session lifecycle states
 - [ ] [F22 Role tools](docs/features/F22-role-tools.md) — the tools Puls's specialists need: today's date, attachments, documents, git history, tables, currency ([plan](docs/plans/F22-role-tools.md)). Built; open: a specialist reading an attached PDF in a real chat.
+      - [ ] Binary attachments: an attached PDF, Word file or spreadsheet is read as text in Puls's web app and
+            carried as a string to the specialist, so it arrives mangled; send it as base64 with its media type and
+            read it with `DocumentText` (found in the docs review, 2026-10-14)
 - [ ] [F21 Personalities](docs/features/F21-personalities.md) — each session (and sub-session) names its personality; Puls speaks everyday South African Afrikaans ([plan](docs/plans/F21-personalities.md)). Built; open: Louis's corrections to the Afrikaans (the delegation check's `answers.md`).
 - [ ] **F23 Credits** (to plan): buy credits with money, spend them per question at cost plus a margin, from the usage
       ledger and prices (F1, F2) — Puls's *Koop krediete*. Louis: "'n layer wat geld na ons interne krediete verander. Wil so
@@ -329,8 +334,8 @@ backlog item removes one, it says so.
 - On Claude Haiku 5.5 (the default), changing the tools or skills during a chat can make its next request fail with a
   400: the model rejects a changed system prompt or tool list once thinking blocks are in the history (enforced for
   accounts created on or after 2026-08-31). That happens when the model creates a tool (`CreateTool`, mid-message),
-  on `/approve`, `/reject` or a skill reload, and in the API for every open chat, since all sessions share one tool
-  list. Start a new chat afterwards → [**FX4**](docs/fixes/FX04-append-only-history.md).
+  on `/approve`, `/reject` or a skill reload, and in the API for every open chat with the same toolsets, since they
+  share one engine and its tool list (F5). Start a new chat afterwards → [**FX4**](docs/fixes/FX04-append-only-history.md).
 
 ## Done
 

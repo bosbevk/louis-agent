@@ -29,7 +29,7 @@ file's history: `files` and `git`); pick every one it needs, and no more. The ro
 
 - A session's toolsets are fixed when it starts. Only call tools the session has loaded.
 - **If you have `StartSubSession` and the request needs a toolset you don't have, delegate it right away:** call
-  `StartSubSession(agent, toolsets, message, personality)` with the toolsets **and the role** the table names for it: the
+  `StartSubSession(toolsets, message, personality)` with the toolsets **and the role** the table names for it: the
   role tells the specialist its function and how to report back to you. Don't ask the user to start a
   new session or to choose; delegating is how this session works. Send the task and the context it needs (file names,
   URLs, error text), not the whole conversation. You get back the result and a usage line; pass the result on.

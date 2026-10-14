@@ -70,7 +70,7 @@ docker compose -f docker/docker-compose.yml --env-file config/.env up -d --build
 | `LLM_CACHE`, `LLM_CACHE_TTL` | Prompt caching on Anthropic: `on` (default) / `off`, and the cached prefix's lifetime, `5m` (default) or `1h`, chosen with `usage-probe -- --cache-gaps` ([MODELS.md](MODELS.md)) |
 | `LLM_SUPPORTS_TOOLS` | Force tool calling on or off (normally inferred from the model) |
 | `AGENT_FUNCTION` | Which `Skills/{name}-skills.md` to load; `louis` loads every skill file |
-| `AGENT_PEERS` | Other louis-agent APIs this one may open sub-sessions on (`StartSubSession`, the `agents` toolset): `name=url` pairs, comma separated. Empty by default for the code-review api; Puls's compose sets it to its specialist (`puls=http://puls-coder:8080`). Peers are called with this deployment's `AGENT_API_KEY` |
+| `AGENT_PEERS` | Other louis-agent APIs this one may open sub-sessions on (`StartSubSession`, the `agents` toolset): `name=url` pairs, comma separated. Empty by default for the code-review api; Puls's compose sets it to its specialist (`puls=http://puls-agent:8080`). Peers are called with this deployment's `AGENT_API_KEY` |
 | `SUB_SESSION_PROMPT_BUDGET` | The most tokens a sub-session's prompt should reach (FX14): when the next request is expected to pass it, the specialist answers from what it has instead of calling more tools. Default `80000`, under Claude Haiku 5.5's long-prompt price step at 100k; `0` turns it off |
 | `REPOSITORIES_PATH` | Host folder mounted at `/repositories` in the containers |
 | `ACP_MOUNT_MAPPINGS` | `HOST_PATH=/container/path` pairs, so Rider's Windows paths (attachments, open file) resolve in the container |
@@ -93,6 +93,17 @@ docker compose -f docker/docker-compose.yml --env-file config/.env up -d --build
 | `LOG_DIRECTORY` | Run logs and the usage ledger. Compose sets it for the containers (`logs/` on the host); for `dotnet run`, set it (for example `LOG_DIRECTORY=logs`) or the ledger is off, with a warning |
 
 Set by compose for the containers, so normally not in `.env`: `WORKSPACE_ROOT`, `SKILLS_DIRECTORY`, `LOG_DIRECTORY`.
+
+**The script tools' interpreters**, only needed when they can't be found (mostly `dotnet run` on Windows); read from the
+environment by the tools themselves:
+
+| Setting | Meaning |
+|---|---|
+| `BASH_PATH` (or `SKILL_SHELL`) | The bash for `BashRun` and bash skills. Default: `/bin/bash`, or Git Bash on Windows (Program Files, or next to `git.exe` on `PATH`); WSL's bash is never used |
+| `POWERSHELL_PATH` | The PowerShell for `PowerShellRun`. Default: `pwsh`, then `powershell.exe` on Windows |
+| `PYTHON_PATH` | The Python for `PythonRun`. Default: `py -3`, `python` or `python3` on Windows; `python3` or `python` elsewhere |
+| `PYTHON_VENV` | Where `PythonRun` keeps the virtual environment for packages it installs. Default: a per-user folder (`%LOCALAPPDATA%/louis-agent/python-venv`, `~/.local/share/louis-agent/python-venv` on Linux) |
+| `AGENT_WORKING_DIRECTORY` | The working directory for bash, PowerShell and Python scripts. Default: the workspace root |
 
 ### `config/.env.secrets`
 
@@ -135,7 +146,7 @@ The unit tests need no secrets, network or Docker.
 ## Security
 
 - Never commit `config/.env.secrets`, and don't paste keys into commits, PRs or chat.
-- Secret files are also off limits to the agent: it can't read or write `.env*`, key or credential files.
+- Secret files are also off limits to the agent: it can't read or write `.env*` (except templates such as `.env.example`), key or credential files.
 
 ## Troubleshooting
 

@@ -48,16 +48,18 @@ The full step-by-step is in [How a turn works](../AGENT_INTERACTION.md).
 |---|---|
 | `Agent/AgentEngine.cs` | The engine: turn loop, history, system prompt, the client pipeline; the façade hosts call |
 | `Agent/ToolRegistry.cs` | The tools in name order (one name each), public methods as tools, discovered tools |
-| `Agent/ToolCallGuards.cs` | Around each call: logging, cut-off calls never run, oversized results summarised (a model call), tools kept on the final request |
-| `Agent/SkillTools.cs` | `ExecuteSkill`, `CreateSkillFile`, `ReloadSkills`, and the skill set the system prompt is built from |
-| `Agent/AgentBuiltTools.cs` | `CreateTool`, `ListAgentTools`, `LoadApprovedTools`, `/approve`, `/reject`, running their scripts |
+| `Agent/ToolCallGuards.cs` | Around each call: logging, cut-off calls never run, oversized results summarised (a model call), tools kept on the final request; a sub-session's prompt budget (FX14: past `SUB_SESSION_PROMPT_BUDGET` the next request answers without tools) |
+| `Agent/ToolsetCatalog.cs`, `ToolsetDefinition.cs`, `ToolsetContext.cs` | Every toolset a session can load (F5): name, description, the settings it needs, its tool class and guide; resolves a session's list (`ToolsetException` for an unknown or unavailable one) |
+| `Agent/Tools/SkillTools.cs` | `ExecuteSkill`, `CreateSkillFile`, `ReloadSkills`, and the skill set the system prompt is built from |
+| `Agent/Tools/AgentBuiltTools.cs` | `CreateTool`, `ListAgentTools`, `LoadApprovedTools`, `/approve`, `/reject`, running their scripts |
 | `Guardrails/` | `WorkspaceBoundary` (relative, inside the root, no symbolic links), `SensitiveFiles`, `SsrfGuard` (public addresses only, every hop and at connect time) |
 | `Hosting/AgentHost.cs`, `AgentHostContext.cs` | Bootstrap for every host: env files, options, skills, client, engine; skill-file discovery |
+| `Hosting/AgentEngineFactory.cs` | One engine per toolsets + personality + router (F5, F21), shared by the sessions that ask for the same; the least recently used of 16 is dropped; a sub-session's role from `roles.json` |
 | `Hosting/RiderMcpToolDiscovery.cs` | At start-up, registers Rider's MCP tools with the engine (logged only; not callable yet) |
 | `Logging/AgentLogging.cs` | Serilog behind `ILogger`, configured once per process: the console on stderr (`[INFO]`, or a tag such as `[TOOL]`), and with `LOG_DIRECTORY` a run file per process and the JSON-lines records |
 | `Logging/MessageLogging.cs`, `ToolCallRecords.cs`, `RecordFormatter.cs` | `logger.Log(level, Member, new { Hole = value })` for a message enum member; the two records (`oversized-tool-results.jsonl`, `truncated-tool-calls.jsonl`), written as `timestamp` and camelCase fields |
 | `Config/LlmOptions.cs`, `CacheLifetime.cs` | `LLM_*`: provider (inferred from the model when unset), model, endpoint, key, tool support, thinking, `LLM_CACHE` and `LLM_CACHE_TTL` |
-| `Config/AgentOptions.cs` | Workspace, skills directory, `AGENT_FUNCTION`, keys for Paymo / DevOps / web search, Rider MCP, `LOG_DIRECTORY` |
+| `Config/AgentOptions.cs` | Workspace, skills directory, `AGENT_FUNCTION`, keys for Paymo / DevOps / web search, Rider MCP, `LOG_DIRECTORY`, prices and rates, `AGENT_PEERS`, `SUB_SESSION_PROMPT_BUDGET` |
 | `Config/EnvFile.cs` | Finds the `config/` folder; sets one line in `config/.env` (`usage-probe --host-culture`), keeping the rest of the file |
 | `Messages/` | Message enums (`ErrorMessage`, `LogMessage`, `ToolMessage`, `UserText`, one file each: every exception, log line, tool error and user text) and `MessageText` (`Format`, `Template`, `Holes`) |
 | `Llm/LlmClientFactory.cs`, `ILlmClientFactory.cs` | Options → `IChatClient`: Anthropic (`AsIChatClient`, `MaxOutputTokens` 16,000, a fixed thinking budget for pre-4.6 models), Ollama, OpenAI-compatible; every client wrapped in `PromptCachingChatClient` with the provider's strategy (`CreatePromptCaching`) |
@@ -67,12 +69,17 @@ The full step-by-step is in [How a turn works](../AGENT_INTERACTION.md).
 | `Llm/AnthropicProvider/` | `AnthropicUsageMapper` (cache writes, and the 1-hour part from the raw response or the stream's `message_start`) and `AnthropicPromptCaching` (marker 1 on a copy of the system prompt with `LLM_CACHE_TTL`, marker 2 the top-level `cache_control`, 5 minutes) |
 | `Skills/MarkdownSkillLoader.cs` | Parses `## Skill:` procedures (description, parameters, a bash / PowerShell / Python fence) from Markdown |
 | `Skills/MarkdownSkillProvider.cs`, `DefaultSkillsProvider.cs`, `PersonalitySkillsProvider.cs`, `CompositeSkillProvider.cs` | Every skill file we control is plain markdown read by `MarkdownSkillProvider` (`default.md` and `personality.md` by their own); `CompositeSkillProvider` joins them into the system prompt; `SkillFiles.BuiltIn` names the files `AgentHost` loads by name |
+| `Skills/Personalities.cs`, `PersonalityException.cs` | A session's personality (F21): the file in `Skills/personalities/`, valid names, the ones available, and `RoleFor` (`roles.json`: a sub-session's role from its toolsets) |
+| `Skills/SkillFileSource.cs`, `SkillFiles.cs` | The built-in skill and personality files, embedded in the assembly; a file of the same name on disk overrides one; which files the agent may not overwrite |
 | `Tools/Workspace/WorkspaceTools.cs` | Files: read (≤ 1 MB), write, append, list, tree, search, find, copy, rename, delete; workspace boundary and secret-file checks |
-| `Tools/Git/GitTools.cs` | 35 git operations, run without a shell, 30-second timeout |
+| `Tools/Git/GitTools.cs` | 38 git operations, run without a shell, 30-second timeout; `Blame`, `FileHistory` and `SearchCommits` take model text as data, never as options (F22) |
 | `Tools/DotNet/DotNetTools.cs` | Build, test, run, restore, clean, packages, SDK info — parsed into compact results |
 | `Tools/Shell/` | `PythonTools`, `PowerShellTools`, `BashTools`: run scripts with arguments as data (Python in its own venv; bash is Git Bash on Windows, never WSL) |
 | `Tools/Web/` | `WebTools`: `WebSearch` (Google or DuckDuckGo, one `IWebSearchProvider` each) and `FetchUrl` (HTML → text; private addresses blocked on every hop) |
 | `Tools/Integrations/Paymo/`, `Integrations/DevOps/` | Paymo time tracking and Azure DevOps work items — only registered when their keys are set |
+| `Tools/Agents/` | `AgentPeerTools.StartSubSession` (F5): a session on a peer with only the toolsets a task needs and a role, its answer and usage back, an empty answer asked for once more (FX11); at most 3 a turn, 5 minutes each. `SessionAttachments` (files forwarded by name), `SubSessionFeed` and `SubSessionEvent` (the specialist's stream, passed to the host live) |
+| `Tools/Clock/` | `ClockTools.GetToday` in every session (F22), in the user's time zone; `UserPlace`: where the user is, per turn |
+| `Tools/Documents/DocumentText.cs` | PDF (PdfPig), Word (OpenXml), spreadsheets and CSV (ExcelDataReader) as text or tables, for `ReadDocument`, `ReadTable` and `FetchUrl` (F22) |
 | `Tools/Scripts/` | Agent-built tools from `*.tool.md` (`ScriptTool`, its definition and parameters): typed parameters, arguments validated and passed as JSON on stdin |
 | `Tools/ProcessRunner.cs` | The one way to start processes: argument lists, no shell, timeouts, bounded output |
 | `Protocols/Mcp/` | `RiderMcpClient` and `DiscoveredTool`: lists Rider's MCP tools |
@@ -103,7 +110,7 @@ Logging). `ArchitectureTests` holds both rules ([docs/CLAUDE.md, Project layout]
 | `WorkspaceBoundary` / `SensitiveFiles` | Internal (`Guardrails/`), used by the file tools and the API's file and git endpoints, so the same rules apply |
 
 **Every public method on a tool class becomes a tool**, named after the method, described by its `[Description]`
-attributes (108 tools with Paymo and DevOps enabled). Helpers must be `internal` or `private`.
+attributes (116 tools with every toolset, Paymo and DevOps included). Helpers must be `internal` or `private`.
 
 ## Configuration
 

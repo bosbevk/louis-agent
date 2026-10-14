@@ -40,6 +40,7 @@ flowchart LR
     Engine -- "tool calls" --> Repo
     Api -- "/workspace, /git" --> Repo
     Orch -. "verifies: git, replay, tests" .-> Repo
+    Api -- "StartSubSession:<br/>sessions + SSE (F5)" --> Peer["another louis-agent.api<br/>(a specialist, e.g. Puls's)"]
 ```
 
 Every host is a thin adapter around the same `AgentEngine`: it turns its protocol's input into a prompt and the
@@ -114,11 +115,14 @@ sequenceDiagram
 
 | Endpoint | Request | Reply |
 |---|---|---|
-| `POST /sessions` | Optional `{ "task", "run", "service" }`: tags every usage record of the session (the orchestrator sends `fix:<error id>`, its run id and the service); each at most 200 printable characters | `201 { "session_id", "created_at", "task", "run", "service" }` |
+| `POST /sessions` | All optional. `task`, `run`, `service`: tags every usage record of the session (the orchestrator sends `fix:<error id>`, its run id and the service); each at most 200 printable characters. `toolsets`: the toolsets the session loads and keeps (F5; none gives `skills`). `personality`: a file in `Skills/personalities/` (F21; none gives `personality.md`). `location` and `time_zone` (IANA): where the user is (F22). `depth` (0 or 1) and `parent` are sent by `StartSubSession` for a sub-session | `201 { "session_id", "created_at", "toolsets", "depth", "personality", "task", "run", "service", "parent" }`; a `400` for an unknown toolset, personality or time zone |
 | `POST /sessions/{id}/messages` | `{ "message": "…", "attachments": [{ "name", "content" }] }`; each attachment is cut at 100,000 characters | Server-Sent Events (below) |
 | `POST /sessions/{id}/cancel` | — | `{ "cancelled": true }`; the stream ends with stop reason `cancelled` |
-| `GET /sessions/{id}` | — | `{ "session_id", "created_at", "last_activity", "busy", "task", "run", "service", "usage" }`: `usage` totals the session's finished turns (the object below), `null` when the API records no usage |
+| `GET /sessions/{id}` | — | `{ "session_id", "created_at", "last_activity", "busy", "toolsets", "depth", "personality", "tools", "task", "run", "service", "usage" }`: `tools` is how many tools the session's engine has; `usage` totals the session's finished turns (the object below), `null` when the API records no usage |
 | `DELETE /sessions/{id}` | — | `{ "deleted": true }` |
+| `GET /toolsets` | — | `{ "default", "toolsets": [{ "name", "description", "available", "missing_settings" }] }`: what a session can load here, never the tool definitions |
+| `GET /personalities` | — | `{ "default": null, "personalities": [...] }` |
+| `GET /model` | — | `{ "provider", "model" }` |
 
 Closing the connection also cancels the reply. A message of `/tools`, `/approve <Name>`, `/reject <Name>` or `/usage` (the
 session's tokens and cost, by purpose) is answered by the API itself and never reaches the model.
@@ -189,6 +193,17 @@ SID=$(curl -s -X POST http://127.0.0.1:5080/sessions | jq -r .session_id)
 curl -N -X POST http://127.0.0.1:5080/sessions/$SID/messages \
      -H "Content-Type: application/json" -d '{"message":"What branch am I on?"}'
 ```
+
+While a turn delegates (`StartSubSession`, F5), the specialist's own stream is passed through as it happens, one
+`sub_session` event per event of the sub-session, so a client can show the delegated work live (Puls's Werk panel):
+
+```text
+event: sub_session
+data: {"type":"sub_session","tool_use_id":"toolu_…","agent":"puls","event":"content_block_start","data":{…}}
+```
+
+`tool_use_id` is the `StartSubSession` call it belongs to; `event` and `data` are the sub-session's own event, in the
+shapes above. When the specialist finishes, its answer comes back as that call's `tool_result`.
 
 ### Workspace and git endpoints
 
@@ -399,6 +414,24 @@ cost can be totalled across both.
 
 A failed or timed-out request fails that error, not the run: the error stays unprocessed and is triaged again on the
 next poll ([FX7](fixes/FX07-timeout-ends-run.md)). Only Ctrl+C ends a run early.
+
+## Agent to agent: Puls and its specialists
+
+Puls (F5, F20–F22) is the same API built with its own web app. Its chats load only the `agents` toolset, so for every
+task the model calls `StartSubSession(toolsets, message, personality, attachments)`, and the tool:
+
+1. opens `POST /sessions` on the peer named in `AGENT_PEERS` (or the only one), with the toolsets, `depth: 1`, the
+   role (`personality`; if none, the peer takes one from the toolsets, `roles.json`), the parent turn
+   (`{session}#{turn}`) and the user's place;
+2. sends the task with the named attachments, which come from the session, never through the model's output;
+3. reads the specialist's stream to the end, passing each event on as `sub_session`; if the answer is empty (all its
+   tool rounds used), asks once more in the same session (FX11);
+4. deletes the session, and returns the answer and a usage line as the tool's result.
+
+A sub-session can't delegate again (`agents` at depth 1 is a `400`); a turn may start at most 3, each stops after 5
+minutes, and a specialist's prompt has a budget (`SUB_SESSION_PROMPT_BUDGET`, FX14). The specialist's usage records
+carry `parent`, so a ledger can total a chat with its specialists. Measured against one agent answering everything:
+[the delegation check](../samples/sample-output-puls-check-repeat/README.md).
 
 ## What changes next
 

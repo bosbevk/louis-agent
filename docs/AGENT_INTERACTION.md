@@ -35,9 +35,16 @@ objects' public methods (plus `ExecuteSkill`) are registered — see "An agent w
 
 ### How skills are loaded
 
-`AgentHost.LoadSkills` combines `personality.md` (first, optional), `default.md`, the always-loaded guides (`dotnet`,
-`python`, `powershell`, `bash`, `web`, `self-extension`) and the `AGENT_FUNCTION` file (`louis` loads them all). The
-combined text is the system prompt.
+`AgentHost.LoadSkills` combines, in this order:
+1. **the personality**: `personality.md`, or the one the session named (F21, `Skills/personalities/{name}.md`: Puls's
+   voice, or a specialist's role);
+2. **`default.md`**, the router, which sends each task to a toolset (left out for a sub-session, whose toolsets were
+   chosen for it);
+3. **the guide of each toolset the session loaded** (`Skills/{toolset}-skills.md`) and no other (F5);
+4. **with the `skills` toolset only**, the `AGENT_FUNCTION` file (`louis` loads every skill file).
+
+The combined text is the system prompt. The built-in files are embedded in core; a file of the same name on disk
+overrides one, so wording can change without a rebuild.
 
 ## A turn, step by step
 

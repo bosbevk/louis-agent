@@ -39,6 +39,12 @@ Docker (web app + API on http://127.0.0.1:5080):
 docker compose -f docker/docker-compose.yml --env-file config/.env up -d --build api
 ```
 
+Puls (its web app on http://127.0.0.1:5070, its specialist on 5071):
+
+```bash
+docker compose -f docker/docker-compose.puls.yml --env-file config/.env up -d --build
+```
+
 Always pass `--env-file config/.env`; compose needs it for `REPOSITORIES_PATH`. Requires the .NET 10 SDK.
 
 ## Project structure
@@ -50,7 +56,8 @@ One design doc per project — purpose, structure, key types, settings, extensio
 ```
 louis-agent.core/             # Namespace = folder path (LouisAgent.Core.Tools.Web); see Project layout
 ├── Agent/                    # AgentEngine: the turn loop, history and system prompt, a façade over the rest:
-│                             # ToolRegistry, ToolCallGuards (cut-off calls, oversized results), SkillTools, AgentBuiltTools;
+│                             # ToolRegistry, ToolCallGuards (cut-off calls, oversized results, a sub-session's prompt
+│                             # budget), SkillTools, AgentBuiltTools;
 │                             # ToolsetCatalog (+ ToolsetDefinition, ToolsetContext): every toolset a session can load (F5)
 ├── Guardrails/               # WorkspaceBoundary, SensitiveFiles, SsrfGuard: pure safety checks (tools and API use them)
 ├── Hosting/                  # AgentHost (+ AgentHostContext): bootstrap for every host; AgentEngineFactory (one engine
@@ -119,9 +126,12 @@ tests/louis-agent.core.tests/ # NUnit; folders mirror core's, plus ArchitectureT
 tests/louis-agent.api.tests/  # NUnit; the API's sessions (toolsets per session, depth), no web host or model
 tests/louis-agent.orchestrator.tests/ # NUnit; error feed, SSE client, verification tools
 samples/                      # order-service (demo microservice), run-demo.ps1 [-Short], sample-output*/ (real runs
-                              # with their priced ledgers, uncached and -cached), smoke-f4-caching/, see samples/README.md
-docker/                       # Dockerfile.{acp-server,api,agent,mcp-server,orchestrator}, docker-compose.yml,
-                              # docker-compose.demo.yml (orchestrator demo); the build context's .dockerignore is at the repo root
+                              # with their priced ledgers, uncached and -cached), smoke-f4-caching/, puls-check/ (the
+                              # delegation check: run_check.py [--repeat N], its runs in sample-output-puls-check*/),
+                              # see samples/README.md
+docker/                       # Dockerfile.{acp-server,api,agent,mcp-server,orchestrator,puls}, docker-compose.yml,
+                              # docker-compose.demo.yml (orchestrator demo), docker-compose.puls.yml (Puls and its
+                              # specialist); the build context's .dockerignore is at the repo root
 config/                       # .env and .env.secrets (both ignored), their examples, LLM profiles (.env.anthropic,
                               # .env.ollama, .env.ollama-triage for the orchestrator), prices.json (model prices),
                               # rates.json (exchange rates), Rider config
@@ -272,8 +282,9 @@ Log.Log(LogLevel.Information, McpServerLogMessage.ToolNameTaken, new { Name = na
 
 Create `Skills/{name}-skills.md`. With `AGENT_FUNCTION=louis` every skill file is loaded; otherwise set
 `AGENT_FUNCTION={name}`. Skill files come with the **skills** toolset: a session without it (Puls's chats, agents
-only) gets the router and its toolsets' guides, not the skill files. For a guide that must always load (like `bash-skills.md`), add it to
-`AgentHost.AlwaysLoadedSkillFiles` and `SkillFiles.BuiltIn`. Procedures use `## Skill: Name` with an `Execution:` fence
+only) gets the router and its toolsets' guides, not the skill files. Since F5 no guide loads in every session: a
+guide comes with its toolset (`bash-skills.md` with `bash`, named by the catalogue's `GuideFile`), and a built-in file
+the agent must not overwrite is listed in `SkillFiles.BuiltIn`. Procedures use `## Skill: Name` with an `Execution:` fence
 (bash, powershell or python); arguments arrive as `SKILL_ARG_*` environment variables. A toolset's guide follows
 *Adding a toolset*: plain markdown, no provider class of its own.
 
