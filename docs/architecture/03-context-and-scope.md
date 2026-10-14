@@ -3,7 +3,7 @@
 > **Explanation.** Who and what louis-agent talks to, at [C4](https://c4model.com) level 1 (the system and its
 > neighbours). **Elsewhere:** every interface in detail (endpoints, the event stream, ACP, MCP, agent to agent) in
 > [AGENT_COMMUNICATION.md](../AGENT_COMMUNICATION.md); what's inside the system in
-> *building blocks* (section 5).
+> [building blocks](05-building-block-view.md).
 
 ```mermaid
 flowchart LR

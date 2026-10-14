@@ -13,6 +13,9 @@ its own, so a reader (or Claude) loads only the one a question needs.
 | 2 | [Constraints](02-constraints.md) | What was fixed before any design: platform, providers, rules |
 | 3 | [Context and scope](03-context-and-scope.md) | Who and what it talks to (C4 level 1) |
 | 4 | [Solution strategy](04-solution-strategy.md) | The few approaches everything else follows |
+| 5 | [Building block view](05-building-block-view.md) | The parts: containers (C4 level 2) and core's components (level 3) |
+| 6 | [Runtime view](06-runtime-view.md) | A chat turn, the guards, and the scenarios across agents |
+| 7 | [Deployment view](07-deployment-view.md) | Where each part runs: images, services, mounts |
 
 The template is arc42 by Dr. Gernot Starke and Dr. Peter Hruschka, [arc42.org](https://arc42.org), used under CC BY-SA
 4.0.

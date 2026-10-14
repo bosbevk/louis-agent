@@ -1,7 +1,7 @@
 # 4. Solution strategy
 
 > **Explanation.** The few approaches every part of louis-agent follows, each in a paragraph, with the decision record
-> that holds its reasons. **Elsewhere:** how they shape the parts in *building blocks* (section 5).
+> that holds its reasons. **Elsewhere:** how they shape the parts in [building blocks](05-building-block-view.md).
 
 **Our own loop, any provider.** louis-agent calls models at the Messages API tier through `IChatClient`, with its own
 tool loop, so the provider is configuration and the tools run in our containers
