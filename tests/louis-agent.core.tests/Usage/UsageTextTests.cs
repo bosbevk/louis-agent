@@ -119,6 +119,23 @@ public class UsageTextTests
     }
 
     [Test]
+    public void Summary_ListsASubSessionsRollUp_AsItsOwnPurpose()
+    {
+        // F5 follow-up: /usage shows what delegation cost next to the chat's own requests, weighted by the roll-up's count.
+        UsageRecord[] session =
+        [
+            Record(1_000, 0, 100, 0.0015m),
+            Record(1_000, 9_000, 200, 0.0123m, UsagePurpose.SubSession) with { Requests = 3, Model = "sub-session:puls" },
+        ];
+
+        Assert.That(UsageText.Summary(session), Is.EqualTo(
+            "Session usage: 4 requests · 11k tokens (9k cached) · $0.014\n" +
+            "- turn: 1 request · 1.1k tokens · $0.0015\n" +
+            "- sub_session: 3 requests · 10k tokens (9k cached) · $0.012\n" +
+            "- tokens: 2k input · 0 cache write · 9k cache read · 300 output"));
+    }
+
+    [Test]
     public void Summary_Unpriced_ExplainsWhy()
     {
         Assert.That(UsageText.Summary([Record(1_000, 0, 100, null)]),

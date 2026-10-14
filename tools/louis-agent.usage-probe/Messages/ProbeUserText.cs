@@ -77,6 +77,9 @@ public enum ProbeUserText
     [Description("{Path}: {Count} requests; models {Models}; prices as of {AsOf}")]
     LedgerSummary,
 
+    [Description("{Rows} sub-session roll-up rows ({Requests} requests, {Cost}) listed, not totalled: the specialists' own requests are rows in the ledger they ran on")]
+    LedgerRollUps,
+
     [Description("Per piece of work (a fix's task, a triage or a chat session)")]
     SectionPerWork,
 

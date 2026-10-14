@@ -1,7 +1,9 @@
 using System.Net;
 using System.Text;
 using System.Text.Json;
+using LouisAgent.Core.Agent;
 using LouisAgent.Core.Config;
+using LouisAgent.Core.Skills;
 using LouisAgent.Core.Tools.Agents;
 using LouisAgent.Core.Tools.Clock;
 using LouisAgent.Core.Usage;
@@ -118,6 +120,37 @@ public class AgentPeerToolsTests
                 .StartSubSession(["files"], "x", agent: "coder");
 
         Assert.That(sink.Records, Is.Empty);
+    }
+
+    [Test]
+    public async Task ThroughTheEngine_TheLedgerHasTheParentsRowsAndOneRollUp_AndNoneOfTheChilds()
+    {
+        // Step 3: a turn that delegates writes its own two requests and one roll-up, in the order they happened; the
+        // specialist's own rows are written where it ran. The turn's total is own + child, with one adder.
+        var sink = new ListUsageSink();
+        var tools = new AgentPeerTools(Peers, null, new HttpClient(Peer()), usageSink: sink);
+        static ChatResponse Reply(params AIContent[] contents) => new(new ChatMessage(ChatRole.Assistant, contents))
+        {
+            Usage = new UsageDetails { InputTokenCount = 1_000, OutputTokenCount = 100 },
+        };
+        var engine = new AgentEngine(
+            new MarkdownSkillProvider(Path.Combine(TestPaths.RepoRoot, "Skills", "HelloWorld.md")),
+            new FakeChatClient(
+                _ => Reply(new FunctionCallContent("call_1", "StartSubSession",
+                    new Dictionary<string, object?> { ["toolsets"] = new[] { "files" }, ["message"] = "Fix order 1006.", ["agent"] = "coder" })),
+                _ => Reply(new TextContent("Done."))),
+            TestPaths.Agent(), toolsets: [tools], usageSink: sink);
+
+        UsageTotal total;
+        using (var scope = UsageScope.Begin(host: "api", session: "sess_parent", turn: 1))
+        {
+            await engine.ProcessPromptAsync(engine.NewHistory(), "delegate this");
+            total = scope.Total();
+        }
+
+        Assert.That(sink.Records.Select(r => r.Purpose), Is.EqualTo(new[] { "turn", "sub_session", "turn" }));
+        Assert.That(sink.Records.Select(r => r.Session), Is.All.EqualTo("sess_parent"));
+        Assert.That((total.Requests, total.Cost, total.Unpriced), Is.EqualTo((5, (decimal?)0.0123m, 2)), "1 + 3 + 1; the own rows are unpriced here");
     }
 
     [Test]

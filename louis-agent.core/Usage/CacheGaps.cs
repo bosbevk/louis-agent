@@ -20,7 +20,8 @@ public static class CacheGaps
 
     public static IReadOnlyList<CacheGapGroup> Analyse(IEnumerable<UsageRecord> records, PriceTable? prices) =>
         records
-            .Where(r => r.Purpose is not (UsagePurpose.Summary or UsagePurpose.Compaction) && r.Tokens.Input is not null)
+            // Summaries carry no cache marker; a sub-session's roll-up stands for requests on another prefix (F5).
+            .Where(r => r.Purpose is not (UsagePurpose.Summary or UsagePurpose.Compaction or UsagePurpose.SubSession) && r.Tokens.Input is not null)
             .GroupBy(r => (Host: r.Host ?? "(no host)", Model: r.Model ?? "(no model)"))
             .Select(g => Group(g.Key.Host, g.Key.Model, g.ToList(), prices?.Find(g.Key.Model)))
             .OrderBy(g => g.Host, StringComparer.Ordinal).ThenBy(g => g.Model, StringComparer.Ordinal)
