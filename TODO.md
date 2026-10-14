@@ -190,7 +190,9 @@ Design and open decisions: [docs/specs/ORCHESTRATOR_DESIGN.md](docs/specs/ORCHES
       [three runs after FX10–FX14](samples/sample-output-puls-check-repeat/README.md): +31% on average) delegating cost more than one agent answering, except plain chat and some web research: each
       specialist starts cold and the answer is written twice. Options to measure: Puls keeps cheap read-only
       toolsets itself (`files`, `git`, `web`) and delegates only long or risky work; a rule for when a task is worth a
-      specialist; F5's *Done when* ("delegate only where the ledger shows it is cheaper")
+      specialist; F5's *Done when* ("delegate only where the ledger shows it is cheaper"). The next check runs on a
+      changed prompt: the docs refresh (PR #30) changed `default.md`'s `StartSubSession` line to the call without
+      `agent` (FX10), so compare it with the repeat run with that in mind
 - [ ] A pull-request tool (GitHub / Azure DevOps), so a fix ends as a PR instead of a local branch
 - [ ] Decide the orchestrator's implementation tier: keep `louis-agent.core` (as the POC) or move to Anthropic's Tool
       Runner

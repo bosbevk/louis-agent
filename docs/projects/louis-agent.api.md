@@ -45,7 +45,10 @@ flowchart LR
   before an engine is built. `GET /personalities` lists them. A sub-session (depth 1) gets no router (`default.md`),
   and when its parent named no role, one is taken from its toolsets (`roles.json`).
 - **The user's place** (F22): `location` (only when the user shared it) and `time_zone` (IANA; an unknown one is a
-  `400`) are kept with the session, so `GetToday` and "near me" are the user's. Files attached to a message are
+  `400`) are kept with the session, so `GetToday` and "near me" are the user's. A location is said once, in front of
+  the session's first message (`ApiModelText.UserPlace`: `[The user is in {Location}; their time zone is {TimeZone}.]`),
+  not in the system prompt, which engines share; without a `time_zone` the note and `GetToday` use
+  `Africa/Johannesburg`. Files attached to a message are
   remembered by name, so `StartSubSession` can forward them to a specialist without the model copying them.
 - **Streaming** (`ClaudeStyleStream`): engine updates become `message_start`, `content_block_start/delta/stop`
   (thinking, text, tool_use, tool_result), `message_delta` (stop reason and the turn's `usage`, F3) and `message_stop`;
