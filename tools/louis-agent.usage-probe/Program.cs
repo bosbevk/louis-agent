@@ -276,9 +276,23 @@ static void PrintCacheGaps(string path, PriceTable prices)
 
 static void PrintLedger(string path, PriceTable prices)
 {
-    var records = UsageReport.Price(UsageReport.Read(path), prices).ToList();
+    var rows = UsageReport.Price(UsageReport.Read(path), prices).ToList();
+    // A sub-session's roll-up (F5) stands for requests that are rows of their own in the ledger they ran on (this one,
+    // when peers share LOG_DIRECTORY as Puls and its specialist do), so it is listed, not totalled: a turn's own line
+    // counts it; a ledger's totals count the requests.
+    var rollUps = rows.Where(r => r.Purpose == UsagePurpose.SubSession).ToList();
+    var records = rows.Except(rollUps).ToList();
     var models = records.Select(r => r.Model).Distinct().ToList();
     Console.WriteLine(MessageText.Format(ProbeUserText.LedgerSummary, new { Path = path, records.Count, Models = string.Join(", ", models), AsOf = prices.AsOf ?? "(none)" }));
+    if (rollUps.Count > 0)
+    {
+        UsageTotal delegated = UsageReport.Total("sub_session", rollUps);
+        Console.WriteLine(MessageText.Format(ProbeUserText.LedgerRollUps, new
+        {
+            Rows = rollUps.Count, delegated.Requests,
+            Cost = delegated.Cost is { } cost ? $"${cost:0.0000}" : "unknown",
+        }));
+    }
 
     Section(MessageText.Format(ProbeUserText.SectionPerWork), UsageReport.Totals(records, UsageReport.WorkOf));
     Section(MessageText.Format(ProbeUserText.SectionPerPurpose), UsageReport.Totals(records, r => r.Purpose));

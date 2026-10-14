@@ -27,6 +27,23 @@ public class UsageSessionTests
     }
 
     [Test]
+    public void EndTurn_ATurnThatDelegated_CountsTheSpecialistsRequests()
+    {
+        // F5 follow-up: the roll-up is one of the turn's records, so the line and the session total include the
+        // specialist's 3 requests, 10,200 tokens and $0.0123 without this class knowing about sub-sessions.
+        var session = new UsageSession();
+        UsageRecord rollUp = Record(0.0123m) with
+        {
+            Purpose = UsagePurpose.SubSession, Round = 0, Model = "sub-session:puls", Stop = "sub_session", Requests = 3,
+            Tokens = new UsageTokens(1_000, 0, 9_000, 200, null),
+        };
+
+        string? line = session.EndTurn([Record(0.01m), rollUp]);
+
+        Assert.That(line, Is.EqualTo("turn: 4 requests · 11k tokens (9k cached) · $0.022 · session $0.022"));
+    }
+
+    [Test]
     public void EndTurn_NoRequests_NoLineAndNothingAdded()
     {
         var session = new UsageSession();

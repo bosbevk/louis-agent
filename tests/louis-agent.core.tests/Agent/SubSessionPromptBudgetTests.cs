@@ -30,13 +30,29 @@ public class SubSessionPromptBudgetTests
         .Append(_ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "The answer, from what I found.")))
         .ToArray());
 
-    private static async Task<FakeChatClient> RunAsync(int budget, string? parent)
+    private static async Task<FakeChatClient> RunAsync(int budget, string? parent, Action<UsageScope>? before = null)
     {
         var client = GrowingPrompt();
         var engine = Engine(client, new ListUsageSink(), budget);
-        using (UsageScope.Begin(session: "sess_child", turn: 1, tags: new UsageTags(null, null, null, parent)))
+        using (var scope = UsageScope.Begin(session: "sess_child", turn: 1, tags: new UsageTags(null, null, null, parent)))
+        {
+            before?.Invoke(scope);
             await foreach (var _ in engine.StreamPromptAsync(engine.NewHistory(), "count them")) { }
+        }
         return client;
+    }
+
+    [Test]
+    public async Task ARollUpInTheScope_DoesNotCountTowardTheBudget()
+    {
+        // F5 follow-up: a sub-session's roll-up record carries the specialist's tokens, not this prompt's size. Counted,
+        // its 5,000 input tokens would already be over the budget before the first request.
+        var client = await RunAsync(budget: 1_000, parent: "sess_puls#1", before: scope => scope.Add(new UsageRecord(
+            DateTimeOffset.UtcNow, 0, UsagePurpose.SubSession, "api", "sess_child", 1, null, null, null, "sub-session:puls",
+            new UsageTokens(5_000, 0, 0, 100, null), 1, "sub_session", Requests: 3)));
+
+        Assert.That(client.Requests[0].Options?.ToolMode, Is.Not.EqualTo(ChatToolMode.None), "the first request keeps its tools");
+        Assert.That(client.Requests[3].Options?.ToolMode, Is.EqualTo(ChatToolMode.None), "the budget still works on the real prompts");
     }
 
     [Test]

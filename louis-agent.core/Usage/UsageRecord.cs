@@ -1,5 +1,7 @@
 namespace LouisAgent.Core.Usage;
 
+using System.Text.Json.Serialization;
+
 /// <summary>
 /// One model request in the usage ledger (Usage spec §4.1). Holds counts, ids, names and timings only: never prompt text
 /// or tool output (F1-S4).
@@ -19,6 +21,10 @@ namespace LouisAgent.Core.Usage;
 /// <param name="Stop">Finish reason (stop, tool_calls, length, …), or "cancelled".</param>
 /// <param name="Cost">What the request cost from the price table (F2); null means "price unknown", never free.</param>
 /// <param name="Parent">For a sub-session's request, the parent turn, <c>{session}#{turn}</c> (F5); null otherwise.</param>
+/// <param name="Requests">
+/// How many model requests a <see cref="UsagePurpose.SubSession"/> roll-up stands for (F5); null, meaning one, on every
+/// other record, and then left out of its ledger line, so the format of a model request's row is unchanged.
+/// </param>
 public sealed record UsageRecord(
     DateTimeOffset At,
     int Round,
@@ -34,4 +40,5 @@ public sealed record UsageRecord(
     long DurationMs,
     string? Stop,
     UsageCost? Cost = null,
-    string? Parent = null);
+    string? Parent = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] int? Requests = null);

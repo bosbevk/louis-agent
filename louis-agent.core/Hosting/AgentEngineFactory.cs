@@ -59,7 +59,7 @@ public sealed class AgentEngineFactory
         _display = display;
         _thinking = thinking;
         _capacity = capacity;
-        Context = new ToolsetContext(agent, webSearch ?? WebSearchProviderFactory.Create(agent), rates);
+        Context = new ToolsetContext(agent, webSearch ?? WebSearchProviderFactory.Create(agent), rates, usageSink);
     }
 
     /// <summary>What the catalogue builds this instance's tools from (settings, the search provider).</summary>

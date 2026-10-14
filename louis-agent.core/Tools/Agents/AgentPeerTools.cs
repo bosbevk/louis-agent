@@ -2,6 +2,7 @@ namespace LouisAgent.Core.Tools.Agents;
 
 using System.Collections.Concurrent;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.Net.Http.Json;
 using System.Text;
@@ -15,7 +16,8 @@ using Microsoft.Extensions.AI;
 /// <summary>
 /// The <c>agents</c> toolset (F5-S5): opens a session on another louis-agent (a peer in AGENT_PEERS) with only the
 /// toolsets a task needs, sends it the task, reads its answer to the end and closes it. Only the answer and a usage line
-/// come back, so the specialist's tools and context never enter this agent's prompt.
+/// come back, so the specialist's tools and context never enter this agent's prompt. What the specialist used is rolled
+/// up into this turn's totals and the ledger as one <see cref="UsagePurpose.SubSession"/> record per reply.
 /// </summary>
 /// <remarks>
 /// The limits are in code, not in the prompt: at most <see cref="MaxPerTurn"/> sub-sessions per turn, each stopped after
@@ -24,7 +26,7 @@ using Microsoft.Extensions.AI;
 /// model's arguments.
 /// </remarks>
 public sealed class AgentPeerTools(IReadOnlyDictionary<string, Uri> peers, string? apiKey, HttpClient? http = null, TimeSpan? timeout = null,
-    TimeProvider? time = null)
+    TimeProvider? time = null, IUsageSink? usageSink = null)
 {
     /// <summary>Sub-sessions one turn may open; outside a turn (an MCP call), the most a minute may.</summary>
     public const int MaxPerTurn = 3;
@@ -44,7 +46,8 @@ public sealed class AgentPeerTools(IReadOnlyDictionary<string, Uri> peers, strin
     private readonly Queue<DateTimeOffset> _noTurn = new();
     private readonly TimeProvider _time = time ?? TimeProvider.System;
 
-    public AgentPeerTools(AgentOptions options) : this(options.AgentPeers, options.AgentApiKey)
+    /// <param name="usageSink">The engine's ledger, for the roll-up of each sub-session's usage (F5); null writes none.</param>
+    public AgentPeerTools(AgentOptions options, IUsageSink? usageSink = null) : this(options.AgentPeers, options.AgentApiKey, usageSink: usageSink)
     {
     }
 
@@ -112,14 +115,14 @@ public sealed class AgentPeerTools(IReadOnlyDictionary<string, Uri> peers, strin
             sessionId = JsonDocument.Parse(createdBody).RootElement.GetProperty("session_id").GetString()
                 ?? throw new JsonException("no session_id");
 
-            var (text, usage, failure) = await SendAsync(peer, sessionId, new { message, attachments = forwarded }, agent, toolUseId, timeout.Token);
+            var (text, usage, failure) = await SendAsync(peer, sessionId, new { message, attachments = forwarded }, agent, toolUseId, scope, timeout.Token);
             if (failure is not null) return failure;
             if (string.IsNullOrWhiteSpace(text))
             {
                 // A specialist that used all its tool rounds can end with no text (FX11): ask once, in the same session,
                 // for the answer from what it found. Its context and cached prefix stay; a new sub-session would start over.
                 var (again, againUsage, againFailure) = await SendAsync(peer, sessionId,
-                    new { message = MessageText.Format(ToolMessage.SubSessionAskForAnswer) }, agent, toolUseId, timeout.Token);
+                    new { message = MessageText.Format(ToolMessage.SubSessionAskForAnswer) }, agent, toolUseId, scope, timeout.Token);
                 if (againFailure is not null) return againFailure;
                 text = again;
                 usage = string.Join(" + ", new[] { usage, againUsage }.OfType<string>());
@@ -162,11 +165,13 @@ public sealed class AgentPeerTools(IReadOnlyDictionary<string, Uri> peers, strin
 
     /// <summary>
     /// Sends one message to the sub-session and reads its reply: the answer's text and usage line, or the failure the
-    /// model gets instead (refused, or an error event).
+    /// model gets instead (refused, or an error event). A reply that reported usage, answered or failed, is rolled up
+    /// into <paramref name="scope"/> and the ledger.
     /// </summary>
     private async Task<(string Text, string? Usage, string? Failure)> SendAsync(Uri peer, string sessionId, object body,
-        string agent, string? toolUseId, CancellationToken cancellationToken)
+        string agent, string? toolUseId, UsageScope? scope, CancellationToken cancellationToken)
     {
+        var stopwatch = Stopwatch.StartNew();
         using var send = Request(HttpMethod.Post, new Uri(peer, $"sessions/{Uri.EscapeDataString(sessionId)}/messages"), body);
         using var reply = await _http.SendAsync(send, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
         if (!reply.IsSuccessStatusCode)
@@ -175,7 +180,42 @@ public sealed class AgentPeerTools(IReadOnlyDictionary<string, Uri> peers, strin
 
         var (text, usage, error) = await ReadStreamAsync(await reply.Content.ReadAsStreamAsync(cancellationToken),
             (type, data) => SubSessionFeed.Report(new SubSessionEvent(toolUseId, agent, type, data)), cancellationToken);
-        return error is null ? (text, usage, null) : ("", usage, MessageText.Format(ToolMessage.SubSessionFailed, new { Agent = agent, Reason = error }));
+        // A failed reply's usage was charged too (FX6); a reply with none (a timeout before any event) leaves no record.
+        if (usage is not null) RollUp(scope, agent, usage, stopwatch.Elapsed);
+        string? line = usage?.Line();
+        return error is null ? (text, line, null) : ("", line, MessageText.Format(ToolMessage.SubSessionFailed, new { Agent = agent, Reason = error }));
+    }
+
+    /// <summary>
+    /// One record standing for the specialist's requests on this reply, written to the ledger and added to the parent
+    /// turn's scope, in that order, as <c>UsageRecordingChatClient.Store</c> does for a model request. Every view totals
+    /// the scope, so the usage line, the chat total, <c>/usage</c> and the API's usage include it with no change of their
+    /// own; the ledger's row keeps the child's cost attributable to this session later (its own rows are in the ledger it
+    /// ran on, linked by <c>parent</c>).
+    /// </summary>
+    private void RollUp(UsageScope? scope, string agent, SubSessionUsage usage, TimeSpan duration)
+    {
+        var record = new UsageRecord(
+            At: _time.GetUtcNow(),
+            Round: 0,
+            Purpose: UsagePurpose.SubSession,
+            Host: scope?.Host,
+            Session: scope?.Session,
+            Turn: scope?.Turn,
+            Task: scope?.Tags.Task,
+            Run: scope?.Tags.Run,
+            Service: scope?.Tags.Service,
+            Model: $"sub-session:{agent}",
+            Tokens: new UsageTokens(usage.Input, usage.CacheWrite, usage.CacheRead, usage.Output, null),
+            DurationMs: (long)duration.TotalMilliseconds,
+            Stop: UsagePurpose.SubSession,
+            // The charged amount, in the child's ledger currency; its price table isn't sent, so none is named.
+            Cost: usage.Cost is { } cost ? new UsageCost(usage.Currency ?? "USD", cost, null) : null,
+            Parent: scope?.Tags.Parent,
+            Requests: usage.Requests);
+        // Not scope?.Add(usageSink?.Record(record)): the ledger row is written whether or not a scope is open (FX5).
+        UsageRecord stored = usageSink?.Record(record) ?? record;
+        scope?.Add(stored);
     }
 
     /// <summary>Outside a turn there's nothing to count against, so a rolling window: at most MaxPerTurn a minute.</summary>
@@ -213,14 +253,15 @@ public sealed class AgentPeerTools(IReadOnlyDictionary<string, Uri> peers, strin
     }
 
     /// <summary>
-    /// The answer's text, a usage line from message_delta (or the error event), and the error, from the SSE stream; every
+    /// The answer's text, the usage from message_delta (or the error event), and the error, from the SSE stream; every
     /// event also goes to <paramref name="onEvent"/> as it arrives (the live view of the sub-session).
     /// </summary>
-    private static async Task<(string Text, string? Usage, string? Error)> ReadStreamAsync(Stream stream, Action<string, string> onEvent,
+    private static async Task<(string Text, SubSessionUsage? Usage, string? Error)> ReadStreamAsync(Stream stream, Action<string, string> onEvent,
         CancellationToken cancellationToken)
     {
         var text = new StringBuilder();
-        string? usage = null, error = null, eventName = null;
+        SubSessionUsage? usage = null;
+        string? error = null, eventName = null;
         using var reader = new StreamReader(stream);
         while (await reader.ReadLineAsync(cancellationToken) is { } line)
         {
@@ -237,29 +278,48 @@ public sealed class AgentPeerTools(IReadOnlyDictionary<string, Uri> peers, strin
                     text.Append(delta.GetProperty("text").GetString());
                     break;
                 case "message_delta" when root.TryGetProperty("usage", out var used) && used.ValueKind == JsonValueKind.Object:
-                    usage = UsageLine(used);
+                    usage = SubSessionUsage.From(used);
                     break;
                 case "error":
                     error = root.GetProperty("error").GetProperty("message").GetString();
-                    if (root.TryGetProperty("usage", out var failed) && failed.ValueKind == JsonValueKind.Object) usage = UsageLine(failed);
+                    if (root.TryGetProperty("usage", out var failed) && failed.ValueKind == JsonValueKind.Object) usage = SubSessionUsage.From(failed);
                     break;
             }
         }
         return (text.ToString(), usage, error);
     }
 
-    private static string UsageLine(JsonElement usage)
+    /// <summary>
+    /// What one reply of a sub-session reported it used: the API's usage object on <c>message_delta</c> (or on the
+    /// <c>error</c> event, FX6), with the four token kinds, how many requests they came from, and the charged cost in the
+    /// child's ledger currency (never <c>display_cost</c>, which is converted for showing).
+    /// </summary>
+    /// <param name="Requests">Null when the peer didn't report a count (then the roll-up counts as one request).</param>
+    private sealed record SubSessionUsage(long Input, long CacheWrite, long CacheRead, long Output, int? Requests, decimal? Cost, string? Currency)
     {
-        long Count(string name) => usage.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.Number ? v.GetInt64() : 0;
-        string cost = usage.TryGetProperty("cost", out var c) && c.ValueKind == JsonValueKind.Number
-            ? $"{c.GetDecimal().ToString("0.####", CultureInfo.InvariantCulture)} {(usage.TryGetProperty("currency", out var cur) ? cur.GetString() : "")}".Trim()
-            : MessageText.Format(ToolMessage.SubSessionCostUnknown);
-        return MessageText.Format(ToolMessage.SubSessionUsage, new
+        public static SubSessionUsage From(JsonElement usage)
         {
-            Requests = Count("requests"),
-            Tokens = (Count("input_tokens") + Count("cache_creation_input_tokens") + Count("cache_read_input_tokens") + Count("output_tokens"))
-                .ToString("N0", CultureInfo.InvariantCulture),
-            Cost = cost,
-        });
+            long Count(string name) => usage.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.Number ? v.GetInt64() : 0;
+            long requests = Count("requests");
+            return new(
+                Count("input_tokens"), Count("cache_creation_input_tokens"), Count("cache_read_input_tokens"), Count("output_tokens"),
+                requests > 0 ? (int)requests : null,
+                usage.TryGetProperty("cost", out var c) && c.ValueKind == JsonValueKind.Number ? c.GetDecimal() : null,
+                usage.TryGetProperty("currency", out var cur) && cur.ValueKind == JsonValueKind.String ? cur.GetString() : null);
+        }
+
+        /// <summary>The usage line in the tool result: <c>3 requests, 10,200 tokens, 0.0123 USD</c>.</summary>
+        public string Line()
+        {
+            string cost = Cost is { } amount
+                ? $"{amount.ToString("0.####", CultureInfo.InvariantCulture)} {Currency ?? ""}".Trim()
+                : MessageText.Format(ToolMessage.SubSessionCostUnknown);
+            return MessageText.Format(ToolMessage.SubSessionUsage, new
+            {
+                Requests = Requests ?? 0,
+                Tokens = (Input + CacheWrite + CacheRead + Output).ToString("N0", CultureInfo.InvariantCulture),
+                Cost = cost,
+            });
+        }
     }
 }
