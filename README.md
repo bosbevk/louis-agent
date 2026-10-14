@@ -118,32 +118,7 @@ Outside Docker the CLI finds `config/.env` and the repo root from any folder in 
 ## Configuration
 
 Settings live in `config/.env` and secrets in `config/.env.secrets`; both are git-ignored and created from their
-`.example` files. Full details:
-[docs/SETUP.md](docs/SETUP.md) and [docs/MODELS.md](docs/MODELS.md).
-
-| Setting | Purpose |
-|---|---|
-| `LLM_PROFILE` | Which LLM profile to load: `anthropic` (`config/.env.anthropic`, Claude Haiku 5.5) or `ollama` (`config/.env.ollama`) |
-| `LLM_PROVIDER`, `LLM_MODEL` | Set by the profile: `anthropic` (default, `claude-haiku-5-5`), `ollama` or `openai-compatible` |
-| `LLM_THINKING` | Visible reasoning: `off` / `low` / `medium` / `high` (default `medium` for Anthropic) |
-| `LLM_CACHE`, `LLM_CACHE_TTL` | Prompt caching (Anthropic): `on` by default; the prefix's lifetime, `5m` (default) or `1h` |
-| `ANTHROPIC_API_KEY` | Claude API key *(secret)* |
-| `AGENT_FUNCTION` | Which `Skills/{name}-skills.md` to load; `louis` loads all |
-| `AGENT_API_KEY` | When set, required (as `x-api-key` or `Authorization: Bearer`) for the HTTP API *(secret)* |
-| `API_PORT` | Host port for the API / web app (default `5080`, bound to `127.0.0.1`) |
-| `GIT_AUTHOR_NAME` / `_EMAIL`, `GIT_COMMITTER_NAME` / `_EMAIL` | Identity for commits made from the web app's Changes view *(secrets file)* |
-| `PAYMO_API_KEY`, `DEVOPS_API_KEY` | Enable the Paymo and Azure DevOps tools *(secret)* |
-| `DEVOPS_ORGANIZATION`, `DEVOPS_PROJECT`, `DEVOPS_TEAM` | Which Azure DevOps project (and optional team) the DevOps tools work on |
-| `GOOGLE_SEARCH_API_KEY`, `GOOGLE_SEARCH_ENGINE_ID` | Google for web search; without them it uses DuckDuckGo *(secret)* |
-| `REPOSITORIES_PATH`, `ACP_MOUNT_MAPPINGS` | Extra repositories mounted into the containers, and how Rider's Windows paths map to them |
-| `USAGE_LEDGER`, `LOG_DIRECTORY` | Usage ledger (on by default): one JSON line per model request in `{LOG_DIRECTORY}/usage-YYYY-MM.jsonl` (`logs/` from Docker) |
-| `USAGE_IN_CHAT` | `true` adds the usage line to Rider's chat after each answer (off by default; the CLI and web app always show it) |
-| `HOST_CULTURE`, `DISPLAY_CURRENCY` | Show costs in your currency (F14): `HOST_CULTURE=en-ZA` (written by `usage-probe -- --host-culture`) gives rands, `R0.11`; `DISPLAY_CURRENCY` overrides it. The ledger stays in USD |
-| `RATES_URL`, `RATES_FORMAT`, `RATES_FILE` | Exchange rates: Frankfurter by default, `config/rates.json` (tracked) as the fallback, served at the API's `GET /rates` |
-| `PRICES_FILE`, `PRICES_URL` | Price table for the ledger's costs: default `config/prices.json` (tracked, with today's Claude prices; local models at 0), or fetched from the API's `GET /prices` |
-| `AGENT_PEERS` | Other louis-agent APIs this one may hand tasks to (`StartSubSession`), as `name=url` pairs; Puls's compose sets its specialist |
-| `SUB_SESSION_PROMPT_BUDGET` | The most tokens a specialist's prompt should reach before it must answer (default `80000`, under Haiku 5.5's long-prompt price step) |
-| `PULS_PORT`, `PULS_CODER_PORT`, `PULS_WORKSPACE` | Puls's port (`5070`), its specialist's (`5071`) and the folder they work in |
+`.example` files. Every setting is in [docs/SETUP.md](docs/SETUP.md); choosing a model in [docs/MODELS.md](docs/MODELS.md).
 
 ## HTTP API
 
