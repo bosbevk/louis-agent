@@ -11,7 +11,7 @@ or retrieval. The ACP server keeps sessions the same way; the web app keeps a co
 
 ## Target shape
 
-![AgentSession architecture](../todo/agentsession-architecture.png)
+![AgentSession architecture](images/agentsession-architecture.svg)
 
 The target separates **session state** (who, what task, which memories) from **the model's context** (what actually
 goes into each prompt), builds that context deliberately each turn, and stores each kind of data where it fits.
