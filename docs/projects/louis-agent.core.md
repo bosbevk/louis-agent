@@ -96,7 +96,7 @@ The full step-by-step is in [How a turn works](../AGENT_INTERACTION.md).
 
 Folders split the code by concern and the namespace is the folder path (`LouisAgent.Core.Tools.Web`); dependencies
 point one way (Hosting → Agent → Llm, Tools, Skills, Usage, Pricing, Protocols → Guardrails → Config, Messages,
-Logging). `ArchitectureTests` holds both rules ([docs/CLAUDE.md, Project layout](../CLAUDE.md#project-layout)).
+Logging). `ArchitectureTests` holds both rules ([louis-agent.core/CLAUDE.md, Project layout](../../louis-agent.core/CLAUDE.md#project-layout)).
 
 ## Key types
 
