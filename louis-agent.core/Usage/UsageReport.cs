@@ -41,21 +41,27 @@ public static class UsageReport
     public static IReadOnlyList<UsageTotal> Totals(IEnumerable<UsageRecord> records, Func<UsageRecord, string> keyOf) =>
         records.GroupBy(keyOf).Select(group => Total(group.Key, group)).ToList();
 
-    /// <summary>The total of all <paramref name="records"/>.</summary>
+    /// <summary>
+    /// The total of all <paramref name="records"/>. A sub-session's roll-up counts as the requests it stands for
+    /// (<see cref="UsageRecord.Requests"/>), so a turn that delegated says how many requests were really made.
+    /// </summary>
     public static UsageTotal Total(string key, IEnumerable<UsageRecord> records)
     {
         var list = records.ToList();
         var priced = list.Where(r => r.Cost is not null).ToList();
         return new UsageTotal(
             key,
-            list.Count,
+            list.Sum(Requests),
             list.Sum(r => r.Tokens.Input ?? 0),
             list.Sum(r => r.Tokens.CacheWrite ?? 0),
             list.Sum(r => r.Tokens.CacheRead ?? 0),
             list.Sum(r => r.Tokens.Output ?? 0),
             priced.Count == 0 ? null : priced.Sum(r => r.Cost!.Amount),
-            list.Count - priced.Count);
+            list.Where(r => r.Cost is null).Sum(Requests));
     }
+
+    /// <summary>The model requests a record stands for: one, or a roll-up's count.</summary>
+    private static int Requests(UsageRecord record) => record.Requests ?? 1;
 
     /// <summary>
     /// Adds totals up, e.g. the usage louis-agent reports for each reply of a fix (F3): requests and tokens add, and the

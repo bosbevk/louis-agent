@@ -1,3 +1,4 @@
+using System.Text.Json;
 using LouisAgent.Core.Usage;
 using LouisAgent.Core.Pricing;
 
@@ -89,6 +90,56 @@ public class UsageReportTests
         var record = UsageReport.Read(WriteLedger(Ledger)).First() with { Cost = charged };
 
         Assert.That(UsageReport.Price([record], Prices).Single().Cost, Is.SameAs(charged));
+    }
+
+    /// <summary>A sub-session's roll-up (F5): one record standing for the specialist's 3 requests, with their charged cost.</summary>
+    private static UsageRecord RollUp(UsageCost? cost = null, int requests = 3) => new(
+        At: DateTimeOffset.Parse("2026-10-14T10:00:00Z"), Round: 0, Purpose: UsagePurpose.SubSession, Host: "api",
+        Session: "sess_parent", Turn: 2, Task: null, Run: null, Service: null, Model: "sub-session:puls",
+        Tokens: new UsageTokens(1_000, 0, 9_000, 200, null), DurationMs: 4_000, Stop: "sub_session",
+        Cost: cost ?? new UsageCost("USD", 0.0123m, null), Requests: requests);
+
+    [Test]
+    public void Total_ARollUpRecord_CountsItsRequests()
+    {
+        // F5 follow-up: a turn that delegated once made 1 request itself and 3 through the specialist, so it says 4.
+        UsageRecord own = UsageReport.Read(WriteLedger(Ledger)).Skip(1).First() with { Cost = new UsageCost("USD", 0.005m, null) };
+
+        UsageTotal total = UsageReport.Total("turn", [own, RollUp()]);
+
+        Assert.That(total.Requests, Is.EqualTo(4));
+        Assert.That((total.Input, total.CacheRead, total.Output), Is.EqualTo((48_605L, 9_000L, 670L)));
+        Assert.That(total.Cost, Is.EqualTo(0.0173m));
+        Assert.That(total.Unpriced, Is.Zero);
+    }
+
+    [Test]
+    public void Total_AnUnpricedRollUp_CountsItsRequestsAsUnpriced()
+    {
+        // A specialist on an unpriced model: "3 requests unpriced", not 1, so the partial cost isn't read as the whole.
+        UsageTotal total = UsageReport.Total("turn", [RollUp(cost: null) with { Cost = null }]);
+
+        Assert.That((total.Requests, total.Unpriced, total.Cost), Is.EqualTo((3, 3, (decimal?)null)));
+    }
+
+    [Test]
+    public void Json_ANormalRecord_HasNoRequestsField()
+    {
+        // The ledger format of a model request's row is unchanged: requests is only written on a roll-up.
+        UsageRecord record = UsageReport.Read(WriteLedger(Ledger)).First();
+
+        Assert.That(JsonSerializer.Serialize(record, JsonlUsageSink.Json), Does.Not.Contain("\"requests\""));
+    }
+
+    [Test]
+    public void Json_ARollUp_RoundTripsRequests()
+    {
+        string line = JsonSerializer.Serialize(RollUp(), JsonlUsageSink.Json);
+
+        UsageRecord back = UsageReport.Read(WriteLedger(line + "\n")).Single();
+
+        Assert.That(line, Does.Contain("\"requests\":3").And.Contain("\"purpose\":\"sub_session\""));
+        Assert.That((back.Requests, back.Purpose, back.Cost?.Amount), Is.EqualTo(((int?)3, "sub_session", (decimal?)0.0123m)));
     }
 
     [Test]
