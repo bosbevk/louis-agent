@@ -132,29 +132,14 @@ Chats that stream the thinking and every tool call, a file browser, a Changes vi
 Branches view to review and merge branches; pushing stays with you. How it works:
 [the web app's design doc](docs/projects/louis-agent.web.md).
 
-## Skills and tools
+## Skills, tools and safety
 
-Built-in tools cover workspace files, git, `dotnet` build/test/run, Python, PowerShell, bash, web search and page fetching,
-Azure DevOps work items and Paymo time tracking. Markdown **skills** in [`Skills/`](Skills) add guidance and repeatable
-procedures: `personality.md` gives the agent its character (edit or delete it to change who the agent is), and
-`default.md` holds its operating instructions and routes each task to a toolset. A session can load only the toolsets
-it needs (`files`, `git`, `dotnet`, `web`, `python`, …), each with its own guide (`Skills/{toolset}-skills.md`), so its
-prompt stays small and cacheable. A session can also name a personality from `Skills/personalities/`: Puls's voice
-(`puls.md`), or a specialist's role (`puls-researcher.md`, `puls-reader.md`, …). The agent can write new skills, and can build its own typed tools, which
-wait in `Skills/tools/pending` until you approve them (`/tools`, `/approve <Name>`, `/reject <Name>`).
-
-## Safety
-
-- File tools stay inside the workspace, refuse secret files (`.env`, keys, certificates; templates such as
-  `.env.example` are readable) and don't follow symbolic links.
-- Scripts and git run without a shell, with arguments passed as a list.
-- The API and web app are published on `127.0.0.1` only; set `AGENT_API_KEY` to require a key. The MCP server in HTTP
-  mode is also local-only and takes `MCP_API_KEY`.
-- The web app never pushes (its commits and merges stay local), and the agent only pushes when you ask it to.
-- Oversized tool output is summarised instead of flooding the model's context, and a tool call cut off by the output
-  limit is never run.
-- A specialist's sub-session is one level deep (it can't delegate again), limited to 3 per turn and 5 minutes each,
-  and has a prompt budget, so a badly routed task can't grow into long-context prices.
+The agent's tools cover files, git, `dotnet`, Python, PowerShell, bash, the web, Azure DevOps and Paymo; markdown
+**skills** in [`Skills/`](Skills) give it its personality, route each task to a toolset, and guide each toolset. A
+session loads only the toolsets it needs. The agent can write new skills and build its own tools, which wait for your
+`/approve`. File tools stay inside the workspace and never touch secret files, the model's text is never spliced into a
+command line, and everything listens on `127.0.0.1` only. Details: [Architecture: Skills](docs/ARCHITECTURE.md#skills),
+[Tools](docs/ARCHITECTURE.md#tools) and [Security](docs/ARCHITECTURE.md#security).
 
 ## Logs
 

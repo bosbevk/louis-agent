@@ -309,6 +309,8 @@ startup and failures only log.
 - **Web:** `FetchUrl` blocks private, loopback and metadata addresses on every redirect and at connect time; fetched
   content is treated as untrusted. The web app renders markdown without raw HTML and only allows http(s)/mailto links.
 - **Network exposure:** the API and web app, and the MCP server in HTTP mode, are published on `127.0.0.1` only.
+- **Pushing stays with you:** the web app never pushes (its commits and merges stay local), and the agent pushes only
+  when you ask it to.
 
 ## Logging
 
