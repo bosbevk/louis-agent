@@ -1,10 +1,10 @@
 # F5 · Toolset profiles: send only the tools a session needs
 
-> **Status:** built; short benchmark done, full run pending · **Milestone:** M2 · **Depends on:** F1
+> **Status:** done (2026-10-14) · **Milestone:** M2 · **Depends on:** F1
 >
 > **Spec:** [Optimisation §C](../specs/RESPONSE_OPTIMISATION.md)
 >
-> **In the TODO:** **F5 Toolset profiles** under *Now* ([TODO](../../TODO.md))
+> **Done:** 2026-10-14, in the [CHANGELOG](../../CHANGELOG.md)
 
 Every engine registers every toolset whose keys are set: in the demo, 108 tools (68,162 characters of definitions)
 including 35 Paymo and DevOps tools a code-fixing container never uses. Their guidance in the system prompt is sent too
@@ -137,6 +137,11 @@ with named toolsets, send it a task, and get the result back, so that tools are 
   to done here and in the features table, and note it in the spec's implementation map.
 
 ## Left before done (2026-10-13)
+
+**Finished on 2026-10-14, decided with Louis:** the short run below stands in for the full benchmark, which was not
+run; the Puls delegation checks ([three runs per mode](../../samples/sample-output-puls-check-repeat/README.md)) ran
+sub-sessions end to end. The *Done when* line on delegation ("only where the ledger shows it is cheaper") continues as
+the TODO's *Relook at how often Puls delegates*. What follows is the list as it stood before.
 
 Built on `feature/F5-toolset-profiles` (steps 1–10 and 12; [plan](../plans/F05-toolset-profiles.md)); all suites pass.
 Left, because each needs a model and so spends money:

@@ -33,8 +33,6 @@ its own.
 
 **M2 — Cheaper:** stop paying full price for the same tokens.
 
-- [ ] [F5 Toolset profiles](docs/features/F05-toolset-profiles.md) — load only the tools a session needs (the demo:
-      coding tools only). *Built on its branch; short benchmark done (prefix −50%, run −23%, 4/4 fixes); left:* the full run and a sub-session end to end
 - [ ] [F15 Model limits](docs/features/F15-model-limits.md) — each model's context window and cache minimum beside its
       prices, `num_ctx` sent to local models, and F9's compaction point (below the price step: under 100k on Haiku 5.5)
       and F13's budget per model instead of one number for all. *From the local triage runs:* `num_ctx` and `num_gpu`
