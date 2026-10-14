@@ -32,7 +32,7 @@ or fix doc (*What the build changed*), not here.
 - **One file per plan**, named like what it plans: `Fnn-name.md` for a feature, `FXnn-name.md` for a fix, `CLn-name.md` for a
   cleanup (a TODO line with no feature or fix doc).
 - **Sections:** *Context* (why now, what the doc says), *Design* (what changes from the doc, and why), *Steps* (one
-  commit each, with its test; the review stop after each), *Verification* (tests, free manual checks, and any paid run,
+  commit each, with its test, written and seen failing first; the review stop after each), *Verification* (tests, free manual checks, and any paid run,
   which needs approval first), and the *Concepts* each step teaches, with their skill in the [goal](../GOAL.md).
 - **A lasting decision gets an ADR:** when a plan decides something later work must follow, its record goes in
   [docs/adr/](../adr/README.md) in the same PR; the plan keeps the steps, the ADR the why.

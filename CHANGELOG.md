@@ -3,6 +3,8 @@
 > **Reference.** What was finished, newest first, one entry per feature, fix or cleanup. **Elsewhere:** what's still
 > open in the [TODO](TODO.md); how each was built in its feature, fix or plan doc (linked from its entry).
 
+- 2026-10-14 — **Test first**: a step that changes behaviour starts with its tests, run and seen failing, then the
+  code; one commit with both, the red output in the step's explanation ([ADR 0014](docs/adr/0014-test-first.md))
 - 2026-10-14 — **CL6 arc42, ADRs and C4**: the architecture in arc42's twelve sections in `docs/architecture/`
   (ARCHITECTURE.md's text moved unchanged, plus goals, constraints, C4 context, container and component diagrams,
   quality scenarios and a glossary), and 13 decisions as ADRs in `docs/adr/`, each written from where it was
