@@ -96,15 +96,13 @@ Return strings the model can act on: say what went wrong and what to do instead.
 
 **The texts a tool returns are `ToolMessage` members** (*Messages and logging*), errors and results alike:
 `return MessageText.Format(ToolMessage.FileNotFound, new { Path = relativePath });`. Its descriptions are attributes.
-Two golden files pin what the model reads: `ModelRequestSnapshot.json` (tools, descriptions, system prompt) and
-`ToolMessageSnapshot.json` (every `ToolMessage` template). A new tool or text changes them on purpose: regenerate with
-`LOUIS_UPDATE_GOLDEN=1 dotnet test tests/louis-agent.core.tests --filter "ModelRequestSnapshotTests|ToolMessageSnapshotTests"`
-and review the diff.
+A new tool or text changes the golden files on purpose: regenerate them and review the diff (*Tests*).
 
 ### Adding a toolset
 
 **Every toolset follows one pattern: guide → tools → guide.** `default.md` routes a task to a toolset, the toolset's
-guide names its tools and when to use them, and each tool's `[Description]` stays short. Four pieces, nothing else:
+guide names its tools and when to use them, and each tool's `[Description]` stays short. The files a new toolset
+touches, and nothing else:
 
 1. **Tools:** a class in `louis-agent.core/Tools/{Toolset}/` (*Adding a C# tool*); every public method is a tool.
 2. **Catalogue entry** in `Agent/ToolsetCatalog.cs`: the name, a one-line description, the settings it needs
@@ -112,9 +110,12 @@ guide names its tools and when to use them, and each tool's `[Description]` stay
    (`GuideFile`).
 3. **Guide:** `Skills/{toolset}-skills.md`, plain markdown: what the toolset is for, its tools grouped with one line
    each, and its workflows (it may also hold `## Skill:` procedures). `AgentHost.LoadSkills(agent, toolsets)` adds it
-   to the prompt, through `MarkdownSkillProvider`, only when a session loads the toolset; list it in
-   `SkillFiles.BuiltIn` too (so the agent can't overwrite it). **No provider class per toolset.**
-4. **Router:** a row in `default.md`'s toolset table, and the name in `DefaultSkillsProviderTests`' toolset list.
+   to the prompt, through `MarkdownSkillProvider`, only when a session loads the toolset. **No provider class per
+   toolset.**
+4. **Built-in list:** the guide's name in `SkillFiles.BuiltIn`, so the agent can't overwrite it.
+5. **Router:** a row in `default.md`'s toolset table.
+6. **Tests:** the name in `DefaultSkillsProviderTests`' toolset list, the toolset's tests in
+   `tests/louis-agent.core.tests/Tools/{Toolset}/`, and the golden files regenerated (*Tests*).
 
 Every catalogue toolset follows it; `SkillFilesTests` checks that each has a guide that loads with it.
 
@@ -194,7 +195,7 @@ Log.Log(LogLevel.Information, McpServerLogMessage.ToolNameTaken, new { Name = na
   layout, and key=value or table formatting.
 - **Text the model reads is pinned:** `ToolMessageSnapshotTests` renders every `ToolMessage` template into
   `Messages/ToolMessageSnapshot.json`, as the model-request snapshot does for the tools and prompt; a deliberate change
-  regenerates it (`LOUIS_UPDATE_GOLDEN=1`) and is reviewed in the diff. Numbers in messages are invariant (`12,345`).
+  regenerates it (*Tests*). Numbers in messages are invariant (`12,345`).
 - **Logging goes through `ILogger` (Microsoft.Extensions.Logging) with Serilog behind it**, configured in code by
   `Logging/AgentLogging` (`AgentHost` calls `Configure`; another agent on core calls it itself). Get a logger with
   `AgentLogging.For<T>()` and log a message member with `logger.Log(level, Member, new { Hole = value })`
@@ -213,11 +214,9 @@ Log.Log(LogLevel.Information, McpServerLogMessage.ToolNameTaken, new { Name = na
 
 Create `Skills/{name}-skills.md`. With `AGENT_FUNCTION=louis` every skill file is loaded; otherwise set
 `AGENT_FUNCTION={name}`. Skill files come with the **skills** toolset: a session without it (Puls's chats, agents
-only) gets the router and its toolsets' guides, not the skill files. Since F5 no guide loads in every session: a
-guide comes with its toolset (`bash-skills.md` with `bash`, named by the catalogue's `GuideFile`), and a built-in file
-the agent must not overwrite is listed in `SkillFiles.BuiltIn`. Procedures use `## Skill: Name` with an `Execution:` fence
-(bash, powershell or python); arguments arrive as `SKILL_ARG_*` environment variables. A toolset's guide follows
-*Adding a toolset*: plain markdown, no provider class of its own.
+only) gets the router and its toolsets' guides, not the skill files; a toolset's guide is *Adding a toolset*. A
+built-in file the agent must not overwrite is listed in `SkillFiles.BuiltIn`. Procedures use `## Skill: Name` with an
+`Execution:` fence (bash, powershell or python); arguments arrive as `SKILL_ARG_*` environment variables.
 
 ### Adding a personality
 
@@ -260,9 +259,8 @@ anywhere else.
 
 - Tool calls are logged to stderr: `[TOOL] -> Name(args)` and `[TOOL] <- Name: result` (or `failed: …`).
 - In Docker, logs persist in `logs/`; `docker logs louis_agent_api` shows the API.
-- Log through `ILogger` (*Messages and logging*), never `Console.Out`: stdout carries the ACP and MCP protocols. With
-  `LOG_DIRECTORY` set, each process writes `agent-{host}-{time}-{pid}.log` there (the stderr lines with the time); the
-  orchestrator's lines are tagged `[orchestrator]`, louis-agent's progress under it `[louis-agent]`.
+- With `LOG_DIRECTORY` set, each process's run file is there (*Messages and logging*); the orchestrator's lines are
+  tagged `[orchestrator]`, louis-agent's progress under it `[louis-agent]`.
 - Every model request is in the usage ledger, `{LOG_DIRECTORY}/usage-YYYY-MM.jsonl` (tokens, cost, host, session,
   turn, fix and run; no prompt text). Total one with
   `dotnet run --project tools/louis-agent.usage-probe -- --ledger logs/usage-YYYY-MM.jsonl`.
@@ -279,10 +277,15 @@ dotnet test tests/louis-agent.orchestrator.tests
 dotnet test louis-agent-solution.sln          # everything, including the order-service sample's tests
 ```
 
-**What the model is sent is pinned by a golden file:** `ModelRequestSnapshotTests` compares the tools, the system
-prompt and the engine's fixed texts with `Agent/ModelRequestSnapshot.json`. A deliberate change (a new tool, an edited
-description or skill file) regenerates it: `LOUIS_UPDATE_GOLDEN=1 dotnet test tests/louis-agent.core.tests --filter
-ModelRequestSnapshotTests`, then review the file's diff before committing.
+**What the model reads is pinned by two golden files:** `ModelRequestSnapshotTests` compares the tools, their
+descriptions, the system prompt and the engine's fixed texts with `Agent/ModelRequestSnapshot.json`;
+`ToolMessageSnapshotTests` compares every `ToolMessage` template with `Messages/ToolMessageSnapshot.json`. A deliberate
+change (a new tool or text, an edited description or skill file) regenerates them, and you review their diff before
+committing:
+
+```bash
+LOUIS_UPDATE_GOLDEN=1 dotnet test tests/louis-agent.core.tests --filter "ModelRequestSnapshotTests|ToolMessageSnapshotTests"
+```
 
 Tests use `FakeChatClient` (a scripted `IChatClient` that also streams) and `StubHandler` for HTTP — no network, model or
 Docker. A few tests skip themselves when git, pip or the network isn't available. The agent runs tests on Linux inside
@@ -306,9 +309,8 @@ whole loop against a real model: API sessions, the fix flow, and the web app's B
 - **Arguments as data** — skill and tool arguments travel as environment variables or argument lists, never through a
   shell, so model text can't become commands.
 - **Guard the context** — oversized results are summarised, cut-off calls are never run, failures carry their reason.
-- **Hosts stay thin** — each host maps the same stream to its protocol; behaviour lives in core.
 - **Toolsets per session** (F5) — a session names its toolsets when it opens and keeps them, so its prefix stays
-  cacheable; an engine per toolset list, with only those tools and their guides (docs/CLAUDE.md, *Adding a toolset*).
+  cacheable; an engine per toolset list, with only those tools and their guides (*Adding a toolset*).
 - **Measure every request, and show it** — the usage ledger records each model request with its tokens and its cost,
   priced from a table dated by `as_of`, so later price changes never rewrite history; unknown prices are `null`, never
   0. Every host shows a turn's usage from the same records and totals (`UsageReport.Total`), so the views and the
