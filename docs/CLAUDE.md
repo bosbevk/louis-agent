@@ -278,7 +278,21 @@ Create `Skills/{name}-skills.md`. With `AGENT_FUNCTION=louis` every skill file i
 `AGENT_FUNCTION={name}`. Skill files come with the **skills** toolset: a session without it (Puls's chats, agents
 only) gets the router and its toolsets' guides, not the skill files; a toolset's guide is *Adding a toolset*. A
 built-in file the agent must not overwrite is listed in `SkillFiles.BuiltIn`. Procedures use `## Skill: Name` with an
-`Execution:` fence (bash, powershell or python); arguments arrive as `SKILL_ARG_*` environment variables.
+`Execution:` fence (bash, powershell or python); arguments arrive as `SKILL_ARG_*` environment variables, so quote
+them and never build commands from them:
+
+````markdown
+## Skill: MySkill
+
+- Description: What it does.
+- Parameters:
+  - `name` (string): What it is.
+- Execution:
+
+```bash
+echo "Hello, ${SKILL_ARG_name}"
+```
+````
 
 ### Adding a personality
 
