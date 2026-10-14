@@ -1,7 +1,7 @@
 # Plan: CL1 Project layout (cleanup)
 
 > **For:** the TODO's *Project layout, after F4, first of two cleanups* · **Rules:**
-> [docs/CLAUDE.md, Project layout](../CLAUDE.md#project-layout) · **Branch:** `refactor/project-layout` ·
+> [louis-agent.core/CLAUDE.md, Project layout](../../louis-agent.core/CLAUDE.md#project-layout) · **Branch:** `refactor/project-layout` ·
 > **Approved:** 2026-10-11
 
 ## Context

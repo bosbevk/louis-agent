@@ -25,7 +25,10 @@ you need otherwise.
 
 | Doc | Type | Read it to… |
 |---|---|---|
-| [Development guide](CLAUDE.md) | How-to | Build and test, find your way around the code, add a tool, a skill, a theme or another agent; design decisions, known limitations, common errors |
+| [Development guide](CLAUDE.md) | How-to | Work with Louis step by step, the rules that always apply, find your way around the code, add a skill or a personality, run and debug; known limitations, common errors |
+| [Core guide](../louis-agent.core/CLAUDE.md) | How-to | Change `louis-agent.core`: add a tool or a toolset, the layout and message rules, another agent on core, a new model provider |
+| [Tests guide](../tests/CLAUDE.md) | How-to | Run the tests, regenerate the golden files (bash or PowerShell), write tests that run on Linux too |
+| [Hosts guide](../src/CLAUDE.md) | How-to | Change a host in `src/`: its own message enums, adding a web theme |
 
 ## 4. See it work: the orchestrator demo
 

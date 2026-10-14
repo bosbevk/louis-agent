@@ -1,7 +1,7 @@
 # Plan: CL3 Messages and logging (cleanup)
 
 > **For:** the TODO's *Messages and logging, after F4, second of two cleanups* · **Rules:**
-> [docs/CLAUDE.md, Messages and logging](../CLAUDE.md#messages-and-logging) · **Branch:** `refactor/messages-and-logging` ·
+> [louis-agent.core/CLAUDE.md, Messages and logging](../../louis-agent.core/CLAUDE.md#messages-and-logging) · **Branch:** `refactor/messages-and-logging` ·
 > **Approved:** 2026-10-12
 
 ## Context

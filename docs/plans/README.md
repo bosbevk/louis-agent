@@ -19,6 +19,7 @@ or fix doc (*What the build changed*), not here.
 | [F14-display-currency.md](F14-display-currency.md) | [F14 Display currency](../features/F14-display-currency.md) | 2026-10-11 | Built before M2 by choice |
 | [F05-toolset-profiles.md](F05-toolset-profiles.md) | [F5 Toolset profiles](../features/F05-toolset-profiles.md) | 2026-10-13 | No toolsets at start-up; an engine per toolset list; sub-sessions on a peer (`StartSubSession`) |
 | [F05-usage-rollup.md](F05-usage-rollup.md) | TODO: *F5 follow-up: roll sub-session usage up* | 2026-10-13 | One summary record per sub-session in the parent scope (never the ledger); three steps |
+| [CL5-guides-by-folder.md](CL5-guides-by-folder.md) | TODO: *Guides by folder* (cleanup) | 2026-10-14 | The guide's folder-only how-tos move to `CLAUDE.md` files beside the code, loaded only there; none in `Skills/` (embedded, read as personalities) |
 | [CL4-doc-types.md](CL4-doc-types.md) | TODO: *One type per doc* (cleanup) | 2026-10-14 | Diátaxis: each doc one type; benchmarks to `BENCHMARKS.md`, Done to `CHANGELOG.md`; a link check per step |
 | [CL3-messages-and-logging.md](CL3-messages-and-logging.md) | TODO: *Messages and logging* (cleanup) | 2026-10-12 | Serilog behind `ILogger`, not NLog; tool texts pinned by a golden file; the comms log unchanged |
 | [CL2-split-agent-engine.md](CL2-split-agent-engine.md) | TODO: *Split `AgentEngine`* (cleanup) | 2026-10-11 | Classes with the engine as façade; console UI to the CLI; pure checks in `Guardrails/` |

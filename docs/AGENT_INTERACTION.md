@@ -41,7 +41,7 @@ Every **public** instance method becomes a tool, named after the method, with it
 documentation. Keep helpers `internal` or `private`. `ToolRegistry` keeps every tool in name order, so the start of
 every request is the same bytes and the prompt cache holds (F4). A toolset whose settings are missing (Paymo or DevOps
 without its API key) can't be loaded. An agent built on core, like the orchestrator, passes its own tool objects as
-`toolsets:` the same way (the guide's [Building another agent on core](CLAUDE.md#building-another-agent-on-core)).
+`toolsets:` the same way (the guide's [Building another agent on core](../louis-agent.core/CLAUDE.md#building-another-agent-on-core)).
 
 ### How skills are loaded
 
@@ -136,8 +136,8 @@ To see what the model is offered, inspect `engine.Tools` (name, description, JSO
 ## Extending
 
 The steps for a new tool, toolset, skill or agent are how-tos, in the development guide:
-[a C# tool](CLAUDE.md#adding-a-c-tool), [a toolset](CLAUDE.md#adding-a-toolset), [a skill](CLAUDE.md#adding-a-skill),
-[a personality](CLAUDE.md#adding-a-personality) and [another agent on core](CLAUDE.md#building-another-agent-on-core).
+[a C# tool](../louis-agent.core/CLAUDE.md#adding-a-c-tool), [a toolset](../louis-agent.core/CLAUDE.md#adding-a-toolset), [a skill](CLAUDE.md#adding-a-skill),
+[a personality](CLAUDE.md#adding-a-personality) and [another agent on core](../louis-agent.core/CLAUDE.md#building-another-agent-on-core).
 
 ---
 [Docs index](README.md) · Previous: [Paymo prompts](PAYMO-PROMPTS.md) · Next: [How the agents and endpoints talk](AGENT_COMMUNICATION.md)

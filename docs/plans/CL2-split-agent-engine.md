@@ -1,7 +1,7 @@
 # Plan: CL2 Split AgentEngine (cleanup)
 
 > **For:** the TODO's *Split `AgentEngine`, right after the project layout* · **Rules:**
-> [docs/CLAUDE.md, Project layout](../CLAUDE.md#project-layout) · **Branch:** `refactor/split-agent-engine` ·
+> [louis-agent.core/CLAUDE.md, Project layout](../../louis-agent.core/CLAUDE.md#project-layout) · **Branch:** `refactor/split-agent-engine` ·
 > **Approved:** 2026-10-11
 
 ## Context
