@@ -25,6 +25,14 @@ The goal and the skill map are in [GOAL.md](GOAL.md).
 
 ## Steps, branches and commits
 
+**Doing a step: test first** ([how](../tests/CLAUDE.md#test-first)):
+
+1. Write the test for the step's behaviour (a fix: a test that reproduces the bug).
+2. Run it and see it fail for the expected reason; keep the output for the explanation.
+3. Implement until it passes, then tidy with the tests green.
+
+Docs-only and configuration-only steps have no test to write first.
+
 **Finishing a step** (before rule 5's stop):
 
 1. `dotnet build louis-agent-solution.sln`, and `dotnet test` on the projects the step touches ([Tests](../tests/CLAUDE.md)); the whole
@@ -34,7 +42,8 @@ The goal and the skill map are in [GOAL.md](GOAL.md).
 3. Update the feature or fix doc with what the step learned; on the last step, follow *Finishing a feature* or
    *Finishing a fix* in their READMEs. The plan changes only under *Approved during the build*. New text goes in the
    doc of its type (*Rules that always apply*: one type per doc).
-4. Commit the step on its own, then explain it (rules 4 and 6) and stop.
+4. Commit the step on its own, test and code together, then explain it (rules 4 and 6), showing the test failing
+   before the code and passing after, and stop.
 
 **Branches** are off `main` and carry the plan's id: `feature/F22-role-tools`, `fix/FX14-sub-session-prompt-budget`,
 `refactor/CL3-messages-and-logging`; `docs/{name}` for docs-only work. The Claude project's `claude/*` branches keep
@@ -95,6 +104,8 @@ decision's record (its context, and what it cost) in [docs/adr/](adr/README.md).
 - **stdout is a protocol** — the ACP and MCP servers speak on it, so logs go through `ILogger` to stderr
   ([Messages and logging](../louis-agent.core/CLAUDE.md#messages-and-logging)).
   Why: [ADR 0009](adr/0009-message-text-as-enum-templates.md).
+- **Test first** — a step that changes behaviour starts with its tests, run and seen failing, then the code; one
+  commit with both. Why: [ADR 0014](adr/0014-test-first.md).
 - **Tests are platform-neutral** — the agent runs them on Linux in its containers
   ([Writing tests](../tests/CLAUDE.md#writing-tests)).
 - **One type per doc** — every doc is a tutorial, how-to, reference, explanation or plan, and opens with what it answers;

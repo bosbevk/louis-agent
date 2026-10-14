@@ -15,6 +15,20 @@ dotnet test tests/louis-agent.orchestrator.tests
 dotnet test louis-agent-solution.sln          # everything, including the order-service sample's tests
 ```
 
+## Test first
+
+A step that changes behaviour starts here ([ADR 0014](../docs/adr/0014-test-first.md)):
+
+1. **Write the test** for the behaviour the step adds, in the folder that mirrors the source
+   (`tests/louis-agent.core.tests/Tools/Git/…` tests `Tools/Git/…`). A fix starts with a test that reproduces the bug.
+2. **See it fail for the right reason:** run just that test (`dotnet test … --filter "FullyQualifiedName~MyTests"`).
+   It should fail on an assertion, not a compile error: give a new member a stub (`throw new
+   NotImplementedException()`) so the test compiles. Keep the failing output for the step's explanation.
+3. **Implement until it passes**, then run the project's suite and tidy with everything green.
+
+The step is one commit with the test and the code, so every commit passes. A change the tests can't reach yet (the web
+app) says so in its explanation, with how it was checked instead.
+
 ## Golden files
 
 **What the model reads is pinned by two golden files:** `ModelRequestSnapshotTests` compares the tools, their
