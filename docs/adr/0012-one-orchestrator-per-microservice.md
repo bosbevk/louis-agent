@@ -28,4 +28,4 @@ louis-agent holds only git and build access to its one repository.
 ## Links
 
 [Orchestrator design](../specs/ORCHESTRATOR_DESIGN.md#decisions-one-orchestrator-per-microservice) ·
-[Runbooks](../RUNBOOKS.md) · [Orchestrator demo](../../samples/README.md)
+[Runbooks](../projects/orchestrator-runbooks.md) · [Orchestrator demo](../../samples/README.md)

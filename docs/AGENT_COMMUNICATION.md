@@ -2,11 +2,11 @@
 
 > **Reference.** The HTTP API, its event stream, the web app, Rider (ACP), MCP, and agent-to-agent messages.
 > **Elsewhere:** the components in [Architecture](architecture/README.md), one turn inside the agent in
-> [How a turn works](AGENT_INTERACTION.md).
+> [How a turn works](architecture/06-runtime-view.md).
 
 Who connects to louis-agent, over which protocol, and what goes over the wire — from a browser or Rider, from another
 program, and from another agent (the orchestrator). For what happens *inside* one turn (the model, tools and skills),
-see [AGENT_INTERACTION.md](AGENT_INTERACTION.md).
+see [AGENT_INTERACTION.md](architecture/06-runtime-view.md).
 
 ## The big picture
 
@@ -286,7 +286,7 @@ Approving agent-built tools is never possible over MCP: that stays with the user
 ## Agent to agent: the orchestrator and louis-agent
 
 The orchestrator ([samples/README.md](../samples/README.md)) is a second agent built on `louis-agent.core`. It reads a
-service's error log, decides what each error needs from a runbook per API method ([RUNBOOKS.md](RUNBOOKS.md)), and has
+service's error log, decides what each error needs from a runbook per API method ([the runbooks](projects/orchestrator-runbooks.md)), and has
 louis-agent fix the ones the runbook allows — over the same session API any client uses. It then checks louis-agent's work itself.
 
 Besides the sessions, it calls `GET /health` at start-up and, in the demo, takes its prices and exchange rates from
@@ -451,4 +451,4 @@ Planned features change parts of this page; each one's doc lists updating it in 
 | [F17 Orchestrator agent](features/F17-orchestrator-agent.md) | Triage becomes a routing workflow: a model classifies each error, the known paths (fix and verify, acknowledge, escalate) run as code, and an agent handles only the exceptions; the three checks become one `ConfirmFix` tool; the fix still goes to louis-agent.api the same way, and the comms log names the path |
 
 ---
-[Docs index](README.md) · Previous: [How a turn works](AGENT_INTERACTION.md) · Next: [Architecture](architecture/README.md)
+[Docs index](README.md) · Previous: [How a turn works](architecture/06-runtime-view.md) · Next: [Architecture](architecture/README.md)

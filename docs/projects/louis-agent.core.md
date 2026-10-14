@@ -40,7 +40,7 @@ flowchart LR
    stop reason, and the `UsageScope` the host opened for the turn (host, session, turn, purpose, task/run/service tags).
    Counts and ids only, never prompt text.
 
-The full step-by-step is in [How a turn works](../AGENT_INTERACTION.md).
+The full step-by-step is in [How a turn works](../architecture/06-runtime-view.md).
 
 ## Structure
 
@@ -160,7 +160,7 @@ variables, never model text spliced into a command line; `FetchUrl` blocks priva
 
 ## Related docs
 
-[Architecture](../architecture/README.md) · [How a turn works](../AGENT_INTERACTION.md) · [Development guide](../CLAUDE.md) ·
+[Architecture](../architecture/README.md) · [How a turn works](../architecture/06-runtime-view.md) · [Development guide](../CLAUDE.md) ·
 [Setup](../SETUP.md) · [Models](../MODELS.md)
 
 ---

@@ -58,7 +58,7 @@ fixes in the web app. [sample-output-short/](sample-output-short/README.md) is a
 |---|---|---|
 | order-service | `samples/order-service` (runs in the demo-setup container; replays run in the orchestrator's) | A console stand-in for a microservice: 11 API methods over `data/orders.csv`, one file each in `src/OrderService/Api/`. Unhandled exceptions go to `logs/errors.jsonl`, standing in for Exceptionless. |
 | Orchestrator | `src/louis-agent.orchestrator` (`docker/Dockerfile.orchestrator`) | An `AgentEngine` from `louis-agent.core` whose system prompt is the runbooks and whose only tools are `ServiceTools` (no file, git or shell tools). |
-| Runbooks | `src/louis-agent.orchestrator/Skills/` | `orchestrator.md` (workflow), `order-service/service.md` (owners, deploy policy) and one file per API method: what it does, which exceptions are expected, auto-fixable or escalated, and the correct behaviour. See [docs/RUNBOOKS.md](../docs/RUNBOOKS.md). |
+| Runbooks | `src/louis-agent.orchestrator/Skills/` | `orchestrator.md` (workflow), `order-service/service.md` (owners, deploy policy) and one file per API method: what it does, which exceptions are expected, auto-fixable or escalated, and the correct behaviour. See [the runbooks guide](../docs/projects/orchestrator-runbooks.md). |
 | louis-agent | `src/louis-agent.api` (the demo-api container) | Does each fix with its usual tools: branch from `main`, edit, regression test in a new file, build, test, commit, then a `FIX-RESULT` line. |
 
 ## What the demo traffic triggers
@@ -199,7 +199,7 @@ The model is louis-agent's usual `LLM_*` configuration.
 
 ## Adding a service or a method
 
-How to write a good runbook, with a template, is in [docs/RUNBOOKS.md](../docs/RUNBOOKS.md).
+How to write a good runbook, with a template, is in [the runbooks guide](../docs/projects/orchestrator-runbooks.md).
 
 
 - **A method:** add `Skills/{service}/{method}.md` with a `## Method: {method}` runbook. The file name is the method
@@ -217,4 +217,4 @@ How to write a good runbook, with a template, is in [docs/RUNBOOKS.md](../docs/R
   recorded under that name.
 
 ---
-[Docs index](../docs/README.md) · Previous: [Development guide](../docs/CLAUDE.md) · Next: [Runbooks](../docs/RUNBOOKS.md)
+[Docs index](../docs/README.md) · Previous: [Development guide](../docs/CLAUDE.md) · Next: [Runbooks](../docs/projects/orchestrator-runbooks.md)

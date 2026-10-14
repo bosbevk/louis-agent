@@ -65,13 +65,13 @@ All docs, in reading order, are listed in **[docs/README.md](docs/README.md)**. 
 |---|---|
 | Start using it (web app, Rider, CLI) and try prompts | [Quick start](docs/QUICK_START_AGENT.md) |
 | Configure settings and secrets, or pick a model | [Setup](docs/SETUP.md) · [Models](docs/MODELS.md) |
-| Understand what happens when you send a message | [How a turn works](docs/AGENT_INTERACTION.md) |
+| Understand what happens when you send a message | [How a turn works](docs/architecture/06-runtime-view.md) |
 | Connect another program or agent: HTTP API and its event stream, Rider, MCP, agent-to-agent | [How the agents and endpoints talk](docs/AGENT_COMMUNICATION.md) |
 | Know the components, security and deployment | [Architecture](docs/architecture/README.md) · [project by project](docs/projects/README.md) |
 | Change the code | [Development guide](docs/CLAUDE.md) |
 | Watch two agents fix ten bugs, then merge the fixes | [Orchestrator demo](samples/README.md) · [sample output](samples/sample-output/README.md) |
 | See what Puls's delegation costs against one agent | [Delegation check](samples/sample-output-puls-check-repeat/README.md) |
-| Learn how the orchestrator decides, and write runbooks | [Runbooks](docs/RUNBOOKS.md) |
+| Learn how the orchestrator decides, and write runbooks | [Runbooks](docs/projects/orchestrator-runbooks.md) |
 
 ## Quick start (Docker)
 
