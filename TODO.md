@@ -148,8 +148,6 @@ the product parts.
 
 ### Quality and CI
 
-- [ ] CI (`.github/workflows`): `dotnet build` and `dotnet test` on every push and pull request — today regressions are
-      only caught locally
 - [ ] Automated tests for the API and the web app (bUnit or Playwright); start with the Branches queue (several clicks in
       a row, a conflict partway through)
 - [ ] End-to-end tests for the orchestrator against a scripted louis-agent.api (today only its parts are unit-tested;

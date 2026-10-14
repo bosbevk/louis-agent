@@ -15,6 +15,9 @@ dotnet test tests/louis-agent.orchestrator.tests
 dotnet test louis-agent-solution.sln          # everything, including the order-service sample's tests
 ```
 
+GitHub Actions runs the last two commands (build, then the whole solution's tests) on Ubuntu on every push and pull
+request (`.github/workflows/ci.yml`); a red check on a PR is the same failure you'd see locally with that command.
+
 ## Test first
 
 A step that changes behaviour starts here ([ADR 0014](../docs/adr/0014-test-first.md)):

@@ -3,6 +3,8 @@
 > **Reference.** What was finished, newest first, one entry per feature, fix or cleanup. **Elsewhere:** what's still
 > open in the [TODO](TODO.md); how each was built in its feature, fix or plan doc (linked from its entry).
 
+- 2026-10-14 — **CI**: `.github/workflows/ci.yml` builds and tests the whole solution on Ubuntu on every push and pull
+  request (the test results kept as an artifact); a regression is caught before a review, not only locally
 - 2026-10-14 — **FX9 Cancelled requests in the ledger**: a non-streaming request that times out or is cancelled (the
   orchestrator's triage) is written to the ledger as `cancelled` with unknown tokens, as a cancelled stream already
   was; provider errors stay unrecorded ([fix](docs/fixes/FX09-cancelled-request-usage.md))
