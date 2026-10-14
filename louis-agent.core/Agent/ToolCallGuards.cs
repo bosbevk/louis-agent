@@ -102,7 +102,10 @@ internal sealed class ToolCallGuards(ToolRegistry registry, IChatClient summaryC
         if (subSessionPromptBudget <= 0 || scope?.Tags.Parent is null) return options;
         if (options?.Tools is not { Count: > 0 } || options.ToolMode == ChatToolMode.None) return options;
 
-        var prompts = scope.Records.Where(r => r.Purpose != UsagePurpose.Summary).Select(r => Prompt(r.Tokens)).ToList();
+        // Summaries run outside the loop; a sub-session's roll-up carries the specialist's tokens, not this prompt's size.
+        var prompts = scope.Records
+            .Where(r => r.Purpose is not (UsagePurpose.Summary or UsagePurpose.SubSession))
+            .Select(r => Prompt(r.Tokens)).ToList();
         if (prompts.Count == 0) return options;
         long last = prompts[^1];
         long next = last + (prompts.Count > 1 ? Math.Max(0, last - prompts[^2]) : 0);

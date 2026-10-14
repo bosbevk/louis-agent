@@ -44,8 +44,93 @@ public class AgentPeerToolsTests
         _ => new HttpResponseMessage(HttpStatusCode.NotFound),
     });
 
-    private static AgentPeerTools Tools(StubHandler handler, TimeSpan? timeout = null, TimeProvider? time = null) =>
-        new(Peers, "the-key", new HttpClient(handler), timeout, time);
+    private static AgentPeerTools Tools(StubHandler handler, TimeSpan? timeout = null, TimeProvider? time = null, IUsageSink? sink = null) =>
+        new(Peers, "the-key", new HttpClient(handler), timeout, time, sink);
+
+    /// <summary>A reply that failed after some work: the API's error event carries what was charged (FX6).</summary>
+    private const string FailedStream = """
+        event: error
+        data: {"type":"error","error":{"type":"api_error","message":"the model refused"},"usage":{"input_tokens":500,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":50,"requests":2,"cost":0.002,"currency":"USD"}}
+
+        """;
+
+    [Test]
+    public async Task ASubSessionsUsage_IsRolledUpIntoTheParentTurn_AsOneLedgerRow()
+    {
+        // F5 follow-up: the specialist's 3 requests count in the parent's turn (its usage line, chat total, /usage,
+        // GET /sessions/{id} all total the scope) and leave one sub_session row in the parent's ledger.
+        var sink = new ListUsageSink();
+        var handler = Peer();
+
+        UsageTotal total;
+        using (var scope = UsageScope.Begin(host: "api", session: "sess_parent", turn: 2))
+        {
+            await Tools(handler, sink: sink).StartSubSession(["files", "git"], "Fix order 1006.", agent: "coder");
+            total = scope.Total();
+        }
+
+        Assert.That((total.Requests, total.Input, total.CacheRead, total.Output, total.Cost), Is.EqualTo((3, 1000L, 9000L, 200L, (decimal?)0.0123m)));
+        UsageRecord row = sink.Records.Single();
+        Assert.That((row.Purpose, row.Model, row.Stop, row.Round, row.Requests), Is.EqualTo(("sub_session", "sub-session:coder", "sub_session", 0, (int?)3)));
+        Assert.That((row.Host, row.Session, row.Turn), Is.EqualTo(("api", "sess_parent", (int?)2)));
+        Assert.That(row.Cost, Is.EqualTo(new UsageCost("USD", 0.0123m, null)), "what the child was charged, not a display amount");
+        Assert.That(row.Tokens, Is.EqualTo(new UsageTokens(1000, 0, 9000, 200, null)));
+    }
+
+    [Test]
+    public async Task TheFollowUpAnswer_IsASecondRollUp()
+    {
+        // FX11's follow-up is a second reply in the same sub-session: its 11 + 3 requests are two rows and one total.
+        var sink = new ListUsageSink();
+
+        UsageTotal total;
+        using (var scope = UsageScope.Begin(session: "sess_parent", turn: 1))
+        {
+            await Tools(Peer(Replies(EmptyStream, Stream)), sink: sink).StartSubSession(["files"], "x", agent: "coder");
+            total = scope.Total();
+        }
+
+        Assert.That(sink.Records.Select(r => r.Requests), Is.EqualTo(new int?[] { 11, 3 }));
+        Assert.That((total.Requests, total.Cost), Is.EqualTo((14, (decimal?)0.0204m)));
+    }
+
+    [Test]
+    public async Task AFailedChild_StillRollsUpWhatItWasCharged()
+    {
+        var sink = new ListUsageSink();
+
+        string result;
+        using (var scope = UsageScope.Begin(session: "sess_parent", turn: 1))
+            result = await Tools(Peer(Replies(FailedStream)), sink: sink).StartSubSession(["files"], "x", agent: "coder");
+
+        Assert.That(result, Does.StartWith("Error").And.Contain("the model refused"));
+        Assert.That((sink.Records.Single().Requests, sink.Records.Single().Cost?.Amount), Is.EqualTo(((int?)2, (decimal?)0.002m)));
+    }
+
+    [Test]
+    public async Task ATimeout_RollsUpNothing()
+    {
+        // No usage arrived, so there is nothing to count: never a zero record (trap 4).
+        var sink = new ListUsageSink();
+
+        using (UsageScope.Begin(session: "sess_parent", turn: 1))
+            await new AgentPeerTools(Peers, null, new HttpClient(new SlowPeer()), TimeSpan.FromMilliseconds(200), usageSink: sink)
+                .StartSubSession(["files"], "x", agent: "coder");
+
+        Assert.That(sink.Records, Is.Empty);
+    }
+
+    [Test]
+    public async Task OutsideATurn_TheRollUpIsStillALedgerRow()
+    {
+        // As a model request outside a scope is (FX5): the ledger records it with no host or session.
+        var sink = new ListUsageSink();
+
+        string result = await Tools(Peer(), sink: sink).StartSubSession(["files"], "x", agent: "coder");
+
+        Assert.That(result, Does.StartWith("Fixed the null check"));
+        Assert.That((sink.Records.Single().Session, sink.Records.Single().Requests), Is.EqualTo(((string?)null, (int?)3)));
+    }
 
     [Test]
     public async Task ASubSession_ReturnsTheAnswerAndUsage_AndIsDeleted()
