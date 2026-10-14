@@ -26,7 +26,8 @@ Return strings the model can act on: say what went wrong and what to do instead.
 
 **The texts a tool returns are `ToolMessage` members** (*Messages and logging*), errors and results alike:
 `return MessageText.Format(ToolMessage.FileNotFound, new { Path = relativePath });`. Its descriptions are attributes.
-A new tool or text changes the golden files on purpose: regenerate them and review the diff ([Tests](../docs/CLAUDE.md#tests)).
+A new tool or text changes the golden files on purpose: regenerate them and review the diff
+([golden files](../tests/CLAUDE.md#golden-files)).
 
 ## Adding a toolset
 
@@ -45,7 +46,8 @@ touches, and nothing else:
 4. **Built-in list:** the guide's name in `SkillFiles.BuiltIn`, so the agent can't overwrite it.
 5. **Router:** a row in `default.md`'s toolset table.
 6. **Tests:** the name in `DefaultSkillsProviderTests`' toolset list, the toolset's tests in
-   `tests/louis-agent.core.tests/Tools/{Toolset}/`, and the golden files regenerated ([Tests](../docs/CLAUDE.md#tests)).
+   `tests/louis-agent.core.tests/Tools/{Toolset}/`, and the golden files regenerated
+   ([golden files](../tests/CLAUDE.md#golden-files)).
 
 Every catalogue toolset follows it; `SkillFilesTests` checks that each has a guide that loads with it.
 
@@ -125,7 +127,7 @@ Log.Log(LogLevel.Information, McpServerLogMessage.ToolNameTaken, new { Name = na
   layout, and key=value or table formatting.
 - **Text the model reads is pinned:** `ToolMessageSnapshotTests` renders every `ToolMessage` template into
   `Messages/ToolMessageSnapshot.json`, as the model-request snapshot does for the tools and prompt; a deliberate change
-  regenerates it ([Tests](../docs/CLAUDE.md#tests)). Numbers in messages are invariant (`12,345`).
+  regenerates it ([golden files](../tests/CLAUDE.md#golden-files)). Numbers in messages are invariant (`12,345`).
 - **Logging goes through `ILogger` (Microsoft.Extensions.Logging) with Serilog behind it**, configured in code by
   `Logging/AgentLogging` (`AgentHost` calls `Configure`; another agent on core calls it itself). Get a logger with
   `AgentLogging.For<T>()` and log a message member with `logger.Log(level, Member, new { Hole = value })`

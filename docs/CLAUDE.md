@@ -27,10 +27,10 @@ The goal and the skill map are in [GOAL.md](GOAL.md).
 
 **Finishing a step** (before rule 5's stop):
 
-1. `dotnet build louis-agent-solution.sln`, and `dotnet test` on the projects the step touches (*Tests*); the whole
+1. `dotnet build louis-agent-solution.sln`, and `dotnet test` on the projects the step touches ([Tests](../tests/CLAUDE.md)); the whole
    solution before a PR.
 2. If tools, their descriptions, `ToolMessage` texts or `Skills/*.md` changed, regenerate the golden files and review
-   their diff (*Tests*).
+   their diff ([golden files](../tests/CLAUDE.md#golden-files)).
 3. Update the feature or fix doc with what the step learned; on the last step, follow *Finishing a feature* or
    *Finishing a fix* in their READMEs. The plan changes only under *Approved during the build*. New text goes in the
    doc of its type (*Rules that always apply*: one type per doc).
@@ -84,7 +84,8 @@ The design decisions every change keeps; the sections below have the details.
   holds the first two ([Project layout](../louis-agent.core/CLAUDE.md#project-layout)).
 - **stdout is a protocol** — the ACP and MCP servers speak on it, so logs go through `ILogger` to stderr
   ([Messages and logging](../louis-agent.core/CLAUDE.md#messages-and-logging)).
-- **Tests are platform-neutral** — the agent runs them on Linux in its containers (*Tests*).
+- **Tests are platform-neutral** — the agent runs them on Linux in its containers
+  ([Writing tests](../tests/CLAUDE.md#writing-tests)).
 - **One type per doc** — every doc is a tutorial, how-to, reference, explanation or plan, and opens with what it answers;
   new text goes in the doc of its type ([docs index: Writing docs](README.md#writing-docs-one-type-per-doc)).
 
@@ -144,6 +145,7 @@ there, so a session pays for them only when they apply:
 
 | Guide | Holds |
 |---|---|
+| [tests/CLAUDE.md](../tests/CLAUDE.md) | Running the tests, the golden files (bash and PowerShell), fakes and platform-neutral tests |
 | [louis-agent.core/CLAUDE.md](../louis-agent.core/CLAUDE.md) | Adding a C# tool or a toolset, the project layout, messages and logging, another agent on core, changing the LLM |
 
 ### Adding a skill
@@ -199,45 +201,6 @@ Copy `src/louis-agent.web/wwwroot/css/themes/paper.css` to `{id}.css`, set the v
   `dotnet run --project tools/louis-agent.usage-probe -- --ledger logs/usage-YYYY-MM.jsonl`.
 - After changing the web app or API, rebuild the `api` image; after changing core, rebuild every image you use. Rider
   chats keep their container until you start a **New Chat**.
-
-### Tests
-
-```bash
-dotnet test tests/louis-agent.core.tests
-dotnet test tests/louis-agent.core.tests --filter "FullyQualifiedName~AgentEngineTests"
-dotnet test tests/louis-agent.api.tests
-dotnet test tests/louis-agent.orchestrator.tests
-dotnet test louis-agent-solution.sln          # everything, including the order-service sample's tests
-```
-
-**What the model reads is pinned by two golden files:** `ModelRequestSnapshotTests` compares the tools, their
-descriptions, the system prompt and the engine's fixed texts with `Agent/ModelRequestSnapshot.json`;
-`ToolMessageSnapshotTests` compares every `ToolMessage` template with `Messages/ToolMessageSnapshot.json`. A deliberate
-change (a new tool or text, an edited description or skill file) regenerates them, and you review their diff before
-committing:
-
-```bash
-LOUIS_UPDATE_GOLDEN=1 dotnet test tests/louis-agent.core.tests --filter "ModelRequestSnapshotTests|ToolMessageSnapshotTests"
-```
-
-```powershell
-$env:LOUIS_UPDATE_GOLDEN = '1'
-try { dotnet test tests/louis-agent.core.tests --filter "ModelRequestSnapshotTests|ToolMessageSnapshotTests" }
-finally { Remove-Item Env:LOUIS_UPDATE_GOLDEN }
-```
-
-The PowerShell variable lasts for the session, hence the `finally`: left set, every later test run rewrites the files
-instead of checking them. On Windows, `git status` can list a regenerated file as modified while `git diff` shows
-nothing: only its line endings changed, and `git checkout -- <file>` puts it back.
-
-Tests use `FakeChatClient` (a scripted `IChatClient` that also streams) and `StubHandler` for HTTP — no network, model or
-Docker. A few tests skip themselves when git, pip or the network isn't available. The agent runs tests on Linux inside
-its containers, so keep them platform-neutral (forward slashes, no Windows-only paths).
-
-The API's sessions are tested (`tests/louis-agent.api.tests`); its endpoints and the web app have no automated tests
-yet, so check them by hand (curl and a browser) after changes. The
-orchestrator demo (`samples/run-demo.ps1`, in Docker; see [samples/README.md](../samples/README.md)) exercises the
-whole loop against a real model: API sessions, the fix flow, and the web app's Branches view.
 
 ## Which Anthropic tier
 
