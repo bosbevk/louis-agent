@@ -25,7 +25,7 @@ loop and the orchestrator gets the result. (Details: [AGENT_COMMUNICATION.md](..
 
 | # | Decision | POC result | Still open |
 |---|---|---|---|
-| 1 | **Scope per microservice**, the same way `AGENT_FUNCTION` selects a skill set: one orchestrator codebase, a configuration per service declaring its error-tracker project, repository, escalation rules and service-specific actions (e.g. payments never auto-deploys; orders may restart a stuck worker) | **Proven:** a folder per service (`Skills/order-service/service.md`) with one runbook per API method ([RUNBOOKS.md](../RUNBOOKS.md)); selected with `ORCHESTRATOR_SERVICE` | Error-tracker project ids and service actions (no real tracker yet) |
+| 1 | **Scope per microservice**, the same way `AGENT_FUNCTION` selects a skill set: one orchestrator codebase, a configuration per service declaring its error-tracker project, repository, escalation rules and service-specific actions (e.g. payments never auto-deploys; orders may restart a stuck worker) | **Proven:** a folder per service (`Skills/order-service/service.md`) with one runbook per API method ([RUNBOOKS.md](../projects/orchestrator-runbooks.md)); selected with `ORCHESTRATOR_SERVICE` | Error-tracker project ids and service actions (no real tracker yet) |
 | 2 | **Don't run the watcher inside the service it watches**: if the service crashes, its watchdog shouldn't crash with it | **Proven:** the orchestrator is its own container | — |
 | 3 | **Topology is a deploy choice**: one shared orchestrator loaded with the right configuration per run, or one instance per service (stronger isolation: a misconfigured orchestrator can't touch another service's repository or credentials), like `acp-server` per chat and `mcp-server` per client today | One instance in the demo | Choose for production |
 | 4 | **Triggering**: scheduled polling and/or a webhook receiver for error-tracker and uptime alerts, per service | Polling only (`ORCHESTRATOR_POLL_SECONDS`, or `--once`) | Webhook receiver |
@@ -68,5 +68,5 @@ only produces the fix. All open:
   rollback decisions stay separate.
 
 ---
-[Docs index](../README.md) · Related: [Orchestrator demo](../../samples/README.md) · [Runbooks](../RUNBOOKS.md) ·
+[Docs index](../README.md) · Related: [Orchestrator demo](../../samples/README.md) · [Runbooks](../projects/orchestrator-runbooks.md) ·
 [TODO](../../TODO.md)

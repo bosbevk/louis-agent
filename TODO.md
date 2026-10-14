@@ -112,7 +112,7 @@ The build flow:
 - [ ] **Review and merge** in the web app's Branches tab; the comms log records every request, reply and check
 - [ ] Optional: louis-agent **drafts the runbooks** from a written description (or an existing service's code) for a
       person to approve first
-- [ ] Docs: a README for the sample, a section in [RUNBOOKS.md](docs/RUNBOOKS.md) on runbooks as specs, links from the
+- [ ] Docs: a README for the sample, a section in [the runbooks](docs/projects/orchestrator-runbooks.md) on runbooks as specs, links from the
       docs index
 
 Keep in mind: one method per task (louis-agent has 10 tool rounds per message, and a long conversation re-sends a
@@ -148,8 +148,6 @@ the product parts.
 
 ### Quality and CI
 
-- [ ] **Docs tidy** — CL7 ([plan](docs/plans/CL7-docs-tidy.md)): `docs/todo/`'s picture to `docs/specs/images/`, How a
-      turn works into arc42's runtime view, Runbooks beside the orchestrator's project doc
 - [ ] CI (`.github/workflows`): `dotnet build` and `dotnet test` on every push and pull request — today regressions are
       only caught locally
 - [ ] Automated tests for the API and the web app (bUnit or Playwright); start with the Branches queue (several clicks in

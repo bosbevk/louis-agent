@@ -48,7 +48,7 @@ Plus three that must not be fixed: a correctly rejected duplicate refund, a paym
 
 - Keep **one method per file** and **one regression test file per fix**, or the demo's branches start conflicting.
 - A new method also needs a runbook in `src/louis-agent.orchestrator/Skills/order-service/`
-  ([Runbooks](../RUNBOOKS.md)) and, for the demo, a line in `data/requests.txt`.
+  ([Runbooks](orchestrator-runbooks.md)) and, for the demo, a line in `data/requests.txt`.
 - The demo copies this folder into a fresh repository on every clean run, so edits here take effect on the next run.
   The copy drops `bin/`, `obj/` and `logs/`, so building it from the louis-agent solution doesn't leak into the demo.
 - Keep `OrderService.slnx`: inside the demo repository it is the solution louis-agent and the orchestrator build and

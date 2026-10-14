@@ -91,4 +91,4 @@ Your own run will differ in error ids, commit hashes, wording and token counts: 
 A quicker five-error run is in [sample-output-short/](../sample-output-short/README.md).
 
 ---
-[Docs index](../../docs/README.md) · Previous: [Runbooks](../../docs/RUNBOOKS.md)
+[Docs index](../../docs/README.md) · Previous: [Runbooks](../../docs/projects/orchestrator-runbooks.md)

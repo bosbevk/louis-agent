@@ -162,4 +162,4 @@ To see what the model is offered, inspect `engine.Tools` (name, description, JSO
 | Scenario | What happens | In detail |
 |---|---|---|
 | **Puls delegates** | Puls opens a sub-session on its specialist with only the toolsets the task needs and a role; the specialist's steps stream into Puls's Werk panel; Puls answers in its own voice | [Agent to agent: Puls and its specialists](../AGENT_COMMUNICATION.md#agent-to-agent-puls-and-its-specialists) |
-| **The orchestrator fixes an error** | It reads the service's error, follows the method's runbook, opens a fix session on louis-agent.api, verifies the commit and replays the request | [Agent to agent: the orchestrator and louis-agent](../AGENT_COMMUNICATION.md#agent-to-agent-the-orchestrator-and-louis-agent) · [Runbooks](../RUNBOOKS.md) |
+| **The orchestrator fixes an error** | It reads the service's error, follows the method's runbook, opens a fix session on louis-agent.api, verifies the commit and replays the request | [Agent to agent: the orchestrator and louis-agent](../AGENT_COMMUNICATION.md#agent-to-agent-the-orchestrator-and-louis-agent) · [Runbooks](../projects/orchestrator-runbooks.md) |

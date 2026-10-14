@@ -3,6 +3,9 @@
 > **Reference.** What was finished, newest first, one entry per feature, fix or cleanup. **Elsewhere:** what's still
 > open in the [TODO](TODO.md); how each was built in its feature, fix or plan doc (linked from its entry).
 
+- 2026-10-14 — **CL7 Docs tidy**: the top of `docs/` keeps the eight docs most readers need. The session picture moves
+  to `docs/specs/images/` (the 43 KB SVG; the 1.1 MB PNG of it goes), How a turn works joins arc42's runtime view, and
+  the runbooks move beside the orchestrator's project doc; every link repointed ([plan](docs/plans/CL7-docs-tidy.md))
 - 2026-10-14 — **Test first**: a step that changes behaviour starts with its tests, run and seen failing, then the
   code; one commit with both, the red output in the step's explanation ([ADR 0014](docs/adr/0014-test-first.md))
 - 2026-10-14 — **CL6 arc42, ADRs and C4**: the architecture in arc42's twelve sections in `docs/architecture/`
@@ -92,7 +95,7 @@
   thinking text checked with `tools/louis-agent.usage-probe`); LLM profiles `config/.env.anthropic` / `.env.ollama`
 - 2026-10-07 — Specs and feature plan for usage, budgets and cheaper responses (`docs/specs/`, `docs/features/`); the
   session-architecture and orchestrator designs moved from this list into `docs/specs/`
-- 2026-10-07 — Docs: [how the agents and endpoints talk](docs/AGENT_COMMUNICATION.md), [runbooks](docs/RUNBOOKS.md), a
+- 2026-10-07 — Docs: [how the agents and endpoints talk](docs/AGENT_COMMUNICATION.md), [runbooks](docs/projects/orchestrator-runbooks.md), a
   docs index in reading order
 - 2026-10-07 — Web app Branches tab: merges and deletes are queued instead of silently dropped while another runs
 - 2026-10-07 — Comms log keeps louis-agent's text blocks apart

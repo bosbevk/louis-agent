@@ -1,8 +1,8 @@
 # Runbooks: How the Orchestrator Decides
 
 > **Explanation.** How the orchestrator decides what an error needs, and how to write a runbook. **Elsewhere:**
-> running the demo in [samples/README.md](../samples/README.md), the design in
-> [the orchestrator spec](specs/ORCHESTRATOR_DESIGN.md).
+> running the demo in [samples/README.md](../../samples/README.md), the design in
+> [the orchestrator spec](../specs/ORCHESTRATOR_DESIGN.md).
 
 A **runbook** is the orchestrator's instruction sheet for one API method of the service it watches. When that method
 throws, the orchestrator reads its runbook to decide what happens: nothing, a fix by louis-agent, or a hand-off to a
@@ -174,4 +174,4 @@ rule, written down by a person; *how* the code does it is louis-agent's job.
   orchestrator decided and what it sent louis-agent, which is the quickest way to check a runbook says what you meant.
 
 ---
-[Docs index](README.md) · Previous: [Orchestrator demo](../samples/README.md) · Next: [Sample output](../samples/sample-output/README.md)
+[Docs index](../README.md) · Previous: [Orchestrator demo](../../samples/README.md) · Next: [Sample output](../../samples/sample-output/README.md)
