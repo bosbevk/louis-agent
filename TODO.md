@@ -148,9 +148,6 @@ the product parts.
 
 ### Quality and CI
 
-- [ ] **Guides by folder** — CL5 ([plan](docs/plans/CL5-guides-by-folder.md)): the development guide loads into every
-      Claude Code session (~11.4k tokens); its core, tests and host how-tos move to `louis-agent.core/CLAUDE.md`,
-      `tests/CLAUDE.md` and `src/CLAUDE.md`, which Claude Code loads only when working there (~5.5k per session)
 - [ ] CI (`.github/workflows`): `dotnet build` and `dotnet test` on every push and pull request — today regressions are
       only caught locally
 - [ ] Automated tests for the API and the web app (bUnit or Playwright); start with the Branches queue (several clicks in

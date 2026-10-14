@@ -3,6 +3,11 @@
 > **Reference.** What was finished, newest first, one entry per feature, fix or cleanup. **Elsewhere:** what's still
 > open in the [TODO](TODO.md); how each was built in its feature, fix or plan doc (linked from its entry).
 
+- 2026-10-14 — **CL5 Guides by folder**: the development guide, which loads into every Claude Code session, keeps what
+  every task needs (~11.4k → ~6.2k tokens); core's how-tos move to `louis-agent.core/CLAUDE.md` (~4.8k), the tests' to
+  `tests/CLAUDE.md`, the hosts' to `src/CLAUDE.md`, which Claude Code loads only when working there (checked with
+  `/context` in a fresh session). None in `Skills/`, which core embeds and reads as personalities
+  ([plan](docs/plans/CL5-guides-by-folder.md))
 - 2026-10-14 — **CL4 One type per doc**: every doc is one Diátaxis type (tutorial, how-to, reference, explanation;
   plans a fifth kind), named in the docs index and in a quoted opening line. Six mixed docs split, moving facts, not
   dropping them: the README 230 → 152 lines, the TODO's Done to this file and its ticked lines removed, the benchmark
