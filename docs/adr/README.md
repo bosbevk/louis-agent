@@ -11,6 +11,12 @@ afterwards from the docs that hold them (each ADR links its sources), with the d
 | ADR | Decision | Status |
 |---|---|---|
 | [0001](0001-record-architecture-decisions.md) | Record architecture decisions | Accepted |
+| [0002](0002-messages-api-tier-with-our-own-loop.md) | The Messages API tier, with our own loop behind `IChatClient` | Accepted |
+| [0003](0003-provider-strategies.md) | Provider differences are strategies, chosen once in `LlmClientFactory` | Accepted |
+| [0004](0004-arguments-as-data.md) | Arguments travel as data, never through a shell | Accepted |
+| [0005](0005-guard-the-context.md) | Guard the context: summarise oversized results, never run cut-off calls | Accepted |
+| [0006](0006-toolsets-per-session.md) | A session chooses its toolsets when it opens, and keeps them | Accepted |
+| [0007](0007-measure-every-request.md) | Measure every request, priced from a dated table | Accepted |
 
 ## When to write one
 
