@@ -1,5 +1,9 @@
 # How the Agents and Endpoints Talk
 
+> **Reference.** The HTTP API, its event stream, the web app, Rider (ACP), MCP, and agent-to-agent messages.
+> **Elsewhere:** the components in [Architecture](ARCHITECTURE.md), one turn inside the agent in
+> [How a turn works](AGENT_INTERACTION.md).
+
 Who connects to louis-agent, over which protocol, and what goes over the wire — from a browser or Rider, from another
 program, and from another agent (the orchestrator). For what happens *inside* one turn (the model, tools and skills),
 see [AGENT_INTERACTION.md](AGENT_INTERACTION.md).

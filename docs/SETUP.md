@@ -1,5 +1,8 @@
 # Configuration Setup Guide
 
+> **Reference.** Every file and setting in `config/`, how they are loaded, and keeping secrets safe. **Elsewhere:**
+> choosing a model in [Models](MODELS.md), a first run in the [Quick start](QUICK_START_AGENT.md).
+
 Configuration lives in `config/`. Your settings and secrets are git-ignored; the `.example` files are the tracked
 templates.
 

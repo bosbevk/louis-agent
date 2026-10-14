@@ -1,5 +1,8 @@
 # Louis Agent: Quick Start
 
+> **Tutorial.** Start the web app, Puls, Rider or the CLI and try your first prompts. **Elsewhere:** every setting in
+> [Setup](SETUP.md), choosing a model in [Models](MODELS.md), how it works in [Architecture](ARCHITECTURE.md).
+
 Louis Agent is an AI agent that works on your repository with real tools: it reads, searches and edits files, runs git,
 `dotnet`, Python, PowerShell and bash, searches the web, and (with keys) works with Azure DevOps and Paymo. You see its
 thinking and every tool call as it works.

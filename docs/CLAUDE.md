@@ -82,6 +82,8 @@ The design decisions every change keeps; the sections below have the details.
 - **stdout is a protocol** — the ACP and MCP servers speak on it, so logs go through `ILogger` to stderr
   (*Messages and logging*).
 - **Tests are platform-neutral** — the agent runs them on Linux in its containers (*Tests*).
+- **One type per doc** — every doc is a tutorial, how-to, reference, explanation or plan, and opens with what it answers;
+  new text goes in the doc of its type ([docs index: Writing docs](README.md#writing-docs-one-type-per-doc)).
 
 ## Quick start
 

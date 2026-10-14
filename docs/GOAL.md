@@ -1,5 +1,8 @@
 # Goal
 
+> **Explanation.** What the whole plan is for, and the skill map. **Elsewhere:** what's next in the
+> [TODO](../TODO.md), how each feature is built in [features](features/README.md).
+
 **Become an AI engineer by building louis-agent: learn each AI-engineering skill hands-on, measure what it changes,
 and be able to explain every design decision behind it.**
 

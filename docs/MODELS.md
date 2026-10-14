@@ -1,5 +1,8 @@
 # Models
 
+> **How-to.** Choose and switch the model: Claude, Ollama or an OpenAI-compatible server. **Elsewhere:** every other
+> setting in [Setup](SETUP.md), why providers are swappable in [Architecture](ARCHITECTURE.md#provider-strategies).
+
 The model is configuration only, no code changes. The LLM settings (`LLM_PROVIDER`, `LLM_MODEL`, `LLM_ENDPOINT`,
 `LLM_THINKING`) live in a **profile** file, and `LLM_PROFILE` in `config/.env` picks one:
 
