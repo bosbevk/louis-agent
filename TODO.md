@@ -112,7 +112,7 @@ The build flow:
 - [ ] **Review and merge** in the web app's Branches tab; the comms log records every request, reply and check
 - [ ] Optional: louis-agent **drafts the runbooks** from a written description (or an existing service's code) for a
       person to approve first
-- [ ] Docs: a README for the sample, a section in [RUNBOOKS.md](docs/RUNBOOKS.md) on runbooks as specs, links from the
+- [ ] Docs: a README for the sample, a section in [the runbooks](docs/projects/orchestrator-runbooks.md) on runbooks as specs, links from the
       docs index
 
 Keep in mind: one method per task (louis-agent has 10 tool rounds per message, and a long conversation re-sends a

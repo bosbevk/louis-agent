@@ -54,7 +54,7 @@ flowchart TD
 | `OrchestratorOptions.cs` | Settings |
 | `Messages/` | `OrchestratorToolMessage` (what its tools return and send louis-agent), `OrchestratorLogMessage` (its log lines: stderr, tagged `[orchestrator]`, and the run file with `LOG_DIRECTORY`), `OrchestratorErrorMessage` |
 | `Skills/orchestrator.md` | The workflow every error goes through |
-| `Skills/<service>/` | `service.md` (owners, policies) and one runbook per API method — see [Runbooks](../RUNBOOKS.md) |
+| `Skills/<service>/` | `service.md` (owners, policies) and one runbook per API method — see [Runbooks](orchestrator-runbooks.md) |
 
 ## Configuration
 
@@ -64,7 +64,7 @@ flowchart TD
 
 ## Extending it
 
-- **A method or service:** a runbook in `Skills/<service>/` ([Runbooks](../RUNBOOKS.md#adding-and-changing-runbooks)).
+- **A method or service:** a runbook in `Skills/<service>/` ([Runbooks](orchestrator-runbooks.md#adding-and-changing-runbooks)).
 - **A tool:** a public method with `[Description]`s on `ServiceTools` — remember every public method becomes a tool.
 - **Build mode** (building methods from runbooks) is planned as a separate sample → *Next* in the [TODO](../../TODO.md).
 
@@ -84,7 +84,7 @@ against a real model.
 
 ## Related docs
 
-[Orchestrator demo](../../samples/README.md) · [Runbooks](../RUNBOOKS.md) ·
+[Orchestrator demo](../../samples/README.md) · [Runbooks](orchestrator-runbooks.md) ·
 [Agent to agent](../AGENT_COMMUNICATION.md#agent-to-agent-the-orchestrator-and-louis-agent) ·
 [Orchestrator design](../specs/ORCHESTRATOR_DESIGN.md)
 

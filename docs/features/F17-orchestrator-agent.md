@@ -98,7 +98,7 @@ cases, so that the change is kept only when decisions hold and cost falls.
 7. **Triage suite** (F18): cases, recorded replies, the baseline on today's orchestrator (**go-ahead**, cents).
 8. **Measure:** the new orchestrator on the suite, then the full demo (**go-ahead**). Record decisions right, cost per
    error, cache-hit rate and fixes confirmed.
-9. **Docs:** the orchestrator project doc, `orchestrator.md`, RUNBOOKS, the orchestrator design spec, the goal map.
+9. **Docs:** the orchestrator project doc, `orchestrator.md`, the runbooks (`projects/orchestrator-runbooks.md`), the orchestrator design spec, the goal map.
 
 ## Done when
 
