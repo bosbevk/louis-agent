@@ -104,7 +104,10 @@ is off, with a warning.
   peers share `LOG_DIRECTORY`, as Puls and its specialist do), linked by `parent`, so **ledger reports list roll-ups
   without totalling them** (`usage-probe --ledger`, `--cache-gaps`): a turn counts its roll-up, a ledger counts the
   requests. The row stays so a session's full cost, delegation included, can be read back later (credits,
-  reconciliation).
+  reconciliation). Two limits: the child's `unpriced` count isn't carried, since a row has one cost or none, so a
+  specialist with some unpriced requests looks priced in the parent (its own rows still say which); and a reply that
+  times out before its usage event rolls up nothing, though the specialist was charged for what it had done (again,
+  its own rows have it).
 
 ### 4.2 Prices
 
