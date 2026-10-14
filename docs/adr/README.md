@@ -17,6 +17,12 @@ afterwards from the docs that hold them (each ADR links its sources), with the d
 | [0005](0005-guard-the-context.md) | Guard the context: summarise oversized results, never run cut-off calls | Accepted |
 | [0006](0006-toolsets-per-session.md) | A session chooses its toolsets when it opens, and keeps them | Accepted |
 | [0007](0007-measure-every-request.md) | Measure every request, priced from a dated table | Accepted |
+| [0008](0008-history-is-append-only.md) | Conversation history is append-only | Accepted (FX4 still open) |
+| [0009](0009-message-text-as-enum-templates.md) | Message text lives in enum templates; logging goes through `ILogger` | Accepted |
+| [0010](0010-folders-by-concern.md) | Folders by concern, the namespace is the folder path, and a test holds it | Accepted |
+| [0011](0011-prompts-are-content.md) | Prompts are content: plain markdown skills, no provider class per toolset | Accepted |
+| [0012](0012-one-orchestrator-per-microservice.md) | One orchestrator per microservice, which asks louis-agent for fixes | Accepted |
+| [0013](0013-documentation-structure.md) | Documentation: one type per doc, guides by folder, arc42 and ADRs | Accepted |
 
 ## When to write one
 

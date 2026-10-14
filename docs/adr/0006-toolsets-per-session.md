@@ -7,7 +7,7 @@
 Every engine registered every toolset whose keys were set: in the demo, 108 tools (68,162 characters of definitions),
 35 of them Paymo and DevOps tools a code-fixing container never uses, plus their guidance in the system prompt. That
 prefix is sent with every request. Changing tools in the middle of a chat breaks the cached prefix, and on Haiku 5.5 the
-thinking blocks already in the history (ADR 0008).
+thinking blocks already in the history ([0008](0008-history-is-append-only.md)).
 
 ## Decision
 

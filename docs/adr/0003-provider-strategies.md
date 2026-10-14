@@ -19,7 +19,8 @@ no strategy.
 ## Consequences
 
 - A new provider means new implementations, not edits to `AgentEngine`, the tools or the hosts.
-- Provider SDKs stay in `Llm/{Name}Provider/`, which the architecture test enforces (ADR 0010).
+- Provider SDKs stay in `Llm/{Name}Provider/`, which the architecture test enforces
+  ([0010](0010-folders-by-concern.md)).
 - Built: `IUsageMapper` (F1), `IPromptCachingStrategy` (F4). Candidates: thinking settings (F10), the context window
   (F15), errors and limits (F8). The same pattern serves `IRatesMapper` and `IWebSearchProvider`.
 
