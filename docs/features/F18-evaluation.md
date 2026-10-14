@@ -3,7 +3,7 @@
 > **Status:** planned · **Milestone:** M4 (built with [F16](F16-summariser.md), its first user; before F9) · **Depends
 > on:** F1, F2
 >
-> **In the TODO:** tick **F18 Evaluation** under *Now* ([TODO](../../TODO.md)) · **Replaces:** the first part of the
+> **In the TODO:** **F18 Evaluation** under *Now* ([TODO](../../TODO.md)) · **Replaces:** the first part of the
 > backlog's *Evaluation* gap (the CI gate stays in the backlog)
 
 Today the only quality check is the orchestrator demo: ten fixes, each verified, at about $0.66 a run. It says whether
@@ -79,7 +79,7 @@ baseline, so that a change is kept only when quality holds and the cost is known
 
 - Stories' criteria pass; tests added; suites pass.
 - F16's suite runs end to end with a saved baseline; its report's cost equals the ledger's.
-- **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)): tick **F18** in the TODO, set *Status*
+- **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)): move **F18** to the CHANGELOG, set *Status*
   to done here and in the features table, and update skill 12 in the goal map.
 
 ---

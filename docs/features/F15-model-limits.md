@@ -4,7 +4,7 @@
 >
 > **Spec:** [Optimisation §B (cache minimums), §C, §D](../specs/RESPONSE_OPTIMISATION.md) · [MODELS.md](../MODELS.md)
 >
-> **In the TODO:** tick **F15 Model limits** under *Now* ([TODO](../../TODO.md))
+> **In the TODO:** **F15 Model limits** under *Now* ([TODO](../../TODO.md))
 
 Every limit the agent works against is a single number today, the same for every model: F9 compacts at 120,000 tokens,
 F13's budget is a per-profile setting. But models differ. The default, Claude Haiku 5.5, has a 1M-token window and

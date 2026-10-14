@@ -12,14 +12,15 @@ relying on training. What that needs beyond the skills is under *Backlog: South 
 **How this list works**
 
 - **Planned work is a feature.** Each feature has a design doc in [docs/features/](docs/features/README.md) with user
-  stories and steps, and exactly **one line under *Now***. When a feature's *Done when* is met, tick that line — it's
-  the only place to tick — and the feature doc says what else to update.
+  stories and steps, and exactly **one line under *Now***. When a feature's *Done when* is met, delete that line and
+  add its entry to the [CHANGELOG](CHANGELOG.md); the feature doc says what else to update.
 - **Each line says what it replaces.** Older backlog items that a feature covers were folded into it, so nothing
   appears twice.
 - **Bigger designs live in [docs/specs/](docs/specs/).** This list keeps only their open items.
 - **Bugs are fixes.** Each has a doc in [docs/fixes/](docs/fixes/README.md) (symptom, cause, fix, how it was confirmed);
   an open one has one backlog line here that links to it.
-- **When something is finished**, tick it, then move it to *Done* as one line (newest first).
+- **When something is finished**, it leaves this list: one line at the top of the [CHANGELOG](CHANGELOG.md) (newest
+  first), so everything here is still open.
 
 ## Now: usage, budgets and cheaper responses
 
@@ -27,18 +28,11 @@ From the specs [Usage, estimates and budgets](docs/specs/USAGE_AND_BUDGETS.md) a
 [Response optimisation](docs/specs/RESPONSE_OPTIMISATION.md). Work through the milestones in order; each is useful on
 its own.
 
-**M1 — See it:** every request's tokens and cost recorded and visible.
-
-- [x] [F1 Usage ledger](docs/features/F01-usage-ledger.md) — record every model request, attributed to session, task
-      and run
-- [x] [F2 Prices and cost](docs/features/F02-prices-and-cost.md) — a price table; cost on every record
-- [x] [F3 Show usage](docs/features/F03-usage-display.md) — cost per answer (web, CLI, Rider), in the API stream, and
-      per fix in the comms log
+**M1 — See it** is done: every request's tokens and cost recorded and visible (F1–F3, in the
+[CHANGELOG](CHANGELOG.md)).
 
 **M2 — Cheaper:** stop paying full price for the same tokens.
 
-- [x] [F4 Prompt caching](docs/features/F04-prompt-caching.md) — cache the ~48,000-token prefix every request re-sends.
-      *Replaces:* "Wire up Anthropic prompt caching on the system prompt"
 - [ ] [F5 Toolset profiles](docs/features/F05-toolset-profiles.md) — load only the tools a session needs (the demo:
       coding tools only). *Built on its branch; short benchmark done (prefix −50%, run −23%, 4/4 fixes); left:* the full run and a sub-session end to end
 - [ ] [F15 Model limits](docs/features/F15-model-limits.md) — each model's context window and cache minimum beside its
@@ -81,10 +75,6 @@ measured.
       per session"
 - [ ] [F12 Response speed](docs/features/F12-response-speed.md) — time to first token and tokens per second on every
       usage record, for every provider (Ollama's own timings too); shown with the usage
-- [x] [F14 Display currency](docs/features/F14-display-currency.md) — show costs in the PC's currency (from the Windows
-      region, `HOST_CULTURE`) or a chosen one, with the rate's date; rates live from `RATES_URL` (frankfurter) with a
-      `config/rates.json` fallback, served at `GET /rates`; the ledger stays in the bill's currency. *Built before
-      M2 by choice* ([plan](docs/plans/F14-display-currency.md))
 
 **Local — Local models:** a local model gets everything it is sent.
 
@@ -160,20 +150,6 @@ the product parts.
 
 ### Quality and CI
 
-- [x] **Project layout, after F4, first of two cleanups** (the rules are in
-      [docs/CLAUDE.md](docs/CLAUDE.md#project-layout)): folders by concern (`Agent`, `Llm/{Provider}`, `Tools/{Toolset}`,
-      `Skills`, `Guardrails`, `Usage`, `Pricing`, `Protocols/Mcp`, `Hosting`), namespace = folder path in PascalCase,
-      `git mv` so history follows, split `AgentEngine` along those concerns, tests mirror the source, and an
-      architecture test (namespaces match folders, dependencies point one way). Its own branch and PR, with a plan;
-      behaviour unchanged, so every test passes untouched apart from namespaces
-- [x] **Split `AgentEngine`, right after the project layout** (its plan comes first): the loop, history and prompt in
-      `Agent/`, the tool registry beside it, and the tool-result guards, `ResolvePath`/`IsSensitive` and the SSRF check
-      in `Guardrails/`. CL1 moves the class whole; this splits it. Behaviour unchanged
-- [x] **Messages and logging, after F4, second of two cleanups** — CL3 ([plan](docs/plans/CL3-messages-and-logging.md); the rule is in [docs/CLAUDE.md](docs/CLAUDE.md#messages-and-logging)): move
-      the ~230 inline messages in 35 files (exceptions, log lines, tool results, user-facing text) into message enums
-      with `[Description]` templates and a `MessageText` helper, with a test over every enum; switch logging from
-      `Console.Error` and `AgentLog`'s files to `ILogger` with Serilog (stderr only, run files and JSON-lines as sinks).
-      Its own branch and PR, with a plan
 - [ ] **One type per doc** — CL4 ([plan](docs/plans/CL4-doc-types.md)): each doc is one Diátaxis type (tutorial,
       how-to, reference, explanation) and opens with what it answers; the six mixed docs split (README, AGENT_INTERACTION,
       ARCHITECTURE, the features README's benchmarks to `docs/BENCHMARKS.md`, the TODO's Done to `CHANGELOG.md`, the
@@ -228,7 +204,6 @@ Design: [docs/specs/SESSION_ARCHITECTURE.md](docs/specs/SESSION_ARCHITECTURE.md)
 - [ ] **F23 Credits** (to plan): buy credits with money, spend them per question at cost plus a margin, from the usage
       ledger and prices (F1, F2) — Puls's *Koop krediete*. Louis: "'n layer wat geld na ons interne krediete verander. Wil so
       bietjie geld maak as ek kan."
-- [x] [F20 Puls look](docs/features/F20-puls-look.md) — Puls gets a landing page and a three-panel dashboard, dark, in its own colours ([plan](docs/plans/F20-puls-look.md)).
 - [ ] **F5 follow-up: roll sub-session usage up into the parent chat** ([plan](docs/plans/F05-usage-rollup.md)). Sub-session totals (`StartSubSession`) must count in the parent's turn scope (`UsageScope.Add`, summary record only, never written to the ledger) so the per-chat usage line, the chat total and `GET /sessions/{id}` include them. Child cost is converted to USD once, at the parent. Confirm in `Program.cs` that `session.Usage` takes the turn's scope records. Test: parent total = own requests + each child; a failed child's usage is included; no duplicate ledger rows.
 
 ### Web app
@@ -348,86 +323,3 @@ item removes one, it says so.
    the rest of that message; `/approve`, `/reject` and a skill reload break the next one; and in the API every open
    chat with the same toolsets shares one engine and its tool list (F5). Start a new chat afterwards.
    → [**FX4** Append-only history](docs/fixes/FX04-append-only-history.md).
-
-## Done
-
-Newest first; details in the git history.
-
-- 2026-10-14 — **F20 Puls look**: a landing page and a dark three-panel dashboard in Puls's colours, with the Werk panel showing each delegation live (specialist, steps, sources, cost); checked in a real browser with a live delegation ([F20](docs/features/F20-puls-look.md)).
-- 2026-10-14 — **FX14 Sub-session prompt budget**: `SUB_SESSION_PROMPT_BUDGET` (80k, under the 100k price step) stops a specialist's prompt growing into long-prompt prices; it answers from what it has ([FX14](docs/fixes/FX14-sub-session-prompt-budget.md)).
-- 2026-10-14 — **FX13 Counting to the analyst**: Puls's router sends counting to `files` + a script, and the reader hands counting back instead of reading every file ([FX13](docs/fixes/FX13-counting-to-the-analyst.md)).
-- 2026-10-14 — **FX12 Env templates readable**: `.env.example`, `.sample` and `.template` files are no longer treated as secrets ([FX12](docs/fixes/FX12-env-templates-readable.md)).
-- 2026-10-14 — **FX11 Empty sub-session answer**: a specialist that ends with no text (its 10 rounds used) is asked once more in the same session instead of Puls starting over ([FX11](docs/fixes/FX11-empty-sub-session-answer.md)).
-- 2026-10-14 — **FX10 Optional peer name**: `StartSubSession` without `agent` uses the only peer; Puls's calls without it were refused ([FX10](docs/fixes/FX10-optional-peer-name.md)).
-- 2026-10-12 — **Ollama on the GPU and local triage**: `ollama-nvidia` and `ollama-amd` services sized for a 4 GB card
-  (32k context, flash attention, 8-bit KV cache); Ollama's client waits 10 minutes, not 100 seconds. The short demo's
-  triage on `qwen3:4b-instruct-2507` (profile `.env.ollama-triage`): 4 fixed, 1 escalated, as on Claude, triage $0, the
-  run $0.042 against $0.049, 2.4× slower; llama3.1 and qwen3's thinking variant failed
-  ([Local triage](docs/BENCHMARKS.md#local-triage-2026-10-12),
-  `samples/sample-output-short-local-triage/`)
-- 2026-10-12 — **CL3 Messages and logging**: every exception, log line, tool error and user text is a message enum
-  member with a `[Description]` template (486: 313 in core, the rest in each host's own `Messages/`), proved to render
-  as before; `ToolMessageSnapshot.json` pins the 190 texts tools return to the model. Logging is `ILogger` with
-  Serilog: stderr only, the run file and the JSON-lines records as sinks, holes kept as fields; `AgentLog` is gone.
-  The orchestrator logs to stderr too, and `decisions.jsonl` is snake_case like its other records
-- 2026-10-12 — **CL2 Split AgentEngine**: 1,078 lines become the engine (the turn loop, 360) and `ToolRegistry`,
-  `ToolCallGuards`, `SkillTools`, `AgentBuiltTools` in `Agent/`; pure checks in `Guardrails/` (`WorkspaceBoundary`,
-  `SensitiveFiles`, `SsrfGuard`); the console chat in the CLI. A golden file pins what the model is sent; it found that
-  the prompt and two descriptions took the checkout's line endings, now always LF
-- 2026-10-11 — **CL1 Project layout**: core in folders by concern (`Agent`, `Llm/{Name}Provider`, `Tools/{Toolset}`,
-  `Skills`, `Usage`, `Pricing`, `Protocols/Mcp`, `Hosting`, `Config`, `Messages`, `Logging`), the namespace the folder
-  path, one type per file; PascalCase namespaces in every project; the tests mirror the source; `ArchitectureTests`
-  fails on a namespace off its folder, two types in a file or a dependency against the layers. Behaviour unchanged:
-  the same 779 tests pass. Moved with `git mv`, so history follows
-- 2026-10-11 — **F4 Prompt caching**: two cache markers on Anthropic (the system prompt with `LLM_CACHE_TTL`, the
-  conversation by automatic caching, 5 minutes), as a provider strategy; tools sorted; writes priced at their lifetime
-  (`cache_write_1h`); `usage-probe --cache-gaps` recommends the lifetime from the ledger. Full demo $0.13 against M1's
-  $0.66 (−80%), louis-agent's input cost −87%, 10/10 fixes; samples in `samples/sample-output-cached/`
-- 2026-10-11 — **F14 Display currency**: costs in the PC's currency in every host (rands from `HOST_CULTURE=en-ZA`,
-  written by `usage-probe --host-culture`; `R0.034`, `.` decimals), at a dated rate (Frankfurter mapped into our
-  `rates.json`, `config/rates.json` as the fallback, served at `GET /rates`), with the rate and the USD charged beside
-  converted totals; a currency picker in the web app. The ledger stays in USD. Both demo samples rerun in rands
-
-- 2026-10-11 — [FX8](docs/fixes/FX08-fix-result-quotes.md): a FIX-RESULT whose summary quotes without escaping
-  ("Cher") is still read, instead of asking louis-agent to continue three times; found by F14's full demo rerun
-
-- 2026-10-11 — **F3 Show usage** (M1 done): every answer says what it used and cost — a line on the CLI's stderr,
-  under each answer in the web app (with the chat's total), in Rider with `USAGE_IN_CHAT=true` — `/usage` in every
-  host, `usage` on the API's `message_delta` and `GET /sessions/{id}`, and cost per reply, per error and per run in the
-  orchestrator's comms log. The short demo's comms log total equals its ledger's exactly ($0.2526, 57 requests)
-- 2026-10-11 — [FX7](docs/fixes/FX07-timeout-ends-run.md): a timed-out request fails that error, not the
-  orchestrator's whole run; found with the new `run-demo.ps1 -OrchestratorProfile`
-
-- 2026-10-11 — [FX6](docs/fixes/FX06-usage-on-failed-turns.md): a failed louis-agent turn still reports its usage (on
-  the API's `error` event), so the web app's chat total and the orchestrator's comms log match the ledger; built in F3
-
-- 2026-10-11 — [FX5](docs/fixes/FX05-null-conditional-ledger.md): a `?.` in F3's first step skipped the ledger write for
-  requests outside a usage scope; F1's tests caught it before the commit
-
-- 2026-10-10 — **F2 Prices and cost**: every ledger record priced from a tracked `config/prices.json` (Haiku 5.5's
-  long-prompt tier included), or from the API's `GET /prices` with `PRICES_URL`; `usage-probe -- --ledger` totals a
-  ledger; M1 baseline $0.6586 for the full demo ($0.0625 a fix), both sample runs rerun with priced ledgers
-- 2026-10-10 — Full demo on Claude Haiku 5.5 with the usage ledger: 10/10 fixes confirmed, 2 ignored, 1 escalated, ≈ $0.66
-  (`samples/sample-output/`, now with `usage-2026-10.jsonl`); F2 prices that ledger for the M1 baseline
-- 2026-10-10 — [FX1](docs/fixes/FX01-round-limit-tools.md): the engine keeps the tools on the request after the
-  10-round limit (`tool_choice: none`), which Haiku 5.5 otherwise rejects; the short demo went from 2/4 to 4/4 fixes
-- 2026-10-10 — **F1 Usage ledger**: every model request of every host in `{LOG_DIRECTORY}/usage-YYYY-MM.jsonl`, with
-  host, session, turn, purpose and the orchestrator's fix and run; `tools/louis-agent.usage-probe`; a short demo
-  (`run-demo.ps1 -Short`) saved with its ledger in `samples/sample-output-short/` (4/4 fixes, ≈ $0.27 on Haiku 5.5)
-- 2026-10-10 — Default Anthropic model is Claude Haiku 5.5 (about 7.5× cheaper than Haiku 4.5; usage, thinking and
-  thinking text checked with `tools/louis-agent.usage-probe`); LLM profiles `config/.env.anthropic` / `.env.ollama`
-- 2026-10-07 — Specs and feature plan for usage, budgets and cheaper responses (`docs/specs/`, `docs/features/`); the
-  session-architecture and orchestrator designs moved from this list into `docs/specs/`
-- 2026-10-07 — Docs: [how the agents and endpoints talk](docs/AGENT_COMMUNICATION.md), [runbooks](docs/RUNBOOKS.md), a
-  docs index in reading order
-- 2026-10-07 — Web app Branches tab: merges and deletes are queued instead of silently dropped while another runs
-- 2026-10-07 — Comms log keeps louis-agent's text blocks apart
-- 2026-10-06 — Orchestrator demo in Docker: ten bugs → ten fix branches, Markdown comms log, sample output with a
-  recording of the merges
-- 2026-10-06 — Web app Branches tab and history endpoints: all commits, branch and commit diffs, merge, delete merged
-- 2026-10-06 — Root `.dockerignore`: builds no longer send `config/.env.secrets` or `.git` into the build context
-- 2026-10-06 — Orchestrator POC: runbook per API method, fixes delegated to louis-agent.api and verified; `AgentEngine`
-  `toolsets:` option
-- 2026-10-06 — MCP server: Streamable HTTP transport (`MCP_TRANSPORT=http`) with its own `MCP_API_KEY`
-- Earlier — Skill files standardised (titles, tool tables, Python fences); DevOps blockers query fixed (tag, not type);
-  sensitive-file checks added to `DeleteDirectory` and `CopyFile`; all 108 tool descriptions rewritten

@@ -5,7 +5,7 @@
 >
 > **Spec:** [Optimisation §C](../specs/RESPONSE_OPTIMISATION.md) (toolsets) · [MODELS.md](../MODELS.md) (Ollama)
 >
-> **In the TODO:** tick **F13 Local models** under *Now* ([TODO](../../TODO.md)) · **Removes the limitation:** local
+> **In the TODO:** **F13 Local models** under *Now* ([TODO](../../TODO.md)) · **Removes the limitation:** local
 > models get a truncated prompt
 
 The first ledger record from a local model (F1 step 6, `llama3.1` on Ollama) showed `input: 2050` for a one-word

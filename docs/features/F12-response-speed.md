@@ -4,7 +4,7 @@
 >
 > **Spec:** [Usage §4.1](../specs/USAGE_AND_BUDGETS.md) (the record) · [Optimisation §A](../specs/RESPONSE_OPTIMISATION.md) (what the adapters report)
 >
-> **In the TODO:** tick **F12 Response speed** under *Now* ([TODO](../../TODO.md))
+> **In the TODO:** **F12 Response speed** under *Now* ([TODO](../../TODO.md))
 
 F1 records how long each request took (`duration_ms`), but not how that time splits: waiting before the first token,
 then writing the answer. That split is what makes a model feel fast or slow, and it is the only way to compare a local

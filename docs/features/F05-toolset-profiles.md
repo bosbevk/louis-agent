@@ -4,7 +4,7 @@
 >
 > **Spec:** [Optimisation §C](../specs/RESPONSE_OPTIMISATION.md)
 >
-> **In the TODO:** tick **F5 Toolset profiles** under *Now* ([TODO](../../TODO.md))
+> **In the TODO:** **F5 Toolset profiles** under *Now* ([TODO](../../TODO.md))
 
 Every engine registers every toolset whose keys are set: in the demo, 108 tools (68,162 characters of definitions)
 including 35 Paymo and DevOps tools a code-fixing container never uses. Their guidance in the system prompt is sent too
@@ -133,7 +133,7 @@ with named toolsets, send it a task, and get the result back, so that tools are 
 - Stories' criteria pass; tests added; suites pass.
 - Benchmark: prefix ≥ 25% smaller, cache still hits, 10/10 fixes confirmed; numbers recorded. Delegation is kept as the
   default only for tasks where the ledger shows it is cheaper.
-- **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)): tick **F5** in the TODO, set *Status*
+- **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)): move **F5** to the CHANGELOG, set *Status*
   to done here and in the features table, and note it in the spec's implementation map.
 
 ## Left before done (2026-10-13)

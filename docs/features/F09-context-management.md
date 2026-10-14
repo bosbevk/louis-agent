@@ -6,7 +6,7 @@
 >
 > **Spec:** [Optimisation §D](../specs/RESPONSE_OPTIMISATION.md) · [Session architecture §2](../specs/SESSION_ARCHITECTURE.md)
 >
-> **In the TODO:** tick **F9 Bounded history** under *Now* ([TODO](../../TODO.md)) · **Replaces:** "Consider context editing and compaction"
+> **In the TODO:** **F9 Bounded history** under *Now* ([TODO](../../TODO.md)) · **Replaces:** "Consider context editing and compaction"
 
 History only grows: every file read and test output stays in the conversation and is re-sent every round until the
 session ends. F9 bounds it in two steps — first replacing stale tool results with short stubs, then summarising old
@@ -81,7 +81,7 @@ quality trade.
 
 - Stories' criteria pass; tests added; suites pass.
 - Benchmark chat passes recall under the threshold; demo 10/10 with cost per fix ≤ M2.
-- **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)): tick **F9** in the TODO,
+- **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)): move **F9** to the CHANGELOG,
   set *Status* to done here and in the features table, and note it in the spec's implementation map.
 
 ---

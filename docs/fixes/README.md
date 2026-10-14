@@ -41,7 +41,8 @@ record (most fixes so far taught something about a model's API).
 In the commit that fixes it, or the one right after:
 
 1. **This folder:** *Status* to **done** here and in the doc; fill in *Fix*, *Tests* and *Confirmed*; add the commit.
-2. **TODO:** remove its backlog line and add a one-line entry at the top of *Done*.
+2. **TODO and CHANGELOG:** remove its backlog line and add a one-line entry at the top of the
+   [CHANGELOG](../../CHANGELOG.md).
 3. **Limitations:** if it removes a known limitation, delete it from the TODO's
    [Known limitations](../../TODO.md#known-limitations); FX4 also removes the note on #9 in
    [docs/CLAUDE.md](../CLAUDE.md#known-limitations).

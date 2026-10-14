@@ -11,7 +11,7 @@ Work through them in milestone order: each milestone is useful on its own, and l
 
 ## Features
 
-Each feature is **one line under *Now* in the [TODO](../../TODO.md)** — tick it there when the feature is done. Where a
+Each feature is **one line under *Now* in the [TODO](../../TODO.md)** — deleted there when the feature is done. Where a
 feature replaces older backlog wording, that wording no longer appears anywhere else in the TODO.
 
 | ID | Feature | Status | Spec | Replaces in the TODO | Depends on | Milestone |
@@ -114,7 +114,8 @@ The runs so far, with their numbers, are in [BENCHMARKS.md](../BENCHMARKS.md).
 When a feature's *Done when* is met, do all of this in the same commit, so the TODO, the specs and these docs never
 drift apart:
 
-1. **TODO:** tick the feature's line under *Now*, and add a one-line entry at the top of *Done*.
+1. **TODO and CHANGELOG:** delete the feature's line under *Now*, and add a one-line entry at the top of the
+   [CHANGELOG](../../CHANGELOG.md).
 2. **This folder:** set *Status* to **done** at the top of the feature's doc and in the table above.
 3. **Spec:** in the spec's *Implementation* map, mark the feature done; change anything the build proved different
    (for example F4's two cache markers instead of three).
