@@ -141,21 +141,11 @@ session loads only the toolsets it needs. The agent can write new skills and bui
 command line, and everything listens on `127.0.0.1` only. Details: [Architecture: Skills](docs/ARCHITECTURE.md#skills),
 [Tools](docs/ARCHITECTURE.md#tools) and [Security](docs/ARCHITECTURE.md#security).
 
-## Logs
-
-Containers write their logs to `logs/` (git-ignored) so they survive `--rm`, plus JSON-lines records of oversized tool
-results and truncated tool calls for spotting where the agent needs narrower tools.
-
 ## Development
 
-```bash
-dotnet build louis-agent-solution.sln
-dotnet test tests/louis-agent.core.tests
-dotnet test tests/louis-agent.api.tests
-dotnet test tests/louis-agent.orchestrator.tests
-```
-
-Requires the .NET 10 SDK. See the [development guide](docs/CLAUDE.md) and the [docs index](docs/README.md).
+Requires the .NET 10 SDK. Building, testing and how a change is made are in the
+[development guide](docs/CLAUDE.md); where the logs go in [Architecture: Logging](docs/ARCHITECTURE.md#logging); every doc
+in the [docs index](docs/README.md).
 
 ## License
 
