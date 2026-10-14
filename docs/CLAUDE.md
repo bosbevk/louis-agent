@@ -287,6 +287,16 @@ committing:
 LOUIS_UPDATE_GOLDEN=1 dotnet test tests/louis-agent.core.tests --filter "ModelRequestSnapshotTests|ToolMessageSnapshotTests"
 ```
 
+```powershell
+$env:LOUIS_UPDATE_GOLDEN = '1'
+try { dotnet test tests/louis-agent.core.tests --filter "ModelRequestSnapshotTests|ToolMessageSnapshotTests" }
+finally { Remove-Item Env:LOUIS_UPDATE_GOLDEN }
+```
+
+The PowerShell variable lasts for the session, hence the `finally`: left set, every later test run rewrites the files
+instead of checking them. On Windows, `git status` can list a regenerated file as modified while `git diff` shows
+nothing: only its line endings changed, and `git checkout -- <file>` puts it back.
+
 Tests use `FakeChatClient` (a scripted `IChatClient` that also streams) and `StubHandler` for HTTP — no network, model or
 Docker. A few tests skip themselves when git, pip or the network isn't available. The agent runs tests on Linux inside
 its containers, so keep them platform-neutral (forward slashes, no Windows-only paths).
