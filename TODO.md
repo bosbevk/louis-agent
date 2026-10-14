@@ -148,6 +148,9 @@ the product parts.
 
 ### Quality and CI
 
+- [ ] **Architecture docs in arc42** — CL6 ([plan](docs/plans/CL6-arc42.md)): `ARCHITECTURE.md` becomes arc42's twelve
+      sections in `docs/architecture/`, the decisions scattered over the guide, specs, fixes and plans become numbered
+      ADRs in `docs/adr/`, and the diagrams follow C4 (context, containers, components)
 - [ ] CI (`.github/workflows`): `dotnet build` and `dotnet test` on every push and pull request — today regressions are
       only caught locally
 - [ ] Automated tests for the API and the web app (bUnit or Playwright); start with the Branches queue (several clicks in
