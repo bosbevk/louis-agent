@@ -3,6 +3,11 @@
 > **Reference.** What was finished, newest first, one entry per feature, fix or cleanup. **Elsewhere:** what's still
 > open in the [TODO](TODO.md); how each was built in its feature, fix or plan doc (linked from its entry).
 
+- 2026-10-14 — **F5 follow-up, sub-session usage rolled up**: a delegated answer's usage line, the chat total, `/usage`
+  and `GET /sessions/{id}` include the specialist's requests, tokens and cost, as one `sub_session` record per reply
+  (with `requests`, the model requests it stands for) that is also a row in the parent's ledger; ledger reports list
+  those rows without totalling them, since the specialist's own rows are in the ledger it ran on
+  ([plan](docs/plans/F05-usage-rollup.md))
 - 2026-10-14 — **FX9 Cancelled requests in the ledger**: a non-streaming request that times out or is cancelled (the
   orchestrator's triage) is written to the ledger as `cancelled` with unknown tokens, as a cancelled stream already
   was; provider errors stay unrecorded ([fix](docs/fixes/FX09-cancelled-request-usage.md))

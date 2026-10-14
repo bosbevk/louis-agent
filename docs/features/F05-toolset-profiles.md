@@ -143,6 +143,12 @@ run; the Puls delegation checks ([three runs per mode](../../samples/sample-outp
 sub-sessions end to end. The *Done when* line on delegation ("only where the ledger shows it is cheaper") continues as
 the TODO's *Relook at how often Puls delegates*. What follows is the list as it stood before.
 
+**The usage roll-up follow-up** ([plan](../plans/F05-usage-rollup.md)) was built on 2026-10-14 on
+`feature/F5-usage-rollup`: a delegated answer's usage line, the chat total, `/usage` and `GET /sessions/{id}` include
+the specialist's requests, tokens and cost, as one `sub_session` record per reply that is also a row in the parent's
+ledger (Louis asked for the row to be kept); ledger reports list those rows without totalling them. The spec's §4.1 has
+the row.
+
 Built on `feature/F5-toolset-profiles` (steps 1–10 and 12; [plan](../plans/F05-toolset-profiles.md)); all suites pass.
 Left, because each needs a model and so spends money:
 - **The full benchmark** (step 11, S4 and S6): `samples/run-demo.ps1` (10 fixes) against F4's full run, to confirm 10/10.

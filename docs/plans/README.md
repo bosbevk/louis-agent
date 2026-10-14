@@ -18,7 +18,7 @@ or fix doc (*What the build changed*), not here.
 | [F03-usage-display.md](F03-usage-display.md) | [F3 Show usage](../features/F03-usage-display.md) | 2026-10-11 | |
 | [F14-display-currency.md](F14-display-currency.md) | [F14 Display currency](../features/F14-display-currency.md) | 2026-10-11 | Built before M2 by choice |
 | [F05-toolset-profiles.md](F05-toolset-profiles.md) | [F5 Toolset profiles](../features/F05-toolset-profiles.md) | 2026-10-13 | No toolsets at start-up; an engine per toolset list; sub-sessions on a peer (`StartSubSession`) |
-| [F05-usage-rollup.md](F05-usage-rollup.md) | TODO: *F5 follow-up: roll sub-session usage up* | 2026-10-13 | One summary record per sub-session in the parent scope (never the ledger); three steps |
+| [F05-usage-rollup.md](F05-usage-rollup.md) | TODO: *F5 follow-up: roll sub-session usage up* | 2026-10-13 | One roll-up record per sub-session reply in the parent scope, and (approved during the build) a row in the parent's ledger; three steps, built 2026-10-14 |
 | [CL7-docs-tidy.md](CL7-docs-tidy.md) | TODO: *Docs tidy* (cleanup) | 2026-10-14 | The session picture to `specs/images/` (SVG only); How a turn works into the runtime view; Runbooks beside the orchestrator's doc |
 | [CL6-arc42.md](CL6-arc42.md) | TODO: *Architecture docs in arc42* (cleanup) | 2026-10-14 | arc42's twelve sections replace ARCHITECTURE.md; 13 ADRs (Nygard) written from where each decision is recorded; C4 diagrams in mermaid flowcharts |
 | [CL5-guides-by-folder.md](CL5-guides-by-folder.md) | TODO: *Guides by folder* (cleanup) | 2026-10-14 | The guide's folder-only how-tos move to `CLAUDE.md` files beside the code, loaded only there; none in `Skills/` (embedded, read as personalities) |
