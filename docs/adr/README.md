@@ -1,0 +1,54 @@
+# Architecture decisions
+
+> **Reference.** Every lasting architecture decision, one record each, newest last. **Elsewhere:** how the system is
+> built in the [architecture](../ARCHITECTURE.md), how a change is made in the [development guide](../CLAUDE.md).
+
+Each record is an ADR (architecture decision record) in
+[Michael Nygard's format](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions): the context that
+forced a choice, the decision, and what it costs. Decisions made before 2026-10-14 were recorded
+afterwards from the docs that hold them (each ADR links its sources), with the date they were made.
+
+| ADR | Decision | Status |
+|---|---|---|
+| [0001](0001-record-architecture-decisions.md) | Record architecture decisions | Accepted |
+
+## When to write one
+
+When a plan makes a decision that later work must follow, or that someone will one day ask "why?" about: a provider,
+a protocol, a layout or safety rule, a trade-off between cost and quality. Not for a step's details (the plan keeps
+those) or a bug's cause (the fix doc keeps that). The ADR lands in the same PR as the work it decides.
+
+## Rules
+
+- **Numbered** `NNNN-title-in-kebab-case.md`, in order; numbers are never reused.
+- **Never edited once accepted**, except its *Status* line. To change a decision, write a new ADR that supersedes it,
+  and set the old one's status to *Superseded by NNNN*, linking the new record.
+- **Short:** a page at most. The detail stays in the feature, fix, plan or spec it links to.
+
+## Template
+
+```markdown
+# NNNN. Title: the decision, in a few words
+
+**Status:** Proposed | Accepted | Superseded by [NNNN](NNNN-….md) · **Date:** YYYY-MM-DD (decided) ·
+**Recorded:** YYYY-MM-DD
+
+## Context
+
+What forced a choice: the problem, the constraints, the options considered.
+
+## Decision
+
+What we do, stated as a rule ("We …").
+
+## Consequences
+
+What gets easier, what gets harder, and what we now have to keep doing.
+
+## Links
+
+The feature, fix, plan or spec where it was decided.
+```
+
+---
+[Docs index](../README.md) · Related: [Architecture](../ARCHITECTURE.md) · [Plans](../plans/README.md)
