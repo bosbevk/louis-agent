@@ -122,31 +122,9 @@ Settings live in `config/.env` and secrets in `config/.env.secrets`; both are gi
 
 ## HTTP API
 
-Sessions live in memory. Every reply is JSON; a message's answer streams as Server-Sent Events shaped like Claude's
-(`message_start`, `content_block_start/delta/stop` for `thinking`, `text`, `tool_use` and `tool_result`, `message_stop`).
-The full reference — authentication, errors, the event stream with an example, and how other agents use it — is in
-[docs/AGENT_COMMUNICATION.md](docs/AGENT_COMMUNICATION.md).
-
-| Endpoint | |
-|---|---|
-| `POST /sessions` | Start a session → `{ "session_id" }`. Optional: `toolsets` (only those tools and guides), `personality` (a voice or a specialist's role), `location` and `time_zone`, and tags for the usage ledger (`task`, `run`, `service`) |
-| `GET /toolsets` · `GET /personalities` · `GET /model` | What a session can load, the personalities it can choose, and the model this instance runs |
-| `POST /sessions/{id}/messages` | `{ "message", "attachments": [{ "name", "content" }] }` → event stream |
-| `POST /sessions/{id}/cancel` · `GET` / `DELETE /sessions/{id}` | Stop a reply, inspect, end |
-| `GET /workspace/entries?path=` · `GET /workspace/file?path=` | Browse the workspace (read-only) |
-| `GET /git/status` · `GET /git/diff?path=&staged=` | Changed files and diffs |
-| `POST /git/stage` · `unstage` · `discard` · `commit` | `{ "paths": [...] }` (commit: `{ "message" }`) |
-| `GET /git/branches` · `GET /git/log?count=` | Branches (ahead/behind the checked-out branch) and the log across all branches |
-| `GET /git/commit?sha=` · `GET /git/branch?name=` | A commit's diff; a branch's commits and what merging it would bring |
-| `POST /git/merge` · `POST /git/branch/delete` | `{ "branch" }`: merge into the checked-out branch (`--no-ff`, aborted on conflict); delete a merged branch |
-| `GET /prices` · `GET /rates` · `GET /rates/display` | The price table, the exchange rates, and the currency costs are shown in |
-| `GET /health` | Liveness (no key needed) |
-
-```bash
-SID=$(curl -s -X POST http://127.0.0.1:5080/sessions | jq -r .session_id)
-curl -N -X POST http://127.0.0.1:5080/sessions/$SID/messages \
-     -H "Content-Type: application/json" -d '{"message":"What branch am I on?"}'
-```
+A JSON API with answers streamed as Server-Sent Events shaped like Claude's: sessions, workspace and git endpoints,
+prices and rates. Every endpoint, the event stream with an example, and how other agents use it are in
+[docs/AGENT_COMMUNICATION.md](docs/AGENT_COMMUNICATION.md#the-http-api-louis-agentapi).
 
 ## Web app
 
