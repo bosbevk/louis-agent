@@ -162,4 +162,4 @@ Works with anything that speaks the OpenAI Chat Completions API. Tool calling de
   `tools=on` in the startup line.
 
 ---
-[Docs index](README.md) · Previous: [Setup](SETUP.md) · Next: [Paymo prompts](PAYMO-PROMPTS.md)
+[Docs index](README.md) · Previous: [Setup](SETUP.md) · Next: [How a turn works](AGENT_INTERACTION.md)

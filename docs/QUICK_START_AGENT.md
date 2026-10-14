@@ -88,7 +88,7 @@ Search the web for the latest Microsoft.Extensions.AI release notes and summaris
 Show me all blockers in the current sprint
 ```
 
-**Paymo** (with `PAYMO_API_KEY`) — see [PAYMO-PROMPTS.md](PAYMO-PROMPTS.md)
+**Paymo** (with `PAYMO_API_KEY`)
 ```
 Log 2 hours on ticket 1234567 – fixed the login redirect
 ```

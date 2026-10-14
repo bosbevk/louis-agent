@@ -11,7 +11,6 @@ you need otherwise.
 | [Quick start](QUICK_START_AGENT.md) | Tutorial | Start the web app, Rider or the CLI, try example prompts, approve agent-built tools, troubleshoot |
 | [Setup](SETUP.md) | Reference | Configure `config/.env` and `config/.env.secrets`: every setting, how they are loaded, keeping secrets safe |
 | [Models](MODELS.md) | How-to | Choose and switch the model: Claude (default), Ollama, OpenAI-compatible servers; thinking and limits |
-| [Paymo prompts](PAYMO-PROMPTS.md) | How-to | Log and review Paymo time in plain language (only if you use Paymo) |
 
 ## 2. Understand it
 
