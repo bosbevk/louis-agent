@@ -316,26 +316,34 @@ feature when its turn comes; remove its line here and update the map's *Missing*
 
 ## Known limitations
 
-The same list as [docs/CLAUDE.md](docs/CLAUDE.md#known-limitations); facts about today, not tasks. Where a feature or
-backlog item removes one, it says so.
+Facts about today, not tasks; the one list (the development guide and the docs link here). When work removes one,
+delete it here (see [Finishing a feature](docs/features/README.md#finishing-a-feature)). Where a feature or backlog
+item removes one, it says so.
 
-- Rider MCP discovery only logs Rider's tools; they aren't callable yet (needs a full MCP client) → *Agent architecture
-  gaps: Protocols*.
-- Sessions are in memory in the API and ACP server; a restart ends them → *Sessions and memory: durable sessions*.
-- Ollama tool support is a name heuristic (`LlmOptions.KnownNoToolsPrefixes`).
-- Paymo task lookup takes the first match for a name; an ambiguous name can hit the wrong task.
-- No rate limiting or audit log beyond the file logs → *Agent architecture gaps: Safety*.
-- 10 tool rounds per message: long tasks need a follow-up message → **F10**.
-- An unpublished API (`dotnet run`) only serves the web app in the `Development` environment.
-- Local models get a truncated prompt: the agent sends ~26,000+ tokens (system prompt and tools) without telling Ollama
-  the window, so Ollama uses its own default (2,048 on the version measured here) and drops the rest without an error
-  (the ledger showed `input: 2050`), except in the `ollama-nvidia` and `ollama-amd` containers, which default to 32k;
-  the CPU `ollama` service still uses Ollama's default → **F15** (`num_ctx`) and **F13**.
-- On Claude Haiku 5.5 (the default), changing the tools or skills during a chat can make its next request fail with a
-  400: the model rejects a changed system prompt or tool list once thinking blocks are in the history (enforced for
-  accounts created on or after 2026-08-31). That happens when the model creates a tool (`CreateTool`, mid-message),
-  on `/approve`, `/reject` or a skill reload, and in the API for every open chat with the same toolsets, since they
-  share one engine and its tool list (F5). Start a new chat afterwards → [**FX4**](docs/fixes/FX04-append-only-history.md).
+1. **Rider MCP discovery only logs** Rider's tools; they aren't callable yet (needs a full MCP client).
+   → *Agent architecture gaps: Protocols* (backlog).
+2. **Sessions are in memory** in the API and ACP server; a restart ends them (the web app keeps the transcript).
+   → *Sessions and memory: durable sessions* ([session architecture](docs/specs/SESSION_ARCHITECTURE.md), backlog).
+3. **Ollama tool support is a name heuristic** (`LlmOptions.KnownNoToolsPrefixes`).
+4. **Paymo task lookup takes the first match** for a name; an ambiguous name can hit the wrong task.
+5. **No rate limiting or audit log** beyond the file logs. → *Agent architecture gaps: Safety* (backlog).
+6. **10 tool rounds per message** (`MaximumIterationsPerRequest`): a long task stops mid-way and needs a follow-up
+   message to continue. The orchestrator does this automatically ("Continue the fix…"); most demo fixes take 2-3
+   messages. → [**F10** Route settings](docs/features/F10-route-settings.md).
+7. **Running the API with `dotnet run` (unpublished)** only serves the web app in the `Development` environment
+   (`ASPNETCORE_ENVIRONMENT=Development`); otherwise `/` returns 404. The Docker images are published, so they're fine.
+8. **Local models get a truncated prompt.** The agent sends ~26,000+ tokens (system prompt and tools) and doesn't tell
+   Ollama the window, so Ollama uses its own default (2,048 on the version measured here; newer ones pick 4k–256k by
+   memory) and drops the rest without an error: the ledger showed `input: 2050`. The `ollama-nvidia` and `ollama-amd`
+   containers default to 32k, which covers it; the CPU `ollama` service still uses Ollama's default.
+   → [**F15** Model limits](docs/features/F15-model-limits.md) (sends `num_ctx`) and
+   [**F13** Local models](docs/features/F13-local-models.md).
+9. **Changing the tools or skills during a chat can break it on Claude Haiku 5.5** (the default). The model rejects a
+   changed system prompt or tool list once thinking blocks are in the history (enforced for accounts created on or
+   after 2026-08-31). `BeginTurn` sends the engine's live tool list, so a tool the model creates (`CreateTool`) breaks
+   the rest of that message; `/approve`, `/reject` and a skill reload break the next one; and in the API every open
+   chat with the same toolsets shares one engine and its tool list (F5). Start a new chat afterwards.
+   → [**FX4** Append-only history](docs/fixes/FX04-append-only-history.md).
 
 ## Done
 

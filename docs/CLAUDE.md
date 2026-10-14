@@ -332,32 +332,10 @@ flow are in [AGENT_COMMUNICATION.md](AGENT_COMMUNICATION.md).
 
 ## Known limitations
 
-The same list as the TODO's *Known limitations*: when work removes one, delete it in both places (see
-[Finishing a feature](features/README.md#finishing-a-feature)).
-
-1. **Rider MCP discovery only logs** Rider's tools; they aren't callable yet (needs a full MCP client).
-   Removed by a full MCP client (TODO *Agent architecture gaps: Protocols*, backlog).
-2. **Sessions are in memory** in the API and ACP server; a restart ends them (the web app keeps the transcript).
-   Removed by durable sessions ([session architecture](specs/SESSION_ARCHITECTURE.md), backlog).
-3. **Ollama tool support is a name heuristic** (`LlmOptions.KnownNoToolsPrefixes`).
-4. **Paymo task lookup takes the first match** for a name; ambiguous names can hit the wrong task.
-5. **No rate limiting or audit log** beyond the file logs. Removed by TODO *Agent architecture gaps: Safety* (backlog).
-6. **10 tool rounds per message** (`MaximumIterationsPerRequest`): a long task stops mid-way and needs a follow-up
-   message to continue. The orchestrator does this automatically ("Continue the fix…"); most demo fixes take 2-3 messages.
-   Removed by [F10 Route settings](features/F10-route-settings.md).
-7. **Running the API with `dotnet run` (unpublished)** only serves the web app in the `Development` environment
-   (`ASPNETCORE_ENVIRONMENT=Development`); otherwise `/` returns 404. The Docker images are published, so they're fine.
-8. **Local models get a truncated prompt.** The agent sends ~26,000+ tokens (system prompt and tools) and doesn't tell
-   Ollama the window, so Ollama uses its own default (2,048 on the version measured here; newer ones pick 4k–256k by
-   memory) and drops the rest without an error: the ledger showed `input: 2050`. The `ollama-nvidia` and `ollama-amd`
-   containers default to 32k, which covers it; the CPU `ollama` service still uses Ollama's default. Removed by
-   [F15 Model limits](features/F15-model-limits.md) (sends `num_ctx`) and [F13 Local models](features/F13-local-models.md).
-9. **Changing the tools or skills during a chat can break it on Claude Haiku 5.5** (the default). The model rejects a
-   changed system prompt or tool list once thinking blocks are in the history (enforced for accounts created on or
-   after 2026-08-31). `BeginTurn` sends the engine's live tool list, so a tool the model creates (`CreateTool`) breaks
-   the rest of that message; `/approve`, `/reject` and a skill reload break the next one; and in the API every open
-   chat with the same toolsets shares one engine and its tool list (F5). Start a new chat afterwards. Removed by
-   [FX4 Append-only history](fixes/FX04-append-only-history.md).
+The list is the TODO's [Known limitations](../TODO.md#known-limitations); when work removes one, delete it there.
+One matters whenever you test a change by hand: on Claude Haiku 5.5 (the default), changing the tools or skills during
+a chat (`CreateTool`, `/approve`, `/reject`, a skill reload) breaks that chat with a 400, so start a new chat
+afterwards (limitation 9, [FX4](fixes/FX04-append-only-history.md)).
 
 ## Common errors
 
@@ -368,7 +346,7 @@ The same list as the TODO's *Known limitations*: when work removes one, delete i
 - **Skill not found** — the file isn't loaded for this `AGENT_FUNCTION`, or the name differs (case-sensitive).
 - **bash not found on Windows** — install Git for Windows or set `BASH_PATH` to `bash.exe`; WSL's bash is never used.
 - **400 "Invalid `signature` in `thinking` block … bound to a different conversation"** — the system prompt or tool list
-  changed under earlier thinking (known limitation 9); start a new chat. See [FX4](fixes/FX04-append-only-history.md).
+  changed under earlier thinking ([known limitation 9](../TODO.md#known-limitations)); start a new chat. See [FX4](fixes/FX04-append-only-history.md).
 - **"Price table …"** stopping start-up (not valid, empty, a negative price, or a bad `long_prompt.above_tokens`) — fix
   `config/prices.json` (or the `PRICES_FILE` / `PRICES_URL` table): every model needs all five prices, none negative.
   **"[WARN] No price table"** means costs are recorded as unknown.
