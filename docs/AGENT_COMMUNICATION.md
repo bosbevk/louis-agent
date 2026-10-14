@@ -292,7 +292,7 @@ louis-agent fix the ones the runbook allows — over the same session API any cl
 Besides the sessions, it calls `GET /health` at start-up and, in the demo, takes its prices and exchange rates from
 louis-agent.api's `/prices` and `/rates` (`PRICES_URL`, `RATES_URL`), so both agents' costs are priced with one table
 and shown at one rate. Its triage can run on another model than the fixes, a local one included
-(`ORCHESTRATOR_LLM_PROFILE`; see [Local triage](features/README.md#local-triage-2026-10-12)).
+(`ORCHESTRATOR_LLM_PROFILE`; see [Local triage](BENCHMARKS.md#local-triage-2026-10-12)).
 
 ```mermaid
 sequenceDiagram

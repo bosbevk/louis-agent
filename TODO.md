@@ -45,7 +45,7 @@ its own.
       prices, `num_ctx` sent to local models, and F9's compaction point (below the price step: under 100k on Haiku 5.5)
       and F13's budget per model instead of one number for all. *From the local triage runs:* `num_ctx` and `num_gpu`
       per request for the orchestrator (8k fits fully on a 4 GB GPU, 32k doesn't), and `think: false` sent when
-      thinking is off ([Local triage](docs/features/README.md#local-triage-2026-10-12))
+      thinking is off ([Local triage](docs/BENCHMARKS.md#local-triage-2026-10-12))
 
 **M3 — In control:** know the cost before, stop cleanly at a limit.
 
@@ -363,7 +363,7 @@ Newest first; details in the git history.
   (32k context, flash attention, 8-bit KV cache); Ollama's client waits 10 minutes, not 100 seconds. The short demo's
   triage on `qwen3:4b-instruct-2507` (profile `.env.ollama-triage`): 4 fixed, 1 escalated, as on Claude, triage $0, the
   run $0.042 against $0.049, 2.4× slower; llama3.1 and qwen3's thinking variant failed
-  ([Local triage](docs/features/README.md#local-triage-2026-10-12),
+  ([Local triage](docs/BENCHMARKS.md#local-triage-2026-10-12),
   `samples/sample-output-short-local-triage/`)
 - 2026-10-12 — **CL3 Messages and logging**: every exception, log line, tool error and user text is a message enum
   member with a `[Description]` template (486: 313 in core, the rest in each host's own `Messages/`), proved to render

@@ -214,7 +214,7 @@ step 6.
 
 ## What the build found
 
-**Result** ([benchmark](README.md#f4-benchmark-2026-10-11)): the full demo cost **$0.1334 against $0.6586 for M1
+**Result** ([benchmark](../BENCHMARKS.md#f4-benchmark-2026-10-11)): the full demo cost **$0.1334 against $0.6586 for M1
 (−80%)**, louis-agent's input cost **−87%** (target ≥ 60%), cache-hit rate 98%, **10/10 fixes confirmed**; the prefix
 per fix about −88%. The short demo: $0.0488 against $0.2884 uncached (−83%). Saved in
 [samples/sample-output-cached/](../../samples/sample-output-cached/README.md) and

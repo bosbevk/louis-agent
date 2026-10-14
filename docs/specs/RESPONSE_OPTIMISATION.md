@@ -213,7 +213,7 @@ Breakpoint 3 adds savings on the growing history on top of that.
 
 **Measured** (F4, 2026-10-11, the full demo): the prefix per fix about **−88%** ($0.054 to about $0.0063), louis-agent's
 input cost **−87%**, the run **−80%** against M1 with 10/10 fixes; the prefix was written once per run and read by every
-later fix in its own session ([F4 benchmark](../features/README.md#f4-benchmark-2026-10-11)).
+later fix in its own session ([F4 benchmark](../BENCHMARKS.md#f4-benchmark-2026-10-11)).
 
 **Accept when:** from the second request of a session, `CachedInputTokenCount` ≥ the prefix size; the benchmark's
 input cost falls by at least 60%; Ollama and OpenAI-compatible runs are unchanged (no markers sent).

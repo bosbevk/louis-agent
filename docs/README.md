@@ -59,6 +59,7 @@ planned, next and in the backlog, and links to the rest.
 | [Goal](GOAL.md) | Explanation | See what the whole plan is for: the skills it teaches, when one counts as learned, and how the work is done |
 | [TODO](../TODO.md) | Plan | See what's planned now (features to tick), next (the build-mode POC), the backlog by area, known limitations and what's done |
 | [Features](features/README.md) | Plan | Follow the step-by-step plan for the usage and optimisation specs and for Puls: each feature with user stories, design, tasks, and what to update when one is finished |
+| [Benchmarks](BENCHMARKS.md) | Reference | See every measured run: tokens, cost, cache hits and fixes confirmed, from the M1 baseline on |
 | [Learning write-ups](learning/README.md) | Explanation | Read what each skill in the goal taught: what was measured before and after, the trade-offs, what didn't work |
 | [Plans](plans/README.md) | Plan | Read the plan approved before each feature or fix was built: what it changed from the doc, the steps and how they were checked |
 | [Fixes](fixes/README.md) | Explanation | See what broke, why and how it was fixed (symptom, cause, fix, how it was confirmed), and the fixes still open |

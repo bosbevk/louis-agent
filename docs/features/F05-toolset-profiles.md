@@ -142,7 +142,7 @@ Built on `feature/F5-toolset-profiles` (steps 1–10 and 12; [plan](../plans/F05
 Left, because each needs a model and so spends money:
 - **The full benchmark** (step 11, S4 and S6): `samples/run-demo.ps1` (10 fixes) against F4's full run, to confirm 10/10.
   The **short run is done** (2026-10-13, [sample](../../samples/sample-output-short-f5/README.md),
-  [numbers](README.md#f5-benchmark-short-run-2026-10-13)): prefix −50% (~48.5k → ~24.4k tokens), louis-agent −31%, the
+  [numbers](../BENCHMARKS.md#f5-benchmark-short-run-2026-10-13)): prefix −50% (~48.5k → ~24.4k tokens), louis-agent −31%, the
   run −23% ($0.0488 → $0.0378), 4/4 fixes confirmed, the cache still hits.
 - **A sub-session end to end:** `--profile peers`, `AGENT_PEERS=coder=http://api-coder:8080`, one task delegated from
   the web app; check the child is deleted and its ledger records carry `parent`.
