@@ -351,5 +351,5 @@ Each step lands only if quality holds: 10/10 demo fixes confirmed by the orchest
   (Its prefix is far below 26,000 tokens, but triage quality must be measured first.)
 
 ---
-[Docs index](../README.md) · Related: [Usage, estimates and budgets](USAGE_AND_BUDGETS.md) · [TODO](../../TODO.md) · [How a turn works](../AGENT_INTERACTION.md) ·
+[Docs index](../README.md) · Related: [Usage, estimates and budgets](USAGE_AND_BUDGETS.md) · [TODO](../../TODO.md) · [How a turn works](../architecture/06-runtime-view.md) ·
 [How the agents and endpoints talk](../AGENT_COMMUNICATION.md)

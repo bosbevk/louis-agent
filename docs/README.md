@@ -16,7 +16,7 @@ you need otherwise.
 
 | Doc | Type | Read it to… |
 |---|---|---|
-| [How a turn works](AGENT_INTERACTION.md) | Explanation | Follow one message through the agent: tools vs skills, the tool loop, guards, what each host shows |
+| [How a turn works](architecture/06-runtime-view.md) | Explanation | Follow one message through the agent: tools vs skills, the tool loop, guards, what each host shows |
 | [How the agents and endpoints talk](AGENT_COMMUNICATION.md) | Reference | See who connects to louis-agent and how: the HTTP API and its event stream, the web app, Rider (ACP), MCP, and the orchestrator ↔ louis-agent conversation |
 | [Architecture](architecture/README.md) | Explanation | Know how it is built and why, in arc42's twelve sections: goals, context, building blocks (C4), runtime, deployment, crosscutting concepts, quality, risks, glossary |
 | [Architecture decisions](adr/README.md) | Explanation | See why each lasting choice was made and what it cost, one record (ADR) each |
