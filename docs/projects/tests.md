@@ -66,7 +66,7 @@ Both are in the TODO backlog (*Quality and CI*), along with CI to run these suit
 
 ## Related docs
 
-[Tests guide](../../tests/CLAUDE.md) · [Architecture § Testing](../ARCHITECTURE.md#testing)
+[Tests guide](../../tests/CLAUDE.md) · [Architecture § Testing](../architecture/08-crosscutting-concepts.md#testing)
 
 ---
 [Projects](README.md) · Previous: [louis-agent.usage-probe](louis-agent.usage-probe.md) · Next: [order-service](order-service.md)

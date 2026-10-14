@@ -67,7 +67,7 @@ A skill can be added, dropped or reworded at any time; that is a change to this 
 - **Ask first** before anything that spends real money (benchmark or demo runs against the API), before pushing, and
   on open design decisions listed in the TODO.
 - **Provider-neutral core:** keep provider-specific code in `LlmClientFactory`, as a strategy per concern where providers
-  differ ([Architecture: Provider strategies](ARCHITECTURE.md#provider-strategies)).
+  differ ([Architecture: Provider strategies](architecture/05-building-block-view.md#provider-strategies)).
 - **Stop and report** rather than guess when a result can't be verified.
 
 ---

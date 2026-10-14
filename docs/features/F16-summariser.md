@@ -38,7 +38,7 @@ model, prompt and output cap, so that it can be tuned and reused without touchin
 
 **F16-S3 — No caching.** As an *operator*, I want summary requests never cached, so that a one-off prompt isn't
 written at 1.25× and never read.
-- *Then* the summariser's client uses `NoPromptCaching` ([provider strategies](../ARCHITECTURE.md#provider-strategies));
+- *Then* the summariser's client uses `NoPromptCaching` ([provider strategies](../architecture/05-building-block-view.md#provider-strategies));
   F4's interim `summary`-scope skip is removed; the ledger shows no cache writes on `summary` records.
 
 **F16-S4 — Measured quality.** As a *developer*, I want the summariser scored on real cases, so that a prompt or model
@@ -75,7 +75,7 @@ instructions, so that there is one summariser, one place to tune it, and one eva
 5. **Eval suite** (with F18): cases from demo logs, the target, the baseline run (**needs Louis's go-ahead**, cents).
 6. **Tune:** prompt for recall then precision, then a cheaper model; each a measured comparison (**go-ahead**).
 7. **Jobs:** `SummaryJob` with `tool-result`; `compaction` added by F9. *Test:* each job sends its own prompt section.
-8. **Docs:** SETUP settings, the core project doc, ARCHITECTURE (guards), the skill-7 map.
+8. **Docs:** SETUP settings, the core project doc, the architecture (runtime view, guards), the skill-7 map.
 
 ## Done when
 

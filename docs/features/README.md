@@ -123,10 +123,12 @@ drift apart:
    TODO's [Known limitations](../../TODO.md#known-limitations) (the one list).
 5. **Benchmark:** for features that change cost, add the measured run to [BENCHMARKS.md](../BENCHMARKS.md).
 6. **User docs:** settings in README / [SETUP](../SETUP.md), and anything the feature changes for users.
-7. **Goal map:** in [docs/GOAL.md](../GOAL.md#what-im-learning-the-whole-agent-architecture), move what the feature
+7. **Decisions:** if the feature made a lasting decision, its [ADR](../adr/README.md) is in the same PR; a decision it
+   changed is superseded, not edited.
+8. **Goal map:** in [docs/GOAL.md](../GOAL.md#what-im-learning-the-whole-agent-architecture), move what the feature
    delivered into *Have today* and drop it from *Planned* or *Missing*; if it closes a TODO *Agent architecture gaps*
    line, remove that line.
-8. **Write-up:** when a skill in the [goal](../GOAL.md#what-im-learning-the-whole-agent-architecture) has nothing left
+9. **Write-up:** when a skill in the [goal](../GOAL.md#what-im-learning-the-whole-agent-architecture) has nothing left
    missing (usually at a milestone's last feature), add or update its write-up in [docs/learning/](../learning/).
 
 ---

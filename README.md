@@ -48,7 +48,7 @@ Open **http://127.0.0.1:5070**; its specialist runs beside it on 5071. Design: [
 | **CLI** | `src/louis-agent.cli` | Interactive or one-shot prompts in the terminal |
 | **MCP server** | `src/louis-agent.mcp-server` | Publishes the agent's tools to any MCP client (the client brings its own model) |
 
-All hosts share `louis-agent.core` (engine, tools, skills, providers). See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+All hosts share `louis-agent.core` (engine, tools, skills, providers). See [the architecture](docs/architecture/README.md).
 
 **Orchestrator demo (proof of concept).** `src/louis-agent.orchestrator` is a second agent, also built on
 `louis-agent.core`, that watches a microservice's errors, decides per API method what each needs, has louis-agent fix
@@ -67,7 +67,7 @@ All docs, in reading order, are listed in **[docs/README.md](docs/README.md)**. 
 | Configure settings and secrets, or pick a model | [Setup](docs/SETUP.md) · [Models](docs/MODELS.md) |
 | Understand what happens when you send a message | [How a turn works](docs/AGENT_INTERACTION.md) |
 | Connect another program or agent: HTTP API and its event stream, Rider, MCP, agent-to-agent | [How the agents and endpoints talk](docs/AGENT_COMMUNICATION.md) |
-| Know the components, security and deployment | [Architecture](docs/ARCHITECTURE.md) · [project by project](docs/projects/README.md) |
+| Know the components, security and deployment | [Architecture](docs/architecture/README.md) · [project by project](docs/projects/README.md) |
 | Change the code | [Development guide](docs/CLAUDE.md) |
 | Watch two agents fix ten bugs, then merge the fixes | [Orchestrator demo](samples/README.md) · [sample output](samples/sample-output/README.md) |
 | See what Puls's delegation costs against one agent | [Delegation check](samples/sample-output-puls-check-repeat/README.md) |
@@ -138,13 +138,13 @@ The agent's tools cover files, git, `dotnet`, Python, PowerShell, bash, the web,
 **skills** in [`Skills/`](Skills) give it its personality, route each task to a toolset, and guide each toolset. A
 session loads only the toolsets it needs. The agent can write new skills and build its own tools, which wait for your
 `/approve`. File tools stay inside the workspace and never touch secret files, the model's text is never spliced into a
-command line, and everything listens on `127.0.0.1` only. Details: [Architecture: Skills](docs/ARCHITECTURE.md#skills),
-[Tools](docs/ARCHITECTURE.md#tools) and [Security](docs/ARCHITECTURE.md#security).
+command line, and everything listens on `127.0.0.1` only. Details: [Architecture: Skills](docs/architecture/05-building-block-view.md#skills),
+[Tools](docs/architecture/05-building-block-view.md#tools) and [Security](docs/architecture/08-crosscutting-concepts.md#security).
 
 ## Development
 
 Requires the .NET 10 SDK. Building, testing and how a change is made are in the
-[development guide](docs/CLAUDE.md); where the logs go in [Architecture: Logging](docs/ARCHITECTURE.md#logging); every doc
+[development guide](docs/CLAUDE.md); where the logs go in [Architecture: Logging](docs/architecture/08-crosscutting-concepts.md#logging); every doc
 in the [docs index](docs/README.md).
 
 ## License

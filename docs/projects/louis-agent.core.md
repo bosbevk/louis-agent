@@ -131,7 +131,7 @@ attributes (116 tools with every toolset, Paymo and DevOps included). Helpers mu
 - **A provider:** a branch in `LlmClientFactory`; provider differences never go into `AgentEngine` or the tools. Where
   it needs its own logic for a concern (usage, caching, …), add its implementation of that concern's strategy, in
   `Llm/{Name}Provider/`
-  ([Architecture: Provider strategies](../ARCHITECTURE.md#provider-strategies)).
+  ([Architecture: Provider strategies](../architecture/05-building-block-view.md#provider-strategies)).
 - **Another agent:** `new AgentEngine(skills, client, options, toolsets: [yourTools])`, as the orchestrator does; pass
   `usageSink: AgentHost.CreateUsageSink(options)` and the factory's `CreateUsageMapper` to record its usage.
 - **A host:** open a `UsageScope` per turn, or its records have no host, session or turn.
@@ -160,7 +160,7 @@ variables, never model text spliced into a command line; `FetchUrl` blocks priva
 
 ## Related docs
 
-[Architecture](../ARCHITECTURE.md) · [How a turn works](../AGENT_INTERACTION.md) · [Development guide](../CLAUDE.md) ·
+[Architecture](../architecture/README.md) · [How a turn works](../AGENT_INTERACTION.md) · [Development guide](../CLAUDE.md) ·
 [Setup](../SETUP.md) · [Models](../MODELS.md)
 
 ---

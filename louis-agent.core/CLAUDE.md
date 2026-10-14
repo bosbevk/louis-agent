@@ -157,5 +157,5 @@ A new model also needs its prices in `config/prices.json` (else its cost is reco
 `LlmClientFactory` (the client, and `CreateUsageMapper` for how it reports usage), never in `AgentEngine` or the tools.
 Where providers need different logic for the same concern, write it as a **strategy**: an interface, one implementation
 per provider that differs (plus a default), chosen once in `LlmClientFactory`, as `IUsageMapper` is
-([Architecture: Provider strategies](../docs/ARCHITECTURE.md#provider-strategies)). Never branch on the provider's name
+([Architecture: Provider strategies](../docs/architecture/05-building-block-view.md#provider-strategies)). Never branch on the provider's name
 anywhere else.

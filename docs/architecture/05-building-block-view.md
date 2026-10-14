@@ -1,86 +1,46 @@
-# Architecture: Louis Agent
+# 5. Building block view
 
-> **Explanation.** The components and why they are built this way: hosts, core abstractions, a turn, skills, tools,
-> security, logging, deployment. **Elsewhere:** settings in [Setup](SETUP.md), the steps for a change in the
-> [development guide](CLAUDE.md).
+> **Explanation.** The parts of louis-agent, from the containers (C4 level 2) down to core's components (level 3).
+> **Elsewhere:** each project's files, types and settings in [projects/](../projects/README.md); how the parts work
+> together on a message in [runtime view](06-runtime-view.md).
 
-## Overview
-
-Louis Agent is a multi-host LLM agent for working on code. One engine (`louis-agent.core`) holds the tools, skills and
-the tool-call loop; several thin hosts put it in front of you: Rider (ACP), a web app and HTTP API, a CLI, and an MCP
-server. A second agent, the orchestrator (a proof of concept), is built on the same core and talks to louis-agent
-through the HTTP API. How all of them connect, and what goes over the wire, is in
-[AGENT_COMMUNICATION.md](AGENT_COMMUNICATION.md).
-
-**Key principle:** the LLM provider is configuration only (`LLM_PROVIDER`, `LLM_MODEL`). Everything goes through
-`Microsoft.Extensions.AI`'s `IChatClient`, so tool calling, streaming and skills work the same on Anthropic, Ollama and
-OpenAI-compatible endpoints.
-
-## Anthropic integration tiers
-
-Four ways to build on Claude, from most managed to least. `louis-agent` deliberately sits at the bottom tier — see
-"Why `louis-agent` uses the Messages API tier" below.
-
-| Tier | Who hosts the loop | Who hosts the sandbox/tools | OpenAI equivalent |
-|---|---|---|---|
-| **Messages API** (`POST /v1/messages`) | You | You | Responses API |
-| **Tool Runner** (`client.beta.messages.tool_runner`, Anthropic SDK only) | SDK | You | Agents SDK (partial — Anthropic-only, no handoffs/multi-agent) |
-| **Claude Agent SDK** (`claude-agent-sdk`, separate package — Claude Code as a library) | SDK | You | Agents SDK (closer — ships built-in coding tools) |
-| **Managed Agents** (beta, Anthropic-hosted) | Anthropic | Anthropic | Agents API |
-
-### Decision tree
+## Level 2: containers
 
 ```mermaid
-flowchart TD
-    A[Need to call Claude] --> B{Need to swap model providers<br/>Anthropic, Ollama, etc.?}
-    B -->|Yes| C["Messages API + your own loop<br/>(this is louis-agent)"]
-    B -->|No, Claude-only is fine| D{Want Anthropic to host<br/>the tool-execution sandbox?}
-    D -->|Yes| E[Managed Agents]
-    D -->|No, I host it| F{Need Claude Code's built-in<br/>file/bash/grep tools?}
-    F -->|Yes| G[Claude Agent SDK]
-    F -->|No, just a loop over my own tools| H[Tool Runner]
-```
-
-### Real-world use cases
-
-- **Messages API + your own loop** (what this repo uses): multi-provider portability is a hard requirement, or you
-  need custom session/approval/skill semantics a vendor SDK doesn't model. `louis-agent`'s `IChatClient`
-  abstraction lets `LlmClientFactory` swap Anthropic for Ollama without touching `AgentEngine` or any tool.
-- **Tool Runner**: a single-provider (Claude-only) shop building a straightforward custom-tool agent — e.g. an
-  internal ticket-triage bot — that wants approval-gate/logging/retry hooks without hand-writing the
-  `while stop_reason == "tool_use"` loop.
-- **Claude Agent SDK**: a coding/filesystem-centric agent (a Cursor/Devin-style assistant, a PR-review bot) where
-  Claude Code's built-in Read/Write/Edit/Bash/Grep tools already cover the surface you need, and being Claude-only
-  is acceptable. Reinventing `WorkspaceTools`/`BashTools` wouldn't have been worth it here either, if this repo
-  didn't also need DevOps/Paymo tools, markdown-defined skills, and provider portability on top.
-- **Managed Agents**: you don't want to run a sandbox at all — a SaaS feature ("AI cleans up your spreadsheet"), a
-  nightly scheduled agent (no cron box of your own to maintain), or persisted/versioned agent configs shared
-  across teams with no platform/ops capacity to host it themselves.
-
-### Why `louis-agent` uses the Messages API tier
-
-Both higher tiers trade away something this repo depends on:
-
-- **Managed Agents** would mean Anthropic hosts the tool-execution sandbox — incompatible with owning the Docker
-  containers, repo mounts, and scoped DevOps/Paymo credentials this repo runs with (see the `IsSensitive` file
-  blocking and the tool-approval flow in `AgentEngine`).
-- **Tool Runner and Claude Agent SDK** are both Anthropic-specific packages — picking either locks every model call
-  to Claude, which conflicts with the `IChatClient` provider abstraction (`LlmClientFactory`) this repo is built
-  around.
-
-```mermaid
-flowchart LR
-    subgraph repo["louis-agent.core"]
-        AE["AgentEngine<br/>(tool loop, skills, approval)"] --> IC["IChatClient"]
-        IC --> AC["AnthropicClient.AsIChatClient()"]
-        IC -.pluggable swap.-> OL["Ollama / other provider"]
+flowchart TB
+    dev(["Developer"])
+    puser(["Puls user"])
+    subgraph la["louis-agent [software system]"]
+        cli["CLI<br/>[.NET console]"]
+        acp["ACP server<br/>[.NET console, one per Rider chat]"]
+        api["HTTP API<br/>[ASP.NET Core, SSE]"]
+        web["Web app / Puls app<br/>[Blazor WebAssembly]"]
+        peer["Specialist API<br/>[the HTTP API, as a peer]"]
+        mcp["MCP server<br/>[.NET, stdio or HTTP]"]
+        orch["Orchestrator<br/>[.NET console, POC]"]
+        core[["louis-agent.core<br/>[class library: engine, tools, skills, providers]"]]
     end
-    AC --> API["Claude Messages API"]
+    llm["Model provider"]
+    ws[("Workspace")]
+    ledger[("logs/: run files, usage ledger")]
+
+    dev --> cli & acp & web
+    puser --> web
+    web -- "HTTP + SSE" --> api
+    api -- "sub-sessions" --> peer
+    orch -- "fix sessions" --> api
+    cli & acp & api & peer & mcp & orch -. "uses" .-> core
+    core --> llm
+    core --> ws
+    core --> ledger
 ```
+
+Every host is thin: it maps the agent's stream to its protocol, and all behaviour is in core
+([0010](../adr/0010-folders-by-concern.md)).
 
 ## Hosts
 
-Each project also has its own design doc in [projects/](projects/README.md).
+Each project also has its own design doc in [projects/](../projects/README.md).
 
 
 | Host | Project | Bootstrap | Transport |
@@ -89,7 +49,7 @@ Each project also has its own design doc in [projects/](projects/README.md).
 | ACP server | `src/louis-agent.acp-server` | `AgentHost.Build()` | [Agent Client Protocol](https://agentclientprotocol.com) JSON-RPC over stdio, for Rider's AI chat |
 | HTTP API + web app | `src/louis-agent.api`, `src/louis-agent.web` or `src/louis-agent.puls` | `AgentHost.Build()` | ASP.NET Core minimal API; Server-Sent Events; serves one of the two Blazor WebAssembly apps |
 | MCP server | `src/louis-agent.mcp-server` | `AgentHost.BuildToolHost()` | Model Context Protocol over stdio (default) or Streamable HTTP (`MCP_TRANSPORT=http`); publishes the tools, the client brings its own model |
-| Orchestrator (POC) | `src/louis-agent.orchestrator` | Own `AgentEngine` with `toolsets:` | Not a host for users: an agent that reads a service's error log and calls louis-agent.api for fixes ([samples/README.md](../samples/README.md)) |
+| Orchestrator (POC) | `src/louis-agent.orchestrator` | Own `AgentEngine` with `toolsets:` | Not a host for users: an agent that reads a service's error log and calls louis-agent.api for fixes ([samples/README.md](../../samples/README.md)) |
 
 ### CLI
 - Streams the answer as it is written, thinking in grey, one status line per tool call; Ctrl+C stops the current reply.
@@ -143,6 +103,28 @@ Each project also has its own design doc in [projects/](projects/README.md).
   and file-write tools over the network, so set `MCP_API_KEY` (`x-api-key` or `Authorization: Bearer`; falls back to
   `AGENT_API_KEY`). With neither set it only logs a warning and accepts unauthenticated requests.
 
+## Level 3: core's components
+
+```mermaid
+flowchart TB
+    hosting["Hosting<br/>AgentHost, AgentEngineFactory"]
+    agent["Agent<br/>AgentEngine, ToolRegistry, ToolCallGuards, ToolsetCatalog"]
+    llm["Llm<br/>LlmClientFactory, middleware, {Name}Provider"]
+    tools["Tools<br/>one folder per toolset"]
+    skills["Skills<br/>markdown loaders"]
+    usage["Usage · Pricing<br/>ledger, prices, rates"]
+    proto["Protocols/Mcp"]
+    guard["Guardrails<br/>workspace boundary, secrets, SSRF"]
+    base["Config · Messages · Logging"]
+    hosting --> agent
+    agent --> llm & tools & skills & usage & proto
+    llm & tools & skills & usage & proto --> guard
+    guard --> base
+```
+
+Dependencies point one way, down this picture; `ArchitectureTests` fails on one that points up
+([0010](../adr/0010-folders-by-concern.md)).
+
 ## Core abstractions
 
 ### `LlmOptions` (`Config/LlmOptions.cs`)
@@ -180,10 +162,10 @@ editing callers. Use one only when providers really differ; a concern every prov
 | Concern | Interface | Implementations | Status |
 |---|---|---|---|
 | How usage is reported | `IUsageMapper` | `StandardUsageMapper` (default), `AnthropicUsageMapper` (cache writes, and their split by lifetime from the raw response, F4) | Built (F1) |
-| Prompt caching | `IPromptCachingStrategy` | `AnthropicPromptCaching` (two markers), `NoPromptCaching` (default: OpenAI-compatible caches prefixes on its own, Ollama), applied by `PromptCachingChatClient` | Built ([F4](features/F04-prompt-caching.md)) |
-| Thinking settings | to be extracted | Anthropic's fixed budget for pre-4.6 models is an inline wrapper in `LlmClientFactory` today | Candidate ([F10](features/F10-route-settings.md) S4) |
-| Context window | to be designed | Ollama needs `num_ctx` sent; Claude's window is fixed | Planned ([F15](features/F15-model-limits.md)) |
-| Errors, retries and limits | to be designed | Each provider reports rate and account limits differently | Planned ([F8](features/F08-reliability.md)) |
+| Prompt caching | `IPromptCachingStrategy` | `AnthropicPromptCaching` (two markers), `NoPromptCaching` (default: OpenAI-compatible caches prefixes on its own, Ollama), applied by `PromptCachingChatClient` | Built ([F4](../features/F04-prompt-caching.md)) |
+| Thinking settings | to be extracted | Anthropic's fixed budget for pre-4.6 models is an inline wrapper in `LlmClientFactory` today | Candidate ([F10](../features/F10-route-settings.md) S4) |
+| Context window | to be designed | Ollama needs `num_ctx` sent; Claude's window is fixed | Planned ([F15](../features/F15-model-limits.md)) |
+| Errors, retries and limits | to be designed | Each provider reports rate and account limits differently | Planned ([F8](../features/F08-reliability.md)) |
 
 The same pattern is used outside the providers: `IRatesMapper` (exchange-rate sources) and `IWebSearchProvider`
 (Google, DuckDuckGo).
@@ -216,30 +198,6 @@ toolsets in `Skills/personalities/roles.json`), at most 3 per turn and 5 minutes
 line come back; its usage records carry the parent turn (`parent`). An empty answer (the specialist used all its tool
 rounds) is asked for once more in the same session (FX11). A sub-session gets no router (`default.md`): its toolsets
 were chosen for it and it can't delegate.
-
-## A chat turn
-
-```
-User message
-  ↓ host (CLI / ACP / API) → AgentEngine.StreamPromptAsync(history, message)
-  ↓ system prompt = skill documentation; ChatOptions: tools, reasoning, 16k output limit
-  ↓ FunctionInvokingChatClient loop
-  │   model streams thinking + text, then tool calls
-  │   each call → ToolCallGuards.InvokeAsync (log, run, guard the result) → result back to the model
-  ↓ answer streams to the host as it is written
-  ↓ the whole turn (thinking blocks, calls, results, answer) is appended to the history
-```
-
-### Guards around tool calls
-- **Oversized results:** a result over 50,000 characters is summarised by a separate, tool-less model call (its input
-  capped at 200,000 characters), falling back to truncation, so one tool can't flood the context.
-- **Cut-off calls:** if a reply hits the output limit, any tool call in it has incomplete arguments. It is not run; the
-  model is told to write large content in chunks. When streaming, a cut-off call is dropped by the provider, so the
-  engine asks the model to continue (up to 3 times).
-- **Failures:** exceptions reach the model with their message (e.g. a missing parameter) and are logged as failures.
-- **A sub-session's prompt budget** (FX14): in a sub-session, once the next request is expected to pass
-  `SUB_SESSION_PROMPT_BUDGET` (default 80,000 tokens, under Haiku 5.5's long-prompt price step), it keeps its tools with
-  tool mode None, so the specialist answers from what it has instead of growing its context further.
 
 ## Skills
 
@@ -288,44 +246,6 @@ is exposed to the model** — helpers must be `internal` or `private`). Names an
 **Agent-built tools** (`ScriptTool`): the model can write `Skills/tools/pending/{Name}.tool.md` (typed parameters + a
 script) with `CreateTool`. It only becomes a real tool after the user types `/approve <Name>`.
 
-## Rider MCP discovery (partial)
-
-With `RIDER_MCP_AUTO_DISCOVER=true`, `AgentHost.Build()` starts a background task that asks Rider's MCP server
-(`RIDER_MCP_ENDPOINT`) for its tools (`RiderMcpClient`) and passes each to `AgentEngine.RegisterDiscoveredTool` as
-`rider_{name}` (`RiderMcpToolDiscovery`). **Today this only logs the discovered tools; they are not added to the
-model's tool list**, because calling them needs a full MCP client. Discovery is off in `config/.env`. It never blocks
-startup and failures only log.
-
-## Security
-
-- **Secrets:** settings (`config/.env`) and secrets (`config/.env.secrets`) are both git-ignored, created from their
-  `.example` files.
-  `LlmOptions.ToString()` never prints the key. No `.env` file is copied into images (the root `.dockerignore`).
-- **Workspace boundary:** paths must be relative and stay inside the workspace; symbolic links are not followed.
-  Secret files (`.env*` but not templates such as `.env.example`, `*.pem`, `*.key`, `*.pfx`, `credentials.json`, `secrets.json`, `appsettings.development.json`,
-  SSH keys) can't be read or written, are skipped by search, and their git diffs are never shown in the web app.
-- **No shell injection:** skills, agent-built tools, git and dotnet run with argument lists or environment variables,
-  never by splicing model text into a command line.
-- **Web:** `FetchUrl` blocks private, loopback and metadata addresses on every redirect and at connect time; fetched
-  content is treated as untrusted. The web app renders markdown without raw HTML and only allows http(s)/mailto links.
-- **Network exposure:** the API and web app, and the MCP server in HTTP mode, are published on `127.0.0.1` only.
-- **Pushing stays with you:** the web app never pushes (its commits and merges stay local), and the agent pushes only
-  when you ask it to.
-
-## Logging
-
-`ILogger` with Serilog behind it (`Logging/AgentLogging`), every line from a message enum (`LogMessage` in core, each
-host's own in its `Messages/`), its holes kept as fields:
-- the console on **stderr only** (stdout carries ACP and MCP), `[INFO]`, `[WARN]`, `[ERROR]` or the call's tag
-  (`[TOOL]`, `[MCP]`, `[orchestrator]`);
-- with `LOG_DIRECTORY` (`/logs` in compose → `logs/` on the host, git-ignored), a run file per process,
-  `agent-{host}-{timestamp}-{pid}.log`, the same lines with the time (containers run with `--rm`);
-- and, there too, the records `oversized-tool-results.jsonl` and `truncated-tool-calls.jsonl` (`ToolCallRecords`), as
-  JSON lines in their own shape (`timestamp` and camelCase fields, `RecordFormatter`), to show which tools need
-  narrower output.
-
-The usage ledger is data, not logs: `JsonlUsageSink` writes it in its own format.
-
 ## Bootstrap: `AgentHost`
 
 `AgentHost.Build()` (CLI, ACP, API):
@@ -337,69 +257,3 @@ The usage ledger is data, not logs: `JsonlUsageSink` writes it in its own format
 4. Start Rider MCP discovery in the background if enabled.
 
 `AgentHost.BuildToolHost()` (MCP server) does the same without an LLM.
-
-## Deployment
-
-All images build and run on the .NET 10 SDK image (the `DotNet*` tools shell out to `dotnet`), with `git` and Python
-installed and `Skills/` copied in.
-
-| Service (`docker/docker-compose.yml`) | Dockerfile | Notes |
-|---|---|---|
-| `acp-server` | `Dockerfile.acp-server` | Run per Rider chat with `docker compose run --rm -T acp-server` |
-| `api` | `Dockerfile.api` | API + web app on `127.0.0.1:${API_PORT:-5080}`; health check on `/health` |
-| Puls: `puls`, `puls-agent` (`docker-compose.puls.yml`) | `Dockerfile.puls` | The general assistant on `127.0.0.1:${PULS_PORT:-5070}` and the specialist it delegates to on `${PULS_CODER_PORT:-5071}`; logs in `logs/puls` |
-| `mcp-server` | `Dockerfile.mcp-server` | stdio: run per client with `run --rm -T mcp-server`; with `MCP_TRANSPORT=http`, on `127.0.0.1:${MCP_PORT:-5090}` |
-| `local-agent` | `Dockerfile.agent` | The CLI |
-| `ollama` | `services/Dockerfile.ollama` | Only with `--profile ollama` |
-| `ollama-nvidia` | `services/Dockerfile.ollama-nvidia` | Only with `--profile ollama-nvidia`: on an NVIDIA GPU, 32k-token context |
-| `ollama-amd` | `services/Dockerfile.ollama-amd` | Only with `--profile ollama-amd`: on an AMD GPU (ROCm, Linux hosts), 32k-token context |
-
-Every agent service above mounts the repo at `/workspace`, `Skills/` at `/skills`, `logs/` at `/logs` and
-`REPOSITORIES_PATH` at `/repositories`, reads `config/.env` and `config/.env.secrets`, and sets `core.autocrlf=true`
-for git (the repo is a Windows checkout). Always pass the env file:
-
-```bash
-docker compose -f docker/docker-compose.yml --env-file config/.env up -d --build api
-```
-
-The orchestrator demo has its own compose file, `docker/docker-compose.demo.yml` (project `louis-agent-demo`):
-
-| Service | Dockerfile | Notes |
-|---|---|---|
-| `demo-setup` | `Dockerfile.orchestrator` | One-off: fresh demo repository in `.demo/order-service` and its production traffic |
-| `demo-api` | `Dockerfile.api` | louis-agent.api and the web app on `127.0.0.1:${DEMO_PORT:-5081}`, workspace `/demo/order-service` |
-| `orchestrator` | `Dockerfile.orchestrator` | Triages new errors once and calls `demo-api` for fixes; SDK image, as it replays requests and runs tests |
-
-All three mount the host's `.demo/` at `/demo` (the demo repository is LF, so no `core.autocrlf`) and share a `nuget`
-volume. `samples/run-demo.ps1` drives them; see [samples/README.md](../samples/README.md).
-
-
-## Testing
-
-`tests/louis-agent.core.tests` (NUnit): options and provider factory, skill loading and providers, the engine (tool-call
-loop, streaming, thinking, summarising, cut-off guards) with a scripted fake `IChatClient`, every toolset, web search and
-fetch with stubbed HTTP, and Rider MCP discovery with mocked HTTP. No network or Docker needed; a few tests skip
-themselves when an external tool (git, pip, live network) isn't available.
-
-`tests/louis-agent.api.tests` (NUnit): the API's sessions (F5): toolsets per session, the default, unknown names,
-depth, shared engines and separate histories, with a model client that is never called.
-
-`tests/louis-agent.orchestrator.tests` (NUnit): the error feed, the louis-agent API client (event stream and
-`FIX-RESULT` parsing), the decision line, runbook loading, the comms log, and the verification tools against a
-throwaway git repository.
-
-```bash
-dotnet test tests/louis-agent.core.tests
-dotnet test tests/louis-agent.api.tests
-dotnet test tests/louis-agent.orchestrator.tests
-```
-
-The API and web app have no automated tests; the orchestrator demo exercises them end to end against a real model.
-
-## Configuration
-
-Every setting is in [SETUP.md](SETUP.md) (and `config/.env.example`); the model settings live in LLM profiles, picked by
-`LLM_PROFILE`, in [MODELS.md](MODELS.md).
-
----
-[Docs index](README.md) · Previous: [How the agents and endpoints talk](AGENT_COMMUNICATION.md) · Next: [Development guide](CLAUDE.md)

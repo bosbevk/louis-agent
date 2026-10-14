@@ -1,7 +1,7 @@
 # How the Agents and Endpoints Talk
 
 > **Reference.** The HTTP API, its event stream, the web app, Rider (ACP), MCP, and agent-to-agent messages.
-> **Elsewhere:** the components in [Architecture](ARCHITECTURE.md), one turn inside the agent in
+> **Elsewhere:** the components in [Architecture](architecture/README.md), one turn inside the agent in
 > [How a turn works](AGENT_INTERACTION.md).
 
 Who connects to louis-agent, over which protocol, and what goes over the wire — from a browser or Rider, from another
@@ -451,4 +451,4 @@ Planned features change parts of this page; each one's doc lists updating it in 
 | [F17 Orchestrator agent](features/F17-orchestrator-agent.md) | Triage becomes a routing workflow: a model classifies each error, the known paths (fix and verify, acknowledge, escalate) run as code, and an agent handles only the exceptions; the three checks become one `ConfirmFix` tool; the fix still goes to louis-agent.api the same way, and the comms log names the path |
 
 ---
-[Docs index](README.md) · Previous: [How a turn works](AGENT_INTERACTION.md) · Next: [Architecture](ARCHITECTURE.md)
+[Docs index](README.md) · Previous: [How a turn works](AGENT_INTERACTION.md) · Next: [Architecture](architecture/README.md)
