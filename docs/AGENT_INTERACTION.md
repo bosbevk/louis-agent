@@ -140,4 +140,4 @@ The steps for a new tool, toolset, skill or agent are how-tos, in the developmen
 [a personality](CLAUDE.md#adding-a-personality) and [another agent on core](../louis-agent.core/CLAUDE.md#building-another-agent-on-core).
 
 ---
-[Docs index](README.md) · Previous: [Paymo prompts](PAYMO-PROMPTS.md) · Next: [How the agents and endpoints talk](AGENT_COMMUNICATION.md)
+[Docs index](README.md) · Previous: [Models](MODELS.md) · Next: [How the agents and endpoints talk](AGENT_COMMUNICATION.md)
