@@ -1,7 +1,7 @@
 # Project design docs
 
 One design doc per project in the solution: what it's for, how it works, its parts, its settings, how to extend it,
-how it's tested, and its limits. For the whole system at once, read [Architecture](../ARCHITECTURE.md) first; come here
+how it's tested, and its limits. For the whole system at once, read [Architecture](../architecture/README.md) first; come here
 when you're about to change a particular project.
 
 ## The projects

@@ -16,6 +16,11 @@ its own, so a reader (or Claude) loads only the one a question needs.
 | 5 | [Building block view](05-building-block-view.md) | The parts: containers (C4 level 2) and core's components (level 3) |
 | 6 | [Runtime view](06-runtime-view.md) | A chat turn, the guards, and the scenarios across agents |
 | 7 | [Deployment view](07-deployment-view.md) | Where each part runs: images, services, mounts |
+| 8 | [Crosscutting concepts](08-crosscutting-concepts.md) | Security, messages, logging, testing, configuration |
+| 9 | [Architecture decisions](09-architecture-decisions.md) | The ADRs that shape the most |
+| 10 | [Quality requirements](10-quality-requirements.md) | How the quality goals are checked |
+| 11 | [Risks and technical debt](11-risks-and-technical-debt.md) | Known limitations, open fixes and decisions |
+| 12 | [Glossary](12-glossary.md) | The words these docs use in a sense of their own |
 
 The template is arc42 by Dr. Gernot Starke and Dr. Peter Hruschka, [arc42.org](https://arc42.org), used under CC BY-SA
 4.0.

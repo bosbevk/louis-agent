@@ -108,7 +108,7 @@ sessions, streaming and the git endpoints end to end.
 ## Related docs
 
 [How the agents and endpoints talk](../AGENT_COMMUNICATION.md) · [louis-agent.web](louis-agent.web.md) ·
-[Architecture § HTTP API](../ARCHITECTURE.md#http-api-and-web-app)
+[Architecture § HTTP API](../architecture/05-building-block-view.md#http-api-and-web-app)
 
 ---
 [Projects](README.md) · Previous: [louis-agent.acp-server](louis-agent.acp-server.md) · Next: [louis-agent.web](louis-agent.web.md)

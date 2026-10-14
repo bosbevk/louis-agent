@@ -47,4 +47,4 @@ flowchart LR
 | **MCP clients** | The tools, one call at a time; the client brings its own model |
 
 **Out of scope:** hosting for public traffic, durable sessions, and a real error tracker. See
-*risks and technical debt* (section 11).
+[risks and technical debt](11-risks-and-technical-debt.md).

@@ -19,7 +19,7 @@ you need otherwise.
 |---|---|---|
 | [How a turn works](AGENT_INTERACTION.md) | Explanation | Follow one message through the agent: tools vs skills, the tool loop, guards, what each host shows |
 | [How the agents and endpoints talk](AGENT_COMMUNICATION.md) | Reference | See who connects to louis-agent and how: the HTTP API and its event stream, the web app, Rider (ACP), MCP, and the orchestrator ↔ louis-agent conversation |
-| [Architecture](ARCHITECTURE.md) | Explanation | Know the components: hosts, core abstractions, skills, tools, security, logging, deployment |
+| [Architecture](architecture/README.md) | Explanation | Know the components: hosts, core abstractions, skills, tools, security, logging, deployment |
 
 ## 3. Change it
 

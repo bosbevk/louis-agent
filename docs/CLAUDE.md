@@ -62,7 +62,7 @@ The design decisions every change keeps; the sections below have the details.
 - **Provider strategies** — where Anthropic, OpenAI-compatible and Ollama differ (usage, caching, thinking, limits),
   one interface with an implementation per provider, picked in `LlmClientFactory`; never branch on the provider's
   name anywhere else ([Changing the LLM](../louis-agent.core/CLAUDE.md#changing-the-llm),
-  [Architecture](ARCHITECTURE.md#provider-strategies)).
+  [Architecture](architecture/05-building-block-view.md#provider-strategies)).
 - **Streaming everywhere** — hosts render `StreamPromptAsync` updates; the finished turn is appended to the history,
   thinking blocks included (Anthropic requires them when continuing after tool calls).
 - **Arguments as data** — skill and tool arguments travel as environment variables or argument lists, never through a
@@ -201,7 +201,7 @@ A session names its personality when it opens (`POST /sessions` with `"personali
 ## Which Anthropic tier
 
 louis-agent sits at the Messages API tier on purpose, with its own loop, so the provider stays swappable. The four
-tiers and why are in [Architecture: Anthropic integration tiers](ARCHITECTURE.md#anthropic-integration-tiers).
+tiers and why are in [Architecture: Anthropic integration tiers](adr/0002-messages-api-tier-with-our-own-loop.md).
 
 ## MCP exposes tools, not a model
 
@@ -236,8 +236,8 @@ afterwards (limitation 9, [FX4](fixes/FX04-append-only-history.md)).
 
 ## Further reading
 
-[ARCHITECTURE.md](ARCHITECTURE.md) for the design, `config/.env.example` for settings, and
+[the architecture](architecture/README.md) for the design, `config/.env.example` for settings, and
 [Skills/default.md](../Skills/default.md) for how the agent is instructed to behave.
 
 ---
-[Docs index](README.md) · Previous: [Architecture](ARCHITECTURE.md) · Next: [Orchestrator demo](../samples/README.md)
+[Docs index](README.md) · Previous: [Architecture](architecture/README.md) · Next: [Orchestrator demo](../samples/README.md)

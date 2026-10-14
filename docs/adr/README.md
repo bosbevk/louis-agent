@@ -1,7 +1,7 @@
 # Architecture decisions
 
 > **Reference.** Every lasting architecture decision, one record each, newest last. **Elsewhere:** how the system is
-> built in the [architecture](../ARCHITECTURE.md), how a change is made in the [development guide](../CLAUDE.md).
+> built in the [architecture](../architecture/README.md), how a change is made in the [development guide](../CLAUDE.md).
 
 Each record is an ADR (architecture decision record) in
 [Michael Nygard's format](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions): the context that
@@ -63,4 +63,4 @@ The feature, fix, plan or spec where it was decided.
 ```
 
 ---
-[Docs index](../README.md) · Related: [Architecture](../ARCHITECTURE.md) · [Plans](../plans/README.md)
+[Docs index](../README.md) · Related: [Architecture](../architecture/README.md) · [Plans](../plans/README.md)

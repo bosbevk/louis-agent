@@ -5,7 +5,7 @@
 
 How the agent turns your message into tool calls and an answer. For how clients and other agents connect to it
 (HTTP API, Rider, MCP, the orchestrator) see [AGENT_COMMUNICATION.md](AGENT_COMMUNICATION.md); for the components
-themselves see [ARCHITECTURE.md](ARCHITECTURE.md).
+themselves see [the architecture](architecture/README.md).
 
 ## Two kinds of capability
 

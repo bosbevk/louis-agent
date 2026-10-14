@@ -56,7 +56,7 @@ F4 doesn't wait for F15: Haiku 5.5's cache minimum is 512 tokens and our prefix 
      output, which is over 512 tokens, so the automatic marker would write it at 1.25× and nothing would ever read it.
    - Effect on the benchmark: triage was about 5% of the short demo's cost ($0.013 of $0.25), so leaving it uncached
      barely moves the comparison with M1. The report gives louis-agent's cost and the run total separately.
-5. **Caching is a provider strategy** (decided 2026-10-11; [Architecture: Provider strategies](../ARCHITECTURE.md#provider-strategies)).
+5. **Caching is a provider strategy** (decided 2026-10-11; [Architecture: Provider strategies](../architecture/05-building-block-view.md#provider-strategies)).
    Instead of an Anthropic-only client added by an `if` in the factory:
    - `IPromptCachingStrategy` (`providers/`): given a request's messages and options, returns what to send.
    - `AnthropicPromptCaching`: the system marker and the top-level `cache_control` (design point 2).

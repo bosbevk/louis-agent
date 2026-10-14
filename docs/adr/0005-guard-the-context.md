@@ -24,5 +24,5 @@ Tool calls pass through guards (`ToolCallGuards`, split out of the engine in CL2
 
 ## Links
 
-[Architecture: Guards around tool calls](../ARCHITECTURE.md#guards-around-tool-calls) ·
+[Architecture: Guards around tool calls](../architecture/06-runtime-view.md#guards-around-tool-calls) ·
 [FX14](../fixes/FX14-sub-session-prompt-budget.md) · [F16 Summariser](../features/F16-summariser.md)

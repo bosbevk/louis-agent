@@ -64,7 +64,7 @@ client and, for HTTP, with curl (no key → 401, right key → 200).
 ## Related docs
 
 [How the agents and endpoints talk § MCP](../AGENT_COMMUNICATION.md#mcp-clients-and-the-mcp-server) ·
-[Architecture § MCP server](../ARCHITECTURE.md#mcp-server) · [Setup](../SETUP.md)
+[Architecture § MCP server](../architecture/05-building-block-view.md#mcp-server) · [Setup](../SETUP.md)
 
 ---
 [Projects](README.md) · Previous: [louis-agent.web](louis-agent.web.md) · Next: [louis-agent.orchestrator](louis-agent.orchestrator.md)

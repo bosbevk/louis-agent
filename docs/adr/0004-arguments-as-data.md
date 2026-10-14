@@ -22,4 +22,4 @@ from an argument list (`ProcessRunner`), never from a shell string built from mo
 
 ## Links
 
-[Architecture: Security](../ARCHITECTURE.md#security) · [Adding a skill](../CLAUDE.md#adding-a-skill)
+[Architecture: Security](../architecture/08-crosscutting-concepts.md#security) · [Adding a skill](../CLAUDE.md#adding-a-skill)
