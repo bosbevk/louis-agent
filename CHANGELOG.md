@@ -3,6 +3,9 @@
 > **Reference.** What was finished, newest first, one entry per feature, fix or cleanup. **Elsewhere:** what's still
 > open in the [TODO](TODO.md); how each was built in its feature, fix or plan doc (linked from its entry).
 
+- 2026-10-14 — **FX9 Cancelled requests in the ledger**: a non-streaming request that times out or is cancelled (the
+  orchestrator's triage) is written to the ledger as `cancelled` with unknown tokens, as a cancelled stream already
+  was; provider errors stay unrecorded ([fix](docs/fixes/FX09-cancelled-request-usage.md))
 - 2026-10-14 — **CL7 Docs tidy**: the top of `docs/` keeps the eight docs most readers need. The session picture moves
   to `docs/specs/images/` (the 43 KB SVG; the 1.1 MB PNG of it goes), How a turn works joins arc42's runtime view, and
   the runbooks move beside the orchestrator's project doc; every link repointed ([plan](docs/plans/CL7-docs-tidy.md))

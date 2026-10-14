@@ -26,7 +26,18 @@ public sealed class UsageRecordingChatClient(
         UsageScope? scope = UsageScope.Current;
         int round = NextRound(scope);
         var stopwatch = Stopwatch.StartNew();
-        ChatResponse response = await base.GetResponseAsync(messages, options, cancellationToken);
+        ChatResponse response;
+        try
+        {
+            response = await base.GetResponseAsync(messages, options, cancellationToken);
+        }
+        catch (OperationCanceledException)
+        {
+            // A timeout or a stopped caller (FX9): recorded as the streaming path records a cancelled stream. A cancelled
+            // call returns no usage, so its tokens stay unknown (null), never 0. Provider errors stay unrecorded.
+            Store(scope, CreateRecord(scope, round, usage: null, model: null, Cancelled, stopwatch.Elapsed));
+            throw;
+        }
 
         // Non-streaming responses carry their usage on ChatResponse.Usage, not as UsageContent.
         object[] raw = response.RawRepresentation is { } r && _mapper.Keeps(r) ? [r] : [];
@@ -101,7 +112,7 @@ public sealed class UsageRecordingChatClient(
         scope?.Add(stored);
     }
 
-    /// <summary>Stop reason for a stream that ended before the provider finished it.</summary>
+    /// <summary>Stop reason for a request that ended before the provider finished it.</summary>
     internal const string Cancelled = "cancelled";
 
     /// <summary>
