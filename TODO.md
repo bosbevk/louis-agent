@@ -148,6 +148,8 @@ the product parts.
 
 ### Quality and CI
 
+- [ ] **Docs tidy** — CL7 ([plan](docs/plans/CL7-docs-tidy.md)): `docs/todo/`'s picture to `docs/specs/images/`, How a
+      turn works into arc42's runtime view, Runbooks beside the orchestrator's project doc
 - [ ] CI (`.github/workflows`): `dotnet build` and `dotnet test` on every push and pull request — today regressions are
       only caught locally
 - [ ] Automated tests for the API and the web app (bUnit or Playwright); start with the Branches queue (several clicks in
