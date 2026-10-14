@@ -129,8 +129,9 @@ samples/                      # order-service (demo microservice), run-demo.ps1 
                               # with their priced ledgers, uncached and -cached), smoke-f4-caching/, puls-check/ (the
                               # delegation check: run_check.py [--repeat N], its runs in sample-output-puls-check*/),
                               # see samples/README.md
-docker/                       # Dockerfile.{acp-server,api,agent,mcp-server,orchestrator}, docker-compose.yml,
-                              # docker-compose.demo.yml (orchestrator demo); the build context's .dockerignore is at the repo root
+docker/                       # Dockerfile.{acp-server,api,agent,mcp-server,orchestrator,puls}, docker-compose.yml,
+                              # docker-compose.demo.yml (orchestrator demo), docker-compose.puls.yml (Puls and its
+                              # specialist); the build context's .dockerignore is at the repo root
 config/                       # .env and .env.secrets (both ignored), their examples, LLM profiles (.env.anthropic,
                               # .env.ollama, .env.ollama-triage for the orchestrator), prices.json (model prices),
                               # rates.json (exchange rates), Rider config
@@ -281,8 +282,9 @@ Log.Log(LogLevel.Information, McpServerLogMessage.ToolNameTaken, new { Name = na
 
 Create `Skills/{name}-skills.md`. With `AGENT_FUNCTION=louis` every skill file is loaded; otherwise set
 `AGENT_FUNCTION={name}`. Skill files come with the **skills** toolset: a session without it (Puls's chats, agents
-only) gets the router and its toolsets' guides, not the skill files. For a guide that must always load (like `bash-skills.md`), add it to
-`AgentHost.AlwaysLoadedSkillFiles` and `SkillFiles.BuiltIn`. Procedures use `## Skill: Name` with an `Execution:` fence
+only) gets the router and its toolsets' guides, not the skill files. Since F5 no guide loads in every session: a
+guide comes with its toolset (`bash-skills.md` with `bash`, named by the catalogue's `GuideFile`), and a built-in file
+the agent must not overwrite is listed in `SkillFiles.BuiltIn`. Procedures use `## Skill: Name` with an `Execution:` fence
 (bash, powershell or python); arguments arrive as `SKILL_ARG_*` environment variables. A toolset's guide follows
 *Adding a toolset*: plain markdown, no provider class of its own.
 

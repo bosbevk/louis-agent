@@ -37,8 +37,11 @@ ledger, by token kind.
 What the numbers say:
 - **Fewer tokens isn't cheaper.** The baseline's tokens are mostly cache reads, the cheapest kind; a specialist starts
   cold and writes its prefix, and output (the dearest kind) roughly triples.
-- **Delegation pays for research and chat, not for short lookups.** It was cheaper for chat and web questions in every
-  run, and 1.2–3.5× dearer for short files, git and counting questions. The TODO now asks whether Puls delegates too
+- **Delegation pays for chat and some research, not for short lookups.** Chat and the first web question (the newest
+  .NET) were cheaper delegated in every run. The second web question (the prime rate) was dearer delegated in the roles
+  and FX10–FX12 runs ($0.0104 against $0.0052, $0.0086 against $0.0059) and about even in the repeat run ($0.0078
+  against $0.0081 on the means). Short files, git and counting questions were 1.2–3.5× dearer on the repeat run's means
+  (files-2 and git-2 were cheaper once, in the roles run). The TODO now asks whether Puls delegates too
   often.
 - **The tail matters more than the average.** One badly routed task cost eight times the other nine together. The fix
   was two layers: a prompt that routes and tells every agent what tool calls cost (FX13), and a limit in code, a prompt

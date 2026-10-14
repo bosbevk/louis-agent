@@ -26,7 +26,8 @@ script) and a general specialist. Puls then writes the answer in its own voice.
   you share it, so "today" and "near me" are yours.
 - **Measured.** A delegation check asks the same questions with and without specialists and prices both from the usage
   ledger ([samples](samples/sample-output-puls-check-repeat/README.md)). On average, delegating costs about a third more
-  than one agent answering everything. It is cheaper for chat and research, and dearer for short lookups.
+  than one agent answering everything. It was cheaper for chat and one of the two web questions, about even on the
+  other, and dearer for short lookups.
 
 ```bash
 docker compose -f docker/docker-compose.puls.yml --env-file config/.env up -d --build
