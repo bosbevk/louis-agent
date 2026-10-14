@@ -49,96 +49,27 @@ Always pass `--env-file config/.env`; compose needs it for `REPOSITORIES_PATH`. 
 
 ## Project structure
 
-One design doc per project — purpose, structure, key types, settings, extension points, tests and limits — is in
-[projects/](projects/README.md).
-
+Where things are. What's inside each project (files, key types, settings, tests, limits) is in its design doc in
+[projects/](projects/README.md); core's folders are in *Project layout* below.
 
 ```
-louis-agent.core/             # Namespace = folder path (LouisAgent.Core.Tools.Web); see Project layout
-├── Agent/                    # AgentEngine: the turn loop, history and system prompt, a façade over the rest:
-│                             # ToolRegistry, ToolCallGuards (cut-off calls, oversized results, a sub-session's prompt
-│                             # budget), SkillTools, AgentBuiltTools;
-│                             # ToolsetCatalog (+ ToolsetDefinition, ToolsetContext): every toolset a session can load (F5)
-├── Guardrails/               # WorkspaceBoundary, SensitiveFiles, SsrfGuard: pure safety checks (tools and API use them)
-├── Hosting/                  # AgentHost (+ AgentHostContext): bootstrap for every host; AgentEngineFactory (one engine
-│                             # per toolset profile, F5); RiderMcpToolDiscovery
-├── Config/                   # LlmOptions (+ CacheLifetime), AgentOptions, EnvFile (finds config/, sets a .env line)
-├── Messages/                 # ErrorMessage, LogMessage, ToolMessage, UserText ([Description] templates), MessageText
-├── Logging/                  # AgentLogging (Serilog behind ILogger: stderr, run file, JSON-lines records),
-│                             # MessageLogging (log a message member), ToolCallRecords
-├── Llm/
-│   ├── LlmClientFactory.cs   # Provider → IChatClient (Anthropic thinking-budget wrapper lives here), wrapped for caching
-│   ├── IPromptCachingStrategy.cs, NoPromptCaching.cs, PromptCachingChatClient.cs  # F4
-│   ├── IUsageMapper.cs, StandardUsageMapper.cs   # Provider usage → the ledger's token kinds
-│   ├── UsageRecordingChatClient.cs  # Middleware inside the tool loop: records each request, streaming or not
-│   └── AnthropicProvider/    # AnthropicUsageMapper, AnthropicPromptCaching (Llm/{Name}Provider/ per provider)
-├── Skills/                   # MarkdownSkillLoader ("## Skill:" procedures), MarkdownSkillProvider (every skill file we control),
-│                             # SkillFileSource (built-in files embedded; disk overrides), SkillFiles
-├── Tools/
-│   ├── ProcessRunner.cs      # Process runner: argument lists, no shell, timeouts
-│   ├── Workspace/            # Files, inside the WorkspaceBoundary, never SensitiveFiles
-│   ├── Git/, DotNet/, Shell/ # GitTools; DotNetTools; BashTools, PowerShellTools, PythonTools
-│   ├── Web/                  # WebTools: WebSearch (Google / DuckDuckGo providers) and FetchUrl (SSRF-guarded)
-│   ├── Scripts/              # Agent-built tools (*.tool.md)
-│   ├── Agents/               # AgentPeerTools: StartSubSession on a peer agent (AGENT_PEERS, F5); SessionAttachments (F22)
-│   ├── Clock/                # ClockTools (GetToday, every session) and UserPlace: where the user is (F22)
-│   ├── Documents/            # DocumentText: PDF, Word, spreadsheets for ReadDocument, ReadTable, FetchUrl (F22)
-│   └── Integrations/         # Paymo/, DevOps/: loaded only when their API keys are set
-├── Protocols/Mcp/            # RiderMcpClient: lists tools from Rider's MCP server
-├── Usage/                    # Usage ledger (F1): one JSON line per model request in {LOG_DIRECTORY}/usage-YYYY-MM.jsonl
-│   ├── UsageRecord.cs, UsageTokens.cs, UsageCost.cs, UsagePurpose.cs, IUsageSink.cs, JsonlUsageSink.cs
-│   ├── UsageScope.cs, UsageTags.cs  # Per-turn context (AsyncLocal): host, session, turn, purpose, task/run/service
-│   ├── UsageReport.cs        # Reads a ledger back, prices old records, totals per fix / triage / run
-│   ├── UsageText.cs, UsageSession.cs  # The usage line and /usage text every host shows (F3); a session's turns
-│   └── CacheGaps.cs          # The prefix's cache lifetime from a ledger's request gaps (F4, usage-probe --cache-gaps)
-└── Pricing/
-    ├── PriceTable.cs, ModelPrice.cs, CostCalculator.cs  # Prices (config/prices.json) and a record's cost (F2)
-    ├── PricingUsageSink.cs   # Puts the cost on each record before the ledger writes it
-    └── ExchangeRates.cs, IRatesMapper.cs, DisplayCurrency.cs  # Rates (config/rates.json, RATES_URL) and the
-                              # currency costs are shown in, from HOST_CULTURE (F14); the ledger keeps what was charged
-
+louis-agent.core/        # The engine: the loop, tools, skills, providers, usage and prices, bootstrap
 src/
-├── louis-agent.cli/          # Terminal host: ConsoleChat (the interactive loop and single-prompt mode)
+├── louis-agent.cli/          # Terminal host
 ├── louis-agent.acp-server/   # Rider (Agent Client Protocol over stdio)
-├── louis-agent.api/          # Minimal API: sessions + SSE, /workspace, /git, /prices; serves the web app
-│   ├── Program.cs, AgentSessions.cs
-│   └── Endpoints/            # Workspace; Git (status, diff, stage/unstage/discard, commit); History (branches, log,
-│                             # commit/branch diffs, merge, delete merged branch)
-├── louis-agent.web/          # Blazor WebAssembly app for code review (chat, Files, Changes, Branches, themes)
-├── louis-agent.puls/         # Puls: the general assistant's web app (chat only; delegates every task), served by the
-│                             # API built with -p:WebApp=puls (docker/docker-compose.puls.yml, port 5070)
-├── louis-agent.web.shared/   # What both web apps share: chat models, API client core, TurnView, BlocksView,
-│                             # DelegationCard (live sub-sessions), markdown, usage, currency, TurnStream
-│   ├── Pages/ChatPage.razor, Components/*.razor, Services/*.cs
-│   └── wwwroot/css/app.css + css/themes/*.css + themes.json
-├── louis-agent.mcp-server/   # Publishes the toolset over MCP (no LLM) - stdio by default, MCP_TRANSPORT=http for remote clients
-└── louis-agent.orchestrator/ # POC: watches a service's errors, runbook per API method, delegates fixes to louis-agent.api
-    ├── Program.cs            # poll loop: triage each error event with an AgentEngine (own toolset, runbooks as skills)
-    ├── Tools/ServiceTools.cs # its only tools: CallLouisAgentFix, VerifyFixCommit, ReplayRequest, RunServiceTests, Escalate/Acknowledge
-    ├── LouisAgentClient.cs   # louis-agent.api sessions + SSE parsing, FIX-RESULT
-    ├── CommsLog.cs           # Markdown log of every message between the agents
-    └── Skills/               # orchestrator.md + {service}/service.md + one runbook per API method
-
-tools/louis-agent.usage-probe/ # Prints a provider's raw token usage and the ledger's mapping (calls the real provider);
-                              # --ledger <file> prices and totals a usage ledger, --cache-gaps <file> recommends
-                              # LLM_CACHE_TTL (neither calls a model)
-tests/louis-agent.core.tests/ # NUnit; folders mirror core's, plus ArchitectureTests (the layout rules)
-tests/louis-agent.api.tests/  # NUnit; the API's sessions (toolsets per session, depth), no web host or model
-tests/louis-agent.orchestrator.tests/ # NUnit; error feed, SSE client, verification tools
-samples/                      # order-service (demo microservice), run-demo.ps1 [-Short], sample-output*/ (real runs
-                              # with their priced ledgers, uncached and -cached), smoke-f4-caching/, puls-check/ (the
-                              # delegation check: run_check.py [--repeat N], its runs in sample-output-puls-check*/),
-                              # see samples/README.md
-docker/                       # Dockerfile.{acp-server,api,agent,mcp-server,orchestrator,puls}, docker-compose.yml,
-                              # docker-compose.demo.yml (orchestrator demo), docker-compose.puls.yml (Puls and its
-                              # specialist); the build context's .dockerignore is at the repo root
-config/                       # .env and .env.secrets (both ignored), their examples, LLM profiles (.env.anthropic,
-                              # .env.ollama, .env.ollama-triage for the orchestrator), prices.json (model prices),
-                              # rates.json (exchange rates), Rider config
-Skills/                       # personality.md + default.md + *-skills.md (system prompt), personalities/ (a session's own,
-                              # F21: puls and its specialists' roles), tools/ (agent-built tools)
-docs/                         # This guide, features/ (planned work), plans/ (approved build plans),
-                              # fixes/ (what broke and why), specs/, projects/
+├── louis-agent.api/          # Minimal API: sessions + SSE, workspace and git endpoints; serves a web app
+├── louis-agent.web/          # Blazor WebAssembly app for code review
+├── louis-agent.puls/         # Puls: the general assistant's web app (the API built with -p:WebApp=puls)
+├── louis-agent.web.shared/   # What both web apps share
+├── louis-agent.mcp-server/   # Publishes the tools over MCP (no model)
+└── louis-agent.orchestrator/ # POC: a second agent on core that has louis-agent fix a service's errors
+tools/louis-agent.usage-probe/ # A provider's raw usage; prices and totals a ledger (--ledger, --cache-gaps)
+tests/                   # NUnit: core.tests (mirrors core, plus ArchitectureTests), api.tests, orchestrator.tests
+samples/                 # order-service, the demo scripts and recorded runs (samples/README.md)
+docker/                  # Dockerfiles and compose files (main, demo, puls)
+config/                  # .env + .env.secrets (ignored) and their examples, LLM profiles, prices.json, rates.json
+Skills/                  # The system prompt's markdown: personality, router, toolset guides, personalities/, tools/
+docs/                    # This guide, features/, plans/, fixes/, specs/, projects/, learning/
 ```
 
 ## Development workflow
