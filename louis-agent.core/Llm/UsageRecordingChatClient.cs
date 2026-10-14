@@ -112,7 +112,7 @@ public sealed class UsageRecordingChatClient(
         scope?.Add(stored);
     }
 
-    /// <summary>Stop reason for a stream that ended before the provider finished it.</summary>
+    /// <summary>Stop reason for a request that ended before the provider finished it.</summary>
     internal const string Cancelled = "cancelled";
 
     /// <summary>

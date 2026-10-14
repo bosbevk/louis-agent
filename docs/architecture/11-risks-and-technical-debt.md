@@ -13,7 +13,6 @@ tools mid-chat on Haiku 5.5, and more), each with the feature or fix that remove
 | Fix | Risk |
 |---|---|
 | [FX4](../fixes/FX04-append-only-history.md) | Changing tools or skills mid-chat breaks a Haiku 5.5 chat ([0008](../adr/0008-history-is-append-only.md) not yet fully held) |
-| [FX9](../fixes/FX09-cancelled-request-usage.md) | A request cancelled without streaming is still written to the ledger |
 
 ## Open decisions
 
