@@ -3,6 +3,9 @@
 > **Reference.** What was finished, newest first, one entry per feature, fix or cleanup. **Elsewhere:** what's still
 > open in the [TODO](TODO.md); how each was built in its feature, fix or plan doc (linked from its entry).
 
+- 2026-10-14 — **FX15 A test needed `config/.env`**: the display-currency test names the tracked rates and prices
+  files; it had relied on `config/` being found next to a `.env`, which a fresh clone lacks, so the first CI run found
+  it ([fix](docs/fixes/FX15-test-needs-env-file.md))
 - 2026-10-14 — **CI**: `.github/workflows/ci.yml` builds and tests the whole solution on Ubuntu on every push and pull
   request (the test results kept as an artifact); a regression is caught before a review, not only locally
 - 2026-10-14 — **FX9 Cancelled requests in the ledger**: a non-streaming request that times out or is cancelled (the
