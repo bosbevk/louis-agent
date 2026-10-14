@@ -194,6 +194,37 @@ public class UsageRecordingChatClientTests
     }
 
     [Test]
+    public void GetResponse_Cancelled_RecordsCancelledWithUnknownTokensAndRethrows()
+    {
+        // FX9: the orchestrator's triage doesn't stream; a timed-out call (TaskCanceledException from the HttpClient)
+        // must still reach the ledger, as a cancelled stream does. Its tokens are unknown (null), never 0.
+        var sink = new ListUsageSink();
+        using var client = new UsageRecordingChatClient(
+            new FailingStreamClient(new TaskCanceledException("HttpClient.Timeout of 100 seconds elapsed")), sink,
+            defaultModel: "llama3.1");
+
+        using (UsageScope.Begin(host: "orchestrator", session: "sess_1", turn: 1))
+            Assert.ThrowsAsync<TaskCanceledException>(async () => await client.GetResponseAsync("triage this"));
+
+        UsageRecord record = sink.Records.Single();
+        Assert.That(record.Stop, Is.EqualTo(UsageRecordingChatClient.Cancelled));
+        Assert.That(record.Tokens, Is.EqualTo(new UsageTokens(null, null, null, null, null)));
+        Assert.That((record.Host, record.Session, record.Model), Is.EqualTo(("orchestrator", "sess_1", "llama3.1")));
+    }
+
+    [Test]
+    public void GetResponse_ProviderError_NotRecorded()
+    {
+        // Unchanged by FX9: a provider error is not a request the ledger can count, streaming or not.
+        var sink = new ListUsageSink();
+        using var client = new UsageRecordingChatClient(new FailingStreamClient(new HttpRequestException("529 overloaded")), sink);
+
+        Assert.ThrowsAsync<HttpRequestException>(async () => await client.GetResponseAsync("hi"));
+
+        Assert.That(sink.Records, Is.Empty);
+    }
+
+    [Test]
     public async Task GetResponse_RecordCarriesTheScopesHostSessionAndTurn()
     {
         var sink = new ListUsageSink();

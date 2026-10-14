@@ -1,6 +1,7 @@
 # FX9 · A request cancelled without streaming is still written to the ledger
 
-> **Status:** open · **Area:** core, the usage recorder (`UsageRecordingChatClient`) · **Found:** 2026-10-12
+> **Status:** done · **Area:** core, the usage recorder (`UsageRecordingChatClient`) · **Found:** 2026-10-12 ·
+> **Fixed:** 2026-10-14
 
 ## Symptom
 
@@ -21,11 +22,13 @@ From the code, not yet from a test: `UsageRecordingChatClient` records the two k
 
 The orchestrator's triage is the one caller that doesn't stream, so its cancelled requests are the ones lost.
 
-## Fix (proposed)
+## Fix
 
-Record a cancelled non-streaming request as the streaming path does: catch `OperationCanceledException` around the
-call, write a record with `stop: "cancelled"`, no tokens (a cancelled call returns no usage) and its duration, then
-rethrow. Provider errors stay unrecorded, as they are when streaming.
+`GetResponseAsync` now records a cancelled request as the streaming path does: the call to the inner client is in a
+`try`, and a `catch (OperationCanceledException)` (which `TaskCanceledException`, the HttpClient timeout's exception,
+derives from) stores a record with `stop: "cancelled"`, a `null` usage and the call's duration, then rethrows. Any
+other exception passes through unrecorded, as a provider error does when streaming. One place, the same `Store` and
+`CreateRecord` as a finished request, and the existing `Cancelled` constant, so the two paths can't drift apart.
 
 Its tokens stay unknown, as a `null` usage, never 0: the ledger records what it was told. Whether Anthropic charges a
 request the client gave up on is not settled here; the record makes such requests visible so F11's reconciliation
@@ -33,14 +36,20 @@ against the provider's report can find out.
 
 ## Tests
 
-- A non-streaming call that throws `OperationCanceledException` writes one record with `stop: "cancelled"` and is still
-  thrown to the caller.
-- A non-streaming call that throws any other exception writes nothing (unchanged).
+In `tests/louis-agent.core.tests/Llm/UsageRecordingChatClientTests.cs`, written first and seen failing with
+`Sequence contains no elements` (the sink was empty after the cancelled call):
+
+- `GetResponse_Cancelled_RecordsCancelledWithUnknownTokensAndRethrows`: a non-streaming call that throws
+  `TaskCanceledException` inside a scope writes one record with `stop: "cancelled"`, all-null tokens, the scope's host
+  and session and the default model, and the exception still reaches the caller.
+- `GetResponse_ProviderError_NotRecorded`: a non-streaming call that throws `HttpRequestException` writes nothing
+  (unchanged; pinned so the catch stays narrow).
 
 ## Confirmed
 
-Not yet: rerun a triage that times out (llama3.1 at the 32k context, or a short `OllamaTimeout` in a test build) and
-count the ledger's records against Ollama's `POST /api/chat` lines.
+By the tests above; the real run is still owed. The next local triage run that times out (llama3.1 at the 32k
+context, [Local triage](../BENCHMARKS.md#local-triage-2026-10-12)) should show the ledger's record count equal to
+Ollama's `POST /api/chat` lines, with the timed-out request as a `cancelled` row with no tokens.
 
 ## Lesson
 

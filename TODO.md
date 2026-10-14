@@ -282,8 +282,6 @@ feature when its turn comes; remove its line here and update the map's *Missing*
 
 ### Observability
 
-- [ ] [FX9](docs/fixes/FX09-cancelled-request-usage.md) Write a request cancelled without streaming (the orchestrator's
-      triage, timed out) to the ledger, as a cancelled stream already is
 - [ ] Metrics and tracing (e.g. OpenTelemetry) beyond the stderr and JSON-lines logs: latency and error dashboards
       (usage and cost are covered by F1–F3 and F11)
 

@@ -3,6 +3,9 @@
 > **Reference.** What was finished, newest first, one entry per feature, fix or cleanup. **Elsewhere:** what's still
 > open in the [TODO](TODO.md); how each was built in its feature, fix or plan doc (linked from its entry).
 
+- 2026-10-14 — **FX9 Cancelled requests in the ledger**: a non-streaming request that times out or is cancelled (the
+  orchestrator's triage) is written to the ledger as `cancelled` with unknown tokens, as a cancelled stream already
+  was; provider errors stay unrecorded ([fix](docs/fixes/FX09-cancelled-request-usage.md))
 - 2026-10-14 — **Test first**: a step that changes behaviour starts with its tests, run and seen failing, then the
   code; one commit with both, the red output in the step's explanation ([ADR 0014](docs/adr/0014-test-first.md))
 - 2026-10-14 — **CL6 arc42, ADRs and C4**: the architecture in arc42's twelve sections in `docs/architecture/`
