@@ -3,6 +3,13 @@
 > **Reference.** What was finished, newest first, one entry per feature, fix or cleanup. **Elsewhere:** what's still
 > open in the [TODO](TODO.md); how each was built in its feature, fix or plan doc (linked from its entry).
 
+- 2026-10-14 — **CL4 One type per doc**: every doc is one Diátaxis type (tutorial, how-to, reference, explanation;
+  plans a fifth kind), named in the docs index and in a quoted opening line. Six mixed docs split, moving facts, not
+  dropping them: the README 230 → 152 lines, the TODO's Done to this file and its ticked lines removed, the benchmark
+  runs to `docs/BENCHMARKS.md`, Architecture's settings to SETUP and MODELS, How a turn works' how-tos to the guide.
+  Five out-of-date facts found on the way were fixed in their own commits (the default model, tool registration since
+  F5, F5's status, deleting `personality.md`, "no shell"); a link check ran after every step
+  ([plan](docs/plans/CL4-doc-types.md))
 - 2026-10-14 — **F5 Toolset profiles**: a session names its toolsets when it opens and keeps them; an engine per
   toolset list with only those tools and their guides; sub-sessions on a peer (`StartSubSession`), which Puls's
   delegation runs on. Short benchmark: prefix −50% (~48.5k → ~24.4k tokens), run −23%, 4/4 fixes, the cache still hits

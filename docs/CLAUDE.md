@@ -32,7 +32,8 @@ The goal and the skill map are in [GOAL.md](GOAL.md).
 2. If tools, their descriptions, `ToolMessage` texts or `Skills/*.md` changed, regenerate the golden files and review
    their diff (*Tests*).
 3. Update the feature or fix doc with what the step learned; on the last step, follow *Finishing a feature* or
-   *Finishing a fix* in their READMEs. The plan changes only under *Approved during the build*.
+   *Finishing a fix* in their READMEs. The plan changes only under *Approved during the build*. New text goes in the
+   doc of its type (*Rules that always apply*: one type per doc).
 4. Commit the step on its own, then explain it (rules 4 and 6) and stop.
 
 **Branches** are off `main` and carry the plan's id: `feature/F22-role-tools`, `fix/FX14-sub-session-prompt-budget`,

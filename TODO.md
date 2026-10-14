@@ -148,10 +148,6 @@ the product parts.
 
 ### Quality and CI
 
-- [ ] **One type per doc** — CL4 ([plan](docs/plans/CL4-doc-types.md)): each doc is one Diátaxis type (tutorial,
-      how-to, reference, explanation) and opens with what it answers; the six mixed docs split (README, AGENT_INTERACTION,
-      ARCHITECTURE, the features README's benchmarks to `docs/BENCHMARKS.md`, the TODO's Done to `CHANGELOG.md`, the
-      index gains a type column). A move, not a rewrite: no fact dropped, a link check after every step
 - [ ] CI (`.github/workflows`): `dotnet build` and `dotnet test` on every push and pull request — today regressions are
       only caught locally
 - [ ] Automated tests for the API and the web app (bUnit or Playwright); start with the Branches queue (several clicks in
