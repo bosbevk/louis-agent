@@ -23,6 +23,66 @@ The goal and the skill map are in [GOAL.md](GOAL.md).
    (how we're building it now), [fixes/](fixes/README.md) (what broke and why) and [specs/](specs/) (why). Update them
    rather than duplicating them.
 
+## Steps, branches and commits
+
+**Finishing a step** (before rule 5's stop):
+
+1. `dotnet build louis-agent-solution.sln`, and `dotnet test` on the projects the step touches (*Tests*); the whole
+   solution before a PR.
+2. If tools, their descriptions, `ToolMessage` texts or `Skills/*.md` changed, regenerate the golden files and review
+   their diff (*Tests*).
+3. Update the feature or fix doc with what the step learned; on the last step, follow *Finishing a feature* or
+   *Finishing a fix* in their READMEs. The plan changes only under *Approved during the build*.
+4. Commit the step on its own, then explain it (rules 4 and 6) and stop.
+
+**Branches** are off `main` and carry the plan's id: `feature/F22-role-tools`, `fix/FX14-sub-session-prompt-budget`,
+`refactor/CL3-messages-and-logging`; `docs/{name}` for docs-only work. The Claude project's `claude/*` branches keep
+their names.
+
+**Commit messages** are `type(scope): step N - what changed`, and the body says why:
+
+```
+feat(f22): step 3 - ReadTable for spreadsheets
+fix(fx14): the prompt budget counts cached tokens
+docs(f5): review of PR #27 - toolset guides
+```
+
+`type` is `feat`, `fix`, `refactor`, `test` or `docs`; `scope` is the id in lowercase (`f22`, `fx14`, `cl3`), or the
+area when there is none (`ollama`, `samples`, `guide`); `step N -` only on a plan's steps. Never push without asking
+(rule 7).
+
+## Rules that always apply
+
+The design decisions every change keeps; the sections below have the details.
+
+- **Reuse before building** — reuse the repo's components and maintained third-party packages (MIT, Apache or BSD);
+  write our own only when nothing fits, and say in the plan which were considered.
+- **Microsoft.Extensions.AI** — one `IChatClient` across providers; `FunctionInvokingChatClient` runs the tool loop.
+- **Provider strategies** — where Anthropic, OpenAI-compatible and Ollama differ (usage, caching, thinking, limits),
+  one interface with an implementation per provider, picked in `LlmClientFactory`; never branch on the provider's
+  name anywhere else (*Changing the LLM*, [Architecture](ARCHITECTURE.md#provider-strategies)).
+- **Streaming everywhere** — hosts render `StreamPromptAsync` updates; the finished turn is appended to the history,
+  thinking blocks included (Anthropic requires them when continuing after tool calls).
+- **Arguments as data** — skill and tool arguments travel as environment variables or argument lists, never through a
+  shell, so model text can't become commands.
+- **Guard the context** — oversized results are summarised, cut-off calls are never run, failures carry their reason.
+- **Toolsets per session** (F5) — a session names its toolsets when it opens and keeps them, so its prefix stays
+  cacheable; an engine per toolset list, with only those tools and their guides (*Adding a toolset*).
+- **Measure every request, and show it** — the usage ledger records each model request with its tokens and its cost,
+  priced from a table dated by `as_of`, so later price changes never rewrite history; unknown prices are `null`, never
+  0. Every host shows a turn's usage from the same records and totals (`UsageReport.Total`), so the views and the
+  ledger agree.
+- **History is append-only** — newer Claude models (Haiku 5.5 and later) bind thinking blocks to the system prompt,
+  tools and earlier messages, so nothing may edit them mid-conversation ([FX1](fixes/FX01-round-limit-tools.md);
+  [FX4](fixes/FX04-append-only-history.md) is still open).
+- **No message text inline in C#** — exceptions, log lines, tool results and user text are message enum members
+  (*Messages and logging*).
+- **Namespace = folder path, dependencies one way, prompts in `Skills/*.md`, hosts stay thin** — `ArchitectureTests`
+  holds the first two (*Project layout*).
+- **stdout is a protocol** — the ACP and MCP servers speak on it, so logs go through `ILogger` to stderr
+  (*Messages and logging*).
+- **Tests are platform-neutral** — the agent runs them on Linux in its containers (*Tests*).
+
 ## Quick start
 
 ```bash
@@ -49,96 +109,27 @@ Always pass `--env-file config/.env`; compose needs it for `REPOSITORIES_PATH`. 
 
 ## Project structure
 
-One design doc per project — purpose, structure, key types, settings, extension points, tests and limits — is in
-[projects/](projects/README.md).
-
+Where things are. What's inside each project (files, key types, settings, tests, limits) is in its design doc in
+[projects/](projects/README.md); core's folders are in *Project layout* below.
 
 ```
-louis-agent.core/             # Namespace = folder path (LouisAgent.Core.Tools.Web); see Project layout
-├── Agent/                    # AgentEngine: the turn loop, history and system prompt, a façade over the rest:
-│                             # ToolRegistry, ToolCallGuards (cut-off calls, oversized results, a sub-session's prompt
-│                             # budget), SkillTools, AgentBuiltTools;
-│                             # ToolsetCatalog (+ ToolsetDefinition, ToolsetContext): every toolset a session can load (F5)
-├── Guardrails/               # WorkspaceBoundary, SensitiveFiles, SsrfGuard: pure safety checks (tools and API use them)
-├── Hosting/                  # AgentHost (+ AgentHostContext): bootstrap for every host; AgentEngineFactory (one engine
-│                             # per toolset profile, F5); RiderMcpToolDiscovery
-├── Config/                   # LlmOptions (+ CacheLifetime), AgentOptions, EnvFile (finds config/, sets a .env line)
-├── Messages/                 # ErrorMessage, LogMessage, ToolMessage, UserText ([Description] templates), MessageText
-├── Logging/                  # AgentLogging (Serilog behind ILogger: stderr, run file, JSON-lines records),
-│                             # MessageLogging (log a message member), ToolCallRecords
-├── Llm/
-│   ├── LlmClientFactory.cs   # Provider → IChatClient (Anthropic thinking-budget wrapper lives here), wrapped for caching
-│   ├── IPromptCachingStrategy.cs, NoPromptCaching.cs, PromptCachingChatClient.cs  # F4
-│   ├── IUsageMapper.cs, StandardUsageMapper.cs   # Provider usage → the ledger's token kinds
-│   ├── UsageRecordingChatClient.cs  # Middleware inside the tool loop: records each request, streaming or not
-│   └── AnthropicProvider/    # AnthropicUsageMapper, AnthropicPromptCaching (Llm/{Name}Provider/ per provider)
-├── Skills/                   # MarkdownSkillLoader ("## Skill:" procedures), MarkdownSkillProvider (every skill file we control),
-│                             # SkillFileSource (built-in files embedded; disk overrides), SkillFiles
-├── Tools/
-│   ├── ProcessRunner.cs      # Process runner: argument lists, no shell, timeouts
-│   ├── Workspace/            # Files, inside the WorkspaceBoundary, never SensitiveFiles
-│   ├── Git/, DotNet/, Shell/ # GitTools; DotNetTools; BashTools, PowerShellTools, PythonTools
-│   ├── Web/                  # WebTools: WebSearch (Google / DuckDuckGo providers) and FetchUrl (SSRF-guarded)
-│   ├── Scripts/              # Agent-built tools (*.tool.md)
-│   ├── Agents/               # AgentPeerTools: StartSubSession on a peer agent (AGENT_PEERS, F5); SessionAttachments (F22)
-│   ├── Clock/                # ClockTools (GetToday, every session) and UserPlace: where the user is (F22)
-│   ├── Documents/            # DocumentText: PDF, Word, spreadsheets for ReadDocument, ReadTable, FetchUrl (F22)
-│   └── Integrations/         # Paymo/, DevOps/: loaded only when their API keys are set
-├── Protocols/Mcp/            # RiderMcpClient: lists tools from Rider's MCP server
-├── Usage/                    # Usage ledger (F1): one JSON line per model request in {LOG_DIRECTORY}/usage-YYYY-MM.jsonl
-│   ├── UsageRecord.cs, UsageTokens.cs, UsageCost.cs, UsagePurpose.cs, IUsageSink.cs, JsonlUsageSink.cs
-│   ├── UsageScope.cs, UsageTags.cs  # Per-turn context (AsyncLocal): host, session, turn, purpose, task/run/service
-│   ├── UsageReport.cs        # Reads a ledger back, prices old records, totals per fix / triage / run
-│   ├── UsageText.cs, UsageSession.cs  # The usage line and /usage text every host shows (F3); a session's turns
-│   └── CacheGaps.cs          # The prefix's cache lifetime from a ledger's request gaps (F4, usage-probe --cache-gaps)
-└── Pricing/
-    ├── PriceTable.cs, ModelPrice.cs, CostCalculator.cs  # Prices (config/prices.json) and a record's cost (F2)
-    ├── PricingUsageSink.cs   # Puts the cost on each record before the ledger writes it
-    └── ExchangeRates.cs, IRatesMapper.cs, DisplayCurrency.cs  # Rates (config/rates.json, RATES_URL) and the
-                              # currency costs are shown in, from HOST_CULTURE (F14); the ledger keeps what was charged
-
+louis-agent.core/        # The engine: the loop, tools, skills, providers, usage and prices, bootstrap
 src/
-├── louis-agent.cli/          # Terminal host: ConsoleChat (the interactive loop and single-prompt mode)
+├── louis-agent.cli/          # Terminal host
 ├── louis-agent.acp-server/   # Rider (Agent Client Protocol over stdio)
-├── louis-agent.api/          # Minimal API: sessions + SSE, /workspace, /git, /prices; serves the web app
-│   ├── Program.cs, AgentSessions.cs
-│   └── Endpoints/            # Workspace; Git (status, diff, stage/unstage/discard, commit); History (branches, log,
-│                             # commit/branch diffs, merge, delete merged branch)
-├── louis-agent.web/          # Blazor WebAssembly app for code review (chat, Files, Changes, Branches, themes)
-├── louis-agent.puls/         # Puls: the general assistant's web app (chat only; delegates every task), served by the
-│                             # API built with -p:WebApp=puls (docker/docker-compose.puls.yml, port 5070)
-├── louis-agent.web.shared/   # What both web apps share: chat models, API client core, TurnView, BlocksView,
-│                             # DelegationCard (live sub-sessions), markdown, usage, currency, TurnStream
-│   ├── Pages/ChatPage.razor, Components/*.razor, Services/*.cs
-│   └── wwwroot/css/app.css + css/themes/*.css + themes.json
-├── louis-agent.mcp-server/   # Publishes the toolset over MCP (no LLM) - stdio by default, MCP_TRANSPORT=http for remote clients
-└── louis-agent.orchestrator/ # POC: watches a service's errors, runbook per API method, delegates fixes to louis-agent.api
-    ├── Program.cs            # poll loop: triage each error event with an AgentEngine (own toolset, runbooks as skills)
-    ├── Tools/ServiceTools.cs # its only tools: CallLouisAgentFix, VerifyFixCommit, ReplayRequest, RunServiceTests, Escalate/Acknowledge
-    ├── LouisAgentClient.cs   # louis-agent.api sessions + SSE parsing, FIX-RESULT
-    ├── CommsLog.cs           # Markdown log of every message between the agents
-    └── Skills/               # orchestrator.md + {service}/service.md + one runbook per API method
-
-tools/louis-agent.usage-probe/ # Prints a provider's raw token usage and the ledger's mapping (calls the real provider);
-                              # --ledger <file> prices and totals a usage ledger, --cache-gaps <file> recommends
-                              # LLM_CACHE_TTL (neither calls a model)
-tests/louis-agent.core.tests/ # NUnit; folders mirror core's, plus ArchitectureTests (the layout rules)
-tests/louis-agent.api.tests/  # NUnit; the API's sessions (toolsets per session, depth), no web host or model
-tests/louis-agent.orchestrator.tests/ # NUnit; error feed, SSE client, verification tools
-samples/                      # order-service (demo microservice), run-demo.ps1 [-Short], sample-output*/ (real runs
-                              # with their priced ledgers, uncached and -cached), smoke-f4-caching/, puls-check/ (the
-                              # delegation check: run_check.py [--repeat N], its runs in sample-output-puls-check*/),
-                              # see samples/README.md
-docker/                       # Dockerfile.{acp-server,api,agent,mcp-server,orchestrator,puls}, docker-compose.yml,
-                              # docker-compose.demo.yml (orchestrator demo), docker-compose.puls.yml (Puls and its
-                              # specialist); the build context's .dockerignore is at the repo root
-config/                       # .env and .env.secrets (both ignored), their examples, LLM profiles (.env.anthropic,
-                              # .env.ollama, .env.ollama-triage for the orchestrator), prices.json (model prices),
-                              # rates.json (exchange rates), Rider config
-Skills/                       # personality.md + default.md + *-skills.md (system prompt), personalities/ (a session's own,
-                              # F21: puls and its specialists' roles), tools/ (agent-built tools)
-docs/                         # This guide, features/ (planned work), plans/ (approved build plans),
-                              # fixes/ (what broke and why), specs/, projects/
+├── louis-agent.api/          # Minimal API: sessions + SSE, workspace and git endpoints; serves a web app
+├── louis-agent.web/          # Blazor WebAssembly app for code review
+├── louis-agent.puls/         # Puls: the general assistant's web app (the API built with -p:WebApp=puls)
+├── louis-agent.web.shared/   # What both web apps share
+├── louis-agent.mcp-server/   # Publishes the tools over MCP (no model)
+└── louis-agent.orchestrator/ # POC: a second agent on core that has louis-agent fix a service's errors
+tools/louis-agent.usage-probe/ # A provider's raw usage; prices and totals a ledger (--ledger, --cache-gaps)
+tests/                   # NUnit: core.tests (mirrors core, plus ArchitectureTests), api.tests, orchestrator.tests
+samples/                 # order-service, the demo scripts and recorded runs (samples/README.md)
+docker/                  # Dockerfiles and compose files (main, demo, puls)
+config/                  # .env + .env.secrets (ignored) and their examples, LLM profiles, prices.json, rates.json
+Skills/                  # The system prompt's markdown: personality, router, toolset guides, personalities/, tools/
+docs/                    # This guide, features/, plans/, fixes/, specs/, projects/, learning/
 ```
 
 ## Development workflow
@@ -165,15 +156,13 @@ Return strings the model can act on: say what went wrong and what to do instead.
 
 **The texts a tool returns are `ToolMessage` members** (*Messages and logging*), errors and results alike:
 `return MessageText.Format(ToolMessage.FileNotFound, new { Path = relativePath });`. Its descriptions are attributes.
-Two golden files pin what the model reads: `ModelRequestSnapshot.json` (tools, descriptions, system prompt) and
-`ToolMessageSnapshot.json` (every `ToolMessage` template). A new tool or text changes them on purpose: regenerate with
-`LOUIS_UPDATE_GOLDEN=1 dotnet test tests/louis-agent.core.tests --filter "ModelRequestSnapshotTests|ToolMessageSnapshotTests"`
-and review the diff.
+A new tool or text changes the golden files on purpose: regenerate them and review the diff (*Tests*).
 
 ### Adding a toolset
 
 **Every toolset follows one pattern: guide → tools → guide.** `default.md` routes a task to a toolset, the toolset's
-guide names its tools and when to use them, and each tool's `[Description]` stays short. Four pieces, nothing else:
+guide names its tools and when to use them, and each tool's `[Description]` stays short. The files a new toolset
+touches, and nothing else:
 
 1. **Tools:** a class in `louis-agent.core/Tools/{Toolset}/` (*Adding a C# tool*); every public method is a tool.
 2. **Catalogue entry** in `Agent/ToolsetCatalog.cs`: the name, a one-line description, the settings it needs
@@ -181,9 +170,12 @@ guide names its tools and when to use them, and each tool's `[Description]` stay
    (`GuideFile`).
 3. **Guide:** `Skills/{toolset}-skills.md`, plain markdown: what the toolset is for, its tools grouped with one line
    each, and its workflows (it may also hold `## Skill:` procedures). `AgentHost.LoadSkills(agent, toolsets)` adds it
-   to the prompt, through `MarkdownSkillProvider`, only when a session loads the toolset; list it in
-   `SkillFiles.BuiltIn` too (so the agent can't overwrite it). **No provider class per toolset.**
-4. **Router:** a row in `default.md`'s toolset table, and the name in `DefaultSkillsProviderTests`' toolset list.
+   to the prompt, through `MarkdownSkillProvider`, only when a session loads the toolset. **No provider class per
+   toolset.**
+4. **Built-in list:** the guide's name in `SkillFiles.BuiltIn`, so the agent can't overwrite it.
+5. **Router:** a row in `default.md`'s toolset table.
+6. **Tests:** the name in `DefaultSkillsProviderTests`' toolset list, the toolset's tests in
+   `tests/louis-agent.core.tests/Tools/{Toolset}/`, and the golden files regenerated (*Tests*).
 
 Every catalogue toolset follows it; `SkillFilesTests` checks that each has a guide that loads with it.
 
@@ -263,7 +255,7 @@ Log.Log(LogLevel.Information, McpServerLogMessage.ToolNameTaken, new { Name = na
   layout, and key=value or table formatting.
 - **Text the model reads is pinned:** `ToolMessageSnapshotTests` renders every `ToolMessage` template into
   `Messages/ToolMessageSnapshot.json`, as the model-request snapshot does for the tools and prompt; a deliberate change
-  regenerates it (`LOUIS_UPDATE_GOLDEN=1`) and is reviewed in the diff. Numbers in messages are invariant (`12,345`).
+  regenerates it (*Tests*). Numbers in messages are invariant (`12,345`).
 - **Logging goes through `ILogger` (Microsoft.Extensions.Logging) with Serilog behind it**, configured in code by
   `Logging/AgentLogging` (`AgentHost` calls `Configure`; another agent on core calls it itself). Get a logger with
   `AgentLogging.For<T>()` and log a message member with `logger.Log(level, Member, new { Hole = value })`
@@ -282,11 +274,9 @@ Log.Log(LogLevel.Information, McpServerLogMessage.ToolNameTaken, new { Name = na
 
 Create `Skills/{name}-skills.md`. With `AGENT_FUNCTION=louis` every skill file is loaded; otherwise set
 `AGENT_FUNCTION={name}`. Skill files come with the **skills** toolset: a session without it (Puls's chats, agents
-only) gets the router and its toolsets' guides, not the skill files. Since F5 no guide loads in every session: a
-guide comes with its toolset (`bash-skills.md` with `bash`, named by the catalogue's `GuideFile`), and a built-in file
-the agent must not overwrite is listed in `SkillFiles.BuiltIn`. Procedures use `## Skill: Name` with an `Execution:` fence
-(bash, powershell or python); arguments arrive as `SKILL_ARG_*` environment variables. A toolset's guide follows
-*Adding a toolset*: plain markdown, no provider class of its own.
+only) gets the router and its toolsets' guides, not the skill files; a toolset's guide is *Adding a toolset*. A
+built-in file the agent must not overwrite is listed in `SkillFiles.BuiltIn`. Procedures use `## Skill: Name` with an
+`Execution:` fence (bash, powershell or python); arguments arrive as `SKILL_ARG_*` environment variables.
 
 ### Adding a personality
 
@@ -329,9 +319,8 @@ anywhere else.
 
 - Tool calls are logged to stderr: `[TOOL] -> Name(args)` and `[TOOL] <- Name: result` (or `failed: …`).
 - In Docker, logs persist in `logs/`; `docker logs louis_agent_api` shows the API.
-- Log through `ILogger` (*Messages and logging*), never `Console.Out`: stdout carries the ACP and MCP protocols. With
-  `LOG_DIRECTORY` set, each process writes `agent-{host}-{time}-{pid}.log` there (the stderr lines with the time); the
-  orchestrator's lines are tagged `[orchestrator]`, louis-agent's progress under it `[louis-agent]`.
+- With `LOG_DIRECTORY` set, each process's run file is there (*Messages and logging*); the orchestrator's lines are
+  tagged `[orchestrator]`, louis-agent's progress under it `[louis-agent]`.
 - Every model request is in the usage ledger, `{LOG_DIRECTORY}/usage-YYYY-MM.jsonl` (tokens, cost, host, session,
   turn, fix and run; no prompt text). Total one with
   `dotnet run --project tools/louis-agent.usage-probe -- --ledger logs/usage-YYYY-MM.jsonl`.
@@ -348,10 +337,25 @@ dotnet test tests/louis-agent.orchestrator.tests
 dotnet test louis-agent-solution.sln          # everything, including the order-service sample's tests
 ```
 
-**What the model is sent is pinned by a golden file:** `ModelRequestSnapshotTests` compares the tools, the system
-prompt and the engine's fixed texts with `Agent/ModelRequestSnapshot.json`. A deliberate change (a new tool, an edited
-description or skill file) regenerates it: `LOUIS_UPDATE_GOLDEN=1 dotnet test tests/louis-agent.core.tests --filter
-ModelRequestSnapshotTests`, then review the file's diff before committing.
+**What the model reads is pinned by two golden files:** `ModelRequestSnapshotTests` compares the tools, their
+descriptions, the system prompt and the engine's fixed texts with `Agent/ModelRequestSnapshot.json`;
+`ToolMessageSnapshotTests` compares every `ToolMessage` template with `Messages/ToolMessageSnapshot.json`. A deliberate
+change (a new tool or text, an edited description or skill file) regenerates them, and you review their diff before
+committing:
+
+```bash
+LOUIS_UPDATE_GOLDEN=1 dotnet test tests/louis-agent.core.tests --filter "ModelRequestSnapshotTests|ToolMessageSnapshotTests"
+```
+
+```powershell
+$env:LOUIS_UPDATE_GOLDEN = '1'
+try { dotnet test tests/louis-agent.core.tests --filter "ModelRequestSnapshotTests|ToolMessageSnapshotTests" }
+finally { Remove-Item Env:LOUIS_UPDATE_GOLDEN }
+```
+
+The PowerShell variable lasts for the session, hence the `finally`: left set, every later test run rewrites the files
+instead of checking them. On Windows, `git status` can list a regenerated file as modified while `git diff` shows
+nothing: only its line endings changed, and `git checkout -- <file>` puts it back.
 
 Tests use `FakeChatClient` (a scripted `IChatClient` that also streams) and `StubHandler` for HTTP — no network, model or
 Docker. A few tests skip themselves when git, pip or the network isn't available. The agent runs tests on Linux inside
@@ -362,93 +366,12 @@ yet, so check them by hand (curl and a browser) after changes. The
 orchestrator demo (`samples/run-demo.ps1`, in Docker; see [samples/README.md](../samples/README.md)) exercises the
 whole loop against a real model: API sessions, the fix flow, and the web app's Branches view.
 
-## Key design decisions
+## Which Anthropic tier
 
-- **Reuse before building** — reuse the repo's components and maintained third-party packages (MIT, Apache or BSD);
-  write our own only when nothing fits, and say in the plan which were considered.
-- **Microsoft.Extensions.AI** — one `IChatClient` across providers; `FunctionInvokingChatClient` runs the tool loop.
-- **Provider strategies** — where Anthropic, OpenAI-compatible and Ollama differ (usage, caching, thinking, limits),
-  one interface with an implementation per provider, picked in `LlmClientFactory`
-  ([Architecture](ARCHITECTURE.md#provider-strategies)).
-- **Streaming everywhere** — hosts render `StreamPromptAsync` updates; the finished turn is appended to the history,
-  thinking blocks included (Anthropic requires them when continuing after tool calls).
-- **Arguments as data** — skill and tool arguments travel as environment variables or argument lists, never through a
-  shell, so model text can't become commands.
-- **Guard the context** — oversized results are summarised, cut-off calls are never run, failures carry their reason.
-- **Hosts stay thin** — each host maps the same stream to its protocol; behaviour lives in core.
-- **Toolsets per session** (F5) — a session names its toolsets when it opens and keeps them, so its prefix stays
-  cacheable; an engine per toolset list, with only those tools and their guides (docs/CLAUDE.md, *Adding a toolset*).
-- **Measure every request, and show it** — the usage ledger records each model request with its tokens and its cost,
-  priced from a table dated by `as_of`, so later price changes never rewrite history; unknown prices are `null`, never
-  0. Every host shows a turn's usage from the same records and totals (`UsageReport.Total`), so the views and the
-  ledger agree.
-- **History is append-only** — newer Claude models (Haiku 5.5 and later) bind thinking blocks to the system prompt,
-  tools and earlier messages, so nothing may edit them mid-conversation ([FX1](fixes/FX01-round-limit-tools.md);
-  [FX4](fixes/FX04-append-only-history.md) is still open).
+louis-agent sits at the Messages API tier on purpose, with its own loop, so the provider stays swappable. The four
+tiers and why are in [Architecture: Anthropic integration tiers](ARCHITECTURE.md#anthropic-integration-tiers).
 
-## Anthropic integration tiers (reference)
-
-Four ways to build on Claude, from most managed to least. `louis-agent` deliberately sits at the bottom tier — see
-"Why `louis-agent` uses the Messages API tier" below.
-
-| Tier | Who hosts the loop | Who hosts the sandbox/tools | OpenAI equivalent |
-|---|---|---|---|
-| **Messages API** (`POST /v1/messages`) | You | You | Responses API |
-| **Tool Runner** (`client.beta.messages.tool_runner`, Anthropic SDK only) | SDK | You | Agents SDK (partial — Anthropic-only, no handoffs/multi-agent) |
-| **Claude Agent SDK** (`claude-agent-sdk`, separate package — Claude Code as a library) | SDK | You | Agents SDK (closer — ships built-in coding tools) |
-| **Managed Agents** (beta, Anthropic-hosted) | Anthropic | Anthropic | Agents API |
-
-### Decision tree
-
-```mermaid
-flowchart TD
-    A[Need to call Claude] --> B{Need to swap model providers<br/>Anthropic, Ollama, etc.?}
-    B -->|Yes| C["Messages API + your own loop<br/>(this is louis-agent)"]
-    B -->|No, Claude-only is fine| D{Want Anthropic to host<br/>the tool-execution sandbox?}
-    D -->|Yes| E[Managed Agents]
-    D -->|No, I host it| F{Need Claude Code's built-in<br/>file/bash/grep tools?}
-    F -->|Yes| G[Claude Agent SDK]
-    F -->|No, just a loop over my own tools| H[Tool Runner]
-```
-
-### Real-world use cases
-
-- **Messages API + your own loop** (what this repo uses): multi-provider portability is a hard requirement, or you
-  need custom session/approval/skill semantics a vendor SDK doesn't model. `louis-agent`'s `IChatClient`
-  abstraction lets `LlmClientFactory` swap Anthropic for Ollama without touching `AgentEngine` or any tool.
-- **Tool Runner**: a single-provider (Claude-only) shop building a straightforward custom-tool agent — e.g. an
-  internal ticket-triage bot — that wants approval-gate/logging/retry hooks without hand-writing the
-  `while stop_reason == "tool_use"` loop.
-- **Claude Agent SDK**: a coding/filesystem-centric agent (a Cursor/Devin-style assistant, a PR-review bot) where
-  Claude Code's built-in Read/Write/Edit/Bash/Grep tools already cover the surface you need, and being Claude-only
-  is acceptable. Reinventing `WorkspaceTools`/`BashTools` wouldn't have been worth it here either, if this repo
-  didn't also need DevOps/Paymo tools, markdown-defined skills, and provider portability on top.
-- **Managed Agents**: you don't want to run a sandbox at all — a SaaS feature ("AI cleans up your spreadsheet"), a
-  nightly scheduled agent (no cron box of your own to maintain), or persisted/versioned agent configs shared
-  across teams with no platform/ops capacity to host it themselves.
-
-### Why `louis-agent` uses the Messages API tier
-
-Both higher tiers trade away something this repo depends on:
-
-- **Managed Agents** would mean Anthropic hosts the tool-execution sandbox — incompatible with owning the Docker
-  containers, repo mounts, and scoped DevOps/Paymo credentials this repo runs with (see the `IsSensitive` file
-  blocking and the tool-approval flow in `AgentEngine`).
-- **Tool Runner and Claude Agent SDK** are both Anthropic-specific packages — picking either locks every model call
-  to Claude, which conflicts with the `IChatClient` provider abstraction (`LlmClientFactory`) this repo is built
-  around.
-
-```mermaid
-flowchart LR
-    subgraph repo["louis-agent.core"]
-        AE["AgentEngine<br/>(tool loop, skills, approval)"] --> IC["IChatClient"]
-        IC --> AC["AnthropicClient.AsIChatClient()"]
-        IC -.pluggable swap.-> OL["Ollama / other provider"]
-    end
-    AC --> API["Claude Messages API"]
-```
-
-### MCP exposes tools, not a model
+## MCP exposes tools, not a model
 
 `louis-agent.mcp-server` hands an *external* client's model the raw tools, one call at a time; it has no model of its
 own, so `AgentEngine` never calls its own tools through it. To have louis-agent do a whole task and report back (as the
@@ -458,32 +381,10 @@ flow are in [AGENT_COMMUNICATION.md](AGENT_COMMUNICATION.md).
 
 ## Known limitations
 
-The same list as the TODO's *Known limitations*: when work removes one, delete it in both places (see
-[Finishing a feature](features/README.md#finishing-a-feature)).
-
-1. **Rider MCP discovery only logs** Rider's tools; they aren't callable yet (needs a full MCP client).
-   Removed by a full MCP client (TODO *Agent architecture gaps: Protocols*, backlog).
-2. **Sessions are in memory** in the API and ACP server; a restart ends them (the web app keeps the transcript).
-   Removed by durable sessions ([session architecture](specs/SESSION_ARCHITECTURE.md), backlog).
-3. **Ollama tool support is a name heuristic** (`LlmOptions.KnownNoToolsPrefixes`).
-4. **Paymo task lookup takes the first match** for a name; ambiguous names can hit the wrong task.
-5. **No rate limiting or audit log** beyond the file logs. Removed by TODO *Agent architecture gaps: Safety* (backlog).
-6. **10 tool rounds per message** (`MaximumIterationsPerRequest`): a long task stops mid-way and needs a follow-up
-   message to continue. The orchestrator does this automatically ("Continue the fix…"); most demo fixes take 2-3 messages.
-   Removed by [F10 Route settings](features/F10-route-settings.md).
-7. **Running the API with `dotnet run` (unpublished)** only serves the web app in the `Development` environment
-   (`ASPNETCORE_ENVIRONMENT=Development`); otherwise `/` returns 404. The Docker images are published, so they're fine.
-8. **Local models get a truncated prompt.** The agent sends ~26,000+ tokens (system prompt and tools) and doesn't tell
-   Ollama the window, so Ollama uses its own default (2,048 on the version measured here; newer ones pick 4k–256k by
-   memory) and drops the rest without an error: the ledger showed `input: 2050`. The `ollama-nvidia` and `ollama-amd`
-   containers default to 32k, which covers it; the CPU `ollama` service still uses Ollama's default. Removed by
-   [F15 Model limits](features/F15-model-limits.md) (sends `num_ctx`) and [F13 Local models](features/F13-local-models.md).
-9. **Changing the tools or skills during a chat can break it on Claude Haiku 5.5** (the default). The model rejects a
-   changed system prompt or tool list once thinking blocks are in the history (enforced for accounts created on or
-   after 2026-08-31). `BeginTurn` sends the engine's live tool list, so a tool the model creates (`CreateTool`) breaks
-   the rest of that message; `/approve`, `/reject` and a skill reload break the next one; and in the API every open
-   chat with the same toolsets shares one engine and its tool list (F5). Start a new chat afterwards. Removed by
-   [FX4 Append-only history](fixes/FX04-append-only-history.md).
+The list is the TODO's [Known limitations](../TODO.md#known-limitations); when work removes one, delete it there.
+One matters whenever you test a change by hand: on Claude Haiku 5.5 (the default), changing the tools or skills during
+a chat (`CreateTool`, `/approve`, `/reject`, a skill reload) breaks that chat with a 400, so start a new chat
+afterwards (limitation 9, [FX4](fixes/FX04-append-only-history.md)).
 
 ## Common errors
 
@@ -494,16 +395,16 @@ The same list as the TODO's *Known limitations*: when work removes one, delete i
 - **Skill not found** — the file isn't loaded for this `AGENT_FUNCTION`, or the name differs (case-sensitive).
 - **bash not found on Windows** — install Git for Windows or set `BASH_PATH` to `bash.exe`; WSL's bash is never used.
 - **400 "Invalid `signature` in `thinking` block … bound to a different conversation"** — the system prompt or tool list
-  changed under earlier thinking (known limitation 9); start a new chat. See [FX4](fixes/FX04-append-only-history.md).
+  changed under earlier thinking ([known limitation 9](../TODO.md#known-limitations)); start a new chat. See
+  [FX4](fixes/FX04-append-only-history.md).
 - **"Price table …"** stopping start-up (not valid, empty, a negative price, or a bad `long_prompt.above_tokens`) — fix
   `config/prices.json` (or the `PRICES_FILE` / `PRICES_URL` table): every model needs all five prices, none negative.
   **"[WARN] No price table"** means costs are recorded as unknown.
 - **"Model '…' isn't pulled into Ollama"** (usage probe) or a 404 from Ollama — `docker exec louis_ollama ollama pull <model>`.
 
-## Contributing
+## Further reading
 
-Branch off `main`, keep changes focused, run `dotnet build` and `dotnet test`, and write commit messages that explain
-why. See [ARCHITECTURE.md](ARCHITECTURE.md) for the design, `config/.env.example` for settings, and
+[ARCHITECTURE.md](ARCHITECTURE.md) for the design, `config/.env.example` for settings, and
 [Skills/default.md](../Skills/default.md) for how the agent is instructed to behave.
 
 ---

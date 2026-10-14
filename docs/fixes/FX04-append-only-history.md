@@ -3,7 +3,7 @@
 > **Status:** open · **Area:** core, the conversation history and tool list (`AgentEngine`) · **Found:** 2026-10-10
 >
 > **Removes the limitation:** "Changing the tools or skills during a chat can break it on Claude Haiku 5.5"
-> ([docs/CLAUDE.md](../CLAUDE.md#known-limitations) #9)
+> ([TODO](../../TODO.md#known-limitations) #9)
 
 ## Symptom (expected from the code and Anthropic's docs; not yet seen in a run)
 

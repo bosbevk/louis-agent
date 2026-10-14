@@ -231,8 +231,8 @@ drift apart:
 2. **This folder:** set *Status* to **done** at the top of the feature's doc and in the table above.
 3. **Spec:** in the spec's *Implementation* map, mark the feature done; change anything the build proved different
    (for example F4's two cache markers instead of three).
-4. **Limitations:** if the feature removes a known limitation (F10: tool rounds), delete it from both
-   [docs/CLAUDE.md](../CLAUDE.md#known-limitations) and the TODO's *Known limitations*.
+4. **Limitations:** if the feature removes a known limitation (F10: tool rounds), delete it from the
+   TODO's [Known limitations](../../TODO.md#known-limitations) (the one list).
 5. **Benchmark:** for features that change cost, add the measured numbers to *The benchmark* below.
 6. **User docs:** settings in README / [SETUP](../SETUP.md), and anything the feature changes for users.
 7. **Goal map:** in [docs/GOAL.md](../GOAL.md#what-im-learning-the-whole-agent-architecture), move what the feature
