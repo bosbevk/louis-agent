@@ -8,7 +8,7 @@ The model is configuration only, no code changes. The LLM settings (`LLM_PROVIDE
 
 | Profile | File | Model |
 |---|---|---|
-| `anthropic` (default) | `config/.env.anthropic` | Claude Haiku 4.5; needs `ANTHROPIC_API_KEY` in `config/.env.secrets` |
+| `anthropic` (default) | `config/.env.anthropic` | Claude Haiku 5.5; needs `ANTHROPIC_API_KEY` in `config/.env.secrets` |
 | `ollama` | `config/.env.ollama` | `llama3.1` on a local Ollama, free |
 
 ```bash
@@ -155,7 +155,7 @@ Works with anything that speaks the OpenAI Chat Completions API. Tool calling de
 - **Ollama connection refused** — the service only runs with `--profile ollama`; check
   `curl http://host.docker.internal:11434/api/tags` from the host. Inside Docker `localhost` is the container itself.
 - **`[WARN] LLM_PROFILE 'x' has no config/.env.x`** — a typo in `LLM_PROFILE`, or the profile file is missing; the
-  settings fall back to `config/.env` and the defaults (Claude Haiku 4.5).
+  settings fall back to `config/.env` and the defaults (Claude Haiku 5.5).
 - **The agent talks about tools instead of using them** — the model can't call tools well; switch model or check
   `tools=on` in the startup line.
 
