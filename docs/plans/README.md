@@ -34,6 +34,8 @@ or fix doc (*What the build changed*), not here.
 - **Sections:** *Context* (why now, what the doc says), *Design* (what changes from the doc, and why), *Steps* (one
   commit each, with its test; the review stop after each), *Verification* (tests, free manual checks, and any paid run,
   which needs approval first), and the *Concepts* each step teaches, with their skill in the [goal](../GOAL.md).
+- **A lasting decision gets an ADR:** when a plan decides something later work must follow, its record goes in
+  [docs/adr/](../adr/README.md) in the same PR; the plan keeps the steps, the ADR the why.
 - **Saved and committed before step 1**, on the feature's branch, so the plan is in the same PR as the work.
 - **Changes during the build:** a change that is asked for and approved during the build (F2's `PRICES_URL`) is added to
   the plan under *Approved during the build*, with the date; everything else the build learns goes in the feature or fix

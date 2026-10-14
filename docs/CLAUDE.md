@@ -54,40 +54,52 @@ area when there is none (`ollama`, `samples`, `guide`); `step N -` only on a pla
 
 ## Rules that always apply
 
-The design decisions every change keeps; the sections below have the details.
+The design decisions every change keeps; the sections below have the details, and each *Why* links the
+decision's record (its context, and what it cost) in [docs/adr/](adr/README.md).
 
 - **Reuse before building** — reuse the repo's components and maintained third-party packages (MIT, Apache or BSD);
   write our own only when nothing fits, and say in the plan which were considered.
 - **Microsoft.Extensions.AI** — one `IChatClient` across providers; `FunctionInvokingChatClient` runs the tool loop.
+  Why: [ADR 0002](adr/0002-messages-api-tier-with-our-own-loop.md).
 - **Provider strategies** — where Anthropic, OpenAI-compatible and Ollama differ (usage, caching, thinking, limits),
   one interface with an implementation per provider, picked in `LlmClientFactory`; never branch on the provider's
   name anywhere else ([Changing the LLM](../louis-agent.core/CLAUDE.md#changing-the-llm),
   [Architecture](architecture/05-building-block-view.md#provider-strategies)).
+  Why: [ADR 0003](adr/0003-provider-strategies.md).
 - **Streaming everywhere** — hosts render `StreamPromptAsync` updates; the finished turn is appended to the history,
   thinking blocks included (Anthropic requires them when continuing after tool calls).
 - **Arguments as data** — skill and tool arguments travel as environment variables or argument lists, never through a
   shell, so model text can't become commands.
+  Why: [ADR 0004](adr/0004-arguments-as-data.md).
 - **Guard the context** — oversized results are summarised, cut-off calls are never run, failures carry their reason.
+  Why: [ADR 0005](adr/0005-guard-the-context.md).
 - **Toolsets per session** (F5) — a session names its toolsets when it opens and keeps them, so its prefix stays
   cacheable; an engine per toolset list, with only those tools and their guides
   ([Adding a toolset](../louis-agent.core/CLAUDE.md#adding-a-toolset)).
+  Why: [ADR 0006](adr/0006-toolsets-per-session.md).
 - **Measure every request, and show it** — the usage ledger records each model request with its tokens and its cost,
   priced from a table dated by `as_of`, so later price changes never rewrite history; unknown prices are `null`, never
   0. Every host shows a turn's usage from the same records and totals (`UsageReport.Total`), so the views and the
   ledger agree.
+  Why: [ADR 0007](adr/0007-measure-every-request.md).
 - **History is append-only** — newer Claude models (Haiku 5.5 and later) bind thinking blocks to the system prompt,
   tools and earlier messages, so nothing may edit them mid-conversation ([FX1](fixes/FX01-round-limit-tools.md);
   [FX4](fixes/FX04-append-only-history.md) is still open).
+  Why: [ADR 0008](adr/0008-history-is-append-only.md).
 - **No message text inline in C#** — exceptions, log lines, tool results and user text are message enum members
   ([Messages and logging](../louis-agent.core/CLAUDE.md#messages-and-logging)).
+  Why: [ADR 0009](adr/0009-message-text-as-enum-templates.md).
 - **Namespace = folder path, dependencies one way, prompts in `Skills/*.md`, hosts stay thin** — `ArchitectureTests`
   holds the first two ([Project layout](../louis-agent.core/CLAUDE.md#project-layout)).
+  Why: [ADR 0010](adr/0010-folders-by-concern.md), [ADR 0011](adr/0011-prompts-are-content.md).
 - **stdout is a protocol** — the ACP and MCP servers speak on it, so logs go through `ILogger` to stderr
   ([Messages and logging](../louis-agent.core/CLAUDE.md#messages-and-logging)).
+  Why: [ADR 0009](adr/0009-message-text-as-enum-templates.md).
 - **Tests are platform-neutral** — the agent runs them on Linux in its containers
   ([Writing tests](../tests/CLAUDE.md#writing-tests)).
 - **One type per doc** — every doc is a tutorial, how-to, reference, explanation or plan, and opens with what it answers;
   new text goes in the doc of its type ([docs index: Writing docs](README.md#writing-docs-one-type-per-doc)).
+  Why: [ADR 0013](adr/0013-documentation-structure.md).
 
 ## Quick start
 
@@ -201,7 +213,7 @@ A session names its personality when it opens (`POST /sessions` with `"personali
 ## Which Anthropic tier
 
 louis-agent sits at the Messages API tier on purpose, with its own loop, so the provider stays swappable. The four
-tiers and why are in [Architecture: Anthropic integration tiers](adr/0002-messages-api-tier-with-our-own-loop.md).
+tiers and why are in [ADR 0002](adr/0002-messages-api-tier-with-our-own-loop.md).
 
 ## MCP exposes tools, not a model
 

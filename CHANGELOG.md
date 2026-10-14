@@ -3,6 +3,11 @@
 > **Reference.** What was finished, newest first, one entry per feature, fix or cleanup. **Elsewhere:** what's still
 > open in the [TODO](TODO.md); how each was built in its feature, fix or plan doc (linked from its entry).
 
+- 2026-10-14 — **CL6 arc42, ADRs and C4**: the architecture in arc42's twelve sections in `docs/architecture/`
+  (ARCHITECTURE.md's text moved unchanged, plus goals, constraints, C4 context, container and component diagrams,
+  quality scenarios and a glossary), and 13 decisions as ADRs in `docs/adr/`, each written from where it was
+  recorded and linking its sources; the guide's rules link their ADRs, and a plan that makes a lasting decision adds
+  one ([plan](docs/plans/CL6-arc42.md))
 - 2026-10-14 — **CL5 Guides by folder**: the development guide, which loads into every Claude Code session, keeps what
   every task needs (~11.4k → ~6.2k tokens); core's how-tos move to `louis-agent.core/CLAUDE.md` (~4.8k), the tests' to
   `tests/CLAUDE.md`, the hosts' to `src/CLAUDE.md`, which Claude Code loads only when working there (checked with
