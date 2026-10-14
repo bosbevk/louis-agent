@@ -146,6 +146,7 @@ there, so a session pays for them only when they apply:
 | Guide | Holds |
 |---|---|
 | [tests/CLAUDE.md](../tests/CLAUDE.md) | Running the tests, the golden files (bash and PowerShell), fakes and platform-neutral tests |
+| [src/CLAUDE.md](../src/CLAUDE.md) | The hosts' own message enums, adding a web theme |
 | [louis-agent.core/CLAUDE.md](../louis-agent.core/CLAUDE.md) | Adding a C# tool or a toolset, the project layout, messages and logging, another agent on core, changing the LLM |
 
 ### Adding a skill
@@ -182,11 +183,6 @@ A session names its personality when it opens (`POST /sessions` with `"personali
 3. A role a parent should pass goes in `agents-skills.md`'s table (toolsets → personality), and in
    `Skills/personalities/roles.json`: a sub-session opened without a role gets the first rule whose toolsets it has.
 4. `GET /personalities` lists them; an unknown or invalid name is a 400 before any engine is built.
-
-### Adding a web theme
-
-Copy `src/louis-agent.web/wwwroot/css/themes/paper.css` to `{id}.css`, set the variables listed at the top of
-`css/app.css`, and add `{ "id": "{id}", "name": "…" }` to `themes.json`. Ids are lowercase letters, digits and dashes.
 
 ### Running and debugging
 

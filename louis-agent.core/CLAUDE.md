@@ -119,9 +119,8 @@ Log.Log(LogLevel.Information, McpServerLogMessage.ToolNameTaken, new { Name = na
 - **What counts:** exception messages, log lines, the error strings tools return to the model, and user-facing text
   (`/usage`, the usage line, CLI help). Enums by kind (`ErrorMessage`, `LogMessage`, `ToolMessage`, `UserText`), each
   member named for what happened, not for its wording.
-- **Each host keeps its own texts** in its project's `Messages/` folder, named for the host (`AcpLogMessage`,
-  `CliUserText`, `OrchestratorToolMessage`, `ProbeUserText`…): core can't know them. `HostMessageEnumTests` checks them
-  from source.
+- **Each host keeps its own texts** in its own `Messages/` folder
+  ([src/CLAUDE.md](../src/CLAUDE.md#each-hosts-own-texts)).
 - **Not messages:** prompts (system prompt and procedures in `Skills/*.md`; the orchestrator's triage and fix prompts),
   keywords another program matches on (`FIX-RESULT`, `DECISION`, `PASS`/`FAIL`, `VERIFIED`), the comms log's Markdown
   layout, and key=value or table formatting.
