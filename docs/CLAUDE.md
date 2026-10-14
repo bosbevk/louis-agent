@@ -23,6 +23,34 @@ The goal and the skill map are in [GOAL.md](GOAL.md).
    (how we're building it now), [fixes/](fixes/README.md) (what broke and why) and [specs/](specs/) (why). Update them
    rather than duplicating them.
 
+## Steps, branches and commits
+
+**Finishing a step** (before rule 5's stop):
+
+1. `dotnet build louis-agent-solution.sln`, and `dotnet test` on the projects the step touches (*Tests*); the whole
+   solution before a PR.
+2. If tools, their descriptions, `ToolMessage` texts or `Skills/*.md` changed, regenerate the golden files and review
+   their diff (*Tests*).
+3. Update the feature or fix doc with what the step learned; on the last step, follow *Finishing a feature* or
+   *Finishing a fix* in their READMEs. The plan changes only under *Approved during the build*.
+4. Commit the step on its own, then explain it (rules 4 and 6) and stop.
+
+**Branches** are off `main` and carry the plan's id: `feature/F22-role-tools`, `fix/FX14-sub-session-prompt-budget`,
+`refactor/CL3-messages-and-logging`; `docs/{name}` for docs-only work. The Claude project's `claude/*` branches keep
+their names.
+
+**Commit messages** are `type(scope): step N - what changed`, and the body says why:
+
+```
+feat(f22): step 3 - ReadTable for spreadsheets
+fix(fx14): the prompt budget counts cached tokens
+docs(f5): review of PR #27 - toolset guides
+```
+
+`type` is `feat`, `fix`, `refactor`, `test` or `docs`; `scope` is the id in lowercase (`f22`, `fx14`, `cl3`), or the
+area when there is none (`ollama`, `samples`, `guide`); `step N -` only on a plan's steps. Never push without asking
+(rule 7).
+
 ## Quick start
 
 ```bash
@@ -358,16 +386,16 @@ afterwards (limitation 9, [FX4](fixes/FX04-append-only-history.md)).
 - **Skill not found** — the file isn't loaded for this `AGENT_FUNCTION`, or the name differs (case-sensitive).
 - **bash not found on Windows** — install Git for Windows or set `BASH_PATH` to `bash.exe`; WSL's bash is never used.
 - **400 "Invalid `signature` in `thinking` block … bound to a different conversation"** — the system prompt or tool list
-  changed under earlier thinking ([known limitation 9](../TODO.md#known-limitations)); start a new chat. See [FX4](fixes/FX04-append-only-history.md).
+  changed under earlier thinking ([known limitation 9](../TODO.md#known-limitations)); start a new chat. See
+  [FX4](fixes/FX04-append-only-history.md).
 - **"Price table …"** stopping start-up (not valid, empty, a negative price, or a bad `long_prompt.above_tokens`) — fix
   `config/prices.json` (or the `PRICES_FILE` / `PRICES_URL` table): every model needs all five prices, none negative.
   **"[WARN] No price table"** means costs are recorded as unknown.
 - **"Model '…' isn't pulled into Ollama"** (usage probe) or a 404 from Ollama — `docker exec louis_ollama ollama pull <model>`.
 
-## Contributing
+## Further reading
 
-Branch off `main`, keep changes focused, run `dotnet build` and `dotnet test`, and write commit messages that explain
-why. See [ARCHITECTURE.md](ARCHITECTURE.md) for the design, `config/.env.example` for settings, and
+[ARCHITECTURE.md](ARCHITECTURE.md) for the design, `config/.env.example` for settings, and
 [Skills/default.md](../Skills/default.md) for how the agent is instructed to behave.
 
 ---
