@@ -126,6 +126,8 @@ default stops mattering, and [F13](features/F13-local-models.md) fits every requ
 
 ## OpenAI-compatible servers
 
+There is no profile file for these yet, so set them in `config/.env`:
+
 ```bash
 LLM_PROVIDER=openai-compatible
 LLM_MODEL=your-model-name

@@ -1,5 +1,9 @@
 # Architecture: Louis Agent
 
+> **Explanation.** The components and why they are built this way: hosts, core abstractions, a turn, skills, tools,
+> security, logging, deployment. **Elsewhere:** settings in [Setup](SETUP.md), the steps for a change in the
+> [development guide](CLAUDE.md).
+
 ## Overview
 
 Louis Agent is a multi-host LLM agent for working on code. One engine (`louis-agent.core`) holds the tools, skills and
@@ -390,28 +394,10 @@ dotnet test tests/louis-agent.orchestrator.tests
 
 The API and web app have no automated tests; the orchestrator demo exercises them end to end against a real model.
 
-## Configuration reference
+## Configuration
 
-See [SETUP.md](SETUP.md) and `config/.env.example`. The model settings live in LLM profiles, picked by `LLM_PROFILE`
-in `config/.env` ([MODELS.md](MODELS.md)):
-
-```bash
-# config/.env.anthropic (LLM_PROFILE=anthropic, the default)
-LLM_PROVIDER=anthropic
-LLM_MODEL=claude-haiku-5-5              # ANTHROPIC_API_KEY in config/.env.secrets
-
-# config/.env.ollama (LLM_PROFILE=ollama; docker compose --profile ollama)
-LLM_PROVIDER=ollama
-LLM_MODEL=llama3.1
-LLM_ENDPOINT=http://host.docker.internal:11434
-
-# no profile yet; set these in config/.env
-
-# OpenAI-compatible (LM Studio, vLLM, ...)
-LLM_PROVIDER=openai-compatible
-LLM_MODEL=your-model
-LLM_ENDPOINT=http://localhost:8000/v1
-```
+Every setting is in [SETUP.md](SETUP.md) (and `config/.env.example`); the model settings live in LLM profiles, picked by
+`LLM_PROFILE`, in [MODELS.md](MODELS.md).
 
 ---
 [Docs index](README.md) · Previous: [How the agents and endpoints talk](AGENT_COMMUNICATION.md) · Next: [Development guide](CLAUDE.md)
