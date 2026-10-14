@@ -51,6 +51,38 @@ docs(f5): review of PR #27 - toolset guides
 area when there is none (`ollama`, `samples`, `guide`); `step N -` only on a plan's steps. Never push without asking
 (rule 7).
 
+## Rules that always apply
+
+The design decisions every change keeps; the sections below have the details.
+
+- **Reuse before building** — reuse the repo's components and maintained third-party packages (MIT, Apache or BSD);
+  write our own only when nothing fits, and say in the plan which were considered.
+- **Microsoft.Extensions.AI** — one `IChatClient` across providers; `FunctionInvokingChatClient` runs the tool loop.
+- **Provider strategies** — where Anthropic, OpenAI-compatible and Ollama differ (usage, caching, thinking, limits),
+  one interface with an implementation per provider, picked in `LlmClientFactory`; never branch on the provider's
+  name anywhere else (*Changing the LLM*, [Architecture](ARCHITECTURE.md#provider-strategies)).
+- **Streaming everywhere** — hosts render `StreamPromptAsync` updates; the finished turn is appended to the history,
+  thinking blocks included (Anthropic requires them when continuing after tool calls).
+- **Arguments as data** — skill and tool arguments travel as environment variables or argument lists, never through a
+  shell, so model text can't become commands.
+- **Guard the context** — oversized results are summarised, cut-off calls are never run, failures carry their reason.
+- **Toolsets per session** (F5) — a session names its toolsets when it opens and keeps them, so its prefix stays
+  cacheable; an engine per toolset list, with only those tools and their guides (*Adding a toolset*).
+- **Measure every request, and show it** — the usage ledger records each model request with its tokens and its cost,
+  priced from a table dated by `as_of`, so later price changes never rewrite history; unknown prices are `null`, never
+  0. Every host shows a turn's usage from the same records and totals (`UsageReport.Total`), so the views and the
+  ledger agree.
+- **History is append-only** — newer Claude models (Haiku 5.5 and later) bind thinking blocks to the system prompt,
+  tools and earlier messages, so nothing may edit them mid-conversation ([FX1](fixes/FX01-round-limit-tools.md);
+  [FX4](fixes/FX04-append-only-history.md) is still open).
+- **No message text inline in C#** — exceptions, log lines, tool results and user text are message enum members
+  (*Messages and logging*).
+- **Namespace = folder path, dependencies one way, prompts in `Skills/*.md`, hosts stay thin** — `ArchitectureTests`
+  holds the first two (*Project layout*).
+- **stdout is a protocol** — the ACP and MCP servers speak on it, so logs go through `ILogger` to stderr
+  (*Messages and logging*).
+- **Tests are platform-neutral** — the agent runs them on Linux in its containers (*Tests*).
+
 ## Quick start
 
 ```bash
@@ -333,29 +365,6 @@ The API's sessions are tested (`tests/louis-agent.api.tests`); its endpoints and
 yet, so check them by hand (curl and a browser) after changes. The
 orchestrator demo (`samples/run-demo.ps1`, in Docker; see [samples/README.md](../samples/README.md)) exercises the
 whole loop against a real model: API sessions, the fix flow, and the web app's Branches view.
-
-## Key design decisions
-
-- **Reuse before building** — reuse the repo's components and maintained third-party packages (MIT, Apache or BSD);
-  write our own only when nothing fits, and say in the plan which were considered.
-- **Microsoft.Extensions.AI** — one `IChatClient` across providers; `FunctionInvokingChatClient` runs the tool loop.
-- **Provider strategies** — where Anthropic, OpenAI-compatible and Ollama differ (usage, caching, thinking, limits),
-  one interface with an implementation per provider, picked in `LlmClientFactory`
-  ([Architecture](ARCHITECTURE.md#provider-strategies)).
-- **Streaming everywhere** — hosts render `StreamPromptAsync` updates; the finished turn is appended to the history,
-  thinking blocks included (Anthropic requires them when continuing after tool calls).
-- **Arguments as data** — skill and tool arguments travel as environment variables or argument lists, never through a
-  shell, so model text can't become commands.
-- **Guard the context** — oversized results are summarised, cut-off calls are never run, failures carry their reason.
-- **Toolsets per session** (F5) — a session names its toolsets when it opens and keeps them, so its prefix stays
-  cacheable; an engine per toolset list, with only those tools and their guides (*Adding a toolset*).
-- **Measure every request, and show it** — the usage ledger records each model request with its tokens and its cost,
-  priced from a table dated by `as_of`, so later price changes never rewrite history; unknown prices are `null`, never
-  0. Every host shows a turn's usage from the same records and totals (`UsageReport.Total`), so the views and the
-  ledger agree.
-- **History is append-only** — newer Claude models (Haiku 5.5 and later) bind thinking blocks to the system prompt,
-  tools and earlier messages, so nothing may edit them mid-conversation ([FX1](fixes/FX01-round-limit-tools.md);
-  [FX4](fixes/FX04-append-only-history.md) is still open).
 
 ## Which Anthropic tier
 
