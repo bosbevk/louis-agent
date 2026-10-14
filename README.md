@@ -128,15 +128,9 @@ prices and rates. Every endpoint, the event stream with an example, and how othe
 
 ## Web app
 
-- **Chats** stream with collapsible thinking, tool cards (input and result) and highlighted code; chats are kept in the browser.
-- **Files** — browse the repo, view files with syntax highlighting, ask the agent to review one.
-- **Changes** — see what the agent (or you) changed, read each diff, tick files to stage / unstage / discard, commit,
-  or ask the agent to review the changes. Pushing stays with you.
-- **Branches** — every branch and how far it is ahead, all commits across branches, each commit's or branch's diff;
-  merge a branch into the checked-out one, or delete a merged branch.
-- **Themes** — *Retro terminal* and *Paper (soft light)*. A theme is one CSS file in
-  `src/louis-agent.web/wwwroot/css/themes/` plus a line in `themes.json`; the variables it must set are listed at the top
-  of `css/app.css`.
+Chats that stream the thinking and every tool call, a file browser, a Changes view to review, stage and commit, and a
+Branches view to review and merge branches; pushing stays with you. How it works:
+[the web app's design doc](docs/projects/louis-agent.web.md).
 
 ## Skills and tools
 
