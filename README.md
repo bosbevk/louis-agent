@@ -118,112 +118,34 @@ Outside Docker the CLI finds `config/.env` and the repo root from any folder in 
 ## Configuration
 
 Settings live in `config/.env` and secrets in `config/.env.secrets`; both are git-ignored and created from their
-`.example` files. Full details:
-[docs/SETUP.md](docs/SETUP.md) and [docs/MODELS.md](docs/MODELS.md).
-
-| Setting | Purpose |
-|---|---|
-| `LLM_PROFILE` | Which LLM profile to load: `anthropic` (`config/.env.anthropic`, Claude Haiku 5.5) or `ollama` (`config/.env.ollama`) |
-| `LLM_PROVIDER`, `LLM_MODEL` | Set by the profile: `anthropic` (default, `claude-haiku-5-5`), `ollama` or `openai-compatible` |
-| `LLM_THINKING` | Visible reasoning: `off` / `low` / `medium` / `high` (default `medium` for Anthropic) |
-| `LLM_CACHE`, `LLM_CACHE_TTL` | Prompt caching (Anthropic): `on` by default; the prefix's lifetime, `5m` (default) or `1h` |
-| `ANTHROPIC_API_KEY` | Claude API key *(secret)* |
-| `AGENT_FUNCTION` | Which `Skills/{name}-skills.md` to load; `louis` loads all |
-| `AGENT_API_KEY` | When set, required (as `x-api-key` or `Authorization: Bearer`) for the HTTP API *(secret)* |
-| `API_PORT` | Host port for the API / web app (default `5080`, bound to `127.0.0.1`) |
-| `GIT_AUTHOR_NAME` / `_EMAIL`, `GIT_COMMITTER_NAME` / `_EMAIL` | Identity for commits made from the web app's Changes view *(secrets file)* |
-| `PAYMO_API_KEY`, `DEVOPS_API_KEY` | Enable the Paymo and Azure DevOps tools *(secret)* |
-| `DEVOPS_ORGANIZATION`, `DEVOPS_PROJECT`, `DEVOPS_TEAM` | Which Azure DevOps project (and optional team) the DevOps tools work on |
-| `GOOGLE_SEARCH_API_KEY`, `GOOGLE_SEARCH_ENGINE_ID` | Google for web search; without them it uses DuckDuckGo *(secret)* |
-| `REPOSITORIES_PATH`, `ACP_MOUNT_MAPPINGS` | Extra repositories mounted into the containers, and how Rider's Windows paths map to them |
-| `USAGE_LEDGER`, `LOG_DIRECTORY` | Usage ledger (on by default): one JSON line per model request in `{LOG_DIRECTORY}/usage-YYYY-MM.jsonl` (`logs/` from Docker) |
-| `USAGE_IN_CHAT` | `true` adds the usage line to Rider's chat after each answer (off by default; the CLI and web app always show it) |
-| `HOST_CULTURE`, `DISPLAY_CURRENCY` | Show costs in your currency (F14): `HOST_CULTURE=en-ZA` (written by `usage-probe -- --host-culture`) gives rands, `R0.11`; `DISPLAY_CURRENCY` overrides it. The ledger stays in USD |
-| `RATES_URL`, `RATES_FORMAT`, `RATES_FILE` | Exchange rates: Frankfurter by default, `config/rates.json` (tracked) as the fallback, served at the API's `GET /rates` |
-| `PRICES_FILE`, `PRICES_URL` | Price table for the ledger's costs: default `config/prices.json` (tracked, with today's Claude prices; local models at 0), or fetched from the API's `GET /prices` |
-| `AGENT_PEERS` | Other louis-agent APIs this one may hand tasks to (`StartSubSession`), as `name=url` pairs; Puls's compose sets its specialist |
-| `SUB_SESSION_PROMPT_BUDGET` | The most tokens a specialist's prompt should reach before it must answer (default `80000`, under Haiku 5.5's long-prompt price step) |
-| `PULS_PORT`, `PULS_CODER_PORT`, `PULS_WORKSPACE` | Puls's port (`5070`), its specialist's (`5071`) and the folder they work in |
+`.example` files. Every setting is in [docs/SETUP.md](docs/SETUP.md); choosing a model in [docs/MODELS.md](docs/MODELS.md).
 
 ## HTTP API
 
-Sessions live in memory. Every reply is JSON; a message's answer streams as Server-Sent Events shaped like Claude's
-(`message_start`, `content_block_start/delta/stop` for `thinking`, `text`, `tool_use` and `tool_result`, `message_stop`).
-The full reference — authentication, errors, the event stream with an example, and how other agents use it — is in
-[docs/AGENT_COMMUNICATION.md](docs/AGENT_COMMUNICATION.md).
-
-| Endpoint | |
-|---|---|
-| `POST /sessions` | Start a session → `{ "session_id" }`. Optional: `toolsets` (only those tools and guides), `personality` (a voice or a specialist's role), `location` and `time_zone`, and tags for the usage ledger (`task`, `run`, `service`) |
-| `GET /toolsets` · `GET /personalities` · `GET /model` | What a session can load, the personalities it can choose, and the model this instance runs |
-| `POST /sessions/{id}/messages` | `{ "message", "attachments": [{ "name", "content" }] }` → event stream |
-| `POST /sessions/{id}/cancel` · `GET` / `DELETE /sessions/{id}` | Stop a reply, inspect, end |
-| `GET /workspace/entries?path=` · `GET /workspace/file?path=` | Browse the workspace (read-only) |
-| `GET /git/status` · `GET /git/diff?path=&staged=` | Changed files and diffs |
-| `POST /git/stage` · `unstage` · `discard` · `commit` | `{ "paths": [...] }` (commit: `{ "message" }`) |
-| `GET /git/branches` · `GET /git/log?count=` | Branches (ahead/behind the checked-out branch) and the log across all branches |
-| `GET /git/commit?sha=` · `GET /git/branch?name=` | A commit's diff; a branch's commits and what merging it would bring |
-| `POST /git/merge` · `POST /git/branch/delete` | `{ "branch" }`: merge into the checked-out branch (`--no-ff`, aborted on conflict); delete a merged branch |
-| `GET /prices` · `GET /rates` · `GET /rates/display` | The price table, the exchange rates, and the currency costs are shown in |
-| `GET /health` | Liveness (no key needed) |
-
-```bash
-SID=$(curl -s -X POST http://127.0.0.1:5080/sessions | jq -r .session_id)
-curl -N -X POST http://127.0.0.1:5080/sessions/$SID/messages \
-     -H "Content-Type: application/json" -d '{"message":"What branch am I on?"}'
-```
+A JSON API with answers streamed as Server-Sent Events shaped like Claude's: sessions, workspace and git endpoints,
+prices and rates. Every endpoint, the event stream with an example, and how other agents use it are in
+[docs/AGENT_COMMUNICATION.md](docs/AGENT_COMMUNICATION.md#the-http-api-louis-agentapi).
 
 ## Web app
 
-- **Chats** stream with collapsible thinking, tool cards (input and result) and highlighted code; chats are kept in the browser.
-- **Files** — browse the repo, view files with syntax highlighting, ask the agent to review one.
-- **Changes** — see what the agent (or you) changed, read each diff, tick files to stage / unstage / discard, commit,
-  or ask the agent to review the changes. Pushing stays with you.
-- **Branches** — every branch and how far it is ahead, all commits across branches, each commit's or branch's diff;
-  merge a branch into the checked-out one, or delete a merged branch.
-- **Themes** — *Retro terminal* and *Paper (soft light)*. A theme is one CSS file in
-  `src/louis-agent.web/wwwroot/css/themes/` plus a line in `themes.json`; the variables it must set are listed at the top
-  of `css/app.css`.
+Chats that stream the thinking and every tool call, a file browser, a Changes view to review, stage and commit, and a
+Branches view to review and merge branches; pushing stays with you. How it works:
+[the web app's design doc](docs/projects/louis-agent.web.md).
 
-## Skills and tools
+## Skills, tools and safety
 
-Built-in tools cover workspace files, git, `dotnet` build/test/run, Python, PowerShell, bash, web search and page fetching,
-Azure DevOps work items and Paymo time tracking. Markdown **skills** in [`Skills/`](Skills) add guidance and repeatable
-procedures: `personality.md` gives the agent its character (edit or delete it to change who the agent is), and
-`default.md` holds its operating instructions and routes each task to a toolset. A session can load only the toolsets
-it needs (`files`, `git`, `dotnet`, `web`, `python`, …), each with its own guide (`Skills/{toolset}-skills.md`), so its
-prompt stays small and cacheable. A session can also name a personality from `Skills/personalities/`: Puls's voice
-(`puls.md`), or a specialist's role (`puls-researcher.md`, `puls-reader.md`, …). The agent can write new skills, and can build its own typed tools, which
-wait in `Skills/tools/pending` until you approve them (`/tools`, `/approve <Name>`, `/reject <Name>`).
-
-## Safety
-
-- File tools stay inside the workspace, refuse secret files (`.env`, keys, certificates; templates such as
-  `.env.example` are readable) and don't follow symbolic links.
-- Scripts and git run without a shell, with arguments passed as a list.
-- The API and web app are published on `127.0.0.1` only; set `AGENT_API_KEY` to require a key. The MCP server in HTTP
-  mode is also local-only and takes `MCP_API_KEY`.
-- The web app never pushes (its commits and merges stay local), and the agent only pushes when you ask it to.
-- Oversized tool output is summarised instead of flooding the model's context, and a tool call cut off by the output
-  limit is never run.
-- A specialist's sub-session is one level deep (it can't delegate again), limited to 3 per turn and 5 minutes each,
-  and has a prompt budget, so a badly routed task can't grow into long-context prices.
-
-## Logs
-
-Containers write their logs to `logs/` (git-ignored) so they survive `--rm`, plus JSON-lines records of oversized tool
-results and truncated tool calls for spotting where the agent needs narrower tools.
+The agent's tools cover files, git, `dotnet`, Python, PowerShell, bash, the web, Azure DevOps and Paymo; markdown
+**skills** in [`Skills/`](Skills) give it its personality, route each task to a toolset, and guide each toolset. A
+session loads only the toolsets it needs. The agent can write new skills and build its own tools, which wait for your
+`/approve`. File tools stay inside the workspace and never touch secret files, the model's text is never spliced into a
+command line, and everything listens on `127.0.0.1` only. Details: [Architecture: Skills](docs/ARCHITECTURE.md#skills),
+[Tools](docs/ARCHITECTURE.md#tools) and [Security](docs/ARCHITECTURE.md#security).
 
 ## Development
 
-```bash
-dotnet build louis-agent-solution.sln
-dotnet test tests/louis-agent.core.tests
-dotnet test tests/louis-agent.api.tests
-dotnet test tests/louis-agent.orchestrator.tests
-```
-
-Requires the .NET 10 SDK. See the [development guide](docs/CLAUDE.md) and the [docs index](docs/README.md).
+Requires the .NET 10 SDK. Building, testing and how a change is made are in the
+[development guide](docs/CLAUDE.md); where the logs go in [Architecture: Logging](docs/ARCHITECTURE.md#logging); every doc
+in the [docs index](docs/README.md).
 
 ## License
 

@@ -1,5 +1,8 @@
 # Louis Agent: How a Turn Works
 
+> **Explanation.** What happens between your message and the answer: tools and skills, the tool loop, the guards.
+> **Elsewhere:** how to add a tool or a skill in the [development guide](CLAUDE.md#development-workflow).
+
 How the agent turns your message into tool calls and an answer. For how clients and other agents connect to it
 (HTTP API, Rider, MCP, the orchestrator) see [AGENT_COMMUNICATION.md](AGENT_COMMUNICATION.md); for the components
 themselves see [ARCHITECTURE.md](ARCHITECTURE.md).
@@ -18,20 +21,27 @@ a new skill file, and `CreateTool` writes a script-backed tool that waits for yo
 
 ### How tools are registered
 
+A session names its toolsets when it opens and keeps them (F5). Each toolset is an entry in `Agent/ToolsetCatalog.cs`
+that builds its tool objects, and the engine registers only those:
+
 ```csharp
+// AgentEngineFactory: the session's toolset names → their tool objects
+var resolved = ToolsetCatalog.Resolve(toolsets, Context);                  // e.g. "files", "git"
+var engine = new AgentEngine(skills, chatClient, options, supportsTools,
+    toolsets: ToolsetCatalog.BuildTools(resolved, Context), ...);
+
 // AgentEngine constructor (simplified)
-_registry.Add(Function(_skillTools.ExecuteSkill, nameof(ExecuteSkill)));   // the engine's own tools, LF descriptions
-_registry.AddPublicMethods(new WorkspaceTools(WorkspaceRoot));            // ToolRegistry keeps them in name order
-_registry.AddPublicMethods(new GitTools(WorkspaceRoot));
-_registry.AddPublicMethods(new DotNetTools(WorkspaceRoot));
-// ... Python, PowerShell, Bash, Web; Paymo and DevOps only when their keys are set
+_registry.Add(Function(_skillTools.ExecuteSkill, nameof(ExecuteSkill)));   // every session
+_registry.AddPublicMethods(new ClockTools());                             // every session: today's date (F22)
+foreach (object toolset in toolsets) _registry.AddPublicMethods(toolset); // only the session's toolsets
+if (selfExtension) AddSelfExtensionTools();                               // the skills toolset: CreateTool, CreateSkillFile…
 ```
 
 Every **public** instance method becomes a tool, named after the method, with its `[Description]` attributes as the
-documentation. Keep helpers `internal` or `private`.
-
-An agent that isn't a coding agent can get a different toolset: pass `toolsets:` to the constructor and only those
-objects' public methods (plus `ExecuteSkill`) are registered — see "An agent with its own tools" below.
+documentation. Keep helpers `internal` or `private`. `ToolRegistry` keeps every tool in name order, so the start of
+every request is the same bytes and the prompt cache holds (F4). A toolset whose settings are missing (Paymo or DevOps
+without its API key) can't be loaded. An agent built on core, like the orchestrator, passes its own tool objects as
+`toolsets:` the same way (the guide's [Building another agent on core](CLAUDE.md#building-another-agent-on-core)).
 
 ### How skills are loaded
 
@@ -125,55 +135,9 @@ To see what the model is offered, inspect `engine.Tools` (name, description, JSO
 
 ## Extending
 
-### A new C# tool
-
-```csharp
-namespace LouisAgent.Core.Tools.MyToolset;   // the file is louis-agent.core/Tools/MyToolset/MyTools.cs
-
-using System.ComponentModel;
-
-public sealed class MyTools
-{
-    [Description("What this tool does, in one sentence the model can act on")]
-    public string MyTool([Description("What this parameter is")] string input) => "result";
-}
-```
-
-Register it in the `AgentEngine` constructor with `_registry.AddPublicMethods(new MyTools())`, mention it in the relevant
-skill file, and add tests in `tests/louis-agent.core.tests/Tools/MyToolset/`. Tool names must stay unique: a
-duplicate stops the engine at start-up.
-
-### An agent with its own tools
-
-Not every agent should get the coding tools. Pass your own tool objects as `toolsets`; their public methods become the
-only tools, plus `ExecuteSkill` (no files, git or shells):
-
-```csharp
-var engine = new AgentEngine(skills, chatClient, options, supportsTools: true, toolsets: [new ServiceTools(...)]);
-```
-
-The orchestrator (`src/louis-agent.orchestrator`) is built this way: its runbooks are the skills, and its tools triage
-errors, call louis-agent.api for fixes and verify the results. See [samples/README.md](../samples/README.md).
-
-### A new skill file
-
-Drop `Skills/{name}-skills.md` in the folder. With `AGENT_FUNCTION=louis` it is picked up automatically; otherwise set
-`AGENT_FUNCTION={name}`. Procedures inside it look like:
-
-````markdown
-## Skill: MySkill
-
-- Description: What it does.
-- Parameters:
-  - `name` (string): What it is.
-- Execution:
-
-```bash
-echo "Hello, ${SKILL_ARG_name}"
-```
-````
-
-Arguments arrive as `SKILL_ARG_*` environment variables; quote them and never build commands from them.
+The steps for a new tool, toolset, skill or agent are how-tos, in the development guide:
+[a C# tool](CLAUDE.md#adding-a-c-tool), [a toolset](CLAUDE.md#adding-a-toolset), [a skill](CLAUDE.md#adding-a-skill),
+[a personality](CLAUDE.md#adding-a-personality) and [another agent on core](CLAUDE.md#building-another-agent-on-core).
 
 ---
 [Docs index](README.md) · Previous: [Paymo prompts](PAYMO-PROMPTS.md) · Next: [How the agents and endpoints talk](AGENT_COMMUNICATION.md)

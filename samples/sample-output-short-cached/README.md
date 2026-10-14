@@ -5,7 +5,7 @@ for both agents, 2026-10-11, run id `run-20261011-184153`): five production erro
 the same as without caching. It cost **$0.0488, shown as R0.81**, against **$0.2884** for the same demo without caching
 ([sample-output-short/](../sample-output-short/README.md), the "before"). The full run is in
 [sample-output-cached/](../sample-output-cached/README.md); the comparison is in the
-[features README](../../docs/features/README.md#f4-benchmark-2026-10-11). Times are UTC.
+[features README](../../docs/BENCHMARKS.md#f4-benchmark-2026-10-11). Times are UTC.
 
 | | Without caching | With caching | Change |
 |---|---:|---:|---:|

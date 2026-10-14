@@ -1,11 +1,14 @@
 # Models
 
+> **How-to.** Choose and switch the model: Claude, Ollama or an OpenAI-compatible server. **Elsewhere:** every other
+> setting in [Setup](SETUP.md), why providers are swappable in [Architecture](ARCHITECTURE.md#provider-strategies).
+
 The model is configuration only, no code changes. The LLM settings (`LLM_PROVIDER`, `LLM_MODEL`, `LLM_ENDPOINT`,
 `LLM_THINKING`) live in a **profile** file, and `LLM_PROFILE` in `config/.env` picks one:
 
 | Profile | File | Model |
 |---|---|---|
-| `anthropic` (default) | `config/.env.anthropic` | Claude Haiku 4.5; needs `ANTHROPIC_API_KEY` in `config/.env.secrets` |
+| `anthropic` (default) | `config/.env.anthropic` | Claude Haiku 5.5; needs `ANTHROPIC_API_KEY` in `config/.env.secrets` |
 | `ollama` | `config/.env.ollama` | `llama3.1` on a local Ollama, free |
 
 ```bash
@@ -123,6 +126,8 @@ default stops mattering, and [F13](features/F13-local-models.md) fits every requ
 
 ## OpenAI-compatible servers
 
+There is no profile file for these yet, so set them in `config/.env`:
+
 ```bash
 LLM_PROVIDER=openai-compatible
 LLM_MODEL=your-model-name
@@ -152,7 +157,7 @@ Works with anything that speaks the OpenAI Chat Completions API. Tool calling de
 - **Ollama connection refused** — the service only runs with `--profile ollama`; check
   `curl http://host.docker.internal:11434/api/tags` from the host. Inside Docker `localhost` is the container itself.
 - **`[WARN] LLM_PROFILE 'x' has no config/.env.x`** — a typo in `LLM_PROFILE`, or the profile file is missing; the
-  settings fall back to `config/.env` and the defaults (Claude Haiku 4.5).
+  settings fall back to `config/.env` and the defaults (Claude Haiku 5.5).
 - **The agent talks about tools instead of using them** — the model can't call tools well; switch model or check
   `tools=on` in the startup line.
 

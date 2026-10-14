@@ -1,5 +1,8 @@
 # Prompting Louis Agent for Paymo Time Logging
 
+> **How-to.** Log and review Paymo time in plain language. **Elsewhere:** setting `PAYMO_API_KEY` in
+> [Setup](SETUP.md).
+
 With `PAYMO_API_KEY` set in `config/.env.secrets`, the agent can log and review your Paymo time. Ask in plain language
 from Rider, the web app or the CLI.
 

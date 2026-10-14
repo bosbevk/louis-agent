@@ -4,7 +4,7 @@
 >
 > **Spec:** [Optimisation §E](../specs/RESPONSE_OPTIMISATION.md)
 >
-> **In the TODO:** tick **F10 Route settings** under *Now* ([TODO](../../TODO.md)) · **Replaces:** the known limitation "10 tool rounds per message"
+> **In the TODO:** **F10 Route settings** under *Now* ([TODO](../../TODO.md)) · **Replaces:** the known limitation "10 tool rounds per message"
 
 One set of settings serves very different work today: a quick chat, a 20-round fix and the orchestrator's triage. F10
 lets each route have its own thinking level and tool-round limit, fixed per session, so caching isn't affected.
@@ -61,7 +61,7 @@ setting (`SUMMARY_MODEL`), and F16 comes before F9.
 
 - Stories' criteria pass; tests added; suites pass.
 - Benchmark: fewer continues per fix, fix rate unchanged, triage cheaper; numbers recorded.
-- **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)): tick **F10** in the TODO,
+- **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)): move **F10** to the CHANGELOG,
   set *Status* to done here and in the features table, and note it in the spec's implementation map.
 
 ---

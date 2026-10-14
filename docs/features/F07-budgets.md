@@ -4,7 +4,7 @@
 >
 > **Spec:** [Usage §6](../specs/USAGE_AND_BUDGETS.md)
 >
-> **In the TODO:** tick **F7 Budgets** under *Now* ([TODO](../../TODO.md))
+> **In the TODO:** **F7 Budgets** under *Now* ([TODO](../../TODO.md))
 
 The only limits today are the Anthropic account's credit and monthly spend limit; hitting them fails every remaining
 request. F7 adds louis-agent's own budgets — per session, task, run, day and month — that warn early and stop or pause
@@ -88,7 +88,7 @@ Enforcement:
 - Stories' criteria pass; tests added; suites pass.
 - Acceptance run: a run budget below the full run's cost stops the run cleanly with deferred fixes; `-Resume` with a
   larger budget completes them (spec §9).
-- **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)): tick **F7** in the TODO,
+- **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)): move **F7** to the CHANGELOG,
   set *Status* to done here and in the features table, and note it in the spec's implementation map.
 
 ---

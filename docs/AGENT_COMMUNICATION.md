@@ -1,5 +1,9 @@
 # How the Agents and Endpoints Talk
 
+> **Reference.** The HTTP API, its event stream, the web app, Rider (ACP), MCP, and agent-to-agent messages.
+> **Elsewhere:** the components in [Architecture](ARCHITECTURE.md), one turn inside the agent in
+> [How a turn works](AGENT_INTERACTION.md).
+
 Who connects to louis-agent, over which protocol, and what goes over the wire — from a browser or Rider, from another
 program, and from another agent (the orchestrator). For what happens *inside* one turn (the model, tools and skills),
 see [AGENT_INTERACTION.md](AGENT_INTERACTION.md).
@@ -288,7 +292,7 @@ louis-agent fix the ones the runbook allows — over the same session API any cl
 Besides the sessions, it calls `GET /health` at start-up and, in the demo, takes its prices and exchange rates from
 louis-agent.api's `/prices` and `/rates` (`PRICES_URL`, `RATES_URL`), so both agents' costs are priced with one table
 and shown at one rate. Its triage can run on another model than the fixes, a local one included
-(`ORCHESTRATOR_LLM_PROFILE`; see [Local triage](features/README.md#local-triage-2026-10-12)).
+(`ORCHESTRATOR_LLM_PROFILE`; see [Local triage](BENCHMARKS.md#local-triage-2026-10-12)).
 
 ```mermaid
 sequenceDiagram

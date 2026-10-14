@@ -3,7 +3,7 @@
 > **Status:** planned · **Milestone:** M4 (after F10; before build mode) · **Depends on:** F4 (the caching strategy),
 > F8 (S4, results as tool calls), F10 (route settings), F18 (its eval)
 >
-> **Spec:** [Orchestrator design](../specs/ORCHESTRATOR_DESIGN.md) · **In the TODO:** tick **F17 Orchestrator agent**
+> **Spec:** [Orchestrator design](../specs/ORCHESTRATOR_DESIGN.md) · **In the TODO:** **F17 Orchestrator agent**
 > under *Now* ([TODO](../../TODO.md))
 
 The orchestrator POC triages each error with a model that, for an auto-fixable error, always calls louis-agent and
@@ -104,7 +104,7 @@ cases, so that the change is kept only when decisions hold and cost falls.
 
 - Stories' criteria pass; tests added; suites pass.
 - Triage suite: decisions right ≥ baseline, cost per error lower; demo 10/10 confirmed; numbers recorded here.
-- **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)): tick **F17** in the TODO, set
+- **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)): move **F17** to the CHANGELOG, set
   *Status* to done here and in the features table, update skill 10 in the goal map and its write-up.
 
 ---

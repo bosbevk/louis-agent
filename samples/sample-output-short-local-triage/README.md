@@ -40,7 +40,7 @@ Every triage followed the runbook's workflow: `CallLouisAgentFix` with the runbo
   twice.
 
 The three tries it took to get here (llama3.1, then qwen3's thinking variant) are in the
-[features README](../../docs/features/README.md#local-triage-2026-10-12).
+[features README](../../docs/BENCHMARKS.md#local-triage-2026-10-12).
 
 ## Run it yourself
 

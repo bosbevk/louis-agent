@@ -32,7 +32,8 @@ The goal and the skill map are in [GOAL.md](GOAL.md).
 2. If tools, their descriptions, `ToolMessage` texts or `Skills/*.md` changed, regenerate the golden files and review
    their diff (*Tests*).
 3. Update the feature or fix doc with what the step learned; on the last step, follow *Finishing a feature* or
-   *Finishing a fix* in their READMEs. The plan changes only under *Approved during the build*.
+   *Finishing a fix* in their READMEs. The plan changes only under *Approved during the build*. New text goes in the
+   doc of its type (*Rules that always apply*: one type per doc).
 4. Commit the step on its own, then explain it (rules 4 and 6) and stop.
 
 **Branches** are off `main` and carry the plan's id: `feature/F22-role-tools`, `fix/FX14-sub-session-prompt-budget`,
@@ -82,6 +83,8 @@ The design decisions every change keeps; the sections below have the details.
 - **stdout is a protocol** — the ACP and MCP servers speak on it, so logs go through `ILogger` to stderr
   (*Messages and logging*).
 - **Tests are platform-neutral** — the agent runs them on Linux in its containers (*Tests*).
+- **One type per doc** — every doc is a tutorial, how-to, reference, explanation or plan, and opens with what it answers;
+  new text goes in the doc of its type ([docs index: Writing docs](README.md#writing-docs-one-type-per-doc)).
 
 ## Quick start
 
@@ -276,7 +279,21 @@ Create `Skills/{name}-skills.md`. With `AGENT_FUNCTION=louis` every skill file i
 `AGENT_FUNCTION={name}`. Skill files come with the **skills** toolset: a session without it (Puls's chats, agents
 only) gets the router and its toolsets' guides, not the skill files; a toolset's guide is *Adding a toolset*. A
 built-in file the agent must not overwrite is listed in `SkillFiles.BuiltIn`. Procedures use `## Skill: Name` with an
-`Execution:` fence (bash, powershell or python); arguments arrive as `SKILL_ARG_*` environment variables.
+`Execution:` fence (bash, powershell or python); arguments arrive as `SKILL_ARG_*` environment variables, so quote
+them and never build commands from them:
+
+````markdown
+## Skill: MySkill
+
+- Description: What it does.
+- Parameters:
+  - `name` (string): What it is.
+- Execution:
+
+```bash
+echo "Hello, ${SKILL_ARG_name}"
+```
+````
 
 ### Adding a personality
 

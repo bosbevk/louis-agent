@@ -4,7 +4,7 @@
 
 ## Symptom
 
-In the short demo with triage on `llama3.1` in Ollama ([Local triage](../features/README.md#local-triage-2026-10-12)),
+In the short demo with triage on `llama3.1` in Ollama ([Local triage](../BENCHMARKS.md#local-triage-2026-10-12)),
 the orchestrator made five model requests and the ledger has four. The missing one is the first triage, cancelled by
 the HttpClient's 100-second timeout (`[ERROR] Triage of bca5719ad2e0 failed: The request was canceled due to the
 configured HttpClient.Timeout of 100 seconds elapsing.`), after Ollama had read 4,762 tokens of prompt and written 288.

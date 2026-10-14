@@ -5,7 +5,7 @@
 >
 > **Spec:** [Optimisation §D (bounded history), §E (summary model)](../specs/RESPONSE_OPTIMISATION.md)
 >
-> **In the TODO:** tick **F16 Summariser** under *Now* ([TODO](../../TODO.md)) · **Takes over:** F10-S3 (a cheaper
+> **In the TODO:** **F16 Summariser** under *Now* ([TODO](../../TODO.md)) · **Takes over:** F10-S3 (a cheaper
 > model for summaries)
 
 When a tool result passes 50,000 characters, `ToolCallGuards.SummariseToolResultAsync` (`Agent/`) sends up to 200,000 characters of
@@ -82,7 +82,7 @@ instructions, so that there is one summariser, one place to tune it, and one eva
 - Stories' criteria pass; tests added; suites pass.
 - The suite's baseline and the kept changes are recorded with pass rate and cost per summary; quality held.
 - The demo still confirms 10/10 fixes.
-- **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)): tick **F16** in the TODO, set
+- **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)): move **F16** to the CHANGELOG, set
   *Status* to done here and in the features table, and update skills 7 and 12 in the goal map.
 
 ---

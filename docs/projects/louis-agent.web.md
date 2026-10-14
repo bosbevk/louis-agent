@@ -41,9 +41,11 @@ flowchart TB
   restart a chat can be read but not continued.
 - **Shared state services** raise `Changed` events so panels, viewers and tab badges stay in step:
   `GitState` (working-tree status, stage / unstage / discard / commit) and `GitHistory` (branches and log; **merges and
-  deletes are queued and run in click order**, each row showing *Merging… / Queued / deleting…*).
+  deletes are queued and run in click order**, each row showing *Merging… / Queued / deleting…*). Each branch shows how
+  many commits it is ahead of the checked-out one.
+- **Nothing pushes.** Commits and merges stay local; the API's git endpoints never push, so pushing stays with you.
 - **Themes** are CSS files in `wwwroot/css/themes/` listed in `themes.json`; each sets the variables listed at the top of
-  `css/app.css`.
+  `css/app.css`. Two today: *Retro terminal* and *Paper (soft light)*.
 
 ## Structure
 
@@ -51,7 +53,7 @@ flowchart TB
 |---|---|
 | `Pages/ChatPage.razor` | The page: tabs, chat flow, stream handling, opening files / diffs / branches, merge and delete actions |
 | `Components/FileTree.razor`, `FileViewer.razor` | Workspace browser and file view (with "Ask agent to review") |
-| `Components/ChangesPanel.razor`, `DiffViewer.razor` | Changed files, selection, stage / unstage / discard / commit; one file's diff |
+| `Components/ChangesPanel.razor`, `DiffViewer.razor` | Changed files, selection, stage / unstage / discard / commit, *Review all* (asks the agent to review every uncommitted change); one file's diff |
 | `Components/BranchesPanel.razor`, `HistoryViewer.razor`, `PatchView.razor` | Branches to merge, merged branches, all commits; a branch's or commit's diff |
 | `Components/ThemeSwitcher.razor` | Theme selection |
 | `Services/AgentApiWorkspace.cs` | The workspace and git calls, on the shared `AgentApi` |

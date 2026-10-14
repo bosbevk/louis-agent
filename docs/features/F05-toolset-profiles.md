@@ -1,10 +1,10 @@
 # F5 · Toolset profiles: send only the tools a session needs
 
-> **Status:** built; short benchmark done, full run pending · **Milestone:** M2 · **Depends on:** F1
+> **Status:** done (2026-10-14) · **Milestone:** M2 · **Depends on:** F1
 >
 > **Spec:** [Optimisation §C](../specs/RESPONSE_OPTIMISATION.md)
 >
-> **In the TODO:** tick **F5 Toolset profiles** under *Now* ([TODO](../../TODO.md))
+> **Done:** 2026-10-14, in the [CHANGELOG](../../CHANGELOG.md)
 
 Every engine registers every toolset whose keys are set: in the demo, 108 tools (68,162 characters of definitions)
 including 35 Paymo and DevOps tools a code-fixing container never uses. Their guidance in the system prompt is sent too
@@ -133,16 +133,21 @@ with named toolsets, send it a task, and get the result back, so that tools are 
 - Stories' criteria pass; tests added; suites pass.
 - Benchmark: prefix ≥ 25% smaller, cache still hits, 10/10 fixes confirmed; numbers recorded. Delegation is kept as the
   default only for tasks where the ledger shows it is cheaper.
-- **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)): tick **F5** in the TODO, set *Status*
+- **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)): move **F5** to the CHANGELOG, set *Status*
   to done here and in the features table, and note it in the spec's implementation map.
 
 ## Left before done (2026-10-13)
+
+**Finished on 2026-10-14, decided with Louis:** the short run below stands in for the full benchmark, which was not
+run; the Puls delegation checks ([three runs per mode](../../samples/sample-output-puls-check-repeat/README.md)) ran
+sub-sessions end to end. The *Done when* line on delegation ("only where the ledger shows it is cheaper") continues as
+the TODO's *Relook at how often Puls delegates*. What follows is the list as it stood before.
 
 Built on `feature/F5-toolset-profiles` (steps 1–10 and 12; [plan](../plans/F05-toolset-profiles.md)); all suites pass.
 Left, because each needs a model and so spends money:
 - **The full benchmark** (step 11, S4 and S6): `samples/run-demo.ps1` (10 fixes) against F4's full run, to confirm 10/10.
   The **short run is done** (2026-10-13, [sample](../../samples/sample-output-short-f5/README.md),
-  [numbers](README.md#f5-benchmark-short-run-2026-10-13)): prefix −50% (~48.5k → ~24.4k tokens), louis-agent −31%, the
+  [numbers](../BENCHMARKS.md#f5-benchmark-short-run-2026-10-13)): prefix −50% (~48.5k → ~24.4k tokens), louis-agent −31%, the
   run −23% ($0.0488 → $0.0378), 4/4 fixes confirmed, the cache still hits.
 - **A sub-session end to end:** `--profile peers`, `AGENT_PEERS=coder=http://api-coder:8080`, one task delegated from
   the web app; check the child is deleted and its ledger records carry `parent`.

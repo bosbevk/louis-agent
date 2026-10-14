@@ -5,7 +5,7 @@ both agents, 2026-10-11, run id `run-20261011-183104`): the 13 production errors
 1 escalated**, the same as without caching, with 10 fix branches and nothing pushed. It cost **$0.1334, shown as
 R2.21**, against **$0.7157** for the same demo without caching ([sample-output/](../sample-output/README.md), the
 "before"). F4's benchmark (step 8); the comparison is in the
-[features README](../../docs/features/README.md#f4-benchmark-2026-10-11). Times are UTC.
+[features README](../../docs/BENCHMARKS.md#f4-benchmark-2026-10-11). Times are UTC.
 
 louis-agent cached its own turns (`LLM_CACHE` on, `LLM_CACHE_TTL` 5m, the defaults); the orchestrator's triage was
 not cached (`LLM_CACHE=off` in `docker-compose.demo.yml`: its caching is F17's), so its cost is unchanged.
