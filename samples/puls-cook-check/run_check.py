@@ -213,7 +213,7 @@ def run_once(out):
                      hosts=scored["hosts"], shop_hosts=scored["shop_hosts"], sources_local=scored["sources_local"],
                      follow_up=scored.get("follow_up"), rand_amounts=scored["rand_amounts"],
                      unconfirmed_marks=scored["unconfirmed_marks"], errors=len(scored["errors"]),
-                     seconds=sum(t["seconds"] for t in turns))
+                     seconds=round(sum(t["seconds"] for t in turns), 1))
         time.sleep(2)   # the ledger's last lines
         records = ledger(run)
         results[mode] = {"run": run, "toolsets": toolsets, "conversations": conversations,
