@@ -1,0 +1,57 @@
+# F30 · Local web peer: a free local model looks up prices for Puls
+
+> **Status:** planned (2026-10-15), on `feature/F30-local-web-peer` · **Milestone:** — · **Depends on:** F5
+> (sub-sessions), F21 (roles), F25 (the cook's price work and check), F29 (the role gate)
+>
+> **In the TODO:** **F30 Local web peer** under *Now*, beside F25 ([TODO](../../TODO.md)) · **Plan:**
+> [plans/F30](../plans/F30-local-web-peer.md)
+
+Puls reasons on Claude Haiku, and every page it reads for a price is paid for again on each later request. A local
+model on Ollama costs nothing per token. Louis's question (2026-10-15): can a local model do the searching and page
+reading for prices, and hand Puls a short report it can check, so an answer costs less with its quality held?
+
+## User stories
+
+**F30-S1 — A session names its model.** As an *operator*, I want a session to say which LLM profile it runs on, so
+one instance serves Haiku to the cook and a local model to a price lookup.
+- *Given* `LLM_SESSION_PROFILES=ollama-web` *when* a session opens with `"llm": "ollama-web"` *then* its requests go
+  to that profile's model, and the session keeps it.
+- *Given* a profile that isn't listed *then* it's refused with a 400 before any engine is built, naming the ones
+  there are.
+- *Given* no `llm` *then* the session runs on the instance's own model, as today.
+
+**F30-S2 — Puls hands price lookups to the local model.** As a *user*, I want a price question answered with each
+item's shop, rand price, date and link, looked up by the local model, so it costs less.
+- *Given* a price question *then* Puls starts one sub-session with `web`, `puls-prices` and `llm: ollama-web` for the
+  whole list.
+- *Given* a price the role couldn't find *then* it says `unknown`, never a guess.
+
+**F30-S3 — A price is used only when its quote checks out.** As a *user*, I want every price Puls shows to be on the
+page it links to, so a small model's mistake doesn't reach me.
+- *Given* the role's quote for a price *when* Puls calls `VerifyQuote(url, quote)` *then* it learns whether those words
+  are on the page, without a model call.
+- *Given* a quote that isn't on the page, or a page that can't be read *then* Puls shows that price as
+  `unconfirmed`, with why.
+
+**F30-S4 — Measured.** As *Louis*, I want five price questions run with Haiku alone and with the local peer, so I
+keep the peer only if real prices hold and the cost drops.
+
+## Design notes
+
+- **Per session, not per container.** `AgentEngineFactory` already keys an engine by toolsets, personality and
+  router; the profile joins the key, and `AgentHost.Build` makes one client per allowed profile through the same
+  `ILlmClientFactory` (the provider strategies stay in `LlmClientFactory`). A profile file is read into a dictionary
+  for `LlmOptions.FromEnvironment(getVariable)`, so the process environment never changes.
+- **Ollama runs natively on Windows** for the RX 7600 (Docker Desktop doesn't pass AMD GPUs to containers); the
+  containers reach it at `host.docker.internal:11434`.
+- **The quote check is code, not a model:** fetched through the SSRF-guarded path, compared with whitespace collapsed
+  and case folded.
+- **The cook stays on Haiku** and unchanged; F29's gate turns `puls-prices` on for the measurement.
+
+## Done when
+
+- A Puls chat sends a price question to `puls-prices` on `ollama-web`, and the ledger shows the qwen model at $0.
+- `VerifyQuote` is tested for present, absent, whitespace and case, unreadable and blocked pages.
+- The five-question run is in BENCHMARKS.md, and the decision to keep or drop the peer is written here.
+
+## What the build changed
