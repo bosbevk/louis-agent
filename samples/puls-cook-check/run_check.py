@@ -58,10 +58,7 @@ RAND = re.compile(r"\bR\s?\d[\d\s,.]*")
 UNCONFIRMED = re.compile(r"\b(unknown|onbekend|geskat|skatting|skattings|estimate[ds]?|nie bevestig|unverified|onbevestig|snippets?|soekresultate|soekindeks)\b", re.IGNORECASE)
 
 
-def progress(event, **fields):
-    """A structured progress line for whoever watches the run (the admin portal renders them as a table; a terminal
-    reads them as they are): '@' then one JSON object. The plain lines stay for people."""
-    print("@" + json.dumps({"event": event, **fields}, ensure_ascii=False), flush=True)
+progress = delegation_check.progress   # the same '@' + JSON progress lines, so the portal draws both checks the same way
 
 
 def converse(toolsets, run, task, location, messages, mode=""):
@@ -139,7 +136,7 @@ def hosts(specialist_calls):
     """The hosts the specialist read pages from (FetchUrl), in order, without repeats."""
     seen = []
     for c in specialist_calls:
-        if c["name"] == "FetchUrl" and (url := c["input"].get("url")):
+        if c["name"] in ("FetchUrl", "ReadRenderedPage") and (url := c["input"].get("url")):
             host = (urlparse(url).hostname or "").lower().removeprefix("www.")
             if host and host not in seen:
                 seen.append(host)

@@ -16,6 +16,7 @@ import json
 import os
 import sys
 import time
+import urllib.parse
 import urllib.request
 from datetime import datetime, timezone
 
@@ -35,9 +36,40 @@ QUESTIONS = [
     ("git-2", "Wie het die meeste aan louis-agent.core/Agent/AgentEngine.cs verander, en wanneer was die laaste verandering?"),
     ("numbers-2", "Hoeveel toetsmetodes ([Test] of [TestCase]) is daar onder tests/louis-agent.core.tests?"),
     ("chat-2", "Skryf 'n kort verjaardagboodskap vir my ma in Afrikaans."),
+    # The cook (F25; Louis: "add the cook delegation to it", two like every kind): a meal must go to puls-cook, not the
+    # researcher, in Afrikaans and in English.
+    ("cook", "Ek is in Stellenbosch. Wat kan ek vanaand vir vier mense kook? Gee die resep en 'n inkopielys met pryse."),
+    ("cook-2", "What should I cook tonight in Pretoria for two? I have about an hour. Give me the recipe and what it'll cost at the shops."),
 ]
 
+# The role each kind should go to when Puls delegates; None where Puls should answer itself.
+EXPECTED_ROLE = {
+    "web": "puls-researcher", "files": "puls-reader", "git": "puls-historian", "numbers": "puls-analyst",
+    "chat": None, "cook": "puls-cook",
+}
+
 TOKEN_KINDS = ["input", "cache_write", "cache_read", "output"]
+
+
+def progress(event, **fields):
+    """A structured progress line for whoever watches the run (the admin portal renders them as a tree; a terminal
+    reads them as they are): '@' then one JSON object. The plain lines stay for people."""
+    print("@" + json.dumps({"event": event, **fields}, ensure_ascii=False), flush=True)
+
+
+def expected_role(task):
+    return EXPECTED_ROLE.get(task.split("-")[0])
+
+
+def hosts(specialist_calls):
+    """The hosts the specialist read pages from, in order, without repeats."""
+    seen = []
+    for c in specialist_calls:
+        if c["name"] in ("FetchUrl", "ReadRenderedPage") and (url := c["input"].get("url")):
+            host = (urllib.parse.urlparse(url).hostname or "").lower().removeprefix("www.")
+            if host and host not in seen:
+                seen.append(host)
+    return seen
 
 
 def call(method, path, body=None, stream=False):
@@ -47,12 +79,15 @@ def call(method, path, body=None, stream=False):
     return response if stream else json.loads(response.read() or b"null")
 
 
-def ask(toolsets, run, task, question):
+def ask(toolsets, run, task, question, mode=""):
     """One question in a new session: the answer's text, the tools it called, its delegations (toolsets and role), the
-    specialists that answered, and an error if any."""
+    specialists that answered, and an error if any. Every stream event is forwarded as progress (the portal shows the
+    conversation unfolding), and the specialist's own tool calls are kept for the hosts it read."""
     session = call("POST", "sessions", {"toolsets": toolsets, "personality": "puls", "time_zone": "Africa/Johannesburg",
-                                        "task": task, "run": run})["session_id"]
-    text, tools, specialists, delegations, error = [], [], [], [], None
+                                        "task": task, "run": run, "location": "Stellenbosch, Wes-Kaap, Suid-Afrika"})["session_id"]
+    text, tools, specialists, delegations, specialist_calls, error = [], [], [], [], [], None
+    progress("question", mode=mode, task=task, turn=1, text=question)
+    started = time.time()
     try:
         with call("POST", f"sessions/{session}/messages", {"message": question}, stream=True) as reply:
             event = None
@@ -64,6 +99,7 @@ def ask(toolsets, run, task, question):
                 if not line.startswith("data: ") or not event:
                     continue
                 data = json.loads(line[6:])
+                progress("sse", mode=mode, task=task, turn=1, type=event, data=data)
                 delta = data.get("delta") or {}
                 if event == "content_block_start" and data.get("content_block", {}).get("type") == "tool_use":
                     block = data["content_block"]
@@ -75,12 +111,25 @@ def ask(toolsets, run, task, question):
                         delegations.append({"toolsets": arguments.get("toolsets"), "personality": arguments.get("personality")})
                 elif event == "content_block_delta" and delta.get("type") == "text_delta":
                     text.append(delta["text"])
-                elif event == "sub_session" and data.get("event") == "message_start":
-                    specialists.append(data.get("agent"))
+                elif event == "sub_session":
+                    inner = data.get("data") or {}
+                    if data.get("event") == "message_start":
+                        specialists.append(data.get("agent"))
+                    elif data.get("event") == "content_block_start" and inner.get("content_block", {}).get("type") == "tool_use":
+                        block = inner["content_block"]
+                        specialist_calls.append({"name": block["name"], "input": block.get("input") or {}})
                 elif event == "error":
                     error = json.dumps(data)
     finally:
         call("DELETE", f"sessions/{session}")
+    seconds = round(time.time() - started, 1)
+    role = delegations[0]["personality"] if delegations else None
+    expected = expected_role(task)
+    progress("turn", mode=mode, task=task, turn=1, question=question, role=role, continued=None, puls_calls=len(tools),
+             specialist_calls=len(specialist_calls), hosts=hosts(specialist_calls), seconds=seconds, error=error)
+    progress("conversation", mode=mode, task=task, role=role, routed_right=(role == expected) if mode == "delegated" else (role is None),
+             hosts=hosts(specialist_calls), shop_hosts=[], sources_local=False, follow_up=None, rand_amounts=0, unconfirmed_marks=0,
+             errors=1 if error else 0, seconds=seconds)
     return "".join(text).strip(), tools, specialists, delegations, error
 
 
@@ -168,15 +217,19 @@ def run_once(out):
         run = f"puls-check-{mode}-{stamp}"
         os.makedirs(os.path.join(out, mode), exist_ok=True)
         answers = []
+        progress("mode", mode=mode, toolsets=toolsets, conversations=len(QUESTIONS))
         for key, question in QUESTIONS:
             started = time.time()
-            text, tools, specialists, delegations, error = ask(toolsets, run, key, question)
+            text, tools, specialists, delegations, error = ask(toolsets, run, key, question, mode)
             answers.append({"task": key, "question": question, "answer": text, "tools": tools, "specialists": specialists,
                             "delegations": delegations, "error": error, "seconds": round(time.time() - started, 1)})
             print(f"{mode:9} {key:8} {answers[-1]['seconds']:6.1f}s  tools={tools}  delegations={delegations}", flush=True)
         time.sleep(2)   # the ledger's last lines
         records = ledger(run)
         results[mode] = {"run": run, "toolsets": toolsets, **summarise(records)}
+        totals = results[mode]["all"]
+        progress("mode_done", mode=mode, cost=totals["cost"], tokens=totals["tokens"], requests=totals["requests"],
+                 per_task={k: v["cost"] for k, v in results[mode]["per_task"].items()})
         with open(os.path.join(out, mode, "answers.json"), "w", encoding="utf-8") as file:
             json.dump(answers, file, ensure_ascii=False, indent=2)
         with open(os.path.join(out, mode, "usage.jsonl"), "w", encoding="utf-8") as file:
