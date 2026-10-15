@@ -187,9 +187,14 @@ else if (_data is { } data)
     {
         <section class="card-p">
             <div class="card-head"><strong>@open.Run.Folder</strong><span class="muted">@Cost(open.Run.Cost)</span></div>
+            @if (open.Modes.Count > 0)
+            {
+                @* The drill-down first: modes → conversations → turns → requests, from the run's own ledger rows. *@
+                <RunExplorer Modes="open.Modes" Currency="Currency.Current" />
+            }
             @if (open.Summary is { } summary)
             {
-                <div class="markdown admin-markdown">@Markdown.ToHtml(summary)</div>
+                <details class="admin-details"><summary>Die verslag (tabel)</summary><div class="markdown admin-markdown">@Markdown.ToHtml(summary)</div></details>
             }
             @if (open.Readme is { } readme)
             {
@@ -240,7 +245,7 @@ else if (_data is { } data)
     private sealed record Run(string Folder, string? Check, DateTimeOffset SavedAt, int Repeats, decimal? Cost);
     private sealed record Page(List<Check> Checks, List<Run> Runs);
     private sealed record Transcript(string Name, string Markdown);
-    private sealed record Opened(Run Run, string? Summary, string? Readme, string? Results, List<Transcript> Transcripts);
+    private sealed record Opened(Run Run, string? Summary, string? Readme, string? Results, List<Transcript> Transcripts, List<RunExplorer.ModeData> Modes);
     private sealed record LiveRun(string Id, string Check, string Folder, int Repeat, string Status, int? ExitCode, DateTimeOffset StartedAt);
 
     private Page? _data;
@@ -467,7 +472,10 @@ else if (_data is { } data)
             var transcripts = json.TryGetProperty("transcripts", out var ts) && ts.ValueKind == JsonValueKind.Array
                 ? ts.EnumerateArray().Select(t => new Transcript(t.GetProperty("name").GetString()!, t.GetProperty("markdown").GetString() ?? "")).ToList()
                 : [];
-            _open = new Opened(ReadRun(json.GetProperty("run")), Text(json, "summary"), Text(json, "readme"), Text(json, "results"), transcripts);
+            var modes = json.TryGetProperty("modes", out var ms) && ms.ValueKind == JsonValueKind.Array
+                ? ms.EnumerateArray().Select(m => new RunExplorer.ModeData(m.GetProperty("name").GetString()!, m.GetProperty("usage").GetString() ?? "", m.GetProperty("answers").GetString() ?? "[]")).ToList()
+                : [];
+            _open = new Opened(ReadRun(json.GetProperty("run")), Text(json, "summary"), Text(json, "readme"), Text(json, "results"), transcripts, modes);
         }
         catch (AgentApiException ex)
         {

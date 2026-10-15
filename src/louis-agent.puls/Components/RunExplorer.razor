@@ -1,0 +1,247 @@
+@* F27 step 8: a finished run's data as a drill-down (Louis: "we need to visualise this; drill down to the lowest level
+   of all data"). Four levels, each a list of rows with a bar for its share of the parent's cost and a stacked bar of
+   its tokens by kind: the modes; a mode's conversations; a conversation's turns, each split into Puls's own requests
+   and the specialist's; a turn's requests, one per model call from the ledger, down to the request's full record.
+   The breadcrumb climbs back up. Built from the run's saved usage.jsonl and answers.json, nothing else. *@
+@using System.Text.Json
+@using LouisAgent.Web.Shared
+@using LouisAgent.Web.Shared.Services
+
+<div class="explorer">
+    <nav class="crumbs" aria-label="Pad">
+        <button type="button" class="crumb @(_mode is null ? "here" : "")" @onclick="() => Go(0)">Lopie</button>
+        @if (_mode is { } cm) { <span class="crumb-sep">›</span><button type="button" class="crumb @(_task is null ? "here" : "")" @onclick="() => Go(1)">@cm.Name</button> }
+        @if (_task is { } ct) { <span class="crumb-sep">›</span><button type="button" class="crumb @(_turn is null ? "here" : "")" @onclick="() => Go(2)"><code>@ct.Task</code></button> }
+        @if (_turn is { } ctu) { <span class="crumb-sep">›</span><button type="button" class="crumb @(_request is null ? "here" : "")" @onclick="() => Go(3)">Beurt @ctu.N</button> }
+        @if (_request is { } rq) { <span class="crumb-sep">›</span><span class="crumb here">Versoek @(rq.Round)</span> }
+    </nav>
+
+    @if (_mode is null)
+    {
+        <div class="legend"><span class="sw in"></span>invoer <span class="sw cw"></span>kas geskryf <span class="sw cr"></span>kas gelees <span class="sw out"></span>uitvoer</div>
+        @foreach (var m in _modes)
+        {
+            @Row(m.Name, m.Rows, _modes.Max(x => x.Cost), () => { _mode = m; }, $"{m.Rows.Count} versoeke")
+        }
+    }
+    else if (_task is null)
+    {
+        var tasks = _mode.Tasks;
+        <div class="explorer-head">
+            <strong>@_mode.Name</strong><span class="muted">@_mode.Rows.Count versoeke · @UsageFormat.Tokens(_mode.Tokens) tokens</span>
+            <span class="explorer-split"><span class="chip">Puls self @Money(_mode.Rows.Where(r => !r.Specialist).Sum(r => r.Cost))</span><span class="chip">spesialiste @Money(_mode.Rows.Where(r => r.Specialist).Sum(r => r.Cost))</span></span>
+        </div>
+        @foreach (var t in tasks)
+        {
+            @Row(t.Task, t.Rows, tasks.Max(x => x.Cost), () => { _task = t; }, $"{t.Turns.Count} beurte · {t.Rows.Count} versoeke")
+        }
+    }
+    else if (_turn is null)
+    {
+        @foreach (var tu in _task.Turns)
+        {
+            @Row($"Beurt {tu.N}", tu.Rows, _task.Turns.Max(x => x.Cost), () => { _turn = tu; },
+                $"Puls {tu.Rows.Count(r => !r.Specialist)} · spesialis {tu.Rows.Count(r => r.Specialist)} versoeke", tu.Question)
+        }
+    }
+    else if (_request is null)
+    {
+        <div class="explorer-turn">
+            @if (_turn.Question is { Length: > 0 } q) { <div class="explorer-q"><span class="muted">Vraag</span> @q</div> }
+            <div class="explorer-cols">
+                <section class="explorer-col">
+                    <div class="work-label">Puls self</div>
+                    @foreach (var r in _turn.Rows.Where(r => !r.Specialist)) { @RequestRow(r, _turn.Rows.Max(x => x.Cost)) }
+                    @if (!_turn.Rows.Any(r => !r.Specialist)) { <p class="muted">—</p> }
+                </section>
+                <section class="explorer-col">
+                    <div class="work-label">Spesialis</div>
+                    @foreach (var r in _turn.Rows.Where(r => r.Specialist)) { @RequestRow(r, _turn.Rows.Max(x => x.Cost)) }
+                    @if (!_turn.Rows.Any(r => r.Specialist)) { <p class="muted">—</p> }
+                </section>
+            </div>
+            @if (_turn.Thinking is { Length: > 0 } th) { <details class="admin-details"><summary>Puls se denke</summary><blockquote class="explorer-think">@th</blockquote></details> }
+            @if (_turn.SpecialistThinking is { Length: > 0 } sth) { <details class="admin-details"><summary>Spesialis se denke</summary><blockquote class="explorer-think">@sth</blockquote></details> }
+            @if (_turn.Calls is { Count: > 0 } calls) { <details class="admin-details"><summary>Spesialis se oproepe (@calls.Count)</summary><ol class="explorer-calls">@foreach (var c in calls) { <li><code>@c</code></li> }</ol></details> }
+            @if (_turn.Answer is { Length: > 0 } a) { <details class="admin-details" open><summary>Antwoord</summary><div class="markdown admin-markdown">@Markdown.ToHtml(a)</div></details> }
+        </div>
+    }
+    else
+    {
+        <div class="explorer-request">
+            <div class="explorer-head"><strong>Versoek @_request.Round</strong><span class="muted">@_request.Model · @_request.Purpose · @_request.Stop · @_request.DurationMs ms</span><span class="chip">@Money(_request.Cost)</span></div>
+            @TokenBar(_request)
+            <dl class="explorer-fields">
+                <dt>invoer</dt><dd>@_request.Input</dd><dt>kas geskryf</dt><dd>@_request.CacheWrite</dd><dt>kas gelees</dt><dd>@_request.CacheRead</dd><dt>uitvoer</dt><dd>@_request.Output</dd>
+                <dt>tyd</dt><dd>@_request.At.ToLocalTime().ToString("HH:mm:ss.fff")</dd><dt>sessie</dt><dd><code>@_request.Session</code></dd>
+                @if (_request.Parent is { } p) { <dt>ouer</dt><dd><code>@p</code></dd> }
+            </dl>
+            <details class="admin-details"><summary>Die rekord (JSON)</summary><pre class="admin-pre">@_request.Json</pre></details>
+        </div>
+    }
+</div>
+
+@code {
+    /// <summary>One mode of the run: its name (folder), its ledger rows (JSON lines) and its answers (JSON), as saved.</summary>
+    public sealed record ModeData(string Name, string Usage, string Answers);
+
+    [Parameter, EditorRequired] public IReadOnlyList<ModeData> Modes { get; set; } = [];
+    [Parameter] public CurrencyChoice? Currency { get; set; }
+
+    private sealed record Request(DateTimeOffset At, int Round, string Purpose, string Session, int? Turn, string? Task, string Model,
+        long Input, long CacheWrite, long CacheRead, long Output, long DurationMs, string? Stop, decimal Cost, string? Parent, string Json)
+    {
+        public bool Specialist => Parent is not null;
+        public long Tokens => Input + CacheWrite + CacheRead + Output;
+    }
+
+    private sealed class TurnNode
+    {
+        public int N; public List<Request> Rows = []; public string? Question, Answer, Thinking, SpecialistThinking; public List<string>? Calls;
+        public decimal Cost => Rows.Sum(r => r.Cost);
+    }
+    private sealed class TaskNode { public string Task = ""; public List<TurnNode> Turns = []; public List<Request> Rows => Turns.SelectMany(t => t.Rows).ToList(); public decimal Cost => Rows.Sum(r => r.Cost); }
+    private sealed class ModeNode
+    {
+        public string Name = ""; public List<Request> Rows = []; public List<TaskNode> Tasks = [];
+        public decimal Cost => Rows.Sum(r => r.Cost); public long Tokens => Rows.Sum(r => r.Tokens);
+    }
+
+    private List<ModeNode> _modes = [];
+    private ModeNode? _mode; private TaskNode? _task; private TurnNode? _turn; private Request? _request;
+
+    protected override void OnParametersSet()
+    {
+        _modes = Modes.Select(Build).ToList();
+        _mode = null; _task = null; _turn = null; _request = null;
+    }
+
+    private void Go(int level) { if (level <= 0) _mode = null; if (level <= 1) _task = null; if (level <= 2) _turn = null; if (level <= 3) _request = null; }
+
+    /// <summary>The mode's tree: rows by the conversation (own rows carry the task; a specialist's row names its parent session and turn), then by turn.</summary>
+    private static ModeNode Build(ModeData data)
+    {
+        var rows = new List<Request>();
+        foreach (string line in data.Usage.Split('\n', StringSplitOptions.RemoveEmptyEntries))
+        {
+            try { if (Parse(line) is { } r) rows.Add(r); } catch (JsonException) { }
+        }
+        // A sub_session row is Puls's roll-up of a specialist's reply: the same requests as the specialist's own rows.
+        rows = rows.Where(r => r.Purpose != "sub_session").OrderBy(r => r.At).ToList();
+        var sessionTask = rows.Where(r => r.Parent is null && r.Task is not null).GroupBy(r => r.Session).ToDictionary(g => g.Key, g => g.First().Task!);
+        string? TaskOf(Request r) => r.Task ?? (r.Parent is { } p && sessionTask.TryGetValue(p.Split('#')[0], out var t) ? t : null);
+        int TurnOf(Request r) => r.Parent is { } p && p.Contains('#') && int.TryParse(p.Split('#')[1], out int n) ? n : r.Turn ?? 1;
+
+        var mode = new ModeNode { Name = data.Name, Rows = rows };
+        foreach (var byTask in rows.GroupBy(TaskOf))
+        {
+            var task = new TaskNode { Task = byTask.Key ?? "?" };
+            foreach (var byTurn in byTask.GroupBy(TurnOf).OrderBy(g => g.Key))
+                task.Turns.Add(new TurnNode { N = byTurn.Key, Rows = byTurn.ToList() });
+            mode.Tasks.Add(task);
+        }
+        Annotate(mode, data.Answers);
+        return mode;
+    }
+
+    /// <summary>The questions, answers, thinking and calls from answers.json: the cook check's shape (turns) or the delegation check's (one per task).</summary>
+    private static void Annotate(ModeNode mode, string answers)
+    {
+        try
+        {
+            using var doc = JsonDocument.Parse(answers);
+            foreach (var a in doc.RootElement.EnumerateArray())
+            {
+                string? key = a.TryGetProperty("task", out var t) ? t.GetString() : null;
+                var task = mode.Tasks.FirstOrDefault(x => x.Task == key);
+                if (task is null) continue;
+                if (a.TryGetProperty("turns", out var turns) && turns.ValueKind == JsonValueKind.Array)
+                {
+                    int n = 0;
+                    foreach (var turn in turns.EnumerateArray())
+                    {
+                        n++;
+                        var node = task.Turns.FirstOrDefault(x => x.N == n);
+                        if (node is null) task.Turns.Add(node = new TurnNode { N = n });
+                        Fill(node, turn);
+                    }
+                }
+                else
+                {
+                    var node = task.Turns.FirstOrDefault() ?? new TurnNode { N = 1 };
+                    if (!task.Turns.Contains(node)) task.Turns.Add(node);
+                    Fill(node, a);
+                }
+            }
+        }
+        catch (JsonException) { }
+    }
+
+    private static void Fill(TurnNode node, JsonElement turn)
+    {
+        node.Question = S(turn, "question"); node.Answer = S(turn, "answer"); node.Thinking = S(turn, "thinking"); node.SpecialistThinking = S(turn, "specialist_thinking");
+        if (turn.TryGetProperty("specialist_calls", out var calls) && calls.ValueKind == JsonValueKind.Array)
+            node.Calls = calls.EnumerateArray().Select(c => $"{S(c, "name")}({(c.TryGetProperty("input", out var i) ? string.Join(", ", i.EnumerateObject().Select(p => p.Value.ValueKind == JsonValueKind.String ? p.Value.GetString() : p.Value.GetRawText())) : "")})").ToList();
+    }
+
+    private static string? S(JsonElement e, string name) => e.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.String ? v.GetString() : null;
+    private static long L(JsonElement e, string name) => e.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.Number ? v.GetInt64() : 0;
+
+    private static Request? Parse(string line)
+    {
+        using var doc = JsonDocument.Parse(line);
+        var r = doc.RootElement;
+        if (r.ValueKind != JsonValueKind.Object) return null;
+        var tokens = r.TryGetProperty("tokens", out var tk) && tk.ValueKind == JsonValueKind.Object ? tk : default;
+        decimal cost = r.TryGetProperty("cost", out var c) && c.ValueKind == JsonValueKind.Object && c.TryGetProperty("amount", out var am) && am.ValueKind == JsonValueKind.Number ? am.GetDecimal() : 0m;
+        return new Request(
+            r.TryGetProperty("at", out var at) && at.TryGetDateTimeOffset(out var when) ? when : DateTimeOffset.MinValue,
+            (int)L(r, "round"), S(r, "purpose") ?? "", S(r, "session") ?? "", r.TryGetProperty("turn", out var tn) && tn.ValueKind == JsonValueKind.Number ? tn.GetInt32() : null,
+            S(r, "task"), S(r, "model") ?? "",
+            tokens.ValueKind == JsonValueKind.Object ? L(tokens, "input") : 0, tokens.ValueKind == JsonValueKind.Object ? L(tokens, "cache_write") : 0,
+            tokens.ValueKind == JsonValueKind.Object ? L(tokens, "cache_read") : 0, tokens.ValueKind == JsonValueKind.Object ? L(tokens, "output") : 0,
+            L(r, "duration_ms"), S(r, "stop"), cost, S(r, "parent"), JsonSerializer.Serialize(r, new JsonSerializerOptions { WriteIndented = true }));
+    }
+
+    private string Money(decimal usd) => UsageFormat.Money(usd, "USD", Currency);
+
+    /// <summary>A drill-down row: its name, its cost as a bar against the biggest sibling, its tokens stacked by kind.</summary>
+    private RenderFragment Row(string name, List<Request> rows, decimal biggest, Action open, string meta, string? sub = null) => __builder =>
+    {
+        decimal cost = rows.Sum(r => r.Cost);
+        <button type="button" class="xrow" @onclick="() => { open(); StateHasChanged(); }">
+            <span class="xrow-name"><strong>@name</strong>@if (sub is { Length: > 0 }) { <small class="xrow-sub">@sub</small> }</span>
+            <span class="xrow-bar"><span class="xrow-fill" style="width: @Pct(cost, biggest)%"></span></span>
+            <span class="xrow-cost">@Money(cost)</span>
+            <span class="xrow-tokens">@TokenBarFor(rows)</span>
+            <span class="xrow-meta">@meta</span>
+            <span class="chevron" aria-hidden="true"></span>
+        </button>
+    };
+
+    private RenderFragment RequestRow(Request r, decimal biggest) => __builder =>
+    {
+        <button type="button" class="xrow xrow-request" @onclick="() => { _request = r; StateHasChanged(); }">
+            <span class="xrow-name"><strong>Versoek @r.Round</strong><small class="xrow-sub">@r.Model · @r.Stop · @r.DurationMs ms</small></span>
+            <span class="xrow-bar"><span class="xrow-fill" style="width: @Pct(r.Cost, biggest)%"></span></span>
+            <span class="xrow-cost">@Money(r.Cost)</span>
+            <span class="xrow-tokens">@TokenBar(r)</span>
+            <span class="chevron" aria-hidden="true"></span>
+        </button>
+    };
+
+    private static RenderFragment TokenBarFor(List<Request> rows) => Stacked(rows.Sum(r => r.Input), rows.Sum(r => r.CacheWrite), rows.Sum(r => r.CacheRead), rows.Sum(r => r.Output));
+    private static RenderFragment TokenBar(Request r) => Stacked(r.Input, r.CacheWrite, r.CacheRead, r.Output);
+
+    private static RenderFragment Stacked(long input, long cacheWrite, long cacheRead, long output) => __builder =>
+    {
+        long total = Math.Max(1, input + cacheWrite + cacheRead + output);
+        <span class="tokbar" title="@($"invoer {input:N0} · kas geskryf {cacheWrite:N0} · kas gelees {cacheRead:N0} · uitvoer {output:N0}")">
+            <span class="in" style="width: @Pct(input, total)%"></span><span class="cw" style="width: @Pct(cacheWrite, total)%"></span><span class="cr" style="width: @Pct(cacheRead, total)%"></span><span class="out" style="width: @Pct(output, total)%"></span>
+        </span>
+        <small class="tokbar-n">@UsageFormat.Tokens(total)</small>
+    };
+
+    private static string Pct(decimal part, decimal whole) => whole <= 0 ? "0" : Math.Round(part / whole * 100, 1).ToString(System.Globalization.CultureInfo.InvariantCulture);
+    private static string Pct(long part, long whole) => Pct((decimal)part, whole);
+}

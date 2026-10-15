@@ -43,8 +43,19 @@ public sealed partial class BenchmarkCatalog(string samplesRoot, IReadOnlyList<B
             Summary: ReadIfExists(path, "summary.md") ?? ReadIfExists(path, "results.md"),
             Readme: ReadIfExists(path, "README.md"),
             Results: ReadIfExists(path, "summary.json") ?? ReadIfExists(path, "results.json"),
-            Transcripts: Transcripts(path));
+            Transcripts: Transcripts(path),
+            Modes: Modes(path));
     }
+
+    /// <summary>Every mode folder with a ledger, in order: its <c>usage.jsonl</c> and <c>answers.json</c> as saved (empty when missing).</summary>
+    private static List<RunMode> Modes(string run) =>
+        Directory.EnumerateFiles(run, "usage.jsonl", SearchOption.AllDirectories)
+            .Select(file => new RunMode(
+                Path.GetRelativePath(run, Path.GetDirectoryName(file)!).Replace('\\', '/'),
+                File.ReadAllText(file),
+                ReadIfExists(Path.GetDirectoryName(file)!, "answers.json") ?? "[]"))
+            .OrderBy(m => m.Name, StringComparer.Ordinal)
+            .ToList();
 
     /// <summary>Every mode's transcript, in order: <c>{mode}/transcript.md</c>, or <c>run-N/{mode}/transcript.md</c> for a repeated run.</summary>
     private static List<RunTranscript> Transcripts(string run) =>

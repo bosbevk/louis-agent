@@ -82,6 +82,14 @@ public class BenchmarkCatalogTests
         Assert.That(run.Readme, Does.StartWith("# Sample output"));
         Assert.That(run.Transcripts.Select(t => t.Name), Is.EqualTo(new[] { "run-1/delegated", "run-1/puls-web" }));
         Assert.That(run.Transcripts[0].Markdown, Does.Contain("Wat kan ek kook?"));
+
+        // The drill-down (Louis: "drill down to the lowest level of all data"): each mode's ledger rows and answers, as saved.
+        Save("sample-output-puls-cook", "run-1/delegated/usage.jsonl", "{\"round\":1,\"task\":\"cook-af\"}\n{\"round\":2,\"task\":\"cook-af\"}\n");
+        Save("sample-output-puls-cook", "run-1/delegated/answers.json", """[{"task":"cook-af","turns":[]}]""");
+        run = new BenchmarkCatalog(_samples).Read("sample-output-puls-cook");
+        Assert.That(run!.Modes.Select(m => m.Name), Is.EqualTo(new[] { "run-1/delegated" }), "a mode folder with a ledger");
+        Assert.That(run.Modes[0].Usage, Does.Contain("\"round\":2"));
+        Assert.That(run.Modes[0].Answers, Does.StartWith("[{\"task\":\"cook-af\""));
         Assert.That(new BenchmarkCatalog(_samples).Read("../secrets"), Is.Null, "never outside samples/");
         Assert.That(new BenchmarkCatalog(_samples).Read("nope"), Is.Null);
     }

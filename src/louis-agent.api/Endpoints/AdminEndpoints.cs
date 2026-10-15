@@ -61,6 +61,7 @@ internal static class AdminEndpoints
             {
                 run = Row(run.Run), summary = run.Summary, readme = run.Readme, results = run.Results,
                 transcripts = run.Transcripts.Select(t => new { name = t.Name, markdown = t.Markdown }),
+                modes = run.Modes.Select(m => new { name = m.Name, usage = m.Usage, answers = m.Answers }),
             })
             : ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error", MessageText.Format(ApiUserText.NoRun, new { Folder = folder })));
     }
