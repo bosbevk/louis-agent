@@ -60,7 +60,11 @@ measured.
       *Replaces:* "Consider context editing and compaction"; first slice of the
       [session architecture](docs/specs/SESSION_ARCHITECTURE.md)'s context pipeline
 - [ ] [F10 Route settings](docs/features/F10-route-settings.md) — thinking and tool rounds per route.
-      *Removes the limitation:* 10 tool rounds per message
+      *Removes the limitation:* 10 tool rounds per message. *Takes over* Louis's "can we make it something we can pass
+      per session?" (2026-10-15): a session's `max_tool_rounds` when it opens (`POST /sessions`, `StartSubSession`), a
+      default per role in `roles.json`, enforced by a guard beside FX14's `KeepWithinPromptBudget` (`ToolMode.None` at
+      the limit, so the history stays append-only) with `MaximumIterationsPerRequest` as a ceiling. Not urgent for
+      the cook: it never reached 10 rounds in 42 measured turns (*Next up: a faster, cheaper cook*)
 - [ ] [F17 Orchestrator agent](docs/features/F17-orchestrator-agent.md) — classification by a model, the known paths as
       code, the agent for the exceptions; its own settings and cache policy; measured against today's orchestrator.
       *From the local triage runs:* `EscalateToHuman` idempotent per error, and contradicting decisions in one reply
@@ -196,8 +200,15 @@ Design: [docs/specs/SESSION_ARCHITECTURE.md](docs/specs/SESSION_ARCHITECTURE.md)
 - [ ] **Next up: a faster, cheaper cook** (to plan; Louis, 2026-10-15: "can we have a subsession allow him to spawn
       web sessions for each task"). The cook does every search and fetch itself, one at a time, and every page it reads
       stays in its context and is paid for again on each later request (400–800k tokens and up to 183 s a meal turn).
-      First measure where its time and tokens go (`run_check.py --personalities` and the ledger per request), then
-      pick one of two:
+      - [x] **Where the time goes, measured** (the ledger, 42 first cook turns, 2026-10-15): 5 rounds on average, 9 at
+            most, every turn ended by the cook itself (`stop`), never at the 10-round limit; the largest request 31k
+            tokens on average (66k at most, under FX14's 80k). Model time 49 s a turn on average (100 s at most), 9.7 s
+            a request; the cook writes ~9,100 output tokens a turn, and the final report alone (~4,850) takes ~24 s.
+            The rest of a turn's wall time is tool time and Puls's own requests
+      - [ ] **First: less output.** The report is half the model time: a shorter report shape, a thinking budget for
+            the cook, or fewer columns; measured with `run_check.py --personalities` (seconds, output tokens, priced
+            ingredients must not drop)
+      - [ ] Then, for the tool time, one of two:
       - [ ] **A fan-out tool, no extra model:** `PriceAtShops(ingredients, shops)` runs the shops' searches in parallel
             (`Task.WhenAll`, Tavily with `site:`) and returns one compact table (price, link, source per cell); testable
             with `StubHandler`, no architecture change
@@ -205,18 +216,6 @@ Design: [docs/specs/SESSION_ARCHITECTURE.md](docs/specs/SESSION_ARCHITECTURE.md)
             parallel, each returning a small table. Needs: `agents` at depth 1 for the cook only (in code), a peer for
             `puls_agent`, `AllowConcurrentInvocation` with thread-safe guards, a per-depth limit instead of
             `MaxPerTurn = 3`, the ledger roll-up through two levels, the Werk card nested
-- [ ] **F30 Tool rounds per session** (to plan; Louis, 2026-10-15: "that 10 tool limit can we make it something we can
-      pass per session?"). Today `MaximumIterationsPerRequest = 10` is set once per engine (`AgentEngine.cs`), shared by
-      every session with that toolset list. First check the saved cook runs' ledgers: does the cook stop at exactly 10
-      rounds (then more rounds should price more ingredients) or earlier (then the limit isn't the problem)? Then:
-      - [ ] A session names `max_tool_rounds` when it opens (`POST /sessions`, `StartSubSession`), kept like its
-            toolsets; on the turn's `UsageScope`; outside 1–40 a 400 before anything is built
-      - [ ] A guard in `ToolCallGuards`, beside FX14's `KeepWithinPromptBudget`: at the session's limit the next request
-            keeps its tools with `ToolMode.None`, so the model answers and the history stays append-only (ADR 0008);
-            `MaximumIterationsPerRequest` becomes a ceiling (40), the default stays 10
-      - [ ] A default per role in `roles.json` (the cook 20, the rest 10), the session's value overriding it
-      - [ ] Measured: the cook at 10 rounds against 20 (priced ingredients, seconds, cost: every round re-sends the
-            whole context, so cost grows faster than the rounds)
 - [ ] [F25 Local cook](docs/features/F25-local-cook.md) — Puls's first local specialist: a South African meal, the recipe and a shopping list priced in rand at the shops near the user; the routing and the sources measured ([plan](docs/plans/F25-local-cook.md), [the run](samples/sample-output-puls-cook/README.md)). The first of the *Local tools* above. Built; open:
       - [x] **Tavily, measured** ([one run from the portal](samples/sample-output-cook-20261015-130521/README.md), 2026-10-15): no search refused, prices read from product pages, unconfirmed marks on the meals down from 20 to 2 and 0
       - [ ] **The cook's unconfirmed prices:** it writes *geskat* (an estimate) where its role says *unknown*; decide which, then measure again
