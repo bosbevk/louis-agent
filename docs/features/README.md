@@ -42,6 +42,7 @@ feature replaces older backlog wording, that wording no longer appears anywhere 
 | [F26](F26-specialist-follow-up.md) | Specialist follow-up: a sub-session stays open for its chat, and Puls continues it by handle instead of starting a specialist cold | built | — | — | F5, F21, F22 | — |
 | [F27](F27-admin-portal.md) | Admin portal: an *Admin* menu into a portal of our own (sidebar and cards on Puls's variables) whose first page runs and reads the benchmarks; built to take more pages | built | — | — | F20, F25 | — |
 | [F28](F28-team-talk.md) | Team talk: Puls briefs its specialist in a fixed note (what the user wants, how they sound, where they are), a per-chat switch for the mood, and the card shows the exchange as a thread | planned | — | — | F5, F21, F25, F26, F27 | — |
+| [F29](F29-validated-specialists.md) | Validated specialists: `PERSONALITIES_ENABLED` gates which roles an instance may use; Puls boots with `agents` and `web`, answers the web itself and delegates only cooking until each other role has passed its check | planned | — | — | F5, F21, F25, F27 | — |
 
 ## Milestones
 
