@@ -72,7 +72,7 @@ public class PersonalitiesTests
     {
         // F21 step 4: embedded, so a container without Skills/ still has them; a file on disk overrides.
         Assert.That(Personalities.Available(skillsDirectory: null), Is.SupersetOf(new[]
-            { "puls", "puls-researcher", "puls-reader", "puls-historian", "puls-analyst", "puls-specialist" }));
+            { "puls", "puls-researcher", "puls-reader", "puls-historian", "puls-analyst", "puls-specialist", "puls-cook" }));
         Assert.That(AgentHost.LoadSkills(new AgentOptions(), [], "puls").Documentation, Does.Contain("# Puls - Persoonlikheid"));
     }
 
@@ -106,12 +106,22 @@ public class PersonalitiesTests
     [TestCase("puls-historian")]
     [TestCase("puls-analyst")]
     [TestCase("puls-specialist")]
+    [TestCase("puls-cook")]
     public void EverySpecialist_IsToldWhatItsToolCallsCost(string role)
     {
         // FX13: the reader that read 74 files never saw the router; the rule has to be in the role it runs with.
         string text = SkillFileSource.ReadEmbedded($"{Personalities.Folder}/{role}.md")!;
 
         Assert.That(text, Does.Contain("Use the fewest tool calls that answer the task").And.Contain("paid for again"));
+    }
+
+    [Test]
+    public void TheCook_AnswersForWhereTheUserIs_AndNeverInventsAPrice()
+    {
+        // The local-specialist idea: one question gets a South African recipe, where to buy it and what it costs.
+        string cook = SkillFileSource.ReadEmbedded(Personalities.Folder + "/puls-cook.md")!;
+
+        Assert.That(cook, Does.Contain("Where the user is").And.Contain("Never invent a price"));
     }
 
     [Test]
