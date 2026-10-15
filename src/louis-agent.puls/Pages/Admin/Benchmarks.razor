@@ -118,6 +118,7 @@ else if (_data is { } data)
                                 <summary>
                                     <span class="chevron" aria-hidden="true"></span>
                                     <code>@c.Task</code>
+                                    @if (c.Turns.Count > 0) { <span class="tree-question">@c.Turns[0].Turn.UserText</span> }
                                     <span class="tree-chips">
                                         @if (c.Summary is { } s)
                                         {

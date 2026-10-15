@@ -45,8 +45,8 @@
             <div class="xbars">
                 @foreach (string task in tasks)
                 {
-                    <div class="xbar-row" style="--i: @(row++)">
-                        <span class="xbar-label"><code>@task</code></span>
+                    <div class="xbar-row" style="--i: @(row++)" title="@Question(task)">
+                        <span class="xbar-label"><code>@task</code><small>@Blurb(Question(task))</small></span>
                         <span class="xbar-group">
                             @foreach (var (m, i) in _modes.Select((m, i) => (m, i)))
                             {
@@ -89,7 +89,7 @@
                 {
                     decimal own = t.Rows.Where(r => !r.Specialist).Sum(r => r.Cost), spec = t.Rows.Where(r => r.Specialist).Sum(r => r.Cost);
                     <div class="xbar-row" style="--i: @(row1++)">
-                        <span class="xbar-label"><code>@t.Task</code><small>@(string.Join(" / ", t.Turns.Select(x => x.Specialist).Distinct())) · @t.Turns.Count beurte · @t.Rows.Count versoeke</small></span>
+                        <span class="xbar-label" title="@Question(t.Task)"><code>@t.Task</code><small>@Blurb(Question(t.Task))</small><small>@(string.Join(" / ", t.Turns.Select(x => x.Specialist).Distinct())) · @t.Turns.Count beurte · @t.Rows.Count versoeke</small></span>
                         <button type="button" class="xbar stacked" title="@($"{t.Task}: Puls {Money(own)}, spesialis {Money(spec)}")" @onclick="() => Open(() => _task = t)">
                             <span class="xbar-fill" style="width: @Pct(own, topTask)%; background: @Own"></span><span class="xbar-fill" style="width: @Pct(spec, topTask)%; background: @Spec"></span>
                             <span class="xbar-value">@Money(t.Cost)</span>
@@ -396,6 +396,12 @@
     }
 
     private string Money(decimal usd) => UsageFormat.Money(usd, "USD", Currency);
+
+    /// <summary>The conversation's first question, from whichever mode has it (the names are the check's; the question says what was asked).</summary>
+    private string? Question(string task) =>
+        _modes.SelectMany(m => m.Tasks).Where(t => t.Task == task).SelectMany(t => t.Turns).Select(t => t.Question).FirstOrDefault(q => !string.IsNullOrEmpty(q));
+
+    private static string Blurb(string? question) => string.IsNullOrEmpty(question) ? "" : question.Length <= 56 ? question : question[..55].TrimEnd() + "…";
 
     /// <summary>The turn's requests on a timeline: Puls's lane and the specialist's, each request a bar from its start to its end, the hovered one lifting; a click opens the request.</summary>
     private RenderFragment Timeline(TurnNode turn, bool clickable) => __builder =>
