@@ -38,6 +38,11 @@ feature replaces older backlog wording, that wording no longer appears anywhere 
 | [F21](F21-personalities.md) | Personalities per session: each session (and sub-session) names its personality | built | — | — | F5 | — |
 | [F22](F22-role-tools.md) | Role tools: today's date, attachments to specialists, documents, git history, tables and currency | built | — | — | F21, F5 | — |
 | [F24](F24-landing-motion.md) | Landing motion: the landing page as a moving page, and the app's empty chat, Werk panel, loading and an *Animasies* switch with it | done | — | — | F20, F5 | — |
+| [F25](F25-local-cook.md) | Local cook: Puls's first local specialist, a South African meal priced at the shops near the user; routing and local sources measured | built | — | — | F21, F22, F5 | — |
+| [F26](F26-specialist-follow-up.md) | Specialist follow-up: a sub-session stays open for its chat, and Puls continues it by handle instead of starting a specialist cold | built | — | — | F5, F21, F22 | — |
+| [F27](F27-admin-portal.md) | Admin portal: an *Admin* menu into a portal of our own (sidebar and cards on Puls's variables) whose first page runs and reads the benchmarks; built to take more pages | built | — | — | F20, F25 | — |
+| [F28](F28-team-talk.md) | Team talk: Puls briefs its specialist in a fixed note (what the user wants, how they sound, where they are), a per-chat switch for the mood, and the card shows the exchange as a thread | planned | — | — | F5, F21, F25, F26, F27 | — |
+| [F29](F29-validated-specialists.md) | Validated specialists: `PERSONALITIES_ENABLED` gates which roles an instance may use; Puls boots with `agents` and `web`, answers the web itself and delegates only cooking until each other role has passed its check | planned | — | — | F5, F21, F25, F27 | — |
 
 ## Milestones
 

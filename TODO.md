@@ -60,7 +60,11 @@ measured.
       *Replaces:* "Consider context editing and compaction"; first slice of the
       [session architecture](docs/specs/SESSION_ARCHITECTURE.md)'s context pipeline
 - [ ] [F10 Route settings](docs/features/F10-route-settings.md) — thinking and tool rounds per route.
-      *Removes the limitation:* 10 tool rounds per message
+      *Removes the limitation:* 10 tool rounds per message. *Takes over* Louis's "can we make it something we can pass
+      per session?" (2026-10-15): a session's `max_tool_rounds` when it opens (`POST /sessions`, `StartSubSession`), a
+      default per role in `roles.json`, enforced by a guard beside FX14's `KeepWithinPromptBudget` (`ToolMode.None` at
+      the limit, so the history stays append-only) with `MaximumIterationsPerRequest` as a ceiling. Not urgent for
+      the cook: it never reached 10 rounds in 42 measured turns (*Next up: a faster, cheaper cook*)
 - [ ] [F17 Orchestrator agent](docs/features/F17-orchestrator-agent.md) — classification by a model, the known paths as
       code, the agent for the exceptions; its own settings and cache policy; measured against today's orchestrator.
       *From the local triage runs:* `EscalateToHuman` idempotent per error, and contradicting decisions in one reply
@@ -193,12 +197,41 @@ Design: [docs/specs/SESSION_ARCHITECTURE.md](docs/specs/SESSION_ARCHITECTURE.md)
             carried as a string to the specialist, so it arrives mangled; send it as base64 with its media type and
             read it with `DocumentText` (found in the docs review, 2026-10-14)
 - [ ] [F21 Personalities](docs/features/F21-personalities.md) — each session (and sub-session) names its personality; Puls speaks everyday South African Afrikaans ([plan](docs/plans/F21-personalities.md)). Built; open: Louis's corrections to the Afrikaans (the delegation check's `answers.md`).
+- [ ] **Next up: a faster, cheaper cook** (to plan; Louis, 2026-10-15: "can we have a subsession allow him to spawn
+      web sessions for each task"). The cook does every search and fetch itself, one at a time, and every page it reads
+      stays in its context and is paid for again on each later request (400–800k tokens and up to 183 s a meal turn).
+      - [x] **Where the time goes, measured** (the ledger, 42 first cook turns, 2026-10-15): 5 rounds on average, 9 at
+            most, every turn ended by the cook itself (`stop`), never at the 10-round limit; the largest request 31k
+            tokens on average (66k at most, under FX14's 80k). Model time 49 s a turn on average (100 s at most), 9.7 s
+            a request; the cook writes ~9,100 output tokens a turn, and the final report alone (~4,850) takes ~24 s.
+            The rest of a turn's wall time is tool time and Puls's own requests
+      - [ ] **First: less output.** The report is half the model time: a shorter report shape, a thinking budget for
+            the cook, or fewer columns; measured with `run_check.py --personalities` (seconds, output tokens, priced
+            ingredients must not drop)
+      - [ ] Then, for the tool time, one of two:
+      - [ ] **A fan-out tool, no extra model:** `PriceAtShops(ingredients, shops)` runs the shops' searches in parallel
+            (`Task.WhenAll`, Tavily with `site:`) and returns one compact table (price, link, source per cell); testable
+            with `StubHandler`, no architecture change
+      - [ ] **Workers at depth 2:** the cook opens a web-only sub-session per task (a shop's prices, the branches), in
+            parallel, each returning a small table. Needs: `agents` at depth 1 for the cook only (in code), a peer for
+            `puls_agent`, `AllowConcurrentInvocation` with thread-safe guards, a per-depth limit instead of
+            `MaxPerTurn = 3`, the ledger roll-up through two levels, the Werk card nested
+- [ ] [F25 Local cook](docs/features/F25-local-cook.md) — Puls's first local specialist: a South African meal, the recipe and a shopping list priced in rand at the shops near the user; the routing and the sources measured ([plan](docs/plans/F25-local-cook.md), [the run](samples/sample-output-puls-cook/README.md)). The first of the *Local tools* above. Built; open:
+      - [x] **Tavily, measured** ([one run from the portal](samples/sample-output-cook-20261015-130521/README.md), 2026-10-15): no search refused, prices read from product pages, unconfirmed marks on the meals down from 20 to 2 and 0
+      - [ ] **The cook's unconfirmed prices:** it writes *geskat* (an estimate) where its role says *unknown*; decide which, then measure again
+- [ ] [F29 Validated specialists](docs/features/F29-validated-specialists.md) — `PERSONALITIES_ENABLED` gates the roles an instance may use; Puls boots with `agents` and `web`, answers the web itself and hands only cooking to the cook, until each other role has a report shape, a relay rule and a check like the cook's ([plan](docs/plans/F29-validated-specialists.md))
+- [ ] [F26 Specialist follow-up](docs/features/F26-specialist-follow-up.md) — a sub-session stays open for its chat and Puls continues it by handle (`ContinueSubSession`), so a follow-up on the cook's meal goes to the same cook with its context, not to a new one cold ([plan](docs/plans/F26-specialist-follow-up.md)). Built; open:
+      - [x] **The firmer follow-up rule, measured** ([one run from the portal](samples/sample-output-cook-20261015-130521/README.md), 2026-10-15): every follow-up continued the same cook, 4 of 4, with `web` on Puls too (was 3 of 6 and 0 of 6)
+      - [x] **The Werk panel names the role** and shows a continue as its own item (2026-10-15)
+      - [ ] **A continued sub-session's own ledger rows name the turn that opened it:** the peer session's `parent` tag is fixed at creation (`{session}#{turn}`), so the specialist's requests during a follow-up turn are attributed to turn 1 in the ledger (the portal's explorer shows turn 2's specialist lane empty); only the `sub_session` roll-up row lands in the right turn. Found in the explorer, 2026-10-15. Fix: send the parent turn with each message (the API's message endpoint takes no tags today), or tag the child's requests from the roll-up
 - [ ] **F23 Credits** (to plan): buy credits with money, spend them per question at cost plus a margin, from the usage
       ledger and prices (F1, F2) — Puls's *Koop krediete*. Louis: "'n layer wat geld na ons interne krediete verander. Wil so
       bietjie geld maak as ek kan."
 
 ### Web app
 
+- [ ] [F27 Admin portal](docs/features/F27-admin-portal.md) — an *Admin* item in the profile menu into a portal of our own (a sidebar and cards on Puls's variables) whose first page runs the checks and reads their saved runs; more pages later ([plan](docs/plans/F27-admin-portal.md)). Built; open: a real run from the page (Louis's go), then *Finishing a feature*
+- [ ] [F28 Team talk](docs/features/F28-team-talk.md) — Puls briefs its specialist in a fixed note (what the user wants, how they sound from their typing, where they are, what they said), with a per-chat *Lees my stemming* switch sent per turn; the delegation card shows the exchange as a thread; both checks score it ([plan](docs/plans/F28-team-talk.md))
 - [ ] Sync chat history across devices and browsers instead of only `localStorage`
 - [ ] A UI for skills (`Skills/*.md`) and for reviewing and approving agent-built tools — today that's typing `/tools`,
       `/approve <Name>` and `/reject <Name>` in a chat
@@ -220,6 +253,14 @@ Design: [docs/specs/SESSION_ARCHITECTURE.md](docs/specs/SESSION_ARCHITECTURE.md)
 From the [goal](docs/GOAL.md)'s architecture map: skills it requires that nothing above plans yet. Promote one to a
 feature when its turn comes; remove its line here and update the map's *Missing* column.
 
+- [ ] **Exception strategy (a cleanup with its own ADR, after F28):** four kinds, each with its rule: a failure the model
+      can act on (a `ToolMessage` with the reason, as the web and peer tools do), a setting the operator must fix (fail
+      fast or a 400 naming it), a transient fault (one retry in the provider strategy, then reported), a bug (propagates,
+      logged with a correlation id, never into the model's history as an outcome). One base exception carrying its kind
+      and message member, so hosts map by kind; a tool guard helper that catches only the expected kinds (Paymo's 17
+      `catch (Exception)` blocks swallow bugs and cancellation alike); the API's turn error as an enum text with the kind,
+      not the exception's type name; an architecture test that fails a filterless `catch (Exception)` outside the hosts'
+      top-level handlers. First measurable win: a cancelled turn no longer scored as a tool failure (noted 2026-10-15)
 - [ ] **Evaluation:** run F18's eval suites in CI as a regression gate (the harness itself is F18)
 - [ ] **Thinking:** measure quality vs tokens per thinking level on the evals; interleaved thinking between tool calls
 - [ ] **Models:** choose models per task from measured quality and cost; check each model's capabilities (real tool

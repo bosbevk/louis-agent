@@ -22,17 +22,20 @@ public sealed partial class WebTools
     private const string UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) louis-agent/1.0";
 
     private readonly IWebSearchProvider _search;
+    private readonly IPageRenderer _renderer;
     private readonly HttpClient _http;
     private readonly Func<string, CancellationToken, Task<IPAddress[]>> _resolve;
 
     /// <param name="search">Search engine; defaults to keyless DuckDuckGo.</param>
     /// <param name="handler">Test seam for FetchUrl; production uses a handler that re-checks the address at connect time.</param>
     /// <param name="resolve">Test seam for DNS resolution.</param>
+    /// <param name="renderer">Page renderer for ReadRenderedPage (F25); defaults to one that says it isn't configured.</param>
     public WebTools(IWebSearchProvider? search = null, HttpMessageHandler? handler = null,
-        Func<string, CancellationToken, Task<IPAddress[]>>? resolve = null, ExchangeRates? rates = null)
+        Func<string, CancellationToken, Task<IPAddress[]>>? resolve = null, ExchangeRates? rates = null, IPageRenderer? renderer = null)
     {
         _rates = rates ?? ExchangeRates.Empty;
         _search = search ?? new DuckDuckGoSearchProvider();
+        _renderer = renderer ?? new UnavailablePageRenderer(MessageText.Format(ToolMessage.RenderNotConfigured));
         _resolve = resolve ?? ((host, ct) => Dns.GetHostAddressesAsync(host, ct));
         _http = new HttpClient(handler ?? SsrfGuard.CreateGuardedHandler(), disposeHandler: true)
         {
@@ -123,8 +126,8 @@ public sealed partial class WebTools
         });
     }
 
-    /// <summary>One part of a fetched page or PDF, framed as untrusted content, with where to continue.</summary>
-    private static string Page(Uri finalUri, string? title, string text, int startIndex, int maxChars)
+    /// <summary>One part of a fetched or rendered page or PDF, framed as untrusted content, with where to continue (by calling <paramref name="tool"/> again).</summary>
+    private static string Page(string finalUri, string? title, string text, int startIndex, int maxChars, string tool = nameof(FetchUrl))
     {
         if (startIndex >= text.Length && text.Length > 0)
             return MessageText.Format(ToolMessage.FetchStartPastEnd, new { StartIndex = startIndex, text.Length });
@@ -137,8 +140,44 @@ public sealed partial class WebTools
         sb.AppendLine(text.Length == 0 ? MessageText.Format(ToolMessage.NoReadableText) : text[startIndex..end]);
         sb.Append("--- end of web content ---");
         if (end < text.Length)
-            sb.Append(MessageText.Format(ToolMessage.PageContinues, new { Start = startIndex, End = end, text.Length }));
+            sb.Append(MessageText.Format(ToolMessage.PageContinues, new { Start = startIndex, End = end, text.Length, Tool = tool }));
         return sb.ToString();
+    }
+
+    [Description("Reads a page the way a browser shows it, rendered by the configured renderer (Tavily Extract), and " +
+        "returns its readable text framed as untrusted data, like FetchUrl. Use it only when FetchUrl came back with " +
+        "'(no readable text)' or without the part you need: sites that draw their content with JavaScript (a shop's " +
+        "product page with its price, a store finder). It costs a credit and takes longer than FetchUrl, so never " +
+        "call it first. Same address rules as FetchUrl; results longer than maxChars continue with startIndex.")]
+    public async Task<string> ReadRenderedPage(
+        [Description("Absolute http(s) URL of the page to render")] string url,
+        [Description("Maximum characters to return (default 8000, max 30000)")] int maxChars = DefaultMaxChars,
+        [Description("Character offset to continue from, as given in a previous truncated result (default 0)")] int startIndex = 0)
+    {
+        if (!Uri.TryCreate((url ?? "").Trim(), UriKind.Absolute, out var uri) || uri.Scheme is not ("http" or "https"))
+            return MessageText.Format(ToolMessage.FetchUrlInvalid);
+        maxChars = Math.Clamp(maxChars, 500, 30_000);
+        startIndex = Math.Max(0, startIndex);
+
+        try
+        {
+            // An internal address is refused here, before the URL is handed to a third party, as FetchUrl refuses it.
+            await SsrfGuard.EnsurePublicHostAsync(uri, _resolve);
+            var page = await _renderer.RenderAsync(uri);
+            return Page(page.Url, null, page.Text, startIndex, maxChars, nameof(ReadRenderedPage));
+        }
+        catch (BlockedAddressException ex)
+        {
+            return MessageText.Format(ToolMessage.ErrorWithReason, new { Reason = ex.Message });
+        }
+        catch (PageRenderException ex)
+        {
+            return MessageText.Format(ToolMessage.ErrorWithReason, new { Reason = ex.Message });
+        }
+        catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException or System.Text.Json.JsonException)
+        {
+            return MessageText.Format(ToolMessage.ErrorWithReason, new { Reason = MessageText.Format(ToolMessage.RenderFailed, new { Url = uri, Reason = ex.Message }) });
+        }
     }
 
     [Description("Fetches an absolute http(s) URL and returns its main readable text — converted from HTML to a " +
@@ -185,7 +224,7 @@ public sealed partial class WebTools
                     // PdfPig throws more than one kind for a damaged file; every one is the same answer to the model.
                     return MessageText.Format(ToolMessage.DocumentUnreadable, new { Path = finalUri, Reason = ex.Message });
                 }
-                return Page(finalUri, null, text, startIndex, maxChars);
+                return Page(finalUri.ToString(), null, text, startIndex, maxChars);
             }
 
             string body = await response.Content.ReadAsStringAsync();
@@ -196,7 +235,7 @@ public sealed partial class WebTools
             else
                 return MessageText.Format(ToolMessage.FetchNotText, new { Url = finalUri, MediaType = mediaType });
 
-            return Page(finalUri, title, text, startIndex, maxChars);
+            return Page(finalUri.ToString(), title, text, startIndex, maxChars);
         }
         catch (BlockedAddressException ex)
         {

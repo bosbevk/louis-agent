@@ -52,8 +52,9 @@ public sealed class AgentPeerTools(IReadOnlyDictionary<string, Uri> peers, strin
     }
 
     [Description("Opens a session on another louis-agent (a peer listed in AGENT_PEERS) with only the toolsets a task needs, " +
-        "sends it the task, waits for its final answer and closes the session. Returns the answer and a usage line. " +
-        "At most 3 per turn, 5 minutes each. See agents-skills.md for when to delegate.")]
+        "sends it the task and waits for its final answer. Returns the answer and a usage line. In a chat the sub-session " +
+        "stays open and the answer names its handle, so a follow-up on the same work goes to ContinueSubSession; elsewhere " +
+        "it is closed. At most 3 calls per turn (starts and continues), 5 minutes each. See agents-skills.md for when to delegate.")]
     public async Task<string> StartSubSession(
         [Description("The toolsets the sub-session loads, e.g. [\"files\",\"git\",\"dotnet\"]. Never \"agents\".")] string[] toolsets,
         [Description("The whole task, self-contained: the sub-session sees nothing of this conversation.")] string message,
@@ -66,18 +67,7 @@ public sealed class AgentPeerTools(IReadOnlyDictionary<string, Uri> peers, strin
             "(the sub-session sees nothing else of the conversation).")] string[]? attachments = null,
         CancellationToken cancellationToken = default)
     {
-        // The model names the attachments; their contents come from the session, never through the model's output.
-        var available = SessionAttachments.Current;
-        var forwarded = new List<object>();
-        foreach (string name in attachments ?? [])
-        {
-            if (!available.TryGetValue(name.Trim(), out string? content))
-                return MessageText.Format(ToolMessage.AttachmentUnknown, new
-                {
-                    Name = name, Attached = available.Count == 0 ? "(none)" : string.Join(", ", available.Keys.Order()),
-                });
-            forwarded.Add(new { name = name.Trim(), content });
-        }
+        if (ForwardAttachments(attachments, out var forwarded) is { } unknownAttachment) return unknownAttachment;
 
         string peerNames = peers.Count == 0 ? "(none)" : string.Join(", ", peers.Keys.Order());
         // An empty name means the only peer, so the model never has to guess one (it used to try an example name first).
@@ -92,9 +82,7 @@ public sealed class AgentPeerTools(IReadOnlyDictionary<string, Uri> peers, strin
         UsageScope? scope = UsageScope.Current;
         // The call that opened this sub-session, so a host can show its events under that call.
         string? toolUseId = FunctionInvokingChatClient.CurrentContext?.CallContent.CallId;
-        string? parent = scope?.Session is { } session ? $"{session}#{scope.Turn}" : null;
-        if (parent is null ? !TakeNoTurnSlot() : !TakeTurnSlot(parent))
-            return MessageText.Format(parent is null ? ToolMessage.SubSessionRateLimit : ToolMessage.SubSessionLimit, new { Max = MaxPerTurn });
+        if (TakeSlot(scope, out string? parent) is { } limit) return limit;
 
         using var timeout = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         timeout.CancelAfter(_timeout);
@@ -112,27 +100,26 @@ public sealed class AgentPeerTools(IReadOnlyDictionary<string, Uri> peers, strin
             string createdBody = await created.Content.ReadAsStringAsync(timeout.Token);
             if (!created.IsSuccessStatusCode)
                 return MessageText.Format(ToolMessage.SubSessionRefused, new { Agent = agent, Status = (int)created.StatusCode, Reason = ErrorText(createdBody) });
-            sessionId = JsonDocument.Parse(createdBody).RootElement.GetProperty("session_id").GetString()
-                ?? throw new JsonException("no session_id");
+            using var createdJson = JsonDocument.Parse(createdBody);
+            sessionId = createdJson.RootElement.GetProperty("session_id").GetString() ?? throw new JsonException("no session_id");
+            // The role it opened with: the one passed, or the one the peer derived from the toolsets (roles.json).
+            string? role = createdJson.RootElement.TryGetProperty("personality", out var p) && p.ValueKind == JsonValueKind.String ? p.GetString() : personality;
 
-            var (text, usage, failure) = await SendAsync(peer, sessionId, new { message, attachments = forwarded }, agent, toolUseId, scope, timeout.Token);
-            if (failure is not null) return failure;
-            if (string.IsNullOrWhiteSpace(text))
+            var reply = await AnswerAsync(peer, sessionId, new { message, attachments = forwarded }, agent, toolUseId, scope, timeout.Token);
+            if (reply.Failure is not null) return reply.Failure;
+            if (SubSessionRegistry.Current is { } registry)
             {
-                // A specialist that used all its tool rounds can end with no text (FX11): ask once, in the same session,
-                // for the answer from what it found. Its context and cached prefix stay; a new sub-session would start over.
-                var (again, againUsage, againFailure) = await SendAsync(peer, sessionId,
-                    new { message = MessageText.Format(ToolMessage.SubSessionAskForAnswer) }, agent, toolUseId, scope, timeout.Token);
-                if (againFailure is not null) return againFailure;
-                text = again;
-                usage = string.Join(" + ", new[] { usage, againUsage }.OfType<string>());
-                if (string.IsNullOrWhiteSpace(text))
-                    return MessageText.Format(ToolMessage.SubSessionNoAnswer, new { Agent = agent, Usage = usage.Length > 0 ? usage : MessageText.Format(ToolMessage.SubSessionNoUsage) });
+                // F26: the chat keeps the specialist, with its context and cached prefix, for a follow-up. The entry's
+                // closer is this tool's delete, so the registry never speaks HTTP; the finally below then leaves it alone.
+                string kept = sessionId;
+                var entry = new OpenSubSession(peer, kept, agent, toolsets, role, () => DeleteAsync(peer, kept));
+                string handle = await registry.AddAsync(entry);
+                sessionId = null;
+                return KeptAnswer(entry with { Handle = handle }, reply);
             }
             return MessageText.Format(ToolMessage.SubSessionAnswer, new
             {
-                Answer = text.Trim(), Agent = agent, Toolsets = string.Join(", ", toolsets),
-                Usage = string.IsNullOrEmpty(usage) ? MessageText.Format(ToolMessage.SubSessionNoUsage) : usage,
+                Answer = reply.Text, Agent = agent, Toolsets = string.Join(", ", toolsets), Usage = reply.UsageLine,
             });
         }
         catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
@@ -150,25 +137,155 @@ public sealed class AgentPeerTools(IReadOnlyDictionary<string, Uri> peers, strin
         }
         finally
         {
-            // Always, success or not, so a peer never keeps a sub-session; its own idle timeout is the fallback.
-            if (sessionId is not null)
-            {
-                try
-                {
-                    using var delete = Request(HttpMethod.Delete, new Uri(peer, $"sessions/{Uri.EscapeDataString(sessionId)}"), null);
-                    using var _ = await _http.SendAsync(delete, CancellationToken.None);
-                }
-                catch (HttpRequestException) { }
-            }
+            // Always, success or not, unless the chat kept it (F26), so a peer never keeps a sub-session nobody will use;
+            // its own idle timeout is the fallback.
+            if (sessionId is not null) await DeleteAsync(peer, sessionId);
         }
+    }
+
+    [Description("Sends a follow-up to a sub-session this chat keeps open (the handle from a StartSubSession answer, e.g. \"sub-1\") " +
+        "and waits for its answer. It keeps everything it found and read, so use it when the user follows up on work that " +
+        "specialist did; start a new sub-session for new work or another role. Counts against the 3 calls per turn, 5 minutes.")]
+    public async Task<string> ContinueSubSession(
+        [Description("The handle from the earlier answer's footer, e.g. \"sub-1\".")] string handle,
+        [Description("The follow-up, self-contained: what the user now asks, and anything new they said since.")] string message,
+        [Description("Names of files the user attached in this conversation that the follow-up needs.")] string[]? attachments = null,
+        CancellationToken cancellationToken = default)
+    {
+        if (SubSessionRegistry.Current is not { } registry) return MessageText.Format(ToolMessage.SubSessionNoneKept);
+        if (registry.Find(handle) is not { } open)
+            return MessageText.Format(ToolMessage.SubSessionUnknownHandle, new { Handle = handle.Trim(), Open = OpenList(registry) });
+        if (ForwardAttachments(attachments, out var forwarded) is { } unknownAttachment) return unknownAttachment;
+
+        UsageScope? scope = UsageScope.Current;
+        string? toolUseId = FunctionInvokingChatClient.CurrentContext?.CallContent.CallId;
+        if (TakeSlot(scope, out _) is { } limit) return limit;
+
+        using var timeout = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        timeout.CancelAfter(_timeout);
+        bool answered = false;
+        try
+        {
+            var reply = await AnswerAsync(open.Peer, open.SessionId, new { message, attachments = forwarded }, open.Agent, toolUseId, scope, timeout.Token);
+            if (reply.RefusedStatus == 404)
+            {
+                // The peer dropped it (idle, or restarted): nothing to close, and the model starts over with the whole context.
+                registry.Remove(open.Handle);
+                return MessageText.Format(ToolMessage.SubSessionGone, new { open.Handle, open.Agent });
+            }
+            if (reply.Failure is not null) return reply.Failure;
+            answered = true;
+            return KeptAnswer(open, reply);
+        }
+        catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
+        {
+            return MessageText.Format(ToolMessage.SubSessionTimedOut, new { open.Agent, Minutes = _timeout.TotalMinutes.ToString("0.##", CultureInfo.InvariantCulture) });
+        }
+        catch (HttpRequestException ex)
+        {
+            return MessageText.Format(ToolMessage.SubSessionFailed, new { open.Agent, Reason = ex.Message });
+        }
+        catch (Exception ex) when (ex is JsonException or KeyNotFoundException or InvalidOperationException or FormatException)
+        {
+            return MessageText.Format(ToolMessage.SubSessionUnreadable, new { open.Agent, Reason = ex.Message });
+        }
+        finally
+        {
+            // A follow-up that failed or timed out leaves the peer's turn in an unknown state: closed (the delete cancels
+            // it), so the next sub-session starts clean. Removed first, so a 404 above (already removed) closes nothing.
+            if (!answered && registry.Remove(open.Handle)) await open.Close();
+        }
+    }
+
+    /// <summary>The answer's footer for a sub-session the chat keeps: its handle, and how to continue it.</summary>
+    private static string KeptAnswer(OpenSubSession open, SubSessionReply reply) => MessageText.Format(ToolMessage.SubSessionAnswerKept, new
+    {
+        Answer = reply.Text, open.Handle, open.Agent, Toolsets = string.Join(", ", open.Toolsets),
+        Role = string.IsNullOrWhiteSpace(open.Role) ? MessageText.Format(ToolMessage.SubSessionDefaultRole) : open.Role, Usage = reply.UsageLine,
+    });
+
+    private static string OpenList(SubSessionRegistry registry)
+    {
+        var open = registry.Open;
+        return open.Count == 0
+            ? MessageText.Format(ToolMessage.SubSessionNoneOpen)
+            : string.Join(", ", open.Select(o => $"{o.Handle} ({o.Agent}: {string.Join(", ", o.Toolsets)}; {o.Role ?? MessageText.Format(ToolMessage.SubSessionDefaultRole)})"));
+    }
+
+    /// <summary>
+    /// The model names the attachments; their contents come from the session, never through the model's output. Returns
+    /// the error for a name the session doesn't have, else null with the list to send.
+    /// </summary>
+    private static string? ForwardAttachments(string[]? attachments, out List<object> forwarded)
+    {
+        var available = SessionAttachments.Current;
+        forwarded = [];
+        foreach (string name in attachments ?? [])
+        {
+            if (!available.TryGetValue(name.Trim(), out string? content))
+                return MessageText.Format(ToolMessage.AttachmentUnknown, new
+                {
+                    Name = name, Attached = available.Count == 0 ? "(none)" : string.Join(", ", available.Keys.Order()),
+                });
+            forwarded.Add(new { name = name.Trim(), content });
+        }
+        return null;
+    }
+
+    /// <summary>Takes one of the turn's call slots (starts and continues alike); returns the refusal when there is none.</summary>
+    private string? TakeSlot(UsageScope? scope, out string? parent)
+    {
+        parent = scope?.Session is { } session ? $"{session}#{scope.Turn}" : null;
+        if (parent is null ? !TakeNoTurnSlot() : !TakeTurnSlot(parent))
+            return MessageText.Format(parent is null ? ToolMessage.SubSessionRateLimit : ToolMessage.SubSessionLimit, new { Max = MaxPerTurn });
+        return null;
+    }
+
+    /// <summary>Deletes a sub-session on its peer; a peer that can't be reached is left to its own idle timeout.</summary>
+    private async Task DeleteAsync(Uri peer, string sessionId)
+    {
+        try
+        {
+            using var delete = Request(HttpMethod.Delete, new Uri(peer, $"sessions/{Uri.EscapeDataString(sessionId)}"), null);
+            using var _ = await _http.SendAsync(delete, CancellationToken.None);
+        }
+        catch (HttpRequestException) { }
+    }
+
+    /// <summary>What one message to a sub-session came back with: the answer and its usage line, or the failure the model gets.</summary>
+    /// <param name="RefusedStatus">The HTTP status when the peer refused the message (404: it no longer has the session).</param>
+    private sealed record SubSessionReply(string Text, string UsageLine, string? Failure, int? RefusedStatus = null);
+
+    /// <summary>
+    /// Sends <paramref name="body"/> and reads the answer; a specialist that used all its tool rounds can end with no
+    /// text (FX11), so it is asked once more, in the same session, for the answer from what it found (its context and
+    /// cached prefix stay; a new sub-session would start over).
+    /// </summary>
+    private async Task<SubSessionReply> AnswerAsync(Uri peer, string sessionId, object body, string agent, string? toolUseId,
+        UsageScope? scope, CancellationToken cancellationToken)
+    {
+        var (text, usage, failure, status) = await SendAsync(peer, sessionId, body, agent, toolUseId, scope, cancellationToken);
+        if (failure is not null) return new SubSessionReply("", "", failure, status);
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            var (again, againUsage, againFailure, againStatus) = await SendAsync(peer, sessionId,
+                new { message = MessageText.Format(ToolMessage.SubSessionAskForAnswer) }, agent, toolUseId, scope, cancellationToken);
+            if (againFailure is not null) return new SubSessionReply("", "", againFailure, againStatus);
+            text = again;
+            usage = string.Join(" + ", new[] { usage, againUsage }.OfType<string>());
+            if (string.IsNullOrWhiteSpace(text))
+                return new SubSessionReply("", "", MessageText.Format(ToolMessage.SubSessionNoAnswer,
+                    new { Agent = agent, Usage = usage.Length > 0 ? usage : MessageText.Format(ToolMessage.SubSessionNoUsage) }));
+        }
+        return new SubSessionReply(text.Trim(), string.IsNullOrEmpty(usage) ? MessageText.Format(ToolMessage.SubSessionNoUsage) : usage, null);
     }
 
     /// <summary>
     /// Sends one message to the sub-session and reads its reply: the answer's text and usage line, or the failure the
-    /// model gets instead (refused, or an error event). A reply that reported usage, answered or failed, is rolled up
-    /// into <paramref name="scope"/> and the ledger.
+    /// model gets instead (refused, with the status, or an error event). A reply that reported usage, answered or
+    /// failed, is rolled up into <paramref name="scope"/> and the ledger.
     /// </summary>
-    private async Task<(string Text, string? Usage, string? Failure)> SendAsync(Uri peer, string sessionId, object body,
+    private async Task<(string Text, string? Usage, string? Failure, int? RefusedStatus)> SendAsync(Uri peer, string sessionId, object body,
         string agent, string? toolUseId, UsageScope? scope, CancellationToken cancellationToken)
     {
         var stopwatch = Stopwatch.StartNew();
@@ -176,14 +293,14 @@ public sealed class AgentPeerTools(IReadOnlyDictionary<string, Uri> peers, strin
         using var reply = await _http.SendAsync(send, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
         if (!reply.IsSuccessStatusCode)
             return ("", null, MessageText.Format(ToolMessage.SubSessionRefused,
-                new { Agent = agent, Status = (int)reply.StatusCode, Reason = ErrorText(await reply.Content.ReadAsStringAsync(cancellationToken)) }));
+                new { Agent = agent, Status = (int)reply.StatusCode, Reason = ErrorText(await reply.Content.ReadAsStringAsync(cancellationToken)) }), (int)reply.StatusCode);
 
         var (text, usage, error) = await ReadStreamAsync(await reply.Content.ReadAsStreamAsync(cancellationToken),
             (type, data) => SubSessionFeed.Report(new SubSessionEvent(toolUseId, agent, type, data)), cancellationToken);
         // A failed reply's usage was charged too (FX6); a reply with none (a timeout before any event) leaves no record.
         if (usage is not null) RollUp(scope, agent, usage, stopwatch.Elapsed);
         string? line = usage?.Line();
-        return error is null ? (text, line, null) : ("", line, MessageText.Format(ToolMessage.SubSessionFailed, new { Agent = agent, Reason = error }));
+        return error is null ? (text, line, null, null) : ("", line, MessageText.Format(ToolMessage.SubSessionFailed, new { Agent = agent, Reason = error }), null);
     }
 
     /// <summary>

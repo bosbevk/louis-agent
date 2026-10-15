@@ -1,0 +1,194 @@
+[
+  {
+    "task": "web",
+    "question": "Wat is die nuutste weergawe van .NET en wanneer is dit vrygestel? Gee jou bronne.",
+    "answer": "Die nuutste stabiele weergawe is **.NET 10**, met patch **10.0.13**, wat op **13 Oktober 2026** vrygestel is. Dit is twee dae gelede.\n\n- **.NET 10** is oorspronklik op **11 November 2025** vrygestel. Dit is 'n LTS-weergawe (langtermynondersteuning), wat tot **14 November 2028** ondersteun word.\n- **10.0.13** is 'n patch-opdatering met sekuriteitsregstellings, so dit is die een om te installeer.\n- **.NET 11** is nog nie GA nie. Die nuutste is **11.0.0-rc.2** (13 Oktober 2026). Die RC1 is op 8 September 2026 uitgereik. Die amptelike lansering is na bewering tydens die .NET-konferensie op 10–13 November 2026.\n- **Let op:** .NET 8 en .NET 9 se ondersteuning eindig op **10 November 2026**. As jy nog op een van hulle is, is dit tyd om na .NET 10 op te gradeer.\n\n**Bronne**\n- https://raw.githubusercontent.com/dotnet/core/main/release-notes/releases-index.json (amptelike .NET-releases-indeks op GitHub)\n- https://builds.dotnet.microsoft.com/dotnet/release-metadata/10.0/releases.json (.NET 10 release-metadata)\n- https://dotnet.microsoft.com/en-us/platform/support/policy/dotnet-core (ondersteuningsbeleid)\n\nEk kon nie die amptelike downloadbladsy lees nie, so die weergawe- en datumgegewens kom uit die release-metadata. Die ondersteuningsbeleid-bladsy wys nog 10.0.12 as die nuutste patch, maar die metadata is nuwer. Die einddatum van .NET 11 het ek nie gekry nie.",
+    "tools": [
+      "StartSubSession",
+      "GetToday"
+    ],
+    "specialists": [
+      "puls"
+    ],
+    "delegations": [
+      {
+        "toolsets": [
+          "web"
+        ],
+        "personality": "puls-researcher"
+      }
+    ],
+    "error": null,
+    "seconds": 33.9
+  },
+  {
+    "task": "files",
+    "question": "Lees README.md in die werkruimte en som in drie punte op wat die projek doen.",
+    "answer": "Die README.md beskryf **Louis Agent**, 'n self-gehoste KI-kodeagent vir .NET, en **Puls**, 'n algemene Afrikaanse assistent wat op dieselfde kern bou.\n\n1. **Die kodeagent** werk met jou repository deur middel van regte gereedskap: lêers, git, `dotnet`, Python, PowerShell, bash, websoektog, Azure DevOps en Paymo. Jy kan dit bereik via Rider, 'n webapp, 'n HTTP-API of die terminal. Dit gebruik Claude as standaard, maar Ollama en OpenAI-versoenbare eindpunte werk ook.\n\n2. **Puls** stuur elke taak na 'n spesialis-agent met net die gereedskap wat daardie taak nodig het, en skryf dan self die antwoord. Die README noem vyf rolle: navorser, leser, historikus, analis en algemene spesialis.\n\n3. **Gashere en struktuur:** Die projek het verskeie gashere (Rider ACP-bediener, Blazor-webapp, Puls-webapp, HTTP-API, CLI en MCP-bediener), en almal deel `louis-agent.core`. Daar is ook 'n orkestrator-demo waar een agent foute in 'n mikrodiens regmaak terwyl 'n ander dit toets. Opstel gaan via Docker, en geheime sleutels staan in `config/.env.secrets`.\n\nDie lêer is in Engels, so die opsomming hierbo is my vertaling van wat die leser gevind het. Die lêerhulpmiddels bly binne die werkruimte en raak nooit geheime lêers aan nie.",
+    "tools": [
+      "StartSubSession"
+    ],
+    "specialists": [
+      "puls"
+    ],
+    "delegations": [
+      {
+        "toolsets": [
+          "files"
+        ],
+        "personality": "puls-reader"
+      }
+    ],
+    "error": null,
+    "seconds": 12.0
+  },
+  {
+    "task": "git",
+    "question": "Wat het die laaste drie commits in hierdie repository verander?",
+    "answer": "Die drie laaste commits is almal deur louis marais op 15 Oktober 2026 gemaak. Hulle bou aan F27 se admin-bladsy.\n\n1. **`afdd096`** (17:32): `fix(f27): a check card's title stays on one line`\n   - Klein CSS-regstelling in `src/louis-agent.puls/wwwroot/css/app.css` (5 reëls bygevoeg, 1 verwyder).\n   - Die kaart se titel bly op een reël, met ellipsis as dit te lank is, en die metadata sit vas aan die regterkant. Dit los die probleem op waar die titel onder die chip gewrap het.\n\n2. **`b7ad0ac`** (17:26): `docs(f27): the asks approved during the build`\n   - Net dokumentasie: 7 reëls bygevoeg in `docs/plans/F27-admin-portal.md`. Dit teken die versoeke op wat tydens die bou goedgekeur is.\n\n3. **`68dbaa5`** (17:25): `feat(f27): step 7 - the live run as a tree: mode, conversation, turn`\n   - Die grootste verandering, in `Pages/Admin/Benchmarks.razor` (202 reëls gewysig) plus 21 reëls CSS.\n   - Die tabel en die aparte gesprekslys is saamgevoeg tot een boom met drie vlakke: modus, gesprek en beurt. Modusse wys hulpmiddelstelle en koste, tokens en versoeke sodra dit klaar is. Die huidige node bly oop, voltooide nodes vou toe, en 'n node wat die leser self oopmaak, bly oop.\n   - Volgens die boodskap gaan 'n foutgebeurtenis nou na die blaaier se konsole in plaas daarvan om die herhaling te stop.\n\n**Let wel:** my spesialis het net die commit-boodskappe en die lêerstatistiek gesien, nie die volledige kode-diff nie. Die besonderhede van gedrag kom dus uit die boodskappe. As jy presies wil weet watter C#-metodes of CSS-reëls verander het, kan ek iemand laat kyk na die diff van `68dbaa5`.",
+    "tools": [
+      "StartSubSession"
+    ],
+    "specialists": [
+      "puls"
+    ],
+    "delegations": [
+      {
+        "toolsets": [
+          "git"
+        ],
+        "personality": "puls-historian"
+      }
+    ],
+    "error": null,
+    "seconds": 18.8
+  },
+  {
+    "task": "numbers",
+    "question": "Hoeveel .cs-lêers is daar onder louis-agent.core, en hoeveel reëls het hulle saam?",
+    "answer": "Daar is **118 .cs-lêers** onder `louis-agent.core`, en hulle het saam **11 767 reëls**.\n\nDie syfers sluit die `bin`- en `obj`-gidse uit, want dit is gegenereerde lêers. Met daardie gidse ingesluit is dit 121 lêers. Van die 11 767 reëls is 1 812 leeg. Alle lêers is suksesvol gelees.",
+    "tools": [
+      "StartSubSession"
+    ],
+    "specialists": [
+      "puls"
+    ],
+    "delegations": [
+      {
+        "toolsets": [
+          "files",
+          "python"
+        ],
+        "personality": "puls-analyst"
+      }
+    ],
+    "error": null,
+    "seconds": 28.4
+  },
+  {
+    "task": "chat",
+    "question": "Gee my drie name vir 'n Jack Russell, met 'n Afrikaanse knipoog.",
+    "answer": "Hier is 'n paar wat by 'n Jack Russell pas:\n\n- **Jakkals**: die voor-die-hand-liggende een. Hy's 'n terrier met 'n jakkals se energie.\n- **Sprinkaan**: want hy spring oor alles en almal.\n- **Bokkie**: lief en klein, maar hy dink hy's 'n bul.\n- **Bobbejaan**: as hy begin rondvreet in die vuilgoed.\n- **Flippie**: 'n Jack-Afrikaans-klank wat maklik roep.\n- **Klein Jaco**: Jack in Afrikaans, en \"klein\" omdat hy so klein is.\n- **Tokkie**: vir die kwaaie koppie wat nie wil luister nie.\n- **Blitz**: vir die vinnige sprint oor die erf.\n- **Sokkie**: as hy oral agter jou aan loop.\n- **Tannie Tjops**: as hy in die kombuis 'n stukkie vleis steel.\n\nAs jy my die kleur of persoonlikheid van hom sê, kan ek 'n paar meer pas by hom maak.",
+    "tools": [],
+    "specialists": [],
+    "delegations": [],
+    "error": null,
+    "seconds": 5.7
+  },
+  {
+    "task": "web-2",
+    "question": "Wat is die huidige prima uitleenkoers in Suid-Afrika, en wanneer het dit laas verander? Gee jou bronne.",
+    "answer": "Die prima uitleenkoers is vandag (15 Oktober 2026) **10,75%**.\n\n**Laaste verandering:** Die Reserwebank se MPC het op 23 September 2026 die repo-koers met 25 basispunte verhoog, van 7,00% na **7,25%**. Dit het op 25 September in werking getree, en die prima het van 10,50% na 10,75% gestyg. Die volgende MPC-besluit is op 19 November 2026.\n\n**Vorige verandering:** Op 28 Mei 2026 is die repo-koers ook met 25 basispunte verhoog, van 6,75% na 7,00%. In Maart 2026 het die koers ongewysig op 6,75% gebly.\n\n**Bronne:**\n- SARB, *Statement of the Monetary Policy Committee, September 2026* (die amptelike bron vir die 7,25% en die volgende vergadering): https://www.resbank.co.za/en/home/publications/publication-detail-pages/statements/monetary-policy-statements/2026/september\n- Moneyweb, \"Sarb ups repo rate to 7.25%\" (23 Sept 2026): https://www.moneyweb.co.za/news/economy/sarb-ups-repo-rate-to-7-25\n- eNCA, \"Reserve Bank hikes interest rates by 25 basis points\" (23 Sept 2026): https://www.enca.com/business-top-stories/reserve-bank-hikes-interest-rates-25-basis-points\n- IOL, oor die verhoging wat op 25 Sept in werking getree het: https://iol.co.za/business/2026-09-25-interest-rate-hike-takes-effect-heres-how-much-more-you-will-pay-for-your-car-and-home\n\n**Let wel:** Die 7,25% repo-koers kom direk van die SARB se amptelike verklaring. Die prima van 10,75% kom uit nuusbronne. Dit pas by die vaste verskil van 3,5 persentasiepunte bo repo, maar ek het dit nie op die SARB se eie markkoersbladsy gesien nie. As jy dit presies nodig het (bv. vir 'n lening), kyk gerus na jou bank se webwerf of die SARB se \"current market rates\"-bladsy. Die datum van die Mei-besluit is ook uit 'n nuusopsomming, nie die volle verklaring nie.",
+    "tools": [
+      "GetToday",
+      "StartSubSession"
+    ],
+    "specialists": [
+      "puls"
+    ],
+    "delegations": [
+      {
+        "toolsets": [
+          "web"
+        ],
+        "personality": "puls-researcher"
+      }
+    ],
+    "error": null,
+    "seconds": 27.3
+  },
+  {
+    "task": "files-2",
+    "question": "Watter instellings in config/.env.example gaan oor die LLM? Lys hulle met 'n kort verduideliking.",
+    "answer": "Die lêer `config/.env.example` het net **een** LLM-instelling wat gestel is, plus twee wat as kommentaar staan:\n\n1. **`LLM_PROFILE=anthropic`** (aktief)\n   Kies watter LLM-profiel die agent gebruik: `anthropic` (Claude) of `ollama` (plaaslik en gratis). Die kommentaar sê ook dat as jy `LLM_*`-instellings in hierdie lêer skryf, dit die profiel se instellings oorskryf. Laat dit dus weg tensy jy iets wil vaslê.\n\n2. **`ANTHROPIC_API_KEY`** (kommentaar, nie gestel nie)\n   Die Claude-profiel het hierdie sleutel nodig, maar dit hoort in `.env.secrets` en nie in hierdie lêer nie.\n\n3. **`SUB_SESSION_PROMPT_BUDGET=80000`** (kommentaar, nie gestel nie)\n   Die maksimum aantal tokens vir die prompt van 'n sub-sessie. Wanneer die volgende versoek die grens sal oorskry, antwoord die spesialis met wat dit al het, in plaas van nog gereedskap te roep. Die verstek is 80000, en `0` skakel dit af. Dit is 'n agentinstelling en nie eintlik 'n provider-instelling nie.\n\nDie model se naam, temperatuur, maksimum uitvoertokens en base URL staan nie in hierdie lêer nie. Dit sal waarskynlik in `config/.env.anthropic` of `config/.env.ollama` wees. Ek het nie daardie lêers gelees nie. Wil jy hê ek moet dit ook nagaan?",
+    "tools": [
+      "StartSubSession"
+    ],
+    "specialists": [
+      "puls"
+    ],
+    "delegations": [
+      {
+        "toolsets": [
+          "files"
+        ],
+        "personality": "puls-reader"
+      }
+    ],
+    "error": null,
+    "seconds": 20.6
+  },
+  {
+    "task": "git-2",
+    "question": "Wie het die meeste aan louis-agent.core/Agent/AgentEngine.cs verander, en wanneer was die laaste verandering?",
+    "answer": "Louis Marais het die meeste aan `AgentEngine.cs` verander, gemeet aan commits. Hy het 33 van die 33 commits gemaak, maar git sien drie verskillende name:\n\n- `Louis Marais`: 27 commits\n- `louis marais`: 5 commits\n- `Louis`: 1 commit (die eerste commit, `574d89c`)\n\nEk het aanvaar dis een persoon. As die e-posadresse verskil, kan dit anders wees.\n\nDie laaste verandering was **14 Oktober 2026**, commit `873e94d`, deur `louis marais`, met die boodskap \"FX14: a sub-session's prompt has a budget\".\n\nEk het nie reëls bygevoeg of verwyder gemeet nie, so as jy wil weet wie die meeste kode geskryf het (en nie net hoeveel keer), kan ek dit ook uitwerk.",
+    "tools": [
+      "StartSubSession"
+    ],
+    "specialists": [
+      "puls"
+    ],
+    "delegations": [
+      {
+        "toolsets": [
+          "git"
+        ],
+        "personality": "puls-historian"
+      }
+    ],
+    "error": null,
+    "seconds": 21.2
+  },
+  {
+    "task": "numbers-2",
+    "question": "Hoeveel toetsmetodes ([Test] of [TestCase]) is daar onder tests/louis-agent.core.tests?",
+    "answer": "Daar is **716 `[Test]`-attribute** en **266 `[TestCase]`-attribute** onder `tests/louis-agent.core.tests`, in 74 `.cs`-lêers.\n\nDit is die aantal attribute, nie noodwendig die aantal metodes nie. 'n Metode met meerdere `[TestCase]`-reëls tel elke keer as 'n aparte voorkoms, so die aantal unieke toetsmetodes is laer as 716 + 266. Ek het dit nie apart getel nie. Sê gerus as jy ddit wil hê.\n\nDie grootste lêers is `DevOpsToolsTests.cs` (55 `[Test]`), `PaymoToolsTests.cs` (51 `[Test]`) en `WebToolsTests.cs` (31 `[Test]`, 32 `[TestCase]`). `[TestMethod]`, `[Fact]` en `[Theory]` kom nie voor nie. `bin`, `obj` en verborge gidse is oorgeslaan.",
+    "tools": [
+      "StartSubSession"
+    ],
+    "specialists": [
+      "puls"
+    ],
+    "delegations": [
+      {
+        "toolsets": [
+          "files",
+          "python"
+        ],
+        "personality": "puls-analyst"
+      }
+    ],
+    "error": null,
+    "seconds": 25.7
+  },
+  {
+    "task": "chat-2",
+    "question": "Skryf 'n kort verjaardagboodskap vir my ma in Afrikaans.",
+    "answer": "Hier is 'n kort boodskap wat jy kan gebruik:\n\n*Ma, baie geluk met jou verjaardag! Dankie dat jy altyd daar is, met die beste raad, die warmste kos en 'n skouer wanneer ek dit nodig het. Ek hoop jou dag is vol liefde, lag en al jou gunsteling dinge. Geniet dit, want jy verdien dit elke dag. Ek is lief vir jou!*\n\nWil jy dit meer speels, meer formeel, of met 'n spesifieke herinnering wat jy daarin wil hê?",
+    "tools": [],
+    "specialists": [],
+    "delegations": [],
+    "error": null,
+    "seconds": 2.4
+  }
+]

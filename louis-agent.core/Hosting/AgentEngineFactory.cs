@@ -69,7 +69,7 @@ public sealed class AgentEngineFactory
     public IReadOnlyList<string> Available => ToolsetCatalog.All.Where(t => t.IsAvailable(Context)).Select(t => t.Name).ToList();
 
     /// <summary>The named personalities a session can choose (F21), built in and in the skills folder.</summary>
-    public IReadOnlyList<string> AvailablePersonalities => Personalities.Available(_agent.SkillsDirectory ?? AgentHost.FindSkillsDirectory(_agent));
+    public IReadOnlyList<string> AvailablePersonalities => AgentHost.EnabledPersonalities(_agent);
 
     /// <summary>
     /// The role for a sub-session with <paramref name="toolsets"/> when its parent named none: from

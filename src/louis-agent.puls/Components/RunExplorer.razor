@@ -1,0 +1,516 @@
+@* F27 steps 8–10: a finished run's data as charts you drill into (Louis: "we need to visualise this; drill down to the
+   lowest level of all data"; "fancy animations, inspired by the landing page"; "the whole chat transcript as it was
+   typed"; "always show baseline and delegated next to each other, at every level"). The modes are the columns at every
+   level, in the run's order, so the same conversation, turn and transcript sit side by side: the run (stat tiles, cost
+   per conversation by mode, the token mix); the conversations of each mode (cost split Puls/specialist, the token mix);
+   a conversation's turns on a timeline of its model requests, per mode; a turn's requests, thinking, calls and answer
+   per mode, with every mode's conversation replayed together as it was typed; and one request's full record, the only
+   level that stands alone. Forms and colours follow the dataviz method: bars for magnitude in one hue, stacks for
+   part-to-whole with a fixed categorical order validated for a dark surface, a legend for two or more series, thin
+   marks with a surface gap, hover tooltips that never gate. Motion: bars grow from the baseline, rows rise staggered,
+   numbers count up, a level zooms in from the row you clicked; all off for people who ask for less. *@
+@using System.Text.Json
+@using LouisAgent.Web.Shared
+@using LouisAgent.Web.Shared.Services
+@inject AgentApi Api
+@inject IJSRuntime Js
+@implements IDisposable
+
+<div class="explorer">
+    <nav class="crumbs" aria-label="Pad">
+        <button type="button" class="crumb @(_level == 0 ? "here" : "")" @onclick="() => Go(0)">Lopie</button>
+        @if (_level >= 1) { <span class="crumb-sep">›</span><button type="button" class="crumb @(_level == 1 ? "here" : "")" @onclick="() => Go(1)">Gesprekke</button> }
+        @if (_level >= 2) { <span class="crumb-sep">›</span><button type="button" class="crumb @(_level == 2 ? "here" : "")" @onclick="() => Go(2)"><code>@_task</code></button> }
+        @if (_level >= 3) { <span class="crumb-sep">›</span><button type="button" class="crumb @(_level == 3 ? "here" : "")" @onclick="() => Go(3)">Beurt @_turn</button> }
+        @if (_level == 4 && _request is { } rq) { <span class="crumb-sep">›</span><span class="crumb here">@_requestMode?.Name · versoek @rq.Round</span> }
+    </nav>
+
+    <div class="lvl @(_dir)" @key="LevelKey">
+    @if (_level == 0)
+    {
+        @* Level 0: the run. Stat tiles lead (the headline numbers, one per mode), then two charts. *@
+        <div class="tiles">
+            @foreach (var (m, i) in Columns)
+            {
+                <button type="button" class="tile" style="--i: @i" @onclick="() => Open(() => _level = 1)">
+                    <span class="tile-label"><span class="sw" style="background: @Series(i)"></span>@m.Name</span>
+                    <strong class="tile-value" data-count="@Money(m.Cost)">@Money(m.Cost)</strong>
+                    <span class="tile-meta">@UsageFormat.Tokens(m.Tokens) tokens · @m.Rows.Count versoeke · @m.Tasks.Count gesprekke</span>
+                    <span class="tile-split"><span class="sw" style="background: @Own"></span>Puls @Money(m.Rows.Where(r => !r.Specialist).Sum(r => r.Cost)) <span class="sw" style="background: @Spec"></span>spesialiste @Money(m.Rows.Where(r => r.Specialist).Sum(r => r.Cost))</span>
+                </button>
+            }
+        </div>
+
+        <section class="chart">
+            <div class="chart-head"><strong>Koste per gesprek</strong><span class="legend">@foreach (var (m, i) in Columns) { <span><span class="sw" style="background: @Series(i)"></span>@m.Name</span> }</span></div>
+            @{ var tasks = _modes.SelectMany(m => m.Tasks.Select(t => t.Task)).Distinct().ToList(); decimal top = Math.Max(0.000001m, _modes.SelectMany(m => m.Tasks).Select(t => t.Cost).DefaultIfEmpty(0m).Max()); int row = 0; }
+            <div class="xbars">
+                @foreach (string task in tasks)
+                {
+                    <div class="xbar-row" style="--i: @(row++)" title="@Question(task)">
+                        <span class="xbar-label"><code>@task</code><small>@Blurb(Question(task))</small></span>
+                        <span class="xbar-group">
+                            @foreach (var (m, i) in Columns)
+                            {
+                                var t = m.Tasks.FirstOrDefault(x => x.Task == task);
+                                decimal cost = t?.Cost ?? 0m;
+                                <button type="button" class="xbar" title="@($"{m.Name} · {task}: {Money(cost)}")" disabled="@(t is null)" @onclick="() => { if (t is not null) Open(() => { _level = 2; _task = task; }); }">
+                                    <span class="xbar-fill" style="width: @Pct(cost, top)%; background: @Series(i)"></span>
+                                    <span class="xbar-value">@Money(cost)</span>
+                                </button>
+                            }
+                        </span>
+                    </div>
+                }
+            </div>
+        </section>
+
+        <section class="chart">
+            <div class="chart-head"><strong>Tokens per modus</strong>@TokenLegend()</div>
+            <div class="xbars">
+                @foreach (var (m, i) in Columns)
+                {
+                    <div class="xbar-row" style="--i: @i">
+                        <span class="xbar-label">@m.Name</span>
+                        <span class="xstack-wrap">@Stack(m.Rows, _modes.Max(x => x.Tokens))</span>
+                        <span class="xbar-value">@UsageFormat.Tokens(m.Tokens)</span>
+                    </div>
+                }
+            </div>
+        </section>
+    }
+    else if (_level == 1)
+    {
+        @* Level 1: each mode's conversations side by side, cost split between Puls's own requests and the specialist's. *@
+        <div class="chart-head lead"><strong>Gesprekke</strong><span class="legend"><span><span class="sw" style="background: @Own"></span>Puls self</span><span><span class="sw" style="background: @Spec"></span>spesialis</span></span></div>
+        <div class="compare">
+            @foreach (var (m, i) in Columns)
+            {
+                decimal topTask = Math.Max(0.000001m, m.Tasks.Select(t => t.Cost).DefaultIfEmpty(0m).Max());
+                long topTok = Math.Max(1, m.Tasks.Select(t => t.Rows.Sum(r => r.Tokens)).DefaultIfEmpty(0L).Max());
+                int row1 = 0, row2 = 0;
+                <section class="compare-col" style="--i: @i">
+                    <h3 class="compare-head"><span class="sw" style="background: @Series(i)"></span>@m.Name<span class="muted">@m.Tasks.Count gesprekke · @m.Rows.Count versoeke · @Money(m.Cost)</span></h3>
+                    <section class="chart">
+                        <div class="xbars">
+                            @foreach (var t in m.Tasks)
+                            {
+                                decimal own = t.Rows.Where(r => !r.Specialist).Sum(r => r.Cost), spec = t.Rows.Where(r => r.Specialist).Sum(r => r.Cost);
+                                <div class="xbar-row" style="--i: @(row1++)">
+                                    <span class="xbar-label" title="@Question(t.Task)"><code>@t.Task</code><small>@Blurb(Question(t.Task))</small><small>@(string.Join(" / ", t.Turns.Select(x => x.Specialist).Distinct())) · @t.Turns.Count beurte · @t.Rows.Count versoeke</small></span>
+                                    <button type="button" class="xbar stacked" title="@($"{t.Task}: Puls {Money(own)}, spesialis {Money(spec)}")" @onclick="() => Open(() => { _level = 2; _task = t.Task; })">
+                                        <span class="xbar-fill" style="width: @Pct(own, topTask)%; background: @Own"></span><span class="xbar-fill" style="width: @Pct(spec, topTask)%; background: @Spec"></span>
+                                        <span class="xbar-value">@Money(t.Cost)</span>
+                                    </button>
+                                </div>
+                            }
+                        </div>
+                    </section>
+                    <section class="chart">
+                        <div class="chart-head"><strong>Tokens per gesprek</strong>@TokenLegend()</div>
+                        <div class="xbars">
+                            @foreach (var t in m.Tasks)
+                            {
+                                <div class="xbar-row" style="--i: @(row2++)">
+                                    <span class="xbar-label"><code>@t.Task</code></span>
+                                    <span class="xstack-wrap">@Stack(t.Rows, topTok)</span>
+                                    <span class="xbar-value">@UsageFormat.Tokens(t.Rows.Sum(r => r.Tokens))</span>
+                                </div>
+                            }
+                        </div>
+                    </section>
+                </section>
+            }
+        </div>
+    }
+    else if (_level == 2)
+    {
+        @* Level 2: the conversation in each mode side by side: its turns on a timeline of model requests, Puls's lane and the specialist's. *@
+        <div class="chart-head lead"><strong><code>@_task</code></strong><span class="muted">@Blurb(Question(_task!))</span><span class="legend"><span><span class="sw" style="background: @Own"></span>Puls self</span><span><span class="sw" style="background: @Spec"></span>@Specialists()</span></span></div>
+        <div class="compare">
+            @foreach (var (m, i) in Columns)
+            {
+                var t = TaskIn(m);
+                <section class="compare-col" style="--i: @i">
+                    <h3 class="compare-head"><span class="sw" style="background: @Series(i)"></span>@m.Name<span class="muted">@(t is null ? "nie in hierdie modus nie" : $"{t.Turns.Count} beurte · {t.Rows.Count} versoeke · {Money(t.Cost)}")</span></h3>
+                    @if (t is not null)
+                    {
+                        foreach (var (tu, j) in t.Turns.Select((x, j) => (x, j)))
+                        {
+                            <section class="chart turn-chart" style="--i: @j">
+                                <button type="button" class="turn-head" @onclick="() => Open(() => { _level = 3; _turn = tu.N; })">
+                                    <span class="tree-turn-n">Beurt @tu.N</span><span class="tree-question">@tu.Question</span>
+                                    <span class="chip">@Money(tu.Cost)</span><span class="chip">@tu.Rows.Count versoeke</span><span class="chip">@Seconds(tu) s</span><span class="chevron" aria-hidden="true"></span>
+                                </button>
+                                @Timeline(tu, null)
+                            </section>
+                        }
+                    }
+                </section>
+            }
+        </div>
+    }
+    else if (_level == 3)
+    {
+        @* Level 3: the turn in each mode side by side: its timeline, its requests, and the conversation itself, every mode replayed together as it was typed. *@
+        <div class="chart-head lead"><strong>Beurt @_turn</strong><span class="muted"><code>@_task</code></span>
+            <span class="legend"><span><span class="sw" style="background: @Own"></span>Puls self</span><span><span class="sw" style="background: @Spec"></span>@Specialists()</span></span></div>
+        @if (Question(_task!) is { Length: > 0 } q) { <div class="explorer-q"><span class="muted">Vraag</span> @q</div> }
+        <div class="replay-bar">
+            @if (_replaying) { <button type="button" class="header-button" @onclick="StopReplay"><span class="ic i-pulse" aria-hidden="true"></span>Stop</button><span class="muted working">speel af soos getik…</span> }
+            else if (_replayable is false) { <span class="muted">Hierdie lopie het nie sy gebeure gestoor nie; die volgende lopies doen.</span> }
+            else { <button type="button" class="header-button" @onclick="ReplayAsync"><span class="ic i-pulse" aria-hidden="true"></span>Speel af soos getik</button> }
+        </div>
+        <div class="compare">
+            @foreach (var (m, i) in Columns)
+            {
+                var tu = TurnIn(m);
+                <section class="compare-col" style="--i: @i">
+                    <h3 class="compare-head"><span class="sw" style="background: @Series(i)"></span>@m.Name<span class="muted">@(tu is null ? "geen beurt in hierdie modus nie" : $"{Money(tu.Cost)} · {tu.Rows.Count} versoeke · {Seconds(tu)} s")</span></h3>
+                    @if (tu is not null)
+                    {
+                        @Timeline(tu, r => Open(() => { _level = 4; _request = r; _requestMode = m; }))
+                        <div class="explorer-turn">
+                            @if (_replays.TryGetValue(m.Name, out var turn))
+                            {
+                                <div class="xreplay"><TurnView Turn="turn" Streaming="_replaying" Currency="Currency" /></div>
+                            }
+                            else
+                            {
+                                @if (_replaying) { <p class="muted">Geen gebeure vir hierdie modus nie.</p> }
+                                @if (tu.Thinking is { Length: > 0 } th) { <details class="admin-details"><summary>Puls se denke</summary><blockquote class="explorer-think">@th</blockquote></details> }
+                                @if (tu.SpecialistThinking is { Length: > 0 } sth) { <details class="admin-details"><summary>@tu.Specialist se denke</summary><blockquote class="explorer-think">@sth</blockquote></details> }
+                                @if (tu.Calls is { Count: > 0 } calls) { <details class="admin-details"><summary>@tu.Specialist se oproepe (@calls.Count)</summary><ol class="explorer-calls">@foreach (var c in calls) { <li><code>@c</code></li> }</ol></details> }
+                                @if (tu.Answer is { Length: > 0 } a) { <details class="admin-details" open><summary>Antwoord</summary><div class="markdown admin-markdown">@Markdown.ToHtml(a)</div></details> }
+                            }
+                        </div>
+                    }
+                </section>
+            }
+        </div>
+    }
+    else if (_request is { } r)
+    {
+        @* Level 4: one model request, the lowest level: its figures as tiles, its tokens, its record. *@
+        <div class="tiles small">
+            <div class="tile" style="--i: 0"><span class="tile-label">koste</span><strong class="tile-value" data-count="@Money(r.Cost)">@Money(r.Cost)</strong></div>
+            <div class="tile" style="--i: 1"><span class="tile-label">tokens</span><strong class="tile-value">@UsageFormat.Tokens(r.Tokens)</strong></div>
+            <div class="tile" style="--i: 2"><span class="tile-label">tyd</span><strong class="tile-value">@((r.DurationMs / 1000m).ToString("0.0", System.Globalization.CultureInfo.InvariantCulture)) s</strong></div>
+            <div class="tile" style="--i: 3"><span class="tile-label">model</span><strong class="tile-value model">@r.Model</strong><span class="tile-meta">@_requestMode?.Name · @r.Purpose · @r.Stop · rondte @r.Round</span></div>
+        </div>
+        <section class="chart">
+            <div class="chart-head"><strong>Tokens</strong>@TokenLegend()</div>
+            <div class="xbars"><div class="xbar-row" style="--i: 0"><span class="xbar-label">@(r.Specialist ? (_requestMode is { } rm ? TurnIn(rm)?.Specialist : null) ?? "spesialis" : "Puls")</span><span class="xstack-wrap">@Stack([r], r.Tokens)</span><span class="xbar-value">@UsageFormat.Tokens(r.Tokens)</span></div></div>
+            <dl class="explorer-fields">
+                <dt>invoer</dt><dd>@r.Input.ToString("N0")</dd><dt>kas geskryf</dt><dd>@r.CacheWrite.ToString("N0")</dd><dt>kas gelees</dt><dd>@r.CacheRead.ToString("N0")</dd><dt>uitvoer</dt><dd>@r.Output.ToString("N0")</dd>
+                <dt>wanneer</dt><dd>@r.At.ToLocalTime().ToString("HH:mm:ss.fff")</dd><dt>sessie</dt><dd><code>@r.Session</code></dd>
+                @if (r.Parent is { } p) { <dt>ouer</dt><dd><code>@p</code></dd> }
+            </dl>
+        </section>
+        <details class="admin-details"><summary>Die rekord (JSON)</summary><pre class="admin-pre">@r.Json</pre></details>
+    }
+    </div>
+</div>
+
+@code {
+    /// <summary>One mode of the run: its name (folder), its ledger rows (JSON lines) and its answers (JSON), as saved.</summary>
+    public sealed record ModeData(string Name, string Usage, string Answers);
+
+    [Parameter, EditorRequired] public IReadOnlyList<ModeData> Modes { get; set; } = [];
+    [Parameter] public CurrencyChoice? Currency { get; set; }
+
+    /// <summary>The run's folder, for the replay's events; null for a run without one.</summary>
+    [Parameter] public string? Folder { get; set; }
+
+    // The dataviz reference palette's dark column, in its validated order: slots 1–4 for the token kinds (a stack of
+    // four), slots 1–3 for modes side by side. Puls's own and the specialist's requests: slot 1 and Puls's orange.
+    private static readonly string[] Palette = ["#3987e5", "#d95926", "#199e70", "#c98500", "#d55181", "#008300"];
+    private const string Own = "#3987e5", Spec = "#f58220";
+    private static string Series(int i) => Palette[i % Palette.Length];
+
+    private sealed record Request(DateTimeOffset At, int Round, string Purpose, string Session, int? Turn, string? Task, string Model,
+        long Input, long CacheWrite, long CacheRead, long Output, long DurationMs, string? Stop, decimal Cost, string? Parent, string Json)
+    {
+        public bool Specialist => Parent is not null;
+        public long Tokens => Input + CacheWrite + CacheRead + Output;
+        public DateTimeOffset Start => At - TimeSpan.FromMilliseconds(DurationMs);
+    }
+
+    private sealed class TurnNode
+    {
+        public int N; public List<Request> Rows = []; public string? Question, Answer, Thinking, SpecialistThinking, Role; public List<string>? Calls;
+        public string Specialist => Role ?? "spesialis";
+        public decimal Cost => Rows.Sum(r => r.Cost);
+    }
+    private sealed class TaskNode { public string Task = ""; public List<TurnNode> Turns = []; public List<Request> Rows => Turns.SelectMany(t => t.Rows).ToList(); public decimal Cost => Rows.Sum(r => r.Cost); }
+    private sealed class ModeNode
+    {
+        public string Name = ""; public List<Request> Rows = []; public List<TaskNode> Tasks = [];
+        public decimal Cost => Rows.Sum(r => r.Cost); public long Tokens => Rows.Sum(r => r.Tokens);
+    }
+
+    private List<ModeNode> _modes = [];
+
+    // Where we are: the level, and the conversation and turn every mode's column shows; a request belongs to one mode.
+    private int _level;
+    private string? _task; private int? _turn; private Request? _request; private ModeNode? _requestMode;
+    private string _dir = "in";
+    private string LevelKey => $"{_level}|{_task}|{_turn}|{_request?.Session}#{_request?.Round}";
+
+    /// <summary>The modes as columns, in the run's order, each with its colour.</summary>
+    private IEnumerable<(ModeNode Mode, int I)> Columns => _modes.Select((m, i) => (m, i));
+    private TaskNode? TaskIn(ModeNode m) => _task is null ? null : m.Tasks.FirstOrDefault(t => t.Task == _task);
+    private TurnNode? TurnIn(ModeNode m) => _turn is null ? null : TaskIn(m)?.Turns.FirstOrDefault(t => t.N == _turn);
+    private string Specialists() => string.Join(" / ", _modes.Select(TaskIn).Where(t => t is not null).SelectMany(t => t!.Turns).Select(t => t.Specialist).Distinct());
+
+    // The replay (step 10): each mode's turn rebuilt from its saved events, applied at the pace they came, all at once.
+    private readonly Dictionary<string, Turn> _replays = [];
+    private bool _replaying;
+    private bool? _replayable;
+    private CancellationTokenSource? _replayStop;
+    private readonly Dictionary<string, string?> _events = [];
+    private sealed record Line(double T, string Type, JsonElement Data, string? Question);
+
+    protected override void OnParametersSet()
+    {
+        _modes = Modes.Select(Build).ToList();
+        _level = 0; _task = null; _turn = null; _request = null; _requestMode = null;
+        ResetReplay();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        // The numbers count up to their value (the landing page's pulsUi.countCosts, keyed on data-count).
+        try { await Js.InvokeVoidAsync("pulsUi.countCosts"); } catch (JSException) { }
+    }
+
+    public void Dispose() => _replayStop?.Cancel();
+
+    private void Open(Action set) { _dir = "in"; ResetReplay(); set(); }
+    private void Go(int level)
+    {
+        _dir = "out"; ResetReplay();
+        _level = level;
+        if (level < 2) _task = null; if (level < 3) _turn = null; if (level < 4) { _request = null; _requestMode = null; }
+    }
+    private void ResetReplay() { _replayStop?.Cancel(); _replayStop = null; _replays.Clear(); _replaying = false; _replayable = Folder is null ? false : null; }
+
+    private static decimal Seconds(TurnNode t) => t.Rows.Count == 0 ? 0 : Math.Round((decimal)(t.Rows.Max(r => r.At) - t.Rows.Min(r => r.Start)).TotalSeconds, 1);
+
+    /// <summary>Replays the turn as it was typed, in every mode at once: each mode's saved events for this task and turn, at their own pace (capped), through the chat's TurnStream.</summary>
+    private async Task ReplayAsync()
+    {
+        if (_task is null || _turn is null || Folder is null) return;
+        var plays = new List<(string Mode, List<Line> Lines)>();
+        foreach (var m in _modes)
+        {
+            var lines = await LinesAsync(m.Name, _task, _turn.Value);
+            if (lines.Count > 0) plays.Add((m.Name, lines));
+        }
+        if (plays.Count == 0) { _replayable = false; return; }
+
+        _replayable = true;
+        var stop = _replayStop = new CancellationTokenSource();
+        _replays.Clear();
+        foreach (var (mode, lines) in plays)
+            _replays[mode] = new Turn { UserText = lines.FirstOrDefault(l => l.Type == "question")?.Question ?? Question(_task) ?? "" };
+        _replaying = true;
+        StateHasChanged();
+        try { await Task.WhenAll(plays.Select(p => PlayAsync(_replays[p.Mode], p.Lines, stop.Token))); }
+        catch (OperationCanceledException) { }
+        _replaying = false;
+        StateHasChanged();
+    }
+
+    /// <summary>A mode's saved events for one task and turn, fetched once per mode and kept.</summary>
+    private async Task<List<Line>> LinesAsync(string mode, string task, int turn)
+    {
+        if (!_events.TryGetValue(mode, out string? text))
+        {
+            try { text = await Api.GetTextAsync($"admin/benchmarks/runs/{Uri.EscapeDataString(Folder!)}/replay?mode={Uri.EscapeDataString(mode)}"); }
+            catch (AgentApiException) { text = null; }
+            _events[mode] = text;
+        }
+        var lines = new List<Line>();
+        if (text is null) return lines;
+        foreach (string line in text.Split('\n', StringSplitOptions.RemoveEmptyEntries))
+        {
+            try
+            {
+                var e = JsonDocument.Parse(line).RootElement.Clone();
+                if (S(e, "task") != task || (e.TryGetProperty("turn", out var tn) && tn.ValueKind == JsonValueKind.Number ? tn.GetInt32() : 1) != turn) continue;
+                double t = e.TryGetProperty("t", out var tv) && tv.ValueKind == JsonValueKind.Number ? tv.GetDouble() : 0;
+                if (S(e, "event") == "question") lines.Add(new Line(t, "question", default, S(e, "text")));
+                else if (S(e, "event") == "sse" && e.TryGetProperty("data", out var data) && S(e, "type") is { } type) lines.Add(new Line(t, type, data, null));
+            }
+            catch (JsonException) { }
+        }
+        return lines;
+    }
+
+    private async Task PlayAsync(Turn turn, List<Line> lines, CancellationToken stop)
+    {
+        double last = lines[0].T;
+        int since = 0;
+        foreach (var line in lines.Where(l => l.Type != "question"))
+        {
+            // Its own rhythm, three times faster, with no pause longer than a quarter second (a tool call's wait).
+            int wait = (int)Math.Clamp((line.T - last) * 1000 / 3, 0, 250);
+            last = line.T;
+            if (wait > 0) await Task.Delay(wait, stop);
+            TurnStream.Apply(turn, new AgentStreamEvent(line.Type, line.Data));
+            if (++since % 3 == 0 || wait > 0) { StateHasChanged(); since = 0; }
+        }
+    }
+
+    private void StopReplay() { _replayStop?.Cancel(); _replaying = false; }
+
+    /// <summary>The mode's tree: rows by the conversation (own rows carry the task; a specialist's row names its parent session and turn), then by turn.</summary>
+    private static ModeNode Build(ModeData data)
+    {
+        var rows = new List<Request>();
+        foreach (string line in data.Usage.Split('\n', StringSplitOptions.RemoveEmptyEntries))
+        {
+            try { if (Parse(line) is { } r) rows.Add(r); } catch (JsonException) { }
+        }
+        // A sub_session row is Puls's roll-up of a specialist's reply: the same requests as the specialist's own rows.
+        rows = rows.Where(r => r.Purpose != "sub_session").OrderBy(r => r.At).ToList();
+        var sessionTask = rows.Where(r => r.Parent is null && r.Task is not null && !r.Task.StartsWith("sub-session:")).GroupBy(r => r.Session).ToDictionary(g => g.Key, g => g.First().Task!);
+        string? TaskOf(Request r) => r.Task is { } own && !own.StartsWith("sub-session:") ? own
+            : r.Parent is { } p && sessionTask.TryGetValue(p.Split('#')[0], out var t) ? t : r.Task;
+        int TurnOf(Request r) => r.Parent is { } p && p.Contains('#') && int.TryParse(p.Split('#')[1], out int n) ? n : r.Turn ?? 1;
+
+        var mode = new ModeNode { Name = data.Name, Rows = rows };
+        foreach (var byTask in rows.GroupBy(TaskOf))
+        {
+            var task = new TaskNode { Task = byTask.Key ?? "?" };
+            foreach (var byTurn in byTask.GroupBy(TurnOf).OrderBy(g => g.Key))
+                task.Turns.Add(new TurnNode { N = byTurn.Key, Rows = byTurn.ToList() });
+            mode.Tasks.Add(task);
+        }
+        Annotate(mode, data.Answers);
+        return mode;
+    }
+
+    /// <summary>The questions, answers, thinking and calls from answers.json: the cook check's shape (turns) or the delegation check's (one per task).</summary>
+    private static void Annotate(ModeNode mode, string answers)
+    {
+        try
+        {
+            using var doc = JsonDocument.Parse(answers);
+            foreach (var a in doc.RootElement.EnumerateArray())
+            {
+                string? key = S(a, "task");
+                var task = mode.Tasks.FirstOrDefault(x => x.Task == key);
+                if (task is null) continue;
+                if (a.TryGetProperty("turns", out var turns) && turns.ValueKind == JsonValueKind.Array)
+                {
+                    int n = 0;
+                    foreach (var turn in turns.EnumerateArray())
+                    {
+                        n++;
+                        var node = task.Turns.FirstOrDefault(x => x.N == n);
+                        if (node is null) task.Turns.Add(node = new TurnNode { N = n });
+                        Fill(node, turn);
+                    }
+                    string? carried = null;
+                    foreach (var tn in task.Turns.OrderBy(x => x.N)) { if (tn.Role is not null) carried = tn.Role; else tn.Role = carried; }
+                }
+                else
+                {
+                    var node = task.Turns.FirstOrDefault() ?? new TurnNode { N = 1 };
+                    if (!task.Turns.Contains(node)) task.Turns.Add(node);
+                    Fill(node, a);
+                }
+            }
+        }
+        catch (JsonException) { }
+    }
+
+    private static void Fill(TurnNode node, JsonElement turn)
+    {
+        node.Question = S(turn, "question"); node.Answer = S(turn, "answer"); node.Thinking = S(turn, "thinking"); node.SpecialistThinking = S(turn, "specialist_thinking");
+        // The role Puls passed on StartSubSession; a continued turn inherits it (Annotate carries the task's last role forward).
+        if (turn.TryGetProperty("delegations", out var ds) && ds.ValueKind == JsonValueKind.Array)
+            node.Role = ds.EnumerateArray().Select(d => S(d, "personality")).FirstOrDefault(r => !string.IsNullOrEmpty(r));
+        if (turn.TryGetProperty("specialist_calls", out var calls) && calls.ValueKind == JsonValueKind.Array)
+            node.Calls = calls.EnumerateArray().Select(c => $"{S(c, "name")}({(c.TryGetProperty("input", out var i) ? string.Join(", ", i.EnumerateObject().Select(p => p.Value.ValueKind == JsonValueKind.String ? p.Value.GetString() : p.Value.GetRawText())) : "")})").ToList();
+    }
+
+    private static string? S(JsonElement e, string name) => e.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.String ? v.GetString() : null;
+    private static long L(JsonElement e, string name) => e.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.Number ? v.GetInt64() : 0;
+
+    private static Request? Parse(string line)
+    {
+        using var doc = JsonDocument.Parse(line);
+        var r = doc.RootElement;
+        if (r.ValueKind != JsonValueKind.Object) return null;
+        var tokens = r.TryGetProperty("tokens", out var tk) && tk.ValueKind == JsonValueKind.Object ? tk : default;
+        decimal cost = r.TryGetProperty("cost", out var c) && c.ValueKind == JsonValueKind.Object && c.TryGetProperty("amount", out var am) && am.ValueKind == JsonValueKind.Number ? am.GetDecimal() : 0m;
+        return new Request(
+            r.TryGetProperty("at", out var at) && at.TryGetDateTimeOffset(out var when) ? when : DateTimeOffset.MinValue,
+            (int)L(r, "round"), S(r, "purpose") ?? "", S(r, "session") ?? "", r.TryGetProperty("turn", out var tn) && tn.ValueKind == JsonValueKind.Number ? tn.GetInt32() : null,
+            S(r, "task"), S(r, "model") ?? "",
+            tokens.ValueKind == JsonValueKind.Object ? L(tokens, "input") : 0, tokens.ValueKind == JsonValueKind.Object ? L(tokens, "cache_write") : 0,
+            tokens.ValueKind == JsonValueKind.Object ? L(tokens, "cache_read") : 0, tokens.ValueKind == JsonValueKind.Object ? L(tokens, "output") : 0,
+            L(r, "duration_ms"), S(r, "stop"), cost, S(r, "parent"), JsonSerializer.Serialize(r, new JsonSerializerOptions { WriteIndented = true }));
+    }
+
+    private string Money(decimal usd) => UsageFormat.Money(usd, "USD", Currency);
+
+    /// <summary>The conversation's first question, from whichever mode has it (the names are the check's; the question says what was asked).</summary>
+    private string? Question(string task) =>
+        _modes.SelectMany(m => m.Tasks).Where(t => t.Task == task).SelectMany(t => t.Turns).Select(t => t.Question).FirstOrDefault(q => !string.IsNullOrEmpty(q));
+
+    private static string Blurb(string? question) => string.IsNullOrEmpty(question) ? "" : question.Length <= 56 ? question : question[..55].TrimEnd() + "…";
+
+    /// <summary>The turn's requests on a timeline: Puls's lane and the specialist's, each request a bar from its start to its end, the hovered one lifting; a click opens the request when <paramref name="open"/> is given.</summary>
+    private RenderFragment Timeline(TurnNode turn, Action<Request>? open) => __builder =>
+    {
+        if (turn.Rows.Count == 0) { <p class="muted">Geen versoeke nie.</p> return; }
+        var start = turn.Rows.Min(r => r.Start); double span = Math.Max(1, (turn.Rows.Max(r => r.At) - start).TotalMilliseconds);
+        <div class="timeline">
+            @foreach (var (lane, label, specialist) in new[] { (0, "Puls", false), (1, turn.Specialist, true) })
+            {
+                <div class="lane">
+                    <span class="lane-label"><span class="sw" style="background: @(specialist ? Spec : Own)"></span>@label</span>
+                    <div class="lane-track">
+                        @foreach (var (r, i) in turn.Rows.Where(r => r.Specialist == specialist).Select((r, i) => (r, i)))
+                        {
+                            double left = (r.Start - start).TotalMilliseconds / span * 100, width = Math.Max(0.6, r.DurationMs / span * 100);
+                            <button type="button" class="tl-bar" style="--i: @i; left: @F(left)%; width: @F(width)%; background: @(specialist ? Spec : Own)" title="@($"versoek {r.Round} · {Money(r.Cost)} · {UsageFormat.Tokens(r.Tokens)} tokens · {r.DurationMs} ms · {r.Stop}")" disabled="@(open is null)" @onclick="() => open?.Invoke(r)">
+                                <span class="tl-tip"><strong>@Money(r.Cost)</strong> versoek @r.Round · @UsageFormat.Tokens(r.Tokens) tokens · @r.DurationMs ms</span>
+                            </button>
+                        }
+                    </div>
+                </div>
+            }
+            <div class="lane axis"><span class="lane-label"></span><div class="lane-track"><span class="axis-l">0 s</span><span class="axis-r">@((span / 1000).ToString("0.0", System.Globalization.CultureInfo.InvariantCulture)) s</span></div></div>
+        </div>
+    };
+
+    /// <summary>The four token kinds stacked, in the palette's fixed order, with a 2px surface gap between segments; widths against <paramref name="top"/> so siblings compare.</summary>
+    private static RenderFragment Stack(IEnumerable<Request> rows, long top) => __builder =>
+    {
+        var list = rows.ToList();
+        long[] parts = [list.Sum(r => r.Input), list.Sum(r => r.CacheWrite), list.Sum(r => r.CacheRead), list.Sum(r => r.Output)];
+        string[] names = ["invoer", "kas geskryf", "kas gelees", "uitvoer"];
+        long scale = Math.Max(1, top);
+        <span class="xstack" title="@string.Join(" · ", names.Select((n, i) => $"{n} {parts[i]:N0}"))">
+            @for (int i = 0; i < 4; i++)
+            {
+                if (parts[i] > 0) { <span class="xseg" style="--i: @i; width: @Pct(parts[i], scale)%; background: @Series(i)"></span> }
+            }
+        </span>
+    };
+
+    private static RenderFragment TokenLegend() => __builder =>
+    {
+        string[] names = ["invoer", "kas geskryf", "kas gelees", "uitvoer"];
+        <span class="legend">@for (int i = 0; i < 4; i++) { <span><span class="sw" style="background: @Series(i)"></span>@names[i]</span> }</span>
+    };
+
+    private static string F(double v) => Math.Round(v, 2).ToString(System.Globalization.CultureInfo.InvariantCulture);
+    private static string Pct(decimal part, decimal whole) => whole <= 0 ? "0" : Math.Round(part / whole * 100, 1).ToString(System.Globalization.CultureInfo.InvariantCulture);
+    private static string Pct(long part, long whole) => Pct((decimal)part, whole);
+}

@@ -1,0 +1,119 @@
+using LouisAgent.Api.Services;
+
+namespace LouisAgent.Api.Tests;
+
+// F27 step 1 (F27-S3): the checks the portal can run, and every saved run under samples/, newest first, with its cost.
+public class BenchmarkCatalogTests
+{
+    private string _samples = "";
+
+    [SetUp]
+    public void SetUp()
+    {
+        _samples = Path.Combine(Path.GetTempPath(), "louis-samples-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(_samples);
+    }
+
+    [TearDown]
+    public void TearDown() => Directory.Delete(_samples, recursive: true);
+
+    private void Save(string folder, string file, string json)
+    {
+        string path = Path.Combine(_samples, folder, file);
+        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+        File.WriteAllText(path, json);
+    }
+
+    [Test]
+    public void TheChecks_AreTheScripts_TheCooksTwice()
+    {
+        var checks = new BenchmarkCatalog(_samples).Checks;
+
+        Assert.That(checks.Select(c => c.Id), Is.EqualTo(new[] { "cook", "delegation", "puls-alone" }));
+        Assert.That(checks[0].Script, Is.EqualTo("samples/puls-cook-check/run_check.py"));
+        Assert.That(checks[1].Script, Is.EqualTo("samples/puls-check/run_check.py"));
+        // Louis: what the cook adds, from the portal: the cook check's script, Puls alone against Puls with its cook.
+        Assert.That(checks[2].Script, Is.EqualTo("samples/puls-cook-check/run_check.py"));
+        Assert.That(checks[2].Arguments, Is.EqualTo(new[] { "--personalities" }));
+        Assert.That(checks[0].Arguments, Is.Empty);
+    }
+
+    [Test]
+    public void APulsAloneRun_IsItsOwnChecks_NotTheCooks()
+    {
+        // Its folder must not start with a cook prefix ("sample-output-cook"), or the page would file it under the cook.
+        Save("sample-output-puls-alone-20261015-210000", "results.json", """{"puls-only":{"all":{"cost":0.01}}}""");
+
+        var runs = new BenchmarkCatalog(_samples).SavedRuns();
+
+        Assert.That(runs.Single().Check, Is.EqualTo("puls-alone"));
+    }
+
+    [Test]
+    public void SavedRuns_AreListedNewestFirst_WithTheirCost()
+    {
+        // A repeated run has summary.json at its top (cost per mode as mean); a single run has results.json (cost per
+        // mode under "all"). Either counts; a folder with neither doesn't.
+        Save("sample-output-puls-cook", "summary.json", """{"delegated":{"cost":{"mean":0.0229}},"puls-web":{"cost":{"mean":0.0152}}}""");
+        Save("sample-output-puls-cook", "run-1/results.json", """{"delegated":{"all":{"cost":0.0263}}}""");
+        Save("sample-output-puls-check-roles", "results.json", """{"baseline":{"all":{"cost":0.0324}},"delegated":{"all":{"cost":0.0509}}}""");
+        Save("sample-output-short", "README.md", "# not a check run");
+        Directory.SetLastWriteTimeUtc(Path.Combine(_samples, "sample-output-puls-check-roles"), new DateTime(2026, 10, 13, 0, 0, 0, DateTimeKind.Utc));
+        Directory.SetLastWriteTimeUtc(Path.Combine(_samples, "sample-output-puls-cook"), new DateTime(2026, 10, 15, 0, 0, 0, DateTimeKind.Utc));
+
+        var runs = new BenchmarkCatalog(_samples).SavedRuns();
+
+        Assert.That(runs.Select(r => r.Folder), Is.EqualTo(new[] { "sample-output-puls-cook", "sample-output-puls-check-roles" }));
+        Assert.That(runs[0].Check, Is.EqualTo("cook"));
+        Assert.That(runs[0].Cost, Is.EqualTo(0.0381m).Within(0.00001m), "the modes' mean costs, added");
+        Assert.That(runs[0].Repeats, Is.EqualTo(1), "one run-N folder");
+        Assert.That(runs[1].Check, Is.EqualTo("delegation"));
+        Assert.That(runs[1].Cost, Is.EqualTo(0.0833m).Within(0.00001m));
+        Assert.That(runs[1].Repeats, Is.EqualTo(1));
+    }
+
+    [Test]
+    public void NoSamplesFolder_IsAnEmptyList()
+    {
+        Assert.That(new BenchmarkCatalog(Path.Combine(_samples, "missing")).SavedRuns(), Is.Empty);
+    }
+
+    [Test]
+    public void ARun_IsReadBack_WithItsFiles()
+    {
+        // The page opens a run: its summary or results, and its README, nothing else from disk.
+        Save("sample-output-puls-cook", "summary.json", """{"delegated":{"cost":{"mean":0.02}}}""");
+        Save("sample-output-puls-cook", "summary.md", "# 3 runs per mode");
+        Save("sample-output-puls-cook", "README.md", "# Sample output");
+        // The conversations themselves (Louis: "where do I see the msg that was sent"): one transcript per mode, and
+        // per run-N for a repeated run.
+        Save("sample-output-puls-cook", "run-1/delegated/transcript.md", "# cook-af\n\n## Turn 1: Wat kan ek kook?\n\nBobotie.");
+        Save("sample-output-puls-cook", "run-1/puls-web/transcript.md", "# cook-af\n\nWeb.");
+
+        var run = new BenchmarkCatalog(_samples).Read("sample-output-puls-cook");
+
+        Assert.That(run, Is.Not.Null);
+        Assert.That(run!.Summary, Does.Contain("3 runs per mode"));
+        Assert.That(run.Readme, Does.StartWith("# Sample output"));
+        Assert.That(run.Transcripts.Select(t => t.Name), Is.EqualTo(new[] { "run-1/delegated", "run-1/puls-web" }));
+        Assert.That(run.Transcripts[0].Markdown, Does.Contain("Wat kan ek kook?"));
+
+        // The drill-down (Louis: "drill down to the lowest level of all data"): each mode's ledger rows and answers, as saved.
+        Save("sample-output-puls-cook", "run-1/delegated/usage.jsonl", "{\"round\":1,\"task\":\"cook-af\"}\n{\"round\":2,\"task\":\"cook-af\"}\n");
+        Save("sample-output-puls-cook", "run-1/delegated/answers.json", """[{"task":"cook-af","turns":[]}]""");
+        run = new BenchmarkCatalog(_samples).Read("sample-output-puls-cook");
+        Assert.That(run!.Modes.Select(m => m.Name), Is.EqualTo(new[] { "run-1/delegated" }), "a mode folder with a ledger");
+        Assert.That(run.Modes[0].Usage, Does.Contain("\"round\":2"));
+        Assert.That(run.Modes[0].Answers, Does.StartWith("[{\"task\":\"cook-af\""));
+
+        // The conversation as it was typed (Louis): a mode's forwarded stream events, read on demand, by plain names only.
+        Save("sample-output-puls-cook", "run-1/delegated/events.jsonl", "{\"event\":\"question\"}\n{\"event\":\"sse\"}\n");
+        var catalog = new BenchmarkCatalog(_samples);
+        Assert.That(catalog.ReadEvents("sample-output-puls-cook", "run-1/delegated"), Does.Contain("\"sse\""));
+        Assert.That(catalog.ReadEvents("sample-output-puls-cook", "run-1/puls-web"), Is.Null, "no events saved for that mode");
+        Assert.That(catalog.ReadEvents("sample-output-puls-cook", "../../secrets"), Is.Null, "never outside the run");
+        Assert.That(catalog.ReadEvents("sample-output-puls-cook", "run-1/../../x"), Is.Null);
+        Assert.That(new BenchmarkCatalog(_samples).Read("../secrets"), Is.Null, "never outside samples/");
+        Assert.That(new BenchmarkCatalog(_samples).Read("nope"), Is.Null);
+    }
+}

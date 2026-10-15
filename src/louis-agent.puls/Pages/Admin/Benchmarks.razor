@@ -1,0 +1,500 @@
+@page "/admin"
+@page "/admin/maatstawwe"
+@layout AdminLayout
+@using System.Net
+@using System.Text.Json
+@using LouisAgent.Web.Shared
+@using LouisAgent.Web.Shared.Services
+@inject AgentApi Api
+@inject ChatStore Store
+@inject CurrencyState Currency
+@implements IDisposable
+
+@* F27 step 2: the first admin page. The checks the portal knows, and every run saved under samples/, newest first;
+   a run opens to its summary table, its README and its numbers. Running one from here is step 4. *@
+
+<PageTitle>Maatstawwe · Puls Admin</PageTitle>
+
+<div class="page-head">
+    <div>
+        <h1>Maatstawwe</h1>
+        <p>Die kontroles wat Puls meet, en elke lopie wat onder <code>samples/</code> gestoor is.</p>
+    </div>
+    <div class="page-actions">
+        <button class="header-button" type="button" @onclick="LoadAsync" disabled="@_loading"><span class="ic i-refresh" aria-hidden="true"></span>Herlaai</button>
+    </div>
+</div>
+
+@if (_error is { } error)
+{
+    <section class="card-p admin-gate">
+        <strong>@error</strong>
+        @if (_needsKey)
+        {
+            <p>Die portaal se sleutel is <code>ADMIN_API_KEY</code> (of <code>AGENT_API_KEY</code>) in <code>config/.env.secrets</code>. Vul dit hier in; dit word in hierdie blaaier gehou, soos in Instellings.</p>
+            <form class="admin-key" @onsubmit="SaveKeyAsync">
+                <input type="password" placeholder="die sleutel" @bind="_keyDraft" />
+                <button class="header-button" type="submit">Stoor en herlaai</button>
+            </form>
+        }
+    </section>
+}
+else if (_loading && _data is null)
+{
+    <section class="card-p"><span class="muted">Laai…</span></section>
+}
+else if (_data is { } data)
+{
+  @* Two columns (Louis: the list "will get long, move it to the right"): the checks, the live run and the opened run
+     in the main column; the saved runs as a compact list in a side column that scrolls on its own. *@
+  <div class="admin-cols @(Running ? "single" : "")">
+  <div class="admin-col-main">
+    <div class="cards">
+        @foreach (var check in data.Checks)
+        {
+            @* Rolls up and down (Louis): the header stays, with the chip and the last run's cost. *@
+            var last = data.Runs.FirstOrDefault(r => r.Check == check.Id);
+            <details class="card-p check-card" open>
+                <summary class="card-head">
+                    <strong>@check.Title</strong>
+                    <span class="check-card-meta">@(last is null ? "" : Cost(last.Cost)) <span class="toolset-chip">@check.Id</span><span class="chevron" aria-hidden="true"></span></span>
+                </summary>
+                <p class="muted"><code>@check.Script</code></p>
+                <p class="muted">@(last is null ? "Nog geen gestoorde lopie nie." : $"Laaste lopie: {last.SavedAt.ToLocalTime():yyyy-MM-dd HH:mm}, {Cost(last.Cost)}")</p>
+                <div class="run-controls">
+                    <span class="muted">Herhalings</span>
+                    @* A segmented control, not a native select: the browser's dropdown ignores the theme. *@
+                    <div class="segmented" role="radiogroup" aria-label="Herhalings">
+                        @for (int n = 1; n <= 5; n++)
+                        {
+                            int count = n;
+                            <button type="button" role="radio" aria-checked="@(RepeatFor(check.Id) == count)" class="@(RepeatFor(check.Id) == count ? "active" : "")" disabled="@Running" @onclick="() => _repeats[check.Id] = count">@count</button>
+                        }
+                    </div>
+                    <button class="header-button" type="button" disabled="@Running" title="Spandeer geld: elke lopie vra die model" @onclick="() => StartAsync(check.Id)">
+                        <span class="ic i-pulse" aria-hidden="true"></span>Hardloop
+                    </button>
+                </div>
+            </details>
+        }
+    </div>
+
+    @if (_run is { } live)
+    {
+        <section class="card-p run-panel @(live.Status)">
+            <div class="card-head">
+                <strong>@(data.Checks.FirstOrDefault(c => c.Id == live.Check)?.Title ?? live.Check) · <code>@live.Folder</code></strong>
+                <span class="work-status">@(live.Status switch { "running" => "Besig", "done" => "Klaar", _ => "Misluk" })</span>
+            </div>
+            <p class="muted">@live.Repeat @(live.Repeat == 1 ? "herhaling" : "herhalings") · begin @live.StartedAt.ToLocalTime().ToString("HH:mm:ss")@(live.ExitCode is { } code && code != 0 ? $" · die skrip het met kode {code} geëindig" : "")</p>
+
+            @* The run as a tree (Louis: "merge this view, a tree-like structure"): mode → conversation → turn. Each node
+               carries its figures from the script's progress events; a turn opens to the conversation itself, rendered
+               by the chat's TurnView from the forwarded stream events, so it types out as it happens. The current node at
+               each level is open; a finished one folds, and a node the reader opens stays open. *@
+            <div class="tree">
+                @foreach (var m in _tree)
+                {
+                    bool modeCurrent = m == _tree[^1];
+                    <details class="tree-node tree-mode" open="@modeCurrent">
+                        <summary>
+                            <span class="chevron" aria-hidden="true"></span>
+                            <strong>@m.Mode</strong><span class="tree-meta">@m.Toolsets</span>
+                            <span class="tree-chips">
+                                @if (m.Done is { } d)
+                                {
+                                    <span class="chip">@Cost(Dec(d, "cost"))</span><span class="chip">@Str(d, "tokens") tokens</span><span class="chip">@Str(d, "requests") versoeke</span>
+                                }
+                                else if (live.Status == "running" && modeCurrent)
+                                {
+                                    <span class="chip busy">besig</span>
+                                }
+                            </span>
+                        </summary>
+                        @foreach (var c in m.Conversations)
+                        {
+                            bool convCurrent = modeCurrent && c == m.Conversations[^1];
+                            <details class="tree-node tree-conv" open="@convCurrent">
+                                <summary>
+                                    <span class="chevron" aria-hidden="true"></span>
+                                    <code>@c.Task</code>
+                                    @if (c.Turns.Count > 0) { <span class="tree-question">@c.Turns[0].Turn.UserText</span> }
+                                    <span class="tree-chips">
+                                        @if (c.Summary is { } s)
+                                        {
+                                            <span class="chip @(Bool(s, "routed_right") ? "ok" : "bad")">@(Str(s, "role") ?? "Puls self") @(Bool(s, "routed_right") ? "✓" : "✗")</span>
+                                            @if (Str(s, "follow_up") is { } f) { <span class="chip @(f == "continued" ? "ok" : "")">@f</span> }
+                                            <span class="chip">winkels @Count(s, "shop_hosts") / @Count(s, "hosts")@(Bool(s, "sources_local") ? " · net SA" : "")</span>
+                                            @if (Str(s, "ingredients") is { } items) { <span class="chip @(Dec(s, "priced_ratio") >= 0.8m ? "ok" : Dec(s, "priced_ratio") < 0.5m ? "bad" : "")">geprys @Str(s, "priced") / @items</span> }
+                                            <span class="chip">R-bedrae @Str(s, "rand_amounts")</span>
+                                            <span class="chip">onbevestig @Str(s, "unconfirmed_marks")</span>
+                                            <span class="chip">@Str(s, "seconds") s</span>
+                                        }
+                                        else if (live.Status == "running" && convCurrent)
+                                        {
+                                            <span class="chip busy">besig</span>
+                                        }
+                                    </span>
+                                </summary>
+                                @foreach (var t in c.Turns)
+                                {
+                                    bool turnCurrent = convCurrent && t == c.Turns[^1];
+                                    <details class="tree-node tree-turn" open="@turnCurrent">
+                                        <summary>
+                                            <span class="chevron" aria-hidden="true"></span>
+                                            <span class="tree-turn-n">Beurt @t.N</span>
+                                            <span class="tree-question">@t.Turn.UserText</span>
+                                            <span class="tree-chips">
+                                                @if (t.Summary is { } ts)
+                                                {
+                                                    @if (Str(ts, "role") is { } role) { <span class="chip">@role</span> }
+                                                    else if (Str(ts, "continued") is { } handle) { <span class="chip ok">vervolg · @handle</span> }
+                                                    else { <span class="chip">Puls self</span> }
+                                                    <span class="chip">Puls @Str(ts, "puls_calls")</span>
+                                                    <span class="chip">spesialis @Str(ts, "specialist_calls")</span>
+                                                    @if (Hosts(ts) is { Length: > 0 } hosts) { <span class="chip hosts">@hosts</span> }
+                                                    <span class="chip">@Str(ts, "seconds") s</span>
+                                                    @if (Str(ts, "error") is { } err) { <span class="chip bad" title="@err">fout</span> }
+                                                }
+                                                else if (live.Status == "running" && turnCurrent)
+                                                {
+                                                    <span class="chip busy">tik…</span>
+                                                }
+                                            </span>
+                                        </summary>
+                                        <div class="tree-turn-body">
+                                            <TurnView Turn="t.Turn" Streaming="@(live.Status == "running" && turnCurrent)" Currency="Currency.Current" />
+                                        </div>
+                                    </details>
+                                }
+                            </details>
+                        }
+                    </details>
+                }
+            </div>
+            @{
+                // When the run ends the script prints its report (markdown, from its first heading): rendered, not raw.
+                int report = live.Status == "running" ? -1 : _log.FindIndex(l => l.StartsWith("# "));
+                var plain = report < 0 ? _log : _log.Take(report).ToList();
+            }
+            @if (report >= 0)
+            {
+                <div class="markdown admin-markdown run-report">@Markdown.ToHtml(string.Join("\n", _log.Skip(report)))</div>
+            }
+            <details class="admin-details" open="@(_tree.Count == 0 && report < 0)"><summary>Die skrip se eie reëls (@plain.Count)</summary><pre class="admin-pre run-log">@string.Join("\n", plain)</pre></details>
+        </section>
+    }
+
+    @if (_open is { } open)
+    {
+        <section class="card-p">
+            <div class="card-head"><strong>@open.Run.Folder</strong><span class="muted">@Cost(open.Run.Cost)</span></div>
+            @if (open.Modes.Count > 0)
+            {
+                @* The drill-down first: modes → conversations → turns → requests, from the run's own ledger rows. *@
+                <RunExplorer Modes="open.Modes" Currency="Currency.Current" Folder="@open.Run.Folder" />
+            }
+            @if (open.Summary is { } summary)
+            {
+                <details class="admin-details"><summary>Die verslag (tabel)</summary><div class="markdown admin-markdown">@Markdown.ToHtml(summary)</div></details>
+            }
+            @if (open.Readme is { } readme)
+            {
+                <details class="admin-details"><summary>README</summary><div class="markdown admin-markdown">@Markdown.ToHtml(readme)</div></details>
+            }
+            @* The conversations themselves: the questions sent, the calls, and the answers, one transcript per mode. *@
+            @foreach (var transcript in open.Transcripts)
+            {
+                <details class="admin-details"><summary>Gesprekke · @transcript.Name</summary><div class="markdown admin-markdown run-transcript">@Markdown.ToHtml(transcript.Markdown)</div></details>
+            }
+            @if (open.Results is { } results)
+            {
+                <details class="admin-details"><summary>Die syfers (JSON)</summary><pre class="admin-pre">@results</pre></details>
+            }
+        </section>
+    }
+  </div>
+
+  <aside class="admin-col-side @(Running ? "d-none" : "")">
+    <section class="card-p runs-list">
+        <div class="card-head"><strong>Gestoorde lopies</strong><span class="muted">@data.Runs.Count</span></div>
+        @if (data.Runs.Count == 0)
+        {
+            <p class="muted">Niks onder <code>samples/</code> met 'n <code>summary.json</code> of <code>results.json</code> nie.</p>
+        }
+        else
+        {
+            <ol class="runs">
+                @foreach (var run in data.Runs)
+                {
+                    <li class="run-row @(run.Folder == _open?.Run.Folder ? "selected" : "")" @onclick="() => OpenAsync(run.Folder)" title="@run.Folder">
+                        <div class="run-row-main">
+                            <code>@run.Folder</code>
+                            <small>@(data.Checks.FirstOrDefault(c => c.Id == run.Check)?.Title ?? "—") · @run.SavedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm") · @run.Repeats×</small>
+                        </div>
+                        <strong class="run-row-cost">@Cost(run.Cost)</strong>
+                    </li>
+                }
+            </ol>
+        }
+    </section>
+  </aside>
+  </div>
+}
+
+@code {
+    private sealed record Check(string Id, string Title, string Script);
+    private sealed record Run(string Folder, string? Check, DateTimeOffset SavedAt, int Repeats, decimal? Cost);
+    private sealed record Page(List<Check> Checks, List<Run> Runs);
+    private sealed record Transcript(string Name, string Markdown);
+    private sealed record Opened(Run Run, string? Summary, string? Readme, string? Results, List<Transcript> Transcripts, List<RunExplorer.ModeData> Modes);
+    private sealed record LiveRun(string Id, string Check, string Folder, int Repeat, string Status, int? ExitCode, DateTimeOffset StartedAt);
+
+    private Page? _data;
+    private Opened? _open;
+    private LiveRun? _run;
+    private readonly List<string> _log = [];
+
+    /// <summary>The live run as a tree: a mode, its conversations, their turns; the figures from the script's progress events.</summary>
+    private sealed class ModeNode { public string Mode = ""; public string Toolsets = ""; public List<ConvNode> Conversations = []; public JsonElement? Done; }
+    private sealed class ConvNode { public string Task = ""; public List<TurnNode> Turns = []; public JsonElement? Summary; }
+    private sealed class TurnNode { public int N; public Turn Turn = new(); public JsonElement? Summary; }
+
+    private readonly List<ModeNode> _tree = [];
+    private bool _renderPending;
+
+    /// <summary>Puts one of the script's progress events into the tree; the stream events feed the turn the chat way.</summary>
+    private void Apply(JsonElement e)
+    {
+        string kind = Str(e, "event") ?? "";
+        string modeName = Str(e, "mode") ?? "", task = Str(e, "task") ?? "";
+        var mode = _tree.FirstOrDefault(m => m.Mode == modeName);
+        if (mode is null && kind != "mode") _tree.Add(mode = new ModeNode { Mode = modeName });
+        var conv = mode?.Conversations.FirstOrDefault(c => c.Task == task);
+
+        switch (kind)
+        {
+            case "mode":
+                _tree.Add(new ModeNode { Mode = modeName, Toolsets = Hosts(e, "toolsets") });
+                break;
+            case "mode_done":
+                mode!.Done = e;
+                break;
+            case "question":
+                if (conv is null) mode!.Conversations.Add(conv = new ConvNode { Task = task });
+                conv.Turns.Add(new TurnNode { N = int.TryParse(Str(e, "turn"), out int n) ? n : conv.Turns.Count + 1, Turn = new Turn { UserText = Str(e, "text") ?? "" } });
+                break;
+            case "sse":
+                if (conv is { Turns.Count: > 0 } && e.TryGetProperty("data", out var data) && Str(e, "type") is { } type)
+                    TurnStream.Apply(conv.Turns[^1].Turn, new AgentStreamEvent(type, data));
+                break;
+            case "turn":
+                if (conv is { Turns.Count: > 0 })
+                    (conv.Turns.FirstOrDefault(t => t.N.ToString() == Str(e, "turn")) ?? conv.Turns[^1]).Summary = e;
+                break;
+            case "conversation":
+                if (conv is null) mode!.Conversations.Add(conv = new ConvNode { Task = task });
+                conv.Summary = e;
+                break;
+        }
+    }
+
+    /// <summary>A render at most every 80 ms while events pour in, as the chat does.</summary>
+    private void RenderThrottled()
+    {
+        if (_renderPending) return;
+        _renderPending = true;
+        _ = Task.Delay(80).ContinueWith(_ => InvokeAsync(() => { _renderPending = false; StateHasChanged(); }));
+    }
+
+    private static string? Str(JsonElement e, string name) =>
+        e.TryGetProperty(name, out var v) ? v.ValueKind switch
+        {
+            JsonValueKind.String => v.GetString(),
+            JsonValueKind.Number => v.GetRawText(),
+            JsonValueKind.True => "ja",
+            JsonValueKind.False => "nee",
+            _ => null,
+        } : null;
+
+    private static bool Bool(JsonElement e, string name) => e.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.True;
+
+    private static int Count(JsonElement e, string name) => e.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.Array ? v.GetArrayLength() : 0;
+
+    private static string Hosts(JsonElement e, string name = "hosts") =>
+        e.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.Array ? string.Join(", ", v.EnumerateArray().Select(h => h.GetString())) : "";
+    private string? _error;
+    private bool _needsKey, _loading;
+    private string _keyDraft = "";
+    // Repeats per check (Louis: "when I click one the other updates"), 1 until chosen.
+    private readonly Dictionary<string, int> _repeats = [];
+
+    private int RepeatFor(string check) => _repeats.GetValueOrDefault(check, 1);
+
+    private bool Running => _run?.Status == "running";
+
+    protected override async Task OnInitializedAsync()
+    {
+        // The key lives in the browser's storage; the chat page loads the store, but /admin can be opened directly.
+        if (!Store.Loaded) await Store.LoadAsync();
+        // Costs in the browser's currency (F14), as everywhere in Puls; the ledger's are USD.
+        Currency.Changed += StateHasChanged;
+        await Currency.LoadAsync();
+        await LoadAsync();
+        await ResumeAsync();
+    }
+
+    public void Dispose() => Currency.Changed -= StateHasChanged;
+
+    private static decimal? Dec(JsonElement e, string name) =>
+        e.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.Number ? v.GetDecimal() : null;
+
+    /// <summary>A run started before this page opened (a reload): pick it up and follow it.</summary>
+    private async Task ResumeAsync()
+    {
+        if (_data is null) return;
+        try
+        {
+            var current = ReadLive(await Api.GetAsync<JsonElement>("admin/benchmarks/runs/current"));
+            if (current.Status == "running") await FollowAsync(current);
+        }
+        catch (AgentApiException ex) when (ex.Status == HttpStatusCode.NotFound)
+        {
+            // No run yet.
+        }
+    }
+
+    private async Task StartAsync(string check)
+    {
+        _error = null;
+        try
+        {
+            var started = ReadLive(await Api.PostAsync($"admin/benchmarks/{check}/runs", new { repeat = RepeatFor(check) }));
+            await FollowAsync(started);
+        }
+        catch (AgentApiException ex)
+        {
+            _error = ex.Message;
+        }
+    }
+
+    /// <summary>Shows the run's lines as they arrive; when it ends, lists it among the saved runs and opens it.</summary>
+    private async Task FollowAsync(LiveRun run)
+    {
+        _run = run;
+        _log.Clear();
+        _tree.Clear();
+        StateHasChanged();
+        int lines = 0;
+        try
+        {
+            await foreach (var (type, line) in Api.StreamLinesAsync($"admin/benchmarks/runs/{run.Id}/events"))
+            {
+                lines++;
+                if (type == "done")
+                {
+                    _run = ReadLive(JsonDocument.Parse(line).RootElement);
+                    break;
+                }
+                if (line.StartsWith('@') && TryParse(line[1..], out var e))
+                {
+                    // One bad event must not end the whole story: it goes to the browser's console, the rest goes on.
+                    try { Apply(e); }
+                    catch (Exception ex) when (ex is not OutOfMemoryException) { Console.Error.WriteLine($"[admin] event {lines} of run {run.Id} not applied: {ex.Message}"); }
+                }
+                else _log.Add(line);
+                RenderThrottled();
+            }
+            Console.WriteLine($"[admin] run {run.Id}: {lines} lines, {_tree.Count} modes, {_tree.Sum(m => m.Conversations.Count)} conversations");
+        }
+        catch (AgentApiException ex)
+        {
+            _error = ex.Message;
+            return;
+        }
+        await LoadAsync();
+        if (_run?.Status == "done") await OpenAsync(_run.Folder);
+    }
+
+    private static bool TryParse(string json, out JsonElement element)
+    {
+        try
+        {
+            element = JsonDocument.Parse(json).RootElement.Clone();
+            return element.ValueKind == JsonValueKind.Object;
+        }
+        catch (JsonException)
+        {
+            element = default;
+            return false;
+        }
+    }
+
+    private static LiveRun ReadLive(JsonElement r) => new(
+        r.GetProperty("id").GetString()!, r.GetProperty("check").GetString()!, r.GetProperty("folder").GetString()!,
+        r.GetProperty("repeat").GetInt32(), r.GetProperty("status").GetString()!,
+        r.TryGetProperty("exit_code", out var e) && e.ValueKind == JsonValueKind.Number ? e.GetInt32() : null,
+        r.GetProperty("started_at").GetDateTimeOffset());
+
+    private async Task LoadAsync()
+    {
+        _loading = true;
+        _error = null;
+        try
+        {
+            var json = await Api.GetAsync<JsonElement>("admin/benchmarks");
+            _data = new Page(
+                json.GetProperty("checks").EnumerateArray().Select(c => new Check(c.GetProperty("id").GetString()!, c.GetProperty("title").GetString()!, c.GetProperty("script").GetString()!)).ToList(),
+                json.GetProperty("runs").EnumerateArray().Select(ReadRun).ToList());
+        }
+        catch (AgentApiException ex)
+        {
+            _needsKey = ex.Status is HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden;
+            _error = ex.Message;
+        }
+        catch (HttpRequestException ex)
+        {
+            _error = ex.Message;
+        }
+        _loading = false;
+    }
+
+    private static Run ReadRun(JsonElement r) => new(
+        r.GetProperty("folder").GetString()!,
+        r.TryGetProperty("check", out var c) && c.ValueKind == JsonValueKind.String ? c.GetString() : null,
+        r.GetProperty("saved_at").GetDateTimeOffset(),
+        r.GetProperty("repeats").GetInt32(),
+        r.TryGetProperty("cost", out var cost) && cost.ValueKind == JsonValueKind.Number ? cost.GetDecimal() : null);
+
+    private async Task OpenAsync(string folder)
+    {
+        try
+        {
+            var json = await Api.GetAsync<JsonElement>($"admin/benchmarks/runs/{Uri.EscapeDataString(folder)}");
+            var transcripts = json.TryGetProperty("transcripts", out var ts) && ts.ValueKind == JsonValueKind.Array
+                ? ts.EnumerateArray().Select(t => new Transcript(t.GetProperty("name").GetString()!, t.GetProperty("markdown").GetString() ?? "")).ToList()
+                : [];
+            var modes = json.TryGetProperty("modes", out var ms) && ms.ValueKind == JsonValueKind.Array
+                ? ms.EnumerateArray().Select(m => new RunExplorer.ModeData(m.GetProperty("name").GetString()!, m.GetProperty("usage").GetString() ?? "", m.GetProperty("answers").GetString() ?? "[]")).ToList()
+                : [];
+            _open = new Opened(ReadRun(json.GetProperty("run")), Text(json, "summary"), Text(json, "readme"), Text(json, "results"), transcripts, modes);
+        }
+        catch (AgentApiException ex)
+        {
+            _error = ex.Message;
+        }
+    }
+
+    private static string? Text(JsonElement json, string name) =>
+        json.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.String ? v.GetString() : null;
+
+    private async Task SaveKeyAsync()
+    {
+        await Store.SaveApiKeyAsync(_keyDraft);
+        _keyDraft = "";
+        await LoadAsync();
+    }
+
+    // The checks' costs are USD in the ledger; shown in the browser's currency at the app's rate (F14), as the chat does.
+    private string Cost(decimal? cost) => cost is { } c ? UsageFormat.Money(c, "USD", Currency.Current) : "—";
+}

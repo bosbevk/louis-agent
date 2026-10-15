@@ -9,8 +9,12 @@
     <summary class="delegation-head">
         <span class="delegation-avatar" aria-hidden="true">@Initial</span>
         <span class="delegation-title">
-            <span class="delegation-agent">@Text.DelegatedTo <strong>@Agent</strong></span>
+            <span class="delegation-agent">@Text.DelegatedTo <strong>@Who</strong></span>
             <span class="delegation-toolsets">
+                @if (Delegation.Continued)
+                {
+                    <span class="toolset-chip follow-up">@Text.FollowUp@(Delegation.Handle is { } handle ? " · " + handle : "")</span>
+                }
                 @foreach (string toolset in Delegation.Toolsets)
                 {
                     <span class="toolset-chip">@toolset</span>
@@ -90,7 +94,10 @@
     /// <summary>The peer actually used: named in the call, else reported by its stream or its result (an empty name means the only peer).</summary>
     private string Agent => Delegation.Agent is { Length: > 0 } named ? named : Block.SubAgent ?? Delegation.ResultAgent ?? Text.Specialist;
 
-    private string Initial => Agent[..1].ToUpperInvariant();
+    /// <summary>Who the work went to, as the user thinks of it: the role (F26; Louis: "show oorgedra → role"), else the handle of a continued one, else the peer.</summary>
+    private string Who => Delegation.Role ?? Delegation.Handle ?? Agent;
+
+    private string Initial => Who[..1].ToUpperInvariant();
 
     /// <summary>The cost shown on the rolled-up line.</summary>
     private string? CostLine => Block.SubTurn?.Usage is { } usage ? UsageFormat.Cost(usage, Currency) : null;

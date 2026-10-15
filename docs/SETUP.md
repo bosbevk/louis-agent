@@ -74,6 +74,7 @@ docker compose -f docker/docker-compose.yml --env-file config/.env up -d --build
 | `LLM_SUPPORTS_TOOLS` | Force tool calling on or off (normally inferred from the model) |
 | `AGENT_FUNCTION` | Which `Skills/{name}-skills.md` to load; `louis` loads every skill file |
 | `AGENT_PEERS` | Other louis-agent APIs this one may open sub-sessions on (`StartSubSession`, the `agents` toolset): `name=url` pairs, comma separated. Empty by default for the code-review api; Puls's compose sets it to its specialist (`puls=http://puls-agent:8080`). Peers are called with this deployment's `AGENT_API_KEY` |
+| `PERSONALITIES_ENABLED` | The personalities this instance may use (F29), comma separated (`puls,puls-cook`); another name is refused as an unknown one, and `GET /personalities` lists only these. Empty: every file in `Skills/personalities`. Puls's compose sets it on both containers, so only a role that has passed its check is reachable |
 | `SUB_SESSION_PROMPT_BUDGET` | The most tokens a sub-session's prompt should reach (FX14): when the next request is expected to pass it, the specialist answers from what it has instead of calling more tools. Default `80000`, under Claude Haiku 5.5's long-prompt price step at 100k; `0` turns it off |
 | `REPOSITORIES_PATH` | Host folder mounted at `/repositories` in the containers |
 | `ACP_MOUNT_MAPPINGS` | `HOST_PATH=/container/path` pairs, so Rider's Windows paths (attachments, open file) resolve in the container |
@@ -81,7 +82,7 @@ docker compose -f docker/docker-compose.yml --env-file config/.env up -d --build
 | `API_PORT` | Host port for the API and web app (default `5080`, always bound to `127.0.0.1`) |
 | `PULS_PORT`, `PULS_CODER_PORT`, `PULS_WORKSPACE` | Puls (`docker/docker-compose.puls.yml`): its port (default `5070`), its specialist's (`5071`), both bound to `127.0.0.1`, and the folder mounted as its workspace (default the repo) |
 | `MCP_TRANSPORT`, `MCP_PORT` | MCP server transport: `stdio` (default) or `http`; host port in HTTP mode (default `5090`, bound to `127.0.0.1`) |
-| `WEB_SEARCH_PROVIDER` | `google` or `duckduckgo` (default: Google when its key and engine id are set) |
+| `WEB_SEARCH_PROVIDER` | `tavily`, `google` or `duckduckgo` (default: Tavily when `TAVILY_API_KEY` is set, else Google when its key and engine id are, else DuckDuckGo) |
 | `DEVOPS_ORGANIZATION`, `DEVOPS_PROJECT` | Azure DevOps organisation (`dev.azure.com/<organisation>`) and project for the DevOps tools |
 | `DEVOPS_TEAM` | Optional team: sprints are looked up under it, and an empty sprint means its current sprint |
 | `USAGE_LEDGER` | `on` (default) records every model request's tokens and cost to `{LOG_DIRECTORY}/usage-YYYY-MM.jsonl`; `off` disables it, and with it every usage line (CLI, web app, Rider, the API's `usage` fields, the comms log's costs): `/usage` then says usage isn't tracked. No `LOG_DIRECTORY` has the same effect |
@@ -119,11 +120,20 @@ environment by the tools themselves:
 | `GIT_AUTHOR_NAME`, `GIT_AUTHOR_EMAIL`, `GIT_COMMITTER_NAME`, `GIT_COMMITTER_EMAIL` | Identity for commits made from the web app's Changes view |
 | `PAYMO_API_KEY` | Enables the Paymo tools |
 | `DEVOPS_API_KEY` | Azure DevOps personal access token; enables the DevOps tools (with the settings below) |
-| `GOOGLE_SEARCH_API_KEY`, `GOOGLE_SEARCH_ENGINE_ID` | Google web search (otherwise DuckDuckGo) |
+| `ADMIN_API_KEY` | The admin portal's key (`/admin`, Puls's *Admin* menu); falls back to `AGENT_API_KEY`; with neither the portal is closed |
+| `TAVILY_API_KEY` | Tavily web search (1,000 free credits a month; the default once set) and `ReadRenderedPage`, which renders JavaScript pages through Tavily Extract (two credits per five pages) |
+| `GOOGLE_SEARCH_API_KEY`, `GOOGLE_SEARCH_ENGINE_ID` | Google web search (discontinued by Google on 2027-01-01; otherwise DuckDuckGo) |
 | `RIDER_MCP_PROJECT_PATH` | Host path of the project, sent to Rider's MCP server |
 
-After changing a secret, restart the container that uses it (for the API:
-`docker compose -f docker/docker-compose.yml --env-file config/.env up -d api`).
+After changing a secret, **recreate** the container that uses it with `up -d`; `docker compose restart` keeps the
+container's old environment, so a new key never reaches it that way (found with `TAVILY_API_KEY`, 2026-10-15):
+
+```bash
+docker compose -f docker/docker-compose.yml --env-file config/.env up -d api          # the API
+docker compose -f docker/docker-compose.puls.yml --env-file config/.env up -d         # Puls and its specialist
+```
+
+A changed file under `Skills/` needs only a restart: the containers mount the folder and read it when a chat opens.
 
 The orchestrator demo (`samples/run-demo.ps1`) reads the same two files; its own settings are set in
 `docker/docker-compose.demo.yml` (see [samples/README.md](../samples/README.md)).
@@ -154,7 +164,8 @@ The unit tests need no secrets, network or Docker.
 ## Troubleshooting
 
 **"ANTHROPIC_API_KEY (or LLM_API_KEY) is required"** — `config/.env.secrets` is missing or the key is empty. Check with
-`grep ANTHROPIC_API_KEY config/.env.secrets`, then restart the container.
+`grep ANTHROPIC_API_KEY config/.env.secrets`, then recreate the container with `up -d` (not `restart`, which keeps the
+old environment).
 
 **Wrong settings in Docker** — run compose with `--env-file config/.env`, and remember that `environment:` in
 `docker/docker-compose.yml` wins over the env files. `docker compose ... config` shows the resolved values.

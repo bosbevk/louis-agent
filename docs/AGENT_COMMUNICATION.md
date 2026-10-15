@@ -430,9 +430,15 @@ task the model calls `StartSubSession(toolsets, message, personality, attachment
 2. sends the task with the named attachments, which come from the session, never through the model's output;
 3. reads the specialist's stream to the end, passing each event on as `sub_session`; if the answer is empty (all its
    tool rounds used), asks once more in the same session (FX11);
-4. deletes the session, and returns the answer and a usage line as the tool's result.
+4. keeps the session open for the chat under a handle (`sub-1`), named in the answer's footer, and returns the answer
+   and a usage line as the tool's result (F26). A follow-up on that work is `ContinueSubSession(handle, message)`: a
+   second message in the same session, with its context and cached prefix. The chat's session owns its open
+   sub-sessions (at most 3; the oldest closed when a fourth starts) and deletes them on the peer when it is deleted or
+   dropped as idle; `GET /sessions/{id}` lists them. Outside a chat (an MCP call) the session is deleted at once, as
+   before.
 
-A sub-session can't delegate again (`agents` at depth 1 is a `400`); a turn may start at most 3, each stops after 5
+A sub-session can't delegate again (`agents` at depth 1 is a `400`); a turn may make at most 3 sub-session calls
+(starts and continues), each stops after 5
 minutes, and a specialist's prompt has a budget (`SUB_SESSION_PROMPT_BUDGET`, FX14). The specialist's usage records
 carry `parent`, so a ledger can total a chat with its specialists. Measured against one agent answering everything:
 [the delegation check](../samples/sample-output-puls-check-repeat/README.md).

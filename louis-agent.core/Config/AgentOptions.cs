@@ -32,8 +32,11 @@ public sealed class AgentOptions
     /// <summary>DEVOPS_TEAM (optional): the team whose sprints are used; sprints live under {project}\{team}.</summary>
     public string? DevopsTeam { get; set; }
 
-    /// <summary>WEB_SEARCH_PROVIDER: google or duckduckgo; null picks Google when its key and engine ID are set, else DuckDuckGo.</summary>
+    /// <summary>WEB_SEARCH_PROVIDER: tavily, google or duckduckgo; null picks Tavily when its key is set, else Google when its key and engine ID are, else DuckDuckGo.</summary>
     public string? WebSearchProvider { get; set; }
+
+    /// <summary>Tavily search API key (TAVILY_API_KEY), F25.</summary>
+    public string? TavilyApiKey { get; set; }
 
     /// <summary>Google Custom Search JSON API key (GOOGLE_SEARCH_API_KEY).</summary>
     public string? GoogleSearchApiKey { get; set; }
@@ -104,6 +107,13 @@ public sealed class AgentOptions
     public IReadOnlyDictionary<string, Uri> AgentPeers { get; set; } = new Dictionary<string, Uri>();
 
     /// <summary>
+    /// PERSONALITIES_ENABLED: the personalities this instance may use (F29), comma separated and lowercase, e.g.
+    /// <c>puls,puls-cook</c>; a session or sub-session asking for another is refused as for an unknown one. Empty: every
+    /// personality on disk. Puls's compose lists only the roles that have passed their check.
+    /// </summary>
+    public IReadOnlyList<string> PersonalitiesEnabled { get; set; } = [];
+
+    /// <summary>
     /// The default of <see cref="SubSessionPromptBudget"/>: below Claude Haiku 5.5's long-prompt threshold (100k in
     /// config/prices.json), not at it. The request the budget forces to answer still carries the last round's tool
     /// results, so it needs room under the price step.
@@ -120,6 +130,10 @@ public sealed class AgentOptions
     public string? AgentApiKey { get; set; }
 
     /// <summary>Parses AGENT_PEERS; an entry without a name or an absolute http(s) URL is skipped.</summary>
+    internal static IReadOnlyList<string> ParseNames(string? value) =>
+        (value ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Select(name => name.ToLowerInvariant()).Distinct().ToList();
+
     internal static IReadOnlyDictionary<string, Uri> ParsePeers(string? value) =>
         (value ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
             .Select(entry => entry.Split('=', 2, StringSplitOptions.TrimEntries))
@@ -142,6 +156,7 @@ public sealed class AgentOptions
             DevopsProject = Get("DEVOPS_PROJECT"),
             DevopsTeam = Get("DEVOPS_TEAM"),
             WebSearchProvider = Get("WEB_SEARCH_PROVIDER"),
+            TavilyApiKey = Get("TAVILY_API_KEY"),
             GoogleSearchApiKey = Get("GOOGLE_SEARCH_API_KEY"),
             GoogleSearchEngineId = Get("GOOGLE_SEARCH_ENGINE_ID"),
             RiderMcpEndpoint = Get("RIDER_MCP_ENDPOINT") ?? "http://127.0.0.1:64482",
@@ -163,6 +178,7 @@ public sealed class AgentOptions
             HostCulture = Get("HOST_CULTURE"),
             DisplayCurrency = Get("DISPLAY_CURRENCY"),
             AgentPeers = ParsePeers(Get("AGENT_PEERS")),
+            PersonalitiesEnabled = ParseNames(Get("PERSONALITIES_ENABLED")),
             AgentApiKey = Get("AGENT_API_KEY"),
             SubSessionPromptBudget = int.TryParse(Get("SUB_SESSION_PROMPT_BUDGET"), NumberStyles.None, CultureInfo.InvariantCulture, out int budget)
                 ? budget : DefaultSubSessionPromptBudget,

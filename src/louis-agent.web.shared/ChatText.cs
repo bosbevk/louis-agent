@@ -15,6 +15,9 @@ public sealed record ChatText
     public string Stopped { get; init; } = "Stopped";
 
     public string DelegatedTo { get; init; } = "Delegated to";
+
+    /// <summary>The chip on a continued sub-session (F26): a follow-up to a specialist that was already working.</summary>
+    public string FollowUp { get; init; } = "follow-up";
     public string Specialist { get; init; } = "specialist";
     public string Task { get; init; } = "Task";
     public string Working { get; init; } = "Working";

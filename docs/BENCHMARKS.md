@@ -120,5 +120,45 @@ Can the orchestrator's triage run on a free local model while louis-agent's fixe
 when thinking is off (F15); make `EscalateToHuman` idempotent per error and reject contradicting decisions in one
 reply (F17); record cancelled requests in the ledger ([FX9](fixes/FX09-cancelled-request-usage.md)).
 
+## The cook check (2026-10-15)
+
+Does Puls route a meal question to the cook (F25), does the cook price it from South African shops, and does a
+follow-up go back to the same cook (F26)? `samples/puls-cook-check/run_check.py --repeat 3` on Claude Haiku 5.5, saved
+in [samples/sample-output-puls-cook/](../samples/sample-output-puls-cook/README.md): two meal conversations with a
+follow-up each and the prime rate as the control, in two modes.
+
+| | Delegated (Puls as built) | Puls with `web` |
+|---|---|---|
+| Meals routed to `puls-cook` | **6 / 6** | 6 / 6 |
+| Control routed to `puls-researcher` | 3 / 3 | 0 / 3 (Puls answered itself) |
+| Meals priced at a South African shop | 6 / 6 | 6 / 6 |
+| Follow-up continued the same cook | **3 / 6** | 0 / 6 |
+| Cost per run, mean | $0.0229 | $0.0152 (−34%) |
+| A meal's first turn / its follow-up | $0.0030–0.0095 / $0.0006–0.0015 | |
+
+- **Routing by two table rows works:** two roles on one toolset, the right one chosen every time from the request.
+- **Search was refused for 41 of 48 calls** (DuckDuckGo), so the cook confirmed one or two prices per meal from product
+  pages and marked the rest as estimates; it never passed an estimate off as a shop price. A search provider that isn't
+  refused is the next step.
+- **The follow-up rule is read as optional:** Puls scaled the list itself half the time rather than continuing the cook.
+  A continue costs the same as Puls's own answer (about $0.001: cache reads on the kept prefix), so the rule can be
+  firmer at no cost.
+
+**The same afternoon, one run from the admin portal** (F27), after Tavily replaced DuckDuckGo, `ReadRenderedPage` was
+added for JavaScript product pages, and the follow-up rule was made firm
+([samples/sample-output-cook-20261015-130521/](../samples/sample-output-cook-20261015-130521/README.md)): no search
+refused, prices read from Checkers product pages with 2 and 0 unconfirmed marks on the meals (was 20 and 20), the
+branches from OpenStreetMap, and **every follow-up continued the same cook, 4 of 4**, with `web` on Puls too (was 0 of
+6). Cost $0.0377 delegated and $0.0404 with `web`, dearer than the morning's $0.023 because the cook now reads real
+pages and the follow-ups do real work.
+
+**Two more cook runs and a delegation run from the portal the same afternoon**
+([15:30](../samples/sample-output-cook-20261015-133037/README.md), [15:51](../samples/sample-output-cook-20261015-135101/README.md),
+[the delegation check at 15:31](../samples/sample-output-delegation-20261015-153147/README.md)): with the cook allowed to
+take a shop's own search result as a price, dated from the index, its fetches halved and the run cost a quarter less
+($0.0325 delegated, $0.0264 with `web`); the follow-up continued the cook in 11 of 12 across the three runs. The
+delegation check, first since the 14th: 8 of 8 routed by the table, delegation +16% against the repeat run's +31%,
+both web questions answered from sources with Tavily.
+
 ---
 [Docs index](README.md) · Related: [Features](features/README.md) · [Cost write-up](learning/13-cost-and-token-economics.md)

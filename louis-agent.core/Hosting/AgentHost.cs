@@ -302,7 +302,7 @@ public static partial class AgentHost
             AddBuiltIn(agent, composite, fileName);
 
         // Function skill files are procedures ExecuteSkill runs: they come with the skills toolset, like a guide with its
-        // tools. A profile without it (Puls's chats: agents only) gets the router and its guides, not every skill file.
+        // tools. A profile without it (Puls's chats: agents and web) gets the router and its guides, not every skill file.
         if (profile.All(t => t.Name != SkillsToolset)) return composite;
 
         if (agent.AgentFunction == "louis")
@@ -374,11 +374,19 @@ public static partial class AgentHost
         if (!Personalities.IsValidName(personality))
             throw new PersonalityException(MessageText.Format(ErrorMessage.PersonalityNameInvalid, new { Name = personality }));
         string file = Personalities.FileName(personality);
-        if (ReadSkillFile(agent, file) is null)
+        // A personality that's off (F29) is refused as an unknown one: the list names what this instance may use.
+        if (!IsEnabled(agent, personality) || ReadSkillFile(agent, file) is null)
             throw new PersonalityException(MessageText.Format(ErrorMessage.UnknownPersonality,
-                new { Name = personality, Available = string.Join(", ", Personalities.Available(agent.SkillsDirectory)) }));
+                new { Name = personality, Available = string.Join(", ", EnabledPersonalities(agent)) }));
         return file;
     }
+
+    /// <summary>The personalities this instance offers: those on disk, or only the enabled ones when the list is set (F29).</summary>
+    internal static IReadOnlyList<string> EnabledPersonalities(AgentOptions agent) =>
+        Personalities.Available(agent.SkillsDirectory ?? FindSkillsDirectory(agent)).Where(name => IsEnabled(agent, name)).ToList();
+
+    private static bool IsEnabled(AgentOptions agent, string personality) =>
+        agent.PersonalitiesEnabled.Count == 0 || agent.PersonalitiesEnabled.Contains(personality, StringComparer.OrdinalIgnoreCase);
 
     /// <summary>Adds a built-in skill file to the prompt, from disk or the assembly; a missing one is skipped.</summary>
     private static void AddBuiltIn(AgentOptions agent, CompositeSkillProvider composite, string fileName)

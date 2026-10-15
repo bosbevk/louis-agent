@@ -32,14 +32,18 @@
                 <img src="brand/puls-icon-tile.svg" alt="" class="work-avatar" />
                 <div class="work-who">
                     <small>@Text.DelegatedTo</small>
-                    <strong>@item.Agent</strong>
+                    <strong>@item.Who</strong>
                 </div>
                 <span class="work-status">@(item.Status switch { "running" => Text.Working, "failed" => Text.Failed, _ => Text.Done })</span>
             </div>
 
-            @if (item.Delegation.Toolsets.Count > 0)
+            @if (item.Delegation.Toolsets.Count > 0 || item.Delegation.Continued)
             {
                 <div class="work-chips">
+                    @if (item.Delegation.Continued)
+                    {
+                        <span class="toolset-chip follow-up">@Text.FollowUp@(item.Delegation.Handle is { } handle ? " · " + handle : "")</span>
+                    }
                     @foreach (string toolset in item.Delegation.Toolsets)
                     {
                         <span class="toolset-chip">@toolset</span>
@@ -125,7 +129,8 @@
     [Parameter] public bool Streaming { get; set; }
     [Parameter] public CurrencyChoice? Currency { get; set; }
 
-    private sealed record Item(Delegation Delegation, Block Block, string Agent, string Status);
+    /// <param name="Who">The role the work went to (F26; Louis: "show oorgedra → role"), else the peer.</param>
+    private sealed record Item(Delegation Delegation, Block Block, string Who, string Status);
 
     /// <summary>Every delegation in the chat, newest first; the one still running is "running".</summary>
     private List<Item> Items
@@ -133,20 +138,20 @@
         get
         {
             if (Chat is null) return [];
+            // A continue names only its handle until its footer arrives; the role is the one the start with that handle had.
+            var roles = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             var items = new List<Item>();
-            for (int t = Chat.Turns.Count - 1; t >= 0; t--)
+            foreach (var (turn, live) in Chat.Turns.Select((turn, t) => (turn, Streaming && t == Chat.Turns.Count - 1)))
+            foreach (var block in turn.Blocks)
             {
-                var turn = Chat.Turns[t];
-                bool live = Streaming && t == Chat.Turns.Count - 1;
-                for (int b = turn.Blocks.Count - 1; b >= 0; b--)
-                {
-                    var block = turn.Blocks[b];
-                    if (Delegation.From(block) is not { } delegation) continue;
-                    string agent = delegation.Agent is { Length: > 0 } named ? named : block.SubAgent ?? delegation.ResultAgent ?? Text.Specialist;
-                    string status = live && block.ToolResult is null ? "running" : block.ToolFailed || delegation.Failed ? "failed" : "done";
-                    items.Add(new Item(delegation, block, agent, status));
-                }
+                if (Delegation.From(block) is not { } delegation) continue;
+                if (delegation is { Handle: { } h, Role: { } r }) roles[h] = r;
+                string agent = delegation.Agent is { Length: > 0 } named ? named : block.SubAgent ?? delegation.ResultAgent ?? Text.Specialist;
+                string who = delegation.Role ?? (delegation.Handle is { } handle && roles.TryGetValue(handle, out var known) ? known : null) ?? delegation.Handle ?? agent;
+                string status = live && block.ToolResult is null ? "running" : block.ToolFailed || delegation.Failed ? "failed" : "done";
+                items.Add(new Item(delegation, block, who, status));
             }
+            items.Reverse();
             return items;
         }
     }

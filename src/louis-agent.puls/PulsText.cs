@@ -15,6 +15,7 @@ public static class PulsText
         Stopped = "Gestop",
 
         DelegatedTo = "Oorgedra aan",
+        FollowUp = "vervolg",
         Specialist = "spesialis",
         Task = "Taak",
         Working = "Besig",

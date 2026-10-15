@@ -1,5 +1,6 @@
 using System.Net;
 using System.Text;
+using System.Text.Json;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Agent;
@@ -51,8 +52,82 @@ public class WebToolsTests
     private static Task<IPAddress[]> PublicDns(string host, CancellationToken _) => Task.FromResult(new[] { IPAddress.Parse("93.184.216.34") });
 
     private static WebTools Tools(Func<HttpRequestMessage, HttpResponseMessage> respond, IWebSearchProvider? search = null,
-        Func<string, CancellationToken, Task<IPAddress[]>>? dns = null) =>
-        new(search ?? new FakeSearch(), new StubHandler(respond), dns ?? PublicDns);
+        Func<string, CancellationToken, Task<IPAddress[]>>? dns = null, IPageRenderer? renderer = null) =>
+        new(search ?? new FakeSearch(), new StubHandler(respond), dns ?? PublicDns, renderer: renderer);
+
+    // --- ReadRenderedPage (F25 step 7, Louis: "use tavily extract, but call the tool something else, keep the web search") ---
+
+    private const string ExtractJson = """
+        {"results":[{"url":"https://www.pnp.co.za/pnp-large-eggs-6-pack/p/118676_EA","raw_content":"# PnP Large Eggs 6 Pack\n\nR34.99\n\nAdd to cart"}],
+         "failed_results":[],"response_time":1.2}
+        """;
+
+    [Test]
+    public async Task ReadRenderedPage_PostsTheUrlToTavilyExtract_AndFramesTheTextAsUntrusted()
+    {
+        // A Pick n Pay product page draws its price with JavaScript: FetchUrl gets "(no readable text)"; Tavily's
+        // Extract renders it. The key goes in the header, never in the body; the page is framed like a fetched one.
+        HttpRequestMessage? sent = null;
+        string? body = null;
+        var renderer = new TavilyPageRenderer("tvly-key", Http(r => { sent = r; body = r.Content!.ReadAsStringAsync().Result; return Html(ExtractJson, "application/json"); }));
+
+        string result = await Tools(_ => Html(""), renderer: renderer).ReadRenderedPage("https://www.pnp.co.za/pnp-large-eggs-6-pack/p/118676_EA");
+
+        Assert.That(sent!.Method, Is.EqualTo(HttpMethod.Post));
+        Assert.That(sent.RequestUri!.ToString(), Is.EqualTo("https://api.tavily.com/extract"));
+        Assert.That(sent.Headers.Authorization!.ToString(), Is.EqualTo("Bearer tvly-key"));
+        using var json = JsonDocument.Parse(body!);
+        Assert.That(json.RootElement.GetProperty("urls")[0].GetString(), Is.EqualTo("https://www.pnp.co.za/pnp-large-eggs-6-pack/p/118676_EA"));
+        Assert.That(json.RootElement.GetProperty("extract_depth").GetString(), Is.EqualTo("advanced"), "the JavaScript sites are why the tool exists");
+        Assert.That(body, Does.Not.Contain("tvly-key"));
+
+        Assert.That(result, Does.StartWith("URL: https://www.pnp.co.za/pnp-large-eggs-6-pack/p/118676_EA"));
+        Assert.That(result, Does.Contain("untrusted web content").And.Contain("R34.99"));
+    }
+
+    [Test]
+    public async Task ReadRenderedPage_ReportsAPageTavilyCouldNotRender()
+    {
+        // Tavily answers 200 with the URL under failed_results: an answer the model can act on, not an empty page.
+        var renderer = new TavilyPageRenderer("k", Http(_ => Html("""{"results":[],"failed_results":[{"url":"https://example.com/x","error":"Failed to fetch URL"}]}""", "application/json")));
+
+        string result = await Tools(_ => Html(""), renderer: renderer).ReadRenderedPage("https://example.com/x");
+
+        Assert.That(result, Does.StartWith("Error").And.Contain("https://example.com/x").And.Contain("Failed to fetch URL"));
+    }
+
+    [Test]
+    public async Task ReadRenderedPage_WithoutAKey_SaysWhatToSet_WithoutANetworkCall()
+    {
+        var handler = new StubHandler(_ => Html(""));
+        var tools = new WebTools(new FakeSearch(), handler, PublicDns, renderer: PageRendererFactory.Create(new AgentOptions()));
+
+        string result = await tools.ReadRenderedPage("https://example.com/x");
+
+        Assert.That(result, Does.StartWith("Error").And.Contain("TAVILY_API_KEY"));
+        Assert.That(handler.Requests, Is.Empty);
+    }
+
+    [Test]
+    public async Task ReadRenderedPage_RefusesAPrivateAddress_BeforeSendingItAnywhere()
+    {
+        // The guard that FetchUrl has: an internal URL must not be handed to a third party either.
+        var tavily = new StubHandler(_ => Html(ExtractJson, "application/json"));
+        var renderer = new TavilyPageRenderer("k", new HttpClient(tavily));
+
+        string result = await Tools(_ => Html(""), dns: (_, _) => Task.FromResult(new[] { IPAddress.Parse("10.0.0.5") }), renderer: renderer)
+            .ReadRenderedPage("https://intranet.example/secret");
+
+        Assert.That(result, Does.StartWith("Error"));
+        Assert.That(tavily.Requests, Is.Empty);
+    }
+
+    [Test]
+    public void RendererFactory_PicksTavilyWhenTheKeyIsSet()
+    {
+        Assert.That(PageRendererFactory.Create(new AgentOptions { TavilyApiKey = "tvly-key" }), Is.TypeOf<TavilyPageRenderer>());
+        Assert.That(PageRendererFactory.Create(new AgentOptions()), Is.TypeOf<UnavailablePageRenderer>());
+    }
 
     private static HttpClient Http(Func<HttpRequestMessage, HttpResponseMessage> respond) => new(new StubHandler(respond));
 
@@ -179,6 +254,97 @@ public class WebToolsTests
         Assert.That(WebSearchProviderFactory.Create(options), Is.TypeOf(expected));
     }
 
+    // F25 step 6 (Louis: "use tavily"): a Tavily key alone picks Tavily; with Google's keys too, Tavily wins (the
+    // Custom Search API ends on 2027-01-01); an explicit choice still wins over any key.
+    [TestCase(null, "tvly-key", null, typeof(TavilySearchProvider))]
+    [TestCase(null, "tvly-key", "key", typeof(TavilySearchProvider))]
+    [TestCase("tavily", "tvly-key", null, typeof(TavilySearchProvider))]
+    [TestCase("Tavily", null, null, typeof(UnavailableSearchProvider))]
+    [TestCase("google", "tvly-key", "key", typeof(GoogleSearchProvider))]
+    [TestCase("duckduckgo", "tvly-key", null, typeof(DuckDuckGoSearchProvider))]
+    public void Factory_PicksTavily(string? provider, string? tavilyKey, string? googleKey, Type expected)
+    {
+        var options = new AgentOptions
+        {
+            WebSearchProvider = provider, TavilyApiKey = tavilyKey,
+            GoogleSearchApiKey = googleKey, GoogleSearchEngineId = googleKey is null ? null : "cx",
+        };
+        Assert.That(WebSearchProviderFactory.Create(options), Is.TypeOf(expected));
+    }
+
+    [Test]
+    public void Factory_ExplainsAMissingTavilyKey()
+    {
+        var missingKey = WebSearchProviderFactory.Create(new AgentOptions { WebSearchProvider = "tavily" });
+
+        Assert.That(() => missingKey.SearchAsync(new WebSearchQuery("x", 1)),
+            Throws.TypeOf<WebSearchException>().With.Message.Contains("TAVILY_API_KEY"));
+        Assert.That(WebSearchProviderFactory.SupportedProviders, Does.Contain("tavily"));
+    }
+
+    private const string TavilyJson = """
+        {"query":"beef mince","results":[
+          {"title":"Beef Mince 500g | Checkers","url":"https://www.checkers.co.za/product/beef-mince-500g","content":"Beef Mince 500g  R64.99","score":0.9},
+          {"title":"Second","url":"https://example.org/b","content":""},
+          {"title":"No url","content":"x"}
+        ],"response_time":0.4}
+        """;
+
+    [Test]
+    public async Task Tavily_PostsTheQueryWithTheKey_Domains_AndTimeRange()
+    {
+        HttpRequestMessage? sent = null;
+        string? body = null;
+        var tavily = new TavilySearchProvider("tvly-key", Http(r =>
+        {
+            sent = r;
+            body = r.Content!.ReadAsStringAsync().Result;
+            return Html(TavilyJson, "application/json");
+        }));
+
+        var results = await tavily.SearchAsync(new WebSearchQuery("beef mince", 2, "checkers.co.za", "week"));
+
+        Assert.That(sent!.Method, Is.EqualTo(HttpMethod.Post));
+        Assert.That(sent.RequestUri!.ToString(), Is.EqualTo("https://api.tavily.com/search"));
+        Assert.That(sent.Headers.Authorization!.ToString(), Is.EqualTo("Bearer tvly-key"));
+        using var json = JsonDocument.Parse(body!);
+        Assert.That(json.RootElement.GetProperty("query").GetString(), Is.EqualTo("beef mince"));
+        Assert.That(json.RootElement.GetProperty("max_results").GetInt32(), Is.EqualTo(2));
+        Assert.That(json.RootElement.GetProperty("include_domains")[0].GetString(), Is.EqualTo("checkers.co.za"));
+        Assert.That(json.RootElement.GetProperty("time_range").GetString(), Is.EqualTo("week"));
+        Assert.That(body, Does.Not.Contain("tvly-key"), "the key travels in the header, never in the body");
+
+        Assert.That(results.Select(r => r.Url), Is.EqualTo(new[] { "https://www.checkers.co.za/product/beef-mince-500g", "https://example.org/b" }), "a result without a url is dropped; max_results holds");
+        Assert.That(results[0].Title, Is.EqualTo("Beef Mince 500g | Checkers"));
+        Assert.That(results[0].Snippet, Is.EqualTo("Beef Mince 500g R64.99"));
+    }
+
+    [Test]
+    public async Task Tavily_WithoutSiteOrRecency_SendsNeither()
+    {
+        string? body = null;
+        var tavily = new TavilySearchProvider("k", Http(r => { body = r.Content!.ReadAsStringAsync().Result; return Html("""{"results":[]}""", "application/json"); }));
+
+        Assert.That(await tavily.SearchAsync(new WebSearchQuery("x", 5)), Is.Empty);
+        Assert.That(body, Does.Not.Contain("include_domains").And.Not.Contain("time_range"));
+    }
+
+    [TestCase(HttpStatusCode.Unauthorized, "Check TAVILY_API_KEY")]
+    [TestCase(HttpStatusCode.Forbidden, "Check TAVILY_API_KEY")]
+    [TestCase(HttpStatusCode.TooManyRequests, "limit")]
+    [TestCase((HttpStatusCode)432, "limit")]
+    [TestCase(HttpStatusCode.BadGateway, "HTTP 502")]
+    public void Tavily_ExplainsApiErrorsWithTavilysMessage(HttpStatusCode status, string expected)
+    {
+        var tavily = new TavilySearchProvider("k", Http(_ => new HttpResponseMessage(status)
+        {
+            Content = new StringContent("""{"detail":{"error":"Unauthorized: missing or invalid API key."}}""", Encoding.UTF8, "application/json"),
+        }));
+
+        Assert.That(() => tavily.SearchAsync(new WebSearchQuery("x", 1)),
+            Throws.TypeOf<WebSearchException>().With.Message.Contains(expected).And.Message.Contains("missing or invalid API key"));
+    }
+
     [Test]
     public void Factory_ExplainsMisconfiguration()
     {
@@ -188,7 +354,7 @@ public class WebToolsTests
         Assert.That(() => missingKey.SearchAsync(new WebSearchQuery("x", 1)),
             Throws.TypeOf<WebSearchException>().With.Message.Contains("GOOGLE_SEARCH_API_KEY").And.Message.Contains("GOOGLE_SEARCH_ENGINE_ID"));
         Assert.That(() => unknown.SearchAsync(new WebSearchQuery("x", 1)),
-            Throws.TypeOf<WebSearchException>().With.Message.Contains("Supported: google, duckduckgo"));
+            Throws.TypeOf<WebSearchException>().With.Message.Contains("Supported: tavily, google, duckduckgo"));
     }
 
     // --- Google ---

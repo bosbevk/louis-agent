@@ -13,6 +13,7 @@ using LouisAgent.Core.Tools.Workspace;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Guardrails;
 using LouisAgent.Api.Messages;
+using LouisAgent.Api.Services;
 using LouisAgent.Core.Logging;
 using Microsoft.Extensions.Logging;
 using LouisAgent.Core.Messages;
@@ -98,6 +99,13 @@ app.MapGet("/rates/display", () => Results.Json(new
 app.MapWorkspace();
 app.MapGit();
 app.MapHistory();
+// F27: the admin portal, behind its own key (ADMIN_API_KEY, else AGENT_API_KEY; neither: closed). The saved runs are
+// the samples/ folder of the workspace this instance mounts.
+// A run's script calls this API back at BENCHMARK_API_URL (the container's own port, by default).
+var benchmarks = new BenchmarkCatalog(Path.Combine(host.Engine.WorkspaceRoot, "samples"));
+app.MapAdmin(benchmarks,
+    new BenchmarkRunner(benchmarks, host.Engine.WorkspaceRoot, Environment.GetEnvironmentVariable("BENCHMARK_API_URL") ?? "http://127.0.0.1:8080/"),
+    AdminGate.Key(Environment.GetEnvironmentVariable("ADMIN_API_KEY"), apiKey));
 
 // The toolsets a session can load (F5-S3): names, what each is for and whether this instance has its settings. Never
 // the tool definitions, so a general agent can choose without loading them.
@@ -162,6 +170,8 @@ app.MapGet("/sessions/{id}", (string id, AgentSessions sessions) =>
             session_id = session.Id, created_at = session.CreatedAt, last_activity = session.LastActivity, busy = session.IsBusy,
             toolsets = session.Toolsets, depth = session.Depth, personality = session.Personality, tools = session.Engine.Tools.Count,
             task = session.Tags.Task, run = session.Tags.Run, service = session.Tags.Service,
+            // F26: the specialists the chat keeps open, by handle (never the peer's session id).
+            sub_sessions = session.SubSessions.Open.Select(o => new { handle = o.Handle, agent = o.Agent, toolsets = o.Toolsets, personality = o.Role }),
             usage = session.Engine.RecordsUsage ? ClaudeStyleStream.Usage(session.Usage.Records, session.Engine.Display) : null,
         })
         : UnknownSession(id));
@@ -265,6 +275,7 @@ static async IAsyncEnumerable<SseItem<string>> StreamTurnAsync(
             using (usage.Activate())
             using (SessionAttachments.Use(session.Attachments))
             using (UserPlace.Use(session.Place))
+            using (SubSessionRegistry.Use(session.SubSessions))
             using (SubSessionFeed.Observe(e => subSessions.Writer.TryWrite(e)))
                 next = updates.MoveNextAsync().AsTask();
 

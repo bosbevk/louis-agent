@@ -1,0 +1,270 @@
+[
+  {
+    "task": "cook-af",
+    "location": "Stellenbosch, Wes-Kaap, Suid-Afrika",
+    "turns": [
+      {
+        "question": "Wat kan ek vanaand vir vier mense kook vir onder R250? Gee die resep en 'n inkopielys met pryse.",
+        "answer": "Vanaand is **bobotie** die plan. Dit is 'n klassieke Kaapse gereg, maklik om te maak, en gewone winkelkos.\n\n**Let wel: ek kon nie regte pryse kry nie.** Die soekdiens was geblokkeer en die winkelbladsye het nie gelaai nie, so die inkopielys hieronder het geen bevestigde pryse. Die bedrae onder is my eie skatting, en dit moet jy by die winkel nagaan.\n\n## Bobotie (vir 4)\n\n**Tyd:** ±1 uur 20 minute\n\n**Bestanddele**\n- 500 g maalvleis\n- 1 groot ui, fyngekap\n- 1 eetlepel olie of botter\n- 1 eetlepel mild kerriepoeier\n- 1 teelepel borrie of gemmerpoeier (opsioneel)\n- 2 eetlepels appelkooskonfyt\n- 2 eetlepels asyn\n- 2 snye witbrood, sonder kors\n- 250 ml melk (150 ml vir die brood, 100 ml vir die custard)\n- 30 g rosyne\n- 1 eetlepel amandelskyfies (opsioneel)\n- 1 teelepel sout en ½ teelepel swartpeper\n- 1 groot eier\n- 4 lourierblare\n\n**Metode**\n1. Verhit die oond tot 180 °C. Vet 'n skottel van ±22 × 22 cm in.\n2. Week die brood in 150 ml melk.\n3. Fruit die ui in die olie of botter tot sag en goudbruin.\n4. Roer die kerrie (en borrie of gemmer) in en laat dit 1 minuut saam bak.\n5. Voeg die maalvleis by en bak tot dit bruin en krummelig is.\n6. Roer konfyt, asyn, rosyne, amandels, sout en peper in.\n7. Druk die brood uit en roer dit deur die vleis.\n8. Skep die mengsel in die skottel en druk dit plat.\n9. Klop die eier met die res van die melk (100 ml) en giet dit oor die vleis.\n10. Lê die lourierblare bo-op en bak 50 minute, tot die custard gestol en goudbruin is.\n\nHou dit met rys (of 'n lekker groen slaai) en 'n bietjie blatjang.\n\n## Inkopielys (my skatting, nie bevestig nie)\n\n| Item | Hoeveelheid | Geskatte prys |\n|---|---|---|\n| Maalvleis | 500 g | ±R70 |\n| Ui | 1 groot | ±R10 |\n| Mild kerriepoeier | 1 bottel | ±R25 |\n| Appelkooskonfyt | 1 bottel | ±R35 |\n| Asyn | 1 bottel | ±R15 |\n| Witbrood | 1 brood | ±R18 |\n| Melk | 250 ml | ±R8 |\n| Rosyne | klein pak | ±R20 |\n| Eier | 1 | ±R5 |\n| Lourierblare | klein pak | ±R15 |\n| Amandelskyfies (opsioneel) | klein pak | ±R25 |\n| **Totaal sonder amandels** | | **±R221** |\n\nSout, peper en olie of botter het jy waarskynlik al. As jy by die amandels uitkom, is dit ±R246, dus **net onder R250 se limiet** maar amper op die grens. Die kerriepoeier, konfyt en asyn is die items wat die meeste kan wissel, en jy kan dalk al van die goed in die kas hê.\n\n**Die vinnigste manier om die werklike prys te kry:** kyk in die Checkers Sixty60-app, die Pick n Pay-app of Woolworths se aanlyn-winkel, of loop by die Stellenbosch-winkel aan. As jy wil, kan ek weer probeer om die pryse op te soek of 'n goedkoper weergawe van die gereg voorstel.",
+        "tools": [
+          "StartSubSession"
+        ],
+        "delegations": [
+          {
+            "call": "start",
+            "toolsets": [
+              "web"
+            ],
+            "personality": "puls-cook"
+          }
+        ],
+        "specialist_calls": [
+          {
+            "name": "GetToday",
+            "input": {}
+          },
+          {
+            "name": "WebSearch",
+            "input": {
+              "query": "Checkers minced beef 500g price",
+              "maxResults": 5
+            }
+          },
+          {
+            "name": "WebSearch",
+            "input": {
+              "query": "Pick n Pay mince beef 500g price",
+              "maxResults": 5
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://www.checkers.co.za/search?q=mince",
+              "maxChars": 4000
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://www.pnp.co.za/search?q=mince",
+              "maxChars": 4000
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://www.checkers.co.za/",
+              "maxChars": 3000
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://www.woolworths.co.za/cat/food/meat-poultry-fish/beef/mince/_/N-1z141uq",
+              "maxChars": 3000
+            }
+          }
+        ],
+        "error": null,
+        "seconds": 39.7
+      },
+      {
+        "question": "Maak dit eerder vir ses mense. Wat kos dit nou?",
+        "answer": "Vir ses mense is die resep 1,5 keer groter. Dit is die nuwe hoeveelhede en die koste.\n\n## Bestanddele vir 6\n\n- 750 g maalvleis\n- 2 groot uie, fyngekap\n- 1½ eetlepel olie of botter\n- 1½ eetlepel mild kerriepoeier\n- 1½ teelepel borrie of gemmerpoeier (opsioneel)\n- 3 eetlepels appelkooskonfyt\n- 3 eetlepels asyn\n- 3 snye witbrood, sonder kors\n- 375 ml melk (225 ml vir die brood, 150 ml vir die custard)\n- 45 g rosyne\n- 1½ eetlepel amandelskyfies (opsioneel)\n- 1½ teelepel sout en ¾ teelepel swartpeper\n- 1 groot eier (of 2 klein)\n- 6 lourierblare\n\nDie metode is dieselfde. Gebruik 'n skottel van ±25 × 30 cm en bak dalk 10 tot 15 minute langer. Kyk na die custard: as dit bo-op nog wiebel, bak nog 5 minute.\n\n## Inkopielys en geskatte koste (nie bevestig nie)\n\n| Item | Hoeveelheid om te koop | Geskatte prys |\n|---|---|---|\n| Maalvleis | 750 g | ±R105 |\n| Ui | 2 groot | ±R20 |\n| Mild kerriepoeier | 1 bottel | ±R25 |\n| Appelkooskonfyt | 1 bottel | ±R35 |\n| Asyn | 1 bottel | ±R15 |\n| Witbrood | 1 brood | ±R18 |\n| Melk | 500 ml | ±R12 |\n| Rosyne | klein pak | ±R20 |\n| Eier | 1 (of 2 klein) | ±R5 |\n| Lourierblare | klein pak | ±R15 |\n| **Totaal sonder amandels** | | **±R270** |\n| Amandelskyfies (opsioneel) | klein pak | ±R25 |\n\nDit is ±R45 per persoon, en dit is **effens bo R250**. Met amandels kom dit op ±R295.\n\nOm onder R250 te bly, kan jy dit so probeer:\n- **Gebruik hoenderment** in plaas van beesmaalvleis. 750 g kan ±R60 tot R80 wees, en dit is ±R25 tot R45 goedkoper. Dit werk goed, al is dit nie die tradisionele keuse nie.\n- **Hou die amandels weg**, soos hierbo.\n- **Gebruik dit wat jy al in die kas het**, veral kerrie, asyn of konfyt.\n\nMet hoenderment kom die totaal na raming ±R225 tot R245, sonder amandels.\n\nDit is my eie skatting, nie werklike winkelpryse nie. Kyk asseblief in die Checkers Sixty60- of Pick n Pay-app voordat jy inkopies doen.",
+        "tools": [],
+        "delegations": [],
+        "specialist_calls": [],
+        "error": null,
+        "seconds": 9.7
+      }
+    ],
+    "score": {
+      "role": "puls-cook",
+      "routed_right": true,
+      "answered_itself": false,
+      "hosts": [
+        "checkers.co.za",
+        "pnp.co.za",
+        "woolworths.co.za"
+      ],
+      "local_hosts": [
+        "checkers.co.za",
+        "pnp.co.za",
+        "woolworths.co.za"
+      ],
+      "shop_hosts": [
+        "checkers.co.za",
+        "pnp.co.za",
+        "woolworths.co.za"
+      ],
+      "sources_local": true,
+      "priced_at_shops": true,
+      "rand_amounts": 36,
+      "unknown_marks": 0,
+      "errors": [],
+      "follow_up": "answered itself",
+      "follow_up_handle": null
+    }
+  },
+  {
+    "task": "cook-en",
+    "location": null,
+    "turns": [
+      {
+        "question": "What should I cook tonight in Pretoria for two? I have about an hour. Give me the recipe and what it'll cost at the shops.",
+        "answer": "Vanaand: **pap en wors met chakalaka**. Dis 'n klassieke Pretoria-kos, en vir twee mense is dit ongeveer 40 minute, so jy het ruimte.\n\n**Die resep (vir 2)**\n\n1. Verhit 1 eetlepel olie in 'n pan op medium hitte. Fruit 1 klein fyn gesnyde ui vir 4 minute, tot sag.\n2. Voeg 1 gesnyde tamatie (en half 'n groen soetrissie, as jy dit wil hê) by. Kook 3 minute.\n3. Roer 1 blikkie (410 g) chakalaka en 2 eetlepels water in. Laat op lae vuur 10 minute sag borrel.\n4. Terwyl dit borrel, braai of bak 500 g boerewors op medium vuur vir 15–20 minute, draai gereeld. Prik een oop om te kyk dat daar geen pienk in is nie.\n5. Vir die pap: kook 500 ml water met ½ teelepel sout in 'n swaar pot. Roer 1 koppie (ongeveer 150 g) mieliemeel stadig in, 'n bietjie op 'n keer, sodat dit nie klonte maak nie.\n6. Draai die vuur laag en roer hard vir 5 minute. Dek toe en laat nog 5 minute stadig gaar word. Roer 'n stukkie botter in.\n7. Dien die pap op met die wors en die chakalaka langs.\n\n**Wat dit gaan kos**\n\nEk kon nie die pryse kry nie. Die soekdiens het geweier, en die winkelwebwerwe het nie pryse teruggegee nie. Dus het ek nie 'n bevestigde totaal nie, en ek gaan nie 'n getal vertel wat ek nie kon nagaan nie.\n\nAs 'n ruwe skatting uit my eie kennis (nie nagegaan nie, en winkelpryse wissel): boerewors 500 g ongeveer R55–65, mieliemeel (1 kg-pak, jy gebruik 150 g) ongeveer R20, chakalaka 410 g ongeveer R20, ui, tamatie, botter en soetrissie saam ongeveer R20. Dit kom op ongeveer **R115–125** by Pick n Pay, Checkers of Shoprite.\n\nWil jy presiese pryse? Gee vir my 'n suburb in Pretoria, of kyk self in die Pick n Pay- of Checkers-app na die sewe items, en ek werk die totaal uit. Ek kan ook weer probeer om die pryse te kry as die soekdiens reggemaak word.",
+        "tools": [
+          "StartSubSession"
+        ],
+        "delegations": [
+          {
+            "call": "start",
+            "toolsets": [
+              "web"
+            ],
+            "personality": "puls-cook"
+          }
+        ],
+        "specialist_calls": [
+          {
+            "name": "GetToday",
+            "input": {}
+          },
+          {
+            "name": "WebSearch",
+            "input": {
+              "query": "Pick n Pay boerewors price per kg online",
+              "maxResults": 5
+            }
+          },
+          {
+            "name": "WebSearch",
+            "input": {
+              "query": "Checkers Sixty60 mielie meal 1kg price",
+              "maxResults": 5
+            }
+          },
+          {
+            "name": "WebSearch",
+            "input": {
+              "query": "Pick n Pay chakalaka 410g price online",
+              "maxResults": 5
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://www.pnp.co.za/search?q=boerewors",
+              "maxChars": 4000
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://www.checkers.co.za/search?q=mielie%20meal",
+              "maxChars": 4000
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://www.woolworths.co.za/cat/food/meat-poultry-fish/boerewors",
+              "maxChars": 4000
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://www.shoprite.co.za/search?q=boerewors",
+              "maxChars": 4000
+            }
+          }
+        ],
+        "error": null,
+        "seconds": 30.9
+      },
+      {
+        "question": "Swap the meat for chicken. What does the shopping list look like now?",
+        "answer": "Met hoender in plaas van wors, verander net die vleisdeel van die resep. Die pap en chakalaka bly dieselfde.\n\n**Vleis-stap (vervang stap 4)**\n\nGebruik 500 g hoenderdye (boneless, skinless is maklikste). Kruis dit met sout, peper en 'n lepel paprika, en braai of bak dit op medium vuur vir 15–20 minute, draai een keer of twee. Dit is gaar as die middel nie meer pienk is nie en die sappe helder loop. As jy 'n vleisthermometer het, moet dit 75 °C wys.\n\n**Bygewerkte inkopielys (vir 2)**\n\n| Item | Hoeveel om te koop | Prys (R) |\n|---|---|---|\n| Hoenderdye, boneless | 500 g | nog nie nagegaan |\n| Mieliemeel | 1 kg-pak (jy gebruik 150 g) | nog nie nagegaan |\n| Chakalaka | 1 blikkie, 410 g | nog nie nagegaan |\n| Ui | 1 medium | nog nie nagegaan |\n| Tamatie | 1 | nog nie nagegaan |\n| Groen soetrissie (opsioneel) | ½ | nog nie nagegaan |\n| Botter | 'n klein stukkie | nog nie nagegaan |\n| Olie, sout, peper, paprika | in die huis, aangeneem | — |\n\nDie pryse het ek nie kon nagaan nie, so daar is geen totaal nie. My ruwe skatting is dat die hoender ongeveer R40–50 sal kos, 'n bietjie minder as die wors, sodat die hele ding grootweg op **R100–115** uitkom. Dis net my eie raaiskoot.\n\nGee vir my 'n suburb in Pretoria, of kyk self in die winkel-app na die sewe items, en ek werk die presiese totaal uit.",
+        "tools": [],
+        "delegations": [],
+        "specialist_calls": [],
+        "error": null,
+        "seconds": 6.7
+      }
+    ],
+    "score": {
+      "role": "puls-cook",
+      "routed_right": true,
+      "answered_itself": false,
+      "hosts": [
+        "pnp.co.za",
+        "checkers.co.za",
+        "woolworths.co.za",
+        "shoprite.co.za"
+      ],
+      "local_hosts": [
+        "pnp.co.za",
+        "checkers.co.za",
+        "woolworths.co.za",
+        "shoprite.co.za"
+      ],
+      "shop_hosts": [
+        "pnp.co.za",
+        "checkers.co.za",
+        "woolworths.co.za",
+        "shoprite.co.za"
+      ],
+      "sources_local": true,
+      "priced_at_shops": true,
+      "rand_amounts": 7,
+      "unknown_marks": 0,
+      "errors": [],
+      "follow_up": "answered itself",
+      "follow_up_handle": null
+    }
+  },
+  {
+    "task": "control-web",
+    "location": "Stellenbosch, Wes-Kaap, Suid-Afrika",
+    "turns": [
+      {
+        "question": "Wat is die huidige prima uitleenkoers in Suid-Afrika, en wanneer het dit laas verander? Gee jou bronne.",
+        "answer": "Die huidige prima uitleenkoers is **10,75%**. Dit is die repo-rate van **7,25%** plus die gewone 3,5 persentasie punte wat bo die repo-rate bygetel word.\n\n**Wanneer het dit laas verander?** Die SARB het op **23 September 2026** die repo-rate van 7,00% na 7,25% opgeskuif. Die prima-rate het saam daarmee na 10,75% gestyg. Die banke pas dit gewoonlik die volgende dag aan, so dit het waarskynlik vanaf 24 September geld.\n\nVir die volledige prentjie:\n- **26 Maart 2026:** SARB het die repo-rate op 6,75% gehou.\n- **Tussen Maart en Julie 2026:** die repo-rate het na 7,00% gestyg. Ek het nie die presiese datum van daardie verhoging gevind nie.\n- **23 Julie 2026:** SARB het die repo-rate op 7% gehou.\n- **23 September 2026:** verhoging na 7,25%, dus prima 10,75%.\n\n**Bronne:**\n- Moneyweb, repo-rate-oorsig (artikels van 23 September 2026, \"Sarb ups repo rate to 7.25%\", en 23 Julie 2026, \"Sarb holds rates steady at 7%\"): https://www.moneyweb.co.za/tag/repo-rate/\n- Moneyweb, 26 Maart 2026, \"Sarb holds rate steady at 6.75%\". Ek het dit gesien via die Wikipedia-artikel hieronder, nie direk nie.\n- Wikipedia, South African Reserve Bank (bankkoers 6,75% met verwysing na Moneyweb): https://en.wikipedia.org/wiki/South_African_Reserve_Bank\n- Wikipedia, Prime rate (lys van lande; Suid-Afrika 10,50% in Julie 2025, wat die 3,5%-verskil met die toenmalige repo van 7% bevestig): https://en.wikipedia.org/wiki/Prime_interest_rate\n- BusinessTech, Finance-afdeling (kopskrif \"Reserve Bank hikes interest rates in South Africa\", 23 September 2026): https://businesstech.co.za/news/finance/\n\n**Let wel:** Die SARB se eie bladsy met huidige markkoerse het ek nie kon lees nie, omdat die waardes dinamies gelaai word. Die Moneyweb-artikels het ek ook net as opskrifte gesien, nie in volle teks nie. Vir 'n lening of hipoteek, bevestig die presiese prima by jou bank of op https://www.resbank.co.za voordat jy besluite neem.",
+        "tools": [
+          "WebSearch",
+          "GetToday",
+          "FetchUrl",
+          "FetchUrl",
+          "FetchUrl",
+          "FetchUrl",
+          "FetchUrl",
+          "FetchUrl",
+          "FetchUrl",
+          "FetchUrl",
+          "FetchUrl",
+          "FetchUrl",
+          "FetchUrl"
+        ],
+        "delegations": [],
+        "specialist_calls": [],
+        "error": null,
+        "seconds": 40.7
+      }
+    ],
+    "score": {
+      "role": null,
+      "routed_right": false,
+      "answered_itself": true,
+      "hosts": [],
+      "local_hosts": [],
+      "shop_hosts": [],
+      "sources_local": false,
+      "priced_at_shops": false,
+      "rand_amounts": 0,
+      "unknown_marks": 0,
+      "errors": []
+    }
+  }
+]

@@ -183,8 +183,29 @@ public enum ToolMessage
     [Description("redirect to unsupported scheme '{Scheme}'.")]
     FetchRedirectScheme,
 
-    [Description("DuckDuckGo refused the automated search. For reliable search set WEB_SEARCH_PROVIDER=google with GOOGLE_SEARCH_API_KEY and GOOGLE_SEARCH_ENGINE_ID.")]
+    [Description("DuckDuckGo refused the automated search. For reliable search set TAVILY_API_KEY (1,000 free searches a month), or WEB_SEARCH_PROVIDER=google with GOOGLE_SEARCH_API_KEY and GOOGLE_SEARCH_ENGINE_ID.")]
     DuckDuckGoRefused,
+
+    [Description("WEB_SEARCH_PROVIDER=tavily needs TAVILY_API_KEY in config/.env.secrets (a key from https://app.tavily.com).")]
+    TavilyNotConfigured,
+
+    [Description("Tavily rejected the request ({Detail}). Check TAVILY_API_KEY.")]
+    TavilyRejected,
+
+    [Description("Tavily's limit was reached ({Detail}): the plan's searches for the month, or too many at once. Try again later, or raise the plan at https://app.tavily.com.")]
+    TavilyLimit,
+
+    [Description("Tavily search failed: HTTP {Status} {Detail}")]
+    TavilyFailed,
+
+    [Description("ReadRenderedPage needs TAVILY_API_KEY in config/.env.secrets (it renders pages with Tavily Extract). Without it, FetchUrl is the only way to read a page.")]
+    RenderNotConfigured,
+
+    [Description("couldn't render {Url}: {Reason}. If FetchUrl read it as empty too, the site blocks readers: mark what it holds as unknown and move on.")]
+    RenderFailed,
+
+    [Description("the renderer returned no content for it")]
+    RenderNoResult,
 
     [Description("Unknown WEB_SEARCH_PROVIDER '{Provider}'. Supported: {Supported}.")]
     UnknownSearchProvider,
@@ -519,7 +540,7 @@ public enum ToolMessage
     [Description("(no readable text)")]
     NoReadableText,
 
-    [Description("\n[Showing characters {Start}-{End} of {Length}. Call FetchUrl with startIndex={End} to continue.]")]
+    [Description("\n[Showing characters {Start}-{End} of {Length}. Call {Tool} with startIndex={End} to continue.]")]
     PageContinues,
 
     [Description("No sprints found.")]
@@ -636,8 +657,20 @@ public enum ToolMessage
     [Description("Error: this instance has more than one peer agent; name one of them: {Peers}.")]
     PeerNameNeeded,
 
-    [Description("Error: this turn has already started {Max} sub-sessions, the most one turn may. Finish with what you have, or ask the user.")]
+    [Description("Error: this turn has already made {Max} sub-session calls (starts and continues), the most one turn may. Finish with what you have, or ask the user.")]
     SubSessionLimit,
+
+    [Description("Error: this session keeps no sub-session open (it isn't a chat). Start a new one with StartSubSession.")]
+    SubSessionNoneKept,
+
+    [Description("Error: no open sub-session '{Handle}'. Open: {Open}. Continue one of those, or start a new one with StartSubSession.")]
+    SubSessionUnknownHandle,
+
+    [Description("(none)")]
+    SubSessionNoneOpen,
+
+    [Description("Error: sub-session {Handle} on {Agent} is no longer open on the peer (dropped as idle, or the peer restarted). Start a new one with StartSubSession, with the whole context the follow-up needs.")]
+    SubSessionGone,
 
     [Description("Error: {Max} sub-sessions have started in the last minute outside a chat turn, the most allowed. Wait a minute and try again.")]
     SubSessionRateLimit,
@@ -656,6 +689,13 @@ public enum ToolMessage
 
     [Description("{Answer}\n\n[Sub-session on {Agent} ({Toolsets}): {Usage}]")]
     SubSessionAnswer,
+
+    [Description("{Answer}\n\n[Sub-session {Handle} on {Agent} ({Toolsets}; {Role}): {Usage}. It stays open: a follow-up on this " +
+        "work goes to ContinueSubSession(\"{Handle}\", message), not to a new sub-session.]")]
+    SubSessionAnswerKept,
+
+    [Description("default role")]
+    SubSessionDefaultRole,
 
     [Description("You stopped without writing an answer (usually: all your tool rounds were used). Don't call any more tools: answer the task now from what you found, and say what you couldn't finish.")]
     SubSessionAskForAnswer,

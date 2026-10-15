@@ -175,7 +175,7 @@ there, so a session pays for them only when they apply:
 ### Adding a skill
 
 Create `Skills/{name}-skills.md`. With `AGENT_FUNCTION=louis` every skill file is loaded; otherwise set
-`AGENT_FUNCTION={name}`. Skill files come with the **skills** toolset: a session without it (Puls's chats, agents only)
+`AGENT_FUNCTION={name}`. Skill files come with the **skills** toolset: a session without it (Puls's chats: agents and web)
 gets the router and its toolsets' guides, not the skill files; a toolset's guide is
 [Adding a toolset](../louis-agent.core/CLAUDE.md#adding-a-toolset). A built-in file the agent must not overwrite is
 listed in `SkillFiles.BuiltIn`. Procedures use `## Skill: Name` with an `Execution:` fence (bash, powershell or python); arguments
@@ -220,6 +220,11 @@ A session names its personality when it opens (`POST /sessions` with `"personali
   `dotnet run --project tools/louis-agent.usage-probe -- --ledger logs/usage-YYYY-MM.jsonl`.
 - After changing the web app or API, rebuild the `api` image; after changing core, rebuild every image you use. Rider
   chats keep their container until you start a **New Chat**.
+- After changing `config/.env.secrets`, recreate the containers with `docker compose … up -d`: `restart` keeps the old
+  environment, so the new key never arrives. A changed `Skills/` file needs only a restart (the folder is mounted).
+- Every image rebuild leaves build cache behind; a day of rebuilds filled Docker Desktop's disk (120 GB of cache) and
+  stopped its engine (2026-10-15). `docker system df` shows it; `docker builder prune -af` clears it, safely, and
+  the next build re-caches. If the daemon stops answering, restart Docker Desktop first.
 
 ## Which Anthropic tier
 
@@ -230,7 +235,8 @@ tiers and why are in [ADR 0002](adr/0002-messages-api-tier-with-our-own-loop.md)
 
 `louis-agent.mcp-server` hands an *external* client's model the raw tools, one call at a time; it has no model of its
 own, so `AgentEngine` never calls its own tools through it. To have louis-agent do a whole task and report back (as the
-orchestrator does), call `louis-agent.api`'s session endpoint instead. `MCP_TRANSPORT=http` serves MCP over the network
+orchestrator does), call `louis-agent.api`'s session endpoint instead. A `StartSubSession` made over MCP keeps nothing
+open: only a chat's session holds sub-sessions for a follow-up (F26). `MCP_TRANSPORT=http` serves MCP over the network
 and needs `MCP_API_KEY` (falls back to `AGENT_API_KEY`). The full comparison, both transports and the agent-to-agent
 flow are in [AGENT_COMMUNICATION.md](AGENT_COMMUNICATION.md).
 

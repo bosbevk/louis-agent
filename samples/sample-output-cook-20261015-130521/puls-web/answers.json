@@ -1,0 +1,480 @@
+[
+  {
+    "task": "cook-af",
+    "location": "Stellenbosch, Wes-Kaap, Suid-Afrika",
+    "turns": [
+      {
+        "question": "Wat kan ek vanaand vir vier mense kook vir onder R250? Gee die resep en 'n inkopielys met pryse.",
+        "answer": "**Bobotie vir vier, ±R215 plus die ui en bouillonblokkie.** Dit is 'n klassieke Suid-Afrikaanse hoofgereg, en dit pas binne jou bedrag.\n\n## Die resep (4 porsies, ±1 uur 20 min, oond 180 °C)\n\n**Bestanddele**\n- 500 g beesmaalvleis\n- 1 ui, fyngekap\n- 1 kl. knoffel (of 1 tl. gemaalde knoffel)\n- 1 snytjie witbrood sonder korsie\n- 200 ml melk (die res bly oor vir die vla)\n- 1 el. medium kerriepoeier\n- ½ tl. borrie (opsioneel)\n- 2 el. peach chutney\n- 1 el. asyn\n- 1 el. tamatiesous\n- 2 el. sultanas\n- 1 beesbouillonblokkie, verkrummel\n- 2 eiers, plus 1 vir die vla\n- 2 lourierblare (opsioneel)\n- sout en peper\n\n**Metode**\n1. Verhit die oond tot 180 °C en smeer 'n ovenskottel (±20 × 20 cm).\n2. Week die brood in die 200 ml melk.\n3. Fruit die ui in 'n bietjie olie sag, voeg knoffel by en roer 'n minuut.\n4. Voeg die maalvleis by, bruin dit en breek die klonte met 'n vurk.\n5. Roer kerrie, borrie, chutney, asyn, tamatiesous, sultanas en bouillon deur. Laat 2 minute saggies warm word.\n6. Druk die brood uit (hou die melk), maak dit fyn en roer dit by die vleis.\n7. Skep die vleis in die skottel en druk dit plat.\n8. Klop 1 eier met die afgehoue melk en 'n knippie sout, en gooi dit oor die vleis.\n9. Sit die lourierblare op die bo-kant.\n10. Bak 40–45 minute tot die vla gestol en goudbruin is.\n\nEet dit met rys, geelrys of 'n groensalaat as jy dit wil aanvul.\n\n## Inkopielys (Checkers, Sixty60-pryse)\n\n| Item | Hoeveelheid | Prys |\n|---|---|---|\n| Beesmaalvleis | 500 g (1 pak) | R64.99 |\n| Vrye-wei-eiers | 6-pak (gebruik 2) | R29.99 |\n| Checkers peach chutney | 460 g | R36.99 (gebruik ongeveer die helfte) |\n| Witbrood | 700 g | R17.99 |\n| Volvet melk | 1 L | R17.99 |\n| Rajah medium kerriepoeier | 50 g | R16.99 |\n| Safari sultanas | 70 g | R14.99 |\n| Gemaalde knoffel | 100 g | R14.99 |\n| Ui, bouillonblokkie, borrie | | **nie geprys nie** |\n\n**Bevestig: ±R215.** Die ui en bouillonblokkie sal waarskynlik nog ±R20–35 bykom, dus die totaal lê nou naby R250. Dit is tight, maar haalbaar. Sout, peper, olie en asyn het jy waarskynlik al.\n\n## Waar koop\n\nDie Checkers-takke in Stellenbosch Sentraal (Andringa Street en Mill Street) het die bevestigde items op die webwerf. Ek het **nie** Pick n Pay, Spar, Woolworths of die boeremark nagegaan nie. As die ui of bouillon by een van die ander goedkoper is, kan jy dit daar koop.\n\n## Onseker\n\n- Die pryse is van die webwerf, en nie almal is van produkbladsye nie. Dit kan verskil van wat in die winkel op die rak staan.\n- Die mince-pak wissel tussen 300 en 500 g. Ek het 500 g aangeneem.\n- Die chutney se prys kom van 'n soekresultaat.\n\nWil jy hê ek moet die ui en bouillon by Pick n Pay of Spar gaan naslaan, of die lys vir 'n ander aantal mense aanpas?",
+        "tools": [
+          "StartSubSession"
+        ],
+        "delegations": [
+          {
+            "call": "start",
+            "toolsets": [
+              "web"
+            ],
+            "personality": "puls-cook"
+          }
+        ],
+        "specialist_calls": [
+          {
+            "name": "GetToday",
+            "input": {}
+          },
+          {
+            "name": "WebSearch",
+            "input": {
+              "query": "bobotie recipe 4 servings ingredients method South Africa",
+              "maxResults": 5
+            }
+          },
+          {
+            "name": "WebSearch",
+            "input": {
+              "query": "Checkers Sixty60 beef mince 500g price",
+              "maxResults": 5,
+              "site": "checkers.co.za"
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://www.checkers.co.za/product/beef-mince-300g-500g-10152011KG"
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://nominatim.openstreetmap.org/search?q=Checkers+Stellenbosch&format=json&limit=5&countrycodes=za"
+            }
+          },
+          {
+            "name": "WebSearch",
+            "input": {
+              "query": "Checkers Sixty60 medium curry powder 100g",
+              "maxResults": 5,
+              "site": "checkers.co.za"
+            }
+          },
+          {
+            "name": "WebSearch",
+            "input": {
+              "query": "Checkers Sixty60 apricot jam fruit chutney 350g",
+              "maxResults": 5,
+              "site": "checkers.co.za"
+            }
+          },
+          {
+            "name": "WebSearch",
+            "input": {
+              "query": "Checkers Sixty60 Worcestershire sauce 150ml",
+              "maxResults": 3,
+              "site": "checkers.co.za"
+            }
+          },
+          {
+            "name": "WebSearch",
+            "input": {
+              "query": "Checkers Sixty60 curry powder medium Robertsons Ina Paarman",
+              "maxResults": 3,
+              "site": "checkers.co.za"
+            }
+          },
+          {
+            "name": "WebSearch",
+            "input": {
+              "query": "Checkers Sixty60 sultanas 250g",
+              "maxResults": 3,
+              "site": "checkers.co.za"
+            }
+          },
+          {
+            "name": "WebSearch",
+            "input": {
+              "query": "Checkers Sixty60 large eggs 6 pack free range",
+              "maxResults": 3,
+              "site": "checkers.co.za"
+            }
+          },
+          {
+            "name": "WebSearch",
+            "input": {
+              "query": "Checkers Sixty60 full cream milk 1L",
+              "maxResults": 3,
+              "site": "checkers.co.za"
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://www.checkers.co.za/product/simple-truth-large-free-range-eggs-6-pack-10720825EA"
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://www.checkers.co.za/product/lea-and-perrins-worcestershire-sauce-150ml-602b93c753c614184741226d"
+            }
+          },
+          {
+            "name": "WebSearch",
+            "input": {
+              "query": "Checkers Housebrand Peach Fruit Chutney 460g",
+              "maxResults": 3,
+              "site": "checkers.co.za"
+            }
+          }
+        ],
+        "error": null,
+        "seconds": 104.4
+      },
+      {
+        "question": "Maak dit eerder vir ses mense. Wat kos dit nou?",
+        "answer": "**Vir ses mense kos dit ±R238.** Dit is ±R40 per persoon en bly onder R250, maar die ui en bouillon is geskat, nie bevestig nie.\n\n## Die resep (6 porsies, ±1 uur 30 min, oond 180 °C)\n\n**Bestanddele**\n- 650 g beesmaalvleis\n- 2 uie, fyngekap\n- 1½ tl. gemaalde knoffel (±1 pot)\n- 2 snytjies witbrood sonder korsie\n- 300 ml melk om die brood in te week, plus ±150 ml vir die vla\n- 1½ el. medium kerriepoeier\n- ¾ tl. borrie (opsioneel)\n- 3 el. peach chutney\n- 1½ el. asyn\n- 1½ el. tamatiesous\n- 3 el. sultanas\n- 1 beesbouillonblokkie, verkrummel\n- 3 eiers\n- 3 lourierblare (opsioneel)\n- sout en peper\n\n**Metode**\n1. Verhit die oond tot 180 °C en smeer 'n ovenskottel van ±25 × 25 cm.\n2. Week die brood in die 300 ml melk.\n3. Fruit die ui in 'n bietjie olie sag, voeg knoffel by en roer 'n minuut.\n4. Voeg die maalvleis by, bruin dit en breek die klonte met 'n vurk (±10 minute).\n5. Roer kerrie, borrie, chutney, asyn, tamatiesous, sultanas en bouillon deur. Laat 2–3 minute saggies warm word.\n6. Druk die brood uit (hou die melk), maak dit fyn en roer dit by die vleis.\n7. Skep die vleis in die skottel en maak die oppervlak gelyk.\n8. Klop 2 eiers met ±150 ml van die afgehoue melk en 'n knippie sout. Gooi dit oor die vleis.\n9. Sit die lourierblare op die bo-kant.\n10. Bak 45–50 minute tot die vla gestol en goudbruin is.\n\nDie derde ei is 'n reserwe. Gebruik dit as die vla te dun lyk, of as jy 'n bietjie meer bindmiddel wil hê.\n\n## Inkopielys (Checkers, Stellenbosch)\n\n| Item | Hoeveelheid | Prys | Status |\n|---|---|---|---|\n| Value Ground Beef | 1 pak (450–650 g) | R64.99 | Bevestig |\n| Simple Truth vrye-wei-eiers | 6-pak (gebruik 3) | R29.99 | Bevestig |\n| Checkers peach chutney | 460 g (gebruik 3 el.) | R36.99 | Bevestig, van soekresultaat |\n| Witbrood | 700 g | R17.99 | Kategorie-bladsy |\n| Volvet melk | 1 L | R17.99 | Kategorie-bladsy |\n| Rajah kerriepoeier | 50 g | R16.99 | Kategorie-bladsy |\n| Safari sultanas | 70 g | R14.99 | Promosie |\n| Gemaalde knoffel | 100 g | R14.99 | Promosie |\n| Uie | ±0,4 kg | ±R12 | **Geskat** |\n| Knorrox beesbouillon | 6 × 10 g (gebruik 1) | ±R10.99 | **Geskat** |\n\n**Totaal: ±R237.91**\n\n## Let wel\n\n- **Mince:** Die pak wissel tussen 450 en 650 g. Die 650 g-pak pas die resep byna presies. Minder as dit en jy kan 'n halwe pond byvoeg.\n- **Ui:** Die webwerf-prys is vir lewering, en die webblad sê dit is nie beskikbaar by jou adres nie. Die prys in die winkel kan anders wees.\n- **Bouillon:** Die R10.99 kom van 'n gekoppelde lys, nie die produkbladsy self nie.\n- **Pantry:** Sout, peper, olie en asyn het jy waarskynlik al. Lourierblare en borrie kan ook in die huis wees.\n- **Winkels:** Ek het net Checkers nagegaan (Andringa Street of Mill Street, Stellenbosch Sentraal). Pick n Pay, Spar en Woolworths is nie nagegaan nie. As die ui of bouillon daar goedkoper is, bespaar jy 'n bietjie.\n\nWil jy hê ek moet die ui en bouillon by Pick n Pay of Spar naslaan?",
+        "tools": [
+          "ContinueSubSession"
+        ],
+        "delegations": [
+          {
+            "call": "continue",
+            "handle": "sub-1"
+          }
+        ],
+        "specialist_calls": [
+          {
+            "name": "WebSearch",
+            "input": {
+              "query": "Checkers Sixty60 Value Ground Beef 450g-650g",
+              "maxResults": 3,
+              "site": "checkers.co.za"
+            }
+          },
+          {
+            "name": "WebSearch",
+            "input": {
+              "query": "Checkers Sixty60 onions loose brown onion",
+              "maxResults": 3,
+              "site": "checkers.co.za"
+            }
+          },
+          {
+            "name": "WebSearch",
+            "input": {
+              "query": "Checkers Sixty60 beef stock cubes 6 pack Knorr Oxo",
+              "maxResults": 3,
+              "site": "checkers.co.za"
+            }
+          }
+        ],
+        "error": null,
+        "seconds": 53.3
+      }
+    ],
+    "score": {
+      "role": "puls-cook",
+      "routed_right": true,
+      "answered_itself": false,
+      "hosts": [
+        "checkers.co.za",
+        "nominatim.openstreetmap.org"
+      ],
+      "local_hosts": [
+        "checkers.co.za"
+      ],
+      "shop_hosts": [
+        "checkers.co.za"
+      ],
+      "sources_local": false,
+      "priced_at_shops": true,
+      "rand_amounts": 27,
+      "unconfirmed_marks": 4,
+      "errors": [],
+      "follow_up": "continued",
+      "follow_up_handle": "sub-1"
+    }
+  },
+  {
+    "task": "cook-en",
+    "location": null,
+    "turns": [
+      {
+        "question": "What should I cook tonight in Pretoria for two? I have about an hour. Give me the recipe and what it'll cost at the shops.",
+        "answer": "**Pap en wors met tamatie-en-ui-smoor** is die plan vir vanaand. Dis 'n klassieke weeksaandmaaltyd, vir twee, en dit is klaar in so 35 tot 40 minute. Geen oond nodig nie.\n\n**Wat jy nodig het (vir twee)**\n- 500 g boerewors\n- 250 g mielie meel (White Star super; die 1 kg sak is meer as wat jy nodig het)\n- 750 ml water, plus 1 tl sout vir die pap\n- 2 uie, fyn gesny\n- 3 tamaties, gekap\n- 1 tl tamatiepasta (opsioneel)\n- 1 tbl kookolie, sout, swartpeper\n- 15 g botter (opsioneel)\n\n**Hoe maak jy dit**\n1. Sit die wors in 'n pan met 2 tbl water. Dek toe en kook 5 minute op medium. Haal die deksel af en bruin dit 10 tot 12 minute, en draai dit om. Hou warm en laat die vet in die pan.\n2. Gooi amper al die vet af, behalwe 1 tbl. Voeg die olie en uie by en bak 8 minute tot goud.\n3. Voeg die tamatie, tamatiepasta, 'n knippie sout en peper, en ongeveer 100 ml water by. Sluimer 10 minute tot dit dik en pulpagtig is.\n4. Terwyl die smoor kook, bring die 750 ml water en die sout aan die kook. Meng die mielie meel met 100 ml koue water tot 'n gladde pasta. Roer dit in die kokende water, skroef die hitte af en roer 2 minute hard.\n5. Dek toe en kook op die laagste hitte 10 tot 15 minute, en roer af en toe. Voeg 'n bietjie water by as dit te styf word. Roer die botter in as jy dit gebruik.\n6. Skep die pap op die borde, sit die wors daarby en gooi die smoor oor die pap.\n\n**Winkellys en pryse (Checkers se aanlynpryse, 15 Oktober 2026)**\n\n| Item | Koop | Pryse |\n|---|---|---|\n| Championship Beef & Pork Thin Boerewors | 1 pak | R68.74 |\n| White Star Super Mielie Meel | 1 kg | R22.99 |\n| Uie | 1 kg sak (jy gebruik 2) | R34.99 |\n| Tamaties | 4-pak | R29.99 |\n\n**Totaal: R156.71**, dit is ongeveer R78 per persoon.\n\nDie olie, sout, peper, botter en tamatiepasta is nie in die totaal nie. Die meeste kombuise het dit al.\n\n**Waar koop jy**\n- **Checkers Hyper, Van Rensburgstraat, Parktown:** die maklikste, want jy koop alles op een plek. Ek kon nie seker maak dat dit in voorraad is nie, so bel gerus eers.\n- **Pick n Pay, Mutualstraat (sentraal):** ek kon nie hul pryse bevestig nie. Hul product bladsye het nie gelaai nie, so ek kan nie sê of dit goedkoper is nie.\n- **Woolworths:** nie geprys nie, maar waarskynlik duurder.\n\n**Let wel**\n- Die Checkers-pryse is aanlyn-pryse. Winkelpryse kan verskil.\n- Ek kon nie seker maak of die 1 kg uie vir aflewering beskikbaar is nie.\n\nWil jy hê ek moet vir meer mense opskaal of 'n ander aand se kos soek?\n\nBronne wat gelees is:\n- checkers.co.za: boerewors, White Star mielie meel, uie en tamaties (produkbladsye)\n- melissamayo.com/recipe/mielie-pap-gravy-boerewors (resep-verwysing)\n- melbyspost.co.za/index.php/2020/02/17/traditional-tomato-sauce-for-pap-wors (resep-verwysing)",
+        "tools": [
+          "StartSubSession"
+        ],
+        "delegations": [
+          {
+            "call": "start",
+            "toolsets": [
+              "web"
+            ],
+            "personality": "puls-cook"
+          }
+        ],
+        "specialist_calls": [
+          {
+            "name": "GetToday",
+            "input": {}
+          },
+          {
+            "name": "WebSearch",
+            "input": {
+              "query": "pap en wors recipe tomato onion gravy smoor South African",
+              "maxResults": 5
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://nominatim.openstreetmap.org/search?q=Checkers+Pretoria+Central&format=json&limit=5&countrycodes=za"
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://nominatim.openstreetmap.org/search?q=Pick+n+Pay+Pretoria+Central&format=json&limit=5&countrycodes=za"
+            }
+          },
+          {
+            "name": "WebSearch",
+            "input": {
+              "query": "Pick n Pay boerewors 500g price",
+              "maxResults": 5
+            }
+          },
+          {
+            "name": "WebSearch",
+            "input": {
+              "query": "Checkers Sixty60 mielie meal 2.5kg price",
+              "maxResults": 5
+            }
+          },
+          {
+            "name": "WebSearch",
+            "input": {
+              "query": "Checkers Pretoria branch Brooklyn Menlyn Hatfield supermarket",
+              "maxResults": 5
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://nominatim.openstreetmap.org/search?q=Woolworths+Pretoria&format=json&limit=5&countrycodes=za"
+            }
+          },
+          {
+            "name": "WebSearch",
+            "input": {
+              "query": "boerewors price",
+              "maxResults": 5,
+              "site": "checkers.co.za"
+            }
+          },
+          {
+            "name": "WebSearch",
+            "input": {
+              "query": "boerewors price",
+              "maxResults": 5,
+              "site": "pnp.co.za"
+            }
+          },
+          {
+            "name": "WebSearch",
+            "input": {
+              "query": "mielie meal price",
+              "maxResults": 5,
+              "site": "checkers.co.za"
+            }
+          },
+          {
+            "name": "WebSearch",
+            "input": {
+              "query": "mielie meal price",
+              "maxResults": 5,
+              "site": "pnp.co.za"
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://www.checkers.co.za/product/championship-boerewors-beef-and-pork-thin-boerewors-per-kg-10152077KG",
+              "maxChars": 3000
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://www.checkers.co.za/product/white-star-super-maize-meal-25kg-10138799EA",
+              "maxChars": 3000
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://www.checkers.co.za/product/iwisa-no1-super-maize-meal-bag-25kg-10142227EA",
+              "maxChars": 3000
+            }
+          },
+          {
+            "name": "WebSearch",
+            "input": {
+              "query": "onions per kg price",
+              "maxResults": 5,
+              "site": "checkers.co.za"
+            }
+          },
+          {
+            "name": "WebSearch",
+            "input": {
+              "query": "tomatoes price per kg",
+              "maxResults": 5,
+              "site": "checkers.co.za"
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://www.checkers.co.za/product/onions-1kg-10135699EA",
+              "maxChars": 1500
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://www.checkers.co.za/product/tomatoes-1kg-10145422EA",
+              "maxChars": 1500
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://www.checkers.co.za/product/white-star-super-maize-meal-1kg-10140974EA",
+              "maxChars": 1500
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://nominatim.openstreetmap.org/search?q=Checkers+Hyper+Pretoria&format=json&limit=5&countrycodes=za"
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://www.checkers.co.za/product/tomatoes-4-pack-10158226EA",
+              "maxChars": 1200
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://www.pnp.co.za/pnp-country-classic-thick-boerewors/p/000000000000107579_KGM",
+              "maxChars": 1500
+            }
+          },
+          {
+            "name": "ReadRenderedPage",
+            "input": {
+              "url": "https://www.pnp.co.za/pnp-country-classic-thick-boerewors/p/000000000000107579_KGM",
+              "maxChars": 2000
+            }
+          }
+        ],
+        "error": null,
+        "seconds": 114.8
+      },
+      {
+        "question": "Swap the meat for chicken. What does the shopping list look like now?",
+        "answer": "Met hoender in plaas van wors, sal die winkellys so lyk:\n\n| Item | Koop | Winkel | Prys (R) |\n|---|---|---|---|\n| Farmer's Choice Vars Ontbeende & Velsonder Hoenderdye | 1 pak (600–900 g) | Checkers | 112.49 |\n| White Star Super Mielie Meel | 1 kg | Checkers | 22.99 |\n| Uie | 1 kg sak (jy gebruik 2) | Checkers | 34.99 |\n| Tamaties | 4-pak | Checkers | 29.99 |\n\n**Totaal: R200.46**, dit is ongeveer R100 per persoon. Dit is R43.75 meer as die wors-weergawe.\n\n**Die kip:** Gebruik ontbeende, velsonder dye. Dit bly sappig in 'n warm pan en is in 12 tot 15 minute gaar. Sny 500 g in repe, draai dit in 1 tl paprika, ½ tl sout en peper, en bak dit in een laag: 3 tot 4 minute per kant, tot goud en heeltemal gaar. Haal dit uit, bak die uie en tamaties in dieselfde pan, en gooi die kip terug vir 2 minute in die smoor.\n\n**Let wel**\n- Die pak is 600 tot 900 g, so jy sal 'n bietjie oor hê. Die prys van R112.49 is vir die pak, nie per kilo nie.\n- Dit is Checkers se aanlyn-pryse. Die winkelprys kan verskil.\n- Pick n Pay en Woolworths is nog nie bevestig nie.\n- Ek kon nie seker maak dat die Parktown-tak die kip op voorraad het nie.\n\nBron: checkers.co.za, Farmer's Choice ontbeende dye (produkbladsy).",
+        "tools": [
+          "ContinueSubSession"
+        ],
+        "delegations": [
+          {
+            "call": "continue",
+            "handle": "sub-1"
+          }
+        ],
+        "specialist_calls": [
+          {
+            "name": "WebSearch",
+            "input": {
+              "query": "chicken thigh fillets skinless boneless price per kg",
+              "maxResults": 5,
+              "site": "checkers.co.za"
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://www.checkers.co.za/product/farmers-choice-fresh-deboned-and-skinless-chicken-thighs-per-kg-10732970KG",
+              "maxChars": 1200
+            }
+          }
+        ],
+        "error": null,
+        "seconds": 23.6
+      }
+    ],
+    "score": {
+      "role": "puls-cook",
+      "routed_right": true,
+      "answered_itself": false,
+      "hosts": [
+        "nominatim.openstreetmap.org",
+        "checkers.co.za",
+        "pnp.co.za"
+      ],
+      "local_hosts": [
+        "checkers.co.za",
+        "pnp.co.za"
+      ],
+      "shop_hosts": [
+        "checkers.co.za",
+        "pnp.co.za"
+      ],
+      "sources_local": false,
+      "priced_at_shops": true,
+      "rand_amounts": 10,
+      "unconfirmed_marks": 1,
+      "errors": [],
+      "follow_up": "continued",
+      "follow_up_handle": "sub-1"
+    }
+  },
+  {
+    "task": "control-web",
+    "location": "Stellenbosch, Wes-Kaap, Suid-Afrika",
+    "turns": [
+      {
+        "question": "Wat is die huidige prima uitleenkoers in Suid-Afrika, en wanneer het dit laas verander? Gee jou bronne.",
+        "answer": "Die huidige prima uitleenkoers is **10,75%**. Dit het op **25 September 2026** verander, toe die Reserwebank se rentekomitee die repo-rente met 0,25 persentasiepunt verhoog het na **7,25%**. Die prima-koers is altyd die Reserwebank se beleidsrente plus 3,5 persentasiepunte, so 7,25% + 3,5% = 10,75%.\n\nDie vorige verandering was 'n vorige verhoging van die repo-rente na 7%, wat die prima-koers na 10,5% gebring het. Ek het nie die presiese datum daarvan bevestig nie. Moneyweb noem dat September se verhoging die tweede van die jaar was.\n\nDie volgende vergadering van die komitee is **19 November 2026**. Die inflasie is volgens die Reserwebank se bladsy 4,4% (teikeen 3%), en die verhoging is volgens hulle 'n reaksie op 'n olie- en voedselprysskok wat met die Midde-Ooste-konflik saamhang.\n\n**Bronne:**\n- Reserwebank, *Statement of the Monetary Policy Committee, September 2026*: https://www.resbank.co.za/en/home/publications/publication-detail-pages/statements/monetary-policy-statements/2026/september (beleidsrente 7,25%, volgende vergadering 19 November 2026)\n- Moneyweb, \"Sarb ups repo rate to 7.25%\": https://www.moneyweb.co.za/news/economy/sarb-ups-repo-rate-to-7-25 (prima 10,75%)\n- eNCA, \"Reserve Bank hikes interest rates by 25 basis points\", 23 September 2026: https://www.enca.com/business-top-stories/reserve-bank-hikes-interest-rates-25-basis-points\n\nVir die presiese huidige prima-koers by jou bank, kyk die bank se eie bladsy of die Reserwebank se \"current market rates\"-bladsy, want banke kan 'n afwyking hê.",
+        "tools": [
+          "WebSearch",
+          "GetToday",
+          "FetchUrl"
+        ],
+        "delegations": [],
+        "specialist_calls": [],
+        "error": null,
+        "seconds": 14.7
+      }
+    ],
+    "score": {
+      "role": null,
+      "routed_right": false,
+      "answered_itself": true,
+      "hosts": [],
+      "local_hosts": [],
+      "shop_hosts": [],
+      "sources_local": false,
+      "priced_at_shops": false,
+      "rand_amounts": 0,
+      "unconfirmed_marks": 0,
+      "errors": []
+    }
+  }
+]

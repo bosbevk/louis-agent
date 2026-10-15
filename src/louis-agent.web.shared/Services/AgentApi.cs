@@ -98,6 +98,31 @@ public sealed class AgentApi(HttpClient http, Settings settings)
             yield return new AgentStreamEvent(item.EventType, JsonDocument.Parse(item.Data).RootElement);
     }
 
+    /// <summary>A GET returning plain text (the admin portal's saved stream events, F27).</summary>
+    public async Task<string> GetTextAsync(string url)
+    {
+        using var response = await SendAsync(new HttpRequestMessage(HttpMethod.Get, url));
+        return await response.Content.ReadAsStringAsync();
+    }
+
+    /// <summary>A POST returning JSON, for an app's own endpoints (the admin portal's runs, F27).</summary>
+    public async Task<JsonElement> PostAsync(string url, object body)
+    {
+        using var response = await SendAsync(new HttpRequestMessage(HttpMethod.Post, url) { Content = JsonContent.Create(body) });
+        return await response.Content.ReadFromJsonAsync<JsonElement>();
+    }
+
+    /// <summary>A GET of server-sent events whose data is plain text (the admin portal's run lines, F27): each event's type and data.</summary>
+    public async IAsyncEnumerable<(string Type, string Data)> StreamLinesAsync(string url, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, url);
+        request.SetBrowserResponseStreamingEnabled(true);
+        using var response = await SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+        await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
+        await foreach (var item in SseParser.Create(stream).EnumerateAsync(cancellationToken))
+            yield return (item.EventType, item.Data);
+    }
+
     /// <summary>Sends with the API key; throws <see cref="AgentApiException"/> with the API's message on an error.</summary>
     public async Task<HttpResponseMessage> SendAsync(
         HttpRequestMessage request,

@@ -1,0 +1,37 @@
+@inherits LayoutComponentBase
+@* F27: the admin portal's own layout, built in-house on the chat's pieces (its sidebar, links and offcanvas): a fixed
+   sidebar of sections and a content column; a page puts its header and cards in @Body. Reference: the page anatomy
+   AdminLTE and Tabler share (sidebar, page header with actions, cards); none of their files. *@
+
+@* Its own root class, not .app: the chat's grid rules (the saved sidebar width, .sidebar-hidden) must not reach here. *@
+<div class="admin-shell">
+    <header class="topbar d-lg-none">
+        <button class="icon menu-button" type="button" data-bs-toggle="offcanvas" data-bs-target="#admin-sidebar" aria-controls="admin-sidebar" aria-label="Maak die kieslys oop">☰</button>
+        <div class="brand"><PulsLogo /></div>
+        <a class="icon" href="gesels" title="Terug na Puls" aria-label="Terug na Puls">←</a>
+    </header>
+
+    <aside class="sidebar offcanvas-lg offcanvas-start" id="admin-sidebar" tabindex="-1" aria-label="Admin">
+        <div class="sidebar-top">
+            <a class="brand brand-stack" href="./" title="Puls se tuisblad"><PulsLogo /><span class="tagline">Admin</span></a>
+            <button class="icon d-lg-none" type="button" data-bs-dismiss="offcanvas" data-bs-target="#admin-sidebar" aria-label="Maak die kieslys toe">×</button>
+        </div>
+
+        <div class="sidebar-label">Meet</div>
+        <nav class="side-nav">
+            <NavLink class="side-link" href="admin" Match="NavLinkMatch.All"><span class="ic i-chart" aria-hidden="true"></span>Maatstawwe</NavLink>
+        </nav>
+
+        <div class="admin-side-note">Meer afdelings kom hier by soos die portaal groei: die grootboek, pryse, vaardighede, die rolle.</div>
+
+        <div class="side-footer">
+            <nav class="side-nav admin-side-back">
+                <a class="side-link" href="gesels"><span class="ic i-chat" aria-hidden="true"></span>Terug na Puls</a>
+            </nav>
+        </div>
+    </aside>
+
+    <main class="admin-main">
+        @Body
+    </main>
+</div>
