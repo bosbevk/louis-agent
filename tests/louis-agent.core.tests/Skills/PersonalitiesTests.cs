@@ -154,6 +154,8 @@ public class PersonalitiesTests
         // Louis's second test: the shops' store finders and search pages are JavaScript and gave the cook nothing, while
         // OpenStreetMap's search returns the branches as JSON; the role names it, and says which pages not to fetch.
         Assert.That(cook, Does.Contain("nominatim.openstreetmap.org/search").And.Contain("Don't fetch"));
+        // Louis: a rating, how many ingredients got a price. The cook states it in a fixed line the check reads.
+        Assert.That(cook, Does.Contain("Geprys: {n} van {m} bestanddele"));
     }
 
     [TestCase("default.md")]

@@ -10,6 +10,7 @@
         "routed_right": 3,
         "sources_local": 1,
         "priced_at_shops": 3,
+        "priced_ratio": 0.33,
         "continued": 1,
         "errors": 0,
         "cost": {
@@ -22,6 +23,7 @@
         "routed_right": 3,
         "sources_local": 1,
         "priced_at_shops": 3,
+        "priced_ratio": 0.0,
         "continued": 2,
         "errors": 0,
         "cost": {
@@ -34,6 +36,7 @@
         "routed_right": 3,
         "sources_local": 0,
         "priced_at_shops": 0,
+        "priced_ratio": null,
         "continued": 0,
         "errors": 0,
         "cost": {
@@ -55,6 +58,7 @@
         "routed_right": 3,
         "sources_local": 2,
         "priced_at_shops": 3,
+        "priced_ratio": 0.0,
         "continued": 0,
         "errors": 0,
         "cost": {
@@ -67,6 +71,7 @@
         "routed_right": 3,
         "sources_local": 2,
         "priced_at_shops": 3,
+        "priced_ratio": 0.0,
         "continued": 0,
         "errors": 0,
         "cost": {
@@ -79,6 +84,7 @@
         "routed_right": 0,
         "sources_local": 0,
         "priced_at_shops": 0,
+        "priced_ratio": null,
         "continued": 0,
         "errors": 0,
         "cost": {

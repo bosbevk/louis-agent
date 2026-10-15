@@ -55,6 +55,10 @@ MODES = {
 SHOPS = ("checkers.co.za", "pnp.co.za", "woolworths.co.za", "spar.co.za", "shoprite.co.za")
 RAND = re.compile(r"\bR\s?\d[\d\s,.]*")
 # A price the cook didn't confirm: the role says "unknown"; the first run showed it writes "geskat" / "skatting" too.
+# The cook's own tally, a fixed line at the end of its shopping list (the role asks for it): "Geprys: 7 van 9 bestanddele".
+PRICED = re.compile(r"\b(?:Geprys|Priced)\s*:\s*(\d+)\s+(?:van|of)\s+(\d+)", re.IGNORECASE)
+ESTIMATE = re.compile(r"\b(unknown|onbekend|geskat|skatting|skattings|estimate[ds]?|nie bevestig|unverified|onbevestig|nie gevind)\b", re.IGNORECASE)
+TABLE_ROW = re.compile(r"^\|(?!\s*-)(?!\s*(?:Item|Bestanddeel|Ingredient|Produk)\b)[^|]+\|", re.IGNORECASE | re.MULTILINE)
 UNCONFIRMED = re.compile(r"\b(unknown|onbekend|geskat|skatting|skattings|estimate[ds]?|nie bevestig|unverified|onbevestig|snippets?|soekresultate|soekindeks)\b", re.IGNORECASE)
 
 
@@ -143,9 +147,26 @@ def hosts(specialist_calls):
     return seen
 
 
+def priced(answer):
+    """The cook's rating (Louis): ingredients with a price over ingredients on the list. From the cook's own tally line
+    when it wrote one; else counted from the list's table rows, a row with a rand amount and no estimate mark being
+    priced. (None, None) when there is no list at all."""
+    if m := PRICED.search(answer or ""):
+        n, total = int(m.group(1)), int(m.group(2))
+        return (min(n, total), total) if total else (None, None)
+    rows = [r for r in re.findall(r"^\|(?!\s*-)[^\n]*$", answer or "", re.MULTILINE) if not re.match(r"^\|\s*(Item|Bestanddeel|Ingredient|Produk)\b", r, re.IGNORECASE)]
+    if not rows:
+        return None, None
+    # A price from the search index counts (Louis's option 1); an estimate or an unknown doesn't.
+    good = [r for r in rows if RAND.search(r) and not ESTIMATE.search(r) and "±" not in r]
+    return len(good), len(rows)
+
+
 def score(task, turns):
-    """What the run says about one conversation, as numbers: the role of each turn, the hosts, rand, unknown, follow-up."""
+    """What the run says about one conversation, as numbers: the role of each turn, the hosts, rand, unknown, follow-up,
+    and the cook's rating: priced ingredients over ingredients."""
     first, follow = turns[0], (turns[1] if len(turns) > 1 else None)
+    n_priced, n_items = priced(first["answer"])
     starts = [d for d in first["delegations"] if d["call"] == "start"]
     fetched = hosts(first["specialist_calls"] + (follow["specialist_calls"] if follow else []))
     local = [h for h in fetched if h.endswith(".za")]        # South African sites: a recipe site counts, a US one doesn't
@@ -158,6 +179,8 @@ def score(task, turns):
         "hosts": fetched, "local_hosts": local, "shop_hosts": shops,
         "sources_local": bool(fetched) and len(local) == len(fetched),
         "priced_at_shops": bool(shops),
+        "ingredients": n_items, "priced": n_priced,
+        "priced_ratio": round(n_priced / n_items, 2) if n_items else None,
         "rand_amounts": len(RAND.findall(first["answer"])) + (len(RAND.findall(follow["answer"])) if follow else 0),
         "unconfirmed_marks": len(UNCONFIRMED.findall(first["answer"])) + (len(UNCONFIRMED.findall(follow["answer"])) if follow else 0),
         "errors": [t["error"] for t in turns if t["error"]],
@@ -210,6 +233,7 @@ def run_once(out):
             progress("conversation", mode=mode, task=key, role=scored["role"], routed_right=scored["routed_right"],
                      hosts=scored["hosts"], shop_hosts=scored["shop_hosts"], sources_local=scored["sources_local"],
                      follow_up=scored.get("follow_up"), rand_amounts=scored["rand_amounts"],
+                     ingredients=scored["ingredients"], priced=scored["priced"], priced_ratio=scored["priced_ratio"],
                      unconfirmed_marks=scored["unconfirmed_marks"], errors=len(scored["errors"]),
                      seconds=round(sum(t["seconds"] for t in turns), 1))
         time.sleep(2)   # the ledger's last lines
@@ -252,12 +276,13 @@ def write_results(out, results):
     lines = ["# The cook check: one run", ""]
     for mode, r in results.items():
         lines += [f"## {mode} (toolsets: {', '.join(r['toolsets'])}): ${r['all']['cost']:.4f}, {r['all']['tokens']:,} tokens, {r['all']['requests']} requests", "",
-                  "| Conversation | Role | Routed right | Hosts fetched (SA shops / SA / all) | Rand amounts | Unconfirmed marks | Follow-up | Cost turn 1 | Cost turn 2 | Seconds |",
-                  "|---|---|---|---|---:|---:|---|---:|---:|---|"]
+                  "| Conversation | Role | Routed right | Hosts fetched (SA shops / SA / all) | Priced ingredients | Rand amounts | Unconfirmed marks | Follow-up | Cost turn 1 | Cost turn 2 | Seconds |",
+                  "|---|---|---|---|---:|---:|---:|---|---:|---:|---|"]
         for c in r["conversations"]:
             s, turns = c["score"], r["per_task"][c["task"]]["turns"]
+            rating = f"{s['priced']} / {s['ingredients']} ({s['priced_ratio']:.0%})" if s.get("ingredients") else "—"
             lines.append(f"| {c['task']} | {s['role'] or ('— (answered itself)' if s['answered_itself'] else '— (error)')} | {'yes' if s['routed_right'] else 'no'} | "
-                         f"{len(s['shop_hosts'])} / {len(s['local_hosts'])} / {len(s['hosts'])}: {', '.join(s['hosts']) or '—'} | {s['rand_amounts']} | {s['unconfirmed_marks']} | "
+                         f"{len(s['shop_hosts'])} / {len(s['local_hosts'])} / {len(s['hosts'])}: {', '.join(s['hosts']) or '—'} | {rating} | {s['rand_amounts']} | {s['unconfirmed_marks']} | "
                          f"{s.get('follow_up', '—')}{' (' + s['follow_up_handle'] + ')' if s.get('follow_up_handle') else ''} | "
                          f"${turns.get('1', {}).get('cost', 0):.4f} | {('$%.4f' % turns['2']['cost']) if '2' in turns else '—'} | {', '.join(str(t['seconds']) for t in c['turns'])} |")
         lines.append("")
@@ -288,10 +313,12 @@ def summarise_runs(out, runs):
         per_task = {}
         for key, _, _ in CONVERSATIONS:
             scores = [next(c["score"] for c in r[mode]["conversations"] if c["task"] == key) for r in runs]
+            ratios = [s["priced_ratio"] for s in scores if s.get("priced_ratio") is not None]
             per_task[key] = {
                 "routed_right": sum(s["routed_right"] for s in scores),
                 "sources_local": sum(s["sources_local"] for s in scores),
                 "priced_at_shops": sum(s["priced_at_shops"] for s in scores),
+                "priced_ratio": round(statistics.mean(ratios), 2) if ratios else None,
                 "continued": sum(s.get("follow_up") == "continued" for s in scores),
                 "errors": sum(bool(s["errors"]) for s in scores),
                 "cost": spread([r[mode]["per_task"][key]["all"]["cost"] for r in runs]),
@@ -302,11 +329,12 @@ def summarise_runs(out, runs):
     n = len(runs)
     lines = [f"# {n} runs per mode", "", "| Mode | Cost, mean (lowest–highest) |", "|---|---:|"]
     lines += [f"| {mode} | ${s['cost']['mean']:.4f} ({s['cost']['min']:.4f}–{s['cost']['max']:.4f}) |" for mode, s in summary.items()]
-    lines += ["", f"| Conversation | Mode | Routed right | Only SA sources | Priced at a shop | Follow-up continued | Errors | Cost, mean (lowest–highest) |", "|---|---|---:|---:|---:|---:|---:|---:|"]
+    lines += ["", f"| Conversation | Mode | Routed right | Only SA sources | Priced at a shop | Priced ingredients, mean | Follow-up continued | Errors | Cost, mean (lowest–highest) |", "|---|---|---:|---:|---:|---:|---:|---:|---:|"]
     for key, _, messages in CONVERSATIONS:
         for mode, s in summary.items():
             t = s["per_task"][key]
-            lines.append(f"| {key} | {mode} | {t['routed_right']}/{n} | {t['sources_local']}/{n} | {t['priced_at_shops']}/{n} | {(str(t['continued']) + '/' + str(n)) if len(messages) > 1 else '—'} | "
+            rating = f"{t['priced_ratio']:.0%}" if t.get("priced_ratio") is not None else "—"
+            lines.append(f"| {key} | {mode} | {t['routed_right']}/{n} | {t['sources_local']}/{n} | {t['priced_at_shops']}/{n} | {rating} | {(str(t['continued']) + '/' + str(n)) if len(messages) > 1 else '—'} | "
                          f"{t['errors']}/{n} | ${t['cost']['mean']:.4f} ({t['cost']['min']:.4f}–{t['cost']['max']:.4f}) |")
     with open(os.path.join(out, "summary.md"), "w", encoding="utf-8") as file:
         file.write("\n".join(lines) + "\n")

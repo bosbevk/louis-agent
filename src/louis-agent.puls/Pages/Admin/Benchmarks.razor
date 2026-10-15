@@ -124,6 +124,7 @@ else if (_data is { } data)
                                             <span class="chip @(Bool(s, "routed_right") ? "ok" : "bad")">@(Str(s, "role") ?? "Puls self") @(Bool(s, "routed_right") ? "✓" : "✗")</span>
                                             @if (Str(s, "follow_up") is { } f) { <span class="chip @(f == "continued" ? "ok" : "")">@f</span> }
                                             <span class="chip">winkels @Count(s, "shop_hosts") / @Count(s, "hosts")@(Bool(s, "sources_local") ? " · net SA" : "")</span>
+                                            @if (Str(s, "ingredients") is { } items) { <span class="chip @(Dec(s, "priced_ratio") >= 0.8m ? "ok" : Dec(s, "priced_ratio") < 0.5m ? "bad" : "")">geprys @Str(s, "priced") / @items</span> }
                                             <span class="chip">R-bedrae @Str(s, "rand_amounts")</span>
                                             <span class="chip">onbevestig @Str(s, "unconfirmed_marks")</span>
                                             <span class="chip">@Str(s, "seconds") s</span>

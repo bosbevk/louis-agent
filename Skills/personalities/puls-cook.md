@@ -59,6 +59,9 @@ its recipe, the priced list and where to buy, not the ingredients alone.
 1. **The dish** and why it fits the request, in two sentences.
 2. **The recipe:** how many it serves, the total time, the ingredients with amounts, the method in numbered steps.
 3. **Shopping list:** each ingredient with the amount to buy, the shop, the price in rand and the page it came from.
+   End the list with one line, exactly in this shape, so the check can score you: `Geprys: {n} van {m} bestanddele`,
+   where {m} is every ingredient on the list and {n} those with a price from a shop's page or its search result (an
+   estimate or an unknown doesn't count).
 4. **Where to buy:** each shop on the list with its branch near the user (name, mall or street), so one trip covers
    the list; say if one shop has everything.
 5. **Total:** the estimated cost and the cost per person, and how many ingredients it leaves unpriced.
