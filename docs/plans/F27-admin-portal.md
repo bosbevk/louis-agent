@@ -69,4 +69,7 @@ A real run from the page spends money and is Louis's go.
 
 ## Approved during the build
 
-*(none yet)*
+- **2026-10-15, the run's progress as a table** (Louis, watching the first run from the page: "this can be made
+  bigger and be more detailed"): step 5. The cook check prints structured progress (`@` + JSON: a mode's start, each
+  turn with its role or continued handle, call counts, hosts and seconds, a summary per conversation, the mode's cost)
+  beside its plain lines; the page renders those as a table and folds the plain lines below.

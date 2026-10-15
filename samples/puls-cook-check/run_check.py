@@ -58,7 +58,13 @@ RAND = re.compile(r"\bR\s?\d[\d\s,.]*")
 UNCONFIRMED = re.compile(r"\b(unknown|onbekend|geskat|skatting|skattings|estimate[ds]?|nie bevestig)\b", re.IGNORECASE)
 
 
-def converse(toolsets, run, task, location, messages):
+def progress(event, **fields):
+    """A structured progress line for whoever watches the run (the admin portal renders them as a table; a terminal
+    reads them as they are): '@' then one JSON object. The plain lines stay for people."""
+    print("@" + json.dumps({"event": event, **fields}, ensure_ascii=False), flush=True)
+
+
+def converse(toolsets, run, task, location, messages, mode=""):
     """One conversation in a new session: for each message, the answer, Puls's tool calls, its delegations (start or
     continue, with toolsets, role and handle), the specialist's own tool calls, the time, and an error if any."""
     body = {"toolsets": toolsets, "personality": "puls", "time_zone": "Africa/Johannesburg", "task": task, "run": run}
@@ -67,11 +73,18 @@ def converse(toolsets, run, task, location, messages):
     session = call("POST", "sessions", body)["session_id"]
     turns = []
     try:
-        for message in messages:
+        for n, message in enumerate(messages, 1):
             started = time.time()
             turn = {"question": message, **send(session, message)}
             turn["seconds"] = round(time.time() - started, 1)
             turns.append(turn)
+            starts = [d for d in turn["delegations"] if d["call"] == "start"]
+            continues = [d for d in turn["delegations"] if d["call"] == "continue"]
+            progress("turn", mode=mode, task=task, turn=n, question=message,
+                     role=starts[0]["personality"] if starts else None,
+                     continued=continues[0]["handle"] if continues else None,
+                     puls_calls=len(turn["tools"]), specialist_calls=len(turn["specialist_calls"]),
+                     hosts=hosts(turn["specialist_calls"]), seconds=turn["seconds"], error=turn["error"])
     finally:
         call("DELETE", f"sessions/{session}")
     return turns
@@ -176,19 +189,28 @@ def run_once(out):
         run = f"puls-cook-{mode}-{stamp}"
         os.makedirs(os.path.join(out, mode), exist_ok=True)
         conversations = []
+        progress("mode", mode=mode, toolsets=toolsets, conversations=len(CONVERSATIONS))
         for key, location, messages in CONVERSATIONS:
             try:
-                turns = converse(toolsets, run, key, location, messages)
+                turns = converse(toolsets, run, key, location, messages, mode)
             except Exception as ex:  # a dead container, a timeout: the run goes on and the README says so
                 turns = [{"question": m, "answer": "", "tools": [], "delegations": [], "specialist_calls": [], "error": repr(ex), "seconds": 0} for m in messages]
             scored = score(key, turns)
             conversations.append({"task": key, "location": location, "turns": turns, "score": scored})
             print(f"{mode:9} {key:12} role={scored['role']} routed={scored['routed_right']} hosts={scored['hosts']} "
                   f"follow_up={scored.get('follow_up')} seconds={[t['seconds'] for t in turns]}", flush=True)
+            progress("conversation", mode=mode, task=key, role=scored["role"], routed_right=scored["routed_right"],
+                     hosts=scored["hosts"], shop_hosts=scored["shop_hosts"], sources_local=scored["sources_local"],
+                     follow_up=scored.get("follow_up"), rand_amounts=scored["rand_amounts"],
+                     unconfirmed_marks=scored["unconfirmed_marks"], errors=len(scored["errors"]),
+                     seconds=sum(t["seconds"] for t in turns))
         time.sleep(2)   # the ledger's last lines
         records = ledger(run)
         results[mode] = {"run": run, "toolsets": toolsets, "conversations": conversations,
                          **summarise(records, [k for k, _, _ in CONVERSATIONS])}
+        totals = results[mode]["all"]
+        progress("mode_done", mode=mode, cost=totals["cost"], tokens=totals["tokens"], requests=totals["requests"],
+                 per_task={k: v["all"]["cost"] for k, v in results[mode]["per_task"].items()})
         with open(os.path.join(out, mode, "answers.json"), "w", encoding="utf-8") as file:
             json.dump(conversations, file, ensure_ascii=False, indent=2)
         with open(os.path.join(out, mode, "usage.jsonl"), "w", encoding="utf-8") as file:

@@ -76,7 +76,56 @@ else if (_data is { } data)
                 <span class="work-status">@(live.Status switch { "running" => "Besig", "done" => "Klaar", _ => "Misluk" })</span>
             </div>
             <p class="muted">@live.Repeat @(live.Repeat == 1 ? "herhaling" : "herhalings") · begin @live.StartedAt.ToLocalTime().ToString("HH:mm:ss")@(live.ExitCode is { } code && code != 0 ? $" · die skrip het met kode {code} geëindig" : "")</p>
-            <pre class="admin-pre run-log">@string.Join("\n", _log)</pre>
+
+            @if (_events.Count > 0)
+            {
+                @* The script's structured progress ('@' + JSON per event): a row per turn, a summary row per conversation, a line per mode. *@
+                <table class="admin-table run-table">
+                    <thead><tr><th>Modus</th><th>Gesprek</th><th>Beurt</th><th>Rol</th><th>Vervolg</th><th class="num">Puls</th><th class="num">Spesialis</th><th>Bronne</th><th class="num">Sek</th></tr></thead>
+                    <tbody>
+                        @foreach (var e in _events)
+                        {
+                            string kind = Str(e, "event") ?? "";
+                            if (kind == "turn")
+                            {
+                                <tr class="@(Str(e, "error") is not null ? "failed" : "")" title="@Str(e, "question")">
+                                    <td>@Str(e, "mode")</td>
+                                    <td><code>@Str(e, "task")</code></td>
+                                    <td class="num">@Str(e, "turn")</td>
+                                    <td>@(Str(e, "role") ?? (Str(e, "continued") is null ? "Puls self" : ""))</td>
+                                    <td>@(Str(e, "continued") is { } h ? $"vervolg · {h}" : "")</td>
+                                    <td class="num">@Str(e, "puls_calls")</td>
+                                    <td class="num">@Str(e, "specialist_calls")</td>
+                                    <td class="hosts">@Hosts(e)</td>
+                                    <td class="num">@Str(e, "seconds")</td>
+                                </tr>
+                            }
+                            else if (kind == "conversation")
+                            {
+                                <tr class="summary">
+                                    <td>@Str(e, "mode")</td>
+                                    <td><code>@Str(e, "task")</code></td>
+                                    <td class="num">Σ</td>
+                                    <td>@(Str(e, "role") ?? "Puls self") @(Bool(e, "routed_right") ? "✓" : "✗")</td>
+                                    <td>@(Str(e, "follow_up") ?? "—")</td>
+                                    <td class="num" colspan="2">R-bedrae @Str(e, "rand_amounts") · onbevestig @Str(e, "unconfirmed_marks")</td>
+                                    <td class="hosts">winkels @Count(e, "shop_hosts") / @Count(e, "hosts")@(Bool(e, "sources_local") ? " · net SA" : "")</td>
+                                    <td class="num">@Str(e, "seconds")</td>
+                                </tr>
+                            }
+                            else if (kind == "mode_done")
+                            {
+                                <tr class="mode"><td colspan="9"><strong>@Str(e, "mode")</strong>: $@Str(e, "cost") · @Str(e, "tokens") tokens · @Str(e, "requests") versoeke</td></tr>
+                            }
+                            else if (kind == "mode")
+                            {
+                                <tr class="mode"><td colspan="9"><strong>@Str(e, "mode")</strong> begin: @Str(e, "conversations") gesprekke met @Hosts(e, "toolsets")</td></tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            }
+            <details class="admin-details" open="@(_events.Count == 0)"><summary>Die skrip se eie reëls (@_log.Count)</summary><pre class="admin-pre run-log">@string.Join("\n", _log)</pre></details>
         </section>
     }
 
@@ -137,6 +186,24 @@ else if (_data is { } data)
     private Opened? _open;
     private LiveRun? _run;
     private readonly List<string> _log = [];
+    private readonly List<JsonElement> _events = [];
+
+    private static string? Str(JsonElement e, string name) =>
+        e.TryGetProperty(name, out var v) ? v.ValueKind switch
+        {
+            JsonValueKind.String => v.GetString(),
+            JsonValueKind.Number => v.GetRawText(),
+            JsonValueKind.True => "ja",
+            JsonValueKind.False => "nee",
+            _ => null,
+        } : null;
+
+    private static bool Bool(JsonElement e, string name) => e.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.True;
+
+    private static int Count(JsonElement e, string name) => e.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.Array ? v.GetArrayLength() : 0;
+
+    private static string Hosts(JsonElement e, string name = "hosts") =>
+        e.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.Array ? string.Join(", ", v.EnumerateArray().Select(h => h.GetString())) : "";
     private string? _error;
     private bool _needsKey, _loading;
     private string _keyDraft = "";
@@ -186,6 +253,7 @@ else if (_data is { } data)
     {
         _run = run;
         _log.Clear();
+        _events.Clear();
         StateHasChanged();
         try
         {
@@ -196,7 +264,8 @@ else if (_data is { } data)
                     _run = ReadLive(JsonDocument.Parse(line).RootElement);
                     break;
                 }
-                _log.Add(line);
+                if (line.StartsWith('@') && TryParse(line[1..], out var e)) _events.Add(e);
+                else _log.Add(line);
                 StateHasChanged();
             }
         }
@@ -207,6 +276,20 @@ else if (_data is { } data)
         }
         await LoadAsync();
         if (_run?.Status == "done") await OpenAsync(_run.Folder);
+    }
+
+    private static bool TryParse(string json, out JsonElement element)
+    {
+        try
+        {
+            element = JsonDocument.Parse(json).RootElement.Clone();
+            return element.ValueKind == JsonValueKind.Object;
+        }
+        catch (JsonException)
+        {
+            element = default;
+            return false;
+        }
     }
 
     private static LiveRun ReadLive(JsonElement r) => new(

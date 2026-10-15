@@ -1263,3 +1263,11 @@ html:has(.landing) { scroll-behavior: smooth; }
 .run-panel.failed .work-status { background: rgba(242, 107, 79, .14); color: var(--danger); }
 .run-panel.running { border: 1px solid transparent; background: linear-gradient(var(--surface), var(--surface)) padding-box, conic-gradient(from var(--angle), var(--orange), var(--green-light), var(--orange)) border-box; animation: rise .4s var(--ease) both, spin 2.6s linear infinite; }
 .run-log { min-height: 80px; white-space: pre-wrap; }
+/* The run's progress as a table (F27, Louis: "bigger and more detailed"): a row per turn, a summary row per conversation. */
+.run-table { font-size: 13px; margin: 6px 0 10px; }
+.run-table td.hosts { font-size: 12px; color: var(--muted); max-width: 360px; word-break: break-word; }
+.run-table tr.summary td { background: rgba(255, 255, 255, .03); color: var(--ink); border-bottom: 1px solid var(--border); }
+.run-table tr.mode td { color: var(--orange-text); padding-top: 12px; }
+.run-table tr.failed td { color: var(--danger); }
+.run-table tbody tr { cursor: default; }
+.run-log { max-height: none; font-size: 12.5px; }
