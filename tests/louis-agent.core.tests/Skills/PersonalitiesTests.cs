@@ -190,6 +190,35 @@ public class PersonalitiesTests
         Assert.That(buy, Is.LessThan(unsure));
     }
 
+    [Test]
+    public void Puls_RelaysTheCooksReport_InsteadOfRewritingIt()
+    {
+        // Louis's manual test after the cook's template: "the cook's output differed from Puls". Nothing told Puls to
+        // hand a report on; the router said "pass the result on" and the roles "Puls will put it in its own voice".
+        string agents = SkillFileSource.ReadEmbedded("agents-skills.md")!;
+        string router = SkillFileSource.ReadEmbedded("default.md")!;
+
+        Assert.That(agents, Does.Contain("## Relaying a report"));
+        Assert.That(agents, Does.Contain("as the specialist wrote it").And.Contain("every table row"), "whole, tables included");
+        Assert.That(router, Does.Contain("as the cook wrote it"), "the one choosing is told too");
+    }
+
+    [Test]
+    public void Puls_HandsOffLikeAPerson_AndIntroducesTheReport()
+    {
+        // Louis: "say something like I'm handing this to my specialist, back shortly" before the call, and "my cook
+        // just came back with this" above the report. The voice file said the opposite: never forward a report as is.
+        string voice = SkillFileSource.ReadEmbedded(Personalities.Folder + "/puls.md")!;
+        string agents = SkillFileSource.ReadEmbedded("agents-skills.md")!;
+        string router = SkillFileSource.ReadEmbedded("default.md")!;
+
+        Assert.That(voice, Does.Not.Contain("Moet nooit 'n spesialis se verslag net so aanstuur nie"));
+        Assert.That(voice, Does.Contain("my kok").And.Contain("nou-nou terug"), "the hand-off line, in Puls's voice");
+        Assert.That(agents, Does.Contain("before the call").IgnoreCase.And.Contain("back shortly"), "one line to the user, then the tool call");
+        Assert.That(agents, Does.Contain("just came back"), "the line above the report introduces who came back with it");
+        Assert.That(router, Does.Contain("one line to the user first"));
+    }
+
     [TestCase("default.md")]
     [TestCase("agents-skills.md")]
     public void AMealToCook_GoesToTheCook_WithWeb(string router)
