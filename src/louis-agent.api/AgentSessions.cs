@@ -2,6 +2,7 @@ using System.Collections.Concurrent;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Tools.Agents;
 using LouisAgent.Core.Tools.Clock;
 using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
@@ -42,6 +43,12 @@ internal sealed class AgentSession(string id, AgentEngine engine, IReadOnlyList<
 
     /// <summary>The files attached in this conversation, by name, for a specialist (F22, <see cref="Core.Tools.Agents.SessionAttachments"/>).</summary>
     public IReadOnlyDictionary<string, string> Attachments => _attachments;
+
+    /// <summary>
+    /// The specialists this chat keeps open for a follow-up (F26): current for each turn, so <c>StartSubSession</c> keeps
+    /// them and <c>ContinueSubSession</c> finds them; closed on the peer when the chat is removed or dropped as idle.
+    /// </summary>
+    public SubSessionRegistry SubSessions { get; } = new();
 
     /// <summary>Keeps an attachment for later turns; the same name again replaces it.</summary>
     public void Remember(string name, string? content)
@@ -110,7 +117,9 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
     /// <summary>The toolset that opens sub-sessions (step 8); refused at <see cref="MaxDepth"/>.</summary>
     public const string AgentsToolset = "agents";
 
-    private static readonly TimeSpan IdleTimeout = TimeSpan.FromHours(4);
+    /// <summary>A session nobody has used for this long is dropped at the next create, with the sub-sessions it kept.</summary>
+    public static readonly TimeSpan IdleTimeout = TimeSpan.FromHours(4);
+
     private readonly ConcurrentDictionary<string, AgentSession> _sessions = new();
 
     /// <summary>
@@ -133,8 +142,7 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
         if (depth > 0 && personality is null) personality = engines.RoleFor(names);
         var engine = engines.GetOrCreate(names, personality, router: depth == 0);
 
-        foreach (var idle in _sessions.Values.Where(s => !s.IsBusy && DateTimeOffset.UtcNow - s.LastActivity > IdleTimeout))
-            _sessions.TryRemove(idle.Id, out _);
+        DropIdle(DateTimeOffset.UtcNow);
 
         var session = new AgentSession($"sess_{Guid.NewGuid():N}", engine, names, depth, tags ?? UsageTags.None, personality, place);
         _sessions[session.Id] = session;
@@ -146,7 +154,27 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
     public bool Remove(string id)
     {
         if (!_sessions.TryRemove(id, out var session)) return false;
-        session.Cancel();
+        Forget(session);
         return true;
+    }
+
+    /// <summary>Drops every session idle at <paramref name="now"/> (F26: with the sub-sessions it kept); returns how many.</summary>
+    internal int DropIdle(DateTimeOffset now)
+    {
+        int dropped = 0;
+        foreach (var idle in _sessions.Values.Where(s => !s.IsBusy && now - s.LastActivity > IdleTimeout))
+        {
+            if (!_sessions.TryRemove(idle.Id, out var session)) continue;
+            Forget(session);
+            dropped++;
+        }
+        return dropped;
+    }
+
+    /// <summary>Stops the session's turn and closes its kept sub-sessions on the peer; the closing never blocks the caller.</summary>
+    private static void Forget(AgentSession session)
+    {
+        session.Cancel();
+        _ = session.SubSessions.CloseAllAsync();
     }
 }

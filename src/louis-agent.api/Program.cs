@@ -162,6 +162,8 @@ app.MapGet("/sessions/{id}", (string id, AgentSessions sessions) =>
             session_id = session.Id, created_at = session.CreatedAt, last_activity = session.LastActivity, busy = session.IsBusy,
             toolsets = session.Toolsets, depth = session.Depth, personality = session.Personality, tools = session.Engine.Tools.Count,
             task = session.Tags.Task, run = session.Tags.Run, service = session.Tags.Service,
+            // F26: the specialists the chat keeps open, by handle (never the peer's session id).
+            sub_sessions = session.SubSessions.Open.Select(o => new { handle = o.Handle, agent = o.Agent, toolsets = o.Toolsets, personality = o.Role }),
             usage = session.Engine.RecordsUsage ? ClaudeStyleStream.Usage(session.Usage.Records, session.Engine.Display) : null,
         })
         : UnknownSession(id));
@@ -265,6 +267,7 @@ static async IAsyncEnumerable<SseItem<string>> StreamTurnAsync(
             using (usage.Activate())
             using (SessionAttachments.Use(session.Attachments))
             using (UserPlace.Use(session.Place))
+            using (SubSessionRegistry.Use(session.SubSessions))
             using (SubSessionFeed.Observe(e => subSessions.Writer.TryWrite(e)))
                 next = updates.MoveNextAsync().AsTask();
 

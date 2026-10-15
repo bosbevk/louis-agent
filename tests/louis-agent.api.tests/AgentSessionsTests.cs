@@ -155,6 +155,39 @@ public class AgentSessionsTests
         Assert.That(session.Place!.Location, Is.EqualTo("Pretoria"));
     }
 
+    private static LouisAgent.Core.Tools.Agents.OpenSubSession Kept(string sessionId, List<string> closed) =>
+        new(new Uri("http://puls-agent/"), sessionId, "puls-agent", ["web"], "puls-cook", () => { closed.Add(sessionId); return Task.CompletedTask; });
+
+    [Test]
+    public async Task RemovingASession_ClosesTheSubSessionsItKept()
+    {
+        // F26 step 3 (F26-S3): the chat is deleted, so its specialists are deleted on the peer too.
+        var sessions = Sessions();
+        var session = sessions.Create(["files"]);   // the test factory has no peers; the registry doesn't care
+        var closed = new List<string>();
+        await session.SubSessions.AddAsync(Kept("sess_cook", closed));
+
+        Assert.That(sessions.Remove(session.Id), Is.True);
+
+        Assert.That(closed, Is.EqualTo(new[] { "sess_cook" }));
+        Assert.That(session.SubSessions.Open, Is.Empty);
+    }
+
+    [Test]
+    public async Task AnIdleSession_IsDropped_WithItsSubSessions()
+    {
+        var sessions = Sessions();
+        var session = sessions.Create(["files"]);
+        var closed = new List<string>();
+        await session.SubSessions.AddAsync(Kept("sess_cook", closed));
+
+        int dropped = sessions.DropIdle(DateTimeOffset.UtcNow + AgentSessions.IdleTimeout + TimeSpan.FromMinutes(1));
+
+        Assert.That(dropped, Is.EqualTo(1));
+        Assert.That(sessions.Get(session.Id), Is.Null);
+        Assert.That(closed, Is.EqualTo(new[] { "sess_cook" }));
+    }
+
     [Test]
     public void ASubSessionWithoutARole_GetsOneFromItsToolsets_AndAGivenOneIsKept()
     {
