@@ -95,6 +95,11 @@
                     </button>
                     <small>Name: © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a></small>
                 </div>
+                @* Animations although the system asks for less (F24): this browser's choice, applied at once. *@
+                <label class="settings-check">
+                    <input type="checkbox" checked="@_motion" @onchange="SaveMotion" />
+                    <span>Wys animasies al vra my stelsel minder@(_reducedMotion ? "" : " (jou stelsel vra nie minder nie)")</span>
+                </label>
                 <label class="settings">
                     API-sleutel
                     <input type="password" value="@Store.ApiKeyDraft" @onchange="SaveApiKey" placeholder="net as AGENT_API_KEY gestel is" />
@@ -148,8 +153,8 @@
                     </button>
                     <div class="dropdown-menu dropdown-menu-end usage-menu">
                         <h6 class="dropdown-header">Krediete · betaal soos jy gebruik</h6>
-                        <div class="usage-row"><span>Hierdie gesprek</span><strong>@(_chat is null ? "—" : Money(ChatTotal(_chat)))</strong></div>
-                        <div class="usage-row"><span>Hierdie maand <small>@MonthChats.Count @(MonthChats.Count == 1 ? "gesprek" : "gesprekke")</small></span><strong>@MonthCost</strong></div>
+                        <div class="usage-row"><span>Hierdie gesprek</span><strong data-count="@(_chat is null ? "—" : Money(ChatTotal(_chat)))">@(_chat is null ? "—" : Money(ChatTotal(_chat)))</strong></div>
+                        <div class="usage-row"><span>Hierdie maand <small>@MonthChats.Count @(MonthChats.Count == 1 ? "gesprek" : "gesprekke")</small></span><strong data-count="@MonthCost">@MonthCost</strong></div>
                         <p class="usage-note">Geen intekening nie: jy betaal net vir die vrae wat jy vra, spesialiste ingesluit. Volgens die gesprekke in hierdie blaaier.</p>
                         <hr class="dropdown-divider" />
                         <button class="dropdown-item" type="button" @onclick='() => ComingSoon("Krediete")'><span class="ic i-coin" aria-hidden="true"></span>Koop krediete</button>
@@ -191,6 +196,11 @@
         </header>
         @* Below lg the Werk panel slides in from this tab (the phone's top bar has the menu and New chat). *@
         <button class="work-tab work-tab-open d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#work" aria-controls="work" title="Wys die werkpaneel">Werk</button>
+        @* The landing's water, low behind an empty chat (F24): across the column, under the messages. *@
+        @if (View is not ("verken" or "studio") && (_chat is null || _chat.Turns.Count == 0))
+        {
+            <Water />
+        }
         <div class="messages" @ref="_messages">
             @if (View == "verken")
             {
@@ -206,12 +216,12 @@
                     @* The app icon, with the slow pulse spreading out from it. *@
                     <div class="hero-mark" aria-hidden="true">
                         <div class="pulse-bg"><span></span><span></span><span></span><span></span></div>
-                        <img src="brand/puls-icon-tile.svg" alt="" width="76" height="76" />
+                        <PulsTile />
                     </div>
                     <button class="news-pill" type="button" @onclick='() => SetDraft("Lees die dokument wat ek aanheg en som dit in vyf punte op.")'>
                         <span class="news-tag">Nuut</span> Puls lees PDF's, Word en Excel <span aria-hidden="true">→</span>
                     </button>
-                    <h1>Hoe kan ek help?</h1>
+                    <h1><span class="w" style="--i:0">Hoe</span> <span class="w" style="--i:1">kan</span> <span class="w" style="--i:2">ek</span> <span class="w" style="--i:3">help?</span></h1>
                     <p class="hint">Vra enigiets. Puls stuur elke taak na 'n spesialis met net die gereedskap wat dit nodig het, en jy kan sien hoe dit werk.</p>
                     <div class="composer composer-centred">@Composer()</div>
                     <div class="topics">
@@ -501,6 +511,15 @@
         await JS.InvokeVoidAsync("pulsUi.saveLocation", _location);
     }
 
+    // Animations although the system asks for less (F24): this browser's choice.
+    private bool _motion, _reducedMotion;
+
+    private async Task SaveMotion(ChangeEventArgs e)
+    {
+        _motion = e.Value is true;
+        await JS.InvokeVoidAsync("pulsUi.setMotion", _motion);
+    }
+
     private async Task UseMyLocation()
     {
         _locating = true;
@@ -618,6 +637,8 @@
         Nav.LocationChanged += OnLocationChanged;
         if (!Store.Loaded) await Store.LoadAsync();
         _location = await JS.InvokeAsync<string?>("pulsUi.loadLocation");
+        _motion = await JS.InvokeAsync<bool>("pulsUi.motion");
+        _reducedMotion = await JS.InvokeAsync<bool>("pulsUi.reducedMotion");
         try
         {
             var model = await Api.GetAsync<System.Text.Json.JsonElement>("model");
@@ -661,6 +682,8 @@
             await JS.InvokeVoidAsync("louisChat.scrollToBottom", _messages, _scrollToEnd);
             _scrollToEnd = false;
         }
+        // A cost that changed since the last render counts up to its new value (F24; data-count elements, js/chat.js).
+        await JS.InvokeVoidAsync("pulsUi.countCosts");
     }
 
     private void NewChat()

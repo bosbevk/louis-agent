@@ -133,6 +133,9 @@ public class DisplayCurrencyTests
         AgentOptions agent = TestPaths.Agent();
         agent.HostCulture = "en-ZA";
         agent.UsageLedger = false;
+        // Named outright (FX15): config/ is only found next to a .env, which a fresh clone and CI don't have.
+        agent.RatesFile = Path.Combine(TestPaths.RepoRoot, "config", "rates.json");
+        agent.PricesFile = Path.Combine(TestPaths.RepoRoot, "config", "prices.json");
 
         AgentHostContext host = AgentHost.Build(new LlmOptions(), agent, new NoModelFactory());
 

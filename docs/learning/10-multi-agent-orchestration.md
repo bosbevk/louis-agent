@@ -64,7 +64,10 @@ What the numbers say:
 - **Tools per role** (F22): what each job needed and lacked (today's date, documents, blame and history search, tables,
   currency), on maintained packages, not our own parsers.
 - **Transparency is part of the design** (F20): the Werk panel shows each specialist's steps, sources and cost, so
-  delegation isn't a black box, and the chat's cost includes the specialists.
+  delegation isn't a black box, and the chat's cost includes the specialists. F24 made it the landing page's
+  thesis: the page plays a delegated turn out of the app's own pieces (the card busy, the Werk steps ticking, the cost
+  counting), so a visitor sees the design before the first question; and in the app a cost that counts up and a card
+  that opens from its header are motion carrying that same information, not decoration.
 
 ## Trade-offs and what didn't work
 

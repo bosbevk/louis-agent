@@ -1,0 +1,47 @@
+# Build and test on every push and pull request, so a regression is caught before a review, not only locally.
+# The same two commands as the development guide's "Finishing a step": dotnet build, then dotnet test on the whole
+# solution (core, API, orchestrator and the order-service sample's tests). Tests are platform-neutral and the agent
+# already runs them on Linux in its containers, so the runner is Ubuntu. No model, no network, no secrets: the tests
+# use FakeChatClient and StubHandler, and skip themselves when git, pip or the network is missing.
+name: CI
+
+on:
+  push:
+  pull_request:
+
+# A branch pushed while its pull request is open would run twice; the later run cancels the earlier one.
+concurrency:
+  group: ci-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    env:
+      DOTNET_NOLOGO: true
+      DOTNET_CLI_TELEMETRY_OPTOUT: true
+      # The git tests commit in a temporary repository; the runner has no identity of its own.
+      GIT_AUTHOR_NAME: ci
+      GIT_AUTHOR_EMAIL: ci@localhost
+      GIT_COMMITTER_NAME: ci
+      GIT_COMMITTER_EMAIL: ci@localhost
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Build
+        run: dotnet build louis-agent-solution.sln
+
+      - name: Test
+        # One .trx per test project, named by the logger, so the four don't overwrite each other.
+        run: dotnet test louis-agent-solution.sln --no-build --logger trx --results-directory TestResults
+
+      - name: Keep the test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: TestResults

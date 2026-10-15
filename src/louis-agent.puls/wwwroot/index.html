@@ -24,13 +24,21 @@
             if (width >= 220 && width <= 480) document.documentElement.style.setProperty("--sidebar-w", width + "px");
             if (localStorage.getItem("puls.sidebarHidden") === "1") document.documentElement.classList.add("sidebar-hidden");
             if (localStorage.getItem("puls.workHidden") === "1") document.documentElement.classList.add("work-hidden");
+            // Motion switched on by the user although the system asks for less (F24): applied before the first paint.
+            if (localStorage.getItem("puls.motion") === "on") document.documentElement.dataset.motion = "on";
         } catch { }
     </script>
 </head>
 
 <body>
     <div id="app">
-        <div class="loading"><img src="brand/puls-logo-stacked-white.svg" alt="Puls" width="120" /></div>
+        <!-- The start screen (F24): the mark beats while the runtime's files load; the count is Blazor's own progress
+             (it sets --blazor-load-percentage-text on <html> as each file arrives), so it is real, not a timer. -->
+        <div class="loading" role="status" aria-live="polite">
+            <img class="loading-mark" src="brand/puls-icon-tile.svg" alt="" width="72" height="72" />
+            <img src="brand/puls-logo-white.svg" alt="Puls" width="96" />
+            <b class="loading-pct" aria-hidden="true"></b>
+        </div>
     </div>
 
     <div id="blazor-error-ui">
@@ -44,6 +52,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="js/chat.js"></script>
+    <script src="js/landing.js"></script>
     <script src="_framework/blazor.webassembly.js"></script>
 </body>
 
