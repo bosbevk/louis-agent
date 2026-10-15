@@ -61,3 +61,9 @@ folder is mounted, so the role and the rows need no rebuild).
   always use cook, because cook knows to also look for prices, also update the cook to also show places where to
   buy"): step 4, the prompt only: the router's opening and its cook row, the agents guide's row, and the role's *Where
   to buy* (the shops' branches in the user's town, never invented). Not measured again: Louis tests by hand.
+- **2026-10-15, branches from OpenStreetMap, and no fetching of JavaScript pages** (Louis's second test: "it did not
+  listen to include prices and where i can buy it, actual shops"; the log showed the cook following the role and the
+  shops' search pages and store finders returning nothing): step 5, the role only. Branches come from Nominatim's
+  JSON search through `FetchUrl` (free, no key; F22 already uses Nominatim), checked from the container; the role
+  says which shop pages not to fetch, and to stop searching after two refusals. Prices still need a search engine that
+  isn't refused: Louis's decision (the TODO).

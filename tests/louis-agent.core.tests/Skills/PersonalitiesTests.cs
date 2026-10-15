@@ -151,6 +151,9 @@ public class PersonalitiesTests
         Assert.That(router, Does.Contain("every cooking question").And.Contain("never from memory"));
         Assert.That(agents, Does.Contain("every cooking question"));
         Assert.That(cook, Does.Contain("Where to buy").And.Contain("branches"));
+        // Louis's second test: the shops' store finders and search pages are JavaScript and gave the cook nothing, while
+        // OpenStreetMap's search returns the branches as JSON; the role names it, and says which pages not to fetch.
+        Assert.That(cook, Does.Contain("nominatim.openstreetmap.org/search").And.Contain("Don't fetch"));
     }
 
     [TestCase("default.md")]

@@ -76,6 +76,11 @@ the cook read, so that "routes properly" and "uses local sources" are numbers fr
   bebotie maak, wat het ek nodig" was answered by Puls from memory). The router's opening said knowledge questions need
   no tool, and the cook's row spoke of "what to cook today"; both now say cooking is never answered from memory. The
   role takes a named dish through the whole report and adds *Where to buy*: the shops' branches in the user's town.
+- **Branches come from OpenStreetMap, not the shops.** The shops' store finders, search and category pages draw their
+  content with JavaScript and gave the cook nothing (Checkers' locator is a 404, Pick n Pay's and Woolworths' search
+  endpoints return their app shell); Nominatim's search returns the branches with their streets as JSON, which
+  `FetchUrl` reads, so the role names it. Prices still depend on a search engine finding the product page, which is
+  the only shop page that gives one.
 - **The town travels two ways:** on the session (`location`, as the web app sends it) for the Afrikaans conversation,
   in the message for the English one; the cook's role covers both.
 
