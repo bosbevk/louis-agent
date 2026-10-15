@@ -59,7 +59,7 @@ public static class ToolsetCatalog
             GuideFile: "web-skills.md",
             MissingSettings: _ => [],
             ToolType: typeof(WebTools),
-            CreateTools: ctx => [new WebTools(ctx.WebSearch, rates: ctx.Rates)]),
+            CreateTools: ctx => [new WebTools(ctx.WebSearch, rates: ctx.Rates, renderer: ctx.Renderer)]),
 
         new("paymo", "Paymo time tracking: time entries, tasks, projects and summaries",
             GuideFile: "paymo-skills.md",

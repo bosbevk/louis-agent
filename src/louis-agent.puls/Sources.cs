@@ -33,8 +33,8 @@ public static partial class Sources
                 foreach (Match link in MarkdownLink().Matches(block.Text)) Add(link.Groups["url"].Value, link.Groups["title"].Value);
                 foreach (Match bare in BareUrl().Matches(block.Text)) Add(bare.Value, null);
             }
-            // The pages the specialist read (FetchUrl's url), even when the answer doesn't link them.
-            foreach (var step in block.SubTurn?.Blocks.Where(b => b.ToolName == "FetchUrl") ?? [])
+            // The pages the specialist read (FetchUrl's or ReadRenderedPage's url), even when the answer doesn't link them.
+            foreach (var step in block.SubTurn?.Blocks.Where(b => b.ToolName is "FetchUrl" or "ReadRenderedPage") ?? [])
                 if (Url(step.ToolInput) is { } fetched) Add(fetched, null);
         }
         return found;

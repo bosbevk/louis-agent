@@ -72,3 +72,9 @@ folder is mounted, so the role and the rows need no rebuild).
   key as a bearer header, `include_domains` for `site`, `time_range` for `freshness`), chosen in
   `WebSearchProviderFactory`: an explicit `WEB_SEARCH_PROVIDER` wins, else a `TAVILY_API_KEY` picks Tavily, else
   Google's keys, else DuckDuckGo. No package: one HTTP endpoint. Tests on a stubbed client; the key never in a body.
+- **2026-10-15, Tavily Extract as a tool of its own** (Louis: "use tavily extract, but call the tool something else,
+  keep the web search", from three options: Tavily Extract, Jina Reader, Playwright in the container): step 7.
+  `ReadRenderedPage(url, maxChars, startIndex)` in the web toolset, beside `FetchUrl`, which stays as it is: an
+  `IPageRenderer` with `TavilyPageRenderer` (`POST https://api.tavily.com/extract`, `extract_depth: advanced`, the
+  same key) and an unavailable one that says what to set, picked in `PageRendererFactory`. The SSRF guard runs before
+  the URL leaves for Tavily. The guide and the cook's role say: only for a product page `FetchUrl` read as empty.

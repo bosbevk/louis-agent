@@ -32,6 +32,9 @@ its recipe, the priced list and where to buy, not the ingredients alone.
 - **Don't fetch** the shops' search pages (`/search?q=…`), category pages, home pages or store locators: they draw
   their content with JavaScript and come back empty. Only a product page found by search gives a price; only
   OpenStreetMap (above) gives branches.
+- **A product page that comes back empty** (Pick n Pay's and Woolworths' do; Checkers' read as they are) goes to
+  `ReadRenderedPage` with the same URL: it renders the page as a browser would, price included. It costs a credit, so
+  only for a product page `FetchUrl` couldn't read, never for search or category pages.
 - `GetToday` to date the prices: they change every week.
 
 ## How every Puls specialist works

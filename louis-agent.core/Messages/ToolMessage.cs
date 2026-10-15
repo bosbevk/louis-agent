@@ -198,6 +198,15 @@ public enum ToolMessage
     [Description("Tavily search failed: HTTP {Status} {Detail}")]
     TavilyFailed,
 
+    [Description("ReadRenderedPage needs TAVILY_API_KEY in config/.env.secrets (it renders pages with Tavily Extract). Without it, FetchUrl is the only way to read a page.")]
+    RenderNotConfigured,
+
+    [Description("Error: couldn't render {Url}: {Reason}")]
+    RenderFailed,
+
+    [Description("the renderer returned no content for it")]
+    RenderNoResult,
+
     [Description("Unknown WEB_SEARCH_PROVIDER '{Provider}'. Supported: {Supported}.")]
     UnknownSearchProvider,
 
@@ -531,7 +540,7 @@ public enum ToolMessage
     [Description("(no readable text)")]
     NoReadableText,
 
-    [Description("\n[Showing characters {Start}-{End} of {Length}. Call FetchUrl with startIndex={End} to continue.]")]
+    [Description("\n[Showing characters {Start}-{End} of {Length}. Call {Tool} with startIndex={End} to continue.]")]
     PageContinues,
 
     [Description("No sprints found.")]

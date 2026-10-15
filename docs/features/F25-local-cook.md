@@ -85,6 +85,10 @@ the cook read, so that "routes properly" and "uses local sources" are numbers fr
   factory when `TAVILY_API_KEY` is set and no provider is named; 1,000 free searches a month, each result carrying the
   page's relevant text. The cook's refused searches were DuckDuckGo's doing; Google's Custom Search API, the other
   configured option, ends on 2027-01-01.
+- **A rendered page is its own tool** (Louis, 2026-10-15): with Tavily searching, the cook read prices from Checkers'
+  product pages, but Pick n Pay's came back "(no readable text)", a JavaScript app. `ReadRenderedPage` renders a page
+  through Tavily Extract (advanced depth, two credits per five pages); `FetchUrl` is unchanged, and the role says to
+  render only a product page that read as empty, since each render costs a credit.
 - **The town travels two ways:** on the session (`location`, as the web app sends it) for the Afrikaans conversation,
   in the message for the English one; the cook's role covers both.
 

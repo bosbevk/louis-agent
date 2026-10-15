@@ -8,6 +8,7 @@ How to research on the internet with `WebSearch` and `FetchUrl`. Use the web for
 |------|-----------|
 | `WebSearch` | Find pages: returns titles, URLs and snippets. Options: `maxResults` (1-10), `site` (e.g. `learn.microsoft.com`), `freshness` (`day`, `week`, `month`, `year`). |
 | `FetchUrl` | Read a page as text (headings, lists, links, code blocks). Long pages come in chunks: call again with the `startIndex` it gives you. Also reads plain text, JSON (e.g. raw GitHub files, APIs) and PDFs (as text, page by page). |
+| `ReadRenderedPage` | Read a page as a browser shows it, for sites that draw their content with JavaScript (a shop's product page and its price, a store finder). Only after `FetchUrl` came back with "(no readable text)" or without the part you need: it costs a credit and is slower. |
 | `ConvertCurrency` | Convert an amount between currencies at the day's reference rates (ZAR, USD, EUR…). |
 
 ## Workflow

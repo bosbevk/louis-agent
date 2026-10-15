@@ -52,8 +52,82 @@ public class WebToolsTests
     private static Task<IPAddress[]> PublicDns(string host, CancellationToken _) => Task.FromResult(new[] { IPAddress.Parse("93.184.216.34") });
 
     private static WebTools Tools(Func<HttpRequestMessage, HttpResponseMessage> respond, IWebSearchProvider? search = null,
-        Func<string, CancellationToken, Task<IPAddress[]>>? dns = null) =>
-        new(search ?? new FakeSearch(), new StubHandler(respond), dns ?? PublicDns);
+        Func<string, CancellationToken, Task<IPAddress[]>>? dns = null, IPageRenderer? renderer = null) =>
+        new(search ?? new FakeSearch(), new StubHandler(respond), dns ?? PublicDns, renderer: renderer);
+
+    // --- ReadRenderedPage (F25 step 7, Louis: "use tavily extract, but call the tool something else, keep the web search") ---
+
+    private const string ExtractJson = """
+        {"results":[{"url":"https://www.pnp.co.za/pnp-large-eggs-6-pack/p/118676_EA","raw_content":"# PnP Large Eggs 6 Pack\n\nR34.99\n\nAdd to cart"}],
+         "failed_results":[],"response_time":1.2}
+        """;
+
+    [Test]
+    public async Task ReadRenderedPage_PostsTheUrlToTavilyExtract_AndFramesTheTextAsUntrusted()
+    {
+        // A Pick n Pay product page draws its price with JavaScript: FetchUrl gets "(no readable text)"; Tavily's
+        // Extract renders it. The key goes in the header, never in the body; the page is framed like a fetched one.
+        HttpRequestMessage? sent = null;
+        string? body = null;
+        var renderer = new TavilyPageRenderer("tvly-key", Http(r => { sent = r; body = r.Content!.ReadAsStringAsync().Result; return Html(ExtractJson, "application/json"); }));
+
+        string result = await Tools(_ => Html(""), renderer: renderer).ReadRenderedPage("https://www.pnp.co.za/pnp-large-eggs-6-pack/p/118676_EA");
+
+        Assert.That(sent!.Method, Is.EqualTo(HttpMethod.Post));
+        Assert.That(sent.RequestUri!.ToString(), Is.EqualTo("https://api.tavily.com/extract"));
+        Assert.That(sent.Headers.Authorization!.ToString(), Is.EqualTo("Bearer tvly-key"));
+        using var json = JsonDocument.Parse(body!);
+        Assert.That(json.RootElement.GetProperty("urls")[0].GetString(), Is.EqualTo("https://www.pnp.co.za/pnp-large-eggs-6-pack/p/118676_EA"));
+        Assert.That(json.RootElement.GetProperty("extract_depth").GetString(), Is.EqualTo("advanced"), "the JavaScript sites are why the tool exists");
+        Assert.That(body, Does.Not.Contain("tvly-key"));
+
+        Assert.That(result, Does.StartWith("URL: https://www.pnp.co.za/pnp-large-eggs-6-pack/p/118676_EA"));
+        Assert.That(result, Does.Contain("untrusted web content").And.Contain("R34.99"));
+    }
+
+    [Test]
+    public async Task ReadRenderedPage_ReportsAPageTavilyCouldNotRender()
+    {
+        // Tavily answers 200 with the URL under failed_results: an answer the model can act on, not an empty page.
+        var renderer = new TavilyPageRenderer("k", Http(_ => Html("""{"results":[],"failed_results":[{"url":"https://example.com/x","error":"Failed to fetch URL"}]}""", "application/json")));
+
+        string result = await Tools(_ => Html(""), renderer: renderer).ReadRenderedPage("https://example.com/x");
+
+        Assert.That(result, Does.StartWith("Error").And.Contain("https://example.com/x").And.Contain("Failed to fetch URL"));
+    }
+
+    [Test]
+    public async Task ReadRenderedPage_WithoutAKey_SaysWhatToSet_WithoutANetworkCall()
+    {
+        var handler = new StubHandler(_ => Html(""));
+        var tools = new WebTools(new FakeSearch(), handler, PublicDns, renderer: PageRendererFactory.Create(new AgentOptions()));
+
+        string result = await tools.ReadRenderedPage("https://example.com/x");
+
+        Assert.That(result, Does.StartWith("Error").And.Contain("TAVILY_API_KEY"));
+        Assert.That(handler.Requests, Is.Empty);
+    }
+
+    [Test]
+    public async Task ReadRenderedPage_RefusesAPrivateAddress_BeforeSendingItAnywhere()
+    {
+        // The guard that FetchUrl has: an internal URL must not be handed to a third party either.
+        var tavily = new StubHandler(_ => Html(ExtractJson, "application/json"));
+        var renderer = new TavilyPageRenderer("k", new HttpClient(tavily));
+
+        string result = await Tools(_ => Html(""), dns: (_, _) => Task.FromResult(new[] { IPAddress.Parse("10.0.0.5") }), renderer: renderer)
+            .ReadRenderedPage("https://intranet.example/secret");
+
+        Assert.That(result, Does.StartWith("Error"));
+        Assert.That(tavily.Requests, Is.Empty);
+    }
+
+    [Test]
+    public void RendererFactory_PicksTavilyWhenTheKeyIsSet()
+    {
+        Assert.That(PageRendererFactory.Create(new AgentOptions { TavilyApiKey = "tvly-key" }), Is.TypeOf<TavilyPageRenderer>());
+        Assert.That(PageRendererFactory.Create(new AgentOptions()), Is.TypeOf<UnavailablePageRenderer>());
+    }
 
     private static HttpClient Http(Func<HttpRequestMessage, HttpResponseMessage> respond) => new(new StubHandler(respond));
 
