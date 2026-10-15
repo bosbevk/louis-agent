@@ -7,6 +7,8 @@
 @using LouisAgent.Web.Shared.Services
 @inject AgentApi Api
 @inject ChatStore Store
+@inject CurrencyState Currency
+@implements IDisposable
 
 @* F27 step 2: the first admin page. The checks the portal knows, and every run saved under samples/, newest first;
    a run opens to its summary table, its README and its numbers. Running one from here is step 4. *@
@@ -115,7 +117,7 @@ else if (_data is { } data)
                             }
                             else if (kind == "mode_done")
                             {
-                                <tr class="mode"><td colspan="9"><strong>@Str(e, "mode")</strong>: $@Str(e, "cost") · @Str(e, "tokens") tokens · @Str(e, "requests") versoeke</td></tr>
+                                <tr class="mode"><td colspan="9"><strong>@Str(e, "mode")</strong>: @Cost(Dec(e, "cost")) · @Str(e, "tokens") tokens · @Str(e, "requests") versoeke</td></tr>
                             }
                             else if (kind == "mode")
                             {
@@ -230,9 +232,17 @@ else if (_data is { } data)
     {
         // The key lives in the browser's storage; the chat page loads the store, but /admin can be opened directly.
         if (!Store.Loaded) await Store.LoadAsync();
+        // Costs in the browser's currency (F14), as everywhere in Puls; the ledger's are USD.
+        Currency.Changed += StateHasChanged;
+        await Currency.LoadAsync();
         await LoadAsync();
         await ResumeAsync();
     }
+
+    public void Dispose() => Currency.Changed -= StateHasChanged;
+
+    private static decimal? Dec(JsonElement e, string name) =>
+        e.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.Number ? v.GetDecimal() : null;
 
     /// <summary>A run started before this page opened (a reload): pick it up and follow it.</summary>
     private async Task ResumeAsync()
@@ -369,6 +379,6 @@ else if (_data is { } data)
         await LoadAsync();
     }
 
-    // The checks' costs are USD in the ledger; shown as they are saved, since the sample READMEs quote them so.
-    private static string Cost(decimal? cost) => cost is { } c ? $"${c:0.0000}" : "—";
+    // The checks' costs are USD in the ledger; shown in the browser's currency at the app's rate (F14), as the chat does.
+    private string Cost(decimal? cost) => cost is { } c ? UsageFormat.Money(c, "USD", Currency.Current) : "—";
 }
