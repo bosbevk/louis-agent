@@ -196,6 +196,7 @@ def run_once(out):
         run = f"puls-cook-{mode}-{stamp}"
         os.makedirs(os.path.join(out, mode), exist_ok=True)
         conversations = []
+        delegation_check.events_file(out, mode)
         progress("mode", mode=mode, toolsets=toolsets, conversations=len(CONVERSATIONS))
         for key, location, messages in CONVERSATIONS:
             try:
@@ -218,6 +219,7 @@ def run_once(out):
         totals = results[mode]["all"]
         progress("mode_done", mode=mode, cost=totals["cost"], tokens=totals["tokens"], requests=totals["requests"],
                  per_task={k: v["all"]["cost"] for k, v in results[mode]["per_task"].items()})
+        delegation_check.EVENTS.close()
         with open(os.path.join(out, mode, "answers.json"), "w", encoding="utf-8") as file:
             json.dump(conversations, file, ensure_ascii=False, indent=2)
         with open(os.path.join(out, mode, "usage.jsonl"), "w", encoding="utf-8") as file:

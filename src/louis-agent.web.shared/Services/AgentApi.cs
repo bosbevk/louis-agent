@@ -98,6 +98,13 @@ public sealed class AgentApi(HttpClient http, Settings settings)
             yield return new AgentStreamEvent(item.EventType, JsonDocument.Parse(item.Data).RootElement);
     }
 
+    /// <summary>A GET returning plain text (the admin portal's saved stream events, F27).</summary>
+    public async Task<string> GetTextAsync(string url)
+    {
+        using var response = await SendAsync(new HttpRequestMessage(HttpMethod.Get, url));
+        return await response.Content.ReadAsStringAsync();
+    }
+
     /// <summary>A POST returning JSON, for an app's own endpoints (the admin portal's runs, F27).</summary>
     public async Task<JsonElement> PostAsync(string url, object body)
     {

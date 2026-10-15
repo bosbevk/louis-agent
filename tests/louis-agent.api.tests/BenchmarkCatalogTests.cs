@@ -90,6 +90,14 @@ public class BenchmarkCatalogTests
         Assert.That(run!.Modes.Select(m => m.Name), Is.EqualTo(new[] { "run-1/delegated" }), "a mode folder with a ledger");
         Assert.That(run.Modes[0].Usage, Does.Contain("\"round\":2"));
         Assert.That(run.Modes[0].Answers, Does.StartWith("[{\"task\":\"cook-af\""));
+
+        // The conversation as it was typed (Louis): a mode's forwarded stream events, read on demand, by plain names only.
+        Save("sample-output-puls-cook", "run-1/delegated/events.jsonl", "{\"event\":\"question\"}\n{\"event\":\"sse\"}\n");
+        var catalog = new BenchmarkCatalog(_samples);
+        Assert.That(catalog.ReadEvents("sample-output-puls-cook", "run-1/delegated"), Does.Contain("\"sse\""));
+        Assert.That(catalog.ReadEvents("sample-output-puls-cook", "run-1/puls-web"), Is.Null, "no events saved for that mode");
+        Assert.That(catalog.ReadEvents("sample-output-puls-cook", "../../secrets"), Is.Null, "never outside the run");
+        Assert.That(catalog.ReadEvents("sample-output-puls-cook", "run-1/../../x"), Is.Null);
         Assert.That(new BenchmarkCatalog(_samples).Read("../secrets"), Is.Null, "never outside samples/");
         Assert.That(new BenchmarkCatalog(_samples).Read("nope"), Is.Null);
     }

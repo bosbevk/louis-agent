@@ -190,7 +190,7 @@ else if (_data is { } data)
             @if (open.Modes.Count > 0)
             {
                 @* The drill-down first: modes → conversations → turns → requests, from the run's own ledger rows. *@
-                <RunExplorer Modes="open.Modes" Currency="Currency.Current" />
+                <RunExplorer Modes="open.Modes" Currency="Currency.Current" Folder="@open.Run.Folder" />
             }
             @if (open.Summary is { } summary)
             {

@@ -47,6 +47,22 @@ public sealed partial class BenchmarkCatalog(string samplesRoot, IReadOnlyList<B
             Modes: Modes(path));
     }
 
+    /// <summary>
+    /// A mode's forwarded stream events (<c>events.jsonl</c>), for the portal to replay the conversation as it was typed;
+    /// null when the run or the mode isn't there, or the names aren't plain (<c>delegated</c>, <c>run-2/puls-web</c>).
+    /// </summary>
+    public string? ReadEvents(string folder, string mode)
+    {
+        if (!FolderName().IsMatch(folder) || !ModeName().IsMatch(mode)) return null;
+        string run = Path.GetFullPath(Path.Combine(SamplesRoot, folder));
+        string file = Path.GetFullPath(Path.Combine(run, mode, "events.jsonl"));
+        if (!file.StartsWith(run + Path.DirectorySeparatorChar, StringComparison.Ordinal)) return null;
+        return File.Exists(file) ? File.ReadAllText(file) : null;
+    }
+
+    [GeneratedRegex(@"^(run-\d+/)?[A-Za-z0-9][A-Za-z0-9._-]*$")]
+    private static partial Regex ModeName();
+
     /// <summary>Every mode folder with a ledger, in order: its <c>usage.jsonl</c> and <c>answers.json</c> as saved (empty when missing).</summary>
     private static List<RunMode> Modes(string run) =>
         Directory.EnumerateFiles(run, "usage.jsonl", SearchOption.AllDirectories)

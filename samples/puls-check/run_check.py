@@ -51,10 +51,27 @@ EXPECTED_ROLE = {
 TOKEN_KINDS = ["input", "cache_write", "cache_read", "output"]
 
 
+EVENTS = None   # a mode's events.jsonl while it runs: the questions and every stream event, so a saved run can be replayed as typed
+
+
 def progress(event, **fields):
     """A structured progress line for whoever watches the run (the admin portal renders them as a tree; a terminal
-    reads them as they are): '@' then one JSON object. The plain lines stay for people."""
-    print("@" + json.dumps({"event": event, **fields}, ensure_ascii=False), flush=True)
+    reads them as they are): '@' then one JSON object. The plain lines stay for people. The conversation's own events
+    (a question, each stream event) also go to the mode's events.jsonl, with the time, for the portal's replay."""
+    line = json.dumps({"event": event, "t": round(time.time(), 3), **fields}, ensure_ascii=False)
+    print("@" + line, flush=True)
+    if EVENTS is not None and event in ("question", "sse"):
+        EVENTS.write(line + "\n")
+
+
+def events_file(out, mode):
+    """Opens the mode's events.jsonl for progress() to write to; the caller closes it when the mode is done."""
+    global EVENTS
+    if EVENTS is not None:
+        EVENTS.close()
+    os.makedirs(os.path.join(out, mode), exist_ok=True)
+    EVENTS = open(os.path.join(out, mode, "events.jsonl"), "w", encoding="utf-8")
+    return EVENTS
 
 
 def expected_role(task):
@@ -217,6 +234,7 @@ def run_once(out):
         run = f"puls-check-{mode}-{stamp}"
         os.makedirs(os.path.join(out, mode), exist_ok=True)
         answers = []
+        events_file(out, mode)
         progress("mode", mode=mode, toolsets=toolsets, conversations=len(QUESTIONS))
         for key, question in QUESTIONS:
             started = time.time()
@@ -230,6 +248,7 @@ def run_once(out):
         totals = results[mode]["all"]
         progress("mode_done", mode=mode, cost=totals["cost"], tokens=totals["tokens"], requests=totals["requests"],
                  per_task={k: v["cost"] for k, v in results[mode]["per_task"].items()})
+        EVENTS.close()
         with open(os.path.join(out, mode, "answers.json"), "w", encoding="utf-8") as file:
             json.dump(answers, file, ensure_ascii=False, indent=2)
         with open(os.path.join(out, mode, "usage.jsonl"), "w", encoding="utf-8") as file:
