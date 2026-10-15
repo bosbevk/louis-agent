@@ -230,6 +230,14 @@ Design: [docs/specs/SESSION_ARCHITECTURE.md](docs/specs/SESSION_ARCHITECTURE.md)
 From the [goal](docs/GOAL.md)'s architecture map: skills it requires that nothing above plans yet. Promote one to a
 feature when its turn comes; remove its line here and update the map's *Missing* column.
 
+- [ ] **Exception strategy (a cleanup with its own ADR, after F28):** four kinds, each with its rule: a failure the model
+      can act on (a `ToolMessage` with the reason, as the web and peer tools do), a setting the operator must fix (fail
+      fast or a 400 naming it), a transient fault (one retry in the provider strategy, then reported), a bug (propagates,
+      logged with a correlation id, never into the model's history as an outcome). One base exception carrying its kind
+      and message member, so hosts map by kind; a tool guard helper that catches only the expected kinds (Paymo's 17
+      `catch (Exception)` blocks swallow bugs and cancellation alike); the API's turn error as an enum text with the kind,
+      not the exception's type name; an architecture test that fails a filterless `catch (Exception)` outside the hosts'
+      top-level handlers. First measurable win: a cancelled turn no longer scored as a tool failure (noted 2026-10-15)
 - [ ] **Evaluation:** run F18's eval suites in CI as a regression gate (the harness itself is F18)
 - [ ] **Thinking:** measure quality vs tokens per thinking level on the evals; interleaved thinking between tool calls
 - [ ] **Models:** choose models per task from measured quality and cost; check each model's capabilities (real tool
