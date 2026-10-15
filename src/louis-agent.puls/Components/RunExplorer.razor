@@ -80,7 +80,7 @@
     else if (_task is null)
     {
         @* Level 1: a mode's conversations, cost split between Puls's own requests and the specialist's. *@
-        <div class="chart-head big"><strong>@_mode.Name</strong><span class="muted">@_mode.Tasks.Count gesprekke · @_mode.Rows.Count versoeke · @UsageFormat.Tokens(_mode.Tokens) tokens</span><span class="legend"><span><span class="sw" style="background: @Own"></span>Puls self</span><span><span class="sw" style="background: @Spec"></span>spesialis</span></span></div>
+        <div class="chart-head lead"><strong>@_mode.Name</strong><span class="muted">@_mode.Tasks.Count gesprekke · @_mode.Rows.Count versoeke · @UsageFormat.Tokens(_mode.Tokens) tokens</span><span class="legend"><span><span class="sw" style="background: @Own"></span>Puls self</span><span><span class="sw" style="background: @Spec"></span>spesialis</span></span></div>
         decimal topTask = Math.Max(0.000001m, _mode.Tasks.Max(t => t.Cost));
         int row1 = 0;
         <section class="chart">
@@ -116,7 +116,7 @@
     else if (_turn is null)
     {
         @* Level 2: the conversation's turns on a timeline of model requests, Puls's lane and the specialist's. *@
-        <div class="chart-head big"><strong><code>@_task.Task</code></strong><span class="muted">@_task.Turns.Count beurte · @Money(_task.Cost)</span><span class="legend"><span><span class="sw" style="background: @Own"></span>Puls self</span><span><span class="sw" style="background: @Spec"></span>@(string.Join(" / ", _task.Turns.Select(t => t.Specialist).Distinct()))</span></span></div>
+        <div class="chart-head lead"><strong><code>@_task.Task</code></strong><span class="muted">@_task.Turns.Count beurte · @Money(_task.Cost)</span><span class="legend"><span><span class="sw" style="background: @Own"></span>Puls self</span><span><span class="sw" style="background: @Spec"></span>@(string.Join(" / ", _task.Turns.Select(t => t.Specialist).Distinct()))</span></span></div>
         @foreach (var (tu, i) in _task.Turns.Select((t, i) => (t, i)))
         {
             <section class="chart turn-chart" style="--i: @i">
@@ -131,7 +131,7 @@
     else if (_request is null)
     {
         @* Level 3: the turn: its timeline, its requests, and the conversation itself, replayable as it was typed. *@
-        <div class="chart-head big"><strong>Beurt @_turn.N</strong><span class="muted">@Money(_turn.Cost) · @_turn.Rows.Count versoeke · @Seconds(_turn) s</span>
+        <div class="chart-head lead"><strong>Beurt @_turn.N</strong><span class="muted">@Money(_turn.Cost) · @_turn.Rows.Count versoeke · @Seconds(_turn) s</span>
             <span class="legend"><span><span class="sw" style="background: @Own"></span>Puls self</span><span><span class="sw" style="background: @Spec"></span>@_turn.Specialist</span></span></div>
         @Timeline(_turn, true)
         <div class="explorer-turn">

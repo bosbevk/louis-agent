@@ -198,7 +198,8 @@ Design: [docs/specs/SESSION_ARCHITECTURE.md](docs/specs/SESSION_ARCHITECTURE.md)
       - [ ] **The cook's unconfirmed prices:** it writes *geskat* (an estimate) where its role says *unknown*; decide which, then measure again
 - [ ] [F26 Specialist follow-up](docs/features/F26-specialist-follow-up.md) — a sub-session stays open for its chat and Puls continues it by handle (`ContinueSubSession`), so a follow-up on the cook's meal goes to the same cook with its context, not to a new one cold ([plan](docs/plans/F26-specialist-follow-up.md)). Built; open:
       - [x] **The firmer follow-up rule, measured** ([one run from the portal](samples/sample-output-cook-20261015-130521/README.md), 2026-10-15): every follow-up continued the same cook, 4 of 4, with `web` on Puls too (was 3 of 6 and 0 of 6)
-      - [ ] **The Werk panel names the peer, not the role,** and shows a continue as a bare tool line (Louis, 2026-10-15)
+      - [x] **The Werk panel names the role** and shows a continue as its own item (2026-10-15)
+      - [ ] **A continued sub-session's own ledger rows name the turn that opened it:** the peer session's `parent` tag is fixed at creation (`{session}#{turn}`), so the specialist's requests during a follow-up turn are attributed to turn 1 in the ledger (the portal's explorer shows turn 2's specialist lane empty); only the `sub_session` roll-up row lands in the right turn. Found in the explorer, 2026-10-15. Fix: send the parent turn with each message (the API's message endpoint takes no tags today), or tag the child's requests from the roll-up
 - [ ] **F23 Credits** (to plan): buy credits with money, spend them per question at cost plus a margin, from the usage
       ledger and prices (F1, F2) — Puls's *Koop krediete*. Louis: "'n layer wat geld na ons interne krediete verander. Wil so
       bietjie geld maak as ek kan."
