@@ -81,7 +81,7 @@ public static class ToolsetCatalog
             GuideFile: "agents-skills.md",
             MissingSettings: ctx => ctx.Options.AgentPeers.Count == 0 ? ["AGENT_PEERS"] : [],
             ToolType: typeof(AgentPeerTools),
-            CreateTools: ctx => [new AgentPeerTools(ctx.Options)]),
+            CreateTools: ctx => [new AgentPeerTools(ctx.Options, ctx.UsageSink)]),
 
         // Engine-provided: CreateSkillFile, ReloadSkills, CreateTool and ListAgentTools are registered by AgentEngine
         // when this name is in the resolved list (step 3), because they need the engine's own registry and skill set.

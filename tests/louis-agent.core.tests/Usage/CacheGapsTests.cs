@@ -111,6 +111,16 @@ public class CacheGapsTests
     }
 
     [Test]
+    public void SubSessionRollUps_AreLeftOut()
+    {
+        // F5 follow-up: a roll-up stands for the specialist's requests on another prefix (its own rows are analysed where
+        // they were written); counted here it would look like a 1M-token request of this host's prefix.
+        CacheGapGroup g = One(Request(Min(0)), Request(Min(3), purpose: UsagePurpose.SubSession), Request(Min(20)));
+
+        Assert.That((g.Requests, g.From5To60m), Is.EqualTo((2, 1)));
+    }
+
+    [Test]
     public void ThePrefix_IsTheSmallestPrompt()
     {
         CacheGapGroup g = One(Request(Min(0), prompt: 48_000), Request(Min(1), prompt: 61_500), Request(Min(2), prompt: 52_000));

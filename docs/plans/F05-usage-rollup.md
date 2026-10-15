@@ -90,3 +90,21 @@ records, they all include it with no change; because `UsageScope.Add` never writ
 Puls on 5070 (`docker compose -f docker/docker-compose.puls.yml --env-file config/.env up -d --build`): delegate one
 task; the answer's usage line should now be about the sum of the chat's line and the card's line, and
 `logs/puls/usage-*.jsonl` should have no `sub_session` rows.
+
+## Approved during the build (2026-10-14)
+
+- **Branch:** `feature/F5-usage-rollup` off `main`; the plan's branch was merged before the build started.
+- **The roll-up is written to the parent's ledger too.** Louis: "we should still keep a separate specialist record,
+  I'm just thinking we might need it for future" (a per-session cost that includes delegation: credits, F23;
+  reconciliation, F11). So the record goes through the engine's sink and then into the scope, as
+  `UsageRecordingChatClient.Store` does, instead of the scope only; `requests` is written on that row (the
+  `JsonIgnore` keeps it off every other row). The tool gets the sink through `ToolsetContext.UsageSink`. *Trap 1* and
+  the *By hand* check change accordingly: the ledger has **one `sub_session` row per sub-session reply**, next to the
+  specialist's own rows when peers share a ledger (Puls and its specialist both mount `logs/puls`).
+- **Ledger reports list roll-up rows without totalling them.** The requests a roll-up stands for are real rows in a
+  ledger (the same file for Puls), so the usage-probe's `--ledger` totals skip `sub_session` and print the roll-ups
+  on their own line, and `CacheGaps` ignores them. `UsageReport.Total` stays purpose-blind: a turn's line counts its
+  roll-up, a filtered ledger report doesn't, with one adder.
+- **The sub-session prompt budget** (`ToolCallGuards.KeepWithinPromptBudget`, FX14) skips `sub_session` records as it
+  skips summaries. It only runs inside a sub-session, which can't delegate, so this states the rule rather than
+  fixing a live bug.

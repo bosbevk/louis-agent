@@ -97,7 +97,13 @@ def total(records):
 
 
 def summarise(records):
-    """A run's totals: all, Puls's own, its specialists' (records with a parent), and per question."""
+    """A run's totals: all, Puls's own, its specialists' (records with a parent), and per question.
+
+    A sub_session row (F5) is Puls's roll-up of a specialist's reply: the same requests as the specialist's own rows,
+    which are in this ledger too (Puls and its specialist share logs/puls). Totalled, every delegation would count
+    twice, so it is skipped here as usage-probe --ledger skips it.
+    """
+    records = [r for r in records if r.get("purpose") != "sub_session"]
     own = [r for r in records if not r.get("parent")]
     sub = [r for r in records if r.get("parent")]
     # A specialist's records name their parent ("{session}#{turn}"); the parent session is the question's.
