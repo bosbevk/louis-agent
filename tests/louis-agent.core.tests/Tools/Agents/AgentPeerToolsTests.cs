@@ -250,6 +250,146 @@ public class AgentPeerToolsTests
         Assert.That(registry.Open.Select(o => o.SessionId), Is.EqualTo(new[] { "sess_2", "sess_3" }));
     }
 
+    [Test]
+    public async Task AContinue_GoesToTheKeptSession_WhichStaysOpen_AndRollsUpLikeAFirstAnswer()
+    {
+        // F26 step 2 (F26-S2): the follow-up is a second message in the same peer session: its context and cached
+        // prefix stay. The footer names the handle again, so the model knows it's still open.
+        var handler = Peer();
+        var registry = new SubSessionRegistry();
+        var sink = new ListUsageSink();
+        var tools = Tools(handler, sink: sink);
+
+        string result;
+        using (SubSessionRegistry.Use(registry))
+        using (UsageScope.Begin(session: "sess_parent", turn: 1))
+        {
+            await tools.StartSubSession(["web"], "Wat kan ek vanaand kook?", agent: "coder", personality: "puls-cook");
+            result = await tools.ContinueSubSession("sub-1", "Maak dit vir ses mense.");
+        }
+
+        Assert.That(result, Does.StartWith("Fixed the null check; 14/14 tests pass."));
+        Assert.That(result, Does.Contain("[Sub-session sub-1 on coder (web; puls-cook): 3 requests").And.Contain("ContinueSubSession(\"sub-1\""));
+        Assert.That(Calls(handler), Is.EqualTo(new[] { "POST /sessions", "POST /sessions/sess_child/messages", "POST /sessions/sess_child/messages" }));
+        using var followUp = JsonDocument.Parse(handler.Requests[2].Body!);
+        Assert.That(followUp.RootElement.GetProperty("message").GetString(), Is.EqualTo("Maak dit vir ses mense."));
+        Assert.That(registry.Open.Single().Handle, Is.EqualTo("sub-1"), "still open");
+        Assert.That(sink.Records.Select(r => r.Purpose), Is.EqualTo(new[] { "sub_session", "sub_session" }), "two roll-ups, one per reply");
+    }
+
+    [Test]
+    public async Task AnUnknownHandle_IsRefused_WithTheOpenOnes_WithoutANetworkCall()
+    {
+        var handler = Peer();
+        var registry = new SubSessionRegistry();
+        var tools = Tools(handler);
+
+        string result;
+        using (SubSessionRegistry.Use(registry))
+        {
+            await tools.StartSubSession(["web"], "x", agent: "coder", personality: "puls-cook");
+            int before = handler.Requests.Count;
+            result = await tools.ContinueSubSession("sub-7", "y");
+            Assert.That(handler.Requests, Has.Count.EqualTo(before));
+        }
+
+        Assert.That(result, Does.StartWith("Error: no open sub-session 'sub-7'").And.Contain("sub-1 (coder: web; puls-cook)"));
+    }
+
+    [Test]
+    public async Task WithoutAChat_AContinue_SaysNothingIsKept()
+    {
+        var handler = Peer();
+
+        string result = await Tools(handler).ContinueSubSession("sub-1", "y");
+
+        Assert.That(result, Does.StartWith("Error").And.Contain("keeps no sub-session open"));
+        Assert.That(handler.Requests, Is.Empty);
+    }
+
+    [Test]
+    public async Task AContinueThePeerNoLongerKnows_IsForgotten_AndSaysToStartOver()
+    {
+        // F26-S3: the peer dropped it as idle (404). Nothing to close; the model starts a new one with the whole context.
+        int messages = 0;
+        var handler = new StubHandler(request => request.Method.Method switch
+        {
+            "POST" when request.RequestUri!.AbsolutePath == "/sessions" => Json(HttpStatusCode.Created, """{"session_id":"sess_child"}"""),
+            "POST" when ++messages == 1 => new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(Stream, Encoding.UTF8, "text/event-stream") },
+            "POST" => Json(HttpStatusCode.NotFound, """{"type":"error","error":{"type":"not_found_error","message":"No session 'sess_child'"}}"""),
+            _ => new HttpResponseMessage(HttpStatusCode.OK),
+        });
+        var registry = new SubSessionRegistry();
+        var tools = Tools(handler);
+
+        string result;
+        using (SubSessionRegistry.Use(registry))
+        {
+            await tools.StartSubSession(["web"], "x", agent: "coder");
+            result = await tools.ContinueSubSession("sub-1", "y");
+        }
+
+        Assert.That(result, Does.StartWith("Error: sub-session sub-1 on coder is no longer open").And.Contain("StartSubSession"));
+        Assert.That(registry.Open, Is.Empty);
+        Assert.That(handler.Requests.Any(r => r.Method == HttpMethod.Delete), Is.False, "nothing left to close");
+    }
+
+    [Test]
+    public async Task AContinueThatFails_ClosesTheSubSession_SoTheNextOneStartsClean()
+    {
+        // A failed or timed-out follow-up leaves the peer's turn in an unknown state: close it rather than continue it.
+        var handler = Peer(Replies(Stream, FailedStream));
+        var registry = new SubSessionRegistry();
+        var tools = Tools(handler);
+
+        string result;
+        using (SubSessionRegistry.Use(registry))
+        {
+            await tools.StartSubSession(["web"], "x", agent: "coder");
+            result = await tools.ContinueSubSession("sub-1", "y");
+        }
+
+        Assert.That(result, Does.StartWith("Error: the sub-session on coder failed: the model refused"));
+        Assert.That(handler.Requests.Last().Method, Is.EqualTo(HttpMethod.Delete));
+        Assert.That(registry.Open, Is.Empty);
+    }
+
+    [Test]
+    public async Task ContinuesCount_AgainstTheTurnsCalls()
+    {
+        // The limit is calls, not starts: a turn can't loop on one specialist either.
+        var registry = new SubSessionRegistry();
+        var tools = Tools(Peer());
+
+        using (SubSessionRegistry.Use(registry))
+        using (UsageScope.Begin(session: "sess_parent", turn: 1))
+        {
+            Assert.That(await tools.StartSubSession(["web"], "x", agent: "coder"), Does.Not.StartWith("Error"));
+            Assert.That(await tools.ContinueSubSession("sub-1", "y"), Does.Not.StartWith("Error"));
+            Assert.That(await tools.ContinueSubSession("sub-1", "z"), Does.Not.StartWith("Error"));
+            Assert.That(await tools.ContinueSubSession("sub-1", "w"), Does.StartWith("Error").And.Contain("already made 3 sub-session calls"));
+        }
+    }
+
+    [Test]
+    public async Task AContinuesNamedAttachments_AreSent()
+    {
+        var handler = Peer();
+        var registry = new SubSessionRegistry();
+        var tools = Tools(handler);
+        var attached = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase) { ["lys.txt"] = "uie, wortels" };
+
+        using (SubSessionRegistry.Use(registry))
+        using (SessionAttachments.Use(attached))
+        {
+            await tools.StartSubSession(["web"], "x", agent: "coder");
+            await tools.ContinueSubSession("sub-1", "Hier is my lys.", attachments: ["lys.txt"]);
+        }
+
+        using var message = JsonDocument.Parse(handler.Requests[2].Body!);
+        Assert.That(message.RootElement.GetProperty("attachments")[0].GetProperty("content").GetString(), Is.EqualTo("uie, wortels"));
+    }
+
     /// <summary>A reply with usage and no text: what the delegation check's specialist sent after its tenth tool round.</summary>
     private const string EmptyStream = """
         event: message_delta
@@ -506,7 +646,7 @@ public class AgentPeerToolsTests
             for (int i = 0; i < AgentPeerTools.MaxPerTurn; i++)
                 Assert.That(await tools.StartSubSession(["files"], "x", agent: "coder"), Does.Not.StartWith("Error"));
 
-            Assert.That(await tools.StartSubSession(["files"], "x", agent: "coder"), Does.Contain("already started 3 sub-sessions"));
+            Assert.That(await tools.StartSubSession(["files"], "x", agent: "coder"), Does.Contain("already made 3 sub-session calls"));
         }
 
         using (UsageScope.Begin(session: "sess_parent", turn: 3))

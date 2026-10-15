@@ -181,6 +181,41 @@
       }
     },
     {
+      "Name": "ContinueSubSession",
+      "Description": "Sends a follow-up to a sub-session this chat keeps open (the handle from a StartSubSession answer, e.g. \"sub-1\") and waits for its answer. It keeps everything it found and read, so use it when the user follows up on work that specialist did; start a new sub-session for new work or another role. Counts against the 3 calls per turn, 5 minutes.",
+      "Schema": {
+        "type": "object",
+        "properties": {
+          "handle": {
+            "description": "The handle from the earlier answer's footer, e.g. \"sub-1\".",
+            "type": "string"
+          },
+          "message": {
+            "description": "The follow-up, self-contained: what the user now asks, and anything new they said since.",
+            "type": "string"
+          },
+          "attachments": {
+            "description": "Names of files the user attached in this conversation that the follow-up needs.",
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "default": null
+          }
+        },
+        "required": [
+          "handle",
+          "message"
+        ]
+      }
+    },
+    {
       "Name": "ConvertCurrency",
       "Description": "Convert an amount between currencies at the day's reference rates (the same rates the app shows costs in). Codes like ZAR, USD, EUR, GBP.",
       "Schema": {

@@ -636,8 +636,20 @@ public enum ToolMessage
     [Description("Error: this instance has more than one peer agent; name one of them: {Peers}.")]
     PeerNameNeeded,
 
-    [Description("Error: this turn has already started {Max} sub-sessions, the most one turn may. Finish with what you have, or ask the user.")]
+    [Description("Error: this turn has already made {Max} sub-session calls (starts and continues), the most one turn may. Finish with what you have, or ask the user.")]
     SubSessionLimit,
+
+    [Description("Error: this session keeps no sub-session open (it isn't a chat). Start a new one with StartSubSession.")]
+    SubSessionNoneKept,
+
+    [Description("Error: no open sub-session '{Handle}'. Open: {Open}. Continue one of those, or start a new one with StartSubSession.")]
+    SubSessionUnknownHandle,
+
+    [Description("(none)")]
+    SubSessionNoneOpen,
+
+    [Description("Error: sub-session {Handle} on {Agent} is no longer open on the peer (dropped as idle, or the peer restarted). Start a new one with StartSubSession, with the whole context the follow-up needs.")]
+    SubSessionGone,
 
     [Description("Error: {Max} sub-sessions have started in the last minute outside a chat turn, the most allowed. Wait a minute and try again.")]
     SubSessionRateLimit,
