@@ -1,6 +1,6 @@
 # F24 · Landing motion: the landing page as a moving page, and the app with it
 
-> **Status:** built (2026-10-15; *done* once Louis has run one delegated chat with *Animasies* on) · **Milestone:** — (Puls, outside the cost milestones) · **Depends on:** F20
+> **Status:** done (2026-10-15) · **Milestone:** — (Puls, outside the cost milestones) · **Depends on:** F20
 > (the landing page and the three panels), F5 (live delegation)
 >
 > **In the TODO:** **F24 Landing motion** under *Sessions and memory* (the Puls lines) ([TODO](../../TODO.md)) ·
@@ -77,8 +77,9 @@ real one).
 
 Checked at the end: the page at 1440 and 520 px by headless Chrome (which reports reduced motion, so layout only), the
 demo, the tour, the accordion, the pill and the switch by hand in Louis's Chrome, `dotnet build` and `dotnet test` on
-the solution. Still Louis's to do with the app running: one delegated question with *Animasies* on, to watch the card
-open and the costs count (S2); the by-hand check in *Done when*.
+the solution. The by-hand check in *Done when* ran on 2026-10-15 while the README's GIFs were recorded: two research
+questions with *Animasies* on, each handed to the researcher; the card opened busy with the ring, the Werk panel
+ticked its steps and listed the sources, and the costs counted up (R0,045 and R0,052 for the specialist).
 
 - **Step 2, the demo is the app's own markup.** The playing frame (`Components/LandingDemo.razor`) builds its turn
   out of the app's classes (`user-message`, `delegation`, `work-item`, `work-step`, `work-cost`), so a change to the
