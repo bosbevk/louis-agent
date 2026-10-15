@@ -32,8 +32,11 @@ public sealed class AgentOptions
     /// <summary>DEVOPS_TEAM (optional): the team whose sprints are used; sprints live under {project}\{team}.</summary>
     public string? DevopsTeam { get; set; }
 
-    /// <summary>WEB_SEARCH_PROVIDER: google or duckduckgo; null picks Google when its key and engine ID are set, else DuckDuckGo.</summary>
+    /// <summary>WEB_SEARCH_PROVIDER: tavily, google or duckduckgo; null picks Tavily when its key is set, else Google when its key and engine ID are, else DuckDuckGo.</summary>
     public string? WebSearchProvider { get; set; }
+
+    /// <summary>Tavily search API key (TAVILY_API_KEY), F25.</summary>
+    public string? TavilyApiKey { get; set; }
 
     /// <summary>Google Custom Search JSON API key (GOOGLE_SEARCH_API_KEY).</summary>
     public string? GoogleSearchApiKey { get; set; }
@@ -142,6 +145,7 @@ public sealed class AgentOptions
             DevopsProject = Get("DEVOPS_PROJECT"),
             DevopsTeam = Get("DEVOPS_TEAM"),
             WebSearchProvider = Get("WEB_SEARCH_PROVIDER"),
+            TavilyApiKey = Get("TAVILY_API_KEY"),
             GoogleSearchApiKey = Get("GOOGLE_SEARCH_API_KEY"),
             GoogleSearchEngineId = Get("GOOGLE_SEARCH_ENGINE_ID"),
             RiderMcpEndpoint = Get("RIDER_MCP_ENDPOINT") ?? "http://127.0.0.1:64482",

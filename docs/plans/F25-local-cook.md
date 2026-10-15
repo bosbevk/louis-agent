@@ -67,3 +67,8 @@ folder is mounted, so the role and the rows need no rebuild).
   JSON search through `FetchUrl` (free, no key; F22 already uses Nominatim), checked from the container; the role
   says which shop pages not to fetch, and to stop searching after two refusals. Prices still need a search engine that
   isn't refused: Louis's decision (the TODO).
+- **2026-10-15, Tavily for search** (Louis: "use tavily", from the three options: Tavily, Serper.dev, and not Google or
+  Brave): step 6. A `TavilySearchProvider` beside Google's and DuckDuckGo's (`POST https://api.tavily.com/search`, the
+  key as a bearer header, `include_domains` for `site`, `time_range` for `freshness`), chosen in
+  `WebSearchProviderFactory`: an explicit `WEB_SEARCH_PROVIDER` wins, else a `TAVILY_API_KEY` picks Tavily, else
+  Google's keys, else DuckDuckGo. No package: one HTTP endpoint. Tests on a stubbed client; the key never in a body.

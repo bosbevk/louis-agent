@@ -183,8 +183,20 @@ public enum ToolMessage
     [Description("redirect to unsupported scheme '{Scheme}'.")]
     FetchRedirectScheme,
 
-    [Description("DuckDuckGo refused the automated search. For reliable search set WEB_SEARCH_PROVIDER=google with GOOGLE_SEARCH_API_KEY and GOOGLE_SEARCH_ENGINE_ID.")]
+    [Description("DuckDuckGo refused the automated search. For reliable search set TAVILY_API_KEY (1,000 free searches a month), or WEB_SEARCH_PROVIDER=google with GOOGLE_SEARCH_API_KEY and GOOGLE_SEARCH_ENGINE_ID.")]
     DuckDuckGoRefused,
+
+    [Description("WEB_SEARCH_PROVIDER=tavily needs TAVILY_API_KEY in config/.env.secrets (a key from https://app.tavily.com).")]
+    TavilyNotConfigured,
+
+    [Description("Tavily rejected the request ({Detail}). Check TAVILY_API_KEY.")]
+    TavilyRejected,
+
+    [Description("Tavily's limit was reached ({Detail}): the plan's searches for the month, or too many at once. Try again later, or raise the plan at https://app.tavily.com.")]
+    TavilyLimit,
+
+    [Description("Tavily search failed: HTTP {Status} {Detail}")]
+    TavilyFailed,
 
     [Description("Unknown WEB_SEARCH_PROVIDER '{Provider}'. Supported: {Supported}.")]
     UnknownSearchProvider,

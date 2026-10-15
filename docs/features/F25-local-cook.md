@@ -81,6 +81,10 @@ the cook read, so that "routes properly" and "uses local sources" are numbers fr
   endpoints return their app shell); Nominatim's search returns the branches with their streets as JSON, which
   `FetchUrl` reads, so the role names it. Prices still depend on a search engine finding the product page, which is
   the only shop page that gives one.
+- **Tavily is the search provider** (Louis, 2026-10-15, from three options): `TavilySearchProvider`, chosen by the
+  factory when `TAVILY_API_KEY` is set and no provider is named; 1,000 free searches a month, each result carrying the
+  page's relevant text. The cook's refused searches were DuckDuckGo's doing; Google's Custom Search API, the other
+  configured option, ends on 2027-01-01.
 - **The town travels two ways:** on the session (`location`, as the web app sends it) for the Afrikaans conversation,
   in the message for the English one; the cook's role covers both.
 
