@@ -90,3 +90,8 @@ A real run from the page spends money and is Louis's go.
 - **2026-10-15, the smaller asks along the way** (Louis, from screenshots): costs in the browser's currency; the saved
   runs as a list in a side column; repeats as a segmented control instead of a native select; the check cards roll
   up and down; repeats per check; a saved run opens its transcripts; the finished run's report rendered as markdown.
+- **2026-10-15, the modes side by side at every level** (Louis: "always show baseline and delegated next to each
+  other; this applies to every level"): the explorer's levels are no longer one mode's; the modes are the columns, in
+  the run's order, from the conversations down to a turn's transcript, and the replay plays every column at once. Only
+  a single model request stands alone. With it, the replay's wrapper got its own class: `.replay` is the landing
+  page's pill button, which drew a rounded border round the transcript.

@@ -1,12 +1,14 @@
 @* F27 steps 8–10: a finished run's data as charts you drill into (Louis: "we need to visualise this; drill down to the
    lowest level of all data"; "fancy animations, inspired by the landing page"; "the whole chat transcript as it was
-   typed"). Four levels, each with a breadcrumb back: the modes (stat tiles, cost per conversation by mode, the token
-   mix); a mode's conversations (cost split Puls/specialist, the token mix); a conversation's turns on a timeline of
-   its model requests; a turn's requests, its question, thinking, calls and answer, and the conversation replayed as
-   it was typed; and a request's full record. Forms and colours follow the dataviz method: bars for magnitude in one
-   hue, stacks for part-to-whole with a fixed categorical order validated for a dark surface, a legend for two or more
-   series, thin marks with a surface gap, hover tooltips that never gate. Motion: bars grow from the baseline, rows
-   rise staggered, numbers count up, a level zooms in from the row you clicked; all off for people who ask for less. *@
+   typed"; "always show baseline and delegated next to each other, at every level"). The modes are the columns at every
+   level, in the run's order, so the same conversation, turn and transcript sit side by side: the run (stat tiles, cost
+   per conversation by mode, the token mix); the conversations of each mode (cost split Puls/specialist, the token mix);
+   a conversation's turns on a timeline of its model requests, per mode; a turn's requests, thinking, calls and answer
+   per mode, with every mode's conversation replayed together as it was typed; and one request's full record, the only
+   level that stands alone. Forms and colours follow the dataviz method: bars for magnitude in one hue, stacks for
+   part-to-whole with a fixed categorical order validated for a dark surface, a legend for two or more series, thin
+   marks with a surface gap, hover tooltips that never gate. Motion: bars grow from the baseline, rows rise staggered,
+   numbers count up, a level zooms in from the row you clicked; all off for people who ask for less. *@
 @using System.Text.Json
 @using LouisAgent.Web.Shared
 @using LouisAgent.Web.Shared.Services
@@ -16,21 +18,21 @@
 
 <div class="explorer">
     <nav class="crumbs" aria-label="Pad">
-        <button type="button" class="crumb @(_mode is null ? "here" : "")" @onclick="() => Go(0)">Lopie</button>
-        @if (_mode is { } cm) { <span class="crumb-sep">›</span><button type="button" class="crumb @(_task is null ? "here" : "")" @onclick="() => Go(1)">@cm.Name</button> }
-        @if (_task is { } ct) { <span class="crumb-sep">›</span><button type="button" class="crumb @(_turn is null ? "here" : "")" @onclick="() => Go(2)"><code>@ct.Task</code></button> }
-        @if (_turn is { } ctu) { <span class="crumb-sep">›</span><button type="button" class="crumb @(_request is null ? "here" : "")" @onclick="() => Go(3)">Beurt @ctu.N</button> }
-        @if (_request is { } rq) { <span class="crumb-sep">›</span><span class="crumb here">Versoek @rq.Round</span> }
+        <button type="button" class="crumb @(_level == 0 ? "here" : "")" @onclick="() => Go(0)">Lopie</button>
+        @if (_level >= 1) { <span class="crumb-sep">›</span><button type="button" class="crumb @(_level == 1 ? "here" : "")" @onclick="() => Go(1)">Gesprekke</button> }
+        @if (_level >= 2) { <span class="crumb-sep">›</span><button type="button" class="crumb @(_level == 2 ? "here" : "")" @onclick="() => Go(2)"><code>@_task</code></button> }
+        @if (_level >= 3) { <span class="crumb-sep">›</span><button type="button" class="crumb @(_level == 3 ? "here" : "")" @onclick="() => Go(3)">Beurt @_turn</button> }
+        @if (_level == 4 && _request is { } rq) { <span class="crumb-sep">›</span><span class="crumb here">@_requestMode?.Name · versoek @rq.Round</span> }
     </nav>
 
     <div class="lvl @(_dir)" @key="LevelKey">
-    @if (_mode is null)
+    @if (_level == 0)
     {
-        @* Level 0: the modes. Stat tiles lead (the headline numbers), then two charts. *@
+        @* Level 0: the run. Stat tiles lead (the headline numbers, one per mode), then two charts. *@
         <div class="tiles">
-            @foreach (var (m, i) in _modes.Select((m, i) => (m, i)))
+            @foreach (var (m, i) in Columns)
             {
-                <button type="button" class="tile" style="--i: @i" @onclick="() => Open(() => _mode = m)">
+                <button type="button" class="tile" style="--i: @i" @onclick="() => Open(() => _level = 1)">
                     <span class="tile-label"><span class="sw" style="background: @Series(i)"></span>@m.Name</span>
                     <strong class="tile-value" data-count="@Money(m.Cost)">@Money(m.Cost)</strong>
                     <span class="tile-meta">@UsageFormat.Tokens(m.Tokens) tokens · @m.Rows.Count versoeke · @m.Tasks.Count gesprekke</span>
@@ -40,19 +42,19 @@
         </div>
 
         <section class="chart">
-            <div class="chart-head"><strong>Koste per gesprek</strong><span class="legend">@foreach (var (m, i) in _modes.Select((m, i) => (m, i))) { <span><span class="sw" style="background: @Series(i)"></span>@m.Name</span> }</span></div>
-            @{ var tasks = _modes.SelectMany(m => m.Tasks.Select(t => t.Task)).Distinct().ToList(); decimal top = Math.Max(0.000001m, _modes.SelectMany(m => m.Tasks).Max(t => t.Cost)); int row = 0; }
+            <div class="chart-head"><strong>Koste per gesprek</strong><span class="legend">@foreach (var (m, i) in Columns) { <span><span class="sw" style="background: @Series(i)"></span>@m.Name</span> }</span></div>
+            @{ var tasks = _modes.SelectMany(m => m.Tasks.Select(t => t.Task)).Distinct().ToList(); decimal top = Math.Max(0.000001m, _modes.SelectMany(m => m.Tasks).Select(t => t.Cost).DefaultIfEmpty(0m).Max()); int row = 0; }
             <div class="xbars">
                 @foreach (string task in tasks)
                 {
                     <div class="xbar-row" style="--i: @(row++)" title="@Question(task)">
                         <span class="xbar-label"><code>@task</code><small>@Blurb(Question(task))</small></span>
                         <span class="xbar-group">
-                            @foreach (var (m, i) in _modes.Select((m, i) => (m, i)))
+                            @foreach (var (m, i) in Columns)
                             {
                                 var t = m.Tasks.FirstOrDefault(x => x.Task == task);
                                 decimal cost = t?.Cost ?? 0m;
-                                <button type="button" class="xbar" title="@($"{m.Name} · {task}: {Money(cost)}")" disabled="@(t is null)" @onclick="() => { if (t is not null) Open(() => { _mode = m; _task = t; }); }">
+                                <button type="button" class="xbar" title="@($"{m.Name} · {task}: {Money(cost)}")" disabled="@(t is null)" @onclick="() => { if (t is not null) Open(() => { _level = 2; _task = task; }); }">
                                     <span class="xbar-fill" style="width: @Pct(cost, top)%; background: @Series(i)"></span>
                                     <span class="xbar-value">@Money(cost)</span>
                                 </button>
@@ -66,7 +68,7 @@
         <section class="chart">
             <div class="chart-head"><strong>Tokens per modus</strong>@TokenLegend()</div>
             <div class="xbars">
-                @foreach (var (m, i) in _modes.Select((m, i) => (m, i)))
+                @foreach (var (m, i) in Columns)
                 {
                     <div class="xbar-row" style="--i: @i">
                         <span class="xbar-label">@m.Name</span>
@@ -77,102 +79,135 @@
             </div>
         </section>
     }
-    else if (_task is null)
+    else if (_level == 1)
     {
-        @* Level 1: a mode's conversations, cost split between Puls's own requests and the specialist's. *@
-        <div class="chart-head lead"><strong>@_mode.Name</strong><span class="muted">@_mode.Tasks.Count gesprekke · @_mode.Rows.Count versoeke · @UsageFormat.Tokens(_mode.Tokens) tokens</span><span class="legend"><span><span class="sw" style="background: @Own"></span>Puls self</span><span><span class="sw" style="background: @Spec"></span>spesialis</span></span></div>
-        decimal topTask = Math.Max(0.000001m, _mode.Tasks.Max(t => t.Cost));
-        int row1 = 0;
-        <section class="chart">
-            <div class="xbars">
-                @foreach (var t in _mode.Tasks)
-                {
-                    decimal own = t.Rows.Where(r => !r.Specialist).Sum(r => r.Cost), spec = t.Rows.Where(r => r.Specialist).Sum(r => r.Cost);
-                    <div class="xbar-row" style="--i: @(row1++)">
-                        <span class="xbar-label" title="@Question(t.Task)"><code>@t.Task</code><small>@Blurb(Question(t.Task))</small><small>@(string.Join(" / ", t.Turns.Select(x => x.Specialist).Distinct())) · @t.Turns.Count beurte · @t.Rows.Count versoeke</small></span>
-                        <button type="button" class="xbar stacked" title="@($"{t.Task}: Puls {Money(own)}, spesialis {Money(spec)}")" @onclick="() => Open(() => _task = t)">
-                            <span class="xbar-fill" style="width: @Pct(own, topTask)%; background: @Own"></span><span class="xbar-fill" style="width: @Pct(spec, topTask)%; background: @Spec"></span>
-                            <span class="xbar-value">@Money(t.Cost)</span>
-                        </button>
-                    </div>
-                }
-            </div>
-        </section>
-        <section class="chart">
-            <div class="chart-head"><strong>Tokens per gesprek</strong>@TokenLegend()</div>
-            @{ int row2 = 0; long topTok = Math.Max(1, _mode.Tasks.Max(t => t.Rows.Sum(r => r.Tokens))); }
-            <div class="xbars">
-                @foreach (var t in _mode.Tasks)
-                {
-                    <div class="xbar-row" style="--i: @(row2++)">
-                        <span class="xbar-label"><code>@t.Task</code></span>
-                        <span class="xstack-wrap">@Stack(t.Rows, topTok)</span>
-                        <span class="xbar-value">@UsageFormat.Tokens(t.Rows.Sum(r => r.Tokens))</span>
-                    </div>
-                }
-            </div>
-        </section>
-    }
-    else if (_turn is null)
-    {
-        @* Level 2: the conversation's turns on a timeline of model requests, Puls's lane and the specialist's. *@
-        <div class="chart-head lead"><strong><code>@_task.Task</code></strong><span class="muted">@_task.Turns.Count beurte · @Money(_task.Cost)</span><span class="legend"><span><span class="sw" style="background: @Own"></span>Puls self</span><span><span class="sw" style="background: @Spec"></span>@(string.Join(" / ", _task.Turns.Select(t => t.Specialist).Distinct()))</span></span></div>
-        @foreach (var (tu, i) in _task.Turns.Select((t, i) => (t, i)))
-        {
-            <section class="chart turn-chart" style="--i: @i">
-                <button type="button" class="turn-head" @onclick="() => Open(() => _turn = tu)">
-                    <span class="tree-turn-n">Beurt @tu.N</span><span class="tree-question">@tu.Question</span>
-                    <span class="chip">@Money(tu.Cost)</span><span class="chip">@tu.Rows.Count versoeke</span><span class="chip">@Seconds(tu) s</span><span class="chevron" aria-hidden="true"></span>
-                </button>
-                @Timeline(tu, false)
-            </section>
-        }
-    }
-    else if (_request is null)
-    {
-        @* Level 3: the turn: its timeline, its requests, and the conversation itself, replayable as it was typed. *@
-        <div class="chart-head lead"><strong>Beurt @_turn.N</strong><span class="muted">@Money(_turn.Cost) · @_turn.Rows.Count versoeke · @Seconds(_turn) s</span>
-            <span class="legend"><span><span class="sw" style="background: @Own"></span>Puls self</span><span><span class="sw" style="background: @Spec"></span>@_turn.Specialist</span></span></div>
-        @Timeline(_turn, true)
-        <div class="explorer-turn">
-            @if (_turn.Question is { Length: > 0 } q) { <div class="explorer-q"><span class="muted">Vraag</span> @q</div> }
-            <div class="replay-bar">
-                @if (_replaying) { <button type="button" class="header-button" @onclick="StopReplay"><span class="ic i-pulse" aria-hidden="true"></span>Stop</button><span class="muted working">speel af soos getik…</span> }
-                else if (_replayable is false) { <span class="muted">Hierdie lopie het nie sy gebeure gestoor nie; die volgende lopies doen.</span> }
-                else { <button type="button" class="header-button" @onclick="ReplayAsync"><span class="ic i-pulse" aria-hidden="true"></span>Speel af soos getik</button> }
-            </div>
-            @if (_replay is { } turn)
+        @* Level 1: each mode's conversations side by side, cost split between Puls's own requests and the specialist's. *@
+        <div class="chart-head lead"><strong>Gesprekke</strong><span class="legend"><span><span class="sw" style="background: @Own"></span>Puls self</span><span><span class="sw" style="background: @Spec"></span>spesialis</span></span></div>
+        <div class="compare">
+            @foreach (var (m, i) in Columns)
             {
-                <div class="replay"><TurnView Turn="turn" Streaming="_replaying" Currency="Currency" /></div>
-            }
-            else
-            {
-                @if (_turn.Thinking is { Length: > 0 } th) { <details class="admin-details"><summary>Puls se denke</summary><blockquote class="explorer-think">@th</blockquote></details> }
-                @if (_turn.SpecialistThinking is { Length: > 0 } sth) { <details class="admin-details"><summary>Spesialis se denke</summary><blockquote class="explorer-think">@sth</blockquote></details> }
-                @if (_turn.Calls is { Count: > 0 } calls) { <details class="admin-details"><summary>Spesialis se oproepe (@calls.Count)</summary><ol class="explorer-calls">@foreach (var c in calls) { <li><code>@c</code></li> }</ol></details> }
-                @if (_turn.Answer is { Length: > 0 } a) { <details class="admin-details" open><summary>Antwoord</summary><div class="markdown admin-markdown">@Markdown.ToHtml(a)</div></details> }
+                decimal topTask = Math.Max(0.000001m, m.Tasks.Select(t => t.Cost).DefaultIfEmpty(0m).Max());
+                long topTok = Math.Max(1, m.Tasks.Select(t => t.Rows.Sum(r => r.Tokens)).DefaultIfEmpty(0L).Max());
+                int row1 = 0, row2 = 0;
+                <section class="compare-col" style="--i: @i">
+                    <h3 class="compare-head"><span class="sw" style="background: @Series(i)"></span>@m.Name<span class="muted">@m.Tasks.Count gesprekke · @m.Rows.Count versoeke · @Money(m.Cost)</span></h3>
+                    <section class="chart">
+                        <div class="xbars">
+                            @foreach (var t in m.Tasks)
+                            {
+                                decimal own = t.Rows.Where(r => !r.Specialist).Sum(r => r.Cost), spec = t.Rows.Where(r => r.Specialist).Sum(r => r.Cost);
+                                <div class="xbar-row" style="--i: @(row1++)">
+                                    <span class="xbar-label" title="@Question(t.Task)"><code>@t.Task</code><small>@Blurb(Question(t.Task))</small><small>@(string.Join(" / ", t.Turns.Select(x => x.Specialist).Distinct())) · @t.Turns.Count beurte · @t.Rows.Count versoeke</small></span>
+                                    <button type="button" class="xbar stacked" title="@($"{t.Task}: Puls {Money(own)}, spesialis {Money(spec)}")" @onclick="() => Open(() => { _level = 2; _task = t.Task; })">
+                                        <span class="xbar-fill" style="width: @Pct(own, topTask)%; background: @Own"></span><span class="xbar-fill" style="width: @Pct(spec, topTask)%; background: @Spec"></span>
+                                        <span class="xbar-value">@Money(t.Cost)</span>
+                                    </button>
+                                </div>
+                            }
+                        </div>
+                    </section>
+                    <section class="chart">
+                        <div class="chart-head"><strong>Tokens per gesprek</strong>@TokenLegend()</div>
+                        <div class="xbars">
+                            @foreach (var t in m.Tasks)
+                            {
+                                <div class="xbar-row" style="--i: @(row2++)">
+                                    <span class="xbar-label"><code>@t.Task</code></span>
+                                    <span class="xstack-wrap">@Stack(t.Rows, topTok)</span>
+                                    <span class="xbar-value">@UsageFormat.Tokens(t.Rows.Sum(r => r.Tokens))</span>
+                                </div>
+                            }
+                        </div>
+                    </section>
+                </section>
             }
         </div>
     }
-    else
+    else if (_level == 2)
+    {
+        @* Level 2: the conversation in each mode side by side: its turns on a timeline of model requests, Puls's lane and the specialist's. *@
+        <div class="chart-head lead"><strong><code>@_task</code></strong><span class="muted">@Blurb(Question(_task!))</span><span class="legend"><span><span class="sw" style="background: @Own"></span>Puls self</span><span><span class="sw" style="background: @Spec"></span>@Specialists()</span></span></div>
+        <div class="compare">
+            @foreach (var (m, i) in Columns)
+            {
+                var t = TaskIn(m);
+                <section class="compare-col" style="--i: @i">
+                    <h3 class="compare-head"><span class="sw" style="background: @Series(i)"></span>@m.Name<span class="muted">@(t is null ? "nie in hierdie modus nie" : $"{t.Turns.Count} beurte · {t.Rows.Count} versoeke · {Money(t.Cost)}")</span></h3>
+                    @if (t is not null)
+                    {
+                        foreach (var (tu, j) in t.Turns.Select((x, j) => (x, j)))
+                        {
+                            <section class="chart turn-chart" style="--i: @j">
+                                <button type="button" class="turn-head" @onclick="() => Open(() => { _level = 3; _turn = tu.N; })">
+                                    <span class="tree-turn-n">Beurt @tu.N</span><span class="tree-question">@tu.Question</span>
+                                    <span class="chip">@Money(tu.Cost)</span><span class="chip">@tu.Rows.Count versoeke</span><span class="chip">@Seconds(tu) s</span><span class="chevron" aria-hidden="true"></span>
+                                </button>
+                                @Timeline(tu, null)
+                            </section>
+                        }
+                    }
+                </section>
+            }
+        </div>
+    }
+    else if (_level == 3)
+    {
+        @* Level 3: the turn in each mode side by side: its timeline, its requests, and the conversation itself, every mode replayed together as it was typed. *@
+        <div class="chart-head lead"><strong>Beurt @_turn</strong><span class="muted"><code>@_task</code></span>
+            <span class="legend"><span><span class="sw" style="background: @Own"></span>Puls self</span><span><span class="sw" style="background: @Spec"></span>@Specialists()</span></span></div>
+        @if (Question(_task!) is { Length: > 0 } q) { <div class="explorer-q"><span class="muted">Vraag</span> @q</div> }
+        <div class="replay-bar">
+            @if (_replaying) { <button type="button" class="header-button" @onclick="StopReplay"><span class="ic i-pulse" aria-hidden="true"></span>Stop</button><span class="muted working">speel af soos getik…</span> }
+            else if (_replayable is false) { <span class="muted">Hierdie lopie het nie sy gebeure gestoor nie; die volgende lopies doen.</span> }
+            else { <button type="button" class="header-button" @onclick="ReplayAsync"><span class="ic i-pulse" aria-hidden="true"></span>Speel af soos getik</button> }
+        </div>
+        <div class="compare">
+            @foreach (var (m, i) in Columns)
+            {
+                var tu = TurnIn(m);
+                <section class="compare-col" style="--i: @i">
+                    <h3 class="compare-head"><span class="sw" style="background: @Series(i)"></span>@m.Name<span class="muted">@(tu is null ? "geen beurt in hierdie modus nie" : $"{Money(tu.Cost)} · {tu.Rows.Count} versoeke · {Seconds(tu)} s")</span></h3>
+                    @if (tu is not null)
+                    {
+                        @Timeline(tu, r => Open(() => { _level = 4; _request = r; _requestMode = m; }))
+                        <div class="explorer-turn">
+                            @if (_replays.TryGetValue(m.Name, out var turn))
+                            {
+                                <div class="xreplay"><TurnView Turn="turn" Streaming="_replaying" Currency="Currency" /></div>
+                            }
+                            else
+                            {
+                                @if (_replaying) { <p class="muted">Geen gebeure vir hierdie modus nie.</p> }
+                                @if (tu.Thinking is { Length: > 0 } th) { <details class="admin-details"><summary>Puls se denke</summary><blockquote class="explorer-think">@th</blockquote></details> }
+                                @if (tu.SpecialistThinking is { Length: > 0 } sth) { <details class="admin-details"><summary>@tu.Specialist se denke</summary><blockquote class="explorer-think">@sth</blockquote></details> }
+                                @if (tu.Calls is { Count: > 0 } calls) { <details class="admin-details"><summary>@tu.Specialist se oproepe (@calls.Count)</summary><ol class="explorer-calls">@foreach (var c in calls) { <li><code>@c</code></li> }</ol></details> }
+                                @if (tu.Answer is { Length: > 0 } a) { <details class="admin-details" open><summary>Antwoord</summary><div class="markdown admin-markdown">@Markdown.ToHtml(a)</div></details> }
+                            }
+                        </div>
+                    }
+                </section>
+            }
+        </div>
+    }
+    else if (_request is { } r)
     {
         @* Level 4: one model request, the lowest level: its figures as tiles, its tokens, its record. *@
         <div class="tiles small">
-            <div class="tile" style="--i: 0"><span class="tile-label">koste</span><strong class="tile-value" data-count="@Money(_request.Cost)">@Money(_request.Cost)</strong></div>
-            <div class="tile" style="--i: 1"><span class="tile-label">tokens</span><strong class="tile-value">@UsageFormat.Tokens(_request.Tokens)</strong></div>
-            <div class="tile" style="--i: 2"><span class="tile-label">tyd</span><strong class="tile-value">@((_request.DurationMs / 1000m).ToString("0.0", System.Globalization.CultureInfo.InvariantCulture)) s</strong></div>
-            <div class="tile" style="--i: 3"><span class="tile-label">model</span><strong class="tile-value model">@_request.Model</strong><span class="tile-meta">@_request.Purpose · @_request.Stop · rondte @_request.Round</span></div>
+            <div class="tile" style="--i: 0"><span class="tile-label">koste</span><strong class="tile-value" data-count="@Money(r.Cost)">@Money(r.Cost)</strong></div>
+            <div class="tile" style="--i: 1"><span class="tile-label">tokens</span><strong class="tile-value">@UsageFormat.Tokens(r.Tokens)</strong></div>
+            <div class="tile" style="--i: 2"><span class="tile-label">tyd</span><strong class="tile-value">@((r.DurationMs / 1000m).ToString("0.0", System.Globalization.CultureInfo.InvariantCulture)) s</strong></div>
+            <div class="tile" style="--i: 3"><span class="tile-label">model</span><strong class="tile-value model">@r.Model</strong><span class="tile-meta">@_requestMode?.Name · @r.Purpose · @r.Stop · rondte @r.Round</span></div>
         </div>
         <section class="chart">
             <div class="chart-head"><strong>Tokens</strong>@TokenLegend()</div>
-            <div class="xbars"><div class="xbar-row" style="--i: 0"><span class="xbar-label">@(_request.Specialist ? _turn?.Specialist ?? "spesialis" : "Puls")</span><span class="xstack-wrap">@Stack([_request], _request.Tokens)</span><span class="xbar-value">@UsageFormat.Tokens(_request.Tokens)</span></div></div>
+            <div class="xbars"><div class="xbar-row" style="--i: 0"><span class="xbar-label">@(r.Specialist ? (_requestMode is { } rm ? TurnIn(rm)?.Specialist : null) ?? "spesialis" : "Puls")</span><span class="xstack-wrap">@Stack([r], r.Tokens)</span><span class="xbar-value">@UsageFormat.Tokens(r.Tokens)</span></div></div>
             <dl class="explorer-fields">
-                <dt>invoer</dt><dd>@_request.Input.ToString("N0")</dd><dt>kas geskryf</dt><dd>@_request.CacheWrite.ToString("N0")</dd><dt>kas gelees</dt><dd>@_request.CacheRead.ToString("N0")</dd><dt>uitvoer</dt><dd>@_request.Output.ToString("N0")</dd>
-                <dt>wanneer</dt><dd>@_request.At.ToLocalTime().ToString("HH:mm:ss.fff")</dd><dt>sessie</dt><dd><code>@_request.Session</code></dd>
-                @if (_request.Parent is { } p) { <dt>ouer</dt><dd><code>@p</code></dd> }
+                <dt>invoer</dt><dd>@r.Input.ToString("N0")</dd><dt>kas geskryf</dt><dd>@r.CacheWrite.ToString("N0")</dd><dt>kas gelees</dt><dd>@r.CacheRead.ToString("N0")</dd><dt>uitvoer</dt><dd>@r.Output.ToString("N0")</dd>
+                <dt>wanneer</dt><dd>@r.At.ToLocalTime().ToString("HH:mm:ss.fff")</dd><dt>sessie</dt><dd><code>@r.Session</code></dd>
+                @if (r.Parent is { } p) { <dt>ouer</dt><dd><code>@p</code></dd> }
             </dl>
         </section>
-        <details class="admin-details"><summary>Die rekord (JSON)</summary><pre class="admin-pre">@_request.Json</pre></details>
+        <details class="admin-details"><summary>Die rekord (JSON)</summary><pre class="admin-pre">@r.Json</pre></details>
     }
     </div>
 </div>
@@ -215,21 +250,31 @@
     }
 
     private List<ModeNode> _modes = [];
-    private ModeNode? _mode; private TaskNode? _task; private TurnNode? _turn; private Request? _request;
-    private string _dir = "in";
-    private string LevelKey => $"{_mode?.Name}|{_task?.Task}|{_turn?.N}|{_request?.Round}";
 
-    // The replay (step 10): the turn rebuilt from the mode's saved events, applied at the pace they came.
-    private Turn? _replay;
+    // Where we are: the level, and the conversation and turn every mode's column shows; a request belongs to one mode.
+    private int _level;
+    private string? _task; private int? _turn; private Request? _request; private ModeNode? _requestMode;
+    private string _dir = "in";
+    private string LevelKey => $"{_level}|{_task}|{_turn}|{_request?.Session}#{_request?.Round}";
+
+    /// <summary>The modes as columns, in the run's order, each with its colour.</summary>
+    private IEnumerable<(ModeNode Mode, int I)> Columns => _modes.Select((m, i) => (m, i));
+    private TaskNode? TaskIn(ModeNode m) => _task is null ? null : m.Tasks.FirstOrDefault(t => t.Task == _task);
+    private TurnNode? TurnIn(ModeNode m) => _turn is null ? null : TaskIn(m)?.Turns.FirstOrDefault(t => t.N == _turn);
+    private string Specialists() => string.Join(" / ", _modes.Select(TaskIn).Where(t => t is not null).SelectMany(t => t!.Turns).Select(t => t.Specialist).Distinct());
+
+    // The replay (step 10): each mode's turn rebuilt from its saved events, applied at the pace they came, all at once.
+    private readonly Dictionary<string, Turn> _replays = [];
     private bool _replaying;
     private bool? _replayable;
     private CancellationTokenSource? _replayStop;
     private readonly Dictionary<string, string?> _events = [];
+    private sealed record Line(double T, string Type, JsonElement Data, string? Question);
 
     protected override void OnParametersSet()
     {
         _modes = Modes.Select(Build).ToList();
-        _mode = null; _task = null; _turn = null; _request = null;
+        _level = 0; _task = null; _turn = null; _request = null; _requestMode = null;
         ResetReplay();
     }
 
@@ -245,61 +290,77 @@
     private void Go(int level)
     {
         _dir = "out"; ResetReplay();
-        if (level <= 0) _mode = null; if (level <= 1) _task = null; if (level <= 2) _turn = null; if (level <= 3) _request = null;
+        _level = level;
+        if (level < 2) _task = null; if (level < 3) _turn = null; if (level < 4) { _request = null; _requestMode = null; }
     }
-    private void ResetReplay() { _replayStop?.Cancel(); _replayStop = null; _replay = null; _replaying = false; _replayable = Folder is null ? false : null; }
+    private void ResetReplay() { _replayStop?.Cancel(); _replayStop = null; _replays.Clear(); _replaying = false; _replayable = Folder is null ? false : null; }
 
     private static decimal Seconds(TurnNode t) => t.Rows.Count == 0 ? 0 : Math.Round((decimal)(t.Rows.Max(r => r.At) - t.Rows.Min(r => r.Start)).TotalSeconds, 1);
 
-    /// <summary>Replays the turn as it was typed: the mode's saved events for this task and turn, at their own pace (capped), through the chat's TurnStream.</summary>
+    /// <summary>Replays the turn as it was typed, in every mode at once: each mode's saved events for this task and turn, at their own pace (capped), through the chat's TurnStream.</summary>
     private async Task ReplayAsync()
     {
-        if (_mode is null || _task is null || _turn is null || Folder is null) return;
-        if (!_events.TryGetValue(_mode.Name, out string? text))
+        if (_task is null || _turn is null || Folder is null) return;
+        var plays = new List<(string Mode, List<Line> Lines)>();
+        foreach (var m in _modes)
         {
-            try { text = await Api.GetTextAsync($"admin/benchmarks/runs/{Uri.EscapeDataString(Folder)}/replay?mode={Uri.EscapeDataString(_mode.Name)}"); }
-            catch (AgentApiException) { text = null; }
-            _events[_mode.Name] = text;
+            var lines = await LinesAsync(m.Name, _task, _turn.Value);
+            if (lines.Count > 0) plays.Add((m.Name, lines));
         }
-        if (text is null) { _replayable = false; return; }
+        if (plays.Count == 0) { _replayable = false; return; }
 
-        var lines = new List<(double T, string Type, JsonElement Data, string? Question)>();
+        _replayable = true;
+        var stop = _replayStop = new CancellationTokenSource();
+        _replays.Clear();
+        foreach (var (mode, lines) in plays)
+            _replays[mode] = new Turn { UserText = lines.FirstOrDefault(l => l.Type == "question")?.Question ?? Question(_task) ?? "" };
+        _replaying = true;
+        StateHasChanged();
+        try { await Task.WhenAll(plays.Select(p => PlayAsync(_replays[p.Mode], p.Lines, stop.Token))); }
+        catch (OperationCanceledException) { }
+        _replaying = false;
+        StateHasChanged();
+    }
+
+    /// <summary>A mode's saved events for one task and turn, fetched once per mode and kept.</summary>
+    private async Task<List<Line>> LinesAsync(string mode, string task, int turn)
+    {
+        if (!_events.TryGetValue(mode, out string? text))
+        {
+            try { text = await Api.GetTextAsync($"admin/benchmarks/runs/{Uri.EscapeDataString(Folder!)}/replay?mode={Uri.EscapeDataString(mode)}"); }
+            catch (AgentApiException) { text = null; }
+            _events[mode] = text;
+        }
+        var lines = new List<Line>();
+        if (text is null) return lines;
         foreach (string line in text.Split('\n', StringSplitOptions.RemoveEmptyEntries))
         {
             try
             {
                 var e = JsonDocument.Parse(line).RootElement.Clone();
-                if (S(e, "task") != _task.Task || (e.TryGetProperty("turn", out var tn) && tn.ValueKind == JsonValueKind.Number ? tn.GetInt32() : 1) != _turn.N) continue;
+                if (S(e, "task") != task || (e.TryGetProperty("turn", out var tn) && tn.ValueKind == JsonValueKind.Number ? tn.GetInt32() : 1) != turn) continue;
                 double t = e.TryGetProperty("t", out var tv) && tv.ValueKind == JsonValueKind.Number ? tv.GetDouble() : 0;
-                if (S(e, "event") == "question") lines.Add((t, "question", default, S(e, "text")));
-                else if (S(e, "event") == "sse" && e.TryGetProperty("data", out var data) && S(e, "type") is { } type) lines.Add((t, type, data, null));
+                if (S(e, "event") == "question") lines.Add(new Line(t, "question", default, S(e, "text")));
+                else if (S(e, "event") == "sse" && e.TryGetProperty("data", out var data) && S(e, "type") is { } type) lines.Add(new Line(t, type, data, null));
             }
             catch (JsonException) { }
         }
-        if (lines.Count == 0) { _replayable = false; return; }
+        return lines;
+    }
 
-        _replayable = true;
-        var stop = _replayStop = new CancellationTokenSource();
-        _replay = new Turn { UserText = lines.FirstOrDefault(l => l.Type == "question").Question ?? _turn.Question ?? "" };
-        _replaying = true;
-        StateHasChanged();
-        try
+    private async Task PlayAsync(Turn turn, List<Line> lines, CancellationToken stop)
+    {
+        double last = lines[0].T;
+        int since = 0;
+        foreach (var line in lines.Where(l => l.Type != "question"))
         {
-            double last = lines[0].T;
-            int since = 0;
-            foreach (var (t, type, data, _) in lines.Where(l => l.Type != "question"))
-            {
-                // Its own rhythm, three times faster, with no pause longer than a quarter second (a tool call's wait).
-                int wait = (int)Math.Clamp((t - last) * 1000 / 3, 0, 250);
-                last = t;
-                if (wait > 0) await Task.Delay(wait, stop.Token);
-                TurnStream.Apply(_replay, new AgentStreamEvent(type, data));
-                if (++since % 3 == 0 || wait > 0) { StateHasChanged(); since = 0; }
-            }
+            // Its own rhythm, three times faster, with no pause longer than a quarter second (a tool call's wait).
+            int wait = (int)Math.Clamp((line.T - last) * 1000 / 3, 0, 250);
+            last = line.T;
+            if (wait > 0) await Task.Delay(wait, stop);
+            TurnStream.Apply(turn, new AgentStreamEvent(line.Type, line.Data));
+            if (++since % 3 == 0 || wait > 0) { StateHasChanged(); since = 0; }
         }
-        catch (OperationCanceledException) { }
-        _replaying = false;
-        StateHasChanged();
     }
 
     private void StopReplay() { _replayStop?.Cancel(); _replaying = false; }
@@ -403,8 +464,8 @@
 
     private static string Blurb(string? question) => string.IsNullOrEmpty(question) ? "" : question.Length <= 56 ? question : question[..55].TrimEnd() + "…";
 
-    /// <summary>The turn's requests on a timeline: Puls's lane and the specialist's, each request a bar from its start to its end, the hovered one lifting; a click opens the request.</summary>
-    private RenderFragment Timeline(TurnNode turn, bool clickable) => __builder =>
+    /// <summary>The turn's requests on a timeline: Puls's lane and the specialist's, each request a bar from its start to its end, the hovered one lifting; a click opens the request when <paramref name="open"/> is given.</summary>
+    private RenderFragment Timeline(TurnNode turn, Action<Request>? open) => __builder =>
     {
         if (turn.Rows.Count == 0) { <p class="muted">Geen versoeke nie.</p> return; }
         var start = turn.Rows.Min(r => r.Start); double span = Math.Max(1, (turn.Rows.Max(r => r.At) - start).TotalMilliseconds);
@@ -417,7 +478,7 @@
                         @foreach (var (r, i) in turn.Rows.Where(r => r.Specialist == specialist).Select((r, i) => (r, i)))
                         {
                             double left = (r.Start - start).TotalMilliseconds / span * 100, width = Math.Max(0.6, r.DurationMs / span * 100);
-                            <button type="button" class="tl-bar" style="--i: @i; left: @F(left)%; width: @F(width)%; background: @(specialist ? Spec : Own)" title="@($"versoek {r.Round} · {Money(r.Cost)} · {UsageFormat.Tokens(r.Tokens)} tokens · {r.DurationMs} ms · {r.Stop}")" disabled="@(!clickable)" @onclick="() => { if (clickable) Open(() => _request = r); }">
+                            <button type="button" class="tl-bar" style="--i: @i; left: @F(left)%; width: @F(width)%; background: @(specialist ? Spec : Own)" title="@($"versoek {r.Round} · {Money(r.Cost)} · {UsageFormat.Tokens(r.Tokens)} tokens · {r.DurationMs} ms · {r.Stop}")" disabled="@(open is null)" @onclick="() => open?.Invoke(r)">
                                 <span class="tl-tip"><strong>@Money(r.Cost)</strong> versoek @r.Round · @UsageFormat.Tokens(r.Tokens) tokens · @r.DurationMs ms</span>
                             </button>
                         }

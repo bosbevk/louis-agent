@@ -67,6 +67,10 @@ can be compared over time.
   listing shows them side by side with the saved ones, matched to their check by folder prefix.
 - **Python is the API container's,** already there for the `python` toolset; `BENCHMARK_API_URL` says where the script
   reaches the API back (the container's own port by default).
+- **The explorer compares, it doesn't browse:** the modes are its columns at every level, in the run's order (the
+  catalog sorts the mode folders by name), so a conversation, a turn and its transcript are read baseline beside
+  delegated; the replay plays every column at once from each mode's own events. A page class that shares a name with
+  the landing page's (`.replay`, `.bars`, `.stack`, `.big`) picks up its styles, so the explorer's own are prefixed.
 - **Not built:** the delegation check's `--repeat` output layout differs from the cook check's (it has no
   `summary.json` for a single run); the listing reads either file.
 
