@@ -175,7 +175,7 @@ there, so a session pays for them only when they apply:
 ### Adding a skill
 
 Create `Skills/{name}-skills.md`. With `AGENT_FUNCTION=louis` every skill file is loaded; otherwise set
-`AGENT_FUNCTION={name}`. Skill files come with the **skills** toolset: a session without it (Puls's chats, agents only)
+`AGENT_FUNCTION={name}`. Skill files come with the **skills** toolset: a session without it (Puls's chats: agents and web)
 gets the router and its toolsets' guides, not the skill files; a toolset's guide is
 [Adding a toolset](../louis-agent.core/CLAUDE.md#adding-a-toolset). A built-in file the agent must not overwrite is
 listed in `SkillFiles.BuiltIn`. Procedures use `## Skill: Name` with an `Execution:` fence (bash, powershell or python); arguments

@@ -302,7 +302,7 @@ public static partial class AgentHost
             AddBuiltIn(agent, composite, fileName);
 
         // Function skill files are procedures ExecuteSkill runs: they come with the skills toolset, like a guide with its
-        // tools. A profile without it (Puls's chats: agents only) gets the router and its guides, not every skill file.
+        // tools. A profile without it (Puls's chats: agents and web) gets the router and its guides, not every skill file.
         if (profile.All(t => t.Name != SkillsToolset)) return composite;
 
         if (agent.AgentFunction == "louis")

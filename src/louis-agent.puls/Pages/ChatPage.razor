@@ -722,12 +722,13 @@
         {
             try
             {
-                // Puls delegates (F5): its chats load only the agents toolset, and hand every task to a specialist. An API
-                // without a peer offers no agents toolset; the chat then gets every toolset there is, so it still works.
+                // Puls answers the web itself and hands cooking to the cook (F29; before it, F5: agents only, every task to
+                // a specialist). An API without a peer offers no agents toolset; the chat then gets every toolset there is.
                 string[] available = await Api.AvailableToolsetsAsync();
+                string[] own = ["agents", "web"];
                 // The time zone always (GetToday in the user's own time; it names a region, not a place); the location only when set.
                 string? timeZone = await JS.InvokeAsync<string?>("pulsUi.timeZone");
-                string sessionId = await Api.CreateSessionAsync(available.Contains("agents") ? ["agents"] : available, Personality,
+                string sessionId = await Api.CreateSessionAsync(available.Contains("agents") ? own.Where(available.Contains).ToArray() : available, Personality,
                     _location, timeZone);
                 _chat = new Chat { SessionId = sessionId, Title = TitleFor(text, attachments) };
                 Store.Chats.Insert(0, _chat);
