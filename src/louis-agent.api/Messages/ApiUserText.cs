@@ -97,4 +97,13 @@ public enum ApiUserText
 
     [Description("No saved run named '{Folder}'.")]
     NoRun,
+
+    [Description("No check named '{Check}'. The checks: {Checks}.")]
+    NoCheck,
+
+    [Description("A run is in progress ({Folder}); wait for it to end. The containers are shared, so one runs at a time.")]
+    BenchmarkRunning,
+
+    [Description("No run in progress.")]
+    NoBenchmarkRun,
 }

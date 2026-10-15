@@ -1,3 +1,4 @@
+using System.Net.ServerSentEvents;
 using LouisAgent.Api.Messages;
 using LouisAgent.Api.Services;
 using LouisAgent.Core.Messages;
@@ -11,7 +12,7 @@ namespace LouisAgent.Api.Endpoints;
 /// </summary>
 internal static class AdminEndpoints
 {
-    public static void MapAdmin(this WebApplication app, BenchmarkCatalog catalog, string? adminKey)
+    public static void MapAdmin(this WebApplication app, BenchmarkCatalog catalog, BenchmarkRunner runner, string? adminKey)
     {
         var admin = app.MapGroup("/admin").AddEndpointFilter(async (context, next) =>
         {
@@ -32,11 +33,51 @@ internal static class AdminEndpoints
             runs = catalog.SavedRuns().Select(Row),
         }));
 
+        // Step 3: a run from the page. 202 with the run; 409 while one runs; its lines as SSE, then "done".
+        admin.MapPost("/benchmarks/{check}/runs", (string check, StartRunRequest? request) =>
+        {
+            if (catalog.Checks.All(c => c.Id != check))
+                return ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error",
+                    MessageText.Format(ApiUserText.NoCheck, new { Check = check, Checks = string.Join(", ", catalog.Checks.Select(c => c.Id)) }));
+            if (runner.IsRunning)
+                return ApiErrors.Result(StatusCodes.Status409Conflict, "conflict_error", MessageText.Format(ApiUserText.BenchmarkRunning, new { runner.Current!.Folder }));
+            return runner.Start(check, request?.Repeat ?? 1) is { } run
+                ? Results.Json(Row(run), statusCode: StatusCodes.Status202Accepted)
+                : ApiErrors.Result(StatusCodes.Status409Conflict, "conflict_error", MessageText.Format(ApiUserText.BenchmarkRunning, new { runner.Current!.Folder }));
+        });
+
+        // The run in progress, or the last one, so a reloaded page can pick it up again.
+        admin.MapGet("/benchmarks/runs/current", () => runner.Current is { } run
+            ? Results.Json(Row(run))
+            : ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error", MessageText.Format(ApiUserText.NoBenchmarkRun)));
+
+        admin.MapGet("/benchmarks/runs/{id}/events", (string id, CancellationToken cancellationToken) =>
+            runner.Current is { } run && run.Id == id
+                ? (IResult)TypedResults.ServerSentEvents(Events(runner, run, cancellationToken))
+                : ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error", MessageText.Format(ApiUserText.NoBenchmarkRun)));
+
         admin.MapGet("/benchmarks/runs/{folder}", (string folder) => catalog.Read(folder) is { } run
             ? Results.Json(new { run = Row(run.Run), summary = run.Summary, readme = run.Readme, results = run.Results })
             : ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error", MessageText.Format(ApiUserText.NoRun, new { Folder = folder })));
     }
 
+    private static async IAsyncEnumerable<SseItem<string>> Events(BenchmarkRunner runner, BenchmarkRun run,
+        [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken cancellationToken)
+    {
+        await foreach (string line in runner.EventsAsync(run.Id, cancellationToken))
+            yield return new SseItem<string>(line, "line");
+        yield return new SseItem<string>(System.Text.Json.JsonSerializer.Serialize(Row(run)), "done");
+    }
+
     private static object Row(SavedRun run) =>
         new { folder = run.Folder, check = run.Check, saved_at = run.SavedAt, repeats = run.Repeats, cost = run.Cost };
+
+    private static object Row(BenchmarkRun run) => new
+    {
+        id = run.Id, check = run.Check, folder = run.Folder, repeat = run.Repeat, status = run.Status.ToString().ToLowerInvariant(),
+        exit_code = run.ExitCode, started_at = run.StartedAt, ended_at = run.EndedAt, lines = run.Lines.Count,
+    };
 }
+
+/// <summary>The body of <c>POST /admin/benchmarks/{check}/runs</c>: how many repeats (1 to the runner's cap).</summary>
+internal sealed record StartRunRequest(int? Repeat);

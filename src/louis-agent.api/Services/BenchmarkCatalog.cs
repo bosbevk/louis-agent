@@ -9,13 +9,16 @@ namespace LouisAgent.Api.Services;
 /// mode under "all"); the cost shown is the modes' added, the way the READMEs report it. Reads only the few files the
 /// page shows, and never a path outside <c>samples/</c>.
 /// </summary>
-public sealed partial class BenchmarkCatalog(string samplesRoot)
+/// <param name="checks">The checks; null for the built-in two (a test passes its own, with a stand-in script).</param>
+public sealed partial class BenchmarkCatalog(string samplesRoot, IReadOnlyList<BenchmarkCheck>? checks = null)
 {
-    public IReadOnlyList<BenchmarkCheck> Checks { get; } =
+    public static readonly IReadOnlyList<BenchmarkCheck> BuiltIn =
     [
         new("cook", "Die kokkontrole", "samples/puls-cook-check/run_check.py", ["sample-output-puls-cook", "sample-output-cook"]),
         new("delegation", "Die delegeringskontrole", "samples/puls-check/run_check.py", ["sample-output-puls-check", "sample-output-delegation"]),
     ];
+
+    public IReadOnlyList<BenchmarkCheck> Checks { get; } = checks ?? BuiltIn;
 
     public string SamplesRoot { get; } = samplesRoot;
 
