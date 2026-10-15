@@ -124,6 +124,19 @@ public class PersonalitiesTests
         Assert.That(cook, Does.Contain("Where the user is").And.Contain("Never invent a price"));
     }
 
+    [TestCase("default.md")]
+    [TestCase("agents-skills.md")]
+    public void AMealToCook_GoesToTheCook_WithWeb(string router)
+    {
+        // Puls routes by its tables (default.md says which toolset and role; agents-skills.md which role per toolset).
+        // Without a row in both, "what should I cook?" is just another web question and goes to the researcher.
+        string[] rows = SkillFileSource.ReadEmbedded(router)!.Split('\n');
+        string? row = rows.FirstOrDefault(r => r.StartsWith('|') && r.Contains("`puls-cook`"));
+
+        Assert.That(row, Is.Not.Null, $"{router} has no table row for the cook");
+        Assert.That(row, Does.Contain("`web`").And.Contain("cook").IgnoreCase);
+    }
+
     [Test]
     public void UnreadableRules_GiveNoRole()
     {
