@@ -54,10 +54,31 @@ else if (_data is { } data)
                 <p class="muted"><code>@check.Script</code></p>
                 @{ var last = data.Runs.FirstOrDefault(r => r.Check == check.Id); }
                 <p class="muted">@(last is null ? "Nog geen gestoorde lopie nie." : $"Laaste lopie: {last.SavedAt.ToLocalTime():yyyy-MM-dd HH:mm}, {Cost(last.Cost)}")</p>
-                <button class="header-button" type="button" disabled title="Kom in die volgende stap: 'n lopie vanaf hierdie bladsy"><span class="ic i-pulse" aria-hidden="true"></span>Hardloop</button>
+                <div class="run-controls">
+                    <label>Herhalings
+                        <select @bind="_repeat" disabled="@Running">
+                            @for (int n = 1; n <= 5; n++) { <option value="@n">@n</option> }
+                        </select>
+                    </label>
+                    <button class="header-button" type="button" disabled="@Running" title="Spandeer geld: elke lopie vra die model" @onclick="() => StartAsync(check.Id)">
+                        <span class="ic i-pulse" aria-hidden="true"></span>Hardloop
+                    </button>
+                </div>
             </section>
         }
     </div>
+
+    @if (_run is { } live)
+    {
+        <section class="card-p run-panel @(live.Status)">
+            <div class="card-head">
+                <strong>@(data.Checks.FirstOrDefault(c => c.Id == live.Check)?.Title ?? live.Check) · <code>@live.Folder</code></strong>
+                <span class="work-status">@(live.Status switch { "running" => "Besig", "done" => "Klaar", _ => "Misluk" })</span>
+            </div>
+            <p class="muted">@live.Repeat @(live.Repeat == 1 ? "herhaling" : "herhalings") · begin @live.StartedAt.ToLocalTime().ToString("HH:mm:ss")@(live.ExitCode is { } code && code != 0 ? $" · die skrip het met kode {code} geëindig" : "")</p>
+            <pre class="admin-pre run-log">@string.Join("\n", _log)</pre>
+        </section>
+    }
 
     <section class="card-p">
         <div class="card-head"><strong>Gestoorde lopies</strong><span class="muted">@data.Runs.Count</span></div>
@@ -110,14 +131,87 @@ else if (_data is { } data)
     private sealed record Run(string Folder, string? Check, DateTimeOffset SavedAt, int Repeats, decimal? Cost);
     private sealed record Page(List<Check> Checks, List<Run> Runs);
     private sealed record Opened(Run Run, string? Summary, string? Readme, string? Results);
+    private sealed record LiveRun(string Id, string Check, string Folder, int Repeat, string Status, int? ExitCode, DateTimeOffset StartedAt);
 
     private Page? _data;
     private Opened? _open;
+    private LiveRun? _run;
+    private readonly List<string> _log = [];
     private string? _error;
     private bool _needsKey, _loading;
     private string _keyDraft = "";
+    private int _repeat = 1;
 
-    protected override Task OnInitializedAsync() => LoadAsync();
+    private bool Running => _run?.Status == "running";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAsync();
+        await ResumeAsync();
+    }
+
+    /// <summary>A run started before this page opened (a reload): pick it up and follow it.</summary>
+    private async Task ResumeAsync()
+    {
+        if (_data is null) return;
+        try
+        {
+            var current = ReadLive(await Api.GetAsync<JsonElement>("admin/benchmarks/runs/current"));
+            if (current.Status == "running") await FollowAsync(current);
+        }
+        catch (AgentApiException ex) when (ex.Status == HttpStatusCode.NotFound)
+        {
+            // No run yet.
+        }
+    }
+
+    private async Task StartAsync(string check)
+    {
+        _error = null;
+        try
+        {
+            var started = ReadLive(await Api.PostAsync($"admin/benchmarks/{check}/runs", new { repeat = _repeat }));
+            await FollowAsync(started);
+        }
+        catch (AgentApiException ex)
+        {
+            _error = ex.Message;
+        }
+    }
+
+    /// <summary>Shows the run's lines as they arrive; when it ends, lists it among the saved runs and opens it.</summary>
+    private async Task FollowAsync(LiveRun run)
+    {
+        _run = run;
+        _log.Clear();
+        StateHasChanged();
+        try
+        {
+            await foreach (var (type, line) in Api.StreamLinesAsync($"admin/benchmarks/runs/{run.Id}/events"))
+            {
+                if (type == "done")
+                {
+                    _run = ReadLive(JsonDocument.Parse(line).RootElement);
+                    break;
+                }
+                _log.Add(line);
+                StateHasChanged();
+            }
+        }
+        catch (AgentApiException ex)
+        {
+            _error = ex.Message;
+            return;
+        }
+        await LoadAsync();
+        if (_run?.Status == "done") await OpenAsync(_run.Folder);
+    }
+
+    private static LiveRun ReadLive(JsonElement r) => new(
+        r.GetProperty("id").GetString()!, r.GetProperty("check").GetString()!, r.GetProperty("folder").GetString()!,
+        r.GetProperty("repeat").GetInt32(), r.GetProperty("status").GetString()!,
+        r.TryGetProperty("exit_code", out var e) && e.ValueKind == JsonValueKind.Number ? e.GetInt32() : null,
+        r.GetProperty("started_at").GetDateTimeOffset());
 
     private async Task LoadAsync()
     {
