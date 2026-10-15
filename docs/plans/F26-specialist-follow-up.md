@@ -60,4 +60,9 @@ approval. A chat by hand against the Puls containers (rebuilt: core changed) sho
 
 ## Approved during the build
 
-*(none yet)*
+- **2026-10-15, the Werk card names the role** (Louis, from a screenshot during the cook check: "should it not say
+  puls-cook at the right", then "can we rather show oorgedra --> role"): a new step **5b** after the run. The card's
+  parser reads `personality` from a start and `handle` from a continue, and both footers (the old one and the kept
+  one with the role); the Werk panel and the inline card head "Oorgedra aan {role}", falling back to the handle, then
+  the peer; a continue is a Werk item too, with a *vervolg · sub-1* chip, its role looked up from the start with that
+  handle. No web test project exists (TODO: *Quality and CI*), so the check is by hand in the rebuilt container.

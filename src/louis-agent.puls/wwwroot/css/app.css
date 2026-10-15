@@ -192,6 +192,8 @@ a { color: var(--blue); text-decoration-thickness: 1px; text-underline-offset: 2
 .delegation-agent strong { color: var(--ink); font-weight: 700; }
 .delegation-toolsets { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 5px; }
 .toolset-chip { font-size: 11px; font-weight: 600; letter-spacing: .3px; background: var(--blue-soft); color: var(--blue); border-radius: 999px; padding: 2px 9px; }
+/* F26: a continued sub-session's chip ("vervolg · sub-1"), told apart from the toolsets. */
+.toolset-chip.follow-up { background: var(--green-soft, var(--blue-soft)); color: var(--green, var(--blue)); }
 .delegation-status { font-size: 12px; font-weight: 600; border-radius: 999px; padding: 4px 11px; background: var(--green-soft); color: var(--green-light); display: inline-flex; align-items: center; gap: 6px; }
 .delegation-status::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
 .delegation.running .delegation-status { background: var(--orange-soft); color: var(--orange-deep); }
