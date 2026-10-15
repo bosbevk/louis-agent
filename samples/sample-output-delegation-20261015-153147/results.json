@@ -1,0 +1,261 @@
+{
+  "baseline": {
+    "run": "puls-check-baseline-20261015-153147",
+    "toolsets": [
+      "files",
+      "git",
+      "dotnet",
+      "python",
+      "powershell",
+      "bash",
+      "web",
+      "paymo",
+      "devops",
+      "skills"
+    ],
+    "all": {
+      "requests": 22,
+      "input": 64,
+      "cache_write": 79945,
+      "cache_read": 982846,
+      "output": 12142,
+      "tokens": 1074997,
+      "cost": 0.025901
+    },
+    "own": {
+      "requests": 22,
+      "input": 64,
+      "cache_write": 79945,
+      "cache_read": 982846,
+      "output": 12142,
+      "tokens": 1074997,
+      "cost": 0.025901
+    },
+    "specialists": {
+      "requests": 0,
+      "input": 0,
+      "cache_write": 0,
+      "cache_read": 0,
+      "output": 0,
+      "tokens": 0,
+      "cost": 0
+    },
+    "per_task": {
+      "web": {
+        "requests": 3,
+        "input": 8,
+        "cache_write": 51867,
+        "cache_read": 95977,
+        "output": 968,
+        "tokens": 148820,
+        "cost": 0.007928
+      },
+      "files": {
+        "requests": 2,
+        "input": 6,
+        "cache_write": 4240,
+        "cache_read": 91866,
+        "output": 797,
+        "tokens": 96909,
+        "cost": 0.001848
+      },
+      "git": {
+        "requests": 2,
+        "input": 6,
+        "cache_write": 1706,
+        "cache_read": 91859,
+        "output": 1190,
+        "tokens": 94761,
+        "cost": 0.001728
+      },
+      "numbers": {
+        "requests": 2,
+        "input": 6,
+        "cache_write": 624,
+        "cache_read": 91879,
+        "output": 632,
+        "tokens": 93141,
+        "cost": 0.001314
+      },
+      "chat": {
+        "requests": 1,
+        "input": 4,
+        "cache_write": 106,
+        "cache_read": 45883,
+        "output": 874,
+        "tokens": 46867,
+        "cost": 0.000909
+      },
+      "web-2": {
+        "requests": 3,
+        "input": 8,
+        "cache_write": 8121,
+        "cache_read": 143988,
+        "output": 2023,
+        "tokens": 154140,
+        "cost": 0.003468
+      },
+      "files-2": {
+        "requests": 2,
+        "input": 6,
+        "cache_write": 2725,
+        "cache_read": 91878,
+        "output": 1382,
+        "tokens": 95991,
+        "cost": 0.001951
+      },
+      "git-2": {
+        "requests": 3,
+        "input": 8,
+        "cache_write": 3124,
+        "cache_read": 139722,
+        "output": 1773,
+        "tokens": 144627,
+        "cost": 0.002676
+      },
+      "numbers-2": {
+        "requests": 3,
+        "input": 8,
+        "cache_write": 7330,
+        "cache_read": 143911,
+        "output": 2264,
+        "tokens": 153513,
+        "cost": 0.003488
+      },
+      "chat-2": {
+        "requests": 1,
+        "input": 4,
+        "cache_write": 102,
+        "cache_read": 45883,
+        "output": 239,
+        "tokens": 46228,
+        "cost": 0.000591
+      }
+    }
+  },
+  "delegated": {
+    "run": "puls-check-delegated-20261015-153147",
+    "toolsets": [
+      "agents"
+    ],
+    "all": {
+      "requests": 38,
+      "input": 112,
+      "cache_write": 105617,
+      "cache_read": 245151,
+      "output": 28874,
+      "tokens": 379754,
+      "cost": 0.030103
+    },
+    "own": {
+      "requests": 19,
+      "input": 58,
+      "cache_write": 21811,
+      "cache_read": 101838,
+      "output": 10258,
+      "tokens": 133965,
+      "cost": 0.008881
+    },
+    "specialists": {
+      "requests": 19,
+      "input": 54,
+      "cache_write": 83806,
+      "cache_read": 143313,
+      "output": 18616,
+      "tokens": 245789,
+      "cost": 0.021222
+    },
+    "per_task": {
+      "web": {
+        "requests": 6,
+        "input": 16,
+        "cache_write": 22198,
+        "cache_read": 30130,
+        "output": 4299,
+        "tokens": 56643,
+        "cost": 0.005228
+      },
+      "files": {
+        "requests": 4,
+        "input": 12,
+        "cache_write": 12398,
+        "cache_read": 18081,
+        "output": 1838,
+        "tokens": 32329,
+        "cost": 0.002651
+      },
+      "git": {
+        "requests": 4,
+        "input": 12,
+        "cache_write": 14111,
+        "cache_read": 21948,
+        "output": 2895,
+        "tokens": 38966,
+        "cost": 0.003431
+      },
+      "numbers": {
+        "requests": 5,
+        "input": 14,
+        "cache_write": 33146,
+        "cache_read": 50134,
+        "output": 3422,
+        "tokens": 86716,
+        "cost": 0.006357
+      },
+      "chat": {
+        "requests": 1,
+        "input": 4,
+        "cache_write": 106,
+        "cache_read": 5504,
+        "output": 696,
+        "tokens": 6310,
+        "cost": 0.000417
+      },
+      "web-2": {
+        "requests": 5,
+        "input": 14,
+        "cache_write": 9098,
+        "cache_read": 26901,
+        "output": 3730,
+        "tokens": 39743,
+        "cost": 0.003272
+      },
+      "files-2": {
+        "requests": 4,
+        "input": 12,
+        "cache_write": 5063,
+        "cache_read": 24949,
+        "output": 3459,
+        "tokens": 33483,
+        "cost": 0.002614
+      },
+      "git-2": {
+        "requests": 4,
+        "input": 12,
+        "cache_write": 3812,
+        "cache_read": 32646,
+        "output": 3669,
+        "tokens": 40139,
+        "cost": 0.002639
+      },
+      "numbers-2": {
+        "requests": 4,
+        "input": 12,
+        "cache_write": 5583,
+        "cache_read": 29354,
+        "output": 4663,
+        "tokens": 39612,
+        "cost": 0.003324
+      },
+      "chat-2": {
+        "requests": 1,
+        "input": 4,
+        "cache_write": 102,
+        "cache_read": 5504,
+        "output": 203,
+        "tokens": 5813,
+        "cost": 0.00017
+      }
+    }
+  }
+}

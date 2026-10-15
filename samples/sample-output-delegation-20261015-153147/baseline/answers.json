@@ -1,0 +1,128 @@
+[
+  {
+    "task": "web",
+    "question": "Wat is die nuutste weergawe van .NET en wanneer is dit vrygestel? Gee jou bronne.",
+    "answer": "Die nuutste stabiele weergawe van .NET is **.NET 10**. Dit is 'n LTS-weergawe (Long Term Support), en dit is vrygestel op **11 November 2025**.\n\n- **Ondersteuning:** .NET 10 word ondersteun tot **November 2028**.\n- **Ander ondersteunde weergawes:** .NET 9 (STS) tot November 2026, en .NET 8 (LTS) ook tot November 2026.\n- **Op hierdie masjien:** Die .NET 10 SDK **10.0.401** en runtime **10.0.12** is geïnstalleer.\n\nEk het nie nagegaan of .NET 11 al in preview is nie. As jy vir produksiewerk beplan, is .NET 10 die veilige keuse.\n\n**Bronne:**\n- Microsoft Lifecycle, .NET and .NET Core: https://learn.microsoft.com/en-us/lifecycle/products/microsoft-net-and-net-core\n- Microsoft Learn, .NET releases, patches, and support: https://learn.microsoft.com/en-us/dotnet/core/releases-and-support",
+    "tools": [
+      "WebSearch",
+      "DotNetSdkInfo",
+      "FetchUrl"
+    ],
+    "specialists": [],
+    "delegations": [],
+    "error": null,
+    "seconds": 16.0
+  },
+  {
+    "task": "files",
+    "question": "Lees README.md in die werkruimte en som in drie punte op wat die projek doen.",
+    "answer": "Die projek is **Louis Agent**, 'n selfgehoste KI-kodeagent in .NET, gebou op Microsoft.Extensions.AI. Dit werk op jou repository met regte gereedskap soos lêers, git, `dotnet`, Python, PowerShell, bash, websoektog, Azure DevOps en Paymo. Jy praat daarmee via Rider, 'n webapp, 'n HTTP API of die terminal.\n\n1. **Die kodeagent.** Antwoorde stroom in soos hulle geskryf word, insluitend die model se denkwerk en elke gereedskapsoproep. Elke antwoord wys ook wat dit gebruik en gekos het. Dit loop standaard op Claude, maar Ollama en OpenAI-versoenbare eindpunte werk ook.\n\n2. **Puls, die algemene assistent.** Puls praat gewone Suid-Afrikaanse Afrikaans en het self geen gereedskap nie. Dit deel elke taak uit aan 'n spesialis (navorsing, lêers, git, berekeninge of algemene werk), en skryf dan die antwoord self. Die Werk-paneel wys elke delegasie terwyl dit gebeur, en 'n meting toon dat delegering gewoonlik ongeveer 'n derde duurder is as een agent wat alles self doen.\n\n3. **Veiligheid en gebruik.** Lêerhulpmiddels bly binne die werkruimte en raak nooit geheime lêers aan nie. Modelteks word nooit in 'n opdragreël ingeplak nie, en alles luister net op `127.0.0.1`. Dit het ook 'n orkestrator-demo wat foute in 'n mikrodiens regstel, elke regstelling op eie tak vastlê en nie push nie. Begin met Docker: `config/.env` en `config/.env.secrets` opstel, dan die webapp op http://127.0.0.1:5080 laat loop.",
+    "tools": [
+      "ReadWorkspaceFile"
+    ],
+    "specialists": [],
+    "delegations": [],
+    "error": null,
+    "seconds": 7.4
+  },
+  {
+    "task": "git",
+    "question": "Wat het die laaste drie commits in hierdie repository verander?",
+    "answer": "Die laaste drie commits:\n\n**1. `b7ad0ac`: docs(f27): the asks approved during the build** (Louis, 15 Okt 2026, 17:26)\n- Net een lêer verander: `docs/plans/F27-admin-portal.md`, 7 reëls bygevoeg.\n- Dis net dokumentasie: die goedgekeurde versoeke uit die bou is by die F27-plan aangeteken.\n\n**2. `68dbaa5`: feat(f27): step 7, the live run as a tree** (Louis, 15 Okt 2026, 17:25)\n- Twee lêers: `Pages/Admin/Benchmarks.razor` (143 bygevoeg, 80 uitgevee) en `wwwroot/css/app.css` (21 bygevoeg).\n- Die tabel en die aparte kletslys is saamgevoeg in een boomstruktuur. Die vlakke is:\n  - modus (met die toolsets, en koste, tokens en versoeke as dit klaar is)\n  - gesprekke\n  - beurte\n  - die gesprek self, wat binne 'n beurt uittik\n- Die huidige node op elke vlak bly oop, afgehandelde nodes vou toe.\n- 'n Slegte gebeurtenis breek die replay nie meer af nie; dit gaan na die browser se console, en die totale word daar ook gelog.\n\n**3. `ad68cfa`: docs(f25): a shop's own search result counts as a price** (Louis, 15 Okt 2026, 15:46)\n- Twee lêers: `Skills/personalities/puls-cook.md` (6 bygevoeg, 2 uitgevee) en `samples/puls-cook-check/run_check.py` (een reël gewysig).\n- Louis het gekies dat 'n winkel se eie soekresultaat as prys tel, as die teksversie van die resultaat die prys wys. Dit word gemerk as \"van die soekindeks\" met die datum.\n- Die produkbladsy word net opgehaal as die resultaat geen prys wys nie.\n- Die \"unconfirmed\"-regex in die toets tel nou ook 'unverified', 'snippet', 'soekresultate' en 'soekindeks'.\n\nDie bron hierbo is die opsomming van lêers en reëls. As jy presies wil sien watter reëls verander het, kan ek die volle diff van enige van die drie wys.",
+    "tools": [
+      "GetLog",
+      "ShowCommit",
+      "ShowCommit",
+      "ShowCommit"
+    ],
+    "specialists": [],
+    "delegations": [],
+    "error": null,
+    "seconds": 11.2
+  },
+  {
+    "task": "numbers",
+    "question": "Hoeveel .cs-lêers is daar onder louis-agent.core, en hoeveel reëls het hulle saam?",
+    "answer": "Onder `louis-agent.core` is daar **118 .cs-lêers** met saam **11 738 reëls** kode.\n\nEk het `bin`- en `obj`-gidse uitgesluit, dus gegenereerde lêers tel nie mee nie. Die reëlgetal tel alle reëls, insluitend leë reëls en kommentaar.",
+    "tools": [
+      "BashRun"
+    ],
+    "specialists": [],
+    "delegations": [],
+    "error": null,
+    "seconds": 6.8
+  },
+  {
+    "task": "chat",
+    "question": "Gee my drie name vir 'n Jack Russell, met 'n Afrikaanse knipoog.",
+    "answer": "Hier is drie:\n\n1. **Boela Bliksem.** \"Boela\" is 'n ou Afrikaanse naam, en \"bliksem\" is 'n skelmpie. Jack Russells is presies so: klein, vinnig en altyd besig met iets stout.\n2. **Kiepie.** Dis 'n liefdevolle koosnaam vir iets klein, en hy sal dit nie eens agterkom dat hy ondeund is nie.\n3. **Stoffel.** 'n Klassieke Afrikaanse naam met 'n ou-wêreld-charme. Dis perfek vir 'n hond wat dink hy is die baas van die stoep.\n\nWil jy een wat meer by die kleur of persoonlikheid van jou hond pas? Vertel my gerus.",
+    "tools": [],
+    "specialists": [],
+    "delegations": [],
+    "error": null,
+    "seconds": 6.8
+  },
+  {
+    "task": "web-2",
+    "question": "Wat is die huidige prima uitleenkoers in Suid-Afrika, en wanneer het dit laas verander? Gee jou bronne.",
+    "answer": "Die huidige prima uitleenkoers is **10,75%**. Dit het op **25 September 2026** verander, toe die SARB se Monetary Policy Committee die repo-rentekoers met 25 basispunte na **7,25%** verhoog het.\n\n**Hoe dit werk:** Prima is gewoonlik die repo-koers plus 3,5 persentasie punte. Met repo op 7,25% kom prima dus op 10,75% uit.\n\n**Wat in 2026 gebeur het:**\n- **Maart 2026:** Repo bly op 6,75%, so prima bly op 10,25%.\n- **28 Mei 2026:** Repo is verhoog na 7%, en prima het na 10,50% gegaan.\n- **23 Julie 2026:** Repo is op 7% gehou.\n- **25 September 2026:** Repo is verhoog na 7,25%, en prima het na 10,75% gegaan. Die besluit was unaniem, en die SARB noem die globale olie-skok as rede.\n\nDie volgende MPC-besluit is op **19 November 2026**.\n\n**Bronne:**\n- SARB, *Statement of the Monetary Policy Committee September 2026*: https://www.resbank.co.za/en/home/publications/publication-detail-pages/statements/monetary-policy-statements/2026/september (repo 7,25%, volgende besluit 19 November 2026)\n- SARB, *Statement of the MPC July 2026* en *May 2026*: dieselfde domein, onder `.../monetary-policy-statements/2026/july` en `.../2026/may`\n- Property24, *Interest rates drop: Repo at 6.75% and prime falls to 10.25%*: https://www.property24.com/articles/interest-rates-drop-repo-at-675-and-prime-falls-to-1025/32878 (die November 2025-verlaging)\n- Trading Economics, Suid-Afrika rentekoers: https://tradingeconomics.com/south-africa/interest-rate\n\n**Let wel:** Nedbank se bladsy wys nog 10,50%, maar dit is ouer as die September-besluit. Die SARB-bladsy is die betroubaarste bron. Jou bank kan ook 'n effektiewe datum of marge hê wat afwyk, so as jy 'n lening het, kyk na jou eie kontrakstaat of vra jou bank. Die SARB het in Februarie 2026 ook gepraat oor die moontlikheid om die primakoers heeltemal af te skaf. Ek het nie bevestiging gekry dat dit besluit is nie.",
+    "tools": [
+      "WebSearch",
+      "WebSearch",
+      "GetToday",
+      "FetchUrl"
+    ],
+    "specialists": [],
+    "delegations": [],
+    "error": null,
+    "seconds": 18.3
+  },
+  {
+    "task": "files-2",
+    "question": "Watter instellings in config/.env.example gaan oor die LLM? Lys hulle met 'n kort verduideliking.",
+    "answer": "Net **één** instelling is 'n echte LLM-instelling: **`LLM_PROFILE`**. Die res raak die model net terloops.\n\n**Die hoofinstelling**\n\n- **`LLM_PROFILE=anthropic`**: kies watter model-lêer gebruik word. `anthropic` gebruik Claude en vereis `ANTHROPIC_API_KEY` in `.env.secrets`. `ollama` gebruik 'n plaaslike model en is gratis. Die profiel laai `config/.env.anthropic` of `config/.env.ollama`. Jy kan dit ook net vir een run verander, bv. `LLM_PROFILE=ollama dotnet run --project src/louis-agent.cli`.\n- Die kommentaar sê ook: as jy 'n `LLM_*`-instelling hier in die lêer skryf, oorskryf dit die profiel s'n. Los dit dus uit tensy jy 'n model wil vassit.\n\n**Verwante instellings (koste en gebruik van LLM-versoeke)**\n\n- **`USAGE_LEDGER`** (standaard aan): skryf een JSON-reël per modelversoek na `logs/usage-JJJJ-MM.jsonl` (tokens, model, tyd; nie die prompt self nie). Stel dit op `off` om dit af te skakel.\n- **`LOG_DIRECTORY`**: waar die gebruikslogs gestoor word. Gebruik 'n absolute pad as jy buite Docker met `dotnet run` werk.\n- **`USAGE_IN_CHAT`**: wys die tokens en koste na elke antwoord in die chat (Rider). Af as dit nie gestel is nie.\n- **`PRICES_FILE`, `PRICES_URL`**: waar die prysetabel vandaan kom. Standaard is dit `config/prices.json`.\n- **`DISPLAY_CURRENCY`, `HOST_CULTURE`**: in watter geldeenheid koste gewys word. `DISPLAY_CURRENCY=ZAR` sou dus rand gee.\n- **`RATES_URL`, `RATES_FORMAT`, `RATES_FILE`**: wisselkoerse. Standaard haal die stelsel dit by Frankfurter (ECB) by opstart; as dit misluk, gebruik dit `config/rates.json`.\n- **`SUB_SESSION_PROMPT_BUDGET=80000`**: die maksimum tokens wat 'n spesialis-subsessie se prompt mag bereik. As die volgende versoek dit sou oorskry, antwoord die spesialis met wat dit al het in plaas van om meer gereedskap te roep. `0` skakel dit af.\n\nDie ander instellings in die lêer (agent-funksie, webfoutsoeker, Rider MCP, Docker-paaie, Azure DevOps) het nie met die model self te doen nie.",
+    "tools": [
+      "ReadWorkspaceFile"
+    ],
+    "specialists": [],
+    "delegations": [],
+    "error": null,
+    "seconds": 10.9
+  },
+  {
+    "task": "git-2",
+    "question": "Wie het die meeste aan louis-agent.core/Agent/AgentEngine.cs verander, en wanneer was die laaste verandering?",
+    "answer": "Louis Marais het die meeste aan `AgentEngine.cs` verander. Die laaste verandering was op **14 Oktober 2026**, commit `873e94d` (\"FX14: a sub-session's prompt has a budget\").\n\n- **Commits:** 30 van die 33 is deur Louis Marais gemaak. Git sien \"Louis Marais\" en \"louis marais\" as twee name, so ek het hulle saamgetel.\n- **Reëls:** Hy het ongeveer +313 en −936 reëls bygedra. Die grootste deel van die lêer se huidige inhoud kom dus van die soveelste herskryf.\n- **Oorspronklike skepping:** Die eerste commit, \"Louis Agent: self-hosted AI coding agent for .NET\", is deur \"Louis\" gemaak en het die lêer met 943 reëls begin.\n\nDie meeste werk aan die lêer het in Oktober 2026 plaasgevind, veral in die refactor-reekse (cl1, cl2, cl3) en die F-stappe rondom gereedskap, gebruik en sub-sessies.",
+    "tools": [
+      "FileHistory",
+      "BashRun"
+    ],
+    "specialists": [],
+    "delegations": [],
+    "error": null,
+    "seconds": 13.3
+  },
+  {
+    "task": "numbers-2",
+    "question": "Hoeveel toetsmetodes ([Test] of [TestCase]) is daar onder tests/louis-agent.core.tests?",
+    "answer": "Daar is **982 toets-attributes** onder `tests/louis-agent.core.tests`, verdeel oor 76 `.cs`-lêers:\n\n- **716** `[Test]`\n- **266** `[TestCase(...)]`\n\nDie 982 is nie dieselfde as die aantal toetsmetodes nie. As 'n metode meer as een `[TestCase]` het, tel dit elke keer. As ek elke metode net een keer tel, is daar **778 toetsmetodes**: 716 gewone `[Test]`-metodes plus 62 metodes wat met `[TestCase]` gedekoreer is.\n\nDie lêers met die meeste toetse is `Tools/Integrations/Paymo/PaymoToolsTests.cs` (57), `Tools/Integrations/DevOps/DevOpsToolsTests.cs` (55), `Tools/Web/WebToolsTests.cs` (63) en `Config/LlmOptionsTests.cs` (52). Die telling is net die bronkode; ek het die tests nie uitgevoer nie.",
+    "tools": [
+      "BashRun",
+      "PythonRun"
+    ],
+    "specialists": [],
+    "delegations": [],
+    "error": null,
+    "seconds": 15.0
+  },
+  {
+    "task": "chat-2",
+    "question": "Skryf 'n kort verjaardagboodskap vir my ma in Afrikaans.",
+    "answer": "Hier's 'n warm boodskap vir jou ma:\n\n**Haar verjaardag: Gelukkige verjaardag, Ma!**\n\nMa, baie geluk met jou verjaardag! Dankie dat jy altyd daar is, met 'n sagte woord, 'n warm kos en 'n oop hart. Ek hoop jou dag is so lekker soos jy vir ons almal is. Geniet elke oomblik, en weet dat ek jou baie liefhet.\n\nLiefde,\n[Jou naam]\n\nWil jy dit meer persoonlik hê, met 'n spesiale herinnering of 'n grappie tussen julle twee? Sê net, dan pas ek dit aan.",
+    "tools": [],
+    "specialists": [],
+    "delegations": [],
+    "error": null,
+    "seconds": 2.7
+  }
+]

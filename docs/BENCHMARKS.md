@@ -152,5 +152,13 @@ branches from OpenStreetMap, and **every follow-up continued the same cook, 4 of
 6). Cost $0.0377 delegated and $0.0404 with `web`, dearer than the morning's $0.023 because the cook now reads real
 pages and the follow-ups do real work.
 
+**Two more cook runs and a delegation run from the portal the same afternoon**
+([15:30](../samples/sample-output-cook-20261015-133037/README.md), [15:51](../samples/sample-output-cook-20261015-135101/README.md),
+[the delegation check at 15:31](../samples/sample-output-delegation-20261015-153147/README.md)): with the cook allowed to
+take a shop's own search result as a price, dated from the index, its fetches halved and the run cost a quarter less
+($0.0325 delegated, $0.0264 with `web`); the follow-up continued the cook in 11 of 12 across the three runs. The
+delegation check, first since the 14th: 8 of 8 routed by the table, delegation +16% against the repeat run's +31%,
+both web questions answered from sources with Tavily.
+
 ---
 [Docs index](README.md) · Related: [Features](features/README.md) · [Cost write-up](learning/13-cost-and-token-economics.md)
