@@ -205,6 +205,7 @@ Design: [docs/specs/SESSION_ARCHITECTURE.md](docs/specs/SESSION_ARCHITECTURE.md)
 
 ### Web app
 
+- [ ] [F27 Admin portal](docs/features/F27-admin-portal.md) — an *Admin* item in the profile menu into a portal of our own (a sidebar and cards on Puls's variables) whose first page runs the checks and reads their saved runs; more pages later ([plan](docs/plans/F27-admin-portal.md))
 - [ ] Sync chat history across devices and browsers instead of only `localStorage`
 - [ ] A UI for skills (`Skills/*.md`) and for reviewing and approving agent-built tools — today that's typing `/tools`,
       `/approve <Name>` and `/reject <Name>` in a chat
