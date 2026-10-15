@@ -134,6 +134,9 @@ public class PersonalitiesTests
         Assert.That(agents, Does.Contain("## Following up").And.Contain("`ContinueSubSession(handle, message, attachments)`"));
         Assert.That(agents, Does.Contain("start a new sub-session").IgnoreCase, "and when not to continue");
         Assert.That(router, Does.Contain("ContinueSubSession"));
+        // The cook check: Puls scaled the list itself in half the follow-ups, reading the rule as optional. Firmer now.
+        Assert.That(router, Does.Contain("even when you could answer it yourself"));
+        Assert.That(agents, Does.Contain("Continue, don't answer it yourself"));
     }
 
     [TestCase("default.md")]

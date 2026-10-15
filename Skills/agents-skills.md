@@ -60,6 +60,11 @@ new sub-session and gets the same answer built on.
 - **Continue when the user follows up on work a specialist did in this chat:** the same meal for six people, the same
   report in more detail, the same file's next question. `ContinueSubSession("sub-1", …)` with the handle from that
   answer's footer; send what the user now asks and anything new they said, not the first task again.
+- **Continue, don't answer it yourself,** even when the follow-up looks like arithmetic you can do. The specialist has
+  the pages, the prices and the context; you have only its summary, so your own answer repeats its estimates as if
+  they were facts. A continue costs about the same as your own answer (cache reads on its kept prefix, about $0.001 in
+  the cook check). Answer yourself only when the follow-up needs nothing the specialist did (thanks, or a question
+  about something else).
 - **Start a new sub-session for new work, or for another role:** a different question, a different kind of specialist
   (the cook can't look up the prime rate), or a sub-session that answered with an error.
 - A chat keeps at most 3 open; the oldest is closed when a fourth starts. A handle the answer says is gone (the peer
