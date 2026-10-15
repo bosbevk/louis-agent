@@ -42,8 +42,18 @@ public sealed partial class BenchmarkCatalog(string samplesRoot, IReadOnlyList<B
         return new SavedRunDetail(run,
             Summary: ReadIfExists(path, "summary.md") ?? ReadIfExists(path, "results.md"),
             Readme: ReadIfExists(path, "README.md"),
-            Results: ReadIfExists(path, "summary.json") ?? ReadIfExists(path, "results.json"));
+            Results: ReadIfExists(path, "summary.json") ?? ReadIfExists(path, "results.json"),
+            Transcripts: Transcripts(path));
     }
+
+    /// <summary>Every mode's transcript, in order: <c>{mode}/transcript.md</c>, or <c>run-N/{mode}/transcript.md</c> for a repeated run.</summary>
+    private static List<RunTranscript> Transcripts(string run) =>
+        Directory.EnumerateFiles(run, "transcript.md", SearchOption.AllDirectories)
+            .Select(file => new RunTranscript(
+                Path.GetRelativePath(run, Path.GetDirectoryName(file)!).Replace('\\', '/'),
+                File.ReadAllText(file)))
+            .OrderBy(t => t.Name, StringComparer.Ordinal)
+            .ToList();
 
     private SavedRun? Describe(string path)
     {

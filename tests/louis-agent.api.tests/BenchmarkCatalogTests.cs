@@ -70,12 +70,18 @@ public class BenchmarkCatalogTests
         Save("sample-output-puls-cook", "summary.json", """{"delegated":{"cost":{"mean":0.02}}}""");
         Save("sample-output-puls-cook", "summary.md", "# 3 runs per mode");
         Save("sample-output-puls-cook", "README.md", "# Sample output");
+        // The conversations themselves (Louis: "where do I see the msg that was sent"): one transcript per mode, and
+        // per run-N for a repeated run.
+        Save("sample-output-puls-cook", "run-1/delegated/transcript.md", "# cook-af\n\n## Turn 1: Wat kan ek kook?\n\nBobotie.");
+        Save("sample-output-puls-cook", "run-1/puls-web/transcript.md", "# cook-af\n\nWeb.");
 
         var run = new BenchmarkCatalog(_samples).Read("sample-output-puls-cook");
 
         Assert.That(run, Is.Not.Null);
         Assert.That(run!.Summary, Does.Contain("3 runs per mode"));
         Assert.That(run.Readme, Does.StartWith("# Sample output"));
+        Assert.That(run.Transcripts.Select(t => t.Name), Is.EqualTo(new[] { "run-1/delegated", "run-1/puls-web" }));
+        Assert.That(run.Transcripts[0].Markdown, Does.Contain("Wat kan ek kook?"));
         Assert.That(new BenchmarkCatalog(_samples).Read("../secrets"), Is.Null, "never outside samples/");
         Assert.That(new BenchmarkCatalog(_samples).Read("nope"), Is.Null);
     }

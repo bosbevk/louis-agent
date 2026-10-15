@@ -1275,3 +1275,8 @@ html:has(.landing) { scroll-behavior: smooth; }
 .run-report h1 { font-size: 16px; margin: 10px 0 4px; color: var(--ink); }
 .run-report h2 { font-size: 14px; margin: 14px 0 6px; color: var(--orange-text); }
 .run-report table { width: 100%; }
+.run-transcript { max-height: 70vh; overflow: auto; padding-right: 8px; }
+.run-transcript h1 { font-size: 16px; margin: 14px 0 4px; color: var(--ink); }
+.run-transcript h2 { font-size: 14px; margin: 12px 0 6px; color: var(--orange-text); }
+.run-transcript h3 { font-size: 13.5px; margin: 10px 0 4px; }
+.run-transcript em { color: var(--muted); }

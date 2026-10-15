@@ -57,7 +57,11 @@ internal static class AdminEndpoints
                 : ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error", MessageText.Format(ApiUserText.NoBenchmarkRun)));
 
         admin.MapGet("/benchmarks/runs/{folder}", (string folder) => catalog.Read(folder) is { } run
-            ? Results.Json(new { run = Row(run.Run), summary = run.Summary, readme = run.Readme, results = run.Results })
+            ? Results.Json(new
+            {
+                run = Row(run.Run), summary = run.Summary, readme = run.Readme, results = run.Results,
+                transcripts = run.Transcripts.Select(t => new { name = t.Name, markdown = t.Markdown }),
+            })
             : ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error", MessageText.Format(ApiUserText.NoRun, new { Folder = folder })));
     }
 

@@ -176,6 +176,11 @@ else if (_data is { } data)
             {
                 <details class="admin-details"><summary>README</summary><div class="markdown admin-markdown">@Markdown.ToHtml(readme)</div></details>
             }
+            @* The conversations themselves: the questions sent, the calls, and the answers, one transcript per mode. *@
+            @foreach (var transcript in open.Transcripts)
+            {
+                <details class="admin-details"><summary>Gesprekke · @transcript.Name</summary><div class="markdown admin-markdown run-transcript">@Markdown.ToHtml(transcript.Markdown)</div></details>
+            }
             @if (open.Results is { } results)
             {
                 <details class="admin-details"><summary>Die syfers (JSON)</summary><pre class="admin-pre">@results</pre></details>
@@ -188,7 +193,8 @@ else if (_data is { } data)
     private sealed record Check(string Id, string Title, string Script);
     private sealed record Run(string Folder, string? Check, DateTimeOffset SavedAt, int Repeats, decimal? Cost);
     private sealed record Page(List<Check> Checks, List<Run> Runs);
-    private sealed record Opened(Run Run, string? Summary, string? Readme, string? Results);
+    private sealed record Transcript(string Name, string Markdown);
+    private sealed record Opened(Run Run, string? Summary, string? Readme, string? Results, List<Transcript> Transcripts);
     private sealed record LiveRun(string Id, string Check, string Folder, int Repeat, string Status, int? ExitCode, DateTimeOffset StartedAt);
 
     private Page? _data;
@@ -342,7 +348,10 @@ else if (_data is { } data)
         try
         {
             var json = await Api.GetAsync<JsonElement>($"admin/benchmarks/runs/{Uri.EscapeDataString(folder)}");
-            _open = new Opened(ReadRun(json.GetProperty("run")), Text(json, "summary"), Text(json, "readme"), Text(json, "results"));
+            var transcripts = json.TryGetProperty("transcripts", out var ts) && ts.ValueKind == JsonValueKind.Array
+                ? ts.EnumerateArray().Select(t => new Transcript(t.GetProperty("name").GetString()!, t.GetProperty("markdown").GetString() ?? "")).ToList()
+                : [];
+            _open = new Opened(ReadRun(json.GetProperty("run")), Text(json, "summary"), Text(json, "readme"), Text(json, "results"), transcripts);
         }
         catch (AgentApiException ex)
         {
