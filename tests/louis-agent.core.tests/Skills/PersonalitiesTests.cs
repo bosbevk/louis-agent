@@ -170,10 +170,18 @@ public class PersonalitiesTests
         Assert.That(cook, Does.Not.Contain("Puls will put it in its own voice"), "the line every other role has invites a rewrite");
         // Louis: one table, not the recipe's ingredients and then the list again.
         // Louis: two shops' prices per ingredient, and the totals merged into one table that compares them.
-        Assert.That(cook, Does.Contain("| Ingredient | For the recipe | To buy | Checkers | Shoprite | Best price |"), "the shopping list's fixed columns");
-        Assert.That(cook, Does.Contain("| **Total, priced rows** | | | **R142,97** | **R137,48** | **R131,97** |"), "the totals are the list's last rows, side by side, the cheapest basket last");
+        Assert.That(cook, Does.Contain("| Ingredient | For the recipe | To buy | Checkers | Shoprite | Pick n Pay | Best price |"), "the shopping list's columns: a column per shop priced at");
+        // Louis: "one shop has to at least have all products; include Spar, Pick n Pay, Usave and Woolworths, it never uses them".
+        Assert.That(cook, Does.Contain("at least one shop must have").And.Contain("one trip"));
+        Assert.That(cook, Does.Contain("Pick n Pay, Spar, Usave, Woolworths").And.Contain("`pnp.co.za`").And.Contain("`usave.co.za`"));
+        // The cheapest basket can exceed a shop's total that leaves rows out, so it's bounded by the completed column.
+        Assert.That(cook, Does.Contain("the cheapest basket is never more than the completed"), "the best-price total the model got wrong");
+        Assert.That(cook, Does.Not.Contain("Checkers and Shoprite always"), "the two shops are picked at random from the town's");
+        // Louis: "pick randomly which store to use based on location; don't even use stores not in your location".
+        Assert.That(cook, Does.Contain("q=supermarkets+in+Stellenbosch").And.Contain("pick two at random").And.Contain("never price at, name or total a shop the town doesn't have"));
+        Assert.That(cook, Does.Contain("| **Total, priced rows** | | | **R102,98** | **R84,99** | **R120,97** | **R110,97** |"), "the totals are the list's last rows, side by side, the cheapest basket last");
         // Louis: an unpriced ingredient is an ordinary row that says unknown; no row counting or naming them.
-        Assert.That(cook, Does.Contain("| Lemons | 2 | 2 | [R12,99](https://www.checkers.co.za/…) | unknown | R12,99 Checkers |"));
+        Assert.That(cook, Does.Contain("| Lemons | 2 | 2 | [R12,99](https://www.checkers.co.za/…) | unknown | [R14,99](https://www.pnp.co.za/…) | R12,99 Checkers |"));
         Assert.That(cook, Does.Not.Contain("**Unpriced"));
         Assert.That(cook, Does.Not.Contain("### Total"), "no section of its own");
         Assert.That(cook, Does.Contain("never a price without its link"), "the source is the link in the cell");
