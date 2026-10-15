@@ -31,8 +31,10 @@ services:
       LOG_DIRECTORY: /logs
       PRICES_FILE: /workspace/config/prices.json
       RATES_FILE: /workspace/config/rates.json
-      # Chats delegate every task to the specialist below
+      # Chats hand cooking to the specialist below and answer the web themselves (F29)
       AGENT_PEERS: puls=http://puls-agent:8080
+      # Only a role that has passed its check is on (F29): the cook, and Puls's own voice
+      PERSONALITIES_ENABLED: puls,puls-cook
     # Localhost only. Set AGENT_API_KEY in config/.env.secrets to require a key.
     ports:
       - "127.0.0.1:${PULS_PORT:-5070}:8080"
@@ -58,6 +60,7 @@ services:
       PRICES_FILE: /workspace/config/prices.json
       RATES_FILE: /workspace/config/rates.json
       AGENT_PEERS: ""
+      PERSONALITIES_ENABLED: puls,puls-cook
     ports:
       - "127.0.0.1:${PULS_CODER_PORT:-5071}:8080"
     volumes:

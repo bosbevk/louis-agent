@@ -20,14 +20,60 @@ public class AgentEngineFactoryTests
 
     /// <summary>A factory whose skills folder is a temp one holding personalities/factory-voice.md (F21); the guides and
     /// the router come from the embedded copies.</summary>
-    private static AgentEngineFactory FactoryWithVoice(out string skills)
+    private static AgentEngineFactory FactoryWithVoice(out string skills, IReadOnlyList<string>? enabled = null)
     {
         skills = Path.Combine(Path.GetTempPath(), "factory-voice-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(Path.Combine(skills, "personalities"));
         File.WriteAllText(Path.Combine(skills, "personalities", "factory-voice.md"), "# Factory Voice");
         var options = Options();
         options.SkillsDirectory = skills;
+        if (enabled is not null) options.PersonalitiesEnabled = enabled;
         return new AgentEngineFactory(new FakeChatClient(), options);
+    }
+
+    [Test]
+    public void OnlyTheEnabledPersonalities_AreOffered_AndAnotherIsRefused()
+    {
+        // F29: Louis switched every specialist but the cook off until it has passed a check like the cook's. The gate is
+        // a setting the API enforces, so a prompt slip that names the researcher fails at the peer, not quietly.
+        var factory = FactoryWithVoice(out string skills, enabled: ["factory-voice"]);
+        try
+        {
+            Assert.That(factory.AvailablePersonalities, Is.EqualTo(new[] { "factory-voice" }), "the built-in roles are on disk but off");
+
+            var refused = Assert.Throws<LouisAgent.Core.Skills.PersonalityException>(() => factory.GetOrCreate(["files"], "puls-cook"))!;
+            Assert.That(refused.Message, Does.Contain("puls-cook").And.Contain("factory-voice").And.Not.Contain("puls-researcher"), "named as unknown, with what's on");
+            Assert.That(factory.Profiles, Is.Empty, "refused before anything is built");
+
+            Assert.That(factory.GetOrCreate(["files"], "factory-voice").SkillDocumentation, Does.Contain("# Factory Voice"));
+        }
+        finally
+        {
+            Directory.Delete(skills, recursive: true);
+        }
+    }
+
+    [Test]
+    public void AnEmptyEnabledList_MeansEveryPersonality()
+    {
+        var factory = FactoryWithVoice(out string skills, enabled: []);
+        try
+        {
+            Assert.That(factory.AvailablePersonalities, Does.Contain("factory-voice").And.Contain("puls-cook").And.Contain("puls-researcher"));
+        }
+        finally
+        {
+            Directory.Delete(skills, recursive: true);
+        }
+    }
+
+    [Test]
+    public void TheEnabledList_IsReadFromTheEnvironment_TrimmedAndLowercase()
+    {
+        var options = AgentOptions.FromEnvironment(name => name == "PERSONALITIES_ENABLED" ? " puls, Puls-Cook ,puls, " : null);
+
+        Assert.That(options.PersonalitiesEnabled, Is.EqualTo(new[] { "puls", "puls-cook" }));
+        Assert.That(AgentOptions.FromEnvironment(_ => null).PersonalitiesEnabled, Is.Empty);
     }
 
     [Test]
