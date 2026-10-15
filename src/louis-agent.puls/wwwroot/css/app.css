@@ -495,7 +495,7 @@ body::before {
 /* The empty chat: the light tile above the headline, the slow pulse spreading out from it. The chat's scroll area
    clips it (.messages), not the empty state, whose top edge would cut the glow off in a straight line. */
 .hero-mark { position: relative; width: 76px; height: 76px; display: grid; place-items: center; margin-bottom: 26px; animation: rise .6s var(--ease) both; }
-.hero-mark img { position: relative; z-index: 1; display: block; border-radius: 17px; box-shadow: 0 1px 0 rgba(255, 255, 255, .05) inset, 0 16px 34px -14px rgba(36, 40, 44, .35), 0 3px 8px rgba(36, 40, 44, .06); }
+.hero-mark img, .hero-mark .puls-tile { position: relative; z-index: 1; display: block; width: 100%; height: 100%; border-radius: 17px; overflow: visible; box-shadow: 0 1px 0 rgba(255, 255, 255, .05) inset, 0 16px 34px -14px rgba(36, 40, 44, .35), 0 3px 8px rgba(36, 40, 44, .06); }
 .hero-mark .pulse-bg { overflow: visible; z-index: 0; }
 .hero-mark .pulse-bg::before { width: min(300px, 70vw); }
 
@@ -515,7 +515,7 @@ body {
 .conversation { background: transparent; }
 .composer { background: linear-gradient(to top, rgba(28, 31, 34, .92) 55%, rgba(28, 31, 34, 0)); }
 .pulse-bg span { border-color: rgba(245, 130, 32, .3); }
-.hero-mark img { box-shadow: 0 0 0 1px rgba(255, 255, 255, .06), 0 18px 40px -14px rgba(0, 0, 0, .7), 0 0 60px -10px rgba(245, 130, 32, .35); }
+.hero-mark img, .hero-mark .puls-tile { box-shadow: 0 0 0 1px rgba(255, 255, 255, .06), 0 18px 40px -14px rgba(0, 0, 0, .7), 0 0 60px -10px rgba(245, 130, 32, .35); }
 .user-message { box-shadow: 0 1px 0 rgba(255, 255, 255, .08) inset, 0 12px 28px -12px rgba(0, 0, 0, .7); }
 .new-chat { box-shadow: 0 8px 22px -8px rgba(245, 130, 32, .6); }
 .tagline { color: var(--muted); }
@@ -599,7 +599,12 @@ html:has(.landing) { scroll-behavior: smooth; }
 /* The hero. */
 .hero { max-width: 900px; margin: 0 auto; padding: clamp(56px, 10vw, 110px) 0 40px; text-align: center; display: flex; flex-direction: column; align-items: center; }
 .hero-mark-lg { width: 96px; height: 96px; margin-bottom: 30px; }
-.hero-mark-lg img { border-radius: 22px; }
+.hero-mark-lg img, .hero-mark-lg .puls-tile { border-radius: 22px; }
+/* The hero's mark sends out the same orange ring as a busy specialist's avatar (the delegation card and the Werk item). */
+.hero-mark-lg .puls-tile { animation: ring 1.8s var(--ease) infinite; }
+/* Inside the app icon only the green source pulses; the glow crossing the rings is the logo's. */
+.hero-mark .puls-glow { animation: none; }
+.hero-mark:hover .puls-source { animation-duration: 1.4s; }
 .eyebrow { display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase; color: var(--orange-text); background: rgba(245, 130, 32, .1); border: 1px solid rgba(245, 130, 32, .25); border-radius: 999px; padding: 6px 14px; margin-bottom: 20px; }
 .hero h1 { font-size: clamp(38px, 7vw, 76px); font-weight: 800; letter-spacing: -2px; line-height: 1.04; color: var(--ink); margin: 0 0 22px; text-wrap: balance; animation: rise .7s var(--ease) both; }
 .gradient-text { background: linear-gradient(100deg, var(--orange) 10%, #f7b267 50%, var(--green-light) 95%); -webkit-background-clip: text; background-clip: text; color: transparent; }

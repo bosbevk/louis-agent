@@ -131,6 +131,10 @@ open and the costs count (S2); the by-hand check in *Done when*.
   a detached node; it now writes the node's value, checked in headless Chrome (same node before and after). Status is
   *built* until Louis has run one delegated chat with *Animasies* on; story S3 says what step 2 made true. Checked at
   1100 px too; 420 px is Chrome's device emulation by hand, since headless Chrome's window floor is about 500 px.
+- **The app icon moves as the logo does.** Louis, after the review: "we lost this animation also", the hero's mark.
+  It was a static image (step 2 had taken the rings behind it away). `Components/PulsTile.razor` draws the icon
+  inline with the logo's glow crossing its rings and the source beating, from the one ring table (`PulsMark.Rings`)
+  the logo now shares, so the two marks can't drift; the hero and the empty chat use it.
 - **The gradient line comes in without blur.** The headline animates word by word with a blur, except the gradient
   line: a `filter` on text that is `background-clip: text` makes Chrome drop the text, so that line gets the same
   rise without the blur.
