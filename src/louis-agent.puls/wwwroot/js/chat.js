@@ -114,8 +114,11 @@ document.addEventListener("pointerout", (e) => {
 // A cost counts up to its value (F24): every [data-count] whose value changed since it was last shown runs from the
 // old number to the new one over 900 ms, keeping the text's own prefix, decimals and separator ("R0,47", "$0.01").
 // Blazor writes the text and the attribute; it only touches the text node again when the value changes, so the frames
-// written here stay. Called after each render of the chat page; a reduced-motion browser jumps straight to the value.
+// written here stay. The frames go into Blazor's own text node (its value, not the element's textContent), so the node
+// Blazor holds is the one on screen and its next write lands there. Called after each render of the chat page; a
+// reduced-motion browser jumps straight to the value.
 pulsUi.countCosts = () => {
+    const write = (el, text) => { const node = el.firstChild; if (node && node.nodeType === 3 && node === el.lastChild) node.nodeValue = text; else el.textContent = text; };
     const still = matchMedia("(prefers-reduced-motion: reduce)").matches && document.documentElement.dataset.motion !== "on";
     for (const el of document.querySelectorAll("[data-count]")) {
         const target = el.dataset.count;
@@ -123,13 +126,13 @@ pulsUi.countCosts = () => {
         const m = /(\d[\d\s]*)([.,](\d+))?/.exec(target);
         const from = parseFloat((el.dataset.shown || "0").replace(/[^\d.,]/g, "").replace(/\s/g, "").replace(",", ".")) || 0;
         el.dataset.shown = target;
-        if (!m || still) { el.textContent = target; continue; }
+        if (!m || still) { write(el, target); continue; }
         const to = parseFloat(m[1].replace(/\s/g, "") + (m[2] ? "." + m[3] : "")), decimals = m[3]?.length ?? 0, sep = m[2]?.[0] ?? ".";
         const prefix = target.slice(0, m.index), suffix = target.slice(m.index + m[0].length), t0 = performance.now();
         const tick = (t) => {
             if (el.dataset.shown !== target) return;      // a newer value took over
             const p = Math.min(1, (t - t0) / 900), e = 1 - Math.pow(1 - p, 3), v = from + (to - from) * e;
-            el.textContent = prefix + v.toFixed(decimals).replace(".", sep) + suffix;
+            write(el, prefix + v.toFixed(decimals).replace(".", sep) + suffix);
             if (p < 1) requestAnimationFrame(tick);
         };
         requestAnimationFrame(tick);

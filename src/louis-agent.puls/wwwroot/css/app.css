@@ -762,7 +762,9 @@ html:has(.landing) { scroll-behavior: smooth; }
 .marquee { margin: 56px auto 0; max-width: 1120px; overflow: hidden; mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); display: flex; flex-direction: column; gap: 10px; }
 .track { display: flex; gap: 10px; width: max-content; animation: marquee 48s linear infinite; }
 .track.rev { animation-direction: reverse; animation-duration: 56s; }
-.marquee:hover .track { animation-play-state: paused; }
+.marquee:hover .track, .marquee.paused .track { animation-play-state: paused; }
+.marquee-pause { display: block; margin: 40px auto -28px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--border); background: rgba(255, 255, 255, .04); color: var(--muted); font-size: 12px; font-weight: 600; transition: color .2s, border-color .2s; }
+.marquee-pause:hover, .marquee-pause[aria-pressed="true"] { color: var(--ink); border-color: rgba(245, 130, 32, .5); }
 @keyframes marquee { to { translate: -50% 0; } }
 .tag { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px; font-size: 12px; font-weight: 600; font-family: var(--font-code); color: var(--orange-text); background: rgba(255, 255, 255, .04); border: 1px solid var(--border); white-space: nowrap; }
 .tag.set { font-family: inherit; font-size: 13px; color: var(--green-light); background: var(--green-soft); border-color: transparent; font-weight: 700; letter-spacing: .3px; }

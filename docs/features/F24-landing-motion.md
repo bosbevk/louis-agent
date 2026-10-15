@@ -1,6 +1,6 @@
 # F24 · Landing motion: the landing page as a moving page, and the app with it
 
-> **Status:** done (2026-10-15) · **Milestone:** — (Puls, outside the cost milestones) · **Depends on:** F20
+> **Status:** built (2026-10-15; *done* once Louis has run one delegated chat with *Animasies* on) · **Milestone:** — (Puls, outside the cost milestones) · **Depends on:** F20
 > (the landing page and the three panels), F5 (live delegation)
 >
 > **In the TODO:** **F24 Landing motion** under *Sessions and memory* (the Puls lines) ([TODO](../../TODO.md)) ·
@@ -42,8 +42,11 @@ feels like one thing.
 
 **F24-S3 — Less motion when asked, and a way back.** As a *user* whose system asks for less motion, I want a still
 page and the choice to see the motion anyway, so that the setting is respected without hiding the page's point.
-- *Given* `prefers-reduced-motion: reduce` *then* nothing moves, the demo shows its finished state, and a pill (landing)
+- *Given* `prefers-reduced-motion: reduce` *then* nothing moves; the demo still plays its turn once at reading pace,
+  since text arriving in order is content and not movement (approved in step 2), and does not loop; a pill (landing)
   or a switch in the sidebar settings (app) turns the motion on, remembered in this browser.
+- *Given* any viewer *then* the demo's loop and the marquees can be stopped with a button (WCAG 2.2.2), the tour's
+  active chip is announced (`aria-pressed`), and a closed answer in *Vrae* is not read out (`inert`).
 
 ## What's real and what's example data
 
@@ -59,8 +62,9 @@ real one).
 
 ## Done when
 
-- The landing page matches the reviewed artifact at desktop (1440 px), tablet (1100 px) and phone (420 px) widths,
-  checked by headless-Chrome screenshots, and plays the demo in a real Chrome.
+- The landing page matches the reviewed artifact at desktop (1440 px), tablet (1100 px) and phone widths, checked by
+  headless-Chrome screenshots (the phone at 520 px: headless Chrome's window floor is about 500 px, so 420 px is
+  checked in Chrome's device emulation by hand), and plays the demo in a real Chrome.
 - Every nav and index link lands as S1 says, clicked by hand.
 - The app's four pieces (S2, S3) work in a real delegated chat (Louis, a few cents) and with Windows' animation
   effects off.
@@ -119,6 +123,14 @@ open and the costs count (S2); the by-hand check in *Done when*.
   `fill-mode: both`, and a finished animation's last frame keeps overriding the element's own `transform`, so the
   tilt never applied. The landing's reveal now rises on `translate`, a separate property, and the tilt is back; the
   FAQ's hover slide had been blocked the same way.
+- **Review of PR #42: motion anyone can stop, and a count that keeps Blazor's node.** The demo gets a *Stop* button
+  while it plays and the marquees a *Pouse die lys* button (WCAG 2.2.2: moving content that lasts longer than five
+  seconds needs a control, and a pointer hover is not one); the tour's active chip carries `aria-pressed` and its
+  title is a polite live region; a closed answer in *Vrae* is `inert`, so it is neither read out nor focusable. The
+  count-up wrote `textContent`, which replaces the text node Blazor holds, so Blazor's next write would have landed on
+  a detached node; it now writes the node's value, checked in headless Chrome (same node before and after). Status is
+  *built* until Louis has run one delegated chat with *Animasies* on; story S3 says what step 2 made true. Checked at
+  1100 px too; 420 px is Chrome's device emulation by hand, since headless Chrome's window floor is about 500 px.
 - **The gradient line comes in without blur.** The headline animates word by word with a blur, except the gradient
   line: a `filter` on text that is `background-clip: text` makes Chrome drop the text, so that line gets the same
   rise without the blur.

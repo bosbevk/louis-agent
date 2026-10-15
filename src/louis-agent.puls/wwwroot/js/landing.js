@@ -101,9 +101,9 @@ window.pulsLanding = (() => {
     // Vrae: one question open at a time; the first starts open.
     function faq() {
         const qs = $$(".landing .q"); if (qs.length === 0) return;
-        const set = (q, open) => { q.classList.toggle("open", open); $("button", q)?.setAttribute("aria-expanded", String(open)); };
+        const set = (q, open) => { q.classList.toggle("open", open); $("button", q)?.setAttribute("aria-expanded", String(open)); const body = $(".body", q); if (body) body.inert = !open; };
         qs.forEach(q => on($("button", q), "click", () => { const open = !q.classList.contains("open"); qs.forEach(o => set(o, o === q && open)); }));
-        set(qs[0], true);
+        qs.forEach(q => set(q, false)); set(qs[0], true);
     }
 
     // The primary pills follow the pointer a few pixels and spring back.
@@ -127,7 +127,8 @@ window.pulsLanding = (() => {
     let pin = null, chips = [], panels = [], tab = -1, tabInfo = [];
     function showTab(i) {
         if (i === tab || !tabInfo[i]) return; tab = i;
-        chips.forEach((c, k) => c.classList.toggle("active", k === i)); panels.forEach((p, k) => p.classList.toggle("active", k === i));
+        chips.forEach((c, k) => { c.classList.toggle("active", k === i); c.setAttribute("aria-pressed", String(k === i)); });
+        panels.forEach((p, k) => p.classList.toggle("active", k === i));
         const title = $("#pin-title"), text = $("#pin-text");
         if (title) title.textContent = tabInfo[i][0]; if (text) text.textContent = tabInfo[i][1];
     }
@@ -155,7 +156,7 @@ window.pulsLanding = (() => {
     async function play(frame, t) {
         const messages = $(".demo-messages", frame), composer = $(".demo-composer", frame), typed = $(".text", composer), send = $(".send", composer), work = $(".work-body", frame), wcount = $(".work-count", frame);
         if (!messages) return;
-        playing = true; $(".replay")?.setAttribute("hidden", "");
+        playing = true; $(".replay:not(.demo-stop)")?.setAttribute("hidden", ""); $(".demo-stop")?.removeAttribute("hidden");
         messages.innerHTML = ""; work.innerHTML = ""; wcount.textContent = "0"; typed.textContent = "";
         $$(".demo-chat-item", frame).forEach(c => c.classList.toggle("active", c.dataset.chat == t.chat));
         composer.classList.add("focus");
@@ -192,15 +193,26 @@ window.pulsLanding = (() => {
     }
     async function loop(frame, turns) {
         for (; n < turns.length; n++) { await play(frame, turns[n]); if (!frame.isConnected) return; await sleep(5000); if (still) break; }
-        n = 0; $(".replay")?.removeAttribute("hidden");
+        n = 0; $(".demo-stop")?.setAttribute("hidden", ""); $(".replay:not(.demo-stop)")?.removeAttribute("hidden");
+    }
+    // Stop: the pending beat's timer is cleared, so the turn's chain never continues; what is on screen stays.
+    function stopDemo() {
+        demoTimers.forEach(clearTimeout); demoTimers = []; playing = false; n = 0;
+        $(".demo-stop")?.setAttribute("hidden", ""); $(".replay:not(.demo-stop)")?.removeAttribute("hidden");
     }
     function demo() {
         const frame = $("#landing-demo"); if (!frame) return;
         showcase = frame.closest(".showcase");
         let turns = []; try { turns = JSON.parse(frame.dataset.turns || "[]"); } catch { }
         if (turns.length === 0) return;
-        const replay = $(".replay"); if (replay) on(replay, "click", () => { if (!playing) loop(frame, turns); });
-        const start = new IntersectionObserver(e => { if (e[0].isIntersecting) { start.disconnect(); still ? play(frame, turns[0]).then(() => replay?.removeAttribute("hidden")) : loop(frame, turns); } }, { threshold: .6 });
+        const replay = $(".replay:not(.demo-stop)"), stop = $(".demo-stop");
+        if (replay) on(replay, "click", () => { if (!playing) loop(frame, turns); });
+        if (stop) on(stop, "click", stopDemo);
+        const once = () => play(frame, turns[0]).then(() => { stop?.setAttribute("hidden", ""); replay?.removeAttribute("hidden"); });
+        const start = new IntersectionObserver(e => { if (e[0].isIntersecting) { start.disconnect(); still ? once() : loop(frame, turns); } }, { threshold: .6 });
+        // The marquees under Kenmerke: a button pauses them (they also pause under the pointer); reduced motion stills them anyway.
+        const pause = $(".marquee-pause"), marquee = $(".landing .marquee");
+        if (pause && marquee) on(pause, "click", () => { const paused = marquee.classList.toggle("paused"); pause.setAttribute("aria-pressed", String(paused)); pause.textContent = paused ? "Speel die lys" : "Pouse die lys"; });
         start.observe(frame); cleanup.push(() => start.disconnect());
     }
 
