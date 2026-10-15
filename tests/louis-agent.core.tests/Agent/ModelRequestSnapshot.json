@@ -1934,7 +1934,7 @@
     },
     {
       "Name": "StartSubSession",
-      "Description": "Opens a session on another louis-agent (a peer listed in AGENT_PEERS) with only the toolsets a task needs, sends it the task, waits for its final answer and closes the session. Returns the answer and a usage line. At most 3 per turn, 5 minutes each. See agents-skills.md for when to delegate.",
+      "Description": "Opens a session on another louis-agent (a peer listed in AGENT_PEERS) with only the toolsets a task needs, sends it the task and waits for its final answer. Returns the answer and a usage line. In a chat the sub-session stays open and the answer names its handle, so a follow-up on the same work goes to ContinueSubSession; elsewhere it is closed. At most 3 calls per turn (starts and continues), 5 minutes each. See agents-skills.md for when to delegate.",
       "Schema": {
         "type": "object",
         "properties": {

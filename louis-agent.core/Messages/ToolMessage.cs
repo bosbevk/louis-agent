@@ -657,6 +657,13 @@ public enum ToolMessage
     [Description("{Answer}\n\n[Sub-session on {Agent} ({Toolsets}): {Usage}]")]
     SubSessionAnswer,
 
+    [Description("{Answer}\n\n[Sub-session {Handle} on {Agent} ({Toolsets}; {Role}): {Usage}. It stays open: a follow-up on this " +
+        "work goes to ContinueSubSession(\"{Handle}\", message), not to a new sub-session.]")]
+    SubSessionAnswerKept,
+
+    [Description("default role")]
+    SubSessionDefaultRole,
+
     [Description("You stopped without writing an answer (usually: all your tool rounds were used). Don't call any more tools: answer the task now from what you found, and say what you couldn't finish.")]
     SubSessionAskForAnswer,
 

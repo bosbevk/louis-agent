@@ -52,8 +52,9 @@ public sealed class AgentPeerTools(IReadOnlyDictionary<string, Uri> peers, strin
     }
 
     [Description("Opens a session on another louis-agent (a peer listed in AGENT_PEERS) with only the toolsets a task needs, " +
-        "sends it the task, waits for its final answer and closes the session. Returns the answer and a usage line. " +
-        "At most 3 per turn, 5 minutes each. See agents-skills.md for when to delegate.")]
+        "sends it the task and waits for its final answer. Returns the answer and a usage line. In a chat the sub-session " +
+        "stays open and the answer names its handle, so a follow-up on the same work goes to ContinueSubSession; elsewhere " +
+        "it is closed. At most 3 calls per turn (starts and continues), 5 minutes each. See agents-skills.md for when to delegate.")]
     public async Task<string> StartSubSession(
         [Description("The toolsets the sub-session loads, e.g. [\"files\",\"git\",\"dotnet\"]. Never \"agents\".")] string[] toolsets,
         [Description("The whole task, self-contained: the sub-session sees nothing of this conversation.")] string message,
@@ -112,8 +113,10 @@ public sealed class AgentPeerTools(IReadOnlyDictionary<string, Uri> peers, strin
             string createdBody = await created.Content.ReadAsStringAsync(timeout.Token);
             if (!created.IsSuccessStatusCode)
                 return MessageText.Format(ToolMessage.SubSessionRefused, new { Agent = agent, Status = (int)created.StatusCode, Reason = ErrorText(createdBody) });
-            sessionId = JsonDocument.Parse(createdBody).RootElement.GetProperty("session_id").GetString()
-                ?? throw new JsonException("no session_id");
+            using var createdJson = JsonDocument.Parse(createdBody);
+            sessionId = createdJson.RootElement.GetProperty("session_id").GetString() ?? throw new JsonException("no session_id");
+            // The role it opened with: the one passed, or the one the peer derived from the toolsets (roles.json).
+            string? role = createdJson.RootElement.TryGetProperty("personality", out var p) && p.ValueKind == JsonValueKind.String ? p.GetString() : personality;
 
             var (text, usage, failure) = await SendAsync(peer, sessionId, new { message, attachments = forwarded }, agent, toolUseId, scope, timeout.Token);
             if (failure is not null) return failure;
@@ -129,10 +132,23 @@ public sealed class AgentPeerTools(IReadOnlyDictionary<string, Uri> peers, strin
                 if (string.IsNullOrWhiteSpace(text))
                     return MessageText.Format(ToolMessage.SubSessionNoAnswer, new { Agent = agent, Usage = usage.Length > 0 ? usage : MessageText.Format(ToolMessage.SubSessionNoUsage) });
             }
+            string usageLine = string.IsNullOrEmpty(usage) ? MessageText.Format(ToolMessage.SubSessionNoUsage) : usage;
+            if (SubSessionRegistry.Current is { } registry)
+            {
+                // F26: the chat keeps the specialist, with its context and cached prefix, for a follow-up. The entry's
+                // closer is this tool's delete, so the registry never speaks HTTP; the finally below then leaves it alone.
+                string kept = sessionId;
+                string handle = await registry.AddAsync(new OpenSubSession(peer, kept, agent, toolsets, role, () => DeleteAsync(peer, kept)));
+                sessionId = null;
+                return MessageText.Format(ToolMessage.SubSessionAnswerKept, new
+                {
+                    Answer = text.Trim(), Handle = handle, Agent = agent, Toolsets = string.Join(", ", toolsets),
+                    Role = string.IsNullOrWhiteSpace(role) ? MessageText.Format(ToolMessage.SubSessionDefaultRole) : role, Usage = usageLine,
+                });
+            }
             return MessageText.Format(ToolMessage.SubSessionAnswer, new
             {
-                Answer = text.Trim(), Agent = agent, Toolsets = string.Join(", ", toolsets),
-                Usage = string.IsNullOrEmpty(usage) ? MessageText.Format(ToolMessage.SubSessionNoUsage) : usage,
+                Answer = text.Trim(), Agent = agent, Toolsets = string.Join(", ", toolsets), Usage = usageLine,
             });
         }
         catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
@@ -150,17 +166,21 @@ public sealed class AgentPeerTools(IReadOnlyDictionary<string, Uri> peers, strin
         }
         finally
         {
-            // Always, success or not, so a peer never keeps a sub-session; its own idle timeout is the fallback.
-            if (sessionId is not null)
-            {
-                try
-                {
-                    using var delete = Request(HttpMethod.Delete, new Uri(peer, $"sessions/{Uri.EscapeDataString(sessionId)}"), null);
-                    using var _ = await _http.SendAsync(delete, CancellationToken.None);
-                }
-                catch (HttpRequestException) { }
-            }
+            // Always, success or not, unless the chat kept it (F26), so a peer never keeps a sub-session nobody will use;
+            // its own idle timeout is the fallback.
+            if (sessionId is not null) await DeleteAsync(peer, sessionId);
         }
+    }
+
+    /// <summary>Deletes a sub-session on its peer; a peer that can't be reached is left to its own idle timeout.</summary>
+    private async Task DeleteAsync(Uri peer, string sessionId)
+    {
+        try
+        {
+            using var delete = Request(HttpMethod.Delete, new Uri(peer, $"sessions/{Uri.EscapeDataString(sessionId)}"), null);
+            using var _ = await _http.SendAsync(delete, CancellationToken.None);
+        }
+        catch (HttpRequestException) { }
     }
 
     /// <summary>

@@ -182,6 +182,74 @@ public class AgentPeerToolsTests
         Assert.That(create.RootElement.GetProperty("personality").ValueKind, Is.EqualTo(JsonValueKind.Null), "none named: the peer's default");
     }
 
+    /// <summary>A peer whose sessions get their own ids (sess_1, sess_2, …), so kept-open ones can be told apart.</summary>
+    private static StubHandler PeerWithIds()
+    {
+        int created = 0;
+        return new StubHandler(request => request.Method.Method switch
+        {
+            "POST" when request.RequestUri!.AbsolutePath == "/sessions" => Json(HttpStatusCode.Created, $$"""{"session_id":"sess_{{++created}}"}"""),
+            "POST" => new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(Stream, Encoding.UTF8, "text/event-stream") },
+            "DELETE" => Json(HttpStatusCode.OK, """{"deleted":true}"""),
+            _ => new HttpResponseMessage(HttpStatusCode.NotFound),
+        });
+    }
+
+    private static IEnumerable<string> Calls(StubHandler handler) => handler.Requests.Select(r => $"{r.Method} {new Uri(r.Url).AbsolutePath}");
+
+    [Test]
+    public async Task InAChat_TheSubSessionIsKept_AndTheAnswerNamesItsHandle()
+    {
+        // F26 step 1: with the chat's registry current, the specialist stays open for a follow-up, and the footer tells
+        // the model how to continue it. Without a registry (an MCP call), it is deleted as before.
+        var handler = Peer();
+        var registry = new SubSessionRegistry();
+
+        string result;
+        using (SubSessionRegistry.Use(registry))
+            result = await Tools(handler).StartSubSession(["web"], "Wat kan ek vanaand kook?", agent: "coder", personality: "puls-cook");
+
+        Assert.That(result, Does.StartWith("Fixed the null check; 14/14 tests pass."));
+        Assert.That(result, Does.Contain("[Sub-session sub-1 on coder (web; puls-cook): 3 requests, 10,200 tokens, 0.0123 USD")
+            .And.Contain("ContinueSubSession(\"sub-1\""));
+        Assert.That(Calls(handler), Is.EqualTo(new[] { "POST /sessions", "POST /sessions/sess_child/messages" }), "no DELETE");
+        OpenSubSession open = registry.Open.Single();
+        Assert.That((open.Handle, open.SessionId, open.Agent, open.Role), Is.EqualTo(("sub-1", "sess_child", "coder", "puls-cook")));
+        Assert.That(open.Toolsets, Is.EqualTo(new[] { "web" }));
+    }
+
+    [Test]
+    public async Task AFailedStart_IsNotKept()
+    {
+        var handler = Peer(Replies(FailedStream));
+        var registry = new SubSessionRegistry();
+
+        using (SubSessionRegistry.Use(registry))
+            await Tools(handler).StartSubSession(["files"], "x", agent: "coder");
+
+        Assert.That(handler.Requests.Last().Method, Is.EqualTo(HttpMethod.Delete));
+        Assert.That(registry.Open, Is.Empty);
+    }
+
+    [Test]
+    public async Task PastTheChatsCap_TheOldestKeptSubSession_IsDeletedOnThePeer()
+    {
+        // F26-S3: the registry evicts; the tool's closer sends the DELETE with the API key.
+        var handler = PeerWithIds();
+        var registry = new SubSessionRegistry(cap: 2);
+        var tools = Tools(handler);
+
+        using (SubSessionRegistry.Use(registry))
+        using (UsageScope.Begin(session: "sess_parent", turn: 1))
+        {
+            for (int i = 0; i < 3; i++)
+                Assert.That(await tools.StartSubSession(["files"], "x", agent: "coder"), Does.Not.StartWith("Error"));
+        }
+
+        Assert.That(Calls(handler).Where(c => c.StartsWith("DELETE")), Is.EqualTo(new[] { "DELETE /sessions/sess_1" }));
+        Assert.That(registry.Open.Select(o => o.SessionId), Is.EqualTo(new[] { "sess_2", "sess_3" }));
+    }
+
     /// <summary>A reply with usage and no text: what the delegation check's specialist sent after its tenth tool round.</summary>
     private const string EmptyStream = """
         event: message_delta
