@@ -10,6 +10,7 @@ or fix doc (*What the build changed*), not here.
 
 | Plan | For | Approved | Notes |
 |---|---|---|---|
+| [F25-local-cook.md](F25-local-cook.md) | [F25 Local cook](../features/F25-local-cook.md) | 2026-10-15 | Two routing rows; a cook check beside the delegation check that reads the specialist's calls from the stream; a paid run on Louis's go |
 | [F22-role-tools.md](F22-role-tools.md) | [F22 Role tools](../features/F22-role-tools.md) | 2026-10-13 | Reuse before building: PdfPig, OpenXml, ExcelDataReader, git CLI, F14's rates |
 | [F21-personalities.md](F21-personalities.md) | [F21 Personalities](../features/F21-personalities.md) | 2026-10-13 | Built before F20 continues; `puls.md` and `puls-specialist.md` |
 | [F20-puls-look.md](F20-puls-look.md) | [F20 Puls look](../features/F20-puls-look.md) | 2026-10-13 | Sensai's look and Preline's placeholders, in Puls's colours, dark; ten steps |
