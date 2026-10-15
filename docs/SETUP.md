@@ -123,8 +123,15 @@ environment by the tools themselves:
 | `GOOGLE_SEARCH_API_KEY`, `GOOGLE_SEARCH_ENGINE_ID` | Google web search (discontinued by Google on 2027-01-01; otherwise DuckDuckGo) |
 | `RIDER_MCP_PROJECT_PATH` | Host path of the project, sent to Rider's MCP server |
 
-After changing a secret, restart the container that uses it (for the API:
-`docker compose -f docker/docker-compose.yml --env-file config/.env up -d api`).
+After changing a secret, **recreate** the container that uses it with `up -d`; `docker compose restart` keeps the
+container's old environment, so a new key never reaches it that way (found with `TAVILY_API_KEY`, 2026-10-15):
+
+```bash
+docker compose -f docker/docker-compose.yml --env-file config/.env up -d api          # the API
+docker compose -f docker/docker-compose.puls.yml --env-file config/.env up -d         # Puls and its specialist
+```
+
+A changed file under `Skills/` needs only a restart: the containers mount the folder and read it when a chat opens.
 
 The orchestrator demo (`samples/run-demo.ps1`) reads the same two files; its own settings are set in
 `docker/docker-compose.demo.yml` (see [samples/README.md](../samples/README.md)).
@@ -155,7 +162,8 @@ The unit tests need no secrets, network or Docker.
 ## Troubleshooting
 
 **"ANTHROPIC_API_KEY (or LLM_API_KEY) is required"** — `config/.env.secrets` is missing or the key is empty. Check with
-`grep ANTHROPIC_API_KEY config/.env.secrets`, then restart the container.
+`grep ANTHROPIC_API_KEY config/.env.secrets`, then recreate the container with `up -d` (not `restart`, which keeps the
+old environment).
 
 **Wrong settings in Docker** — run compose with `--env-file config/.env`, and remember that `environment:` in
 `docker/docker-compose.yml` wins over the env files. `docker compose ... config` shows the resolved values.

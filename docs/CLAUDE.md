@@ -220,6 +220,8 @@ A session names its personality when it opens (`POST /sessions` with `"personali
   `dotnet run --project tools/louis-agent.usage-probe -- --ledger logs/usage-YYYY-MM.jsonl`.
 - After changing the web app or API, rebuild the `api` image; after changing core, rebuild every image you use. Rider
   chats keep their container until you start a **New Chat**.
+- After changing `config/.env.secrets`, recreate the containers with `docker compose … up -d`: `restart` keeps the old
+  environment, so the new key never arrives. A changed `Skills/` file needs only a restart (the folder is mounted).
 
 ## Which Anthropic tier
 
