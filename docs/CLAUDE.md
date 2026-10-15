@@ -222,6 +222,9 @@ A session names its personality when it opens (`POST /sessions` with `"personali
   chats keep their container until you start a **New Chat**.
 - After changing `config/.env.secrets`, recreate the containers with `docker compose … up -d`: `restart` keeps the old
   environment, so the new key never arrives. A changed `Skills/` file needs only a restart (the folder is mounted).
+- Every image rebuild leaves build cache behind; a day of rebuilds filled Docker Desktop's disk (120 GB of cache) and
+  stopped its engine (2026-10-15). `docker system df` shows it; `docker builder prune -af` clears it, safely, and
+  the next build re-caches. If the daemon stops answering, restart Docker Desktop first.
 
 ## Which Anthropic tier
 
