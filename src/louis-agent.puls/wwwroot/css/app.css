@@ -582,33 +582,66 @@ html:has(.landing) { scroll-behavior: smooth; }
 .lead { font-size: clamp(16px, 2vw, 19px); color: var(--muted); max-width: 640px; margin: 0 0 34px; text-wrap: balance; line-height: 1.65; }
 .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
 
-/* The picture of the app: a three-panel frame, drawn in HTML. */
-.showcase { max-width: 1060px; margin: 30px auto 0; padding: 10px; border-radius: 26px; background: linear-gradient(160deg, rgba(245, 130, 32, .35), rgba(255, 255, 255, .06) 40%, rgba(56, 180, 73, .3)); box-shadow: 0 40px 100px -40px rgba(245, 130, 32, .45); }
-.mock { display: grid; grid-template-columns: 210px 1fr 230px; min-height: 380px; border-radius: 18px; overflow: hidden; background: var(--bg); border: 1px solid rgba(255, 255, 255, .06); font-size: 12.5px; }
-.mock-side, .mock-work { display: flex; flex-direction: column; gap: 8px; padding: 18px 14px; background: var(--sidebar); }
-.mock-work { background: rgba(255, 255, 255, .02); border-left: 1px solid var(--border); }
-.mock-logo { height: 26px; align-self: flex-start; margin-bottom: 8px; }
-.mock-new { background: var(--cta); color: #fff; font-weight: 700; border-radius: 10px; padding: 8px 10px; }
-.mock-label { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--dim); margin-top: 8px; }
-.mock-chat { color: var(--muted); padding: 6px 8px; border-radius: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.mock-chat.active { background: var(--surface); color: var(--ink); }
-.mock-main { display: flex; flex-direction: column; gap: 14px; padding: 22px 26px; }
-.mock-user { align-self: flex-end; background: linear-gradient(135deg, var(--green), var(--green-deep)); color: #fff; padding: 9px 14px; border-radius: 16px 16px 5px 16px; }
-.mock-card { display: flex; align-items: center; gap: 10px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 10px 12px; }
-.mock-card img { width: 30px; height: 30px; border-radius: 8px; }
-.mock-card > div { flex: 1; color: var(--muted); }
-.mock-card b { color: var(--ink); }
-.mock-chip { display: inline-block; font-size: 10px; font-weight: 700; color: var(--green-light); background: var(--green-soft); border-radius: 999px; padding: 1px 8px; margin-top: 3px; }
-.mock-done { font-size: 11px; font-weight: 700; color: var(--green-light); background: var(--green-soft); border-radius: 999px; padding: 3px 10px; }
-.mock-lines { display: flex; flex-direction: column; gap: 9px; }
-.mock-lines i { display: block; height: 8px; border-radius: 4px; background: rgba(255, 255, 255, .08); }
-.mock-composer { margin-top: auto; display: flex; justify-content: space-between; align-items: center; color: var(--dim); background: var(--surface); border: 1px solid rgba(245, 130, 32, .35); border-radius: 14px; padding: 9px 9px 9px 14px; }
-.mock-composer span { width: 26px; height: 26px; display: grid; place-items: center; border-radius: 8px; background: var(--cta); color: #fff; font-weight: 700; }
-.mock-work b { color: var(--ink); font-size: 13px; }
-.mock-step { color: var(--text); }
-.mock-step::first-letter { color: var(--green-light); }
-.mock-source { color: var(--green-light); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.mock-cost { margin-top: auto; color: var(--muted); font-variant-numeric: tabular-nums; }
+/* ---- The hero's motion (F24): the headline word by word, the definition as the eyebrow, the "Nuut" pill, a proof
+   line and keywords under the buttons. The gradient line comes in as one piece without the blur: a filter on text that
+   is clipped to a background makes the browser drop the text. ---- */
+.hero h1 { animation: none; }
+.hero h1 .w { display: inline-block; animation: word .8s var(--ease) both; animation-delay: calc(.25s + var(--i) * 90ms); }
+@keyframes word { from { opacity: 0; translate: 0 18px; filter: blur(6px); } to { opacity: 1; translate: 0 0; filter: blur(0); } }
+.hero h1 .gradient-text.w { animation-name: word-plain; }
+@keyframes word-plain { from { opacity: 0; translate: 0 18px; } to { opacity: 1; translate: 0 0; } }
+.hero .gradient-text { background-size: 200% 100%; animation: sheen 6s linear infinite; }
+@keyframes sheen { from { background-position: 0% 0; } to { background-position: 200% 0; } }
+.hero .eyebrow { text-transform: none; letter-spacing: .2px; font-weight: 600; font-size: 13px; animation: rise .7s .1s var(--ease) both; }
+.hero .lead { margin-bottom: 32px; animation: rise .7s .9s var(--ease) both; }
+.hero .hero-actions { animation: rise .7s 1.05s var(--ease) both; }
+.hero .news-pill { color: var(--text); }
+.hero .news-pill i { font-style: normal; color: var(--orange); transition: translate .25s var(--spring); }
+.hero .news-pill:hover i { translate: 3px 0; }
+.proof { display: inline-flex; align-items: center; gap: 8px; margin: 24px 0 0; font-size: 13px; color: var(--muted); animation: rise .7s 1.15s var(--ease) both; }
+.proof .ic { color: var(--green-light); }
+.keywords { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 18px; margin: 12px 0 0; font-size: 12px; color: var(--dim); font-weight: 600; letter-spacing: .3px; animation: rise .7s 1.25s var(--ease) both; }
+
+/* ---- The app in the page (F24, Components/LandingDemo.razor): a three-panel frame that lies tilted back and flattens
+   as it scrolls up into view (scroll-driven where the browser can; js sets --p elsewhere). The pieces inside are the
+   app's own classes; the frame is demo-*. ---- */
+.showcase { max-width: 1080px; margin: 36px auto 0; padding: 10px; border-radius: 26px; scroll-margin-top: 96px; background: linear-gradient(160deg, rgba(245, 130, 32, .35), rgba(255, 255, 255, .06) 40%, rgba(56, 180, 73, .3)); box-shadow: 0 40px 100px -40px rgba(245, 130, 32, .45); animation: rise .9s 1.2s var(--ease) both; }
+.showcase { --p: 0; transform: perspective(1400px) rotateX(calc(16deg * (1 - var(--p)))) scale(calc(.94 + .06 * var(--p))); transform-origin: 50% 0; will-change: transform; }
+@supports (animation-timeline: view()) {
+    .showcase { transform: none; animation: flatten linear both; animation-timeline: view(); animation-range: entry 5% entry 85%; }
+    @keyframes flatten { from { transform: perspective(1400px) rotateX(16deg) scale(.94); opacity: .7; } to { transform: perspective(1400px) rotateX(0) scale(1); opacity: 1; } }
+}
+.showcase-hint { text-align: center; color: var(--dim); font-size: 12px; margin: 14px 0 0; letter-spacing: .4px; }
+.replay { display: inline-flex; align-items: center; gap: 8px; margin-left: 10px; padding: 7px 14px; border-radius: 999px; border: 1px solid var(--border); background: rgba(255, 255, 255, .04); color: var(--text); font-size: 13px; font-weight: 600; transition: border-color .2s, color .2s, transform .25s var(--spring); }
+.replay:hover { color: var(--ink); border-color: rgba(245, 130, 32, .5); transform: translateY(-1px); }
+.replay .ic { color: var(--orange); }
+.demo { display: grid; grid-template-columns: 200px minmax(0, 1fr) 250px; min-height: 440px; border-radius: 18px; overflow: hidden; background: var(--bg); border: 1px solid rgba(255, 255, 255, .06); font-size: 12.5px; text-align: left; }
+.demo-side, .demo-work { display: flex; flex-direction: column; gap: 8px; padding: 16px 14px; background: var(--sidebar); min-width: 0; }
+.demo-work { background: rgba(255, 255, 255, .02); border-left: 1px solid var(--border); padding: 0; gap: 0; }
+.demo-work .work-head { padding: 14px 12px 10px; }
+.demo-work .work-body { flex: 1; padding: 10px 12px; display: flex; flex-direction: column; gap: 10px; }
+.demo-logo { height: 26px; align-self: flex-start; margin-bottom: 6px; }
+.demo-new { background: var(--cta); color: #fff; font-weight: 700; border-radius: 10px; padding: 8px 10px; }
+.demo-label { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--dim); margin-top: 8px; }
+.demo-chat-item { color: var(--muted); padding: 6px 8px; border-radius: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: background .3s, color .3s; }
+.demo-chat-item.active { background: var(--surface); color: var(--ink); }
+.demo-chat { display: flex; flex-direction: column; gap: 12px; padding: 20px 22px 16px; min-width: 0; }
+.demo-messages { flex: 1; display: flex; flex-direction: column; gap: 12px; min-height: 250px; }
+.demo .user-message { max-width: 78%; padding: 9px 14px; border-radius: 18px 18px 5px 18px; }
+.demo .delegation { padding: 11px 14px; border-radius: 16px; margin: 0; }
+.demo .delegation-avatar { width: 34px; height: 34px; border-radius: 10px; }
+.demo .delegation-agent { font-size: 12.5px; }
+.demo .work-item { padding: 12px; }
+.demo-answer { color: var(--text); line-height: 1.65; min-height: 1em; animation: rise .4s var(--ease) both; }
+.demo-answer b { color: var(--ink); }
+.demo-caret { display: inline-block; width: 2px; height: 1em; background: var(--orange); vertical-align: -2px; margin-left: 1px; animation: blink .9s steps(1) infinite; }
+.demo-source { color: var(--green-light); font-size: 11.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; animation: rise .3s var(--ease) both; }
+.demo-composer { margin-top: auto; display: flex; align-items: center; gap: 8px; color: var(--ink); background: rgba(37, 41, 45, .9); border: 1px solid var(--border); border-radius: 14px; padding: 9px 9px 9px 14px; min-height: 44px; transition: border-color .3s, box-shadow .3s; }
+.demo-composer.focus { border-color: color-mix(in srgb, var(--orange) 55%, var(--bg)); box-shadow: 0 0 0 4px rgba(245, 130, 32, .12); }
+.demo-composer .text { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.demo-composer .text:empty::before { content: "Boodskap aan Puls"; color: var(--dim); }
+.demo-composer .send { width: 28px; height: 28px; border-radius: 9px; font-size: 14px; animation: none; }
+.demo-composer .send.go { animation: breathe 2.4s var(--ease) infinite; }
 
 /* Sections. */
 .section { max-width: 1120px; margin: 0 auto; padding: clamp(70px, 10vw, 120px) 0 0; text-align: center; scroll-margin-top: 90px; }
@@ -637,8 +670,9 @@ html:has(.landing) { scroll-behavior: smooth; }
 
 /* Phones and tablets. */
 @media (max-width: 900px) {
-    .mock { grid-template-columns: 1fr; }
-    .mock-side, .mock-work { display: none; }
+    .demo { grid-template-columns: minmax(0, 1fr); }
+    .demo-side, .demo-work { display: none; }
+    .showcase { transform: none !important; animation: rise .9s 1.2s var(--ease) both !important; }
     .steps, .features { grid-template-columns: minmax(0, 1fr); }
 }
 @media (max-width: 700px) {

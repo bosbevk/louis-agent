@@ -27,54 +27,28 @@
         <a class="pill pill-primary" href="gesels">Begin gesels</a>
     </header>
 
+    @* The thesis: a puls is a single disturbance that travels away from its source (af.wikipedia.org/wiki/Puls). *@
     <section class="hero" id="top">
         <div class="hero-mark hero-mark-lg" aria-hidden="true">
-            <div class="pulse-bg"><span></span><span></span><span></span><span></span></div>
             <img src="brand/puls-icon-tile.svg" alt="" width="96" height="96" />
         </div>
-        <span class="eyebrow">Jou KI-assistent, in Afrikaans</span>
+        <a class="news-pill" href="#demo"><span class="news-tag">Nuut</span> Spesialiste se koste tel nou in jou gesprek <i aria-hidden="true">→</i></a>
+        <span class="eyebrow reveal">'n Puls is 'n eenmalige versteuring wat deur 'n medium beweeg</span>
         <h1>Elke vraag op pad <span class="gradient-text">na 'n antwoord</span></h1>
-        <p class="lead">Puls stuur elke taak na 'n spesialis met net die gereedskap wat dit nodig het, en jy sien hoe dit werk: die stappe, die bronne en die koste.</p>
+        <p class="lead">Jou vraag is die versteuring. Puls stuur dit uit na 'n spesialis met net die gereedskap wat dit nodig het, en jy sien hoe dit terugkom: die stappe, die bronne en die koste.</p>
         <div class="hero-actions">
-            <a class="pill pill-primary pill-lg" href="gesels">Begin 'n gesprek</a>
+            <a class="pill pill-primary pill-lg magnet" href="gesels">Begin 'n gesprek</a>
             <a class="pill pill-ghost pill-lg" href="#hoe">Hoe dit werk</a>
         </div>
+        <p class="proof"><span class="ic i-github" aria-hidden="true"></span>Oopbron onder MIT · gebou op louis-agent</p>
+        <p class="keywords"><span>Afrikaans</span><span>Spesialiste</span><span>Bronne by elke antwoord</span><span>Koste in rand</span><span>Geen intekening</span></p>
     </section>
 
-    @* A picture of the app, drawn in HTML so it stays sharp and in the theme's colours. *@
-    <section class="showcase" id="demo" aria-hidden="true">
-        <div class="mock">
-            <div class="mock-side">
-                <img src="brand/puls-logo-white.svg" alt="" class="mock-logo" />
-                <span class="mock-new">+ Nuwe gesprek</span>
-                <span class="mock-label">Onlangs</span>
-                <span class="mock-chat active">Wat is nuut in .NET 10?</span>
-                <span class="mock-chat">Som die README op</span>
-                <span class="mock-chat">Laaste vyf commits</span>
-                <span class="mock-chat">Reëls kode per vouer</span>
-            </div>
-            <div class="mock-main">
-                <div class="mock-user">Wat is nuut in .NET 10?</div>
-                <div class="mock-card">
-                    <img src="brand/puls-icon-tile.svg" alt="" />
-                    <div><small>Oorgedra aan</small> <b>puls</b><div><span class="mock-chip">web</span></div></div>
-                    <span class="mock-done">Klaar</span>
-                </div>
-                <div class="mock-lines"><i style="width:92%"></i><i style="width:84%"></i><i style="width:88%"></i><i style="width:60%"></i></div>
-                <div class="mock-composer">Boodskap aan Puls <span>↑</span></div>
-            </div>
-            <div class="mock-work">
-                <b>Werk</b>
-                <span class="mock-step">✓ WebSearch</span>
-                <span class="mock-step">✓ FetchUrl · 3 bladsye</span>
-                <span class="mock-step">✓ Antwoord geskryf</span>
-                <span class="mock-label">Bronne</span>
-                <span class="mock-source">learn.microsoft.com</span>
-                <span class="mock-source">devblogs.microsoft.com</span>
-                <span class="mock-cost">R0,02 · 4 versoeke</span>
-            </div>
-        </div>
+    @* The app in the page, playing a turn (Components/LandingDemo.razor); it lies tilted back and flattens as it scrolls up. *@
+    <section class="showcase" id="demo" aria-label="Puls se app, besig met 'n vraag">
+        <LandingDemo />
     </section>
+    <p class="showcase-hint">'n Werklike beurt, soos die app dit wys <button class="replay" type="button" hidden><span class="ic i-refresh" aria-hidden="true"></span>Speel weer</button></p>
 
     <section class="section" id="hoe">
         <span class="eyebrow reveal">Hoe dit werk</span>

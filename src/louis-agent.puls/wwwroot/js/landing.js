@@ -139,48 +139,51 @@ window.pulsLanding = (() => {
         tab = -1; showTab(0);
     }
 
-    // The demo: a turn, step by step, from the turns the page gives it (data-turns on the frame).
+    // The demo: a turn, step by step, from the turns the page gives it (data-turns on the frame). It starts once the
+    // frame is well into view (Die app), at a reading pace. Reduced motion keeps the pace, since text arriving in order
+    // is content and not movement; it only plays the one turn instead of looping.
     let playing = false, n = 0, demoTimers = [];
-    const sleep = ms => new Promise(r => { const t = setTimeout(r, still ? 0 : ms); demoTimers.push(t); });
+    const sleep = ms => new Promise(r => { const t = setTimeout(r, ms); demoTimers.push(t); });
     async function play(frame, t) {
-        const messages = $(".messages", frame), typed = $(".composer .text", frame), composer = $(".composer", frame), send = $(".send", frame), work = $(".work-body", frame), wcount = $(".work-count", frame);
+        const messages = $(".demo-messages", frame), composer = $(".demo-composer", frame), typed = $(".text", composer), send = $(".send", composer), work = $(".work-body", frame), wcount = $(".work-count", frame);
         if (!messages) return;
         playing = true; $(".replay")?.setAttribute("hidden", "");
         messages.innerHTML = ""; work.innerHTML = ""; wcount.textContent = "0"; typed.textContent = "";
-        $$(".m-chat", frame).forEach(c => c.classList.toggle("active", c.dataset.chat == t.chat));
+        $$(".demo-chat-item", frame).forEach(c => c.classList.toggle("active", c.dataset.chat == t.chat));
         composer.classList.add("focus");
-        for (const ch of t.q) { typed.textContent += ch; await sleep(28 + Math.random() * 30); }
-        send.classList.add("go"); await sleep(500);
+        for (const ch of t.q) { typed.textContent += ch; await sleep(45 + Math.random() * 40); }
+        send.classList.add("go"); await sleep(700);
         send.classList.remove("go"); composer.classList.remove("focus"); typed.textContent = "";
-        messages.insertAdjacentHTML("beforeend", `<div class="user-message">${t.q}</div>`);
-        await sleep(500);
-        const chips = t.sets.map(s => `<span class="chip">${s}</span>`).join("");
+        messages.insertAdjacentHTML("beforeend", `<div class="user-message"><div class="user-text">${t.q}</div></div>`);
+        await sleep(900);
+        // The app's own pieces, so the demo looks exactly like a real turn: a delegation card and a Werk item.
+        const chips = t.sets.map(s => `<span class="toolset-chip">${s}</span>`).join("");
         const tile = frame.dataset.tile || "brand/puls-icon-tile.svg";
-        messages.insertAdjacentHTML("beforeend", `<div class="delegation running demo-card"><img class="avatar" src="${tile}" alt=""><div class="who"><small>Oorgedra aan</small> <b>puls</b><div>${chips}</div></div><span class="status">Besig</span></div>`);
+        messages.insertAdjacentHTML("beforeend", `<div class="delegation running demo-card"><div class="delegation-head"><span class="delegation-avatar"></span><div class="delegation-title"><span class="delegation-agent">Oorgedra aan <strong>puls</strong></span><div class="delegation-toolsets">${chips}</div></div><span class="delegation-status">Besig</span></div></div>`);
         work.insertAdjacentHTML("beforeend", `<div class="work-item running demo-item"><div class="work-item-head"><img class="work-avatar" src="${tile}" alt=""><div class="work-who"><small>Spesialis</small><strong>puls</strong></div><span class="work-status">Besig</span></div><div class="work-chips">${chips}</div><ul class="work-steps demo-steps"></ul></div>`);
         wcount.textContent = "1";
         const steps = $(".demo-steps", frame);
         for (const [name, args] of t.steps) {
             steps.insertAdjacentHTML("beforeend", `<li class="work-step waiting"><span class="work-step-mark">…</span><span class="work-step-name">${name}</span><span class="work-step-args">${args}</span></li>`);
-            await sleep(700 + Math.random() * 500);
+            await sleep(1100 + Math.random() * 700);
             const li = steps.lastElementChild; li.classList.remove("waiting"); $(".work-step-mark", li).textContent = "✓";
         }
-        await sleep(400);
-        messages.insertAdjacentHTML("beforeend", `<div class="answer demo-answer"><span class="caret"></span></div>`);
+        await sleep(700);
+        messages.insertAdjacentHTML("beforeend", `<div class="demo-answer markdown"><span class="demo-caret"></span></div>`);
         const answer = $(".demo-answer", frame), words = t.a.split(" ");
         let out = "";
-        for (const w of words) { out += (out ? " " : "") + w; answer.innerHTML = out + '<span class="caret"></span>'; await sleep(40 + Math.random() * 50); }
+        for (const w of words) { out += (out ? " " : "") + w; answer.innerHTML = out + '<span class="demo-caret"></span>'; await sleep(70 + Math.random() * 80); }
         answer.innerHTML = out;
-        const card = $(".demo-card", frame); card.classList.remove("running"); $(".status", card).textContent = "Klaar";
+        const card = $(".demo-card", frame); card.classList.remove("running"); $(".delegation-status", card).textContent = "Klaar";
         const wi = $(".demo-item", frame); wi.classList.remove("running"); $(".work-status", wi).textContent = "Klaar";
-        wi.insertAdjacentHTML("beforeend", `<span class="work-label">Bronne</span>${t.src.map(s => `<span class="work-source-text"><small>${s}</small></span>`).join("")}<div class="work-cost"><span>${t.req} versoeke</span><strong class="demo-cost">R0,00</strong></div>`);
+        wi.insertAdjacentHTML("beforeend", `<span class="work-label">Bronne</span>${t.src.map(s => `<span class="demo-source">${s}</span>`).join("")}<div class="work-cost"><span>${t.req} versoeke</span><strong class="demo-cost">R0,00</strong></div>`);
         const costn = $(".demo-cost", frame), t0 = performance.now();
-        await new Promise(res => { const tick = tm => { const p = still ? 1 : Math.min(1, (tm - t0) / 900), e = 1 - Math.pow(1 - p, 3); costn.textContent = "R" + rand((t.cost * e).toFixed(2)); p < 1 ? requestAnimationFrame(tick) : res(); }; requestAnimationFrame(tick); });
+        await new Promise(res => { const tick = tm => { const p = Math.min(1, (tm - t0) / 1200), e = 1 - Math.pow(1 - p, 3); costn.textContent = "R" + rand((t.cost * e).toFixed(2)); p < 1 ? requestAnimationFrame(tick) : res(); }; requestAnimationFrame(tick); });
         messages.insertAdjacentHTML("beforeend", `<div class="usage">beurt: ${t.req + 2} versoeke · R${rand((t.cost + 0.01).toFixed(2))} · gesprek R${rand((t.cost + 0.01).toFixed(2))}</div>`);
         playing = false;
     }
     async function loop(frame, turns) {
-        for (; n < turns.length; n++) { await play(frame, turns[n]); if (!$(".messages", frame)) return; await sleep(3200); if (still) break; }
+        for (; n < turns.length; n++) { await play(frame, turns[n]); if (!frame.isConnected) return; await sleep(5000); if (still) break; }
         n = 0; $(".replay")?.removeAttribute("hidden");
     }
     function demo() {
@@ -189,7 +192,7 @@ window.pulsLanding = (() => {
         let turns = []; try { turns = JSON.parse(frame.dataset.turns || "[]"); } catch { }
         if (turns.length === 0) return;
         const replay = $(".replay"); if (replay) on(replay, "click", () => { if (!playing) loop(frame, turns); });
-        const start = new IntersectionObserver(e => { if (e[0].isIntersecting) { start.disconnect(); still ? play(frame, turns[0]).then(() => replay?.removeAttribute("hidden")) : loop(frame, turns); } }, { threshold: .3 });
+        const start = new IntersectionObserver(e => { if (e[0].isIntersecting) { start.disconnect(); still ? play(frame, turns[0]).then(() => replay?.removeAttribute("hidden")) : loop(frame, turns); } }, { threshold: .6 });
         start.observe(frame); cleanup.push(() => start.disconnect());
     }
 

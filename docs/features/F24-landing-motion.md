@@ -73,5 +73,18 @@ real one).
 
 (filled in step by step)
 
+- **Step 2, the demo is the app's own markup.** The playing frame (`Components/LandingDemo.razor`) builds its turn
+  out of the app's classes (`user-message`, `delegation`, `work-item`, `work-step`, `work-cost`), so a change to the
+  app's look changes the demo with it and nothing in the demo can drift from the real thing; only the frame's layout
+  is its own (`demo-*`). The turns are example data in C#, serialised into a `data-turns` attribute, so the copy sits
+  with the page's other copy and the script stays a player. The F20 picture (`.mock*`) and the hero's rings went: the
+  water is the pulse now. The turn starts once most of the frame is in view and plays at a reading pace; a reader
+  who asked for less motion still gets that pace, because text arriving in order is content and not movement, and
+  only the auto-loop is dropped (Louis, on seeing it appear in one go: "slow the animation down, and only start when
+  reaching Die App").
+- **The gradient line comes in without blur.** The headline animates word by word with a blur, except the gradient
+  line: a `filter` on text that is `background-clip: text` makes Chrome drop the text, so that line gets the same
+  rise without the blur.
+
 ---
 [Features](README.md) · [Plan](../plans/F24-landing-motion.md)
