@@ -195,6 +195,7 @@ Design: [docs/specs/SESSION_ARCHITECTURE.md](docs/specs/SESSION_ARCHITECTURE.md)
             carried as a string to the specialist, so it arrives mangled; send it as base64 with its media type and
             read it with `DocumentText` (found in the docs review, 2026-10-14)
 - [ ] [F21 Personalities](docs/features/F21-personalities.md) — each session (and sub-session) names its personality; Puls speaks everyday South African Afrikaans ([plan](docs/plans/F21-personalities.md)). Built; open: Louis's corrections to the Afrikaans (the delegation check's `answers.md`).
+- [ ] [F24 Landing motion](docs/features/F24-landing-motion.md) — the landing page as a moving page (the water, the app playing a turn in the page, a pinned tour, counters, an accordion), and the app's empty chat, Werk panel, loading screen and an *Animasies* switch with it ([plan](docs/plans/F24-landing-motion.md)).
 - [ ] **F23 Credits** (to plan): buy credits with money, spend them per question at cost plus a margin, from the usage
       ledger and prices (F1, F2) — Puls's *Koop krediete*. Louis: "'n layer wat geld na ons interne krediete verander. Wil so
       bietjie geld maak as ek kan."
