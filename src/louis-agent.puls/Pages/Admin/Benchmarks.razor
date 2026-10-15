@@ -88,67 +88,88 @@ else if (_data is { } data)
             </div>
             <p class="muted">@live.Repeat @(live.Repeat == 1 ? "herhaling" : "herhalings") · begin @live.StartedAt.ToLocalTime().ToString("HH:mm:ss")@(live.ExitCode is { } code && code != 0 ? $" · die skrip het met kode {code} geëindig" : "")</p>
 
-            @* The conversations as they unfold (Louis: "show me as if I'm typing it"): the script forwards every stream
-               event, and the chat's own TurnView renders them, thinking, specialist cards and the answer typing out. *@
-            @foreach (var conversation in _liveChats)
-            {
-                <section class="live-chat">
-                    <div class="live-chat-head"><span class="toolset-chip">@conversation.Mode</span><code>@conversation.Task</code></div>
-                    @foreach (var turn in conversation.Turns)
-                    {
-                        <TurnView Turn="turn" Streaming="@(live.Status == "running" && conversation == _liveChats[^1] && turn == conversation.Turns[^1])" Currency="Currency.Current" />
-                    }
-                </section>
-            }
-
-            @if (_events.Count > 0)
-            {
-                @* The script's structured progress ('@' + JSON per event): a row per turn, a summary row per conversation, a line per mode. *@
-                <table class="admin-table run-table">
-                    <thead><tr><th>Modus</th><th>Gesprek</th><th>Beurt</th><th>Rol</th><th>Vervolg</th><th class="num">Puls</th><th class="num">Spesialis</th><th>Bronne</th><th class="num">Sek</th></tr></thead>
-                    <tbody>
-                        @foreach (var e in _events)
+            @* The run as a tree (Louis: "merge this view, a tree-like structure"): mode → conversation → turn. Each node
+               carries its figures from the script's progress events; a turn opens to the conversation itself, rendered
+               by the chat's TurnView from the forwarded stream events, so it types out as it happens. The current node at
+               each level is open; a finished one folds, and a node the reader opens stays open. *@
+            <div class="tree">
+                @foreach (var m in _tree)
+                {
+                    bool modeCurrent = m == _tree[^1];
+                    <details class="tree-node tree-mode" open="@modeCurrent">
+                        <summary>
+                            <span class="chevron" aria-hidden="true"></span>
+                            <strong>@m.Mode</strong><span class="tree-meta">@m.Toolsets</span>
+                            <span class="tree-chips">
+                                @if (m.Done is { } d)
+                                {
+                                    <span class="chip">@Cost(Dec(d, "cost"))</span><span class="chip">@Str(d, "tokens") tokens</span><span class="chip">@Str(d, "requests") versoeke</span>
+                                }
+                                else if (live.Status == "running" && modeCurrent)
+                                {
+                                    <span class="chip busy">besig</span>
+                                }
+                            </span>
+                        </summary>
+                        @foreach (var c in m.Conversations)
                         {
-                            string kind = Str(e, "event") ?? "";
-                            if (kind == "turn")
-                            {
-                                <tr class="@(Str(e, "error") is not null ? "failed" : "")" title="@Str(e, "question")">
-                                    <td>@Str(e, "mode")</td>
-                                    <td><code>@Str(e, "task")</code></td>
-                                    <td class="num">@Str(e, "turn")</td>
-                                    <td>@(Str(e, "role") ?? (Str(e, "continued") is null ? "Puls self" : ""))</td>
-                                    <td>@(Str(e, "continued") is { } h ? $"vervolg · {h}" : "")</td>
-                                    <td class="num">@Str(e, "puls_calls")</td>
-                                    <td class="num">@Str(e, "specialist_calls")</td>
-                                    <td class="hosts">@Hosts(e)</td>
-                                    <td class="num">@Str(e, "seconds")</td>
-                                </tr>
-                            }
-                            else if (kind == "conversation")
-                            {
-                                <tr class="summary">
-                                    <td>@Str(e, "mode")</td>
-                                    <td><code>@Str(e, "task")</code></td>
-                                    <td class="num">Σ</td>
-                                    <td>@(Str(e, "role") ?? "Puls self") @(Bool(e, "routed_right") ? "✓" : "✗")</td>
-                                    <td>@(Str(e, "follow_up") ?? "—")</td>
-                                    <td class="num" colspan="2">R-bedrae @Str(e, "rand_amounts") · onbevestig @Str(e, "unconfirmed_marks")</td>
-                                    <td class="hosts">winkels @Count(e, "shop_hosts") / @Count(e, "hosts")@(Bool(e, "sources_local") ? " · net SA" : "")</td>
-                                    <td class="num">@Str(e, "seconds")</td>
-                                </tr>
-                            }
-                            else if (kind == "mode_done")
-                            {
-                                <tr class="mode"><td colspan="9"><strong>@Str(e, "mode")</strong>: @Cost(Dec(e, "cost")) · @Str(e, "tokens") tokens · @Str(e, "requests") versoeke</td></tr>
-                            }
-                            else if (kind == "mode")
-                            {
-                                <tr class="mode"><td colspan="9"><strong>@Str(e, "mode")</strong> begin: @Str(e, "conversations") gesprekke met @Hosts(e, "toolsets")</td></tr>
-                            }
+                            bool convCurrent = modeCurrent && c == m.Conversations[^1];
+                            <details class="tree-node tree-conv" open="@convCurrent">
+                                <summary>
+                                    <span class="chevron" aria-hidden="true"></span>
+                                    <code>@c.Task</code>
+                                    <span class="tree-chips">
+                                        @if (c.Summary is { } s)
+                                        {
+                                            <span class="chip @(Bool(s, "routed_right") ? "ok" : "bad")">@(Str(s, "role") ?? "Puls self") @(Bool(s, "routed_right") ? "✓" : "✗")</span>
+                                            @if (Str(s, "follow_up") is { } f) { <span class="chip @(f == "continued" ? "ok" : "")">@f</span> }
+                                            <span class="chip">winkels @Count(s, "shop_hosts") / @Count(s, "hosts")@(Bool(s, "sources_local") ? " · net SA" : "")</span>
+                                            <span class="chip">R-bedrae @Str(s, "rand_amounts")</span>
+                                            <span class="chip">onbevestig @Str(s, "unconfirmed_marks")</span>
+                                            <span class="chip">@Str(s, "seconds") s</span>
+                                        }
+                                        else if (live.Status == "running" && convCurrent)
+                                        {
+                                            <span class="chip busy">besig</span>
+                                        }
+                                    </span>
+                                </summary>
+                                @foreach (var t in c.Turns)
+                                {
+                                    bool turnCurrent = convCurrent && t == c.Turns[^1];
+                                    <details class="tree-node tree-turn" open="@turnCurrent">
+                                        <summary>
+                                            <span class="chevron" aria-hidden="true"></span>
+                                            <span class="tree-turn-n">Beurt @t.N</span>
+                                            <span class="tree-question">@t.Turn.UserText</span>
+                                            <span class="tree-chips">
+                                                @if (t.Summary is { } ts)
+                                                {
+                                                    @if (Str(ts, "role") is { } role) { <span class="chip">@role</span> }
+                                                    else if (Str(ts, "continued") is { } handle) { <span class="chip ok">vervolg · @handle</span> }
+                                                    else { <span class="chip">Puls self</span> }
+                                                    <span class="chip">Puls @Str(ts, "puls_calls")</span>
+                                                    <span class="chip">spesialis @Str(ts, "specialist_calls")</span>
+                                                    @if (Hosts(ts) is { Length: > 0 } hosts) { <span class="chip hosts">@hosts</span> }
+                                                    <span class="chip">@Str(ts, "seconds") s</span>
+                                                    @if (Str(ts, "error") is { } err) { <span class="chip bad" title="@err">fout</span> }
+                                                }
+                                                else if (live.Status == "running" && turnCurrent)
+                                                {
+                                                    <span class="chip busy">tik…</span>
+                                                }
+                                            </span>
+                                        </summary>
+                                        <div class="tree-turn-body">
+                                            <TurnView Turn="t.Turn" Streaming="@(live.Status == "running" && turnCurrent)" Currency="Currency.Current" />
+                                        </div>
+                                    </details>
+                                }
+                            </details>
                         }
-                    </tbody>
-                </table>
-            }
+                    </details>
+                }
+            </div>
             @{
                 // When the run ends the script prints its report (markdown, from its first heading): rendered, not raw.
                 int report = live.Status == "running" ? -1 : _log.FindIndex(l => l.StartsWith("# "));
@@ -158,7 +179,7 @@ else if (_data is { } data)
             {
                 <div class="markdown admin-markdown run-report">@Markdown.ToHtml(string.Join("\n", _log.Skip(report)))</div>
             }
-            <details class="admin-details" open="@(_events.Count == 0 && report < 0)"><summary>Die skrip se eie reëls (@plain.Count)</summary><pre class="admin-pre run-log">@string.Join("\n", plain)</pre></details>
+            <details class="admin-details" open="@(_tree.Count == 0 && report < 0)"><summary>Die skrip se eie reëls (@plain.Count)</summary><pre class="admin-pre run-log">@string.Join("\n", plain)</pre></details>
         </section>
     }
 
@@ -226,32 +247,49 @@ else if (_data is { } data)
     private Opened? _open;
     private LiveRun? _run;
     private readonly List<string> _log = [];
-    private readonly List<JsonElement> _events = [];
 
-    /// <summary>One conversation of the live run, as the chat holds one: its turns, built from the forwarded stream events.</summary>
-    private sealed record LiveChat(string Mode, string Task, List<Turn> Turns);
+    /// <summary>The live run as a tree: a mode, its conversations, their turns; the figures from the script's progress events.</summary>
+    private sealed class ModeNode { public string Mode = ""; public string Toolsets = ""; public List<ConvNode> Conversations = []; public JsonElement? Done; }
+    private sealed class ConvNode { public string Task = ""; public List<TurnNode> Turns = []; public JsonElement? Summary; }
+    private sealed class TurnNode { public int N; public Turn Turn = new(); public JsonElement? Summary; }
 
-    private readonly List<LiveChat> _liveChats = [];
+    private readonly List<ModeNode> _tree = [];
     private bool _renderPending;
 
-    /// <summary>Applies a forwarded event to the live conversations; returns false for the table's kinds.</summary>
-    private bool ApplyLive(JsonElement e)
+    /// <summary>Puts one of the script's progress events into the tree; the stream events feed the turn the chat way.</summary>
+    private void Apply(JsonElement e)
     {
         string kind = Str(e, "event") ?? "";
-        if (kind is not ("question" or "sse")) return false;
-        string mode = Str(e, "mode") ?? "", task = Str(e, "task") ?? "";
-        var chat = _liveChats.FirstOrDefault(c => c.Mode == mode && c.Task == task);
-        if (chat is null) _liveChats.Add(chat = new LiveChat(mode, task, []));
+        string modeName = Str(e, "mode") ?? "", task = Str(e, "task") ?? "";
+        var mode = _tree.FirstOrDefault(m => m.Mode == modeName);
+        if (mode is null && kind != "mode") _tree.Add(mode = new ModeNode { Mode = modeName });
+        var conv = mode?.Conversations.FirstOrDefault(c => c.Task == task);
 
-        if (kind == "question")
+        switch (kind)
         {
-            chat.Turns.Add(new Turn { UserText = Str(e, "text") ?? "" });
+            case "mode":
+                _tree.Add(new ModeNode { Mode = modeName, Toolsets = Hosts(e, "toolsets") });
+                break;
+            case "mode_done":
+                mode!.Done = e;
+                break;
+            case "question":
+                if (conv is null) mode!.Conversations.Add(conv = new ConvNode { Task = task });
+                conv.Turns.Add(new TurnNode { N = int.TryParse(Str(e, "turn"), out int n) ? n : conv.Turns.Count + 1, Turn = new Turn { UserText = Str(e, "text") ?? "" } });
+                break;
+            case "sse":
+                if (conv is { Turns.Count: > 0 } && e.TryGetProperty("data", out var data) && Str(e, "type") is { } type)
+                    TurnStream.Apply(conv.Turns[^1].Turn, new AgentStreamEvent(type, data));
+                break;
+            case "turn":
+                if (conv is { Turns.Count: > 0 })
+                    (conv.Turns.FirstOrDefault(t => t.N.ToString() == Str(e, "turn")) ?? conv.Turns[^1]).Summary = e;
+                break;
+            case "conversation":
+                if (conv is null) mode!.Conversations.Add(conv = new ConvNode { Task = task });
+                conv.Summary = e;
+                break;
         }
-        else if (chat.Turns.Count > 0 && e.TryGetProperty("data", out var data) && Str(e, "type") is { } type)
-        {
-            TurnStream.Apply(chat.Turns[^1], new AgentStreamEvent(type, data));
-        }
-        return true;
     }
 
     /// <summary>A render at most every 80 ms while events pour in, as the chat does.</summary>
@@ -338,13 +376,14 @@ else if (_data is { } data)
     {
         _run = run;
         _log.Clear();
-        _events.Clear();
-        _liveChats.Clear();
+        _tree.Clear();
         StateHasChanged();
+        int lines = 0;
         try
         {
             await foreach (var (type, line) in Api.StreamLinesAsync($"admin/benchmarks/runs/{run.Id}/events"))
             {
+                lines++;
                 if (type == "done")
                 {
                     _run = ReadLive(JsonDocument.Parse(line).RootElement);
@@ -352,11 +391,14 @@ else if (_data is { } data)
                 }
                 if (line.StartsWith('@') && TryParse(line[1..], out var e))
                 {
-                    if (!ApplyLive(e)) _events.Add(e);
+                    // One bad event must not end the whole story: it goes to the browser's console, the rest goes on.
+                    try { Apply(e); }
+                    catch (Exception ex) when (ex is not OutOfMemoryException) { Console.Error.WriteLine($"[admin] event {lines} of run {run.Id} not applied: {ex.Message}"); }
                 }
                 else _log.Add(line);
                 RenderThrottled();
             }
+            Console.WriteLine($"[admin] run {run.Id}: {lines} lines, {_tree.Count} modes, {_tree.Sum(m => m.Conversations.Count)} conversations");
         }
         catch (AgentApiException ex)
         {
