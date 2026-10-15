@@ -570,7 +570,9 @@ html:has(.landing) { scroll-behavior: smooth; }
 .landing-links a.active::after { transform: scaleX(1); }
 
 /* Reveals (F24): visible at rest; when a block enters, it plays rise once; a heading comes in through a mask. */
-.landing .reveal.in { animation: rise .7s var(--ease) both; }
+/* The reveal rises on translate, not transform: a filled transform animation would override a card's tilt (.feature) for good. */
+.landing .reveal.in { animation: reveal-rise .7s var(--ease) both; }
+@keyframes reveal-rise { from { opacity: 0; translate: 0 12px; } to { opacity: 1; translate: 0 0; } }
 .landing .reveal.in[data-delay="1"] { animation-delay: .1s; } .landing .reveal.in[data-delay="2"] { animation-delay: .2s; }
 .landing .reveal.in[data-delay="3"] { animation-delay: .3s; } .landing .reveal.in[data-delay="4"] { animation-delay: .4s; } .landing .reveal.in[data-delay="5"] { animation-delay: .5s; }
 .landing .section h2.reveal.in { animation: unmask .9s var(--ease) both; }
@@ -584,8 +586,13 @@ html:has(.landing) { scroll-behavior: smooth; }
 /* Pill buttons. */
 .pill { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: 999px; padding: 10px 20px; font-weight: 700; font-size: 14px; transition: transform .25s var(--spring), box-shadow .25s var(--ease), background .2s, color .2s; white-space: nowrap; }
 .pill-lg { padding: 15px 28px; font-size: 15.5px; }
-.pill-primary { color: #fff; background: var(--cta); box-shadow: 0 10px 26px -10px rgba(245, 130, 32, .8); }
-.pill-primary:hover { color: #fff; transform: translateY(-2px); box-shadow: 0 16px 34px -12px rgba(245, 130, 32, .95); }
+/* The primary pill (F24): on hover its gradient shifts and a light sheen sweeps across it; a .magnet one also follows
+   the pointer a few pixels (js/landing.js), so the lift is left to the ghost pill. */
+.pill-primary { position: relative; overflow: hidden; color: #fff; background: var(--cta); background-size: 200% 100%; box-shadow: 0 10px 26px -10px rgba(245, 130, 32, .8); will-change: transform; transition: transform .25s var(--spring), box-shadow .25s var(--ease), background-position .6s var(--ease); }
+.pill-primary::after { content: ""; position: absolute; inset: 0; transform: translateX(-120%) skewX(-20deg); background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .45), transparent); pointer-events: none; }
+.pill-primary:hover { color: #fff; background-position: 100% 0; box-shadow: 0 16px 34px -12px rgba(245, 130, 32, .95); }
+.pill-primary:not(.magnet):hover { transform: translateY(-2px); }
+.pill-primary:hover::after { transition: transform .7s var(--ease); transform: translateX(120%) skewX(-20deg); }
 .pill-ghost { color: var(--ink); background: rgba(255, 255, 255, .05); border: 1px solid rgba(255, 255, 255, .14); }
 .pill-ghost:hover { color: var(--ink); background: rgba(255, 255, 255, .1); transform: translateY(-2px); }
 

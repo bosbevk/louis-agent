@@ -114,6 +114,11 @@ open and the costs count (S2); the by-hand check in *Done when*.
   every `[data-count]` (the Werk item's cost, the Werk foot, the rolled-up card's cost, the Krediete rows) runs from
   the number last shown to the new one after a render, keeping the text's own prefix, decimals and separator, so the
   C# formatting stays the one source of the money text; a reduced-motion browser jumps straight to the value.
+- **A filled animation owns its properties.** After the PR's first look, Louis: the Kenmerke and Pryse cards "lost
+  its animation effect", unlike Hoe dit werk's. Those cards also had `reveal`, whose rise animated `transform` with
+  `fill-mode: both`, and a finished animation's last frame keeps overriding the element's own `transform`, so the
+  tilt never applied. The landing's reveal now rises on `translate`, a separate property, and the tilt is back; the
+  FAQ's hover slide had been blocked the same way.
 - **The gradient line comes in without blur.** The headline animates word by word with a blur, except the gradient
   line: a `filter` on text that is `background-clip: text` makes Chrome drop the text, so that line gets the same
   rise without the blur.
