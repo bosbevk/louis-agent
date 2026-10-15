@@ -201,7 +201,7 @@ public enum ToolMessage
     [Description("ReadRenderedPage needs TAVILY_API_KEY in config/.env.secrets (it renders pages with Tavily Extract). Without it, FetchUrl is the only way to read a page.")]
     RenderNotConfigured,
 
-    [Description("Error: couldn't render {Url}: {Reason}")]
+    [Description("couldn't render {Url}: {Reason}. If FetchUrl read it as empty too, the site blocks readers: mark what it holds as unknown and move on.")]
     RenderFailed,
 
     [Description("the renderer returned no content for it")]

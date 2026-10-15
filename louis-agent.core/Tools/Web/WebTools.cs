@@ -176,7 +176,7 @@ public sealed partial class WebTools
         }
         catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException or System.Text.Json.JsonException)
         {
-            return MessageText.Format(ToolMessage.RenderFailed, new { Url = uri, Reason = ex.Message });
+            return MessageText.Format(ToolMessage.ErrorWithReason, new { Reason = MessageText.Format(ToolMessage.RenderFailed, new { Url = uri, Reason = ex.Message }) });
         }
     }
 

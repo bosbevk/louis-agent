@@ -132,7 +132,7 @@
   "ProgramKilled": "Program was still running after <Seconds>s and was killed.",
   "PythonNotInstalled": "Python 3 is not installed or not on PATH. Install it (https://www.python.org/downloads/ or 'winget install Python.Python.3.12'), or set PYTHON_PATH to the interpreter. On Windows, the 'python' Microsoft Store alias does not count as an install.",
   "RatesUnavailable": "No exchange rates are loaded on this instance (RATES_URL or RATES_FILE), so amounts can't be converted.",
-  "RenderFailed": "Error: couldn't render <Url>: <Reason>",
+  "RenderFailed": "couldn't render <Url>: <Reason>. If FetchUrl read it as empty too, the site blocks readers: mark what it holds as unknown and move on.",
   "RenderNoResult": "the renderer returned no content for it",
   "RenderNotConfigured": "ReadRenderedPage needs TAVILY_API_KEY in config/.env.secrets (it renders pages with Tavily Extract). Without it, FetchUrl is the only way to read a page.",
   "ScriptCodeEmpty": "The implementation code block is empty.",
