@@ -189,6 +189,8 @@
                         <li><hr class="dropdown-divider" /></li>
                         <li><button class="dropdown-item" type="button" @onclick='() => ComingSoon("Profiel")'><span class="ic i-user" aria-hidden="true"></span>Profiel</button></li>
                         <li><button class="dropdown-item" type="button" onclick="pulsUi.openSettings()"><span class="ic i-cog" aria-hidden="true"></span>Instellings</button></li>
+                        @* F27: the admin portal (benchmarks first); the API's admin key gates it, not this menu. *@
+                        <li><a class="dropdown-item" href="admin"><span class="ic i-sliders" aria-hidden="true"></span>Admin</a></li>
                         <li><button class="dropdown-item" type="button" @onclick='() => ComingSoon("Teken uit")'><span class="ic i-logout" aria-hidden="true"></span>Teken uit</button></li>
                     </ul>
                 </div>

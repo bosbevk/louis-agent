@@ -1,0 +1,177 @@
+@page "/admin"
+@page "/admin/maatstawwe"
+@layout AdminLayout
+@using System.Net
+@using System.Text.Json
+@using LouisAgent.Web.Shared
+@using LouisAgent.Web.Shared.Services
+@inject AgentApi Api
+@inject ChatStore Store
+
+@* F27 step 2: the first admin page. The checks the portal knows, and every run saved under samples/, newest first;
+   a run opens to its summary table, its README and its numbers. Running one from here is step 4. *@
+
+<PageTitle>Maatstawwe · Puls Admin</PageTitle>
+
+<div class="page-head">
+    <div>
+        <h1>Maatstawwe</h1>
+        <p>Die kontroles wat Puls meet, en elke lopie wat onder <code>samples/</code> gestoor is.</p>
+    </div>
+    <div class="page-actions">
+        <button class="header-button" type="button" @onclick="LoadAsync" disabled="@_loading"><span class="ic i-refresh" aria-hidden="true"></span>Herlaai</button>
+    </div>
+</div>
+
+@if (_error is { } error)
+{
+    <section class="card-p admin-gate">
+        <strong>@error</strong>
+        @if (_needsKey)
+        {
+            <p>Die portaal se sleutel is <code>ADMIN_API_KEY</code> (of <code>AGENT_API_KEY</code>) in <code>config/.env.secrets</code>. Vul dit hier in; dit word in hierdie blaaier gehou, soos in Instellings.</p>
+            <form class="admin-key" @onsubmit="SaveKeyAsync">
+                <input type="password" placeholder="die sleutel" @bind="_keyDraft" />
+                <button class="header-button" type="submit">Stoor en herlaai</button>
+            </form>
+        }
+    </section>
+}
+else if (_loading && _data is null)
+{
+    <section class="card-p"><span class="muted">Laai…</span></section>
+}
+else if (_data is { } data)
+{
+    <div class="cards">
+        @foreach (var check in data.Checks)
+        {
+            <section class="card-p">
+                <div class="card-head">
+                    <strong>@check.Title</strong>
+                    <span class="toolset-chip">@check.Id</span>
+                </div>
+                <p class="muted"><code>@check.Script</code></p>
+                @{ var last = data.Runs.FirstOrDefault(r => r.Check == check.Id); }
+                <p class="muted">@(last is null ? "Nog geen gestoorde lopie nie." : $"Laaste lopie: {last.SavedAt.ToLocalTime():yyyy-MM-dd HH:mm}, {Cost(last.Cost)}")</p>
+                <button class="header-button" type="button" disabled title="Kom in die volgende stap: 'n lopie vanaf hierdie bladsy"><span class="ic i-pulse" aria-hidden="true"></span>Hardloop</button>
+            </section>
+        }
+    </div>
+
+    <section class="card-p">
+        <div class="card-head"><strong>Gestoorde lopies</strong><span class="muted">@data.Runs.Count</span></div>
+        @if (data.Runs.Count == 0)
+        {
+            <p class="muted">Niks onder <code>samples/</code> met 'n <code>summary.json</code> of <code>results.json</code> nie.</p>
+        }
+        else
+        {
+            <table class="admin-table">
+                <thead><tr><th>Lopie</th><th>Kontrole</th><th>Gestoor</th><th class="num">Herhalings</th><th class="num">Koste</th></tr></thead>
+                <tbody>
+                    @foreach (var run in data.Runs)
+                    {
+                        <tr class="@(run.Folder == _open?.Run.Folder ? "selected" : "")" @onclick="() => OpenAsync(run.Folder)">
+                            <td><code>@run.Folder</code></td>
+                            <td>@(data.Checks.FirstOrDefault(c => c.Id == run.Check)?.Title ?? "—")</td>
+                            <td>@run.SavedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</td>
+                            <td class="num">@run.Repeats</td>
+                            <td class="num">@Cost(run.Cost)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </section>
+
+    @if (_open is { } open)
+    {
+        <section class="card-p">
+            <div class="card-head"><strong>@open.Run.Folder</strong><span class="muted">@Cost(open.Run.Cost)</span></div>
+            @if (open.Summary is { } summary)
+            {
+                <div class="markdown admin-markdown">@Markdown.ToHtml(summary)</div>
+            }
+            @if (open.Readme is { } readme)
+            {
+                <details class="admin-details"><summary>README</summary><div class="markdown admin-markdown">@Markdown.ToHtml(readme)</div></details>
+            }
+            @if (open.Results is { } results)
+            {
+                <details class="admin-details"><summary>Die syfers (JSON)</summary><pre class="admin-pre">@results</pre></details>
+            }
+        </section>
+    }
+}
+
+@code {
+    private sealed record Check(string Id, string Title, string Script);
+    private sealed record Run(string Folder, string? Check, DateTimeOffset SavedAt, int Repeats, decimal? Cost);
+    private sealed record Page(List<Check> Checks, List<Run> Runs);
+    private sealed record Opened(Run Run, string? Summary, string? Readme, string? Results);
+
+    private Page? _data;
+    private Opened? _open;
+    private string? _error;
+    private bool _needsKey, _loading;
+    private string _keyDraft = "";
+
+    protected override Task OnInitializedAsync() => LoadAsync();
+
+    private async Task LoadAsync()
+    {
+        _loading = true;
+        _error = null;
+        try
+        {
+            var json = await Api.GetAsync<JsonElement>("admin/benchmarks");
+            _data = new Page(
+                json.GetProperty("checks").EnumerateArray().Select(c => new Check(c.GetProperty("id").GetString()!, c.GetProperty("title").GetString()!, c.GetProperty("script").GetString()!)).ToList(),
+                json.GetProperty("runs").EnumerateArray().Select(ReadRun).ToList());
+        }
+        catch (AgentApiException ex)
+        {
+            _needsKey = ex.Status is HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden;
+            _error = ex.Message;
+        }
+        catch (HttpRequestException ex)
+        {
+            _error = ex.Message;
+        }
+        _loading = false;
+    }
+
+    private static Run ReadRun(JsonElement r) => new(
+        r.GetProperty("folder").GetString()!,
+        r.TryGetProperty("check", out var c) && c.ValueKind == JsonValueKind.String ? c.GetString() : null,
+        r.GetProperty("saved_at").GetDateTimeOffset(),
+        r.GetProperty("repeats").GetInt32(),
+        r.TryGetProperty("cost", out var cost) && cost.ValueKind == JsonValueKind.Number ? cost.GetDecimal() : null);
+
+    private async Task OpenAsync(string folder)
+    {
+        try
+        {
+            var json = await Api.GetAsync<JsonElement>($"admin/benchmarks/runs/{Uri.EscapeDataString(folder)}");
+            _open = new Opened(ReadRun(json.GetProperty("run")), Text(json, "summary"), Text(json, "readme"), Text(json, "results"));
+        }
+        catch (AgentApiException ex)
+        {
+            _error = ex.Message;
+        }
+    }
+
+    private static string? Text(JsonElement json, string name) =>
+        json.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.String ? v.GetString() : null;
+
+    private async Task SaveKeyAsync()
+    {
+        await Store.SaveApiKeyAsync(_keyDraft);
+        _keyDraft = "";
+        await LoadAsync();
+    }
+
+    // The checks' costs are USD in the ledger; shown as they are saved, since the sample READMEs quote them so.
+    private static string Cost(decimal? cost) => cost is { } c ? $"${c:0.0000}" : "—";
+}
