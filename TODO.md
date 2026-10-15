@@ -193,6 +193,30 @@ Design: [docs/specs/SESSION_ARCHITECTURE.md](docs/specs/SESSION_ARCHITECTURE.md)
             carried as a string to the specialist, so it arrives mangled; send it as base64 with its media type and
             read it with `DocumentText` (found in the docs review, 2026-10-14)
 - [ ] [F21 Personalities](docs/features/F21-personalities.md) — each session (and sub-session) names its personality; Puls speaks everyday South African Afrikaans ([plan](docs/plans/F21-personalities.md)). Built; open: Louis's corrections to the Afrikaans (the delegation check's `answers.md`).
+- [ ] **Next up: a faster, cheaper cook** (to plan; Louis, 2026-10-15: "can we have a subsession allow him to spawn
+      web sessions for each task"). The cook does every search and fetch itself, one at a time, and every page it reads
+      stays in its context and is paid for again on each later request (400–800k tokens and up to 183 s a meal turn).
+      First measure where its time and tokens go (`run_check.py --personalities` and the ledger per request), then
+      pick one of two:
+      - [ ] **A fan-out tool, no extra model:** `PriceAtShops(ingredients, shops)` runs the shops' searches in parallel
+            (`Task.WhenAll`, Tavily with `site:`) and returns one compact table (price, link, source per cell); testable
+            with `StubHandler`, no architecture change
+      - [ ] **Workers at depth 2:** the cook opens a web-only sub-session per task (a shop's prices, the branches), in
+            parallel, each returning a small table. Needs: `agents` at depth 1 for the cook only (in code), a peer for
+            `puls_agent`, `AllowConcurrentInvocation` with thread-safe guards, a per-depth limit instead of
+            `MaxPerTurn = 3`, the ledger roll-up through two levels, the Werk card nested
+- [ ] **F30 Tool rounds per session** (to plan; Louis, 2026-10-15: "that 10 tool limit can we make it something we can
+      pass per session?"). Today `MaximumIterationsPerRequest = 10` is set once per engine (`AgentEngine.cs`), shared by
+      every session with that toolset list. First check the saved cook runs' ledgers: does the cook stop at exactly 10
+      rounds (then more rounds should price more ingredients) or earlier (then the limit isn't the problem)? Then:
+      - [ ] A session names `max_tool_rounds` when it opens (`POST /sessions`, `StartSubSession`), kept like its
+            toolsets; on the turn's `UsageScope`; outside 1–40 a 400 before anything is built
+      - [ ] A guard in `ToolCallGuards`, beside FX14's `KeepWithinPromptBudget`: at the session's limit the next request
+            keeps its tools with `ToolMode.None`, so the model answers and the history stays append-only (ADR 0008);
+            `MaximumIterationsPerRequest` becomes a ceiling (40), the default stays 10
+      - [ ] A default per role in `roles.json` (the cook 20, the rest 10), the session's value overriding it
+      - [ ] Measured: the cook at 10 rounds against 20 (priced ingredients, seconds, cost: every round re-sends the
+            whole context, so cost grows faster than the rounds)
 - [ ] [F25 Local cook](docs/features/F25-local-cook.md) — Puls's first local specialist: a South African meal, the recipe and a shopping list priced in rand at the shops near the user; the routing and the sources measured ([plan](docs/plans/F25-local-cook.md), [the run](samples/sample-output-puls-cook/README.md)). The first of the *Local tools* above. Built; open:
       - [x] **Tavily, measured** ([one run from the portal](samples/sample-output-cook-20261015-130521/README.md), 2026-10-15): no search refused, prices read from product pages, unconfirmed marks on the meals down from 20 to 2 and 0
       - [ ] **The cook's unconfirmed prices:** it writes *geskat* (an estimate) where its role says *unknown*; decide which, then measure again
