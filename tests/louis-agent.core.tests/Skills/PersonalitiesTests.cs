@@ -124,6 +124,18 @@ public class PersonalitiesTests
         Assert.That(cook, Does.Contain("Where the user is").And.Contain("Never invent a price"));
     }
 
+    [Test]
+    public void AFollowUp_GoesToTheOpenSpecialist()
+    {
+        // F26 step 4: the tool exists from the first turn; the prompt says when to continue and when to start over.
+        string agents = SkillFileSource.ReadEmbedded("agents-skills.md")!;
+        string router = SkillFileSource.ReadEmbedded("default.md")!;
+
+        Assert.That(agents, Does.Contain("## Following up").And.Contain("`ContinueSubSession(handle, message, attachments)`"));
+        Assert.That(agents, Does.Contain("start a new sub-session").IgnoreCase, "and when not to continue");
+        Assert.That(router, Does.Contain("ContinueSubSession"));
+    }
+
     [TestCase("default.md")]
     [TestCase("agents-skills.md")]
     public void AMealToCook_GoesToTheCook_WithWeb(string router)

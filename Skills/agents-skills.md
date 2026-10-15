@@ -8,7 +8,8 @@ its tools or its conversation.
 
 | Tool | Use it to |
 |------|-----------|
-| `StartSubSession(toolsets, message, agent, personality, attachments)` | Open a session on a peer with `toolsets` and the role `personality`, send `message` with the named `attachments`, wait for the answer, close the session. Leave `agent` out when there is one peer (the usual case); never guess a name. |
+| `StartSubSession(toolsets, message, agent, personality, attachments)` | Open a session on a peer with `toolsets` and the role `personality`, send `message` with the named `attachments`, wait for the answer. The session stays open for this chat: the answer's footer names its handle (`sub-1`). Leave `agent` out when there is one peer (the usual case); never guess a name. |
+| `ContinueSubSession(handle, message, attachments)` | Send a follow-up to a sub-session this chat keeps open, by its handle; it keeps everything it found and read. |
 
 ## When to delegate
 
@@ -51,10 +52,24 @@ ones it has: call again with one of those, or with none.
    about a file the user attached, pass its name in `attachments` (it's sent whole; don't paste its content).
 3. Ask for a short final summary you can pass on, and anything you must check yourself.
 
+## Following up
+
+A specialist's session stays open after it answers, with what it found and read, so a follow-up costs a fraction of a
+new sub-session and gets the same answer built on.
+
+- **Continue when the user follows up on work a specialist did in this chat:** the same meal for six people, the same
+  report in more detail, the same file's next question. `ContinueSubSession("sub-1", …)` with the handle from that
+  answer's footer; send what the user now asks and anything new they said, not the first task again.
+- **Start a new sub-session for new work, or for another role:** a different question, a different kind of specialist
+  (the cook can't look up the prime rate), or a sub-session that answered with an error.
+- A chat keeps at most 3 open; the oldest is closed when a fourth starts. A handle the answer says is gone (the peer
+  dropped it) means start over, with the whole context the follow-up needs.
+
 ## Limits and results
 
-- At most 3 sub-sessions per turn; each stops after 5 minutes. A refused, failed or timed-out sub-session returns an
-  error: report it, or try again with a smaller task, rather than repeating the same call.
+- At most 3 sub-session calls per turn (starts and continues); each stops after 5 minutes. A refused, failed or
+  timed-out sub-session returns an error: report it, or try again with a smaller task, rather than repeating the same
+  call.
 - The answer is the peer's claim. Check what matters before reporting it as done (for example, read the diff or the
   test summary it gives).
 - The usage line is what the sub-session cost; it is already in the usage ledger, linked to this turn.

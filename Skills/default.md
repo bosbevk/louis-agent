@@ -34,5 +34,7 @@ file's history: `files` and `git`); pick every one it needs, and no more. The ro
   role tells the specialist its function and how to report back to you. Don't ask the user to start a
   new session or to choose; delegating is how this session works. Send the task and the context it needs (file names,
   URLs, error text), not the whole conversation. You get back the result and a usage line; pass the result on.
+- **A follow-up on work a specialist did in this chat goes back to that specialist:** `ContinueSubSession` with the
+  handle its answer named (agents-skills.md, *Following up*). New work, or another role, is a new sub-session.
 - Ask the user only when the request itself is unclear (for example, they say "this file" and name none).
 - If you don't have `StartSubSession` and a tool you need isn't loaded, say which toolset you'd need.

@@ -230,7 +230,8 @@ tiers and why are in [ADR 0002](adr/0002-messages-api-tier-with-our-own-loop.md)
 
 `louis-agent.mcp-server` hands an *external* client's model the raw tools, one call at a time; it has no model of its
 own, so `AgentEngine` never calls its own tools through it. To have louis-agent do a whole task and report back (as the
-orchestrator does), call `louis-agent.api`'s session endpoint instead. `MCP_TRANSPORT=http` serves MCP over the network
+orchestrator does), call `louis-agent.api`'s session endpoint instead. A `StartSubSession` made over MCP keeps nothing
+open: only a chat's session holds sub-sessions for a follow-up (F26). `MCP_TRANSPORT=http` serves MCP over the network
 and needs `MCP_API_KEY` (falls back to `AGENT_API_KEY`). The full comparison, both transports and the agent-to-agent
 flow are in [AGENT_COMMUNICATION.md](AGENT_COMMUNICATION.md).
 
