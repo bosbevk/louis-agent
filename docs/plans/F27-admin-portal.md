@@ -77,6 +77,16 @@ A real run from the page spends money and is Louis's go.
   typing it"; then "merge this view, a nice modern treeview-like structure"): steps 6 and 7. The script forwards every
   stream event of each turn; the page builds a tree, mode → conversation → turn, with the figures as chips on each
   node and the chat's own TurnView inside a turn, so the conversation types out as it happens.
+- **2026-10-15, charts you drill into, with motion, and the replay** (Louis: "this does not work, we need to
+  visualise this; drill down to the lowest level of all data", "we do not even have graphs", "fancy animations, take
+  inspiration from the landing page, do research before starting", "the whole chat transcript as it was typed"): steps
+  8 to 10. Researched first: the dataviz method (the form by the data's job; the reference palette's dark column in its
+  validated order for the token kinds, since the validator's Node isn't on this machine; thin marks, a surface gap, a
+  legend for two or more series, tooltips that never gate), the landing page's motion, and drill-down conventions (the
+  child level unfolds from the clicked point, a breadcrumb back). Built in-house as HTML and CSS, no chart package
+  (Chart.js and ECharts were the alternatives; a package decision for a later chart that needs an axis system). The
+  checks save each mode's events with their time; the API serves them on demand; the turn replays through the chat's
+  own components.
 - **2026-10-15, the smaller asks along the way** (Louis, from screenshots): costs in the browser's currency; the saved
   runs as a list in a side column; repeats as a segmented control instead of a native select; the check cards roll
   up and down; repeats per check; a saved run opens its transcripts; the finished run's report rendered as markdown.
