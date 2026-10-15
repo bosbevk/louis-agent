@@ -37,7 +37,7 @@ feature replaces older backlog wording, that wording no longer appears anywhere 
 | [F20](F20-puls-look.md) | Puls look: a landing page and a three-panel dashboard, dark, in Puls's colours | done | — | — | F5 | — |
 | [F21](F21-personalities.md) | Personalities per session: each session (and sub-session) names its personality | built | — | — | F5 | — |
 | [F22](F22-role-tools.md) | Role tools: today's date, attachments to specialists, documents, git history, tables and currency | built | — | — | F21, F5 | — |
-| [F24](F24-landing-motion.md) | Landing motion: the landing page as a moving page, and the app's empty chat, Werk panel, loading and an *Animasies* switch with it | in progress | — | — | F20, F5 | — |
+| [F24](F24-landing-motion.md) | Landing motion: the landing page as a moving page, and the app's empty chat, Werk panel, loading and an *Animasies* switch with it | done | — | — | F20, F5 | — |
 
 ## Milestones
 

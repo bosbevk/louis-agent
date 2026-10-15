@@ -25,14 +25,17 @@ needs. Pay as you go: every answer shows what it cost, specialists included.
   Werk panel slides in; below 992px the sidebar does.
 - **Placeholders** (share, edit, regenerate, feedback, voice, screenshots, image, deep research, other models, language,
   theme, profile, sign-out, buying credits) answer with a "kom binnekort" toast.
-- **Stored in the browser:** chats (with favourite and archived), the API key, the currency, the location, and whether
-  the sidebar and the Werk panel are hidden.
+- **Stored in the browser:** chats (with favourite and archived), the API key, the currency, the location, whether
+  the sidebar and the Werk panel are hidden, and whether the animations are on although the system asks for less
+  (`puls.motion`, F24).
 
 ## Structure
 
 | Path | What |
 |---|---|
-| `Pages/LandingPage.razor` | Hero, a picture of the app in HTML, how it works, features, Pryse (pay as you go), Oor ons, FAQ |
+| `Pages/LandingPage.razor` | The landing page (F20, moving since F24): hero, the app playing a turn, Hoe dit werk, the pinned *In die app* tour, the Kenmerke bento and marquees, Syfers, Pryse, Oor ons, the Vrae accordion; its copy as C# arrays |
+| `Components/LandingDemo.razor` | The app's three panels in the landing page, playing three scripted turns (example data in `data-turns`, played by `landing.js`) |
+| `Components/Water.razor` | The four swells behind the landing page and an empty chat |
 | `Pages/ChatPage.razor` | The shell: sidebar, top bar, the chat, Verken and Studio views, the message box, the Werk panel |
 | `Components/PulsLogo.razor` | The ripple logo inline (its rings glow outward) |
 | `Components/WorkPanel.razor` | The Werk panel |
@@ -42,7 +45,9 @@ needs. Pay as you go: every answer shows what it cost, specialists included.
 | `Sources.cs` | A turn's sources: the answer's links and the pages its specialists read |
 | `Templates.cs` | The starters on Verken and Studio |
 | `wwwroot/css/app.css` | The dark theme (orange, green, charcoal, a charcoal-tinted white; Montserrat) |
-| `wwwroot/js/chat.js` | Scrolling, the sidebar and panel toggles, copy, location (browser + Nominatim), focus |
+| `wwwroot/js/chat.js` | Scrolling, the sidebar and panel toggles, copy, location (browser + Nominatim), focus, the pointer spotlight and tilt, the motion switch, costs counting up |
+| `wwwroot/js/landing.js` | The landing page's motion (F24): progress line, section index, centred links, reveals, counters, the pinned tour, the demo, the accordion; started and stopped by `LandingPage.razor` |
+| `wwwroot/index.html` | The start screen with Blazor's real loading count; the saved layout and the motion choice applied before the first paint |
 | `wwwroot/brand/` | The logo set: mark, logo, stacked, icon tiles, colour versions |
 
 ## Configuration

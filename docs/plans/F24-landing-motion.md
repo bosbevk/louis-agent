@@ -66,4 +66,9 @@ stop on dispose); progressive enhancement (the page reads complete with no JS an
 
 ## Approved during the build
 
-(none yet)
+- **Step 2, the demo's pace (2026-10-15).** Louis, on seeing the turn appear in one go: "slow the animation down, and
+  only start when reaching Die App". The turn starts once 60% of the frame is in view (was 30%), every beat is slower
+  (typing 45–85 ms a character, a step 1.1–1.8 s, a word 70–150 ms, 5 s between turns), and reduced motion keeps that
+  pace, playing one turn instead of looping, since text arriving in order is content and not movement.
+- **Step 5, the loading count (2026-10-15).** Blazor's own `--blazor-load-percentage-text` instead of
+  `loadBootResource`: the same real count, no script (reuse before building).
