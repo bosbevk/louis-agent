@@ -63,6 +63,7 @@ public sealed class BenchmarkRunner(BenchmarkCatalog catalog, string workspaceRo
         start.ArgumentList.Add("samples/" + run.Folder);
         start.ArgumentList.Add("--repeat");
         start.ArgumentList.Add(run.Repeat.ToString());
+        foreach (string argument in check.Arguments) start.ArgumentList.Add(argument);
         start.Environment["PULS_API"] = pulsApi;
         start.Environment["PYTHONUNBUFFERED"] = "1";      // so each line arrives as it is printed
         start.Environment["PYTHONIOENCODING"] = "utf-8";

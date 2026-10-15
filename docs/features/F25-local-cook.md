@@ -91,6 +91,11 @@ the cook read, so that "routes properly" and "uses local sources" are numbers fr
   render only a product page that read as empty, since each render costs a credit.
 - **The town travels two ways:** on the session (`location`, as the web app sends it) for the Afrikaans conversation,
   in the message for the English one; the cook's role covers both.
+- **What the cook adds is measured by turning it off** (Louis, 2026-10-15): `--personalities` runs the conversations
+  with Puls on `web` only (it can't delegate) and on `agents` and `web`; the portal runs it as *Puls alleen teen Puls
+  met die kok*. Not with `PERSONALITIES_ENABLED`: that list is read at start-up, so switching it restarts the
+  container the portal runs checks in. Puls's own `FetchUrl` calls are now scored as hosts too: without the cook it
+  reads the shops itself, and before, those fetches went uncounted.
 
 ---
 [Features](README.md) · [Plan](../plans/F25-local-cook.md)

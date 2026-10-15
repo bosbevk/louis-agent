@@ -25,13 +25,28 @@ public class BenchmarkCatalogTests
     }
 
     [Test]
-    public void TheChecks_AreTheTwoScripts()
+    public void TheChecks_AreTheScripts_TheCooksTwice()
     {
         var checks = new BenchmarkCatalog(_samples).Checks;
 
-        Assert.That(checks.Select(c => c.Id), Is.EqualTo(new[] { "cook", "delegation" }));
+        Assert.That(checks.Select(c => c.Id), Is.EqualTo(new[] { "cook", "delegation", "puls-alone" }));
         Assert.That(checks[0].Script, Is.EqualTo("samples/puls-cook-check/run_check.py"));
         Assert.That(checks[1].Script, Is.EqualTo("samples/puls-check/run_check.py"));
+        // Louis: what the cook adds, from the portal: the cook check's script, Puls alone against Puls with its cook.
+        Assert.That(checks[2].Script, Is.EqualTo("samples/puls-cook-check/run_check.py"));
+        Assert.That(checks[2].Arguments, Is.EqualTo(new[] { "--personalities" }));
+        Assert.That(checks[0].Arguments, Is.Empty);
+    }
+
+    [Test]
+    public void APulsAloneRun_IsItsOwnChecks_NotTheCooks()
+    {
+        // Its folder must not start with a cook prefix ("sample-output-cook"), or the page would file it under the cook.
+        Save("sample-output-puls-alone-20261015-210000", "results.json", """{"puls-only":{"all":{"cost":0.01}}}""");
+
+        var runs = new BenchmarkCatalog(_samples).SavedRuns();
+
+        Assert.That(runs.Single().Check, Is.EqualTo("puls-alone"));
     }
 
     [Test]

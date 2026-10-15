@@ -27,14 +27,28 @@ public class BenchmarkRunnerTests
         Directory.Delete(_workspace, recursive: true);
     }
 
-    /// <summary>A runner whose "cook" check is <paramref name="python"/> saved under samples/.</summary>
-    private BenchmarkRunner Runner(string python, string pulsApi = "http://x/")
+    /// <summary>A runner whose "cook" check is <paramref name="python"/> saved under samples/, with <paramref name="arguments"/> of its own.</summary>
+    private BenchmarkRunner Runner(string python, string pulsApi = "http://x/", IReadOnlyList<string>? arguments = null)
     {
         string script = Path.Combine("samples", "fake-check", "run_check.py");
         Directory.CreateDirectory(Path.Combine(_workspace, "samples", "fake-check"));
         File.WriteAllText(Path.Combine(_workspace, script), python);
-        var catalog = new BenchmarkCatalog(Path.Combine(_workspace, "samples"), [new BenchmarkCheck("cook", "Die kokkontrole", script.Replace('\\', '/'), ["sample-output-cook"])]);
+        var catalog = new BenchmarkCatalog(Path.Combine(_workspace, "samples"),
+            [new BenchmarkCheck("cook", "Die kokkontrole", script.Replace('\\', '/'), ["sample-output-cook"], arguments ?? [])]);
         return _runner = new BenchmarkRunner(catalog, _workspace, pulsApi, Python);
+    }
+
+    [Test]
+    public async Task ACheckArguments_FollowTheRepeat_EachItsOwn()
+    {
+        // One script, two checks (the cook's, and Puls alone against Puls with its cook): the check's own arguments.
+        var runner = Runner("import sys\nprint(sys.argv[4:])", arguments: ["--personalities", "two words"]);
+
+        BenchmarkRun run = runner.Start("cook", repeat: 1)!;
+        var lines = new List<string>();
+        await foreach (string line in runner.EventsAsync(run.Id)) lines.Add(line);
+
+        Assert.That(lines, Is.EqualTo(new[] { "['--personalities', 'two words']" }), "an argument list, never a shell string");
     }
 
     private const string Echo = """

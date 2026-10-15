@@ -87,3 +87,13 @@ folder is mounted, so the role and the rows need no rebuild).
   `default.md`. (3) The check scores both: `relayed` (the cook's tally line and every list row are in Puls's answer,
   from the specialist's text the check now captures) and the rating read from the table's source column. Every step
   has its prompt test first; the golden request snapshot is regenerated with each.
+- **2026-10-15, a benchmark of what the cook adds** (Louis: "generate me a benchmark for puls which between only
+  -puls and -puls -puls-cook"; the id and build-only his choices): the cook check gets a `--personalities` switch
+  that runs the same conversations in two modes, `puls-only` (`web` only: Puls can't delegate, so it cooks itself)
+  and `puls-cook` (`agents` and `web`). The score counts Puls's own fetches too (in `puls-only` it fetches itself),
+  the expected role follows the toolsets, and Louis's Stellenbosch question (two shops, links, branches, the cheapest
+  basket) is a fourth conversation. In the portal too (Louis: "must be here mos"): a check carries arguments of its
+  own, and *Puls alleen teen Puls met die kok* (`puls-alone`) runs the cook check's script with `--personalities`.
+  First built as a restart with `PERSONALITIES_ENABLED=puls`; dropped because the portal runs checks inside the
+  container that would restart (Louis chose toolsets over a restart or a runtime switch). Checked with `--report` on
+  saved runs; the paid run is Louis's to start.

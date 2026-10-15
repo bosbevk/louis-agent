@@ -16,6 +16,11 @@ Several runs (each in run-N/, with summary.json and summary.md over them):
     python samples/puls-cook-check/run_check.py samples/sample-output-puls-cook --repeat 3
 Scores and totals again from a saved run, without model calls:
     python samples/puls-cook-check/run_check.py --report samples/sample-output-puls-cook
+
+What the cook adds (`--personalities`): the same conversations with Puls alone (`puls-only`, `web` only, so it can't
+delegate and cooks itself) and Puls with its cook (`puls-cook`, `agents` and `web`). A toolset is chosen per session,
+so nothing restarts and the portal can run it too (its *Puls alleen teen Puls met die kok*):
+    python samples/puls-cook-check/run_check.py samples/sample-output-puls-alone --personalities
 """
 import json
 import os
@@ -42,6 +47,12 @@ CONVERSATIONS = [
         "What should I cook tonight in Pretoria for two? I have about an hour. Give me the recipe and what it'll cost at the shops.",
         "Swap the meat for chicken. What does the shopping list look like now?",
     ]),
+    # Louis's own question (2026-10-15): two shops' prices with their links, one shop for everything, the branches.
+    ("cook-shops", "Stellenbosch, Wes-Kaap, Suid-Afrika", [
+        "Ek is in Stellenbosch, kook vanaand vir vier mense en het so 'n uur. Wat moet ek maak? Gee my die resep, elke "
+        "bestanddeel se prys by twee winkels hier naby met die skakel waar jy die prys gekry het, by watter winkel ek "
+        "alles in een slag kry, die takke se adresse, en wat die goedkoopste mandjie kos.",
+    ]),
     # The control: a plain web question, which must still go to the researcher.
     ("control-web", "Stellenbosch, Wes-Kaap, Suid-Afrika", [
         "Wat is die huidige prima uitleenkoers in Suid-Afrika, en wanneer het dit laas verander? Gee jou bronne.",
@@ -52,6 +63,16 @@ MODES = {
     "delegated": ["agents"],        # Puls with agents only: the comparison (as built before F29)
     "puls-web": ["agents", "web"],  # Puls as built (F29): the web itself, cooking to the cook
 }
+# --personalities: what the cook adds. Without `agents` Puls can't delegate, so it cooks and prices itself.
+PERSONALITY_MODES = {
+    "puls-only": ["web"],
+    "puls-cook": ["agents", "web"],
+}
+
+
+def cook_on(toolsets):
+    """Whether a mode's Puls can hand cooking to the cook: only with the agents toolset."""
+    return "agents" in toolsets
 
 SHOPS = ("checkers.co.za", "pnp.co.za", "woolworths.co.za", "spar.co.za", "shoprite.co.za")
 RAND = re.compile(r"\bR\s?\d[\d\s,.]*")
@@ -94,7 +115,7 @@ def converse(toolsets, run, task, location, messages, mode=""):
 
 
 def send(session, message, mode="", task="", turn=0):
-    text, tools, delegations, specialist_calls, error = [], [], [], [], None
+    text, tools, calls, delegations, specialist_calls, error = [], [], [], [], [], None
     thinking, specialist_thinking = [], []   # what Puls and its specialist thought before answering (Louis: "I need to see the thinking")
     with call("POST", f"sessions/{session}/messages", {"message": message}, stream=True) as reply:
         event = None
@@ -113,6 +134,7 @@ def send(session, message, mode="", task="", turn=0):
                 block = data["content_block"]
                 tools.append(block["name"])
                 arguments = block.get("input") or {}
+                calls.append({"name": block["name"], "input": arguments})   # Puls's own, for the hosts it read itself
                 if block["name"] == "StartSubSession":
                     delegations.append({"call": "start", "toolsets": arguments.get("toolsets"), "personality": arguments.get("personality")})
                 elif block["name"] == "ContinueSubSession":
@@ -133,7 +155,7 @@ def send(session, message, mode="", task="", turn=0):
     answer = "".join(text).strip()
     # The handle a kept sub-session got, from the footer Puls's tool result carries into its answer only if it quotes
     # it; the reliable source is the next turn's ContinueSubSession call, scored in `score`.
-    return {"answer": answer, "tools": tools, "delegations": delegations, "specialist_calls": specialist_calls, "error": error,
+    return {"answer": answer, "tools": tools, "calls": calls, "delegations": delegations, "specialist_calls": specialist_calls, "error": error,
             "thinking": "".join(thinking).strip(), "specialist_thinking": "".join(specialist_thinking).strip()}
 
 
@@ -163,17 +185,19 @@ def priced(answer):
     return len(good), len(rows)
 
 
-def score(task, turns):
+def score(task, turns, cook=True):
     """What the run says about one conversation, as numbers: the role of each turn, the hosts, rand, unknown, follow-up,
     and the cook's rating: priced ingredients over ingredients."""
     first, follow = turns[0], (turns[1] if len(turns) > 1 else None)
     n_priced, n_items = priced(first["answer"])
     starts = [d for d in first["delegations"] if d["call"] == "start"]
-    fetched = hosts(first["specialist_calls"] + (follow["specialist_calls"] if follow else []))
+    # Puls's own fetches count too: with no cook (puls-only) it reads the shops itself. Runs saved before have none.
+    fetched = hosts([c for t in turns for c in t.get("calls", []) + t["specialist_calls"]])
     local = [h for h in fetched if h.endswith(".za")]        # South African sites: a recipe site counts, a US one doesn't
     shops = [h for h in fetched if h.endswith(SHOPS)]        # where the prices must come from
     # F29: only the cook is on; the control question is right when Puls answers it itself (before F29: the researcher).
-    expected_role = "puls-cook" if task.startswith("cook") else None
+    # --personalities: without the cook, Puls answers the cooking questions itself.
+    expected_role = "puls-cook" if task.startswith("cook") and cook else None
     result = {
         "role": starts[0]["personality"] if starts else None,
         "routed_right": (starts[0]["personality"] == expected_role) if starts else (expected_role is None and not first["error"]),
@@ -214,10 +238,10 @@ def summarise(records, tasks):
     return {"all": total(records), "own": total(own), "specialists": total(sub), "per_task": per_task}
 
 
-def run_once(out):
+def run_once(out, modes):
     stamp = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
     results = {}
-    for mode, toolsets in MODES.items():
+    for mode, toolsets in modes.items():
         run = f"puls-cook-{mode}-{stamp}"
         os.makedirs(os.path.join(out, mode), exist_ok=True)
         conversations = []
@@ -228,7 +252,7 @@ def run_once(out):
                 turns = converse(toolsets, run, key, location, messages, mode)
             except Exception as ex:  # a dead container, a timeout: the run goes on and the README says so
                 turns = [{"question": m, "answer": "", "tools": [], "delegations": [], "specialist_calls": [], "error": repr(ex), "seconds": 0} for m in messages]
-            scored = score(key, turns)
+            scored = score(key, turns, cook_on(toolsets))
             conversations.append({"task": key, "location": location, "turns": turns, "score": scored})
             print(f"{mode:9} {key:12} role={scored['role']} routed={scored['routed_right']} hosts={scored['hosts']} "
                   f"follow_up={scored.get('follow_up')} seconds={[t['seconds'] for t in turns]}", flush=True)
@@ -293,14 +317,14 @@ def write_results(out, results):
     print("\n".join(lines), flush=True)
 
 
-def main(out, repeat):
+def main(out, repeat, modes):
     if repeat == 1:
-        run_once(out)
+        run_once(out, modes)
         return
     runs = []
     for n in range(1, repeat + 1):
         print(f"--- run {n} of {repeat}", flush=True)
-        runs.append(run_once(os.path.join(out, f"run-{n}")))
+        runs.append(run_once(os.path.join(out, f"run-{n}"), modes))
     summarise_runs(out, runs)
 
 
@@ -310,10 +334,13 @@ def summarise_runs(out, runs):
     def spread(values):
         return {"mean": round(statistics.mean(values), 6), "min": round(min(values), 6), "max": round(max(values), 6)}
 
+    # The conversations as the runs saved them, so a run from before a conversation was added still reports.
+    saved = next(iter(runs[0].values()))["conversations"]
+    tasks = [(c["task"], len(c["turns"])) for c in saved]
     summary = {}
     for mode in runs[0]:
         per_task = {}
-        for key, _, _ in CONVERSATIONS:
+        for key, _ in tasks:
             scores = [next(c["score"] for c in r[mode]["conversations"] if c["task"] == key) for r in runs]
             ratios = [s["priced_ratio"] for s in scores if s.get("priced_ratio") is not None]
             per_task[key] = {
@@ -332,11 +359,11 @@ def summarise_runs(out, runs):
     lines = [f"# {n} runs per mode", "", "| Mode | Cost, mean (lowest–highest) |", "|---|---:|"]
     lines += [f"| {mode} | ${s['cost']['mean']:.4f} ({s['cost']['min']:.4f}–{s['cost']['max']:.4f}) |" for mode, s in summary.items()]
     lines += ["", f"| Conversation | Mode | Routed right | Only SA sources | Priced at a shop | Priced ingredients, mean | Follow-up continued | Errors | Cost, mean (lowest–highest) |", "|---|---|---:|---:|---:|---:|---:|---:|---:|"]
-    for key, _, messages in CONVERSATIONS:
+    for key, messages in tasks:
         for mode, s in summary.items():
             t = s["per_task"][key]
             rating = f"{t['priced_ratio']:.0%}" if t.get("priced_ratio") is not None else "—"
-            lines.append(f"| {key} | {mode} | {t['routed_right']}/{n} | {t['sources_local']}/{n} | {t['priced_at_shops']}/{n} | {rating} | {(str(t['continued']) + '/' + str(n)) if len(messages) > 1 else '—'} | "
+            lines.append(f"| {key} | {mode} | {t['routed_right']}/{n} | {t['sources_local']}/{n} | {t['priced_at_shops']}/{n} | {rating} | {(str(t['continued']) + '/' + str(n)) if messages > 1 else '—'} | "
                          f"{t['errors']}/{n} | ${t['cost']['mean']:.4f} ({t['cost']['min']:.4f}–{t['cost']['max']:.4f}) |")
     with open(os.path.join(out, "summary.md"), "w", encoding="utf-8") as file:
         file.write("\n".join(lines) + "\n")
@@ -365,8 +392,8 @@ def rescore(out):
         with open(os.path.join(out, mode, "usage.jsonl"), encoding="utf-8") as file:
             records = [json.loads(line) for line in file]
         for c in results[mode]["conversations"]:
-            c["score"] = score(c["task"], c["turns"])
-        results[mode].update(summarise(records, [k for k, _, _ in CONVERSATIONS]))
+            c["score"] = score(c["task"], c["turns"], cook_on(results[mode]["toolsets"]))
+        results[mode].update(summarise(records, [c["task"] for c in results[mode]["conversations"]]))
     return results
 
 
@@ -380,4 +407,8 @@ if __name__ == "__main__":
             i = arguments.index("--repeat")
             repeat = int(arguments[i + 1])
             del arguments[i:i + 2]
-        main(arguments[0] if arguments else "samples/sample-output-puls-cook", repeat)
+        modes = MODES
+        if "--personalities" in arguments:
+            arguments.remove("--personalities")
+            modes = PERSONALITY_MODES
+        main(arguments[0] if arguments else "samples/sample-output-puls-cook", repeat, modes)
