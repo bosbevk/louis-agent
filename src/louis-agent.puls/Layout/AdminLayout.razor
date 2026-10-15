@@ -3,7 +3,8 @@
    sidebar of sections and a content column; a page puts its header and cards in @Body. Reference: the page anatomy
    AdminLTE and Tabler share (sidebar, page header with actions, cards); none of their files. *@
 
-<div class="app admin">
+@* Its own root class, not .app: the chat's grid rules (the saved sidebar width, .sidebar-hidden) must not reach here. *@
+<div class="admin-shell">
     <header class="topbar d-lg-none">
         <button class="icon menu-button" type="button" data-bs-toggle="offcanvas" data-bs-target="#admin-sidebar" aria-controls="admin-sidebar" aria-label="Maak die kieslys oop">☰</button>
         <div class="brand"><PulsLogo /></div>
