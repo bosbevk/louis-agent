@@ -144,5 +144,13 @@ follow-up each and the prime rate as the control, in two modes.
   A continue costs the same as Puls's own answer (about $0.001: cache reads on the kept prefix), so the rule can be
   firmer at no cost.
 
+**The same afternoon, one run from the admin portal** (F27), after Tavily replaced DuckDuckGo, `ReadRenderedPage` was
+added for JavaScript product pages, and the follow-up rule was made firm
+([samples/sample-output-cook-20261015-130521/](../samples/sample-output-cook-20261015-130521/README.md)): no search
+refused, prices read from Checkers product pages with 2 and 0 unconfirmed marks on the meals (was 20 and 20), the
+branches from OpenStreetMap, and **every follow-up continued the same cook, 4 of 4**, with `web` on Puls too (was 0 of
+6). Cost $0.0377 delegated and $0.0404 with `web`, dearer than the morning's $0.023 because the cook now reads real
+pages and the follow-ups do real work.
+
 ---
 [Docs index](README.md) · Related: [Features](features/README.md) · [Cost write-up](learning/13-cost-and-token-economics.md)
