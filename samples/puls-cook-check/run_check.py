@@ -75,7 +75,8 @@ def converse(toolsets, run, task, location, messages, mode=""):
     try:
         for n, message in enumerate(messages, 1):
             started = time.time()
-            turn = {"question": message, **send(session, message)}
+            progress("question", mode=mode, task=task, turn=n, text=message)
+            turn = {"question": message, **send(session, message, mode, task, n)}
             turn["seconds"] = round(time.time() - started, 1)
             turns.append(turn)
             starts = [d for d in turn["delegations"] if d["call"] == "start"]
@@ -90,7 +91,7 @@ def converse(toolsets, run, task, location, messages, mode=""):
     return turns
 
 
-def send(session, message):
+def send(session, message, mode="", task="", turn=0):
     text, tools, delegations, specialist_calls, error = [], [], [], [], None
     thinking, specialist_thinking = [], []   # what Puls and its specialist thought before answering (Louis: "I need to see the thinking")
     with call("POST", f"sessions/{session}/messages", {"message": message}, stream=True) as reply:
@@ -103,6 +104,9 @@ def send(session, message):
             if not line.startswith("data: ") or not event:
                 continue
             data = json.loads(line[6:])
+            # Every stream event, forwarded as it arrives, so the portal can show the conversation unfolding the way the
+            # chat does (Louis: "show me as if I'm typing it").
+            progress("sse", mode=mode, task=task, turn=turn, type=event, data=data)
             if event == "content_block_start" and data.get("content_block", {}).get("type") == "tool_use":
                 block = data["content_block"]
                 tools.append(block["name"])

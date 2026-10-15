@@ -1311,3 +1311,8 @@ html:has(.landing) { scroll-behavior: smooth; }
 .check-card .chevron { width: 8px; height: 8px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(45deg); transition: transform .2s var(--ease); margin: 0 4px 3px; }
 .check-card[open] .chevron { transform: rotate(-135deg); margin-bottom: -3px; }
 .check-card:not([open]) { gap: 0; }
+/* The live run's conversations, rendered by the chat's TurnView; while a run goes the page is one column. */
+.admin-cols.single { grid-template-columns: minmax(0, 1fr); }
+.live-chat { display: flex; flex-direction: column; gap: 14px; padding: 14px 0 6px; border-top: 1px solid var(--border); }
+.live-chat-head { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 13px; }
+.live-chat .user-message { max-width: 70%; }

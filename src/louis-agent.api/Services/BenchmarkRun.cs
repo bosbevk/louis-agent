@@ -9,7 +9,9 @@ namespace LouisAgent.Api.Services;
 /// </summary>
 public sealed class BenchmarkRun(string id, string check, string folder, int repeat)
 {
-    private const int MaxLines = 2_000;
+    // The cook check forwards every stream event of its conversations as a line (the portal replays them as the chat),
+    // a few thousand per conversation; a late listener needs the whole story.
+    private const int MaxLines = 100_000;
 
     private readonly Lock _lock = new();
     private readonly List<string> _lines = [];

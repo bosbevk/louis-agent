@@ -47,7 +47,7 @@ else if (_data is { } data)
 {
   @* Two columns (Louis: the list "will get long, move it to the right"): the checks, the live run and the opened run
      in the main column; the saved runs as a compact list in a side column that scrolls on its own. *@
-  <div class="admin-cols">
+  <div class="admin-cols @(Running ? "single" : "")">
   <div class="admin-col-main">
     <div class="cards">
         @foreach (var check in data.Checks)
@@ -87,6 +87,19 @@ else if (_data is { } data)
                 <span class="work-status">@(live.Status switch { "running" => "Besig", "done" => "Klaar", _ => "Misluk" })</span>
             </div>
             <p class="muted">@live.Repeat @(live.Repeat == 1 ? "herhaling" : "herhalings") · begin @live.StartedAt.ToLocalTime().ToString("HH:mm:ss")@(live.ExitCode is { } code && code != 0 ? $" · die skrip het met kode {code} geëindig" : "")</p>
+
+            @* The conversations as they unfold (Louis: "show me as if I'm typing it"): the script forwards every stream
+               event, and the chat's own TurnView renders them, thinking, specialist cards and the answer typing out. *@
+            @foreach (var conversation in _liveChats)
+            {
+                <section class="live-chat">
+                    <div class="live-chat-head"><span class="toolset-chip">@conversation.Mode</span><code>@conversation.Task</code></div>
+                    @foreach (var turn in conversation.Turns)
+                    {
+                        <TurnView Turn="turn" Streaming="@(live.Status == "running" && conversation == _liveChats[^1] && turn == conversation.Turns[^1])" Currency="Currency.Current" />
+                    }
+                </section>
+            }
 
             @if (_events.Count > 0)
             {
@@ -174,7 +187,7 @@ else if (_data is { } data)
     }
   </div>
 
-  <aside class="admin-col-side">
+  <aside class="admin-col-side @(Running ? "d-none" : "")">
     <section class="card-p runs-list">
         <div class="card-head"><strong>Gestoorde lopies</strong><span class="muted">@data.Runs.Count</span></div>
         @if (data.Runs.Count == 0)
@@ -214,6 +227,40 @@ else if (_data is { } data)
     private LiveRun? _run;
     private readonly List<string> _log = [];
     private readonly List<JsonElement> _events = [];
+
+    /// <summary>One conversation of the live run, as the chat holds one: its turns, built from the forwarded stream events.</summary>
+    private sealed record LiveChat(string Mode, string Task, List<Turn> Turns);
+
+    private readonly List<LiveChat> _liveChats = [];
+    private bool _renderPending;
+
+    /// <summary>Applies a forwarded event to the live conversations; returns false for the table's kinds.</summary>
+    private bool ApplyLive(JsonElement e)
+    {
+        string kind = Str(e, "event") ?? "";
+        if (kind is not ("question" or "sse")) return false;
+        string mode = Str(e, "mode") ?? "", task = Str(e, "task") ?? "";
+        var chat = _liveChats.FirstOrDefault(c => c.Mode == mode && c.Task == task);
+        if (chat is null) _liveChats.Add(chat = new LiveChat(mode, task, []));
+
+        if (kind == "question")
+        {
+            chat.Turns.Add(new Turn { UserText = Str(e, "text") ?? "" });
+        }
+        else if (chat.Turns.Count > 0 && e.TryGetProperty("data", out var data) && Str(e, "type") is { } type)
+        {
+            TurnStream.Apply(chat.Turns[^1], new AgentStreamEvent(type, data));
+        }
+        return true;
+    }
+
+    /// <summary>A render at most every 80 ms while events pour in, as the chat does.</summary>
+    private void RenderThrottled()
+    {
+        if (_renderPending) return;
+        _renderPending = true;
+        _ = Task.Delay(80).ContinueWith(_ => InvokeAsync(() => { _renderPending = false; StateHasChanged(); }));
+    }
 
     private static string? Str(JsonElement e, string name) =>
         e.TryGetProperty(name, out var v) ? v.ValueKind switch
@@ -292,6 +339,7 @@ else if (_data is { } data)
         _run = run;
         _log.Clear();
         _events.Clear();
+        _liveChats.Clear();
         StateHasChanged();
         try
         {
@@ -302,9 +350,12 @@ else if (_data is { } data)
                     _run = ReadLive(JsonDocument.Parse(line).RootElement);
                     break;
                 }
-                if (line.StartsWith('@') && TryParse(line[1..], out var e)) _events.Add(e);
+                if (line.StartsWith('@') && TryParse(line[1..], out var e))
+                {
+                    if (!ApplyLive(e)) _events.Add(e);
+                }
                 else _log.Add(line);
-                StateHasChanged();
+                RenderThrottled();
             }
         }
         catch (AgentApiException ex)
