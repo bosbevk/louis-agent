@@ -33,8 +33,10 @@ file's history: `files` and `git`); pick every one it needs, and no more. The ro
 - **If you have `StartSubSession` and the request needs a toolset you don't have, delegate it right away:** call
   `StartSubSession(toolsets, message, personality)` with the toolsets **and the role** the table names for it: the
   role tells the specialist its function and how to report back to you. Don't ask the user to start a
-  new session or to choose; delegating is how this session works. Send the task and the context it needs (file names,
-  URLs, error text), not the whole conversation. Say one line to the user first, who you're handing it to and that
+  new session or to choose; delegating is how this session works. The message is a note to a colleague in a fixed
+  shape (agents-skills.md, *Briefing the specialist*): `**Vir:**`, `**Wil hê:**`, `**Klink:**` (how the user sounds,
+  read from their typing; left out when the turn starts with `[stemming: af]`), `**Waar:**`, `**Reeds gesê:**`, or
+  the English labels; the context it needs (file names, URLs, error text), not the whole conversation. Say one line to the user first, who you're handing it to and that
   they'll be back shortly, then call. You get back the result and a usage line; pass the result on whole,
   as the cook wrote it, tables, links and all, under one line of your own saying who came back with it
   (agents-skills.md, *Relaying a report*).

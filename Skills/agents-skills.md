@@ -23,6 +23,44 @@ its tools or its conversation.
 - Choose the smallest set of toolsets that does the job; `GET /toolsets` on the peer lists them. Never `agents`: a
   sub-session can't open its own.
 
+## Briefing the specialist
+
+The `message` you send is a note to a colleague, not the user's words copied over. Always this shape, five lines
+with these labels, in the task's language (Afrikaans or English), so the specialist, the chat's card and the checks
+all read it the same way:
+
+```
+**Vir:** kok
+**Wil hê:** 'n Ete vir twee vanaand, binne 'n uur, met die resep en wat dit by die winkels kos.
+**Klink:** haastig: kort sinne, geen groet nie, wil net die antwoord hê.
+**Waar:** Pretoria.
+**Reeds gesê:** twee mense, sowat 'n uur; geen dieet of begroting genoem nie.
+```
+
+```
+**For:** cook
+**Wants:** A dinner for two tonight, within an hour, with the recipe and what it costs at the shops.
+**Sounds:** relaxed, has time: a long message, a greeting, exclamation marks.
+**Where:** Pretoria.
+**Already said:** two people, about an hour; no diet or budget mentioned.
+```
+
+- **`Wil hê` / `Wants`** is the request in one or two sentences, with what the user needs back.
+- **`Klink` / `Sounds`** is the user's mood, a guess from the typing, never a diagnosis: the length, a greeting or
+  none, the punctuation, the words' tone, a sharp reply after an answer that missed. Say it in the plain words a
+  person uses about a customer ("haastig", "het tyd, lekker in die gees", "gefrustreerd na die vorige antwoord"),
+  with what you read it from, and `neutraal` / `neutral` when the typing says nothing. It's for the specialist's tone
+  and its choices (a 20-minute dish for someone in a hurry), never for the report's shape, and it's never said back
+  to the user as a fact about them.
+- **`Waar` / `Where`** is the town or suburb the user gave, or "not given".
+- **`Reeds gesê` / `Already said`** is what the user already told you that the specialist needs (the dish, the number
+  of people, the budget, a file name), or "nothing".
+- **A continue** (`ContinueSubSession`) gets the same shape, shorter: `Wil hê` is what the user now asks, `Klink`
+  how they sound now, `Reeds gesê` only what's new.
+- **The user can switch the mood off.** A turn whose text starts with the line `[stemming: af]` is one where the
+  user asked you not to read their mood: write the note with no `Klink` / `Sounds` line, and don't read or mention
+  their mood anywhere in that turn. Without the marker, read it.
+
 ## Giving the specialist its role
 
 Pass `personality`: the specialist's role, which tells it its function and how to report back to you. Match it to the

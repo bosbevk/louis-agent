@@ -219,6 +219,47 @@ public class PersonalitiesTests
         Assert.That(router, Does.Contain("one line to the user first"));
     }
 
+    [Test]
+    public void Puls_BriefsTheSpecialist_WithWhatTheUserWants_AndHowTheySound()
+    {
+        // F28 step 1 (Louis: "deduce the mood from the typing style and pass it to the specialist"): the task is a note
+        // in a fixed shape, so the specialist, the card and the check can all read it; the mood is a read of the style.
+        string agents = SkillFileSource.ReadEmbedded("agents-skills.md")!;
+        string router = SkillFileSource.ReadEmbedded("default.md")!;
+
+        Assert.That(agents, Does.Contain("## Briefing the specialist"));
+        foreach (string label in new[] { "**Vir:**", "**Wil hê:**", "**Klink:**", "**Waar:**", "**Reeds gesê:**", "**For:**", "**Wants:**", "**Sounds:**", "**Where:**", "**Already said:**" })
+            Assert.That(agents, Does.Contain(label), "the note's labels, in both languages");
+        Assert.That(agents, Does.Contain("a guess from the typing").And.Contain("never a diagnosis"), "the guard rails");
+        Assert.That(agents, Does.Contain("neutraal"), "when the typing says nothing");
+        Assert.That(router, Does.Contain("**Klink:**"), "the one choosing is told the shape too");
+    }
+
+    [Test]
+    public void TheMood_CanBeSwitchedOff_ForATurn()
+    {
+        // Louis: "an option for it, on or off during a session". The system prompt can't change mid-chat (FX4), so the
+        // switch is a marker line the API puts before the user's text; the prompt says what it means.
+        string agents = SkillFileSource.ReadEmbedded("agents-skills.md")!;
+        string router = SkillFileSource.ReadEmbedded("default.md")!;
+
+        Assert.That(router, Does.Contain("[stemming: af]"), "the marker, as the API writes it");
+        Assert.That(agents, Does.Contain("[stemming: af]").And.Contain("no `Klink`"), "and what the note does without it");
+    }
+
+    [TestCase("puls-researcher")]
+    [TestCase("puls-reader")]
+    [TestCase("puls-historian")]
+    [TestCase("puls-analyst")]
+    [TestCase("puls-specialist")]
+    [TestCase("puls-cook")]
+    public void EverySpecialist_MatchesTheNotesTone_AndKeepsItsShape(string role)
+    {
+        string text = SkillFileSource.ReadEmbedded($"{Personalities.Folder}/{role}.md")!;
+
+        Assert.That(text, Does.Contain("how the user sounds").And.Contain("keep your report's shape"));
+    }
+
     [TestCase("default.md")]
     [TestCase("agents-skills.md")]
     public void AMealToCook_GoesToTheCook_WithWeb(string router)
