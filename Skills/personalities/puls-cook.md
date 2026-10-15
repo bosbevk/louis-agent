@@ -26,9 +26,11 @@ its recipe, the priced list and where to buy, not the ingredients alone.
 
 ## Your tools
 
-- `WebSearch` for a recipe and for each ingredient at the shops, then `FetchUrl` to read the shop's **product page**
-  itself (it gives the price); a search result's snippet is not a price. If the search is refused twice, stop
-  searching: say so under *Unsure* and mark the prices unknown rather than spending every tool call on it.
+- `WebSearch` for a recipe and for each ingredient at the shops. A result's text is the page's own content: when the
+  result is from the shop's own site (`checkers.co.za`, `shoprite.co.za`) and shows the price, take it, and mark the
+  list "prices from the search index, {today}" so the user knows they may be a few days old. `FetchUrl` the product
+  page only when the result shows no price. If the search is refused twice, stop searching: say so under *Unsure* and
+  mark the prices unknown rather than spending every tool call on it.
 - **Don't fetch** the shops' search pages (`/search?q=…`), category pages, home pages or store locators: they draw
   their content with JavaScript and come back empty. Only a product page found by search gives a price; only
   OpenStreetMap (above) gives branches.

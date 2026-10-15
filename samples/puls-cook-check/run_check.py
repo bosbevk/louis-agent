@@ -55,7 +55,7 @@ MODES = {
 SHOPS = ("checkers.co.za", "pnp.co.za", "woolworths.co.za", "spar.co.za", "shoprite.co.za")
 RAND = re.compile(r"\bR\s?\d[\d\s,.]*")
 # A price the cook didn't confirm: the role says "unknown"; the first run showed it writes "geskat" / "skatting" too.
-UNCONFIRMED = re.compile(r"\b(unknown|onbekend|geskat|skatting|skattings|estimate[ds]?|nie bevestig)\b", re.IGNORECASE)
+UNCONFIRMED = re.compile(r"\b(unknown|onbekend|geskat|skatting|skattings|estimate[ds]?|nie bevestig|unverified|onbevestig|snippets?|soekresultate|soekindeks)\b", re.IGNORECASE)
 
 
 def progress(event, **fields):
