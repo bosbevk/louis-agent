@@ -164,6 +164,6 @@ in the [docs index](docs/README.md).
 
 ## License
 
-[GNU AGPL-3.0](LICENSE) (since 2026-10-15; MIT before). Free to use, study, change and share. The one condition that
-matters here: anyone who changes it and runs it as a service for others must publish their changes under the same
-licence, so improvements to louis-agent and Puls stay open. Why: [ADR 0015](docs/adr/0015-licence-agpl.md).
+**All rights reserved** ([LICENSE](LICENSE), since 2026-10-15). The code is public to read, but you may not use, copy,
+change, share or host it without written permission; open an issue to ask. Versions released before under MIT or the
+AGPL-3.0 keep that licence. Why: [ADR 0016](docs/adr/0016-licence-all-rights-reserved.md).
