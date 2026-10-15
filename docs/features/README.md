@@ -40,7 +40,7 @@ feature replaces older backlog wording, that wording no longer appears anywhere 
 | [F24](F24-landing-motion.md) | Landing motion: the landing page as a moving page, and the app's empty chat, Werk panel, loading and an *Animasies* switch with it | done | — | — | F20, F5 | — |
 | [F25](F25-local-cook.md) | Local cook: Puls's first local specialist, a South African meal priced at the shops near the user; routing and local sources measured | built | — | — | F21, F22, F5 | — |
 | [F26](F26-specialist-follow-up.md) | Specialist follow-up: a sub-session stays open for its chat, and Puls continues it by handle instead of starting a specialist cold | built | — | — | F5, F21, F22 | — |
-| [F27](F27-admin-portal.md) | Admin portal: an *Admin* menu into a portal of our own (sidebar and cards on Puls's variables) whose first page runs and reads the benchmarks; built to take more pages | in progress | — | — | F20, F25 | — |
+| [F27](F27-admin-portal.md) | Admin portal: an *Admin* menu into a portal of our own (sidebar and cards on Puls's variables) whose first page runs and reads the benchmarks; built to take more pages | built | — | — | F20, F25 | — |
 
 ## Milestones
 

@@ -1,6 +1,6 @@
 # F27 · Admin portal: a place to run and read the benchmarks, built to grow
 
-> **Status:** in progress (2026-10-15), on `claude/project-thread-381vmw` · **Milestone:** — · **Depends on:** F20 (Puls's app and look), F25 (the cook check), F1–F3 (the ledger the checks read)
+> **Status:** built (2026-10-15), on `claude/project-thread-381vmw`; open: a real run from the page (Louis's go) · **Milestone:** — · **Depends on:** F20 (Puls's app and look), F25 (the cook check), F1–F3 (the ledger the checks read)
 >
 > **In the TODO:** **F27 Admin portal** under *Web app* ([TODO](../../TODO.md)) · **Plan:** [plans/F27](../plans/F27-admin-portal.md)
 
@@ -58,7 +58,17 @@ can be compared over time.
 
 ## What the build changed
 
-*(filled in as the steps land)*
+- **The template is ours** (Louis, during the build): the layout reuses the chat's sidebar, links, offcanvas and chips,
+  with one `/* Admin portal */` section of styles; no admin kit is loaded.
+- **The key is entered on the page itself** when the API answers 401 or 403, saved where *Instellings* saves the API
+  key, so the portal can be opened without going back to the chat.
+- **A reloaded page resumes a run:** `GET /admin/benchmarks/runs/current` and a late listener gets the lines so far.
+- **Runs write to `samples/sample-output-{check}-{stamp}/`,** so the committed samples are never overwritten; the
+  listing shows them side by side with the saved ones, matched to their check by folder prefix.
+- **Python is the API container's,** already there for the `python` toolset; `BENCHMARK_API_URL` says where the script
+  reaches the API back (the container's own port by default).
+- **Not built:** the delegation check's `--repeat` output layout differs from the cook check's (it has no
+  `summary.json` for a single run); the listing reads either file.
 
 ---
 [Features](README.md) · [Plan](../plans/F27-admin-portal.md)
