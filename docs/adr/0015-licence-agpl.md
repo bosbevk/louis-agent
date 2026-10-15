@@ -1,6 +1,6 @@
 # 0015. Licence: AGPL-3.0, so improvements to a hosted Puls stay open
 
-**Status:** Accepted · **Date:** 2026-10-15 · **Recorded:** 2026-10-15
+**Status:** Superseded by [0016](0016-licence-all-rights-reserved.md) · **Date:** 2026-10-15 · **Recorded:** 2026-10-15
 
 ## Context
 
