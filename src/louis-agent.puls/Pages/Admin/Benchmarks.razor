@@ -146,6 +146,8 @@ else if (_data is { } data)
 
     protected override async Task OnInitializedAsync()
     {
+        // The key lives in the browser's storage; the chat page loads the store, but /admin can be opened directly.
+        if (!Store.Loaded) await Store.LoadAsync();
         await LoadAsync();
         await ResumeAsync();
     }
