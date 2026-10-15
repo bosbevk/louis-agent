@@ -19,7 +19,7 @@
         </span>
         @if (!Running && CostLine is { } cost)
         {
-            <span class="delegation-cost">@cost</span>
+            <span class="delegation-cost" data-count="@cost">@cost</span>
         }
         <span class="delegation-status">@StatusText</span>
         <span class="delegation-chevron" aria-hidden="true"></span>

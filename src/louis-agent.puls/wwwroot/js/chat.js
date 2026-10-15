@@ -89,16 +89,16 @@ document.addEventListener("click", (e) => {
     if (sidebar && window.bootstrap) window.bootstrap.Offcanvas.getInstance(sidebar)?.hide();
 });
 
-// The spotlight on cards follows the mouse (app.css reads --mx/--my); a .feature card also tilts a little toward it
-// (--rx/--ry/--ty, F24) and settles back when the pointer leaves.
-const litCards = ".suggestion, .delegation, .tool, .card, .q, .feature";
+// The spotlight on cards follows the mouse (app.css reads --mx/--my); a .feature card or a suggestion also tilts a
+// little toward it (--rx/--ry/--ty, F24) and settles back when the pointer leaves.
+const litCards = ".suggestion, .delegation, .tool, .card, .q, .feature", tilting = ".feature, .suggestion";
 document.addEventListener("pointermove", (e) => {
     const card = e.target.closest?.(litCards);
     if (!card) return;
     const box = card.getBoundingClientRect(), x = e.clientX - box.left, y = e.clientY - box.top;
     card.style.setProperty("--mx", x + "px");
     card.style.setProperty("--my", y + "px");
-    if (card.classList.contains("feature")) {
+    if (card.matches(tilting)) {
         card.style.setProperty("--ry", ((x / box.width) - .5) * 6 + "deg");
         card.style.setProperty("--rx", (.5 - (y / box.height)) * 6 + "deg");
         card.style.setProperty("--ty", "-4px");
@@ -106,10 +106,35 @@ document.addEventListener("pointermove", (e) => {
 }, { passive: true });
 
 document.addEventListener("pointerout", (e) => {
-    const card = e.target.closest?.(".feature");
+    const card = e.target.closest?.(tilting);
     if (!card || card.contains(e.relatedTarget)) return;
     card.style.setProperty("--rx", "0deg"); card.style.setProperty("--ry", "0deg"); card.style.setProperty("--ty", "0");
 }, { passive: true });
+
+// A cost counts up to its value (F24): every [data-count] whose value changed since it was last shown runs from the
+// old number to the new one over 900 ms, keeping the text's own prefix, decimals and separator ("R0,47", "$0.01").
+// Blazor writes the text and the attribute; it only touches the text node again when the value changes, so the frames
+// written here stay. Called after each render of the chat page; a reduced-motion browser jumps straight to the value.
+pulsUi.countCosts = () => {
+    const still = matchMedia("(prefers-reduced-motion: reduce)").matches && document.documentElement.dataset.motion !== "on";
+    for (const el of document.querySelectorAll("[data-count]")) {
+        const target = el.dataset.count;
+        if (el.dataset.shown === target) continue;
+        const m = /(\d[\d\s]*)([.,](\d+))?/.exec(target);
+        const from = parseFloat((el.dataset.shown || "0").replace(/[^\d.,]/g, "").replace(/\s/g, "").replace(",", ".")) || 0;
+        el.dataset.shown = target;
+        if (!m || still) { el.textContent = target; continue; }
+        const to = parseFloat(m[1].replace(/\s/g, "") + (m[2] ? "." + m[3] : "")), decimals = m[3]?.length ?? 0, sep = m[2]?.[0] ?? ".";
+        const prefix = target.slice(0, m.index), suffix = target.slice(m.index + m[0].length), t0 = performance.now();
+        const tick = (t) => {
+            if (el.dataset.shown !== target) return;      // a newer value took over
+            const p = Math.min(1, (t - t0) / 900), e = 1 - Math.pow(1 - p, 3), v = from + (to - from) * e;
+            el.textContent = prefix + v.toFixed(decimals).replace(".", sep) + suffix;
+            if (p < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+    }
+};
 
 // Focus a field once Blazor has drawn it (the chat search, the rename field); select its text when asked.
 pulsUi.focus = (selector, select) => {

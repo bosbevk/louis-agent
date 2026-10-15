@@ -124,10 +124,16 @@ a { color: var(--blue); text-decoration-thickness: 1px; text-underline-offset: 2
 .empty { min-height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; position: relative; isolation: isolate; }
 .empty h1 {
     font-size: clamp(30px, 4.6vw, 54px); font-weight: 800; letter-spacing: -1.2px; margin: 0 0 10px; line-height: 1.1;
-    color: var(--ink); animation: rise .7s var(--ease) both;
+    color: var(--ink);
 }
+.empty h1 .w { display: inline-block; animation: word .7s var(--ease) both; animation-delay: calc(.1s + var(--i) * 80ms); }
+/* The landing's water (Components/Water.razor), low behind the empty chat: across the conversation column, under the
+   messages, rather than over the viewport. */
+.conversation > .wave-bg { position: absolute; left: 0; right: 0; bottom: 0; height: 55%; z-index: 0; mask-image: linear-gradient(transparent, #000 50%); }
+.conversation > .messages { position: relative; z-index: 1; }
 .empty .hint { color: var(--muted); font-size: 16px; max-width: 460px; margin: 0 0 26px; animation: rise .7s .08s var(--ease) both; }
-.suggestions { display: grid; grid-template-columns: repeat(2, minmax(0, 260px)); gap: 10px; }
+.suggestions { display: grid; grid-template-columns: repeat(2, minmax(0, 260px)); gap: 10px; perspective: 1200px; }
+.suggestion { transform: rotateX(var(--rx, 0)) rotateY(var(--ry, 0)) translateY(var(--ty, 0)); }
 .suggestion {
     text-align: left; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 12px 14px; color: var(--text);
     box-shadow: var(--shadow-sm); transition: transform .25s var(--spring), box-shadow .25s var(--ease), border-color .25s;
@@ -137,7 +143,7 @@ a { color: var(--blue); text-decoration-thickness: 1px; text-underline-offset: 2
 .suggestion:nth-child(3) { animation-delay: .26s; } .suggestion:nth-child(4) { animation-delay: .32s; }
 .suggestion strong { color: var(--ink); font-size: 14px; }
 .suggestion span { color: var(--muted); font-size: 13px; }
-.suggestion:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border-color: rgba(245, 130, 32, .55); }
+.suggestion:hover { --ty: -3px; box-shadow: var(--shadow-md); border-color: rgba(245, 130, 32, .55); }
 .suggestion:hover strong { color: var(--orange-deep); }
 @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 
@@ -276,10 +282,16 @@ a { color: var(--blue); text-decoration-thickness: 1px; text-underline-offset: 2
 /* The card rolls up to its header when the specialist is done; a chevron and the cost show on that line. */
 .delegation-body { display: flex; flex-direction: column; gap: 12px; margin-top: 14px; animation: rise .35s var(--ease) both; }
 .delegation-cost { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
-.delegation-chevron { width: 26px; height: 26px; border-radius: 8px; display: grid; place-items: center; color: var(--muted); transition: transform .3s var(--ease), background .2s; }
-.delegation-chevron::before { content: "›"; font-size: 18px; line-height: 1; }
-.delegation[open] .delegation-chevron { transform: rotate(90deg); }
-.delegation-head:hover .delegation-chevron { background: var(--orange-soft); color: var(--orange-deep); }
+.delegation-chevron { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; color: var(--orange); background: rgba(245, 130, 32, .12); border: 1px solid rgba(245, 130, 32, .25); transition: transform .45s var(--spring), background .3s, color .3s, border-color .3s; }
+.delegation-chevron::before { content: "+"; font-size: 17px; line-height: 1; font-weight: 500; }
+.delegation[open] .delegation-chevron { transform: rotate(135deg); background: var(--cta); border-color: transparent; color: #fff; box-shadow: 0 8px 18px -8px rgba(245, 130, 32, .9); }
+.delegation-head:hover .delegation-chevron { background: rgba(245, 130, 32, .2); }
+.delegation[open] .delegation-head:hover .delegation-chevron { background: var(--cta); }
+/* The card, its task and its work open and close with a height transition where the browser can animate a details
+   element's content (F24); elsewhere they pop as before. */
+:root { interpolate-size: allow-keywords; }
+.delegation::details-content, .delegation-task::details-content, .delegation-work::details-content { height: 0; overflow: clip; transition: height .45s var(--ease), content-visibility .45s allow-discrete; }
+.delegation[open]::details-content, .delegation-task[open]::details-content, .delegation-work[open]::details-content { height: auto; }
 .delegation:not([open]) { box-shadow: var(--shadow-sm); }
 .delegation:not([open]):hover { box-shadow: var(--shadow-md); }
 
@@ -394,7 +406,8 @@ a { color: var(--blue); text-decoration-thickness: 1px; text-underline-offset: 2
 
 /* Delegation cards and tools */
 .delegation:hover { border-color: rgba(245, 130, 32, .35); }
-.delegation-head:hover .delegation-chevron { transform: translateX(2px); }
+.delegation-head:hover .delegation-chevron { transform: scale(1.08); }
+.delegation[open] .delegation-head:hover .delegation-chevron { transform: rotate(135deg) scale(1.08); }
 .delegation[open] .delegation-head:hover .delegation-chevron { transform: rotate(90deg) translateX(2px); }
 .toolset-chip { transition: transform .2s var(--spring), background .2s, color .2s; }
 .toolset-chip:hover { transform: translateY(-1px); background: var(--green); color: #fff; }
@@ -1123,7 +1136,7 @@ html:has(.landing) { scroll-behavior: smooth; }
 .source-dot { width: 20px; height: 20px; border-radius: 50%; display: inline-grid; place-items: center; flex: none; font-size: 10px; font-weight: 800; color: #fff; background: linear-gradient(135deg, var(--orange), var(--green-light)); box-shadow: 0 0 0 2px var(--bg); }
 
 /* The Werk panel's sources. */
-.work-sources { display: flex; flex-direction: column; gap: 4px; padding: 4px 16px 14px; }
+.work-sources { display: flex; flex-direction: column; gap: 4px; padding: 4px 16px 14px; animation: rise .4s var(--ease) both; }
 .work-sources .work-label { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
 .work-source { display: flex; align-items: center; gap: 10px; padding: 8px; border-radius: 10px; text-decoration: none; transition: background .2s; }
 .work-source:hover { background: rgba(255, 255, 255, .05); }

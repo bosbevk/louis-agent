@@ -102,6 +102,15 @@ real one).
   `:root:not([data-motion="on"])`, so one switch covers the landing and the app. Checked on Louis's Windows, where
   Animation effects is off and Chrome reports reduced motion: the pill shows, a press starts the page over with
   motion, the app's checkbox shows the choice, unticking it stills the rings again.
+- **Step 6, the app borrows from the landing, not the other way round.** The empty chat gets the landing's
+  `Water` component low across the conversation column (under the messages, only when the chat is empty and not on
+  Verken or Studio), its headline word by word, and the suggestions tilt toward the pointer like the Kenmerke cards
+  (one pointer handler in `chat.js` serves both). The delegation card's chevron is the FAQ's round plus, and the card,
+  its task and its work open and close with a height transition where the browser can animate a `details` element's
+  content (`::details-content` with `interpolate-size`, Chrome 131+; elsewhere they pop as before). Costs count up:
+  every `[data-count]` (the Werk item's cost, the Werk foot, the rolled-up card's cost, the Krediete rows) runs from
+  the number last shown to the new one after a render, keeping the text's own prefix, decimals and separator, so the
+  C# formatting stays the one source of the money text; a reduced-motion browser jumps straight to the value.
 - **The gradient line comes in without blur.** The headline animates word by word with a blur, except the gradient
   line: a `filter` on text that is `background-clip: text` makes Chrome drop the text, so that line gets the same
   rise without the blur.

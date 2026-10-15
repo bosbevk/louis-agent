@@ -79,7 +79,7 @@
             {
                 <div class="work-cost" title="@UsageFormat.Detail(usage, Currency)">
                     <span>Koste</span>
-                    <strong>@UsageFormat.Cost(usage, Currency)</strong>
+                    <strong data-count="@UsageFormat.Cost(usage, Currency)">@UsageFormat.Cost(usage, Currency)</strong>
                     <span>@usage.Requests versoeke</span>
                 </div>
             }
@@ -111,10 +111,11 @@
 @if (Chat?.Usage() is { } own)
 {
     <div class="work-foot">
-        <span title="@UsageFormat.Detail(own, Currency)">Puls <strong>@UsageFormat.Cost(own, Currency)</strong></span>
+        @* data-count: a changed cost counts up to its value (F24, pulsUi.countCosts). *@
+        <span title="@UsageFormat.Detail(own, Currency)">Puls <strong data-count="@UsageFormat.Cost(own, Currency)">@UsageFormat.Cost(own, Currency)</strong></span>
         @if (SpecialistUsage is { } specialists)
         {
-            <span title="@UsageFormat.Detail(specialists, Currency)">Spesialiste <strong>@UsageFormat.Cost(specialists, Currency)</strong></span>
+            <span title="@UsageFormat.Detail(specialists, Currency)">Spesialiste <strong data-count="@UsageFormat.Cost(specialists, Currency)">@UsageFormat.Cost(specialists, Currency)</strong></span>
         }
     </div>
 }
