@@ -95,6 +95,11 @@
                     </button>
                     <small>Name: © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a></small>
                 </div>
+                @* Animations although the system asks for less (F24): this browser's choice, applied at once. *@
+                <label class="settings-check">
+                    <input type="checkbox" checked="@_motion" @onchange="SaveMotion" />
+                    <span>Wys animasies al vra my stelsel minder@(_reducedMotion ? "" : " (jou stelsel vra nie minder nie)")</span>
+                </label>
                 <label class="settings">
                     API-sleutel
                     <input type="password" value="@Store.ApiKeyDraft" @onchange="SaveApiKey" placeholder="net as AGENT_API_KEY gestel is" />
@@ -501,6 +506,15 @@
         await JS.InvokeVoidAsync("pulsUi.saveLocation", _location);
     }
 
+    // Animations although the system asks for less (F24): this browser's choice.
+    private bool _motion, _reducedMotion;
+
+    private async Task SaveMotion(ChangeEventArgs e)
+    {
+        _motion = e.Value is true;
+        await JS.InvokeVoidAsync("pulsUi.setMotion", _motion);
+    }
+
     private async Task UseMyLocation()
     {
         _locating = true;
@@ -618,6 +632,8 @@
         Nav.LocationChanged += OnLocationChanged;
         if (!Store.Loaded) await Store.LoadAsync();
         _location = await JS.InvokeAsync<string?>("pulsUi.loadLocation");
+        _motion = await JS.InvokeAsync<bool>("pulsUi.motion");
+        _reducedMotion = await JS.InvokeAsync<bool>("pulsUi.reducedMotion");
         try
         {
             var model = await Api.GetAsync<System.Text.Json.JsonElement>("model");

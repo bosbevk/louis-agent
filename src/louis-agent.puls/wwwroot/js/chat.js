@@ -136,6 +136,15 @@ pulsUi.openSettings = () => {
     settings.scrollIntoView({ block: "end", behavior: "smooth" });
 };
 
+// Animations although the system asks for less (F24): data-motion="on" on <html> (app.css lifts its reduced-motion
+// rules under it; index.html applies it before the first paint), remembered in this browser as puls.motion.
+pulsUi.motion = () => document.documentElement.dataset.motion === "on";
+pulsUi.reducedMotion = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
+pulsUi.setMotion = (on) => {
+    if (on) document.documentElement.dataset.motion = "on"; else delete document.documentElement.dataset.motion;
+    try { if (on) localStorage.setItem("puls.motion", "on"); else localStorage.removeItem("puls.motion"); } catch { }
+};
+
 // Where the user is (F22): kept in this browser only.
 pulsUi.loadLocation = () => { try { return localStorage.getItem("puls.location"); } catch { return null; } };
 pulsUi.saveLocation = (place) => {

@@ -93,6 +93,15 @@ real one).
   The prices are the same cards as Kenmerke, the examples counting up. Vrae is an accordion built from the same
   `Questions` array as before, one open at a time, the first open; the band's rings are the app's own `pulse-bg`
   rather than a copy. The F20 landing CSS (`.mock*`, `.step`, `.features`, `.price-card*`, the `details` FAQ) is gone.
+- **Step 5, the loading count is Blazor's own.** The plan had the start screen count files through
+  `Blazor.start({ loadBootResource })`; the runtime already publishes its progress as
+  `--blazor-load-percentage-text` on `<html>` as each file arrives, so the start screen's count is that variable in a
+  `::after` and no script was written (reuse before building). The *Animasies* switch is one browser-side setting:
+  `data-motion="on"` on `<html>`, applied by `index.html` before the first paint and lifted by `pulsUi.setMotion`,
+  which the sidebar's checkbox and the landing's pill both call; `app.css` guards its two reduced-motion blocks with
+  `:root:not([data-motion="on"])`, so one switch covers the landing and the app. Checked on Louis's Windows, where
+  Animation effects is off and Chrome reports reduced motion: the pill shows, a press starts the page over with
+  motion, the app's checkbox shows the choice, unticking it stills the rings again.
 - **The gradient line comes in without blur.** The headline animates word by word with a blur, except the gradient
   line: a `filter` on text that is `background-clip: text` makes Chrome drop the text, so that line gets the same
   rise without the blur.

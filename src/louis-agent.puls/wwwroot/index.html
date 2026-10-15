@@ -32,7 +32,13 @@
 
 <body>
     <div id="app">
-        <div class="loading"><img src="brand/puls-logo-stacked-white.svg" alt="Puls" width="120" /></div>
+        <!-- The start screen (F24): the mark beats while the runtime's files load; the count is Blazor's own progress
+             (it sets --blazor-load-percentage-text on <html> as each file arrives), so it is real, not a timer. -->
+        <div class="loading" role="status" aria-live="polite">
+            <img class="loading-mark" src="brand/puls-icon-tile.svg" alt="" width="72" height="72" />
+            <img src="brand/puls-logo-white.svg" alt="Puls" width="96" />
+            <b class="loading-pct" aria-hidden="true"></b>
+        </div>
     </div>
 
     <div id="blazor-error-ui">

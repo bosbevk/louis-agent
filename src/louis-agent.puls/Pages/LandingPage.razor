@@ -255,6 +255,8 @@
         <span class="landing-footer-copy">© 2026 bosbevk · MIT-lisensie</span>
     </footer>
 </div>
+@* Shown by js/landing.js when the system asks for less motion and the user hasn't switched the animations on. *@
+<button class="motion-pill" id="motion-pill" type="button" hidden><span class="ic i-pulse" aria-hidden="true"></span>Wys die animasies <span>· jou stelsel vra minder beweging</span></button>
 
 @code {
     protected override async Task OnAfterRenderAsync(bool firstRender)

@@ -207,10 +207,13 @@ window.pulsLanding = (() => {
     return {
         start() {
             this.stop();
-            let motionOn = false; try { motionOn = localStorage.getItem("puls.motion") === "on"; } catch { }
-            still = matchMedia("(prefers-reduced-motion: reduce)").matches && !motionOn;
+            still = matchMedia("(prefers-reduced-motion: reduce)").matches && document.documentElement.dataset.motion !== "on";
             headline(); links(); reveals(); magnetic(); pinned(); demo(); faq();
             const onScroll = scrolling(); onScroll();
+            // The system asks for less motion and the viewer hasn't chosen: offer the animations; a yes applies at once
+            // (pulsUi.setMotion in chat.js remembers it) and this page starts over with them.
+            const pill = $("#motion-pill");
+            if (pill) { pill.hidden = !still; if (still) on(pill, "click", () => { window.pulsUi?.setMotion(true); pill.hidden = true; this.start(); }); }
         },
         stop() {
             cleanup.forEach(f => f()); cleanup = [];
