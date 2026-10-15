@@ -68,7 +68,7 @@ else if (_data is { } data)
                         @for (int n = 1; n <= 5; n++)
                         {
                             int count = n;
-                            <button type="button" role="radio" aria-checked="@(_repeat == count)" class="@(_repeat == count ? "active" : "")" disabled="@Running" @onclick="() => _repeat = count">@count</button>
+                            <button type="button" role="radio" aria-checked="@(RepeatFor(check.Id) == count)" class="@(RepeatFor(check.Id) == count ? "active" : "")" disabled="@Running" @onclick="() => _repeats[check.Id] = count">@count</button>
                         }
                     </div>
                     <button class="header-button" type="button" disabled="@Running" title="Spandeer geld: elke lopie vra die model" @onclick="() => StartAsync(check.Id)">
@@ -234,7 +234,10 @@ else if (_data is { } data)
     private string? _error;
     private bool _needsKey, _loading;
     private string _keyDraft = "";
-    private int _repeat = 1;
+    // Repeats per check (Louis: "when I click one the other updates"), 1 until chosen.
+    private readonly Dictionary<string, int> _repeats = [];
+
+    private int RepeatFor(string check) => _repeats.GetValueOrDefault(check, 1);
 
     private bool Running => _run?.Status == "running";
 
@@ -274,7 +277,7 @@ else if (_data is { } data)
         _error = null;
         try
         {
-            var started = ReadLive(await Api.PostAsync($"admin/benchmarks/{check}/runs", new { repeat = _repeat }));
+            var started = ReadLive(await Api.PostAsync($"admin/benchmarks/{check}/runs", new { repeat = RepeatFor(check) }));
             await FollowAsync(started);
         }
         catch (AgentApiException ex)
