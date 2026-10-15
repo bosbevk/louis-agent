@@ -10,6 +10,11 @@
   opens with a round plus, costs that count up, Blazor's real loading count, and an *Animasies* switch that overrides
   the system's reduced-motion setting in this browser ([feature](docs/features/F24-landing-motion.md),
   [plan](docs/plans/F24-landing-motion.md))
+- 2026-10-14 — **FX15 A test needed `config/.env`**: the display-currency test names the tracked rates and prices
+  files; it had relied on `config/` being found next to a `.env`, which a fresh clone lacks, so the first CI run found
+  it ([fix](docs/fixes/FX15-test-needs-env-file.md))
+- 2026-10-14 — **CI**: `.github/workflows/ci.yml` builds and tests the whole solution on Ubuntu on every push and pull
+  request (the test results kept as an artifact); a regression is caught before a review, not only locally
 - 2026-10-14 — **F5 follow-up, sub-session usage rolled up**: a delegated answer's usage line, the chat total, `/usage`
   and `GET /sessions/{id}` include the specialist's requests, tokens and cost, as one `sub_session` record per reply
   (with `requests`, the model requests it stands for) that is also a row in the parent's ledger; ledger reports list

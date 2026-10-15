@@ -23,6 +23,7 @@ record (most fixes so far taught something about a model's API).
 | [FX12](FX12-env-templates-readable.md) | `.env` templates (`.env.example`) can be read; the real `.env` files stay blocked | done | core: `SensitiveFiles` | Puls delegation check with roles, files-2 refused in both runs (2026-10-13) | (this commit) | — |
 | [FX13](FX13-counting-to-the-analyst.md) | Counting goes to the analyst (a script), and the reader hands it back instead of reading every file | done | skills: routing, reader role | Delegation check after FX10–FX12, numbers-2 at $0.278 (2026-10-14) | (this commit) | — |
 | [FX14](FX14-sub-session-prompt-budget.md) | A sub-session's prompt has a budget (80k tokens, under the 100k price step): past it the specialist answers from what it has | done | core: tool loop | Delegation check after FX10–FX12, a 298k-token sub-session (2026-10-14) | (this commit) | — |
+| [FX15](FX15-test-needs-env-file.md) | A display-currency test names the tracked rates and prices files instead of relying on a `config/.env` to find them | done | tests: `DisplayCurrencyTests` | The first CI run, on a fresh Ubuntu clone (2026-10-14) | (this commit) | — |
 
 ## Conventions
 
