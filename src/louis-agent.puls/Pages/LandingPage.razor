@@ -1,15 +1,23 @@
 @page "/"
+@inject IJSRuntime JS
+@implements IAsyncDisposable
 
 @* F20: what Puls is, before you chat. A floating pill nav, the hero with the tagline, a picture of the app, how it works,
-   the features, questions and a way in. The chat is at /gesels. *@
+   the features, questions and a way in. The chat is at /gesels. F24 makes it move: the water behind it, the section
+   index, the progress line, in-page links that land their section centred, and js/landing.js, started after the first
+   render and stopped when the page is left. *@
 
 <PageTitle>Puls · Elke vraag op pad na 'n antwoord</PageTitle>
 
-<div class="landing">
-    <div class="landing-glow" aria-hidden="true"><span></span><span></span><span></span></div>
+<Water />
+<div class="progress" id="landing-progress" aria-hidden="true"></div>
+<nav class="index" aria-label="Afdelings">
+    <a href="#top">Intro</a><a href="#demo">Die app</a><a href="#hoe">Hoe dit werk</a><a href="#kenmerke">Kenmerke</a><a href="#pryse">Pryse</a><a href="#oor">Oor ons</a><a href="#vrae">Vrae</a>
+</nav>
 
+<div class="landing">
     <header class="landing-nav">
-        <a class="brand" href="./" aria-label="Puls"><PulsLogo /></a>
+        <a class="brand" href="#top" aria-label="Puls"><PulsLogo /></a>
         <nav class="landing-links">
             <a href="#hoe">Hoe dit werk</a>
             <a href="#kenmerke">Kenmerke</a>
@@ -19,7 +27,7 @@
         <a class="pill pill-primary" href="gesels">Begin gesels</a>
     </header>
 
-    <section class="hero">
+    <section class="hero" id="top">
         <div class="hero-mark hero-mark-lg" aria-hidden="true">
             <div class="pulse-bg"><span></span><span></span><span></span><span></span></div>
             <img src="brand/puls-icon-tile.svg" alt="" width="96" height="96" />
@@ -34,7 +42,7 @@
     </section>
 
     @* A picture of the app, drawn in HTML so it stays sharp and in the theme's colours. *@
-    <section class="showcase" aria-hidden="true">
+    <section class="showcase" id="demo" aria-hidden="true">
         <div class="mock">
             <div class="mock-side">
                 <img src="brand/puls-logo-white.svg" alt="" class="mock-logo" />
@@ -69,8 +77,8 @@
     </section>
 
     <section class="section" id="hoe">
-        <span class="eyebrow">Hoe dit werk</span>
-        <h2>Een vraag, drie stappe</h2>
+        <span class="eyebrow reveal">Hoe dit werk</span>
+        <h2 class="reveal" data-delay="1">Een vraag, drie stappe</h2>
         <div class="steps">
             <div class="step">
                 <span class="step-num">1</span>
@@ -91,8 +99,8 @@
     </section>
 
     <section class="section" id="kenmerke">
-        <span class="eyebrow">Kenmerke</span>
-        <h2>Alles wat jy nodig het, niks meer nie</h2>
+        <span class="eyebrow reveal">Kenmerke</span>
+        <h2 class="reveal" data-delay="1">Alles wat jy nodig het, niks meer nie</h2>
         <div class="features">
             @foreach (var (icon, title, text) in Features)
             {
@@ -106,8 +114,8 @@
     </section>
 
     <section class="section" id="pryse">
-        <span class="eyebrow">Pryse</span>
-        <h2>Betaal soos jy gebruik</h2>
+        <span class="eyebrow reveal">Pryse</span>
+        <h2 class="reveal" data-delay="1">Betaal soos jy gebruik</h2>
         <div class="pricing">
             <div class="price-card">
                 <span class="feature-icon i-coin" aria-hidden="true"></span>
@@ -130,8 +138,8 @@
     </section>
 
     <section class="section" id="oor">
-        <span class="eyebrow">Oor ons</span>
-        <h2>Gebou deur een mens, oop vir almal</h2>
+        <span class="eyebrow reveal">Oor ons</span>
+        <h2 class="reveal" data-delay="1">Gebou deur een mens, oop vir almal</h2>
         <p class="about">Puls is 'n persoonlike projek, gebou op <strong>louis-agent</strong>: 'n KI-agent wat take na spesialiste
             stuur en elke stap en elke sent sigbaar maak. Die kode is oopbron onder die MIT-lisensie.</p>
         <a class="pill pill-ghost" href="https://github.com/bosbevk/louis-agent" target="_blank" rel="noopener">
@@ -140,8 +148,8 @@
     </section>
 
     <section class="section" id="vrae">
-        <span class="eyebrow">Vrae</span>
-        <h2>Gereelde vrae</h2>
+        <span class="eyebrow reveal">Vrae</span>
+        <h2 class="reveal" data-delay="1">Gereelde vrae</h2>
         <div class="faq">
             @foreach (var (question, answer) in Questions)
             {
@@ -167,6 +175,18 @@
 </div>
 
 @code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender) await JS.InvokeVoidAsync("pulsLanding.start");
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        // The page's listeners and timers go with it; a closed browser tab has no JS runtime to tell.
+        try { await JS.InvokeVoidAsync("pulsLanding.stop"); }
+        catch (JSDisconnectedException) { }
+    }
+
     private static readonly (string Icon, string Title, string Text)[] Features =
     [
         ("search", "Soek aanlyn", "Die spesialis soek op die web en lees die bladsye self, met die bronne by die antwoord."),

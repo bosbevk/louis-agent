@@ -24,6 +24,8 @@
             if (width >= 220 && width <= 480) document.documentElement.style.setProperty("--sidebar-w", width + "px");
             if (localStorage.getItem("puls.sidebarHidden") === "1") document.documentElement.classList.add("sidebar-hidden");
             if (localStorage.getItem("puls.workHidden") === "1") document.documentElement.classList.add("work-hidden");
+            // Motion switched on by the user although the system asks for less (F24): applied before the first paint.
+            if (localStorage.getItem("puls.motion") === "on") document.documentElement.dataset.motion = "on";
         } catch { }
     </script>
 </head>
@@ -44,6 +46,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="js/chat.js"></script>
+    <script src="js/landing.js"></script>
     <script src="_framework/blazor.webassembly.js"></script>
 </body>
 

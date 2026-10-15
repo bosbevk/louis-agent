@@ -89,13 +89,26 @@ document.addEventListener("click", (e) => {
     if (sidebar && window.bootstrap) window.bootstrap.Offcanvas.getInstance(sidebar)?.hide();
 });
 
-// The spotlight on cards follows the mouse (app.css reads --mx/--my).
+// The spotlight on cards follows the mouse (app.css reads --mx/--my); a .feature card also tilts a little toward it
+// (--rx/--ry/--ty, F24) and settles back when the pointer leaves.
+const litCards = ".suggestion, .delegation, .tool, .card, .q, .feature";
 document.addEventListener("pointermove", (e) => {
-    const card = e.target.closest?.(".suggestion, .delegation, .tool");
+    const card = e.target.closest?.(litCards);
     if (!card) return;
-    const box = card.getBoundingClientRect();
-    card.style.setProperty("--mx", (e.clientX - box.left) + "px");
-    card.style.setProperty("--my", (e.clientY - box.top) + "px");
+    const box = card.getBoundingClientRect(), x = e.clientX - box.left, y = e.clientY - box.top;
+    card.style.setProperty("--mx", x + "px");
+    card.style.setProperty("--my", y + "px");
+    if (card.classList.contains("feature")) {
+        card.style.setProperty("--ry", ((x / box.width) - .5) * 6 + "deg");
+        card.style.setProperty("--rx", (.5 - (y / box.height)) * 6 + "deg");
+        card.style.setProperty("--ty", "-4px");
+    }
+}, { passive: true });
+
+document.addEventListener("pointerout", (e) => {
+    const card = e.target.closest?.(".feature");
+    if (!card || card.contains(e.relatedTarget)) return;
+    card.style.setProperty("--rx", "0deg"); card.style.setProperty("--ry", "0deg"); card.style.setProperty("--ty", "0");
 }, { passive: true });
 
 // Focus a field once Blazor has drawn it (the chat search, the rename field); select its text when asked.
