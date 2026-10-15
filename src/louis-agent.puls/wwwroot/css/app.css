@@ -1230,7 +1230,7 @@ html:has(.landing) { scroll-behavior: smooth; }
 .page-head h1 { font-size: 24px; font-weight: 800; letter-spacing: -.4px; color: var(--ink); margin: 0; }
 .page-head p { margin: 4px 0 0; color: var(--muted); }
 .page-actions { display: flex; gap: 8px; align-items: center; }
-.cards { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+.cards { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); align-items: start; }
 .card-p { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; display: flex; flex-direction: column; gap: 10px; animation: rise .4s var(--ease) both; }
 .card-p > p { margin: 0; }
 .card-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; color: var(--ink); }
@@ -1337,3 +1337,7 @@ html:has(.landing) { scroll-behavior: smooth; }
 .tree-question { color: var(--text); font-size: 13.5px; max-width: 46ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .tree-turn-body { padding: 6px 0 10px 14px; display: flex; flex-direction: column; gap: 12px; }
 .tree-turn-body .user-message { max-width: 70%; }
+/* A check card's title stays on one line; the cost, chip and chevron sit at the right and never push it down. */
+.check-card > summary { flex-wrap: nowrap; }
+.check-card > summary > strong { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.check-card-meta { margin-left: auto; flex: 0 0 auto; }
