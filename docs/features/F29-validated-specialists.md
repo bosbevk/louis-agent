@@ -49,6 +49,20 @@ itself as right, and delegating a non-cook question as wrong, so that the checks
   delegation check's delegated mode is `agents` and `web`; the cook check's `puls-web` mode is Puls as built. Saved
   samples keep the scores they were recorded with.
 
+## What the build changed
+
+- **The setting lives in `config/.env`** (Louis: "where do I put the new setting on and off"): the Puls compose reads
+  `PERSONALITIES_ENABLED` from it for both containers, defaulting to `puls,puls-cook` when the line is absent; a role
+  is turned on by adding it there and `up -d`, every role by setting it empty.
+- **The saved samples keep their recorded scores.** Re-reporting them with the new expectation flips one line each
+  way: the control question delegated to the researcher now reads "routed wrong", and answered by Puls itself reads
+  "right". They were right by the rules of their day, so they weren't rewritten; a run from the portal after F29 is
+  the first scored by the new rule. In the delegation check, "routed right" is only the portal's live event; its
+  saved tables show the role.
+- **The agents guide keeps the analyst-not-reader paragraph** under *Waiting for validation*: it's about those roles
+  and holds when they come back.
+- **No API test for `GET /personalities`:** the endpoint returns the factory's list, which the factory tests cover.
+
 ## Done when
 
 - **F29-S1:** factory tests (the list filters; a name off the list is refused before anything is built; empty means

@@ -1,5 +1,6 @@
-"""The Puls delegation check (F5, F21, F22): the same questions asked twice through Puls's API, first by one agent with
-every toolset (the baseline), then by Puls delegating to its specialists, each question in a session of its own. The
+"""The Puls delegation check (F5, F21, F22, F29): the same questions asked twice through Puls's API, first by one agent
+with every toolset (the baseline), then by Puls as built (`agents` and `web`: it answers the web itself and hands only
+cooking to the cook, the one role that's on, F29), each question in a session of its own. The
 usage ledger (logs/puls) is read back for each run's tokens by kind and cost, Puls's own and its specialists', per
 question; each delegation's toolsets and role are recorded from the tool call.
 
@@ -43,8 +44,10 @@ QUESTIONS = [
 ]
 
 # The role each kind should go to when Puls delegates; None where Puls should answer itself.
+# F29: only the cook is on. The right outcome for every other question is no delegation: Puls answers the web itself and
+# says a files, git or numbers request isn't available yet. (Before F29: researcher, reader, historian, analyst.)
 EXPECTED_ROLE = {
-    "web": "puls-researcher", "files": "puls-reader", "git": "puls-historian", "numbers": "puls-analyst",
+    "web": None, "files": None, "git": None, "numbers": None,
     "chat": None, "cook": "puls-cook",
 }
 
@@ -225,8 +228,8 @@ def run_once(out):
     modes = {
         # The baseline: one agent with every toolset this instance has (not agents), no delegation.
         "baseline": [t for t in available if t != "agents"],
-        # Puls: agents only; every task goes to a specialist with its role.
-        "delegated": ["agents"],
+        # Puls as built (F29): agents and web; the web itself, cooking to the cook, the rest "not yet".
+        "delegated": ["agents", "web"],
     }
     stamp = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
     results = {}

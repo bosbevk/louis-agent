@@ -1,7 +1,8 @@
 """The cook check (F25, F26): does Puls hand a meal question to the cook, does the cook price it from South African
 shops' own pages, and does a follow-up go back to the same cook? Each conversation runs in one Puls session (the
-follow-up is the second message), in two modes: Puls as built (`agents` only) and Puls with `web` itself (Louis: does
-it still delegate the meal, and what does it save on the control question?). The usage ledger (logs/puls) is read back
+follow-up is the second message), in two modes: `puls-web`, Puls as built since F29 (`agents` and `web`: the web
+itself, cooking to the cook), and `delegated`, Puls with `agents` only, the comparison (does the cook get the meal
+either way, and what does `web` save on the control question?). The usage ledger (logs/puls) is read back
 for each run's cost, per conversation and per turn.
 
 What is scored is what the agents called, not only what they wrote: the role Puls passed to StartSubSession, the hosts
@@ -48,8 +49,8 @@ CONVERSATIONS = [
 ]
 
 MODES = {
-    "delegated": ["agents"],        # Puls as built
-    "puls-web": ["agents", "web"],  # Puls with the web itself
+    "delegated": ["agents"],        # Puls with agents only: the comparison (as built before F29)
+    "puls-web": ["agents", "web"],  # Puls as built (F29): the web itself, cooking to the cook
 }
 
 SHOPS = ("checkers.co.za", "pnp.co.za", "woolworths.co.za", "spar.co.za", "shoprite.co.za")
@@ -171,10 +172,11 @@ def score(task, turns):
     fetched = hosts(first["specialist_calls"] + (follow["specialist_calls"] if follow else []))
     local = [h for h in fetched if h.endswith(".za")]        # South African sites: a recipe site counts, a US one doesn't
     shops = [h for h in fetched if h.endswith(SHOPS)]        # where the prices must come from
-    expected_role = "puls-cook" if task.startswith("cook") else "puls-researcher"
+    # F29: only the cook is on; the control question is right when Puls answers it itself (before F29: the researcher).
+    expected_role = "puls-cook" if task.startswith("cook") else None
     result = {
         "role": starts[0]["personality"] if starts else None,
-        "routed_right": bool(starts) and starts[0]["personality"] == expected_role,
+        "routed_right": (starts[0]["personality"] == expected_role) if starts else (expected_role is None and not first["error"]),
         "answered_itself": not starts and not first["error"],
         "hosts": fetched, "local_hosts": local, "shop_hosts": shops,
         "sources_local": bool(fetched) and len(local) == len(fetched),
