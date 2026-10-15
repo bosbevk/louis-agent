@@ -73,3 +73,10 @@ A real run from the page spends money and is Louis's go.
   bigger and be more detailed"): step 5. The cook check prints structured progress (`@` + JSON: a mode's start, each
   turn with its role or continued handle, call counts, hosts and seconds, a summary per conversation, the mode's cost)
   beside its plain lines; the page renders those as a table and folds the plain lines below.
+- **2026-10-15, the run's conversations live, then as a tree** (Louis: "use all the space and show me as if I'm
+  typing it"; then "merge this view, a nice modern treeview-like structure"): steps 6 and 7. The script forwards every
+  stream event of each turn; the page builds a tree, mode → conversation → turn, with the figures as chips on each
+  node and the chat's own TurnView inside a turn, so the conversation types out as it happens.
+- **2026-10-15, the smaller asks along the way** (Louis, from screenshots): costs in the browser's currency; the saved
+  runs as a list in a side column; repeats as a segmented control instead of a native select; the check cards roll
+  up and down; repeats per check; a saved run opens its transcripts; the finished run's report rendered as markdown.
