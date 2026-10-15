@@ -45,6 +45,10 @@ else if (_loading && _data is null)
 }
 else if (_data is { } data)
 {
+  @* Two columns (Louis: the list "will get long, move it to the right"): the checks, the live run and the opened run
+     in the main column; the saved runs as a compact list in a side column that scrolls on its own. *@
+  <div class="admin-cols">
+  <div class="admin-col-main">
     <div class="cards">
         @foreach (var check in data.Checks)
         {
@@ -140,32 +144,6 @@ else if (_data is { } data)
         </section>
     }
 
-    <section class="card-p">
-        <div class="card-head"><strong>Gestoorde lopies</strong><span class="muted">@data.Runs.Count</span></div>
-        @if (data.Runs.Count == 0)
-        {
-            <p class="muted">Niks onder <code>samples/</code> met 'n <code>summary.json</code> of <code>results.json</code> nie.</p>
-        }
-        else
-        {
-            <table class="admin-table">
-                <thead><tr><th>Lopie</th><th>Kontrole</th><th>Gestoor</th><th class="num">Herhalings</th><th class="num">Koste</th></tr></thead>
-                <tbody>
-                    @foreach (var run in data.Runs)
-                    {
-                        <tr class="@(run.Folder == _open?.Run.Folder ? "selected" : "")" @onclick="() => OpenAsync(run.Folder)">
-                            <td><code>@run.Folder</code></td>
-                            <td>@(data.Checks.FirstOrDefault(c => c.Id == run.Check)?.Title ?? "—")</td>
-                            <td>@run.SavedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</td>
-                            <td class="num">@run.Repeats</td>
-                            <td class="num">@Cost(run.Cost)</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        }
-    </section>
-
     @if (_open is { } open)
     {
         <section class="card-p">
@@ -189,6 +167,33 @@ else if (_data is { } data)
             }
         </section>
     }
+  </div>
+
+  <aside class="admin-col-side">
+    <section class="card-p runs-list">
+        <div class="card-head"><strong>Gestoorde lopies</strong><span class="muted">@data.Runs.Count</span></div>
+        @if (data.Runs.Count == 0)
+        {
+            <p class="muted">Niks onder <code>samples/</code> met 'n <code>summary.json</code> of <code>results.json</code> nie.</p>
+        }
+        else
+        {
+            <ol class="runs">
+                @foreach (var run in data.Runs)
+                {
+                    <li class="run-row @(run.Folder == _open?.Run.Folder ? "selected" : "")" @onclick="() => OpenAsync(run.Folder)" title="@run.Folder">
+                        <div class="run-row-main">
+                            <code>@run.Folder</code>
+                            <small>@(data.Checks.FirstOrDefault(c => c.Id == run.Check)?.Title ?? "—") · @run.SavedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm") · @run.Repeats×</small>
+                        </div>
+                        <strong class="run-row-cost">@Cost(run.Cost)</strong>
+                    </li>
+                }
+            </ol>
+        }
+    </section>
+  </aside>
+  </div>
 }
 
 @code {
