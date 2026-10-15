@@ -257,7 +257,7 @@
         if (_mode is null || _task is null || _turn is null || Folder is null) return;
         if (!_events.TryGetValue(_mode.Name, out string? text))
         {
-            try { text = await Api.GetTextAsync($"admin/benchmarks/runs/{Uri.EscapeDataString(Folder)}/events?mode={Uri.EscapeDataString(_mode.Name)}"); }
+            try { text = await Api.GetTextAsync($"admin/benchmarks/runs/{Uri.EscapeDataString(Folder)}/replay?mode={Uri.EscapeDataString(_mode.Name)}"); }
             catch (AgentApiException) { text = null; }
             _events[_mode.Name] = text;
         }

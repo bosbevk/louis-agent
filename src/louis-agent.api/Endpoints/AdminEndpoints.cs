@@ -57,7 +57,8 @@ internal static class AdminEndpoints
                 : ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error", MessageText.Format(ApiUserText.NoBenchmarkRun)));
 
         // A mode's stream events, as JSON lines, for the replay of a conversation as it was typed (F27 step 10).
-        admin.MapGet("/benchmarks/runs/{folder}/events", (string folder, string mode) => catalog.ReadEvents(folder, mode) is { } events
+        // Not .../runs/{folder}/events: that would be ambiguous with the live run's .../runs/{id}/events above.
+        admin.MapGet("/benchmarks/runs/{folder}/replay", (string folder, string mode) => catalog.ReadEvents(folder, mode) is { } events
             ? Results.Text(events, "application/x-ndjson")
             : ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error", MessageText.Format(ApiUserText.NoRun, new { Folder = $"{folder}/{mode}" })));
 
