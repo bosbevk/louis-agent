@@ -1,0 +1,316 @@
+"""The cook check (F25, F26): does Puls hand a meal question to the cook, does the cook price it from South African
+shops' own pages, and does a follow-up go back to the same cook? Each conversation runs in one Puls session (the
+follow-up is the second message), in two modes: Puls as built (`agents` only) and Puls with `web` itself (Louis: does
+it still delegate the meal, and what does it save on the control question?). The usage ledger (logs/puls) is read back
+for each run's cost, per conversation and per turn.
+
+What is scored is what the agents called, not only what they wrote: the role Puls passed to StartSubSession, the hosts
+the specialist fetched (from the sub_session events the API streams), rand amounts and "unknown" in the answer, and
+whether the follow-up was a ContinueSubSession with the first answer's handle.
+
+Spends money (Claude). Run from the repo root with the Puls containers up (rebuilt after a core change):
+    docker compose -f docker/docker-compose.puls.yml --env-file config/.env up -d --build
+    python samples/puls-cook-check/run_check.py samples/sample-output-puls-cook
+Several runs (each in run-N/, with summary.json and summary.md over them):
+    python samples/puls-cook-check/run_check.py samples/sample-output-puls-cook --repeat 3
+Scores and totals again from a saved run, without model calls:
+    python samples/puls-cook-check/run_check.py --report samples/sample-output-puls-cook
+"""
+import json
+import os
+import re
+import statistics
+import sys
+import time
+from datetime import datetime, timezone
+from urllib.parse import urlparse
+
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "puls-check"))
+import run_check as delegation_check  # noqa: E402  (the delegation check's API calls and ledger reading)
+
+call, ledger, total = delegation_check.call, delegation_check.ledger, delegation_check.total
+
+# One session each; a second message is the follow-up. The place goes with the session (F22), as the web app sends it,
+# except cook-en, which says its town in the message: the cook's role covers both.
+CONVERSATIONS = [
+    ("cook-af", "Stellenbosch, Wes-Kaap, Suid-Afrika", [
+        "Wat kan ek vanaand vir vier mense kook vir onder R250? Gee die resep en 'n inkopielys met pryse.",
+        "Maak dit eerder vir ses mense. Wat kos dit nou?",
+    ]),
+    ("cook-en", None, [
+        "What should I cook tonight in Pretoria for two? I have about an hour. Give me the recipe and what it'll cost at the shops.",
+        "Swap the meat for chicken. What does the shopping list look like now?",
+    ]),
+    # The control: a plain web question, which must still go to the researcher.
+    ("control-web", "Stellenbosch, Wes-Kaap, Suid-Afrika", [
+        "Wat is die huidige prima uitleenkoers in Suid-Afrika, en wanneer het dit laas verander? Gee jou bronne.",
+    ]),
+]
+
+MODES = {
+    "delegated": ["agents"],        # Puls as built
+    "puls-web": ["agents", "web"],  # Puls with the web itself
+}
+
+SHOPS = ("checkers.co.za", "pnp.co.za", "woolworths.co.za", "spar.co.za", "shoprite.co.za")
+RAND = re.compile(r"\bR\s?\d[\d\s,.]*")
+UNKNOWN = re.compile(r"\b(unknown|onbekend)\b", re.IGNORECASE)
+
+
+def converse(toolsets, run, task, location, messages):
+    """One conversation in a new session: for each message, the answer, Puls's tool calls, its delegations (start or
+    continue, with toolsets, role and handle), the specialist's own tool calls, the time, and an error if any."""
+    body = {"toolsets": toolsets, "personality": "puls", "time_zone": "Africa/Johannesburg", "task": task, "run": run}
+    if location:
+        body["location"] = location
+    session = call("POST", "sessions", body)["session_id"]
+    turns = []
+    try:
+        for message in messages:
+            started = time.time()
+            turn = {"question": message, **send(session, message)}
+            turn["seconds"] = round(time.time() - started, 1)
+            turns.append(turn)
+    finally:
+        call("DELETE", f"sessions/{session}")
+    return turns
+
+
+def send(session, message):
+    text, tools, delegations, specialist_calls, error = [], [], [], [], None
+    with call("POST", f"sessions/{session}/messages", {"message": message}, stream=True) as reply:
+        event = None
+        for raw in reply:
+            line = raw.decode("utf-8").rstrip("\n")
+            if line.startswith("event: "):
+                event = line[7:]
+                continue
+            if not line.startswith("data: ") or not event:
+                continue
+            data = json.loads(line[6:])
+            if event == "content_block_start" and data.get("content_block", {}).get("type") == "tool_use":
+                block = data["content_block"]
+                tools.append(block["name"])
+                arguments = block.get("input") or {}
+                if block["name"] == "StartSubSession":
+                    delegations.append({"call": "start", "toolsets": arguments.get("toolsets"), "personality": arguments.get("personality")})
+                elif block["name"] == "ContinueSubSession":
+                    delegations.append({"call": "continue", "handle": arguments.get("handle")})
+            elif event == "content_block_delta" and (data.get("delta") or {}).get("type") == "text_delta":
+                text.append(data["delta"]["text"])
+            elif event == "sub_session":
+                inner = data.get("data") or {}
+                if data.get("event") == "content_block_start" and inner.get("content_block", {}).get("type") == "tool_use":
+                    block = inner["content_block"]
+                    specialist_calls.append({"name": block["name"], "input": block.get("input") or {}})
+            elif event == "error":
+                error = json.dumps(data)
+    answer = "".join(text).strip()
+    # The handle a kept sub-session got, from the footer Puls's tool result carries into its answer only if it quotes
+    # it; the reliable source is the next turn's ContinueSubSession call, scored in `score`.
+    return {"answer": answer, "tools": tools, "delegations": delegations, "specialist_calls": specialist_calls, "error": error}
+
+
+def hosts(specialist_calls):
+    """The hosts the specialist read pages from (FetchUrl), in order, without repeats."""
+    seen = []
+    for c in specialist_calls:
+        if c["name"] == "FetchUrl" and (url := c["input"].get("url")):
+            host = (urlparse(url).hostname or "").lower().removeprefix("www.")
+            if host and host not in seen:
+                seen.append(host)
+    return seen
+
+
+def score(task, turns):
+    """What the run says about one conversation, as numbers: the role of each turn, the hosts, rand, unknown, follow-up."""
+    first, follow = turns[0], (turns[1] if len(turns) > 1 else None)
+    starts = [d for d in first["delegations"] if d["call"] == "start"]
+    fetched = hosts(first["specialist_calls"] + (follow["specialist_calls"] if follow else []))
+    local = [h for h in fetched if h.endswith(".za")]        # South African sites: a recipe site counts, a US one doesn't
+    shops = [h for h in fetched if h.endswith(SHOPS)]        # where the prices must come from
+    expected_role = "puls-cook" if task.startswith("cook") else "puls-researcher"
+    result = {
+        "role": starts[0]["personality"] if starts else None,
+        "routed_right": bool(starts) and starts[0]["personality"] == expected_role,
+        "answered_itself": not starts and not first["error"],
+        "hosts": fetched, "local_hosts": local, "shop_hosts": shops,
+        "sources_local": bool(fetched) and len(local) == len(fetched),
+        "priced_at_shops": bool(shops),
+        "rand_amounts": len(RAND.findall(first["answer"])) + (len(RAND.findall(follow["answer"])) if follow else 0),
+        "unknown_marks": len(UNKNOWN.findall(first["answer"])) + (len(UNKNOWN.findall(follow["answer"])) if follow else 0),
+        "errors": [t["error"] for t in turns if t["error"]],
+    }
+    if follow:
+        continues = [d for d in follow["delegations"] if d["call"] == "continue"]
+        result["follow_up"] = "continued" if continues else ("new sub-session" if any(d["call"] == "start" for d in follow["delegations"]) else "answered itself")
+        result["follow_up_handle"] = continues[0]["handle"] if continues else None
+    return result
+
+
+def summarise(records, tasks):
+    """A run's totals from the ledger: all, Puls's own, its specialists', per conversation and per turn of it."""
+    records = [r for r in records if r.get("purpose") != "sub_session"]   # the roll-up repeats the child's own rows
+    own = [r for r in records if not r.get("parent")]
+    sub = [r for r in records if r.get("parent")]
+    session_of = {r["session"]: r.get("task") for r in own}
+
+    def task_of(r):
+        return r.get("task") if not r.get("parent") else session_of.get(r["parent"].split("#")[0])
+
+    def turn_of(r):
+        return r.get("turn") if not r.get("parent") else int(r["parent"].split("#")[1])
+
+    per_task = {}
+    for key in tasks:
+        mine = [r for r in records if task_of(r) == key]
+        per_task[key] = {"all": total(mine), "turns": {str(t): total([r for r in mine if turn_of(r) == t]) for t in sorted({turn_of(r) for r in mine if turn_of(r)})}}
+    return {"all": total(records), "own": total(own), "specialists": total(sub), "per_task": per_task}
+
+
+def run_once(out):
+    stamp = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
+    results = {}
+    for mode, toolsets in MODES.items():
+        run = f"puls-cook-{mode}-{stamp}"
+        os.makedirs(os.path.join(out, mode), exist_ok=True)
+        conversations = []
+        for key, location, messages in CONVERSATIONS:
+            try:
+                turns = converse(toolsets, run, key, location, messages)
+            except Exception as ex:  # a dead container, a timeout: the run goes on and the README says so
+                turns = [{"question": m, "answer": "", "tools": [], "delegations": [], "specialist_calls": [], "error": repr(ex), "seconds": 0} for m in messages]
+            scored = score(key, turns)
+            conversations.append({"task": key, "location": location, "turns": turns, "score": scored})
+            print(f"{mode:9} {key:12} role={scored['role']} routed={scored['routed_right']} hosts={scored['hosts']} "
+                  f"follow_up={scored.get('follow_up')} seconds={[t['seconds'] for t in turns]}", flush=True)
+        time.sleep(2)   # the ledger's last lines
+        records = ledger(run)
+        results[mode] = {"run": run, "toolsets": toolsets, "conversations": conversations,
+                         **summarise(records, [k for k, _, _ in CONVERSATIONS])}
+        with open(os.path.join(out, mode, "answers.json"), "w", encoding="utf-8") as file:
+            json.dump(conversations, file, ensure_ascii=False, indent=2)
+        with open(os.path.join(out, mode, "usage.jsonl"), "w", encoding="utf-8") as file:
+            for r in records:
+                file.write(json.dumps(r, ensure_ascii=False) + "\n")
+        transcript(os.path.join(out, mode, "transcript.md"), conversations)
+    write_results(out, results)
+    return results
+
+
+def transcript(path, conversations):
+    with open(path, "w", encoding="utf-8") as file:
+        for c in conversations:
+            file.write(f"# {c['task']}" + (f" ({c['location']})" if c["location"] else "") + "\n\n")
+            for n, t in enumerate(c["turns"], 1):
+                calls = ", ".join(f"{s['name']}({s['input'].get('url') or s['input'].get('query') or ''})" for s in t["specialist_calls"])
+                file.write(f"## Turn {n}: {t['question']}\n\n*Puls:* {', '.join(t['tools']) or '—'} · "
+                           f"*Delegations:* {json.dumps(t['delegations'], ensure_ascii=False) if t['delegations'] else '—'} · *{t['seconds']} s*\n\n"
+                           f"*Specialist:* {calls or '—'}\n\n{t['answer'] or t['error']}\n\n")
+
+
+def write_results(out, results):
+    with open(os.path.join(out, "results.json"), "w", encoding="utf-8") as file:
+        json.dump(results, file, ensure_ascii=False, indent=2)
+    lines = ["# The cook check: one run", ""]
+    for mode, r in results.items():
+        lines += [f"## {mode} (toolsets: {', '.join(r['toolsets'])}): ${r['all']['cost']:.4f}, {r['all']['tokens']:,} tokens, {r['all']['requests']} requests", "",
+                  "| Conversation | Role | Routed right | Hosts fetched (SA shops / SA / all) | Rand amounts | Unknown | Follow-up | Cost turn 1 | Cost turn 2 | Seconds |",
+                  "|---|---|---|---|---:|---:|---|---:|---:|---|"]
+        for c in r["conversations"]:
+            s, turns = c["score"], r["per_task"][c["task"]]["turns"]
+            lines.append(f"| {c['task']} | {s['role'] or ('— (answered itself)' if s['answered_itself'] else '— (error)')} | {'yes' if s['routed_right'] else 'no'} | "
+                         f"{len(s['shop_hosts'])} / {len(s['local_hosts'])} / {len(s['hosts'])}: {', '.join(s['hosts']) or '—'} | {s['rand_amounts']} | {s['unknown_marks']} | "
+                         f"{s.get('follow_up', '—')}{' (' + s['follow_up_handle'] + ')' if s.get('follow_up_handle') else ''} | "
+                         f"${turns.get('1', {}).get('cost', 0):.4f} | {('$%.4f' % turns['2']['cost']) if '2' in turns else '—'} | {', '.join(str(t['seconds']) for t in c['turns'])} |")
+        lines.append("")
+    with open(os.path.join(out, "results.md"), "w", encoding="utf-8") as file:
+        file.write("\n".join(lines))
+    print("\n".join(lines), flush=True)
+
+
+def main(out, repeat):
+    if repeat == 1:
+        run_once(out)
+        return
+    runs = []
+    for n in range(1, repeat + 1):
+        print(f"--- run {n} of {repeat}", flush=True)
+        runs.append(run_once(os.path.join(out, f"run-{n}")))
+    summarise_runs(out, runs)
+
+
+def summarise_runs(out, runs):
+    """summary.json and summary.md over the runs: how often each conversation routed right, fetched only local shops
+    and continued its specialist, and the cost's spread."""
+    def spread(values):
+        return {"mean": round(statistics.mean(values), 6), "min": round(min(values), 6), "max": round(max(values), 6)}
+
+    summary = {}
+    for mode in runs[0]:
+        per_task = {}
+        for key, _, _ in CONVERSATIONS:
+            scores = [next(c["score"] for c in r[mode]["conversations"] if c["task"] == key) for r in runs]
+            per_task[key] = {
+                "routed_right": sum(s["routed_right"] for s in scores),
+                "sources_local": sum(s["sources_local"] for s in scores),
+                "priced_at_shops": sum(s["priced_at_shops"] for s in scores),
+                "continued": sum(s.get("follow_up") == "continued" for s in scores),
+                "errors": sum(bool(s["errors"]) for s in scores),
+                "cost": spread([r[mode]["per_task"][key]["all"]["cost"] for r in runs]),
+            }
+        summary[mode] = {"cost": spread([r[mode]["all"]["cost"] for r in runs]), "per_task": per_task}
+    with open(os.path.join(out, "summary.json"), "w", encoding="utf-8") as file:
+        json.dump(summary, file, indent=2)
+    n = len(runs)
+    lines = [f"# {n} runs per mode", "", "| Mode | Cost, mean (lowest–highest) |", "|---|---:|"]
+    lines += [f"| {mode} | ${s['cost']['mean']:.4f} ({s['cost']['min']:.4f}–{s['cost']['max']:.4f}) |" for mode, s in summary.items()]
+    lines += ["", f"| Conversation | Mode | Routed right | Only SA sources | Priced at a shop | Follow-up continued | Errors | Cost, mean (lowest–highest) |", "|---|---|---:|---:|---:|---:|---:|---:|"]
+    for key, _, messages in CONVERSATIONS:
+        for mode, s in summary.items():
+            t = s["per_task"][key]
+            lines.append(f"| {key} | {mode} | {t['routed_right']}/{n} | {t['sources_local']}/{n} | {t['priced_at_shops']}/{n} | {(str(t['continued']) + '/' + str(n)) if len(messages) > 1 else '—'} | "
+                         f"{t['errors']}/{n} | ${t['cost']['mean']:.4f} ({t['cost']['min']:.4f}–{t['cost']['max']:.4f}) |")
+    with open(os.path.join(out, "summary.md"), "w", encoding="utf-8") as file:
+        file.write("\n".join(lines) + "\n")
+    print("\n".join(lines), flush=True)
+
+
+def report(out):
+    """Scores and totals again from a saved run (or its run-N folders), without model calls."""
+    if os.path.exists(os.path.join(out, "results.json")):
+        write_results(out, rescore(out))
+        return
+    runs = []
+    for n in range(1, 100):
+        folder = os.path.join(out, f"run-{n}")
+        if not os.path.exists(os.path.join(folder, "results.json")):
+            break
+        runs.append(rescore(folder))
+        write_results(folder, runs[-1])
+    summarise_runs(out, runs)
+
+
+def rescore(out):
+    with open(os.path.join(out, "results.json"), encoding="utf-8") as file:
+        results = json.load(file)
+    for mode in results:
+        with open(os.path.join(out, mode, "usage.jsonl"), encoding="utf-8") as file:
+            records = [json.loads(line) for line in file]
+        for c in results[mode]["conversations"]:
+            c["score"] = score(c["task"], c["turns"])
+        results[mode].update(summarise(records, [k for k, _, _ in CONVERSATIONS]))
+    return results
+
+
+if __name__ == "__main__":
+    arguments = sys.argv[1:]
+    if arguments and arguments[0] == "--report":
+        report(arguments[1])
+    else:
+        repeat = 1
+        if "--repeat" in arguments:
+            i = arguments.index("--repeat")
+            repeat = int(arguments[i + 1])
+            del arguments[i:i + 2]
+        main(arguments[0] if arguments else "samples/sample-output-puls-cook", repeat)
