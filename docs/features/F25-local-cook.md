@@ -72,6 +72,10 @@ the cook read, so that "routes properly" and "uses local sources" are numbers fr
 - **The check scores calls, not prose:** the role from Puls's `StartSubSession` arguments, the hosts from the
   specialist's `FetchUrl` calls in the API's `sub_session` events, the follow-up from a `ContinueSubSession` call with
   the first answer's handle. Rand amounts and "unknown" marks are the only things read from the answer.
+- **Every cooking question is the cook's, and it says where to buy** (Louis, 2026-10-15, from a manual test: "ek wil
+  bebotie maak, wat het ek nodig" was answered by Puls from memory). The router's opening said knowledge questions need
+  no tool, and the cook's row spoke of "what to cook today"; both now say cooking is never answered from memory. The
+  role takes a named dish through the whole report and adds *Where to buy*: the shops' branches in the user's town.
 - **The town travels two ways:** on the session (`location`, as the web app sends it) for the Afrikaans conversation,
   in the message for the English one; the cook's role covers both.
 

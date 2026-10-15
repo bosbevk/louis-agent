@@ -56,4 +56,8 @@ folder is mounted, so the role and the rows need no rebuild).
 
 ## Approved during the build
 
-*(none yet)*
+- **2026-10-15, the follow-up and the Werk card** came through F26 (its plan has them).
+- **2026-10-15, every cooking question is the cook's, and it says where to buy** (Louis: "any cooking stuff must
+  always use cook, because cook knows to also look for prices, also update the cook to also show places where to
+  buy"): step 4, the prompt only: the router's opening and its cook row, the agents guide's row, and the role's *Where
+  to buy* (the shops' branches in the user's town, never invented). Not measured again: Louis tests by hand.

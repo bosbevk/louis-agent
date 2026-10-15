@@ -139,6 +139,20 @@ public class PersonalitiesTests
         Assert.That(agents, Does.Contain("Continue, don't answer it yourself"));
     }
 
+    [Test]
+    public void EveryCookingQuestion_GoesToTheCook_WhichSaysWhereToBuy()
+    {
+        // Louis's manual test: "ek wil bebotie maak, wat het ek nodig" was answered from memory, no prices, no shop.
+        // Cooking is the cook's even when Puls knows the recipe, and the cook names the branches near the user.
+        string router = SkillFileSource.ReadEmbedded("default.md")!;
+        string agents = SkillFileSource.ReadEmbedded("agents-skills.md")!;
+        string cook = SkillFileSource.ReadEmbedded(Personalities.Folder + "/puls-cook.md")!;
+
+        Assert.That(router, Does.Contain("every cooking question").And.Contain("never from memory"));
+        Assert.That(agents, Does.Contain("every cooking question"));
+        Assert.That(cook, Does.Contain("Where to buy").And.Contain("branches"));
+    }
+
     [TestCase("default.md")]
     [TestCase("agents-skills.md")]
     public void AMealToCook_GoesToTheCook_WithWeb(string router)

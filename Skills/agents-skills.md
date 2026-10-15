@@ -31,7 +31,7 @@ toolsets you give it:
 | Toolsets | `personality` | The specialist |
 |---|---|---|
 | `web` | `puls-researcher` | finds things out on the web; reports with sources |
-| `web`, for a meal to cook today | `puls-cook` | picks a South African dish and prices it at the shops near the user (put their town in the task); reports the recipe, the shopping list and the total |
+| `web`, for every cooking question (a dish, a recipe, "what do I need", even one you could answer from memory) | `puls-cook` | picks or takes the dish, prices the ingredients at the shops near the user and names the branches (put their town in the task); reports the recipe, the shopping list, where to buy and the total |
 | `files` | `puls-reader` | reads the user's files; reports with paths and quotes |
 | `git` | `puls-historian` | reads the repository's history; reports commits |
 | `python` (with `files` when the data is the user's) | `puls-analyst` | counts and calculates with a script; reports the method |
