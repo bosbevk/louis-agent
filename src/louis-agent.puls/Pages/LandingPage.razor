@@ -12,7 +12,7 @@
 <Water />
 <div class="progress" id="landing-progress" aria-hidden="true"></div>
 <nav class="index" aria-label="Afdelings">
-    <a href="#top">Intro</a><a href="#demo">Die app</a><a href="#hoe">Hoe dit werk</a><a href="#kenmerke">Kenmerke</a><a href="#pryse">Pryse</a><a href="#oor">Oor ons</a><a href="#vrae">Vrae</a>
+    <a href="#top">Intro</a><a href="#demo">Die app</a><a href="#hoe">Hoe dit werk</a><a href="#indie">In die app</a><a href="#kenmerke">Kenmerke</a><a href="#pryse">Pryse</a><a href="#oor">Oor ons</a><a href="#vrae">Vrae</a>
 </nav>
 
 <div class="landing">
@@ -50,40 +50,128 @@
     </section>
     <p class="showcase-hint">'n Werklike beurt, soos die app dit wys <button class="replay" type="button" hidden><span class="ic i-refresh" aria-hidden="true"></span>Speel weer</button></p>
 
+    @* Three cards in one row, so the section fits a screen; each card's stage shows its step as the physics: the source
+       beating, the disturbance going out as a delegation, the answer back. The stages are the app's own pieces again. *@
     <section class="section" id="hoe">
         <span class="eyebrow reveal">Hoe dit werk</span>
         <h2 class="reveal" data-delay="1">Een vraag, drie stappe</h2>
-        <div class="steps">
-            <div class="step">
-                <span class="step-num">1</span>
-                <h3>Vra</h3>
-                <p>Tik jou vraag in gewone taal, of heg 'n lêer aan.</p>
-            </div>
-            <div class="step">
-                <span class="step-num">2</span>
-                <h3>Puls stuur dit uit</h3>
-                <p>Puls kies 'n spesialis en gee dit net die gereedskap wat die taak nodig het.</p>
-            </div>
-            <div class="step">
-                <span class="step-num">3</span>
-                <h3>Kry die antwoord</h3>
-                <p>Jy sien die spesialis werk, sy bronne en wat dit gekos het, en kry die antwoord.</p>
+        <p class="sub reveal" data-delay="2">Soos 'n puls: dit begin by 'n bron, beweeg weg daarvan, en kom as 'n antwoord terug.</p>
+        <div class="stack reveal-group">
+            <article class="card feature stack-card">
+                <div><span class="num">1</span><h3>Vra</h3><p>Tik jou vraag in gewone taal, of heg 'n lêer aan. Dit is die bron van die versteuring: alles wat volg, beweeg hiervandaan weg.</p></div>
+                <div class="stage stage-1" aria-hidden="true"><span class="r"></span><span class="r"></span><span class="r"></span><span class="source"></span></div>
+            </article>
+            <article class="card feature stack-card">
+                <div><span class="num">2</span><h3>Puls stuur dit uit</h3><p>Puls kies 'n spesialis en gee dit net die gereedskap wat die taak nodig het: web vir 'n soektog, files vir 'n lêer, git vir die geskiedenis.</p></div>
+                <div class="stage stage-2" aria-hidden="true"><span class="r"></span><span class="r"></span><span class="r"></span>
+                    <div class="mini">
+                        <div class="delegation running"><div class="delegation-head"><span class="delegation-avatar"></span><div class="delegation-title"><span class="delegation-agent">Oorgedra aan <strong>puls</strong></span><div class="delegation-toolsets"><span class="toolset-chip">web</span></div></div><span class="delegation-status">Besig</span></div></div>
+                    </div>
+                </div>
+            </article>
+            <article class="card feature stack-card">
+                <div><span class="num">3</span><h3>Kry die antwoord</h3><p>Jy sien die spesialis werk, sy bronne en wat dit gekos het, en kry die antwoord. Die puls is terug by sy bron.</p></div>
+                <div class="stage stage-3" aria-hidden="true">
+                    <div class="mini">
+                        <div class="user-message"><div class="user-text">Wat is nuut in .NET 10?</div></div>
+                        <div class="delegation"><div class="delegation-head"><span class="delegation-avatar"></span><div class="delegation-title"><span class="delegation-agent"><strong>puls</strong> · <span class="toolset-chip">web</span></span></div><span class="delegation-status">Klaar</span></div></div>
+                        <span class="line" style="width:92%"></span><span class="line" style="width:78%;animation-delay:.15s"></span><span class="line" style="width:60%;animation-delay:.3s"></span>
+                        <span class="usage">beurt: 6 versoeke · R0,07</span>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    @* In the app, pinned: the block is two screens tall and its inside sticks, so scrolling through it moves from chip
+       to chip and the frame's screen changes with them; a click scrolls to that chip's part (js/landing.js pinned()). *@
+    <section class="section" id="indie">
+        <span class="eyebrow reveal">In die app</span>
+        <h2 class="reveal" data-delay="1">Alles in een stil app</h2>
+        <p class="sub reveal" data-delay="2">Soek, lees, kyk na die geskiedenis en sien die koste: so lyk dit in die app.</p>
+        <div class="pin" id="pin">
+            <div class="pin-inner">
+                <div class="pin-text">
+                    <div class="chips" id="chips">
+                        @foreach (var (icon, label, title, text) in Tour)
+                        {
+                            <button type="button" data-title="@title" data-text="@text"><span class="ic i-@icon" aria-hidden="true"></span>@label</button>
+                        }
+                    </div>
+                    <h3 id="pin-title">@Tour[0].Title</h3>
+                    <p id="pin-text">@Tour[0].Text</p>
+                </div>
+                <div class="pin-frame" id="pin-frame" aria-hidden="true">
+                    <div class="panel">
+                        <div class="user-message"><div class="user-text">Wat is die nuutste weergawe van .NET?</div></div>
+                        <div class="delegation"><div class="delegation-head"><span class="delegation-avatar"></span><div class="delegation-title"><span class="delegation-agent">Oorgedra aan <strong>puls</strong></span><div class="delegation-toolsets"><span class="toolset-chip">web</span></div></div><span class="delegation-status">Klaar</span></div></div>
+                        <div class="answer">Die nuutste <b>stabiele</b> weergawe is <b>.NET 10.0.13</b>, 'n LTS-vrystelling van 13 Oktober 2026.</div>
+                        <div class="srcs"><span><i>1</i>learn.microsoft.com</span><span><i>2</i>github.com/dotnet/core</span></div>
+                        <div class="usage">beurt: 6 versoeke · R0,07</div>
+                    </div>
+                    <div class="panel">
+                        <span class="toolset-chip attach">verslag.pdf · 12 bladsye</span>
+                        <div class="user-message"><div class="user-text">Som die verslag op in drie punte.</div></div>
+                        <div class="delegation"><div class="delegation-head"><span class="delegation-avatar"></span><div class="delegation-title"><span class="delegation-agent">Oorgedra aan <strong>puls</strong></span><div class="delegation-toolsets"><span class="toolset-chip">files</span></div></div><span class="delegation-status">Klaar</span></div></div>
+                        <ul class="work-steps"><li class="work-step"><span class="work-step-mark">✓</span><span class="work-step-name">ReadDocument</span><span class="work-step-args">verslag.pdf</span></li></ul>
+                        <div class="answer"><b>1.</b> Inkomste het 12% gegroei. <b>2.</b> Koste is gelyk gehou. <b>3.</b> Die tweede helfte lyk sterker.</div>
+                        <div class="usage">beurt: 3 versoeke · R0,03</div>
+                    </div>
+                    <div class="panel">
+                        <div class="user-message"><div class="user-text">Wat het die laaste drie commits verander?</div></div>
+                        <div class="delegation"><div class="delegation-head"><span class="delegation-avatar"></span><div class="delegation-title"><span class="delegation-agent">Oorgedra aan <strong>puls</strong></span><div class="delegation-toolsets"><span class="toolset-chip">git</span></div></div><span class="delegation-status">Klaar</span></div></div>
+                        <div class="commit"><code>d577822</code><span>fix(fx15): die toets noem die tariewe-lêer self</span><small>14 Okt</small></div>
+                        <div class="commit"><code>36e63d8</code><span>fix(f5): die afvaardigingstoets slaan opsomrye oor</span><small>14 Okt</small></div>
+                        <div class="commit"><code>9b600ca</code><span>docs(f5): die gebruik rol op in die ouergesprek</span><small>14 Okt</small></div>
+                        <div class="usage">beurt: 4 versoeke · R0,04</div>
+                    </div>
+                    <div class="panel">
+                        <div class="meter"><span class="ic i-coin" aria-hidden="true"></span>R0,06 <small>hierdie gesprek</small></div>
+                        <div class="cost-row"><span>Puls self</span><strong>R0,01 · 2 versoeke</strong></div>
+                        <div class="cost-row"><span>Spesialis (web)</span><strong>R0,05 · 4 versoeke</strong></div>
+                        <div class="cost-row"><span>Hierdie maand</span><strong>R3,42 · 48 vrae</strong></div>
+                        <div class="bars bars-fill">@foreach (var h in Bars) { <i style="--h:@(h)%"></i> }</div>
+                        <div class="usage">Koop krediete wanneer jy wil. (Kom binnekort.)</div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
+    @* Kenmerke as a bento: six tiles, two tall and one wide, each showing a little of what it says; under them the
+       toolsets and tools a specialist can hold roll past, twice over so the loop is seamless. *@
     <section class="section" id="kenmerke">
         <span class="eyebrow reveal">Kenmerke</span>
         <h2 class="reveal" data-delay="1">Alles wat jy nodig het, niks meer nie</h2>
-        <div class="features">
-            @foreach (var (icon, title, text) in Features)
+        <p class="sub reveal" data-delay="2">Elke spesialis kry 'n klein stel gereedskap. Dit hou die antwoord skerp en die koste laag.</p>
+        <div class="bento">
+            @foreach (var (area, icon, title, text) in Features)
             {
-                <div class="feature">
-                    <span class="feature-icon i-@icon" aria-hidden="true"></span>
-                    <h3>@title</h3>
-                    <p>@text</p>
+                <div class="card feature reveal t-@area" data-delay="@(area - 'a')">
+                    <div>
+                        <span class="feature-icon i-@icon" aria-hidden="true"></span>
+                        <h3>@title</h3>
+                        <p>@text</p>
+                    </div>
+                    @switch (icon)
+                    {
+                        case "pulse":
+                            <ul class="work-steps" aria-hidden="true"><li class="work-step"><span class="work-step-mark">✓</span><span class="work-step-name">GetToday</span></li><li class="work-step"><span class="work-step-mark">✓</span><span class="work-step-name">WebSearch</span><span class="work-step-args">".NET 10"</span></li><li class="work-step"><span class="work-step-mark">✓</span><span class="work-step-name">FetchUrl</span><span class="work-step-args">learn.microsoft.com</span></li><li class="work-step waiting"><span class="work-step-mark">…</span><span class="work-step-name">FetchUrl</span><span class="work-step-args">github.com/dotnet</span></li></ul>
+                            break;
+                        case "search":
+                            <div class="srcs" aria-hidden="true"><span><i>1</i>learn.microsoft.com</span><span><i>2</i>devblogs.microsoft.com</span><span><i>3</i>github.com/dotnet/core</span></div>
+                            break;
+                        case "coin":
+                            <div class="big counter" data-to="0.47" data-fmt="rand">R0,00</div><p class="small">hierdie vraag, spesialis ingesluit</p>
+                            <div class="bars bars-fill" aria-hidden="true">@foreach (var h in Bars[..10]) { <i style="--h:@(h)%"></i> }</div>
+                            break;
+                    }
                 </div>
             }
+        </div>
+        <div class="marquee" aria-hidden="true">
+            <div class="track">@foreach (var (kind, name) in Marquee.Concat(Marquee)) { <span class="tag @kind">@name</span> }</div>
+            <div class="track rev">@foreach (var (kind, name) in Enumerable.Reverse(Marquee).Concat(Enumerable.Reverse(Marquee))) { <span class="tag @kind">@name</span> }</div>
         </div>
     </section>
 
@@ -161,14 +249,36 @@
         catch (JSDisconnectedException) { }
     }
 
-    private static readonly (string Icon, string Title, string Text)[] Features =
+    // The bento's tiles: the area letter places each one in the grid ("a a b" / "c d b" / "c e f"), and the three with
+    // an extra (pulse, search, coin) get it from the switch in the markup.
+    private static readonly (char Area, string Icon, string Title, string Text)[] Features =
     [
-        ("search", "Soek aanlyn", "Die spesialis soek op die web en lees die bladsye self, met die bronne by die antwoord."),
-        ("file", "Lees lêers", "Vra oor 'n lêer of heg een aan: Puls lees dit en som dit op."),
-        ("clock", "Kyk na die geskiedenis", "Wat het verander, wie het dit gedoen en waarom: uit die repository se geskiedenis."),
-        ("chart", "Tel en reken", "Laat die spesialis tel, reken en tabelle maak met 'n skrip wat jy kan nagaan."),
-        ("pulse", "Sien hoe dit werk", "Elke taak se stappe, gedagtes en gereedskap verskyn lewendig terwyl die spesialis werk."),
-        ("coin", "Koste sigbaar", "Elke vraag wys wat dit gekos het, in jou eie geldeenheid."),
+        ('a', "pulse", "Sien hoe dit werk", "Elke taak se stappe, gedagtes en gereedskap verskyn lewendig terwyl die spesialis werk."),
+        ('b', "search", "Soek aanlyn", "Die spesialis soek op die web en lees die bladsye self, met die bronne by die antwoord."),
+        ('c', "coin", "Koste sigbaar", "Elke vraag wys wat dit gekos het, in jou eie geldeenheid."),
+        ('d', "file", "Lees lêers", "Vra oor 'n lêer of heg een aan: Puls lees dit en som dit op."),
+        ('e', "clock", "Kyk na die geskiedenis", "Wat het verander, wie het dit gedoen en waarom: uit die repository se geskiedenis."),
+        ('f', "chart", "Tel en reken", "Laat die spesialis tel, reken en tabelle maak met 'n skrip wat jy kan nagaan."),
+    ];
+
+    // The pinned tour's chips, in the order of its panels.
+    private static readonly (string Icon, string Label, string Title, string Text)[] Tour =
+    [
+        ("search", "Soek", "Soek aanlyn", "Die spesialis soek, lees die bladsye self en gee die bronne by die antwoord."),
+        ("file", "Lees", "Lees lêers", "Heg 'n PDF, 'n Word-dokument of 'n sigblad aan; die spesialis lees dit en som dit op."),
+        ("clock", "Geskiedenis", "Kyk na die geskiedenis", "Wat het verander, wie het dit gedoen en waarom: uit die repository se geskiedenis."),
+        ("coin", "Koste", "Koste sigbaar", "Elke vraag se koste, spesialiste ingesluit, en jou gebruik vir die maand, in rand."),
+    ];
+
+    // Example bar heights (percent) for the little cost charts.
+    private static readonly int[] Bars = [40, 70, 30, 85, 55, 100, 45, 62, 78, 36, 90, 58];
+
+    // What rolls past under the bento: the toolsets (set) and their tools (tool).
+    private static readonly (string Kind, string Name)[] Marquee =
+    [
+        ("set", "web"), ("tool", "WebSearch"), ("tool", "FetchUrl"), ("set", "files"), ("tool", "ReadFile"), ("tool", "ReadDocument"),
+        ("tool", "ReadTable"), ("set", "git"), ("tool", "GitLog"), ("tool", "GitShow"), ("set", "dotnet"), ("tool", "DotNetTest"),
+        ("set", "python"), ("tool", "PythonRun"), ("set", "clock"), ("tool", "GetToday"), ("tool", "ConvertCurrency"),
     ];
 
     private static readonly (string Question, string Answer)[] Questions =

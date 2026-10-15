@@ -82,6 +82,11 @@ real one).
   who asked for less motion still gets that pace, because text arriving in order is content and not movement, and
   only the auto-loop is dropped (Louis, on seeing it appear in one go: "slow the animation down, and only start when
   reaching Die App").
+- **Step 3, the copy stays data.** The bento's tiles, the tour's chips, the chart heights and the marquee's tags are
+  C# arrays on the page, rendered by Razor (the marquee twice over, so its loop is seamless), so no script builds
+  markup from literals. The stages, the tour's panels and the tiles' extras are the app's own pieces again
+  (`delegation`, `user-message`, `work-steps`). One trap: Bootstrap's `.row` is loaded in the app, so the tour's cost
+  rows are `cost-row`; a landing class must not collide with a Bootstrap grid class.
 - **The gradient line comes in without blur.** The headline animates word by word with a blur, except the gradient
   line: a `filter` on text that is `background-clip: text` makes Chrome drop the text, so that line gets the same
   rise without the blur.
