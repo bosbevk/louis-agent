@@ -92,6 +92,7 @@ def converse(toolsets, run, task, location, messages, mode=""):
 
 def send(session, message):
     text, tools, delegations, specialist_calls, error = [], [], [], [], None
+    thinking, specialist_thinking = [], []   # what Puls and its specialist thought before answering (Louis: "I need to see the thinking")
     with call("POST", f"sessions/{session}/messages", {"message": message}, stream=True) as reply:
         event = None
         for raw in reply:
@@ -112,17 +113,22 @@ def send(session, message):
                     delegations.append({"call": "continue", "handle": arguments.get("handle")})
             elif event == "content_block_delta" and (data.get("delta") or {}).get("type") == "text_delta":
                 text.append(data["delta"]["text"])
+            elif event == "content_block_delta" and (data.get("delta") or {}).get("type") == "thinking_delta":
+                thinking.append(data["delta"].get("thinking", ""))
             elif event == "sub_session":
                 inner = data.get("data") or {}
                 if data.get("event") == "content_block_start" and inner.get("content_block", {}).get("type") == "tool_use":
                     block = inner["content_block"]
                     specialist_calls.append({"name": block["name"], "input": block.get("input") or {}})
+                elif data.get("event") == "content_block_delta" and (inner.get("delta") or {}).get("type") == "thinking_delta":
+                    specialist_thinking.append(inner["delta"].get("thinking", ""))
             elif event == "error":
                 error = json.dumps(data)
     answer = "".join(text).strip()
     # The handle a kept sub-session got, from the footer Puls's tool result carries into its answer only if it quotes
     # it; the reliable source is the next turn's ContinueSubSession call, scored in `score`.
-    return {"answer": answer, "tools": tools, "delegations": delegations, "specialist_calls": specialist_calls, "error": error}
+    return {"answer": answer, "tools": tools, "delegations": delegations, "specialist_calls": specialist_calls, "error": error,
+            "thinking": "".join(thinking).strip(), "specialist_thinking": "".join(specialist_thinking).strip()}
 
 
 def hosts(specialist_calls):
@@ -229,7 +235,12 @@ def transcript(path, conversations):
                 calls = ", ".join(f"{s['name']}({s['input'].get('url') or s['input'].get('query') or ''})" for s in t["specialist_calls"])
                 file.write(f"## Turn {n}: {t['question']}\n\n*Puls:* {', '.join(t['tools']) or '—'} · "
                            f"*Delegations:* {json.dumps(t['delegations'], ensure_ascii=False) if t['delegations'] else '—'} · *{t['seconds']} s*\n\n"
-                           f"*Specialist:* {calls or '—'}\n\n{t['answer'] or t['error']}\n\n")
+                           f"*Specialist:* {calls or '—'}\n\n")
+                # The thinking, as blockquotes under a label: the portal renders markdown without HTML, so no <details>.
+                for label, thought in (("Puls se denke", t.get("thinking")), ("Spesialis se denke", t.get("specialist_thinking"))):
+                    if thought:
+                        file.write(f"*{label}:*\n\n" + "\n".join("> " + line for line in thought.splitlines()) + "\n\n")
+                file.write(f"{t['answer'] or t['error']}\n\n")
 
 
 def write_results(out, results):
