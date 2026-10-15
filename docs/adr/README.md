@@ -24,6 +24,7 @@ afterwards from the docs that hold them (each ADR links its sources), with the d
 | [0012](0012-one-orchestrator-per-microservice.md) | One orchestrator per microservice, which asks louis-agent for fixes | Accepted |
 | [0013](0013-documentation-structure.md) | Documentation: one type per doc, guides by folder, arc42 and ADRs | Accepted |
 | [0014](0014-test-first.md) | Test first: a step's tests are written and seen failing before the code | Accepted |
+| [0015](0015-licence-agpl.md) | Licence: AGPL-3.0, so improvements to a hosted Puls stay open | Accepted |
 
 ## When to write one
 

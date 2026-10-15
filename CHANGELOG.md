@@ -3,6 +3,8 @@
 > **Reference.** What was finished, newest first, one entry per feature, fix or cleanup. **Elsewhere:** what's still
 > open in the [TODO](TODO.md); how each was built in its feature, fix or plan doc (linked from its entry).
 
+- 2026-10-15 — **Licence: AGPL-3.0** (was MIT): still free to use, change and share; whoever changes it and runs it as a
+  service must publish the changes, so a hosted Puls's improvements stay open ([ADR 0015](docs/adr/0015-licence-agpl.md))
 - 2026-10-15 — **F24 Landing motion**: Puls's landing page as a moving page on the brand's idea (a puls is a disturbance
   that travels from its source): dark water behind it, the app's three panels playing a scripted turn in the page, a
   pinned *In die app* tour, a Kenmerke bento over two marquees, Syfers counting up the measured numbers, an accordion
