@@ -10,6 +10,21 @@ written, including the model's thinking and every tool call, and each answer say
 
 Runs on Claude (Anthropic) by default; Ollama and OpenAI-compatible endpoints work too.
 
+## See it
+
+**Puls's landing page** tells the idea by playing it: a question goes out to a specialist and comes back as an
+answer, in the app's own pieces, over the water.
+
+![Puls's landing page: the hero, the app playing a turn, how it works, the pinned tour, the features and the measured numbers](docs/specs/images/puls-landing.gif)
+
+**The app**, one real question: Puls hands it to a researcher, the Werk panel shows the specialist's steps, the
+sources it read and what it cost, and the answer streams in.
+
+![Puls answering a question: the delegation card, the Werk panel's steps and sources, the answer and its cost](docs/specs/images/puls-app.gif)
+
+Both recorded from the running app (`docker compose -f docker/docker-compose.puls.yml ... up`, then
+http://127.0.0.1:5070); nothing is mocked.
+
 ## Puls
 
 **Puls** (*Elke vraag op pad na 'n antwoord*) is a general AI assistant that speaks everyday South African Afrikaans.
