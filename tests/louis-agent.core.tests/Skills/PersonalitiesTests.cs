@@ -260,6 +260,25 @@ public class PersonalitiesTests
         Assert.That(text, Does.Contain("how the user sounds").And.Contain("keep your report's shape"));
     }
 
+    [Test]
+    public void OnlyTheCook_IsARoleToDelegate_UntilTheOthersPassTheirCheck()
+    {
+        // F29 step 3 (Louis: "disable all specialists, Puls boots with web, except the cook"): the prompts match the gate.
+        // The web is Puls's own work; the other rows say "not yet", and a not-yet request is never handed over.
+        string router = SkillFileSource.ReadEmbedded("default.md")!;
+        string agents = SkillFileSource.ReadEmbedded("agents-skills.md")!;
+
+        string[] routerRows = router.Split('\n').Where(r => r.StartsWith('|')).ToArray();
+        Assert.That(routerRows.Single(r => r.Contains("The world:")), Does.Contain("you, with `web`").And.Not.Contain("puls-researcher"));
+        Assert.That(routerRows.Where(r => r.Contains("`puls-")), Has.Exactly(1).Items.And.All.Contains("`puls-cook`"), "one role left in the table");
+        Assert.That(routerRows.Count(r => r.Contains("*not yet*")), Is.GreaterThanOrEqualTo(6), "files, git, code, dotnet, paymo, devops, skills");
+        Assert.That(router, Does.Contain("isn't available yet"), "what to say instead of delegating");
+
+        string[] agentRows = agents.Split('\n').Where(r => r.StartsWith('|') && r.Contains("`puls-")).ToArray();
+        Assert.That(agentRows, Has.Exactly(1).Items.And.All.Contains("`puls-cook`"), "the roles table keeps the cook");
+        Assert.That(agents, Does.Contain("## Waiting for validation").And.Contain("PERSONALITIES_ENABLED"));
+    }
+
     [TestCase("default.md")]
     [TestCase("agents-skills.md")]
     public void AMealToCook_GoesToTheCook_WithWeb(string router)
