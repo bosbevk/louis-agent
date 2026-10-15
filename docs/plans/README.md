@@ -10,6 +10,7 @@ or fix doc (*What the build changed*), not here.
 
 | Plan | For | Approved | Notes |
 |---|---|---|---|
+| [F26-specialist-follow-up.md](F26-specialist-follow-up.md) | [F26 Specialist follow-up](../features/F26-specialist-follow-up.md) | 2026-10-15 | A `SubSessionRegistry` owned by the chat's session; `ContinueSubSession(handle, message)`; caps in code; measured by F25's follow-up question |
 | [F25-local-cook.md](F25-local-cook.md) | [F25 Local cook](../features/F25-local-cook.md) | 2026-10-15 | Two routing rows; a cook check beside the delegation check that reads the specialist's calls from the stream; a paid run on Louis's go |
 | [F22-role-tools.md](F22-role-tools.md) | [F22 Role tools](../features/F22-role-tools.md) | 2026-10-13 | Reuse before building: PdfPig, OpenXml, ExcelDataReader, git CLI, F14's rates |
 | [F21-personalities.md](F21-personalities.md) | [F21 Personalities](../features/F21-personalities.md) | 2026-10-13 | Built before F20 continues; `puls.md` and `puls-specialist.md` |
