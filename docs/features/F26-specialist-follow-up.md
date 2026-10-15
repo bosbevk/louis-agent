@@ -1,6 +1,6 @@
 # F26 · Specialist follow-up: Puls asks the same specialist again
 
-> **Status:** planned (2026-10-15) · **Milestone:** — · **Depends on:** F5 (sub-sessions), F21 (roles), F22 (the per-turn
+> **Status:** built (2026-10-15), on `claude/project-thread-381vmw`; open: the follow-up rule, the Werk panel · **Milestone:** — · **Depends on:** F5 (sub-sessions), F21 (roles), F22 (the per-turn
 > context a tool reads: attachments, the user's place)
 >
 > **In the TODO:** **F26 Specialist follow-up** under *Sessions and memory*, beside F21, F22 and F25 ([TODO](../../TODO.md)) ·
@@ -61,12 +61,29 @@ so that a peer never keeps sessions nobody will use.
   continue sends to the right session; unknown handle; the cap; the per-turn limit counts both) and API tests (the
   chat's delete and idle drop close its sub-sessions). The golden files show only the new tool and texts.
 - **F26-S1:** in the cook check (F25), a follow-up on the meal goes to the same cook (`ContinueSubSession` with the
-  handle of the first delegation), the dish is the same, and the follow-up costs less than the first answer.
-- Suites pass; *Finishing a feature*.
+  handle of the first delegation), the dish is the same, and the follow-up costs less than the first answer. *Partly
+  met* in the [three-run cook check](../../samples/sample-output-puls-cook/README.md): 3 of 6 delegated follow-ups
+  continued the cook with `sub-1`, the dish unchanged, at $0.0011–0.0015 against $0.0030–0.0095 for the first answer;
+  in the other 3 Puls scaled the list itself, and with `web` of its own it never continued. **Open:** the rule in
+  `default.md` is read as optional; make it firmer and measure again.
+- Suites pass; *Finishing a feature*. *Open:* the Werk panel names the peer, not the role, and shows a continue as a
+  bare tool line (Louis, 2026-10-15).
 
 ## What the build changed
 
-*(filled in as the steps land)*
+- **The footer names the role the peer opened with**, read from its `POST /sessions` response, so a derived role
+  (`roles.json`) is named too, not only one Puls passed; a peer that says nothing gets "default role".
+- **A continue that fails or times out closes the sub-session.** The peer's turn is then in an unknown state (a
+  delete cancels it), so the next sub-session starts clean; a 404 (the peer dropped it) is only forgotten, since there
+  is nothing to close. The plan had only the 404 case.
+- **The per-turn limit counts calls**, starts and continues alike, so a turn can't loop on one specialist either
+  (`SubSessionLimit`'s text changed with it).
+- **Shared with `StartSubSession`:** attachment forwarding, the turn slot and the send-with-FX11-retry moved into
+  helpers, so the two tools can't drift.
+- **The idle sweep is testable:** `AgentSessions.DropIdle(now)` takes the clock, so the API test ages a session instead
+  of waiting four hours.
+- **Not built:** nothing shows the open sub-sessions in Puls's web app yet; `GET /sessions/{id}` lists them for a client
+  that wants to.
 
 ---
 [Features](README.md) · [Plan](../plans/F26-specialist-follow-up.md)

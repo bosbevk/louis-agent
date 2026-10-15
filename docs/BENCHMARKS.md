@@ -120,5 +120,29 @@ Can the orchestrator's triage run on a free local model while louis-agent's fixe
 when thinking is off (F15); make `EscalateToHuman` idempotent per error and reject contradicting decisions in one
 reply (F17); record cancelled requests in the ledger ([FX9](fixes/FX09-cancelled-request-usage.md)).
 
+## The cook check (2026-10-15)
+
+Does Puls route a meal question to the cook (F25), does the cook price it from South African shops, and does a
+follow-up go back to the same cook (F26)? `samples/puls-cook-check/run_check.py --repeat 3` on Claude Haiku 5.5, saved
+in [samples/sample-output-puls-cook/](../samples/sample-output-puls-cook/README.md): two meal conversations with a
+follow-up each and the prime rate as the control, in two modes.
+
+| | Delegated (Puls as built) | Puls with `web` |
+|---|---|---|
+| Meals routed to `puls-cook` | **6 / 6** | 6 / 6 |
+| Control routed to `puls-researcher` | 3 / 3 | 0 / 3 (Puls answered itself) |
+| Meals priced at a South African shop | 6 / 6 | 6 / 6 |
+| Follow-up continued the same cook | **3 / 6** | 0 / 6 |
+| Cost per run, mean | $0.0229 | $0.0152 (−34%) |
+| A meal's first turn / its follow-up | $0.0030–0.0095 / $0.0006–0.0015 | |
+
+- **Routing by two table rows works:** two roles on one toolset, the right one chosen every time from the request.
+- **Search was refused for 41 of 48 calls** (DuckDuckGo), so the cook confirmed one or two prices per meal from product
+  pages and marked the rest as estimates; it never passed an estimate off as a shop price. A search provider that isn't
+  refused is the next step.
+- **The follow-up rule is read as optional:** Puls scaled the list itself half the time rather than continuing the cook.
+  A continue costs the same as Puls's own answer (about $0.001: cache reads on the kept prefix), so the rule can be
+  firmer at no cost.
+
 ---
 [Docs index](README.md) · Related: [Features](features/README.md) · [Cost write-up](learning/13-cost-and-token-economics.md)

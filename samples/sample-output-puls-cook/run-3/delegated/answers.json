@@ -1,0 +1,481 @@
+[
+  {
+    "task": "cook-af",
+    "location": "Stellenbosch, Wes-Kaap, Suid-Afrika",
+    "turns": [
+      {
+        "question": "Wat kan ek vanaand vir vier mense kook vir onder R250? Gee die resep en 'n inkopielys met pryse.",
+        "answer": "**Vanaand: bobotie vir vier.** Dis 'n klassieke Suid-Afrikaanse gehaktskottel met eierbedekking, en die bestanddele is redelik goedkoop.\n\n**Eerlik eerste:** ek kon nie die winkelpryse bevestig nie. Die winkelwebwerwe het nie gelaai nie, en die enigste prys wat ek kon naslaan, is melk by Spar (2 L, R32,99, volgens die brosjure). Die bedrae hieronder is my eie ruwe skattings, nie gekontroleerde pryse nie. Die resep self is 'n standaard bobotie, so dit is betroubaar.\n\n## Resep (vir 4 mense, ±1 uur 30 min)\n\n**Bestanddele:**\n- 750 g beesmaalvleis\n- 2 snye witbrood, in 250 ml melk geweek\n- 1 groot ui, fyn gekap\n- 1 eetlepel olie\n- 1 eetlepel kerriepoeier (mild of medium)\n- 1 teelepel borrie\n- 1 appel, geraspe\n- 50 g rosyne\n- 1 eetlepel aprikosjem (of blatjang)\n- 1 eetlepel asyn\n- 1 eetlepel Worcestershire-sous (opsioneel)\n- 1 teelepel sout, ½ teelepel swartpeper\n- 2 eiers en 250 ml melk (vir die bedekking)\n- 2 lourierblare\n\n**Metode:**\n1. Verhit die oond tot 180 °C en vet 'n ovenskottel van ±1,5 liter in.\n2. Week die brood in die 250 ml melk, druk dit uit en hou die melk opsy.\n3. Fruit die ui in die olie tot sag en goudbruin.\n4. Voeg kerrie en borrie by met 'n skeut water en roer 1 minuut.\n5. Bruin die maalvleis en breek die klonte los.\n6. Voeg die brood, appel, rosyne, jem, asyn, Worcestershire, sout en peper by. Kook 5 minute saam.\n7. Skep die mengsel in die skottel, druk plat en lê die lourierblare bo-op.\n8. Klop die eiers met die 250 ml melk en giet oor die vleis.\n9. Bak 30–35 minute tot die bedekking stewig en goudbruin is.\n10. Rus 5 minute en bedien met rys, sambal of blatjang.\n\n## Inkopielys (ruwe skatting, nie bevestig nie)\n\n| Item | Hoeveelheid | Skatting |\n|---|---|---|\n| Beesmaalvleis | 750 g | R110–140 |\n| Eiers | 6 (tray) | R45–55 |\n| Witbrood | 1 klein brood | R15–20 |\n| Melk | 2 L | R33 (Spar, bevestig) |\n| Ui | 1 groot | R7 |\n| Appel | 1 | R6 |\n| Rosyne | 50 g | R6 |\n| Aprikosjem | 1 bottel | R25–35 |\n| Kerriepoeier, borrie, lourierblare | as nodig | R0 as jy dit het, anders ±R40 |\n| Worcestershire-sous | opsioneel | R20–25 |\n\nOlie, sout, swartpeper en asyn neem ek aan dat jy al het.\n\n**Totaal:** As jy kerrie, borrie en lourierblare al het, en die Worcestershire uitlaat, kom jy na my skatting op ±R250–270. Dit is naby die budget, maar dalk effe bo. Die maalvleis is die grootste koste. Met 600 g in plaas van 750 g, of 'n goedkoper maalvleis-aanbieding, bly jy makliker onder R250.\n\n## Volgende stap\n\nDie pryse by die winkel self kan jou die beste antwoord gee. Vra gerus by Checkers of Pick n Pay in Stellenbosch vir die maalvleis- en eierpryse, of kyk na hul apps. As jy wil, kan ek die pryse vir die Stellenbosch-winkels nog 'n keer probeer naslaan.",
+        "tools": [
+          "StartSubSession"
+        ],
+        "delegations": [
+          {
+            "call": "start",
+            "toolsets": [
+              "web"
+            ],
+            "personality": "puls-cook"
+          }
+        ],
+        "specialist_calls": [
+          {
+            "name": "GetToday",
+            "input": {}
+          },
+          {
+            "name": "WebSearch",
+            "input": {
+              "query": "bobotie resep maak vir 4 mense maalvleis appelkooigeel",
+              "maxResults": 5
+            }
+          },
+          {
+            "name": "WebSearch",
+            "input": {
+              "query": "bobotie recipe South Africa",
+              "maxResults": 5
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://www.checkers.co.za/search?q=beef%20mince",
+              "maxChars": 4000
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://en.wikipedia.org/wiki/Bobotie",
+              "maxChars": 4000
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://www.pnp.co.za/search?q=beef%20mince",
+              "maxChars": 3000
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://www.woolworths.co.za/search?q=beef%20mince",
+              "maxChars": 3000
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://www.checkers.co.za/",
+              "maxChars": 3000
+            }
+          },
+          {
+            "name": "WebSearch",
+            "input": {
+              "query": "Checkers beef mince 500g price R",
+              "maxResults": 5
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://www.shoprite.co.za/",
+              "maxChars": 2000
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://www.spar.co.za/",
+              "maxChars": 2000
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://www.spar.co.za/",
+              "startIndex": 2000,
+              "maxChars": 4300
+            }
+          }
+        ],
+        "error": null,
+        "seconds": 57.6
+      },
+      {
+        "question": "Maak dit eerder vir ses mense. Wat kos dit nou?",
+        "answer": "Met ses mense word dit duurder. Ek het die hoeveelhede met 1,5 vermenigvuldig. Die pryse is steeds my eie ruwe skattings, nie bevestig nie.\n\n## Aangepaste inkopielys (vir 6)\n\n| Item | Hoeveelheid | Skatting |\n|---|---|---|\n| Beesmaalvleis | 1,125 kg | R165–210 |\n| Eiers | 3 (1 tray van 6) | R45–55 |\n| Witbrood | 1 klein brood (3 snye) | R15–20 |\n| Melk | 2 L (750 ml nodig) | R33 (Spar, bevestig) |\n| Ui | 2 groot | R14 |\n| Appel | 2 | R12 |\n| Rosyne | 75 g | R8 |\n| Aprikosjem | 1 bottel | R25–35 |\n| Worcestershire-sous | opsioneel | R20–25 |\n\nKerrie, borrie en lourierblare neem ek aan dat jy al het. Olie, sout, peper en asyn ook.\n\n**Totaal: ±R320–380** sonder Worcestershire en met die kruie in die huis. Dis ongeveer R55–60 per persoon, en ver bo die R250 wat jy wou hê.\n\n## Hoe om dit onder R250 te kry\n\n- **Minder vleis:** 750 g in plaas van 1,125 kg bespaar sowat R55–70. Vul aan met 'n extra ui en 'n snye brood, dan bly dit steeds vol genoeg vir ses.\n- **Goedkoper maalvleis:** Vergelyk die prys per kilogram by Checkers, Pick n Pay en Spar. Die aanbiedings verskil baie.\n- **Slaan die jem oor:** Gebruik suiker of heuning in plaas van die aprikosjem, of sit net 'n bietjie blatjang in. Dit spaar sowat R25–35.\n- **Slaan die Worcestershire-sous oor:** Dit is opsioneel.\n\nMet 750 g maalvleis, sonder jem en Worcestershire kom jy na my skatting op ±R230–260. Dis op die grens, so kyk na die werklike pryse by die winkel.",
+        "tools": [],
+        "delegations": [],
+        "specialist_calls": [],
+        "error": null,
+        "seconds": 8.4
+      }
+    ],
+    "score": {
+      "role": "puls-cook",
+      "routed_right": true,
+      "answered_itself": false,
+      "hosts": [
+        "checkers.co.za",
+        "en.wikipedia.org",
+        "pnp.co.za",
+        "woolworths.co.za",
+        "shoprite.co.za",
+        "spar.co.za"
+      ],
+      "local_hosts": [
+        "checkers.co.za",
+        "pnp.co.za",
+        "woolworths.co.za",
+        "shoprite.co.za",
+        "spar.co.za"
+      ],
+      "shop_hosts": [
+        "checkers.co.za",
+        "pnp.co.za",
+        "woolworths.co.za",
+        "shoprite.co.za",
+        "spar.co.za"
+      ],
+      "sources_local": false,
+      "priced_at_shops": true,
+      "rand_amounts": 30,
+      "unknown_marks": 0,
+      "errors": [],
+      "follow_up": "answered itself",
+      "follow_up_handle": null
+    }
+  },
+  {
+    "task": "cook-en",
+    "location": null,
+    "turns": [
+      {
+        "question": "What should I cook tonight in Pretoria for two? I have about an hour. Give me the recipe and what it'll cost at the shops.",
+        "answer": "Ek het vir jou 'n ete gekry: **pap en wors met tamatie-uiesmoor**. Dit is vir twee mense, en dit is ongeveer 35–40 minute. Die pryse het ek egter nie kon bevestig nie, so sien die skatting hieronder.\n\n## Resep (vir 2)\n\n**Ingrediënte**\n- 400 g boerewors (ongeveer 4 wors)\n- 200 g super mielie meal\n- 750 ml water\n- 1 tl sout, plus 1 tl vir die smoor\n- ½ tl swartpeper\n- 1 medium ui, fyn gekap\n- 1 tl olie\n- 2 medium tamaties, fyn gekap, of 1 blik (400 g) gesnyde tamaties\n- 1 eetl botter (opsioneel)\n\n**Metode**\n1. **(0–5 min)** Verhit 'n droë koekpan op medium hitte. Prik die wors met 'n vurk, sit dit in die pan en voeg 2 eetl water by. Dek toe.\n2. **(5–20 min)** Draai die wors gereeld om tot dit gaar en bruin is. Hou dit warm.\n3. **(5–20 min)** Kook die 750 ml water met 1 tl sout in 'n klein pot.\n4. **(10–15 min)** Roer die mielie meal stadig in die kokende water, sonder klonte. Verlaag die hitte.\n5. **(15–30 min)** Kook die pap saggies en roer gereeld. Voeg meer water by as dit te styf word. Roer die botter in as jy dit gebruik.\n6. **(20–30 min)** Bak die ui in olie sag en goudbruin, ongeveer 5 minute.\n7. **(30–35 min)** Voeg die tamaties, sout en peper by. Stoof dit tot 'n dik smoor, ongeveer 8–10 minute.\n8. **(35–40 min)** Skep die pap op die borde, skik die wors langs, en gooi die smoor oor die wors.\n\nDie hoeveelhede en tye is standaard kookriglyne. Dit is nie uit 'n spesifieke bron nie, maar dit werk.\n\n## Inkoopslys en koste\n\nDie soekdiens het nie vanaf die internet pryse gekry nie, en die Checkers- en Pick n Pay-bladsye het nie gelaai nie. Hierdie skatting is dus **my eie raming uit die kop**, nie gekontroleer nie:\n\n| Item | Koop | Geskatte prys |\n|---|---|---|\n| Boerewors | 500 g | ±R50–60 |\n| Super mielie meal | 1 kg of 2,5 kg | ±R10–20 (deel van 'n groot sak) |\n| Ui | 1 medium | ±R5 |\n| Tamaties | 1 blik gesnyde tamaties | ±R15–20 |\n| Olie, botter | klein fles, opsioneel botter | ±R5–10 |\n\n**Totaal: ongeveer R85–110**, of sowat R45–55 per persoon. Die mielie meal en olie is waarskynlik al by die huis.\n\nKyk gou in die Checkers Sixty60- of Pick n Pay-app vir die regte pryse, want dit verskil van winkel tot winkel. As jy wil hê ek moet die pryse probeer nagaan, moet die soekdiens eers reggemaak word.",
+        "tools": [
+          "StartSubSession"
+        ],
+        "delegations": [
+          {
+            "call": "start",
+            "toolsets": [
+              "web"
+            ],
+            "personality": "puls-cook"
+          }
+        ],
+        "specialist_calls": [
+          {
+            "name": "WebSearch",
+            "input": {
+              "query": "Checkers Sixty60 boerewors 500g price",
+              "maxResults": 5
+            }
+          },
+          {
+            "name": "WebSearch",
+            "input": {
+              "query": "Pick n Pay mielie meal 2.5kg price",
+              "maxResults": 5
+            }
+          },
+          {
+            "name": "WebSearch",
+            "input": {
+              "query": "pap en wors met tamatiesmoor resep",
+              "maxResults": 3
+            }
+          },
+          {
+            "name": "GetToday",
+            "input": {}
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://www.checkers.co.za/search?q=boerewors",
+              "maxChars": 4000
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://www.pnp.co.za/search?q=mielie%20meal",
+              "maxChars": 4000
+            }
+          }
+        ],
+        "error": null,
+        "seconds": 35.4
+      },
+      {
+        "question": "Swap the meat for chicken. What does the shopping list look like now?",
+        "answer": "Met hoender in plaas van wors sal die lys soos volg lyk. Die prys is weer my eie raming, nie gekontroleer nie.\n\n## Inkoopslys (hoender)\n\n| Item | Koop | Geskatte prys |\n|---|---|---|\n| Hoender | 600 g hoenderdeel (4 bene-dy of drumsticks, of 'n pak bene-lose dye) | ±R60–80 |\n| Super mielie meal | 1 kg of 2,5 kg | ±R10–20 |\n| Ui | 1 medium | ±R5 |\n| Tamaties | 1 blik gesnyde tamaties | ±R15–20 |\n| Olie, botter | klein fles, opsioneel botter | ±R5–10 |\n\n**Totaal: ongeveer R95–120**, of sowat R48–60 per persoon. Dit is ongeveer R10 meer as met die wors.\n\n## Wat verander in die resep\n\n- **Hoender in die pan:** Kruie die stukke met sout, swartpeper en 'n knippie paprika. Bak dit in 'n bietjie olie op medium hitte, dek toe, en laat dit 20–25 minute sag gaar word. Draai dit een keer om. Gee dit laaste 5 minute sonder deksel om bruin te word. Die hoender moet heeltemal gaar wees, en die sap moet helder wees.\n- **Pap en smoor:** Dit bly presies dieselfde.\n- **Tydsberekening:** Begin die hoender eerste, en maak die pap en smoor terwyl dit gaar word. Dit pas nog steeds binne die uur.\n\nAs jy bene-lose dye koop, verkort die kooktyd tot 15–20 minute.",
+        "tools": [],
+        "delegations": [],
+        "specialist_calls": [],
+        "error": null,
+        "seconds": 7.2
+      }
+    ],
+    "score": {
+      "role": "puls-cook",
+      "routed_right": true,
+      "answered_itself": false,
+      "hosts": [
+        "checkers.co.za",
+        "pnp.co.za"
+      ],
+      "local_hosts": [
+        "checkers.co.za",
+        "pnp.co.za"
+      ],
+      "shop_hosts": [
+        "checkers.co.za",
+        "pnp.co.za"
+      ],
+      "sources_local": true,
+      "priced_at_shops": true,
+      "rand_amounts": 15,
+      "unknown_marks": 0,
+      "errors": [],
+      "follow_up": "answered itself",
+      "follow_up_handle": null
+    }
+  },
+  {
+    "task": "control-web",
+    "location": "Stellenbosch, Wes-Kaap, Suid-Afrika",
+    "turns": [
+      {
+        "question": "Wat is die huidige prima uitleenkoers in Suid-Afrika, en wanneer het dit laas verander? Gee jou bronne.",
+        "answer": "Ek kon nie die huidige prima uitleenkoers of die datum van die laaste verandering bevestig nie. Die soektoestel was geblokkeer, en die meeste bank- en rentebladsye het nie gelaai nie.\n\n**Wat ek wel kon sien:**\n\n- **23 September 2026:** BusinessTech het 'n kopteks gepubliseer: *\"Reserve Bank hikes interest rates in South Africa\"*. Dit is net die koptekst, sonder syfers. As dit reg is, het die repo- en dus ook die prima koers waarskynlik **op 23 September 2026 gestyg**. Ek kon dit nie bevestig nie.\n- **27 September 2026:** 'n Ander BusinessTech-koptekst oor die SARB-goewerneur se \"goeie nuus\" oor rentekoerse. Dit is dubbelsinnig en sê nie of die koers op- of afgegaan het nie.\n- **2026 MPC-datums** (volgens die SARB se kalender): 29 Jan, 26 Mar, 28 May, 23 Jul, 23 Sep en 19 Nov 2026. Die volgende besluit is dus op 19 November.\n\n**Wat ek nie kon bevestig nie:** die presiese prima koers vandag, die ou en nuwe koers van die laaste verandering, en die amptelike SARB-verklaring.\n\n**Hoe jy dit vinnig self kan nagaan:**\n\n1. Die SARB se *Current Market Rates*: https://www.resbank.co.za/en/home/what-we-do/statistics/key-statistics/current-market-rates\n2. Die SARB se mediaverklaring of MPC-verklaring van 23 September 2026 (op resbank.co.za onder *Media releases*).\n3. Die BusinessTech-artikel van 23 September 2026 (op https://businesstech.co.za/news/finance/).\n4. Jou bank se app of webwerf. Prima verander gewoonlik dieselfde dag as die repo-besluit.\n\nMoenie 'n lening of verband op my syfers baseer nie. As jy wil hê ek moet dit weer probeer, kan ek 'n ander bron nagaan, maar die soektoestel self moet eers reggemaak word.",
+        "tools": [
+          "GetToday",
+          "StartSubSession",
+          "ContinueSubSession"
+        ],
+        "delegations": [
+          {
+            "call": "start",
+            "toolsets": [
+              "web"
+            ],
+            "personality": "puls-researcher"
+          },
+          {
+            "call": "continue",
+            "handle": "sub-1"
+          }
+        ],
+        "specialist_calls": [
+          {
+            "name": "GetToday",
+            "input": {}
+          },
+          {
+            "name": "WebSearch",
+            "input": {
+              "query": "South Africa prime lending rate SARB repo rate decision latest",
+              "maxResults": 8
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://www.resbank.co.za/en/home/what-we-do/statistics/key-statistics/current-market-rates"
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://www.resbank.co.za/en/home/publications/statements/monetary-policy-statements"
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://www.fnb.co.za/rates/prime-rate.html"
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://www.standardbank.co.za/southafrica/personal/products-and-services/rates-and-fees/prime-rate"
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://www.resbank.co.za/en/home/what-we-do/monetary-policy/monetary-policy-committee"
+            }
+          },
+          {
+            "name": "WebSearch",
+            "input": {
+              "query": "prime lending rate South Africa 2026 MPC repo rate",
+              "maxResults": 5
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://www.capitecbank.co.za/rates-and-fees/"
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://en.wikipedia.org/wiki/South_African_Reserve_Bank",
+              "maxChars": 4000
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://www.nedbank.co.za/content/nedbank/desktop/gt/en/personal/rates-and-fees.html"
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://en.wikipedia.org/wiki/Monetary_policy_of_South_Africa",
+              "maxChars": 12000
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://www.absa.co.za/personal/rates-and-fees/"
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://en.wikipedia.org/wiki/Prime_interest_rate",
+              "maxChars": 6000
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://www.resbank.co.za/en/home/what-we-do/monetary-policy/MPC-announcement-webcasts",
+              "maxChars": 4000
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://tradingeconomics.com/south-africa/interest-rate",
+              "maxChars": 4000
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://tradingeconomics.com/south-africa/prime-lending-rate",
+              "maxChars": 4000
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://www.resbank.co.za/en/home/publications/media-releases",
+              "maxChars": 4000
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://businesstech.co.za/news/finance/",
+              "maxChars": 4000
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://www.moneyweb.co.za/tag/repo-rate/",
+              "maxChars": 4000
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://www.capitecbank.co.za/prime-rate/",
+              "maxChars": 3000
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://businesstech.co.za/news/finance/",
+              "startIndex": 4000,
+              "maxChars": 4400
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://businesstech.co.za/news/banking/",
+              "maxChars": 5000
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://businesstech.co.za/news/finance/reserve-bank-hikes-interest-rates-in-south-africa/",
+              "maxChars": 5000
+            }
+          },
+          {
+            "name": "FetchUrl",
+            "input": {
+              "url": "https://www.moneyweb.co.za/category/moneyweb-personal-finance/",
+              "maxChars": 3000
+            }
+          }
+        ],
+        "error": null,
+        "seconds": 83.1
+      }
+    ],
+    "score": {
+      "role": "puls-researcher",
+      "routed_right": true,
+      "answered_itself": false,
+      "hosts": [
+        "resbank.co.za",
+        "fnb.co.za",
+        "standardbank.co.za",
+        "capitecbank.co.za",
+        "en.wikipedia.org",
+        "nedbank.co.za",
+        "absa.co.za",
+        "tradingeconomics.com",
+        "businesstech.co.za",
+        "moneyweb.co.za"
+      ],
+      "local_hosts": [
+        "resbank.co.za",
+        "fnb.co.za",
+        "standardbank.co.za",
+        "capitecbank.co.za",
+        "nedbank.co.za",
+        "absa.co.za",
+        "businesstech.co.za",
+        "moneyweb.co.za"
+      ],
+      "shop_hosts": [],
+      "sources_local": false,
+      "priced_at_shops": false,
+      "rand_amounts": 0,
+      "unknown_marks": 0,
+      "errors": []
+    }
+  }
+]

@@ -54,7 +54,8 @@ MODES = {
 
 SHOPS = ("checkers.co.za", "pnp.co.za", "woolworths.co.za", "spar.co.za", "shoprite.co.za")
 RAND = re.compile(r"\bR\s?\d[\d\s,.]*")
-UNKNOWN = re.compile(r"\b(unknown|onbekend)\b", re.IGNORECASE)
+# A price the cook didn't confirm: the role says "unknown"; the first run showed it writes "geskat" / "skatting" too.
+UNCONFIRMED = re.compile(r"\b(unknown|onbekend|geskat|skatting|skattings|estimate[ds]?|nie bevestig)\b", re.IGNORECASE)
 
 
 def converse(toolsets, run, task, location, messages):
@@ -138,7 +139,7 @@ def score(task, turns):
         "sources_local": bool(fetched) and len(local) == len(fetched),
         "priced_at_shops": bool(shops),
         "rand_amounts": len(RAND.findall(first["answer"])) + (len(RAND.findall(follow["answer"])) if follow else 0),
-        "unknown_marks": len(UNKNOWN.findall(first["answer"])) + (len(UNKNOWN.findall(follow["answer"])) if follow else 0),
+        "unconfirmed_marks": len(UNCONFIRMED.findall(first["answer"])) + (len(UNCONFIRMED.findall(follow["answer"])) if follow else 0),
         "errors": [t["error"] for t in turns if t["error"]],
     }
     if follow:
@@ -215,12 +216,12 @@ def write_results(out, results):
     lines = ["# The cook check: one run", ""]
     for mode, r in results.items():
         lines += [f"## {mode} (toolsets: {', '.join(r['toolsets'])}): ${r['all']['cost']:.4f}, {r['all']['tokens']:,} tokens, {r['all']['requests']} requests", "",
-                  "| Conversation | Role | Routed right | Hosts fetched (SA shops / SA / all) | Rand amounts | Unknown | Follow-up | Cost turn 1 | Cost turn 2 | Seconds |",
+                  "| Conversation | Role | Routed right | Hosts fetched (SA shops / SA / all) | Rand amounts | Unconfirmed marks | Follow-up | Cost turn 1 | Cost turn 2 | Seconds |",
                   "|---|---|---|---|---:|---:|---|---:|---:|---|"]
         for c in r["conversations"]:
             s, turns = c["score"], r["per_task"][c["task"]]["turns"]
             lines.append(f"| {c['task']} | {s['role'] or ('— (answered itself)' if s['answered_itself'] else '— (error)')} | {'yes' if s['routed_right'] else 'no'} | "
-                         f"{len(s['shop_hosts'])} / {len(s['local_hosts'])} / {len(s['hosts'])}: {', '.join(s['hosts']) or '—'} | {s['rand_amounts']} | {s['unknown_marks']} | "
+                         f"{len(s['shop_hosts'])} / {len(s['local_hosts'])} / {len(s['hosts'])}: {', '.join(s['hosts']) or '—'} | {s['rand_amounts']} | {s['unconfirmed_marks']} | "
                          f"{s.get('follow_up', '—')}{' (' + s['follow_up_handle'] + ')' if s.get('follow_up_handle') else ''} | "
                          f"${turns.get('1', {}).get('cost', 0):.4f} | {('$%.4f' % turns['2']['cost']) if '2' in turns else '—'} | {', '.join(str(t['seconds']) for t in c['turns'])} |")
         lines.append("")

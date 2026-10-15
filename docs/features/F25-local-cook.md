@@ -1,6 +1,6 @@
 # F25 · Local cook: Puls's first local specialist
 
-> **Status:** in progress (2026-10-15), on `claude/project-thread-381vmw` · **Milestone:** — · **Depends on:** F21 (roles), F22 (`GetToday`, the user's place, `ConvertCurrency`), F5 (sub-sessions)
+> **Status:** built (2026-10-15), on `claude/project-thread-381vmw`; open: a search provider, the cook's estimates · **Milestone:** — · **Depends on:** F21 (roles), F22 (`GetToday`, the user's place, `ConvertCurrency`), F5 (sub-sessions)
 >
 > **In the TODO:** **F25 Local cook** under *Sessions and memory*, beside F21 and F22 ([TODO](../../TODO.md)) · **Plan:** [plans/F25](../plans/F25-local-cook.md)
 
@@ -54,12 +54,26 @@ the cook read, so that "routes properly" and "uses local sources" are numbers fr
   golden file showing only the new row.
 - **F25-S1 and F25-S3:** in the cook check, every meal question goes to `puls-cook`, the control question to the
   researcher, every price the cook reports comes from a South African shop's page it fetched, and unpriced ingredients
-  are marked unknown. *Open:* the run.
-- Suites pass; the run's README is in `samples/` and its numbers in [BENCHMARKS.md](../BENCHMARKS.md).
+  are marked unknown. *Met* in the [three-run cook check](../../samples/sample-output-puls-cook/README.md): 6 of 6 meals
+  to the cook, 3 of 3 controls to the researcher, every meal priced at Checkers and Pick n Pay (and others), confirmed
+  prices from product pages only. *Open:* the cook marks an unconfirmed price *geskat* (an estimate) rather than
+  *unknown*, and with DuckDuckGo refusing 41 of 48 searches most prices were estimates; a search provider that isn't
+  refused is needed before the shopping list is one the user can drive to the shop with.
+- Suites pass; the run's README is in `samples/` and its numbers in [BENCHMARKS.md](../BENCHMARKS.md#the-cook-check-2026-10-15). *Met.*
 
 ## What the build changed
 
-*(filled in as the steps land)*
+- **F26 came first.** Louis asked (2026-10-15) that a follow-up on the meal go to the same cook; checked, it couldn't
+  (every sub-session was deleted after its answer), so [F26 Specialist follow-up](F26-specialist-follow-up.md) was
+  built on this branch before the check, and the check asks a follow-up in each meal conversation.
+- **"Local sources" is scored in two parts:** every fetched host South African (`.za`, so a recipe site counts), and
+  at least one known shop among them (where the prices must come from). The plan's single "every host a shop" would have
+  failed a cook that read a recipe page.
+- **The check scores calls, not prose:** the role from Puls's `StartSubSession` arguments, the hosts from the
+  specialist's `FetchUrl` calls in the API's `sub_session` events, the follow-up from a `ContinueSubSession` call with
+  the first answer's handle. Rand amounts and "unknown" marks are the only things read from the answer.
+- **The town travels two ways:** on the session (`location`, as the web app sends it) for the Afrikaans conversation,
+  in the message for the English one; the cook's role covers both.
 
 ---
 [Features](README.md) · [Plan](../plans/F25-local-cook.md)

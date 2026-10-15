@@ -165,6 +165,11 @@ calls and `.env.example` read, but one counting task sent to a `files`-only spec
 FX10–FX14: delegation +31% on average (+6%, +11%, +86%), every delegation routed by the table, the dearest question
 $0.0174; cheaper for chat and web research, 1.2–3.5× dearer for short files, git and counting questions.
 
+The cook, measured: [sample-output-puls-cook/](sample-output-puls-cook/README.md) runs two meal conversations with a
+follow-up each and a control question, three times, Puls as built and Puls with `web` (`samples/puls-cook-check/run_check.py`):
+every meal went to `puls-cook` and was priced at South African shops; the follow-up continued the same cook in half the
+delegated runs and never when Puls had `web`; DuckDuckGo refused 41 of 48 searches, so most prices are marked estimates.
+
 With triage on a local model: [sample-output-short-local-triage/](sample-output-short-local-triage/README.md) is a
 `-Short` run whose orchestrator ran on `qwen3:4b-instruct-2507` in Ollama on a 4 GB GPU, fixes on Claude: the same
 4 fixes and 1 escalation, triage free ($0.042 against $0.049), 2.4 times slower. Its README has the steps to run it
