@@ -91,4 +91,10 @@ public enum ApiUserText
 
     [Description("'{Branch}' isn't merged yet; merge it first.")]
     BranchNotMerged,
+
+    [Description("The admin portal is closed: set ADMIN_API_KEY (or AGENT_API_KEY) in config/.env.secrets and recreate the container.")]
+    AdminClosed,
+
+    [Description("No saved run named '{Folder}'.")]
+    NoRun,
 }

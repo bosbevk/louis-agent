@@ -119,6 +119,7 @@ environment by the tools themselves:
 | `GIT_AUTHOR_NAME`, `GIT_AUTHOR_EMAIL`, `GIT_COMMITTER_NAME`, `GIT_COMMITTER_EMAIL` | Identity for commits made from the web app's Changes view |
 | `PAYMO_API_KEY` | Enables the Paymo tools |
 | `DEVOPS_API_KEY` | Azure DevOps personal access token; enables the DevOps tools (with the settings below) |
+| `ADMIN_API_KEY` | The admin portal's key (`/admin`, Puls's *Admin* menu); falls back to `AGENT_API_KEY`; with neither the portal is closed |
 | `TAVILY_API_KEY` | Tavily web search (1,000 free credits a month; the default once set) and `ReadRenderedPage`, which renders JavaScript pages through Tavily Extract (two credits per five pages) |
 | `GOOGLE_SEARCH_API_KEY`, `GOOGLE_SEARCH_ENGINE_ID` | Google web search (discontinued by Google on 2027-01-01; otherwise DuckDuckGo) |
 | `RIDER_MCP_PROJECT_PATH` | Host path of the project, sent to Rider's MCP server |
