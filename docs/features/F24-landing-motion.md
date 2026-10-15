@@ -87,6 +87,12 @@ real one).
   markup from literals. The stages, the tour's panels and the tiles' extras are the app's own pieces again
   (`delegation`, `user-message`, `work-steps`). One trap: Bootstrap's `.row` is loaded in the app, so the tour's cost
   rows are `cost-row`; a landing class must not collide with a Bootstrap grid class.
+- **Step 4, the numbers are the measured ones.** Syfers counts up four numbers from the learning write-ups (the
+  toolset profiles' prompt saving, the puls check's 24/24, the demo's 10/10 with its cache saving, the README's cost);
+  they are data on the page with what each one is and how it was measured, so a new measurement changes one line.
+  The prices are the same cards as Kenmerke, the examples counting up. Vrae is an accordion built from the same
+  `Questions` array as before, one open at a time, the first open; the band's rings are the app's own `pulse-bg`
+  rather than a copy. The F20 landing CSS (`.mock*`, `.step`, `.features`, `.price-card*`, the `details` FAQ) is gone.
 - **The gradient line comes in without blur.** The headline animates word by word with a blur, except the gradient
   line: a `filter` on text that is `background-clip: text` makes Chrome drop the text, so that line gets the same
   rise without the blur.

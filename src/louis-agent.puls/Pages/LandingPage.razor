@@ -12,7 +12,7 @@
 <Water />
 <div class="progress" id="landing-progress" aria-hidden="true"></div>
 <nav class="index" aria-label="Afdelings">
-    <a href="#top">Intro</a><a href="#demo">Die app</a><a href="#hoe">Hoe dit werk</a><a href="#indie">In die app</a><a href="#kenmerke">Kenmerke</a><a href="#pryse">Pryse</a><a href="#oor">Oor ons</a><a href="#vrae">Vrae</a>
+    <a href="#top">Intro</a><a href="#demo">Die app</a><a href="#hoe">Hoe dit werk</a><a href="#indie">In die app</a><a href="#kenmerke">Kenmerke</a><a href="#syfers">Syfers</a><a href="#pryse">Pryse</a><a href="#oor">Oor ons</a><a href="#vrae">Vrae</a>
 </nav>
 
 <div class="landing">
@@ -175,23 +175,41 @@
         </div>
     </section>
 
+    @* Syfers: the measured numbers (docs/learning, the puls check and the demo), counting up when the band comes in;
+       the brand's pulse rings sit behind the right half. *@
+    <section class="section" id="syfers">
+        <div class="stats-band reveal">
+            <div class="pulse-bg stats-pulse" aria-hidden="true"><span></span><span></span><span></span><span></span><i class="source"></i></div>
+            <div><span class="eyebrow">Syfers</span><h2>Gemeet, nie geraai nie.</h2><p>Elke versoek staan in die grootboek met sy tokens en sy koste. Dit is wat die metings tot dusver wys.</p></div>
+            <div class="stats-grid">
+                @foreach (var (to, fmt, start, unit, what, how) in Stats)
+                {
+                    <div class="stat"><b><span class="counter" data-to="@to" data-fmt="@fmt">@start</span>@if (unit is not null) { <span class="unit">@unit</span> }</b><span>@what</span><small>@how</small></div>
+                }
+            </div>
+        </div>
+    </section>
+
     <section class="section" id="pryse">
         <span class="eyebrow reveal">Pryse</span>
         <h2 class="reveal" data-delay="1">Betaal soos jy gebruik</h2>
+        <p class="sub reveal" data-delay="2">Geen intekening nie. Elke vraag se koste staan onder sy antwoord, spesialiste ingesluit.</p>
         <div class="pricing">
-            <div class="price-card">
+            <div class="card feature reveal">
                 <span class="feature-icon i-coin" aria-hidden="true"></span>
                 <h3>Geen intekening nie</h3>
                 <p>Geen maandfooi en geen planne nie: jy betaal net vir die vrae wat jy vra.</p>
             </div>
-            <div class="price-card price-card-main">
+            <div class="card feature reveal" data-delay="1">
                 <span class="feature-icon i-pulse" aria-hidden="true"></span>
                 <h3>Sien wat elke vraag kos</h3>
                 <p>Onder elke antwoord, en vir elke spesialis wat gehelp het, in rand.</p>
-                <div class="price-example"><span>Wat is nuut in .NET 10?</span><strong>R0,47</strong></div>
-                <div class="price-example"><span>Som die README op</span><strong>R0,09</strong></div>
+                @foreach (var (question, cost) in PriceExamples)
+                {
+                    <div class="example"><span>@question</span><strong class="counter" data-to="@cost" data-fmt="rand">R0,00</strong></div>
+                }
             </div>
-            <div class="price-card">
+            <div class="card feature reveal" data-delay="2">
                 <span class="feature-icon i-chart" aria-hidden="true"></span>
                 <h3>Krediete wanneer jy wil</h3>
                 <p>Koop krediete en gebruik dit soos jy vra; jou gebruik vir die maand is altyd een klik weg. (Kom binnekort.)</p>
@@ -212,26 +230,28 @@
     <section class="section" id="vrae">
         <span class="eyebrow reveal">Vrae</span>
         <h2 class="reveal" data-delay="1">Gereelde vrae</h2>
+        @* An accordion, one open at a time (js/landing.js faq()): a number per question, an orange rail on the open
+           one, a round plus that turns into a minus, the answer fading up once the panel has opened. *@
         <div class="faq">
-            @foreach (var (question, answer) in Questions)
+            @for (int i = 0; i < Questions.Length; i++)
             {
-                <details>
-                    <summary>@question</summary>
-                    <p>@answer</p>
-                </details>
+                <div class="q reveal" data-delay="@Math.Min(i, 5)">
+                    <button type="button" aria-expanded="false"><span class="k">0@(i + 1)</span><span class="t">@Questions[i].Question</span></button>
+                    <div class="body"><div><p>@Questions[i].Answer</p></div></div>
+                </div>
             }
         </div>
     </section>
 
-    <section class="cta">
+    <section class="cta reveal">
         <h2>Gereed? Vra jou eerste vraag.</h2>
-        <a class="pill pill-primary pill-lg" href="gesels">Begin 'n gesprek</a>
+        <a class="pill pill-primary pill-lg magnet" href="gesels">Begin 'n gesprek</a>
     </section>
 
     <footer class="landing-footer">
-        <img src="brand/puls-logo-white.svg" alt="Puls" height="32" />
+        <img src="brand/puls-logo-white.svg" alt="Puls" height="30" />
         <span>Elke vraag op pad na 'n antwoord</span>
-        <a class="landing-footer-link" href="https://github.com/bosbevk/louis-agent" target="_blank" rel="noopener">GitHub</a>
+        <a class="landing-footer-link" href="https://github.com/bosbevk/louis-agent" target="_blank" rel="noopener"><span class="ic i-github" aria-hidden="true"></span>GitHub</a>
         <span class="landing-footer-copy">© 2026 bosbevk · MIT-lisensie</span>
     </footer>
 </div>
@@ -268,6 +288,23 @@
         ("file", "Lees", "Lees lêers", "Heg 'n PDF, 'n Word-dokument of 'n sigblad aan; die spesialis lees dit en som dit op."),
         ("clock", "Geskiedenis", "Kyk na die geskiedenis", "Wat het verander, wie het dit gedoen en waarom: uit die repository se geskiedenis."),
         ("coin", "Koste", "Koste sigbaar", "Elke vraag se koste, spesialiste ingesluit, en jou gebruik vir die maand, in rand."),
+    ];
+
+    // Syfers: the measured numbers, from the learning write-ups (F5's toolset profiles, the puls check, the demo's
+    // prompt cache) — the counter's target, its format (pct, int or rand), its text before counting, a unit after it,
+    // what it is and how it was measured.
+    private static readonly (string To, string Fmt, string Start, string? Unit, string What, string How)[] Stats =
+    [
+        ("50", "pct", "−0%", null, "kleiner prompt per gesprek", "~48,5k → ~24,4k tokens met toolset-profiele"),
+        ("24", "int", "0", "/24", "take by die regte spesialis", "die afvaardigingstoets, drie lopies"),
+        ("10", "int", "0", "/10", "regstellings in die demo bevestig", "met prompt-kas: $0,66 → $0,13 per lopie"),
+        ("0.02", "rand", "R0,00", null, "om 'n README op te som", "spesialis ingesluit, in rand"),
+    ];
+
+    // What a question cost, as the price card's examples (rand).
+    private static readonly (string Question, string Cost)[] PriceExamples =
+    [
+        ("Wat is nuut in .NET 10?", "0.47"), ("Som die README op", "0.09"), ("Laaste drie commits", "0.12"),
     ];
 
     // Example bar heights (percent) for the little cost charts.

@@ -98,6 +98,14 @@ window.pulsLanding = (() => {
         split(h1);
     }
 
+    // Vrae: one question open at a time; the first starts open.
+    function faq() {
+        const qs = $$(".landing .q"); if (qs.length === 0) return;
+        const set = (q, open) => { q.classList.toggle("open", open); $("button", q)?.setAttribute("aria-expanded", String(open)); };
+        qs.forEach(q => on($("button", q), "click", () => { const open = !q.classList.contains("open"); qs.forEach(o => set(o, o === q && open)); }));
+        set(qs[0], true);
+    }
+
     // The primary pills follow the pointer a few pixels and spring back.
     function magnetic() {
         if (still || !matchMedia("(pointer: fine)").matches) return;
@@ -201,7 +209,7 @@ window.pulsLanding = (() => {
             this.stop();
             let motionOn = false; try { motionOn = localStorage.getItem("puls.motion") === "on"; } catch { }
             still = matchMedia("(prefers-reduced-motion: reduce)").matches && !motionOn;
-            headline(); links(); reveals(); magnetic(); pinned(); demo();
+            headline(); links(); reveals(); magnetic(); pinned(); demo(); faq();
             const onScroll = scrolling(); onScroll();
         },
         stop() {
