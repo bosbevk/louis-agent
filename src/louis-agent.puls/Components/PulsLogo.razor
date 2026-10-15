@@ -11,7 +11,7 @@
         </linearGradient>
         <mask id="@(_id)cut" maskUnits="userSpaceOnUse" x="0" y="0" width="120" height="120">
             <circle cx="60" cy="60" r="58" fill="#fff" />
-            @foreach (var (radius, width) in Rings)
+            @foreach (var (radius, width) in PulsMark.Rings)
             {
                 <circle cx="30" cy="92" r="@radius" fill="none" stroke="#000" stroke-width="@width" />
             }
@@ -20,7 +20,7 @@
     </defs>
     <rect width="120" height="120" fill="url(#@(_id)bg)" mask="url(#@(_id)cut)" />
     <g clip-path="url(#@(_id)disc)">
-        @foreach (var (radius, width) in Rings)
+        @foreach (var (radius, width) in PulsMark.Rings)
         {
             <circle class="puls-glow" cx="30" cy="92" r="@radius" fill="none" stroke="#fff" stroke-width="@width" />
         }
@@ -33,12 +33,5 @@
 </svg>
 
 @code {
-    /// <summary>Radius and width of each ring cut out of the disc: the first clear from the green source's edge to the first orange band (no orange ring around the source), each after it thinner, with a thin even band of orange (3.5) between them.</summary>
-    private static readonly (string Radius, string Width)[] Rings =
-    [
-        ("19.5", "28"), ("41.5", "9"), ("53.3", "7.6"),
-        ("63.75", "6.3"), ("72.95", "5.1"), ("81", "4"), ("88", "3"),
-    ];
-
     private readonly string _id = "puls-" + Guid.NewGuid().ToString("N")[..8] + "-";
 }
