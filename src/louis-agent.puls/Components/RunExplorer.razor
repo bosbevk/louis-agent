@@ -42,19 +42,19 @@
         <section class="chart">
             <div class="chart-head"><strong>Koste per gesprek</strong><span class="legend">@foreach (var (m, i) in _modes.Select((m, i) => (m, i))) { <span><span class="sw" style="background: @Series(i)"></span>@m.Name</span> }</span></div>
             @{ var tasks = _modes.SelectMany(m => m.Tasks.Select(t => t.Task)).Distinct().ToList(); decimal top = Math.Max(0.000001m, _modes.SelectMany(m => m.Tasks).Max(t => t.Cost)); int row = 0; }
-            <div class="bars">
+            <div class="xbars">
                 @foreach (string task in tasks)
                 {
-                    <div class="bar-row" style="--i: @(row++)">
-                        <span class="bar-label"><code>@task</code></span>
-                        <span class="bar-group">
+                    <div class="xbar-row" style="--i: @(row++)">
+                        <span class="xbar-label"><code>@task</code></span>
+                        <span class="xbar-group">
                             @foreach (var (m, i) in _modes.Select((m, i) => (m, i)))
                             {
                                 var t = m.Tasks.FirstOrDefault(x => x.Task == task);
                                 decimal cost = t?.Cost ?? 0m;
-                                <button type="button" class="bar" title="@($"{m.Name} · {task}: {Money(cost)}")" disabled="@(t is null)" @onclick="() => { if (t is not null) Open(() => { _mode = m; _task = t; }); }">
-                                    <span class="bar-fill" style="width: @Pct(cost, top)%; background: @Series(i)"></span>
-                                    <span class="bar-value">@Money(cost)</span>
+                                <button type="button" class="xbar" title="@($"{m.Name} · {task}: {Money(cost)}")" disabled="@(t is null)" @onclick="() => { if (t is not null) Open(() => { _mode = m; _task = t; }); }">
+                                    <span class="xbar-fill" style="width: @Pct(cost, top)%; background: @Series(i)"></span>
+                                    <span class="xbar-value">@Money(cost)</span>
                                 </button>
                             }
                         </span>
@@ -65,13 +65,13 @@
 
         <section class="chart">
             <div class="chart-head"><strong>Tokens per modus</strong>@TokenLegend()</div>
-            <div class="bars">
+            <div class="xbars">
                 @foreach (var (m, i) in _modes.Select((m, i) => (m, i)))
                 {
-                    <div class="bar-row" style="--i: @i">
-                        <span class="bar-label">@m.Name</span>
-                        <span class="stack-wrap">@Stack(m.Rows, _modes.Max(x => x.Tokens))</span>
-                        <span class="bar-value">@UsageFormat.Tokens(m.Tokens)</span>
+                    <div class="xbar-row" style="--i: @i">
+                        <span class="xbar-label">@m.Name</span>
+                        <span class="xstack-wrap">@Stack(m.Rows, _modes.Max(x => x.Tokens))</span>
+                        <span class="xbar-value">@UsageFormat.Tokens(m.Tokens)</span>
                     </div>
                 }
             </div>
@@ -84,15 +84,15 @@
         decimal topTask = Math.Max(0.000001m, _mode.Tasks.Max(t => t.Cost));
         int row1 = 0;
         <section class="chart">
-            <div class="bars">
+            <div class="xbars">
                 @foreach (var t in _mode.Tasks)
                 {
                     decimal own = t.Rows.Where(r => !r.Specialist).Sum(r => r.Cost), spec = t.Rows.Where(r => r.Specialist).Sum(r => r.Cost);
-                    <div class="bar-row" style="--i: @(row1++)">
-                        <span class="bar-label"><code>@t.Task</code><small>@t.Turns.Count beurte · @t.Rows.Count versoeke</small></span>
-                        <button type="button" class="bar stacked" title="@($"{t.Task}: Puls {Money(own)}, spesialis {Money(spec)}")" @onclick="() => Open(() => _task = t)">
-                            <span class="bar-fill" style="width: @Pct(own, topTask)%; background: @Own"></span><span class="bar-fill" style="width: @Pct(spec, topTask)%; background: @Spec"></span>
-                            <span class="bar-value">@Money(t.Cost)</span>
+                    <div class="xbar-row" style="--i: @(row1++)">
+                        <span class="xbar-label"><code>@t.Task</code><small>@(string.Join(" / ", t.Turns.Select(x => x.Specialist).Distinct())) · @t.Turns.Count beurte · @t.Rows.Count versoeke</small></span>
+                        <button type="button" class="xbar stacked" title="@($"{t.Task}: Puls {Money(own)}, spesialis {Money(spec)}")" @onclick="() => Open(() => _task = t)">
+                            <span class="xbar-fill" style="width: @Pct(own, topTask)%; background: @Own"></span><span class="xbar-fill" style="width: @Pct(spec, topTask)%; background: @Spec"></span>
+                            <span class="xbar-value">@Money(t.Cost)</span>
                         </button>
                     </div>
                 }
@@ -101,13 +101,13 @@
         <section class="chart">
             <div class="chart-head"><strong>Tokens per gesprek</strong>@TokenLegend()</div>
             @{ int row2 = 0; long topTok = Math.Max(1, _mode.Tasks.Max(t => t.Rows.Sum(r => r.Tokens))); }
-            <div class="bars">
+            <div class="xbars">
                 @foreach (var t in _mode.Tasks)
                 {
-                    <div class="bar-row" style="--i: @(row2++)">
-                        <span class="bar-label"><code>@t.Task</code></span>
-                        <span class="stack-wrap">@Stack(t.Rows, topTok)</span>
-                        <span class="bar-value">@UsageFormat.Tokens(t.Rows.Sum(r => r.Tokens))</span>
+                    <div class="xbar-row" style="--i: @(row2++)">
+                        <span class="xbar-label"><code>@t.Task</code></span>
+                        <span class="xstack-wrap">@Stack(t.Rows, topTok)</span>
+                        <span class="xbar-value">@UsageFormat.Tokens(t.Rows.Sum(r => r.Tokens))</span>
                     </div>
                 }
             </div>
@@ -116,7 +116,7 @@
     else if (_turn is null)
     {
         @* Level 2: the conversation's turns on a timeline of model requests, Puls's lane and the specialist's. *@
-        <div class="chart-head big"><strong><code>@_task.Task</code></strong><span class="muted">@_task.Turns.Count beurte · @Money(_task.Cost)</span><span class="legend"><span><span class="sw" style="background: @Own"></span>Puls self</span><span><span class="sw" style="background: @Spec"></span>spesialis</span></span></div>
+        <div class="chart-head big"><strong><code>@_task.Task</code></strong><span class="muted">@_task.Turns.Count beurte · @Money(_task.Cost)</span><span class="legend"><span><span class="sw" style="background: @Own"></span>Puls self</span><span><span class="sw" style="background: @Spec"></span>@(string.Join(" / ", _task.Turns.Select(t => t.Specialist).Distinct()))</span></span></div>
         @foreach (var (tu, i) in _task.Turns.Select((t, i) => (t, i)))
         {
             <section class="chart turn-chart" style="--i: @i">
@@ -132,7 +132,7 @@
     {
         @* Level 3: the turn: its timeline, its requests, and the conversation itself, replayable as it was typed. *@
         <div class="chart-head big"><strong>Beurt @_turn.N</strong><span class="muted">@Money(_turn.Cost) · @_turn.Rows.Count versoeke · @Seconds(_turn) s</span>
-            <span class="legend"><span><span class="sw" style="background: @Own"></span>Puls self</span><span><span class="sw" style="background: @Spec"></span>spesialis</span></span></div>
+            <span class="legend"><span><span class="sw" style="background: @Own"></span>Puls self</span><span><span class="sw" style="background: @Spec"></span>@_turn.Specialist</span></span></div>
         @Timeline(_turn, true)
         <div class="explorer-turn">
             @if (_turn.Question is { Length: > 0 } q) { <div class="explorer-q"><span class="muted">Vraag</span> @q</div> }
@@ -165,7 +165,7 @@
         </div>
         <section class="chart">
             <div class="chart-head"><strong>Tokens</strong>@TokenLegend()</div>
-            <div class="bars"><div class="bar-row" style="--i: 0"><span class="bar-label">@(_request.Specialist ? "spesialis" : "Puls")</span><span class="stack-wrap">@Stack([_request], _request.Tokens)</span><span class="bar-value">@UsageFormat.Tokens(_request.Tokens)</span></div></div>
+            <div class="xbars"><div class="xbar-row" style="--i: 0"><span class="xbar-label">@(_request.Specialist ? _turn?.Specialist ?? "spesialis" : "Puls")</span><span class="xstack-wrap">@Stack([_request], _request.Tokens)</span><span class="xbar-value">@UsageFormat.Tokens(_request.Tokens)</span></div></div>
             <dl class="explorer-fields">
                 <dt>invoer</dt><dd>@_request.Input.ToString("N0")</dd><dt>kas geskryf</dt><dd>@_request.CacheWrite.ToString("N0")</dd><dt>kas gelees</dt><dd>@_request.CacheRead.ToString("N0")</dd><dt>uitvoer</dt><dd>@_request.Output.ToString("N0")</dd>
                 <dt>wanneer</dt><dd>@_request.At.ToLocalTime().ToString("HH:mm:ss.fff")</dd><dt>sessie</dt><dd><code>@_request.Session</code></dd>
@@ -203,7 +203,8 @@
 
     private sealed class TurnNode
     {
-        public int N; public List<Request> Rows = []; public string? Question, Answer, Thinking, SpecialistThinking; public List<string>? Calls;
+        public int N; public List<Request> Rows = []; public string? Question, Answer, Thinking, SpecialistThinking, Role; public List<string>? Calls;
+        public string Specialist => Role ?? "spesialis";
         public decimal Cost => Rows.Sum(r => r.Cost);
     }
     private sealed class TaskNode { public string Task = ""; public List<TurnNode> Turns = []; public List<Request> Rows => Turns.SelectMany(t => t.Rows).ToList(); public decimal Cost => Rows.Sum(r => r.Cost); }
@@ -313,8 +314,9 @@
         }
         // A sub_session row is Puls's roll-up of a specialist's reply: the same requests as the specialist's own rows.
         rows = rows.Where(r => r.Purpose != "sub_session").OrderBy(r => r.At).ToList();
-        var sessionTask = rows.Where(r => r.Parent is null && r.Task is not null).GroupBy(r => r.Session).ToDictionary(g => g.Key, g => g.First().Task!);
-        string? TaskOf(Request r) => r.Task ?? (r.Parent is { } p && sessionTask.TryGetValue(p.Split('#')[0], out var t) ? t : null);
+        var sessionTask = rows.Where(r => r.Parent is null && r.Task is not null && !r.Task.StartsWith("sub-session:")).GroupBy(r => r.Session).ToDictionary(g => g.Key, g => g.First().Task!);
+        string? TaskOf(Request r) => r.Task is { } own && !own.StartsWith("sub-session:") ? own
+            : r.Parent is { } p && sessionTask.TryGetValue(p.Split('#')[0], out var t) ? t : r.Task;
         int TurnOf(Request r) => r.Parent is { } p && p.Contains('#') && int.TryParse(p.Split('#')[1], out int n) ? n : r.Turn ?? 1;
 
         var mode = new ModeNode { Name = data.Name, Rows = rows };
@@ -350,6 +352,8 @@
                         if (node is null) task.Turns.Add(node = new TurnNode { N = n });
                         Fill(node, turn);
                     }
+                    string? carried = null;
+                    foreach (var tn in task.Turns.OrderBy(x => x.N)) { if (tn.Role is not null) carried = tn.Role; else tn.Role = carried; }
                 }
                 else
                 {
@@ -365,6 +369,9 @@
     private static void Fill(TurnNode node, JsonElement turn)
     {
         node.Question = S(turn, "question"); node.Answer = S(turn, "answer"); node.Thinking = S(turn, "thinking"); node.SpecialistThinking = S(turn, "specialist_thinking");
+        // The role Puls passed on StartSubSession; a continued turn inherits it (Annotate carries the task's last role forward).
+        if (turn.TryGetProperty("delegations", out var ds) && ds.ValueKind == JsonValueKind.Array)
+            node.Role = ds.EnumerateArray().Select(d => S(d, "personality")).FirstOrDefault(r => !string.IsNullOrEmpty(r));
         if (turn.TryGetProperty("specialist_calls", out var calls) && calls.ValueKind == JsonValueKind.Array)
             node.Calls = calls.EnumerateArray().Select(c => $"{S(c, "name")}({(c.TryGetProperty("input", out var i) ? string.Join(", ", i.EnumerateObject().Select(p => p.Value.ValueKind == JsonValueKind.String ? p.Value.GetString() : p.Value.GetRawText())) : "")})").ToList();
     }
@@ -396,7 +403,7 @@
         if (turn.Rows.Count == 0) { <p class="muted">Geen versoeke nie.</p> return; }
         var start = turn.Rows.Min(r => r.Start); double span = Math.Max(1, (turn.Rows.Max(r => r.At) - start).TotalMilliseconds);
         <div class="timeline">
-            @foreach (var (lane, label, specialist) in new[] { (0, "Puls", false), (1, "spesialis", true) })
+            @foreach (var (lane, label, specialist) in new[] { (0, "Puls", false), (1, turn.Specialist, true) })
             {
                 <div class="lane">
                     <span class="lane-label"><span class="sw" style="background: @(specialist ? Spec : Own)"></span>@label</span>
@@ -422,10 +429,10 @@
         long[] parts = [list.Sum(r => r.Input), list.Sum(r => r.CacheWrite), list.Sum(r => r.CacheRead), list.Sum(r => r.Output)];
         string[] names = ["invoer", "kas geskryf", "kas gelees", "uitvoer"];
         long scale = Math.Max(1, top);
-        <span class="stack" title="@string.Join(" · ", names.Select((n, i) => $"{n} {parts[i]:N0}"))">
+        <span class="xstack" title="@string.Join(" · ", names.Select((n, i) => $"{n} {parts[i]:N0}"))">
             @for (int i = 0; i < 4; i++)
             {
-                if (parts[i] > 0) { <span class="seg" style="--i: @i; width: @Pct(parts[i], scale)%; background: @Series(i)"></span> }
+                if (parts[i] > 0) { <span class="xseg" style="--i: @i; width: @Pct(parts[i], scale)%; background: @Series(i)"></span> }
             }
         </span>
     };
