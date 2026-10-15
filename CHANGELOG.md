@@ -3,6 +3,8 @@
 > **Reference.** What was finished, newest first, one entry per feature, fix or cleanup. **Elsewhere:** what's still
 > open in the [TODO](TODO.md); how each was built in its feature, fix or plan doc (linked from its entry).
 
+- 2026-10-15 — **Licence: AGPL-3.0** (was MIT): still free to use, change and share; whoever changes it and runs it as a
+  service must publish the changes, so a hosted Puls's improvements stay open ([ADR 0015](docs/adr/0015-licence-agpl.md))
 - 2026-10-14 — **F5 follow-up, sub-session usage rolled up**: a delegated answer's usage line, the chat total, `/usage`
   and `GET /sessions/{id}` include the specialist's requests, tokens and cost, as one `sub_session` record per reply
   (with `requests`, the model requests it stands for) that is also a row in the parent's ledger; ledger reports list
