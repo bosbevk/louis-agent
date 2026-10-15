@@ -125,7 +125,16 @@ else if (_data is { } data)
                     </tbody>
                 </table>
             }
-            <details class="admin-details" open="@(_events.Count == 0)"><summary>Die skrip se eie reëls (@_log.Count)</summary><pre class="admin-pre run-log">@string.Join("\n", _log)</pre></details>
+            @{
+                // When the run ends the script prints its report (markdown, from its first heading): rendered, not raw.
+                int report = live.Status == "running" ? -1 : _log.FindIndex(l => l.StartsWith("# "));
+                var plain = report < 0 ? _log : _log.Take(report).ToList();
+            }
+            @if (report >= 0)
+            {
+                <div class="markdown admin-markdown run-report">@Markdown.ToHtml(string.Join("\n", _log.Skip(report)))</div>
+            }
+            <details class="admin-details" open="@(_events.Count == 0 && report < 0)"><summary>Die skrip se eie reëls (@plain.Count)</summary><pre class="admin-pre run-log">@string.Join("\n", plain)</pre></details>
         </section>
     }
 

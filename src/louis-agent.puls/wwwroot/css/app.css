@@ -1271,3 +1271,7 @@ html:has(.landing) { scroll-behavior: smooth; }
 .run-table tr.failed td { color: var(--danger); }
 .run-table tbody tr { cursor: default; }
 .run-log { max-height: none; font-size: 12.5px; }
+.run-report { margin-top: 6px; }
+.run-report h1 { font-size: 16px; margin: 10px 0 4px; color: var(--ink); }
+.run-report h2 { font-size: 14px; margin: 14px 0 6px; color: var(--orange-text); }
+.run-report table { width: 100%; }
