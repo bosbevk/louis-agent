@@ -78,3 +78,12 @@ folder is mounted, so the role and the rows need no rebuild).
   `IPageRenderer` with `TavilyPageRenderer` (`POST https://api.tavily.com/extract`, `extract_depth: advanced`, the
   same key) and an unavailable one that says what to set, picked in `PageRendererFactory`. The SSRF guard runs before
   the URL leaves for Tavily. The guide and the cook's role say: only for a product page `FetchUrl` read as empty.
+- **2026-10-15, the report goes through as the cook wrote it, by prompt** (Louis: "force Puls to output the data as
+  the cook said it, and conform the cook's output"; chosen over an engine change that would stream the sub-session's
+  answer as the turn's): three steps. (1) The cook's report in one fixed shape: six headings in a fixed order, the
+  shopping list and the branches as tables with fixed columns, a price only from a shop's page or its search result
+  with the source beside it, the `Geprys:` line, and the role's closing line says Puls hands the report on as it is.
+  (2) Puls relays a report instead of rewriting it: a *Relaying a report* rule in `agents-skills.md` and a line in
+  `default.md`. (3) The check scores both: `relayed` (the cook's tally line and every list row are in Puls's answer,
+  from the specialist's text the check now captures) and the rating read from the table's source column. Every step
+  has its prompt test first; the golden request snapshot is regenerated with each.

@@ -158,6 +158,38 @@ public class PersonalitiesTests
         Assert.That(cook, Does.Contain("Geprys: {n} van {m} bestanddele"));
     }
 
+    [Test]
+    public void TheCook_WritesItsReportInOneShape_ThatPulsHandsOn()
+    {
+        // Louis: "force Puls to output the data as the cook said it, and conform the cook's output". The report is
+        // written for the user in a fixed shape (headings in order, the list and the branches as tables with fixed
+        // columns, a price only with its source), so Puls can hand it on whole and the check can read it row by row.
+        string cook = SkillFileSource.ReadEmbedded(Personalities.Folder + "/puls-cook.md")!;
+
+        Assert.That(cook, Does.Contain("Puls hands your report to the user as it is"));
+        Assert.That(cook, Does.Not.Contain("Puls will put it in its own voice"), "the line every other role has invites a rewrite");
+        // Louis: one table, not the recipe's ingredients and then the list again.
+        // Louis: two shops' prices per ingredient, and the totals merged into one table that compares them.
+        Assert.That(cook, Does.Contain("| Ingredient | For the recipe | To buy | Checkers | Shoprite | Best price |"), "the shopping list's fixed columns");
+        Assert.That(cook, Does.Contain("| **Total, priced rows** | | | **R142,97** | **R137,48** | **R131,97** |"), "the totals are the list's last rows, side by side, the cheapest basket last");
+        // Louis: an unpriced ingredient is an ordinary row that says unknown; no row counting or naming them.
+        Assert.That(cook, Does.Contain("| Lemons | 2 | 2 | [R12,99](https://www.checkers.co.za/…) | unknown | R12,99 Checkers |"));
+        Assert.That(cook, Does.Not.Contain("**Unpriced"));
+        Assert.That(cook, Does.Not.Contain("### Total"), "no section of its own");
+        Assert.That(cook, Does.Contain("never a price without its link"), "the source is the link in the cell");
+        Assert.That(cook, Does.Contain("don't list them here too"));
+        // Louis: where to buy links the shop's site, the branch's own page when it has one.
+        Assert.That(cook, Does.Contain("| Shop | Branch | Street or mall | Website |"), "the branches' fixed columns");
+        Assert.That(cook, Does.Contain("the branch's own page on the shop's site").And.Contain("else the shop's home page"));
+        // Louis: the list, the branches, the total and the doubts all as tables.
+        Assert.That(cook, Does.Contain("| What | Why |"), "the doubts' fixed columns");
+        int dish = cook.IndexOf("### The dish", StringComparison.Ordinal), list = cook.IndexOf("### Shopping list", StringComparison.Ordinal),
+            buy = cook.IndexOf("### Where to buy", StringComparison.Ordinal), unsure = cook.IndexOf("### Unsure", StringComparison.Ordinal);
+        Assert.That(dish, Is.GreaterThan(-1).And.LessThan(list), "the headings, in the report's order");
+        Assert.That(list, Is.LessThan(buy));
+        Assert.That(buy, Is.LessThan(unsure));
+    }
+
     [TestCase("default.md")]
     [TestCase("agents-skills.md")]
     public void AMealToCook_GoesToTheCook_WithWeb(string router)
