@@ -52,25 +52,30 @@ else if (_data is { } data)
     <div class="cards">
         @foreach (var check in data.Checks)
         {
-            <section class="card-p">
-                <div class="card-head">
+            @* Rolls up and down (Louis): the header stays, with the chip and the last run's cost. *@
+            var last = data.Runs.FirstOrDefault(r => r.Check == check.Id);
+            <details class="card-p check-card" open>
+                <summary class="card-head">
                     <strong>@check.Title</strong>
-                    <span class="toolset-chip">@check.Id</span>
-                </div>
+                    <span class="check-card-meta">@(last is null ? "" : Cost(last.Cost)) <span class="toolset-chip">@check.Id</span><span class="chevron" aria-hidden="true"></span></span>
+                </summary>
                 <p class="muted"><code>@check.Script</code></p>
-                @{ var last = data.Runs.FirstOrDefault(r => r.Check == check.Id); }
                 <p class="muted">@(last is null ? "Nog geen gestoorde lopie nie." : $"Laaste lopie: {last.SavedAt.ToLocalTime():yyyy-MM-dd HH:mm}, {Cost(last.Cost)}")</p>
                 <div class="run-controls">
-                    <label>Herhalings
-                        <select @bind="_repeat" disabled="@Running">
-                            @for (int n = 1; n <= 5; n++) { <option value="@n">@n</option> }
-                        </select>
-                    </label>
+                    <span class="muted">Herhalings</span>
+                    @* A segmented control, not a native select: the browser's dropdown ignores the theme. *@
+                    <div class="segmented" role="radiogroup" aria-label="Herhalings">
+                        @for (int n = 1; n <= 5; n++)
+                        {
+                            int count = n;
+                            <button type="button" role="radio" aria-checked="@(_repeat == count)" class="@(_repeat == count ? "active" : "")" disabled="@Running" @onclick="() => _repeat = count">@count</button>
+                        }
+                    </div>
                     <button class="header-button" type="button" disabled="@Running" title="Spandeer geld: elke lopie vra die model" @onclick="() => StartAsync(check.Id)">
                         <span class="ic i-pulse" aria-hidden="true"></span>Hardloop
                     </button>
                 </div>
-            </section>
+            </details>
         }
     </div>
 

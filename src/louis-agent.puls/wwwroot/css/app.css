@@ -1298,3 +1298,16 @@ html:has(.landing) { scroll-behavior: smooth; }
     .admin-col-side { position: static; }
     .runs-list { max-height: none; }
 }
+/* A segmented control (the repeats): buttons in a pill, the chosen one lit; no native dropdown. */
+.segmented { display: inline-flex; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; background: var(--bg); }
+.segmented button { background: transparent; border: 0; color: var(--muted); padding: 5px 11px; font-size: 13px; font-weight: 600; line-height: 1.4; transition: background .15s, color .15s; }
+.segmented button + button { border-left: 1px solid var(--border); }
+.segmented button:hover:not(:disabled) { color: var(--ink); background: rgba(255, 255, 255, .05); }
+.segmented button.active { background: var(--orange-soft); color: var(--orange-text); }
+/* A check's card rolls up and down: its header is the summary, with the chip and the last cost; a chevron turns. */
+.check-card > summary { cursor: pointer; list-style: none; user-select: none; }
+.check-card > summary::-webkit-details-marker { display: none; }
+.check-card-meta { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); font-size: 13px; }
+.check-card .chevron { width: 8px; height: 8px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(45deg); transition: transform .2s var(--ease); margin: 0 4px 3px; }
+.check-card[open] .chevron { transform: rotate(-135deg); margin-bottom: -3px; }
+.check-card:not([open]) { gap: 0; }
