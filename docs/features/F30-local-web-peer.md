@@ -22,19 +22,22 @@ one instance serves Haiku to the cook and a local model to a price lookup.
 
 **F30-S2 — Puls hands price lookups to the local model.** As a *user*, I want a price question answered with each
 item's shop, rand price, date and link, looked up by the local model, so it costs less.
-- *Given* a price question *then* Puls starts one sub-session with `web`, `puls-prices` and `llm: ollama-web` for the
-  whole list.
-- *Given* a price the role couldn't find *then* it says `unknown`, never a guess.
+- *Given* a price question *then* Puls hands it to a specialist (the researcher), which hands each shop page to a
+  minion with `FetchUrl`.
+- *Given* a meal question *then* the cook (on Haiku) hands each shop page to a **minion**: one task, one tool from the
+  cook's own toolbox (`FetchUrl`), in the role `puls-minion-web-price-lookup`, on the model `MINION_LLMS` names for that role
+  (`ollama-puls`; Haiku if needed).
+- *Given* a price the minion couldn't find *then* it says `unknown`, never a guess.
 
 **F30-S3 — A price is used only when its quote checks out.** As a *user*, I want every price Puls shows to be on the
 page it links to, so a small model's mistake doesn't reach me.
-- *Given* the role's quote for a price *when* Puls calls `VerifyQuote(url, quote)` *then* it learns whether those words
+- *Given* a minion's quote for a price *when* the specialist calls `VerifyQuote(url, quote)` *then* it learns whether those words
   are on the page, without a model call.
-- *Given* a quote that isn't on the page, or a page that can't be read *then* Puls shows that price as
+- *Given* a quote that isn't on the page, or a page that can't be read *then* that price is shown as
   `unconfirmed`, with why.
 
-**F30-S4 — Measured.** As *Louis*, I want five price questions run with Haiku alone and with the local peer, so I
-keep the peer only if real prices hold and the cost drops.
+**F30-S4 — Measured.** As *Louis*, I want five price questions and the cook check run with and without minions, so I
+keep minions only if real prices hold and the cost drops.
 
 ## Design notes
 
@@ -46,11 +49,13 @@ keep the peer only if real prices hold and the cost drops.
   containers reach it at `host.docker.internal:11434`.
 - **The quote check is code, not a model:** fetched through the SSRF-guarded path, compared with whitespace collapsed
   and case folded.
-- **The cook stays on Haiku** and unchanged; F29's gate turns `puls-prices` on for the measurement.
+- **The cook stays on Haiku;** what moves to the local model is reading pages, through minions (level 2): one task
+  and one tool handed down from the specialist's own toolbox, on the model `MINION_LLMS` names for its role.
 
 ## Done when
 
-- A Puls chat sends a price question to `puls-prices` on `ollama-web`, and the ledger shows the qwen model at $0.
+- A Puls chat's cook and researcher hand shop pages to minions on `ollama-puls`, and the ledger shows the qwen model
+  at $0 under the specialist's turn.
 - `VerifyQuote` is tested for present, absent, whitespace and case, unreadable and blocked pages.
 - The five-question run is in BENCHMARKS.md, and the decision to keep or drop the peer is written here.
 
@@ -69,3 +74,8 @@ keep the peer only if real prices hold and the cost drops.
 - **The local model reads English, not Afrikaans** (step 3). Asked in Afrikaans for "drie groente in een sin", it took
   *sin* for an orange and answered in Dutch over 600 tokens. The role is written in English and Puls hands it the task
   in English; Puls writes the Afrikaans answer.
+- **Minions: a second level, by capability** (step 3, Louis). Drawing the design showed the cook, which prices most
+  answers, couldn't reach the local model: sub-sessions were one level deep. Now a specialist may hand one task and one
+  tool from its own toolbox to a minion (level 2), which never delegates; each minion has a role (`puls-minion-*`, one function), and its model is configuration per role
+  (`MINION_LLMS`: the local model, or Haiku if needed). A per-role rule (`SUB_SESSION_DELEGATION`) was drawn first and
+  dropped. The plan's *Approved during the build* has the steps and both diagrams.

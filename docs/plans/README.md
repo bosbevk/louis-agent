@@ -45,6 +45,10 @@ or fix doc (*What the build changed*), not here.
 - **Sections:** *Context* (why now, what the doc says), *Design* (what changes from the doc, and why), *Steps* (one
   commit each, with its test, written and seen failing first; the review stop after each), *Verification* (tests, free manual checks, and any paid run,
   which needs approval first), and the *Concepts* each step teaches, with their skill in the [goal](../GOAL.md).
+- **Two diagrams, always** (Louis, 2026-10-16), in the *Design*, as mermaid: an **architecture diagram** (a
+  `flowchart`: the containers, hosts and services, and which step builds or changes each part) and a **communication
+  diagram** (a `sequenceDiagram`: who calls whom, in order, for the feature's main case, with what each call carries).
+  A plan approved without them gets them under *Approved during the build*.
 - **A lasting decision gets an ADR:** when a plan decides something later work must follow, its record goes in
   [docs/adr/](../adr/README.md) in the same PR; the plan keeps the steps, the ADR the why.
 - **Saved and committed before step 1**, on the feature's branch, so the plan is in the same PR as the work.

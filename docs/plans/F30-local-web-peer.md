@@ -65,3 +65,198 @@ One commit each, test first, the review stop after each; the Puls image rebuilt 
 - Steps 3 and 7 by hand and as a paid run, with Louis's go.
 
 ## Approved during the build
+
+- **The profile is `ollama-puls`, not `ollama-web`** (Louis, step 3, 2026-10-16): it is Puls's local model, named for
+  who uses it rather than for one toolset. Everywhere above that says `ollama-web` means `ollama-puls`.
+- **Step 7's modes are `haiku-puls` and `puls-local`** (Louis, step 3, 2026-10-16), not `haiku-web` and
+  `haiku-local`: `haiku-puls` is Puls alone on Haiku looking prices up itself (`web`), `puls-local` is Puls handing them
+  to `puls-prices` on `ollama-puls` (`agents`, `web`).
+- **Minions: a specialist hands one task and one of its own tools to a minion on the local model** (Louis, step 3,
+  2026-10-16; written for Louis to read before step 4). Replaces steps 4–7 above; steps 0–3 stand.
+
+### Why
+
+Drawing the design showed the cook, which prices most of Puls's answers, couldn't reach the local model: sub-sessions
+were one level deep. Louis's model for a second level: **a specialist has a toolbox, and can hand a task down to a
+minion and give it one tool from that toolbox.**
+
+```
+level 0   Puls            talks to the user; delegates to specialists          Claude Haiku
+level 1   specialist      a role and a toolbox (toolsets); may use minions      Claude Haiku
+level 2   minion          a minion role (one function), one task, one tool      MINION_LLMS (configured)
+                          handed down; never delegates
+```
+
+**Every minion has a role** (Louis): its one function, as a personality file, named
+`puls-minion-{toolset}-{function}`, e.g. `puls-minion-web-price-lookup`. (Louis's `pulse-minion-webquery_price_lookup`,
+in the form personality names allow: lowercase letters, digits and dashes, at most 40 characters.)
+
+That is **capability delegation**: a minion can never do more than the specialist that sent it, so any specialist may
+use minions without a per-role rule (the gated alternative, `SUB_SESSION_DELEGATION=role>child@llm`, was drawn first
+and dropped: every new use would need configuration). What a minion is worth: the page text that makes a Haiku answer
+expensive (it is paid for again on every later request) is read by the free local model, and Haiku gets one line back.
+A 4B model also does far better with one tool and a ~1–2k-token prompt than with the `web` guide and 10–20k tokens.
+
+**Prior work this follows.** The pattern is the one measured in *Minions: Cost-efficient Collaboration Between
+On-device and Cloud Language Models* (Narayan et al., Hazy Research, Stanford; ICML 2025,
+[arXiv:2502.15964](https://arxiv.org/abs/2502.15964)): a cloud model coordinates while a small local model reads the
+long documents. A free-form chat between the two (their *Minion*) cut cloud cost 30.4× but kept only 87% of the cloud
+model's quality; having the cloud model **split the work into small, single-step tasks over short pieces** that the
+local model runs (their *MinionS*) cut cost 5.7× and kept 97.9%. Hence one task and one tool per minion, a fixed
+answer format, and short pages, never an open conversation with the local model. Level 1 is the orchestrator–workers
+pattern (Anthropic, *Building effective agents*); handing down only a tool you hold is capability attenuation. Most
+production systems stop at one level (Anthropic's research system, Claude Code's subagents); the second level here is
+safe only because a minion can't delegate, has one tool and is counted across the tree, all in code.
+
+### Design
+
+- **Minion roles:** `Skills/minions/puls-minion-*.md`, on a shared minion base (`puls-minion.md`: do this one
+  task with this one tool; answer short, in the role's format; say `unknown` rather than guess; English). A role is a
+  function, not a voice: `puls-minion-web-price-lookup` says what to read for and gives its answer format
+  (shop · R price · date · url · "exact words", or `unknown`). Which tools each role accepts is data, as
+  the specialists' `roles.json` is: `Skills/minions/minions.json`, e.g. (the folder is CL8's level 2;
+  [CL8](CL8-skills-by-level.md) is built first)
+  `{ "role": "puls-minion-web-price-lookup", "tools": ["FetchUrl", "ReadRenderedPage"] }`. That file can only narrow:
+  the caller's own toolbox is still checked. Roles go through F29's gate (`PERSONALITIES_ENABLED`) like any other, so a
+  minion role is on only once it has passed its check.
+- **`minions` toolset** (given to specialists, never to Puls or a minion): `StartMinion(role, tool, task)` and
+  `ContinueMinion(handle, message)`. Same code path as `StartSubSession` / `ContinueSubSession` (`AgentPeerTools`):
+  the session body, the kept-open registry (F26), live events, the usage roll-up, the timeouts. Separate names so the
+  model's choice reads clearly in its prompt and in the logs.
+- **The tool must be in the caller's own toolbox and in the role's list**, checked twice in code: `StartMinion` refuses, before any HTTP, a
+  tool its session doesn't have (the session's tool names as an ambient, set per turn like `UserPlace.Use`); the peer
+  checks again against the parent session (minions run on the specialist's own instance, `AGENT_PEERS` to itself) and
+  refuses a minion whose parent it can't find, a role that isn't a minion role (`puls-minion-*` in `minions.json`), and
+  a tool the role doesn't accept. Never handed down: the `agents` and `minions` tools and the engine's
+  self-extension (`CreateTool`, `ExecuteSkill`).
+- **A minion's engine:** its role (on the minion base), one tool, no router, no toolset guides; on the model
+  `MINION_LLMS` names for its role. `AgentEngineFactory`'s key gets `|tool:{name}` beside the role; `ToolsetCatalog.BuildTools` builds the tool's toolset and keeps that
+  one tool. Depth 2 is a minion; `MaxDepth` 2; a minion's session can't load `agents` or `minions`.
+- **A minion's model is configuration, not fixed** (Louis): `MINION_LLMS`, a map from the **minion role** to an LLM
+  profile (the role is the function, so it decides how hard the work is), with `*` as the default, e.g.
+  `MINION_LLMS=*=ollama-puls,puls-minion-web-summary=instance`. A profile is one from
+  `LLM_SESSION_PROFILES`, or `instance` for the instance's own model: **Haiku, when a role needs a stronger model**
+  (Louis). So a minion can run on the local model, on Claude, or on another local model, per role, by changing one line and `up -d`, no rebuild. The specialist chooses
+  the role, the task and the tool, never the model, so what a minion costs stays configuration, not a prompt. Unset: no
+  `minions` toolset; an unknown profile in the map stops start-up.
+- **A cascade, when a cheap answer fails its check** (Louis): a role's entry can list models cheapest first,
+  `MINION_LLMS=*=ollama-puls>instance` (the local model, then Haiku). This is an LLM cascade as in *FrugalGPT* (Chen,
+  Zaharia, Zou, Stanford, 2023, [arXiv:2305.05176](https://arxiv.org/abs/2305.05176): the cheapest model first, the
+  next only when the answer is unreliable; it matched GPT-4 at up to 98% less cost). Ours needs no learned scorer:
+  the check is `VerifyQuote` (code). When it fails, the specialist calls `StartMinion(role, tool, task, stronger: true)`,
+  which runs the same task on the next model in that role's list; it can't name a model, only ask for the next one.
+  Once per task, counted in the tree limit, and the ledger shows which model answered.
+- **Limits in code:** `MaxMinionsPerTurn` across the whole tree of one Puls turn (6; the specialist's turn carries
+  Puls's turn as `parent`, so the count follows it), because Ollama answers one request at a time on one GPU
+  (`OLLAMA_NUM_PARALLEL=1`); a minion's timeout (2 min) inside the specialist's (5).
+- **Prices:** the `puls-prices` role is dropped. The cook (and the researcher, for a plain price question Puls hands
+  it) searches itself (Tavily results are short), hands each page to a `puls-minion-web-price-lookup` minion with `FetchUrl`
+  (or `ReadRenderedPage` for a JavaScript shop page), and checks each quote with `VerifyQuote` (code, no model).
+
+### Steps (replacing 4–7 above; one commit each, test first, stop after each)
+
+| Step | What | Check |
+|---|---|---|
+| 3 | **Configuration** (done): `config/.env.ollama-puls`, `LLM_SESSION_PROFILES` on `puls-agent`, MODELS.md native Ollama, measured | the profile in `GET :5071/llm-profiles` and the start-up log |
+| 4 | **A one-tool engine and a minion's session (core + API):** `\|tool:` in the factory's key; the minion base `puls-minion.md`, the first role `puls-minion-web-price-lookup.md`, and `minions.json` (role → tools it accepts); `POST /sessions` takes `tool` (depth 2 only, with `parent` and a minion role), checks the tool against the parent session's tools and the role's list, runs on `MINION_LLMS`' profile for that role; `MaxDepth` 2 | `AgentEngineFactoryTests` (one tool, the role on the minion base, own key), `AgentSessionsTests` (a tool the parent has / hasn't, one the role doesn't accept, a non-minion role, no parent, a delegation tool, depth 3), `PersonalitiesTests` (the base and the role; `minions.json` read like `roles.json`), first |
+| 5 | **The `minions` toolset:** `StartMinion(role, tool, task, stronger)`, `ContinueMinion` on `AgentPeerTools`' code; the caller's tools as an ambient; refused before HTTP for a tool it lacks; `MaxMinionsPerTurn` across the tree; the 2-minute timeout; `toolsets/minions.md` (a short guide: when a minion is worth it, the minion roles there are and the tools each takes, one task each); `MINION_LLMS` in `AgentOptions` (parsed; `*`, minion roles, `instance`, a `>` cascade; an unknown profile stops start-up); `stronger: true` runs the next model in the role's cascade (none left: refused with why). ADR 0018 *Minions: one task, one tool, two levels deep* | `AgentPeerToolsTests` first (tool refused, depth 2, the role and `tool` in the body, the tree limit, timeout, roll-up; `stronger` picks the next profile, once, and is refused at the end of the list); golden files |
+| 6 | **Compose and roles:** on `puls-agent`, `AGENT_PEERS` to itself and `MINION_LLMS: ${MINION_LLMS-*=ollama-puls>instance}`; `puls-minion-web-price-lookup` added to `PERSONALITIES_ENABLED`'s default; `agents-skills.md` gives specialists `minions` (the cook: `minions, web`); the cook's and researcher's roles say when to use one | configuration + `PersonalitiesTests`; golden files |
+| 7 | **`VerifyQuote(url, quote)`** in `WebTools`, as step 5 above, with `ReadRenderedPage`'s text as the fallback for a JavaScript page | `WebToolsTests` first; golden files |
+| 8 | **The price rules:** `puls-cook.md` and `puls-researcher.md`: a `puls-minion-web-price-lookup` minion per page with `FetchUrl` (its role gives the answer as shop · R price · date · url · "exact words"); `VerifyQuote` each; a failed quote asks once more with `stronger: true`; still failed: `unconfirmed` with why. Then **the hand check** (Louis's go: cents of Haiku, Tavily credits): the Stellenbosch cook question and one plain price question; `ollama ps`; the ledger's `parent` chain, qwen at $0; seconds against the 2- and 5-minute limits; the nested events in Puls's web app | `PersonalitiesTests` first; golden files |
+| 9 | **Measure (Louis's go):** `run_check.py --prices`, modes `haiku-puls` (no minions) and `puls-local` (minions on), five price questions; the cook check with minions against F25's saved baseline. Per answer: real, dated prices over total, failed quotes, how often the cascade went to Haiku, cost from the ledger, seconds; compared with MinionS' 5.7× and 97.9% | `--report` on saved runs first; then the paid run; numbers in the feature doc and BENCHMARKS.md; keep minions only if real prices hold and cost drops |
+
+Already works at depth 2, read in the code: usage nests (the specialist's turn includes its minions' roll-ups, so
+Puls's roll-up carries both; the usage probe lists roll-ups and never totals them), `parent` chains through both
+levels, and `MaxPerTurn` is per calling turn.
+
+### Risks
+
+- **Time:** minions queue on one GPU; the tree limit and the 2-minute timeout keep a turn inside Puls's 5 minutes.
+  Step 8 measures it.
+- **A 4B model extracting a price** from a long page: one tool, a short prompt, small `maxChars`, the format fixed,
+  and every quote checked in code; a failed one cascades to Haiku once. If the local model fails often, the cascade
+  costs more than Haiku alone would (two runs instead of one): step 9 counts it, and `MINION_LLMS` can move that role
+  to Haiku outright without a code change.
+- **A minion handed a risky tool** (bash, file writes): no escalation (the specialist has it already), and a tool is
+  handed down only if a minion role in `minions.json` accepts it, so none of those is, until a role that needs it is
+  written and checked.
+- **Afrikaans:** tasks to a minion are in English; Puls writes the Afrikaans answer.
+
+### Architecture
+
+```mermaid
+flowchart LR
+    user([User in Puls's web app])
+
+    subgraph docker["Docker Desktop"]
+        subgraph puls["puls :5070 · Claude Haiku"]
+            chat["Puls · level 0<br/>agents, web"]
+        end
+
+        subgraph agent["puls-agent :5071"]
+            factory["AgentEngineFactory<br/>key: toolsets, personality, llm, tool<br/>steps 1–2, 4"]
+            cfg[("LLM_SESSION_PROFILES · .env.ollama-puls<br/>MINION_LLMS: *=ollama-puls>instance<br/>(per minion role; a cascade)<br/>AGENT_PEERS to itself · steps 3, 6")]
+            cook["cook · level 1 · Haiku<br/>web, minions · puls-cook<br/>VerifyQuote (step 7)"]
+            research["researcher · level 1 · Haiku<br/>web, minions · puls-researcher"]
+            m1["minion · level 2<br/>puls-minion-web-price-lookup<br/>tool: FetchUrl · model from MINION_LLMS<br/>steps 4–5"]
+            m2["minion · level 2<br/>puls-minion-web-price-lookup<br/>tool: FetchUrl"]
+            mroles[("puls-minion.md · puls-minion-*.md<br/>minions.json: role → tools")]
+        end
+
+        ledger[("logs/puls/usage-*.jsonl<br/>roll-ups nest; qwen at $0")]
+    end
+
+    subgraph host["Windows host"]
+        ollama["Ollama, native (ROCm)<br/>qwen3:4b-instruct-2507<br/>RX 7600 · 32k · flash attn · q8_0"]
+    end
+
+    anthropic[("Anthropic API")]
+    web[("Tavily · shops' pages")]
+
+    user --> chat
+    chat -- "StartSubSession(web+minions, puls-cook)" --> cook
+    chat -- "StartSubSession(web+minions, puls-researcher)" --> research
+    cook -- "StartMinion(price-lookup, FetchUrl, task)" --> m1
+    research -- "StartMinion(price-lookup, FetchUrl, task)" --> m2
+    mroles -.-> factory
+    cfg -.-> factory
+    factory -.-> cook & research & m1 & m2
+    chat & cook & research --> anthropic
+    m1 & m2 -- "host.docker.internal:11434" --> ollama
+    m1 & m2 -- FetchUrl --> web
+    cook & research -- "WebSearch, VerifyQuote" --> web
+    chat & cook & research & m1 & m2 -. usage .-> ledger
+```
+
+### Communication: the cook's main case
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor U as User
+    participant P as Puls (level 0, Haiku)
+    participant C as Cook (level 1, Haiku)
+    participant M as Minion (level 2, qwen)
+    participant W as Web
+
+    U->>P: Stellenbosch, four people, an hour: recipe and prices
+    P->>C: POST /sessions {toolsets: [web, minions], personality: puls-cook, depth: 1} + the task
+    C->>W: Nominatim: shops; WebSearch: each item at two shops
+    C->>C: recipe, list, one page per price
+    Note over C: StartMinion(puls-minion-web-price-lookup, FetchUrl, task): FetchUrl in the cook's toolbox and in the role's list; at most 6 minions this Puls turn
+    loop each page (2 minutes each, one at a time on the GPU)
+        C->>M: POST /sessions {personality: puls-minion-web-price-lookup, tool: FetchUrl, depth: 2, parent: cook#turn} + "1 kg onions at Checkers on url" (English)
+        Note over M: the peer checks the role, and FetchUrl against the parent session and minions.json; the minion runs on MINION_LLMS' profile for its role
+        M->>W: FetchUrl(url, small maxChars)
+        M-->>C: shop · R price · date · url · "exact words", or unknown
+        C->>W: VerifyQuote(url, quote): code, no model
+        opt the quote isn't on the page
+            C->>M: StartMinion(same role, FetchUrl, same task, stronger: true): the next model in the cascade (Haiku), once
+            M-->>C: the price and quote again
+            C->>W: VerifyQuote again; still failed: "unconfirmed", with why
+        end
+    end
+    C-->>P: recipe, verified prices ("unconfirmed" with why), basket; usage with the minions' roll-ups
+    P-->>U: the answer in Afrikaans, verified prices with links
+    Note over P,M: ledger: the minions' rows (qwen, $0) name the cook's turn; roll-ups are listed, never totalled
+```
