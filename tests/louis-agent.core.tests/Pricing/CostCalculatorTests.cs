@@ -87,7 +87,7 @@ public class CostCalculatorTests
     [Test]
     public void For_RealRecordFromTheDemoLedger()
     {
-        // A fix request from samples/sample-output: 47,605 input, 0 cached, 470 output on Haiku 5.5.
+        // A recorded fix request (the orchestrator demo, before CL10): 47,605 input, 0 cached, 470 output on Haiku 5.5.
         UsageCost? cost = CostCalculator.For(Record("claude-haiku-5-5", new UsageTokens(47_605, null, 0, 470, null)), Table);
 
         Assert.That(cost!.Amount, Is.EqualTo(0.004996m));
