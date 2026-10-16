@@ -3,6 +3,12 @@
 > **Reference.** What was finished, newest first, one entry per feature, fix or cleanup. **Elsewhere:** what's still
 > open in the [TODO](TODO.md); how each was built in its feature, fix or plan doc (linked from its entry).
 
+- 2026-10-17 — **CL10 Clear the decks**: `samples/` goes (both checks, 18 recorded runs, the order-service demo and
+  its compose file) and `docs/BENCHMARKS.md`; they're kept at the tag `pre-cl10`, where the history docs now link. The
+  admin portal stops reading and writing run folders: no checks until they're rewritten, with scripts in `benchmarks/`
+  and results in SQL Server's `puls_benchmarks` (the next feature, before F30's minions are measured). Roles are
+  named, not derived: `roles.json`, `RoleFor` and `puls-specialist` go; the other specialists stay, off by
+  `PERSONALITIES_ENABLED` ([plan](docs/plans/CL10-clear-the-decks.md))
 - 2026-10-17 — **CL9 Modes per product**: a level-0 session is a mode, one file of voice and routing in a folder per
   product (`agent/louis-agent/voice.md`, the default for the CLI, Rider and code review; `voice-orchestrator.md`), or a
   language (`agent/puls/voice-af.md`, `voice-en.md`) that loads Puls's shared routing (`puls/voice.md`); Puls's *Taal*

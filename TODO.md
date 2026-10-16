@@ -197,10 +197,6 @@ Design: [docs/specs/SESSION_ARCHITECTURE.md](docs/specs/SESSION_ARCHITECTURE.md)
             carried as a string to the specialist, so it arrives mangled; send it as base64 with its media type and
             read it with `DocumentText` (found in the docs review, 2026-10-14)
 - [ ] [F21 Personalities](docs/features/F21-personalities.md) — each session (and sub-session) names its personality; Puls speaks everyday South African Afrikaans ([plan](docs/plans/F21-personalities.md)). Built; open: Louis's corrections to the Afrikaans (the delegation check's `answers.md`).
-- [ ] **Clear the decks** (cleanup, CL10, before F30 step 4) — `samples/` goes entirely (the recorded runs, both checks,
-      the order-service demo) and `BENCHMARKS.md`; the admin portal stops reading and writing run folders; roles are
-      named, not derived (`roles.json`, `RoleFor`, `puls-specialist` go; the other specialists stay, off by
-      `PERSONALITIES_ENABLED`) ([plan](docs/plans/CL10-clear-the-decks.md))
 - [ ] **Benchmarks in the admin portal** (a feature, to plan; after F30's build steps, before its minions are measured)
       — check scripts in `benchmarks/{check}/`, run only from the admin portal, results stored in Louis's local SQL
       Server, database `puls_benchmarks` (connection in `config/.env.secrets`; the SQL client package chosen from three

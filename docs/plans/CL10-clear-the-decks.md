@@ -167,3 +167,8 @@ sequenceDiagram
   from three options with Louis), the admin screen planned with a proper layout before it's built. Order: CL10 → F30's
   build steps → *Benchmarks in the admin portal* → F30's hand check and measured run, from the portal. A TODO line now;
   its own plan with both diagrams when its turn comes.
+- **Step 5's hand check** (free, 2026-10-17), on the rebuilt Puls stack and code-review API: `GET /personalities`
+  unchanged on all three (`puls/voice-af`, `puls/voice-en`, `puls-cook`); a sub-session with `web` and no role opened
+  with none (201, `personality: null`; its prompt the default mode's voice, 2,885 tokens of fixed prefix);
+  `/admin/benchmarks` still behind the admin key (401 without it). The Benchmarks page's message is for Louis to see in
+  the browser (the page renders in Blazor, not in `curl`).
