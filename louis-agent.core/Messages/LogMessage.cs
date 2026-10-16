@@ -187,15 +187,6 @@ public enum LogMessage
     SubSessionPromptBudgetReached,
 
 
-    [Description("Loaded {File} via MarkdownSkillProvider")]
-    MainSkillsFileLoaded,
-
-    [Description("Skills file '{File}' not found; using default skills only.")]
-    MainSkillsFileMissing,
-
-    [Description("Loading ALL skill providers (louis function)")]
-    LoadingAllSkills,
-
     [Description("Discovered skills file: {File}")]
     SkillsFileDiscovered,
 

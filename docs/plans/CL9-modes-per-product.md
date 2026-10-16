@@ -266,3 +266,17 @@ sequenceDiagram
 - **No private-network rule for now** (Louis, step 2, 2026-10-17): a line in the principles about private addresses,
   and a step guarding `ReadRenderedPage` with `SsrfGuard`, were drawn and dropped: "remove the ssrf for now because I
   test locally". `FetchUrl`'s guard is unchanged; the steps stay as the previous entry numbers them.
+- **Step 4's code review: a row and a rule in the coding agent's routing** (step 4, 2026-10-17): "Reviewing a change"
+  goes to `git` and `files`, and a code review reads the diff, then each changed file, and reports by file and line,
+  the most serious first; that is what `code-review.md`'s note said, without its echo skills.
+- **Puls's shared part is `puls/voice.md`** (Louis, step 4, 2026-10-17: "and then we have a puls/voice.md for shared
+  things"). Step 5 splits it out: `puls/voice-af.md` and `puls/voice-en.md` hold only how Puls talks in that language,
+  `puls/voice.md` holds Puls's routing, written once; a session naming `puls/voice-af` loads `voice-af.md` then
+  `voice.md`. `puls/voice` can't be named on its own. The identical-routing test goes (the routing exists once).
+  `louis-agent/voice.md` stays a whole mode, and `voice-orchestrator.md` (step 6) loads only itself.
+- **The `agents` toolset becomes `specialists`** (Louis, step 4, 2026-10-17: "this should say specialists since we
+  call them that now"). A new step 5, test first: the toolset, its guide (`toolsets/specialists.md`), the routing rows,
+  "the specialists guide", Puls's web app (`[specialists, web]`) and the API's sub-session check; a client still
+  sending `agents` gets the 400 that names the valid toolsets. It lines up with F30's `minions`. The later steps move
+  down one: 6 `puls/voice.md`, `puls/voice-en.md` and the *Taal* menu, 7 the orchestrator's prompt, 8 docs, 9 rebuild
+  and check, 10 measure.

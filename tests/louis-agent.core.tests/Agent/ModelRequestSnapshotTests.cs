@@ -37,7 +37,7 @@ public class ModelRequestSnapshotTests
         // Every toolset: Paymo and DevOps load only with their keys (nothing is called while building the engine).
         var options = new AgentOptions
         {
-            WorkspaceRoot = _skillsDir, SkillsDirectory = _skillsDir, AgentFunction = "louis", RatesUrl = null,
+            WorkspaceRoot = _skillsDir, SkillsDirectory = _skillsDir, RatesUrl = null,
             PaymoApiKey = "snapshot", DevopsApiKey = "snapshot", DevopsOrganization = "org", DevopsProject = "project",
             AgentPeers = new Dictionary<string, Uri> { ["coder"] = new("http://coder.test/") },
         };

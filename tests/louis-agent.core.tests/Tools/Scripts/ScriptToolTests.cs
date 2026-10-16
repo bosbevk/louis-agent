@@ -39,7 +39,7 @@ public class ScriptToolTests
 
     private AgentEngine Engine(IChatClient? client = null)
     {
-        var options = new AgentOptions { WorkspaceRoot = _skillsDir, SkillsDirectory = _skillsDir, AgentFunction = "code-review" };
+        var options = new AgentOptions { WorkspaceRoot = _skillsDir, SkillsDirectory = _skillsDir };
         var engine = new AgentEngine(AgentHost.LoadSkills(options), client ?? new FakeChatClient(), options)
         {
             SkillsDirectory = _skillsDir,

@@ -36,7 +36,7 @@ public class ToolOrderTests
 
     private AgentEngine Engine()
     {
-        var options = new AgentOptions { WorkspaceRoot = _skillsDir, SkillsDirectory = _skillsDir, AgentFunction = "louis", RatesUrl = null };
+        var options = new AgentOptions { WorkspaceRoot = _skillsDir, SkillsDirectory = _skillsDir, RatesUrl = null };
         var engine = new AgentEngine(AgentHost.LoadSkills(options), new FakeChatClient(), options) { SkillsDirectory = _skillsDir };
         engine.LoadApprovedTools();
         return engine;

@@ -55,6 +55,7 @@ shown.
 |---|---|
 | The user's own files: anything they name by file name or path, or attach | `files` |
 | How those files changed: versions, history, branches | `git` |
+| Reviewing a change (a code review): what changed, and whether it's right | `git`, `files` |
 | The world: a URL or website, current facts, news, documentation | `web` |
 | Running code or calculations (over the user's files: add `files`) | `python`, `powershell`, `bash` |
 | Building or testing .NET code | `dotnet` |
@@ -72,6 +73,8 @@ file's history: `files` and `git`); pick every one it needs, and no more.
 ## How to use them
 
 - A session's toolsets are fixed when it starts. Only call tools the session has loaded.
+- **A code review:** read the diff with `git`, then each changed file with `files`; say what's wrong and what to
+  change, by file and line, the most serious first.
 - No specialist has passed its check for this work yet, so never hand it to one: if you have the toolset, do the work
   yourself; if you don't, say which toolset you'd need.
 - Ask the user only when the request itself is unclear (for example, they say "this file" and name none).

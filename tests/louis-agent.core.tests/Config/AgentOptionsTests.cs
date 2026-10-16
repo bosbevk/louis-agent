@@ -44,13 +44,6 @@ public class AgentOptionsTests
     }
 
     [Test]
-    public void AgentFunction_ReturnsString()
-    {
-        var options = AgentOptions.FromEnvironment();
-        Assert.That(options.AgentFunction, Is.Not.Empty);
-    }
-
-    [Test]
     public void SkillsDirectory_ReturnsPathOrNull()
     {
         var options = AgentOptions.FromEnvironment();
@@ -65,13 +58,11 @@ public class AgentOptionsTests
         var options = new AgentOptions
         {
             WorkspaceRoot = "/test/workspace",
-            AgentFunction = "test-agent",
             PaymoApiKey = "paymo-123",
             DevopsApiKey = "devops-456"
         };
 
         Assert.That(options.WorkspaceRoot, Is.EqualTo("/test/workspace"));
-        Assert.That(options.AgentFunction, Is.EqualTo("test-agent"));
         Assert.That(options.PaymoApiKey, Is.EqualTo("paymo-123"));
         Assert.That(options.DevopsApiKey, Is.EqualTo("devops-456"));
     }

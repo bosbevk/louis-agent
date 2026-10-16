@@ -27,11 +27,9 @@ internal static class SkillFiles
     /// <summary>A function skill's file: <c>agent/functions/{name}.md</c>.</summary>
     internal static string Function(string name) => $"{FunctionsFolder}/{name}.md";
 
-    /// <summary>Skill files <c>AgentHost</c> loads by name (the toolset guides and the function files); discovery skips
-    /// them to avoid loading them twice, and the agent may not overwrite them.</summary>
-    internal static readonly HashSet<string> BuiltIn = new(StringComparer.OrdinalIgnoreCase)
-    {
-        Guide("devops"), Guide("paymo"), Guide("files"), Guide("git"), Guide("agents"), Function("code-review"),
-        Guide("dotnet"), Guide("python"), Guide("powershell"), Guide("bash"), Guide("web"), Guide("self-extension"),
-    };
+    /// <summary>
+    /// Whether <paramref name="path"/> is a built-in prompt: what is embedded is built in (CL9, ADR 0019), so the names the
+    /// agent may not take follow the files, with no list to keep. Discovery skips one, and <c>CreateSkillFile</c> refuses it.
+    /// </summary>
+    internal static bool IsBuiltIn(string path) => SkillFileSource.EmbeddedFiles.Contains(path, StringComparer.OrdinalIgnoreCase);
 }

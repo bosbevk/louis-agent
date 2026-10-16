@@ -9,7 +9,7 @@ These are simple test skills used for development and testing. Use them to:
 - Test parameter substitution
 - Confirm output formatting
 
-These skills are available when `AGENT_FUNCTION=HelloWorld` or when loaded explicitly for testing.
+A test fixture: loaded explicitly by the tests, never by a host.
 
 ## Guidelines
 

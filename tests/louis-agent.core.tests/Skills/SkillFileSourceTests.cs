@@ -23,7 +23,7 @@ public class SkillFileSourceTests
     public void EveryBuiltInFile_IsEmbedded_UnderItsOwnPath()
     {
         var builtIn = ToolsetCatalog.All.Select(t => t.GuideFile).OfType<string>()
-            .Concat(["shared/principles.md", "agent/louis-agent/voice.md", "agent/puls/voice-af.md", "agent/functions/code-review.md",
+            .Concat(["shared/principles.md", "agent/louis-agent/voice.md", "agent/puls/voice-af.md",
                 "specialists/roles.json"]);
 
         Assert.That(SkillFileSource.EmbeddedFiles, Is.SupersetOf(builtIn));
@@ -84,16 +84,5 @@ public class SkillFileSourceTests
     public void ANameThatIsntEmbedded_IsNull()
     {
         Assert.That(SkillFileSource.ReadEmbedded("no-such.md"), Is.Null);
-    }
-
-    [Test]
-    public void AnEmbeddedFunctionFile_KeepsItsProcedures()
-    {
-        // Parsing from text gives the same skills as parsing the file.
-        var fromText = MarkdownSkillProvider.FromText(SkillFileSource.ReadEmbedded("agent/functions/code-review.md")!);
-
-        Assert.That(fromText.Skills.Select(s => s.Name), Does.Contain("AnalyzeChanges"));
-        Assert.That(fromText.Skills.Select(s => s.Name),
-            Is.EqualTo(MarkdownSkillLoader.Load(Path.Combine(TestPaths.Prompts, "agent", "functions", "code-review.md")).Select(s => s.Name)));
     }
 }

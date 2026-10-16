@@ -278,7 +278,7 @@ public static partial class AgentHost
     /// <summary>
     /// Loads the system prompt for a toolset profile (F5): personality, default.md (the router), the guide of each of
     /// <paramref name="toolsets"/> and no other (docs/CLAUDE.md, *Adding a toolset*), then, when the profile has the skills
-    /// toolset, the function's own skill file (agent/functions/{AgentFunction}.md; "louis" loads every one). Our own skill files are plain markdown read by
+    /// toolset, every function skill the agent wrote (agent/functions/*.md in the skills folder; CL9). Our own skill files are plain markdown read by
     /// <see cref="MarkdownSkillProvider"/>; a provider class of its own is only for skills we don't control.
     /// Built-in files are read only from the assembly (<see cref="SkillFileSource"/>, CL8 step 4); only what the agent
     /// wrote (its function files) comes from the skills folder (<see cref="FindSkillsDirectory"/>).
@@ -308,49 +308,18 @@ public static partial class AgentHost
             AddBuiltIn(agent, composite, fileName);
 
         // Function skill files are procedures ExecuteSkill runs: they come with the skills toolset, like a guide with its
-        // tools. A profile without it (Puls's chats: agents and web) gets the router and its guides, not every skill file.
+        // tools. A profile without it (Puls's chats: agents and web) gets its mode and its guides, no skill file.
         if (profile.All(t => t.Name != SkillsToolset)) return composite;
 
-        if (agent.AgentFunction == "louis")
-        {
-            LoadAllSkillFiles(agent, composite);
-        }
-        else if (agent.AgentFunction != null && ToolsetCatalog.Find(agent.AgentFunction) is null)
-        {
-            // The function's own skill file: agent/functions/code-review.md, or a custom one (a toolset's
-            // name is not a function: its guide comes with the toolset)
-            string mainFile = SkillFiles.Function(agent.AgentFunction);
-            if (ReadSkillFile(agent, mainFile) is { } main)
-            {
-                composite.AddProvider(MarkdownSkillProvider.FromText(main.Text));
-                Log.Log(LogLevel.Information, LogMessage.MainSkillsFileLoaded, new { File = mainFile });
-            }
-            else
-            {
-                Log.Log(LogLevel.Warning, LogMessage.MainSkillsFileMissing, new { File = mainFile });
-            }
-        }
-
-        return composite;
-    }
-
-    private static void LoadAllSkillFiles(AgentOptions agent, CompositeSkillProvider composite)
-    {
-        Log.Log(LogLevel.Information, LogMessage.LoadingAllSkills);
-
-        foreach (string fileName in FunctionSkillFiles)
-            AddBuiltIn(agent, composite, fileName);
-
-        // Any other function file dropped into agent/functions/ (including ones the agent created) loads without code changes
-        foreach (string file in DiscoverSkillFiles(agent).Where(f => !SkillFiles.BuiltIn.Contains(SkillFiles.Function(Path.GetFileNameWithoutExtension(f)))))
+        // Every function skill the agent wrote (CL9: no setting picks one; none is built in any more)
+        foreach (string file in DiscoverSkillFiles(agent).Where(f => !SkillFiles.IsBuiltIn(SkillFiles.Function(Path.GetFileNameWithoutExtension(f)))))
         {
             composite.AddProvider(new MarkdownSkillProvider(file, includeDefaultInstructions: false));
             Log.Log(LogLevel.Information, LogMessage.SkillsFileDiscovered, new { File = Path.GetFileName(file) });
         }
-    }
 
-    /// <summary>Skill files of functions that aren't toolsets, loaded by "louis" (and by their own AGENT_FUNCTION).</summary>
-    private static readonly string[] FunctionSkillFiles = [SkillFiles.Function("code-review")];
+        return composite;
+    }
 
     /// <summary>The toolset the function skill files come with (ExecuteSkill runs their procedures).</summary>
     private const string SkillsToolset = "skills";

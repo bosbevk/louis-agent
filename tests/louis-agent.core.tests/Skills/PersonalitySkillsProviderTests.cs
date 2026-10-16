@@ -25,11 +25,10 @@ public class PersonalitySkillsProviderTests
         Assert.That(provider.Documentation, Is.Empty);
     }
 
-    [TestCase("code-review")]
-    [TestCase("louis")]
-    public void AgentHostLoadSkills_PutsThePersonalityFirstAndOnce(string agentFunction)
+    [Test]
+    public void AgentHostLoadSkills_PutsThePersonalityFirstAndOnce()
     {
-        var options = new AgentOptions { SkillsDirectory = SkillsDirectory, AgentFunction = agentFunction };
+        var options = new AgentOptions { SkillsDirectory = SkillsDirectory };
 
         string docs = AgentHost.LoadSkills(options).Documentation;
 
