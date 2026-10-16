@@ -29,7 +29,8 @@ public class ToolOrderTests
     public void SetUp()
     {
         _skillsDir = Directory.CreateTempSubdirectory("tool-order-").FullName;
-        File.WriteAllText(Path.Combine(_skillsDir, "default.md"), "# Default");
+        Directory.CreateDirectory(Path.Combine(_skillsDir, "agent"));
+        File.WriteAllText(Path.Combine(_skillsDir, "agent", "default.md"), "# Default");
     }
 
     [TearDown]

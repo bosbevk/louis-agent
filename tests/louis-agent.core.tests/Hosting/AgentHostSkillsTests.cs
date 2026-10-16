@@ -28,6 +28,25 @@ public class AgentHostSkillsTests
     }
 
     [Test]
+    public void TheSkillsFolder_IsTheOneAboveTheRouter()
+    {
+        // CL8 step 2: default.md moved into agent/, so the skills folder is its parent's parent, where toolsets/ is too.
+        string skills = Directory.CreateTempSubdirectory("skills-root-").FullName;
+        try
+        {
+            Directory.CreateDirectory(Path.Combine(skills, "agent"));
+            File.WriteAllText(Path.Combine(skills, "agent", "default.md"), "# Default");
+
+            Assert.That(AgentHost.FindSkillsDirectory(new AgentOptions { SkillsDirectory = skills }), Is.EqualTo(skills));
+            Assert.That(AgentHost.FindSkillsDirectory(Options()), Is.EqualTo(Path.Combine(TestPaths.RepoRoot, "Skills")));
+        }
+        finally
+        {
+            Directory.Delete(skills, recursive: true);
+        }
+    }
+
+    [Test]
     public void PersonalityAndTheRouter_AreAlwaysThere()
     {
         string docs = AgentHost.LoadSkills(Options(), []).Documentation;

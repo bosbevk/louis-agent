@@ -17,33 +17,36 @@ public class SkillFileSourceTests
 
     private static string Repo(string fileName) => File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "Skills", fileName));
 
+    /// <summary>A file in a subfolder (toolsets/git.md) is embedded as toolsets.git.md.</summary>
+    private static string Embedded(string fileName) => fileName.Replace('/', '.');
+
     [Test]
     public void EveryBuiltInFile_IsEmbedded()
     {
         var builtIn = ToolsetCatalog.All.Select(t => t.GuideFile).OfType<string>()
-            .Concat(["personality.md", "default.md", "code-review-skills.md", "time-logging-skills.md"]);
+            .Concat(["agent/personality.md", "agent/default.md", "code-review-skills.md", "time-logging-skills.md"]);
 
-        Assert.That(SkillFileSource.EmbeddedNames, Is.SupersetOf(builtIn));
+        Assert.That(SkillFileSource.EmbeddedNames, Is.SupersetOf(builtIn.Select(Embedded)));
         Assert.That(SkillFileSource.EmbeddedNames, Does.Not.Contain("HelloWorld.md"), "a test fixture, not a built-in");
     }
 
     [Test]
     public void WithNothingOnDisk_TheEmbeddedCopyIsUsed()
     {
-        var file = SkillFileSource.Read("git-skills.md", [Path.Combine(_dir, "git-skills.md")]);
+        var file = SkillFileSource.Read("toolsets/git.md", [Path.Combine(_dir, "git.md")]);
 
         Assert.That(file, Is.Not.Null);
         Assert.That(file!.Value.FromDisk, Is.False);
-        Assert.That(file.Value.Text.ReplaceLineEndings("\n"), Is.EqualTo(Repo("git-skills.md").ReplaceLineEndings("\n")));
+        Assert.That(file.Value.Text.ReplaceLineEndings("\n"), Is.EqualTo(Repo("toolsets/git.md").ReplaceLineEndings("\n")));
     }
 
     [Test]
     public void AFileOnDisk_Overrides()
     {
-        string path = Path.Combine(_dir, "git-skills.md");
+        string path = Path.Combine(_dir, "git.md");
         File.WriteAllText(path, "# Git Skills\n\nOur own version.");
 
-        var file = SkillFileSource.Read("git-skills.md", [path]);
+        var file = SkillFileSource.Read("toolsets/git.md", [path]);
 
         Assert.That(file!.Value.FromDisk, Is.True);
         Assert.That(file.Value.Text, Does.Contain("Our own version."));

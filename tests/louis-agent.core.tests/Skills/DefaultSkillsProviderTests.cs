@@ -11,7 +11,7 @@ public class DefaultSkillsProviderTests
     public void Setup()
     {
         _repoRoot = Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, "..", "..", "..", "..", ".."));
-        _defaultMdPath = Path.Combine(_repoRoot, "Skills", "default.md");
+        _defaultMdPath = Path.Combine(_repoRoot, "Skills", "agent", "default.md");
     }
 
     /// <summary>

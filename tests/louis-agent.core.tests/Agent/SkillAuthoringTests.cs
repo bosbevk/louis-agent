@@ -31,7 +31,8 @@ public class SkillAuthoringTests
     public void SetUp()
     {
         _skillsDir = Directory.CreateTempSubdirectory("skills-").FullName;
-        File.WriteAllText(Path.Combine(_skillsDir, "default.md"), "# Default instructions");
+        Directory.CreateDirectory(Path.Combine(_skillsDir, "agent"));
+        File.WriteAllText(Path.Combine(_skillsDir, "agent", "default.md"), "# Default instructions");
     }
 
     [TearDown]
@@ -89,6 +90,8 @@ public class SkillAuthoringTests
     [TestCase("dotnet")]
     [TestCase("python")]
     [TestCase("paymo")]
+    [TestCase("self-extension")]
+    [TestCase("code-review")]
     [TestCase("default")]
     public void CreateSkillFile_RefusesBuiltInNames(string name)
     {

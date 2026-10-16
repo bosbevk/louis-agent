@@ -13,7 +13,7 @@ using System.Text.RegularExpressions;
 public static partial class Personalities
 {
     /// <summary>The personality of a session that names none: the one every host had before F21.</summary>
-    public const string DefaultFile = "personality.md";
+    public const string DefaultFile = AgentFolder + "/personality.md";
 
     /// <summary>Level 0's folder, under the skills folder: the voices of the agent the user talks to.</summary>
     public const string AgentFolder = "agent";
@@ -65,6 +65,12 @@ public static partial class Personalities
     /// <summary>Whether <paramref name="name"/> can name a personality (and so can be turned into a path safely).</summary>
     public static bool IsValidName(string? name) => name is { Length: > 0 and <= MaxNameLength } && NamePattern().IsMatch(name);
 
+    /// <summary>
+    /// Whether <paramref name="file"/> shares level 0's folder without being a voice to choose: personality.md (a session
+    /// that names none) and default.md (the router).
+    /// </summary>
+    internal static bool IsReserved(string file) => file is DefaultFile or SkillFiles.Router;
+
     /// <summary>The skill file of a named personality at <paramref name="level"/>, relative to the skills folder.</summary>
     public static string FileName(string name, SkillLevel level) => $"{FolderOf(level)}/{name}.md";
 
@@ -80,7 +86,7 @@ public static partial class Personalities
             .Select(n => n[(folder.Length + 1)..^".md".Length]);
         if (skillsDirectory is not null && Directory.Exists(Path.Combine(skillsDirectory, folder)))
             names = names.Concat(Directory.EnumerateFiles(Path.Combine(skillsDirectory, folder), "*.md").Select(f => Path.GetFileNameWithoutExtension(f)));
-        return names.Where(IsValidName).Distinct().Order(StringComparer.Ordinal).ToList();
+        return names.Where(n => IsValidName(n) && !IsReserved(FileName(n, level))).Distinct().Order(StringComparer.Ordinal).ToList();
     }
 
     [GeneratedRegex("^[a-z0-9]+(-[a-z0-9]+)*$")]

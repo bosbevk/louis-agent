@@ -294,7 +294,7 @@ public static partial class AgentHost
 
         // Personality first, so who the agent is frames everything after it; default.md (the router) after it
         AddBuiltIn(agent, composite, PersonalityFile(agent, personality, level));
-        if (level == SkillLevel.Agent) AddBuiltIn(agent, composite, "default.md");
+        if (level == SkillLevel.Agent) AddBuiltIn(agent, composite, SkillFiles.Router);
 
         // The guides of this profile's toolsets only, so the prompt never describes tools the session doesn't have
         var profile = toolsets.ToList();
@@ -349,9 +349,9 @@ public static partial class AgentHost
     /// <summary>The toolset the function skill files come with (ExecuteSkill runs their procedures).</summary>
     private const string SkillsToolset = "skills";
 
-    /// <summary>The folder holding default.md and the *-skills.md files, or null if none was found.</summary>
+    /// <summary>The skills folder, the one above agent/default.md (CL8), or null if none was found.</summary>
     public static string? FindSkillsDirectory(AgentOptions agent) =>
-        FindSkillFile(agent, "default.md") is { } defaultFile ? Path.GetDirectoryName(defaultFile) : null;
+        FindSkillFile(agent, SkillFiles.Router) is { } router ? Path.GetDirectoryName(Path.GetDirectoryName(router)) : null;
 
     internal static IEnumerable<string> DiscoverSkillFiles(AgentOptions agent) =>
         FindSkillsDirectory(agent) is { } dir
@@ -376,7 +376,7 @@ public static partial class AgentHost
             throw new PersonalityException(MessageText.Format(ErrorMessage.PersonalityNameInvalid, new { Name = personality }));
         string file = Personalities.FileName(personality, level);
         // A personality that's off (F29) is refused as an unknown one: the list names what this instance may use.
-        if (!IsEnabled(agent, personality) || ReadSkillFile(agent, file) is null)
+        if (Personalities.IsReserved(file) || !IsEnabled(agent, personality) || ReadSkillFile(agent, file) is null)
             throw new PersonalityException(MessageText.Format(ErrorMessage.UnknownPersonality,
                 new { Name = personality, Available = string.Join(", ", EnabledPersonalities(agent, level)) }));
         return file;

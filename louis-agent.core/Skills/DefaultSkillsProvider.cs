@@ -22,7 +22,7 @@ public class DefaultSkillsProvider : ISkillProvider
     /// <param name="filePath">Path to default.md file. Searches standard locations if not provided.</param>
     public DefaultSkillsProvider(string? filePath = null)
     {
-        _filePath = ResolveFilePath(filePath ?? "default.md");
+        _filePath = ResolveFilePath(filePath ?? SkillFiles.Router);
     }
 
     private List<MarkdownSkillLoader.SkillDef> LoadSkills()

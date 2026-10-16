@@ -196,3 +196,7 @@ sequenceDiagram
   test what it adds. Step 1 now moves `puls.md` to `agent/` and the roles and `roles.json` to `specialists/` (with the
   csproj's embedded resources for those two folders); `personality.md` and `default.md` stay at the root until step 2,
   which moves them and the toolset guides.
+- **Step 4 also renames the file names the model reads** (Louis, step 2, 2026-10-16): `default.md` (three times) and
+  `StartSubSession`'s descriptions (twice) say `agents-skills.md`, which step 2 moved to `toolsets/agents.md`. Step 2
+  left them so its golden file stayed unchanged; step 4 says "the agents guide" instead of a file name and regenerates
+  the golden file, so its diff shows only those words.

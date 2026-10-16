@@ -179,7 +179,8 @@ internal sealed partial class SkillTools
         if (string.IsNullOrWhiteSpace(markdown)) return MessageText.Format(ToolMessage.SkillMarkdownEmpty);
 
         string fileName = $"{name}-skills.md";
-        if (name == "default" || SkillFiles.BuiltIn.Contains(fileName))
+        // A toolset's guide (toolsets/{name}.md, CL8) keeps its name too, so a skill file never passes for one.
+        if (name == "default" || SkillFiles.BuiltIn.Contains(fileName) || SkillFiles.BuiltIn.Contains(SkillFiles.Guide(name)))
             return MessageText.Format(ToolMessage.SkillFileBuiltIn, new { File = fileName });
 
         string path = Path.Combine(SkillsDirectory, fileName);

@@ -34,7 +34,7 @@ public class MarkdownSkillProvider : ISkillProvider
         // Combine default instructions with chosen skillset
         // Try multiple locations for default.md (current dir, Skills/, /app, or same dir as skillset)
         string defaultDocs = "";
-        foreach (string searchPath in includeDefaultInstructions ? new[] { "default.md", "Skills/default.md", "/app/default.md", "/app/Skills/default.md", Path.Combine(Path.GetDirectoryName(filePath) ?? "", "default.md") } : Array.Empty<string>())
+        foreach (string searchPath in includeDefaultInstructions ? new[] { SkillFiles.Router, "Skills/" + SkillFiles.Router, "/app/" + SkillFiles.Router, "/app/Skills/" + SkillFiles.Router, Path.Combine(Path.GetDirectoryName(filePath) ?? "", SkillFiles.Router) } : Array.Empty<string>())
         {
             if (File.Exists(searchPath))
             {

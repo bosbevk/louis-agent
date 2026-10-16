@@ -32,7 +32,8 @@ public class ScriptToolTests
     public void SetUp()
     {
         _skillsDir = Directory.CreateTempSubdirectory("script-tools-").FullName;
-        File.WriteAllText(Path.Combine(_skillsDir, "default.md"), "# Default");
+        Directory.CreateDirectory(Path.Combine(_skillsDir, "agent"));
+        File.WriteAllText(Path.Combine(_skillsDir, "agent", "default.md"), "# Default");
     }
 
     [TearDown]

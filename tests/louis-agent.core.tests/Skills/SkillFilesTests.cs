@@ -25,6 +25,7 @@ public class SkillFilesTests
         {
             Assert.That(toolset.GuideFile, Is.Not.Null, $"{toolset.Name} has a guide");
             string guide = toolset.GuideFile!;
+            Assert.That(guide, Does.StartWith("toolsets/"), "CL8: every level shares the guides, so they're in toolsets/");
             Assert.That(File.Exists(Path.Combine(SkillsDirectory, guide)), Is.True, $"{guide} exists");
             string title = File.ReadLines(Path.Combine(SkillsDirectory, guide)).First();
             Assert.That(AgentHost.LoadSkills(options, [toolset]).Documentation, Does.Contain(title), $"{guide} loads with {toolset.Name}");
@@ -51,7 +52,7 @@ public class SkillFilesTests
     {
         // Guards against the guidance drifting from DotNetTools after a rename.
         var toolNames = typeof(DotNetTools).GetMethods().Select(m => m.Name).ToHashSet();
-        var referenced = Regex.Matches(Load("dotnet-skills.md").Documentation, @"`(DotNet[A-Za-z]+)`")
+        var referenced = Regex.Matches(Load("toolsets/dotnet.md").Documentation, @"`(DotNet[A-Za-z]+)`")
             .Select(m => m.Groups[1].Value)
             .Distinct()
             .ToList();
@@ -64,7 +65,7 @@ public class SkillFilesTests
     public void PaymoGuide_NamesOnlyToolsThatExist()
     {
         var toolNames = typeof(PaymoTools).GetMethods().Select(m => m.Name).ToHashSet();
-        var referenced = Regex.Matches(Load("paymo-skills.md").Documentation, @"`([A-Z][A-Za-z]+)\(")
+        var referenced = Regex.Matches(Load("toolsets/paymo.md").Documentation, @"`([A-Z][A-Za-z]+)\(")
             .Select(m => m.Groups[1].Value)
             .Distinct()
             .ToList();
