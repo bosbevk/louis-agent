@@ -278,7 +278,7 @@ public static partial class AgentHost
     /// <summary>
     /// Loads the system prompt for a toolset profile (F5): personality, default.md (the router), the guide of each of
     /// <paramref name="toolsets"/> and no other (docs/CLAUDE.md, *Adding a toolset*), then, when the profile has the skills
-    /// toolset, the function's own skill file ({AgentFunction}-skills.md; "louis" loads every skill file). Our own skill files are plain markdown read by
+    /// toolset, the function's own skill file (agent/functions/{AgentFunction}.md; "louis" loads every one). Our own skill files are plain markdown read by
     /// <see cref="MarkdownSkillProvider"/>; a provider class of its own is only for skills we don't control.
     /// Built-in files are read from disk when there (<see cref="AgentOptions.SkillsDirectory"/>, the working directory
     /// and its parents, /app), else from the copy embedded in the assembly (<see cref="SkillFileSource"/>).
@@ -311,9 +311,9 @@ public static partial class AgentHost
         }
         else if (agent.AgentFunction != null && ToolsetCatalog.Find(agent.AgentFunction) is null)
         {
-            // The function's own skill file: code-review-skills.md, time-logging-skills.md, or a custom one (a toolset's
+            // The function's own skill file: agent/functions/code-review.md, time-logging.md, or a custom one (a toolset's
             // name is not a function: its guide comes with the toolset)
-            string mainFile = $"{agent.AgentFunction}-skills.md";
+            string mainFile = SkillFiles.Function(agent.AgentFunction);
             if (ReadSkillFile(agent, mainFile) is { } main)
             {
                 composite.AddProvider(MarkdownSkillProvider.FromText(main.Text));
@@ -335,8 +335,8 @@ public static partial class AgentHost
         foreach (string fileName in FunctionSkillFiles)
             AddBuiltIn(agent, composite, fileName);
 
-        // Any other *-skills.md dropped into the skills folder (including ones the agent created) loads without code changes
-        foreach (string file in DiscoverSkillFiles(agent).Where(f => !SkillFiles.BuiltIn.Contains(Path.GetFileName(f))))
+        // Any other function file dropped into agent/functions/ (including ones the agent created) loads without code changes
+        foreach (string file in DiscoverSkillFiles(agent).Where(f => !SkillFiles.BuiltIn.Contains(SkillFiles.Function(Path.GetFileNameWithoutExtension(f)))))
         {
             composite.AddProvider(new MarkdownSkillProvider(file, includeDefaultInstructions: false));
             Log.Log(LogLevel.Information, LogMessage.SkillsFileDiscovered, new { File = Path.GetFileName(file) });
@@ -344,7 +344,7 @@ public static partial class AgentHost
     }
 
     /// <summary>Skill files of functions that aren't toolsets, loaded by "louis" (and by their own AGENT_FUNCTION).</summary>
-    private static readonly string[] FunctionSkillFiles = ["code-review-skills.md", "time-logging-skills.md"];
+    private static readonly string[] FunctionSkillFiles = [SkillFiles.Function("code-review"), SkillFiles.Function("time-logging")];
 
     /// <summary>The toolset the function skill files come with (ExecuteSkill runs their procedures).</summary>
     private const string SkillsToolset = "skills";
@@ -355,7 +355,8 @@ public static partial class AgentHost
 
     internal static IEnumerable<string> DiscoverSkillFiles(AgentOptions agent) =>
         FindSkillsDirectory(agent) is { } dir
-            ? Directory.EnumerateFiles(dir, "*-skills.md").Order(StringComparer.OrdinalIgnoreCase)
+            && Directory.Exists(Path.Combine(dir, SkillFiles.FunctionsFolder))
+            ? Directory.EnumerateFiles(Path.Combine(dir, SkillFiles.FunctionsFolder), "*.md").Order(StringComparer.OrdinalIgnoreCase)
             : [];
 
     internal static string? FindSkillFile(AgentOptions agent, string fileName) => SkillFilePaths(agent, fileName).FirstOrDefault(File.Exists);

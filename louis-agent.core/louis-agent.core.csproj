@@ -33,6 +33,7 @@
       <EmbeddedResource Include="..\Skills\*.md" Exclude="..\Skills\HelloWorld.md" LogicalName="Skills.%(Filename)%(Extension)" />
       <!-- CL8: each level's files in its folder, the toolset guides in toolsets/ (minions/ comes with F30's first minion). -->
       <EmbeddedResource Include="..\Skills\agent\*.md" LogicalName="Skills.agent.%(Filename)%(Extension)" />
+      <EmbeddedResource Include="..\Skills\agent\functions\code-review.md;..\Skills\agent\functions\time-logging.md" LogicalName="Skills.agent.functions.%(Filename)%(Extension)" />
       <EmbeddedResource Include="..\Skills\toolsets\*.md" LogicalName="Skills.toolsets.%(Filename)%(Extension)" />
       <EmbeddedResource Include="..\Skills\specialists\*.md;..\Skills\specialists\*.json" LogicalName="Skills.specialists.%(Filename)%(Extension)" />
     </ItemGroup>

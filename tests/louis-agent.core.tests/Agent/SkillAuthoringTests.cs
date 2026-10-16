@@ -38,6 +38,13 @@ public class SkillAuthoringTests
     [TearDown]
     public void TearDown() => Directory.Delete(_skillsDir, recursive: true);
 
+    /// <summary>A function skill file (CL8: agent/functions/{name}.md), as a user would drop one in.</summary>
+    private string FunctionFile(string name)
+    {
+        Directory.CreateDirectory(Path.Combine(_skillsDir, "agent", "functions"));
+        return Path.Combine(_skillsDir, "agent", "functions", $"{name}.md");
+    }
+
     private AgentOptions Options(string function) =>
         new() { WorkspaceRoot = _skillsDir, SkillsDirectory = _skillsDir, AgentFunction = function };
 
@@ -54,13 +61,24 @@ public class SkillAuthoringTests
     [Test]
     public void LoadSkills_LouisFunction_DiscoversCustomSkillFiles()
     {
-        File.WriteAllText(Path.Combine(_skillsDir, "greeting-skills.md"), EchoSkill);
+        File.WriteAllText(FunctionFile("greeting"), EchoSkill);
 
         var louis = AgentHost.LoadSkills(Options("louis"));
         var codeReview = AgentHost.LoadSkills(Options("code-review"));
 
         Assert.That(louis.Skills.Select(s => s.Name), Does.Contain("Greet"));
         Assert.That(codeReview.Skills.Select(s => s.Name), Does.Not.Contain("Greet"), "other functions only load their own file");
+    }
+
+    [Test]
+    public void AnAgentFunction_LoadsItsFileFromAgentFunctions()
+    {
+        // CL8 step 3: AGENT_FUNCTION=greeting reads agent/functions/greeting.md; a file left at the root isn't read.
+        File.WriteAllText(FunctionFile("greeting"), EchoSkill);
+        File.WriteAllText(Path.Combine(_skillsDir, "farewell-skills.md"), EchoSkill.Replace("Greet", "Farewell"));
+
+        Assert.That(AgentHost.LoadSkills(Options("greeting")).Skills.Select(s => s.Name), Does.Contain("Greet"));
+        Assert.That(AgentHost.LoadSkills(Options("louis")).Skills.Select(s => s.Name), Does.Not.Contain("Farewell"));
     }
 
     [Test]
@@ -71,7 +89,8 @@ public class SkillAuthoringTests
         var result = engine.CreateSkillFile("greeting", EchoSkill);
 
         Assert.That(result, Does.Contain("Greet"));
-        Assert.That(File.Exists(Path.Combine(_skillsDir, "greeting-skills.md")), Is.True);
+        Assert.That(File.Exists(Path.Combine(_skillsDir, "agent", "functions", "greeting.md")), Is.True);
+        Assert.That(result, Does.Contain(Path.Combine("agent", "functions", "greeting.md")));
         Assert.That(engine.SkillDocumentation, Does.Contain("# Greeting Skills"));
         Assert.That(engine.ExecuteSkill("Greet", """{"who":"Louis"}"""), Is.EqualTo("hello Louis"));
     }
@@ -84,7 +103,7 @@ public class SkillAuthoringTests
         var result = Engine().CreateSkillFile("broken", missingExecution);
 
         Assert.That(result, Does.Contain("only 0 are valid"));
-        Assert.That(File.Exists(Path.Combine(_skillsDir, "broken-skills.md")), Is.False);
+        Assert.That(File.Exists(Path.Combine(_skillsDir, "agent", "functions", "broken.md")), Is.False);
     }
 
     [TestCase("dotnet")]
@@ -138,7 +157,7 @@ public class SkillAuthoringTests
     public void ReloadSkills_PicksUpFilesAddedOnDisk()
     {
         var engine = Engine("louis");
-        File.WriteAllText(Path.Combine(_skillsDir, "greeting-skills.md"), EchoSkill);
+        File.WriteAllText(FunctionFile("greeting"), EchoSkill);
 
         Assert.That(engine.ReloadSkills(), Does.Contain("Greet"));
     }

@@ -91,8 +91,8 @@ public class SkillFilesTests
         Assert.That(dangling, Is.Empty);
     }
 
-    [TestCase("code-review-skills.md", "AnalyzeChanges")]
-    [TestCase("time-logging-skills.md", "LogWorkEntry")]
+    [TestCase("agent/functions/code-review.md", "AnalyzeChanges")]
+    [TestCase("agent/functions/time-logging.md", "LogWorkEntry")]
     public void FunctionSkillFiles_HaveTheirProcedures(string fileName, string skill)
     {
         Assert.That(Load(fileName).Skills.Select(s => s.Name), Does.Contain(skill));

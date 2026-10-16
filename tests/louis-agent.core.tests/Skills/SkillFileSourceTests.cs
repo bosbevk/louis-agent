@@ -24,7 +24,7 @@ public class SkillFileSourceTests
     public void EveryBuiltInFile_IsEmbedded()
     {
         var builtIn = ToolsetCatalog.All.Select(t => t.GuideFile).OfType<string>()
-            .Concat(["agent/personality.md", "agent/default.md", "code-review-skills.md", "time-logging-skills.md"]);
+            .Concat(["agent/personality.md", "agent/default.md", "agent/functions/code-review.md", "agent/functions/time-logging.md"]);
 
         Assert.That(SkillFileSource.EmbeddedNames, Is.SupersetOf(builtIn.Select(Embedded)));
         Assert.That(SkillFileSource.EmbeddedNames, Does.Not.Contain("HelloWorld.md"), "a test fixture, not a built-in");
@@ -62,10 +62,10 @@ public class SkillFileSourceTests
     public void AnEmbeddedFunctionFile_KeepsItsProcedures()
     {
         // Parsing from text gives the same skills as parsing the file.
-        var fromText = MarkdownSkillProvider.FromText(SkillFileSource.ReadEmbedded("code-review-skills.md")!);
+        var fromText = MarkdownSkillProvider.FromText(SkillFileSource.ReadEmbedded("agent/functions/code-review.md")!);
 
         Assert.That(fromText.Skills.Select(s => s.Name), Does.Contain("AnalyzeChanges"));
         Assert.That(fromText.Skills.Select(s => s.Name),
-            Is.EqualTo(MarkdownSkillLoader.Load(Path.Combine(TestPaths.RepoRoot, "Skills", "code-review-skills.md")).Select(s => s.Name)));
+            Is.EqualTo(MarkdownSkillLoader.Load(Path.Combine(TestPaths.RepoRoot, "Skills", "agent", "functions", "code-review.md")).Select(s => s.Name)));
     }
 }

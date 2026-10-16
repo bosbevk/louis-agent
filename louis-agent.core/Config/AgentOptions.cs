@@ -12,10 +12,10 @@ public sealed class AgentOptions
 
     public string WorkspaceRoot { get; set; } = Environment.CurrentDirectory;
 
-    /// <summary>The skills folder (agent/, specialists/, toolsets/ and the *-skills.md files); null means the working dir, then /app.</summary>
+    /// <summary>The skills folder (agent/, specialists/, toolsets/); null means the working dir, then /app.</summary>
     public string? SkillsDirectory { get; set; }
 
-    /// <summary>Selects {AgentFunction}-skills.md.</summary>
+    /// <summary>Selects agent/functions/{AgentFunction}.md ("louis": every one).</summary>
     public string AgentFunction { get; set; } = "code-review";
 
     public string? PaymoApiKey { get; set; }

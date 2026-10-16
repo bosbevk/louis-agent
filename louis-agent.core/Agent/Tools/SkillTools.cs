@@ -45,7 +45,7 @@ internal sealed partial class SkillTools
     /// <summary>The currently loaded skills (refreshed by <see cref="ReloadSkills"/>).</summary>
     public IReadOnlyCollection<MarkdownSkillLoader.SkillDef> Skills => _skills.Values;
 
-    /// <summary>Folder where <see cref="CreateSkillFile"/> writes new *-skills.md files; null disables skill authoring.</summary>
+    /// <summary>The skills folder; <see cref="CreateSkillFile"/> writes into its agent/functions/; null disables skill authoring.</summary>
     public string? SkillsDirectory { get; set; }
 
     /// <summary>Rebuilds the skill set from disk for <see cref="ReloadSkills"/>; null disables reloading.</summary>
@@ -146,7 +146,7 @@ internal sealed partial class SkillTools
     }
 
     [Description("""
-        Creates (or updates, with overwrite=true) a reusable *-skills.md file under the Skills folder and loads it
+        Creates (or updates, with overwrite=true) a reusable skill file, agent/functions/<name>.md in the Skills folder, and loads it
         immediately so its skills become callable via ExecuteSkill in this same session — the file is saved to disk
         right away, but only becomes part of every future session's skill set if the agent's AGENT_FUNCTION setting
         loads it (e.g. 'louis', which loads every skill file). Use this when the user asks to save a repeatable
@@ -168,7 +168,7 @@ internal sealed partial class SkillTools
         Guidance-only files (no Skill sections) are allowed.
         """)]
     public string CreateSkillFile(
-        [Description("Short kebab-case name; the file is saved as <name>-skills.md (e.g. 'csv-reports')")] string name,
+        [Description("Short kebab-case name; the file is saved as agent/functions/<name>.md (e.g. 'csv-reports')")] string name,
         [Description("Full markdown content of the skills file")] string markdown,
         [Description("Set true to replace an existing file previously created with this name")] bool overwrite = false)
     {
@@ -178,12 +178,12 @@ internal sealed partial class SkillTools
         if (!SkillFileName().IsMatch(name)) return MessageText.Format(ToolMessage.SkillFileNameInvalid);
         if (string.IsNullOrWhiteSpace(markdown)) return MessageText.Format(ToolMessage.SkillMarkdownEmpty);
 
-        string fileName = $"{name}-skills.md";
+        string fileName = SkillFiles.Function(name);
         // A toolset's guide (toolsets/{name}.md, CL8) keeps its name too, so a skill file never passes for one.
         if (name == "default" || SkillFiles.BuiltIn.Contains(fileName) || SkillFiles.BuiltIn.Contains(SkillFiles.Guide(name)))
             return MessageText.Format(ToolMessage.SkillFileBuiltIn, new { File = fileName });
 
-        string path = Path.Combine(SkillsDirectory, fileName);
+        string path = Path.Combine(SkillsDirectory, fileName.Replace('/', Path.DirectorySeparatorChar));
         if (File.Exists(path) && !overwrite)
             return MessageText.Format(ToolMessage.SkillFileExists, new { File = fileName });
 
@@ -198,6 +198,7 @@ internal sealed partial class SkillTools
         if (parsed.Count < declared)
             return MessageText.Format(ToolMessage.SkillSectionsInvalid, new { Declared = declared, Valid = parsed.Count });
 
+        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
         File.WriteAllText(path, markdown);
         if (!_createdSkillFiles.Contains(path, StringComparer.OrdinalIgnoreCase)) _createdSkillFiles.Add(path);
 

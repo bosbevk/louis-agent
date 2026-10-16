@@ -9,14 +9,20 @@ internal static class SkillFiles
     /// <summary>The router: it picks a toolset and delegates, so only level 0 has it.</summary>
     internal const string Router = Personalities.AgentFolder + "/default.md";
 
+    /// <summary>The folder of the function skills: procedures ExecuteSkill runs, chosen by AGENT_FUNCTION (level 0's).</summary>
+    internal const string FunctionsFolder = Personalities.AgentFolder + "/functions";
+
     /// <summary>A toolset guide's file: <c>toolsets/{name}.md</c>.</summary>
     internal static string Guide(string name) => $"{ToolsetsFolder}/{name}.md";
+
+    /// <summary>A function skill's file: <c>agent/functions/{name}.md</c>.</summary>
+    internal static string Function(string name) => $"{FunctionsFolder}/{name}.md";
 
     /// <summary>Skill files <c>AgentHost</c> loads by name (the toolset guides and the function files); discovery skips
     /// them to avoid loading them twice, and the agent may not overwrite them.</summary>
     internal static readonly HashSet<string> BuiltIn = new(StringComparer.OrdinalIgnoreCase)
     {
-        Guide("devops"), Guide("paymo"), Guide("files"), Guide("git"), Guide("agents"), "code-review-skills.md", "time-logging-skills.md",
+        Guide("devops"), Guide("paymo"), Guide("files"), Guide("git"), Guide("agents"), Function("code-review"), Function("time-logging"),
         Guide("dotnet"), Guide("python"), Guide("powershell"), Guide("bash"), Guide("web"), Guide("self-extension"),
     };
 }
