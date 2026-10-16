@@ -71,7 +71,7 @@ public class PersonalitiesTests
     public void AnUnknownName_IsRefused_ListingTheAvailable()
     {
         var ex = Assert.Throws<PersonalityException>(() => AgentHost.LoadSkills(Options(), [], "nobody"));
-        Assert.That(ex!.Message, Does.Contain("Unknown personality 'nobody'").And.EndWith("Available: louis-agent/voice, puls/voice-af, puls/voice-en."));
+        Assert.That(ex!.Message, Does.Contain("Unknown personality 'nobody'").And.EndWith("Available: louis-agent/voice, louis-agent/voice-orchestrator, puls/voice-af, puls/voice-en."));
     }
 
     [Test]
@@ -86,7 +86,7 @@ public class PersonalitiesTests
     public void PulsAndItsSpecialists_AreBuiltIn()
     {
         // F21 step 4: embedded, so a container without Skills/ still has them; a file on disk overrides.
-        Assert.That(Personalities.Available(SkillLevel.Agent), Is.EqualTo(new[] { "louis-agent/voice", "puls/voice-af", "puls/voice-en" }));
+        Assert.That(Personalities.Available(SkillLevel.Agent), Is.EqualTo(new[] { "louis-agent/voice", "louis-agent/voice-orchestrator", "puls/voice-af", "puls/voice-en" }));
         Assert.That(Personalities.Available(SkillLevel.Specialist), Is.SupersetOf(new[]
             { "puls-researcher", "puls-reader", "puls-historian", "puls-analyst", "puls-specialist", "puls-cook" }));
         Assert.That(AgentHost.LoadSkills(new AgentOptions(), [], "puls/voice-af").Documentation, Does.Contain("# Puls - Persoonlikheid"));
@@ -123,7 +123,7 @@ public class PersonalitiesTests
     [Test]
     public void PulsVoice_IsShared_NotAModeOnItsOwn()
     {
-        Assert.That(Personalities.Available(SkillLevel.Agent), Is.EqualTo(new[] { "louis-agent/voice", "puls/voice-af", "puls/voice-en" }));
+        Assert.That(Personalities.Available(SkillLevel.Agent), Is.EqualTo(new[] { "louis-agent/voice", "louis-agent/voice-orchestrator", "puls/voice-af", "puls/voice-en" }));
         Assert.Throws<PersonalityException>(() => AgentHost.LoadSkills(new AgentOptions(), [], "puls/voice"));
         Assert.That(Personalities.LanguageOf("louis-agent/voice"), Is.Null, "the coding agent's mode is whole");
     }
@@ -147,7 +147,7 @@ public class PersonalitiesTests
         // CL9: a mode is agent/{product}/{mode}.md; a function skill, a product folder or an old name isn't one.
         var ex = Assert.Throws<PersonalityException>(() => AgentHost.LoadSkills(new AgentOptions(), [], name));
 
-        Assert.That(ex!.Message, Does.EndWith("Available: louis-agent/voice, puls/voice-af, puls/voice-en."));
+        Assert.That(ex!.Message, Does.EndWith("Available: louis-agent/voice, louis-agent/voice-orchestrator, puls/voice-af, puls/voice-en."));
     }
 
     [Test]
@@ -164,7 +164,7 @@ public class PersonalitiesTests
         // CL8: a role opens only at its own level, so Puls's chat can't take the cook's role as its voice.
         var ex = Assert.Throws<PersonalityException>(() => AgentHost.LoadSkills(new AgentOptions(), [], "puls-cook", SkillLevel.Agent));
 
-        Assert.That(ex!.Message, Does.Contain("Unknown personality 'puls-cook'").And.EndWith("Available: louis-agent/voice, puls/voice-af, puls/voice-en."));
+        Assert.That(ex!.Message, Does.Contain("Unknown personality 'puls-cook'").And.EndWith("Available: louis-agent/voice, louis-agent/voice-orchestrator, puls/voice-af, puls/voice-en."));
     }
 
     [Test]

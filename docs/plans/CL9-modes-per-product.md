@@ -289,3 +289,6 @@ sequenceDiagram
   toggle; when we test I do not want anything else loaded except puls and what I'm testing"). `PERSONALITIES_ENABLED` is
   that toggle (F29); CL10 removes `roles.json`, `RoleFor` and `puls-specialist` (nothing would select it), and keeps the
   researcher, reader, historian and analyst, switched off.
+- **Step 7: `louis-agent/voice-orchestrator` is a mode a session could name** (step 7, 2026-10-17). It's a level-0 file
+  like the others, so `GET /personalities` lists it and an API session could open with it (it would have none of the
+  orchestrator's tools); `PERSONALITIES_ENABLED` keeps it off where that's set, as on Puls.

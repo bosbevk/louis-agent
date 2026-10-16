@@ -192,11 +192,14 @@ internal sealed partial record Decision(string Outcome, string Reason)
 }
 
 /// <summary>
-/// Builds the system prompt: the shared principles every agent gets first (ADR 0020), orchestrator.md, then
-/// Skills/{service}/service.md and one runbook per API method.
+/// Builds the system prompt: the shared principles every agent gets first (ADR 0020), the orchestrator's mode (CL9:
+/// louis-agent/voice-orchestrator, built into core), then Skills/{service}/service.md and one runbook per API method.
 /// </summary>
 internal static class OrchestratorSkills
 {
+    /// <summary>The orchestrator's mode in core's Prompts (CL9): its workflow, the same for every service.</summary>
+    internal const string Mode = "louis-agent/voice-orchestrator";
+
     public static (ISkillProvider Skills, IReadOnlySet<string> Methods) Load(string skillsDirectory, string service)
     {
         string serviceDirectory = Path.Combine(skillsDirectory, service);
@@ -205,7 +208,7 @@ internal static class OrchestratorSkills
 
         var composite = new CompositeSkillProvider();
         composite.AddProvider(MarkdownSkillProvider.FromText(SkillFileSource.ReadEmbedded(SkillFiles.Principles)!));
-        composite.AddProvider(new MarkdownSkillProvider(Path.Combine(skillsDirectory, "orchestrator.md"), includeDefaultInstructions: false));
+        composite.AddProvider(MarkdownSkillProvider.FromText(SkillFileSource.ReadEmbedded(Personalities.FileName(Mode, SkillLevel.Agent))!));
 
         string serviceFile = Path.Combine(serviceDirectory, "service.md");
         if (File.Exists(serviceFile)) composite.AddProvider(new MarkdownSkillProvider(serviceFile, includeDefaultInstructions: false));
