@@ -119,7 +119,7 @@ sequenceDiagram
 
 | Endpoint | Request | Reply |
 |---|---|---|
-| `POST /sessions` | All optional. `task`, `run`, `service`: tags every usage record of the session (the orchestrator sends `fix:<error id>`, its run id and the service); each at most 200 printable characters. `toolsets`: the toolsets the session loads and keeps (F5; none gives `skills`). `personality`: a built-in one at the session's level (F21, CL8; none gives `personality.md`). `location` and `time_zone` (IANA): where the user is (F22). `depth` (0 or 1) and `parent` are sent by `StartSubSession` for a sub-session | `201 { "session_id", "created_at", "toolsets", "depth", "personality", "task", "run", "service", "parent" }`; a `400` for an unknown toolset, personality or time zone |
+| `POST /sessions` | All optional. `task`, `run`, `service`: tags every usage record of the session (the orchestrator sends `fix:<error id>`, its run id and the service); each at most 200 printable characters. `toolsets`: the toolsets the session loads and keeps (F5; none gives `skills`). `personality`: a built-in one at the session's level (F21, CL8: a mode such as `puls/voice-af` at depth 0; none gives the default mode, `louis-agent/voice`, CL9). `location` and `time_zone` (IANA): where the user is (F22). `depth` (0 or 1) and `parent` are sent by `StartSubSession` for a sub-session | `201 { "session_id", "created_at", "toolsets", "depth", "personality", "task", "run", "service", "parent" }`; a `400` for an unknown toolset, personality or time zone |
 | `POST /sessions/{id}/messages` | `{ "message": "…", "attachments": [{ "name", "content" }] }`; each attachment is cut at 100,000 characters | Server-Sent Events (below) |
 | `POST /sessions/{id}/cancel` | — | `{ "cancelled": true }`; the stream ends with stop reason `cancelled` |
 | `GET /sessions/{id}` | — | `{ "session_id", "created_at", "last_activity", "busy", "toolsets", "depth", "personality", "tools", "task", "run", "service", "usage" }`: `tools` is how many tools the session's engine has; `usage` totals the session's finished turns (the object below), `null` when the API records no usage |
@@ -421,7 +421,7 @@ next poll ([FX7](fixes/FX07-timeout-ends-run.md)). Only Ctrl+C ends a run early.
 
 ## Agent to agent: Puls and its specialists
 
-Puls (F5, F20–F22) is the same API built with its own web app. Its chats load only the `agents` toolset, so for every
+Puls (F5, F20–F22) is the same API built with its own web app. Its chats load the `specialists` and `web` toolsets, so for a cooking
 task the model calls `StartSubSession(toolsets, message, personality, attachments)`, and the tool:
 
 1. opens `POST /sessions` on the peer named in `AGENT_PEERS` (or the only one), with the toolsets, `depth: 1`, the
@@ -437,7 +437,7 @@ task the model calls `StartSubSession(toolsets, message, personality, attachment
    dropped as idle; `GET /sessions/{id}` lists them. Outside a chat (an MCP call) the session is deleted at once, as
    before.
 
-A sub-session can't delegate again (`agents` at depth 1 is a `400`); a turn may make at most 3 sub-session calls
+A sub-session can't delegate again (`specialists` at depth 1 is a `400`); a turn may make at most 3 sub-session calls
 (starts and continues), each stops after 5
 minutes, and a specialist's prompt has a budget (`SUB_SESSION_PROMPT_BUDGET`, FX14). The specialist's usage records
 carry `parent`, so a ledger can total a chat with its specialists. Measured against one agent answering everything:

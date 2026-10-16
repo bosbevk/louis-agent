@@ -53,7 +53,7 @@ flowchart TD
 | `CommsLog.cs` | The Markdown conversation log: per error, messages, replies, checks, summary; a run summary table |
 | `OrchestratorOptions.cs` | Settings |
 | `Messages/` | `OrchestratorToolMessage` (what its tools return and send louis-agent), `OrchestratorLogMessage` (its log lines: stderr, tagged `[orchestrator]`, and the run file with `LOG_DIRECTORY`), `OrchestratorErrorMessage` |
-| `Skills/orchestrator.md` | The workflow every error goes through |
+| `louis-agent.core/Prompts/agent/louis-agent/voice-orchestrator.md` | The workflow every error goes through: its mode, built into core (CL9) |
 | `Skills/<service>/` | `service.md` (owners, policies) and one runbook per API method — see [Runbooks](orchestrator-runbooks.md) |
 
 ## Configuration

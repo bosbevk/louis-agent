@@ -46,12 +46,12 @@ without its API key) can't be loaded. An agent built on core, like the orchestra
 ### How skills are loaded
 
 `AgentHost.LoadSkills` combines, in this order:
-1. **the personality**: the default mode (`agent/louis-agent/voice.md`: the coding agent's voice and routing), or the one the session named, from its level's folder (F21, CL8:
-   Puls's voice in `agent/`, or a specialist's role in `specialists/`);
-2. **`default.md`**, the router, which sends each task to a toolset (left out for a sub-session, whose toolsets were
-   chosen for it);
+1. **the principles** (`shared/principles.md`), the same for every agent (ADR 0020);
+2. **the personality**: at level 0 the session's mode, its voice then its routing (ADR 0019: the default
+   `louis-agent/voice`, or Puls's language file then `puls/voice.md`); at level 1 a specialist's role from
+   `specialists/`, with no routing, since its toolsets were chosen for it;
 3. **the guide of each toolset the session loaded** (`toolsets/{toolset}.md`) and no other (F5);
-4. **with the `skills` toolset only**, the `AGENT_FUNCTION` file (`louis` loads every skill file).
+4. **with the `skills` toolset only**, every function skill the agent wrote.
 
 The combined text is the system prompt. The built-in files are in `louis-agent.core/Prompts/` and read only from the
 assembly (ADR 0018), so a wording change is a rebuild.
@@ -137,7 +137,7 @@ next step (read a file → edit it → build → run the tests).
 ## Writing large files
 
 A reply has a 16,000-token output limit, and a whole web page or long source file can exceed it in one tool call. The
-agent's instructions (`default.md`) tell it to write large files in chunks: `WriteWorkspaceFile` for the first ~300
+files guide (`toolsets/files.md`) tells it to write large files in chunks: `WriteWorkspaceFile` for the first ~300
 lines, then `AppendToFile` for each next chunk. If a call is still cut off, it is skipped and the model is asked to
 continue in smaller pieces (up to 3 times when streaming).
 

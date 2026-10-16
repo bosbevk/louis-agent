@@ -218,7 +218,7 @@ Design: [docs/specs/SESSION_ARCHITECTURE.md](docs/specs/SESSION_ARCHITECTURE.md)
             (`Task.WhenAll`, Tavily with `site:`) and returns one compact table (price, link, source per cell); testable
             with `StubHandler`, no architecture change
       - [ ] **Workers at depth 2:** the cook opens a web-only sub-session per task (a shop's prices, the branches), in
-            parallel, each returning a small table. Needs: `agents` at depth 1 for the cook only (in code), a peer for
+            parallel, each returning a small table. Needs: `specialists` at depth 1 for the cook only (in code), a peer for
             `puls_agent`, `AllowConcurrentInvocation` with thread-safe guards, a per-depth limit instead of
             `MaxPerTurn = 3`, the ledger roll-up through two levels, the Werk card nested
 - [ ] [F25 Local cook](docs/features/F25-local-cook.md) — Puls's first local specialist: a South African meal, the recipe and a shopping list priced in rand at the shops near the user; the routing and the sources measured ([plan](docs/plans/F25-local-cook.md), [the run](samples/sample-output-puls-cook/README.md)). The first of the *Local tools* above. Built; open:

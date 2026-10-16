@@ -7,8 +7,8 @@
 ## Purpose
 
 Puls is the general assistant's web app: a South African AI assistant in everyday Afrikaans that answers by handing each
-task to a specialist (F5) and shows that work as it happens. It's chat only: its sessions load `agents` and `web`
-(F29; `agents` alone before it), so Puls answers the web itself and delegates to its peer (`puls-agent`) with a role
+task to a specialist (F5) and shows that work as it happens. It's chat only: its sessions load `specialists` and `web`
+(F29; `agents`, as it was called before CL9, alone before it), so Puls answers the web itself and delegates to its peer (`puls-agent`) with a role
 (F21) and only the toolsets the task needs; only a validated role is on (`PERSONALITIES_ENABLED`: the cook, F25). Pay
 as you go: every answer shows what it cost, specialists included.
 
