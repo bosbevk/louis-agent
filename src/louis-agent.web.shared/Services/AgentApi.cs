@@ -21,7 +21,7 @@ public sealed class AgentApi(HttpClient http, Settings settings)
 {
     /// <summary>
     /// Opens a session with <paramref name="toolsets"/> (F5): a session's tools are chosen when it opens and kept. Each app
-    /// decides which: the code-review app every available toolset, Puls only <c>agents</c> (it delegates).
+    /// decides which: the code-review app every available toolset, Puls only <c>specialists</c> (it delegates).
     /// </summary>
     public async Task<string> CreateSessionAsync(IEnumerable<string> toolsets, string? personality = null,
         string? location = null, string? timeZone = null)

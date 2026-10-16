@@ -1,7 +1,7 @@
 """The cook check (F25, F26): does Puls hand a meal question to the cook, does the cook price it from South African
 shops' own pages, and does a follow-up go back to the same cook? Each conversation runs in one Puls session (the
-follow-up is the second message), in two modes: `puls-web`, Puls as built since F29 (`agents` and `web`: the web
-itself, cooking to the cook), and `delegated`, Puls with `agents` only, the comparison (does the cook get the meal
+follow-up is the second message), in two modes: `puls-web`, Puls as built since F29 (`specialists` and `web`: the web
+itself, cooking to the cook), and `delegated`, Puls with `specialists` only, the comparison (does the cook get the meal
 either way, and what does `web` save on the control question?). The usage ledger (logs/puls) is read back
 for each run's cost, per conversation and per turn.
 
@@ -18,7 +18,7 @@ Scores and totals again from a saved run, without model calls:
     python samples/puls-cook-check/run_check.py --report samples/sample-output-puls-cook
 
 What the cook adds (`--personalities`): the same conversations with Puls alone (`puls-only`, `web` only, so it can't
-delegate and cooks itself) and Puls with its cook (`puls-cook`, `agents` and `web`). A toolset is chosen per session,
+delegate and cooks itself) and Puls with its cook (`puls-cook`, `specialists` and `web`). A toolset is chosen per session,
 so nothing restarts and the portal can run it too (its *Puls alleen teen Puls met die kok*):
     python samples/puls-cook-check/run_check.py samples/sample-output-puls-alone --personalities
 """
@@ -60,19 +60,19 @@ CONVERSATIONS = [
 ]
 
 MODES = {
-    "delegated": ["agents"],        # Puls with agents only: the comparison (as built before F29)
-    "puls-web": ["agents", "web"],  # Puls as built (F29): the web itself, cooking to the cook
+    "delegated": ["specialists"],        # Puls with specialists only: the comparison (as built before F29)
+    "puls-web": ["specialists", "web"],  # Puls as built (F29): the web itself, cooking to the cook
 }
-# --personalities: what the cook adds. Without `agents` Puls can't delegate, so it cooks and prices itself.
+# --personalities: what the cook adds. Without `specialists` Puls can't delegate, so it cooks and prices itself.
 PERSONALITY_MODES = {
     "puls-only": ["web"],
-    "puls-cook": ["agents", "web"],
+    "puls-cook": ["specialists", "web"],
 }
 
 
 def cook_on(toolsets):
     """Whether a mode's Puls can hand cooking to the cook: only with the agents toolset."""
-    return "agents" in toolsets
+    return "specialists" in toolsets
 
 SHOPS = ("checkers.co.za", "pnp.co.za", "woolworths.co.za", "spar.co.za", "shoprite.co.za")
 RAND = re.compile(r"\bR\s?\d[\d\s,.]*")

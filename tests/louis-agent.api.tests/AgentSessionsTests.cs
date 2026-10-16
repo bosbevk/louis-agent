@@ -64,14 +64,16 @@ public class AgentSessionsTests
     }
 
     [Test]
-    public void ASubSession_CantLoadAgents_AndDepthIsOneLevel()
+    public void ASubSession_CantLoadSpecialists_AndDepthIsOneLevel()
     {
         var sessions = Sessions();
 
-        Assert.That(() => sessions.Create([AgentSessions.AgentsToolset], depth: 1),
+        Assert.That(() => sessions.Create(["specialists"], depth: 1),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("one level deep"));
         Assert.That(() => sessions.Create(["files"], depth: 2), Throws.TypeOf<ToolsetException>());
         Assert.That(sessions.Create(["files"], depth: 1).Depth, Is.EqualTo(1));
+        // CL9 step 5: a client still sending the old name gets the 400 that lists the valid toolsets.
+        Assert.That(() => sessions.Create(["agents"]), Throws.TypeOf<ToolsetException>().With.Message.Contain("specialists"));
     }
 
     [Test]

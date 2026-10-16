@@ -54,14 +54,14 @@ public sealed class AgentPeerTools(IReadOnlyDictionary<string, Uri> peers, strin
     [Description("Opens a session on another louis-agent (a peer listed in AGENT_PEERS) with only the toolsets a task needs, " +
         "sends it the task and waits for its final answer. Returns the answer and a usage line. In a chat the sub-session " +
         "stays open and the answer names its handle, so a follow-up on the same work goes to ContinueSubSession; elsewhere " +
-        "it is closed. At most 3 calls per turn (starts and continues), 5 minutes each. See the agents guide for when to delegate.")]
+        "it is closed. At most 3 calls per turn (starts and continues), 5 minutes each. See the specialists guide for when to delegate.")]
     public async Task<string> StartSubSession(
         [Description("The toolsets the sub-session loads, e.g. [\"files\",\"git\",\"dotnet\"]. Never \"agents\".")] string[] toolsets,
         [Description("The whole task, self-contained: the sub-session sees nothing of this conversation.")] string message,
         // Optional, so a call without it is valid: the delegation check saw Puls leave it out (the call failed) and guess "default".
         [Description("The peer's name from AGENT_PEERS. Leave it out when this instance has one peer (the usual case); " +
             "it is then used.")] string? agent = null,
-        [Description("The sub-session's personality: its role on the peer (the agents guide says which goes with which toolsets). " +
+        [Description("The sub-session's personality: its role on the peer (the specialists guide says which goes with which toolsets). " +
             "Empty: the peer's default.")] string? personality = null,
         [Description("Names of files the user attached in this conversation that the task needs; they are sent with the task " +
             "(the sub-session sees nothing else of the conversation).")] string[]? attachments = null,

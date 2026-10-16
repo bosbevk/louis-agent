@@ -45,6 +45,16 @@ public class AgentHostSkillsTests
         }
     }
 
+    [Test]
+    public void TheToolsetThatHandsWorkOn_IsCalledSpecialists()
+    {
+        // CL9 step 5 (Louis: "this should say specialists since we call them that now"); F30's minions get their own.
+        var specialists = ToolsetCatalog.Find("specialists");
+
+        Assert.That(specialists?.GuideFile, Is.EqualTo("toolsets/specialists.md"));
+        Assert.That(ToolsetCatalog.Find("agents"), Is.Null, "the old name is gone");
+    }
+
     [TestCase(null, SkillLevel.Agent)]
     [TestCase("puls/voice-af", SkillLevel.Agent)]
     [TestCase("puls-cook", SkillLevel.Specialist)]
@@ -93,7 +103,7 @@ public class AgentHostSkillsTests
             var options = new AgentOptions { SkillsDirectory = skills };
 
             Assert.That(AgentHost.LoadSkills(options, Toolsets("files", "skills")).Documentation, Does.Contain("# Greeting Skills"));
-            Assert.That(AgentHost.LoadSkills(options, Toolsets("agents", "web")).Documentation, Does.Not.Contain("# Greeting Skills"));
+            Assert.That(AgentHost.LoadSkills(options, Toolsets("specialists", "web")).Documentation, Does.Not.Contain("# Greeting Skills"));
         }
         finally
         {
