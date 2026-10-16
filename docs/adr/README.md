@@ -28,6 +28,7 @@ afterwards from the docs that hold them (each ADR links its sources), with the d
 | [0016](0016-licence-all-rights-reserved.md) | Licence: all rights reserved | Accepted |
 | [0017](0017-skills-by-level.md) | Skill files follow the levels: a folder per level, and a role opens only at its own | Accepted |
 | [0018](0018-built-in-prompts-embedded.md) | Built-in prompts are embedded, read only from the assembly | Accepted |
+| [0019](0019-modes-voice-and-router.md) | A level-0 session is a mode: a voice and its router, paired as data | Accepted |
 
 ## When to write one
 
