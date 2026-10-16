@@ -54,36 +54,36 @@ public class AgentEngineFactoryTests
         // lookup, so the model is chosen when a session opens, not per container.
         var own = new FakeChatClient(_ => Answer("haiku"));
         var local = new FakeChatClient(_ => Answer("qwen"));
-        var factory = new AgentEngineFactory(own, Options(), sessionLlms: [new SessionLlm("ollama-web", local)]);
+        var factory = new AgentEngineFactory(own, Options(), sessionLlms: [new SessionLlm("ollama-puls", local)]);
 
-        var onLocal = factory.GetOrCreate([], llm: "ollama-web");
+        var onLocal = factory.GetOrCreate([], llm: "ollama-puls");
         Assert.That(await onLocal.ProcessPromptAsync(onLocal.NewHistory(), "prices?"), Is.EqualTo("qwen"));
         var onOwn = factory.GetOrCreate([]);
         Assert.That(await onOwn.ProcessPromptAsync(onOwn.NewHistory(), "hello"), Is.EqualTo("haiku"));
 
         Assert.That((own.Requests.Count, local.Requests.Count), Is.EqualTo((1, 1)), "each request went to its own model");
         Assert.That(onLocal, Is.Not.SameAs(onOwn), "the profile is part of the engine's key");
-        Assert.That(factory.Profiles, Does.Contain("|llm:ollama-web"));
-        Assert.That(factory.SessionLlms, Is.EqualTo(new[] { "ollama-web" }));
+        Assert.That(factory.Profiles, Does.Contain("|llm:ollama-puls"));
+        Assert.That(factory.SessionLlms, Is.EqualTo(new[] { "ollama-puls" }));
     }
 
     [Test]
     public void AnUnknownLlmProfile_IsRefused_BeforeAnythingIsBuilt()
     {
-        var factory = new AgentEngineFactory(new FakeChatClient(), Options(), sessionLlms: [new SessionLlm("ollama-web", new FakeChatClient())]);
+        var factory = new AgentEngineFactory(new FakeChatClient(), Options(), sessionLlms: [new SessionLlm("ollama-puls", new FakeChatClient())]);
 
         var refused = Assert.Throws<SessionLlmException>(() => factory.GetOrCreate([], llm: "gpt-local"))!;
 
-        Assert.That(refused.Message, Does.Contain("gpt-local").And.Contain("ollama-web"), "named, with what this instance has");
+        Assert.That(refused.Message, Does.Contain("gpt-local").And.Contain("ollama-puls"), "named, with what this instance has");
         Assert.That(factory.Profiles, Is.Empty);
     }
 
     [Test]
     public void TheSessionProfiles_AreReadFromTheEnvironment_TrimmedAndLowercase()
     {
-        var options = AgentOptions.FromEnvironment(name => name == "LLM_SESSION_PROFILES" ? " Ollama-Web , ollama-web," : null);
+        var options = AgentOptions.FromEnvironment(name => name == "LLM_SESSION_PROFILES" ? " Ollama-Puls , ollama-puls," : null);
 
-        Assert.That(options.SessionLlmProfiles, Is.EqualTo(new[] { "ollama-web" }));
+        Assert.That(options.SessionLlmProfiles, Is.EqualTo(new[] { "ollama-puls" }));
         Assert.That(AgentOptions.FromEnvironment(_ => null).SessionLlmProfiles, Is.Empty);
     }
 

@@ -62,6 +62,9 @@ services:
       RATES_FILE: /workspace/config/rates.json
       AGENT_PEERS: ""
       PERSONALITIES_ENABLED: ${PERSONALITIES_ENABLED-puls/voice-af,puls/voice-en,puls-cook}
+      # The models a specialist may run on besides Claude (F30): a sub-session naming "ollama-puls" runs on the local model
+      # in config/.env.ollama-puls (Ollama on the host). Set LLM_SESSION_PROFILES in config/.env to change it.
+      LLM_SESSION_PROFILES: ${LLM_SESSION_PROFILES-ollama-puls}
     ports:
       - "127.0.0.1:${PULS_CODER_PORT:-5071}:8080"
     volumes:

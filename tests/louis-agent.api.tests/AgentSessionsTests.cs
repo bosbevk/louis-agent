@@ -220,12 +220,12 @@ public class AgentSessionsTests
     public void ASessionNamingAnLlmProfile_KeepsIt_AndOneWithout_HasNone()
     {
         // F30: a price lookup runs on the local model, the chat that asked for it on the instance's.
-        var sessions = Sessions([new SessionLlm("ollama-web", new NoModel())]);
+            var sessions = Sessions([new SessionLlm("ollama-puls", new NoModel())]);
 
-        var local = sessions.Create(["web"], depth: 1, llm: "ollama-web");
+        var local = sessions.Create(["web"], depth: 1, llm: "ollama-puls");
         var own = sessions.Create(["web"], depth: 1);
 
-        Assert.That(local.Llm, Is.EqualTo("ollama-web"));
+        Assert.That(local.Llm, Is.EqualTo("ollama-puls"));
         Assert.That(own.Llm, Is.Null);
         Assert.That(local.Engine, Is.Not.SameAs(own.Engine), "one engine per model");
     }
@@ -233,9 +233,9 @@ public class AgentSessionsTests
     [Test]
     public void AnUnknownLlmProfile_IsRefused_NamingTheOnesThereAre()
     {
-        var sessions = Sessions([new SessionLlm("ollama-web", new NoModel())]);
+        var sessions = Sessions([new SessionLlm("ollama-puls", new NoModel())]);
 
         var ex = Assert.Throws<SessionLlmException>(() => sessions.Create(["web"], llm: "gpt-9"));
-        Assert.That(ex!.Message, Does.Contain("gpt-9").And.Contain("ollama-web"));
+        Assert.That(ex!.Message, Does.Contain("gpt-9").And.Contain("ollama-puls"));
     }
 }

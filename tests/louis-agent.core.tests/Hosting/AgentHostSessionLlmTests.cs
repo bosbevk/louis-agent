@@ -36,7 +36,7 @@ public class AgentHostSessionLlmTests
     [Test]
     public void AProfile_IsReadFromItsFile_AndTheInstancesModelDoesntLeakIn()
     {
-        File.WriteAllText(Path.Combine(_config, ".env.ollama-web"),
+        File.WriteAllText(Path.Combine(_config, ".env.ollama-puls"),
             "# a local model for prices\nLLM_PROVIDER=ollama\nLLM_MODEL=qwen3:4b-instruct-2507-q4_K_M\nLLM_ENDPOINT=http://host.docker.internal:11434\n");
         // The instance runs Claude with thinking on; none of that belongs to the local profile.
         var environment = new Dictionary<string, string>
@@ -44,11 +44,11 @@ public class AgentHostSessionLlmTests
             ["LLM_PROVIDER"] = "anthropic", ["LLM_MODEL"] = "claude-haiku-5-5", ["LLM_THINKING"] = "high",
         };
         var factory = new RecordingFactory();
-        var agent = new AgentOptions { SessionLlmProfiles = ["ollama-web"] };
+        var agent = new AgentOptions { SessionLlmProfiles = ["ollama-puls"] };
 
         var llms = AgentHost.LoadSessionLlms(agent, factory, _config, name => environment.GetValueOrDefault(name));
 
-        Assert.That(llms.Select(l => l.Name), Is.EqualTo(new[] { "ollama-web" }));
+        Assert.That(llms.Select(l => l.Name), Is.EqualTo(new[] { "ollama-puls" }));
         var built = factory.Built.Single();
         Assert.That((built.Provider, built.Model, built.Endpoint), Is.EqualTo(("ollama", "qwen3:4b-instruct-2507-q4_K_M", "http://host.docker.internal:11434")));
         Assert.That(llms[0].Thinking, Is.Null, "the instance's LLM_THINKING isn't the profile's");
@@ -71,9 +71,9 @@ public class AgentHostSessionLlmTests
     public void AListedProfileWithoutItsFile_StopsStartUp_NamingTheFile()
     {
         var refused = Assert.Throws<SessionLlmException>(() =>
-            AgentHost.LoadSessionLlms(new AgentOptions { SessionLlmProfiles = ["ollama-web"] }, new RecordingFactory(), _config, _ => null))!;
+            AgentHost.LoadSessionLlms(new AgentOptions { SessionLlmProfiles = ["ollama-puls"] }, new RecordingFactory(), _config, _ => null))!;
 
-        Assert.That(refused.Message, Does.Contain("ollama-web").And.Contain(".env.ollama-web"));
+        Assert.That(refused.Message, Does.Contain("ollama-puls").And.Contain(".env.ollama-puls"));
     }
 
     [Test]

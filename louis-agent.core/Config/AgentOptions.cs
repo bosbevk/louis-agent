@@ -113,7 +113,7 @@ public sealed class AgentOptions
 
     /// <summary>
     /// LLM_SESSION_PROFILES: the LLM profiles a session may name when it opens (F30), comma separated, e.g.
-    /// <c>ollama-web</c>; each is read from <c>config/.env.{name}</c>. Empty: every session runs on the instance's model.
+    /// <c>ollama-puls</c>; each is read from <c>config/.env.{name}</c>. Empty: every session runs on the instance's model.
     /// </summary>
     public IReadOnlyList<string> SessionLlmProfiles { get; set; } = [];
 

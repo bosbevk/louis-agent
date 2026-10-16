@@ -512,10 +512,10 @@ public class AgentPeerToolsTests
         var handler = Peer();
 
         await Tools(handler).StartSubSession(["web"], "Prys van 1 kg uie in Stellenbosch?", agent: "coder", personality: "puls-prices",
-            llm: " ollama-web ");
+            llm: " ollama-puls ");
 
         using var create = JsonDocument.Parse(handler.Requests[0].Body!);
-        Assert.That(create.RootElement.GetProperty("llm").GetString(), Is.EqualTo("ollama-web"));
+        Assert.That(create.RootElement.GetProperty("llm").GetString(), Is.EqualTo("ollama-puls"));
     }
 
     [Test]

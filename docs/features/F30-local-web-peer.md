@@ -14,7 +14,7 @@ reading for prices, and hand Puls a short report it can check, so an answer cost
 
 **F30-S1 — A session names its model.** As an *operator*, I want a session to say which LLM profile it runs on, so
 one instance serves Haiku to the cook and a local model to a price lookup.
-- *Given* `LLM_SESSION_PROFILES=ollama-web` *when* a session opens with `"llm": "ollama-web"` *then* its requests go
+- *Given* `LLM_SESSION_PROFILES=ollama-puls` *when* a session opens with `"llm": "ollama-puls"` *then* its requests go
   to that profile's model, and the session keeps it.
 - *Given* a profile that isn't listed *then* it's refused with a 400 before any engine is built, naming the ones
   there are.
@@ -63,3 +63,9 @@ keep the peer only if real prices hold and the cost drops.
 - **The profile goes to the peer as data, and the peer decides** (step 2). `StartSubSession(…, llm)` sends the name in
   the session's body, trimmed; the peer refuses one it doesn't offer with the same 400 as an unknown personality, so the
   parent never needs to know which models the peer has. `GET /llm-profiles` lists them, beside `/personalities`.
+- **32k fits on 8 GB only with flash attention and an 8-bit cache** (step 3). At Ollama's full-precision cache the
+  model and a 32k context took 7.7 GB and ran 7% on the CPU; with `OLLAMA_FLASH_ATTENTION=1` and
+  `OLLAMA_KV_CACHE_TYPE=q8_0` they take 5.3 GB, all on the GPU (MODELS.md, *Native Ollama on Windows*).
+- **The local model reads English, not Afrikaans** (step 3). Asked in Afrikaans for "drie groente in een sin", it took
+  *sin* for an orange and answered in Dutch over 600 tokens. The role is written in English and Puls hands it the task
+  in English; Puls writes the Afrikaans answer.
