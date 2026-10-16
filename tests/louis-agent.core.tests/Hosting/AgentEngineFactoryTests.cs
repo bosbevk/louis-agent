@@ -49,7 +49,7 @@ public class AgentEngineFactoryTests
     {
         var factory = FactoryEnabling([]);
 
-        Assert.That(factory.AvailablePersonalities(SkillLevel.Agent), Is.EqualTo(new[] { "louis-agent/voice", "puls/voice-af" }));
+        Assert.That(factory.AvailablePersonalities(SkillLevel.Agent), Is.EqualTo(new[] { "louis-agent/voice", "puls/voice-af", "puls/voice-en" }));
         Assert.That(factory.DefaultVoice, Is.EqualTo("louis-agent/voice"), "GET /personalities' default");
         Assert.That(factory.AvailablePersonalities(SkillLevel.Specialist), Does.Contain("puls-cook").And.Contain("puls-researcher"));
     }

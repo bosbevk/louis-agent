@@ -162,14 +162,16 @@
                 </div>
                 <div class="dropdown">
                     <button class="header-button" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Taal">
-                        <span class="ic i-globe" aria-hidden="true"></span>AF
+                        <span class="ic i-globe" aria-hidden="true"></span>@_language.ToUpperInvariant()
                     </button>
+                    @* Puls's language (CL9): the languages the API has a puls/voice-{code} for; a new chat speaks the one chosen. *@
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li><h6 class="dropdown-header">Taal</h6></li>
-                        <li><button class="dropdown-item active" type="button">Afrikaans <span class="ic i-check ms-auto" aria-hidden="true"></span></button></li>
-                        @foreach (string language in Languages)
+                        @foreach (string code in _languages)
                         {
-                            <li><button class="dropdown-item" type="button" @onclick="() => ComingSoon(language)">@language</button></li>
+                            <li><button class="dropdown-item @(code == _language ? "active" : "")" type="button" @onclick="() => ChooseLanguage(code)">
+                                @LanguageName(code)@if (code == _language) {<span class="ic i-check ms-auto" aria-hidden="true"></span>}
+                            </button></li>
                         }
                     </ul>
                 </div>
@@ -317,10 +319,27 @@
         <li><button class="dropdown-item danger" type="button" @onclick="() => DeleteChat(chat)"><span class="ic i-trash" aria-hidden="true"></span>Vee uit</button></li>
     };
 
-    /// <summary>Puls's mode (F21, CL9): louis-agent.core/Prompts/agent/puls/voice-af.md, its voice and routing.</summary>
-    private const string Personality = "puls/voice-af";
+    /// <summary>
+    /// Puls's mode for a new chat (F21, CL9): <c>puls/voice-{code}</c>, its voice in the chosen language, then Puls's
+    /// shared routing (louis-agent.core/Prompts/agent/puls/). A running chat keeps the voice it opened with.
+    /// </summary>
+    private string Personality => $"puls/voice-{_language}";
 
-    private static readonly string[] Languages = ["English", "Nederlands", "Deutsch", "isiZulu"];
+    /// <summary>Puls speaks Afrikaans unless this browser chose another language the API offers.</summary>
+    private const string DefaultLanguage = "af";
+
+    private string _language = DefaultLanguage;
+    private IReadOnlyList<string> _languages = [DefaultLanguage];
+
+    /// <summary>A language's name in the menu; a code without one is shown as it is.</summary>
+    private static string LanguageName(string code) => code switch { "af" => "Afrikaans", "en" => "English", _ => code };
+
+    /// <summary>Kept in this browser; the next chat opens in it, the open one keeps its voice (its prompt stays cached).</summary>
+    private async Task ChooseLanguage(string code)
+    {
+        _language = code;
+        await JS.InvokeVoidAsync("pulsUi.saveLanguage", code);
+    }
 
     /// <summary>
     /// The message box: attachments, the text, and a toolbar (Media and Tools on the left; the model, voice and send on the
@@ -640,6 +659,7 @@
         if (!Store.Loaded) await Store.LoadAsync();
         _location = await JS.InvokeAsync<string?>("pulsUi.loadLocation");
         _motion = await JS.InvokeAsync<bool>("pulsUi.motion");
+        await LoadLanguagesAsync();
         _reducedMotion = await JS.InvokeAsync<bool>("pulsUi.reducedMotion");
         try
         {
@@ -650,6 +670,24 @@
         {
             _model = null;   // An older API without /model: the picker says "Model".
         }
+    }
+
+    /// <summary>The languages Puls can speak: a puls/voice-{code} for each in GET /personalities, so the menu and the API agree.</summary>
+    private async Task LoadLanguagesAsync()
+    {
+        try
+        {
+            var personalities = await Api.GetAsync<System.Text.Json.JsonElement>("personalities");
+            var codes = personalities.GetProperty("agent").EnumerateArray().Select(p => p.GetString() ?? "")
+                .Where(p => p.StartsWith("puls/voice-", StringComparison.Ordinal)).Select(p => p["puls/voice-".Length..]).ToList();
+            if (codes.Count > 0) _languages = codes;
+        }
+        catch (Exception)
+        {
+            // An older API without levels in /personalities: Afrikaans, as before CL9.
+        }
+        string? saved = await JS.InvokeAsync<string?>("pulsUi.loadLanguage");
+        _language = saved is not null && _languages.Contains(saved) ? saved : _languages.Contains(DefaultLanguage) ? DefaultLanguage : _languages[0];
     }
 
     protected override void OnParametersSet()

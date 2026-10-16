@@ -301,6 +301,9 @@ public static partial class AgentHost
             composite.AddProvider(MarkdownSkillProvider.FromText(Personalities.ModeParts(mode.Text).Voice));
         else
             AddBuiltIn(agent, composite, personalityFile);
+        // A language mode (puls/voice-af) says how it talks; its product's shared voice.md routes (CL9 step 6)
+        if (level == SkillLevel.Agent && personality is not null && Personalities.LanguageOf(personality) is not null)
+            AddBuiltIn(agent, composite, Personalities.FileName(Personalities.SharedOf(personality), SkillLevel.Agent));
 
         // The guides of this profile's toolsets only, so the prompt never describes tools the session doesn't have
         var profile = toolsets.ToList();

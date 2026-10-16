@@ -39,14 +39,15 @@ public class SkillsLayoutTests
     }
 
     [Test]
-    public void AProductsRouting_IsTheSameInEachOfItsModes()
+    public void ALanguageFile_IsOnlyItsVoice_AndItsProductHasTheSharedPart()
     {
-        // CL9: a mode is one file, so a product's routing is written in each of its modes; they must not drift apart.
-        foreach (var product in Personalities.Available(SkillLevel.Agent).GroupBy(n => n.Split('/')[0]))
+        // CL9 step 6: {product}/voice-{xx}.md is how the product talks in one language; {product}/voice.md holds the rest.
+        foreach (string mode in Personalities.Available(SkillLevel.Agent).Where(m => Personalities.LanguageOf(m) is not null))
         {
-            var routings = product.Select(n => Personalities.ModeParts(SkillFileSource.ReadEmbedded(Personalities.FileName(n, SkillLevel.Agent))!).Routing)
-                .Where(r => r.Length > 0).Select(r => r.ReplaceLineEndings("\n")).Distinct().ToList();
-            Assert.That(routings, Has.Count.LessThanOrEqualTo(1), $"{product.Key}'s modes route differently");
+            string text = SkillFileSource.ReadEmbedded(Personalities.FileName(mode, SkillLevel.Agent))!;
+            Assert.That(Personalities.ModeParts(text).Routing, Is.Empty, $"{mode} has no routing of its own");
+            Assert.That(SkillFileSource.ReadEmbedded(Personalities.FileName(Personalities.SharedOf(mode), SkillLevel.Agent)), Is.Not.Null,
+                $"{mode}'s product has its shared voice.md");
         }
     }
 

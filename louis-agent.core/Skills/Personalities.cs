@@ -92,12 +92,30 @@ public static partial class Personalities
         return second.Success ? (text[..second.Index].TrimEnd(), text[second.Index..].Trim()) : (text.Trim(), "");
     }
 
-    private static IEnumerable<string> Modes() =>
-        SkillFileSource.EmbeddedFiles
+    /// <summary>
+    /// The language a mode speaks (CL9 step 6): <c>{product}/voice-{xx}</c>, a two-letter code, is how the product talks in
+    /// that language, and loads <see cref="SharedOf"/> after it; null for a whole mode (<c>louis-agent/voice</c>).
+    /// </summary>
+    public static string? LanguageOf(string mode) => LanguageMode().Match(mode) is { Success: true } m ? m.Groups["code"].Value : null;
+
+    /// <summary>A language mode's shared part: its product's <c>voice</c> (Puls's routing), never a mode of its own.</summary>
+    public static string SharedOf(string mode) => mode[..mode.IndexOf('/')] + "/voice";
+
+    private static IEnumerable<string> Modes()
+    {
+        var files = SkillFileSource.EmbeddedFiles
             .Where(f => f.StartsWith(AgentFolder + "/", StringComparison.Ordinal) && f.EndsWith(".md", StringComparison.Ordinal)
                 && !f.StartsWith(SkillFiles.FunctionsFolder + "/", StringComparison.Ordinal))
             .Select(f => f[(AgentFolder.Length + 1)..^".md".Length])
-            .Where(n => n.Count(c => c == '/') == 1);
+            .Where(n => n.Count(c => c == '/') == 1)
+            .ToList();
+        // A product with languages shares its voice.md between them; it isn't a mode of its own (puls/voice).
+        var shared = files.Where(f => LanguageOf(f) is not null).Select(SharedOf).ToHashSet(StringComparer.Ordinal);
+        return files.Where(f => !shared.Contains(f));
+    }
+
+    [GeneratedRegex("^[a-z0-9-]+/voice-(?<code>[a-z]{2})$")]
+    private static partial Regex LanguageMode();
 
     // Not the first line: a mode file starts with its voice's heading.
     [GeneratedRegex(@"(?<=\n)# ", RegexOptions.None)]

@@ -280,3 +280,12 @@ sequenceDiagram
   sending `agents` gets the 400 that names the valid toolsets. It lines up with F30's `minions`. The later steps move
   down one: 6 `puls/voice.md`, `puls/voice-en.md` and the *Taal* menu, 7 the orchestrator's prompt, 8 docs, 9 rebuild
   and check, 10 measure.
+- **Step 6's rule for a shared part: a language mode** (step 6, 2026-10-17). `{product}/voice-{xx}` (a two-letter
+  code) is a language: the session loads it, then `{product}/voice.md`, which is then not a mode of its own. Puls has
+  two (`af`, `en`); `louis-agent/voice` has none, so it stays whole. The *Taal* menu lists the `puls/voice-{code}` that
+  `GET /personalities` offers, kept in the browser (`puls.language`); `PERSONALITIES_ENABLED`'s default adds
+  `puls/voice-en`. The English voice is a draft of the Afrikaans one, for Louis to change.
+- **For CL10: the other specialists stay, off by default** (Louis, step 6, 2026-10-17: "keep this but make this a
+  toggle; when we test I do not want anything else loaded except puls and what I'm testing"). `PERSONALITIES_ENABLED` is
+  that toggle (F29); CL10 removes `roles.json`, `RoleFor` and `puls-specialist` (nothing would select it), and keeps the
+  researcher, reader, historian and analyst, switched off.
