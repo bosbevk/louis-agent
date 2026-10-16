@@ -200,3 +200,25 @@ sequenceDiagram
   `StartSubSession`'s descriptions (twice) say `agents-skills.md`, which step 2 moved to `toolsets/agents.md`. Step 2
   left them so its golden file stayed unchanged; step 4 says "the agents guide" instead of a file name and regenerates
   the golden file, so its diff shows only those words.
+- **Built-in prompts live in core and are read only from the assembly: a new step 4** (Louis, step 3, 2026-10-16).
+  Rider showed every built-in file flat at core's root (linked from `../Skills` with no folder). Louis: "they must also
+  move here, we should not read the files, we should embed them as resources and read them as such." Old steps 4 and
+  5 become 5 and 6.
+  - **Where:** `louis-agent.core/Prompts/` (`agent/`, `agent/functions/`, `specialists/`, `minions/`, `toolsets/`), moved
+    with `git mv`, embedded under their own paths. `Prompts/`, not core's `Skills/`, which holds the loader's C#.
+  - **How they're read (option A of three):** `Microsoft.Extensions.FileProviders.Embedded` (MIT, Microsoft) with
+    `GenerateEmbeddedFilesManifest`, through `ManifestEmbeddedFileProvider`: real folder paths and listings, the way
+    ASP.NET Core reads a library's embedded files. Considered: B, keeping `SkillFileSource` on
+    `GetManifestResourceStream` (no package, but folders become dots); C, `.resx` (built for short localized strings).
+  - **No disk override:** a built-in file is read only from the assembly, so a wording change is a rebuild, not a
+    restart. `SKILLS_DIRECTORY` keeps only what the agent writes: `agent/functions/<name>.md` (`CreateSkillFile`) and
+    `tools/`. A disk file with a built-in's name is ignored and logged; the repo's `Skills/` keeps `tools/` and
+    `examples/`.
+  - **Its ADR is 0017** (*Built-in prompts are embedded, read only from the assembly*): it ends ADR 0011's "wording
+    changes without a rebuild", so 0011's status gets *Amended by 0017* in step 5. F30's minions ADR becomes 0018.
+  - **Test first:** a disk file with a built-in's name no longer overrides (`SkillFileSourceTests`' override test
+    inverts); each level's personalities and the guides are listed from the manifest; an agent-written function file
+    still loads from disk. The golden file is unchanged.
+  - **Step 5's layout test** checks `Prompts/` and that the repo's `Skills/` holds only `tools/` and `examples/`; its
+    docs drop "a file on disk wins … restart the container". Step 6's hand check shows each file loaded from the
+    assembly.
