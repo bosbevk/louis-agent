@@ -197,10 +197,6 @@ Design: [docs/specs/SESSION_ARCHITECTURE.md](docs/specs/SESSION_ARCHITECTURE.md)
             carried as a string to the specialist, so it arrives mangled; send it as base64 with its media type and
             read it with `DocumentText` (found in the docs review, 2026-10-14)
 - [ ] [F21 Personalities](docs/features/F21-personalities.md) — each session (and sub-session) names its personality; Puls speaks everyday South African Afrikaans ([plan](docs/plans/F21-personalities.md)). Built; open: Louis's corrections to the Afrikaans (the delegation check's `answers.md`).
-- [ ] **Skills by level** (cleanup, before F30 step 4) — `Skills/` regrouped so its folders follow the levels a session
-      runs at: `agent/` (level 0), `specialists/` (level 1), `minions/` (level 2, F30's minions) and `toolsets/` (shared);
-      a role is loaded only at its own level ([plan](docs/plans/CL8-skills-by-level.md),
-      [ADR 0016](docs/adr/0016-skills-by-level.md))
 - [ ] **Next up: a faster, cheaper cook** (to plan; Louis, 2026-10-15: "can we have a subsession allow him to spawn
       web sessions for each task"). The cook does every search and fetch itself, one at a time, and every page it reads
       stays in its context and is paid for again on each later request (400–800k tokens and up to 183 s a meal turn).

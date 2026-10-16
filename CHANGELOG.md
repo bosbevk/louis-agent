@@ -3,6 +3,13 @@
 > **Reference.** What was finished, newest first, one entry per feature, fix or cleanup. **Elsewhere:** what's still
 > open in the [TODO](TODO.md); how each was built in its feature, fix or plan doc (linked from its entry).
 
+- 2026-10-16 — **CL8 Skills by level**: the built-in prompts move into `louis-agent.core/Prompts/`, one folder per
+  level a session runs at (`agent/` level 0, `specialists/` level 1, `minions/` level 2 for F30) beside the shared
+  `toolsets/`, and are read only from the assembly (`Microsoft.Extensions.FileProviders.Embedded`): a role opens only at
+  its own level, a copy on disk no longer overrides one, and a wording change is a rebuild. The repo's `Skills/` keeps
+  what the agent writes; the placeholder time-logging skill goes; `SkillsLayoutTests` holds the layout
+  ([plan](docs/plans/CL8-skills-by-level.md), [ADR 0016](docs/adr/0016-skills-by-level.md),
+  [ADR 0017](docs/adr/0017-built-in-prompts-embedded.md))
 - 2026-10-15 — **Licence: AGPL-3.0** (was MIT): still free to use, change and share; whoever changes it and runs it as a
   service must publish the changes, so a hosted Puls's improvements stay open ([ADR 0015](docs/adr/0015-licence-agpl.md))
 - 2026-10-15 — **F24 Landing motion**: Puls's landing page as a moving page on the brand's idea (a puls is a disturbance
