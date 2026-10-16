@@ -41,9 +41,9 @@ public class PersonalitiesTests
 
         Assert.That(Personalities.DefaultVoice, Is.EqualTo("louis-agent/voice"));
         Assert.That(docs.IndexOf("# Puls - Persoonlikheid", StringComparison.Ordinal),
-            Is.LessThan(docs.IndexOf("# Louis Agent - Default Instructions", StringComparison.Ordinal)));
+            Is.LessThan(docs.IndexOf("# Puls - Routing", StringComparison.Ordinal)));
         var (voice, routing) = Personalities.ModeParts(SkillFileSource.ReadEmbedded("agent/puls/voice-af.md")!);
-        Assert.That((voice.StartsWith("# Puls"), routing.StartsWith("# Louis Agent - Default Instructions")), Is.EqualTo((true, true)));
+        Assert.That((voice.StartsWith("# Puls"), routing.StartsWith("# Puls - Routing")), Is.EqualTo((true, true)));
     }
 
     [Test]
@@ -54,7 +54,7 @@ public class PersonalitiesTests
         Assert.That(docs, Does.Contain("# Puls - Persoonlikheid"));
         Assert.That(docs, Does.Not.Contain("Louis's Minion"));
         Assert.That(docs.IndexOf("# Puls - Persoonlikheid", StringComparison.Ordinal),
-            Is.LessThan(docs.IndexOf("# Louis Agent - Default Instructions", StringComparison.Ordinal)), "who the agent is, before the router");
+            Is.LessThan(docs.IndexOf("# Puls - Routing", StringComparison.Ordinal)), "who the agent is, before its routing");
     }
 
     [TestCase("../personality")]
@@ -93,6 +93,20 @@ public class PersonalitiesTests
         Assert.That(AgentHost.LoadSkills(new AgentOptions(), [], "puls/voice-af").Documentation, Does.Contain("# Puls - Persoonlikheid"));
         Assert.That(AgentHost.LoadSkills(new AgentOptions(), [], "puls-cook", SkillLevel.Specialist).Documentation,
             Does.Contain("Never invent a price"));
+    }
+
+    [Test]
+    public void EachProduct_RoutesOnlyWhatItDoes()
+    {
+        // CL9 step 3: a product's routing holds its own rows, so neither pays for the other's in every request.
+        string puls = Personalities.ModeParts(SkillFileSource.ReadEmbedded("agent/puls/voice-af.md")!).Routing;
+        string louis = Personalities.ModeParts(SkillFileSource.ReadEmbedded("agent/louis-agent/voice.md")!).Routing;
+
+        Assert.That(puls, Does.Contain("`web`").And.Contain("`agents`").And.Contain("`puls-cook`").And.Contain("**Vir:**"));
+        foreach (string coding in new[] { "`files`", "`git`", "`dotnet`", "`python`", "`paymo`", "`devops`", "`skills`" })
+            Assert.That(puls, Does.Not.Contain(coding), $"Puls doesn't route {coding}");
+        Assert.That(puls, Does.Contain("isn't available here yet"), "and still says so in one line when asked");
+        Assert.That(louis, Does.Not.Contain("puls-cook").And.Not.Contain("**Vir:**").And.Not.Contain("cook"), "no cook, no Afrikaans briefing");
     }
 
     [TestCase("functions/code-review")]
@@ -344,7 +358,8 @@ public class PersonalitiesTests
         string[] routerRows = router.Split('\n').Where(r => r.StartsWith('|')).ToArray();
         Assert.That(routerRows.Single(r => r.Contains("The world:")), Does.Contain("you, with `web`").And.Not.Contain("puls-researcher"));
         Assert.That(routerRows.Where(r => r.Contains("`puls-")), Has.Exactly(1).Items.And.All.Contains("`puls-cook`"), "one role left in the table");
-        Assert.That(routerRows.Count(r => r.Contains("*not yet*")), Is.GreaterThanOrEqualTo(6), "files, git, code, dotnet, paymo, devops, skills");
+        // CL9 step 3: the not-yet rows (files, git, code, dotnet, paymo, devops, skills) became one sentence in Puls's routing.
+        Assert.That(router, Does.Contain("never hand anything else to a specialist"));
         Assert.That(router, Does.Contain("isn't available yet"), "what to say instead of delegating");
 
         string[] agentRows = agents.Split('\n').Where(r => r.StartsWith('|') && r.Contains("`puls-")).ToArray();
