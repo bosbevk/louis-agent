@@ -12,7 +12,7 @@ namespace LouisAgent.Core.Tests.Skills;
 // provider class each. These check the pattern holds and that the files say what their tools are.
 public class SkillFilesTests
 {
-    private static string SkillsDirectory => Path.Combine(TestPaths.RepoRoot, "Skills");
+    private static string SkillsDirectory => TestPaths.Prompts;
 
     private static MarkdownSkillProvider Load(string fileName) =>
         new(Path.Combine(SkillsDirectory, fileName), includeDefaultInstructions: false);
@@ -25,11 +25,34 @@ public class SkillFilesTests
         {
             Assert.That(toolset.GuideFile, Is.Not.Null, $"{toolset.Name} has a guide");
             string guide = toolset.GuideFile!;
+            Assert.That(guide, Does.StartWith("toolsets/"), "CL8: every level shares the guides, so they're in toolsets/");
             Assert.That(File.Exists(Path.Combine(SkillsDirectory, guide)), Is.True, $"{guide} exists");
             string title = File.ReadLines(Path.Combine(SkillsDirectory, guide)).First();
             Assert.That(AgentHost.LoadSkills(options, [toolset]).Documentation, Does.Contain(title), $"{guide} loads with {toolset.Name}");
             Assert.That(SkillFiles.BuiltIn, Does.Contain(guide), $"{guide} can't be overwritten by the agent");
         }
+    }
+
+    /// <summary>
+    /// The router names every toolset and describes no tools, so the prompt never shows a session tools it doesn't load
+    /// (F5 step 4). Read from the assembly, as every session reads it (ADR 0018).
+    /// </summary>
+    [Test]
+    public void TheRouter_NamesEveryToolsetAndDescribesNoTools()
+    {
+        string doc = SkillFileSource.ReadEmbedded(SkillFiles.Router)!;
+
+        foreach (string toolset in ToolsetCatalog.All.Select(t => t.Name))
+            Assert.That(doc, Does.Contain($"`{toolset}`"), $"the router should name the '{toolset}' toolset");
+
+        string[] tools =
+        [
+            "ReadWorkspaceFile", "WriteWorkspaceFile", "GetStatus", "Commit(",
+            "PythonRun", "WebSearch", "CreateSkillFile",
+            "LogTimeByTaskName", "GetWorkItemsByAssignee",
+        ];
+        foreach (string tool in tools)
+            Assert.That(doc, Does.Not.Contain(tool), $"the router should not describe the {tool} tool");
     }
 
     [Test]
@@ -42,7 +65,7 @@ public class SkillFilesTests
 
         Assert.That(providers, Is.EquivalentTo(new[]
         {
-            nameof(CompositeSkillProvider), nameof(MarkdownSkillProvider), nameof(DefaultSkillsProvider), nameof(PersonalitySkillsProvider),
+            nameof(CompositeSkillProvider), nameof(MarkdownSkillProvider), nameof(PersonalitySkillsProvider),
         }));
     }
 
@@ -51,7 +74,7 @@ public class SkillFilesTests
     {
         // Guards against the guidance drifting from DotNetTools after a rename.
         var toolNames = typeof(DotNetTools).GetMethods().Select(m => m.Name).ToHashSet();
-        var referenced = Regex.Matches(Load("dotnet-skills.md").Documentation, @"`(DotNet[A-Za-z]+)`")
+        var referenced = Regex.Matches(Load("toolsets/dotnet.md").Documentation, @"`(DotNet[A-Za-z]+)`")
             .Select(m => m.Groups[1].Value)
             .Distinct()
             .ToList();
@@ -64,7 +87,7 @@ public class SkillFilesTests
     public void PaymoGuide_NamesOnlyToolsThatExist()
     {
         var toolNames = typeof(PaymoTools).GetMethods().Select(m => m.Name).ToHashSet();
-        var referenced = Regex.Matches(Load("paymo-skills.md").Documentation, @"`([A-Z][A-Za-z]+)\(")
+        var referenced = Regex.Matches(Load("toolsets/paymo.md").Documentation, @"`([A-Z][A-Za-z]+)\(")
             .Select(m => m.Groups[1].Value)
             .Distinct()
             .ToList();
@@ -90,8 +113,7 @@ public class SkillFilesTests
         Assert.That(dangling, Is.Empty);
     }
 
-    [TestCase("code-review-skills.md", "AnalyzeChanges")]
-    [TestCase("time-logging-skills.md", "LogWorkEntry")]
+    [TestCase("agent/functions/code-review.md", "AnalyzeChanges")]
     public void FunctionSkillFiles_HaveTheirProcedures(string fileName, string skill)
     {
         Assert.That(Load(fileName).Skills.Select(s => s.Name), Does.Contain(skill));
@@ -112,11 +134,21 @@ public class SkillFilesTests
     }
 
     [TestCase("code-review", "AnalyzeChanges")]
-    [TestCase("time-logging", "LogWorkEntry")]
     public void AgentHostLoadSkills_LoadsTheFunctionsOwnFile(string agentFunction, string skill)
     {
         var options = new AgentOptions { SkillsDirectory = SkillsDirectory, AgentFunction = agentFunction };
 
         Assert.That(AgentHost.LoadSkills(options).Skills.Select(s => s.Name), Does.Contain(skill));
+    }
+
+    [Test]
+    public void TimeLogging_IsGone_ThePaymoToolsDoItsWork()
+    {
+        // CL8 step 6: its three skills only echoed a message; the paymo toolset logs real time.
+        var options = new AgentOptions { SkillsDirectory = SkillsDirectory, AgentFunction = "louis" };
+
+        Assert.That(SkillFileSource.ReadEmbedded(SkillFiles.Function("time-logging")), Is.Null);
+        Assert.That(AgentHost.LoadSkills(options).Skills.Select(s => s.Name),
+            Has.None.AnyOf("LogWorkEntry", "GetWeeklySummary", "ValidateTimeEntry"));
     }
 }

@@ -6,12 +6,12 @@ namespace LouisAgent.Core.Tests.Skills;
 
 public class PersonalitySkillsProviderTests
 {
-    private static string SkillsDirectory => Path.Combine(TestPaths.RepoRoot, "Skills");
+    private static string SkillsDirectory => TestPaths.Prompts;
 
     [Test]
     public void Documentation_IsThePersonalityFile()
     {
-        var provider = new PersonalitySkillsProvider(Path.Combine(SkillsDirectory, "personality.md"));
+        var provider = new PersonalitySkillsProvider(Path.Combine(SkillsDirectory, "agent", "personality.md"));
 
         Assert.That(provider.Documentation, Does.Contain("Louis's Minion"));
         Assert.That(provider.Skills, Is.Empty, "personality.md is guidance only");
@@ -42,7 +42,7 @@ public class PersonalitySkillsProviderTests
     [Test]
     public void DefaultInstructions_NoLongerCarryThePersonality()
     {
-        string defaults = File.ReadAllText(Path.Combine(SkillsDirectory, "default.md"));
+        string defaults = File.ReadAllText(Path.Combine(SkillsDirectory, "agent", "default.md"));
 
         Assert.That(defaults, Does.Not.Contain("Minion").And.Not.Contain("Thiel"));
     }

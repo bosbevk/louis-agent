@@ -31,22 +31,8 @@ public class MarkdownSkillProvider : ISkillProvider
         // Load the specified skill file
         _skills = MarkdownSkillLoader.Load(filePath);
 
-        // Combine default instructions with chosen skillset
-        // Try multiple locations for default.md (current dir, Skills/, /app, or same dir as skillset)
-        string defaultDocs = "";
-        foreach (string searchPath in includeDefaultInstructions ? new[] { "default.md", "Skills/default.md", "/app/default.md", "/app/Skills/default.md", Path.Combine(Path.GetDirectoryName(filePath) ?? "", "default.md") } : Array.Empty<string>())
-        {
-            if (File.Exists(searchPath))
-            {
-                try
-                {
-                    defaultDocs = File.ReadAllText(searchPath);
-                    Log.Log(LogLevel.Information, LogMessage.DefaultInstructionsLoaded, new { Path = searchPath });
-                    break;
-                }
-                catch { }
-            }
-        }
+        // Combine default instructions with chosen skillset: the router is built in (CL8 step 4)
+        string defaultDocs = includeDefaultInstructions ? SkillFileSource.ReadEmbedded(SkillFiles.Router) ?? "" : "";
 
         if (includeDefaultInstructions && string.IsNullOrEmpty(defaultDocs))
         {

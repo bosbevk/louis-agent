@@ -40,7 +40,7 @@ flowchart LR
   chats with every available toolset; Puls opens them with `agents` only and delegates every task to its peer.
   Engines are shared by every session with the same toolsets, personality and router, and the least recently used of
   16 is dropped (a session keeps its own).
-- **Personalities** (F21): `POST /sessions` takes `personality`, a file in `Skills/personalities/` (`puls`, or a
+- **Personalities** (F21): `POST /sessions` takes `personality`, a built-in one at the session's level (`puls`, or a
   specialist's role such as `puls-researcher`); none gives `personality.md`; an invalid or unknown name is a `400`
   before an engine is built. `GET /personalities` lists them. A sub-session (depth 1) gets no router (`default.md`),
   and when its parent named no role, one is taken from its toolsets (`roles.json`).

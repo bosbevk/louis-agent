@@ -71,7 +71,7 @@ public class AgentEngine
         remove => _agentBuiltTools.ToolsChanged -= value;
     }
 
-    /// <summary>Folder where <see cref="CreateSkillFile"/> writes new *-skills.md files; null disables skill authoring.</summary>
+    /// <summary>The skills folder; <see cref="CreateSkillFile"/> writes into its agent/functions/; null disables skill authoring.</summary>
     public string? SkillsDirectory { get => _skillTools.SkillsDirectory; init => _skillTools.SkillsDirectory = value; }
 
     /// <summary>Reasoning effort for each turn (the model's thinking is streamed to hosts); null disables thinking.</summary>

@@ -11,10 +11,10 @@
 
 | | **Tools** | **Skills** |
 |---|---|---|
-| What | Public C# methods on the tool classes in `louis-agent.core/Tools/{Toolset}/` | Markdown in `Skills/*.md` |
+| What | Public C# methods on the tool classes in `louis-agent.core/Tools/{Toolset}/` | Markdown in `louis-agent.core/Prompts/` |
 | The model sees | A function with typed parameters and a description | Text in the system prompt; named procedures it can run |
 | How it's used | The model calls it; the result comes back | The model follows the guidance, or runs a procedure with `ExecuteSkill` |
-| Examples | `ReadWorkspaceFile`, `GetStatus`, `DotNetTest`, `WebSearch`, `LogTimeByTaskName` | `default.md` (behaviour, tool overview), `dotnet-skills.md`, `code-review-skills.md` |
+| Examples | `ReadWorkspaceFile`, `GetStatus`, `DotNetTest`, `WebSearch`, `LogTimeByTaskName` | `agent/default.md` (behaviour, tool overview), `toolsets/dotnet.md`, `agent/functions/code-review.md` |
 
 Tools give the agent abilities; skills tell it how and when to use them. The agent can add both: `CreateSkillFile` writes
 a new skill file, and `CreateTool` writes a script-backed tool that waits for your `/approve <Name>`.
@@ -46,15 +46,15 @@ without its API key) can't be loaded. An agent built on core, like the orchestra
 ### How skills are loaded
 
 `AgentHost.LoadSkills` combines, in this order:
-1. **the personality**: `personality.md`, or the one the session named (F21, `Skills/personalities/{name}.md`: Puls's
-   voice, or a specialist's role);
+1. **the personality**: `agent/personality.md`, or the one the session named, from its level's folder (F21, CL8:
+   Puls's voice in `agent/`, or a specialist's role in `specialists/`);
 2. **`default.md`**, the router, which sends each task to a toolset (left out for a sub-session, whose toolsets were
    chosen for it);
-3. **the guide of each toolset the session loaded** (`Skills/{toolset}-skills.md`) and no other (F5);
+3. **the guide of each toolset the session loaded** (`toolsets/{toolset}.md`) and no other (F5);
 4. **with the `skills` toolset only**, the `AGENT_FUNCTION` file (`louis` loads every skill file).
 
-The combined text is the system prompt. The built-in files are embedded in core; a file of the same name on disk
-overrides one, so wording can change without a rebuild.
+The combined text is the system prompt. The built-in files are in `louis-agent.core/Prompts/` and read only from the
+assembly (ADR 0018), so a wording change is a rebuild.
 
 ## A chat turn
 

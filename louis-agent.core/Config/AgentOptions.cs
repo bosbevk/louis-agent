@@ -12,10 +12,10 @@ public sealed class AgentOptions
 
     public string WorkspaceRoot { get; set; } = Environment.CurrentDirectory;
 
-    /// <summary>Directory searched for *-skills.md and default.md; null means the working dir, then /app.</summary>
+    /// <summary>The skills folder (agent/, specialists/, toolsets/); null means the working dir, then /app.</summary>
     public string? SkillsDirectory { get; set; }
 
-    /// <summary>Selects {AgentFunction}-skills.md.</summary>
+    /// <summary>Selects agent/functions/{AgentFunction}.md ("louis": every one).</summary>
     public string AgentFunction { get; set; } = "code-review";
 
     public string? PaymoApiKey { get; set; }
@@ -109,7 +109,7 @@ public sealed class AgentOptions
     /// <summary>
     /// PERSONALITIES_ENABLED: the personalities this instance may use (F29), comma separated and lowercase, e.g.
     /// <c>puls,puls-cook</c>; a session or sub-session asking for another is refused as for an unknown one. Empty: every
-    /// personality on disk. Puls's compose lists only the roles that have passed their check.
+    /// built-in personality. Puls's compose lists only the roles that have passed their check.
     /// </summary>
     public IReadOnlyList<string> PersonalitiesEnabled { get; set; } = [];
 

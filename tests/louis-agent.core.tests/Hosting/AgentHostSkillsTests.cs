@@ -28,6 +28,23 @@ public class AgentHostSkillsTests
     }
 
     [Test]
+    public void TheSkillsFolder_IsSkillsDirectory_ElseTheReposSkillsFolder()
+    {
+        // CL8 step 4: no built-in file is on disk any more, so the folder the agent writes into is found by its README.
+        string skills = Directory.CreateTempSubdirectory("skills-root-").FullName;
+        try
+        {
+            Assert.That(AgentHost.FindSkillsDirectory(new AgentOptions { SkillsDirectory = skills }), Is.EqualTo(skills));
+            Assert.That(AgentHost.FindSkillsDirectory(new AgentOptions()), Is.EqualTo(Path.Combine(TestPaths.RepoRoot, "Skills")),
+                "from the tests' folder up, not tests/louis-agent.core.tests/Skills/");
+        }
+        finally
+        {
+            Directory.Delete(skills, recursive: true);
+        }
+    }
+
+    [Test]
     public void PersonalityAndTheRouter_AreAlwaysThere()
     {
         string docs = AgentHost.LoadSkills(Options(), []).Documentation;
@@ -66,7 +83,7 @@ public class AgentHostSkillsTests
         louis.AgentFunction = "louis";
 
         Assert.That(AgentHost.LoadSkills(louis, Toolsets("skills")).Documentation,
-            Does.Contain("# Code Review Skills").And.Contain("# Time Logging Skills"));
+            Does.Contain("# Code Review Skills").And.Not.Contain("# Time Logging Skills"));
         Assert.That(AgentHost.LoadSkills(Options(), Toolsets("files", "skills")).Documentation, Does.Contain("# Code Review Skills"));
     }
 

@@ -11,7 +11,7 @@ public class RiderMcpToolDiscoveryTests
     [Test]
     public void Constructor_WithAgentEngine_Initializes()
     {
-        var skillProvider = new DefaultSkillsProvider(null);
+        var skillProvider = new CompositeSkillProvider();
         var chatClient = new StubChatClient();
         var options = new AgentOptions { WorkspaceRoot = Environment.CurrentDirectory };
         var engine = new AgentEngine(skillProvider, chatClient, options, supportsTools: true);
@@ -23,7 +23,7 @@ public class RiderMcpToolDiscoveryTests
     [Test]
     public void Constructor_WithCustomEndpoint_Initializes()
     {
-        var skillProvider = new DefaultSkillsProvider(null);
+        var skillProvider = new CompositeSkillProvider();
         var chatClient = new StubChatClient();
         var options = new AgentOptions { WorkspaceRoot = Environment.CurrentDirectory };
         var engine = new AgentEngine(skillProvider, chatClient, options, supportsTools: true);
@@ -35,7 +35,7 @@ public class RiderMcpToolDiscoveryTests
     [Test]
     public async Task DiscoverAndRegisterAsync_WhenRiderUnavailable_DoesNotThrow()
     {
-        var skillProvider = new DefaultSkillsProvider(null);
+        var skillProvider = new CompositeSkillProvider();
         var chatClient = new StubChatClient();
         var options = new AgentOptions { WorkspaceRoot = Environment.CurrentDirectory };
         var engine = new AgentEngine(skillProvider, chatClient, options, supportsTools: true);
@@ -50,7 +50,7 @@ public class RiderMcpToolDiscoveryTests
     [Test]
     public async Task DiscoverAndRegisterAsync_IsAsync()
     {
-        var skillProvider = new DefaultSkillsProvider(null);
+        var skillProvider = new CompositeSkillProvider();
         var chatClient = new StubChatClient();
         var options = new AgentOptions { WorkspaceRoot = Environment.CurrentDirectory };
         var engine = new AgentEngine(skillProvider, chatClient, options, supportsTools: true);

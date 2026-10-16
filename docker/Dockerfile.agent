@@ -8,5 +8,4 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl bc git pyt
 WORKDIR /app
 COPY --from=build /app/publish/ .
 # Skill files are mounted by docker-compose; secrets come from env_file, never from the image.
-COPY Skills/ ./
 ENTRYPOINT ["dotnet", "louis-agent.cli.dll"]

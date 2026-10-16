@@ -278,23 +278,23 @@ public static partial class AgentHost
     /// <summary>
     /// Loads the system prompt for a toolset profile (F5): personality, default.md (the router), the guide of each of
     /// <paramref name="toolsets"/> and no other (docs/CLAUDE.md, *Adding a toolset*), then, when the profile has the skills
-    /// toolset, the function's own skill file ({AgentFunction}-skills.md; "louis" loads every skill file). Our own skill files are plain markdown read by
+    /// toolset, the function's own skill file (agent/functions/{AgentFunction}.md; "louis" loads every one). Our own skill files are plain markdown read by
     /// <see cref="MarkdownSkillProvider"/>; a provider class of its own is only for skills we don't control.
-    /// Built-in files are read from disk when there (<see cref="AgentOptions.SkillsDirectory"/>, the working directory
-    /// and its parents, /app), else from the copy embedded in the assembly (<see cref="SkillFileSource"/>).
+    /// Built-in files are read only from the assembly (<see cref="SkillFileSource"/>, CL8 step 4); only what the agent
+    /// wrote (its function files) comes from the skills folder (<see cref="FindSkillsDirectory"/>).
     /// </summary>
-    /// <param name="personality">The session's personality (F21): a name in <c>Skills/personalities/</c>, or null for
-    /// <c>personality.md</c>. <see cref="PersonalityException"/> for a name that isn't valid or has no file.</param>
-    /// <param name="router">Whether the prompt has default.md, the router that picks a toolset and delegates. A sub-session
-    /// gets none (F21): its toolsets were chosen for it and it can't delegate.</param>
+    /// <param name="personality">The session's personality (F21): a name in <paramref name="level"/>'s folder, or null for
+    /// <c>personality.md</c>. <see cref="PersonalityException"/> for a name that isn't valid or has no file there.</param>
+    /// <param name="level">The session's level (CL8): where its personality is, and whether the prompt has default.md, the
+    /// router that picks a toolset and delegates. Only level 0 has it (F21): a sub-session's toolsets were chosen for it.</param>
     public static ISkillProvider LoadSkills(AgentOptions agent, IEnumerable<ToolsetDefinition> toolsets, string? personality = null,
-        bool router = true)
+        SkillLevel level = SkillLevel.Agent)
     {
         var composite = new CompositeSkillProvider();
 
         // Personality first, so who the agent is frames everything after it; default.md (the router) after it
-        AddBuiltIn(agent, composite, PersonalityFile(agent, personality));
-        if (router) AddBuiltIn(agent, composite, "default.md");
+        AddBuiltIn(agent, composite, PersonalityFile(agent, personality, level));
+        if (level == SkillLevel.Agent) AddBuiltIn(agent, composite, SkillFiles.Router);
 
         // The guides of this profile's toolsets only, so the prompt never describes tools the session doesn't have
         var profile = toolsets.ToList();
@@ -311,9 +311,9 @@ public static partial class AgentHost
         }
         else if (agent.AgentFunction != null && ToolsetCatalog.Find(agent.AgentFunction) is null)
         {
-            // The function's own skill file: code-review-skills.md, time-logging-skills.md, or a custom one (a toolset's
+            // The function's own skill file: agent/functions/code-review.md, or a custom one (a toolset's
             // name is not a function: its guide comes with the toolset)
-            string mainFile = $"{agent.AgentFunction}-skills.md";
+            string mainFile = SkillFiles.Function(agent.AgentFunction);
             if (ReadSkillFile(agent, mainFile) is { } main)
             {
                 composite.AddProvider(MarkdownSkillProvider.FromText(main.Text));
@@ -335,8 +335,8 @@ public static partial class AgentHost
         foreach (string fileName in FunctionSkillFiles)
             AddBuiltIn(agent, composite, fileName);
 
-        // Any other *-skills.md dropped into the skills folder (including ones the agent created) loads without code changes
-        foreach (string file in DiscoverSkillFiles(agent).Where(f => !SkillFiles.BuiltIn.Contains(Path.GetFileName(f))))
+        // Any other function file dropped into agent/functions/ (including ones the agent created) loads without code changes
+        foreach (string file in DiscoverSkillFiles(agent).Where(f => !SkillFiles.BuiltIn.Contains(SkillFiles.Function(Path.GetFileNameWithoutExtension(f)))))
         {
             composite.AddProvider(new MarkdownSkillProvider(file, includeDefaultInstructions: false));
             Log.Log(LogLevel.Information, LogMessage.SkillsFileDiscovered, new { File = Path.GetFileName(file) });
@@ -344,70 +344,82 @@ public static partial class AgentHost
     }
 
     /// <summary>Skill files of functions that aren't toolsets, loaded by "louis" (and by their own AGENT_FUNCTION).</summary>
-    private static readonly string[] FunctionSkillFiles = ["code-review-skills.md", "time-logging-skills.md"];
+    private static readonly string[] FunctionSkillFiles = [SkillFiles.Function("code-review")];
 
     /// <summary>The toolset the function skill files come with (ExecuteSkill runs their procedures).</summary>
     private const string SkillsToolset = "skills";
 
-    /// <summary>The folder holding default.md and the *-skills.md files, or null if none was found.</summary>
-    public static string? FindSkillsDirectory(AgentOptions agent) =>
-        FindSkillFile(agent, "default.md") is { } defaultFile ? Path.GetDirectoryName(defaultFile) : null;
+    /// <summary>
+    /// The skills folder, where what the agent writes is kept (CreateSkillFile's agent/functions/, approved tools/):
+    /// <see cref="AgentOptions.SkillsDirectory"/>, else the first <c>Skills/</c> with its <see cref="SkillFiles.FolderMarker"/>
+    /// in the working directory or its parents (the repo's, when run from it); null when there is none.
+    /// </summary>
+    public static string? FindSkillsDirectory(AgentOptions agent)
+    {
+        if (!string.IsNullOrWhiteSpace(agent.SkillsDirectory)) return agent.SkillsDirectory;
+        for (var dir = new DirectoryInfo(Environment.CurrentDirectory); dir is not null; dir = dir.Parent)
+            if (File.Exists(Path.Combine(dir.FullName, "Skills", SkillFiles.FolderMarker)))
+                return Path.Combine(dir.FullName, "Skills");
+        return null;
+    }
 
     internal static IEnumerable<string> DiscoverSkillFiles(AgentOptions agent) =>
         FindSkillsDirectory(agent) is { } dir
-            ? Directory.EnumerateFiles(dir, "*-skills.md").Order(StringComparer.OrdinalIgnoreCase)
+            && Directory.Exists(Path.Combine(dir, SkillFiles.FunctionsFolder))
+            ? Directory.EnumerateFiles(Path.Combine(dir, SkillFiles.FunctionsFolder), "*.md").Order(StringComparer.OrdinalIgnoreCase)
             : [];
 
-    internal static string? FindSkillFile(AgentOptions agent, string fileName) => SkillFilePaths(agent, fileName).FirstOrDefault(File.Exists);
-
-    /// <summary>A skill file's text from disk (which overrides) or the assembly; null when neither has it.</summary>
-    internal static (string Text, bool FromDisk)? ReadSkillFile(AgentOptions agent, string fileName) =>
-        SkillFileSource.Read(fileName, SkillFilePaths(agent, fileName));
+    /// <summary>
+    /// A skill file's text: a built-in one from the assembly only (a copy in the skills folder is ignored, and logged), a
+    /// function file the agent wrote from the skills folder; null when neither has it.
+    /// </summary>
+    internal static (string Text, bool FromDisk)? ReadSkillFile(AgentOptions agent, string fileName)
+    {
+        string? onDisk = FindSkillsDirectory(agent) is { } dir ? Path.Combine(dir, fileName.Replace('/', Path.DirectorySeparatorChar)) : null;
+        if (SkillFileSource.ReadEmbedded(fileName) is { } builtIn)
+        {
+            if (onDisk is not null && File.Exists(onDisk)) Log.Log(LogLevel.Warning, LogMessage.BuiltInCopyIgnored, new { File = onDisk });
+            return (builtIn, false);
+        }
+        // Only the agent's own files are read from disk: a personality or a guide is built in, or it isn't one.
+        bool agentWritten = fileName.StartsWith(SkillFiles.FunctionsFolder + "/", StringComparison.Ordinal);
+        return agentWritten && onDisk is not null && File.Exists(onDisk) ? (File.ReadAllText(onDisk), true) : null;
+    }
 
     /// <summary>
     /// The skill file of <paramref name="personality"/>: <see cref="Personalities.DefaultFile"/> when none is named, else
-    /// its file in <c>personalities/</c>, which must exist on disk or in the assembly.
+    /// its file in <paramref name="level"/>'s folder, which must be built in. A name from another
+    /// level is refused as an unknown one (CL8), so a role never opens at the wrong level.
     /// </summary>
-    internal static string PersonalityFile(AgentOptions agent, string? personality)
+    internal static string PersonalityFile(AgentOptions agent, string? personality, SkillLevel level)
     {
         if (string.IsNullOrEmpty(personality)) return Personalities.DefaultFile;
         if (!Personalities.IsValidName(personality))
             throw new PersonalityException(MessageText.Format(ErrorMessage.PersonalityNameInvalid, new { Name = personality }));
-        string file = Personalities.FileName(personality);
+        string file = Personalities.FileName(personality, level);
         // A personality that's off (F29) is refused as an unknown one: the list names what this instance may use.
-        if (!IsEnabled(agent, personality) || ReadSkillFile(agent, file) is null)
+        if (Personalities.IsReserved(file) || !IsEnabled(agent, personality) || ReadSkillFile(agent, file) is null)
             throw new PersonalityException(MessageText.Format(ErrorMessage.UnknownPersonality,
-                new { Name = personality, Available = string.Join(", ", EnabledPersonalities(agent)) }));
+                new { Name = personality, Available = string.Join(", ", EnabledPersonalities(agent, level)) }));
         return file;
     }
 
-    /// <summary>The personalities this instance offers: those on disk, or only the enabled ones when the list is set (F29).</summary>
-    internal static IReadOnlyList<string> EnabledPersonalities(AgentOptions agent) =>
-        Personalities.Available(agent.SkillsDirectory ?? FindSkillsDirectory(agent)).Where(name => IsEnabled(agent, name)).ToList();
+    /// <summary>
+    /// The personalities this instance offers at <paramref name="level"/>: the built-in ones, or only the enabled ones when
+    /// the list is set (F29).
+    /// </summary>
+    internal static IReadOnlyList<string> EnabledPersonalities(AgentOptions agent, SkillLevel level) =>
+        Personalities.Available(level).Where(name => IsEnabled(agent, name)).ToList();
 
     private static bool IsEnabled(AgentOptions agent, string personality) =>
         agent.PersonalitiesEnabled.Count == 0 || agent.PersonalitiesEnabled.Contains(personality, StringComparer.OrdinalIgnoreCase);
 
-    /// <summary>Adds a built-in skill file to the prompt, from disk or the assembly; a missing one is skipped.</summary>
+    /// <summary>Adds a skill file to the prompt (<see cref="ReadSkillFile"/>); a missing one is skipped.</summary>
     private static void AddBuiltIn(AgentOptions agent, CompositeSkillProvider composite, string fileName)
     {
         if (ReadSkillFile(agent, fileName) is not { } file) return;
         composite.AddProvider(MarkdownSkillProvider.FromText(file.Text));
         Log.Log(LogLevel.Information, file.FromDisk ? LogMessage.SkillProviderLoaded : LogMessage.SkillFileEmbedded,
             new { Provider = fileName });
-    }
-
-    /// <summary>Where a skill file may be on disk, in order: the skills folder, the working directory and its parents
-    /// (so running from src/&lt;project&gt; finds the repo's Skills/), /app, the program's folder.</summary>
-    private static IEnumerable<string> SkillFilePaths(AgentOptions agent, string fileName)
-    {
-        var ancestors = new List<string>();
-        for (var dir = new DirectoryInfo(Environment.CurrentDirectory); dir is not null; dir = dir.Parent)
-            ancestors.Add(dir.FullName);
-
-        return new[] { agent.SkillsDirectory }.Concat(ancestors).Concat(["/app", AppContext.BaseDirectory])
-            .Where(d => !string.IsNullOrWhiteSpace(d))
-            .SelectMany(d => new[] { Path.Combine(d!, fileName), Path.Combine(d!, "Skills", fileName) })
-            .ToList();
     }
 }

@@ -26,6 +26,8 @@ afterwards from the docs that hold them (each ADR links its sources), with the d
 | [0014](0014-test-first.md) | Test first: a step's tests are written and seen failing before the code | Accepted |
 | [0015](0015-licence-agpl.md) | Licence: AGPL-3.0, so improvements to a hosted Puls stay open | Superseded by 0016 |
 | [0016](0016-licence-all-rights-reserved.md) | Licence: all rights reserved | Accepted |
+| [0017](0017-skills-by-level.md) | Skill files follow the levels: a folder per level, and a role opens only at its own | Accepted |
+| [0018](0018-built-in-prompts-embedded.md) | Built-in prompts are embedded, read only from the assembly | Accepted |
 
 ## When to write one
 

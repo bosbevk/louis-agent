@@ -27,7 +27,6 @@ public class ModelRequestSnapshotTests
     public void SetUp()
     {
         _skillsDir = Directory.CreateTempSubdirectory("model-request-").FullName;
-        File.WriteAllText(Path.Combine(_skillsDir, "default.md"), "# Default\n\nThe snapshot's default instructions.");
     }
 
     [TearDown]

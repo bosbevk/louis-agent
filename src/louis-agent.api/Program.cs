@@ -122,11 +122,13 @@ app.MapGet("/toolsets", (AgentEngineFactory engines) => Results.Json(new
 // The model this instance answers with (F20: Puls's model picker shows it).
 app.MapGet("/model", () => Results.Json(new { provider = host.Llm.Provider, model = host.Llm.Model }));
 
-// The personalities a session can choose (F21): null is personality.md, the default.
+// The personalities a session can choose (F21), per level (CL8: a session's level is its depth); null is personality.md.
 app.MapGet("/personalities", (AgentEngineFactory engines) => Results.Json(new
 {
     @default = (string?)null,
-    personalities = engines.AvailablePersonalities,
+    agent = engines.AvailablePersonalities(SkillLevel.Agent),
+    specialists = engines.AvailablePersonalities(SkillLevel.Specialist),
+    minions = engines.AvailablePersonalities(SkillLevel.Minion),
 }));
 
 // The body is optional: { "toolsets": [...] } chooses the session's tools for its lifetime (F5; none sent: skills only);

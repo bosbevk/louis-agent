@@ -13,7 +13,7 @@ public class MarkdownSkillLoaderTests
     {
         var repoRoot = Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, "..", "..", "..", "..", ".."));
         // Use default.md which should contain skill definitions
-        var filePath = Path.Combine(repoRoot, "Skills", "default.md");
+        var filePath = Path.Combine(TestPaths.Prompts, "agent", "default.md");
 
         var skills = MarkdownSkillLoader.Load(filePath);
 

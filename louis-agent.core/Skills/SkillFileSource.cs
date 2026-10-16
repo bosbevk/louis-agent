@@ -1,43 +1,40 @@
 namespace LouisAgent.Core.Skills;
 
-using System.Reflection;
+using Microsoft.Extensions.FileProviders;
 
 /// <summary>
-/// Reads a built-in skill file by name (F5 step 4b): a file of that name on disk first, so a copy in the skills folder
-/// overrides one without a rebuild, else the copy embedded in louis-agent.core, so a host finds personality.md,
-/// default.md and every toolset's guide even with no Skills/ folder. Files the agent writes stay on disk only.
+/// Reads a built-in prompt (CL8 step 4, ADR 0018): the files in core's <c>Prompts/</c>, embedded with a manifest so they
+/// keep their folder paths (<c>agent/puls.md</c>, <c>toolsets/web.md</c>), and read only from the assembly. A copy on
+/// disk never overrides one, so a wording change is a rebuild. Files the agent writes stay on disk (<c>AgentHost</c>).
 /// </summary>
 public static class SkillFileSource
 {
-    // The csproj embeds Skills/*.md as "Skills.{file name}".
-    private const string Prefix = "Skills.";
+    // The csproj embeds Prompts/**; the provider serves them from that folder, by their paths under it.
+    private const string Root = "Prompts";
 
-    private static readonly Assembly Assembly = typeof(SkillFileSource).Assembly;
+    private static readonly ManifestEmbeddedFileProvider Provider = new(typeof(SkillFileSource).Assembly, Root);
 
-    /// <summary>The file names embedded in the assembly.</summary>
-    public static IReadOnlyList<string> EmbeddedNames { get; } = Assembly.GetManifestResourceNames()
-        .Where(n => n.StartsWith(Prefix, StringComparison.Ordinal))
-        .Select(n => n[Prefix.Length..])
-        .Order(StringComparer.Ordinal)
-        .ToList();
+    /// <summary>Every built-in prompt's path under <c>Prompts/</c>, with forward slashes, sorted.</summary>
+    public static IReadOnlyList<string> EmbeddedFiles { get; } = AllFiles("").Order(StringComparer.Ordinal).ToList();
 
-    /// <summary>The embedded copy of <paramref name="fileName"/>, or null when it isn't built in.</summary>
-    public static string? ReadEmbedded(string fileName)
+    /// <summary>The file names directly in <paramref name="folder"/> (not its subfolders); none when it isn't there.</summary>
+    public static IReadOnlyList<string> Files(string folder) =>
+        Provider.GetDirectoryContents(folder).Where(f => !f.IsDirectory).Select(f => f.Name).Order(StringComparer.Ordinal).ToList();
+
+    /// <summary>The built-in prompt at <paramref name="path"/>, or null when there is none.</summary>
+    public static string? ReadEmbedded(string path)
     {
-        // A file in a subfolder (personalities/puls.md) is embedded as Skills.personalities.puls.md.
-        using Stream? stream = Assembly.GetManifestResourceStream(Prefix + fileName.Replace('/', '.'));
-        if (stream is null) return null;
-        using var reader = new StreamReader(stream);
+        var file = Provider.GetFileInfo(path);
+        if (!file.Exists || file.IsDirectory) return null;
+        using var reader = new StreamReader(file.CreateReadStream());
         return reader.ReadToEnd();
     }
 
-    /// <summary>
-    /// The text of <paramref name="fileName"/> from the first of <paramref name="diskPaths"/> that exists, else the
-    /// embedded copy; null when neither has it. <c>FromDisk</c> says which.
-    /// </summary>
-    public static (string Text, bool FromDisk)? Read(string fileName, IEnumerable<string> diskPaths)
-    {
-        if (diskPaths.FirstOrDefault(File.Exists) is { } path) return (File.ReadAllText(path), true);
-        return ReadEmbedded(fileName) is { } embedded ? (embedded, false) : null;
-    }
+    private static IEnumerable<string> AllFiles(string folder) =>
+        // The manifest's root is "/" ("" lists nothing).
+        Provider.GetDirectoryContents(folder.Length == 0 ? "/" : folder).SelectMany(f =>
+        {
+            string path = folder.Length == 0 ? f.Name : $"{folder}/{f.Name}";
+            return f.IsDirectory ? AllFiles(path) : [path];
+        });
 }

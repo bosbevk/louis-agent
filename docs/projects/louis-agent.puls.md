@@ -59,7 +59,7 @@ None of its own: the API it's served by holds the settings (`AGENT_PEERS` names 
 ## Extending it
 
 - **A starter:** a line in `Templates.cs`.
-- **Puls's voice or a specialist's role:** `Skills/personalities/puls*.md` (F21); a file on disk overrides the built-in copy.
+- **Puls's voice or a specialist's role:** `louis-agent.core/Prompts/agent/puls.md` and `specialists/puls-*.md` (F21); built in, so a change is a rebuild.
 - **A placeholder made real:** replace its `ComingSoon(...)` with the feature; keep the label.
 
 ## Tests

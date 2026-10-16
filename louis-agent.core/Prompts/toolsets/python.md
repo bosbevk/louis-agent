@@ -34,7 +34,7 @@ Code runs with the workspace root as the current directory, so relative paths li
 
 ## Turning a procedure into a skill
 
-`CreateSkillFile` saves a `<name>-skills.md` file to the skills folder and loads it immediately; use `ExecuteSkill` to run it. Each skill's execution block runs in bash from the workspace root, so call the interpreter there (`python3` in Docker; on Windows the interpreter shown by `PythonInfo`). Read skill arguments only as `"${SKILL_ARG_name}"` (quoted) — never paste user values into the command. Use `ReloadSkills` after editing a skills file by hand.
+`CreateSkillFile` saves an `agent/functions/<name>.md` file in the skills folder and loads it immediately; use `ExecuteSkill` to run it. Each skill's execution block runs in bash from the workspace root, so call the interpreter there (`python3` in Docker; on Windows the interpreter shown by `PythonInfo`). Read skill arguments only as `"${SKILL_ARG_name}"` (quoted) — never paste user values into the command. Use `ReloadSkills` after editing a skills file by hand.
 
 ## Rules
 

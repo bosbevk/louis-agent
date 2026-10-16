@@ -10,7 +10,7 @@ public class AgentEngineDiscoveredToolsTests
     [Test]
     public void RegisterDiscoveredTool_WithValidTool_ReturnsTrue()
     {
-        var skillProvider = new DefaultSkillsProvider(null);
+        var skillProvider = new CompositeSkillProvider();
         var chatClient = new StubChatClient();
         var options = new AgentOptions { WorkspaceRoot = Environment.CurrentDirectory };
         var engine = new AgentEngine(skillProvider, chatClient, options, supportsTools: true);
@@ -22,7 +22,7 @@ public class AgentEngineDiscoveredToolsTests
     [Test]
     public void RegisterDiscoveredTool_LogsDiscoveredTools()
     {
-        var skillProvider = new DefaultSkillsProvider(null);
+        var skillProvider = new CompositeSkillProvider();
         var chatClient = new StubChatClient();
         var options = new AgentOptions { WorkspaceRoot = Environment.CurrentDirectory };
         var engine = new AgentEngine(skillProvider, chatClient, options, supportsTools: true);
@@ -40,7 +40,7 @@ public class AgentEngineDiscoveredToolsTests
     {
         var chatClient = new StubChatClient();
         var options = new AgentOptions { WorkspaceRoot = Environment.CurrentDirectory };
-        var skillProvider = new DefaultSkillsProvider(null);
+        var skillProvider = new CompositeSkillProvider();
         var engine = new AgentEngine(skillProvider, chatClient, options, supportsTools: false);
 
         var result = engine.RegisterDiscoveredTool("rider_build", "Build");
@@ -50,7 +50,7 @@ public class AgentEngineDiscoveredToolsTests
     [Test]
     public void RegisterDiscoveredTool_MultipleToolsCanBeRegistered()
     {
-        var skillProvider = new DefaultSkillsProvider(null);
+        var skillProvider = new CompositeSkillProvider();
         var chatClient = new StubChatClient();
         var options = new AgentOptions { WorkspaceRoot = Environment.CurrentDirectory };
         var engine = new AgentEngine(skillProvider, chatClient, options, supportsTools: true);
@@ -69,7 +69,7 @@ public class AgentEngineDiscoveredToolsTests
     {
         var chatClient = new StubChatClient();
         var options = new AgentOptions { WorkspaceRoot = Environment.CurrentDirectory };
-        var skillProvider = new DefaultSkillsProvider(null);
+        var skillProvider = new CompositeSkillProvider();
 
         var engineWith = new AgentEngine(skillProvider, chatClient, options, supportsTools: true);
         var engineWithout = new AgentEngine(skillProvider, chatClient, options, supportsTools: false);

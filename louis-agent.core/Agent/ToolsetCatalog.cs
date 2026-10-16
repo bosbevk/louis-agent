@@ -1,6 +1,7 @@
 namespace LouisAgent.Core.Agent;
 
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Skills;
 using LouisAgent.Core.Tools.Agents;
 using LouisAgent.Core.Tools.DotNet;
 using LouisAgent.Core.Tools.Git;
@@ -20,55 +21,55 @@ public static class ToolsetCatalog
     public static IReadOnlyList<ToolsetDefinition> All { get; } =
     [
         new("files", "Read, write, search, copy, rename and delete files in the workspace",
-            GuideFile: "files-skills.md",
+            GuideFile: SkillFiles.Guide("files"),
             MissingSettings: _ => [],
             ToolType: typeof(WorkspaceTools),
             CreateTools: ctx => [new WorkspaceTools(Root(ctx))]),
 
         new("git", "Status, diffs, branches, staging, commits, merges and history for the workspace repository",
-            GuideFile: "git-skills.md",
+            GuideFile: SkillFiles.Guide("git"),
             MissingSettings: _ => [],
             ToolType: typeof(GitTools),
             CreateTools: ctx => [new GitTools(Root(ctx))]),
 
         new("dotnet", "Build, test, run and restore .NET projects; list packages; SDK information",
-            GuideFile: "dotnet-skills.md",
+            GuideFile: SkillFiles.Guide("dotnet"),
             MissingSettings: _ => [],
             ToolType: typeof(DotNetTools),
             CreateTools: ctx => [new DotNetTools(Root(ctx))]),
 
         new("python", "Run Python code or scripts and manage packages in the agent's own virtual environment",
-            GuideFile: "python-skills.md",
+            GuideFile: SkillFiles.Guide("python"),
             MissingSettings: _ => [],
             ToolType: typeof(PythonTools),
             CreateTools: ctx => [new PythonTools(Root(ctx))]),
 
         new("powershell", "Run PowerShell scripts (PowerShell 7, or Windows PowerShell 5.1 on Windows)",
-            GuideFile: "powershell-skills.md",
+            GuideFile: SkillFiles.Guide("powershell"),
             MissingSettings: _ => [],
             ToolType: typeof(PowerShellTools),
             CreateTools: ctx => [new PowerShellTools(Root(ctx))]),
 
         new("bash", "Run bash scripts (Git Bash on Windows, /bin/bash elsewhere)",
-            GuideFile: "bash-skills.md",
+            GuideFile: SkillFiles.Guide("bash"),
             MissingSettings: _ => [],
             ToolType: typeof(BashTools),
             CreateTools: ctx => [new BashTools(Root(ctx))]),
 
         new("web", "Search the web and fetch web pages",
-            GuideFile: "web-skills.md",
+            GuideFile: SkillFiles.Guide("web"),
             MissingSettings: _ => [],
             ToolType: typeof(WebTools),
             CreateTools: ctx => [new WebTools(ctx.WebSearch, rates: ctx.Rates, renderer: ctx.Renderer)]),
 
         new("paymo", "Paymo time tracking: time entries, tasks, projects and summaries",
-            GuideFile: "paymo-skills.md",
+            GuideFile: SkillFiles.Guide("paymo"),
             MissingSettings: ctx => Missing(ctx, ("PAYMO_API_KEY", ctx.Options.PaymoApiKey)),
             ToolType: typeof(PaymoTools),
             CreateTools: ctx => [new PaymoTools(ctx.Options)]),
 
         new("devops", "Azure DevOps work items, sprints and team queries",
-            GuideFile: "devops-skills.md",
+            GuideFile: SkillFiles.Guide("devops"),
             MissingSettings: ctx => Missing(ctx,
                 ("DEVOPS_API_KEY", ctx.Options.DevopsApiKey),
                 ("DEVOPS_ORGANIZATION", ctx.Options.DevopsOrganization),
@@ -78,7 +79,7 @@ public static class ToolsetCatalog
                 ctx.Options.DevopsApiKey!, ctx.Options.DevopsOrganization!, ctx.Options.DevopsProject!, ctx.Options.DevopsTeam)]),
 
         new("agents", "Hand a separate task to a specialist agent: a sub-session on a peer with only the toolsets it needs",
-            GuideFile: "agents-skills.md",
+            GuideFile: SkillFiles.Guide("agents"),
             MissingSettings: ctx => ctx.Options.AgentPeers.Count == 0 ? ["AGENT_PEERS"] : [],
             ToolType: typeof(AgentPeerTools),
             CreateTools: ctx => [new AgentPeerTools(ctx.Options, ctx.UsageSink)]),
@@ -86,7 +87,7 @@ public static class ToolsetCatalog
         // Engine-provided: CreateSkillFile, ReloadSkills, CreateTool and ListAgentTools are registered by AgentEngine
         // when this name is in the resolved list (step 3), because they need the engine's own registry and skill set.
         new("skills", "Create and reload skills, and build and list agent-built tools",
-            GuideFile: "self-extension-skills.md",
+            GuideFile: SkillFiles.Guide("self-extension"),
             MissingSettings: _ => [],
             CreateTools: null),
     ];
