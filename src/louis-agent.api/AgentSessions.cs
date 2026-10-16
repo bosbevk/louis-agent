@@ -2,6 +2,7 @@ using System.Collections.Concurrent;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Skills;
 using LouisAgent.Core.Tools.Agents;
 using LouisAgent.Core.Tools.Clock;
 using LouisAgent.Core.Usage;
@@ -124,8 +125,9 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
 
     /// <summary>
     /// Opens a session with <paramref name="toolsets"/> (null: <see cref="DefaultToolsets"/>; empty: none) and
-    /// <paramref name="personality"/> (null: personality.md). A sub-session gets no router (default.md): its toolsets were
-    /// chosen for it and it can't delegate (F21). Throws <see cref="ToolsetException"/> for an unknown or unavailable
+    /// <paramref name="personality"/> (null: personality.md). The session's level is its depth (CL8): its personality comes
+    /// from that level's folder, and a sub-session gets no router (default.md): its toolsets were chosen for it and it
+    /// can't delegate (F21). Throws <see cref="ToolsetException"/> for an unknown or unavailable
     /// toolset, a depth outside 0..<see cref="MaxDepth"/>, or a sub-session asking for <see cref="AgentsToolset"/>, and
     /// <see cref="Core.Skills.PersonalityException"/> for an unknown personality, before anything is created.
     /// </summary>
@@ -140,7 +142,7 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
         if (string.IsNullOrEmpty(personality)) personality = null;
         // A sub-session its parent gave no role gets one from its toolsets (roles.json): roles in code, not left to the prompt.
         if (depth > 0 && personality is null) personality = engines.RoleFor(names);
-        var engine = engines.GetOrCreate(names, personality, router: depth == 0);
+        var engine = engines.GetOrCreate(names, personality, (SkillLevel)depth);
 
         DropIdle(DateTimeOffset.UtcNow);
 

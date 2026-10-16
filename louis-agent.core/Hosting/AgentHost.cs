@@ -283,18 +283,18 @@ public static partial class AgentHost
     /// Built-in files are read from disk when there (<see cref="AgentOptions.SkillsDirectory"/>, the working directory
     /// and its parents, /app), else from the copy embedded in the assembly (<see cref="SkillFileSource"/>).
     /// </summary>
-    /// <param name="personality">The session's personality (F21): a name in <c>Skills/personalities/</c>, or null for
-    /// <c>personality.md</c>. <see cref="PersonalityException"/> for a name that isn't valid or has no file.</param>
-    /// <param name="router">Whether the prompt has default.md, the router that picks a toolset and delegates. A sub-session
-    /// gets none (F21): its toolsets were chosen for it and it can't delegate.</param>
+    /// <param name="personality">The session's personality (F21): a name in <paramref name="level"/>'s folder, or null for
+    /// <c>personality.md</c>. <see cref="PersonalityException"/> for a name that isn't valid or has no file there.</param>
+    /// <param name="level">The session's level (CL8): where its personality is, and whether the prompt has default.md, the
+    /// router that picks a toolset and delegates. Only level 0 has it (F21): a sub-session's toolsets were chosen for it.</param>
     public static ISkillProvider LoadSkills(AgentOptions agent, IEnumerable<ToolsetDefinition> toolsets, string? personality = null,
-        bool router = true)
+        SkillLevel level = SkillLevel.Agent)
     {
         var composite = new CompositeSkillProvider();
 
         // Personality first, so who the agent is frames everything after it; default.md (the router) after it
-        AddBuiltIn(agent, composite, PersonalityFile(agent, personality));
-        if (router) AddBuiltIn(agent, composite, "default.md");
+        AddBuiltIn(agent, composite, PersonalityFile(agent, personality, level));
+        if (level == SkillLevel.Agent) AddBuiltIn(agent, composite, "default.md");
 
         // The guides of this profile's toolsets only, so the prompt never describes tools the session doesn't have
         var profile = toolsets.ToList();
@@ -366,24 +366,28 @@ public static partial class AgentHost
 
     /// <summary>
     /// The skill file of <paramref name="personality"/>: <see cref="Personalities.DefaultFile"/> when none is named, else
-    /// its file in <c>personalities/</c>, which must exist on disk or in the assembly.
+    /// its file in <paramref name="level"/>'s folder, which must exist on disk or in the assembly. A name from another
+    /// level is refused as an unknown one (CL8), so a role never opens at the wrong level.
     /// </summary>
-    internal static string PersonalityFile(AgentOptions agent, string? personality)
+    internal static string PersonalityFile(AgentOptions agent, string? personality, SkillLevel level)
     {
         if (string.IsNullOrEmpty(personality)) return Personalities.DefaultFile;
         if (!Personalities.IsValidName(personality))
             throw new PersonalityException(MessageText.Format(ErrorMessage.PersonalityNameInvalid, new { Name = personality }));
-        string file = Personalities.FileName(personality);
+        string file = Personalities.FileName(personality, level);
         // A personality that's off (F29) is refused as an unknown one: the list names what this instance may use.
         if (!IsEnabled(agent, personality) || ReadSkillFile(agent, file) is null)
             throw new PersonalityException(MessageText.Format(ErrorMessage.UnknownPersonality,
-                new { Name = personality, Available = string.Join(", ", EnabledPersonalities(agent)) }));
+                new { Name = personality, Available = string.Join(", ", EnabledPersonalities(agent, level)) }));
         return file;
     }
 
-    /// <summary>The personalities this instance offers: those on disk, or only the enabled ones when the list is set (F29).</summary>
-    internal static IReadOnlyList<string> EnabledPersonalities(AgentOptions agent) =>
-        Personalities.Available(agent.SkillsDirectory ?? FindSkillsDirectory(agent)).Where(name => IsEnabled(agent, name)).ToList();
+    /// <summary>
+    /// The personalities this instance offers at <paramref name="level"/>: those on disk, or only the enabled ones when
+    /// the list is set (F29).
+    /// </summary>
+    internal static IReadOnlyList<string> EnabledPersonalities(AgentOptions agent, SkillLevel level) =>
+        Personalities.Available(agent.SkillsDirectory ?? FindSkillsDirectory(agent), level).Where(name => IsEnabled(agent, name)).ToList();
 
     private static bool IsEnabled(AgentOptions agent, string personality) =>
         agent.PersonalitiesEnabled.Count == 0 || agent.PersonalitiesEnabled.Contains(personality, StringComparer.OrdinalIgnoreCase);

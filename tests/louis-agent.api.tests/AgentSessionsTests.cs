@@ -119,6 +119,18 @@ public class AgentSessionsTests
     }
 
     [Test]
+    public void ARole_OpensOnlyAtItsOwnLevel()
+    {
+        // CL8: a session's level is its depth; the cook is a specialist (level 1), Puls's voice is level 0's.
+        var sessions = Sessions();
+
+        Assert.Throws<LouisAgent.Core.Skills.PersonalityException>(() => sessions.Create(["web"], personality: "puls-cook"));
+        Assert.Throws<LouisAgent.Core.Skills.PersonalityException>(() => sessions.Create(["web"], depth: 1, personality: "puls"));
+        Assert.That(sessions.Create(["web"], personality: "puls").Personality, Is.EqualTo("puls"));
+        Assert.That(sessions.Create(["web"], depth: 1, personality: "puls-cook").Personality, Is.EqualTo("puls-cook"));
+    }
+
+    [Test]
     public void NoPersonality_IsTheDefault()
     {
         var session = Sessions().Create(["files"], personality: "");

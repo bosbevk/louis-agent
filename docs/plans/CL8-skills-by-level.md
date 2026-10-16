@@ -191,3 +191,8 @@ sequenceDiagram
 - **ADR 0011 keeps its body; only its status changes** (Louis, step 0, 2026-10-16): accepted ADRs are never edited
   except their *Status* line, so step 4 sets 0011's to *Accepted; file names amended by
   [0016](../adr/0016-skills-by-level.md)* instead of changing its file names. ADR 0016 records the new names.
+- **Step 1 moves the named personalities; step 2 moves the rest** (Louis, step 1, 2026-10-16): with every level's
+  folder still `personalities/`, a role opened at the wrong level is found and can't be refused, so step 1 couldn't
+  test what it adds. Step 1 now moves `puls.md` to `agent/` and the roles and `roles.json` to `specialists/` (with the
+  csproj's embedded resources for those two folders); `personality.md` and `default.md` stay at the root until step 2,
+  which moves them and the toolset guides.

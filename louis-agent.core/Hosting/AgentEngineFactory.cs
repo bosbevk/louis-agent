@@ -16,8 +16,8 @@ using Microsoft.Extensions.Logging;
 
 /// <summary>
 /// One engine per toolset profile (F5): a session names its toolsets, and gets an engine with only those tools and
-/// only their guides in its system prompt. Engines are cached by their normalised list, its personality and whether it has
-/// the router (F21), so every session with the same three shares one engine, one tool list and one cacheable prefix. Everything else (the model client, the usage
+/// only their guides in its system prompt. Engines are cached by their normalised list, its personality and its level
+/// (F21, CL8), so every session with the same three shares one engine, one tool list and one cacheable prefix. Everything else (the model client, the usage
 /// ledger, the display currency, thinking) is shared by all of them.
 /// </summary>
 /// <remarks>
@@ -68,40 +68,41 @@ public sealed class AgentEngineFactory
     /// <summary>Every toolset this instance can load: those whose settings are all set.</summary>
     public IReadOnlyList<string> Available => ToolsetCatalog.All.Where(t => t.IsAvailable(Context)).Select(t => t.Name).ToList();
 
-    /// <summary>The named personalities a session can choose (F21), built in and in the skills folder.</summary>
-    public IReadOnlyList<string> AvailablePersonalities => AgentHost.EnabledPersonalities(_agent);
+    /// <summary>The named personalities a session at <paramref name="level"/> can choose (F21, CL8), built in and on disk.</summary>
+    public IReadOnlyList<string> AvailablePersonalities(SkillLevel level) => AgentHost.EnabledPersonalities(_agent, level);
 
     /// <summary>
     /// The role for a sub-session with <paramref name="toolsets"/> when its parent named none: from
-    /// <c>Skills/personalities/roles.json</c> (disk, else built in), and only a personality this instance has; null otherwise.
+    /// <c>Skills/specialists/roles.json</c> (disk, else built in), and only a role this instance has; null otherwise.
     /// </summary>
     public string? RoleFor(IEnumerable<string> toolsets)
     {
         if (AgentHost.ReadSkillFile(_agent, Personalities.RolesFile) is not { } roles) return null;
         string? role = Personalities.RoleFor(roles.Text, toolsets);
         if (role is null || !Personalities.IsValidName(role)) return null;
-        try { AgentHost.PersonalityFile(_agent, role); return role; }
+        try { AgentHost.PersonalityFile(_agent, role, SkillLevel.Specialist); return role; }
         catch (PersonalityException) { return null; }
     }
 
-    /// <summary>The profiles built so far: each its toolsets joined with commas, then |personality and |no-router when set.</summary>
+    /// <summary>The profiles built so far: each its toolsets joined with commas, then |personality and |level below level 0.</summary>
     public IReadOnlyCollection<string> Profiles => _engines.Keys.ToList();
 
     /// <summary>
     /// The engine for <paramref name="toolsets"/> (any order or case; duplicates ignored), <paramref name="personality"/>
-    /// (null: personality.md) and <paramref name="router"/> (default.md in the prompt), built on first use. Throws
+    /// (null: personality.md) and <paramref name="level"/> (CL8: where the personality is; the router only at level 0),
+    /// built on first use. Throws
     /// <see cref="ToolsetException"/> for an unknown or unavailable toolset and <see cref="PersonalityException"/> for an
-    /// unknown personality, before anything is built. A full cache drops its least recently used profile (on a specialist
+    /// unknown personality or one from another level, before anything is built. A full cache drops its least recently used profile (on a specialist
     /// the model chooses the lists, so they are many).
     /// </summary>
-    public AgentEngine GetOrCreate(IEnumerable<string>? toolsets, string? personality = null, bool router = true)
+    public AgentEngine GetOrCreate(IEnumerable<string>? toolsets, string? personality = null, SkillLevel level = SkillLevel.Agent)
     {
         var resolved = ToolsetCatalog.Resolve(toolsets, Context);
         if (string.IsNullOrEmpty(personality)) personality = null;
         // Checked here, not in Build: a Lazy that throws keeps the exception, and the key would stay broken.
-        AgentHost.PersonalityFile(_agent, personality);
+        AgentHost.PersonalityFile(_agent, personality, level);
 
-        string key = string.Join(",", resolved.Select(t => t.Name)) + (personality is null ? "" : "|" + personality) + (router ? "" : "|no-router");
+        string key = string.Join(",", resolved.Select(t => t.Name)) + (personality is null ? "" : "|" + personality) + LevelSuffix(level);
         _lastUsed[key] = Interlocked.Increment(ref _clock);
         if (_engines.TryGetValue(key, out var existing)) return existing.Value;
 
@@ -115,20 +116,23 @@ public sealed class AgentEngineFactory
                 _lastUsed.TryRemove(oldest, out _);
                 Log.Log(LogLevel.Information, LogMessage.ToolsetProfileDropped, new { Toolsets = oldest.Length == 0 ? "(none)" : oldest, Capacity = _capacity });
             }
-            engine = _engines.GetOrAdd(key, _ => new Lazy<AgentEngine>(() => Build(resolved, personality, router)));
+            engine = _engines.GetOrAdd(key, _ => new Lazy<AgentEngine>(() => Build(resolved, personality, level)));
         }
         return engine.Value;   // built outside the lock: building one profile doesn't hold up another
     }
 
-    private AgentEngine Build(IReadOnlyList<ToolsetDefinition> resolved, string? personality, bool router)
+    /// <summary>Level 0 adds nothing to the key, so its profiles keep the names they had before CL8.</summary>
+    private static string LevelSuffix(SkillLevel level) => level == SkillLevel.Agent ? "" : "|" + level.ToString().ToLowerInvariant();
+
+    private AgentEngine Build(IReadOnlyList<ToolsetDefinition> resolved, string? personality, SkillLevel level)
     {
         bool selfExtension = resolved.Any(t => t.IsEngineProvided);
-        var engine = new AgentEngine(AgentHost.LoadSkills(_agent, resolved, personality, router), _chatClient, _agent, _supportsTools,
+        var engine = new AgentEngine(AgentHost.LoadSkills(_agent, resolved, personality, level), _chatClient, _agent, _supportsTools,
             toolsets: ToolsetCatalog.BuildTools(resolved, Context), _usageSink, _usageMapper, selfExtension)
         {
             SkillsDirectory = AgentHost.FindSkillsDirectory(_agent),
             // ReloadSkills reloads this profile's prompt (its guides, personality and router), never another's.
-            SkillReloader = () => AgentHost.LoadSkills(_agent, resolved, personality, router),
+            SkillReloader = () => AgentHost.LoadSkills(_agent, resolved, personality, level),
             Thinking = _thinking,
             Display = _display,
         };
@@ -139,7 +143,7 @@ public sealed class AgentEngineFactory
         Log.Log(LogLevel.Information, LogMessage.ToolsetProfileBuilt, new
         {
             Toolsets = (resolved.Count == 0 ? "(none)" : string.Join(", ", resolved.Select(t => t.Name)))
-                + (personality is null ? "" : $" · personality {personality}") + (router ? "" : " · no router"),
+                + (personality is null ? "" : $" · personality {personality}") + (level == SkillLevel.Agent ? "" : $" · {level.ToString().ToLowerInvariant()}"),
             Tools = engine.Tools.Count,
             PromptChars = engine.SkillDocumentation.Length,
             // About four characters a token: an estimate of the fixed prefix every request of this profile sends.

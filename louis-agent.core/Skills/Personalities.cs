@@ -4,22 +4,39 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 
 /// <summary>
-/// Personalities a session can choose (F21): <c>Skills/personalities/{name}.md</c>, embedded like the other built-in
-/// skill files (a file on disk overrides). <see cref="DefaultFile"/> is used when a session names none. A name is
-/// lowercase letters, digits and dashes, so it never reaches outside the folder.
+/// Personalities a session can choose (F21), in the folder of the level that reads them (CL8, ADR 0016):
+/// <c>Skills/agent/{name}.md</c> (level 0, a voice), <c>Skills/specialists/{name}.md</c> (level 1, a role),
+/// <c>Skills/minions/{name}.md</c> (level 2, F30), embedded like the other built-in skill files (a file on disk
+/// overrides). <see cref="DefaultFile"/> is used when a session names none. A name is lowercase letters, digits and
+/// dashes, so it never reaches outside its folder.
 /// </summary>
 public static partial class Personalities
 {
     /// <summary>The personality of a session that names none: the one every host had before F21.</summary>
     public const string DefaultFile = "personality.md";
 
-    /// <summary>The folder, under the skills folder, that holds the named personalities.</summary>
-    public const string Folder = "personalities";
+    /// <summary>Level 0's folder, under the skills folder: the voices of the agent the user talks to.</summary>
+    public const string AgentFolder = "agent";
+
+    /// <summary>Level 1's folder: one role per specialist, and <see cref="RolesFile"/>.</summary>
+    public const string SpecialistsFolder = "specialists";
+
+    /// <summary>Level 2's folder: one function per minion (F30).</summary>
+    public const string MinionsFolder = "minions";
 
     private const int MaxNameLength = 40;
 
     /// <summary>The file of the rules that give a sub-session its role from its toolsets (<see cref="RoleFor"/>).</summary>
-    public const string RolesFile = Folder + "/roles.json";
+    public const string RolesFile = SpecialistsFolder + "/roles.json";
+
+    /// <summary>The folder, under the skills folder, of <paramref name="level"/>'s personalities.</summary>
+    public static string FolderOf(SkillLevel level) => level switch
+    {
+        SkillLevel.Agent => AgentFolder,
+        SkillLevel.Specialist => SpecialistsFolder,
+        SkillLevel.Minion => MinionsFolder,
+        _ => throw new ArgumentOutOfRangeException(nameof(level), level, null),
+    };
 
     /// <summary>
     /// The role for a sub-session with <paramref name="toolsets"/> when its parent named none (the delegation check
@@ -48,17 +65,21 @@ public static partial class Personalities
     /// <summary>Whether <paramref name="name"/> can name a personality (and so can be turned into a path safely).</summary>
     public static bool IsValidName(string? name) => name is { Length: > 0 and <= MaxNameLength } && NamePattern().IsMatch(name);
 
-    /// <summary>The skill file of a named personality, relative to the skills folder.</summary>
-    public static string FileName(string name) => $"{Folder}/{name}.md";
+    /// <summary>The skill file of a named personality at <paramref name="level"/>, relative to the skills folder.</summary>
+    public static string FileName(string name, SkillLevel level) => $"{FolderOf(level)}/{name}.md";
 
-    /// <summary>The named personalities: the built-in ones and any in <paramref name="skillsDirectory"/>, sorted.</summary>
-    public static IReadOnlyList<string> Available(string? skillsDirectory)
+    /// <summary>
+    /// The named personalities at <paramref name="level"/>: the built-in ones and any in its folder under
+    /// <paramref name="skillsDirectory"/>, sorted.
+    /// </summary>
+    public static IReadOnlyList<string> Available(string? skillsDirectory, SkillLevel level)
     {
+        string folder = FolderOf(level);
         var names = SkillFileSource.EmbeddedNames
-            .Where(n => n.StartsWith(Folder + ".", StringComparison.Ordinal) && n.EndsWith(".md", StringComparison.Ordinal))
-            .Select(n => n[(Folder.Length + 1)..^".md".Length]);
-        if (skillsDirectory is not null && Directory.Exists(Path.Combine(skillsDirectory, Folder)))
-            names = names.Concat(Directory.EnumerateFiles(Path.Combine(skillsDirectory, Folder), "*.md").Select(f => Path.GetFileNameWithoutExtension(f)));
+            .Where(n => n.StartsWith(folder + ".", StringComparison.Ordinal) && n.EndsWith(".md", StringComparison.Ordinal))
+            .Select(n => n[(folder.Length + 1)..^".md".Length]);
+        if (skillsDirectory is not null && Directory.Exists(Path.Combine(skillsDirectory, folder)))
+            names = names.Concat(Directory.EnumerateFiles(Path.Combine(skillsDirectory, folder), "*.md").Select(f => Path.GetFileNameWithoutExtension(f)));
         return names.Where(IsValidName).Distinct().Order(StringComparer.Ordinal).ToList();
     }
 

@@ -24,7 +24,7 @@ public static class SkillFileSource
     /// <summary>The embedded copy of <paramref name="fileName"/>, or null when it isn't built in.</summary>
     public static string? ReadEmbedded(string fileName)
     {
-        // A file in a subfolder (personalities/puls.md) is embedded as Skills.personalities.puls.md.
+        // A file in a subfolder (agent/puls.md) is embedded as Skills.agent.puls.md.
         using Stream? stream = Assembly.GetManifestResourceStream(Prefix + fileName.Replace('/', '.'));
         if (stream is null) return null;
         using var reader = new StreamReader(stream);
