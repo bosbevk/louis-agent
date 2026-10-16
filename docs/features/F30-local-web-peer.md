@@ -60,3 +60,6 @@ keep the peer only if real prices hold and the cost drops.
   process environment for whatever a profile file leaves out; that would hand the local model Claude's
   `LLM_THINKING`. Only `LLM_API_KEY`, `ANTHROPIC_API_KEY` and `ANTHROPIC_WORKSPACE_ID` fall back (they belong in
   `.env.secrets`, never in a profile file); anything else takes its default.
+- **The profile goes to the peer as data, and the peer decides** (step 2). `StartSubSession(…, llm)` sends the name in
+  the session's body, trimmed; the peer refuses one it doesn't offer with the same 400 as an unknown personality, so the
+  parent never needs to know which models the peer has. `GET /llm-profiles` lists them, beside `/personalities`.

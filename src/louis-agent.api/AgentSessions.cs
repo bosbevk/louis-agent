@@ -15,7 +15,7 @@ namespace LouisAgent.Api;
 /// progress, if any.
 /// </summary>
 internal sealed class AgentSession(string id, AgentEngine engine, IReadOnlyList<string> toolsets, int depth, UsageTags tags,
-    string? personality = null, UserPlace? place = null)
+    string? personality = null, UserPlace? place = null, string? llm = null)
 {
     private readonly SemaphoreSlim _turnLock = new(1, 1);
     private CancellationTokenSource? _activeTurn;
@@ -36,6 +36,9 @@ internal sealed class AgentSession(string id, AgentEngine engine, IReadOnlyList<
 
     /// <summary>Where the user is, when they shared it (F22): set for every turn; the first message says it.</summary>
     public UserPlace? Place { get; } = place;
+
+    /// <summary>The LLM profile the session runs on (F30), or null for the instance's own model.</summary>
+    public string? Llm { get; } = llm;
 
     /// <summary>The longest attachment kept, as in the prompt: one file can't fill a specialist's context.</summary>
     public const int MaxAttachmentChars = 100_000;
@@ -129,10 +132,11 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
     /// from that level's folder, and a sub-session gets no router (default.md): its toolsets were chosen for it and it
     /// can't delegate (F21). Throws <see cref="ToolsetException"/> for an unknown or unavailable
     /// toolset, a depth outside 0..<see cref="MaxDepth"/>, or a sub-session asking for <see cref="SpecialistsToolset"/>, and
-    /// <see cref="Core.Skills.PersonalityException"/> for an unknown personality, before anything is created.
+    /// <see cref="Core.Skills.PersonalityException"/> for an unknown personality, and <see cref="SessionLlmException"/> for an
+    /// LLM profile this instance doesn't offer (<paramref name="llm"/>, F30; null: its own model), before anything is created.
     /// </summary>
     public AgentSession Create(IEnumerable<string>? toolsets = null, UsageTags? tags = null, int depth = 0, string? personality = null,
-        UserPlace? place = null)
+        UserPlace? place = null, string? llm = null)
     {
         if (depth is < 0 or > MaxDepth)
             throw new ToolsetException(MessageText.Format(ErrorMessage.SessionDepthInvalid, new { Max = MaxDepth }));
@@ -141,11 +145,12 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
             throw new ToolsetException(MessageText.Format(ErrorMessage.SubSessionCannotDelegate, new { Toolset = SpecialistsToolset }));
         if (string.IsNullOrEmpty(personality)) personality = null;
         // A sub-session's role is named by its parent (CL10); with none it gets the default mode's voice, no routing.
-        var engine = engines.GetOrCreate(names, personality, (SkillLevel)depth);
+        if (string.IsNullOrWhiteSpace(llm)) llm = null;
+        var engine = engines.GetOrCreate(names, personality, (SkillLevel)depth, llm);
 
         DropIdle(DateTimeOffset.UtcNow);
 
-        var session = new AgentSession($"sess_{Guid.NewGuid():N}", engine, names, depth, tags ?? UsageTags.None, personality, place);
+        var session = new AgentSession($"sess_{Guid.NewGuid():N}", engine, names, depth, tags ?? UsageTags.None, personality, place, llm);
         _sessions[session.Id] = session;
         return session;
     }

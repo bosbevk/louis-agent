@@ -12,8 +12,9 @@ public class AgentSessionsTests
     private static string RepoRoot { get; } =
         Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, "..", "..", "..", "..", ".."));
 
-    private static AgentSessions Sessions() => new(new AgentEngineFactory(new NoModel(),
-        new AgentOptions { WorkspaceRoot = RepoRoot, SkillsDirectory = Path.Combine(RepoRoot, "Skills"), RatesUrl = null }));
+    private static AgentSessions Sessions(IReadOnlyList<SessionLlm>? llms = null) => new(new AgentEngineFactory(new NoModel(),
+        new AgentOptions { WorkspaceRoot = RepoRoot, SkillsDirectory = Path.Combine(RepoRoot, "Skills"), RatesUrl = null },
+        sessionLlms: llms));
 
     private static string[] Names(AgentSession session) => session.Engine.Tools.Select(t => t.Name).ToArray();
 
@@ -213,5 +214,28 @@ public class AgentSessionsTests
         Assert.That(unnamed.Engine.SkillDocumentation, Does.Contain("Louis's Minion").And.Not.Contain("# Louis Agent - Default Instructions"));
         Assert.That(sessions.Create(["web"], depth: 1, personality: "puls-cook").Personality, Is.EqualTo("puls-cook"));
         Assert.That(sessions.Create(["web"]).Personality, Is.Null, "a top-level session that names none gets the default voice");
+    }
+
+    [Test]
+    public void ASessionNamingAnLlmProfile_KeepsIt_AndOneWithout_HasNone()
+    {
+        // F30: a price lookup runs on the local model, the chat that asked for it on the instance's.
+        var sessions = Sessions([new SessionLlm("ollama-web", new NoModel())]);
+
+        var local = sessions.Create(["web"], depth: 1, llm: "ollama-web");
+        var own = sessions.Create(["web"], depth: 1);
+
+        Assert.That(local.Llm, Is.EqualTo("ollama-web"));
+        Assert.That(own.Llm, Is.Null);
+        Assert.That(local.Engine, Is.Not.SameAs(own.Engine), "one engine per model");
+    }
+
+    [Test]
+    public void AnUnknownLlmProfile_IsRefused_NamingTheOnesThereAre()
+    {
+        var sessions = Sessions([new SessionLlm("ollama-web", new NoModel())]);
+
+        var ex = Assert.Throws<SessionLlmException>(() => sessions.Create(["web"], llm: "gpt-9"));
+        Assert.That(ex!.Message, Does.Contain("gpt-9").And.Contain("ollama-web"));
     }
 }

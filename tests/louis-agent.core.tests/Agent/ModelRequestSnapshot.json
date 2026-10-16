@@ -2039,6 +2039,14 @@
               ]
             },
             "default": null
+          },
+          "llm": {
+            "description": "The LLM profile the sub-session runs on, when agents-skills.md names one for the task (the peer lists them at /llm-profiles). Empty: the peer's own model.",
+            "type": [
+              "string",
+              "null"
+            ],
+            "default": null
           }
         },
         "required": [

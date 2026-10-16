@@ -65,6 +65,8 @@ public sealed class AgentPeerTools(IReadOnlyDictionary<string, Uri> peers, strin
             "Empty: the peer's default.")] string? personality = null,
         [Description("Names of files the user attached in this conversation that the task needs; they are sent with the task " +
             "(the sub-session sees nothing else of the conversation).")] string[]? attachments = null,
+        [Description("The LLM profile the sub-session runs on, when agents-skills.md names one for the task (the peer lists " +
+            "them at /llm-profiles). Empty: the peer's own model.")] string? llm = null,
         CancellationToken cancellationToken = default)
     {
         if (ForwardAttachments(attachments, out var forwarded) is { } unknownAttachment) return unknownAttachment;
@@ -93,6 +95,7 @@ public sealed class AgentPeerTools(IReadOnlyDictionary<string, Uri> peers, strin
             {
                 toolsets, depth = 1, task = $"sub-session:{agent}", run = scope?.Tags.Run, service = scope?.Tags.Service, parent,
                 personality = string.IsNullOrWhiteSpace(personality) ? null : personality.Trim(),
+                llm = string.IsNullOrWhiteSpace(llm) ? null : llm.Trim(),
                 // The user's place, when they shared it, so the specialist's time and "near me" are theirs (F22).
                 location = UserPlace.Current?.Location, time_zone = UserPlace.Current?.TimeZone,
             });

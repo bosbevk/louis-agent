@@ -180,6 +180,7 @@ public class AgentPeerToolsTests
         Assert.That(create.RootElement.GetProperty("depth").GetInt32(), Is.EqualTo(1), "one level deep");
         Assert.That(create.RootElement.GetProperty("toolsets").EnumerateArray().Select(t => t.GetString()), Is.EqualTo(new[] { "files", "git" }));
         Assert.That(create.RootElement.GetProperty("personality").ValueKind, Is.EqualTo(JsonValueKind.Null), "none named: the peer's default");
+        Assert.That(create.RootElement.GetProperty("llm").ValueKind, Is.EqualTo(JsonValueKind.Null), "none named: the peer's own model");
     }
 
     /// <summary>A peer whose sessions get their own ids (sess_1, sess_2, …), so kept-open ones can be told apart.</summary>
@@ -502,6 +503,19 @@ public class AgentPeerToolsTests
 
         using var create = JsonDocument.Parse(handler.Requests[0].Body!);
         Assert.That(create.RootElement.GetProperty("personality").GetString(), Is.EqualTo("puls-researcher"));
+    }
+
+    [Test]
+    public async Task AnLlmProfile_IsSentToThePeer_Trimmed()
+    {
+        // F30: the price lookup names the peer's local model; the peer refuses a profile it doesn't offer.
+        var handler = Peer();
+
+        await Tools(handler).StartSubSession(["web"], "Prys van 1 kg uie in Stellenbosch?", agent: "coder", personality: "puls-prices",
+            llm: " ollama-web ");
+
+        using var create = JsonDocument.Parse(handler.Requests[0].Body!);
+        Assert.That(create.RootElement.GetProperty("llm").GetString(), Is.EqualTo("ollama-web"));
     }
 
     [Test]
