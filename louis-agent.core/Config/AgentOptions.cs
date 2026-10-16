@@ -112,6 +112,12 @@ public sealed class AgentOptions
     public IReadOnlyList<string> PersonalitiesEnabled { get; set; } = [];
 
     /// <summary>
+    /// LLM_SESSION_PROFILES: the LLM profiles a session may name when it opens (F30), comma separated, e.g.
+    /// <c>ollama-web</c>; each is read from <c>config/.env.{name}</c>. Empty: every session runs on the instance's model.
+    /// </summary>
+    public IReadOnlyList<string> SessionLlmProfiles { get; set; } = [];
+
+    /// <summary>
     /// The default of <see cref="SubSessionPromptBudget"/>: below Claude Haiku 5.5's long-prompt threshold (100k in
     /// config/prices.json), not at it. The request the budget forces to answer still carries the last round's tool
     /// results, so it needs room under the price step.
@@ -177,6 +183,7 @@ public sealed class AgentOptions
             DisplayCurrency = Get("DISPLAY_CURRENCY"),
             AgentPeers = ParsePeers(Get("AGENT_PEERS")),
             PersonalitiesEnabled = ParseNames(Get("PERSONALITIES_ENABLED")),
+            SessionLlmProfiles = ParseNames(Get("LLM_SESSION_PROFILES")),
             AgentApiKey = Get("AGENT_API_KEY"),
             SubSessionPromptBudget = int.TryParse(Get("SUB_SESSION_PROMPT_BUDGET"), NumberStyles.None, CultureInfo.InvariantCulture, out int budget)
                 ? budget : DefaultSubSessionPromptBudget,

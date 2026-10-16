@@ -56,6 +56,41 @@ public static partial class AgentHost
             overwriteExistingVars: false));
     }
 
+    /// <summary>The settings an LLM profile file never holds, taken from the environment instead (.env.secrets).</summary>
+    private static readonly string[] SecretLlmSettings = ["LLM_API_KEY", "ANTHROPIC_API_KEY", "ANTHROPIC_WORKSPACE_ID"];
+
+    /// <summary>
+    /// The models a session may name besides the instance's own (F30): each profile in <c>LLM_SESSION_PROFILES</c> read
+    /// from <c>config/.env.{name}</c> into a dictionary, so the process environment, and with it the instance's own
+    /// model, never changes. Only the API key settings come from <paramref name="environment"/>; anything else a profile
+    /// leaves out takes its default, not the instance's value. A listed profile without its file stops start-up.
+    /// </summary>
+    internal static IReadOnlyList<SessionLlm> LoadSessionLlms(AgentOptions agent, ILlmClientFactory clientFactory, string? configDirectory,
+        Func<string, string?> environment)
+    {
+        var llms = new List<SessionLlm>();
+        foreach (string name in agent.SessionLlmProfiles)
+        {
+            if (!LlmProfileName().IsMatch(name))
+                throw new SessionLlmException(MessageText.Format(ErrorMessage.SessionLlmNameInvalid, new { Name = name }));
+            string file = Path.Combine(configDirectory ?? "", $".env.{name}");
+            if (configDirectory is null || !File.Exists(file))
+                throw new SessionLlmException(MessageText.Format(ErrorMessage.SessionLlmFileMissing, new { Name = name, File = $"config/.env.{name}" }));
+
+            var settings = DotEnv.Read(new DotEnvOptions(ignoreExceptions: false, envFilePaths: [file]));
+            var llm = LlmOptions.FromEnvironment(key => settings.TryGetValue(key, out string? value) ? value
+                : SecretLlmSettings.Contains(key) ? environment(key) : null);
+            var model = new SessionLlm(name, clientFactory.Create(llm), llm.ResolveSupportsTools(), clientFactory.CreateUsageMapper(llm),
+                llm.ResolveThinking());
+            Log.Log(LogLevel.Information, LogMessage.SessionLlmLoaded, new
+            {
+                Name = name, Llm = llm, Tools = model.SupportsTools ? "on" : "off", Thinking = model.Thinking?.ToString().ToLowerInvariant() ?? "off",
+            });
+            llms.Add(model);
+        }
+        return llms;
+    }
+
     /// <summary>Profile names are file-name parts (anthropic, ollama), never paths.</summary>
     [System.Text.RegularExpressions.GeneratedRegex("^[a-z0-9-]+$")]
     private static partial System.Text.RegularExpressions.Regex LlmProfileName();
@@ -114,8 +149,11 @@ public static partial class AgentHost
         ExchangeRates rates = LoadRates(agent, prices.Currency);
         DisplayCurrency display = DisplayCurrency.Resolve(agent, prices.Currency, rates);
         Log.Log(LogLevel.Information, LogMessage.DisplayCurrencyChosen, new { Display = display });
+        // The profiles sit beside .env: the repo's config/ when run from it, the mounted workspace's in a container.
+        string configDirectory = EnvFile.FindConfigDirectory(Environment.CurrentDirectory) ?? Path.Combine(agent.WorkspaceRoot, "config");
+        var sessionLlms = LoadSessionLlms(agent, clientFactory, configDirectory, Environment.GetEnvironmentVariable);
         var engines = new AgentEngineFactory(chatClient, agent, llm.ResolveSupportsTools(), CreateUsageSink(agent, prices),
-            clientFactory.CreateUsageMapper(llm), display, llm.ResolveThinking(), rates: rates);
+            clientFactory.CreateUsageMapper(llm), display, llm.ResolveThinking(), rates: rates, sessionLlms: sessionLlms);
         var engine = engines.GetOrCreate(engines.Available);
         Log.Log(LogLevel.Information, LogMessage.LlmChosen,
             new { Llm = llm, Tools = engine.SupportsTools ? "on" : "off", Thinking = engine.Thinking?.ToString().ToLowerInvariant() ?? "off" });

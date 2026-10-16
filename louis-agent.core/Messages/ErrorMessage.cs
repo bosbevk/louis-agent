@@ -117,4 +117,13 @@ public enum ErrorMessage
 
     [Description("A sub-session can't load the '{Toolset}' toolset: sub-sessions are one level deep.")]
     SubSessionCannotDelegate,
+
+    [Description("Unknown LLM profile '{Name}'. Available: {Available}.")]
+    UnknownSessionLlm,
+
+    [Description("LLM_SESSION_PROFILES names '{Name}', but {File} isn't there.")]
+    SessionLlmFileMissing,
+
+    [Description("'{Name}' isn't an LLM profile name: use lowercase letters, digits and dashes.")]
+    SessionLlmNameInvalid,
 }

@@ -55,3 +55,8 @@ keep the peer only if real prices hold and the cost drops.
 - The five-question run is in BENCHMARKS.md, and the decision to keep or drop the peer is written here.
 
 ## What the build changed
+
+- **A profile takes nothing from the instance but its API key** (step 1). The first idea was to fall back to the
+  process environment for whatever a profile file leaves out; that would hand the local model Claude's
+  `LLM_THINKING`. Only `LLM_API_KEY`, `ANTHROPIC_API_KEY` and `ANTHROPIC_WORKSPACE_ID` fall back (they belong in
+  `.env.secrets`, never in a profile file); anything else takes its default.
