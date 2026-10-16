@@ -100,9 +100,9 @@ app.MapWorkspace();
 app.MapGit();
 app.MapHistory();
 // F27: the admin portal, behind its own key (ADMIN_API_KEY, else AGENT_API_KEY; neither: closed). The saved runs are
-// the samples/ folder of the workspace this instance mounts.
+// none since CL10: the rewritten checks come with the Benchmarks feature.
 // A run's script calls this API back at BENCHMARK_API_URL (the container's own port, by default).
-var benchmarks = new BenchmarkCatalog(Path.Combine(host.Engine.WorkspaceRoot, "samples"));
+var benchmarks = new BenchmarkCatalog();
 app.MapAdmin(benchmarks,
     new BenchmarkRunner(benchmarks, host.Engine.WorkspaceRoot, Environment.GetEnvironmentVariable("BENCHMARK_API_URL") ?? "http://127.0.0.1:8080/"),
     AdminGate.Key(Environment.GetEnvironmentVariable("ADMIN_API_KEY"), apiKey));

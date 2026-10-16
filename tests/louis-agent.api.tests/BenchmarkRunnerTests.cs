@@ -3,7 +3,7 @@ using LouisAgent.Api.Services;
 namespace LouisAgent.Api.Tests;
 
 // F27 step 3 (F27-S2): a check runs as a child process (an argument list, never a shell), one at a time, its lines
-// streamed to whoever listens, into a timestamped folder under samples/. The script here is a stand-in: a few lines
+// streamed to whoever listens (CL10: no run folder any more). The script here is a stand-in: a few lines
 // of Python that print what they got, so the test needs no containers, model or network.
 public class BenchmarkRunnerTests
 {
@@ -15,7 +15,7 @@ public class BenchmarkRunnerTests
     public void SetUp()
     {
         _workspace = Path.Combine(Path.GetTempPath(), "louis-bench-" + Guid.NewGuid().ToString("N"));
-        Directory.CreateDirectory(Path.Combine(_workspace, "samples"));
+        Directory.CreateDirectory(_workspace);
     }
 
     [TearDown]
@@ -27,14 +27,13 @@ public class BenchmarkRunnerTests
         Directory.Delete(_workspace, recursive: true);
     }
 
-    /// <summary>A runner whose "cook" check is <paramref name="python"/> saved under samples/, with <paramref name="arguments"/> of its own.</summary>
+    /// <summary>A runner whose "cook" check is <paramref name="python"/> under benchmarks/, with <paramref name="arguments"/> of its own.</summary>
     private BenchmarkRunner Runner(string python, string pulsApi = "http://x/", IReadOnlyList<string>? arguments = null)
     {
-        string script = Path.Combine("samples", "fake-check", "run_check.py");
-        Directory.CreateDirectory(Path.Combine(_workspace, "samples", "fake-check"));
+        string script = Path.Combine("benchmarks", "fake-check", "run_check.py");
+        Directory.CreateDirectory(Path.Combine(_workspace, "benchmarks", "fake-check"));
         File.WriteAllText(Path.Combine(_workspace, script), python);
-        var catalog = new BenchmarkCatalog(Path.Combine(_workspace, "samples"),
-            [new BenchmarkCheck("cook", "Die kokkontrole", script.Replace('\\', '/'), ["sample-output-cook"], arguments ?? [])]);
+        var catalog = new BenchmarkCatalog([new BenchmarkCheck("cook", "Die kokkontrole", script.Replace('\\', '/'), arguments ?? [])]);
         return _runner = new BenchmarkRunner(catalog, _workspace, pulsApi, Python);
     }
 
@@ -42,7 +41,7 @@ public class BenchmarkRunnerTests
     public async Task ACheckArguments_FollowTheRepeat_EachItsOwn()
     {
         // One script, two checks (the cook's, and Puls alone against Puls with its cook): the check's own arguments.
-        var runner = Runner("import sys\nprint(sys.argv[4:])", arguments: ["--personalities", "two words"]);
+        var runner = Runner("import sys\nprint(sys.argv[3:])", arguments: ["--personalities", "two words"]);
 
         BenchmarkRun run = runner.Start("cook", repeat: 1)!;
         var lines = new List<string>();
@@ -53,10 +52,22 @@ public class BenchmarkRunnerTests
 
     private const string Echo = """
         import os, sys
-        print("out", sys.argv[1])
-        print("repeat", sys.argv[3])
+        print("repeat", sys.argv[2])
         print("api", os.environ.get("PULS_API"))
         """;
+
+    [Test]
+    public async Task TheScript_GetsItsRepeatAndArguments_NoOutputFolder()
+    {
+        // CL10: a run writes no folder under samples/; where its results go (puls_benchmarks) is the later feature's.
+        var runner = Runner("import sys\nprint(sys.argv[1:])", arguments: ["--x"]);
+
+        BenchmarkRun run = runner.Start("cook", repeat: 2)!;
+        var lines = new List<string>();
+        await foreach (string line in runner.EventsAsync(run.Id)) lines.Add(line);
+
+        Assert.That(lines, Is.EqualTo(new[] { "['--repeat', '2', '--x']" }));
+    }
 
     [Test]
     public async Task ARun_StreamsTheScriptsLines_ThenEndsDone()
@@ -67,8 +78,7 @@ public class BenchmarkRunnerTests
         var lines = new List<string>();
         await foreach (string line in runner.EventsAsync(run.Id)) lines.Add(line);
 
-        Assert.That(run.Folder, Does.StartWith("sample-output-cook-"));
-        Assert.That(lines, Is.EqualTo(new[] { $"out samples/{run.Folder}", "repeat 2", "api http://127.0.0.1:8080/" }));
+        Assert.That(lines, Is.EqualTo(new[] { "repeat 2", "api http://127.0.0.1:8080/" }));
         Assert.That((run.Status, run.ExitCode), Is.EqualTo((BenchmarkRunStatus.Done, (int?)0)));
         Assert.That(runner.Current, Is.SameAs(run), "the last run stays readable");
     }

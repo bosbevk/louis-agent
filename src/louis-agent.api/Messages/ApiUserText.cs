@@ -95,13 +95,10 @@ public enum ApiUserText
     [Description("The admin portal is closed: set ADMIN_API_KEY (or AGENT_API_KEY) in config/.env.secrets and recreate the container.")]
     AdminClosed,
 
-    [Description("No saved run named '{Folder}'.")]
-    NoRun,
-
     [Description("No check named '{Check}'. The checks: {Checks}.")]
     NoCheck,
 
-    [Description("A run is in progress ({Folder}); wait for it to end. The containers are shared, so one runs at a time.")]
+    [Description("A run of {Check} is in progress; wait for it to end. The containers are shared, so one runs at a time.")]
     BenchmarkRunning,
 
     [Description("No run in progress.")]
