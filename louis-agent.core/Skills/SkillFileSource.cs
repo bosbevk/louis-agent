@@ -3,7 +3,7 @@ namespace LouisAgent.Core.Skills;
 using Microsoft.Extensions.FileProviders;
 
 /// <summary>
-/// Reads a built-in prompt (CL8 step 4, ADR 0017): the files in core's <c>Prompts/</c>, embedded with a manifest so they
+/// Reads a built-in prompt (CL8 step 4, ADR 0018): the files in core's <c>Prompts/</c>, embedded with a manifest so they
 /// keep their folder paths (<c>agent/puls.md</c>, <c>toolsets/web.md</c>), and read only from the assembly. A copy on
 /// disk never overrides one, so a wording change is a rebuild. Files the agent writes stay on disk (<c>AgentHost</c>).
 /// </summary>

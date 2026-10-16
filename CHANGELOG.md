@@ -8,8 +8,10 @@
   `toolsets/`, and are read only from the assembly (`Microsoft.Extensions.FileProviders.Embedded`): a role opens only at
   its own level, a copy on disk no longer overrides one, and a wording change is a rebuild. The repo's `Skills/` keeps
   what the agent writes; the placeholder time-logging skill goes; `SkillsLayoutTests` holds the layout
-  ([plan](docs/plans/CL8-skills-by-level.md), [ADR 0016](docs/adr/0016-skills-by-level.md),
-  [ADR 0017](docs/adr/0017-built-in-prompts-embedded.md))
+  ([plan](docs/plans/CL8-skills-by-level.md), [ADR 0017](docs/adr/0017-skills-by-level.md),
+  [ADR 0018](docs/adr/0018-built-in-prompts-embedded.md))
+- 2026-10-15 — **Licence: all rights reserved** (was AGPL-3.0): public to read, but no use, copying, changes or hosting
+  without written permission; earlier versions keep their licence ([ADR 0016](docs/adr/0016-licence-all-rights-reserved.md))
 - 2026-10-15 — **Licence: AGPL-3.0** (was MIT): still free to use, change and share; whoever changes it and runs it as a
   service must publish the changes, so a hosted Puls's improvements stay open ([ADR 0015](docs/adr/0015-licence-agpl.md))
 - 2026-10-15 — **F24 Landing motion**: Puls's landing page as a moving page on the brand's idea (a puls is a disturbance

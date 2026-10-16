@@ -1,7 +1,7 @@
 # Skills: what the agent writes
 
 > **Reference.** What this folder holds, and where the built-in prompts are instead. **Elsewhere:** why, in
-> [ADR 0016](../docs/adr/0016-skills-by-level.md) and [ADR 0017](../docs/adr/0017-built-in-prompts-embedded.md).
+> [ADR 0017](../docs/adr/0017-skills-by-level.md) and [ADR 0018](../docs/adr/0018-built-in-prompts-embedded.md).
 
 This folder is the **skills folder** when `SKILLS_DIRECTORY` isn't set (the compose files set it to this folder,
 mounted at `/skills`). It holds only what the agent writes, kept on disk so it survives a rebuild:

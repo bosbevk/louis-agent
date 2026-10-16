@@ -54,7 +54,7 @@ without its API key) can't be loaded. An agent built on core, like the orchestra
 4. **with the `skills` toolset only**, the `AGENT_FUNCTION` file (`louis` loads every skill file).
 
 The combined text is the system prompt. The built-in files are in `louis-agent.core/Prompts/` and read only from the
-assembly (ADR 0017), so a wording change is a rebuild.
+assembly (ADR 0018), so a wording change is a rebuild.
 
 ## A chat turn
 

@@ -43,12 +43,12 @@ Skills/
 - **Names stay unique across levels** (a role name means one file), so `PERSONALITIES_ENABLED` (F29) keeps naming
   roles without a level.
 
-### The rule (into *Rules that always apply*, with ADR 0016)
+### The rule (into *Rules that always apply*, with ADR 0017)
 
 > **Skill files follow the levels.** A prompt file lives in the folder of the level that reads it: `agent/` (level 0),
 > `specialists/` (level 1), `minions/` (level 2); what every level shares, the toolset guides, lives in `toolsets/`. A
 > session at depth N loads its personality only from level N's folder, so a role is never opened at the wrong level.
-> Why: [ADR 0016](../adr/0016-skills-by-level.md).
+> Why: [ADR 0017](../adr/0017-skills-by-level.md).
 
 Held in code, not only in the docs:
 
@@ -148,7 +148,7 @@ sequenceDiagram
 
 | Step | What | Check |
 |---|---|---|
-| 0 | **Docs:** this plan; ADR 0016 *Skill files follow the levels*; the TODO line; the plans index row | — |
+| 0 | **Docs:** this plan; ADR 0017 *Skill files follow the levels*; the TODO line; the plans index row | — |
 | 1 | **Levels in code, files not moved yet:** `SkillLevel`; `PersonalityFile(…, level)` and `LoadSkills(…, level)`; `GetOrCreate`'s `router` becomes the level; `AgentSessions` passes `depth` as the level; `GET /personalities` per level. Until step 2 every level's folder is `personalities/` (one line to change) | Tests first: a level-1 role refused at level 0 and the other way round, with the level's names in the message; level 0 without a name gets `personality.md`; the key separates levels; `AgentSessionsTests` for the 400. Golden file unchanged |
 | 2 | **Move the files** (`git mv`, so history follows) and point every reader at them: the table above; the csproj's embedded resources; `FindSkillsDirectory`'s marker | The whole core and API suites; the golden file **unchanged** (same text, same order); `SkillFileSource` reads every moved file embedded and from disk |
 | 3 | **Function skills in `agent/functions/`:** discovery, `AGENT_FUNCTION`, `CreateSkillFile` writes `agent/functions/<name>.md` | `SkillToolsTests` first (where it writes, that it loads); golden file: only `CreateSkillFile`'s description |
@@ -190,7 +190,7 @@ sequenceDiagram
 
 - **ADR 0011 keeps its body; only its status changes** (Louis, step 0, 2026-10-16): accepted ADRs are never edited
   except their *Status* line, so step 4 sets 0011's to *Accepted; file names amended by
-  [0016](../adr/0016-skills-by-level.md)* instead of changing its file names. ADR 0016 records the new names.
+  [0017](../adr/0017-skills-by-level.md)* instead of changing its file names. ADR 0017 records the new names.
 - **Step 1 moves the named personalities; step 2 moves the rest** (Louis, step 1, 2026-10-16): with every level's
   folder still `personalities/`, a role opened at the wrong level is found and can't be refused, so step 1 couldn't
   test what it adds. Step 1 now moves `puls.md` to `agent/` and the roles and `roles.json` to `specialists/` (with the
@@ -214,8 +214,8 @@ sequenceDiagram
     restart. `SKILLS_DIRECTORY` keeps only what the agent writes: `agent/functions/<name>.md` (`CreateSkillFile`) and
     `tools/`. A disk file with a built-in's name is ignored and logged; the repo's `Skills/` keeps `tools/` and
     `examples/`.
-  - **Its ADR is 0017** (*Built-in prompts are embedded, read only from the assembly*): it ends ADR 0011's "wording
-    changes without a rebuild", so 0011's status gets *Amended by 0017* in step 5. F30's minions ADR becomes 0018.
+  - **Its ADR is 0018** (*Built-in prompts are embedded, read only from the assembly*): it ends ADR 0011's "wording
+    changes without a rebuild", so 0011's status gets *Amended by 0018* in step 5. F30's minions ADR becomes 0020 (main's licence took 0016; CL9 takes 0019).
   - **Test first:** a disk file with a built-in's name no longer overrides (`SkillFileSourceTests`' override test
     inverts); each level's personalities and the guides are listed from the manifest; an agent-written function file
     still loads from disk. The golden file is unchanged.

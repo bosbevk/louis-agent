@@ -1,7 +1,7 @@
 # 0011. Prompts are content: plain markdown skills, no provider class per toolset
 
-**Status:** Accepted; file names amended by [0016](0016-skills-by-level.md), the disk override ended by
-[0017](0017-built-in-prompts-embedded.md) · **Date:** 2026-10-11 · **Recorded:** 2026-10-14
+**Status:** Accepted; file names amended by [0017](0017-skills-by-level.md), the disk override ended by
+[0018](0018-built-in-prompts-embedded.md) · **Date:** 2026-10-11 · **Recorded:** 2026-10-14
 
 ## Context
 

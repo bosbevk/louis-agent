@@ -215,8 +215,8 @@ documentation is the system prompt; every file is plain markdown read by `Markdo
    or one the agent wrote); `louis` loads them all plus any the agent wrote
 
 The built-in files live in `louis-agent.core/Prompts/`, one folder per level (`agent/`, `specialists/`, `minions/`)
-beside `toolsets/` (ADR 0016), and are read only from the assembly (`SkillFileSource`, `ManifestEmbeddedFileProvider`;
-ADR 0017), so what the model reads is fixed by the build. Files the agent writes (its function skills, its tools) are
+beside `toolsets/` (ADR 0017), and are read only from the assembly (`SkillFileSource`, `ManifestEmbeddedFileProvider`;
+ADR 0018), so what the model reads is fixed by the build. Files the agent writes (its function skills, its tools) are
 on disk only, in the skills folder: `SKILLS_DIRECTORY`, else the repo's `Skills/` (found by its README).
 
 A markdown **skill** is a named procedure with a fenced script (bash, PowerShell or Python by fence language). The model

@@ -4,7 +4,7 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 
 /// <summary>
-/// Personalities a session can choose (F21), in the folder of the level that reads them (CL8, ADR 0016):
+/// Personalities a session can choose (F21), in the folder of the level that reads them (CL8, ADR 0017):
 /// <c>agent/{name}.md</c> (level 0, a voice), <c>specialists/{name}.md</c> (level 1, a role),
 /// <c>minions/{name}.md</c> (level 2, F30), under core's <c>Prompts/</c> and read only from the assembly (CL8
 /// step 4). <see cref="DefaultFile"/> is used when a session names none. A name is lowercase letters, digits and

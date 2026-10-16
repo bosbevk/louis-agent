@@ -1,4 +1,4 @@
-# 0017. Built-in prompts are embedded, read only from the assembly
+# 0018. Built-in prompts are embedded, read only from the assembly
 
 **Status:** Accepted · **Date:** 2026-10-16 · **Recorded:** 2026-10-16
 
@@ -17,7 +17,7 @@ strings, not markdown).
 
 ## Decision
 
-We keep the built-in prompts in `louis-agent.core/Prompts/`, one folder per level (ADR 0016) beside `toolsets/`, embed
+We keep the built-in prompts in `louis-agent.core/Prompts/`, one folder per level (ADR 0017) beside `toolsets/`, embed
 them with a manifest (`GenerateEmbeddedFilesManifest`), and read them only through `ManifestEmbeddedFileProvider`, by
 their own paths. A file on disk never overrides one: a copy with a built-in's name is ignored, with a warning. The
 skills folder (`SKILLS_DIRECTORY`, else the repo's `Skills/`, found by its README) holds only what the agent writes:
@@ -36,4 +36,4 @@ its function skills (`agent/functions/`) and its tools (`tools/`).
 ## Links
 
 [CL8 plan](../plans/CL8-skills-by-level.md) (*Approved during the build*, step 4) ·
-[ADR 0011](0011-prompts-are-content.md) · [ADR 0016](0016-skills-by-level.md)
+[ADR 0011](0011-prompts-are-content.md) · [ADR 0017](0017-skills-by-level.md)

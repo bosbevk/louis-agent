@@ -105,7 +105,7 @@ decision's record (its context, and what it cost) in [docs/adr/](adr/README.md).
   level that reads it (`agent/` level 0, `specialists/` level 1, `minions/` level 2) or in `toolsets/` when every level
   shares it; a session loads its personality only from its own level's folder. They're read only from the assembly, so
   a wording change is a rebuild; the repo's `Skills/` holds only what the agent writes. `SkillsLayoutTests` holds it.
-  Why: [ADR 0016](adr/0016-skills-by-level.md), [ADR 0017](adr/0017-built-in-prompts-embedded.md).
+  Why: [ADR 0017](adr/0017-skills-by-level.md), [ADR 0018](adr/0018-built-in-prompts-embedded.md).
 - **stdout is a protocol** — the ACP and MCP servers speak on it, so logs go through `ILogger` to stderr
   ([Messages and logging](../louis-agent.core/CLAUDE.md#messages-and-logging)).
   Why: [ADR 0009](adr/0009-message-text-as-enum-templates.md).
