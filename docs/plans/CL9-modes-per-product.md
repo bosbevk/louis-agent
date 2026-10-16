@@ -28,7 +28,7 @@ What the code shows:
 - **Puls's language is fixed twice.** `ChatPage.razor` sends `personality: "puls"`; the *Taal* menu lists English,
   Nederlands, Deutsch and isiZulu, each "coming soon". Nothing ties a language choice to the voice.
 
-Goal skill: 11, context engineering (each mode's prompt holds only its own routing), and 13, cost (a smaller fixed
+Goal skills: 3, prompt design, and 7, context engineering (each mode's prompt holds only its own routing), and 13, cost (a smaller fixed
 prefix per request, measured).
 
 ## Design
@@ -213,7 +213,7 @@ sequenceDiagram
 
 ## Concepts
 
-- **Context engineering** (goal skill 11): a mode's prompt holds its own routing and nothing else; the voice and its
+- **Context engineering** (goal skill 7, with 3, prompt design): a mode's prompt holds its own routing and nothing else; the voice and its
   router are paired as data, not left to a naming habit.
 - **Cost of the fixed prefix** (goal skill 13): every request pays for the router; a smaller one is measured per
   profile, free, from the start-up log, before any paid run.
@@ -221,3 +221,10 @@ sequenceDiagram
   has, so the two can't disagree.
 
 ## Approved during the build
+- **The skill map** (the review of PR #47, 2026-10-16): context engineering is skill 7 and prompt design skill 3 in
+  [GOAL.md](../GOAL.md); 11 is Protocols. The *Context* and *Concepts* above say 3 and 7.
+- **`SkillFiles.BuiltIn` goes: what is embedded is built in** (Louis, 2026-10-16). After CL8 the hand-kept list only
+  reserves names (a copy on disk can't override a built-in any more), and it can drift from what's embedded. Step 3,
+  where `code-review.md` goes, replaces it with a check against `SkillFileSource.EmbeddedFiles`: `CreateSkillFile`
+  refuses a name whose function or guide path is embedded, and discovery skips a disk file whose path is. Test first:
+  a new toolset's guide is reserved with no list to edit; `SkillFilesTests` stops asserting the list.
