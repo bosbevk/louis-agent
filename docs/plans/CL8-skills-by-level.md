@@ -187,3 +187,7 @@ sequenceDiagram
   test refuses a misplaced file.
 
 ## Approved during the build
+
+- **ADR 0011 keeps its body; only its status changes** (Louis, step 0, 2026-10-16): accepted ADRs are never edited
+  except their *Status* line, so step 4 sets 0011's to *Accepted; file names amended by
+  [0016](../adr/0016-skills-by-level.md)* instead of changing its file names. ADR 0016 records the new names.

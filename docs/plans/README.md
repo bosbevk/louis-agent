@@ -10,6 +10,7 @@ or fix doc (*What the build changed*), not here.
 
 | Plan | For | Approved | Notes |
 |---|---|---|---|
+| [CL8-skills-by-level.md](CL8-skills-by-level.md) | TODO: *Skills by level* (cleanup) | 2026-10-16 | `Skills/` in folders by level (`agent/`, `specialists/`, `minions/`) beside `toolsets/`; the loader refuses a role at the wrong level; built before F30 step 4; ADR 0016 |
 | [F29-validated-specialists.md](F29-validated-specialists.md) | [F29 Validated specialists](../features/F29-validated-specialists.md) | 2026-10-15 | A setting the API enforces (a role off the list is refused as unknown), prompts that match it, the chat opening with `agents` and `web`, the checks expecting no delegation but the cook's |
 | [F28-team-talk.md](F28-team-talk.md) | [F28 Team talk](../features/F28-team-talk.md) | 2026-10-15 | The note in the tools' `message` (no tool change), five labelled lines in the task's language; `read_mood` per turn with a marker line, as the user's place travels (F22); the shared card as a thread; both checks score `briefed` |
 | [F27-admin-portal.md](F27-admin-portal.md) | [F27 Admin portal](../features/F27-admin-portal.md) | 2026-10-15 | Our own sidebar-and-cards layout on Puls's variables (AdminLTE, Tabler and MudBlazor as reference only); the checks' Python scripts run by the API as child processes, progress over SSE; `ADMIN_API_KEY` gate |

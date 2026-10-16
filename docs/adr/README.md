@@ -25,6 +25,7 @@ afterwards from the docs that hold them (each ADR links its sources), with the d
 | [0013](0013-documentation-structure.md) | Documentation: one type per doc, guides by folder, arc42 and ADRs | Accepted |
 | [0014](0014-test-first.md) | Test first: a step's tests are written and seen failing before the code | Accepted |
 | [0015](0015-licence-agpl.md) | Licence: AGPL-3.0, so improvements to a hosted Puls stay open | Accepted |
+| [0016](0016-skills-by-level.md) | Skill files follow the levels: a folder per level, and a role opens only at its own | Accepted |
 
 ## When to write one
 
