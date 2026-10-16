@@ -33,6 +33,28 @@ public class SkillFilesTests
         }
     }
 
+    /// <summary>
+    /// The router names every toolset and describes no tools, so the prompt never shows a session tools it doesn't load
+    /// (F5 step 4). Read from the assembly, as every session reads it (ADR 0018).
+    /// </summary>
+    [Test]
+    public void TheRouter_NamesEveryToolsetAndDescribesNoTools()
+    {
+        string doc = SkillFileSource.ReadEmbedded(SkillFiles.Router)!;
+
+        foreach (string toolset in ToolsetCatalog.All.Select(t => t.Name))
+            Assert.That(doc, Does.Contain($"`{toolset}`"), $"the router should name the '{toolset}' toolset");
+
+        string[] tools =
+        [
+            "ReadWorkspaceFile", "WriteWorkspaceFile", "GetStatus", "Commit(",
+            "PythonRun", "WebSearch", "CreateSkillFile",
+            "LogTimeByTaskName", "GetWorkItemsByAssignee",
+        ];
+        foreach (string tool in tools)
+            Assert.That(doc, Does.Not.Contain(tool), $"the router should not describe the {tool} tool");
+    }
+
     [Test]
     public void NoProviderClassPerSkillFile()
     {
@@ -43,7 +65,7 @@ public class SkillFilesTests
 
         Assert.That(providers, Is.EquivalentTo(new[]
         {
-            nameof(CompositeSkillProvider), nameof(MarkdownSkillProvider), nameof(DefaultSkillsProvider), nameof(PersonalitySkillsProvider),
+            nameof(CompositeSkillProvider), nameof(MarkdownSkillProvider), nameof(PersonalitySkillsProvider),
         }));
     }
 

@@ -45,7 +45,7 @@ touches, and nothing else:
    toolset.**
 4. **Built-in list:** the guide's name in `SkillFiles.BuiltIn`, so the agent can't overwrite it.
 5. **Router:** a row in `default.md`'s toolset table.
-6. **Tests:** the name in `DefaultSkillsProviderTests`' toolset list, the toolset's tests in
+6. **Tests:** `SkillFilesTests` checks the router names it, the toolset's tests in
    `tests/louis-agent.core.tests/Tools/{Toolset}/`, and the golden files regenerated
    ([golden files](../tests/CLAUDE.md#golden-files)).
 
