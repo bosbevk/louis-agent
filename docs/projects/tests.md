@@ -26,6 +26,7 @@ The folders mirror `louis-agent.core`'s, and each test's namespace is its folder
 | `Tools/{Toolset}/` | Every toolset: workspace boundary and secret files, git, dotnet, Python, PowerShell, bash, web search and fetch, Paymo, DevOps, agent-built tools |
 | `Usage/` | Scopes and their totals, the ledger file, reports, the usage text and sessions, `CacheGaps` |
 | `ArchitectureTests.cs` | The layout rules on core's source: namespace = folder, one type per file, dependencies one way |
+| `SkillsLayoutTests.cs` | Skill files follow the levels (CL8): every built-in prompt in a known folder of `Prompts/` and embedded, no name at two levels, a guide per toolset, and the repo's `Skills/` holding only what the agent writes |
 | `TestHelpers.cs` | `TestPaths` (repository root, options), `FakeChatClient` (a scripted `IChatClient` that also streams), `StubHandler`, `ListUsageSink`, `FailingStreamClient` |
 
 - HTTP is stubbed with handlers, so Paymo, DevOps and web tests never call out.

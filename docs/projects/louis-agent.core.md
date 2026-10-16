@@ -69,8 +69,8 @@ The full step-by-step is in [How a turn works](../architecture/06-runtime-view.m
 | `Llm/AnthropicProvider/` | `AnthropicUsageMapper` (cache writes, and the 1-hour part from the raw response or the stream's `message_start`) and `AnthropicPromptCaching` (marker 1 on a copy of the system prompt with `LLM_CACHE_TTL`, marker 2 the top-level `cache_control`, 5 minutes) |
 | `Skills/MarkdownSkillLoader.cs` | Parses `## Skill:` procedures (description, parameters, a bash / PowerShell / Python fence) from Markdown |
 | `Skills/MarkdownSkillProvider.cs`, `DefaultSkillsProvider.cs`, `PersonalitySkillsProvider.cs`, `CompositeSkillProvider.cs` | Every skill file we control is plain markdown read by `MarkdownSkillProvider` (`default.md` and `personality.md` by their own); `CompositeSkillProvider` joins them into the system prompt; `SkillFiles.BuiltIn` names the files `AgentHost` loads by name |
-| `Skills/Personalities.cs`, `PersonalityException.cs` | A session's personality (F21): the file in `Skills/personalities/`, valid names, the ones available, and `RoleFor` (`roles.json`: a sub-session's role from its toolsets) |
-| `Skills/SkillFileSource.cs`, `SkillFiles.cs` | The built-in skill and personality files, embedded in the assembly; a file of the same name on disk overrides one; which files the agent may not overwrite |
+| `Skills/Personalities.cs`, `PersonalityException.cs` | A session's personality (F21): its file in its level's folder (`SkillLevel`, CL8), valid names, the ones available, and `RoleFor` (`roles.json`: a sub-session's role from its toolsets) |
+| `Skills/SkillFileSource.cs`, `SkillFiles.cs` | The built-in prompts in `Prompts/`, embedded with a manifest and read only from the assembly (`ManifestEmbeddedFileProvider`); their paths; which names the agent may not take |
 | `Tools/Workspace/WorkspaceTools.cs` | Files: read (≤ 1 MB), write, append, list, tree, search, find, copy, rename, delete; workspace boundary and secret-file checks |
 | `Tools/Git/GitTools.cs` | 38 git operations, run without a shell, 30-second timeout; `Blame`, `FileHistory` and `SearchCommits` take model text as data, never as options (F22) |
 | `Tools/DotNet/DotNetTools.cs` | Build, test, run, restore, clean, packages, SDK info — parsed into compact results |
@@ -127,7 +127,7 @@ attributes (116 tools with every toolset, Paymo and DevOps included). Helpers mu
 
 - **A tool:** a public method with `[Description]`s on a tool class in `Tools/{Toolset}/`; a new class is registered in
   the `AgentEngine` constructor; mention it in a skill file; test it in `tests/louis-agent.core.tests/Tools/{Toolset}/`.
-- **A skill:** `Skills/{name}-skills.md`; loaded with `AGENT_FUNCTION={name}` or `louis`.
+- **A skill:** `Prompts/agent/functions/{name}.md` (built in) or `Skills/agent/functions/{name}.md` (written by the agent); loaded with `AGENT_FUNCTION={name}` or `louis`.
 - **A provider:** a branch in `LlmClientFactory`; provider differences never go into `AgentEngine` or the tools. Where
   it needs its own logic for a concern (usage, caching, …), add its implementation of that concern's strategy, in
   `Llm/{Name}Provider/`

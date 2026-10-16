@@ -14,7 +14,7 @@
    ```
 
 2. A new class is a new toolset: follow *Adding a toolset* below. The engine doesn't register tool classes itself.
-3. Name it in its toolset's guide (`Skills/{toolset}-skills.md`) so the model knows when to use it.
+3. Name it in its toolset's guide (`Prompts/toolsets/{toolset}.md`) so the model knows when to use it.
 4. Test it in `tests/louis-agent.core.tests/Tools/{Toolset}/`.
 
 **Every public method on a tool class becomes a tool.** Helpers must be `internal` or `private` (the test project and
@@ -39,7 +39,7 @@ touches, and nothing else:
 2. **Catalogue entry** in `Agent/ToolsetCatalog.cs`: the name, a one-line description, the settings it needs
    (`MissingSettings`), its tool class (`ToolType`), the factory for its tool object (`CreateTools`) and its guide
    (`GuideFile`).
-3. **Guide:** `Skills/{toolset}-skills.md`, plain markdown: what the toolset is for, its tools grouped with one line
+3. **Guide:** `Prompts/toolsets/{toolset}.md`, plain markdown, embedded with the other built-in prompts: what the toolset is for, its tools grouped with one line
    each, and its workflows (it may also hold `## Skill:` procedures). `AgentHost.LoadSkills(agent, toolsets)` adds it
    to the prompt, through `MarkdownSkillProvider`, only when a session loads the toolset. **No provider class per
    toolset.**
@@ -51,9 +51,9 @@ touches, and nothing else:
 
 Every catalogue toolset follows it; `SkillFilesTests` checks that each has a guide that loads with it.
 
-**Skill files we control are plain markdown, always.** That covers every file in `Skills/`: the toolset guides, and the
-function files (`code-review-skills.md`, `time-logging-skills.md`), which `AGENT_FUNCTION={name}` loads through the same
-`{name}-skills.md` fallback as a custom file. `SkillFilesTests` fails if a provider class for one of them appears.
+**Skill files we control are plain markdown, always.** That covers every file in `Prompts/`: the toolset guides, and the
+function files (`agent/functions/code-review.md`, `time-logging.md`), which `AGENT_FUNCTION={name}` loads by the same
+`agent/functions/{name}.md` path as one the agent wrote (that one from the repo's `Skills/`, on disk). `SkillFilesTests` fails if a provider class for one of them appears.
 
 **The exception: our own implementation.** A provider class of its own is only for skills we don't control, when we
 must read someone else's skill format; a toolset's tools may be registered differently only when a tool class can't
@@ -87,7 +87,9 @@ The rules:
    `Protocols` → `Guardrails` → `Config`, `Messages`, `Logging`. A tool never references the agent loop or a model;
    `Agent` never references a provider's SDK (provider differences stay in `Llm/{Name}Provider/`, as in *Changing the
    LLM*).
-3. **Prompts are content, not code:** system prompt text and procedures stay in `Skills/*.md`; C# only loads them.
+3. **Prompts are content, not code:** system prompt text and procedures stay in `Prompts/`, in the folder of the level
+   that reads them (`agent/`, `specialists/`, `minions/`; `toolsets/` for what every level shares), embedded and read
+   only from the assembly; C# only loads them. `SkillsLayoutTests` fails on a misplaced file.
 4. **Hosts stay thin:** a host project maps the agent's stream to its protocol (`Endpoints/`, `Services/`) and holds no
    agent behaviour; another agent on core (the orchestrator) keeps its own `Tools/` and `Skills/` the same way.
 5. **Tests mirror the source:** `tests/louis-agent.core.tests/Llm/AnthropicProvider/…` tests `Llm/AnthropicProvider/…`.
@@ -121,7 +123,7 @@ Log.Log(LogLevel.Information, McpServerLogMessage.ToolNameTaken, new { Name = na
   member named for what happened, not for its wording.
 - **Each host keeps its own texts** in its own `Messages/` folder
   ([src/CLAUDE.md](../src/CLAUDE.md#each-hosts-own-texts)).
-- **Not messages:** prompts (system prompt and procedures in `Skills/*.md`; the orchestrator's triage and fix prompts),
+- **Not messages:** prompts (system prompt and procedures in `Prompts/`; the orchestrator's triage and fix prompts),
   keywords another program matches on (`FIX-RESULT`, `DECISION`, `PASS`/`FAIL`, `VERIFIED`), the comms log's Markdown
   layout, and key=value or table formatting.
 - **Text the model reads is pinned:** `ToolMessageSnapshotTests` renders every `ToolMessage` template into

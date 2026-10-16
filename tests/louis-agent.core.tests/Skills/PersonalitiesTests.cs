@@ -339,7 +339,7 @@ public class PersonalitiesTests
     [TestCase("toolsets/agents.md")]
     public void AMealToCook_GoesToTheCook_WithWeb(string router)
     {
-        // Puls routes by its tables (default.md says which toolset and role; agents-skills.md which role per toolset).
+        // Puls routes by its tables (default.md says which toolset and role; the agents guide which role per toolset).
         // Without a row in both, "what should I cook?" is just another web question and goes to the researcher.
         string[] rows = SkillFileSource.ReadEmbedded(router)!.Split('\n');
         string? row = rows.FirstOrDefault(r => r.StartsWith('|') && r.Contains("`puls-cook`"));

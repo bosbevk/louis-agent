@@ -34,5 +34,5 @@ fails a file outside the known folders, a name in two level folders, or a toolse
 
 ## Links
 
-[CL8 plan](../plans/CL8-skills-by-level.md) · [F30 plan](../plans/F30-local-web-peer.md) (minions, level 2) ·
+[CL8 plan](../plans/CL8-skills-by-level.md) · F30 (minions, level 2) ·
 [ADR 0011](0011-prompts-are-content.md) · [Adding a personality](../CLAUDE.md#adding-a-personality)

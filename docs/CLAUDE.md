@@ -37,7 +37,7 @@ Docs-only and configuration-only steps have no test to write first.
 
 1. `dotnet build louis-agent-solution.sln`, and `dotnet test` on the projects the step touches ([Tests](../tests/CLAUDE.md)); the whole
    solution before a PR.
-2. If tools, their descriptions, `ToolMessage` texts or `Skills/*.md` changed, regenerate the golden files and review
+2. If tools, their descriptions, `ToolMessage` texts or the prompts in `louis-agent.core/Prompts/` changed, regenerate the golden files and review
    their diff ([golden files](../tests/CLAUDE.md#golden-files)).
 3. Update the feature or fix doc with what the step learned; on the last step, follow *Finishing a feature* or
    *Finishing a fix* in their READMEs. The plan changes only under *Approved during the build*. New text goes in the
@@ -98,9 +98,14 @@ decision's record (its context, and what it cost) in [docs/adr/](adr/README.md).
 - **No message text inline in C#** — exceptions, log lines, tool results and user text are message enum members
   ([Messages and logging](../louis-agent.core/CLAUDE.md#messages-and-logging)).
   Why: [ADR 0009](adr/0009-message-text-as-enum-templates.md).
-- **Namespace = folder path, dependencies one way, prompts in `Skills/*.md`, hosts stay thin** — `ArchitectureTests`
+- **Namespace = folder path, dependencies one way, prompts in markdown, hosts stay thin** — `ArchitectureTests`
   holds the first two ([Project layout](../louis-agent.core/CLAUDE.md#project-layout)).
   Why: [ADR 0010](adr/0010-folders-by-concern.md), [ADR 0011](adr/0011-prompts-are-content.md).
+- **Skill files follow the levels** — a built-in prompt lives in `louis-agent.core/Prompts/`, in the folder of the
+  level that reads it (`agent/` level 0, `specialists/` level 1, `minions/` level 2) or in `toolsets/` when every level
+  shares it; a session loads its personality only from its own level's folder. They're read only from the assembly, so
+  a wording change is a rebuild; the repo's `Skills/` holds only what the agent writes. `SkillsLayoutTests` holds it.
+  Why: [ADR 0016](adr/0016-skills-by-level.md), [ADR 0017](adr/0017-built-in-prompts-embedded.md).
 - **stdout is a protocol** — the ACP and MCP servers speak on it, so logs go through `ILogger` to stderr
   ([Messages and logging](../louis-agent.core/CLAUDE.md#messages-and-logging)).
   Why: [ADR 0009](adr/0009-message-text-as-enum-templates.md).
@@ -142,7 +147,7 @@ Where things are. What's inside each project (files, key types, settings, tests,
 [projects/](projects/README.md); core's folders are in [Project layout](../louis-agent.core/CLAUDE.md#project-layout).
 
 ```
-louis-agent.core/        # The engine: the loop, tools, skills, providers, usage and prices, bootstrap
+louis-agent.core/        # The engine: the loop, tools, skills, providers, usage and prices, bootstrap; Prompts/: the built-in prompts
 src/
 ├── louis-agent.cli/          # Terminal host
 ├── louis-agent.acp-server/   # Rider (Agent Client Protocol over stdio)
@@ -153,11 +158,11 @@ src/
 ├── louis-agent.mcp-server/   # Publishes the tools over MCP (no model)
 └── louis-agent.orchestrator/ # POC: a second agent on core that has louis-agent fix a service's errors
 tools/louis-agent.usage-probe/ # A provider's raw usage; prices and totals a ledger (--ledger, --cache-gaps)
-tests/                   # NUnit: core.tests (mirrors core, plus ArchitectureTests), api.tests, orchestrator.tests
+tests/                   # NUnit: core.tests (mirrors core, plus ArchitectureTests, SkillsLayoutTests), api.tests, orchestrator.tests
 samples/                 # order-service, the demo scripts and recorded runs (samples/README.md)
 docker/                  # Dockerfiles and compose files (main, demo, puls)
 config/                  # .env + .env.secrets (ignored) and their examples, LLM profiles, prices.json, rates.json
-Skills/                  # The system prompt's markdown: personality, router, toolset guides, personalities/, tools/
+Skills/                  # What the agent writes: agent/functions/ (CreateSkillFile), tools/ (agent-built tools)
 docs/                    # This guide, features/, plans/, fixes/, specs/, projects/, learning/
 ```
 
@@ -174,8 +179,9 @@ there, so a session pays for them only when they apply:
 
 ### Adding a skill
 
-Create `Skills/{name}-skills.md`. With `AGENT_FUNCTION=louis` every skill file is loaded; otherwise set
-`AGENT_FUNCTION={name}`. Skill files come with the **skills** toolset: a session without it (Puls's chats: agents and web)
+A built-in function skill is `louis-agent.core/Prompts/agent/functions/{name}.md` (embedded, so a rebuild); one the
+agent writes with `CreateSkillFile` is `Skills/agent/functions/{name}.md`, on disk. With `AGENT_FUNCTION=louis` every
+function skill is loaded; otherwise set `AGENT_FUNCTION={name}`. Skill files come with the **skills** toolset: a session without it (Puls's chats: agents and web)
 gets the router and its toolsets' guides, not the skill files; a toolset's guide is
 [Adding a toolset](../louis-agent.core/CLAUDE.md#adding-a-toolset). A built-in file the agent must not overwrite is
 listed in `SkillFiles.BuiltIn`. Procedures use `## Skill: Name` with an `Execution:` fence (bash, powershell or python); arguments
@@ -199,13 +205,15 @@ echo "Hello, ${SKILL_ARG_name}"
 A session names its personality when it opens (`POST /sessions` with `"personality": "{name}"`; a sub-session through
 `StartSubSession(…, personality)`), and keeps it, as it keeps its toolsets (F21). Without one it gets `personality.md`.
 
-1. Create `Skills/personalities/{name}.md`: lowercase letters, digits and dashes. It's embedded in core like the other
-   built-in files; a file of that name on disk wins, so wording can change without a rebuild (restart the container).
+1. Create it in the folder of the level that uses it, under `louis-agent.core/Prompts/`: a voice in `agent/`, a
+   specialist's role in `specialists/`, a minion's function in `minions/` (lowercase letters, digits and dashes, a name
+   used at one level only). It's embedded and read only from the assembly, so rebuild the images that use core; a role
+   opened at another level is refused as unknown.
 2. **A voice** (`puls.md`) says who the agent is and how it talks. **A role** for a specialist (`puls-researcher.md`)
    says its function and how it reports to the agent that called it, on the shared base the `puls-*` roles use.
-3. A role a parent should pass goes in `agents-skills.md`'s table (toolsets → personality), and in
-   `Skills/personalities/roles.json`: a sub-session opened without a role gets the first rule whose toolsets it has.
-4. `GET /personalities` lists them; an unknown or invalid name is a 400 before any engine is built.
+3. A role a parent should pass goes in the agents guide's table (`toolsets/agents.md`: toolsets → personality), and in
+   `specialists/roles.json`: a sub-session opened without a role gets the first rule whose toolsets it has.
+4. `GET /personalities` lists them by level; an unknown or invalid name is a 400 before any engine is built.
 
 ### Running and debugging
 
@@ -221,7 +229,8 @@ A session names its personality when it opens (`POST /sessions` with `"personali
 - After changing the web app or API, rebuild the `api` image; after changing core, rebuild every image you use. Rider
   chats keep their container until you start a **New Chat**.
 - After changing `config/.env.secrets`, recreate the containers with `docker compose … up -d`: `restart` keeps the old
-  environment, so the new key never arrives. A changed `Skills/` file needs only a restart (the folder is mounted).
+  environment, so the new key never arrives. A changed prompt (`louis-agent.core/Prompts/`) is a change to core:
+  rebuild the images that use it.
 - Every image rebuild leaves build cache behind; a day of rebuilds filled Docker Desktop's disk (120 GB of cache) and
   stopped its engine (2026-10-15). `docker system df` shows it; `docker builder prune -af` clears it, safely, and
   the next build re-caches. If the daemon stops answering, restart Docker Desktop first.
@@ -266,7 +275,7 @@ afterwards (limitation 9, [FX4](fixes/FX04-append-only-history.md)).
 ## Further reading
 
 [the architecture](architecture/README.md) for the design, `config/.env.example` for settings, and
-[Skills/default.md](../Skills/default.md) for how the agent is instructed to behave.
+[the router](../louis-agent.core/Prompts/agent/default.md) for how the agent is instructed to behave.
 
 ---
 [Docs index](README.md) · Previous: [Architecture](architecture/README.md) · Next: [Orchestrator demo](../samples/README.md)

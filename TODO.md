@@ -237,7 +237,7 @@ Design: [docs/specs/SESSION_ARCHITECTURE.md](docs/specs/SESSION_ARCHITECTURE.md)
 - [ ] [F27 Admin portal](docs/features/F27-admin-portal.md) — an *Admin* item in the profile menu into a portal of our own (a sidebar and cards on Puls's variables) whose first page runs the checks and reads their saved runs; more pages later ([plan](docs/plans/F27-admin-portal.md)). Built; open: a real run from the page (Louis's go), then *Finishing a feature*
 - [ ] [F28 Team talk](docs/features/F28-team-talk.md) — Puls briefs its specialist in a fixed note (what the user wants, how they sound from their typing, where they are, what they said), with a per-chat *Lees my stemming* switch sent per turn; the delegation card shows the exchange as a thread; both checks score it ([plan](docs/plans/F28-team-talk.md))
 - [ ] Sync chat history across devices and browsers instead of only `localStorage`
-- [ ] A UI for skills (`Skills/*.md`) and for reviewing and approving agent-built tools — today that's typing `/tools`,
+- [ ] A UI for skills (the agent's own in `Skills/`, the built-in ones in `louis-agent.core/Prompts/`) and for reviewing and approving agent-built tools — today that's typing `/tools`,
       `/approve <Name>` and `/reject <Name>` in a chat
 - [ ] Tests for the web app's `UsageFormat`, which repeats core's `UsageText` number and currency rules (F3, F14) with
       no tests of its own: share the rules (a small project both reference) or test both against the same strings
