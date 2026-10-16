@@ -212,7 +212,7 @@ documentation is the system prompt; every file is plain markdown read by `Markdo
 3. the guide of each of the profile's toolsets (`toolsets/files.md`, `toolsets/git.md`, …) and no other, so the prompt never
    describes tools the session doesn't have
 4. with the `skills` toolset only, the `AGENT_FUNCTION` skill file (`agent/functions/{name}.md`: `code-review`,
-   `time-logging`, or one the agent wrote); `louis` loads them all plus any the agent wrote
+   or one the agent wrote); `louis` loads them all plus any the agent wrote
 
 The built-in files live in `louis-agent.core/Prompts/`, one folder per level (`agent/`, `specialists/`, `minions/`)
 beside `toolsets/` (ADR 0016), and are read only from the assembly (`SkillFileSource`, `ManifestEmbeddedFileProvider`;

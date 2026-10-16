@@ -23,7 +23,7 @@ public class SkillFileSourceTests
     public void EveryBuiltInFile_IsEmbedded_UnderItsOwnPath()
     {
         var builtIn = ToolsetCatalog.All.Select(t => t.GuideFile).OfType<string>()
-            .Concat(["agent/personality.md", "agent/default.md", "agent/functions/code-review.md", "agent/functions/time-logging.md",
+            .Concat(["agent/personality.md", "agent/default.md", "agent/functions/code-review.md",
                 "specialists/roles.json"]);
 
         Assert.That(SkillFileSource.EmbeddedFiles, Is.SupersetOf(builtIn));

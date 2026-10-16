@@ -92,7 +92,6 @@ public class SkillFilesTests
     }
 
     [TestCase("agent/functions/code-review.md", "AnalyzeChanges")]
-    [TestCase("agent/functions/time-logging.md", "LogWorkEntry")]
     public void FunctionSkillFiles_HaveTheirProcedures(string fileName, string skill)
     {
         Assert.That(Load(fileName).Skills.Select(s => s.Name), Does.Contain(skill));
@@ -113,11 +112,21 @@ public class SkillFilesTests
     }
 
     [TestCase("code-review", "AnalyzeChanges")]
-    [TestCase("time-logging", "LogWorkEntry")]
     public void AgentHostLoadSkills_LoadsTheFunctionsOwnFile(string agentFunction, string skill)
     {
         var options = new AgentOptions { SkillsDirectory = SkillsDirectory, AgentFunction = agentFunction };
 
         Assert.That(AgentHost.LoadSkills(options).Skills.Select(s => s.Name), Does.Contain(skill));
+    }
+
+    [Test]
+    public void TimeLogging_IsGone_ThePaymoToolsDoItsWork()
+    {
+        // CL8 step 6: its three skills only echoed a message; the paymo toolset logs real time.
+        var options = new AgentOptions { SkillsDirectory = SkillsDirectory, AgentFunction = "louis" };
+
+        Assert.That(SkillFileSource.ReadEmbedded(SkillFiles.Function("time-logging")), Is.Null);
+        Assert.That(AgentHost.LoadSkills(options).Skills.Select(s => s.Name),
+            Has.None.AnyOf("LogWorkEntry", "GetWeeklySummary", "ValidateTimeEntry"));
     }
 }

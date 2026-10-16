@@ -311,7 +311,7 @@ public static partial class AgentHost
         }
         else if (agent.AgentFunction != null && ToolsetCatalog.Find(agent.AgentFunction) is null)
         {
-            // The function's own skill file: agent/functions/code-review.md, time-logging.md, or a custom one (a toolset's
+            // The function's own skill file: agent/functions/code-review.md, or a custom one (a toolset's
             // name is not a function: its guide comes with the toolset)
             string mainFile = SkillFiles.Function(agent.AgentFunction);
             if (ReadSkillFile(agent, mainFile) is { } main)
@@ -344,7 +344,7 @@ public static partial class AgentHost
     }
 
     /// <summary>Skill files of functions that aren't toolsets, loaded by "louis" (and by their own AGENT_FUNCTION).</summary>
-    private static readonly string[] FunctionSkillFiles = [SkillFiles.Function("code-review"), SkillFiles.Function("time-logging")];
+    private static readonly string[] FunctionSkillFiles = [SkillFiles.Function("code-review")];
 
     /// <summary>The toolset the function skill files come with (ExecuteSkill runs their procedures).</summary>
     private const string SkillsToolset = "skills";

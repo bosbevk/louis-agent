@@ -83,7 +83,7 @@ public class AgentHostSkillsTests
         louis.AgentFunction = "louis";
 
         Assert.That(AgentHost.LoadSkills(louis, Toolsets("skills")).Documentation,
-            Does.Contain("# Code Review Skills").And.Contain("# Time Logging Skills"));
+            Does.Contain("# Code Review Skills").And.Not.Contain("# Time Logging Skills"));
         Assert.That(AgentHost.LoadSkills(Options(), Toolsets("files", "skills")).Documentation, Does.Contain("# Code Review Skills"));
     }
 

@@ -52,7 +52,7 @@ touches, and nothing else:
 Every catalogue toolset follows it; `SkillFilesTests` checks that each has a guide that loads with it.
 
 **Skill files we control are plain markdown, always.** That covers every file in `Prompts/`: the toolset guides, and the
-function files (`agent/functions/code-review.md`, `time-logging.md`), which `AGENT_FUNCTION={name}` loads by the same
+function file (`agent/functions/code-review.md`), which `AGENT_FUNCTION={name}` loads by the same
 `agent/functions/{name}.md` path as one the agent wrote (that one from the repo's `Skills/`, on disk). `SkillFilesTests` fails if a provider class for one of them appears.
 
 **The exception: our own implementation.** A provider class of its own is only for skills we don't control, when we

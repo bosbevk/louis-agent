@@ -28,7 +28,7 @@ internal static class SkillFiles
     /// them to avoid loading them twice, and the agent may not overwrite them.</summary>
     internal static readonly HashSet<string> BuiltIn = new(StringComparer.OrdinalIgnoreCase)
     {
-        Guide("devops"), Guide("paymo"), Guide("files"), Guide("git"), Guide("agents"), Function("code-review"), Function("time-logging"),
+        Guide("devops"), Guide("paymo"), Guide("files"), Guide("git"), Guide("agents"), Function("code-review"),
         Guide("dotnet"), Guide("python"), Guide("powershell"), Guide("bash"), Guide("web"), Guide("self-extension"),
     };
 }

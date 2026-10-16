@@ -115,6 +115,13 @@ public class SkillAuthoringTests
         Assert.That(Engine().CreateSkillFile(name, EchoSkill), Does.Contain("built-in"));
     }
 
+    [Test]
+    public void CreateSkillFile_MayTakeTheNameTimeLoggingHad()
+    {
+        // CL8 step 6: time-logging isn't built in any more, so the name is free for a skill of the agent's own.
+        Assert.That(Engine().CreateSkillFile("time-logging", EchoSkill), Does.Contain("Saved"));
+    }
+
     [TestCase("../escape")]
     [TestCase("Has Spaces")]
     [TestCase("")]

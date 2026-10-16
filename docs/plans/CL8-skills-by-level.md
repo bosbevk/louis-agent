@@ -228,3 +228,7 @@ sequenceDiagram
   first `Skills/` holding `README.md` from the working directory up. The README says what the folder holds.
 - **Step 4's golden file changes** (step 4, 2026-10-16): its test's fake router on disk is ignored now, so the snapshot
   holds the real `default.md`; nothing else in it changed. A router edit now shows in the golden file.
+- **A new step 6: time-logging goes** (Louis, after step 5, 2026-10-16): its three skills only echoed a message, and
+  the `paymo` toolset logs real time. The old step 6 (rebuild and check by hand) becomes step 7. Louis also asked
+  whether code review could be a mode, like Puls's voices; that and per-product routers are CL9, planned after CL8
+  (`code-review.md`, also a placeholder, stays until CL9 replaces it).
