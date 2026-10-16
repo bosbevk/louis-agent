@@ -10,7 +10,8 @@ public class SkillsLayoutTests
 {
     /// <summary>The folders under Prompts/ a built-in file may be in: a level's, its function skills', or the shared guides'.</summary>
     private static readonly string[] PromptFolders =
-        [Personalities.AgentFolder, SkillFiles.FunctionsFolder, Personalities.SpecialistsFolder, Personalities.MinionsFolder, SkillFiles.ToolsetsFolder];
+        [Personalities.AgentFolder, SkillFiles.FunctionsFolder, Personalities.SpecialistsFolder, Personalities.MinionsFolder, SkillFiles.ToolsetsFolder,
+         SkillFiles.SharedFolder];
 
     private static readonly SkillLevel[] Levels = Enum.GetValues<SkillLevel>();
 

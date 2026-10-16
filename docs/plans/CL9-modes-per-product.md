@@ -256,3 +256,13 @@ sequenceDiagram
   `voice-code-review.md`: `code-review.md` goes, and what it says about reviewing a change (the diff through the git
   tools, then the changed files) moves into `louis-agent/voice.md`. The coding agent's modes are `voice` and
   `voice-orchestrator`.
+- **A new step 2: principles every agent loads first** (Louis, after step 1, 2026-10-17): "an MD file which says an
+  agent may never lie, cheat, steal or murder, so all agents get it." `Prompts/shared/principles.md` comes first in
+  every prompt the hosts build, at every level, and in the microservice orchestrator's; Louis's sentence, then what each
+  word means for an agent. It states intent; the guards in code (arguments as data, the SSRF and sensitive-file
+  guards, F30's `VerifyQuote`) still hold the line. Its ADR is 0020, so F30's minions ADR becomes 0021. The later
+  steps move down one: 3 split the routing, 4 `AGENT_FUNCTION` and `code-review.md` go, 5 `puls/voice-en` and the
+  *Taal* menu, 6 the orchestrator's prompt moves in, 7 docs, 8 rebuild and check, 9 measure.
+- **No private-network rule for now** (Louis, step 2, 2026-10-17): a line in the principles about private addresses,
+  and a step guarding `ReadRenderedPage` with `SsrfGuard`, were drawn and dropped: "remove the ssrf for now because I
+  test locally". `FetchUrl`'s guard is unchanged; the steps stay as the previous entry numbers them.

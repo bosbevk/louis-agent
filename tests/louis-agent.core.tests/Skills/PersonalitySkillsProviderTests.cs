@@ -33,7 +33,10 @@ public class PersonalitySkillsProviderTests
 
         string docs = AgentHost.LoadSkills(options).Documentation;
 
-        Assert.That(docs, Does.StartWith("# Louis's Minion - Personality"));
+        // CL9 step 2: the principles first, then the personality before everything else.
+        Assert.That(docs, Does.StartWith("# Principles"));
+        Assert.That(docs.IndexOf("# Louis's Minion - Personality", StringComparison.Ordinal),
+            Is.LessThan(docs.IndexOf("# Louis Agent - Default Instructions", StringComparison.Ordinal)));
         Assert.That(docs.Split("# Louis's Minion - Personality").Length - 1, Is.EqualTo(1));
         Assert.That(docs.IndexOf("# Louis Agent - Default Instructions", StringComparison.Ordinal),
             Is.GreaterThan(0), "default.md follows the personality");

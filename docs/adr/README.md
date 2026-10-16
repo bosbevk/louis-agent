@@ -29,6 +29,7 @@ afterwards from the docs that hold them (each ADR links its sources), with the d
 | [0017](0017-skills-by-level.md) | Skill files follow the levels: a folder per level, and a role opens only at its own | Accepted |
 | [0018](0018-built-in-prompts-embedded.md) | Built-in prompts are embedded, read only from the assembly | Accepted |
 | [0019](0019-modes-one-file-per-product.md) | A level-0 session is a mode: one file, in a folder per product | Accepted |
+| [0020](0020-principles-for-every-agent.md) | Every agent loads the same principles first: never lie, cheat, steal or murder | Accepted |
 
 ## When to write one
 

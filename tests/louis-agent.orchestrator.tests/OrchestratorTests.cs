@@ -90,7 +90,9 @@ public class OrchestratorTests
             "customer-initials", "delivery-estimate", "discount-label", "get-order", "invoice-number", "loyalty-points",
             "order-total", "packing-slip", "refund", "shipping-cost", "vat",
         }));
-        Assert.That(provider.Documentation, Does.StartWith("# Orchestrator"));
+        // CL9 step 2: the orchestrator is an agent too, so it gets the shared principles first.
+        Assert.That(provider.Documentation, Does.StartWith("# Principles"));
+        Assert.That(provider.Documentation, Does.Contain("# Orchestrator"));
         Assert.That(provider.Documentation, Does.Contain("## Method: refund").And.Contain("# Service: order-service"));
     }
 

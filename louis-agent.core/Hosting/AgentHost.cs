@@ -293,7 +293,9 @@ public static partial class AgentHost
     {
         var composite = new CompositeSkillProvider();
 
-        // Personality first, so who the agent is (and, for a mode, how it routes) frames everything after it
+        // The principles first, for every agent at every level (ADR 0020); then the personality, so who the agent is (and,
+        // for a mode, how it routes) frames everything after it
+        AddBuiltIn(agent, composite, SkillFiles.Principles);
         string personalityFile = PersonalityFile(agent, personality, level);
         if (personality is null && level != SkillLevel.Agent && ReadSkillFile(agent, personalityFile) is { } mode)
             composite.AddProvider(MarkdownSkillProvider.FromText(Personalities.ModeParts(mode.Text).Voice));

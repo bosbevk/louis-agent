@@ -2,6 +2,7 @@ using System.Text.RegularExpressions;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
+using LouisAgent.Core.Skills;
 
 namespace LouisAgent.Core.Tests.Hosting;
 
@@ -42,6 +43,21 @@ public class AgentHostSkillsTests
         {
             Directory.Delete(skills, recursive: true);
         }
+    }
+
+    [TestCase(null, SkillLevel.Agent)]
+    [TestCase("puls/voice-af", SkillLevel.Agent)]
+    [TestCase("puls-cook", SkillLevel.Specialist)]
+    [TestCase(null, SkillLevel.Specialist)]
+    [TestCase(null, SkillLevel.Minion)]
+    public void EveryPrompt_StartsWithThePrinciples(string? personality, SkillLevel level)
+    {
+        // CL9 step 2: every agent, at every level, whatever its voice or role, gets the shared principles first, so no
+        // later file can push them aside.
+        string docs = AgentHost.LoadSkills(Options(), [], personality, level).Documentation;
+
+        Assert.That(docs, Does.StartWith("# Principles"));
+        Assert.That(docs, Does.Contain("An agent may never lie, cheat, steal or murder."));
     }
 
     [Test]

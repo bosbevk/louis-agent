@@ -192,7 +192,10 @@ internal sealed partial record Decision(string Outcome, string Reason)
     private static partial Regex DecisionLine();
 }
 
-/// <summary>Builds the system prompt: orchestrator.md, then Skills/{service}/service.md and one runbook per API method.</summary>
+/// <summary>
+/// Builds the system prompt: the shared principles every agent gets first (ADR 0020), orchestrator.md, then
+/// Skills/{service}/service.md and one runbook per API method.
+/// </summary>
 internal static class OrchestratorSkills
 {
     public static (ISkillProvider Skills, IReadOnlySet<string> Methods) Load(string skillsDirectory, string service)
@@ -202,6 +205,7 @@ internal static class OrchestratorSkills
             throw new InvalidOperationException(MessageText.Format(OrchestratorErrorMessage.NoRunbooks, new { Service = service, Directory = serviceDirectory }));
 
         var composite = new CompositeSkillProvider();
+        composite.AddProvider(MarkdownSkillProvider.FromText(SkillFileSource.ReadEmbedded(SkillFiles.Principles)!));
         composite.AddProvider(new MarkdownSkillProvider(Path.Combine(skillsDirectory, "orchestrator.md"), includeDefaultInstructions: false));
 
         string serviceFile = Path.Combine(serviceDirectory, "service.md");

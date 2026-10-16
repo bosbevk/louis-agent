@@ -9,6 +9,12 @@ internal static class SkillFiles
     /// </summary>
     internal const string FolderMarker = "README.md";
 
+    /// <summary>The folder of what every agent loads, at every level (CL9): the principles.</summary>
+    internal const string SharedFolder = "shared";
+
+    /// <summary>The principles (ADR 0020): first in every agent's prompt, so nothing later can push them aside.</summary>
+    internal const string Principles = SharedFolder + "/principles.md";
+
     /// <summary>The folder of the toolset guides, which every level shares (a guide is the same whichever level loads it).</summary>
     internal const string ToolsetsFolder = "toolsets";
 
