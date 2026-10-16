@@ -88,7 +88,8 @@ public class PersonalitiesTests
         // F21 step 4: embedded, so a container without Skills/ still has them; a file on disk overrides.
         Assert.That(Personalities.Available(SkillLevel.Agent), Is.EqualTo(new[] { "louis-agent/voice", "louis-agent/voice-orchestrator", "puls/voice-af", "puls/voice-en" }));
         Assert.That(Personalities.Available(SkillLevel.Specialist), Is.SupersetOf(new[]
-            { "puls-researcher", "puls-reader", "puls-historian", "puls-analyst", "puls-specialist", "puls-cook" }));
+            { "puls-researcher", "puls-reader", "puls-historian", "puls-analyst", "puls-cook" }));
+        Assert.That(Personalities.Available(SkillLevel.Specialist), Does.Not.Contain("puls-specialist"), "CL10: no function of its own");
         Assert.That(AgentHost.LoadSkills(new AgentOptions(), [], "puls/voice-af").Documentation, Does.Contain("# Puls - Persoonlikheid"));
         Assert.That(AgentHost.LoadSkills(new AgentOptions(), [], "puls-cook", SkillLevel.Specialist).Documentation,
             Does.Contain("Never invent a price"));
@@ -185,19 +186,6 @@ public class PersonalitiesTests
             Does.Not.Contain("# Louis Agent - Default Instructions"));
     }
 
-    [TestCase(new[] { "web" }, "puls-researcher")]
-    [TestCase(new[] { "files", "python" }, "puls-analyst")]
-    [TestCase(new[] { "files", "git" }, "puls-historian")]
-    [TestCase(new[] { "files" }, "puls-reader")]
-    [TestCase(new[] { "dotnet" }, "puls-specialist")]
-    public void ARoleComesFromTheToolsets_TheFirstRuleThatMatches(string[] toolsets, string role)
-    {
-        // The delegation check: Puls passed a role in one delegation of four; the peer now derives one (roles.json).
-        string rules = SkillFileSource.ReadEmbedded(Personalities.RolesFile)!;
-
-        Assert.That(Personalities.RoleFor(rules, toolsets), Is.EqualTo(role));
-    }
-
     [Test]
     public void CountingGoesToTheAnalyst_AndTheReaderHandsItBack()
     {
@@ -214,7 +202,6 @@ public class PersonalitiesTests
     [TestCase("puls-reader")]
     [TestCase("puls-historian")]
     [TestCase("puls-analyst")]
-    [TestCase("puls-specialist")]
     [TestCase("puls-cook")]
     public void EverySpecialist_IsToldWhatItsToolCallsCost(string role)
     {
@@ -368,7 +355,6 @@ public class PersonalitiesTests
     [TestCase("puls-reader")]
     [TestCase("puls-historian")]
     [TestCase("puls-analyst")]
-    [TestCase("puls-specialist")]
     [TestCase("puls-cook")]
     public void EverySpecialist_MatchesTheNotesTone_AndKeepsItsShape(string role)
     {
@@ -411,8 +397,11 @@ public class PersonalitiesTests
     }
 
     [Test]
-    public void UnreadableRules_GiveNoRole()
+    public void ARole_IsNamed_NeverDerived()
     {
-        Assert.That(Personalities.RoleFor("not json", ["web"]), Is.Null);
+        // CL10: Puls names the cook; nothing picks a role from a sub-session's toolsets any more, and the guide says so.
+        Assert.That(SkillFileSource.ReadEmbedded("specialists/roles.json"), Is.Null);
+        Assert.That(SkillFileSource.ReadEmbedded("toolsets/specialists.md"), Does.Not.Contain("roles.json"));
     }
+
 }

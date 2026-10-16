@@ -425,7 +425,7 @@ Puls (F5, F20–F22) is the same API built with its own web app. Its chats load 
 task the model calls `StartSubSession(toolsets, message, personality, attachments)`, and the tool:
 
 1. opens `POST /sessions` on the peer named in `AGENT_PEERS` (or the only one), with the toolsets, `depth: 1`, the
-   role (`personality`; if none, the peer takes one from the toolsets, `roles.json`), the parent turn
+   role (`personality`, always named: the peer never derives one, CL10), the parent turn
    (`{session}#{turn}`) and the user's place;
 2. sends the task with the named attachments, which come from the session, never through the model's output;
 3. reads the specialist's stream to the end, passing each event on as `sub_session`; if the answer is empty (all its
