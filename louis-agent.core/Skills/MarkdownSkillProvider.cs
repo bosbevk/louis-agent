@@ -31,8 +31,9 @@ public class MarkdownSkillProvider : ISkillProvider
         // Load the specified skill file
         _skills = MarkdownSkillLoader.Load(filePath);
 
-        // Combine default instructions with chosen skillset: the router is built in (CL8 step 4)
-        string defaultDocs = includeDefaultInstructions ? SkillFileSource.ReadEmbedded(SkillFiles.Router) ?? "" : "";
+        // Combine default instructions with chosen skillset: the default mode's routing, built in (CL8, CL9)
+        string? defaultMode = includeDefaultInstructions ? SkillFileSource.ReadEmbedded(Personalities.FileName(Personalities.DefaultVoice, SkillLevel.Agent)) : null;
+        string defaultDocs = defaultMode is null ? "" : Personalities.ModeParts(defaultMode).Routing;
 
         if (includeDefaultInstructions && string.IsNullOrEmpty(defaultDocs))
         {

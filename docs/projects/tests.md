@@ -37,7 +37,7 @@ The folders mirror `louis-agent.core`'s, and each test's namespace is its folder
 ## louis-agent.api.tests
 
 `AgentSessionsTests` (F5): a session's toolsets and tools, the `skills` default, an empty list, unknown names, depth and
-the `agents` rule, sessions sharing an engine but not a history. No web host, network or model: the sessions are built on
+the `specialists` rule, sessions sharing an engine but not a history. No web host, network or model: the sessions are built on
 an `AgentEngineFactory` with a client that throws if called.
 
 ## louis-agent.orchestrator.tests

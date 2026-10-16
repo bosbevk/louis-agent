@@ -78,8 +78,8 @@ public static class ToolsetCatalog
             CreateTools: ctx => [new DevOpsTools(
                 ctx.Options.DevopsApiKey!, ctx.Options.DevopsOrganization!, ctx.Options.DevopsProject!, ctx.Options.DevopsTeam)]),
 
-        new("agents", "Hand a separate task to a specialist agent: a sub-session on a peer with only the toolsets it needs",
-            GuideFile: SkillFiles.Guide("agents"),
+        new("specialists", "Hand a separate task to a specialist agent: a sub-session on a peer with only the toolsets it needs",
+            GuideFile: SkillFiles.Guide("specialists"),
             MissingSettings: ctx => ctx.Options.AgentPeers.Count == 0 ? ["AGENT_PEERS"] : [],
             ToolType: typeof(AgentPeerTools),
             CreateTools: ctx => [new AgentPeerTools(ctx.Options, ctx.UsageSink)]),

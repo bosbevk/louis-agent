@@ -15,8 +15,6 @@ public sealed class AgentOptions
     /// <summary>The skills folder (agent/, specialists/, toolsets/); null means the working dir, then /app.</summary>
     public string? SkillsDirectory { get; set; }
 
-    /// <summary>Selects agent/functions/{AgentFunction}.md ("louis": every one).</summary>
-    public string AgentFunction { get; set; } = "code-review";
 
     public string? PaymoApiKey { get; set; }
 
@@ -183,7 +181,6 @@ public sealed class AgentOptions
             SubSessionPromptBudget = int.TryParse(Get("SUB_SESSION_PROMPT_BUDGET"), NumberStyles.None, CultureInfo.InvariantCulture, out int budget)
                 ? budget : DefaultSubSessionPromptBudget,
         };
-        if (Get("AGENT_FUNCTION") is { } function) options.AgentFunction = function;
         if (Get("WORKSPACE_ROOT") is { } root) options.WorkspaceRoot = root;
         else if (FindRepositoryRoot(Environment.CurrentDirectory) is { } repoRoot)
         {

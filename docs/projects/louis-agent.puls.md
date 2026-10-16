@@ -7,8 +7,8 @@
 ## Purpose
 
 Puls is the general assistant's web app: a South African AI assistant in everyday Afrikaans that answers by handing each
-task to a specialist (F5) and shows that work as it happens. It's chat only: its sessions load `agents` and `web`
-(F29; `agents` alone before it), so Puls answers the web itself and delegates to its peer (`puls-agent`) with a role
+task to a specialist (F5) and shows that work as it happens. It's chat only: its sessions load `specialists` and `web`
+(F29; `agents`, as it was called before CL9, alone before it), so Puls answers the web itself and delegates to its peer (`puls-agent`) with a role
 (F21) and only the toolsets the task needs; only a validated role is on (`PERSONALITIES_ENABLED`: the cook, F25). Pay
 as you go: every answer shows what it cost, specialists included.
 
@@ -59,7 +59,7 @@ None of its own: the API it's served by holds the settings (`AGENT_PEERS` names 
 ## Extending it
 
 - **A starter:** a line in `Templates.cs`.
-- **Puls's voice or a specialist's role:** `louis-agent.core/Prompts/agent/puls.md` and `specialists/puls-*.md` (F21); built in, so a change is a rebuild.
+- **Puls's voice or a specialist's role:** `louis-agent.core/Prompts/agent/puls/voice-af.md` (its mode: voice and routing) and `specialists/puls-*.md` (F21); built in, so a change is a rebuild.
 - **A placeholder made real:** replace its `ComingSoon(...)` with the feature; keep the label.
 
 ## Tests

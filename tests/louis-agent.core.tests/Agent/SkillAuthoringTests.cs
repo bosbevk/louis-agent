@@ -43,12 +43,11 @@ public class SkillAuthoringTests
         return Path.Combine(_skillsDir, "agent", "functions", $"{name}.md");
     }
 
-    private AgentOptions Options(string function) =>
-        new() { WorkspaceRoot = _skillsDir, SkillsDirectory = _skillsDir, AgentFunction = function };
+    private AgentOptions Options() => new() { WorkspaceRoot = _skillsDir, SkillsDirectory = _skillsDir };
 
-    private AgentEngine Engine(string function = "code-review", IChatClient? client = null)
+    private AgentEngine Engine(IChatClient? client = null)
     {
-        var options = Options(function);
+        var options = Options();
         return new AgentEngine(AgentHost.LoadSkills(options), client ?? new FakeChatClient(), options)
         {
             SkillsDirectory = _skillsDir,
@@ -57,26 +56,12 @@ public class SkillAuthoringTests
     }
 
     [Test]
-    public void LoadSkills_LouisFunction_DiscoversCustomSkillFiles()
+    public void AFunctionFileLeftAtTheRoot_IsntRead()
     {
-        File.WriteAllText(FunctionFile("greeting"), EchoSkill);
-
-        var louis = AgentHost.LoadSkills(Options("louis"));
-        var codeReview = AgentHost.LoadSkills(Options("code-review"));
-
-        Assert.That(louis.Skills.Select(s => s.Name), Does.Contain("Greet"));
-        Assert.That(codeReview.Skills.Select(s => s.Name), Does.Not.Contain("Greet"), "other functions only load their own file");
-    }
-
-    [Test]
-    public void AnAgentFunction_LoadsItsFileFromAgentFunctions()
-    {
-        // CL8 step 3: AGENT_FUNCTION=greeting reads agent/functions/greeting.md; a file left at the root isn't read.
-        File.WriteAllText(FunctionFile("greeting"), EchoSkill);
+        // CL8 step 3: function skills live in agent/functions/; an old *-skills.md at the root isn't loaded.
         File.WriteAllText(Path.Combine(_skillsDir, "farewell-skills.md"), EchoSkill.Replace("Greet", "Farewell"));
 
-        Assert.That(AgentHost.LoadSkills(Options("greeting")).Skills.Select(s => s.Name), Does.Contain("Greet"));
-        Assert.That(AgentHost.LoadSkills(Options("louis")).Skills.Select(s => s.Name), Does.Not.Contain("Farewell"));
+        Assert.That(AgentHost.LoadSkills(Options()).Skills.Select(s => s.Name), Does.Not.Contain("Farewell"));
     }
 
     [Test]
@@ -108,7 +93,6 @@ public class SkillAuthoringTests
     [TestCase("python")]
     [TestCase("paymo")]
     [TestCase("self-extension")]
-    [TestCase("code-review")]
     [TestCase("default")]
     public void CreateSkillFile_RefusesBuiltInNames(string name)
     {
@@ -120,6 +104,28 @@ public class SkillAuthoringTests
     {
         // CL8 step 6: time-logging isn't built in any more, so the name is free for a skill of the agent's own.
         Assert.That(Engine().CreateSkillFile("time-logging", EchoSkill), Does.Contain("Saved"));
+    }
+
+    [Test]
+    public void AnAgentWrittenFunction_LoadsWithTheSkillsToolset_NoSettingNeeded()
+    {
+        // CL9 step 4: AGENT_FUNCTION goes; with the skills toolset a session loads every function skill the agent wrote.
+        File.WriteAllText(FunctionFile("greeting"), EchoSkill);
+        var options = new AgentOptions { WorkspaceRoot = _skillsDir, SkillsDirectory = _skillsDir };
+
+        Assert.That(AgentHost.LoadSkills(options).Skills.Select(s => s.Name), Does.Contain("Greet"));
+    }
+
+    [Test]
+    public void CreateSkillFile_RefusesEveryToolsetsGuideName()
+    {
+        // CL9 step 4: what is embedded is built in, so a new toolset's guide is reserved with no list to edit.
+        var engine = Engine();
+        foreach (string guide in ToolsetCatalog.All.Select(t => t.GuideFile!))
+        {
+            string name = Path.GetFileNameWithoutExtension(guide);
+            Assert.That(engine.CreateSkillFile(name, EchoSkill), Does.Contain("built-in"), $"{name} is a toolset's guide");
+        }
     }
 
     [TestCase("../escape")]
@@ -161,7 +167,7 @@ public class SkillAuthoringTests
     [Test]
     public void ReloadSkills_PicksUpFilesAddedOnDisk()
     {
-        var engine = Engine("louis");
+        var engine = Engine();
         File.WriteAllText(FunctionFile("greeting"), EchoSkill);
 
         Assert.That(engine.ReloadSkills(), Does.Contain("Greet"));

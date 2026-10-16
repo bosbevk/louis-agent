@@ -31,7 +31,7 @@ A new tool or text changes the golden files on purpose: regenerate them and revi
 
 ## Adding a toolset
 
-**Every toolset follows one pattern: guide → tools → guide.** `default.md` routes a task to a toolset, the toolset's
+**Every toolset follows one pattern: guide → tools → guide.** A mode's routing sends a task to a toolset, the toolset's
 guide names its tools and when to use them, and each tool's `[Description]` stays short. The files a new toolset
 touches, and nothing else:
 
@@ -43,17 +43,17 @@ touches, and nothing else:
    each, and its workflows (it may also hold `## Skill:` procedures). `AgentHost.LoadSkills(agent, toolsets)` adds it
    to the prompt, through `MarkdownSkillProvider`, only when a session loads the toolset. **No provider class per
    toolset.**
-4. **Built-in list:** the guide's name in `SkillFiles.BuiltIn`, so the agent can't overwrite it.
-5. **Router:** a row in `default.md`'s toolset table.
-6. **Tests:** `SkillFilesTests` checks the router names it, the toolset's tests in
+4. **Reserved by itself:** the guide is embedded, so the agent can't take its name (`SkillFiles.IsBuiltIn`).
+5. **Routing:** a row in the routing of each mode whose product uses it (`agent/louis-agent/voice.md`, Puls's
+   `agent/puls/voice.md`).
+6. **Tests:** `SkillFilesTests` checks the coding agent's routing names it, the toolset's tests in
    `tests/louis-agent.core.tests/Tools/{Toolset}/`, and the golden files regenerated
    ([golden files](../tests/CLAUDE.md#golden-files)).
 
 Every catalogue toolset follows it; `SkillFilesTests` checks that each has a guide that loads with it.
 
-**Skill files we control are plain markdown, always.** That covers every file in `Prompts/`: the toolset guides, and the
-function file (`agent/functions/code-review.md`), which `AGENT_FUNCTION={name}` loads by the same
-`agent/functions/{name}.md` path as one the agent wrote (that one from the repo's `Skills/`, on disk). `SkillFilesTests` fails if a provider class for one of them appears.
+**Skill files we control are plain markdown, always.** That covers every file in `Prompts/` (the principles, the modes,
+the roles, the toolset guides) and the function skills the agent writes into `Skills/agent/functions/`. `SkillFilesTests` fails if a provider class for one of them appears.
 
 **The exception: our own implementation.** A provider class of its own is only for skills we don't control, when we
 must read someone else's skill format; a toolset's tools may be registered differently only when a tool class can't

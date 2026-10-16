@@ -58,7 +58,7 @@ fixes in the web app. [sample-output-short/](sample-output-short/README.md) is a
 |---|---|---|
 | order-service | `samples/order-service` (runs in the demo-setup container; replays run in the orchestrator's) | A console stand-in for a microservice: 11 API methods over `data/orders.csv`, one file each in `src/OrderService/Api/`. Unhandled exceptions go to `logs/errors.jsonl`, standing in for Exceptionless. |
 | Orchestrator | `src/louis-agent.orchestrator` (`docker/Dockerfile.orchestrator`) | An `AgentEngine` from `louis-agent.core` whose system prompt is the runbooks and whose only tools are `ServiceTools` (no file, git or shell tools). |
-| Runbooks | `src/louis-agent.orchestrator/Skills/` | `orchestrator.md` (workflow), `order-service/service.md` (owners, deploy policy) and one file per API method: what it does, which exceptions are expected, auto-fixable or escalated, and the correct behaviour. See [the runbooks guide](../docs/projects/orchestrator-runbooks.md). |
+| Runbooks | `src/louis-agent.orchestrator/Skills/` | the workflow is core's `louis-agent/voice-orchestrator` (CL9), `order-service/service.md` (owners, deploy policy) and one file per API method: what it does, which exceptions are expected, auto-fixable or escalated, and the correct behaviour. See [the runbooks guide](../docs/projects/orchestrator-runbooks.md). |
 | louis-agent | `src/louis-agent.api` (the demo-api container) | Does each fix with its usual tools: branch from `main`, edit, regression test in a new file, build, test, commit, then a `FIX-RESULT` line. |
 
 ## What the demo traffic triggers

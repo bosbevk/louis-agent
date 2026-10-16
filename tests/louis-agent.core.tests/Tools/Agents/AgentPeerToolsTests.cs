@@ -597,11 +597,11 @@ public class AgentPeerToolsTests
     public async Task ARefusedSession_ReportsThePeersReason()
     {
         var handler = new StubHandler(_ => Json(HttpStatusCode.BadRequest,
-            """{"type":"error","error":{"type":"invalid_request_error","message":"A sub-session can't load the 'agents' toolset"}}"""));
+            """{"type":"error","error":{"type":"invalid_request_error","message":"A sub-session can't load the 'specialists' toolset"}}"""));
 
-        string result = await Tools(handler).StartSubSession(["agents"], "x", agent: "coder");
+        string result = await Tools(handler).StartSubSession(["specialists"], "x", agent: "coder");
 
-        Assert.That(result, Does.Contain("HTTP 400").And.Contain("can't load the 'agents' toolset"));
+        Assert.That(result, Does.Contain("HTTP 400").And.Contain("can't load the 'specialists' toolset"));
         Assert.That(handler.Requests, Has.Count.EqualTo(1), "nothing was created, so nothing to delete");
     }
 

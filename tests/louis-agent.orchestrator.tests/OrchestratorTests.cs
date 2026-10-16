@@ -80,6 +80,29 @@ public class OrchestratorTests
         Assert.That(Decision.Parse("I looked at it.").Outcome, Is.EqualTo("unknown"));
 
     [Test]
+    public void TheWorkflow_IsBuiltIn_OnlyTheRunbooksAreOnDisk()
+    {
+        // CL9 step 7: the orchestrator's prompt is a mode in core (louis-agent/voice-orchestrator), read from the assembly;
+        // its own Skills/ keeps the per-service runbooks.
+        string skills = Directory.CreateTempSubdirectory("orchestrator-skills-").FullName;
+        try
+        {
+            string service = Path.Combine(skills, "order-service");
+            Directory.CreateDirectory(service);
+            foreach (string file in Directory.EnumerateFiles(Path.Combine(AppContext.BaseDirectory, "Skills", "order-service"), "*.md"))
+                File.Copy(file, Path.Combine(service, Path.GetFileName(file)));
+
+            var (provider, _) = OrchestratorSkills.Load(skills, "order-service");
+
+            Assert.That(provider.Documentation, Does.Contain("# Orchestrator").And.Contain("# Service: order-service"));
+        }
+        finally
+        {
+            Directory.Delete(skills, recursive: true);
+        }
+    }
+
+    [Test]
     public void Skills_LoadTheWorkflowServiceAndOneRunbookPerMethod()
     {
         string skills = Path.Combine(AppContext.BaseDirectory, "Skills");
@@ -90,7 +113,9 @@ public class OrchestratorTests
             "customer-initials", "delivery-estimate", "discount-label", "get-order", "invoice-number", "loyalty-points",
             "order-total", "packing-slip", "refund", "shipping-cost", "vat",
         }));
-        Assert.That(provider.Documentation, Does.StartWith("# Orchestrator"));
+        // CL9 step 2: the orchestrator is an agent too, so it gets the shared principles first.
+        Assert.That(provider.Documentation, Does.StartWith("# Principles"));
+        Assert.That(provider.Documentation, Does.Contain("# Orchestrator"));
         Assert.That(provider.Documentation, Does.Contain("## Method: refund").And.Contain("# Service: order-service"));
     }
 

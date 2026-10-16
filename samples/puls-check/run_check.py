@@ -1,5 +1,5 @@
 """The Puls delegation check (F5, F21, F22, F29): the same questions asked twice through Puls's API, first by one agent
-with every toolset (the baseline), then by Puls as built (`agents` and `web`: it answers the web itself and hands only
+with every toolset (the baseline), then by Puls as built (`specialists` and `web`: it answers the web itself and hands only
 cooking to the cook, the one role that's on, F29), each question in a session of its own. The
 usage ledger (logs/puls) is read back for each run's tokens by kind and cost, Puls's own and its specialists', per
 question; each delegation's toolsets and role are recorded from the tool call.
@@ -103,7 +103,7 @@ def ask(toolsets, run, task, question, mode=""):
     """One question in a new session: the answer's text, the tools it called, its delegations (toolsets and role), the
     specialists that answered, and an error if any. Every stream event is forwarded as progress (the portal shows the
     conversation unfolding), and the specialist's own tool calls are kept for the hosts it read."""
-    session = call("POST", "sessions", {"toolsets": toolsets, "personality": "puls", "time_zone": "Africa/Johannesburg",
+    session = call("POST", "sessions", {"toolsets": toolsets, "personality": "puls/voice-af", "time_zone": "Africa/Johannesburg",
                                         "task": task, "run": run, "location": "Stellenbosch, Wes-Kaap, Suid-Afrika"})["session_id"]
     text, tools, specialists, delegations, specialist_calls, error = [], [], [], [], [], None
     progress("question", mode=mode, task=task, turn=1, text=question)
@@ -227,9 +227,9 @@ def run_once(out):
     available = [t["name"] for t in call("GET", "toolsets")["toolsets"] if t["available"]]
     modes = {
         # The baseline: one agent with every toolset this instance has (not agents), no delegation.
-        "baseline": [t for t in available if t != "agents"],
+        "baseline": [t for t in available if t != "specialists"],
         # Puls as built (F29): agents and web; the web itself, cooking to the cook, the rest "not yet".
-        "delegated": ["agents", "web"],
+        "delegated": ["specialists", "web"],
     }
     stamp = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
     results = {}

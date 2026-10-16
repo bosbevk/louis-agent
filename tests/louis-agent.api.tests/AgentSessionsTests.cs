@@ -64,14 +64,16 @@ public class AgentSessionsTests
     }
 
     [Test]
-    public void ASubSession_CantLoadAgents_AndDepthIsOneLevel()
+    public void ASubSession_CantLoadSpecialists_AndDepthIsOneLevel()
     {
         var sessions = Sessions();
 
-        Assert.That(() => sessions.Create([AgentSessions.AgentsToolset], depth: 1),
+        Assert.That(() => sessions.Create(["specialists"], depth: 1),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("one level deep"));
         Assert.That(() => sessions.Create(["files"], depth: 2), Throws.TypeOf<ToolsetException>());
         Assert.That(sessions.Create(["files"], depth: 1).Depth, Is.EqualTo(1));
+        // CL9 step 5: a client still sending the old name gets the 400 that lists the valid toolsets.
+        Assert.That(() => sessions.Create(["agents"]), Throws.TypeOf<ToolsetException>().With.Message.Contain("specialists"));
     }
 
     [Test]
@@ -125,8 +127,8 @@ public class AgentSessionsTests
         var sessions = Sessions();
 
         Assert.Throws<LouisAgent.Core.Skills.PersonalityException>(() => sessions.Create(["web"], personality: "puls-cook"));
-        Assert.Throws<LouisAgent.Core.Skills.PersonalityException>(() => sessions.Create(["web"], depth: 1, personality: "puls"));
-        Assert.That(sessions.Create(["web"], personality: "puls").Personality, Is.EqualTo("puls"));
+        Assert.Throws<LouisAgent.Core.Skills.PersonalityException>(() => sessions.Create(["web"], depth: 1, personality: "puls/voice-af"));
+        Assert.That(sessions.Create(["web"], personality: "puls/voice-af").Personality, Is.EqualTo("puls/voice-af"));
         Assert.That(sessions.Create(["web"], depth: 1, personality: "puls-cook").Personality, Is.EqualTo("puls-cook"));
     }
 
@@ -209,6 +211,6 @@ public class AgentSessionsTests
         Assert.That(sessions.Create(["web"], depth: 1).Personality, Is.EqualTo("puls-researcher"));
         Assert.That(sessions.Create(["files", "python"], depth: 1).Personality, Is.EqualTo("puls-analyst"));
         Assert.That(sessions.Create(["web"], depth: 1, personality: "puls-specialist").Personality, Is.EqualTo("puls-specialist"));
-        Assert.That(sessions.Create(["web"]).Personality, Is.Null, "a top-level session keeps personality.md");
+        Assert.That(sessions.Create(["web"]).Personality, Is.Null, "a top-level session that names none gets the default voice");
     }
 }

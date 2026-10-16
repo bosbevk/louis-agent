@@ -29,7 +29,7 @@ public class SkillFilesTests
             Assert.That(File.Exists(Path.Combine(SkillsDirectory, guide)), Is.True, $"{guide} exists");
             string title = File.ReadLines(Path.Combine(SkillsDirectory, guide)).First();
             Assert.That(AgentHost.LoadSkills(options, [toolset]).Documentation, Does.Contain(title), $"{guide} loads with {toolset.Name}");
-            Assert.That(SkillFiles.BuiltIn, Does.Contain(guide), $"{guide} can't be overwritten by the agent");
+            Assert.That(SkillFiles.IsBuiltIn(guide), Is.True, $"{guide} can't be overwritten by the agent");
         }
     }
 
@@ -40,7 +40,8 @@ public class SkillFilesTests
     [Test]
     public void TheRouter_NamesEveryToolsetAndDescribesNoTools()
     {
-        string doc = SkillFileSource.ReadEmbedded(SkillFiles.Router)!;
+        // The coding agent's routing (CL9): Puls's routes only what Puls does.
+        string doc = Personalities.ModeParts(SkillFileSource.ReadEmbedded(Personalities.FileName(Personalities.DefaultVoice, SkillLevel.Agent))!).Routing;
 
         foreach (string toolset in ToolsetCatalog.All.Select(t => t.Name))
             Assert.That(doc, Does.Contain($"`{toolset}`"), $"the router should name the '{toolset}' toolset");
@@ -53,6 +54,16 @@ public class SkillFilesTests
         ];
         foreach (string tool in tools)
             Assert.That(doc, Does.Not.Contain(tool), $"the router should not describe the {tool} tool");
+    }
+
+    [Test]
+    public void CodeReview_IsPartOfTheCodingAgentsMode()
+    {
+        // CL9 step 4: the placeholder code-review skills (they only echoed) go; how to review a change is in the mode.
+        string routing = Personalities.ModeParts(SkillFileSource.ReadEmbedded(Personalities.FileName(Personalities.DefaultVoice, SkillLevel.Agent))!).Routing;
+
+        Assert.That(SkillFileSource.ReadEmbedded(SkillFiles.Function("code-review")), Is.Null);
+        Assert.That(routing, Does.Contain("Reviewing a change").And.Contain("`git`"));
     }
 
     [Test]
@@ -113,19 +124,10 @@ public class SkillFilesTests
         Assert.That(dangling, Is.Empty);
     }
 
-    [TestCase("agent/functions/code-review.md", "AnalyzeChanges")]
-    public void FunctionSkillFiles_HaveTheirProcedures(string fileName, string skill)
+    [Test]
+    public void AgentHostLoadSkills_IncludesEachToolsetGuideOnce()
     {
-        Assert.That(Load(fileName).Skills.Select(s => s.Name), Does.Contain(skill));
-    }
-
-    [TestCase("code-review")]
-    [TestCase("louis")]
-    [TestCase("dotnet")]
-    [TestCase("paymo")]
-    public void AgentHostLoadSkills_IncludesEachToolsetGuideOnce(string agentFunction)
-    {
-        var options = new AgentOptions { SkillsDirectory = SkillsDirectory, AgentFunction = agentFunction };
+        var options = new AgentOptions { SkillsDirectory = SkillsDirectory };
 
         string docs = AgentHost.LoadSkills(options).Documentation;
 
@@ -133,19 +135,11 @@ public class SkillFilesTests
         Assert.That(Regex.Matches(docs, "# Paymo Skills").Count, Is.EqualTo(1));
     }
 
-    [TestCase("code-review", "AnalyzeChanges")]
-    public void AgentHostLoadSkills_LoadsTheFunctionsOwnFile(string agentFunction, string skill)
-    {
-        var options = new AgentOptions { SkillsDirectory = SkillsDirectory, AgentFunction = agentFunction };
-
-        Assert.That(AgentHost.LoadSkills(options).Skills.Select(s => s.Name), Does.Contain(skill));
-    }
-
     [Test]
     public void TimeLogging_IsGone_ThePaymoToolsDoItsWork()
     {
         // CL8 step 6: its three skills only echoed a message; the paymo toolset logs real time.
-        var options = new AgentOptions { SkillsDirectory = SkillsDirectory, AgentFunction = "louis" };
+        var options = new AgentOptions { SkillsDirectory = SkillsDirectory };
 
         Assert.That(SkillFileSource.ReadEmbedded(SkillFiles.Function("time-logging")), Is.Null);
         Assert.That(AgentHost.LoadSkills(options).Skills.Select(s => s.Name),

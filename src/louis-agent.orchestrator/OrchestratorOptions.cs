@@ -35,7 +35,7 @@ internal sealed class OrchestratorOptions
     private string? _commsLogPath;
     public string? CommsLogOverride { init => _commsLogPath = value is null ? null : Path.GetFullPath(value); }
 
-    /// <summary>Folder holding orchestrator.md and the per-service skill folders.</summary>
+    /// <summary>Folder holding the per-service runbook folders (the workflow itself is built into core, CL9).</summary>
     public required string SkillsDirectory { get; init; }
 
     public bool Once { get; init; }

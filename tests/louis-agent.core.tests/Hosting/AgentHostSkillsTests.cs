@@ -2,6 +2,7 @@ using System.Text.RegularExpressions;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
+using LouisAgent.Core.Skills;
 
 namespace LouisAgent.Core.Tests.Hosting;
 
@@ -45,6 +46,31 @@ public class AgentHostSkillsTests
     }
 
     [Test]
+    public void TheToolsetThatHandsWorkOn_IsCalledSpecialists()
+    {
+        // CL9 step 5 (Louis: "this should say specialists since we call them that now"); F30's minions get their own.
+        var specialists = ToolsetCatalog.Find("specialists");
+
+        Assert.That(specialists?.GuideFile, Is.EqualTo("toolsets/specialists.md"));
+        Assert.That(ToolsetCatalog.Find("agents"), Is.Null, "the old name is gone");
+    }
+
+    [TestCase(null, SkillLevel.Agent)]
+    [TestCase("puls/voice-af", SkillLevel.Agent)]
+    [TestCase("puls-cook", SkillLevel.Specialist)]
+    [TestCase(null, SkillLevel.Specialist)]
+    [TestCase(null, SkillLevel.Minion)]
+    public void EveryPrompt_StartsWithThePrinciples(string? personality, SkillLevel level)
+    {
+        // CL9 step 2: every agent, at every level, whatever its voice or role, gets the shared principles first, so no
+        // later file can push them aside.
+        string docs = AgentHost.LoadSkills(Options(), [], personality, level).Documentation;
+
+        Assert.That(docs, Does.StartWith("# Principles"));
+        Assert.That(docs, Does.Contain("An agent may never lie, cheat, steal or murder."));
+    }
+
+    [Test]
     public void PersonalityAndTheRouter_AreAlwaysThere()
     {
         string docs = AgentHost.LoadSkills(Options(), []).Documentation;
@@ -65,40 +91,24 @@ public class AgentHostSkillsTests
     }
 
     [Test]
-    public void AToolsetNameAsTheFunction_DoesntLoadItsGuideOutsideTheProfile()
+    public void FunctionSkills_ComeWithTheSkillsToolset_AndNotWithout()
     {
-        // AGENT_FUNCTION=python names a toolset, not a function file: its guide comes only with the toolset.
-        var options = Options();
-        options.AgentFunction = "python";
+        // A function skill is a set of procedures run by ExecuteSkill: it belongs to the skills toolset, like a guide to its
+        // tools. Puls's chats load agents and web, so their prompt has no skill file (CL9: there's no setting to add one).
+        string skills = Directory.CreateTempSubdirectory("function-skills-").FullName;
+        try
+        {
+            Directory.CreateDirectory(Path.Combine(skills, "agent", "functions"));
+            File.WriteAllText(Path.Combine(skills, "agent", "functions", "greeting.md"), "# Greeting Skills\n\nGreets people.");
+            var options = new AgentOptions { SkillsDirectory = skills };
 
-        Assert.That(AgentHost.LoadSkills(options, Toolsets("files")).Documentation, Does.Not.Contain("# Python Skills"));
-    }
-
-    [Test]
-    public void FunctionSkills_ComeWithTheSkillsToolset()
-    {
-        // The function's skill file (and with "louis", every one) is a set of procedures run by ExecuteSkill: it belongs
-        // to the skills toolset, like a guide to its tools.
-        var louis = Options();
-        louis.AgentFunction = "louis";
-
-        Assert.That(AgentHost.LoadSkills(louis, Toolsets("skills")).Documentation,
-            Does.Contain("# Code Review Skills").And.Not.Contain("# Time Logging Skills"));
-        Assert.That(AgentHost.LoadSkills(Options(), Toolsets("files", "skills")).Documentation, Does.Contain("# Code Review Skills"));
-    }
-
-    [Test]
-    public void WithoutTheSkillsToolset_NoFunctionSkills()
-    {
-        // Puls's chats load only the agents toolset: its prompt is the router and the agents guide, not every skill file
-        // in the folder (AGENT_FUNCTION=louis used to add them all, agent-made ones included).
-        var louis = Options();
-        louis.AgentFunction = "louis";
-
-        string docs = AgentHost.LoadSkills(louis, Toolsets("agents")).Documentation;
-
-        Assert.That(docs, Does.Not.Contain("# Code Review Skills").And.Not.Contain("# Time Logging Skills"));
-        Assert.That(AgentHost.LoadSkills(Options(), Toolsets("files")).Documentation, Does.Not.Contain("# Code Review Skills"));
+            Assert.That(AgentHost.LoadSkills(options, Toolsets("files", "skills")).Documentation, Does.Contain("# Greeting Skills"));
+            Assert.That(AgentHost.LoadSkills(options, Toolsets("specialists", "web")).Documentation, Does.Not.Contain("# Greeting Skills"));
+        }
+        finally
+        {
+            Directory.Delete(skills, recursive: true);
+        }
     }
 
     [Test]

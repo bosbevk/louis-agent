@@ -71,6 +71,9 @@ public sealed class AgentEngineFactory
     /// <summary>The named personalities a session at <paramref name="level"/> can choose (F21, CL8), all built in.</summary>
     public IReadOnlyList<string> AvailablePersonalities(SkillLevel level) => AgentHost.EnabledPersonalities(_agent, level);
 
+    /// <summary>The mode of a level-0 session that names none (CL9): <c>GET /personalities</c>' <c>default</c>.</summary>
+    public string DefaultVoice => Personalities.DefaultVoice;
+
     /// <summary>
     /// The role for a sub-session with <paramref name="toolsets"/> when its parent named none: from
     /// <c>specialists/roles.json</c> (built in), and only a role this instance has; null otherwise.
@@ -89,7 +92,7 @@ public sealed class AgentEngineFactory
 
     /// <summary>
     /// The engine for <paramref name="toolsets"/> (any order or case; duplicates ignored), <paramref name="personality"/>
-    /// (null: personality.md) and <paramref name="level"/> (CL8: where the personality is; the router only at level 0),
+    /// (null: the default mode) and <paramref name="level"/> (CL8: where the personality is; the router only at level 0),
     /// built on first use. Throws
     /// <see cref="ToolsetException"/> for an unknown or unavailable toolset and <see cref="PersonalityException"/> for an
     /// unknown personality or one from another level, before anything is built. A full cache drops its least recently used profile (on a specialist

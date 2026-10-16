@@ -28,24 +28,37 @@ public class PersonalitiesTests
     {
         string docs = AgentHost.LoadSkills(Options(), [], personality: null).Documentation;
 
-        Assert.That(docs, Does.Contain("Louis's Minion"), "personality.md, as before F21");
+        Assert.That(docs, Does.Contain("Louis's Minion"), "the default voice, louis-agent/voice (personality.md before CL9)");
         Assert.That(docs, Does.Not.Contain("# Puls - Persoonlikheid"));
+        Assert.That(docs, Does.Contain("# Louis Agent - Default Instructions"), "and its router");
+    }
+
+    [Test]
+    public void AMode_IsOneFile_ItsVoiceThenItsRouting()
+    {
+        // CL9: a level-0 session loads one file; its voice frames everything after it, its routing follows.
+        string docs = AgentHost.LoadSkills(new AgentOptions(), [], "puls/voice-af").Documentation;
+
+        Assert.That(Personalities.DefaultVoice, Is.EqualTo("louis-agent/voice"));
+        Assert.That(docs.IndexOf("# Puls - Persoonlikheid", StringComparison.Ordinal),
+            Is.LessThan(docs.IndexOf("# Puls - Routing", StringComparison.Ordinal)));
+        Assert.That(SkillFileSource.ReadEmbedded("agent/puls/voice.md"), Does.StartWith("# Puls - Routing"), "Puls's shared part");
     }
 
     [Test]
     public void ANamedPersonality_ReplacesTheDefault_AndComesFirst()
     {
-        string docs = AgentHost.LoadSkills(Options(), [], "puls").Documentation;
+        string docs = AgentHost.LoadSkills(Options(), [], "puls/voice-af").Documentation;
 
         Assert.That(docs, Does.Contain("# Puls - Persoonlikheid"));
         Assert.That(docs, Does.Not.Contain("Louis's Minion"));
         Assert.That(docs.IndexOf("# Puls - Persoonlikheid", StringComparison.Ordinal),
-            Is.LessThan(docs.IndexOf("# Louis Agent - Default Instructions", StringComparison.Ordinal)), "who the agent is, before the router");
+            Is.LessThan(docs.IndexOf("# Puls - Routing", StringComparison.Ordinal)), "who the agent is, before its routing");
     }
 
     [TestCase("../personality")]
     [TestCase("Puls")]
-    [TestCase("a/b")]
+    [TestCase("a/b/c")]
     [TestCase("voice.md")]
     [TestCase("-voice")]
     public void ANameThatIsntValid_IsRefused(string name)
@@ -58,7 +71,7 @@ public class PersonalitiesTests
     public void AnUnknownName_IsRefused_ListingTheAvailable()
     {
         var ex = Assert.Throws<PersonalityException>(() => AgentHost.LoadSkills(Options(), [], "nobody"));
-        Assert.That(ex!.Message, Does.Contain("Unknown personality 'nobody'").And.EndWith("Available: puls."));
+        Assert.That(ex!.Message, Does.Contain("Unknown personality 'nobody'").And.EndWith("Available: louis-agent/voice, louis-agent/voice-orchestrator, puls/voice-af, puls/voice-en."));
     }
 
     [Test]
@@ -73,27 +86,75 @@ public class PersonalitiesTests
     public void PulsAndItsSpecialists_AreBuiltIn()
     {
         // F21 step 4: embedded, so a container without Skills/ still has them; a file on disk overrides.
-        Assert.That(Personalities.Available(SkillLevel.Agent), Is.EqualTo(new[] { "puls" }));
+        Assert.That(Personalities.Available(SkillLevel.Agent), Is.EqualTo(new[] { "louis-agent/voice", "louis-agent/voice-orchestrator", "puls/voice-af", "puls/voice-en" }));
         Assert.That(Personalities.Available(SkillLevel.Specialist), Is.SupersetOf(new[]
             { "puls-researcher", "puls-reader", "puls-historian", "puls-analyst", "puls-specialist", "puls-cook" }));
-        Assert.That(AgentHost.LoadSkills(new AgentOptions(), [], "puls").Documentation, Does.Contain("# Puls - Persoonlikheid"));
+        Assert.That(AgentHost.LoadSkills(new AgentOptions(), [], "puls/voice-af").Documentation, Does.Contain("# Puls - Persoonlikheid"));
         Assert.That(AgentHost.LoadSkills(new AgentOptions(), [], "puls-cook", SkillLevel.Specialist).Documentation,
             Does.Contain("Never invent a price"));
     }
 
     [Test]
-    public void TheDefaultVoiceAndTheRouter_AreNotVoicesToChoose()
+    public void EachProduct_RoutesOnlyWhatItDoes()
     {
-        // CL8 step 2: personality.md and default.md live in agent/ beside puls.md, but a session can't name either.
-        Assert.That(Personalities.Available(SkillLevel.Agent), Is.EqualTo(new[] { "puls" }));
-        Assert.Throws<PersonalityException>(() => AgentHost.LoadSkills(new AgentOptions(), [], "default"));
+        // CL9 step 3: a product's routing holds its own rows, so neither pays for the other's in every request.
+        string puls = SkillFileSource.ReadEmbedded("agent/puls/voice.md")!;
+        string louis = Personalities.ModeParts(SkillFileSource.ReadEmbedded("agent/louis-agent/voice.md")!).Routing;
+
+        Assert.That(puls, Does.Contain("`web`").And.Contain("`specialists`").And.Contain("`puls-cook`").And.Contain("**Vir:**"));
+        foreach (string coding in new[] { "`files`", "`git`", "`dotnet`", "`python`", "`paymo`", "`devops`", "`skills`" })
+            Assert.That(puls, Does.Not.Contain(coding), $"Puls doesn't route {coding}");
+        Assert.That(puls, Does.Contain("isn't available here yet"), "and still says so in one line when asked");
+        Assert.That(louis, Does.Not.Contain("puls-cook").And.Not.Contain("**Vir:**").And.Not.Contain("cook"), "no cook, no Afrikaans briefing");
+    }
+
+    [TestCase("af", "# Puls - Persoonlikheid")]
+    [TestCase("en", "# Puls - Personality")]
+    public void APulsLanguage_LoadsItsVoice_ThenPulsShared(string code, string voice)
+    {
+        // CL9 step 6 (Louis: "a puls/voice.md for shared things"): the language file says how Puls talks, voice.md routes.
+        string docs = AgentHost.LoadSkills(new AgentOptions(), [], $"puls/voice-{code}").Documentation;
+
+        Assert.That(docs.IndexOf(voice, StringComparison.Ordinal), Is.GreaterThan(0));
+        Assert.That(docs.IndexOf(voice, StringComparison.Ordinal), Is.LessThan(docs.IndexOf("# Puls - Routing", StringComparison.Ordinal)));
+        Assert.That(Personalities.LanguageOf($"puls/voice-{code}"), Is.EqualTo(code));
+    }
+
+    [Test]
+    public void PulsVoice_IsShared_NotAModeOnItsOwn()
+    {
+        Assert.That(Personalities.Available(SkillLevel.Agent), Is.EqualTo(new[] { "louis-agent/voice", "louis-agent/voice-orchestrator", "puls/voice-af", "puls/voice-en" }));
+        Assert.Throws<PersonalityException>(() => AgentHost.LoadSkills(new AgentOptions(), [], "puls/voice"));
+        Assert.That(Personalities.LanguageOf("louis-agent/voice"), Is.Null, "the coding agent's mode is whole");
+    }
+
+    [Test]
+    public void ThePulsLanguages_HaveTheSameSections()
+    {
+        // Two languages of one voice drift apart unless something holds them together: the same sections, in order.
+        static string[] Sections(string text) => text.Split('\n').Where(l => l.StartsWith("## ")).ToArray();
+        string af = SkillFileSource.ReadEmbedded("agent/puls/voice-af.md")!, en = SkillFileSource.ReadEmbedded("agent/puls/voice-en.md")!;
+
+        Assert.That(Sections(en), Has.Length.EqualTo(Sections(af).Length));
+        Assert.That(en.Split('\n').Count(l => l.StartsWith("- ")), Is.EqualTo(af.Split('\n').Count(l => l.StartsWith("- "))), "the same points");
+    }
+
+    [TestCase("functions/code-review")]
+    [TestCase("puls")]
+    [TestCase("default")]
+    public void OnlyAMode_IsANameAtLevelZero(string name)
+    {
+        // CL9: a mode is agent/{product}/{mode}.md; a function skill, a product folder or an old name isn't one.
+        var ex = Assert.Throws<PersonalityException>(() => AgentHost.LoadSkills(new AgentOptions(), [], name));
+
+        Assert.That(ex!.Message, Does.EndWith("Available: louis-agent/voice, louis-agent/voice-orchestrator, puls/voice-af, puls/voice-en."));
     }
 
     [Test]
     public void EachLevel_ListsOnlyItsOwnPersonalities()
     {
         // CL8: the folders follow the levels; minions (level 2) are F30's, so its folder is empty until then.
-        Assert.That(Personalities.Available(SkillLevel.Specialist), Does.Not.Contain("puls"));
+        Assert.That(Personalities.Available(SkillLevel.Specialist), Does.Not.Contain("puls/voice-af"));
         Assert.That(Personalities.Available(SkillLevel.Minion), Is.Empty);
     }
 
@@ -103,15 +164,15 @@ public class PersonalitiesTests
         // CL8: a role opens only at its own level, so Puls's chat can't take the cook's role as its voice.
         var ex = Assert.Throws<PersonalityException>(() => AgentHost.LoadSkills(new AgentOptions(), [], "puls-cook", SkillLevel.Agent));
 
-        Assert.That(ex!.Message, Does.Contain("Unknown personality 'puls-cook'").And.EndWith("Available: puls."));
+        Assert.That(ex!.Message, Does.Contain("Unknown personality 'puls-cook'").And.EndWith("Available: louis-agent/voice, louis-agent/voice-orchestrator, puls/voice-af, puls/voice-en."));
     }
 
     [Test]
     public void TheAgentsVoice_IsRefusedAtLevelOne_NamingTheRolesThereAre()
     {
-        var ex = Assert.Throws<PersonalityException>(() => AgentHost.LoadSkills(new AgentOptions(), [], "puls", SkillLevel.Specialist));
+        var ex = Assert.Throws<PersonalityException>(() => AgentHost.LoadSkills(new AgentOptions(), [], "puls/voice-af", SkillLevel.Specialist));
 
-        Assert.That(ex!.Message, Does.Contain("Unknown personality 'puls'").And.Contain("puls-cook"));
+        Assert.That(ex!.Message, Does.Contain("Unknown personality 'puls/voice-af'").And.Contain("puls-cook"));
     }
 
     [Test]
@@ -141,7 +202,7 @@ public class PersonalitiesTests
     public void CountingGoesToTheAnalyst_AndTheReaderHandsItBack()
     {
         // FX13: a counting task sent to a files-only reader read every test file into a 298k-token prompt ($0.278).
-        string router = SkillFileSource.ReadEmbedded("toolsets/agents.md")!;
+        string router = SkillFileSource.ReadEmbedded("toolsets/specialists.md")!;
         string reader = SkillFileSource.ReadEmbedded(Personalities.SpecialistsFolder + "/puls-reader.md")!;
 
         Assert.That(router, Does.Contain("Counting is the analyst's, never the reader's"));
@@ -176,8 +237,8 @@ public class PersonalitiesTests
     public void AFollowUp_GoesToTheOpenSpecialist()
     {
         // F26 step 4: the tool exists from the first turn; the prompt says when to continue and when to start over.
-        string agents = SkillFileSource.ReadEmbedded("toolsets/agents.md")!;
-        string router = SkillFileSource.ReadEmbedded("agent/default.md")!;
+        string agents = SkillFileSource.ReadEmbedded("toolsets/specialists.md")!;
+        string router = SkillFileSource.ReadEmbedded("agent/puls/voice.md")!;
 
         Assert.That(agents, Does.Contain("## Following up").And.Contain("`ContinueSubSession(handle, message, attachments)`"));
         Assert.That(agents, Does.Contain("start a new sub-session").IgnoreCase, "and when not to continue");
@@ -192,8 +253,8 @@ public class PersonalitiesTests
     {
         // Louis's manual test: "ek wil bebotie maak, wat het ek nodig" was answered from memory, no prices, no shop.
         // Cooking is the cook's even when Puls knows the recipe, and the cook names the branches near the user.
-        string router = SkillFileSource.ReadEmbedded("agent/default.md")!;
-        string agents = SkillFileSource.ReadEmbedded("toolsets/agents.md")!;
+        string router = SkillFileSource.ReadEmbedded("agent/puls/voice.md")!;
+        string agents = SkillFileSource.ReadEmbedded("toolsets/specialists.md")!;
         string cook = SkillFileSource.ReadEmbedded(Personalities.SpecialistsFolder + "/puls-cook.md")!;
 
         Assert.That(router, Does.Contain("every cooking question").And.Contain("never from memory"));
@@ -251,8 +312,8 @@ public class PersonalitiesTests
     {
         // Louis's manual test after the cook's template: "the cook's output differed from Puls". Nothing told Puls to
         // hand a report on; the router said "pass the result on" and the roles "Puls will put it in its own voice".
-        string agents = SkillFileSource.ReadEmbedded("toolsets/agents.md")!;
-        string router = SkillFileSource.ReadEmbedded("agent/default.md")!;
+        string agents = SkillFileSource.ReadEmbedded("toolsets/specialists.md")!;
+        string router = SkillFileSource.ReadEmbedded("agent/puls/voice.md")!;
 
         Assert.That(agents, Does.Contain("## Relaying a report"));
         Assert.That(agents, Does.Contain("as the specialist wrote it").And.Contain("every table row"), "whole, tables included");
@@ -264,9 +325,9 @@ public class PersonalitiesTests
     {
         // Louis: "say something like I'm handing this to my specialist, back shortly" before the call, and "my cook
         // just came back with this" above the report. The voice file said the opposite: never forward a report as is.
-        string voice = SkillFileSource.ReadEmbedded(Personalities.AgentFolder + "/puls.md")!;
-        string agents = SkillFileSource.ReadEmbedded("toolsets/agents.md")!;
-        string router = SkillFileSource.ReadEmbedded("agent/default.md")!;
+        string voice = SkillFileSource.ReadEmbedded(Personalities.AgentFolder + "/puls/voice-af.md")!;
+        string agents = SkillFileSource.ReadEmbedded("toolsets/specialists.md")!;
+        string router = SkillFileSource.ReadEmbedded("agent/puls/voice.md")!;
 
         Assert.That(voice, Does.Not.Contain("Moet nooit 'n spesialis se verslag net so aanstuur nie"));
         Assert.That(voice, Does.Contain("my kok").And.Contain("nou-nou terug"), "the hand-off line, in Puls's voice");
@@ -280,8 +341,8 @@ public class PersonalitiesTests
     {
         // F28 step 1 (Louis: "deduce the mood from the typing style and pass it to the specialist"): the task is a note
         // in a fixed shape, so the specialist, the card and the check can all read it; the mood is a read of the style.
-        string agents = SkillFileSource.ReadEmbedded("toolsets/agents.md")!;
-        string router = SkillFileSource.ReadEmbedded("agent/default.md")!;
+        string agents = SkillFileSource.ReadEmbedded("toolsets/specialists.md")!;
+        string router = SkillFileSource.ReadEmbedded("agent/puls/voice.md")!;
 
         Assert.That(agents, Does.Contain("## Briefing the specialist"));
         foreach (string label in new[] { "**Vir:**", "**Wil hê:**", "**Klink:**", "**Waar:**", "**Reeds gesê:**", "**For:**", "**Wants:**", "**Sounds:**", "**Where:**", "**Already said:**" })
@@ -296,8 +357,8 @@ public class PersonalitiesTests
     {
         // Louis: "an option for it, on or off during a session". The system prompt can't change mid-chat (FX4), so the
         // switch is a marker line the API puts before the user's text; the prompt says what it means.
-        string agents = SkillFileSource.ReadEmbedded("toolsets/agents.md")!;
-        string router = SkillFileSource.ReadEmbedded("agent/default.md")!;
+        string agents = SkillFileSource.ReadEmbedded("toolsets/specialists.md")!;
+        string router = SkillFileSource.ReadEmbedded("agent/puls/voice.md")!;
 
         Assert.That(router, Does.Contain("[stemming: af]"), "the marker, as the API writes it");
         Assert.That(agents, Does.Contain("[stemming: af]").And.Contain("no `Klink`"), "and what the note does without it");
@@ -321,13 +382,14 @@ public class PersonalitiesTests
     {
         // F29 step 3 (Louis: "disable all specialists, Puls boots with web, except the cook"): the prompts match the gate.
         // The web is Puls's own work; the other rows say "not yet", and a not-yet request is never handed over.
-        string router = SkillFileSource.ReadEmbedded("agent/default.md")!;
-        string agents = SkillFileSource.ReadEmbedded("toolsets/agents.md")!;
+        string router = SkillFileSource.ReadEmbedded("agent/puls/voice.md")!;
+        string agents = SkillFileSource.ReadEmbedded("toolsets/specialists.md")!;
 
         string[] routerRows = router.Split('\n').Where(r => r.StartsWith('|')).ToArray();
         Assert.That(routerRows.Single(r => r.Contains("The world:")), Does.Contain("you, with `web`").And.Not.Contain("puls-researcher"));
         Assert.That(routerRows.Where(r => r.Contains("`puls-")), Has.Exactly(1).Items.And.All.Contains("`puls-cook`"), "one role left in the table");
-        Assert.That(routerRows.Count(r => r.Contains("*not yet*")), Is.GreaterThanOrEqualTo(6), "files, git, code, dotnet, paymo, devops, skills");
+        // CL9 step 3: the not-yet rows (files, git, code, dotnet, paymo, devops, skills) became one sentence in Puls's routing.
+        Assert.That(router, Does.Contain("never hand anything else to a specialist"));
         Assert.That(router, Does.Contain("isn't available yet"), "what to say instead of delegating");
 
         string[] agentRows = agents.Split('\n').Where(r => r.StartsWith('|') && r.Contains("`puls-")).ToArray();
@@ -335,11 +397,11 @@ public class PersonalitiesTests
         Assert.That(agents, Does.Contain("## Waiting for validation").And.Contain("PERSONALITIES_ENABLED"));
     }
 
-    [TestCase("agent/default.md")]
-    [TestCase("toolsets/agents.md")]
+    [TestCase("agent/puls/voice.md")]
+    [TestCase("toolsets/specialists.md")]
     public void AMealToCook_GoesToTheCook_WithWeb(string router)
     {
-        // Puls routes by its tables (default.md says which toolset and role; the agents guide which role per toolset).
+        // Puls routes by its tables (default.md says which toolset and role; the specialists guide which role per toolset).
         // Without a row in both, "what should I cook?" is just another web question and goes to the researcher.
         string[] rows = SkillFileSource.ReadEmbedded(router)!.Split('\n');
         string? row = rows.FirstOrDefault(r => r.StartsWith('|') && r.Contains("`puls-cook`"));

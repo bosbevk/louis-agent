@@ -178,6 +178,9 @@ pulsUi.loadLocation = () => { try { return localStorage.getItem("puls.location")
 pulsUi.saveLocation = (place) => {
     try { if (place) localStorage.setItem("puls.location", place); else localStorage.removeItem("puls.location"); } catch { }
 };
+// Puls's language (CL9): the voice a new chat opens with, remembered in this browser as puls.language.
+pulsUi.loadLanguage = () => { try { return localStorage.getItem("puls.language"); } catch { return null; } };
+pulsUi.saveLanguage = (code) => { try { localStorage.setItem("puls.language", code); } catch { } };
 pulsUi.timeZone = () => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone || null; } catch { return null; } };
 
 // "Gebruik my ligging": the browser's position (it asks the user once), named by OpenStreetMap's Nominatim at town level.

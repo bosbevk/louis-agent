@@ -11,7 +11,7 @@ public class PersonalitySkillsProviderTests
     [Test]
     public void Documentation_IsThePersonalityFile()
     {
-        var provider = new PersonalitySkillsProvider(Path.Combine(SkillsDirectory, "agent", "personality.md"));
+        var provider = new PersonalitySkillsProvider(Path.Combine(SkillsDirectory, "agent", "louis-agent", "voice.md"));
 
         Assert.That(provider.Documentation, Does.Contain("Louis's Minion"));
         Assert.That(provider.Skills, Is.Empty, "personality.md is guidance only");
@@ -25,15 +25,17 @@ public class PersonalitySkillsProviderTests
         Assert.That(provider.Documentation, Is.Empty);
     }
 
-    [TestCase("code-review")]
-    [TestCase("louis")]
-    public void AgentHostLoadSkills_PutsThePersonalityFirstAndOnce(string agentFunction)
+    [Test]
+    public void AgentHostLoadSkills_PutsThePersonalityFirstAndOnce()
     {
-        var options = new AgentOptions { SkillsDirectory = SkillsDirectory, AgentFunction = agentFunction };
+        var options = new AgentOptions { SkillsDirectory = SkillsDirectory };
 
         string docs = AgentHost.LoadSkills(options).Documentation;
 
-        Assert.That(docs, Does.StartWith("# Louis's Minion - Personality"));
+        // CL9 step 2: the principles first, then the personality before everything else.
+        Assert.That(docs, Does.StartWith("# Principles"));
+        Assert.That(docs.IndexOf("# Louis's Minion - Personality", StringComparison.Ordinal),
+            Is.LessThan(docs.IndexOf("# Louis Agent - Default Instructions", StringComparison.Ordinal)));
         Assert.That(docs.Split("# Louis's Minion - Personality").Length - 1, Is.EqualTo(1));
         Assert.That(docs.IndexOf("# Louis Agent - Default Instructions", StringComparison.Ordinal),
             Is.GreaterThan(0), "default.md follows the personality");
@@ -42,7 +44,8 @@ public class PersonalitySkillsProviderTests
     [Test]
     public void DefaultInstructions_NoLongerCarryThePersonality()
     {
-        string defaults = File.ReadAllText(Path.Combine(SkillsDirectory, "agent", "default.md"));
+        // CL9: the routing part of the coding agent's mode, after its voice.
+        string defaults = Personalities.ModeParts(File.ReadAllText(Path.Combine(SkillsDirectory, "agent", "louis-agent", "voice.md"))).Routing;
 
         Assert.That(defaults, Does.Not.Contain("Minion").And.Not.Contain("Thiel"));
     }

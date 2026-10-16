@@ -148,8 +148,7 @@ internal sealed partial class SkillTools
     [Description("""
         Creates (or updates, with overwrite=true) a reusable skill file, agent/functions/<name>.md in the Skills folder, and loads it
         immediately so its skills become callable via ExecuteSkill in this same session — the file is saved to disk
-        right away, but only becomes part of every future session's skill set if the agent's AGENT_FUNCTION setting
-        loads it (e.g. 'louis', which loads every skill file). Use this when the user asks to save a repeatable
+        right away, and every later session with the skills toolset loads it too. Use this when the user asks to save a repeatable
         procedure as a skill, not for a one-off action that only needs to happen once. A built-in skills file name
         (including 'default') cannot be overwritten with this tool. Markdown format, one section per skill:
         # <Title>
@@ -180,7 +179,7 @@ internal sealed partial class SkillTools
 
         string fileName = SkillFiles.Function(name);
         // A toolset's guide (toolsets/{name}.md, CL8) keeps its name too, so a skill file never passes for one.
-        if (name == "default" || SkillFiles.BuiltIn.Contains(fileName) || SkillFiles.BuiltIn.Contains(SkillFiles.Guide(name)))
+        if (name == "default" || SkillFiles.IsBuiltIn(fileName) || SkillFiles.IsBuiltIn(SkillFiles.Guide(name)))
             return MessageText.Format(ToolMessage.SkillFileBuiltIn, new { File = fileName });
 
         string path = Path.Combine(SkillsDirectory, fileName.Replace('/', Path.DirectorySeparatorChar));

@@ -59,7 +59,7 @@ The full step-by-step is in [How a turn works](../architecture/06-runtime-view.m
 | `Logging/AgentLogging.cs` | Serilog behind `ILogger`, configured once per process: the console on stderr (`[INFO]`, or a tag such as `[TOOL]`), and with `LOG_DIRECTORY` a run file per process and the JSON-lines records |
 | `Logging/MessageLogging.cs`, `ToolCallRecords.cs`, `RecordFormatter.cs` | `logger.Log(level, Member, new { Hole = value })` for a message enum member; the two records (`oversized-tool-results.jsonl`, `truncated-tool-calls.jsonl`), written as `timestamp` and camelCase fields |
 | `Config/LlmOptions.cs`, `CacheLifetime.cs` | `LLM_*`: provider (inferred from the model when unset), model, endpoint, key, tool support, thinking, `LLM_CACHE` and `LLM_CACHE_TTL` |
-| `Config/AgentOptions.cs` | Workspace, skills directory, `AGENT_FUNCTION`, keys for Paymo / DevOps / web search, Rider MCP, `LOG_DIRECTORY`, prices and rates, `AGENT_PEERS`, `SUB_SESSION_PROMPT_BUDGET` |
+| `Config/AgentOptions.cs` | Workspace, skills directory, keys for Paymo / DevOps / web search, Rider MCP, `LOG_DIRECTORY`, prices and rates, `AGENT_PEERS`, `SUB_SESSION_PROMPT_BUDGET` |
 | `Config/EnvFile.cs` | Finds the `config/` folder; sets one line in `config/.env` (`usage-probe --host-culture`), keeping the rest of the file |
 | `Messages/` | Message enums (`ErrorMessage`, `LogMessage`, `ToolMessage`, `UserText`, one file each: every exception, log line, tool error and user text) and `MessageText` (`Format`, `Template`, `Holes`) |
 | `Llm/LlmClientFactory.cs`, `ILlmClientFactory.cs` | Options → `IChatClient`: Anthropic (`AsIChatClient`, `MaxOutputTokens` 16,000, a fixed thinking budget for pre-4.6 models), Ollama, OpenAI-compatible; every client wrapped in `PromptCachingChatClient` with the provider's strategy (`CreatePromptCaching`) |
@@ -115,7 +115,7 @@ attributes (116 tools with every toolset, Paymo and DevOps included). Helpers mu
 ## Configuration
 
 `LLM_PROVIDER`, `LLM_MODEL`, `LLM_ENDPOINT`, `LLM_API_KEY` / `ANTHROPIC_API_KEY`, `ANTHROPIC_WORKSPACE_ID`,
-`LLM_SUPPORTS_TOOLS`, `LLM_THINKING`, `LLM_PROFILE`, `WORKSPACE_ROOT`, `SKILLS_DIRECTORY`, `AGENT_FUNCTION`,
+`LLM_SUPPORTS_TOOLS`, `LLM_THINKING`, `LLM_PROFILE`, `WORKSPACE_ROOT`, `SKILLS_DIRECTORY`,
 `LOG_DIRECTORY`, `USAGE_LEDGER`, `USAGE_IN_CHAT`, `PRICES_FILE`, `PRICES_URL`, `RATES_URL`, `RATES_FORMAT`, `RATES_FILE`,
 `HOST_CULTURE`, `DISPLAY_CURRENCY`,
 `PAYMO_API_KEY`, `DEVOPS_API_KEY`, `DEVOPS_ORGANIZATION`, `DEVOPS_PROJECT`, `DEVOPS_TEAM`, `WEB_SEARCH_PROVIDER`,
@@ -127,7 +127,7 @@ attributes (116 tools with every toolset, Paymo and DevOps included). Helpers mu
 
 - **A tool:** a public method with `[Description]`s on a tool class in `Tools/{Toolset}/`; a new class is registered in
   the `AgentEngine` constructor; mention it in a skill file; test it in `tests/louis-agent.core.tests/Tools/{Toolset}/`.
-- **A skill:** `Prompts/agent/functions/{name}.md` (built in) or `Skills/agent/functions/{name}.md` (written by the agent); loaded with `AGENT_FUNCTION={name}` or `louis`.
+- **A skill:** `Skills/agent/functions/{name}.md`, written by the agent or dropped in; loaded with the `skills` toolset.
 - **A provider:** a branch in `LlmClientFactory`; provider differences never go into `AgentEngine` or the tools. Where
   it needs its own logic for a concern (usage, caching, …), add its implementation of that concern's strategy, in
   `Llm/{Name}Provider/`

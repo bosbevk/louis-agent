@@ -102,10 +102,17 @@ decision's record (its context, and what it cost) in [docs/adr/](adr/README.md).
   holds the first two ([Project layout](../louis-agent.core/CLAUDE.md#project-layout)).
   Why: [ADR 0010](adr/0010-folders-by-concern.md), [ADR 0011](adr/0011-prompts-are-content.md).
 - **Skill files follow the levels** — a built-in prompt lives in `louis-agent.core/Prompts/`, in the folder of the
-  level that reads it (`agent/` level 0, `specialists/` level 1, `minions/` level 2) or in `toolsets/` when every level
-  shares it; a session loads its personality only from its own level's folder. They're read only from the assembly, so
+  level that reads it (`agent/` level 0, `specialists/` level 1, `minions/` level 2) or in `toolsets/` and `shared/`
+  when every level shares it; a session loads its personality only from its own level's folder. They're read only from the assembly, so
   a wording change is a rebuild; the repo's `Skills/` holds only what the agent writes. `SkillsLayoutTests` holds it.
   Why: [ADR 0017](adr/0017-skills-by-level.md), [ADR 0018](adr/0018-built-in-prompts-embedded.md).
+- **A level-0 session is a mode** — one file of voice and routing in a folder per product
+  (`agent/louis-agent/voice.md`, the default; `agent/louis-agent/voice-orchestrator.md`), or a language
+  (`agent/puls/voice-af.md`, `voice-en.md`) that loads its product's shared `voice.md` after it. A session names
+  `{product}/{mode}`; each product routes only what it does. Why: [ADR 0019](adr/0019-modes-one-file-per-product.md).
+- **Every agent loads the principles first** — `Prompts/shared/principles.md` (never lie, cheat, steal or murder)
+  opens every prompt, at every level and in the orchestrator. It states intent; the guards in code enforce.
+  Why: [ADR 0020](adr/0020-principles-for-every-agent.md).
 - **stdout is a protocol** — the ACP and MCP servers speak on it, so logs go through `ILogger` to stderr
   ([Messages and logging](../louis-agent.core/CLAUDE.md#messages-and-logging)).
   Why: [ADR 0009](adr/0009-message-text-as-enum-templates.md).
@@ -179,12 +186,11 @@ there, so a session pays for them only when they apply:
 
 ### Adding a skill
 
-A built-in function skill is `louis-agent.core/Prompts/agent/functions/{name}.md` (embedded, so a rebuild); one the
-agent writes with `CreateSkillFile` is `Skills/agent/functions/{name}.md`, on disk. With `AGENT_FUNCTION=louis` every
-function skill is loaded; otherwise set `AGENT_FUNCTION={name}`. Skill files come with the **skills** toolset: a session without it (Puls's chats: agents and web)
-gets the router and its toolsets' guides, not the skill files; a toolset's guide is
-[Adding a toolset](../louis-agent.core/CLAUDE.md#adding-a-toolset). A built-in file the agent must not overwrite is
-listed in `SkillFiles.BuiltIn`. Procedures use `## Skill: Name` with an `Execution:` fence (bash, powershell or python); arguments
+A function skill is `Skills/agent/functions/{name}.md`, on disk: the agent writes one with `CreateSkillFile`, or you
+drop one in. Every one loads with the **skills** toolset, no setting needed (CL9 retired `AGENT_FUNCTION`); a session
+without it (Puls's chats: `specialists` and `web`) gets its mode and its toolsets' guides, no skill file. A toolset's
+guide is [Adding a toolset](../louis-agent.core/CLAUDE.md#adding-a-toolset). A name that is a built-in prompt (a
+toolset's guide) is refused: what is embedded is built in (`SkillFiles.IsBuiltIn`). Procedures use `## Skill: Name` with an `Execution:` fence (bash, powershell or python); arguments
 arrive as `SKILL_ARG_*` environment variables, so quote them and never build commands from them:
 
 ````markdown
@@ -200,20 +206,25 @@ echo "Hello, ${SKILL_ARG_name}"
 ```
 ````
 
-### Adding a personality
+### Adding a mode or a role
 
 A session names its personality when it opens (`POST /sessions` with `"personality": "{name}"`; a sub-session through
-`StartSubSession(…, personality)`), and keeps it, as it keeps its toolsets (F21). Without one it gets `personality.md`.
+`StartSubSession(…, personality)`), and keeps it, as it keeps its toolsets (F21). Without one it gets the default mode,
+`louis-agent/voice`. Everything here is under `louis-agent.core/Prompts/`, embedded and read only from the assembly, so
+rebuild the images that use core.
 
-1. Create it in the folder of the level that uses it, under `louis-agent.core/Prompts/`: a voice in `agent/`, a
-   specialist's role in `specialists/`, a minion's function in `minions/` (lowercase letters, digits and dashes, a name
-   used at one level only). It's embedded and read only from the assembly, so rebuild the images that use core; a role
-   opened at another level is refused as unknown.
-2. **A voice** (`puls.md`) says who the agent is and how it talks. **A role** for a specialist (`puls-researcher.md`)
-   says its function and how it reports to the agent that called it, on the shared base the `puls-*` roles use.
-3. A role a parent should pass goes in the agents guide's table (`toolsets/agents.md`: toolsets → personality), and in
-   `specialists/roles.json`: a sub-session opened without a role gets the first rule whose toolsets it has.
-4. `GET /personalities` lists them by level; an unknown or invalid name is a 400 before any engine is built.
+1. **A mode** (level 0) is one file in a product's folder: its voice (the first `# ` section), then its routing (from
+   the second `# ` heading on), named `{product}/{mode}` (`louis-agent/voice`). A **language** is
+   `{product}/voice-{xx}.md` with only the voice; it loads the product's shared `voice.md` (the routing) after it, and
+   Puls's *Taal* menu offers it as soon as `GET /personalities` does. Each product routes only what it does.
+2. **A role** (level 1) is `specialists/{name}.md`: a specialist's function and how it reports to the agent that called
+   it. A parent names it in `StartSubSession`; the specialists guide (`toolsets/specialists.md`) says which goes with
+   which toolsets. **A minion's function** (level 2, F30) goes in `minions/`.
+3. Names are lowercase letters, digits and dashes (a mode adds one `/`), used at one level only; a name from another
+   level is refused as unknown. `PERSONALITIES_ENABLED` turns on only the listed ones, so a test can run Puls and the
+   one role under test.
+4. `GET /personalities` lists them by level, with the default; an unknown or invalid name is a 400 before any engine is
+   built.
 
 ### Running and debugging
 
@@ -262,7 +273,8 @@ afterwards (limitation 9, [FX4](fixes/FX04-append-only-history.md)).
 - **"prompt is too long"** — something put a huge result into the history; check `logs/oversized-tool-results.jsonl`.
 - **"adaptive thinking is not supported on this model"** — a pre-4.6 Claude model not listed in
   `LlmClientFactory.ThinkingBudgetModelPrefixes`; add its prefix.
-- **Skill not found** — the file isn't loaded for this `AGENT_FUNCTION`, or the name differs (case-sensitive).
+- **Skill not found** — the session doesn't have the `skills` toolset, the file isn't in `Skills/agent/functions/`, or
+  the name differs (case-sensitive).
 - **bash not found on Windows** — install Git for Windows or set `BASH_PATH` to `bash.exe`; WSL's bash is never used.
 - **400 "Invalid `signature` in `thinking` block … bound to a different conversation"** — the system prompt or tool list
   changed under earlier thinking ([known limitation 9](../TODO.md#known-limitations)); start a new chat. See
@@ -275,7 +287,7 @@ afterwards (limitation 9, [FX4](fixes/FX04-append-only-history.md)).
 ## Further reading
 
 [the architecture](architecture/README.md) for the design, `config/.env.example` for settings, and
-[the router](../louis-agent.core/Prompts/agent/default.md) for how the agent is instructed to behave.
+[the coding agent's mode](../louis-agent.core/Prompts/agent/louis-agent/voice.md) and [Puls's](../louis-agent.core/Prompts/agent/puls/voice-af.md) for how the agent is instructed to behave.
 
 ---
 [Docs index](README.md) · Previous: [Architecture](architecture/README.md) · Next: [Orchestrator demo](../samples/README.md)

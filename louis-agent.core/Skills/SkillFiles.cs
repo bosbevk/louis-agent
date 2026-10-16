@@ -9,11 +9,14 @@ internal static class SkillFiles
     /// </summary>
     internal const string FolderMarker = "README.md";
 
+    /// <summary>The folder of what every agent loads, at every level (CL9): the principles.</summary>
+    internal const string SharedFolder = "shared";
+
+    /// <summary>The principles (ADR 0020): first in every agent's prompt, so nothing later can push them aside.</summary>
+    internal const string Principles = SharedFolder + "/principles.md";
+
     /// <summary>The folder of the toolset guides, which every level shares (a guide is the same whichever level loads it).</summary>
     internal const string ToolsetsFolder = "toolsets";
-
-    /// <summary>The router: it picks a toolset and delegates, so only level 0 has it.</summary>
-    internal const string Router = Personalities.AgentFolder + "/default.md";
 
     /// <summary>The folder of the function skills: procedures ExecuteSkill runs, chosen by AGENT_FUNCTION (level 0's).</summary>
     internal const string FunctionsFolder = Personalities.AgentFolder + "/functions";
@@ -24,11 +27,9 @@ internal static class SkillFiles
     /// <summary>A function skill's file: <c>agent/functions/{name}.md</c>.</summary>
     internal static string Function(string name) => $"{FunctionsFolder}/{name}.md";
 
-    /// <summary>Skill files <c>AgentHost</c> loads by name (the toolset guides and the function files); discovery skips
-    /// them to avoid loading them twice, and the agent may not overwrite them.</summary>
-    internal static readonly HashSet<string> BuiltIn = new(StringComparer.OrdinalIgnoreCase)
-    {
-        Guide("devops"), Guide("paymo"), Guide("files"), Guide("git"), Guide("agents"), Function("code-review"),
-        Guide("dotnet"), Guide("python"), Guide("powershell"), Guide("bash"), Guide("web"), Guide("self-extension"),
-    };
+    /// <summary>
+    /// Whether <paramref name="path"/> is a built-in prompt: what is embedded is built in (CL9, ADR 0019), so the names the
+    /// agent may not take follow the files, with no list to keep. Discovery skips one, and <c>CreateSkillFile</c> refuses it.
+    /// </summary>
+    internal static bool IsBuiltIn(string path) => SkillFileSource.EmbeddedFiles.Contains(path, StringComparer.OrdinalIgnoreCase);
 }

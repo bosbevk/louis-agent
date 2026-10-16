@@ -31,7 +31,7 @@ internal sealed class AgentSession(string id, AgentEngine engine, IReadOnlyList<
     /// <summary>0 for a session a client opened; 1 for a sub-session another agent opened (F5-S5).</summary>
     public int Depth { get; } = depth;
 
-    /// <summary>The personality the session chose (F21), or null for personality.md.</summary>
+    /// <summary>The personality the session chose (F21), or null for the default voice (CL9).</summary>
     public string? Personality { get; } = personality;
 
     /// <summary>Where the user is, when they shared it (F22): set for every turn; the first message says it.</summary>
@@ -115,8 +115,8 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
     /// <summary>Sub-sessions are one level deep: a session another agent opened may not open its own.</summary>
     public const int MaxDepth = 1;
 
-    /// <summary>The toolset that opens sub-sessions (step 8); refused at <see cref="MaxDepth"/>.</summary>
-    public const string AgentsToolset = "agents";
+    /// <summary>The toolset that opens sub-sessions (F5; named specialists in CL9); refused at <see cref="MaxDepth"/>.</summary>
+    public const string SpecialistsToolset = "specialists";
 
     /// <summary>A session nobody has used for this long is dropped at the next create, with the sub-sessions it kept.</summary>
     public static readonly TimeSpan IdleTimeout = TimeSpan.FromHours(4);
@@ -125,10 +125,10 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
 
     /// <summary>
     /// Opens a session with <paramref name="toolsets"/> (null: <see cref="DefaultToolsets"/>; empty: none) and
-    /// <paramref name="personality"/> (null: personality.md). The session's level is its depth (CL8): its personality comes
+    /// <paramref name="personality"/> (null: the default voice). The session's level is its depth (CL8): its personality comes
     /// from that level's folder, and a sub-session gets no router (default.md): its toolsets were chosen for it and it
     /// can't delegate (F21). Throws <see cref="ToolsetException"/> for an unknown or unavailable
-    /// toolset, a depth outside 0..<see cref="MaxDepth"/>, or a sub-session asking for <see cref="AgentsToolset"/>, and
+    /// toolset, a depth outside 0..<see cref="MaxDepth"/>, or a sub-session asking for <see cref="SpecialistsToolset"/>, and
     /// <see cref="Core.Skills.PersonalityException"/> for an unknown personality, before anything is created.
     /// </summary>
     public AgentSession Create(IEnumerable<string>? toolsets = null, UsageTags? tags = null, int depth = 0, string? personality = null,
@@ -137,8 +137,8 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
         if (depth is < 0 or > MaxDepth)
             throw new ToolsetException(MessageText.Format(ErrorMessage.SessionDepthInvalid, new { Max = MaxDepth }));
         var names = ToolsetCatalog.Normalise(toolsets ?? DefaultToolsets);
-        if (depth > 0 && names.Contains(AgentsToolset))
-            throw new ToolsetException(MessageText.Format(ErrorMessage.SubSessionCannotDelegate, new { Toolset = AgentsToolset }));
+        if (depth > 0 && names.Contains(SpecialistsToolset))
+            throw new ToolsetException(MessageText.Format(ErrorMessage.SubSessionCannotDelegate, new { Toolset = SpecialistsToolset }));
         if (string.IsNullOrEmpty(personality)) personality = null;
         // A sub-session its parent gave no role gets one from its toolsets (roles.json): roles in code, not left to the prompt.
         if (depth > 0 && personality is null) personality = engines.RoleFor(names);

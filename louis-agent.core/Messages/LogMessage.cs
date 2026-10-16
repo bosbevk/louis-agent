@@ -42,10 +42,10 @@ public enum LogMessage
     [Description("Failed to load {File}: {Reason}")]
     SkillFileLoadFailed,
 
-    [Description("The router (agent/default.md) isn't in the assembly")]
+    [Description("The default mode isn't in the assembly")]
     DefaultInstructionsNotFound,
 
-    [Description("No personality.md found; running without a personality.")]
+    [Description("No personality file found; running without a personality.")]
     NoPersonality,
 
     [Description("Failed to connect to Rider at {Endpoint}: {Reason}")]
@@ -186,15 +186,6 @@ public enum LogMessage
     [Description("Sub-session prompt budget: the last request's prompt was {Last} tokens and the next is expected at {Next}, over the budget of {Budget}; the next request answers without tools")]
     SubSessionPromptBudgetReached,
 
-
-    [Description("Loaded {File} via MarkdownSkillProvider")]
-    MainSkillsFileLoaded,
-
-    [Description("Skills file '{File}' not found; using default skills only.")]
-    MainSkillsFileMissing,
-
-    [Description("Loading ALL skill providers (louis function)")]
-    LoadingAllSkills,
 
     [Description("Discovered skills file: {File}")]
     SkillsFileDiscovered,

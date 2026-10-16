@@ -71,10 +71,10 @@ Each project also has its own design doc in [projects/](../projects/README.md).
   that profile from `AgentEngineFactory`, fixed for the session's life; no list means `skills` only; an unknown or
   unavailable name is a 400 listing the valid ones. Sessions with the same list share one engine and one cacheable
   prefix. `GET /toolsets` lists names, descriptions and availability (never tool definitions); `GET /sessions/{id}`
-  returns a session's toolsets. A session opened by another agent (`depth: 1`) may not load `agents`.
+  returns a session's toolsets. A session opened by another agent (`depth: 1`) may not load `specialists`.
 - Two web apps share one API codebase and `louis-agent.web.shared`: the code-review app (`louis-agent.web`, every
-  toolset; served by default) and **Puls** (`louis-agent.puls`, the general assistant: chats load only `agents` and
-  delegate every task; served when the API is built with `-p:WebApp=puls`).
+  toolset; served by default) and **Puls** (`louis-agent.puls`, the general assistant: chats load `specialists` and `web` and
+  hand cooking to the cook; served when the API is built with `-p:WebApp=puls`).
 - **Live delegation:** while a `StartSubSession` call runs, the specialist's own events stream to the chat as
   `sub_session` events (`SubSessionFeed` → the API's turn stream), and the delegation card shows its thinking, tool
   calls, answer and cost as they happen; the model gets only the answer.
@@ -137,8 +137,8 @@ Dependencies point one way, down this picture; `ArchitectureTests` fails on one 
 - `LLM_THINKING`: `off` | `low` | `medium` | `high`; default `medium` for Anthropic, `off` otherwise.
 
 ### `AgentOptions` (`Config/AgentOptions.cs`)
-- `WORKSPACE_ROOT` (default: the repository root found from the working directory), `SKILLS_DIRECTORY`,
-  `AGENT_FUNCTION` (default `code-review`; `louis` loads every skill file), `LOG_DIRECTORY`.
+- `WORKSPACE_ROOT` (default: the repository root found from the working directory), `SKILLS_DIRECTORY` (what the agent
+  writes), `LOG_DIRECTORY`.
 - Keys: `PAYMO_API_KEY`, `DEVOPS_API_KEY`, `WEB_SEARCH_PROVIDER`, `GOOGLE_SEARCH_API_KEY`, `GOOGLE_SEARCH_ENGINE_ID`.
 - Sub-sessions (F5): `AGENT_PEERS` (`name=url` pairs) and `AGENT_API_KEY`, sent to the peers.
 - Azure DevOps: `DEVOPS_ORGANIZATION`, `DEVOPS_PROJECT`, optional `DEVOPS_TEAM` (sprints live under the team).
@@ -188,31 +188,29 @@ Everything it sends uses LF line endings, whatever the checkout:
 ### Toolsets (`Agent/ToolsetCatalog.cs`, `Hosting/AgentEngineFactory.cs`)
 Every toolset is a catalogue entry: a name, a one-line description, the settings it needs, its tool class and factory,
 and its guide (docs/CLAUDE.md, *Adding a toolset*). `files`, `git`, `dotnet`, `python`, `powershell`, `bash`, `web`,
-`paymo`, `devops`, `agents` (sub-sessions on a peer, `AGENT_PEERS`) and `skills` (engine-provided). `AgentEngineFactory`
-builds one engine per profile, cached by its normalised toolset list, its personality and whether it has the router (F21;
+`paymo`, `devops`, `specialists` (sub-sessions on a peer, `AGENT_PEERS`) and `skills` (engine-provided). `AgentEngineFactory`
+builds one engine per profile, cached by its normalised toolset list, its personality and its level (F21, CL8;
 past 16 the least recently used is dropped), with only those tools and only their guides in the system prompt, and logs
 each profile's tool count and fixed-prefix estimate. The CLI, ACP server and MCP server use every
 toolset the instance can load; the API's sessions choose theirs. A sub-session (`AgentPeerTools.StartSubSession`) runs
 on a peer with its own toolsets and its role (`personality`; when the parent names none, the peer takes one from the
 toolsets in `specialists/roles.json`), at most 3 per turn and 5 minutes each, and only its answer and a usage
 line come back; its usage records carry the parent turn (`parent`). An empty answer (the specialist used all its tool
-rounds) is asked for once more in the same session (FX11). A sub-session gets no router (`default.md`): its toolsets
-were chosen for it and it can't delegate.
+rounds) is asked for once more in the same session (FX11). A sub-session gets no routing: its toolsets were chosen for it
+and it can't delegate.
 
 ## Skills
 
 `AgentHost.LoadSkills(agent, toolsets, personality, level)` builds a `CompositeSkillProvider` whose combined
 documentation is the system prompt; every file is plain markdown read by `MarkdownSkillProvider`:
-1. the personality — who the agent is and how it talks, kept apart so it can change without touching how the agent
-   works: `agent/personality.md` by default, or the session's own from its level's folder (F21, CL8: `POST /sessions`
-   with `personality`, `GET /personalities`). Puls speaks as `puls`; its specialists get a role (`puls-researcher`,
-   `puls-reader`, `puls-historian`, `puls-analyst`, `puls-specialist`) that says their function and how to report
-2. `default.md` — the router: which toolset a task needs, and how sessions and sub-sessions work (top-level sessions
-   only: a sub-session gets none)
+1. the principles (`shared/principles.md`, ADR 0020): never lie, cheat, steal or murder; the same for every agent
+2. the personality: at level 0 a mode (ADR 0019), its voice then its routing (which toolset a task needs, and how
+   delegation works): the default `louis-agent/voice`, Puls's `puls/voice-af` or `puls/voice-en` (the language, then
+   Puls's shared `puls/voice.md`), the orchestrator's `louis-agent/voice-orchestrator`; at level 1 a specialist's role
+   (`puls-cook`), which says its function and how to report; no routing below level 0
 3. the guide of each of the profile's toolsets (`toolsets/files.md`, `toolsets/git.md`, …) and no other, so the prompt never
    describes tools the session doesn't have
-4. with the `skills` toolset only, the `AGENT_FUNCTION` skill file (`agent/functions/{name}.md`: `code-review`,
-   or one the agent wrote); `louis` loads them all plus any the agent wrote
+4. with the `skills` toolset only, every function skill the agent wrote (`Skills/agent/functions/*.md`)
 
 The built-in files live in `louis-agent.core/Prompts/`, one folder per level (`agent/`, `specialists/`, `minions/`)
 beside `toolsets/` (ADR 0017), and are read only from the assembly (`SkillFileSource`, `ManifestEmbeddedFileProvider`;
