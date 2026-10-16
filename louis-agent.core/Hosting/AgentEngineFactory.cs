@@ -68,12 +68,12 @@ public sealed class AgentEngineFactory
     /// <summary>Every toolset this instance can load: those whose settings are all set.</summary>
     public IReadOnlyList<string> Available => ToolsetCatalog.All.Where(t => t.IsAvailable(Context)).Select(t => t.Name).ToList();
 
-    /// <summary>The named personalities a session at <paramref name="level"/> can choose (F21, CL8), built in and on disk.</summary>
+    /// <summary>The named personalities a session at <paramref name="level"/> can choose (F21, CL8), all built in.</summary>
     public IReadOnlyList<string> AvailablePersonalities(SkillLevel level) => AgentHost.EnabledPersonalities(_agent, level);
 
     /// <summary>
     /// The role for a sub-session with <paramref name="toolsets"/> when its parent named none: from
-    /// <c>Skills/specialists/roles.json</c> (disk, else built in), and only a role this instance has; null otherwise.
+    /// <c>specialists/roles.json</c> (built in), and only a role this instance has; null otherwise.
     /// </summary>
     public string? RoleFor(IEnumerable<string> toolsets)
     {

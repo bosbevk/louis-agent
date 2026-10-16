@@ -29,17 +29,17 @@ public class PersonalitiesTests
         string docs = AgentHost.LoadSkills(Options(), [], personality: null).Documentation;
 
         Assert.That(docs, Does.Contain("Louis's Minion"), "personality.md, as before F21");
-        Assert.That(docs, Does.Not.Contain("# Test Voice"));
+        Assert.That(docs, Does.Not.Contain("# Puls - Persoonlikheid"));
     }
 
     [Test]
     public void ANamedPersonality_ReplacesTheDefault_AndComesFirst()
     {
-        string docs = AgentHost.LoadSkills(Options(), [], "test-voice").Documentation;
+        string docs = AgentHost.LoadSkills(Options(), [], "puls").Documentation;
 
-        Assert.That(docs, Does.Contain("# Test Voice"));
+        Assert.That(docs, Does.Contain("# Puls - Persoonlikheid"));
         Assert.That(docs, Does.Not.Contain("Louis's Minion"));
-        Assert.That(docs.IndexOf("# Test Voice", StringComparison.Ordinal),
+        Assert.That(docs.IndexOf("# Puls - Persoonlikheid", StringComparison.Ordinal),
             Is.LessThan(docs.IndexOf("# Louis Agent - Default Instructions", StringComparison.Ordinal)), "who the agent is, before the router");
     }
 
@@ -58,21 +58,23 @@ public class PersonalitiesTests
     public void AnUnknownName_IsRefused_ListingTheAvailable()
     {
         var ex = Assert.Throws<PersonalityException>(() => AgentHost.LoadSkills(Options(), [], "nobody"));
-        Assert.That(ex!.Message, Does.Contain("Unknown personality 'nobody'").And.Contain("test-voice"));
+        Assert.That(ex!.Message, Does.Contain("Unknown personality 'nobody'").And.EndWith("Available: puls."));
     }
 
     [Test]
-    public void Available_ListsTheFilesOnDisk()
+    public void AVoiceOnDisk_IsNeitherOfferedNorLoaded()
     {
-        Assert.That(Personalities.Available(_skills, SkillLevel.Agent), Does.Contain("test-voice"));
+        // CL8 step 4: personalities are built in; the skills folder holds only what the agent writes.
+        Assert.That(Personalities.Available(SkillLevel.Agent), Does.Not.Contain("test-voice"));
+        Assert.Throws<PersonalityException>(() => AgentHost.LoadSkills(Options(), [], "test-voice"));
     }
 
     [Test]
     public void PulsAndItsSpecialists_AreBuiltIn()
     {
         // F21 step 4: embedded, so a container without Skills/ still has them; a file on disk overrides.
-        Assert.That(Personalities.Available(skillsDirectory: null, SkillLevel.Agent), Is.EqualTo(new[] { "puls" }));
-        Assert.That(Personalities.Available(skillsDirectory: null, SkillLevel.Specialist), Is.SupersetOf(new[]
+        Assert.That(Personalities.Available(SkillLevel.Agent), Is.EqualTo(new[] { "puls" }));
+        Assert.That(Personalities.Available(SkillLevel.Specialist), Is.SupersetOf(new[]
             { "puls-researcher", "puls-reader", "puls-historian", "puls-analyst", "puls-specialist", "puls-cook" }));
         Assert.That(AgentHost.LoadSkills(new AgentOptions(), [], "puls").Documentation, Does.Contain("# Puls - Persoonlikheid"));
         Assert.That(AgentHost.LoadSkills(new AgentOptions(), [], "puls-cook", SkillLevel.Specialist).Documentation,
@@ -83,10 +85,7 @@ public class PersonalitiesTests
     public void TheDefaultVoiceAndTheRouter_AreNotVoicesToChoose()
     {
         // CL8 step 2: personality.md and default.md live in agent/ beside puls.md, but a session can't name either.
-        string skills = Path.Combine(TestPaths.RepoRoot, "Skills");
-
-        Assert.That(Personalities.Available(skills, SkillLevel.Agent), Is.EqualTo(new[] { "puls" }));
-        Assert.That(Personalities.Available(skillsDirectory: null, SkillLevel.Agent), Is.EqualTo(new[] { "puls" }));
+        Assert.That(Personalities.Available(SkillLevel.Agent), Is.EqualTo(new[] { "puls" }));
         Assert.Throws<PersonalityException>(() => AgentHost.LoadSkills(new AgentOptions(), [], "default"));
     }
 
@@ -94,8 +93,8 @@ public class PersonalitiesTests
     public void EachLevel_ListsOnlyItsOwnPersonalities()
     {
         // CL8: the folders follow the levels; minions (level 2) are F30's, so its folder is empty until then.
-        Assert.That(Personalities.Available(skillsDirectory: null, SkillLevel.Specialist), Does.Not.Contain("puls"));
-        Assert.That(Personalities.Available(skillsDirectory: null, SkillLevel.Minion), Is.Empty);
+        Assert.That(Personalities.Available(SkillLevel.Specialist), Does.Not.Contain("puls"));
+        Assert.That(Personalities.Available(SkillLevel.Minion), Is.Empty);
     }
 
     [Test]

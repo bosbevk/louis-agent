@@ -12,6 +12,9 @@ internal static class TestPaths
     public static string RepoRoot { get; } =
         Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, "..", "..", "..", "..", ".."));
 
+    /// <summary>The built-in prompts in core (CL8 step 4), embedded and read only from the assembly.</summary>
+    public static string Prompts { get; } = Path.Combine(RepoRoot, "louis-agent.core", "Prompts");
+
     public static AgentOptions Agent(string? paymoKey = null) => new()
     {
         WorkspaceRoot = RepoRoot,

@@ -19,16 +19,11 @@ public class AgentEngineFactoryTests
 
     private static string[] Names(AgentEngine engine) => engine.Tools.Select(t => t.Name).ToArray();
 
-    /// <summary>A factory whose skills folder is a temp one holding agent/factory-voice.md (F21, CL8: a level-0 voice); the guides and
-    /// the router come from the embedded copies.</summary>
-    private static AgentEngineFactory FactoryWithVoice(out string skills, IReadOnlyList<string>? enabled = null)
+    /// <summary>A factory with only <paramref name="enabled"/> personalities on (F29); every one is built in (CL8 step 4).</summary>
+    private static AgentEngineFactory FactoryEnabling(IReadOnlyList<string> enabled)
     {
-        skills = Path.Combine(Path.GetTempPath(), "factory-voice-" + Guid.NewGuid().ToString("N"));
-        Directory.CreateDirectory(Path.Combine(skills, Personalities.AgentFolder));
-        File.WriteAllText(Path.Combine(skills, Personalities.AgentFolder, "factory-voice.md"), "# Factory Voice");
         var options = Options();
-        options.SkillsDirectory = skills;
-        if (enabled is not null) options.PersonalitiesEnabled = enabled;
+        options.PersonalitiesEnabled = enabled;
         return new AgentEngineFactory(new FakeChatClient(), options);
     }
 
@@ -37,37 +32,25 @@ public class AgentEngineFactoryTests
     {
         // F29: Louis switched every specialist but the cook off until it has passed a check like the cook's. The gate is
         // a setting the API enforces, so a prompt slip that names the researcher fails at the peer, not quietly.
-        var factory = FactoryWithVoice(out string skills, enabled: ["factory-voice"]);
-        try
-        {
-            Assert.That(factory.AvailablePersonalities(SkillLevel.Agent), Is.EqualTo(new[] { "factory-voice" }), "puls is built in but off");
-            Assert.That(factory.AvailablePersonalities(SkillLevel.Specialist), Is.Empty, "the built-in roles are off too");
+        var factory = FactoryEnabling(["puls", "puls-cook"]);
 
-            var refused = Assert.Throws<LouisAgent.Core.Skills.PersonalityException>(() => factory.GetOrCreate(["files"], "puls-cook"))!;
-            Assert.That(refused.Message, Does.Contain("puls-cook").And.Contain("factory-voice").And.Not.Contain("puls-researcher"), "named as unknown, with what's on");
-            Assert.That(factory.Profiles, Is.Empty, "refused before anything is built");
+        Assert.That(factory.AvailablePersonalities(SkillLevel.Agent), Is.EqualTo(new[] { "puls" }));
+        Assert.That(factory.AvailablePersonalities(SkillLevel.Specialist), Is.EqualTo(new[] { "puls-cook" }), "the other roles are built in but off");
 
-            Assert.That(factory.GetOrCreate(["files"], "factory-voice").SkillDocumentation, Does.Contain("# Factory Voice"));
-        }
-        finally
-        {
-            Directory.Delete(skills, recursive: true);
-        }
+        var refused = Assert.Throws<LouisAgent.Core.Skills.PersonalityException>(() => factory.GetOrCreate(["web"], "puls-researcher", SkillLevel.Specialist))!;
+        Assert.That(refused.Message, Does.Contain("puls-researcher").And.EndWith("Available: puls-cook."), "named as unknown, with what's on");
+        Assert.That(factory.Profiles, Is.Empty, "refused before anything is built");
+
+        Assert.That(factory.GetOrCreate(["web"], "puls-cook", SkillLevel.Specialist).SkillDocumentation, Does.Contain("Never invent a price"));
     }
 
     [Test]
     public void AnEmptyEnabledList_MeansEveryPersonality()
     {
-        var factory = FactoryWithVoice(out string skills, enabled: []);
-        try
-        {
-            Assert.That(factory.AvailablePersonalities(SkillLevel.Agent), Does.Contain("factory-voice").And.Contain("puls"));
-            Assert.That(factory.AvailablePersonalities(SkillLevel.Specialist), Does.Contain("puls-cook").And.Contain("puls-researcher"));
-        }
-        finally
-        {
-            Directory.Delete(skills, recursive: true);
-        }
+        var factory = FactoryEnabling([]);
+
+        Assert.That(factory.AvailablePersonalities(SkillLevel.Agent), Is.EqualTo(new[] { "puls" }));
+        Assert.That(factory.AvailablePersonalities(SkillLevel.Specialist), Does.Contain("puls-cook").And.Contain("puls-researcher"));
     }
 
     [Test]
@@ -95,25 +78,18 @@ public class AgentEngineFactoryTests
     public void APersonality_IsItsOwnProfile_WithItsOwnPrompt()
     {
         // F21: the same toolsets with another personality, or at another level (CL8: no router below level 0), is another engine.
-        var factory = FactoryWithVoice(out string skills);
-        try
-        {
-            var plain = factory.GetOrCreate(["files"]);
-            var voiced = factory.GetOrCreate(["files"], "factory-voice");
-            var noRouter = factory.GetOrCreate(["files"], level: SkillLevel.Specialist);
+        var factory = Factory();
 
-            Assert.That(voiced, Is.Not.SameAs(plain));
-            Assert.That(factory.GetOrCreate(["files"], "factory-voice"), Is.SameAs(voiced));
-            Assert.That(voiced.SkillDocumentation, Does.Contain("# Factory Voice").And.Not.Contain("Louis's Minion"));
-            Assert.That(noRouter.SkillDocumentation, Does.Not.Contain("# Louis Agent - Default Instructions"));
-            Assert.That(plain.SkillDocumentation, Does.Contain("# Louis Agent - Default Instructions"));
-            Assert.That(factory.Profiles, Is.EquivalentTo(new[] { "files", "files|factory-voice", "files|specialist" }));
-            Assert.That(factory.AvailablePersonalities(SkillLevel.Agent), Does.Contain("factory-voice"));
-        }
-        finally
-        {
-            Directory.Delete(skills, recursive: true);
-        }
+        var plain = factory.GetOrCreate(["files"]);
+        var voiced = factory.GetOrCreate(["files"], "puls");
+        var noRouter = factory.GetOrCreate(["files"], level: SkillLevel.Specialist);
+
+        Assert.That(voiced, Is.Not.SameAs(plain));
+        Assert.That(factory.GetOrCreate(["files"], "puls"), Is.SameAs(voiced));
+        Assert.That(voiced.SkillDocumentation, Does.Contain("# Puls - Persoonlikheid").And.Not.Contain("Louis's Minion"));
+        Assert.That(noRouter.SkillDocumentation, Does.Not.Contain("# Louis Agent - Default Instructions"));
+        Assert.That(plain.SkillDocumentation, Does.Contain("# Louis Agent - Default Instructions"));
+        Assert.That(factory.Profiles, Is.EquivalentTo(new[] { "files", "files|puls", "files|specialist" }));
     }
 
     [Test]

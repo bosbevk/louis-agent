@@ -5,9 +5,9 @@ using System.Text.RegularExpressions;
 
 /// <summary>
 /// Personalities a session can choose (F21), in the folder of the level that reads them (CL8, ADR 0016):
-/// <c>Skills/agent/{name}.md</c> (level 0, a voice), <c>Skills/specialists/{name}.md</c> (level 1, a role),
-/// <c>Skills/minions/{name}.md</c> (level 2, F30), embedded like the other built-in skill files (a file on disk
-/// overrides). <see cref="DefaultFile"/> is used when a session names none. A name is lowercase letters, digits and
+/// <c>agent/{name}.md</c> (level 0, a voice), <c>specialists/{name}.md</c> (level 1, a role),
+/// <c>minions/{name}.md</c> (level 2, F30), under core's <c>Prompts/</c> and read only from the assembly (CL8
+/// step 4). <see cref="DefaultFile"/> is used when a session names none. A name is lowercase letters, digits and
 /// dashes, so it never reaches outside its folder.
 /// </summary>
 public static partial class Personalities
@@ -74,20 +74,13 @@ public static partial class Personalities
     /// <summary>The skill file of a named personality at <paramref name="level"/>, relative to the skills folder.</summary>
     public static string FileName(string name, SkillLevel level) => $"{FolderOf(level)}/{name}.md";
 
-    /// <summary>
-    /// The named personalities at <paramref name="level"/>: the built-in ones and any in its folder under
-    /// <paramref name="skillsDirectory"/>, sorted.
-    /// </summary>
-    public static IReadOnlyList<string> Available(string? skillsDirectory, SkillLevel level)
-    {
-        string folder = FolderOf(level);
-        var names = SkillFileSource.EmbeddedNames
-            .Where(n => n.StartsWith(folder + ".", StringComparison.Ordinal) && n.EndsWith(".md", StringComparison.Ordinal))
-            .Select(n => n[(folder.Length + 1)..^".md".Length]);
-        if (skillsDirectory is not null && Directory.Exists(Path.Combine(skillsDirectory, folder)))
-            names = names.Concat(Directory.EnumerateFiles(Path.Combine(skillsDirectory, folder), "*.md").Select(f => Path.GetFileNameWithoutExtension(f)));
-        return names.Where(n => IsValidName(n) && !IsReserved(FileName(n, level))).Distinct().Order(StringComparer.Ordinal).ToList();
-    }
+    /// <summary>The named personalities at <paramref name="level"/>, all built in (CL8 step 4), sorted.</summary>
+    public static IReadOnlyList<string> Available(SkillLevel level) =>
+        SkillFileSource.Files(FolderOf(level))
+            .Where(f => f.EndsWith(".md", StringComparison.Ordinal))
+            .Select(f => f[..^".md".Length])
+            .Where(n => IsValidName(n) && !IsReserved(FileName(n, level)))
+            .ToList();
 
     [GeneratedRegex("^[a-z0-9]+(-[a-z0-9]+)*$")]
     private static partial Regex NamePattern();

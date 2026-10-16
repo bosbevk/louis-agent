@@ -177,8 +177,11 @@ public enum LogMessage
     [Description("Loaded {Provider}")]
     SkillProviderLoaded,
 
-    [Description("Loaded {Provider} (built in: no copy on disk)")]
+    [Description("Loaded {Provider} (built in)")]
     SkillFileEmbedded,
+
+    [Description("{File} is ignored: built-in prompts are read from the assembly; change the one in louis-agent.core/Prompts and rebuild")]
+    BuiltInCopyIgnored,
 
     [Description("Toolsets {Toolsets}: {Tools} tools, a {PromptChars}-character system prompt, about {PrefixTokens} tokens of fixed prefix")]
     ToolsetProfileBuilt,

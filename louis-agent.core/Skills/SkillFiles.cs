@@ -1,8 +1,14 @@
 namespace LouisAgent.Core.Skills;
 
-/// <summary>The skill files core knows by name, relative to the skills folder (CL8: in the folder of the level that reads them).</summary>
+/// <summary>The skill files core knows by name, by their path under core's Prompts/ (CL8: in the folder of the level that reads them).</summary>
 internal static class SkillFiles
 {
+    /// <summary>
+    /// The file that marks the repo's <c>Skills/</c> as the skills folder when SKILLS_DIRECTORY isn't set: no built-in file
+    /// is on disk any more (CL8 step 4), and other folders are called Skills too (core's loader, the tests' mirror).
+    /// </summary>
+    internal const string FolderMarker = "README.md";
+
     /// <summary>The folder of the toolset guides, which every level shares (a guide is the same whichever level loads it).</summary>
     internal const string ToolsetsFolder = "toolsets";
 

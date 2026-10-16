@@ -12,7 +12,7 @@ namespace LouisAgent.Core.Tests.Skills;
 // provider class each. These check the pattern holds and that the files say what their tools are.
 public class SkillFilesTests
 {
-    private static string SkillsDirectory => Path.Combine(TestPaths.RepoRoot, "Skills");
+    private static string SkillsDirectory => TestPaths.Prompts;
 
     private static MarkdownSkillProvider Load(string fileName) =>
         new(Path.Combine(SkillsDirectory, fileName), includeDefaultInstructions: false);

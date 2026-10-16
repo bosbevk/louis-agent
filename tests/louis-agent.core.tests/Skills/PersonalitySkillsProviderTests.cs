@@ -6,7 +6,7 @@ namespace LouisAgent.Core.Tests.Skills;
 
 public class PersonalitySkillsProviderTests
 {
-    private static string SkillsDirectory => Path.Combine(TestPaths.RepoRoot, "Skills");
+    private static string SkillsDirectory => TestPaths.Prompts;
 
     [Test]
     public void Documentation_IsThePersonalityFile()

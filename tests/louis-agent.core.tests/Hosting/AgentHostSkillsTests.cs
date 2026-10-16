@@ -28,17 +28,15 @@ public class AgentHostSkillsTests
     }
 
     [Test]
-    public void TheSkillsFolder_IsTheOneAboveTheRouter()
+    public void TheSkillsFolder_IsSkillsDirectory_ElseTheReposSkillsFolder()
     {
-        // CL8 step 2: default.md moved into agent/, so the skills folder is its parent's parent, where toolsets/ is too.
+        // CL8 step 4: no built-in file is on disk any more, so the folder the agent writes into is found by its README.
         string skills = Directory.CreateTempSubdirectory("skills-root-").FullName;
         try
         {
-            Directory.CreateDirectory(Path.Combine(skills, "agent"));
-            File.WriteAllText(Path.Combine(skills, "agent", "default.md"), "# Default");
-
             Assert.That(AgentHost.FindSkillsDirectory(new AgentOptions { SkillsDirectory = skills }), Is.EqualTo(skills));
-            Assert.That(AgentHost.FindSkillsDirectory(Options()), Is.EqualTo(Path.Combine(TestPaths.RepoRoot, "Skills")));
+            Assert.That(AgentHost.FindSkillsDirectory(new AgentOptions()), Is.EqualTo(Path.Combine(TestPaths.RepoRoot, "Skills")),
+                "from the tests' folder up, not tests/louis-agent.core.tests/Skills/");
         }
         finally
         {

@@ -109,7 +109,7 @@ public sealed class AgentOptions
     /// <summary>
     /// PERSONALITIES_ENABLED: the personalities this instance may use (F29), comma separated and lowercase, e.g.
     /// <c>puls,puls-cook</c>; a session or sub-session asking for another is refused as for an unknown one. Empty: every
-    /// personality on disk. Puls's compose lists only the roles that have passed their check.
+    /// built-in personality. Puls's compose lists only the roles that have passed their check.
     /// </summary>
     public IReadOnlyList<string> PersonalitiesEnabled { get; set; } = [];
 

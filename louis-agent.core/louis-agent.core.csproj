@@ -5,6 +5,8 @@
         <RootNamespace>LouisAgent.Core</RootNamespace>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <!-- Keeps the embedded prompts' folder paths (ManifestEmbeddedFileProvider). -->
+        <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
     </PropertyGroup>
 
     <ItemGroup>
@@ -20,6 +22,7 @@
       <PackageReference Include="ExcelDataReader" Version="3.9.0" />
       <PackageReference Include="Microsoft.Extensions.AI" Version="10.10.0" />
       <PackageReference Include="Microsoft.Extensions.AI.OpenAI" Version="10.10.1" />
+      <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="10.0.13" />
       <PackageReference Include="OllamaSharp" Version="5.5.0" />
       <PackageReference Include="PdfPig" Version="0.1.16" />
       <PackageReference Include="Serilog.Extensions.Logging" Version="10.0.0" />
@@ -28,14 +31,10 @@
     </ItemGroup>
 
     <ItemGroup>
-      <!-- F5 step 4b: the built-in skill files ship inside the assembly; a file of the same name on disk overrides one
-           (Skills/SkillFileSource). HelloWorld.md is a test fixture, not a built-in. -->
-      <EmbeddedResource Include="..\Skills\*.md" Exclude="..\Skills\HelloWorld.md" LogicalName="Skills.%(Filename)%(Extension)" />
-      <!-- CL8: each level's files in its folder, the toolset guides in toolsets/ (minions/ comes with F30's first minion). -->
-      <EmbeddedResource Include="..\Skills\agent\*.md" LogicalName="Skills.agent.%(Filename)%(Extension)" />
-      <EmbeddedResource Include="..\Skills\agent\functions\code-review.md;..\Skills\agent\functions\time-logging.md" LogicalName="Skills.agent.functions.%(Filename)%(Extension)" />
-      <EmbeddedResource Include="..\Skills\toolsets\*.md" LogicalName="Skills.toolsets.%(Filename)%(Extension)" />
-      <EmbeddedResource Include="..\Skills\specialists\*.md;..\Skills\specialists\*.json" LogicalName="Skills.specialists.%(Filename)%(Extension)" />
+      <!-- CL8 step 4: the built-in prompts live in Prompts/, one folder per level beside toolsets/, and are read only from
+           the assembly (Skills/SkillFileSource), by their own paths through the manifest. What the agent writes stays on
+           disk, in the skills folder (SKILLS_DIRECTORY, else the repo's Skills/). -->
+      <EmbeddedResource Include="Prompts\**\*.md;Prompts\**\*.json" />
     </ItemGroup>
 
 </Project>

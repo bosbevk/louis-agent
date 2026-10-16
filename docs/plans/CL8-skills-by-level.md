@@ -222,3 +222,9 @@ sequenceDiagram
   - **Step 5's layout test** checks `Prompts/` and that the repo's `Skills/` holds only `tools/` and `examples/`; its
     docs drop "a file on disk wins … restart the container". Step 6's hand check shows each file loaded from the
     assembly.
+- **The skills folder is found by `Skills/README.md`** (Louis, step 4, 2026-10-16): with no built-in file on disk, the
+  old marker (`agent/default.md`) is gone, and other folders are named `Skills` too (core's loader, the tests' mirror).
+  Without `SKILLS_DIRECTORY` (only the CLI run from the repo; every compose service sets it), `AgentHost` takes the
+  first `Skills/` holding `README.md` from the working directory up. The README says what the folder holds.
+- **Step 4's golden file changes** (step 4, 2026-10-16): its test's fake router on disk is ignored now, so the snapshot
+  holds the real `default.md`; nothing else in it changed. A router edit now shows in the golden file.

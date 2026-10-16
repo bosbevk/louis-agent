@@ -31,8 +31,6 @@ public class SkillAuthoringTests
     public void SetUp()
     {
         _skillsDir = Directory.CreateTempSubdirectory("skills-").FullName;
-        Directory.CreateDirectory(Path.Combine(_skillsDir, "agent"));
-        File.WriteAllText(Path.Combine(_skillsDir, "agent", "default.md"), "# Default instructions");
     }
 
     [TearDown]
