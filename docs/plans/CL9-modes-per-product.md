@@ -294,4 +294,9 @@ sequenceDiagram
   orchestrator's tools); `PERSONALITIES_ENABLED` keeps it off where that's set, as on Puls.
 - **Step 10 is skipped** (Louis, 2026-10-17: "skip step 10, finish CL9"). The paid cook and delegation checks against
   their baselines aren't run; the checks are rewritten after F30's minions (CL10), and Puls's routing is measured then.
-  Step 9's hand check (free) is in the CHANGELOG entry.
+  Step 9's hand check (free, 2026-10-17): `GET /personalities` on Puls (`:5070`), its specialist (`:5071`) and the
+  code-review API (`:5080`) listed `puls/voice-af`, `puls/voice-en` and the cook, default `louis-agent/voice`; a session
+  with each language was a 201, `puls/voice` alone, `agents` and `specialists` at depth 1 were 400s; the logs showed
+  principles → mode (→ `puls/voice.md`) → guides and no ignored copy; the CLI started on `louis-agent/voice`. Not done:
+  a Puls chat in English and an open chat keeping its voice after the language changes, which need a turn in the browser
+  (a few cents) and are Louis's to run.

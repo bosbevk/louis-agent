@@ -56,7 +56,7 @@ public sealed class AgentPeerTools(IReadOnlyDictionary<string, Uri> peers, strin
         "stays open and the answer names its handle, so a follow-up on the same work goes to ContinueSubSession; elsewhere " +
         "it is closed. At most 3 calls per turn (starts and continues), 5 minutes each. See the specialists guide for when to delegate.")]
     public async Task<string> StartSubSession(
-        [Description("The toolsets the sub-session loads, e.g. [\"files\",\"git\",\"dotnet\"]. Never \"agents\".")] string[] toolsets,
+        [Description("The toolsets the sub-session loads, e.g. [\"files\",\"git\",\"dotnet\"]. Never \"specialists\".")] string[] toolsets,
         [Description("The whole task, self-contained: the sub-session sees nothing of this conversation.")] string message,
         // Optional, so a call without it is valid: the delegation check saw Puls leave it out (the call failed) and guess "default".
         [Description("The peer's name from AGENT_PEERS. Leave it out when this instance has one peer (the usual case); " +

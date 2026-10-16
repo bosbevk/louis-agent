@@ -2000,7 +2000,7 @@
         "type": "object",
         "properties": {
           "toolsets": {
-            "description": "The toolsets the sub-session loads, e.g. [\"files\",\"git\",\"dotnet\"]. Never \"agents\".",
+            "description": "The toolsets the sub-session loads, e.g. [\"files\",\"git\",\"dotnet\"]. Never \"specialists\".",
             "type": "array",
             "items": {
               "type": "string"
