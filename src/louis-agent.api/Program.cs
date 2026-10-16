@@ -122,17 +122,18 @@ app.MapGet("/toolsets", (AgentEngineFactory engines) => Results.Json(new
 // The model this instance answers with (F20: Puls's model picker shows it).
 app.MapGet("/model", () => Results.Json(new { provider = host.Llm.Provider, model = host.Llm.Model }));
 
-// The personalities a session can choose (F21), per level (CL8: a session's level is its depth); null is personality.md.
+// The personalities a session can choose (F21), per level (CL8: a session's level is its depth); default is the voice a
+// level-0 session gets when it names none (CL9).
 app.MapGet("/personalities", (AgentEngineFactory engines) => Results.Json(new
 {
-    @default = (string?)null,
+    @default = engines.DefaultVoice,
     agent = engines.AvailablePersonalities(SkillLevel.Agent),
     specialists = engines.AvailablePersonalities(SkillLevel.Specialist),
     minions = engines.AvailablePersonalities(SkillLevel.Minion),
 }));
 
 // The body is optional: { "toolsets": [...] } chooses the session's tools for its lifetime (F5; none sent: skills only);
-// "personality" its personality (F21; none sent: personality.md);
+// "personality" its personality (F21; none sent: the default voice, CL9);
 // { "task", "run", "service" } tag every usage record of the session (the orchestrator sends them for a fix); "depth" is
 // set by an agent opening a sub-session.
 app.MapPost("/sessions", (CreateSessionRequest? request, AgentSessions sessions) =>

@@ -42,10 +42,10 @@ public enum LogMessage
     [Description("Failed to load {File}: {Reason}")]
     SkillFileLoadFailed,
 
-    [Description("The router (agent/default.md) isn't in the assembly")]
+    [Description("The default mode isn't in the assembly")]
     DefaultInstructionsNotFound,
 
-    [Description("No personality.md found; running without a personality.")]
+    [Description("No personality file found; running without a personality.")]
     NoPersonality,
 
     [Description("Failed to connect to Rider at {Endpoint}: {Reason}")]

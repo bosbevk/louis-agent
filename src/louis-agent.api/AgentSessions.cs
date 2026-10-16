@@ -31,7 +31,7 @@ internal sealed class AgentSession(string id, AgentEngine engine, IReadOnlyList<
     /// <summary>0 for a session a client opened; 1 for a sub-session another agent opened (F5-S5).</summary>
     public int Depth { get; } = depth;
 
-    /// <summary>The personality the session chose (F21), or null for personality.md.</summary>
+    /// <summary>The personality the session chose (F21), or null for the default voice (CL9).</summary>
     public string? Personality { get; } = personality;
 
     /// <summary>Where the user is, when they shared it (F22): set for every turn; the first message says it.</summary>
@@ -125,7 +125,7 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
 
     /// <summary>
     /// Opens a session with <paramref name="toolsets"/> (null: <see cref="DefaultToolsets"/>; empty: none) and
-    /// <paramref name="personality"/> (null: personality.md). The session's level is its depth (CL8): its personality comes
+    /// <paramref name="personality"/> (null: the default voice). The session's level is its depth (CL8): its personality comes
     /// from that level's folder, and a sub-session gets no router (default.md): its toolsets were chosen for it and it
     /// can't delegate (F21). Throws <see cref="ToolsetException"/> for an unknown or unavailable
     /// toolset, a depth outside 0..<see cref="MaxDepth"/>, or a sub-session asking for <see cref="AgentsToolset"/>, and

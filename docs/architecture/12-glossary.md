@@ -13,7 +13,7 @@
 | **Personality** | Who the agent is and how it talks, in its level's folder under `louis-agent.core/Prompts/`: Puls's voice (`agent/`), or a specialist's role (`specialists/`) |
 | **Prefix** | The start of every request (tools, system prompt) that stays the same and is cached |
 | **Puls** | The general assistant in Afrikaans, which delegates every task to a specialist |
-| **Router** | `louis-agent.core/Prompts/agent/default.md`, which sends a task to the toolset it needs (level 0 only) |
+| **Router** | The routing part of a mode (CL9): after its voice, in the same file, it sends a task to the toolset it needs; level 0 only |
 | **Runbook** | The orchestrator's instructions for one API method of the service it watches |
 | **Session** | One conversation with its own history, toolsets and personality, fixed when it opens |
 | **Skill** | A markdown file of guidance, or a named procedure in one (`## Skill:`) that `ExecuteSkill` runs |

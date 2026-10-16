@@ -125,8 +125,8 @@ public class AgentSessionsTests
         var sessions = Sessions();
 
         Assert.Throws<LouisAgent.Core.Skills.PersonalityException>(() => sessions.Create(["web"], personality: "puls-cook"));
-        Assert.Throws<LouisAgent.Core.Skills.PersonalityException>(() => sessions.Create(["web"], depth: 1, personality: "puls"));
-        Assert.That(sessions.Create(["web"], personality: "puls").Personality, Is.EqualTo("puls"));
+        Assert.Throws<LouisAgent.Core.Skills.PersonalityException>(() => sessions.Create(["web"], depth: 1, personality: "puls/voice-af"));
+        Assert.That(sessions.Create(["web"], personality: "puls/voice-af").Personality, Is.EqualTo("puls/voice-af"));
         Assert.That(sessions.Create(["web"], depth: 1, personality: "puls-cook").Personality, Is.EqualTo("puls-cook"));
     }
 
@@ -209,6 +209,6 @@ public class AgentSessionsTests
         Assert.That(sessions.Create(["web"], depth: 1).Personality, Is.EqualTo("puls-researcher"));
         Assert.That(sessions.Create(["files", "python"], depth: 1).Personality, Is.EqualTo("puls-analyst"));
         Assert.That(sessions.Create(["web"], depth: 1, personality: "puls-specialist").Personality, Is.EqualTo("puls-specialist"));
-        Assert.That(sessions.Create(["web"]).Personality, Is.Null, "a top-level session keeps personality.md");
+        Assert.That(sessions.Create(["web"]).Personality, Is.Null, "a top-level session that names none gets the default voice");
     }
 }

@@ -40,7 +40,8 @@ public class SkillFilesTests
     [Test]
     public void TheRouter_NamesEveryToolsetAndDescribesNoTools()
     {
-        string doc = SkillFileSource.ReadEmbedded(SkillFiles.Router)!;
+        // The coding agent's routing (CL9): Puls's routes only what Puls does.
+        string doc = Personalities.ModeParts(SkillFileSource.ReadEmbedded(Personalities.FileName(Personalities.DefaultVoice, SkillLevel.Agent))!).Routing;
 
         foreach (string toolset in ToolsetCatalog.All.Select(t => t.Name))
             Assert.That(doc, Does.Contain($"`{toolset}`"), $"the router should name the '{toolset}' toolset");

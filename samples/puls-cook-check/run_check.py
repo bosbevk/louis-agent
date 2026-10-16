@@ -90,7 +90,7 @@ progress = delegation_check.progress   # the same '@' + JSON progress lines, so 
 def converse(toolsets, run, task, location, messages, mode=""):
     """One conversation in a new session: for each message, the answer, Puls's tool calls, its delegations (start or
     continue, with toolsets, role and handle), the specialist's own tool calls, the time, and an error if any."""
-    body = {"toolsets": toolsets, "personality": "puls", "time_zone": "Africa/Johannesburg", "task": task, "run": run}
+    body = {"toolsets": toolsets, "personality": "puls/voice-af", "time_zone": "Africa/Johannesburg", "task": task, "run": run}
     if location:
         body["location"] = location
     session = call("POST", "sessions", body)["session_id"]

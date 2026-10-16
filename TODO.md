@@ -197,11 +197,11 @@ Design: [docs/specs/SESSION_ARCHITECTURE.md](docs/specs/SESSION_ARCHITECTURE.md)
             carried as a string to the specialist, so it arrives mangled; send it as base64 with its media type and
             read it with `DocumentText` (found in the docs review, 2026-10-14)
 - [ ] [F21 Personalities](docs/features/F21-personalities.md) — each session (and sub-session) names its personality; Puls speaks everyday South African Afrikaans ([plan](docs/plans/F21-personalities.md)). Built; open: Louis's corrections to the Afrikaans (the delegation check's `answers.md`).
-- [ ] **Modes per product** (cleanup, before F30 step 4) — a level-0 session is a mode, a voice and the router that goes
-      with it, paired in `voices.json`: Puls (`puls-default-af`, `puls-default-en`) with `puls-orchestrator`, the coding
-      agent (`louis-default-en`, `louis-code-review`) with `louis-router`, so each pays only for its own routing; Puls's
-      language menu (af, en) picks its voice; `AGENT_FUNCTION` goes ([plan](docs/plans/CL9-modes-per-product.md),
-      [ADR 0019](docs/adr/0019-modes-voice-and-router.md))
+- [ ] **Modes per product** (cleanup, before F30 step 4) — a level-0 session is a mode, one file of voice and routing in
+      a folder per product (`agent/puls/voice-af.md`, `voice-en.md`; `agent/louis-agent/voice.md`, with code review,
+      `voice-orchestrator.md`), so each pays only for its own routing; Puls's language menu (af, en) picks its mode;
+      `AGENT_FUNCTION` goes ([plan](docs/plans/CL9-modes-per-product.md),
+      [ADR 0019](docs/adr/0019-modes-one-file-per-product.md))
 - [ ] **Next up: a faster, cheaper cook** (to plan; Louis, 2026-10-15: "can we have a subsession allow him to spawn
       web sessions for each task"). The cook does every search and fetch itself, one at a time, and every page it reads
       stays in its context and is paid for again on each later request (400–800k tokens and up to 183 s a meal turn).

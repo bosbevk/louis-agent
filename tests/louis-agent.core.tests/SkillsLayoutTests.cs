@@ -22,15 +22,31 @@ public class SkillsLayoutTests
     [Test]
     public void EveryPrompt_IsInAKnownFolder()
     {
-        var misplaced = FilesUnder(TestPaths.Prompts).Where(f => !PromptFolders.Contains(Path.GetDirectoryName(f)!.Replace('\\', '/')));
+        // agent/ holds a folder per product (CL9) beside functions/, and no file of its own.
+        var misplaced = FilesUnder(TestPaths.Prompts).Select(f => (File: f, Folder: Path.GetDirectoryName(f)!.Replace('\\', '/')))
+            .Where(f => (!PromptFolders.Contains(f.Folder) && !System.Text.RegularExpressions.Regex.IsMatch(f.Folder, "^agent/[a-z0-9-]+$"))
+                || f.Folder == Personalities.AgentFolder)
+            .Select(f => f.File);
 
-        Assert.That(misplaced, Is.Empty, "Prompts/ holds agent/, agent/functions/, specialists/, minions/ and toolsets/ only");
+        Assert.That(misplaced, Is.Empty, "Prompts/ holds agent/{product}/, agent/functions/, specialists/, minions/ and toolsets/ only");
     }
 
     [Test]
     public void EveryPrompt_IsEmbedded_AndNothingElseIs()
     {
         Assert.That(SkillFileSource.EmbeddedFiles, Is.EquivalentTo(FilesUnder(TestPaths.Prompts)), "the csproj embeds Prompts/** and only that");
+    }
+
+    [Test]
+    public void AProductsRouting_IsTheSameInEachOfItsModes()
+    {
+        // CL9: a mode is one file, so a product's routing is written in each of its modes; they must not drift apart.
+        foreach (var product in Personalities.Available(SkillLevel.Agent).GroupBy(n => n.Split('/')[0]))
+        {
+            var routings = product.Select(n => Personalities.ModeParts(SkillFileSource.ReadEmbedded(Personalities.FileName(n, SkillLevel.Agent))!).Routing)
+                .Where(r => r.Length > 0).Select(r => r.ReplaceLineEndings("\n")).Distinct().ToList();
+            Assert.That(routings, Has.Count.LessThanOrEqualTo(1), $"{product.Key}'s modes route differently");
+        }
     }
 
     [Test]

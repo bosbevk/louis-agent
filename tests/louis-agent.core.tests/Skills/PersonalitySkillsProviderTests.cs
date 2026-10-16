@@ -11,7 +11,7 @@ public class PersonalitySkillsProviderTests
     [Test]
     public void Documentation_IsThePersonalityFile()
     {
-        var provider = new PersonalitySkillsProvider(Path.Combine(SkillsDirectory, "agent", "personality.md"));
+        var provider = new PersonalitySkillsProvider(Path.Combine(SkillsDirectory, "agent", "louis-agent", "voice.md"));
 
         Assert.That(provider.Documentation, Does.Contain("Louis's Minion"));
         Assert.That(provider.Skills, Is.Empty, "personality.md is guidance only");
@@ -42,7 +42,8 @@ public class PersonalitySkillsProviderTests
     [Test]
     public void DefaultInstructions_NoLongerCarryThePersonality()
     {
-        string defaults = File.ReadAllText(Path.Combine(SkillsDirectory, "agent", "default.md"));
+        // CL9: the routing part of the coding agent's mode, after its voice.
+        string defaults = Personalities.ModeParts(File.ReadAllText(Path.Combine(SkillsDirectory, "agent", "louis-agent", "voice.md"))).Routing;
 
         Assert.That(defaults, Does.Not.Contain("Minion").And.Not.Contain("Thiel"));
     }

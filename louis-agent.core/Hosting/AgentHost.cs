@@ -283,18 +283,22 @@ public static partial class AgentHost
     /// Built-in files are read only from the assembly (<see cref="SkillFileSource"/>, CL8 step 4); only what the agent
     /// wrote (its function files) comes from the skills folder (<see cref="FindSkillsDirectory"/>).
     /// </summary>
-    /// <param name="personality">The session's personality (F21): a name in <paramref name="level"/>'s folder, or null for
-    /// <c>personality.md</c>. <see cref="PersonalityException"/> for a name that isn't valid or has no file there.</param>
-    /// <param name="level">The session's level (CL8): where its personality is, and whether the prompt has default.md, the
-    /// router that picks a toolset and delegates. Only level 0 has it (F21): a sub-session's toolsets were chosen for it.</param>
+    /// <param name="personality">The session's personality (F21): at level 0 a mode, one file of voice and routing (CL9:
+    /// <c>puls/voice-af</c>); below it a role. Null: the default mode (<see cref="Personalities.DefaultVoice"/>), and below
+    /// level 0 only its voice, since a sub-session's toolsets were chosen for it (F21). <see cref="PersonalityException"/>
+    /// for a name that isn't valid or has no file there.</param>
+    /// <param name="level">The session's level (CL8): where its personality is.</param>
     public static ISkillProvider LoadSkills(AgentOptions agent, IEnumerable<ToolsetDefinition> toolsets, string? personality = null,
         SkillLevel level = SkillLevel.Agent)
     {
         var composite = new CompositeSkillProvider();
 
-        // Personality first, so who the agent is frames everything after it; default.md (the router) after it
-        AddBuiltIn(agent, composite, PersonalityFile(agent, personality, level));
-        if (level == SkillLevel.Agent) AddBuiltIn(agent, composite, SkillFiles.Router);
+        // Personality first, so who the agent is (and, for a mode, how it routes) frames everything after it
+        string personalityFile = PersonalityFile(agent, personality, level);
+        if (personality is null && level != SkillLevel.Agent && ReadSkillFile(agent, personalityFile) is { } mode)
+            composite.AddProvider(MarkdownSkillProvider.FromText(Personalities.ModeParts(mode.Text).Voice));
+        else
+            AddBuiltIn(agent, composite, personalityFile);
 
         // The guides of this profile's toolsets only, so the prompt never describes tools the session doesn't have
         var profile = toolsets.ToList();
@@ -387,18 +391,19 @@ public static partial class AgentHost
     }
 
     /// <summary>
-    /// The skill file of <paramref name="personality"/>: <see cref="Personalities.DefaultFile"/> when none is named, else
-    /// its file in <paramref name="level"/>'s folder, which must be built in. A name from another
-    /// level is refused as an unknown one (CL8), so a role never opens at the wrong level.
+    /// The skill file of <paramref name="personality"/>: the default mode's when none is named, else its file in
+    /// <paramref name="level"/>'s folder, which must be built in. A name from another level is refused as an unknown one
+    /// (CL8), so a role never opens at the wrong level; at level 0 only a mode is a name (CL9), never a function skill.
     /// </summary>
     internal static string PersonalityFile(AgentOptions agent, string? personality, SkillLevel level)
     {
-        if (string.IsNullOrEmpty(personality)) return Personalities.DefaultFile;
+        if (string.IsNullOrEmpty(personality)) return Personalities.FileName(Personalities.DefaultVoice, SkillLevel.Agent);
         if (!Personalities.IsValidName(personality))
             throw new PersonalityException(MessageText.Format(ErrorMessage.PersonalityNameInvalid, new { Name = personality }));
         string file = Personalities.FileName(personality, level);
         // A personality that's off (F29) is refused as an unknown one: the list names what this instance may use.
-        if (Personalities.IsReserved(file) || !IsEnabled(agent, personality) || ReadSkillFile(agent, file) is null)
+        bool offered = level != SkillLevel.Agent || Personalities.Available(SkillLevel.Agent).Contains(personality);
+        if (!offered || !IsEnabled(agent, personality) || ReadSkillFile(agent, file) is null)
             throw new PersonalityException(MessageText.Format(ErrorMessage.UnknownPersonality,
                 new { Name = personality, Available = string.Join(", ", EnabledPersonalities(agent, level)) }));
         return file;

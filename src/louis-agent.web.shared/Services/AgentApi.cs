@@ -28,7 +28,7 @@ public sealed class AgentApi(HttpClient http, Settings settings)
     {
         using var response = await SendAsync(new HttpRequestMessage(HttpMethod.Post, "sessions")
         {
-            // personality (F21): the session's voice; null is the API's default (personality.md). location and time_zone
+            // personality (F21): the session's voice; null is the API's default voice (CL9). location and time_zone
             // (F22): where the user is, only when they shared it.
             Content = JsonContent.Create(new { toolsets, personality, location, time_zone = timeZone }),
         });

@@ -204,7 +204,7 @@ were chosen for it and it can't delegate.
 `AgentHost.LoadSkills(agent, toolsets, personality, level)` builds a `CompositeSkillProvider` whose combined
 documentation is the system prompt; every file is plain markdown read by `MarkdownSkillProvider`:
 1. the personality — who the agent is and how it talks, kept apart so it can change without touching how the agent
-   works: `agent/personality.md` by default, or the session's own from its level's folder (F21, CL8: `POST /sessions`
+   works: the default mode (`agent/louis-agent/voice.md`, its voice then its routing, CL9), or the session's own from its level's folder (F21, CL8: `POST /sessions`
    with `personality`, `GET /personalities`). Puls speaks as `puls`; its specialists get a role (`puls-researcher`,
    `puls-reader`, `puls-historian`, `puls-analyst`, `puls-specialist`) that says their function and how to report
 2. `default.md` — the router: which toolset a task needs, and how sessions and sub-sessions work (top-level sessions

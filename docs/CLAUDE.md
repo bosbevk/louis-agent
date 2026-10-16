@@ -275,7 +275,7 @@ afterwards (limitation 9, [FX4](fixes/FX04-append-only-history.md)).
 ## Further reading
 
 [the architecture](architecture/README.md) for the design, `config/.env.example` for settings, and
-[the router](../louis-agent.core/Prompts/agent/default.md) for how the agent is instructed to behave.
+[the coding agent's mode](../louis-agent.core/Prompts/agent/louis-agent/voice.md) and [Puls's](../louis-agent.core/Prompts/agent/puls/voice-af.md) for how the agent is instructed to behave.
 
 ---
 [Docs index](README.md) · Previous: [Architecture](architecture/README.md) · Next: [Orchestrator demo](../samples/README.md)

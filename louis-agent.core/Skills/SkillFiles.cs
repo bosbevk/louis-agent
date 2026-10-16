@@ -12,9 +12,6 @@ internal static class SkillFiles
     /// <summary>The folder of the toolset guides, which every level shares (a guide is the same whichever level loads it).</summary>
     internal const string ToolsetsFolder = "toolsets";
 
-    /// <summary>The router: it picks a toolset and delegates, so only level 0 has it.</summary>
-    internal const string Router = Personalities.AgentFolder + "/default.md";
-
     /// <summary>The folder of the function skills: procedures ExecuteSkill runs, chosen by AGENT_FUNCTION (level 0's).</summary>
     internal const string FunctionsFolder = Personalities.AgentFolder + "/functions";
 

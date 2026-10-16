@@ -103,7 +103,7 @@ def ask(toolsets, run, task, question, mode=""):
     """One question in a new session: the answer's text, the tools it called, its delegations (toolsets and role), the
     specialists that answered, and an error if any. Every stream event is forwarded as progress (the portal shows the
     conversation unfolding), and the specialist's own tool calls are kept for the hosts it read."""
-    session = call("POST", "sessions", {"toolsets": toolsets, "personality": "puls", "time_zone": "Africa/Johannesburg",
+    session = call("POST", "sessions", {"toolsets": toolsets, "personality": "puls/voice-af", "time_zone": "Africa/Johannesburg",
                                         "task": task, "run": run, "location": "Stellenbosch, Wes-Kaap, Suid-Afrika"})["session_id"]
     text, tools, specialists, delegations, specialist_calls, error = [], [], [], [], [], None
     progress("question", mode=mode, task=task, turn=1, text=question)
