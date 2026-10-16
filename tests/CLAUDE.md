@@ -12,7 +12,7 @@ dotnet test tests/louis-agent.core.tests
 dotnet test tests/louis-agent.core.tests --filter "FullyQualifiedName~AgentEngineTests"
 dotnet test tests/louis-agent.api.tests
 dotnet test tests/louis-agent.orchestrator.tests
-dotnet test louis-agent-solution.sln          # everything, including the order-service sample's tests
+dotnet test louis-agent-solution.sln          # everything
 ```
 
 GitHub Actions runs the last two commands (build, then the whole solution's tests) on Ubuntu on every push and pull
@@ -61,6 +61,5 @@ Docker. A few tests skip themselves when git, pip or the network isn't available
 its containers, so keep them platform-neutral (forward slashes, no Windows-only paths).
 
 The API's sessions are tested (`tests/louis-agent.api.tests`); its endpoints and the web app have no automated tests
-yet, so check them by hand (curl and a browser) after changes. The
-orchestrator demo (`samples/run-demo.ps1`, in Docker; see [samples/README.md](../samples/README.md)) exercises the
-whole loop against a real model: API sessions, the fix flow, and the web app's Branches view.
+yet, so check them by hand (curl and a browser) after changes. The orchestrator demo that exercised the whole loop
+against a real model was removed in CL10; it comes back with the rewritten benchmarks.

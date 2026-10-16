@@ -1,6 +1,6 @@
 # Design: Orchestrators and Self-Healing
 
-**Status:** partly proven by the orchestrator POC ([samples/README.md](../../samples/README.md)) · **Date:** moved here
+**Status:** partly proven by the orchestrator POC ([samples/README.md](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/README.md)) · **Date:** moved here
 from the TODO on 2026-10-07 · **Next:** [F17 Orchestrator agent](../features/F17-orchestrator-agent.md) (a routing
 workflow with an agent for the exceptions, measured against the POC)
 
@@ -37,7 +37,7 @@ loop and the orchestrator gets the result. (Details: [AGENT_COMMUNICATION.md](..
 error tracker → the service's runbook says this error is auto-fixable → `CallLouisAgentFix` opens a session on the
 service's louis-agent.api with the stack trace → louis-agent fixes it, tests it and hands back a branch (later a PR) →
 the orchestrator — not louis-agent — decides whether to merge and deploy under the service's rules, or wait for a person.
-**The POC ran this end to end with ten bugs** ([sample output](../../samples/sample-output/README.md)), with a local
+**The POC ran this end to end with ten bugs** ([sample output](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/sample-output/README.md)), with a local
 branch instead of a PR and a person merging in the web app.
 
 ## Self-healing within louis-agent
@@ -68,5 +68,5 @@ only produces the fix. All open:
   rollback decisions stay separate.
 
 ---
-[Docs index](../README.md) · Related: [Orchestrator demo](../../samples/README.md) · [Runbooks](../projects/orchestrator-runbooks.md) ·
+[Docs index](../README.md) · Related: [Orchestrator demo](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/README.md) · [Runbooks](../projects/orchestrator-runbooks.md) ·
 [TODO](../../TODO.md)

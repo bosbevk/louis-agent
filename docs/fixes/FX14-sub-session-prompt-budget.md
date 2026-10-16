@@ -64,7 +64,7 @@ The test
 
 ## Confirmed
 
-Partly, on 2026-10-14. In the [three-run delegation check](../../samples/sample-output-puls-check-repeat/README.md) no sub-session prompt went over 46k tokens, so
+Partly, on 2026-10-14. In the [three-run delegation check](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/sample-output-puls-check-repeat/README.md) no sub-session prompt went over 46k tokens, so
 the budget was never reached and the guard's forced answer hasn't been seen against the real model yet. The tests
 cover the mechanism. A real confirmation needs a task that grows a specialist's context past 100k.
 

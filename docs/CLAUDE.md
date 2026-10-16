@@ -166,7 +166,6 @@ src/
 └── louis-agent.orchestrator/ # POC: a second agent on core that has louis-agent fix a service's errors
 tools/louis-agent.usage-probe/ # A provider's raw usage; prices and totals a ledger (--ledger, --cache-gaps)
 tests/                   # NUnit: core.tests (mirrors core, plus ArchitectureTests, SkillsLayoutTests), api.tests, orchestrator.tests
-samples/                 # order-service, the demo scripts and recorded runs (samples/README.md)
 docker/                  # Dockerfiles and compose files (main, demo, puls)
 config/                  # .env + .env.secrets (ignored) and their examples, LLM profiles, prices.json, rates.json
 Skills/                  # What the agent writes: agent/functions/ (CreateSkillFile), tools/ (agent-built tools)
@@ -290,4 +289,4 @@ afterwards (limitation 9, [FX4](fixes/FX04-append-only-history.md)).
 [the coding agent's mode](../louis-agent.core/Prompts/agent/louis-agent/voice.md) and [Puls's](../louis-agent.core/Prompts/agent/puls/voice-af.md) for how the agent is instructed to behave.
 
 ---
-[Docs index](README.md) · Previous: [Architecture](architecture/README.md) · Next: [Orchestrator demo](../samples/README.md)
+[Docs index](README.md) · Previous: [Architecture](architecture/README.md) · Next: [Orchestrator runbooks](projects/orchestrator-runbooks.md)

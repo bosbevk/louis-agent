@@ -1,7 +1,7 @@
 # Runbooks: How the Orchestrator Decides
 
 > **Explanation.** How the orchestrator decides what an error needs, and how to write a runbook. **Elsewhere:**
-> running the demo in [samples/README.md](../../samples/README.md), the design in
+> the demo's last run at the [`pre-cl10` tag](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/README.md) (removed in CL10), the design in
 > [the orchestrator spec](../specs/ORCHESTRATOR_DESIGN.md).
 
 A **runbook** is the orchestrator's instruction sheet for one API method of the service it watches. When that method
@@ -171,9 +171,9 @@ rule, written down by a person; *how* the code does it is louis-agent's job.
   error events carry.
 - **A new service:** add `Skills/<service>/service.md` and the method runbooks, and run an orchestrator with
   `ORCHESTRATOR_SERVICE=<service>`, pointed at that service's own louis-agent.api.
-- **After a change:** runbooks are copied into the orchestrator's build, so rebuild it — in the demo,
-  `.\samples\run-demo.ps1` rebuilds the images. The next triage uses the new text. `agent-comms.md` shows what the
+- **After a change:** runbooks are copied into the orchestrator's build, so rebuild it (its image too, if you
+  run it in Docker). The next triage uses the new text. `agent-comms.md` shows what the
   orchestrator decided and what it sent louis-agent, which is the quickest way to check a runbook says what you meant.
 
 ---
-[Docs index](../README.md) · Previous: [Orchestrator demo](../../samples/README.md) · Next: [Sample output](../../samples/sample-output/README.md)
+[Docs index](../README.md) · Previous: [Development guide](../CLAUDE.md) · Next: [Puls's web app](louis-agent.puls.md)

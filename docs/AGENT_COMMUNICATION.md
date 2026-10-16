@@ -135,7 +135,7 @@ session's tokens and cost, by purpose) is answered by the API itself and never r
 
 The answer streams as Server-Sent Events shaped like Claude's Messages API. Thinking and text arrive as deltas inside a
 block; a tool call and its result each arrive as one whole block. A trimmed example; the usage is the real total of the
-order-total fix in [the cached demo run](../samples/sample-output-cached/agent-comms.md) (11 requests):
+order-total fix in [the cached demo run](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/sample-output-cached/agent-comms.md) (11 requests):
 
 ```text
 event: message_start
@@ -285,14 +285,14 @@ Approving agent-built tools is never possible over MCP: that stays with the user
 
 ## Agent to agent: the orchestrator and louis-agent
 
-The orchestrator ([samples/README.md](../samples/README.md)) is a second agent built on `louis-agent.core`. It reads a
+The orchestrator ([its project doc](projects/louis-agent.orchestrator.md)) is a second agent built on `louis-agent.core`. It reads a
 service's error log, decides what each error needs from a runbook per API method ([the runbooks](projects/orchestrator-runbooks.md)), and has
 louis-agent fix the ones the runbook allows — over the same session API any client uses. It then checks louis-agent's work itself.
 
 Besides the sessions, it calls `GET /health` at start-up and, in the demo, takes its prices and exchange rates from
 louis-agent.api's `/prices` and `/rates` (`PRICES_URL`, `RATES_URL`), so both agents' costs are priced with one table
 and shown at one rate. Its triage can run on another model than the fixes, a local one included
-(`ORCHESTRATOR_LLM_PROFILE`; see [Local triage](BENCHMARKS.md#local-triage-2026-10-12)).
+(`ORCHESTRATOR_LLM_PROFILE`; see [Local triage](https://github.com/bosbevk/louis-agent/blob/pre-cl10/docs/BENCHMARKS.md#local-triage-2026-10-12)).
 
 ```mermaid
 sequenceDiagram
@@ -387,8 +387,8 @@ louis-agent's usage under each reply, triage + louis-agent + total in each error
 columns in the run summary, and a run total split by agent (the figure to compare with the usage ledger's total for
 the run id, `usage-probe -- --ledger`). Since F14 the costs are shown in the display currency, with the rate and the
 USD charged under the run total. A real one from the cached demo run is in
-[samples/sample-output-cached/agent-comms.md](../samples/sample-output-cached/agent-comms.md) (the uncached "before"
-is in [samples/sample-output/](../samples/sample-output/agent-comms.md)); a shortened excerpt:
+[the cached demo run's `agent-comms.md`](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/sample-output-cached/agent-comms.md) (the uncached "before"
+is in [the first demo run](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/sample-output/agent-comms.md); both at the `pre-cl10` tag); a shortened excerpt:
 
 ```text
 ## 2/13 · `order-total 1003` · KeyNotFoundException
@@ -441,7 +441,7 @@ A sub-session can't delegate again (`specialists` at depth 1 is a `400`); a turn
 (starts and continues), each stops after 5
 minutes, and a specialist's prompt has a budget (`SUB_SESSION_PROMPT_BUDGET`, FX14). The specialist's usage records
 carry `parent`, so a ledger can total a chat with its specialists. Measured against one agent answering everything:
-[the delegation check](../samples/sample-output-puls-check-repeat/README.md).
+[the delegation check](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/sample-output-puls-check-repeat/README.md).
 
 ## What changes next
 

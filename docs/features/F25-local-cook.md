@@ -54,12 +54,12 @@ the cook read, so that "routes properly" and "uses local sources" are numbers fr
   golden file showing only the new row.
 - **F25-S1 and F25-S3:** in the cook check, every meal question goes to `puls-cook`, the control question to the
   researcher, every price the cook reports comes from a South African shop's page it fetched, and unpriced ingredients
-  are marked unknown. *Met* in the [three-run cook check](../../samples/sample-output-puls-cook/README.md): 6 of 6 meals
+  are marked unknown. *Met* in the [three-run cook check](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/sample-output-puls-cook/README.md): 6 of 6 meals
   to the cook, 3 of 3 controls to the researcher, every meal priced at Checkers and Pick n Pay (and others), confirmed
   prices from product pages only. *Open:* the cook marks an unconfirmed price *geskat* (an estimate) rather than
   *unknown*, and with DuckDuckGo refusing 41 of 48 searches most prices were estimates; a search provider that isn't
   refused is needed before the shopping list is one the user can drive to the shop with.
-- Suites pass; the run's README is in `samples/` and its numbers in [BENCHMARKS.md](../BENCHMARKS.md#the-cook-check-2026-10-15). *Met.*
+- Suites pass; the run's README is in `samples/` and its numbers in [BENCHMARKS.md](https://github.com/bosbevk/louis-agent/blob/pre-cl10/docs/BENCHMARKS.md#the-cook-check-2026-10-15). *Met.*
 
 ## What the build changed
 

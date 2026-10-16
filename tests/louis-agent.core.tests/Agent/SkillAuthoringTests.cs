@@ -93,10 +93,16 @@ public class SkillAuthoringTests
     [TestCase("python")]
     [TestCase("paymo")]
     [TestCase("self-extension")]
-    [TestCase("default")]
     public void CreateSkillFile_RefusesBuiltInNames(string name)
     {
         Assert.That(Engine().CreateSkillFile(name, EchoSkill), Does.Contain("built-in"));
+    }
+
+    [Test]
+    public void CreateSkillFile_MayTakeTheNameDefault()
+    {
+        // CL10: default.md went in CL9 (the router is part of a mode), so the name isn't special any more.
+        Assert.That(Engine().CreateSkillFile("default", EchoSkill), Does.Contain("Saved"));
     }
 
     [Test]

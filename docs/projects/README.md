@@ -19,7 +19,6 @@ when you're about to change a particular project.
 | `tools/louis-agent.usage-probe` | Console app (developer tool) | Prints what a provider reports as token usage and what the ledger makes of it | [usage-probe](louis-agent.usage-probe.md) |
 | `src/louis-agent.web.shared` | Razor class library | What both web apps share: chat models, the API client, the turn and delegation views, markdown, usage and currency | in [web](louis-agent.web.md) and [puls](louis-agent.puls.md) |
 | `tests/louis-agent.core.tests`, `tests/louis-agent.api.tests`, `tests/louis-agent.orchestrator.tests` | NUnit | Unit tests for core, the API's sessions and the orchestrator | [tests](tests.md) |
-| `samples/order-service` | Console app + tests | The demo microservice with ten planted bugs (in the solution's `samples` folder; also has its own `OrderService.slnx`) | [order-service](order-service.md) |
 
 ## How they depend on each other
 
@@ -38,7 +37,6 @@ flowchart BT
     Orch["louis-agent.orchestrator"] --> Core
     Probe["louis-agent.usage-probe"] --> Core
     Orch -. "HTTP + SSE<br/>(sessions)" .-> API
-    Orch -. "git, dotnet<br/>(verify, replay, test)" .-> Svc["samples/order-service<br/>(its own repository)"]
     CoreTests["louis-agent.core.tests"] --> Core
     OrchTests["louis-agent.orchestrator.tests"] --> Orch
     ApiTests["louis-agent.api.tests"] --> API
@@ -55,10 +53,9 @@ thin adapter between its protocol and `AgentEngine`.
 | core | (library) | — |
 | cli | `dotnet run --project src/louis-agent.cli` | `local-agent` |
 | acp-server | Rider starts it per chat | `acp-server` (`docker compose run --rm -T acp-server`) |
-| api + web | `docker compose … up -d api` → http://127.0.0.1:5080 | `api`; `demo-api` in the demo |
+| api + web | `docker compose … up -d api` → http://127.0.0.1:5080 | `api` |
 | mcp-server | an MCP client starts it (stdio), or HTTP with `MCP_TRANSPORT=http` | `mcp-server` |
-| orchestrator | `samples/run-demo.ps1` | `orchestrator`, `demo-setup` (demo compose file) |
-| order-service | inside the demo containers | — |
+| orchestrator | `dotnet run --project src/louis-agent.orchestrator` (its demo returns with the benchmarks) | — |
 
 ## Each doc covers
 

@@ -4,7 +4,7 @@
 
 ## Symptom
 
-In the [delegation check after FX10–FX12](../../samples/sample-output-puls-check-fixes/README.md), question numbers-2
+In the [delegation check after FX10–FX12](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/sample-output-puls-check-fixes/README.md), question numbers-2
 ("how many test methods are in core's tests?") cost **$0.278**, 89% of the delegated run. The baseline answered the same
 question for $0.0032. It took 176 s and 12 requests.
 
@@ -51,7 +51,7 @@ The golden file changed for the router's lines.
 
 ## Confirmed
 
-2026-10-14, in the [three-run delegation check](../../samples/sample-output-puls-check-repeat/README.md): all six counting questions (numbers and numbers-2,
+2026-10-14, in the [three-run delegation check](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/sample-output-puls-check-repeat/README.md): all six counting questions (numbers and numbers-2,
 three runs each) went to `files` + `python` with `puls-analyst`, and all 24 delegations matched the router's table.
 The dearest delegated question cost $0.0174, against $0.278 before.
 

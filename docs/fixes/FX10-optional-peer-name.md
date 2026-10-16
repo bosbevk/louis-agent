@@ -4,7 +4,7 @@
 
 ## Symptom
 
-In the [Puls delegation check with roles](../../samples/sample-output-puls-check-roles/README.md), three of Puls's
+In the [Puls delegation check with roles](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/sample-output-puls-check-roles/README.md), three of Puls's
 `StartSubSession` calls never reached a specialist (API tool log, 2026-10-13):
 
 ```
@@ -41,7 +41,7 @@ quietly sending the task elsewhere would hide it.
 
 ## Confirmed
 
-2026-10-14, in the [delegation check after the fixes](../../samples/sample-output-puls-check-fixes/README.md):
+2026-10-14, in the [delegation check after the fixes](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/sample-output-puls-check-fixes/README.md):
 all 8 delegations went through on the first call and none named `agent`. The API's tool log has no
 `missing a value for the required parameter 'agent'` and no `no peer agent named` lines (the roles run had 3).
 

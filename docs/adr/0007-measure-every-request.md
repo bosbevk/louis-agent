@@ -18,7 +18,7 @@ a later price change never rewrites history. Unknown counts and unknown prices a
 
 ## Consequences
 
-- Every change to cost is measured against the ledger (the [benchmarks](../BENCHMARKS.md)).
+- Every change to cost is measured against the ledger (the [benchmarks](https://github.com/bosbevk/louis-agent/blob/pre-cl10/docs/BENCHMARKS.md)).
 - A new model needs its prices in `config/prices.json`, or its cost is recorded as unknown.
 - The views and the ledger agree, because they total the same records (`UsageReport.Total`).
 

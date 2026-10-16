@@ -4,7 +4,7 @@
 
 ## Symptom
 
-In the [Puls delegation check with roles](../../samples/sample-output-puls-check-roles/README.md), question files-2
+In the [Puls delegation check with roles](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/sample-output-puls-check-roles/README.md), question files-2
 ("which settings in config/.env.example are about the LLM?") couldn't be answered in either run. The specialist got
 *"Reading this sensitive file is not allowed."* The baseline agent got the same refusal and pieced the settings
 together from the code and the README instead, which is slower and less complete.
@@ -40,7 +40,7 @@ a template, which is ordinary editing. It still can't copy a real `.env` into on
 
 ## Confirmed
 
-2026-10-14, in the [delegation check after the fixes](../../samples/sample-output-puls-check-fixes/README.md):
+2026-10-14, in the [delegation check after the fixes](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/sample-output-puls-check-fixes/README.md):
 both modes read `config/.env.example` and answered files-2 from it. There were no "sensitive file" refusals in the
 log (the roles run had 2).
 

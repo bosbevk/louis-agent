@@ -26,4 +26,4 @@ agent can open a sub-session on a peer agent with the toolsets a task needs; sub
 ## Links
 
 [F5 Toolset profiles](../features/F05-toolset-profiles.md) · [F5 plan](../plans/F05-toolset-profiles.md) ·
-[F5 benchmark](../BENCHMARKS.md#f5-benchmark-short-run-2026-10-13)
+[F5 benchmark](https://github.com/bosbevk/louis-agent/blob/pre-cl10/docs/BENCHMARKS.md#f5-benchmark-short-run-2026-10-13)

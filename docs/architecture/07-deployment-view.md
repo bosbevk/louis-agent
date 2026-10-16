@@ -1,7 +1,7 @@
 # 7. Deployment view
 
 > **Explanation.** Where each part runs: the Docker images and services, and what they mount. **Elsewhere:** the
-> settings in [Setup](../SETUP.md); running the demo in [samples/README.md](../../samples/README.md).
+> settings in [Setup](../SETUP.md); the orchestrator demo was removed in CL10 (its last run at the [`pre-cl10` tag](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/README.md)).
 
 ## Deployment
 
@@ -27,13 +27,5 @@ for git (the repo is a Windows checkout). Always pass the env file:
 docker compose -f docker/docker-compose.yml --env-file config/.env up -d --build api
 ```
 
-The orchestrator demo has its own compose file, `docker/docker-compose.demo.yml` (project `louis-agent-demo`):
-
-| Service | Dockerfile | Notes |
-|---|---|---|
-| `demo-setup` | `Dockerfile.orchestrator` | One-off: fresh demo repository in `.demo/order-service` and its production traffic |
-| `demo-api` | `Dockerfile.api` | louis-agent.api and the web app on `127.0.0.1:${DEMO_PORT:-5081}`, workspace `/demo/order-service` |
-| `orchestrator` | `Dockerfile.orchestrator` | Triages new errors once and calls `demo-api` for fixes; SDK image, as it replays requests and runs tests |
-
-All three mount the host's `.demo/` at `/demo` (the demo repository is LF, so no `core.autocrlf`) and share a `nuget`
-volume. `samples/run-demo.ps1` drives them; see [samples/README.md](../../samples/README.md).
+The orchestrator demo (its own compose file, a demo service with ten bugs) was removed in CL10 and comes back with
+the rewritten benchmarks; `Dockerfile.orchestrator` still builds the orchestrator.
