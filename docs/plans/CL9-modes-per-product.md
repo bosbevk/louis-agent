@@ -292,3 +292,6 @@ sequenceDiagram
 - **Step 7: `louis-agent/voice-orchestrator` is a mode a session could name** (step 7, 2026-10-17). It's a level-0 file
   like the others, so `GET /personalities` lists it and an API session could open with it (it would have none of the
   orchestrator's tools); `PERSONALITIES_ENABLED` keeps it off where that's set, as on Puls.
+- **Step 10 is skipped** (Louis, 2026-10-17: "skip step 10, finish CL9"). The paid cook and delegation checks against
+  their baselines aren't run; the checks are rewritten after F30's minions (CL10), and Puls's routing is measured then.
+  Step 9's hand check (free) is in the CHANGELOG entry.

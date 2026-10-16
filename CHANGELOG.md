@@ -3,6 +3,15 @@
 > **Reference.** What was finished, newest first, one entry per feature, fix or cleanup. **Elsewhere:** what's still
 > open in the [TODO](TODO.md); how each was built in its feature, fix or plan doc (linked from its entry).
 
+- 2026-10-17 — **CL9 Modes per product**: a level-0 session is a mode, one file of voice and routing in a folder per
+  product (`agent/louis-agent/voice.md`, the default for the CLI, Rider and code review; `voice-orchestrator.md`), or a
+  language (`agent/puls/voice-af.md`, `voice-en.md`) that loads Puls's shared routing (`puls/voice.md`); Puls's *Taal*
+  menu picks the language for new chats. Every agent loads the same principles first (never lie, cheat, steal or
+  murder). Each product routes only what it does; `AGENT_FUNCTION` and the placeholder code-review skill go; the
+  `agents` toolset is `specialists`. Measured from the start-up logs: the coding agent's fixed prefix 29,464 → 28,663
+  tokens, the cook's 4,518 → 4,773 (the principles), Puls's chat 6,703 (Afrikaans) and 6,694 (English); the paid
+  checks were skipped until they're rewritten after F30 ([plan](docs/plans/CL9-modes-per-product.md),
+  [ADR 0019](docs/adr/0019-modes-one-file-per-product.md), [ADR 0020](docs/adr/0020-principles-for-every-agent.md))
 - 2026-10-16 — **CL8 Skills by level**: the built-in prompts move into `louis-agent.core/Prompts/`, one folder per
   level a session runs at (`agent/` level 0, `specialists/` level 1, `minions/` level 2 for F30) beside the shared
   `toolsets/`, and are read only from the assembly (`Microsoft.Extensions.FileProviders.Embedded`): a role opens only at
