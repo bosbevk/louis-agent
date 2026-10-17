@@ -120,3 +120,8 @@ before it.
   agree. The ledger's files are read for every month the run spans; an unreadable one leaves the cost unknown and
   says so in the log. Open: whether the last turn's rows are always written before the script ends (the old scripts
   waited two seconds); step 11b's paid run checks the count.
+- **Step 5a (2026-10-17): `AdminOptions`** (`src/louis-agent.api/Config/`, a new folder for the API's settings), read
+  once at start-up as `AgentOptions` is: the portal's key, the URL a script calls back, and the store
+  (`BENCHMARKS_MONGO_URL`), plus `BENCHMARKS_MONGO_DATABASE` (`puls_benchmarks` by default) so the contract tests can
+  use `puls_benchmarks_test` on the same server. `Program.cs`'s three reads go; nothing else changes: by hand on the
+  rebuilt Puls, `GET /admin/benchmarks` is 401 without the key and 200 with it.

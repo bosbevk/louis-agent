@@ -3,6 +3,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using LouisAgent.Api;
+using LouisAgent.Api.Config;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Sessions;
 using LouisAgent.Core.Usage;
@@ -100,13 +101,11 @@ app.MapGet("/rates/display", () => Results.Json(new
 app.MapWorkspace();
 app.MapGit();
 app.MapHistory();
-// F27: the admin portal, behind its own key (ADMIN_API_KEY, else AGENT_API_KEY; neither: closed). The saved runs are
-// none since CL10: the rewritten checks come with the Benchmarks feature.
-// A run's script calls this API back at BENCHMARK_API_URL (the container's own port, by default).
+// F27: the admin portal, behind its own key (ADMIN_API_KEY, else AGENT_API_KEY; neither: closed); its settings in
+// AdminOptions (F31). A run's script calls this API back at BENCHMARK_API_URL (the container's own port, by default).
+var admin = AdminOptions.FromEnvironment();
 var benchmarks = new BenchmarkCatalog();
-app.MapAdmin(benchmarks,
-    new BenchmarkRunner(benchmarks, host.Engine.WorkspaceRoot, Environment.GetEnvironmentVariable("BENCHMARK_API_URL") ?? "http://127.0.0.1:8080/"),
-    AdminGate.Key(Environment.GetEnvironmentVariable("ADMIN_API_KEY"), apiKey));
+app.MapAdmin(benchmarks, new BenchmarkRunner(benchmarks, host.Engine.WorkspaceRoot, admin.BenchmarkApiUrl), admin.AdminKey);
 
 // The toolsets a session can load (F5-S3): names, what each is for and whether this instance has its settings. Never
 // the tool definitions, so a general agent can choose without loading them.
