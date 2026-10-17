@@ -31,6 +31,7 @@ afterwards from the docs that hold them (each ADR links its sources), with the d
 | [0019](0019-modes-one-file-per-product.md) | A level-0 session is a mode, in a folder per product; a language shares its product's routing | Accepted |
 | [0020](0020-principles-for-every-agent.md) | Every agent loads the same principles first: never lie, cheat, steal or murder | Accepted |
 | [0021](0021-minions-one-task-one-tool.md) | Minions: a specialist hands one task and one of its own tools down, two levels deep and no further | Accepted |
+| [0022](0022-benchmarks-recorded-from-the-protocol.md) | Benchmark results in MongoDB, recorded by the API from the harness's stdout protocol | Accepted |
 
 ## When to write one
 

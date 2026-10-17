@@ -1,6 +1,7 @@
 # F27 · Admin portal: a place to run and read the benchmarks, built to grow
 
-> **Status:** built (2026-10-15), on `claude/project-thread-381vmw`; open: a real run from the page (Louis's go) · **Milestone:** — · **Depends on:** F20 (Puls's app and look), F25 (the cook check), F1–F3 (the ledger the checks read)
+> **Status:** done, superseded by [F31](F31-benchmarks-portal.md) (2026-10-17): its run and read stories are met
+> by F31's portal, and the first real run went through it · **Milestone:** — · **Depends on:** F20 (Puls's app and look), F25 (the cook check), F1–F3 (the ledger the checks read)
 >
 > **In the TODO:** **F27 Admin portal** under *Web app* ([TODO](../../TODO.md)) · **Plan:** [plans/F27](../plans/F27-admin-portal.md)
 

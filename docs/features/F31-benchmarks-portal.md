@@ -1,6 +1,7 @@
 # F31 · Benchmarks in the admin portal: the checks run from the portal, their results kept in a store
 
-> **Status:** planned (2026-10-17), on `docs/F31-benchmarks-portal-plan` (the plan); the code after F30 (merged 2026-10-17) ·
+> **Status:** done (2026-10-17), on `feature/F31-benchmarks-portal`; step 11c's rest (notes on a run, tool failures
+> stored at record time) is a TODO line ·
 > **Milestone:** — · **Depends on:** F27 (the portal, its runner and SSE), F1–F3 (the ledger the costs come from),
 > F25 and F29 (the cook and the role gate the checks measure), F30's build steps (the minions the first measured run
 > compares)
@@ -82,7 +83,7 @@ before it.
 - **F31-S3 and S4:** the explorer and the trend from the store. *Met by:* the trend test; the pages by hand; one paid
   run of the cook check from the page (Louis's go), its numbers in this doc.
 - Suites pass; F27 closed; *Finishing a feature* (the ADR for the store and the protocol, CHANGELOG, GOAL skill 12,
-  SETUP's settings, the API's and Puls's project docs).
+  SETUP's settings, the API's and Puls's project docs). *Met by:* step 11d; [ADR 0022](../adr/0022-benchmarks-recorded-from-the-protocol.md).
 
 ---
 [Features](README.md) · [Plan](../plans/F31-benchmarks-portal.md) · Previous: [F27 Admin portal](F27-admin-portal.md)

@@ -335,3 +335,8 @@ an ephemeral-Mongo test package.
   aliases. Recorded data is never translated.
 - **The trend as nine panels** (Louis, 2026-10-17): the trend endpoint carries every ring's measure, and the run page
   shows them three to a row, each explained on hover as the rings are.
+- **2026-10-17, after step 11b (Louis: "let us first pr"; "Do 11d first, then PR"): F31 finishes with 11d, and
+  11c's rest moves to the TODO.** Part 1 of 11c is met on read (the explorer counts each turn's failures and groups
+  their reasons from its stored events, `BenchmarkTools`, built in 11b); storing them at record time and part 2, a
+  person's notes on a run and a conversation, are a TODO line, with the search provider and renderer in a run's
+  settings once F32 lets them be chosen.
