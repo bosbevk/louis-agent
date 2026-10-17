@@ -51,7 +51,7 @@ public static class BenchmarkTrends
                     foreach (var turn in await store.TurnsAsync(run.Id, conversation.Key, cancellationToken))
                     {
                         turns.Add(turn);
-                        var tools = BenchmarkTools.Of(await store.TurnEventsAsync(run.Id, turn.Key, cancellationToken));
+                        var tools = await BenchmarkTools.OfTurnAsync(store, run.Id, turn, cancellationToken);
                         calls += tools.Calls;
                         failed += tools.Failed;
                     }

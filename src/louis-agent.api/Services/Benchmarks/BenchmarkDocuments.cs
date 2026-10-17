@@ -34,7 +34,10 @@ public static class BenchmarkDocuments
     /// <summary>A conversation's result; <see cref="Order"/> is when it started in its run, so the check's order holds.</summary>
     public sealed record Conversation(ConversationKey Key, int Order, string? Role, JsonElement Scores, int Errors, double Seconds);
 
-    /// <summary>One turn, without its stream events (<see cref="IBenchmarkStore.TurnEventsAsync"/>).</summary>
+    /// <summary>
+    /// One turn, without its stream events (<see cref="IBenchmarkStore.TurnEventsAsync"/>). <see cref="Tools"/> is what
+    /// its tools did, counted when it was recorded; null for a turn recorded before the counts were kept.
+    /// </summary>
     public sealed record Turn(
         TurnKey Key,
         string Session,
@@ -46,7 +49,8 @@ public static class BenchmarkDocuments
         int SpecialistCalls,
         IReadOnlyList<string> Hosts,
         double Seconds,
-        string? Error);
+        string? Error,
+        BenchmarkTools.Summary? Tools = null);
 
     /// <summary>One stream event of a turn, kept for its replay.</summary>
     public sealed record StreamEvent(string Type, JsonElement Data, DateTimeOffset? At);

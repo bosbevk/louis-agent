@@ -200,9 +200,8 @@ Design: [docs/specs/SESSION_ARCHITECTURE.md](docs/specs/SESSION_ARCHITECTURE.md)
 - [ ] **Why a benchmark run behaved as it did** (to plan; F31 step 11c, split off when F31 finished, 2026-10-17):
       a note by a person on a run and on a conversation (*Tavily out of credits: no web search in this run*), kept
       in the benchmark store with when it was written, shown on the run's row and as a marker on its trend point;
-      each turn's tool failures stored when the turn is recorded (the explorer reads them from the stored events
-      today, `BenchmarkTools`); and the search provider and page renderer in a run's settings (`BenchmarkSettings`),
-      once they can be chosen (F32).
+      and the search provider and page renderer in a run's settings (`BenchmarkSettings`), once they can be chosen
+      (F32). Each turn's tool counts are already kept when it's recorded (review of PR #55).
 - [ ] [F30 Local web peer](docs/features/F30-local-web-peer.md) — built, not in use: a session names its LLM profile, and a specialist can hand one task and one of its own tools to a minion on a cheap model (`MINION_LLMS`, depth 2, 16 per turn); Puls's prompts don't use minions until F31 measures the cook with and without them ([plan](docs/plans/F30-local-web-peer.md))
 - [ ] **Next up: a faster, cheaper cook** (to plan; Louis, 2026-10-15: "can we have a subsession allow him to spawn
       web sessions for each task"). The cook does every search and fetch itself, one at a time, and every page it reads

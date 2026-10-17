@@ -187,6 +187,26 @@ public abstract class BenchmarkStoreContract
     }
 
     [Test]
+    public async Task ATurnsToolCounts_ReadBackWithIt_AndNoneStayNone()
+    {
+        // Review of PR #55: opening a run read every turn's events to count its tools; the counts are kept on the turn.
+        string run = NewId();
+        var counted = NewTurn("bobotie", 1) with
+        {
+            Tools = new BenchmarkTools.Summary(3, 1, [new BenchmarkTools.Failure("WebSearch", "Error: Tavily's limit was reached", 1)]),
+        };
+        await _store.SaveTurnAsync(run, counted, []);
+        await _store.SaveTurnAsync(run, NewTurn("bobotie", 2), []);
+
+        var turns = await _store.TurnsAsync(run, counted.Key.Conversation);
+
+        var tools = turns[0].Tools!;
+        Assert.That((tools.Calls, tools.Failed), Is.EqualTo((3, 1)));
+        Assert.That(tools.Reasons.Single(), Is.EqualTo(new BenchmarkTools.Failure("WebSearch", "Error: Tavily's limit was reached", 1)));
+        Assert.That(turns[1].Tools, Is.Null, "a turn recorded before the counts were kept: unknown, not 0 calls");
+    }
+
+    [Test]
     public async Task TheEventsOfAnUnknownTurn_AreEmpty() =>
         Assert.That(await _store.TurnEventsAsync(NewId(), new TurnKey("m", 1, "t", 1)), Is.Empty);
 

@@ -111,7 +111,8 @@ public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = n
                     _sessions.TryAdd(turn.Session, turn.Key.Conversation);
                     var events = _open.Remove(turn.Key, out var open) ? open.Events : [];
                     await WriteAsync(() => store.SaveTurnAsync(run.Id, new Turn(turn.Key, turn.Session, turn.Question, turn.Answer, turn.Role,
-                        turn.Continued, turn.PulsCalls, turn.SpecialistCalls, turn.Hosts, turn.Seconds, turn.Error), events, cancellationToken));
+                        turn.Continued, turn.PulsCalls, turn.SpecialistCalls, turn.Hosts, turn.Seconds, turn.Error, BenchmarkTools.Of(events)),
+                        events, cancellationToken));
                     break;
                 case ConversationEnded conversation:
                     await WriteAsync(() => store.SaveConversationAsync(run.Id, new Conversation(conversation.Key, OrderOf(conversation.Key),
@@ -126,7 +127,7 @@ public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = n
             string cutOff = MessageText.Format(ApiUserText.BenchmarkTurnCutOff);
             foreach (var (key, open) in _open)
                 await WriteAsync(() => store.SaveTurnAsync(run.Id,
-                    new Turn(key, open.Session, open.Question, null, null, null, 0, 0, [], 0, cutOff), open.Events, cancellationToken));
+                    new Turn(key, open.Session, open.Question, null, null, null, 0, 0, [], 0, cutOff, BenchmarkTools.Of(open.Events)), open.Events, cancellationToken));
             _open.Clear();
             await JoinLedgerAsync();
 

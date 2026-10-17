@@ -1,6 +1,7 @@
 using System.Text.Json;
 using LouisAgent.Api.Services.Benchmarks;
 using static LouisAgent.Api.Services.Benchmarks.BenchmarkDocuments;
+using static LouisAgent.Api.Services.Benchmarks.BenchmarkProtocol;
 
 namespace LouisAgent.Api.Tests;
 
@@ -53,4 +54,36 @@ public class BenchmarkToolsTests
     [Test]
     public void ATurnWithoutTools_HasNone() =>
         Assert.That(BenchmarkTools.Of([E("message_start", new { type = "message_start" })]), Is.EqualTo(BenchmarkTools.None));
+
+    // Review of PR #55: opening a run and every trend read each turn's whole stream to count its tools. The recorder keeps
+    // the counts on the turn; a turn recorded before that is counted from its events once, and the counts written back.
+
+    private static Turn ATurn(BenchmarkTools.Summary? tools = null) =>
+        new(new TurnKey("puls-cook", 1, "bobotie", 1), "s", "?", "!", "puls-cook", null, 1, 2, [], 10, null, tools);
+
+    [Test]
+    public async Task KeptCounts_AreUsedAsTheyAre()
+    {
+        var store = new InMemoryBenchmarkStore();
+        var kept = new BenchmarkTools.Summary(4, 0, []);
+        await store.SaveTurnAsync("r", ATurn(kept), [Use("u1", "WebSearch"), Result("u1", true, "Error: limit")]);
+
+        var tools = await BenchmarkTools.OfTurnAsync(store, "r", ATurn(kept));
+
+        Assert.That((tools.Calls, tools.Failed), Is.EqualTo((4, 0)), "the kept counts, not the events");
+    }
+
+    [Test]
+    public async Task ATurnFromBefore_IsCountedOnce_AndItsCountsKept()
+    {
+        var store = new InMemoryBenchmarkStore();
+        await store.SaveTurnAsync("r", ATurn(), [Use("u1", "WebSearch"), Result("u1", true, "Error: limit")]);
+
+        var tools = await BenchmarkTools.OfTurnAsync(store, "r", ATurn());
+
+        Assert.That((tools.Calls, tools.Failed), Is.EqualTo((1, 1)));
+        var stored = (await store.TurnsAsync("r", new ConversationKey("puls-cook", 1, "bobotie"))).Single();
+        Assert.That(stored.Tools?.Failed, Is.EqualTo(1), "written back, so the next read needs no events");
+        Assert.That(await store.TurnEventsAsync("r", stored.Key), Has.Count.EqualTo(2), "its events kept for the replay");
+    }
 }

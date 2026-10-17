@@ -1,7 +1,7 @@
 # F31 · Benchmarks in the admin portal: the checks run from the portal, their results kept in a store
 
-> **Status:** done (2026-10-17), on `feature/F31-benchmarks-portal`; step 11c's rest (notes on a run, tool failures
-> stored at record time) is a TODO line ·
+> **Status:** done (2026-10-17), on `feature/F31-benchmarks-portal`; step 11c's rest (a person's notes on a run) is a
+> TODO line ·
 > **Milestone:** — · **Depends on:** F27 (the portal, its runner and SSE), F1–F3 (the ledger the costs come from),
 > F25 and F29 (the cook and the role gate the checks measure), F30's build steps (the minions the first measured run
 > compares)

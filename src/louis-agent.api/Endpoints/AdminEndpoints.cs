@@ -86,7 +86,7 @@ internal static class AdminEndpoints
             var turns = new List<object>();
             foreach (var conversation in conversations)
                 foreach (var turn in await s.TurnsAsync(id, conversation.Key, cancellationToken))
-                    turns.Add(TurnRow(turn, BenchmarkTools.Of(await s.TurnEventsAsync(id, turn.Key, cancellationToken))));
+                    turns.Add(TurnRow(turn, await BenchmarkTools.OfTurnAsync(s, id, turn, cancellationToken)));
             var requests = await s.RequestsAsync(id, cancellationToken);
             return Results.Json(new
             {

@@ -6,9 +6,10 @@ namespace LouisAgent.Api.Services.Benchmarks;
 /// <summary>
 /// What a turn's tools did (F31; step 11c's first half), read from its stored stream events: every tool call Puls and
 /// its specialist (or a minion) made, the ones whose result came back as an error, and why, grouped by tool and the
-/// first line of the reason. Read when asked, from the events the store already keeps, so every run has it, the
-/// runs before it was written too. 11b's run had every WebSearch refused by Tavily's limit and nothing on the screen
-/// said so.
+/// first line of the reason. Counted when the recorder saves a turn and kept on it (review of PR #55: reading every
+/// turn's events to count them made each run and each trend slower than the last); a turn recorded before that is
+/// counted from its events once (<see cref="OfTurnAsync"/>). 11b's run had every WebSearch refused by Tavily's limit and
+/// nothing on the screen said so.
 /// </summary>
 public static class BenchmarkTools
 {
@@ -54,6 +55,19 @@ public static class BenchmarkTools
         if (calls == 0) return None;
         var reasons = failures.GroupBy(f => (f.Tool, f.Reason)).Select(g => new Failure(g.Key.Tool, g.Key.Reason, g.Count())).ToList();
         return new Summary(calls, failures.Count, reasons);
+    }
+
+    /// <summary>
+    /// A turn's tool counts: those kept on it, or, for a turn recorded before they were kept, counted from its events
+    /// once and written back with them, so the next read needs no events.
+    /// </summary>
+    public static async Task<Summary> OfTurnAsync(IBenchmarkStore store, string run, Turn turn, CancellationToken cancellationToken = default)
+    {
+        if (turn.Tools is { } kept) return kept;
+        var events = await store.TurnEventsAsync(run, turn.Key, cancellationToken);
+        var counted = Of(events);
+        await store.SaveTurnAsync(run, turn with { Tools = counted }, events, cancellationToken);
+        return counted;
     }
 
     /// <summary>A reason's first line, at most 160 characters: enough to say what happened, short enough to group by.</summary>

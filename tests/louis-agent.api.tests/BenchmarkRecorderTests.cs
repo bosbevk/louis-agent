@@ -91,6 +91,26 @@ public class BenchmarkRecorderTests
     }
 
     [Test]
+    public async Task ATurnsToolCounts_AreKept_WhenItEnds()
+    {
+        // Review of PR #55: counted once when the turn is recorded, so reading a run never needs its events for them.
+        string Block(object block) => At(new { @event = "sse", mode = "puls-cook", repeat = 1, task = "bobotie", turn = 1, type = "content_block_start", data = new { content_block = block } });
+        var recording = new BenchmarkRecorder(_store).RecordAsync(_run);
+        Add(Protocol(), Mode(), Question("bobotie"),
+            Block(new { type = "tool_use", id = "u1", name = "WebSearch", input = new { } }),
+            Block(new { type = "tool_result", tool_use_id = "u1", content = "Error: limit reached", is_error = true }),
+            Block(new { type = "tool_use", id = "u2", name = "FetchUrl", input = new { } }),
+            TurnDone("bobotie"), ConversationDone("bobotie"), ModeDone());
+        _run.Complete(0);
+        await recording;
+
+        var tools = (await _store.TurnsAsync(_run.Id, new ConversationKey("puls-cook", 1, "bobotie"))).Single().Tools!;
+
+        Assert.That((tools.Calls, tools.Failed), Is.EqualTo((2, 1)));
+        Assert.That(tools.Reasons.Single(), Is.EqualTo(new BenchmarkTools.Failure("WebSearch", "Error: limit reached", 1)));
+    }
+
+    [Test]
     public async Task AHalfDoneRun_IsReadable_WhileItRuns()
     {
         var recording = new BenchmarkRecorder(_store).RecordAsync(_run);
