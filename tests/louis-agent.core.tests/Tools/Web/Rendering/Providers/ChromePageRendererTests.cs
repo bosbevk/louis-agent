@@ -1,7 +1,7 @@
 using LouisAgent.Core.Tools.Web.Rendering;
-using LouisAgent.Core.Tools.Web.Rendering.Renderers;
+using LouisAgent.Core.Tools.Web.Rendering.Providers;
 
-namespace LouisAgent.Core.Tests.Tools.Web.Rendering.Renderers;
+namespace LouisAgent.Core.Tests.Tools.Web.Rendering.Providers;
 
 // F32 step 2: the headless Chrome renderer. Without a browser, a call says the browser didn't answer, never hangs. With
 // one (BROWSER_URL set, as the Puls stack's puls-browser on 127.0.0.1:9222), the live tests render a real page and

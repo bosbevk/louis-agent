@@ -363,3 +363,6 @@ did* (F31's step 11c rest), so F32 doesn't depend on it.
   Tavily, the unavailable stand-in) and `Rendering/Renderers/` (`…Rendering.Renderers`: Tavily, the stand-in, and step
   2's `ChromePageRenderer` and `RenderPolicy`). The interface design's "in `Tools/Web/`" reads as these folders; tests
   mirror them.
+- **2026-10-17, after step 2 (Louis: "rename to Providers"): one word for implementations.** `Rendering/Renderers/`
+  became `Rendering/Providers/` (`…Rendering.Providers`), so every seam keeps its contract at its top and its
+  implementations in `Providers/`, the layout CL12 follows for the integrations (`TimeTracking/`, `WorkItems/`).

@@ -1,4 +1,4 @@
-namespace LouisAgent.Core.Tools.Web.Rendering.Renderers;
+namespace LouisAgent.Core.Tools.Web.Rendering.Providers;
 
 using System.Net;
 using System.Net.Http.Headers;

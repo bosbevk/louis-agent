@@ -11,7 +11,7 @@ using LouisAgent.Core.Pricing;
 using LouisAgent.Core.Tools.Documents;
 using LouisAgent.Core.Tools.Web.Search;
 using LouisAgent.Core.Tools.Web.Rendering;
-using LouisAgent.Core.Tools.Web.Rendering.Renderers;
+using LouisAgent.Core.Tools.Web.Rendering.Providers;
 using LouisAgent.Core.Tools.Web.Search.Providers;
 
 /// <summary>

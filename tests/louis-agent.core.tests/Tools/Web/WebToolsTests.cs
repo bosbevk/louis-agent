@@ -8,7 +8,7 @@ using Microsoft.Extensions.AI;
 using LouisAgent.Core.Tools.Web;
 using LouisAgent.Core.Tools.Web.Search;
 using LouisAgent.Core.Tools.Web.Rendering;
-using LouisAgent.Core.Tools.Web.Rendering.Renderers;
+using LouisAgent.Core.Tools.Web.Rendering.Providers;
 using LouisAgent.Core.Tools.Web.Search.Providers;
 
 namespace LouisAgent.Core.Tests.Tools.Web;
