@@ -53,8 +53,9 @@ shop (price, size, per kilogram, location, link and the exact words), so no sear
   ingredient with the amount to buy (the pack the shops sell, e.g. "beef mince, 500 g"), the user's town, and every
   shop in the town with its website, e.g. `beef mince, 500 g; Malmesbury; shops: Checkers (checkers.co.za), Pick n Pay
   (pnp.co.za), Spar (spar.co.za)`.
-- One minion per ingredient, every ingredient of the recipe, at most 16 in a turn. A refused or failed minion means that
-  ingredient is "unknown" at every shop; don't search it yourself.
+- One minion per ingredient, every ingredient of the recipe, at most 16 in a turn. A minion answers once and closes.
+  **Never retry a minion** and never search the shops yourself: what its lines say `unknown` is unknown, and a refused
+  or failed minion means that ingredient is "unknown" at every shop.
 - **Each shop's line goes into that shop's column:** its `price` as a link to its `url`, `unknown` when the line says
   so. A price for another size than the one to buy stays out of the list; say it under *Unsure*. Never put a number in
   the list that isn't in a minion's line.

@@ -146,10 +146,11 @@ public sealed class SpecialistTools(IReadOnlyDictionary<string, Uri> peers, stri
     /// <summary>
     /// Opens a child on <paramref name="peer"/> with <paramref name="createBody"/>, sends <paramref name="messageBody"/>
     /// and reads the answer to the end; in a chat the child is kept on the registry (F26) and the answer carries its
-    /// handle, else it is deleted. Every failure is an answer the model can act on, never a crash.
+    /// handle, else (or with <paramref name="keep"/> false: a minion) it is deleted. Every failure is an answer the model
+    /// can act on, never a crash.
     /// </summary>
     internal async Task<string> OpenChildAsync(Uri peer, string agent, object createBody, object messageBody, IReadOnlyList<string> toolsets,
-        string? role, ChildKind kind, string? toolUseId, UsageScope? scope, TimeSpan timeout, CancellationToken cancellationToken)
+        string? role, ChildKind kind, string? toolUseId, UsageScope? scope, TimeSpan timeout, CancellationToken cancellationToken, bool keep = true)
     {
         using var timeoutSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         timeoutSource.CancelAfter(timeout);
@@ -168,7 +169,7 @@ public sealed class SpecialistTools(IReadOnlyDictionary<string, Uri> peers, stri
 
             var reply = await AnswerAsync(peer, sessionId, messageBody, kind, toolUseId, scope, timeoutSource.Token);
             if (reply.Failure is not null) return reply.Failure;
-            if (SubSessionRegistry.Current is { } registry)
+            if (keep && SubSessionRegistry.Current is { } registry)
             {
                 // F26: the chat keeps the child, with its context and cached prefix, for a follow-up. The entry's closer
                 // is this tool's delete, so the registry never speaks HTTP; the finally below then leaves it alone.

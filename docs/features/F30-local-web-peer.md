@@ -122,6 +122,14 @@ keep minions only if real prices hold and the cost drops.
   the minion searches each shop's site (`WebSearch`, never a freshness filter, the short name) and answers with one
   line per shop (price, size, per kilogram, location, link, the exact words). Every price is the search index's, so
   the cook no longer uses `VerifyQuote` or the page readers, and the report always carries the search-index line.
+- **The fourth hand check (2026-10-17):** the Haiku minions found the right products and invented nothing, but a
+  search returns an excerpt picked by the query: the short name ("eggs") gave the description, while the cook's own
+  "PnP large eggs 6 pack R" gave R22.99. Spar and Usave showed only promotions and their home pages. The cook retried
+  all six minions with `stronger` (no next model), and its `ContinueMinion` calls failed because kept minions had
+  evicted each other from the chat's three places. Louis: "why not always fall to the short name and pick the
+  closest", then "do all three": the minion searches twice per shop (the short name to pick the closest product, its
+  exact title and "price" for the price), Spar and Usave once ("no online prices"); a minion answers once and closes
+  (no `ContinueMinion`); the cook never retries a minion or searches the shops itself.
 
 - **A profile takes nothing from the instance but its API key** (step 1). The first idea was to fall back to the
   process environment for whatever a profile file leaves out; that would hand the local model Claude's

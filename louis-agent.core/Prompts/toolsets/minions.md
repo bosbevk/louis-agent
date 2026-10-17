@@ -8,8 +8,7 @@ it reads never enters your context: you get its lines back, and a usage line.
 
 | Tool | Use it to |
 |------|-----------|
-| `StartMinion(role, tool, task, stronger)` | Open a minion with `role`, hand it one of your tools (`tool`) and the `task`; wait for its answer. The minion stays open for this chat: the answer's footer names its handle. `stronger: true` runs the same task on the next, stronger model in the role's list, once, when the instance lists one. |
-| `ContinueMinion(handle, message)` | A follow-up to a minion this chat keeps open, by its handle; it still has what it found. |
+| `StartMinion(role, tool, task, stronger)` | Open a minion with `role`, hand it one of your tools (`tool`) and the `task`; wait for its answer. It answers once and closes. `stronger: true` runs the same task on the next, stronger model in the role's list, once, only when the instance lists one. |
 
 ## When a minion is worth it
 
@@ -23,7 +22,7 @@ it reads never enters your context: you get its lines back, and a usage line.
 
 | Role | Hand it | Its answer |
 |---|---|---|
-| `puls-minion-web-price-lookup` | `WebSearch` and a task with one ingredient and the amount to buy, the user's town, and the shops to look in with their websites | `ingredient: …`, then one line per shop: `shop`, `price`, `size`, `per_kg`, `location`, `url`, `quote` (the exact words the price came from), each `unknown` when nothing says, and a `note` when something's off |
+| `puls-minion-web-price-lookup` | `WebSearch` and a task with one ingredient and the amount to buy, the user's town, and the shops to look in with their websites (it searches each shop twice: the product, then its price; Spar and Usave once, they have no online prices) | `ingredient: …`, then one line per shop: `shop`, `price`, `size`, `per_kg`, `location`, `url`, `quote` (the exact words the price came from), each `unknown` when nothing says, and a `note` when something's off |
 
 ## Writing the task
 

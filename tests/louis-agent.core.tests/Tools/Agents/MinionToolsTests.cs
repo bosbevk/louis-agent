@@ -188,25 +188,33 @@ public class MinionToolsTests
     }
 
     [Test]
-    public async Task InAChat_TheMinionIsKept_AndContinueMinion_GoesBackToIt()
+    public async Task InAChat_AMinionIsNeverKept_ItIsDeletedOnceItAnswers()
     {
+        // F30, the fourth hand check: a chat keeps three children, so kept minions evicted the cook's earlier ones and
+        // its ContinueMinion calls failed. A minion answers once and closes (Louis: "do all three").
         var creates = new List<JsonDocument>();
-        var tools = Tools(Peer(creates));
+        int deletes = 0;
+        var handler = new StubHandler(request =>
+        {
+            if (request.Method == HttpMethod.Delete) { deletes++; return Json(HttpStatusCode.OK, "{}"); }
+            if (request.RequestUri!.AbsolutePath == "/sessions")
+            {
+                creates.Add(JsonDocument.Parse(request.Content!.ReadAsStringAsync().Result));
+                return Json(HttpStatusCode.Created, """{"session_id":"sess_minion"}""");
+            }
+            return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(Stream, Encoding.UTF8, "text/event-stream") };
+        });
         var registry = new SubSessionRegistry();
 
+        string answer;
         using (CooksTurn())
         using (SubSessionRegistry.Use(registry))
-        {
-            string first = await tools.StartMinion(Role, "FetchUrl", "a page");
-            Assert.That(first, Does.Contain("ContinueMinion(\"sub-1\""));
-            Assert.That(registry.Open.Single().Role, Is.EqualTo(Role));
+            answer = await Tools(handler).StartMinion(Role, "FetchUrl", "a page");
 
-            string again = await tools.ContinueMinion("sub-1", "and the 1 kg pack?");
-            Assert.That(again, Does.StartWith("shop: Checkers"));
-            Assert.That(await tools.ContinueMinion("sub-9", "?"), Does.StartWith("Error:").And.Contain("sub-9"));
-        }
-
-        Assert.That(creates, Has.Count.EqualTo(1), "a continue opens nothing new");
+        Assert.That(answer, Does.StartWith("shop: Checkers").And.Not.Contain("handle"));
+        Assert.That(registry.Open, Is.Empty, "the chat's three places stay for its specialists");
+        Assert.That(deletes, Is.EqualTo(1));
+        Assert.That(typeof(MinionTools).GetMethod("ContinueMinion"), Is.Null, "nothing to continue");
     }
 
     [Test]

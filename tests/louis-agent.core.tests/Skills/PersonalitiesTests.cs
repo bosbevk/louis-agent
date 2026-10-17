@@ -460,4 +460,20 @@ public class PersonalitiesTests
         Assert.That(minion, Does.Contain("Never set `freshness`"));
         Assert.That(minion, Does.Not.Contain("| unknown`"), "the template shows one filled-in example, not alternatives");
     }
+
+    [Test]
+    public void TheMinion_FindsTheProductByItsShortName_ThenItsPriceByItsTitle_AndTriesSparAndUsaveOnce()
+    {
+        // F30, the fourth hand check: "eggs" found PnP Large Eggs 6 Pack but its excerpt was the description; the
+        // cook's "PnP large eggs 6 pack R" got R22.99. Louis: "why not always fall to the short name and pick the
+        // closest": the short name finds the closest product, its exact title with "price" finds the price.
+        string minion = SkillFileSource.ReadEmbedded(Personalities.MinionsFolder + "/puls-minion-web-price-lookup.md")!;
+        string cook = SkillFileSource.ReadEmbedded(Personalities.SpecialistsFolder + "/puls-cook.md")!;
+
+        Assert.That(minion, Does.Contain("Two searches per shop"));
+        Assert.That(minion, Does.Contain("its exact title and the word `price`"));
+        Assert.That(minion, Does.Contain("no online prices"), "Spar and Usave show only promotions and their home page");
+        Assert.That(cook, Does.Contain("Never retry a minion"));
+        Assert.That(cook, Does.Not.Contain("ContinueMinion"));
+    }
 }

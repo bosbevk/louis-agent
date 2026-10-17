@@ -8,16 +8,20 @@ The specialist gives you one ingredient with its size or unit (a 500 g pack, per
 to look in, each with its website (for example `Checkers (checkers.co.za), Pick n Pay (pnp.co.za)`). Your one tool is
 `WebSearch`.
 
-For each shop, one search:
+**Two searches per shop.** A search result shows a short excerpt of the page, picked by the words you searched: the
+short name finds the product, but its excerpt is usually the description. So:
 
-- `site` set to that shop's website, and `query` the ingredient's short name as a shopper would type it ("beef
-  mince", "onions", "curry powder"), without the size or the brand. Leave `maxResults` at its default.
-- **Never set `freshness`.** Shop pages aren't re-indexed every day or week; a freshness filter hides them.
-- Read the results' titles and text for that ingredient in that size, or the size closest to it, and its price in
-  rand. A result for another product (a sauce, a ready meal, a combo deal, a multi-pack) is not the ingredient.
+1. **Find the product:** `site` set to the shop's website, `query` the ingredient's short name as a shopper would type
+   it ("beef mince", "onions", "curry powder"), without size or brand. From the results' titles pick the product
+   closest to the ingredient in the size asked for (or the closest size). A sauce, a ready meal, a combo deal or a
+   multi-pack is not the ingredient.
+2. **Find its price:** search the same site again with **its exact title and the word `price`**, e.g. `PnP Large Eggs 6
+   Pack price`. Read the price in rand from that result's text.
 
-When a search finds nothing, search that shop once more with an even shorter name ("mince", "onion"), then give up on
-that shop.
+Nothing found in step 1: try once more with an even shorter name ("mince", "onion"), then give up on that shop.
+**Spar (`spar.co.za`) and Usave (`usave.co.za`) have no online prices:** their sites show only promotions and a
+store page. One search each; unless a result shows that very product with its price, write `unknown` with the note
+`no online prices`. **Never set `freshness`** on any search: shop pages aren't re-indexed every day or week.
 
 ## Your answer
 

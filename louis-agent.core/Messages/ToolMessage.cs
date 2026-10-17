@@ -727,17 +727,8 @@ public enum ToolMessage
     [Description("Error: this user turn has already used {Max} minions, the most one turn may across every specialist. Finish with what you have.")]
     MinionLimit,
 
-    [Description("Error: this session keeps no minion open (it isn't a chat). Start a new one with StartMinion.")]
-    MinionNoneKept,
-
-    [Description("Error: no open minion '{Handle}'. Open: {Open}. Continue one of those, or start a new one with StartMinion.")]
-    MinionUnknownHandle,
-
     [Description("{Answer}\n\n[Minion {Role} on {Llm} with {Tool}: {Usage}]")]
     MinionAnswer,
-
-    [Description("{Answer}\n\n[Minion {Role} on {Llm} with {Tool}: {Usage}; handle {Handle}: a follow-up on this page goes to ContinueMinion(\"{Handle}\", message).]")]
-    MinionAnswerKept,
 
     [Description("You stopped without writing an answer (usually: all your tool rounds were used). Don't call any more tools: answer the task now from what you found, and say what you couldn't finish.")]
     SubSessionAskForAnswer,

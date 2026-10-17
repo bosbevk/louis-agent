@@ -47,7 +47,7 @@ public sealed class MinionTools
     /// </summary>
     public static readonly IReadOnlySet<string> NeverHandedDown = new HashSet<string>(StringComparer.Ordinal)
     {
-        nameof(SpecialistTools.StartSubSession), nameof(SpecialistTools.ContinueSubSession), nameof(StartMinion), nameof(ContinueMinion),
+        nameof(SpecialistTools.StartSubSession), nameof(SpecialistTools.ContinueSubSession), nameof(StartMinion),
         "ExecuteSkill", "CreateSkillFile", "ReloadSkills", "CreateTool", "ListAgentTools",
     };
 
@@ -71,16 +71,15 @@ public sealed class MinionTools
     }
 
     [Description("Hands one task and one of your own tools to a minion: a small worker on a cheap model that reads one page or " +
-        "does one lookup and answers in its role's fixed shape, so the page never enters your context. The minion stays open " +
-        "for this chat and the answer names its handle, so a follow-up on the same page goes to ContinueMinion. At most 16 " +
-        "minions per user turn across all specialists, 2 minutes each. See the minions guide.")]
+        "does one lookup and answers in its role's fixed shape, so what it reads never enters your context. It answers once " +
+        "and closes. At most 16 minions per user turn across all specialists, 2 minutes each. See the minions guide.")]
     public async Task<string> StartMinion(
         [Description("The minion's role, e.g. \"puls-minion-web-price-lookup\" (the minions guide lists them).")] string role,
         [Description("The one tool the minion gets, one of your own, e.g. \"FetchUrl\" (never a delegation or skills tool).")] string tool,
         [Description("The task, self-contained and in English: the URL, the product with its size, the user's town. The minion " +
             "sees nothing else.")] string task,
-        [Description("True to run the same task on the next, stronger model in the role's list, after the first answer failed " +
-            "your check (VerifyQuote). Once per task; false the first time.")] bool stronger = false,
+        [Description("True to run the same task on the next, stronger model in the role's list, when this instance lists one " +
+            "(MINION_LLMS) and the first answer failed your check. Once per task; false the first time.")] bool stronger = false,
         CancellationToken cancellationToken = default)
     {
         role = role.Trim();
@@ -104,36 +103,12 @@ public sealed class MinionTools
             location = UserPlace.Current?.Location, time_zone = UserPlace.Current?.TimeZone,
         };
         string model = llm ?? InstanceLlm;
-        var kind = new SpecialistTools.ChildKind(Kind, role, $"minion:{role}",
-            (open, reply) => MessageText.Format(ToolMessage.MinionAnswerKept, new { Answer = reply.Text, open.Handle, Role = role, Tool = tool, Llm = model, Usage = reply.UsageLine }),
-            reply => MessageText.Format(ToolMessage.MinionAnswer, new { Answer = reply.Text, Role = role, Tool = tool, Llm = model, Usage = reply.UsageLine }),
-            Llm: model);
-        return await _peers.OpenChildAsync(peer, agent, createBody, new { message = task }, [tool], role, kind, toolUseId, scope, _timeout, cancellationToken);
-    }
-
-    [Description("Sends a follow-up to a minion this chat keeps open (the handle from a StartMinion answer, e.g. \"sub-2\") and " +
-        "waits for its answer: it still has the page it read. Counts against the 16 minions per user turn, 2 minutes.")]
-    public async Task<string> ContinueMinion(
-        [Description("The handle from the earlier answer's footer, e.g. \"sub-2\".")] string handle,
-        [Description("The follow-up, self-contained and in English.")] string message,
-        CancellationToken cancellationToken = default)
-    {
-        if (SubSessionRegistry.Current is not { } registry) return MessageText.Format(ToolMessage.MinionNoneKept);
-        if (registry.Find(handle) is not { } open || open.Kind != Kind)
-            return MessageText.Format(ToolMessage.MinionUnknownHandle, new { Handle = handle.Trim(), Open = SpecialistTools.OpenList(registry, Kind) });
-
-        UsageScope? scope = UsageScope.Current;
-        string? toolUseId = FunctionInvokingChatClient.CurrentContext?.CallContent.CallId;
-        if (TakeSlot(scope) is { } limit) return limit;
-
-        string role = open.Role ?? open.Agent;
-        var kind = new SpecialistTools.ChildKind(Kind, role, $"minion:{role}",
-            (kept, reply) => MessageText.Format(ToolMessage.MinionAnswerKept, new
-            {
-                Answer = reply.Text, kept.Handle, Role = role, Tool = string.Join(", ", kept.Toolsets), Llm = kept.Llm ?? InstanceLlm, Usage = reply.UsageLine,
-            }),
-            _ => "");
-        return await _peers.ContinueChildAsync(registry, open, new { message }, kind, toolUseId, scope, _timeout, cancellationToken);
+        string Answer(SpecialistTools.SubSessionReply reply) =>
+            MessageText.Format(ToolMessage.MinionAnswer, new { Answer = reply.Text, Role = role, Tool = tool, Llm = model, Usage = reply.UsageLine });
+        var kind = new SpecialistTools.ChildKind(Kind, role, $"minion:{role}", (_, reply) => Answer(reply), Answer, Llm: model);
+        // Never kept (F30, the fourth hand check): a chat keeps three children, and kept minions evicted its specialists.
+        return await _peers.OpenChildAsync(peer, agent, createBody, new { message = task }, [tool], role, kind, toolUseId, scope, _timeout,
+            cancellationToken, keep: false);
     }
 
     /// <summary>
