@@ -19,6 +19,8 @@ public sealed partial class CheckersCatalogue(IWebBrowser browser) : IShopCatalo
 {
     private static readonly Uri Site = new("https://www.checkers.co.za/");
     private const string CataloguePath = "/api/catalogue/get-products-filter";
+    // Where the search page's cards load a product's photo from, by the answer's imageId (seen live, 2026-10-17).
+    private static readonly Uri Images = new("https://catalog.sixty60.co.za/v2/files/");
 
     public ShopKind Shop => ShopKind.Checkers;
 
@@ -82,7 +84,8 @@ public sealed partial class CheckersCatalogue(IWebBrowser browser) : IShopCatalo
                 weight is { } kg ? Kg(kg.MinKg, kg.MaxKg) : null,
                 byWeight ? price : null,
                 byWeight ? "kg" : "each",
-                LinkOf(html, article, unit) ?? searchUri));
+                LinkOf(html, article, unit) ?? searchUri,
+                ImageOf(p)));
             if (products.Count == maxResults) break;
         }
         return products;
@@ -108,6 +111,12 @@ public sealed partial class CheckersCatalogue(IWebBrowser browser) : IShopCatalo
     /// <summary>What a pack of this weight costs at the price per kg, to the cent; no weight, no pack price.</summary>
     private static decimal? Pack(decimal perKg, decimal? kg) =>
         kg is { } weight ? Math.Round(perKg * weight, 2, MidpointRounding.AwayFromZero) : null;
+
+    /// <summary>The product's photo, as its card shows it (256 pixels), or none when the answer names none.</summary>
+    private static Uri? ImageOf(JsonElement p) =>
+        p.TryGetProperty("imageId", out var id) && id.ValueKind == JsonValueKind.String && id.GetString() is { Length: > 0 } image
+            ? new Uri(Images, Uri.EscapeDataString(image) + "?width=256&height=256")
+            : null;
 
     /// <summary>The product's card on the search page: a link ending in its article number and unit.</summary>
     private static Uri? LinkOf(string html, string article, string unit)

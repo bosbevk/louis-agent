@@ -48,6 +48,17 @@ public class CheckersCatalogueTests
         Assert.That(chakalaka.Url.AbsolutePath, Is.EqualTo("/product/koo-mild-and-spicy-chakalaka-can-410g-10133306EA"));
     }
 
+    // Louis: "can we have a product image". The answer names each product's image (imageId); the page's cards load it
+    // from Checkers' catalogue host, at 256 pixels.
+    [Test]
+    public void AProductsImage_IsTheOneItsCardShows() =>
+        Assert.That(CheckersCatalogue.Parse(Json, Html, Search, 10)[2].Image?.AbsoluteUri,
+            Is.EqualTo("https://catalog.sixty60.co.za/v2/files/6a5f7a88745efcce53fcd220?width=256&height=256"));
+
+    [Test]
+    public void AProductWithoutAnImage_HasNone() =>
+        Assert.That(CheckersCatalogue.Parse(Json, Html, Search, 10)[0].Image, Is.Null);
+
     [Test]
     public void TheList_IsCutAtMaxResults() =>
         Assert.That(CheckersCatalogue.Parse(Json, Html, Search, 2), Has.Count.EqualTo(2));

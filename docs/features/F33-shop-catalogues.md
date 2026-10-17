@@ -101,6 +101,22 @@ the run shows priced ingredients with sources.
   beside *guessed*. Tested on the run's own rows. Re-scored from the stored answers (free), run `fc7f8ecfdc87` is
   **19 of 23 priced, 3 per kg** (cook-af 8/9, cook-en 5/7, cook-shops 6/7). The third is cook-af's mince at R71,49,
   Checkers' page price at the pack's middle weight: one amount for a weighed pack, so strict, by design.
+- **The list, from Louis's look at the run (2026-10-17): the product, its photo, the right pack.** The *To buy* column
+  showed `1 kg` and `6 pak` with no product, as the cook's own example did; it now names the product as the shop sells
+  it, with its pack, and the example does too (its thighs now a range, the totals redone). `FindProducts` gives each
+  product's photo, the one its card shows (`catalog.sixty60.co.za/v2/files/{imageId}`, read from the answer's
+  `imageId`), and the cook puts it before the name. The web app showed any image a model wrote, and a browser loads an
+  image by itself, so an injected image could carry the chat to any host: now only a shop's image host is shown
+  (`Markdown.ImageHosts`, https only), and any other image is a link. And the cook priced Iwisa's 2,5 kg maize meal for
+  a recipe needing under 1 kg, with a 1 kg pack at R26,99: it now takes the smallest pack that covers the recipe, and
+  searches again with the size when the table shows only bigger ones.
+- **Malmesbury's Checkers (Louis: "there is a checkers in malmesbury so why is puls not picking it up").** The cook
+  finds a town's shops with OpenStreetMap's `supermarkets in Malmesbury`, which gives Pick n Pay, Superspar and Usave:
+  Checkers is mapped on the N7, in Swartland Ward 12, outside the town's boundary, so the cook ruled it out and never
+  called `FindProducts`; `Checkers Malmesbury` finds it. When a shop `FindProducts` covers isn't in the list, the
+  cook now looks it up by name, and a branch in the same municipality counts as the town's. The same chat's web
+  searches all came back empty: SearXNG's engines were refused (Brave: too many requests; DuckDuckGo: CAPTCHA; Google
+  and Qwant: access denied), the SearXNG-results follow-up in the TODO.
 
 ---
 [Features](README.md) · [Plan](../plans/F33-shop-catalogues.md) · Previous: [F32 Self-hosted web](F32-self-hosted-web.md)
