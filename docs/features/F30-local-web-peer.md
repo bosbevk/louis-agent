@@ -110,6 +110,12 @@ keep minions only if real prices hold and the cost drops.
   Puls → cook → minion and rolled each up into the cook's turn; but every Pick n Pay render failed, as the role had
   measured on 2026-10-15. Pick n Pay and Woolworths now get a minion with `WebSearch` (the price from the shop's
   search result, `source: search`, marked as the search index's, never checked against the page).
+- **The third hand check (2026-10-17):** the Pick n Pay minions ran (3 to 13 seconds each, $0), but qwen3:4b set a
+  freshness filter on its own searches (most came back empty), copied the answer template's `| unknown` into its
+  lines, priced the wrong products (a combo deal for eggs, a 6 x 1 L pack for 1 L of milk) and wrote the same date,
+  2023-10-05, on six answers. Louis: "make the minions use haiku5.5": `MINION_LLMS` defaults to `*=instance` on
+  `puls-agent`, Claude Haiku 5.5 at $0.10 / $0.50 per million tokens, about a tenth of a cent a minion. The local
+  model stays one setting away (`*=ollama-puls>instance`); with `instance` alone, `stronger` has no next model.
 
 - **A profile takes nothing from the instance but its API key** (step 1). The first idea was to fall back to the
   process environment for whatever a profile file leaves out; that would hand the local model Claude's

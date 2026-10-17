@@ -62,10 +62,10 @@ services:
       PRICES_FILE: /workspace/config/prices.json
       RATES_FILE: /workspace/config/rates.json
       # Minions (F30) run on this instance itself, one level below the specialist that opened them: its only peer is
-      # itself, and MINION_LLMS says which model a minion role runs on (the local model first, this instance's own
-      # model when the specialist asks for a stronger one). Set MINION_LLMS in config/.env to change it.
+      # itself, and MINION_LLMS says which model a minion role runs on: this instance's own, Claude Haiku 5.5 (Louis,
+      # 2026-10-17: qwen invented dates and priced the wrong products). Set MINION_LLMS in config/.env to change it.
       AGENT_PEERS: puls-agent=http://puls-agent:8080
-      MINION_LLMS: ${MINION_LLMS-*=ollama-puls>instance}
+      MINION_LLMS: ${MINION_LLMS-*=instance}
       PERSONALITIES_ENABLED: ${PERSONALITIES_ENABLED-puls/voice-af,puls/voice-en,puls-cook,puls-minion-web-price-lookup}
       # The models a specialist may run on besides Claude (F30): a sub-session naming "ollama-puls" runs on the local model
       # in config/.env.ollama-puls (Ollama on the host). Set LLM_SESSION_PROFILES in config/.env to change it.
