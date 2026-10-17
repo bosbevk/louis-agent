@@ -14,6 +14,9 @@ using PuppeteerSharp;
 /// kept, the page closed and the connection dropped. No connection is kept, so a browser restart costs nothing; at most
 /// <see cref="MaxPages"/> pages are open at once across the process, so a cook's minions don't open a tab each. Chrome
 /// answers its DevTools address only by IP or as localhost, so a service name (puls-browser) is resolved first.
+/// A visit with a session (the cookies it starts with) or a script (one of ours, run once the page has loaded) has a
+/// browser context of its own, dropped after, and hands back the cookies the site set (F34): one area's store never
+/// reaches another visit. A plain visit shares the browser's default context, as before.
 /// </summary>
 public sealed class ChromeWebBrowser(Uri browserUrl, Func<string, CancellationToken, Task<IPAddress[]>>? resolve = null) : IWebBrowser
 {
@@ -30,7 +33,8 @@ public sealed class ChromeWebBrowser(Uri browserUrl, Func<string, CancellationTo
 
     private readonly Func<string, CancellationToken, Task<IPAddress[]>> _resolve = resolve ?? ((host, ct) => Dns.GetHostAddressesAsync(host, ct));
 
-    public async Task<BrowserVisit> VisitAsync(Uri url, Func<Uri, bool>? capture = null, CancellationToken cancellationToken = default)
+    public async Task<BrowserVisit> VisitAsync(Uri url, Func<Uri, bool>? capture = null, BrowserSession? session = null, string? script = null,
+        CancellationToken cancellationToken = default)
     {
         await Pages.WaitAsync(cancellationToken);
         try
@@ -38,7 +42,7 @@ public sealed class ChromeWebBrowser(Uri browserUrl, Func<string, CancellationTo
             IBrowser browser = await ConnectAsync(cancellationToken);
             try
             {
-                return await VisitInAsync(browser, url, capture, cancellationToken);
+                return await VisitInAsync(browser, url, capture, session, script, cancellationToken);
             }
             finally
             {
@@ -72,15 +76,19 @@ public sealed class ChromeWebBrowser(Uri browserUrl, Func<string, CancellationTo
         return new UriBuilder(browserUrl) { Host = address.ToString() }.Uri;
     }
 
-    private async Task<BrowserVisit> VisitInAsync(IBrowser browser, Uri url, Func<Uri, bool>? capture, CancellationToken cancellationToken)
+    private async Task<BrowserVisit> VisitInAsync(IBrowser browser, Uri url, Func<Uri, bool>? capture, BrowserSession? session,
+        string? script, CancellationToken cancellationToken)
     {
-        var page = await browser.NewPageAsync();
+        IBrowserContext? own = session is not null || script is not null ? await browser.CreateBrowserContextAsync() : null;
+        var page = own is null ? await browser.NewPageAsync() : await own.NewPageAsync();
+        if (session is { Cookies.Count: > 0 })
+            await page.SetCookieAsync([.. session.Cookies.Select(c => new CookieParam { Name = c.Name, Value = c.Value, Domain = c.Domain, Path = "/" })]);
         // A cancelled turn closes its page, which ends the load or the wait at once and frees its slot (review of PR #56:
         // PuppeteerSharp's waits take no token, so a cancelled render held a page for up to 40 s).
         using var closeOnCancel = cancellationToken.Register(() => _ = CloseQuietlyAsync(page));
         try
         {
-            return await LoadAsync(page, url, capture);
+            return await LoadAsync(page, url, capture, script, own is not null);
         }
         catch (Exception ex) when (cancellationToken.IsCancellationRequested && ex is not OperationCanceledException)
         {
@@ -89,6 +97,15 @@ public sealed class ChromeWebBrowser(Uri browserUrl, Func<string, CancellationTo
         finally
         {
             await CloseQuietlyAsync(page);
+            if (own is not null)
+                try
+                {
+                    await own.CloseAsync();
+                }
+                catch (Exception ex) when (ex is not OutOfMemoryException)
+                {
+                    // The browser went away, and the context with it.
+                }
         }
     }
 
@@ -105,7 +122,7 @@ public sealed class ChromeWebBrowser(Uri browserUrl, Func<string, CancellationTo
         }
     }
 
-    private async Task<BrowserVisit> LoadAsync(IPage page, Uri url, Func<Uri, bool>? capture)
+    private async Task<BrowserVisit> LoadAsync(IPage page, Uri url, Func<Uri, bool>? capture, string? script, bool ownContext)
     {
         string? refusedPage = null;
         // Request interception doesn't see WebSockets (nor does Chrome's URL blocking), and the browser shares a network
@@ -189,11 +206,28 @@ public sealed class ChromeWebBrowser(Uri browserUrl, Func<string, CancellationTo
             // A page that never goes quiet (adverts, polling) is read as it stands.
         }
 
+        // One script of ours, run once the page has loaded: its requests go through the same interception, so the
+        // address rule holds for them; it answers a string (awaited when it's a promise).
+        string? scriptResult = null;
+        if (script is not null)
+            try
+            {
+                scriptResult = await page.EvaluateExpressionAsync<string>(script);
+            }
+            catch (EvaluationFailedException ex)
+            {
+                throw new WebBrowserException(MessageText.Format(ToolMessage.BrowserScriptFailed, new { Url = url, Reason = ex.Message }));
+            }
+
         Task[] pending;
         lock (reads) pending = [.. reads];
         await Task.WhenAll(pending);
         string html = await page.GetContentAsync();
-        lock (captured) return new BrowserVisit(page.Url, html, [.. captured]);
+        // The cookies the site set, only from a context of the visit's own: the default context's are other visits'.
+        IReadOnlyList<BrowserCookie>? cookies = ownContext
+            ? [.. (await page.GetCookiesAsync()).Select(c => new BrowserCookie(c.Name, c.Value, c.Domain))]
+            : null;
+        lock (captured) return new BrowserVisit(page.Url, html, [.. captured], scriptResult, cookies);
     }
 
     /// <summary>Keeps one captured response's body; one that can't be read (the page moved on) is logged and left out.</summary>

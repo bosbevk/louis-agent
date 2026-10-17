@@ -8,6 +8,7 @@
   "BashCrlfHint": "\nHint: the script has Windows (CRLF) line endings; convert it to LF.",
   "BashNotInstalled": "Bash is not available. On Windows install Git for Windows (https://git-scm.com, includes Git Bash) or set BASH_PATH to bash.exe. WSL's bash.exe in System32 is deliberately not used.",
   "BrowserNotConfigured": "PAGE_RENDERER=chrome needs BROWSER_URL: the headless Chrome's DevTools address (http://puls-browser:9222 in the Puls stack).",
+  "BrowserScriptFailed": "The page at <Url> couldn't run the browser's script: <Reason>.",
   "BrowserUnreachable": "The browser at <Url> didn't answer (<Reason>). Is puls-browser running?",
   "BuildFailed": "FAILED (exit code <ExitCode>).",
   "BuildFailedBeforeTests": "Build failed before tests ran.\n<Build>",

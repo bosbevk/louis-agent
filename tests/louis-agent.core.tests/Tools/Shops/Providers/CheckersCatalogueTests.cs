@@ -108,7 +108,8 @@ public class CheckersCatalogueTests
         public Uri? Visited { get; private set; }
         public Func<Uri, bool>? Capture { get; private set; }
 
-        public Task<BrowserVisit> VisitAsync(Uri url, Func<Uri, bool>? capture = null, CancellationToken cancellationToken = default)
+        public Task<BrowserVisit> VisitAsync(Uri url, Func<Uri, bool>? capture = null, BrowserSession? session = null, string? script = null,
+            CancellationToken cancellationToken = default)
         {
             (Visited, Capture) = (url, capture);
             return Task.FromResult(new BrowserVisit(url.ToString(), Html, captured));
@@ -140,7 +141,8 @@ public class CheckersCatalogueTests
 
     private sealed class DownBrowser : IWebBrowser
     {
-        public Task<BrowserVisit> VisitAsync(Uri url, Func<Uri, bool>? capture = null, CancellationToken cancellationToken = default) =>
+        public Task<BrowserVisit> VisitAsync(Uri url, Func<Uri, bool>? capture = null, BrowserSession? session = null, string? script = null,
+            CancellationToken cancellationToken = default) =>
             throw new WebBrowserException("The browser at http://puls-browser:9222 didn't answer");
     }
 

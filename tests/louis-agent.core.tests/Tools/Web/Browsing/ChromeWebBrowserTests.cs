@@ -73,6 +73,67 @@ public class ChromeWebBrowserTests
         Assert.That(watch.Elapsed, Is.LessThan(TimeSpan.FromSeconds(5)));
     }
 
+    // F34 step 1a: a shop serves by area (Checkers keeps the area's store in cookies), so a visit can start in a session,
+    // run one script of ours, and hand back the cookies the site set. Such a visit has a browser context of its own,
+    // dropped after, so one user's area never reaches another's search.
+    private static readonly BrowserSession Malmesbury = new([new BrowserCookie("f34area", "malmesbury", "httpbin.org")]);
+
+    [Test, Category("Live")]
+    public async Task AVisitInASession_StartsWithItsCookies()
+    {
+        var visit = await Live().VisitAsync(new Uri("https://httpbin.org/cookies"), session: Malmesbury);
+
+        Assert.That(visit.Html, Does.Contain("malmesbury"));
+    }
+
+    [Test, Category("Live")]
+    public async Task ASessionsCookies_StayInItsVisit()
+    {
+        var browser = Live();
+        await browser.VisitAsync(new Uri("https://httpbin.org/cookies"), session: Malmesbury);
+
+        var plain = await browser.VisitAsync(new Uri("https://httpbin.org/cookies"));
+        var another = await browser.VisitAsync(new Uri("https://httpbin.org/cookies"),
+            session: new([new BrowserCookie("f34area", "stellenbosch", "httpbin.org")]));
+
+        Assert.That(plain.Html, Does.Not.Contain("malmesbury"), "a plain visit never sees a session's cookies");
+        Assert.That(another.Html, Does.Contain("stellenbosch").And.Not.Contain("malmesbury"));
+    }
+
+    [Test, Category("Live")]
+    public async Task TheCookiesASiteSets_AreReturned_FromASessionsVisit()
+    {
+        var visit = await Live().VisitAsync(new Uri("https://httpbin.org/cookies/set?f34store=655b0c8f"), session: new([]));
+
+        Assert.That(visit.Cookies, Has.Some.Matches<BrowserCookie>(c => c.Name == "f34store" && c.Value == "655b0c8f"));
+    }
+
+    [Test, Category("Live")]
+    public async Task AScript_RunsAfterTheLoad_AndItsResultIsReturned()
+    {
+        var visit = await Live().VisitAsync(Page("<body>loaded</body>"), script: "document.body.textContent + ' and scripted'");
+
+        Assert.That(visit.ScriptResult, Is.EqualTo("loaded and scripted"));
+    }
+
+    [Test, Category("Live")]
+    public async Task AScriptsRequests_AreHeldToTheAddressRule()
+    {
+        var visit = await Live().VisitAsync(Page("<body>x</body>"),
+            script: "fetch('http://169.254.169.254/latest/meta-data/').then(() => 'reached', () => 'refused')");
+
+        Assert.That(visit.ScriptResult, Is.EqualTo("refused"));
+    }
+
+    [Test, Category("Live")]
+    public void AScriptThatFails_IsAWebBrowserException_WithItsReason()
+    {
+        var browser = Live();
+
+        Assert.That(() => browser.VisitAsync(Page("<body>x</body>"), script: "(() => { throw new Error('no store here'); })()"),
+            Throws.TypeOf<WebBrowserException>().With.Message.Contains("no store here"));
+    }
+
     [Test, Category("Live")]
     public void ARedirectToAnInternalAddress_IsRefusedInsideTheBrowser()
     {

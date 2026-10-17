@@ -228,6 +228,9 @@ public enum ToolMessage
     [Description("The browser at {Url} didn't answer ({Reason}). Is puls-browser running?")]
     BrowserUnreachable,
 
+    [Description("The page at {Url} couldn't run the browser's script: {Reason}.")]
+    BrowserScriptFailed,
+
     [Description("Unknown PAGE_RENDERER '{Renderer}'. Supported: {Supported}.")]
     UnknownPageRenderer,
 

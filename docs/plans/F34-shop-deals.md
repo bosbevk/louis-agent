@@ -251,7 +251,19 @@ sequenceDiagram
 
 ## Approved during the build
 
-(none yet)
+- **2026-10-17, step 1 split in two (Louis: "yes, go ahead"), after the recorded visit.** Checkers' own address call
+  (`POST /api/store/fetch-store-contexts?update=true`, an address with `latitude` and `longitude`) answers a visitor
+  who isn't logged in with the area's store contexts and sets three cookies (`storeContexts`, `storeids`,
+  `istio-storeIds`); the next search is that store's (Malmesbury: store `655b0c8f…`, 85 chicken products against the
+  default's 61), its body still `storeContexts: []`: the cookies carry the store. And every visit shared the browser's
+  default context, so cookies carried over: one town's store would have answered every later search.
+  - **1a, the browser:** `VisitAsync(url, capture, session, script, ct)`; `BrowserSession` and `BrowserCookie`
+    (namespace map: `Tools/Web/Browsing/`); a visit with a session or a script has a browser context of its own,
+    dropped after; a script of ours runs once the page has loaded, under the same interception, and its result is the
+    visit's (`BrowserVisit.ScriptResult`); such a visit returns the cookies the site set (`BrowserVisit.Cookies`), so the
+    store's cookies are Checkers' own, never rebuilt. `ToolMessage.BrowserScriptFailed`.
+  - **1b, the user's store:** `PlaceCoordinates`, `CheckersStore` (one lookup visit per town, the site's own call, its
+    cookies kept as a `BrowserSession`), `CheckersCatalogue` searching in it.
 
 ---
 [Plans](README.md) · Previous: [CL14 The public word: role](CL14-public-word-role.md)

@@ -30,7 +30,7 @@ public sealed partial class CheckersCatalogue(IWebBrowser browser) : IShopCatalo
         BrowserVisit visit;
         try
         {
-            visit = await browser.VisitAsync(search, url => url.AbsolutePath == CataloguePath, cancellationToken);
+            visit = await browser.VisitAsync(search, url => url.AbsolutePath == CataloguePath, cancellationToken: cancellationToken);
         }
         catch (WebBrowserException ex)
         {

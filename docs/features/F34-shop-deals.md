@@ -49,7 +49,14 @@ prices.
 
 ## What the build changed
 
-(nothing yet)
+- **Step 1a (2026-10-17): a visit with a session, or a script, of its own.** The recorded visit found that Checkers
+  keeps an area's store in cookies its own address call sets, and that every visit shared the browser's default
+  context, so one town's store would have answered every later search. A visit can now start with cookies
+  (`BrowserSession`), run one script of ours once the page has loaded (its requests under the same address rule), and
+  return the cookies the site set; such a visit has a browser context of its own, dropped after. Plain visits, the
+  renderer's and today's catalogue searches, are unchanged. Live tests: a session's cookie reaches the site, stays in
+  its visit (a plain visit and another session don't see it), a site's cookie comes back, a script's result and its
+  failure, and a script's request to an internal address refused.
 
 ---
 [Features](README.md) · [Plan](../plans/F34-shop-deals.md) · Previous: [F33 Shop catalogues](F33-shop-catalogues.md)
