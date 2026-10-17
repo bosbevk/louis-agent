@@ -129,7 +129,8 @@ public sealed class AgentApi(HttpClient http, Settings settings)
         HttpCompletionOption completion = HttpCompletionOption.ResponseContentRead,
         CancellationToken cancellationToken = default)
     {
-        if (!string.IsNullOrWhiteSpace(settings.ApiKey)) request.Headers.Add("x-api-key", settings.ApiKey);
+        // The admin portal's requests carry its own key, the chat's carry the chat's (F31).
+        if (settings.KeyFor(request.RequestUri) is { } key && !string.IsNullOrWhiteSpace(key)) request.Headers.Add("x-api-key", key);
         var response = await http.SendAsync(request, completion, cancellationToken);
         if (response.IsSuccessStatusCode) return response;
 

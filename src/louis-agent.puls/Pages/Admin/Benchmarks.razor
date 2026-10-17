@@ -42,7 +42,7 @@
         <strong>@error</strong>
         @if (_needsKey)
         {
-            <p>The portal's key is <code>ADMIN_API_KEY</code> (or <code>AGENT_API_KEY</code>) in <code>config/.env.secrets</code>. Enter it here; it's kept in this browser, as in Settings.</p>
+            <p>The portal's key is <code>ADMIN_API_KEY</code> (or <code>AGENT_API_KEY</code>) in <code>config/.env.secrets</code>. Enter it here; it's kept in this browser, apart from the chat's key.</p>
             <form class="admin-key" @onsubmit="SaveKeyAsync">
                 <input type="password" placeholder="the key" @bind="_keyDraft" />
                 <button class="header-button" type="submit">Save and reload</button>
@@ -649,7 +649,7 @@ else if (_data is { } data)
 
     private async Task SaveKeyAsync()
     {
-        await Store.SaveApiKeyAsync(_keyDraft);
+        await Store.SaveAdminKeyAsync(_keyDraft);
         _keyDraft = "";
         await LoadAsync();
     }
