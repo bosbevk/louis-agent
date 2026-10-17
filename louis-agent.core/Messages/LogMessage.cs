@@ -216,4 +216,7 @@ public enum LogMessage
 
     [Description("Refused {Request} while rendering {Page}: not a public address")]
     RenderRequestRefused,
+
+    [Description("Couldn't answer {Request} while rendering {Page}: {Reason}")]
+    RenderRequestUnhandled,
 }

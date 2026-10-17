@@ -52,6 +52,34 @@ public class ChromePageRendererTests
     }
 
     [Test, Category("Live")]
+    public async Task AWebSocketFromAScriptMadeFrame_IsBlocked()
+    {
+        // Review of PR #56: a frame a script makes starts as about:blank, which may not run the scripts a new document
+        // gets; its window has a WebSocket of its own.
+        const string html = "<body>waiting</body><script>const f = document.createElement('iframe'); document.body.appendChild(f);" +
+                            "try { const w = new f.contentWindow.WebSocket('wss://echo.websocket.org');" +
+                            "w.onopen = () => document.body.textContent = 'socket-open';" +
+                            "w.onerror = () => document.body.textContent = 'socket-blocked'; }" +
+                            "catch { document.body.textContent = 'socket-blocked'; }" +
+                            "fetch('https://httpbin.org/delay/3');</script>";
+        var page = await Live().RenderAsync(new Uri("data:text/html," + Uri.EscapeDataString(html)));
+
+        Assert.That(page.Text, Does.Contain("socket-blocked").And.Not.Contain("socket-open"));
+    }
+
+    [Test, Category("Live")]
+    public void ACancelledRender_GivesUpAtOnce_NotAfterItsTimeouts()
+    {
+        // Review of PR #56: a cancelled turn kept one of the four browser pages for up to 40 s.
+        var renderer = Live();
+        using var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(1));
+        var watch = System.Diagnostics.Stopwatch.StartNew();
+
+        Assert.That(() => renderer.RenderAsync(new Uri("https://httpbin.org/delay/10"), cancel.Token), Throws.InstanceOf<OperationCanceledException>());
+        Assert.That(watch.Elapsed, Is.LessThan(TimeSpan.FromSeconds(5)));
+    }
+
+    [Test, Category("Live")]
     public void ARedirectToAnInternalAddress_IsRefusedInsideTheBrowser()
     {
         var renderer = Live();

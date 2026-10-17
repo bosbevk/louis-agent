@@ -153,7 +153,8 @@ public sealed partial class WebTools
     public async Task<string> ReadRenderedPage(
         [Description("Absolute http(s) URL of the page to render")] string url,
         [Description("Maximum characters to return (default 8000, max 30000)")] int maxChars = DefaultMaxChars,
-        [Description("Character offset to continue from, as given in a previous truncated result (default 0)")] int startIndex = 0)
+        [Description("Character offset to continue from, as given in a previous truncated result (default 0)")] int startIndex = 0,
+        CancellationToken cancellationToken = default)
     {
         if (!Uri.TryCreate((url ?? "").Trim(), UriKind.Absolute, out var uri) || uri.Scheme is not ("http" or "https"))
             return MessageText.Format(ToolMessage.FetchUrlInvalid);
@@ -164,7 +165,7 @@ public sealed partial class WebTools
         {
             // An internal address is refused here, before the URL is handed to a third party, as FetchUrl refuses it.
             await SsrfGuard.EnsurePublicHostAsync(uri, _resolve);
-            var page = await _renderer.RenderAsync(uri);
+            var page = await _renderer.RenderAsync(uri, cancellationToken);
             return Page(page.Url, null, page.Text, startIndex, maxChars, nameof(ReadRenderedPage));
         }
         catch (BlockedAddressException ex)
@@ -266,7 +267,8 @@ public sealed partial class WebTools
         [Description("Absolute http(s) URL of the page the value came from")] string url,
         [Description("The exact words the value came from, as the minion (or you) copied them")] string quote,
         [Description("The product's name as the page shows it. Needed when the quote is only a price (R22.99): a price " +
-            "alone matches any product at that price on the page.")] string? product = null)
+            "alone matches any product at that price on the page.")] string? product = null,
+        CancellationToken cancellationToken = default)
     {
         if (!Uri.TryCreate((url ?? "").Trim(), UriKind.Absolute, out var uri) || uri.Scheme is not ("http" or "https"))
             return MessageText.Format(ToolMessage.FetchUrlInvalid);
@@ -302,7 +304,7 @@ public sealed partial class WebTools
             // Nothing readable: a page drawn with JavaScript. The renderer reads it as a browser shows it (slower).
             try
             {
-                var page = await _renderer.RenderAsync(finalUri);
+                var page = await _renderer.RenderAsync(finalUri, cancellationToken);
                 if (Normalise(page.Text).Length == 0) return MessageText.Format(ToolMessage.QuotePageEmpty, new { Url = finalUri });
                 if (Matches(page.Text)) return MessageText.Format(ToolMessage.QuoteFound, new { Url = finalUri });
                 return named is not null && OnPage(page.Text)

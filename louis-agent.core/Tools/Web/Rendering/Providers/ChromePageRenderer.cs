@@ -42,7 +42,7 @@ public sealed class ChromePageRenderer(Uri browserUrl, Func<string, Cancellation
             IBrowser browser = await ConnectAsync(cancellationToken);
             try
             {
-                return await RenderInAsync(browser, url);
+                return await RenderInAsync(browser, url, cancellationToken);
             }
             finally
             {
@@ -76,32 +76,73 @@ public sealed class ChromePageRenderer(Uri browserUrl, Func<string, Cancellation
         return new UriBuilder(browserUrl) { Host = address.ToString() }.Uri;
     }
 
-    private async Task<RenderedPage> RenderInAsync(IBrowser browser, Uri url)
+    private async Task<RenderedPage> RenderInAsync(IBrowser browser, Uri url, CancellationToken cancellationToken)
     {
-        await using var page = await browser.NewPageAsync();
+        var page = await browser.NewPageAsync();
+        // A cancelled turn closes its page, which ends the load or the wait at once and frees its slot (review of PR #56:
+        // PuppeteerSharp's waits take no token, so a cancelled render held a page for up to 40 s).
+        using var closeOnCancel = cancellationToken.Register(() => _ = CloseQuietlyAsync(page));
+        try
+        {
+            return await ReadAsync(page, url);
+        }
+        catch (Exception ex) when (cancellationToken.IsCancellationRequested && ex is not OperationCanceledException)
+        {
+            throw new OperationCanceledException(null, ex, cancellationToken);
+        }
+        finally
+        {
+            await CloseQuietlyAsync(page);
+        }
+    }
+
+    /// <summary>Closes a page that may already be closing (cancelled) or gone with its connection; never throws.</summary>
+    private static async Task CloseQuietlyAsync(IPage page)
+    {
+        try
+        {
+            if (!page.IsClosed) await page.CloseAsync();
+        }
+        catch (Exception ex) when (ex is not OutOfMemoryException)
+        {
+            // Closed already, or the browser went away: either way the page is gone.
+        }
+    }
+
+    private async Task<RenderedPage> ReadAsync(IPage page, Uri url)
+    {
         string? refusedPage = null;
         // Request interception doesn't see WebSockets (nor does Chrome's URL blocking), and the browser shares a network
         // with puls (step 4), so a page could open one to an internal address. No shop needs one for its prices: before
         // any of the page's own scripts, in every frame, WebSocket refuses to be made.
         await page.EvaluateExpressionOnNewDocumentAsync(NoWebSockets);
         await page.SetRequestInterceptionAsync(true);
+        // An event handler is async void: an exception escaping it would end the process, every open chat with it
+        // (review of PR #56), so nothing may. A request that can't be decided or answered is left to fail.
         page.Request += async (_, e) =>
         {
             var request = e.Request;
-            var verdict = Uri.TryCreate(request.Url, UriKind.Absolute, out var target)
-                ? await RenderPolicy.DecideAsync(target, request.ResourceType, _resolve)
-                : RenderVerdict.Refuse;
-            if (verdict == RenderVerdict.Allow)
+            try
             {
-                await request.ContinueAsync();
-                return;
+                var verdict = Uri.TryCreate(request.Url, UriKind.Absolute, out var target)
+                    ? await RenderPolicy.DecideAsync(target, request.ResourceType, _resolve)
+                    : RenderVerdict.Refuse;
+                if (verdict == RenderVerdict.Allow)
+                {
+                    await request.ContinueAsync();
+                    return;
+                }
+                if (verdict == RenderVerdict.Refuse)
+                {
+                    if (request.IsNavigationRequest && request.Frame == page.MainFrame) refusedPage = request.Url;
+                    Log.Log(LogLevel.Warning, LogMessage.RenderRequestRefused, new { Request = request.Url, Page = url });
+                }
+                await request.AbortAsync(RequestAbortErrorCode.BlockedByClient);
             }
-            if (verdict == RenderVerdict.Refuse)
+            catch (Exception ex) when (ex is not OutOfMemoryException)
             {
-                if (request.IsNavigationRequest && request.Frame == page.MainFrame) refusedPage = request.Url;
-                Log.Log(LogLevel.Warning, LogMessage.RenderRequestRefused, new { Request = request.Url, Page = url });
+                Log.Log(LogLevel.Warning, LogMessage.RenderRequestUnhandled, new { Request = request.Url, Page = url, Reason = ex.Message });
             }
-            await request.AbortAsync(RequestAbortErrorCode.BlockedByClient);
         };
 
         try

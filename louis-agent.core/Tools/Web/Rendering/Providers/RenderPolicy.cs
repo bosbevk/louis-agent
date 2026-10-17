@@ -22,8 +22,10 @@ internal static class RenderPolicy
         {
             await SsrfGuard.EnsurePublicHostAsync(url, resolve);
         }
-        catch (Exception ex) when (ex is BlockedAddressException or HttpRequestException)
+        catch (Exception ex) when (ex is not OutOfMemoryException)
         {
+            // Not public, or not known to be: the real lookup throws for a host that doesn't exist (review of PR #56), and
+            // a request whose address can't be checked isn't made.
             return RenderVerdict.Refuse;
         }
         return type is ResourceType.Image or ResourceType.Font or ResourceType.Media ? RenderVerdict.Skip : RenderVerdict.Allow;
