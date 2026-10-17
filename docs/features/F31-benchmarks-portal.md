@@ -229,3 +229,12 @@ before it.
   and its log. By hand in Chrome on the stub's 2-repeat run, its turns given made-up requests in the store for the
   check (removed afterwards): every level opened, the bars, donuts and timelines drew, the replay typed both modes out
   with the cook's hand-off card, no console errors.
+- **Step 10b (2026-10-17): a manual per check** (Louis). `benchmarks/{check}/HANDLEIDING.md` beside each script, in
+  Afrikaans: what it measures, its modes (Puls's tools and the specialist's apart: Louis caught the table listing
+  `specialists` as if the cook had it; it is Puls's ability to hand on, and the cook gets only `web`), its
+  conversations and what's right, every score and when it's ✓, what it costs, how to read it, how to run it by hand.
+  `BenchmarkManuals` reads it from the catalogue entry, and only inside `benchmarks/`; `GET
+  /admin/benchmarks/{check}/manual`, the list saying which checks have one. The card's *Handleiding* button opens it
+  in a modal on the search dialog's frame (Esc, ×, a click outside). Tests first: every check has its manual and none
+  is read from outside `benchmarks/` (C#, 6); every key a check's `score()` returns is named in its manual (Python).
+  By hand in Chrome: all three manuals open, each way of closing works, the card doesn't fold, no console errors.

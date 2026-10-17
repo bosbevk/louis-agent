@@ -20,7 +20,8 @@ internal static class AdminEndpoints
     private const int ListedRuns = 50;
 
     public static void MapAdmin(this WebApplication app, BenchmarkCatalog catalog, BenchmarkRunner runner, string? adminKey,
-        IBenchmarkStore? store, BenchmarkRecorder? recorder, Func<BenchmarkCheck, IReadOnlyDictionary<string, string>> settingsOf)
+        IBenchmarkStore? store, BenchmarkRecorder? recorder, Func<BenchmarkCheck, IReadOnlyDictionary<string, string>> settingsOf,
+        string workspaceRoot)
     {
         var admin = app.MapGroup("/admin").AddEndpointFilter(async (context, next) =>
         {
@@ -45,11 +46,17 @@ internal static class AdminEndpoints
                 catch (Exception ex) when (ex is not OperationCanceledException) { error = Unavailable(ex); }
             return Results.Json(new
             {
-                checks = catalog.Checks.Select(c => new { id = c.Id, title = c.Title, script = c.Script }),
+                checks = catalog.Checks.Select(c => new { id = c.Id, title = c.Title, script = c.Script, manual = BenchmarkManuals.Has(workspaceRoot, c) }),
                 store = new { configured = store is not null, error },
                 runs = runs.Select(RunRow),
             });
         });
+
+        // A check's manual (step 10b): the markdown beside its script, found from the catalogue, never from the request.
+        admin.MapGet("/benchmarks/{check}/manual", (string check) =>
+            catalog.Checks.FirstOrDefault(c => c.Id == check) is { } known && BenchmarkManuals.Read(workspaceRoot, known) is { } markdown
+                ? Results.Json(new { check = known.Id, title = known.Title, markdown })
+                : ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error", MessageText.Format(ApiUserText.NoManual, new { Check = check })));
 
         // A stored run with its conversations, their turns (without their events) and its requests: the explorer's levels.
         admin.MapGet("/benchmarks/runs/{id}", (string id, CancellationToken cancellationToken) => FromStore(store, async s =>

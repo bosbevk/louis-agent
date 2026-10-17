@@ -126,7 +126,7 @@ if (benchmarkStore is not null)
         }
     });
 app.MapAdmin(benchmarks, new BenchmarkRunner(benchmarks, host.Engine.WorkspaceRoot, admin.BenchmarkApiUrl), admin.AdminKey, benchmarkStore, recorder,
-    check => BenchmarkSettings.Of(check, host.Llm.Provider, host.Llm.Model, host.Agent.PersonalitiesEnabled));
+    check => BenchmarkSettings.Of(check, host.Llm.Provider, host.Llm.Model, host.Agent.PersonalitiesEnabled), host.Engine.WorkspaceRoot);
 
 // The toolsets a session can load (F5-S3): names, what each is for and whether this instance has its settings. Never
 // the tool definitions, so a general agent can choose without loading them.

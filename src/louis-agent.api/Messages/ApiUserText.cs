@@ -127,4 +127,7 @@ public enum ApiUserText
 
     [Description("The benchmark store didn't answer: {Reason}")]
     BenchmarkStoreUnavailable,
+
+    [Description("The check '{Check}' has no manual (benchmarks/{Check}/HANDLEIDING.md).")]
+    NoManual,
 }

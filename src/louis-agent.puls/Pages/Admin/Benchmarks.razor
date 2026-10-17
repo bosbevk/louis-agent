@@ -8,6 +8,7 @@
 @inject AgentApi Api
 @inject ChatStore Store
 @inject CurrencyState Currency
+@inject IJSRuntime JS
 @implements IDisposable
 
 @* F31 step 9: the Benchmarks page as the plan lays it out. The store's state, a card per check (repeats, Loop), the run
@@ -76,7 +77,15 @@ else if (_data is { } data)
             <details class="card-p check-card" open>
                 <summary class="card-head">
                     <strong>@check.Title</strong>
-                    <span class="check-card-meta">@(last?.Total is { } t ? Cost(t.Cost) : "") <span class="toolset-chip">@check.Id</span><span class="chevron" aria-hidden="true"></span></span>
+                    <span class="check-card-meta">
+                        @(last?.Total is { } t ? Cost(t.Cost) : "")
+                        @if (check.Manual)
+                        {
+                            @* Inside the summary: the click must not also fold the card. *@
+                            <button type="button" class="manual-button" title="Die handleiding" @onclick="() => OpenManualAsync(check.Id)" @onclick:preventDefault @onclick:stopPropagation>Handleiding</button>
+                        }
+                        <span class="toolset-chip">@check.Id</span><span class="chevron" aria-hidden="true"></span>
+                    </span>
                 </summary>
                 <p class="muted"><code>@check.Script</code></p>
                 <p class="muted">@(last is null ? "Nog geen lopie in die stoor nie." : $"Laaste lopie: {last.StartedAt.ToLocalTime():yyyy-MM-dd HH:mm}, {Status(last.Status)}, {Cost(last.Total?.Cost)}")</p>
@@ -162,6 +171,19 @@ else if (_data is { } data)
         </section>
     }
 
+    @if (_manual is { } manual)
+    {
+        <div class="search-backdrop" @onclick="CloseManual"></div>
+        <div class="search-dialog manual-dialog" id="manual-dialog" role="dialog" aria-modal="true" aria-label="@manual.Title" tabindex="-1" @onkeydown="ManualKey">
+            <div class="manual-head">
+                <strong>@manual.Title</strong>
+                <kbd>Esc</kbd>
+                <button type="button" class="icon" aria-label="Maak toe" @onclick="CloseManual">×</button>
+            </div>
+            <div class="manual-body markdown admin-markdown">@Markdown.ToHtml(manual.Markdown)</div>
+        </div>
+    }
+
     <section class="card-p runs-list">
         <div class="card-head"><strong>Lopies</strong><span class="muted">@data.Runs.Count</span></div>
         @if (data.Runs.Count == 0)
@@ -187,7 +209,8 @@ else if (_data is { } data)
 }
 
 @code {
-    private sealed record Check(string Id, string Title, string Script);
+    private sealed record Check(string Id, string Title, string Script, bool Manual);
+    private sealed record Manual(string Title, string Markdown);
     private sealed record Total(decimal? Cost, int Requests);
     private sealed record Run(string Id, string Check, int Repeat, string Status, DateTimeOffset StartedAt, Total? Total, string? StoreError);
     private sealed record StoreState(bool Configured, string? Error);
@@ -255,7 +278,8 @@ else if (_data is { } data)
             var json = await Api.GetAsync<JsonElement>("admin/benchmarks");
             var store = json.GetProperty("store");
             _data = new Page(
-                json.GetProperty("checks").EnumerateArray().Select(c => new Check(c.GetProperty("id").GetString()!, c.GetProperty("title").GetString()!, c.GetProperty("script").GetString()!)).ToList(),
+                json.GetProperty("checks").EnumerateArray().Select(c => new Check(c.GetProperty("id").GetString()!, c.GetProperty("title").GetString()!, c.GetProperty("script").GetString()!,
+                    c.TryGetProperty("manual", out var m) && m.ValueKind == JsonValueKind.True)).ToList(),
                 new StoreState(store.GetProperty("configured").GetBoolean(), Str(store, "error")),
                 json.GetProperty("runs").EnumerateArray().Select(ReadRun).ToList());
         }
@@ -527,6 +551,41 @@ else if (_data is { } data)
         e.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.Number ? v.GetDecimal() : null;
 
     private static string Status(string status) => status switch { "running" => "besig", "done" => "klaar", _ => "misluk" };
+
+    private Manual? _manual;
+    private bool _focusManual;
+
+    /// <summary>A check's manual in a modal (step 10b): Esc, the × or a click outside closes it.</summary>
+    private async Task OpenManualAsync(string check)
+    {
+        try
+        {
+            var json = await Api.GetAsync<JsonElement>($"admin/benchmarks/{Uri.EscapeDataString(check)}/manual");
+            _manual = new Manual(json.GetProperty("title").GetString()!, json.GetProperty("markdown").GetString()!);
+            _focusManual = true;
+        }
+        catch (AgentApiException ex)
+        {
+            _error = ex.Message;
+        }
+    }
+
+    private void CloseManual() => _manual = null;
+
+    private void ManualKey(KeyboardEventArgs e)
+    {
+        if (e.Key == "Escape") CloseManual();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        // Focus the open manual, so Esc reaches it and a screen reader starts there.
+        if (_focusManual && _manual is not null)
+        {
+            _focusManual = false;
+            try { await JS.InvokeVoidAsync("pulsUi.focus", "#manual-dialog"); } catch (JSException) { }
+        }
+    }
 
     private async Task SaveKeyAsync()
     {
