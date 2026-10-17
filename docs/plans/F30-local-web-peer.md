@@ -292,3 +292,5 @@ sequenceDiagram
   Pick n Pay render failed, "Failed to fetch url"; "give the minion WebSearch"): Pick n Pay and Woolworths are priced
   by a minion that searches the shop's site and reads the result; the minion's answer gets an eighth line, `source:
   page | search`; the cook checks only `page` quotes and marks `search` prices with the search-index line.
+- **One minion per ingredient, across every shop** (Louis, 2026-10-17, after the minions moved to Haiku 5.5): replaces
+  the per-page minions above; the price role answers with one line per shop, and every shop in the town is priced.

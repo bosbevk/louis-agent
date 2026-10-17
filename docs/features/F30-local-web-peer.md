@@ -116,6 +116,12 @@ keep minions only if real prices hold and the cost drops.
   2023-10-05, on six answers. Louis: "make the minions use haiku5.5": `MINION_LLMS` defaults to `*=instance` on
   `puls-agent`, Claude Haiku 5.5 at $0.10 / $0.50 per million tokens, about a tenth of a cent a minion. The local
   model stays one setting away (`*=ollama-puls>instance`); with `instance` alone, `stronger` has no next model.
+- **One minion per ingredient, every shop** (Louis, 2026-10-17: "the cook should give each minion a ingredient and
+  let them look for it across all shops. The minions must report back each stores price"): the cook no longer picks
+  two shops or product pages; it gives each minion one ingredient, the town and every shop in it with its website, and
+  the minion searches each shop's site (`WebSearch`, never a freshness filter, the short name) and answers with one
+  line per shop (price, size, per kilogram, location, link, the exact words). Every price is the search index's, so
+  the cook no longer uses `VerifyQuote` or the page readers, and the report always carries the search-index line.
 
 - **A profile takes nothing from the instance but its API key** (step 1). The first idea was to fall back to the
   process environment for whatever a profile file leaves out; that would hand the local model Claude's
