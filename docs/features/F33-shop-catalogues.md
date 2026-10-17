@@ -1,6 +1,6 @@
 # F33 · Shop catalogues: product prices read from the shop, in code
 
-> **Status:** done (2026-10-17), on `feature/F33-shop-catalogues`: its run priced 22 of 23 ingredients with sources (two of them per kg, fixed after PR #58's review) · **Milestone:** — · **Depends on:** F32 (the
+> **Status:** done (2026-10-17), on `feature/F33-shop-catalogues`: its run priced 19 of 23 ingredients with sources, 3 more at their price per kg (re-scored after PR #58's review) · **Milestone:** — · **Depends on:** F32 (the
 > headless browser and its guards), F25 (the cook), F31 (the cook check that measures it)
 >
 > **In the TODO:** done, so its line is gone; its follow-up, **F33 follow-up: more shop catalogues**, is under
