@@ -1,0 +1,23 @@
+namespace LouisAgent.Core.Tools.Shops;
+
+using LouisAgent.Core.Config;
+using LouisAgent.Core.Tools.Shops.Providers;
+using LouisAgent.Core.Tools.Web.Browsing;
+
+/// <summary>
+/// A catalogue per shop a deployment enables (F33), each reading its shop through the guarded browser. Which shops are
+/// enabled is configuration (<c>SHOP_CATALOGUES</c>, step 3): none enabled is none created, so a deployment that hasn't
+/// checked a shop's terms doesn't read it (ADR 0023).
+/// </summary>
+public static class ShopCatalogueFactory
+{
+    /// <summary>The shops there are catalogues for, from <see cref="ShopKind"/>.</summary>
+    public static IReadOnlyList<string> SupportedShops { get; } = SettingChoice.Names<ShopKind>();
+
+    public static IReadOnlyDictionary<ShopKind, IShopCatalogue> Create(IReadOnlyList<ShopKind> enabled, IWebBrowser browser) =>
+        enabled.Distinct().ToDictionary(shop => shop, shop => shop switch
+        {
+            ShopKind.Checkers => (IShopCatalogue)new CheckersCatalogue(browser),
+            _ => throw new ArgumentOutOfRangeException(nameof(enabled), shop, null),
+        });
+}

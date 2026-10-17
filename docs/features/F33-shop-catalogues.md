@@ -62,3 +62,9 @@ the run shows priced ingredients with sources.
   unchanged. A visit keeps the response bodies a caller asks for (the live test: of two JSON documents a page fetched,
   exactly the one asked for), each read by a task the visit awaits, so no handler is `async void` and none is lost to
   the page closing. `ToolsetContext.Browser` gives a toolset the browser `BROWSER_URL` names.
+- **Step 2 (2026-10-17): Checkers' catalogue.** `Tools/Shops` holds the contract (`IShopCatalogue`, `ShopProduct`,
+  `ShopKind`, `ShopCatalogueException`, `ShopCatalogueFactory`); `Providers/CheckersCatalogue` visits Checkers' search
+  page through the guarded browser, keeps its `get-products-filter` answer and reads each product: in stock only, at
+  what it costs now (a special's price when lower), per kg (with its pack's weight, "1.1–1.3 kg") or each, linked to
+  its card on the page (`/product/{name}-{article}{unit}`) or to the search. Tested against a real answer and page,
+  recorded and trimmed (`Fixtures/`); the live search of "chakalaka" returned Checkers' products with prices and links.

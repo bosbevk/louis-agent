@@ -234,6 +234,12 @@ public enum ToolMessage
     [Description("it went on to {Address}, which isn't a public address")]
     RenderBlockedAddress,
 
+    [Description("{Shop}'s catalogue gave no answer for '{Query}' ({Url}): the page may have changed, or refused the browser.")]
+    ShopCatalogueNoAnswer,
+
+    [Description("{Shop}'s catalogue answer for '{Query}' couldn't be read ({Reason}): the shop may have changed its catalogue.")]
+    ShopCatalogueUnreadable,
+
     [Description("Error: DEVOPS_API_KEY is not set.")]
     DevOpsKeyNotSet,
 

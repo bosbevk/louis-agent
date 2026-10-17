@@ -233,3 +233,11 @@ above); F33's run is the one that shows prices.
 - **2026-10-17, in step 1: `WebBrowserException`** (`Tools/Web/Browsing/`, `LouisAgent.Core.Tools.Web.Browsing`, new):
   the browser's own error, so each user turns it into its own (`ChromePageRenderer` into `PageRenderException`, the
   catalogue into `ShopCatalogueException`) and the browser depends on neither. Added to the namespace map's step 1.
+- **2026-10-17, in step 2: what the recorded answers showed.** The catalogue answer has no product link, but the
+  search page's cards link each product as `/product/{name}-{articleNumber}{unit}`, so `CheckersCatalogue.Parse` takes
+  the page's HTML too (`Parse(json, html, searchUri, maxResults)`) and links a product to its card, or to the search when
+  the page has none. The answer also gives `price` as a decimal and `discountedPrice` (a special), so neither
+  `priceWithoutDecimal` nor `priceFactor` is needed. `ShopCatalogueFactory.Create` takes the enabled shops
+  (`IReadOnlyList<ShopKind>`), step 3 parsing them from `SHOP_CATALOGUES`; `ShopProduct.UnitOfMeasure` is never null
+  ("kg" or "each"). The browser now navigates to `AbsoluteUri` (the escaped address) rather than `ToString()`. The two
+  catalogue messages came in step 2, so the golden file moved in step 2 as well as 3.

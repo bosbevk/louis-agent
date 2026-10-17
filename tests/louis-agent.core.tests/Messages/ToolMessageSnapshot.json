@@ -184,6 +184,8 @@
   "SensitiveRead": "Reading this sensitive file is not allowed.",
   "SensitiveRename": "Renaming this sensitive file is not allowed.",
   "SensitiveWrite": "Writing this sensitive file is not allowed.",
+  "ShopCatalogueNoAnswer": "<Shop>'s catalogue gave no answer for '<Query>' (<Url>): the page may have changed, or refused the browser.",
+  "ShopCatalogueUnreadable": "<Shop>'s catalogue answer for '<Query>' couldn't be read (<Reason>): the shop may have changed its catalogue.",
   "SkillArgumentsInvalid": "Error: Invalid JSON arguments: <Reason>",
   "SkillArgumentsNotObject": "Error: Invalid JSON arguments: expected an object.",
   "SkillAuthoringUnavailable": "Error: skill authoring is not available (no skills folder was found).",

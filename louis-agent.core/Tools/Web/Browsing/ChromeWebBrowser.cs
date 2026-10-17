@@ -167,7 +167,7 @@ public sealed class ChromeWebBrowser(Uri browserUrl, Func<string, CancellationTo
 
         try
         {
-            await page.GoToAsync(url.ToString(), new NavigationOptions
+            await page.GoToAsync(url.AbsoluteUri, new NavigationOptions
             {
                 Timeout = (int)Load.TotalMilliseconds, WaitUntil = [WaitUntilNavigation.DOMContentLoaded],
             });
