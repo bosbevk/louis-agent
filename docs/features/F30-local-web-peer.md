@@ -1,6 +1,7 @@
 # F30 · Local web peer: a free local model looks up prices for Puls
 
-> **Status:** planned (2026-10-15), on `feature/F30-local-web-peer` · **Milestone:** — · **Depends on:** F5
+> **Status:** built, not in use (2026-10-17): no session is given `minions` until F31 measures it; on
+> `feature/F30-local-web-peer` · **Milestone:** — · **Depends on:** F5
 > (sub-sessions), F21 (roles), F25 (the cook's price work and check), F29 (the role gate)
 >
 > **In the TODO:** **F30 Local web peer** under *Now*, beside F25 ([TODO](../../TODO.md)) · **Plan:**
@@ -57,7 +58,7 @@ keep minions only if real prices hold and the cost drops.
 - A Puls chat's cook and researcher hand shop pages to minions on `ollama-puls`, and the ledger shows the qwen model
   at $0 under the specialist's turn.
 - `VerifyQuote` is tested for present, absent, whitespace and case, unreadable and blocked pages.
-- The five-question run is in the admin portal's store, run from the portal ([F31](F31-benchmarks-portal.md)), and the
+- The five-question run is in the admin portal's store, run from the portal (F31, its plan on `docs/F31-benchmarks-portal-plan`), and the
   decision to keep or drop the peer is written here.
 
 ## What the build changed

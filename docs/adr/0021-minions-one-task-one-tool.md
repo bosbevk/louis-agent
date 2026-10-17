@@ -1,6 +1,7 @@
 # 0021. Minions: a specialist hands one task and one of its own tools down, two levels deep and no further
 
-**Status:** Accepted · **Date:** 2026-10-16 (decided, F30 step 3) · **Recorded:** 2026-10-17
+**Status:** Accepted (built, not in use: no session is given `minions` until F31 measures it) · **Date:** 2026-10-16
+(decided, F30 step 3) · **Recorded:** 2026-10-17
 
 ## Context
 
@@ -31,18 +32,22 @@ with exactly one tool, for one task, and never delegates.
 - **The model is configuration:** `MINION_LLMS` maps a role (or `*`) to a cascade of profiles, cheapest first, with
   `instance` for the specialist's own model. The specialist can ask for the next model (`stronger`) after its own check
   fails, never name one. An unknown profile stops start-up.
-- **The limits are in code:** six minions per user turn across every specialist of that turn (one GPU, one request at
-  a time), two minutes each inside the specialist's five, depth 2 is the end of the tree.
-- **One child path:** a minion is opened, asked, kept or deleted and rolled up by the same code as a specialist
-  (`SpecialistTools`, renamed from `AgentPeerTools`); its roll-up lands in the specialist's turn, so the chat's roll-up
-  carries it up unchanged.
+- **The limits are in code:** 16 minions per user turn across every specialist of that turn (one per ingredient of a
+  recipe), two minutes each inside the specialist's five, depth 2 is the end of the tree.
+- **One child path, never kept:** a minion is opened, asked and rolled up by the same code as a specialist
+  (`SpecialistTools`, renamed from `AgentPeerTools`), then deleted once it answers: a chat keeps three children, and
+  kept minions evicted its specialists. Its roll-up lands in the specialist's turn, so the chat's roll-up carries it up
+  unchanged.
 
 ## Consequences
 
-- A page the cook would have read into its context is read by the local model for nothing, and the cook gets five
-  lines back; the measured run (F30 step 9) decides whether real prices hold and cost drops, or minions go.
-- A minion's answer is a claim on a cheap model: the specialist checks it in code (`VerifyQuote`) before using it, and
-  the principles (ADR 0020) hold at level 2 as everywhere.
+- What the cook would have read into its context is read by a cheap model (Claude Haiku 5.5 by default, or the local
+  one), and the cook gets one line per shop back; the measured run (F31) decides whether real prices hold and cost
+  drops, or minions go. Until then no prompt hands work to a minion.
+- A minion's answer is a claim on a cheap model. The price-lookup minion's prices come from the shops' search results,
+  which nothing checks in code: `VerifyQuote` can't read the pages that draw their prices with JavaScript, so the
+  answer carries the result's `url` and exact `quote`, and the report says the prices are from the search index. The
+  principles (ADR 0020) hold at level 2 as everywhere.
 - Every host that runs a specialist sets the session's tool names as a per-turn ambient (`AgentTools`), as it sets
   the attachments and the place, or no tool can be handed down.
 - A third level is a new decision, not a setting.

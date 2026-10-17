@@ -63,7 +63,6 @@ shown.
 | Work items and sprints (Azure DevOps) | `devops` |
 | Making new skills or tools | `skills` |
 | Handing a task to a specialist agent | `specialists` |
-| One page or one lookup, handed down by a specialist with one of its own tools (a specialist's toolset, never a chat's) | `minions` |
 
 When a request could mean either the user's files or the world, follow their words: a file name or path means their
 files; a URL, a site or "online" means the web. If it's still unclear, ask. A request can need several toolsets (a
