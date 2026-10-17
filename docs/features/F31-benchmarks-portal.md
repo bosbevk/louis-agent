@@ -168,3 +168,18 @@ before it.
   their scores, 6 turns and the cook's events (18, `sub_session` among them). Its total is 0 requests at an unknown
   cost: no request was made, and `UsageReport.Total` calls a cost with no priced request unknown; the page shows it
   as such. That run (`c1608ea06dc0`) stays in the store for steps 9 and 10.
+- **Step 7a (2026-10-17): the shared harness** (`benchmarks/puls_check/`, standard library only): `client.py` (a
+  session opened with its tags, its messages' streams read as events, the key from `AGENT_API_KEY`), `protocol.py`
+  (the `@` writer, the run tag `{run}:{mode}:{repeat}`), `stream.py` (a turn's stream into the answer, Puls's calls,
+  the role handed to or the sub-session continued, the specialist's calls through nested `sub_session` events, the
+  thinking, the error) and `scoring.py` (rand amounts, the cook's tally or its priced rows, unconfirmed marks).
+  Louis chose (2026-10-17) to split step 7 (7a the harness, 7b the cook check) and to record the fixture from **one
+  paid turn**: a meal question on Puls, 8 requests on Claude Haiku 5.5, **$0.0175** from the ledger
+  (`benchmarks/fixtures/session-stream.sse`, 401 KB, 1,503 events). Its expected counts
+  (`session-stream.expected.json`: Puls's one `StartSubSession` to `puls-cook`, the cook's 32 calls, the hosts, the
+  answer's start and length) were taken once by a throwaway reader, and both `stream.py`'s unittest and a C# test of
+  `TurnStream` (read as the web app reads it) are held to them; with one count changed, both failed. No minion in
+  it (no prompt hands work to one) and no error turn: those two are unit cases in `test_stream.py`. CI runs the
+  Python tests (18). **Seen in the recording:** the cook called `VerifyQuote` six times though its restored role
+  never mentions it: it learnt the tool from the web guide's row, which every web session loads (PR #51's review,
+  should-fix).

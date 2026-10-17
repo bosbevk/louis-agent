@@ -1,2 +1,5 @@
 # Shell scripts run inside Linux containers, so they must keep LF endings on a Windows checkout.
 *.sh text eol=lf
+
+# A recorded stream is kept byte for byte (F31): the readers are tested against exactly what the API sent.
+benchmarks/fixtures/*.sse -text
