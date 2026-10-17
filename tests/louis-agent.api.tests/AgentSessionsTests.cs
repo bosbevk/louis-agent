@@ -1,6 +1,8 @@
 using LouisAgent.Core.Agent;
+using LouisAgent.Core.Sessions;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
+using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Api.Tests;
@@ -12,8 +14,9 @@ public class AgentSessionsTests
     private static string RepoRoot { get; } =
         Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, "..", "..", "..", "..", ".."));
 
-    private static AgentSessions Sessions() => new(new AgentEngineFactory(new NoModel(),
-        new AgentOptions { WorkspaceRoot = RepoRoot, SkillsDirectory = Path.Combine(RepoRoot, "Skills"), RatesUrl = null }));
+    private static AgentSessions Sessions(IReadOnlyList<SessionLlm>? llms = null) => new(new AgentEngineFactory(new NoModel(),
+        new AgentOptions { WorkspaceRoot = RepoRoot, SkillsDirectory = Path.Combine(RepoRoot, "Skills"), RatesUrl = null },
+        sessionLlms: llms));
 
     private static string[] Names(AgentSession session) => session.Engine.Tools.Select(t => t.Name).ToArray();
 
@@ -64,13 +67,13 @@ public class AgentSessionsTests
     }
 
     [Test]
-    public void ASubSession_CantLoadSpecialists_AndDepthIsOneLevel()
+    public void ASubSession_CantLoadSpecialists_AndDepthStopsAtTheMinion()
     {
         var sessions = Sessions();
 
         Assert.That(() => sessions.Create(["specialists"], depth: 1),
-            Throws.TypeOf<ToolsetException>().With.Message.Contain("one level deep"));
-        Assert.That(() => sessions.Create(["files"], depth: 2), Throws.TypeOf<ToolsetException>());
+            Throws.TypeOf<ToolsetException>().With.Message.Contain("delegates"));
+        Assert.That(() => sessions.Create(["files"], depth: 3), Throws.TypeOf<ToolsetException>().With.Message.Contain("between 0 and 2"));
         Assert.That(sessions.Create(["files"], depth: 1).Depth, Is.EqualTo(1));
         // CL9 step 5: a client still sending the old name gets the 400 that lists the valid toolsets.
         Assert.That(() => sessions.Create(["agents"]), Throws.TypeOf<ToolsetException>().With.Message.Contain("specialists"));
@@ -160,16 +163,16 @@ public class AgentSessionsTests
     {
         // F22 step 2b, and PR #28's review: a time zone sent without a location is kept (GetToday in the user's time).
         Assert.That(new CreateSessionRequest(null, null, null, Location: " Pretoria ", TimeZone: "Africa/Johannesburg").Place(),
-            Is.EqualTo(new LouisAgent.Core.Tools.Clock.UserPlace("Pretoria", "Africa/Johannesburg")));
+            Is.EqualTo(new LouisAgent.Core.Sessions.UserPlace("Pretoria", "Africa/Johannesburg")));
         Assert.That(new CreateSessionRequest(null, null, null, TimeZone: "Europe/London").Place(),
-            Is.EqualTo(new LouisAgent.Core.Tools.Clock.UserPlace(null, "Europe/London")));
+            Is.EqualTo(new LouisAgent.Core.Sessions.UserPlace(null, "Europe/London")));
         Assert.That(new CreateSessionRequest(null, null, null).Place(), Is.Null);
 
-        var session = Sessions().Create(["files"], place: new LouisAgent.Core.Tools.Clock.UserPlace("Pretoria", null));
+        var session = Sessions().Create(["files"], place: new LouisAgent.Core.Sessions.UserPlace("Pretoria", null));
         Assert.That(session.Place!.Location, Is.EqualTo("Pretoria"));
     }
 
-    private static LouisAgent.Core.Tools.Agents.OpenSubSession Kept(string sessionId, List<string> closed) =>
+    private static LouisAgent.Core.Sessions.OpenSubSession Kept(string sessionId, List<string> closed) =>
         new(new Uri("http://puls-agent/"), sessionId, "puls-agent", ["web"], "puls-cook", () => { closed.Add(sessionId); return Task.CompletedTask; });
 
     [Test]
@@ -213,5 +216,106 @@ public class AgentSessionsTests
         Assert.That(unnamed.Engine.SkillDocumentation, Does.Contain("Louis's Minion").And.Not.Contain("# Louis Agent - Default Instructions"));
         Assert.That(sessions.Create(["web"], depth: 1, personality: "puls-cook").Personality, Is.EqualTo("puls-cook"));
         Assert.That(sessions.Create(["web"]).Personality, Is.Null, "a top-level session that names none gets the default voice");
+    }
+
+    [Test]
+    public void ASessionNamingAnLlmProfile_KeepsIt_AndOneWithout_HasNone()
+    {
+        // F30: a price lookup runs on the local model, the chat that asked for it on the instance's.
+            var sessions = Sessions([new SessionLlm("ollama-puls", new NoModel())]);
+
+        var local = sessions.Create(["web"], depth: 1, llm: "ollama-puls");
+        var own = sessions.Create(["web"], depth: 1);
+
+        Assert.That(local.Llm, Is.EqualTo("ollama-puls"));
+        Assert.That(own.Llm, Is.Null);
+        Assert.That(local.Engine, Is.Not.SameAs(own.Engine), "one engine per model");
+    }
+
+    [Test]
+    public void AnUnknownLlmProfile_IsRefused_NamingTheOnesThereAre()
+    {
+        var sessions = Sessions([new SessionLlm("ollama-puls", new NoModel())]);
+
+        var ex = Assert.Throws<SessionLlmException>(() => sessions.Create(["web"], llm: "gpt-9"));
+        Assert.That(ex!.Message, Does.Contain("gpt-9").And.Contain("ollama-puls"));
+    }
+
+    private static UsageTags ParentOf(AgentSession parent) => new(null, null, null, $"{parent.Id}#1");
+
+    [Test]
+    public void AMinion_OpensAtDepthTwo_WithOneToolItsParentHas()
+    {
+        // F30 step 4: a specialist hands a minion one task and one of its own tools; the peer checks the tool against
+        // the parent session it finds here (minions run on the specialist's own instance).
+        var sessions = Sessions();
+        var cook = sessions.Create(["web"], depth: 1, personality: "puls-cook");
+
+        var minion = sessions.Create(["web"], ParentOf(cook), depth: 2, personality: "puls-minion-web-price-lookup", tool: "FetchUrl");
+
+        Assert.That(minion.Depth, Is.EqualTo(2));
+        Assert.That(minion.Tool, Is.EqualTo("FetchUrl"));
+        Assert.That(Names(minion), Is.EqualTo(new[] { "FetchUrl" }));
+        Assert.That(minion.Engine.SkillDocumentation, Does.Contain("# Puls minion: Web price lookup").And.Not.Contain("# Web Skills"));
+        Assert.That(cook.Tool, Is.Null, "a specialist has toolsets, not one tool");
+    }
+
+    [Test]
+    public void AMinion_GetsOnlyAToolItsParentHas_AndOneThatIsEverHandedDown()
+    {
+        // Capability delegation: a minion can never do more than the specialist that sent it. The parent's toolbox is
+        // the only list (Louis: "the specialist must give him its tools"); delegation and self-extension never go down.
+        var sessions = Sessions();
+        var withFiles = sessions.Create(["files"], depth: 1, personality: "puls-cook");
+        var withWeb = sessions.Create(["web", "files"], depth: 1, personality: "puls-cook");
+
+        Assert.That(() => sessions.Create(["web"], ParentOf(withFiles), depth: 2, personality: "puls-minion-web-price-lookup", tool: "FetchUrl"),
+            Throws.TypeOf<ToolsetException>().With.Message.Contain("parent session has no 'FetchUrl'"));
+        Assert.That(sessions.Create(["files"], ParentOf(withWeb), depth: 2, personality: "puls-minion-web-price-lookup", tool: "ReadWorkspaceFile").Tool,
+            Is.EqualTo("ReadWorkspaceFile"), "any tool of the parent's own: which one is the specialist's call");
+        Assert.That(() => sessions.Create(["skills"], ParentOf(withWeb), depth: 2, personality: "puls-minion-web-price-lookup", tool: "ExecuteSkill"),
+            Throws.TypeOf<ToolsetException>().With.Message.Contain("never handed"));
+    }
+
+    [Test]
+    public void AMinion_NeedsAParentItCanFind_AMinionRole_AndATool_AndNothingDeeper()
+    {
+        var sessions = Sessions();
+        var cook = sessions.Create(["web"], depth: 1, personality: "puls-cook");
+        var parent = ParentOf(cook);
+
+        Assert.That(() => sessions.Create(["web"], depth: 2, personality: "puls-minion-web-price-lookup", tool: "FetchUrl"),
+            Throws.TypeOf<ToolsetException>().With.Message.Contain("parent"), "no parent");
+        Assert.That(() => sessions.Create(["web"], new UsageTags(null, null, null, "sess_gone#1"), depth: 2, personality: "puls-minion-web-price-lookup", tool: "FetchUrl"),
+            Throws.TypeOf<ToolsetException>().With.Message.Contain("sess_gone"), "a parent it can't find");
+        Assert.That(() => sessions.Create(["web"], parent, depth: 2, personality: "puls-cook", tool: "FetchUrl"),
+            Throws.TypeOf<LouisAgent.Core.Skills.PersonalityException>(), "a specialist's role is no minion role");
+        Assert.That(() => sessions.Create(["web"], parent, depth: 2, personality: "puls-minion", tool: "FetchUrl"),
+            Throws.TypeOf<LouisAgent.Core.Skills.PersonalityException>(), "the base is no role");
+        Assert.That(() => sessions.Create(["web"], parent, depth: 2, tool: "FetchUrl"),
+            Throws.TypeOf<LouisAgent.Core.Skills.PersonalityException>(), "a minion always has a role");
+        Assert.That(() => sessions.Create(["web"], parent, depth: 2, personality: "puls-minion-web-price-lookup"),
+            Throws.TypeOf<ToolsetException>().With.Message.Contain("'tool'"), "a minion always has its one tool");
+        Assert.That(() => sessions.Create(["web"], depth: 1, personality: "puls-cook", tool: "FetchUrl"),
+            Throws.TypeOf<ToolsetException>().With.Message.Contain("'tool'"), "a specialist loads toolsets, not a tool");
+        Assert.That(() => sessions.Create(["web"], parent, depth: 3, personality: "puls-minion-web-price-lookup", tool: "FetchUrl"),
+            Throws.TypeOf<ToolsetException>().With.Message.Contain("between 0 and 2"), "a minion never delegates");
+    }
+
+    [Test]
+    public void AMinionSession_DerivesItsToolsetFromItsTool_AndMinionsAreForSpecialistsOnly()
+    {
+        // F30 step 5: StartMinion sends no toolsets, only the tool; the peer finds the toolset that builds it. The
+        // minions toolset is a specialist's: never the chat's (level 0), never a minion's (the end of the tree).
+        var sessions = Sessions();
+        var cook = sessions.Create(["web"], depth: 1, personality: "puls-cook");
+
+        var minion = sessions.Create(null, ParentOf(cook), depth: 2, personality: "puls-minion-web-price-lookup", tool: "FetchUrl");
+        Assert.That(minion.Toolsets, Is.EqualTo(new[] { "web" }));
+        Assert.That(Names(minion), Is.EqualTo(new[] { "FetchUrl" }));
+
+        Assert.That(() => sessions.Create(["minions"]), Throws.TypeOf<ToolsetException>().With.Message.Contain("specialist"));
+        Assert.That(() => sessions.Create(["minions"], ParentOf(cook), depth: 2, personality: "puls-minion-web-price-lookup", tool: "FetchUrl"),
+            Throws.TypeOf<ToolsetException>().With.Message.Contain("delegates"));
     }
 }

@@ -1,6 +1,7 @@
 namespace LouisAgent.Core.Tools.Clock;
 
 using System.ComponentModel;
+using LouisAgent.Core.Sessions;
 using System.Globalization;
 using LouisAgent.Core.Messages;
 

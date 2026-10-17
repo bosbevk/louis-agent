@@ -33,9 +33,10 @@ services:
       RATES_FILE: /workspace/config/rates.json
       # Chats hand cooking to the specialist below and answer the web themselves (F29)
       AGENT_PEERS: puls=http://puls-agent:8080
-      # Only a role that has passed its check is on (F29): the cook, and Puls's own voice. Set PERSONALITIES_ENABLED in
-      # config/.env to change it (an empty value turns every role on), then `up -d`; both containers read it.
-      PERSONALITIES_ENABLED: ${PERSONALITIES_ENABLED-puls/voice-af,puls/voice-en,puls-cook}
+      # Only a role that has passed its check is on (F29): the cook, its price minion (F30) and Puls's own voice. Set
+      # PERSONALITIES_ENABLED in config/.env to change it (an empty value turns every role on), then `up -d`; both
+      # containers read it.
+      PERSONALITIES_ENABLED: ${PERSONALITIES_ENABLED-puls/voice-af,puls/voice-en,puls-cook,puls-minion-web-price-lookup}
     # Localhost only. Set AGENT_API_KEY in config/.env.secrets to require a key.
     ports:
       - "127.0.0.1:${PULS_PORT:-5070}:8080"
@@ -46,7 +47,7 @@ services:
     depends_on:
       - puls-agent
 
-  # The specialist Puls delegates to: the same image, no peers of its own (sub-sessions are one level deep).
+  # The specialist Puls delegates to: the same image; its one peer is itself, for the minions it hands pages to (F30).
   puls-agent:
     image: louis-agent-puls:latest
     container_name: puls_agent
@@ -60,8 +61,15 @@ services:
       LOG_DIRECTORY: /logs
       PRICES_FILE: /workspace/config/prices.json
       RATES_FILE: /workspace/config/rates.json
-      AGENT_PEERS: ""
-      PERSONALITIES_ENABLED: ${PERSONALITIES_ENABLED-puls/voice-af,puls/voice-en,puls-cook}
+      # Minions (F30) run on this instance itself, one level below the specialist that opened them: its only peer is
+      # itself, and MINION_LLMS says which model a minion role runs on: this instance's own, Claude Haiku 5.5 (Louis,
+      # 2026-10-17: qwen invented dates and priced the wrong products). Set MINION_LLMS in config/.env to change it.
+      AGENT_PEERS: puls-agent=http://puls-agent:8080
+      MINION_LLMS: ${MINION_LLMS-*=instance}
+      PERSONALITIES_ENABLED: ${PERSONALITIES_ENABLED-puls/voice-af,puls/voice-en,puls-cook,puls-minion-web-price-lookup}
+      # The models a specialist may run on besides Claude (F30): a sub-session naming "ollama-puls" runs on the local model
+      # in config/.env.ollama-puls (Ollama on the host). Set LLM_SESSION_PROFILES in config/.env to change it.
+      LLM_SESSION_PROFILES: ${LLM_SESSION_PROFILES-ollama-puls}
     ports:
       - "127.0.0.1:${PULS_CODER_PORT:-5071}:8080"
     volumes:

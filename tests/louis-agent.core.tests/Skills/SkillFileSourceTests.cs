@@ -33,7 +33,7 @@ public class SkillFileSourceTests
     public void AFolder_ListsItsFiles()
     {
         Assert.That(SkillFileSource.Files("specialists"), Does.Contain("puls-cook.md").And.Contain("puls-researcher.md"));
-        Assert.That(SkillFileSource.Files("minions"), Is.Empty, "F30 fills it");
+        Assert.That(SkillFileSource.Files("minions"), Is.EqualTo(new[] { "puls-minion-web-price-lookup.md", "puls-minion.md" }), "F30 step 4: a role and the base");
     }
 
     [Test]

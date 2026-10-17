@@ -10,6 +10,7 @@ The model is configuration only, no code changes. The LLM settings (`LLM_PROVIDE
 |---|---|---|
 | `anthropic` (default) | `config/.env.anthropic` | Claude Haiku 5.5; needs `ANTHROPIC_API_KEY` in `config/.env.secrets` |
 | `ollama` | `config/.env.ollama` | `llama3.1` on a local Ollama, free |
+| `ollama-puls` | `config/.env.ollama-puls` | `qwen3:4b-instruct-2507` on a local Ollama, for one session (below), free |
 
 ```bash
 # config/.env
@@ -101,6 +102,41 @@ docker compose -f docker/docker-compose.yml --env-file config/.env --profile oll
   `OLLAMA_KV_CACHE_TYPE=q8_0`), which halve the context's memory. llama3.1 (8B, ~4.9 GB) and its context don't fit in
   4 GB, so Ollama runs part of the model on the CPU from system RAM: slower than all-GPU, but the prompt isn't cut.
   `docker exec louis_ollama_nvidia ollama ps` shows the split in its PROCESSOR column.
+
+### Native Ollama on Windows (AMD)
+
+Docker Desktop doesn't pass an AMD card to a container, so Ollama in Docker on Windows runs on the CPU: minutes just to
+read an agent's prompt. Install Ollama for Windows instead (it uses the card through ROCm); the containers reach it at
+the same `http://host.docker.internal:11434`, so only the host changes. Set its memory once, as user variables, then
+quit Ollama from the tray and start it again (Ollama reads them only at start):
+
+```powershell
+[Environment]::SetEnvironmentVariable('OLLAMA_CONTEXT_LENGTH', '32768', 'User')
+[Environment]::SetEnvironmentVariable('OLLAMA_FLASH_ATTENTION', '1', 'User')
+[Environment]::SetEnvironmentVariable('OLLAMA_KV_CACHE_TYPE', 'q8_0', 'User')
+ollama pull qwen3:4b-instruct-2507-q4_K_M
+ollama ps    # after a first `ollama run`: PROCESSOR 100% GPU, CONTEXT 32768
+```
+
+Measured on an RX 7600 (8 GB), 2026-10-16, `qwen3:4b-instruct-2507-q4_K_M`:
+
+| Settings | Size in `ollama ps` | PROCESSOR |
+|---|---|---|
+| Ollama's default (4,096 tokens) | 3.2 GB | 100% GPU |
+| 32,768 tokens, full-precision cache | 7.7 GB | 7%/93% CPU/GPU |
+| 32,768 tokens, flash attention, `q8_0` cache | 5.3 GB (cache 2.4 GB) | 100% GPU |
+
+Without the last two settings the context's cache alone is about 4.5 GB, and part of the model moves to the CPU.
+Loaded, it writes about 55 tokens a second. A terminal opened before the install doesn't find `ollama`: open a new one.
+
+### A local model for one session (F30)
+
+An instance can run on Claude and still give one session a local model. `LLM_SESSION_PROFILES` lists the profiles a
+session may name (`ollama-puls` on Puls's `puls-agent`); a session opened with `"llm": "ollama-puls"` (a sub-session
+through `StartSubSession(…, llm)`) runs on it, every other on `LLM_PROFILE`'s, and `GET /llm-profiles` lists them. The
+profile's file gives everything but the API keys, which come from `config/.env.secrets`; nothing else is taken from the
+instance's profile, so a local model never gets Claude's `LLM_THINKING`. A listed profile without its file stops
+start-up.
 
 **Tool calling decides how useful a local model is.** The agent works by calling tools, so pick a model whose
 Ollama page lists tool support (for example `llama3.1`, `qwen3`, `mistral`). Models known to reject tools, or to answer

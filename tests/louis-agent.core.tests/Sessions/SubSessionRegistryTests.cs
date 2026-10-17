@@ -1,9 +1,10 @@
 using LouisAgent.Core.Tools.Agents;
+using LouisAgent.Core.Sessions;
 
-namespace LouisAgent.Core.Tests.Tools.Agents;
+namespace LouisAgent.Core.Tests.Sessions;
 
 // F26 step 1: a chat's open sub-sessions, by handle. The registry is a store; closing is the entry's own delegate, so
-// the HTTP side stays in AgentPeerTools.
+// the HTTP side stays in SpecialistTools.
 public class SubSessionRegistryTests
 {
     private static OpenSubSession Entry(string sessionId, List<string> closed) =>

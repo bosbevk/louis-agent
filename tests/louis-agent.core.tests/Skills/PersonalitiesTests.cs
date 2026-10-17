@@ -154,9 +154,9 @@ public class PersonalitiesTests
     [Test]
     public void EachLevel_ListsOnlyItsOwnPersonalities()
     {
-        // CL8: the folders follow the levels; minions (level 2) are F30's, so its folder is empty until then.
-        Assert.That(Personalities.Available(SkillLevel.Specialist), Does.Not.Contain("puls/voice-af"));
-        Assert.That(Personalities.Available(SkillLevel.Minion), Is.Empty);
+        // CL8: the folders follow the levels; F30 step 4 fills minions/ (level 2) with its first role.
+        Assert.That(Personalities.Available(SkillLevel.Specialist), Does.Not.Contain("puls/voice-af").And.Not.Contain("puls-minion-web-price-lookup"));
+        Assert.That(Personalities.Available(SkillLevel.Minion), Is.EqualTo(new[] { "puls-minion-web-price-lookup" }));
     }
 
     [Test]

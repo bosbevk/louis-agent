@@ -697,6 +697,39 @@ public enum ToolMessage
     [Description("default role")]
     SubSessionDefaultRole,
 
+    [Description("Error: give the exact words to look for: the quote is empty.")]
+    QuoteEmpty,
+
+    [Description("Found: the quote is on {Url}.")]
+    QuoteFound,
+
+    [Description("Not found: the quote isn't on {Url}. Treat the value as unconfirmed: ask once more with stronger: true, or say it couldn't be confirmed.")]
+    QuoteNotFound,
+
+    [Description("Page empty: {Url} has no readable text (a page drawn with JavaScript that couldn't be rendered), so the quote can't be checked. Treat the value as unconfirmed.")]
+    QuotePageEmpty,
+
+    [Description("Error: '{Role}' isn't a minion role (a minion role is <product>-minion-<function>, e.g. puls-minion-web-price-lookup; the minions guide lists them).")]
+    MinionRoleInvalid,
+
+    [Description("Error: '{Tool}' is never handed to a minion: a minion gets one of your working tools, not delegation or skills.")]
+    MinionToolNeverHandedDown,
+
+    [Description("Error: you don't hold a '{Tool}' tool, so you can't hand it to a minion. Your tools: {Tools}.")]
+    MinionToolNotMine,
+
+    [Description("Error: no model is configured for the '{Role}' minion (MINION_LLMS names neither it nor *). Do the task yourself.")]
+    MinionNoLlm,
+
+    [Description("Error: no stronger model is left for the '{Role}' minion (its list: {Models}). Treat the answer as unconfirmed, or do the task yourself.")]
+    MinionNoStronger,
+
+    [Description("Error: this user turn has already used {Max} minions, the most one turn may across every specialist. Finish with what you have.")]
+    MinionLimit,
+
+    [Description("{Answer}\n\n[Minion {Role} on {Llm} with {Tool}: {Usage}]")]
+    MinionAnswer,
+
     [Description("You stopped without writing an answer (usually: all your tool rounds were used). Don't call any more tools: answer the task now from what you found, and say what you couldn't finish.")]
     SubSessionAskForAnswer,
 

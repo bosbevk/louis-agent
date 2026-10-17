@@ -15,6 +15,8 @@ public static class PulsText
         Stopped = "Gestop",
 
         DelegatedTo = "Oorgedra aan",
+        MinionLabel = "Minion",
+        OnModel = "op",
         FollowUp = "vervolg",
         Specialist = "spesialis",
         Task = "Taak",

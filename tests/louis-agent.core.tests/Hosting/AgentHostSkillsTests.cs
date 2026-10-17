@@ -59,7 +59,7 @@ public class AgentHostSkillsTests
     [TestCase("puls/voice-af", SkillLevel.Agent)]
     [TestCase("puls-cook", SkillLevel.Specialist)]
     [TestCase(null, SkillLevel.Specialist)]
-    [TestCase(null, SkillLevel.Minion)]
+    [TestCase("puls-minion-web-price-lookup", SkillLevel.Minion)]   // F30: a minion always has a role
     public void EveryPrompt_StartsWithThePrinciples(string? personality, SkillLevel level)
     {
         // CL9 step 2: every agent, at every level, whatever its voice or role, gets the shared principles first, so no

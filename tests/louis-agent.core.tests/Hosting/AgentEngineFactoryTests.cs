@@ -44,6 +44,49 @@ public class AgentEngineFactoryTests
         Assert.That(factory.GetOrCreate(["web"], "puls-cook", SkillLevel.Specialist).SkillDocumentation, Does.Contain("Never invent a price"));
     }
 
+    private static Microsoft.Extensions.AI.ChatResponse Answer(string text) =>
+        new(new Microsoft.Extensions.AI.ChatMessage(Microsoft.Extensions.AI.ChatRole.Assistant, text));
+
+    [Test]
+    public async Task ASessionNamingAnLlmProfile_RunsOnItsModel_AndOneWithout_OnTheInstances()
+    {
+        // F30 (Louis: "can we switch it on session?"): one instance serves Haiku to the cook and a local model to a price
+        // lookup, so the model is chosen when a session opens, not per container.
+        var own = new FakeChatClient(_ => Answer("haiku"));
+        var local = new FakeChatClient(_ => Answer("qwen"));
+        var factory = new AgentEngineFactory(own, Options(), sessionLlms: [new SessionLlm("ollama-puls", local)]);
+
+        var onLocal = factory.GetOrCreate([], llm: "ollama-puls");
+        Assert.That(await onLocal.ProcessPromptAsync(onLocal.NewHistory(), "prices?"), Is.EqualTo("qwen"));
+        var onOwn = factory.GetOrCreate([]);
+        Assert.That(await onOwn.ProcessPromptAsync(onOwn.NewHistory(), "hello"), Is.EqualTo("haiku"));
+
+        Assert.That((own.Requests.Count, local.Requests.Count), Is.EqualTo((1, 1)), "each request went to its own model");
+        Assert.That(onLocal, Is.Not.SameAs(onOwn), "the profile is part of the engine's key");
+        Assert.That(factory.Profiles, Does.Contain("|llm:ollama-puls"));
+        Assert.That(factory.SessionLlms, Is.EqualTo(new[] { "ollama-puls" }));
+    }
+
+    [Test]
+    public void AnUnknownLlmProfile_IsRefused_BeforeAnythingIsBuilt()
+    {
+        var factory = new AgentEngineFactory(new FakeChatClient(), Options(), sessionLlms: [new SessionLlm("ollama-puls", new FakeChatClient())]);
+
+        var refused = Assert.Throws<SessionLlmException>(() => factory.GetOrCreate([], llm: "gpt-local"))!;
+
+        Assert.That(refused.Message, Does.Contain("gpt-local").And.Contain("ollama-puls"), "named, with what this instance has");
+        Assert.That(factory.Profiles, Is.Empty);
+    }
+
+    [Test]
+    public void TheSessionProfiles_AreReadFromTheEnvironment_TrimmedAndLowercase()
+    {
+        var options = AgentOptions.FromEnvironment(name => name == "LLM_SESSION_PROFILES" ? " Ollama-Puls , ollama-puls," : null);
+
+        Assert.That(options.SessionLlmProfiles, Is.EqualTo(new[] { "ollama-puls" }));
+        Assert.That(AgentOptions.FromEnvironment(_ => null).SessionLlmProfiles, Is.Empty);
+    }
+
     [Test]
     public void AnEmptyEnabledList_MeansEveryPersonality()
     {
@@ -169,5 +212,35 @@ public class AgentEngineFactoryTests
     public void NoToolsets_GivesOnlyExecuteSkill()
     {
         Assert.That(Names(Factory().GetOrCreate([])), Is.EquivalentTo(new[] { "ExecuteSkill", "GetToday" }));
+    }
+
+    [Test]
+    public void AMinionsEngine_HasOneTool_TheRoleOnTheBase_NoGuides_AndItsOwnKey()
+    {
+        // F30 step 4 (Louis: a specialist hands a minion one task and one of its own tools): the engine is the role on
+        // the minion base with that one tool, no toolset guide and no router, so a 4B model reads a prompt it can follow.
+        var factory = Factory();
+
+        var minion = factory.GetOrCreate(["web"], "puls-minion-web-price-lookup", SkillLevel.Minion, tool: "FetchUrl");
+
+        Assert.That(Names(minion), Is.EqualTo(new[] { "FetchUrl" }), "one tool: no clock, no ExecuteSkill, no WebSearch");
+        Assert.That(minion.SkillDocumentation, Does.Contain("# Puls minion: Web price lookup").And.Contain("You are a **minion**")
+            .And.Not.Contain("# Web Skills").And.Not.Contain("# Louis Agent - Default Instructions"));
+        Assert.That(factory.Profiles, Is.EqualTo(new[] { "web|puls-minion-web-price-lookup|minion|tool:FetchUrl" }));
+        Assert.That(factory.GetOrCreate(["web"], "puls-minion-web-price-lookup", SkillLevel.Minion, tool: "FetchUrl"), Is.SameAs(minion));
+        Assert.That(factory.GetOrCreate(["web"], "puls-minion-web-price-lookup", SkillLevel.Minion, tool: "ReadRenderedPage"), Is.Not.SameAs(minion),
+            "the tool is part of the key");
+    }
+
+    [Test]
+    public void AToolTheToolsetsDontHave_IsRefused_BeforeAnythingIsBuilt()
+    {
+        var factory = Factory();
+
+        var ex = Assert.Throws<ToolsetException>(() =>
+            factory.GetOrCreate(["web"], "puls-minion-web-price-lookup", SkillLevel.Minion, tool: "ReadWorkspaceFile"))!;
+
+        Assert.That(ex.Message, Does.Contain("ReadWorkspaceFile").And.Contain("web"));
+        Assert.That(factory.Profiles, Is.Empty);
     }
 }
