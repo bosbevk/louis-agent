@@ -286,12 +286,14 @@ public sealed partial class WebTools
                 return MessageText.Format(ToolMessage.FetchHttpError, new { Url = finalUri, Status = (int)response.StatusCode, Reason = response.ReasonPhrase });
 
             string body = await response.Content.ReadAsStringAsync();
-            // The readable text, and the whole body with its tags stripped: a price per kilo can sit outside <main>.
+            // The whole body with every tag a space (a price per kilo can sit outside <main>): stripped with nothing
+            // between, a badge joins its price ("newr54.99"), which then isn't seen as a price (FX16, the PR #54
+            // re-review). The readable text only tells a JavaScript shell from a page.
             var (_, text) = HtmlToText(body, finalUri);
-            string all = CleanInline(ScriptOrStyle().Replace(body, " "));
-            if (Matches(text) || Matches(all))
+            string all = WebUtility.HtmlDecode(Tag().Replace(ScriptOrStyle().Replace(body, " "), " "));
+            if (Matches(all))
                 return MessageText.Format(ToolMessage.QuoteFound, new { Url = finalUri });
-            if (named is not null && (OnPage(text) || OnPage(all)))
+            if (named is not null && OnPage(all))
                 return MessageText.Format(ToolMessage.QuoteNotWithProduct, new { Url = finalUri, Product = product!.Trim(), Window = ProductWindowChars });
             if (!LooksLikeShell(text, all, body.Length))
                 return MessageText.Format(ToolMessage.QuoteNotFound, new { Url = finalUri });
@@ -325,9 +327,12 @@ public sealed partial class WebTools
         }
     }
 
-    /// <summary>Text as a quote is compared: entities decoded, every run of whitespace (a non-breaking space too) one space, lower case.</summary>
+    /// <summary>
+    /// Text as a quote is compared: entities decoded, every run of whitespace (a non-breaking space too) one space, lower
+    /// case, and a rand sign joined to its amount (<c>r 35.99</c> is <c>r35.99</c>: a price drawn in two tags, FX16).
+    /// </summary>
     internal static string Normalise(string text) =>
-        AnyWhitespace().Replace(WebUtility.HtmlDecode(text).Replace('\u00A0', ' '), " ").Trim().ToLowerInvariant();
+        RandSpace().Replace(AnyWhitespace().Replace(WebUtility.HtmlDecode(text).Replace('\u00A0', ' '), " ").Trim().ToLowerInvariant(), "r");
 
     /// <summary>
     /// A quote that is only a price (FX16): without its prices and the words around a price (<c>each</c>, <c>now</c>,
@@ -468,6 +473,10 @@ public sealed partial class WebTools
 
     [GeneratedRegex(@"\b" + Rand)]
     private static partial Regex Price();
+
+    // VerifyQuote (FX16): the space between a rand sign and its amount.
+    [GeneratedRegex(@"\br (?=\d)")]
+    private static partial Regex RandSpace();
 
     // VerifyQuote (FX16): a special's old price or saving, which is no product's price (was r29.99, save r7.00).
     [GeneratedRegex(@"\b(?:was|save|normally)\s*:?\s*" + Rand)]

@@ -33,6 +33,11 @@ often only that (`quote: "R22.99"`). Reproduced with the three-product list abov
   between the name and R22.99, and shops show *Was* and *Save* prices all the time. A price right after `was`, `save`
   or `normally` doesn't count as another product's, and a quote right after one of them is never the product's price
   (the eggs at R29.99 are *Not found with the product*).
+- **Every tag is a space** (the PR #54 re-review): the page was matched with its tags stripped to nothing, so a badge
+  joined its price (`500g</h3><span>New</span><span>R54.99` read `500gnewr54.99`), the butter's own price lost its word
+  boundary, and the milk's R22.99 after it passed for the butter's. `VerifyQuote` now matches the body with each tag a
+  space, and `Normalise` joins a rand sign to its amount (`r 35.99` is `r35.99`), so a price drawn in two tags still
+  matches. The readable text (`HtmlToText`, which strips the same way) only tells a JavaScript shell from a page.
 - **A quote with words still works without a product,** as before. It can still be another product's ("ESKORT
   R65.99"), so a scorer that checks a price always passes the product: F31's scorer does.
 
@@ -56,6 +61,10 @@ The PR #54 review's additions, also written first and seen failing (eight cases)
 `ASpecialsOldPriceOrSaving_DoesntHideTheProductsPrice` (the eggs at R22.99 after *Was R29.99*, the butter at R54.99
 after *Save R7.00*) and `TheOldPriceOrTheSaving_IsNotTheProductsPrice` (R29.99 and R7.00). The ninth,
 `ASpecialStillDoesntLetTheNextProductsPriceThrough` (the milk's R22.99 for the butter), passed before and after.
+
+The re-review's case, written first and seen failing (*Found* for the butter at the milk's R22.99):
+`ABadgeBeforeThePrice_DoesntLetTheNextProductsPriceThrough`, with `ABadgeBeforeThePrice_StillFindsTheProductsOwnPrice`
+beside it.
 
 The earlier tests that checked a bare price now name its product; the footer's price per kilo is quoted with its words
 (`Unit price R71.98/kg`), and the absent quote has words (`Beef Mince R29.99`: `R29.99 per 500g` is now only a

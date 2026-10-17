@@ -227,7 +227,7 @@ public class VerifyQuoteTests
     [Test]
     public async Task APriceSplitAcrossTags_StillMatches()
     {
-        // ProductHtml draws the price as <span>R</span><span>35.99</span>; the body with its tags stripped joins them.
+        // ProductHtml draws the price as <span>R</span><span>35.99</span>: "r 35.99" once its tags are spaces, read as r35.99.
         string result = await Tools(_ => Html(ProductHtml)).VerifyQuote(Url, "R35.99", Beef);
 
         Assert.That(result, Does.StartWith("Found:"));
@@ -267,5 +267,31 @@ public class VerifyQuoteTests
         string result = await Tools(_ => Html(SpecialsHtml)).VerifyQuote(ListUrl, "R22.99", "PnP Salted Butter 500g");
 
         Assert.That(result, Does.StartWith("Not found with the product:"));
+    }
+
+    // The PR #54 re-review: tags stripped with nothing between them joined a badge to the price ("500gnewr54.99"), so
+    // the butter's own price lost its word boundary, wasn't seen as a price, and the milk's R22.99 passed for it.
+    private const string BadgeHtml = """
+        <html><body><main><ul>
+          <li><h3>PnP Large Eggs 6 Pack</h3><span class="price">R22.99</span></li>
+          <li><h3>PnP Salted Butter 500g</h3><span>New</span><span class="price">R54.99</span></li>
+          <li><h3>PnP Full Cream Milk 2L</h3><span class="price">R22.99</span></li>
+        </ul></main></body></html>
+        """;
+
+    [Test]
+    public async Task ABadgeBeforeThePrice_DoesntLetTheNextProductsPriceThrough()
+    {
+        string result = await Tools(_ => Html(BadgeHtml)).VerifyQuote(ListUrl, "R22.99", "PnP Salted Butter 500g");
+
+        Assert.That(result, Does.StartWith("Not found with the product:"));
+    }
+
+    [Test]
+    public async Task ABadgeBeforeThePrice_StillFindsTheProductsOwnPrice()
+    {
+        string result = await Tools(_ => Html(BadgeHtml)).VerifyQuote(ListUrl, "R54.99", "PnP Salted Butter 500g");
+
+        Assert.That(result, Does.StartWith("Found:"));
     }
 }
