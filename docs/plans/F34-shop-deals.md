@@ -264,6 +264,14 @@ sequenceDiagram
     store's cookies are Checkers' own, never rebuilt. `ToolMessage.BrowserScriptFailed`.
   - **1b, the user's store:** `PlaceCoordinates`, `CheckersStore` (one lookup visit per town, the site's own call, its
     cookies kept as a `BrowserSession`), `CheckersCatalogue` searching in it.
+- **2026-10-17, in step 1b: a search says which store answered.** Only the catalogue knows whether the town's store was
+  found, so `IShopCatalogue.SearchAsync` returns `ShopSearch(Products, Area)` (`Tools/Shops/`, new) instead of a list;
+  the table's header names the store (`ToolMessage.ShopStoreForArea`, `ShopDefaultStore`, `ShopDefaultStoreNoneFor`).
+  The lookup sends only the town's centre (Checkers' call works without the address's text), and a lookup that fails
+  isn't kept, so the next search tries again (`LogMessage.ShopAreaUnavailable`).
+- **2026-10-17, for step 4 (Louis, on a screenshot of the list: "can we move the picture into its own to the first
+  column"):** the shopping list's product photo gets a column of its own, the first, before *Ingredient*; *To buy* keeps
+  the product's name and pack.
 
 ---
 [Plans](README.md) · Previous: [CL14 The public word: role](CL14-public-word-role.md)

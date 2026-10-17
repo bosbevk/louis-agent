@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Text;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Sessions;
 
 /// <summary>
 /// The shops toolset (F33 step 3): a shop's products and their prices from the shop's own catalogue, as a short table
@@ -32,9 +33,10 @@ public sealed class ShopTools(IReadOnlyDictionary<ShopKind, IShopCatalogue> cata
 
         string search = query.Trim();
         IReadOnlyList<ShopProduct> products;
+        string? area;
         try
         {
-            products = await catalogue.SearchAsync(search, Math.Clamp(maxResults, 1, MaxResults), cancellationToken);
+            (products, area) = await catalogue.SearchAsync(search, Math.Clamp(maxResults, 1, MaxResults), cancellationToken);
         }
         catch (ShopCatalogueException ex)
         {
@@ -45,7 +47,7 @@ public sealed class ShopTools(IReadOnlyDictionary<ShopKind, IShopCatalogue> cata
         if (products.Count == 0) return MessageText.Format(ToolMessage.ShopNoProducts, new { Shop = name, Query = search });
 
         var table = new StringBuilder();
-        table.AppendLine(MessageText.Format(ToolMessage.ShopProductsFound, new { Shop = name, Query = search, products.Count }));
+        table.AppendLine(MessageText.Format(ToolMessage.ShopProductsFound, new { Shop = name, Store = StoreOf(area), Query = search, products.Count }));
         table.AppendLine(MessageText.Format(ToolMessage.ShopDataStart));
         table.AppendLine("| Product | Size | Pack price | Per kg | Image | Link |");
         table.AppendLine("|---|---|---|---|---|---|");
@@ -63,6 +65,12 @@ public sealed class ShopTools(IReadOnlyDictionary<ShopKind, IShopCatalogue> cata
         ({ } price, null) => Money(price, p.Currency),
         _ => "-",
     };
+
+    /// <summary>Which store answered (F34): the one serving the user's town, or the shop's default, and why.</summary>
+    private static string StoreOf(string? area) =>
+        area is not null ? MessageText.Format(ToolMessage.ShopStoreForArea, new { Area = area })
+        : UserPlace.Current?.Location is { Length: > 0 } place ? MessageText.Format(ToolMessage.ShopDefaultStoreNoneFor, new { Area = place.Trim() })
+        : MessageText.Format(ToolMessage.ShopDefaultStore);
 
     private string Enabled() =>
         catalogues.Count == 0 ? "none" : string.Join(", ", catalogues.Keys.Order().Select(k => k.ToString().ToLowerInvariant()));

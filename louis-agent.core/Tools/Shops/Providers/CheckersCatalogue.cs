@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Sessions;
 using LouisAgent.Core.Tools.Shops;
 using LouisAgent.Core.Tools.Web.Browsing;
 
@@ -13,9 +14,10 @@ using LouisAgent.Core.Tools.Web.Browsing;
 /// answer gives each product's name, price, unit and article number; the page's cards link each product as
 /// <c>/product/{name}-{article}{unit}</c>. The page is visited through the guarded browser like any shopper's, its
 /// catalogue answer kept (no internal API called directly), and parsed here. For development and benchmarks until
-/// Checkers' terms are checked (ADR 0023).
+/// Checkers' terms are checked (ADR 0023). Where the user shared their town, the search runs in the store that serves it
+/// (F34: <see cref="CheckersStore"/>), else in Checkers' default store; the answer says which.
 /// </summary>
-public sealed partial class CheckersCatalogue(IWebBrowser browser) : IShopCatalogue
+public sealed partial class CheckersCatalogue(IWebBrowser browser, CheckersStore? store = null) : IShopCatalogue
 {
     private static readonly Uri Site = new("https://www.checkers.co.za/");
     private const string CataloguePath = "/api/catalogue/get-products-filter";
@@ -24,13 +26,15 @@ public sealed partial class CheckersCatalogue(IWebBrowser browser) : IShopCatalo
 
     public ShopKind Shop => ShopKind.Checkers;
 
-    public async Task<IReadOnlyList<ShopProduct>> SearchAsync(string query, int maxResults, CancellationToken cancellationToken = default)
+    public async Task<ShopSearch> SearchAsync(string query, int maxResults, CancellationToken cancellationToken = default)
     {
         var search = SearchUri(query);
+        string? place = UserPlace.Current?.Location;
+        BrowserSession? area = store is null ? null : await store.ForAsync(place, cancellationToken);
         BrowserVisit visit;
         try
         {
-            visit = await browser.VisitAsync(search, url => url.AbsolutePath == CataloguePath, cancellationToken: cancellationToken);
+            visit = await browser.VisitAsync(search, url => url.AbsolutePath == CataloguePath, area, cancellationToken: cancellationToken);
         }
         catch (WebBrowserException ex)
         {
@@ -41,7 +45,7 @@ public sealed partial class CheckersCatalogue(IWebBrowser browser) : IShopCatalo
             throw new ShopCatalogueException(MessageText.Format(ToolMessage.ShopCatalogueNoAnswer, new { Shop = "Checkers", Query = query, Url = search }));
         try
         {
-            return Parse(visit.Captured[0], visit.Html, search, maxResults);
+            return new ShopSearch(Parse(visit.Captured[0], visit.Html, search, maxResults), area is null ? null : place!.Trim());
         }
         catch (Exception ex) when (ex is JsonException or KeyNotFoundException or InvalidOperationException or FormatException)
         {

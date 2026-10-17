@@ -19,11 +19,13 @@ public class ShopToolsTests
         public Exception? Fails { get; init; }
         public ShopKind Shop => ShopKind.Checkers;
 
-        public Task<IReadOnlyList<ShopProduct>> SearchAsync(string query, int maxResults, CancellationToken cancellationToken = default)
+        public string? Area { get; init; }
+
+        public Task<ShopSearch> SearchAsync(string query, int maxResults, CancellationToken cancellationToken = default)
         {
             (Query, MaxResults, Token) = (query, maxResults, cancellationToken);
             if (Fails is not null) throw Fails;
-            return Task.FromResult<IReadOnlyList<ShopProduct>>(products);
+            return Task.FromResult(new ShopSearch(products, Area));
         }
     }
 
@@ -42,7 +44,7 @@ public class ShopToolsTests
         string result = await Tools(new FakeCatalogue(Chicken, Chakalaka)).FindProducts("Checkers", "chicken pieces");
 
         // F33's run: "Checkers's products" read wrong for a shop whose name ends in s; the header names the shop plainly.
-        Assert.That(result, Does.StartWith("Products at Checkers for 'chicken pieces' (2)").And.Not.Contain("'s products"));
+        Assert.That(result, Does.StartWith("Products at Checkers (its default store: no area shared) for 'chicken pieces' (2)").And.Not.Contain("'s products"));
         Assert.That(result, Does.Contain("untrusted"), "a shop's names come from its site");
         // PR #58's review: the Price column is what a pack costs; a pack sold by weight, from its lightest to its heaviest.
         // Louis: "can we have a product image": the photo the shop shows, for the cook's list; "-" without one.
@@ -56,6 +58,12 @@ public class ShopToolsTests
         Assert.That(await Tools(new FakeCatalogue(new ShopProduct("Beef Mince Per kg", null, null, "ZAR", null, 129.99m, "kg",
                 new Uri("https://www.checkers.co.za/search?Search=mince")))).FindProducts("checkers", "mince"),
             Does.Contain("| Beef Mince Per kg | - | - | R129.99/kg | - |"));
+
+    [Test]
+    public async Task TheStoreThatAnswered_IsNamed() =>
+        // F34 step 1b: the store that serves the user's town, when the catalogue found one.
+        Assert.That(await Tools(new FakeCatalogue(Chakalaka) { Area = "Malmesbury" }).FindProducts("checkers", "chakalaka"),
+            Does.StartWith("Products at Checkers (the store serving Malmesbury) for 'chakalaka' (1)"));
 
     [Test]
     public async Task TheQueryTheCountAndTheTurnsCancellation_ReachTheCatalogue()

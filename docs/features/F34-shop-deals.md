@@ -57,6 +57,12 @@ prices.
   renderer's and today's catalogue searches, are unchanged. Live tests: a session's cookie reaches the site, stays in
   its visit (a plain visit and another session don't see it), a site's cookie comes back, a script's result and its
   failure, and a script's request to an internal address refused.
+- **Step 1b (2026-10-17): the user's store.** Where the user shared their town, `CheckersStore` asks Checkers for the
+  stores serving its centre (OpenStreetMap's Nominatim gives it), in a visit of its own, the site's own call, and keeps
+  the three cookies Checkers sets; each search then runs in them. Once per town; no town, an unknown one, none served or
+  a failed lookup: Checkers' default store, as before. The table's header names the store: `Products at Checkers (the
+  store serving Malmesbury)`, `(its default store: no area shared)` or `(… none found for {town})`. Live: Malmesbury's
+  stores aren't the default's, and a search from Malmesbury is answered there; only the town's centre is sent.
 
 ---
 [Features](README.md) · [Plan](../plans/F34-shop-deals.md) · Previous: [F33 Shop catalogues](F33-shop-catalogues.md)

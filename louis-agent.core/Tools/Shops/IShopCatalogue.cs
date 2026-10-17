@@ -9,5 +9,5 @@ public interface IShopCatalogue
 {
     ShopKind Shop { get; }
 
-    Task<IReadOnlyList<ShopProduct>> SearchAsync(string query, int maxResults, CancellationToken cancellationToken = default);
+    Task<ShopSearch> SearchAsync(string query, int maxResults, CancellationToken cancellationToken = default);
 }

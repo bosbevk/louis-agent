@@ -107,20 +107,59 @@ public class CheckersCatalogueTests
     {
         public Uri? Visited { get; private set; }
         public Func<Uri, bool>? Capture { get; private set; }
+        public BrowserSession? Session { get; private set; }
 
         public Task<BrowserVisit> VisitAsync(Uri url, Func<Uri, bool>? capture = null, BrowserSession? session = null, string? script = null,
             CancellationToken cancellationToken = default)
         {
-            (Visited, Capture) = (url, capture);
+            (Visited, Capture, Session) = (url, capture, session);
             return Task.FromResult(new BrowserVisit(url.ToString(), Html, captured));
         }
+    }
+
+    // F34 step 1b: the search runs in the store that serves the user's town, when they shared it; the answer says which.
+    private static readonly BrowserSession MalmesburysStore = new([new BrowserCookie("storeids", "655b0c8fb44cda100fd99383", "www.checkers.co.za")]);
+
+    private sealed class OneTownsStore : IWebBrowser
+    {
+        public Task<BrowserVisit> VisitAsync(Uri url, Func<Uri, bool>? capture = null, BrowserSession? session = null, string? script = null,
+            CancellationToken cancellationToken = default) =>
+            Task.FromResult(new BrowserVisit(url.AbsoluteUri, "", [], """{"storeContexts":[{"storeId":"655b0c8fb44cda100fd99383"}]}""", MalmesburysStore.Cookies));
+    }
+
+    private static CheckersStore Store() =>
+        new(new OneTownsStore(), (place, _) => Task.FromResult<(double, double)?>(place == "Malmesbury" ? (-33.46, 18.72) : null));
+
+    [Test]
+    public async Task WhereTheUserIs_TheSearchRunsInTheStoreThatServesIt()
+    {
+        var browser = new FakeBrowser(Json);
+        ShopSearch found;
+        using (LouisAgent.Core.Sessions.UserPlace.Use(new("Malmesbury", null)))
+            found = await new CheckersCatalogue(browser, Store()).SearchAsync("chicken pieces", 5);
+
+        Assert.That(browser.Session!.Cookies.Single().Value, Is.EqualTo("655b0c8fb44cda100fd99383"));
+        Assert.That(found.Area, Is.EqualTo("Malmesbury"));
+    }
+
+    [Test]
+    public async Task WithNoPlace_OrNoStoreForIt_TheSearchIsTheDefaultStores()
+    {
+        var browser = new FakeBrowser(Json);
+        var noPlace = await new CheckersCatalogue(browser, Store()).SearchAsync("chicken pieces", 5);
+        Assert.That((browser.Session, noPlace.Area), Is.EqualTo(((BrowserSession?)null, (string?)null)));
+
+        ShopSearch unknown;
+        using (LouisAgent.Core.Sessions.UserPlace.Use(new("Atlantis", null)))
+            unknown = await new CheckersCatalogue(browser, Store()).SearchAsync("chicken pieces", 5);
+        Assert.That((browser.Session, unknown.Area), Is.EqualTo(((BrowserSession?)null, (string?)null)));
     }
 
     [Test]
     public async Task ASearch_VisitsTheSearchPage_AndKeepsOnlyTheCataloguesAnswer()
     {
         var browser = new FakeBrowser(Json);
-        var products = await new CheckersCatalogue(browser).SearchAsync("chicken pieces", 5);
+        var products = (await new CheckersCatalogue(browser).SearchAsync("chicken pieces", 5)).Products;
 
         Assert.That(products, Has.Count.EqualTo(3));
         Assert.That(browser.Visited, Is.EqualTo(Search));
@@ -152,12 +191,27 @@ public class CheckersCatalogueTests
             Throws.TypeOf<ShopCatalogueException>().With.Message.Contains("didn't answer"));
 
     [Test, Category("Live")]
+    public async Task FromMalmesbury_TheSearchIsMalmesburysStore()
+    {
+        string? url = Environment.GetEnvironmentVariable("BROWSER_URL");
+        Assume.That(url, Is.Not.Null.And.Not.Empty, "BROWSER_URL isn't set: no browser to search Checkers with (the Puls stack's puls-browser).");
+        var browser = new ChromeWebBrowser(new Uri(url!));
+
+        ShopSearch found;
+        using (LouisAgent.Core.Sessions.UserPlace.Use(new("Malmesbury", null)))
+            found = await new CheckersCatalogue(browser, new CheckersStore(browser, LouisAgent.Core.Tools.Shops.PlaceCoordinates.OfAsync)).SearchAsync("chicken", 5);
+
+        Assert.That(found.Area, Is.EqualTo("Malmesbury"));
+        Assert.That(found.Products, Is.Not.Empty);
+    }
+
+    [Test, Category("Live")]
     public async Task Checkers_FindsItsProducts_WithPricesAndLinks()
     {
         string? url = Environment.GetEnvironmentVariable("BROWSER_URL");
         Assume.That(url, Is.Not.Null.And.Not.Empty, "BROWSER_URL isn't set: no browser to search Checkers with (the Puls stack's puls-browser).");
 
-        var products = await new CheckersCatalogue(new ChromeWebBrowser(new Uri(url!))).SearchAsync("chakalaka", 5);
+        var products = (await new CheckersCatalogue(new ChromeWebBrowser(new Uri(url!))).SearchAsync("chakalaka", 5)).Products;
 
         Assert.That(products, Is.Not.Empty);
         Assert.That(products, Has.All.Matches<ShopProduct>(p => (p.Price > 0 || p.UnitPrice > 0) && p.Url.Host == "www.checkers.co.za"));

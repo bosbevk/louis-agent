@@ -28,7 +28,8 @@ public static class ShopCatalogueFactory
     public static IReadOnlyDictionary<ShopKind, IShopCatalogue> Create(IReadOnlyList<ShopKind> enabled, IWebBrowser browser) =>
         enabled.Distinct().ToDictionary(shop => shop, shop => shop switch
         {
-            ShopKind.Checkers => (IShopCatalogue)new CheckersCatalogue(browser),
+            // F34: Checkers answers for the store that serves the user's town, found once per town.
+            ShopKind.Checkers => (IShopCatalogue)new CheckersCatalogue(browser, new CheckersStore(browser, PlaceCoordinates.OfAsync)),
             _ => throw new ArgumentOutOfRangeException(nameof(enabled), shop, null),
         });
 }
