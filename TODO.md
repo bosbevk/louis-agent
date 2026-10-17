@@ -261,6 +261,13 @@ Design: [docs/specs/SESSION_ARCHITECTURE.md](docs/specs/SESSION_ARCHITECTURE.md)
 From the [goal](docs/GOAL.md)'s architecture map: skills it requires that nothing above plans yet. Promote one to a
 feature when its turn comes; remove its line here and update the map's *Missing* column.
 
+- [ ] **One session-stream reader** (cleanup, CL11; to plan after F31): the session's SSE stream (the API's
+      `content_block_*`, `message_delta`, `sub_session`, `usage` events) is read by four separate switches, in
+      `web.shared/TurnStream.cs`, the orchestrator's `LouisAgentClient`, core's `SpecialistTools` and F31's Python
+      harness, so a new event (F30's minions) has to be learnt four times or a reader quietly miscounts. One C# reader,
+      lines in and typed events out, in a small project the browser app can reference too, under the three C# readers;
+      F31 step 7's recorded stream (`benchmarks/fixtures/session-stream.sse`) as the contract the Python reader is held
+      to as well (Louis, 2026-10-17)
 - [ ] **Exception strategy (a cleanup with its own ADR, after F28):** four kinds, each with its rule: a failure the model
       can act on (a `ToolMessage` with the reason, as the web and peer tools do), a setting the operator must fix (fail
       fast or a 400 naming it), a transient fault (one retry in the provider strategy, then reported), a bug (propagates,

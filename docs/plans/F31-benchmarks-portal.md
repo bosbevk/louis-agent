@@ -294,3 +294,9 @@ an ephemeral-Mongo test package.
   short-quote fix the plan calls "FX15" is [FX16](../fixes/FX16-short-quote-match.md) (FX15 was taken), merged
   (PR #54) before step 1. So the harness may send F30's `tool` and `llm` session fields, and a scorer that checks a
   price always passes `VerifyQuote` its product (FX16: a quote with words can still be another product's).
+- **2026-10-17, after step 1 (Louis: "yes", to one reader of the session stream):** step 7 adds a recorded session
+  stream as the contract between the stream's readers: `benchmarks/fixtures/session-stream.sse`, real turns (a
+  delegation with a specialist's tool calls, a minion's card, an error), checked in once. The Python reader's unittest
+  parses it to fixed counts (calls, hosts, role, answer); the same counts are asserted in C# against `TurnStream`
+  today, against CL11's one reader later. A change to the stream changes the fixture, and both languages' tests fail
+  until both readers follow.
