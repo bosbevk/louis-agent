@@ -74,7 +74,7 @@ keep minions only if real prices hold and the cost drops.
 - **Step 5 (2026-10-17):** the `minions` toolset (`MinionTools`: `StartMinion(role, tool, task, stronger)`,
   `ContinueMinion`) on the specialist tools' child path, which `SpecialistTools` (renamed from `AgentPeerTools`, Louis:
   "just rename it") now exposes to both; a minion is refused before any HTTP for a tool the specialist doesn't hold
-  (`SessionTools`, a per-turn ambient the API sets like the attachments), one never handed down, or a role that isn't a
+  (`AgentTools`, a per-turn ambient the API sets like the attachments), one never handed down, or a role that isn't a
   minion's. `MINION_LLMS` maps a role (or `*`) to a cascade of profiles, `instance` for the specialist's own model,
   checked at start-up; `stronger` takes the second model, once. Six minions per user turn, counted on Puls's turn tag so
   every specialist under it shares them; two minutes each. The minion's roll-up row (`minion:{role}`) lands in the

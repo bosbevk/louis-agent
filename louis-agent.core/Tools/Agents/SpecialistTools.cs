@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.Json;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Sessions;
 using LouisAgent.Core.Tools.Clock;
 using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
@@ -39,7 +40,7 @@ public sealed class SpecialistTools(IReadOnlyDictionary<string, Uri> peers, stri
     public static readonly TimeSpan DefaultTimeout = TimeSpan.FromMinutes(5);
 
     /// <summary>A sub-session's kind on the registry (F26); a minion's is <see cref="MinionTools.Kind"/>.</summary>
-    public const string Kind = "sub-session";
+    public const string Kind = OpenSubSession.SpecialistKind;
 
     // One client for every engine: sub-session answers can take minutes, so the timeout is ours, not HttpClient's.
     private static readonly HttpClient SharedHttp = new() { Timeout = Timeout.InfiniteTimeSpan };

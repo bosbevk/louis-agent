@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.Json;
 using LouisAgent.Api;
 using LouisAgent.Core.Agent;
+using LouisAgent.Core.Sessions;
 using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
 using LouisAgent.Api.Endpoints;
@@ -287,7 +288,7 @@ static async IAsyncEnumerable<SseItem<string>> StreamTurnAsync(
             Task<bool> next;
             using (usage.Activate())
             using (SessionAttachments.Use(session.Attachments))
-            using (SessionTools.Use(session.Engine.Tools.Select(t => t.Name)))
+            using (AgentTools.Use(session.Engine.Tools.Select(t => t.Name)))
             using (UserPlace.Use(session.Place))
             using (SubSessionRegistry.Use(session.SubSessions))
             using (SubSessionFeed.Observe(e => subSessions.Writer.TryWrite(e)))

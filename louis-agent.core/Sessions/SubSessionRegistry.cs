@@ -1,4 +1,4 @@
-namespace LouisAgent.Core.Tools.Agents;
+namespace LouisAgent.Core.Sessions;
 
 /// <summary>
 /// A chat's open sub-sessions, by handle (F26): the host (the API's session) owns one and makes it current for each

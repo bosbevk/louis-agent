@@ -4,6 +4,7 @@ using System.Collections.Concurrent;
 using System.ComponentModel;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Sessions;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Tools.Clock;
 using LouisAgent.Core.Usage;
@@ -17,7 +18,7 @@ using Microsoft.Extensions.AI;
 /// </summary>
 /// <remarks>
 /// The limits are in code, not in the prompt (Louis's rule: a minion can never do more than the specialist that sent it):
-/// the tool must be one the specialist holds (<see cref="SessionTools"/>) and never one of <see cref="NeverHandedDown"/>;
+/// the tool must be one the specialist holds (<see cref="AgentTools"/>) and never one of <see cref="NeverHandedDown"/>;
 /// at most <see cref="MaxPerTurn"/> minions across the whole tree of one user turn (one GPU answers one request at a
 /// time); each stopped after <see cref="DefaultTimeout"/>, inside the specialist's own. The model is configuration: the
 /// role's list in <c>MINION_LLMS</c>, cheapest first; <c>stronger</c> asks for the next one (a cascade, FrugalGPT) and can
@@ -32,7 +33,7 @@ public sealed class MinionTools
     public static readonly TimeSpan DefaultTimeout = TimeSpan.FromMinutes(2);
 
     /// <summary>A minion's kind on the registry (F26), beside <see cref="SpecialistTools.Kind"/>.</summary>
-    public const string Kind = "minion";
+    public const string Kind = OpenSubSession.MinionKind;
 
     /// <summary>The model name in <c>MINION_LLMS</c> that means this instance's own (Haiku, when a role needs a stronger model).</summary>
     public const string InstanceLlm = "instance";
@@ -86,7 +87,7 @@ public sealed class MinionTools
         tool = tool.Trim();
         if (Personalities.MinionBaseOf(role) is null) return MessageText.Format(ToolMessage.MinionRoleInvalid, new { Role = role });
         if (NeverHandedDown.Contains(tool)) return MessageText.Format(ToolMessage.MinionToolNeverHandedDown, new { Tool = tool });
-        var mine = SessionTools.Current;
+        var mine = AgentTools.Current;
         if (!mine.Contains(tool))
             return MessageText.Format(ToolMessage.MinionToolNotMine, new { Tool = tool, Tools = mine.Count == 0 ? "(none)" : string.Join(", ", mine.Order()) });
         if (ModelFor(role, stronger, out string? llm) is { } noModel) return noModel;

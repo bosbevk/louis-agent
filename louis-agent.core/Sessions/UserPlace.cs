@@ -1,4 +1,4 @@
-namespace LouisAgent.Core.Tools.Clock;
+namespace LouisAgent.Core.Sessions;
 
 /// <summary>
 /// Where the user is (F22): the place they set (a town, as they wrote it or as the browser found it) and their time

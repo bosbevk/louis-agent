@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using LouisAgent.Core.Agent;
+using LouisAgent.Core.Sessions;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Skills;

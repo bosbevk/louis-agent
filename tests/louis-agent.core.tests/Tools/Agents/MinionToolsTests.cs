@@ -2,6 +2,7 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using LouisAgent.Core.Agent;
+using LouisAgent.Core.Sessions;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Tools.Agents;
@@ -52,7 +53,7 @@ public class MinionToolsTests
     private static IDisposable CooksTurn(string session = "sess_cook", int turn = 2, string parent = "sess_puls#1", params string[] tools)
     {
         var scope = UsageScope.Begin(host: "api", session: session, turn: turn, tags: new UsageTags(null, null, null, parent));
-        var mine = SessionTools.Use(tools.Length == 0 ? ["FetchUrl", "ReadRenderedPage", "WebSearch", "ExecuteSkill"] : tools);
+        var mine = AgentTools.Use(tools.Length == 0 ? ["FetchUrl", "ReadRenderedPage", "WebSearch", "ExecuteSkill"] : tools);
         return new Both(scope, mine);
     }
 

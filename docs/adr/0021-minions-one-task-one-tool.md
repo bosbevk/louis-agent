@@ -43,7 +43,7 @@ with exactly one tool, for one task, and never delegates.
   lines back; the measured run (F30 step 9) decides whether real prices hold and cost drops, or minions go.
 - A minion's answer is a claim on a cheap model: the specialist checks it in code (`VerifyQuote`) before using it, and
   the principles (ADR 0020) hold at level 2 as everywhere.
-- Every host that runs a specialist sets the session's tool names as a per-turn ambient (`SessionTools`), as it sets
+- Every host that runs a specialist sets the session's tool names as a per-turn ambient (`AgentTools`), as it sets
   the attachments and the place, or no tool can be handed down.
 - A third level is a new decision, not a setting.
 

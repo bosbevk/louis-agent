@@ -1,4 +1,4 @@
-namespace LouisAgent.Core.Tools.Agents;
+namespace LouisAgent.Core.Sessions;
 
 /// <summary>
 /// Where a turn's sub-session events go while it runs: a host that shows them (the API's chat stream) observes the turn,
