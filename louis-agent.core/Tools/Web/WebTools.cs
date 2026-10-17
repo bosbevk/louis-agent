@@ -145,11 +145,11 @@ public sealed partial class WebTools
         return sb.ToString();
     }
 
-    [Description("Reads a page the way a browser shows it, rendered by the configured renderer (Tavily Extract), and " +
-        "returns its readable text framed as untrusted data, like FetchUrl. Use it only when FetchUrl came back with " +
-        "'(no readable text)' or without the part you need: sites that draw their content with JavaScript (a shop's " +
-        "product page with its price, a store finder). It costs a credit and takes longer than FetchUrl, so never " +
-        "call it first. Same address rules as FetchUrl; results longer than maxChars continue with startIndex.")]
+    [Description("Reads a page the way a browser shows it and returns its readable text framed as untrusted data, " +
+        "like FetchUrl. Use it only when FetchUrl came back with '(no readable text)' or without the part you need: " +
+        "sites that draw their content with JavaScript (a shop's product page with its price, a store finder). It is " +
+        "slower than FetchUrl, so never call it first. Same address rules as FetchUrl, for every request the page " +
+        "makes; results longer than maxChars continue with startIndex.")]
     public async Task<string> ReadRenderedPage(
         [Description("Absolute http(s) URL of the page to render")] string url,
         [Description("Maximum characters to return (default 8000, max 30000)")] int maxChars = DefaultMaxChars,
@@ -299,7 +299,7 @@ public sealed partial class WebTools
             if (!LooksLikeShell(text, all, body.Length))
                 return MessageText.Format(ToolMessage.QuoteNotFound, new { Url = finalUri });
 
-            // Nothing readable: a page drawn with JavaScript. The renderer reads it as a browser shows it (a credit).
+            // Nothing readable: a page drawn with JavaScript. The renderer reads it as a browser shows it (slower).
             try
             {
                 var page = await _renderer.RenderAsync(finalUri);

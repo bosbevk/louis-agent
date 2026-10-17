@@ -108,8 +108,22 @@ public class WebToolsTests
 
         string result = await tools.ReadRenderedPage("https://example.com/x");
 
-        Assert.That(result, Does.StartWith("Error").And.Contain("TAVILY_API_KEY"));
+        // F32 step 3: either renderer will do, the headless Chrome we run or Tavily's Extract.
+        Assert.That(result, Does.StartWith("Error").And.Contain("BROWSER_URL").And.Contain("TAVILY_API_KEY"));
         Assert.That(handler.Requests, Is.Empty);
+    }
+
+    [Test]
+    public void ReadRenderedPage_SaysNoMoreThanIsTrueOfEveryRenderer()
+    {
+        // F32 step 3: the description named Tavily and its credits; the renderer is configuration now (Chrome, which
+        // costs nothing, or Tavily), so it says what's true of both: slower than FetchUrl, and the address rule.
+        string description = typeof(WebTools).GetMethod(nameof(WebTools.ReadRenderedPage))!
+            .GetCustomAttributes(typeof(System.ComponentModel.DescriptionAttribute), false)
+            .Cast<System.ComponentModel.DescriptionAttribute>().Single().Description;
+
+        Assert.That(description, Does.Not.Contain("Tavily").And.Not.Contain("credit"));
+        Assert.That(description, Does.Contain("slower than FetchUrl").And.Contain("every request the page makes"));
     }
 
     [Test]
@@ -428,7 +442,10 @@ public class WebToolsTests
     {
         var ddg = new DuckDuckGoSearchProvider(Http(_ => Html("<div class=\"anomaly-modal\">Unfortunately, bots use DuckDuckGo too.</div>")));
         Assert.That(() => ddg.SearchAsync(new WebSearchQuery("x", 1)),
-            Throws.TypeOf<WebSearchException>().With.Message.Contains("WEB_SEARCH_PROVIDER=google"));
+            // F32 step 3: Google's Custom Search is closed to new customers; the advice is SearXNG for development
+            // and a licensed API (Tavily) for the sold endpoint (ADR 0023).
+            Throws.TypeOf<WebSearchException>().With.Message.Contains("WEB_SEARCH_PROVIDER=searxng")
+                .And.Message.Contains("TAVILY_API_KEY").And.Message.Not.Contains("google"));
     }
 
     [Test]

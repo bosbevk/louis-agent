@@ -81,3 +81,10 @@ priced with sources, and what it cost.
   interception can't close:** Chrome's request interception doesn't see WebSocket connections, so the browser's own
   network (step 4) is the layer that keeps a page from opening one to an internal address. Chrome answers its
   DevTools address only by IP, so the renderer resolves `puls-browser` first.
+- **Step 3: the texts the model reads say no more than is true.** `ReadRenderedPage`'s description names no renderer
+  and no credit (it says it's slower than `FetchUrl`, and that the address rule holds for every request the page
+  makes); DuckDuckGo's refusal and the web guide advise a licensed API (Tavily) or, for development, SearXNG, not
+  Google; a missing renderer names both settings. **Left as it is, to measure:** the cook's prompt says Pick n Pay's and
+  Woolworths' pages give nothing even rendered, so it prices them from search results. That was Tavily Extract's
+  result; the Chrome renderer read 37 prices off Pick n Pay's search page. Whether to let the cook render them is a
+  change to how it works, for the baseline run to inform, not a wording fix.

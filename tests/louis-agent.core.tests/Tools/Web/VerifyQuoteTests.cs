@@ -106,7 +106,7 @@ public class VerifyQuoteTests
     [Test]
     public async Task APageWithText_IsNeverRendered()
     {
-        // ReadRenderedPage costs a credit: only an empty page is rendered.
+        // ReadRenderedPage is slow (and, with Tavily, costs a credit): only an empty page is rendered.
         var renderer = new FakeRenderer("R35.99");
 
         await Tools(_ => Html(ProductHtml), renderer).VerifyQuote(Url, "R12.00", Beef);

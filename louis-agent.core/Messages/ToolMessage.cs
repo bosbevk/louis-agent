@@ -183,7 +183,7 @@ public enum ToolMessage
     [Description("redirect to unsupported scheme '{Scheme}'.")]
     FetchRedirectScheme,
 
-    [Description("DuckDuckGo refused the automated search. For reliable search set TAVILY_API_KEY (1,000 free searches a month), or WEB_SEARCH_PROVIDER=google with GOOGLE_SEARCH_API_KEY and GOOGLE_SEARCH_ENGINE_ID.")]
+    [Description("DuckDuckGo refused the automated search. For reliable search set TAVILY_API_KEY (a licensed search API), or, for development and benchmarks, WEB_SEARCH_PROVIDER=searxng with SEARXNG_URL (the SearXNG we run).")]
     DuckDuckGoRefused,
 
     [Description("WEB_SEARCH_PROVIDER=tavily needs TAVILY_API_KEY in config/.env.secrets (a key from https://app.tavily.com).")]
@@ -198,7 +198,7 @@ public enum ToolMessage
     [Description("Tavily search failed: HTTP {Status} {Detail}")]
     TavilyFailed,
 
-    [Description("ReadRenderedPage needs TAVILY_API_KEY in config/.env.secrets (it renders pages with Tavily Extract). Without it, FetchUrl is the only way to read a page.")]
+    [Description("ReadRenderedPage needs a renderer: BROWSER_URL (the headless Chrome we run) or TAVILY_API_KEY (Tavily Extract). Without one, FetchUrl is the only way to read a page.")]
     RenderNotConfigured,
 
     [Description("couldn't render {Url}: {Reason}. If FetchUrl read it as empty too, the site blocks readers: mark what it holds as unknown and move on.")]
