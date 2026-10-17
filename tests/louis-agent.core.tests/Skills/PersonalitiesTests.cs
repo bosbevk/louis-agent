@@ -455,4 +455,20 @@ public class PersonalitiesTests
         Assert.That(cook, Does.Contain("at most 16"));
         Assert.That(cook, Does.Not.Contain("at most six"));
     }
+
+    [Test]
+    public void AShopThatBlocksReaders_IsPricedByAMinionWithWebSearch_AndItsQuoteIsNeverChecked()
+    {
+        // F30 second hand check (2026-10-17): every Pick n Pay render failed ("Failed to fetch url"), as the cook's role
+        // had measured on 2026-10-15. Louis: "give the minion WebSearch". The minion reads the shop's search result,
+        // says so on its source line, and the cook marks that price as the search index's instead of checking it.
+        string minion = SkillFileSource.ReadEmbedded(Personalities.MinionsFolder + "/puls-minion-web-price-lookup.md")!;
+        string cook = SkillFileSource.ReadEmbedded(Personalities.SpecialistsFolder + "/puls-cook.md")!;
+
+        Assert.That(minion, Does.Contain("source: page | search"));
+        Assert.That(minion, Does.Contain("`WebSearch`"));
+        Assert.That(cook, Does.Contain("`WebSearch` for Pick n Pay"));
+        Assert.That(cook, Does.Contain("`source: search`"));
+        Assert.That(cook, Does.Contain("Pryse uit die soekindeks"));
+    }
 }

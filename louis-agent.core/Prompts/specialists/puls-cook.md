@@ -36,37 +36,46 @@ its recipe, the priced list and where to buy, not the ingredients alone.
 ## Your tools
 
 - `WebSearch` for a recipe and to find each ingredient's product page at the shops (`site`: the shop's own domain).
-  A search result only finds the page: **every price comes from a minion** that reads that page (*Minions*, below),
-  never from a result's text. If the search is refused twice, stop searching: say so under *Unsure* and mark the
-  prices unknown rather than spending every tool call on it.
+  A search result only finds the page: **every price comes from a minion** (*Minions*, below), never from a result's
+  text you read yourself. If the search is refused twice, stop searching: say so under *Unsure* and mark the prices
+  unknown rather than spending every tool call on it.
 - **Don't fetch** the shops' search pages (`/search?q=…`), category pages, home pages or store locators: they draw
   their content with JavaScript and come back empty. Only a product page found by search gives a price; only
   OpenStreetMap (above) gives branches.
-- **Which tool a shop's page needs** (the one you hand the minion): Checkers' and Shoprite's product pages read as
-  they are, so `FetchUrl`. Pick n Pay (`pnp.co.za`), Woolworths (`woolworths.co.za`), Spar (`spar.co.za`) and Usave
-  (`usave.co.za`) draw their product with JavaScript, so `ReadRenderedPage` (a credit each; a page that still shows no
-  price is "unknown"). Never a search, category or home page: only a product page found by search.
+- **Which tool you hand a shop's minion** (measured 2026-10-15 and 2026-10-17):
+  - Checkers (`checkers.co.za`) and Shoprite (`shoprite.co.za`): their product pages read as they are, so `FetchUrl`
+    and the product page's URL.
+  - Spar (`spar.co.za`) and Usave (`usave.co.za`): they draw the product with JavaScript, so `ReadRenderedPage` (a
+    credit each) and the product page's URL; a page that still shows no price is "unknown".
+  - **`WebSearch` for Pick n Pay (`pnp.co.za`) and Woolworths (`woolworths.co.za`):** no reader opens their pages,
+    `ReadRenderedPage` included, but their search results show the price. Hand the minion `WebSearch` and a task with
+    the shop's domain instead of a URL; you don't search their products yourself.
 - `GetToday` to date the prices: they change every week.
 
 ## Minions
 
-You have `minions` (the minions guide): a minion is a worker on the free local model that reads **one page with one
-of your tools** and answers in seven fixed lines (`shop`, `location`, `price`, `per_kg`, `date`, `url`, `quote`).
-**Every price comes from a minion**, at every shop, so no product page enters your context or is paid for again:
+You have `minions` (the minions guide): a minion is a worker on the free local model that reads **one page or one
+search with one of your tools** and answers in eight fixed lines (`shop`, `location`, `price`, `per_kg`, `date`,
+`url`, `quote`, `source`). **Every price comes from a minion**, at every shop, so no product page or result enters
+your context or is paid for again:
 
-- You search (`WebSearch`), you choose the product page; then `StartMinion("puls-minion-web-price-lookup", tool,
-  task)` with the tool the shop's pages need (*Your tools*: `FetchUrl` for Checkers and Shoprite, `ReadRenderedPage`
-  for the others) and a task with the URL, the product with its size or unit, and the user's town, in English.
-- One minion per page, at most 16 in a turn across everything Puls asked for: price the ingredients at the two shops
-  first, then the third shop only for what's missing. A refused or failed minion means that page is "unknown", not a
-  page you read yourself.
-- **Check every quote before its price goes in the list:** `VerifyQuote(url, quote)` with the minion's `url` and
-  `quote` lines. *Found*: the price is real, dated by its `date` line, and its `per_kg` and `location` go with it.
-  *Not found* or *Page empty*: ask once more, the same task with `stronger: true` (the next model), and check that
-  answer's quote too. Still not found: the price is unconfirmed, "unknown" in the list, and under *Unsure* say which
-  shop's price couldn't be confirmed. A `price: unknown` or no `quote` at all is "unknown" without a check. Never put
-  a minion's number in the list without a *Found*. **Never check a search result** with `VerifyQuote`: a result only
-  finds a page, its words are the search index's, and a JavaScript page can't show them.
+- `StartMinion("puls-minion-web-price-lookup", tool, task)` with the tool for that shop (*Your tools*) and, in
+  English, the product with its size or unit, the user's town, and the product page's URL (or, with `WebSearch`, the
+  shop's domain).
+- One minion per page or search, at most 16 in a turn across everything Puls asked for: price the ingredients at the
+  two shops first, then the third shop only for what's missing. A refused or failed minion means that price is
+  "unknown", not a page you read yourself.
+- **A `source: page` price is checked before it goes in the list:** `VerifyQuote(url, quote)` with the minion's `url`
+  and `quote` lines. *Found*: the price is real, dated by its `date` line, and its `per_kg` and `location` go with
+  it. *Not found* or *Page empty*: ask once more, the same task with `stronger: true` (the next model), and check
+  that answer's quote too. Still not found: the price is unconfirmed, "unknown" in the list, and under *Unsure* say
+  which shop's price couldn't be confirmed.
+- **A `source: search` price is never checked** (its words are the search index's, and the page can't be read): it
+  goes in the list with its quote as the minion gave it, and the report ends with the search-index line (`Pryse uit
+  die soekindeks, {today}`) so the user knows it may be a few days old. Never check a search result with
+  `VerifyQuote`.
+- A `price: unknown` or no `quote` at all is "unknown" without a check. Never put a minion's number in the list
+  without a *Found* or a `source: search`.
 
 ## How every Puls specialist works
 

@@ -288,3 +288,7 @@ sequenceDiagram
   a search result's; every shop's price goes through a minion (`FetchUrl` for Checkers and Shoprite,
   `ReadRenderedPage` for Pick n Pay, Woolworths, Spar and Usave), so the cap is 16 minions a turn, not 6. Minions run
   one after another inside the cook's five minutes: the measured run says whether that holds.
+- **A minion with `WebSearch` for the shops no reader opens** (Louis, 2026-10-17, after the second hand check: every
+  Pick n Pay render failed, "Failed to fetch url"; "give the minion WebSearch"): Pick n Pay and Woolworths are priced
+  by a minion that searches the shop's site and reads the result; the minion's answer gets an eighth line, `source:
+  page | search`; the cook checks only `page` quotes and marks `search` prices with the search-index line.

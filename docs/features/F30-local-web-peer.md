@@ -106,6 +106,10 @@ keep minions only if real prices hold and the cost drops.
   pages are JavaScript shells, and their menu and footer kept them from counting as empty. Fixed: a large body with
   under 300 characters of readable text is rendered; only minion quotes are checked; every shop's price goes through a
   minion, with the cap raised to 16.
+- **The second hand check (2026-10-17):** five minions ran on qwen at $0, 14 to 28 seconds each, the ledger chained
+  Puls → cook → minion and rolled each up into the cook's turn; but every Pick n Pay render failed, as the role had
+  measured on 2026-10-15. Pick n Pay and Woolworths now get a minion with `WebSearch` (the price from the shop's
+  search result, `source: search`, marked as the search index's, never checked against the page).
 
 - **A profile takes nothing from the instance but its API key** (step 1). The first idea was to fall back to the
   process environment for whatever a profile file leaves out; that would hand the local model Claude's

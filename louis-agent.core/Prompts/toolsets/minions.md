@@ -24,7 +24,7 @@ The page it reads never enters your context: you get its few lines back, and a u
 
 | Role | Hand it | Its answer |
 |---|---|---|
-| `puls-minion-web-price-lookup` | `FetchUrl` (or `ReadRenderedPage` for a JavaScript shop page) and a task with the URL, the product with its size or unit, and the user's town | `shop`, `location`, `price`, `per_kg`, `date`, `url`, `quote` (the exact words the price came from), each `unknown` when the page doesn't say; a `note` line when something's off |
+| `puls-minion-web-price-lookup` | `FetchUrl` (or `ReadRenderedPage` for a JavaScript shop page) and a task with the URL, the product with its size or unit, and the user's town; or `WebSearch` and the shop's domain instead of a URL, for a shop whose pages no reader opens | `shop`, `location`, `price`, `per_kg`, `date`, `url`, `quote` (the exact words the price came from), `source` (`page` or `search`), each `unknown` when nothing says; a `note` line when something's off |
 
 ## Writing the task
 
@@ -34,8 +34,9 @@ sees nothing of this conversation and nothing you found elsewhere.
 
 ## Checking the answer
 
-A minion's answer is a claim on a cheap model. Check what matters before you use it: a price's `quote` is for
-`VerifyQuote(url, quote)`, which looks those words up on the page itself. A quote that isn't there means the price
+A minion's answer is a claim on a cheap model. Check what matters before you use it: a `source: page` price's `quote`
+is for `VerifyQuote(url, quote)`, which looks those words up on the page itself; a `source: search` price can't be
+checked that way, so say it comes from the search index. A quote that isn't there means the price
 isn't either: ask once more with `stronger: true` (the same task on the next model), and if that fails too, treat the
 price as `unconfirmed` and say why. Never pass a minion's number on as yours without its check.
 
