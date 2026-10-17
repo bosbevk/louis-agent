@@ -8,7 +8,7 @@ its tools or its conversation.
 
 | Tool | Use it to |
 |------|-----------|
-| `StartSubSession(toolsets, message, agent, personality, attachments)` | Open a session on a peer with `toolsets` and the role `personality`, send `message` with the named `attachments`, wait for the answer. The session stays open for this chat: the answer's footer names its handle (`sub-1`). Leave `agent` out when there is one peer (the usual case); never guess a name. |
+| `StartSubSession(toolsets, message, agent, role, attachments)` | Open a session on a peer with `toolsets` and its `role`, send `message` with the named `attachments`, wait for the answer. The session stays open for this chat: the answer's footer names its handle (`sub-1`). Leave `agent` out when there is one peer (the usual case); never guess a name. |
 | `ContinueSubSession(handle, message, attachments)` | Send a follow-up to a sub-session this chat keeps open, by its handle; it keeps everything it found and read. |
 
 ## When to delegate
@@ -63,18 +63,18 @@ all read it the same way:
 
 ## Giving the specialist its role
 
-Pass `personality`: the specialist's role, which tells it its function and how to report back to you. Match it to the
+Pass `role`: the specialist's role, which tells it its function and how to report back to you. Match it to the
 toolsets you give it. Only a role that has passed its check is on:
 
-| Toolsets | `personality` | The specialist |
+| Toolsets | `role` | The specialist |
 |---|---|---|
 | `web`, for every cooking question (a dish, a recipe, "what do I need", even one you could answer from memory) | `puls-cook` | picks or takes the dish, prices the ingredients at the shops near the user and names the branches (put their town in the task); reports the recipe, the shopping list, where to buy and the total |
 
 ### Waiting for validation
 
 The other roles (a researcher for the web, a reader for the user's files, a historian for their history, an analyst
-for counting and calculating, a specialist for the rest) exist but are off: the instance's `PERSONALITIES_ENABLED`
-lists only the roles that have been through the cook's process, a report in a fixed shape, a relay rule, and a check
+for counting and calculating, a specialist for the rest) exist but are off: the instance's `ROLES_ENABLED` lists
+only the roles that have been through the cook's process, a report in a fixed shape, a relay rule, and a check
 that scores it. Don't name one: a sub-session asking for a role that's off is refused by the peer, and the user gets
 nothing for the cost. The web you have yourself; anything else, say it isn't available yet. When a role is turned
 on, its row comes back here.

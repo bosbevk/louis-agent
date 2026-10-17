@@ -9,6 +9,12 @@ using System.ComponentModel;
 /// <summary>Log lines ([INFO], [WARN]); written to stderr, never stdout.</summary>
 public enum LogMessage
 {
+    [Description("{Old} is the setting's name before CL14; it's read until it's removed. Rename it {New} in config/.env.")]
+    RolesSettingRenamed,
+
+    [Description("{Old} is ignored: {New} is set, and wins. In config/.env, rename {Old} to {New} (or remove it if {New} is there already).")]
+    RolesSettingIgnored,
+
     [Description("{Tool} returned {Chars} characters, {Outcome} to {ReturnedChars}; arguments {Arguments}; request: {UserRequest}")]
     OversizedToolResult,
 

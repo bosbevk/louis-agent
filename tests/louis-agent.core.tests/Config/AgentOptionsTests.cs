@@ -66,4 +66,69 @@ public class AgentOptionsTests
         Assert.That(options.PaymoApiKey, Is.EqualTo("paymo-123"));
         Assert.That(options.DevopsApiKey, Is.EqualTo("devops-456"));
     }
+
+    // CL14 step 1: ROLES_ENABLED is the setting's name; PERSONALITIES_ENABLED, its name before, is still read, with a
+    // warning, until the TODO's line removes it, so a config/.env written before CL14 keeps working.
+    private static AgentOptions With(params (string Name, string Value)[] variables) =>
+        AgentOptions.FromEnvironment(name => variables.FirstOrDefault(v => v.Name == name).Value);
+
+    [Test]
+    public void RolesEnabled_ReadsRolesEnabled() =>
+        Assert.That(With(("ROLES_ENABLED", "puls-cook,puls/voice-af")).RolesEnabled, Is.EqualTo(new[] { "puls-cook", "puls/voice-af" }));
+
+    [Test]
+    public void RolesEnabled_ReadsThePersonalitiesSetting_WhenItIsUnset() =>
+        Assert.That(With(("PERSONALITIES_ENABLED", "puls-cook")).RolesEnabled, Is.EqualTo(new[] { "puls-cook" }));
+
+    [Test]
+    public void RolesEnabled_ReadsTheNewOne_WhenBothAreSet() =>
+        Assert.That(With(("ROLES_ENABLED", "puls-cook"), ("PERSONALITIES_ENABLED", "puls/voice-af")).RolesEnabled, Is.EqualTo(new[] { "puls-cook" }));
+
+    // Review of PR #60: ROLES_ENABLED= (empty: every role on) is set, not unset, so the old name never overrides it.
+    [Test]
+    public void AnEmptyRolesEnabled_TurnsEveryRoleOn_EvenWithTheOldNameSet() =>
+        Assert.That(With(("ROLES_ENABLED", ""), ("PERSONALITIES_ENABLED", "puls-cook")).RolesEnabled, Is.Empty);
+
+    private static string Stderr(Action action)
+    {
+        TextWriter original = Console.Error;
+        var stderr = new StringWriter();
+        Console.SetError(stderr);
+        try
+        {
+            LouisAgent.Core.Logging.AgentLogging.Configure(null);
+            action();
+        }
+        finally
+        {
+            Console.SetError(original);
+        }
+        return stderr.ToString();
+    }
+
+    // Review of PR #60: Puls's compose sets ROLES_ENABLED, and env_file passes config/.env's old name in too, so the
+    // warning must also show when both are set, saying the old one is ignored.
+    [Test, NonParallelizable]
+    public void TheOldSetting_BesideTheNewOne_IsSaidToBeIgnored() =>
+        Assert.That(Stderr(() => With(("ROLES_ENABLED", "puls-cook"), ("PERSONALITIES_ENABLED", "puls/voice-af"))),
+            Does.Contain("[WARN]").And.Contain("PERSONALITIES_ENABLED").And.Contain("ignored"));
+
+    [Test, NonParallelizable]
+    public void TheOldSetting_IsNamedInAWarning()
+    {
+        TextWriter original = Console.Error;
+        var stderr = new StringWriter();
+        Console.SetError(stderr);
+        try
+        {
+            LouisAgent.Core.Logging.AgentLogging.Configure(null);
+            With(("PERSONALITIES_ENABLED", "puls-cook"));
+        }
+        finally
+        {
+            Console.SetError(original);
+        }
+
+        Assert.That(stderr.ToString(), Does.Contain("[WARN]").And.Contain("PERSONALITIES_ENABLED").And.Contain("ROLES_ENABLED"));
+    }
 }

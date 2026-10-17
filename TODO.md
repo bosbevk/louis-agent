@@ -229,7 +229,7 @@ Design: [docs/specs/SESSION_ARCHITECTURE.md](docs/specs/SESSION_ARCHITECTURE.md)
 - [ ] [F25 Local cook](docs/features/F25-local-cook.md) — Puls's first local specialist: a South African meal, the recipe and a shopping list priced in rand at the shops near the user; the routing and the sources measured ([plan](docs/plans/F25-local-cook.md), [the run](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/sample-output-puls-cook/README.md)). The first of the *Local tools* above. Built; open:
       - [x] **Tavily, measured** ([one run from the portal](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/sample-output-cook-20261015-130521/README.md), 2026-10-15): no search refused, prices read from product pages, unconfirmed marks on the meals down from 20 to 2 and 0
       - [ ] **The cook's unconfirmed prices:** it writes *geskat* (an estimate) where its role says *unknown*; decide which, then measure again
-- [ ] [F29 Validated specialists](docs/features/F29-validated-specialists.md) — `PERSONALITIES_ENABLED` gates the roles an instance may use; Puls boots with `specialists` (then called `agents`) and `web`, answers the web itself and hands only cooking to the cook, until each other role has a report shape, a relay rule and a check like the cook's ([plan](docs/plans/F29-validated-specialists.md))
+- [ ] [F29 Validated specialists](docs/features/F29-validated-specialists.md) — `ROLES_ENABLED` (`PERSONALITIES_ENABLED` before CL14) gates the roles an instance may use; Puls boots with `specialists` (then called `agents`) and `web`, answers the web itself and hands only cooking to the cook, until each other role has a report shape, a relay rule and a check like the cook's ([plan](docs/plans/F29-validated-specialists.md))
 - [ ] [F26 Specialist follow-up](docs/features/F26-specialist-follow-up.md) — a sub-session stays open for its chat and Puls continues it by handle (`ContinueSubSession`), so a follow-up on the cook's meal goes to the same cook with its context, not to a new one cold ([plan](docs/plans/F26-specialist-follow-up.md)). Built; open:
       - [x] **The firmer follow-up rule, measured** ([one run from the portal](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/sample-output-cook-20261015-130521/README.md), 2026-10-15): every follow-up continued the same cook, 4 of 4, with `web` on Puls too (was 3 of 6 and 0 of 6)
       - [x] **The Werk panel names the role** and shows a continue as its own item (2026-10-15)
@@ -259,9 +259,11 @@ Design: [docs/specs/SESSION_ARCHITECTURE.md](docs/specs/SESSION_ARCHITECTURE.md)
 - [ ] **F33 follow-up: more shop catalogues** (to plan): Shoprite (Checkers' sister store, likely the same Sixty60
       catalogue), Pick n Pay and Woolworths as providers under `Tools/Shops/Providers`; and a delivery area per shop
       (Louis's Malmesbury idea: Checkers keeps it in cookies) for local stock.
-- [ ] **CL14 The public word: role** (to plan; CL13 renamed the code, `RoleNamingTests` lists what's left): `role` on `POST /sessions` and in `StartSubSession` (the
-      golden files move), `ROLES_ENABLED`, `GET /roles`, the web apps, the benchmarks' Python and the error texts; the
-      old names still accepted for a while.
+- [ ] **Remove CL14's aliases** (after a deploy, once every `config/.env` says `ROLES_ENABLED`): `personality` on
+      `POST /sessions` (`CreateSessionRequest.Personality`, `ApiUserText.RoleAndPersonalityDiffer`), `GET /personalities`
+      (`RolesView.Routes`), `PERSONALITIES_ENABLED` (`AgentOptions.RolesSetting`, the compose files' nested default);
+      `ApiRoleNamingTests` then allows nothing. The readers of recorded data (`stream.py`, `Delegation`, the benchmark
+      protocol and store, `SpecialistTools` reading a peer's reply) keep their fallback for good.
 - [ ] **F32 follow-up: one egress proxy for the browser** (to plan; review of PR #56): `puls-browser` reaches the
       internet only through a proxy that resolves each name once, refuses internal addresses and connects to the address
       it checked, so DNS rebinding (Chrome resolving again after `RenderPolicy` checked) and a Web Worker's WebSocket

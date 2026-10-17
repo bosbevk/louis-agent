@@ -149,7 +149,7 @@ Branches view to review and merge branches; pushing stays with you. How it works
 ## Skills, tools and safety
 
 The agent's tools cover files, git, `dotnet`, Python, PowerShell, bash, the web, Azure DevOps and Paymo; markdown
-**skills** in [`Skills/`](Skills) give it its personality, route each task to a toolset, and guide each toolset. A
+**skills** in [`Skills/`](Skills) give it its voice and role, route each task to a toolset, and guide each toolset. A
 session loads only the toolsets it needs. The agent can write new skills and build its own tools, which wait for your
 `/approve`. File tools stay inside the workspace and never touch secret files, the model's text is never spliced into a
 command line, and everything listens on `127.0.0.1` only. Details: [Architecture: Skills](docs/architecture/05-building-block-view.md#skills),

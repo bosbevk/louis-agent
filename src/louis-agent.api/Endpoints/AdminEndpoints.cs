@@ -92,7 +92,7 @@ internal static class AdminEndpoints
             {
                 run = RunRow(run),
                 settings = run.Settings,
-                modes = (run.Modes ?? []).Select(m => new { name = m.Name, repeat = m.Repeat, toolsets = m.Toolsets, personality = m.Personality, llm = m.Llm }),
+                modes = (run.Modes ?? []).Select(m => new { name = m.Name, repeat = m.Repeat, toolsets = m.Toolsets, role = m.Role, llm = m.Llm }),
                 log = run.Log,
                 conversations = conversations.Select(ConversationRow),
                 turns,

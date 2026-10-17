@@ -10,6 +10,7 @@ or fix doc (*What the build changed*), not here.
 
 | Plan | For | Approved | Notes |
 |---|---|---|---|
+| [CL14-public-word-role.md](CL14-public-word-role.md) | TODO: *CL14 The public word: role* | 2026-10-17 | "personality" becomes "role" where callers see it: the API (`role`, `GET /roles`), `StartSubSession(role)`, `ROLES_ENABLED`, the web apps and benchmarks; write the new word, read both, the input aliases removed after a deploy |
 | [CL13-skills-by-role.md](CL13-skills-by-role.md) | TODO: *CL13 Skills by role* (cleanup) | 2026-10-17 | `Skills/` in the seams' pattern: the contract at the top, `Providers/`, `Roles/`; "personality" becomes "role" in the code (`RoleCatalog`, `RoleLevel`, `RoleException`); the dead `PersonalitySkillsProvider` deleted; the public names in CL14 |
 | [F33-shop-catalogues.md](F33-shop-catalogues.md) | [F33 Shop catalogues](../features/F33-shop-catalogues.md) | 2026-10-17 | The guarded browser moved into `Tools/Web/Browsing`; `Tools/Shops` with `IShopCatalogue` and `Providers/CheckersCatalogue`, which reads Checkers' catalogue JSON through the page; a `shops` toolset off unless `SHOP_CATALOGUES` names the shop; the first plan with a namespace map |
 | [F32-self-hosted-web.md](F32-self-hosted-web.md) | [F32 Self-hosted web](../features/F32-self-hosted-web.md) | 2026-10-17 | SearXNG behind `IWebSearchProvider`, a headless Chrome behind `IPageRenderer` (PuppeteerSharp over CDP, every request held to `SsrfGuard`), both in the Puls stack on their own network; Tavily still selectable; MCP for the model its own feature |

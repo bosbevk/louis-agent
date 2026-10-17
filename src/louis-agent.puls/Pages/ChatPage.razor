@@ -323,7 +323,7 @@
     /// Puls's mode for a new chat (F21, CL9): <c>puls/voice-{code}</c>, its voice in the chosen language, then Puls's
     /// shared routing (louis-agent.core/Prompts/agent/puls/). A running chat keeps the voice it opened with.
     /// </summary>
-    private string Personality => $"puls/voice-{_language}";
+    private string Role => $"puls/voice-{_language}";
 
     /// <summary>Puls speaks Afrikaans unless this browser chose another language the API offers.</summary>
     private const string DefaultLanguage = "af";
@@ -672,19 +672,19 @@
         }
     }
 
-    /// <summary>The languages Puls can speak: a puls/voice-{code} for each in GET /personalities, so the menu and the API agree.</summary>
+    /// <summary>The languages Puls can speak: a puls/voice-{code} for each in GET /roles, so the menu and the API agree.</summary>
     private async Task LoadLanguagesAsync()
     {
         try
         {
-            var personalities = await Api.GetAsync<System.Text.Json.JsonElement>("personalities");
-            var codes = personalities.GetProperty("agent").EnumerateArray().Select(p => p.GetString() ?? "")
+            var roles = await Api.GetAsync<System.Text.Json.JsonElement>("roles");
+            var codes = roles.GetProperty("agent").EnumerateArray().Select(p => p.GetString() ?? "")
                 .Where(p => p.StartsWith("puls/voice-", StringComparison.Ordinal)).Select(p => p["puls/voice-".Length..]).ToList();
             if (codes.Count > 0) _languages = codes;
         }
         catch (Exception)
         {
-            // An older API without levels in /personalities: Afrikaans, as before CL9.
+            // An API without /roles or its levels: Afrikaans, as before CL9.
         }
         string? saved = await JS.InvokeAsync<string?>("pulsUi.loadLanguage");
         _language = saved is not null && _languages.Contains(saved) ? saved : _languages.Contains(DefaultLanguage) ? DefaultLanguage : _languages[0];
@@ -766,7 +766,7 @@
                 string[] own = ["specialists", "web"];
                 // The time zone always (GetToday in the user's own time; it names a region, not a place); the location only when set.
                 string? timeZone = await JS.InvokeAsync<string?>("pulsUi.timeZone");
-                string sessionId = await Api.CreateSessionAsync(available.Contains("specialists") ? own.Where(available.Contains).ToArray() : available, Personality,
+                string sessionId = await Api.CreateSessionAsync(available.Contains("specialists") ? own.Where(available.Contains).ToArray() : available, Role,
                     _location, timeZone);
                 _chat = new Chat { SessionId = sessionId, Title = TitleFor(text, attachments) };
                 Store.Chats.Insert(0, _chat);

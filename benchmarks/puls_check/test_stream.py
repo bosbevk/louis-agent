@@ -47,6 +47,13 @@ class EveryEvent(unittest.TestCase):
         turn = stream.read_turn([("error", {"type": "error", "error": {"type": "api_error", "message": "overloaded"}})])
         self.assertIn("overloaded", turn["error"])
 
+    def test_a_calls_role_is_its_role_and_a_recorded_calls_personality_too(self):
+        # CL14: StartSubSession's argument is "role"; the fixture, recorded before CL14, says "personality" and still reads.
+        call = {"type": "content_block_start", "content_block": {"type": "tool_use", "name": "StartSubSession", "input": {"role": "puls-cook"}}}
+        old = {"type": "content_block_start", "content_block": {"type": "tool_use", "name": "StartSubSession", "input": {"personality": "puls-cook"}}}
+        self.assertEqual(stream.read_turn([("content_block_start", call)])["role"], "puls-cook")
+        self.assertEqual(stream.read_turn([("content_block_start", old)])["role"], "puls-cook")
+
     def test_a_continue_is_a_delegation_to_the_same_handle(self):
         start = {"type": "content_block_start", "content_block": {"type": "tool_use", "id": "t1", "name": "ContinueSubSession", "input": {"handle": "sub-1"}}}
         turn = stream.read_turn([("content_block_start", start)])

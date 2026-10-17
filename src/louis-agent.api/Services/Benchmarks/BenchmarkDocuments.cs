@@ -26,7 +26,7 @@ public static class BenchmarkDocuments
         string? StoreError = null);
 
     /// <summary>A mode's repeat as it opened its sessions.</summary>
-    public sealed record Mode(string Name, int Repeat, IReadOnlyList<string> Toolsets, string? Personality, string? Llm);
+    public sealed record Mode(string Name, int Repeat, IReadOnlyList<string> Toolsets, string? Role, string? Llm);
 
     /// <summary>The run's cost, from the ledger with <c>UsageReport.Total</c>; <see cref="Cost"/> null when a price was unknown.</summary>
     public sealed record Total(decimal? Cost, string Currency, long Tokens, int Requests);

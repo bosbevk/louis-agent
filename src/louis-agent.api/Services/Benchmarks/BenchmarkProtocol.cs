@@ -23,7 +23,7 @@ public static class BenchmarkProtocol
     public sealed record ProtocolStarted(int Version, DateTimeOffset? At = null) : Event;
 
     /// <summary>A mode begins one repeat: what its sessions open with.</summary>
-    public sealed record ModeStarted(string Mode, int Repeat, IReadOnlyList<string> Toolsets, string? Personality, string? Llm,
+    public sealed record ModeStarted(string Mode, int Repeat, IReadOnlyList<string> Toolsets, string? Role, string? Llm,
         int? Conversations, DateTimeOffset? At = null) : Event;
 
     public sealed record QuestionAsked(TurnKey Key, string Session, string Text, DateTimeOffset? At = null) : Event;
@@ -61,7 +61,8 @@ public static class BenchmarkProtocol
             return Text(e, "event") switch
             {
                 "protocol" => new ProtocolStarted(Int(e, "version"), at),
-                "mode" => new ModeStarted(Required(e, "mode"), Int(e, "repeat"), Strings(e, "toolsets"), Text(e, "personality"),
+                "mode" => new ModeStarted(Required(e, "mode"), Int(e, "repeat"), Strings(e, "toolsets"),
+                    Text(e, "role") ?? Text(e, "personality"),   // CL14: a harness before CL14 said personality
                     Text(e, "llm"), OptionalInt(e, "conversations"), at),
                 "question" => new QuestionAsked(Turn(e), Required(e, "session"), Required(e, "text"), at),
                 "sse" => new SseEvent(Turn(e), Required(e, "type"), Json(e, "data"), at),

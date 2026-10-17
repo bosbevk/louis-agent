@@ -23,7 +23,7 @@ its check, so never hand anything else to a specialist.
 
 - A session's toolsets are fixed when it starts. Only call tools the session has loaded.
 - **If you have `StartSubSession` and the request needs a toolset you don't have, delegate it right away when the
-  table names a role for it** (today: the cook): call `StartSubSession(toolsets, message, personality)` with the
+  table names a role for it** (today: the cook): call `StartSubSession(toolsets, message, role)` with the
   toolsets **and the role**: the role tells the specialist its function and how to report back to you. Don't ask the
   user to start a new session or to choose; delegating is how this session works. The message is a note to a colleague
   in a fixed shape (the specialists guide, *Briefing the specialist*): `**Vir:**`, `**Wil hê:**`, `**Klink:**` (how the user

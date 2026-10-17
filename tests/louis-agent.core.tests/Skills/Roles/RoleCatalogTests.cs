@@ -30,7 +30,7 @@ public class RoleCatalogTests
         string docs = AgentHost.LoadSkills(Options(), [], role: null).Documentation;
 
         Assert.That(docs, Does.Contain("Louis's Minion"), "the default voice, louis-agent/voice (personality.md before CL9)");
-        Assert.That(docs, Does.Not.Contain("# Puls - Persoonlikheid"));
+        Assert.That(docs, Does.Not.Contain("# Puls - Stem"));
         Assert.That(docs, Does.Contain("# Louis Agent - Default Instructions"), "and its router");
     }
 
@@ -41,7 +41,7 @@ public class RoleCatalogTests
         string docs = AgentHost.LoadSkills(new AgentOptions(), [], "puls/voice-af").Documentation;
 
         Assert.That(RoleCatalog.DefaultVoice, Is.EqualTo("louis-agent/voice"));
-        Assert.That(docs.IndexOf("# Puls - Persoonlikheid", StringComparison.Ordinal),
+        Assert.That(docs.IndexOf("# Puls - Stem", StringComparison.Ordinal),
             Is.LessThan(docs.IndexOf("# Puls - Routing", StringComparison.Ordinal)));
         Assert.That(SkillFileSource.ReadEmbedded("agent/puls/voice.md"), Does.StartWith("# Puls - Routing"), "Puls's shared part");
     }
@@ -51,9 +51,9 @@ public class RoleCatalogTests
     {
         string docs = AgentHost.LoadSkills(Options(), [], "puls/voice-af").Documentation;
 
-        Assert.That(docs, Does.Contain("# Puls - Persoonlikheid"));
+        Assert.That(docs, Does.Contain("# Puls - Stem"));
         Assert.That(docs, Does.Not.Contain("Louis's Minion"));
-        Assert.That(docs.IndexOf("# Puls - Persoonlikheid", StringComparison.Ordinal),
+        Assert.That(docs.IndexOf("# Puls - Stem", StringComparison.Ordinal),
             Is.LessThan(docs.IndexOf("# Puls - Routing", StringComparison.Ordinal)), "who the agent is, before its routing");
     }
 
@@ -72,7 +72,7 @@ public class RoleCatalogTests
     public void AnUnknownName_IsRefused_ListingTheAvailable()
     {
         var ex = Assert.Throws<RoleException>(() => AgentHost.LoadSkills(Options(), [], "nobody"));
-        Assert.That(ex!.Message, Does.Contain("Unknown personality 'nobody'").And.EndWith("Available: louis-agent/voice, louis-agent/voice-orchestrator, puls/voice-af, puls/voice-en."));
+        Assert.That(ex!.Message, Does.Contain("Unknown role 'nobody'").And.EndWith("Available: louis-agent/voice, louis-agent/voice-orchestrator, puls/voice-af, puls/voice-en."));
     }
 
     [Test]
@@ -91,7 +91,7 @@ public class RoleCatalogTests
         Assert.That(RoleCatalog.Available(RoleLevel.Specialist), Is.SupersetOf(new[]
             { "puls-researcher", "puls-reader", "puls-historian", "puls-analyst", "puls-cook" }));
         Assert.That(RoleCatalog.Available(RoleLevel.Specialist), Does.Not.Contain("puls-specialist"), "CL10: no function of its own");
-        Assert.That(AgentHost.LoadSkills(new AgentOptions(), [], "puls/voice-af").Documentation, Does.Contain("# Puls - Persoonlikheid"));
+        Assert.That(AgentHost.LoadSkills(new AgentOptions(), [], "puls/voice-af").Documentation, Does.Contain("# Puls - Stem"));
         Assert.That(AgentHost.LoadSkills(new AgentOptions(), [], "puls-cook", RoleLevel.Specialist).Documentation,
             Does.Contain("Never invent a price"));
     }
@@ -110,8 +110,8 @@ public class RoleCatalogTests
         Assert.That(louis, Does.Not.Contain("puls-cook").And.Not.Contain("**Vir:**").And.Not.Contain("cook"), "no cook, no Afrikaans briefing");
     }
 
-    [TestCase("af", "# Puls - Persoonlikheid")]
-    [TestCase("en", "# Puls - Personality")]
+    [TestCase("af", "# Puls - Stem")]
+    [TestCase("en", "# Puls - Voice")]
     public void APulsLanguage_LoadsItsVoice_ThenPulsShared(string code, string voice)
     {
         // CL9 step 6 (Louis: "a puls/voice.md for shared things"): the language file says how Puls talks, voice.md routes.
@@ -166,7 +166,7 @@ public class RoleCatalogTests
         // CL8: a role opens only at its own level, so Puls's chat can't take the cook's role as its voice.
         var ex = Assert.Throws<RoleException>(() => AgentHost.LoadSkills(new AgentOptions(), [], "puls-cook", RoleLevel.Agent));
 
-        Assert.That(ex!.Message, Does.Contain("Unknown personality 'puls-cook'").And.EndWith("Available: louis-agent/voice, louis-agent/voice-orchestrator, puls/voice-af, puls/voice-en."));
+        Assert.That(ex!.Message, Does.Contain("Unknown role 'puls-cook'").And.EndWith("Available: louis-agent/voice, louis-agent/voice-orchestrator, puls/voice-af, puls/voice-en."));
     }
 
     [Test]
@@ -174,7 +174,7 @@ public class RoleCatalogTests
     {
         var ex = Assert.Throws<RoleException>(() => AgentHost.LoadSkills(new AgentOptions(), [], "puls/voice-af", RoleLevel.Specialist));
 
-        Assert.That(ex!.Message, Does.Contain("Unknown personality 'puls/voice-af'").And.Contain("puls-cook"));
+        Assert.That(ex!.Message, Does.Contain("Unknown role 'puls/voice-af'").And.Contain("puls-cook"));
     }
 
     [Test]
@@ -211,6 +211,23 @@ public class RoleCatalogTests
 
         Assert.That(text, Does.Contain("Use the fewest tool calls that answer the task").And.Contain("paid for again"));
     }
+
+    [Test]
+    public void ThePromptsTeach_StartSubSessionsRole()
+    {
+        // CL14 step 2: the model's word is role, in the tool's schema and in the prompts that teach it.
+        string router = SkillFileSource.ReadEmbedded("agent/puls/voice.md")!;
+        string guide = SkillFileSource.ReadEmbedded("toolsets/specialists.md")!;
+
+        Assert.That(router, Does.Contain("StartSubSession(toolsets, message, role)").And.Not.Contain("personality"));
+        Assert.That(guide, Does.Contain("Pass `role`").And.Contain("ROLES_ENABLED").And.Not.Contain("personality").IgnoreCase);
+    }
+
+    [TestCase("agent/louis-agent/voice.md", "# Louis's Minion - Voice")]
+    [TestCase("agent/puls/voice-en.md", "# Puls - Voice")]
+    [TestCase("agent/puls/voice-af.md", "# Puls - Stem")]
+    public void AVoicesHeading_SaysVoice(string file, string heading) =>
+        Assert.That(SkillFileSource.ReadEmbedded(file)!, Does.StartWith(heading));
 
     [Test]
     public void TheCook_AnswersForWhereTheUserIs_AndNeverInventsAPrice()
@@ -411,7 +428,7 @@ public class RoleCatalogTests
 
         string[] agentRows = agents.Split('\n').Where(r => r.StartsWith('|') && r.Contains("`puls-")).ToArray();
         Assert.That(agentRows, Has.Exactly(1).Items.And.All.Contains("`puls-cook`"), "the roles table keeps the cook");
-        Assert.That(agents, Does.Contain("## Waiting for validation").And.Contain("PERSONALITIES_ENABLED"));
+        Assert.That(agents, Does.Contain("## Waiting for validation").And.Contain("ROLES_ENABLED"));
     }
 
     [TestCase("agent/puls/voice.md")]

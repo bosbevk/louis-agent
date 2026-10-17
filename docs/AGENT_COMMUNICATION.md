@@ -119,13 +119,13 @@ sequenceDiagram
 
 | Endpoint | Request | Reply |
 |---|---|---|
-| `POST /sessions` | All optional. `task`, `run`, `service`: tags every usage record of the session (the orchestrator sends `fix:<error id>`, its run id and the service); each at most 200 printable characters. `toolsets`: the toolsets the session loads and keeps (F5; none gives `skills`). `personality`: a built-in one at the session's level (F21, CL8: a mode such as `puls/voice-af` at depth 0; none gives the default mode, `louis-agent/voice`, CL9). `llm`: a profile in the instance's `LLM_SESSION_PROFILES` (F30; none gives the instance's own model). `location` and `time_zone` (IANA): where the user is (F22). `depth` (0 or 1) and `parent` are sent by `StartSubSession` for a sub-session | `201 { "session_id", "created_at", "toolsets", "depth", "personality", "llm", "task", "run", "service", "parent" }`; a `400` for an unknown toolset, personality, LLM profile or time zone |
+| `POST /sessions` | All optional. `task`, `run`, `service`: tags every usage record of the session (the orchestrator sends `fix:<error id>`, its run id and the service); each at most 200 printable characters. `toolsets`: the toolsets the session loads and keeps (F5; none gives `skills`). `role`: a built-in one at the session's level (F21, CL8: a mode such as `puls/voice-af` at depth 0; none gives the default mode, `louis-agent/voice`, CL9; `personality`, its name before CL14, is still read when `role` is absent, and both, differing, is a `400`). `llm`: a profile in the instance's `LLM_SESSION_PROFILES` (F30; none gives the instance's own model). `location` and `time_zone` (IANA): where the user is (F22). `depth` (0 or 1) and `parent` are sent by `StartSubSession` for a sub-session | `201 { "session_id", "created_at", "toolsets", "depth", "role", "llm", "task", "run", "service", "parent" }`; a `400` for an unknown toolset, role, LLM profile or time zone |
 | `POST /sessions/{id}/messages` | `{ "message": "…", "attachments": [{ "name", "content" }] }`; each attachment is cut at 100,000 characters | Server-Sent Events (below) |
 | `POST /sessions/{id}/cancel` | — | `{ "cancelled": true }`; the stream ends with stop reason `cancelled` |
-| `GET /sessions/{id}` | — | `{ "session_id", "created_at", "last_activity", "busy", "toolsets", "depth", "personality", "llm", "tools", "task", "run", "service", "usage" }`: `tools` is how many tools the session's engine has; `usage` totals the session's finished turns (the object below), `null` when the API records no usage |
+| `GET /sessions/{id}` | — | `{ "session_id", "created_at", "last_activity", "busy", "toolsets", "depth", "role", "llm", "tools", "task", "run", "service", "sub_sessions", "usage" }`: `tools` is how many tools the session's engine has; `usage` totals the session's finished turns (the object below), `null` when the API records no usage |
 | `DELETE /sessions/{id}` | — | `{ "deleted": true }` |
 | `GET /toolsets` | — | `{ "default", "toolsets": [{ "name", "description", "available", "missing_settings" }] }`: what a session can load here, never the tool definitions |
-| `GET /personalities` | — | `{ "default": null, "personalities": [...] }` |
+| `GET /roles` | — | `{ "default", "agent": [...], "specialists": [...], "minions": [...] }`: the roles a session can choose, by level (`GET /personalities`, its name before CL14, answers the same) |
 | `GET /llm-profiles` | — | `{ "default": null, "profiles": [...] }`: the profiles a session may name besides the instance's model (F30) |
 | `GET /model` | — | `{ "provider", "model" }` |
 
@@ -423,10 +423,10 @@ next poll ([FX7](fixes/FX07-timeout-ends-run.md)). Only Ctrl+C ends a run early.
 ## Agent to agent: Puls and its specialists
 
 Puls (F5, F20–F22) is the same API built with its own web app. Its chats load the `specialists` and `web` toolsets, so for a cooking
-task the model calls `StartSubSession(toolsets, message, personality, attachments)`, and the tool:
+task the model calls `StartSubSession(toolsets, message, role, attachments)`, and the tool:
 
 1. opens `POST /sessions` on the peer named in `AGENT_PEERS` (or the only one), with the toolsets, `depth: 1`, the
-   role (`personality`, always named: the peer never derives one, CL10), the parent turn
+   `role` (always named: the peer never derives one, CL10), the parent turn
    (`{session}#{turn}`) and the user's place;
 2. sends the task with the named attachments, which come from the session, never through the model's output;
 3. reads the specialist's stream to the end, passing each event on as `sub_session`; if the answer is empty (all its

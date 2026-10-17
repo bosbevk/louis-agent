@@ -37,7 +37,7 @@ public class MinionToolsTests
         if (request.Method == HttpMethod.Post && request.RequestUri!.AbsolutePath == "/sessions")
         {
             creates.Add(JsonDocument.Parse(request.Content!.ReadAsStringAsync().Result));
-            return Json(HttpStatusCode.Created, """{"session_id":"sess_minion","personality":"puls-minion-web-price-lookup"}""");
+            return Json(HttpStatusCode.Created, """{"session_id":"sess_minion","role":"puls-minion-web-price-lookup"}""");
         }
         return request.Method.Method switch
         {
@@ -74,7 +74,7 @@ public class MinionToolsTests
 
         var body = creates.Single().RootElement;
         Assert.That(body.GetProperty("depth").GetInt32(), Is.EqualTo(2));
-        Assert.That(body.GetProperty("personality").GetString(), Is.EqualTo(Role));
+        Assert.That(body.GetProperty("role").GetString(), Is.EqualTo(Role), "CL14: the body says role");
         Assert.That(body.GetProperty("tool").GetString(), Is.EqualTo("FetchUrl"));
         Assert.That(body.GetProperty("llm").GetString(), Is.EqualTo("ollama-puls"), "the cheapest model in the role's list first");
         Assert.That(body.GetProperty("parent").GetString(), Is.EqualTo("sess_cook#2"), "the specialist's turn, so the ledger chains Puls → cook → minion");

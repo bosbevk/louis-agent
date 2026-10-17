@@ -17,13 +17,13 @@ public class BenchmarkSettingsTests
         {
             ["provider"] = "anthropic",
             ["model"] = "claude-haiku-5-5",
-            ["personalities_enabled"] = "puls/voice-af,puls-cook",
+            ["roles_enabled"] = "puls/voice-af,puls-cook",
             ["script"] = "benchmarks/cook/run_check.py",
             ["arguments"] = """["--personalities","puls-cook"]""",
         }));
     }
 
     [Test]
-    public void EveryPersonality_IsOn_WhenNoneAreListed() =>
-        Assert.That(BenchmarkSettings.Of(new BenchmarkCheck("c", "C", "s.py", []), "anthropic", "m", [])["personalities_enabled"], Is.EqualTo("(all)"));
+    public void EveryRole_IsOn_WhenNoneAreListed() =>
+        Assert.That(BenchmarkSettings.Of(new BenchmarkCheck("c", "C", "s.py", []), "anthropic", "m", [])["roles_enabled"], Is.EqualTo("(all)"));
 }

@@ -78,7 +78,7 @@ public sealed class AgentEngineFactory
     /// <summary>The named roles a session at <paramref name="level"/> can choose (F21, CL8), all built in.</summary>
     public IReadOnlyList<string> AvailableRoles(RoleLevel level) => AgentHost.EnabledRoles(_agent, level);
 
-    /// <summary>The mode of a level-0 session that names none (CL9): <c>GET /personalities</c>' <c>default</c>.</summary>
+    /// <summary>The mode of a level-0 session that names none (CL9): <c>GET /roles</c>' <c>default</c>.</summary>
     public string DefaultVoice => RoleCatalog.DefaultVoice;
 
     /// <summary>The profiles built so far: each its toolsets joined with commas, then |role, |level below level 0,
@@ -162,7 +162,7 @@ public sealed class AgentEngineFactory
         Log.Log(LogLevel.Information, LogMessage.ToolsetProfileBuilt, new
         {
             Toolsets = (resolved.Count == 0 ? "(none)" : string.Join(", ", resolved.Select(t => t.Name)))
-                + (role is null ? "" : $" · personality {role}") + (level == RoleLevel.Agent ? "" : $" · {level.ToString().ToLowerInvariant()}")
+                + (role is null ? "" : $" · role {role}") + (level == RoleLevel.Agent ? "" : $" · {level.ToString().ToLowerInvariant()}")
                 + (model is null ? "" : $" · llm {model.Name}") + (tool is null ? "" : $" · tool {tool}"),
             Tools = engine.Tools.Count,
             PromptChars = engine.SkillDocumentation.Length,

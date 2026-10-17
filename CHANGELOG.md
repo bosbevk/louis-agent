@@ -3,6 +3,13 @@
 > **Reference.** What was finished, newest first, one entry per feature, fix or cleanup. **Elsewhere:** what's still
 > open in the [TODO](TODO.md); how each was built in its feature, fix or plan doc (linked from its entry).
 
+- 2026-10-17 — **CL14 The public word: role**: what callers see says role: `POST /sessions` takes `role` and the session
+  JSON returns it, `GET /roles`, `ROLES_ENABLED`, the model's `StartSubSession(…, role, …)` and the prompts that teach
+  it, the voices' headings, the web apps and the benchmarks. Expand, then contract: the old words are still read
+  (`personality`, `GET /personalities`, `PERSONALITIES_ENABLED` with a warning) until a TODO line removes them, and
+  recorded data (stored runs, old chats, the stream fixture) is read either way for good. Checked by hand (free): the
+  language menu, a cook opened with either word, and a run stored before CL14 in the portal
+  ([plan](docs/plans/CL14-public-word-role.md))
 - 2026-10-17 — **CL13 Skills by role**: `Skills/` in the seams' pattern, the contract at the top, `Providers/`
   (`MarkdownSkillProvider`, `CompositeSkillProvider`) and `Roles/` (`RoleCatalog`, `RoleLevel`, `RoleException`,
   `RoleHeader`); "personality" becomes "role" in the code, `RoleNamingTests` holding it; the unused

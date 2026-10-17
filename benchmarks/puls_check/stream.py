@@ -39,7 +39,7 @@ def read_turn(events):
             arguments = block.get("input") or {}
             turn["calls"].append({"name": block["name"], "input": arguments})
             if block["name"] == "StartSubSession" and turn["role"] is None:
-                turn["role"] = arguments.get("personality")
+                turn["role"] = arguments.get("role") or arguments.get("personality")   # CL14: recorded before, personality
             elif block["name"] == "ContinueSubSession" and turn["continued"] is None:
                 turn["continued"] = arguments.get("handle")
         elif event == "content_block_delta":

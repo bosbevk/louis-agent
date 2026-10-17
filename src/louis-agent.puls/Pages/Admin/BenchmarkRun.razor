@@ -71,7 +71,7 @@ else
                 @foreach (var m in run.GetProperty("modes").EnumerateArray())
                 {
                     <dt>@m.GetProperty("name").GetString() · @m.GetProperty("repeat").GetInt32()</dt>
-                    <dd><code>@string.Join(", ", m.GetProperty("toolsets").EnumerateArray().Select(t => t.GetString()))</code>@(S(m, "personality") is { } p ? $" · {p}" : "")@(S(m, "llm") is { } l ? $" · {l}" : "")</dd>
+                    <dd><code>@string.Join(", ", m.GetProperty("toolsets").EnumerateArray().Select(t => t.GetString()))</code>@(S(m, "role") is { } p ? $" · {p}" : "")@(S(m, "llm") is { } l ? $" · {l}" : "")</dd>
                 }
             </dl>
         </details>

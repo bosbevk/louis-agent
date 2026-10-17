@@ -8,11 +8,8 @@ namespace LouisAgent.Core.Tests.Skills.Roles;
 // changes the public word with the old names still accepted.
 public class RoleNamingTests
 {
-    // The public contract's names, which CL14 renames: a tool's parameter is what the model reads.
-    private static readonly HashSet<string> ContractNames =
-    [
-        "SpecialistTools.StartSubSession(personality)",   // CL14: the model's StartSubSession argument
-    ];
+    // CL14 step 2 renamed the last one, StartSubSession's parameter, the word the model reads: nothing is left.
+    private static readonly HashSet<string> ContractNames = [];
 
     private const BindingFlags All = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance |
                                      BindingFlags.Static | BindingFlags.DeclaredOnly;

@@ -61,11 +61,11 @@ public class AgentHostSkillsTests
     [TestCase("puls-cook", RoleLevel.Specialist)]
     [TestCase(null, RoleLevel.Specialist)]
     [TestCase("puls-minion-web-price-lookup", RoleLevel.Minion)]   // F30: a minion always has a role
-    public void EveryPrompt_StartsWithThePrinciples(string? personality, RoleLevel level)
+    public void EveryPrompt_StartsWithThePrinciples(string? role, RoleLevel level)
     {
         // CL9 step 2: every agent, at every level, whatever its voice or role, gets the shared principles first, so no
         // later file can push them aside.
-        string docs = AgentHost.LoadSkills(Options(), [], personality, level).Documentation;
+        string docs = AgentHost.LoadSkills(Options(), [], role, level).Documentation;
 
         Assert.That(docs, Does.StartWith("# Principles"));
         Assert.That(docs, Does.Contain("An agent may never lie, cheat, steal or murder."));

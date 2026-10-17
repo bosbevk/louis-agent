@@ -117,9 +117,10 @@ public sealed class AgentOptions
     public IReadOnlyDictionary<string, Uri> AgentPeers { get; set; } = new Dictionary<string, Uri>();
 
     /// <summary>
-    /// PERSONALITIES_ENABLED (its name changes in CL14): the roles this instance may use (F29), comma separated and
-    /// lowercase, e.g. <c>puls,puls-cook</c>; a session or sub-session asking for another is refused as for an unknown
-    /// one. Empty: every built-in role. Puls's compose lists only the roles that have passed their check.
+    /// ROLES_ENABLED: the roles this instance may use (F29), comma separated and lowercase, e.g.
+    /// <c>puls/voice-af,puls-cook</c>; a session or sub-session asking for another is refused as for an unknown one.
+    /// Empty: every built-in role. Puls's compose lists only the roles that have passed their check. PERSONALITIES_ENABLED,
+    /// its name before CL14, is read when it's unset, with a warning, until the TODO's line removes it.
     /// </summary>
     public IReadOnlyList<string> RolesEnabled { get; set; } = [];
 
@@ -177,6 +178,21 @@ public sealed class AgentOptions
             .GroupBy(pair => pair[0].ToLowerInvariant())
             .ToDictionary(g => g.Key, g => new Uri(g.Last()[1].TrimEnd('/') + "/"), StringComparer.OrdinalIgnoreCase);
 
+    /// <summary>
+    /// ROLES_ENABLED, or PERSONALITIES_ENABLED (its name before CL14) when it's unset. Read raw: set but empty is "every
+    /// role on", never "unset" (review of PR #60). The old name, when set, is always said in a warning: renamed when it's
+    /// read, ignored when the new one is set too (Puls's compose sets ROLES_ENABLED, and env_file passes config/.env in).
+    /// </summary>
+    private static string? RolesSetting(Func<string, string?> raw)
+    {
+        string? roles = raw("ROLES_ENABLED");
+        string? old = raw("PERSONALITIES_ENABLED");
+        if (old is not null)
+            Log.Log(LogLevel.Warning, roles is null ? LogMessage.RolesSettingRenamed : LogMessage.RolesSettingIgnored,
+                new { Old = "PERSONALITIES_ENABLED", New = "ROLES_ENABLED" });
+        return roles ?? old;
+    }
+
     public static AgentOptions FromEnvironment(Func<string, string?>? getVariable = null)
     {
         getVariable ??= Environment.GetEnvironmentVariable;
@@ -217,7 +233,7 @@ public sealed class AgentOptions
             HostCulture = Get("HOST_CULTURE"),
             DisplayCurrency = Get("DISPLAY_CURRENCY"),
             AgentPeers = ParsePeers(Get("AGENT_PEERS")),
-            RolesEnabled = ParseNames(Get("PERSONALITIES_ENABLED")),
+            RolesEnabled = ParseNames(RolesSetting(getVariable)),
             SessionLlmProfiles = ParseNames(Get("LLM_SESSION_PROFILES")),
             MinionLlms = ParseMinionLlms(Get("MINION_LLMS")),
             AgentApiKey = Get("AGENT_API_KEY"),

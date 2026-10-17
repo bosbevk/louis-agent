@@ -102,10 +102,10 @@ public enum ErrorMessage
     [Description("Unknown toolset(s): {Names}. Valid names: {Valid}.")]
     UnknownToolsets,
 
-    [Description("'{Name}' isn't a personality name: use lowercase letters, digits and dashes, and one / between a product and its mode.")]
+    [Description("'{Name}' isn't a role name: use lowercase letters, digits and dashes, and one / between a product and its mode.")]
     RoleNameInvalid,
 
-    [Description("Unknown personality '{Name}'. Available: {Available}.")]
+    [Description("Unknown role '{Name}'. Available: {Available}.")]
     UnknownRole,
 
     [Description("Toolset '{Name}' needs {Settings} to be set on this instance.")]
