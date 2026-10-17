@@ -253,11 +253,9 @@ Design: [docs/specs/SESSION_ARCHITECTURE.md](docs/specs/SESSION_ARCHITECTURE.md)
 
 ### Tooling and repositories
 
-- [ ] [F32 Self-hosted web](docs/features/F32-self-hosted-web.md) — `WebSearch` through SearXNG in Docker and pages
-      drawn with JavaScript rendered by a headless Chrome (PuppeteerSharp), every request it makes held to the address
-      rule, so development and the benchmarks search and read any page with no key and no credits; the sold endpoint
-      keeps a licensed search API (Tavily) ([plan](docs/plans/F32-self-hosted-web.md)). Built 2026-10-17; open: the
-      cook check's baseline run from the portal (paid, Louis's go), then *Finishing a feature*.
+- [ ] **F32 follow-up: SearXNG's results** (from F32's run): filter them to the site asked for (Bing, often the one
+      engine answering, ignores `site:`), and retry once without the time range when a freshness filter leaves no
+      engine.
 - [ ] **F32 follow-up: one egress proxy for the browser** (to plan; review of PR #56): `puls-browser` reaches the
       internet only through a proxy that resolves each name once, refuses internal addresses and connects to the address
       it checked, so DNS rebinding (Chrome resolving again after `RenderPolicy` checked) and a Web Worker's WebSocket

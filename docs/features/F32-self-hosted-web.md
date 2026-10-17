@@ -1,7 +1,7 @@
 # F32 · Self-hosted web: search through SearXNG, pages rendered by a headless Chrome
 
-> **Status:** built (2026-10-17), on `feature/F32-self-hosted-web` (PR #56); open: the cook check's baseline run and a
-> Puls chat that searched and rendered with `TAVILY_API_KEY` unset (both paid, Louis's go) · **Milestone:** — · **Depends on:** F25 (the
+> **Status:** done (2026-10-17), on `feature/F32-self-hosted-web` (PR #56); its run shows why the cook still found no
+> prices, which F33 (shop catalogues) answers · **Milestone:** — · **Depends on:** F25 (the
 > renderer seam, `ReadRenderedPage`), FX16 (`VerifyQuote`'s fallback to the renderer), F31 (the cook check that
 > measures it)
 >
@@ -115,3 +115,15 @@ priced with sources, and what it cost.
   anyone else). `FetchUrl` doesn't have the gap: it checks the address it connects to. With the Worker's socket, this is
   the second thing one layer would close: an egress proxy for the browser that resolves once, refuses internal
   addresses and connects to the address it checked (a TODO line).
+- **The baseline run (2026-10-17, Louis's go): cook check `663d065ccca8`, 1 repeat, $0.057, 66 requests, 1.15M
+  tokens.** Search and rendering ran with no key: every search went through SearXNG (Bing the one engine answering; the
+  others refused, each named), pages through the headless Chrome, and the Tavily key, still set, was never used (Puls
+  and the cook both searched "via SearXNG", rendered with Chrome): done-when bullet 1, shown in a real run rather than
+  a separate chat. 104 of 112 tool calls worked (11b: every search refused); every conversation routed right. **But
+  the cook priced 0 ingredients with a source** (0/14, 0/11, 0/7). Free experiments the same day found why, none of
+  them the renderer's: the cook's prompt forbids the shops' search pages (a rule from Tavily Extract's failures);
+  Checkers ignores the `/search?q=` it guesses (its own search box sends `/search?Search=…`, which renders 61 results
+  with prices, no address needed; a Malmesbury address adds local stock, 69); Bing ignores `site:`; and a freshness
+  filter leaves SearXNG no engine. The page's own call (`/api/catalogue/get-products-filter`) answers with structured
+  products and exact prices, so **F33 (shop catalogues) reads them in code**, Checkers first, and its run is the one to
+  show prices.

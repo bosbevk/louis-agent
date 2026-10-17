@@ -3,6 +3,12 @@
 > **Reference.** What was finished, newest first, one entry per feature, fix or cleanup. **Elsewhere:** what's still
 > open in the [TODO](TODO.md); how each was built in its feature, fix or plan doc (linked from its entry).
 
+- 2026-10-17 — **F32 Self-hosted web**: `WebSearch` through SearXNG in the Puls stack (development and benchmarks
+  only, ADR 0023: the sold endpoint keeps Tavily) and pages drawn with JavaScript rendered by a headless Chrome
+  (PuppeteerSharp), every request a page makes held to the address rule and no WebSockets; both containers pinned by
+  digest, off the database's network. Choices are enums (ADR 0024); the web toolset is laid out by role (`Search/`,
+  `Rendering/`, each with its `Providers/`). Its run ($0.057) searched and rendered with no key but priced nothing:
+  F33 follows ([feature](docs/features/F32-self-hosted-web.md))
 - 2026-10-17 — **F31 Benchmarks in the admin portal**: the checks (`benchmarks/`: a shared Python harness, the cook
   check, the routing check and a free stub) run only from the portal, and the API records each run from the
   script's stdout line protocol into MongoDB (`puls-mongo`, `puls_benchmarks`), costed from the usage ledger; the
