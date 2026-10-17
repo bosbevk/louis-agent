@@ -12,13 +12,14 @@
 | **Ledger** | The usage ledger: one JSON line per model request, with its tokens and cost |
 | **Mode** | What a level-0 session names (CL9, ADR 0019): one file, its voice then its routing, `agent/{product}/{mode}.md`; the default is `louis-agent/voice` |
 | **Peer** | Another louis-agent API this one may open sub-sessions on (`AGENT_PEERS`) |
-| **Personality** | Who the agent is, in its level's folder under `louis-agent.core/Prompts/`: a mode at level 0 (`agent/`), a specialist's role at level 1 (`specialists/`) |
+| **Personality** | A role's name before CL13 (the code) and CL14 (the API); still read in recorded runs and as an alias |
 | **Principles** | `shared/principles.md`: never lie, cheat, steal or murder; first in every agent's prompt (ADR 0020) |
 | **Prefix** | The start of every request (tools, system prompt) that stays the same and is cached |
 | **Puls** | The general assistant in Afrikaans or English, which answers the web itself and hands cooking to its cook |
+| **Role** | What a session is, in its level's folder under `louis-agent.core/Prompts/`: a mode at level 0 (`agent/`), a specialist's role at level 1 (`specialists/`), a minion's function at level 2 (`minions/`); `RoleCatalog` in the code, `role` on the API |
 | **Router** | The routing part of a mode (CL9): after its voice, in the same file, it sends a task to the toolset it needs; level 0 only |
 | **Runbook** | The orchestrator's instructions for one API method of the service it watches |
-| **Session** | One conversation with its own history, toolsets and personality, fixed when it opens |
+| **Session** | One conversation with its own history, toolsets and role, fixed when it opens |
 | **Skill** | A markdown file of guidance, or a named procedure in one (`## Skill:`) that `ExecuteSkill` runs |
 | **Specialist** | A sub-session with a role (the cook; others off until they pass a check) that does one task and reports back; opened through the `specialists` toolset |
 | **Sub-session** | A session opened by another agent on a peer, one level deep (`StartSubSession`) |

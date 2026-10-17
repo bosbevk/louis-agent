@@ -189,11 +189,11 @@ Everything it sends uses LF line endings, whatever the checkout:
 Every toolset is a catalogue entry: a name, a one-line description, the settings it needs, its tool class and factory,
 and its guide (docs/CLAUDE.md, *Adding a toolset*). `files`, `git`, `dotnet`, `python`, `powershell`, `bash`, `web`,
 `paymo`, `devops`, `specialists` (sub-sessions on a peer, `AGENT_PEERS`) and `skills` (engine-provided). `AgentEngineFactory`
-builds one engine per profile, cached by its normalised toolset list, its personality and its level (F21, CL8;
+builds one engine per profile, cached by its normalised toolset list, its role and its level (F21, CL8;
 past 16 the least recently used is dropped), with only those tools and only their guides in the system prompt, and logs
 each profile's tool count and fixed-prefix estimate. The CLI, ACP server and MCP server use every
 toolset the instance can load; the API's sessions choose theirs. A sub-session (`SpecialistTools.StartSubSession`) runs
-on a peer with its own toolsets and its role (`personality`, named by the parent; with none it gets the default mode's voice,
+on a peer with its own toolsets and its `role` (named by the parent; with none it gets the default mode's voice,
 CL10), at most 3 per turn and 5 minutes each, and only its answer and a usage
 line come back; its usage records carry the parent turn (`parent`). An empty answer (the specialist used all its tool
 rounds) is asked for once more in the same session (FX11). A sub-session gets no routing: its toolsets were chosen for it
@@ -204,7 +204,7 @@ and it can't delegate.
 `AgentHost.LoadSkills(agent, toolsets, role, level)` builds a `CompositeSkillProvider` whose combined
 documentation is the system prompt; every file is plain markdown read by `MarkdownSkillProvider`:
 1. the principles (`shared/principles.md`, ADR 0020): never lie, cheat, steal or murder; the same for every agent
-2. the personality: at level 0 a mode (ADR 0019), its voice then its routing (which toolset a task needs, and how
+2. the role: at level 0 a mode (ADR 0019), its voice then its routing (which toolset a task needs, and how
    delegation works): the default `louis-agent/voice`, Puls's `puls/voice-af` or `puls/voice-en` (the language, then
    Puls's shared `puls/voice.md`), the orchestrator's `louis-agent/voice-orchestrator`; at level 1 a specialist's role
    (`puls-cook`), which says its function and how to report; no routing below level 0

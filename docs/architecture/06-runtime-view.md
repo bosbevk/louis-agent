@@ -4,7 +4,7 @@
 > step by step with its guards, what each host shows, and the scenarios that span several agents. **Elsewhere:** every
 > message on the wire in [AGENT_COMMUNICATION.md](../AGENT_COMMUNICATION.md); adding
 > [a C# tool](../../louis-agent.core/CLAUDE.md#adding-a-c-tool), [a toolset](../../louis-agent.core/CLAUDE.md#adding-a-toolset),
-> [a skill](../CLAUDE.md#adding-a-skill), [a personality](../CLAUDE.md#adding-a-personality) or
+> [a skill](../CLAUDE.md#adding-a-skill), [a mode or a role](../CLAUDE.md#adding-a-mode-or-a-role) or
 > [another agent on core](../../louis-agent.core/CLAUDE.md#building-another-agent-on-core) in the development guides.
 
 ## Two kinds of capability
@@ -47,7 +47,7 @@ without its API key) can't be loaded. An agent built on core, like the orchestra
 
 `AgentHost.LoadSkills` combines, in this order:
 1. **the principles** (`shared/principles.md`), the same for every agent (ADR 0020);
-2. **the personality**: at level 0 the session's mode, its voice then its routing (ADR 0019: the default
+2. **the role**: at level 0 the session's mode, its voice then its routing (ADR 0019: the default
    `louis-agent/voice`, or Puls's language file then `puls/voice.md`); at level 1 a specialist's role from
    `specialists/`, with no routing, since its toolsets were chosen for it;
 3. **the guide of each toolset the session loaded** (`toolsets/{toolset}.md`) and no other (F5);

@@ -9,7 +9,7 @@
 Puls is the general assistant's web app: a South African AI assistant in everyday Afrikaans that answers by handing each
 task to a specialist (F5) and shows that work as it happens. It's chat only: its sessions load `specialists` and `web`
 (F29; `agents`, as it was called before CL9, alone before it), so Puls answers the web itself and delegates to its peer (`puls-agent`) with a role
-(F21) and only the toolsets the task needs; only a validated role is on (`PERSONALITIES_ENABLED`: the cook, F25). Pay
+(F21) and only the toolsets the task needs; only a validated role is on (`ROLES_ENABLED`: the cook, F25). Pay
 as you go: every answer shows what it cost, specialists included.
 
 ## How it works
@@ -17,7 +17,7 @@ as you go: every answer shows what it cost, specialists included.
 - **Pages:** `/` is the landing page (`LandingPage.razor`). The app is one page, `ChatPage.razor`, at `/gesels`,
   `/gesels/{id}` (old `/chat/{id}` links move there), `/verken` and `/studio`; it redraws on every address change, since
   Blazor wouldn't for the same page with the same parameters.
-- **A chat** opens `POST /sessions` with `toolsets: ["agents", "web"]` (F29), `personality: "puls"` (F21) and, when the user shared it,
+- **A chat** opens `POST /sessions` with `toolsets: ["agents", "web"]` (F29), `role: "puls/voice-af"` (F21, CL9, CL14) and, when the user shared it,
   `location` and `time_zone` (F22). Messages stream over SSE; `TurnStream` (shared) folds them, sub-session events
   included, into the turn the page shows.
 - **Three panels:** the sidebar (search, Verken, Studio, favourites, projects, recent, archive, profile and settings),
