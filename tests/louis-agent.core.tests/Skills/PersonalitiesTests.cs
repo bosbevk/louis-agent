@@ -255,6 +255,20 @@ public class PersonalitiesTests
     }
 
     [Test]
+    public void TheCook_PricesAShopWithACatalogue_ThroughFindProducts_First()
+    {
+        // F33 step 4: F32's run priced nothing; Checkers' own catalogue gives exact, linked prices. Where the cook has
+        // FindProducts (the shops toolset, its own: `toolsets: shops?`), a shop it covers in the town is one of the two,
+        // priced through it before any web search, each price linked to the product the table gives.
+        string cook = SkillFileSource.ReadEmbedded(Personalities.SpecialistsFolder + "/puls-cook.md")!;
+
+        Assert.That(cook, Does.StartWith("---\ntoolsets: shops?\n---").Or.StartWith("---\r\ntoolsets: shops?\r\n---"));
+        Assert.That(cook, Does.Contain("`FindProducts`").And.Contain("before any `WebSearch`"));
+        Assert.That(cook, Does.Contain("one of the two"), "a shop with a catalogue is picked first");
+        Assert.That(cook, Does.Contain("the link the table gives"), "its source");
+    }
+
+    [Test]
     public void TheCook_WritesItsReportInOneShape_ThatPulsHandsOn()
     {
         // Louis: "force Puls to output the data as the cook said it, and conform the cook's output". The report is

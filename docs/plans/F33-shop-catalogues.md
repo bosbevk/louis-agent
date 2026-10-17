@@ -241,3 +241,16 @@ above); F33's run is the one that shows prices.
   (`IReadOnlyList<ShopKind>`), step 3 parsing them from `SHOP_CATALOGUES`; `ShopProduct.UnitOfMeasure` is never null
   ("kg" or "each"). The browser now navigates to `AbsoluteUri` (the escaped address) rather than `ToString()`. The two
   catalogue messages came in step 2, so the golden file moved in step 2 as well as 3.
+- **2026-10-17, in step 4: the cook loads `shops` itself, where the instance has it** (Louis: "the cook always load
+  the tool, puls should not pass it … here we want the cook to have the tool always"; then, of three places for it,
+  "In the role's file"; and optional toolsets for instances without it). The plan had Puls pass `web, shops`; a
+  specialist instance without `SHOP_CATALOGUES` (the sold endpoint) would then have refused the cook. Instead:
+  - **Optional toolsets:** a name ending in `?` loads when this instance has the toolset and is skipped, logged
+    (`LogMessage.OptionalToolsetSkipped`), when it doesn't; an unknown name is refused, `?` or not; named both ways,
+    the required one wins (`ToolsetCatalog.NameOf`, `Normalise`, `Resolve`). `AgentSessions` holds the plain names to
+    its delegation rules and records the toolsets a session loaded.
+  - **A role's header:** `Skills/RoleHeader` (`LouisAgent.Core.Skills`, new) reads `---` / `toolsets: shops?` / `---`
+    at the top of a role's file, and the prompt reader strips it, so the model never sees it;
+    `Personalities.ToolsetsOf(role, level)` gives them, and `AgentSessions` adds them to what the parent passed, before
+    the rules. `puls-cook.md` declares `shops?`; Puls's routing still passes `web` alone.
+  - `SHOP_CATALOGUES=checkers` is set on this development machine (`config/.env`, git-ignored), not by the compose file.

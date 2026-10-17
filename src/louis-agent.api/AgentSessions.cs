@@ -162,15 +162,21 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
         var names = ToolsetCatalog.Normalise(depth == MinionDepth && toolsets is null ? [ToolsetCatalog.ToolsetOf(tool!)
                 ?? throw new ToolsetException(MessageText.Format(ErrorMessage.NoToolsetForTool, new { Tool = tool }))]
             : toolsets ?? DefaultToolsets);
-        if (depth > 0 && names.Contains(SpecialistsToolset))
+        // A role's own toolsets (F33: the cook's `shops?`, from its file's header) come with it, beside what its parent
+        // passed; then every name, optional or not, is held to the same rules.
+        names = ToolsetCatalog.Normalise(names.Concat(Personalities.ToolsetsOf(personality, (SkillLevel)depth)));
+        var plain = names.Select(ToolsetCatalog.NameOf).ToList();
+        if (depth > 0 && plain.Contains(SpecialistsToolset))
             throw new ToolsetException(MessageText.Format(ErrorMessage.SubSessionCannotDelegate, new { Toolset = SpecialistsToolset }));
-        if (depth == MinionDepth && names.Contains(MinionsToolset))
+        if (depth == MinionDepth && plain.Contains(MinionsToolset))
             throw new ToolsetException(MessageText.Format(ErrorMessage.SubSessionCannotDelegate, new { Toolset = MinionsToolset }));
-        if (depth == 0 && names.Contains(MinionsToolset))
+        if (depth == 0 && plain.Contains(MinionsToolset))
             throw new ToolsetException(MessageText.Format(ErrorMessage.MinionsOnlyForSpecialists));
         if (string.IsNullOrEmpty(personality)) personality = null;
         // A sub-session's role is named by its parent (CL10); with none it gets the default mode's voice, no routing.
         if (string.IsNullOrWhiteSpace(llm)) llm = null;
+        // What the session loads: an optional toolset this instance lacks is left out, and the session says so.
+        names = ToolsetCatalog.Resolve(names, engines.Context).Select(t => t.Name).ToList();
         var engine = engines.GetOrCreate(names, personality, (SkillLevel)depth, llm, tool);
 
         DropIdle(DateTimeOffset.UtcNow);

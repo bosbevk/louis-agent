@@ -75,3 +75,8 @@ the run shows priced ingredients with sources.
   or the toolset is unavailable. Its guide (`toolsets/shops.md`) says to ask the shop before the web and to link each
   price to its product; the coding agent's routing names it. The golden files gained the tool, its guide, the routing
   row and six messages; the snapshot sets a placeholder shop and browser, as it does Paymo's key.
+- **Step 4 (2026-10-17): the cook has the shops, always, where they are.** Its file's header declares `toolsets:
+  shops?`, which the loader strips; `?` makes a toolset optional (loaded where the instance has it, skipped and logged
+  where it doesn't), so the sold endpoint, without `SHOP_CATALOGUES`, still cooks with the web. Its prompt prices a shop
+  `FindProducts` covers through it first (one call per ingredient, the price linked to the product the table gives), and
+  makes that shop one of the two when it's in the town. On this machine `puls-agent` lists `shops` as available.

@@ -67,6 +67,41 @@ public class AgentSessionsTests
     }
 
     [Test]
+    public void AnOptionalToolset_ThisInstanceLacks_IsLeftOut_AndTheSessionSaysWhatItLoaded()
+    {
+        // F33 step 4: Puls hands the cook `web` and `shops?`; here SHOP_CATALOGUES isn't set, so the cook gets web alone.
+        var session = Sessions().Create(["web", "shops?"], depth: 1);
+
+        Assert.That(session.Toolsets, Is.EqualTo(new[] { "web" }));
+        Assert.That(Names(session), Does.Contain("WebSearch").And.Not.Contain("FindProducts"));
+    }
+
+    [Test]
+    public void TheCook_LoadsItsOwnToolsets_BesideWhatPulsPasses()
+    {
+        // F33 step 4 (Louis): the cook always loads the shops; Puls passes `web` only. Here SHOP_CATALOGUES is set.
+        var sessions = new AgentSessions(new AgentEngineFactory(new NoModel(), new AgentOptions
+        {
+            WorkspaceRoot = RepoRoot, SkillsDirectory = Path.Combine(RepoRoot, "Skills"), RatesUrl = null,
+            ShopCatalogues = "checkers", BrowserUrl = "http://puls-browser:9222",
+        }));
+
+        var cook = sessions.Create(["web"], depth: 1, personality: "puls-cook");
+
+        Assert.That(cook.Toolsets, Is.EqualTo(new[] { "web", "shops" }));
+        Assert.That(Names(cook), Does.Contain("FindProducts").And.Contain("WebSearch"));
+    }
+
+    [Test]
+    public void TheCook_WithoutShopsOnThisInstance_StillCooks_WithTheWeb() =>
+        Assert.That(Sessions().Create(["web"], depth: 1, personality: "puls-cook").Toolsets, Is.EqualTo(new[] { "web" }));
+
+    [Test]
+    public void AnOptionalMark_DoesntGetPastTheDelegationRules() =>
+        Assert.That(() => Sessions().Create(["specialists?"], depth: 1),
+            Throws.TypeOf<ToolsetException>().With.Message.Contain("delegates"));
+
+    [Test]
     public void ASubSession_CantLoadSpecialists_AndDepthStopsAtTheMinion()
     {
         var sessions = Sessions();

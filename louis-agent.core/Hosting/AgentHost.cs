@@ -414,7 +414,8 @@ public static partial class AgentHost
         if (SkillFileSource.ReadEmbedded(fileName) is { } builtIn)
         {
             if (onDisk is not null && File.Exists(onDisk)) Log.Log(LogLevel.Warning, LogMessage.BuiltInCopyIgnored, new { File = onDisk });
-            return (builtIn, false);
+            // A role's header (its own toolsets, F33) is for the loader, never the model.
+            return (RoleHeader.Split(builtIn).Body, false);
         }
         // Only the agent's own files are read from disk: a personality or a guide is built in, or it isn't one.
         bool agentWritten = fileName.StartsWith(SkillFiles.FunctionsFolder + "/", StringComparison.Ordinal);

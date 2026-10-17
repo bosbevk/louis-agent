@@ -1,5 +1,6 @@
 namespace LouisAgent.Core.Agent;
 
+using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Tools.Agents;
@@ -11,6 +12,7 @@ using LouisAgent.Core.Tools.Shell;
 using LouisAgent.Core.Tools.Shops;
 using LouisAgent.Core.Tools.Web;
 using LouisAgent.Core.Tools.Workspace;
+using Microsoft.Extensions.Logging;
 
 /// <summary>
 /// The toolsets a session can load (F5). Nothing is loaded by default: a session names the toolsets it needs, and
@@ -18,6 +20,8 @@ using LouisAgent.Core.Tools.Workspace;
 /// </summary>
 public static class ToolsetCatalog
 {
+    private static readonly ILogger Log = AgentLogging.For<ToolsetDefinition>();
+
     /// <summary>Every toolset, in the order <c>GET /toolsets</c> lists them.</summary>
     public static IReadOnlyList<ToolsetDefinition> All { get; } =
     [
@@ -138,41 +142,63 @@ public static class ToolsetCatalog
     public static ToolsetDefinition? Find(string name) =>
         All.FirstOrDefault(t => string.Equals(t.Name, name, StringComparison.OrdinalIgnoreCase));
 
+    /// <summary>The mark of an optional toolset (F33): <c>shops?</c> loads when this instance has it, else is skipped.</summary>
+    public const char OptionalMark = '?';
+
+    /// <summary>A toolset's name without its optional mark.</summary>
+    public static string NameOf(string name) => name.TrimEnd(OptionalMark);
+
+    private static bool IsOptional(string name) => name.EndsWith(OptionalMark);
+
     /// <summary>
     /// Cleans a client's list: trims, lowercases, drops empty entries and duplicates, and sorts it, so the same set
-    /// always gives the same engine (the engine cache and the cached prefix both depend on that).
+    /// always gives the same engine (the engine cache and the cached prefix both depend on that). An optional name keeps
+    /// its mark; named both ways, the required one wins.
     /// </summary>
-    public static IReadOnlyList<string> Normalise(IEnumerable<string>? names) =>
-        (names ?? [])
+    public static IReadOnlyList<string> Normalise(IEnumerable<string>? names)
+    {
+        var cleaned = (names ?? [])
             .Select(n => (n ?? string.Empty).Trim().ToLowerInvariant())
-            .Where(n => n.Length > 0)
-            .Distinct(StringComparer.Ordinal)
+            .Where(n => NameOf(n).Length > 0)
+            .ToList();
+        return cleaned
+            .GroupBy(NameOf, StringComparer.Ordinal)
+            .Select(g => g.Any(n => !IsOptional(n)) ? g.Key : g.Key + OptionalMark)
             .Order(StringComparer.Ordinal)
             .ToList();
+    }
 
     /// <summary>
     /// Resolves a client's request to definitions, in the order of <see cref="All"/>. Throws
-    /// <see cref="ToolsetException"/> for an unknown name (listing the valid ones) or a toolset whose settings are
-    /// missing on this instance (listing them), before any tool is built.
+    /// <see cref="ToolsetException"/> for an unknown name (listing the valid ones; an optional one too, so a typo is never
+    /// skipped in silence) or a required toolset whose settings are missing on this instance (listing them), before any
+    /// tool is built. An optional toolset (<c>shops?</c>) whose settings are missing is left out, and the log says why.
     /// </summary>
     public static IReadOnlyList<ToolsetDefinition> Resolve(IEnumerable<string>? names, ToolsetContext context)
     {
         var requested = Normalise(names);
 
-        var unknown = requested.Where(n => Find(n) is null).ToList();
+        var unknown = requested.Where(n => Find(NameOf(n)) is null).ToList();
         if (unknown.Count > 0)
             throw new ToolsetException(MessageText.Format(ErrorMessage.UnknownToolsets,
                 new { Names = string.Join(", ", unknown), Valid = string.Join(", ", All.Select(t => t.Name)) }));
 
-        var resolved = All.Where(t => requested.Contains(t.Name, StringComparer.Ordinal)).ToList();
+        var optional = requested.Where(IsOptional).Select(NameOf).ToHashSet(StringComparer.Ordinal);
+        var resolved = All.Where(t => requested.Select(NameOf).Contains(t.Name, StringComparer.Ordinal)).ToList();
 
         var unavailable = resolved
-            .Select(t => (t.Name, Missing: t.MissingSettings(context)))
+            .Select(t => (Toolset: t, Missing: t.MissingSettings(context)))
             .Where(x => x.Missing.Count > 0)
             .ToList();
-        if (unavailable.Count > 0)
-            throw new ToolsetException(string.Join(" ", unavailable.Select(x => MessageText.Format(ErrorMessage.ToolsetSettingsMissing,
-                new { x.Name, Settings = string.Join(", ", x.Missing) }))));
+        foreach (var skipped in unavailable.Where(x => optional.Contains(x.Toolset.Name)))
+        {
+            Log.Log(LogLevel.Information, LogMessage.OptionalToolsetSkipped, new { skipped.Toolset.Name, Settings = string.Join(", ", skipped.Missing) });
+            resolved.Remove(skipped.Toolset);
+        }
+        var refused = unavailable.Where(x => !optional.Contains(x.Toolset.Name)).ToList();
+        if (refused.Count > 0)
+            throw new ToolsetException(string.Join(" ", refused.Select(x => MessageText.Format(ErrorMessage.ToolsetSettingsMissing,
+                new { x.Toolset.Name, Settings = string.Join(", ", x.Missing) }))));
 
         return resolved;
     }
