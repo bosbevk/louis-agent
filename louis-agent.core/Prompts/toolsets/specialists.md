@@ -83,9 +83,9 @@ on, its row comes back here.
 more than a few files go to `puls-analyst` with `files` and `python` (or `bash`): a script counts in one call. With
 `files` alone the reader reads every file into its context, which is slow and costs many times more.
 
-For a mix led by one kind (`files` and `git` to explain a change), pass the role of the main part. If you pass none,
-the peer picks one from the toolsets (its `roles.json`). If the peer doesn't know a role, the call is refused with the
-ones it has: call again with one of those, or with none.
+For a mix led by one kind (`files` and `git` to explain a change), pass the role of the main part. Always name the
+role: the peer never picks one for you. If the peer doesn't know a role, the call is refused with the ones it has: call
+again with one of those.
 
 ## Writing the message
 

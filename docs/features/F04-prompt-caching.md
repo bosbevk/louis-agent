@@ -214,12 +214,12 @@ step 6.
 
 ## What the build found
 
-**Result** ([benchmark](../BENCHMARKS.md#f4-benchmark-2026-10-11)): the full demo cost **$0.1334 against $0.6586 for M1
+**Result** ([benchmark](https://github.com/bosbevk/louis-agent/blob/pre-cl10/docs/BENCHMARKS.md#f4-benchmark-2026-10-11)): the full demo cost **$0.1334 against $0.6586 for M1
 (−80%)**, louis-agent's input cost **−87%** (target ≥ 60%), cache-hit rate 98%, **10/10 fixes confirmed**; the prefix
 per fix about −88%. The short demo: $0.0488 against $0.2884 uncached (−83%). Saved in
-[samples/sample-output-cached/](../../samples/sample-output-cached/README.md) and
-[-short-cached/](../../samples/sample-output-short-cached/README.md); the smoke check in
-[samples/smoke-f4-caching/](../../samples/smoke-f4-caching/README.md).
+[samples/sample-output-cached/](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/sample-output-cached/README.md) and
+[-short-cached/](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/sample-output-short-cached/README.md); the smoke check in
+[samples/smoke-f4-caching/](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/smoke-f4-caching/README.md).
 
 **What was built, against the design above:**
 

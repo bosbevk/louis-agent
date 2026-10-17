@@ -37,7 +37,7 @@ its own.
       prices, `num_ctx` sent to local models, and F9's compaction point (below the price step: under 100k on Haiku 5.5)
       and F13's budget per model instead of one number for all. *From the local triage runs:* `num_ctx` and `num_gpu`
       per request for the orchestrator (8k fits fully on a 4 GB GPU, 32k doesn't), and `think: false` sent when
-      thinking is off ([Local triage](docs/BENCHMARKS.md#local-triage-2026-10-12))
+      thinking is off ([Local triage](https://github.com/bosbevk/louis-agent/blob/pre-cl10/docs/BENCHMARKS.md#local-triage-2026-10-12))
 
 **M3 — In control:** know the cost before, stop cleanly at a limit.
 
@@ -162,8 +162,8 @@ the product parts.
 Design and open decisions: [docs/specs/ORCHESTRATOR_DESIGN.md](docs/specs/ORCHESTRATOR_DESIGN.md).
 
 - [ ] **Relook at how often Puls delegates (Louis, 2026-10-14):** maybe too often. In every delegation check
-      ([roles](samples/sample-output-puls-check-roles/README.md), [after FX10–FX12](samples/sample-output-puls-check-fixes/README.md),
-      [three runs after FX10–FX14](samples/sample-output-puls-check-repeat/README.md): +31% on average) delegating cost more than one agent answering, except plain chat and some web research: each
+      ([roles](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/sample-output-puls-check-roles/README.md), [after FX10–FX12](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/sample-output-puls-check-fixes/README.md),
+      [three runs after FX10–FX14](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/sample-output-puls-check-repeat/README.md): +31% on average) delegating cost more than one agent answering, except plain chat and some web research: each
       specialist starts cold and the answer is written twice. Options to measure: Puls keeps cheap read-only
       toolsets itself (`files`, `git`, `web`) and delegates only long or risky work; a rule for when a task is worth a
       specialist; F5's *Done when* ("delegate only where the ledger shows it is cheaper"). The next check runs on a
@@ -197,10 +197,11 @@ Design: [docs/specs/SESSION_ARCHITECTURE.md](docs/specs/SESSION_ARCHITECTURE.md)
             carried as a string to the specialist, so it arrives mangled; send it as base64 with its media type and
             read it with `DocumentText` (found in the docs review, 2026-10-14)
 - [ ] [F21 Personalities](docs/features/F21-personalities.md) — each session (and sub-session) names its personality; Puls speaks everyday South African Afrikaans ([plan](docs/plans/F21-personalities.md)). Built; open: Louis's corrections to the Afrikaans (the delegation check's `answers.md`).
-- [ ] **Clear the decks** (cleanup, CL10; to plan after CL9 merges, before F30 step 4) — remove the samples (the
-      recorded runs, both checks and the order-service demo, keeping runbooks for the orchestrator's tests) and
-      `BENCHMARKS.md`, to be redone after F30's minions; remove `roles.json`, `RoleFor` and `puls-specialist`; keep the
-      other specialists, off by `PERSONALITIES_ENABLED`; the admin portal's Benchmarks page says the checks are coming back
+- [ ] **Benchmarks in the admin portal** (a feature, to plan; after F30's build steps, before its minions are measured)
+      — check scripts in `benchmarks/{check}/`, run only from the admin portal, results stored in Louis's local SQL
+      Server, database `puls_benchmarks` (connection in `config/.env.secrets`; the SQL client package chosen from three
+      options); the admin screen planned with a proper layout before it's built. F30's hand check and measured run go
+      through it
 - [ ] **Next up: a faster, cheaper cook** (to plan; Louis, 2026-10-15: "can we have a subsession allow him to spawn
       web sessions for each task"). The cook does every search and fetch itself, one at a time, and every page it reads
       stays in its context and is paid for again on each later request (400–800k tokens and up to 183 s a meal turn).
@@ -220,12 +221,12 @@ Design: [docs/specs/SESSION_ARCHITECTURE.md](docs/specs/SESSION_ARCHITECTURE.md)
             parallel, each returning a small table. Needs: `specialists` at depth 1 for the cook only (in code), a peer for
             `puls_agent`, `AllowConcurrentInvocation` with thread-safe guards, a per-depth limit instead of
             `MaxPerTurn = 3`, the ledger roll-up through two levels, the Werk card nested
-- [ ] [F25 Local cook](docs/features/F25-local-cook.md) — Puls's first local specialist: a South African meal, the recipe and a shopping list priced in rand at the shops near the user; the routing and the sources measured ([plan](docs/plans/F25-local-cook.md), [the run](samples/sample-output-puls-cook/README.md)). The first of the *Local tools* above. Built; open:
-      - [x] **Tavily, measured** ([one run from the portal](samples/sample-output-cook-20261015-130521/README.md), 2026-10-15): no search refused, prices read from product pages, unconfirmed marks on the meals down from 20 to 2 and 0
+- [ ] [F25 Local cook](docs/features/F25-local-cook.md) — Puls's first local specialist: a South African meal, the recipe and a shopping list priced in rand at the shops near the user; the routing and the sources measured ([plan](docs/plans/F25-local-cook.md), [the run](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/sample-output-puls-cook/README.md)). The first of the *Local tools* above. Built; open:
+      - [x] **Tavily, measured** ([one run from the portal](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/sample-output-cook-20261015-130521/README.md), 2026-10-15): no search refused, prices read from product pages, unconfirmed marks on the meals down from 20 to 2 and 0
       - [ ] **The cook's unconfirmed prices:** it writes *geskat* (an estimate) where its role says *unknown*; decide which, then measure again
 - [ ] [F29 Validated specialists](docs/features/F29-validated-specialists.md) — `PERSONALITIES_ENABLED` gates the roles an instance may use; Puls boots with `specialists` (then called `agents`) and `web`, answers the web itself and hands only cooking to the cook, until each other role has a report shape, a relay rule and a check like the cook's ([plan](docs/plans/F29-validated-specialists.md))
 - [ ] [F26 Specialist follow-up](docs/features/F26-specialist-follow-up.md) — a sub-session stays open for its chat and Puls continues it by handle (`ContinueSubSession`), so a follow-up on the cook's meal goes to the same cook with its context, not to a new one cold ([plan](docs/plans/F26-specialist-follow-up.md)). Built; open:
-      - [x] **The firmer follow-up rule, measured** ([one run from the portal](samples/sample-output-cook-20261015-130521/README.md), 2026-10-15): every follow-up continued the same cook, 4 of 4, with `web` on Puls too (was 3 of 6 and 0 of 6)
+      - [x] **The firmer follow-up rule, measured** ([one run from the portal](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/sample-output-cook-20261015-130521/README.md), 2026-10-15): every follow-up continued the same cook, 4 of 4, with `web` on Puls too (was 3 of 6 and 0 of 6)
       - [x] **The Werk panel names the role** and shows a continue as its own item (2026-10-15)
       - [ ] **A continued sub-session's own ledger rows name the turn that opened it:** the peer session's `parent` tag is fixed at creation (`{session}#{turn}`), so the specialist's requests during a follow-up turn are attributed to turn 1 in the ledger (the portal's explorer shows turn 2's specialist lane empty); only the `sub_session` roll-up row lands in the right turn. Found in the explorer, 2026-10-15. Fix: send the parent turn with each message (the API's message endpoint takes no tags today), or tag the child's requests from the roll-up
 - [ ] **F23 Credits** (to plan): buy credits with money, spend them per question at cost plus a margin, from the usage

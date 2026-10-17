@@ -98,7 +98,7 @@ The M1 run is the baseline. A change lands only if quality holds: 10/10 fixes co
 To measure a run: `dotnet run --project tools/louis-agent.usage-probe -- --ledger .demo/logs/usage-YYYY-MM.jsonl` prices
 the ledger with `config/prices.json` and totals it per fix, triage, purpose and run.
 
-The runs so far, with their numbers, are in [BENCHMARKS.md](../BENCHMARKS.md).
+The runs so far, with their numbers, are in [BENCHMARKS.md](https://github.com/bosbevk/louis-agent/blob/pre-cl10/docs/BENCHMARKS.md).
 
 ## Conventions
 
@@ -128,7 +128,7 @@ drift apart:
    (for example F4's two cache markers instead of three).
 4. **Limitations:** if the feature removes a known limitation (F10: tool rounds), delete it from the
    TODO's [Known limitations](../../TODO.md#known-limitations) (the one list).
-5. **Benchmark:** for features that change cost, add the measured run to [BENCHMARKS.md](../BENCHMARKS.md).
+5. **Benchmark:** for features that change cost, add the measured run to [BENCHMARKS.md](https://github.com/bosbevk/louis-agent/blob/pre-cl10/docs/BENCHMARKS.md).
 6. **User docs:** settings in README / [SETUP](../SETUP.md), and anything the feature changes for users.
 7. **Decisions:** if the feature made a lasting decision, its [ADR](../adr/README.md) is in the same PR; a decision it
    changed is superseded, not edited.

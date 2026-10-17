@@ -62,7 +62,7 @@ so that a peer never keeps sessions nobody will use.
   chat's delete and idle drop close its sub-sessions). The golden files show only the new tool and texts.
 - **F26-S1:** in the cook check (F25), a follow-up on the meal goes to the same cook (`ContinueSubSession` with the
   handle of the first delegation), the dish is the same, and the follow-up costs less than the first answer. *Partly
-  met* in the [three-run cook check](../../samples/sample-output-puls-cook/README.md): 3 of 6 delegated follow-ups
+  met* in the [three-run cook check](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/sample-output-puls-cook/README.md): 3 of 6 delegated follow-ups
   continued the cook with `sub-1`, the dish unchanged, at $0.0011–0.0015 against $0.0030–0.0095 for the first answer;
   in the other 3 Puls scaled the list itself, and with `web` of its own it never continued. **Open:** the rule in
   `default.md` is read as optional; make it firmer and measure again.

@@ -30,20 +30,17 @@ you need otherwise.
 | [Tests guide](../tests/CLAUDE.md) | How-to | Run the tests, regenerate the golden files (bash or PowerShell), write tests that run on Linux too |
 | [Hosts guide](../src/CLAUDE.md) | How-to | Change a host in `src/`: its own message enums, adding a web theme |
 
-## 4. See it work: the orchestrator demo
+## 4. The orchestrator
 
 | Doc | Type | Read it to… |
 |---|---|---|
-| [Orchestrator demo](../samples/README.md) | Tutorial | Run a second agent that watches a demo microservice, has louis-agent fix its ten bugs (one branch each), verifies every fix, and lets you merge them in the web app — all in Docker |
 | [Runbooks](projects/orchestrator-runbooks.md) | Explanation | Understand how the orchestrator decides what each error needs, with real examples, and write your own runbook |
-| [Sample output](../samples/sample-output/README.md) | Reference | See one real run without running it: the agents' full conversation, logs, branches and a recording of the merges |
 
 ## 5. See it work: Puls and its specialists
 
 | Doc | Type | Read it to… |
 |---|---|---|
 | [Puls's web app](projects/louis-agent.puls.md) | Reference | Know Puls: the assistant in Afrikaans that hands each task to a specialist and shows the work in its Werk panel |
-| [Delegation check](../samples/sample-output-puls-check-repeat/README.md) | Reference | See what delegating costs against one agent answering, three runs per mode, and what the fixes changed |
 | [Multi-agent write-up](learning/10-multi-agent-orchestration.md) | Explanation | Read what building Puls taught: roles, routing, measured delegation (a draft) |
 
 ## 6. Project by project
@@ -63,7 +60,6 @@ planned, next and in the backlog, and links to the rest.
 | [TODO](../TODO.md) | Plan | See what's still open: planned now (milestones and features), next (the build-mode POC), the backlog by area, and the known limitations |
 | [Changelog](../CHANGELOG.md) | Reference | See what was finished and when, newest first, each entry linking to its feature, fix or plan |
 | [Features](features/README.md) | Plan | Follow the step-by-step plan for the usage and optimisation specs and for Puls: each feature with user stories, design, tasks, and what to update when one is finished |
-| [Benchmarks](BENCHMARKS.md) | Reference | See every measured run: tokens, cost, cache hits and fixes confirmed, from the M1 baseline on |
 | [Learning write-ups](learning/README.md) | Explanation | Read what each skill in the goal taught: what was measured before and after, the trade-offs, what didn't work |
 | [Plans](plans/README.md) | Plan | Read the plan approved before each feature or fix was built: what it changed from the doc, the steps and how they were checked |
 | [Fixes](fixes/README.md) | Explanation | See what broke, why and how it was fixed (symptom, cause, fix, how it was confirmed), and the fixes still open |

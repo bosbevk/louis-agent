@@ -108,7 +108,7 @@ Where it plugs in:
    comms log does a run), on the triage records and sent with every fix; `ServiceTools.RunId` is `internal`, since a
    public property's accessors would become tools. Checked by hand: a tagged session's record carries all three tags.
 9. **Docs:** settings in README / SETUP; spec status. **Done**, with the project tree, the core design doc, and a saved
-   demo run ([samples/sample-output-short/](../../samples/sample-output-short/README.md)).
+   demo run ([samples/sample-output-short/](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/sample-output-short/README.md)).
 
 ## Done when
 
@@ -116,7 +116,7 @@ Where it plugs in:
 - A demo run produces a ledger in which every fix's records carry its task and run, and the orchestrator's triage
   records are present. **Met:** `run-demo.ps1 -Short` on Claude Haiku 5.5 (2026-10-10, run `run-20261010-171318`):
   61 records, every fix's tagged `fix:<error id>` and the run id, all five triages present with the same run id
-  ([saved ledger](../../samples/sample-output-short/usage-2026-10.jsonl)); 4/4 fixes confirmed. (A first run lost two
+  ([saved ledger](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/sample-output-short/usage-2026-10.jsonl)); 4/4 fixes confirmed. (A first run lost two
   fixes to a Haiku 5.5 round-limit problem the ledger helped find, since fixed in the engine.)
 - **The M1 baseline is recorded** (after F2): total tokens and cost per fix for the current demo. *Tokens recorded
   now* (about 525,000–584,000 input tokens per one-message fix, about $0.05–0.06 at Haiku 5.5 prices); F2 records the

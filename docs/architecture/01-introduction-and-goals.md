@@ -24,7 +24,7 @@ The qualities that win when they conflict with others, most important first:
 
 | # | Quality | What it means here | Held by |
 |---|---|---|---|
-| 1 | **Measured cost** | Every model request is recorded with its tokens and cost, and every answer shows it; a change to cost is proven on the ledger | [0007](../adr/0007-measure-every-request.md), [benchmarks](../BENCHMARKS.md) |
+| 1 | **Measured cost** | Every model request is recorded with its tokens and cost, and every answer shows it; a change to cost is proven on the ledger | [0007](../adr/0007-measure-every-request.md), [benchmarks](https://github.com/bosbevk/louis-agent/blob/pre-cl10/docs/BENCHMARKS.md) |
 | 2 | **Safety** | Model text never becomes a command; tools stay in the workspace and away from secrets; nothing listens beyond `127.0.0.1` | [0004](../adr/0004-arguments-as-data.md), [0005](../adr/0005-guard-the-context.md) |
 | 3 | **Provider portability** | Claude, Ollama or an OpenAI-compatible server, by configuration | [0002](../adr/0002-messages-api-tier-with-our-own-loop.md), [0003](../adr/0003-provider-strategies.md) |
 | 4 | **Explainable** | Every design decision can be explained, with what it cost (the project's goal) | [ADRs](../adr/README.md) |

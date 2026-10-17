@@ -54,7 +54,7 @@ The full step-by-step is in [How a turn works](../architecture/06-runtime-view.m
 | `Agent/Tools/AgentBuiltTools.cs` | `CreateTool`, `ListAgentTools`, `LoadApprovedTools`, `/approve`, `/reject`, running their scripts |
 | `Guardrails/` | `WorkspaceBoundary` (relative, inside the root, no symbolic links), `SensitiveFiles`, `SsrfGuard` (public addresses only, every hop and at connect time) |
 | `Hosting/AgentHost.cs`, `AgentHostContext.cs` | Bootstrap for every host: env files, options, skills, client, engine; skill-file discovery |
-| `Hosting/AgentEngineFactory.cs` | One engine per toolsets + personality + router (F5, F21), shared by the sessions that ask for the same; the least recently used of 16 is dropped; a sub-session's role from `roles.json` |
+| `Hosting/AgentEngineFactory.cs` | One engine per toolsets + personality + level (F5, F21, CL8), shared by the sessions that ask for the same; the least recently used of 16 is dropped |
 | `Hosting/RiderMcpToolDiscovery.cs` | At start-up, registers Rider's MCP tools with the engine (logged only; not callable yet) |
 | `Logging/AgentLogging.cs` | Serilog behind `ILogger`, configured once per process: the console on stderr (`[INFO]`, or a tag such as `[TOOL]`), and with `LOG_DIRECTORY` a run file per process and the JSON-lines records |
 | `Logging/MessageLogging.cs`, `ToolCallRecords.cs`, `RecordFormatter.cs` | `logger.Log(level, Member, new { Hole = value })` for a message enum member; the two records (`oversized-tool-results.jsonl`, `truncated-tool-calls.jsonl`), written as `timestamp` and camelCase fields |
@@ -69,7 +69,7 @@ The full step-by-step is in [How a turn works](../architecture/06-runtime-view.m
 | `Llm/AnthropicProvider/` | `AnthropicUsageMapper` (cache writes, and the 1-hour part from the raw response or the stream's `message_start`) and `AnthropicPromptCaching` (marker 1 on a copy of the system prompt with `LLM_CACHE_TTL`, marker 2 the top-level `cache_control`, 5 minutes) |
 | `Skills/MarkdownSkillLoader.cs` | Parses `## Skill:` procedures (description, parameters, a bash / PowerShell / Python fence) from Markdown |
 | `Skills/MarkdownSkillProvider.cs`, `PersonalitySkillsProvider.cs`, `CompositeSkillProvider.cs` | Every skill file we control is plain markdown read by `MarkdownSkillProvider` (`default.md` and `personality.md` by their own); `CompositeSkillProvider` joins them into the system prompt; `SkillFiles.BuiltIn` names the files `AgentHost` loads by name |
-| `Skills/Personalities.cs`, `PersonalityException.cs` | A session's personality (F21): its file in its level's folder (`SkillLevel`, CL8), valid names, the ones available, and `RoleFor` (`roles.json`: a sub-session's role from its toolsets) |
+| `Skills/Personalities.cs`, `PersonalityException.cs` | A session's personality (F21): its file in its level's folder (`SkillLevel`, CL8), valid names, the ones available |
 | `Skills/SkillFileSource.cs`, `SkillFiles.cs` | The built-in prompts in `Prompts/`, embedded with a manifest and read only from the assembly (`ManifestEmbeddedFileProvider`); their paths; which names the agent may not take |
 | `Tools/Workspace/WorkspaceTools.cs` | Files: read (≤ 1 MB), write, append, list, tree, search, find, copy, rename, delete; workspace boundary and secret-file checks |
 | `Tools/Git/GitTools.cs` | 38 git operations, run without a shell, 30-second timeout; `Blame`, `FileHistory` and `SearchCommits` take model text as data, never as options (F22) |

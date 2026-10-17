@@ -21,7 +21,7 @@ flowchart LR
     repo[("Repositories<br/>mounted workspace")]
     web["Web<br/>search · pages · exchange rates<br/>[external system]"]
     biz["Paymo · Azure DevOps<br/>[external system]"]
-    svc["A watched service<br/>(order-service demo)"]
+    svc["A watched service<br/>(a microservice)"]
 
     dev -- "chat: web app, CLI" --> agent
     dev -- "chat" --> rider -- "ACP over stdio" --> agent

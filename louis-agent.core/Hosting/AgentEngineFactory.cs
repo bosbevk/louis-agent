@@ -74,19 +74,6 @@ public sealed class AgentEngineFactory
     /// <summary>The mode of a level-0 session that names none (CL9): <c>GET /personalities</c>' <c>default</c>.</summary>
     public string DefaultVoice => Personalities.DefaultVoice;
 
-    /// <summary>
-    /// The role for a sub-session with <paramref name="toolsets"/> when its parent named none: from
-    /// <c>specialists/roles.json</c> (built in), and only a role this instance has; null otherwise.
-    /// </summary>
-    public string? RoleFor(IEnumerable<string> toolsets)
-    {
-        if (AgentHost.ReadSkillFile(_agent, Personalities.RolesFile) is not { } roles) return null;
-        string? role = Personalities.RoleFor(roles.Text, toolsets);
-        if (role is null || !Personalities.IsValidName(role)) return null;
-        try { AgentHost.PersonalityFile(_agent, role, SkillLevel.Specialist); return role; }
-        catch (PersonalityException) { return null; }
-    }
-
     /// <summary>The profiles built so far: each its toolsets joined with commas, then |personality and |level below level 0.</summary>
     public IReadOnlyCollection<string> Profiles => _engines.Keys.ToList();
 

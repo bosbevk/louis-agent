@@ -1,2 +1,0 @@
-{"error_id":"326c45aaad44","reason":"Runbook (method refund, expected): System.InvalidOperationException whose message contains \u0022already been refunded\u0022 is a duplicate refund request correctly rejected. Message here is \u0022Order 1002 has already been refunded\u0022.","at":"2026-10-11T08:45:48.8648318+00:00"}
-{"error_id":"6dedc539e9f3","reason":"Runbook get-order: OrderService.OrderNotFoundException is expected. The client asked for order id 9999, which doesn\u0027t exist (404).","at":"2026-10-11T08:45:57.6971747+00:00"}

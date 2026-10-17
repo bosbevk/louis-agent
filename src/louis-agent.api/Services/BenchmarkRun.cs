@@ -7,7 +7,7 @@ namespace LouisAgent.Api.Services;
 /// the lines so far and then each new one as it arrives (<see cref="BenchmarkRunner.EventsAsync"/>), so a page that
 /// opens late sees the whole story.
 /// </summary>
-public sealed class BenchmarkRun(string id, string check, string folder, int repeat)
+public sealed class BenchmarkRun(string id, string check, int repeat)
 {
     // The cook check forwards every stream event of its conversations as a line (the portal replays them as the chat),
     // a few thousand per conversation; a late listener needs the whole story.
@@ -19,9 +19,6 @@ public sealed class BenchmarkRun(string id, string check, string folder, int rep
 
     public string Id { get; } = id;
     public string Check { get; } = check;
-
-    /// <summary>The folder under <c>samples/</c> the run writes to.</summary>
-    public string Folder { get; } = folder;
 
     public int Repeat { get; } = repeat;
     public DateTimeOffset StartedAt { get; } = DateTimeOffset.UtcNow;

@@ -134,8 +134,7 @@ docker compose -f docker/docker-compose.puls.yml --env-file config/.env up -d   
 
 A changed file under `Skills/` needs only a restart: the containers mount the folder and read it when a chat opens.
 
-The orchestrator demo (`samples/run-demo.ps1`) reads the same two files; its own settings are set in
-`docker/docker-compose.demo.yml` (see [samples/README.md](../samples/README.md)).
+The orchestrator reads the same two files (its demo, removed in CL10, comes back with the rewritten benchmarks).
 
 ## Adding a setting
 

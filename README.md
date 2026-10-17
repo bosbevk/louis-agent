@@ -40,7 +40,7 @@ script) and a general specialist. Puls then writes the answer in its own voice.
 - **It knows where and when you are.** It sends your time zone with every chat, and your location (about 1 km) only if
   you share it, so "today" and "near me" are yours.
 - **Measured.** A delegation check asks the same questions with and without specialists and prices both from the usage
-  ledger ([samples](samples/sample-output-puls-check-repeat/README.md)). On average, delegating costs about a third more
+  ledger ([the runs, at the `pre-cl10` tag](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/sample-output-puls-check-repeat/README.md)). On average, delegating costs about a third more
   than one agent answering everything. It was cheaper for chat and one of the two web questions, about even on the
   other, and dearer for short lookups.
 
@@ -67,10 +67,9 @@ All hosts share `louis-agent.core` (engine, tools, skills, providers). See [the 
 
 **Orchestrator demo (proof of concept).** `src/louis-agent.orchestrator` is a second agent, also built on
 `louis-agent.core`, that watches a microservice's errors, decides per API method what each needs, has louis-agent fix
-the fixable ones (one branch and commit each, never pushed) and verifies every fix itself. `samples/run-demo.ps1` runs
-it in Docker (`docker/docker-compose.demo.yml`) against a demo service with ten bugs, logs every message between the
-agents to a Markdown file, and leaves the web app up on http://127.0.0.1:5081 for you to review and merge the fixes.
-See [samples/README.md](samples/README.md).
+the fixable ones (one branch and commit each, never pushed) and verifies every fix itself. Its demo (a service with
+ten bugs, run in Docker) was removed in CL10 and comes back with the rewritten benchmarks; the last run is at the
+[`pre-cl10` tag](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/README.md).
 
 ## Documentation
 
@@ -84,8 +83,8 @@ All docs, in reading order, are listed in **[docs/README.md](docs/README.md)**. 
 | Connect another program or agent: HTTP API and its event stream, Rider, MCP, agent-to-agent | [How the agents and endpoints talk](docs/AGENT_COMMUNICATION.md) |
 | Know the components, security and deployment | [Architecture](docs/architecture/README.md) · [project by project](docs/projects/README.md) |
 | Change the code | [Development guide](docs/CLAUDE.md) |
-| Watch two agents fix ten bugs, then merge the fixes | [Orchestrator demo](samples/README.md) · [sample output](samples/sample-output/README.md) |
-| See what Puls's delegation costs against one agent | [Delegation check](samples/sample-output-puls-check-repeat/README.md) |
+| Watch two agents fix ten bugs, then merge the fixes | [The last demo run, at `pre-cl10`](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/sample-output/README.md) (the demo comes back with the rewritten benchmarks) |
+| See what Puls's delegation costs against one agent | [Delegation check, at `pre-cl10`](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/sample-output-puls-check-repeat/README.md) |
 | Learn how the orchestrator decides, and write runbooks | [Runbooks](docs/projects/orchestrator-runbooks.md) |
 
 ## Quick start (Docker)

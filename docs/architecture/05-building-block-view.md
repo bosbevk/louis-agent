@@ -49,7 +49,7 @@ Each project also has its own design doc in [projects/](../projects/README.md).
 | ACP server | `src/louis-agent.acp-server` | `AgentHost.Build()` | [Agent Client Protocol](https://agentclientprotocol.com) JSON-RPC over stdio, for Rider's AI chat |
 | HTTP API + web app | `src/louis-agent.api`, `src/louis-agent.web` or `src/louis-agent.puls` | `AgentHost.Build()` | ASP.NET Core minimal API; Server-Sent Events; serves one of the two Blazor WebAssembly apps |
 | MCP server | `src/louis-agent.mcp-server` | `AgentHost.BuildToolHost()` | Model Context Protocol over stdio (default) or Streamable HTTP (`MCP_TRANSPORT=http`); publishes the tools, the client brings its own model |
-| Orchestrator (POC) | `src/louis-agent.orchestrator` | Own `AgentEngine` with `toolsets:` | Not a host for users: an agent that reads a service's error log and calls louis-agent.api for fixes ([samples/README.md](../../samples/README.md)) |
+| Orchestrator (POC) | `src/louis-agent.orchestrator` | Own `AgentEngine` with `toolsets:` | Not a host for users: an agent that reads a service's error log and calls louis-agent.api for fixes ([samples/README.md](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/README.md)) |
 
 ### CLI
 - Streams the answer as it is written, thinking in grey, one status line per tool call; Ctrl+C stops the current reply.
@@ -193,8 +193,8 @@ builds one engine per profile, cached by its normalised toolset list, its person
 past 16 the least recently used is dropped), with only those tools and only their guides in the system prompt, and logs
 each profile's tool count and fixed-prefix estimate. The CLI, ACP server and MCP server use every
 toolset the instance can load; the API's sessions choose theirs. A sub-session (`AgentPeerTools.StartSubSession`) runs
-on a peer with its own toolsets and its role (`personality`; when the parent names none, the peer takes one from the
-toolsets in `specialists/roles.json`), at most 3 per turn and 5 minutes each, and only its answer and a usage
+on a peer with its own toolsets and its role (`personality`, named by the parent; with none it gets the default mode's voice,
+CL10), at most 3 per turn and 5 minutes each, and only its answer and a usage
 line come back; its usage records carry the parent turn (`parent`). An empty answer (the specialist used all its tool
 rounds) is asked for once more in the same session (FX11). A sub-session gets no routing: its toolsets were chosen for it
 and it can't delegate.

@@ -102,7 +102,7 @@ public sealed class AgentPeerTools(IReadOnlyDictionary<string, Uri> peers, strin
                 return MessageText.Format(ToolMessage.SubSessionRefused, new { Agent = agent, Status = (int)created.StatusCode, Reason = ErrorText(createdBody) });
             using var createdJson = JsonDocument.Parse(createdBody);
             sessionId = createdJson.RootElement.GetProperty("session_id").GetString() ?? throw new JsonException("no session_id");
-            // The role it opened with: the one passed, or the one the peer derived from the toolsets (roles.json).
+            // The role it opened with, as the peer reports it (the one passed: CL10, a role is never derived).
             string? role = createdJson.RootElement.TryGetProperty("personality", out var p) && p.ValueKind == JsonValueKind.String ? p.GetString() : personality;
 
             var reply = await AnswerAsync(peer, sessionId, new { message, attachments = forwarded }, agent, toolUseId, scope, timeout.Token);

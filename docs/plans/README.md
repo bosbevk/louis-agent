@@ -10,6 +10,7 @@ or fix doc (*What the build changed*), not here.
 
 | Plan | For | Approved | Notes |
 |---|---|---|---|
+| [CL10-clear-the-decks.md](CL10-clear-the-decks.md) | TODO: *Clear the decks* (cleanup) | 2026-10-17 | `samples/` and `BENCHMARKS.md` go; the admin portal stops being file-based (results will live in SQL Server `puls_benchmarks`, scripts in `benchmarks/`); roles named, not derived; history docs link at tag `pre-cl10`; before F30 step 4 |
 | [CL9-modes-per-product.md](CL9-modes-per-product.md) | TODO: *Modes per product* (cleanup) | 2026-10-16 | A level-0 session is a mode, one file of voice and routing in a folder per product (`agent/puls/voice-af.md`, `agent/louis-agent/voice.md` …; approved during the build); Puls's language menu picks the mode; `AGENT_FUNCTION` goes; before F30 step 4; ADR 0019 |
 | [CL8-skills-by-level.md](CL8-skills-by-level.md) | TODO: *Skills by level* (cleanup) | 2026-10-16 | `Skills/` in folders by level (`agent/`, `specialists/`, `minions/`) beside `toolsets/`; the loader refuses a role at the wrong level; built before F30 step 4; ADR 0017 |
 | [F29-validated-specialists.md](F29-validated-specialists.md) | [F29 Validated specialists](../features/F29-validated-specialists.md) | 2026-10-15 | A setting the API enforces (a role off the list is refused as unknown), prompts that match it, the chat opening with `agents` and `web`, the checks expecting no delegation but the cook's |

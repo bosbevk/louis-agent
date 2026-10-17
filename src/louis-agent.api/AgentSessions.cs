@@ -140,8 +140,7 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
         if (depth > 0 && names.Contains(SpecialistsToolset))
             throw new ToolsetException(MessageText.Format(ErrorMessage.SubSessionCannotDelegate, new { Toolset = SpecialistsToolset }));
         if (string.IsNullOrEmpty(personality)) personality = null;
-        // A sub-session its parent gave no role gets one from its toolsets (roles.json): roles in code, not left to the prompt.
-        if (depth > 0 && personality is null) personality = engines.RoleFor(names);
+        // A sub-session's role is named by its parent (CL10); with none it gets the default mode's voice, no routing.
         var engine = engines.GetOrCreate(names, personality, (SkillLevel)depth);
 
         DropIdle(DateTimeOffset.UtcNow);

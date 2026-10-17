@@ -1,7 +1,7 @@
 # louis-agent.orchestrator — design
 
 > **Kind:** console app · **Path:** `src/louis-agent.orchestrator/` · **References:** louis-agent.core · **Talks to:**
-> louis-agent.api over HTTP + SSE · **Docker services:** `orchestrator`, `demo-setup` (`docker/docker-compose.demo.yml`) ·
+> louis-agent.api over HTTP + SSE · **Docker:** `Dockerfile.orchestrator` (its demo compose file was removed in CL10) ·
 > **Status:** proof of concept
 
 ## Purpose
@@ -84,7 +84,7 @@ against a real model.
 
 ## Related docs
 
-[Orchestrator demo](../../samples/README.md) · [Runbooks](orchestrator-runbooks.md) ·
+[Runbooks](orchestrator-runbooks.md) ·
 [Agent to agent](../AGENT_COMMUNICATION.md#agent-to-agent-the-orchestrator-and-louis-agent) ·
 [Orchestrator design](../specs/ORCHESTRATOR_DESIGN.md)
 

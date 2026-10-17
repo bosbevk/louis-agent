@@ -3,6 +3,12 @@
 > **Reference.** What was finished, newest first, one entry per feature, fix or cleanup. **Elsewhere:** what's still
 > open in the [TODO](TODO.md); how each was built in its feature, fix or plan doc (linked from its entry).
 
+- 2026-10-17 — **CL10 Clear the decks**: `samples/` goes (both checks, 18 recorded runs, the order-service demo and
+  its compose file) and `docs/BENCHMARKS.md`; they're kept at the tag `pre-cl10`, where the history docs now link. The
+  admin portal stops reading and writing run folders: no checks until they're rewritten, with scripts in `benchmarks/`
+  and results in SQL Server's `puls_benchmarks` (the next feature, before F30's minions are measured). Roles are
+  named, not derived: `roles.json`, `RoleFor` and `puls-specialist` go; the other specialists stay, off by
+  `PERSONALITIES_ENABLED` ([plan](docs/plans/CL10-clear-the-decks.md))
 - 2026-10-17 — **CL9 Modes per product**: a level-0 session is a mode, one file of voice and routing in a folder per
   product (`agent/louis-agent/voice.md`, the default for the CLI, Rider and code review; `voice-orchestrator.md`), or a
   language (`agent/puls/voice-af.md`, `voice-en.md`) that loads Puls's shared routing (`puls/voice.md`); Puls's *Taal*
@@ -68,7 +74,7 @@
 - 2026-10-14 — **F5 Toolset profiles**: a session names its toolsets when it opens and keeps them; an engine per
   toolset list with only those tools and their guides; sub-sessions on a peer (`StartSubSession`), which Puls's
   delegation runs on. Short benchmark: prefix −50% (~48.5k → ~24.4k tokens), run −23%, 4/4 fixes, the cache still hits
-  ([numbers](docs/BENCHMARKS.md#f5-benchmark-short-run-2026-10-13)); the full 10-fix run waived by Louis
+  ([numbers](https://github.com/bosbevk/louis-agent/blob/pre-cl10/docs/BENCHMARKS.md#f5-benchmark-short-run-2026-10-13)); the full 10-fix run waived by Louis
   ([F5](docs/features/F05-toolset-profiles.md))
 - 2026-10-14 — **F20 Puls look**: a landing page and a dark three-panel dashboard in Puls's colours, with the Werk panel showing each delegation live (specialist, steps, sources, cost); checked in a real browser with a live delegation ([F20](docs/features/F20-puls-look.md)).
 - 2026-10-14 — **FX14 Sub-session prompt budget**: `SUB_SESSION_PROMPT_BUDGET` (80k, under the 100k price step) stops a specialist's prompt growing into long-prompt prices; it answers from what it has ([FX14](docs/fixes/FX14-sub-session-prompt-budget.md)).
@@ -80,7 +86,7 @@
   (32k context, flash attention, 8-bit KV cache); Ollama's client waits 10 minutes, not 100 seconds. The short demo's
   triage on `qwen3:4b-instruct-2507` (profile `.env.ollama-triage`): 4 fixed, 1 escalated, as on Claude, triage $0, the
   run $0.042 against $0.049, 2.4× slower; llama3.1 and qwen3's thinking variant failed
-  ([Local triage](docs/BENCHMARKS.md#local-triage-2026-10-12),
+  ([Local triage](https://github.com/bosbevk/louis-agent/blob/pre-cl10/docs/BENCHMARKS.md#local-triage-2026-10-12),
   `samples/sample-output-short-local-triage/`)
 - 2026-10-12 — **CL3 Messages and logging**: every exception, log line, tool error and user text is a message enum
   member with a `[Description]` template (486: 313 in core, the rest in each host's own `Messages/`), proved to render

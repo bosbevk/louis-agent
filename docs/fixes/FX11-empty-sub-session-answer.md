@@ -4,7 +4,7 @@
 
 ## Symptom
 
-In the [Puls delegation check with roles](../../samples/sample-output-puls-check-roles/README.md), question numbers-2
+In the [Puls delegation check with roles](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/sample-output-puls-check-roles/README.md), question numbers-2
 ("how many test methods are in core's tests?") cost $0.0166 and took 105 s. That is a third of the delegated run, on
 one question. Puls said so in its answer: *"Die sub-sessie het net die gebruikslyn teruggestuur, nie die telling self
 nie. Ek probeer dit weer…"* The first specialist's answer was empty (`[TOOL] <- StartSubSession: ` followed by only the
@@ -55,9 +55,9 @@ In `AgentPeerToolsTests`:
 
 ## Confirmed
 
-2026-10-14, run 3 of the [three-run delegation check](../../samples/sample-output-puls-check-repeat/README.md). The numbers-2 analyst used all ten tool rounds
+2026-10-14, run 3 of the [three-run delegation check](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/sample-output-puls-check-repeat/README.md). The numbers-2 analyst used all ten tool rounds
 and ended its turn without text (`stop`, 170 output tokens). The follow-up in the same session (turn 2) gave the
-answer, and Puls called `StartSubSession` once. The earlier [check after FX10–FX12](../../samples/sample-output-puls-check-fixes/README.md)
+answer, and Puls called `StartSubSession` once. The earlier [check after FX10–FX12](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/sample-output-puls-check-fixes/README.md)
 had no empty answer. If a specialist hits its round limit again,
 its sub-session should show two messages and one answer, and Puls should not start a second sub-session for the same
 task.

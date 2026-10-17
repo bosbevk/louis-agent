@@ -203,14 +203,15 @@ public class AgentSessionsTests
     }
 
     [Test]
-    public void ASubSessionWithoutARole_GetsOneFromItsToolsets_AndAGivenOneIsKept()
+    public void ASubSessionWithoutARole_GetsNone_AndAGivenOneIsKept()
     {
-        // The delegation check's option 4: the role in code, on the peer, not left to the parent's prompt.
+        // CL10: a role is named by the parent, never derived from the toolsets; with none, the default mode's voice only.
         var sessions = Sessions();
 
-        Assert.That(sessions.Create(["web"], depth: 1).Personality, Is.EqualTo("puls-researcher"));
-        Assert.That(sessions.Create(["files", "python"], depth: 1).Personality, Is.EqualTo("puls-analyst"));
-        Assert.That(sessions.Create(["web"], depth: 1, personality: "puls-specialist").Personality, Is.EqualTo("puls-specialist"));
+        var unnamed = sessions.Create(["web"], depth: 1);
+        Assert.That(unnamed.Personality, Is.Null);
+        Assert.That(unnamed.Engine.SkillDocumentation, Does.Contain("Louis's Minion").And.Not.Contain("# Louis Agent - Default Instructions"));
+        Assert.That(sessions.Create(["web"], depth: 1, personality: "puls-cook").Personality, Is.EqualTo("puls-cook"));
         Assert.That(sessions.Create(["web"]).Personality, Is.Null, "a top-level session that names none gets the default voice");
     }
 }

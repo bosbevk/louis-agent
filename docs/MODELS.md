@@ -58,7 +58,7 @@ and each tool round reads the round before. On the demo it cut the input cost by
 whose lifetime is `LLM_CACHE_TTL` (`5m` default; `1h` when requests sharing it come 5–60 minutes apart, as in a chat
 with pauses), and the conversation, always 5 minutes. To choose the lifetime from your own traffic:
 `dotnet run --project tools/louis-agent.usage-probe -- --cache-gaps logs/usage-YYYY-MM.jsonl`. A cache miss raises no
-error; the ledger shows `cache_read: 0` (compare with `samples/smoke-f4-caching/`). Ollama and OpenAI-compatible
+error; the ledger shows `cache_read: 0` (compare with [the F4 smoke run at `pre-cl10`](https://github.com/bosbevk/louis-agent/tree/pre-cl10/samples/smoke-f4-caching)). Ollama and OpenAI-compatible
 endpoints get no markers. Haiku 5.5 caches from 512 tokens, Haiku 4.5 from 4,096.
 
 **History must stay append-only on Haiku 5.5.** It rejects a request whose system prompt, tools or earlier messages

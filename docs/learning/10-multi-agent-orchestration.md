@@ -29,10 +29,10 @@ ledger, by token kind.
 
 | Run | Baseline | Delegated | What it found |
 |---|---:|---:|---|
-| [First, five questions](../../samples/sample-output-puls-check/README.md) | $0.0167 | $0.0218 (+31%) | Fewer tokens (−60%), but dearer kinds: each specialist writes its own prefix to the cache, and the answer is written twice. Puls passed a role 1 time in 4 |
-| [Roles derived on the peer](../../samples/sample-output-puls-check-roles/README.md) | $0.0324 | $0.0509 (+57%) | Every delegation had a role. Three refused calls (a required `agent`), an empty answer retried from scratch, a blocked `.env.example` |
-| [After FX10–FX12](../../samples/sample-output-puls-check-fixes/README.md) | $0.0279 | $0.3128 | One counting task went to a files-only reader, which read 74 files into a 298k-token prompt at the long-prompt price: $0.278 |
-| [Three runs, after FX10–FX14](../../samples/sample-output-puls-check-repeat/README.md) | $0.0276 mean | $0.0363 mean (+31%) | All 24 delegations routed by the table; the dearest question $0.0174; runs varied +6%, +11%, +86% |
+| [First, five questions](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/sample-output-puls-check/README.md) | $0.0167 | $0.0218 (+31%) | Fewer tokens (−60%), but dearer kinds: each specialist writes its own prefix to the cache, and the answer is written twice. Puls passed a role 1 time in 4 |
+| [Roles derived on the peer](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/sample-output-puls-check-roles/README.md) | $0.0324 | $0.0509 (+57%) | Every delegation had a role. Three refused calls (a required `agent`), an empty answer retried from scratch, a blocked `.env.example` |
+| [After FX10–FX12](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/sample-output-puls-check-fixes/README.md) | $0.0279 | $0.3128 | One counting task went to a files-only reader, which read 74 files into a 298k-token prompt at the long-prompt price: $0.278 |
+| [Three runs, after FX10–FX14](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/sample-output-puls-check-repeat/README.md) | $0.0276 mean | $0.0363 mean (+31%) | All 24 delegations routed by the table; the dearest question $0.0174; runs varied +6%, +11%, +86% |
 
 What the numbers say:
 - **Fewer tokens isn't cheaper.** The baseline's tokens are mostly cache reads, the cheapest kind; a specialist starts

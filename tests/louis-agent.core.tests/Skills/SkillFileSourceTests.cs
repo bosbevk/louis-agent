@@ -23,8 +23,7 @@ public class SkillFileSourceTests
     public void EveryBuiltInFile_IsEmbedded_UnderItsOwnPath()
     {
         var builtIn = ToolsetCatalog.All.Select(t => t.GuideFile).OfType<string>()
-            .Concat(["shared/principles.md", "agent/louis-agent/voice.md", "agent/puls/voice.md", "agent/puls/voice-af.md", "agent/puls/voice-en.md",
-                "specialists/roles.json"]);
+            .Concat(["shared/principles.md", "agent/louis-agent/voice.md", "agent/puls/voice.md", "agent/puls/voice-af.md", "agent/puls/voice-en.md"]);
 
         Assert.That(SkillFileSource.EmbeddedFiles, Is.SupersetOf(builtIn));
         Assert.That(SkillFileSource.EmbeddedFiles, Has.None.Contains("HelloWorld"), "a test fixture, not a built-in");
@@ -33,7 +32,7 @@ public class SkillFileSourceTests
     [Test]
     public void AFolder_ListsItsFiles()
     {
-        Assert.That(SkillFileSource.Files("specialists"), Does.Contain("puls-cook.md").And.Contain("roles.json"));
+        Assert.That(SkillFileSource.Files("specialists"), Does.Contain("puls-cook.md").And.Contain("puls-researcher.md"));
         Assert.That(SkillFileSource.Files("minions"), Is.Empty, "F30 fills it");
     }
 

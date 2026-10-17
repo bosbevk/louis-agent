@@ -5,7 +5,7 @@
 
 ## Symptom
 
-In the short demo with triage on `llama3.1` in Ollama ([Local triage](../BENCHMARKS.md#local-triage-2026-10-12)),
+In the short demo with triage on `llama3.1` in Ollama ([Local triage](https://github.com/bosbevk/louis-agent/blob/pre-cl10/docs/BENCHMARKS.md#local-triage-2026-10-12)),
 the orchestrator made five model requests and the ledger has four. The missing one is the first triage, cancelled by
 the HttpClient's 100-second timeout (`[ERROR] Triage of bca5719ad2e0 failed: The request was canceled due to the
 configured HttpClient.Timeout of 100 seconds elapsing.`), after Ollama had read 4,762 tokens of prompt and written 288.
@@ -48,7 +48,7 @@ In `tests/louis-agent.core.tests/Llm/UsageRecordingChatClientTests.cs`, written 
 ## Confirmed
 
 By the tests above; the real run is still owed. The next local triage run that times out (llama3.1 at the 32k
-context, [Local triage](../BENCHMARKS.md#local-triage-2026-10-12)) should show the ledger's record count equal to
+context, [Local triage](https://github.com/bosbevk/louis-agent/blob/pre-cl10/docs/BENCHMARKS.md#local-triage-2026-10-12)) should show the ledger's record count equal to
 Ollama's `POST /api/chat` lines, with the timed-out request as a `cancelled` row with no tokens.
 
 ## Lesson

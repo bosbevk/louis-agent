@@ -43,8 +43,8 @@ flowchart LR
 - **Personalities** (F21): `POST /sessions` takes `personality`, a built-in one at the session's level (a mode such as
   `puls/voice-af` at depth 0, a specialist's role such as `puls-cook` at depth 1); none gives the default mode,
   `louis-agent/voice`; an invalid or unknown name is a `400` before an engine is built. `GET /personalities` lists them
-  by level, with the default. A sub-session (depth 1) gets no routing, and when its parent named no role, one is taken
-  from its toolsets (`roles.json`).
+  by level, with the default. A sub-session (depth 1) gets no routing, and the role its parent names; with none it gets
+  the default mode's voice (CL10: a role is never derived from the toolsets).
 - **The user's place** (F22): `location` (only when the user shared it) and `time_zone` (IANA; an unknown one is a
   `400`) are kept with the session, so `GetToday` and "near me" are the user's. A location is said once, in front of
   the session's first message (`ApiModelText.UserPlace`: `[The user is in {Location}; their time zone is {TimeZone}.]`),
@@ -92,7 +92,7 @@ Docker, bound to `127.0.0.1`), `GIT_AUTHOR_*` / `GIT_COMMITTER_*` (identity for 
 ## Tests
 
 `tests/louis-agent.api.tests`: the sessions' toolsets, the default, unknown names, depth and the `specialists` rule, shared
-engines and separate histories, personalities and the role a sub-session gets from its toolsets (a model client that is
+engines and separate histories, personalities, a role opening only at its own level, and a sub-session with no role getting none (a model client that is
 never called). The endpoints and the web app are checked with
 curl and the browser (backlog: *Automated tests for the API and the web app*); the orchestrator demo exercises
 sessions, streaming and the git endpoints end to end.
