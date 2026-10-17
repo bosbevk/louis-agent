@@ -130,6 +130,8 @@ keep minions only if real prices hold and the cost drops.
   closest", then "do all three": the minion searches twice per shop (the short name to pick the closest product, its
   exact title and "price" for the price), Spar and Usave once ("no online prices"); a minion answers once and closes
   (no `ContinueMinion`); the cook never retries a minion or searches the shops itself.
+- **Prompts restored (2026-10-17, Louis):** the cook's, researcher's, Puls's routing and the specialists guide are back
+  to their pre-step-6 text; the minion feature stays in the code, unused by Puls until a measured run says it pays.
 
 - **A profile takes nothing from the instance but its API key** (step 1). The first idea was to fall back to the
   process environment for whatever a profile file leaves out; that would hand the local model Claude's

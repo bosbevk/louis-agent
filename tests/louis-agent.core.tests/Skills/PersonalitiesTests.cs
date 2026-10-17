@@ -274,7 +274,7 @@ public class PersonalitiesTests
         Assert.That(cook, Does.Contain("the cheapest basket is never more than the completed"), "the best-price total the model got wrong");
         Assert.That(cook, Does.Not.Contain("Checkers and Shoprite always"), "the two shops are picked at random from the town's");
         // Louis: "pick randomly which store to use based on location; don't even use stores not in your location".
-        Assert.That(cook, Does.Contain("q=supermarkets+in+Stellenbosch").And.Contain("every shop in the town").And.Contain("never price at, name or total a shop the town doesn't have"));
+        Assert.That(cook, Does.Contain("q=supermarkets+in+Stellenbosch").And.Contain("pick two at random").And.Contain("never price at, name or total a shop the town doesn't have"));
         Assert.That(cook, Does.Contain("| **Total, priced rows** | | | **R102,98** | **R84,99** | **R120,97** | **R110,97** |"), "the totals are the list's last rows, side by side, the cheapest basket last");
         // Louis: an unpriced ingredient is an ordinary row that says unknown; no row counting or naming them.
         Assert.That(cook, Does.Contain("| Lemons | 2 | 2 | [R12,99](https://www.checkers.co.za/…) | unknown | [R14,99](https://www.pnp.co.za/…) | R12,99 Checkers |"));
@@ -404,76 +404,4 @@ public class PersonalitiesTests
         Assert.That(SkillFileSource.ReadEmbedded("toolsets/specialists.md"), Does.Not.Contain("roles.json"));
     }
 
-    [Test]
-    public void TheCook_GetsMinions_AndTheCookAndResearcher_SayWhenOneIsWorthIt()
-    {
-        // F30 step 6: the cook hands shop pages to a price minion instead of reading them itself. Puls's routing and the
-        // specialists guide give the cook `minions` beside `web`, and the two roles that price things say how to use one.
-        string router = SkillFileSource.ReadEmbedded("agent/puls/voice.md")!;
-        string guide = SkillFileSource.ReadEmbedded("toolsets/specialists.md")!;
-        string cook = SkillFileSource.ReadEmbedded(Personalities.SpecialistsFolder + "/puls-cook.md")!;
-        string researcher = SkillFileSource.ReadEmbedded(Personalities.SpecialistsFolder + "/puls-researcher.md")!;
-
-        Assert.That(router.Split('\n').Single(r => r.StartsWith('|') && r.Contains("`puls-cook`")), Does.Contain("`web`, `minions`"));
-        Assert.That(guide.Split('\n').Single(r => r.StartsWith('|') && r.Contains("`puls-cook`")), Does.Contain("`web`").And.Contain("`minions`"));
-        foreach (string role in new[] { cook, researcher })
-        {
-            Assert.That(role, Does.Contain("## Minions").And.Contain("StartMinion").And.Contain("puls-minion-web-price-lookup"));
-            Assert.That(role, Does.Not.Contain("You can't delegate and can't ask questions"), "a minion isn't delegation, but the old line would forbid it");
-            Assert.That(role, Does.Contain("Use the fewest tool calls that answer the task"), "the cost rule stays");
-        }
-        Assert.That(SkillFileSource.ReadEmbedded(Personalities.SpecialistsFolder + "/puls-reader.md"), Does.Not.Contain("## Minions"), "only the roles that price things");
-    }
-
-    [TestCase("puls-researcher")]
-    public void APricedRole_ChecksEveryMinionQuote_AsksOnceMore_ThenSaysUnconfirmed(string role)
-    {
-        // F30 step 8: a minion's price is a claim on a cheap model; the role uses it only after VerifyQuote (code)
-        // finds its words on the page, asks the next model once when it doesn't, and never passes on an unchecked price.
-        string text = SkillFileSource.ReadEmbedded($"{Personalities.SpecialistsFolder}/{role}.md")!;
-
-        Assert.That(text, Does.Contain("VerifyQuote(url, quote)"));
-        Assert.That(text, Does.Contain("stronger: true"));
-        Assert.That(text, Does.Contain("Found"));
-        Assert.That(text, Does.Contain("unconfirmed"));
-        Assert.That(text, Does.Not.Contain("can read in its result"), "the step-6 rule (read the quote by eye) is replaced");
-    }
-
-    [Test]
-    public void TheCook_GivesEachMinionAnIngredient_AndTheMinionPricesItAtEveryShop()
-    {
-        // F30, the fourth hand check (Louis, 2026-10-17: "the cook should give each minion a ingredient and let them
-        // look for it across all shops. The minions must report back each stores price"): one minion per ingredient
-        // with WebSearch, the town's shops and their domains in its task, and one line per shop in its answer.
-        string cook = SkillFileSource.ReadEmbedded(Personalities.SpecialistsFolder + "/puls-cook.md")!;
-        string minion = SkillFileSource.ReadEmbedded(Personalities.MinionsFolder + "/puls-minion-web-price-lookup.md")!;
-
-        Assert.That(cook, Does.Contain("One minion per ingredient"));
-        Assert.That(cook, Does.Contain("StartMinion(\"puls-minion-web-price-lookup\", \"WebSearch\", task)"));
-        Assert.That(cook, Does.Contain("every shop in the town"));
-        Assert.That(cook, Does.Contain("Pryse uit die soekindeks"));
-        Assert.That(cook, Does.Not.Contain("ReadRenderedPage"), "no page readers: the minion searches");
-        Assert.That(cook, Does.Not.Contain("VerifyQuote"), "search prices can't be checked against a page");
-
-        Assert.That(minion, Does.Contain("one line per shop"));
-        Assert.That(minion, Does.Contain("shop: Checkers | price: R"));
-        Assert.That(minion, Does.Contain("Never set `freshness`"));
-        Assert.That(minion, Does.Not.Contain("| unknown`"), "the template shows one filled-in example, not alternatives");
-    }
-
-    [Test]
-    public void TheMinion_FindsTheProductByItsShortName_ThenItsPriceByItsTitle_AndTriesSparAndUsaveOnce()
-    {
-        // F30, the fourth hand check: "eggs" found PnP Large Eggs 6 Pack but its excerpt was the description; the
-        // cook's "PnP large eggs 6 pack R" got R22.99. Louis: "why not always fall to the short name and pick the
-        // closest": the short name finds the closest product, its exact title with "price" finds the price.
-        string minion = SkillFileSource.ReadEmbedded(Personalities.MinionsFolder + "/puls-minion-web-price-lookup.md")!;
-        string cook = SkillFileSource.ReadEmbedded(Personalities.SpecialistsFolder + "/puls-cook.md")!;
-
-        Assert.That(minion, Does.Contain("Two searches per shop"));
-        Assert.That(minion, Does.Contain("its exact title and the word `price`"));
-        Assert.That(minion, Does.Contain("no online prices"), "Spar and Usave show only promotions and their home page");
-        Assert.That(cook, Does.Contain("Never retry a minion"));
-        Assert.That(cook, Does.Not.Contain("ContinueMinion"));
-    }
 }

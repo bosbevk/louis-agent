@@ -296,3 +296,8 @@ sequenceDiagram
   the per-page minions above; the price role answers with one line per shop, and every shop in the town is priced.
 - **Minions answer once and close; two searches per shop** (Louis, 2026-10-17): `ContinueMinion` goes (kept minions
   evicted the chat's specialists), the minion finds a product by its short name and its price by its exact title.
+- **The minions stay, the prompts go back** (Louis, 2026-10-17: "keep the minion feature but restore the prompts as it
+  was"): Puls's routing, the specialists guide and the cook's and researcher's roles are as they were before step 6, so
+  the cook prices from search results again and no specialist is given `minions`. The minion code, its roles and guide,
+  `VerifyQuote`, the compose settings and the Werk card stay, ready for F31 to measure a minion setup against this one.
+  Open: running a round's minion calls concurrently (`AllowConcurrentInvocation`; they ran one after another).
