@@ -1,0 +1,75 @@
+{
+  "products": [
+    {
+      "articleNumber": "10395676",
+      "name": "NESCAFÉ Classic Instant Coffee 200g",
+      "brand": "NESCAFÉ",
+      "unitOfMeasure": "EA",
+      "weightOptions": [],
+      "price": 149.99,
+      "discountedPrice": 149.99,
+      "oldPrice": 14999,
+      "discount": 0,
+      "currency": "ZAR",
+      "isOnPromotion": false,
+      "bonusBuyIds": [
+        "6ac777c38f8278e4906a7ad2"
+      ],
+      "isStockAvailable": true,
+      "imageId": "6a5f7c5f745efcce53fcd50d"
+    },
+    {
+      "articleNumber": "10626516",
+      "name": "NESCAFÉ Gold Instant Espresso Coffee 200g",
+      "brand": "NESCAFÉ",
+      "unitOfMeasure": "EA",
+      "weightOptions": [],
+      "price": 209.99,
+      "discountedPrice": 209.99,
+      "oldPrice": 20999,
+      "discount": 0,
+      "currency": "ZAR",
+      "isOnPromotion": false,
+      "bonusBuyIds": [],
+      "isStockAvailable": true,
+      "imageId": "6a5f7b4a77626dab257de1d9"
+    },
+    {
+      "articleNumber": "10732965",
+      "name": "Farmer's Choice Fresh Drum & Thigh Chicken Individually Wrapped 16-Piece",
+      "brand": "Farmer's Choice",
+      "unitOfMeasure": "KG",
+      "weightOptions": [
+        "1700-1900"
+      ],
+      "price": 79.99,
+      "discountedPrice": 79.99,
+      "oldPrice": 7999,
+      "discount": 0,
+      "currency": "ZAR",
+      "isOnPromotion": true,
+      "bonusBuyIds": [],
+      "isStockAvailable": true,
+      "imageId": "6a593fe43f6e8a9e1b664993"
+    },
+    {
+      "articleNumber": "10727368",
+      "name": "NESCAFÉ Classic Black Roast Instant Coffee 200g",
+      "brand": "NESCAFÉ",
+      "unitOfMeasure": "EA",
+      "weightOptions": [],
+      "price": 149.99,
+      "discountedPrice": 149.99,
+      "oldPrice": 14999,
+      "discount": 0,
+      "currency": "ZAR",
+      "isOnPromotion": false,
+      "bonusBuyIds": [
+        "6ac777c38f8278e4906a7ad2"
+      ],
+      "isStockAvailable": true,
+      "imageId": "6a5f792a745efcce53fcd01d"
+    }
+  ],
+  "totalCount": 4
+}

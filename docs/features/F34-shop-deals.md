@@ -63,6 +63,16 @@ prices.
   a failed lookup: Checkers' default store, as before. The table's header names the store: `Products at Checkers (the
   store serving Malmesbury)`, `(its default store: no area shared)` or `(… none found for {town})`. Live: Malmesbury's
   stores aren't the default's, and a search from Malmesbury is answered there; only the town's centre is sent.
+- **The list's photo (2026-10-17, Louis on a screenshot):** a cell with a product's photo keeps a lane for it, so a long
+  name wraps beside the photo, never under it (Puls's styles).
+- **Step 2 (2026-10-17): each product's deal.** `ShopProduct.Deal`: a `ShopDeal` of `ShopDealKind.Special` when the
+  answer links the product to a bonus buy (`bonusBuyIds`), else `Promotion` when it flags one (`isOnPromotion`), and the
+  wording from the badge on the product's card (a `promotion-badge_save` button or span: `BUY 2 FOR R199`, `SAVE`).
+  The price fields never change for a deal, so this is where it shows. Tested on a real answer and page (NESCAFÉ
+  Classic's multi-buy, Farmer's Choice's promotion, a product with none, and a multi-buy whose card the page left out:
+  its kind, no wording). Live: chicken's deals with their wording, three runs in four; the one that failed read the page
+  before its cards were drawn (3 s), so a deal can come without its wording when the page is slow: its kind still
+  says there is one.
 
 ---
 [Features](README.md) · [Plan](../plans/F34-shop-deals.md) · Previous: [F33 Shop catalogues](F33-shop-catalogues.md)

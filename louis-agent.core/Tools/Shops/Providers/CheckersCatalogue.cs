@@ -1,6 +1,7 @@
 namespace LouisAgent.Core.Tools.Shops.Providers;
 
 using System.Globalization;
+using System.Net;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using LouisAgent.Core.Messages;
@@ -89,7 +90,8 @@ public sealed partial class CheckersCatalogue(IWebBrowser browser, CheckersStore
                 byWeight ? price : null,
                 byWeight ? "kg" : "each",
                 LinkOf(html, article, unit) ?? searchUri,
-                ImageOf(p)));
+                ImageOf(p),
+                DealOf(p, html, article, unit)));
             if (products.Count == maxResults) break;
         }
         return products;
@@ -121,6 +123,38 @@ public sealed partial class CheckersCatalogue(IWebBrowser browser, CheckersStore
         p.TryGetProperty("imageId", out var id) && id.ValueKind == JsonValueKind.String && id.GetString() is { Length: > 0 } image
             ? new Uri(Images, Uri.EscapeDataString(image) + "?width=256&height=256")
             : null;
+
+    /// <summary>
+    /// The product's deal (F34 step 2): a multi-buy when the answer links it to a bonus buy (<c>bonusBuyIds</c>), else a
+    /// promotion when it flags one (<c>isOnPromotion</c>); its wording is the badge on the product's card. Neither changes
+    /// the price fields, so this is the only place a deal shows.
+    /// </summary>
+    private static ShopDeal? DealOf(JsonElement p, string html, string article, string unit)
+    {
+        ShopDealKind? kind =
+            p.TryGetProperty("bonusBuyIds", out var bonusBuys) && bonusBuys.ValueKind == JsonValueKind.Array && bonusBuys.GetArrayLength() > 0
+                ? ShopDealKind.Special
+                : p.TryGetProperty("isOnPromotion", out var promoted) && promoted.ValueKind == JsonValueKind.True ? ShopDealKind.Promotion : null;
+        return kind is { } deal ? new ShopDeal(deal, BadgeOf(html, article, unit)) : null;
+    }
+
+    /// <summary>
+    /// The deal's wording on the product's card: the card runs from its start (<c>product-card_card__</c>) to the next
+    /// card's, and holds the product's link and, when it has a deal, a <c>promotion-badge_save</c> element (a button for
+    /// a multi-buy, a span for a promotion) whose text is the deal. None when the page has no card for the product.
+    /// </summary>
+    private static string? BadgeOf(string html, string article, string unit)
+    {
+        if (article.Length == 0) return null;
+        var link = Regex.Match(html, "href=\"/product/[^\"]*-" + Regex.Escape(article) + Regex.Escape(unit) + "\"", RegexOptions.IgnoreCase);
+        if (!link.Success) return null;
+        const string Card = "product-card_card__";
+        int start = html.LastIndexOf(Card, link.Index, StringComparison.Ordinal);
+        int end = html.IndexOf(Card, link.Index, StringComparison.Ordinal);
+        string card = html[(start < 0 ? link.Index : start)..(end < 0 ? html.Length : end)];
+        var badge = Regex.Match(card, "class=\"[^\"]*promotion-badge_save[^\"]*\"[^>]*>([^<]+)<");
+        return badge.Success && WebUtility.HtmlDecode(badge.Groups[1].Value).Trim() is { Length: > 0 } wording ? wording : null;
+    }
 
     /// <summary>The product's card on the search page: a link ending in its article number and unit.</summary>
     private static Uri? LinkOf(string html, string article, string unit)

@@ -101,6 +101,34 @@ public class CheckersCatalogueTests
     public void AProductOutOfStock_IsLeftOut_ItCantBeBought() =>
         Assert.That(CheckersCatalogue.Parse(Two, "", Search, 10).Select(p => p.Name), Is.EqualTo(new[] { "On special" }));
 
+    // F34 step 2: a deal is in the same visit. The answer says which products have one: a multi-buy ("bonus buy") by
+    // bonusBuyIds, a promotion by isOnPromotion; their prices don't change. The card says what it is: its promotion
+    // badge ("BUY 2 FOR R199", "SAVE"). The fixtures are a real answer and page, recorded 2026-10-17 and trimmed; the
+    // last product's card is left out, as a deal whose wording the page didn't show.
+    private static string DealsJson => File.ReadAllText(Path.Combine(Fixtures, "checkers-deals.json"));
+    private static string DealsHtml => File.ReadAllText(Path.Combine(Fixtures, "checkers-deals.html"));
+    private static IReadOnlyList<ShopProduct> Deals => CheckersCatalogue.Parse(DealsJson, DealsHtml, Search, 10);
+
+    [Test]
+    public void AMultiBuy_IsASpecial_WithItsCardsWording() =>
+        Assert.That(Deals[0].Deal, Is.EqualTo(new ShopDeal(ShopDealKind.Special, "BUY 2 FOR R199")));
+
+    [Test]
+    public void AProductOnPromotion_IsAPromotion_WithItsBadge() =>
+        Assert.That(Deals[2].Deal, Is.EqualTo(new ShopDeal(ShopDealKind.Promotion, "SAVE")));
+
+    [Test]
+    public void AProductWithNoDeal_HasNone() =>
+        Assert.That(Deals[1].Deal, Is.Null);
+
+    [Test]
+    public void ADealWhoseCardDoesntShowIt_KeepsItsKind_WithoutWording() =>
+        Assert.That(Deals[3].Deal, Is.EqualTo(new ShopDeal(ShopDealKind.Special, null)));
+
+    [Test]
+    public void ADealDoesntChangeThePrice() =>
+        Assert.That((Deals[0].Price, Deals[2].UnitPrice), Is.EqualTo(((decimal?)149.99m, (decimal?)79.99m)));
+
     // --- Through the browser ---
 
     private sealed class FakeBrowser(params string[] captured) : IWebBrowser
@@ -203,6 +231,17 @@ public class CheckersCatalogueTests
 
         Assert.That(found.Area, Is.EqualTo("Malmesbury"));
         Assert.That(found.Products, Is.Not.Empty);
+    }
+
+    [Test, Category("Live")]
+    public async Task Checkers_ShowsItsDeals_WithTheirWording()
+    {
+        string? url = Environment.GetEnvironmentVariable("BROWSER_URL");
+        Assume.That(url, Is.Not.Null.And.Not.Empty, "BROWSER_URL isn't set: no browser to search Checkers with (the Puls stack's puls-browser).");
+
+        var products = (await new CheckersCatalogue(new ChromeWebBrowser(new Uri(url!))).SearchAsync("chicken", 16)).Products;
+
+        Assert.That(products, Has.Some.Matches<ShopProduct>(p => p.Deal is { Text.Length: > 0 }), "deals come and go; chicken has had one all week");
     }
 
     [Test, Category("Live")]
