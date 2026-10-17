@@ -354,7 +354,7 @@ public class WebToolsTests
         Assert.That(() => missingKey.SearchAsync(new WebSearchQuery("x", 1)),
             Throws.TypeOf<WebSearchException>().With.Message.Contains("GOOGLE_SEARCH_API_KEY").And.Message.Contains("GOOGLE_SEARCH_ENGINE_ID"));
         Assert.That(() => unknown.SearchAsync(new WebSearchQuery("x", 1)),
-            Throws.TypeOf<WebSearchException>().With.Message.Contains("Supported: tavily, google, duckduckgo"));
+            Throws.TypeOf<WebSearchException>().With.Message.Contains("Supported: tavily, google, searxng, duckduckgo"));
     }
 
     // --- Google ---

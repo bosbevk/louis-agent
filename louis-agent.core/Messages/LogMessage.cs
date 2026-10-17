@@ -210,4 +210,7 @@ public enum LogMessage
 
     [Description("File logging disabled; could not use '{Directory}': {Reason}")]
     FileLoggingDisabled,
+
+    [Description("SearXNG searched without these engines: {Engines}")]
+    SearxngEnginesSilent,
 }

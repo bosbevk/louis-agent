@@ -210,6 +210,18 @@ public enum ToolMessage
     [Description("Unknown WEB_SEARCH_PROVIDER '{Provider}'. Supported: {Supported}.")]
     UnknownSearchProvider,
 
+    [Description("WEB_SEARCH_PROVIDER=searxng needs SEARXNG_URL: the address of the SearXNG we run (http://puls-searxng:8080 in the Puls stack).")]
+    SearxngNotConfigured,
+
+    [Description("SearXNG at {Url} refused a JSON search (HTTP 403): its settings.yml needs json under search.formats.")]
+    SearxngJsonOff,
+
+    [Description("No search engine behind SearXNG answered: {Reasons}. Try again later.")]
+    SearxngNoEngineAnswered,
+
+    [Description("SearXNG search failed: HTTP {Status} {Detail}")]
+    SearxngFailed,
+
     [Description("Error: DEVOPS_API_KEY is not set.")]
     DevOpsKeyNotSet,
 
