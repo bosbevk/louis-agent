@@ -107,8 +107,8 @@ app.MapHistory();
 // F31: each run is recorded into the benchmark store (BENCHMARKS_MONGO_URL), its cost joined from this instance's
 // ledger; without a store no run starts. At start-up nothing runs, so a run still "running" was cut off by a restart.
 var admin = AdminOptions.FromEnvironment();
-// The checks: the free stub (steps 6c, 9, 10's hand checks); the cook and routing checks come with steps 7 and 8.
-var benchmarks = new BenchmarkCatalog([BenchmarkCatalog.Stub]);
+// The checks: the free stub (for the hand checks) and the cook check; the routing check comes with step 8.
+var benchmarks = new BenchmarkCatalog(BenchmarkCatalog.Default);
 var benchmarkLog = AgentLogging.LoggerFactory.CreateLogger("LouisAgent.Api.Benchmarks");
 IBenchmarkStore? benchmarkStore = admin.BenchmarksMongoUrl is { } mongoUrl ? new MongoBenchmarkStore(mongoUrl, admin.BenchmarksDatabase) : null;
 BenchmarkRecorder? recorder = benchmarkStore is null ? null : new BenchmarkRecorder(benchmarkStore, benchmarkLog, host.Agent.LogDirectory);

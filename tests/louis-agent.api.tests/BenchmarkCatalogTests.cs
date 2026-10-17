@@ -2,14 +2,23 @@ using LouisAgent.Api.Services;
 
 namespace LouisAgent.Api.Tests;
 
-// F27 step 1 (F27-S3): the checks the portal can run. CL10: none until they're rewritten; no saved runs on disk.
+// F27 step 1 (F27-S3): the checks the portal can run; F31 brings them back, each with its script under benchmarks/.
 public class BenchmarkCatalogTests
 {
+    private static string RepoRoot { get; } =
+        Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, "..", "..", "..", "..", ".."));
+
     [Test]
-    public void TheCatalog_HasNoChecks_UntilTheyAreRewritten()
-    {
-        // CL10: the old checks went with samples/; the rewritten ones (benchmarks/, results in puls_benchmarks) come later.
+    public void AnEmptyCatalog_HasNoChecks() =>
         Assert.That(new BenchmarkCatalog().Checks, Is.Empty);
+
+    [Test]
+    public void ThePortalsChecks_AreTheStubAndTheCook_EachWithItsScript()
+    {
+        // F31 steps 6c and 7b; the routing check joins in step 8.
+        Assert.That(BenchmarkCatalog.Default.Select(c => c.Id), Is.EqualTo(new[] { "stub", "cook" }));
+        foreach (var check in BenchmarkCatalog.Default)
+            Assert.That(File.Exists(Path.Combine(RepoRoot, check.Script)), check.Script);
     }
 
     [Test]

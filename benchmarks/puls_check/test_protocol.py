@@ -35,5 +35,26 @@ class TheWriter(unittest.TestCase):
         self.assertEqual(protocol.run_tag("abc123", "puls-cook", 2), "abc123:puls-cook:2")
 
 
+class AnyConsole(unittest.TestCase):
+    """F31 step 7b's replay found it: run by hand on Windows, stdout is cp1252, and a recorded turn's curly quote or
+    emoji raised mid-stream, ending its conversation. The runner sets PYTHONIOENCODING, but the writer can't rely on it."""
+
+    def _on(self, encoding, action):
+        raw = io.BytesIO()
+        console = io.TextIOWrapper(raw, encoding=encoding)
+        with redirect_stdout(console):
+            action()
+        console.flush()
+        return raw.getvalue().decode(encoding).splitlines()
+
+    def test_an_event_with_any_character_is_written_and_reads_back(self):
+        [line] = self._on("cp1252", lambda: protocol.emit("question", text="Die kok s’n pannekoek 🍳"))
+        self.assertEqual(json.loads(line[1:])["text"], "Die kok s’n pannekoek 🍳")
+
+    def test_a_plain_line_with_any_character_never_stops_the_run(self):
+        [line] = self._on("cp1252", lambda: protocol.say("Klaar 🍳"))
+        self.assertTrue(line.startswith("Klaar"))
+
+
 if __name__ == "__main__":
     unittest.main()

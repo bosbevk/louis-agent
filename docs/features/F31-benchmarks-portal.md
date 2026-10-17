@@ -183,3 +183,15 @@ before it.
   Python tests (18). **Seen in the recording:** the cook called `VerifyQuote` six times though its restored role
   never mentions it: it learnt the tool from the web guide's row, which every web session loads (PR #51's review,
   should-fix).
+- **Step 7b (2026-10-17): the cook check** (`benchmarks/cook/run_check.py`, on the harness; in the catalogue as
+  `cook`, *Kokkontrole: Puls alleen teen Puls met die kok*). Modes `puls-only` (`web`) and `puls-cook` (`specialists`,
+  `web`); the four conversations of the pre-CL10 check (cook-af and cook-en with a follow-up, cook-shops, the
+  control); each session tagged `{BENCHMARK_RUN}:{mode}:{repeat}`; every stream event forwarded, the turn's reading and
+  the conversation's scores (role, routed right, hosts, shops, the cook's rating, rand, unknown marks, the follow-up)
+  sent as events. No ledger code and no files: the API keeps the run and prices it. Its scoring has 11 unittests. **A
+  free run against a stand-in API that streams the recorded turn back** found a bug: by hand on Windows stdout is
+  cp1252, and the turn's curly quotes and emoji raised mid-stream, so each conversation stopped after ~300 events and
+  no turn was reported (in the container the runner sets `PYTHONIOENCODING`, so the stub's test never saw it). The
+  writer now sends events as ASCII JSON (every other character escaped, read back as it was) and replaces what a
+  console can't show in a plain line; two tests first. Replayed again: 12 questions, 12 turns, 18,036 events, scores
+  as designed.

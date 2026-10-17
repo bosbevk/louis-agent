@@ -10,8 +10,9 @@ VERSION = 1
 
 
 def emit(event, **fields):
-    """One event line: '@' and one JSON object, with the time (Unix seconds)."""
-    sys.stdout.write("@" + json.dumps({"event": event, "t": round(time.time(), 3), **fields}, ensure_ascii=False) + "\n")
+    """One event line: '@' and one JSON object, with the time (Unix seconds). ASCII only, every other character
+    escaped (\\u2019): any console can write it, whatever its code page, and JSON reads it back as it was."""
+    sys.stdout.write("@" + json.dumps({"event": event, "t": round(time.time(), 3), **fields}) + "\n")
     sys.stdout.flush()
 
 
@@ -21,8 +22,11 @@ def start():
 
 
 def say(text):
-    """A line for people; one that happens to start with '@' gets a space, so it's never read as an event."""
-    sys.stdout.write((" " + text if text.startswith("@") else text) + "\n")
+    """A line for people; one that happens to start with '@' gets a space, so it's never read as an event. What the
+    console can't show is replaced: a plain line is for reading, and must never stop the run."""
+    line = (" " + text if text.startswith("@") else text) + "\n"
+    encoding = getattr(sys.stdout, "encoding", None) or "utf-8"
+    sys.stdout.write(line.encode(encoding, errors="replace").decode(encoding))
     sys.stdout.flush()
 
 
