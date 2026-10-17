@@ -230,3 +230,6 @@ above); F33's run is the one that shows prices.
   scorer says whether it did.
 
 ## Approved during the build
+- **2026-10-17, in step 1: `WebBrowserException`** (`Tools/Web/Browsing/`, `LouisAgent.Core.Tools.Web.Browsing`, new):
+  the browser's own error, so each user turns it into its own (`ChromePageRenderer` into `PageRenderException`, the
+  catalogue into `ShopCatalogueException`) and the browser depends on neither. Added to the namespace map's step 1.

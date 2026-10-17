@@ -1,4 +1,4 @@
-namespace LouisAgent.Core.Tools.Web.Rendering.Providers;
+namespace LouisAgent.Core.Tools.Web.Browsing;
 
 using System.Net;
 using LouisAgent.Core.Guardrails;

@@ -56,3 +56,9 @@ the run shows priced ingredients with sources.
 [Features](README.md) · [Plan](../plans/F33-shop-catalogues.md) · Previous: [F32 Self-hosted web](F32-self-hosted-web.md)
 
 ## What the build changed
+- **Step 1 (2026-10-17): the guarded browser, a seam of its own.** `Tools/Web/Browsing` holds `IWebBrowser` and
+  `ChromeWebBrowser` (F32's renderer's guards, moved: the address rule on every request, no WebSockets, cancellation,
+  4 pages at once), `RenderPolicy` and `RenderVerdict`; `ChromePageRenderer` is a few lines over it, its answers
+  unchanged. A visit keeps the response bodies a caller asks for (the live test: of two JSON documents a page fetched,
+  exactly the one asked for), each read by a task the visit awaits, so no handler is `async void` and none is lost to
+  the page closing. `ToolsetContext.Browser` gives a toolset the browser `BROWSER_URL` names.

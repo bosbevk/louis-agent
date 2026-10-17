@@ -1,4 +1,4 @@
-namespace LouisAgent.Core.Tools.Web.Rendering.Providers;
+namespace LouisAgent.Core.Tools.Web.Browsing;
 
 /// <summary>What happens to one request a rendered page makes (F32 step 2): <see cref="RenderPolicy"/> decides.</summary>
 public enum RenderVerdict
