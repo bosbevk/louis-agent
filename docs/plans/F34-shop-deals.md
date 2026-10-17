@@ -269,9 +269,10 @@ sequenceDiagram
   the table's header names the store (`ToolMessage.ShopStoreForArea`, `ShopDefaultStore`, `ShopDefaultStoreNoneFor`).
   The lookup sends only the town's centre (Checkers' call works without the address's text), and a lookup that fails
   isn't kept, so the next search tries again (`LogMessage.ShopAreaUnavailable`).
-- **2026-10-17, for step 4 (Louis, on a screenshot of the list: "can we move the picture into its own to the first
-  column"):** the shopping list's product photo gets a column of its own, the first, before *Ingredient*; *To buy* keeps
-  the product's name and pack.
+- **2026-10-17, the list's product photo (Louis, on a screenshot: "can we move the picture into its own to the first
+  column", then "no wait keep it there but the text must not go underneath"):** the photo stays in *To buy*; Puls's
+  styles give a cell with a photo a lane for it (`.markdown td:has(> img)`), so a long name wraps beside the photo, never
+  under it. Not the cook's prompt.
 
 ---
 [Plans](README.md) · Previous: [CL14 The public word: role](CL14-public-word-role.md)
