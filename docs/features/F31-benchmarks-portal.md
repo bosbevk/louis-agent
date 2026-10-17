@@ -132,3 +132,12 @@ before it.
   **The restart test passed on Louis's Windows host** (Docker Desktop, the host folder): a document written as root
   read back after `restart puls-mongo` and after the stack's `down` and `up`, no errors in Mongo's log; an
   unauthenticated read is refused. So the host folder stays and no named volume is needed.
+- **Step 5c (2026-10-17): `MongoBenchmarkStore`** on `MongoDB.Driver` 3.12.0. The documents are mapped to BSON by
+  hand, field by field in snake case, so what `mongosh` shows is what the portal reads; a check's scores and a turn's
+  stream events are stored as the JSON they came as. Conversations and turns have their key as a compound `_id`, so a
+  save is a replace by key. The indexes are made on first use. A server that doesn't answer fails a call within five
+  seconds, so the recorder gives up quickly. The same 13 contract tests pass against `puls-mongo` on Louis's machine
+  (`BENCHMARKS_MONGO_URL` set in the shell, with `127.0.0.1`) and are skipped, with the reason, without it; the test
+  database is dropped afterwards. CI gets a throwaway `mongo:8` service, so the contract runs there on every push.
+  Noticed meanwhile, not changed: `Microsoft.AspNetCore.Components.WebAssembly.Server` 10.0.12 has two published
+  high-severity advisories (NU1903 on restore).
