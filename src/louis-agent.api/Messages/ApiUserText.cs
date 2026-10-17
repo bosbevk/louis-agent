@@ -112,4 +112,7 @@ public enum ApiUserText
 
     [Description("The check speaks protocol {Version} and this API reads {Supported}: lines it doesn't know are kept as the log.")]
     BenchmarkProtocolUnknown,
+
+    [Description("The usage ledger couldn't be read ({Reason}), so the run's cost is unknown.")]
+    BenchmarkLedgerUnreadable,
 }

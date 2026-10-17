@@ -111,3 +111,12 @@ before it.
   cut off is kept with its question, its events and the error `BenchmarkTurnCutOff`. An unknown protocol version is
   said in the log and the run is still read. A store that fails stops every later write but the run's last one, which
   carries `store_error`; the run itself never waits on it. `Total` stays empty until step 4.
+- **Step 4 (2026-10-17): the cost, from the ledger** (`BenchmarkLedger`, called by the recorder when the run ends).
+  A run's rows are those tagged with its id or `{id}:…` (not an id that merely starts the same); the `sub_session`
+  roll-ups are skipped, since they repeat the child's own rows in the parent's turn. A row joins its turn by its
+  session (Puls's, which the script named) or by its `parent`, followed up through a specialist, so a minion's cost
+  lands on the Puls turn that sent its specialist. A row nobody can place is kept with no turn and still counted. The
+  run's `total` is `UsageReport.Total` over those rows, as every host totals usage, so the portal and the ledger
+  agree. The ledger's files are read for every month the run spans; an unreadable one leaves the cost unknown and
+  says so in the log. Open: whether the last turn's rows are always written before the script ends (the old scripts
+  waited two seconds); step 11b's paid run checks the count.

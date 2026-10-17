@@ -2,6 +2,7 @@ using System.Text.Json;
 using LouisAgent.Api.Messages;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Usage;
 using Microsoft.Extensions.Logging;
 using static LouisAgent.Api.Services.Benchmarks.BenchmarkDocuments;
 using static LouisAgent.Api.Services.Benchmarks.BenchmarkProtocol;
@@ -13,10 +14,12 @@ namespace LouisAgent.Api.Services.Benchmarks;
 /// (<see cref="BenchmarkRun.Listen"/>: the lines so far, then each new one), parses each with
 /// <see cref="BenchmarkProtocol"/> and writes as it goes: the run and its modes when they start, a conversation when its
 /// first question comes (its scores when it ends), a turn with its stream events when it ends. So a half-done run is
-/// already readable. When the run ends it closes whatever is still open, a turn with what it had, and writes the run's
-/// end and its plain lines. A store that fails stops the writes, never the run: the result and the run say so.
+/// already readable. When the run ends it closes whatever is still open, a turn with what it had, joins the run's rows
+/// of the usage ledger in <paramref name="ledgerDirectory"/> to its turns (<see cref="BenchmarkLedger"/>), and writes
+/// the run's end, its total and its plain lines. A store that fails stops the writes, never the run: the result and
+/// the run say so.
 /// </summary>
-public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = null)
+public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = null, string? ledgerDirectory = null)
 {
     /// <summary>Whether everything was kept; <see cref="StoreError"/> says why not.</summary>
     public sealed record Result(bool Stored, string? StoreError);
@@ -29,7 +32,7 @@ public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = n
     {
         // Listen before the first await, so no line printed meanwhile is missed.
         var (soFar, live) = run.Listen();
-        var recording = new Recording(run, settings, store, logger, cancellationToken);
+        var recording = new Recording(run, settings, store, logger, ledgerDirectory, cancellationToken);
         await recording.SaveRunAsync();
         foreach (string line in soFar) await recording.FoldAsync(Parse(line));
         await foreach (string line in live.ReadAllAsync(cancellationToken)) await recording.FoldAsync(Parse(line));
@@ -38,12 +41,14 @@ public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = n
 
     /// <summary>One run's state while it is recorded: what is open, and whether the store still takes writes.</summary>
     private sealed class Recording(BenchmarkRun run, IReadOnlyDictionary<string, string>? settings, IBenchmarkStore store,
-        ILogger? logger, CancellationToken cancellationToken)
+        ILogger? logger, string? ledgerDirectory, CancellationToken cancellationToken)
     {
         private readonly List<Mode> _modes = [];
         private readonly List<string> _log = [];
         private readonly Dictionary<ConversationKey, int> _order = [];
         private readonly Dictionary<TurnKey, OpenTurn> _open = [];
+        private readonly Dictionary<string, ConversationKey> _sessions = [];
+        private Total? _total;
         private string? _storeError;
 
         private sealed class OpenTurn(string session, string question)
@@ -71,6 +76,7 @@ public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = n
                     break;
                 case QuestionAsked question:
                     _open[question.Key] = new OpenTurn(question.Session, question.Text);
+                    _sessions.TryAdd(question.Session, question.Key.Conversation);
                     if (!_order.ContainsKey(question.Key.Conversation))
                         await WriteAsync(() => store.SaveConversationAsync(run.Id,
                             new Conversation(question.Key.Conversation, OrderOf(question.Key.Conversation), null, NoScores, 0, 0), cancellationToken));
@@ -79,6 +85,7 @@ public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = n
                     OpenOf(sse.Key).Events.Add(new StreamEvent(sse.Type, sse.Data, sse.At));
                     break;
                 case TurnEnded turn:
+                    _sessions.TryAdd(turn.Session, turn.Key.Conversation);
                     var events = _open.Remove(turn.Key, out var open) ? open.Events : [];
                     await WriteAsync(() => store.SaveTurnAsync(run.Id, new Turn(turn.Key, turn.Session, turn.Question, turn.Answer, turn.Role,
                         turn.Continued, turn.PulsCalls, turn.SpecialistCalls, turn.Hosts, turn.Seconds, turn.Error), events, cancellationToken));
@@ -98,6 +105,7 @@ public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = n
                 await WriteAsync(() => store.SaveTurnAsync(run.Id,
                     new Turn(key, open.Session, open.Question, null, null, null, 0, 0, [], 0, cutOff), open.Events, cancellationToken));
             _open.Clear();
+            await JoinLedgerAsync();
 
             bool stored = _storeError is null;
             try
@@ -111,6 +119,29 @@ public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = n
                 stored = false;
             }
             return new Result(stored, _storeError);
+        }
+
+        /// <summary>
+        /// The run's requests and total from the ledger, read once the script has ended. A request's row is written when
+        /// it finishes, so the last turn's rows should be there by then; the first real run (step 11b) checks that the
+        /// run's request count matches the turns' (the old scripts waited two seconds to be sure).
+        /// </summary>
+        private async Task JoinLedgerAsync()
+        {
+            if (ledgerDirectory is null) return;
+            IReadOnlyList<UsageRecord> ofRun;
+            try
+            {
+                ofRun = BenchmarkLedger.OfRun(run.Id, BenchmarkLedger.Read(ledgerDirectory, run.StartedAt, run.EndedAt ?? DateTimeOffset.UtcNow));
+            }
+            catch (Exception ex) when (ex is IOException or InvalidDataException or UnauthorizedAccessException)
+            {
+                _log.Add(MessageText.Format(ApiUserText.BenchmarkLedgerUnreadable, new { Reason = ex.Message }));
+                return;
+            }
+            _total = BenchmarkLedger.TotalOf(ofRun);
+            var requests = BenchmarkLedger.Join(run.Id, ofRun, _sessions);
+            if (requests.Count > 0) await WriteAsync(() => store.AddRequestsAsync(run.Id, requests, cancellationToken));
         }
 
         private int OrderOf(ConversationKey key)
@@ -128,7 +159,7 @@ public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = n
 
         private Run Document() =>
             new(run.Id, run.Check, run.Repeat, run.Status, run.StartedAt, run.EndedAt, run.ExitCode, settings, _modes.ToArray(),
-                Total: null, Log: run.Status == BenchmarkRunStatus.Running ? null : _log.ToArray(), StoreError: _storeError);
+                _total, Log: run.Status == BenchmarkRunStatus.Running ? null : _log.ToArray(), StoreError: _storeError);
 
         /// <summary>One write; after the first failure none are tried, so a store that is down doesn't slow the run.</summary>
         private async Task WriteAsync(Func<Task> write)
