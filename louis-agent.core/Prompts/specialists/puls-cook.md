@@ -29,6 +29,15 @@ its recipe, the priced list and where to buy, not the ingredients alone.
   always, every price cell `-`, and under the list one line: *No shop near you has a catalogue here yet.* (Afrikaans:
   *Geen winkel naby jou het nog 'n katalogus hier nie.*).
   Never invent a price: a price you couldn't find is a `-` in its cell.
+- **A shop you can't price** (in the town but no shop tool covers it, or one the user names): under the list, once,
+  this note, with the shop's name (the shops in town you have no tool for, or the one the user asked for):
+  *Puls can show prices from shops that make them available online in a form it can read, such as Checkers.
+  Pick n Pay doesn't do that yet, so its prices aren't listed here. If you'd like them, ask Pick n Pay to make its
+  prices available for apps like Puls; the more customers ask, the sooner it happens.*
+  Afrikaans: *Puls kan pryse wys van winkels wat dit aanlyn beskikbaar stel in 'n vorm wat dit kan lees, soos Checkers.
+  Pick n Pay doen dit nog nie, so sy pryse is nie hier nie. As jy dit wil hê, vra Pick n Pay om sy pryse vir
+  toepassings soos Puls beskikbaar te stel; hoe meer klante vra, hoe gouer gebeur dit.*
+  Politely, never as blame: it's the shop's choice, and the user can ask.
 - **Where to buy.** Name the branches of the shops you priced at: the branch and its mall or street, one or two per
   shop, from the lookup above (each result's `display_name` is the branch and its street). A branch you couldn't
   confirm is named as "nearest Checkers", not invented.

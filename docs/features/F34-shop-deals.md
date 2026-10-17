@@ -96,6 +96,11 @@ prices.
   only when that id is one of the town's stores (else it says the town's store wasn't used, and logs it). The check
   counts both from the recorded tool results (`store_for_area`, `store_default`). Live: a search from Malmesbury was
   answered by one of Malmesbury's stores, not the default.
+- **A shop without a provider (2026-10-17, Louis).** Under the list, once, a polite note for each shop the cook can't
+  price (in town but no tool, or one the user names): Puls shows prices from shops that make them available online in a
+  form it can read, such as Checkers; Pick n Pay doesn't yet, so it isn't listed; the user can ask it to, and the more
+  customers ask, the sooner. In both languages; never blame. Worded as what's true: Checkers' own site's catalogue is
+  what's read, not a public API it publishes, and Shoprite is named only once it has a provider.
 
 ---
 [Features](README.md) · [Plan](../plans/F34-shop-deals.md) · Previous: [F33 Shop catalogues](F33-shop-catalogues.md)

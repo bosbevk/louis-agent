@@ -265,6 +265,12 @@ sequenceDiagram
   wasn't used (`ToolMessage.ShopStoreNotUsed`). The header carries the store's id
   (`the store serving Malmesbury, store 655b0c8f`). The benchmark's stream keeps the tools' results, and two scores
   read those headers: `store_for_area` and `store_default`.
+- **2026-10-17, a shop without a provider (Louis: "when a shop does not have a provider puls must reply to the user
+  politely to take it up with the store in order to get listed", "since they do not have an api", then "use your
+  wording").** The cook adds, under the list, a note per shop it can't price (in town without a tool, or one the user
+  names): Puls shows prices from shops that make them available online in a form it can read, such as Checkers; that
+  shop doesn't yet; the user can ask it to, and the more customers ask, the sooner. Not "a public API": Checkers
+  publishes none as such (its own site's catalogue is what's read), and Shoprite is named once its provider exists.
 
 - **2026-10-17, step 1 split in two (Louis: "yes, go ahead"), after the recorded visit.** Checkers' own address call
   (`POST /api/store/fetch-store-contexts?update=true`, an address with `latitude` and `longitude`) answers a visitor

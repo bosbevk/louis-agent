@@ -305,6 +305,20 @@ public class RoleCatalogTests
     }
 
     [Test]
+    public void AShopThePriceCantComeFrom_IsExplained_AndTheUserAskedToRaiseIt()
+    {
+        // Louis: "when a shop does not have a provider puls must reply to the user politely to take it up with the store
+        // in order to get listed", "since they do not have an API": the reason in plain words, and the ask on the public.
+        string cook = SkillFileSource.ReadEmbedded(RoleCatalog.SpecialistsFolder + "/puls-cook.md")!;
+
+        Assert.That(cook, Does.Contain("Puls can show prices from shops that make them available online in a form it can read, such as Checkers."));
+        Assert.That(cook, Does.Contain("the more customers ask, the sooner it happens"));
+        Assert.That(cook, Does.Contain("Puls kan pryse wys van winkels wat dit aanlyn beskikbaar stel in 'n vorm wat dit kan lees, soos Checkers."));
+        Assert.That(cook, Does.Contain("hoe meer klante vra, hoe gouer gebeur dit"));
+        Assert.That(cook, Does.Not.Contain("public API"), "Checkers publishes no API as such: what's true is that its prices can be read");
+    }
+
+    [Test]
     public void TheCook_WritesItsReportInOneShape_ThatPulsHandsOn()
     {
         // Louis: "force Puls to output the data as the cook said it, and conform the cook's output". The report is
