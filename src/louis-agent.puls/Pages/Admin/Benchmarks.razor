@@ -1,24 +1,540 @@
 @page "/admin"
 @page "/admin/maatstawwe"
 @layout AdminLayout
+@using System.Net
+@using System.Text.Json
+@using LouisAgent.Web.Shared
+@using LouisAgent.Web.Shared.Services
+@inject AgentApi Api
+@inject ChatStore Store
+@inject CurrencyState Currency
+@implements IDisposable
 
-@* F27's first admin page. CL10: the old checks and their saved runs went with samples/; the rewritten checks (their
-   scripts in benchmarks/, their results in SQL Server's puls_benchmarks) and this screen's new layout come with the
-   Benchmarks feature, before F30's minions are measured. Until then the page says so, and calls nothing. *@
+@* F31 step 9: the Benchmarks page as the plan lays it out. The store's state, a card per check (repeats, Loop), the run
+   in progress (a row per turn as the script reports it, the open turn typing out in the chat's own TurnView, the
+   script's plain lines folded) and the stored runs, newest first. A reloaded page picks the live run up again: the
+   finished turns from the store, the rest from the run's events. The explorer of one run is step 10. *@
 
 <PageTitle>Maatstawwe · Puls Admin</PageTitle>
 
 <div class="page-head">
     <div>
         <h1>Maatstawwe</h1>
-        <p>Die kontroles wat Puls meet.</p>
+        <p>Die kontroles wat Puls meet. Elke lopie word in die stoor gehou en uit die grootboek geprys.</p>
+    </div>
+    <div class="page-actions">
+        @if (_data is { } head)
+        {
+            <span class="store-pill @(head.Store.Configured && head.Store.Error is null ? "up" : "down")" title="@(head.Store.Error ?? (head.Store.Configured ? "puls-mongo antwoord" : "Geen stoor nie"))">
+                <span class="dot" aria-hidden="true"></span>@(head.Store.Configured ? (head.Store.Error is null ? "stoor" : "stoor af") : "geen stoor")
+            </span>
+        }
+        <button class="header-button" type="button" @onclick="LoadAsync" disabled="@_loading"><span class="ic i-refresh" aria-hidden="true"></span>Herlaai</button>
     </div>
 </div>
 
-<section class="card-p">
-    <strong>Die kontroles word herskryf.</strong>
-    <p>
-        Die ou kontroles en hul lopies is weg. Die nuwes kom ná F30 se minions: hulle loop
-        net van hier af, en hul uitslae word in SQL Server se <code>puls_benchmarks</code> gehou.
-    </p>
-</section>
+@if (_error is { } error)
+{
+    <section class="card-p admin-gate">
+        <strong>@error</strong>
+        @if (_needsKey)
+        {
+            <p>Die portaal se sleutel is <code>ADMIN_API_KEY</code> (of <code>AGENT_API_KEY</code>) in <code>config/.env.secrets</code>. Vul dit hier in; dit word in hierdie blaaier gehou, soos in Instellings.</p>
+            <form class="admin-key" @onsubmit="SaveKeyAsync">
+                <input type="password" placeholder="die sleutel" @bind="_keyDraft" />
+                <button class="header-button" type="submit">Stoor en herlaai</button>
+            </form>
+        }
+    </section>
+}
+
+@if (_loading && _data is null)
+{
+    <section class="card-p"><span class="muted">Laai…</span></section>
+}
+else if (_data is { } data)
+{
+    @if (!data.Store.Configured)
+    {
+        <section class="card-p store-banner">
+            <strong>Geen stoor nie, dus begin geen lopie nie.</strong>
+            <p>'n Betaalde lopie waarvan die uitslae verlore gaan, is die slegste uitkoms. Stel <code>BENCHMARKS_MONGO_URL</code> in <code>config/.env.secrets</code> en skep die houer weer (<code>up -d</code>).</p>
+        </section>
+    }
+    else if (data.Store.Error is { } storeError)
+    {
+        <section class="card-p store-banner">
+            <strong>Die stoor antwoord nie.</strong>
+            <p>@storeError</p>
+        </section>
+    }
+
+    <div class="cards">
+        @foreach (var check in data.Checks)
+        {
+            var last = data.Runs.FirstOrDefault(r => r.Check == check.Id);
+            <details class="card-p check-card" open>
+                <summary class="card-head">
+                    <strong>@check.Title</strong>
+                    <span class="check-card-meta">@(last?.Total is { } t ? Cost(t.Cost) : "") <span class="toolset-chip">@check.Id</span><span class="chevron" aria-hidden="true"></span></span>
+                </summary>
+                <p class="muted"><code>@check.Script</code></p>
+                <p class="muted">@(last is null ? "Nog geen lopie in die stoor nie." : $"Laaste lopie: {last.StartedAt.ToLocalTime():yyyy-MM-dd HH:mm}, {Status(last.Status)}, {Cost(last.Total?.Cost)}")</p>
+                <div class="run-controls">
+                    <span class="muted">Herhalings</span>
+                    @* A segmented control, not a native select: the browser's dropdown ignores the theme. *@
+                    <div class="segmented" role="radiogroup" aria-label="Herhalings">
+                        @for (int n = 1; n <= 5; n++)
+                        {
+                            int count = n;
+                            <button type="button" role="radio" aria-checked="@(RepeatFor(check.Id) == count)" class="@(RepeatFor(check.Id) == count ? "active" : "")" disabled="@Running" @onclick="() => _repeats[check.Id] = count">@count</button>
+                        }
+                    </div>
+                    <button class="header-button" type="button" disabled="@(Running || !CanRun(data))"
+                            title="@(check.Id == "stub" ? "Gratis: geen sessie, geen model" : "Spandeer geld: elke lopie vra die model")" @onclick="() => StartAsync(check.Id)">
+                        <span class="ic i-pulse" aria-hidden="true"></span>Loop
+                    </button>
+                </div>
+            </details>
+        }
+    </div>
+
+    @if (_run is { } live)
+    {
+        <section class="card-p run-panel @(live.Status)">
+            <div class="card-head">
+                <strong>@(data.Checks.FirstOrDefault(c => c.Id == live.Check)?.Title ?? live.Check) · <code>@live.Id</code></strong>
+                <span class="work-status">@Status(live.Status)</span>
+            </div>
+            <p class="muted">
+                @live.Repeat @(live.Repeat == 1 ? "herhaling" : "herhalings") · begin @live.StartedAt.ToLocalTime().ToString("HH:mm:ss")
+                @if (live.ExitCode is { } exit && exit != 0) { <span> · die skrip het met kode @exit geëindig</span> }
+                @if (live.Stored is false) { <span class="danger"> · nie alles is gestoor nie@(live.StoreError is { } se ? $": {se}" : "")</span> }
+                @if (live.Stored is true) { <span> · in die stoor</span> }
+            </p>
+
+            @if (_rows.Count > 0)
+            {
+                <div class="table-wrap">
+                    <table class="run-table">
+                        <thead>
+                            <tr><th>Mode</th><th>Gesprek</th><th>Beurt</th><th>Rol</th><th>Oproepe</th><th>Sek</th><th>Koste</th></tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var group in _rows.GroupBy(r => (r.Mode, r.Repeat, r.Task)))
+                            {
+                                foreach (var row in group)
+                                {
+                                    var rowKey = row.Key;
+                                    <tr class="@(row == _openRow ? "selected" : "") @(row.Error is not null ? "failed" : "")" @onclick="() => OpenTurnAsync(rowKey)" style="cursor: pointer">
+                                        <td>@row.Mode@(live.Repeat > 1 ? $" ·{row.Repeat}" : "")</td>
+                                        <td><code>@row.Task</code></td>
+                                        <td>@row.N</td>
+                                        <td>@(row.Done ? (row.Role ?? (row.Continued is { } h ? $"vervolg · {h}" : "Puls self")) : "")</td>
+                                        <td>@(row.Done ? $"{row.PulsCalls} · {row.SpecialistCalls}" : "")</td>
+                                        <td>@(row.Done ? row.Seconds.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture) : "")</td>
+                                        <td>@(row.Done ? (_costs.TryGetValue(rowKey, out var c) ? Cost(c) : "—") : "")</td>
+                                    </tr>
+                                    @if (!row.Done && live.Status == "running")
+                                    {
+                                        <tr><td colspan="7"><span class="chip busy">tik…</span></td></tr>
+                                    }
+                                }
+                                if (_scores.TryGetValue((group.Key.Mode, group.Key.Repeat, group.Key.Task), out var s))
+                                {
+                                    <tr class="summary"><td colspan="7"><span class="tree-chips">@foreach (var chip in Chips(s.Role, s.Scores)) { <span class="chip @chip.Kind">@chip.Text</span> }</span></td></tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+
+            @if (_openRow is { } open)
+            {
+                <div class="tree-turn-body">
+                    <p class="muted"><code>@open.Mode · @open.Task · beurt @open.N</code></p>
+                    <TurnView Turn="open.Turn" Streaming="@(live.Status == "running" && !open.Done)" Currency="Currency.Current" />
+                </div>
+            }
+
+            <details class="admin-details" open="@(_rows.Count == 0)"><summary>Die skrip se eie reëls (@_log.Count)</summary><pre class="admin-pre run-log">@string.Join("\n", _log)</pre></details>
+        </section>
+    }
+
+    <section class="card-p runs-list">
+        <div class="card-head"><strong>Lopies</strong><span class="muted">@data.Runs.Count</span></div>
+        @if (data.Runs.Count == 0)
+        {
+            <p class="muted">Nog niks in die stoor nie.</p>
+        }
+        else
+        {
+            <ol class="runs">
+                @foreach (var run in data.Runs)
+                {
+                    <li class="run-row">
+                        <a class="run-row-main" href="admin/maatstawwe/@run.Id">
+                            <code>@run.Id</code>
+                            <small>@run.StartedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm") · @(data.Checks.FirstOrDefault(c => c.Id == run.Check)?.Title ?? run.Check) · @run.Repeat× · @Status(run.Status)@(run.Total is { } t ? $" · {t.Requests} versoeke" : "")@(run.StoreError is not null ? " · nie alles gestoor nie" : "")</small>
+                        </a>
+                        <strong class="run-row-cost">@Cost(run.Total?.Cost)</strong>
+                    </li>
+                }
+            </ol>
+        }
+    </section>
+}
+
+@code {
+    private sealed record Check(string Id, string Title, string Script);
+    private sealed record Total(decimal? Cost, int Requests);
+    private sealed record Run(string Id, string Check, int Repeat, string Status, DateTimeOffset StartedAt, Total? Total, string? StoreError);
+    private sealed record StoreState(bool Configured, string? Error);
+    private sealed record Page(List<Check> Checks, StoreState Store, List<Run> Runs);
+    private sealed record LiveRun(string Id, string Check, int Repeat, string Status, int? ExitCode, DateTimeOffset StartedAt, bool? Stored, string? StoreError);
+    private readonly record struct TurnKey(string Mode, int Repeat, string Task, int N);
+
+    /// <summary>One turn of the live run: its question and stream (for TurnView), and its figures once it has ended.</summary>
+    private sealed class Row
+    {
+        public TurnKey Key;
+        public string Mode => Key.Mode;
+        public int Repeat => Key.Repeat;
+        public string Task => Key.Task;
+        public int N => Key.N;
+        public Turn Turn = new();
+        /// <summary>Done: its turn event came. Streamed: its events came on this page (else they're read from the store).</summary>
+        public bool Done, Streamed;
+        public string? Role, Continued, Error;
+        public int PulsCalls, SpecialistCalls;
+        public double Seconds;
+    }
+
+    private sealed record Chip(string Text, string Kind = "");
+
+    private Page? _data;
+    private LiveRun? _run;
+    private readonly List<string> _log = [];
+    private readonly List<Row> _rows = [];
+    private readonly Dictionary<(string, int, string), (string? Role, JsonElement Scores)> _scores = [];
+    private readonly Dictionary<TurnKey, decimal?> _costs = [];
+    private Row? _openRow;
+    private bool _followOpen = true;
+    private bool _renderPending;
+
+    private string? _error;
+    private bool _needsKey, _loading;
+    private string _keyDraft = "";
+    private readonly Dictionary<string, int> _repeats = [];
+
+    private int RepeatFor(string check) => _repeats.GetValueOrDefault(check, 1);
+
+    private bool Running => _run?.Status == "running";
+
+    private static bool CanRun(Page data) => data.Store.Configured && data.Store.Error is null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!Store.Loaded) await Store.LoadAsync();
+        // Costs in the browser's currency (F14), as everywhere in Puls; the ledger's are USD.
+        Currency.Changed += StateHasChanged;
+        await Currency.LoadAsync();
+        await LoadAsync();
+        await ResumeAsync();
+    }
+
+    public void Dispose() => Currency.Changed -= StateHasChanged;
+
+    private async Task LoadAsync()
+    {
+        _loading = true;
+        _error = null;
+        try
+        {
+            var json = await Api.GetAsync<JsonElement>("admin/benchmarks");
+            var store = json.GetProperty("store");
+            _data = new Page(
+                json.GetProperty("checks").EnumerateArray().Select(c => new Check(c.GetProperty("id").GetString()!, c.GetProperty("title").GetString()!, c.GetProperty("script").GetString()!)).ToList(),
+                new StoreState(store.GetProperty("configured").GetBoolean(), Str(store, "error")),
+                json.GetProperty("runs").EnumerateArray().Select(ReadRun).ToList());
+        }
+        catch (AgentApiException ex)
+        {
+            _needsKey = ex.Status is HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden;
+            _error = ex.Message;
+        }
+        catch (HttpRequestException ex)
+        {
+            _error = ex.Message;
+        }
+        _loading = false;
+    }
+
+    private static Run ReadRun(JsonElement r) => new(
+        r.GetProperty("id").GetString()!, r.GetProperty("check").GetString()!, r.GetProperty("repeat").GetInt32(),
+        r.GetProperty("status").GetString()!, r.GetProperty("started_at").GetDateTimeOffset(),
+        r.TryGetProperty("total", out var t) && t.ValueKind == JsonValueKind.Object ? new Total(Dec(t, "cost"), t.GetProperty("requests").GetInt32()) : null,
+        Str(r, "store_error"));
+
+    /// <summary>A run started before this page opened (a reload): its finished turns from the store, then its events.</summary>
+    private async Task ResumeAsync()
+    {
+        if (_data is null) return;
+        try
+        {
+            var current = ReadLive(await Api.GetAsync<JsonElement>("admin/benchmarks/runs/current"));
+            if (current.Status != "running") return;
+            await FromStoreAsync(current.Id);
+            await FollowAsync(current, keepRows: true);
+        }
+        catch (AgentApiException ex) when (ex.Status == HttpStatusCode.NotFound)
+        {
+            // No run yet.
+        }
+    }
+
+    private async Task StartAsync(string check)
+    {
+        _error = null;
+        try
+        {
+            var started = ReadLive(await Api.PostAsync($"admin/benchmarks/{check}/runs", new { repeat = RepeatFor(check) }));
+            await FollowAsync(started, keepRows: false);
+        }
+        catch (AgentApiException ex)
+        {
+            _error = ex.Message;
+        }
+    }
+
+    /// <summary>The turns the store already holds, so a reloaded page doesn't depend on the run's kept lines alone.</summary>
+    private async Task FromStoreAsync(string id)
+    {
+        _rows.Clear();
+        _scores.Clear();
+        try
+        {
+            var json = await Api.GetAsync<JsonElement>($"admin/benchmarks/runs/{id}");
+            foreach (var t in json.GetProperty("turns").EnumerateArray())
+            {
+                var row = RowOf(new TurnKey(t.GetProperty("mode").GetString()!, t.GetProperty("repeat").GetInt32(), t.GetProperty("task").GetString()!, t.GetProperty("turn").GetInt32()));
+                row.Turn = new Turn { UserText = Str(t, "question") ?? "" };
+                Finish(row, t);
+            }
+            foreach (var c in json.GetProperty("conversations").EnumerateArray())
+                if (c.TryGetProperty("scores", out var s) && s.ValueKind == JsonValueKind.Object && s.EnumerateObject().Any())
+                    _scores[(c.GetProperty("mode").GetString()!, c.GetProperty("repeat").GetInt32(), c.GetProperty("task").GetString()!)] = (Str(c, "role"), s.Clone());
+        }
+        catch (AgentApiException)
+        {
+            // The store doesn't have it (yet): the events will tell.
+        }
+    }
+
+    /// <summary>Shows the run's lines as they arrive; when it ends, its costs per turn from the store and the list again.</summary>
+    private async Task FollowAsync(LiveRun run, bool keepRows)
+    {
+        _run = run;
+        _log.Clear();
+        if (!keepRows) { _rows.Clear(); _scores.Clear(); }
+        _costs.Clear();
+        _openRow = null;
+        _followOpen = true;
+        StateHasChanged();
+        try
+        {
+            await foreach (var (type, line) in Api.StreamLinesAsync($"admin/benchmarks/runs/{run.Id}/events"))
+            {
+                if (type == "done")
+                {
+                    _run = ReadLive(JsonDocument.Parse(line).RootElement);
+                    break;
+                }
+                if (line.StartsWith('@') && TryParse(line[1..], out var e))
+                {
+                    // One bad event must not end the whole story: it goes to the browser's console, the rest goes on.
+                    try { Apply(e); }
+                    catch (Exception ex) when (ex is not OutOfMemoryException) { Console.Error.WriteLine($"[admin] event of run {run.Id} not applied: {ex.Message}"); }
+                }
+                else _log.Add(line);
+                RenderThrottled();
+            }
+        }
+        catch (AgentApiException ex)
+        {
+            _error = ex.Message;
+            return;
+        }
+        await CostsAsync(run.Id);
+        await LoadAsync();
+        StateHasChanged();
+    }
+
+    /// <summary>One of the script's events into the table; the stream events feed the turn the chat's way.</summary>
+    private void Apply(JsonElement e)
+    {
+        string kind = Str(e, "event") ?? "";
+        string mode = Str(e, "mode") ?? "", task = Str(e, "task") ?? "";
+        int repeat = Int(e, "repeat") ?? 1, n = Int(e, "turn") ?? 1;
+        switch (kind)
+        {
+            case "question":
+            {
+                var row = RowOf(new TurnKey(mode, repeat, task, n));
+                if (!row.Streamed) row.Turn = new Turn { UserText = Str(e, "text") ?? "" };
+                if (_followOpen) _openRow = row;
+                break;
+            }
+            case "sse":
+            {
+                var row = RowOf(new TurnKey(mode, repeat, task, n));
+                if (e.TryGetProperty("data", out var data) && Str(e, "type") is { } type)
+                    TurnStream.Apply(row.Turn, new AgentStreamEvent(type, data));
+                row.Streamed = true;
+                break;
+            }
+            case "turn":
+                Finish(RowOf(new TurnKey(mode, repeat, task, n)), e);
+                break;
+            case "conversation":
+                if (e.TryGetProperty("scores", out var scores) && scores.ValueKind == JsonValueKind.Object)
+                    _scores[(mode, repeat, task)] = (Str(e, "role"), scores.Clone());
+                break;
+        }
+    }
+
+    private Row RowOf(TurnKey key)
+    {
+        if (_rows.FirstOrDefault(r => r.Key == key) is { } row) return row;
+        _rows.Add(row = new Row { Key = key });
+        return row;
+    }
+
+    private static void Finish(Row row, JsonElement t)
+    {
+        row.Done = true;
+        row.Role = Str(t, "role");
+        row.Continued = Str(t, "continued");
+        row.Error = Str(t, "error");
+        row.PulsCalls = Int(t, "puls_calls") ?? 0;
+        row.SpecialistCalls = Int(t, "specialist_calls") ?? 0;
+        row.Seconds = t.TryGetProperty("seconds", out var s) && s.ValueKind == JsonValueKind.Number ? s.GetDouble() : 0;
+    }
+
+    /// <summary>A turn opened from the table; one the store holds but this page never streamed is replayed from its events.</summary>
+    private async Task OpenTurnAsync(TurnKey key)
+    {
+        if (_rows.FirstOrDefault(r => r.Key == key) is not { } row) return;
+        _openRow = row;
+        _followOpen = row == _rows[^1];
+        if (row.Streamed || _run is null) return;
+        try
+        {
+            var json = await Api.GetAsync<JsonElement>(
+                $"admin/benchmarks/runs/{_run.Id}/turns/{Uri.EscapeDataString(key.Mode)}/{key.Repeat}/{Uri.EscapeDataString(key.Task)}/{key.N}/events");
+            var turn = new Turn { UserText = row.Turn.UserText };
+            foreach (var ev in json.GetProperty("events").EnumerateArray())
+                TurnStream.Apply(turn, new AgentStreamEvent(ev.GetProperty("type").GetString()!, ev.GetProperty("data")));
+            row.Turn = turn;
+            row.Streamed = true;
+        }
+        catch (AgentApiException ex)
+        {
+            _error = ex.Message;
+        }
+    }
+
+    /// <summary>Each turn's cost once the run has ended: the store's requests, joined from the ledger, summed per turn.</summary>
+    private async Task CostsAsync(string id)
+    {
+        try
+        {
+            var json = await Api.GetAsync<JsonElement>($"admin/benchmarks/runs/{id}");
+            foreach (var r in json.GetProperty("requests").EnumerateArray())
+            {
+                if (!r.TryGetProperty("turn", out var t) || t.ValueKind != JsonValueKind.Object) continue;
+                var key = new TurnKey(t.GetProperty("mode").GetString()!, t.GetProperty("repeat").GetInt32(), t.GetProperty("task").GetString()!, t.GetProperty("turn").GetInt32());
+                decimal? cost = Dec(r, "cost");
+                _costs[key] = _costs.TryGetValue(key, out var sum) ? (sum is null && cost is null ? null : (sum ?? 0) + (cost ?? 0)) : cost;
+            }
+        }
+        catch (AgentApiException)
+        {
+            // Costs stay "—".
+        }
+    }
+
+    /// <summary>
+    /// A conversation's scores as chips: its role (the protocol's, beside the scores) and whether it was routed right,
+    /// then what the checks share.
+    /// </summary>
+    private static IEnumerable<Chip> Chips(string? role, JsonElement s)
+    {
+        if (s.TryGetProperty("routed_right", out var right))
+            yield return new Chip($"{role ?? "Puls self"} {(right.ValueKind == JsonValueKind.True ? "✓" : "✗")}", right.ValueKind == JsonValueKind.True ? "ok" : "bad");
+        if (Str(s, "follow_up") is { } follow) yield return new Chip(follow, follow == "continued" ? "ok" : "");
+        if (Int(s, "ingredients") is { } items)
+        {
+            decimal ratio = Dec(s, "priced_ratio") ?? 0;
+            yield return new Chip($"geprys {Str(s, "priced")} / {items}", ratio >= 0.8m ? "ok" : ratio < 0.5m ? "bad" : "");
+        }
+        if (s.TryGetProperty("shop_hosts", out var shops) && shops.ValueKind == JsonValueKind.Array)
+            yield return new Chip($"winkels {shops.GetArrayLength()}");
+        if (Int(s, "errors") is > 0 and var errors) yield return new Chip($"foute {errors}", "bad");
+    }
+
+    /// <summary>A render at most every 80 ms while events pour in, as the chat does.</summary>
+    private void RenderThrottled()
+    {
+        if (_renderPending) return;
+        _renderPending = true;
+        _ = Task.Delay(80).ContinueWith(_ => InvokeAsync(() => { _renderPending = false; StateHasChanged(); }));
+    }
+
+    private static LiveRun ReadLive(JsonElement r) => new(
+        r.GetProperty("id").GetString()!, r.GetProperty("check").GetString()!, r.GetProperty("repeat").GetInt32(),
+        r.GetProperty("status").GetString()!, Int(r, "exit_code"), r.GetProperty("started_at").GetDateTimeOffset(),
+        r.TryGetProperty("stored", out var s) && s.ValueKind is JsonValueKind.True or JsonValueKind.False ? s.GetBoolean() : null,
+        Str(r, "store_error"));
+
+    private static bool TryParse(string json, out JsonElement element)
+    {
+        try
+        {
+            element = JsonDocument.Parse(json).RootElement.Clone();
+            return element.ValueKind == JsonValueKind.Object;
+        }
+        catch (JsonException)
+        {
+            element = default;
+            return false;
+        }
+    }
+
+    private static string? Str(JsonElement e, string name) =>
+        e.TryGetProperty(name, out var v) ? v.ValueKind switch
+        {
+            JsonValueKind.String => v.GetString(),
+            JsonValueKind.Number => v.GetRawText(),
+            _ => null,
+        } : null;
+
+    private static int? Int(JsonElement e, string name) =>
+        e.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.Number && v.TryGetInt32(out int n) ? n : null;
+
+    private static decimal? Dec(JsonElement e, string name) =>
+        e.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.Number ? v.GetDecimal() : null;
+
+    private static string Status(string status) => status switch { "running" => "besig", "done" => "klaar", _ => "misluk" };
+
+    private async Task SaveKeyAsync()
+    {
+        await Store.SaveApiKeyAsync(_keyDraft);
+        _keyDraft = "";
+        await LoadAsync();
+    }
+
+    // The ledger's costs are USD; shown in the browser's currency at the app's rate (F14), as the chat does.
+    private string Cost(decimal? cost) => cost is { } c ? UsageFormat.Money(c, "USD", Currency.Current) : "—";
+}

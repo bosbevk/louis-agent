@@ -205,3 +205,15 @@ before it.
   events, `delegated` 2 of 12 right (the two meals), as designed. On Louis's Puls the baseline would be `files, git,
   dotnet, python, powershell, bash, web, paymo, devops, skills`: Paymo and DevOps are there because their keys are
   set, as in the old check.
+- **Step 9 (2026-10-17): the list page** (`Pages/Admin/Benchmarks.razor`, rebuilt on F27's page and its CSS). The
+  store's state as a pill beside *Herlaai* and a banner when there is no store or it doesn't answer (then *Loop* is
+  off); a card per check with its last stored run, the repeats and *Loop* (its title says which spend money); the live
+  run as a table, a row per turn as the script reports it (mode, conversation, turn, role, Puls's and the
+  specialist's calls, seconds, and each turn's cost from the store once the run ends), the conversation's score chips
+  under its turns, the open turn typing out in the chat's own `TurnView` and any finished one opened from its row (from
+  this page's events, or from the store's when the page didn't see them); the script's plain lines folded; the stored
+  runs, newest first, each a link to its explorer (step 10). A reloaded page takes the finished turns from the store,
+  then follows the run's events. By hand in Chrome on the rebuilt Puls with the stub (free): 2 repeats, 12 rows, *klaar
+  · in die stoor*, the cook's hand-off card in the open turn, a finished turn opened from its row, no console errors.
+  Two fixes on the way: the score chip took the role from the scores (the protocol sends it beside them), and the table
+  needed the panel's width. Not seen by hand: a reload mid-run (the stub ends in a second).
