@@ -10,6 +10,7 @@ or fix doc (*What the build changed*), not here.
 
 | Plan | For | Approved | Notes |
 |---|---|---|---|
+| [F31-benchmarks-portal.md](F31-benchmarks-portal.md) | [F31 Benchmarks in the admin portal](../features/F31-benchmarks-portal.md) | 2026-10-17 | The harness's stdout protocol recorded by the API into MongoDB (`puls-mongo`, data on a host folder; `MongoDB.Driver`); a store behind a contract test; the cook and routing checks rewritten; the screen laid out first, on Puls's theme; built after F30's build steps, before its measured run; closes F27 |
 | [CL10-clear-the-decks.md](CL10-clear-the-decks.md) | TODO: *Clear the decks* (cleanup) | 2026-10-17 | `samples/` and `BENCHMARKS.md` go; the admin portal stops being file-based (results will live in SQL Server `puls_benchmarks`, scripts in `benchmarks/`); roles named, not derived; history docs link at tag `pre-cl10`; before F30 step 4 |
 | [CL9-modes-per-product.md](CL9-modes-per-product.md) | TODO: *Modes per product* (cleanup) | 2026-10-16 | A level-0 session is a mode, one file of voice and routing in a folder per product (`agent/puls/voice-af.md`, `agent/louis-agent/voice.md` …; approved during the build); Puls's language menu picks the mode; `AGENT_FUNCTION` goes; before F30 step 4; ADR 0019 |
 | [CL8-skills-by-level.md](CL8-skills-by-level.md) | TODO: *Skills by level* (cleanup) | 2026-10-16 | `Skills/` in folders by level (`agent/`, `specialists/`, `minions/`) beside `toolsets/`; the loader refuses a role at the wrong level; built before F30 step 4; ADR 0017 |
