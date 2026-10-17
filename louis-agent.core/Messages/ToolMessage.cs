@@ -255,6 +255,21 @@ public enum ToolMessage
     [Description("Products at {Shop} ({Store}) for '{Query}' ({Count}), from the shop's own catalogue, at what they cost now:")]
     ShopProductsFound,
 
+    [Description("Specials (multi-buys) at {Shop} ({Store}) for '{Query}' ({Count}), from the shop's own catalogue; each pack price is one pack's, the deal beside it:")]
+    ShopSpecialsFound,
+
+    [Description("Promotions at {Shop} ({Store}) for '{Query}' ({Count}), from the shop's own catalogue, with each product's badge:")]
+    ShopPromotionsFound,
+
+    [Description("{Shop} ({Store}) has no multi-buy among what it finds for '{Query}'. Try a broader word, or FindProducts for its prices.")]
+    ShopNoSpecials,
+
+    [Description("{Shop} ({Store}) has no promotion among what it finds for '{Query}'. Try a broader word, or FindProducts for its prices.")]
+    ShopNoPromotions,
+
+    [Description("{Deal} (its link shows it)")]
+    ShopDealUnworded,
+
     [Description("the store serving {Area}")]
     ShopStoreForArea,
 

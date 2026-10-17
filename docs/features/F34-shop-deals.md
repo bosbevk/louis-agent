@@ -73,6 +73,13 @@ prices.
   its kind, no wording). Live: chicken's deals with their wording, three runs in four; the one that failed read the page
   before its cards were drawn (3 s), so a deal can come without its wording when the page is slow: its kind still
   says there is one.
+- **Step 3 (2026-10-17): `SearchSpecials` and `SearchPromotions`.** The same search as `FindProducts` (one private
+  `SearchAsync` for the three), asking the catalogue for the most it gives (20) and keeping one kind of deal, up to
+  `maxResults`, with a *Deal* column: the card's wording, or "a multi-buy (its link shows it)" when the page didn't word
+  it. `FindProducts`' table is unchanged. The `shops` guide says when: a budget meal, a broad word per main ingredient;
+  a multi-buy's pack price stays one pack's, the deal named beside it and used only when the recipe needs that many;
+  never a saving the shop doesn't state. Checkers' own `dealsOnly` filter isn't used: it would mean changing the
+  request the page makes, nearer to calling its API than visiting it as a shopper (F33's line).
 
 ---
 [Features](README.md) · [Plan](../plans/F34-shop-deals.md) · Previous: [F33 Shop catalogues](F33-shop-catalogues.md)

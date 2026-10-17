@@ -98,6 +98,71 @@ public class ShopToolsTests
     public async Task AnEmptyQuery_SaysWhatToSearchFor() =>
         Assert.That(await Tools(new FakeCatalogue(Chicken)).FindProducts("checkers", " "), Does.Contain("query"));
 
+    // --- F34 step 3: SearchSpecials and SearchPromotions (Louis: "the 2 new Tools"): the same search, one kind of deal ---
+
+    private static readonly ShopProduct Coffee = new("NESCAFÉ Classic Instant Coffee 200g", 149.99m, null, "ZAR", null, null, "each",
+        new Uri("https://www.checkers.co.za/product/nescafe-classic-instant-coffee-200g-10395676EA"), null,
+        new ShopDeal(ShopDealKind.Special, "BUY 2 FOR R199"));
+
+    private static readonly ShopProduct Thighs = new("Farmer's Choice Fresh Drum & Thigh Chicken 16-Piece", 135.98m, 151.98m, "ZAR",
+        "1.7–1.9 kg", 79.99m, "kg", new Uri("https://www.checkers.co.za/product/farmers-choice-drum-and-thigh-10732965KG"), null,
+        new ShopDeal(ShopDealKind.Promotion, "SAVE"));
+
+    private static readonly ShopProduct Rooibos = new("Freshpak Rooibos 80s", 59.99m, null, "ZAR", null, null, "each",
+        new Uri("https://www.checkers.co.za/product/freshpak-rooibos-80s-10001EA"), null, new ShopDeal(ShopDealKind.Special, null));
+
+    [Test]
+    public async Task SearchSpecials_KeepsTheMultiBuys_WithTheirDeal()
+    {
+        var catalogue = new FakeCatalogue(Chakalaka, Coffee, Thighs, Rooibos);
+
+        string result = await Tools(catalogue).SearchSpecials("checkers", "coffee");
+
+        Assert.That(result, Does.StartWith("Specials (multi-buys) at Checkers (its default store: no area shared) for 'coffee' (2)"));
+        Assert.That(result, Does.Contain("untrusted"));
+        Assert.That(result, Does.Contain("| Product | Size | Pack price | Per kg | Deal | Image | Link |"));
+        Assert.That(result, Does.Contain("| NESCAFÉ Classic Instant Coffee 200g | - | R149.99 | - | BUY 2 FOR R199 | - | https://www.checkers.co.za/product/nescafe-classic-instant-coffee-200g-10395676EA |"));
+        Assert.That(result, Does.Contain("| Freshpak Rooibos 80s | - | R59.99 | - | a multi-buy (its link shows it) |"), "a deal the card didn't word");
+        Assert.That(result, Does.Not.Contain("Chakalaka").And.Not.Contain("Farmer's Choice"));
+        Assert.That(catalogue.MaxResults, Is.EqualTo(20), "the most the catalogue gives, then one kind kept");
+    }
+
+    [Test]
+    public async Task SearchPromotions_KeepsThePromotions_WithTheirBadge()
+    {
+        string result = await Tools(new FakeCatalogue(Chakalaka, Coffee, Thighs)).SearchPromotions("checkers", "chicken");
+
+        Assert.That(result, Does.StartWith("Promotions at Checkers (its default store: no area shared) for 'chicken' (1)"));
+        Assert.That(result, Does.Contain("| Farmer's Choice Fresh Drum & Thigh Chicken 16-Piece | 1.7–1.9 kg | R135.98–R151.98 | R79.99/kg | SAVE |"));
+        Assert.That(result, Does.Not.Contain("NESCAFÉ").And.Not.Contain("Chakalaka"));
+    }
+
+    [Test]
+    public async Task ADealTool_KeepsAtMostWhatWasAskedFor()
+    {
+        string result = await Tools(new FakeCatalogue(Coffee, Rooibos)).SearchSpecials("checkers", "coffee", maxResults: 1);
+
+        Assert.That(result, Does.Contain("(1)").And.Contain("NESCAFÉ").And.Not.Contain("Rooibos"));
+    }
+
+    [Test]
+    public async Task NoDealOfItsKind_SaysSo_AndWhatToTry()
+    {
+        Assert.That(await Tools(new FakeCatalogue(Chakalaka, Thighs)).SearchSpecials("checkers", "chakalaka"),
+            Does.Contain("no multi-buy").And.Contain("chakalaka").And.Contain("FindProducts"));
+        Assert.That(await Tools(new FakeCatalogue(Chakalaka, Coffee)).SearchPromotions("checkers", "chakalaka"),
+            Does.Contain("no promotion").And.Contain("chakalaka").And.Contain("FindProducts"));
+    }
+
+    [Test]
+    public async Task ADealTool_ForAShopNotEnabled_SaysWhichAre() =>
+        Assert.That(await Tools(new FakeCatalogue()).SearchPromotions("pnp", "chicken"), Does.Contain("checkers"));
+
+    [Test]
+    public async Task FindProducts_KeepsItsTable_NoDealColumn() =>
+        Assert.That(await Tools(new FakeCatalogue(Coffee)).FindProducts("checkers", "coffee"),
+            Does.Contain("| Product | Size | Pack price | Per kg | Image | Link |").And.Not.Contain("BUY 2 FOR"));
+
     // --- SHOP_CATALOGUES, and the toolset ---
 
     [TestCase("checkers", new[] { ShopKind.Checkers })]

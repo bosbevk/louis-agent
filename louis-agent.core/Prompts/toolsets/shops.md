@@ -8,6 +8,8 @@ How to price a product at a shop from the shop's own catalogue. The shops here a
 | Tool | Use it to |
 |------|-----------|
 | `FindProducts` | Find a shop's products and their prices in its own catalogue (`shop`: `checkers`; `query` as a shopper would search). Returns a table: product, size, what a pack costs now (a special's price when lower; for what's sold by weight, from the lightest to the heaviest pack), the price per kg for what's sold by weight, its photo, and a link to the product on the shop's site. |
+| `SearchSpecials` | Find a shop's specials, its multi-buys (`BUY 2 FOR R199`), among what a search finds (`shop`, a broad `query`: `coffee`, `rice`). The same table with a *Deal* column. |
+| `SearchPromotions` | Find the products a shop has on promotion (its `SAVE` badges) among what a search finds. The same table with a *Deal* column. |
 
 ## Workflow
 
@@ -20,7 +22,11 @@ How to price a product at a shop from the shop's own catalogue. The shops here a
    *Pack price* is a range, from the lightest pack in *Size* to the heaviest: quote the range, never the price per kg
    as a pack's price.
 4. **Link the price to its product,** with the link the table gives: that's its source.
-5. **A shop without a catalogue here** (Pick n Pay, Woolworths, Spar): the web, as before.
+5. **Look for a deal when cost matters** (a budget meal): `SearchSpecials` and `SearchPromotions` for the main
+   ingredients, a broad word each. A multi-buy is for its count (`BUY 2 FOR R199` is two packs): the pack price stays
+   one pack's; name the deal beside it, and use it only when the recipe needs that many. A deal is the shop's wording,
+   as the table gives it: never work out a saving it doesn't state.
+6. **A shop without a catalogue here** (Pick n Pay, Woolworths, Spar): the web, as before.
 
 ## Rules
 
