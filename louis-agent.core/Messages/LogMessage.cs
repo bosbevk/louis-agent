@@ -18,6 +18,12 @@ public enum LogMessage
     [Description("{Shop} couldn't find the store for {Place} ({Reason}); the default store answers.")]
     ShopAreaUnavailable,
 
+    [Description("{Shop} serves {Place} (its centre {Latitude}, {Longitude}) from stores {Stores}; searches from there use them.")]
+    ShopStoreForPlace,
+
+    [Description("{Shop} names no store for {Place} (its centre {Latitude}, {Longitude}); searches from there use its default store.")]
+    ShopNoStoreForPlace,
+
     [Description("{Shop} answered a search from {Place} from store {Store}, not one that serves {Place}; it's said so in the answer.")]
     ShopStoreNotUsed,
 

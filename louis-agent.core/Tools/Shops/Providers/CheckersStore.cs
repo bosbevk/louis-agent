@@ -50,6 +50,13 @@ public sealed class CheckersStore(IWebBrowser browser, Func<string, Cancellation
         BrowserSession? session = Serves(visit.ScriptResult) && visit.Cookies?.Where(c => StoreCookies.Contains(c.Name)).ToList() is { Count: > 0 } cookies
             ? new BrowserSession(cookies)
             : null;
+        // Louis: "see the logs, it did not set my address": the lookup says what it found, once per town.
+        Log.Log(LogLevel.Information, session is null ? LogMessage.ShopNoStoreForPlace : LogMessage.ShopStoreForPlace, new
+        {
+            Shop = "Checkers", Place = town, Latitude = centre.Latitude.ToString("0.####", CultureInfo.InvariantCulture),
+            Longitude = centre.Longitude.ToString("0.####", CultureInfo.InvariantCulture),
+            Stores = session?.Cookies.FirstOrDefault(c => c.Name == "storeids")?.Value ?? "",
+        });
         return _byTown.GetOrAdd(town, session);
     }
 
