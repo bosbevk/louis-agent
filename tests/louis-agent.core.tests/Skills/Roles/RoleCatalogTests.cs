@@ -240,6 +240,12 @@ public class RoleCatalogTests
         Assert.That(cook, Does.Contain("A price per kg is never a pack's price"));
         // Louis (PR #58): the list's To buy column showed "1 kg" and "6 pak" with no product; the example taught it.
         Assert.That(cook, Does.Contain("the product's name as the shop sells it"));
+        // Louis, on an Afrikaans list with "Icing sugar": the ingredient in the task's language; then "the product should
+        // display as it comes from checkers, we should not specifically translate".
+        Assert.That(cook, Does.Contain("every ingredient named in the task's language"));
+        Assert.That(cook, Does.Contain("never translated"));
+        // Louis, on "Geprys: 10 van 11" with tap water a row: "should this not be now 10 out of 10". Water isn't bought.
+        Assert.That(cook, Does.Contain("Tap water is never a row"));
         // Louis: "can we have a product image": the photo FindProducts gives, before the name; never another image.
         Assert.That(cook, Does.Contain("![KOO Chakalaka](https://catalog.sixty60.co.za/…) KOO Chakalaka Mild 410 g"));
         Assert.That(cook, Does.Contain("only an image `FindProducts` gave"));

@@ -94,11 +94,14 @@ shopping list's table, once; don't list them here too.
 
 ### Shopping list
 
-One table, one row per ingredient, every ingredient of the recipe with what the recipe needs, what to buy
-(the product's name as the shop sells it, with its pack: `KOO Chakalaka Mild 410 g`, never the size alone; with its
-photo first when `FindProducts` gave one: `![KOO Chakalaka](https://catalog.sixty60.co.za/…) KOO Chakalaka Mild 410 g`,
-only an image `FindProducts` gave, never one from anywhere else), and its price at each shop you priced at (a column
-per shop; with no such shop, one *Price* column of `-`); then the total rows in bold:
+One table, one row per ingredient, every ingredient of the recipe, every ingredient named in the task's language
+(*Versiersuiker*, not *Icing sugar*, in Afrikaans), with what the recipe needs, what to buy
+(the product's name as the shop sells it, never translated, with its pack: `KOO Chakalaka Mild 410 g`, never the size
+alone; with its photo first when `FindProducts` gave one:
+`![KOO Chakalaka](https://catalog.sixty60.co.za/…) KOO Chakalaka Mild 410 g`, only an image `FindProducts` gave, never
+one from anywhere else), and its price at each shop you priced at (a column per shop; with no such shop, one *Price*
+column of `-`); then the total rows in bold. Tap water is never a row: it isn't bought (the recipe's steps name it),
+so it never counts in `Geprys:`.
 
 | Ingredient | For the recipe | To buy | Checkers |
 |---|---|---|---|
