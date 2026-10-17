@@ -253,6 +253,15 @@ Design: [docs/specs/SESSION_ARCHITECTURE.md](docs/specs/SESSION_ARCHITECTURE.md)
 
 ### Tooling and repositories
 
+- [ ] [F32 Self-hosted web](docs/features/F32-self-hosted-web.md) — `WebSearch` through SearXNG in Docker and pages
+      drawn with JavaScript rendered by a headless Chrome (PuppeteerSharp), every request it makes held to the address
+      rule, so development and the benchmarks search and read any page with no key and no credits; the sold endpoint
+      keeps a licensed search API (Tavily) ([plan](docs/plans/F32-self-hosted-web.md)). Planned 2026-10-17, after
+      Tavily's credits ran out in F31's paid run.
+- [ ] **MCP servers as a session toolset** (to plan after F32; Louis, 2026-10-17: "An MCP toolset for the model"): a
+      session names MCP servers as it names toolsets (F5, so its prefix stays cacheable), their tools wrapped with our
+      guards (untrusted-data framing, oversized results, failures with reasons) and their versions pinned, so a
+      vendor's server can be used without its tool list changing under a chat.
 - [ ] Search and work across more than one mounted repository at once (`REPOSITORIES_PATH` mounts several, but every
       tool is scoped to one workspace)
 - [ ] Share agent-built tools between projects or teammates (each repository builds its own today)
