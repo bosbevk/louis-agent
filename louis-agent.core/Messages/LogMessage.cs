@@ -135,6 +135,9 @@ public enum LogMessage
     [Description("LLM: {Llm}; tools={Tools}; thinking={Thinking}")]
     LlmChosen,
 
+    [Description("A session may also name LLM profile '{Name}': {Llm}; tools={Tools}; thinking={Thinking}")]
+    SessionLlmLoaded,
+
     [Description("Starting MCP tool discovery from {Endpoint}")]
     McpDiscoveryStarting,
 

@@ -192,7 +192,7 @@ and its guide (docs/CLAUDE.md, *Adding a toolset*). `files`, `git`, `dotnet`, `p
 builds one engine per profile, cached by its normalised toolset list, its personality and its level (F21, CL8;
 past 16 the least recently used is dropped), with only those tools and only their guides in the system prompt, and logs
 each profile's tool count and fixed-prefix estimate. The CLI, ACP server and MCP server use every
-toolset the instance can load; the API's sessions choose theirs. A sub-session (`AgentPeerTools.StartSubSession`) runs
+toolset the instance can load; the API's sessions choose theirs. A sub-session (`SpecialistTools.StartSubSession`) runs
 on a peer with its own toolsets and its role (`personality`, named by the parent; with none it gets the default mode's voice,
 CL10), at most 3 per turn and 5 minutes each, and only its answer and a usage
 line come back; its usage records carry the parent turn (`parent`). An empty answer (the specialist used all its tool

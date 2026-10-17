@@ -202,6 +202,7 @@ Design: [docs/specs/SESSION_ARCHITECTURE.md](docs/specs/SESSION_ARCHITECTURE.md)
       Server, database `puls_benchmarks` (connection in `config/.env.secrets`; the SQL client package chosen from three
       options); the admin screen planned with a proper layout before it's built. F30's hand check and measured run go
       through it
+- [ ] [F30 Local web peer](docs/features/F30-local-web-peer.md) — built, not in use: a session names its LLM profile, and a specialist can hand one task and one of its own tools to a minion on a cheap model (`MINION_LLMS`, depth 2, 16 per turn); Puls's prompts don't use minions until F31 measures the cook with and without them ([plan](docs/plans/F30-local-web-peer.md))
 - [ ] **Next up: a faster, cheaper cook** (to plan; Louis, 2026-10-15: "can we have a subsession allow him to spawn
       web sessions for each task"). The cook does every search and fetch itself, one at a time, and every page it reads
       stays in its context and is paid for again on each later request (400–800k tokens and up to 183 s a meal turn).

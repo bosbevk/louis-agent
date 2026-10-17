@@ -27,6 +27,16 @@ public static partial class Personalities
     /// <summary>The mode of a level-0 session that names none (CL9): the coding agent's (CLI, Rider, MCP).</summary>
     public const string DefaultVoice = "louis-agent/voice";
 
+    /// <summary>
+    /// The base a minion role sits on (F30): <c>{product}-minion</c> for <c>{product}-minion-{function}</c>
+    /// (<c>puls-minion</c> for <c>puls-minion-web-price-lookup</c>), loaded before the role so every minion of a product
+    /// is told what a minion is once. Null for a name that isn't a minion role's shape.
+    /// </summary>
+    public static string? MinionBaseOf(string role) => MinionRole().Match(role) is { Success: true } m ? m.Groups["base"].Value : null;
+
+    /// <summary>Whether <paramref name="name"/> is a minion base (<c>puls-minion</c>), which is no role a specialist can name.</summary>
+    public static bool IsMinionBase(string name) => MinionBase().IsMatch(name);
+
     /// <summary>The folder, under the skills folder, of <paramref name="level"/>'s personalities.</summary>
     public static string FolderOf(SkillLevel level) => level switch
     {
@@ -44,12 +54,14 @@ public static partial class Personalities
 
     /// <summary>
     /// The named personalities at <paramref name="level"/>, all built in (CL8 step 4), sorted: at level 0 the modes,
-    /// <c>agent/{product}/{mode}.md</c> (every product folder but the function skills'), elsewhere the level's files.
+    /// <c>agent/{product}/{mode}.md</c> (every product folder but the function skills'); at level 1 the roles; at level 2
+    /// the minion roles, never a base (F30: <c>puls-minion</c> frames every minion, it is no role itself).
     /// </summary>
     public static IReadOnlyList<string> Available(SkillLevel level) =>
         (level == SkillLevel.Agent ? Modes() : SkillFileSource.Files(FolderOf(level)).Where(f => f.EndsWith(".md", StringComparison.Ordinal))
             .Select(f => f[..^".md".Length]))
         .Where(IsValidName)
+        .Where(n => level != SkillLevel.Minion || !IsMinionBase(n))
         .Order(StringComparer.Ordinal)
         .ToList();
 
@@ -88,6 +100,12 @@ public static partial class Personalities
 
     [GeneratedRegex("^[a-z0-9-]+/voice-(?<code>[a-z]{2})$")]
     private static partial Regex LanguageMode();
+
+    [GeneratedRegex("^(?<base>[a-z0-9]+-minion)-[a-z0-9]+(-[a-z0-9]+)*$")]
+    private static partial Regex MinionRole();
+
+    [GeneratedRegex("^[a-z0-9]+-minion$")]
+    private static partial Regex MinionBase();
 
     // Not the first line: a mode file starts with its voice's heading.
     [GeneratedRegex(@"(?<=\n)# ", RegexOptions.None)]

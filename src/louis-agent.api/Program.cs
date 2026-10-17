@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.Json;
 using LouisAgent.Api;
 using LouisAgent.Core.Agent;
+using LouisAgent.Core.Sessions;
 using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
 using LouisAgent.Api.Endpoints;
@@ -132,8 +133,16 @@ app.MapGet("/personalities", (AgentEngineFactory engines) => Results.Json(new
     minions = engines.AvailablePersonalities(SkillLevel.Minion),
 }));
 
+// The LLM profiles a session can name besides this instance's model (F30): null is the instance's own.
+app.MapGet("/llm-profiles", (AgentEngineFactory engines) => Results.Json(new
+{
+    @default = (string?)null,
+    profiles = engines.SessionLlms,
+}));
+
 // The body is optional: { "toolsets": [...] } chooses the session's tools for its lifetime (F5; none sent: skills only);
-// "personality" its personality (F21; none sent: the default voice, CL9);
+// "personality" its personality (F21; none sent: the default voice, CL9); "llm" the LLM profile it runs on (F30; none sent: this
+// instance's model); "tool" a minion's one tool (F30; depth 2 only, with "parent" the specialist's session and turn);
 // { "task", "run", "service" } tag every usage record of the session (the orchestrator sends them for a fix); "depth" is
 // set by an agent opening a sub-session.
 app.MapPost("/sessions", (CreateSessionRequest? request, AgentSessions sessions) =>
@@ -151,9 +160,9 @@ app.MapPost("/sessions", (CreateSessionRequest? request, AgentSessions sessions)
     {
         session = sessions.Create(request?.Toolsets,
             request is null ? null : new UsageTags(request.Task, request.Run, request.Service, request.Parent), request?.Depth ?? 0,
-            request?.Personality, request?.Place());
+            request?.Personality, request?.Place(), request?.Llm, request?.Tool);
     }
-    catch (Exception ex) when (ex is ToolsetException or PersonalityException)
+    catch (Exception ex) when (ex is ToolsetException or PersonalityException or SessionLlmException)
     {
         return Results.Json(Error("invalid_request_error", ex.Message), statusCode: StatusCodes.Status400BadRequest);
     }
@@ -161,7 +170,8 @@ app.MapPost("/sessions", (CreateSessionRequest? request, AgentSessions sessions)
     return Results.Json(new
     {
         session_id = session.Id, created_at = session.CreatedAt, toolsets = session.Toolsets, depth = session.Depth,
-        personality = session.Personality, task = session.Tags.Task, run = session.Tags.Run, service = session.Tags.Service, parent = session.Tags.Parent,
+        personality = session.Personality, llm = session.Llm, tool = session.Tool, task = session.Tags.Task, run = session.Tags.Run,
+        service = session.Tags.Service, parent = session.Tags.Parent,
     }, statusCode: StatusCodes.Status201Created);
 });
 
@@ -171,7 +181,8 @@ app.MapGet("/sessions/{id}", (string id, AgentSessions sessions) =>
         ? Results.Json(new
         {
             session_id = session.Id, created_at = session.CreatedAt, last_activity = session.LastActivity, busy = session.IsBusy,
-            toolsets = session.Toolsets, depth = session.Depth, personality = session.Personality, tools = session.Engine.Tools.Count,
+            toolsets = session.Toolsets, depth = session.Depth, personality = session.Personality, llm = session.Llm, tool = session.Tool,
+            tools = session.Engine.Tools.Count,
             task = session.Tags.Task, run = session.Tags.Run, service = session.Tags.Service,
             // F26: the specialists the chat keeps open, by handle (never the peer's session id).
             sub_sessions = session.SubSessions.Open.Select(o => new { handle = o.Handle, agent = o.Agent, toolsets = o.Toolsets, personality = o.Role }),
@@ -277,6 +288,7 @@ static async IAsyncEnumerable<SseItem<string>> StreamTurnAsync(
             Task<bool> next;
             using (usage.Activate())
             using (SessionAttachments.Use(session.Attachments))
+            using (AgentTools.Use(session.Engine.Tools.Select(t => t.Name)))
             using (UserPlace.Use(session.Place))
             using (SubSessionRegistry.Use(session.SubSessions))
             using (SubSessionFeed.Observe(e => subSessions.Writer.TryWrite(e)))
@@ -344,13 +356,14 @@ static async IAsyncEnumerable<SseItem<string>> StreamTurnAsync(
 internal sealed record SendMessageRequest(string? Message, List<AttachmentRequest>? Attachments);
 
 /// <summary>
-/// A new session's options: its toolsets (F5), its personality (F21), and optional tags for the usage ledger, kept short
+/// A new session's options: its toolsets (F5), its personality (F21), its LLM profile (F30), and optional tags for the usage ledger, kept short
 /// and printable. Depth is 1 when another agent opens it as a sub-session.
 /// </summary>
 internal sealed record CreateSessionRequest(
     string? Task, string? Run, string? Service, List<string>? Toolsets = null, int Depth = 0, string? Parent = null,
     string? Personality = null, string? Location = null,
-    [property: System.Text.Json.Serialization.JsonPropertyName("time_zone")] string? TimeZone = null)
+    [property: System.Text.Json.Serialization.JsonPropertyName("time_zone")] string? TimeZone = null, string? Llm = null,
+    string? Tool = null)
 {
     internal const int MaxTagLength = 200;
 

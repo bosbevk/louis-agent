@@ -1,4 +1,4 @@
-namespace LouisAgent.Core.Tools.Agents;
+namespace LouisAgent.Core.Sessions;
 
 /// <summary>
 /// One event of a sub-session's stream (F5): the specialist's thinking, text, tool calls and results, and its usage, as

@@ -43,8 +43,10 @@ public class SkillFilesTests
         // The coding agent's routing (CL9): Puls's routes only what Puls does.
         string doc = Personalities.ModeParts(SkillFileSource.ReadEmbedded(Personalities.FileName(Personalities.DefaultVoice, SkillLevel.Agent))!).Routing;
 
-        foreach (string toolset in ToolsetCatalog.All.Select(t => t.Name))
+        // Every toolset but minions (F30): a specialist's toolset, never a chat's, and the coding product has no minion roles.
+        foreach (string toolset in ToolsetCatalog.All.Select(t => t.Name).Where(name => name != "minions"))
             Assert.That(doc, Does.Contain($"`{toolset}`"), $"the router should name the '{toolset}' toolset");
+        Assert.That(doc, Does.Not.Contain("`minions`"), "a chat never holds minions");
 
         string[] tools =
         [

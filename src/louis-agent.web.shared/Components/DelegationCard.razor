@@ -5,12 +5,16 @@
 
 @inject ChatText Text
 
-<details class="delegation @Status" open="@Running">
+<details class="delegation @Status @(Delegation.Minion ? "minion" : "")" open="@Running">
     <summary class="delegation-head">
         <span class="delegation-avatar" aria-hidden="true">@Initial</span>
         <span class="delegation-title">
-            <span class="delegation-agent">@Text.DelegatedTo <strong>@Who</strong></span>
+            <span class="delegation-agent">@(Delegation.Minion ? Text.MinionLabel : Text.DelegatedTo) <strong>@Who</strong></span>
             <span class="delegation-toolsets">
+                @if (Delegation.Minion && Delegation.Llm is { } llm)
+                {
+                    <span class="toolset-chip model">@Text.OnModel @llm</span>
+                }
                 @if (Delegation.Continued)
                 {
                     <span class="toolset-chip follow-up">@Text.FollowUp@(Delegation.Handle is { } handle ? " · " + handle : "")</span>
@@ -97,7 +101,7 @@
     /// <summary>Who the work went to, as the user thinks of it: the role (F26; Louis: "show oorgedra → role"), else the handle of a continued one, else the peer.</summary>
     private string Who => Delegation.Role ?? Delegation.Handle ?? Agent;
 
-    private string Initial => Who[..1].ToUpperInvariant();
+    private string Initial => Delegation.Minion ? "m" : Who[..1].ToUpperInvariant();
 
     /// <summary>The cost shown on the rolled-up line.</summary>
     private string? CostLine => Block.SubTurn?.Usage is { } usage ? UsageFormat.Cost(usage, Currency) : null;

@@ -16,6 +16,12 @@ public sealed record ChatText
 
     public string DelegatedTo { get; init; } = "Delegated to";
 
+    /// <summary>A minion's card and Werk line (F30): the specialist handed one page to a minion.</summary>
+    public string MinionLabel { get; init; } = "Minion";
+
+    /// <summary>Between a minion's role and its model: "puls-minion-web-price-lookup on ollama-puls".</summary>
+    public string OnModel { get; init; } = "on";
+
     /// <summary>The chip on a continued sub-session (F26): a follow-up to a specialist that was already working.</summary>
     public string FollowUp { get; init; } = "follow-up";
     public string Specialist { get; init; } = "specialist";

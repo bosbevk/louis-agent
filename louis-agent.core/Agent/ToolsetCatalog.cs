@@ -81,8 +81,15 @@ public static class ToolsetCatalog
         new("specialists", "Hand a separate task to a specialist agent: a sub-session on a peer with only the toolsets it needs",
             GuideFile: SkillFiles.Guide("specialists"),
             MissingSettings: ctx => ctx.Options.AgentPeers.Count == 0 ? ["AGENT_PEERS"] : [],
-            ToolType: typeof(AgentPeerTools),
-            CreateTools: ctx => [new AgentPeerTools(ctx.Options, ctx.UsageSink)]),
+            ToolType: typeof(SpecialistTools),
+            CreateTools: ctx => [new SpecialistTools(ctx.Options, ctx.UsageSink)]),
+
+        new("minions", "Hand one task and one of your own tools to a minion on a cheap model (a specialist's toolset, F30)",
+            GuideFile: SkillFiles.Guide("minions"),
+            MissingSettings: ctx => new[] { ctx.Options.AgentPeers.Count == 0 ? "AGENT_PEERS" : null, ctx.Options.MinionLlms.Count == 0 ? "MINION_LLMS" : null }
+                .OfType<string>().ToList(),
+            ToolType: typeof(MinionTools),
+            CreateTools: ctx => [new MinionTools(ctx.Options, ctx.UsageSink)]),
 
         // Engine-provided: CreateSkillFile, ReloadSkills, CreateTool and ListAgentTools are registered by AgentEngine
         // when this name is in the resolved list (step 3), because they need the engine's own registry and skill set.
@@ -101,6 +108,20 @@ public static class ToolsetCatalog
         .SelectMany(t => ToolRegistry.ToolMethods(t.ToolType!))
         .Select(m => m.Name)
         .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+    /// <summary>
+    /// The tool names <paramref name="resolved"/> register (an engine-provided toolset contributes none): what a minion's
+    /// one tool may be chosen from (F30).
+    /// </summary>
+    public static IReadOnlySet<string> ToolNamesOf(IEnumerable<ToolsetDefinition> resolved) => resolved
+        .Where(t => t.ToolType is not null)
+        .SelectMany(t => ToolRegistry.ToolMethods(t.ToolType!))
+        .Select(m => m.Name)
+        .ToHashSet(StringComparer.Ordinal);
+
+    /// <summary>The toolset whose class builds <paramref name="tool"/> (a minion's one tool names its toolset, F30); null for none.</summary>
+    public static string? ToolsetOf(string tool) => All
+        .FirstOrDefault(t => t.ToolType is not null && ToolRegistry.ToolMethods(t.ToolType).Any(m => string.Equals(m.Name, tool, StringComparison.Ordinal)))?.Name;
 
     /// <summary>Looks a toolset up by name (case-insensitive); null when there is none.</summary>
     public static ToolsetDefinition? Find(string name) =>

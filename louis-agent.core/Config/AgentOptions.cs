@@ -112,6 +112,31 @@ public sealed class AgentOptions
     public IReadOnlyList<string> PersonalitiesEnabled { get; set; } = [];
 
     /// <summary>
+    /// LLM_SESSION_PROFILES: the LLM profiles a session may name when it opens (F30), comma separated, e.g.
+    /// <c>ollama-puls</c>; each is read from <c>config/.env.{name}</c>. Empty: every session runs on the instance's model.
+    /// </summary>
+    public IReadOnlyList<string> SessionLlmProfiles { get; set; } = [];
+
+    /// <summary>
+    /// MINION_LLMS (F30): the model a minion role runs on, as <c>role=profile</c> entries separated by commas, with
+    /// <c>*</c> for every role not named and <c>instance</c> for this instance's own model; a <c>&gt;</c> lists a cascade,
+    /// cheapest first, e.g. <c>*=ollama-puls&gt;instance,puls-minion-web-summary=instance</c>. Every profile must be in
+    /// <see cref="SessionLlmProfiles"/> (checked at start-up). Empty: no <c>minions</c> toolset.
+    /// </summary>
+    public IReadOnlyDictionary<string, IReadOnlyList<string>> MinionLlms { get; set; } = new Dictionary<string, IReadOnlyList<string>>();
+
+    /// <summary>Parses <c>MINION_LLMS</c>; an entry without a role or without a model is dropped, names are lowercased.</summary>
+    internal static IReadOnlyDictionary<string, IReadOnlyList<string>> ParseMinionLlms(string? value) =>
+        (value ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Select(entry => entry.Split('=', 2, StringSplitOptions.TrimEntries))
+            .Where(pair => pair.Length == 2 && pair[0].Length > 0)
+            .Select(pair => (Role: pair[0].ToLowerInvariant(), Models: (IReadOnlyList<string>)pair[1]
+                .Split('>', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Select(m => m.ToLowerInvariant()).Distinct().ToList()))
+            .Where(x => x.Models.Count > 0)
+            .GroupBy(x => x.Role, StringComparer.Ordinal)
+            .ToDictionary(g => g.Key, g => g.Last().Models, StringComparer.Ordinal);
+
+    /// <summary>
     /// The default of <see cref="SubSessionPromptBudget"/>: below Claude Haiku 5.5's long-prompt threshold (100k in
     /// config/prices.json), not at it. The request the budget forces to answer still carries the last round's tool
     /// results, so it needs room under the price step.
@@ -177,6 +202,8 @@ public sealed class AgentOptions
             DisplayCurrency = Get("DISPLAY_CURRENCY"),
             AgentPeers = ParsePeers(Get("AGENT_PEERS")),
             PersonalitiesEnabled = ParseNames(Get("PERSONALITIES_ENABLED")),
+            SessionLlmProfiles = ParseNames(Get("LLM_SESSION_PROFILES")),
+            MinionLlms = ParseMinionLlms(Get("MINION_LLMS")),
             AgentApiKey = Get("AGENT_API_KEY"),
             SubSessionPromptBudget = int.TryParse(Get("SUB_SESSION_PROMPT_BUDGET"), NumberStyles.None, CultureInfo.InvariantCulture, out int budget)
                 ? budget : DefaultSubSessionPromptBudget,

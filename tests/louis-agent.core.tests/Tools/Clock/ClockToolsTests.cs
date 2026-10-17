@@ -1,4 +1,5 @@
 using LouisAgent.Core.Tools.Clock;
+using LouisAgent.Core.Sessions;
 using Microsoft.Extensions.Time.Testing;
 
 namespace LouisAgent.Core.Tests.Tools.Clock;

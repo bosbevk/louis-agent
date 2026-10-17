@@ -1,4 +1,4 @@
-namespace LouisAgent.Core.Tools.Agents;
+namespace LouisAgent.Core.Sessions;
 
 /// <summary>
 /// A sub-session a chat keeps open for a follow-up (F26): where it is, what it was opened with, and how to close it.
@@ -15,4 +15,16 @@ public sealed record OpenSubSession(Uri Peer, string SessionId, string Agent, IR
 {
     /// <summary>The chat's name for it (<c>sub-1</c>), given by the registry when it is added.</summary>
     public string Handle { get; init; } = "";
+
+    /// <summary>A specialist's kind (F26): what <c>StartSubSession</c> keeps.</summary>
+    public const string SpecialistKind = "sub-session";
+
+    /// <summary>A minion's kind (F30): what <c>StartMinion</c> keeps; each tool continues only its own kind.</summary>
+    public const string MinionKind = "minion";
+
+    /// <summary>What was kept: <see cref="SpecialistKind"/> or <see cref="MinionKind"/>.</summary>
+    public string Kind { get; init; } = SpecialistKind;
+
+    /// <summary>A minion's model, as <c>MINION_LLMS</c> named it (F30); null for a specialist or the instance's own model.</summary>
+    public string? Llm { get; init; }
 }

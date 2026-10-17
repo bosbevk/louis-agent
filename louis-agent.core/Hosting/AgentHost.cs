@@ -56,6 +56,56 @@ public static partial class AgentHost
             overwriteExistingVars: false));
     }
 
+    /// <summary>The settings an LLM profile file never holds, taken from the environment instead (.env.secrets).</summary>
+    private static readonly string[] SecretLlmSettings = ["LLM_API_KEY", "ANTHROPIC_API_KEY", "ANTHROPIC_WORKSPACE_ID"];
+
+    /// <summary>
+    /// The models a session may name besides the instance's own (F30): each profile in <c>LLM_SESSION_PROFILES</c> read
+    /// from <c>config/.env.{name}</c> into a dictionary, so the process environment, and with it the instance's own
+    /// model, never changes. Only the API key settings come from <paramref name="environment"/>; anything else a profile
+    /// leaves out takes its default, not the instance's value. A listed profile without its file stops start-up.
+    /// </summary>
+    /// <summary>
+    /// Every model <c>MINION_LLMS</c> names is a profile in <c>LLM_SESSION_PROFILES</c> or <c>instance</c> (F30); another
+    /// stops start-up (<see cref="SessionLlmException"/>), so a typo never leaves a minion with no model at run time.
+    /// </summary>
+    internal static void CheckMinionLlms(AgentOptions agent)
+    {
+        foreach (var (role, models) in agent.MinionLlms)
+            foreach (string model in models)
+                if (model != Tools.Agents.MinionTools.InstanceLlm && !agent.SessionLlmProfiles.Contains(model, StringComparer.Ordinal))
+                    throw new SessionLlmException(MessageText.Format(ErrorMessage.MinionLlmUnknown, new
+                    {
+                        Name = model, Role = role, Available = agent.SessionLlmProfiles.Count == 0 ? "none" : string.Join(", ", agent.SessionLlmProfiles),
+                    }));
+    }
+
+    internal static IReadOnlyList<SessionLlm> LoadSessionLlms(AgentOptions agent, ILlmClientFactory clientFactory, string? configDirectory,
+        Func<string, string?> environment)
+    {
+        var llms = new List<SessionLlm>();
+        foreach (string name in agent.SessionLlmProfiles)
+        {
+            if (!LlmProfileName().IsMatch(name))
+                throw new SessionLlmException(MessageText.Format(ErrorMessage.SessionLlmNameInvalid, new { Name = name }));
+            string file = Path.Combine(configDirectory ?? "", $".env.{name}");
+            if (configDirectory is null || !File.Exists(file))
+                throw new SessionLlmException(MessageText.Format(ErrorMessage.SessionLlmFileMissing, new { Name = name, File = $"config/.env.{name}" }));
+
+            var settings = DotEnv.Read(new DotEnvOptions(ignoreExceptions: false, envFilePaths: [file]));
+            var llm = LlmOptions.FromEnvironment(key => settings.TryGetValue(key, out string? value) ? value
+                : SecretLlmSettings.Contains(key) ? environment(key) : null);
+            var model = new SessionLlm(name, clientFactory.Create(llm), llm.ResolveSupportsTools(), clientFactory.CreateUsageMapper(llm),
+                llm.ResolveThinking());
+            Log.Log(LogLevel.Information, LogMessage.SessionLlmLoaded, new
+            {
+                Name = name, Llm = llm, Tools = model.SupportsTools ? "on" : "off", Thinking = model.Thinking?.ToString().ToLowerInvariant() ?? "off",
+            });
+            llms.Add(model);
+        }
+        return llms;
+    }
+
     /// <summary>Profile names are file-name parts (anthropic, ollama), never paths.</summary>
     [System.Text.RegularExpressions.GeneratedRegex("^[a-z0-9-]+$")]
     private static partial System.Text.RegularExpressions.Regex LlmProfileName();
@@ -114,8 +164,12 @@ public static partial class AgentHost
         ExchangeRates rates = LoadRates(agent, prices.Currency);
         DisplayCurrency display = DisplayCurrency.Resolve(agent, prices.Currency, rates);
         Log.Log(LogLevel.Information, LogMessage.DisplayCurrencyChosen, new { Display = display });
+        // The profiles sit beside .env: the repo's config/ when run from it, the mounted workspace's in a container.
+        string configDirectory = EnvFile.FindConfigDirectory(Environment.CurrentDirectory) ?? Path.Combine(agent.WorkspaceRoot, "config");
+        var sessionLlms = LoadSessionLlms(agent, clientFactory, configDirectory, Environment.GetEnvironmentVariable);
+        CheckMinionLlms(agent);
         var engines = new AgentEngineFactory(chatClient, agent, llm.ResolveSupportsTools(), CreateUsageSink(agent, prices),
-            clientFactory.CreateUsageMapper(llm), display, llm.ResolveThinking(), rates: rates);
+            clientFactory.CreateUsageMapper(llm), display, llm.ResolveThinking(), rates: rates, sessionLlms: sessionLlms);
         var engine = engines.GetOrCreate(engines.Available);
         Log.Log(LogLevel.Information, LogMessage.LlmChosen,
             new { Llm = llm, Tools = engine.SupportsTools ? "on" : "off", Thinking = engine.Thinking?.ToString().ToLowerInvariant() ?? "off" });
@@ -297,6 +351,9 @@ public static partial class AgentHost
         // for a mode, how it routes) frames everything after it
         AddBuiltIn(agent, composite, SkillFiles.Principles);
         string personalityFile = PersonalityFile(agent, personality, level);
+        // A minion's base (puls-minion.md) frames its role (F30): what every minion is, then what this one does
+        if (level == SkillLevel.Minion && personality is not null && Personalities.MinionBaseOf(personality) is { } minionBase)
+            AddBuiltIn(agent, composite, Personalities.FileName(minionBase, SkillLevel.Minion));
         if (personality is null && level != SkillLevel.Agent && ReadSkillFile(agent, personalityFile) is { } mode)
             composite.AddProvider(MarkdownSkillProvider.FromText(Personalities.ModeParts(mode.Text).Voice));
         else
@@ -371,12 +428,20 @@ public static partial class AgentHost
     /// </summary>
     internal static string PersonalityFile(AgentOptions agent, string? personality, SkillLevel level)
     {
-        if (string.IsNullOrEmpty(personality)) return Personalities.FileName(Personalities.DefaultVoice, SkillLevel.Agent);
+        if (string.IsNullOrEmpty(personality))
+        {
+            // A minion with no role would be the coding agent's voice with one tool (F30): it always opens with a role.
+            if (level == SkillLevel.Minion)
+                throw new PersonalityException(MessageText.Format(ErrorMessage.MinionNeedsRole,
+                    new { Available = string.Join(", ", EnabledPersonalities(agent, level)) }));
+            return Personalities.FileName(Personalities.DefaultVoice, SkillLevel.Agent);
+        }
         if (!Personalities.IsValidName(personality))
             throw new PersonalityException(MessageText.Format(ErrorMessage.PersonalityNameInvalid, new { Name = personality }));
         string file = Personalities.FileName(personality, level);
-        // A personality that's off (F29) is refused as an unknown one: the list names what this instance may use.
-        bool offered = level != SkillLevel.Agent || Personalities.Available(SkillLevel.Agent).Contains(personality);
+        // A personality that's off (F29) is refused as an unknown one: the list names what this instance may use. At level
+        // 0 only a mode is a name (CL9); at level 2 a role on the base (F30), never the base itself.
+        bool offered = level == SkillLevel.Specialist || Personalities.Available(level).Contains(personality);
         if (!offered || !IsEnabled(agent, personality) || ReadSkillFile(agent, file) is null)
             throw new PersonalityException(MessageText.Format(ErrorMessage.UnknownPersonality,
                 new { Name = personality, Available = string.Join(", ", EnabledPersonalities(agent, level)) }));

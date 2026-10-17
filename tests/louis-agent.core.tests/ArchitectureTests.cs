@@ -14,7 +14,7 @@ public partial class ArchitectureTests
     {
         ["Config"] = 0, ["Messages"] = 0, ["Logging"] = 0,
         ["Guardrails"] = 1,
-        ["Llm"] = 2, ["Tools"] = 2, ["Skills"] = 2, ["Usage"] = 2, ["Pricing"] = 2, ["Protocols"] = 2,
+        ["Llm"] = 2, ["Tools"] = 2, ["Sessions"] = 2, ["Skills"] = 2, ["Usage"] = 2, ["Pricing"] = 2, ["Protocols"] = 2,
         ["Agent"] = 3,
         ["Hosting"] = 4,
     };

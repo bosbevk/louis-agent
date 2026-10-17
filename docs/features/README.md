@@ -43,6 +43,7 @@ feature replaces older backlog wording, that wording no longer appears anywhere 
 | [F27](F27-admin-portal.md) | Admin portal: an *Admin* menu into a portal of our own (sidebar and cards on Puls's variables) whose first page runs and reads the benchmarks; built to take more pages | built | — | — | F20, F25 | — |
 | [F28](F28-team-talk.md) | Team talk: Puls briefs its specialist in a fixed note (what the user wants, how they sound, where they are), a per-chat switch for the mood, and the card shows the exchange as a thread | planned | — | — | F5, F21, F25, F26, F27 | — |
 | [F29](F29-validated-specialists.md) | Validated specialists: `PERSONALITIES_ENABLED` gates which roles an instance may use; Puls boots with `specialists` (then called `agents`) and `web`, answers the web itself and delegates only cooking until each other role has passed its check | planned | — | — | F5, F21, F25, F27 | — |
+| [F30](F30-local-web-peer.md) | Local web peer: a session names its LLM profile; a specialist hands one task and one of its own tools to a minion on a cheap model (`MINION_LLMS`); built, not in use until F31 measures it | built | — | — | F5, F21, F25, F29 | — |
 
 ## Milestones
 
