@@ -71,6 +71,14 @@ keep minions only if real prices hold and the cost drops.
   is the caller's `llm` until step 5's `MINION_LLMS` maps it per role. Louis, reading the price role: the answer gets a
   `per_kg` line (the page's per-kilogram price, or worked out from a stated pack weight with the working shown) and a
   `location` line (the branch or delivery area the page's price holds for), since prices differ by area.
+- **Step 5 (2026-10-17):** the `minions` toolset (`MinionTools`: `StartMinion(role, tool, task, stronger)`,
+  `ContinueMinion`) on the specialist tools' child path, which `SpecialistTools` (renamed from `AgentPeerTools`, Louis:
+  "just rename it") now exposes to both; a minion is refused before any HTTP for a tool the specialist doesn't hold
+  (`SessionTools`, a per-turn ambient the API sets like the attachments), one never handed down, or a role that isn't a
+  minion's. `MINION_LLMS` maps a role (or `*`) to a cascade of profiles, `instance` for the specialist's own model,
+  checked at start-up; `stronger` takes the second model, once. Six minions per user turn, counted on Puls's turn tag so
+  every specialist under it shares them; two minutes each. The minion's roll-up row (`minion:{role}`) lands in the
+  specialist's turn, so the chat's roll-up carries it up. `toolsets/minions.md` is the guide; ADR 0021.
 
 - **A profile takes nothing from the instance but its API key** (step 1). The first idea was to fall back to the
   process environment for whatever a profile file leaves out; that would hand the local model Claude's

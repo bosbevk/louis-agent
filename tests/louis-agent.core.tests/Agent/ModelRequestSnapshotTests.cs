@@ -40,6 +40,8 @@ public class ModelRequestSnapshotTests
             WorkspaceRoot = _skillsDir, SkillsDirectory = _skillsDir, RatesUrl = null,
             PaymoApiKey = "snapshot", DevopsApiKey = "snapshot", DevopsOrganization = "org", DevopsProject = "project",
             AgentPeers = new Dictionary<string, Uri> { ["coder"] = new("http://coder.test/") },
+            // F30: the minions toolset needs a model map too; the snapshot then holds StartMinion and ContinueMinion.
+            MinionLlms = new Dictionary<string, IReadOnlyList<string>> { ["*"] = ["instance"] },
         };
         // F5: an engine has only the toolsets it is given, so the snapshot names them all (and self-extension).
         var toolsets = TestPaths.Toolsets(options, ToolsetCatalog.All.Select(t => t.Name));

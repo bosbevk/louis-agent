@@ -142,6 +142,15 @@ public enum ErrorMessage
     [Description("The parent session has no '{Tool}' tool: a minion gets one of its specialist's own tools.")]
     ParentLacksTool,
 
+    [Description("MINION_LLMS names '{Name}' for '{Role}', which is neither a profile in LLM_SESSION_PROFILES ({Available}) nor 'instance'.")]
+    MinionLlmUnknown,
+
+    [Description("The 'minions' toolset is a specialist's (depth 1): the agent the user talks to delegates to specialists, and a minion delegates to no one.")]
+    MinionsOnlyForSpecialists,
+
+    [Description("No toolset builds a '{Tool}' tool.")]
+    NoToolsetForTool,
+
 
     [Description("Unknown LLM profile '{Name}'. Available: {Available}.")]
     UnknownSessionLlm,

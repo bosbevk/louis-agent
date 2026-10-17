@@ -2,8 +2,8 @@ namespace LouisAgent.Core.Tools.Agents;
 
 /// <summary>
 /// A chat's open sub-sessions, by handle (F26): the host (the API's session) owns one and makes it current for each
-/// turn, like <see cref="SessionAttachments"/>; <see cref="AgentPeerTools.StartSubSession"/> then keeps a specialist
-/// open instead of deleting it, and <see cref="AgentPeerTools.ContinueSubSession"/> finds it again. With none current
+/// turn, like <see cref="SessionAttachments"/>; <see cref="SpecialistTools.StartSubSession"/> then keeps a specialist
+/// open instead of deleting it, and <see cref="SpecialistTools.ContinueSubSession"/> finds it again. With none current
 /// (an MCP call, the CLI) nothing is kept.
 /// </summary>
 /// <remarks>

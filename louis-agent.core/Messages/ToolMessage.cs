@@ -697,6 +697,36 @@ public enum ToolMessage
     [Description("default role")]
     SubSessionDefaultRole,
 
+    [Description("Error: '{Role}' isn't a minion role (a minion role is <product>-minion-<function>, e.g. puls-minion-web-price-lookup; the minions guide lists them).")]
+    MinionRoleInvalid,
+
+    [Description("Error: '{Tool}' is never handed to a minion: a minion gets one of your working tools, not delegation or skills.")]
+    MinionToolNeverHandedDown,
+
+    [Description("Error: you don't hold a '{Tool}' tool, so you can't hand it to a minion. Your tools: {Tools}.")]
+    MinionToolNotMine,
+
+    [Description("Error: no model is configured for the '{Role}' minion (MINION_LLMS names neither it nor *). Do the task yourself.")]
+    MinionNoLlm,
+
+    [Description("Error: no stronger model is left for the '{Role}' minion (its list: {Models}). Treat the answer as unconfirmed, or do the task yourself.")]
+    MinionNoStronger,
+
+    [Description("Error: this user turn has already used {Max} minions, the most one turn may across every specialist. Finish with what you have.")]
+    MinionLimit,
+
+    [Description("Error: this session keeps no minion open (it isn't a chat). Start a new one with StartMinion.")]
+    MinionNoneKept,
+
+    [Description("Error: no open minion '{Handle}'. Open: {Open}. Continue one of those, or start a new one with StartMinion.")]
+    MinionUnknownHandle,
+
+    [Description("{Answer}\n\n[Minion {Role} on {Llm} with {Tool}: {Usage}]")]
+    MinionAnswer,
+
+    [Description("{Answer}\n\n[Minion {Role} on {Llm} with {Tool}: {Usage}; handle {Handle}: a follow-up on this page goes to ContinueMinion(\"{Handle}\", message).]")]
+    MinionAnswerKept,
+
     [Description("You stopped without writing an answer (usually: all your tool rounds were used). Don't call any more tools: answer the task now from what you found, and say what you couldn't finish.")]
     SubSessionAskForAnswer,
 

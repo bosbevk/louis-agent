@@ -65,6 +65,21 @@ public static partial class AgentHost
     /// model, never changes. Only the API key settings come from <paramref name="environment"/>; anything else a profile
     /// leaves out takes its default, not the instance's value. A listed profile without its file stops start-up.
     /// </summary>
+    /// <summary>
+    /// Every model <c>MINION_LLMS</c> names is a profile in <c>LLM_SESSION_PROFILES</c> or <c>instance</c> (F30); another
+    /// stops start-up (<see cref="SessionLlmException"/>), so a typo never leaves a minion with no model at run time.
+    /// </summary>
+    internal static void CheckMinionLlms(AgentOptions agent)
+    {
+        foreach (var (role, models) in agent.MinionLlms)
+            foreach (string model in models)
+                if (model != Tools.Agents.MinionTools.InstanceLlm && !agent.SessionLlmProfiles.Contains(model, StringComparer.Ordinal))
+                    throw new SessionLlmException(MessageText.Format(ErrorMessage.MinionLlmUnknown, new
+                    {
+                        Name = model, Role = role, Available = agent.SessionLlmProfiles.Count == 0 ? "none" : string.Join(", ", agent.SessionLlmProfiles),
+                    }));
+    }
+
     internal static IReadOnlyList<SessionLlm> LoadSessionLlms(AgentOptions agent, ILlmClientFactory clientFactory, string? configDirectory,
         Func<string, string?> environment)
     {
@@ -152,6 +167,7 @@ public static partial class AgentHost
         // The profiles sit beside .env: the repo's config/ when run from it, the mounted workspace's in a container.
         string configDirectory = EnvFile.FindConfigDirectory(Environment.CurrentDirectory) ?? Path.Combine(agent.WorkspaceRoot, "config");
         var sessionLlms = LoadSessionLlms(agent, clientFactory, configDirectory, Environment.GetEnvironmentVariable);
+        CheckMinionLlms(agent);
         var engines = new AgentEngineFactory(chatClient, agent, llm.ResolveSupportsTools(), CreateUsageSink(agent, prices),
             clientFactory.CreateUsageMapper(llm), display, llm.ResolveThinking(), rates: rates, sessionLlms: sessionLlms);
         var engine = engines.GetOrCreate(engines.Available);

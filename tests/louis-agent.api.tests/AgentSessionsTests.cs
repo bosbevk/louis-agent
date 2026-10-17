@@ -300,4 +300,21 @@ public class AgentSessionsTests
         Assert.That(() => sessions.Create(["web"], parent, depth: 3, personality: "puls-minion-web-price-lookup", tool: "FetchUrl"),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("between 0 and 2"), "a minion never delegates");
     }
+
+    [Test]
+    public void AMinionSession_DerivesItsToolsetFromItsTool_AndMinionsAreForSpecialistsOnly()
+    {
+        // F30 step 5: StartMinion sends no toolsets, only the tool; the peer finds the toolset that builds it. The
+        // minions toolset is a specialist's: never the chat's (level 0), never a minion's (the end of the tree).
+        var sessions = Sessions();
+        var cook = sessions.Create(["web"], depth: 1, personality: "puls-cook");
+
+        var minion = sessions.Create(null, ParentOf(cook), depth: 2, personality: "puls-minion-web-price-lookup", tool: "FetchUrl");
+        Assert.That(minion.Toolsets, Is.EqualTo(new[] { "web" }));
+        Assert.That(Names(minion), Is.EqualTo(new[] { "FetchUrl" }));
+
+        Assert.That(() => sessions.Create(["minions"]), Throws.TypeOf<ToolsetException>().With.Message.Contain("specialist"));
+        Assert.That(() => sessions.Create(["minions"], ParentOf(cook), depth: 2, personality: "puls-minion-web-price-lookup", tool: "FetchUrl"),
+            Throws.TypeOf<ToolsetException>().With.Message.Contain("delegates"));
+    }
 }

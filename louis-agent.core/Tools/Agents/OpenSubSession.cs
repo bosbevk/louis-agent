@@ -15,4 +15,10 @@ public sealed record OpenSubSession(Uri Peer, string SessionId, string Agent, IR
 {
     /// <summary>The chat's name for it (<c>sub-1</c>), given by the registry when it is added.</summary>
     public string Handle { get; init; } = "";
+
+    /// <summary>What was kept: a specialist (<see cref="SpecialistTools.Kind"/>) or a minion (<see cref="MinionTools.Kind"/>, F30).</summary>
+    public string Kind { get; init; } = SpecialistTools.Kind;
+
+    /// <summary>A minion's model, as <c>MINION_LLMS</c> named it (F30); null for a specialist or the instance's own model.</summary>
+    public string? Llm { get; init; }
 }

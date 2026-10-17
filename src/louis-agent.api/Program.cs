@@ -287,6 +287,7 @@ static async IAsyncEnumerable<SseItem<string>> StreamTurnAsync(
             Task<bool> next;
             using (usage.Activate())
             using (SessionAttachments.Use(session.Attachments))
+            using (SessionTools.Use(session.Engine.Tools.Select(t => t.Name)))
             using (UserPlace.Use(session.Place))
             using (SubSessionRegistry.Use(session.SubSessions))
             using (SubSessionFeed.Observe(e => subSessions.Writer.TryWrite(e)))

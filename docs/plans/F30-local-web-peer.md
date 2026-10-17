@@ -270,3 +270,15 @@ sequenceDiagram
   runs' numbers go in the admin portal's store, so step 9 runs from the portal after
   [F31 Benchmarks in the admin portal](F31-benchmarks-portal.md) (order: F30's steps 4–8, then F31, then step 9).
   The `puls-specialist` default role is gone too: a sub-session with no role gets the default mode's voice only.
+- **No `minions.json`: the specialist gives the minion its tool** (Louis, step 4, 2026-10-17: "the specialist must give
+  him its tools"; asked which is better, tool delegation or tool lookups: delegation, the sender's toolbox is the
+  ceiling and the small model picks nothing). A role is one file; the price role answers with `per_kg` and `location`
+  lines too (Louis: "add price per kilo", "we should get this by location").
+- **`AgentPeerTools` is `SpecialistTools`** (Louis, step 5: "just rename it"): the class behind the `specialists`
+  toolset, named for what it is since CL9; the minion tools share its child path. The per-session ambients
+  (attachments, tools, place, the kept sub-sessions, the live feed) move out of `Tools/` into `Sessions/` (Louis:
+  "should these session classes be in Tools").
+- **A step for the front end** (Louis, step 5: "we must also somehow display when a minion was called on the front
+  end"): **step 6b**, after step 6: Puls's Werk card shows a minion as an item nested under its specialist's (role, tool,
+  model, seconds, cost), from the `sub_session` events the specialist's stream already forwards with the minion's role as
+  its agent. Checked by hand; the hand check in step 8 reads it.

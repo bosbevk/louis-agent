@@ -12,7 +12,7 @@ using Microsoft.Extensions.AI;
 namespace LouisAgent.Core.Tests.Tools.Agents;
 
 // F5 step 8 (F5-S5): a sub-session on a peer, with its limits in code. The peer is a stub: no network.
-public class AgentPeerToolsTests
+public class SpecialistToolsTests
 {
     private static readonly Dictionary<string, Uri> Peers = new() { ["coder"] = new Uri("http://coder.test/") };
 
@@ -46,7 +46,7 @@ public class AgentPeerToolsTests
         _ => new HttpResponseMessage(HttpStatusCode.NotFound),
     });
 
-    private static AgentPeerTools Tools(StubHandler handler, TimeSpan? timeout = null, TimeProvider? time = null, IUsageSink? sink = null) =>
+    private static SpecialistTools Tools(StubHandler handler, TimeSpan? timeout = null, TimeProvider? time = null, IUsageSink? sink = null) =>
         new(Peers, "the-key", new HttpClient(handler), timeout, time, sink);
 
     /// <summary>A reply that failed after some work: the API's error event carries what was charged (FX6).</summary>
@@ -116,7 +116,7 @@ public class AgentPeerToolsTests
         var sink = new ListUsageSink();
 
         using (UsageScope.Begin(session: "sess_parent", turn: 1))
-            await new AgentPeerTools(Peers, null, new HttpClient(new SlowPeer()), TimeSpan.FromMilliseconds(200), usageSink: sink)
+            await new SpecialistTools(Peers, null, new HttpClient(new SlowPeer()), TimeSpan.FromMilliseconds(200), usageSink: sink)
                 .StartSubSession(["files"], "x", agent: "coder");
 
         Assert.That(sink.Records, Is.Empty);
@@ -128,7 +128,7 @@ public class AgentPeerToolsTests
         // Step 3: a turn that delegates writes its own two requests and one roll-up, in the order they happened; the
         // specialist's own rows are written where it ran. The turn's total is own + child, with one adder.
         var sink = new ListUsageSink();
-        var tools = new AgentPeerTools(Peers, null, new HttpClient(Peer()), usageSink: sink);
+        var tools = new SpecialistTools(Peers, null, new HttpClient(Peer()), usageSink: sink);
         static ChatResponse Reply(params AIContent[] contents) => new(new ChatMessage(ChatRole.Assistant, contents))
         {
             Usage = new UsageDetails { InputTokenCount = 1_000, OutputTokenCount = 100 },
@@ -579,7 +579,7 @@ public class AgentPeerToolsTests
         var handler = Peer();
         var peers = new Dictionary<string, Uri> { ["coder"] = new("http://coder.test/"), ["writer"] = new("http://writer.test/") };
 
-        string result = await new AgentPeerTools(peers, null, new HttpClient(handler)).StartSubSession(["files"], "x", agent: " ");
+        string result = await new SpecialistTools(peers, null, new HttpClient(handler)).StartSubSession(["files"], "x", agent: " ");
 
         Assert.That(result, Does.Contain("more than one peer").And.Contain("coder, writer"));
         Assert.That(handler.Requests, Is.Empty);
@@ -626,11 +626,11 @@ public class AgentPeerToolsTests
         var time = new Microsoft.Extensions.Time.Testing.FakeTimeProvider(DateTimeOffset.Parse("2026-10-13T10:00:00Z"));
         var tools = Tools(Peer(), time: time);
 
-        for (int i = 0; i < AgentPeerTools.MaxPerTurn; i++)
+        for (int i = 0; i < SpecialistTools.MaxPerTurn; i++)
             Assert.That(await tools.StartSubSession(["files"], "x", agent: "coder"), Does.Not.StartWith("Error"));
         Assert.That(await tools.StartSubSession(["files"], "x", agent: "coder"), Does.Contain("in the last minute"));
 
-        time.Advance(AgentPeerTools.NoTurnWindow);
+        time.Advance(SpecialistTools.NoTurnWindow);
         Assert.That(await tools.StartSubSession(["files"], "x", agent: "coder"), Does.Not.StartWith("Error"), "a minute later it works again");
     }
 
@@ -657,7 +657,7 @@ public class AgentPeerToolsTests
 
         using (UsageScope.Begin(session: "sess_parent", turn: 2))
         {
-            for (int i = 0; i < AgentPeerTools.MaxPerTurn; i++)
+            for (int i = 0; i < SpecialistTools.MaxPerTurn; i++)
                 Assert.That(await tools.StartSubSession(["files"], "x", agent: "coder"), Does.Not.StartWith("Error"));
 
             Assert.That(await tools.StartSubSession(["files"], "x", agent: "coder"), Does.Contain("already made 3 sub-session calls"));
@@ -672,7 +672,7 @@ public class AgentPeerToolsTests
     {
         var handler = new SlowPeer();
 
-        string result = await new AgentPeerTools(Peers, null, new HttpClient(handler), TimeSpan.FromMilliseconds(200))
+        string result = await new SpecialistTools(Peers, null, new HttpClient(handler), TimeSpan.FromMilliseconds(200))
             .StartSubSession(["files"], "x", agent: "coder");
 
         Assert.That(result, Does.Contain("didn't finish within"));

@@ -124,12 +124,8 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
     /// <summary>A minion's depth (F30): one role on the minion base, one tool, never delegates.</summary>
     public const int MinionDepth = 2;
 
-    /// <summary>
-    /// Tools a minion never gets (F30), whatever its parent has: delegation (a minion is the end of the tree) and the
-    /// engine's self-extension (a minion runs one task with one tool, it doesn't build tools).
-    /// </summary>
-    public static readonly IReadOnlySet<string> NeverHandedDown = new HashSet<string>(StringComparer.Ordinal)
-        { "StartSubSession", "ContinueSubSession", "StartMinion", "ContinueMinion", "ExecuteSkill", "CreateSkillFile", "ReloadSkills", "CreateTool", "ListAgentTools" };
+    /// <summary>The toolset a specialist hands minions with (F30): a specialist's only, never the chat's nor a minion's.</summary>
+    public const string MinionsToolset = "minions";
 
     /// <summary>The toolset that opens sub-sessions (F5; named specialists in CL9); refused at <see cref="MaxDepth"/>.</summary>
     public const string SpecialistsToolset = "specialists";
@@ -149,23 +145,31 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
     /// LLM profile this instance doesn't offer (<paramref name="llm"/>, F30; null: its own model), before anything is created.
     /// A minion (depth <see cref="MinionDepth"/>, F30) names its one <paramref name="tool"/>, which must be its parent
     /// session's (<paramref name="tags"/>' parent, found here: minions run on their specialist's own instance) and never
-    /// one of <see cref="NeverHandedDown"/>; every other depth refuses a tool.
+    /// one of <see cref="MinionTools.NeverHandedDown"/>; its toolsets, when none are sent, are the one that builds the
+    /// tool. Every other depth refuses a tool, and only depth 1 loads <see cref="MinionsToolset"/>.
     /// </summary>
     public AgentSession Create(IEnumerable<string>? toolsets = null, UsageTags? tags = null, int depth = 0, string? personality = null,
         UserPlace? place = null, string? llm = null, string? tool = null)
     {
         if (depth is < 0 or > MaxDepth)
             throw new ToolsetException(MessageText.Format(ErrorMessage.SessionDepthInvalid, new { Max = MaxDepth }));
-        var names = ToolsetCatalog.Normalise(toolsets ?? DefaultToolsets);
-        if (depth > 0 && names.Contains(SpecialistsToolset))
-            throw new ToolsetException(MessageText.Format(ErrorMessage.SubSessionCannotDelegate, new { Toolset = SpecialistsToolset }));
-        if (string.IsNullOrEmpty(personality)) personality = null;
-        // A sub-session's role is named by its parent (CL10); with none it gets the default mode's voice, no routing.
-        if (string.IsNullOrWhiteSpace(llm)) llm = null;
         if (string.IsNullOrWhiteSpace(tool)) tool = null;
         if (depth == MinionDepth) CheckMinion(tags, tool);
         else if (tool is not null)
             throw new ToolsetException(MessageText.Format(ErrorMessage.ToolOnlyForMinions, new { MinionDepth, Depth = depth }));
+        // A minion names its tool; the toolset that builds it is implied (StartMinion sends none).
+        var names = ToolsetCatalog.Normalise(depth == MinionDepth && toolsets is null ? [ToolsetCatalog.ToolsetOf(tool!)
+                ?? throw new ToolsetException(MessageText.Format(ErrorMessage.NoToolsetForTool, new { Tool = tool }))]
+            : toolsets ?? DefaultToolsets);
+        if (depth > 0 && names.Contains(SpecialistsToolset))
+            throw new ToolsetException(MessageText.Format(ErrorMessage.SubSessionCannotDelegate, new { Toolset = SpecialistsToolset }));
+        if (depth == MinionDepth && names.Contains(MinionsToolset))
+            throw new ToolsetException(MessageText.Format(ErrorMessage.SubSessionCannotDelegate, new { Toolset = MinionsToolset }));
+        if (depth == 0 && names.Contains(MinionsToolset))
+            throw new ToolsetException(MessageText.Format(ErrorMessage.MinionsOnlyForSpecialists));
+        if (string.IsNullOrEmpty(personality)) personality = null;
+        // A sub-session's role is named by its parent (CL10); with none it gets the default mode's voice, no routing.
+        if (string.IsNullOrWhiteSpace(llm)) llm = null;
         var engine = engines.GetOrCreate(names, personality, (SkillLevel)depth, llm, tool);
 
         DropIdle(DateTimeOffset.UtcNow);
@@ -190,7 +194,7 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
         string parentId = tags.Parent.Split('#')[0];
         if (Get(parentId) is not { } parent)
             throw new ToolsetException(MessageText.Format(ErrorMessage.MinionParentUnknown, new { Session = parentId }));
-        if (NeverHandedDown.Contains(tool))
+        if (MinionTools.NeverHandedDown.Contains(tool))
             throw new ToolsetException(MessageText.Format(ErrorMessage.ToolNeverHandedDown, new { Tool = tool }));
         if (!parent.Engine.Tools.Any(t => string.Equals(t.Name, tool, StringComparison.Ordinal)))
             throw new ToolsetException(MessageText.Format(ErrorMessage.ParentLacksTool, new { Tool = tool }));

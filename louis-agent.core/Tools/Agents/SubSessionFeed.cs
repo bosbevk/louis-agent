@@ -2,7 +2,7 @@ namespace LouisAgent.Core.Tools.Agents;
 
 /// <summary>
 /// Where a turn's sub-session events go while it runs: a host that shows them (the API's chat stream) observes the turn,
-/// and <see cref="AgentPeerTools"/> reports every event it reads. Held in an <see cref="AsyncLocal{T}"/>, like the usage
+/// and <see cref="SpecialistTools"/> reports every event it reads. Held in an <see cref="AsyncLocal{T}"/>, like the usage
 /// scope, so it flows into the tool call without being passed through the engine; nothing observes it by default.
 /// </summary>
 public static class SubSessionFeed
