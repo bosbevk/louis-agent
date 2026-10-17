@@ -40,7 +40,8 @@ public class ShopToolsTests
     {
         string result = await Tools(new FakeCatalogue(Chicken, Chakalaka)).FindProducts("Checkers", "chicken pieces");
 
-        Assert.That(result, Does.Contain("Checkers").And.Contain("chicken pieces"));
+        // F33's run: "Checkers's products" read wrong for a shop whose name ends in s; the header names the shop plainly.
+        Assert.That(result, Does.StartWith("Products at Checkers for 'chicken pieces' (2)").And.Not.Contain("'s products"));
         Assert.That(result, Does.Contain("untrusted"), "a shop's names come from its site");
         Assert.That(result, Does.Contain("| Farmer's Choice Fresh Chicken 16 Piece Drumsticks & Wings Per kg | 1.1–1.3 kg | R79.99 | R79.99/kg | https://www.checkers.co.za/product/farmers-choice-fresh-chicken-16-piece-drumsticks-and-wings-per-kg-10796287KG |"));
         Assert.That(result, Does.Contain("| KOO Mild & Spicy Chakalaka Can 410g | - | R25.99 | - | https://www.checkers.co.za/product/koo-mild-and-spicy-chakalaka-can-410g-10133306EA |"));
