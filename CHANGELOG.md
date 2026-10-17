@@ -3,6 +3,9 @@
 > **Reference.** What was finished, newest first, one entry per feature, fix or cleanup. **Elsewhere:** what's still
 > open in the [TODO](TODO.md); how each was built in its feature, fix or plan doc (linked from its entry).
 
+- 2026-10-17 — **FX16 A price is checked against its product**: `VerifyQuote` refuses a quote that is only a price
+  (`R22.99`) unless it names the product, and then finds it only right after the product's name, no other price
+  between; it was *Found* for any product at that price ([fix](docs/fixes/FX16-short-quote-match.md))
 - 2026-10-17 — **CL10 Clear the decks**: `samples/` goes (both checks, 18 recorded runs, the order-service demo and
   its compose file) and `docs/BENCHMARKS.md`; they're kept at the tag `pre-cl10`, where the history docs now link. The
   admin portal stops reading and writing run folders: no checks until they're rewritten, with scripts in `benchmarks/`

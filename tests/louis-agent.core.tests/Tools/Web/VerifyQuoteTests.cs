@@ -9,6 +9,7 @@ namespace LouisAgent.Core.Tests.Tools.Web;
 public class VerifyQuoteTests
 {
     private const string Url = "https://www.checkers.co.za/p/beef-mince-500g";
+    private const string Beef = "Checkers Beef Mince 500g";
 
     private const string ProductHtml = """
         <html><head><title>Beef Mince 500g | Checkers</title></head>
@@ -19,7 +20,7 @@ public class VerifyQuoteTests
             <div class="price"><span>R</span><span>35.99</span></div>
             <p>Price&nbsp;valid until 20 Oct</p>
           </main>
-          <footer><span class="unit">R71.98/kg</span></footer>
+          <footer><span class="unit">Unit price R71.98/kg</span></footer>
         </body></html>
         """;
 
@@ -55,7 +56,7 @@ public class VerifyQuoteTests
     [Test]
     public async Task AQuoteThatIsntThere_IsNotFound_AndSaysTheValueIsUnconfirmed()
     {
-        string result = await Tools(_ => Html(ProductHtml)).VerifyQuote(Url, "R29.99 per 500g");
+        string result = await Tools(_ => Html(ProductHtml)).VerifyQuote(Url, "Beef Mince R29.99");
 
         Assert.That(result, Does.StartWith("Not found:").And.Contain("unconfirmed"));
     }
@@ -63,7 +64,7 @@ public class VerifyQuoteTests
     [TestCase("checkers beef mince 500g")]
     [TestCase("  CHECKERS   Beef\nMince 500G ")]
     [TestCase("\"Price valid until 20 Oct\"")]
-    [TestCase("R71.98/kg")]
+    [TestCase("unit price R71.98/kg")]
     public async Task SpacingCaseQuotesAndThePagesOtherParts_DontMatter(string quote)
     {
         // A small model copies a quote with its own spacing and case; a price per kilo can sit outside <main>.
@@ -75,7 +76,7 @@ public class VerifyQuoteTests
     [Test]
     public async Task APageThatDoesntLoad_IsAnErrorWithItsStatus()
     {
-        string result = await Tools(_ => new HttpResponseMessage(HttpStatusCode.NotFound)).VerifyQuote(Url, "R35.99");
+        string result = await Tools(_ => new HttpResponseMessage(HttpStatusCode.NotFound)).VerifyQuote(Url, "R35.99", Beef);
 
         Assert.That(result, Does.StartWith("Error:").And.Contain("404"));
     }
@@ -87,7 +88,7 @@ public class VerifyQuoteTests
         var renderer = new FakeRenderer("Beef Mince 500g\nR35.99\nAdd to cart");
 
         string result = await Tools(_ => Html("<html><body><div id=\"app\"></div><script>load()</script></body></html>"), renderer)
-            .VerifyQuote(Url, "R35.99");
+            .VerifyQuote(Url, "R35.99", "Beef Mince 500g");
 
         Assert.That(result, Does.StartWith("Found:"));
         Assert.That(renderer.Calls, Is.EqualTo(1));
@@ -96,7 +97,7 @@ public class VerifyQuoteTests
     [Test]
     public async Task AnEmptyPageWithNoRenderer_SaysItCantBeChecked()
     {
-        string result = await Tools(_ => Html("<html><body><div id=\"app\"></div></body></html>")).VerifyQuote(Url, "R35.99");
+        string result = await Tools(_ => Html("<html><body><div id=\"app\"></div></body></html>")).VerifyQuote(Url, "R35.99", Beef);
 
         Assert.That(result, Does.StartWith("Page empty:").And.Contain("unconfirmed"));
     }
@@ -107,7 +108,7 @@ public class VerifyQuoteTests
         // ReadRenderedPage costs a credit: only an empty page is rendered.
         var renderer = new FakeRenderer("R35.99");
 
-        await Tools(_ => Html(ProductHtml), renderer).VerifyQuote(Url, "R12.00");
+        await Tools(_ => Html(ProductHtml), renderer).VerifyQuote(Url, "R12.00", Beef);
 
         Assert.That(renderer.Calls, Is.Zero);
     }
@@ -117,7 +118,7 @@ public class VerifyQuoteTests
     {
         int requests = 0;
         string result = await Tools(_ => { requests++; return Html(ProductHtml); }, dns: (_, _) => Task.FromResult(new[] { IPAddress.Parse("10.0.0.5") }))
-            .VerifyQuote("https://intranet.test/prices", "R35.99");
+            .VerifyQuote("https://intranet.test/prices", "R35.99", Beef);
 
         Assert.That(result, Does.StartWith("Error:"));
         Assert.That(requests, Is.Zero);
@@ -167,5 +168,130 @@ public class VerifyQuoteTests
         string result = await Tools(_ => Html(ShellPage())).VerifyQuote(Url, "ESKORT R65.99");
 
         Assert.That(result, Does.StartWith("Page empty:"));
+    }
+
+    // FX16 (the PR #51 review): a quote that is only a price matched any product at that price on the page, so
+    // "Found" said more than was checked. A price is checked against its product: right after the product's name.
+    private const string ListUrl = "https://www.pnp.co.za/c/eggs-dairy";
+
+    private const string ListHtml = """
+        <html><body><main><ul>
+          <li><h3>PnP Large Eggs 6 Pack</h3><span class="price">R22.99</span><a>Add to trolley</a></li>
+          <li><h3>PnP Salted Butter 500g</h3><span class="price">R54.99</span><a>Add to trolley</a></li>
+          <li><h3>PnP Full Cream Milk 2L</h3><span class="price">R22.99</span><a>Add to trolley</a></li>
+        </ul></main></body></html>
+        """;
+
+    [TestCase("R22.99")]
+    [TestCase("\"R 22,99\"")]
+    [TestCase("R119.98/kg")]
+    [TestCase("R22.99 each")]
+    [TestCase("Now R22.99")]
+    [TestCase("only R22.99 per kg")]
+    [TestCase("Was R29.99 Save R7.00")]
+    public async Task APriceOnlyQuote_WithoutItsProduct_IsRefused_WithoutARequest(string quote)
+    {
+        int requests = 0;
+        string result = await Tools(_ => { requests++; return Html(ListHtml); }).VerifyQuote(ListUrl, quote);
+
+        Assert.That(result, Does.StartWith("Error:").And.Contain("product"));
+        Assert.That(requests, Is.Zero);
+    }
+
+    [TestCase("PnP Large Eggs 6 Pack")]
+    [TestCase("pnp full cream milk 2l")]
+    public async Task APriceRightAfterItsProduct_IsFound(string product)
+    {
+        string result = await Tools(_ => Html(ListHtml)).VerifyQuote(ListUrl, "R22.99", product);
+
+        Assert.That(result, Does.StartWith("Found:"), product);
+    }
+
+    [Test]
+    public async Task AnotherProductsPrice_IsNotFoundWithTheProduct()
+    {
+        // The bug: R22.99 is on the page (the eggs, the milk), but the butter is R54.99.
+        string result = await Tools(_ => Html(ListHtml)).VerifyQuote(ListUrl, "R22.99", "PnP Salted Butter 500g");
+
+        Assert.That(result, Does.StartWith("Not found with the product:").And.Contain("PnP Salted Butter 500g").And.Contain("unconfirmed"));
+    }
+
+    [Test]
+    public async Task AProductThePageDoesntShow_IsNotFoundWithTheProduct()
+    {
+        string result = await Tools(_ => Html(ListHtml)).VerifyQuote(ListUrl, "R22.99", "Free Range Eggs 18 Pack");
+
+        Assert.That(result, Does.StartWith("Not found with the product:"));
+    }
+
+    [Test]
+    public async Task APriceSplitAcrossTags_StillMatches()
+    {
+        // ProductHtml draws the price as <span>R</span><span>35.99</span>: "r 35.99" once its tags are spaces, read as r35.99.
+        string result = await Tools(_ => Html(ProductHtml)).VerifyQuote(Url, "R35.99", Beef);
+
+        Assert.That(result, Does.StartWith("Found:"));
+    }
+
+    // The PR #54 review: a special shows the old price between the name and the price ("Was R29.99 · R22.99").
+    private const string SpecialsHtml = """
+        <html><body><main><ul>
+          <li><h3>PnP Large Eggs 6 Pack</h3><span>Was R29.99</span><span class="price">R22.99</span></li>
+          <li><h3>PnP Salted Butter 500g</h3><span>Save R7.00</span><span class="price">R54.99</span></li>
+          <li><h3>PnP Full Cream Milk 2L</h3><span class="price">R22.99</span></li>
+        </ul></main></body></html>
+        """;
+
+    [TestCase("PnP Large Eggs 6 Pack", "R22.99")]
+    [TestCase("PnP Salted Butter 500g", "R54.99")]
+    public async Task ASpecialsOldPriceOrSaving_DoesntHideTheProductsPrice(string product, string quote)
+    {
+        string result = await Tools(_ => Html(SpecialsHtml)).VerifyQuote(ListUrl, quote, product);
+
+        Assert.That(result, Does.StartWith("Found:"), product);
+    }
+
+    [TestCase("PnP Large Eggs 6 Pack", "R29.99")]
+    [TestCase("PnP Salted Butter 500g", "R7.00")]
+    public async Task TheOldPriceOrTheSaving_IsNotTheProductsPrice(string product, string quote)
+    {
+        string result = await Tools(_ => Html(SpecialsHtml)).VerifyQuote(ListUrl, quote, product);
+
+        Assert.That(result, Does.StartWith("Not found with the product:"), quote);
+    }
+
+    [Test]
+    public async Task ASpecialStillDoesntLetTheNextProductsPriceThrough()
+    {
+        // The butter's saving is skipped, its own price is not: the milk's R22.99 is not the butter's.
+        string result = await Tools(_ => Html(SpecialsHtml)).VerifyQuote(ListUrl, "R22.99", "PnP Salted Butter 500g");
+
+        Assert.That(result, Does.StartWith("Not found with the product:"));
+    }
+
+    // The PR #54 re-review: tags stripped with nothing between them joined a badge to the price ("500gnewr54.99"), so
+    // the butter's own price lost its word boundary, wasn't seen as a price, and the milk's R22.99 passed for it.
+    private const string BadgeHtml = """
+        <html><body><main><ul>
+          <li><h3>PnP Large Eggs 6 Pack</h3><span class="price">R22.99</span></li>
+          <li><h3>PnP Salted Butter 500g</h3><span>New</span><span class="price">R54.99</span></li>
+          <li><h3>PnP Full Cream Milk 2L</h3><span class="price">R22.99</span></li>
+        </ul></main></body></html>
+        """;
+
+    [Test]
+    public async Task ABadgeBeforeThePrice_DoesntLetTheNextProductsPriceThrough()
+    {
+        string result = await Tools(_ => Html(BadgeHtml)).VerifyQuote(ListUrl, "R22.99", "PnP Salted Butter 500g");
+
+        Assert.That(result, Does.StartWith("Not found with the product:"));
+    }
+
+    [Test]
+    public async Task ABadgeBeforeThePrice_StillFindsTheProductsOwnPrice()
+    {
+        string result = await Tools(_ => Html(BadgeHtml)).VerifyQuote(ListUrl, "R54.99", "PnP Salted Butter 500g");
+
+        Assert.That(result, Does.StartWith("Found:"));
     }
 }

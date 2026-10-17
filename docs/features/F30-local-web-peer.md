@@ -57,7 +57,8 @@ keep minions only if real prices hold and the cost drops.
 
 - A Puls chat's cook and researcher hand shop pages to minions on `ollama-puls`, and the ledger shows the qwen model
   at $0 under the specialist's turn.
-- `VerifyQuote` is tested for present, absent, whitespace and case, unreadable and blocked pages.
+- `VerifyQuote` is tested for present, absent, whitespace and case, unreadable and blocked pages; a price is checked
+  against its product ([FX16](../fixes/FX16-short-quote-match.md)).
 - The five-question run is in the admin portal's store, run from the portal (F31, its plan on `docs/F31-benchmarks-portal-plan`), and the
   decision to keep or drop the peer is written here.
 
