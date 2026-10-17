@@ -17,6 +17,16 @@ public class MarkdownImageTests
         Assert.That(html, Does.Contain("<img src=\"https://catalog.sixty60.co.za/v2/files/6a5f7a88745efcce53fcd220"));
     }
 
+    // Louis: "when you click the product image the original must open in a modal". The list shows the 256 px thumbnail;
+    // the photo carries the shop's original (the same file, no size asked), which chat.js opens in a dialog.
+    [Test]
+    public void AShopsProductImage_CarriesItsOriginal_ForTheModal()
+    {
+        string html = Markdown.ToHtml($"![KOO Chakalaka]({Chakalaka})").Value;
+
+        Assert.That(html, Does.Contain("data-original=\"https://catalog.sixty60.co.za/v2/files/6a5f7a88745efcce53fcd220\""));
+    }
+
     [TestCase("https://attacker.example/pixel.png?chat=secret")]
     [TestCase("http://catalog.sixty60.co.za/v2/files/1")]
     [TestCase("https://catalog.sixty60.co.za.attacker.example/x.png")]

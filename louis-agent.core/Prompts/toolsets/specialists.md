@@ -31,7 +31,7 @@ all read it the same way:
 
 ```
 **Vir:** kok
-**Wil hê:** 'n Ete vir twee vanaand, binne 'n uur, met die resep en wat dit by die winkels kos.
+**Wil hê:** 'n Ete vir twee vanaand, binne 'n uur, met die resep en wat dit by die winkels kos, elke produk met sy foto.
 **Klink:** haastig: kort sinne, geen groet nie, wil net die antwoord hê.
 **Waar:** Pretoria.
 **Reeds gesê:** twee mense, sowat 'n uur; geen dieet of begroting genoem nie.
@@ -39,13 +39,15 @@ all read it the same way:
 
 ```
 **For:** cook
-**Wants:** A dinner for two tonight, within an hour, with the recipe and what it costs at the shops.
+**Wants:** A dinner for two tonight, within an hour, with the recipe and what it costs at the shops, every product with its photo.
 **Sounds:** relaxed, has time: a long message, a greeting, exclamation marks.
 **Where:** Pretoria.
 **Already said:** two people, about an hour; no diet or budget mentioned.
 ```
 
-- **`Wil hê` / `Wants`** is the request in one or two sentences, with what the user needs back.
+- **`Wil hê` / `Wants`** is the request in one or two sentences, with what the user needs back. A request about
+  products (a meal, a shop's specials, a price) always ends with *elke produk met sy foto* / *every product with its
+  photo*.
 - **`Klink` / `Sounds`** is the user's mood, a guess from the typing, never a diagnosis: the length, a greeting or
   none, the punctuation, the words' tone, a sharp reply after an answer that missed. Say it in the plain words a
   person uses about a customer ("haastig", "het tyd, lekker in die gees", "gefrustreerd na die vorige antwoord"),
@@ -127,6 +129,8 @@ Like a person with a team, you tell the user what's happening, and you don't rew
   or a section left out: the specialist checked the pages, you didn't, and a report rewritten is a report with its
   prices and sources gone. The cook's report is always in this shape (its list, where to buy, its doubts, as tables);
   the other roles' answers you pass on in full the same way, in the task's language.
+- **The footer the tool adds under the report** (`[Sub-session sub-1 on puls (web; puls-cook): 4 requests, …]`) is
+  for you, not part of the report: its handle and cost, never in your answer. The chat shows the cost already.
 
 ## Limits and results
 

@@ -1,4 +1,5 @@
 using Markdig;
+using Markdig.Renderers.Html;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 using Microsoft.AspNetCore.Components;
@@ -24,6 +25,8 @@ public static class Markdown
         {
             if (!IsSafeUrl(link.Url)) link.Url = "#";
             if (link.IsImage && !IsShopImage(link.Url)) link.IsImage = false;
+            // A shop's photo opens its original in a dialog when clicked (chat.js): the same file, without the size.
+            if (link.IsImage) link.GetAttributes().AddProperty("data-original", new UriBuilder(link.Url!) { Query = "" }.Uri.AbsoluteUri);
         }
 
         foreach (var link in document.Descendants<AutolinkInline>())

@@ -111,6 +111,11 @@ prices.
 - **After the run:** the shop tools take `area` (the task's town when no place was shared); the no-shop town is Prince
   Albert (Darling is Malmesbury's municipality and Checkers serves it); and a place Checkers answers with its fallback
   stores, its default first, has no store of its own, so its header never claims one.
+- **Photos (2026-10-18, Louis).** Every product the cook names has its photo, first in its cell; a click opens the
+  shop's original in a dialog. The original is the thumbnail's URL without `?width=256&height=256` (Checkers serves it,
+  about 17 KB against 15 KB), on the same allowlisted host, so the dialog loads nothing the list couldn't.
+- **The footer isn't the answer (2026-10-18).** Puls copied `[Sub-session sub-1 on puls (web; puls-cook): …]` into its
+  reply: told to keep every line under a table, it kept the tool's footer, the last one. Named in the relay rule now.
 
 ---
 [Features](README.md) · [Plan](../plans/F34-shop-deals.md) · Previous: [F33 Shop catalogues](F33-shop-catalogues.md)

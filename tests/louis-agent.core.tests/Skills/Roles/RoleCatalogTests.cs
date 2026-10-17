@@ -307,6 +307,13 @@ public class RoleCatalogTests
         Assert.That(cook, Does.Contain("No shop near you has a catalogue here yet").And.Contain("Geen winkel naby jou het nog 'n katalogus hier nie"));
         Assert.That(cook, Does.Contain("`SearchSpecials`").And.Contain("`SearchPromotions`"));
         Assert.That(cook, Does.Contain("pass `area`: the user's town from the task"), "run dd992620f6cc: Pretoria only in the message");
+        // Louis, on Puls's brief for frozen pizza specials (a table with no photos): "always send a product image with a
+        // product". Puls asks for it in every brief about products; the cook shows it in every table, not only the list.
+        Assert.That(cook, Does.Contain("every product you name, in any table"));
+        // Louis: "die foto moet altyd eerste wees en dan produk desc": in the product's cell, the photo, then its name.
+        Assert.That(cook, Does.Contain("the photo always first in the cell, then the product's name and pack"));
+        string guide = SkillFileSource.ReadEmbedded("toolsets/specialists.md")!;
+        Assert.That(guide, Does.Contain("elke produk met sy foto").And.Contain("every product with its photo"));
         Assert.That(cook, Does.Contain("the link the table gives"), "its source");
         Assert.That(cook, Does.Not.Contain("pick two at random").And.Not.Contain("before any `WebSearch`"), "no shop without a tool");
         Assert.That(cook, Does.Not.Contain("Which shops' pages give a price").And.Not.Contain("`pnp.co.za`").And.Not.Contain("soekindeks"),
@@ -379,6 +386,10 @@ public class RoleCatalogTests
         Assert.That(agents, Does.Contain("## Relaying a report"));
         Assert.That(agents, Does.Contain("as the specialist wrote it").And.Contain("every table row"), "whole, tables included");
         Assert.That(router, Does.Contain("as the cook wrote it"), "the one choosing is told too");
+        // Louis, on Puls's answer ending "[Sub-session sub-1 on puls (web; puls-cook): 4 requests, …]": "bug". "Every
+        // line under a table" took in the tool's footer, the last line under the last table. The footer is Puls's alone.
+        Assert.That(agents, Does.Contain("The footer the tool adds under the report"));
+        Assert.That(agents, Does.Contain("never in your answer"));
     }
 
     [Test]

@@ -301,6 +301,12 @@ sequenceDiagram
   column", then "no wait keep it there but the text must not go underneath"):** the photo stays in *To buy*; Puls's
   styles give a cell with a photo a lane for it (`.markdown td:has(> img)`), so a long name wraps beside the photo, never
   under it. Not the cook's prompt.
+- **2026-10-18, photos (Louis: "always send a product image with a product", "die foto moet altyd eerste wees en dan
+  produk desc", "when you click the product image the original must open in a modal").** Puls's brief asks for every
+  product's photo; the cook shows it in every table, first in the cell. A shop photo carries its original
+  (`data-original`, the same file without the size, from `Markdown.cs`), which `chat.js` opens in a dialog.
+- **2026-10-18, the sub-session footer in Puls's answer (Louis: "bug").** The relay rule's "every line under a table"
+  took in the tool's `[Sub-session …]` footer; the specialists guide now says the footer is Puls's, never the answer's.
 
 ---
 [Plans](README.md) · Previous: [CL14 The public word: role](CL14-public-word-role.md)

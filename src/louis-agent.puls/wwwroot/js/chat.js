@@ -38,6 +38,25 @@ document.addEventListener("input", (e) => {
     e.target.style.height = Math.min(e.target.scrollHeight, 240) + "px";
 });
 
+// A shop's product photo in an answer opens its original in a dialog (F34, Louis): the src Markdown.cs gave it as
+// data-original, on the same allowlisted host. Esc, a click on the photo or beside it, closes it.
+document.addEventListener("click", (e) => {
+    const thumb = e.target.closest?.(".markdown img[data-original]");
+    if (!thumb) return;
+    const dialog = document.createElement("dialog");
+    dialog.className = "photo-dialog";
+    const photo = document.createElement("img");
+    photo.src = thumb.dataset.original;
+    photo.alt = thumb.alt;
+    const caption = document.createElement("p");
+    caption.textContent = thumb.alt;
+    dialog.append(photo, caption);
+    dialog.addEventListener("click", () => dialog.close());
+    dialog.addEventListener("close", () => dialog.remove());
+    document.body.append(dialog);
+    dialog.showModal();
+});
+
 // The sidebar: drag its edge to resize (220-480px, remembered), double-click the edge to reset, hide and show it.
 window.pulsUi = {
     minWidth: 220,
