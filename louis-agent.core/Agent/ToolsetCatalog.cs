@@ -102,6 +102,16 @@ public static class ToolsetCatalog
         .Select(m => m.Name)
         .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
+    /// <summary>
+    /// The tool names <paramref name="resolved"/> register (an engine-provided toolset contributes none): what a minion's
+    /// one tool may be chosen from (F30).
+    /// </summary>
+    public static IReadOnlySet<string> ToolNamesOf(IEnumerable<ToolsetDefinition> resolved) => resolved
+        .Where(t => t.ToolType is not null)
+        .SelectMany(t => ToolRegistry.ToolMethods(t.ToolType!))
+        .Select(m => m.Name)
+        .ToHashSet(StringComparer.Ordinal);
+
     /// <summary>Looks a toolset up by name (case-insensitive); null when there is none.</summary>
     public static ToolsetDefinition? Find(string name) =>
         All.FirstOrDefault(t => string.Equals(t.Name, name, StringComparison.OrdinalIgnoreCase));

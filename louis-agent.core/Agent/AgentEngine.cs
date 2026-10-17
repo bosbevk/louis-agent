@@ -149,6 +149,16 @@ public class AgentEngine
     }
 
     /// <summary>
+    /// Keeps the one tool named and drops every other, the clock and <see cref="ExecuteSkill"/> included (F30: a minion
+    /// gets one task and one tool, so its prompt lists exactly what it may call). Before the engine's first turn.
+    /// </summary>
+    public void KeepOnlyTool(string name)
+    {
+        foreach (var other in _registry.Live.Where(t => !string.Equals(t.Name, name, StringComparison.Ordinal)).ToList())
+            _registry.Remove(other);
+    }
+
+    /// <summary>
     /// Register a tool discovered from an external source (e.g., Rider MCP).
     /// Currently logs the discovery; full invocation requires MCP protocol implementation.
     /// Returns true if not already registered, false if duplicate.

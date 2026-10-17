@@ -335,6 +335,9 @@ public static partial class AgentHost
         // for a mode, how it routes) frames everything after it
         AddBuiltIn(agent, composite, SkillFiles.Principles);
         string personalityFile = PersonalityFile(agent, personality, level);
+        // A minion's base (puls-minion.md) frames its role (F30): what every minion is, then what this one does
+        if (level == SkillLevel.Minion && personality is not null && Personalities.MinionBaseOf(personality) is { } minionBase)
+            AddBuiltIn(agent, composite, Personalities.FileName(minionBase, SkillLevel.Minion));
         if (personality is null && level != SkillLevel.Agent && ReadSkillFile(agent, personalityFile) is { } mode)
             composite.AddProvider(MarkdownSkillProvider.FromText(Personalities.ModeParts(mode.Text).Voice));
         else
@@ -409,12 +412,20 @@ public static partial class AgentHost
     /// </summary>
     internal static string PersonalityFile(AgentOptions agent, string? personality, SkillLevel level)
     {
-        if (string.IsNullOrEmpty(personality)) return Personalities.FileName(Personalities.DefaultVoice, SkillLevel.Agent);
+        if (string.IsNullOrEmpty(personality))
+        {
+            // A minion with no role would be the coding agent's voice with one tool (F30): it always opens with a role.
+            if (level == SkillLevel.Minion)
+                throw new PersonalityException(MessageText.Format(ErrorMessage.MinionNeedsRole,
+                    new { Available = string.Join(", ", EnabledPersonalities(agent, level)) }));
+            return Personalities.FileName(Personalities.DefaultVoice, SkillLevel.Agent);
+        }
         if (!Personalities.IsValidName(personality))
             throw new PersonalityException(MessageText.Format(ErrorMessage.PersonalityNameInvalid, new { Name = personality }));
         string file = Personalities.FileName(personality, level);
-        // A personality that's off (F29) is refused as an unknown one: the list names what this instance may use.
-        bool offered = level != SkillLevel.Agent || Personalities.Available(SkillLevel.Agent).Contains(personality);
+        // A personality that's off (F29) is refused as an unknown one: the list names what this instance may use. At level
+        // 0 only a mode is a name (CL9); at level 2 only a role minions.json lists (F30), never the base.
+        bool offered = level == SkillLevel.Specialist || Personalities.Available(level).Contains(personality);
         if (!offered || !IsEnabled(agent, personality) || ReadSkillFile(agent, file) is null)
             throw new PersonalityException(MessageText.Format(ErrorMessage.UnknownPersonality,
                 new { Name = personality, Available = string.Join(", ", EnabledPersonalities(agent, level)) }));

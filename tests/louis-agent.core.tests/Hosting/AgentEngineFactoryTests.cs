@@ -213,4 +213,34 @@ public class AgentEngineFactoryTests
     {
         Assert.That(Names(Factory().GetOrCreate([])), Is.EquivalentTo(new[] { "ExecuteSkill", "GetToday" }));
     }
+
+    [Test]
+    public void AMinionsEngine_HasOneTool_TheRoleOnTheBase_NoGuides_AndItsOwnKey()
+    {
+        // F30 step 4 (Louis: a specialist hands a minion one task and one of its own tools): the engine is the role on
+        // the minion base with that one tool, no toolset guide and no router, so a 4B model reads a prompt it can follow.
+        var factory = Factory();
+
+        var minion = factory.GetOrCreate(["web"], "puls-minion-web-price-lookup", SkillLevel.Minion, tool: "FetchUrl");
+
+        Assert.That(Names(minion), Is.EqualTo(new[] { "FetchUrl" }), "one tool: no clock, no ExecuteSkill, no WebSearch");
+        Assert.That(minion.SkillDocumentation, Does.Contain("# Puls minion: Web price lookup").And.Contain("You are a **minion**")
+            .And.Not.Contain("# Web Skills").And.Not.Contain("# Louis Agent - Default Instructions"));
+        Assert.That(factory.Profiles, Is.EqualTo(new[] { "web|puls-minion-web-price-lookup|minion|tool:FetchUrl" }));
+        Assert.That(factory.GetOrCreate(["web"], "puls-minion-web-price-lookup", SkillLevel.Minion, tool: "FetchUrl"), Is.SameAs(minion));
+        Assert.That(factory.GetOrCreate(["web"], "puls-minion-web-price-lookup", SkillLevel.Minion, tool: "ReadRenderedPage"), Is.Not.SameAs(minion),
+            "the tool is part of the key");
+    }
+
+    [Test]
+    public void AToolTheToolsetsDontHave_IsRefused_BeforeAnythingIsBuilt()
+    {
+        var factory = Factory();
+
+        var ex = Assert.Throws<ToolsetException>(() =>
+            factory.GetOrCreate(["web"], "puls-minion-web-price-lookup", SkillLevel.Minion, tool: "ReadWorkspaceFile"))!;
+
+        Assert.That(ex.Message, Does.Contain("ReadWorkspaceFile").And.Contain("web"));
+        Assert.That(factory.Profiles, Is.Empty);
+    }
 }

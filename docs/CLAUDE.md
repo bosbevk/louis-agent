@@ -218,7 +218,9 @@ rebuild the images that use core.
    Puls's *Taal* menu offers it as soon as `GET /personalities` does. Each product routes only what it does.
 2. **A role** (level 1) is `specialists/{name}.md`: a specialist's function and how it reports to the agent that called
    it. A parent names it in `StartSubSession`; the specialists guide (`toolsets/specialists.md`) says which goes with
-   which toolsets. **A minion's function** (level 2, F30) goes in `minions/`.
+   which toolsets. **A minion's function** (level 2, F30) is `minions/{product}-minion-{function}.md`, loaded after its
+   product's base (`minions/{product}-minion.md`: what every minion is), and a line in `minions/minions.json` naming the
+   tools the role accepts; a role the file doesn't list, or the base, is no role.
 3. Names are lowercase letters, digits and dashes (a mode adds one `/`), used at one level only; a name from another
    level is refused as unknown. `PERSONALITIES_ENABLED` turns on only the listed ones, so a test can run Puls and the
    one role under test.

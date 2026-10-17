@@ -62,6 +62,15 @@ keep minions only if real prices hold and the cost drops.
 
 ## What the build changed
 
+- **Step 4 (2026-10-17):** a minion's engine is the principles, its product's base (`minions/puls-minion.md`), its role
+  and one tool, no toolset guide and no router; `minions.json` lists the roles and the tools each takes, and only a
+  listed role is a name at level 2 (the base isn't; a minion with no role is refused). `POST /sessions` takes `tool` at
+  depth 2 only, with `parent`: the API finds the parent session on its own instance and refuses a tool the parent
+  lacks, one the role doesn't take, or a delegation or self-extension tool, before anything is built. The minion's model
+  is the caller's `llm` until step 5's `MINION_LLMS` maps it per role. Louis, reading the price role: the answer gets a
+  `per_kg` line (the page's per-kilogram price, or worked out from a stated pack weight with the working shown) and a
+  `location` line (the branch or delivery area the page's price holds for), since prices differ by area.
+
 - **A profile takes nothing from the instance but its API key** (step 1). The first idea was to fall back to the
   process environment for whatever a profile file leaves out; that would hand the local model Claude's
   `LLM_THINKING`. Only `LLM_API_KEY`, `ANTHROPIC_API_KEY` and `ANTHROPIC_WORKSPACE_ID` fall back (they belong in

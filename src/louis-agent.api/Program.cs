@@ -141,7 +141,7 @@ app.MapGet("/llm-profiles", (AgentEngineFactory engines) => Results.Json(new
 
 // The body is optional: { "toolsets": [...] } chooses the session's tools for its lifetime (F5; none sent: skills only);
 // "personality" its personality (F21; none sent: the default voice, CL9); "llm" the LLM profile it runs on (F30; none sent: this
-// instance's model);
+// instance's model); "tool" a minion's one tool (F30; depth 2 only, with "parent" the specialist's session and turn);
 // { "task", "run", "service" } tag every usage record of the session (the orchestrator sends them for a fix); "depth" is
 // set by an agent opening a sub-session.
 app.MapPost("/sessions", (CreateSessionRequest? request, AgentSessions sessions) =>
@@ -159,7 +159,7 @@ app.MapPost("/sessions", (CreateSessionRequest? request, AgentSessions sessions)
     {
         session = sessions.Create(request?.Toolsets,
             request is null ? null : new UsageTags(request.Task, request.Run, request.Service, request.Parent), request?.Depth ?? 0,
-            request?.Personality, request?.Place(), request?.Llm);
+            request?.Personality, request?.Place(), request?.Llm, request?.Tool);
     }
     catch (Exception ex) when (ex is ToolsetException or PersonalityException or SessionLlmException)
     {
@@ -169,8 +169,8 @@ app.MapPost("/sessions", (CreateSessionRequest? request, AgentSessions sessions)
     return Results.Json(new
     {
         session_id = session.Id, created_at = session.CreatedAt, toolsets = session.Toolsets, depth = session.Depth,
-        personality = session.Personality, llm = session.Llm, task = session.Tags.Task, run = session.Tags.Run, service = session.Tags.Service,
-        parent = session.Tags.Parent,
+        personality = session.Personality, llm = session.Llm, tool = session.Tool, task = session.Tags.Task, run = session.Tags.Run,
+        service = session.Tags.Service, parent = session.Tags.Parent,
     }, statusCode: StatusCodes.Status201Created);
 });
 
@@ -180,7 +180,7 @@ app.MapGet("/sessions/{id}", (string id, AgentSessions sessions) =>
         ? Results.Json(new
         {
             session_id = session.Id, created_at = session.CreatedAt, last_activity = session.LastActivity, busy = session.IsBusy,
-            toolsets = session.Toolsets, depth = session.Depth, personality = session.Personality, llm = session.Llm,
+            toolsets = session.Toolsets, depth = session.Depth, personality = session.Personality, llm = session.Llm, tool = session.Tool,
             tools = session.Engine.Tools.Count,
             task = session.Tags.Task, run = session.Tags.Run, service = session.Tags.Service,
             // F26: the specialists the chat keeps open, by handle (never the peer's session id).
@@ -360,7 +360,8 @@ internal sealed record SendMessageRequest(string? Message, List<AttachmentReques
 internal sealed record CreateSessionRequest(
     string? Task, string? Run, string? Service, List<string>? Toolsets = null, int Depth = 0, string? Parent = null,
     string? Personality = null, string? Location = null,
-    [property: System.Text.Json.Serialization.JsonPropertyName("time_zone")] string? TimeZone = null, string? Llm = null)
+    [property: System.Text.Json.Serialization.JsonPropertyName("time_zone")] string? TimeZone = null, string? Llm = null,
+    string? Tool = null)
 {
     internal const int MaxTagLength = 200;
 
