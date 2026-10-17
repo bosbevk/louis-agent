@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Providers;
+using LouisAgent.Core.Skills.Roles;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Usage;
 using LouisAgent.Orchestrator;
@@ -209,7 +210,7 @@ internal static class OrchestratorSkills
 
         var composite = new CompositeSkillProvider();
         composite.AddProvider(MarkdownSkillProvider.FromText(SkillFileSource.ReadEmbedded(SkillFiles.Principles)!));
-        composite.AddProvider(MarkdownSkillProvider.FromText(SkillFileSource.ReadEmbedded(Personalities.FileName(Mode, SkillLevel.Agent))!));
+        composite.AddProvider(MarkdownSkillProvider.FromText(SkillFileSource.ReadEmbedded(RoleCatalog.FileName(Mode, RoleLevel.Agent))!));
 
         string serviceFile = Path.Combine(serviceDirectory, "service.md");
         if (File.Exists(serviceFile)) composite.AddProvider(new MarkdownSkillProvider(serviceFile, includeDefaultInstructions: false));

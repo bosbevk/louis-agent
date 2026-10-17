@@ -12,6 +12,7 @@ using Microsoft.Extensions.AI;
 using LouisAgent.Api.Endpoints;
 using LouisAgent.Core.Pricing;
 using LouisAgent.Core.Skills;
+using LouisAgent.Core.Skills.Roles;
 using LouisAgent.Core.Tools.Workspace;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Guardrails;
@@ -126,7 +127,7 @@ if (benchmarkStore is not null)
         }
     });
 app.MapAdmin(benchmarks, new BenchmarkRunner(benchmarks, host.Engine.WorkspaceRoot, admin.BenchmarkApiUrl), admin.AdminKey, benchmarkStore, recorder,
-    check => BenchmarkSettings.Of(check, host.Llm.Provider, host.Llm.Model, host.Agent.PersonalitiesEnabled), host.Engine.WorkspaceRoot);
+    check => BenchmarkSettings.Of(check, host.Llm.Provider, host.Llm.Model, host.Agent.RolesEnabled), host.Engine.WorkspaceRoot);
 
 // The toolsets a session can load (F5-S3): names, what each is for and whether this instance has its settings. Never
 // the tool definitions, so a general agent can choose without loading them.
@@ -148,9 +149,9 @@ app.MapGet("/model", () => Results.Json(new { provider = host.Llm.Provider, mode
 app.MapGet("/personalities", (AgentEngineFactory engines) => Results.Json(new
 {
     @default = engines.DefaultVoice,
-    agent = engines.AvailablePersonalities(SkillLevel.Agent),
-    specialists = engines.AvailablePersonalities(SkillLevel.Specialist),
-    minions = engines.AvailablePersonalities(SkillLevel.Minion),
+    agent = engines.AvailableRoles(RoleLevel.Agent),
+    specialists = engines.AvailableRoles(RoleLevel.Specialist),
+    minions = engines.AvailableRoles(RoleLevel.Minion),
 }));
 
 // The LLM profiles a session can name besides this instance's model (F30): null is the instance's own.
@@ -182,7 +183,7 @@ app.MapPost("/sessions", (CreateSessionRequest? request, AgentSessions sessions)
             request is null ? null : new UsageTags(request.Task, request.Run, request.Service, request.Parent), request?.Depth ?? 0,
             request?.Personality, request?.Place(), request?.Llm, request?.Tool);
     }
-    catch (Exception ex) when (ex is ToolsetException or PersonalityException or SessionLlmException)
+    catch (Exception ex) when (ex is ToolsetException or RoleException or SessionLlmException)
     {
         return Results.Json(Error("invalid_request_error", ex.Message), statusCode: StatusCodes.Status400BadRequest);
     }

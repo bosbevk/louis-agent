@@ -4,6 +4,7 @@ using LouisAgent.Core.Sessions;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Skills;
+using LouisAgent.Core.Skills.Roles;
 using LouisAgent.Core.Tools.Agents;
 using LouisAgent.Core.Tools.Clock;
 using LouisAgent.Core.Usage;
@@ -142,7 +143,7 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
     /// from that level's folder, and a sub-session gets no router (default.md): its toolsets were chosen for it and it
     /// can't delegate (F21). Throws <see cref="ToolsetException"/> for an unknown or unavailable
     /// toolset, a depth outside 0..<see cref="MaxDepth"/>, or a sub-session asking for <see cref="SpecialistsToolset"/>, and
-    /// <see cref="Core.Skills.PersonalityException"/> for an unknown personality, and <see cref="SessionLlmException"/> for an
+    /// <see cref="Core.Skills.Roles.RoleException"/> for an unknown personality, and <see cref="SessionLlmException"/> for an
     /// LLM profile this instance doesn't offer (<paramref name="llm"/>, F30; null: its own model), before anything is created.
     /// A minion (depth <see cref="MinionDepth"/>, F30) names its one <paramref name="tool"/>, which must be its parent
     /// session's (<paramref name="tags"/>' parent, found here: minions run on their specialist's own instance) and never
@@ -164,7 +165,7 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
             : toolsets ?? DefaultToolsets);
         // A role's own toolsets (F33: the cook's `shops?`, from its file's header) come with it, beside what its parent
         // passed; then every name, optional or not, is held to the same rules.
-        names = ToolsetCatalog.Normalise(names.Concat(Personalities.ToolsetsOf(personality, (SkillLevel)depth)));
+        names = ToolsetCatalog.Normalise(names.Concat(RoleCatalog.ToolsetsOf(personality, (RoleLevel)depth)));
         var plain = names.Select(ToolsetCatalog.NameOf).ToList();
         if (depth > 0 && plain.Contains(SpecialistsToolset))
             throw new ToolsetException(MessageText.Format(ErrorMessage.SubSessionCannotDelegate, new { Toolset = SpecialistsToolset }));
@@ -177,7 +178,7 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
         if (string.IsNullOrWhiteSpace(llm)) llm = null;
         // What the session loads: an optional toolset this instance lacks is left out, and the session says so.
         names = ToolsetCatalog.Resolve(names, engines.Context).Select(t => t.Name).ToList();
-        var engine = engines.GetOrCreate(names, personality, (SkillLevel)depth, llm, tool);
+        var engine = engines.GetOrCreate(names, personality, (RoleLevel)depth, llm, tool);
 
         DropIdle(DateTimeOffset.UtcNow);
 

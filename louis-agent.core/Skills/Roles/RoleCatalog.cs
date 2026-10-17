@@ -1,17 +1,17 @@
-namespace LouisAgent.Core.Skills;
+namespace LouisAgent.Core.Skills.Roles;
 
 using System.Text.RegularExpressions;
 
 /// <summary>
-/// Personalities a session can choose (F21), in the folder of the level that reads them (CL8, ADR 0017):
+/// The roles a session can choose (F21), in the folder of the level that reads them (CL8, ADR 0017):
 /// <c>agent/{name}.md</c> (level 0, a voice), <c>specialists/{name}.md</c> (level 1, a role),
 /// <c>minions/{name}.md</c> (level 2, F30), under core's <c>Prompts/</c> and read only from the assembly (CL8
-/// step 4). At level 0 a personality is a mode (CL9, ADR 0019): one file, its voice then its routing, in a folder per
+/// step 4). At level 0 a role is a mode (CL9, ADR 0019): one file, its voice then its routing, in a folder per
 /// product (<c>agent/puls/voice-af.md</c>), named <c>{product}/{mode}</c>; <see cref="DefaultVoice"/> is the mode of a
 /// session that names none. A name is lowercase letters, digits and dashes, with one <c>/</c> between a product and its
 /// mode, so it never reaches outside its folder.
 /// </summary>
-public static partial class Personalities
+public static partial class RoleCatalog
 {
     /// <summary>Level 0's folder, under the skills folder: the voices of the agent the user talks to.</summary>
     public const string AgentFolder = "agent";
@@ -37,38 +37,38 @@ public static partial class Personalities
     /// <summary>Whether <paramref name="name"/> is a minion base (<c>puls-minion</c>), which is no role a specialist can name.</summary>
     public static bool IsMinionBase(string name) => MinionBase().IsMatch(name);
 
-    /// <summary>The folder, under the skills folder, of <paramref name="level"/>'s personalities.</summary>
-    public static string FolderOf(SkillLevel level) => level switch
+    /// <summary>The folder, under the skills folder, of <paramref name="level"/>'s roles.</summary>
+    public static string FolderOf(RoleLevel level) => level switch
     {
-        SkillLevel.Agent => AgentFolder,
-        SkillLevel.Specialist => SpecialistsFolder,
-        SkillLevel.Minion => MinionsFolder,
+        RoleLevel.Agent => AgentFolder,
+        RoleLevel.Specialist => SpecialistsFolder,
+        RoleLevel.Minion => MinionsFolder,
         _ => throw new ArgumentOutOfRangeException(nameof(level), level, null),
     };
 
-    /// <summary>Whether <paramref name="name"/> can name a personality (and so can be turned into a path safely).</summary>
+    /// <summary>Whether <paramref name="name"/> can name a role (and so can be turned into a path safely).</summary>
     public static bool IsValidName(string? name) => name is { Length: > 0 and <= MaxNameLength } && NamePattern().IsMatch(name);
 
-    /// <summary>The skill file of a named personality at <paramref name="level"/>, relative to the skills folder.</summary>
-    public static string FileName(string name, SkillLevel level) => $"{FolderOf(level)}/{name}.md";
+    /// <summary>The skill file of a named role at <paramref name="level"/>, relative to the skills folder.</summary>
+    public static string FileName(string name, RoleLevel level) => $"{FolderOf(level)}/{name}.md";
 
     /// <summary>
     /// The toolsets a role always loads (F33), from its file's header (<see cref="RoleHeader"/>): none for a role without
     /// one, or a name that isn't a built-in role.
     /// </summary>
-    public static IReadOnlyList<string> ToolsetsOf(string? name, SkillLevel level) =>
+    public static IReadOnlyList<string> ToolsetsOf(string? name, RoleLevel level) =>
         IsValidName(name) && SkillFileSource.ReadEmbedded(FileName(name!, level)) is { } text ? RoleHeader.Split(text).Toolsets : [];
 
     /// <summary>
-    /// The named personalities at <paramref name="level"/>, all built in (CL8 step 4), sorted: at level 0 the modes,
+    /// The named roles at <paramref name="level"/>, all built in (CL8 step 4), sorted: at level 0 the modes,
     /// <c>agent/{product}/{mode}.md</c> (every product folder but the function skills'); at level 1 the roles; at level 2
     /// the minion roles, never a base (F30: <c>puls-minion</c> frames every minion, it is no role itself).
     /// </summary>
-    public static IReadOnlyList<string> Available(SkillLevel level) =>
-        (level == SkillLevel.Agent ? Modes() : SkillFileSource.Files(FolderOf(level)).Where(f => f.EndsWith(".md", StringComparison.Ordinal))
+    public static IReadOnlyList<string> Available(RoleLevel level) =>
+        (level == RoleLevel.Agent ? Modes() : SkillFileSource.Files(FolderOf(level)).Where(f => f.EndsWith(".md", StringComparison.Ordinal))
             .Select(f => f[..^".md".Length]))
         .Where(IsValidName)
-        .Where(n => level != SkillLevel.Minion || !IsMinionBase(n))
+        .Where(n => level != RoleLevel.Minion || !IsMinionBase(n))
         .Order(StringComparer.Ordinal)
         .ToList();
 

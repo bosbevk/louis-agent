@@ -103,10 +103,10 @@ public enum ErrorMessage
     UnknownToolsets,
 
     [Description("'{Name}' isn't a personality name: use lowercase letters, digits and dashes, and one / between a product and its mode.")]
-    PersonalityNameInvalid,
+    RoleNameInvalid,
 
     [Description("Unknown personality '{Name}'. Available: {Available}.")]
-    UnknownPersonality,
+    UnknownRole,
 
     [Description("Toolset '{Name}' needs {Settings} to be set on this instance.")]
     ToolsetSettingsMissing,

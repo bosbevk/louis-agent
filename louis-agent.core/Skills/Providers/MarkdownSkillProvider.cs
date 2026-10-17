@@ -2,6 +2,7 @@ namespace LouisAgent.Core.Skills.Providers;
 
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Skills;
+using LouisAgent.Core.Skills.Roles;
 using LouisAgent.Core.Messages;
 using Microsoft.Extensions.Logging;
 
@@ -33,8 +34,8 @@ public class MarkdownSkillProvider : ISkillProvider
         _skills = MarkdownSkillLoader.Load(filePath);
 
         // Combine default instructions with chosen skillset: the default mode's routing, built in (CL8, CL9)
-        string? defaultMode = includeDefaultInstructions ? SkillFileSource.ReadEmbedded(Personalities.FileName(Personalities.DefaultVoice, SkillLevel.Agent)) : null;
-        string defaultDocs = defaultMode is null ? "" : Personalities.ModeParts(defaultMode).Routing;
+        string? defaultMode = includeDefaultInstructions ? SkillFileSource.ReadEmbedded(RoleCatalog.FileName(RoleCatalog.DefaultVoice, RoleLevel.Agent)) : null;
+        string defaultDocs = defaultMode is null ? "" : RoleCatalog.ModeParts(defaultMode).Routing;
 
         if (includeDefaultInstructions && string.IsNullOrEmpty(defaultDocs))
         {

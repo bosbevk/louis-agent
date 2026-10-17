@@ -1,3 +1,4 @@
+using LouisAgent.Core.Skills.Roles;
 namespace LouisAgent.Core.Skills;
 
 /// <summary>The skill files core knows by name, by their path under core's Prompts/ (CL8: in the folder of the level that reads them).</summary>
@@ -19,7 +20,7 @@ internal static class SkillFiles
     internal const string ToolsetsFolder = "toolsets";
 
     /// <summary>The folder of the function skills: procedures ExecuteSkill runs, chosen by AGENT_FUNCTION (level 0's).</summary>
-    internal const string FunctionsFolder = Personalities.AgentFolder + "/functions";
+    internal const string FunctionsFolder = RoleCatalog.AgentFolder + "/functions";
 
     /// <summary>A toolset guide's file: <c>toolsets/{name}.md</c>.</summary>
     internal static string Guide(string name) => $"{ToolsetsFolder}/{name}.md";

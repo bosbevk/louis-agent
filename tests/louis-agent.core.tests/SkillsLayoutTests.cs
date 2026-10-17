@@ -1,5 +1,6 @@
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Skills;
+using LouisAgent.Core.Skills.Roles;
 
 namespace LouisAgent.Core.Tests;
 
@@ -10,10 +11,10 @@ public class SkillsLayoutTests
 {
     /// <summary>The folders under Prompts/ a built-in file may be in: a level's, its function skills', or the shared guides'.</summary>
     private static readonly string[] PromptFolders =
-        [Personalities.AgentFolder, SkillFiles.FunctionsFolder, Personalities.SpecialistsFolder, Personalities.MinionsFolder, SkillFiles.ToolsetsFolder,
+        [RoleCatalog.AgentFolder, SkillFiles.FunctionsFolder, RoleCatalog.SpecialistsFolder, RoleCatalog.MinionsFolder, SkillFiles.ToolsetsFolder,
          SkillFiles.SharedFolder];
 
-    private static readonly SkillLevel[] Levels = Enum.GetValues<SkillLevel>();
+    private static readonly RoleLevel[] Levels = Enum.GetValues<RoleLevel>();
 
     private static IEnumerable<string> FilesUnder(string root) =>
         Directory.Exists(root)
@@ -26,7 +27,7 @@ public class SkillsLayoutTests
         // agent/ holds a folder per product (CL9) beside functions/, and no file of its own.
         var misplaced = FilesUnder(TestPaths.Prompts).Select(f => (File: f, Folder: Path.GetDirectoryName(f)!.Replace('\\', '/')))
             .Where(f => (!PromptFolders.Contains(f.Folder) && !System.Text.RegularExpressions.Regex.IsMatch(f.Folder, "^agent/[a-z0-9-]+$"))
-                || f.Folder == Personalities.AgentFolder)
+                || f.Folder == RoleCatalog.AgentFolder)
             .Select(f => f.File);
 
         Assert.That(misplaced, Is.Empty, "Prompts/ holds agent/{product}/, agent/functions/, specialists/, minions/ and toolsets/ only");
@@ -42,11 +43,11 @@ public class SkillsLayoutTests
     public void ALanguageFile_IsOnlyItsVoice_AndItsProductHasTheSharedPart()
     {
         // CL9 step 6: {product}/voice-{xx}.md is how the product talks in one language; {product}/voice.md holds the rest.
-        foreach (string mode in Personalities.Available(SkillLevel.Agent).Where(m => Personalities.LanguageOf(m) is not null))
+        foreach (string mode in RoleCatalog.Available(RoleLevel.Agent).Where(m => RoleCatalog.LanguageOf(m) is not null))
         {
-            string text = SkillFileSource.ReadEmbedded(Personalities.FileName(mode, SkillLevel.Agent))!;
-            Assert.That(Personalities.ModeParts(text).Routing, Is.Empty, $"{mode} has no routing of its own");
-            Assert.That(SkillFileSource.ReadEmbedded(Personalities.FileName(Personalities.SharedOf(mode), SkillLevel.Agent)), Is.Not.Null,
+            string text = SkillFileSource.ReadEmbedded(RoleCatalog.FileName(mode, RoleLevel.Agent))!;
+            Assert.That(RoleCatalog.ModeParts(text).Routing, Is.Empty, $"{mode} has no routing of its own");
+            Assert.That(SkillFileSource.ReadEmbedded(RoleCatalog.FileName(RoleCatalog.SharedOf(mode), RoleLevel.Agent)), Is.Not.Null,
                 $"{mode}'s product has its shared voice.md");
         }
     }
@@ -55,7 +56,7 @@ public class SkillsLayoutTests
     public void NoPersonality_IsInTwoLevels()
     {
         // A role name means one file, so PERSONALITIES_ENABLED names roles without a level.
-        var twice = Levels.SelectMany(Personalities.Available).GroupBy(n => n).Where(g => g.Count() > 1).Select(g => g.Key);
+        var twice = Levels.SelectMany(RoleCatalog.Available).GroupBy(n => n).Where(g => g.Count() > 1).Select(g => g.Key);
 
         Assert.That(twice, Is.Empty);
     }

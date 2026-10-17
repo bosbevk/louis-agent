@@ -1,4 +1,4 @@
-namespace LouisAgent.Core.Skills;
+namespace LouisAgent.Core.Skills.Roles;
 
 /// <summary>
 /// A role's own settings (F33 step 4; Louis: "we want the cook to have the tool always"), in a header at the top of its

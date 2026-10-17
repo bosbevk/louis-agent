@@ -4,6 +4,7 @@ using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Providers;
+using LouisAgent.Core.Skills.Roles;
 using LouisAgent.Core.Tools.DotNet;
 using LouisAgent.Core.Tools.Integrations.Paymo;
 
@@ -42,7 +43,7 @@ public class SkillFilesTests
     public void TheRouter_NamesEveryToolsetAndDescribesNoTools()
     {
         // The coding agent's routing (CL9): Puls's routes only what Puls does.
-        string doc = Personalities.ModeParts(SkillFileSource.ReadEmbedded(Personalities.FileName(Personalities.DefaultVoice, SkillLevel.Agent))!).Routing;
+        string doc = RoleCatalog.ModeParts(SkillFileSource.ReadEmbedded(RoleCatalog.FileName(RoleCatalog.DefaultVoice, RoleLevel.Agent))!).Routing;
 
         // Every toolset but minions (F30): a specialist's toolset, never a chat's, and the coding product has no minion roles.
         foreach (string toolset in ToolsetCatalog.All.Select(t => t.Name).Where(name => name != "minions"))
@@ -63,7 +64,7 @@ public class SkillFilesTests
     public void CodeReview_IsPartOfTheCodingAgentsMode()
     {
         // CL9 step 4: the placeholder code-review skills (they only echoed) go; how to review a change is in the mode.
-        string routing = Personalities.ModeParts(SkillFileSource.ReadEmbedded(Personalities.FileName(Personalities.DefaultVoice, SkillLevel.Agent))!).Routing;
+        string routing = RoleCatalog.ModeParts(SkillFileSource.ReadEmbedded(RoleCatalog.FileName(RoleCatalog.DefaultVoice, RoleLevel.Agent))!).Routing;
 
         Assert.That(SkillFileSource.ReadEmbedded(SkillFiles.Function("code-review")), Is.Null);
         Assert.That(routing, Does.Contain("Reviewing a change").And.Contain("`git`"));
