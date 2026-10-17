@@ -36,6 +36,9 @@ Thumbs.db
 *.log
 logs/
 
+# The benchmark store's data (F31: puls-mongo's data folder)
+data/
+
 # Secrets and local configuration (see config/.env.secrets.example)
 config/.env
 config/.env.secrets

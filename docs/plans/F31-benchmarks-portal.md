@@ -300,3 +300,7 @@ an ephemeral-Mongo test package.
   parses it to fixed counts (calls, hosts, role, answer); the same counts are asserted in C# against `TurnStream`
   today, against CL11's one reader later. A change to the stream changes the fixture, and both languages' tests fail
   until both readers follow.
+- **2026-10-17, step 5b (Louis: "next", on the step's note):** the store's root user is `MONGO_INITDB_ROOT_USERNAME`
+  and `MONGO_INITDB_ROOT_PASSWORD` in `.env.secrets`, read by `puls-mongo` itself, instead of `MONGO_ROOT_USER` and
+  `MONGO_ROOT_PASSWORD`: compose fills `${…}` only from `config/.env`. The restart test passed, so the host folder
+  stays.

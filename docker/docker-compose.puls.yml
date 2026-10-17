@@ -46,6 +46,7 @@ services:
       - ../logs/puls:/logs
     depends_on:
       - puls-agent
+      - puls-mongo
 
   # The specialist Puls delegates to: the same image; its one peer is itself, for the minions it hands pages to (F30).
   puls-agent:
@@ -76,3 +77,24 @@ services:
       - ${PULS_WORKSPACE:-../}:/workspace
       - ../Skills:/skills
       - ../logs/puls:/logs
+
+  # The benchmark store (F31): the admin portal's runs, recorded by puls from each check's output. Its data is a folder
+  # on the host (data/mongo, git-ignored), so it outlives the container and the image. Localhost only. The root user is
+  # MONGO_INITDB_ROOT_USERNAME and _PASSWORD in config/.env.secrets, read when the data folder is first created; puls
+  # reaches it at BENCHMARKS_MONGO_URL (the service name, puls-mongo). The server is MongoDB Community (SSPL): used as
+  # is, for Louis's own benchmark results, and part of no customer's instance.
+  puls-mongo:
+    image: mongo:8
+    container_name: puls_mongo
+    env_file:
+      - path: ../config/.env.secrets
+        required: false
+    ports:
+      - "127.0.0.1:${PULS_MONGO_PORT:-27017}:27017"
+    volumes:
+      - ../data/mongo:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 5

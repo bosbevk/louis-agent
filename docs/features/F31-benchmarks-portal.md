@@ -125,3 +125,10 @@ before it.
   (`BENCHMARKS_MONGO_URL`), plus `BENCHMARKS_MONGO_DATABASE` (`puls_benchmarks` by default) so the contract tests can
   use `puls_benchmarks_test` on the same server. `Program.cs`'s three reads go; nothing else changes: by hand on the
   rebuilt Puls, `GET /admin/benchmarks` is 401 without the key and 200 with it.
+- **Step 5b (2026-10-17): `puls-mongo`** in `docker/docker-compose.puls.yml` (`mongo:8`, `127.0.0.1:27017`, its data
+  on the host in `data/mongo`, git-ignored, a `mongosh` ping as its health check; `puls` starts after it). Its root
+  user is `MONGO_INITDB_ROOT_USERNAME` and `_PASSWORD` in `.env.secrets`, the image's own names, not the plan's
+  `MONGO_ROOT_USER`: compose fills `${…}` only from `config/.env`, so the container reads `.env.secrets` itself.
+  **The restart test passed on Louis's Windows host** (Docker Desktop, the host folder): a document written as root
+  read back after `restart puls-mongo` and after the stack's `down` and `up`, no errors in Mongo's log; an
+  unauthenticated read is refused. So the host folder stays and no named volume is needed.
