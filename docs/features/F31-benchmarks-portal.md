@@ -293,7 +293,11 @@ before it.
   the cook answered from page fetches and their own knowledge. All 8 conversations were routed right, both follow-ups
   went back to the same cook (*continued*), and the cook priced 0 of its 20 ingredients (`puls-only`'s cook-af priced
   11 of 11 from memory, which the check counts as priced: a scoring gap to look at). This is the first run that will
-  carry its reason on record (step 11c).
+  carry its reason on record (step 11c). **Its numbers come before the review of PR #55:** the cook's prompt
+  (`specialists/puls-cook.md`) then wrote a missing price as `unknown`, now `-`, and the scorer then took any link in
+  a row, now only a link to the price's own shop. So this run and the next aren't like for like: the next cook-check
+  run, with web search working (F32), is the baseline. The golden files aren't affected (they don't hold the
+  specialists' prompts).
   **Accuracy per mode** (Louis: "one that shows accuracy"): a third ring chart beside cost and tokens, the
   conversations routed right (green) and wrong (red) per mode with the share in its middle, and, where the check counts
   ingredients, the share priced under it.

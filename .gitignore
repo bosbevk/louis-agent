@@ -36,8 +36,8 @@ Thumbs.db
 *.log
 logs/
 
-# The benchmark store's data (F31: puls-mongo's data folder)
-data/
+# The benchmark store's data (F31: puls-mongo's data folder), at the root only: a folder named data elsewhere is code's
+/data/
 
 # Secrets and local configuration (see config/.env.secrets.example)
 config/.env

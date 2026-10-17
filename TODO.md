@@ -197,6 +197,10 @@ Design: [docs/specs/SESSION_ARCHITECTURE.md](docs/specs/SESSION_ARCHITECTURE.md)
             carried as a string to the specialist, so it arrives mangled; send it as base64 with its media type and
             read it with `DocumentText` (found in the docs review, 2026-10-14)
 - [ ] [F21 Personalities](docs/features/F21-personalities.md) — each session (and sub-session) names its personality; Puls speaks everyday South African Afrikaans ([plan](docs/plans/F21-personalities.md)). Built; open: Louis's corrections to the Afrikaans (the delegation check's `answers.md`).
+- [ ] **F31 follow-ups from the review of PR #55** (small, 2026-10-17): the orphan cleanup's time filter; a deadline
+      for a run, and a way to cancel one; the leaks the review found in the Benchmarks page; the dozen labels still in
+      Afrikaans in the admin portal (the checks' manuals, `HANDLEIDING.md`, among them); and the stale doc lines it
+      listed (the build review, `F31-benchmarks-portal-build-review.md` in the Claude project, at its bottom).
 - [ ] **Why a benchmark run behaved as it did** (to plan; F31 step 11c, split off when F31 finished, 2026-10-17):
       a note by a person on a run and on a conversation (*Tavily out of credits: no web search in this run*), kept
       in the benchmark store with when it was written, shown on the run's row and as a marker on its trend point;
