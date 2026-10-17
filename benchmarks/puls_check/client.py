@@ -22,6 +22,11 @@ class Client:
         data = json.dumps(body).encode() if body is not None else None
         return urllib.request.urlopen(urllib.request.Request(self.api + path, data=data, method=method, headers=headers), timeout=TIMEOUT)
 
+    def toolsets(self):
+        """The toolsets this instance can load (GET /toolsets: those whose settings are there)."""
+        with self._request("GET", "toolsets") as response:
+            return [t["name"] for t in json.loads(response.read())["toolsets"] if t.get("available")]
+
     def open_session(self, **body):
         """A new session; fields left None aren't sent, so the API's defaults hold. Returns its id."""
         with self._request("POST", "sessions", {k: v for k, v in body.items() if v is not None}) as response:

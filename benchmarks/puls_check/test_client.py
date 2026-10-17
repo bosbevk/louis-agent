@@ -33,6 +33,14 @@ class Puls(BaseHTTPRequestHandler):
             self.wfile.write(b'event: content_block_delta\ndata: {"delta":{"type":"text_delta","text":"Hallo"}}\n\n'
                              b'event: message_stop\ndata: {"type":"message_stop"}\n\n')
 
+    def do_GET(self):
+        Puls.seen.append((self.command, self.path, self.headers.get("x-api-key"), None))
+        payload = json.dumps({"toolsets": [{"name": "web", "available": True}, {"name": "paymo", "available": False}]}).encode()
+        self.send_response(200)
+        self.send_header("Content-Type", "application/json")
+        self.end_headers()
+        self.wfile.write(payload)
+
     def do_DELETE(self):
         Puls.seen.append((self.command, self.path, self.headers.get("x-api-key"), None))
         self.send_response(200)
@@ -66,6 +74,9 @@ class TheClient(unittest.TestCase):
     def test_a_field_left_none_isnt_sent(self):
         self.client.open_session(toolsets=["web"], location=None)
         self.assertEqual(Puls.seen[0][3], {"toolsets": ["web"]})
+
+    def test_the_toolsets_are_the_ones_this_instance_has(self):
+        self.assertEqual(self.client.toolsets(), ["web"])
 
 
 if __name__ == "__main__":

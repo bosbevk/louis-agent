@@ -13,10 +13,10 @@ public class BenchmarkCatalogTests
         Assert.That(new BenchmarkCatalog().Checks, Is.Empty);
 
     [Test]
-    public void ThePortalsChecks_AreTheStubAndTheCook_EachWithItsScript()
+    public void ThePortalsChecks_AreTheStubTheCookAndTheRouting_EachWithItsScript()
     {
-        // F31 steps 6c and 7b; the routing check joins in step 8.
-        Assert.That(BenchmarkCatalog.Default.Select(c => c.Id), Is.EqualTo(new[] { "stub", "cook" }));
+        // F31 steps 6c, 7b and 8.
+        Assert.That(BenchmarkCatalog.Default.Select(c => c.Id), Is.EqualTo(new[] { "stub", "cook", "routing" }));
         foreach (var check in BenchmarkCatalog.Default)
             Assert.That(File.Exists(Path.Combine(RepoRoot, check.Script)), check.Script);
     }

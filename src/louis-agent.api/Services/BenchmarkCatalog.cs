@@ -14,8 +14,11 @@ public sealed class BenchmarkCatalog(IReadOnlyList<BenchmarkCheck>? checks = nul
     /// <summary>The cook check (F25; F31): Puls alone against Puls with its cook, priced from the ledger. Spends money.</summary>
     public static readonly BenchmarkCheck Cook = new("cook", "Kokkontrole: Puls alleen teen Puls met die kok", "benchmarks/cook/run_check.py");
 
+    /// <summary>The routing check (F5, F29; F31): one agent with every toolset against Puls as built, twelve questions. Spends money.</summary>
+    public static readonly BenchmarkCheck Routing = new("routing", "Roeteringkontrole: een agent teen Puls soos gebou", "benchmarks/routing/run_check.py");
+
     /// <summary>The checks the portal offers.</summary>
-    public static readonly IReadOnlyList<BenchmarkCheck> Default = [Stub, Cook];
+    public static readonly IReadOnlyList<BenchmarkCheck> Default = [Stub, Cook, Routing];
 
     public IReadOnlyList<BenchmarkCheck> Checks { get; } = checks ?? [];
 }

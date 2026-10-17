@@ -195,3 +195,13 @@ before it.
   writer now sends events as ASCII JSON (every other character escaped, read back as it was) and replaces what a
   console can't show in a plain line; two tests first. Replayed again: 12 questions, 12 turns, 18,036 events, scores
   as designed.
+- **Step 8 (2026-10-17): the routing check** (`benchmarks/routing/run_check.py`; in the catalogue as `routing`,
+  *Roeteringkontrole*). The pre-CL10 delegation check on the harness: twelve questions, two of each kind, each in its
+  own session; `baseline` is every toolset the instance has (`GET /toolsets`, the client's new `toolsets()`) but the
+  delegating ones (`specialists`, and `minions`, which a chat can't hold), `delegated` is Puls as built. Only the cook
+  is on, so a meal is right with `puls-cook` and anything else when Puls answers itself; the baseline, which can't
+  delegate, is right unless it failed. 10 unittests (the expected role, both modes, the baseline's toolsets, errors).
+  A free replay against the stand-in API (every answer the recorded delegation): 24 questions and turns, 36,072
+  events, `delegated` 2 of 12 right (the two meals), as designed. On Louis's Puls the baseline would be `files, git,
+  dotnet, python, powershell, bash, web, paymo, devops, skills`: Paymo and DevOps are there because their keys are
+  set, as in the old check.
