@@ -304,3 +304,13 @@ an ephemeral-Mongo test package.
   and `MONGO_INITDB_ROOT_PASSWORD` in `.env.secrets`, read by `puls-mongo` itself, instead of `MONGO_ROOT_USER` and
   `MONGO_ROOT_PASSWORD`: compose fills `${…}` only from `config/.env`. The restart test passed, so the host folder
   stays.
+- **2026-10-17, after step 10 (Louis: "add a step to add a user manual for each, accessible from the check card,
+  displayed in a modal"): step 10b, a manual per check.** Each check keeps its manual beside its script,
+  `benchmarks/{check}/HANDLEIDING.md`, in Afrikaans like the rest of Puls: what the check asks and why, its modes, its
+  conversations, every score it reports and what makes it right or wrong, what a run costs (filled in from 11b's
+  paid run), how to read it in the explorer, and how to run it by hand. The API serves it from the catalogue, never
+  from a path the caller names (`GET /admin/benchmarks/{check}/manual`, 404 for a check without one; the list says
+  which have one). The check card gets a *Handleiding* button that opens it in a modal, rendered as markdown, closed
+  with Esc, a click outside or its ×. Tests first: the endpoint's path stays inside `benchmarks/` and every check in the
+  catalogue has a manual (C#); every score key a check's `score()` returns is named in its manual, so a new score
+  can't ship unexplained (Python). By hand in Chrome.
