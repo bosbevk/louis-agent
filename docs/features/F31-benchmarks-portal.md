@@ -1,6 +1,6 @@
 # F31 · Benchmarks in the admin portal: the checks run from the portal, their results kept in a store
 
-> **Status:** planned (2026-10-17), on `docs/F31-benchmarks-portal-plan` (the plan); the code after F30's build steps ·
+> **Status:** planned (2026-10-17), on `docs/F31-benchmarks-portal-plan` (the plan); the code after F30 (merged 2026-10-17) ·
 > **Milestone:** — · **Depends on:** F27 (the portal, its runner and SSE), F1–F3 (the ledger the costs come from),
 > F25 and F29 (the cook and the role gate the checks measure), F30's build steps (the minions the first measured run
 > compares)
@@ -68,15 +68,15 @@ before it.
 - **The checks:** a shared `benchmarks/puls_check/` module (sessions and SSE on the standard library, the protocol
   writer, scoring) and two checks rewritten for the current design: the cook check (`puls-only` with `web` against
   `puls-cook` with `specialists` and `web`) and the routing check (`baseline` with every toolset but `specialists`
-  against `delegated`). F30's prices check is written in F30's measured-run step on the same harness, since it needs
-  F30's `tool` and `llm` session fields.
+  against `delegated`). F30's prices check is written in F30's measured-run step on the same harness, with F30's `tool` and
+  `llm` session fields.
 - **F27 finishes here.** Its run and read stories are met by this feature's; its status becomes *done, superseded by
   F31* in the last step.
 
 ## Done when
 
 - **F31-S1:** a check runs from the page with live progress; a second run and a run without a store are refused.
-  *Met by:* recorder and runner tests; the endpoints by hand; a free run of a stub check.
+  *Met by:* recorder and runner tests; the endpoints by hand; a free run of the stub check (`benchmarks/stub/`, plan step 6c).
 - **F31-S2:** the run's documents, with the ledger's requests joined and roll-ups skipped; a failed run keeps what it
   recorded. *Met by:* the store contract (in-memory always, Mongo when configured), recorder and ledger-join tests.
 - **F31-S3 and S4:** the explorer and the trend from the store. *Met by:* the trend test; the pages by hand; one paid

@@ -3,8 +3,8 @@
 > Approved 2026-10-17 (Louis: MongoDB in Docker with its data on a host folder, `MongoDB.Driver`, the harness with the
 > cook and routing checks, charts in-house on Puls's theme; "F30 first", the plan in as a docs-only PR) · Feature:
 > [F31 Benchmarks in the admin portal](../features/F31-benchmarks-portal.md) · Branch: `docs/F31-benchmarks-portal-plan`
-> for this plan; `feature/F31-benchmarks-portal` off `main` for the steps, after F30's build steps (4–8) are merged;
-> F30's measured run (its step 9) then goes through the portal.
+> for this plan; `feature/F31-benchmarks-portal` off `main` for the steps (F30 merged 2026-10-17, PR #51); F30's
+> measured run (its step 9) then goes through the portal.
 
 ## Context
 
@@ -87,6 +87,11 @@ in-memory store and its test is honest.
 (Apache-2.0; a DbContext over the same driver, two packages, no migrations for Mongo) and MongoDB.Entities (MIT, one
 maintainer, lags the driver). No chart package (in-house SVG and CSS, as F27 decided); no ephemeral-Mongo test package
 (CI's service container).
+
+The server is another matter: `mongo:8` (MongoDB Community) is under the SSPL, which the reuse rule's MIT, Apache or BSD
+doesn't cover. It is used only as is, unmodified, in Louis's own stack, for Louis's own benchmark results: it is no
+part of a customer's instance and nothing ships it. A store that has to ship goes behind `IBenchmarkStore` with a
+server under a permitted licence.
 
 ### The page, laid out before it's built
 
@@ -219,15 +224,23 @@ One commit each, test first where behaviour changes; the review stop after each.
 | 2 | `IBenchmarkStore`, `InMemoryBenchmarkStore`, the abstract `BenchmarkStoreContract` (write, read back keyed and ordered, runs newest first, close orphans, delete) | The contract against the in-memory store, first |
 | 3 | `BenchmarkRecorder`: attaches to a `BenchmarkRun` (internals visible to the tests), folds events into upserts, closes documents on `Complete`, swallows and reports store errors (`store_error`, `ILogger`) | Drive a `BenchmarkRun` with `Add` and `Complete`, assert the store; a store that throws |
 | 4 | The ledger join: `UsageReport.Read` over the months spanned, the `Run` prefix, `sub_session` skipped, turn keys from session or parent, `requests` written, `UsageReport.Total` on the run | A temp ledger with own, specialist and roll-up rows; the roll-up must not double count |
-| 5 | Mongo: `MongoDB.Driver` in the API; `MongoBenchmarkStore` (indexes on first use); `AdminOptions`; `BENCHMARKS_MONGO_URL`, `MONGO_ROOT_USER`, `MONGO_ROOT_PASSWORD` in `.env.secrets.example` and SETUP; `puls-mongo` in the compose, `data/` ignored; CI's Mongo service; `CloseOrphans` at start-up | The contract against Mongo behind `Assume.That`; `AdminOptions` tests |
-| 6 | Endpoints and wiring: runs and `store` status in `GET /admin/benchmarks`; `GET runs/{id}`; `GET runs/{id}/turns/{key}/events`; `DELETE runs/{id}`; `POST` 503 without a store; `done` carries `stored`; the runner sets `BENCHMARK_RUN`; `Program.cs` builds options, store, recorder; `ApiUserText` members | The runner test for the variable; the endpoints by hand (curl) |
+| 5a | `AdminOptions.FromEnvironment()` (`AdminKey`, `BenchmarkApiUrl`, `BenchmarksMongoUrl`) in place of `Program.cs`'s ad hoc reads; nothing else changes | `AdminOptions` tests first |
+| 5b | `puls-mongo` in the compose (`../data/mongo:/data/db`, root user from `.env.secrets`), `data/` ignored; `BENCHMARKS_MONGO_URL`, `MONGO_ROOT_USER`, `MONGO_ROOT_PASSWORD` in `.env.secrets.example` and SETUP (both URLs). **The restart test, first:** write a document, `docker compose restart puls-mongo`, then `down` and `up`, and read it back on Louis's Windows host; if the host folder fails (file locks, permissions, slow fsync), a named volume instead, recorded under *Approved during the build* | Configuration only; the restart test by hand |
+| 5c | `MongoDB.Driver` in the API; `MongoBenchmarkStore` (indexes on first use); CI's Mongo service container | The contract against Mongo behind `Assume.That` (database `puls_benchmarks_test`), on Louis's machine and on CI |
+| 6a | Wiring: `Program.cs` builds the store and the recorder; the runner sets `BENCHMARK_RUN`; the recorder attaches on `POST`; `POST` 503 without a store; `done` carries `stored`; `CloseOrphans` at start-up; `ApiUserText` members | The runner test for the variable; a run by hand (curl) |
+| 6b | The read endpoints: runs and `store` status in `GET /admin/benchmarks`; `GET runs/{id}`; `GET runs/{id}/turns/{key}/events`; `DELETE runs/{id}` | By hand (curl), on 6c's run |
+| 6c | **The stub check:** `benchmarks/stub/run_check.py`, standard library only, prints a canned two-mode, two-conversation run in the protocol (with SSE events for the replay) and opens no session, so it costs nothing; in the catalogue as `stub` | An API test that its output parses with no line falling back to a log line (skips without `python3`); the free hand check after 6 |
 | 7 | Python: `benchmarks/puls_check/` (`client.py`: sessions and SSE on `urllib`; `protocol.py`: the `@` writer; `scoring.py`) and `benchmarks/cook/run_check.py` from `pre-cl10` minus its ledger code, plus `session`, `repeat` and the run tag from `BENCHMARK_RUN`; modes `puls-only` (`web`) and `puls-cook` (`specialists`, `web`) | `python3 -m unittest discover benchmarks` for the scoring, added to CI |
 | 8 | `benchmarks/routing/run_check.py`: the delegation check rewritten (`baseline`: every toolset but `specialists`; `delegated`: `specialists`, `web`; twelve questions; the expected role only for cooking); both checks in the catalogue | Its scoring's unittest; the catalogue test |
 | 9 | Web: the list page as laid out (the store banner, check cards with repeats and *Loop*, the live panel with its table, the open turn in `TurnView`, the folded log, the runs list from the store); finished turns from the store while live | By hand on the rebuilt stack with a stub check (free) |
 | 10 | Web: the explorer (crumbs, tiles counting up, modes side by side, cost bars in cascade, token donut, conversations and turns, replay from the stored events through `TurnStream.Apply`) | By hand (free, the stub check's run) |
-| 11 | The trend: `GET /admin/benchmarks/checks/{check}/trend` in C# over the store, the line on the card and in the explorer; then a **paid** run of the cook check from the page (Louis's go); *Finishing a feature*: the ADR (results in Mongo, recorded by the API from the harness's stdout protocol), CHANGELOG, GOAL skill 12, the API's and Puls's project docs; **F27 closed** (done, superseded by F31; its TODO line goes) | The trend test over the in-memory store; the paid run |
+| 11a | The trend: `GET /admin/benchmarks/checks/{check}/trend` in C# over the store, the line on the card and in the explorer | The trend test over the in-memory store first; by hand on stub runs |
+| 11b | A **paid** run of the cook check from the page (Louis's go), its numbers in the feature doc | The paid run |
+| 11c | *Finishing a feature*: the ADR (results in Mongo, recorded by the API from the harness's stdout protocol), CHANGELOG, GOAL skill 12, the API's and Puls's project docs; *Finishing a feature* step 5 rewritten (`docs/features/README.md`): a measured run is a run in the portal's store, linked from the feature doc, no longer a section of the frozen `BENCHMARKS.md`; **F27 closed** (done, superseded by F31; its TODO line goes) | Docs only; a link check |
 
-Steps 1–5 are pure C# and run on CI; 6 is the first integration; 7 and 8 need only 1; 9–11 need 6–8.
+Steps 1–5c are C# and configuration and run on CI; 6a–6c are the first integration; 7 and 8 need only 1; 9–11 need
+6–8. **Before step 7:** F30's short-quote false *Found* (a quote that is only a price, `R22.99`, matches any product at
+that price on the page) is fixed, as FX15 or as a step here (Louis's call), so it never reaches the shared scorer.
 
 ## Reused, not built
 
@@ -240,9 +253,12 @@ an ephemeral-Mongo test package.
 
 ## Risks to watch
 
-- **F30 is unmerged and behind `main`** (its branch is based on CL8's merge; a dry run shows eight files in conflict).
-  It is rebased and built first; this feature's harness never assumes its `tool` and `llm` session fields, and the
-  prices check is F30's.
+- **F30's minions are built but not in use** (merged 2026-10-17, PR #51): no prompt hands work to a minion, so the
+  cook check measures the cook as it is. The harness may send F30's `tool` and `llm` session fields; the prices check,
+  minions on and off, is F30's measured run on this harness.
+- **MongoDB's data on a Windows host folder** (Louis's choice) is a known trouble spot for Docker Desktop: file locks,
+  permissions, slow fsync. Step 5b tests a restart first; a named volume is the fallback.
+- **F30's short-quote match** must be fixed before step 7 (*Steps*), or a false *Found* reaches every check's score.
 - **The F26 attribution gap** (TODO, under F26): a continued sub-session's rows carry the first turn's `parent`, so a
   follow-up turn's specialist cost lands on turn 1. The recorder joins by what the ledger says; the feature doc
   notes it until F26's fix.
@@ -256,7 +272,7 @@ an ephemeral-Mongo test package.
   before the PR; `python3 -m unittest discover benchmarks` from step 7.
 - The Mongo contract test on Louis's machine with `BENCHMARKS_MONGO_URL` set (the stack's `puls-mongo` on 27017) and
   on CI through its service container.
-- Free hand checks with the stub check on the rebuilt Puls stack after steps 6, 9 and 10; one paid run in step 11.
+- Free hand checks with the stub check (6c) on the rebuilt Puls stack after steps 6c, 9 and 10; one paid run in 11b.
 - Golden files untouched (no tool, prompt or `ToolMessage` text changes).
 
 ## Concepts
