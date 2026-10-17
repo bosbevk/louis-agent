@@ -10,6 +10,7 @@ or fix doc (*What the build changed*), not here.
 
 | Plan | For | Approved | Notes |
 |---|---|---|---|
+| [F33-shop-catalogues.md](F33-shop-catalogues.md) | [F33 Shop catalogues](../features/F33-shop-catalogues.md) | 2026-10-17 | The guarded browser moved into `Tools/Web/Browsing`; `Tools/Shops` with `IShopCatalogue` and `Providers/CheckersCatalogue`, which reads Checkers' catalogue JSON through the page; a `shops` toolset off unless `SHOP_CATALOGUES` names the shop; the first plan with a namespace map |
 | [F32-self-hosted-web.md](F32-self-hosted-web.md) | [F32 Self-hosted web](../features/F32-self-hosted-web.md) | 2026-10-17 | SearXNG behind `IWebSearchProvider`, a headless Chrome behind `IPageRenderer` (PuppeteerSharp over CDP, every request held to `SsrfGuard`), both in the Puls stack on their own network; Tavily still selectable; MCP for the model its own feature |
 | [F31-benchmarks-portal.md](F31-benchmarks-portal.md) | [F31 Benchmarks in the admin portal](../features/F31-benchmarks-portal.md) | 2026-10-17 | The harness's stdout protocol recorded by the API into MongoDB (`puls-mongo`, data on a host folder; `MongoDB.Driver`); a store behind a contract test; the cook and routing checks rewritten; the screen laid out first, on Puls's theme; built after F30's build steps, before its measured run; closes F27 |
 | [CL10-clear-the-decks.md](CL10-clear-the-decks.md) | TODO: *Clear the decks* (cleanup) | 2026-10-17 | `samples/` and `BENCHMARKS.md` go; the admin portal stops being file-based (results will live in SQL Server `puls_benchmarks`, scripts in `benchmarks/`); roles named, not derived; history docs link at tag `pre-cl10`; before F30 step 4 |
@@ -53,6 +54,9 @@ or fix doc (*What the build changed*), not here.
   calls whom), an **architecture diagram** (a `flowchart`: the containers, hosts and services, and which step builds or
   changes each part) and a **communication diagram** (a `sequenceDiagram`: who calls whom, in order, for the feature's
   main case, with what each call carries). A plan approved without them gets them under *Approved during the build*.
+- **A namespace map, always** (Louis, 2026-10-17, F33: "include in the plan the namespaces, this must be a rule"), in the
+  *Design*: a table of every type the plan adds, moves or changes, with its folder, its namespace and the step that
+  does it (tests included), so the layout is decided before the code and `ArchitectureTests` holds no surprise.
 - **A lasting decision gets an ADR:** when a plan decides something later work must follow, its record goes in
   [docs/adr/](../adr/README.md) in the same PR; the plan keeps the steps, the ADR the why.
 - **Saved and committed before step 1**, on the feature's branch, so the plan is in the same PR as the work.

@@ -256,6 +256,10 @@ Design: [docs/specs/SESSION_ARCHITECTURE.md](docs/specs/SESSION_ARCHITECTURE.md)
 - [ ] **F32 follow-up: SearXNG's results** (from F32's run): filter them to the site asked for (Bing, often the one
       engine answering, ignores `site:`), and retry once without the time range when a freshness filter leaves no
       engine.
+- [ ] [F33 Shop catalogues](docs/features/F33-shop-catalogues.md) — a shop's products and exact prices read from its
+      own catalogue through the guarded browser, Checkers first (`Tools/Shops`, `Providers/CheckersCatalogue`); a
+      `shops` toolset with `FindProducts`, which the cook uses; off unless `SHOP_CATALOGUES` names the shop
+      ([plan](docs/plans/F33-shop-catalogues.md)). Planned 2026-10-17, after F32's run priced nothing.
 - [ ] **F32 follow-up: one egress proxy for the browser** (to plan; review of PR #56): `puls-browser` reaches the
       internet only through a proxy that resolves each name once, refuses internal addresses and connects to the address
       it checked, so DNS rebinding (Chrome resolving again after `RenderPolicy` checked) and a Web Worker's WebSocket
