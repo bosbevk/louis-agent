@@ -1,0 +1,120 @@
+using System.Text.Json;
+using LouisAgent.Api.Services.Benchmarks;
+using static LouisAgent.Api.Services.Benchmarks.BenchmarkProtocol;
+
+namespace LouisAgent.Api.Tests;
+
+// F31 step 1: a check prints plain lines for people and '@' + one JSON object for the portal. Parse turns one line into
+// a typed event, and anything it can't read (a plain line, bad JSON, an unknown event, a missing field) into a log
+// line, never an exception: a run never fails on its own output.
+public class BenchmarkProtocolTests
+{
+    [Test]
+    public void TheFirstLine_NamesTheProtocolVersion()
+    {
+        var parsed = Parse("""@{"event":"protocol","version":1}""");
+
+        Assert.That(parsed, Is.EqualTo(new ProtocolStarted(1)));
+    }
+
+    [Test]
+    public void AMode_CarriesItsRepeatToolsetsAndTheSessionFieldsItOpensWith()
+    {
+        var parsed = Parse("""@{"event":"mode","mode":"puls-cook","repeat":2,"toolsets":["specialists","web"],"personality":"puls/voice-af","llm":null,"conversations":4,"t":1760700000.5}""");
+
+        var mode = (ModeStarted)parsed;
+        Assert.That(mode.Mode, Is.EqualTo("puls-cook"));
+        Assert.That(mode.Repeat, Is.EqualTo(2));
+        Assert.That(mode.Toolsets, Is.EqualTo(new[] { "specialists", "web" }));
+        Assert.That(mode.Personality, Is.EqualTo("puls/voice-af"));
+        Assert.That(mode.Llm, Is.Null);
+        Assert.That(mode.Conversations, Is.EqualTo(4));
+        Assert.That(mode.At, Is.EqualTo(DateTimeOffset.FromUnixTimeMilliseconds(1_760_700_000_500)));
+    }
+
+    [Test]
+    public void AQuestion_CarriesItsSession()
+    {
+        var parsed = Parse("""@{"event":"question","mode":"puls-cook","repeat":1,"task":"bobotie","turn":2,"session":"sess_abc","text":"En vir 6?"}""");
+
+        Assert.That(parsed, Is.EqualTo(new QuestionAsked(new TurnKey("puls-cook", 1, "bobotie", 2), "sess_abc", "En vir 6?", null)));
+    }
+
+    [Test]
+    public void AnSseEvent_KeepsItsDataAsJson()
+    {
+        var parsed = (SseEvent)Parse("""@{"event":"sse","mode":"puls-only","repeat":1,"task":"bobotie","turn":1,"type":"content_block_delta","data":{"delta":{"type":"text_delta","text":"Hallo"}}}""");
+
+        Assert.That(parsed.Key, Is.EqualTo(new TurnKey("puls-only", 1, "bobotie", 1)));
+        Assert.That(parsed.Type, Is.EqualTo("content_block_delta"));
+        Assert.That(parsed.Data.GetProperty("delta").GetProperty("text").GetString(), Is.EqualTo("Hallo"));
+    }
+
+    [Test]
+    public void ATurn_CarriesItsSessionCallsHostsAndAnswer()
+    {
+        var turn = (TurnEnded)Parse("""@{"event":"turn","mode":"puls-cook","repeat":1,"task":"bobotie","turn":1,"session":"sess_abc","question":"Bobotie vir 4","answer":"Hier is…","role":"puls-cook","continued":null,"puls_calls":1,"specialist_calls":7,"hosts":["www.checkers.co.za"],"seconds":41.3,"error":null}""");
+
+        Assert.That(turn.Key, Is.EqualTo(new TurnKey("puls-cook", 1, "bobotie", 1)));
+        Assert.That(turn.Session, Is.EqualTo("sess_abc"));
+        Assert.That((turn.Question, turn.Answer, turn.Role, turn.Continued), Is.EqualTo(("Bobotie vir 4", "Hier is…", "puls-cook", (string?)null)));
+        Assert.That((turn.PulsCalls, turn.SpecialistCalls, turn.Seconds), Is.EqualTo((1, 7, 41.3)));
+        Assert.That(turn.Hosts, Is.EqualTo(new[] { "www.checkers.co.za" }));
+        Assert.That(turn.Error, Is.Null);
+    }
+
+    [Test]
+    public void AConversation_KeepsTheChecksScoresAsTheyCame()
+    {
+        // The scores are the check's own document: the cook check's are not the routing check's.
+        var conversation = (ConversationEnded)Parse("""@{"event":"conversation","mode":"puls-cook","repeat":1,"task":"bobotie","role":"puls-cook","scores":{"routed_right":true,"priced_ratio":0.75},"errors":0,"seconds":88.1}""");
+
+        Assert.That(conversation.Key, Is.EqualTo(new ConversationKey("puls-cook", 1, "bobotie")));
+        Assert.That(conversation.Role, Is.EqualTo("puls-cook"));
+        Assert.That(conversation.Scores.GetProperty("priced_ratio").GetDouble(), Is.EqualTo(0.75));
+        Assert.That((conversation.Errors, conversation.Seconds), Is.EqualTo((0, 88.1)));
+    }
+
+    [Test]
+    public void AModesEnd_IsAMarkerWithNoCost()
+    {
+        // Costs come from the ledger in C# (step 4), never from the script.
+        Assert.That(Parse("""@{"event":"mode_done","mode":"puls-cook","repeat":2,"cost":0.42}"""), Is.EqualTo(new ModeEnded("puls-cook", 2)));
+    }
+
+    [TestCase("puls-cook  bobotie  role=puls-cook routed=True")]
+    [TestCase("")]
+    [TestCase("@")]
+    [TestCase("@not json")]
+    [TestCase("@[1,2]")]
+    [TestCase("""@{"event":"mystery","mode":"x"}""")]
+    [TestCase("""@{"mode":"puls-cook"}""")]
+    [TestCase("""@{"event":"question","mode":"puls-cook","repeat":1,"task":"bobotie","turn":1,"text":"no session"}""")]
+    [TestCase("""@{"event":"turn","mode":"puls-cook","task":"bobotie","turn":1,"session":"s","question":"no repeat"}""")]
+    [TestCase("""@{"event":"mode","mode":"puls-cook","repeat":"two","toolsets":[]}""")]
+    [TestCase("""@{"event":"protocol"}""")]
+    public void AnythingElse_IsALogLine_NeverAnError(string line)
+    {
+        Assert.That(Parse(line), Is.EqualTo(new LogLine(line)));
+    }
+
+    [Test]
+    public void ALogLine_FromTheScriptsStderr_StaysAsItCame()
+    {
+        // The runner merges stderr into the lines: a Python traceback is a log line too.
+        const string traceback = "Traceback (most recent call last):";
+
+        Assert.That(Parse(traceback), Is.EqualTo(new LogLine(traceback)));
+    }
+
+    [Test]
+    public void TheSseDataAndTheScores_OutliveTheLine()
+    {
+        // The events are kept until the turn ends (step 3), long after their JSON document would have been disposed.
+        var sse = (SseEvent)Parse("""@{"event":"sse","mode":"m","repeat":1,"task":"t","turn":1,"type":"message_start","data":{"id":"msg_1"}}""");
+        GC.Collect();
+
+        Assert.That(sse.Data.ValueKind, Is.EqualTo(JsonValueKind.Object));
+        Assert.That(sse.Data.GetProperty("id").GetString(), Is.EqualTo("msg_1"));
+    }
+}

@@ -287,3 +287,10 @@ an ephemeral-Mongo test package.
   it's there and says so when it isn't.
 - **Evaluation as a product surface, trends before gates** (skills 12, 16): a run anyone can start and read, with
   its configuration recorded, is the step before a regression gate in CI.
+
+## Approved during the build
+
+- **2026-10-17, before step 1 (Louis: "Merge F30 first", "fx15"):** F30 merged (PR #51) before F31's code, and the
+  short-quote fix the plan calls "FX15" is [FX16](../fixes/FX16-short-quote-match.md) (FX15 was taken), merged
+  (PR #54) before step 1. So the harness may send F30's `tool` and `llm` session fields, and a scorer that checks a
+  price always passes `VerifyQuote` its product (FX16: a quote with words can still be another product's).

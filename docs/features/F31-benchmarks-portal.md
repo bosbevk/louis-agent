@@ -86,3 +86,14 @@ before it.
 
 ---
 [Features](README.md) · [Plan](../plans/F31-benchmarks-portal.md) · Previous: [F27 Admin portal](F27-admin-portal.md)
+
+## What the build changed
+
+- **Step 1 (2026-10-17): the protocol, version 1** (`Services/Benchmarks/BenchmarkProtocol.cs`). Beyond F27's events
+  and the plan's three changes, what the store needs is in the lines: `mode` carries `personality`, `llm` and its
+  number of `conversations`; `turn` carries the `answer`; `conversation` carries the check's own `scores` document
+  instead of each check's fields at the top level, so one parser reads every check. A line is a log line unless it is
+  a whole, known event: plain text, bad JSON, an unknown event, a missing or mistyped `mode`, `repeat`, `task`,
+  `turn` or `session`. The keys are records (`ConversationKey`, `TurnKey`), the store's keys in step 2. The new
+  folder `Services/Benchmarks/` holds F31's types; F27's `Benchmark*` files stay in `Services/` until a move is
+  worth its diff.
