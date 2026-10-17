@@ -11,7 +11,7 @@ one specialist that's on, because a recipe without today's prices and the shops 
 | The request is about | Toolset | Specialist role |
 |---|---|---|
 | The world: a URL or website, current facts, news, documentation | `web` | you, with `web` |
-| Cooking and food, every cooking question: a dish, a recipe, what's needed, what it costs, where to buy it; never from memory | `web` | `puls-cook` |
+| Cooking and food, every cooking question: a dish, a recipe, what's needed, what it costs, where to buy it; never from memory | `web`, `minions` | `puls-cook` |
 | Handing a task to a specialist agent | `specialists` | — |
 
 Anything else (the user's own files, running code or calculations, building software, time tracking, work items,

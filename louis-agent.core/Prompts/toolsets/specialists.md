@@ -21,7 +21,8 @@ its tools or its conversation.
   twice (its report, then your reply). Send one sub-session per task, not one per step, and choose the toolsets that let
   the specialist answer in the fewest calls: a script to count, a search before reading.
 - Choose the smallest set of toolsets that does the job; `GET /toolsets` on the peer lists them. Never `specialists`: a
-  sub-session can't open its own.
+  sub-session can't open its own. `minions` goes only where the roles table gives it: it lets the specialist hand single
+  pages to minions on the local model (F30), which is how the cook prices without reading every shop page itself.
 
 ## Briefing the specialist
 
@@ -68,7 +69,7 @@ toolsets you give it. Only a role that has passed its check is on:
 
 | Toolsets | `personality` | The specialist |
 |---|---|---|
-| `web`, for every cooking question (a dish, a recipe, "what do I need", even one you could answer from memory) | `puls-cook` | picks or takes the dish, prices the ingredients at the shops near the user and names the branches (put their town in the task); reports the recipe, the shopping list, where to buy and the total |
+| `web`, `minions`, for every cooking question (a dish, a recipe, "what do I need", even one you could answer from memory) | `puls-cook` | picks or takes the dish, prices the ingredients at the shops near the user and names the branches (put their town in the task); reports the recipe, the shopping list, where to buy and the total |
 
 ### Waiting for validation
 

@@ -79,6 +79,12 @@ keep minions only if real prices hold and the cost drops.
   checked at start-up; `stronger` takes the second model, once. Six minions per user turn, counted on Puls's turn tag so
   every specialist under it shares them; two minutes each. The minion's roll-up row (`minion:{role}`) lands in the
   specialist's turn, so the chat's roll-up carries it up. `toolsets/minions.md` is the guide; ADR 0021.
+- **Step 6 (2026-10-17):** `puls-agent`'s only peer is itself (`AGENT_PEERS: puls-agent=http://puls-agent:8080`) and
+  `MINION_LLMS` defaults to `*=ollama-puls>instance`; the price minion role is in `PERSONALITIES_ENABLED`'s default on
+  both containers. Puls's routing and the specialists guide give the cook `web`, `minions`; the cook's and researcher's
+  roles got a *Minions* section (one page, one of your tools, the seven-line answer; a price without a quote is
+  unknown) and their "can't delegate" line now says a minion isn't delegation. The quote check itself is step 7's
+  `VerifyQuote`; until step 8 the roles read the quote by eye.
 
 - **A profile takes nothing from the instance but its API key** (step 1). The first idea was to fall back to the
   process environment for whatever a profile file leaves out; that would hand the local model Claude's

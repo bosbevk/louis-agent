@@ -404,4 +404,24 @@ public class PersonalitiesTests
         Assert.That(SkillFileSource.ReadEmbedded("toolsets/specialists.md"), Does.Not.Contain("roles.json"));
     }
 
+    [Test]
+    public void TheCook_GetsMinions_AndTheCookAndResearcher_SayWhenOneIsWorthIt()
+    {
+        // F30 step 6: the cook hands shop pages to a price minion instead of reading them itself. Puls's routing and the
+        // specialists guide give the cook `minions` beside `web`, and the two roles that price things say how to use one.
+        string router = SkillFileSource.ReadEmbedded("agent/puls/voice.md")!;
+        string guide = SkillFileSource.ReadEmbedded("toolsets/specialists.md")!;
+        string cook = SkillFileSource.ReadEmbedded(Personalities.SpecialistsFolder + "/puls-cook.md")!;
+        string researcher = SkillFileSource.ReadEmbedded(Personalities.SpecialistsFolder + "/puls-researcher.md")!;
+
+        Assert.That(router.Split('\n').Single(r => r.StartsWith('|') && r.Contains("`puls-cook`")), Does.Contain("`web`, `minions`"));
+        Assert.That(guide.Split('\n').Single(r => r.StartsWith('|') && r.Contains("`puls-cook`")), Does.Contain("`web`").And.Contain("`minions`"));
+        foreach (string role in new[] { cook, researcher })
+        {
+            Assert.That(role, Does.Contain("## Minions").And.Contain("StartMinion").And.Contain("puls-minion-web-price-lookup"));
+            Assert.That(role, Does.Not.Contain("You can't delegate and can't ask questions"), "a minion isn't delegation, but the old line would forbid it");
+            Assert.That(role, Does.Contain("Use the fewest tool calls that answer the task"), "the cost rule stays");
+        }
+        Assert.That(SkillFileSource.ReadEmbedded(Personalities.SpecialistsFolder + "/puls-reader.md"), Does.Not.Contain("## Minions"), "only the roles that price things");
+    }
 }
