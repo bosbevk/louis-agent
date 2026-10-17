@@ -19,13 +19,16 @@ public class CheckersCatalogueTests
     public void TheSearch_IsTheAddressCheckersOwnSearchBoxSends() =>
         Assert.That(Search.AbsoluteUri, Is.EqualTo("https://www.checkers.co.za/search?Search=chicken%20pieces"));
 
+    // PR #58's review: a pack sold by weight showed its price per kg as its price, so the cook priced a 1–1.2 kg pack of
+    // thighs at R99.99 (run fc7f8ecfdc87). A pack's price is what its weight costs: the lightest to the heaviest pack.
     [Test]
-    public void AProductSoldByWeight_IsItsPricePerKg_WithItsWeightAndItsLink()
+    public void AProductSoldByWeight_IsWhatItsPacksCost_WithItsPricePerKgAndItsLink()
     {
         var chicken = CheckersCatalogue.Parse(Json, Html, Search, 10)[0];
 
         Assert.That(chicken.Name, Is.EqualTo("Farmer's Choice Fresh Chicken 16 Piece Drumsticks & Wings Per kg"));
-        Assert.That((chicken.Price, chicken.Currency, chicken.UnitPrice, chicken.UnitOfMeasure), Is.EqualTo((79.99m, "ZAR", (decimal?)79.99m, "kg")));
+        Assert.That((chicken.Price, chicken.PriceTo), Is.EqualTo(((decimal?)87.99m, (decimal?)103.99m)), "R79.99/kg × 1.1 kg to × 1.3 kg");
+        Assert.That((chicken.Currency, chicken.UnitPrice, chicken.UnitOfMeasure), Is.EqualTo(("ZAR", (decimal?)79.99m, "kg")));
         Assert.That(chicken.Size, Is.EqualTo("1.1–1.3 kg"));
         Assert.That(chicken.Url.ToString(), Is.EqualTo("https://www.checkers.co.za/product/farmers-choice-fresh-chicken-16-piece-drumsticks-and-wings-per-kg-10796287KG"));
     }
@@ -39,7 +42,8 @@ public class CheckersCatalogueTests
     {
         var chakalaka = CheckersCatalogue.Parse(Json, Html, Search, 10)[2];
 
-        Assert.That((chakalaka.Name, chakalaka.Price, chakalaka.UnitOfMeasure), Is.EqualTo(("KOO Mild & Spicy Chakalaka Can 410g", 25.99m, "each")));
+        Assert.That((chakalaka.Name, chakalaka.Price, chakalaka.PriceTo, chakalaka.UnitOfMeasure),
+            Is.EqualTo(("KOO Mild & Spicy Chakalaka Can 410g", (decimal?)25.99m, (decimal?)null, "each")));
         Assert.That((chakalaka.UnitPrice, chakalaka.Size), Is.EqualTo(((decimal?)null, (string?)null)), "the size is in its name");
         Assert.That(chakalaka.Url.AbsolutePath, Is.EqualTo("/product/koo-mild-and-spicy-chakalaka-can-410g-10133306EA"));
     }
@@ -58,6 +62,29 @@ public class CheckersCatalogueTests
     [Test]
     public void AProductOnSpecial_IsWhatItCostsNow() =>
         Assert.That(CheckersCatalogue.Parse(Two, "", Search, 10)[0].Price, Is.EqualTo(24.99m));
+
+    private const string Weighed = """
+        {"products":[
+          {"articleNumber":"3","name":"Beef Mince (300g - 500g)","unitOfMeasure":"KG","price":129.99,"discountedPrice":129.99,"currency":"ZAR","isStockAvailable":true,"weightOptions":["300-500"]},
+          {"articleNumber":"4","name":"Beef Mince Per kg","unitOfMeasure":"KG","price":129.99,"discountedPrice":129.99,"currency":"ZAR","isStockAvailable":true}
+        ],"totalCount":2}
+        """;
+
+    [Test]
+    public void APackOfMince_IsWhatItsWeightCosts_NotItsPricePerKg()
+    {
+        var mince = CheckersCatalogue.Parse(Weighed, "", Search, 10)[0];
+
+        Assert.That((mince.Price, mince.PriceTo, mince.UnitPrice), Is.EqualTo(((decimal?)39.00m, (decimal?)65.00m, (decimal?)129.99m)));
+    }
+
+    [Test]
+    public void AProductSoldByWeight_WithNoPackWeight_HasNoPackPrice_OnlyItsPricePerKg()
+    {
+        var mince = CheckersCatalogue.Parse(Weighed, "", Search, 10)[1];
+
+        Assert.That((mince.Price, mince.PriceTo, mince.UnitPrice, mince.Size), Is.EqualTo(((decimal?)null, (decimal?)null, (decimal?)129.99m, (string?)null)));
+    }
 
     [Test]
     public void AProductOutOfStock_IsLeftOut_ItCantBeBought() =>
@@ -120,6 +147,6 @@ public class CheckersCatalogueTests
         var products = await new CheckersCatalogue(new ChromeWebBrowser(new Uri(url!))).SearchAsync("chakalaka", 5);
 
         Assert.That(products, Is.Not.Empty);
-        Assert.That(products, Has.All.Matches<ShopProduct>(p => p.Price > 0 && p.Url.Host == "www.checkers.co.za"));
+        Assert.That(products, Has.All.Matches<ShopProduct>(p => (p.Price > 0 || p.UnitPrice > 0) && p.Url.Host == "www.checkers.co.za"));
     }
 }

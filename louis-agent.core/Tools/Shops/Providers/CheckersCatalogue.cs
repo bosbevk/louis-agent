@@ -52,8 +52,8 @@ public sealed partial class CheckersCatalogue(IWebBrowser browser) : IShopCatalo
 
     /// <summary>
     /// The catalogue's answer as products: in stock only (one that can't be bought isn't a price), at what it costs now
-    /// (a special's price when lower), per kg or each, each linked to its card's page, or to the search when the page
-    /// has no card for it.
+    /// (a special's price when lower), each or per kg, each linked to its card's page, or to the search when the page
+    /// has no card for it. Checkers prices what's sold by weight per kg; a pack's price is that times its weight.
     /// </summary>
     internal static IReadOnlyList<ShopProduct> Parse(string json, string html, Uri searchUri, int maxResults)
     {
@@ -72,12 +72,14 @@ public sealed partial class CheckersCatalogue(IWebBrowser browser) : IShopCatalo
             string unit = p.TryGetProperty("unitOfMeasure", out var u) ? u.GetString() ?? "" : "";
             bool byWeight = unit.Equals("KG", StringComparison.OrdinalIgnoreCase);
             string article = p.TryGetProperty("articleNumber", out var a) ? a.GetString() ?? "" : "";
+            var weight = byWeight ? Weight(p) : null;
 
             products.Add(new ShopProduct(
                 p.GetProperty("name").GetString() ?? "",
-                price,
+                byWeight ? Pack(price, weight?.MinKg) : price,
+                byWeight && weight is { } w && w.MaxKg != w.MinKg ? Pack(price, w.MaxKg) : null,
                 p.TryGetProperty("currency", out var c) ? c.GetString() ?? "ZAR" : "ZAR",
-                byWeight ? Weight(p) : null,
+                weight is { } kg ? Kg(kg.MinKg, kg.MaxKg) : null,
                 byWeight ? price : null,
                 byWeight ? "kg" : "each",
                 LinkOf(html, article, unit) ?? searchUri));
@@ -86,15 +88,26 @@ public sealed partial class CheckersCatalogue(IWebBrowser browser) : IShopCatalo
         return products;
     }
 
-    /// <summary>A product sold by weight comes in packs of a range of grams ("1100-1300"): "1.1–1.3 kg".</summary>
-    private static string? Weight(JsonElement p)
+    /// <summary>A product sold by weight comes in packs of a range of grams ("1100-1300"): 1.1 to 1.3 kg.</summary>
+    private static (decimal MinKg, decimal MaxKg)? Weight(JsonElement p)
     {
         if (!p.TryGetProperty("weightOptions", out var options) || options.ValueKind != JsonValueKind.Array || options.GetArrayLength() == 0)
             return null;
-        string[] grams = (options[0].GetString() ?? "").Split('-', StringSplitOptions.TrimEntries);
-        static string Kg(string g) => (decimal.Parse(g, CultureInfo.InvariantCulture) / 1000m).ToString("0.###", CultureInfo.InvariantCulture);
-        return grams.Length == 2 ? $"{Kg(grams[0])}–{Kg(grams[1])} kg" : $"{Kg(grams[0])} kg";
+        decimal[] kg = (options[0].GetString() ?? "").Split('-', StringSplitOptions.TrimEntries)
+            .Select(g => decimal.Parse(g, CultureInfo.InvariantCulture) / 1000m).ToArray();
+        return (kg[0], kg[^1]);
     }
+
+    /// <summary>"1.1–1.3 kg", or "0.5 kg" for packs of one weight.</summary>
+    private static string Kg(decimal min, decimal max)
+    {
+        static string Of(decimal kg) => kg.ToString("0.###", CultureInfo.InvariantCulture);
+        return min == max ? $"{Of(min)} kg" : $"{Of(min)}–{Of(max)} kg";
+    }
+
+    /// <summary>What a pack of this weight costs at the price per kg, to the cent; no weight, no pack price.</summary>
+    private static decimal? Pack(decimal perKg, decimal? kg) =>
+        kg is { } weight ? Math.Round(perKg * weight, 2, MidpointRounding.AwayFromZero) : null;
 
     /// <summary>The product's card on the search page: a link ending in its article number and unit.</summary>
     private static Uri? LinkOf(string html, string article, string unit)

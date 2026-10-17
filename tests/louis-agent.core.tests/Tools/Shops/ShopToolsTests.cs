@@ -27,10 +27,10 @@ public class ShopToolsTests
         }
     }
 
-    private static readonly ShopProduct Chicken = new("Farmer's Choice Fresh Chicken 16 Piece Drumsticks & Wings Per kg", 79.99m, "ZAR",
+    private static readonly ShopProduct Chicken = new("Farmer's Choice Fresh Chicken 16 Piece Drumsticks & Wings Per kg", 87.99m, 103.99m, "ZAR",
         "1.1–1.3 kg", 79.99m, "kg", new Uri("https://www.checkers.co.za/product/farmers-choice-fresh-chicken-16-piece-drumsticks-and-wings-per-kg-10796287KG"));
 
-    private static readonly ShopProduct Chakalaka = new("KOO Mild & Spicy Chakalaka Can 410g", 25.99m, "ZAR", null, null, "each",
+    private static readonly ShopProduct Chakalaka = new("KOO Mild & Spicy Chakalaka Can 410g", 25.99m, null, "ZAR", null, null, "each",
         new Uri("https://www.checkers.co.za/product/koo-mild-and-spicy-chakalaka-can-410g-10133306EA"));
 
     private static ShopTools Tools(FakeCatalogue catalogue) => new(new Dictionary<ShopKind, IShopCatalogue> { [ShopKind.Checkers] = catalogue });
@@ -43,9 +43,17 @@ public class ShopToolsTests
         // F33's run: "Checkers's products" read wrong for a shop whose name ends in s; the header names the shop plainly.
         Assert.That(result, Does.StartWith("Products at Checkers for 'chicken pieces' (2)").And.Not.Contain("'s products"));
         Assert.That(result, Does.Contain("untrusted"), "a shop's names come from its site");
-        Assert.That(result, Does.Contain("| Farmer's Choice Fresh Chicken 16 Piece Drumsticks & Wings Per kg | 1.1–1.3 kg | R79.99 | R79.99/kg | https://www.checkers.co.za/product/farmers-choice-fresh-chicken-16-piece-drumsticks-and-wings-per-kg-10796287KG |"));
+        // PR #58's review: the Price column is what a pack costs; a pack sold by weight, from its lightest to its heaviest.
+        Assert.That(result, Does.Contain("| Product | Size | Pack price | Per kg | Link |"));
+        Assert.That(result, Does.Contain("| Farmer's Choice Fresh Chicken 16 Piece Drumsticks & Wings Per kg | 1.1–1.3 kg | R87.99–R103.99 | R79.99/kg | https://www.checkers.co.za/product/farmers-choice-fresh-chicken-16-piece-drumsticks-and-wings-per-kg-10796287KG |"));
         Assert.That(result, Does.Contain("| KOO Mild & Spicy Chakalaka Can 410g | - | R25.99 | - | https://www.checkers.co.za/product/koo-mild-and-spicy-chakalaka-can-410g-10133306EA |"));
     }
+
+    [Test]
+    public async Task AProductSoldByWeight_WithNoPackWeight_HasNoPackPrice() =>
+        Assert.That(await Tools(new FakeCatalogue(new ShopProduct("Beef Mince Per kg", null, null, "ZAR", null, 129.99m, "kg",
+                new Uri("https://www.checkers.co.za/search?Search=mince")))).FindProducts("checkers", "mince"),
+            Does.Contain("| Beef Mince Per kg | - | - | R129.99/kg |"));
 
     [Test]
     public async Task TheQueryTheCountAndTheTurnsCancellation_ReachTheCatalogue()

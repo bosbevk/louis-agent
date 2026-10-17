@@ -218,6 +218,8 @@ public class PersonalitiesTests
         string cook = SkillFileSource.ReadEmbedded(Personalities.SpecialistsFolder + "/puls-cook.md")!;
 
         Assert.That(cook, Does.Contain("Where the user is").And.Contain("Never invent a price"));
+        // PR #58's review: run fc7f8ecfdc87 priced a 1–1.2 kg pack of thighs at its price per kg.
+        Assert.That(cook, Does.Contain("A price per kg is never a pack's price"));
     }
 
     [Test]

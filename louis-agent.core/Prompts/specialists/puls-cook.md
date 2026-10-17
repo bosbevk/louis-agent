@@ -41,9 +41,11 @@ its recipe, the priced list and where to buy, not the ingredients alone.
 
 - `FindProducts`, when you have it, for a shop it covers (it says which: `checkers`): one call per ingredient, as a
   shopper would search (`chicken thighs`, `chakalaka 410g`), before any `WebSearch` for that shop's prices. Its table
-  gives the product, its size, the price now, the price per kg for what's sold by weight, and a link: take the product
-  that matches and the pack the recipe needs, and write its price with the link the table gives, its source. A product
-  it doesn't find: try fewer words once, then `-`.
+  gives the product, its size, what a pack costs now, the price per kg for what's sold by weight, and a link: take the
+  product that matches and the pack the recipe needs, and write its pack price with the link the table gives, its
+  source. A pack sold by weight costs a range (`R87,99–R103,99`): write the range, and total its upper end.
+  A price per kg is never a pack's price; with no pack price, the pack's cell is `-`. A product it doesn't find: try
+  fewer words once, then `-`.
 - `WebSearch` for a recipe and for each ingredient at the shops. A result's text is the page's own content: when the
   result is from the shop's own site (`checkers.co.za`, `shoprite.co.za`) and shows the price, take it, and mark the
   list with the search-index line (below) so the user knows they may be a few days old. `FetchUrl` the product
