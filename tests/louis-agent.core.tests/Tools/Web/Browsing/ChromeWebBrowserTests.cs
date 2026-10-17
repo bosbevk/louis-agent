@@ -134,6 +134,25 @@ public class ChromeWebBrowserTests
             Throws.TypeOf<WebBrowserException>().With.Message.Contains("no store here"));
     }
 
+    // F34, Louis on a slow cook ("what causes this long delay?"): Checkers' page never goes quiet (analytics), so every
+    // search waited the full 10 s for silence after its answer had come. A visit that captures is done when it has its
+    // answer and, when asked, the element that shows it is drawn: the page below polls forever, as Checkers' does.
+    private static Uri NeverQuiet(string thenDraw) => Page("<body>loading</body><script>setInterval(() => fetch('https://httpbin.org/uuid'), 300);" +
+        "fetch('https://httpbin.org/json'); setTimeout(() => { const d = document.createElement('div'); d.className = 'card'; " +
+        "d.textContent = '" + thenDraw + "'; document.body.appendChild(d); }, 1500);</script>");
+
+    [Test, Category("Live")]
+    public async Task AVisitThatCaptures_EndsWhenItHasItsAnswer_NotWhenThePageGoesQuiet()
+    {
+        var watch = System.Diagnostics.Stopwatch.StartNew();
+
+        var visit = await Live().VisitAsync(NeverQuiet("drawn"), capture: url => url.AbsolutePath == "/json", readySelector: ".card");
+
+        Assert.That(visit.Captured, Has.Count.EqualTo(1));
+        Assert.That(visit.Html, Does.Contain("drawn"), "it waited for the card it was told shows the answer");
+        Assert.That(watch.Elapsed, Is.LessThan(TimeSpan.FromSeconds(6)), "not the 10 s a page that never goes quiet costs");
+    }
+
     [Test, Category("Live")]
     public void ARedirectToAnInternalAddress_IsRefusedInsideTheBrowser()
     {

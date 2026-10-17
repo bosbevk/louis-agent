@@ -25,6 +25,7 @@ public sealed partial class CheckersCatalogue(IWebBrowser browser, CheckersStore
     private static readonly ILogger Log = AgentLogging.For<CheckersCatalogue>();
     private static readonly Uri Site = new("https://www.checkers.co.za/");
     private const string CataloguePath = "/api/catalogue/get-products-filter";
+    private const string ProductCard = "div[class*='product-card_card__']";
     // Where the search page's cards load a product's photo from, by the answer's imageId (seen live, 2026-10-17).
     private static readonly Uri Images = new("https://catalog.sixty60.co.za/v2/files/");
 
@@ -38,7 +39,10 @@ public sealed partial class CheckersCatalogue(IWebBrowser browser, CheckersStore
         BrowserVisit visit;
         try
         {
-            visit = await browser.VisitAsync(search, url => url.AbsolutePath == CataloguePath, area, cancellationToken: cancellationToken);
+            // Done once the answer is in and a product's card is drawn (its deal's wording is on it), not when the page
+            // goes quiet: it never does (F34).
+            visit = await browser.VisitAsync(search, url => url.AbsolutePath == CataloguePath, area, readySelector: ProductCard,
+                cancellationToken: cancellationToken);
         }
         catch (WebBrowserException ex)
         {

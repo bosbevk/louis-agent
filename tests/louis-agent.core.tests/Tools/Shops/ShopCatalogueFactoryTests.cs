@@ -11,7 +11,7 @@ public class ShopCatalogueFactoryTests
     private sealed class NoBrowser : IWebBrowser
     {
         public Task<BrowserVisit> VisitAsync(Uri url, Func<Uri, bool>? capture = null, BrowserSession? session = null, string? script = null,
-            CancellationToken cancellationToken = default) =>
+            string? readySelector = null, CancellationToken cancellationToken = default) =>
             Task.FromResult(new BrowserVisit(url.ToString(), "", []));
     }
 

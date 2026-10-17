@@ -136,11 +136,12 @@ public class CheckersCatalogueTests
         public Uri? Visited { get; private set; }
         public Func<Uri, bool>? Capture { get; private set; }
         public BrowserSession? Session { get; private set; }
+        public string? ReadySelector { get; private set; }
 
         public Task<BrowserVisit> VisitAsync(Uri url, Func<Uri, bool>? capture = null, BrowserSession? session = null, string? script = null,
-            CancellationToken cancellationToken = default)
+            string? readySelector = null, CancellationToken cancellationToken = default)
         {
-            (Visited, Capture, Session) = (url, capture, session);
+            (Visited, Capture, Session, ReadySelector) = (url, capture, session, readySelector);
             return Task.FromResult(new BrowserVisit(url.ToString(), Html, captured));
         }
     }
@@ -151,7 +152,7 @@ public class CheckersCatalogueTests
     private sealed class OneTownsStore : IWebBrowser
     {
         public Task<BrowserVisit> VisitAsync(Uri url, Func<Uri, bool>? capture = null, BrowserSession? session = null, string? script = null,
-            CancellationToken cancellationToken = default) =>
+            string? readySelector = null, CancellationToken cancellationToken = default) =>
             Task.FromResult(new BrowserVisit(url.AbsoluteUri, "", [], """{"storeContexts":[{"storeId":"655b0c8fb44cda100fd99383"}]}""", MalmesburysStore.Cookies));
     }
 
@@ -212,6 +213,7 @@ public class CheckersCatalogueTests
         Assert.That(browser.Capture!(new Uri("https://www.checkers.co.za/api/catalogue/get-products-filter")), Is.True);
         Assert.That(browser.Capture!(new Uri("https://www.checkers.co.za/api/catalogue/get-products-filter-options")), Is.False);
         Assert.That(browser.Capture!(new Uri("https://www.checkers.co.za/api/catalogue/get-popular-searches")), Is.False);
+        Assert.That(browser.ReadySelector, Does.Contain("product-card_card__"), "done when a card is drawn, not when the page goes quiet");
     }
 
     [Test]
@@ -227,7 +229,7 @@ public class CheckersCatalogueTests
     private sealed class DownBrowser : IWebBrowser
     {
         public Task<BrowserVisit> VisitAsync(Uri url, Func<Uri, bool>? capture = null, BrowserSession? session = null, string? script = null,
-            CancellationToken cancellationToken = default) =>
+            string? readySelector = null, CancellationToken cancellationToken = default) =>
             throw new WebBrowserException("The browser at http://puls-browser:9222 didn't answer");
     }
 

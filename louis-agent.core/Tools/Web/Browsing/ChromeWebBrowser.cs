@@ -34,7 +34,7 @@ public sealed class ChromeWebBrowser(Uri browserUrl, Func<string, CancellationTo
     private readonly Func<string, CancellationToken, Task<IPAddress[]>> _resolve = resolve ?? ((host, ct) => Dns.GetHostAddressesAsync(host, ct));
 
     public async Task<BrowserVisit> VisitAsync(Uri url, Func<Uri, bool>? capture = null, BrowserSession? session = null, string? script = null,
-        CancellationToken cancellationToken = default)
+        string? readySelector = null, CancellationToken cancellationToken = default)
     {
         await Pages.WaitAsync(cancellationToken);
         try
@@ -42,7 +42,7 @@ public sealed class ChromeWebBrowser(Uri browserUrl, Func<string, CancellationTo
             IBrowser browser = await ConnectAsync(cancellationToken);
             try
             {
-                return await VisitInAsync(browser, url, capture, session, script, cancellationToken);
+                return await VisitInAsync(browser, url, capture, session, script, readySelector, cancellationToken);
             }
             finally
             {
@@ -77,7 +77,7 @@ public sealed class ChromeWebBrowser(Uri browserUrl, Func<string, CancellationTo
     }
 
     private async Task<BrowserVisit> VisitInAsync(IBrowser browser, Uri url, Func<Uri, bool>? capture, BrowserSession? session,
-        string? script, CancellationToken cancellationToken)
+        string? script, string? readySelector, CancellationToken cancellationToken)
     {
         IBrowserContext? own = session is not null || script is not null ? await browser.CreateBrowserContextAsync() : null;
         var page = own is null ? await browser.NewPageAsync() : await own.NewPageAsync();
@@ -88,7 +88,7 @@ public sealed class ChromeWebBrowser(Uri browserUrl, Func<string, CancellationTo
         using var closeOnCancel = cancellationToken.Register(() => _ = CloseQuietlyAsync(page));
         try
         {
-            return await LoadAsync(page, url, capture, script, own is not null);
+            return await LoadAsync(page, url, capture, script, readySelector, own is not null);
         }
         catch (Exception ex) when (cancellationToken.IsCancellationRequested && ex is not OperationCanceledException)
         {
@@ -122,7 +122,7 @@ public sealed class ChromeWebBrowser(Uri browserUrl, Func<string, CancellationTo
         }
     }
 
-    private async Task<BrowserVisit> LoadAsync(IPage page, Uri url, Func<Uri, bool>? capture, string? script, bool ownContext)
+    private async Task<BrowserVisit> LoadAsync(IPage page, Uri url, Func<Uri, bool>? capture, string? script, string? readySelector, bool ownContext)
     {
         string? refusedPage = null;
         // Request interception doesn't see WebSockets (nor does Chrome's URL blocking), and the browser shares a network
@@ -175,11 +175,12 @@ public sealed class ChromeWebBrowser(Uri browserUrl, Func<string, CancellationTo
         // them awaited before the visit ends, so none is lost to the page closing and no handler is async void.
         var captured = new List<string>();
         var reads = new List<Task>();
+        var answered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         if (capture is not null)
             page.Response += (_, e) =>
             {
                 if (!Uri.TryCreate(e.Response.Url, UriKind.Absolute, out var responseUrl) || !capture(responseUrl)) return;
-                lock (reads) reads.Add(KeepAsync(e.Response, captured));
+                lock (reads) reads.Add(KeepAsync(e.Response, captured, answered));
             };
 
         try
@@ -197,14 +198,17 @@ public sealed class ChromeWebBrowser(Uri browserUrl, Func<string, CancellationTo
             throw new WebBrowserException(MessageText.Format(ToolMessage.RenderFailed, new { Url = url, Reason = reason }));
         }
 
-        try
-        {
-            await page.WaitForNetworkIdleAsync(new WaitForNetworkIdleOptions { Timeout = (int)Settle.TotalMilliseconds, IdleTime = 500 });
-        }
-        catch (TimeoutException)
-        {
-            // A page that never goes quiet (adverts, polling) is read as it stands.
-        }
+        if (capture is not null)
+            await AnsweredAsync(page, answered.Task, readySelector);
+        else
+            try
+            {
+                await page.WaitForNetworkIdleAsync(new WaitForNetworkIdleOptions { Timeout = (int)Settle.TotalMilliseconds, IdleTime = 500 });
+            }
+            catch (TimeoutException)
+            {
+                // A page that never goes quiet (adverts, polling) is read as it stands.
+            }
 
         // One script of ours, run once the page has loaded: its requests go through the same interception, so the
         // address rule holds for them; it answers a string (awaited when it's a promise).
@@ -230,13 +234,34 @@ public sealed class ChromeWebBrowser(Uri browserUrl, Func<string, CancellationTo
         lock (captured) return new BrowserVisit(page.Url, html, [.. captured], scriptResult, cookies);
     }
 
+    /// <summary>
+    /// A visit that captures is done when it has its answer and, when given, the element that shows it is drawn (F34,
+    /// Louis: "what causes this long delay?"): a shop's page never goes quiet, so waiting for quiet cost every search
+    /// the full <see cref="Settle"/>. Neither comes: the visit ends at <see cref="Settle"/>, read as it stands.
+    /// </summary>
+    private static async Task AnsweredAsync(IPage page, Task answered, string? readySelector)
+    {
+        var watch = System.Diagnostics.Stopwatch.StartNew();
+        if (await Task.WhenAny(answered, Task.Delay(Settle)) != answered || readySelector is null) return;
+        int left = (int)Math.Max(0, (Settle - watch.Elapsed).TotalMilliseconds);
+        try
+        {
+            await page.WaitForSelectorAsync(readySelector, new WaitForSelectorOptions { Timeout = left });
+        }
+        catch (Exception ex) when (ex is WaitTaskTimeoutException or TimeoutException)
+        {
+            // The answer came but nothing showed it in time (an empty search): read as it stands.
+        }
+    }
+
     /// <summary>Keeps one captured response's body; one that can't be read (the page moved on) is logged and left out.</summary>
-    private static async Task KeepAsync(IResponse response, List<string> captured)
+    private static async Task KeepAsync(IResponse response, List<string> captured, TaskCompletionSource answered)
     {
         try
         {
             string body = await response.TextAsync();
             lock (captured) captured.Add(body);
+            answered.TrySetResult();
         }
         catch (Exception ex) when (ex is not OutOfMemoryException)
         {

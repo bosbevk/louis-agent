@@ -26,7 +26,7 @@ public class CheckersStoreTests
         public List<(Uri Url, BrowserSession? Session, string? Script)> Visits { get; } = [];
 
         public Task<BrowserVisit> VisitAsync(Uri url, Func<Uri, bool>? capture = null, BrowserSession? session = null, string? script = null,
-            CancellationToken cancellationToken = default)
+            string? readySelector = null, CancellationToken cancellationToken = default)
         {
             Visits.Add((url, session, script));
             if (fails is not null) throw fails;
