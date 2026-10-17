@@ -122,6 +122,7 @@ public sealed class ChromePageRenderer(Uri browserUrl, Func<string, Cancellation
         page.Request += async (_, e) =>
         {
             var request = e.Request;
+            bool answered = false;
             try
             {
                 var verdict = Uri.TryCreate(request.Url, UriKind.Absolute, out var target)
@@ -130,6 +131,7 @@ public sealed class ChromePageRenderer(Uri browserUrl, Func<string, Cancellation
                 if (verdict == RenderVerdict.Allow)
                 {
                     await request.ContinueAsync();
+                    answered = true;
                     return;
                 }
                 if (verdict == RenderVerdict.Refuse)
@@ -138,10 +140,21 @@ public sealed class ChromePageRenderer(Uri browserUrl, Func<string, Cancellation
                     Log.Log(LogLevel.Warning, LogMessage.RenderRequestRefused, new { Request = request.Url, Page = url });
                 }
                 await request.AbortAsync(RequestAbortErrorCode.BlockedByClient);
+                answered = true;
             }
             catch (Exception ex) when (ex is not OutOfMemoryException)
             {
                 Log.Log(LogLevel.Warning, LogMessage.RenderRequestUnhandled, new { Request = request.Url, Page = url, Reason = ex.Message });
+                // Not answered yet: ended now, not left until the page's timeout (re-review of PR #56). Not made either.
+                if (!answered)
+                    try
+                    {
+                        await request.AbortAsync(RequestAbortErrorCode.Failed);
+                    }
+                    catch (Exception again) when (again is not OutOfMemoryException)
+                    {
+                        // The page is gone, and the request with it.
+                    }
             }
         };
 

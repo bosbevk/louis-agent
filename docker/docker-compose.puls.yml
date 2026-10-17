@@ -116,13 +116,14 @@ services:
   #
   # SearXNG (AGPL-3.0, run unchanged beside us, ADR 0023): metasearch for development, tests and benchmarks; the sold
   # endpoint keeps a licensed search API. Its settings are docker/searxng/settings.yml; its secret, and nothing else,
-  # comes from config/.env.searxng.
+  # comes from config/.env.searxng, which must exist (copy config/.env.searxng.example): without it SearXNG would sign
+  # with the placeholder committed in settings.yml (re-review of PR #56).
   puls-searxng:
     image: searxng/searxng@sha256:79180616c984f39524f6f27f19625a46f82c8ad4aa6a2e553db52b14e1b4a768   # 2026.10.17-2a6fc07be
     container_name: puls_searxng
     env_file:
       - path: ../config/.env.searxng
-        required: false
+        required: true
     volumes:
       - ./searxng/settings.yml:/etc/searxng/settings.yml:ro
     networks: [web]

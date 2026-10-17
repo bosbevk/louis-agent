@@ -19,7 +19,7 @@ templates.
 | `config/.env.secrets.example` | ✅ tracked | Template listing every secret |
 | `config/.env.mongo` | ❌ git-ignored | The benchmark store's root user, read only by `puls-mongo` (F31) |
 | `config/.env.mongo.example` | ✅ tracked | Template for `config/.env.mongo` |
-| `config/.env.searxng` | ❌ git-ignored | The secret of the SearXNG we run, read only by `puls-searxng` (F32) |
+| `config/.env.searxng` | ❌ git-ignored | The secret of the SearXNG we run, read only by `puls-searxng` (F32); the Puls stack won't start without it |
 | `config/.env.searxng.example` | ✅ tracked | Template for `config/.env.searxng` |
 | `config/rider-acp.example.json` | ✅ tracked | Rider agent-server entry for the ACP server (replace `C:\path\to`) |
 | `config/.rider-mcp-servers.json` | ✅ tracked | MCP client entry for the MCP server (replace `C:\path\to`) |

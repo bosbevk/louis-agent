@@ -262,6 +262,10 @@ Design: [docs/specs/SESSION_ARCHITECTURE.md](docs/specs/SESSION_ARCHITECTURE.md)
       internet only through a proxy that resolves each name once, refuses internal addresses and connects to the address
       it checked, so DNS rebinding (Chrome resolving again after `RenderPolicy` checked) and a Web Worker's WebSocket
       can't reach `puls`, `puls-agent` or the host. Until then, set `AGENT_API_KEY` wherever the stack is reachable.
+- [ ] **F32 follow-up: SearXNG on only where it's meant to be** (re-review of PR #56; Louis's call): the Puls compose
+      file sets `SEARXNG_URL` by default, so a sold deployment without a Tavily key would search through SearXNG, against
+      ADR 0023 (its engines don't license their results). Option: leave `SEARXNG_URL` unset in compose and set it in a
+      development machine's `config/.env`, so SearXNG is switched on on purpose.
 - [ ] **CL12 Integrations by role** (cleanup, to plan after F32; Louis: "this should also be interfaced", then "it would
       not follow the same pattern as Web"): the integrations laid out as the web seams are, a contract per role at the top
       and its vendors in `Providers/`: `Tools/Integrations/TimeTracking/` (`ITimeTracker`; Paymo) and `WorkItems/`

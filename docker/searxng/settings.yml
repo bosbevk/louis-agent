@@ -31,7 +31,7 @@ search:
     - json
 
 server:
-  # SEARXNG_SECRET (config/.env.searxng) replaces this; SearXNG won't start on the template's default.
+  # SEARXNG_SECRET (config/.env.searxng, required by the compose file) replaces this placeholder, which is public.
   secret_key: "replaced-by-SEARXNG_SECRET"
   limiter: false
   public_instance: false
