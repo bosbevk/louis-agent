@@ -260,3 +260,13 @@ sequenceDiagram
     P-->>U: the answer in Afrikaans, verified prices with links
     Note over P,M: ledger: the minions' rows (qwen, $0) name the cook's turn; roll-ups are listed, never totalled
 ```
+
+- **Rebased onto `main` after CL8, CL9 and CL10** (Louis, 2026-10-17: "F30 first"; steps 0–3 carried over, eight files
+  resolved by hand). What the names above mean now: the `agents` toolset is `specialists` and `agents-skills.md` is
+  `toolsets/specialists.md` (CL9); `Skills/personalities/` is `louis-agent.core/Prompts/specialists/` and
+  `Skills/minions/` is `Prompts/minions/`, embedded and read only from the assembly, so a role change is a rebuild
+  (CL8); `roles.json` and `RoleFor` are gone, a role is named, never derived (CL10), so `minions.json` is a new file
+  with nothing to be "read like"; the minions ADR is 0021 (0017 to 0020 are taken); `BENCHMARKS.md` is gone and the
+  runs' numbers go in the admin portal's store, so step 9 runs from the portal after
+  [F31 Benchmarks in the admin portal](F31-benchmarks-portal.md) (order: F30's steps 4–8, then F31, then step 9).
+  The `puls-specialist` default role is gone too: a sub-session with no role gets the default mode's voice only.

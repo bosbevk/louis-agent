@@ -65,7 +65,7 @@ public sealed class AgentPeerTools(IReadOnlyDictionary<string, Uri> peers, strin
             "Empty: the peer's default.")] string? personality = null,
         [Description("Names of files the user attached in this conversation that the task needs; they are sent with the task " +
             "(the sub-session sees nothing else of the conversation).")] string[]? attachments = null,
-        [Description("The LLM profile the sub-session runs on, when agents-skills.md names one for the task (the peer lists " +
+        [Description("The LLM profile the sub-session runs on, when the specialists guide names one for the task (the peer lists " +
             "them at /llm-profiles). Empty: the peer's own model.")] string? llm = null,
         CancellationToken cancellationToken = default)
     {
