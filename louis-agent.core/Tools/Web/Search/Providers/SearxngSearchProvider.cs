@@ -1,10 +1,12 @@
-namespace LouisAgent.Core.Tools.Web;
+namespace LouisAgent.Core.Tools.Web.Search.Providers;
 
 using System.Net;
 using System.Text.Json;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
 using Microsoft.Extensions.Logging;
+using LouisAgent.Core.Tools.Web;
+using LouisAgent.Core.Tools.Web.Search;
 
 /// <summary>
 /// SearXNG as the search engine (F32 step 1): the metasearch we run ourselves in the Puls stack, for development,
@@ -45,7 +47,7 @@ public sealed class SearxngSearchProvider(Uri baseUrl, HttpClient? http = null) 
     {
         string text = string.IsNullOrWhiteSpace(query.Site) ? query.Text : $"{query.Text} site:{query.Site.Trim()}";
         var parameters = new List<string> { "q=" + Uri.EscapeDataString(text), "format=json" };
-        if (query.Recency is { } recency) parameters.Add("time_range=" + Uri.EscapeDataString(recency));
+        if (query.Recency is { } recency) parameters.Add("time_range=" + recency.ToString().ToLowerInvariant());
         string root = baseUrl.ToString().TrimEnd('/');
         return new Uri($"{root}/search?{string.Join("&", parameters)}");
     }

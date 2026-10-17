@@ -1,6 +1,7 @@
 using System.Net;
 using System.Text;
 using LouisAgent.Core.Tools.Web;
+using LouisAgent.Core.Tools.Web.Rendering;
 
 namespace LouisAgent.Core.Tests.Tools.Web;
 

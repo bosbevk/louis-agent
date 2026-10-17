@@ -345,3 +345,21 @@ did* (F31's step 11c rest), so F32 doesn't depend on it.
 - **Tests against real services that skip honestly** (skill 18): stubs for the logic, live tests for the containers.
 
 ## Approved during the build
+
+- **2026-10-17, after step 1 (Louis, on `WebSearchProviderFactory`'s string switch: "can we make this enums, as the
+  next step. This must also be a rule"): step 1b, choices are enums.** `WebSearchProviderKind` (Tavily, Google,
+  Searxng, DuckDuckGo; `ddg` an alias) is parsed once in the factory, which switches on it; `SupportedProviders` comes
+  from it. `SearchRecency` (Day, Week, Month, Year; the first letter an alias) replaces `WebSearchQuery.Recency`'s
+  string, parsed once where `WebSearch` receives the model's `freshness`; each provider writes it in its own words.
+  `Config/SettingChoice` is the one parser (tested first). The rule joins *Rules that always apply* with ADR 0024, and
+  the choices still made by string are a TODO line. Step 2's `PAGE_RENDERER` is an enum from the start
+  (`PageRendererKind`), so the interface design's `PAGE_RENDERER` row reads as that enum.
+- **2026-10-17, in step 1b (Louis: "move each type to its type namespace"): the web toolset in folders by kind.**
+  `Tools/Web/Search/` (namespace `LouisAgent.Core.Tools.Web.Search`): the search seam, its records, exception, enums,
+  factory and every provider; `Tools/Web/Rendering/` (`…Web.Rendering`): the renderer seam, its record, exception,
+  factory and renderers, where step 2's `ChromePageRenderer` and `RenderPolicy` go; `WebTools` stays in `Tools/Web/`.
+  Then (Louis: "these must also be grouped"; by role): each seam keeps its contract at its top and its
+  implementations below, `Search/Providers/` (`…Search.Providers`: DuckDuckGo, Google, SearXNG with `SearxngAnswer`,
+  Tavily, the unavailable stand-in) and `Rendering/Renderers/` (`…Rendering.Renderers`: Tavily, the stand-in, and step
+  2's `ChromePageRenderer` and `RenderPolicy`). The interface design's "in `Tools/Web/`" reads as these folders; tests
+  mirror them.

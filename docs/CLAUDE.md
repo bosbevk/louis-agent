@@ -98,6 +98,10 @@ decision's record (its context, and what it cost) in [docs/adr/](adr/README.md).
 - **No message text inline in C#** — exceptions, log lines, tool results and user text are message enum members
   ([Messages and logging](../louis-agent.core/CLAUDE.md#messages-and-logging)).
   Why: [ADR 0009](adr/0009-message-text-as-enum-templates.md).
+- **Choices are enums, not strings** — a value that names one of a fixed set (a provider, a renderer, a freshness, a
+  mode) is an enum, parsed once where it enters with `Config/SettingChoice` (case ignored, aliases, never a number);
+  code switches on the enum, and the "supported" list comes from it. Text stays text only up to that point.
+  Why: [ADR 0024](adr/0024-choices-are-enums.md).
 - **Namespace = folder path, dependencies one way, prompts in markdown, hosts stay thin** — `ArchitectureTests`
   holds the first two ([Project layout](../louis-agent.core/CLAUDE.md#project-layout)).
   Why: [ADR 0010](adr/0010-folders-by-concern.md), [ADR 0011](adr/0011-prompts-are-content.md).

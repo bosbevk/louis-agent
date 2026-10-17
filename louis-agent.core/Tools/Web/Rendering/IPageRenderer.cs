@@ -1,4 +1,6 @@
-namespace LouisAgent.Core.Tools.Web;
+namespace LouisAgent.Core.Tools.Web.Rendering;
+
+using LouisAgent.Core.Tools.Web;
 
 /// <summary>
 /// Renders a page the way a browser would and returns its text (F25 step 7): for sites that draw their content with

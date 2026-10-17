@@ -1,7 +1,8 @@
-namespace LouisAgent.Core.Tools.Web;
+namespace LouisAgent.Core.Tools.Web.Rendering;
 
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Tools.Web.Rendering.Renderers;
 
 /// <summary>
 /// Picks the page renderer from configuration: Tavily's Extract when TAVILY_API_KEY is set (the same key as its

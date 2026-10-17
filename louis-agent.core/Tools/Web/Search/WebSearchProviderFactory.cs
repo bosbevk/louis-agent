@@ -1,8 +1,9 @@
-namespace LouisAgent.Core.Tools.Web;
+namespace LouisAgent.Core.Tools.Web.Search;
 
 using System.Net;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Tools.Web.Search.Providers;
 
 /// <summary>
 /// Picks the search engine from configuration: WEB_SEARCH_PROVIDER = tavily | google | searxng | duckduckgo. When unset,
@@ -13,32 +14,41 @@ using LouisAgent.Core.Messages;
 /// </summary>
 public static class WebSearchProviderFactory
 {
-    public static IReadOnlyList<string> SupportedProviders { get; } = ["tavily", "google", "searxng", "duckduckgo"];
+    /// <summary>The names <c>WEB_SEARCH_PROVIDER</c> takes, from <see cref="WebSearchProviderKind"/>.</summary>
+    public static IReadOnlyList<string> SupportedProviders { get; } = SettingChoice.Names<WebSearchProviderKind>();
+
+    private static readonly IReadOnlyDictionary<string, WebSearchProviderKind> Aliases =
+        new Dictionary<string, WebSearchProviderKind> { ["ddg"] = WebSearchProviderKind.DuckDuckGo };
 
     public static IWebSearchProvider Create(AgentOptions options, HttpClient? http = null)
     {
         bool hasTavily = !string.IsNullOrWhiteSpace(options.TavilyApiKey);
         bool hasGoogle = !string.IsNullOrWhiteSpace(options.GoogleSearchApiKey) && !string.IsNullOrWhiteSpace(options.GoogleSearchEngineId);
         Uri? searxng = Uri.TryCreate(options.SearxngUrl?.Trim(), UriKind.Absolute, out var url) ? url : null;
-        string choice = (options.WebSearchProvider ?? "").Trim().ToLowerInvariant();
+        if (!SettingChoice.TryParse(options.WebSearchProvider, out WebSearchProviderKind? choice, Aliases))
+        {
+            string named = options.WebSearchProvider!.Trim();
+            return new UnavailableSearchProvider(named, MessageText.Format(ToolMessage.UnknownSearchProvider,
+                new { Provider = named, Supported = string.Join(", ", SupportedProviders) }));
+        }
 
         return choice switch
         {
-            "" when hasTavily => new TavilySearchProvider(options.TavilyApiKey!, http),
-            "" when hasGoogle => new GoogleSearchProvider(options.GoogleSearchApiKey!, options.GoogleSearchEngineId!, http),
-            "" when searxng is not null => new SearxngSearchProvider(searxng, http),
-            "" => new DuckDuckGoSearchProvider(http),
-            "tavily" => hasTavily
+            null when hasTavily => new TavilySearchProvider(options.TavilyApiKey!, http),
+            null when hasGoogle => new GoogleSearchProvider(options.GoogleSearchApiKey!, options.GoogleSearchEngineId!, http),
+            null when searxng is not null => new SearxngSearchProvider(searxng, http),
+            null => new DuckDuckGoSearchProvider(http),
+            WebSearchProviderKind.Tavily => hasTavily
                 ? new TavilySearchProvider(options.TavilyApiKey!, http)
                 : new UnavailableSearchProvider("Tavily", MessageText.Format(ToolMessage.TavilyNotConfigured)),
-            "google" => hasGoogle
+            WebSearchProviderKind.Google => hasGoogle
                 ? new GoogleSearchProvider(options.GoogleSearchApiKey!, options.GoogleSearchEngineId!, http)
                 : new UnavailableSearchProvider("Google", MessageText.Format(ToolMessage.GoogleNotConfigured)),
-            "searxng" => searxng is not null
+            WebSearchProviderKind.Searxng => searxng is not null
                 ? new SearxngSearchProvider(searxng, http)
                 : new UnavailableSearchProvider("SearXNG", MessageText.Format(ToolMessage.SearxngNotConfigured)),
-            "duckduckgo" or "ddg" => new DuckDuckGoSearchProvider(http),
-            _ => new UnavailableSearchProvider(choice, MessageText.Format(ToolMessage.UnknownSearchProvider, new { Provider = choice, Supported = string.Join(", ", SupportedProviders) })),
+            WebSearchProviderKind.DuckDuckGo => new DuckDuckGoSearchProvider(http),
+            _ => throw new ArgumentOutOfRangeException(nameof(options), choice, null),
         };
     }
 }

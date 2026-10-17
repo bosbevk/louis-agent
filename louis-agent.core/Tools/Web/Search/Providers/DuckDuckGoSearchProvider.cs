@@ -1,8 +1,10 @@
-namespace LouisAgent.Core.Tools.Web;
+namespace LouisAgent.Core.Tools.Web.Search.Providers;
 
 using System.Net;
 using System.Text.RegularExpressions;
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Tools.Web;
+using LouisAgent.Core.Tools.Web.Search;
 
 /// <summary>Keyless search through DuckDuckGo's HTML endpoint. Convenient, but it may refuse automated traffic.</summary>
 public sealed partial class DuckDuckGoSearchProvider(HttpClient? http = null) : IWebSearchProvider
@@ -16,7 +18,7 @@ public sealed partial class DuckDuckGoSearchProvider(HttpClient? http = null) : 
     {
         string text = string.IsNullOrWhiteSpace(query.Site) ? query.Text : $"{query.Text} site:{query.Site}";
         var form = new Dictionary<string, string> { ["q"] = text };
-        if (query.Recency is { } recency) form["df"] = recency[..1];
+        if (query.Recency is { } recency) form["df"] = Letter(recency);
 
         using var request = new HttpRequestMessage(HttpMethod.Post, "https://html.duckduckgo.com/html/") { Content = new FormUrlEncodedContent(form) };
         request.Headers.UserAgent.ParseAdd(BrowserUserAgent);
@@ -27,6 +29,9 @@ public sealed partial class DuckDuckGoSearchProvider(HttpClient? http = null) : 
 
         return ParseResults(html, query.MaxResults);
     }
+
+    /// <summary>A recency's first letter, as DuckDuckGo's <c>df</c> and Google's <c>dateRestrict</c> write it: d, w, m or y.</summary>
+    internal static string Letter(SearchRecency recency) => recency.ToString()[..1].ToLowerInvariant();
 
     internal static List<WebSearchResult> ParseResults(string html, int count)
     {

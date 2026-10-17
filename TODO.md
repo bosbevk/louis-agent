@@ -258,6 +258,10 @@ Design: [docs/specs/SESSION_ARCHITECTURE.md](docs/specs/SESSION_ARCHITECTURE.md)
       rule, so development and the benchmarks search and read any page with no key and no credits; the sold endpoint
       keeps a licensed search API (Tavily) ([plan](docs/plans/F32-self-hosted-web.md)). Planned 2026-10-17, after
       Tavily's credits ran out in F31's paid run.
+- [ ] **Choices still made by string** (cleanup; ADR 0024, F32 step 1b): make each an enum parsed once with
+      `SettingChoice` when it's next touched: the LLM provider (`LlmOptions.Provider`, `"anthropic"`), the rates format
+      (`RatesMappers.For`), a skill's script language (`SkillTools`, `AgentBuiltTools`, `MarkdownSkillLoader`), the MCP
+      server's `MCP_TRANSPORT`, and `ListPackages`' kind (`DotNetTools`).
 - [ ] **MCP servers as a session toolset** (to plan after F32; Louis, 2026-10-17: "An MCP toolset for the model"): a
       session names MCP servers as it names toolsets (F5, so its prefix stays cacheable), their tools wrapped with our
       guards (untrusted-data framing, oversized results, failures with reasons) and their versions pinned, so a

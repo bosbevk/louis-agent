@@ -1,10 +1,12 @@
-namespace LouisAgent.Core.Tools.Web;
+namespace LouisAgent.Core.Tools.Web.Search.Providers;
 
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Tools.Web;
+using LouisAgent.Core.Tools.Web.Search;
 
 /// <summary>
 /// Tavily's search API (F25 step 6; Louis's choice over Google, whose Custom Search API ends on 2027-01-01): a search
@@ -31,7 +33,7 @@ public sealed class TavilySearchProvider(string apiKey, HttpClient? http = null)
             ["search_depth"] = "basic",
         };
         if (!string.IsNullOrWhiteSpace(query.Site)) body["include_domains"] = new[] { query.Site.Trim() };
-        if (query.Recency is { } recency) body["time_range"] = recency;
+        if (query.Recency is { } recency) body["time_range"] = recency.ToString().ToLowerInvariant();
 
         using var request = new HttpRequestMessage(HttpMethod.Post, Endpoint) { Content = JsonContent.Create(body) };
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);

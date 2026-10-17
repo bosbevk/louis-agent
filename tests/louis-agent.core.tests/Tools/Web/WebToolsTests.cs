@@ -6,6 +6,10 @@ using LouisAgent.Core.Skills;
 using LouisAgent.Core.Agent;
 using Microsoft.Extensions.AI;
 using LouisAgent.Core.Tools.Web;
+using LouisAgent.Core.Tools.Web.Search;
+using LouisAgent.Core.Tools.Web.Rendering;
+using LouisAgent.Core.Tools.Web.Rendering.Renderers;
+using LouisAgent.Core.Tools.Web.Search.Providers;
 
 namespace LouisAgent.Core.Tests.Tools.Web;
 
@@ -202,7 +206,7 @@ public class WebToolsTests
 
         var result = await Tools(_ => Html(""), fake).WebSearch("dotnet 10", maxResults: 2, site: "learn.microsoft.com", freshness: "w");
 
-        Assert.That(fake.Last, Is.EqualTo(new WebSearchQuery("dotnet 10", 2, "learn.microsoft.com", "week")));
+        Assert.That(fake.Last, Is.EqualTo(new WebSearchQuery("dotnet 10", 2, "learn.microsoft.com", SearchRecency.Week)));
         Assert.That(result, Does.StartWith("Search results for 'dotnet 10' on learn.microsoft.com (via FakeSearch):"));
         Assert.That(result, Does.Contain("1. First\n   https://a.example/1\n   one"));
         Assert.That(result, Does.Contain("2. Second\n   https://a.example/2"));
@@ -302,7 +306,7 @@ public class WebToolsTests
             return Html(TavilyJson, "application/json");
         }));
 
-        var results = await tavily.SearchAsync(new WebSearchQuery("beef mince", 2, "checkers.co.za", "week"));
+        var results = await tavily.SearchAsync(new WebSearchQuery("beef mince", 2, "checkers.co.za", SearchRecency.Week));
 
         Assert.That(sent!.Method, Is.EqualTo(HttpMethod.Post));
         Assert.That(sent.RequestUri!.ToString(), Is.EqualTo("https://api.tavily.com/search"));
@@ -365,7 +369,7 @@ public class WebToolsTests
         HttpRequestMessage? sent = null;
         var google = new GoogleSearchProvider("my-key", "my-cx", Http(r => { sent = r; return Html(GoogleJson, "application/json"); }));
 
-        var results = await google.SearchAsync(new WebSearchQuery("dotnet 10", 1, "learn.microsoft.com", "month"));
+        var results = await google.SearchAsync(new WebSearchQuery("dotnet 10", 1, "learn.microsoft.com", SearchRecency.Month));
 
         string query = Uri.UnescapeDataString(sent!.RequestUri!.Query);
         Assert.That(sent.RequestUri.Host, Is.EqualTo("www.googleapis.com"));
@@ -413,7 +417,7 @@ public class WebToolsTests
         string? form = null;
         var ddg = new DuckDuckGoSearchProvider(Http(r => { form = r.Content!.ReadAsStringAsync().Result; return Html(DuckDuckGoHtml); }));
 
-        var results = await ddg.SearchAsync(new WebSearchQuery("dotnet 10", 1, "learn.microsoft.com", "week"));
+        var results = await ddg.SearchAsync(new WebSearchQuery("dotnet 10", 1, "learn.microsoft.com", SearchRecency.Week));
 
         Assert.That(form, Does.Contain("q=dotnet+10+site%3Alearn.microsoft.com").And.Contain("df=w"));
         Assert.That(results, Has.Count.EqualTo(1));

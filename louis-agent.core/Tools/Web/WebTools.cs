@@ -4,10 +4,15 @@ using System.ComponentModel;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
+using LouisAgent.Core.Config;
 using LouisAgent.Core.Guardrails;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Pricing;
 using LouisAgent.Core.Tools.Documents;
+using LouisAgent.Core.Tools.Web.Search;
+using LouisAgent.Core.Tools.Web.Rendering;
+using LouisAgent.Core.Tools.Web.Rendering.Renderers;
+using LouisAgent.Core.Tools.Web.Search.Providers;
 
 /// <summary>
 /// Web toolset: search through a pluggable <see cref="IWebSearchProvider"/> (Google, DuckDuckGo, or any injected engine)
@@ -22,6 +27,10 @@ public sealed partial class WebTools
     private const string UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) louis-agent/1.0";
 
     private readonly IWebSearchProvider _search;
+
+    /// <summary>A freshness's first letter is its alias: d, w, m, y.</summary>
+    private static readonly IReadOnlyDictionary<string, SearchRecency> RecencyLetters =
+        Enum.GetValues<SearchRecency>().ToDictionary(r => r.ToString()[..1].ToLowerInvariant());
     private readonly IPageRenderer _renderer;
     private readonly HttpClient _http;
     private readonly Func<string, CancellationToken, Task<IPAddress[]>> _resolve;
@@ -61,16 +70,8 @@ public sealed partial class WebTools
         if (string.IsNullOrWhiteSpace(query)) return MessageText.Format(ToolMessage.SearchQueryEmpty);
         maxResults = Math.Clamp(maxResults, 1, 10);
 
-        string? recency = (freshness ?? "").Trim().ToLowerInvariant() switch
-        {
-            "" => null,
-            "day" or "d" => "day",
-            "week" or "w" => "week",
-            "month" or "m" => "month",
-            "year" or "y" => "year",
-            _ => "invalid",
-        };
-        if (recency == "invalid") return MessageText.Format(ToolMessage.SearchFreshnessInvalid);
+        if (!SettingChoice.TryParse(freshness, out SearchRecency? recency, RecencyLetters))
+            return MessageText.Format(ToolMessage.SearchFreshnessInvalid);
 
         var request = new WebSearchQuery(query.Trim(), maxResults, string.IsNullOrWhiteSpace(site) ? null : site.Trim(), recency);
         string described = request.Site is null ? $"'{request.Text}'" : $"'{request.Text}' on {request.Site}";

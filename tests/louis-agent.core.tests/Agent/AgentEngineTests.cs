@@ -2,8 +2,8 @@ using System.Text.Json;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Skills;
-using LouisAgent.Core.Tools.Web;
 using Microsoft.Extensions.AI;
+using LouisAgent.Core.Tools.Web.Search;
 
 namespace LouisAgent.Core.Tests.Agent;
 

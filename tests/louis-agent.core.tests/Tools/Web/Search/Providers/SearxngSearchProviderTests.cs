@@ -1,9 +1,10 @@
 using System.Net;
 using System.Text;
 using LouisAgent.Core.Config;
-using LouisAgent.Core.Tools.Web;
+using LouisAgent.Core.Tools.Web.Search;
+using LouisAgent.Core.Tools.Web.Search.Providers;
 
-namespace LouisAgent.Core.Tests.Tools.Web;
+namespace LouisAgent.Core.Tests.Tools.Web.Search.Providers;
 
 // F32 step 1: WebSearch through SearXNG, the search engine we run ourselves (for development, tests and benchmarks;
 // the sold endpoint keeps a licensed API, ADR 0023). One GET with format=json; the engines SearXNG asked and couldn't
@@ -31,7 +32,7 @@ public class SearxngSearchProviderTests
     [Test]
     public void TheRequest_IsOneGet_WithTheSiteInTheQuery_JsonAndTheTimeRange()
     {
-        var uri = SearxngSearchProvider.RequestUri(Base, new WebSearchQuery("beef mince", 5, "checkers.co.za", "month"));
+        var uri = SearxngSearchProvider.RequestUri(Base, new WebSearchQuery("beef mince", 5, "checkers.co.za", SearchRecency.Month));
 
         Assert.That(uri.GetLeftPart(UriPartial.Path), Is.EqualTo("http://puls-searxng:8080/search"));
         var query = System.Web.HttpUtility.ParseQueryString(uri.Query);

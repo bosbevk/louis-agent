@@ -1,4 +1,4 @@
-namespace LouisAgent.Core.Tools.Web;
+namespace LouisAgent.Core.Tools.Web.Search;
 
 using System.Net;
 

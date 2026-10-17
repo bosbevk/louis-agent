@@ -1,8 +1,10 @@
-namespace LouisAgent.Core.Tools.Web;
+namespace LouisAgent.Core.Tools.Web.Search.Providers;
 
 using System.Net;
 using System.Text.Json;
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Tools.Web;
+using LouisAgent.Core.Tools.Web.Search;
 
 /// <summary>
 /// Google Programmable Search Engine via the Custom Search JSON API. Needs an API key and a search engine ID (cx)
@@ -24,7 +26,7 @@ public sealed class GoogleSearchProvider(string apiKey, string searchEngineId, H
             $"num={Math.Clamp(query.MaxResults, 1, 10)}",
         };
         if (!string.IsNullOrWhiteSpace(query.Site)) parameters.AddRange([$"siteSearch={Uri.EscapeDataString(query.Site)}", "siteSearchFilter=i"]);
-        if (query.Recency is { } recency) parameters.Add($"dateRestrict={recency[0]}1");
+        if (query.Recency is { } recency) parameters.Add($"dateRestrict={DuckDuckGoSearchProvider.Letter(recency)}1");
 
         using var response = await _http.GetAsync("https://www.googleapis.com/customsearch/v1?" + string.Join('&', parameters), cancellationToken);
         string json = await response.Content.ReadAsStringAsync(cancellationToken);
