@@ -222,6 +222,7 @@ a { color: var(--blue); text-decoration-thickness: 1px; text-underline-offset: 2
 .markdown pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px; overflow-x: auto; }
 .markdown pre code { background: none; color: var(--text); padding: 0; font-size: 13px; }
 .markdown blockquote { margin: 0; padding: 2px 0 2px 14px; border-left: 3px solid var(--green-light); color: var(--muted); }
+.markdown td img { width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin-right: 8px; border-radius: 8px; background: #fff; }
 .markdown table { border-collapse: separate; border-spacing: 0; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
 .markdown th { background: var(--code-bg); color: var(--ink); font-weight: 600; }
 .markdown th, .markdown td { border-bottom: 1px solid var(--border); padding: 8px 12px; text-align: left; }

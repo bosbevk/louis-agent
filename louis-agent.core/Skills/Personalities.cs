@@ -53,6 +53,13 @@ public static partial class Personalities
     public static string FileName(string name, SkillLevel level) => $"{FolderOf(level)}/{name}.md";
 
     /// <summary>
+    /// The toolsets a role always loads (F33), from its file's header (<see cref="RoleHeader"/>): none for a role without
+    /// one, or a name that isn't a built-in role.
+    /// </summary>
+    public static IReadOnlyList<string> ToolsetsOf(string? name, SkillLevel level) =>
+        IsValidName(name) && SkillFileSource.ReadEmbedded(FileName(name!, level)) is { } text ? RoleHeader.Split(text).Toolsets : [];
+
+    /// <summary>
     /// The named personalities at <paramref name="level"/>, all built in (CL8 step 4), sorted: at level 0 the modes,
     /// <c>agent/{product}/{mode}.md</c> (every product folder but the function skills'); at level 1 the roles; at level 2
     /// the minion roles, never a base (F30: <c>puls-minion</c> frames every minion, it is no role itself).

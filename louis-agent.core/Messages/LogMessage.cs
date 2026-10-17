@@ -219,4 +219,7 @@ public enum LogMessage
 
     [Description("Couldn't answer {Request} while rendering {Page}: {Reason}")]
     RenderRequestUnhandled,
+
+    [Description("Optional toolset '{Name}' left out: this instance needs {Settings} for it")]
+    OptionalToolsetSkipped,
 }

@@ -46,6 +46,7 @@ Elke gesprek kry hierdie tellings, onder sy beurte in die lopie se tabel en in d
 | `priced` | Hoeveel daarvan 'n prys het **met die skakel waar dit vandaan kom**: net 'n prys met sy bron tel (F31 stap 11b: 'n prys uit die geheue is nie 'n antwoord nie). Die skakel moet na die winkel van daardie kolom gaan (Checkers se prys na `checkers.co.za`); 'n resep se skakel of 'n ander winkel s'n tel nie, en 'n verwysingskakel (`[R12,99][1]`) is sy URL | — |
 | `priced_ratio` | `priced` gedeel deur `ingredients` | groen vanaf 0.8, rooi onder 0.5 |
 | `unsourced` | Hoeveel pryse sonder 'n skakel gegee is: geraai, uit die geheue. Dit tel nooit as geprys nie; die portaal wys dit oranje (*geskat*) | 0 |
+| `per_kg` | Hoeveel pryse met hul skakel 'n prys per kg is in plaas van 'n pak s'n: die sel sê *per kg* (`R99,99/kg`), of dit is een bedrag vir iets wat per gewig verkoop word (Checkers se skakel eindig op `KG`), waar 'n pak 'n reeks kos (`R87,99–R103,99`). Dit tel nie as geprys of geraai nie; die portaal wys dit oranje (PR #58 se resensie: die lopie het 'n pak van 1–1,2 kg teen sy kiloprys geprys) | 0 |
 | `rand_amounts` | Hoeveel randbedrae die antwoorde gee | — |
 | `unconfirmed_marks` | Hoe dikwels die antwoorde *onbekend*, *geskat* of *soekindeks* sê: eerlikheid oor wat nie bevestig is nie | — |
 | `errors` | Hoeveel beurte gefaal het | 0 |

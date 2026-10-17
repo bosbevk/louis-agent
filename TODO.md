@@ -256,6 +256,16 @@ Design: [docs/specs/SESSION_ARCHITECTURE.md](docs/specs/SESSION_ARCHITECTURE.md)
 - [ ] **F32 follow-up: SearXNG's results** (from F32's run): filter them to the site asked for (Bing, often the one
       engine answering, ignores `site:`), and retry once without the time range when a freshness filter leaves no
       engine.
+- [ ] **F33 follow-up: more shop catalogues** (to plan): Shoprite (Checkers' sister store, likely the same Sixty60
+      catalogue), Pick n Pay and Woolworths as providers under `Tools/Shops/Providers`; and a delivery area per shop
+      (Louis's Malmesbury idea: Checkers keeps it in cookies) for local stock.
+- [ ] **CL13 Skills by role** (cleanup, to plan after F33; Louis: "we must cleanup to fix the whole Skills folder
+      namespace … to follow the established pattern and naming"): `Skills/` as the other seams are, the contract at the
+      top (`ISkillProvider`, the file reading), its implementations in `Providers/` (Markdown, Composite, `RoleSkillProvider`
+      from `PersonalitySkillsProvider`), and `Roles/` (`Roles` from `Personalities`, `RoleException`, `RoleHeader`,
+      `RoleLevel` from `SkillLevel`). "Personality" becomes "role" in the code first; the public names (`personality` on
+      `POST /sessions` and `StartSubSession`, `PERSONALITIES_ENABLED`, `GET /personalities`, the web app, the benchmarks)
+      in a second part, the old names still accepted for a while.
 - [ ] **F32 follow-up: one egress proxy for the browser** (to plan; review of PR #56): `puls-browser` reaches the
       internet only through a proxy that resolves each name once, refuses internal addresses and connects to the address
       it checked, so DNS rebinding (Chrome resolving again after `RenderPolicy` checked) and a Web Worker's WebSocket

@@ -34,6 +34,7 @@ afterwards from the docs that hold them (each ADR links its sources), with the d
 | [0022](0022-benchmarks-recorded-from-the-protocol.md) | Benchmark results in MongoDB, recorded by the API from the harness's stdout protocol | Accepted |
 | [0023](0023-copyleft-service-beside-us.md) | A copyleft service may run beside us, unchanged; what we link stays MIT, Apache or BSD | Accepted |
 | [0024](0024-choices-are-enums.md) | Choices are enums, not strings, parsed once where they enter | Accepted |
+| [0025](0025-a-role-declares-its-toolsets.md) | A role declares its own toolsets in its file; a `?` toolset loads only where an instance has it | Accepted |
 
 ## When to write one
 

@@ -2,6 +2,7 @@ namespace LouisAgent.Core.Tools.Web.Rendering;
 
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Tools.Web.Browsing;
 using LouisAgent.Core.Tools.Web.Rendering.Providers;
 
 /// <summary>
@@ -27,11 +28,11 @@ public static class PageRendererFactory
 
         return choice switch
         {
-            null when browser is not null => new ChromePageRenderer(browser),
+            null when browser is not null => new ChromePageRenderer(new ChromeWebBrowser(browser)),
             null when hasTavily => new TavilyPageRenderer(options.TavilyApiKey!, http),
             null => new UnavailablePageRenderer(MessageText.Format(ToolMessage.RenderNotConfigured)),
             PageRendererKind.Chrome => browser is not null
-                ? new ChromePageRenderer(browser)
+                ? new ChromePageRenderer(new ChromeWebBrowser(browser))
                 : new UnavailablePageRenderer(MessageText.Format(ToolMessage.BrowserNotConfigured)),
             PageRendererKind.Tavily => hasTavily
                 ? new TavilyPageRenderer(options.TavilyApiKey!, http)

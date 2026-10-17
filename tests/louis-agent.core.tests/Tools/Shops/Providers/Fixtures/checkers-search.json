@@ -1,0 +1,58 @@
+{
+  "products": [
+    {
+      "id": "62cd41822aa38c342af26f2a",
+      "articleNumber": "10796287",
+      "name": "Farmer's Choice Fresh Chicken 16 Piece Drumsticks & Wings Per kg",
+      "brand": "Farmer's Choice",
+      "unitOfMeasure": "KG",
+      "weightOptions": [
+        "1100-1300"
+      ],
+      "price": 79.99,
+      "discountedPrice": 79.99,
+      "oldPrice": 7999,
+      "priceWithoutDecimal": 7999,
+      "priceFactor": 100,
+      "currency": "ZAR",
+      "isOnPromotion": true,
+      "isStockAvailable": true
+    },
+    {
+      "id": "5fc8fbc1743de0d328d3a87e",
+      "articleNumber": "10732976",
+      "name": "Farmer's Choice Chicken 8 Piece Wings Per Kg",
+      "brand": "Farmer's Choice",
+      "unitOfMeasure": "KG",
+      "weightOptions": [
+        "500-800"
+      ],
+      "price": 99.99,
+      "discountedPrice": 99.99,
+      "oldPrice": 9999,
+      "priceWithoutDecimal": 9999,
+      "priceFactor": 100,
+      "currency": "ZAR",
+      "isOnPromotion": false,
+      "isStockAvailable": true
+    },
+    {
+      "id": "5d3af641f434cf8420738048",
+      "articleNumber": "10133306",
+      "name": "KOO Mild & Spicy Chakalaka Can 410g",
+      "brand": "KOO",
+      "imageId": "6a5f7a88745efcce53fcd220",
+      "unitOfMeasure": "EA",
+      "weightOptions": [],
+      "price": 25.99,
+      "discountedPrice": 25.99,
+      "oldPrice": 2599,
+      "priceWithoutDecimal": 2599,
+      "priceFactor": 100,
+      "currency": "ZAR",
+      "isOnPromotion": false,
+      "isStockAvailable": true
+    }
+  ],
+  "totalCount": 3
+}

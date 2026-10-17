@@ -218,6 +218,19 @@ public class PersonalitiesTests
         string cook = SkillFileSource.ReadEmbedded(Personalities.SpecialistsFolder + "/puls-cook.md")!;
 
         Assert.That(cook, Does.Contain("Where the user is").And.Contain("Never invent a price"));
+        // PR #58's review: run fc7f8ecfdc87 priced a 1–1.2 kg pack of thighs at its price per kg.
+        Assert.That(cook, Does.Contain("A price per kg is never a pack's price"));
+        // Louis (PR #58): the list's To buy column showed "1 kg" and "6 pak" with no product; the example taught it.
+        Assert.That(cook, Does.Contain("the product's name as the shop sells it"));
+        // Louis: "can we have a product image": the photo FindProducts gives, before the name; never another image.
+        Assert.That(cook, Does.Contain("![KOO Chakalaka](https://catalog.sixty60.co.za/…) KOO Chakalaka Mild 410 g"));
+        Assert.That(cook, Does.Contain("only an image `FindProducts` gave"));
+        // Louis: the recipe needed under 1 kg of maize meal and the cook priced the 2.5 kg pack, with a 1 kg one on the shelf.
+        Assert.That(cook, Does.Contain("the smallest pack that covers what the recipe needs"));
+        // Louis: "there is a checkers in malmesbury so why is puls not picking it up". "supermarkets in Malmesbury" on
+        // OpenStreetMap misses it (mapped on the N7, outside the town's boundary); a search by name finds it.
+        Assert.That(cook, Does.Contain("look it up by name").And.Contain("q=Checkers+Malmesbury"));
+        Assert.That(cook, Does.Contain("| Chicken thighs | 600 g | Farmer's Choice Chicken Thighs 1–1,2 kg |"));
     }
 
     [Test]
@@ -255,6 +268,20 @@ public class PersonalitiesTests
     }
 
     [Test]
+    public void TheCook_PricesAShopWithACatalogue_ThroughFindProducts_First()
+    {
+        // F33 step 4: F32's run priced nothing; Checkers' own catalogue gives exact, linked prices. Where the cook has
+        // FindProducts (the shops toolset, its own: `toolsets: shops?`), a shop it covers in the town is one of the two,
+        // priced through it before any web search, each price linked to the product the table gives.
+        string cook = SkillFileSource.ReadEmbedded(Personalities.SpecialistsFolder + "/puls-cook.md")!;
+
+        Assert.That(cook, Does.StartWith("---\ntoolsets: shops?\n---").Or.StartWith("---\r\ntoolsets: shops?\r\n---"));
+        Assert.That(cook, Does.Contain("`FindProducts`").And.Contain("before any `WebSearch`"));
+        Assert.That(cook, Does.Contain("one of the two"), "a shop with a catalogue is picked first");
+        Assert.That(cook, Does.Contain("the link the table gives"), "its source");
+    }
+
+    [Test]
     public void TheCook_WritesItsReportInOneShape_ThatPulsHandsOn()
     {
         // Louis: "force Puls to output the data as the cook said it, and conform the cook's output". The report is
@@ -275,11 +302,11 @@ public class PersonalitiesTests
         Assert.That(cook, Does.Not.Contain("Checkers and Shoprite always"), "the two shops are picked at random from the town's");
         // Louis: "pick randomly which store to use based on location; don't even use stores not in your location".
         Assert.That(cook, Does.Contain("q=supermarkets+in+Stellenbosch").And.Contain("pick two at random").And.Contain("never price at, name or total a shop the town doesn't have"));
-        Assert.That(cook, Does.Contain("| **Total, priced rows** | | | **R102,98** | **R84,99** | **R120,97** | **R110,97** |"), "the totals are the list's last rows, side by side, the cheapest basket last");
+        Assert.That(cook, Does.Contain("| **Total, priced rows** | | | **R120,98** | **R84,99** | **R120,97** | **R110,97** |"), "the totals are the list's last rows, side by side, the cheapest basket last");
         // Louis: an unpriced ingredient is an ordinary row; no row counting or naming them. Its cell is a `-` (review of
         // PR #55: "make unknown --> -"), so a column of gaps reads at a glance and the check's scorer counts the row's
         // linked price at another shop.
-        Assert.That(cook, Does.Contain("| Lemons | 2 | 2 | [R12,99](https://www.checkers.co.za/…) | - | [R14,99](https://www.pnp.co.za/…) | R12,99 Checkers |"));
+        Assert.That(cook, Does.Contain("| Lemons | 2 | Loose lemons, 2 | [R12,99](https://www.checkers.co.za/…) | - | [R14,99](https://www.pnp.co.za/…) | R12,99 Checkers |"));
         Assert.That(cook, Does.Contain("a price you couldn't find is a `-` in its cell"));
         Assert.That(cook, Does.Not.Contain("**Unpriced"));
         Assert.That(cook, Does.Not.Contain("### Total"), "no section of its own");

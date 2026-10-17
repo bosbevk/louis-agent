@@ -84,8 +84,9 @@ decision's record (its context, and what it cost) in [docs/adr/](adr/README.md).
   Why: [ADR 0005](adr/0005-guard-the-context.md).
 - **Toolsets per session** (F5) — a session names its toolsets when it opens and keeps them, so its prefix stays
   cacheable; an engine per toolset list, with only those tools and their guides
-  ([Adding a toolset](../louis-agent.core/CLAUDE.md#adding-a-toolset)).
-  Why: [ADR 0006](adr/0006-toolsets-per-session.md).
+  ([Adding a toolset](../louis-agent.core/CLAUDE.md#adding-a-toolset)). A role's file may add its own (F33), and a
+  name ending in `?` loads only where the instance has that toolset.
+  Why: [ADR 0006](adr/0006-toolsets-per-session.md), [ADR 0025](adr/0025-a-role-declares-its-toolsets.md).
 - **Measure every request, and show it** — the usage ledger records each model request with its tokens and its cost,
   priced from a table dated by `as_of`, so later price changes never rewrite history; unknown prices are `null`, never
   0. Every host shows a turn's usage from the same records and totals (`UsageReport.Total`), so the views and the
@@ -222,9 +223,21 @@ rebuild the images that use core.
    Puls's *Taal* menu offers it as soon as `GET /personalities` does. Each product routes only what it does.
 2. **A role** (level 1) is `specialists/{name}.md`: a specialist's function and how it reports to the agent that called
    it. A parent names it in `StartSubSession`; the specialists guide (`toolsets/specialists.md`) says which goes with
-   which toolsets. **A minion's function** (level 2, F30) is `minions/{product}-minion-{function}.md`, loaded after its
-   product's base (`minions/{product}-minion.md`: what every minion is, which is no role itself); the specialist hands
-   the minion one tool of its own, so no file lists tools per role.
+   which toolsets. A role that always needs a toolset declares it in a header at the top of its file, which the
+   loader strips before the model sees it (F33, [ADR 0025](adr/0025-a-role-declares-its-toolsets.md)):
+
+   ```markdown
+   ---
+   toolsets: shops?
+   ---
+   ```
+
+   Those toolsets are added to what the parent passed; `?` loads one only where this instance has it (`shops` needs
+   `SHOP_CATALOGUES` and `BROWSER_URL`), and skips it with a log line elsewhere.
+
+   **A minion's function** (level 2, F30) is `minions/{product}-minion-{function}.md`, loaded after its product's base
+   (`minions/{product}-minion.md`: what every minion is, which is no role itself); the specialist hands the minion one
+   tool of its own, so no file lists tools per role.
 3. Names are lowercase letters, digits and dashes (a mode adds one `/`), used at one level only; a name from another
    level is refused as unknown. `PERSONALITIES_ENABLED` turns on only the listed ones, so a test can run Puls and the
    one role under test.
