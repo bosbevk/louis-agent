@@ -13,7 +13,7 @@ def fetch(url):
     return {"name": "FetchUrl", "input": {"url": url}}
 
 
-START = {"name": "StartSubSession", "input": {"personality": "puls-cook"}}
+START = {"name": "StartSubSession", "input": {"role": "puls-cook"}}
 
 
 class AMealQuestion(unittest.TestCase):

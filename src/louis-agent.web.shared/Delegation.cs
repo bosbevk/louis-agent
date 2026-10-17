@@ -9,7 +9,7 @@ namespace LouisAgent.Web.Shared;
 /// (<c>[Sub-session on coder (files): 3 requests, …]</c>, or for a kept one
 /// <c>[Sub-session sub-1 on puls (web; puls-cook): 3 requests, …. It stays open: …]</c>).
 /// </summary>
-/// <param name="Role">The specialist's role (its personality): from the call for a start, from the footer once it returned.</param>
+/// <param name="Role">The specialist's role: from the call for a start, from the footer once it returned.</param>
 /// <param name="Handle">The kept sub-session's handle (<c>sub-1</c>): from the call for a continue, from the footer for a start.</param>
 /// <param name="Continued">True for a <c>ContinueSubSession</c> call: a follow-up to a specialist that was already working.</param>
 /// <param name="ResultAgent">The peer named in the result's footer: the one actually used (the call may leave the name empty).</param>
@@ -44,7 +44,9 @@ public sealed partial record Delegation(
             var root = input.RootElement;
             if (root.TryGetProperty("agent", out var a)) agent = a.GetString() ?? "";
             if (root.TryGetProperty("message", out var m)) task = m.GetString() ?? "";
-            if (root.TryGetProperty("personality", out var p) && p.ValueKind == JsonValueKind.String) role = Blank(p.GetString());
+            // CL14: the call's role; a chat recorded before CL14 said personality.
+            if ((root.TryGetProperty("role", out var p) || root.TryGetProperty("personality", out p)) && p.ValueKind == JsonValueKind.String)
+                role = Blank(p.GetString());
             if (root.TryGetProperty("handle", out var h) && h.ValueKind == JsonValueKind.String) handle = Blank(h.GetString());
             if (root.TryGetProperty("toolsets", out var t) && t.ValueKind == JsonValueKind.Array)
                 toolsets.AddRange(t.EnumerateArray().Select(x => x.GetString() ?? "").Where(x => x.Length > 0));

@@ -50,7 +50,7 @@ def stream(mode, repeat, task, turn, cook):
     if cook:
         call = f"toolu_{task}_{turn}"
         block({"type": "tool_use", "id": call, "name": "StartSubSession",
-               "input": {"agent": "puls", "personality": "puls-cook", "task": task}})
+               "input": {"agent": "puls", "role": "puls-cook", "task": task}})
         for inner, data in [
             ("content_block_start", {"type": "content_block_start", "index": 0, "content_block": {"type": "text", "text": ""}}),
             ("content_block_delta", {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "Die kok se resep."}}),
@@ -77,7 +77,7 @@ def main():
     for repeat in range(1, args.repeat + 1):
         for mode, toolsets in MODES:
             cook = "specialists" in toolsets
-            emit("mode", mode=mode, repeat=repeat, toolsets=toolsets, personality="puls/voice-af", llm=None,
+            emit("mode", mode=mode, repeat=repeat, toolsets=toolsets, role="puls/voice-af", llm=None,
                  conversations=len(CONVERSATIONS))
             for task, questions in CONVERSATIONS:
                 session = f"sess_stub_{mode}_{repeat}_{task}"

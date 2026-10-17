@@ -34,9 +34,9 @@ services:
       # Chats hand cooking to the specialist below and answer the web themselves (F29)
       AGENT_PEERS: puls=http://puls-agent:8080
       # Only a role that has passed its check is on (F29): the cook, its price minion (F30) and Puls's own voice. Set
-      # PERSONALITIES_ENABLED in config/.env to change it (an empty value turns every role on), then `up -d`; both
-      # containers read it.
-      PERSONALITIES_ENABLED: ${PERSONALITIES_ENABLED-puls/voice-af,puls/voice-en,puls-cook,puls-minion-web-price-lookup}
+      # ROLES_ENABLED in config/.env to change it (an empty value turns every role on), then `up -d`; both containers
+      # read it. PERSONALITIES_ENABLED, its name before CL14, is still passed on when ROLES_ENABLED is unset.
+      ROLES_ENABLED: ${ROLES_ENABLED-${PERSONALITIES_ENABLED-puls/voice-af,puls/voice-en,puls-cook,puls-minion-web-price-lookup}}
       # The web we run (F32): SearXNG for search (development and benchmarks only, ADR 0023; WEB_SEARCH_PROVIDER picks
       # it) and the headless Chrome that renders pages drawn with JavaScript.
       SEARXNG_URL: ${SEARXNG_URL-http://puls-searxng:8080}
@@ -75,7 +75,7 @@ services:
       # 2026-10-17: qwen invented dates and priced the wrong products). Set MINION_LLMS in config/.env to change it.
       AGENT_PEERS: puls-agent=http://puls-agent:8080
       MINION_LLMS: ${MINION_LLMS-*=instance}
-      PERSONALITIES_ENABLED: ${PERSONALITIES_ENABLED-puls/voice-af,puls/voice-en,puls-cook,puls-minion-web-price-lookup}
+      ROLES_ENABLED: ${ROLES_ENABLED-${PERSONALITIES_ENABLED-puls/voice-af,puls/voice-en,puls-cook,puls-minion-web-price-lookup}}
       # The models a specialist may run on besides Claude (F30): a sub-session naming "ollama-puls" runs on the local model
       # in config/.env.ollama-puls (Ollama on the host). Set LLM_SESSION_PROFILES in config/.env to change it.
       LLM_SESSION_PROFILES: ${LLM_SESSION_PROFILES-ollama-puls}

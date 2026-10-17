@@ -1,4 +1,4 @@
-"""Puls's API, as a check calls it (F31): open a session with its toolsets, personality and tags, send it messages
+"""Puls's API, as a check calls it (F31): open a session with its toolsets, role and tags, send it messages
 and read their streams, delete it. The API is PULS_API (the runner sets it to the container's own port) and, when
 the API wants one, the key is AGENT_API_KEY, which the script has from the container's environment."""
 import json

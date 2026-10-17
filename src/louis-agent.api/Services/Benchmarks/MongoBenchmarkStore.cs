@@ -160,7 +160,7 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
     private static BsonDocument TurnId(string run, TurnKey key) =>
         new() { ["run"] = run, ["mode"] = key.Mode, ["repeat"] = key.Repeat, ["task"] = key.Task, ["turn"] = key.Turn };
 
-    private static BsonDocument ToBson(Run run) => new()
+    internal static BsonDocument ToBson(Run run) => new()
     {
         ["_id"] = run.Id,
         ["check"] = run.Check,
@@ -173,7 +173,7 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
         ["modes"] = new BsonArray((run.Modes ?? []).Select(m => new BsonDocument
         {
             ["name"] = m.Name, ["repeat"] = m.Repeat, ["toolsets"] = new BsonArray(m.Toolsets),
-            ["personality"] = Nullable(m.Personality), ["llm"] = Nullable(m.Llm),
+            ["role"] = Nullable(m.Role), ["llm"] = Nullable(m.Llm),
         })),
         ["total"] = run.Total is null ? BsonNull.Value : new BsonDocument
         {
@@ -183,7 +183,8 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
         ["store_error"] = Nullable(run.StoreError),
     };
 
-    private static Run RunOf(BsonDocument d) => new(
+    /// <summary>A run as stored; a mode recorded before CL14 keeps "personality", read as its role (never rewritten).</summary>
+    internal static Run RunOf(BsonDocument d) => new(
         d["_id"].AsString,
         d["check"].AsString,
         d["repeat"].AsInt32,
@@ -193,7 +194,8 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
         d["exit_code"].IsBsonNull ? null : d["exit_code"].AsInt32,
         d["settings"].IsBsonNull ? null : d["settings"].AsBsonDocument.ToDictionary(e => e.Name, e => e.Value.AsString),
         d["modes"].AsBsonArray.Select(m => m.AsBsonDocument).Select(m => new Mode(m["name"].AsString, m["repeat"].AsInt32,
-            m["toolsets"].AsBsonArray.Select(t => t.AsString).ToArray(), StringOf(m["personality"]), StringOf(m["llm"]))).ToArray(),
+            m["toolsets"].AsBsonArray.Select(t => t.AsString).ToArray(),
+            StringOf(m.GetValue("role", null) ?? m.GetValue("personality", BsonNull.Value)), StringOf(m["llm"]))).ToArray(),
         d["total"].IsBsonNull ? null : new Total(DecimalOf(d["total"]["cost"]), d["total"]["currency"].AsString,
             d["total"]["tokens"].ToInt64(), d["total"]["requests"].AsInt32),
         d["log"].IsBsonNull ? null : d["log"].AsBsonArray.Select(l => l.AsString).ToArray(),

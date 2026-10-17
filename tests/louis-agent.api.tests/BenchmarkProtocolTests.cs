@@ -20,17 +20,22 @@ public class BenchmarkProtocolTests
     [Test]
     public void AMode_CarriesItsRepeatToolsetsAndTheSessionFieldsItOpensWith()
     {
-        var parsed = Parse("""@{"event":"mode","mode":"puls-cook","repeat":2,"toolsets":["specialists","web"],"personality":"puls/voice-af","llm":null,"conversations":4,"t":1760700000.5}""");
+        var parsed = Parse("""@{"event":"mode","mode":"puls-cook","repeat":2,"toolsets":["specialists","web"],"role":"puls/voice-af","llm":null,"conversations":4,"t":1760700000.5}""");
 
         var mode = (ModeStarted)parsed;
         Assert.That(mode.Mode, Is.EqualTo("puls-cook"));
         Assert.That(mode.Repeat, Is.EqualTo(2));
         Assert.That(mode.Toolsets, Is.EqualTo(new[] { "specialists", "web" }));
-        Assert.That(mode.Personality, Is.EqualTo("puls/voice-af"));
+        Assert.That(mode.Role, Is.EqualTo("puls/voice-af"));
         Assert.That(mode.Llm, Is.Null);
         Assert.That(mode.Conversations, Is.EqualTo(4));
         Assert.That(mode.At, Is.EqualTo(DateTimeOffset.FromUnixTimeMilliseconds(1_760_700_000_500)));
     }
+
+    [Test]
+    public void AModeFromAHarnessBeforeCL14_SaysPersonality_ReadAsItsRole() =>
+        Assert.That(((ModeStarted)Parse("""@{"event":"mode","mode":"puls-cook","repeat":1,"toolsets":["web"],"personality":"puls/voice-af"}""")).Role,
+            Is.EqualTo("puls/voice-af"));
 
     [Test]
     public void AQuestion_CarriesItsSession()

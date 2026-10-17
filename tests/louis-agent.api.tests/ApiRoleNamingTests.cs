@@ -13,10 +13,6 @@ public class ApiRoleNamingTests
         "CreateSessionRequest.get_Personality", "CreateSessionRequest.set_Personality",
         "CreateSessionRequest..ctor(Personality)", "CreateSessionRequest.Deconstruct(Personality)",
         "ApiUserText.RoleAndPersonalityDiffer",             // the 400 for a request that sends both, differing
-        "ModeStarted.Personality", "ModeStarted.get_Personality", "ModeStarted.set_Personality",   // step 3: the benchmarks
-        "ModeStarted..ctor(Personality)", "ModeStarted.Deconstruct(Personality)",
-        "Mode.Personality", "Mode.get_Personality", "Mode.set_Personality", "Mode..ctor(Personality)", "Mode.Deconstruct(Personality)",
-        "BenchmarkSettings.Of(personalities)",
     ];
 
     private const BindingFlags All = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance |

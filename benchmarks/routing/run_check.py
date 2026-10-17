@@ -20,7 +20,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."
 from benchmarks.puls_check import protocol, stream  # noqa: E402
 from benchmarks.puls_check.client import Client  # noqa: E402
 
-PERSONALITY = "puls/voice-af"
+ROLE = "puls/voice-af"
 TIME_ZONE = "Africa/Johannesburg"
 LOCATION = "Stellenbosch, Wes-Kaap, Suid-Afrika"
 
@@ -76,7 +76,7 @@ def score(task, turn, delegating):
 def ask(client, run, mode, repeat, toolsets, task, question):
     """One question in a new session, its stream forwarded as it comes; what the turn read."""
     key = {"mode": mode, "repeat": repeat, "task": task, "turn": 1}
-    session = client.open_session(toolsets=toolsets, personality=PERSONALITY, time_zone=TIME_ZONE, location=LOCATION,
+    session = client.open_session(toolsets=toolsets, role=ROLE, time_zone=TIME_ZONE, location=LOCATION,
                                   task=task, run=protocol.run_tag(run, mode, repeat))
     started, events = time.time(), []
     try:
@@ -114,7 +114,7 @@ def main():
     for repeat in range(1, args.repeat + 1):
         for mode, toolsets in modes.items():
             delegating = "specialists" in toolsets
-            protocol.emit("mode", mode=mode, repeat=repeat, toolsets=toolsets, personality=PERSONALITY, llm=None,
+            protocol.emit("mode", mode=mode, repeat=repeat, toolsets=toolsets, role=ROLE, llm=None,
                           conversations=len(QUESTIONS))
             right = 0
             for task, question in QUESTIONS:

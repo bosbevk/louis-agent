@@ -31,7 +31,7 @@ public class BenchmarkRecorderTests
     private static string Protocol(int version = 1) => At(new { @event = "protocol", version });
 
     private static string Mode(string mode = "puls-cook", int repeat = 1) =>
-        At(new { @event = "mode", mode, repeat, toolsets = new[] { "specialists", "web" }, personality = "puls/voice-af", conversations = 2 });
+        At(new { @event = "mode", mode, repeat, toolsets = new[] { "specialists", "web" }, role = "puls/voice-af", conversations = 2 });
 
     private static string Question(string task, int turn = 1, string mode = "puls-cook", int repeat = 1) =>
         At(new { @event = "question", mode, repeat, task, turn, session = $"sess_{task}", text = $"{task}?" });
@@ -76,7 +76,7 @@ public class BenchmarkRecorderTests
         Assert.That((run!.Check, run.Repeat, run.Status, run.ExitCode), Is.EqualTo(("cook", 1, BenchmarkRunStatus.Done, (int?)0)));
         Assert.That(run.EndedAt, Is.Not.Null);
         Assert.That(run.Settings!["model"], Is.EqualTo("claude-haiku-5-5"));
-        Assert.That(run.Modes!.Single() is { Name: "puls-cook", Repeat: 1, Personality: "puls/voice-af" });
+        Assert.That(run.Modes!.Single() is { Name: "puls-cook", Repeat: 1, Role: "puls/voice-af" });
         Assert.That(run.Log, Is.EqualTo(new[] { "Puls cook check, 1 repeat", "puls-cook bobotie role=puls-cook" }), "the plain lines, not the events");
 
         var conversation = (await _store.ConversationsAsync(_run.Id)).Single();

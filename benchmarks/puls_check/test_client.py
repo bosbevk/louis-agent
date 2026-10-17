@@ -59,14 +59,14 @@ class TheClient(unittest.TestCase):
         self.server.server_close()
 
     def test_a_session_is_opened_asked_and_deleted_with_the_key(self):
-        session = self.client.open_session(toolsets=["web"], personality="puls/voice-af", run="r1:puls-only:1", task="bobotie")
+        session = self.client.open_session(toolsets=["web"], role="puls/voice-af", run="r1:puls-only:1", task="bobotie")
         events = list(self.client.message(session, "Bobotie?"))
         self.client.close(session)
 
         self.assertEqual(session, "sess_1")
         self.assertEqual([e for e, _ in events], ["content_block_delta", "message_stop"])
         self.assertEqual(Puls.seen[0][:3], ("POST", "/sessions", "k3y"))
-        self.assertEqual(Puls.seen[0][3], {"toolsets": ["web"], "personality": "puls/voice-af", "run": "r1:puls-only:1", "task": "bobotie"})
+        self.assertEqual(Puls.seen[0][3], {"toolsets": ["web"], "role": "puls/voice-af", "run": "r1:puls-only:1", "task": "bobotie"})
         self.assertEqual(Puls.seen[1][:2], ("POST", "/sessions/sess_1/messages"))
         self.assertEqual(Puls.seen[1][3], {"message": "Bobotie?"})
         self.assertEqual(Puls.seen[2][:2], ("DELETE", "/sessions/sess_1"))

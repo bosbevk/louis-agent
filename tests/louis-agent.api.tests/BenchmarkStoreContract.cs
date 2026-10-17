@@ -68,11 +68,25 @@ public abstract class BenchmarkStoreContract
         Assert.That((read!.Id, read.Check, read.Repeat, read.Status), Is.EqualTo((id, _check, 2, BenchmarkRunStatus.Done)));
         Assert.That((read.StartedAt, read.EndedAt, read.ExitCode), Is.EqualTo((T0, (DateTimeOffset?)T0.AddMinutes(9), (int?)0)));
         Assert.That(read.Settings, Is.EquivalentTo(run.Settings));
-        Assert.That(read.Modes!.Single() is { Name: "puls-cook", Repeat: 1, Personality: "puls/voice-af", Llm: null });
+        Assert.That(read.Modes!.Single() is { Name: "puls-cook", Repeat: 1, Role: "puls/voice-af", Llm: null });
         Assert.That(read.Modes!.Single().Toolsets, Is.EqualTo(new[] { "specialists", "web" }));
         Assert.That(read.Total, Is.EqualTo(new Total(0.4217m, "USD", 812_345, 61)));
         Assert.That(read.Log, Is.EqualTo(run.Log));
         Assert.That(read.StoreError, Is.Null);
+    }
+
+    [Test]
+    public void ARunStoredBeforeCL14_ReadsItsModesPersonalityAsTheRole()
+    {
+        // CL14: runs recorded before CL14 keep "personality" on their modes in MongoDB; they're never rewritten, so read both.
+        var run = new Run("r_old", _check, 1, BenchmarkRunStatus.Done, T0, T0, 0, null,
+            [new Mode("puls-cook", 1, ["web"], "puls/voice-af", null)], null, null, null);
+        var stored = MongoBenchmarkStore.ToBson(run);
+        var mode = stored["modes"][0].AsBsonDocument;
+        mode.Remove("role");
+        mode["personality"] = "puls/voice-af";
+
+        Assert.That(MongoBenchmarkStore.RunOf(stored).Modes!.Single().Role, Is.EqualTo("puls/voice-af"));
     }
 
     [Test]

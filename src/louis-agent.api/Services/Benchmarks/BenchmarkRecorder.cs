@@ -94,7 +94,7 @@ public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = n
                     _log.Add(MessageText.Format(ApiUserText.BenchmarkProtocolUnknown, new { started.Version, Supported = BenchmarkProtocol.Version }));
                     break;
                 case ModeStarted mode:
-                    _modes.Add(new Mode(mode.Mode, mode.Repeat, mode.Toolsets, mode.Personality, mode.Llm));
+                    _modes.Add(new Mode(mode.Mode, mode.Repeat, mode.Toolsets, mode.Role, mode.Llm));
                     await SaveRunAsync();
                     break;
                 case QuestionAsked question:

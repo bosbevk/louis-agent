@@ -21,7 +21,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."
 from benchmarks.puls_check import protocol, scoring, stream  # noqa: E402
 from benchmarks.puls_check.client import Client  # noqa: E402
 
-PERSONALITY = "puls/voice-af"
+ROLE = "puls/voice-af"
 TIME_ZONE = "Africa/Johannesburg"
 
 MODES = {
@@ -88,7 +88,7 @@ def score(task, turns, cook_on):
 
 def converse(client, run, mode, repeat, toolsets, task, location, messages):
     """One conversation in a new session: each message, its stream forwarded as it comes, and what the turn read."""
-    session = client.open_session(toolsets=toolsets, personality=PERSONALITY, time_zone=TIME_ZONE, location=location,
+    session = client.open_session(toolsets=toolsets, role=ROLE, time_zone=TIME_ZONE, location=location,
                                   task=task, run=protocol.run_tag(run, mode, repeat))
     key = {"mode": mode, "repeat": repeat, "task": task}
     turns = []
@@ -128,7 +128,7 @@ def main():
     for repeat in range(1, args.repeat + 1):
         for mode, toolsets in MODES.items():
             cook_on = "specialists" in toolsets
-            protocol.emit("mode", mode=mode, repeat=repeat, toolsets=toolsets, personality=PERSONALITY, llm=None,
+            protocol.emit("mode", mode=mode, repeat=repeat, toolsets=toolsets, role=ROLE, llm=None,
                           conversations=len(CONVERSATIONS))
             for task, location, messages in CONVERSATIONS:
                 started = time.time()
