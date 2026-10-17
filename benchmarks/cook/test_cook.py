@@ -106,8 +106,11 @@ class Errors(unittest.TestCase):
 
 
 class TheModes(unittest.TestCase):
-    def test_are_puls_alone_and_puls_with_its_cook(self):
-        self.assertEqual(cook.MODES, {"puls-only": ["web"], "puls-cook": ["specialists", "web"]})
+    # Louis (F34): "puls loaded with everything the cook has vs puls + puls-cook". Puls alone gets the cook's tools
+    # (web and shops), so the check measures the cook's role and its own session, not a toolset Puls lacked. A new
+    # name: the portal's trend follows a mode by name, and puls-only's runs had web alone.
+    def test_are_puls_with_the_cooks_tools_and_puls_with_its_cook(self):
+        self.assertEqual(cook.MODES, {"puls-tools": ["web", "shops"], "puls-cook": ["specialists", "web"]})
 
 
 if __name__ == "__main__":

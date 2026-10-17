@@ -123,6 +123,9 @@ prices.
   number of people got a meal for two, where Louis meant himself: the cook always knows now. A meal's brief has a
   `Vir hoeveel` / `Serves` line, and when the user didn't say, Puls asks first (Louis's choice over a default of one:
   a guess is still a guess).
+- **The cook check compares like with like (2026-10-18).** Puls alone had only `web`, so it couldn't reach a shop's
+  catalogue and the check measured the tools, not the cook. `puls-tools` gives it `web` and `shops` (a session with
+  both: 10 tools, about 5,458 tokens of fixed prefix).
 
 ---
 [Features](README.md) · [Plan](../plans/F34-shop-deals.md) · Previous: [F33 Shop catalogues](F33-shop-catalogues.md)

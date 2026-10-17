@@ -1,9 +1,10 @@
-# Kokkontrole (`cook`): Puls alleen teen Puls met die kok
+# Kokkontrole (`cook`): Puls met die kok se gereedskap teen Puls met die kok
 
 ## Wat dit meet
 
-Wat voeg Puls se kok by? Dieselfde gesprekke word twee keer gevoer: eers deur Puls alleen, wat self kook en self
-pryse soek, dan deur Puls soos gebou, wat 'n maaltyd aan die kok (`puls-cook`) oorgee. Wat getel word, is wat die
+Wat voeg Puls se kok by? Dieselfde gesprekke word twee keer gevoer: eers deur Puls alleen met al die kok se gereedskap
+(`web` en `shops`), wat self kook en self pryse soek, dan deur Puls soos gebou, wat 'n maaltyd aan die kok
+(`puls-cook`) oorgee. Albei het dus dieselfde gereedskap: die verskil is die kok se rol en sy eie sessie. Wat getel word, is wat die
 agente *gedoen* het (wie oorgegee het, watter webwerwe gelees is, hoeveel bestanddele geprys is), nie net wat hulle
 geskryf het nie. Die koste kom uit die grootboek, nie uit die skrip nie.
 
@@ -11,11 +12,16 @@ geskryf het nie. Die koste kom uit die grootboek, nie uit die skrip nie.
 
 | Modus | Puls se gereedskap | Die kok se gereedskap | Wat dit is |
 |---|---|---|---|
-| `puls-only` | `web` | — | Puls alleen: kan nie oorgee nie, kook en prys self |
-| `puls-cook` | `specialists`, `web` | `web` | Puls soos gebou: die web self, kook na die kok |
+| `puls-tools` | `web`, `shops` | — | Puls alleen met die kok se gereedskap: kan nie oorgee nie, kook en prys self |
+| `puls-cook` | `specialists`, `web` | `web`, `shops` | Puls soos gebou: die web self, kook na die kok |
 
 `specialists` is nie iets wat die kok gebruik nie: dit is Puls se vermoë om oor te gee. Sonder dit kan Puls net self
-kook, wat `puls-only` is. Die kok kry van Puls net `web` (die opgeneemde beurt wys `toolsets: ["web"]`).
+kook, wat `puls-tools` is. Die kok kry van Puls `web` (die opgeneemde beurt wys `toolsets: ["web"]`), en sy rol voeg
+`shops` by (F33, ADR 0025).
+
+Tot F34 was die eerste modus `puls-only`, met net `web`: Puls alleen kon nie by 'n winkel se katalogus kom nie, so
+die vergelyking het die gereedskap gemeet, nie die kok nie (Louis: "puls loaded with everything the cook has vs puls +
+puls-cook"). Die nuwe naam hou die portaal se tendens eerlik: ou lopies se `puls-only` staan apart.
 
 ## Die gesprekke
 
@@ -71,7 +77,7 @@ daardie lopie het sonder websoektogte geloop (Tavily se krediete was op), so 'n 
 - **Op die bladsy:** die lopie se tabel wys elke beurt soos dit klaarkom; die tellings staan onder elke gesprek.
 - **In die verkenner** (klik die lopie in die lys): die koste per modus en per gesprek langs mekaar, dan 'n gesprek
   se beurte op 'n tydlyn van modelversoeke, dan die beurt self, afgespeel soos dit getik is, en een versoek se rekord.
-- Vergelyk `puls-only` met `puls-cook` op dieselfde gesprek: kos die kok meer, en prys hy meer bestanddele by
+- Vergelyk `puls-tools` met `puls-cook` op dieselfde gesprek: kos die kok meer, en prys hy meer bestanddele by
   plaaslike winkels?
 
 ## Met die hand

@@ -1,6 +1,7 @@
 """The cook check (F25, F26; rewritten for the portal in F31): what does Puls's cook add? The same conversations with
-Puls alone (`puls-only`: `web`, so it can't delegate and cooks itself) and Puls with its cook (`puls-cook`:
-`specialists` and `web`, Puls as built). Each conversation is one session; a second message is the follow-up.
+Puls alone with every tool the cook has (`puls-tools`: `web` and `shops`, so it can't delegate and cooks and prices
+itself; F34, until then `puls-only` with `web` alone) and Puls with its cook (`puls-cook`: `specialists` and `web`, Puls
+as built). Each conversation is one session; a second message is the follow-up.
 
 What is scored is what the agents called, not only what they wrote: the role Puls handed to, the hosts the pages came
 from (Puls's own reads and the cook's), the cook's rating (priced ingredients over ingredients), rand amounts, the
@@ -25,7 +26,7 @@ ROLE = "puls/voice-af"
 TIME_ZONE = "Africa/Johannesburg"
 
 MODES = {
-    "puls-only": ["web"],                 # Puls alone: it can't delegate, so it cooks and prices itself
+    "puls-tools": ["web", "shops"],       # Puls alone with the cook's tools: it can't delegate, so it cooks and prices itself
     "puls-cook": ["specialists", "web"],  # Puls as built: the web itself, cooking to the cook
 }
 
@@ -137,7 +138,7 @@ def converse(client, run, mode, repeat, toolsets, task, location, messages):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="The cook check: Puls alone against Puls with its cook.")
+    parser = argparse.ArgumentParser(description="The cook check: Puls with the cook's tools against Puls with its cook.")
     parser.add_argument("--repeat", type=int, default=1)
     args = parser.parse_args()
     run = os.environ.get("BENCHMARK_RUN") or time.strftime("local-%Y%m%d-%H%M%S")

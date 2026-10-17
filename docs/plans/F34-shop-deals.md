@@ -314,6 +314,10 @@ sequenceDiagram
   ingredients before it settles the recipe, for every meal; a search's size is the one the recipe needs, never bigger;
   a meal's brief has its own `Vir hoeveel` / `Serves` line, and when the user didn't say, Puls asks before it hands
   the meal on.
+- **2026-10-18, the cook check's first mode (Louis: "update the benchmark with puls loaded with everything the cook has
+  vs puls + puls-cook").** `puls-only` (`web`) becomes `puls-tools` (`web`, `shops`): both modes have the same tools,
+  so the check measures the cook's role and its own session. A new name, since the portal's trend follows a mode by
+  name.
 
 ---
 [Plans](README.md) · Previous: [CL14 The public word: role](CL14-public-word-role.md)
