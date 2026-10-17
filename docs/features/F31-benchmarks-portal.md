@@ -150,3 +150,11 @@ before it.
   `CloseOrphans` runs at start-up in the background, so a store that's down never delays the API: by hand, a run
   planted as `running` in `puls_benchmarks` was `failed` with its end time after the rebuild, and the run file said
   `1 benchmark run(s) a restart cut off are marked failed`.
+- **Step 6b (2026-10-17): the read endpoints**, one per level the explorer opens. `GET /admin/benchmarks` adds
+  `store: {configured, error}` and the last 50 `runs`; `GET runs/{id}` the run with its settings, modes, log,
+  conversations, turns (without their events) and requests; `GET runs/{id}/turns/{mode}/{repeat}/{task}/{turn}/events`
+  one turn's events for its replay (a route of its parts, not one key string); `DELETE runs/{id}` 204, 404 when there
+  is none, 409 while it runs. Without a store, or when it doesn't answer, a read is 503 saying why. By hand on the
+  rebuilt Puls with a run planted in `puls_benchmarks`: each endpoint answered as above, the scores and the events came
+  back as the JSON they were stored as, and with `puls-mongo` stopped the list said `The benchmark store didn't
+  answer: A timeout occurred after 5000ms…` and a run read was 503, both back to normal once it started again.

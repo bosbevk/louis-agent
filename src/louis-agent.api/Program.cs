@@ -124,7 +124,7 @@ if (benchmarkStore is not null)
             benchmarkLog.Log(LogLevel.Warning, ApiLogMessage.BenchmarkStoreUnreachable, exception: ex, tag: "API");
         }
     });
-app.MapAdmin(benchmarks, new BenchmarkRunner(benchmarks, host.Engine.WorkspaceRoot, admin.BenchmarkApiUrl), admin.AdminKey, recorder,
+app.MapAdmin(benchmarks, new BenchmarkRunner(benchmarks, host.Engine.WorkspaceRoot, admin.BenchmarkApiUrl), admin.AdminKey, benchmarkStore, recorder,
     check => BenchmarkSettings.Of(check, host.Llm.Provider, host.Llm.Model, host.Agent.PersonalitiesEnabled));
 
 // The toolsets a session can load (F5-S3): names, what each is for and whether this instance has its settings. Never

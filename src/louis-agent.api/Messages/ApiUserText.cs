@@ -118,4 +118,13 @@ public enum ApiUserText
 
     [Description("The benchmark store isn't set, so a run's results would be lost: set BENCHMARKS_MONGO_URL in config/.env.secrets and recreate the container.")]
     NoBenchmarkStore,
+
+    [Description("No stored run '{Id}'.")]
+    NoStoredRun,
+
+    [Description("Run {Id} is still running: delete it once it has ended.")]
+    StoredRunStillRunning,
+
+    [Description("The benchmark store didn't answer: {Reason}")]
+    BenchmarkStoreUnavailable,
 }
