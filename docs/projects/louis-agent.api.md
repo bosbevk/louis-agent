@@ -74,13 +74,18 @@ The full endpoint and event reference: [How the agents and endpoints talk](../AG
 | `WorkspaceEndpoints.cs` | `GET /workspace/entries`, `GET /workspace/file` (text ≤ 1 MB; secret files listed but not readable) |
 | `GitEndpoints.cs` | `GET /git/status`, `GET /git/diff`, `POST /git/stage` · `unstage` · `discard` · `commit`; the git runner |
 | `HistoryEndpoints.cs` | `GET /git/branches`, `/git/log`, `/git/commit`, `/git/branch`; `POST /git/merge`, `/git/branch/delete` |
+| `Endpoints/AdminEndpoints.cs` | The admin portal's API under `/admin` (F27, F31), behind `AdminGate`: the checks and runs, a run started (503 without a store), its live events over SSE, a check's manual and trend, a stored run with its levels, a turn's events, a run deleted |
+| `Config/AdminOptions.cs` | The portal's settings in one place: the admin key, the API address the checks call, the store's URL and database |
+| `Services/BenchmarkCatalog.cs`, `BenchmarkRunner.cs`, `BenchmarkRun.cs` | The checks the portal offers; one run at a time as a child process (`python3 run_check.py --repeat N`, `BENCHMARK_RUN` set), its lines kept and streamed |
+| `Services/Benchmarks/` | F31: `BenchmarkProtocol` (the `@` lines), `BenchmarkRecorder` (the lines into the store), `BenchmarkLedger` (the run's cost from the ledger), `IBenchmarkStore` with `InMemoryBenchmarkStore` and `MongoBenchmarkStore`, `BenchmarkTrends`, `BenchmarkTools` (a turn's tool failures from its events), `BenchmarkManuals`, `BenchmarkSettings` |
 
 ## Configuration
 
 Core settings, plus: `AGENT_API_KEY` (required on `/sessions`, `/workspace`, `/git` when set), `API_PORT` (host port in
 Docker, bound to `127.0.0.1`), `GIT_AUTHOR_*` / `GIT_COMMITTER_*` (identity for commits and merges from the web app),
 `ASPNETCORE_URLS` / `ASPNETCORE_ENVIRONMENT` outside Docker (an unpublished `dotnet run` only serves the web app in
-`Development`).
+`Development`). The admin portal: `ADMIN_API_KEY` (falls back to `AGENT_API_KEY`), `BENCHMARKS_MONGO_URL` and
+`BENCHMARKS_MONGO_DATABASE` (the store; without it no run starts), [SETUP](../SETUP.md).
 
 ## Extending it
 
@@ -93,7 +98,9 @@ Docker, bound to `127.0.0.1`), `GIT_AUTHOR_*` / `GIT_COMMITTER_*` (identity for 
 
 `tests/louis-agent.api.tests`: the sessions' toolsets, the default, unknown names, depth and the `specialists` rule, shared
 engines and separate histories, personalities, a role opening only at its own level, and a sub-session with no role getting none (a model client that is
-never called). The endpoints and the web app are checked with
+never called). The benchmarks (F31): the protocol, the recorder, the ledger join, the runner, the catalogue, the
+manuals, the trends, the tool failures, and one store contract run against the in-memory store and, when
+`BENCHMARKS_MONGO_URL` is set, MongoDB (CI sets it). The endpoints and the web app are checked with
 curl and the browser (backlog: *Automated tests for the API and the web app*); the orchestrator demo exercises
 sessions, streaming and the git endpoints end to end.
 

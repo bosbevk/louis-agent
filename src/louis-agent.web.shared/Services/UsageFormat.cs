@@ -66,6 +66,16 @@ public static class UsageFormat
         return symbol == code ? $"{number} {code}" : $"{symbol}{number}";
     }
 
+    /// <summary>
+    /// Costs added the ledger's way (core's <c>UsageReport.Total</c>): null when no part has a price, never 0 for
+    /// "unknown" (ADR 0007); otherwise the known parts.
+    /// </summary>
+    public static decimal? KnownSum(IEnumerable<decimal?> costs)
+    {
+        var known = costs.Where(c => c is not null).Select(c => c!.Value).ToList();
+        return known.Count == 0 ? null : known.Sum();
+    }
+
     public static string Tokens(long count) => count switch
     {
         < 1_000 => count.ToString(Invariant),

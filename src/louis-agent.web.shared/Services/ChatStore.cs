@@ -7,6 +7,18 @@ namespace LouisAgent.Web.Shared.Services;
 public sealed class Settings
 {
     public string? ApiKey { get; set; }
+
+    /// <summary>The admin portal's key (ADMIN_API_KEY), kept apart so saving it never replaces the chat's (F31).</summary>
+    public string? AdminKey { get; set; }
+
+    /// <summary>The key a request to <paramref name="uri"/> carries: the admin key under <c>admin/</c>, else the chat's.</summary>
+    public string? KeyFor(Uri? uri)
+    {
+        string path = uri is null ? "" : uri.IsAbsoluteUri ? uri.AbsolutePath : uri.OriginalString;
+        path = path.TrimStart('/');
+        bool admin = path == "admin" || path.StartsWith("admin/", StringComparison.Ordinal) || path.StartsWith("admin?", StringComparison.Ordinal);
+        return admin && !string.IsNullOrWhiteSpace(AdminKey) ? AdminKey : ApiKey;
+    }
 }
 
 /// <summary>Chats and settings saved in the browser's localStorage, so a reload keeps the conversation.</summary>
@@ -14,6 +26,7 @@ public sealed class ChatStore(IJSRuntime js, Settings settings)
 {
     private const string ChatsKey = "louis-agent.chats";
     private const string ApiKeyKey = "louis-agent.apiKey";
+    private const string AdminKeyKey = "louis-agent.adminKey";
 
     // localStorage holds ~5 MB per site; tool output is the bulk of a chat, so only its start is kept.
     private const int MaxStoredToolResultChars = 4_000;
@@ -30,6 +43,7 @@ public sealed class ChatStore(IJSRuntime js, Settings settings)
     {
         Loaded = true;
         settings.ApiKey = await js.InvokeAsync<string?>("localStorage.getItem", ApiKeyKey);
+        settings.AdminKey = await js.InvokeAsync<string?>("localStorage.getItem", AdminKeyKey);
         string? json = await js.InvokeAsync<string?>("localStorage.getItem", ChatsKey);
         try
         {
@@ -70,6 +84,14 @@ public sealed class ChatStore(IJSRuntime js, Settings settings)
                 catch (JSException) { }
             }
         }
+    }
+
+    /// <summary>The admin portal's key, in its own entry: the chat's key is left as it is (F31).</summary>
+    public async Task SaveAdminKeyAsync(string? adminKey)
+    {
+        settings.AdminKey = string.IsNullOrWhiteSpace(adminKey) ? null : adminKey.Trim();
+        if (settings.AdminKey is null) await js.InvokeVoidAsync("localStorage.removeItem", AdminKeyKey);
+        else await js.InvokeVoidAsync("localStorage.setItem", AdminKeyKey, settings.AdminKey);
     }
 
     public async Task SaveApiKeyAsync(string? apiKey)

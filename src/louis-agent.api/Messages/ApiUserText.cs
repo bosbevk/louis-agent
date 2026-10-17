@@ -103,4 +103,31 @@ public enum ApiUserText
 
     [Description("No run in progress.")]
     NoBenchmarkRun,
+
+    [Description("The run ended before this turn did.")]
+    BenchmarkTurnCutOff,
+
+    [Description("The store stopped taking writes ({Reason}): what came after isn't kept, but the run went on.")]
+    BenchmarkStoreFailed,
+
+    [Description("The check speaks protocol {Version} and this API reads {Supported}: lines it doesn't know are kept as the log.")]
+    BenchmarkProtocolUnknown,
+
+    [Description("The usage ledger couldn't be read ({Reason}), so the run's cost is unknown.")]
+    BenchmarkLedgerUnreadable,
+
+    [Description("The benchmark store isn't set, so a run's results would be lost: set BENCHMARKS_MONGO_URL in config/.env.secrets and recreate the container.")]
+    NoBenchmarkStore,
+
+    [Description("No stored run '{Id}'.")]
+    NoStoredRun,
+
+    [Description("Run {Id} is still running: delete it once it has ended.")]
+    StoredRunStillRunning,
+
+    [Description("The benchmark store didn't answer: {Reason}")]
+    BenchmarkStoreUnavailable,
+
+    [Description("The check '{Check}' has no manual (benchmarks/{Check}/HANDLEIDING.md).")]
+    NoManual,
 }

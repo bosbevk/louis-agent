@@ -197,13 +197,15 @@ Design: [docs/specs/SESSION_ARCHITECTURE.md](docs/specs/SESSION_ARCHITECTURE.md)
             carried as a string to the specialist, so it arrives mangled; send it as base64 with its media type and
             read it with `DocumentText` (found in the docs review, 2026-10-14)
 - [ ] [F21 Personalities](docs/features/F21-personalities.md) — each session (and sub-session) names its personality; Puls speaks everyday South African Afrikaans ([plan](docs/plans/F21-personalities.md)). Built; open: Louis's corrections to the Afrikaans (the delegation check's `answers.md`).
-- [ ] [F31 Benchmarks in the admin portal](docs/features/F31-benchmarks-portal.md) — check scripts in
-      `benchmarks/{check}/` (the harness, the cook check and the routing check), run only from the admin portal; the
-      API records each run from the script's stdout protocol into MongoDB (`puls-mongo` in the Puls stack, its data on
-      `data/mongo`, database `puls_benchmarks`, `BENCHMARKS_MONGO_URL` in `config/.env.secrets`; `MongoDB.Driver`);
-      the explorer and trends read the store; the screen laid out in the plan before it's built
-      ([plan](docs/plans/F31-benchmarks-portal.md)). Planned 2026-10-17; built after F30's build steps, before its
-      measured run, which goes through it. F27 closes with it.
+- [ ] **F31 follow-ups from the review of PR #55** (small, 2026-10-17): the orphan cleanup's time filter; a deadline
+      for a run, and a way to cancel one; the leaks the review found in the Benchmarks page; the dozen labels still in
+      Afrikaans in the admin portal (the checks' manuals, `HANDLEIDING.md`, among them); and the stale doc lines it
+      listed (the build review, `F31-benchmarks-portal-build-review.md` in the Claude project, at its bottom).
+- [ ] **Why a benchmark run behaved as it did** (to plan; F31 step 11c, split off when F31 finished, 2026-10-17):
+      a note by a person on a run and on a conversation (*Tavily out of credits: no web search in this run*), kept
+      in the benchmark store with when it was written, shown on the run's row and as a marker on its trend point;
+      and the search provider and page renderer in a run's settings (`BenchmarkSettings`), once they can be chosen
+      (F32). Each turn's tool counts are already kept when it's recorded (review of PR #55).
 - [ ] [F30 Local web peer](docs/features/F30-local-web-peer.md) — built, not in use: a session names its LLM profile, and a specialist can hand one task and one of its own tools to a minion on a cheap model (`MINION_LLMS`, depth 2, 16 per turn); Puls's prompts don't use minions until F31 measures the cook with and without them ([plan](docs/plans/F30-local-web-peer.md))
 - [ ] **Next up: a faster, cheaper cook** (to plan; Louis, 2026-10-15: "can we have a subsession allow him to spawn
       web sessions for each task"). The cook does every search and fetch itself, one at a time, and every page it reads
@@ -238,7 +240,6 @@ Design: [docs/specs/SESSION_ARCHITECTURE.md](docs/specs/SESSION_ARCHITECTURE.md)
 
 ### Web app
 
-- [ ] [F27 Admin portal](docs/features/F27-admin-portal.md) — an *Admin* item in the profile menu into a portal of our own (a sidebar and cards on Puls's variables) whose first page runs the checks and reads their saved runs; more pages later ([plan](docs/plans/F27-admin-portal.md)). Built; CL10 emptied its catalogue and run reader, so it closes with [F31](docs/features/F31-benchmarks-portal.md) (done, superseded by F31) once a real run goes through the portal
 - [ ] [F28 Team talk](docs/features/F28-team-talk.md) — Puls briefs its specialist in a fixed note (what the user wants, how they sound from their typing, where they are, what they said), with a per-chat *Lees my stemming* switch sent per turn; the delegation card shows the exchange as a thread; both checks score it ([plan](docs/plans/F28-team-talk.md))
 - [ ] Sync chat history across devices and browsers instead of only `localStorage`
 - [ ] A UI for skills (the agent's own in `Skills/`, the built-in ones in `louis-agent.core/Prompts/`) and for reviewing and approving agent-built tools — today that's typing `/tools`,
@@ -261,6 +262,13 @@ Design: [docs/specs/SESSION_ARCHITECTURE.md](docs/specs/SESSION_ARCHITECTURE.md)
 From the [goal](docs/GOAL.md)'s architecture map: skills it requires that nothing above plans yet. Promote one to a
 feature when its turn comes; remove its line here and update the map's *Missing* column.
 
+- [ ] **One session-stream reader** (cleanup, CL11; to plan after F31): the session's SSE stream (the API's
+      `content_block_*`, `message_delta`, `sub_session`, `usage` events) is read by four separate switches, in
+      `web.shared/TurnStream.cs`, the orchestrator's `LouisAgentClient`, core's `SpecialistTools` and F31's Python
+      harness, so a new event (F30's minions) has to be learnt four times or a reader quietly miscounts. One C# reader,
+      lines in and typed events out, in a small project the browser app can reference too, under the three C# readers;
+      F31 step 7's recorded stream (`benchmarks/fixtures/session-stream.sse`) as the contract the Python reader is held
+      to as well (Louis, 2026-10-17)
 - [ ] **Exception strategy (a cleanup with its own ADR, after F28):** four kinds, each with its rule: a failure the model
       can act on (a `ToolMessage` with the reason, as the web and peer tools do), a setting the operator must fix (fail
       fast or a 400 naming it), a transient fault (one retry in the provider strategy, then reported), a bug (propagates,

@@ -5,8 +5,8 @@ namespace LouisAgent.Api.Services;
 
 /// <summary>
 /// Runs a check's script as a child process (F27): the interpreter with an argument list, never a shell string, in the
-/// workspace, with <c>PULS_API</c> pointing at this API; where a run's results go is the Benchmarks feature's (SQL
-/// Server's <c>puls_benchmarks</c>; CL10 removed the run folders under <c>samples/</c>). One run at a time: the containers are shared, and a second run would skew the first's
+/// workspace, with <c>PULS_API</c> pointing at this API and <c>BENCHMARK_RUN</c> its id; a run's results go to the
+/// benchmark store through <c>BenchmarkRecorder</c> (F31). One run at a time: the containers are shared, and a second run would skew the first's
 /// ledger and timings. Its lines (stdout and stderr) are kept on the run and streamed to listeners.
 /// </summary>
 /// <param name="interpreter">The Python to run; <c>python3</c> in the containers.</param>
@@ -63,6 +63,8 @@ public sealed class BenchmarkRunner(BenchmarkCatalog catalog, string workspaceRo
         start.ArgumentList.Add(run.Repeat.ToString());
         foreach (string argument in check.Arguments) start.ArgumentList.Add(argument);
         start.Environment["PULS_API"] = pulsApi;
+        // F31: the script tags its sessions {BENCHMARK_RUN}:{mode}:{repeat}, so the ledger's rows find their run.
+        start.Environment["BENCHMARK_RUN"] = run.Id;
         start.Environment["PYTHONUNBUFFERED"] = "1";      // so each line arrives as it is printed
         start.Environment["PYTHONIOENCODING"] = "utf-8";
 

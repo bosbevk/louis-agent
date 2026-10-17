@@ -2,7 +2,8 @@
 # The same two commands as the development guide's "Finishing a step": dotnet build, then dotnet test on the whole
 # solution (core, API, orchestrator and the order-service sample's tests). Tests are platform-neutral and the agent
 # already runs them on Linux in its containers, so the runner is Ubuntu. No model, no network, no secrets: the tests
-# use FakeChatClient and StubHandler, and skip themselves when git, pip or the network is missing.
+# use FakeChatClient and StubHandler, and skip themselves when git, pip or the network is missing. One service: a
+# throwaway MongoDB, so the benchmark store's contract runs against the real store too (F31), not only in memory.
 name: CI
 
 on:
@@ -17,6 +18,17 @@ concurrency:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    services:
+      mongo:
+        image: mongo:8
+        env:
+          MONGO_INITDB_ROOT_USERNAME: ci
+          MONGO_INITDB_ROOT_PASSWORD: ci
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --quiet --eval 'db.runCommand({ping:1}).ok'"
+          --health-interval 10s --health-timeout 5s --health-retries 5
     env:
       DOTNET_NOLOGO: true
       DOTNET_CLI_TELEMETRY_OPTOUT: true
@@ -25,6 +37,8 @@ jobs:
       GIT_AUTHOR_EMAIL: ci@localhost
       GIT_COMMITTER_NAME: ci
       GIT_COMMITTER_EMAIL: ci@localhost
+      # The Mongo store's contract tests (F31); a throwaway server with a throwaway user, so no secret.
+      BENCHMARKS_MONGO_URL: mongodb://ci:ci@localhost:27017/?authSource=admin
     steps:
       - uses: actions/checkout@v4
 
@@ -38,6 +52,10 @@ jobs:
       - name: Test
         # One .trx per test project, named by the logger, so the four don't overwrite each other.
         run: dotnet test louis-agent-solution.sln --no-build --logger trx --results-directory TestResults
+
+      - name: Test the benchmark harness
+        # F31: the checks' Python (benchmarks/), standard library only, held to the same recorded stream as TurnStream.
+        run: python3 -m unittest discover -s benchmarks -t . -v
 
       - name: Keep the test results
         if: always()

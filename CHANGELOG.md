@@ -3,6 +3,13 @@
 > **Reference.** What was finished, newest first, one entry per feature, fix or cleanup. **Elsewhere:** what's still
 > open in the [TODO](TODO.md); how each was built in its feature, fix or plan doc (linked from its entry).
 
+- 2026-10-17 — **F31 Benchmarks in the admin portal**: the checks (`benchmarks/`: a shared Python harness, the cook
+  check, the routing check and a free stub) run only from the portal, and the API records each run from the
+  script's stdout line protocol into MongoDB (`puls-mongo`, `puls_benchmarks`), costed from the usage ledger; the
+  explorer reads a run at every level (nine charts per mode, the conversations side by side, each turn replayed, each
+  request) and a trend per check, every chart explaining itself; a price counts only with its source. The first paid
+  run (cook check, $0.045, the ledger's figure exactly) found Tavily out of credits. The portal is in English at
+  `/admin/benchmarks`. Closes F27 ([feature](docs/features/F31-benchmarks-portal.md))
 - 2026-10-17 — **FX16 A price is checked against its product**: `VerifyQuote` refuses a quote that is only a price
   (`R22.99`) unless it names the product, and then finds it only right after the product's name, no other price
   between; it was *Found* for any product at that price ([fix](docs/fixes/FX16-short-quote-match.md))

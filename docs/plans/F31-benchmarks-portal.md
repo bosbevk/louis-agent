@@ -287,3 +287,56 @@ an ephemeral-Mongo test package.
   it's there and says so when it isn't.
 - **Evaluation as a product surface, trends before gates** (skills 12, 16): a run anyone can start and read, with
   its configuration recorded, is the step before a regression gate in CI.
+
+## Approved during the build
+
+- **2026-10-17, before step 1 (Louis: "Merge F30 first", "fx15"):** F30 merged (PR #51) before F31's code, and the
+  short-quote fix the plan calls "FX15" is [FX16](../fixes/FX16-short-quote-match.md) (FX15 was taken), merged
+  (PR #54) before step 1. So the harness may send F30's `tool` and `llm` session fields, and a scorer that checks a
+  price always passes `VerifyQuote` its product (FX16: a quote with words can still be another product's).
+- **2026-10-17, after step 1 (Louis: "yes", to one reader of the session stream):** step 7 adds a recorded session
+  stream as the contract between the stream's readers: `benchmarks/fixtures/session-stream.sse`, real turns (a
+  delegation with a specialist's tool calls, a minion's card, an error), checked in once. The Python reader's unittest
+  parses it to fixed counts (calls, hosts, role, answer); the same counts are asserted in C# against `TurnStream`
+  today, against CL11's one reader later. A change to the stream changes the fixture, and both languages' tests fail
+  until both readers follow.
+- **2026-10-17, step 5b (Louis: "next", on the step's note):** the store's root user is `MONGO_INITDB_ROOT_USERNAME`
+  and `MONGO_INITDB_ROOT_PASSWORD` in `.env.secrets`, read by `puls-mongo` itself, instead of `MONGO_ROOT_USER` and
+  `MONGO_ROOT_PASSWORD`: compose fills `${…}` only from `config/.env`. The restart test passed, so the host folder
+  stays.
+- **2026-10-17, after step 10 (Louis: "add a step to add a user manual for each, accessible from the check card,
+  displayed in a modal"): step 10b, a manual per check.** Each check keeps its manual beside its script,
+  `benchmarks/{check}/HANDLEIDING.md`, in Afrikaans like the rest of Puls: what the check asks and why, its modes, its
+  conversations, every score it reports and what makes it right or wrong, what a run costs (filled in from 11b's
+  paid run), how to read it in the explorer, and how to run it by hand. The API serves it from the catalogue, never
+  from a path the caller names (`GET /admin/benchmarks/{check}/manual`, 404 for a check without one; the list says
+  which have one). The check card gets a *Handleiding* button that opens it in a modal, rendered as markdown, closed
+  with Esc, a click outside or its ×. Tests first: the endpoint's path stays inside `benchmarks/` and every check in the
+  catalogue has a manual (C#); every score key a check's `score()` returns is named in its manual, so a new score
+  can't ship unexplained (Python). By hand in Chrome.
+- **2026-10-17, during step 11b (Louis: "my web search API might be declined, I have no tokens anymore; run it, but
+  it would be nice if I could record why the run did something weird, then I can say yes, it's because of ABC"):
+  step 11c, why a run behaved as it did; *Finishing a feature* becomes 11d.** 11b's run showed it at once: Tavily's
+  monthly limit refused every `WebSearch` (*This request exceeds your plan's set usage limit*), so Puls cooked
+  without searching and the run measures that, not the cook. Two parts:
+  1. **What the run itself says, recorded without anyone looking:** the recorder counts each turn's failed tool
+     results from its stream events (`tool_result` with `is_error`, the specialist's too) and keeps them on the turn
+     with the tool and the first line of the reason (`tool_errors`); the conversation, the run and the run list show
+     the count, and the explorer shows the reasons grouped (*WebSearch × 11: Tavily's limit was reached…*). A run
+     recorded before it is filled in from its stored events, so 11b's run gets them too. Tested first on the
+     recorder (a turn with a refused search) and on the grouping.
+  2. **What a person says:** a note on a run and on a conversation (*Tavily out of credits: no web search in this
+     run*), written in the explorer, kept in the store with when it was written, shown on the run's row and as a
+     marker on its trend point, so a dip in the line carries its reason. Tested first on the store's contract (a note
+     saved and read back) and on the endpoint by hand.
+- **The admin portal in English, not Afrikaans** (Louis, 2026-10-17): the plan's *in Afrikaans like the rest of Puls*
+  no longer holds; English is the working language and Afrikaans is a language Puls is configured for and being
+  tested in. The page addresses become `/admin/benchmarks` and `/admin/benchmarks/{run}`; the old ones stay as
+  aliases. Recorded data is never translated.
+- **The trend as nine panels** (Louis, 2026-10-17): the trend endpoint carries every ring's measure, and the run page
+  shows them three to a row, each explained on hover as the rings are.
+- **2026-10-17, after step 11b (Louis: "let us first pr"; "Do 11d first, then PR"): F31 finishes with 11d, and
+  11c's rest moves to the TODO.** Part 1 of 11c is met on read (the explorer counts each turn's failures and groups
+  their reasons from its stored events, `BenchmarkTools`, built in 11b); storing them at record time and part 2, a
+  person's notes on a run and a conversation, are a TODO line, with the search provider and renderer in a run's
+  settings once F32 lets them be chosen.

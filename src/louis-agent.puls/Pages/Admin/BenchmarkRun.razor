@@ -1,0 +1,138 @@
+@page "/admin/benchmarks/{RunId}"
+@* The Afrikaans address the portal had first, so links already shared still open. *@
+@page "/admin/maatstawwe/{RunId}"
+@layout AdminLayout
+@using System.Net
+@using System.Text.Json
+@using LouisAgent.Web.Shared
+@using LouisAgent.Web.Shared.Services
+@inject AgentApi Api
+@inject ChatStore Store
+@inject CurrencyState Currency
+@implements IDisposable
+
+@* F31 step 10: one stored run: what it ran with, and its explorer (RunExplorer), read from the benchmark store. *@
+
+<PageTitle>Run @RunId · Puls Admin</PageTitle>
+
+<div class="page-head">
+    <div>
+        <h1>@(_title ?? "Run")</h1>
+        <p>
+            <code>@RunId</code>
+            @if (_run is { } head)
+            {
+                <span> · @Started(head) · @Status(head) · @Repeat(head)</span>
+                @if (Total(head) is { } total) { <span> · @total</span> }
+            }
+        </p>
+    </div>
+    <div class="page-actions">
+        <a class="header-button" href="admin/benchmarks"><span class="ic i-chart" aria-hidden="true"></span>Benchmarks</a>
+    </div>
+</div>
+
+@if (_error is { } error)
+{
+    <section class="card-p admin-gate"><strong>@error</strong></section>
+}
+else if (_run is null)
+{
+    <section class="card-p"><span class="muted">Loading…</span></section>
+}
+else
+{
+    var run = _run.Value;
+    @if (S(run.GetProperty("run"), "store_error") is { } storeError)
+    {
+        <section class="card-p store-banner"><strong>Not all of this run was stored.</strong><p>@storeError</p></section>
+    }
+    @* No entrance animation on this card: a filled transform animation makes it the frame of every fixed child, so the
+       explorer's chats modal would be clipped to the card and painted under the cards after it. *@
+    <section class="card-p holds-modal">
+        <RunExplorer Run="run" Currency="Currency.Current" />
+    </section>
+    @if (_trend is { } trend)
+    {
+        <section class="card-p">
+            <details class="fold" open><summary class="fold-head"><span class="fold-chevron" aria-hidden="true"></span>Trend</summary>
+                <TrendChart Trend="trend" Highlight="@RunId" Labels="_labels" ShowTitle="false" Currency="Currency.Current" />
+            </details>
+        </section>
+    }
+    <section class="card-p">
+        <details class="admin-details">
+            <summary>What it ran with</summary>
+            <dl class="explorer-fields">
+                @if (run.TryGetProperty("settings", out var settings) && settings.ValueKind == JsonValueKind.Object)
+                {
+                    foreach (var p in settings.EnumerateObject()) { <dt>@p.Name</dt><dd><code>@p.Value.GetString()</code></dd> }
+                }
+                @foreach (var m in run.GetProperty("modes").EnumerateArray())
+                {
+                    <dt>@m.GetProperty("name").GetString() · @m.GetProperty("repeat").GetInt32()</dt>
+                    <dd><code>@string.Join(", ", m.GetProperty("toolsets").EnumerateArray().Select(t => t.GetString()))</code>@(S(m, "personality") is { } p ? $" · {p}" : "")@(S(m, "llm") is { } l ? $" · {l}" : "")</dd>
+                }
+            </dl>
+        </details>
+        @if (run.TryGetProperty("log", out var log) && log.ValueKind == JsonValueKind.Array)
+        {
+            <details class="admin-details"><summary>The script's own lines (@log.GetArrayLength())</summary><pre class="admin-pre run-log">@string.Join("\n", log.EnumerateArray().Select(l => l.GetString()))</pre></details>
+        }
+    </section>
+}
+
+@code {
+    [Parameter] public string RunId { get; set; } = "";
+
+    private JsonElement? _run, _trend;
+    private Dictionary<string, string> _labels = [];
+
+    /// <summary>Who each mode is, as the explorer names it: Puls with the roles it handed to, or Puls alone.</summary>
+    private static Dictionary<string, string> Labels(JsonElement run) =>
+        run.GetProperty("turns").EnumerateArray()
+            .GroupBy(t => t.GetProperty("mode").GetString()!)
+            .ToDictionary(g => g.Key, g => g.Select(t => S(t, "role")).Where(r => !string.IsNullOrEmpty(r)).Distinct().ToList() is { Count: > 0 } roles
+                ? $"Puls with {string.Join(" and ", roles)}" : "Puls alone");
+    private string? _title, _error;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!Store.Loaded) await Store.LoadAsync();
+        Currency.Changed += StateHasChanged;
+        await Currency.LoadAsync();
+        _run = null;
+        _error = null;
+        try
+        {
+            var run = await Api.GetAsync<JsonElement>($"admin/benchmarks/runs/{Uri.EscapeDataString(RunId)}");
+            var list = await Api.GetAsync<JsonElement>("admin/benchmarks");
+            string check = run.GetProperty("run").GetProperty("check").GetString()!;
+            _title = list.GetProperty("checks").EnumerateArray().Where(c => c.GetProperty("id").GetString() == check)
+                .Select(c => c.GetProperty("title").GetString()).FirstOrDefault() ?? check;
+            _run = run;
+            _labels = Labels(run);
+            try { _trend = await Api.GetAsync<JsonElement>($"admin/benchmarks/checks/{Uri.EscapeDataString(check)}/trend"); }
+            catch (AgentApiException) { _trend = null; }
+        }
+        catch (AgentApiException ex)
+        {
+            _error = ex.Status == HttpStatusCode.NotFound ? $"No run {RunId} in the store." : ex.Message;
+        }
+    }
+
+    public void Dispose() => Currency.Changed -= StateHasChanged;
+
+    private static string? S(JsonElement e, string name) => e.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.String ? v.GetString() : null;
+
+    private static string Started(JsonElement run) => run.GetProperty("run").GetProperty("started_at").GetDateTimeOffset().ToLocalTime().ToString("yyyy-MM-dd HH:mm");
+
+    private static string Status(JsonElement run) => S(run.GetProperty("run"), "status") switch { "running" => "running", "done" => "done", _ => "failed" };
+
+    private static string Repeat(JsonElement run) => run.GetProperty("run").GetProperty("repeat").GetInt32() is var n && n == 1 ? "1 repeat" : $"{n} repeats";
+
+    private string? Total(JsonElement run) =>
+        run.GetProperty("run").TryGetProperty("total", out var t) && t.ValueKind == JsonValueKind.Object
+            ? $"{(t.TryGetProperty("cost", out var c) && c.ValueKind == JsonValueKind.Number ? UsageFormat.Money(c.GetDecimal(), "USD", Currency.Current) : "—")}, {t.GetProperty("requests").GetInt32()} requests"
+            : null;
+}

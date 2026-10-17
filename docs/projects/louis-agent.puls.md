@@ -24,6 +24,11 @@ as you go: every answer shows what it cost, specialists included.
   the chat (top bar, messages with actions, the message box), and the Werk panel (`WorkPanel.razor`: each delegation's
   specialist, toolsets, task, steps and cost, the chat's sources, Puls's and the specialists' cost). Below 1200px the
   Werk panel slides in; below 992px the sidebar does.
+- **The admin portal** (F27, F31; English, the builders' screen): *Admin* in the profile menu opens `/admin`, its own
+  layout (`AdminLayout`). `/admin/benchmarks` lists the checks, runs one with live progress, and lists a check's
+  runs; `/admin/benchmarks/{run}` is the explorer (`RunExplorer`: the run, its conversations side by side, a turn, a
+  request), the trend (`TrendChart`) and what the run ran with. Each chart explains itself on hover (`ChartInfo`).
+  The old `/admin/maatstawwe` addresses still open.
 - **Placeholders** (share, edit, regenerate, feedback, voice, screenshots, image, deep research, other models, language,
   theme, profile, sign-out, buying credits) answer with a "kom binnekort" toast.
 - **Stored in the browser:** chats (with favourite and archived), the API key, the currency, the location, whether
@@ -42,6 +47,9 @@ as you go: every answer shows what it cost, specialists included.
 | `Components/WorkPanel.razor` | The Werk panel |
 | `Components/ChatSearch.razor` | Ctrl/Cmd K search over the chats in this browser |
 | `Components/ExploreView.razor`, `StudioView.razor`, `TemplateCard.razor` | Verken and Studio |
+| `Layout/AdminLayout.razor` | The admin portal's sidebar and content column |
+| `Pages/Admin/Benchmarks.razor`, `BenchmarkRun.razor` | The checks, a live run and the runs list; one stored run |
+| `Components/RunExplorer.razor`, `TrendChart.razor`, `ChartInfo.razor` | A run at every level, a check's trend, a chart's explanation |
 | `PulsText.cs` | The shared components' words in Afrikaans (`ChatText`) |
 | `Sources.cs` | A turn's sources: the answer's links and the pages its specialists read |
 | `Templates.cs` | The starters on Verken and Studio |
@@ -75,7 +83,8 @@ None automated (like louis-agent.web): checked by hand and by headless-Chrome sc
 ## Related docs
 
 [F20 Puls look](../features/F20-puls-look.md) · [F21 Personalities](../features/F21-personalities.md) ·
-[F22 Role tools](../features/F22-role-tools.md) · [louis-agent.web](louis-agent.web.md) · [api](louis-agent.api.md)
+[F22 Role tools](../features/F22-role-tools.md) · [F31 Benchmarks in the admin portal](../features/F31-benchmarks-portal.md) ·
+[louis-agent.web](louis-agent.web.md) · [api](louis-agent.api.md)
 
 ---
 [Projects](README.md)

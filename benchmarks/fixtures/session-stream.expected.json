@@ -1,0 +1,48 @@
+{
+  "_about": "What both readers of the session stream must read from session-stream.sse (F31 step 7a): the Python harness (benchmarks/puls_check/stream.py) and the web app's TurnStream. Recorded 2026-10-17 from one real Puls turn (a meal question; Claude Haiku 5.5, 8 requests, $0.0175). A change to the stream re-records it and updates these.",
+  "puls_tools": [
+    "StartSubSession"
+  ],
+  "role": "puls-cook",
+  "specialist_tools": [
+    "FetchUrl",
+    "GetToday",
+    "WebSearch",
+    "WebSearch",
+    "WebSearch",
+    "WebSearch",
+    "WebSearch",
+    "WebSearch",
+    "WebSearch",
+    "WebSearch",
+    "WebSearch",
+    "WebSearch",
+    "WebSearch",
+    "WebSearch",
+    "VerifyQuote",
+    "VerifyQuote",
+    "VerifyQuote",
+    "VerifyQuote",
+    "WebSearch",
+    "WebSearch",
+    "WebSearch",
+    "WebSearch",
+    "WebSearch",
+    "WebSearch",
+    "VerifyQuote",
+    "VerifyQuote",
+    "FetchUrl",
+    "FetchUrl",
+    "FetchUrl",
+    "FetchUrl",
+    "FetchUrl",
+    "FetchUrl"
+  ],
+  "hosts": [
+    "nominatim.openstreetmap.org",
+    "checkers.co.za"
+  ],
+  "answer_starts": "Ek gee dit gou vir my kok; hy's nou-nou terug met 'n resep e",
+  "answer_length": 4359,
+  "error": null
+}

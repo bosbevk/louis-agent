@@ -8,4 +8,7 @@ namespace LouisAgent.Api.Services;
 public sealed record BenchmarkCheck(string Id, string Title, string Script, IReadOnlyList<string> Arguments)
 {
     public BenchmarkCheck(string id, string title, string script) : this(id, title, script, []) { }
+
+    /// <summary>Its manual (F31): <c>HANDLEIDING.md</c> beside its script, so the two change together.</summary>
+    public string ManualPath => (Path.GetDirectoryName(Script) is { Length: > 0 } folder ? folder + "/" : "").Replace('\\', '/') + "HANDLEIDING.md";
 }
