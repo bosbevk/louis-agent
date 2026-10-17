@@ -52,7 +52,8 @@ CONVERSATIONS = [
     ]),
 ]
 
-SHOPS = ("checkers.co.za", "pnp.co.za", "woolworths.co.za", "spar.co.za", "shoprite.co.za", "usave.co.za")
+# The shops' sites, one list with the scorer's (a price links to its own shop).
+SHOPS = tuple(sorted(set(scoring.SHOP_HOSTS.values())))
 
 
 def score(task, turns, cook_on):

@@ -28,6 +28,33 @@ class Prices(unittest.TestCase):
         answer = "| Bestanddeel | Prys |\n|---|---|\n| Meel | R22.99 |\n| Eiers | R45.00 |\n| Melk | [R18](https://pnp.co.za/m) |\n"
         self.assertEqual(scoring.priced(answer), (1, 3, 2))
 
+    # Review of PR #55: "any link in the row counts, even a recipe link, and reference-style links count as guesses". A
+    # price is sourced only by a link to the shop whose column it's in (or, under a column naming no shop, to a shop).
+
+    def test_a_recipe_link_is_no_source(self):
+        answer = ("| Bestanddeel | Checkers |\n|---|---|\n"
+                  "| Hoender | [R89,99](https://www.food24.com/recipes/hoender) |\n")
+        self.assertEqual(scoring.priced(answer), (0, 1, 1))
+
+    def test_another_shops_link_is_no_source_for_this_shops_price(self):
+        answer = ("| Bestanddeel | Checkers | Pick n Pay |\n|---|---|---|\n"
+                  "| Hoender | [R89,99](https://www.pnp.co.za/hoender) | - |\n"
+                  "| Uie | - | [R24,99](https://www.pnp.co.za/uie) |\n")
+        self.assertEqual(scoring.priced(answer), (1, 2, 1))
+
+    def test_a_reference_style_link_is_its_url(self):
+        answer = ("| Bestanddeel | Checkers |\n|---|---|\n| Hoender | [R89,99][1] |\n| Uie | [R24,99][uie] |\n\n"
+                  "[1]: https://www.checkers.co.za/p/hoender\n[uie]: https://www.checkers.co.za/p/uie \"Uie\"\n")
+        self.assertEqual(scoring.priced(answer), (2, 2, 0))
+
+    def test_a_shops_own_subdomain_is_the_shop(self):
+        answer = "| Bestanddeel | Woolworths |\n|---|---|\n| Melk | [R32,99](https://shop.woolworths.co.za/melk) |\n"
+        self.assertEqual(scoring.priced(answer), (1, 1, 0))
+
+    def test_a_host_that_only_ends_like_a_shop_is_not_the_shop(self):
+        answer = "| Bestanddeel | Checkers |\n|---|---|\n| Melk | [R32,99](https://notcheckers.co.za/melk) |\n"
+        self.assertEqual(scoring.priced(answer), (0, 1, 1))
+
     def test_the_cooks_own_tally_is_a_claim_not_a_rating(self):
         # "Geprys: 11 van 11" under a list priced from memory: the rows say what was sourced.
         answer = "| Bestanddeel | Prys |\n|---|---|\n| Meel | R22.99 |\n\nGeprys: 11 van 11 bestanddele"

@@ -43,7 +43,7 @@ Elke gesprek kry hierdie tellings, onder sy beurte in die lopie se tabel en in d
 | `sources_local` | Al die gelese werwe is Suid-Afrikaans | ja |
 | `priced_at_shops` | Ten minste een winkel se bladsy is gelees | ja |
 | `ingredients` | Hoeveel bestanddele op die lys is: die tabel se rye (die kok se eie *Geprys: n van m*-reël is sy bewering, nie die telling nie) | — |
-| `priced` | Hoeveel daarvan 'n prys het **met die skakel waar dit vandaan kom**: net 'n prys met sy bron tel (F31 stap 11b: 'n prys uit die geheue is nie 'n antwoord nie) | — |
+| `priced` | Hoeveel daarvan 'n prys het **met die skakel waar dit vandaan kom**: net 'n prys met sy bron tel (F31 stap 11b: 'n prys uit die geheue is nie 'n antwoord nie). Die skakel moet na die winkel van daardie kolom gaan (Checkers se prys na `checkers.co.za`); 'n resep se skakel of 'n ander winkel s'n tel nie, en 'n verwysingskakel (`[R12,99][1]`) is sy URL | — |
 | `priced_ratio` | `priced` gedeel deur `ingredients` | groen vanaf 0.8, rooi onder 0.5 |
 | `unsourced` | Hoeveel pryse sonder 'n skakel gegee is: geraai, uit die geheue. Dit tel nooit as geprys nie; die portaal wys dit oranje (*geskat*) | 0 |
 | `rand_amounts` | Hoeveel randbedrae die antwoorde gee | — |
