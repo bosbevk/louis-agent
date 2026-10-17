@@ -276,8 +276,11 @@ public class PersonalitiesTests
         // Louis: "pick randomly which store to use based on location; don't even use stores not in your location".
         Assert.That(cook, Does.Contain("q=supermarkets+in+Stellenbosch").And.Contain("pick two at random").And.Contain("never price at, name or total a shop the town doesn't have"));
         Assert.That(cook, Does.Contain("| **Total, priced rows** | | | **R102,98** | **R84,99** | **R120,97** | **R110,97** |"), "the totals are the list's last rows, side by side, the cheapest basket last");
-        // Louis: an unpriced ingredient is an ordinary row that says unknown; no row counting or naming them.
-        Assert.That(cook, Does.Contain("| Lemons | 2 | 2 | [R12,99](https://www.checkers.co.za/…) | unknown | [R14,99](https://www.pnp.co.za/…) | R12,99 Checkers |"));
+        // Louis: an unpriced ingredient is an ordinary row; no row counting or naming them. Its cell is a `-` (review of
+        // PR #55: "make unknown --> -"), so a column of gaps reads at a glance and the check's scorer counts the row's
+        // linked price at another shop.
+        Assert.That(cook, Does.Contain("| Lemons | 2 | 2 | [R12,99](https://www.checkers.co.za/…) | - | [R14,99](https://www.pnp.co.za/…) | R12,99 Checkers |"));
+        Assert.That(cook, Does.Contain("a price you couldn't find is a `-` in its cell"));
         Assert.That(cook, Does.Not.Contain("**Unpriced"));
         Assert.That(cook, Does.Not.Contain("### Total"), "no section of its own");
         Assert.That(cook, Does.Contain("never a price without its link"), "the source is the link in the cell");

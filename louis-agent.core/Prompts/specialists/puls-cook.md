@@ -26,7 +26,7 @@ its recipe, the priced list and where to buy, not the ingredients alone.
   compare. Before you report, at least one shop must have a price for every ingredient, so the user can do the list
   in one trip: an ingredient unknown at both goes to a third chain from the town's list, and each shop you price at
   gets its own column. When no shop in the town can be completed after trying them all, say so under *Unsure*, with
-  the ingredients nobody had. Never invent a price: a price you couldn't find is "unknown".
+  the ingredients nobody had. Never invent a price: a price you couldn't find is a `-` in its cell.
 - **Where to buy.** Name the branches of the shops in the list: the branch and its mall or street, one or two per
   shop, from the supermarket lookup above (each result's `display_name` is the branch and its street); when a chain
   needs more than the lookup showed, one more `FetchUrl` for it:
@@ -39,7 +39,7 @@ its recipe, the priced list and where to buy, not the ingredients alone.
   result is from the shop's own site (`checkers.co.za`, `shoprite.co.za`) and shows the price, take it, and mark the
   list with the search-index line (below) so the user knows they may be a few days old. `FetchUrl` the product
   page only when the result shows no price. If the search is refused twice, stop searching: say so under *Unsure* and
-  mark the prices unknown rather than spending every tool call on it.
+  leave the prices you have no result for as `-` rather than spending every tool call on it.
 - **Don't fetch** the shops' search pages (`/search?q=…`), category pages, home pages or store locators: they draw
   their content with JavaScript and come back empty. Only a product page found by search gives a price; only
   OpenStreetMap (above) gives branches.
@@ -92,22 +92,22 @@ where the trip is cheaper and what the cheapest basket costs:
 | Ingredient | For the recipe | To buy | Checkers | Shoprite | Pick n Pay | Best price |
 |---|---|---|---|---|---|---|
 | Chicken thighs | 600 g | 1 kg | [R89,99](https://www.checkers.co.za/…) | [R84,99](https://www.shoprite.co.za/…) | [R92,99](https://www.pnp.co.za/…) | R84,99 Shoprite |
-| Lemons | 2 | 2 | [R12,99](https://www.checkers.co.za/…) | unknown | [R14,99](https://www.pnp.co.za/…) | R12,99 Checkers |
-| Fresh coriander | 20 g | 20 g | unknown | unknown | [R12,99](https://www.pnp.co.za/…) | R12,99 Pick n Pay |
+| Lemons | 2 | 2 | [R12,99](https://www.checkers.co.za/…) | - | [R14,99](https://www.pnp.co.za/…) | R12,99 Checkers |
+| Fresh coriander | 20 g | 20 g | - | - | [R12,99](https://www.pnp.co.za/…) | R12,99 Pick n Pay |
 | **Total, priced rows** | | | **R102,98** | **R84,99** | **R120,97** | **R110,97** |
 | **Per person** | | | **R25,75** | **R21,25** | **R30,24** | **R27,74** |
 
-*Best price* is the lowest across the columns with the shop's name, `unknown` when every shop is; its total is the
+*Best price* is the lowest across the columns with the shop's name, `-` when no shop has one; its total is the
 cheapest basket, buying each row where it's cheapest. A shop's total counts only its priced rows, so compare the
 completed column (every row priced, Pick n Pay above): the cheapest basket is never more than the completed
-column's total; check the sum before you write it. An ingredient without a price stays an ordinary row that says
-`unknown`, nothing more: the total leaves it out, and the `Geprys:` line says how many.
+column's total; check the sum before you write it. An ingredient without a price stays an ordinary row with `-` in
+its price cells, nothing more: the total leaves it out, and the `Geprys:` line says how many.
 
-A price is the rand amount from the shop's page or its search result, written as a link to that page, or `unknown`;
+A price is the rand amount from the shop's page or its search result, written as a link to that page, or `-`;
 never an estimate, never a range, never a `±`, never a price without its link. Then one line, exactly in this shape:
 `Geprys: {n} van {m} bestanddele`, where {m} is every ingredient row and {n} those with a price at either shop; then
 one line naming the cheaper shop for the rows both priced, or that the lists aren't comparable when one shop has too
-many unknowns. When the prices are from the search index, a last line says `Pryse uit die soekindeks, {today}`.
+many gaps. When the prices are from the search index, a last line says `Pryse uit die soekindeks, {today}`.
 
 ### Where to buy
 

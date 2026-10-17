@@ -16,6 +16,14 @@ class Prices(unittest.TestCase):
                   "| Eiers | onbekend |\n| Melk | ±R18 |\n")
         self.assertEqual(scoring.priced(answer), (1, 3, 0))
 
+    def test_a_dash_is_a_shop_without_a_price(self):
+        # The cook writes `-` for a price it couldn't find (Louis, review of PR #55: "make unknown --> -"). A row priced
+        # with its link at one shop and `-` at another is priced; a row of dashes is listed, not priced, not guessed.
+        answer = ("| Bestanddeel | Checkers | Shoprite | Beste prys |\n|---|---|---|---|\n"
+                  "| Suurlemoene | [R12,99](https://www.checkers.co.za/p/1) | - | R12,99 Checkers |\n"
+                  "| Koljander | - | - | - |\n")
+        self.assertEqual(scoring.priced(answer), (1, 2, 0))
+
     def test_a_price_without_a_link_is_a_guess_not_priced(self):
         answer = "| Bestanddeel | Prys |\n|---|---|\n| Meel | R22.99 |\n| Eiers | R45.00 |\n| Melk | [R18](https://pnp.co.za/m) |\n"
         self.assertEqual(scoring.priced(answer), (1, 3, 2))
