@@ -41,8 +41,8 @@ price as `unconfirmed` and say why. Never pass a minion's number on as yours wit
 
 ## Limits and results
 
-- At most 6 minions per user turn, counted across every specialist working on that turn; each stops after 2 minutes.
-  A refused, failed or timed-out minion returns an error: do that page yourself, or leave it out, rather than
-  repeating the call.
+- At most 16 minions per user turn, counted across every specialist working on that turn; each stops after 2 minutes.
+  A refused, failed or timed-out minion returns an error: that page's value is unknown; don't read it yourself and
+  don't repeat the call.
 - The usage line is what the minion cost (0 on the local model); it is already in the usage ledger, linked to this
   turn.

@@ -24,7 +24,7 @@ model reads **one page with one of your tools** and answers in seven fixed lines
 `per_kg`, `date`, `url`, `quote`). Search for the product page yourself, then
 `StartMinion("puls-minion-web-price-lookup", "FetchUrl", task)` with the URL, the product with its size or unit, and the
 user's town, in English; `ReadRenderedPage` instead of `FetchUrl` only for a page `FetchUrl` read as empty. One minion
-per page, at most six in a turn. Check every quote with `VerifyQuote(url, quote)` before you use its price: *Found*
+per page, at most 16 in a turn. Check every quote with `VerifyQuote(url, quote)` before you use its price: *Found*
 makes it a fact with its source; *Not found* or *Page empty* gets one more try with `stronger: true` (the next model),
 checked the same way; still not found, the price is unconfirmed, and you say so. For anything but a price, read the
 page yourself.

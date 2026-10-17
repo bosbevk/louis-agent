@@ -101,6 +101,11 @@ keep minions only if real prices hold and the cost drops.
   before a price is used; *Not found* or *Page empty* gets one more try with `stronger: true`, checked the same way;
   still not found, the price is unconfirmed ("unknown" in the cook's list, named under *Unsure*). This replaces
   step 6's read-the-quote-by-eye rule.
+- **The hand check (2026-10-17, Malmesbury breakfast):** no minion ran (the cook drew Pick n Pay and Spar, which its
+  role priced from search results), and `VerifyQuote` answered *Not found* for three real Pick n Pay prices: the
+  pages are JavaScript shells, and their menu and footer kept them from counting as empty. Fixed: a large body with
+  under 300 characters of readable text is rendered; only minion quotes are checked; every shop's price goes through a
+  minion, with the cap raised to 16.
 
 - **A profile takes nothing from the instance but its API key** (step 1). The first idea was to fall back to the
   process environment for whatever a profile file leaves out; that would hand the local model Claude's

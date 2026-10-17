@@ -439,4 +439,20 @@ public class PersonalitiesTests
         Assert.That(text, Does.Contain("unconfirmed"));
         Assert.That(text, Does.Not.Contain("can read in its result"), "the step-6 rule (read the quote by eye) is replaced");
     }
+
+    [Test]
+    public void TheCook_PricesEveryShopThroughAMinion_AndChecksOnlyMinionQuotes()
+    {
+        // F30 hand check (Louis, 2026-10-17: "route all shops through minions"): the cook picked Pick n Pay and Spar,
+        // which its role priced from search results, so no minion ran; and it checked search-result quotes with
+        // VerifyQuote, which can't find a price a JavaScript page draws later.
+        string cook = SkillFileSource.ReadEmbedded(Personalities.SpecialistsFolder + "/puls-cook.md")!;
+
+        Assert.That(cook, Does.Contain("Every price comes from a minion"));
+        Assert.That(cook, Does.Contain("`ReadRenderedPage`").And.Contain("pnp.co.za"));
+        Assert.That(cook, Does.Not.Contain("price them from their"), "no shop is priced from its search results any more");
+        Assert.That(cook, Does.Contain("Never check a search result"));
+        Assert.That(cook, Does.Contain("at most 16"));
+        Assert.That(cook, Does.Not.Contain("at most six"));
+    }
 }

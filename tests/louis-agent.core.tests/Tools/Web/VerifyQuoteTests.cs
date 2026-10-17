@@ -138,4 +138,34 @@ public class VerifyQuoteTests
     [Test]
     public async Task ANonHttpUrl_IsRefused() =>
         Assert.That(await Tools(_ => Html(ProductHtml)).VerifyQuote("file:///etc/passwd", "root"), Does.StartWith("Error:"));
+
+    private static string ShellPage()
+    {
+        // What Pick n Pay sends (F30 hand check, 2026-10-17): a menu, a footer, and the product drawn later by scripts.
+        string scripts = string.Concat(Enumerable.Repeat("<script>window.__state={\"product\":{\"id\":1}};render();</script>", 600));
+        return "<html><head><title>Eskort Streaky Bacon 200g | PnP</title></head><body>" +
+               "<nav><a href=\"/\">Home</a><a href=\"/food\">Food</a><a href=\"/cart\">Cart</a></nav>" +
+               "<div id=\"app\">Loading…</div>" + scripts +
+               "<footer>Copyright Pick n Pay. Terms. Privacy. Contact us.</footer></body></html>";
+    }
+
+    [Test]
+    public async Task AShellPageWithAMenuAndAFooter_IsRendered_NotReportedAsNotFound()
+    {
+        // The hand check's false "Not found": the menu and footer left some text, so the page wasn't treated as empty.
+        var renderer = new FakeRenderer("Eskort Streaky Bacon 200g\nESKORT R65.99\nAdd to trolley");
+
+        string result = await Tools(_ => Html(ShellPage()), renderer).VerifyQuote(Url, "ESKORT R65.99");
+
+        Assert.That(result, Does.StartWith("Found:"));
+        Assert.That(renderer.Calls, Is.EqualTo(1));
+    }
+
+    [Test]
+    public async Task AShellPageWithNoRenderer_IsPageEmpty()
+    {
+        string result = await Tools(_ => Html(ShellPage())).VerifyQuote(Url, "ESKORT R65.99");
+
+        Assert.That(result, Does.StartWith("Page empty:"));
+    }
 }

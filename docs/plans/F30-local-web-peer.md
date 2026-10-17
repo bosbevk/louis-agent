@@ -282,3 +282,9 @@ sequenceDiagram
   end"): **step 6b**, after step 6: Puls's Werk card shows a minion as an item nested under its specialist's (role, tool,
   model, seconds, cost), from the `sub_session` events the specialist's stream already forwards with the minion's role as
   its agent. Checked by hand; the hand check in step 8 reads it.
+- **The hand check's fixes** (Louis, 2026-10-17, after a Malmesbury breakfast showed no minion: "fix 1 and 2, route
+  all shops through minions"): `VerifyQuote` renders a page whose large body has almost no readable text (a JavaScript
+  shell with a menu and a footer) instead of answering a false *Not found*; the cook checks only a minion's quote, never
+  a search result's; every shop's price goes through a minion (`FetchUrl` for Checkers and Shoprite,
+  `ReadRenderedPage` for Pick n Pay, Woolworths, Spar and Usave), so the cap is 16 minions a turn, not 6. Minions run
+  one after another inside the cook's five minutes: the measured run says whether that holds.

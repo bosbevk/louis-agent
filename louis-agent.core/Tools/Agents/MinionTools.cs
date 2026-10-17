@@ -27,7 +27,7 @@ using Microsoft.Extensions.AI;
 public sealed class MinionTools
 {
     /// <summary>Minions one user turn may open, counted across every specialist of that turn.</summary>
-    public const int MaxPerTurn = 6;
+    public const int MaxPerTurn = 16;
 
     /// <summary>How long one minion may run: inside the specialist's five minutes.</summary>
     public static readonly TimeSpan DefaultTimeout = TimeSpan.FromMinutes(2);
@@ -72,7 +72,7 @@ public sealed class MinionTools
 
     [Description("Hands one task and one of your own tools to a minion: a small worker on a cheap model that reads one page or " +
         "does one lookup and answers in its role's fixed shape, so the page never enters your context. The minion stays open " +
-        "for this chat and the answer names its handle, so a follow-up on the same page goes to ContinueMinion. At most 6 " +
+        "for this chat and the answer names its handle, so a follow-up on the same page goes to ContinueMinion. At most 16 " +
         "minions per user turn across all specialists, 2 minutes each. See the minions guide.")]
     public async Task<string> StartMinion(
         [Description("The minion's role, e.g. \"puls-minion-web-price-lookup\" (the minions guide lists them).")] string role,
@@ -112,7 +112,7 @@ public sealed class MinionTools
     }
 
     [Description("Sends a follow-up to a minion this chat keeps open (the handle from a StartMinion answer, e.g. \"sub-2\") and " +
-        "waits for its answer: it still has the page it read. Counts against the 6 minions per user turn, 2 minutes.")]
+        "waits for its answer: it still has the page it read. Counts against the 16 minions per user turn, 2 minutes.")]
     public async Task<string> ContinueMinion(
         [Description("The handle from the earlier answer's footer, e.g. \"sub-2\".")] string handle,
         [Description("The follow-up, self-contained and in English.")] string message,
@@ -155,7 +155,7 @@ public sealed class MinionTools
 
     /// <summary>
     /// Takes one of the user turn's minion slots: the specialist's turn carries Puls's turn as its parent, so every
-    /// specialist under that turn counts against the same six. Outside a turn: the specialist's own, then none.
+    /// specialist under that turn counts against the same sixteen. Outside a turn: the specialist's own, then none.
     /// </summary>
     private string? TakeSlot(UsageScope? scope)
     {

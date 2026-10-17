@@ -142,24 +142,27 @@ public class MinionToolsTests
     }
 
     [Test]
-    public async Task TheSeventhMinionInOneUserTurn_IsRefused_AcrossSpecialists()
+    public async Task OnePastTheCap_IsRefused_AcrossSpecialists()
     {
         // One GPU answers one request at a time, so the limit counts the whole tree of Puls's turn: two specialists
-        // under the same Puls turn share it.
+        // under the same Puls turn share it. Every shop's price goes through a minion (Louis, F30 hand check), so a meal
+        // of about eight ingredients at two shops needs sixteen.
+        Assert.That(MinionTools.MaxPerTurn, Is.EqualTo(16));
         var creates = new List<JsonDocument>();
         var tools = Tools(Peer(creates));
+        int first = MinionTools.MaxPerTurn - 2;
 
         using (CooksTurn(session: "sess_cook", turn: 1, parent: "sess_puls#4"))
-            for (int i = 0; i < 4; i++) Assert.That(await tools.StartMinion(Role, "FetchUrl", $"page {i}"), Does.Not.StartWith("Error:"));
+            for (int i = 0; i < first; i++) Assert.That(await tools.StartMinion(Role, "FetchUrl", $"page {i}"), Does.Not.StartWith("Error:"));
         using (CooksTurn(session: "sess_researcher", turn: 1, parent: "sess_puls#4"))
         {
             for (int i = 0; i < 2; i++) Assert.That(await tools.StartMinion(Role, "FetchUrl", $"page {i}"), Does.Not.StartWith("Error:"));
-            Assert.That(await tools.StartMinion(Role, "FetchUrl", "one more"), Does.StartWith("Error:").And.Contain("6"));
+            Assert.That(await tools.StartMinion(Role, "FetchUrl", "one more"), Does.StartWith("Error:").And.Contain("16"));
         }
         using (CooksTurn(session: "sess_cook", turn: 1, parent: "sess_puls#5"))
             Assert.That(await tools.StartMinion(Role, "FetchUrl", "next turn"), Does.Not.StartWith("Error:"), "another user turn starts fresh");
 
-        Assert.That(creates, Has.Count.EqualTo(7));
+        Assert.That(creates, Has.Count.EqualTo(MinionTools.MaxPerTurn + 1));
     }
 
     [Test]

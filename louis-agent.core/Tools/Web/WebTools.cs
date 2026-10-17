@@ -282,7 +282,7 @@ public sealed partial class WebTools
             string all = CleanInline(ScriptOrStyle().Replace(body, " "));
             if (Normalise(text).Contains(wanted, StringComparison.Ordinal) || Normalise(all).Contains(wanted, StringComparison.Ordinal))
                 return MessageText.Format(ToolMessage.QuoteFound, new { Url = finalUri });
-            if (text.Length > 0 || all.Length > 0 && !LooksEmpty(all))
+            if (!LooksLikeShell(text, all, body.Length))
                 return MessageText.Format(ToolMessage.QuoteNotFound, new { Url = finalUri });
 
             // Nothing readable: a page drawn with JavaScript. The renderer reads it as a browser shows it (a credit).
@@ -316,8 +316,19 @@ public sealed partial class WebTools
     internal static string Normalise(string text) =>
         AnyWhitespace().Replace(WebUtility.HtmlDecode(text).Replace('\u00A0', ' '), " ").Trim().ToLowerInvariant();
 
-    /// <summary>A body whose only text is what a JavaScript app's shell leaves (nothing, or a "loading" line).</summary>
-    private static bool LooksEmpty(string text) => Normalise(text).Length < 3;
+    /// <summary>
+    /// A page a JavaScript app draws later (F30 hand check: Pick n Pay's product pages): no text at all, or a large body
+    /// whose readable text is only a menu, a "loading" line and a footer. Its "Not found" would be false, so it is
+    /// rendered instead.
+    /// </summary>
+    private static bool LooksLikeShell(string readable, string all, int bodyLength) =>
+        Normalise(all).Length < 3 || bodyLength > ShellBodyBytes && Normalise(readable).Length < ShellTextChars;
+
+    /// <summary>A body this large with less readable text than <see cref="ShellTextChars"/> is a shell: the product is in its scripts.</summary>
+    private const int ShellBodyBytes = 20_000;
+
+    /// <summary>Less readable text than this on a large page: a menu and a footer, not a product page.</summary>
+    private const int ShellTextChars = 300;
 
     internal static string CleanInline(string? html) =>
         Whitespace().Replace(WebUtility.HtmlDecode(Tag().Replace(html ?? "", "")), " ").Trim();
