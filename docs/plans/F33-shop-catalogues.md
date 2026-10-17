@@ -254,3 +254,7 @@ above); F33's run is the one that shows prices.
     `Personalities.ToolsetsOf(role, level)` gives them, and `AgentSessions` adds them to what the parent passed, before
     the rules. `puls-cook.md` declares `shops?`; Puls's routing still passes `web` alone.
   - `SHOP_CATALOGUES=checkers` is set on this development machine (`config/.env`, git-ignored), not by the compose file.
+- **2026-10-17, after PR #58's review: a pack's price.** `ShopProduct(Name, decimal? Price, decimal? PriceTo, …)`:
+  for a pack sold by weight, `Price` and `PriceTo` are the lightest and the heaviest pack's price (per kg × weight),
+  both null without a pack weight; the table's column is *Pack price*. The run had priced weighed packs at their price
+  per kg. The role header and optional toolsets of step 4 are recorded as ADR 0025.

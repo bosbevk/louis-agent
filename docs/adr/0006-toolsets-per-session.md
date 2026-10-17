@@ -25,5 +25,6 @@ agent can open a sub-session on a peer agent with the toolsets a task needs; sub
 
 ## Links
 
+Extended by [0025](0025-a-role-declares-its-toolsets.md) (a role adds its own toolsets; `?` for optional ones) ·
 [F5 Toolset profiles](../features/F05-toolset-profiles.md) · [F5 plan](../plans/F05-toolset-profiles.md) ·
 [F5 benchmark](https://github.com/bosbevk/louis-agent/blob/pre-cl10/docs/BENCHMARKS.md#f5-benchmark-short-run-2026-10-13)
