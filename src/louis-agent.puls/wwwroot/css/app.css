@@ -1446,5 +1446,15 @@ button.tile:hover { transform: translateY(-2px); border-color: rgba(245, 130, 32
 .explorer-calls { font-size: 12.5px; padding-left: 20px; }
 .explorer-fields { display: grid; grid-template-columns: max-content 1fr; gap: 4px 14px; margin: 0; font-size: 13px; }
 .explorer-fields dt { color: var(--muted); } .explorer-fields dd { margin: 0; font-variant-numeric: tabular-nums; }
+/* F31: each mode's token mix as a donut; each arc sweeps in after the one before (Jitter's chart idiom), on the
+   explorer's palette. A circumference of 100, so an arc's dash length is its share. */
+.donuts { display: flex; flex-wrap: wrap; gap: 24px; }
+.donut-fig { display: flex; flex-direction: column; align-items: center; gap: 6px; margin: 0; animation: rise .5s var(--ease) both; animation-delay: calc(var(--i, 0) * 90ms); }
+.donut-fig figcaption { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--muted); }
+.donut { width: 132px; height: 132px; transform: rotate(0deg); }
+.donut circle { fill: none; stroke-width: 5; }
+.donut-track { stroke: rgba(255, 255, 255, .06); }
+.donut-arc { stroke-dasharray: var(--len) calc(100 - var(--len)); animation: sweep .9s var(--ease) both; animation-delay: calc(var(--i, 0) * 160ms + 150ms); }
+@keyframes sweep { from { stroke-dasharray: 0 100; } }
 @media (max-width: 991.98px) { .xbar-row { grid-template-columns: 1fr; gap: 4px; } .xbar .xbar-value { position: static; } .lane { grid-template-columns: 70px 1fr; } }
 @media (prefers-reduced-motion: reduce) { :root:not([data-motion="on"]) .explorer * { animation: none !important; transition: none !important; } }

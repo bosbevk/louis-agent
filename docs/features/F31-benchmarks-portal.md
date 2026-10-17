@@ -217,3 +217,15 @@ before it.
   · in die stoor*, the cook's hand-off card in the open turn, a finished turn opened from its row, no console errors.
   Two fixes on the way: the score chip took the role from the scores (the protocol sends it beside them), and the table
   needed the panel's width. Not seen by hand: a reload mid-run (the stub ends in a second).
+- **Step 10 (2026-10-17): the explorer** (`/admin/maatstawwe/{run}`: `Pages/Admin/BenchmarkRun.razor` and
+  `Components/RunExplorer.razor`, F27's explorer ported from the old run folders onto the store's JSON). One repeat at a
+  time (a chooser when there are more); the modes as columns at every level; the run (tiles counting up: cost,
+  requests, tokens, seconds, and the score as routed right out of the conversations; cost per conversation as bars
+  growing in a cascade; each mode's token mix as a donut whose arcs sweep in one after another, Jitter's idiom, new
+  CSS under the explorer's section); the conversations (cost split Puls/specialist, their score chips); a
+  conversation's turns on a timeline of model requests in Puls's lane and the specialist's; a turn's timeline and its
+  transcript, which before a replay is its question and answer, and *Speel af soos getik* replays every mode at once
+  from the stored events through `TurnStream`; one request's record. The page around it shows what the run ran with
+  and its log. By hand in Chrome on the stub's 2-repeat run, its turns given made-up requests in the store for the
+  check (removed afterwards): every level opened, the bars, donuts and timelines drew, the replay typed both modes out
+  with the cook's hand-off card, no console errors.

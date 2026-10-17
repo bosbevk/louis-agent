@@ -1,0 +1,517 @@
+@* F31 step 10: a stored run as charts you drill into, ported from F27's explorer onto the benchmark store. The modes are
+   the columns at every level, in the run's order, so the same conversation, turn and transcript sit side by side
+   (Louis, F27): the run (tiles that count up: cost, requests, tokens, seconds, score; cost per conversation as bars
+   that grow in a cascade; each mode's token mix as a donut that sweeps); the conversations of each mode (cost split
+   between Puls and the specialist, their scores); a conversation's turns on a timeline of model requests; a turn's
+   requests and its transcript, replayed from the stored events through the chat's TurnStream, every mode at once; one
+   request's record. One repeat at a time. Motion is off for people who ask for less (the explorer's CSS). *@
+@using System.Text.Json
+@using LouisAgent.Web.Shared
+@using LouisAgent.Web.Shared.Services
+@inject AgentApi Api
+@inject IJSRuntime Js
+@implements IDisposable
+
+<div class="explorer">
+    @if (_repeats > 1)
+    {
+        <div class="run-controls">
+            <span class="muted">Herhaling</span>
+            <div class="segmented" role="radiogroup" aria-label="Herhaling">
+                @for (int n = 1; n <= _repeats; n++)
+                {
+                    int r = n;
+                    <button type="button" role="radio" aria-checked="@(_repeat == r)" class="@(_repeat == r ? "active" : "")" @onclick="() => ShowRepeat(r)">@r</button>
+                }
+            </div>
+        </div>
+    }
+
+    <nav class="crumbs" aria-label="Pad">
+        <button type="button" class="crumb @(_level == 0 ? "here" : "")" @onclick="() => Go(0)">Lopie</button>
+        @if (_level >= 1) { <span class="crumb-sep">›</span><button type="button" class="crumb @(_level == 1 ? "here" : "")" @onclick="() => Go(1)">Gesprekke</button> }
+        @if (_level >= 2) { <span class="crumb-sep">›</span><button type="button" class="crumb @(_level == 2 ? "here" : "")" @onclick="() => Go(2)"><code>@_task</code></button> }
+        @if (_level >= 3) { <span class="crumb-sep">›</span><button type="button" class="crumb @(_level == 3 ? "here" : "")" @onclick="() => Go(3)">Beurt @_turn</button> }
+        @if (_level == 4 && _request is { } rq) { <span class="crumb-sep">›</span><span class="crumb here">@_requestMode?.Name · versoek om @rq.At.ToLocalTime().ToString("HH:mm:ss")</span> }
+    </nav>
+
+    <div class="lvl @(_dir)" @key="LevelKey">
+    @if (_level == 0)
+    {
+        <div class="tiles">
+            @foreach (var (m, i) in Columns)
+            {
+                <button type="button" class="tile" style="--i: @i" @onclick="() => Open(() => _level = 1)">
+                    <span class="tile-label"><span class="sw" style="background: @Series(i)"></span>@m.Name<span class="muted">· @string.Join(", ", m.Toolsets)</span></span>
+                    <strong class="tile-value" data-count="@Money(m.Cost)">@Money(m.Cost)</strong>
+                    <span class="tile-meta">@m.Rows.Count versoeke · @UsageFormat.Tokens(m.Tokens) tokens · @Secs(m.Seconds) s</span>
+                    <span class="tile-meta">telling: <strong>@m.Right / @m.Conversations.Count</strong> reg gestuur@(m.Errors > 0 ? $" · {m.Errors} foute" : "")</span>
+                    <span class="tile-split"><span class="sw" style="background: @Own"></span>Puls @Money(m.Rows.Where(r => !r.Specialist).Sum(r => r.Cost ?? 0)) <span class="sw" style="background: @Spec"></span>spesialiste @Money(m.Rows.Where(r => r.Specialist).Sum(r => r.Cost ?? 0))</span>
+                </button>
+            }
+        </div>
+
+        <section class="chart">
+            <div class="chart-head"><strong>Koste per gesprek</strong><span class="legend">@foreach (var (m, i) in Columns) { <span><span class="sw" style="background: @Series(i)"></span>@m.Name</span> }</span></div>
+            @{ var tasks = _modes.SelectMany(m => m.Conversations.Select(c => c.Task)).Distinct().ToList(); decimal top = Math.Max(0.000001m, _modes.SelectMany(m => m.Conversations).Select(c => c.Cost).DefaultIfEmpty(0m).Max()); int row = 0; }
+            <div class="xbars">
+                @foreach (string task in tasks)
+                {
+                    <div class="xbar-row" style="--i: @(row++)" title="@Question(task)">
+                        <span class="xbar-label"><code>@task</code><small>@Blurb(Question(task))</small></span>
+                        <span class="xbar-group">
+                            @foreach (var (m, i) in Columns)
+                            {
+                                var c = m.Conversations.FirstOrDefault(x => x.Task == task);
+                                decimal cost = c?.Cost ?? 0m;
+                                <button type="button" class="xbar" title="@($"{m.Name} · {task}: {Money(cost)}")" disabled="@(c is null)" @onclick="() => { if (c is not null) Open(() => { _level = 2; _task = task; }); }">
+                                    <span class="xbar-fill" style="width: @Pct(cost, top)%; background: @Series(i)"></span>
+                                    <span class="xbar-value">@Money(cost)</span>
+                                </button>
+                            }
+                        </span>
+                    </div>
+                }
+            </div>
+        </section>
+
+        <section class="chart">
+            <div class="chart-head"><strong>Tokens per modus</strong>@TokenLegend()</div>
+            <div class="donuts">
+                @foreach (var (m, i) in Columns)
+                {
+                    <figure class="donut-fig" style="--i: @i">
+                        @Donut(m.Rows)
+                        <figcaption><span class="sw" style="background: @Series(i)"></span>@m.Name · @UsageFormat.Tokens(m.Tokens)</figcaption>
+                    </figure>
+                }
+            </div>
+        </section>
+    }
+    else if (_level == 1)
+    {
+        <div class="chart-head lead"><strong>Gesprekke</strong><span class="legend"><span><span class="sw" style="background: @Own"></span>Puls self</span><span><span class="sw" style="background: @Spec"></span>spesialis</span></span></div>
+        <div class="compare">
+            @foreach (var (m, i) in Columns)
+            {
+                decimal topConv = Math.Max(0.000001m, m.Conversations.Select(c => c.Cost).DefaultIfEmpty(0m).Max());
+                long topTok = Math.Max(1, m.Conversations.Select(c => c.Rows.Sum(r => r.Tokens)).DefaultIfEmpty(0L).Max());
+                int row1 = 0, row2 = 0;
+                <section class="compare-col" style="--i: @i">
+                    <h3 class="compare-head"><span class="sw" style="background: @Series(i)"></span>@m.Name<span class="muted">@m.Conversations.Count gesprekke · @m.Rows.Count versoeke · @Money(m.Cost)</span></h3>
+                    <section class="chart">
+                        <div class="xbars">
+                            @foreach (var c in m.Conversations)
+                            {
+                                decimal own = c.Rows.Where(r => !r.Specialist).Sum(r => r.Cost ?? 0), spec = c.Rows.Where(r => r.Specialist).Sum(r => r.Cost ?? 0);
+                                <div class="xbar-row" style="--i: @(row1++)">
+                                    <span class="xbar-label" title="@Question(c.Task)">
+                                        <code>@c.Task</code><small>@Blurb(Question(c.Task))</small>
+                                        <span class="tree-chips">@foreach (var chip in Chips(c)) { <span class="chip @chip.Kind">@chip.Text</span> }</span>
+                                    </span>
+                                    <button type="button" class="xbar stacked" title="@($"{c.Task}: Puls {Money(own)}, spesialis {Money(spec)}")" @onclick="() => Open(() => { _level = 2; _task = c.Task; })">
+                                        <span class="xbar-fill" style="width: @Pct(own, topConv)%; background: @Own"></span><span class="xbar-fill" style="width: @Pct(spec, topConv)%; background: @Spec"></span>
+                                        <span class="xbar-value">@Money(c.Cost)</span>
+                                    </button>
+                                </div>
+                            }
+                        </div>
+                    </section>
+                    <section class="chart">
+                        <div class="chart-head"><strong>Tokens per gesprek</strong>@TokenLegend()</div>
+                        <div class="xbars">
+                            @foreach (var c in m.Conversations)
+                            {
+                                <div class="xbar-row" style="--i: @(row2++)">
+                                    <span class="xbar-label"><code>@c.Task</code></span>
+                                    <span class="xstack-wrap">@Stack(c.Rows, topTok)</span>
+                                    <span class="xbar-value">@UsageFormat.Tokens(c.Rows.Sum(r => r.Tokens))</span>
+                                </div>
+                            }
+                        </div>
+                    </section>
+                </section>
+            }
+        </div>
+    }
+    else if (_level == 2)
+    {
+        <div class="chart-head lead"><strong><code>@_task</code></strong><span class="muted">@Blurb(Question(_task!))</span><span class="legend"><span><span class="sw" style="background: @Own"></span>Puls self</span><span><span class="sw" style="background: @Spec"></span>spesialis</span></span></div>
+        <div class="compare">
+            @foreach (var (m, i) in Columns)
+            {
+                var c = ConversationIn(m);
+                <section class="compare-col" style="--i: @i">
+                    <h3 class="compare-head"><span class="sw" style="background: @Series(i)"></span>@m.Name<span class="muted">@(c is null ? "nie in hierdie modus nie" : $"{c.Turns.Count} beurte · {c.Rows.Count} versoeke · {Money(c.Cost)}")</span></h3>
+                    @if (c is not null)
+                    {
+                        foreach (var (tu, j) in c.Turns.Select((x, j) => (x, j)))
+                        {
+                            <section class="chart turn-chart" style="--i: @j">
+                                <button type="button" class="turn-head" @onclick="() => Open(() => { _level = 3; _turn = tu.N; })">
+                                    <span class="tree-turn-n">Beurt @tu.N</span><span class="tree-question">@tu.Question</span>
+                                    <span class="chip">@(tu.Role ?? (tu.Continued is { } h ? $"vervolg · {h}" : "Puls self"))</span>
+                                    <span class="chip">@Money(tu.Cost)</span><span class="chip">@tu.Rows.Count versoeke</span><span class="chip">@Secs(tu.Seconds) s</span>
+                                    @if (tu.Error is not null) { <span class="chip bad" title="@tu.Error">fout</span> }
+                                    <span class="chevron" aria-hidden="true"></span>
+                                </button>
+                                @Timeline(tu, null)
+                            </section>
+                        }
+                    }
+                </section>
+            }
+        </div>
+    }
+    else if (_level == 3)
+    {
+        <div class="chart-head lead"><strong>Beurt @_turn</strong><span class="muted"><code>@_task</code></span>
+            <span class="legend"><span><span class="sw" style="background: @Own"></span>Puls self</span><span><span class="sw" style="background: @Spec"></span>spesialis</span></span></div>
+        <div class="replay-bar">
+            @if (_replaying) { <button type="button" class="header-button" @onclick="StopReplay"><span class="ic i-pulse" aria-hidden="true"></span>Stop</button><span class="muted working">speel af soos getik…</span> }
+            else { <button type="button" class="header-button" @onclick="ReplayAsync"><span class="ic i-pulse" aria-hidden="true"></span>Speel af soos getik</button> }
+        </div>
+        <div class="compare">
+            @foreach (var (m, i) in Columns)
+            {
+                var tu = TurnIn(m);
+                <section class="compare-col" style="--i: @i">
+                    <h3 class="compare-head"><span class="sw" style="background: @Series(i)"></span>@m.Name<span class="muted">@(tu is null ? "geen beurt in hierdie modus nie" : $"{Money(tu.Cost)} · {tu.Rows.Count} versoeke · {Secs(tu.Seconds)} s")</span></h3>
+                    @if (tu is not null)
+                    {
+                        @Timeline(tu, r => Open(() => { _level = 4; _request = r; _requestMode = m; }))
+                        <div class="explorer-turn">
+                            <div class="xreplay"><TurnView Turn="@(_replays.GetValueOrDefault(m.Name) ?? tu.Shown)" Streaming="_replaying" Currency="Currency" /></div>
+                            @if (tu.Hosts.Count > 0) { <p class="muted">Gelees: @string.Join(", ", tu.Hosts)</p> }
+                        </div>
+                    }
+                </section>
+            }
+        </div>
+    }
+    else if (_request is { } r)
+    {
+        <div class="tiles small">
+            <div class="tile" style="--i: 0"><span class="tile-label">koste</span><strong class="tile-value" data-count="@Money(r.Cost)">@Money(r.Cost)</strong></div>
+            <div class="tile" style="--i: 1"><span class="tile-label">tokens</span><strong class="tile-value">@UsageFormat.Tokens(r.Tokens)</strong></div>
+            <div class="tile" style="--i: 2"><span class="tile-label">tyd</span><strong class="tile-value">@Secs(r.DurationMs / 1000.0) s</strong></div>
+            <div class="tile" style="--i: 3"><span class="tile-label">model</span><strong class="tile-value model">@(r.Model ?? "—")</strong><span class="tile-meta">@_requestMode?.Name · @r.Purpose</span></div>
+        </div>
+        <section class="chart">
+            <div class="chart-head"><strong>Tokens</strong>@TokenLegend()</div>
+            <div class="xbars"><div class="xbar-row" style="--i: 0"><span class="xbar-label">@(r.Specialist ? "spesialis" : "Puls")</span><span class="xstack-wrap">@Stack([r], r.Tokens)</span><span class="xbar-value">@UsageFormat.Tokens(r.Tokens)</span></div></div>
+            <dl class="explorer-fields">
+                <dt>invoer</dt><dd>@Count(r.Input)</dd><dt>kas geskryf</dt><dd>@Count(r.CacheWrite)</dd><dt>kas gelees</dt><dd>@Count(r.CacheRead)</dd><dt>uitvoer</dt><dd>@Count(r.Output)</dd>
+                <dt>wanneer</dt><dd>@r.At.ToLocalTime().ToString("HH:mm:ss.fff")</dd><dt>sessie</dt><dd><code>@r.Session</code></dd>
+                @if (r.Parent is { } p) { <dt>ouer</dt><dd><code>@p</code></dd> }
+            </dl>
+        </section>
+    }
+    </div>
+</div>
+
+@code {
+    /// <summary>The run as GET /admin/benchmarks/runs/{id} answers it.</summary>
+    [Parameter, EditorRequired] public JsonElement Run { get; set; }
+    [Parameter] public CurrencyChoice? Currency { get; set; }
+
+    // The dataviz reference palette's dark column, in its validated order: slots 1–4 for the token kinds, slots 1–3 for
+    // modes side by side. Puls's own and the specialist's requests: slot 1 and Puls's orange.
+    private static readonly string[] Palette = ["#3987e5", "#d95926", "#199e70", "#c98500", "#d55181", "#008300"];
+    private const string Own = "#3987e5", Spec = "#f58220";
+    private static string Series(int i) => Palette[i % Palette.Length];
+
+    private sealed record Request(DateTimeOffset At, string Purpose, string? Session, string? Parent, string? Model,
+        long? Input, long? CacheWrite, long? CacheRead, long? Output, decimal? Cost, long DurationMs)
+    {
+        public bool Specialist => Parent is not null;
+        public long Tokens => (Input ?? 0) + (CacheWrite ?? 0) + (CacheRead ?? 0) + (Output ?? 0);
+        public DateTimeOffset Start => At - TimeSpan.FromMilliseconds(DurationMs);
+    }
+
+    private sealed class TurnNode
+    {
+        public int N; public string Question = ""; public string? Answer, Role, Continued, Error; public double Seconds;
+        public List<string> Hosts = []; public List<Request> Rows = [];
+        /// <summary>The transcript before a replay: the question and the answer.</summary>
+        public Turn Shown = new();
+        public decimal Cost => Rows.Sum(r => r.Cost ?? 0);
+    }
+
+    private sealed class ConversationNode
+    {
+        public string Task = ""; public string? Role; public JsonElement Scores; public int Errors; public List<TurnNode> Turns = [];
+        public List<Request> Rows => Turns.SelectMany(t => t.Rows).ToList();
+        public decimal Cost => Rows.Sum(r => r.Cost ?? 0);
+        public bool Right => Scores.ValueKind == JsonValueKind.Object && Scores.TryGetProperty("routed_right", out var v) && v.ValueKind == JsonValueKind.True;
+    }
+
+    private sealed class ModeNode
+    {
+        public string Name = ""; public List<string> Toolsets = []; public List<ConversationNode> Conversations = [];
+        public List<Request> Rows => Conversations.SelectMany(c => c.Rows).ToList();
+        public decimal Cost => Rows.Sum(r => r.Cost ?? 0);
+        public long Tokens => Rows.Sum(r => r.Tokens);
+        public double Seconds => Conversations.SelectMany(c => c.Turns).Sum(t => t.Seconds);
+        public int Right => Conversations.Count(c => c.Right);
+        public int Errors => Conversations.Sum(c => c.Errors);
+    }
+
+    private sealed record Chip(string Text, string Kind = "");
+
+    private List<ModeNode> _modes = [];
+    private string _runId = "";
+    private int _repeats = 1, _repeat = 1;
+
+    private int _level;
+    private string? _task; private int? _turn; private Request? _request; private ModeNode? _requestMode;
+    private string _dir = "in";
+    private string LevelKey => $"{_repeat}|{_level}|{_task}|{_turn}|{_request?.At:O}";
+
+    private IEnumerable<(ModeNode Mode, int I)> Columns => _modes.Select((m, i) => (m, i));
+    private ConversationNode? ConversationIn(ModeNode m) => _task is null ? null : m.Conversations.FirstOrDefault(c => c.Task == _task);
+    private TurnNode? TurnIn(ModeNode m) => _turn is null ? null : ConversationIn(m)?.Turns.FirstOrDefault(t => t.N == _turn);
+
+    private readonly Dictionary<string, Turn> _replays = [];
+    private bool _replaying;
+    private CancellationTokenSource? _replayStop;
+
+    protected override void OnParametersSet()
+    {
+        _runId = Run.GetProperty("run").GetProperty("id").GetString()!;
+        _repeats = Math.Max(1, Run.GetProperty("run").GetProperty("repeat").GetInt32());
+        _repeat = Math.Clamp(_repeat, 1, _repeats);
+        Build();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        // The numbers count up to their value (the landing page's pulsUi.countCosts, keyed on data-count).
+        try { await Js.InvokeVoidAsync("pulsUi.countCosts"); } catch (JSException) { }
+    }
+
+    public void Dispose() => _replayStop?.Cancel();
+
+    private void ShowRepeat(int repeat) { _repeat = repeat; Build(); Go(0); }
+
+    private void Open(Action set) { _dir = "in"; ResetReplay(); set(); }
+
+    private void Go(int level)
+    {
+        _dir = "out"; ResetReplay();
+        _level = level;
+        if (level < 2) _task = null;
+        if (level < 3) _turn = null;
+        if (level < 4) { _request = null; _requestMode = null; }
+    }
+
+    private void ResetReplay() { _replayStop?.Cancel(); _replayStop = null; _replays.Clear(); _replaying = false; }
+
+    /// <summary>The run's tree for the shown repeat: modes in the run's order, their conversations, turns and requests.</summary>
+    private void Build()
+    {
+        var modes = new List<ModeNode>();
+        foreach (var m in Run.GetProperty("modes").EnumerateArray().Where(m => m.GetProperty("repeat").GetInt32() == _repeat))
+            modes.Add(new ModeNode { Name = m.GetProperty("name").GetString()!, Toolsets = m.GetProperty("toolsets").EnumerateArray().Select(t => t.GetString()!).ToList() });
+
+        ModeNode ModeOf(string name)
+        {
+            var mode = modes.FirstOrDefault(x => x.Name == name);
+            if (mode is null) modes.Add(mode = new ModeNode { Name = name });
+            return mode;
+        }
+
+        foreach (var c in Run.GetProperty("conversations").EnumerateArray().Where(c => c.GetProperty("repeat").GetInt32() == _repeat))
+            ModeOf(c.GetProperty("mode").GetString()!).Conversations.Add(new ConversationNode
+            {
+                Task = c.GetProperty("task").GetString()!, Role = S(c, "role"), Scores = c.GetProperty("scores").Clone(),
+                Errors = c.TryGetProperty("errors", out var e) && e.ValueKind == JsonValueKind.Number ? e.GetInt32() : 0,
+            });
+
+        foreach (var t in Run.GetProperty("turns").EnumerateArray().Where(t => t.GetProperty("repeat").GetInt32() == _repeat))
+        {
+            var mode = ModeOf(t.GetProperty("mode").GetString()!);
+            string task = t.GetProperty("task").GetString()!;
+            var conversation = mode.Conversations.FirstOrDefault(c => c.Task == task);
+            if (conversation is null) mode.Conversations.Add(conversation = new ConversationNode { Task = task });
+            var turn = new TurnNode
+            {
+                N = t.GetProperty("turn").GetInt32(), Question = S(t, "question") ?? "", Answer = S(t, "answer"), Role = S(t, "role"),
+                Continued = S(t, "continued"), Error = S(t, "error"),
+                Seconds = t.TryGetProperty("seconds", out var s) && s.ValueKind == JsonValueKind.Number ? s.GetDouble() : 0,
+                Hosts = t.TryGetProperty("hosts", out var h) && h.ValueKind == JsonValueKind.Array ? h.EnumerateArray().Select(x => x.GetString()!).ToList() : [],
+            };
+            turn.Shown = new Turn { UserText = turn.Question, Error = turn.Error };
+            if (turn.Answer is { Length: > 0 } answer) turn.Shown.Blocks.Add(new Block { Kind = BlockKind.Text, Text = answer });
+            conversation.Turns.Add(turn);
+        }
+
+        foreach (var r in Run.GetProperty("requests").EnumerateArray())
+        {
+            if (!r.TryGetProperty("turn", out var key) || key.ValueKind != JsonValueKind.Object || key.GetProperty("repeat").GetInt32() != _repeat) continue;
+            var turn = modes.FirstOrDefault(m => m.Name == key.GetProperty("mode").GetString())?.Conversations
+                .FirstOrDefault(c => c.Task == key.GetProperty("task").GetString())?.Turns.FirstOrDefault(t => t.N == key.GetProperty("turn").GetInt32());
+            turn?.Rows.Add(new Request(r.GetProperty("at").GetDateTimeOffset(), S(r, "purpose") ?? "", S(r, "session"), S(r, "parent"), S(r, "model"),
+                L(r, "input_tokens"), L(r, "cache_write_tokens"), L(r, "cache_read_tokens"), L(r, "output_tokens"), D(r, "cost"),
+                L(r, "duration_ms") ?? 0));
+        }
+
+        foreach (var c in modes.SelectMany(m => m.Conversations)) c.Turns.Sort((a, b) => a.N.CompareTo(b.N));
+        _modes = modes;
+    }
+
+    /// <summary>Replays the turn as it was typed, in every mode at once: the stored events, at their own pace (capped), through the chat's TurnStream.</summary>
+    private async Task ReplayAsync()
+    {
+        if (_task is null || _turn is null) return;
+        var plays = new List<(string Mode, string Question, List<(DateTimeOffset? At, string Type, JsonElement Data)> Events)>();
+        foreach (var m in _modes)
+        {
+            if (TurnIn(m) is not { } tu) continue;
+            try
+            {
+                var json = await Api.GetAsync<JsonElement>(
+                    $"admin/benchmarks/runs/{_runId}/turns/{Uri.EscapeDataString(m.Name)}/{_repeat}/{Uri.EscapeDataString(_task)}/{_turn}/events");
+                var events = json.GetProperty("events").EnumerateArray()
+                    .Select(e => (e.TryGetProperty("at", out var at) && at.ValueKind == JsonValueKind.String ? at.GetDateTimeOffset() : (DateTimeOffset?)null,
+                        e.GetProperty("type").GetString()!, e.GetProperty("data").Clone()))
+                    .ToList();
+                if (events.Count > 0) plays.Add((m.Name, tu.Question, events));
+            }
+            catch (AgentApiException) { }
+        }
+        if (plays.Count == 0) return;
+
+        var stop = _replayStop = new CancellationTokenSource();
+        _replays.Clear();
+        foreach (var (mode, question, _) in plays) _replays[mode] = new Turn { UserText = question };
+        _replaying = true;
+        StateHasChanged();
+        try { await Task.WhenAll(plays.Select(p => PlayAsync(_replays[p.Mode], p.Events, stop.Token))); }
+        catch (OperationCanceledException) { }
+        _replaying = false;
+        StateHasChanged();
+    }
+
+    private async Task PlayAsync(Turn turn, List<(DateTimeOffset? At, string Type, JsonElement Data)> events, CancellationToken stop)
+    {
+        DateTimeOffset? last = events[0].At;
+        int since = 0;
+        foreach (var (at, type, data) in events)
+        {
+            // Its own rhythm, three times faster, with no pause longer than a quarter second (a tool call's wait).
+            int wait = at is { } now && last is { } before ? (int)Math.Clamp((now - before).TotalMilliseconds / 3, 0, 250) : 15;
+            last = at ?? last;
+            if (wait > 0) await Task.Delay(wait, stop);
+            TurnStream.Apply(turn, new AgentStreamEvent(type, data));
+            if (++since % 3 == 0 || wait > 0) { StateHasChanged(); since = 0; }
+        }
+    }
+
+    private void StopReplay() { _replayStop?.Cancel(); _replaying = false; }
+
+    private static IEnumerable<Chip> Chips(ConversationNode c)
+    {
+        if (c.Scores.ValueKind != JsonValueKind.Object) yield break;
+        if (c.Scores.TryGetProperty("routed_right", out var right))
+            yield return new Chip($"{c.Role ?? "Puls self"} {(right.ValueKind == JsonValueKind.True ? "✓" : "✗")}", right.ValueKind == JsonValueKind.True ? "ok" : "bad");
+        if (S(c.Scores, "follow_up") is { } follow) yield return new Chip(follow, follow == "continued" ? "ok" : "");
+        if (c.Scores.TryGetProperty("ingredients", out var items) && items.ValueKind == JsonValueKind.Number)
+        {
+            decimal ratio = D(c.Scores, "priced_ratio") ?? 0;
+            yield return new Chip($"geprys {c.Scores.GetProperty("priced").GetRawText()} / {items.GetRawText()}", ratio >= 0.8m ? "ok" : ratio < 0.5m ? "bad" : "");
+        }
+        if (c.Errors > 0) yield return new Chip($"foute {c.Errors}", "bad");
+    }
+
+    private string Money(decimal? usd) => usd is { } c ? UsageFormat.Money(c, "USD", Currency) : "—";
+
+    private string? Question(string task) =>
+        _modes.SelectMany(m => m.Conversations).Where(c => c.Task == task).SelectMany(c => c.Turns).Select(t => t.Question).FirstOrDefault(q => q.Length > 0);
+
+    private static string Blurb(string? question) => string.IsNullOrEmpty(question) ? "" : question.Length <= 56 ? question : question[..55].TrimEnd() + "…";
+
+    /// <summary>The turn's requests on a timeline: Puls's lane and the specialist's, each a bar from its start to its end; a click opens one when <paramref name="open"/> is given.</summary>
+    private RenderFragment Timeline(TurnNode turn, Action<Request>? open) => __builder =>
+    {
+        if (turn.Rows.Count == 0) { <p class="muted">Geen versoeke in die grootboek nie.</p> return; }
+        var start = turn.Rows.Min(r => r.Start); double span = Math.Max(1, (turn.Rows.Max(r => r.At) - start).TotalMilliseconds);
+        <div class="timeline">
+            @foreach (var (label, specialist) in new[] { ("Puls", false), (turn.Role ?? "spesialis", true) })
+            {
+                <div class="lane">
+                    <span class="lane-label"><span class="sw" style="background: @(specialist ? Spec : Own)"></span>@label</span>
+                    <div class="lane-track">
+                        @foreach (var (r, i) in turn.Rows.Where(r => r.Specialist == specialist).Select((r, i) => (r, i)))
+                        {
+                            double left = (r.Start - start).TotalMilliseconds / span * 100, width = Math.Max(0.6, r.DurationMs / span * 100);
+                            <button type="button" class="tl-bar" style="--i: @i; left: @F(left)%; width: @F(width)%; background: @(specialist ? Spec : Own)" title="@($"{Money(r.Cost)} · {UsageFormat.Tokens(r.Tokens)} tokens · {r.DurationMs} ms")" disabled="@(open is null)" @onclick="() => open?.Invoke(r)">
+                                <span class="tl-tip"><strong>@Money(r.Cost)</strong> · @UsageFormat.Tokens(r.Tokens) tokens · @r.DurationMs ms</span>
+                            </button>
+                        }
+                    </div>
+                </div>
+            }
+            <div class="lane axis"><span class="lane-label"></span><div class="lane-track"><span class="axis-l">0 s</span><span class="axis-r">@Secs(span / 1000) s</span></div></div>
+        </div>
+    };
+
+    private static long[] Parts(IEnumerable<Request> rows)
+    {
+        var list = rows.ToList();
+        return [list.Sum(r => r.Input ?? 0), list.Sum(r => r.CacheWrite ?? 0), list.Sum(r => r.CacheRead ?? 0), list.Sum(r => r.Output ?? 0)];
+    }
+
+    private static readonly string[] TokenNames = ["invoer", "kas geskryf", "kas gelees", "uitvoer"];
+
+    /// <summary>The four token kinds stacked, in the palette's fixed order, with a 2px surface gap; widths against <paramref name="top"/> so siblings compare.</summary>
+    private static RenderFragment Stack(IEnumerable<Request> rows, long top) => __builder =>
+    {
+        long[] parts = Parts(rows);
+        long scale = Math.Max(1, top);
+        <span class="xstack" title="@string.Join(" · ", TokenNames.Select((n, i) => $"{n} {parts[i]:N0}"))">
+            @for (int i = 0; i < 4; i++)
+            {
+                if (parts[i] > 0) { <span class="xseg" style="--i: @i; width: @Pct(parts[i], scale)%; background: @Series(i)"></span> }
+            }
+        </span>
+    };
+
+    /// <summary>
+    /// The token mix as a donut: one arc per kind in the palette's order, each sweeping in after the one before (a
+    /// circle's stroke-dasharray, the arc's length out of the circumference). An empty ring when nothing was counted.
+    /// </summary>
+    private static RenderFragment Donut(IEnumerable<Request> rows) => __builder =>
+    {
+        long[] parts = Parts(rows);
+        long total = parts.Sum();
+        const double r = 15.915494, circumference = 100;   // a circumference of 100, so lengths are percentages
+        double offset = 25;                                 // start at twelve o'clock
+        <svg class="donut" viewBox="0 0 42 42" role="img" aria-label="@string.Join(", ", TokenNames.Select((n, i) => $"{n} {parts[i]:N0}"))">
+            <circle class="donut-track" cx="21" cy="21" r="@F(r)" />
+            @for (int i = 0; i < 4; i++)
+            {
+                if (total == 0 || parts[i] == 0) continue;
+                double length = (double)parts[i] / total * circumference;
+                <circle class="donut-arc" cx="21" cy="21" r="@F(r)" style="--i: @i; --len: @F(length); stroke: @Series(i); stroke-dashoffset: @F(offset)">
+                    <title>@TokenNames[i] @parts[i].ToString("N0")</title>
+                </circle>
+                offset -= length;
+            }
+        </svg>
+    };
+
+    private static RenderFragment TokenLegend() => __builder =>
+    {
+        <span class="legend">@for (int i = 0; i < 4; i++) { <span><span class="sw" style="background: @Series(i)"></span>@TokenNames[i]</span> }</span>
+    };
+
+    private static string? S(JsonElement e, string name) => e.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.String ? v.GetString() : null;
+    private static long? L(JsonElement e, string name) => e.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.Number ? v.GetInt64() : null;
+    private static decimal? D(JsonElement e, string name) => e.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.Number ? v.GetDecimal() : null;
+    private static string Count(long? n) => n is { } v ? v.ToString("N0") : "—";
+    private static string Secs(double s) => s.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture);
+    private static string F(double v) => Math.Round(v, 3).ToString(System.Globalization.CultureInfo.InvariantCulture);
+    private static string Pct(decimal part, decimal whole) => whole <= 0 ? "0" : Math.Round(part / whole * 100, 1).ToString(System.Globalization.CultureInfo.InvariantCulture);
+    private static string Pct(long part, long whole) => Pct((decimal)part, whole);
+}
