@@ -99,7 +99,7 @@ public sealed class MinionTools
 
         var createBody = new
         {
-            depth = 2, personality = role, tool, task = $"minion:{role}", run = scope?.Tags.Run, service = scope?.Tags.Service,
+            depth = 2, role, tool, task = $"minion:{role}", run = scope?.Tags.Run, service = scope?.Tags.Service,
             parent = SpecialistTools.ParentTag(scope), llm,
             location = UserPlace.Current?.Location, time_zone = UserPlace.Current?.TimeZone,
         };

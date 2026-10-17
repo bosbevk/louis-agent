@@ -66,8 +66,8 @@ public sealed class SpecialistTools(IReadOnlyDictionary<string, Uri> peers, stri
         // Optional, so a call without it is valid: the delegation check saw Puls leave it out (the call failed) and guess "default".
         [Description("The peer's name from AGENT_PEERS. Leave it out when this instance has one peer (the usual case); " +
             "it is then used.")] string? agent = null,
-        [Description("The sub-session's personality: its role on the peer (the specialists guide says which goes with which toolsets). " +
-            "Empty: the peer's default.")] string? personality = null,
+        [Description("The sub-session's role on the peer: its function (the specialists guide says which goes with which toolsets). " +
+            "Empty: the peer's default.")] string? role = null,
         [Description("Names of files the user attached in this conversation that the task needs; they are sent with the task " +
             "(the sub-session sees nothing else of the conversation).")] string[]? attachments = null,
         [Description("The LLM profile the sub-session runs on, when the specialists guide names one for the task (the peer lists " +
@@ -85,7 +85,7 @@ public sealed class SpecialistTools(IReadOnlyDictionary<string, Uri> peers, stri
         var createBody = new
         {
             toolsets, depth = 1, task = $"sub-session:{name}", run = scope?.Tags.Run, service = scope?.Tags.Service, parent,
-            personality = string.IsNullOrWhiteSpace(personality) ? null : personality.Trim(),
+            role = string.IsNullOrWhiteSpace(role) ? null : role.Trim(),
             llm = string.IsNullOrWhiteSpace(llm) ? null : llm.Trim(),
             // The user's place, when they shared it, so the specialist's time and "near me" are theirs (F22).
             location = UserPlace.Current?.Location, time_zone = UserPlace.Current?.TimeZone,
@@ -95,7 +95,7 @@ public sealed class SpecialistTools(IReadOnlyDictionary<string, Uri> peers, stri
             Answer = reply.Text, Agent = name, Toolsets = string.Join(", ", toolsets), Usage = reply.UsageLine,
         }));
         return await OpenChildAsync(peer, name, createBody, new { message, attachments = forwarded }, toolsets,
-            string.IsNullOrWhiteSpace(personality) ? null : personality.Trim(), kind, toolUseId, scope, _timeout, cancellationToken);
+            string.IsNullOrWhiteSpace(role) ? null : role.Trim(), kind, toolUseId, scope, _timeout, cancellationToken);
     }
 
     [Description("Sends a follow-up to a sub-session this chat keeps open (the handle from a StartSubSession answer, e.g. \"sub-1\") " +

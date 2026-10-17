@@ -131,7 +131,7 @@ public class AgentEngineFactoryTests
 
         Assert.That(voiced, Is.Not.SameAs(plain));
         Assert.That(factory.GetOrCreate(["files"], "puls/voice-af"), Is.SameAs(voiced));
-        Assert.That(voiced.SkillDocumentation, Does.Contain("# Puls - Persoonlikheid").And.Not.Contain("Louis's Minion"));
+        Assert.That(voiced.SkillDocumentation, Does.Contain("# Puls - Stem").And.Not.Contain("Louis's Minion"));
         Assert.That(noRouter.SkillDocumentation, Does.Not.Contain("# Louis Agent - Default Instructions"));
         Assert.That(plain.SkillDocumentation, Does.Contain("# Louis Agent - Default Instructions"));
         Assert.That(factory.Profiles, Is.EquivalentTo(new[] { "files", "files|puls/voice-af", "files|specialist" }));

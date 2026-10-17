@@ -181,7 +181,7 @@ public class SpecialistToolsTests
         using var create = JsonDocument.Parse(handler.Requests[0].Body!);
         Assert.That(create.RootElement.GetProperty("depth").GetInt32(), Is.EqualTo(1), "one level deep");
         Assert.That(create.RootElement.GetProperty("toolsets").EnumerateArray().Select(t => t.GetString()), Is.EqualTo(new[] { "files", "git" }));
-        Assert.That(create.RootElement.GetProperty("personality").ValueKind, Is.EqualTo(JsonValueKind.Null), "none named: the peer's default");
+        Assert.That(create.RootElement.GetProperty("role").ValueKind, Is.EqualTo(JsonValueKind.Null), "none named: the peer's default");
         Assert.That(create.RootElement.GetProperty("llm").ValueKind, Is.EqualTo(JsonValueKind.Null), "none named: the peer's own model");
     }
 
@@ -210,7 +210,7 @@ public class SpecialistToolsTests
 
         string result;
         using (SubSessionRegistry.Use(registry))
-            result = await Tools(handler).StartSubSession(["web"], "Wat kan ek vanaand kook?", agent: "coder", personality: "puls-cook");
+            result = await Tools(handler).StartSubSession(["web"], "Wat kan ek vanaand kook?", agent: "coder", role: "puls-cook");
 
         Assert.That(result, Does.StartWith("Fixed the null check; 14/14 tests pass."));
         Assert.That(result, Does.Contain("[Sub-session sub-1 on coder (web; puls-cook): 3 requests, 10,200 tokens, 0.0123 USD")
@@ -267,7 +267,7 @@ public class SpecialistToolsTests
         using (SubSessionRegistry.Use(registry))
         using (UsageScope.Begin(session: "sess_parent", turn: 1))
         {
-            await tools.StartSubSession(["web"], "Wat kan ek vanaand kook?", agent: "coder", personality: "puls-cook");
+            await tools.StartSubSession(["web"], "Wat kan ek vanaand kook?", agent: "coder", role: "puls-cook");
             result = await tools.ContinueSubSession("sub-1", "Maak dit vir ses mense.");
         }
 
@@ -281,6 +281,25 @@ public class SpecialistToolsTests
     }
 
     [Test]
+    public async Task APeerADeployBehind_ReportsItsRoleAsPersonality_AndItIsRead()
+    {
+        // CL14: a peer on the build before CL14 answers {"personality": …}; the kept sub-session still has the role it reported.
+        var handler = new StubHandler(request => request.Method.Method switch
+        {
+            "POST" when request.RequestUri!.AbsolutePath == "/sessions" => Json(HttpStatusCode.Created, """{"session_id":"sess_child","personality":"puls-reader"}"""),
+            "POST" => new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(Stream, Encoding.UTF8, "text/event-stream") },
+            "DELETE" => Json(HttpStatusCode.OK, """{"deleted":true}"""),
+            _ => new HttpResponseMessage(HttpStatusCode.NotFound),
+        });
+        var registry = new SubSessionRegistry();
+
+        using (SubSessionRegistry.Use(registry))
+            await Tools(handler).StartSubSession(["web"], "x", agent: "coder", role: "puls-cook");
+
+        Assert.That(registry.Open.Single().Role, Is.EqualTo("puls-reader"));
+    }
+
+    [Test]
     public async Task AnUnknownHandle_IsRefused_WithTheOpenOnes_WithoutANetworkCall()
     {
         var handler = Peer();
@@ -290,7 +309,7 @@ public class SpecialistToolsTests
         string result;
         using (SubSessionRegistry.Use(registry))
         {
-            await tools.StartSubSession(["web"], "x", agent: "coder", personality: "puls-cook");
+            await tools.StartSubSession(["web"], "x", agent: "coder", role: "puls-cook");
             int before = handler.Requests.Count;
             result = await tools.ContinueSubSession("sub-7", "y");
             Assert.That(handler.Requests, Has.Count.EqualTo(before));
@@ -498,13 +517,13 @@ public class SpecialistToolsTests
     [Test]
     public async Task APersonality_IsSentToThePeer()
     {
-        // F21: the specialist's role (its function) is the personality its session opens with.
+        // F21: the specialist's role (its function) is the role its session opens with (CL14: the body says role).
         var handler = Peer();
 
-        await Tools(handler).StartSubSession(["web"], "What's new in .NET 10?", agent: "coder", personality: "puls-researcher");
+        await Tools(handler).StartSubSession(["web"], "What's new in .NET 10?", agent: "coder", role: "puls-researcher");
 
         using var create = JsonDocument.Parse(handler.Requests[0].Body!);
-        Assert.That(create.RootElement.GetProperty("personality").GetString(), Is.EqualTo("puls-researcher"));
+        Assert.That(create.RootElement.GetProperty("role").GetString(), Is.EqualTo("puls-researcher"));
     }
 
     [Test]
@@ -513,7 +532,7 @@ public class SpecialistToolsTests
         // F30: the price lookup names the peer's local model; the peer refuses a profile it doesn't offer.
         var handler = Peer();
 
-        await Tools(handler).StartSubSession(["web"], "Prys van 1 kg uie in Stellenbosch?", agent: "coder", personality: "puls-prices",
+        await Tools(handler).StartSubSession(["web"], "Prys van 1 kg uie in Stellenbosch?", agent: "coder", role: "puls-prices",
             llm: " ollama-puls ");
 
         using var create = JsonDocument.Parse(handler.Requests[0].Body!);
