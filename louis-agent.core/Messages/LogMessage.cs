@@ -213,4 +213,7 @@ public enum LogMessage
 
     [Description("SearXNG searched without these engines: {Engines}")]
     SearxngEnginesSilent,
+
+    [Description("Refused {Request} while rendering {Page}: not a public address")]
+    RenderRequestRefused,
 }

@@ -222,6 +222,18 @@ public enum ToolMessage
     [Description("SearXNG search failed: HTTP {Status} {Detail}")]
     SearxngFailed,
 
+    [Description("PAGE_RENDERER=chrome needs BROWSER_URL: the headless Chrome's DevTools address (http://puls-browser:9222 in the Puls stack).")]
+    BrowserNotConfigured,
+
+    [Description("The browser at {Url} didn't answer ({Reason}). Is puls-browser running?")]
+    BrowserUnreachable,
+
+    [Description("Unknown PAGE_RENDERER '{Renderer}'. Supported: {Supported}.")]
+    UnknownPageRenderer,
+
+    [Description("it went on to {Address}, which isn't a public address")]
+    RenderBlockedAddress,
+
     [Description("Error: DEVOPS_API_KEY is not set.")]
     DevOpsKeyNotSet,
 

@@ -68,3 +68,16 @@ priced with sources, and what it cost.
 [Features](README.md) · [Plan](../plans/F32-self-hosted-web.md) · Previous: [F31 Benchmarks in the admin portal](F31-benchmarks-portal.md)
 
 ## What the build changed
+
+- **Step 1 (2026-10-17): SearXNG behind `IWebSearchProvider`.** One GET with `format=json`; the engines it couldn't
+  reach come back named with their reason, so a search where none answered fails saying which and why. Unset, it comes
+  after Tavily and Google and before DuckDuckGo, so a Tavily key keeps the sold endpoint on the licensed API.
+- **Step 1b: choices are enums, and the web toolset by role** (Louis). `WEB_SEARCH_PROVIDER` and the search's freshness
+  became enums parsed once with `Config/SettingChoice`; the rule joined *Rules that always apply* with ADR 0024. The
+  web toolset moved into `Search/` and `Rendering/`, each with its implementations one level down.
+- **Step 2: the headless Chrome renderer.** On Pick n Pay's search page `FetchUrl` read **0 characters**; the renderer
+  read **4,345, with 37 rand prices**. Every request the page makes goes through `RenderPolicy` (the same `SsrfGuard` as
+  `FetchUrl`): a redirect to `169.254.169.254` is refused inside the browser, the error naming it. **One gap the
+  interception can't close:** Chrome's request interception doesn't see WebSocket connections, so the browser's own
+  network (step 4) is the layer that keeps a page from opening one to an internal address. Chrome answers its
+  DevTools address only by IP, so the renderer resolves `puls-browser` first.
