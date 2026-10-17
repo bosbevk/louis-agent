@@ -259,12 +259,7 @@ Design: [docs/specs/SESSION_ARCHITECTURE.md](docs/specs/SESSION_ARCHITECTURE.md)
 - [ ] **F33 follow-up: more shop catalogues** (to plan): Shoprite (Checkers' sister store, likely the same Sixty60
       catalogue), Pick n Pay and Woolworths as providers under `Tools/Shops/Providers`; and a delivery area per shop
       (Louis's Malmesbury idea: Checkers keeps it in cookies) for local stock.
-- [ ] **CL13 Skills by role** (cleanup, in progress on `refactor/CL13-skills-by-role`;
-      [plan](docs/plans/CL13-skills-by-role.md); Louis: "we must cleanup to fix the whole Skills folder namespace … to
-      follow the established pattern and naming"): `Skills/` as the other seams are, the contract at the top,
-      `Providers/` (Markdown, Composite; the dead `PersonalitySkillsProvider` deleted) and `Roles/` (`RoleCatalog` from
-      `Personalities`, `RoleLevel`, `RoleException`, `RoleHeader`); "personality" becomes "role" in the code.
-- [ ] **CL14 The public word: role** (to plan after CL13): `role` on `POST /sessions` and in `StartSubSession` (the
+- [ ] **CL14 The public word: role** (to plan; CL13 renamed the code, `RoleNamingTests` lists what's left): `role` on `POST /sessions` and in `StartSubSession` (the
       golden files move), `ROLES_ENABLED`, `GET /roles`, the web apps, the benchmarks' Python and the error texts; the
       old names still accepted for a while.
 - [ ] **F32 follow-up: one egress proxy for the browser** (to plan; review of PR #56): `puls-browser` reaches the

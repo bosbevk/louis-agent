@@ -108,8 +108,9 @@ decision's record (its context, and what it cost) in [docs/adr/](adr/README.md).
   Why: [ADR 0010](adr/0010-folders-by-concern.md), [ADR 0011](adr/0011-prompts-are-content.md).
 - **Skill files follow the levels** — a built-in prompt lives in `louis-agent.core/Prompts/`, in the folder of the
   level that reads it (`agent/` level 0, `specialists/` level 1, `minions/` level 2) or in `toolsets/` and `shared/`
-  when every level shares it; a session loads its personality only from its own level's folder. They're read only from the assembly, so
-  a wording change is a rebuild; the repo's `Skills/` holds only what the agent writes. `SkillsLayoutTests` holds it.
+  when every level shares it; a session loads its role only from its own level's folder. They're read only from the
+  assembly, so a wording change is a rebuild; the repo's `Skills/` holds only what the agent writes.
+  `SkillsLayoutTests` holds it.
   Why: [ADR 0017](adr/0017-skills-by-level.md), [ADR 0018](adr/0018-built-in-prompts-embedded.md).
 - **A level-0 session is a mode** — one file of voice and routing in a folder per product
   (`agent/louis-agent/voice.md`, the default; `agent/louis-agent/voice-orchestrator.md`), or a language
@@ -212,8 +213,9 @@ echo "Hello, ${SKILL_ARG_name}"
 
 ### Adding a mode or a role
 
-A session names its personality when it opens (`POST /sessions` with `"personality": "{name}"`; a sub-session through
-`StartSubSession(…, personality)`), and keeps it, as it keeps its toolsets (F21). Without one it gets the default mode,
+A session names its role when it opens (`POST /sessions` with `"personality": "{name}"`; a sub-session through
+`StartSubSession(…, personality)`: the public word until CL14), and keeps it, as it keeps its toolsets (F21). In the
+code a role is `Skills/Roles/RoleCatalog` and its level `RoleLevel` (CL13). Without one it gets the default mode,
 `louis-agent/voice`. Everything here is under `louis-agent.core/Prompts/`, embedded and read only from the assembly, so
 rebuild the images that use core.
 

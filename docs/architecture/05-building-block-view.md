@@ -201,7 +201,7 @@ and it can't delegate.
 
 ## Skills
 
-`AgentHost.LoadSkills(agent, toolsets, personality, level)` builds a `CompositeSkillProvider` whose combined
+`AgentHost.LoadSkills(agent, toolsets, role, level)` builds a `CompositeSkillProvider` whose combined
 documentation is the system prompt; every file is plain markdown read by `MarkdownSkillProvider`:
 1. the principles (`shared/principles.md`, ADR 0020): never lie, cheat, steal or murder; the same for every agent
 2. the personality: at level 0 a mode (ADR 0019), its voice then its routing (which toolset a task needs, and how

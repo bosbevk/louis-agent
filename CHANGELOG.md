@@ -3,6 +3,11 @@
 > **Reference.** What was finished, newest first, one entry per feature, fix or cleanup. **Elsewhere:** what's still
 > open in the [TODO](TODO.md); how each was built in its feature, fix or plan doc (linked from its entry).
 
+- 2026-10-17 — **CL13 Skills by role**: `Skills/` in the seams' pattern, the contract at the top, `Providers/`
+  (`MarkdownSkillProvider`, `CompositeSkillProvider`) and `Roles/` (`RoleCatalog`, `RoleLevel`, `RoleException`,
+  `RoleHeader`); "personality" becomes "role" in the code, `RoleNamingTests` holding it; the unused
+  `PersonalitySkillsProvider` deleted. The public word (`personality` on the API and `StartSubSession`) is CL14's
+  ([plan](docs/plans/CL13-skills-by-role.md))
 - 2026-10-17 — **F33 Shop catalogues**: a shop's products and exact prices read from its own catalogue through the
   guarded browser (`Tools/Web/Browsing`, extracted from F32's renderer), Checkers first (`Tools/Shops`,
   `Providers/CheckersCatalogue`); a `shops` toolset with `FindProducts`, off unless `SHOP_CATALOGUES` names the shop.
