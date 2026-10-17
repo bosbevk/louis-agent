@@ -256,6 +256,9 @@ Design: [docs/specs/SESSION_ARCHITECTURE.md](docs/specs/SESSION_ARCHITECTURE.md)
 - [ ] **F32 follow-up: SearXNG's results** (from F32's run): filter them to the site asked for (Bing, often the one
       engine answering, ignores `site:`), and retry once without the time range when a freshness filter leaves no
       engine.
+- [ ] [F34 Shop deals](docs/features/F34-shop-deals.md) — Checkers searched in the store that serves the user's town;
+      `SearchSpecials` (multi-buys) and `SearchPromotions` with their wording; the cook prices only shops it has a tool
+      for, none: no prices ([plan](docs/plans/F34-shop-deals.md)). Planned 2026-10-17.
 - [ ] **F33 follow-up: more shop catalogues** (to plan): Shoprite (Checkers' sister store, likely the same Sixty60
       catalogue), Pick n Pay and Woolworths as providers under `Tools/Shops/Providers`; and a delivery area per shop
       (Louis's Malmesbury idea: Checkers keeps it in cookies) for local stock.
