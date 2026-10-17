@@ -255,6 +255,70 @@ public sealed partial class WebTools
         }
     }
 
+    [Description("Checks that the exact words a price (or any fact) came from are on the page itself: fetches the page " +
+        "with FetchUrl's address rules and looks for the quote with spacing and case ignored. Answers 'Found', 'Not " +
+        "found' (treat the value as unconfirmed), 'Page empty' (a JavaScript page that couldn't be read) or an error " +
+        "with its reason. No model reads the page, so a check costs nothing but the fetch. Use it on every quote a " +
+        "minion returns before you use its value.")]
+    public async Task<string> VerifyQuote(
+        [Description("Absolute http(s) URL of the page the value came from")] string url,
+        [Description("The exact words the value came from, as the minion (or you) copied them")] string quote)
+    {
+        if (!Uri.TryCreate((url ?? "").Trim(), UriKind.Absolute, out var uri) || uri.Scheme is not ("http" or "https"))
+            return MessageText.Format(ToolMessage.FetchUrlInvalid);
+        string wanted = Normalise((quote ?? "").Trim().Trim('"', '\u201C', '\u201D', '\''));
+        if (wanted.Length == 0) return MessageText.Format(ToolMessage.QuoteEmpty);
+
+        try
+        {
+            var (response, finalUri) = await GetFollowingRedirectsAsync(uri);
+            using var _ = response;
+            if (!response.IsSuccessStatusCode)
+                return MessageText.Format(ToolMessage.FetchHttpError, new { Url = finalUri, Status = (int)response.StatusCode, Reason = response.ReasonPhrase });
+
+            string body = await response.Content.ReadAsStringAsync();
+            // The readable text, and the whole body with its tags stripped: a price per kilo can sit outside <main>.
+            var (_, text) = HtmlToText(body, finalUri);
+            string all = CleanInline(ScriptOrStyle().Replace(body, " "));
+            if (Normalise(text).Contains(wanted, StringComparison.Ordinal) || Normalise(all).Contains(wanted, StringComparison.Ordinal))
+                return MessageText.Format(ToolMessage.QuoteFound, new { Url = finalUri });
+            if (text.Length > 0 || all.Length > 0 && !LooksEmpty(all))
+                return MessageText.Format(ToolMessage.QuoteNotFound, new { Url = finalUri });
+
+            // Nothing readable: a page drawn with JavaScript. The renderer reads it as a browser shows it (a credit).
+            try
+            {
+                var page = await _renderer.RenderAsync(finalUri);
+                if (Normalise(page.Text).Length == 0) return MessageText.Format(ToolMessage.QuotePageEmpty, new { Url = finalUri });
+                return MessageText.Format(Normalise(page.Text).Contains(wanted, StringComparison.Ordinal) ? ToolMessage.QuoteFound : ToolMessage.QuoteNotFound,
+                    new { Url = finalUri });
+            }
+            catch (PageRenderException)
+            {
+                return MessageText.Format(ToolMessage.QuotePageEmpty, new { Url = finalUri });
+            }
+        }
+        catch (BlockedAddressException ex)
+        {
+            return MessageText.Format(ToolMessage.ErrorWithReason, new { Reason = ex.Message });
+        }
+        catch (HttpRequestException ex) when (ex.InnerException is BlockedAddressException blocked)
+        {
+            return MessageText.Format(ToolMessage.ErrorWithReason, new { Reason = blocked.Message });
+        }
+        catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException or System.Text.Json.JsonException)
+        {
+            return MessageText.Format(ToolMessage.FetchFailed, new { Url = uri, Reason = ex.Message });
+        }
+    }
+
+    /// <summary>Text as a quote is compared: entities decoded, every run of whitespace (a non-breaking space too) one space, lower case.</summary>
+    internal static string Normalise(string text) =>
+        AnyWhitespace().Replace(WebUtility.HtmlDecode(text).Replace('\u00A0', ' '), " ").Trim().ToLowerInvariant();
+
+    /// <summary>A body whose only text is what a JavaScript app's shell leaves (nothing, or a "loading" line).</summary>
+    private static bool LooksEmpty(string text) => Normalise(text).Length < 3;
+
     internal static string CleanInline(string? html) =>
         Whitespace().Replace(WebUtility.HtmlDecode(Tag().Replace(html ?? "", "")), " ").Trim();
 
@@ -335,6 +399,14 @@ public sealed partial class WebTools
 
     [GeneratedRegex(@"<(script|style|noscript|svg|nav|footer|aside|form|iframe|template|button)\b[^>]*>.*?</\1>", RegexOptions.IgnoreCase | RegexOptions.Singleline)]
     private static partial Regex NonContent();
+
+    // VerifyQuote (F30): only what a browser never shows goes; a footer or a sidebar can hold the price per kilo.
+    [GeneratedRegex(@"<(script|style|noscript|template)\b[^>]*>.*?</\1>", RegexOptions.IgnoreCase | RegexOptions.Singleline)]
+    private static partial Regex ScriptOrStyle();
+
+    // VerifyQuote (F30): a quote copied across a line break still matches.
+    [GeneratedRegex(@"\s+")]
+    private static partial Regex AnyWhitespace();
 
     [GeneratedRegex(@"<pre[^>]*>(.*?)</pre>", RegexOptions.IgnoreCase | RegexOptions.Singleline)]
     private static partial Regex PreBlock();

@@ -697,6 +697,18 @@ public enum ToolMessage
     [Description("default role")]
     SubSessionDefaultRole,
 
+    [Description("Error: give the exact words to look for: the quote is empty.")]
+    QuoteEmpty,
+
+    [Description("Found: the quote is on {Url}.")]
+    QuoteFound,
+
+    [Description("Not found: the quote isn't on {Url}. Treat the value as unconfirmed: ask once more with stronger: true, or say it couldn't be confirmed.")]
+    QuoteNotFound,
+
+    [Description("Page empty: {Url} has no readable text (a page drawn with JavaScript that couldn't be rendered), so the quote can't be checked. Treat the value as unconfirmed.")]
+    QuotePageEmpty,
+
     [Description("Error: '{Role}' isn't a minion role (a minion role is <product>-minion-<function>, e.g. puls-minion-web-price-lookup; the minions guide lists them).")]
     MinionRoleInvalid,
 

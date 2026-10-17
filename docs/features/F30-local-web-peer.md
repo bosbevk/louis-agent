@@ -91,6 +91,12 @@ keep minions only if real prices hold and the cost drops.
   shows the minion under the specialist's steps: role, tool and model chips, its task, its own step and its cost. The
   minion's stream events already arrived nested (`sub_session` inside `sub_session`); the fold now matches any
   delegation call, so they land on the minion's block. Checked by hand in step 8's run.
+- **Step 7 (2026-10-17):** `VerifyQuote(url, quote)` in `WebTools`: the page through the same redirect-following,
+  SSRF-guarded reader as `FetchUrl`, the quote compared with entities decoded, spacing (a non-breaking space too) and
+  case ignored and its surrounding quotes dropped, against the readable text and the whole body (a price per kilo can
+  sit outside `<main>`). An empty page is rendered once (`ReadRenderedPage`'s renderer, a credit) and never otherwise;
+  no renderer means *Page empty*. Four answers, each a `ToolMessage`: found, not found (unconfirmed), page empty
+  (unconfirmed), or the fetch's error.
 
 - **A profile takes nothing from the instance but its API key** (step 1). The first idea was to fall back to the
   process environment for whatever a profile file leaves out; that would hand the local model Claude's
