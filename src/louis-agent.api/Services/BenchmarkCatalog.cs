@@ -8,5 +8,8 @@ namespace LouisAgent.Api.Services;
 /// <param name="checks">The checks; none by default (a test passes its own, with a stand-in script).</param>
 public sealed class BenchmarkCatalog(IReadOnlyList<BenchmarkCheck>? checks = null)
 {
+    /// <summary>The free stub check (F31): a canned run in the protocol, no session, no model, for the portal's hand checks.</summary>
+    public static readonly BenchmarkCheck Stub = new("stub", "Proefkontrole (gratis, geen model)", "benchmarks/stub/run_check.py");
+
     public IReadOnlyList<BenchmarkCheck> Checks { get; } = checks ?? [];
 }

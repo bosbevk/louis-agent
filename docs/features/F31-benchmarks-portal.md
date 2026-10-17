@@ -158,3 +158,13 @@ before it.
   rebuilt Puls with a run planted in `puls_benchmarks`: each endpoint answered as above, the scores and the events came
   back as the JSON they were stored as, and with `puls-mongo` stopped the list said `The benchmark store didn't
   answer: A timeout occurred after 5000ms…` and a run read was 503, both back to normal once it started again.
+- **Step 6c (2026-10-17): the stub check** (`benchmarks/stub/run_check.py`, standard library only; in the catalogue
+  as `stub`, *Proefkontrole*). A canned run of two modes and two conversations each (bobotie with a follow-up), every
+  turn's stream in the API's own event shapes, the cook's as nested `sub_session` events, so the live view and the
+  replay draw it as a real run; no session, no model, no cost. `StubCheckTests` run it through the real runner and
+  recorder: every `@` line a known event, the store holding 8 conversations for two repeats. **The first run end to
+  end, by hand on the rebuilt Puls:** `POST /admin/benchmarks/stub/runs` → 202; its SSE ended with `done`
+  `stored: true`; the run read back from `puls-mongo` with its settings, both modes, 4 conversations in order with
+  their scores, 6 turns and the cook's events (18, `sub_session` among them). Its total is 0 requests at an unknown
+  cost: no request was made, and `UsageReport.Total` calls a cost with no priced request unknown; the page shows it
+  as such. That run (`c1608ea06dc0`) stays in the store for steps 9 and 10.
