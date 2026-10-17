@@ -115,4 +115,7 @@ public enum ApiUserText
 
     [Description("The usage ledger couldn't be read ({Reason}), so the run's cost is unknown.")]
     BenchmarkLedgerUnreadable,
+
+    [Description("The benchmark store isn't set, so a run's results would be lost: set BENCHMARKS_MONGO_URL in config/.env.secrets and recreate the container.")]
+    NoBenchmarkStore,
 }

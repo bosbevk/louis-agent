@@ -139,4 +139,17 @@ public class BenchmarkRunnerTests
 
         Assert.That(lines, Is.EqualTo(new[] { "one", "two" }));
     }
+
+    [Test]
+    public async Task TheScript_GetsItsRunId_ToTagItsSessions()
+    {
+        // F31 step 6a: the script tags its sessions {BENCHMARK_RUN}:{mode}:{repeat}, so the ledger's rows find the run.
+        var runner = Runner("import os\nprint(os.environ.get('BENCHMARK_RUN'))");
+
+        BenchmarkRun run = runner.Start("cook", repeat: 1)!;
+        var lines = new List<string>();
+        await foreach (string line in runner.EventsAsync(run.Id)) lines.Add(line);
+
+        Assert.That(lines, Is.EqualTo(new[] { run.Id }));
+    }
 }

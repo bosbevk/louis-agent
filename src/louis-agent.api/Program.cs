@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.Json;
 using LouisAgent.Api;
 using LouisAgent.Api.Config;
+using LouisAgent.Api.Services.Benchmarks;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Sessions;
 using LouisAgent.Core.Usage;
@@ -103,9 +104,28 @@ app.MapGit();
 app.MapHistory();
 // F27: the admin portal, behind its own key (ADMIN_API_KEY, else AGENT_API_KEY; neither: closed); its settings in
 // AdminOptions (F31). A run's script calls this API back at BENCHMARK_API_URL (the container's own port, by default).
+// F31: each run is recorded into the benchmark store (BENCHMARKS_MONGO_URL), its cost joined from this instance's
+// ledger; without a store no run starts. At start-up nothing runs, so a run still "running" was cut off by a restart.
 var admin = AdminOptions.FromEnvironment();
 var benchmarks = new BenchmarkCatalog();
-app.MapAdmin(benchmarks, new BenchmarkRunner(benchmarks, host.Engine.WorkspaceRoot, admin.BenchmarkApiUrl), admin.AdminKey);
+var benchmarkLog = AgentLogging.LoggerFactory.CreateLogger("LouisAgent.Api.Benchmarks");
+IBenchmarkStore? benchmarkStore = admin.BenchmarksMongoUrl is { } mongoUrl ? new MongoBenchmarkStore(mongoUrl, admin.BenchmarksDatabase) : null;
+BenchmarkRecorder? recorder = benchmarkStore is null ? null : new BenchmarkRecorder(benchmarkStore, benchmarkLog, host.Agent.LogDirectory);
+if (benchmarkStore is not null)
+    _ = Task.Run(async () =>
+    {
+        try
+        {
+            int closed = await benchmarkStore.CloseOrphansAsync(DateTimeOffset.UtcNow);
+            if (closed > 0) benchmarkLog.Log(LogLevel.Information, ApiLogMessage.BenchmarkOrphansClosed, new { Count = closed }, tag: "API");
+        }
+        catch (Exception ex)
+        {
+            benchmarkLog.Log(LogLevel.Warning, ApiLogMessage.BenchmarkStoreUnreachable, exception: ex, tag: "API");
+        }
+    });
+app.MapAdmin(benchmarks, new BenchmarkRunner(benchmarks, host.Engine.WorkspaceRoot, admin.BenchmarkApiUrl), admin.AdminKey, recorder,
+    check => BenchmarkSettings.Of(check, host.Llm.Provider, host.Llm.Model, host.Agent.PersonalitiesEnabled));
 
 // The toolsets a session can load (F5-S3): names, what each is for and whether this instance has its settings. Never
 // the tool definitions, so a general agent can choose without loading them.

@@ -141,3 +141,12 @@ before it.
   database is dropped afterwards. CI gets a throwaway `mongo:8` service, so the contract runs there on every push.
   Noticed meanwhile, not changed: `Microsoft.AspNetCore.Components.WebAssembly.Server` 10.0.12 has two published
   high-severity advisories (NU1903 on restore).
+- **Step 6a (2026-10-17): the wiring.** `Program.cs` builds the Mongo store and the recorder (with this instance's
+  ledger directory) when `BENCHMARKS_MONGO_URL` is set; `POST …/runs` answers 503 (`NoBenchmarkStore`) without one,
+  else attaches the recorder to the run it starts (`Attach`, in the background, kept by run for `RecordingOf`). The
+  runner gives the script `BENCHMARK_RUN`, its run id. `done` waits up to 30 seconds for the recording and carries
+  `stored` and `store_error`. A run keeps its settings (`BenchmarkSettings`: provider, model, the personalities
+  allowed, the check's script and arguments); not yet the commit, which needs git run in the container (open).
+  `CloseOrphans` runs at start-up in the background, so a store that's down never delays the API: by hand, a run
+  planted as `running` in `puls_benchmarks` was `failed` with its end time after the rebuild, and the run file said
+  `1 benchmark run(s) a restart cut off are marked failed`.

@@ -205,4 +205,21 @@ public class BenchmarkRecorderTests
         var conversation = (await _store.ConversationsAsync(_run.Id)).Single();
         Assert.That(conversation.Role, Is.Null, "nothing after the failure was written: not bobotie's scores, not cottage-pie");
     }
+
+    [Test]
+    public async Task AnAttachedRecording_IsKeptByItsRun_SoTheEndCanSayWhetherItWasStored()
+    {
+        // F31 step 6a: the endpoint attaches the recorder when it starts a run, and its "done" event awaits the
+        // recording to say stored: true or false.
+        var recorder = new BenchmarkRecorder(_store);
+
+        recorder.Attach(_run);
+        Add(Protocol(), Mode());
+        _run.Complete(0);
+
+        var recording = recorder.RecordingOf(_run.Id);
+        Assert.That(recording, Is.Not.Null);
+        Assert.That((await recording!).Stored, Is.True);
+        Assert.That(recorder.RecordingOf("unknown"), Is.Null);
+    }
 }

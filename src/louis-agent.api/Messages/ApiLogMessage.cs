@@ -13,4 +13,10 @@ public enum ApiLogMessage
 
     [Description("Benchmark run {Run}: the store failed, so recording stopped; the run goes on")]
     BenchmarkStoreFailed,
+
+    [Description("{Count} benchmark run(s) a restart cut off are marked failed")]
+    BenchmarkOrphansClosed,
+
+    [Description("The benchmark store isn't answering at start-up; a run will say so when it can't write")]
+    BenchmarkStoreUnreachable,
 }

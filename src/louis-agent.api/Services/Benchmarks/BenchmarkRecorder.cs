@@ -24,6 +24,29 @@ public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = n
     /// <summary>Whether everything was kept; <see cref="StoreError"/> says why not.</summary>
     public sealed record Result(bool Stored, string? StoreError);
 
+    /// <summary>How many runs' recordings are kept for <see cref="RecordingOf"/>: the last few are all a page asks about.</summary>
+    private const int KeptRecordings = 8;
+
+    private readonly Lock _lock = new();
+    private readonly List<(string Run, Task<Result> Recording)> _recordings = [];
+
+    /// <summary>Starts recording <paramref name="run"/> in the background (the endpoint that started it doesn't wait).</summary>
+    public void Attach(BenchmarkRun run, IReadOnlyDictionary<string, string>? settings = null)
+    {
+        var recording = RecordAsync(run, settings);
+        lock (_lock)
+        {
+            _recordings.Add((run.Id, recording));
+            if (_recordings.Count > KeptRecordings) _recordings.RemoveAt(0);
+        }
+    }
+
+    /// <summary>The recording of a run <see cref="Attach"/> started; null for one it didn't (or no longer keeps).</summary>
+    public Task<Result>? RecordingOf(string id)
+    {
+        lock (_lock) return _recordings.LastOrDefault(r => r.Run == id).Recording;
+    }
+
     private static readonly JsonElement NoScores = JsonDocument.Parse("{}").RootElement.Clone();
 
     /// <summary>Records <paramref name="run"/> until it ends; <paramref name="settings"/> are what it ran with.</summary>
