@@ -56,7 +56,7 @@ public class VerifyQuoteTests
     [Test]
     public async Task AQuoteThatIsntThere_IsNotFound_AndSaysTheValueIsUnconfirmed()
     {
-        string result = await Tools(_ => Html(ProductHtml)).VerifyQuote(Url, "R29.99 per 500g");
+        string result = await Tools(_ => Html(ProductHtml)).VerifyQuote(Url, "Beef Mince R29.99");
 
         Assert.That(result, Does.StartWith("Not found:").And.Contain("unconfirmed"));
     }
@@ -185,6 +185,10 @@ public class VerifyQuoteTests
     [TestCase("R22.99")]
     [TestCase("\"R 22,99\"")]
     [TestCase("R119.98/kg")]
+    [TestCase("R22.99 each")]
+    [TestCase("Now R22.99")]
+    [TestCase("only R22.99 per kg")]
+    [TestCase("Was R29.99 Save R7.00")]
     public async Task APriceOnlyQuote_WithoutItsProduct_IsRefused_WithoutARequest(string quote)
     {
         int requests = 0;
@@ -223,9 +227,45 @@ public class VerifyQuoteTests
     [Test]
     public async Task APriceSplitAcrossTags_StillMatches()
     {
-        // ProductHtml draws the price as <span>R</span><span>35.99</span>: the page's text reads "R 35.99".
+        // ProductHtml draws the price as <span>R</span><span>35.99</span>; the body with its tags stripped joins them.
         string result = await Tools(_ => Html(ProductHtml)).VerifyQuote(Url, "R35.99", Beef);
 
         Assert.That(result, Does.StartWith("Found:"));
+    }
+
+    // The PR #54 review: a special shows the old price between the name and the price ("Was R29.99 · R22.99").
+    private const string SpecialsHtml = """
+        <html><body><main><ul>
+          <li><h3>PnP Large Eggs 6 Pack</h3><span>Was R29.99</span><span class="price">R22.99</span></li>
+          <li><h3>PnP Salted Butter 500g</h3><span>Save R7.00</span><span class="price">R54.99</span></li>
+          <li><h3>PnP Full Cream Milk 2L</h3><span class="price">R22.99</span></li>
+        </ul></main></body></html>
+        """;
+
+    [TestCase("PnP Large Eggs 6 Pack", "R22.99")]
+    [TestCase("PnP Salted Butter 500g", "R54.99")]
+    public async Task ASpecialsOldPriceOrSaving_DoesntHideTheProductsPrice(string product, string quote)
+    {
+        string result = await Tools(_ => Html(SpecialsHtml)).VerifyQuote(ListUrl, quote, product);
+
+        Assert.That(result, Does.StartWith("Found:"), product);
+    }
+
+    [TestCase("PnP Large Eggs 6 Pack", "R29.99")]
+    [TestCase("PnP Salted Butter 500g", "R7.00")]
+    public async Task TheOldPriceOrTheSaving_IsNotTheProductsPrice(string product, string quote)
+    {
+        string result = await Tools(_ => Html(SpecialsHtml)).VerifyQuote(ListUrl, quote, product);
+
+        Assert.That(result, Does.StartWith("Not found with the product:"), quote);
+    }
+
+    [Test]
+    public async Task ASpecialStillDoesntLetTheNextProductsPriceThrough()
+    {
+        // The butter's saving is skipped, its own price is not: the milk's R22.99 is not the butter's.
+        string result = await Tools(_ => Html(SpecialsHtml)).VerifyQuote(ListUrl, "R22.99", "PnP Salted Butter 500g");
+
+        Assert.That(result, Does.StartWith("Not found with the product:"));
     }
 }

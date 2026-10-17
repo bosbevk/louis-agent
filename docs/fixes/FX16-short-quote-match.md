@@ -20,14 +20,21 @@ often only that (`quote: "R22.99"`). Reproduced with the three-product list abov
 `VerifyQuote(url, quote, product)`: a `product`, the name as the page shows it, ties the price to it.
 
 - **A quote that is only a price needs its product.** Without one it is refused before any request
-  (`QuoteOnlyAPrice`). "Only a price" is a quote with fewer than three letters left once its prices are taken out
-  (`R22.99`, `R 22,99`, `R119.98/kg`).
+  (`QuoteOnlyAPrice`). "Only a price" is a quote with fewer than three letters left once its prices and the words
+  that come with a price (`each`, `now`, `only`, `per`, `from`, `special`, `was`, `save`, the units) are taken out:
+  `R22.99`, `R 22,99`, `R119.98/kg`, `R22.99 each`, `Now R22.99` (the PR #54 review: a filler word made a bare price
+  look like words).
 - **With a product, the quote must stand right after its name:** within 300 characters after one of the name's
   places on the page, with no other price between (`StandsAfter`). On a list the first price after a name is that
   product's; any later one is the next product's. A quote that holds the name itself is matched as a whole. A quote
   that is on the page but not after the name is *Not found with the product* (`QuoteNotWithProduct`), and the value
   is unconfirmed.
-- **A quote with words still works without a product,** as before.
+- **A special's old price or saving is skipped** (the PR #54 review): `Eggs 6 Pack · Was R29.99 · R22.99` has a price
+  between the name and R22.99, and shops show *Was* and *Save* prices all the time. A price right after `was`, `save`
+  or `normally` doesn't count as another product's, and a quote right after one of them is never the product's price
+  (the eggs at R29.99 are *Not found with the product*).
+- **A quote with words still works without a product,** as before. It can still be another product's ("ESKORT
+  R65.99"), so a scorer that checks a price always passes the product: F31's scorer does.
 
 Considered: a minimum quote length (a long quote can still be another product's: "ESKORT R65.99"); the price nearest
 the name in either direction (on a list the previous product's price is as near); reading the page's structure (each
@@ -44,8 +51,15 @@ shop marks up its products differently, and a rendered page has no structure lef
 - `APriceRightAfterItsProduct_IsFound` (the eggs and the milk at R22.99) and `APriceSplitAcrossTags_StillMatches`
   passed before and after.
 
+The PR #54 review's additions, also written first and seen failing (eight cases): the four filler quotes refused
+(`R22.99 each`, `Now R22.99`, `only R22.99 per kg`, `Was R29.99 Save R7.00`), and on a page of specials
+`ASpecialsOldPriceOrSaving_DoesntHideTheProductsPrice` (the eggs at R22.99 after *Was R29.99*, the butter at R54.99
+after *Save R7.00*) and `TheOldPriceOrTheSaving_IsNotTheProductsPrice` (R29.99 and R7.00). The ninth,
+`ASpecialStillDoesntLetTheNextProductsPriceThrough` (the milk's R22.99 for the butter), passed before and after.
+
 The earlier tests that checked a bare price now name its product; the footer's price per kilo is quoted with its words
-(`Unit price R71.98/kg`).
+(`Unit price R71.98/kg`), and the absent quote has words (`Beef Mince R29.99`: `R29.99 per 500g` is now only a
+price).
 
 ## Confirmed
 

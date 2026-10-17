@@ -330,16 +330,17 @@ public sealed partial class WebTools
         AnyWhitespace().Replace(WebUtility.HtmlDecode(text).Replace('\u00A0', ' '), " ").Trim().ToLowerInvariant();
 
     /// <summary>
-    /// A quote that is only a price (FX16): without its prices fewer than three letters are left (<c>r22.99</c>,
-    /// <c>r119.98/kg</c>), so it names no product.
+    /// A quote that is only a price (FX16): without its prices and the words around a price (<c>each</c>, <c>now</c>,
+    /// <c>per kg</c>, <c>was</c>, <c>save</c>) fewer than three letters are left, so it names no product.
     /// </summary>
     internal static bool IsOnlyAPrice(string normalised) =>
-        Price().Replace(normalised, "").Count(char.IsLetter) < 3;
+        PriceWord().Replace(Price().Replace(normalised, " "), " ").Count(char.IsLetter) < 3;
 
     /// <summary>
     /// The quote stands for <paramref name="product"/> (FX16): it starts within <see cref="ProductWindowChars"/> after
     /// one of the product's names on the page with no other price between, or it holds the name itself. On a list of
-    /// products the next price after a name is that product's; any later one is another's.
+    /// products the next price after a name is that product's; any later one is another's. A special's old price or
+    /// saving (<c>was R29.99</c>, <c>save R7.00</c>) between is skipped, and is never the product's price itself.
     /// </summary>
     internal static bool StandsAfter(string text, string product, string quote)
     {
@@ -349,7 +350,9 @@ public sealed partial class WebTools
             int start = at + product.Length;
             string window = text.Substring(start, Math.Min(ProductWindowChars, text.Length - start));
             int found = window.IndexOf(quote, StringComparison.Ordinal);
-            if (found >= 0 && !Price().IsMatch(window[..found])) return true;
+            if (found < 0) continue;
+            string between = window[..found];
+            if (!AfterWasOrSave().IsMatch(between) && !Price().IsMatch(OldPrice().Replace(between, " "))) return true;
         }
         return false;
     }
@@ -461,8 +464,22 @@ public sealed partial class WebTools
     private static partial Regex AnyWhitespace();
 
     // VerifyQuote (FX16): a price in rand as normalised text reads it (r22.99, r 1 299,00, r35).
-    [GeneratedRegex(@"\br ?\d+(?:[ ,]\d{3})*(?:[.,]\d{2})?")]
+    private const string Rand = @"r ?\d+(?:[ ,]\d{3})*(?:[.,]\d{2})?";
+
+    [GeneratedRegex(@"\b" + Rand)]
     private static partial Regex Price();
+
+    // VerifyQuote (FX16): a special's old price or saving, which is no product's price (was r29.99, save r7.00).
+    [GeneratedRegex(@"\b(?:was|save|normally)\s*:?\s*" + Rand)]
+    private static partial Regex OldPrice();
+
+    // VerifyQuote (FX16): the quote itself follows "was" or "save": the old price or the saving, not the price.
+    [GeneratedRegex(@"\b(?:was|save|normally)\s*:?\s*$")]
+    private static partial Regex AfterWasOrSave();
+
+    // VerifyQuote (FX16): words that come with a price and name no product.
+    [GeneratedRegex(@"\b(?:each|ea|now|only|per|from|special|promo|price|was|save|normally|kg|g|ml|l|pack)\b")]
+    private static partial Regex PriceWord();
 
     [GeneratedRegex(@"<pre[^>]*>(.*?)</pre>", RegexOptions.IgnoreCase | RegexOptions.Singleline)]
     private static partial Regex PreBlock();
