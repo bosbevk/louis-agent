@@ -85,6 +85,12 @@ keep minions only if real prices hold and the cost drops.
   roles got a *Minions* section (one page, one of your tools, the seven-line answer; a price without a quote is
   unknown) and their "can't delegate" line now says a minion isn't delegation. The quote check itself is step 7's
   `VerifyQuote`; until step 8 the roles read the quote by eye.
+- **Step 6b (2026-10-17, Louis: "we must also somehow display when a minion was called on the front end"):** a
+  `StartMinion` or `ContinueMinion` call is a `Delegation` with `Minion` set (the role, the one tool, the model from
+  the footer), so the answer's delegation card draws a minion card nested inside the specialist's, and the Werk panel
+  shows the minion under the specialist's steps: role, tool and model chips, its task, its own step and its cost. The
+  minion's stream events already arrived nested (`sub_session` inside `sub_session`); the fold now matches any
+  delegation call, so they land on the minion's block. Checked by hand in step 8's run.
 
 - **A profile takes nothing from the instance but its API key** (step 1). The first idea was to fall back to the
   process environment for whatever a profile file leaves out; that would hand the local model Claude's

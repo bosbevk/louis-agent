@@ -62,9 +62,10 @@ public static class TurnStream
 
             case "sub_session":
                 // F5: an event of a sub-session a StartSubSession call opened, folded into that call's own turn the same way.
+                // F30: a minion's events arrive inside the specialist's as a nested sub_session, so this recurses a level.
                 string? callId = data.TryGetProperty("tool_use_id", out var id) ? id.GetString() : null;
                 var call = (callId is null ? null : turn.Blocks.LastOrDefault(b => b.ToolUseId == callId))
-                           ?? turn.Blocks.LastOrDefault(b => b.ToolName == Delegation.ToolName);
+                           ?? turn.Blocks.LastOrDefault(b => Delegation.IsDelegationTool(b.ToolName));
                 if (call is null || !data.TryGetProperty("event", out var inner) || inner.GetString() is not { } innerType) break;
                 call.SubTurn ??= new Turn();
                 if (data.TryGetProperty("agent", out var peer)) call.SubAgent ??= peer.GetString();

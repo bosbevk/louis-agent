@@ -64,7 +64,64 @@
             <ol class="work-steps">
                 @foreach (var step in steps)
                 {
-                    <li class="work-step @(step.ToolResult is null ? "waiting" : step.ToolFailed ? "failed" : "ok")">
+                    string state = step.ToolResult is null ? "waiting" : step.ToolFailed ? "failed" : "ok";
+                    @if (Delegation.From(step) is { Minion: true } minion)
+                    {
+                        @* F30 step 6b (Louis: "display when a minion was called"): the specialist handed one page to a minion;
+                           its role, tool and model, its own step and what it cost, nested under the specialist's steps. *@
+                        var minionSteps = step.SubTurn?.Blocks.Where(b => b.Kind == BlockKind.Tool).ToList() ?? [];
+                        <li class="work-step minion @state">
+                            <span class="work-step-mark">@(step.ToolResult is null ? "⋯" : step.ToolFailed ? "✗" : "✓")</span>
+                            <div class="work-minion">
+                                <div class="work-minion-head">
+                                    <span class="work-step-name">@Text.MinionLabel</span>
+                                    <span class="work-minion-role">@(minion.Role ?? step.ToolName)</span>
+                                    @if (minion.Continued)
+                                    {
+                                        <span class="toolset-chip follow-up">@Text.FollowUp@(minion.Handle is { } h ? " · " + h : "")</span>
+                                    }
+                                    @foreach (string tool in minion.Toolsets)
+                                    {
+                                        <span class="toolset-chip">@tool</span>
+                                    }
+                                    @if (minion.Llm is { } llm)
+                                    {
+                                        <span class="toolset-chip model">@Text.OnModel @llm</span>
+                                    }
+                                </div>
+                                @if (minion.Task is { Length: > 0 } minionTask)
+                                {
+                                    <div class="work-minion-task" title="@minionTask">@minionTask</div>
+                                }
+                                @if (minionSteps.Count > 0)
+                                {
+                                    <ol class="work-steps nested">
+                                        @foreach (var inner in minionSteps)
+                                        {
+                                            <li class="work-step @(inner.ToolResult is null ? "waiting" : inner.ToolFailed ? "failed" : "ok")">
+                                                <span class="work-step-mark">@(inner.ToolResult is null ? "⋯" : inner.ToolFailed ? "✗" : "✓")</span>
+                                                <span class="work-step-name">@inner.ToolName</span>
+                                                @if (Summarise(inner.ToolInput) is { Length: > 0 } innerArgs)
+                                                {
+                                                    <span class="work-step-args">@innerArgs</span>
+                                                }
+                                            </li>
+                                        }
+                                    </ol>
+                                }
+                                @if (step.SubTurn?.Usage is { } minionUsage)
+                                {
+                                    <div class="work-minion-cost" title="@UsageFormat.Detail(minionUsage, Currency)">@UsageFormat.Cost(minionUsage, Currency) · @minionUsage.Requests versoeke</div>
+                                }
+                                else if (minion.UsageLine is { } minionLine)
+                                {
+                                    <div class="work-minion-cost">@minionLine</div>
+                                }
+                            </div>
+                        </li>
+                        continue;
+                    }
+                    <li class="work-step @state">
                         <span class="work-step-mark">@(step.ToolResult is null ? "⋯" : step.ToolFailed ? "✗" : "✓")</span>
                         <span class="work-step-name">@step.ToolName</span>
                         @if (Summarise(step.ToolInput) is { Length: > 0 } args)
