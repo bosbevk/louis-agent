@@ -3,6 +3,7 @@ using LouisAgent.Core.Agent;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Skills;
+using LouisAgent.Core.Skills.Roles;
 
 namespace LouisAgent.Core.Tests.Hosting;
 
@@ -55,12 +56,12 @@ public class AgentHostSkillsTests
         Assert.That(ToolsetCatalog.Find("agents"), Is.Null, "the old name is gone");
     }
 
-    [TestCase(null, SkillLevel.Agent)]
-    [TestCase("puls/voice-af", SkillLevel.Agent)]
-    [TestCase("puls-cook", SkillLevel.Specialist)]
-    [TestCase(null, SkillLevel.Specialist)]
-    [TestCase("puls-minion-web-price-lookup", SkillLevel.Minion)]   // F30: a minion always has a role
-    public void EveryPrompt_StartsWithThePrinciples(string? personality, SkillLevel level)
+    [TestCase(null, RoleLevel.Agent)]
+    [TestCase("puls/voice-af", RoleLevel.Agent)]
+    [TestCase("puls-cook", RoleLevel.Specialist)]
+    [TestCase(null, RoleLevel.Specialist)]
+    [TestCase("puls-minion-web-price-lookup", RoleLevel.Minion)]   // F30: a minion always has a role
+    public void EveryPrompt_StartsWithThePrinciples(string? personality, RoleLevel level)
     {
         // CL9 step 2: every agent, at every level, whatever its voice or role, gets the shared principles first, so no
         // later file can push them aside.
@@ -71,7 +72,7 @@ public class AgentHostSkillsTests
     }
 
     [Test]
-    public void PersonalityAndTheRouter_AreAlwaysThere()
+    public void TheRoleAndTheRouter_AreAlwaysThere()
     {
         string docs = AgentHost.LoadSkills(Options(), []).Documentation;
 

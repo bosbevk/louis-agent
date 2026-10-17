@@ -6,6 +6,7 @@ using LouisAgent.Core.Config;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Sessions;
 using LouisAgent.Core.Skills;
+using LouisAgent.Core.Skills.Roles;
 using LouisAgent.Core.Tools.Clock;
 using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
@@ -84,7 +85,7 @@ public sealed class MinionTools
     {
         role = role.Trim();
         tool = tool.Trim();
-        if (Personalities.MinionBaseOf(role) is null) return MessageText.Format(ToolMessage.MinionRoleInvalid, new { Role = role });
+        if (RoleCatalog.MinionBaseOf(role) is null) return MessageText.Format(ToolMessage.MinionRoleInvalid, new { Role = role });
         if (NeverHandedDown.Contains(tool)) return MessageText.Format(ToolMessage.MinionToolNeverHandedDown, new { Tool = tool });
         var mine = AgentTools.Current;
         if (!mine.Contains(tool))

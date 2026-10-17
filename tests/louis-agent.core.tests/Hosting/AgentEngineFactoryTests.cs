@@ -2,6 +2,7 @@ using LouisAgent.Core.Agent;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Skills;
+using LouisAgent.Core.Skills.Roles;
 
 namespace LouisAgent.Core.Tests.Hosting;
 
@@ -19,29 +20,29 @@ public class AgentEngineFactoryTests
 
     private static string[] Names(AgentEngine engine) => engine.Tools.Select(t => t.Name).ToArray();
 
-    /// <summary>A factory with only <paramref name="enabled"/> personalities on (F29); every one is built in (CL8 step 4).</summary>
+    /// <summary>A factory with only <paramref name="enabled"/> roles on (F29); every one is built in (CL8 step 4).</summary>
     private static AgentEngineFactory FactoryEnabling(IReadOnlyList<string> enabled)
     {
         var options = Options();
-        options.PersonalitiesEnabled = enabled;
+        options.RolesEnabled = enabled;
         return new AgentEngineFactory(new FakeChatClient(), options);
     }
 
     [Test]
-    public void OnlyTheEnabledPersonalities_AreOffered_AndAnotherIsRefused()
+    public void OnlyTheEnabledRoles_AreOffered_AndAnotherIsRefused()
     {
         // F29: Louis switched every specialist but the cook off until it has passed a check like the cook's. The gate is
         // a setting the API enforces, so a prompt slip that names the researcher fails at the peer, not quietly.
         var factory = FactoryEnabling(["puls/voice-af", "puls-cook"]);
 
-        Assert.That(factory.AvailablePersonalities(SkillLevel.Agent), Is.EqualTo(new[] { "puls/voice-af" }), "louis-agent/voice is built in but off");
-        Assert.That(factory.AvailablePersonalities(SkillLevel.Specialist), Is.EqualTo(new[] { "puls-cook" }), "the other roles are built in but off");
+        Assert.That(factory.AvailableRoles(RoleLevel.Agent), Is.EqualTo(new[] { "puls/voice-af" }), "louis-agent/voice is built in but off");
+        Assert.That(factory.AvailableRoles(RoleLevel.Specialist), Is.EqualTo(new[] { "puls-cook" }), "the other roles are built in but off");
 
-        var refused = Assert.Throws<LouisAgent.Core.Skills.PersonalityException>(() => factory.GetOrCreate(["web"], "puls-researcher", SkillLevel.Specialist))!;
+        var refused = Assert.Throws<LouisAgent.Core.Skills.Roles.RoleException>(() => factory.GetOrCreate(["web"], "puls-researcher", RoleLevel.Specialist))!;
         Assert.That(refused.Message, Does.Contain("puls-researcher").And.EndWith("Available: puls-cook."), "named as unknown, with what's on");
         Assert.That(factory.Profiles, Is.Empty, "refused before anything is built");
 
-        Assert.That(factory.GetOrCreate(["web"], "puls-cook", SkillLevel.Specialist).SkillDocumentation, Does.Contain("Never invent a price"));
+        Assert.That(factory.GetOrCreate(["web"], "puls-cook", RoleLevel.Specialist).SkillDocumentation, Does.Contain("Never invent a price"));
     }
 
     private static Microsoft.Extensions.AI.ChatResponse Answer(string text) =>
@@ -88,13 +89,13 @@ public class AgentEngineFactoryTests
     }
 
     [Test]
-    public void AnEmptyEnabledList_MeansEveryPersonality()
+    public void AnEmptyEnabledList_MeansEveryRole()
     {
         var factory = FactoryEnabling([]);
 
-        Assert.That(factory.AvailablePersonalities(SkillLevel.Agent), Is.EqualTo(new[] { "louis-agent/voice", "louis-agent/voice-orchestrator", "puls/voice-af", "puls/voice-en" }));
+        Assert.That(factory.AvailableRoles(RoleLevel.Agent), Is.EqualTo(new[] { "louis-agent/voice", "louis-agent/voice-orchestrator", "puls/voice-af", "puls/voice-en" }));
         Assert.That(factory.DefaultVoice, Is.EqualTo("louis-agent/voice"), "GET /personalities' default");
-        Assert.That(factory.AvailablePersonalities(SkillLevel.Specialist), Does.Contain("puls-cook").And.Contain("puls-researcher"));
+        Assert.That(factory.AvailableRoles(RoleLevel.Specialist), Does.Contain("puls-cook").And.Contain("puls-researcher"));
     }
 
     [Test]
@@ -102,8 +103,8 @@ public class AgentEngineFactoryTests
     {
         var options = AgentOptions.FromEnvironment(name => name == "PERSONALITIES_ENABLED" ? " puls, Puls-Cook ,puls, " : null);
 
-        Assert.That(options.PersonalitiesEnabled, Is.EqualTo(new[] { "puls", "puls-cook" }));
-        Assert.That(AgentOptions.FromEnvironment(_ => null).PersonalitiesEnabled, Is.Empty);
+        Assert.That(options.RolesEnabled, Is.EqualTo(new[] { "puls", "puls-cook" }));
+        Assert.That(AgentOptions.FromEnvironment(_ => null).RolesEnabled, Is.Empty);
     }
 
     [Test]
@@ -119,14 +120,14 @@ public class AgentEngineFactoryTests
     }
 
     [Test]
-    public void APersonality_IsItsOwnProfile_WithItsOwnPrompt()
+    public void ARole_IsItsOwnProfile_WithItsOwnPrompt()
     {
-        // F21: the same toolsets with another personality, or at another level (CL8: no router below level 0), is another engine.
+        // F21: the same toolsets with another role, or at another level (CL8: no router below level 0), is another engine.
         var factory = Factory();
 
         var plain = factory.GetOrCreate(["files"]);
         var voiced = factory.GetOrCreate(["files"], "puls/voice-af");
-        var noRouter = factory.GetOrCreate(["files"], level: SkillLevel.Specialist);
+        var noRouter = factory.GetOrCreate(["files"], level: RoleLevel.Specialist);
 
         Assert.That(voiced, Is.Not.SameAs(plain));
         Assert.That(factory.GetOrCreate(["files"], "puls/voice-af"), Is.SameAs(voiced));
@@ -137,11 +138,11 @@ public class AgentEngineFactoryTests
     }
 
     [Test]
-    public void AnUnknownPersonality_IsRefused_BeforeAnythingIsBuilt()
+    public void AnUnknownRole_IsRefused_BeforeAnythingIsBuilt()
     {
         var factory = Factory();
 
-        Assert.Throws<LouisAgent.Core.Skills.PersonalityException>(() => factory.GetOrCreate(["files"], "nobody-here"));
+        Assert.Throws<LouisAgent.Core.Skills.Roles.RoleException>(() => factory.GetOrCreate(["files"], "nobody-here"));
         Assert.That(factory.Profiles, Is.Empty);
     }
 
@@ -221,14 +222,14 @@ public class AgentEngineFactoryTests
         // the minion base with that one tool, no toolset guide and no router, so a 4B model reads a prompt it can follow.
         var factory = Factory();
 
-        var minion = factory.GetOrCreate(["web"], "puls-minion-web-price-lookup", SkillLevel.Minion, tool: "FetchUrl");
+        var minion = factory.GetOrCreate(["web"], "puls-minion-web-price-lookup", RoleLevel.Minion, tool: "FetchUrl");
 
         Assert.That(Names(minion), Is.EqualTo(new[] { "FetchUrl" }), "one tool: no clock, no ExecuteSkill, no WebSearch");
         Assert.That(minion.SkillDocumentation, Does.Contain("# Puls minion: Web price lookup").And.Contain("You are a **minion**")
             .And.Not.Contain("# Web Skills").And.Not.Contain("# Louis Agent - Default Instructions"));
         Assert.That(factory.Profiles, Is.EqualTo(new[] { "web|puls-minion-web-price-lookup|minion|tool:FetchUrl" }));
-        Assert.That(factory.GetOrCreate(["web"], "puls-minion-web-price-lookup", SkillLevel.Minion, tool: "FetchUrl"), Is.SameAs(minion));
-        Assert.That(factory.GetOrCreate(["web"], "puls-minion-web-price-lookup", SkillLevel.Minion, tool: "ReadRenderedPage"), Is.Not.SameAs(minion),
+        Assert.That(factory.GetOrCreate(["web"], "puls-minion-web-price-lookup", RoleLevel.Minion, tool: "FetchUrl"), Is.SameAs(minion));
+        Assert.That(factory.GetOrCreate(["web"], "puls-minion-web-price-lookup", RoleLevel.Minion, tool: "ReadRenderedPage"), Is.Not.SameAs(minion),
             "the tool is part of the key");
     }
 
@@ -238,7 +239,7 @@ public class AgentEngineFactoryTests
         var factory = Factory();
 
         var ex = Assert.Throws<ToolsetException>(() =>
-            factory.GetOrCreate(["web"], "puls-minion-web-price-lookup", SkillLevel.Minion, tool: "ReadWorkspaceFile"))!;
+            factory.GetOrCreate(["web"], "puls-minion-web-price-lookup", RoleLevel.Minion, tool: "ReadWorkspaceFile"))!;
 
         Assert.That(ex.Message, Does.Contain("ReadWorkspaceFile").And.Contain("web"));
         Assert.That(factory.Profiles, Is.Empty);

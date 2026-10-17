@@ -117,11 +117,11 @@ public sealed class AgentOptions
     public IReadOnlyDictionary<string, Uri> AgentPeers { get; set; } = new Dictionary<string, Uri>();
 
     /// <summary>
-    /// PERSONALITIES_ENABLED: the personalities this instance may use (F29), comma separated and lowercase, e.g.
-    /// <c>puls,puls-cook</c>; a session or sub-session asking for another is refused as for an unknown one. Empty: every
-    /// built-in personality. Puls's compose lists only the roles that have passed their check.
+    /// PERSONALITIES_ENABLED (its name changes in CL14): the roles this instance may use (F29), comma separated and
+    /// lowercase, e.g. <c>puls,puls-cook</c>; a session or sub-session asking for another is refused as for an unknown
+    /// one. Empty: every built-in role. Puls's compose lists only the roles that have passed their check.
     /// </summary>
-    public IReadOnlyList<string> PersonalitiesEnabled { get; set; } = [];
+    public IReadOnlyList<string> RolesEnabled { get; set; } = [];
 
     /// <summary>
     /// LLM_SESSION_PROFILES: the LLM profiles a session may name when it opens (F30), comma separated, e.g.
@@ -217,7 +217,7 @@ public sealed class AgentOptions
             HostCulture = Get("HOST_CULTURE"),
             DisplayCurrency = Get("DISPLAY_CURRENCY"),
             AgentPeers = ParsePeers(Get("AGENT_PEERS")),
-            PersonalitiesEnabled = ParseNames(Get("PERSONALITIES_ENABLED")),
+            RolesEnabled = ParseNames(Get("PERSONALITIES_ENABLED")),
             SessionLlmProfiles = ParseNames(Get("LLM_SESSION_PROFILES")),
             MinionLlms = ParseMinionLlms(Get("MINION_LLMS")),
             AgentApiKey = Get("AGENT_API_KEY"),

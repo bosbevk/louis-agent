@@ -4,6 +4,7 @@ using System.Reflection;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Skills;
+using LouisAgent.Core.Skills.Providers;
 using LouisAgent.Core.Tools.Workspace;
 using Microsoft.Extensions.AI;
 using NUnit.Framework;

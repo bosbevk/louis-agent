@@ -70,7 +70,7 @@ public class SkillFileSourceTests
     }
 
     [Test]
-    public void APersonalityOnDisk_IsNotRead()
+    public void ARoleOnDisk_IsNotRead()
     {
         // Only the agent's own files come from disk: a role or a voice is built in, or it isn't one.
         Directory.CreateDirectory(Path.Combine(_dir, "specialists"));

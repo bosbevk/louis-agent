@@ -155,7 +155,7 @@ public class AgentSessionsTests
     [Test]
     public void AnUnknownPersonality_IsRefused()
     {
-        Assert.Throws<LouisAgent.Core.Skills.PersonalityException>(() => Sessions().Create(["files"], personality: "nobody-here"));
+        Assert.Throws<LouisAgent.Core.Skills.Roles.RoleException>(() => Sessions().Create(["files"], personality: "nobody-here"));
     }
 
     [Test]
@@ -164,8 +164,8 @@ public class AgentSessionsTests
         // CL8: a session's level is its depth; the cook is a specialist (level 1), Puls's voice is level 0's.
         var sessions = Sessions();
 
-        Assert.Throws<LouisAgent.Core.Skills.PersonalityException>(() => sessions.Create(["web"], personality: "puls-cook"));
-        Assert.Throws<LouisAgent.Core.Skills.PersonalityException>(() => sessions.Create(["web"], depth: 1, personality: "puls/voice-af"));
+        Assert.Throws<LouisAgent.Core.Skills.Roles.RoleException>(() => sessions.Create(["web"], personality: "puls-cook"));
+        Assert.Throws<LouisAgent.Core.Skills.Roles.RoleException>(() => sessions.Create(["web"], depth: 1, personality: "puls/voice-af"));
         Assert.That(sessions.Create(["web"], personality: "puls/voice-af").Personality, Is.EqualTo("puls/voice-af"));
         Assert.That(sessions.Create(["web"], depth: 1, personality: "puls-cook").Personality, Is.EqualTo("puls-cook"));
     }
@@ -324,11 +324,11 @@ public class AgentSessionsTests
         Assert.That(() => sessions.Create(["web"], new UsageTags(null, null, null, "sess_gone#1"), depth: 2, personality: "puls-minion-web-price-lookup", tool: "FetchUrl"),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("sess_gone"), "a parent it can't find");
         Assert.That(() => sessions.Create(["web"], parent, depth: 2, personality: "puls-cook", tool: "FetchUrl"),
-            Throws.TypeOf<LouisAgent.Core.Skills.PersonalityException>(), "a specialist's role is no minion role");
+            Throws.TypeOf<LouisAgent.Core.Skills.Roles.RoleException>(), "a specialist's role is no minion role");
         Assert.That(() => sessions.Create(["web"], parent, depth: 2, personality: "puls-minion", tool: "FetchUrl"),
-            Throws.TypeOf<LouisAgent.Core.Skills.PersonalityException>(), "the base is no role");
+            Throws.TypeOf<LouisAgent.Core.Skills.Roles.RoleException>(), "the base is no role");
         Assert.That(() => sessions.Create(["web"], parent, depth: 2, tool: "FetchUrl"),
-            Throws.TypeOf<LouisAgent.Core.Skills.PersonalityException>(), "a minion always has a role");
+            Throws.TypeOf<LouisAgent.Core.Skills.Roles.RoleException>(), "a minion always has a role");
         Assert.That(() => sessions.Create(["web"], parent, depth: 2, personality: "puls-minion-web-price-lookup"),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("'tool'"), "a minion always has its one tool");
         Assert.That(() => sessions.Create(["web"], depth: 1, personality: "puls-cook", tool: "FetchUrl"),

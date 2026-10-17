@@ -2,8 +2,9 @@ using LouisAgent.Core.Agent;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Skills;
+using LouisAgent.Core.Skills.Roles;
 
-namespace LouisAgent.Core.Tests.Skills;
+namespace LouisAgent.Core.Tests.Skills.Roles;
 
 // F33 step 4 (Louis: "we want the cook to have the tool always … puls should not pass it"): a role's file declares the
 // toolsets the role always loads, in a header the loader reads and strips, so the model never sees it:
@@ -39,18 +40,18 @@ public class RoleHeaderTests
 
     [Test]
     public void TheCook_AlwaysLoadsTheShops_WhereThisInstanceHasThem() =>
-        Assert.That(Personalities.ToolsetsOf("puls-cook", SkillLevel.Specialist), Is.EqualTo(new[] { "shops?" }));
+        Assert.That(RoleCatalog.ToolsetsOf("puls-cook", RoleLevel.Specialist), Is.EqualTo(new[] { "shops?" }));
 
     [Test]
     public void ARoleWithoutAHeader_DeclaresNone() =>
-        Assert.That(Personalities.ToolsetsOf("louis-agent/voice", SkillLevel.Agent), Is.Empty);
+        Assert.That(RoleCatalog.ToolsetsOf("louis-agent/voice", RoleLevel.Agent), Is.Empty);
 
     [Test]
     public void EveryBuiltInRolesHeader_NamesToolsetsThatExist()
     {
-        foreach (var level in Enum.GetValues<SkillLevel>())
-            foreach (string role in Personalities.Available(level))
-                foreach (string toolset in Personalities.ToolsetsOf(role, level))
+        foreach (var level in Enum.GetValues<RoleLevel>())
+            foreach (string role in RoleCatalog.Available(level))
+                foreach (string toolset in RoleCatalog.ToolsetsOf(role, level))
                     Assert.That(ToolsetCatalog.Find(ToolsetCatalog.NameOf(toolset)), Is.Not.Null, $"{role} names '{toolset}'");
     }
 
@@ -58,7 +59,7 @@ public class RoleHeaderTests
     public void TheModel_NeverSeesTheHeader()
     {
         var options = new AgentOptions { WorkspaceRoot = TestPaths.RepoRoot, RatesUrl = null };
-        string prompt = AgentHost.LoadSkills(options, [], "puls-cook", SkillLevel.Specialist).Documentation;
+        string prompt = AgentHost.LoadSkills(options, [], "puls-cook", RoleLevel.Specialist).Documentation;
 
         Assert.That(prompt, Does.Contain("Local cook").And.Not.Contain("toolsets: shops?"));
     }

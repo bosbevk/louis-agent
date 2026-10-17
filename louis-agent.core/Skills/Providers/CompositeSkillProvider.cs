@@ -1,4 +1,6 @@
-namespace LouisAgent.Core.Skills;
+namespace LouisAgent.Core.Skills.Providers;
+
+using LouisAgent.Core.Skills;
 
 /// <summary>
 /// Composite skill provider that combines skills from multiple sources (files, MCP, etc.)

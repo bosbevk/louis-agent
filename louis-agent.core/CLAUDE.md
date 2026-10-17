@@ -72,7 +72,7 @@ a change to one (a new provider, a new tool, a new guard) touches one folder:
 | `Llm/` + `Llm/{Name}Provider/` | The model: client factory, `IChatClient` middleware (thinking, caching, usage recording), one folder per provider (`AnthropicProvider/`: a folder named `Anthropic` would hide the SDK's own `Anthropic` namespace) |
 | `Tools/{Toolset}/` | What the model can do: one folder per toolset (`Workspace`, `Git`, `DotNet`, `Shell`, `Web`, `Scripts`, `Agents`, `Integrations/Paymo`, `Integrations/DevOps`), plus `Clock` (every session) and `Documents` (shared by two toolsets); `ProcessRunner` beside them |
 | `Sessions/` | What a host sets for one session's turn and the tools read: the user's place (F22), the attachments, the sub-sessions a chat keeps (F26), the live feed of a child's events. Not what the model can do, and not the loop |
-| `Skills/` | Loading the markdown skills and personality into the prompt |
+| `Skills/` | Loading the markdown skills and a session's role into the prompt: the contract at the top (`ISkillProvider`, the embedded files), its implementations in `Providers/`, and in `Roles/` what a session is (`RoleCatalog`, `RoleLevel`, `RoleHeader`, CL13) |
 | `Guardrails/` | Pure safety checks, no model: the workspace boundary, sensitive files, the SSRF guard (the guards that call a model are in `Agent/`) |
 | `Usage/` and `Pricing/` | The ledger (records, sinks, scopes, reports); prices, cost, rates and the display currency |
 | `Protocols/Mcp/` | Talking to other agents and tools over MCP |

@@ -1,6 +1,7 @@
 using LouisAgent.Core.Skills;
+using LouisAgent.Core.Skills.Providers;
 
-namespace LouisAgent.Core.Tests.Skills;
+namespace LouisAgent.Core.Tests.Skills.Providers;
 
 public class MarkdownSkillProviderTests
 {
@@ -27,14 +28,14 @@ public class MarkdownSkillProviderTests
 
     /// <summary>
     /// Verifies that the provider gracefully handles missing files
-    /// by returning empty skills and documentation strings when includeDefaultInstructions is false.
+    /// by returning empty skills and documentation strings.
     /// </summary>
     [Test]
     public void Constructor_WhenFileDoesNotExist_LoadsEmptySkillsList()
     {
         var missingFile = Path.Combine(Path.GetTempPath(), $"missing-{Guid.NewGuid():N}.md");
 
-        var provider = new MarkdownSkillProvider(missingFile, includeDefaultInstructions: false);
+        var provider = new MarkdownSkillProvider(missingFile);
 
         Assert.That(provider.Skills, Is.Empty);
         Assert.That(provider.Documentation, Is.Empty);
@@ -80,6 +81,16 @@ public class MarkdownSkillProviderTests
         {
             Assert.That(provider.Documentation, Is.Not.Empty);
         }
+    }
+
+    // CL13, review of PR #59: the provider prepended the default mode's routing unless told not to, which every caller
+    // but the tests told it; a provider reads its own file, and who the agent is comes from AgentHost.LoadSkills.
+    [Test]
+    public void AFile_IsItsDocumentation_NothingAdded()
+    {
+        var filePath = Path.Combine(TestPaths.RepoRoot, "Skills", "HelloWorld.md");
+
+        Assert.That(new MarkdownSkillProvider(filePath).Documentation, Is.EqualTo(File.ReadAllText(filePath)));
     }
 
     /// <summary>

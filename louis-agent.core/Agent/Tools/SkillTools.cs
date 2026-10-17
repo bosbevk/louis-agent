@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Skills;
+using LouisAgent.Core.Skills.Providers;
 using LouisAgent.Core.Tools;
 using LouisAgent.Core.Tools.Shell;
 using LouisAgent.Core.Messages;
@@ -222,7 +223,7 @@ internal sealed partial class SkillTools
         {
             // Skip files the reloader already picked up (e.g. via skills-folder discovery).
             if (!loadedDocs.Contains(File.ReadAllText(file).Trim(), StringComparison.Ordinal))
-                provider.AddProvider(new MarkdownSkillProvider(file, includeDefaultInstructions: false));
+                provider.AddProvider(new MarkdownSkillProvider(file));
         }
 
         _skills = ToSkillMap(provider);

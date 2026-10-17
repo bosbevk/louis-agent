@@ -3,6 +3,8 @@ using LouisAgent.Core.Agent;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Skills;
+using LouisAgent.Core.Skills.Providers;
+using LouisAgent.Core.Skills.Roles;
 using LouisAgent.Core.Tools.DotNet;
 using LouisAgent.Core.Tools.Integrations.Paymo;
 
@@ -15,7 +17,7 @@ public class SkillFilesTests
     private static string SkillsDirectory => TestPaths.Prompts;
 
     private static MarkdownSkillProvider Load(string fileName) =>
-        new(Path.Combine(SkillsDirectory, fileName), includeDefaultInstructions: false);
+        new(Path.Combine(SkillsDirectory, fileName));
 
     [Test]
     public void EveryToolset_HasAGuide_ThatLoadsWithIt_AndCantBeOverwritten()
@@ -41,7 +43,7 @@ public class SkillFilesTests
     public void TheRouter_NamesEveryToolsetAndDescribesNoTools()
     {
         // The coding agent's routing (CL9): Puls's routes only what Puls does.
-        string doc = Personalities.ModeParts(SkillFileSource.ReadEmbedded(Personalities.FileName(Personalities.DefaultVoice, SkillLevel.Agent))!).Routing;
+        string doc = RoleCatalog.ModeParts(SkillFileSource.ReadEmbedded(RoleCatalog.FileName(RoleCatalog.DefaultVoice, RoleLevel.Agent))!).Routing;
 
         // Every toolset but minions (F30): a specialist's toolset, never a chat's, and the coding product has no minion roles.
         foreach (string toolset in ToolsetCatalog.All.Select(t => t.Name).Where(name => name != "minions"))
@@ -62,11 +64,16 @@ public class SkillFilesTests
     public void CodeReview_IsPartOfTheCodingAgentsMode()
     {
         // CL9 step 4: the placeholder code-review skills (they only echoed) go; how to review a change is in the mode.
-        string routing = Personalities.ModeParts(SkillFileSource.ReadEmbedded(Personalities.FileName(Personalities.DefaultVoice, SkillLevel.Agent))!).Routing;
+        string routing = RoleCatalog.ModeParts(SkillFileSource.ReadEmbedded(RoleCatalog.FileName(RoleCatalog.DefaultVoice, RoleLevel.Agent))!).Routing;
 
         Assert.That(SkillFileSource.ReadEmbedded(SkillFiles.Function("code-review")), Is.Null);
         Assert.That(routing, Does.Contain("Reviewing a change").And.Contain("`git`"));
     }
+
+    [Test]
+    public void TheFunctionSkills_AreLevelZeros() =>
+        // CL13: written out in SkillFiles, so the top of Skills/ doesn't use Roles/; still the agent level's folder.
+        Assert.That(SkillFiles.FunctionsFolder, Does.StartWith(RoleCatalog.AgentFolder + "/"));
 
     [Test]
     public void NoProviderClassPerSkillFile()
@@ -74,12 +81,11 @@ public class SkillFilesTests
         // Only skills we don't control would need a provider of their own; ours are all plain markdown.
         var providers = typeof(ISkillProvider).Assembly.GetTypes()
             .Where(t => typeof(ISkillProvider).IsAssignableFrom(t) && t is { IsClass: true, IsAbstract: false })
-            .Select(t => t.Name);
+            .ToList();
 
-        Assert.That(providers, Is.EquivalentTo(new[]
-        {
-            nameof(CompositeSkillProvider), nameof(MarkdownSkillProvider), nameof(PersonalitySkillsProvider),
-        }));
+        // CL13: PersonalitySkillsProvider went, unused since F5 step 4b; the providers sit in Providers/, as every seam's do.
+        Assert.That(providers.Select(t => t.Name), Is.EquivalentTo(new[] { nameof(CompositeSkillProvider), nameof(MarkdownSkillProvider) }));
+        Assert.That(providers.Select(t => t.Namespace), Has.All.EqualTo("LouisAgent.Core.Skills.Providers"));
     }
 
     [Test]
