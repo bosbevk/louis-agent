@@ -1,6 +1,7 @@
-namespace LouisAgent.Core.Tools.Web;
+namespace LouisAgent.Core.Tools.Web.Search;
 
 using System.Net;
+using LouisAgent.Core.Tools.Web;
 
 /// <summary>
 /// A web search engine behind <see cref="WebTools.WebSearch"/>. Implement this to plug in another engine

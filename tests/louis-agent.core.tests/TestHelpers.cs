@@ -2,8 +2,8 @@ using LouisAgent.Core.Agent;
 using LouisAgent.Core.Config;
 using Microsoft.Extensions.AI;
 using LouisAgent.Core.Hosting;
-using LouisAgent.Core.Tools.Web;
 using LouisAgent.Core.Usage;
+using LouisAgent.Core.Tools.Web.Search;
 
 namespace LouisAgent.Core.Tests;
 

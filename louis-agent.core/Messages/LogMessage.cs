@@ -210,4 +210,13 @@ public enum LogMessage
 
     [Description("File logging disabled; could not use '{Directory}': {Reason}")]
     FileLoggingDisabled,
+
+    [Description("SearXNG searched without these engines: {Engines}")]
+    SearxngEnginesSilent,
+
+    [Description("Refused {Request} while rendering {Page}: not a public address")]
+    RenderRequestRefused,
+
+    [Description("Couldn't answer {Request} while rendering {Page}: {Reason}")]
+    RenderRequestUnhandled,
 }

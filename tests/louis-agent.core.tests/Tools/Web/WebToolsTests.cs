@@ -6,6 +6,10 @@ using LouisAgent.Core.Skills;
 using LouisAgent.Core.Agent;
 using Microsoft.Extensions.AI;
 using LouisAgent.Core.Tools.Web;
+using LouisAgent.Core.Tools.Web.Search;
+using LouisAgent.Core.Tools.Web.Rendering;
+using LouisAgent.Core.Tools.Web.Rendering.Providers;
+using LouisAgent.Core.Tools.Web.Search.Providers;
 
 namespace LouisAgent.Core.Tests.Tools.Web;
 
@@ -104,8 +108,22 @@ public class WebToolsTests
 
         string result = await tools.ReadRenderedPage("https://example.com/x");
 
-        Assert.That(result, Does.StartWith("Error").And.Contain("TAVILY_API_KEY"));
+        // F32 step 3: either renderer will do, the headless Chrome we run or Tavily's Extract.
+        Assert.That(result, Does.StartWith("Error").And.Contain("BROWSER_URL").And.Contain("TAVILY_API_KEY"));
         Assert.That(handler.Requests, Is.Empty);
+    }
+
+    [Test]
+    public void ReadRenderedPage_SaysNoMoreThanIsTrueOfEveryRenderer()
+    {
+        // F32 step 3: the description named Tavily and its credits; the renderer is configuration now (Chrome, which
+        // costs nothing, or Tavily), so it says what's true of both: slower than FetchUrl, and the address rule.
+        string description = typeof(WebTools).GetMethod(nameof(WebTools.ReadRenderedPage))!
+            .GetCustomAttributes(typeof(System.ComponentModel.DescriptionAttribute), false)
+            .Cast<System.ComponentModel.DescriptionAttribute>().Single().Description;
+
+        Assert.That(description, Does.Not.Contain("Tavily").And.Not.Contain("credit"));
+        Assert.That(description, Does.Contain("slower than FetchUrl").And.Contain("every request the page makes"));
     }
 
     [Test]
@@ -202,7 +220,7 @@ public class WebToolsTests
 
         var result = await Tools(_ => Html(""), fake).WebSearch("dotnet 10", maxResults: 2, site: "learn.microsoft.com", freshness: "w");
 
-        Assert.That(fake.Last, Is.EqualTo(new WebSearchQuery("dotnet 10", 2, "learn.microsoft.com", "week")));
+        Assert.That(fake.Last, Is.EqualTo(new WebSearchQuery("dotnet 10", 2, "learn.microsoft.com", SearchRecency.Week)));
         Assert.That(result, Does.StartWith("Search results for 'dotnet 10' on learn.microsoft.com (via FakeSearch):"));
         Assert.That(result, Does.Contain("1. First\n   https://a.example/1\n   one"));
         Assert.That(result, Does.Contain("2. Second\n   https://a.example/2"));
@@ -302,7 +320,7 @@ public class WebToolsTests
             return Html(TavilyJson, "application/json");
         }));
 
-        var results = await tavily.SearchAsync(new WebSearchQuery("beef mince", 2, "checkers.co.za", "week"));
+        var results = await tavily.SearchAsync(new WebSearchQuery("beef mince", 2, "checkers.co.za", SearchRecency.Week));
 
         Assert.That(sent!.Method, Is.EqualTo(HttpMethod.Post));
         Assert.That(sent.RequestUri!.ToString(), Is.EqualTo("https://api.tavily.com/search"));
@@ -354,7 +372,7 @@ public class WebToolsTests
         Assert.That(() => missingKey.SearchAsync(new WebSearchQuery("x", 1)),
             Throws.TypeOf<WebSearchException>().With.Message.Contains("GOOGLE_SEARCH_API_KEY").And.Message.Contains("GOOGLE_SEARCH_ENGINE_ID"));
         Assert.That(() => unknown.SearchAsync(new WebSearchQuery("x", 1)),
-            Throws.TypeOf<WebSearchException>().With.Message.Contains("Supported: tavily, google, duckduckgo"));
+            Throws.TypeOf<WebSearchException>().With.Message.Contains("Supported: tavily, google, searxng, duckduckgo"));
     }
 
     // --- Google ---
@@ -365,7 +383,7 @@ public class WebToolsTests
         HttpRequestMessage? sent = null;
         var google = new GoogleSearchProvider("my-key", "my-cx", Http(r => { sent = r; return Html(GoogleJson, "application/json"); }));
 
-        var results = await google.SearchAsync(new WebSearchQuery("dotnet 10", 1, "learn.microsoft.com", "month"));
+        var results = await google.SearchAsync(new WebSearchQuery("dotnet 10", 1, "learn.microsoft.com", SearchRecency.Month));
 
         string query = Uri.UnescapeDataString(sent!.RequestUri!.Query);
         Assert.That(sent.RequestUri.Host, Is.EqualTo("www.googleapis.com"));
@@ -413,7 +431,7 @@ public class WebToolsTests
         string? form = null;
         var ddg = new DuckDuckGoSearchProvider(Http(r => { form = r.Content!.ReadAsStringAsync().Result; return Html(DuckDuckGoHtml); }));
 
-        var results = await ddg.SearchAsync(new WebSearchQuery("dotnet 10", 1, "learn.microsoft.com", "week"));
+        var results = await ddg.SearchAsync(new WebSearchQuery("dotnet 10", 1, "learn.microsoft.com", SearchRecency.Week));
 
         Assert.That(form, Does.Contain("q=dotnet+10+site%3Alearn.microsoft.com").And.Contain("df=w"));
         Assert.That(results, Has.Count.EqualTo(1));
@@ -424,7 +442,10 @@ public class WebToolsTests
     {
         var ddg = new DuckDuckGoSearchProvider(Http(_ => Html("<div class=\"anomaly-modal\">Unfortunately, bots use DuckDuckGo too.</div>")));
         Assert.That(() => ddg.SearchAsync(new WebSearchQuery("x", 1)),
-            Throws.TypeOf<WebSearchException>().With.Message.Contains("WEB_SEARCH_PROVIDER=google"));
+            // F32 step 3: Google's Custom Search is closed to new customers; the advice is SearXNG for development
+            // and a licensed API (Tavily) for the sold endpoint (ADR 0023).
+            Throws.TypeOf<WebSearchException>().With.Message.Contains("WEB_SEARCH_PROVIDER=searxng")
+                .And.Message.Contains("TAVILY_API_KEY").And.Message.Not.Contains("google"));
     }
 
     [Test]

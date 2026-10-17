@@ -37,6 +37,10 @@ services:
       # PERSONALITIES_ENABLED in config/.env to change it (an empty value turns every role on), then `up -d`; both
       # containers read it.
       PERSONALITIES_ENABLED: ${PERSONALITIES_ENABLED-puls/voice-af,puls/voice-en,puls-cook,puls-minion-web-price-lookup}
+      # The web we run (F32): SearXNG for search (development and benchmarks only, ADR 0023; WEB_SEARCH_PROVIDER picks
+      # it) and the headless Chrome that renders pages drawn with JavaScript.
+      SEARXNG_URL: ${SEARXNG_URL-http://puls-searxng:8080}
+      BROWSER_URL: ${BROWSER_URL-http://puls-browser:9222}
     # Localhost only. Set AGENT_API_KEY in config/.env.secrets to require a key.
     ports:
       - "127.0.0.1:${PULS_PORT:-5070}:8080"
@@ -44,6 +48,7 @@ services:
       - ${PULS_WORKSPACE:-../}:/workspace
       - ../Skills:/skills
       - ../logs/puls:/logs
+    networks: [default, web]
     depends_on:
       puls-agent:
         condition: service_started
@@ -74,6 +79,9 @@ services:
       # The models a specialist may run on besides Claude (F30): a sub-session naming "ollama-puls" runs on the local model
       # in config/.env.ollama-puls (Ollama on the host). Set LLM_SESSION_PROFILES in config/.env to change it.
       LLM_SESSION_PROFILES: ${LLM_SESSION_PROFILES-ollama-puls}
+      SEARXNG_URL: ${SEARXNG_URL-http://puls-searxng:8080}
+      BROWSER_URL: ${BROWSER_URL-http://puls-browser:9222}
+    networks: [default, web]
     ports:
       - "127.0.0.1:${PULS_CODER_PORT:-5071}:8080"
     volumes:
@@ -102,3 +110,35 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  # The web we run (F32), on their own network with puls and puls-agent and never with puls-mongo. Both images are
+  # pinned by digest, so benchmark runs compare. 127.0.0.1 only: the ports are for the live tests on this machine.
+  #
+  # SearXNG (AGPL-3.0, run unchanged beside us, ADR 0023): metasearch for development, tests and benchmarks; the sold
+  # endpoint keeps a licensed search API. Its settings are docker/searxng/settings.yml; its secret, and nothing else,
+  # comes from config/.env.searxng, which must exist (copy config/.env.searxng.example): without it SearXNG would sign
+  # with the placeholder committed in settings.yml (re-review of PR #56).
+  puls-searxng:
+    image: searxng/searxng@sha256:79180616c984f39524f6f27f19625a46f82c8ad4aa6a2e553db52b14e1b4a768   # 2026.10.17-2a6fc07be
+    container_name: puls_searxng
+    env_file:
+      - path: ../config/.env.searxng
+        required: true
+    volumes:
+      - ./searxng/settings.yml:/etc/searxng/settings.yml:ro
+    networks: [web]
+    ports:
+      - "127.0.0.1:${PULS_SEARXNG_PORT:-8888}:8080"
+
+  # The headless Chrome (Chromium's headless shell, BSD-style) that renders pages drawn with JavaScript; puls drives it
+  # over its DevTools port. Every request a page makes is put to the address rule (RenderPolicy), and a page can't open
+  # a WebSocket; this network keeps it away from puls-mongo.
+  puls-browser:
+    image: chromedp/headless-shell@sha256:53cc0f33c0598ff244f6e45458f6dfaf0ae4206d388ae7364903afd1d9d14f0a   # Chrome 156.0.8078.36
+    container_name: puls_browser
+    networks: [web]
+    ports:
+      - "127.0.0.1:${PULS_BROWSER_PORT:-9222}:9222"
+
+networks:
+  web:

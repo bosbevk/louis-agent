@@ -9,10 +9,10 @@ using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Pricing;
 using LouisAgent.Core.Skills;
-using LouisAgent.Core.Tools.Web;
 using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
+using LouisAgent.Core.Tools.Web.Search;
 
 /// <summary>
 /// One engine per toolset profile (F5): a session names its toolsets, and gets an engine with only those tools and

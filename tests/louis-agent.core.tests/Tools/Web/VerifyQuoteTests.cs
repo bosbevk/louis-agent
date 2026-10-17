@@ -1,6 +1,7 @@
 using System.Net;
 using System.Text;
 using LouisAgent.Core.Tools.Web;
+using LouisAgent.Core.Tools.Web.Rendering;
 
 namespace LouisAgent.Core.Tests.Tools.Web;
 
@@ -36,13 +37,42 @@ public class VerifyQuoteTests
     private sealed class FakeRenderer(string text) : IPageRenderer
     {
         public int Calls { get; private set; }
+        public CancellationToken Token { get; private set; }
         public string Name => "fake";
 
         public Task<RenderedPage> RenderAsync(Uri url, CancellationToken cancellationToken = default)
         {
             Calls++;
+            Token = cancellationToken;
             return Task.FromResult(new RenderedPage(url.ToString(), text));
         }
+    }
+
+    // Review of PR #56: a cancelled turn kept its browser page; the turn's token reaches the renderer from both tools
+    // that render (Microsoft.Extensions.AI fills a CancellationToken parameter and leaves it out of the tool's schema).
+
+    [Test]
+    public async Task ReadRenderedPage_HandsTheTurnsCancellationToTheRenderer()
+    {
+        var renderer = new FakeRenderer("R22.99");
+        using var turn = new CancellationTokenSource();
+
+        await Tools(_ => Html(""), renderer).ReadRenderedPage("https://www.pnp.co.za/p/1", cancellationToken: turn.Token);
+
+        Assert.That(renderer.Token, Is.EqualTo(turn.Token));
+    }
+
+    [Test]
+    public async Task VerifyQuote_HandsTheTurnsCancellationToTheRenderer()
+    {
+        var renderer = new FakeRenderer("Beef mince R59.99");
+        using var turn = new CancellationTokenSource();
+
+        await Tools(_ => Html("<html><body><div id=\"app\"></div></body></html>"), renderer)
+            .VerifyQuote("https://www.pnp.co.za/p/1", "R59.99", "Beef mince", cancellationToken: turn.Token);
+
+        Assert.That(renderer.Calls, Is.EqualTo(1), "an empty page is rendered");
+        Assert.That(renderer.Token, Is.EqualTo(turn.Token));
     }
 
     [Test]
@@ -105,7 +135,7 @@ public class VerifyQuoteTests
     [Test]
     public async Task APageWithText_IsNeverRendered()
     {
-        // ReadRenderedPage costs a credit: only an empty page is rendered.
+        // ReadRenderedPage is slow (and, with Tavily, costs a credit): only an empty page is rendered.
         var renderer = new FakeRenderer("R35.99");
 
         await Tools(_ => Html(ProductHtml), renderer).VerifyQuote(Url, "R12.00", Beef);

@@ -253,6 +253,34 @@ Design: [docs/specs/SESSION_ARCHITECTURE.md](docs/specs/SESSION_ARCHITECTURE.md)
 
 ### Tooling and repositories
 
+- [ ] [F32 Self-hosted web](docs/features/F32-self-hosted-web.md) — `WebSearch` through SearXNG in Docker and pages
+      drawn with JavaScript rendered by a headless Chrome (PuppeteerSharp), every request it makes held to the address
+      rule, so development and the benchmarks search and read any page with no key and no credits; the sold endpoint
+      keeps a licensed search API (Tavily) ([plan](docs/plans/F32-self-hosted-web.md)). Built 2026-10-17; open: the
+      cook check's baseline run from the portal (paid, Louis's go), then *Finishing a feature*.
+- [ ] **F32 follow-up: one egress proxy for the browser** (to plan; review of PR #56): `puls-browser` reaches the
+      internet only through a proxy that resolves each name once, refuses internal addresses and connects to the address
+      it checked, so DNS rebinding (Chrome resolving again after `RenderPolicy` checked) and a Web Worker's WebSocket
+      can't reach `puls`, `puls-agent` or the host. Until then, set `AGENT_API_KEY` wherever the stack is reachable.
+- [ ] **F32 follow-up: SearXNG on only where it's meant to be** (re-review of PR #56; Louis's call): the Puls compose
+      file sets `SEARXNG_URL` by default, so a sold deployment without a Tavily key would search through SearXNG, against
+      ADR 0023 (its engines don't license their results). Option: leave `SEARXNG_URL` unset in compose and set it in a
+      development machine's `config/.env`, so SearXNG is switched on on purpose.
+- [ ] **CL12 Integrations by role** (cleanup, to plan after F32; Louis: "this should also be interfaced", then "it would
+      not follow the same pattern as Web"): the integrations laid out as the web seams are, a contract per role at the top
+      and its vendors in `Providers/`: `Tools/Integrations/TimeTracking/` (`ITimeTracker`; Paymo) and `WorkItems/`
+      (`IWorkItemTracker`; Azure DevOps), the shared HTTP, Basic auth, error and JSON plumbing in one place
+      (`IntegrationClient`, or a `DelegatingHandler`: the plan weighs both), the tool classes using only the role
+      contracts, the choice of vendor an enum (ADR 0024). The toolset names (`paymo`, `devops`) stay unless the plan
+      decides otherwise.
+- [ ] **Choices still made by string** (cleanup; ADR 0024, F32 step 1b): make each an enum parsed once with
+      `SettingChoice` when it's next touched: the LLM provider (`LlmOptions.Provider`, `"anthropic"`), the rates format
+      (`RatesMappers.For`), a skill's script language (`SkillTools`, `AgentBuiltTools`, `MarkdownSkillLoader`), the MCP
+      server's `MCP_TRANSPORT`, and `ListPackages`' kind (`DotNetTools`).
+- [ ] **MCP servers as a session toolset** (to plan after F32; Louis, 2026-10-17: "An MCP toolset for the model"): a
+      session names MCP servers as it names toolsets (F5, so its prefix stays cacheable), their tools wrapped with our
+      guards (untrusted-data framing, oversized results, failures with reasons) and their versions pinned, so a
+      vendor's server can be used without its tool list changing under a chat.
 - [ ] Search and work across more than one mounted repository at once (`REPOSITORIES_PATH` mounts several, but every
       tool is scoped to one workspace)
 - [ ] Share agent-built tools between projects or teammates (each repository builds its own today)

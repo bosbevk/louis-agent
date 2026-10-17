@@ -2,8 +2,9 @@ namespace LouisAgent.Core.Agent;
 
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Pricing;
-using LouisAgent.Core.Tools.Web;
 using LouisAgent.Core.Usage;
+using LouisAgent.Core.Tools.Web.Search;
+using LouisAgent.Core.Tools.Web.Rendering;
 
 /// <summary>What a toolset needs to build its tools for one engine; <paramref name="Rates"/> are the ones the host loaded
 /// for the display currency (F14), which <c>ConvertCurrency</c> uses too (F22); <paramref name="UsageSink"/> is the engine's

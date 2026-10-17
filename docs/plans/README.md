@@ -10,6 +10,7 @@ or fix doc (*What the build changed*), not here.
 
 | Plan | For | Approved | Notes |
 |---|---|---|---|
+| [F32-self-hosted-web.md](F32-self-hosted-web.md) | [F32 Self-hosted web](../features/F32-self-hosted-web.md) | 2026-10-17 | SearXNG behind `IWebSearchProvider`, a headless Chrome behind `IPageRenderer` (PuppeteerSharp over CDP, every request held to `SsrfGuard`), both in the Puls stack on their own network; Tavily still selectable; MCP for the model its own feature |
 | [F31-benchmarks-portal.md](F31-benchmarks-portal.md) | [F31 Benchmarks in the admin portal](../features/F31-benchmarks-portal.md) | 2026-10-17 | The harness's stdout protocol recorded by the API into MongoDB (`puls-mongo`, data on a host folder; `MongoDB.Driver`); a store behind a contract test; the cook and routing checks rewritten; the screen laid out first, on Puls's theme; built after F30's build steps, before its measured run; closes F27 |
 | [CL10-clear-the-decks.md](CL10-clear-the-decks.md) | TODO: *Clear the decks* (cleanup) | 2026-10-17 | `samples/` and `BENCHMARKS.md` go; the admin portal stops being file-based (results will live in SQL Server `puls_benchmarks`, scripts in `benchmarks/`); roles named, not derived; history docs link at tag `pre-cl10`; before F30 step 4 |
 | [CL9-modes-per-product.md](CL9-modes-per-product.md) | TODO: *Modes per product* (cleanup) | 2026-10-16 | A level-0 session is a mode, one file of voice and routing in a folder per product (`agent/puls/voice-af.md`, `agent/louis-agent/voice.md` …; approved during the build); Puls's language menu picks the mode; `AGENT_FUNCTION` goes; before F30 step 4; ADR 0019 |
@@ -46,10 +47,12 @@ or fix doc (*What the build changed*), not here.
 - **Sections:** *Context* (why now, what the doc says), *Design* (what changes from the doc, and why), *Steps* (one
   commit each, with its test, written and seen failing first; the review stop after each), *Verification* (tests, free manual checks, and any paid run,
   which needs approval first), and the *Concepts* each step teaches, with their skill in the [goal](../GOAL.md).
-- **Two diagrams, always** (Louis, 2026-10-16), in the *Design*, as mermaid: an **architecture diagram** (a
-  `flowchart`: the containers, hosts and services, and which step builds or changes each part) and a **communication
-  diagram** (a `sequenceDiagram`: who calls whom, in order, for the feature's main case, with what each call carries).
-  A plan approved without them gets them under *Approved during the build*.
+- **Three diagrams, always** (Louis, 2026-10-16; the third 2026-10-17, F32), in the *Design*, as mermaid: an
+  **interface design** (a `classDiagram` with the C# signatures beside it: the interfaces and records the change uses or
+  adds, every implementation behind them, old and new, marked with the step that builds it, and who creates, reads and
+  calls whom), an **architecture diagram** (a `flowchart`: the containers, hosts and services, and which step builds or
+  changes each part) and a **communication diagram** (a `sequenceDiagram`: who calls whom, in order, for the feature's
+  main case, with what each call carries). A plan approved without them gets them under *Approved during the build*.
 - **A lasting decision gets an ADR:** when a plan decides something later work must follow, its record goes in
   [docs/adr/](../adr/README.md) in the same PR; the plan keeps the steps, the ADR the why.
 - **Saved and committed before step 1**, on the feature's branch, so the plan is in the same PR as the work.

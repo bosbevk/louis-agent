@@ -183,7 +183,7 @@ public enum ToolMessage
     [Description("redirect to unsupported scheme '{Scheme}'.")]
     FetchRedirectScheme,
 
-    [Description("DuckDuckGo refused the automated search. For reliable search set TAVILY_API_KEY (1,000 free searches a month), or WEB_SEARCH_PROVIDER=google with GOOGLE_SEARCH_API_KEY and GOOGLE_SEARCH_ENGINE_ID.")]
+    [Description("DuckDuckGo refused the automated search. For reliable search set TAVILY_API_KEY (a licensed search API), or, for development and benchmarks, WEB_SEARCH_PROVIDER=searxng with SEARXNG_URL (the SearXNG we run).")]
     DuckDuckGoRefused,
 
     [Description("WEB_SEARCH_PROVIDER=tavily needs TAVILY_API_KEY in config/.env.secrets (a key from https://app.tavily.com).")]
@@ -198,7 +198,7 @@ public enum ToolMessage
     [Description("Tavily search failed: HTTP {Status} {Detail}")]
     TavilyFailed,
 
-    [Description("ReadRenderedPage needs TAVILY_API_KEY in config/.env.secrets (it renders pages with Tavily Extract). Without it, FetchUrl is the only way to read a page.")]
+    [Description("ReadRenderedPage needs a renderer: BROWSER_URL (the headless Chrome we run) or TAVILY_API_KEY (Tavily Extract). Without one, FetchUrl is the only way to read a page.")]
     RenderNotConfigured,
 
     [Description("couldn't render {Url}: {Reason}. If FetchUrl read it as empty too, the site blocks readers: mark what it holds as unknown and move on.")]
@@ -209,6 +209,30 @@ public enum ToolMessage
 
     [Description("Unknown WEB_SEARCH_PROVIDER '{Provider}'. Supported: {Supported}.")]
     UnknownSearchProvider,
+
+    [Description("WEB_SEARCH_PROVIDER=searxng needs SEARXNG_URL: the address of the SearXNG we run (http://puls-searxng:8080 in the Puls stack).")]
+    SearxngNotConfigured,
+
+    [Description("SearXNG at {Url} refused a JSON search (HTTP 403): its settings.yml needs json under search.formats.")]
+    SearxngJsonOff,
+
+    [Description("No search engine behind SearXNG answered: {Reasons}. Try again later.")]
+    SearxngNoEngineAnswered,
+
+    [Description("SearXNG search failed: HTTP {Status} {Detail}")]
+    SearxngFailed,
+
+    [Description("PAGE_RENDERER=chrome needs BROWSER_URL: the headless Chrome's DevTools address (http://puls-browser:9222 in the Puls stack).")]
+    BrowserNotConfigured,
+
+    [Description("The browser at {Url} didn't answer ({Reason}). Is puls-browser running?")]
+    BrowserUnreachable,
+
+    [Description("Unknown PAGE_RENDERER '{Renderer}'. Supported: {Supported}.")]
+    UnknownPageRenderer,
+
+    [Description("it went on to {Address}, which isn't a public address")]
+    RenderBlockedAddress,
 
     [Description("Error: DEVOPS_API_KEY is not set.")]
     DevOpsKeyNotSet,

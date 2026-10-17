@@ -7,6 +7,7 @@ using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Tools.Agents;
 using LouisAgent.Core.Usage;
+using LouisAgent.Core.Tools.Web.Search;
 
 namespace LouisAgent.Core.Tests.Tools.Agents;
 
@@ -255,10 +256,10 @@ public class MinionToolsTests
         Assert.That(ToolsetCatalog.ToolsetOf("CreateTool"), Is.Null, "engine-provided: no toolset builds it");
     }
 
-    private sealed class NoSearch : LouisAgent.Core.Tools.Web.IWebSearchProvider
+    private sealed class NoSearch : LouisAgent.Core.Tools.Web.Search.IWebSearchProvider
     {
         public string Name => "none";
-        public Task<IReadOnlyList<LouisAgent.Core.Tools.Web.WebSearchResult>> SearchAsync(LouisAgent.Core.Tools.Web.WebSearchQuery query, CancellationToken cancellationToken = default) =>
-            Task.FromResult<IReadOnlyList<LouisAgent.Core.Tools.Web.WebSearchResult>>([]);
+        public Task<IReadOnlyList<LouisAgent.Core.Tools.Web.Search.WebSearchResult>> SearchAsync(LouisAgent.Core.Tools.Web.Search.WebSearchQuery query, CancellationToken cancellationToken = default) =>
+            Task.FromResult<IReadOnlyList<LouisAgent.Core.Tools.Web.Search.WebSearchResult>>([]);
     }
 }

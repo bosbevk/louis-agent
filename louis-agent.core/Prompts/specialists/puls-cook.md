@@ -48,7 +48,7 @@ its recipe, the priced list and where to buy, not the ingredients alone.
   `ReadRenderedPage` too, and Woolworths' render without a price: never fetch or render those; price them from their
   search results (`WebSearch` with `site`: `pnp.co.za`, `woolworths.co.za`, `spar.co.za`, `usave.co.za`), which show
   the price in the result's text. `ReadRenderedPage` is for a product page on another site that `FetchUrl` read as
-  empty; it costs a credit, so never for search or category pages.
+  empty; it is slow, so never for search or category pages.
 - `GetToday` to date the prices: they change every week.
 
 ## How every Puls specialist works

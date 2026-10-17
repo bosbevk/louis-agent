@@ -4,10 +4,15 @@ using System.ComponentModel;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
+using LouisAgent.Core.Config;
 using LouisAgent.Core.Guardrails;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Pricing;
 using LouisAgent.Core.Tools.Documents;
+using LouisAgent.Core.Tools.Web.Search;
+using LouisAgent.Core.Tools.Web.Rendering;
+using LouisAgent.Core.Tools.Web.Rendering.Providers;
+using LouisAgent.Core.Tools.Web.Search.Providers;
 
 /// <summary>
 /// Web toolset: search through a pluggable <see cref="IWebSearchProvider"/> (Google, DuckDuckGo, or any injected engine)
@@ -22,6 +27,10 @@ public sealed partial class WebTools
     private const string UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) louis-agent/1.0";
 
     private readonly IWebSearchProvider _search;
+
+    /// <summary>A freshness's first letter is its alias: d, w, m, y.</summary>
+    private static readonly IReadOnlyDictionary<string, SearchRecency> RecencyLetters =
+        Enum.GetValues<SearchRecency>().ToDictionary(r => r.ToString()[..1].ToLowerInvariant());
     private readonly IPageRenderer _renderer;
     private readonly HttpClient _http;
     private readonly Func<string, CancellationToken, Task<IPAddress[]>> _resolve;
@@ -61,16 +70,8 @@ public sealed partial class WebTools
         if (string.IsNullOrWhiteSpace(query)) return MessageText.Format(ToolMessage.SearchQueryEmpty);
         maxResults = Math.Clamp(maxResults, 1, 10);
 
-        string? recency = (freshness ?? "").Trim().ToLowerInvariant() switch
-        {
-            "" => null,
-            "day" or "d" => "day",
-            "week" or "w" => "week",
-            "month" or "m" => "month",
-            "year" or "y" => "year",
-            _ => "invalid",
-        };
-        if (recency == "invalid") return MessageText.Format(ToolMessage.SearchFreshnessInvalid);
+        if (!SettingChoice.TryParse(freshness, out SearchRecency? recency, RecencyLetters))
+            return MessageText.Format(ToolMessage.SearchFreshnessInvalid);
 
         var request = new WebSearchQuery(query.Trim(), maxResults, string.IsNullOrWhiteSpace(site) ? null : site.Trim(), recency);
         string described = request.Site is null ? $"'{request.Text}'" : $"'{request.Text}' on {request.Site}";
@@ -144,15 +145,16 @@ public sealed partial class WebTools
         return sb.ToString();
     }
 
-    [Description("Reads a page the way a browser shows it, rendered by the configured renderer (Tavily Extract), and " +
-        "returns its readable text framed as untrusted data, like FetchUrl. Use it only when FetchUrl came back with " +
-        "'(no readable text)' or without the part you need: sites that draw their content with JavaScript (a shop's " +
-        "product page with its price, a store finder). It costs a credit and takes longer than FetchUrl, so never " +
-        "call it first. Same address rules as FetchUrl; results longer than maxChars continue with startIndex.")]
+    [Description("Reads a page the way a browser shows it and returns its readable text framed as untrusted data, " +
+        "like FetchUrl. Use it only when FetchUrl came back with '(no readable text)' or without the part you need: " +
+        "sites that draw their content with JavaScript (a shop's product page with its price, a store finder). It is " +
+        "slower than FetchUrl, so never call it first. Same address rules as FetchUrl, for every request the page " +
+        "makes; results longer than maxChars continue with startIndex.")]
     public async Task<string> ReadRenderedPage(
         [Description("Absolute http(s) URL of the page to render")] string url,
         [Description("Maximum characters to return (default 8000, max 30000)")] int maxChars = DefaultMaxChars,
-        [Description("Character offset to continue from, as given in a previous truncated result (default 0)")] int startIndex = 0)
+        [Description("Character offset to continue from, as given in a previous truncated result (default 0)")] int startIndex = 0,
+        CancellationToken cancellationToken = default)
     {
         if (!Uri.TryCreate((url ?? "").Trim(), UriKind.Absolute, out var uri) || uri.Scheme is not ("http" or "https"))
             return MessageText.Format(ToolMessage.FetchUrlInvalid);
@@ -163,7 +165,7 @@ public sealed partial class WebTools
         {
             // An internal address is refused here, before the URL is handed to a third party, as FetchUrl refuses it.
             await SsrfGuard.EnsurePublicHostAsync(uri, _resolve);
-            var page = await _renderer.RenderAsync(uri);
+            var page = await _renderer.RenderAsync(uri, cancellationToken);
             return Page(page.Url, null, page.Text, startIndex, maxChars, nameof(ReadRenderedPage));
         }
         catch (BlockedAddressException ex)
@@ -265,7 +267,8 @@ public sealed partial class WebTools
         [Description("Absolute http(s) URL of the page the value came from")] string url,
         [Description("The exact words the value came from, as the minion (or you) copied them")] string quote,
         [Description("The product's name as the page shows it. Needed when the quote is only a price (R22.99): a price " +
-            "alone matches any product at that price on the page.")] string? product = null)
+            "alone matches any product at that price on the page.")] string? product = null,
+        CancellationToken cancellationToken = default)
     {
         if (!Uri.TryCreate((url ?? "").Trim(), UriKind.Absolute, out var uri) || uri.Scheme is not ("http" or "https"))
             return MessageText.Format(ToolMessage.FetchUrlInvalid);
@@ -298,10 +301,10 @@ public sealed partial class WebTools
             if (!LooksLikeShell(text, all, body.Length))
                 return MessageText.Format(ToolMessage.QuoteNotFound, new { Url = finalUri });
 
-            // Nothing readable: a page drawn with JavaScript. The renderer reads it as a browser shows it (a credit).
+            // Nothing readable: a page drawn with JavaScript. The renderer reads it as a browser shows it (slower).
             try
             {
-                var page = await _renderer.RenderAsync(finalUri);
+                var page = await _renderer.RenderAsync(finalUri, cancellationToken);
                 if (Normalise(page.Text).Length == 0) return MessageText.Format(ToolMessage.QuotePageEmpty, new { Url = finalUri });
                 if (Matches(page.Text)) return MessageText.Format(ToolMessage.QuoteFound, new { Url = finalUri });
                 return named is not null && OnPage(page.Text)

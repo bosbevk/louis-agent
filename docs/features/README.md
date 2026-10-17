@@ -45,6 +45,7 @@ feature replaces older backlog wording, that wording no longer appears anywhere 
 | [F29](F29-validated-specialists.md) | Validated specialists: `PERSONALITIES_ENABLED` gates which roles an instance may use; Puls boots with `specialists` (then called `agents`) and `web`, answers the web itself and delegates only cooking until each other role has passed its check | planned | — | — | F5, F21, F25, F27 | — |
 | [F30](F30-local-web-peer.md) | Local web peer: a session names its LLM profile; a specialist hands one task and one of its own tools to a minion on a cheap model (`MINION_LLMS`); built, not in use until F31 measures it | built | — | — | F5, F21, F25, F29 | — |
 | [F31](F31-benchmarks-portal.md) | Benchmarks in the admin portal: check scripts in `benchmarks/` run only from the portal, each run recorded by the API from the script's stdout protocol into MongoDB (`puls_benchmarks`), with an explorer at every level and trends per check; closes F27 | done | — | TODO *Benchmarks in the admin portal* | F27, F1–F3, F25, F29, F30 | — |
+| [F32](F32-self-hosted-web.md) | Self-hosted web: `WebSearch` through SearXNG in Docker, and any page drawn with JavaScript rendered by a headless Chrome (PuppeteerSharp), every request it makes held to the address rule; no key, no credits, for development and benchmarks (the sold endpoint keeps a licensed search API) | built | — | — | F25, FX16, F31 | — |
 
 ## Milestones
 
