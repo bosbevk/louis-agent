@@ -22,7 +22,7 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
     private readonly IMongoCollection<BsonDocument> _conversations;
     private readonly IMongoCollection<BsonDocument> _turns;
     private readonly IMongoCollection<BsonDocument> _requests;
-    private readonly Lazy<Task> _indexes;
+    private readonly OnceItWorks _indexes;
 
     public MongoBenchmarkStore(string url, string database)
     {
@@ -34,7 +34,7 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
         _conversations = db.GetCollection<BsonDocument>("conversations");
         _turns = db.GetCollection<BsonDocument>("turns");
         _requests = db.GetCollection<BsonDocument>("requests");
-        _indexes = new Lazy<Task>(CreateIndexesAsync);
+        _indexes = new OnceItWorks(CreateIndexesAsync);
     }
 
     /// <summary>The database itself, for the tests to drop theirs.</summary>
@@ -52,7 +52,7 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
             Builders<BsonDocument>.IndexKeys.Ascending("run").Ascending("at")));
     }
 
-    private Task Ready() => _indexes.Value;
+    private Task Ready() => _indexes.RunAsync();
 
     private static readonly ReplaceOptions Upsert = new() { IsUpsert = true };
 
