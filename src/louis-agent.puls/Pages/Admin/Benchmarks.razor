@@ -524,7 +524,7 @@ else if (_data is { } data)
                 if (!r.TryGetProperty("turn", out var t) || t.ValueKind != JsonValueKind.Object) continue;
                 var key = new TurnKey(t.GetProperty("mode").GetString()!, t.GetProperty("repeat").GetInt32(), t.GetProperty("task").GetString()!, t.GetProperty("turn").GetInt32());
                 decimal? cost = Dec(r, "cost");
-                _costs[key] = _costs.TryGetValue(key, out var sum) ? (sum is null && cost is null ? null : (sum ?? 0) + (cost ?? 0)) : cost;
+                _costs[key] = UsageFormat.KnownSum([_costs.GetValueOrDefault(key), cost]);
             }
         }
         catch (AgentApiException)

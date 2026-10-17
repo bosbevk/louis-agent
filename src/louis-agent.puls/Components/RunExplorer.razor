@@ -89,7 +89,7 @@
                     <strong class="tile-value" data-count="@Money(m.Cost)">@Money(m.Cost)</strong>
                     <span class="tile-meta">@m.Rows.Count requests · @UsageFormat.Tokens(m.Tokens) tokens · @Secs(m.Seconds) s</span>
                     <span class="tile-meta">score: <strong>@m.Right / @m.Conversations.Count</strong> routed right@(m.Errors > 0 ? $" · {m.Errors} errors" : "")</span>
-                    <span class="tile-split"><span class="sw" style="background: @Own"></span>Puls @Money(m.Rows.Where(r => !r.Specialist).Sum(r => r.Cost ?? 0)) <span class="sw" style="background: @Spec"></span>@Roles(m) @Money(m.Rows.Where(r => r.Specialist).Sum(r => r.Cost ?? 0))</span>
+                    <span class="tile-split"><span class="sw" style="background: @Own"></span>Puls @Money(Part(m.Rows, specialist: false)) <span class="sw" style="background: @Spec"></span>@Roles(m) @Money(Part(m.Rows, specialist: true))</span>
                 </button>
             }
         </div>
@@ -98,7 +98,7 @@
         <details class="fold" open><summary class="fold-head"><span class="fold-chevron" aria-hidden="true"></span>Cost per conversation</summary>
         <section class="chart">
             <div class="chart-head"><span class="legend">@foreach (var (m, i) in Columns) { <span><span class="sw" style="background: @Series(i)"></span>@Who(m)</span> }</span></div>
-            @{ var tasks = _modes.SelectMany(m => m.Conversations.Select(c => c.Task)).Distinct().ToList(); decimal top = Math.Max(0.000001m, _modes.SelectMany(m => m.Conversations).Select(c => c.Cost).DefaultIfEmpty(0m).Max()); int row = 0; }
+            @{ var tasks = _modes.SelectMany(m => m.Conversations.Select(c => c.Task)).Distinct().ToList(); decimal top = Math.Max(0.000001m, _modes.SelectMany(m => m.Conversations).Select(c => c.Cost ?? 0m).DefaultIfEmpty(0m).Max()); int row = 0; }
             <div class="xbars">
                 @foreach (string task in tasks)
                 {
@@ -110,16 +110,16 @@
                             @foreach (var (m, i) in Columns)
                             {
                                 var c = m.Conversations.FirstOrDefault(x => x.Task == task);
-                                decimal cost = c?.Cost ?? 0m;
+                                decimal? cost = c?.Cost;
                                 <span class="xbar" title="@($"{Who(m)} · {task}: {Money(cost)}")">
-                                    <span class="xbar-fill" style="width: @Pct(cost, top)%; background: @Series(i)"></span>
+                                    <span class="xbar-fill" style="width: @Pct(cost ?? 0, top)%; background: @Series(i)"></span>
                                 </span>
                             }
                         </span>
                         <span class="row-costs">
                             @foreach (var (m, i) in Columns)
                             {
-                                decimal cost = m.Conversations.FirstOrDefault(x => x.Task == task)?.Cost ?? 0m;
+                                decimal? cost = m.Conversations.FirstOrDefault(x => x.Task == task)?.Cost;
                                 <span class="row-cost small" title="@Who(m)"><span class="sw" style="background: @Series(i)"></span><span data-count="@Money(cost)">@Money(cost)</span></span>
                             }
                         </span>
@@ -139,9 +139,9 @@
                 <div class="donuts">
                     @foreach (var (m, i) in Columns)
                     {
-                        decimal own = m.Rows.Where(r => !r.Specialist).Sum(r => r.Cost ?? 0), spec = m.Rows.Where(r => r.Specialist).Sum(r => r.Cost ?? 0);
+                        decimal? own = Part(m.Rows, specialist: false), spec = Part(m.Rows, specialist: true);
                         <figure class="donut-fig" style="--i: @i">
-                            @Ring([(double)own, (double)spec], [Own, Spec], [$"Puls {Money(own)}", $"{Roles(m)} {Money(spec)}"], Money(m.Cost), $"{m.Rows.Count} requests")
+                            @Ring([(double)(own ?? 0), (double)(spec ?? 0)], [Own, Spec], [$"Puls {Money(own)}", $"{Roles(m)} {Money(spec)}"], Money(m.Cost), $"{m.Rows.Count} requests")
                             <figcaption><span class="sw" style="background: @Series(i)"></span>@Who(m)</figcaption>
                         </figure>
                     }
@@ -298,9 +298,10 @@
                     @foreach (var (m, i) in Columns)
                     {
                         var answered = m.Conversations.Where(Answered).ToList();
-                        decimal good = answered.Sum(c => c.Cost), bad = m.Cost - good;
+                        // Unknown stays unknown (ADR 0007): no priced request, no amount; the ring draws what is known.
+                        decimal? good = UsageFormat.KnownSum(answered.Select(c => c.Cost)), bad = m.Cost - (good ?? 0);
                         <figure class="donut-fig" style="--i: @i">
-                            @Ring([(double)good, (double)bad], [Right, Wrong], [$"with an answer {Money(good)}", $"without {Money(bad)}"],
+                            @Ring([(double)(good ?? 0), (double)(bad ?? 0)], [Right, Wrong], [$"with an answer {Money(good)}", $"without {Money(bad)}"],
                                 answered.Count == 0 ? "—" : Money(good / answered.Count), answered.Count == 0 ? "no answer" : "per answer")
                             <figcaption><span class="sw" style="background: @Series(i)"></span>@Who(m)</figcaption>
                             <small class="muted">@answered.Count / @m.Conversations.Count with an answer</small>
@@ -318,7 +319,7 @@
            modes' bars, so a longer bar is a dearer conversation whichever side it is on. *@
         <div class="chart-head lead"><strong>Conversations</strong><span class="legend"><span><span class="sw" style="background: @Own"></span>Puls itself</span><span><span class="sw" style="background: @Spec"></span>@Roles()</span></span></div>
         var tasks = Tasks();
-        decimal topConv = Math.Max(0.000001m, _modes.SelectMany(m => m.Conversations).Select(c => c.Cost).DefaultIfEmpty(0m).Max());
+        decimal topConv = Math.Max(0.000001m, _modes.SelectMany(m => m.Conversations).Select(c => c.Cost ?? 0m).DefaultIfEmpty(0m).Max());
         long topTok = Math.Max(1, _modes.SelectMany(m => m.Conversations).Select(c => c.Rows.Sum(r => r.Tokens)).DefaultIfEmpty(0L).Max());
         <div class="compare-grid" style="--cols: @_modes.Count">
             @foreach (var (m, i) in Columns)
@@ -337,14 +338,14 @@
                         }
                         else
                         {
-                            decimal own = c.Rows.Where(r => !r.Specialist).Sum(r => r.Cost ?? 0), spec = c.Rows.Where(r => r.Specialist).Sum(r => r.Cost ?? 0);
+                            decimal? own = Part(c.Rows, specialist: false), spec = Part(c.Rows, specialist: true);
                             <div class="conv-row">
                                 <span class="xbar-label" title="@Question(c.Task)">
                                     <code>@c.Task</code><small>@Blurb(Question(c.Task))</small>
                                     <span class="tree-chips">@foreach (var chip in Chips(c)) { <span class="chip @chip.Kind">@chip.Text</span> }</span>
                                 </span>
                                 <span class="xbar stacked" title="@($"{c.Task}: Puls {Money(own)}, {Roles(m)} {Money(spec)}")">
-                                    <span class="xbar-fill" style="width: @Pct(own, topConv)%; background: @Own"></span><span class="xbar-fill" style="width: @Pct(spec, topConv)%; background: @Spec"></span>
+                                    <span class="xbar-fill" style="width: @Pct(own ?? 0, topConv)%; background: @Own"></span><span class="xbar-fill" style="width: @Pct(spec ?? 0, topConv)%; background: @Spec"></span>
                                 </span>
                                 <span class="row-cost" data-count="@Money(c.Cost)">@Money(c.Cost)</span>
                                 @Actions(c.Task, null)
@@ -492,14 +493,14 @@
         public int ToolCalls, ToolsFailed; public List<(string Tool, string Reason, int Count)> ToolReasons = [];
         /// <summary>The transcript before a replay: the question and the answer.</summary>
         public Turn Shown = new();
-        public decimal Cost => Rows.Sum(r => r.Cost ?? 0);
+        public decimal? Cost => UsageFormat.KnownSum(Rows.Select(r => r.Cost));
     }
 
     private sealed class ConversationNode
     {
         public string Task = ""; public string? Role; public JsonElement Scores; public int Errors; public List<TurnNode> Turns = [];
         public List<Request> Rows => Turns.SelectMany(t => t.Rows).ToList();
-        public decimal Cost => Rows.Sum(r => r.Cost ?? 0);
+        public decimal? Cost => UsageFormat.KnownSum(Rows.Select(r => r.Cost));
         public bool Right => Scores.ValueKind == JsonValueKind.Object && Scores.TryGetProperty("routed_right", out var v) && v.ValueKind == JsonValueKind.True;
     }
 
@@ -507,7 +508,7 @@
     {
         public string Name = ""; public List<string> Toolsets = []; public List<ConversationNode> Conversations = [];
         public List<Request> Rows => Conversations.SelectMany(c => c.Rows).ToList();
-        public decimal Cost => Rows.Sum(r => r.Cost ?? 0);
+        public decimal? Cost => UsageFormat.KnownSum(Rows.Select(r => r.Cost));
         public long Tokens => Rows.Sum(r => r.Tokens);
         public double Seconds => Conversations.SelectMany(c => c.Turns).Sum(t => t.Seconds);
         public int Right => Conversations.Count(c => c.Right);
@@ -841,6 +842,10 @@
         if (n.ValueKind != JsonValueKind.Number) return !c.Task.StartsWith("cook");
         return c.Scores.TryGetProperty("priced_ratio", out var r) && r.ValueKind == JsonValueKind.Number && r.GetDouble() >= 0.8;
     }
+
+    /// <summary>Puls's own part of some requests' cost, or the specialists': unknown when none of them was priced, never 0.</summary>
+    private static decimal? Part(IEnumerable<Request> rows, bool specialist) =>
+        UsageFormat.KnownSum(rows.Where(r => r.Specialist == specialist).Select(r => r.Cost));
 
     private string Money(decimal? usd) => usd is { } c ? UsageFormat.Money(c, "USD", Currency) : "—";
 
