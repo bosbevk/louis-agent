@@ -100,8 +100,11 @@ One table, one row per ingredient, every ingredient of the recipe, every ingredi
 alone; with its photo first when `FindProducts` gave one:
 `![KOO Chakalaka](https://catalog.sixty60.co.za/…) KOO Chakalaka Mild 410 g`, only an image `FindProducts` gave, never
 one from anywhere else), and its price at each shop you priced at (a column per shop; with no such shop, one *Price*
-column of `-`); then the total rows in bold. Tap water is never a row: it isn't bought (the recipe's steps name it),
-so it never counts in `Geprys:`.
+column of `-`); then the total rows in bold.
+What isn't bought is never a row: tap water, and pantry staples the user has (oil, salt and pepper). They go on one
+line under the list, in the task's language (*From the pantry: cooking oil, salt and pepper.*; Afrikaans:
+*Uit die voorraadkas: kookolie, sout en peper.*), and never count in `Geprys:`, so a list whose bought rows all have a
+price reads `Geprys: 8 van 8`.
 
 | Ingredient | For the recipe | To buy | Checkers |
 |---|---|---|---|

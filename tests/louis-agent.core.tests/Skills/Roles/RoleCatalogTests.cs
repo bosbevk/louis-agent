@@ -244,8 +244,10 @@ public class RoleCatalogTests
         // display as it comes from checkers, we should not specifically translate".
         Assert.That(cook, Does.Contain("every ingredient named in the task's language"));
         Assert.That(cook, Does.Contain("never translated"));
-        // Louis, on "Geprys: 10 van 11" with tap water a row: "should this not be now 10 out of 10". Water isn't bought.
-        Assert.That(cook, Does.Contain("Tap water is never a row"));
+        // Louis, on "Geprys: 10 van 11" with tap water a row, then "8 van 10" with oil and salt "uit die voorraadkas":
+        // "it should now say 8 of 8". What isn't bought (tap water, pantry staples) is a line under the list, not a row.
+        Assert.That(cook, Does.Contain("What isn't bought is never a row"));
+        Assert.That(cook, Does.Contain("*Uit die voorraadkas: kookolie, sout en peper.*"));
         // Louis: "can we have a product image": the photo FindProducts gives, before the name; never another image.
         Assert.That(cook, Does.Contain("![KOO Chakalaka](https://catalog.sixty60.co.za/…) KOO Chakalaka Mild 410 g"));
         Assert.That(cook, Does.Contain("only an image `FindProducts` gave"));
