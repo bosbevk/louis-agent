@@ -117,9 +117,10 @@ public sealed class AgentOptions
     public IReadOnlyDictionary<string, Uri> AgentPeers { get; set; } = new Dictionary<string, Uri>();
 
     /// <summary>
-    /// PERSONALITIES_ENABLED (its name changes in CL14): the roles this instance may use (F29), comma separated and
-    /// lowercase, e.g. <c>puls,puls-cook</c>; a session or sub-session asking for another is refused as for an unknown
-    /// one. Empty: every built-in role. Puls's compose lists only the roles that have passed their check.
+    /// ROLES_ENABLED: the roles this instance may use (F29), comma separated and lowercase, e.g.
+    /// <c>puls/voice-af,puls-cook</c>; a session or sub-session asking for another is refused as for an unknown one.
+    /// Empty: every built-in role. Puls's compose lists only the roles that have passed their check. PERSONALITIES_ENABLED,
+    /// its name before CL14, is read when it's unset, with a warning, until the TODO's line removes it.
     /// </summary>
     public IReadOnlyList<string> RolesEnabled { get; set; } = [];
 
@@ -177,6 +178,16 @@ public sealed class AgentOptions
             .GroupBy(pair => pair[0].ToLowerInvariant())
             .ToDictionary(g => g.Key, g => new Uri(g.Last()[1].TrimEnd('/') + "/"), StringComparer.OrdinalIgnoreCase);
 
+    /// <summary>ROLES_ENABLED, or PERSONALITIES_ENABLED (its name before CL14) when it's unset, said in a warning.</summary>
+    private static string? RolesSetting(Func<string, string?> get)
+    {
+        if (get("ROLES_ENABLED") is { } roles) return roles;
+        string? old = get("PERSONALITIES_ENABLED");
+        if (old is not null)
+            Log.Log(LogLevel.Warning, LogMessage.RolesSettingRenamed, new { Old = "PERSONALITIES_ENABLED", New = "ROLES_ENABLED" });
+        return old;
+    }
+
     public static AgentOptions FromEnvironment(Func<string, string?>? getVariable = null)
     {
         getVariable ??= Environment.GetEnvironmentVariable;
@@ -217,7 +228,7 @@ public sealed class AgentOptions
             HostCulture = Get("HOST_CULTURE"),
             DisplayCurrency = Get("DISPLAY_CURRENCY"),
             AgentPeers = ParsePeers(Get("AGENT_PEERS")),
-            RolesEnabled = ParseNames(Get("PERSONALITIES_ENABLED")),
+            RolesEnabled = ParseNames(RolesSetting(Get)),
             SessionLlmProfiles = ParseNames(Get("LLM_SESSION_PROFILES")),
             MinionLlms = ParseMinionLlms(Get("MINION_LLMS")),
             AgentApiKey = Get("AGENT_API_KEY"),

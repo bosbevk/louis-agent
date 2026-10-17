@@ -165,7 +165,10 @@ public sealed class SpecialistTools(IReadOnlyDictionary<string, Uri> peers, stri
             using var createdJson = JsonDocument.Parse(createdBody);
             sessionId = createdJson.RootElement.GetProperty("session_id").GetString() ?? throw new JsonException("no session_id");
             // The role it opened with, as the peer reports it (the one passed: CL10, a role is never derived).
-            string? reported = createdJson.RootElement.TryGetProperty("personality", out var p) && p.ValueKind == JsonValueKind.String ? p.GetString() : role;
+            // CL14: "role" from a peer on this build, "personality" from one a deploy behind.
+            string? reported = (createdJson.RootElement.TryGetProperty("role", out var p) && p.ValueKind == JsonValueKind.String) ||
+                               (createdJson.RootElement.TryGetProperty("personality", out p) && p.ValueKind == JsonValueKind.String)
+                ? p.GetString() : role;
 
             var reply = await AnswerAsync(peer, sessionId, messageBody, kind, toolUseId, scope, timeoutSource.Token);
             if (reply.Failure is not null) return reply.Failure;

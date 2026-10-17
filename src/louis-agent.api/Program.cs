@@ -49,7 +49,7 @@ else
     {
         bool isApi = context.Request.Path.StartsWithSegments("/sessions") || context.Request.Path.StartsWithSegments("/workspace") ||
                      context.Request.Path.StartsWithSegments("/git") || context.Request.Path.StartsWithSegments("/toolsets") ||
-                     context.Request.Path.StartsWithSegments("/personalities") || context.Request.Path.StartsWithSegments("/model");
+                     RolesView.Routes.Any(route => context.Request.Path.StartsWithSegments(route)) || context.Request.Path.StartsWithSegments("/model");
         if (!isApi || HasApiKey(context.Request, apiKey))
         {
             await next(context);
@@ -144,15 +144,9 @@ app.MapGet("/toolsets", (AgentEngineFactory engines) => Results.Json(new
 // The model this instance answers with (F20: Puls's model picker shows it).
 app.MapGet("/model", () => Results.Json(new { provider = host.Llm.Provider, model = host.Llm.Model }));
 
-// The personalities a session can choose (F21), per level (CL8: a session's level is its depth); default is the voice a
-// level-0 session gets when it names none (CL9).
-app.MapGet("/personalities", (AgentEngineFactory engines) => Results.Json(new
-{
-    @default = engines.DefaultVoice,
-    agent = engines.AvailableRoles(RoleLevel.Agent),
-    specialists = engines.AvailableRoles(RoleLevel.Specialist),
-    minions = engines.AvailableRoles(RoleLevel.Minion),
-}));
+// The roles a session can choose, per level: GET /roles, and GET /personalities for a client one deploy behind (CL14).
+foreach (string route in RolesView.Routes)
+    app.MapGet(route, (AgentEngineFactory engines) => Results.Json(RolesView.Of(engines)));
 
 // The LLM profiles a session can name besides this instance's model (F30): null is the instance's own.
 app.MapGet("/llm-profiles", (AgentEngineFactory engines) => Results.Json(new
@@ -162,7 +156,7 @@ app.MapGet("/llm-profiles", (AgentEngineFactory engines) => Results.Json(new
 }));
 
 // The body is optional: { "toolsets": [...] } chooses the session's tools for its lifetime (F5; none sent: skills only);
-// "personality" its personality (F21; none sent: the default voice, CL9); "llm" the LLM profile it runs on (F30; none sent: this
+// "role" its role (F21; none sent: the default voice, CL9; "personality", its name before CL14, still read); "llm" the LLM profile it runs on (F30; none sent: this
 // instance's model); "tool" a minion's one tool (F30; depth 2 only, with "parent" the specialist's session and turn);
 // { "task", "run", "service" } tag every usage record of the session (the orchestrator sends them for a fix); "depth" is
 // set by an agent opening a sub-session.
@@ -181,35 +175,18 @@ app.MapPost("/sessions", (CreateSessionRequest? request, AgentSessions sessions)
     {
         session = sessions.Create(request?.Toolsets,
             request is null ? null : new UsageTags(request.Task, request.Run, request.Service, request.Parent), request?.Depth ?? 0,
-            request?.Personality, request?.Place(), request?.Llm, request?.Tool);
+            request?.RoleOrAlias(), request?.Place(), request?.Llm, request?.Tool);
     }
     catch (Exception ex) when (ex is ToolsetException or RoleException or SessionLlmException)
     {
         return Results.Json(Error("invalid_request_error", ex.Message), statusCode: StatusCodes.Status400BadRequest);
     }
 
-    return Results.Json(new
-    {
-        session_id = session.Id, created_at = session.CreatedAt, toolsets = session.Toolsets, depth = session.Depth,
-        personality = session.Personality, llm = session.Llm, tool = session.Tool, task = session.Tags.Task, run = session.Tags.Run,
-        service = session.Tags.Service, parent = session.Tags.Parent,
-    }, statusCode: StatusCodes.Status201Created);
+    return Results.Json(SessionView.Created(session), statusCode: StatusCodes.Status201Created);
 });
 
-// usage: the session's finished turns, like message_delta's (null when the API doesn't record usage).
 app.MapGet("/sessions/{id}", (string id, AgentSessions sessions) =>
-    sessions.Get(id) is { } session
-        ? Results.Json(new
-        {
-            session_id = session.Id, created_at = session.CreatedAt, last_activity = session.LastActivity, busy = session.IsBusy,
-            toolsets = session.Toolsets, depth = session.Depth, personality = session.Personality, llm = session.Llm, tool = session.Tool,
-            tools = session.Engine.Tools.Count,
-            task = session.Tags.Task, run = session.Tags.Run, service = session.Tags.Service,
-            // F26: the specialists the chat keeps open, by handle (never the peer's session id).
-            sub_sessions = session.SubSessions.Open.Select(o => new { handle = o.Handle, agent = o.Agent, toolsets = o.Toolsets, personality = o.Role }),
-            usage = session.Engine.RecordsUsage ? ClaudeStyleStream.Usage(session.Usage.Records, session.Engine.Display) : null,
-        })
-        : UnknownSession(id));
+    sessions.Get(id) is { } session ? Results.Json(SessionView.Of(session)) : UnknownSession(id));
 
 app.MapDelete("/sessions/{id}", (string id, AgentSessions sessions) =>
     sessions.Remove(id) ? Results.Json(new { session_id = id, deleted = true }) : UnknownSession(id));
@@ -377,16 +354,29 @@ static async IAsyncEnumerable<SseItem<string>> StreamTurnAsync(
 internal sealed record SendMessageRequest(string? Message, List<AttachmentRequest>? Attachments);
 
 /// <summary>
-/// A new session's options: its toolsets (F5), its personality (F21), its LLM profile (F30), and optional tags for the usage ledger, kept short
+/// A new session's options: its toolsets (F5), its role (F21; <c>Personality</c> its alias until the TODO's line removes it), its LLM profile (F30), and optional tags for the usage ledger, kept short
 /// and printable. Depth is 1 when another agent opens it as a sub-session.
 /// </summary>
 internal sealed record CreateSessionRequest(
     string? Task, string? Run, string? Service, List<string>? Toolsets = null, int Depth = 0, string? Parent = null,
     string? Personality = null, string? Location = null,
     [property: System.Text.Json.Serialization.JsonPropertyName("time_zone")] string? TimeZone = null, string? Llm = null,
-    string? Tool = null)
+    string? Tool = null, string? Role = null)
 {
     internal const int MaxTagLength = 200;
+
+    /// <summary>
+    /// The role asked for: <c>role</c>, or <c>personality</c>, its name before CL14, from a client one deploy behind;
+    /// both, differing, is a <see cref="RoleException"/> (the API's 400), since neither can be guessed to win.
+    /// </summary>
+    public string? RoleOrAlias()
+    {
+        string? role = string.IsNullOrWhiteSpace(Role) ? null : Role.Trim();
+        string? alias = string.IsNullOrWhiteSpace(Personality) ? null : Personality.Trim();
+        if (role is not null && alias is not null && role != alias)
+            throw new RoleException(MessageText.Format(ApiUserText.RoleAndPersonalityDiffer, new { Role = role, Personality = alias }));
+        return role ?? alias;
+    }
 
     /// <summary>Where the user is (F22): their location when they shared it, their time zone when sent; null with neither.</summary>
     public UserPlace? Place() => string.IsNullOrWhiteSpace(Location) && string.IsNullOrWhiteSpace(TimeZone)

@@ -17,7 +17,7 @@ namespace LouisAgent.Api;
 /// progress, if any.
 /// </summary>
 internal sealed class AgentSession(string id, AgentEngine engine, IReadOnlyList<string> toolsets, int depth, UsageTags tags,
-    string? personality = null, UserPlace? place = null, string? llm = null, string? tool = null)
+    string? role = null, UserPlace? place = null, string? llm = null, string? tool = null)
 {
     private readonly SemaphoreSlim _turnLock = new(1, 1);
     private CancellationTokenSource? _activeTurn;
@@ -33,8 +33,8 @@ internal sealed class AgentSession(string id, AgentEngine engine, IReadOnlyList<
     /// <summary>0 for a session a client opened; 1 for a sub-session another agent opened (F5-S5).</summary>
     public int Depth { get; } = depth;
 
-    /// <summary>The personality the session chose (F21), or null for the default voice (CL9).</summary>
-    public string? Personality { get; } = personality;
+    /// <summary>The role the session chose (F21), or null for the default voice (CL9).</summary>
+    public string? Role { get; } = role;
 
     /// <summary>Where the user is, when they shared it (F22): set for every turn; the first message says it.</summary>
     public UserPlace? Place { get; } = place;
@@ -139,18 +139,18 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
 
     /// <summary>
     /// Opens a session with <paramref name="toolsets"/> (null: <see cref="DefaultToolsets"/>; empty: none) and
-    /// <paramref name="personality"/> (null: the default voice). The session's level is its depth (CL8): its personality comes
+    /// <paramref name="role"/> (null: the default voice). The session's level is its depth (CL8): its role comes
     /// from that level's folder, and a sub-session gets no router (default.md): its toolsets were chosen for it and it
     /// can't delegate (F21). Throws <see cref="ToolsetException"/> for an unknown or unavailable
     /// toolset, a depth outside 0..<see cref="MaxDepth"/>, or a sub-session asking for <see cref="SpecialistsToolset"/>, and
-    /// <see cref="Core.Skills.Roles.RoleException"/> for an unknown personality, and <see cref="SessionLlmException"/> for an
+    /// <see cref="Core.Skills.Roles.RoleException"/> for an unknown role, and <see cref="SessionLlmException"/> for an
     /// LLM profile this instance doesn't offer (<paramref name="llm"/>, F30; null: its own model), before anything is created.
     /// A minion (depth <see cref="MinionDepth"/>, F30) names its one <paramref name="tool"/>, which must be its parent
     /// session's (<paramref name="tags"/>' parent, found here: minions run on their specialist's own instance) and never
     /// one of <see cref="MinionTools.NeverHandedDown"/>; its toolsets, when none are sent, are the one that builds the
     /// tool. Every other depth refuses a tool, and only depth 1 loads <see cref="MinionsToolset"/>.
     /// </summary>
-    public AgentSession Create(IEnumerable<string>? toolsets = null, UsageTags? tags = null, int depth = 0, string? personality = null,
+    public AgentSession Create(IEnumerable<string>? toolsets = null, UsageTags? tags = null, int depth = 0, string? role = null,
         UserPlace? place = null, string? llm = null, string? tool = null)
     {
         if (depth is < 0 or > MaxDepth)
@@ -165,7 +165,7 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
             : toolsets ?? DefaultToolsets);
         // A role's own toolsets (F33: the cook's `shops?`, from its file's header) come with it, beside what its parent
         // passed; then every name, optional or not, is held to the same rules.
-        names = ToolsetCatalog.Normalise(names.Concat(RoleCatalog.ToolsetsOf(personality, (RoleLevel)depth)));
+        names = ToolsetCatalog.Normalise(names.Concat(RoleCatalog.ToolsetsOf(role, (RoleLevel)depth)));
         var plain = names.Select(ToolsetCatalog.NameOf).ToList();
         if (depth > 0 && plain.Contains(SpecialistsToolset))
             throw new ToolsetException(MessageText.Format(ErrorMessage.SubSessionCannotDelegate, new { Toolset = SpecialistsToolset }));
@@ -173,16 +173,16 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
             throw new ToolsetException(MessageText.Format(ErrorMessage.SubSessionCannotDelegate, new { Toolset = MinionsToolset }));
         if (depth == 0 && plain.Contains(MinionsToolset))
             throw new ToolsetException(MessageText.Format(ErrorMessage.MinionsOnlyForSpecialists));
-        if (string.IsNullOrEmpty(personality)) personality = null;
+        if (string.IsNullOrEmpty(role)) role = null;
         // A sub-session's role is named by its parent (CL10); with none it gets the default mode's voice, no routing.
         if (string.IsNullOrWhiteSpace(llm)) llm = null;
         // What the session loads: an optional toolset this instance lacks is left out, and the session says so.
         names = ToolsetCatalog.Resolve(names, engines.Context).Select(t => t.Name).ToList();
-        var engine = engines.GetOrCreate(names, personality, (RoleLevel)depth, llm, tool);
+        var engine = engines.GetOrCreate(names, role, (RoleLevel)depth, llm, tool);
 
         DropIdle(DateTimeOffset.UtcNow);
 
-        var session = new AgentSession($"sess_{Guid.NewGuid():N}", engine, names, depth, tags ?? UsageTags.None, personality, place, llm, tool);
+        var session = new AgentSession($"sess_{Guid.NewGuid():N}", engine, names, depth, tags ?? UsageTags.None, role, place, llm, tool);
         _sessions[session.Id] = session;
         return session;
     }
@@ -191,7 +191,7 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
     /// A minion's checks (F30), in code and before any HTTP or engine: capability delegation means it can never do more
     /// than the specialist that sent it, which hands it one tool of its own (Louis: no list per role; the specialist's
     /// toolbox is the only one). The role itself (a minion role, not a specialist's or the base) is the factory's check,
-    /// as for every personality.
+    /// as for every role.
     /// </summary>
     private void CheckMinion(UsageTags? tags, string? tool)
     {

@@ -8,6 +8,9 @@ public enum ApiUserText
     [Description("'{Tag}' must be at most {Max} printable characters.")]
     InvalidTag,
 
+    [Description("'role' is '{Role}' but 'personality' is '{Personality}': send role only ('personality' is its name before CL14).")]
+    RoleAndPersonalityDiffer,
+
     [Description("Unknown time zone '{TimeZone}'. Use an IANA name, e.g. Africa/Johannesburg.")]
     UnknownTimeZone,
 

@@ -72,7 +72,7 @@ public class RoleCatalogTests
     public void AnUnknownName_IsRefused_ListingTheAvailable()
     {
         var ex = Assert.Throws<RoleException>(() => AgentHost.LoadSkills(Options(), [], "nobody"));
-        Assert.That(ex!.Message, Does.Contain("Unknown personality 'nobody'").And.EndWith("Available: louis-agent/voice, louis-agent/voice-orchestrator, puls/voice-af, puls/voice-en."));
+        Assert.That(ex!.Message, Does.Contain("Unknown role 'nobody'").And.EndWith("Available: louis-agent/voice, louis-agent/voice-orchestrator, puls/voice-af, puls/voice-en."));
     }
 
     [Test]
@@ -166,7 +166,7 @@ public class RoleCatalogTests
         // CL8: a role opens only at its own level, so Puls's chat can't take the cook's role as its voice.
         var ex = Assert.Throws<RoleException>(() => AgentHost.LoadSkills(new AgentOptions(), [], "puls-cook", RoleLevel.Agent));
 
-        Assert.That(ex!.Message, Does.Contain("Unknown personality 'puls-cook'").And.EndWith("Available: louis-agent/voice, louis-agent/voice-orchestrator, puls/voice-af, puls/voice-en."));
+        Assert.That(ex!.Message, Does.Contain("Unknown role 'puls-cook'").And.EndWith("Available: louis-agent/voice, louis-agent/voice-orchestrator, puls/voice-af, puls/voice-en."));
     }
 
     [Test]
@@ -174,7 +174,7 @@ public class RoleCatalogTests
     {
         var ex = Assert.Throws<RoleException>(() => AgentHost.LoadSkills(new AgentOptions(), [], "puls/voice-af", RoleLevel.Specialist));
 
-        Assert.That(ex!.Message, Does.Contain("Unknown personality 'puls/voice-af'").And.Contain("puls-cook"));
+        Assert.That(ex!.Message, Does.Contain("Unknown role 'puls/voice-af'").And.Contain("puls-cook"));
     }
 
     [Test]
