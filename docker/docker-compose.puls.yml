@@ -35,7 +35,8 @@ services:
       AGENT_PEERS: puls=http://puls-agent:8080
       # Only a role that has passed its check is on (F29): the cook, its price minion (F30) and Puls's own voice. Set
       # ROLES_ENABLED in config/.env to change it (an empty value turns every role on), then `up -d`; both containers
-      # read it. PERSONALITIES_ENABLED, its name before CL14, is still passed on when ROLES_ENABLED is unset.
+      # read it. PERSONALITIES_ENABLED, its name before CL14, is still passed on when ROLES_ENABLED is unset; set
+      # either way, the old name reaches the containers through env_file too, and they warn that it's to be renamed.
       ROLES_ENABLED: ${ROLES_ENABLED-${PERSONALITIES_ENABLED-puls/voice-af,puls/voice-en,puls-cook,puls-minion-web-price-lookup}}
       # The web we run (F32): SearXNG for search (development and benchmarks only, ADR 0023; WEB_SEARCH_PROVIDER picks
       # it) and the headless Chrome that renders pages drawn with JavaScript.

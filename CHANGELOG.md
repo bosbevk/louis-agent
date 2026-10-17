@@ -7,7 +7,8 @@
   JSON returns it, `GET /roles`, `ROLES_ENABLED`, the model's `StartSubSession(…, role, …)` and the prompts that teach
   it, the voices' headings, the web apps and the benchmarks. Expand, then contract: the old words are still read
   (`personality`, `GET /personalities`, `PERSONALITIES_ENABLED` with a warning) until a TODO line removes them, and
-  recorded data (stored runs, old chats, the stream fixture) is read either way for good
+  recorded data (stored runs, old chats, the stream fixture) is read either way for good. Checked by hand (free): the
+  language menu, a cook opened with either word, and a run stored before CL14 in the portal
   ([plan](docs/plans/CL14-public-word-role.md))
 - 2026-10-17 — **CL13 Skills by role**: `Skills/` in the seams' pattern, the contract at the top, `Providers/`
   (`MarkdownSkillProvider`, `CompositeSkillProvider`) and `Roles/` (`RoleCatalog`, `RoleLevel`, `RoleException`,

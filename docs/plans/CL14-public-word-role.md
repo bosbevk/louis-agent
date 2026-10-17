@@ -209,7 +209,17 @@ sequenceDiagram
 
 ## Approved during the build
 
-(none yet)
+- **2026-10-17, review of PR #60: the setting is read raw, and the old name always warns.** `ROLES_ENABLED=` (empty:
+  every role on) counted as unset, since `Get` turns a blank into null, so an old `PERSONALITIES_ENABLED` beside it
+  won; `RolesSetting` now reads both raw (`AnEmptyRolesEnabled_TurnsEveryRoleOn_EvenWithTheOldNameSet`). And Puls's
+  compose copies the old name into `ROLES_ENABLED`, so the warning never showed: rather than drop that nested default
+  (compose would then always set `ROLES_ENABLED` to its default list and silently ignore an old `.env`), core warns
+  whenever the old name is set, `RolesSettingIgnored` when the new one wins (`env_file` passes `config/.env` into the
+  containers, so they see both).
+- **The hand check (free, 2026-10-17), recorded:** Puls's language menu: `GET /roles` on `puls` lists
+  `puls/voice-af, puls/voice-en`; a cook opened on `puls-agent` with `role` and with `personality` both report
+  `"role":"puls-cook"` and `web, shops`; both, differing, is a `400`; run `fc7f8ecfdc87` (stored before CL14, its modes
+  say `personality` in MongoDB) comes back from the portal's API with each mode's `role`.
 
 ---
 [Plans](README.md) · Previous: [CL13 Skills by role](CL13-skills-by-role.md)
