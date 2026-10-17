@@ -424,4 +424,19 @@ public class PersonalitiesTests
         }
         Assert.That(SkillFileSource.ReadEmbedded(Personalities.SpecialistsFolder + "/puls-reader.md"), Does.Not.Contain("## Minions"), "only the roles that price things");
     }
+
+    [TestCase("puls-cook")]
+    [TestCase("puls-researcher")]
+    public void APricedRole_ChecksEveryMinionQuote_AsksOnceMore_ThenSaysUnconfirmed(string role)
+    {
+        // F30 step 8: a minion's price is a claim on a cheap model; the role uses it only after VerifyQuote (code)
+        // finds its words on the page, asks the next model once when it doesn't, and never passes on an unchecked price.
+        string text = SkillFileSource.ReadEmbedded($"{Personalities.SpecialistsFolder}/{role}.md")!;
+
+        Assert.That(text, Does.Contain("VerifyQuote(url, quote)"));
+        Assert.That(text, Does.Contain("stronger: true"));
+        Assert.That(text, Does.Contain("Found"));
+        Assert.That(text, Does.Contain("unconfirmed"));
+        Assert.That(text, Does.Not.Contain("can read in its result"), "the step-6 rule (read the quote by eye) is replaced");
+    }
 }

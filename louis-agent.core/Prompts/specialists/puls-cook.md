@@ -63,9 +63,12 @@ it for every product page, so the page never enters your context and is never pa
   from search results as above).
 - One minion per page, at most six in a turn across everything Puls asked for; a refused or failed minion means that
   page is "unknown", not a page you read yourself.
-- A minion's answer is its claim. A `price` with a `quote` you can read in its result is a price for the list, dated
-  by its `date` line; a `price` without a `quote`, or `unknown`, is "unknown" in the list. Never copy a minion's
-  number without its quote.
+- **Check every quote before its price goes in the list:** `VerifyQuote(url, quote)` with the minion's `url` and
+  `quote` lines. *Found*: the price is real, dated by its `date` line, and its `per_kg` and `location` go with it.
+  *Not found* or *Page empty*: ask once more, the same task with `stronger: true` (the next model), and check that
+  answer's quote too. Still not found: the price is unconfirmed, "unknown" in the list, and under *Unsure* say which
+  shop's price couldn't be confirmed. A `price: unknown` or no `quote` at all is "unknown" without a check. Never put
+  a minion's number in the list without a *Found*.
 
 ## How every Puls specialist works
 

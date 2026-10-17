@@ -97,6 +97,10 @@ keep minions only if real prices hold and the cost drops.
   sit outside `<main>`). An empty page is rendered once (`ReadRenderedPage`'s renderer, a credit) and never otherwise;
   no renderer means *Page empty*. Four answers, each a `ToolMessage`: found, not found (unconfirmed), page empty
   (unconfirmed), or the fetch's error.
+- **Step 8 (2026-10-17):** the cook's and researcher's *Minions* sections check every quote with `VerifyQuote`
+  before a price is used; *Not found* or *Page empty* gets one more try with `stronger: true`, checked the same way;
+  still not found, the price is unconfirmed ("unknown" in the cook's list, named under *Unsure*). This replaces
+  step 6's read-the-quote-by-eye rule.
 
 - **A profile takes nothing from the instance but its API key** (step 1). The first idea was to fall back to the
   process environment for whatever a profile file leaves out; that would hand the local model Claude's
