@@ -97,3 +97,10 @@ before it.
   `turn` or `session`. The keys are records (`ConversationKey`, `TurnKey`), the store's keys in step 2. The new
   folder `Services/Benchmarks/` holds F31's types; F27's `Benchmark*` files stay in `Services/` until a move is
   worth its diff.
+- **Step 2 (2026-10-17): the store's seam** (`IBenchmarkStore`, `BenchmarkDocuments`, `InMemoryBenchmarkStore`). One
+  record per collection (`Run`, `Conversation`, `Turn`, `Request`), the same in memory and in MongoDB. A turn's stream
+  events are saved with it but read apart (`TurnEventsAsync`), so a list of turns never carries thousands of events.
+  A conversation has an `Order` (when it started in its run), since neither insertion order nor its task's name keeps
+  the check's order in MongoDB. A request's tokens and cost stay null when the ledger doesn't know them (FX9, an
+  unpriced model), never 0. The contract (`BenchmarkStoreContract`, 13 tests) gives every test its own run ids and
+  check name, so step 5c runs it on a shared database unchanged.
