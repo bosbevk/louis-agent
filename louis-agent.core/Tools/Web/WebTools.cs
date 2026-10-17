@@ -256,18 +256,27 @@ public sealed partial class WebTools
     }
 
     [Description("Checks that the exact words a price (or any fact) came from are on the page itself: fetches the page " +
-        "with FetchUrl's address rules and looks for the quote with spacing and case ignored. Answers 'Found', 'Not " +
-        "found' (treat the value as unconfirmed), 'Page empty' (a JavaScript page that couldn't be read) or an error " +
-        "with its reason. No model reads the page, so a check costs nothing but the fetch. Use it on every quote a " +
-        "minion returns before you use its value.")]
+        "with FetchUrl's address rules and looks for the quote with spacing and case ignored. With product, the quote " +
+        "must stand right after the product's name, no other price between; a quote that is only a price needs it. " +
+        "Answers 'Found', 'Not found' or 'Not found with the product' (treat the value as unconfirmed), 'Page empty' " +
+        "(a JavaScript page that couldn't be read) or an error with its reason. No model reads the page, so a check " +
+        "costs nothing but the fetch. Use it on every quote a minion returns before you use its value.")]
     public async Task<string> VerifyQuote(
         [Description("Absolute http(s) URL of the page the value came from")] string url,
-        [Description("The exact words the value came from, as the minion (or you) copied them")] string quote)
+        [Description("The exact words the value came from, as the minion (or you) copied them")] string quote,
+        [Description("The product's name as the page shows it. Needed when the quote is only a price (R22.99): a price " +
+            "alone matches any product at that price on the page.")] string? product = null)
     {
         if (!Uri.TryCreate((url ?? "").Trim(), UriKind.Absolute, out var uri) || uri.Scheme is not ("http" or "https"))
             return MessageText.Format(ToolMessage.FetchUrlInvalid);
         string wanted = Normalise((quote ?? "").Trim().Trim('"', '\u201C', '\u201D', '\''));
         if (wanted.Length == 0) return MessageText.Format(ToolMessage.QuoteEmpty);
+        string? named = string.IsNullOrWhiteSpace(product) ? null : Normalise(product.Trim().Trim('"', '\u201C', '\u201D', '\''));
+        // FX16: R22.99 is on a page of eggs, milk and butter for the eggs and the milk; alone it says nothing of whose it is.
+        if (named is null && IsOnlyAPrice(wanted)) return MessageText.Format(ToolMessage.QuoteOnlyAPrice, new { Quote = quote!.Trim() });
+
+        bool Matches(string text) => named is null ? Normalise(text).Contains(wanted, StringComparison.Ordinal) : StandsAfter(Normalise(text), named, wanted);
+        bool OnPage(string text) => Normalise(text).Contains(wanted, StringComparison.Ordinal);
 
         try
         {
@@ -280,8 +289,10 @@ public sealed partial class WebTools
             // The readable text, and the whole body with its tags stripped: a price per kilo can sit outside <main>.
             var (_, text) = HtmlToText(body, finalUri);
             string all = CleanInline(ScriptOrStyle().Replace(body, " "));
-            if (Normalise(text).Contains(wanted, StringComparison.Ordinal) || Normalise(all).Contains(wanted, StringComparison.Ordinal))
+            if (Matches(text) || Matches(all))
                 return MessageText.Format(ToolMessage.QuoteFound, new { Url = finalUri });
+            if (named is not null && (OnPage(text) || OnPage(all)))
+                return MessageText.Format(ToolMessage.QuoteNotWithProduct, new { Url = finalUri, Product = product!.Trim(), Window = ProductWindowChars });
             if (!LooksLikeShell(text, all, body.Length))
                 return MessageText.Format(ToolMessage.QuoteNotFound, new { Url = finalUri });
 
@@ -290,8 +301,10 @@ public sealed partial class WebTools
             {
                 var page = await _renderer.RenderAsync(finalUri);
                 if (Normalise(page.Text).Length == 0) return MessageText.Format(ToolMessage.QuotePageEmpty, new { Url = finalUri });
-                return MessageText.Format(Normalise(page.Text).Contains(wanted, StringComparison.Ordinal) ? ToolMessage.QuoteFound : ToolMessage.QuoteNotFound,
-                    new { Url = finalUri });
+                if (Matches(page.Text)) return MessageText.Format(ToolMessage.QuoteFound, new { Url = finalUri });
+                return named is not null && OnPage(page.Text)
+                    ? MessageText.Format(ToolMessage.QuoteNotWithProduct, new { Url = finalUri, Product = product!.Trim(), Window = ProductWindowChars })
+                    : MessageText.Format(ToolMessage.QuoteNotFound, new { Url = finalUri });
             }
             catch (PageRenderException)
             {
@@ -315,6 +328,34 @@ public sealed partial class WebTools
     /// <summary>Text as a quote is compared: entities decoded, every run of whitespace (a non-breaking space too) one space, lower case.</summary>
     internal static string Normalise(string text) =>
         AnyWhitespace().Replace(WebUtility.HtmlDecode(text).Replace('\u00A0', ' '), " ").Trim().ToLowerInvariant();
+
+    /// <summary>
+    /// A quote that is only a price (FX16): without its prices fewer than three letters are left (<c>r22.99</c>,
+    /// <c>r119.98/kg</c>), so it names no product.
+    /// </summary>
+    internal static bool IsOnlyAPrice(string normalised) =>
+        Price().Replace(normalised, "").Count(char.IsLetter) < 3;
+
+    /// <summary>
+    /// The quote stands for <paramref name="product"/> (FX16): it starts within <see cref="ProductWindowChars"/> after
+    /// one of the product's names on the page with no other price between, or it holds the name itself. On a list of
+    /// products the next price after a name is that product's; any later one is another's.
+    /// </summary>
+    internal static bool StandsAfter(string text, string product, string quote)
+    {
+        if (quote.Contains(product, StringComparison.Ordinal)) return text.Contains(quote, StringComparison.Ordinal);
+        for (int at = text.IndexOf(product, StringComparison.Ordinal); at >= 0; at = text.IndexOf(product, at + 1, StringComparison.Ordinal))
+        {
+            int start = at + product.Length;
+            string window = text.Substring(start, Math.Min(ProductWindowChars, text.Length - start));
+            int found = window.IndexOf(quote, StringComparison.Ordinal);
+            if (found >= 0 && !Price().IsMatch(window[..found])) return true;
+        }
+        return false;
+    }
+
+    /// <summary>How far after a product's name its price may stand: a name, a size, a badge, then the price.</summary>
+    private const int ProductWindowChars = 300;
 
     /// <summary>
     /// A page a JavaScript app draws later (F30 hand check: Pick n Pay's product pages): no text at all, or a large body
@@ -418,6 +459,10 @@ public sealed partial class WebTools
     // VerifyQuote (F30): a quote copied across a line break still matches.
     [GeneratedRegex(@"\s+")]
     private static partial Regex AnyWhitespace();
+
+    // VerifyQuote (FX16): a price in rand as normalised text reads it (r22.99, r 1 299,00, r35).
+    [GeneratedRegex(@"\br ?\d+(?:[ ,]\d{3})*(?:[.,]\d{2})?")]
+    private static partial Regex Price();
 
     [GeneratedRegex(@"<pre[^>]*>(.*?)</pre>", RegexOptions.IgnoreCase | RegexOptions.Singleline)]
     private static partial Regex PreBlock();

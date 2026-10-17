@@ -706,6 +706,12 @@ public enum ToolMessage
     [Description("Not found: the quote isn't on {Url}. Treat the value as unconfirmed: ask once more with stronger: true, or say it couldn't be confirmed.")]
     QuoteNotFound,
 
+    [Description("Error: '{Quote}' is only a price, and a price alone matches any product at that price on the page. Give the product's name as the page shows it (product), or quote the words around the price.")]
+    QuoteOnlyAPrice,
+
+    [Description("Not found with the product: {Url} has the quote, but not right after '{Product}' (within {Window} characters, no other price between), so it may be another product's. Treat the value as unconfirmed.")]
+    QuoteNotWithProduct,
+
     [Description("Page empty: {Url} has no readable text (a page drawn with JavaScript that couldn't be rendered), so the quote can't be checked. Treat the value as unconfirmed.")]
     QuotePageEmpty,
 
