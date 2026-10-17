@@ -3,6 +3,12 @@
 > **Reference.** What was finished, newest first, one entry per feature, fix or cleanup. **Elsewhere:** what's still
 > open in the [TODO](TODO.md); how each was built in its feature, fix or plan doc (linked from its entry).
 
+- 2026-10-17 — **F33 Shop catalogues**: a shop's products and exact prices read from its own catalogue through the
+  guarded browser (`Tools/Web/Browsing`, extracted from F32's renderer), Checkers first (`Tools/Shops`,
+  `Providers/CheckersCatalogue`); a `shops` toolset with `FindProducts`, off unless `SHOP_CATALOGUES` names the shop.
+  The cook loads it itself, from its role's header (`toolsets: shops?`), optional toolsets (`?`) loading only where an
+  instance has them. Its run priced 22 of 23 ingredients with sources, F32's 0 of 32. Plans now carry a namespace map
+  ([feature](docs/features/F33-shop-catalogues.md))
 - 2026-10-17 — **F32 Self-hosted web**: `WebSearch` through SearXNG in the Puls stack (development and benchmarks
   only, ADR 0023: the sold endpoint keeps Tavily) and pages drawn with JavaScript rendered by a headless Chrome
   (PuppeteerSharp), every request a page makes held to the address rule and no WebSockets; both containers pinned by

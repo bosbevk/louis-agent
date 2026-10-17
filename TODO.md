@@ -256,10 +256,9 @@ Design: [docs/specs/SESSION_ARCHITECTURE.md](docs/specs/SESSION_ARCHITECTURE.md)
 - [ ] **F32 follow-up: SearXNG's results** (from F32's run): filter them to the site asked for (Bing, often the one
       engine answering, ignores `site:`), and retry once without the time range when a freshness filter leaves no
       engine.
-- [ ] [F33 Shop catalogues](docs/features/F33-shop-catalogues.md) — a shop's products and exact prices read from its
-      own catalogue through the guarded browser, Checkers first (`Tools/Shops`, `Providers/CheckersCatalogue`); a
-      `shops` toolset with `FindProducts`, which the cook uses; off unless `SHOP_CATALOGUES` names the shop
-      ([plan](docs/plans/F33-shop-catalogues.md)). Planned 2026-10-17, after F32's run priced nothing.
+- [ ] **F33 follow-up: more shop catalogues** (to plan): Shoprite (Checkers' sister store, likely the same Sixty60
+      catalogue), Pick n Pay and Woolworths as providers under `Tools/Shops/Providers`; and a delivery area per shop
+      (Louis's Malmesbury idea: Checkers keeps it in cookies) for local stock.
 - [ ] **CL13 Skills by role** (cleanup, to plan after F33; Louis: "we must cleanup to fix the whole Skills folder
       namespace … to follow the established pattern and naming"): `Skills/` as the other seams are, the contract at the
       top (`ISkillProvider`, the file reading), its implementations in `Providers/` (Markdown, Composite, `RoleSkillProvider`

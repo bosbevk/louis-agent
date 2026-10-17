@@ -1,6 +1,6 @@
 # F33 · Shop catalogues: product prices read from the shop, in code
 
-> **Status:** planned (2026-10-17), on `feature/F33-shop-catalogues` · **Milestone:** — · **Depends on:** F32 (the
+> **Status:** done (2026-10-17), on `feature/F33-shop-catalogues`: its run priced 22 of 23 ingredients with sources · **Milestone:** — · **Depends on:** F32 (the
 > headless browser and its guards), F25 (the cook), F31 (the cook check that measures it)
 >
 > **In the TODO:** **F33 Shop catalogues** under *Tooling and repositories* ([TODO](../../TODO.md)) · **Plan:**
@@ -80,3 +80,10 @@ the run shows priced ingredients with sources.
   where it doesn't), so the sold endpoint, without `SHOP_CATALOGUES`, still cooks with the web. Its prompt prices a shop
   `FindProducts` covers through it first (one call per ingredient, the price linked to the product the table gives), and
   makes that shop one of the two when it's in the town. On this machine `puls-agent` lists `shops` as available.
+- **The run (2026-10-17, Louis's go): cook check `fc7f8ecfdc87`, 1 repeat, $0.068, 61 requests, 1.13M tokens.** The
+  cook priced **22 of 23 ingredients with a source** (cook-af 9/9, cook-en 6/7, cook-shops 7/7), where F32's run priced
+  0 of 32; no guessed price; every conversation routed right. It called `FindProducts` 24 times, once per ingredient,
+  the tool loaded from its own role (`shops?`), Puls passing `web` alone. 119 of 128 tool calls worked. Puls alone, with
+  no catalogue, still priced 0 of 3 with a source (2 guessed): the gain is the cook's tool. The run cost a little more
+  than F32's ($0.057) for priced answers instead of none. One wording slip, "Checkers's products", became "Products at
+  Checkers for …".
