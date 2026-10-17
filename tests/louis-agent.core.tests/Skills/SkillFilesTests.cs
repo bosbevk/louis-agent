@@ -3,6 +3,7 @@ using LouisAgent.Core.Agent;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Skills;
+using LouisAgent.Core.Skills.Providers;
 using LouisAgent.Core.Tools.DotNet;
 using LouisAgent.Core.Tools.Integrations.Paymo;
 
@@ -74,12 +75,11 @@ public class SkillFilesTests
         // Only skills we don't control would need a provider of their own; ours are all plain markdown.
         var providers = typeof(ISkillProvider).Assembly.GetTypes()
             .Where(t => typeof(ISkillProvider).IsAssignableFrom(t) && t is { IsClass: true, IsAbstract: false })
-            .Select(t => t.Name);
+            .ToList();
 
-        Assert.That(providers, Is.EquivalentTo(new[]
-        {
-            nameof(CompositeSkillProvider), nameof(MarkdownSkillProvider), nameof(PersonalitySkillsProvider),
-        }));
+        // CL13: PersonalitySkillsProvider went, unused since F5 step 4b; the providers sit in Providers/, as every seam's do.
+        Assert.That(providers.Select(t => t.Name), Is.EquivalentTo(new[] { nameof(CompositeSkillProvider), nameof(MarkdownSkillProvider) }));
+        Assert.That(providers.Select(t => t.Namespace), Has.All.EqualTo("LouisAgent.Core.Skills.Providers"));
     }
 
     [Test]

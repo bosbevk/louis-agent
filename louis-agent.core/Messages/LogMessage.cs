@@ -45,9 +45,6 @@ public enum LogMessage
     [Description("The default mode isn't in the assembly")]
     DefaultInstructionsNotFound,
 
-    [Description("No personality file found; running without a personality.")]
-    NoPersonality,
-
     [Description("Failed to connect to Rider at {Endpoint}: {Reason}")]
     McpConnectFailed,
 

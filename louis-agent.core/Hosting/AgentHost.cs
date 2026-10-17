@@ -4,6 +4,7 @@ using dotenv.net;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Skills;
+using LouisAgent.Core.Skills.Providers;
 using LouisAgent.Core.Usage;
 using LouisAgent.Core.Pricing;
 using LouisAgent.Core.Llm;

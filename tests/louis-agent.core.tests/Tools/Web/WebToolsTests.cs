@@ -3,6 +3,7 @@ using System.Text;
 using System.Text.Json;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Skills;
+using LouisAgent.Core.Skills.Providers;
 using LouisAgent.Core.Agent;
 using Microsoft.Extensions.AI;
 using LouisAgent.Core.Tools.Web;

@@ -1,6 +1,7 @@
-namespace LouisAgent.Core.Skills;
+namespace LouisAgent.Core.Skills.Providers;
 
 using LouisAgent.Core.Logging;
+using LouisAgent.Core.Skills;
 using LouisAgent.Core.Messages;
 using Microsoft.Extensions.Logging;
 

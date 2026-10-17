@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Skills;
+using LouisAgent.Core.Skills.Providers;
 using LouisAgent.Core.Tools;
 using LouisAgent.Core.Tools.Shell;
 using LouisAgent.Core.Messages;

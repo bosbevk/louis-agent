@@ -1,6 +1,7 @@
 using LouisAgent.Core.Skills;
+using LouisAgent.Core.Skills.Providers;
 
-namespace LouisAgent.Core.Tests.Skills;
+namespace LouisAgent.Core.Tests.Skills.Providers;
 
 public class CompositeSkillProviderTests
 {
