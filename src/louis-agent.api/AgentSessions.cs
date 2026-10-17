@@ -148,8 +148,8 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
     /// <see cref="Core.Skills.PersonalityException"/> for an unknown personality, and <see cref="SessionLlmException"/> for an
     /// LLM profile this instance doesn't offer (<paramref name="llm"/>, F30; null: its own model), before anything is created.
     /// A minion (depth <see cref="MinionDepth"/>, F30) names its one <paramref name="tool"/>, which must be its parent
-    /// session's (<paramref name="tags"/>' parent, found here: minions run on their specialist's own instance), one its
-    /// role accepts (<see cref="Core.Skills.MinionRoles"/>) and never one of <see cref="NeverHandedDown"/>; every other depth refuses a tool.
+    /// session's (<paramref name="tags"/>' parent, found here: minions run on their specialist's own instance) and never
+    /// one of <see cref="NeverHandedDown"/>; every other depth refuses a tool.
     /// </summary>
     public AgentSession Create(IEnumerable<string>? toolsets = null, UsageTags? tags = null, int depth = 0, string? personality = null,
         UserPlace? place = null, string? llm = null, string? tool = null)
@@ -163,7 +163,7 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
         // A sub-session's role is named by its parent (CL10); with none it gets the default mode's voice, no routing.
         if (string.IsNullOrWhiteSpace(llm)) llm = null;
         if (string.IsNullOrWhiteSpace(tool)) tool = null;
-        if (depth == MinionDepth) CheckMinion(tags, personality, tool);
+        if (depth == MinionDepth) CheckMinion(tags, tool);
         else if (tool is not null)
             throw new ToolsetException(MessageText.Format(ErrorMessage.ToolOnlyForMinions, new { MinionDepth, Depth = depth }));
         var engine = engines.GetOrCreate(names, personality, (SkillLevel)depth, llm, tool);
@@ -177,10 +177,11 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
 
     /// <summary>
     /// A minion's checks (F30), in code and before any HTTP or engine: capability delegation means it can never do more
-    /// than the specialist that sent it. The role itself (a minion role, not a specialist's or the base) is the factory's
-    /// check, as for every personality.
+    /// than the specialist that sent it, which hands it one tool of its own (Louis: no list per role; the specialist's
+    /// toolbox is the only one). The role itself (a minion role, not a specialist's or the base) is the factory's check,
+    /// as for every personality.
     /// </summary>
-    private void CheckMinion(UsageTags? tags, string? personality, string? tool)
+    private void CheckMinion(UsageTags? tags, string? tool)
     {
         if (tool is null)
             throw new ToolsetException(MessageText.Format(ErrorMessage.MinionNeedsTool, new { Depth = MinionDepth }));
@@ -193,9 +194,6 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
             throw new ToolsetException(MessageText.Format(ErrorMessage.ToolNeverHandedDown, new { Tool = tool }));
         if (!parent.Engine.Tools.Any(t => string.Equals(t.Name, tool, StringComparison.Ordinal)))
             throw new ToolsetException(MessageText.Format(ErrorMessage.ParentLacksTool, new { Tool = tool }));
-        if (personality is not null && MinionRoles.ToolsOf(personality) is { } accepted && !accepted.Contains(tool, StringComparer.Ordinal))
-            throw new ToolsetException(MessageText.Format(ErrorMessage.ToolNotAcceptedByRole,
-                new { Role = personality, Tool = tool, Tools = string.Join(", ", accepted) }));
     }
 
     public AgentSession? Get(string id) => _sessions.GetValueOrDefault(id);

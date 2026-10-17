@@ -55,13 +55,13 @@ public static partial class Personalities
     /// <summary>
     /// The named personalities at <paramref name="level"/>, all built in (CL8 step 4), sorted: at level 0 the modes,
     /// <c>agent/{product}/{mode}.md</c> (every product folder but the function skills'); at level 1 the roles; at level 2
-    /// the minion roles <see cref="MinionRoles"/> lists (F30: a base, or a file the data file doesn't name, is no role).
+    /// the minion roles, never a base (F30: <c>puls-minion</c> frames every minion, it is no role itself).
     /// </summary>
     public static IReadOnlyList<string> Available(SkillLevel level) =>
         (level == SkillLevel.Agent ? Modes() : SkillFileSource.Files(FolderOf(level)).Where(f => f.EndsWith(".md", StringComparison.Ordinal))
             .Select(f => f[..^".md".Length]))
         .Where(IsValidName)
-        .Where(n => level != SkillLevel.Minion || MinionRoles.ToolsOf(n) is not null)
+        .Where(n => level != SkillLevel.Minion || !IsMinionBase(n))
         .Order(StringComparer.Ordinal)
         .ToList();
 

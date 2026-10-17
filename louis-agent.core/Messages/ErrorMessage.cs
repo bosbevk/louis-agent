@@ -142,8 +142,6 @@ public enum ErrorMessage
     [Description("The parent session has no '{Tool}' tool: a minion gets one of its specialist's own tools.")]
     ParentLacksTool,
 
-    [Description("The '{Role}' minion doesn't take '{Tool}'; it takes {Tools}.")]
-    ToolNotAcceptedByRole,
 
     [Description("Unknown LLM profile '{Name}'. Available: {Available}.")]
     UnknownSessionLlm,

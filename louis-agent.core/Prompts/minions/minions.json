@@ -1,6 +1,0 @@
-{
-  "_comment": "F30: the minion roles (level 2) and the tools each accepts; a role's file is beside this one, on the puls-minion base. The list only narrows: the specialist's own toolbox is checked too, and a delegation or self-extension tool is never handed down.",
-  "roles": [
-    { "role": "puls-minion-web-price-lookup", "tools": ["FetchUrl", "ReadRenderedPage"] }
-  ]
-}

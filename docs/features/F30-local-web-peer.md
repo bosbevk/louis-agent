@@ -63,10 +63,11 @@ keep minions only if real prices hold and the cost drops.
 ## What the build changed
 
 - **Step 4 (2026-10-17):** a minion's engine is the principles, its product's base (`minions/puls-minion.md`), its role
-  and one tool, no toolset guide and no router; `minions.json` lists the roles and the tools each takes, and only a
-  listed role is a name at level 2 (the base isn't; a minion with no role is refused). `POST /sessions` takes `tool` at
-  depth 2 only, with `parent`: the API finds the parent session on its own instance and refuses a tool the parent
-  lacks, one the role doesn't take, or a delegation or self-extension tool, before anything is built. The minion's model
+  and one tool, no toolset guide and no router; every file in `minions/` but a base is a role at level 2 (a minion with
+  no role is refused). **No `minions.json`** (Louis, reviewing the step: "the specialist must give him its tools"): the
+  specialist's own toolbox is the only list, so a role is one file. `POST /sessions` takes `tool` at depth 2 only, with
+  `parent`: the API finds the parent session on its own instance and refuses a tool the parent lacks or a delegation
+  or self-extension tool, before anything is built. The minion's model
   is the caller's `llm` until step 5's `MINION_LLMS` maps it per role. Louis, reading the price role: the answer gets a
   `per_kg` line (the page's per-kilogram price, or worked out from a stated pack weight with the working shown) and a
   `location` line (the branch or delivery area the page's price holds for), since prices differ by area.

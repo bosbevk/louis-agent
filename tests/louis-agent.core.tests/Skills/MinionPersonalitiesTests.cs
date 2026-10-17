@@ -4,8 +4,9 @@ using LouisAgent.Core.Skills;
 
 namespace LouisAgent.Core.Tests.Skills;
 
-// F30 step 4: a minion (level 2) is a function on the minion base, and minions.json says which tools each role accepts.
-public class MinionRolesTests
+// F30 step 4: a minion (level 2) is a function on the minion base; the specialist hands it one of its own tools (Louis:
+// no list of tools per role, the specialist's toolbox is the only one).
+public class MinionPersonalitiesTests
 {
     [Test]
     public void TheMinionRoles_AreListed_TheBaseIsNot()
@@ -13,19 +14,9 @@ public class MinionRolesTests
         // The base (puls-minion.md) frames every minion; it is no role a specialist can name.
         Assert.That(Personalities.Available(SkillLevel.Minion), Is.EqualTo(new[] { "puls-minion-web-price-lookup" }));
         Assert.That(Personalities.MinionBaseOf("puls-minion-web-price-lookup"), Is.EqualTo("puls-minion"));
+        Assert.That(Personalities.MinionBaseOf("puls-cook"), Is.Null, "a specialist's role has no base");
         Assert.That(Personalities.IsMinionBase("puls-minion"), Is.True);
         Assert.That(Personalities.IsMinionBase("puls-minion-web-price-lookup"), Is.False);
-    }
-
-    [Test]
-    public void MinionsJson_SaysWhichToolsARoleAccepts()
-    {
-        // Which tools a role takes is data, so a new minion is a file and a line, not code; the list can only narrow.
-        Assert.That(MinionRoles.ToolsOf("puls-minion-web-price-lookup"), Is.EqualTo(new[] { "FetchUrl", "ReadRenderedPage" }));
-        Assert.That(MinionRoles.ToolsOf("puls-cook"), Is.Null, "a specialist's role is no minion role");
-        Assert.That(MinionRoles.ToolsOf("puls-minion"), Is.Null, "the base is no role");
-        Assert.That(MinionRoles.Roles, Is.EqualTo(new[] { "puls-minion-web-price-lookup" }));
-        Assert.That(MinionRoles.Parse("{ not json").Count, Is.Zero, "a broken file lists no role, so no minion opens");
     }
 
     [Test]

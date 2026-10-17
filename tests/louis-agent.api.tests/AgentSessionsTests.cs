@@ -260,18 +260,18 @@ public class AgentSessionsTests
     }
 
     [Test]
-    public void AMinion_GetsOnlyAToolItsParentHas_ThatItsRoleTakes_AndThatIsEverHandedDown()
+    public void AMinion_GetsOnlyAToolItsParentHas_AndOneThatIsEverHandedDown()
     {
-        // Capability delegation: a minion can never do more than the specialist that sent it (the parent's toolbox),
-        // minions.json only narrows that, and delegation and self-extension tools never go down.
+        // Capability delegation: a minion can never do more than the specialist that sent it. The parent's toolbox is
+        // the only list (Louis: "the specialist must give him its tools"); delegation and self-extension never go down.
         var sessions = Sessions();
         var withFiles = sessions.Create(["files"], depth: 1, personality: "puls-cook");
         var withWeb = sessions.Create(["web", "files"], depth: 1, personality: "puls-cook");
 
         Assert.That(() => sessions.Create(["web"], ParentOf(withFiles), depth: 2, personality: "puls-minion-web-price-lookup", tool: "FetchUrl"),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("parent session has no 'FetchUrl'"));
-        Assert.That(() => sessions.Create(["files"], ParentOf(withWeb), depth: 2, personality: "puls-minion-web-price-lookup", tool: "ReadWorkspaceFile"),
-            Throws.TypeOf<ToolsetException>().With.Message.Contain("doesn't take 'ReadWorkspaceFile'").And.Message.Contain("FetchUrl, ReadRenderedPage"));
+        Assert.That(sessions.Create(["files"], ParentOf(withWeb), depth: 2, personality: "puls-minion-web-price-lookup", tool: "ReadWorkspaceFile").Tool,
+            Is.EqualTo("ReadWorkspaceFile"), "any tool of the parent's own: which one is the specialist's call");
         Assert.That(() => sessions.Create(["skills"], ParentOf(withWeb), depth: 2, personality: "puls-minion-web-price-lookup", tool: "ExecuteSkill"),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("never handed"));
     }

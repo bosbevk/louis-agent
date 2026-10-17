@@ -424,7 +424,7 @@ public static partial class AgentHost
             throw new PersonalityException(MessageText.Format(ErrorMessage.PersonalityNameInvalid, new { Name = personality }));
         string file = Personalities.FileName(personality, level);
         // A personality that's off (F29) is refused as an unknown one: the list names what this instance may use. At level
-        // 0 only a mode is a name (CL9); at level 2 only a role minions.json lists (F30), never the base.
+        // 0 only a mode is a name (CL9); at level 2 a role on the base (F30), never the base itself.
         bool offered = level == SkillLevel.Specialist || Personalities.Available(level).Contains(personality);
         if (!offered || !IsEnabled(agent, personality) || ReadSkillFile(agent, file) is null)
             throw new PersonalityException(MessageText.Format(ErrorMessage.UnknownPersonality,
