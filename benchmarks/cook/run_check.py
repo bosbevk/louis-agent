@@ -60,7 +60,7 @@ def score(task, turns, cook_on):
     """One conversation as numbers. A meal goes to the cook when the mode has it; otherwise, and for the control
     question, Puls answers itself. An errored first turn is never right."""
     first, follow = turns[0], (turns[1] if len(turns) > 1 else None)
-    n_priced, n_items, n_guessed = scoring.priced(first["answer"])
+    n_priced, n_items, n_guessed, n_per_kg = scoring.priced(first["answer"])
     fetched = stream.hosts([c for t in turns for c in t["calls"] + t["specialist_calls"]])
     local = [h for h in fetched if h.endswith(".za")]
     shops = [h for h in fetched if h.endswith(SHOPS)]
@@ -73,7 +73,7 @@ def score(task, turns, cook_on):
         "hosts": fetched, "local_hosts": local, "shop_hosts": shops,
         "sources_local": bool(fetched) and len(local) == len(fetched),
         "priced_at_shops": bool(shops),
-        "ingredients": n_items, "priced": n_priced, "unsourced": n_guessed,
+        "ingredients": n_items, "priced": n_priced, "unsourced": n_guessed, "per_kg": n_per_kg,
         "priced_ratio": round(n_priced / n_items, 2) if n_items else None,
         "rand_amounts": sum(scoring.rand_amounts(a) for a in answers),
         "unconfirmed_marks": sum(scoring.unconfirmed_marks(a) for a in answers),

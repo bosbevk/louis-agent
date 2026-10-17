@@ -20,6 +20,11 @@ UNCONFIRMED = re.compile(r"\b(unknown|onbekend|geskat|skatting|skattings|estimat
 HEADER = re.compile(r"^\|\s*(Item|Bestanddeel|Ingredient|Produk)\b", re.IGNORECASE)
 SEPARATOR = re.compile(r"^\|\s*:?-")
 TOTAL = re.compile(r"^\|\s*\*\*")
+# A price per kg says so (R99,99/kg, R99,99 per kg); a pack sold by weight costs a range (R87,99–R103,99, R87,99 - 103,99).
+PER_KG = re.compile(r"(/\s*kg\b|\bper\s*(kg|kilo))", re.IGNORECASE)
+RANGE = re.compile(r"\bR\s?\d[\d\s,.]*?\s*[–-]\s*R?\s?\d")
+# A product sold by weight: the shop's link ends in its unit, KG (Checkers and Shoprite: /product/…-10732975KG).
+BY_WEIGHT_LINK = re.compile(r"-\d+KG/?$")
 
 
 def _tables(answer):
@@ -47,17 +52,19 @@ def unconfirmed_marks(answer):
 
 
 def priced(answer):
-    """A list's ingredients as (priced, listed, guessed). A row is priced only with the link its price came from (the
-    cook's report links each price to its page): a rand amount without one is a guess from memory, counted apart and
-    never as priced (Louis, F31 step 11b: "the idea is to get an actual answer"). The link must be to the shop whose
+    """A list's ingredients as (priced, listed, guessed, per_kg). A row is priced only with the link its price came
+    from (the cook's report links each price to its page): a rand amount without one is a guess from memory, counted
+    apart and never as priced (Louis, F31 step 11b: "the idea is to get an actual answer"). The link must be to the shop whose
     column the price is in, or to a shop under a column that names none, so a recipe's link or another shop's is no
     source (review of PR #55); a reference-style link (`[R12,99][1]`) is its URL. An estimate mark or ± is neither. The
-    cook's own *Geprys: n van m* line is its claim, so the rows decide; (None, None, None) without a list's rows. Only
+    cook's own *Geprys: n van m* line is its claim, so the rows decide; four Nones without a list's rows. Only
     the shopping list counts: a table headed *Bestanddeel* (or Ingredient, Item, Produk), without its bold total rows;
-    the branches and what's unsure are tables too (seen in 11b's run)."""
+    the branches and what's unsure are tables too (seen in 11b's run). A price per kg is no pack's price (review of
+    PR #58: run fc7f8ecfdc87 priced a 1–1,2 kg pack of thighs at R99,99/kg): a cell that says per kg, or one amount
+    linked to a product sold by weight, whose pack costs a range, counts apart as per kg, neither priced nor guessed."""
     answer = answer or ""
     references = {label.strip().lower(): url for label, url in REFERENCE.findall(answer)}
-    listed = priced_rows = guessed = 0
+    listed = priced_rows = guessed = per_kg = 0
     for table in _tables(answer):
         if not HEADER.match(table[0]):
             continue
@@ -68,14 +75,17 @@ def priced(answer):
             listed += 1
             cells = _cells(row)
             # The first column is the ingredient; a price is sourced in its own shop's column.
-            if any(RAND.search(cell) and _sourced(cell, shops[i] if i < len(shops) else None, references)
-                   for i, cell in enumerate(cells) if i > 0):
+            sourced = [cell for i, cell in enumerate(cells) if i > 0 and RAND.search(cell)
+                       and _sourced(cell, shops[i] if i < len(shops) else None, references)]
+            if any(not _per_kg(cell, references) for cell in sourced):
                 priced_rows += 1
+            elif sourced:
+                per_kg += 1
             elif RAND.search(row) and not ESTIMATE.search(row) and "±" not in row:
                 guessed += 1
     if not listed:
-        return None, None, None
-    return priced_rows, listed, guessed
+        return None, None, None, None
+    return priced_rows, listed, guessed, per_kg
 
 
 def _cells(row):
@@ -95,9 +105,21 @@ def _is_host(url, site):
     return host == site or host.endswith("." + site)
 
 
-def _sourced(cell, shop, references):
-    """Whether a price cell links to its source: the column's shop, or any shop under a column that names none."""
+def _urls(cell, references):
+    """The links in a cell: inline ones, and reference-style ones by their label."""
     urls = INLINE_LINK.findall(cell)
     urls += [references.get((ref or text).strip().lower(), "") for text, ref in REFERENCE_LINK.findall(cell)]
+    return [url for url in urls if url]
+
+
+def _per_kg(cell, references):
+    """Whether a sourced price is a price per kg: it says so, or it's one amount for a product sold by weight."""
+    if PER_KG.search(INLINE_LINK.sub("]", cell)):   # the words, not the link (a shop's address may hold /kg)
+        return True
+    return not RANGE.search(cell) and any(BY_WEIGHT_LINK.search(urlparse(url).path) for url in _urls(cell, references))
+
+
+def _sourced(cell, shop, references):
+    """Whether a price cell links to its source: the column's shop, or any shop under a column that names none."""
     sites = [shop] if shop else list(SHOP_HOSTS.values())
-    return any(_is_host(url, site) for url in urls if url for site in sites)
+    return any(_is_host(url, site) for url in _urls(cell, references) for site in sites)

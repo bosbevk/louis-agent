@@ -1,9 +1,10 @@
 # F33 · Shop catalogues: product prices read from the shop, in code
 
-> **Status:** done (2026-10-17), on `feature/F33-shop-catalogues`: its run priced 22 of 23 ingredients with sources · **Milestone:** — · **Depends on:** F32 (the
+> **Status:** done (2026-10-17), on `feature/F33-shop-catalogues`: its run priced 22 of 23 ingredients with sources (two of them per kg, fixed after PR #58's review) · **Milestone:** — · **Depends on:** F32 (the
 > headless browser and its guards), F25 (the cook), F31 (the cook check that measures it)
 >
-> **In the TODO:** **F33 Shop catalogues** under *Tooling and repositories* ([TODO](../../TODO.md)) · **Plan:**
+> **In the TODO:** done, so its line is gone; its follow-up, **F33 follow-up: more shop catalogues**, is under
+> *Tooling and repositories* ([TODO](../../TODO.md)) · **Plan:**
 > [plans/F33](../plans/F33-shop-catalogues.md)
 
 F32 gave Puls search and page rendering with no key, and its cook check still priced nothing with a source. The cook
@@ -52,10 +53,8 @@ the run shows priced ingredients with sources.
   `puls-browser` and skip without it.
 - The cook check, run from the portal, prices ingredients at Checkers with sources, its numbers here.
 
----
-[Features](README.md) · [Plan](../plans/F33-shop-catalogues.md) · Previous: [F32 Self-hosted web](F32-self-hosted-web.md)
-
 ## What the build changed
+
 - **Step 1 (2026-10-17): the guarded browser, a seam of its own.** `Tools/Web/Browsing` holds `IWebBrowser` and
   `ChromeWebBrowser` (F32's renderer's guards, moved: the address rule on every request, no WebSockets, cancellation,
   4 pages at once), `RenderPolicy` and `RenderVerdict`; `ChromePageRenderer` is a few lines over it, its answers
@@ -87,3 +86,21 @@ the run shows priced ingredients with sources.
   no catalogue, still priced 0 of 3 with a source (2 guessed): the gain is the cook's tool. The run cost a little more
   than F32's ($0.057) for priced answers instead of none. One wording slip, "Checkers's products", became "Products at
   Checkers for …".
+- **PR #58's review (2026-10-17): a pack's price, never its price per kg.** The table's *Price* column showed a pack
+  sold by weight at its price per kg (`Beef Mince (300g - 500g) | 0.3–0.5 kg | R129.99 | R129.99/kg`), and the run's
+  answers show it reached the totals: cook-shops priced a 1–1.2 kg pack of thighs at R99.99 (it costs about
+  R100–R120), and cook-en counted R99.99/kg as a 1 kg pack; cook-af read the mince's own page instead (R71.49 for
+  450–650 g). The scorer counts a price with a source, not whether it's the pack's, so 22 of 23 overstates it: two were
+  per-kg prices. Now `ShopProduct` has `Price` and `PriceTo`, the lightest and the heaviest pack's price (per kg × the
+  pack's weight, to the cent), both null when Checkers gives no pack weight; the column is *Pack price*
+  (`R87.99–R103.99`), `-` without one. The cook writes the range and totals its upper end; its prompt says a price per
+  kg is never a pack's price. Tested on the fixture's chicken and on the mince from the run (R39.00–R65.00).
+- **The scorer, after the same review: a price per kg counts apart.** `scoring.priced` returns a fourth count,
+  `per_kg`: a sourced price whose cell says per kg (`R99,99/kg`), or one amount linked to a product sold by weight
+  (Checkers' link ends in `KG`), where a pack costs a range. Neither priced nor guessed; the portal shows it orange,
+  beside *guessed*. Tested on the run's own rows. Re-scored from the stored answers (free), run `fc7f8ecfdc87` is
+  **19 of 23 priced, 3 per kg** (cook-af 8/9, cook-en 5/7, cook-shops 6/7). The third is cook-af's mince at R71,49,
+  Checkers' page price at the pack's middle weight: one amount for a weighed pack, so strict, by design.
+
+---
+[Features](README.md) · [Plan](../plans/F33-shop-catalogues.md) · Previous: [F32 Self-hosted web](F32-self-hosted-web.md)

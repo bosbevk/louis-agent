@@ -791,6 +791,9 @@
             // A price without its source is a guess (Louis): orange, never counted as priced.
             if (c.Scores.TryGetProperty("unsourced", out var guessed) && guessed.ValueKind == JsonValueKind.Number && guessed.GetInt32() > 0)
                 yield return new Chip($"guessed {guessed.GetInt32()}", "warn");
+            // A price per kg given as a pack's (review of PR #58): sourced, but not what the pack costs.
+            if (c.Scores.TryGetProperty("per_kg", out var perKg) && perKg.ValueKind == JsonValueKind.Number && perKg.GetInt32() > 0)
+                yield return new Chip($"per kg {perKg.GetInt32()}", "warn");
         }
         if (c.Errors > 0) yield return new Chip($"errors {c.Errors}", "bad");
     }

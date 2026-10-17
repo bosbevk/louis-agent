@@ -27,6 +27,7 @@ class AMealQuestion(unittest.TestCase):
         self.assertEqual(scores["shop_hosts"], ["checkers.co.za", "pnp.co.za"])
         self.assertFalse(scores["sources_local"], "a UK recipe site isn't South African")
         self.assertEqual((scores["priced"], scores["ingredients"], scores["priced_ratio"], scores["unsourced"]), (1, 2, 0.5, 1))
+        self.assertEqual(scores["per_kg"], 0)
 
     def test_answered_by_puls_itself_is_routed_wrong_when_the_cook_was_on(self):
         scores = cook.score("cook-en", [turn("A recipe.")], cook_on=True)
