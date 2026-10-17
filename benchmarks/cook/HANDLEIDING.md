@@ -42,9 +42,10 @@ Elke gesprek kry hierdie tellings, onder sy beurte in die lopie se tabel en in d
 | `shop_hosts` | Daarvan, die winkels (Checkers, Pick n Pay, Woolworths, Spar, Shoprite, Usave) | — |
 | `sources_local` | Al die gelese werwe is Suid-Afrikaans | ja |
 | `priced_at_shops` | Ten minste een winkel se bladsy is gelees | ja |
-| `ingredients` | Hoeveel bestanddele op die lys is (die kok se eie *Geprys: n van m*-reël, anders die tabel se rye) | — |
-| `priced` | Hoeveel daarvan 'n prys het (sonder *onbekend*, *geskat* of ±) | — |
+| `ingredients` | Hoeveel bestanddele op die lys is: die tabel se rye (die kok se eie *Geprys: n van m*-reël is sy bewering, nie die telling nie) | — |
+| `priced` | Hoeveel daarvan 'n prys het **met die skakel waar dit vandaan kom**: net 'n prys met sy bron tel (F31 stap 11b: 'n prys uit die geheue is nie 'n antwoord nie) | — |
 | `priced_ratio` | `priced` gedeel deur `ingredients` | groen vanaf 0.8, rooi onder 0.5 |
+| `unsourced` | Hoeveel pryse sonder 'n skakel gegee is: geraai, uit die geheue. Dit tel nooit as geprys nie; die portaal wys dit oranje (*geskat*) | 0 |
 | `rand_amounts` | Hoeveel randbedrae die antwoorde gee | — |
 | `unconfirmed_marks` | Hoe dikwels die antwoorde *onbekend*, *geskat* of *soekindeks* sê: eerlikheid oor wat nie bevestig is nie | — |
 | `errors` | Hoeveel beurte gefaal het | 0 |
@@ -53,9 +54,9 @@ Elke gesprek kry hierdie tellings, onder sy beurte in die lopie se tabel en in d
 
 ## Wat dit kos
 
-Dit spandeer geld: elke beurt vra Claude. Een opgeneemde kokbeurt (F31, 'n pannekoekvraag) het $0.0175 gekos, 8
-versoeke op Claude Haiku 5.5. 'n Volle herhaling is 2 modes × 4 gesprekke (12 beurte); die eerste betaalde lopie
-(F31 stap 11b) se werklike koste kom hier.
+Dit spandeer geld: elke beurt vra Claude. Die eerste betaalde lopie (F31 stap 11b, `474faef30ff0`, 1 herhaling, 12
+beurte) het **$0.0446** (R0.73) gekos, 49 versoeke op Claude Haiku 5.5: `puls-only` $0.013, `puls-cook` $0.032. Maar
+daardie lopie het sonder websoektogte geloop (Tavily se krediete was op), so 'n lopie mét soektogte sal meer kos.
 
 ## Hoe om dit te lees
 

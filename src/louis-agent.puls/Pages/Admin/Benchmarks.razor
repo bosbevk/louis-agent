@@ -1,4 +1,6 @@
 @page "/admin"
+@page "/admin/benchmarks"
+@* The Afrikaans address the portal had first, so links already shared still open. *@
 @page "/admin/maatstawwe"
 @layout AdminLayout
 @using System.Net
@@ -16,21 +18,21 @@
    script's plain lines folded) and the stored runs, newest first. A reloaded page picks the live run up again: the
    finished turns from the store, the rest from the run's events. The explorer of one run is step 10. *@
 
-<PageTitle>Maatstawwe · Puls Admin</PageTitle>
+<PageTitle>Benchmarks · Puls Admin</PageTitle>
 
 <div class="page-head">
     <div>
-        <h1>Maatstawwe</h1>
-        <p>Die kontroles wat Puls meet. Elke lopie word in die stoor gehou en uit die grootboek geprys.</p>
+        <h1>Benchmarks</h1>
+        <p>The checks that measure Puls. Every run is kept in the store and priced from the ledger.</p>
     </div>
     <div class="page-actions">
         @if (_data is { } head)
         {
-            <span class="store-pill @(head.Store.Configured && head.Store.Error is null ? "up" : "down")" title="@(head.Store.Error ?? (head.Store.Configured ? "puls-mongo antwoord" : "Geen stoor nie"))">
-                <span class="dot" aria-hidden="true"></span>@(head.Store.Configured ? (head.Store.Error is null ? "stoor" : "stoor af") : "geen stoor")
+            <span class="store-pill @(head.Store.Configured && head.Store.Error is null ? "up" : "down")" title="@(head.Store.Error ?? (head.Store.Configured ? "puls-mongo answers" : "No store"))">
+                <span class="dot" aria-hidden="true"></span>@(head.Store.Configured ? (head.Store.Error is null ? "store" : "store down") : "no store")
             </span>
         }
-        <button class="header-button" type="button" @onclick="LoadAsync" disabled="@_loading"><span class="ic i-refresh" aria-hidden="true"></span>Herlaai</button>
+        <button class="header-button" type="button" @onclick="LoadAsync" disabled="@_loading"><span class="ic i-refresh" aria-hidden="true"></span>Reload</button>
     </div>
 </div>
 
@@ -40,10 +42,10 @@
         <strong>@error</strong>
         @if (_needsKey)
         {
-            <p>Die portaal se sleutel is <code>ADMIN_API_KEY</code> (of <code>AGENT_API_KEY</code>) in <code>config/.env.secrets</code>. Vul dit hier in; dit word in hierdie blaaier gehou, soos in Instellings.</p>
+            <p>The portal's key is <code>ADMIN_API_KEY</code> (or <code>AGENT_API_KEY</code>) in <code>config/.env.secrets</code>. Enter it here; it's kept in this browser, as in Settings.</p>
             <form class="admin-key" @onsubmit="SaveKeyAsync">
-                <input type="password" placeholder="die sleutel" @bind="_keyDraft" />
-                <button class="header-button" type="submit">Stoor en herlaai</button>
+                <input type="password" placeholder="the key" @bind="_keyDraft" />
+                <button class="header-button" type="submit">Save and reload</button>
             </form>
         }
     </section>
@@ -51,21 +53,21 @@
 
 @if (_loading && _data is null)
 {
-    <section class="card-p"><span class="muted">Laai…</span></section>
+    <section class="card-p"><span class="muted">Loading…</span></section>
 }
 else if (_data is { } data)
 {
     @if (!data.Store.Configured)
     {
         <section class="card-p store-banner">
-            <strong>Geen stoor nie, dus begin geen lopie nie.</strong>
-            <p>'n Betaalde lopie waarvan die uitslae verlore gaan, is die slegste uitkoms. Stel <code>BENCHMARKS_MONGO_URL</code> in <code>config/.env.secrets</code> en skep die houer weer (<code>up -d</code>).</p>
+            <strong>No store, so no run starts.</strong>
+            <p>A paid run whose results are lost is the worst outcome. Set <code>BENCHMARKS_MONGO_URL</code> in <code>config/.env.secrets</code> and recreate the container (<code>up -d</code>).</p>
         </section>
     }
     else if (data.Store.Error is { } storeError)
     {
         <section class="card-p store-banner">
-            <strong>Die stoor antwoord nie.</strong>
+            <strong>The store doesn't answer.</strong>
             <p>@storeError</p>
         </section>
     }
@@ -73,8 +75,8 @@ else if (_data is { } data)
     @* One fold for all the checks (Louis: "do not roll up 3 times, have one that rolls up them all"): folded, each card
        keeps its head (title, manual, chip) and loses its body. *@
     <div class="checks-head">
-        <span class="sidebar-label">Kontroles</span>
-        <button type="button" class="checks-toggle @(_checksOpen ? "open" : "")" aria-expanded="@_checksOpen" title="@(_checksOpen ? "Vou die kontroles op" : "Vou die kontroles oop")" @onclick="() => _checksOpen = !_checksOpen">
+        <span class="sidebar-label">Checks</span>
+        <button type="button" class="checks-toggle @(_checksOpen ? "open" : "")" aria-expanded="@_checksOpen" title="@(_checksOpen ? "Fold the checks" : "Unfold the checks")" @onclick="() => _checksOpen = !_checksOpen">
             <span class="chevron" aria-hidden="true"></span>
         </button>
     </div>
@@ -91,7 +93,7 @@ else if (_data is { } data)
                         @(last?.Total is { } t ? Cost(t.Cost) : "")
                         @if (check.Manual)
                         {
-                            <button type="button" class="manual-button" title="Die handleiding" @onclick="() => OpenManualAsync(check.Id)" @onclick:stopPropagation>Handleiding</button>
+                            <button type="button" class="manual-button" title="The manual" @onclick="() => OpenManualAsync(check.Id)" @onclick:stopPropagation>Manual</button>
                         }
                         <span class="toolset-chip">@check.Id</span>
                     </span>
@@ -99,15 +101,15 @@ else if (_data is { } data)
                 @if (_checksOpen)
                 {
                 <p class="muted"><code>@check.Script</code></p>
-                <p class="muted">@(last is null ? "Nog geen lopie in die stoor nie." : $"Laaste lopie: {last.StartedAt.ToLocalTime():yyyy-MM-dd HH:mm}, {Status(last.Status)}, {Cost(last.Total?.Cost)}")</p>
+                <p class="muted">@(last is null ? "No run in the store yet." : $"Last run: {last.StartedAt.ToLocalTime():yyyy-MM-dd HH:mm}, {Status(last.Status)}, {Cost(last.Total?.Cost)}")</p>
                 @if (_trends.TryGetValue(check.Id, out var trend))
                 {
                     <TrendChart Trend="trend" Small="true" Currency="Currency.Current" />
                 }
                 <div class="run-controls">
-                    <span class="muted">Herhalings</span>
+                    <span class="muted">Repeats</span>
                     @* A segmented control, not a native select: the browser's dropdown ignores the theme. *@
-                    <div class="segmented" role="radiogroup" aria-label="Herhalings">
+                    <div class="segmented" role="radiogroup" aria-label="Repeats">
                         @for (int n = 1; n <= 5; n++)
                         {
                             int count = n;
@@ -115,8 +117,8 @@ else if (_data is { } data)
                         }
                     </div>
                     <button class="header-button" type="button" disabled="@(Running || !CanRun(data))"
-                            title="@(check.Id == "stub" ? "Gratis: geen sessie, geen model" : "Spandeer geld: elke lopie vra die model")" @onclick="() => StartAsync(check.Id)" @onclick:stopPropagation>
-                        <span class="ic i-pulse" aria-hidden="true"></span>Loop
+                            title="@(check.Id == "stub" ? "Free: no session, no model" : "Spends money: every run asks the model")" @onclick="() => StartAsync(check.Id)" @onclick:stopPropagation>
+                        <span class="ic i-pulse" aria-hidden="true"></span>Run
                     </button>
                 </div>
                 }
@@ -132,10 +134,10 @@ else if (_data is { } data)
                 <span class="work-status">@Status(live.Status)</span>
             </div>
             <p class="muted">
-                @live.Repeat @(live.Repeat == 1 ? "herhaling" : "herhalings") · begin @live.StartedAt.ToLocalTime().ToString("HH:mm:ss")
-                @if (live.ExitCode is { } exit && exit != 0) { <span> · die skrip het met kode @exit geëindig</span> }
-                @if (live.Stored is false) { <span class="danger"> · nie alles is gestoor nie@(live.StoreError is { } se ? $": {se}" : "")</span> }
-                @if (live.Stored is true) { <span> · in die stoor</span> }
+                @live.Repeat @(live.Repeat == 1 ? "repeat" : "repeats") · started @live.StartedAt.ToLocalTime().ToString("HH:mm:ss")
+                @if (live.ExitCode is { } exit && exit != 0) { <span> · the script ended with code @exit</span> }
+                @if (live.Stored is false) { <span class="danger"> · not everything was stored@(live.StoreError is { } se ? $": {se}" : "")</span> }
+                @if (live.Stored is true) { <span> · in the store</span> }
             </p>
 
             @if (_rows.Count > 0)
@@ -143,7 +145,7 @@ else if (_data is { } data)
                 <div class="table-wrap">
                     <table class="run-table">
                         <thead>
-                            <tr><th>Mode</th><th>Gesprek</th><th>Beurt</th><th>Rol</th><th>Oproepe</th><th>Sek</th><th>Koste</th></tr>
+                            <tr><th>Mode</th><th>Conversation</th><th>Turn</th><th>Role</th><th>Calls</th><th>Sec</th><th>Cost</th></tr>
                         </thead>
                         <tbody>
                             @foreach (var group in _rows.GroupBy(r => (r.Mode, r.Repeat, r.Task)))
@@ -153,16 +155,17 @@ else if (_data is { } data)
                                     var rowKey = row.Key;
                                     <tr class="@(row == _openRow ? "selected" : "") @(row.Error is not null ? "failed" : "")" @onclick="() => OpenTurnAsync(rowKey)" style="cursor: pointer">
                                         <td>@row.Mode@(live.Repeat > 1 ? $" ·{row.Repeat}" : "")</td>
-                                        <td><code>@row.Task</code></td>
+                                        @* Louis: what was asked, beside the conversation's name; turn 2's row shows its follow-up. *@
+                                        <td class="conv-cell"><code>@row.Task</code><small title="@row.Turn.UserText">@Blurb(row.Turn.UserText)</small></td>
                                         <td>@row.N</td>
-                                        <td>@(row.Done ? (row.Role ?? (row.Continued is { } h ? $"vervolg · {h}" : "Puls self")) : "")</td>
+                                        <td>@(row.Done ? (row.Role ?? (row.Continued is { } h ? $"continued · {h}" : "Puls itself")) : "")</td>
                                         <td>@(row.Done ? $"{row.PulsCalls} · {row.SpecialistCalls}" : "")</td>
                                         <td>@(row.Done ? row.Seconds.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture) : "")</td>
                                         <td>@(row.Done ? (_costs.TryGetValue(rowKey, out var c) ? Cost(c) : "—") : "")</td>
                                     </tr>
                                     @if (!row.Done && live.Status == "running")
                                     {
-                                        <tr><td colspan="7"><span class="chip busy">tik…</span></td></tr>
+                                        <tr><td colspan="7"><span class="chip busy">typing…</span></td></tr>
                                     }
                                 }
                                 if (_scores.TryGetValue((group.Key.Mode, group.Key.Repeat, group.Key.Task), out var s))
@@ -178,12 +181,12 @@ else if (_data is { } data)
             @if (_openRow is { } open)
             {
                 <div class="tree-turn-body">
-                    <p class="muted"><code>@open.Mode · @open.Task · beurt @open.N</code></p>
+                    <p class="muted"><code>@open.Mode · @open.Task · turn @open.N</code></p>
                     <TurnView Turn="open.Turn" Streaming="@(live.Status == "running" && !open.Done)" Currency="Currency.Current" />
                 </div>
             }
 
-            <details class="admin-details" open="@(_rows.Count == 0)"><summary>Die skrip se eie reëls (@_log.Count)</summary><pre class="admin-pre run-log">@string.Join("\n", _log)</pre></details>
+            <details class="admin-details" open="@(_rows.Count == 0)"><summary>The script's own lines (@_log.Count)</summary><pre class="admin-pre run-log">@string.Join("\n", _log)</pre></details>
         </section>
     }
 
@@ -194,7 +197,7 @@ else if (_data is { } data)
             <div class="manual-head">
                 <strong>@manual.Title</strong>
                 <kbd>Esc</kbd>
-                <button type="button" class="icon" aria-label="Maak toe" @onclick="CloseManual">×</button>
+                <button type="button" class="icon" aria-label="Close" @onclick="CloseManual">×</button>
             </div>
             <div class="manual-body markdown admin-markdown">@Markdown.ToHtml(manual.Markdown)</div>
         </div>
@@ -208,16 +211,16 @@ else if (_data is { } data)
             var costs = runs.Select(r => r.Total?.Cost).Where(c => c is not null).ToList();
         }
         <div class="card-head">
-            <strong>Lopies@(chosen is null ? "" : $" · {chosen.Title}")</strong>
-            @if (chosen is not null) { <span class="muted">@runs.Count @(runs.Count == 1 ? "lopie" : "lopies")@(costs.Count > 0 ? $" · {Cost(costs.Sum())} saam" : "")</span> }
+            <strong>Runs@(chosen is null ? "" : $" · {chosen.Title}")</strong>
+            @if (chosen is not null) { <span class="muted">@runs.Count @(runs.Count == 1 ? "run" : "runs")@(costs.Count > 0 ? $" · {Cost(costs.Sum())} together" : "")</span> }
         </div>
         @if (chosen is null)
         {
-            <p class="muted">Kies 'n kontrole hierbo om sy lopies te sien.</p>
+            <p class="muted">Choose a check above to see its runs.</p>
         }
         else if (runs.Count == 0)
         {
-            <p class="muted">Nog geen lopies vir hierdie kontrole nie.</p>
+            <p class="muted">No runs for this check yet.</p>
         }
         else
         {
@@ -225,9 +228,9 @@ else if (_data is { } data)
                 @foreach (var run in runs)
                 {
                     <li class="run-row">
-                        <a class="run-row-main" href="admin/maatstawwe/@run.Id">
+                        <a class="run-row-main" href="admin/benchmarks/@run.Id">
                             <code>@run.Id</code>
-                            <small>@run.StartedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm") · @run.Repeat× · @Status(run.Status)@(run.Total is { } t ? $" · {t.Requests} versoeke" : "")@(run.StoreError is not null ? " · nie alles gestoor nie" : "")</small>
+                            <small>@run.StartedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm") · @run.Repeat× · @Status(run.Status)@(run.Total is { } t ? $" · {t.Requests} requests" : "")@(run.StoreError is not null ? " · not everything stored" : "")</small>
                         </a>
                         <strong class="run-row-cost">@Cost(run.Total?.Cost)</strong>
                     </li>
@@ -537,15 +540,16 @@ else if (_data is { } data)
     private static IEnumerable<Chip> Chips(string? role, JsonElement s)
     {
         if (s.TryGetProperty("routed_right", out var right))
-            yield return new Chip($"{role ?? "Puls self"} {(right.ValueKind == JsonValueKind.True ? "✓" : "✗")}", right.ValueKind == JsonValueKind.True ? "ok" : "bad");
+            yield return new Chip($"{role ?? "Puls itself"} {(right.ValueKind == JsonValueKind.True ? "✓" : "✗")}", right.ValueKind == JsonValueKind.True ? "ok" : "bad");
         if (Str(s, "follow_up") is { } follow) yield return new Chip(follow, follow == "continued" ? "ok" : "");
         if (Int(s, "ingredients") is { } items)
         {
             decimal ratio = Dec(s, "priced_ratio") ?? 0;
-            yield return new Chip($"geprys {Str(s, "priced")} / {items}", ratio >= 0.8m ? "ok" : ratio < 0.5m ? "bad" : "");
+            yield return new Chip($"priced {Str(s, "priced")} / {items}", ratio >= 0.8m ? "ok" : ratio < 0.5m ? "bad" : "");
+            if (Int(s, "unsourced") is > 0 and var guessed) yield return new Chip($"guessed {guessed}", "warn");
         }
         if (s.TryGetProperty("shop_hosts", out var shops) && shops.ValueKind == JsonValueKind.Array)
-            yield return new Chip($"winkels {shops.GetArrayLength()}");
+            yield return new Chip($"shops {shops.GetArrayLength()}");
         if (Int(s, "errors") is > 0 and var errors) yield return new Chip($"foute {errors}", "bad");
     }
 
@@ -591,7 +595,9 @@ else if (_data is { } data)
     private static decimal? Dec(JsonElement e, string name) =>
         e.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.Number ? v.GetDecimal() : null;
 
-    private static string Status(string status) => status switch { "running" => "besig", "done" => "klaar", _ => "misluk" };
+    private static string Blurb(string? question) => string.IsNullOrEmpty(question) ? "" : question.Length <= 70 ? question : question[..69].TrimEnd() + "…";
+
+    private static string Status(string status) => status switch { "running" => "running", "done" => "done", _ => "failed" };
 
     private readonly Dictionary<string, JsonElement> _trends = [];
 

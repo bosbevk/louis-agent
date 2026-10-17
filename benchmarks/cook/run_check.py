@@ -59,7 +59,7 @@ def score(task, turns, cook_on):
     """One conversation as numbers. A meal goes to the cook when the mode has it; otherwise, and for the control
     question, Puls answers itself. An errored first turn is never right."""
     first, follow = turns[0], (turns[1] if len(turns) > 1 else None)
-    n_priced, n_items = scoring.priced(first["answer"])
+    n_priced, n_items, n_guessed = scoring.priced(first["answer"])
     fetched = stream.hosts([c for t in turns for c in t["calls"] + t["specialist_calls"]])
     local = [h for h in fetched if h.endswith(".za")]
     shops = [h for h in fetched if h.endswith(SHOPS)]
@@ -72,7 +72,7 @@ def score(task, turns, cook_on):
         "hosts": fetched, "local_hosts": local, "shop_hosts": shops,
         "sources_local": bool(fetched) and len(local) == len(fetched),
         "priced_at_shops": bool(shops),
-        "ingredients": n_items, "priced": n_priced,
+        "ingredients": n_items, "priced": n_priced, "unsourced": n_guessed,
         "priced_ratio": round(n_priced / n_items, 2) if n_items else None,
         "rand_amounts": sum(scoring.rand_amounts(a) for a in answers),
         "unconfirmed_marks": sum(scoring.unconfirmed_marks(a) for a in answers),
@@ -139,7 +139,7 @@ def main():
                 protocol.emit("conversation", mode=mode, repeat=repeat, task=task, role=scores["role"], scores=scores,
                               errors=scores["errors"], seconds=round(time.time() - started, 1))
                 protocol.say(f"{mode:9} {task:12} repeat={repeat} role={scores['role']} routed={scores['routed_right']} "
-                             f"priced={scores['priced']}/{scores['ingredients']} follow_up={scores['follow_up']}")
+                             f"priced={scores['priced']}/{scores['ingredients']} guessed={scores['unsourced']} follow_up={scores['follow_up']}")
             protocol.emit("mode_done", mode=mode, repeat=repeat)
     protocol.say("Cook check done.")
     return 0

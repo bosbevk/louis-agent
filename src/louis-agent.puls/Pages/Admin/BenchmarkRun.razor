@@ -1,3 +1,5 @@
+@page "/admin/benchmarks/{RunId}"
+@* The Afrikaans address the portal had first, so links already shared still open. *@
 @page "/admin/maatstawwe/{RunId}"
 @layout AdminLayout
 @using System.Net
@@ -11,11 +13,11 @@
 
 @* F31 step 10: one stored run: what it ran with, and its explorer (RunExplorer), read from the benchmark store. *@
 
-<PageTitle>Lopie @RunId · Puls Admin</PageTitle>
+<PageTitle>Run @RunId · Puls Admin</PageTitle>
 
 <div class="page-head">
     <div>
-        <h1>@(_title ?? "Lopie")</h1>
+        <h1>@(_title ?? "Run")</h1>
         <p>
             <code>@RunId</code>
             @if (_run is { } head)
@@ -26,7 +28,7 @@
         </p>
     </div>
     <div class="page-actions">
-        <a class="header-button" href="admin/maatstawwe"><span class="ic i-chart" aria-hidden="true"></span>Maatstawwe</a>
+        <a class="header-button" href="admin/benchmarks"><span class="ic i-chart" aria-hidden="true"></span>Benchmarks</a>
     </div>
 </div>
 
@@ -36,14 +38,14 @@
 }
 else if (_run is null)
 {
-    <section class="card-p"><span class="muted">Laai…</span></section>
+    <section class="card-p"><span class="muted">Loading…</span></section>
 }
 else
 {
     var run = _run.Value;
     @if (S(run.GetProperty("run"), "store_error") is { } storeError)
     {
-        <section class="card-p store-banner"><strong>Nie alles van hierdie lopie is gestoor nie.</strong><p>@storeError</p></section>
+        <section class="card-p store-banner"><strong>Not all of this run was stored.</strong><p>@storeError</p></section>
     }
     @* No entrance animation on this card: a filled transform animation makes it the frame of every fixed child, so the
        explorer's chats modal would be clipped to the card and painted under the cards after it. *@
@@ -53,12 +55,14 @@ else
     @if (_trend is { } trend)
     {
         <section class="card-p">
-            <TrendChart Trend="trend" Highlight="@RunId" Labels="_labels" Currency="Currency.Current" />
+            <details class="fold" open><summary class="fold-head"><span class="fold-chevron" aria-hidden="true"></span>Trend</summary>
+                <TrendChart Trend="trend" Highlight="@RunId" Labels="_labels" ShowTitle="false" Currency="Currency.Current" />
+            </details>
         </section>
     }
     <section class="card-p">
         <details class="admin-details">
-            <summary>Waarmee dit geloop het</summary>
+            <summary>What it ran with</summary>
             <dl class="explorer-fields">
                 @if (run.TryGetProperty("settings", out var settings) && settings.ValueKind == JsonValueKind.Object)
                 {
@@ -73,7 +77,7 @@ else
         </details>
         @if (run.TryGetProperty("log", out var log) && log.ValueKind == JsonValueKind.Array)
         {
-            <details class="admin-details"><summary>Die skrip se eie reëls (@log.GetArrayLength())</summary><pre class="admin-pre run-log">@string.Join("\n", log.EnumerateArray().Select(l => l.GetString()))</pre></details>
+            <details class="admin-details"><summary>The script's own lines (@log.GetArrayLength())</summary><pre class="admin-pre run-log">@string.Join("\n", log.EnumerateArray().Select(l => l.GetString()))</pre></details>
         }
     </section>
 }
@@ -89,7 +93,7 @@ else
         run.GetProperty("turns").EnumerateArray()
             .GroupBy(t => t.GetProperty("mode").GetString()!)
             .ToDictionary(g => g.Key, g => g.Select(t => S(t, "role")).Where(r => !string.IsNullOrEmpty(r)).Distinct().ToList() is { Count: > 0 } roles
-                ? $"Puls met {string.Join(" en ", roles)}" : "Puls alleen");
+                ? $"Puls with {string.Join(" and ", roles)}" : "Puls alone");
     private string? _title, _error;
 
     protected override async Task OnParametersSetAsync()
@@ -113,7 +117,7 @@ else
         }
         catch (AgentApiException ex)
         {
-            _error = ex.Status == HttpStatusCode.NotFound ? $"Geen lopie {RunId} in die stoor nie." : ex.Message;
+            _error = ex.Status == HttpStatusCode.NotFound ? $"No run {RunId} in the store." : ex.Message;
         }
     }
 
@@ -123,12 +127,12 @@ else
 
     private static string Started(JsonElement run) => run.GetProperty("run").GetProperty("started_at").GetDateTimeOffset().ToLocalTime().ToString("yyyy-MM-dd HH:mm");
 
-    private static string Status(JsonElement run) => S(run.GetProperty("run"), "status") switch { "running" => "besig", "done" => "klaar", _ => "misluk" };
+    private static string Status(JsonElement run) => S(run.GetProperty("run"), "status") switch { "running" => "running", "done" => "done", _ => "failed" };
 
-    private static string Repeat(JsonElement run) => run.GetProperty("run").GetProperty("repeat").GetInt32() is var n && n == 1 ? "1 herhaling" : $"{n} herhalings";
+    private static string Repeat(JsonElement run) => run.GetProperty("run").GetProperty("repeat").GetInt32() is var n && n == 1 ? "1 repeat" : $"{n} repeats";
 
     private string? Total(JsonElement run) =>
         run.GetProperty("run").TryGetProperty("total", out var t) && t.ValueKind == JsonValueKind.Object
-            ? $"{(t.TryGetProperty("cost", out var c) && c.ValueKind == JsonValueKind.Number ? UsageFormat.Money(c.GetDecimal(), "USD", Currency.Current) : "—")}, {t.GetProperty("requests").GetInt32()} versoeke"
+            ? $"{(t.TryGetProperty("cost", out var c) && c.ValueKind == JsonValueKind.Number ? UsageFormat.Money(c.GetDecimal(), "USD", Currency.Current) : "—")}, {t.GetProperty("requests").GetInt32()} requests"
             : null;
 }

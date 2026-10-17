@@ -280,3 +280,62 @@ before it.
   counting up, each mode's with its dot, instead of a grey label at a bar's end; and the second way on is a button,
   *Beurte ›* or *Versoeke ›*, named for where it goes. And
   a conversation's cost no longer runs into its buttons: its bar sits in a group, as at the run level.
+  The live table's *Gesprek* column carries each turn's question under the conversation's name (Louis: "add a
+  description next to it"), so a follow-up's row says what it asked.
+- **Step 11b (2026-10-17): the first paid run** (Louis's go), the cook check, 1 repeat, run `474faef30ff0`, started
+  from the API as the page's *Loop* does. Done in 5 min 47 s, exit 0, `stored: true`. **$0.04456** (R0.73), 49
+  requests on Claude Haiku 5.5, 743,193 tokens: `puls-only` 18 requests $0.0126, `puls-cook` 31 requests $0.0320. The
+  ledger, read straight from `logs/puls/usage-2026-10.jsonl`, says the same: 49 requests (5 roll-ups skipped),
+  $0.04456. **Step 4's open point is answered for this run:** every request joined a turn (none left over), and the
+  last ledger row was written 17 ms before the run ended. **But it measured no web search:** Louis's Tavily plan was
+  out of credits, so every `WebSearch` was refused (*This request exceeds your plan's set usage limit*); Puls and
+  the cook answered from page fetches and their own knowledge. All 8 conversations were routed right, both follow-ups
+  went back to the same cook (*continued*), and the cook priced 0 of its 20 ingredients (`puls-only`'s cook-af priced
+  11 of 11 from memory, which the check counts as priced: a scoring gap to look at). This is the first run that will
+  carry its reason on record (step 11c).
+  **Accuracy per mode** (Louis: "one that shows accuracy"): a third ring chart beside cost and tokens, the
+  conversations routed right (green) and wrong (red) per mode with the share in its middle, and, where the check counts
+  ingredients, the share priced under it.
+  **A guess is not an answer** (Louis, on 11b's *geprys 11 / 11*: "this is not true, it was guessed; it should be
+  orange, not count as answered. The idea is to get an actual answer"): a price counts as priced only with the link it
+  came from; one without is `unsourced`, an orange *geskat* chip, never priced; the cook's own *Geprys: n van m* line is
+  its claim, so only the shopping list's ingredient rows count (a table headed *Bestanddeel*, without its bold total
+  rows: the branches and *Onseker* are tables too). Tests first (Python, 6). 11b's run, whose answers are in the store,
+  was rescored with the rule: Puls alone's cook-af went from 11 / 11 priced to 0 / 10 with 10 guessed; the cook's
+  three lists 0 / 4, 0 / 11, 0 / 5. **Accuracy is the answer, not the routing** (Louis on the 100 % ring: "this is not
+  true"): for a check that lists ingredients, the accuracy ring is ingredients sourced (green), guessed (orange) and
+  unknown (red), the share sourced in its middle; routing and the meals that came without a list are under it.
+  **Performance per mode**, the fourth chart (Louis): model time split Puls / specialist, the seconds per turn in its
+  middle; the four charts two by two.
+  Then (Louis: "we should keep this one and call it routing"): *Roetering per modus* is the routed-right ring, and
+  *Akkuraatheid per modus* the ingredients ring, shown only for a check that lists ingredients; five charts, three
+  across on a wide screen.
+  **Eight charts, four to a row** (Louis: a sixth from three options, then "push 4 sections into a row and fill
+  them all"): besides cost, tokens, performance, routing and accuracy, *Kas per modus* (input read from the prompt
+  cache against sent fresh, the hit share in its middle), *Gereedskap per modus* (tool calls that worked against
+  those refused or failed, the failures in its middle, the commonest reason under it) and *Waarde per modus* (the cost
+  of conversations with a real answer, routed right and, for a meal, at least 80 % priced with a source, against the
+  rest; one real answer's cost in its middle). Every ring's figure the same width, so the rings line up across the
+  charts. The tools ring is step 11c's first half, done now: `BenchmarkTools.Of` reads a turn's tool calls and
+  failures, the specialist's and a minion's too, from its stored events (3 tests first), and the run endpoint gives
+  each turn its summary, so every run has it with no backfill. 11b's run shows it: 12 of Puls alone's 23 calls and
+  28 of the cook's 46 refused, *WebSearch × 9: Error: Tavily's limit was reached*; 85 % and 82 % from the cache; one
+  conversation of four with a real answer in each mode (the prime rate).
+  **Aligned and folded** (Louis: "this must always align"; "only 3 items in a row, then the ability to roll up
+  sections"): the conversations level is one grid, a row per conversation with every mode's cell in it, so the same
+  conversation sits level across the modes, with one cost scale for both and the costs in a fixed column; the charts
+  three to a row; and the explorer's sections (*Oorsig*, *Koste per gesprek*, *Per modus*) and the run page's
+  *Tendens* each fold from their head.
+  A ninth chart to fill the rows (Louis): *Bronne per modus*, the sites each mode read pages from, South African shops,
+  other South African sites and the rest, how many different ones in its middle.
+  **Every chart explains itself** (Louis: "on hover can we explain what is good and bad and why?"): a chart's title
+  carries Puls's info icon, and hovering or focusing it opens a note of what the chart shows, what good and bad look
+  like, why it matters, and which way is better. One text per measure (`ChartInfo`), shared by the rings and the trend.
+  **The trend is the nine rings over time** (Louis: "3 rows, with 3 charts each"): `BenchmarkTrends` adds, per mode
+  and run, the tokens per repeat, seconds per turn, the cache's share of the input, the share of ingredients priced
+  with a source, the share of tool calls that failed (from the turns' stored events, `BenchmarkTools`), what one real
+  answer cost and how many sites were read; a value nobody measured stays null.
+  **The admin portal is in English** (Louis: "afrikaans is just the language puls can be configured for we use
+  english"): the portal is the builders' screen; Puls's chat keeps its configured language, and recorded questions,
+  answers and errors stay in the language they were recorded in. The addresses are `/admin/benchmarks…`, with the
+  first `/admin/maatstawwe…` kept so shared links open. The checks' manuals (`HANDLEIDING.md`) are still in Afrikaans.

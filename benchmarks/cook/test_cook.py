@@ -18,7 +18,7 @@ START = {"name": "StartSubSession", "input": {"personality": "puls-cook"}}
 
 class AMealQuestion(unittest.TestCase):
     def test_handed_to_the_cook_is_routed_right_with_its_shops_and_rating(self):
-        first = turn("Meel R22.99\nGeprys: 7 van 9 bestanddele", calls=[START], role="puls-cook",
+        first = turn("| Bestanddeel | Prys |\n|---|---|\n| Meel | [R22.99](https://www.checkers.co.za/p/1) |\n| Eiers | R45 |\n", calls=[START], role="puls-cook",
                      specialist_calls=[fetch("https://www.checkers.co.za/p/1"), fetch("https://www.pnp.co.za/p/2"), fetch("https://www.bbc.co.uk/food")])
         scores = cook.score("cook-af", [first], cook_on=True)
 
@@ -26,7 +26,7 @@ class AMealQuestion(unittest.TestCase):
         self.assertTrue(scores["routed_right"])
         self.assertEqual(scores["shop_hosts"], ["checkers.co.za", "pnp.co.za"])
         self.assertFalse(scores["sources_local"], "a UK recipe site isn't South African")
-        self.assertEqual((scores["priced"], scores["ingredients"], scores["priced_ratio"]), (7, 9, 0.78))
+        self.assertEqual((scores["priced"], scores["ingredients"], scores["priced_ratio"], scores["unsourced"]), (1, 2, 0.5, 1))
 
     def test_answered_by_puls_itself_is_routed_wrong_when_the_cook_was_on(self):
         scores = cook.score("cook-en", [turn("A recipe.")], cook_on=True)

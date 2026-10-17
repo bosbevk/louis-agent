@@ -314,3 +314,24 @@ an ephemeral-Mongo test package.
   with Esc, a click outside or its ×. Tests first: the endpoint's path stays inside `benchmarks/` and every check in the
   catalogue has a manual (C#); every score key a check's `score()` returns is named in its manual, so a new score
   can't ship unexplained (Python). By hand in Chrome.
+- **2026-10-17, during step 11b (Louis: "my web search API might be declined, I have no tokens anymore; run it, but
+  it would be nice if I could record why the run did something weird, then I can say yes, it's because of ABC"):
+  step 11c, why a run behaved as it did; *Finishing a feature* becomes 11d.** 11b's run showed it at once: Tavily's
+  monthly limit refused every `WebSearch` (*This request exceeds your plan's set usage limit*), so Puls cooked
+  without searching and the run measures that, not the cook. Two parts:
+  1. **What the run itself says, recorded without anyone looking:** the recorder counts each turn's failed tool
+     results from its stream events (`tool_result` with `is_error`, the specialist's too) and keeps them on the turn
+     with the tool and the first line of the reason (`tool_errors`); the conversation, the run and the run list show
+     the count, and the explorer shows the reasons grouped (*WebSearch × 11: Tavily's limit was reached…*). A run
+     recorded before it is filled in from its stored events, so 11b's run gets them too. Tested first on the
+     recorder (a turn with a refused search) and on the grouping.
+  2. **What a person says:** a note on a run and on a conversation (*Tavily out of credits: no web search in this
+     run*), written in the explorer, kept in the store with when it was written, shown on the run's row and as a
+     marker on its trend point, so a dip in the line carries its reason. Tested first on the store's contract (a note
+     saved and read back) and on the endpoint by hand.
+- **The admin portal in English, not Afrikaans** (Louis, 2026-10-17): the plan's *in Afrikaans like the rest of Puls*
+  no longer holds; English is the working language and Afrikaans is a language Puls is configured for and being
+  tested in. The page addresses become `/admin/benchmarks` and `/admin/benchmarks/{run}`; the old ones stay as
+  aliases. Recorded data is never translated.
+- **The trend as nine panels** (Louis, 2026-10-17): the trend endpoint carries every ring's measure, and the run page
+  shows them three to a row, each explained on hover as the rings are.

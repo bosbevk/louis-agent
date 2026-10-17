@@ -86,6 +86,40 @@ public class BenchmarkTrendTests
     }
 
     [Test]
+    public async Task EveryRingHasItsLine_TheTokensTimeCacheAccuracyToolsValueAndSites()
+    {
+        // Louis: the trend as the nine rings over the runs. One run, one mode, two meal conversations: one priced 4 of
+        // 5 with sources (a real answer), one guessed; each with a turn of 10 s reading two sites, one a shop; the
+        // first turn's search refused once of two calls.
+        await _store.SaveRunAsync(new Run("a", "cook", 1, BenchmarkRunStatus.Done, T0));
+        JsonElement S(string json) => JsonDocument.Parse(json).RootElement.Clone();
+        await _store.SaveConversationAsync("a", new Conversation(new ConversationKey("puls-cook", 1, "cook-af"), 1, "puls-cook",
+            S("""{"routed_right":true,"ingredients":5,"priced":4,"unsourced":0,"priced_ratio":0.8}"""), 0, 10));
+        await _store.SaveConversationAsync("a", new Conversation(new ConversationKey("puls-cook", 1, "cook-en"), 2, "puls-cook",
+            S("""{"routed_right":true,"ingredients":5,"priced":0,"unsourced":5,"priced_ratio":0}"""), 0, 10));
+        StreamEvent E(string type, object data) => new(type, JsonSerializer.SerializeToElement(data), null);
+        StreamEvent Use(string id) => E("content_block_start", new { content_block = new { type = "tool_use", id, name = "WebSearch", input = new { } } });
+        StreamEvent Refused(string id) => E("content_block_start", new { content_block = new { type = "tool_result", tool_use_id = id, content = "Error: limit", is_error = true } });
+        await _store.SaveTurnAsync("a", new Turn(new TurnKey("puls-cook", 1, "cook-af", 1), "s1", "?", "!", "puls-cook", null, 1, 2,
+            ["checkers.co.za", "food.com"], 10, null), [Use("u1"), Refused("u1"), Use("u2")]);
+        await _store.SaveTurnAsync("a", new Turn(new TurnKey("puls-cook", 1, "cook-en", 1), "s2", "?", "!", "puls-cook", null, 1, 0,
+            ["checkers.co.za"], 20, null), []);
+        Request R(string task, decimal cost, long input, long cached) =>
+            new("a", new TurnKey("puls-cook", 1, task, 1), T0, "turn", "s", null, "m", input, 100, cached, 0, cost, 1000);
+        await _store.AddRequestsAsync("a", [R("cook-af", 0.06m, 200, 700), R("cook-en", 0.02m, 100, 0)]);
+
+        var point = (await BenchmarkTrends.ComputeAsync(_store, "cook")).Modes.Single().Points.Single();
+
+        Assert.That(point.Tokens, Is.EqualTo(1200L), "input, output and cache, per repeat");
+        Assert.That(point.SecondsPerTurn, Is.EqualTo(15.0));
+        Assert.That(point.CacheShare, Is.EqualTo(0.7).Within(1e-9), "700 of the 1,000 input tokens from the cache");
+        Assert.That(point.Sourced, Is.EqualTo(0.4), "4 of 10 ingredients priced with a source");
+        Assert.That(point.ToolsFailed, Is.EqualTo(0.5), "one of two tool calls refused");
+        Assert.That(point.CostPerAnswer, Is.EqualTo(0.06m), "one real answer, cook-af's cost");
+        Assert.That(point.Sites, Is.EqualTo(2));
+    }
+
+    [Test]
     public async Task OnlyTheLastRuns_UpToTheLimit()
     {
         for (int h = 1; h <= 5; h++) await Run($"r{h}", "cook", hour: h, repeat: 1, BenchmarkRunStatus.Done, cookCost: 0.04m, right: 4);

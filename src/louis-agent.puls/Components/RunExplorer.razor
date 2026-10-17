@@ -16,7 +16,7 @@
     @if (_repeats > 1)
     {
         <div class="run-controls">
-            <span class="muted">Herhaling</span>
+            <span class="muted">Repeat</span>
             <div class="segmented" role="radiogroup" aria-label="Herhaling">
                 @for (int n = 1; n <= _repeats; n++)
                 {
@@ -28,21 +28,21 @@
     }
 
     <nav class="crumbs" aria-label="Pad">
-        <button type="button" class="crumb @(_level == 0 ? "here" : "")" @onclick="() => Go(0)">Lopie</button>
-        @if (_level >= 1) { <span class="crumb-sep">›</span><button type="button" class="crumb @(_level == 1 ? "here" : "")" @onclick="() => Go(1)">Gesprekke</button> }
+        <button type="button" class="crumb @(_level == 0 ? "here" : "")" @onclick="() => Go(0)">Run</button>
+        @if (_level >= 1) { <span class="crumb-sep">›</span><button type="button" class="crumb @(_level == 1 ? "here" : "")" @onclick="() => Go(1)">Conversations</button> }
         @if (_level >= 2) { <span class="crumb-sep">›</span><button type="button" class="crumb @(_level == 2 ? "here" : "")" @onclick="() => Go(2)"><code>@_task</code></button> }
         @if (_level >= 3) { <span class="crumb-sep">›</span><button type="button" class="crumb @(_level == 3 ? "here" : "")" @onclick="() => Go(3)">Beurt @_turn</button> }
-        @if (_level == 4 && _request is { } rq) { <span class="crumb-sep">›</span><span class="crumb here">@_requestMode?.Name · versoek om @rq.At.ToLocalTime().ToString("HH:mm:ss")</span> }
+        @if (_level == 4 && _request is { } rq) { <span class="crumb-sep">›</span><span class="crumb here">@_requestMode?.Name · request at @rq.At.ToLocalTime().ToString("HH:mm:ss")</span> }
         @* Louis: the chats side by side in a modal, Puls alone against Puls with its cook. *@
-        <button type="button" class="header-button chat-open" @onclick="() => OpenChatsAsync(_task)"><span class="ic i-chat" aria-hidden="true"></span>Speel gesprekke af</button>
+        <button type="button" class="header-button chat-open" @onclick="() => OpenChatsAsync(_task)"><span class="ic i-chat" aria-hidden="true"></span>Replay conversations</button>
     </nav>
 
     @if (_chatOpen)
     {
         <div class="search-backdrop" @onclick="CloseChats"></div>
-        <div class="search-dialog chats-dialog" id="chats-dialog" role="dialog" aria-modal="true" aria-label="Die gesprekke langs mekaar" tabindex="-1" @onkeydown="ChatsKey">
+        <div class="search-dialog chats-dialog" id="chats-dialog" role="dialog" aria-modal="true" aria-label="The conversations side by side" tabindex="-1" @onkeydown="ChatsKey">
             <div class="manual-head">
-                <strong>Die gesprekke langs mekaar</strong>
+                <strong>The conversations side by side</strong>
                 <div class="segmented" role="radiogroup" aria-label="Gesprek">
                     @foreach (string task in Tasks())
                     {
@@ -50,8 +50,8 @@
                         <button type="button" role="radio" aria-checked="@(_chatTask == t)" class="@(_chatTask == t ? "active" : "")" @onclick="() => OpenChatsAsync(t)">@t</button>
                     }
                 </div>
-                @if (_chatPlaying) { <span class="muted working">speel af…</span> }
-                else { <button type="button" class="header-button" @onclick="() => OpenChatsAsync(_chatTask)"><span class="ic i-pulse" aria-hidden="true"></span>Speel weer</button> }
+                @if (_chatPlaying) { <span class="muted working">replaying…</span> }
+                else { <button type="button" class="header-button" @onclick="() => OpenChatsAsync(_chatTask)"><span class="ic i-pulse" aria-hidden="true"></span>Replay again</button> }
                 <kbd>Esc</kbd>
                 <button type="button" class="icon" aria-label="Maak toe" @onclick="CloseChats">×</button>
             </div>
@@ -60,7 +60,7 @@
                 {
                     <section class="compare-col" style="--i: @i">
                         <h3 class="compare-head"><span class="sw" style="background: @Series(i)"></span>@Who(m) <code class="mode-name">@m.Name</code>
-                            <span class="muted">@(m.Conversations.FirstOrDefault(c => c.Task == _chatTask) is { } c ? $"{c.Turns.Count} beurte · {Money(c.Cost)}" : "nie in hierdie modus nie")</span></h3>
+                            <span class="muted">@(m.Conversations.FirstOrDefault(c => c.Task == _chatTask) is { } c ? $"{c.Turns.Count} turns · {Money(c.Cost)}" : "not in this mode")</span></h3>
                         @if (_chats.TryGetValue(m.Name, out var turns))
                         {
                             <div class="xreplay">
@@ -79,21 +79,25 @@
     <div class="lvl @(_dir)" @key="LevelKey">
     @if (_level == 0)
     {
+        @* Louis: every section rolls up (its head folds it), the overview, the cost per conversation and the charts. *@
+        <details class="fold" open><summary class="fold-head"><span class="fold-chevron" aria-hidden="true"></span>Overview</summary>
         <div class="tiles">
             @foreach (var (m, i) in Columns)
             {
                 <button type="button" class="tile" style="--i: @i" @onclick="() => Open(() => _level = 1)">
                     <span class="tile-label"><span class="sw" style="background: @Series(i)"></span>@Who(m)<span class="muted">· <code>@m.Name</code> · @string.Join(", ", m.Toolsets)</span></span>
                     <strong class="tile-value" data-count="@Money(m.Cost)">@Money(m.Cost)</strong>
-                    <span class="tile-meta">@m.Rows.Count versoeke · @UsageFormat.Tokens(m.Tokens) tokens · @Secs(m.Seconds) s</span>
-                    <span class="tile-meta">telling: <strong>@m.Right / @m.Conversations.Count</strong> reg gestuur@(m.Errors > 0 ? $" · {m.Errors} foute" : "")</span>
+                    <span class="tile-meta">@m.Rows.Count requests · @UsageFormat.Tokens(m.Tokens) tokens · @Secs(m.Seconds) s</span>
+                    <span class="tile-meta">score: <strong>@m.Right / @m.Conversations.Count</strong> routed right@(m.Errors > 0 ? $" · {m.Errors} errors" : "")</span>
                     <span class="tile-split"><span class="sw" style="background: @Own"></span>Puls @Money(m.Rows.Where(r => !r.Specialist).Sum(r => r.Cost ?? 0)) <span class="sw" style="background: @Spec"></span>@Roles(m) @Money(m.Rows.Where(r => r.Specialist).Sum(r => r.Cost ?? 0))</span>
                 </button>
             }
         </div>
+        </details>
 
+        <details class="fold" open><summary class="fold-head"><span class="fold-chevron" aria-hidden="true"></span>Cost per conversation</summary>
         <section class="chart">
-            <div class="chart-head"><strong>Koste per gesprek</strong><span class="legend">@foreach (var (m, i) in Columns) { <span><span class="sw" style="background: @Series(i)"></span>@Who(m)</span> }</span></div>
+            <div class="chart-head"><span class="legend">@foreach (var (m, i) in Columns) { <span><span class="sw" style="background: @Series(i)"></span>@Who(m)</span> }</span></div>
             @{ var tasks = _modes.SelectMany(m => m.Conversations.Select(c => c.Task)).Distinct().ToList(); decimal top = Math.Max(0.000001m, _modes.SelectMany(m => m.Conversations).Select(c => c.Cost).DefaultIfEmpty(0m).Max()); int row = 0; }
             <div class="xbars">
                 @foreach (string task in tasks)
@@ -124,18 +128,20 @@
                 }
             </div>
         </section>
+        </details>
 
+        <details class="fold" open><summary class="fold-head"><span class="fold-chevron" aria-hidden="true"></span>Per mode</summary>
         @* Louis: the cost per mode beside the tokens per mode. Each mode's bar is split between Puls's own requests and
            the specialist's, against the dearest mode, so the bars compare. *@
         <div class="chart-pair">
             <section class="chart">
-                <div class="chart-head"><strong>Koste per modus</strong><span class="legend"><span><span class="sw" style="background: @Own"></span>Puls self</span><span><span class="sw" style="background: @Spec"></span>@Roles()</span></span></div>
+                <div class="chart-head"><ChartInfo Topic="cost" Title="Cost per mode" /><span class="legend"><span><span class="sw" style="background: @Own"></span>Puls itself</span><span><span class="sw" style="background: @Spec"></span>@Roles()</span></span></div>
                 <div class="donuts">
                     @foreach (var (m, i) in Columns)
                     {
                         decimal own = m.Rows.Where(r => !r.Specialist).Sum(r => r.Cost ?? 0), spec = m.Rows.Where(r => r.Specialist).Sum(r => r.Cost ?? 0);
                         <figure class="donut-fig" style="--i: @i">
-                            @Ring([(double)own, (double)spec], [Own, Spec], [$"Puls {Money(own)}", $"{Roles(m)} {Money(spec)}"], Money(m.Cost), $"{m.Rows.Count} versoeke")
+                            @Ring([(double)own, (double)spec], [Own, Spec], [$"Puls {Money(own)}", $"{Roles(m)} {Money(spec)}"], Money(m.Cost), $"{m.Rows.Count} requests")
                             <figcaption><span class="sw" style="background: @Series(i)"></span>@Who(m)</figcaption>
                         </figure>
                     }
@@ -143,7 +149,7 @@
             </section>
 
             <section class="chart">
-                <div class="chart-head"><strong>Tokens per modus</strong>@TokenLegend()</div>
+                <div class="chart-head"><ChartInfo Topic="tokens" Title="Tokens per mode" />@TokenLegend()</div>
                 <div class="donuts">
                     @foreach (var (m, i) in Columns)
                     {
@@ -154,66 +160,236 @@
                     }
                 </div>
             </section>
+
+            @* Louis: a performance graph, the fourth. The model's time per mode, Puls's own requests and the specialist's,
+               the seconds a turn took on average in its middle (the turns' wall time, as the run table shows). *@
+            <section class="chart">
+                <div class="chart-head"><ChartInfo Topic="time" Title="Performance per mode" /><span class="legend"><span><span class="sw" style="background: @Own"></span>Puls itself</span><span><span class="sw" style="background: @Spec"></span>@Roles()</span></span></div>
+                <div class="donuts">
+                    @foreach (var (m, i) in Columns)
+                    {
+                        double own = m.Rows.Where(r => !r.Specialist).Sum(r => r.DurationMs) / 1000.0, spec = m.Rows.Where(r => r.Specialist).Sum(r => r.DurationMs) / 1000.0;
+                        var turns = m.Conversations.SelectMany(c => c.Turns).ToList();
+                        string perTurn = turns.Count == 0 ? "—" : $"{Secs(turns.Average(t => t.Seconds))} s";
+                        <figure class="donut-fig" style="--i: @i">
+                            @Ring([own, spec], [Own, Spec], [$"Puls {Secs(own)} s", $"{Roles(m)} {Secs(spec)} s"], perTurn, "per turn")
+                            <figcaption><span class="sw" style="background: @Series(i)"></span>@Who(m)</figcaption>
+                            <small class="muted">model @Secs(own + spec) s · @turns.Count turns</small>
+                        </figure>
+                    }
+                </div>
+            </section>
+
+            @* Louis: routing, the ring that was "accuracy" first, kept under its own name: the conversations Puls sent where
+               they should go (green) and where they shouldn't (red), the share in its middle. *@
+            <section class="chart">
+                <div class="chart-head"><ChartInfo Topic="routing" Title="Routing per mode" /><span class="legend"><span><span class="sw" style="background: @Right"></span>routed right</span><span><span class="sw" style="background: @Wrong"></span>wrong</span></span></div>
+                <div class="donuts">
+                    @foreach (var (m, i) in Columns)
+                    {
+                        int total = m.Conversations.Count, right = m.Right;
+                        <figure class="donut-fig" style="--i: @i">
+                            @Ring([right, total - right], [Right, Wrong], [$"routed right {right}", $"wrong {total - right}"],
+                                total == 0 ? "—" : $"{(double)right / total:0%}", $"{right} / {total}")
+                            <figcaption><span class="sw" style="background: @Series(i)"></span>@Who(m)</figcaption>
+                        </figure>
+                    }
+                </div>
+            </section>
+
+            @* Louis: accuracy is the answer, not the routing ("this is not true" of a 100 % ring over a run that priced
+               nothing). Where the check lists ingredients (the cook check): each priced with its source (green), guessed
+               without one (orange) or unknown (red), the share sourced in its middle, and the meals that came without a
+               list under it. A check without ingredients has routing as its accuracy, so no second ring. *@
+            @if (_modes.Any(m => Priced(m) is not null))
+            {
+                <section class="chart">
+                    <div class="chart-head"><ChartInfo Topic="accuracy" Title="Accuracy per mode" /><span class="legend"><span><span class="sw" style="background: @Right"></span>sourced</span><span><span class="sw" style="background: @Guess"></span>guessed</span><span><span class="sw" style="background: @Wrong"></span>unknown</span></span></div>
+                    <div class="donuts">
+                        @foreach (var (m, i) in Columns)
+                        {
+                            <figure class="donut-fig" style="--i: @i">
+                                @if (Priced(m) is { } priced)
+                                {
+                                    int unknown = priced.Ingredients - priced.Priced - priced.Guessed;
+                                    @Ring([priced.Priced, priced.Guessed, unknown], [Right, Guess, Wrong],
+                                        [$"sourced {priced.Priced}", $"guessed {priced.Guessed}", $"unknown {unknown}"],
+                                        $"{(double)priced.Priced / priced.Ingredients:0%}", $"{priced.Priced} / {priced.Ingredients}")
+                                }
+                                else
+                                {
+                                    @Ring([0], [Wrong], ["no list"], "—", "no list")
+                                }
+                                <figcaption><span class="sw" style="background: @Series(i)"></span>@Who(m)</figcaption>
+                                @if (Unlisted(m) is > 0 and var none) { <small class="muted">@none @(none == 1 ? "meal" : "meals") without a list</small> }
+                            </figure>
+                        }
+                    </div>
+                </section>
+            }
+
+            @* Louis: three more, to fill the rows. The cache: the input each mode read from the prompt cache against what it
+               sent fresh (F4: the biggest cost lever), the hit share in its middle. *@
+            <section class="chart">
+                <div class="chart-head"><ChartInfo Topic="cache" Title="Cache per mode" /><span class="legend"><span><span class="sw" style="background: @Series(2)"></span>from the cache</span><span><span class="sw" style="background: @Series(0)"></span>sent fresh</span></span></div>
+                <div class="donuts">
+                    @foreach (var (m, i) in Columns)
+                    {
+                        long cached = m.Rows.Sum(r => r.CacheRead ?? 0), fresh = m.Rows.Sum(r => (r.Input ?? 0) + (r.CacheWrite ?? 0));
+                        long all = cached + fresh;
+                        <figure class="donut-fig" style="--i: @i">
+                            @Ring([cached, fresh], [Series(2), Series(0)], [$"from the cache {cached:N0}", $"fresh {fresh:N0}"],
+                                all == 0 ? "—" : $"{(double)cached / all:0%}", "from the cache")
+                            <figcaption><span class="sw" style="background: @Series(i)"></span>@Who(m)</figcaption>
+                        </figure>
+                    }
+                </div>
+            </section>
+
+            @* The tools: calls that worked against those refused or failed (Puls's and the specialist's), the failures in
+               its middle and the commonest reason under it, so a run like 11b's (every search refused) shows at a glance. *@
+            <section class="chart">
+                <div class="chart-head"><ChartInfo Topic="tools" Title="Tools per mode" /><span class="legend"><span><span class="sw" style="background: @Right"></span>worked</span><span><span class="sw" style="background: @Wrong"></span>refused or failed</span></span></div>
+                <div class="donuts">
+                    @foreach (var (m, i) in Columns)
+                    {
+                        var turns = m.Conversations.SelectMany(c => c.Turns).ToList();
+                        int calls = turns.Sum(t => t.ToolCalls), failed = turns.Sum(t => t.ToolsFailed);
+                        var topReason = turns.SelectMany(t => t.ToolReasons).GroupBy(r => (r.Tool, r.Reason)).Select(g => (g.Key.Tool, g.Key.Reason, Count: g.Sum(r => r.Count)))
+                            .OrderByDescending(r => r.Count).FirstOrDefault();
+                        <figure class="donut-fig" style="--i: @i">
+                            @Ring([calls - failed, failed], [Right, Wrong], [$"gewerk {calls - failed}", $"geweier {failed}"],
+                                calls == 0 ? "—" : failed.ToString(), $"of {calls}")
+                            <figcaption><span class="sw" style="background: @Series(i)"></span>@Who(m)</figcaption>
+                            @if (topReason.Count > 0)
+                            {
+                                <small class="ring-note" title="@topReason.Reason"><strong>@topReason.Tool × @topReason.Count</strong><span class="clamp">@topReason.Reason</span></small>
+                            }
+                        </figure>
+                    }
+                </div>
+            </section>
+
+            @* Louis: a ninth, to fill the rows. The sources: the sites each mode read pages from (Puls's and the specialist's),
+               South African shops, other South African sites and the rest, how many different ones in its middle. *@
+            <section class="chart">
+                <div class="chart-head"><ChartInfo Topic="sources" Title="Sources per mode" /><span class="legend"><span><span class="sw" style="background: @Right"></span>SA shops</span><span><span class="sw" style="background: @Series(0)"></span>other SA</span><span><span class="sw" style="background: @Other"></span>elsewhere</span></span></div>
+                <div class="donuts">
+                    @foreach (var (m, i) in Columns)
+                    {
+                        var hosts = m.Conversations.SelectMany(c => c.Turns).SelectMany(t => t.Hosts).Distinct().ToList();
+                        int shops = hosts.Count(IsShop), za = hosts.Count(h => h.EndsWith(".za") && !IsShop(h)), rest = hosts.Count - shops - za;
+                        <figure class="donut-fig" style="--i: @i">
+                            @Ring([shops, za, rest], [Right, Series(0), Other], [$"SA shops {shops}", $"other SA {za}", $"elsewhere {rest}"],
+                                hosts.Count.ToString(), hosts.Count == 1 ? "site" : "sites")
+                            <figcaption><span class="sw" style="background: @Series(i)"></span>@Who(m)</figcaption>
+                            @if (hosts.Count > 0) { <small class="muted" title="@string.Join(", ", hosts)">@Blurb(string.Join(", ", hosts))</small> }
+                        </figure>
+                    }
+                </div>
+            </section>
+
+            @* The value: the cost of conversations that got a real answer (routed right, and where the check lists
+               ingredients, at least 80 % of them priced with a source) against the cost of those that didn't, what one
+               real answer cost in its middle. *@
+            <section class="chart">
+                <div class="chart-head"><ChartInfo Topic="value" Title="Value per mode" /><span class="legend"><span><span class="sw" style="background: @Right"></span>with an answer</span><span><span class="sw" style="background: @Wrong"></span>without</span></span></div>
+                <div class="donuts">
+                    @foreach (var (m, i) in Columns)
+                    {
+                        var answered = m.Conversations.Where(Answered).ToList();
+                        decimal good = answered.Sum(c => c.Cost), bad = m.Cost - good;
+                        <figure class="donut-fig" style="--i: @i">
+                            @Ring([(double)good, (double)bad], [Right, Wrong], [$"with an answer {Money(good)}", $"without {Money(bad)}"],
+                                answered.Count == 0 ? "—" : Money(good / answered.Count), answered.Count == 0 ? "no answer" : "per answer")
+                            <figcaption><span class="sw" style="background: @Series(i)"></span>@Who(m)</figcaption>
+                            <small class="muted">@answered.Count / @m.Conversations.Count with an answer</small>
+                        </figure>
+                    }
+                </div>
+            </section>
         </div>
+        </details>
     }
     else if (_level == 1)
     {
-        <div class="chart-head lead"><strong>Gesprekke</strong><span class="legend"><span><span class="sw" style="background: @Own"></span>Puls self</span><span><span class="sw" style="background: @Spec"></span>@Roles()</span></span></div>
-        <div class="compare">
+        @* One grid, a row per conversation with every mode's cell in it (Louis: "this must always align"): a row is as
+           tall as its tallest cell, so the same conversation sits level across the modes, and one scale for both
+           modes' bars, so a longer bar is a dearer conversation whichever side it is on. *@
+        <div class="chart-head lead"><strong>Conversations</strong><span class="legend"><span><span class="sw" style="background: @Own"></span>Puls itself</span><span><span class="sw" style="background: @Spec"></span>@Roles()</span></span></div>
+        var tasks = Tasks();
+        decimal topConv = Math.Max(0.000001m, _modes.SelectMany(m => m.Conversations).Select(c => c.Cost).DefaultIfEmpty(0m).Max());
+        long topTok = Math.Max(1, _modes.SelectMany(m => m.Conversations).Select(c => c.Rows.Sum(r => r.Tokens)).DefaultIfEmpty(0L).Max());
+        <div class="compare-grid" style="--cols: @_modes.Count">
             @foreach (var (m, i) in Columns)
             {
-                decimal topConv = Math.Max(0.000001m, m.Conversations.Select(c => c.Cost).DefaultIfEmpty(0m).Max());
-                long topTok = Math.Max(1, m.Conversations.Select(c => c.Rows.Sum(r => r.Tokens)).DefaultIfEmpty(0L).Max());
-                int row1 = 0, row2 = 0;
-                <section class="compare-col" style="--i: @i">
-                    <h3 class="compare-head"><span class="sw" style="background: @Series(i)"></span>@Who(m) <code class="mode-name">@m.Name</code><span class="muted">@m.Conversations.Count gesprekke · @m.Rows.Count versoeke · @Money(m.Cost)</span></h3>
-                    <section class="chart">
-                        <div class="xbars">
-                            @foreach (var c in m.Conversations)
-                            {
-                                decimal own = c.Rows.Where(r => !r.Specialist).Sum(r => r.Cost ?? 0), spec = c.Rows.Where(r => r.Specialist).Sum(r => r.Cost ?? 0);
-                                <div class="xbar-row drill" style="--i: @(row1++)">
-                                    <span class="xbar-label" title="@Question(c.Task)">
-                                        <code>@c.Task</code><small>@Blurb(Question(c.Task))</small>
-                                        <span class="tree-chips">@foreach (var chip in Chips(c)) { <span class="chip @chip.Kind">@chip.Text</span> }</span>
-                                    </span>
-                                    <span class="xbar-group">
-                                        <span class="xbar stacked" title="@($"{c.Task}: Puls {Money(own)}, {Roles(m)} {Money(spec)}")">
-                                            <span class="xbar-fill" style="width: @Pct(own, topConv)%; background: @Own"></span><span class="xbar-fill" style="width: @Pct(spec, topConv)%; background: @Spec"></span>
-                                        </span>
-                                    </span>
-                                    <span class="row-cost" data-count="@Money(c.Cost)">@Money(c.Cost)</span>
-                                    @Actions(c.Task, null)
-                                </div>
-                            }
-                        </div>
-                    </section>
-                    <section class="chart">
-                        <div class="chart-head"><strong>Tokens per gesprek</strong>@TokenLegend()</div>
-                        <div class="xbars">
-                            @foreach (var c in m.Conversations)
-                            {
-                                <div class="xbar-row" style="--i: @(row2++)">
-                                    <span class="xbar-label"><code>@c.Task</code></span>
-                                    <span class="xstack-wrap">@Stack(c.Rows, topTok)</span>
-                                    <span class="xbar-value">@UsageFormat.Tokens(c.Rows.Sum(r => r.Tokens))</span>
-                                </div>
-                            }
-                        </div>
-                    </section>
-                </section>
+                <h3 class="compare-head" style="--i: @i"><span class="sw" style="background: @Series(i)"></span>@Who(m) <code class="mode-name">@m.Name</code><span class="muted">@m.Conversations.Count conversations · @m.Rows.Count requests · @Money(m.Cost)</span></h3>
+            }
+            @foreach (var (task, row) in tasks.Select((t, r) => (t, r)))
+            {
+                foreach (var (m, i) in Columns)
+                {
+                    var c = m.Conversations.FirstOrDefault(x => x.Task == task);
+                    <div class="compare-cell" style="--i: @row">
+                        @if (c is null)
+                        {
+                            <span class="muted"><code>@task</code> · not in this mode</span>
+                        }
+                        else
+                        {
+                            decimal own = c.Rows.Where(r => !r.Specialist).Sum(r => r.Cost ?? 0), spec = c.Rows.Where(r => r.Specialist).Sum(r => r.Cost ?? 0);
+                            <div class="conv-row">
+                                <span class="xbar-label" title="@Question(c.Task)">
+                                    <code>@c.Task</code><small>@Blurb(Question(c.Task))</small>
+                                    <span class="tree-chips">@foreach (var chip in Chips(c)) { <span class="chip @chip.Kind">@chip.Text</span> }</span>
+                                </span>
+                                <span class="xbar stacked" title="@($"{c.Task}: Puls {Money(own)}, {Roles(m)} {Money(spec)}")">
+                                    <span class="xbar-fill" style="width: @Pct(own, topConv)%; background: @Own"></span><span class="xbar-fill" style="width: @Pct(spec, topConv)%; background: @Spec"></span>
+                                </span>
+                                <span class="row-cost" data-count="@Money(c.Cost)">@Money(c.Cost)</span>
+                                @Actions(c.Task, null)
+                            </div>
+                        }
+                    </div>
+                }
             }
         </div>
+
+        <section class="chart">
+            <div class="chart-head"><strong>Tokens per conversation</strong>@TokenLegend()</div>
+            <div class="compare-grid tokens" style="--cols: @_modes.Count">
+                @foreach (var (m, i) in Columns)
+                {
+                    <span class="compare-sub"><span class="sw" style="background: @Series(i)"></span>@Who(m)</span>
+                }
+                @foreach (var (task, row) in tasks.Select((t, r) => (t, r)))
+                {
+                    foreach (var (m, i) in Columns)
+                    {
+                        var c = m.Conversations.FirstOrDefault(x => x.Task == task);
+                        <div class="token-row" style="--i: @row">
+                            <code>@task</code>
+                            @if (c is not null)
+                            {
+                                <span class="xstack-wrap">@Stack(c.Rows, topTok)</span>
+                                <span class="token-total">@UsageFormat.Tokens(c.Rows.Sum(r => r.Tokens))</span>
+                            }
+                            else { <span class="muted">—</span><span></span> }
+                        </div>
+                    }
+                }
+            </div>
+        </section>
     }
     else if (_level == 2)
     {
-        <div class="chart-head lead"><strong><code>@_task</code></strong><span class="muted">@Blurb(Question(_task!))</span><span class="legend"><span><span class="sw" style="background: @Own"></span>Puls self</span><span><span class="sw" style="background: @Spec"></span>@Roles()</span></span></div>
+        <div class="chart-head lead"><strong><code>@_task</code></strong><span class="muted">@Blurb(Question(_task!))</span><span class="legend"><span><span class="sw" style="background: @Own"></span>Puls itself</span><span><span class="sw" style="background: @Spec"></span>@Roles()</span></span></div>
         <div class="compare">
             @foreach (var (m, i) in Columns)
             {
                 var c = ConversationIn(m);
                 <section class="compare-col" style="--i: @i">
-                    <h3 class="compare-head"><span class="sw" style="background: @Series(i)"></span>@Who(m) <code class="mode-name">@m.Name</code><span class="muted">@(c is null ? "nie in hierdie modus nie" : $"{c.Turns.Count} beurte · {c.Rows.Count} versoeke · {Money(c.Cost)}")</span></h3>
+                    <h3 class="compare-head"><span class="sw" style="background: @Series(i)"></span>@Who(m) <code class="mode-name">@m.Name</code><span class="muted">@(c is null ? "not in this mode" : $"{c.Turns.Count} turns · {c.Rows.Count} requests · {Money(c.Cost)}")</span></h3>
                     @if (c is not null)
                     {
                         foreach (var (tu, j) in c.Turns.Select((x, j) => (x, j)))
@@ -221,10 +397,10 @@
                             <section class="chart turn-chart" style="--i: @j">
                                 <div class="turn-head">
                                     <span class="tree-turn-n">Beurt @tu.N</span><span class="tree-question">@tu.Question</span>
-                                    <span class="chip">@(tu.Role ?? (tu.Continued is { } h ? $"vervolg · {h}" : "Puls self"))</span>
-                                    <span class="chip">@tu.Rows.Count versoeke</span><span class="chip">@Secs(tu.Seconds) s</span>
+                                    <span class="chip">@(tu.Role ?? (tu.Continued is { } h ? $"continued · {h}" : "Puls itself"))</span>
+                                    <span class="chip">@tu.Rows.Count requests</span><span class="chip">@Secs(tu.Seconds) s</span>
                                     <span class="row-cost turn-cost" data-count="@Money(tu.Cost)">@Money(tu.Cost)</span>
-                                    @if (tu.Error is not null) { <span class="chip bad" title="@tu.Error">fout</span> }
+                                    @if (tu.Error is not null) { <span class="chip bad" title="@tu.Error">error</span> }
                                     @Actions(_task!, tu.N)
                                 </div>
                                 @Timeline(tu, null)
@@ -238,17 +414,17 @@
     else if (_level == 3)
     {
         <div class="chart-head lead"><strong>Beurt @_turn</strong><span class="muted"><code>@_task</code></span>
-            <span class="legend"><span><span class="sw" style="background: @Own"></span>Puls self</span><span><span class="sw" style="background: @Spec"></span>@Roles()</span></span></div>
+            <span class="legend"><span><span class="sw" style="background: @Own"></span>Puls itself</span><span><span class="sw" style="background: @Spec"></span>@Roles()</span></span></div>
         <div class="replay-bar">
-            @if (_replaying) { <button type="button" class="header-button" @onclick="StopReplay"><span class="ic i-pulse" aria-hidden="true"></span>Stop</button><span class="muted working">speel af soos getik…</span> }
-            else { <button type="button" class="header-button" @onclick="ReplayAsync"><span class="ic i-pulse" aria-hidden="true"></span>Speel af soos getik</button> }
+            @if (_replaying) { <button type="button" class="header-button" @onclick="StopReplay"><span class="ic i-pulse" aria-hidden="true"></span>Stop</button><span class="muted working">replaying as typed…</span> }
+            else { <button type="button" class="header-button" @onclick="ReplayAsync"><span class="ic i-pulse" aria-hidden="true"></span>Replay as typed</button> }
         </div>
         <div class="compare">
             @foreach (var (m, i) in Columns)
             {
                 var tu = TurnIn(m);
                 <section class="compare-col" style="--i: @i">
-                    <h3 class="compare-head"><span class="sw" style="background: @Series(i)"></span>@Who(m) <code class="mode-name">@m.Name</code><span class="muted">@(tu is null ? "geen beurt in hierdie modus nie" : $"{Money(tu.Cost)} · {tu.Rows.Count} versoeke · {Secs(tu.Seconds)} s")</span></h3>
+                    <h3 class="compare-head"><span class="sw" style="background: @Series(i)"></span>@Who(m) <code class="mode-name">@m.Name</code><span class="muted">@(tu is null ? "no turn in this mode" : $"{Money(tu.Cost)} · {tu.Rows.Count} requests · {Secs(tu.Seconds)} s")</span></h3>
                     @if (tu is not null)
                     {
                         @Timeline(tu, r => Open(() => { _level = 4; _request = r; _requestMode = m; }))
@@ -264,18 +440,18 @@
     else if (_request is { } r)
     {
         <div class="tiles small">
-            <div class="tile" style="--i: 0"><span class="tile-label">koste</span><strong class="tile-value" data-count="@Money(r.Cost)">@Money(r.Cost)</strong></div>
+            <div class="tile" style="--i: 0"><span class="tile-label">cost</span><strong class="tile-value" data-count="@Money(r.Cost)">@Money(r.Cost)</strong></div>
             <div class="tile" style="--i: 1"><span class="tile-label">tokens</span><strong class="tile-value">@UsageFormat.Tokens(r.Tokens)</strong></div>
-            <div class="tile" style="--i: 2"><span class="tile-label">tyd</span><strong class="tile-value">@Secs(r.DurationMs / 1000.0) s</strong></div>
+            <div class="tile" style="--i: 2"><span class="tile-label">time</span><strong class="tile-value">@Secs(r.DurationMs / 1000.0) s</strong></div>
             <div class="tile" style="--i: 3"><span class="tile-label">model</span><strong class="tile-value model">@(r.Model ?? "—")</strong><span class="tile-meta">@_requestMode?.Name · @r.Purpose</span></div>
         </div>
         <section class="chart">
             <div class="chart-head"><strong>Tokens</strong>@TokenLegend()</div>
             <div class="xbars"><div class="xbar-row" style="--i: 0"><span class="xbar-label">@(r.Specialist ? (_requestMode is { } rm ? Roles(rm) : Roles()) : "Puls")</span><span class="xstack-wrap">@Stack([r], r.Tokens)</span><span class="xbar-value">@UsageFormat.Tokens(r.Tokens)</span></div></div>
             <dl class="explorer-fields">
-                <dt>invoer</dt><dd>@Count(r.Input)</dd><dt>kas geskryf</dt><dd>@Count(r.CacheWrite)</dd><dt>kas gelees</dt><dd>@Count(r.CacheRead)</dd><dt>uitvoer</dt><dd>@Count(r.Output)</dd>
-                <dt>wanneer</dt><dd>@r.At.ToLocalTime().ToString("HH:mm:ss.fff")</dd><dt>sessie</dt><dd><code>@r.Session</code></dd>
-                @if (r.Parent is { } p) { <dt>ouer</dt><dd><code>@p</code></dd> }
+                <dt>input</dt><dd>@Count(r.Input)</dd><dt>cache written</dt><dd>@Count(r.CacheWrite)</dd><dt>cache read</dt><dd>@Count(r.CacheRead)</dd><dt>output</dt><dd>@Count(r.Output)</dd>
+                <dt>when</dt><dd>@r.At.ToLocalTime().ToString("HH:mm:ss.fff")</dd><dt>session</dt><dd><code>@r.Session</code></dd>
+                @if (r.Parent is { } p) { <dt>parent</dt><dd><code>@p</code></dd> }
             </dl>
         </section>
     }
@@ -291,6 +467,13 @@
     // modes side by side. Puls's own and the specialist's requests: slot 1 and Puls's orange.
     private static readonly string[] Palette = ["#3987e5", "#d95926", "#199e70", "#c98500", "#d55181", "#008300"];
     private const string Own = "#3987e5", Spec = "#f58220";
+    // Right and wrong: Puls's own green and danger red, which read on its dark surface.
+    private const string Right = "#38b449", Wrong = "#f26b4f", Guess = "#f58220", Other = "#8a8f98";
+
+    /// <summary>The shops the cook prices at (its role's list, F25).</summary>
+    private static readonly string[] Shops = ["checkers.co.za", "pnp.co.za", "woolworths.co.za", "spar.co.za", "shoprite.co.za", "usave.co.za"];
+
+    private static bool IsShop(string host) => Shops.Any(s => host == s || host.EndsWith("." + s));
     private static string Series(int i) => Palette[i % Palette.Length];
 
     private sealed record Request(DateTimeOffset At, string Purpose, string? Session, string? Parent, string? Model,
@@ -305,6 +488,8 @@
     {
         public int N; public string Question = ""; public string? Answer, Role, Continued, Error; public double Seconds;
         public List<string> Hosts = []; public List<Request> Rows = [];
+        /// <summary>What its tools did (calls, failed, the reasons grouped), as the API read it from the stored events.</summary>
+        public int ToolCalls, ToolsFailed; public List<(string Tool, string Reason, int Count)> ToolReasons = [];
         /// <summary>The transcript before a replay: the question and the answer.</summary>
         public Turn Shown = new();
         public decimal Cost => Rows.Sum(r => r.Cost ?? 0);
@@ -383,14 +568,14 @@
     private RenderFragment Actions(string task, int? turn) => __builder =>
     {
         <span class="row-actions">
-            <button type="button" class="turn-open" @onclick="() => OpenChatsAsync(task)"><span class="ic i-chat" aria-hidden="true"></span>Speel af</button>
+            <button type="button" class="turn-open" @onclick="() => OpenChatsAsync(task)"><span class="ic i-chat" aria-hidden="true"></span>Replay</button>
             @if (turn is { } n)
             {
-                <button type="button" class="turn-open quiet" @onclick="() => Open(() => { _level = 3; _turn = n; })">Versoeke <span aria-hidden="true">›</span></button>
+                <button type="button" class="turn-open quiet" @onclick="() => Open(() => { _level = 3; _turn = n; })">Requests <span aria-hidden="true">›</span></button>
             }
             else
             {
-                <button type="button" class="turn-open quiet" @onclick="() => OpenConversation(task)">Beurte <span aria-hidden="true">›</span></button>
+                <button type="button" class="turn-open quiet" @onclick="() => OpenConversation(task)">Turns <span aria-hidden="true">›</span></button>
             }
         </span>
     };
@@ -440,6 +625,13 @@
                 Seconds = t.TryGetProperty("seconds", out var s) && s.ValueKind == JsonValueKind.Number ? s.GetDouble() : 0,
                 Hosts = t.TryGetProperty("hosts", out var h) && h.ValueKind == JsonValueKind.Array ? h.EnumerateArray().Select(x => x.GetString()!).ToList() : [],
             };
+            if (t.TryGetProperty("tools", out var tools) && tools.ValueKind == JsonValueKind.Object)
+            {
+                turn.ToolCalls = tools.GetProperty("calls").GetInt32();
+                turn.ToolsFailed = tools.GetProperty("failed").GetInt32();
+                turn.ToolReasons = tools.GetProperty("reasons").EnumerateArray()
+                    .Select(r => (r.GetProperty("tool").GetString()!, r.GetProperty("reason").GetString()!, r.GetProperty("count").GetInt32())).ToList();
+            }
             turn.Shown = new Turn { UserText = turn.Question, Error = turn.Error };
             if (turn.Answer is { Length: > 0 } answer) turn.Shown.Blocks.Add(new Block { Kind = BlockKind.Text, Text = answer });
             conversation.Turns.Add(turn);
@@ -589,14 +781,17 @@
     {
         if (c.Scores.ValueKind != JsonValueKind.Object) yield break;
         if (c.Scores.TryGetProperty("routed_right", out var right))
-            yield return new Chip($"{c.Role ?? "Puls self"} {(right.ValueKind == JsonValueKind.True ? "✓" : "✗")}", right.ValueKind == JsonValueKind.True ? "ok" : "bad");
+            yield return new Chip($"{c.Role ?? "Puls itself"} {(right.ValueKind == JsonValueKind.True ? "✓" : "✗")}", right.ValueKind == JsonValueKind.True ? "ok" : "bad");
         if (S(c.Scores, "follow_up") is { } follow) yield return new Chip(follow, follow == "continued" ? "ok" : "");
         if (c.Scores.TryGetProperty("ingredients", out var items) && items.ValueKind == JsonValueKind.Number)
         {
             decimal ratio = D(c.Scores, "priced_ratio") ?? 0;
-            yield return new Chip($"geprys {c.Scores.GetProperty("priced").GetRawText()} / {items.GetRawText()}", ratio >= 0.8m ? "ok" : ratio < 0.5m ? "bad" : "");
+            yield return new Chip($"priced {c.Scores.GetProperty("priced").GetRawText()} / {items.GetRawText()}", ratio >= 0.8m ? "ok" : ratio < 0.5m ? "bad" : "");
+            // A price without its source is a guess (Louis): orange, never counted as priced.
+            if (c.Scores.TryGetProperty("unsourced", out var guessed) && guessed.ValueKind == JsonValueKind.Number && guessed.GetInt32() > 0)
+                yield return new Chip($"guessed {guessed.GetInt32()}", "warn");
         }
-        if (c.Errors > 0) yield return new Chip($"foute {c.Errors}", "bad");
+        if (c.Errors > 0) yield return new Chip($"errors {c.Errors}", "bad");
     }
 
     /// <summary>
@@ -604,7 +799,7 @@
     /// run's own turns, or Puls alone when it handed nothing on.
     /// </summary>
     private static string Who(ModeNode m) =>
-        RolesOf(m) is { Count: > 0 } roles ? $"Puls met {string.Join(" en ", roles)}" : "Puls alleen";
+        RolesOf(m) is { Count: > 0 } roles ? $"Puls with {string.Join(" and ", roles)}" : "Puls alone";
 
     private static List<string> RolesOf(ModeNode m) =>
         m.Conversations.SelectMany(c => c.Turns).Select(t => t.Role).Where(r => !string.IsNullOrEmpty(r)).Distinct().ToList()!;
@@ -613,7 +808,38 @@
     private string Roles(ModeNode? m = null)
     {
         var roles = (m is null ? _modes.SelectMany(RolesOf) : RolesOf(m)).Distinct().ToList();
-        return roles.Count == 0 ? "spesialis" : string.Join(" / ", roles);
+        return roles.Count == 0 ? "specialist" : string.Join(" / ", roles);
+    }
+
+    /// <summary>A mode's ingredients priced over ingredients listed, summed over its conversations; null where the check counts none.</summary>
+    private static (int Priced, int Ingredients, int Guessed)? Priced(ModeNode m)
+    {
+        int priced = 0, items = 0, guessed = 0;
+        foreach (var c in m.Conversations)
+        {
+            if (c.Scores.ValueKind != JsonValueKind.Object || !c.Scores.TryGetProperty("ingredients", out var n) || n.ValueKind != JsonValueKind.Number) continue;
+            items += n.GetInt32();
+            priced += c.Scores.TryGetProperty("priced", out var p) && p.ValueKind == JsonValueKind.Number ? p.GetInt32() : 0;
+            guessed += c.Scores.TryGetProperty("unsourced", out var g) && g.ValueKind == JsonValueKind.Number ? g.GetInt32() : 0;
+        }
+        return items == 0 ? null : (priced, items, guessed);
+    }
+
+    /// <summary>A meal the check expected a list for that came without one (its ingredients unknown, not counted).</summary>
+    private static int Unlisted(ModeNode m) =>
+        m.Conversations.Count(c => c.Task.StartsWith("cook") && c.Scores.ValueKind == JsonValueKind.Object
+                                   && c.Scores.TryGetProperty("ingredients", out var n) && n.ValueKind == JsonValueKind.Null);
+
+    /// <summary>
+    /// A real answer (Louis: "the idea is to get an actual answer"): routed right, and where the check lists ingredients,
+    /// at least 80 % of them priced with their source. A meal that came without a list is no answer.
+    /// </summary>
+    private static bool Answered(ConversationNode c)
+    {
+        if (!c.Right) return false;
+        if (c.Scores.ValueKind != JsonValueKind.Object || !c.Scores.TryGetProperty("ingredients", out var n)) return true;
+        if (n.ValueKind != JsonValueKind.Number) return !c.Task.StartsWith("cook");
+        return c.Scores.TryGetProperty("priced_ratio", out var r) && r.ValueKind == JsonValueKind.Number && r.GetDouble() >= 0.8;
     }
 
     private string Money(decimal? usd) => usd is { } c ? UsageFormat.Money(c, "USD", Currency) : "—";
@@ -626,10 +852,10 @@
     /// <summary>The turn's requests on a timeline: Puls's lane and the specialist's, each a bar from its start to its end; a click opens one when <paramref name="open"/> is given.</summary>
     private RenderFragment Timeline(TurnNode turn, Action<Request>? open) => __builder =>
     {
-        if (turn.Rows.Count == 0) { <p class="muted">Geen versoeke in die grootboek nie.</p> return; }
+        if (turn.Rows.Count == 0) { <p class="muted">No requests in the ledger.</p> return; }
         var start = turn.Rows.Min(r => r.Start); double span = Math.Max(1, (turn.Rows.Max(r => r.At) - start).TotalMilliseconds);
         <div class="timeline">
-            @foreach (var (label, specialist) in new[] { ("Puls", false), (turn.Role ?? "spesialis", true) })
+            @foreach (var (label, specialist) in new[] { ("Puls", false), (turn.Role ?? "specialist", true) })
             {
                 <div class="lane">
                     <span class="lane-label"><span class="sw" style="background: @(specialist ? Spec : Own)"></span>@label</span>
@@ -654,7 +880,7 @@
         return [list.Sum(r => r.Input ?? 0), list.Sum(r => r.CacheWrite ?? 0), list.Sum(r => r.CacheRead ?? 0), list.Sum(r => r.Output ?? 0)];
     }
 
-    private static readonly string[] TokenNames = ["invoer", "kas geskryf", "kas gelees", "uitvoer"];
+    private static readonly string[] TokenNames = ["input", "cache written", "cache read", "output"];
 
     /// <summary>The four token kinds stacked, in the palette's fixed order, with a 2px surface gap; widths against <paramref name="top"/> so siblings compare.</summary>
     private static RenderFragment Stack(IEnumerable<Request> rows, long top) => __builder =>

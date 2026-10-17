@@ -58,7 +58,7 @@ internal static class AdminEndpoints
                 ? Results.Json(new { check = known.Id, title = known.Title, markdown })
                 : ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error", MessageText.Format(ApiUserText.NoManual, new { Check = check })));
 
-        // A check's trend over its finished runs (step 11a): per mode, one repeat's cost and the share routed right.
+        // A check's trend over its finished runs (step 11a): per mode, the explorer's nine rings as lines over the runs.
         admin.MapGet("/benchmarks/checks/{check}/trend", (string check, CancellationToken cancellationToken) => FromStore(store, async s =>
         {
             var trend = await BenchmarkTrends.ComputeAsync(s, check, cancellationToken: cancellationToken);
@@ -68,7 +68,12 @@ internal static class AdminEndpoints
                 modes = trend.Modes.Select(m => new
                 {
                     name = m.Name,
-                    points = m.Points.Select(p => new { run = p.Run, at = p.At, cost = p.Cost, score = p.Score, conversations = p.Conversations }),
+                    points = m.Points.Select(p => new
+                    {
+                        run = p.Run, at = p.At, cost = p.Cost, score = p.Score, conversations = p.Conversations,
+                        tokens = p.Tokens, seconds_per_turn = p.SecondsPerTurn, cache_share = p.CacheShare, sourced = p.Sourced,
+                        tools_failed = p.ToolsFailed, cost_per_answer = p.CostPerAnswer, sites = p.Sites,
+                    }),
                 }),
             });
         }));
@@ -80,7 +85,8 @@ internal static class AdminEndpoints
             var conversations = await s.ConversationsAsync(id, cancellationToken);
             var turns = new List<object>();
             foreach (var conversation in conversations)
-                turns.AddRange((await s.TurnsAsync(id, conversation.Key, cancellationToken)).Select(TurnRow));
+                foreach (var turn in await s.TurnsAsync(id, conversation.Key, cancellationToken))
+                    turns.Add(TurnRow(turn, BenchmarkTools.Of(await s.TurnEventsAsync(id, turn.Key, cancellationToken))));
             var requests = await s.RequestsAsync(id, cancellationToken);
             return Results.Json(new
             {
@@ -180,8 +186,10 @@ internal static class AdminEndpoints
         errors = c.Errors, seconds = c.Seconds,
     };
 
-    private static object TurnRow(BenchmarkDocuments.Turn t) => new
+    /// <summary>A turn, with what its tools did, read from its stored events (step 11c's first half): every run has it.</summary>
+    private static object TurnRow(BenchmarkDocuments.Turn t, BenchmarkTools.Summary tools) => new
     {
+        tools = new { calls = tools.Calls, failed = tools.Failed, reasons = tools.Reasons.Select(r => new { tool = r.Tool, reason = r.Reason, count = r.Count }) },
         mode = t.Key.Mode, repeat = t.Key.Repeat, task = t.Key.Task, turn = t.Key.Turn, session = t.Session, question = t.Question,
         answer = t.Answer, role = t.Role, continued = t.Continued, puls_calls = t.PulsCalls, specialist_calls = t.SpecialistCalls,
         hosts = t.Hosts, seconds = t.Seconds, error = t.Error,
