@@ -43,6 +43,7 @@ logs/
 config/.env
 config/.env.secrets
 config/.env.mongo
+config/.env.searxng
 config/.env.secrets.local
 config/.env.local
 

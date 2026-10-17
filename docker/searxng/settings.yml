@@ -1,0 +1,38 @@
+# F32: the SearXNG we run for development, tests and benchmarks; never the sold endpoint's search (ADR 0023: the
+# engines it asks don't license their results). Mounted read-only into puls-searxng. SearXNG's defaults, then only
+# what Puls needs changed: JSON answers, no limiter (it's ours, not a public instance), and the engines it may ask.
+use_default_settings:
+  engines:
+    keep_only:
+      - bing
+      - brave
+      - duckduckgo
+      - google
+      - qwant
+      - wikipedia
+
+# Bing, Google and Qwant are off in SearXNG's defaults; keeping them doesn't switch them on. (Mojeek and Startpage were
+# planned too, but this version marks both inactive: they now ask for a proof-of-work CAPTCHA.)
+engines:
+  - name: bing
+    disabled: false
+  - name: google
+    disabled: false
+  - name: qwant
+    disabled: false
+
+general:
+  instance_name: "puls-searxng"
+
+search:
+  # format=json is refused (403) unless it's listed here.
+  formats:
+    - html
+    - json
+
+server:
+  # SEARXNG_SECRET (config/.env.searxng) replaces this; SearXNG won't start on the template's default.
+  secret_key: "replaced-by-SEARXNG_SECRET"
+  limiter: false
+  public_instance: false
+  image_proxy: false

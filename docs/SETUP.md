@@ -19,6 +19,8 @@ templates.
 | `config/.env.secrets.example` | ✅ tracked | Template listing every secret |
 | `config/.env.mongo` | ❌ git-ignored | The benchmark store's root user, read only by `puls-mongo` (F31) |
 | `config/.env.mongo.example` | ✅ tracked | Template for `config/.env.mongo` |
+| `config/.env.searxng` | ❌ git-ignored | The secret of the SearXNG we run, read only by `puls-searxng` (F32) |
+| `config/.env.searxng.example` | ✅ tracked | Template for `config/.env.searxng` |
 | `config/rider-acp.example.json` | ✅ tracked | Rider agent-server entry for the ACP server (replace `C:\path\to`) |
 | `config/.rider-mcp-servers.json` | ✅ tracked | MCP client entry for the MCP server (replace `C:\path\to`) |
 
@@ -86,7 +88,10 @@ docker compose -f docker/docker-compose.yml --env-file config/.env up -d --build
 | `PULS_PORT`, `PULS_CODER_PORT`, `PULS_WORKSPACE` | Puls (`docker/docker-compose.puls.yml`): its port (default `5070`), its specialist's (`5071`), both bound to `127.0.0.1`, and the folder mounted as its workspace (default the repo) |
 | `PULS_MONGO_PORT`, `BENCHMARKS_MONGO_DATABASE` | The benchmark store (F31): `puls-mongo`'s host port (default `27017`, on `127.0.0.1`) and its database (default `puls_benchmarks`; the Mongo contract tests use `puls_benchmarks_test`) |
 | `MCP_TRANSPORT`, `MCP_PORT` | MCP server transport: `stdio` (default) or `http`; host port in HTTP mode (default `5090`, bound to `127.0.0.1`) |
-| `WEB_SEARCH_PROVIDER` | `tavily`, `google` or `duckduckgo` (default: Tavily when `TAVILY_API_KEY` is set, else Google when its key and engine id are, else DuckDuckGo) |
+| `WEB_SEARCH_PROVIDER` | `tavily`, `google`, `searxng` or `duckduckgo` (default: Tavily when `TAVILY_API_KEY` is set, else Google when its key and engine id are, else SearXNG when `SEARXNG_URL` is, else DuckDuckGo). SearXNG is for development and benchmarks only (ADR 0023) |
+| `SEARXNG_URL` | The SearXNG we run (F32): `http://puls-searxng:8080` in the Puls stack (set there); from the host, for its live tests, `http://127.0.0.1:8888` |
+| `PAGE_RENDERER` | `chrome` or `tavily`, for `ReadRenderedPage` (default: Chrome when `BROWSER_URL` is set, else Tavily when its key is) |
+| `BROWSER_URL` | The headless Chrome we run (F32): `http://puls-browser:9222` in the Puls stack (set there); from the host, for its live tests, `http://127.0.0.1:9222` |
 | `DEVOPS_ORGANIZATION`, `DEVOPS_PROJECT` | Azure DevOps organisation (`dev.azure.com/<organisation>`) and project for the DevOps tools |
 | `DEVOPS_TEAM` | Optional team: sprints are looked up under it, and an empty sprint means its current sprint |
 | `USAGE_LEDGER` | `on` (default) records every model request's tokens and cost to `{LOG_DIRECTORY}/usage-YYYY-MM.jsonl`; `off` disables it, and with it every usage line (CLI, web app, Rider, the API's `usage` fields, the comms log's costs): `/usage` then says usage isn't tracked. No `LOG_DIRECTORY` has the same effect |
@@ -127,7 +132,7 @@ environment by the tools themselves:
 | `ADMIN_API_KEY` | The admin portal's key (`/admin`, Puls's *Admin* menu); falls back to `AGENT_API_KEY`; with neither the portal is closed |
 | `MONGO_INITDB_ROOT_USERNAME`, `MONGO_INITDB_ROOT_PASSWORD` | In `config/.env.mongo`, not here: the benchmark store's root user (`puls-mongo`, F31), created the first time it starts with an empty `data/mongo`; changing them later needs the folder emptied. Their own file, so the database container never sees the other keys |
 | `BENCHMARKS_MONGO_URL` | How Puls reaches the benchmark store: `mongodb://{user}:{password}@puls-mongo:27017/?authSource=admin` (the service name). From the host, for the Mongo contract tests, the same with `127.0.0.1`, set in the shell. Without it the portal starts no runs |
-| `TAVILY_API_KEY` | Tavily web search (1,000 free credits a month; the default once set) and `ReadRenderedPage`, which renders JavaScript pages through Tavily Extract (two credits per five pages) |
+| `TAVILY_API_KEY` | Tavily web search (1,000 free credits a month; the default once set, and the sold endpoint's search) and, with `PAGE_RENDERER=tavily` or no `BROWSER_URL`, `ReadRenderedPage` through Tavily Extract (two credits per five pages) |
 | `GOOGLE_SEARCH_API_KEY`, `GOOGLE_SEARCH_ENGINE_ID` | Google web search (discontinued by Google on 2027-01-01; otherwise DuckDuckGo) |
 | `RIDER_MCP_PROJECT_PATH` | Host path of the project, sent to Rider's MCP server |
 

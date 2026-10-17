@@ -256,8 +256,15 @@ Design: [docs/specs/SESSION_ARCHITECTURE.md](docs/specs/SESSION_ARCHITECTURE.md)
 - [ ] [F32 Self-hosted web](docs/features/F32-self-hosted-web.md) — `WebSearch` through SearXNG in Docker and pages
       drawn with JavaScript rendered by a headless Chrome (PuppeteerSharp), every request it makes held to the address
       rule, so development and the benchmarks search and read any page with no key and no credits; the sold endpoint
-      keeps a licensed search API (Tavily) ([plan](docs/plans/F32-self-hosted-web.md)). Planned 2026-10-17, after
-      Tavily's credits ran out in F31's paid run.
+      keeps a licensed search API (Tavily) ([plan](docs/plans/F32-self-hosted-web.md)). Built 2026-10-17; open: the
+      cook check's baseline run from the portal (paid, Louis's go), then *Finishing a feature*.
+- [ ] **CL12 Integrations by role** (cleanup, to plan after F32; Louis: "this should also be interfaced", then "it would
+      not follow the same pattern as Web"): the integrations laid out as the web seams are, a contract per role at the top
+      and its vendors in `Providers/`: `Tools/Integrations/TimeTracking/` (`ITimeTracker`; Paymo) and `WorkItems/`
+      (`IWorkItemTracker`; Azure DevOps), the shared HTTP, Basic auth, error and JSON plumbing in one place
+      (`IntegrationClient`, or a `DelegatingHandler`: the plan weighs both), the tool classes using only the role
+      contracts, the choice of vendor an enum (ADR 0024). The toolset names (`paymo`, `devops`) stay unless the plan
+      decides otherwise.
 - [ ] **Choices still made by string** (cleanup; ADR 0024, F32 step 1b): make each an enum parsed once with
       `SettingChoice` when it's next touched: the LLM provider (`LlmOptions.Provider`, `"anthropic"`), the rates format
       (`RatesMappers.For`), a skill's script language (`SkillTools`, `AgentBuiltTools`, `MarkdownSkillLoader`), the MCP

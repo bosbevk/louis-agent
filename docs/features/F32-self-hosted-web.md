@@ -88,3 +88,14 @@ priced with sources, and what it cost.
   Woolworths' pages give nothing even rendered, so it prices them from search results. That was Tavily Extract's
   result; the Chrome renderer read 37 prices off Pick n Pay's search page. Whether to let the cook render them is a
   change to how it works, for the baseline run to inform, not a wording fix.
+- **Step 4: the containers, and a gap the interception left.** `puls-searxng` and `puls-browser` run in the Puls stack
+  on a `web` network with `puls` and `puls-agent`, never with `puls-mongo`, both pinned by digest; SearXNG reads only
+  its own secret (`config/.env.searxng`, the pattern of the review of PR #55). **WebSockets:** request interception
+  doesn't see them, and neither does Chrome's URL blocking (`Network.setBlockedURLs`, tried first: the live test still
+  opened a socket); so before a page's own scripts, in every frame, `WebSocket` refuses to be made, and the live test
+  now reads `socket-blocked`. What's left is a Web Worker's socket: a blind GET to `puls` or `puls-agent`, whose GET
+  endpoints change nothing, and no route to the database. **Engines:** SearXNG's defaults switch Bing, Google and Qwant
+  off, so the settings switch them on; Mojeek and Startpage, planned, are inactive in this version (they ask for a
+  proof-of-work CAPTCHA). From Louis's IP on the day, **only Bing answered** (Google and Qwant *access denied*, Brave
+  *too many requests*, DuckDuckGo *CAPTCHA*), each named with its reason: enough for 9 results with Pick n Pay's pages,
+  but one engine is thin, so a benchmark on it says which provider it searched with.

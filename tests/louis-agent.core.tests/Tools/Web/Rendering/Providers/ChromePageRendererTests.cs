@@ -35,6 +35,23 @@ public class ChromePageRendererTests
     }
 
     [Test, Category("Live")]
+    public async Task APagesWebSocket_IsBlocked()
+    {
+        // F32 step 4: request interception doesn't see WebSockets, and the browser shares a network with puls, so a
+        // page could open one to an internal address. Every ws:// and wss:// is blocked; a public echo server stands
+        // in for any address, so the test tells "blocked" from "couldn't connect anyway".
+        const string html = "<body>waiting</body><script>try { const w = new WebSocket('wss://echo.websocket.org');" +
+                            "w.onopen = () => document.body.textContent = 'socket-open';" +
+                            "w.onerror = () => document.body.textContent = 'socket-blocked'; }" +
+                            "catch { document.body.textContent = 'socket-blocked'; }" +
+                            // A slow request keeps the network busy, so the page is read after the socket's outcome.
+                            "fetch('https://httpbin.org/delay/3');</script>";
+        var page = await Live().RenderAsync(new Uri("data:text/html," + Uri.EscapeDataString(html)));
+
+        Assert.That(page.Text, Does.Contain("socket-blocked").And.Not.Contain("socket-open"));
+    }
+
+    [Test, Category("Live")]
     public void ARedirectToAnInternalAddress_IsRefusedInsideTheBrowser()
     {
         var renderer = Live();

@@ -25,6 +25,11 @@ public sealed class ChromePageRenderer(Uri browserUrl, Func<string, Cancellation
     private static readonly TimeSpan Settle = TimeSpan.FromSeconds(10);
     private static readonly ILogger Log = AgentLogging.For<ChromePageRenderer>();
 
+    /// <summary>Runs before a page's scripts in every frame: a WebSocket can't be made.</summary>
+    private const string NoWebSockets =
+        "Object.defineProperty(globalThis, 'WebSocket', { value: function () { throw new Error('WebSocket is blocked'); }, " +
+        "writable: false, configurable: false });";
+
     private readonly Func<string, CancellationToken, Task<IPAddress[]>> _resolve = resolve ?? ((host, ct) => Dns.GetHostAddressesAsync(host, ct));
 
     public string Name => "Chrome";
@@ -75,6 +80,10 @@ public sealed class ChromePageRenderer(Uri browserUrl, Func<string, Cancellation
     {
         await using var page = await browser.NewPageAsync();
         string? refusedPage = null;
+        // Request interception doesn't see WebSockets (nor does Chrome's URL blocking), and the browser shares a network
+        // with puls (step 4), so a page could open one to an internal address. No shop needs one for its prices: before
+        // any of the page's own scripts, in every frame, WebSocket refuses to be made.
+        await page.EvaluateExpressionOnNewDocumentAsync(NoWebSockets);
         await page.SetRequestInterceptionAsync(true);
         page.Request += async (_, e) =>
         {

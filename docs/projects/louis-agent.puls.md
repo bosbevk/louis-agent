@@ -62,7 +62,11 @@ as you go: every answer shows what it cost, specialists included.
 ## Configuration
 
 None of its own: the API it's served by holds the settings (`AGENT_PEERS` names `puls-agent`). The compose file runs
-`puls` (5070, the app and its API) and `puls-agent` (5071, the specialists' API, no peers of its own).
+`puls` (5070, the app and its API), `puls-agent` (5071, the specialists' API; its one peer is itself, for the minions,
+F30), `puls-mongo` (the benchmark store, F31) and, on their own `web` network with `puls` and `puls-agent` (F32),
+`puls-searxng` (8888: the search we run, for development and benchmarks; settings in `docker/searxng/settings.yml`, its
+secret in `config/.env.searxng`) and `puls-browser` (9222: the headless Chrome that renders pages). Both images are
+pinned by digest.
 
 ## Extending it
 
