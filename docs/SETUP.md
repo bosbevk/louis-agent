@@ -17,6 +17,8 @@ templates.
 | `config/prices.json` | ✅ tracked | Model prices per million tokens for the usage ledger's costs; update it (and its `as_of`) when prices change |
 | `config/.env.secrets` | ❌ git-ignored | Your API keys and other secrets |
 | `config/.env.secrets.example` | ✅ tracked | Template listing every secret |
+| `config/.env.mongo` | ❌ git-ignored | The benchmark store's root user, read only by `puls-mongo` (F31) |
+| `config/.env.mongo.example` | ✅ tracked | Template for `config/.env.mongo` |
 | `config/rider-acp.example.json` | ✅ tracked | Rider agent-server entry for the ACP server (replace `C:\path\to`) |
 | `config/.rider-mcp-servers.json` | ✅ tracked | MCP client entry for the MCP server (replace `C:\path\to`) |
 
@@ -123,7 +125,7 @@ environment by the tools themselves:
 | `PAYMO_API_KEY` | Enables the Paymo tools |
 | `DEVOPS_API_KEY` | Azure DevOps personal access token; enables the DevOps tools (with the settings below) |
 | `ADMIN_API_KEY` | The admin portal's key (`/admin`, Puls's *Admin* menu); falls back to `AGENT_API_KEY`; with neither the portal is closed |
-| `MONGO_INITDB_ROOT_USERNAME`, `MONGO_INITDB_ROOT_PASSWORD` | The benchmark store's root user (`puls-mongo`, F31), created the first time it starts with an empty `data/mongo`; changing them later needs the folder emptied |
+| `MONGO_INITDB_ROOT_USERNAME`, `MONGO_INITDB_ROOT_PASSWORD` | In `config/.env.mongo`, not here: the benchmark store's root user (`puls-mongo`, F31), created the first time it starts with an empty `data/mongo`; changing them later needs the folder emptied. Their own file, so the database container never sees the other keys |
 | `BENCHMARKS_MONGO_URL` | How Puls reaches the benchmark store: `mongodb://{user}:{password}@puls-mongo:27017/?authSource=admin` (the service name). From the host, for the Mongo contract tests, the same with `127.0.0.1`, set in the shell. Without it the portal starts no runs |
 | `TAVILY_API_KEY` | Tavily web search (1,000 free credits a month; the default once set) and `ReadRenderedPage`, which renders JavaScript pages through Tavily Extract (two credits per five pages) |
 | `GOOGLE_SEARCH_API_KEY`, `GOOGLE_SEARCH_ENGINE_ID` | Google web search (discontinued by Google on 2027-01-01; otherwise DuckDuckGo) |

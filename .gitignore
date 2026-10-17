@@ -42,6 +42,7 @@ data/
 # Secrets and local configuration (see config/.env.secrets.example)
 config/.env
 config/.env.secrets
+config/.env.mongo
 config/.env.secrets.local
 config/.env.local
 
