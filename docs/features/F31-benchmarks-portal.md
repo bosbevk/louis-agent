@@ -104,3 +104,10 @@ before it.
   the check's order in MongoDB. A request's tokens and cost stay null when the ledger doesn't know them (FX9, an
   unpriced model), never 0. The contract (`BenchmarkStoreContract`, 13 tests) gives every test its own run ids and
   check name, so step 5c runs it on a shared database unchanged.
+- **Step 3 (2026-10-17): the recorder** (`BenchmarkRecorder.RecordAsync(run, settings)`). It listens before its first
+  write, so no line printed meanwhile is lost, and a run that already ended is recorded whole. It writes the run when it
+  starts and at each mode, a conversation at its first question (its `Order`, no scores yet) and again when it ends, a
+  turn with its events when it ends; the plain lines become the run's `log`, written when the run ends. A turn the run
+  cut off is kept with its question, its events and the error `BenchmarkTurnCutOff`. An unknown protocol version is
+  said in the log and the run is still read. A store that fails stops every later write but the run's last one, which
+  carries `store_error`; the run itself never waits on it. `Total` stays empty until step 4.

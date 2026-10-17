@@ -10,4 +10,7 @@ public enum ApiLogMessage
 
     [Description("Turn failed in {Session}")]
     TurnFailed,
+
+    [Description("Benchmark run {Run}: the store failed, so recording stopped; the run goes on")]
+    BenchmarkStoreFailed,
 }

@@ -103,4 +103,13 @@ public enum ApiUserText
 
     [Description("No run in progress.")]
     NoBenchmarkRun,
+
+    [Description("The run ended before this turn did.")]
+    BenchmarkTurnCutOff,
+
+    [Description("The store stopped taking writes ({Reason}): what came after isn't kept, but the run went on.")]
+    BenchmarkStoreFailed,
+
+    [Description("The check speaks protocol {Version} and this API reads {Supported}: lines it doesn't know are kept as the log.")]
+    BenchmarkProtocolUnknown,
 }
