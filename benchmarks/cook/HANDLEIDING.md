@@ -43,7 +43,7 @@ Elke gesprek kry hierdie tellings, onder sy beurte in die lopie se tabel en in d
 | `sources_local` | Al die gelese werwe is Suid-Afrikaans | ja |
 | `priced_at_shops` | Ten minste een winkel se bladsy is gelees, of sy katalogus gevra met 'n winkelinstrument (F34) | ja, waar daar 'n Checkers is |
 | `shop_tool_calls` | Hoeveel keer die kok 'n winkelinstrument gebruik het (`FindProducts`, `SearchSpecials`, `SearchPromotions`, F34) | meer as 0 waar daar 'n Checkers is |
-| `deal_tool_calls` | Daarvan, `SearchSpecials` en `SearchPromotions`: na spesiale gesoek | meer as 0 by die begrotingsvraag (`cook-malmesbury`) |
+| `deal_tool_calls` | Daarvan, `SearchSpecials` en `SearchPromotions`: na spesiale gesoek | meer as 0 by elke ete met 'n winkelhulpmiddel: die kok soek eers spesiale |
 | `deals_named` | Hoeveel rye op die lys 'n spesiaal langs die prys noem (`· BUY 2 FOR R45`, `SAVE`) | — |
 | `untooled_shops` | Hoeveel winkels die lys prys waarvoor die kok geen instrument het nie (Louis, F34: net winkels met 'n instrument). Die portaal wys dit rooi | 0 |
 | `store_for_area` | Hoeveel van die kok se winkelsoektogte die winkel beantwoord het wat die gebruiker se dorp bedien: die instrument se eerste reël noem die winkel, nagegaan teen Checkers se eie winkel-id (Louis: "hoe weet ons die adres is gebruik?") | meer as 0 in Malmesbury |

@@ -250,7 +250,7 @@ public class RoleCatalogTests
         Assert.That(cook, Does.Contain("*Uit die voorraadkas: kookolie, sout en peper.*"));
         // Louis: "can we have a product image": the photo FindProducts gives, before the name; never another image.
         Assert.That(cook, Does.Contain("![KOO Chakalaka](https://catalog.sixty60.co.za/…) KOO Chakalaka Mild 410 g"));
-        Assert.That(cook, Does.Contain("only an image `FindProducts` gave"));
+        Assert.That(cook, Does.Contain("only an image a shop tool gave"));
         // Louis: the recipe needed under 1 kg of maize meal and the cook priced the 2.5 kg pack, with a 1 kg one on the shelf.
         Assert.That(cook, Does.Contain("the smallest pack that covers what the recipe needs"));
         // Louis: "there is a checkers in malmesbury so why is puls not picking it up". "supermarkets in Malmesbury" on
@@ -291,6 +291,32 @@ public class RoleCatalogTests
         Assert.That(cook, Does.Contain("nominatim.openstreetmap.org/search").And.Contain("Don't fetch"));
         // Louis: a rating, how many ingredients got a price. The cook states it in a fixed line the check reads.
         Assert.That(cook, Does.Contain("Geprys: {n} van {m} bestanddele"));
+    }
+
+    // Louis's chats of 2026-10-18 (R100, R75, R50 for Malmesbury): about 40 shop searches, one SearchSpecials, after
+    // the list was priced. "the cook should probably search for deals or specials first". The rice was searched as
+    // `long grain rice 1kg` for 300 g, so the 500 g pack never showed: "the size must agree with the recipe". A brief
+    // with no number of people got a meal for two: "it also assumed 2 people, i meant 1", then "the cook must always
+    // know how many people it is for", and, asked how: "Puls asks first".
+    [Test]
+    public void TheCook_LooksForDealsFirst_InPacksTheRecipeNeeds_ForAsManyPeopleAsPulsAsked()
+    {
+        string cook = SkillFileSource.ReadEmbedded("specialists/puls-cook.md")!;
+        string shops = SkillFileSource.ReadEmbedded("toolsets/shops.md")!;
+        string guide = SkillFileSource.ReadEmbedded("toolsets/specialists.md")!;
+
+        Assert.That(cook, Does.Contain("Deals first, for every meal"));
+        Assert.That(cook, Does.Not.Contain("when cost matters"), "not only for a budget");
+        Assert.That(shops, Does.Contain("Look for deals first"));
+        Assert.That(cook, Does.Contain("a deal product that fits a row is that row"), "no second search for it");
+
+        Assert.That(cook, Does.Contain("the size the recipe needs").And.Not.Contain("`chakalaka 410g`"));
+        Assert.That(shops, Does.Contain("the size the recipe needs"));
+
+        Assert.That(guide, Does.Contain("**Vir hoeveel:**").And.Contain("**Serves:**"), "its own line in every meal's brief");
+        Assert.That(guide, Does.Contain("Vir hoeveel mense kook jy?"), "Puls asks first, never a guess");
+        Assert.That(SkillFileSource.ReadEmbedded("agent/puls/voice.md")!, Does.Contain("ask how many people first"));
+        Assert.That(cook, Does.Contain("cook for exactly that many").And.Not.Contain("cook for one"));
     }
 
     [Test]
@@ -417,7 +443,7 @@ public class RoleCatalogTests
         string router = SkillFileSource.ReadEmbedded("agent/puls/voice.md")!;
 
         Assert.That(agents, Does.Contain("## Briefing the specialist"));
-        foreach (string label in new[] { "**Vir:**", "**Wil hê:**", "**Klink:**", "**Waar:**", "**Reeds gesê:**", "**For:**", "**Wants:**", "**Sounds:**", "**Where:**", "**Already said:**" })
+        foreach (string label in new[] { "**Vir:**", "**Wil hê:**", "**Vir hoeveel:**", "**Klink:**", "**Waar:**", "**Reeds gesê:**", "**For:**", "**Wants:**", "**Serves:**", "**Sounds:**", "**Where:**", "**Already said:**" })
             Assert.That(agents, Does.Contain(label), "the note's labels, in both languages");
         Assert.That(agents, Does.Contain("a guess from the typing").And.Contain("never a diagnosis"), "the guard rails");
         Assert.That(agents, Does.Contain("neutraal"), "when the typing says nothing");

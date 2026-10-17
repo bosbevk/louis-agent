@@ -116,6 +116,13 @@ prices.
   about 17 KB against 15 KB), on the same allowlisted host, so the dialog loads nothing the list couldn't.
 - **The footer isn't the answer (2026-10-18).** Puls copied `[Sub-session sub-1 on puls (web; puls-cook): …]` into its
   reply: told to keep every line under a table, it kept the tool's footer, the last one. Named in the relay rule now.
+- **Deals first (2026-10-18).** Louis's chats that evening (R100, R75, R50 in Malmesbury) made about 40 shop searches
+  and one `SearchSpecials`, after the list was priced, so a deal could never change the meal. The deal searches come
+  first now, for every meal; a deal product that fits a row is that row. The rice was searched as `long grain rice 1kg`
+  for 300 g and the 500 g pack never showed: a search's size is the one the recipe needs, or none. A brief with no
+  number of people got a meal for two, where Louis meant himself: the cook always knows now. A meal's brief has a
+  `Vir hoeveel` / `Serves` line, and when the user didn't say, Puls asks first (Louis's choice over a default of one:
+  a guess is still a guess).
 
 ---
 [Features](README.md) · [Plan](../plans/F34-shop-deals.md) · Previous: [F33 Shop catalogues](F33-shop-catalogues.md)

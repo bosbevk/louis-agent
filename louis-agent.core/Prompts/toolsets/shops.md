@@ -13,19 +13,19 @@ How to price a product at a shop from the shop's own catalogue. The shops here a
 
 ## Workflow
 
-1. **Ask the shop first.** For a shop that has a catalogue here, `FindProducts` before any web search: its prices are
+1. **Look for deals first** for the main ingredients (a meal's meat and starch, a broad word each): `SearchSpecials`
+   and `SearchPromotions`, so what's on deal can shape the choice. A multi-buy is for its count (`BUY 2 FOR R199` is
+   two packs): the pack price stays one pack's; name the deal beside it, and use it only when the recipe needs that
+   many. A deal is the shop's wording, as the table gives it: never work out a saving it doesn't state.
+2. **Ask the shop first.** For a shop that has a catalogue here, `FindProducts` before any web search: its prices are
    the shop's own, exact, and linked.
-2. **Search as a shopper would.** The product and, when it matters, its size or brand: `chicken thighs`, `cake flour
-   2.5kg`, `KOO baked beans`. Too many words find nothing; try fewer.
-3. **Pick the product that matches,** in the smallest pack that covers what the recipe needs; when the table shows only
-   bigger packs, search again with the size (`maize meal 1kg`). What's sold by weight is weighed at the till, so its
-   *Pack price* is a range, from the lightest pack in *Size* to the heaviest: quote the range, never the price per kg
-   as a pack's price.
-4. **Link the price to its product,** with the link the table gives: that's its source.
-5. **Look for a deal when cost matters** (a budget meal): `SearchSpecials` and `SearchPromotions` for the main
-   ingredients, a broad word each. A multi-buy is for its count (`BUY 2 FOR R199` is two packs): the pack price stays
-   one pack's; name the deal beside it, and use it only when the recipe needs that many. A deal is the shop's wording,
-   as the table gives it: never work out a saving it doesn't state.
+3. **Search as a shopper would.** The product and, when it matters, its brand: `chicken thighs`, `KOO baked beans`.
+   Too many words find nothing; try fewer.
+4. **Pick the product that matches,** in the smallest pack that covers what the recipe needs. A size in the search is
+   the size the recipe needs, never a bigger one: search without one first, and with it only when the table shows only
+   bigger packs (`rice 500g` for 300 g). What's sold by weight is weighed at the till, so its *Pack price* is a range,
+   from the lightest pack in *Size* to the heaviest: quote the range, never the price per kg as a pack's price.
+5. **Link the price to its product,** with the link the table gives: that's its source.
 6. **A shop without a catalogue here** (Pick n Pay, Woolworths, Spar): these tools can't price it; your role says
    whether anything else may (the cook's doesn't: no prices from the web).
 

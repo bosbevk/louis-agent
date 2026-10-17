@@ -307,6 +307,13 @@ sequenceDiagram
   (`data-original`, the same file without the size, from `Markdown.cs`), which `chat.js` opens in a dialog.
 - **2026-10-18, the sub-session footer in Puls's answer (Louis: "bug").** The relay rule's "every line under a table"
   took in the tool's `[Sub-session …]` footer; the specialists guide now says the footer is Puls's, never the answer's.
+- **2026-10-18, deals first (Louis: "the cook should probably search for deals or specials first", "the size must agree
+  with the recipe", "it also assumed 2 people, i meant 1", "the cook must always know how many people it is for";
+  asked how: "Puls asks first").** From his chats that evening: about 40 shop searches, one deal search, after the
+  list was priced; rice searched as `1kg` for 300 g. The cook looks for deals for the main
+  ingredients before it settles the recipe, for every meal; a search's size is the one the recipe needs, never bigger;
+  a meal's brief has its own `Vir hoeveel` / `Serves` line, and when the user didn't say, Puls asks before it hands
+  the meal on.
 
 ---
 [Plans](README.md) · Previous: [CL14 The public word: role](CL14-public-word-role.md)
