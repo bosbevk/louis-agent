@@ -50,8 +50,10 @@ CONVERSATIONS = [
     ("cook-malmesbury", "Malmesbury, Wes-Kaap, Suid-Afrika", [
         "Ek het R150 vir aandete vir vier mense. Wat kan ek maak, en wat kos dit by die winkel? Gebruik spesiale as daar is.",
     ]),
-    # F34: a town with no Checkers on OpenStreetMap: no shop the cook has a tool for, so the list comes without prices.
-    ("cook-no-shop", "Darling, Wes-Kaap, Suid-Afrika", [
+    # F34: a town with no Checkers in it or its municipality, and none Checkers serves it from (it answers with its
+    # fallback stores): no shop the cook has a tool for, so the list comes without prices. Not Darling: it's in
+    # Malmesbury's municipality, and Checkers serves it (run dd992620f6cc priced it).
+    ("cook-no-shop", "Prince Albert, Wes-Kaap, Suid-Afrika", [
         "Wat kan ek vanaand vir twee kook? Gee die resep en wat dit by die winkel kos.",
     ]),
     # The control: a plain web question, which Puls answers itself (F29: only the cook is on).

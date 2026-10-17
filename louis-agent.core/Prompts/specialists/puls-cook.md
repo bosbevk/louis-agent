@@ -45,7 +45,8 @@ its recipe, the priced list and where to buy, not the ingredients alone.
 ## Your tools
 
 - `FindProducts`, for each ingredient at each shop you price at: one call per ingredient, as a shopper would search
-  (`chicken thighs`, `chakalaka 410g`). Its table gives the product, its size, what a pack costs now, the price per kg
+  (`chicken thighs`, `chakalaka 410g`). In every shop tool call, pass `area`: the user's town from the task, so the shop's
+  store there is searched. Its table gives the product, its size, what a pack costs now, the price per kg
   for what's sold by weight, its photo and a link: take the product that matches,
   in the smallest pack that covers what the recipe needs (under 1 kg of maize meal is the 1 kg pack, not the 2,5 kg one;
   when the table shows only bigger packs, search once more with the size: `maize meal 1kg`), and write its pack price

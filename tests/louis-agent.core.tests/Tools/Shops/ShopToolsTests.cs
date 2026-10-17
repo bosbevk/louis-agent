@@ -23,9 +23,11 @@ public class ShopToolsTests
         public string? Store { get; init; }
         public bool AreaIgnored { get; init; }
 
-        public Task<ShopSearch> SearchAsync(string query, int maxResults, CancellationToken cancellationToken = default)
+        public string? Place { get; private set; }
+
+        public Task<ShopSearch> SearchAsync(string query, int maxResults, string? place = null, CancellationToken cancellationToken = default)
         {
-            (Query, MaxResults, Token) = (query, maxResults, cancellationToken);
+            (Query, MaxResults, Token, Place) = (query, maxResults, cancellationToken, place);
             if (Fails is not null) throw Fails;
             return Task.FromResult(new ShopSearch(products, Area, Store, AreaIgnored));
         }
@@ -75,6 +77,29 @@ public class ShopToolsTests
             result = await Tools(new FakeCatalogue(Chakalaka) { Store = "5ece6935faafe599532665b2", AreaIgnored = true }).FindProducts("checkers", "chakalaka");
 
         Assert.That(result, Does.StartWith("Products at Checkers (its default store, store 5ece6935: Malmesbury's wasn't used) for 'chakalaka'"));
+    }
+
+    // F34 run dd992620f6cc: cook-en named Pretoria only in its message, no place was shared, and every search was the
+    // default store's. The tools take the town from the task (area) when Puls shared no place; a shared place wins.
+    [Test]
+    public async Task TheTownFromTheTask_IsWhereItSearches_WhenNoPlaceWasShared()
+    {
+        var catalogue = new FakeCatalogue(Chakalaka);
+
+        string result = await Tools(catalogue).FindProducts("checkers", "chakalaka", area: " Pretoria ");
+
+        Assert.That(catalogue.Place, Is.EqualTo("Pretoria"));
+        Assert.That(result, Does.Contain("its default store: none found for Pretoria"), "the fake found none: the header says for where");
+    }
+
+    [Test]
+    public async Task ASharedPlace_WinsOverTheTasksTown()
+    {
+        var catalogue = new FakeCatalogue(Chakalaka);
+        using (LouisAgent.Core.Sessions.UserPlace.Use(new("Malmesbury, Wes-Kaap", null)))
+            await Tools(catalogue).SearchSpecials("checkers", "chakalaka", area: "Pretoria");
+
+        Assert.That(catalogue.Place, Is.EqualTo("Malmesbury, Wes-Kaap"));
     }
 
     [Test]

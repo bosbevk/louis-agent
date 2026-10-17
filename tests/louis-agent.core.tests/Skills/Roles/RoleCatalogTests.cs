@@ -306,6 +306,7 @@ public class RoleCatalogTests
         Assert.That(cook, Does.Contain("Price only at a shop your shop tools cover"));
         Assert.That(cook, Does.Contain("No shop near you has a catalogue here yet").And.Contain("Geen winkel naby jou het nog 'n katalogus hier nie"));
         Assert.That(cook, Does.Contain("`SearchSpecials`").And.Contain("`SearchPromotions`"));
+        Assert.That(cook, Does.Contain("pass `area`: the user's town from the task"), "run dd992620f6cc: Pretoria only in the message");
         Assert.That(cook, Does.Contain("the link the table gives"), "its source");
         Assert.That(cook, Does.Not.Contain("pick two at random").And.Not.Contain("before any `WebSearch`"), "no shop without a tool");
         Assert.That(cook, Does.Not.Contain("Which shops' pages give a price").And.Not.Contain("`pnp.co.za`").And.Not.Contain("soekindeks"),

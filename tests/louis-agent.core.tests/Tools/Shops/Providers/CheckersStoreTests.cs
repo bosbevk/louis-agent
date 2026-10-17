@@ -91,6 +91,16 @@ public class CheckersStoreTests
     public async Task NoStoreServingThePlace_IsTheDefaultStore(string? answer) =>
         Assert.That(await new CheckersStore(new FakeBrowser(answer, SetByCheckers), Malmesbury).ForAsync("Malmesbury"), Is.Null);
 
+    // The benchmark's no-shop town, Prince Albert, 300 km from a Checkers: Checkers answers any place it doesn't serve with
+    // the stores a visitor with no address gets, its default store (5ece6935) first; that's no store for the town, else
+    // the town's header would claim a store that isn't its own. Recorded 2026-10-18.
+    private static readonly string Fallback = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "tests", "louis-agent.core.tests", "Tools", "Shops", "Providers", "Fixtures", "checkers-store-contexts-fallback.json"));
+
+    [Test]
+    public async Task ATownCheckersAnswersWithItsFallbackStores_HasNoStore() =>
+        Assert.That(await new CheckersStore(new FakeBrowser(Fallback, SetByCheckers),
+            (_, _) => Task.FromResult<(double, double)?>((-33.222626, 22.030331))).ForAsync("Prince Albert"), Is.Null);
+
     [Test]
     public async Task ABrowserError_IsTheDefaultStore_NotAFailedSearch() =>
         Assert.That(await new CheckersStore(new FakeBrowser(fails: new WebBrowserException("didn't answer")), Malmesbury).ForAsync("Malmesbury"), Is.Null);

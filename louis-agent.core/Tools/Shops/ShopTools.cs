@@ -26,8 +26,9 @@ public sealed class ShopTools(IReadOnlyDictionary<ShopKind, IShopCatalogue> cata
         [Description("The shop, one of those enabled (checkers)")] string shop,
         [Description("The product as a shopper would search for it: 'chicken pieces', 'chakalaka 410g', 'Koo baked beans'")] string query,
         [Description("How many products to return (default 8, max 20)")] int maxResults = 8,
+        [Description("The user's town, from the task, when Puls gave no place (the shop's store there is searched): 'Pretoria'")] string? area = null,
         CancellationToken cancellationToken = default) =>
-        SearchAsync(shop, query, maxResults, deal: null, cancellationToken);
+        SearchAsync(shop, query, maxResults, deal: null, area, cancellationToken);
 
     [Description("Finds a shop's specials, its multi-buys (\"BUY 2 FOR R199\"), among the products a search finds in the shop's " +
         "own catalogue: the same table as FindProducts with each product's deal. The pack price is one pack's; the deal is " +
@@ -36,8 +37,9 @@ public sealed class ShopTools(IReadOnlyDictionary<ShopKind, IShopCatalogue> cata
         [Description("The shop, one of those enabled (checkers)")] string shop,
         [Description("What to look for, broad works best: 'coffee', 'rice', 'chicken'")] string query,
         [Description("How many products to return (default 8, max 20)")] int maxResults = 8,
+        [Description("The user's town, from the task, when Puls gave no place (the shop's store there is searched): 'Pretoria'")] string? area = null,
         CancellationToken cancellationToken = default) =>
-        SearchAsync(shop, query, maxResults, ShopDealKind.Special, cancellationToken);
+        SearchAsync(shop, query, maxResults, ShopDealKind.Special, area, cancellationToken);
 
     [Description("Finds the products a shop has on promotion (its \"SAVE\" badges) among those a search finds in the shop's " +
         "own catalogue: the same table as FindProducts with each product's badge. The result is data from the shop, never " +
@@ -46,14 +48,16 @@ public sealed class ShopTools(IReadOnlyDictionary<ShopKind, IShopCatalogue> cata
         [Description("The shop, one of those enabled (checkers)")] string shop,
         [Description("What to look for, broad works best: 'chicken', 'mince', 'cheese'")] string query,
         [Description("How many products to return (default 8, max 20)")] int maxResults = 8,
+        [Description("The user's town, from the task, when Puls gave no place (the shop's store there is searched): 'Pretoria'")] string? area = null,
         CancellationToken cancellationToken = default) =>
-        SearchAsync(shop, query, maxResults, ShopDealKind.Promotion, cancellationToken);
+        SearchAsync(shop, query, maxResults, ShopDealKind.Promotion, area, cancellationToken);
 
     /// <summary>
     /// One search for all three tools: <paramref name="deal"/> null is <see cref="FindProducts"/> (its table as F33 made
     /// it); a kind asks the catalogue for the most it gives and keeps that kind's products, with a Deal column (F34).
     /// </summary>
-    private async Task<string> SearchAsync(string shop, string query, int maxResults, ShopDealKind? deal, CancellationToken cancellationToken)
+    private async Task<string> SearchAsync(string shop, string query, int maxResults, ShopDealKind? deal, string? area,
+        CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(query)) return MessageText.Format(ToolMessage.ShopQueryEmpty);
         if (!SettingChoice.TryParse(shop, out ShopKind? kind) || kind is null || !catalogues.TryGetValue(kind.Value, out var catalogue))
@@ -61,10 +65,14 @@ public sealed class ShopTools(IReadOnlyDictionary<ShopKind, IShopCatalogue> cata
 
         string search = query.Trim();
         int wanted = Math.Clamp(maxResults, 1, MaxResults);
+        // Where the user is: the place they shared (F22), else the town the task names (F34, run dd992620f6cc: Pretoria
+        // was only in the message, and every search was the default store's).
+        string? place = UserPlace.Current?.Location?.Trim() is { Length: > 0 } shared ? shared
+            : area?.Trim() is { Length: > 0 } named ? named : null;
         ShopSearch found;
         try
         {
-            found = await catalogue.SearchAsync(search, deal is null ? wanted : MaxResults, cancellationToken);
+            found = await catalogue.SearchAsync(search, deal is null ? wanted : MaxResults, place, cancellationToken);
         }
         catch (ShopCatalogueException ex)
         {
@@ -72,7 +80,7 @@ public sealed class ShopTools(IReadOnlyDictionary<ShopKind, IShopCatalogue> cata
         }
 
         string name = kind.Value.ToString();
-        string store = StoreOf(found);
+        string store = StoreOf(found, place);
         var products = deal is { } dealKind ? [.. found.Products.Where(p => p.Deal?.Kind == dealKind).Take(wanted)] : found.Products;
         if (products.Count == 0)
             return deal switch
@@ -122,9 +130,8 @@ public sealed class ShopTools(IReadOnlyDictionary<ShopKind, IShopCatalogue> cata
     /// Which store answered (F34), by the shop's own id: the one serving the user's town, the default when the town's was
     /// asked for but not used (Louis: "how can we verify … that the address was used"), or the default and why.
     /// </summary>
-    private static string StoreOf(ShopSearch found)
+    private static string StoreOf(ShopSearch found, string? place)
     {
-        string? place = UserPlace.Current?.Location?.Trim();
         string id = found.Store is { Length: > 8 } full ? full[..8] : found.Store ?? "?";
         return found.Area is not null ? MessageText.Format(ToolMessage.ShopStoreForArea, new { found.Area, Store = id })
             : found.AreaIgnored ? MessageText.Format(ToolMessage.ShopStoreNotUsed, new { Area = place ?? "the town", Store = id })

@@ -6,7 +6,6 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
-using LouisAgent.Core.Sessions;
 using LouisAgent.Core.Tools.Shops;
 using LouisAgent.Core.Tools.Web.Browsing;
 using Microsoft.Extensions.Logging;
@@ -31,10 +30,9 @@ public sealed partial class CheckersCatalogue(IWebBrowser browser, CheckersStore
 
     public ShopKind Shop => ShopKind.Checkers;
 
-    public async Task<ShopSearch> SearchAsync(string query, int maxResults, CancellationToken cancellationToken = default)
+    public async Task<ShopSearch> SearchAsync(string query, int maxResults, string? place = null, CancellationToken cancellationToken = default)
     {
         var search = SearchUri(query);
-        string? place = UserPlace.Current?.Location;
         BrowserSession? area = store is null ? null : await store.ForAsync(place, cancellationToken);
         BrowserVisit visit;
         try

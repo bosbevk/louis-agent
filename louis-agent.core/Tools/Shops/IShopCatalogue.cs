@@ -9,5 +9,6 @@ public interface IShopCatalogue
 {
     ShopKind Shop { get; }
 
-    Task<ShopSearch> SearchAsync(string query, int maxResults, CancellationToken cancellationToken = default);
+    /// <param name="place">Where the user is (F34): a shop that serves by area searches the store serving it; null: the default store.</param>
+    Task<ShopSearch> SearchAsync(string query, int maxResults, string? place = null, CancellationToken cancellationToken = default);
 }

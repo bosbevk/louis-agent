@@ -101,6 +101,16 @@ prices.
   form it can read, such as Checkers; Pick n Pay doesn't yet, so it isn't listed; the user can ask it to, and the more
   customers ask, the sooner. In both languages; never blame. Worded as what's true: Checkers' own site's catalogue is
   what's read, not a public API it publishes, and Shoprite is named only once it has a provider.
+- **Cook check `dd992620f6cc` (2026-10-18, Louis's go; 1 repeat, $0.082, 80 requests).** With the cook: cook-af 8 of
+  10 priced, cook-en 5/7, cook-shops 7/7, cook-malmesbury 7/11, Darling 10/11; no guessed price, no price per kg, no
+  shop priced without a tool, every conversation routed right, every follow-up to the same cook. Malmesbury's,
+  Stellenbosch's and Darling's searches all answered by the town's store; cook-en's by the default store (Pretoria was
+  only in its message). The unpriced rows were all pantry staples (fixed since: a line under the list). The cook looked
+  for specials in Malmesbury four times and found multi-buys on chicken, mince and rice, and used none: the recipe needed
+  one pack of each. Searches took 3-4 s.
+- **After the run:** the shop tools take `area` (the task's town when no place was shared); the no-shop town is Prince
+  Albert (Darling is Malmesbury's municipality and Checkers serves it); and a place Checkers answers with its fallback
+  stores, its default first, has no store of its own, so its header never claims one.
 
 ---
 [Features](README.md) · [Plan](../plans/F34-shop-deals.md) · Previous: [F33 Shop catalogues](F33-shop-catalogues.md)

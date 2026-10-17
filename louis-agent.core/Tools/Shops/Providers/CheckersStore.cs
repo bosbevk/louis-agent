@@ -23,6 +23,10 @@ public sealed class CheckersStore(IWebBrowser browser, Func<string, Cancellation
     private static readonly Uri Site = new("https://www.checkers.co.za/");
     private static readonly HashSet<string> StoreCookies = new(["storeContexts", "storeids", "istio-storeIds"], StringComparer.Ordinal);
 
+    // The store Checkers answers a visitor with no address from (seen 2026-10-17 and 18). A place Checkers has no store
+    // for gets its fallback set, this store first (Prince Albert, Sutherland, Calvinia, Loxton): no store for the town.
+    internal const string DefaultStore = "5ece6935faafe599532665b2";
+
     // Each town's answer, kept for the instance's life: a town's stores don't move between searches. A failed lookup
     // isn't kept, so the next search tries again.
     private readonly ConcurrentDictionary<string, BrowserSession?> _byTown = new(StringComparer.OrdinalIgnoreCase);
@@ -64,7 +68,7 @@ public sealed class CheckersStore(IWebBrowser browser, Func<string, Cancellation
     internal static string Lookup(double latitude, double longitude) => string.Create(CultureInfo.InvariantCulture,
         $$"""fetch('/api/store/fetch-store-contexts?update=true', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ address: { coordinates: { latitude: {{latitude:R}}, longitude: {{longitude:R}} } }, update: true, acceptedLimitedExperience: false }) }).then(r => r.text())""");
 
-    /// <summary>Whether the answer names at least one store serving the area.</summary>
+    /// <summary>Whether the answer names a store serving the area: at least one, and not Checkers' fallback set.</summary>
     private static bool Serves(string? answer)
     {
         if (answer is null) return false;
@@ -73,7 +77,8 @@ public sealed class CheckersStore(IWebBrowser browser, Func<string, Cancellation
             using var doc = JsonDocument.Parse(answer);
             return doc.RootElement.ValueKind == JsonValueKind.Object
                 && doc.RootElement.TryGetProperty("storeContexts", out var stores)
-                && stores.ValueKind == JsonValueKind.Array && stores.GetArrayLength() > 0;
+                && stores.ValueKind == JsonValueKind.Array && stores.GetArrayLength() > 0
+                && !stores.EnumerateArray().Any(store => store.TryGetProperty("storeId", out var id) && id.GetString() == DefaultStore);
         }
         catch (JsonException)
         {

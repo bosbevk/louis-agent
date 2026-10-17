@@ -840,6 +840,14 @@
             "description": "How many products to return (default 8, max 20)",
             "type": "integer",
             "default": 8
+          },
+          "area": {
+            "description": "The user's town, from the task, when Puls gave no place (the shop's store there is searched): 'Pretoria'",
+            "type": [
+              "string",
+              "null"
+            ],
+            "default": null
           }
         },
         "required": [
@@ -1939,6 +1947,14 @@
             "description": "How many products to return (default 8, max 20)",
             "type": "integer",
             "default": 8
+          },
+          "area": {
+            "description": "The user's town, from the task, when Puls gave no place (the shop's store there is searched): 'Pretoria'",
+            "type": [
+              "string",
+              "null"
+            ],
+            "default": null
           }
         },
         "required": [
@@ -1965,6 +1981,14 @@
             "description": "How many products to return (default 8, max 20)",
             "type": "integer",
             "default": 8
+          },
+          "area": {
+            "description": "The user's town, from the task, when Puls gave no place (the shop's store there is searched): 'Pretoria'",
+            "type": [
+              "string",
+              "null"
+            ],
+            "default": null
           }
         },
         "required": [

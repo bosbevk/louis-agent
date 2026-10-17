@@ -59,7 +59,7 @@ class AMealQuestion(unittest.TestCase):
     def test_the_check_asks_in_malmesbury_and_in_a_town_without_a_checkers(self):
         tasks = {task: place for task, place, _ in cook.CONVERSATIONS}
         self.assertEqual(tasks["cook-malmesbury"], "Malmesbury, Wes-Kaap, Suid-Afrika")
-        self.assertEqual(tasks["cook-no-shop"], "Darling, Wes-Kaap, Suid-Afrika")
+        self.assertEqual(tasks["cook-no-shop"], "Prince Albert, Wes-Kaap, Suid-Afrika")
 
     def test_answered_by_puls_itself_is_routed_wrong_when_the_cook_was_on(self):
         scores = cook.score("cook-en", [turn("A recipe.")], cook_on=True)

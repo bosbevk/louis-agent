@@ -271,6 +271,13 @@ sequenceDiagram
   names): Puls shows prices from shops that make them available online in a form it can read, such as Checkers; that
   shop doesn't yet; the user can ask it to, and the more customers ask, the sooner. Not "a public API": Checkers
   publishes none as such (its own site's catalogue is what's read), and Shoprite is named once its provider exists.
+- **2026-10-18, after the cook check `dd992620f6cc` (Louis: "add the area argument and swap the town").** cook-en named
+  Pretoria only in its message, so its searches were the default store's: the shop tools take `area`, the town from
+  the task, used when Puls shared no place (a shared place wins), and `IShopCatalogue.SearchAsync` takes the place the
+  tool chose. Darling priced at Checkers: it's in Malmesbury's municipality and Checkers serves it, so the no-shop
+  conversation moves to Prince Albert. Checking it found that Checkers answers any place it has no store for with its
+  fallback stores, the default (`5ece6935…`) first: `CheckersStore` counts those as no store for the town, so a header
+  never names a town's store that isn't its own.
 
 - **2026-10-17, step 1 split in two (Louis: "yes, go ahead"), after the recorded visit.** Checkers' own address call
   (`POST /api/store/fetch-store-contexts?update=true`, an address with `latitude` and `longitude`) answers a visitor
