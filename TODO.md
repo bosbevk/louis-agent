@@ -258,6 +258,10 @@ Design: [docs/specs/SESSION_ARCHITECTURE.md](docs/specs/SESSION_ARCHITECTURE.md)
       rule, so development and the benchmarks search and read any page with no key and no credits; the sold endpoint
       keeps a licensed search API (Tavily) ([plan](docs/plans/F32-self-hosted-web.md)). Built 2026-10-17; open: the
       cook check's baseline run from the portal (paid, Louis's go), then *Finishing a feature*.
+- [ ] **F32 follow-up: one egress proxy for the browser** (to plan; review of PR #56): `puls-browser` reaches the
+      internet only through a proxy that resolves each name once, refuses internal addresses and connects to the address
+      it checked, so DNS rebinding (Chrome resolving again after `RenderPolicy` checked) and a Web Worker's WebSocket
+      can't reach `puls`, `puls-agent` or the host. Until then, set `AGENT_API_KEY` wherever the stack is reachable.
 - [ ] **CL12 Integrations by role** (cleanup, to plan after F32; Louis: "this should also be interfaced", then "it would
       not follow the same pattern as Web"): the integrations laid out as the web seams are, a contract per role at the top
       and its vendors in `Providers/`: `Tools/Integrations/TimeTracking/` (`ITimeTracker`; Paymo) and `WorkItems/`

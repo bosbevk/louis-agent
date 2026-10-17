@@ -1,6 +1,7 @@
 # F32 · Self-hosted web: search through SearXNG, pages rendered by a headless Chrome
 
-> **Status:** planned (2026-10-17), on `feature/F32-self-hosted-web` · **Milestone:** — · **Depends on:** F25 (the
+> **Status:** built (2026-10-17), on `feature/F32-self-hosted-web` (PR #56); open: the cook check's baseline run and a
+> Puls chat that searched and rendered with `TAVILY_API_KEY` unset (both paid, Louis's go) · **Milestone:** — · **Depends on:** F25 (the
 > renderer seam, `ReadRenderedPage`), FX16 (`VerifyQuote`'s fallback to the renderer), F31 (the cook check that
 > measures it)
 >
@@ -99,3 +100,18 @@ priced with sources, and what it cost.
   proof-of-work CAPTCHA). From Louis's IP on the day, **only Bing answered** (Google and Qwant *access denied*, Brave
   *too many requests*, DuckDuckGo *CAPTCHA*), each named with its reason: enough for 9 results with Pick n Pay's pages,
   but one engine is thin, so a benchmark on it says which provider it searched with.
+- **Review of PR #56.** *Must:* a host that doesn't exist (a dead tracker on a shop's page) made the real lookup throw,
+  and the exception escaped the browser's `async void` request handler, which would end the process and every open
+  chat with it; the tests' stub resolver returned `[]`, which the real one never does. `RenderPolicy` now refuses when
+  the lookup fails for any reason, and the handler catches everything (answering a request can throw too, when the
+  page closes under it), both tested first with a resolver that throws. *Should:* a cancelled turn held one of the four
+  browser pages for up to 40 s, since PuppeteerSharp's waits take no token: the turn's token now reaches the renderer
+  (`ReadRenderedPage` and `VerifyQuote` take it; Microsoft.Extensions.AI fills it and keeps it out of the schema, so the
+  golden files didn't move), and cancelling closes the page, which ends the wait (live test: under 5 s, from 12). A
+  frame a script makes (`about:blank`) was suspected of escaping the WebSocket block; a live test shows it doesn't.
+  **Still open, by design for now:** *DNS rebinding.* `RenderPolicy` resolves a name and decides; Chrome then resolves
+  it again on its own, so a hostile name could answer public to the check and internal to Chrome, and reach `puls` or
+  `puls-agent` on the `web` network (no key unless `AGENT_API_KEY` is set: set it where the stack is reachable by
+  anyone else). `FetchUrl` doesn't have the gap: it checks the address it connects to. With the Worker's socket, this is
+  the second thing one layer would close: an egress proxy for the browser that resolves once, refuses internal
+  addresses and connects to the address it checked (a TODO line).
