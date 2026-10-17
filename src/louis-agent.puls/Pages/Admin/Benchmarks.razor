@@ -70,25 +70,40 @@ else if (_data is { } data)
         </section>
     }
 
+    @* One fold for all the checks (Louis: "do not roll up 3 times, have one that rolls up them all"): folded, each card
+       keeps its head (title, manual, chip) and loses its body. *@
+    <div class="checks-head">
+        <span class="sidebar-label">Kontroles</span>
+        <button type="button" class="checks-toggle @(_checksOpen ? "open" : "")" aria-expanded="@_checksOpen" title="@(_checksOpen ? "Vou die kontroles op" : "Vou die kontroles oop")" @onclick="() => _checksOpen = !_checksOpen">
+            <span class="chevron" aria-hidden="true"></span>
+        </button>
+    </div>
     <div class="cards">
         @foreach (var check in data.Checks)
         {
             var last = data.Runs.FirstOrDefault(r => r.Check == check.Id);
-            <details class="card-p check-card" open>
-                <summary class="card-head">
+            @* A card selects its check (Louis): the runs below are its runs only. Its own buttons don't also select it. *@
+            <section class="card-p check-card @(_checksOpen ? "open" : "") @(_selected == check.Id ? "selected" : "")" role="button" tabindex="0"
+                     aria-pressed="@(_selected == check.Id)" @onclick="() => Select(check.Id)" @onkeydown="e => SelectKey(e, check.Id)">
+                <div class="card-head">
                     <strong>@check.Title</strong>
                     <span class="check-card-meta">
                         @(last?.Total is { } t ? Cost(t.Cost) : "")
                         @if (check.Manual)
                         {
-                            @* Inside the summary: the click must not also fold the card. *@
-                            <button type="button" class="manual-button" title="Die handleiding" @onclick="() => OpenManualAsync(check.Id)" @onclick:preventDefault @onclick:stopPropagation>Handleiding</button>
+                            <button type="button" class="manual-button" title="Die handleiding" @onclick="() => OpenManualAsync(check.Id)" @onclick:stopPropagation>Handleiding</button>
                         }
-                        <span class="toolset-chip">@check.Id</span><span class="chevron" aria-hidden="true"></span>
+                        <span class="toolset-chip">@check.Id</span>
                     </span>
-                </summary>
+                </div>
+                @if (_checksOpen)
+                {
                 <p class="muted"><code>@check.Script</code></p>
                 <p class="muted">@(last is null ? "Nog geen lopie in die stoor nie." : $"Laaste lopie: {last.StartedAt.ToLocalTime():yyyy-MM-dd HH:mm}, {Status(last.Status)}, {Cost(last.Total?.Cost)}")</p>
+                @if (_trends.TryGetValue(check.Id, out var trend))
+                {
+                    <TrendChart Trend="trend" Small="true" Currency="Currency.Current" />
+                }
                 <div class="run-controls">
                     <span class="muted">Herhalings</span>
                     @* A segmented control, not a native select: the browser's dropdown ignores the theme. *@
@@ -96,15 +111,16 @@ else if (_data is { } data)
                         @for (int n = 1; n <= 5; n++)
                         {
                             int count = n;
-                            <button type="button" role="radio" aria-checked="@(RepeatFor(check.Id) == count)" class="@(RepeatFor(check.Id) == count ? "active" : "")" disabled="@Running" @onclick="() => _repeats[check.Id] = count">@count</button>
+                            <button type="button" role="radio" aria-checked="@(RepeatFor(check.Id) == count)" class="@(RepeatFor(check.Id) == count ? "active" : "")" disabled="@Running" @onclick="() => _repeats[check.Id] = count" @onclick:stopPropagation>@count</button>
                         }
                     </div>
                     <button class="header-button" type="button" disabled="@(Running || !CanRun(data))"
-                            title="@(check.Id == "stub" ? "Gratis: geen sessie, geen model" : "Spandeer geld: elke lopie vra die model")" @onclick="() => StartAsync(check.Id)">
+                            title="@(check.Id == "stub" ? "Gratis: geen sessie, geen model" : "Spandeer geld: elke lopie vra die model")" @onclick="() => StartAsync(check.Id)" @onclick:stopPropagation>
                         <span class="ic i-pulse" aria-hidden="true"></span>Loop
                     </button>
                 </div>
-            </details>
+                }
+            </section>
         }
     </div>
 
@@ -184,21 +200,34 @@ else if (_data is { } data)
         </div>
     }
 
+    @* The selected check's runs, newest first; nothing until a check is chosen (Louis). *@
     <section class="card-p runs-list">
-        <div class="card-head"><strong>Lopies</strong><span class="muted">@data.Runs.Count</span></div>
-        @if (data.Runs.Count == 0)
+        @{
+            var chosen = data.Checks.FirstOrDefault(c => c.Id == _selected);
+            var runs = chosen is null ? [] : data.Runs.Where(r => r.Check == chosen.Id).ToList();
+            var costs = runs.Select(r => r.Total?.Cost).Where(c => c is not null).ToList();
+        }
+        <div class="card-head">
+            <strong>Lopies@(chosen is null ? "" : $" · {chosen.Title}")</strong>
+            @if (chosen is not null) { <span class="muted">@runs.Count @(runs.Count == 1 ? "lopie" : "lopies")@(costs.Count > 0 ? $" · {Cost(costs.Sum())} saam" : "")</span> }
+        </div>
+        @if (chosen is null)
         {
-            <p class="muted">Nog niks in die stoor nie.</p>
+            <p class="muted">Kies 'n kontrole hierbo om sy lopies te sien.</p>
+        }
+        else if (runs.Count == 0)
+        {
+            <p class="muted">Nog geen lopies vir hierdie kontrole nie.</p>
         }
         else
         {
             <ol class="runs">
-                @foreach (var run in data.Runs)
+                @foreach (var run in runs)
                 {
                     <li class="run-row">
                         <a class="run-row-main" href="admin/maatstawwe/@run.Id">
                             <code>@run.Id</code>
-                            <small>@run.StartedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm") · @(data.Checks.FirstOrDefault(c => c.Id == run.Check)?.Title ?? run.Check) · @run.Repeat× · @Status(run.Status)@(run.Total is { } t ? $" · {t.Requests} versoeke" : "")@(run.StoreError is not null ? " · nie alles gestoor nie" : "")</small>
+                            <small>@run.StartedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm") · @run.Repeat× · @Status(run.Status)@(run.Total is { } t ? $" · {t.Requests} versoeke" : "")@(run.StoreError is not null ? " · nie alles gestoor nie" : "")</small>
                         </a>
                         <strong class="run-row-cost">@Cost(run.Total?.Cost)</strong>
                     </li>
@@ -251,6 +280,16 @@ else if (_data is { } data)
     private string _keyDraft = "";
     private readonly Dictionary<string, int> _repeats = [];
 
+    private bool _checksOpen = true;
+    private string? _selected;
+
+    private void Select(string check) => _selected = check;
+
+    private void SelectKey(KeyboardEventArgs e, string check)
+    {
+        if (e.Key is "Enter" or " ") Select(check);
+    }
+
     private int RepeatFor(string check) => _repeats.GetValueOrDefault(check, 1);
 
     private bool Running => _run?.Status == "running";
@@ -292,6 +331,7 @@ else if (_data is { } data)
         {
             _error = ex.Message;
         }
+        await LoadTrendsAsync();
         _loading = false;
     }
 
@@ -324,6 +364,7 @@ else if (_data is { } data)
         try
         {
             var started = ReadLive(await Api.PostAsync($"admin/benchmarks/{check}/runs", new { repeat = RepeatFor(check) }));
+            _selected = check;
             await FollowAsync(started, keepRows: false);
         }
         catch (AgentApiException ex)
@@ -551,6 +592,19 @@ else if (_data is { } data)
         e.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.Number ? v.GetDecimal() : null;
 
     private static string Status(string status) => status switch { "running" => "besig", "done" => "klaar", _ => "misluk" };
+
+    private readonly Dictionary<string, JsonElement> _trends = [];
+
+    /// <summary>Each check's trend for its card (step 11a); a check without finished runs draws nothing.</summary>
+    private async Task LoadTrendsAsync()
+    {
+        if (_data is not { Store.Configured: true }) return;
+        foreach (var check in _data.Checks)
+        {
+            try { _trends[check.Id] = await Api.GetAsync<JsonElement>($"admin/benchmarks/checks/{Uri.EscapeDataString(check.Id)}/trend"); }
+            catch (AgentApiException) { _trends.Remove(check.Id); }
+        }
+    }
 
     private Manual? _manual;
     private bool _focusManual;

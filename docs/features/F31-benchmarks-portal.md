@@ -238,3 +238,45 @@ before it.
   in a modal on the search dialog's frame (Esc, ×, a click outside). Tests first: every check has its manual and none
   is read from outside `benchmarks/` (C#, 6); every key a check's `score()` returns is named in its manual (Python).
   By hand in Chrome: all three manuals open, each way of closing works, the card doesn't fold, no console errors.
+- **Step 11a (2026-10-17): the trend** (`BenchmarkTrends.ComputeAsync`, `GET /admin/benchmarks/checks/{check}/trend`,
+  `Components/TrendChart.razor`). Per mode, a point per finished run, oldest first: what one repeat cost (the mode's
+  requests over the run's repeats; null when none had a price) and the share of conversations routed right; a run
+  still going isn't a point. In C# over the store, 6 tests on the in-memory one. A line per mode, small on the check
+  card (cost only) and full in the explorer (cost and score, the open run marked); a point opens its run. The lines
+  are revealed from the left by a growing clip, and the points are round-capped zero-length lines: a dash-drawn line
+  broke into pieces and circles became ovals once the chart stretches to its width (seen by hand). **One fold for
+  all the check cards** (Louis: "do not roll up 3 times, have one that rolls up them all"): a *Kontroles* toggle above
+  them; folded, each keeps its head (title, *Handleiding*, chip). By hand in Chrome on the four stub runs given
+  made-up costs (removed afterwards).
+  **A check card selects its check** (Louis, after first asking for the runs grouped by check with a fold each:
+  "each of these must be selectable and then only display the runs for the type; on initial load display nothing
+  until selection"): the selected card glows, the list below holds only its runs with their count and cost
+  together, and before any choice it asks for one; the card's own buttons (*Handleiding*, the repeats, *Loop*) don't
+  also select it, and starting a run selects its check. The groups went: one check's runs need no grouping. A trend panel with no
+  known value (the stub's costs) says so instead of drawing an empty chart; on the card it draws nothing.
+  **Who each mode is** (Louis: "be more specific, say Puls with puls-cook"): the explorer's heads, tiles and legends
+  say *Puls met puls-cook* or *Puls alleen*, from the roles in the run's own turns, with the mode's name beside them,
+  and name the specialist by its role instead of *spesialis*; the run page's trend uses the same names.
+  **The chats side by side** (Louis: "a button where I can see the replay chat side by side of Puls vs Puls with
+  puls-cook, open in a modal"): *Speel gesprekke af* at the right of the explorer's crumbs opens a wide modal with one
+  conversation of every mode, every turn replayed from the stored events through `TurnView`, the modes at once; a
+  chooser switches conversation (it starts on the one open in the explorer), *Speel weer* replays it, Esc, × or a
+  click outside closes it. By hand in Chrome on the stub's 2-repeat run.
+  Louis saw the chats modal cut off at the bottom of the explorer's card, with the trend card painted over it: `.card-p`
+  rises in with a filled `transform` animation, and an element so animated becomes the frame of its fixed children, so
+  the modal was positioned and clipped inside the card. The card that holds the explorer doesn't rise in
+  (`.card-p.holds-modal`); seen right by hand.
+  **The ways on are buttons** (Louis, over four rounds: the way into a turn was a bare chevron, a conversation's only
+  way in was its bar, which at R0 is nothing to click; then "remove this hover effect, the button is enough, why not
+  just open the modal?"): every conversation and turn row ends in *Speel af*, which opens the chats side by side on
+  its conversation, and a small *Koste ›* (a conversation: its turns) or *Versoeke ›* (a turn: its requests) for what
+  the modal doesn't show; the rows themselves neither light up nor click. The breadcrumb's earlier levels are in
+  Puls's orange and underline on hover. Each amount in *Koste per gesprek* has its mode's dot, so whose is whose
+  reads even when its bar is empty.
+  **Cost per mode beside tokens per mode** (Louis; "it must also be a graph"): at the run level, *Koste per modus* is a
+  ring per mode, split between Puls's own requests and the specialist's, beside the token rings; every ring has its
+  total in its middle, so a run without costs still shows a graph. **The cost pops** (Louis: "that cost value looks
+  ugly … it must pop, that is the cost"): in every conversation and turn row the cost is a bold figure of its own,
+  counting up, each mode's with its dot, instead of a grey label at a bar's end; and the second way on is a button,
+  *Beurte ›* or *Versoeke ›*, named for where it goes. And
+  a conversation's cost no longer runs into its buttons: its bar sits in a group, as at the run level.

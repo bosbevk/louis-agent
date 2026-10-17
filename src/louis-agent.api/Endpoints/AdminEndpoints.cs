@@ -58,6 +58,21 @@ internal static class AdminEndpoints
                 ? Results.Json(new { check = known.Id, title = known.Title, markdown })
                 : ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error", MessageText.Format(ApiUserText.NoManual, new { Check = check })));
 
+        // A check's trend over its finished runs (step 11a): per mode, one repeat's cost and the share routed right.
+        admin.MapGet("/benchmarks/checks/{check}/trend", (string check, CancellationToken cancellationToken) => FromStore(store, async s =>
+        {
+            var trend = await BenchmarkTrends.ComputeAsync(s, check, cancellationToken: cancellationToken);
+            return Results.Json(new
+            {
+                check = trend.Check,
+                modes = trend.Modes.Select(m => new
+                {
+                    name = m.Name,
+                    points = m.Points.Select(p => new { run = p.Run, at = p.At, cost = p.Cost, score = p.Score, conversations = p.Conversations }),
+                }),
+            });
+        }));
+
         // A stored run with its conversations, their turns (without their events) and its requests: the explorer's levels.
         admin.MapGet("/benchmarks/runs/{id}", (string id, CancellationToken cancellationToken) => FromStore(store, async s =>
         {

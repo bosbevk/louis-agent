@@ -1,0 +1,105 @@
+@* F31 step 11a: a check's trend over its runs, a line per mode in the explorer's palette, drawn in from the left as
+   Jitter's line charts draw themselves (a clipping rectangle that grows; a dash pattern breaks once the stroke doesn't
+   scale with the chart); a point opens its run. Small on the check card
+   (cost only), full in the explorer (cost and score, the open run marked). Motion is off for people who ask for less. *@
+@using System.Globalization
+@using System.Text.Json
+@using LouisAgent.Web.Shared
+@using LouisAgent.Web.Shared.Services
+
+@if (_series.Count == 0 || _runs.Count == 0 || (Small && !Known(p => p.Cost is { } c ? (double)c : null)))
+{
+    @if (!Small) { <p class="muted">Nog geen voltooide lopies vir 'n tendens nie.</p> }
+}
+else
+{
+    <div class="trend @(Small ? "small" : "")">
+        @if (!Small)
+        {
+            <div class="chart-head"><strong>Tendens</strong><span class="muted">@_runs.Count lopies</span>
+                <span class="legend">@foreach (var (s, i) in _series.Select((s, i) => (s, i))) { <span><span class="sw" style="background: @Series(i)"></span>@(Labels?.GetValueOrDefault(s.Name) ?? s.Name)</span> }</span></div>
+        }
+        @Panel("Koste per herhaling", p => p.Cost is { } c ? (double)c : null, v => Money((decimal)v))
+        @if (!Small)
+        {
+            @Panel("Telling (reg gestuur)", p => p.Score, v => v.ToString("0%", CultureInfo.InvariantCulture), fixedTop: 1)
+        }
+    </div>
+}
+
+@code {
+    /// <summary>The trend as GET /admin/benchmarks/checks/{check}/trend answers it.</summary>
+    [Parameter, EditorRequired] public JsonElement Trend { get; set; }
+    [Parameter] public CurrencyChoice? Currency { get; set; }
+    [Parameter] public bool Small { get; set; }
+    [Parameter] public string? Highlight { get; set; }
+
+    /// <summary>A name per mode for the legend (Puls met puls-cook), when the page knows them; else the mode's name.</summary>
+    [Parameter] public IReadOnlyDictionary<string, string>? Labels { get; set; }
+
+    private const double W = 600, H = 150, Pad = 8;
+    private static readonly string[] Palette = ["#3987e5", "#d95926", "#199e70", "#c98500", "#d55181", "#008300"];
+    private static string Series(int i) => Palette[i % Palette.Length];
+
+    private sealed record Point(string Run, DateTimeOffset At, decimal? Cost, double? Score);
+    private sealed record Line(string Name, List<Point> Points);
+
+    private readonly string _id = Guid.NewGuid().ToString("N")[..8];
+    private List<Line> _series = [];
+    private List<(string Run, DateTimeOffset At)> _runs = [];
+
+    protected override void OnParametersSet()
+    {
+        _series = Trend.GetProperty("modes").EnumerateArray().Select(m => new Line(m.GetProperty("name").GetString()!,
+            m.GetProperty("points").EnumerateArray().Select(p => new Point(p.GetProperty("run").GetString()!, p.GetProperty("at").GetDateTimeOffset(),
+                p.TryGetProperty("cost", out var c) && c.ValueKind == JsonValueKind.Number ? c.GetDecimal() : null,
+                p.TryGetProperty("score", out var s) && s.ValueKind == JsonValueKind.Number ? s.GetDouble() : null)).ToList())).ToList();
+        // Every run on one x axis, in time: a mode missing from a run leaves a gap, not a shifted line.
+        _runs = _series.SelectMany(s => s.Points).Select(p => (p.Run, p.At)).Distinct().OrderBy(r => r.At).ToList();
+    }
+
+    /// <summary>One panel: a line per mode of <paramref name="value"/> over the runs, with its top value labelled.</summary>
+    /// <summary>Whether any run has a value here: a cost the ledger never priced (the stub's) draws no empty line.</summary>
+    private bool Known(Func<Point, double?> value) => _series.SelectMany(s => s.Points).Any(p => value(p) is not null);
+
+    private RenderFragment Panel(string title, Func<Point, double?> value, Func<double, string> label, double? fixedTop = null) => __builder =>
+    {
+        if (!Known(value)) { <section class="chart trend-panel"><div class="chart-head"><span class="muted">@title</span><span class="muted trend-top">nog geen bekende waardes nie</span></div></section> return; }
+        double top = fixedTop ?? Math.Max(1e-9, _series.SelectMany(s => s.Points).Select(value).Where(v => v is not null).Select(v => v!.Value).DefaultIfEmpty(0).Max());
+        double X(string run) => _runs.Count == 1 ? W / 2 : Pad + _runs.FindIndex(r => r.Run == run) * (W - 2 * Pad) / (_runs.Count - 1);
+        double Y(double v) => H - Pad - v / top * (H - 2 * Pad);
+        <section class="chart trend-panel">
+            <div class="chart-head"><span class="muted">@title</span><span class="muted trend-top">bo: @label(top)</span></div>
+            @{ string clip = $"trend-clip-{_id}-{title.Length}"; }
+            <svg class="trend-svg" viewBox="0 0 @F(W) @F(H)" preserveAspectRatio="none" role="img" aria-label="@title">
+                <defs><clipPath id="@clip"><rect class="trend-reveal" x="-10" y="-10" width="@F(W + 20)" height="@F(H + 20)" /></clipPath></defs>
+                <line class="trend-axis" x1="0" y1="@F(H - Pad)" x2="@F(W)" y2="@F(H - Pad)" />
+                @if (Highlight is { } h && _runs.Any(r => r.Run == h))
+                {
+                    <line class="trend-mark" x1="@F(X(h))" y1="0" x2="@F(X(h))" y2="@F(H)" />
+                }
+                @foreach (var (s, i) in _series.Select((s, i) => (s, i)))
+                {
+                    var known = s.Points.Where(p => value(p) is not null).OrderBy(p => p.At).ToList();
+                    if (known.Count > 1)
+                    {
+                        <path class="trend-line" clip-path="url(#@clip)" style="--i: @i; stroke: @Series(i)"
+                              d="@string.Join(" ", known.Select((p, k) => $"{(k == 0 ? "M" : "L")}{F(X(p.Run))},{F(Y(value(p)!.Value))}"))" />
+                    }
+                    @foreach (var p in known)
+                    {
+                        <a href="admin/maatstawwe/@p.Run">
+                            @* A zero-length line with a round cap: a circle at any width, where a stretched circle would be an oval. *@
+                            <line class="trend-point @(p.Run == Highlight ? "here" : "")" x1="@F(X(p.Run))" y1="@F(Y(value(p)!.Value))" x2="@F(X(p.Run))" y2="@F(Y(value(p)!.Value))" style="--i: @i; stroke: @Series(i)">
+                                <title>@s.Name · @p.At.ToLocalTime().ToString("yyyy-MM-dd HH:mm") · @label(value(p)!.Value)</title>
+                            </line>
+                        </a>
+                    }
+                }
+            </svg>
+        </section>
+    };
+
+    private string Money(decimal usd) => UsageFormat.Money(usd, "USD", Currency);
+    private static string F(double v) => Math.Round(v, 2).ToString(CultureInfo.InvariantCulture);
+}

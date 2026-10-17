@@ -1245,6 +1245,8 @@ html:has(.landing) { scroll-behavior: smooth; }
 .cards { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); align-items: start; }
 .card-p { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; display: flex; flex-direction: column; gap: 10px; animation: rise .4s var(--ease) both; }
 .card-p > p { margin: 0; }
+/* A card that holds a modal doesn't rise in: its filled transform animation would trap the modal inside it (F31). */
+.card-p.holds-modal { animation: none; }
 .card-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; color: var(--ink); }
 .muted { color: var(--muted); }
 .admin-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
@@ -1306,6 +1308,32 @@ html:has(.landing) { scroll-behavior: smooth; }
 .manual-body { overflow-y: auto; padding: 6px 22px 22px; }
 .manual-body table { width: 100%; }
 .manual-body h1 { font-size: 20px; margin-top: 14px; }
+/* F31 step 11a: a check's trend; each line draws itself in (a path of length 1, its dash offset to 0), then its points. */
+.compare-head .mode-name { font-size: 12px; font-weight: 400; color: var(--dim); }
+/* F31: the chats side by side (Louis), from the explorer's crumbs row into a wide modal on the search dialog's frame. */
+.crumbs .chat-open { margin-left: auto; }
+.chats-dialog { width: min(1500px, calc(100vw - 32px)); max-height: 88vh; top: min(5vh, 40px); outline: 0; }
+.chats-dialog .manual-head { flex-wrap: wrap; }
+.chats-dialog .manual-head kbd { margin-left: auto; }
+.chats-body { overflow-y: auto; padding: 14px 20px 22px; }
+.chats-body .xreplay { display: flex; flex-direction: column; gap: 6px; }
+.trend { display: flex; flex-direction: column; gap: 10px; }
+.trend.small { margin: 2px 0 6px; }
+.trend.small .chart { padding: 6px 8px; background: none; border: 0; animation: none; }
+.trend.small .trend-svg { height: 54px; }
+.trend-panel .chart-head { gap: 8px; }
+.trend-top { margin-left: auto; font-size: 11.5px; }
+.trend-svg { width: 100%; height: 150px; overflow: visible; }
+.trend-axis { stroke: var(--border); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.trend-mark { stroke: rgba(245, 130, 32, .45); stroke-width: 1; stroke-dasharray: 3 3; vector-effect: non-scaling-stroke; }
+.trend-line { fill: none; stroke-width: 2; vector-effect: non-scaling-stroke; stroke-linejoin: round; }
+.trend-reveal { animation: reveal 1.2s var(--ease) both; animation-delay: .1s; }
+@keyframes reveal { from { width: 0; } }
+.trend-point { stroke-width: 7; stroke-linecap: round; vector-effect: non-scaling-stroke; cursor: pointer; animation: fade .4s ease both; animation-delay: calc(var(--i, 0) * 120ms + 1s); }
+.trend-point.here { stroke-width: 11; }
+.trend.small .trend-point { stroke-width: 5; }
+.trend-point:hover { filter: brightness(1.25); }
+@media (prefers-reduced-motion: reduce) { :root:not([data-motion="on"]) :is(.trend-reveal, .trend-point) { animation: none; } }
 .manual-body h2 { font-size: 16px; color: var(--orange-text); }
 .runs-list .run-row-main:hover code { color: var(--orange-text); }
 .run-report { margin-top: 6px; }
@@ -1323,6 +1351,11 @@ html:has(.landing) { scroll-behavior: smooth; }
 .admin-col-side { position: sticky; top: 0; }
 .runs-list { max-height: calc(100vh - 150px); overflow: auto; }
 .runs { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+/* F31: a check card selects its check (Louis); the selected one glows in Puls's orange. */
+.check-card { cursor: pointer; transition: border-color .2s, box-shadow .2s; }
+.check-card:hover { border-color: rgba(245, 130, 32, .3); }
+.check-card.selected { border-color: rgba(245, 130, 32, .65); box-shadow: var(--shadow-glow); }
+.check-card:focus-visible { outline: 2px solid rgba(245, 130, 32, .6); outline-offset: 2px; }
 .run-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 9px 8px; border-radius: 10px; cursor: pointer; border-bottom: 1px solid rgba(255, 255, 255, .05); transition: background .15s; }
 .run-row:hover { background: rgba(255, 255, 255, .04); }
 .run-row.selected { background: var(--orange-soft); }
@@ -1342,12 +1375,15 @@ html:has(.landing) { scroll-behavior: smooth; }
 .segmented button:hover:not(:disabled) { color: var(--ink); background: rgba(255, 255, 255, .05); }
 .segmented button.active { background: var(--orange-soft); color: var(--orange-text); }
 /* A check's card rolls up and down: its header is the summary, with the chip and the last cost; a chevron turns. */
-.check-card > summary { cursor: pointer; list-style: none; user-select: none; }
-.check-card > summary::-webkit-details-marker { display: none; }
+/* F31: one fold for every check card (Louis), not a fold per card. */
+.checks-head { display: flex; align-items: center; gap: 8px; margin: 0 2px 6px; }
+.checks-head .sidebar-label { margin: 0; padding: 0; }
+.checks-toggle { background: none; border: 0; padding: 4px 6px; border-radius: 8px; line-height: 0; }
+.checks-toggle:hover { background: rgba(255, 255, 255, .06); }
+.checks-toggle .chevron { display: inline-block; width: 8px; height: 8px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(45deg); transition: transform .2s var(--ease); margin-bottom: 3px; }
+.checks-toggle.open .chevron { transform: rotate(-135deg); margin-bottom: -3px; }
 .check-card-meta { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); font-size: 13px; }
-.check-card .chevron { width: 8px; height: 8px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(45deg); transition: transform .2s var(--ease); margin: 0 4px 3px; }
-.check-card[open] .chevron { transform: rotate(-135deg); margin-bottom: -3px; }
-.check-card:not([open]) { gap: 0; }
+.check-card:not(.open) { gap: 0; }
 /* The live run's conversations, rendered by the chat's TurnView; while a run goes the page is one column. */
 .admin-cols.single { grid-template-columns: minmax(0, 1fr); }
 .live-chat { display: flex; flex-direction: column; gap: 14px; padding: 14px 0 6px; border-top: 1px solid var(--border); }
@@ -1375,17 +1411,18 @@ html:has(.landing) { scroll-behavior: smooth; }
 .tree-turn-body { padding: 6px 0 10px 14px; display: flex; flex-direction: column; gap: 12px; }
 .tree-turn-body .user-message { max-width: 70%; }
 /* A check card's title stays on one line; the cost, chip and chevron sit at the right and never push it down. */
-.check-card > summary { flex-wrap: nowrap; }
-.check-card > summary > strong { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.check-card > .card-head { flex-wrap: nowrap; }
+.check-card > .card-head > strong { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 .check-card-meta { margin-left: auto; flex: 0 0 auto; }
 /* The run explorer (F27 steps 8-10): charts you drill into. Marks follow the dataviz specs (bars <= 24px, 4px rounded
    data-end, a 2px surface gap between stacked segments, recessive hairlines); motion follows the landing page (rise,
    grow, count-up, a spring), and stops for people who ask for less. */
 .explorer { display: flex; flex-direction: column; gap: 14px; margin: 6px 0 10px; }
 .crumbs { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 13px; }
-.crumb { background: none; border: 0; color: var(--muted); padding: 3px 8px; border-radius: 8px; font: inherit; font-size: 13px; transition: background .15s, color .15s; }
-.crumb:hover { background: rgba(255, 255, 255, .06); color: var(--ink); }
-.crumb.here { color: var(--ink); font-weight: 700; }
+.crumb { background: none; border: 0; color: var(--orange-text); padding: 3px 8px; border-radius: 8px; font: inherit; font-size: 13px; cursor: pointer; transition: background .15s, color .15s; }
+.crumb:hover, .crumb:focus-visible { background: rgba(245, 130, 32, .1); text-decoration: underline; text-underline-offset: 3px; }
+.crumb.here { color: var(--ink); font-weight: 700; cursor: default; background: none; text-decoration: none; }
+.crumb code { color: inherit; }
 .crumb-sep { color: var(--dim); }
 .lvl { display: flex; flex-direction: column; gap: 14px; transform-origin: 0 0; }
 .lvl.in { animation: zoom-in .4s var(--ease) both; }
@@ -1419,15 +1456,31 @@ button.tile:hover { transform: translateY(-2px); border-color: rgba(245, 130, 32
 .xbar.stacked .xbar-fill:first-child { border-radius: 0; }
 .xbar:hover .xbar-fill { filter: brightness(1.15); }
 @keyframes grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
-.xbar-value { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; margin-left: 6px; }
+.xbar-value { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; margin-left: 6px; display: inline-flex; align-items: center; gap: 5px; }
 .xbar .xbar-value { position: absolute; right: -90px; }
 .xstack-wrap { display: flex; align-items: center; }
 .xstack { display: inline-flex; gap: 2px; height: 14px; width: 100%; }
 .xseg { display: block; height: 100%; border-radius: 3px; transform-origin: 0 50%; animation: grow .8s var(--ease) both; animation-delay: calc(var(--i, 0) * 90ms + 100ms); }
 .turn-chart { padding-top: 8px; }
 .turn-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; width: 100%; background: none; border: 0; padding: 4px 2px 8px; color: var(--text); font: inherit; text-align: left; cursor: pointer; border-radius: 10px; }
-.turn-head:hover { background: rgba(255, 255, 255, .04); }
-.turn-head .chevron { margin-left: auto; width: 7px; height: 7px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(-45deg); }
+.turn-head { cursor: default; padding: 6px 8px 8px; }
+.turn-head:hover { background: none; }
+/* F31: a row's ways on are its buttons only (Louis): Speel af opens the chats, the link goes into the costs. */
+.row-actions { display: inline-flex; align-items: center; gap: 8px; }
+.turn-head .row-actions { margin-left: 4px; }
+.turn-open { display: inline-flex; align-items: center; gap: 6px; font: inherit; font-size: 12.5px; font-weight: 600; color: var(--orange-text); background: none; border: 1px solid rgba(245, 130, 32, .45); border-radius: 999px; padding: 3px 12px; cursor: pointer; white-space: nowrap; transition: background .15s; }
+.turn-open:hover, .turn-open:focus-visible { background: rgba(245, 130, 32, .14); }
+.turn-open.quiet { color: var(--text); border-color: var(--border); }
+.turn-open.quiet:hover, .turn-open.quiet:focus-visible { color: var(--orange-text); border-color: rgba(245, 130, 32, .45); background: rgba(245, 130, 32, .08); }
+/* F31: a row's cost pops (Louis), as a tile's figure does: bold, white, its digits in columns, counting up. */
+.row-cost { font-size: 19px; font-weight: 700; color: var(--ink); letter-spacing: -.3px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.row-cost.small { font-size: 15px; display: inline-flex; align-items: center; gap: 6px; }
+.row-costs { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+.turn-head .turn-cost { margin-left: auto; }
+/* F31: a conversation's whole row drills in (Louis), lit on hover like a turn's, its pill saying what it does. */
+.xbar-row.drill { grid-template-columns: minmax(140px, 220px) minmax(0, 1fr) auto auto; gap: 16px; padding: 4px 0; }
+.xbar-row.drill .xbar { cursor: default; }
+.xbar-row.drill > .xbar-group { min-width: 0; }
 .timeline { display: flex; flex-direction: column; gap: 6px; }
 .lane { display: grid; grid-template-columns: 90px minmax(0, 1fr); align-items: center; gap: 10px; }
 .lane-label { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
@@ -1459,9 +1512,16 @@ button.tile:hover { transform: translateY(-2px); border-color: rgba(245, 130, 32
 /* F31: each mode's token mix as a donut; each arc sweeps in after the one before (Jitter's chart idiom), on the
    explorer's palette. A circumference of 100, so an arc's dash length is its share. */
 .donuts { display: flex; flex-wrap: wrap; gap: 24px; }
+/* F31: two charts side by side (the cost and the tokens per mode), one under the other when the screen is narrow. */
+.chart-pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 14px; align-items: stretch; }
 .donut-fig { display: flex; flex-direction: column; align-items: center; gap: 6px; margin: 0; animation: rise .5s var(--ease) both; animation-delay: calc(var(--i, 0) * 90ms); }
 .donut-fig figcaption { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--muted); }
 .donut { width: 132px; height: 132px; transform: rotate(0deg); }
+/* The ring's total in its middle (Louis: the cost must pop), as a tile's figure. */
+.donut-wrap { position: relative; display: grid; place-items: center; }
+.donut-centre { position: absolute; display: flex; flex-direction: column; align-items: center; line-height: 1.1; pointer-events: none; }
+.donut-centre strong { font-size: 18px; font-weight: 700; color: var(--ink); letter-spacing: -.3px; font-variant-numeric: tabular-nums; }
+.donut-centre small { font-size: 10.5px; color: var(--muted); }
 .donut circle { fill: none; stroke-width: 5; }
 .donut-track { stroke: rgba(255, 255, 255, .06); }
 .donut-arc { stroke-dasharray: var(--len) calc(100 - var(--len)); animation: sweep .9s var(--ease) both; animation-delay: calc(var(--i, 0) * 160ms + 150ms); }

@@ -45,9 +45,17 @@ else
     {
         <section class="card-p store-banner"><strong>Nie alles van hierdie lopie is gestoor nie.</strong><p>@storeError</p></section>
     }
-    <section class="card-p">
+    @* No entrance animation on this card: a filled transform animation makes it the frame of every fixed child, so the
+       explorer's chats modal would be clipped to the card and painted under the cards after it. *@
+    <section class="card-p holds-modal">
         <RunExplorer Run="run" Currency="Currency.Current" />
     </section>
+    @if (_trend is { } trend)
+    {
+        <section class="card-p">
+            <TrendChart Trend="trend" Highlight="@RunId" Labels="_labels" Currency="Currency.Current" />
+        </section>
+    }
     <section class="card-p">
         <details class="admin-details">
             <summary>Waarmee dit geloop het</summary>
@@ -73,7 +81,15 @@ else
 @code {
     [Parameter] public string RunId { get; set; } = "";
 
-    private JsonElement? _run;
+    private JsonElement? _run, _trend;
+    private Dictionary<string, string> _labels = [];
+
+    /// <summary>Who each mode is, as the explorer names it: Puls with the roles it handed to, or Puls alone.</summary>
+    private static Dictionary<string, string> Labels(JsonElement run) =>
+        run.GetProperty("turns").EnumerateArray()
+            .GroupBy(t => t.GetProperty("mode").GetString()!)
+            .ToDictionary(g => g.Key, g => g.Select(t => S(t, "role")).Where(r => !string.IsNullOrEmpty(r)).Distinct().ToList() is { Count: > 0 } roles
+                ? $"Puls met {string.Join(" en ", roles)}" : "Puls alleen");
     private string? _title, _error;
 
     protected override async Task OnParametersSetAsync()
@@ -91,6 +107,9 @@ else
             _title = list.GetProperty("checks").EnumerateArray().Where(c => c.GetProperty("id").GetString() == check)
                 .Select(c => c.GetProperty("title").GetString()).FirstOrDefault() ?? check;
             _run = run;
+            _labels = Labels(run);
+            try { _trend = await Api.GetAsync<JsonElement>($"admin/benchmarks/checks/{Uri.EscapeDataString(check)}/trend"); }
+            catch (AgentApiException) { _trend = null; }
         }
         catch (AgentApiException ex)
         {
