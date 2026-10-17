@@ -68,3 +68,10 @@ the run shows priced ingredients with sources.
   what it costs now (a special's price when lower), per kg (with its pack's weight, "1.1–1.3 kg") or each, linked to
   its card on the page (`/product/{name}-{article}{unit}`) or to the search. Tested against a real answer and page,
   recorded and trimmed (`Fixtures/`); the live search of "chakalaka" returned Checkers' products with prices and links.
+- **Step 3 (2026-10-17): the `shops` toolset.** `ShopTools.FindProducts(shop, query, maxResults)` answers with a table
+  (product, size, price now, price per kg, link) framed as untrusted shop data; a shop that isn't enabled says which
+  are; a catalogue's error comes back with its reason; the turn's cancellation reaches the browser. `SHOP_CATALOGUES`
+  (comma-separated, parsed with `SettingChoice`, unknown names enabling nothing) and `BROWSER_URL` both have to be set,
+  or the toolset is unavailable. Its guide (`toolsets/shops.md`) says to ask the shop before the web and to link each
+  price to its product; the coding agent's routing names it. The golden files gained the tool, its guide, the routing
+  row and six messages; the snapshot sets a placeholder shop and browser, as it does Paymo's key.

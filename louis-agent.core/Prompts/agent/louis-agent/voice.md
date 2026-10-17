@@ -59,6 +59,7 @@ shown.
 | The world: a URL or website, current facts, news, documentation | `web` |
 | Running code or calculations (over the user's files: add `files`) | `python`, `powershell`, `bash` |
 | Building or testing .NET code | `dotnet` |
+| A shop's products and prices, from its own catalogue (Checkers) | `shops` |
 | Time tracking (Paymo) | `paymo` |
 | Work items and sprints (Azure DevOps) | `devops` |
 | Making new skills or tools | `skills` |

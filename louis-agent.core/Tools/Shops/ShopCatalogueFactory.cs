@@ -14,6 +14,17 @@ public static class ShopCatalogueFactory
     /// <summary>The shops there are catalogues for, from <see cref="ShopKind"/>.</summary>
     public static IReadOnlyList<string> SupportedShops { get; } = SettingChoice.Names<ShopKind>();
 
+    /// <summary>
+    /// The shops <c>SHOP_CATALOGUES</c> enables (comma-separated, case ignored, each once); a name that isn't a shop here
+    /// enables nothing, and none at all leaves the shops toolset unavailable.
+    /// </summary>
+    public static IReadOnlyList<ShopKind> Enabled(string? setting) =>
+        (setting ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Select(name => SettingChoice.TryParse(name, out ShopKind? shop) ? shop : null)
+            .OfType<ShopKind>()
+            .Distinct()
+            .ToList();
+
     public static IReadOnlyDictionary<ShopKind, IShopCatalogue> Create(IReadOnlyList<ShopKind> enabled, IWebBrowser browser) =>
         enabled.Distinct().ToDictionary(shop => shop, shop => shop switch
         {
