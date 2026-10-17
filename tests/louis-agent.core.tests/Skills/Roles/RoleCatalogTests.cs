@@ -286,17 +286,22 @@ public class RoleCatalogTests
     }
 
     [Test]
-    public void TheCook_PricesAShopWithACatalogue_ThroughFindProducts_First()
+    public void TheCook_PricesOnlyShopsItHasAToolFor()
     {
-        // F33 step 4: F32's run priced nothing; Checkers' own catalogue gives exact, linked prices. Where the cook has
-        // FindProducts (the shops toolset, its own: `toolsets: shops?`), a shop it covers in the town is one of the two,
-        // priced through it before any web search, each price linked to the product the table gives.
+        // F34 step 4 (Louis: "the cook may only use shops for who has tools for"; with none, the recipe with no prices).
+        // F33's cook priced two shops picked at random, through WebSearch for those without a catalogue; with every
+        // search engine refusing (the Malmesbury chat), that gave no price with a source. Now a price comes only from a
+        // shop tool, linked to the product the table gives, a deal named beside it.
         string cook = SkillFileSource.ReadEmbedded(RoleCatalog.SpecialistsFolder + "/puls-cook.md")!;
 
         Assert.That(cook, Does.StartWith("---\ntoolsets: shops?\n---").Or.StartWith("---\r\ntoolsets: shops?\r\n---"));
-        Assert.That(cook, Does.Contain("`FindProducts`").And.Contain("before any `WebSearch`"));
-        Assert.That(cook, Does.Contain("one of the two"), "a shop with a catalogue is picked first");
+        Assert.That(cook, Does.Contain("Price only at a shop your shop tools cover"));
+        Assert.That(cook, Does.Contain("No shop near you has a catalogue here yet").And.Contain("Geen winkel naby jou het nog 'n katalogus hier nie"));
+        Assert.That(cook, Does.Contain("`SearchSpecials`").And.Contain("`SearchPromotions`"));
         Assert.That(cook, Does.Contain("the link the table gives"), "its source");
+        Assert.That(cook, Does.Not.Contain("pick two at random").And.Not.Contain("before any `WebSearch`"), "no shop without a tool");
+        Assert.That(cook, Does.Not.Contain("Which shops' pages give a price").And.Not.Contain("`pnp.co.za`").And.Not.Contain("soekindeks"),
+            "no prices from the web");
     }
 
     [Test]
@@ -309,22 +314,20 @@ public class RoleCatalogTests
 
         Assert.That(cook, Does.Contain("Puls hands your report to the user as it is"));
         Assert.That(cook, Does.Not.Contain("Puls will put it in its own voice"), "the line every other role has invites a rewrite");
-        // Louis: one table, not the recipe's ingredients and then the list again.
-        // Louis: two shops' prices per ingredient, and the totals merged into one table that compares them.
-        Assert.That(cook, Does.Contain("| Ingredient | For the recipe | To buy | Checkers | Shoprite | Pick n Pay | Best price |"), "the shopping list's columns: a column per shop priced at");
-        // Louis: "one shop has to at least have all products; include Spar, Pick n Pay, Usave and Woolworths, it never uses them".
-        Assert.That(cook, Does.Contain("at least one shop must have").And.Contain("one trip"));
-        Assert.That(cook, Does.Contain("Pick n Pay, Spar, Usave, Woolworths").And.Contain("`pnp.co.za`").And.Contain("`usave.co.za`"));
+        // Louis: one table, not the recipe's ingredients and then the list again; a column per shop priced at (F34: only
+        // shops with a tool, so Checkers today), and a best-price column only when there's more than one.
+        Assert.That(cook, Does.Contain("| Ingredient | For the recipe | To buy | Checkers |"), "the shopping list's columns: a column per shop priced at");
         // The cheapest basket can exceed a shop's total that leaves rows out, so it's bounded by the completed column.
         Assert.That(cook, Does.Contain("the cheapest basket is never more than the completed"), "the best-price total the model got wrong");
-        Assert.That(cook, Does.Not.Contain("Checkers and Shoprite always"), "the two shops are picked at random from the town's");
-        // Louis: "pick randomly which store to use based on location; don't even use stores not in your location".
-        Assert.That(cook, Does.Contain("q=supermarkets+in+Stellenbosch").And.Contain("pick two at random").And.Contain("never price at, name or total a shop the town doesn't have"));
-        Assert.That(cook, Does.Contain("| **Total, priced rows** | | | **R120,98** | **R84,99** | **R120,97** | **R110,97** |"), "the totals are the list's last rows, side by side, the cheapest basket last");
+        // Louis: "don't even use stores not in your location".
+        Assert.That(cook, Does.Contain("never price at, name or total a shop the town doesn't have"));
+        Assert.That(cook, Does.Contain("| **Total, priced rows** | | | **R132,98** |"), "the totals are the list's last rows");
+        // F34: a deal is named beside the pack's price, as the shop words it.
+        Assert.That(cook, Does.Contain("[R24,99](https://www.checkers.co.za/…) · BUY 2 FOR R45"));
         // Louis: an unpriced ingredient is an ordinary row; no row counting or naming them. Its cell is a `-` (review of
         // PR #55: "make unknown --> -"), so a column of gaps reads at a glance and the check's scorer counts the row's
         // linked price at another shop.
-        Assert.That(cook, Does.Contain("| Lemons | 2 | Loose lemons, 2 | [R12,99](https://www.checkers.co.za/…) | - | [R14,99](https://www.pnp.co.za/…) | R12,99 Checkers |"));
+        Assert.That(cook, Does.Contain("| Fresh coriander | 20 g | Fresh coriander 20 g | - |"));
         Assert.That(cook, Does.Contain("a price you couldn't find is a `-` in its cell"));
         Assert.That(cook, Does.Not.Contain("**Unpriced"));
         Assert.That(cook, Does.Not.Contain("### Total"), "no section of its own");

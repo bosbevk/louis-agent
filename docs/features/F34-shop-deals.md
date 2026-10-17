@@ -80,6 +80,14 @@ prices.
   a multi-buy's pack price stays one pack's, the deal named beside it and used only when the recipe needs that many;
   never a saving the shop doesn't state. Checkers' own `dealsOnly` filter isn't used: it would mean changing the
   request the page makes, nearer to calling its API than visiting it as a shopper (F33's line).
+- **Step 4 (2026-10-17): the cook prices only shops it has a tool for.** `puls-cook.md` drops the two shops picked at
+  random, the column completed at other shops, `WebSearch` for prices, the notes on which shops' pages give a price and
+  the search-index line. A shop is priced when a shop tool covers it and it has a branch in the town (looked up by name);
+  without one, the list keeps its rows with `-` and says *No shop near you has a catalogue here yet* (Afrikaans: *Geen
+  winkel naby jou het nog 'n katalogus hier nie*). `SearchSpecials` and `SearchPromotions` when cost matters, a deal
+  beside the pack's price (`[R24,99](…) · BUY 2 FOR R45`). The list's example is one shop's; a *Best price* column only
+  with more than one. `WebSearch` stays for a recipe and a branch's own page; the shops guide no longer sends a shop
+  without a catalogue to the web.
 
 ---
 [Features](README.md) · [Plan](../plans/F34-shop-deals.md) · Previous: [F33 Shop catalogues](F33-shop-catalogues.md)
