@@ -80,6 +80,29 @@ public partial class ArchitectureTests
         }
     }
 
+    // CL13, review of PR #59: inside Skills/, the top (the contract and the embedded files) uses neither subfolder, and
+    // Providers/ and Roles/ use the top, never each other; SkillFiles once used RoleCatalog while RoleCatalog read
+    // SkillFileSource, a cycle the layers above can't see. Skills only: a factory at a seam's top (Tools/Shops) may
+    // create its providers.
+    [Test]
+    public void InsideSkills_TheTopUsesNothingBelow_AndItsFoldersOnlyTheTop()
+    {
+        string skills = Path.Combine(TestPaths.RepoRoot, "louis-agent.core", "Skills");
+        var found = new List<string>();
+        foreach (string path in Directory.EnumerateFiles(skills, "*.cs", SearchOption.AllDirectories))
+        {
+            string file = Path.GetRelativePath(skills, path).Replace('\\', '/');
+            string folder = Path.GetDirectoryName(file)!.Replace('\\', '/');
+            foreach (string used in SkillsUsing().Matches(File.ReadAllText(path)).Select(u => u.Groups[1].Value).Distinct())
+                if (used != folder) found.Add($"Skills/{file} uses Skills.{used}");
+        }
+
+        Assert.That(found, Is.Empty, "Skills/: the top uses nothing below it; Providers/ and Roles/ use only the top");
+    }
+
+    [GeneratedRegex(@"^using\s+LouisAgent\.Core\.Skills\.(\w+)\s*;", RegexOptions.Multiline)]
+    private static partial Regex SkillsUsing();
+
     [GeneratedRegex(@"^namespace\s+([\w.]+)\s*;", RegexOptions.Multiline)]
     private static partial Regex Namespace();
 

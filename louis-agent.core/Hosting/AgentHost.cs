@@ -376,7 +376,7 @@ public static partial class AgentHost
         // Every function skill the agent wrote (CL9: no setting picks one; none is built in any more)
         foreach (string file in DiscoverSkillFiles(agent).Where(f => !SkillFiles.IsBuiltIn(SkillFiles.Function(Path.GetFileNameWithoutExtension(f)))))
         {
-            composite.AddProvider(new MarkdownSkillProvider(file, includeDefaultInstructions: false));
+            composite.AddProvider(new MarkdownSkillProvider(file));
             Log.Log(LogLevel.Information, LogMessage.SkillsFileDiscovered, new { File = Path.GetFileName(file) });
         }
 
@@ -452,7 +452,7 @@ public static partial class AgentHost
     }
 
     /// <summary>
-    /// The personalities this instance offers at <paramref name="level"/>: the built-in ones, or only the enabled ones when
+    /// The roles this instance offers at <paramref name="level"/>: the built-in ones, or only the enabled ones when
     /// the list is set (F29).
     /// </summary>
     internal static IReadOnlyList<string> EnabledRoles(AgentOptions agent, RoleLevel level) =>

@@ -72,7 +72,7 @@ public class AgentHostSkillsTests
     }
 
     [Test]
-    public void PersonalityAndTheRouter_AreAlwaysThere()
+    public void TheRoleAndTheRouter_AreAlwaysThere()
     {
         string docs = AgentHost.LoadSkills(Options(), []).Documentation;
 

@@ -53,7 +53,7 @@ public class SkillsLayoutTests
     }
 
     [Test]
-    public void NoPersonality_IsInTwoLevels()
+    public void NoRole_IsInTwoLevels()
     {
         // A role name means one file, so PERSONALITIES_ENABLED names roles without a level.
         var twice = Levels.SelectMany(RoleCatalog.Available).GroupBy(n => n).Where(g => g.Count() > 1).Select(g => g.Key);

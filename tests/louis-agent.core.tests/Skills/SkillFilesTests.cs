@@ -17,7 +17,7 @@ public class SkillFilesTests
     private static string SkillsDirectory => TestPaths.Prompts;
 
     private static MarkdownSkillProvider Load(string fileName) =>
-        new(Path.Combine(SkillsDirectory, fileName), includeDefaultInstructions: false);
+        new(Path.Combine(SkillsDirectory, fileName));
 
     [Test]
     public void EveryToolset_HasAGuide_ThatLoadsWithIt_AndCantBeOverwritten()
@@ -69,6 +69,11 @@ public class SkillFilesTests
         Assert.That(SkillFileSource.ReadEmbedded(SkillFiles.Function("code-review")), Is.Null);
         Assert.That(routing, Does.Contain("Reviewing a change").And.Contain("`git`"));
     }
+
+    [Test]
+    public void TheFunctionSkills_AreLevelZeros() =>
+        // CL13: written out in SkillFiles, so the top of Skills/ doesn't use Roles/; still the agent level's folder.
+        Assert.That(SkillFiles.FunctionsFolder, Does.StartWith(RoleCatalog.AgentFolder + "/"));
 
     [Test]
     public void NoProviderClassPerSkillFile()

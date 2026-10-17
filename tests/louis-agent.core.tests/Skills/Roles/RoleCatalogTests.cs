@@ -5,7 +5,7 @@ using LouisAgent.Core.Skills.Roles;
 
 namespace LouisAgent.Core.Tests.Skills.Roles;
 
-// F21 step 1: a session names its personality; the prompt starts with that one instead of personality.md, and a name
+// F21 step 1: a session names its role (its personality before CL13); the prompt starts with that one instead of personality.md, and a name
 // never reaches outside its level's folder (CL8: Skills/agent/, Skills/specialists/).
 public class RoleCatalogTests
 {
@@ -25,7 +25,7 @@ public class RoleCatalogTests
     private AgentOptions Options() => new() { SkillsDirectory = _skills };
 
     [Test]
-    public void NoName_IsTheDefaultPersonality()
+    public void NoName_IsTheDefaultMode()
     {
         string docs = AgentHost.LoadSkills(Options(), [], role: null).Documentation;
 
@@ -47,7 +47,7 @@ public class RoleCatalogTests
     }
 
     [Test]
-    public void ANamedPersonality_ReplacesTheDefault_AndComesFirst()
+    public void ANamedRole_ReplacesTheDefault_AndComesFirst()
     {
         string docs = AgentHost.LoadSkills(Options(), [], "puls/voice-af").Documentation;
 
@@ -78,7 +78,7 @@ public class RoleCatalogTests
     [Test]
     public void AVoiceOnDisk_IsNeitherOfferedNorLoaded()
     {
-        // CL8 step 4: personalities are built in; the skills folder holds only what the agent writes.
+        // CL8 step 4: roles are built in; the skills folder holds only what the agent writes.
         Assert.That(RoleCatalog.Available(RoleLevel.Agent), Does.Not.Contain("test-voice"));
         Assert.Throws<RoleException>(() => AgentHost.LoadSkills(Options(), [], "test-voice"));
     }
@@ -153,7 +153,7 @@ public class RoleCatalogTests
     }
 
     [Test]
-    public void EachLevel_ListsOnlyItsOwnPersonalities()
+    public void EachLevel_ListsOnlyItsOwnRoles()
     {
         // CL8: the folders follow the levels; F30 step 4 fills minions/ (level 2) with its first role.
         Assert.That(RoleCatalog.Available(RoleLevel.Specialist), Does.Not.Contain("puls/voice-af").And.Not.Contain("puls-minion-web-price-lookup"));

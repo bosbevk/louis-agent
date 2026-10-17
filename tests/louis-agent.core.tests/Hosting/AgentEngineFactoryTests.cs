@@ -20,7 +20,7 @@ public class AgentEngineFactoryTests
 
     private static string[] Names(AgentEngine engine) => engine.Tools.Select(t => t.Name).ToArray();
 
-    /// <summary>A factory with only <paramref name="enabled"/> personalities on (F29); every one is built in (CL8 step 4).</summary>
+    /// <summary>A factory with only <paramref name="enabled"/> roles on (F29); every one is built in (CL8 step 4).</summary>
     private static AgentEngineFactory FactoryEnabling(IReadOnlyList<string> enabled)
     {
         var options = Options();
@@ -29,7 +29,7 @@ public class AgentEngineFactoryTests
     }
 
     [Test]
-    public void OnlyTheEnabledPersonalities_AreOffered_AndAnotherIsRefused()
+    public void OnlyTheEnabledRoles_AreOffered_AndAnotherIsRefused()
     {
         // F29: Louis switched every specialist but the cook off until it has passed a check like the cook's. The gate is
         // a setting the API enforces, so a prompt slip that names the researcher fails at the peer, not quietly.
@@ -89,7 +89,7 @@ public class AgentEngineFactoryTests
     }
 
     [Test]
-    public void AnEmptyEnabledList_MeansEveryPersonality()
+    public void AnEmptyEnabledList_MeansEveryRole()
     {
         var factory = FactoryEnabling([]);
 
@@ -120,9 +120,9 @@ public class AgentEngineFactoryTests
     }
 
     [Test]
-    public void APersonality_IsItsOwnProfile_WithItsOwnPrompt()
+    public void ARole_IsItsOwnProfile_WithItsOwnPrompt()
     {
-        // F21: the same toolsets with another personality, or at another level (CL8: no router below level 0), is another engine.
+        // F21: the same toolsets with another role, or at another level (CL8: no router below level 0), is another engine.
         var factory = Factory();
 
         var plain = factory.GetOrCreate(["files"]);
@@ -138,7 +138,7 @@ public class AgentEngineFactoryTests
     }
 
     [Test]
-    public void AnUnknownPersonality_IsRefused_BeforeAnythingIsBuilt()
+    public void AnUnknownRole_IsRefused_BeforeAnythingIsBuilt()
     {
         var factory = Factory();
 

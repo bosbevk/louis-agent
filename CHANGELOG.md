@@ -6,8 +6,10 @@
 - 2026-10-17 — **CL13 Skills by role**: `Skills/` in the seams' pattern, the contract at the top, `Providers/`
   (`MarkdownSkillProvider`, `CompositeSkillProvider`) and `Roles/` (`RoleCatalog`, `RoleLevel`, `RoleException`,
   `RoleHeader`); "personality" becomes "role" in the code, `RoleNamingTests` holding it; the unused
-  `PersonalitySkillsProvider` deleted. The public word (`personality` on the API and `StartSubSession`) is CL14's
-  ([plan](docs/plans/CL13-skills-by-role.md))
+  `PersonalitySkillsProvider` deleted, and `MarkdownSkillProvider`'s unused default-routing flag; inside `Skills/` the
+  top uses nothing below it (`ArchitectureTests`). The golden files never changed, and a cook session on the rebuilt
+  `puls-agent` still opens with `web, shops` (checked by hand, free). The public word (`personality` on the API and
+  `StartSubSession`) is CL14's ([plan](docs/plans/CL13-skills-by-role.md))
 - 2026-10-17 — **F33 Shop catalogues**: a shop's products and exact prices read from its own catalogue through the
   guarded browser (`Tools/Web/Browsing`, extracted from F32's renderer), Checkers first (`Tools/Shops`,
   `Providers/CheckersCatalogue`); a `shops` toolset with `FindProducts`, off unless `SHOP_CATALOGUES` names the shop.

@@ -42,9 +42,6 @@ public enum LogMessage
     [Description("Failed to load {File}: {Reason}")]
     SkillFileLoadFailed,
 
-    [Description("The default mode isn't in the assembly")]
-    DefaultInstructionsNotFound,
-
     [Description("Failed to connect to Rider at {Endpoint}: {Reason}")]
     McpConnectFailed,
 

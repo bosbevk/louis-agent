@@ -75,7 +75,7 @@ public sealed class AgentEngineFactory
     /// <summary>The LLM profiles a session can name besides the instance's own model (F30, <c>LLM_SESSION_PROFILES</c>).</summary>
     public IReadOnlyList<string> SessionLlms => _sessionLlms.Keys.ToList();
 
-    /// <summary>The named personalities a session at <paramref name="level"/> can choose (F21, CL8), all built in.</summary>
+    /// <summary>The named roles a session at <paramref name="level"/> can choose (F21, CL8), all built in.</summary>
     public IReadOnlyList<string> AvailableRoles(RoleLevel level) => AgentHost.EnabledRoles(_agent, level);
 
     /// <summary>The mode of a level-0 session that names none (CL9): <c>GET /personalities</c>' <c>default</c>.</summary>

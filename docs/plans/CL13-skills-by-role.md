@@ -189,7 +189,19 @@ the old names accepted for a while, so nothing breaks at once.
 
 ## Approved during the build
 
-(none yet)
+- **2026-10-17, review of PR #59: the dependencies inside `Skills/` are as the diagram draws them.** The build left a
+  cycle (`SkillFiles.FunctionsFolder` used `RoleCatalog.AgentFolder` while `RoleCatalog` read `SkillFileSource`) and
+  `MarkdownSkillProvider` reaching into `Roles/`, which `ArchitectureTests`' layers can't see. Now:
+  - `ArchitectureTests.InsideSkills_TheTopUsesNothingBelow_AndItsFoldersOnlyTheTop`: the top uses neither subfolder,
+    and `Providers/` and `Roles/` use only the top (Skills only: a factory at a seam's top, as in `Tools/Shops`, may
+    create its providers). Run first, it named the two.
+  - `SkillFiles.FunctionsFolder` is written out (`agent/functions`); `SkillFilesTests` holds it to
+    `RoleCatalog.AgentFolder`.
+  - **`MarkdownSkillProvider(filePath, includeDefaultInstructions)` loses its flag**, dead as `PersonalitySkillsProvider`
+    was: every production caller passed `false`, only tests took the default, which prepended the default mode's
+    routing. A provider now reads only its own file (`AFile_IsItsDocumentation_NothingAdded`), and
+    `LogMessage.DefaultInstructionsNotFound` goes with it.
+  - Core's test names and comments say role; the API's tests keep "personality" with its field, until CL14.
 
 ---
 [Plans](README.md) · Previous: [F33 Shop catalogues](F33-shop-catalogues.md)

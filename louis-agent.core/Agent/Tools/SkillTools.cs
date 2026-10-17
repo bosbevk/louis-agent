@@ -223,7 +223,7 @@ internal sealed partial class SkillTools
         {
             // Skip files the reloader already picked up (e.g. via skills-folder discovery).
             if (!loadedDocs.Contains(File.ReadAllText(file).Trim(), StringComparison.Ordinal))
-                provider.AddProvider(new MarkdownSkillProvider(file, includeDefaultInstructions: false));
+                provider.AddProvider(new MarkdownSkillProvider(file));
         }
 
         _skills = ToSkillMap(provider);

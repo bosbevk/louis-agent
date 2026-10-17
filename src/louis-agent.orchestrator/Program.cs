@@ -213,13 +213,13 @@ internal static class OrchestratorSkills
         composite.AddProvider(MarkdownSkillProvider.FromText(SkillFileSource.ReadEmbedded(RoleCatalog.FileName(Mode, RoleLevel.Agent))!));
 
         string serviceFile = Path.Combine(serviceDirectory, "service.md");
-        if (File.Exists(serviceFile)) composite.AddProvider(new MarkdownSkillProvider(serviceFile, includeDefaultInstructions: false));
+        if (File.Exists(serviceFile)) composite.AddProvider(new MarkdownSkillProvider(serviceFile));
 
         var methods = new SortedSet<string>(StringComparer.Ordinal);
         foreach (string file in Directory.EnumerateFiles(serviceDirectory, "*.md").Order(StringComparer.Ordinal))
         {
             if (Path.GetFileName(file) == "service.md") continue;
-            composite.AddProvider(new MarkdownSkillProvider(file, includeDefaultInstructions: false));
+            composite.AddProvider(new MarkdownSkillProvider(file));
             methods.Add(Path.GetFileNameWithoutExtension(file));
         }
 
