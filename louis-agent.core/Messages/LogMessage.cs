@@ -18,6 +18,9 @@ public enum LogMessage
     [Description("{Shop} couldn't find the store for {Place} ({Reason}); the default store answers.")]
     ShopAreaUnavailable,
 
+    [Description("{Shop} answered a search from {Place} from store {Store}, not one that serves {Place}; it's said so in the answer.")]
+    ShopStoreNotUsed,
+
     [Description("{Tool} returned {Chars} characters, {Outcome} to {ReturnedChars}; arguments {Arguments}; request: {UserRequest}")]
     OversizedToolResult,
 

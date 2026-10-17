@@ -251,6 +251,21 @@ sequenceDiagram
 
 ## Approved during the build
 
+- **2026-10-17, step 5, the cook check (Louis: "don't we need to update/add some stuff on the benchmark?", then "yes,
+  go ahead I will run the benchmark manually").** The check scored F33's cook: `priced_at_shops` only counted shop pages
+  read, which the cook no longer reads. Two conversations: `cook-malmesbury` (Louis's town, a R150 budget for four: the
+  store lookup, the N7 Checkers found by name, the deal tools) and `cook-no-shop` (Darling, no Checkers on OpenStreetMap:
+  no prices, the no-catalogue line). Scores: `shop_tool_calls`, `deal_tool_calls`, `deals_named`, `untooled_shops` (0
+  is right) and `no_catalogue_line`; `priced_at_shops` counts a shop tool too. The manual and the portal's chips name
+  them. Louis runs the check himself.
+- **2026-10-17, in step 5: proof the address was used (Louis: "how can we verify that the product comes from the
+  malmesbury store? that the address was used").** Each product in Checkers' answer names the store that priced it
+  (`storeId`). `CheckersCatalogue` names the town only when that store is one the town's lookup named
+  (`ShopSearch.Store`, `AreaIgnored`); else it logs `LogMessage.ShopStoreNotUsed` and the header says the town's store
+  wasn't used (`ToolMessage.ShopStoreNotUsed`). The header carries the store's id
+  (`the store serving Malmesbury, store 655b0c8f`). The benchmark's stream keeps the tools' results, and two scores
+  read those headers: `store_for_area` and `store_default`.
+
 - **2026-10-17, step 1 split in two (Louis: "yes, go ahead"), after the recorded visit.** Checkers' own address call
   (`POST /api/store/fetch-store-contexts?update=true`, an address with `latitude` and `longitude`) answers a visitor
   who isn't logged in with the area's store contexts and sets three cookies (`storeContexts`, `storeids`,

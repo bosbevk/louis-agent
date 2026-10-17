@@ -46,6 +46,14 @@ CONVERSATIONS = [
         "bestanddeel se prys by twee winkels hier naby met die skakel waar jy die prys gekry het, by watter winkel ek "
         "alles in een slag kry, die takke se adresse, en wat die goedkoopste mandjie kos.",
     ]),
+    # F34: Louis's town, a budget meal (the store that serves Malmesbury, the N7 Checkers found by name, its deals).
+    ("cook-malmesbury", "Malmesbury, Wes-Kaap, Suid-Afrika", [
+        "Ek het R150 vir aandete vir vier mense. Wat kan ek maak, en wat kos dit by die winkel? Gebruik spesiale as daar is.",
+    ]),
+    # F34: a town with no Checkers on OpenStreetMap: no shop the cook has a tool for, so the list comes without prices.
+    ("cook-no-shop", "Darling, Wes-Kaap, Suid-Afrika", [
+        "Wat kan ek vanaand vir twee kook? Gee die resep en wat dit by die winkel kos.",
+    ]),
     # The control: a plain web question, which Puls answers itself (F29: only the cook is on).
     ("control-web", "Stellenbosch, Wes-Kaap, Suid-Afrika", [
         "Wat is die huidige prima uitleenkoers in Suid-Afrika, en wanneer het dit laas verander? Gee jou bronne.",
@@ -65,6 +73,9 @@ def score(task, turns, cook_on):
     local = [h for h in fetched if h.endswith(".za")]
     shops = [h for h in fetched if h.endswith(SHOPS)]
     expected = "puls-cook" if task.startswith("cook") and cook_on else None
+    # F34: the cook reads shops through its tools, never their pages.
+    shop_calls = [c for t in turns for c in t["calls"] + t["specialist_calls"] if c["name"] in scoring.SHOP_TOOLS]
+    results = [r for t in turns for r in t.get("results", []) + t.get("specialist_results", [])]
     answers = [t["answer"] for t in turns]
     result = {
         "role": first["role"],
@@ -72,7 +83,14 @@ def score(task, turns, cook_on):
         "answered_itself": first["role"] is None and not first["error"],
         "hosts": fetched, "local_hosts": local, "shop_hosts": shops,
         "sources_local": bool(fetched) and len(local) == len(fetched),
-        "priced_at_shops": bool(shops),
+        "priced_at_shops": bool(shops) or bool(shop_calls),
+        "shop_tool_calls": len(shop_calls),
+        "deal_tool_calls": sum(1 for c in shop_calls if c["name"] in scoring.DEAL_TOOLS),
+        "deals_named": scoring.deals_named(first["answer"]),
+        "untooled_shops": scoring.untooled_shops(first["answer"]),
+        "no_catalogue_line": scoring.no_catalogue_line(first["answer"]),
+        "store_for_area": scoring.store_for_area(results),
+        "store_default": scoring.store_default(results),
         "ingredients": n_items, "priced": n_priced, "unsourced": n_guessed, "per_kg": n_per_kg,
         "priced_ratio": round(n_priced / n_items, 2) if n_items else None,
         "rand_amounts": sum(scoring.rand_amounts(a) for a in answers),

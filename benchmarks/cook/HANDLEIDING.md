@@ -41,7 +41,14 @@ Elke gesprek kry hierdie tellings, onder sy beurte in die lopie se tabel en in d
 | `local_hosts` | Daarvan, die Suid-Afrikaanse (`.za`) | — |
 | `shop_hosts` | Daarvan, die winkels (Checkers, Pick n Pay, Woolworths, Spar, Shoprite, Usave) | — |
 | `sources_local` | Al die gelese werwe is Suid-Afrikaans | ja |
-| `priced_at_shops` | Ten minste een winkel se bladsy is gelees | ja |
+| `priced_at_shops` | Ten minste een winkel se bladsy is gelees, of sy katalogus gevra met 'n winkelinstrument (F34) | ja, waar daar 'n Checkers is |
+| `shop_tool_calls` | Hoeveel keer die kok 'n winkelinstrument gebruik het (`FindProducts`, `SearchSpecials`, `SearchPromotions`, F34) | meer as 0 waar daar 'n Checkers is |
+| `deal_tool_calls` | Daarvan, `SearchSpecials` en `SearchPromotions`: na spesiale gesoek | meer as 0 by die begrotingsvraag (`cook-malmesbury`) |
+| `deals_named` | Hoeveel rye op die lys 'n spesiaal langs die prys noem (`· BUY 2 FOR R45`, `SAVE`) | — |
+| `untooled_shops` | Hoeveel winkels die lys prys waarvoor die kok geen instrument het nie (Louis, F34: net winkels met 'n instrument). Die portaal wys dit rooi | 0 |
+| `store_for_area` | Hoeveel van die kok se winkelsoektogte die winkel beantwoord het wat die gebruiker se dorp bedien: die instrument se eerste reël noem die winkel, nagegaan teen Checkers se eie winkel-id (Louis: "hoe weet ons die adres is gebruik?") | meer as 0 in Malmesbury |
+| `store_default` | Hoeveel die winkel se verstekwinkel beantwoord het: geen dorp nie, geen winkel daar nie, of die dorp s'n is nie gebruik nie | 0 in Malmesbury |
+| `no_catalogue_line` | Die antwoord sê geen winkel naby die gebruiker het nog 'n katalogus hier nie (die lys sonder pryse) | ja in Darling (`cook-no-shop`), nee elders |
 | `ingredients` | Hoeveel bestanddele op die lys is: die tabel se rye (die kok se eie *Geprys: n van m*-reël is sy bewering, nie die telling nie) | — |
 | `priced` | Hoeveel daarvan 'n prys het **met die skakel waar dit vandaan kom**: net 'n prys met sy bron tel (F31 stap 11b: 'n prys uit die geheue is nie 'n antwoord nie). Die skakel moet na die winkel van daardie kolom gaan (Checkers se prys na `checkers.co.za`); 'n resep se skakel of 'n ander winkel s'n tel nie, en 'n verwysingskakel (`[R12,99][1]`) is sy URL | — |
 | `priced_ratio` | `priced` gedeel deur `ingredients` | groen vanaf 0.8, rooi onder 0.5 |

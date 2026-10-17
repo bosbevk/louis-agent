@@ -4,10 +4,12 @@ using System.Globalization;
 using System.Net;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Sessions;
 using LouisAgent.Core.Tools.Shops;
 using LouisAgent.Core.Tools.Web.Browsing;
+using Microsoft.Extensions.Logging;
 
 /// <summary>
 /// Checkers' products from its own catalogue (F33 step 2). Its search page, at the address its own search box sends
@@ -20,6 +22,7 @@ using LouisAgent.Core.Tools.Web.Browsing;
 /// </summary>
 public sealed partial class CheckersCatalogue(IWebBrowser browser, CheckersStore? store = null) : IShopCatalogue
 {
+    private static readonly ILogger Log = AgentLogging.For<CheckersCatalogue>();
     private static readonly Uri Site = new("https://www.checkers.co.za/");
     private const string CataloguePath = "/api/catalogue/get-products-filter";
     // Where the search page's cards load a product's photo from, by the answer's imageId (seen live, 2026-10-17).
@@ -46,13 +49,38 @@ public sealed partial class CheckersCatalogue(IWebBrowser browser, CheckersStore
             throw new ShopCatalogueException(MessageText.Format(ToolMessage.ShopCatalogueNoAnswer, new { Shop = "Checkers", Query = query, Url = search }));
         try
         {
-            return new ShopSearch(Parse(visit.Captured[0], visit.Html, search, maxResults), area is null ? null : place!.Trim());
+            var products = Parse(visit.Captured[0], visit.Html, search, maxResults);
+            // Louis: "how can we verify that the product comes from the malmesbury store?" Checkers' answer names the
+            // store that priced each product: the town's only when it's one its lookup named.
+            string? answered = AnsweredBy(visit.Captured[0]);
+            if (area is null) return new ShopSearch(products, null, answered);
+            if (answered is not null && StoresOf(area).Contains(answered)) return new ShopSearch(products, place!.Trim(), answered);
+            if (answered is null) return new ShopSearch(products, null);
+            Log.Log(LogLevel.Warning, LogMessage.ShopStoreNotUsed, new { Shop = "Checkers", Place = place!.Trim(), Store = answered });
+            return new ShopSearch(products, null, answered, AreaIgnored: true);
         }
         catch (Exception ex) when (ex is JsonException or KeyNotFoundException or InvalidOperationException or FormatException)
         {
             throw new ShopCatalogueException(MessageText.Format(ToolMessage.ShopCatalogueUnreadable, new { Shop = "Checkers", Query = query, Reason = ex.Message }));
         }
     }
+
+    /// <summary>The store that priced the answer's products (each product's <c>storeId</c>), or none in an empty answer.</summary>
+    private static string? AnsweredBy(string json)
+    {
+        using var doc = JsonDocument.Parse(json);
+        return doc.RootElement.TryGetProperty("products", out var products) && products.ValueKind == JsonValueKind.Array
+            && products.EnumerateArray().FirstOrDefault() is { ValueKind: JsonValueKind.Object } first
+            && first.TryGetProperty("storeId", out var id) && id.ValueKind == JsonValueKind.String
+            ? id.GetString()
+            : null;
+    }
+
+    /// <summary>The stores a town's session names: Checkers' own <c>storeids</c> cookie, ids joined by dashes.</summary>
+    private static HashSet<string> StoresOf(BrowserSession session) =>
+        session.Cookies.Where(c => c.Name is "storeids" or "istio-storeIds")
+            .SelectMany(c => Uri.UnescapeDataString(c.Value).Split('-', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+            .ToHashSet(StringComparer.Ordinal);
 
     /// <summary>The search, as Checkers' own search box sends it.</summary>
     internal static Uri SearchUri(string query) => new(Site, "search?Search=" + Uri.EscapeDataString(query.Trim()));

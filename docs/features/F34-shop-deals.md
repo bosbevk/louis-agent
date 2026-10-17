@@ -88,6 +88,14 @@ prices.
   beside the pack's price (`[R24,99](…) · BUY 2 FOR R45`). The list's example is one shop's; a *Best price* column only
   with more than one. `WebSearch` stays for a recipe and a branch's own page; the shops guide no longer sends a shop
   without a catalogue to the web.
+- **Step 5 (2026-10-17): the cook check measures F34.** `cook-malmesbury` and `cook-no-shop` (Darling) join the
+  conversations; the scorer counts the cook's shop tool calls and its deal tool calls, the deals named in the list, the
+  shops priced with no tool for them (0 is right) and the no-catalogue line; `priced_at_shops` counts a shop tool as
+  pricing at a shop. The manual and the portal's chips show them. Louis runs it (paid).
+  **Proof of the store:** each search's header names the store that answered by Checkers' own id, and names the town
+  only when that id is one of the town's stores (else it says the town's store wasn't used, and logs it). The check
+  counts both from the recorded tool results (`store_for_area`, `store_default`). Live: a search from Malmesbury was
+  answered by one of Malmesbury's stores, not the default.
 
 ---
 [Features](README.md) · [Plan](../plans/F34-shop-deals.md) · Previous: [F33 Shop catalogues](F33-shop-catalogues.md)

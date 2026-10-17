@@ -550,6 +550,13 @@ else if (_data is { } data)
             // A price per kg given as a pack's (review of PR #58): sourced, but not what the pack costs.
             if (Int(s, "per_kg") is > 0 and var perKg) yield return new Chip($"per kg {perKg}", "warn");
         }
+        // F34: deals named beside a price; a shop priced with no tool for it (Louis: only shops with a tool) is wrong.
+        if (Int(s, "deals_named") is > 0 and var deals) yield return new Chip($"deals {deals}", "ok");
+        if (Int(s, "untooled_shops") is > 0 and var untooled) yield return new Chip($"no-tool shops {untooled}", "bad");
+        if (s.TryGetProperty("no_catalogue_line", out var none) && none.ValueKind == JsonValueKind.True) yield return new Chip("no catalogue here");
+        // Louis: "how can we verify … that the address was used": the searches the town's store answered, and the default's.
+        if (Int(s, "store_for_area") is > 0 and var local) yield return new Chip($"town's store {local}", "ok");
+        if (Int(s, "store_default") is > 0 and var fallback) yield return new Chip($"default store {fallback}", "warn");
         if (s.TryGetProperty("shop_hosts", out var shops) && shops.ValueKind == JsonValueKind.Array)
             yield return new Chip($"shops {shops.GetArrayLength()}");
         if (Int(s, "errors") is > 0 and var errors) yield return new Chip($"foute {errors}", "bad");

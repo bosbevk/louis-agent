@@ -54,6 +54,15 @@ class EveryEvent(unittest.TestCase):
         self.assertEqual(stream.read_turn([("content_block_start", call)])["role"], "puls-cook")
         self.assertEqual(stream.read_turn([("content_block_start", old)])["role"], "puls-cook")
 
+    def test_the_tools_results_are_kept_puls_s_and_the_specialists(self):
+        # F34: a shop tool's result names the store that answered; the check counts it, so the results are kept.
+        own = {"type": "content_block_start", "content_block": {"type": "tool_result", "tool_use_id": "t1", "content": "Saturday 17 October"}}
+        inner = {"event": "content_block_start", "data": {"type": "content_block_start", "content_block": {
+            "type": "tool_result", "tool_use_id": "t2", "content": "Products at Checkers (the store serving Malmesbury, store 655b0c8f) for 'rice' (1)"}}}
+        turn = stream.read_turn([("content_block_start", own), ("sub_session", inner)])
+        self.assertEqual(turn["results"], ["Saturday 17 October"])
+        self.assertEqual(turn["specialist_results"], ["Products at Checkers (the store serving Malmesbury, store 655b0c8f) for 'rice' (1)"])
+
     def test_a_continue_is_a_delegation_to_the_same_handle(self):
         start = {"type": "content_block_start", "content_block": {"type": "tool_use", "id": "t1", "name": "ContinueSubSession", "input": {"handle": "sub-1"}}}
         turn = stream.read_turn([("content_block_start", start)])

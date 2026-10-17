@@ -20,6 +20,16 @@ UNCONFIRMED = re.compile(r"\b(unknown|onbekend|geskat|skatting|skattings|estimat
 HEADER = re.compile(r"^\|\s*(Item|Bestanddeel|Ingredient|Produk)\b", re.IGNORECASE)
 SEPARATOR = re.compile(r"^\|\s*:?-")
 TOTAL = re.compile(r"^\|\s*\*\*")
+# F34: the shops the cook has a tool for, by their sites (Checkers today, ShopKind in core), and the tools themselves.
+TOOL_SHOP_HOSTS = ("checkers.co.za",)
+SHOP_TOOLS = ("FindProducts", "SearchSpecials", "SearchPromotions")
+DEAL_TOOLS = ("SearchSpecials", "SearchPromotions")
+# A deal beside a price, as the shop words it: after the price's link (`[R24,99](…) · BUY 2 FOR R45`), or its badge.
+DEAL = re.compile(r"\)\s*·\s*\S|\b(BUY \d+ FOR|SAVE)\b", re.IGNORECASE)
+# A shop tool's first line names the store that answered, checked against the shop's own store id (F34).
+STORE_FOR_AREA = re.compile(r"^(?:Products|Specials \(multi-buys\)|Promotions) at [^(]+\(the store serving ")
+STORE_DEFAULT = re.compile(r"^(?:Products|Specials \(multi-buys\)|Promotions) at [^(]+\(its default store")
+NO_CATALOGUE = re.compile(r"No shop near you has a catalogue|Geen winkel naby jou het nog 'n katalogus", re.IGNORECASE)
 # A price per kg says so (R99,99/kg, R99,99 per kg); a pack sold by weight costs a range (R87,99–R103,99, R87,99 - 103,99).
 PER_KG = re.compile(r"(/\s*kg\b|\bper\s*(kg|kilo))", re.IGNORECASE)
 RANGE = re.compile(r"\bR\s?\d[\d\s,.]*?\s*[–-]\s*R?\s?\d")
@@ -86,6 +96,40 @@ def priced(answer):
     if not listed:
         return None, None, None, None
     return priced_rows, listed, guessed, per_kg
+
+
+def _list_rows(answer):
+    """The shopping list's tables, each as (its header's cells, its ingredient rows' cells): totals and separators left out."""
+    for table in _tables(answer or ""):
+        if HEADER.match(table[0]):
+            yield _cells(table[0]), [_cells(row) for row in table[1:] if not SEPARATOR.match(row) and not TOTAL.match(row)]
+
+
+def deals_named(answer):
+    """How many of the list's rows name a deal beside a linked price (F34: `· BUY 2 FOR R45`, `SAVE`)."""
+    return sum(1 for _, rows in _list_rows(answer) for cells in rows
+               if any(INLINE_LINK.search(cell) and DEAL.search(cell) for cell in cells[1:]))
+
+
+def untooled_shops(answer):
+    """How many shops the list prices at that the cook has no tool for (F34, Louis: only shops with a tool): 0 is right."""
+    shops = {_shop_of(name) for header, _ in _list_rows(answer) for name in header}
+    return len({shop for shop in shops if shop and shop not in TOOL_SHOP_HOSTS})
+
+
+def store_for_area(results):
+    """How many shop searches the store serving the user's town answered (Louis: "that the address was used")."""
+    return sum(1 for result in results if STORE_FOR_AREA.search(result or ""))
+
+
+def store_default(results):
+    """How many shop searches the shop's default store answered: no town, none served, or the town's not used."""
+    return sum(1 for result in results if STORE_DEFAULT.search(result or ""))
+
+
+def no_catalogue_line(answer):
+    """Whether the answer says no shop near the user has a catalogue here yet (F34: the list without prices)."""
+    return bool(NO_CATALOGUE.search(answer or ""))
 
 
 def _cells(row):

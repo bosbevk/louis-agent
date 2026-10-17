@@ -20,12 +20,14 @@ public class ShopToolsTests
         public ShopKind Shop => ShopKind.Checkers;
 
         public string? Area { get; init; }
+        public string? Store { get; init; }
+        public bool AreaIgnored { get; init; }
 
         public Task<ShopSearch> SearchAsync(string query, int maxResults, CancellationToken cancellationToken = default)
         {
             (Query, MaxResults, Token) = (query, maxResults, cancellationToken);
             if (Fails is not null) throw Fails;
-            return Task.FromResult(new ShopSearch(products, Area));
+            return Task.FromResult(new ShopSearch(products, Area, Store, AreaIgnored));
         }
     }
 
@@ -60,10 +62,20 @@ public class ShopToolsTests
             Does.Contain("| Beef Mince Per kg | - | - | R129.99/kg | - |"));
 
     [Test]
-    public async Task TheStoreThatAnswered_IsNamed() =>
-        // F34 step 1b: the store that serves the user's town, when the catalogue found one.
-        Assert.That(await Tools(new FakeCatalogue(Chakalaka) { Area = "Malmesbury" }).FindProducts("checkers", "chakalaka"),
-            Does.StartWith("Products at Checkers (the store serving Malmesbury) for 'chakalaka' (1)"));
+    public async Task TheStoreThatAnswered_IsNamed_WithItsId() =>
+        // F34 step 1b, then Louis: "how can we verify … that the address was used": the store that answered, by its id.
+        Assert.That(await Tools(new FakeCatalogue(Chakalaka) { Area = "Malmesbury", Store = "655b0c8fb44cda100fd99383" }).FindProducts("checkers", "chakalaka"),
+            Does.StartWith("Products at Checkers (the store serving Malmesbury, store 655b0c8f) for 'chakalaka' (1)"));
+
+    [Test]
+    public async Task AnAnswerFromAnotherStore_IsSaidSo()
+    {
+        string result;
+        using (LouisAgent.Core.Sessions.UserPlace.Use(new("Malmesbury", null)))
+            result = await Tools(new FakeCatalogue(Chakalaka) { Store = "5ece6935faafe599532665b2", AreaIgnored = true }).FindProducts("checkers", "chakalaka");
+
+        Assert.That(result, Does.StartWith("Products at Checkers (its default store, store 5ece6935: Malmesbury's wasn't used) for 'chakalaka'"));
+    }
 
     [Test]
     public async Task TheQueryTheCountAndTheTurnsCancellation_ReachTheCatalogue()

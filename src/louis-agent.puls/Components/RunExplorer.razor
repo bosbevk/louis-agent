@@ -795,6 +795,18 @@
             if (c.Scores.TryGetProperty("per_kg", out var perKg) && perKg.ValueKind == JsonValueKind.Number && perKg.GetInt32() > 0)
                 yield return new Chip($"per kg {perKg.GetInt32()}", "warn");
         }
+        // F34: deals named beside a price; a shop priced with no tool for it (Louis: only shops with a tool) is wrong.
+        if (c.Scores.TryGetProperty("deals_named", out var deals) && deals.ValueKind == JsonValueKind.Number && deals.GetInt32() > 0)
+            yield return new Chip($"deals {deals.GetInt32()}", "ok");
+        if (c.Scores.TryGetProperty("untooled_shops", out var untooled) && untooled.ValueKind == JsonValueKind.Number && untooled.GetInt32() > 0)
+            yield return new Chip($"no-tool shops {untooled.GetInt32()}", "bad");
+        if (c.Scores.TryGetProperty("no_catalogue_line", out var none) && none.ValueKind == JsonValueKind.True)
+            yield return new Chip("no catalogue here");
+        // Louis: "how can we verify … that the address was used": the searches the town's store answered, and the default's.
+        if (c.Scores.TryGetProperty("store_for_area", out var local) && local.ValueKind == JsonValueKind.Number && local.GetInt32() > 0)
+            yield return new Chip($"town's store {local.GetInt32()}", "ok");
+        if (c.Scores.TryGetProperty("store_default", out var fallback) && fallback.ValueKind == JsonValueKind.Number && fallback.GetInt32() > 0)
+            yield return new Chip($"default store {fallback.GetInt32()}", "warn");
         if (c.Errors > 0) yield return new Chip($"errors {c.Errors}", "bad");
     }
 

@@ -61,11 +61,10 @@ public sealed class ShopTools(IReadOnlyDictionary<ShopKind, IShopCatalogue> cata
 
         string search = query.Trim();
         int wanted = Math.Clamp(maxResults, 1, MaxResults);
-        IReadOnlyList<ShopProduct> products;
-        string? area;
+        ShopSearch found;
         try
         {
-            (products, area) = await catalogue.SearchAsync(search, deal is null ? wanted : MaxResults, cancellationToken);
+            found = await catalogue.SearchAsync(search, deal is null ? wanted : MaxResults, cancellationToken);
         }
         catch (ShopCatalogueException ex)
         {
@@ -73,8 +72,8 @@ public sealed class ShopTools(IReadOnlyDictionary<ShopKind, IShopCatalogue> cata
         }
 
         string name = kind.Value.ToString();
-        string store = StoreOf(area);
-        if (deal is { } dealKind) products = [.. products.Where(p => p.Deal?.Kind == dealKind).Take(wanted)];
+        string store = StoreOf(found);
+        var products = deal is { } dealKind ? [.. found.Products.Where(p => p.Deal?.Kind == dealKind).Take(wanted)] : found.Products;
         if (products.Count == 0)
             return deal switch
             {
@@ -83,14 +82,14 @@ public sealed class ShopTools(IReadOnlyDictionary<ShopKind, IShopCatalogue> cata
                 _ => MessageText.Format(ToolMessage.ShopNoProducts, new { Shop = name, Query = search }),
             };
 
-        var found = deal switch
+        var header = deal switch
         {
             ShopDealKind.Special => ToolMessage.ShopSpecialsFound,
             ShopDealKind.Promotion => ToolMessage.ShopPromotionsFound,
             _ => ToolMessage.ShopProductsFound,
         };
         var table = new StringBuilder();
-        table.AppendLine(MessageText.Format(found, new { Shop = name, Store = store, Query = search, products.Count }));
+        table.AppendLine(MessageText.Format(header, new { Shop = name, Store = store, Query = search, products.Count }));
         table.AppendLine(MessageText.Format(ToolMessage.ShopDataStart));
         table.AppendLine(deal is null ? "| Product | Size | Pack price | Per kg | Image | Link |" : "| Product | Size | Pack price | Per kg | Deal | Image | Link |");
         table.AppendLine(deal is null ? "|---|---|---|---|---|---|" : "|---|---|---|---|---|---|---|");
@@ -119,11 +118,19 @@ public sealed class ShopTools(IReadOnlyDictionary<ShopKind, IShopCatalogue> cata
         _ => "-",
     };
 
-    /// <summary>Which store answered (F34): the one serving the user's town, or the shop's default, and why.</summary>
-    private static string StoreOf(string? area) =>
-        area is not null ? MessageText.Format(ToolMessage.ShopStoreForArea, new { Area = area })
-        : UserPlace.Current?.Location is { Length: > 0 } place ? MessageText.Format(ToolMessage.ShopDefaultStoreNoneFor, new { Area = place.Trim() })
-        : MessageText.Format(ToolMessage.ShopDefaultStore);
+    /// <summary>
+    /// Which store answered (F34), by the shop's own id: the one serving the user's town, the default when the town's was
+    /// asked for but not used (Louis: "how can we verify … that the address was used"), or the default and why.
+    /// </summary>
+    private static string StoreOf(ShopSearch found)
+    {
+        string? place = UserPlace.Current?.Location?.Trim();
+        string id = found.Store is { Length: > 8 } full ? full[..8] : found.Store ?? "?";
+        return found.Area is not null ? MessageText.Format(ToolMessage.ShopStoreForArea, new { found.Area, Store = id })
+            : found.AreaIgnored ? MessageText.Format(ToolMessage.ShopStoreNotUsed, new { Area = place ?? "the town", Store = id })
+            : place is { Length: > 0 } ? MessageText.Format(ToolMessage.ShopDefaultStoreNoneFor, new { Area = place })
+            : MessageText.Format(ToolMessage.ShopDefaultStore);
+    }
 
     private string Enabled() =>
         catalogues.Count == 0 ? "none" : string.Join(", ", catalogues.Keys.Order().Select(k => k.ToString().ToLowerInvariant()));

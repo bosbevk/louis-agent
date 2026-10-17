@@ -158,16 +158,34 @@ public class CheckersCatalogueTests
     private static CheckersStore Store() =>
         new(new OneTownsStore(), (place, _) => Task.FromResult<(double, double)?>(place == "Malmesbury" ? (-33.46, 18.72) : null));
 
+    // Louis: "how can we verify that the product comes from the malmesbury store? that the address was used". Each
+    // product in Checkers' answer names the store that priced it (storeId): the town's only when it's one of the stores
+    // the town's lookup named; else Checkers answered from another (its default), and the search says so.
+    private static string AnswerFrom(string storeId) =>
+        "{\"products\":[{\"articleNumber\":\"1\",\"name\":\"Rice 1kg\",\"unitOfMeasure\":\"EA\",\"price\":24.99,\"discountedPrice\":24.99," +
+        "\"currency\":\"ZAR\",\"isStockAvailable\":true,\"storeId\":\"" + storeId + "\"}],\"totalCount\":1}";
+
     [Test]
-    public async Task WhereTheUserIs_TheSearchRunsInTheStoreThatServesIt()
+    public async Task WhereTheUserIs_TheSearchRunsInTheStoreThatServesIt_AndItsAnswerProvesIt()
     {
-        var browser = new FakeBrowser(Json);
+        var browser = new FakeBrowser(AnswerFrom("655b0c8fb44cda100fd99383"));
         ShopSearch found;
         using (LouisAgent.Core.Sessions.UserPlace.Use(new("Malmesbury", null)))
-            found = await new CheckersCatalogue(browser, Store()).SearchAsync("chicken pieces", 5);
+            found = await new CheckersCatalogue(browser, Store()).SearchAsync("rice", 5);
 
         Assert.That(browser.Session!.Cookies.Single().Value, Is.EqualTo("655b0c8fb44cda100fd99383"));
-        Assert.That(found.Area, Is.EqualTo("Malmesbury"));
+        Assert.That((found.Area, found.Store, found.AreaIgnored), Is.EqualTo(("Malmesbury", "655b0c8fb44cda100fd99383", false)));
+    }
+
+    [Test]
+    public async Task AnAnswerFromAnotherStore_IsNeverCalledTheTowns()
+    {
+        var browser = new FakeBrowser(AnswerFrom("5ece6935faafe599532665b2"));
+        ShopSearch found;
+        using (LouisAgent.Core.Sessions.UserPlace.Use(new("Malmesbury", null)))
+            found = await new CheckersCatalogue(browser, Store()).SearchAsync("rice", 5);
+
+        Assert.That((found.Area, found.Store, found.AreaIgnored), Is.EqualTo(((string?)null, "5ece6935faafe599532665b2", true)));
     }
 
     [Test]
@@ -230,6 +248,7 @@ public class CheckersCatalogueTests
             found = await new CheckersCatalogue(browser, new CheckersStore(browser, LouisAgent.Core.Tools.Shops.PlaceCoordinates.OfAsync)).SearchAsync("chicken", 5);
 
         Assert.That(found.Area, Is.EqualTo("Malmesbury"));
+        Assert.That(found.Store, Does.Not.StartWith("5ece6935"), "the default store's id: the town's store answered");
         Assert.That(found.Products, Is.Not.Empty);
     }
 

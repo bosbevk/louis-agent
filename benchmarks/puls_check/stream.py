@@ -31,10 +31,13 @@ def parse_sse(lines):
 def read_turn(events):
     """What one turn's events say. A specialist's events arrive as sub_session; deeper ones (a minion's) nest again."""
     turn = {"answer": "", "calls": [], "role": None, "continued": None, "specialist_calls": [],
-            "thinking": "", "specialist_thinking": "", "error": None}
+            "thinking": "", "specialist_thinking": "", "error": None, "results": [], "specialist_results": []}
     text, thinking, specialist_thinking = [], [], []
     for event, data in events:
-        if event == "content_block_start" and (data.get("content_block") or {}).get("type") == "tool_use":
+        if event == "content_block_start" and (data.get("content_block") or {}).get("type") == "tool_result":
+            # F34: a tool's result, kept for what it says (a shop tool names the store that answered).
+            turn["results"].append(str(data["content_block"].get("content") or ""))
+        elif event == "content_block_start" and (data.get("content_block") or {}).get("type") == "tool_use":
             block = data["content_block"]
             arguments = block.get("input") or {}
             turn["calls"].append({"name": block["name"], "input": arguments})
@@ -49,7 +52,7 @@ def read_turn(events):
             elif delta.get("type") == "thinking_delta":
                 thinking.append(delta.get("thinking", ""))
         elif event == "sub_session":
-            _specialist(data, turn["specialist_calls"], specialist_thinking)
+            _specialist(data, turn["specialist_calls"], specialist_thinking, turn["specialist_results"])
         elif event == "error":
             turn["error"] = ((data.get("error") or {}).get("message")) or json.dumps(data, ensure_ascii=False)
     turn["answer"] = "".join(text).strip()
@@ -58,16 +61,18 @@ def read_turn(events):
     return turn
 
 
-def _specialist(data, calls, thinking):
+def _specialist(data, calls, thinking, results):
     """A sub_session event: the specialist's own call or thinking; a nested sub_session (a minion's) goes one deeper."""
     inner_event, inner = data.get("event"), data.get("data") or {}
-    if inner_event == "content_block_start" and (inner.get("content_block") or {}).get("type") == "tool_use":
+    if inner_event == "content_block_start" and (inner.get("content_block") or {}).get("type") == "tool_result":
+        results.append(str(inner["content_block"].get("content") or ""))
+    elif inner_event == "content_block_start" and (inner.get("content_block") or {}).get("type") == "tool_use":
         block = inner["content_block"]
         calls.append({"name": block["name"], "input": block.get("input") or {}})
     elif inner_event == "content_block_delta" and (inner.get("delta") or {}).get("type") == "thinking_delta":
         thinking.append(inner["delta"].get("thinking", ""))
     elif inner_event == "sub_session":
-        _specialist(inner, calls, thinking)
+        _specialist(inner, calls, thinking, results)
 
 
 def hosts(calls):

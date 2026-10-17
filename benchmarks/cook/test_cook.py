@@ -4,9 +4,9 @@ import unittest
 from benchmarks.cook import run_check as cook
 
 
-def turn(answer="", calls=(), specialist_calls=(), role=None, continued=None, error=None):
+def turn(answer="", calls=(), specialist_calls=(), role=None, continued=None, error=None, specialist_results=()):
     return {"answer": answer, "calls": list(calls), "specialist_calls": list(specialist_calls), "role": role,
-            "continued": continued, "error": error, "seconds": 1.0}
+            "continued": continued, "error": error, "seconds": 1.0, "results": [], "specialist_results": list(specialist_results)}
 
 
 def fetch(url):
@@ -28,6 +28,38 @@ class AMealQuestion(unittest.TestCase):
         self.assertFalse(scores["sources_local"], "a UK recipe site isn't South African")
         self.assertEqual((scores["priced"], scores["ingredients"], scores["priced_ratio"], scores["unsourced"]), (1, 2, 0.5, 1))
         self.assertEqual(scores["per_kg"], 0)
+
+    def test_the_cooks_shop_tools_count_and_price_at_the_shops(self):
+        # F34 step 5: the cook reads shops through its tools, never their pages, so a tool call is pricing at a shop.
+        calls = [{"name": "FindProducts", "input": {"shop": "checkers", "query": "rice"}},
+                 {"name": "SearchSpecials", "input": {"shop": "checkers", "query": "rice"}},
+                 {"name": "SearchPromotions", "input": {"shop": "checkers", "query": "chicken"}},
+                 fetch("https://nominatim.openstreetmap.org/search?q=Checkers+Malmesbury")]
+        scores = cook.score("cook-malmesbury", [turn("Resep.", calls=[START], role="puls-cook", specialist_calls=calls)], cook_on=True)
+
+        self.assertEqual((scores["shop_tool_calls"], scores["deal_tool_calls"]), (3, 2))
+        self.assertTrue(scores["priced_at_shops"], "no shop page read, but its catalogue asked")
+        self.assertEqual(scores["shop_hosts"], [])
+
+    def test_which_store_answered_the_cooks_searches_is_scored(self):
+        results = ["Products at Checkers (the store serving Malmesbury, store 655b0c8f) for 'rice' (1)",
+                   "Products at Checkers (its default store, store 5ece6935: Malmesbury's wasn't used) for 'onions' (1)"]
+        scores = cook.score("cook-malmesbury", [turn("Resep.", calls=[START], role="puls-cook", specialist_results=results)], cook_on=True)
+
+        self.assertEqual((scores["store_for_area"], scores["store_default"]), (1, 1))
+
+    def test_the_list_s_rule_scores_are_reported(self):
+        answer = ("| Ingredient | For the recipe | To buy | Price |\n|---|---|---|---|\n| Rice | 300 g | Rice 1 kg | - |\n\n"
+                  "*Geen winkel naby jou het nog 'n katalogus hier nie.*")
+        scores = cook.score("cook-no-shop", [turn(answer, calls=[START], role="puls-cook")], cook_on=True)
+
+        self.assertEqual((scores["deals_named"], scores["untooled_shops"], scores["no_catalogue_line"]), (0, 0, True))
+        self.assertEqual((scores["priced"], scores["ingredients"]), (0, 1))
+
+    def test_the_check_asks_in_malmesbury_and_in_a_town_without_a_checkers(self):
+        tasks = {task: place for task, place, _ in cook.CONVERSATIONS}
+        self.assertEqual(tasks["cook-malmesbury"], "Malmesbury, Wes-Kaap, Suid-Afrika")
+        self.assertEqual(tasks["cook-no-shop"], "Darling, Wes-Kaap, Suid-Afrika")
 
     def test_answered_by_puls_itself_is_routed_wrong_when_the_cook_was_on(self):
         scores = cook.score("cook-en", [turn("A recipe.")], cook_on=True)

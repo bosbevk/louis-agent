@@ -270,8 +270,11 @@ public enum ToolMessage
     [Description("{Deal} (its link shows it)")]
     ShopDealUnworded,
 
-    [Description("the store serving {Area}")]
+    [Description("the store serving {Area}, store {Store}")]
     ShopStoreForArea,
+
+    [Description("its default store, store {Store}: {Area}'s wasn't used")]
+    ShopStoreNotUsed,
 
     [Description("its default store: no area shared")]
     ShopDefaultStore,
