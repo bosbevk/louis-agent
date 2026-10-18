@@ -169,6 +169,10 @@ public sealed class SpecialistTools(IReadOnlyDictionary<string, Uri> peers, stri
             string? reported = (createdJson.RootElement.TryGetProperty("role", out var p) && p.ValueKind == JsonValueKind.String) ||
                                (createdJson.RootElement.TryGetProperty("personality", out p) && p.ValueKind == JsonValueKind.String)
                 ? p.GetString() : role;
+            // F34: the toolsets it loaded, as the peer reports them: a role may add its own to the ones sent.
+            IReadOnlyList<string> loaded = createdJson.RootElement.TryGetProperty("toolsets", out var t) && t.ValueKind == JsonValueKind.Array
+                && t.EnumerateArray().Select(x => x.GetString()).OfType<string>().ToList() is { Count: > 0 } reportedToolsets
+                ? reportedToolsets : toolsets;
 
             var reply = await AnswerAsync(peer, sessionId, messageBody, kind, toolUseId, scope, timeoutSource.Token);
             if (reply.Failure is not null) return reply.Failure;
@@ -177,7 +181,7 @@ public sealed class SpecialistTools(IReadOnlyDictionary<string, Uri> peers, stri
                 // F26: the chat keeps the child, with its context and cached prefix, for a follow-up. The entry's closer
                 // is this tool's delete, so the registry never speaks HTTP; the finally below then leaves it alone.
                 string kept = sessionId;
-                var entry = new OpenSubSession(peer, kept, agent, toolsets, reported, () => DeleteAsync(peer, kept)) { Kind = kind.Kind, Llm = kind.Llm };
+                var entry = new OpenSubSession(peer, kept, agent, loaded, reported, () => DeleteAsync(peer, kept)) { Kind = kind.Kind, Llm = kind.Llm };
                 string handle = await registry.AddAsync(entry);
                 sessionId = null;
                 return kind.KeptAnswer(entry with { Handle = handle }, reply);

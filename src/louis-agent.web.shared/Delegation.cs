@@ -67,9 +67,12 @@ public sealed partial record Delegation(
             // The footer's "(web; puls-cook)": the toolsets, then the role; the old footer has only the toolsets.
             string[] inside = match.Groups["inside"].Value.Split(';', 2, StringSplitOptions.TrimEntries);
             if (inside.Length == 2) role ??= Blank(inside[1]);
-            if (toolsets.Count == 0)
-                toolsets.AddRange(inside[0].Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries));
+            // F34: the footer names what the specialist loaded (its role may add some), so it wins over what was sent.
+            var loaded = inside[0].Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+            if (loaded.Length > 0) toolsets = [.. loaded];
         }
+        // While it works, its own stream's start says what it loaded (F34).
+        if (block.SubTurn?.Toolsets is { Count: > 0 } live) toolsets = [.. live];
         return new Delegation(agent, toolsets, task, answer ?? (failed ? block.ToolResult : null), usage, failed, resultAgent, role, handle, continued);
     }
 

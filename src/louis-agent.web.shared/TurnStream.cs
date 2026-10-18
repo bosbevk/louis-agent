@@ -11,6 +11,13 @@ public static class TurnStream
         var data = streamEvent.Data;
         switch (streamEvent.Type)
         {
+            case "message_start":
+                // F34: what the session loaded; a specialist's role may add toolsets to the ones its parent sent.
+                if (data.TryGetProperty("message", out var message) && message.TryGetProperty("toolsets", out var loaded)
+                    && loaded.ValueKind == JsonValueKind.Array)
+                    turn.Toolsets = [.. loaded.EnumerateArray().Select(t => t.GetString()).OfType<string>()];
+                break;
+
             case "content_block_start":
                 var block = data.GetProperty("content_block");
                 switch (block.GetProperty("type").GetString())

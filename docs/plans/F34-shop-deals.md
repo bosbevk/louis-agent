@@ -318,6 +318,14 @@ sequenceDiagram
   vs puls + puls-cook").** `puls-only` (`web`) becomes `puls-tools` (`web`, `shops`): both modes have the same tools,
   so the check measures the cook's role and its own session. A new name, since the portal's trend follows a mode by
   name.
+- **2026-10-18, the cook's long pause (Louis: "why is here such a long pause, puls plus shops does not have that
+  pause", then "yes, do all 3").** The cook planned eleven searches in one answer (10 s), its first search waited 12.5 s
+  for Malmesbury's store (the town's store lived in memory, per engine, and the container had been rebuilt), and the
+  searches ran one after another (45 s). Three changes: a toolset can be parallel-safe (`web`, `shops`), and an engine
+  of only such toolsets runs a round's calls at once (`AllowConcurrentInvocation`; the browser's four pages bound it);
+  a town's store is one shared lookup (`StoreSessionCache`), kept a day in `SHOP_STORE_CACHE` (`data/puls`, mounted
+  in both Puls containers); and the specialist's card shows the toolsets it loaded (`message_start` carries them,
+  the footer names the peer's), so the cook shows `web, shops`.
 
 ---
 [Plans](README.md) · Previous: [CL14 The public word: role](CL14-public-word-role.md)

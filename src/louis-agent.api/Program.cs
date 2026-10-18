@@ -257,7 +257,7 @@ static string BuildPrompt(SendMessageRequest request)
 static async IAsyncEnumerable<SseItem<string>> StreamTurnAsync(
     AgentEngine engine, AgentSession session, string prompt, CancellationTokenSource turn)
 {
-    var stream = new ClaudeStyleStream(session.Id);
+    var stream = new ClaudeStyleStream(session.Id, session.Toolsets);
     UsageScope? usage = null;
     try
     {
@@ -392,7 +392,7 @@ internal sealed record CreateSessionRequest(
 internal sealed record AttachmentRequest(string Name, string? Content);
 
 /// <summary>Turns streamed agent updates into Claude-style SSE events with JSON data.</summary>
-internal sealed class ClaudeStyleStream(string sessionId)
+internal sealed class ClaudeStyleStream(string sessionId, IReadOnlyList<string>? toolsets = null)
 {
     // Relaxed escaping keeps quotes and backticks readable instead of '-style escapes; the data is JSON, never embedded in HTML.
     private static readonly JsonSerializerOptions Json = new()
@@ -419,8 +419,9 @@ internal sealed class ClaudeStyleStream(string sessionId)
         });
     }
 
+    /// <summary>The turn's start, with the toolsets the session loaded (F34: a specialist's card shows what it has).</summary>
     public SseItem<string> MessageStart() =>
-        Event("message_start", new { type = "message_start", message = new { session_id = sessionId, role = "assistant" } });
+        Event("message_start", new { type = "message_start", message = new { session_id = sessionId, role = "assistant", toolsets = toolsets ?? [] } });
 
     public IEnumerable<SseItem<string>> Content(AIContent content) => content switch
     {

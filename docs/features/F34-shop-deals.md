@@ -126,6 +126,12 @@ prices.
 - **The cook check compares like with like (2026-10-18).** Puls alone had only `web`, so it couldn't reach a shop's
   catalogue and the check measured the tools, not the cook. `puls-tools` gives it `web` and `shops` (a session with
   both: 10 tools, about 5,458 tokens of fixed prefix).
+- **The cook's pause (2026-10-18).** In Louis's melktert chat the card sat at "Gedink vir 8s" with no tool calls:
+  10 s of the cook planning eleven searches at once, 12.5 s finding Malmesbury's store again after a rebuild, then
+  45 s of searches one after another. Searches now run at once for engines of parallel-safe toolsets only (`web` and
+  `shops`; the coding agent's files, shells and git keep their order, and Puls's `specialists` too), the town's store
+  is looked up once and kept a day in a file, and the card's chips say `web, shops`: the role's `shops` was never
+  shown, since the card read only what Puls sent.
 
 ---
 [Features](README.md) · [Plan](../plans/F34-shop-deals.md) · Previous: [F33 Shop catalogues](F33-shop-catalogues.md)
