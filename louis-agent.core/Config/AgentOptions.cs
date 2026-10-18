@@ -45,6 +45,9 @@ public sealed class AgentOptions
     /// <summary>SHOP_CATALOGUES (F33): the shops whose catalogue may be read, comma-separated (checkers); unset, none.</summary>
     public string? ShopCatalogues { get; set; }
 
+    /// <summary>SHOP_STORE_CACHE (F34): a file that keeps each town's store a day, across restarts; unset, memory only.</summary>
+    public string? ShopStoreCache { get; set; }
+
     /// <summary>Tavily search API key (TAVILY_API_KEY), F25.</summary>
     public string? TavilyApiKey { get; set; }
 
@@ -211,6 +214,7 @@ public sealed class AgentOptions
             BrowserUrl = Get("BROWSER_URL"),
             PageRenderer = Get("PAGE_RENDERER"),
             ShopCatalogues = Get("SHOP_CATALOGUES"),
+            ShopStoreCache = Get("SHOP_STORE_CACHE"),
             TavilyApiKey = Get("TAVILY_API_KEY"),
             GoogleSearchApiKey = Get("GOOGLE_SEARCH_API_KEY"),
             GoogleSearchEngineId = Get("GOOGLE_SEARCH_ENGINE_ID"),

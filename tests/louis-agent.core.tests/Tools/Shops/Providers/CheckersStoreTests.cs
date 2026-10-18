@@ -105,6 +105,36 @@ public class CheckersStoreTests
     public async Task ABrowserError_IsTheDefaultStore_NotAFailedSearch() =>
         Assert.That(await new CheckersStore(new FakeBrowser(fails: new WebBrowserException("didn't answer")), Malmesbury).ForAsync("Malmesbury"), Is.Null);
 
+    // F34: the cook's searches run at once, and each engine builds its own shop tools; one cache for the process means
+    // eleven first searches in two engines still ask Checkers once.
+    [Test]
+    public async Task EnginesSearchingAtOnce_ShareOneLookup()
+    {
+        var browser = new SlowBrowser(Contexts, SetByCheckers);
+        var shared = new LouisAgent.Core.Tools.Shops.StoreSessionCache();
+        var cook = new CheckersStore(browser, Malmesbury, shared);
+        var puls = new CheckersStore(browser, Malmesbury, shared);
+
+        var sessions = await Task.WhenAll(Enumerable.Range(0, 11).Select(i => (i % 2 == 0 ? cook : puls).ForAsync("Malmesbury")));
+
+        Assert.That(browser.Visits, Is.EqualTo(1));
+        Assert.That(sessions, Has.All.Not.Null);
+    }
+
+    private sealed class SlowBrowser(string answer, IReadOnlyList<BrowserCookie> cookies) : IWebBrowser
+    {
+        private int _visits;
+        public int Visits => _visits;
+
+        public async Task<BrowserVisit> VisitAsync(Uri url, Func<Uri, bool>? capture = null, BrowserSession? session = null, string? script = null,
+            string? readySelector = null, CancellationToken cancellationToken = default)
+        {
+            Interlocked.Increment(ref _visits);
+            await Task.Delay(100, cancellationToken);
+            return new BrowserVisit(url.AbsoluteUri, "<html></html>", [], answer, cookies);
+        }
+    }
+
     [Test, Category("Live")]
     public async Task Malmesbury_IsServedByAStoreOtherThanTheDefault()
     {

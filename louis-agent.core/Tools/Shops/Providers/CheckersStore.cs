@@ -1,10 +1,10 @@
 namespace LouisAgent.Core.Tools.Shops.Providers;
 
-using System.Collections.Concurrent;
 using System.Globalization;
 using System.Text.Json;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Tools.Shops;
 using LouisAgent.Core.Tools.Web.Browsing;
 using Microsoft.Extensions.Logging;
 
@@ -15,9 +15,12 @@ using Microsoft.Extensions.Logging;
 /// the cookies (<c>storeContexts</c>, <c>storeids</c>, <c>istio-storeIds</c>) every later search is answered from. This
 /// does the same, once per town, in a visit of its own (only the town's centre goes into the script, as numbers), and
 /// keeps those cookies, Checkers' own, as the session a search starts with. No place, a place nobody knows, none served
-/// there, or a lookup that fails: no session, so the default store answers, as before.
+/// there, or a lookup that fails: no session, so the default store answers, as before. The towns are kept in
+/// <paramref name="stores"/>, the process's one cache (F34): one lookup per town however many searches ask at once, kept
+/// a day in its file.
 /// </summary>
-public sealed class CheckersStore(IWebBrowser browser, Func<string, CancellationToken, Task<(double Latitude, double Longitude)?>> locate)
+public sealed class CheckersStore(IWebBrowser browser, Func<string, CancellationToken, Task<(double Latitude, double Longitude)?>> locate,
+    StoreSessionCache? stores = null)
 {
     private static readonly ILogger Log = AgentLogging.For<CheckersStore>();
     private static readonly Uri Site = new("https://www.checkers.co.za/");
@@ -27,17 +30,21 @@ public sealed class CheckersStore(IWebBrowser browser, Func<string, Cancellation
     // for gets its fallback set, this store first (Prince Albert, Sutherland, Calvinia, Loxton): no store for the town.
     internal const string DefaultStore = "5ece6935faafe599532665b2";
 
-    // Each town's answer, kept for the instance's life: a town's stores don't move between searches. A failed lookup
-    // isn't kept, so the next search tries again.
-    private readonly ConcurrentDictionary<string, BrowserSession?> _byTown = new(StringComparer.OrdinalIgnoreCase);
+    // Each town's answer: a town's stores don't move between searches. A failed lookup isn't kept, so the next search
+    // tries again.
+    private readonly StoreSessionCache _stores = stores ?? new StoreSessionCache();
 
-    public async Task<BrowserSession?> ForAsync(string? place, CancellationToken cancellationToken = default)
+    public Task<BrowserSession?> ForAsync(string? place, CancellationToken cancellationToken = default)
     {
-        if (string.IsNullOrWhiteSpace(place)) return null;
+        if (string.IsNullOrWhiteSpace(place)) return Task.FromResult<BrowserSession?>(null);
         string town = place.Trim();
-        if (_byTown.TryGetValue(town, out var known)) return known;
+        // The lookup is shared by every search waiting for it, so a caller's cancellation ends its wait, not the lookup.
+        return _stores.GetOrLookUpAsync("checkers", town, () => LookUpAsync(town, CancellationToken.None), cancellationToken);
+    }
 
-        if (await locate(town, cancellationToken) is not { } centre) return _byTown.GetOrAdd(town, (BrowserSession?)null);
+    private async Task<(BrowserSession? Session, bool Keep)> LookUpAsync(string town, CancellationToken cancellationToken)
+    {
+        if (await locate(town, cancellationToken) is not { } centre) return (null, true);
 
         BrowserVisit visit;
         try
@@ -48,7 +55,7 @@ public sealed class CheckersStore(IWebBrowser browser, Func<string, Cancellation
         catch (WebBrowserException ex)
         {
             Log.Log(LogLevel.Warning, LogMessage.ShopAreaUnavailable, new { Shop = "Checkers", Place = town, Reason = ex.Message });
-            return null;
+            return (null, false);
         }
 
         BrowserSession? session = Serves(visit.ScriptResult) && visit.Cookies?.Where(c => StoreCookies.Contains(c.Name)).ToList() is { Count: > 0 } cookies
@@ -61,7 +68,7 @@ public sealed class CheckersStore(IWebBrowser browser, Func<string, Cancellation
             Longitude = centre.Longitude.ToString("0.####", CultureInfo.InvariantCulture),
             Stores = session?.Cookies.FirstOrDefault(c => c.Name == "storeids")?.Value ?? "",
         });
-        return _byTown.GetOrAdd(town, session);
+        return (session, true);
     }
 
     /// <summary>The site's own call for an area's stores, as its address picker makes it: only the centre, as numbers.</summary>

@@ -24,6 +24,12 @@ public enum LogMessage
     [Description("{Shop} names no store for {Place} (its centre {Latitude}, {Longitude}); searches from there use its default store.")]
     ShopNoStoreForPlace,
 
+    [Description("The shops' store cache {Path} can't be read ({Reason}); towns are looked up again.")]
+    ShopStoreCacheUnreadable,
+
+    [Description("The shops' store cache {Path} can't be written ({Reason}); towns are kept in memory only.")]
+    ShopStoreCacheUnwritable,
+
     [Description("{Shop} answered a search from {Place} from store {Store}, not one that serves {Place}; it's said so in the answer.")]
     ShopStoreNotUsed,
 

@@ -76,7 +76,7 @@ public static class ToolsetCatalog
                 ("SHOP_CATALOGUES", ShopCatalogueFactory.Enabled(ctx.Options.ShopCatalogues).Count > 0 ? "set" : null),
                 ("BROWSER_URL", ctx.Browser is null ? null : "set")),
             ToolType: typeof(ShopTools),
-            CreateTools: ctx => [new ShopTools(ShopCatalogueFactory.Create(ShopCatalogueFactory.Enabled(ctx.Options.ShopCatalogues), ctx.Browser!))],
+            CreateTools: ctx => [new ShopTools(ShopCatalogueFactory.Create(ShopCatalogueFactory.Enabled(ctx.Options.ShopCatalogues), ctx.Browser!, ctx.StoreSessions))],
             // F34: searches read a catalogue and change nothing; the browser opens at most four pages at once.
             ParallelSafe: true),
 
