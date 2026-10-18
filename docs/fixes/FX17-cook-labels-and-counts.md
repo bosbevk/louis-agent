@@ -59,13 +59,22 @@ endings moved, and were restored).
 - **The card:** by the tests so far. Puls is rebuilt at `72643ff`; a follow-up in a chat there is the hand check (it
   calls the model, so it waits for Louis's next chat), and is to be recorded here.
 - **The labels and the count:** by the prompt's tests only so far; whether the cook follows them shows in the next cook
-  check (paid, Louis's go), which also scores the follow-up for six.
+  check (paid, Louis's go), which also scores the follow-up for six. That check looks for:
+  - *Dien* / *Geprys* in the Afrikaans reports and *Serves* / *Priced* in the English one (cook-en);
+  - every count after the name and pack, the photo first in its cell;
+  - **a count with a multi-buy** (review, should 3): when the recipe needs two packs of something on a multi-buy, how the
+    row reads (`… 410 g × 2` and `[R24,99](…) × 2 · BUY 2 FOR R45`), and whether its total is the deal's price or two
+    packs at one pack's price;
+  - **how `[R24,99](…) × 2` reads** (review, should 4): one pack's price with its count, not R24,99 for both, and the
+    total counting both packs.
+- **A follow-up's card by hand:** after Louis's next chat with a follow-up to the cook, recorded here.
 
 ## Lesson
 
 A label the model is meant to translate has to be shown translated: one literal form is copied as it stands, whatever
-the task's language. And a card that names who it's waiting on needs that name from the one who's working, not only
-from the call that sent the work: a call can be a follow-up that never names it.
+the task's language (skill 3, *Prompt design*). And a card that names who it's waiting on needs that name from the one
+who's working, not only from the call that sent the work: a call can be a follow-up that never names it (skill 10,
+*Multi-agent orchestration*).
 
 ## What the build changed
 
