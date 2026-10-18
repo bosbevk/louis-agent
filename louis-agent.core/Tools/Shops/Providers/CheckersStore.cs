@@ -44,7 +44,16 @@ public sealed class CheckersStore(IWebBrowser browser, Func<string, Cancellation
 
     private async Task<(BrowserSession? Session, bool Keep)> LookUpAsync(string town, CancellationToken cancellationToken)
     {
-        if (await locate(town, cancellationToken) is not { } centre) return (null, true);
+        (double Latitude, double Longitude)? found;
+        try
+        {
+            found = await locate(town, cancellationToken);
+        }
+        catch (PlaceUnavailableException)
+        {
+            return (null, false);   // Nominatim didn't answer: no answer about the town, so it isn't kept (review of PR #61)
+        }
+        if (found is not { } centre) return (null, true);
 
         BrowserVisit visit;
         try

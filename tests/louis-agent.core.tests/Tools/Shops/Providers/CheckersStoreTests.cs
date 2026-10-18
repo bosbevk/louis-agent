@@ -117,6 +117,21 @@ public class CheckersStoreTests
         Assert.That(browser.Visits, Has.Count.EqualTo(2), "looked up again");
     }
 
+    // Review of PR #61: Nominatim not answering (the cook's own FetchUrl asks it from the same address at the same time)
+    // is a failed lookup, never a town without a store kept a day.
+    [Test]
+    public async Task NominatimNotAnswering_IsAFailedLookup_NotKept()
+    {
+        int asked = 0;
+        var store = new CheckersStore(new FakeBrowser(Contexts, SetByCheckers),
+            (_, _) => { asked++; throw new LouisAgent.Core.Tools.Shops.PlaceUnavailableException("429 Too Many Requests"); },
+            new LouisAgent.Core.Tools.Shops.StoreSessionCache());
+
+        Assert.That(await store.ForAsync("Malmesbury"), Is.Null);
+        await store.ForAsync("Malmesbury");
+        Assert.That(asked, Is.EqualTo(2), "looked up again");
+    }
+
     [Test]
     public async Task ATownCheckersDoesntServe_IsKept()
     {

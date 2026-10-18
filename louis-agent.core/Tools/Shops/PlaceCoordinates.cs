@@ -46,17 +46,27 @@ public static class PlaceCoordinates
         }
     }
 
-    /// <summary>The town's centre, or none when Nominatim doesn't know it or doesn't answer (said in a log line).</summary>
-    public static async Task<(double Latitude, double Longitude)?> OfAsync(string place, CancellationToken cancellationToken)
+    /// <summary>
+    /// The town's centre, or none when Nominatim doesn't know it. Nominatim not answering (an error status such as 429 or
+    /// 503, a timeout, a reply that isn't its JSON) is no answer about the town: <see cref="PlaceUnavailableException"/>,
+    /// said in a log line, so a caller never keeps it as "no town" (review of PR #61).
+    /// </summary>
+    public static Task<(double Latitude, double Longitude)?> OfAsync(string place, CancellationToken cancellationToken) =>
+        OfAsync(place, Http, cancellationToken);
+
+    internal static async Task<(double Latitude, double Longitude)?> OfAsync(string place, HttpClient http, CancellationToken cancellationToken)
     {
+        string answer;
         try
         {
-            return Parse(await Http.GetStringAsync(Url(place), cancellationToken));
+            answer = await http.GetStringAsync(Url(place), cancellationToken);
+            using var _ = JsonDocument.Parse(answer);
         }
-        catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException && !cancellationToken.IsCancellationRequested)
+        catch (Exception ex) when (ex is HttpRequestException or JsonException or TaskCanceledException && !cancellationToken.IsCancellationRequested)
         {
             Log.Log(LogLevel.Warning, LogMessage.ShopAreaUnavailable, new { Shop = "OpenStreetMap", Place = place, Reason = ex.Message });
-            return null;
+            throw new PlaceUnavailableException(ex.Message);
         }
+        return Parse(answer);
     }
 }

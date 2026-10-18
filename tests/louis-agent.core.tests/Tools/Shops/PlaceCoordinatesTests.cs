@@ -22,4 +22,24 @@ public class PlaceCoordinatesTests
     [TestCase("[{\"name\":\"no coordinates\"}]")]
     public void NoTown_IsNoCentre(string answer) =>
         Assert.That(PlaceCoordinates.Parse(answer), Is.Null);
+
+    // Review of PR #61: a 429, a 503 or a timeout also came back as "no town", and the store cache kept that a day. A town
+    // Nominatim doesn't know is an answer; Nominatim not answering is no answer, and says so.
+    [TestCase(System.Net.HttpStatusCode.TooManyRequests, "[]")]
+    [TestCase(System.Net.HttpStatusCode.ServiceUnavailable, "[]")]
+    [TestCase(System.Net.HttpStatusCode.OK, "<html>blocked</html>")]
+    public void NominatimNotAnswering_IsNoAnswer_NotNoTown(System.Net.HttpStatusCode status, string body)
+    {
+        var http = new HttpClient(new StubHandler(_ => new HttpResponseMessage(status) { Content = new StringContent(body) }));
+
+        Assert.That(() => PlaceCoordinates.OfAsync("Malmesbury", http, CancellationToken.None), Throws.TypeOf<PlaceUnavailableException>());
+    }
+
+    [Test]
+    public async Task ATownNominatimDoesntKnow_IsNoCentre()
+    {
+        var http = new HttpClient(new StubHandler(_ => new HttpResponseMessage(System.Net.HttpStatusCode.OK) { Content = new StringContent("[]") }));
+
+        Assert.That(await PlaceCoordinates.OfAsync("Atlantis", http, CancellationToken.None), Is.Null);
+    }
 }
