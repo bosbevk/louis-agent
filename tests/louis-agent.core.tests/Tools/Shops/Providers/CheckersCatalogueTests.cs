@@ -220,6 +220,36 @@ public class CheckersCatalogueTests
         Assert.That(() => new CheckersCatalogue(new FakeBrowser("<html>not json</html>")).SearchAsync("chicken pieces", 5),
             Throws.TypeOf<ShopCatalogueException>().With.Message.Contains("Checkers"));
 
+    // F34, cook check 42d837f13659: Checkers' refusals were a page that wasn't its catalogue, then no answer. Either tells
+    // the shop's throttle, so the next search waits; a browser that's down is ours, not a refusal.
+    [TestCase("<html>Request blocked</html>")]
+    [TestCase(null)]
+    public async Task ARefusedSearch_MakesTheNextOneWait(string? answer)
+    {
+        var waits = new List<TimeSpan>();
+        var now = new DateTimeOffset(2026, 10, 18, 0, 24, 0, TimeSpan.Zero);
+        var throttle = new LouisAgent.Core.Tools.Shops.ShopThrottle(2, TimeSpan.FromSeconds(20), () => now,
+            (wait, _) => { waits.Add(wait); return Task.CompletedTask; });
+        var refused = new CheckersCatalogue(answer is null ? new FakeBrowser() : new FakeBrowser(answer), throttle: throttle);
+
+        Assert.That(() => refused.SearchAsync("onions", 5), Throws.TypeOf<ShopCatalogueException>());
+        await new CheckersCatalogue(new FakeBrowser(Json), throttle: throttle).SearchAsync("rice", 5);
+
+        Assert.That(waits, Is.EqualTo(new[] { TimeSpan.FromSeconds(20) }));
+    }
+
+    [Test]
+    public async Task ABrowserThatsDown_IsNoRefusal()
+    {
+        var waits = new List<TimeSpan>();
+        var throttle = new LouisAgent.Core.Tools.Shops.ShopThrottle(2, TimeSpan.FromSeconds(20), null, (wait, _) => { waits.Add(wait); return Task.CompletedTask; });
+
+        Assert.That(() => new CheckersCatalogue(new DownBrowser(), throttle: throttle).SearchAsync("onions", 5), Throws.TypeOf<ShopCatalogueException>());
+        await new CheckersCatalogue(new FakeBrowser(Json), throttle: throttle).SearchAsync("rice", 5);
+
+        Assert.That(waits, Is.Empty);
+    }
+
     private sealed class DownBrowser : IWebBrowser
     {
         public Task<BrowserVisit> VisitAsync(Uri url, Func<Uri, bool>? capture = null, BrowserSession? session = null, string? script = null,

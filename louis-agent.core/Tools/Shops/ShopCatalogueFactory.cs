@@ -25,13 +25,16 @@ public static class ShopCatalogueFactory
             .Distinct()
             .ToList();
 
+    // F34: one throttle per shop for the process, so every engine's searches count against the same limit.
+    private static readonly ShopThrottle CheckersThrottle = new();
+
     /// <param name="stores">The process's store cache (F34), shared by every engine's catalogues; a new one when null.</param>
     public static IReadOnlyDictionary<ShopKind, IShopCatalogue> Create(IReadOnlyList<ShopKind> enabled, IWebBrowser browser,
         StoreSessionCache? stores = null) =>
         enabled.Distinct().ToDictionary(shop => shop, shop => shop switch
         {
             // F34: Checkers answers for the store that serves the user's town, found once per town.
-            ShopKind.Checkers => (IShopCatalogue)new CheckersCatalogue(browser, new CheckersStore(browser, PlaceCoordinates.OfAsync, stores)),
+            ShopKind.Checkers => (IShopCatalogue)new CheckersCatalogue(browser, new CheckersStore(browser, PlaceCoordinates.OfAsync, stores), CheckersThrottle),
             _ => throw new ArgumentOutOfRangeException(nameof(enabled), shop, null),
         });
 }

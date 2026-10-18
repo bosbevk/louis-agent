@@ -17,9 +17,10 @@ using Microsoft.Extensions.Logging;
 /// <c>/product/{name}-{article}{unit}</c>. The page is visited through the guarded browser like any shopper's, its
 /// catalogue answer kept (no internal API called directly), and parsed here. For development and benchmarks until
 /// Checkers' terms are checked (ADR 0023). Where the user shared their town, the search runs in the store that serves it
-/// (F34: <see cref="CheckersStore"/>), else in Checkers' default store; the answer says which.
+/// (F34: <see cref="CheckersStore"/>), else in Checkers' default store; the answer says which. Searches go through
+/// <paramref name="throttle"/> (F34): a few at once, and a pause after Checkers refuses one.
 /// </summary>
-public sealed partial class CheckersCatalogue(IWebBrowser browser, CheckersStore? store = null) : IShopCatalogue
+public sealed partial class CheckersCatalogue(IWebBrowser browser, CheckersStore? store = null, ShopThrottle? throttle = null) : IShopCatalogue
 {
     private static readonly ILogger Log = AgentLogging.For<CheckersCatalogue>();
     private static readonly Uri Site = new("https://www.checkers.co.za/");
@@ -30,10 +31,17 @@ public sealed partial class CheckersCatalogue(IWebBrowser browser, CheckersStore
 
     public ShopKind Shop => ShopKind.Checkers;
 
+    private readonly ShopThrottle _throttle = throttle ?? new ShopThrottle();
+
     public async Task<ShopSearch> SearchAsync(string query, int maxResults, string? place = null, CancellationToken cancellationToken = default)
     {
-        var search = SearchUri(query);
         BrowserSession? area = store is null ? null : await store.ForAsync(place, cancellationToken);
+        return await _throttle.RunAsync(() => SearchInAsync(query, maxResults, place, area, cancellationToken), cancellationToken);
+    }
+
+    private async Task<ShopSearch> SearchInAsync(string query, int maxResults, string? place, BrowserSession? area, CancellationToken cancellationToken)
+    {
+        var search = SearchUri(query);
         BrowserVisit visit;
         try
         {
@@ -48,7 +56,10 @@ public sealed partial class CheckersCatalogue(IWebBrowser browser, CheckersStore
         }
 
         if (visit.Captured.Count == 0)
+        {
+            _throttle.Refused();
             throw new ShopCatalogueException(MessageText.Format(ToolMessage.ShopCatalogueNoAnswer, new { Shop = "Checkers", Query = query, Url = search }));
+        }
         try
         {
             var products = Parse(visit.Captured[0], visit.Html, search, maxResults);
@@ -63,6 +74,7 @@ public sealed partial class CheckersCatalogue(IWebBrowser browser, CheckersStore
         }
         catch (Exception ex) when (ex is JsonException or KeyNotFoundException or InvalidOperationException or FormatException)
         {
+            _throttle.Refused();
             throw new ShopCatalogueException(MessageText.Format(ToolMessage.ShopCatalogueUnreadable, new { Shop = "Checkers", Query = query, Reason = ex.Message }));
         }
     }
