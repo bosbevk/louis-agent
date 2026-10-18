@@ -140,7 +140,7 @@ order-total fix in [the cached demo run](https://github.com/bosbevk/louis-agent/
 
 ```text
 event: message_start
-data: {"type":"message_start","message":{"session_id":"sess_2b84…","role":"assistant"}}
+data: {"type":"message_start","message":{"session_id":"sess_2b84…","role":"assistant","toolsets":["files","git","dotnet"],"session_role":null}}
 
 event: content_block_start
 data: {"type":"content_block_start","index":0,"content_block":{"type":"text","text":""}}
@@ -172,7 +172,7 @@ data: {"type":"message_stop"}
 
 | Event | Meaning |
 |---|---|
-| `message_start` | The reply has started |
+| `message_start` | The reply has started: the session's id, the toolsets it loaded (F34) and its role, `session_role` (FX17; `role` is Claude's speaker, always `assistant`). A specialist's start tells its parent's card who is working, even on a follow-up |
 | `content_block_start` | A new block: `thinking`, `text`, `tool_use` (name and input) or `tool_result` (content, `is_error`) |
 | `content_block_delta` | More `thinking_delta` or `text_delta` for the open block |
 | `content_block_stop` | The block is complete |
