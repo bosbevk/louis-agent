@@ -109,5 +109,11 @@ sequenceDiagram
 
 ## Approved during the build
 
+- **2026-10-18, a follow-up's card names the cook (Louis, on "Oorgedra aan sub-1": "this must say puls-cook?", then
+  "put it in the FX17 branch").** `ContinueSubSession` names the handle, not the role, so the card showed `sub-1` and the
+  line under it `BESIG` until the answer's footer came. Each session's `message_start` carries its role
+  (`session_role`, since `role` is Claude's speaker), the web app keeps it on the sub-turn (`Turn.Role`), and
+  `Delegation` takes it when the call names none: the card says *puls-cook*, the line *Soek bestanddele* / *Bou resep*.
+
 ---
 [Plans](README.md) · Previous: [F34 Shop deals](F34-shop-deals.md)

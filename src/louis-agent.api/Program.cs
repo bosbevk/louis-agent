@@ -257,7 +257,7 @@ static string BuildPrompt(SendMessageRequest request)
 static async IAsyncEnumerable<SseItem<string>> StreamTurnAsync(
     AgentEngine engine, AgentSession session, string prompt, CancellationTokenSource turn)
 {
-    var stream = new ClaudeStyleStream(session.Id, session.Toolsets);
+    var stream = new ClaudeStyleStream(session.Id, session.Toolsets, session.Role);
     UsageScope? usage = null;
     try
     {
@@ -392,7 +392,7 @@ internal sealed record CreateSessionRequest(
 internal sealed record AttachmentRequest(string Name, string? Content);
 
 /// <summary>Turns streamed agent updates into Claude-style SSE events with JSON data.</summary>
-internal sealed class ClaudeStyleStream(string sessionId, IReadOnlyList<string>? toolsets = null)
+internal sealed class ClaudeStyleStream(string sessionId, IReadOnlyList<string>? toolsets = null, string? sessionRole = null)
 {
     // Relaxed escaping keeps quotes and backticks readable instead of '-style escapes; the data is JSON, never embedded in HTML.
     private static readonly JsonSerializerOptions Json = new()
@@ -419,9 +419,12 @@ internal sealed class ClaudeStyleStream(string sessionId, IReadOnlyList<string>?
         });
     }
 
-    /// <summary>The turn's start, with the toolsets the session loaded (F34: a specialist's card shows what it has).</summary>
+    /// <summary>
+    /// The turn's start, with the toolsets the session loaded (F34: a specialist's card shows what it has) and its role
+    /// (FX17: a follow-up's card names the specialist while it works); <c>session_role</c>, since <c>role</c> is Claude's speaker.
+    /// </summary>
     public SseItem<string> MessageStart() =>
-        Event("message_start", new { type = "message_start", message = new { session_id = sessionId, role = "assistant", toolsets = toolsets ?? [] } });
+        Event("message_start", new { type = "message_start", message = new { session_id = sessionId, role = "assistant", toolsets = toolsets ?? [], session_role = sessionRole } });
 
     public IEnumerable<SseItem<string>> Content(AIContent content) => content switch
     {

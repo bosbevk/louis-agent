@@ -73,6 +73,8 @@ public sealed partial record Delegation(
         }
         // While it works, its own stream's start says what it loaded (F34).
         if (block.SubTurn?.Toolsets is { Count: > 0 } live) toolsets = [.. live];
+        // FX17: a follow-up's call names the handle, not the role; its stream's start names it.
+        role ??= Blank(block.SubTurn?.Role);
         return new Delegation(agent, toolsets, task, answer ?? (failed ? block.ToolResult : null), usage, failed, resultAgent, role, handle, continued);
     }
 

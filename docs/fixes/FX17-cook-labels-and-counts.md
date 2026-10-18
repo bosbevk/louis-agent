@@ -31,6 +31,10 @@ the name and pack, and after the pack's price, never before the photo. Prompt on
 - **Step 2 (2026-10-18): a count after the name.** When the recipe needs more than one pack, the count goes after the
   name and pack (`… Miami Italian Style Diced Tomatoes 410 g × 2`) and after the pack's price (`[R24,99](…) × 2`),
   never before the photo; the total counts every pack, as the run's follow-up already did.
+- **A follow-up's card (2026-10-18, Louis: "this must say puls-cook?").** A continued specialist's card said
+  "Oorgedra aan sub-1", and the line under it "BESIG": the follow-up's call names only the handle. Each session's
+  `message_start` now carries its role (`session_role`), so the card names *puls-cook* and the line the cook's phase
+  while it works. Tested in `ContinuedSpecialistRoleTests` (failed first: no role, "BESIG", no field).
 
 ---
 [Fixes](README.md) · Previous: [FX16](FX16-short-quote-match.md)
