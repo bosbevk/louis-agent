@@ -17,10 +17,11 @@ using Microsoft.Extensions.Logging;
 /// keeps those cookies, Checkers' own, as the session a search starts with. No place, a place nobody knows, none served
 /// there, or a lookup that fails: no session, so the default store answers, as before. The towns are kept in
 /// <paramref name="stores"/>, the process's one cache (F34): one lookup per town however many searches ask at once, kept
-/// a day in its file.
+/// a day in its file. A lookup goes through <paramref name="throttle"/> like a search (review of PR #61), and a refused
+/// one is a refusal.
 /// </summary>
 public sealed class CheckersStore(IWebBrowser browser, Func<string, CancellationToken, Task<(double Latitude, double Longitude)?>> locate,
-    StoreSessionCache? stores = null)
+    StoreSessionCache? stores = null, ShopThrottle? throttle = null)
 {
     private static readonly ILogger Log = AgentLogging.For<CheckersStore>();
     private static readonly Uri Site = new("https://www.checkers.co.za/");
@@ -33,6 +34,7 @@ public sealed class CheckersStore(IWebBrowser browser, Func<string, Cancellation
     // Each town's answer: a town's stores don't move between searches. A failed lookup isn't kept, so the next search
     // tries again.
     private readonly StoreSessionCache _stores = stores ?? new StoreSessionCache();
+    private readonly ShopThrottle _throttle = throttle ?? new ShopThrottle();
 
     public Task<BrowserSession?> ForAsync(string? place, CancellationToken cancellationToken = default)
     {
@@ -58,8 +60,8 @@ public sealed class CheckersStore(IWebBrowser browser, Func<string, Cancellation
         BrowserVisit visit;
         try
         {
-            visit = await browser.VisitAsync(Site, session: new BrowserSession([]), script: Lookup(centre.Latitude, centre.Longitude),
-                cancellationToken: cancellationToken);
+            visit = await _throttle.RunAsync(() => browser.VisitAsync(Site, session: new BrowserSession([]),
+                script: Lookup(centre.Latitude, centre.Longitude), cancellationToken: cancellationToken), cancellationToken);
         }
         catch (WebBrowserException ex)
         {
@@ -70,6 +72,7 @@ public sealed class CheckersStore(IWebBrowser browser, Func<string, Cancellation
         // Cook check 42d837f13659: a reply that isn't Checkers' store answer (a refusal) is a failed lookup, never "no store".
         if (Serves(visit.ScriptResult) is not { } serves)
         {
+            _throttle.Refused();
             Log.Log(LogLevel.Warning, LogMessage.ShopStoreAnswerUnreadable, new { Shop = "Checkers", Place = town });
             return (null, false);
         }

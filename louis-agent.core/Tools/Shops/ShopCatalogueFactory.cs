@@ -34,7 +34,7 @@ public static class ShopCatalogueFactory
         enabled.Distinct().ToDictionary(shop => shop, shop => shop switch
         {
             // F34: Checkers answers for the store that serves the user's town, found once per town.
-            ShopKind.Checkers => (IShopCatalogue)new CheckersCatalogue(browser, new CheckersStore(browser, PlaceCoordinates.OfAsync, stores), CheckersThrottle),
+            ShopKind.Checkers => (IShopCatalogue)new CheckersCatalogue(browser, new CheckersStore(browser, PlaceCoordinates.OfAsync, stores, CheckersThrottle), CheckersThrottle),
             _ => throw new ArgumentOutOfRangeException(nameof(enabled), shop, null),
         });
 }

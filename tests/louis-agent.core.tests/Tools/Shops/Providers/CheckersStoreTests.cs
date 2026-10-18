@@ -34,6 +34,9 @@ public class CheckersStoreTests
         }
     }
 
+    /// <summary>A throttle that counts a refusal but never sleeps, so a refused lookup doesn't hold the test 20 s.</summary>
+    private static LouisAgent.Core.Tools.Shops.ShopThrottle NoWait() => new(2, TimeSpan.FromSeconds(20), null, (_, _) => Task.CompletedTask);
+
     private static Task<(double Latitude, double Longitude)?> Malmesbury(string place, CancellationToken _) =>
         Task.FromResult<(double, double)?>(place.Contains("malmesbury", StringComparison.OrdinalIgnoreCase) ? (-33.460278, 18.723611) : null);
 
@@ -110,7 +113,7 @@ public class CheckersStoreTests
     public async Task AReplyThatIsntTheStoreAnswer_IsAFailedLookup_NotKept(string? reply)
     {
         var browser = new FakeBrowser(reply, SetByCheckers);
-        var store = new CheckersStore(browser, Malmesbury, new LouisAgent.Core.Tools.Shops.StoreSessionCache());
+        var store = new CheckersStore(browser, Malmesbury, new LouisAgent.Core.Tools.Shops.StoreSessionCache(), NoWait());
 
         Assert.That(await store.ForAsync("Malmesbury"), Is.Null);
         await store.ForAsync("Malmesbury");
@@ -130,6 +133,20 @@ public class CheckersStoreTests
         Assert.That(await store.ForAsync("Malmesbury"), Is.Null);
         await store.ForAsync("Malmesbury");
         Assert.That(asked, Is.EqualTo(2), "looked up again");
+    }
+
+    // Review of PR #61: the store lookup skipped the throttle, so after Checkers refused, the next town's lookup still went
+    // straight through. It waits like a search, and a refused lookup is a refusal too.
+    [Test]
+    public async Task TheLookup_WaitsAfterARefusal_AndARefusedOneIsARefusal()
+    {
+        var waits = new List<TimeSpan>();
+        var throttle = new LouisAgent.Core.Tools.Shops.ShopThrottle(2, TimeSpan.FromSeconds(20), null, (wait, _) => { waits.Add(wait); return Task.CompletedTask; });
+
+        await new CheckersStore(new FakeBrowser("<html>blocked</html>", SetByCheckers), Malmesbury, throttle: throttle).ForAsync("Malmesbury");
+        await new CheckersStore(new FakeBrowser(Contexts, SetByCheckers), Malmesbury, throttle: throttle).ForAsync("Malmesbury");
+
+        Assert.That(waits, Has.Count.EqualTo(1), "the second lookup waited after the first was refused");
     }
 
     [Test]
