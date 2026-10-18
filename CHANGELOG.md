@@ -3,6 +3,13 @@
 > **Reference.** What was finished, newest first, one entry per feature, fix or cleanup. **Elsewhere:** what's still
 > open in the [TODO](TODO.md); how each was built in its feature, fix or plan doc (linked from its entry).
 
+- 2026-10-18 — **F34 Shop deals**: Checkers searched in the store that serves the user's town (its own address call,
+  the one approved direct call, ADR 0023), found once per town and kept a day; `SearchSpecials` (multi-buys) and
+  `SearchPromotions` with the shop's wording; the cook prices only shops it has a tool for, none: the list with `-` and
+  a no-catalogue line, deals first, packs the recipe needs, every product with its photo, and Puls asks how many people.
+  A round's calls run at once for read-only toolsets (ADR 0026), two searches at once per shop with a pause after a
+  refusal. The cook check compares Puls with the cook's tools against Puls with its cook: run `d94597a51d4d` priced 31 of
+  31 with the cook (Prince Albert rightly without prices), 13 of 18 alone ([feature](docs/features/F34-shop-deals.md))
 - 2026-10-17 — **CL14 The public word: role**: what callers see says role: `POST /sessions` takes `role` and the session
   JSON returns it, `GET /roles`, `ROLES_ENABLED`, the model's `StartSubSession(…, role, …)` and the prompts that teach
   it, the voices' headings, the web apps and the benchmarks. Expand, then contract: the old words are still read

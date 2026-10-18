@@ -340,6 +340,9 @@ sequenceDiagram
   OpenStreetMap, the cook's branch lookup, and no SA shop showed though every price came from Checkers. A shop search
   counts as its shop's site read (`stream.hosts`); OpenStreetMap is its own slice, *maps*, and no source in
   `sources_local`.
+- **2026-10-18, review of PR #61.** A Nominatim failure is no answer, never "no store" kept a day; the store lookup
+  goes through the shop's throttle; `area` keeps only the town; [ADR 0026](../adr/0026-parallel-tool-calls-for-read-only-toolsets.md)
+  for parallel tool calls; the store lookup recorded as the one approved direct call beside ADR 0023's terms.
 
 ---
 [Plans](README.md) · Previous: [CL14 The public word: role](CL14-public-word-role.md)

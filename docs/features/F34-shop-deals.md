@@ -1,6 +1,6 @@
 # F34 · Shop deals: the user's store, its specials and promotions, and a cook that prices only where it has a tool
 
-> **Status:** planned (2026-10-17), on `feature/F34-shop-deals` · **Milestone:** — · **Depends on:** F33 (the shops
+> **Status:** done (2026-10-18), PR #61 · **Milestone:** — · **Depends on:** F33 (the shops
 > toolset and Checkers' catalogue), F22 (the user's place), F25 (the cook)
 >
 > **In the TODO:** **F34 Shop deals** under *Tooling and repositories* ([TODO](../../TODO.md)) · **Plan:**
@@ -37,6 +37,12 @@ prices.
 - **One visit, more of it read:** the deal's kind is in the answer, its wording on the page; no new request.
 - **The store from the town's centre**, never the user's address; development and benchmarks first (ADR 0023), as F33.
 - **The sold endpoint prices nothing** until it has a shop tool: Louis's choice (F34-S4).
+- **One call of the site's own, approved:** the store lookup runs, in a visit of its own, the call Checkers' address
+  picker makes (`/api/store/fetch-store-contexts`, the town's centre only), once per town a day. Every search is still
+  the page a shopper visits (F33's line; `dealsOnly` turned down for it). Recorded beside
+  [ADR 0023](../adr/0023-copyleft-service-beside-us.md)'s terms.
+- **Backing off, not getting round:** two searches at once per shop, and 20 s after it refuses one, so Checkers' rate
+  limit is respected; nothing changes who we look like or where we ask from.
 
 ## Done when
 
@@ -144,6 +150,11 @@ prices.
   line, which the accuracy ring counted as unknown until it learned there's no shop there (now 31/31). Puls alone: 13
   of 18, five prices for Pretoria without a link, and Prince Albert priced at a store that isn't the town's. Checkers
   refused 8 searches, each followed by the 20 s pause, and no four-minute block; the cook took 80-155 s a meal.
+- **Review of PR #61 (2026-10-18).** Nominatim not answering (a 429, a 503, a timeout, a page that isn't its JSON) was
+  "no town", and the store cache kept it a day: now `PlaceUnavailableException`, a failed lookup, never kept. The store
+  lookup goes through the shop's throttle like a search, and a refused one is a refusal. `area` keeps only the town
+  (a part with a digit, a house number or a postcode, never goes on to Nominatim, the log or the cache file), and the
+  tools' description says the town only. Parallel tool calls are [ADR 0026](../adr/0026-parallel-tool-calls-for-read-only-toolsets.md).
 
 ---
 [Features](README.md) · [Plan](../plans/F34-shop-deals.md) · Previous: [F33 Shop catalogues](F33-shop-catalogues.md)
