@@ -17,7 +17,10 @@ REFERENCE = re.compile(r"^\s*\[([^\]]+)\]:\s*(https?://\S+)", re.MULTILINE)
 RAND = re.compile(r"\bR\s?\d[\d\s,.]*")
 ESTIMATE = re.compile(r"\b(unknown|onbekend|geskat|skatting|skattings|estimate[ds]?|nie bevestig|unverified|onbevestig|nie gevind)\b", re.IGNORECASE)
 UNCONFIRMED = re.compile(r"\b(unknown|onbekend|geskat|skatting|skattings|estimate[ds]?|nie bevestig|unverified|onbevestig|snippets?|soekresultate|soekindeks)\b", re.IGNORECASE)
-HEADER = re.compile(r"^\|\s*(Item|Bestanddeel|Ingredient|Produk)\b", re.IGNORECASE)
+# Cook check 42d837f13659: Puls alone headed its list `| Wat | Pak | Prys |`; the cook's *Onseker* table is `| Wat |
+# Hoekom |` too, so a table with a why column is never the list.
+HEADER = re.compile(r"^\|\s*(Item|Bestanddeel|Ingredient|Produk|Wat|What)\b", re.IGNORECASE)
+WHY_COLUMN = re.compile(r"\|\s*(Hoekom|Waarom|Why)\s*\|", re.IGNORECASE)
 SEPARATOR = re.compile(r"^\|\s*:?-")
 TOTAL = re.compile(r"^\|\s*\*\*")
 # F34: the shops the cook has a tool for, by their sites (Checkers today, ShopKind in core), and the tools themselves.
@@ -78,7 +81,7 @@ def priced(answer):
     references = {label.strip().lower(): url for label, url in REFERENCE.findall(answer)}
     listed = priced_rows = guessed = per_kg = 0
     for table in _tables(answer):
-        if not HEADER.match(table[0]):
+        if not _is_list(table[0]):
             continue
         shops = [_shop_of(name) for name in _cells(table[0])]
         for row in table[1:]:
@@ -107,7 +110,7 @@ def priced(answer):
 def _list_rows(answer):
     """The shopping list's tables, each as (its header's cells, its ingredient rows' cells): totals and separators left out."""
     for table in _tables(answer or ""):
-        if HEADER.match(table[0]):
+        if _is_list(table[0]):
             yield _cells(table[0]), [_cells(row) for row in table[1:] if not SEPARATOR.match(row) and not TOTAL.match(row)]
 
 
@@ -136,6 +139,11 @@ def store_default(results):
 def no_catalogue_line(answer):
     """Whether the answer says no shop near the user has a catalogue here yet (F34: the list without prices)."""
     return bool(NO_CATALOGUE.search(answer or ""))
+
+
+def _is_list(header):
+    """Whether a table's header is a shopping list's: an ingredient column first, and no why column (*Onseker*)."""
+    return bool(HEADER.match(header)) and not WHY_COLUMN.search(header)
 
 
 def _cells(row):

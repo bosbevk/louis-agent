@@ -132,6 +132,13 @@ prices.
   `shops`; the coding agent's files, shells and git keep their order, and Puls's `specialists` too), the town's store
   is looked up once and kept a day in a file, and the card's chips say `web, shops`: the role's `shops` was never
   shown, since the card read only what Puls sent.
+- **Cook check `42d837f13659` (2026-10-18; 1 repeat, $0.113, 70 requests).** With the cook: cook-shops 9/9,
+  cook-malmesbury 5/5 with a deal named, cook-en 6/6 but at the default store, Prince Albert 0/9 with the no-catalogue
+  line, cook-af 1/8: Checkers refused every search from 00:24 to 00:28. Puls alone with the cook's tools: cook-shops
+  7/7, Malmesbury 4/4, and Prince Albert 5/5, priced at the default store for a town Checkers doesn't serve; the cook's
+  rule (no store, no prices) is what Puls alone lacks. The cook took 100-350 s a meal, Puls alone 50-90 s.
+- **Checkers' limit (2026-10-18).** About 50 searches in seven minutes, then four minutes of refusals. Two searches at
+  once per shop, a 20 s pause after a refusal, and a refused store lookup is never kept as "no store".
 
 ---
 [Features](README.md) · [Plan](../plans/F34-shop-deals.md) · Previous: [F33 Shop catalogues](F33-shop-catalogues.md)

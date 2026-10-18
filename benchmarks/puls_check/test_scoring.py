@@ -67,6 +67,15 @@ class Prices(unittest.TestCase):
                   "| [Hoender](https://www.food24.com/recipes/hoender) | R89,99 |\n")
         self.assertEqual(scoring.priced(answer), (0, 2, 2, 0))
 
+    def test_a_list_headed_wat_is_the_shopping_list(self):
+        # Cook check 42d837f13659: Puls alone headed its list `| Wat | Pak | Prys |`, and the scorer found no list.
+        answer = ("| Wat | Pak | Prys |\n|---|---|---|\n"
+                  "| [Uie](https://www.checkers.co.za/product/onions-1kg-10135699EA) | 1 kg | R34.99 |\n")
+        self.assertEqual(scoring.priced(answer), (1, 1, 0, 0))
+        self.assertEqual(scoring.priced(answer.replace("Wat", "What")), (1, 1, 0, 0))
+        self.assertEqual(scoring.priced("| Wat | Waarom |\n|---|---|\n| Rys | R19,99 nie gevind |\n"), (None, None, None, None),
+                         "the cook's Onseker table is no list")
+
     def test_a_shops_own_subdomain_is_the_shop(self):
         answer = "| Bestanddeel | Woolworths |\n|---|---|\n| Melk | [R32,99](https://shop.woolworths.co.za/melk) |\n"
         self.assertEqual(scoring.priced(answer), (1, 1, 0, 0))

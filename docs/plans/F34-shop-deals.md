@@ -326,6 +326,12 @@ sequenceDiagram
   a town's store is one shared lookup (`StoreSessionCache`), kept a day in `SHOP_STORE_CACHE` (`data/puls`, mounted
   in both Puls containers); and the specialist's card shows the toolsets it loaded (`message_start` carries them,
   the footer names the peer's), so the cook shows `web, shops`.
+- **2026-10-18, after cook check `42d837f13659` (Louis: "yes, do all 3").** Checkers refused searches for four
+  minutes after about 50 in seven (an HTML page, then no answer), and the cook priced 1 of 8; right after, Pretoria's
+  store lookup came back as "no store", which the new cache would have kept a day. A reply that isn't Checkers' store
+  answer is a failed lookup, never kept; a shop gets at most two searches at once and, once it refuses one, its next
+  searches wait 20 s (`ShopThrottle`, one per shop for the process); and the scorer reads a list headed *Wat* (Puls
+  alone's), never the cook's *Onseker* table (`| Wat | Hoekom |`).
 
 ---
 [Plans](README.md) · Previous: [CL14 The public word: role](CL14-public-word-role.md)
