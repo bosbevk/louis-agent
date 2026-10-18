@@ -71,7 +71,9 @@ def priced(answer):
     the shopping list counts: a table headed *Bestanddeel* (or Ingredient, Item, Produk), without its bold total rows;
     the branches and what's unsure are tables too (seen in 11b's run). A price per kg is no pack's price (review of
     PR #58: run fc7f8ecfdc87 priced a 1–1,2 kg pack of thighs at R99,99/kg): a cell that says per kg, or one amount
-    linked to a product sold by weight, whose pack costs a range, counts apart as per kg, neither priced nor guessed."""
+    linked to a product sold by weight, whose pack costs a range, counts apart as per kg, neither priced nor guessed.
+    A price whose row links its product at that price's shop is sourced by that link (F34, run 26527259bf31: Puls alone
+    linked `[Onions 1kg](checkers…)` and wrote `R34.99` beside it)."""
     answer = answer or ""
     references = {label.strip().lower(): url for label, url in REFERENCE.findall(answer)}
     listed = priced_rows = guessed = per_kg = 0
@@ -84,9 +86,13 @@ def priced(answer):
                 continue
             listed += 1
             cells = _cells(row)
-            # The first column is the ingredient; a price is sourced in its own shop's column.
-            sourced = [cell for i, cell in enumerate(cells) if i > 0 and RAND.search(cell)
-                       and _sourced(cell, shops[i] if i < len(shops) else None, references)]
+            # The first column is the ingredient; a price is sourced in its own shop's column, by its own link or by the
+            # row's link to the product at that shop.
+            linked = " ".join(f"[]({url})" for cell in cells for url in _urls(cell, references))
+            sourced = [cell if _sourced(cell, shop, references) else cell + " " + linked
+                       for i, cell in enumerate(cells) if i > 0 and RAND.search(cell)
+                       for shop in [shops[i] if i < len(shops) else None]
+                       if _sourced(cell, shop, references) or _sourced(linked, shop, references)]
             if any(not _per_kg(cell, references) for cell in sourced):
                 priced_rows += 1
             elif sourced:

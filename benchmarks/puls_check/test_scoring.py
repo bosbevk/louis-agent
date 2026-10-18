@@ -47,6 +47,26 @@ class Prices(unittest.TestCase):
                   "[1]: https://www.checkers.co.za/p/hoender\n[uie]: https://www.checkers.co.za/p/uie \"Uie\"\n")
         self.assertEqual(scoring.priced(answer), (2, 2, 0, 0))
 
+    # F34, run 26527259bf31: Puls alone (puls-tools) priced from the shop tools but linked the product, not the price
+    # (`| [Onions 1kg](checkers…) | R34.99 |`), and scored 0 priced. The row's link to the product at the price's shop
+    # is its source too (Louis: "fix the scorer"); a link elsewhere still isn't.
+
+    def test_a_price_whose_product_links_to_the_shop_is_priced(self):
+        answer = ("| Item | Pryse | Subtotaal |\n|---|---|---|\n"
+                  "| [Onions 1kg](https://www.checkers.co.za/product/onions-1kg-10135699EA) | R34.99 | R34.99 |\n"
+                  "| [Tastic Long Grain Parboiled Rice 500g](https://www.checkers.co.za/product/tastic-long-grain-parboiled-white-rice-500g-10130260EA) | R19.99 | R19.99 |\n")
+        self.assertEqual(scoring.priced(answer), (2, 2, 0, 0))
+
+    def test_one_price_for_a_product_linked_as_sold_by_weight_is_its_price_per_kg(self):
+        answer = ("| Item | Pryse |\n|---|---|\n"
+                  "| [Farmer's Choice Chicken 8 Piece Braai Pack Per Kg](https://www.checkers.co.za/product/farmers-choice-chicken-8-piece-braai-pack-per-kg-10732967KG), 1 kg | R59.99 |\n")
+        self.assertEqual(scoring.priced(answer), (0, 1, 0, 1))
+
+    def test_a_product_linked_to_another_shop_or_a_recipe_is_no_source(self):
+        answer = ("| Item | Checkers |\n|---|---|\n| [Melk](https://www.pnp.co.za/melk) | R18,99 |\n"
+                  "| [Hoender](https://www.food24.com/recipes/hoender) | R89,99 |\n")
+        self.assertEqual(scoring.priced(answer), (0, 2, 2, 0))
+
     def test_a_shops_own_subdomain_is_the_shop(self):
         answer = "| Bestanddeel | Woolworths |\n|---|---|\n| Melk | [R32,99](https://shop.woolworths.co.za/melk) |\n"
         self.assertEqual(scoring.priced(answer), (1, 1, 0, 0))
