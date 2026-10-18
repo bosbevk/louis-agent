@@ -204,7 +204,7 @@
             @if (_modes.Any(m => Priced(m) is not null))
             {
                 <section class="chart">
-                    <div class="chart-head"><ChartInfo Topic="accuracy" Title="Accuracy per mode" /><span class="legend"><span><span class="sw" style="background: @Right"></span>sourced</span><span><span class="sw" style="background: @Guess"></span>guessed</span><span><span class="sw" style="background: @Wrong"></span>unknown</span></span></div>
+                    <div class="chart-head"><ChartInfo Topic="accuracy" Title="Accuracy per mode" /><span class="legend"><span><span class="sw" style="background: @Right"></span>right</span><span><span class="sw" style="background: @Guess"></span>guessed</span><span><span class="sw" style="background: @Wrong"></span>no price</span></span></div>
                     <div class="donuts">
                         @foreach (var (m, i) in Columns)
                         {
@@ -213,7 +213,7 @@
                                 {
                                     int unknown = priced.Ingredients - priced.Priced - priced.Guessed;
                                     @Ring([priced.Priced, priced.Guessed, unknown], [Right, Guess, Wrong],
-                                        [$"sourced {priced.Priced}", $"guessed {priced.Guessed}", $"unknown {unknown}"],
+                                        [$"right {priced.Priced}", $"guessed {priced.Guessed}", $"no price {unknown}"],
                                         $"{(double)priced.Priced / priced.Ingredients:0%}", $"{priced.Priced} / {priced.Ingredients}")
                                 }
                                 else
@@ -800,6 +800,11 @@
             yield return new Chip($"deals {deals.GetInt32()}", "ok");
         if (c.Scores.TryGetProperty("untooled_shops", out var untooled) && untooled.ValueKind == JsonValueKind.Number && untooled.GetInt32() > 0)
             yield return new Chip($"no-tool shops {untooled.GetInt32()}", "bad");
+        // A town with no shop (Louis: "no shop there mos?"): no price is right, a price is from a store that isn't the town's.
+        if (c.Scores.TryGetProperty("no_shop_rows", out var noShop) && noShop.ValueKind == JsonValueKind.Number && noShop.GetInt32() > 0)
+            yield return new Chip($"no shop, no price {noShop.GetInt32()}", "ok");
+        if (c.Scores.TryGetProperty("wrong_store", out var wrong) && wrong.ValueKind == JsonValueKind.Number && wrong.GetInt32() > 0)
+            yield return new Chip($"wrong store {wrong.GetInt32()}", "bad");
         if (c.Scores.TryGetProperty("no_catalogue_line", out var none) && none.ValueKind == JsonValueKind.True)
             yield return new Chip("no catalogue here");
         // Louis: "how can we verify … that the address was used": the searches the town's store answered, and the default's.
@@ -827,7 +832,11 @@
         return roles.Count == 0 ? "specialist" : string.Join(" / ", roles);
     }
 
-    /// <summary>A mode's ingredients priced over ingredients listed, summed over its conversations; null where the check counts none.</summary>
+    /// <summary>
+    /// A mode's right ingredients over ingredients listed, summed over its conversations; null where the check counts none.
+    /// Right is priced with its source, or rightly without a price in a town with no shop (F34: <c>no_shop_rows</c>; a
+    /// price there, <c>wrong_store</c>, is red with the rest).
+    /// </summary>
     private static (int Priced, int Ingredients, int Guessed)? Priced(ModeNode m)
     {
         int priced = 0, items = 0, guessed = 0;
@@ -835,11 +844,14 @@
         {
             if (c.Scores.ValueKind != JsonValueKind.Object || !c.Scores.TryGetProperty("ingredients", out var n) || n.ValueKind != JsonValueKind.Number) continue;
             items += n.GetInt32();
-            priced += c.Scores.TryGetProperty("priced", out var p) && p.ValueKind == JsonValueKind.Number ? p.GetInt32() : 0;
-            guessed += c.Scores.TryGetProperty("unsourced", out var g) && g.ValueKind == JsonValueKind.Number ? g.GetInt32() : 0;
+            priced += Count(c.Scores, "priced") + Count(c.Scores, "no_shop_rows");
+            guessed += Count(c.Scores, "unsourced");
         }
         return items == 0 ? null : (priced, items, guessed);
     }
+
+    private static int Count(JsonElement scores, string name) =>
+        scores.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.Number ? v.GetInt32() : 0;
 
     /// <summary>A meal the check expected a list for that came without one (its ingredients unknown, not counted).</summary>
     private static int Unlisted(ModeNode m) =>

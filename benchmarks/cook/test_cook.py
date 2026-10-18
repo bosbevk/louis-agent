@@ -56,6 +56,32 @@ class AMealQuestion(unittest.TestCase):
         self.assertEqual((scores["deals_named"], scores["untooled_shops"], scores["no_catalogue_line"]), (0, 0, True))
         self.assertEqual((scores["priced"], scores["ingredients"]), (0, 1))
 
+    # Louis, on run d94597a51d4d's ring (84 % with the cook): "accuracy is 100%, no shop there mos?" Prince Albert has no
+    # Checkers, so a `-` there is the right answer, and a price there came from a store that isn't the town's.
+    NO_SHOP_LIST = ("| Bestanddeel | Vir die resep | Om te koop | Prys |\n|---|---|---|---|\n"
+                    "| Hoender | 1 kg | Hoenderstukke | - |\n| Rys | 300 g | Rys 500 g | - |\n\n"
+                    "*Geen winkel naby jou het nog 'n katalogus hier nie.*")
+
+    def test_where_there_is_no_shop_no_price_is_right(self):
+        scores = cook.score("cook-no-shop", [turn(self.NO_SHOP_LIST, calls=[START], role="puls-cook")], cook_on=True)
+
+        self.assertEqual((scores["priced"], scores["no_shop_rows"], scores["wrong_store"], scores["ingredients"]), (0, 2, 0, 2))
+        self.assertEqual(scores["priced_ratio"], 1.0)
+
+    def test_where_there_is_no_shop_a_price_is_from_the_wrong_store(self):
+        # Puls alone in Prince Albert priced at Checkers' default store, linked: sourced, but not where the user is.
+        answer = ("| Wat | Prys |\n|---|---|\n| [Uie](https://www.checkers.co.za/product/onions-1kg-10135699EA) | R34.99 |\n"
+                  "| Rys | - |\n")
+        scores = cook.score("cook-no-shop", [turn(answer)], cook_on=False)
+
+        self.assertEqual((scores["priced"], scores["no_shop_rows"], scores["wrong_store"], scores["ingredients"]), (0, 1, 1, 2))
+        self.assertEqual(scores["priced_ratio"], 0.5)
+
+    def test_where_there_is_a_shop_a_dash_is_still_no_price(self):
+        scores = cook.score("cook-malmesbury", [turn(self.NO_SHOP_LIST, calls=[START], role="puls-cook")], cook_on=True)
+
+        self.assertEqual((scores["priced"], scores["no_shop_rows"], scores["priced_ratio"]), (0, 0, 0.0))
+
     def test_the_check_asks_in_malmesbury_and_in_a_town_without_a_checkers(self):
         tasks = {task: place for task, place, _ in cook.CONVERSATIONS}
         self.assertEqual(tasks["cook-malmesbury"], "Malmesbury, Wes-Kaap, Suid-Afrika")

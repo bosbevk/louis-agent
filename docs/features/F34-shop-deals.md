@@ -139,6 +139,11 @@ prices.
   rule (no store, no prices) is what Puls alone lacks. The cook took 100-350 s a meal, Puls alone 50-90 s.
 - **Checkers' limit (2026-10-18).** About 50 searches in seven minutes, then four minutes of refusals. Two searches at
   once per shop, a 20 s pause after a refusal, and a refused store lookup is never kept as "no store".
+- **Run `d94597a51d4d` (2026-10-18; $0.118, 71 requests).** The cook priced everything it could: cook-af 8/8,
+  cook-en 5/5 at Pretoria's own store, cook-shops 8/8, Malmesbury 5/5; in Prince Albert no prices and the no-catalogue
+  line, which the accuracy ring counted as unknown until it learned there's no shop there (now 31/31). Puls alone: 13
+  of 18, five prices for Pretoria without a link, and Prince Albert priced at a store that isn't the town's. Checkers
+  refused 8 searches, each followed by the 20 s pause, and no four-minute block; the cook took 80-155 s a meal.
 
 ---
 [Features](README.md) · [Plan](../plans/F34-shop-deals.md) · Previous: [F33 Shop catalogues](F33-shop-catalogues.md)

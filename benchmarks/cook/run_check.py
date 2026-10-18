@@ -66,12 +66,21 @@ CONVERSATIONS = [
 # The shops' sites, one list with the scorer's (a price links to its own shop).
 SHOPS = tuple(sorted(set(scoring.SHOP_HOSTS.values())))
 
+# The conversations whose town has no shop the cook has a tool for (Prince Albert: no Checkers, and none serves it).
+# There a `-` is the right answer, and a price came from a store that isn't the town's (Louis, run d94597a51d4d: "accuracy
+# is 100%, no shop there mos?").
+NO_SHOP = frozenset({"cook-no-shop"})
+
 
 def score(task, turns, cook_on):
     """One conversation as numbers. A meal goes to the cook when the mode has it; otherwise, and for the control
     question, Puls answers itself. An errored first turn is never right."""
     first, follow = turns[0], (turns[1] if len(turns) > 1 else None)
     n_priced, n_items, n_guessed, n_per_kg = scoring.priced(first["answer"])
+    no_shop_rows = wrong_store = 0
+    if task in NO_SHOP and n_items:
+        wrong_store, n_priced = n_priced, 0
+        no_shop_rows = n_items - wrong_store - n_guessed - n_per_kg
     fetched = stream.hosts([c for t in turns for c in t["calls"] + t["specialist_calls"]])
     local = [h for h in fetched if h.endswith(".za")]
     shops = [h for h in fetched if h.endswith(SHOPS)]
@@ -95,7 +104,9 @@ def score(task, turns, cook_on):
         "store_for_area": scoring.store_for_area(results),
         "store_default": scoring.store_default(results),
         "ingredients": n_items, "priced": n_priced, "unsourced": n_guessed, "per_kg": n_per_kg,
-        "priced_ratio": round(n_priced / n_items, 2) if n_items else None,
+        "no_shop_rows": no_shop_rows, "wrong_store": wrong_store,
+        # Right rows over the list's: priced with their source, or rightly without a price where there's no shop.
+        "priced_ratio": round((n_priced + no_shop_rows) / n_items, 2) if n_items else None,
         "rand_amounts": sum(scoring.rand_amounts(a) for a in answers),
         "unconfirmed_marks": sum(scoring.unconfirmed_marks(a) for a in answers),
         "errors": sum(1 for t in turns if t["error"]),

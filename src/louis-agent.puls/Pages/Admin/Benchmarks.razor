@@ -553,6 +553,9 @@ else if (_data is { } data)
         // F34: deals named beside a price; a shop priced with no tool for it (Louis: only shops with a tool) is wrong.
         if (Int(s, "deals_named") is > 0 and var deals) yield return new Chip($"deals {deals}", "ok");
         if (Int(s, "untooled_shops") is > 0 and var untooled) yield return new Chip($"no-tool shops {untooled}", "bad");
+        // A town with no shop (Louis: "no shop there mos?"): no price is right, a price is from a store that isn't the town's.
+        if (Int(s, "no_shop_rows") is > 0 and var noShop) yield return new Chip($"no shop, no price {noShop}", "ok");
+        if (Int(s, "wrong_store") is > 0 and var wrong) yield return new Chip($"wrong store {wrong}", "bad");
         if (s.TryGetProperty("no_catalogue_line", out var none) && none.ValueKind == JsonValueKind.True) yield return new Chip("no catalogue here");
         // Louis: "how can we verify … that the address was used": the searches the town's store answered, and the default's.
         if (Int(s, "store_for_area") is > 0 and var local) yield return new Chip($"town's store {local}", "ok");

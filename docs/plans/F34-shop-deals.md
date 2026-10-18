@@ -332,6 +332,10 @@ sequenceDiagram
   answer is a failed lookup, never kept; a shop gets at most two searches at once and, once it refuses one, its next
   searches wait 20 s (`ShopThrottle`, one per shop for the process); and the scorer reads a list headed *Wat* (Puls
   alone's), never the cook's *Onseker* table (`| Wat | Hoekom |`).
+- **2026-10-18, accuracy where there's no shop (Louis, on run `d94597a51d4d`'s ring at 84 %: "accuracy is 100%, no
+  shop there mos?").** In the conversations the check knows have no shop with a tool (`cook-no-shop`), a row without a
+  price is right (`no_shop_rows`) and a priced one came from a store that isn't the town's (`wrong_store`, red);
+  `priced_ratio` and the portal's ring count right rows, and the ring's green says *right*.
 
 ---
 [Plans](README.md) · Previous: [CL14 The public word: role](CL14-public-word-role.md)
