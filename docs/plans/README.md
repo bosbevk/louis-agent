@@ -10,6 +10,7 @@ or fix doc (*What the build changed*), not here.
 
 | Plan | For | Approved | Notes |
 |---|---|---|---|
+| [FX17-cook-labels-and-counts.md](FX17-cook-labels-and-counts.md) | [FX17](../fixes/FX17-cook-labels-and-counts.md) | 2026-10-18 | The cook's two fixed labels in both languages (*Dien*/*Serves*, *Geprys*/*Priced*), and a count of packs after the name, so the photo stays first (the cook's prompt); approved during the build, a follow-up's card naming the cook (`session_role`) |
 | [F34-shop-deals.md](F34-shop-deals.md) | [F34 Shop deals](../features/F34-shop-deals.md) | 2026-10-17 | The user's store (Checkers' store contexts for their town, via the site's own address lookup); each product's deal from the same visit; `SearchSpecials`, `SearchPromotions`; the cook prices only shops it has a tool for |
 | [CL14-public-word-role.md](CL14-public-word-role.md) | TODO: *CL14 The public word: role* | 2026-10-17 | "personality" becomes "role" where callers see it: the API (`role`, `GET /roles`), `StartSubSession(role)`, `ROLES_ENABLED`, the web apps and benchmarks; write the new word, read both, the input aliases removed after a deploy |
 | [CL13-skills-by-role.md](CL13-skills-by-role.md) | TODO: *CL13 Skills by role* (cleanup) | 2026-10-17 | `Skills/` in the seams' pattern: the contract at the top, `Providers/`, `Roles/`; "personality" becomes "role" in the code (`RoleCatalog`, `RoleLevel`, `RoleException`); the dead `PersonalitySkillsProvider` deleted; the public names in CL14 |

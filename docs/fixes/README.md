@@ -25,6 +25,7 @@ record (most fixes so far taught something about a model's API).
 | [FX14](FX14-sub-session-prompt-budget.md) | A sub-session's prompt has a budget (80k tokens, under the 100k price step): past it the specialist answers from what it has | done | core: tool loop | Delegation check after FX10–FX12, a 298k-token sub-session (2026-10-14) | (this commit) | — |
 | [FX15](FX15-test-needs-env-file.md) | A display-currency test names the tracked rates and prices files instead of relying on a `config/.env` to find them | done | tests: `DisplayCurrencyTests` | The first CI run, on a fresh Ubuntu clone (2026-10-14) | (this commit) | — |
 | [FX16](FX16-short-quote-match.md) | A quote that is only a price is checked against its product (`VerifyQuote`'s `product`): it was *Found* for any product at that price on the page | done | core: `VerifyQuote` (F30) | The review of PR #51 (2026-10-17) | (this commit) | — |
+| [FX17](FX17-cook-labels-and-counts.md) | The cook's labels in the task's language (*Dien*/*Serves*, *Geprys*/*Priced*), a count after the name so the photo stays first, and a follow-up's card names the cook (`session_role` on `message_start`) | done | prompt: `puls-cook.md`; API stream and the delegation card | Cook check `d94597a51d4d` (2026-10-18) | (this commit) | — |
 
 ## Conventions
 

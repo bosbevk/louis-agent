@@ -16,6 +16,10 @@ public static class TurnStream
                 if (data.TryGetProperty("message", out var message) && message.TryGetProperty("toolsets", out var loaded)
                     && loaded.ValueKind == JsonValueKind.Array)
                     turn.Toolsets = [.. loaded.EnumerateArray().Select(t => t.GetString()).OfType<string>()];
+                // FX17: its role, so a follow-up's card (whose call names only the handle) knows who it went to.
+                if (data.TryGetProperty("message", out var started) && started.TryGetProperty("session_role", out var role)
+                    && role.ValueKind == JsonValueKind.String)
+                    turn.Role = role.GetString();
                 break;
 
             case "content_block_start":
