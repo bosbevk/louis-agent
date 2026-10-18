@@ -62,6 +62,44 @@ public class AgentEngineTests
         Assert.That(engine.Tools.Select(t => t.Name), Is.EquivalentTo(new[] { "ExecuteSkill", "GetToday", "Ping" }));
     }
 
+    // F34, Louis's melktert chat: the cook planned eleven shop searches in one answer and they ran one after another,
+    // 4-5 s each (45 s). An engine whose toolsets are all parallel-safe runs a round's calls at once; any other engine
+    // keeps them in order (a file written, then the tests run).
+    [Test]
+    public async Task AParallelEngine_RunsARoundsCallsAtOnce_AnyOtherOneAfterAnother()
+    {
+        async Task<int> MostAtOnce(bool concurrent)
+        {
+            var tools = new SlowTools();
+            var client = new FakeChatClient(
+                _ => new ChatResponse(new ChatMessage(ChatRole.Assistant,
+                    [new FunctionCallContent("c1", "Slow"), new FunctionCallContent("c2", "Slow"), new FunctionCallContent("c3", "Slow")])),
+                _ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "done")));
+            var engine = new AgentEngine(HelloSkills(), client, TestPaths.Agent(), toolsets: [tools], concurrentToolCalls: concurrent);
+            await engine.ProcessPromptAsync(engine.NewHistory(), "go");
+            return tools.MostAtOnce;
+        }
+
+        Assert.That(await MostAtOnce(concurrent: true), Is.EqualTo(3));
+        Assert.That(await MostAtOnce(concurrent: false), Is.EqualTo(1));
+    }
+
+    private sealed class SlowTools
+    {
+        private int _running;
+        public int MostAtOnce;
+
+        [System.ComponentModel.Description("Takes a moment")]
+        public async Task<string> Slow()
+        {
+            int now = Interlocked.Increment(ref _running);
+            lock (this) MostAtOnce = Math.Max(MostAtOnce, now);
+            await Task.Delay(150);
+            Interlocked.Decrement(ref _running);
+            return "done";
+        }
+    }
+
     private sealed class PingTools
     {
         [System.ComponentModel.Description("Replies pong")]

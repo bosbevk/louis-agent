@@ -65,7 +65,8 @@ public static class ToolsetCatalog
             GuideFile: SkillFiles.Guide("web"),
             MissingSettings: _ => [],
             ToolType: typeof(WebTools),
-            CreateTools: ctx => [new WebTools(ctx.WebSearch, rates: ctx.Rates, renderer: ctx.Renderer)]),
+            CreateTools: ctx => [new WebTools(ctx.WebSearch, rates: ctx.Rates, renderer: ctx.Renderer)],
+            ParallelSafe: true),
 
         // F33: a shop's products from its own catalogue, through the guarded browser; off unless SHOP_CATALOGUES names a
         // shop (development and benchmarks first, ADR 0023).
@@ -75,7 +76,9 @@ public static class ToolsetCatalog
                 ("SHOP_CATALOGUES", ShopCatalogueFactory.Enabled(ctx.Options.ShopCatalogues).Count > 0 ? "set" : null),
                 ("BROWSER_URL", ctx.Browser is null ? null : "set")),
             ToolType: typeof(ShopTools),
-            CreateTools: ctx => [new ShopTools(ShopCatalogueFactory.Create(ShopCatalogueFactory.Enabled(ctx.Options.ShopCatalogues), ctx.Browser!))]),
+            CreateTools: ctx => [new ShopTools(ShopCatalogueFactory.Create(ShopCatalogueFactory.Enabled(ctx.Options.ShopCatalogues), ctx.Browser!))],
+            // F34: searches read a catalogue and change nothing; the browser opens at most four pages at once.
+            ParallelSafe: true),
 
         new("paymo", "Paymo time tracking: time entries, tasks, projects and summaries",
             GuideFile: SkillFiles.Guide("paymo"),
@@ -137,6 +140,13 @@ public static class ToolsetCatalog
     /// <summary>The toolset whose class builds <paramref name="tool"/> (a minion's one tool names its toolset, F30); null for none.</summary>
     public static string? ToolsetOf(string tool) => All
         .FirstOrDefault(t => t.ToolType is not null && ToolRegistry.ToolMethods(t.ToolType).Any(m => string.Equals(m.Name, tool, StringComparison.Ordinal)))?.Name;
+
+    /// <summary>
+    /// Whether an engine of <paramref name="resolved"/> runs a round's tool calls at once (F34): only when it has toolsets
+    /// and every one is <see cref="ToolsetDefinition.ParallelSafe"/>. No toolsets is the coding agent's default set, in order.
+    /// </summary>
+    public static bool RunsInParallel(IReadOnlyCollection<ToolsetDefinition> resolved) =>
+        resolved.Count > 0 && resolved.All(t => t.ParallelSafe);
 
     /// <summary>Looks a toolset up by name (case-insensitive); null when there is none.</summary>
     public static ToolsetDefinition? Find(string name) =>
