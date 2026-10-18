@@ -127,10 +127,6 @@ public sealed class ShopTools(IReadOnlyDictionary<ShopKind, IShopCatalogue> cata
     };
 
     /// <summary>
-    /// Which store answered (F34), by the shop's own id: the one serving the user's town, the default when the town's was
-    /// asked for but not used (Louis: "how can we verify … that the address was used"), or the default and why.
-    /// </summary>
-    /// <summary>
     /// The town in what the model passed as <c>area</c> (review of PR #61): a part with a digit (a house number, a
     /// postcode) never goes on to Nominatim, the log or the store cache; what's left, or nothing.
     /// </summary>
@@ -138,6 +134,10 @@ public sealed class ShopTools(IReadOnlyDictionary<ShopKind, IShopCatalogue> cata
         string.Join(", ", (area ?? "").Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
             .Where(part => !part.Any(char.IsDigit))) is { Length: > 0 } town ? town : null;
 
+    /// <summary>
+    /// Which store answered (F34), by the shop's own id: the one serving the user's town, the default when the town's was
+    /// asked for but not used (Louis: "how can we verify … that the address was used"), or the default and why.
+    /// </summary>
     private static string StoreOf(ShopSearch found, string? place)
     {
         string id = found.Store is { Length: > 8 } full ? full[..8] : found.Store ?? "?";
