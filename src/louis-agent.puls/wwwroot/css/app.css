@@ -241,6 +241,9 @@ a { color: var(--blue); text-decoration-thickness: 1px; text-underline-offset: 2
 .working, .delegation-waiting { color: var(--muted); font-size: 13px; display: inline-flex; align-items: center; gap: 2px; }
 .working { background: linear-gradient(90deg, var(--muted) 0%, var(--ink) 50%, var(--muted) 100%); background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: shimmer 1.6s linear infinite; }
 @keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+/* F34, Louis: "maybe some small loader icon left of it". Its own colours: the label's text is clipped to its gradient. */
+.working .spinner { width: 12px; height: 12px; margin-right: 8px; flex: none; border-radius: 50%; border: 2px solid rgba(255, 255, 255, .14); border-top-color: var(--orange, #f58220); animation: loader-spin .8s linear infinite; }
+@keyframes loader-spin { to { transform: rotate(360deg); } }
 .dots { display: inline-flex; gap: 3px; margin-left: 4px; }
 .dots::after { content: "•••"; letter-spacing: 2px; background: linear-gradient(90deg, var(--orange), var(--green)); -webkit-background-clip: text; background-clip: text; color: transparent; animation: blink 1.2s ease-in-out infinite; }
 .stopped { color: var(--muted); font-size: 13px; font-style: italic; }

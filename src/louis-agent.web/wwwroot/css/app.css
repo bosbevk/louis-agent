@@ -402,6 +402,10 @@ details > summary::-webkit-details-marker { display: none; }
 .tool pre { margin: 4px 0; max-height: 320px; overflow: auto; white-space: pre-wrap; color: var(--muted); }
 
 .working { color: var(--amber); font-size: 12px; letter-spacing: .06em; }
+/* F34: a small loader left of the working line. */
+.working { display: inline-flex; align-items: center; }
+.working .spinner { width: 10px; height: 10px; margin-right: 8px; border-radius: 50%; border: 2px solid var(--border); border-top-color: var(--amber); animation: loader-spin .8s linear infinite; }
+@keyframes loader-spin { to { transform: rotate(360deg); } }
 
 .stopped { color: var(--amber); font-size: 12px; font-style: italic; }
 /* F3: what an answer and the whole chat used. Quiet, so it's there when wanted and out of the way otherwise. */
