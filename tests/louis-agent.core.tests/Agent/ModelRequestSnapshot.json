@@ -842,7 +842,7 @@
             "default": 8
           },
           "area": {
-            "description": "The user's town, from the task, when Puls gave no place (the shop's store there is searched): 'Pretoria'",
+            "description": "The user's town only, from the task, when Puls gave no place (the shop's store there is searched): 'Pretoria'; never a street address",
             "type": [
               "string",
               "null"
@@ -1949,7 +1949,7 @@
             "default": 8
           },
           "area": {
-            "description": "The user's town, from the task, when Puls gave no place (the shop's store there is searched): 'Pretoria'",
+            "description": "The user's town only, from the task, when Puls gave no place (the shop's store there is searched): 'Pretoria'; never a street address",
             "type": [
               "string",
               "null"
@@ -1983,7 +1983,7 @@
             "default": 8
           },
           "area": {
-            "description": "The user's town, from the task, when Puls gave no place (the shop's store there is searched): 'Pretoria'",
+            "description": "The user's town only, from the task, when Puls gave no place (the shop's store there is searched): 'Pretoria'; never a street address",
             "type": [
               "string",
               "null"

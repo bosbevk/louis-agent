@@ -26,7 +26,7 @@ public sealed class ShopTools(IReadOnlyDictionary<ShopKind, IShopCatalogue> cata
         [Description("The shop, one of those enabled (checkers)")] string shop,
         [Description("The product as a shopper would search for it: 'chicken pieces', 'chakalaka 410g', 'Koo baked beans'")] string query,
         [Description("How many products to return (default 8, max 20)")] int maxResults = 8,
-        [Description("The user's town, from the task, when Puls gave no place (the shop's store there is searched): 'Pretoria'")] string? area = null,
+        [Description("The user's town only, from the task, when Puls gave no place (the shop's store there is searched): 'Pretoria'; never a street address")] string? area = null,
         CancellationToken cancellationToken = default) =>
         SearchAsync(shop, query, maxResults, deal: null, area, cancellationToken);
 
@@ -37,7 +37,7 @@ public sealed class ShopTools(IReadOnlyDictionary<ShopKind, IShopCatalogue> cata
         [Description("The shop, one of those enabled (checkers)")] string shop,
         [Description("What to look for, broad works best: 'coffee', 'rice', 'chicken'")] string query,
         [Description("How many products to return (default 8, max 20)")] int maxResults = 8,
-        [Description("The user's town, from the task, when Puls gave no place (the shop's store there is searched): 'Pretoria'")] string? area = null,
+        [Description("The user's town only, from the task, when Puls gave no place (the shop's store there is searched): 'Pretoria'; never a street address")] string? area = null,
         CancellationToken cancellationToken = default) =>
         SearchAsync(shop, query, maxResults, ShopDealKind.Special, area, cancellationToken);
 
@@ -48,7 +48,7 @@ public sealed class ShopTools(IReadOnlyDictionary<ShopKind, IShopCatalogue> cata
         [Description("The shop, one of those enabled (checkers)")] string shop,
         [Description("What to look for, broad works best: 'chicken', 'mince', 'cheese'")] string query,
         [Description("How many products to return (default 8, max 20)")] int maxResults = 8,
-        [Description("The user's town, from the task, when Puls gave no place (the shop's store there is searched): 'Pretoria'")] string? area = null,
+        [Description("The user's town only, from the task, when Puls gave no place (the shop's store there is searched): 'Pretoria'; never a street address")] string? area = null,
         CancellationToken cancellationToken = default) =>
         SearchAsync(shop, query, maxResults, ShopDealKind.Promotion, area, cancellationToken);
 
@@ -68,7 +68,7 @@ public sealed class ShopTools(IReadOnlyDictionary<ShopKind, IShopCatalogue> cata
         // Where the user is: the place they shared (F22), else the town the task names (F34, run dd992620f6cc: Pretoria
         // was only in the message, and every search was the default store's).
         string? place = UserPlace.Current?.Location?.Trim() is { Length: > 0 } shared ? shared
-            : area?.Trim() is { Length: > 0 } named ? named : null;
+            : TownOf(area);
         ShopSearch found;
         try
         {
@@ -130,6 +130,14 @@ public sealed class ShopTools(IReadOnlyDictionary<ShopKind, IShopCatalogue> cata
     /// Which store answered (F34), by the shop's own id: the one serving the user's town, the default when the town's was
     /// asked for but not used (Louis: "how can we verify … that the address was used"), or the default and why.
     /// </summary>
+    /// <summary>
+    /// The town in what the model passed as <c>area</c> (review of PR #61): a part with a digit (a house number, a
+    /// postcode) never goes on to Nominatim, the log or the store cache; what's left, or nothing.
+    /// </summary>
+    internal static string? TownOf(string? area) =>
+        string.Join(", ", (area ?? "").Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
+            .Where(part => !part.Any(char.IsDigit))) is { Length: > 0 } town ? town : null;
+
     private static string StoreOf(ShopSearch found, string? place)
     {
         string id = found.Store is { Length: > 8 } full ? full[..8] : found.Store ?? "?";

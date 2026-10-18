@@ -92,6 +92,20 @@ public class ShopToolsTests
         Assert.That(result, Does.Contain("its default store: none found for Pretoria"), "the fake found none: the header says for where");
     }
 
+    // Review of PR #61: area is whatever the model passes, so a street address the user typed would go to Nominatim, the
+    // log and the store cache file. Only the town goes on: a part with a digit (a house number, a postcode) is dropped.
+    [TestCase("12 Piet Retief Street, Malmesbury, 7300", "Malmesbury")]
+    [TestCase("Malmesbury, Wes-Kaap", "Malmesbury, Wes-Kaap")]
+    [TestCase("7300", null)]
+    public async Task OnlyTheTown_GoesOn(string area, string? searched)
+    {
+        var catalogue = new FakeCatalogue(Chakalaka);
+
+        await Tools(catalogue).FindProducts("checkers", "chakalaka", area: area);
+
+        Assert.That(catalogue.Place, Is.EqualTo(searched));
+    }
+
     [Test]
     public async Task ASharedPlace_WinsOverTheTasksTown()
     {
