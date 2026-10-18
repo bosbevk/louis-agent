@@ -91,6 +91,7 @@ docker compose -f docker/docker-compose.yml --env-file config/.env up -d --build
 | `WEB_SEARCH_PROVIDER` | `tavily`, `google`, `searxng` or `duckduckgo` (default: Tavily when `TAVILY_API_KEY` is set, else Google when its key and engine id are, else SearXNG when `SEARXNG_URL` is, else DuckDuckGo). SearXNG is for development and benchmarks only (ADR 0023) |
 | `SEARXNG_URL` | The SearXNG we run (F32): `http://puls-searxng:8080` in the Puls stack (set there); from the host, for its live tests, `http://127.0.0.1:8888` |
 | `PAGE_RENDERER` | `chrome` or `tavily`, for `ReadRenderedPage` (default: Chrome when `BROWSER_URL` is set, else Tavily when its key is) |
+| `SHOP_STORE_CACHE` | A file that keeps the store each shop serves a town from, a day, across restarts (F34). Unset, towns are kept in memory only; the Puls compose file sets `/data/shop-stores.json` (the host's `data/puls`) |
 | `SHOP_CATALOGUES` | The shops whose own catalogue the `shops` toolset may read (F33), comma-separated: `checkers`. Unset, the toolset is off; it needs `BROWSER_URL` too. Development and benchmarks only until the shops' terms are checked (ADR 0023) |
 | `BROWSER_URL` | The headless Chrome we run (F32): `http://puls-browser:9222` in the Puls stack (set there); from the host, for its live tests, `http://127.0.0.1:9222` |
 | `DEVOPS_ORGANIZATION`, `DEVOPS_PROJECT` | Azure DevOps organisation (`dev.azure.com/<organisation>`) and project for the DevOps tools |

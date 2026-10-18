@@ -27,6 +27,10 @@ We tell **linking** apart from **running beside**.
   sell, such as Puls's answers, it is allowed on those terms.
 - **What the service fetches has terms of its own.** A service that scrapes others' results (SearXNG) serves
   development, tests and benchmarks; the sold endpoint uses a provider whose terms license its results (Tavily, Brave).
+  *Recorded 2026-10-18 (F34):* a shop's catalogue is read as a shopper's page is (F33: no internal API called
+  directly), with one approved exception, Checkers' store lookup: our script makes the call its own address picker
+  makes (`/api/store/fetch-store-contexts`, the town's centre only), once per town a day. The pause after Checkers
+  refuses a search (`ShopThrottle`, 20 s) backs off from its rate limit; it never works around one.
 - The plan that adds such a service names its licence, the terms of what it fetches, and why both fit; a change to its
   code, or selling it as itself, is a new decision.
 

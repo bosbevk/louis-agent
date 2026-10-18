@@ -35,6 +35,7 @@ afterwards from the docs that hold them (each ADR links its sources), with the d
 | [0023](0023-copyleft-service-beside-us.md) | A copyleft service may run beside us, unchanged; what we link stays MIT, Apache or BSD | Accepted |
 | [0024](0024-choices-are-enums.md) | Choices are enums, not strings, parsed once where they enter | Accepted |
 | [0025](0025-a-role-declares-its-toolsets.md) | A role declares its own toolsets in its file; a `?` toolset loads only where an instance has it | Accepted |
+| [0026](0026-parallel-tool-calls-for-read-only-toolsets.md) | A round's tool calls run at once only where every toolset is parallel-safe | Accepted |
 
 ## When to write one
 

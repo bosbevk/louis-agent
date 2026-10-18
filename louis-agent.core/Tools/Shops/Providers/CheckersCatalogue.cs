@@ -1,11 +1,14 @@
 namespace LouisAgent.Core.Tools.Shops.Providers;
 
 using System.Globalization;
+using System.Net;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Tools.Shops;
 using LouisAgent.Core.Tools.Web.Browsing;
+using Microsoft.Extensions.Logging;
 
 /// <summary>
 /// Checkers' products from its own catalogue (F33 step 2). Its search page, at the address its own search box sends
@@ -13,24 +16,39 @@ using LouisAgent.Core.Tools.Web.Browsing;
 /// answer gives each product's name, price, unit and article number; the page's cards link each product as
 /// <c>/product/{name}-{article}{unit}</c>. The page is visited through the guarded browser like any shopper's, its
 /// catalogue answer kept (no internal API called directly), and parsed here. For development and benchmarks until
-/// Checkers' terms are checked (ADR 0023).
+/// Checkers' terms are checked (ADR 0023). Where the user shared their town, the search runs in the store that serves it
+/// (F34: <see cref="CheckersStore"/>), else in Checkers' default store; the answer says which. Searches go through
+/// <paramref name="throttle"/> (F34): a few at once, and a pause after Checkers refuses one.
 /// </summary>
-public sealed partial class CheckersCatalogue(IWebBrowser browser) : IShopCatalogue
+public sealed partial class CheckersCatalogue(IWebBrowser browser, CheckersStore? store = null, ShopThrottle? throttle = null) : IShopCatalogue
 {
+    private static readonly ILogger Log = AgentLogging.For<CheckersCatalogue>();
     private static readonly Uri Site = new("https://www.checkers.co.za/");
     private const string CataloguePath = "/api/catalogue/get-products-filter";
+    private const string ProductCard = "div[class*='product-card_card__']";
     // Where the search page's cards load a product's photo from, by the answer's imageId (seen live, 2026-10-17).
     private static readonly Uri Images = new("https://catalog.sixty60.co.za/v2/files/");
 
     public ShopKind Shop => ShopKind.Checkers;
 
-    public async Task<IReadOnlyList<ShopProduct>> SearchAsync(string query, int maxResults, CancellationToken cancellationToken = default)
+    private readonly ShopThrottle _throttle = throttle ?? new ShopThrottle();
+
+    public async Task<ShopSearch> SearchAsync(string query, int maxResults, string? place = null, CancellationToken cancellationToken = default)
+    {
+        BrowserSession? area = store is null ? null : await store.ForAsync(place, cancellationToken);
+        return await _throttle.RunAsync(() => SearchInAsync(query, maxResults, place, area, cancellationToken), cancellationToken);
+    }
+
+    private async Task<ShopSearch> SearchInAsync(string query, int maxResults, string? place, BrowserSession? area, CancellationToken cancellationToken)
     {
         var search = SearchUri(query);
         BrowserVisit visit;
         try
         {
-            visit = await browser.VisitAsync(search, url => url.AbsolutePath == CataloguePath, cancellationToken);
+            // Done once the answer is in and a product's card is drawn (its deal's wording is on it), not when the page
+            // goes quiet: it never does (F34).
+            visit = await browser.VisitAsync(search, url => url.AbsolutePath == CataloguePath, area, readySelector: ProductCard,
+                cancellationToken: cancellationToken);
         }
         catch (WebBrowserException ex)
         {
@@ -38,16 +56,45 @@ public sealed partial class CheckersCatalogue(IWebBrowser browser) : IShopCatalo
         }
 
         if (visit.Captured.Count == 0)
+        {
+            _throttle.Refused();
             throw new ShopCatalogueException(MessageText.Format(ToolMessage.ShopCatalogueNoAnswer, new { Shop = "Checkers", Query = query, Url = search }));
+        }
         try
         {
-            return Parse(visit.Captured[0], visit.Html, search, maxResults);
+            var products = Parse(visit.Captured[0], visit.Html, search, maxResults);
+            // Louis: "how can we verify that the product comes from the malmesbury store?" Checkers' answer names the
+            // store that priced each product: the town's only when it's one its lookup named.
+            string? answered = AnsweredBy(visit.Captured[0]);
+            if (area is null) return new ShopSearch(products, null, answered);
+            if (answered is not null && StoresOf(area).Contains(answered)) return new ShopSearch(products, place!.Trim(), answered);
+            if (answered is null) return new ShopSearch(products, null);
+            Log.Log(LogLevel.Warning, LogMessage.ShopStoreNotUsed, new { Shop = "Checkers", Place = place!.Trim(), Store = answered });
+            return new ShopSearch(products, null, answered, AreaIgnored: true);
         }
         catch (Exception ex) when (ex is JsonException or KeyNotFoundException or InvalidOperationException or FormatException)
         {
+            _throttle.Refused();
             throw new ShopCatalogueException(MessageText.Format(ToolMessage.ShopCatalogueUnreadable, new { Shop = "Checkers", Query = query, Reason = ex.Message }));
         }
     }
+
+    /// <summary>The store that priced the answer's products (each product's <c>storeId</c>), or none in an empty answer.</summary>
+    private static string? AnsweredBy(string json)
+    {
+        using var doc = JsonDocument.Parse(json);
+        return doc.RootElement.TryGetProperty("products", out var products) && products.ValueKind == JsonValueKind.Array
+            && products.EnumerateArray().FirstOrDefault() is { ValueKind: JsonValueKind.Object } first
+            && first.TryGetProperty("storeId", out var id) && id.ValueKind == JsonValueKind.String
+            ? id.GetString()
+            : null;
+    }
+
+    /// <summary>The stores a town's session names: Checkers' own <c>storeids</c> cookie, ids joined by dashes.</summary>
+    private static HashSet<string> StoresOf(BrowserSession session) =>
+        session.Cookies.Where(c => c.Name is "storeids" or "istio-storeIds")
+            .SelectMany(c => Uri.UnescapeDataString(c.Value).Split('-', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+            .ToHashSet(StringComparer.Ordinal);
 
     /// <summary>The search, as Checkers' own search box sends it.</summary>
     internal static Uri SearchUri(string query) => new(Site, "search?Search=" + Uri.EscapeDataString(query.Trim()));
@@ -85,7 +132,8 @@ public sealed partial class CheckersCatalogue(IWebBrowser browser) : IShopCatalo
                 byWeight ? price : null,
                 byWeight ? "kg" : "each",
                 LinkOf(html, article, unit) ?? searchUri,
-                ImageOf(p)));
+                ImageOf(p),
+                DealOf(p, html, article, unit)));
             if (products.Count == maxResults) break;
         }
         return products;
@@ -117,6 +165,38 @@ public sealed partial class CheckersCatalogue(IWebBrowser browser) : IShopCatalo
         p.TryGetProperty("imageId", out var id) && id.ValueKind == JsonValueKind.String && id.GetString() is { Length: > 0 } image
             ? new Uri(Images, Uri.EscapeDataString(image) + "?width=256&height=256")
             : null;
+
+    /// <summary>
+    /// The product's deal (F34 step 2): a multi-buy when the answer links it to a bonus buy (<c>bonusBuyIds</c>), else a
+    /// promotion when it flags one (<c>isOnPromotion</c>); its wording is the badge on the product's card. Neither changes
+    /// the price fields, so this is the only place a deal shows.
+    /// </summary>
+    private static ShopDeal? DealOf(JsonElement p, string html, string article, string unit)
+    {
+        ShopDealKind? kind =
+            p.TryGetProperty("bonusBuyIds", out var bonusBuys) && bonusBuys.ValueKind == JsonValueKind.Array && bonusBuys.GetArrayLength() > 0
+                ? ShopDealKind.Special
+                : p.TryGetProperty("isOnPromotion", out var promoted) && promoted.ValueKind == JsonValueKind.True ? ShopDealKind.Promotion : null;
+        return kind is { } deal ? new ShopDeal(deal, BadgeOf(html, article, unit)) : null;
+    }
+
+    /// <summary>
+    /// The deal's wording on the product's card: the card runs from its start (<c>product-card_card__</c>) to the next
+    /// card's, and holds the product's link and, when it has a deal, a <c>promotion-badge_save</c> element (a button for
+    /// a multi-buy, a span for a promotion) whose text is the deal. None when the page has no card for the product.
+    /// </summary>
+    private static string? BadgeOf(string html, string article, string unit)
+    {
+        if (article.Length == 0) return null;
+        var link = Regex.Match(html, "href=\"/product/[^\"]*-" + Regex.Escape(article) + Regex.Escape(unit) + "\"", RegexOptions.IgnoreCase);
+        if (!link.Success) return null;
+        const string Card = "product-card_card__";
+        int start = html.LastIndexOf(Card, link.Index, StringComparison.Ordinal);
+        int end = html.IndexOf(Card, link.Index, StringComparison.Ordinal);
+        string card = html[(start < 0 ? link.Index : start)..(end < 0 ? html.Length : end)];
+        var badge = Regex.Match(card, "class=\"[^\"]*promotion-badge_save[^\"]*\"[^>]*>([^<]+)<");
+        return badge.Success && WebUtility.HtmlDecode(badge.Groups[1].Value).Trim() is { Length: > 0 } wording ? wording : null;
+    }
 
     /// <summary>The product's card on the search page: a link ending in its article number and unit.</summary>
     private static Uri? LinkOf(string html, string article, string unit)

@@ -17,9 +17,24 @@ REFERENCE = re.compile(r"^\s*\[([^\]]+)\]:\s*(https?://\S+)", re.MULTILINE)
 RAND = re.compile(r"\bR\s?\d[\d\s,.]*")
 ESTIMATE = re.compile(r"\b(unknown|onbekend|geskat|skatting|skattings|estimate[ds]?|nie bevestig|unverified|onbevestig|nie gevind)\b", re.IGNORECASE)
 UNCONFIRMED = re.compile(r"\b(unknown|onbekend|geskat|skatting|skattings|estimate[ds]?|nie bevestig|unverified|onbevestig|snippets?|soekresultate|soekindeks)\b", re.IGNORECASE)
-HEADER = re.compile(r"^\|\s*(Item|Bestanddeel|Ingredient|Produk)\b", re.IGNORECASE)
+# Cook check 42d837f13659: Puls alone headed its list `| Wat | Pak | Prys |`; the cook's *Onseker* table is `| Wat |
+# Hoekom |` too, so a table with a why column is never the list.
+HEADER = re.compile(r"^\|\s*(Item|Bestanddeel|Ingredient|Produk|Wat|What)\b", re.IGNORECASE)
+WHY_COLUMN = re.compile(r"\|\s*(Hoekom|Waarom|Why)\s*\|", re.IGNORECASE)
 SEPARATOR = re.compile(r"^\|\s*:?-")
 TOTAL = re.compile(r"^\|\s*\*\*")
+# F34: where a branch is looked up (the cook's OpenStreetMap search): a map, not a source of the answer.
+MAP_HOSTS = ("openstreetmap.org",)
+# F34: the shops the cook has a tool for, by their sites (Checkers today, ShopKind in core), and the tools themselves.
+TOOL_SHOP_HOSTS = ("checkers.co.za",)
+SHOP_TOOLS = ("FindProducts", "SearchSpecials", "SearchPromotions")
+DEAL_TOOLS = ("SearchSpecials", "SearchPromotions")
+# A deal beside a price, as the shop words it: after the price's link (`[R24,99](…) · BUY 2 FOR R45`), or its badge.
+DEAL = re.compile(r"\)\s*·\s*\S|\b(BUY \d+ FOR|SAVE)\b", re.IGNORECASE)
+# A shop tool's first line names the store that answered, checked against the shop's own store id (F34).
+STORE_FOR_AREA = re.compile(r"^(?:Products|Specials \(multi-buys\)|Promotions) at [^(]+\(the store serving ")
+STORE_DEFAULT = re.compile(r"^(?:Products|Specials \(multi-buys\)|Promotions) at [^(]+\(its default store")
+NO_CATALOGUE = re.compile(r"No shop near you has a catalogue|Geen winkel naby jou het nog 'n katalogus", re.IGNORECASE)
 # A price per kg says so (R99,99/kg, R99,99 per kg); a pack sold by weight costs a range (R87,99–R103,99, R87,99 - 103,99).
 PER_KG = re.compile(r"(/\s*kg\b|\bper\s*(kg|kilo))", re.IGNORECASE)
 RANGE = re.compile(r"\bR\s?\d[\d\s,.]*?\s*[–-]\s*R?\s?\d")
@@ -61,12 +76,14 @@ def priced(answer):
     the shopping list counts: a table headed *Bestanddeel* (or Ingredient, Item, Produk), without its bold total rows;
     the branches and what's unsure are tables too (seen in 11b's run). A price per kg is no pack's price (review of
     PR #58: run fc7f8ecfdc87 priced a 1–1,2 kg pack of thighs at R99,99/kg): a cell that says per kg, or one amount
-    linked to a product sold by weight, whose pack costs a range, counts apart as per kg, neither priced nor guessed."""
+    linked to a product sold by weight, whose pack costs a range, counts apart as per kg, neither priced nor guessed.
+    A price whose row links its product at that price's shop is sourced by that link (F34, run 26527259bf31: Puls alone
+    linked `[Onions 1kg](checkers…)` and wrote `R34.99` beside it)."""
     answer = answer or ""
     references = {label.strip().lower(): url for label, url in REFERENCE.findall(answer)}
     listed = priced_rows = guessed = per_kg = 0
     for table in _tables(answer):
-        if not HEADER.match(table[0]):
+        if not _is_list(table[0]):
             continue
         shops = [_shop_of(name) for name in _cells(table[0])]
         for row in table[1:]:
@@ -74,9 +91,13 @@ def priced(answer):
                 continue
             listed += 1
             cells = _cells(row)
-            # The first column is the ingredient; a price is sourced in its own shop's column.
-            sourced = [cell for i, cell in enumerate(cells) if i > 0 and RAND.search(cell)
-                       and _sourced(cell, shops[i] if i < len(shops) else None, references)]
+            # The first column is the ingredient; a price is sourced in its own shop's column, by its own link or by the
+            # row's link to the product at that shop.
+            linked = " ".join(f"[]({url})" for cell in cells for url in _urls(cell, references))
+            sourced = [cell if _sourced(cell, shop, references) else cell + " " + linked
+                       for i, cell in enumerate(cells) if i > 0 and RAND.search(cell)
+                       for shop in [shops[i] if i < len(shops) else None]
+                       if _sourced(cell, shop, references) or _sourced(linked, shop, references)]
             if any(not _per_kg(cell, references) for cell in sourced):
                 priced_rows += 1
             elif sourced:
@@ -86,6 +107,45 @@ def priced(answer):
     if not listed:
         return None, None, None, None
     return priced_rows, listed, guessed, per_kg
+
+
+def _list_rows(answer):
+    """The shopping list's tables, each as (its header's cells, its ingredient rows' cells): totals and separators left out."""
+    for table in _tables(answer or ""):
+        if _is_list(table[0]):
+            yield _cells(table[0]), [_cells(row) for row in table[1:] if not SEPARATOR.match(row) and not TOTAL.match(row)]
+
+
+def deals_named(answer):
+    """How many of the list's rows name a deal beside a linked price (F34: `· BUY 2 FOR R45`, `SAVE`)."""
+    return sum(1 for _, rows in _list_rows(answer) for cells in rows
+               if any(INLINE_LINK.search(cell) and DEAL.search(cell) for cell in cells[1:]))
+
+
+def untooled_shops(answer):
+    """How many shops the list prices at that the cook has no tool for (F34, Louis: only shops with a tool): 0 is right."""
+    shops = {_shop_of(name) for header, _ in _list_rows(answer) for name in header}
+    return len({shop for shop in shops if shop and shop not in TOOL_SHOP_HOSTS})
+
+
+def store_for_area(results):
+    """How many shop searches the store serving the user's town answered (Louis: "that the address was used")."""
+    return sum(1 for result in results if STORE_FOR_AREA.search(result or ""))
+
+
+def store_default(results):
+    """How many shop searches the shop's default store answered: no town, none served, or the town's not used."""
+    return sum(1 for result in results if STORE_DEFAULT.search(result or ""))
+
+
+def no_catalogue_line(answer):
+    """Whether the answer says no shop near the user has a catalogue here yet (F34: the list without prices)."""
+    return bool(NO_CATALOGUE.search(answer or ""))
+
+
+def _is_list(header):
+    """Whether a table's header is a shopping list's: an ingredient column first, and no why column (*Onseker*)."""
+    return bool(HEADER.match(header)) and not WHY_COLUMN.search(header)
 
 
 def _cells(row):

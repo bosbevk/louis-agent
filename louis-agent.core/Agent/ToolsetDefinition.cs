@@ -13,6 +13,11 @@ namespace LouisAgent.Core.Agent;
 /// Builds the tool objects for an engine (its public methods become tools). Null when the engine provides the tools
 /// itself (<c>skills</c>, see <see cref="AgentEngine"/>).
 /// </param>
+/// <param name="ParallelSafe">
+/// True when the toolset's calls don't depend on each other's order (they read, they change nothing another call reads),
+/// so an engine of only such toolsets runs a round's calls at once (F34: the cook's shop searches). False keeps them in
+/// order.
+/// </param>
 /// <param name="ToolType">
 /// The class <see cref="CreateTools"/> builds, so its tool names are known without building it (<see cref="ToolsetCatalog.ToolNames"/>).
 /// Null when the engine provides the tools.
@@ -23,7 +28,8 @@ public sealed record ToolsetDefinition(
     string? GuideFile,
     Func<ToolsetContext, IReadOnlyList<string>> MissingSettings,
     Func<ToolsetContext, IReadOnlyList<object>>? CreateTools,
-    Type? ToolType = null)
+    Type? ToolType = null,
+    bool ParallelSafe = false)
 {
     /// <summary>True when the engine adds these tools itself rather than from <see cref="CreateTools"/>.</summary>
     public bool IsEngineProvided => CreateTools is null;

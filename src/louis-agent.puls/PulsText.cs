@@ -12,6 +12,8 @@ public static class PulsText
         Input = "Invoer",
         Result = "Resultaat",
         Processing = "BESIG",
+        // F34, Louis: "it must actually say soek bestanddele en dan bou resep".
+        RolePhases = new Dictionary<string, RolePhases> { ["puls-cook"] = new("Soek bestanddele", "Bou resep") },
         Stopped = "Gestop",
 
         DelegatedTo = "Oorgedra aan",

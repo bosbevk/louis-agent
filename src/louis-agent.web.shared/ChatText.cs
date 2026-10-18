@@ -12,6 +12,9 @@ public sealed record ChatText
     public string Input { get; init; } = "Input";
     public string Result { get; init; } = "Result";
     public string Processing { get; init; } = "PROCESSING";
+
+    /// <summary>What a running specialist is doing, per role (F34), in place of <see cref="Processing"/>; none by default.</summary>
+    public IReadOnlyDictionary<string, RolePhases> RolePhases { get; init; } = new Dictionary<string, RolePhases>();
     public string Stopped { get; init; } = "Stopped";
 
     public string DelegatedTo { get; init; } = "Delegated to";

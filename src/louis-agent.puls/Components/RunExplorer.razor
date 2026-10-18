@@ -204,7 +204,7 @@
             @if (_modes.Any(m => Priced(m) is not null))
             {
                 <section class="chart">
-                    <div class="chart-head"><ChartInfo Topic="accuracy" Title="Accuracy per mode" /><span class="legend"><span><span class="sw" style="background: @Right"></span>sourced</span><span><span class="sw" style="background: @Guess"></span>guessed</span><span><span class="sw" style="background: @Wrong"></span>unknown</span></span></div>
+                    <div class="chart-head"><ChartInfo Topic="accuracy" Title="Accuracy per mode" /><span class="legend"><span><span class="sw" style="background: @Right"></span>right</span><span><span class="sw" style="background: @Guess"></span>guessed</span><span><span class="sw" style="background: @Wrong"></span>no price</span></span></div>
                     <div class="donuts">
                         @foreach (var (m, i) in Columns)
                         {
@@ -213,7 +213,7 @@
                                 {
                                     int unknown = priced.Ingredients - priced.Priced - priced.Guessed;
                                     @Ring([priced.Priced, priced.Guessed, unknown], [Right, Guess, Wrong],
-                                        [$"sourced {priced.Priced}", $"guessed {priced.Guessed}", $"unknown {unknown}"],
+                                        [$"right {priced.Priced}", $"guessed {priced.Guessed}", $"no price {unknown}"],
                                         $"{(double)priced.Priced / priced.Ingredients:0%}", $"{priced.Priced} / {priced.Ingredients}")
                                 }
                                 else
@@ -273,14 +273,16 @@
             @* Louis: a ninth, to fill the rows. The sources: the sites each mode read pages from (Puls's and the specialist's),
                South African shops, other South African sites and the rest, how many different ones in its middle. *@
             <section class="chart">
-                <div class="chart-head"><ChartInfo Topic="sources" Title="Sources per mode" /><span class="legend"><span><span class="sw" style="background: @Right"></span>SA shops</span><span><span class="sw" style="background: @Series(0)"></span>other SA</span><span><span class="sw" style="background: @Other"></span>elsewhere</span></span></div>
+                <div class="chart-head"><ChartInfo Topic="sources" Title="Sources per mode" /><span class="legend"><span><span class="sw" style="background: @Right"></span>SA shops</span><span><span class="sw" style="background: @Series(0)"></span>other SA</span><span><span class="sw" style="background: @Series(1)"></span>maps</span><span><span class="sw" style="background: @Other"></span>elsewhere</span></span></div>
                 <div class="donuts">
                     @foreach (var (m, i) in Columns)
                     {
                         var hosts = m.Conversations.SelectMany(c => c.Turns).SelectMany(t => t.Hosts).Distinct().ToList();
-                        int shops = hosts.Count(IsShop), za = hosts.Count(h => h.EndsWith(".za") && !IsShop(h)), rest = hosts.Count - shops - za;
+                        // F34: a shop search counts as its shop's site; a branch looked up on a map is its own slice.
+                        int shops = hosts.Count(IsShop), za = hosts.Count(h => h.EndsWith(".za") && !IsShop(h)), maps = hosts.Count(IsMap);
+                        int rest = hosts.Count - shops - za - maps;
                         <figure class="donut-fig" style="--i: @i">
-                            @Ring([shops, za, rest], [Right, Series(0), Other], [$"SA shops {shops}", $"other SA {za}", $"elsewhere {rest}"],
+                            @Ring([shops, za, maps, rest], [Right, Series(0), Series(1), Other], [$"SA shops {shops}", $"other SA {za}", $"maps {maps}", $"elsewhere {rest}"],
                                 hosts.Count.ToString(), hosts.Count == 1 ? "site" : "sites")
                             <figcaption><span class="sw" style="background: @Series(i)"></span>@Who(m)</figcaption>
                             @if (hosts.Count > 0) { <small class="muted" title="@string.Join(", ", hosts)">@Blurb(string.Join(", ", hosts))</small> }
@@ -475,6 +477,9 @@
     private static readonly string[] Shops = ["checkers.co.za", "pnp.co.za", "woolworths.co.za", "spar.co.za", "shoprite.co.za", "usave.co.za"];
 
     private static bool IsShop(string host) => Shops.Any(s => host == s || host.EndsWith("." + s));
+
+    /// <summary>Where a branch is looked up (F34: the cook's OpenStreetMap search): a map, not a source.</summary>
+    private static bool IsMap(string host) => host == "openstreetmap.org" || host.EndsWith(".openstreetmap.org");
     private static string Series(int i) => Palette[i % Palette.Length];
 
     private sealed record Request(DateTimeOffset At, string Purpose, string? Session, string? Parent, string? Model,
@@ -795,6 +800,23 @@
             if (c.Scores.TryGetProperty("per_kg", out var perKg) && perKg.ValueKind == JsonValueKind.Number && perKg.GetInt32() > 0)
                 yield return new Chip($"per kg {perKg.GetInt32()}", "warn");
         }
+        // F34: deals named beside a price; a shop priced with no tool for it (Louis: only shops with a tool) is wrong.
+        if (c.Scores.TryGetProperty("deals_named", out var deals) && deals.ValueKind == JsonValueKind.Number && deals.GetInt32() > 0)
+            yield return new Chip($"deals {deals.GetInt32()}", "ok");
+        if (c.Scores.TryGetProperty("untooled_shops", out var untooled) && untooled.ValueKind == JsonValueKind.Number && untooled.GetInt32() > 0)
+            yield return new Chip($"no-tool shops {untooled.GetInt32()}", "bad");
+        // A town with no shop (Louis: "no shop there mos?"): no price is right, a price is from a store that isn't the town's.
+        if (c.Scores.TryGetProperty("no_shop_rows", out var noShop) && noShop.ValueKind == JsonValueKind.Number && noShop.GetInt32() > 0)
+            yield return new Chip($"no shop, no price {noShop.GetInt32()}", "ok");
+        if (c.Scores.TryGetProperty("wrong_store", out var wrong) && wrong.ValueKind == JsonValueKind.Number && wrong.GetInt32() > 0)
+            yield return new Chip($"wrong store {wrong.GetInt32()}", "bad");
+        if (c.Scores.TryGetProperty("no_catalogue_line", out var none) && none.ValueKind == JsonValueKind.True)
+            yield return new Chip("no catalogue here");
+        // Louis: "how can we verify … that the address was used": the searches the town's store answered, and the default's.
+        if (c.Scores.TryGetProperty("store_for_area", out var local) && local.ValueKind == JsonValueKind.Number && local.GetInt32() > 0)
+            yield return new Chip($"town's store {local.GetInt32()}", "ok");
+        if (c.Scores.TryGetProperty("store_default", out var fallback) && fallback.ValueKind == JsonValueKind.Number && fallback.GetInt32() > 0)
+            yield return new Chip($"default store {fallback.GetInt32()}", "warn");
         if (c.Errors > 0) yield return new Chip($"errors {c.Errors}", "bad");
     }
 
@@ -815,7 +837,11 @@
         return roles.Count == 0 ? "specialist" : string.Join(" / ", roles);
     }
 
-    /// <summary>A mode's ingredients priced over ingredients listed, summed over its conversations; null where the check counts none.</summary>
+    /// <summary>
+    /// A mode's right ingredients over ingredients listed, summed over its conversations; null where the check counts none.
+    /// Right is priced with its source, or rightly without a price in a town with no shop (F34: <c>no_shop_rows</c>; a
+    /// price there, <c>wrong_store</c>, is red with the rest).
+    /// </summary>
     private static (int Priced, int Ingredients, int Guessed)? Priced(ModeNode m)
     {
         int priced = 0, items = 0, guessed = 0;
@@ -823,11 +849,14 @@
         {
             if (c.Scores.ValueKind != JsonValueKind.Object || !c.Scores.TryGetProperty("ingredients", out var n) || n.ValueKind != JsonValueKind.Number) continue;
             items += n.GetInt32();
-            priced += c.Scores.TryGetProperty("priced", out var p) && p.ValueKind == JsonValueKind.Number ? p.GetInt32() : 0;
-            guessed += c.Scores.TryGetProperty("unsourced", out var g) && g.ValueKind == JsonValueKind.Number ? g.GetInt32() : 0;
+            priced += Count(c.Scores, "priced") + Count(c.Scores, "no_shop_rows");
+            guessed += Count(c.Scores, "unsourced");
         }
         return items == 0 ? null : (priced, items, guessed);
     }
+
+    private static int Count(JsonElement scores, string name) =>
+        scores.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.Number ? v.GetInt32() : 0;
 
     /// <summary>A meal the check expected a list for that came without one (its ingredients unknown, not counted).</summary>
     private static int Unlisted(ModeNode m) =>

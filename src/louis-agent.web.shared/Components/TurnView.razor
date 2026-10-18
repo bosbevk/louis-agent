@@ -27,7 +27,7 @@
 
         @if (Streaming && (Turn.Blocks.Count == 0 || Turn.Blocks[^1] is { Kind: BlockKind.Tool }))
         {
-            <div class="working">@Text.Processing<span class="cursor"></span></div>
+            <div class="working"><span class="spinner" aria-hidden="true"></span>@WorkStatus.Label(Turn, Text)</div>
         }
         @if (Turn.StopReason == "cancelled")
         {

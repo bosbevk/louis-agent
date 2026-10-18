@@ -1,9 +1,10 @@
-# Kokkontrole (`cook`): Puls alleen teen Puls met die kok
+# Kokkontrole (`cook`): Puls met die kok se gereedskap teen Puls met die kok
 
 ## Wat dit meet
 
-Wat voeg Puls se kok by? Dieselfde gesprekke word twee keer gevoer: eers deur Puls alleen, wat self kook en self
-pryse soek, dan deur Puls soos gebou, wat 'n maaltyd aan die kok (`puls-cook`) oorgee. Wat getel word, is wat die
+Wat voeg Puls se kok by? Dieselfde gesprekke word twee keer gevoer: eers deur Puls alleen met al die kok se gereedskap
+(`web` en `shops`), wat self kook en self pryse soek, dan deur Puls soos gebou, wat 'n maaltyd aan die kok
+(`puls-cook`) oorgee. Albei het dus dieselfde gereedskap: die verskil is die kok se rol en sy eie sessie. Wat getel word, is wat die
 agente *gedoen* het (wie oorgegee het, watter webwerwe gelees is, hoeveel bestanddele geprys is), nie net wat hulle
 geskryf het nie. Die koste kom uit die grootboek, nie uit die skrip nie.
 
@@ -11,11 +12,16 @@ geskryf het nie. Die koste kom uit die grootboek, nie uit die skrip nie.
 
 | Modus | Puls se gereedskap | Die kok se gereedskap | Wat dit is |
 |---|---|---|---|
-| `puls-only` | `web` | — | Puls alleen: kan nie oorgee nie, kook en prys self |
-| `puls-cook` | `specialists`, `web` | `web` | Puls soos gebou: die web self, kook na die kok |
+| `puls-tools` | `web`, `shops` | — | Puls alleen met die kok se gereedskap: kan nie oorgee nie, kook en prys self |
+| `puls-cook` | `specialists`, `web` | `web`, `shops` | Puls soos gebou: die web self, kook na die kok |
 
 `specialists` is nie iets wat die kok gebruik nie: dit is Puls se vermoë om oor te gee. Sonder dit kan Puls net self
-kook, wat `puls-only` is. Die kok kry van Puls net `web` (die opgeneemde beurt wys `toolsets: ["web"]`).
+kook, wat `puls-tools` is. Die kok kry van Puls `web` (die opgeneemde beurt wys `toolsets: ["web"]`), en sy rol voeg
+`shops` by (F33, ADR 0025).
+
+Tot F34 was die eerste modus `puls-only`, met net `web`: Puls alleen kon nie by 'n winkel se katalogus kom nie, so
+die vergelyking het die gereedskap gemeet, nie die kok nie (Louis: "puls loaded with everything the cook has vs puls +
+puls-cook"). Die nuwe naam hou die portaal se tendens eerlik: ou lopies se `puls-only` staan apart.
 
 ## Die gesprekke
 
@@ -40,10 +46,19 @@ Elke gesprek kry hierdie tellings, onder sy beurte in die lopie se tabel en in d
 | `hosts` | Die webwerwe waarvan bladsye gelees is (Puls s'n en die kok s'n), in volgorde | — |
 | `local_hosts` | Daarvan, die Suid-Afrikaanse (`.za`) | — |
 | `shop_hosts` | Daarvan, die winkels (Checkers, Pick n Pay, Woolworths, Spar, Shoprite, Usave) | — |
-| `sources_local` | Al die gelese werwe is Suid-Afrikaans | ja |
-| `priced_at_shops` | Ten minste een winkel se bladsy is gelees | ja |
+| `sources_local` | Al die gelese werwe is Suid-Afrikaans; 'n winkelsoektog tel as sy winkel se werf, en 'n kaart (OpenStreetMap, waar die kok 'n tak opsoek) is geen bron nie (F34) | ja |
+| `priced_at_shops` | Ten minste een winkel se bladsy is gelees, of sy katalogus gevra met 'n winkelinstrument (F34) | ja, waar daar 'n Checkers is |
+| `shop_tool_calls` | Hoeveel keer die kok 'n winkelinstrument gebruik het (`FindProducts`, `SearchSpecials`, `SearchPromotions`, F34) | meer as 0 waar daar 'n Checkers is |
+| `deal_tool_calls` | Daarvan, `SearchSpecials` en `SearchPromotions`: na spesiale gesoek | meer as 0 by elke ete met 'n winkelhulpmiddel: die kok soek eers spesiale |
+| `deals_named` | Hoeveel rye op die lys 'n spesiaal langs die prys noem (`· BUY 2 FOR R45`, `SAVE`) | — |
+| `untooled_shops` | Hoeveel winkels die lys prys waarvoor die kok geen instrument het nie (Louis, F34: net winkels met 'n instrument). Die portaal wys dit rooi | 0 |
+| `store_for_area` | Hoeveel van die kok se winkelsoektogte die winkel beantwoord het wat die gebruiker se dorp bedien: die instrument se eerste reël noem die winkel, nagegaan teen Checkers se eie winkel-id (Louis: "hoe weet ons die adres is gebruik?") | meer as 0 in Malmesbury |
+| `store_default` | Hoeveel die winkel se verstekwinkel beantwoord het: geen dorp nie, geen winkel daar nie, of die dorp s'n is nie gebruik nie | 0 in Malmesbury |
+| `no_catalogue_line` | Die antwoord sê geen winkel naby die gebruiker het nog 'n katalogus hier nie (die lys sonder pryse) | ja in Darling (`cook-no-shop`), nee elders |
 | `ingredients` | Hoeveel bestanddele op die lys is: die tabel se rye (die kok se eie *Geprys: n van m*-reël is sy bewering, nie die telling nie) | — |
-| `priced` | Hoeveel daarvan 'n prys het **met die skakel waar dit vandaan kom**: net 'n prys met sy bron tel (F31 stap 11b: 'n prys uit die geheue is nie 'n antwoord nie). Die skakel moet na die winkel van daardie kolom gaan (Checkers se prys na `checkers.co.za`); 'n resep se skakel of 'n ander winkel s'n tel nie, en 'n verwysingskakel (`[R12,99][1]`) is sy URL | — |
+| `priced` | Hoeveel daarvan 'n prys het **met die skakel waar dit vandaan kom**: net 'n prys met sy bron tel (F31 stap 11b: 'n prys uit die geheue is nie 'n antwoord nie). Die skakel moet na die winkel van daardie kolom gaan (Checkers se prys na `checkers.co.za`); 'n resep se skakel of 'n ander winkel s'n tel nie, en 'n verwysingskakel (`[R12,99][1]`) is sy URL. Die ry se skakel na die produk by daardie winkel tel ook (F34: Puls alleen skryf `[Onions 1kg](checkers…) | R34.99`) | — |
+| `no_shop_rows` | In 'n dorp sonder 'n winkel waarvoor die kok 'n instrument het (`cook-no-shop`, Prince Albert): hoeveel rye reg sonder 'n prys is (`-`). Hulle tel as reg (Louis: "accuracy is 100%, no shop there mos?") | al die rye daar |
+| `wrong_store` | In daardie dorp: hoeveel rye tog 'n prys het, uit 'n winkel wat nie die dorp s'n is nie (Checkers se verstekwinkel). Dit tel as verkeerd, nie as geprys nie | 0 |
 | `priced_ratio` | `priced` gedeel deur `ingredients` | groen vanaf 0.8, rooi onder 0.5 |
 | `unsourced` | Hoeveel pryse sonder 'n skakel gegee is: geraai, uit die geheue. Dit tel nooit as geprys nie; die portaal wys dit oranje (*geskat*) | 0 |
 | `per_kg` | Hoeveel pryse met hul skakel 'n prys per kg is in plaas van 'n pak s'n: die sel sê *per kg* (`R99,99/kg`), of dit is een bedrag vir iets wat per gewig verkoop word (Checkers se skakel eindig op `KG`), waar 'n pak 'n reeks kos (`R87,99–R103,99`). Dit tel nie as geprys of geraai nie; die portaal wys dit oranje (PR #58 se resensie: die lopie het 'n pak van 1–1,2 kg teen sy kiloprys geprys) | 0 |
@@ -64,7 +79,7 @@ daardie lopie het sonder websoektogte geloop (Tavily se krediete was op), so 'n 
 - **Op die bladsy:** die lopie se tabel wys elke beurt soos dit klaarkom; die tellings staan onder elke gesprek.
 - **In die verkenner** (klik die lopie in die lys): die koste per modus en per gesprek langs mekaar, dan 'n gesprek
   se beurte op 'n tydlyn van modelversoeke, dan die beurt self, afgespeel soos dit getik is, en een versoek se rekord.
-- Vergelyk `puls-only` met `puls-cook` op dieselfde gesprek: kos die kok meer, en prys hy meer bestanddele by
+- Vergelyk `puls-tools` met `puls-cook` op dieselfde gesprek: kos die kok meer, en prys hy meer bestanddele by
   plaaslike winkels?
 
 ## Met die hand

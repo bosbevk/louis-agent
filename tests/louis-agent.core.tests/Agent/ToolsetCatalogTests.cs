@@ -10,6 +10,18 @@ namespace LouisAgent.Core.Tests.Agent;
 // is never skipped in silence.
 public class ToolsetCatalogTests
 {
+    // F34: only toolsets whose calls don't depend on each other's order run in parallel: reading the web and the shops.
+    // Files, shells, git and the specialists keep their order.
+    [Test]
+    public void OnlyTheWebAndTheShops_RunInParallel()
+    {
+        Assert.That(ToolsetCatalog.All.Where(t => t.ParallelSafe).Select(t => t.Name), Is.EquivalentTo(new[] { "web", "shops" }));
+        Assert.That(ToolsetCatalog.RunsInParallel([ToolsetCatalog.Find("web")!, ToolsetCatalog.Find("shops")!]), Is.True, "the cook");
+        Assert.That(ToolsetCatalog.RunsInParallel([ToolsetCatalog.Find("specialists")!, ToolsetCatalog.Find("web")!]), Is.False, "Puls");
+        Assert.That(ToolsetCatalog.RunsInParallel([ToolsetCatalog.Find("files")!, ToolsetCatalog.Find("web")!]), Is.False);
+        Assert.That(ToolsetCatalog.RunsInParallel([]), Is.False, "no toolsets: the coding agent's default tools");
+    }
+
     private sealed class NoSearch : IWebSearchProvider
     {
         public string Name => "none";

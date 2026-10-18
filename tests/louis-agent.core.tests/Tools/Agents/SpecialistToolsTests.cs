@@ -200,6 +200,28 @@ public class SpecialistToolsTests
 
     private static IEnumerable<string> Calls(StubHandler handler) => handler.Requests.Select(r => $"{r.Method} {new Uri(r.Url).AbsolutePath}");
 
+    // F34, Louis's screenshot: the cook's card showed `web` only, though its role adds `shops` on the peer. The peer
+    // says what the session loaded; the footer and the kept sub-session say that, not just what was sent.
+    [Test]
+    public async Task TheFooter_NamesTheToolsetsThePeerLoaded()
+    {
+        var handler = new StubHandler(request => request.Method.Method switch
+        {
+            "POST" when request.RequestUri!.AbsolutePath == "/sessions" =>
+                Json(HttpStatusCode.Created, """{"session_id":"sess_child","toolsets":["web","shops"],"role":"puls-cook"}"""),
+            "POST" => new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(Stream, Encoding.UTF8, "text/event-stream") },
+            _ => new HttpResponseMessage(HttpStatusCode.NotFound),
+        });
+        var registry = new SubSessionRegistry();
+
+        string result;
+        using (SubSessionRegistry.Use(registry))
+            result = await Tools(handler).StartSubSession(["web"], "Wat kook ek?", agent: "coder", role: "puls-cook");
+
+        Assert.That(result, Does.Contain("[Sub-session sub-1 on coder (web, shops; puls-cook)"));
+        Assert.That(registry.Open.Single().Toolsets, Is.EqualTo(new[] { "web", "shops" }));
+    }
+
     [Test]
     public async Task InAChat_TheSubSessionIsKept_AndTheAnswerNamesItsHandle()
     {

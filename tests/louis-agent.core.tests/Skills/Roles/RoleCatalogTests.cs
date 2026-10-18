@@ -240,9 +240,17 @@ public class RoleCatalogTests
         Assert.That(cook, Does.Contain("A price per kg is never a pack's price"));
         // Louis (PR #58): the list's To buy column showed "1 kg" and "6 pak" with no product; the example taught it.
         Assert.That(cook, Does.Contain("the product's name as the shop sells it"));
+        // Louis, on an Afrikaans list with "Icing sugar": the ingredient in the task's language; then "the product should
+        // display as it comes from checkers, we should not specifically translate".
+        Assert.That(cook, Does.Contain("every ingredient named in the task's language"));
+        Assert.That(cook, Does.Contain("never translated"));
+        // Louis, on "Geprys: 10 van 11" with tap water a row, then "8 van 10" with oil and salt "uit die voorraadkas":
+        // "it should now say 8 of 8". What isn't bought (tap water, pantry staples) is a line under the list, not a row.
+        Assert.That(cook, Does.Contain("What isn't bought is never a row"));
+        Assert.That(cook, Does.Contain("*Uit die voorraadkas: kookolie, sout en peper.*"));
         // Louis: "can we have a product image": the photo FindProducts gives, before the name; never another image.
         Assert.That(cook, Does.Contain("![KOO Chakalaka](https://catalog.sixty60.co.za/…) KOO Chakalaka Mild 410 g"));
-        Assert.That(cook, Does.Contain("only an image `FindProducts` gave"));
+        Assert.That(cook, Does.Contain("only an image a shop tool gave"));
         // Louis: the recipe needed under 1 kg of maize meal and the cook priced the 2.5 kg pack, with a 1 kg one on the shelf.
         Assert.That(cook, Does.Contain("the smallest pack that covers what the recipe needs"));
         // Louis: "there is a checkers in malmesbury so why is puls not picking it up". "supermarkets in Malmesbury" on
@@ -285,18 +293,71 @@ public class RoleCatalogTests
         Assert.That(cook, Does.Contain("Geprys: {n} van {m} bestanddele"));
     }
 
+    // Louis's chats of 2026-10-18 (R100, R75, R50 for Malmesbury): about 40 shop searches, one SearchSpecials, after
+    // the list was priced. "the cook should probably search for deals or specials first". The rice was searched as
+    // `long grain rice 1kg` for 300 g, so the 500 g pack never showed: "the size must agree with the recipe". A brief
+    // with no number of people got a meal for two: "it also assumed 2 people, i meant 1", then "the cook must always
+    // know how many people it is for", and, asked how: "Puls asks first".
     [Test]
-    public void TheCook_PricesAShopWithACatalogue_ThroughFindProducts_First()
+    public void TheCook_LooksForDealsFirst_InPacksTheRecipeNeeds_ForAsManyPeopleAsPulsAsked()
     {
-        // F33 step 4: F32's run priced nothing; Checkers' own catalogue gives exact, linked prices. Where the cook has
-        // FindProducts (the shops toolset, its own: `toolsets: shops?`), a shop it covers in the town is one of the two,
-        // priced through it before any web search, each price linked to the product the table gives.
+        string cook = SkillFileSource.ReadEmbedded("specialists/puls-cook.md")!;
+        string shops = SkillFileSource.ReadEmbedded("toolsets/shops.md")!;
+        string guide = SkillFileSource.ReadEmbedded("toolsets/specialists.md")!;
+
+        Assert.That(cook, Does.Contain("Deals first, for every meal"));
+        Assert.That(cook, Does.Not.Contain("when cost matters"), "not only for a budget");
+        Assert.That(shops, Does.Contain("Look for deals first"));
+        Assert.That(cook, Does.Contain("a deal product that fits a row is that row"), "no second search for it");
+
+        Assert.That(cook, Does.Contain("the size the recipe needs").And.Not.Contain("`chakalaka 410g`"));
+        Assert.That(shops, Does.Contain("the size the recipe needs"));
+
+        Assert.That(guide, Does.Contain("**Vir hoeveel:**").And.Contain("**Serves:**"), "its own line in every meal's brief");
+        Assert.That(guide, Does.Contain("Vir hoeveel mense kook jy?"), "Puls asks first, never a guess");
+        Assert.That(SkillFileSource.ReadEmbedded("agent/puls/voice.md")!, Does.Contain("ask how many people first"));
+        Assert.That(cook, Does.Contain("cook for exactly that many").And.Not.Contain("cook for one"));
+    }
+
+    [Test]
+    public void TheCook_PricesOnlyShopsItHasAToolFor()
+    {
+        // F34 step 4 (Louis: "the cook may only use shops for who has tools for"; with none, the recipe with no prices).
+        // F33's cook priced two shops picked at random, through WebSearch for those without a catalogue; with every
+        // search engine refusing (the Malmesbury chat), that gave no price with a source. Now a price comes only from a
+        // shop tool, linked to the product the table gives, a deal named beside it.
         string cook = SkillFileSource.ReadEmbedded(RoleCatalog.SpecialistsFolder + "/puls-cook.md")!;
 
         Assert.That(cook, Does.StartWith("---\ntoolsets: shops?\n---").Or.StartWith("---\r\ntoolsets: shops?\r\n---"));
-        Assert.That(cook, Does.Contain("`FindProducts`").And.Contain("before any `WebSearch`"));
-        Assert.That(cook, Does.Contain("one of the two"), "a shop with a catalogue is picked first");
+        Assert.That(cook, Does.Contain("Price only at a shop your shop tools cover"));
+        Assert.That(cook, Does.Contain("No shop near you has a catalogue here yet").And.Contain("Geen winkel naby jou het nog 'n katalogus hier nie"));
+        Assert.That(cook, Does.Contain("`SearchSpecials`").And.Contain("`SearchPromotions`"));
+        Assert.That(cook, Does.Contain("pass `area`: the user's town from the task"), "run dd992620f6cc: Pretoria only in the message");
+        // Louis, on Puls's brief for frozen pizza specials (a table with no photos): "always send a product image with a
+        // product". Puls asks for it in every brief about products; the cook shows it in every table, not only the list.
+        Assert.That(cook, Does.Contain("every product you name, in any table"));
+        // Louis: "die foto moet altyd eerste wees en dan produk desc": in the product's cell, the photo, then its name.
+        Assert.That(cook, Does.Contain("the photo always first in the cell, then the product's name and pack"));
+        string guide = SkillFileSource.ReadEmbedded("toolsets/specialists.md")!;
+        Assert.That(guide, Does.Contain("elke produk met sy foto").And.Contain("every product with its photo"));
         Assert.That(cook, Does.Contain("the link the table gives"), "its source");
+        Assert.That(cook, Does.Not.Contain("pick two at random").And.Not.Contain("before any `WebSearch`"), "no shop without a tool");
+        Assert.That(cook, Does.Not.Contain("Which shops' pages give a price").And.Not.Contain("`pnp.co.za`").And.Not.Contain("soekindeks"),
+            "no prices from the web");
+    }
+
+    [Test]
+    public void AShopThePriceCantComeFrom_IsExplained_AndTheUserAskedToRaiseIt()
+    {
+        // Louis: "when a shop does not have a provider puls must reply to the user politely to take it up with the store
+        // in order to get listed", "since they do not have an API": the reason in plain words, and the ask on the public.
+        string cook = SkillFileSource.ReadEmbedded(RoleCatalog.SpecialistsFolder + "/puls-cook.md")!;
+
+        Assert.That(cook, Does.Contain("Puls can show prices from shops that make them available online in a form it can read, such as Checkers."));
+        Assert.That(cook, Does.Contain("the more customers ask, the sooner it happens"));
+        Assert.That(cook, Does.Contain("Puls kan pryse wys van winkels wat dit aanlyn beskikbaar stel in 'n vorm wat dit kan lees, soos Checkers."));
+        Assert.That(cook, Does.Contain("hoe meer klante vra, hoe gouer gebeur dit"));
+        Assert.That(cook, Does.Not.Contain("public API"), "Checkers publishes no API as such: what's true is that its prices can be read");
     }
 
     [Test]
@@ -309,22 +370,20 @@ public class RoleCatalogTests
 
         Assert.That(cook, Does.Contain("Puls hands your report to the user as it is"));
         Assert.That(cook, Does.Not.Contain("Puls will put it in its own voice"), "the line every other role has invites a rewrite");
-        // Louis: one table, not the recipe's ingredients and then the list again.
-        // Louis: two shops' prices per ingredient, and the totals merged into one table that compares them.
-        Assert.That(cook, Does.Contain("| Ingredient | For the recipe | To buy | Checkers | Shoprite | Pick n Pay | Best price |"), "the shopping list's columns: a column per shop priced at");
-        // Louis: "one shop has to at least have all products; include Spar, Pick n Pay, Usave and Woolworths, it never uses them".
-        Assert.That(cook, Does.Contain("at least one shop must have").And.Contain("one trip"));
-        Assert.That(cook, Does.Contain("Pick n Pay, Spar, Usave, Woolworths").And.Contain("`pnp.co.za`").And.Contain("`usave.co.za`"));
+        // Louis: one table, not the recipe's ingredients and then the list again; a column per shop priced at (F34: only
+        // shops with a tool, so Checkers today), and a best-price column only when there's more than one.
+        Assert.That(cook, Does.Contain("| Ingredient | For the recipe | To buy | Checkers |"), "the shopping list's columns: a column per shop priced at");
         // The cheapest basket can exceed a shop's total that leaves rows out, so it's bounded by the completed column.
         Assert.That(cook, Does.Contain("the cheapest basket is never more than the completed"), "the best-price total the model got wrong");
-        Assert.That(cook, Does.Not.Contain("Checkers and Shoprite always"), "the two shops are picked at random from the town's");
-        // Louis: "pick randomly which store to use based on location; don't even use stores not in your location".
-        Assert.That(cook, Does.Contain("q=supermarkets+in+Stellenbosch").And.Contain("pick two at random").And.Contain("never price at, name or total a shop the town doesn't have"));
-        Assert.That(cook, Does.Contain("| **Total, priced rows** | | | **R120,98** | **R84,99** | **R120,97** | **R110,97** |"), "the totals are the list's last rows, side by side, the cheapest basket last");
+        // Louis: "don't even use stores not in your location".
+        Assert.That(cook, Does.Contain("never price at, name or total a shop the town doesn't have"));
+        Assert.That(cook, Does.Contain("| **Total, priced rows** | | | **R132,98** |"), "the totals are the list's last rows");
+        // F34: a deal is named beside the pack's price, as the shop words it.
+        Assert.That(cook, Does.Contain("[R24,99](https://www.checkers.co.za/…) · BUY 2 FOR R45"));
         // Louis: an unpriced ingredient is an ordinary row; no row counting or naming them. Its cell is a `-` (review of
         // PR #55: "make unknown --> -"), so a column of gaps reads at a glance and the check's scorer counts the row's
         // linked price at another shop.
-        Assert.That(cook, Does.Contain("| Lemons | 2 | Loose lemons, 2 | [R12,99](https://www.checkers.co.za/…) | - | [R14,99](https://www.pnp.co.za/…) | R12,99 Checkers |"));
+        Assert.That(cook, Does.Contain("| Fresh coriander | 20 g | Fresh coriander 20 g | - |"));
         Assert.That(cook, Does.Contain("a price you couldn't find is a `-` in its cell"));
         Assert.That(cook, Does.Not.Contain("**Unpriced"));
         Assert.That(cook, Does.Not.Contain("### Total"), "no section of its own");
@@ -353,6 +412,10 @@ public class RoleCatalogTests
         Assert.That(agents, Does.Contain("## Relaying a report"));
         Assert.That(agents, Does.Contain("as the specialist wrote it").And.Contain("every table row"), "whole, tables included");
         Assert.That(router, Does.Contain("as the cook wrote it"), "the one choosing is told too");
+        // Louis, on Puls's answer ending "[Sub-session sub-1 on puls (web; puls-cook): 4 requests, …]": "bug". "Every
+        // line under a table" took in the tool's footer, the last line under the last table. The footer is Puls's alone.
+        Assert.That(agents, Does.Contain("The footer the tool adds under the report"));
+        Assert.That(agents, Does.Contain("never in your answer"));
     }
 
     [Test]
@@ -380,7 +443,7 @@ public class RoleCatalogTests
         string router = SkillFileSource.ReadEmbedded("agent/puls/voice.md")!;
 
         Assert.That(agents, Does.Contain("## Briefing the specialist"));
-        foreach (string label in new[] { "**Vir:**", "**Wil hê:**", "**Klink:**", "**Waar:**", "**Reeds gesê:**", "**For:**", "**Wants:**", "**Sounds:**", "**Where:**", "**Already said:**" })
+        foreach (string label in new[] { "**Vir:**", "**Wil hê:**", "**Vir hoeveel:**", "**Klink:**", "**Waar:**", "**Reeds gesê:**", "**For:**", "**Wants:**", "**Serves:**", "**Sounds:**", "**Where:**", "**Already said:**" })
             Assert.That(agents, Does.Contain(label), "the note's labels, in both languages");
         Assert.That(agents, Does.Contain("a guess from the typing").And.Contain("never a diagnosis"), "the guard rails");
         Assert.That(agents, Does.Contain("neutraal"), "when the typing says nothing");

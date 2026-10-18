@@ -42,6 +42,8 @@ services:
       # it) and the headless Chrome that renders pages drawn with JavaScript.
       SEARXNG_URL: ${SEARXNG_URL-http://puls-searxng:8080}
       BROWSER_URL: ${BROWSER_URL-http://puls-browser:9222}
+      # F34: each town's store at a shop, kept a day in a file both containers share, so a rebuild doesn't look it up again.
+      SHOP_STORE_CACHE: ${SHOP_STORE_CACHE-/data/shop-stores.json}
     # Localhost only. Set AGENT_API_KEY in config/.env.secrets to require a key.
     ports:
       - "127.0.0.1:${PULS_PORT:-5070}:8080"
@@ -49,6 +51,7 @@ services:
       - ${PULS_WORKSPACE:-../}:/workspace
       - ../Skills:/skills
       - ../logs/puls:/logs
+      - ../data/puls:/data
     networks: [default, web]
     depends_on:
       puls-agent:
@@ -82,6 +85,8 @@ services:
       LLM_SESSION_PROFILES: ${LLM_SESSION_PROFILES-ollama-puls}
       SEARXNG_URL: ${SEARXNG_URL-http://puls-searxng:8080}
       BROWSER_URL: ${BROWSER_URL-http://puls-browser:9222}
+      # F34: each town's store at a shop, kept a day in a file both containers share, so a rebuild doesn't look it up again.
+      SHOP_STORE_CACHE: ${SHOP_STORE_CACHE-/data/shop-stores.json}
     networks: [default, web]
     ports:
       - "127.0.0.1:${PULS_CODER_PORT:-5071}:8080"
@@ -89,6 +94,7 @@ services:
       - ${PULS_WORKSPACE:-../}:/workspace
       - ../Skills:/skills
       - ../logs/puls:/logs
+      - ../data/puls:/data
 
   # The benchmark store (F31): the admin portal's runs, recorded by puls from each check's output. Its data is a folder
   # on the host (data/mongo, git-ignored), so it outlives the container and the image. Localhost only. The root user is

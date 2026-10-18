@@ -34,6 +34,9 @@ public sealed class Turn
     public string? StopReason { get; set; }
     public string? Error { get; set; }
 
+    /// <summary>The toolsets the session loaded, from <c>message_start</c> (F34); null from an older API.</summary>
+    public List<string>? Toolsets { get; set; }
+
     /// <summary>What the turn's model requests used, from <c>message_delta.usage</c>; null for commands and older chats.</summary>
     public TurnUsage? Usage { get; set; }
 }

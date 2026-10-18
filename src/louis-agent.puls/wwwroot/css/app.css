@@ -223,6 +223,15 @@ a { color: var(--blue); text-decoration-thickness: 1px; text-underline-offset: 2
 .markdown pre code { background: none; color: var(--text); padding: 0; font-size: 13px; }
 .markdown blockquote { margin: 0; padding: 2px 0 2px 14px; border-left: 3px solid var(--green-light); color: var(--muted); }
 .markdown td img { width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin-right: 8px; border-radius: 8px; background: #fff; }
+/* A product's photo beside its name (F34, Louis: "the text must not go underneath"): the cell keeps a lane for the photo, so a long name wraps beside it. */
+/* Louis: "a min padding around the pics", then bigger, three times: 104 px, a cell tall enough for 10 px above and below. */
+.markdown td:has(> img) { position: relative; padding-left: 128px; height: 124px; }
+.markdown img[data-original] { cursor: zoom-in; }
+.photo-dialog { padding: 16px; border: 1px solid var(--border); border-radius: 18px; background: #fff; max-width: calc(100vw - 32px); max-height: calc(100vh - 32px); cursor: zoom-out; animation: fade .2s both; }
+.photo-dialog::backdrop { background: rgba(0, 0, 0, .7); }
+.photo-dialog img { display: block; width: min(560px, calc(100vw - 64px)); max-height: calc(100vh - 120px); object-fit: contain; }
+.photo-dialog p { margin: 10px 0 0; text-align: center; font-size: 14px; color: #333; }
+.markdown td:has(> img) > img { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 104px; height: 104px; margin-right: 0; }
 .markdown table { border-collapse: separate; border-spacing: 0; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
 .markdown th { background: var(--code-bg); color: var(--ink); font-weight: 600; }
 .markdown th, .markdown td { border-bottom: 1px solid var(--border); padding: 8px 12px; text-align: left; }
@@ -232,6 +241,9 @@ a { color: var(--blue); text-decoration-thickness: 1px; text-underline-offset: 2
 .working, .delegation-waiting { color: var(--muted); font-size: 13px; display: inline-flex; align-items: center; gap: 2px; }
 .working { background: linear-gradient(90deg, var(--muted) 0%, var(--ink) 50%, var(--muted) 100%); background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: shimmer 1.6s linear infinite; }
 @keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+/* F34, Louis: "maybe some small loader icon left of it". Its own colours: the label's text is clipped to its gradient. */
+.working .spinner { width: 12px; height: 12px; margin-right: 8px; flex: none; border-radius: 50%; border: 2px solid rgba(255, 255, 255, .14); border-top-color: var(--orange, #f58220); animation: loader-spin .8s linear infinite; }
+@keyframes loader-spin { to { transform: rotate(360deg); } }
 .dots { display: inline-flex; gap: 3px; margin-left: 4px; }
 .dots::after { content: "•••"; letter-spacing: 2px; background: linear-gradient(90deg, var(--orange), var(--green)); -webkit-background-clip: text; background-clip: text; color: transparent; animation: blink 1.2s ease-in-out infinite; }
 .stopped { color: var(--muted); font-size: 13px; font-style: italic; }

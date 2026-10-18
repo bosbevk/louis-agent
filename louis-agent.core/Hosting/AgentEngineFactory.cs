@@ -146,7 +146,7 @@ public sealed class AgentEngineFactory
         // ledger, prices and display currency are the instance's.
         var engine = new AgentEngine(AgentHost.LoadSkills(_agent, guided, role, level), model?.Client ?? _chatClient, _agent,
             model?.SupportsTools ?? _supportsTools, toolsets: ToolsetCatalog.BuildTools(resolved, Context), _usageSink,
-            model is null ? _usageMapper : model.UsageMapper, selfExtension)
+            model is null ? _usageMapper : model.UsageMapper, selfExtension, ToolsetCatalog.RunsInParallel(resolved))
         {
             SkillsDirectory = AgentHost.FindSkillsDirectory(_agent),
             // ReloadSkills reloads this profile's prompt (its guides, role and router), never another's.

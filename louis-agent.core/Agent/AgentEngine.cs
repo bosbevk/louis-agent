@@ -92,13 +92,14 @@ public class AgentEngine
     /// </param>
     /// <param name="usageSink">Where one usage record per model request goes; null records nothing.</param>
     /// <param name="usageMapper">The provider's usage mapping (<c>LlmClientFactory.CreateUsageMapper</c>); null uses the standard one.</param>
+    /// <param name="concurrentToolCalls">Run a round's tool calls at once (F34); only for toolsets that allow it.</param>
     /// <param name="selfExtension">
     /// On a toolsets engine, also register the self-extension tools (CreateSkillFile, ReloadSkills, CreateTool,
     /// ListAgentTools): the <c>skills</c> toolset. Ignored when <paramref name="toolsets"/> is null, which always registers them.
     /// </param>
     public AgentEngine(ISkillProvider skillProvider, IChatClient chatClient, AgentOptions options, bool supportsTools = true,
         IEnumerable<object>? toolsets = null,
-        IUsageSink? usageSink = null, IUsageMapper? usageMapper = null, bool selfExtension = false)
+        IUsageSink? usageSink = null, IUsageMapper? usageMapper = null, bool selfExtension = false, bool concurrentToolCalls = false)
     {
         _options = options;
         SupportsTools = supportsTools;
@@ -117,6 +118,8 @@ public class AgentEngine
             .UseFunctionInvocation(configure: c =>
             {
                 c.MaximumIterationsPerRequest = 10;
+                // F34: a round's calls at once, for an engine whose toolsets all allow it (ToolsetCatalog.RunsInParallel).
+                c.AllowConcurrentInvocation = concurrentToolCalls;
                 c.FunctionInvoker = _guards.InvokeAsync;
                 // Lets the model see why a call failed (e.g. a missing argument) instead of a generic failure.
                 c.IncludeDetailedErrors = true;

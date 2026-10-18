@@ -47,6 +47,35 @@ class Prices(unittest.TestCase):
                   "[1]: https://www.checkers.co.za/p/hoender\n[uie]: https://www.checkers.co.za/p/uie \"Uie\"\n")
         self.assertEqual(scoring.priced(answer), (2, 2, 0, 0))
 
+    # F34, run 26527259bf31: Puls alone (puls-tools) priced from the shop tools but linked the product, not the price
+    # (`| [Onions 1kg](checkers…) | R34.99 |`), and scored 0 priced. The row's link to the product at the price's shop
+    # is its source too (Louis: "fix the scorer"); a link elsewhere still isn't.
+
+    def test_a_price_whose_product_links_to_the_shop_is_priced(self):
+        answer = ("| Item | Pryse | Subtotaal |\n|---|---|---|\n"
+                  "| [Onions 1kg](https://www.checkers.co.za/product/onions-1kg-10135699EA) | R34.99 | R34.99 |\n"
+                  "| [Tastic Long Grain Parboiled Rice 500g](https://www.checkers.co.za/product/tastic-long-grain-parboiled-white-rice-500g-10130260EA) | R19.99 | R19.99 |\n")
+        self.assertEqual(scoring.priced(answer), (2, 2, 0, 0))
+
+    def test_one_price_for_a_product_linked_as_sold_by_weight_is_its_price_per_kg(self):
+        answer = ("| Item | Pryse |\n|---|---|\n"
+                  "| [Farmer's Choice Chicken 8 Piece Braai Pack Per Kg](https://www.checkers.co.za/product/farmers-choice-chicken-8-piece-braai-pack-per-kg-10732967KG), 1 kg | R59.99 |\n")
+        self.assertEqual(scoring.priced(answer), (0, 1, 0, 1))
+
+    def test_a_product_linked_to_another_shop_or_a_recipe_is_no_source(self):
+        answer = ("| Item | Checkers |\n|---|---|\n| [Melk](https://www.pnp.co.za/melk) | R18,99 |\n"
+                  "| [Hoender](https://www.food24.com/recipes/hoender) | R89,99 |\n")
+        self.assertEqual(scoring.priced(answer), (0, 2, 2, 0))
+
+    def test_a_list_headed_wat_is_the_shopping_list(self):
+        # Cook check 42d837f13659: Puls alone headed its list `| Wat | Pak | Prys |`, and the scorer found no list.
+        answer = ("| Wat | Pak | Prys |\n|---|---|---|\n"
+                  "| [Uie](https://www.checkers.co.za/product/onions-1kg-10135699EA) | 1 kg | R34.99 |\n")
+        self.assertEqual(scoring.priced(answer), (1, 1, 0, 0))
+        self.assertEqual(scoring.priced(answer.replace("Wat", "What")), (1, 1, 0, 0))
+        self.assertEqual(scoring.priced("| Wat | Waarom |\n|---|---|\n| Rys | R19,99 nie gevind |\n"), (None, None, None, None),
+                         "the cook's Onseker table is no list")
+
     def test_a_shops_own_subdomain_is_the_shop(self):
         answer = "| Bestanddeel | Woolworths |\n|---|---|\n| Melk | [R32,99](https://shop.woolworths.co.za/melk) |\n"
         self.assertEqual(scoring.priced(answer), (1, 1, 0, 0))
@@ -99,6 +128,41 @@ class Prices(unittest.TestCase):
     def test_one_price_for_a_product_sold_each_is_its_packs_price(self):
         answer = self.HEADER_AF + "| Uie | 2 | 1 kg sak | [R34,99](https://www.checkers.co.za/product/onions-1kg-10135699EA) | - | R34,99 Checkers |\n"
         self.assertEqual(scoring.priced(answer), (1, 1, 0, 0))
+
+    # F34 step 5: the cook prices only shops it has a tool for (Louis), names a deal beside the pack's price, and says
+    # so when no shop near the user has a catalogue. The rows are shaped as the cook's prompt asks.
+    ONE_SHOP = "| Ingredient | For the recipe | To buy | Checkers |\n|---|---|---|---|\n"
+
+    def test_a_deal_named_beside_a_price_is_counted(self):
+        answer = (self.ONE_SHOP + "| Rice | 300 g | Spekko Rice 1 kg | [R24,99](https://www.checkers.co.za/p/1) · BUY 2 FOR R45 |\n"
+                  "| Chicken | 1 kg | Farmer's Choice 16-piece | [R135,98–R151,98](https://www.checkers.co.za/p/2KG) · SAVE |\n"
+                  "| Onions | 2 | Onions 1 kg | [R34,99](https://www.checkers.co.za/p/3) |\n")
+        self.assertEqual(scoring.deals_named(answer), 2)
+
+    def test_no_deal_is_none_named(self):
+        self.assertEqual(scoring.deals_named(self.ONE_SHOP + "| Onions | 2 | Onions 1 kg | [R34,99](https://www.checkers.co.za/p/3) |\n"), 0)
+
+    def test_a_shop_without_a_tool_in_the_list_is_counted(self):
+        # Checkers has a tool (FindProducts); Pick n Pay and Shoprite don't: their columns break the rule.
+        answer = ("| Ingredient | For the recipe | To buy | Checkers | Pick n Pay | Shoprite | Best price |\n|---|---|---|---|---|---|---|\n"
+                  "| Onions | 2 | Onions 1 kg | [R34,99](https://www.checkers.co.za/p/3) | - | - | R34,99 Checkers |\n")
+        self.assertEqual(scoring.untooled_shops(answer), 2)
+        self.assertEqual(scoring.untooled_shops(self.ONE_SHOP + "| Onions | 2 | Onions 1 kg | - |\n"), 0)
+
+    def test_the_no_catalogue_line_is_found_in_either_language(self):
+        self.assertTrue(scoring.no_catalogue_line("...\n_No shop near you has a catalogue here yet._"))
+        self.assertTrue(scoring.no_catalogue_line("...\n*Geen winkel naby jou het nog 'n katalogus hier nie.*"))
+        self.assertFalse(scoring.no_catalogue_line("Geprys: 3 van 3 bestanddele"))
+
+    def test_which_store_answered_is_counted_from_the_tools_headers(self):
+        # Louis: "how can we verify that the product comes from the malmesbury store?" The tool names the store that
+        # answered, checked against Checkers' own storeId; a search the town's store didn't answer says so.
+        results = ["Products at Checkers (the store serving Malmesbury, store 655b0c8f) for 'rice' (1), from the shop's own catalogue",
+                   "Specials (multi-buys) at Checkers (the store serving Malmesbury, store 655b0c8f) for 'coffee' (2)",
+                   "Products at Checkers (its default store, store 5ece6935: Malmesbury's wasn't used) for 'onions' (1)",
+                   "Products at Checkers (its default store: no area shared) for 'eggs' (3)",
+                   "Saturday 17 October 2026"]
+        self.assertEqual((scoring.store_for_area(results), scoring.store_default(results)), (2, 2))
 
     def test_unconfirmed_marks(self):
         self.assertEqual(scoring.unconfirmed_marks("Prys onbekend; die ander is geskat uit die soekindeks."), 3)
