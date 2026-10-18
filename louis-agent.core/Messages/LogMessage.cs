@@ -27,6 +27,9 @@ public enum LogMessage
     [Description("The shops' store cache {Path} can't be read ({Reason}); towns are looked up again.")]
     ShopStoreCacheUnreadable,
 
+    [Description("{Shop} didn't answer the store lookup for {Place} with its store answer (refused, or its site changed); the default store answers, and the town is looked up again next time.")]
+    ShopStoreAnswerUnreadable,
+
     [Description("The shops' store cache {Path} can't be written ({Reason}); towns are kept in memory only.")]
     ShopStoreCacheUnwritable,
 

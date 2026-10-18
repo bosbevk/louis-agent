@@ -101,6 +101,33 @@ public class CheckersStoreTests
         Assert.That(await new CheckersStore(new FakeBrowser(Fallback, SetByCheckers),
             (_, _) => Task.FromResult<(double, double)?>((-33.222626, 22.030331))).ForAsync("Prince Albert"), Is.Null);
 
+    // F34, cook check 42d837f13659: at 00:29, just after Checkers had refused searches for four minutes, the lookup for
+    // Pretoria came back in 1.1 s as "no store". A reply that isn't Checkers' store answer is a failed lookup: the
+    // search uses the default store now, and the town is looked up again, never kept a day as having no store.
+    [TestCase("<html><body>Request blocked</body></html>")]
+    [TestCase("{\"message\":\"Too many requests\"}")]
+    [TestCase(null)]
+    public async Task AReplyThatIsntTheStoreAnswer_IsAFailedLookup_NotKept(string? reply)
+    {
+        var browser = new FakeBrowser(reply, SetByCheckers);
+        var store = new CheckersStore(browser, Malmesbury, new LouisAgent.Core.Tools.Shops.StoreSessionCache());
+
+        Assert.That(await store.ForAsync("Malmesbury"), Is.Null);
+        await store.ForAsync("Malmesbury");
+        Assert.That(browser.Visits, Has.Count.EqualTo(2), "looked up again");
+    }
+
+    [Test]
+    public async Task ATownCheckersDoesntServe_IsKept()
+    {
+        var browser = new FakeBrowser(Fallback, SetByCheckers);
+        var store = new CheckersStore(browser, Malmesbury, new LouisAgent.Core.Tools.Shops.StoreSessionCache());
+
+        await store.ForAsync("Malmesbury");
+        await store.ForAsync("Malmesbury");
+        Assert.That(browser.Visits, Has.Count.EqualTo(1), "Checkers' own answer: no store there, kept");
+    }
+
     [Test]
     public async Task ABrowserError_IsTheDefaultStore_NotAFailedSearch() =>
         Assert.That(await new CheckersStore(new FakeBrowser(fails: new WebBrowserException("didn't answer")), Malmesbury).ForAsync("Malmesbury"), Is.Null);

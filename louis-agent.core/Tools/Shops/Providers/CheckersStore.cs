@@ -58,7 +58,13 @@ public sealed class CheckersStore(IWebBrowser browser, Func<string, Cancellation
             return (null, false);
         }
 
-        BrowserSession? session = Serves(visit.ScriptResult) && visit.Cookies?.Where(c => StoreCookies.Contains(c.Name)).ToList() is { Count: > 0 } cookies
+        // Cook check 42d837f13659: a reply that isn't Checkers' store answer (a refusal) is a failed lookup, never "no store".
+        if (Serves(visit.ScriptResult) is not { } serves)
+        {
+            Log.Log(LogLevel.Warning, LogMessage.ShopStoreAnswerUnreadable, new { Shop = "Checkers", Place = town });
+            return (null, false);
+        }
+        BrowserSession? session = serves && visit.Cookies?.Where(c => StoreCookies.Contains(c.Name)).ToList() is { Count: > 0 } cookies
             ? new BrowserSession(cookies)
             : null;
         // Louis: "see the logs, it did not set my address": the lookup says what it found, once per town.
@@ -75,21 +81,25 @@ public sealed class CheckersStore(IWebBrowser browser, Func<string, Cancellation
     internal static string Lookup(double latitude, double longitude) => string.Create(CultureInfo.InvariantCulture,
         $$"""fetch('/api/store/fetch-store-contexts?update=true', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ address: { coordinates: { latitude: {{latitude:R}}, longitude: {{longitude:R}} } }, update: true, acceptedLimitedExperience: false }) }).then(r => r.text())""");
 
-    /// <summary>Whether the answer names a store serving the area: at least one, and not Checkers' fallback set.</summary>
-    private static bool Serves(string? answer)
+    /// <summary>
+    /// Whether the answer names a store serving the area: at least one, and not Checkers' fallback set. Null when it isn't
+    /// Checkers' store answer at all (no <c>storeContexts</c> list: a refusal, or a site that changed).
+    /// </summary>
+    private static bool? Serves(string? answer)
     {
-        if (answer is null) return false;
+        if (answer is null) return null;
         try
         {
             using var doc = JsonDocument.Parse(answer);
-            return doc.RootElement.ValueKind == JsonValueKind.Object
-                && doc.RootElement.TryGetProperty("storeContexts", out var stores)
-                && stores.ValueKind == JsonValueKind.Array && stores.GetArrayLength() > 0
+            if (doc.RootElement.ValueKind != JsonValueKind.Object || !doc.RootElement.TryGetProperty("storeContexts", out var stores)
+                || stores.ValueKind != JsonValueKind.Array)
+                return null;
+            return stores.GetArrayLength() > 0
                 && !stores.EnumerateArray().Any(store => store.TryGetProperty("storeId", out var id) && id.GetString() == DefaultStore);
         }
         catch (JsonException)
         {
-            return false;
+            return null;
         }
     }
 }
