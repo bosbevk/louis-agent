@@ -293,6 +293,19 @@ public class RoleCatalogTests
         Assert.That(cook, Does.Contain("Geprys: {n} van {m} bestanddele"));
     }
 
+    // FX17, cook check d94597a51d4d: the Afrikaans reports said "Serves 4 · ongeveer 1 uur" and the English one
+    // "Geprys: 5 van 5": each label was given in one language, and the cook copied it. Both forms, in the task's language.
+    [Test]
+    public void TheCooksLabels_AreInTheTasksLanguage()
+    {
+        string cook = SkillFileSource.ReadEmbedded("specialists/puls-cook.md")!;
+
+        Assert.That(cook, Does.Contain("`Dien {n} · {tyd}`").And.Contain("`Serves {n} · {time}`"), "the recipe line");
+        Assert.That(cook, Does.Contain("`Geprys: {n} van {m} bestanddele`").And.Contain("`Priced: {n} of {m} ingredients`"), "the tally");
+        Assert.That(cook, Does.Not.Contain("One line, `Serves {n} · {total time}`"), "not English alone");
+        Assert.That(cook, Does.Contain("in the task's language, never the other"));
+    }
+
     // Louis's chats of 2026-10-18 (R100, R75, R50 for Malmesbury): about 40 shop searches, one SearchSpecials, after
     // the list was priced. "the cook should probably search for deals or specials first". The rice was searched as
     // `long grain rice 1kg` for 300 g, so the 500 g pack never showed: "the size must agree with the recipe". A brief

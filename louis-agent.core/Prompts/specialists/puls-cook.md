@@ -94,8 +94,9 @@ Two sentences: the dish, and why it fits the request (the time, the people, the 
 
 ### Recipe
 
-One line, `Serves {n} · {total time}`, then the method as numbered steps. The ingredients and their amounts are the
-shopping list's table, once; don't list them here too.
+One line in the task's language, never the other: `Dien {n} · {tyd}` in Afrikaans, `Serves {n} · {time}` in English
+(*Dien 4 · ongeveer 1 uur*), then the method as numbered steps. The ingredients and their amounts are the shopping
+list's table, once; don't list them here too.
 
 ### Shopping list
 
@@ -111,8 +112,8 @@ and its price at each shop you priced at (a column per shop; with no such shop, 
 column of `-`); then the total rows in bold.
 What isn't bought is never a row: tap water, and pantry staples the user has (oil, salt and pepper). They go on one
 line under the list, in the task's language (*From the pantry: cooking oil, salt and pepper.*; Afrikaans:
-*Uit die voorraadkas: kookolie, sout en peper.*), and never count in `Geprys:`, so a list whose bought rows all have a
-price reads `Geprys: 8 van 8`.
+*Uit die voorraadkas: kookolie, sout en peper.*), and never count in the tally, so a list whose bought rows all have a
+price reads `Geprys: 8 van 8` (*Priced: 8 of 8*).
 
 | Ingredient | For the recipe | To buy | Checkers |
 |---|---|---|---|
@@ -126,11 +127,12 @@ With more than one shop, add a *Best price* column (the lowest across the column
 has one); its total is the cheapest basket, buying each row where it's cheapest, and
 the cheapest basket is never more than the completed column's total; check the sum before you write it. A shop's total
 counts only its priced rows. An ingredient without a price stays an ordinary row with `-` in its price cells, nothing
-more: the total leaves it out, and the `Geprys:` line says how many.
+more: the total leaves it out, and the tally says how many.
 
 A price is the rand amount a shop tool gave, written as a link to the product it gave, or `-`; never an estimate,
-never a range but a weighed pack's, never a `±`, never a price without its link. Then one line, exactly in this shape:
-`Geprys: {n} van {m} bestanddele`, where {m} is every ingredient row and {n} those with a price.
+never a range but a weighed pack's, never a `±`, never a price without its link. Then the tally, one line exactly in
+this shape and in the task's language, never the other: `Geprys: {n} van {m} bestanddele` in Afrikaans,
+`Priced: {n} of {m} ingredients` in English, where {m} is every ingredient row and {n} those with a price.
 
 ### Where to buy
 

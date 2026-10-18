@@ -19,5 +19,10 @@ but not where a count of packs goes, so the model put it in front.
 
 ## What the build changed
 
+- **Step 1 (2026-10-18): the labels in the task's language.** `puls-cook.md` gives the recipe line as
+  `Dien {n} · {tyd}` / `Serves {n} · {time}` and the tally as `Geprys: {n} van {m} bestanddele` /
+  `Priced: {n} of {m} ingredients`, each "in the task's language, never the other"; the pantry line's example names
+  both tallies. The golden files didn't change: they pin Puls's prompt, not the cook's.
+
 ---
 [Fixes](README.md) · Previous: [FX16](FX16-short-quote-match.md)
