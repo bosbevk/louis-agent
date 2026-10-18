@@ -46,7 +46,7 @@ Elke gesprek kry hierdie tellings, onder sy beurte in die lopie se tabel en in d
 | `hosts` | Die webwerwe waarvan bladsye gelees is (Puls s'n en die kok s'n), in volgorde | — |
 | `local_hosts` | Daarvan, die Suid-Afrikaanse (`.za`) | — |
 | `shop_hosts` | Daarvan, die winkels (Checkers, Pick n Pay, Woolworths, Spar, Shoprite, Usave) | — |
-| `sources_local` | Al die gelese werwe is Suid-Afrikaans | ja |
+| `sources_local` | Al die gelese werwe is Suid-Afrikaans; 'n winkelsoektog tel as sy winkel se werf, en 'n kaart (OpenStreetMap, waar die kok 'n tak opsoek) is geen bron nie (F34) | ja |
 | `priced_at_shops` | Ten minste een winkel se bladsy is gelees, of sy katalogus gevra met 'n winkelinstrument (F34) | ja, waar daar 'n Checkers is |
 | `shop_tool_calls` | Hoeveel keer die kok 'n winkelinstrument gebruik het (`FindProducts`, `SearchSpecials`, `SearchPromotions`, F34) | meer as 0 waar daar 'n Checkers is |
 | `deal_tool_calls` | Daarvan, `SearchSpecials` en `SearchPromotions`: na spesiale gesoek | meer as 0 by elke ete met 'n winkelhulpmiddel: die kok soek eers spesiale |

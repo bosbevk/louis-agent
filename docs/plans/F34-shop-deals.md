@@ -336,6 +336,10 @@ sequenceDiagram
   shop there mos?").** In the conversations the check knows have no shop with a tool (`cook-no-shop`), a row without a
   price is right (`no_shop_rows`) and a priced one came from a store that isn't the town's (`wrong_store`, red);
   `priced_ratio` and the portal's ring count right rows, and the ring's green says *right*.
+- **2026-10-18, the sources ring (Louis: "who is the elsewhere?", then "commit and a b").** The grey slice was
+  OpenStreetMap, the cook's branch lookup, and no SA shop showed though every price came from Checkers. A shop search
+  counts as its shop's site read (`stream.hosts`); OpenStreetMap is its own slice, *maps*, and no source in
+  `sources_local`.
 
 ---
 [Plans](README.md) · Previous: [CL14 The public word: role](CL14-public-word-role.md)

@@ -82,7 +82,9 @@ def score(task, turns, cook_on):
         wrong_store, n_priced = n_priced, 0
         no_shop_rows = n_items - wrong_store - n_guessed - n_per_kg
     fetched = stream.hosts([c for t in turns for c in t["calls"] + t["specialist_calls"]])
-    local = [h for h in fetched if h.endswith(".za")]
+    # A branch looked up on a map (OpenStreetMap) is no source of the answer (F34).
+    sources = [h for h in fetched if not h.endswith(scoring.MAP_HOSTS)]
+    local = [h for h in sources if h.endswith(".za")]
     shops = [h for h in fetched if h.endswith(SHOPS)]
     expected = "puls-cook" if task.startswith("cook") and cook_on else None
     # F34: the cook reads shops through its tools, never their pages.
@@ -94,7 +96,7 @@ def score(task, turns, cook_on):
         "routed_right": not first["error"] and first["role"] == expected,
         "answered_itself": first["role"] is None and not first["error"],
         "hosts": fetched, "local_hosts": local, "shop_hosts": shops,
-        "sources_local": bool(fetched) and len(local) == len(fetched),
+        "sources_local": bool(sources) and len(local) == len(sources),
         "priced_at_shops": bool(shops) or bool(shop_calls),
         "shop_tool_calls": len(shop_calls),
         "deal_tool_calls": sum(1 for c in shop_calls if c["name"] in scoring.DEAL_TOOLS),

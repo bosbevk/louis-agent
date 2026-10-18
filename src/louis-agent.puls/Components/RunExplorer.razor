@@ -273,14 +273,16 @@
             @* Louis: a ninth, to fill the rows. The sources: the sites each mode read pages from (Puls's and the specialist's),
                South African shops, other South African sites and the rest, how many different ones in its middle. *@
             <section class="chart">
-                <div class="chart-head"><ChartInfo Topic="sources" Title="Sources per mode" /><span class="legend"><span><span class="sw" style="background: @Right"></span>SA shops</span><span><span class="sw" style="background: @Series(0)"></span>other SA</span><span><span class="sw" style="background: @Other"></span>elsewhere</span></span></div>
+                <div class="chart-head"><ChartInfo Topic="sources" Title="Sources per mode" /><span class="legend"><span><span class="sw" style="background: @Right"></span>SA shops</span><span><span class="sw" style="background: @Series(0)"></span>other SA</span><span><span class="sw" style="background: @Series(1)"></span>maps</span><span><span class="sw" style="background: @Other"></span>elsewhere</span></span></div>
                 <div class="donuts">
                     @foreach (var (m, i) in Columns)
                     {
                         var hosts = m.Conversations.SelectMany(c => c.Turns).SelectMany(t => t.Hosts).Distinct().ToList();
-                        int shops = hosts.Count(IsShop), za = hosts.Count(h => h.EndsWith(".za") && !IsShop(h)), rest = hosts.Count - shops - za;
+                        // F34: a shop search counts as its shop's site; a branch looked up on a map is its own slice.
+                        int shops = hosts.Count(IsShop), za = hosts.Count(h => h.EndsWith(".za") && !IsShop(h)), maps = hosts.Count(IsMap);
+                        int rest = hosts.Count - shops - za - maps;
                         <figure class="donut-fig" style="--i: @i">
-                            @Ring([shops, za, rest], [Right, Series(0), Other], [$"SA shops {shops}", $"other SA {za}", $"elsewhere {rest}"],
+                            @Ring([shops, za, maps, rest], [Right, Series(0), Series(1), Other], [$"SA shops {shops}", $"other SA {za}", $"maps {maps}", $"elsewhere {rest}"],
                                 hosts.Count.ToString(), hosts.Count == 1 ? "site" : "sites")
                             <figcaption><span class="sw" style="background: @Series(i)"></span>@Who(m)</figcaption>
                             @if (hosts.Count > 0) { <small class="muted" title="@string.Join(", ", hosts)">@Blurb(string.Join(", ", hosts))</small> }
@@ -475,6 +477,9 @@
     private static readonly string[] Shops = ["checkers.co.za", "pnp.co.za", "woolworths.co.za", "spar.co.za", "shoprite.co.za", "usave.co.za"];
 
     private static bool IsShop(string host) => Shops.Any(s => host == s || host.EndsWith("." + s));
+
+    /// <summary>Where a branch is looked up (F34: the cook's OpenStreetMap search): a map, not a source.</summary>
+    private static bool IsMap(string host) => host == "openstreetmap.org" || host.EndsWith(".openstreetmap.org");
     private static string Series(int i) => Palette[i % Palette.Length];
 
     private sealed record Request(DateTimeOffset At, string Purpose, string? Session, string? Parent, string? Model,

@@ -6,6 +6,8 @@ reader later)."""
 import json
 from urllib.parse import urlparse
 
+from benchmarks.puls_check.scoring import SHOP_HOSTS, SHOP_TOOLS
+
 DELEGATIONS = ("StartSubSession", "ContinueSubSession")
 PAGE_READERS = ("FetchUrl", "ReadRenderedPage")
 
@@ -76,11 +78,16 @@ def _specialist(data, calls, thinking, results):
 
 
 def hosts(calls):
-    """The hosts pages were read from (FetchUrl, ReadRenderedPage), in order, without repeats, without 'www.'."""
+    """The hosts pages were read from (FetchUrl, ReadRenderedPage), in order, without repeats, without 'www.'; a shop
+    search (FindProducts and the deal searches, F34) reads its shop's catalogue, so it's that shop's site."""
     seen = []
     for c in calls:
-        if c["name"] in PAGE_READERS and (url := (c.get("input") or {}).get("url")):
+        given = c.get("input") or {}
+        host = None
+        if c["name"] in PAGE_READERS and (url := given.get("url")):
             host = (urlparse(url).hostname or "").lower().removeprefix("www.")
-            if host and host not in seen:
-                seen.append(host)
+        elif c["name"] in SHOP_TOOLS and isinstance(given.get("shop"), str):
+            host = SHOP_HOSTS.get(given["shop"].strip().lower())
+        if host and host not in seen:
+            seen.append(host)
     return seen

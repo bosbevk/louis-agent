@@ -36,6 +36,18 @@ class TheRecordedTurn(unittest.TestCase):
         self.assertEqual(self.turn["error"], self.expected["error"])
 
 
+class TheSitesRead(unittest.TestCase):
+    # Louis, on run d94597a51d4d's sources ring: "who is the elsewhere?" (OpenStreetMap, the cook's branch lookup), and
+    # no SA shop at all, though every price came from Checkers: a shop search reads its shop's catalogue too.
+    def test_a_shop_search_is_a_read_of_its_shop(self):
+        calls = [{"name": "FindProducts", "input": {"shop": "checkers", "query": "rice"}},
+                 {"name": "SearchSpecials", "input": {"shop": "Checkers", "query": "chicken"}},
+                 {"name": "FetchUrl", "input": {"url": "https://nominatim.openstreetmap.org/search?q=Checkers+Malmesbury"}},
+                 {"name": "FindProducts", "input": {"shop": "atlantis", "query": "rice"}}]
+
+        self.assertEqual(stream.hosts(calls), ["checkers.co.za", "nominatim.openstreetmap.org"])
+
+
 class EveryEvent(unittest.TestCase):
     def test_is_kept_for_the_portal(self):
         events = recorded()

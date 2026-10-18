@@ -39,7 +39,7 @@ class AMealQuestion(unittest.TestCase):
 
         self.assertEqual((scores["shop_tool_calls"], scores["deal_tool_calls"]), (3, 2))
         self.assertTrue(scores["priced_at_shops"], "no shop page read, but its catalogue asked")
-        self.assertEqual(scores["shop_hosts"], [])
+        self.assertEqual(scores["shop_hosts"], ["checkers.co.za"], "its catalogue searched is the shop's site read (Louis: \"who is the elsewhere?\")")
 
     def test_which_store_answered_the_cooks_searches_is_scored(self):
         results = ["Products at Checkers (the store serving Malmesbury, store 655b0c8f) for 'rice' (1)",
@@ -61,6 +61,15 @@ class AMealQuestion(unittest.TestCase):
     NO_SHOP_LIST = ("| Bestanddeel | Vir die resep | Om te koop | Prys |\n|---|---|---|---|\n"
                     "| Hoender | 1 kg | Hoenderstukke | - |\n| Rys | 300 g | Rys 500 g | - |\n\n"
                     "*Geen winkel naby jou het nog 'n katalogus hier nie.*")
+
+    def test_a_cooks_sources_are_its_shops_catalogue_and_a_map_isnt_one(self):
+        # Every price from Checkers' catalogue, the branch from OpenStreetMap: all the answer's sources are South African.
+        calls = [{"name": "FindProducts", "input": {"shop": "checkers", "query": "rice"}},
+                 fetch("https://nominatim.openstreetmap.org/search?q=Checkers+Malmesbury")]
+        scores = cook.score("cook-malmesbury", [turn("Resep.", calls=[START], role="puls-cook", specialist_calls=calls)], cook_on=True)
+
+        self.assertEqual(scores["shop_hosts"], ["checkers.co.za"])
+        self.assertTrue(scores["sources_local"], "a branch looked up on a map is no source")
 
     def test_where_there_is_no_shop_no_price_is_right(self):
         scores = cook.score("cook-no-shop", [turn(self.NO_SHOP_LIST, calls=[START], role="puls-cook")], cook_on=True)

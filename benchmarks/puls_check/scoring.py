@@ -23,6 +23,8 @@ HEADER = re.compile(r"^\|\s*(Item|Bestanddeel|Ingredient|Produk|Wat|What)\b", re
 WHY_COLUMN = re.compile(r"\|\s*(Hoekom|Waarom|Why)\s*\|", re.IGNORECASE)
 SEPARATOR = re.compile(r"^\|\s*:?-")
 TOTAL = re.compile(r"^\|\s*\*\*")
+# F34: where a branch is looked up (the cook's OpenStreetMap search): a map, not a source of the answer.
+MAP_HOSTS = ("openstreetmap.org",)
 # F34: the shops the cook has a tool for, by their sites (Checkers today, ShopKind in core), and the tools themselves.
 TOOL_SHOP_HOSTS = ("checkers.co.za",)
 SHOP_TOOLS = ("FindProducts", "SearchSpecials", "SearchPromotions")
