@@ -3,6 +3,9 @@
 > **Reference.** What was finished, newest first, one entry per feature, fix or cleanup. **Elsewhere:** what's still
 > open in the [TODO](TODO.md); how each was built in its feature, fix or plan doc (linked from its entry).
 
+- 2026-10-18 — **FX17 The cook's labels and counts**: the recipe line and the tally in the task's language (*Dien* /
+  *Serves*, *Geprys* / *Priced*), and a count of packs after the name and the price, so the photo stays first; prompt
+  only ([fix](docs/fixes/FX17-cook-labels-and-counts.md))
 - 2026-10-18 — **F34 Shop deals**: Checkers searched in the store that serves the user's town (its own address call,
   the one approved direct call, ADR 0023), found once per town and kept a day; `SearchSpecials` (multi-buys) and
   `SearchPromotions` with the shop's wording; the cook prices only shops it has a tool for, none: the list with `-` and

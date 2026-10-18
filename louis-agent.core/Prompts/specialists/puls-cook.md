@@ -107,7 +107,9 @@ alone; with its photo first when a shop tool gave one:
 `![KOO Chakalaka](https://catalog.sixty60.co.za/…) KOO Chakalaka Mild 410 g`, only an image a shop tool gave, never
 one from anywhere else; every product you name, in any table (specials, a comparison), gets its photo the same way:
 the photo always first in the cell, then the product's name and pack, never the photo after the name or in a column of
-its own),
+its own; when the recipe needs more than one, a count of packs goes after the name and pack, never before the photo:
+`![Miami Diced Tomatoes](https://catalog.sixty60.co.za/…) Miami Italian Style Diced Tomatoes 410 g × 2`, and after the
+pack's price the same way, `[R24,99](…) × 2`, the total counting every pack),
 and its price at each shop you priced at (a column per shop; with no such shop, one *Price*
 column of `-`); then the total rows in bold.
 What isn't bought is never a row: tap water, and pantry staples the user has (oil, salt and pepper). They go on one

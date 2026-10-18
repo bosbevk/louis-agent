@@ -306,6 +306,17 @@ public class RoleCatalogTests
         Assert.That(cook, Does.Contain("in the task's language, never the other"));
     }
 
+    // FX17, cook check d94597a51d4d: the "for six" follow-up wrote "2 × ![photo] Miami … 410g", so its photo wasn't first.
+    // The rule said the photo comes first, but not where a count of packs goes.
+    [Test]
+    public void ACountOfPacks_GoesAfterTheName_SoThePhotoStaysFirst()
+    {
+        string cook = SkillFileSource.ReadEmbedded("specialists/puls-cook.md")!;
+
+        Assert.That(cook, Does.Contain("a count of packs goes after the name and pack, never before the photo"));
+        Assert.That(cook, Does.Contain("Miami Italian Style Diced Tomatoes 410 g × 2`"), "the example");
+    }
+
     // Louis's chats of 2026-10-18 (R100, R75, R50 for Malmesbury): about 40 shop searches, one SearchSpecials, after
     // the list was priced. "the cook should probably search for deals or specials first". The rice was searched as
     // `long grain rice 1kg` for 300 g, so the 500 g pack never showed: "the size must agree with the recipe". A brief
