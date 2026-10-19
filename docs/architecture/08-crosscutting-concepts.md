@@ -13,7 +13,9 @@
   Secret files (`.env*` but not templates such as `.env.example`, `*.pem`, `*.key`, `*.pfx`, `credentials.json`, `secrets.json`, `appsettings.development.json`,
   SSH keys) can't be read or written, are skipped by search, and their git diffs are never shown in the web app.
 - **No shell injection:** skills, agent-built tools, git and dotnet run with argument lists or environment variables,
-  never by splicing model text into a command line.
+  never by splicing model text into a command line; and a list isn't enough against options, so git gets the model's
+  values after `--end-of-options` (paths after `--`), refuses one that starts with `-`, and sets only `user.name` and
+  `user.email` (FX19, [ADR 0004](../adr/0004-arguments-as-data.md)).
 - **Web:** `FetchUrl` blocks private, loopback and metadata addresses on every redirect and at connect time; fetched
   content is treated as untrusted. The web app renders markdown without raw HTML and only allows http(s)/mailto links.
 - **Network exposure:** the API and web app, and the MCP server in HTTP mode, are published on `127.0.0.1` only.

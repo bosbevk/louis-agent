@@ -20,6 +20,18 @@ from an argument list (`ProcessRunner`), never from a shell string built from mo
 - The bash, PowerShell and Python toolsets still run scripts the model writes, by design: what those may do is bounded
   by the workspace boundary and the container, not by this rule.
 
+## Amended 2026-10-19 (FX19)
+
+A list stops a value being split; it doesn't stop a value being read as an option. `git show --output=<file> --stat`
+takes `--output` as an option however it arrived, and `git config core.fsmonitor <command>` makes the next `git status`
+run the command. So for git, and for any program that reads options from its arguments, the rule has two more parts:
+our own options come first, then `--end-of-options`, then the model's values, with paths after `--`; and a value that
+names something (a ref, branch, remote, path, key) and starts with `-` is refused before the program runs, so a command
+that takes neither marker is covered too. Free text that is an option's own argument (a `-m` message) travels whole.
+Where a program's own settings can run commands, the keys it may set are an allow-list (`SetConfig`: `user.name`,
+`user.email`), since a deny-list ages. `ArchitectureTests` fails any core file that builds a process's command line as
+one string. Found by [FX19](../fixes/FX19-git-arguments-as-data.md).
+
 ## Links
 
 [Architecture: Security](../architecture/08-crosscutting-concepts.md#security) · [Adding a skill](../CLAUDE.md#adding-a-skill)
