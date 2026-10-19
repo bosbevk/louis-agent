@@ -778,6 +778,10 @@ sequenceDiagram
   `Network/`, `Workspace/`), `Hosting/SessionLlms/`, `Llm/` (`Caching/`, `UsageMapping/`), `Pricing/` (`Prices/`,
   `Rates/`), `Sessions/SubSessions/` and `Usage/` (`Records/`, `Sinks/`, `Reports/`); the layers still key on the top
   folder. Left for later, each a TODO line: `ToolMessage` split per toolset; Paymo, DevOps and Rider out of core.
+- **The API sorted, `Program.cs` start-up only** (Louis, core layout review, 2026-10-19): the routes in `Endpoints/`
+  (`SessionEndpoints`, `InfoEndpoints`, `ApiErrors`), a turn's stream in `Sessions/` (`TurnStream`, `ClaudeStyleStream`,
+  the session and its view, the request records under `Requests/`), `Admin/` for the gate, `Benchmarks/` as `Runs/`,
+  `Store/` and `Reports/`; no `Services/`. Moves only: no route, handler body, JSON shape or text changed.
 
 ---
 [Plans](README.md) · [The platform plan](platform.md)

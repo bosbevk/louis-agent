@@ -24,8 +24,9 @@ flowchart LR
 
 - **Start-up** (`Program.cs`): `AgentHost.Build()`, register the engine, `AgentSessions` and a `WorkspaceTools` for path
   checks; decide the auth with core's `HostAuth` (FX18: no `AGENT_API_KEY` stops start-up unless `AGENT_AUTH=off`; a
-  key adds the middleware, whose check is `HostAuth.HasKey`); map static assets, `/health`, `/prices`, workspace,
-  git and history endpoints, and the session endpoints.
+  key adds the middleware, whose check is `HostAuth.HasKey`); map static assets, then each endpoint group
+  (`MapInfo`, workspace, git, history, admin, `MapSessions`). Nothing else: the routes and the turn's stream live in
+  `Endpoints/` and `Sessions/`.
 - **Prices** (`GET /prices`, public): the price table `AgentHost.Build` loaded for this API's usage ledger, so other
   hosts can set `PRICES_URL` to it and price with the same table (the demo's orchestrator does); `404` without one.
 - **Rates** (`GET /rates`, public, F14): the exchange rates `AgentHost.Build` loaded, in our `rates.json` format, for
@@ -70,15 +71,22 @@ The full endpoint and event reference: [How the agents and endpoints talk](../AG
 
 | File | What's in it |
 |---|---|
-| `Program.cs` | Start-up, API-key middleware, `/health`, `/prices`, `/rates`, `/toolsets`, `/roles` (`/personalities`), `/model`, session endpoints, `StreamTurnAsync`, `ClaudeStyleStream` |
-| `AgentSessions.cs` | `AgentSession` (id, engine, toolsets, depth, role, place, attachments, history, turn lock, cancellation) and the in-memory session store, which picks each session's engine |
-| `WorkspaceEndpoints.cs` | `GET /workspace/entries`, `GET /workspace/file` (text ≤ 1 MB; secret files listed but not readable) |
-| `GitEndpoints.cs` | `GET /git/status`, `GET /git/diff`, `POST /git/stage` · `unstage` · `discard` · `commit`; the git runner |
-| `HistoryEndpoints.cs` | `GET /git/branches`, `/git/log`, `/git/commit`, `/git/branch`; `POST /git/merge`, `/git/branch/delete` |
+| `Program.cs` | Start-up only (CL15, the core layout review): `AgentHost.Build`, the services, the API-key middleware (FX18), the web app's files, then each endpoint group mapped |
+| `Endpoints/InfoEndpoints.cs` | `/health`, `/prices`, `/rates`, `/rates/display`, `/toolsets`, `/model`, `/roles` (`/personalities`), `/llm-profiles`: what this instance is and has |
+| `Endpoints/SessionEndpoints.cs` | `POST /sessions`, `GET` and `DELETE /sessions/{id}`, `POST /sessions/{id}/cancel` and `/messages` (the turn as SSE, through `TurnStream`) |
+| `Endpoints/ApiErrors.cs` | The one error body every endpoint returns |
+| `Endpoints/WorkspaceEndpoints.cs` | `GET /workspace/entries`, `GET /workspace/file` (text ≤ 1 MB; secret files listed but not readable) |
+| `Endpoints/GitEndpoints.cs` | `GET /git/status`, `GET /git/diff`, `POST /git/stage` · `unstage` · `discard` · `commit`; the git runner |
+| `Endpoints/HistoryEndpoints.cs` | `GET /git/branches`, `/git/log`, `/git/commit`, `/git/branch`; `POST /git/merge`, `/git/branch/delete` |
+| `Sessions/AgentSession.cs`, `AgentSessions.cs` | One conversation (id, engine, toolsets, depth, role, place, attachments, history, turn lock, cancellation) and the in-memory session store, which picks each session's engine |
+| `Sessions/TurnStream.cs`, `ClaudeStyleStream.cs` | A turn as the API streams it: the prompt from the message and its attachments, the engine's updates as Claude-style events, a sub-session's events live among them, the usage at the end |
+| `Sessions/SessionView.cs`, `Sessions/Requests/` | A session as the API shows it; the request bodies (`CreateSessionRequest`, `SendMessageRequest`, `AttachmentRequest`) |
+| `Admin/AdminGate.cs`, `AdminAccess.cs` | The gate on `/admin` (F27): the admin key, else the agent's, else closed; what it decided |
 | `Endpoints/AdminEndpoints.cs` | The admin portal's API under `/admin` (F27, F31), behind `AdminGate`: the checks and runs, a run started (503 without a store), its live events over SSE, a check's manual and trend, a stored run with its levels, a turn's events, a run deleted |
 | `Config/AdminOptions.cs` | The portal's settings in one place: the admin key, the API address the checks call, the store's URL and database |
-| `Services/BenchmarkCatalog.cs`, `BenchmarkRunner.cs`, `BenchmarkRun.cs` | The checks the portal offers; one run at a time as a child process (`python3 run_check.py --repeat N`, `BENCHMARK_RUN` set), its lines kept and streamed |
-| `Services/Benchmarks/` | F31: `BenchmarkProtocol` (the `@` lines), `BenchmarkRecorder` (the lines into the store), `BenchmarkLedger` (the run's cost from the ledger), `IBenchmarkStore` with `InMemoryBenchmarkStore` and `MongoBenchmarkStore`, `BenchmarkTrends`, `BenchmarkTools` (a turn's tool failures from its events), `BenchmarkManuals`, `BenchmarkSettings` |
+| `Benchmarks/Runs/` | The checks the portal offers (`BenchmarkCatalog`, `BenchmarkCheck`) and one run at a time as a child process (`BenchmarkRunner`, `BenchmarkRun`, its status: `python3 run_check.py --repeat N`, `BENCHMARK_RUN` set, its lines kept and streamed); `BenchmarkProtocol` (the `@` lines a script prints) and `BenchmarkSettings` (what a run ran with) |
+| `Benchmarks/Store/` | Where runs are kept (F31): `IBenchmarkStore` with `InMemoryBenchmarkStore` and `MongoBenchmarkStore`, `BenchmarkDocuments` (the records), `BenchmarkRecorder` (a run's lines into the store as it happens), `OnceItWorks` (the store's indexes, set up until it works once) |
+| `Benchmarks/Reports/` | What is read back for the portal: `BenchmarkTrends` (a check over its runs), `BenchmarkTools` (a turn's tool failures from its events), `BenchmarkLedger` (a run's cost from the usage ledger), `BenchmarkManuals` (a check's manual) |
 
 ## Configuration
 

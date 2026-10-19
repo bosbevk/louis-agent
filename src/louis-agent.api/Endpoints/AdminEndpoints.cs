@@ -1,7 +1,9 @@
+using LouisAgent.Api.Admin;
+using LouisAgent.Api.Benchmarks.Runs;
+using LouisAgent.Api.Benchmarks.Store;
+using LouisAgent.Api.Benchmarks.Reports;
 using System.Net.ServerSentEvents;
 using LouisAgent.Api.Messages;
-using LouisAgent.Api.Services;
-using LouisAgent.Api.Services.Benchmarks;
 using LouisAgent.Core.Messages;
 
 namespace LouisAgent.Api.Endpoints;

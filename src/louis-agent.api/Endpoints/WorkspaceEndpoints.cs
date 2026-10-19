@@ -8,13 +8,6 @@ using LouisAgent.Api.Messages;
 namespace LouisAgent.Api.Endpoints;
 
 /// <summary>Errors in Claude's shape: { "type": "error", "error": { "type", "message" } }.</summary>
-internal static class ApiErrors
-{
-    public static object Body(string type, string message) => new { type = "error", error = new { type, message } };
-
-    public static IResult Result(int status, string type, string message) => Results.Json(Body(type, message), statusCode: status);
-}
-
 /// <summary>
 /// Read-only browsing of the agent's workspace for the web app. Paths go through the same checks as the agent's own
 /// file tools: they must stay inside the workspace, can't follow symbolic links, and secret files (.env, keys,
