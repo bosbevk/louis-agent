@@ -170,7 +170,7 @@ public sealed class GitTools
         [Description("Branch name; if empty, pushes current branch")] string branch = "",
         [Description("If true, force push (dangerous!)")] bool force = false)
     {
-        if ((Refused(nameof(remote), remote) ?? Refused(nameof(branch), branch)) is { } refused) return refused;
+        if ((Refused(nameof(remote), remote) ?? RefusedRefspec(nameof(branch), branch)) is { } refused) return refused;
         var args = new List<string> { "push" };
         if (force) args.Add("--force-with-lease");
         args.AddRange([EndOfOptions, remote]);
@@ -183,7 +183,7 @@ public sealed class GitTools
         [Description("Remote name (default 'origin')")] string remote = "origin",
         [Description("Branch name; if empty, pulls current branch")] string branch = "")
     {
-        if ((Refused(nameof(remote), remote) ?? Refused(nameof(branch), branch)) is { } refused) return refused;
+        if ((Refused(nameof(remote), remote) ?? RefusedRefspec(nameof(branch), branch)) is { } refused) return refused;
         var args = new List<string> { "pull", EndOfOptions, remote };
         if (!string.IsNullOrWhiteSpace(branch)) args.Add(branch);
         return RunGitList(args);
@@ -361,6 +361,16 @@ public sealed class GitTools
         value.TrimStart().StartsWith('-')
             ? MessageText.Format(ToolMessage.GitValueRefused, new { Parameter = parameter, Value = value })
             : null;
+
+    /// <summary>
+    /// The refusal for a branch that is really a refspec (review of PR #66): neither marker sees one, yet <c>+main</c>
+    /// forces the push past <c>force: false</c>, <c>:main</c> deletes the remote's branch and <c>a:b</c> pushes to another
+    /// ref. A branch name alone, or nothing, passes; a leading <c>-</c> is refused as elsewhere.
+    /// </summary>
+    private static string? RefusedRefspec(string parameter, string branch) =>
+        branch.TrimStart().StartsWith('+') || branch.Contains(':')
+            ? MessageText.Format(ToolMessage.GitRefspecRefused, new { Parameter = parameter, Value = branch })
+            : Refused(parameter, branch);
 
     /// <summary>
     /// The one way git runs: each argument separate (no command line to split), in the workspace or the folder ACP set

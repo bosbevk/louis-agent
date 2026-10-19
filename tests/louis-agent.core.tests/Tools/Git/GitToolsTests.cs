@@ -98,6 +98,25 @@ public class GitToolsTests
         Assert.That(_git.GetCurrentBranch(), Is.EqualTo("main"), "nothing ran");
     }
 
+    // Review of PR #66: a refspec isn't an option, so neither guard saw it. "+main" force-pushed with force: false,
+    // and ":main" deleted main on the remote; both got around the tool's own force switch.
+    [Test]
+    public void Push_RefusesARefspec_ThatWouldForceOrDelete()
+    {
+        _git.AddRemote("origin", _origin);
+        Commit("readme.md", "Hallo\nMore\n", "Second");
+        _git.Push("origin", "main");
+        Git(_repo, "reset", "-q", "--hard", "HEAD~1");
+        Commit("readme.md", "Hallo\nOther\n", "Diverged");
+
+        Assert.That(_git.Push("origin", "+main"), Does.Contain("refspec").And.Contain("branch"), "a forced push, with force: false");
+        Assert.That(Git(_origin, "log", "-1", "--format=%s", "main").Output.Trim(), Is.EqualTo("Second"), "origin's main was overwritten");
+        Assert.That(_git.Push("origin", ":main"), Does.Contain("refspec").And.Contain("branch"), "a delete");
+        Assert.That(Git(_origin, "rev-parse", "--verify", "refs/heads/main").ExitCode, Is.Zero, "origin's main was deleted");
+        Assert.That(_git.Push("origin", "main:other"), Does.Contain("refspec"), "a push to another ref");
+        Assert.That(_git.Pull("origin", "+main"), Does.Contain("refspec"), "the same value on pull");
+    }
+
     [Test]
     public void AValueWithSpaces_ArrivesAsOneArgument()
     {

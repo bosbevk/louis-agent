@@ -54,6 +54,10 @@ As designed in [the platform plan](../plans/platform.md), Phase 1 (*FX19 · Git 
   starts a process (`ProcessStartInfo`) and assigns its `Arguments` string.
 - **Docs.** [ADR 0004](../adr/0004-arguments-as-data.md) is amended with the two further parts of the rule; the git
   guide's `SetConfig` line; the core design doc, the crosscutting concepts' *Security* and F22's note of the gap.
+- **From the review of PR #66 (2026-10-19): a refspec isn't an option.** Neither guard saw `Push`'s branch when it was
+  `+main` (a forced push, with `force: false`) or `:main` (deletes the remote's branch), both around the tool's own
+  force switch. `Push` and `Pull` now refuse a branch that starts with `+` or contains `:`
+  (`ToolMessage.GitRefspecRefused`): a value can be read as more than a name without being an option.
 - **Not this fix's door, noted:** `AmendCommit(noEdit: false)` would open git's editor in a process with no terminal and
   wait out the 30-second timeout; it did before, and it stays for a later look at the tool's shape.
 
@@ -70,6 +74,8 @@ and the `ArchitectureTests` check. Written first and seen failing on the old cod
 - `AValueThatStartsWithADash_IsRefusedBeforeGitRuns`: `Fetch("--upload-pack=touch …")` ran (`Could not read from remote
   repository`); now `Fetch`, `CreateBranch("--orphan")`, `SwitchBranch("-")`, `AddRemote` (name and URL), `ResetHard`,
   `GetConfig("--global")` and `DiffUnstaged("--output=…")` are refused and nothing runs.
+- `Push_RefusesARefspec_ThatWouldForceOrDelete` (from the review): red first, `+main` pushed with `force: false`; now
+  `+main`, `:main` and `main:other` are refused and origin's `main` stays as it was, and `Pull` refuses the same.
 - `AValueWithSpaces_ArrivesAsOneArgument`: was `unknown option 'upload-pack=touch'` (the string split); now git sees one
   name and refuses it.
 - `FreeText_ArrivesWhole_WhateverItStartsWith`: a message of `-m "quoted" --and dashes; and a 'tail'` read back whole
@@ -82,7 +88,7 @@ and the `ArchitectureTests` check. Written first and seen failing on the old cod
 
 The golden files changed on purpose and their diff was reviewed: five descriptions (`SetConfig` and its `key`,
 `GetConfig`, `GetRemoteUrl`, `Stash`) in `ModelRequestSnapshot.json`; `GitValueRefused` and `GitConfigKeyRefused` in,
-`GitFailed` out, in `ToolMessageSnapshot.json`.
+`GitFailed` out, in `ToolMessageSnapshot.json`; `GitRefspecRefused` in after the review.
 
 ## Confirmed
 

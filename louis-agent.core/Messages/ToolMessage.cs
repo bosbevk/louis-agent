@@ -45,6 +45,9 @@ public enum ToolMessage
     [Description("SetConfig sets only {Allowed}; '{Key}' was not set. Other keys (core.fsmonitor, core.sshCommand, core.hooksPath, alias.*) can make git run commands. GetConfig can read any key.")]
     GitConfigKeyRefused,
 
+    [Description("{Parameter} '{Value}' is a refspec, not a branch name: '+' would force the push and ':' would push to or delete another ref. Give the branch name alone, and use force for a forced push.")]
+    GitRefspecRefused,
+
     [Description("ReadDocument reads {Supported}; '{Extension}' isn't one of them. Use ReadWorkspaceFile for text files.")]
     DocumentTypeUnsupported,
 
@@ -104,7 +107,6 @@ public enum ToolMessage
 
     [Description("[Timeout] Git command exceeded 30s limit.")]
     GitTimeout,
-
 
     [Description("Invalid file path.")]
     InvalidFilePath,
