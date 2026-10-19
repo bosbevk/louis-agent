@@ -1,4 +1,4 @@
-namespace LouisAgent.Packs.Shops;
+namespace LouisAgent.Packs.Shops.Catalogues;
 
 /// <summary>
 /// A search's products, and the area whose store answered it (F34): the user's town when the shop serves it from a store

@@ -1,7 +1,7 @@
-using LouisAgent.Packs.Shops;
+using LouisAgent.Packs.Shops.Providers;
 using LouisAgent.Core.Tools.Web.Browsing;
 
-namespace LouisAgent.Packs.Shops.Tests;
+namespace LouisAgent.Packs.Shops.Tests.Providers;
 
 // F34, Louis's melktert chat: the cook's first search waited 12.5 s for Malmesbury's store, because the container had
 // just been rebuilt and the town's store lived only in memory, per engine. With the searches now in parallel, eleven

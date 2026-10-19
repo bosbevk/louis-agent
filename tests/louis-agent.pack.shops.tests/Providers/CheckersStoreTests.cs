@@ -1,3 +1,4 @@
+using LouisAgent.Packs.Shops.Places;
 using LouisAgent.Packs.Shops.Providers;
 using LouisAgent.Core.Tools.Web.Browsing;
 
@@ -113,7 +114,7 @@ public class CheckersStoreTests
     public async Task AReplyThatIsntTheStoreAnswer_IsAFailedLookup_NotKept(string? reply)
     {
         var browser = new FakeBrowser(reply, SetByCheckers);
-        var store = new CheckersStore(browser, Malmesbury, new LouisAgent.Packs.Shops.StoreSessionCache(), NoWait());
+        var store = new CheckersStore(browser, Malmesbury, new LouisAgent.Packs.Shops.Providers.StoreSessionCache(), NoWait());
 
         Assert.That(await store.ForAsync("Malmesbury"), Is.Null);
         await store.ForAsync("Malmesbury");
@@ -127,8 +128,8 @@ public class CheckersStoreTests
     {
         int asked = 0;
         var store = new CheckersStore(new FakeBrowser(Contexts, SetByCheckers),
-            (_, _) => { asked++; throw new LouisAgent.Packs.Shops.PlaceUnavailableException("429 Too Many Requests"); },
-            new LouisAgent.Packs.Shops.StoreSessionCache());
+            (_, _) => { asked++; throw new LouisAgent.Packs.Shops.Places.PlaceUnavailableException("429 Too Many Requests"); },
+            new LouisAgent.Packs.Shops.Providers.StoreSessionCache());
 
         Assert.That(await store.ForAsync("Malmesbury"), Is.Null);
         await store.ForAsync("Malmesbury");
@@ -141,7 +142,7 @@ public class CheckersStoreTests
     public async Task TheLookup_WaitsAfterARefusal_AndARefusedOneIsARefusal()
     {
         var waits = new List<TimeSpan>();
-        var throttle = new LouisAgent.Packs.Shops.ShopThrottle(2, TimeSpan.FromSeconds(20), null, (wait, _) => { waits.Add(wait); return Task.CompletedTask; });
+        var throttle = new LouisAgent.Packs.Shops.Providers.ShopThrottle(2, TimeSpan.FromSeconds(20), null, (wait, _) => { waits.Add(wait); return Task.CompletedTask; });
 
         await new CheckersStore(new FakeBrowser("<html>blocked</html>", SetByCheckers), Malmesbury, throttle: throttle).ForAsync("Malmesbury");
         await new CheckersStore(new FakeBrowser(Contexts, SetByCheckers), Malmesbury, throttle: throttle).ForAsync("Malmesbury");
@@ -153,7 +154,7 @@ public class CheckersStoreTests
     public async Task ATownCheckersDoesntServe_IsKept()
     {
         var browser = new FakeBrowser(Fallback, SetByCheckers);
-        var store = new CheckersStore(browser, Malmesbury, new LouisAgent.Packs.Shops.StoreSessionCache());
+        var store = new CheckersStore(browser, Malmesbury, new LouisAgent.Packs.Shops.Providers.StoreSessionCache());
 
         await store.ForAsync("Malmesbury");
         await store.ForAsync("Malmesbury");
@@ -170,7 +171,7 @@ public class CheckersStoreTests
     public async Task EnginesSearchingAtOnce_ShareOneLookup()
     {
         var browser = new SlowBrowser(Contexts, SetByCheckers);
-        var shared = new LouisAgent.Packs.Shops.StoreSessionCache();
+        var shared = new LouisAgent.Packs.Shops.Providers.StoreSessionCache();
         var cook = new CheckersStore(browser, Malmesbury, shared);
         var puls = new CheckersStore(browser, Malmesbury, shared);
 
@@ -200,7 +201,7 @@ public class CheckersStoreTests
         string? url = Environment.GetEnvironmentVariable("BROWSER_URL");
         Assume.That(url, Is.Not.Null.And.Not.Empty, "BROWSER_URL isn't set: no browser to ask Checkers with (the Puls stack's puls-browser).");
 
-        var session = await new CheckersStore(new ChromeWebBrowser(new Uri(url!)), LouisAgent.Packs.Shops.PlaceCoordinates.OfAsync).ForAsync("Malmesbury");
+        var session = await new CheckersStore(new ChromeWebBrowser(new Uri(url!)), LouisAgent.Packs.Shops.Places.PlaceCoordinates.OfAsync).ForAsync("Malmesbury");
 
         Assert.That(session, Is.Not.Null);
         Assert.That(session!.Cookies.Single(c => c.Name == "storeids").Value, Does.Not.StartWith("5ece6935faafe599532665b2"), "the default store's id");

@@ -1,4 +1,4 @@
-namespace LouisAgent.Packs.Shops;
+namespace LouisAgent.Packs.Shops.Catalogues;
 
 /// <summary>
 /// One shop's products, searched in its own catalogue (F33): the shop's own prices, exact and linked, read in code rather

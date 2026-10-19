@@ -1,4 +1,4 @@
-namespace LouisAgent.Packs.Shops;
+namespace LouisAgent.Packs.Shops.Catalogues;
 
 /// <summary>
 /// The shops whose catalogue Puls can read (F33; an enum, ADR 0024), in the order the "supported" message lists them.

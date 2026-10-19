@@ -1,5 +1,6 @@
-namespace LouisAgent.Packs.Shops;
+namespace LouisAgent.Packs.Shops.Tools;
 
+using LouisAgent.Packs.Shops.Catalogues;
 using System.ComponentModel;
 using System.Globalization;
 using System.Text;

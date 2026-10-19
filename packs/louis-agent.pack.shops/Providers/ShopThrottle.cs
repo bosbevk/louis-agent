@@ -1,5 +1,6 @@
-namespace LouisAgent.Packs.Shops;
+namespace LouisAgent.Packs.Shops.Providers;
 
+using LouisAgent.Packs.Shops.Catalogues;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
 using LouisAgent.Packs.Shops.Messages;

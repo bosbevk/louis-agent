@@ -1,4 +1,4 @@
-namespace LouisAgent.Packs.Shops;
+namespace LouisAgent.Packs.Shops.Providers;
 
 using System.Collections.Concurrent;
 using System.Text.Json;

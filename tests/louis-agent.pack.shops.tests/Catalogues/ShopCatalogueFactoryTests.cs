@@ -1,8 +1,8 @@
-using LouisAgent.Packs.Shops;
+using LouisAgent.Packs.Shops.Catalogues;
 using LouisAgent.Packs.Shops.Providers;
 using LouisAgent.Core.Tools.Web.Browsing;
 
-namespace LouisAgent.Packs.Shops.Tests;
+namespace LouisAgent.Packs.Shops.Tests.Catalogues;
 
 // F33 step 2: a catalogue per shop a deployment enables (ShopKind, an enum: ADR 0024), each on the guarded browser.
 // Which shops are enabled comes from SHOP_CATALOGUES in step 3; none enabled is none created.

@@ -765,6 +765,10 @@ sequenceDiagram
   the pack's and the composition's) now reference `louis-agent.core.tests` for its fakes (`FakeChatClient`,
   `StubHandler`, `FakePrompts`, `TestPaths`), the trigger flagged at step 2. They move to `tests/louis-agent.testing`,
   referenced by every test project; `core.tests` opens its internals to no other project.
+- **The shops pack sorted by concern** (Louis, review of step 5, 2026-10-19; ADR 0010): the flat folder step 4 took over
+  from core's `Tools/Shops` gets `Tools/`, `Catalogues/` (the contract a second shop plugs into), `Providers/` (the
+  shops behind it, with the throttle and the store cache) and `Places/` (what leaves for a places pack later); namespaces
+  follow the folders, the tests mirror them, nothing else changes.
 
 ---
 [Plans](README.md) · [The platform plan](platform.md)

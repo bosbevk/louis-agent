@@ -1,5 +1,6 @@
-namespace LouisAgent.Packs.Shops;
+namespace LouisAgent.Packs.Shops.Places;
 
+using LouisAgent.Packs.Shops.Catalogues;
 using System.Globalization;
 using System.Text.Json;
 using LouisAgent.Core.Logging;

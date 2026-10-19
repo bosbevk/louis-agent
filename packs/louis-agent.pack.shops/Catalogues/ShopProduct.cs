@@ -1,4 +1,4 @@
-namespace LouisAgent.Packs.Shops;
+namespace LouisAgent.Packs.Shops.Catalogues;
 
 /// <summary>
 /// A product as the shop sells it: what a pack costs now (<see cref="Price"/>, a special's price when there is one), per

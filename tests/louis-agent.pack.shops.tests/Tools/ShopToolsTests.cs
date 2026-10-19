@@ -1,10 +1,11 @@
+using LouisAgent.Packs.Shops.Catalogues;
+using LouisAgent.Packs.Shops.Tools;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Config;
-using LouisAgent.Packs.Shops;
 using LouisAgent.Core.Tools.Web.Browsing;
 using LouisAgent.Core.Tools.Web.Search;
 
-namespace LouisAgent.Packs.Shops.Tests;
+namespace LouisAgent.Packs.Shops.Tests.Tools;
 
 // F33 step 3: FindProducts, the shops toolset's tool. A shop's products from its own catalogue as a short table, framed
 // as untrusted data (a shop's names come from its site); a shop that isn't enabled says which are; the toolset is off

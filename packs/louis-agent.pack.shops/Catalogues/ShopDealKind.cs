@@ -1,4 +1,4 @@
-namespace LouisAgent.Packs.Shops;
+namespace LouisAgent.Packs.Shops.Catalogues;
 
 /// <summary>
 /// The kind of deal a shop has on a product (F34 step 2; ADR 0024: a choice is an enum). Its price fields don't show

@@ -1,13 +1,13 @@
-using LouisAgent.Packs.Shops;
+using LouisAgent.Packs.Shops.Places;
 
-namespace LouisAgent.Packs.Shops.Tests;
+namespace LouisAgent.Packs.Shops.Tests.Places;
 
 // F34 step 1b: a shop that serves by area needs the user's town as coordinates. OpenStreetMap's Nominatim gives a town's
 // centre (the cook already asks it for the town's shops); only the town is sent, never the user's address. The fixture
 // is its real answer for Malmesbury, recorded 2026-10-17 and trimmed.
 public class PlaceCoordinatesTests
 {
-    private static string Fixture => File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "tests", "louis-agent.pack.shops.tests", "Fixtures", "nominatim-malmesbury.json"));
+    private static string Fixture => File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "tests", "louis-agent.pack.shops.tests", "Places", "Fixtures", "nominatim-malmesbury.json"));
 
     [Test]
     public void TheLookup_IsTheTownOnOpenStreetMap_InSouthAfrica() =>

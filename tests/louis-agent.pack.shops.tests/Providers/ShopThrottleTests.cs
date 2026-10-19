@@ -1,6 +1,6 @@
-using LouisAgent.Packs.Shops;
+using LouisAgent.Packs.Shops.Providers;
 
-namespace LouisAgent.Packs.Shops.Tests;
+namespace LouisAgent.Packs.Shops.Tests.Providers;
 
 // F34, cook check 42d837f13659: after about 50 searches in 7 minutes Checkers answered with a page that wasn't its
 // catalogue, then nothing, for four minutes (00:24-00:28), and the cook priced 1 of 8. With searches now in parallel

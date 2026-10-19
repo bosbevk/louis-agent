@@ -1,4 +1,5 @@
-using LouisAgent.Packs.Shops;
+using LouisAgent.Packs.Shops.Catalogues;
+using LouisAgent.Packs.Shops.Places;
 using LouisAgent.Packs.Shops.Providers;
 using LouisAgent.Core.Tools.Web.Browsing;
 
@@ -228,7 +229,7 @@ public class CheckersCatalogueTests
     {
         var waits = new List<TimeSpan>();
         var now = new DateTimeOffset(2026, 10, 18, 0, 24, 0, TimeSpan.Zero);
-        var throttle = new LouisAgent.Packs.Shops.ShopThrottle(2, TimeSpan.FromSeconds(20), () => now,
+        var throttle = new LouisAgent.Packs.Shops.Providers.ShopThrottle(2, TimeSpan.FromSeconds(20), () => now,
             (wait, _) => { waits.Add(wait); return Task.CompletedTask; });
         var refused = new CheckersCatalogue(answer is null ? new FakeBrowser() : new FakeBrowser(answer), throttle: throttle);
 
@@ -242,7 +243,7 @@ public class CheckersCatalogueTests
     public async Task ABrowserThatsDown_IsNoRefusal()
     {
         var waits = new List<TimeSpan>();
-        var throttle = new LouisAgent.Packs.Shops.ShopThrottle(2, TimeSpan.FromSeconds(20), null, (wait, _) => { waits.Add(wait); return Task.CompletedTask; });
+        var throttle = new LouisAgent.Packs.Shops.Providers.ShopThrottle(2, TimeSpan.FromSeconds(20), null, (wait, _) => { waits.Add(wait); return Task.CompletedTask; });
 
         Assert.That(() => new CheckersCatalogue(new DownBrowser(), throttle: throttle).SearchAsync("onions", 5), Throws.TypeOf<ShopCatalogueException>());
         await new CheckersCatalogue(new FakeBrowser(Json), throttle: throttle).SearchAsync("rice", 5);
@@ -269,7 +270,7 @@ public class CheckersCatalogueTests
         Assume.That(url, Is.Not.Null.And.Not.Empty, "BROWSER_URL isn't set: no browser to search Checkers with (the Puls stack's puls-browser).");
         var browser = new ChromeWebBrowser(new Uri(url!));
 
-        var found = await new CheckersCatalogue(browser, new CheckersStore(browser, LouisAgent.Packs.Shops.PlaceCoordinates.OfAsync)).SearchAsync("chicken", 5, "Malmesbury");
+        var found = await new CheckersCatalogue(browser, new CheckersStore(browser, LouisAgent.Packs.Shops.Places.PlaceCoordinates.OfAsync)).SearchAsync("chicken", 5, "Malmesbury");
 
         Assert.That(found.Area, Is.EqualTo("Malmesbury"));
         Assert.That(found.Store, Does.Not.StartWith("5ece6935"), "the default store's id: the town's store answered");

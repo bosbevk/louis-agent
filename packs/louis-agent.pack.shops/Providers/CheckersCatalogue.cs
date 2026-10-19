@@ -1,5 +1,6 @@
 namespace LouisAgent.Packs.Shops.Providers;
 
+using LouisAgent.Packs.Shops.Catalogues;
 using System.Globalization;
 using System.Net;
 using System.Text.Json;
