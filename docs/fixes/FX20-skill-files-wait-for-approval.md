@@ -65,8 +65,12 @@ loaded it, `/approve greeting` said *No pending tool named 'greeting'*, `/tools`
 - `AName_ThatIsBothAPendingTool_AndAPendingSkillFile_IsRefused`: both files named, nothing moved.
 - `Overwrite_KeepsTheApprovedVersion_UntilTheNewOneIsApproved`: pending `hi`, approved `hello`; this engine says `hi`,
   a new one `hello`; after `/approve`, a new one says `hi`.
-- `Tools_ListsPendingSkillFiles`: the file this engine wrote as *active this session*, one dropped in `pending/` by an
+- `Tools_ListsPendingSkillFiles`: the file this engine wrote as *active here* (the review of PR #68: in the API "here"
+  is the engine, which chats share, so the label says neither "session" nor "engine"), one dropped in `pending/` by an
   earlier session as *not loaded*.
+- `Approve_AndReject_TakeTheNameInAnyCase` (from the review): `CreateSkillFile` lowercases the name, so the commands do
+  too; `/approve Greeting` finds `greeting.md`. Green on Windows before the fix, since its file system ignores case,
+  which is why the review caught it and the test alone wouldn't have.
 
 The golden files changed on purpose and their diff was reviewed: `CreateSkillFile`'s description and its `name` and
 `overwrite` parameters, `SkillFileSaved`, and the two guide lines in the system prompt.

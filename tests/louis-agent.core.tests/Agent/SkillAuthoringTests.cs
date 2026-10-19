@@ -113,6 +113,22 @@ public class SkillAuthoringTests
         Assert.That(CountOf(engine.SkillDocumentation, "# Greeting Skills"), Is.EqualTo(1), "loaded once, not twice");
     }
 
+    // Review of PR #68: CreateSkillFile lowercases the name, so /approve has to as well, or on Linux "Greeting" finds nothing.
+    [Test]
+    public void Approve_AndReject_TakeTheNameInAnyCase()
+    {
+        var engine = Engine();
+        engine.CreateSkillFile("Greeting", EchoSkill);
+
+        Assert.That(engine.HandleUserCommand("/tools"), Does.Contain("greeting"));
+        Assert.That(engine.HandleUserCommand("/approve Greeting"), Does.Contain("Approved"));
+        Assert.That(File.Exists(ApprovedFile("greeting")), Is.True);
+
+        engine.CreateSkillFile("greeting", EchoSkill.Replace("hello", "hi"), overwrite: true);
+        Assert.That(engine.HandleUserCommand("/reject GREETING"), Does.Contain("Rejected"));
+        Assert.That(File.Exists(PendingFile("greeting")), Is.False);
+    }
+
     [Test]
     public void Reject_DeletesTheFile_AndUnloadsItHere()
     {
@@ -178,7 +194,7 @@ public class SkillAuthoringTests
 
         string reply = engine.HandleUserCommand("/tools")!;
 
-        Assert.That(reply, Does.Contain("greeting").And.Contain("skill file").And.Contain("active this session"));
+        Assert.That(reply, Does.Contain("greeting").And.Contain("skill file").And.Contain("active here"));
         Assert.That(reply, Does.Contain("older").And.Contain("not loaded"));
     }
 

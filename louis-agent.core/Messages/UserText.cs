@@ -93,7 +93,7 @@ public enum UserText
     [Description(" and unloaded it from this session")]
     SkillFileRejectedFromSession,
 
-    [Description("- {Name} [skill file pending, active this session]")]
+    [Description("- {Name} [skill file pending, active here]")]
     PendingSkillFileActive,
 
     [Description("- {Name} [skill file pending from an earlier session, not loaded]")]

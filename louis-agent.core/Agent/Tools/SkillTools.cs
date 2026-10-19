@@ -212,8 +212,9 @@ internal sealed partial class SkillTools
 
     // ---- FX20: the user's side of a pending skill file, reached through AgentEngine.HandleUserCommand, never the model ----
 
-    private string PendingPath(string name) => Path.Combine(SkillsDirectory!, SkillFiles.PendingFunction(name).Replace('/', Path.DirectorySeparatorChar));
-    private string ApprovedPath(string name) => Path.Combine(SkillsDirectory!, SkillFiles.Function(name).Replace('/', Path.DirectorySeparatorChar));
+    // The name as CreateSkillFile saved it, lowercase (review of PR #68): on Linux "/approve Greeting" must still find greeting.md.
+    private string PendingPath(string name) => Path.Combine(SkillsDirectory!, SkillFiles.PendingFunction(name.Trim().ToLowerInvariant()).Replace('/', Path.DirectorySeparatorChar));
+    private string ApprovedPath(string name) => Path.Combine(SkillsDirectory!, SkillFiles.Function(name.Trim().ToLowerInvariant()).Replace('/', Path.DirectorySeparatorChar));
 
     /// <summary>Whether a skill file of this name waits in pending/.</summary>
     internal bool HasPendingSkillFile(string name) => SkillsDirectory is not null && File.Exists(PendingPath(name));
