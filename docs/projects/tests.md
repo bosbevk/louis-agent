@@ -1,7 +1,9 @@
 # Test projects — design
 
 > **Kind:** NUnit test projects · **Paths:** `tests/louis-agent.core.tests/`, `tests/louis-agent.api.tests/`,
-> `tests/louis-agent.orchestrator.tests/` · **Run:** `dotnet test louis-agent-solution.sln` (or each project)
+> `tests/louis-agent.orchestrator.tests/`, `tests/louis-agent.identity.puls.tests/`, `tests/louis-agent.pack.shops.tests/`,
+> `tests/louis-agent.composition.tests/`; the fakes they share in `tests/louis-agent.testing/` (a class library, CL15) ·
+> **Run:** `dotnet test louis-agent-solution.sln` (or each project)
 
 ## Purpose
 
@@ -48,6 +50,20 @@ an `AgentEngineFactory` with a client that throws if called.
 | `OrchestratorTests.cs` | The error feed (processed ids survive restarts, unsafe ids ignored), decisions, runbook loading, the fix prompt, tool guards, the comms log, returning to `main`, and `VerifyFixCommit` against a throwaway git repository |
 
 `InternalsVisibleTo` gives the test projects access to `internal` types in core and the orchestrator.
+
+## louis-agent.identity.puls.tests, louis-agent.pack.shops.tests, louis-agent.composition.tests
+
+CL15 cut the engine into identities and packs, and each got its tests beside it: the identity's prove its prompts are
+its own and read through `SkillFileSource` (`PulsPromptsTests`, the Puls golden `PulsSessionSnapshot.json`); the pack's
+are the shop tests that left core, with their fixtures and their own golden (`ShopToolMessageSnapshot.json`); the
+composition root's prove `IDENTITIES` and `PACKS` pick (`PluginsTests`) and that every pack stays convertible to an
+MCP server (`PackConvertibilityTests`, through the MCP SDK's own `McpServerTool.Create`, a test-only package). Each
+registers the prompts its identity or pack brings in a `[SetUpFixture]`, as a host's `Build` does.
+
+`tests/louis-agent.testing` is a class library, not a test project: the fakes and paths every test project shares
+(`FakeChatClient`, `FailingStreamClient`, `StubHandler`, `ListUsageSink`, `FakePrompts`, `FakeIdentity`, `FakePack`,
+`TestPaths`), a global using in the four that use them. No test project references another test project, and `core.tests` opens its
+internals to none; `ArchitectureTests` holds both.
 
 ## What isn't covered yet
 

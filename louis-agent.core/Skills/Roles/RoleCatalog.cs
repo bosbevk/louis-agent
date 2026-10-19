@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 /// <c>agent/{name}.md</c> (level 0, a voice), <c>specialists/{name}.md</c> (level 1, a role),
 /// <c>minions/{name}.md</c> (level 2, F30), under core's <c>Prompts/</c> and read only from the assembly (CL8
 /// step 4). At level 0 a role is a mode (CL9, ADR 0019): one file, its voice then its routing, in a folder per
-/// product (<c>agent/puls/voice-af.md</c>), named <c>{product}/{mode}</c>; <see cref="DefaultVoice"/> is the mode of a
+/// product (<c>agent/acme/voice-en.md</c>), named <c>{product}/{mode}</c>; <see cref="DefaultVoice"/> is the mode of a
 /// session that names none. A name is lowercase letters, digits and dashes, with one <c>/</c> between a product and its
 /// mode, so it never reaches outside its folder.
 /// </summary>
@@ -29,12 +29,12 @@ public static partial class RoleCatalog
 
     /// <summary>
     /// The base a minion role sits on (F30): <c>{product}-minion</c> for <c>{product}-minion-{function}</c>
-    /// (<c>puls-minion</c> for <c>puls-minion-web-price-lookup</c>), loaded before the role so every minion of a product
+    /// (<c>acme-minion</c> for <c>acme-minion-web-lookup</c>), loaded before the role so every minion of a product
     /// is told what a minion is once. Null for a name that isn't a minion role's shape.
     /// </summary>
     public static string? MinionBaseOf(string role) => MinionRole().Match(role) is { Success: true } m ? m.Groups["base"].Value : null;
 
-    /// <summary>Whether <paramref name="name"/> is a minion base (<c>puls-minion</c>), which is no role a specialist can name.</summary>
+    /// <summary>Whether <paramref name="name"/> is a minion base (<c>acme-minion</c>), which is no role a specialist can name.</summary>
     public static bool IsMinionBase(string name) => MinionBase().IsMatch(name);
 
     /// <summary>The folder, under the skills folder, of <paramref name="level"/>'s roles.</summary>
@@ -62,7 +62,7 @@ public static partial class RoleCatalog
     /// <summary>
     /// The named roles at <paramref name="level"/>, all built in (CL8 step 4), sorted: at level 0 the modes,
     /// <c>agent/{product}/{mode}.md</c> (every product folder but the function skills'); at level 1 the roles; at level 2
-    /// the minion roles, never a base (F30: <c>puls-minion</c> frames every minion, it is no role itself).
+    /// the minion roles, never a base (F30: <c>acme-minion</c> frames every minion, it is no role itself).
     /// </summary>
     public static IReadOnlyList<string> Available(RoleLevel level) =>
         (level == RoleLevel.Agent ? Modes() : SkillFileSource.Files(FolderOf(level)).Where(f => f.EndsWith(".md", StringComparison.Ordinal))
@@ -89,7 +89,7 @@ public static partial class RoleCatalog
     /// </summary>
     public static string? LanguageOf(string mode) => LanguageMode().Match(mode) is { Success: true } m ? m.Groups["code"].Value : null;
 
-    /// <summary>A language mode's shared part: its product's <c>voice</c> (Puls's routing), never a mode of its own.</summary>
+    /// <summary>A language mode's shared part: its product's <c>voice</c> (its routing), never a mode of its own.</summary>
     public static string SharedOf(string mode) => mode[..mode.IndexOf('/')] + "/voice";
 
     private static IEnumerable<string> Modes()
@@ -100,7 +100,7 @@ public static partial class RoleCatalog
             .Select(f => f[(AgentFolder.Length + 1)..^".md".Length])
             .Where(n => n.Count(c => c == '/') == 1)
             .ToList();
-        // A product with languages shares its voice.md between them; it isn't a mode of its own (puls/voice).
+        // A product with languages shares its voice.md between them; it isn't a mode of its own ({product}/voice).
         var shared = files.Where(f => LanguageOf(f) is not null).Select(SharedOf).ToHashSet(StringComparer.Ordinal);
         return files.Where(f => !shared.Contains(f));
     }

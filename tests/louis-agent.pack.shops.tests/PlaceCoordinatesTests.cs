@@ -1,4 +1,3 @@
-using LouisAgent.Core.Tests;
 using LouisAgent.Packs.Shops;
 
 namespace LouisAgent.Packs.Shops.Tests;

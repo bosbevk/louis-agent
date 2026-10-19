@@ -63,7 +63,7 @@ public sealed class SpecialistTools(IReadOnlyDictionary<string, Uri> peers, stri
     public async Task<string> StartSubSession(
         [Description("The toolsets the sub-session loads, e.g. [\"files\",\"git\",\"dotnet\"]. Never \"specialists\".")] string[] toolsets,
         [Description("The whole task, self-contained: the sub-session sees nothing of this conversation.")] string message,
-        // Optional, so a call without it is valid: the delegation check saw Puls leave it out (the call failed) and guess "default".
+        // Optional, so a call without it is valid: the delegation check saw a router leave it out (the call failed) and guess "default".
         [Description("The peer's name from AGENT_PEERS. Leave it out when this instance has one peer (the usual case); " +
             "it is then used.")] string? agent = null,
         [Description("The sub-session's role on the peer: its function (the specialists guide says which goes with which toolsets). " +

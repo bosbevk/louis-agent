@@ -9,7 +9,7 @@ using LouisAgent.Core.Tools.Web;
 using LouisAgent.Core.Tools.Web.Search;
 
 /// <summary>
-/// SearXNG as the search engine (F32 step 1): the metasearch we run ourselves in the Puls stack, for development,
+/// SearXNG as the search engine (F32 step 1): the metasearch we run ourselves in a compose stack, for development,
 /// tests and benchmarks; the sold endpoint keeps a licensed API, since the engines SearXNG asks don't license their
 /// results (ADR 0023). <c>GET {SEARXNG_URL}/search?q=…&amp;format=json</c>: <see cref="WebSearchQuery.Site"/> goes into
 /// the query as <c>site:</c>, <see cref="WebSearchQuery.Recency"/> becomes <c>time_range</c> (day, week, month, year:

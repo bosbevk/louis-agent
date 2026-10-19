@@ -353,7 +353,7 @@ public static partial class AgentHost
     /// wrote (its function files) comes from the skills folder (<see cref="FindSkillsDirectory"/>).
     /// </summary>
     /// <param name="role">The session's role (F21): at level 0 a mode, one file of voice and routing (CL9:
-    /// <c>puls/voice-af</c>); below it a role. Null: the default mode (<see cref="RoleCatalog.DefaultVoice"/>), and below
+    /// <c>acme/voice-en</c>); below it a role. Null: the default mode (<see cref="RoleCatalog.DefaultVoice"/>), and below
     /// level 0 only its voice, since a sub-session's toolsets were chosen for it (F21). <see cref="RoleException"/>
     /// for a name that isn't valid or has no file there.</param>
     /// <param name="level">The session's level (CL8): where its role is.</param>
@@ -366,14 +366,14 @@ public static partial class AgentHost
         // for a mode, how it routes) frames everything after it
         AddBuiltIn(agent, composite, SkillFiles.Principles);
         string roleFile = RoleFile(agent, role, level);
-        // A minion's base (puls-minion.md) frames its role (F30): what every minion is, then what this one does
+        // A minion's base ({product}-minion.md) frames its role (F30): what every minion is, then what this one does
         if (level == RoleLevel.Minion && role is not null && RoleCatalog.MinionBaseOf(role) is { } minionBase)
             AddBuiltIn(agent, composite, RoleCatalog.FileName(minionBase, RoleLevel.Minion));
         if (role is null && level != RoleLevel.Agent && ReadSkillFile(agent, roleFile) is { } mode)
             composite.AddProvider(MarkdownSkillProvider.FromText(RoleCatalog.ModeParts(mode.Text).Voice));
         else
             AddBuiltIn(agent, composite, roleFile);
-        // A language mode (puls/voice-af) says how it talks; its product's shared voice.md routes (CL9 step 6)
+        // A language mode ({product}/voice-{xx}) says how it talks; its product's shared voice.md routes (CL9 step 6)
         if (level == RoleLevel.Agent && role is not null && RoleCatalog.LanguageOf(role) is not null)
             AddBuiltIn(agent, composite, RoleCatalog.FileName(RoleCatalog.SharedOf(role), RoleLevel.Agent));
 
@@ -383,7 +383,7 @@ public static partial class AgentHost
             AddBuiltIn(agent, composite, fileName);
 
         // Function skill files are procedures ExecuteSkill runs: they come with the skills toolset, like a guide with its
-        // tools. A profile without it (Puls's chats: agents and web) gets its mode and its guides, no skill file.
+        // tools. A profile without it (a product's chats with only their own toolsets) gets its mode and its guides, no skill file.
         if (profile.All(t => t.Name != SkillsToolset)) return composite;
 
         // Every function skill the agent wrote (CL9: no setting picks one; none is built in any more)
@@ -468,7 +468,7 @@ public static partial class AgentHost
     /// Start-up's check of the roles (CL15): every <c>ROLES_ENABLED</c> name must be a role this instance has, at some
     /// level, and <paramref name="defaultMode"/>, the mode of a session that names none, must have its file. Before the
     /// cut an unknown name was dropped in silence (it simply never matched), and a session with no role was handed the
-    /// default before any check, so a Puls missing from <c>IDENTITIES</c> would have shown as a 400 at the first chat.
+    /// default before any check, so an identity missing from <c>IDENTITIES</c> would have shown as a 400 at the first chat.
     /// </summary>
     internal static void CheckRoles(AgentOptions agent, string defaultMode)
     {

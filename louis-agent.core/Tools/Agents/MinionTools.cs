@@ -130,7 +130,7 @@ public sealed class MinionTools
     }
 
     /// <summary>
-    /// Takes one of the user turn's minion slots: the specialist's turn carries Puls's turn as its parent, so every
+    /// Takes one of the user turn's minion slots: the specialist's turn carries the router's turn as its parent, so every
     /// specialist under that turn counts against the same sixteen. Outside a turn: the specialist's own, then none.
     /// </summary>
     private string? TakeSlot(UsageScope? scope)

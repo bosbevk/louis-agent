@@ -19,12 +19,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\packs\louis-agent.pack.shops\louis-agent.pack.shops.csproj" />
-    <!-- The fakes core's tests share (StubHandler); core.tests opens its internals to this project. -->
-    <ProjectReference Include="..\louis-agent.core.tests\louis-agent.core.tests.csproj" />
+    <!-- The fakes every test project shares (CL15 step 5). -->
+    <ProjectReference Include="..\louis-agent.testing\louis-agent.testing.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Using Include="NUnit.Framework" />
+    <Using Include="LouisAgent.Testing" />
   </ItemGroup>
 
 </Project>

@@ -28,17 +28,17 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\louis-agent.core\louis-agent.core.csproj" />
+    <!-- The fakes every test project shares (CL15 step 5). -->
+    <ProjectReference Include="..\louis-agent.testing\louis-agent.testing.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <!-- CL15: the identity tests reuse the fakes and paths here (FakeChatClient, TestPaths). -->
-    <InternalsVisibleTo Include="louis-agent.identity.puls.tests" />
-    <InternalsVisibleTo Include="louis-agent.pack.shops.tests" />
-    <InternalsVisibleTo Include="louis-agent.composition.tests" />
   </ItemGroup>
 
   <ItemGroup>
     <Using Include="NUnit.Framework" />
+    <Using Include="LouisAgent.Testing" />
   </ItemGroup>
 
 </Project>

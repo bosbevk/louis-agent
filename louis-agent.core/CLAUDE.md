@@ -35,20 +35,25 @@ A new tool or text changes the golden files on purpose: regenerate them and revi
 guide names its tools and when to use them, and each tool's `[Description]` stays short. The files a new toolset
 touches, and nothing else:
 
-1. **Tools:** a class in `louis-agent.core/Tools/{Toolset}/` (*Adding a C# tool*); every public method is a tool.
-2. **Catalogue entry** in `Agent/ToolsetCatalog.cs`: the name, a one-line description, the settings it needs
+1. **Tools:** a class in `louis-agent.core/Tools/{Toolset}/` (*Adding a C# tool*), or in the pack's project when the
+   toolset is a capability of its own (*Building an identity or a pack*); every public method is a tool.
+2. **Catalogue entry:** a `ToolsetDefinition` (the name, a one-line description, the settings it needs
    (`MissingSettings`), its tool class (`ToolType`), the factory for its tool object (`CreateTools`) and its guide
-   (`GuideFile`).
-3. **Guide:** `Prompts/toolsets/{toolset}.md`, plain markdown, embedded with the other built-in prompts: what the toolset is for, its tools grouped with one line
-   each, and its workflows (it may also hold `## Skill:` procedures). `AgentHost.LoadSkills(agent, toolsets)` adds it
-   to the prompt, through `MarkdownSkillProvider`, only when a session loads the toolset. **No provider class per
+   (`GuideFile`)) in `Agent/ToolsetCatalog.cs` for core's, or in the pack's `Toolsets` for a pack's. `AgentCatalog`
+   lists both, core's first, and stops start-up on a tool name two toolsets or the engine already use.
+3. **Guide:** `Prompts/toolsets/{toolset}.md`, plain markdown, embedded with the other built-in prompts (a pack's in
+   its own `Prompts/`): what the toolset is for, its tools grouped with one line each, and its workflows. Core's guides
+   may also hold `## Skill:` procedures; a pack's may not, because a guide must be able to travel as an MCP server's
+   instructions (ADR 0028): a procedure a pack needs becomes a tool. `AgentHost.LoadSkills(agent, toolsets)` adds the
+   guide to the prompt, through `MarkdownSkillProvider`, only when a session loads the toolset. **No provider class per
    toolset.**
 4. **Reserved by itself:** the guide is embedded, so the agent can't take its name (`SkillFiles.IsBuiltIn`).
-5. **Routing:** a row in the routing of each mode whose product uses it (`agent/louis-agent/voice.md`, Puls's
-   `agent/puls/voice.md`).
-6. **Tests:** `SkillFilesTests` checks the coding agent's routing names it, the toolset's tests in
-   `tests/louis-agent.core.tests/Tools/{Toolset}/`, and the golden files regenerated
-   ([golden files](../tests/CLAUDE.md#golden-files)).
+5. **Routing:** a row in the routing of each mode whose product uses it (`agent/louis-agent/voice.md` in core; an
+   identity's `agent/{name}/voice.md` in its own project). A pack can't add a row to a router it doesn't own, so a
+   pack's guide opens with the one line that routes to it, read only where the toolset loads (the TODO's small cleanups).
+6. **Tests:** `SkillFilesTests` checks the coding agent's routing names core's toolset, the toolset's tests in
+   `tests/louis-agent.core.tests/Tools/{Toolset}/` (a pack's in `tests/louis-agent.pack.{name}.tests/`), and the golden
+   files regenerated ([golden files](../tests/CLAUDE.md#golden-files)).
 
 Every catalogue toolset follows it; `SkillFilesTests` checks that each has a guide that loads with it.
 
@@ -143,6 +148,47 @@ Log.Log(LogLevel.Information, McpServerLogMessage.ToolNameTaken, new { Name = na
 - **A unit test checks every message enum:** each member has a `[Description]`, and its template's holes are well formed.
 - **Screen text is not logging:** the CLI's usage line and the usage probe's errors are written to `Console.Error`
   directly (from their enums), so they stay out of the run file.
+
+## Building an identity or a pack
+
+Core is the engine and names no product, shop or country (CL15, [ADR 0027](../docs/adr/0027-engine-identities-and-packs.md));
+`ArchitectureTests` holds it in the model-visible text and in the comments. Who an agent is lives in an identity, what
+it can do in a pack, and only `src/louis-agent.composition` knows them all. The one identity in `identities/` and the
+one pack in `packs/` are the worked examples (this guide names neither: core's source, this file included, names no
+product, held by the same test); F40's demo takes over as the simpler one.
+
+**An identity** is a project `identities/louis-agent.identity.{name}` with one class implementing `IAgentIdentity`:
+its `Name` (what `IDENTITIES` loads it by), its `Prompts` (a `ManifestEmbeddedFileProvider` over its `Prompts/` folder:
+its modes under `agent/{name}/`, its roles under `specialists/` and `minions/`, as *Adding a mode or a role* lays them
+out) and the `Packs` it names, by name, never by reference. Its csproj needs core's two embedding lines
+(`GenerateEmbeddedFilesManifest` and the `EmbeddedResource` glob), or its prompts silently vanish: its tests read one
+prompt through `SkillFileSource` to prove the manifest works, after a `[SetUpFixture]` registers the identity's prompts
+and its packs' with `SkillFileSource.Use`, as a host's `Build` does with the catalogue's.
+
+**A pack** is a project `packs/louis-agent.pack.{name}` with one class implementing `IAgentPack`: its `Name`, its
+`Toolsets` (one `ToolsetDefinition` each, *Adding a toolset*), its `Prompts` (its guides) and the packs it `Requires`,
+by name. It reads its own settings in its own options class (`ShopsOptions.FromEnvironment`), never through
+`AgentOptions`, and reaches core's shared services through `ToolsetContext` (the browser, the search provider, the
+rates). Its result texts are its own message enums in its `Messages/` folder (`ShopToolMessage`, `ShopLogMessage`), with
+their own golden; `HostMessageEnumTests` finds them.
+
+**Then the composition root:** a member in `IdentityKind` or `PackKind`, its `Create` arm in `Plugins`, a project
+reference in `louis-agent.composition.csproj`, and the test projects that need it. A host picks with `IDENTITIES` and
+`PACKS` at start-up; `AgentCatalog` refuses a name nothing provides, a name used twice, a tool name two toolsets share
+and a `Requires` cycle, before any engine is built.
+
+**The review checklist for a pack** ([ADR 0028](../docs/adr/0028-packs-stay-convertible-to-mcp.md)):
+`PackConvertibilityTests` holds the shapes (text returned, plain data taken, a `CancellationToken` when it waits, an
+MCP-safe name, no identity named in a description, guides as prose in the pack's prompts, the MCP SDK keeping name,
+schema and description). Review the rest by hand, because a test can't see it:
+
+- A failure is text with its reason, never a thrown exception: served over MCP, the SDK would replace the message.
+- Whatever a tool reads from the session (the user's place) also arrives as a parameter, so an MCP client can pass it.
+- Outside data it returns is framed as data (`--- untrusted … ---`), and its own output is bounded: a call served over
+  MCP skips the engine's guards.
+- It is ready when built: anything slow or async happens before the catalogue is built, once, and its toolsets and
+  tools never change afterwards.
+- It references no other pack and no identity (`ArchitectureTests` reads the csproj), and names the packs it needs.
 
 ## Building another agent on core
 

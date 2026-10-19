@@ -18,7 +18,10 @@ flowchart TB
         peer["Specialist API<br/>[the HTTP API, as a peer]"]
         mcp["MCP server<br/>[.NET, stdio or HTTP]"]
         orch["Orchestrator<br/>[.NET console, POC]"]
-        core[["louis-agent.core<br/>[class library: engine, tools, skills, providers]"]]
+        comp["Composition root<br/>[class library: IDENTITIES, PACKS]"]
+        core[["louis-agent.core<br/>[class library: the engine, tools, skills, providers]"]]
+        ident["Identities<br/>[puls: voice, modes, roles]"]
+        pack["Packs<br/>[shops: toolsets, guides, settings]"]
     end
     llm["Model provider"]
     ws[("Workspace")]
@@ -30,13 +33,21 @@ flowchart TB
     api -- "sub-sessions" --> peer
     orch -- "fix sessions" --> api
     cli & acp & api & peer & mcp & orch -. "uses" .-> core
+    cli & acp & api & mcp -- "Plugins.FromEnvironment()" --> comp
+    comp --> ident & pack
+    ident & pack -. "uses" .-> core
     core --> llm
     core --> ws
     core --> ledger
 ```
 
 Every host is thin: it maps the agent's stream to its protocol, and all behaviour is in core
-([0010](../adr/0010-folders-by-concern.md)).
+([0010](../adr/0010-folders-by-concern.md)). Core is the engine and names no product: who an agent is (its voice, modes,
+roles and the packs it uses, by name) is an identity in `identities/`, what it can do (toolsets, guides, settings) is a
+pack in `packs/`, and only the composition root (`src/louis-agent.composition`) knows them all; a host picks with
+`IDENTITIES` and `PACKS` at start-up and hands one `AgentCatalog` to `AgentHost.Build` (CL15,
+[0027](../adr/0027-engine-identities-and-packs.md)). Every pack stays convertible to an MCP server, held by
+`PackConvertibilityTests` ([0028](../adr/0028-packs-stay-convertible-to-mcp.md)).
 
 ## Hosts
 
@@ -187,10 +198,13 @@ Everything it sends uses LF line endings, whatever the checkout:
   toolsets (`AgentEngineFactory`), or another agent's own tools (the orchestrator's `ServiceTools`); `selfExtension:`
   adds `CreateSkillFile`, `ReloadSkills`, `CreateTool` and `ListAgentTools` (the `skills` toolset).
 
-### Toolsets (`Agent/ToolsetCatalog.cs`, `Hosting/AgentEngineFactory.cs`)
-Every toolset is a catalogue entry: a name, a one-line description, the settings it needs, its tool class and factory,
-and its guide (docs/CLAUDE.md, *Adding a toolset*). `files`, `git`, `dotnet`, `python`, `powershell`, `bash`, `web`,
-`paymo`, `devops`, `specialists` (sub-sessions on a peer, `AGENT_PEERS`) and `skills` (engine-provided). `AgentEngineFactory`
+### Toolsets (`Agent/ToolsetCatalog.cs`, `Agent/AgentCatalog.cs`, `Hosting/AgentEngineFactory.cs`)
+Every toolset is a `ToolsetDefinition`: a name, a one-line description, the settings it needs, its tool class and
+factory, and its guide (docs/CLAUDE.md, *Adding a toolset*). Core's, in `ToolsetCatalog`: `files`, `git`, `dotnet`,
+`python`, `powershell`, `bash`, `web`, `paymo`, `devops`, `specialists` (sub-sessions on a peer, `AGENT_PEERS`),
+`minions` and `skills` (engine-provided); a pack's (`shops`) come with the pack. `AgentCatalog`, built once by the
+composition root, lists core's first and then each pack's, owns every tool name (an agent-built tool may take none,
+and a name two toolsets or the engine share stops start-up), and resolves a session's list (CL15). `AgentEngineFactory`
 builds one engine per profile, cached by its normalised toolset list, its role and its level (F21, CL8;
 past 16 the least recently used is dropped), with only those tools and only their guides in the system prompt, and logs
 each profile's tool count and fixed-prefix estimate. The CLI, ACP server and MCP server use every
@@ -249,10 +263,13 @@ script) with `CreateTool`. It only becomes a real tool after the user types `/ap
 
 ## Bootstrap: `AgentHost`
 
-`AgentHost.Build()` (CLI, ACP, API):
+`AgentHost.Build(catalog)` (CLI, ACP, API), with the catalogue the host got from `Plugins.FromEnvironment()`
+(`IDENTITIES` and `PACKS`, read after `config/.env`; CL15):
 1. Load `config/.env.secrets` then `config/.env` (searching upward from the working directory) and a legacy `./.env`;
    variables already set in the process win.
-2. Bind `LlmOptions` and `AgentOptions`; configure logging (`AgentLogging.Configure(LOG_DIRECTORY)`).
+2. Bind `LlmOptions` and `AgentOptions`; configure logging (`AgentLogging.Configure(LOG_DIRECTORY)`); register the
+   identities' and packs' prompts with `SkillFileSource.Use`, and check that every `ROLES_ENABLED` name and the default
+   mode resolve, so a missing identity stops the host here, not at its first chat.
 3. Create the `IChatClient`, the usage ledger and an `AgentEngineFactory` (with `LLM_THINKING` and the display
    currency); the host's own engine has every toolset this instance can load (approved agent-built tools with `skills`).
 4. Start Rider MCP discovery in the background if enabled.

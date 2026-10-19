@@ -21,12 +21,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\louis-agent.composition\louis-agent.composition.csproj" />
-    <!-- The in-memory prompts core's tests fake (FakePrompts); core.tests opens its internals to this project. -->
-    <ProjectReference Include="..\louis-agent.core.tests\louis-agent.core.tests.csproj" />
+    <!-- The fakes every test project shares (CL15 step 5). -->
+    <ProjectReference Include="..\louis-agent.testing\louis-agent.testing.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Using Include="NUnit.Framework" />
+    <Using Include="LouisAgent.Testing" />
   </ItemGroup>
 
 </Project>

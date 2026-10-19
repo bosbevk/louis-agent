@@ -159,6 +159,42 @@ public partial class ArchitectureTests
         Assert.That(found, Is.Empty, "a pack references another pack or an identity (ADR 0027):\n" + string.Join("\n", found));
     }
 
+    [Test]
+    public void CoresSource_NamesNoProduct()
+    {
+        // Step 5: the ratchet above holds the model-visible text; the comments and examples follow it, so a reader of
+        // core never meets a product, a shop or a country. Those live in an identity or a pack, and core's examples
+        // use made-up names.
+        string core = Path.Combine(TestPaths.RepoRoot, "louis-agent.core");
+        var found = Directory.EnumerateFiles(core, "*.cs", SearchOption.AllDirectories)
+            .Where(f => !f.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}") && !f.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}"))
+            .Append(Path.Combine(core, "CLAUDE.md"))
+            .SelectMany(f => File.ReadLines(f)
+                .Select((line, i) => (Line: line, Number: i + 1))
+                .Where(x => ProductName().IsMatch(x.Line))
+                .Select(x => $"{Path.GetRelativePath(core, f).Replace('\\', '/')}:{x.Number}: {x.Line.Trim()}"))
+            .ToList();
+        Assert.That(found, Is.Empty, "core's source names a product, a shop or a country (CL15 step 5):\n" + string.Join("\n", found));
+    }
+
+    [Test]
+    public void NoTestProject_LeansOnCoresTests()
+    {
+        // Louis, review of step 4: the fakes the test projects share (FakeChatClient, StubHandler, FakePrompts, TestPaths)
+        // live in tests/louis-agent.testing, referenced by the projects that use them; core.tests is referenced by no
+        // project and opens its internals to none, so a test project's fakes never become another project's dependency.
+        string tests = Path.Combine(TestPaths.RepoRoot, "tests");
+        var leaning = Directory.EnumerateFiles(tests, "*.csproj", SearchOption.AllDirectories)
+            .Where(f => File.ReadAllText(f).Contains("louis-agent.core.tests.csproj", StringComparison.Ordinal))
+            .Select(f => Path.GetRelativePath(tests, f).Replace('\\', '/'))
+            .ToList();
+        Assert.That(leaning, Is.Empty, "a test project references core.tests; its fakes belong in louis-agent.testing");
+        Assert.That(File.ReadAllText(Path.Combine(tests, "louis-agent.core.tests", "louis-agent.core.tests.csproj")), Does.Not.Contain("InternalsVisibleTo"));
+    }
+
+    [GeneratedRegex(@"\b(puls|checkers|south\s+africa|johannesburg)\b", RegexOptions.IgnoreCase)]
+    private static partial Regex ProductName();
+
     /// <summary>The project references a csproj makes into <c>packs/</c> or <c>identities/</c> (core's and a pack's may make none).</summary>
     internal static IReadOnlyList<string> ForbiddenReferences(string csproj) =>
         ProjectReference().Matches(csproj).Select(m => m.Groups[1].Value)

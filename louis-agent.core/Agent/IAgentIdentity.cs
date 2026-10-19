@@ -9,7 +9,7 @@ using Microsoft.Extensions.FileProviders;
 /// </summary>
 public interface IAgentIdentity
 {
-    /// <summary>"puls" (F40: "demo"); its modes are <c>agent/{name}/…</c>. Lowercase letters, digits and dashes.</summary>
+    /// <summary>The name <c>IDENTITIES</c> loads it by ("acme"); its modes are <c>agent/{name}/…</c>. Lowercase letters, digits and dashes.</summary>
     string Name { get; }
 
     /// <summary>Its modes, its own specialists and its own minion roles: content, never converted to MCP.</summary>

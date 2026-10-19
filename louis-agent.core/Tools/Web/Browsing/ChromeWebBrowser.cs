@@ -13,7 +13,7 @@ using PuppeteerSharp;
 /// (30 s at most) and given up to 10 s more for its scripts to fetch what they draw, the responses a caller asked for
 /// kept, the page closed and the connection dropped. No connection is kept, so a browser restart costs nothing; at most
 /// <see cref="MaxPages"/> pages are open at once across the process, so a cook's minions don't open a tab each. Chrome
-/// answers its DevTools address only by IP or as localhost, so a service name (puls-browser) is resolved first.
+/// answers its DevTools address only by IP or as localhost, so a service name (a compose stack's browser) is resolved first.
 /// A visit with a session (the cookies it starts with) or a script (one of ours, run once the page has loaded) has a
 /// browser context of its own, dropped after, and hands back the cookies the site set (F34): one area's store never
 /// reaches another visit. A plain visit shares the browser's default context, as before.
@@ -126,7 +126,7 @@ public sealed class ChromeWebBrowser(Uri browserUrl, Func<string, CancellationTo
     {
         string? refusedPage = null;
         // Request interception doesn't see WebSockets (nor does Chrome's URL blocking), and the browser shares a network
-        // with puls (F32 step 4), so a page could open one to an internal address. No shop needs one for its prices:
+        // with a product's app (F32 step 4), so a page could open one to an internal address. No shop needs one for its prices:
         // before any of the page's own scripts, in every frame, WebSocket refuses to be made.
         await page.EvaluateExpressionOnNewDocumentAsync(NoWebSockets);
         await page.SetRequestInterceptionAsync(true);

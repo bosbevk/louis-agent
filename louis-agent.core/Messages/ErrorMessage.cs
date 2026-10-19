@@ -185,7 +185,7 @@ public enum ErrorMessage
     [Description("The default mode '{Mode}' has no file ({File}): a session that names no role would open with no mode.")]
     DefaultModeMissing,
 
-    [Description("HOST_TIME_ZONE '{Value}' isn't a time zone this machine knows: use an IANA name such as Africa/Johannesburg, or leave it unset for the machine's own.")]
+    [Description("HOST_TIME_ZONE '{Value}' isn't a time zone this machine knows: use an IANA name such as Europe/London, or leave it unset for the machine's own.")]
     UnknownHostTimeZone,
 
     [Description("LLM_SESSION_PROFILES names '{Name}', but {File} isn't there.")]

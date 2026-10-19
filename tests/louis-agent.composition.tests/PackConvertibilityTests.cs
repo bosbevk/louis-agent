@@ -4,7 +4,6 @@ using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
 using LouisAgent.Composition;
 using LouisAgent.Core.Agent;
-using LouisAgent.Core.Tests.Agent;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.FileProviders;
 using ModelContextProtocol.Server;

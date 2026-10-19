@@ -57,7 +57,8 @@ nothing: only its line endings changed, and `git checkout -- <file>` puts it bac
 ## Writing tests
 
 Tests use `FakeChatClient` (a scripted `IChatClient` that also streams) and `StubHandler` for HTTP — no network, model or
-Docker. A few tests skip themselves when git, pip or the network isn't available. The agent runs tests on Linux inside
+Docker. Those, `FakePrompts`, `FakeIdentity`, `FakePack` and `TestPaths` live in `tests/louis-agent.testing`, a class library the
+test projects that use them reference as a global using (CL15); no test project references another, and `ArchitectureTests` holds it. A few tests skip themselves when git, pip or the network isn't available. The agent runs tests on Linux inside
 its containers, so keep them platform-neutral (forward slashes, no Windows-only paths).
 
 The API's sessions are tested (`tests/louis-agent.api.tests`); its endpoints and the web app have no automated tests

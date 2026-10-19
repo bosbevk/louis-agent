@@ -36,7 +36,7 @@ public sealed class AgentOptions
     /// <summary>SEARXNG_URL (F32): the SearXNG we run ourselves, for development, tests and benchmarks (ADR 0023).</summary>
     public string? SearxngUrl { get; set; }
 
-    /// <summary>BROWSER_URL (F32): the headless Chrome we run, its DevTools address (http://puls-browser:9222 in the Puls stack).</summary>
+    /// <summary>BROWSER_URL (F32): the headless Chrome we run, its DevTools address (a compose stack names its browser service: http://browser:9222).</summary>
     public string? BrowserUrl { get; set; }
 
     /// <summary>PAGE_RENDERER (F32): chrome or tavily; null picks Chrome when BROWSER_URL is set, else Tavily when its key is.</summary>
@@ -115,22 +115,22 @@ public sealed class AgentOptions
 
     /// <summary>
     /// ROLES_ENABLED: the roles this instance may use (F29), comma separated and lowercase, e.g.
-    /// <c>puls/voice-af,puls-cook</c>; a session or sub-session asking for another is refused as for an unknown one.
-    /// Empty: every built-in role. Puls's compose lists only the roles that have passed their check. PERSONALITIES_ENABLED,
+    /// <c>acme/voice-en,acme-cook</c>; a session or sub-session asking for another is refused as for an unknown one.
+    /// Empty: every built-in role. A product's compose lists only the roles that have passed their check. PERSONALITIES_ENABLED,
     /// its name before CL14, is read when it's unset, with a warning, until the TODO's line removes it.
     /// </summary>
     public IReadOnlyList<string> RolesEnabled { get; set; } = [];
 
     /// <summary>
     /// LLM_SESSION_PROFILES: the LLM profiles a session may name when it opens (F30), comma separated, e.g.
-    /// <c>ollama-puls</c>; each is read from <c>config/.env.{name}</c>. Empty: every session runs on the instance's model.
+    /// <c>ollama-local</c>; each is read from <c>config/.env.{name}</c>. Empty: every session runs on the instance's model.
     /// </summary>
     public IReadOnlyList<string> SessionLlmProfiles { get; set; } = [];
 
     /// <summary>
     /// MINION_LLMS (F30): the model a minion role runs on, as <c>role=profile</c> entries separated by commas, with
     /// <c>*</c> for every role not named and <c>instance</c> for this instance's own model; a <c>&gt;</c> lists a cascade,
-    /// cheapest first, e.g. <c>*=ollama-puls&gt;instance,puls-minion-web-summary=instance</c>. Every profile must be in
+    /// cheapest first, e.g. <c>*=ollama-local&gt;instance,acme-minion-web-summary=instance</c>. Every profile must be in
     /// <see cref="SessionLlmProfiles"/> (checked at start-up). Empty: no <c>minions</c> toolset.
     /// </summary>
     public IReadOnlyDictionary<string, IReadOnlyList<string>> MinionLlms { get; set; } = new Dictionary<string, IReadOnlyList<string>>();
@@ -164,7 +164,7 @@ public sealed class AgentOptions
 
     /// <summary>
     /// HOST_TIME_ZONE (CL15): the zone <c>GetToday</c> and the API's place line use when the user shared none, an IANA name
-    /// (<c>Africa/Johannesburg</c> in the Puls stack); null is the machine's own. Core names no country.
+    /// (an IANA name; a product's compose sets its own); null is the machine's own. Core names no country.
     /// </summary>
     public string? HostTimeZone { get; set; }
 
@@ -184,7 +184,7 @@ public sealed class AgentOptions
     /// <summary>
     /// ROLES_ENABLED, or PERSONALITIES_ENABLED (its name before CL14) when it's unset. Read raw: set but empty is "every
     /// role on", never "unset" (review of PR #60). The old name, when set, is always said in a warning: renamed when it's
-    /// read, ignored when the new one is set too (Puls's compose sets ROLES_ENABLED, and env_file passes config/.env in).
+    /// read, ignored when the new one is set too (a product's compose sets ROLES_ENABLED, and env_file passes config/.env in).
     /// </summary>
     private static string? RolesSetting(Func<string, string?> raw)
     {
