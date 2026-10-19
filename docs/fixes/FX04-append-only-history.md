@@ -5,7 +5,7 @@
 > **Removes the limitation:** "Changing the tools or skills during a chat can break it on Claude Haiku 5.5"
 > ([TODO](../../TODO.md#known-limitations) #9)
 
-## Symptom (expected from the code and Anthropic's docs; not yet seen in a run)
+## Symptom (seen in a run on 2026-10-19: Puls, a `CreateTool` mid-message, the next request a 400 naming the `tools` list; expected from the code and Anthropic's docs before that)
 
 On Claude Haiku 5.5, the default model, a request fails with a 400 like [FX1](FX01-round-limit-tools.md)'s ("Invalid
 `signature` in `thinking` block … The `tools` list differs …") when the system prompt or the tool list changed since
@@ -50,16 +50,18 @@ The first and last rows were found by reading the code (the first from a PR revi
   `FunctionInvokingChatClient` reuses one options object for all the rounds and copies it only for the final one, so
   removing the key from the shared object on round 1 would leave the final request without the frozen list.
 - **System prompt:** keep `history[0]` as it was; after a skill reload, append a short system message saying what
-  changed (Haiku 5.5 accepts mid-conversation system messages). An appended message doesn't invalidate the thinking
-  written before it; it becomes part of the checked prefix for thinking written after it, which is what append-only
-  means.
+  changed. An appended message doesn't invalidate the thinking written before it; it becomes part of the checked
+  prefix for thinking written after it, which is what append-only means. Anthropic's
+  [page](https://platform.claude.com/docs/en/build-with-claude/mid-conversation-system-messages) lists Haiku 5.5 for
+  mid-conversation `system` messages, with no beta header (checked 2026-10-19); the plan's first step still proves it
+  with one real request before building on it.
 - **F9 (compaction)** must be designed the same way: summarise by appending, never by editing earlier turns.
 
 **Alternatives considered:**
 
 | Option | What it does | Why not (for now) |
 |---|---|---|
-| `tool_addition` / `tool_removal` blocks in an appended system message | Adds or removes a tool mid-conversation without touching `tools`, so thinking stays valid and the cache keeps hitting | Beta (`inline-tools-2026-09-15`) and Claude API only; the engine must stay provider-neutral (`IChatClient`). Worth adding later for Anthropic, behind `LlmClientFactory`, so a new tool can be used in the same chat |
+| `tool_addition` / `tool_removal` blocks in an appended system message | Adds or removes a tool mid-conversation without touching `tools`, so thinking stays valid and the cache keeps hitting: a `tool_addition` block carries the new tool's whole definition, or names by `tool_reference` one already in `tools` with `defer_loading: true` | Beta, on the same models as mid-conversation `system` messages, Haiku 5.5 included (checked 2026-10-19): `inline-tools-2026-09-15` (Claude API; by definition, which `CreateTool` needs since its tool didn't exist when the chat started, or by reference), or `mid-conversation-tool-changes-2026-07-01` (by reference only, also on Bedrock and Google Cloud); the engine must stay provider-neutral (`IChatClient`). Worth adding after this fix for Anthropic, behind `LlmClientFactory`, so a new tool can be used in the same chat. Until then a tool built in a chat is used in the next chat |
 | `prefix_mismatch_behavior: "drop_block"` | The API drops the stale thinking blocks instead of failing | Beta (`thinking-binding-controls-2026-08-01`). The request succeeds but the model loses its earlier reasoning, the prompt cache restarts at the edit, and Anthropic measured 4.6% (low effort) to 67% (max) more output tokens. A safety net, not a design |
 | Leave it, and tell users to start a new chat | Today's known limitation | The `CreateTool` case fails in the middle of a message, with no chance to start a new chat |
 
