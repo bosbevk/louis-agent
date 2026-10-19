@@ -72,7 +72,7 @@ Guidance for the `git` toolset: status, diffs, branches, staging, commits, merge
 
 ### Configuration
 - `GetConfig(key)` — Get a git config value (or all if key is empty)
-- `SetConfig(key, value)` — Set a git config value
+- `SetConfig(key, value)` — Set `user.name` or `user.email` (the only keys it sets: others can make git run commands)
 
 ## Workflows
 

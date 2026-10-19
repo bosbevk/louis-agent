@@ -39,6 +39,15 @@ public enum ToolMessage
     [Description("Give at least one of text, author, since or until to search the commits.")]
     GitSearchNeedsCriteria,
 
+    [Description("{Parameter} '{Value}' starts with '-': git would read it as an option, so nothing was run. Give a name, reference or path, not an option.")]
+    GitValueRefused,
+
+    [Description("SetConfig sets only {Allowed}; '{Key}' was not set. Other keys (core.fsmonitor, core.sshCommand, core.hooksPath, alias.*) can make git run commands. GetConfig can read any key.")]
+    GitConfigKeyRefused,
+
+    [Description("{Parameter} '{Value}' is a refspec, not a branch name: '+' would force the push and ':' would push to or delete another ref. Give the branch name alone, and use force for a forced push.")]
+    GitRefspecRefused,
+
     [Description("ReadDocument reads {Supported}; '{Extension}' isn't one of them. Use ReadWorkspaceFile for text files.")]
     DocumentTypeUnsupported,
 
@@ -98,9 +107,6 @@ public enum ToolMessage
 
     [Description("[Timeout] Git command exceeded 30s limit.")]
     GitTimeout,
-
-    [Description("Error running git: {Reason}")]
-    GitFailed,
 
     [Description("Invalid file path.")]
     InvalidFilePath,

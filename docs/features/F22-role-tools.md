@@ -59,8 +59,8 @@ attachments to a sub-session is our own: nothing third-party does that for us.
   and specialists get it.
 - **Attachments by name:** the model names a file and the session supplies it, so a file isn't copied through the model's
   output; the session remembers attachments across turns.
-- **The new git tools use argument lists** (`ProcessRunner`); the older git tools still build one command string, a gap
-  outside F22.
+- **The new git tools use argument lists** (`ProcessRunner`); the older git tools still built one command string, a gap
+  outside F22 that [FX19](../fixes/FX19-git-arguments-as-data.md) closed.
 - **Roles name their tools**, and the analyst gets `python` with `files` when the data is the user's.
 - **PR #28 review:** any failure reading a PDF in `FetchUrl` is `DocumentUnreadable` (PdfPig throws more than one kind);
   the browser's position goes to Nominatim at two decimals (~1 km, a town) instead of four (~11 m); the time zone is sent

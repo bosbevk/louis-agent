@@ -3,6 +3,10 @@
 > **Reference.** What was finished, newest first, one entry per feature, fix or cleanup. **Elsewhere:** what's still
 > open in the [TODO](TODO.md); how each was built in its feature, fix or plan doc (linked from its entry).
 
+- 2026-10-19 — **FX19 Git arguments as data** (the platform plan's Phase 1): every git tool runs from a list of
+  arguments, the model's values after `--end-of-options` and paths after `--`, a value that starts with `-` refused
+  before git runs, and `SetConfig` limited to `user.name` and `user.email`; `ArchitectureTests` keeps a command-line
+  string out of core ([fix](docs/fixes/FX19-git-arguments-as-data.md), [ADR 0004](docs/adr/0004-arguments-as-data.md) amended)
 - 2026-10-19 — **FX18 Auth fails closed** (the platform plan's Phase 1): the API, and the MCP server over HTTP, refuse
   to start without a key unless `AGENT_AUTH=off` says so on purpose; a key that is set is always checked. One pure
   rule in core, `Guardrails/HostAuth`, replaces the two hosts' own checks ([fix](docs/fixes/FX18-auth-fails-closed.md))

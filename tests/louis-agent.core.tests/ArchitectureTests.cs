@@ -100,6 +100,26 @@ public partial class ArchitectureTests
         Assert.That(found, Is.Empty, "Skills/: the top uses nothing below it; Providers/ and Roles/ use only the top");
     }
 
+    // FX19 (ADR 0004): a process starts from an argument list, never from one command-line string, so a value from the
+    // model can't be split into more arguments. A ProcessStartInfo.Arguments assignment is the one way to build such a
+    // string; this fails on it anywhere in core, so it can't come back. (Other types have an Arguments property too:
+    // a tool call's, a record's; only a file that starts a process is read.)
+    [Test]
+    public void NoFileInCore_BuildsAProcessCommandLineAsOneString()
+    {
+        string core = Path.Combine(TestPaths.RepoRoot, "louis-agent.core");
+        var found = Directory.EnumerateFiles(core, "*.cs", SearchOption.AllDirectories)
+            .Select(f => Path.GetRelativePath(core, f).Replace('\\', '/'))
+            .Where(f => !f.StartsWith("bin/") && !f.StartsWith("obj/"))
+            .Where(f => File.ReadAllText(Path.Combine(core, f)) is { } source && source.Contains("ProcessStartInfo") && ArgumentsString().IsMatch(source))
+            .ToList();
+
+        Assert.That(found, Is.Empty, "Builds a command line as one string (ADR 0004); use ProcessRunner's argument list:\n" + string.Join("\n", found));
+    }
+
+    [GeneratedRegex(@"(^|[\s.])Arguments\s*=[^=]", RegexOptions.Multiline)]
+    private static partial Regex ArgumentsString();
+
     [GeneratedRegex(@"^using\s+LouisAgent\.Core\.Skills\.(\w+)\s*;", RegexOptions.Multiline)]
     private static partial Regex SkillsUsing();
 
