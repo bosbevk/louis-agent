@@ -247,7 +247,7 @@ public sealed class AgentOptions
             SessionLlmProfiles = ParseNames(Get("LLM_SESSION_PROFILES")),
             MinionLlms = ParseMinionLlms(Get("MINION_LLMS")),
             AgentApiKey = Get("AGENT_API_KEY"),
-            HostTimeZone = Get("HOST_TIME_ZONE"),
+            HostTimeZone = TimeZoneChecked(Get("HOST_TIME_ZONE")),
             SubSessionPromptBudget = int.TryParse(Get("SUB_SESSION_PROMPT_BUDGET"), NumberStyles.None, CultureInfo.InvariantCulture, out int budget)
                 ? budget : DefaultSubSessionPromptBudget,
         };
@@ -261,6 +261,15 @@ public sealed class AgentOptions
         options.WorkspaceRoot = Path.GetFullPath(options.WorkspaceRoot);
         return options;
     }
+
+    /// <summary>
+    /// HOST_TIME_ZONE must be a zone this machine knows (review of CL15 step 3): a misspelt one fell back in silence and
+    /// reached the model's place line as written, two hours off; every other setting stops the host when it's wrong.
+    /// </summary>
+    private static string? TimeZoneChecked(string? name) =>
+        name is null || TimeZoneInfo.TryFindSystemTimeZoneById(name, out _)
+            ? name
+            : throw new ArgumentException(MessageText.Format(ErrorMessage.UnknownHostTimeZone, new { Value = name }));
 
     /// <summary>Nearest directory at or above <paramref name="startDirectory"/> containing .git or a .sln file.</summary>
     internal static string? FindRepositoryRoot(string startDirectory)

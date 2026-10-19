@@ -35,6 +35,16 @@ public class ClockToolsTests
     }
 
     [Test]
+    public void AZoneThisMachineDoesntKnow_StopsTheHost_AtStartUp()
+    {
+        // Review of step 3: "Africa/Johannesberg" fell back to the machine's zone in silence and reached the model's
+        // place line misspelled, two hours off on "vanaand". Every other setting refuses to start when it's wrong.
+        var error = Assert.Throws<ArgumentException>(() => AgentOptions.FromEnvironment(name => name == "HOST_TIME_ZONE" ? "Africa/Johannesberg" : null))!;
+
+        Assert.That(error.Message, Does.Contain("HOST_TIME_ZONE").And.Contain("Africa/Johannesberg"));
+    }
+
+    [Test]
     public void GetToday_CrossesMidnight_ByTheLocalClock()
     {
         // 23:30 UTC is already the next day in South Africa.
