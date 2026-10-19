@@ -1,6 +1,7 @@
 using System.Net.ServerSentEvents;
 using System.Text.Json;
 using LouisAgent.Api;
+using LouisAgent.Composition;
 using LouisAgent.Api.Config;
 using LouisAgent.Api.Services.Benchmarks;
 using LouisAgent.Core.Agent;
@@ -26,7 +27,7 @@ using LouisAgent.Core.Tools.Clock;
 
 // HTTP version of the ACP server, which also serves the web app: every API reply is JSON, and a message's answer streams as Server-Sent Events shaped
 // like Claude's (message_start, content_block_start/delta/stop for thinking, text, tool_use and tool_result, message_stop).
-var host = AgentHost.Build();
+var host = AgentHost.Build(Plugins.FromEnvironment());
 
 var builder = WebApplication.CreateBuilder(args);
 // host.Engine (every toolset this instance can load) serves /workspace and /git; sessions get their own (F5).

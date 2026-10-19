@@ -23,6 +23,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- CL15: the identity tests reuse the fakes and paths here (FakeChatClient, TestPaths). -->
+    <InternalsVisibleTo Include="louis-agent.identity.puls.tests" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Using Include="NUnit.Framework" />
   </ItemGroup>
 

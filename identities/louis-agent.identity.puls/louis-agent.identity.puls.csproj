@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Who Puls is (CL15, ADR 0027): its modes, its specialists and its minion roles, as embedded prompts, and the packs it
+       uses by name. The web app the user sees stays src/louis-agent.puls; this is what the agent loads. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>LouisAgent.Identities.Puls</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <!-- Keeps the embedded prompts' folder paths (ManifestEmbeddedFileProvider), as core's csproj does. -->
+    <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\louis-agent.core\louis-agent.core.csproj" />
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="10.0.13" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Step 3 moves Puls's prompts here from core's Prompts/, byte for byte. -->
+    <EmbeddedResource Include="Prompts\**\*.md" />
+  </ItemGroup>
+
+</Project>

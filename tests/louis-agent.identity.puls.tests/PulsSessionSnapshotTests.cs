@@ -4,19 +4,20 @@ using LouisAgent.Core.Agent;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Skills.Roles;
+using LouisAgent.Core.Tests;
 using Microsoft.Extensions.AI;
 
-namespace LouisAgent.Core.Tests.Agent;
+namespace LouisAgent.Identities.Puls.Tests;
 
 // CL15 step 0: what the model is sent in a Puls session must not change while Puls and the shops leave core, except
 // where a step says it does. The coding agent's golden (ModelRequestSnapshotTests) never pinned a Puls session, so the
 // cut had no proof; this one pins the two sessions Puls runs: the chat (puls/voice-af with specialists and web, as the
 // web app opens it) and the cook (puls-cook with web and shops, as Puls hands it the work). Written from main before
-// the first move. A deliberate change regenerates it: LOUIS_UPDATE_GOLDEN=1, run, review the diff, commit.
+// the first move, in core's tests; here, with Puls's identity, from step 2. A deliberate change regenerates it: LOUIS_UPDATE_GOLDEN=1, run, review the diff, commit.
 public class PulsSessionSnapshotTests
 {
     private static readonly string GoldenFile =
-        Path.Combine(TestPaths.RepoRoot, "tests", "louis-agent.core.tests", "Agent", "PulsSessionSnapshot.json");
+        Path.Combine(TestPaths.RepoRoot, "tests", "louis-agent.identity.puls.tests", "PulsSessionSnapshot.json");
 
     private static readonly JsonSerializerOptions Json = new()
     {

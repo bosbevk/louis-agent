@@ -1,4 +1,5 @@
 using LouisAgent.AcpServer;
+using LouisAgent.Composition;
 using LouisAgent.Core.Hosting;
 using LouisAgent.AcpServer.Messages;
 using LouisAgent.Core.Logging;
@@ -7,7 +8,7 @@ using Microsoft.Extensions.Logging;
 
 try
 {
-    var host = AgentHost.Build();
+    var host = AgentHost.Build(Plugins.FromEnvironment());
     await new AcpServer(host.Engine, usageInChat: host.Agent.UsageInChat).RunAsync();
 }
 catch (Exception ex)

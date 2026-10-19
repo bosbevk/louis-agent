@@ -22,6 +22,8 @@ services:
     container_name: puls
     <<: *puls-env
     environment:
+      # Who this agent is (CL15): Puls, from identities/louis-agent.identity.puls; the code-review stack sets none.
+      IDENTITIES: puls
       WORKSPACE_ROOT: /workspace
       SKILLS_DIRECTORY: /skills
       GIT_CONFIG_COUNT: "1"
@@ -67,6 +69,8 @@ services:
     container_name: puls_agent
     <<: *puls-env
     environment:
+      # The same identity as puls (CL15): its specialists and minion roles are Puls's own.
+      IDENTITIES: puls
       WORKSPACE_ROOT: /workspace
       SKILLS_DIRECTORY: /skills
       GIT_CONFIG_COUNT: "1"

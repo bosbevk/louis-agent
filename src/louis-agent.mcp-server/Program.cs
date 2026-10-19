@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using LouisAgent.Composition;
 using LouisAgent.Core.Agent;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -15,7 +16,7 @@ using LouisAgent.Core.Messages;
 
 // The MCP client brings its own model; this server publishes the agent's tools (workspace, git, DotNet*, Python*,
 // PowerShell*, Bash*, skills, agent-built tools, ...) so that client can call them.
-var engine = AgentHost.BuildToolHost();
+var engine = AgentHost.BuildToolHost(Plugins.FromEnvironment());
 
 // Default (unset or anything but "http"): stdio, for a client that launches this as a local subprocess (Rider,
 // Claude Desktop) - unchanged from before. "http" serves Streamable HTTP instead, for a remote client that isn't

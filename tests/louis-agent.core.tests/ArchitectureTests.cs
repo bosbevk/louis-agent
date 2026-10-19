@@ -120,6 +120,138 @@ public partial class ArchitectureTests
     [GeneratedRegex(@"(^|[\s.])Arguments\s*=[^=]", RegexOptions.Multiline)]
     private static partial Regex ArgumentsString();
 
+    // ---- CL15: the cut. Core is the engine and names no identity, pack or product; a pack references no other pack and
+    // no identity (ADR 0027); and core's model-visible text names no product, held by a ratchet like Pending's. ----
+
+    [Test]
+    public void Core_ReferencesNoIdentityOrPack()
+    {
+        string core = Path.Combine(TestPaths.RepoRoot, "louis-agent.core");
+        Assert.That(ForbiddenReferences(File.ReadAllText(Path.Combine(core, "louis-agent.core.csproj"))), Is.Empty, "core's csproj references an identity or a pack");
+
+        var usings = Directory.EnumerateFiles(core, "*.cs", SearchOption.AllDirectories)
+            .Where(f => !f.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}") && !f.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}"))
+            .Where(f => OutsideCoreUsing().IsMatch(File.ReadAllText(f)))
+            .Select(f => Path.GetRelativePath(core, f))
+            .ToList();
+        Assert.That(usings, Is.Empty, "core uses an identity's, a pack's or the composition's namespace");
+    }
+
+    [Test]
+    public void NoPack_ReferencesAnotherPack_OrAnIdentity()
+    {
+        // The rule on a fixture, read as text (never a loose csproj the build would pick up), then on every pack on disk.
+        const string offending = """
+            <Project Sdk="Microsoft.NET.Sdk">
+              <ItemGroup>
+                <ProjectReference Include="..\..\louis-agent.core\louis-agent.core.csproj" />
+                <ProjectReference Include="..\louis-agent.pack.recipes\louis-agent.pack.recipes.csproj" />
+                <ProjectReference Include="..\..\identities\louis-agent.identity.puls\louis-agent.identity.puls.csproj" />
+              </ItemGroup>
+            </Project>
+            """;
+        Assert.That(ForbiddenReferences(offending), Is.EqualTo(new[] { @"..\louis-agent.pack.recipes\louis-agent.pack.recipes.csproj", @"..\..\identities\louis-agent.identity.puls\louis-agent.identity.puls.csproj" }));
+
+        string packs = Path.Combine(TestPaths.RepoRoot, "packs");
+        var found = (Directory.Exists(packs) ? Directory.EnumerateFiles(packs, "*.csproj", SearchOption.AllDirectories) : [])
+            .SelectMany(f => ForbiddenReferences(File.ReadAllText(f)).Select(r => $"{Path.GetRelativePath(packs, f)}: {r}"))
+            .ToList();
+        Assert.That(found, Is.Empty, "a pack references another pack or an identity (ADR 0027):\n" + string.Join("\n", found));
+    }
+
+    /// <summary>The project references a csproj makes into <c>packs/</c> or <c>identities/</c> (core's and a pack's may make none).</summary>
+    internal static IReadOnlyList<string> ForbiddenReferences(string csproj) =>
+        ProjectReference().Matches(csproj).Select(m => m.Groups[1].Value)
+            .Where(include => PackOrIdentityPath().IsMatch(include))
+            .ToList();
+
+    // What the model reads from core, and may not name: a product (puls), its country, or its Afrikaans briefing labels.
+    // Today's pieces, each "file: what", until steps 3 and 4 move them out; a new one fails, a stale entry fails too.
+    private static readonly HashSet<string> PendingProductText =
+    [
+        // Step 3 moves Puls's own files to its identity, splits its protocol out of the two shared guides, takes the
+        // Puls names out of ToolMessage and MinionTools, and South Africa out of GetToday.
+        "Messages/ToolMessage.cs: puls",
+        "Prompts/agent/puls/voice-af.md: puls",
+        "Prompts/agent/puls/voice-en.md: South Africa",
+        "Prompts/agent/puls/voice-en.md: puls",
+        "Prompts/agent/puls/voice.md: Afrikaans briefing label",
+        "Prompts/agent/puls/voice.md: puls",
+        "Prompts/minions/puls-minion-web-price-lookup.md: puls",
+        "Prompts/minions/puls-minion.md: puls",
+        "Prompts/specialists/puls-analyst.md: puls",
+        "Prompts/specialists/puls-cook.md: Afrikaans briefing label",
+        "Prompts/specialists/puls-cook.md: South Africa",
+        "Prompts/specialists/puls-cook.md: puls",
+        "Prompts/specialists/puls-historian.md: puls",
+        "Prompts/specialists/puls-reader.md: puls",
+        "Prompts/specialists/puls-researcher.md: puls",
+        "Prompts/toolsets/minions.md: puls",
+        "Prompts/toolsets/specialists.md: Afrikaans briefing label",
+        "Prompts/toolsets/specialists.md: puls",
+        "Tools/Agents/MinionTools.cs: puls",
+        "Tools/Clock/ClockTools.cs: South Africa",
+        // Step 4 moves the shops toolset, whose area text names Puls, to its pack.
+        "Tools/Shops/ShopTools.cs: puls",
+    ];
+
+    private static readonly (string Label, Regex Pattern)[] ProductWords =
+    [
+        ("puls", new Regex(@"\bpuls\b", RegexOptions.IgnoreCase)),
+        ("South Africa", new Regex(@"South Africa")),
+        ("Afrikaans briefing label", new Regex(@"Vir hoeveel|Wil hê|stemming")),
+    ];
+
+    [Test]
+    public void CoresModelVisibleText_NamesNoProduct_BeyondThePendingList()
+    {
+        List<string> unexpected = ProductText().Where(v => !PendingProductText.Contains(v)).ToList();
+        Assert.That(unexpected, Is.Empty, "Core's model-visible text names a product (CL15):\n" + string.Join("\n", unexpected));
+    }
+
+    [Test]
+    public void ThePendingProductText_OnlyHoldsRealPieces()
+    {
+        HashSet<string> current = ProductText().ToHashSet();
+        List<string> gone = PendingProductText.Where(p => !current.Contains(p)).ToList();
+        Assert.That(gone, Is.Empty, "No longer there; remove them from PendingProductText:\n" + string.Join("\n", gone));
+    }
+
+    /// <summary>Every "file: word" in core's embedded prompts and in the [Description] texts of its C# (tool descriptions, ToolMessage members).</summary>
+    private static IEnumerable<string> ProductText()
+    {
+        string core = Path.Combine(TestPaths.RepoRoot, "louis-agent.core");
+        var pieces = new SortedSet<string>(StringComparer.Ordinal);
+        foreach (string file in Directory.EnumerateFiles(Path.Combine(core, "Prompts"), "*.md", SearchOption.AllDirectories))
+            Add(Path.GetRelativePath(core, file), File.ReadAllText(file));
+        foreach (string file in Directory.EnumerateFiles(core, "*.cs", SearchOption.AllDirectories))
+        {
+            if (file.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}") || file.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}")) continue;
+            string descriptions = string.Join("\n", DescriptionText().Matches(File.ReadAllText(file)).Select(m => m.Groups[1].Value));
+            Add(Path.GetRelativePath(core, file), descriptions);
+        }
+        return pieces;
+
+        void Add(string file, string text)
+        {
+            foreach (var (label, pattern) in ProductWords)
+                if (pattern.IsMatch(text)) pieces.Add($"{file.Replace('\\', '/')}: {label}");
+        }
+    }
+
+    [GeneratedRegex(@"<ProjectReference\s+Include=""([^""]+)""")]
+    private static partial Regex ProjectReference();
+
+    [GeneratedRegex(@"[\\/](packs|identities)[\\/]|^\.\.[\\/]louis-agent\.(pack|identity)\.")]
+    private static partial Regex PackOrIdentityPath();
+
+    [GeneratedRegex(@"^using\s+LouisAgent\.(Identities|Packs|Composition)\b", RegexOptions.Multiline)]
+    private static partial Regex OutsideCoreUsing();
+
+    // Everything inside a [Description(…)]: one literal, literals joined with +, or a multi-line raw string.
+    [GeneratedRegex(@"\[Description\((.*?)\)\]", RegexOptions.Singleline)]
+    private static partial Regex DescriptionText();
+
     [GeneratedRegex(@"^using\s+LouisAgent\.Core\.Skills\.(\w+)\s*;", RegexOptions.Multiline)]
     private static partial Regex SkillsUsing();
 

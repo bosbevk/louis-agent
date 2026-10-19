@@ -20,6 +20,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\louis-agent.core\louis-agent.core.csproj" />
+    <!-- CL15: the identities and packs this host may load, chosen by IDENTITIES and PACKS at start-up. -->
+    <ProjectReference Include="..\louis-agent.composition\louis-agent.composition.csproj" />
   </ItemGroup>
 
 </Project>
