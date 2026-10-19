@@ -52,8 +52,9 @@ public sealed class AgentEngineFactory
     public AgentEngineFactory(IChatClient chatClient, AgentOptions agent, bool supportsTools = true,
         IUsageSink? usageSink = null, IUsageMapper? usageMapper = null, DisplayCurrency? display = null,
         ReasoningEffort? thinking = null, IWebSearchProvider? webSearch = null, int capacity = DefaultCapacity,
-        ExchangeRates? rates = null, IReadOnlyList<SessionLlm>? sessionLlms = null)
+        ExchangeRates? rates = null, IReadOnlyList<SessionLlm>? sessionLlms = null, AgentCatalog? catalog = null)
     {
+        Catalog = catalog ?? AgentCatalog.CoreOnly;
         _chatClient = chatClient;
         _agent = agent;
         _supportsTools = supportsTools;
@@ -69,8 +70,11 @@ public sealed class AgentEngineFactory
     /// <summary>What the catalogue builds this instance's tools from (settings, the search provider).</summary>
     public ToolsetContext Context { get; }
 
+    /// <summary>The toolsets this instance can load (CL15): core's and its packs'; <see cref="AgentCatalog.CoreOnly"/> when a host passes none.</summary>
+    public AgentCatalog Catalog { get; }
+
     /// <summary>Every toolset this instance can load: those whose settings are all set.</summary>
-    public IReadOnlyList<string> Available => ToolsetCatalog.All.Where(t => t.IsAvailable(Context)).Select(t => t.Name).ToList();
+    public IReadOnlyList<string> Available => Catalog.Toolsets.Where(t => t.IsAvailable(Context)).Select(t => t.Name).ToList();
 
     /// <summary>The LLM profiles a session can name besides the instance's own model (F30, <c>LLM_SESSION_PROFILES</c>).</summary>
     public IReadOnlyList<string> SessionLlms => _sessionLlms.Keys.ToList();
@@ -100,7 +104,7 @@ public sealed class AgentEngineFactory
     public AgentEngine GetOrCreate(IEnumerable<string>? toolsets, string? role = null, RoleLevel level = RoleLevel.Agent,
         string? llm = null, string? tool = null)
     {
-        var resolved = ToolsetCatalog.Resolve(toolsets, Context);
+        var resolved = Catalog.Resolve(toolsets, Context);
         if (string.IsNullOrEmpty(role)) role = null;
         // Checked here, not in Build: a Lazy that throws keeps the exception, and the key would stay broken.
         AgentHost.RoleFile(_agent, role, level);
@@ -110,7 +114,7 @@ public sealed class AgentEngineFactory
             throw new SessionLlmException(MessageText.Format(ErrorMessage.UnknownSessionLlm,
                 new { Name = llm, Available = _sessionLlms.Count == 0 ? "none" : string.Join(", ", _sessionLlms.Keys) }));
         if (string.IsNullOrWhiteSpace(tool)) tool = null;
-        if (tool is not null && !ToolsetCatalog.ToolNamesOf(resolved).Contains(tool))
+        if (tool is not null && !Catalog.ToolNamesOf(resolved).Contains(tool))
             throw new ToolsetException(MessageText.Format(ErrorMessage.ToolNotInToolsets,
                 new { Tool = tool, Toolsets = resolved.Count == 0 ? "(none)" : string.Join(", ", resolved.Select(t => t.Name)) }));
 
@@ -149,6 +153,8 @@ public sealed class AgentEngineFactory
             model is null ? _usageMapper : model.UsageMapper, selfExtension, ToolsetCatalog.RunsInParallel(resolved))
         {
             SkillsDirectory = AgentHost.FindSkillsDirectory(_agent),
+            // An agent-built tool may take no name of the catalogue's, a pack's included (CL15).
+            ReservedToolNames = Catalog.ToolNames,
             // ReloadSkills reloads this profile's prompt (its guides, role and router), never another's.
             SkillReloader = () => AgentHost.LoadSkills(_agent, guided, role, level),
             Thinking = model is null ? _thinking : model.Thinking,

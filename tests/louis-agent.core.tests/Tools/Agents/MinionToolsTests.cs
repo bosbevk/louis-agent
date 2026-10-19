@@ -251,9 +251,9 @@ public class MinionToolsTests
         Assert.That(minions.MissingSettings(without), Is.EqualTo(new[] { "AGENT_PEERS", "MINION_LLMS" }));
         Assert.That(minions.IsAvailable(with), Is.True);
         Assert.That(minions.GuideFile, Is.EqualTo("toolsets/minions.md"));
-        Assert.That(ToolsetCatalog.ToolsetOf("FetchUrl"), Is.EqualTo("web"));
-        Assert.That(ToolsetCatalog.ToolsetOf("ReadWorkspaceFile"), Is.EqualTo("files"));
-        Assert.That(ToolsetCatalog.ToolsetOf("CreateTool"), Is.Null, "engine-provided: no toolset builds it");
+        Assert.That(AgentCatalog.CoreOnly.ToolsetOf("FetchUrl"), Is.EqualTo("web"));
+        Assert.That(AgentCatalog.CoreOnly.ToolsetOf("ReadWorkspaceFile"), Is.EqualTo("files"));
+        Assert.That(AgentCatalog.CoreOnly.ToolsetOf("CreateTool"), Is.Null, "engine-provided: no toolset builds it");
     }
 
     private sealed class NoSearch : LouisAgent.Core.Tools.Web.Search.IWebSearchProvider

@@ -117,12 +117,17 @@ public static partial class AgentHost
     /// model, so no LLM provider or API key is needed. It has every toolset this instance can load (F5); skills,
     /// agent-built tools and approval work as usual.
     /// </summary>
-    public static AgentEngine BuildToolHost()
+    public static AgentEngine BuildToolHost() => BuildToolHost(AgentCatalog.CoreOnly);
+
+    /// <summary>The same, with the identities and packs the host was given (CL15): their prompts registered, the roles checked.</summary>
+    public static AgentEngine BuildToolHost(AgentCatalog catalog)
     {
         LoadEnvironment();
         var agent = AgentOptions.FromEnvironment();
         AgentLogging.Configure(agent.LogDirectory);
-        var engines = new AgentEngineFactory(new ToolsOnlyChatClient(), agent);
+        SkillFileSource.Use(catalog.Prompts);
+        CheckRoles(agent, RoleCatalog.DefaultVoice);
+        var engines = new AgentEngineFactory(new ToolsOnlyChatClient(), agent, catalog: catalog);
         return engines.GetOrCreate(engines.Available);
     }
 
@@ -143,14 +148,17 @@ public static partial class AgentHost
         public void Dispose() { }
     }
 
-    public static AgentHostContext Build(ILlmClientFactory? clientFactory = null)
+    public static AgentHostContext Build(ILlmClientFactory? clientFactory = null) => Build(AgentCatalog.CoreOnly, clientFactory);
+
+    /// <summary>The same, with the identities and packs the host was given (CL15): their prompts registered, the roles checked.</summary>
+    public static AgentHostContext Build(AgentCatalog catalog, ILlmClientFactory? clientFactory = null)
     {
         LoadEnvironment();
 
         var llm = LlmOptions.FromEnvironment();
         var agent = AgentOptions.FromEnvironment();
         AgentLogging.Configure(agent.LogDirectory);
-        return Build(llm, agent, clientFactory ?? new LlmClientFactory());
+        return Build(llm, agent, clientFactory ?? new LlmClientFactory(), catalog);
     }
 
     /// <summary>
@@ -159,8 +167,13 @@ public static partial class AgentHost
     /// every toolset this instance can load: what the CLI and the ACP server use, one session per process. The API
     /// builds each session's engine from <see cref="AgentHostContext.Engines"/>.
     /// </summary>
-    public static AgentHostContext Build(LlmOptions llm, AgentOptions agent, ILlmClientFactory clientFactory)
+    public static AgentHostContext Build(LlmOptions llm, AgentOptions agent, ILlmClientFactory clientFactory, AgentCatalog? catalog = null)
     {
+        catalog ??= AgentCatalog.CoreOnly;
+        // The identities' and packs' prompts, before any is read (CL15); then every ROLES_ENABLED name and the default
+        // mode must resolve, so a missing identity stops the host here, not at its first chat.
+        SkillFileSource.Use(catalog.Prompts);
+        CheckRoles(agent, RoleCatalog.DefaultVoice);
         var chatClient = clientFactory.Create(llm);
         PriceTable prices = LoadPrices(agent);
         ExchangeRates rates = LoadRates(agent, prices.Currency);
@@ -171,7 +184,7 @@ public static partial class AgentHost
         var sessionLlms = LoadSessionLlms(agent, clientFactory, configDirectory, Environment.GetEnvironmentVariable);
         CheckMinionLlms(agent);
         var engines = new AgentEngineFactory(chatClient, agent, llm.ResolveSupportsTools(), CreateUsageSink(agent, prices),
-            clientFactory.CreateUsageMapper(llm), display, llm.ResolveThinking(), rates: rates, sessionLlms: sessionLlms);
+            clientFactory.CreateUsageMapper(llm), display, llm.ResolveThinking(), rates: rates, sessionLlms: sessionLlms, catalog: catalog);
         var engine = engines.GetOrCreate(engines.Available);
         Log.Log(LogLevel.Information, LogMessage.LlmChosen,
             new { Llm = llm, Tools = engine.SupportsTools ? "on" : "off", Thinking = engine.Thinking?.ToString().ToLowerInvariant() ?? "off" });
@@ -449,6 +462,25 @@ public static partial class AgentHost
             throw new RoleException(MessageText.Format(ErrorMessage.UnknownRole,
                 new { Name = role, Available = string.Join(", ", EnabledRoles(agent, level)) }));
         return file;
+    }
+
+    /// <summary>
+    /// Start-up's check of the roles (CL15): every <c>ROLES_ENABLED</c> name must be a role this instance has, at some
+    /// level, and <paramref name="defaultMode"/>, the mode of a session that names none, must have its file. Before the
+    /// cut an unknown name was dropped in silence (it simply never matched), and a session with no role was handed the
+    /// default before any check, so a Puls missing from <c>IDENTITIES</c> would have shown as a 400 at the first chat.
+    /// </summary>
+    internal static void CheckRoles(AgentOptions agent, string defaultMode)
+    {
+        var known = Enum.GetValues<RoleLevel>().SelectMany(RoleCatalog.Available).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var unknown = agent.RolesEnabled.Where(r => !known.Contains(r)).ToList();
+        if (unknown.Count > 0)
+            throw new RoleException(MessageText.Format(ErrorMessage.UnknownRolesEnabled,
+                new { Names = string.Join(", ", unknown), Available = string.Join(", ", known.Order(StringComparer.Ordinal)) }));
+
+        string file = RoleCatalog.FileName(defaultMode, RoleLevel.Agent);
+        if (ReadSkillFile(agent, file) is null)
+            throw new RoleException(MessageText.Format(ErrorMessage.DefaultModeMissing, new { Mode = defaultMode, File = file }));
     }
 
     /// <summary>

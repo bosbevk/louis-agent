@@ -160,7 +160,7 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
         else if (tool is not null)
             throw new ToolsetException(MessageText.Format(ErrorMessage.ToolOnlyForMinions, new { MinionDepth, Depth = depth }));
         // A minion names its tool; the toolset that builds it is implied (StartMinion sends none).
-        var names = ToolsetCatalog.Normalise(depth == MinionDepth && toolsets is null ? [ToolsetCatalog.ToolsetOf(tool!)
+        var names = ToolsetCatalog.Normalise(depth == MinionDepth && toolsets is null ? [engines.Catalog.ToolsetOf(tool!)
                 ?? throw new ToolsetException(MessageText.Format(ErrorMessage.NoToolsetForTool, new { Tool = tool }))]
             : toolsets ?? DefaultToolsets);
         // A role's own toolsets (F33: the cook's `shops?`, from its file's header) come with it, beside what its parent
@@ -177,7 +177,7 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
         // A sub-session's role is named by its parent (CL10); with none it gets the default mode's voice, no routing.
         if (string.IsNullOrWhiteSpace(llm)) llm = null;
         // What the session loads: an optional toolset this instance lacks is left out, and the session says so.
-        names = ToolsetCatalog.Resolve(names, engines.Context).Select(t => t.Name).ToList();
+        names = engines.Catalog.Resolve(names, engines.Context).Select(t => t.Name).ToList();
         var engine = engines.GetOrCreate(names, role, (RoleLevel)depth, llm, tool);
 
         DropIdle(DateTimeOffset.UtcNow);

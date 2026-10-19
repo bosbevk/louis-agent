@@ -19,7 +19,7 @@ namespace LouisAgent.Core.Agent;
 /// order.
 /// </param>
 /// <param name="ToolType">
-/// The class <see cref="CreateTools"/> builds, so its tool names are known without building it (<see cref="ToolsetCatalog.ToolNames"/>).
+/// The class <see cref="CreateTools"/> builds, so its tool names are known without building it (<see cref="AgentCatalog.ToolNames"/>).
 /// Null when the engine provides the tools.
 /// </param>
 public sealed record ToolsetDefinition(

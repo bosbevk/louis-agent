@@ -117,29 +117,7 @@ public static class ToolsetCatalog
             CreateTools: null),
     ];
 
-    /// <summary>
-    /// Every tool name a catalogue toolset can register, loaded in this engine or not: an agent-built tool may not take
-    /// one, or it would collide when a session loads that toolset.
-    /// </summary>
-    public static IReadOnlySet<string> ToolNames { get; } = All
-        .Where(t => t.ToolType is not null)
-        .SelectMany(t => ToolRegistry.ToolMethods(t.ToolType!))
-        .Select(m => m.Name)
-        .ToHashSet(StringComparer.OrdinalIgnoreCase);
-
-    /// <summary>
-    /// The tool names <paramref name="resolved"/> register (an engine-provided toolset contributes none): what a minion's
-    /// one tool may be chosen from (F30).
-    /// </summary>
-    public static IReadOnlySet<string> ToolNamesOf(IEnumerable<ToolsetDefinition> resolved) => resolved
-        .Where(t => t.ToolType is not null)
-        .SelectMany(t => ToolRegistry.ToolMethods(t.ToolType!))
-        .Select(m => m.Name)
-        .ToHashSet(StringComparer.Ordinal);
-
-    /// <summary>The toolset whose class builds <paramref name="tool"/> (a minion's one tool names its toolset, F30); null for none.</summary>
-    public static string? ToolsetOf(string tool) => All
-        .FirstOrDefault(t => t.ToolType is not null && ToolRegistry.ToolMethods(t.ToolType).Any(m => string.Equals(m.Name, tool, StringComparison.Ordinal)))?.Name;
+    // CL15: ToolNames, ToolNamesOf and ToolsetOf moved to AgentCatalog, so a pack's tools count too.
 
     /// <summary>
     /// Whether an engine of <paramref name="resolved"/> runs a round's tool calls at once (F34): only when it has toolsets
@@ -148,9 +126,11 @@ public static class ToolsetCatalog
     public static bool RunsInParallel(IReadOnlyCollection<ToolsetDefinition> resolved) =>
         resolved.Count > 0 && resolved.All(t => t.ParallelSafe);
 
-    /// <summary>Looks a toolset up by name (case-insensitive); null when there is none.</summary>
-    public static ToolsetDefinition? Find(string name) =>
-        All.FirstOrDefault(t => string.Equals(t.Name, name, StringComparison.OrdinalIgnoreCase));
+    /// <summary>Looks a core toolset up by name (case-insensitive); null when there is none.</summary>
+    public static ToolsetDefinition? Find(string name) => Find(name, All);
+
+    private static ToolsetDefinition? Find(string name, IReadOnlyList<ToolsetDefinition> toolsets) =>
+        toolsets.FirstOrDefault(t => string.Equals(t.Name, name, StringComparison.OrdinalIgnoreCase));
 
     /// <summary>The mark of an optional toolset (F33): <c>shops?</c> loads when this instance has it, else is skipped.</summary>
     public const char OptionalMark = '?';
@@ -179,22 +159,27 @@ public static class ToolsetCatalog
     }
 
     /// <summary>
-    /// Resolves a client's request to definitions, in the order of <see cref="All"/>. Throws
+    /// Resolves a client's request to core's definitions, in the order of <see cref="All"/>; a host with packs resolves
+    /// through its <see cref="AgentCatalog"/>. Throws
     /// <see cref="ToolsetException"/> for an unknown name (listing the valid ones; an optional one too, so a typo is never
     /// skipped in silence) or a required toolset whose settings are missing on this instance (listing them), before any
     /// tool is built. An optional toolset (<c>shops?</c>) whose settings are missing is left out, and the log says why.
     /// </summary>
-    public static IReadOnlyList<ToolsetDefinition> Resolve(IEnumerable<string>? names, ToolsetContext context)
+    public static IReadOnlyList<ToolsetDefinition> Resolve(IEnumerable<string>? names, ToolsetContext context) =>
+        Resolve(names, context, All);
+
+    /// <summary>The same, over <paramref name="toolsets"/>: core's and a catalogue's packs', in that order (CL15).</summary>
+    internal static IReadOnlyList<ToolsetDefinition> Resolve(IEnumerable<string>? names, ToolsetContext context, IReadOnlyList<ToolsetDefinition> toolsets)
     {
         var requested = Normalise(names);
 
-        var unknown = requested.Where(n => Find(NameOf(n)) is null).ToList();
+        var unknown = requested.Where(n => Find(NameOf(n), toolsets) is null).ToList();
         if (unknown.Count > 0)
             throw new ToolsetException(MessageText.Format(ErrorMessage.UnknownToolsets,
-                new { Names = string.Join(", ", unknown), Valid = string.Join(", ", All.Select(t => t.Name)) }));
+                new { Names = string.Join(", ", unknown), Valid = string.Join(", ", toolsets.Select(t => t.Name)) }));
 
         var optional = requested.Where(IsOptional).Select(NameOf).ToHashSet(StringComparer.Ordinal);
-        var resolved = All.Where(t => requested.Select(NameOf).Contains(t.Name, StringComparer.Ordinal)).ToList();
+        var resolved = toolsets.Where(t => requested.Select(NameOf).Contains(t.Name, StringComparer.Ordinal)).ToList();
 
         var unavailable = resolved
             .Select(t => (Toolset: t, Missing: t.MissingSettings(context)))

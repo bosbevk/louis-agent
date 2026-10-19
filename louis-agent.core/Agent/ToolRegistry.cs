@@ -1,6 +1,5 @@
 namespace LouisAgent.Core.Agent;
 
-using System.ComponentModel;
 using System.Reflection;
 using LouisAgent.Core.Messages;
 using Microsoft.Extensions.AI;
@@ -37,24 +36,14 @@ internal sealed class ToolRegistry
     }
 
     /// <summary>
-    /// Adds every public instance method the object declares as a tool, named and described by the method; the
-    /// description with LF line endings, whatever the checkout (<see cref="AgentEngine.Normalise"/>).
+    /// Adds every public instance method the object declares as a tool, named and described by the method, by the one
+    /// rule the catalogue states (<see cref="AgentCatalog.ToolMethodsOfType"/>, <see cref="AgentCatalog.FunctionOf"/>), so
+    /// what the engine registers is what the convertibility test checks (CL15).
     /// </summary>
-    /// <summary>The methods of a tool class that become tools: its public instance methods, declared on it.</summary>
-    internal static IEnumerable<MethodInfo> ToolMethods(Type type) =>
-        type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
-
     public void AddPublicMethods(object target)
     {
-        foreach (MethodInfo method in ToolMethods(target.GetType()))
-        {
-            Add(AIFunctionFactory.Create(method, target, new AIFunctionFactoryOptions
-            {
-                Description = method.GetCustomAttribute<DescriptionAttribute>() is { } description
-                    ? AgentEngine.Normalise(description.Description)
-                    : null,
-            }));
-        }
+        foreach (MethodInfo method in AgentCatalog.ToolMethodsOfType(target.GetType()))
+            Add(AgentCatalog.FunctionOf(method, _ => target));
     }
 
     public bool Remove(AITool tool) => Live.Remove(tool);

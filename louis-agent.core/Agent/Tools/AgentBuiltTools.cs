@@ -16,9 +16,10 @@ using Microsoft.Extensions.Logging;
 /// <param name="registry">The engine's tools, which an agent-built tool joins and leaves.</param>
 /// <param name="supportsTools">Whether the model takes tools at all; without them nothing is built or loaded.</param>
 /// <param name="skillsDirectory">The skills folder, read when needed: hosts set it after the engine is built.</param>
+/// <param name="reservedNames">The names no agent-built tool may take (CL15: the catalogue's tool names), read when needed, as the folder is.</param>
 internal sealed class AgentBuiltTools(
     ToolRegistry registry, bool supportsTools, string workspaceRoot, PythonTools python, PowerShellTools powerShell,
-    Func<string?> skillsDirectory)
+    Func<string?> skillsDirectory, Func<IReadOnlySet<string>> reservedNames)
 {
     private static readonly ILogger Log = AgentLogging.For<AgentBuiltTools>();
 
@@ -68,7 +69,7 @@ internal sealed class AgentBuiltTools(
             if (existing.Approved) return MessageText.Format(ToolMessage.ApprovedToolExists, new { parsed.Name });
             if (!overwrite) return MessageText.Format(ToolMessage.PendingToolExists, new { parsed.Name });
         }
-        else if (registry.Contains(parsed.Name, StringComparison.OrdinalIgnoreCase) || ToolsetCatalog.ToolNames.Contains(parsed.Name))
+        else if (registry.Contains(parsed.Name, StringComparison.OrdinalIgnoreCase) || reservedNames().Contains(parsed.Name))
         {
             return MessageText.Format(ToolMessage.BuiltInToolName, new { parsed.Name });
         }

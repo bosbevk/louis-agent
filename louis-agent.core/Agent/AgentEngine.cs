@@ -83,6 +83,12 @@ public class AgentEngine
     /// <summary>Approved agent-built tools live here (*.tool.md); new ones wait in its 'pending' subfolder.</summary>
     public string? ToolsDirectory => _agentBuiltTools.ToolsDirectory;
 
+    /// <summary>
+    /// The names an agent-built tool may not take (CL15): every tool a toolset of the host's catalogue can register,
+    /// loaded here or not. Core's by default; <c>AgentEngineFactory</c> sets the catalogue's, so a pack's count too.
+    /// </summary>
+    public IReadOnlySet<string> ReservedToolNames { get; init; } = AgentCatalog.CoreOnly.ToolNames;
+
     private readonly AgentBuiltTools _agentBuiltTools;
 
     /// <param name="toolsets">
@@ -108,7 +114,7 @@ public class AgentEngine
         _powerShell = new PowerShellTools(WorkspaceRoot);
         _bash = new BashTools(WorkspaceRoot);
         _skillTools = new SkillTools(skillProvider, options, WorkspaceRoot, _python, _powerShell);
-        _agentBuiltTools = new AgentBuiltTools(_registry, supportsTools, WorkspaceRoot, _python, _powerShell, () => SkillsDirectory);
+        _agentBuiltTools = new AgentBuiltTools(_registry, supportsTools, WorkspaceRoot, _python, _powerShell, () => SkillsDirectory, () => ReservedToolNames);
 
         // Summaries call the model directly, outside the tool loop, so they are recorded by their own recorder.
         RecordsUsage = usageSink is not null;

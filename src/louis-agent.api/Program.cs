@@ -140,7 +140,7 @@ app.MapAdmin(benchmarks, new BenchmarkRunner(benchmarks, host.Engine.WorkspaceRo
 app.MapGet("/toolsets", (AgentEngineFactory engines) => Results.Json(new
 {
     @default = AgentSessions.DefaultToolsets,
-    toolsets = ToolsetCatalog.All.Select(t => new
+    toolsets = engines.Catalog.Toolsets.Select(t => new
     {
         name = t.Name, description = t.Description, available = t.IsAvailable(engines.Context),
         missing_settings = t.MissingSettings(engines.Context),

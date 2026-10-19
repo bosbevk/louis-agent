@@ -1,7 +1,10 @@
 namespace LouisAgent.Core.Skills;
 
-/// <summary>The skill files core knows by name, by their path under core's Prompts/ (CL8: in the folder of the level that reads them).</summary>
-internal static class SkillFiles
+/// <summary>
+/// The skill files core knows by name, by their path under core's Prompts/ (CL8: in the folder of the level that reads
+/// them). Public since CL15, so a pack names its guide the way core does (<see cref="Guide"/>).
+/// </summary>
+public static class SkillFiles
 {
     /// <summary>
     /// The file that marks the repo's <c>Skills/</c> as the skills folder when SKILLS_DIRECTORY isn't set: no built-in file
@@ -35,7 +38,7 @@ internal static class SkillFiles
     internal static string PendingFunction(string name) => $"{PendingFunctionsFolder}/{name}.md";
 
     /// <summary>A toolset guide's file: <c>toolsets/{name}.md</c>.</summary>
-    internal static string Guide(string name) => $"{ToolsetsFolder}/{name}.md";
+    public static string Guide(string name) => $"{ToolsetsFolder}/{name}.md";
 
     /// <summary>A function skill's file: <c>agent/functions/{name}.md</c>.</summary>
     internal static string Function(string name) => $"{FunctionsFolder}/{name}.md";

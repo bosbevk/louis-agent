@@ -161,6 +161,30 @@ public enum ErrorMessage
     [Description("Unknown LLM profile '{Name}'. Available: {Available}.")]
     UnknownSessionLlm,
 
+    [Description("'{Name}' is registered twice as a {Kind}: a pack, toolset, role or prompt path has one home.")]
+    CatalogNameTwice,
+
+    [Description("'{Owner}' names the pack '{Name}', which isn't registered. Registered: {Registered}.")]
+    CatalogPackUnknown,
+
+    [Description("Packs require each other in a cycle: {Cycle}.")]
+    CatalogRequiresCycle,
+
+    [Description("Tool '{Tool}' is in two toolsets, '{First}' and '{Second}'; tool names are unique across all toolsets.")]
+    CatalogToolNameTwice,
+
+    [Description("Tool '{Tool}' in toolset '{Toolset}' takes the engine's own tool name.")]
+    CatalogToolNameIsTheEngines,
+
+    [Description("Prompts were added after the first one was read: register every identity and pack before the host builds.")]
+    PromptsAddedAfterRead,
+
+    [Description("ROLES_ENABLED names roles this instance doesn't have: {Names}. Available: {Available}.")]
+    UnknownRolesEnabled,
+
+    [Description("The default mode '{Mode}' has no file ({File}): a session that names no role would open with no mode.")]
+    DefaultModeMissing,
+
     [Description("LLM_SESSION_PROFILES names '{Name}', but {File} isn't there.")]
     SessionLlmFileMissing,
 
