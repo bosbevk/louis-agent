@@ -57,13 +57,16 @@ nothing: only its line endings changed, and `git checkout -- <file>` puts it bac
 **The web apps' components are pinned the same way** (T1, CL15): `tests/louis-agent.web.shared.tests` renders
 `TurnView`, `BlocksView`, `DelegationCard` and `CurrencySwitcher` with bUnit from the recorded Puls turn
 (`benchmarks/fixtures/session-stream.sse`) and compares each one's markup with the `.html` golden beside its test
-(`Components/TurnView.html`); `tests/louis-agent.puls.tests` does the same for `WorkPanel`, `PulsTile`, `TemplateCard`
-and the chat page, empty and with the turn (`Pages/ChatPage.empty.html`, `ChatPage.turn.html`), against a stub API that
-answers from the fixture. The same switch regenerates them:
+(`Components/TurnView.html`); `tests/louis-agent.puls.tests` does the same for `WorkPanel`, `PulsTile`, `TemplateCard`,
+the landing page and the chat page, empty and with the turn (`Pages/ChatPage.empty.html`, `ChatPage.turn.html`), and
+`tests/louis-agent.web.tests` for the code-review app's chat page, each against the stub API (`FixtureApi` in
+`tests/louis-agent.web.testing`, the library the three share with the fixture replay and the snapshot helper). The
+same switch regenerates them:
 
 ```bash
 LOUIS_UPDATE_GOLDEN=1 dotnet test tests/louis-agent.web.shared.tests
 LOUIS_UPDATE_GOLDEN=1 dotnet test tests/louis-agent.puls.tests
+LOUIS_UPDATE_GOLDEN=1 dotnet test tests/louis-agent.web.tests
 ```
 
 A mismatch writes what was rendered to `louis-agent-snapshots/` under the temp folder, so the diff can be read. The

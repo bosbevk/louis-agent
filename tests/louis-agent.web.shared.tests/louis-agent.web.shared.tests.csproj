@@ -23,7 +23,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\louis-agent.web.shared\louis-agent.web.shared.csproj" />
-    <!-- The fakes and paths every test project shares (StubHandler, TestPaths). -->
+    <!-- The fixture replay, the stub API and the snapshot helper the web tests share; no test project references another. -->
+    <ProjectReference Include="..\louis-agent.web.testing\louis-agent.web.testing.csproj" />
     <ProjectReference Include="..\louis-agent.testing\louis-agent.testing.csproj" />
   </ItemGroup>
 
@@ -31,6 +32,7 @@
     <Using Include="NUnit.Framework" />
     <Using Include="Bunit" />
     <Using Include="LouisAgent.Testing" />
+    <Using Include="LouisAgent.Web.Testing" />
   </ItemGroup>
 
 </Project>

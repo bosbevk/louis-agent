@@ -2,8 +2,9 @@
 
 > **Kind:** NUnit test projects · **Paths:** `tests/louis-agent.core.tests/`, `tests/louis-agent.api.tests/`,
 > `tests/louis-agent.orchestrator.tests/`, `tests/louis-agent.identity.puls.tests/`, `tests/louis-agent.pack.shops.tests/`,
-> `tests/louis-agent.composition.tests/`, `tests/louis-agent.web.shared.tests/`, `tests/louis-agent.puls.tests/`; the
-> fakes they share in `tests/louis-agent.testing/` (a class library, CL15) ·
+> `tests/louis-agent.composition.tests/`, `tests/louis-agent.web.shared.tests/`, `tests/louis-agent.puls.tests/`,
+> `tests/louis-agent.web.tests/`; the fakes they share in `tests/louis-agent.testing/` and, for the web apps,
+> `tests/louis-agent.web.testing/` (class libraries, CL15) ·
 > **Run:** `dotnet test louis-agent-solution.sln` (or each project)
 
 ## Purpose
@@ -66,7 +67,7 @@ registers the prompts its identity or pack brings in a `[SetUpFixture]`, as a ho
 `TestPaths`), a global using in the four that use them. No test project references another test project, and `core.tests` opens its
 internals to none; `ArchitectureTests` holds both.
 
-## louis-agent.web.shared.tests, louis-agent.puls.tests
+## louis-agent.web.shared.tests, louis-agent.puls.tests, louis-agent.web.tests
 
 The web apps' first tests (T1, CL15: the proof the web sort changes nothing, written before it). The shared library's
 logic with plain NUnit, in folders that mirror it: `TurnStream` (the recorded turn read as the Python harness reads it,
@@ -75,8 +76,11 @@ through), `UsageFormat` (priced, unpriced, the display currency) and `Markdown` 
 components with bUnit, each rendered from the recorded turn and pinned to the `.html` golden beside its test. Puls's
 tests pin `WorkPanel`, `PulsTile` and `TemplateCard`, and render `ChatPage` end to end against a stub API that opens a
 session and streams the recorded turn: the empty page and the page with the turn, each a golden, and the JS calls the
-page makes, listed. The code-review app has none yet: its logic lives in the shared library, and its components get
-tests when Phase 4 adds the Branches queue.
+page makes, listed; its landing page is a golden too. The code-review app's tests (T1b) pin its chat page the same way,
+empty and with the turn, before W2 splits it; its components get tests when Phase 4 adds the Branches queue.
+`tests/louis-agent.web.testing` holds what the three share: the fixture replay, the stub API (`FixtureApi`: fixed JSON
+for what the apps read at start-up, one session, the recorded turn streamed, the workspace and git reads empty) and the
+snapshot helper.
 
 ## What isn't covered yet
 

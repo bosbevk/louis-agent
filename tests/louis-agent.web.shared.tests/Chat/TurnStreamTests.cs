@@ -1,7 +1,6 @@
 using System.Text.Json;
 using LouisAgent.Web.Shared.Api;
 using LouisAgent.Web.Shared.Chat;
-using LouisAgent.Web.Shared.Tests.Fixtures;
 using LouisAgent.Web.Shared.Usage;
 
 namespace LouisAgent.Web.Shared.Tests.Chat;

@@ -792,6 +792,9 @@ sequenceDiagram
   tests, not only by clicking. `tests/louis-agent.web.shared.tests` (the logic with NUnit, the components with bUnit
   2.12.5, MIT, pinned to goldens) and `tests/louis-agent.puls.tests` (its components and a render of `ChatPage` against
   a stub API that streams the recorded turn); the TODO's `UsageFormat` line closes with it.
+- **T1b: the two pages W2 still needed pinned** (Louis, 2026-10-19): Puls's landing page and the code-review app's chat
+  page (a third web test project, `tests/louis-agent.web.tests`), and `tests/louis-agent.web.testing` for what the three
+  web test projects share (the fixture replay, the stub API, the snapshot helper), so no test project copies another.
 
 ---
 [Plans](README.md) · [The platform plan](platform.md)

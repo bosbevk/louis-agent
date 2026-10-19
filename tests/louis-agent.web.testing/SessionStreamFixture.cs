@@ -1,18 +1,19 @@
 using System.Net.ServerSentEvents;
 using System.Text.Json;
+using LouisAgent.Testing;
 using LouisAgent.Web.Shared.Api;
 using LouisAgent.Web.Shared.Chat;
 
-namespace LouisAgent.Web.Shared.Tests.Fixtures;
+namespace LouisAgent.Web.Testing;
 
 /// <summary>
-/// One recorded Puls turn (benchmarks/fixtures/session-stream.sse, F31 step 7a: a meal question handed to the cook),
-/// replayed through <see cref="TurnStream"/> the way the chat page replays the live stream. Every component snapshot
-/// renders the turn it gives, so the goldens show a real answer, not a made-up one.
+/// One recorded Puls turn (benchmarks/fixtures/session-stream.sse, F31 step 7a: a pancake recipe for two, priced near
+/// Stellenbosch, handed to the cook), replayed through <see cref="TurnStream"/> the way the chat page replays the live
+/// stream. Every component snapshot renders the turn it gives, so the goldens show a real answer, not a made-up one.
 /// </summary>
-internal static class SessionStreamFixture
+public static class SessionStreamFixture
 {
-    // The question the recording answered: a pancake recipe for two, priced at a shop near Stellenbosch.
+    /// <summary>The question the recording answered.</summary>
     public const string Question = "Gee my 'n eenvoudige resep vir pannekoek vir twee mense, en wat dit by 'n winkel naby Stellenbosch kos.";
 
     public static string Folder => Path.Combine(TestPaths.RepoRoot, "benchmarks", "fixtures");

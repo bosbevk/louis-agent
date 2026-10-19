@@ -1,5 +1,4 @@
 using LouisAgent.Puls.Components.Chat;
-using LouisAgent.Puls.Tests.Fixtures;
 using LouisAgent.Puls.Text;
 using LouisAgent.Web.Shared.Chat;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,7 +23,7 @@ public class WorkPanelTests
         Assert.That(cut.Find(".work-count").TextContent, Is.EqualTo("1"));
         Assert.That(cut.Find(".work-who strong").TextContent, Is.EqualTo("puls-cook"));
         Assert.That(cut.FindAll(".work-step"), Has.Count.EqualTo(turn.Blocks.Single(b => b.ToolName == "StartSubSession").SubTurn!.Blocks.Count(b => b.Kind == BlockKind.Tool)));
-        Snapshots.Match("Components/WorkPanel.html", cut.Markup);
+        Snapshots.Match("louis-agent.puls.tests", "Components/WorkPanel.html", cut.Markup);
     }
 
     [Test]

@@ -17,7 +17,7 @@ public class TemplateCardTests
 
         Assert.That(cut.Find("strong").TextContent, Is.EqualTo(template.Title));
         Assert.That(cut.Find("small").TextContent, Is.EqualTo($"Deur Puls · {template.Category}"));
-        Snapshots.Match("Components/TemplateCard.html", cut.Markup);
+        Snapshots.Match("louis-agent.puls.tests", "Components/TemplateCard.html", cut.Markup);
     }
 
     [Test]

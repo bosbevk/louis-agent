@@ -1,5 +1,4 @@
 using LouisAgent.Web.Shared.Chat;
-using LouisAgent.Web.Shared.Tests.Fixtures;
 
 namespace LouisAgent.Web.Shared.Tests.Chat;
 

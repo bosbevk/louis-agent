@@ -15,7 +15,7 @@ public class PulsTileTests
 
         Assert.That(cut.FindAll("circle.puls-glow"), Has.Count.EqualTo(PulsMark.Rings.Length));
         Assert.That(cut.Find("svg").GetAttribute("class"), Is.EqualTo("puls-tile"));
-        Snapshots.Match("Components/PulsTile.html", cut.Markup);
+        Snapshots.Match("louis-agent.puls.tests", "Components/PulsTile.html", cut.Markup);
     }
 
     [Test]

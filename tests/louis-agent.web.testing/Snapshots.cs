@@ -1,13 +1,17 @@
 using System.Text.RegularExpressions;
+using LouisAgent.Testing;
+using NUnit.Framework;
 
-namespace LouisAgent.Web.Shared.Tests;
+namespace LouisAgent.Web.Testing;
 
 /// <summary>
 /// A component's rendered markup pinned to a golden file beside its test, the way the model's request and the tool
-/// texts are pinned (tests/CLAUDE.md, golden files): <c>LOUIS_UPDATE_GOLDEN=1</c> writes it, any other run compares.
-/// Per-instance SVG ids, element references and the seconds a thinking block took are normalised, since neither is the component's doing.
+/// texts are pinned (tests/CLAUDE.md, golden files): <c>LOUIS_UPDATE_GOLDEN=1</c> writes it, any other run compares,
+/// and a mismatch leaves what was rendered under the temp folder's <c>louis-agent-snapshots/</c> so the diff can be
+/// read. Per-instance SVG ids, <c>@ref</c> element references and the seconds a thinking block took are normalised,
+/// since none is the component's doing.
 /// </summary>
-internal static partial class Snapshots
+public static partial class Snapshots
 {
     public static string Normalise(string markup)
     {
@@ -32,7 +36,6 @@ internal static partial class Snapshots
         }
 
         Assert.That(File.Exists(path), $"No golden file; run with LOUIS_UPDATE_GOLDEN=1 to write {path}.");
-        // A mismatch leaves what was rendered beside the temp files, so the diff can be read; the golden stays as it is.
         string rendered = Path.Combine(Path.GetTempPath(), "louis-agent-snapshots", Path.GetFileName(path));
         Directory.CreateDirectory(Path.GetDirectoryName(rendered)!);
         File.WriteAllText(rendered, actual);
