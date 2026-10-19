@@ -24,7 +24,7 @@ ROLE = "puls/voice-af"
 TIME_ZONE = "Africa/Johannesburg"
 LOCATION = "Stellenbosch, Wes-Kaap, Suid-Afrika"
 
-DELEGATED = ["specialists", "web"]   # Puls as built (F29)
+DELEGATED = ["skills", "specialists", "web"]   # Puls as built (F29; skills since FX20's gate)
 DELEGATING = ("specialists", "minions")
 
 # Two of each kind, so one odd answer doesn't decide a kind.

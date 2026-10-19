@@ -27,7 +27,7 @@ TIME_ZONE = "Africa/Johannesburg"
 
 MODES = {
     "puls-tools": ["web", "shops"],       # Puls alone with the cook's tools: it can't delegate, so it cooks and prices itself
-    "puls-cook": ["specialists", "web"],  # Puls as built: the web itself, cooking to the cook
+    "puls-cook": ["skills", "specialists", "web"],  # Puls as built: skills (FX20's gate in front), the web itself, cooking to the cook
 }
 
 # One session each; a second message is the follow-up. The place goes with the session (F22), as the web app sends it,

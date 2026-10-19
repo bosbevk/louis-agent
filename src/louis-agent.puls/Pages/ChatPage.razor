@@ -763,7 +763,7 @@
                 // Puls answers the web itself and hands cooking to the cook (F29; before it, F5: agents only, every task to
                 // a specialist). An API without a peer offers no specialists toolset; the chat then gets every toolset there is.
                 string[] available = await Api.AvailableToolsetsAsync();
-                string[] own = ["specialists", "web"];
+                string[] own = ["skills", "specialists", "web"];
                 // The time zone always (GetToday in the user's own time; it names a region, not a place); the location only when set.
                 string? timeZone = await JS.InvokeAsync<string?>("pulsUi.timeZone");
                 string sessionId = await Api.CreateSessionAsync(available.Contains("specialists") ? own.Where(available.Contains).ToArray() : available, Role,

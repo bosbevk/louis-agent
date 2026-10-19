@@ -54,7 +54,7 @@ class TheBaseline(unittest.TestCase):
 
 class TheModes(unittest.TestCase):
     def test_delegated_is_puls_as_built(self):
-        self.assertEqual(routing.DELEGATED, ["specialists", "web"])
+        self.assertEqual(routing.DELEGATED, ["skills", "specialists", "web"])
 
 
 if __name__ == "__main__":
