@@ -1,9 +1,10 @@
 # F26 · Specialist follow-up: Puls asks the same specialist again
 
-> **Status:** built (2026-10-15), on `claude/project-thread-381vmw`; open: the follow-up rule, the Werk panel · **Milestone:** — · **Depends on:** F5 (sub-sessions), F21 (roles), F22 (the per-turn
+> **Status:** done (built 2026-10-15, on `claude/project-thread-381vmw`; closed 2026-10-19 by [the platform plan](../plans/platform.md)); the firmer follow-up rule measured and the Werk panel naming the role (2026-10-15) · **Milestone:** — · **Depends on:** F5 (sub-sessions), F21 (roles), F22 (the per-turn
 > context a tool reads: attachments, the user's place)
 >
-> **In the TODO:** **F26 Specialist follow-up** under *Sessions and memory*, beside F21, F22 and F25 ([TODO](../../TODO.md)) ·
+> **In the TODO:** done, so its line is gone; its open item, **FX: a continued specialist's ledger rows name the turn
+> that continued it**, is under *Puls* ([TODO](../../TODO.md)) ·
 > **Plan:** [plans/F26](../plans/F26-specialist-follow-up.md)
 
 A sub-session lives for one task: `StartSubSession` opens it, sends the task, reads the answer and deletes it, even on

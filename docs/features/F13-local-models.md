@@ -1,12 +1,14 @@
 # F13 · Local models: fit every request into a small context window
 
-> **Status:** planned · **Milestone:** Local · **Depends on:** F1, F5, [F15](F15-model-limits.md) (the window: F15 owns
+> **Status:** merged into [F15](F15-model-limits.md) (2026-10-19); this doc stays as its design · **Milestone:** Local · **Depends on:** F1, F5, [F15](F15-model-limits.md) (the window: F15 owns
 > `LLM_CONTEXT_TOKENS`, sends it to Ollama as `num_ctx` and warns at 90% of it)
 >
 > **Spec:** [Optimisation §C](../specs/RESPONSE_OPTIMISATION.md) (toolsets) · [MODELS.md](../MODELS.md) (Ollama)
 >
-> **In the TODO:** **F13 Local models** under *Now* ([TODO](../../TODO.md)) · **Removes the limitation:** local
-> models get a truncated prompt
+> **In the TODO:** merged into [F15](F15-model-limits.md) (2026-10-19, [the platform plan](../plans/platform.md):
+> most of it is sending `num_ctx`, which is F15's), so its line is gone; its work is on **F15 Model limits and local
+> models** under *Next*, Phase 9 ([TODO](../../TODO.md)) · **Removes the limitation:** local models get a truncated
+> prompt (now F15's)
 
 The first ledger record from a local model (F1 step 6, `llama3.1` on Ollama) showed `input: 2050` for a one-word
 question. The agent's system prompt alone is about 26,000 tokens, before the tool definitions. The Ollama measured here

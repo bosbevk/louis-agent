@@ -1,8 +1,9 @@
 # F25 · Local cook: Puls's first local specialist
 
-> **Status:** built (2026-10-15), on `claude/project-thread-381vmw`; open: a search provider, the cook's estimates · **Milestone:** — · **Depends on:** F21 (roles), F22 (`GetToday`, the user's place, `ConvertCurrency`), F5 (sub-sessions)
+> **Status:** done (built 2026-10-15, on `claude/project-thread-381vmw`; closed 2026-10-19 by [the platform plan](../plans/platform.md)); the search provider was measured with Tavily (2026-10-15) · **Milestone:** — · **Depends on:** F21 (roles), F22 (`GetToday`, the user's place, `ConvertCurrency`), F5 (sub-sessions)
 >
-> **In the TODO:** **F25 Local cook** under *Sessions and memory*, beside F21 and F22 ([TODO](../../TODO.md)) · **Plan:** [plans/F25](../plans/F25-local-cook.md)
+> **In the TODO:** done, so its line is gone; its open item, **The cook's unconfirmed prices** (*geskat* or
+> *unknown*), is under *Puls* ([TODO](../../TODO.md)) · **Plan:** [plans/F25](../plans/F25-local-cook.md)
 
 The end product is a general agent that knows where its users are and looks up what changes instead of relying on
 training ([TODO](../../TODO.md), *South African general AI*). Puls's specialists so far are generic: a researcher, a

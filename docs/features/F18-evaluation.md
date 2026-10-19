@@ -3,8 +3,8 @@
 > **Status:** planned · **Milestone:** M4 (built with [F16](F16-summariser.md), its first user; before F9) · **Depends
 > on:** F1, F2
 >
-> **In the TODO:** **F18 Evaluation** under *Now* ([TODO](../../TODO.md)) · **Replaces:** the first part of the
-> backlog's *Evaluation* gap (the CI gate stays in the backlog)
+> **In the TODO:** **F18 Simulations in C#** under *Now*, Phase 3 of [the platform plan](../plans/platform.md), which
+> also takes in the CI gate ([TODO](../../TODO.md)) · **Replaces:** the backlog's *Evaluation* gap
 
 Today the only quality check is the orchestrator demo: ten fixes, each verified, at about $0.66 a run. It says whether
 the whole system still works, but not whether one part (a summary, a triage decision) is right, and it's too slow and

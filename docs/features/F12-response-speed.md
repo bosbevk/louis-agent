@@ -1,10 +1,13 @@
 # F12 · Response speed: time to first token and tokens per second, for every provider
 
-> **Status:** planned · **Milestone:** M5 · **Depends on:** F1 (F3 and F11 to show it)
+> **Status:** merged into F44 *The engine as a product* (2026-10-19): in [the platform plan](../plans/platform.md)'s
+> Phase 9, F12-S1 (`ttft_ms` and tokens per second on every ledger record) is F44's first step, and the traces carry
+> speed too; this doc stays as its design · **Milestone:** M5 · **Depends on:** F1 (F3 and F11 to show it)
 >
 > **Spec:** [Usage §4.1](../specs/USAGE_AND_BUDGETS.md) (the record) · [Optimisation §A](../specs/RESPONSE_OPTIMISATION.md) (what the adapters report)
 >
-> **In the TODO:** **F12 Response speed** under *Now* ([TODO](../../TODO.md))
+> **In the TODO:** merged, so its line is gone; its work is on **F44 The engine as a product** under *Next*
+> ([TODO](../../TODO.md))
 
 F1 records how long each request took (`duration_ms`), but not how that time splits: waiting before the first token,
 then writing the answer. That split is what makes a model feel fast or slow, and it is the only way to compare a local

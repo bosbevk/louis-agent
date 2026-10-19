@@ -4,7 +4,9 @@
 >
 > **Spec:** [Usage §6](../specs/USAGE_AND_BUDGETS.md)
 >
-> **In the TODO:** **F7 Budgets** under *Now* ([TODO](../../TODO.md))
+> **In the TODO:** **F7 Cost you can see and stop** under *Next*, Phase 5 of [the platform plan](../plans/platform.md),
+> taking in [F6](F06-estimates.md) and [F11](F11-usage-tab-and-reconciliation.md); its fifth story, the orchestrator
+> deferring what it can't afford, goes to F39 (Phase 6 B4) ([TODO](../../TODO.md))
 
 The only limits today are the Anthropic account's credit and monthly spend limit; hitting them fails every remaining
 request. F7 adds louis-agent's own budgets — per session, task, run, day and month — that warn early and stop or pause

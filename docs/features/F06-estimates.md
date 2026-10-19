@@ -1,10 +1,13 @@
 # F6 · Cost estimates before a run
 
-> **Status:** planned · **Milestone:** M3 · **Depends on:** F1, F2
+> **Status:** merged into [F7](F07-budgets.md) (2026-10-19): [the platform plan](../plans/platform.md) makes
+> estimates F7's step 2 in Phase 5, *Cost you can see and stop*, since an estimate is the first half of a budget that
+> asks; this doc stays as its design · **Milestone:** M3 · **Depends on:** F1, F2
 >
 > **Spec:** [Usage §5](../specs/USAGE_AND_BUDGETS.md)
 >
-> **In the TODO:** **F6 Estimates** under *Now* ([TODO](../../TODO.md))
+> **In the TODO:** merged, so its line is gone; its work is on **F7 Cost you can see and stop** under *Next*
+> ([TODO](../../TODO.md))
 
 Cost is only known afterwards today. F6 predicts it — always as a range with its basis — for an orchestrator run, a
 single fix, and (later) each method of a build-mode service, and checks itself against what actually happened.

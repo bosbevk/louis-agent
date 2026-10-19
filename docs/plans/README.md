@@ -50,16 +50,30 @@ or fix doc (*What the build changed*), not here.
 ## Conventions
 
 - **One file per plan**, named like what it plans: `Fnn-name.md` for a feature, `FXnn-name.md` for a fix, `CLn-name.md` for a
-  cleanup (a TODO line with no feature or fix doc).
+  cleanup (a TODO line with no feature or fix doc). A fix gets a plan only when it takes more than one step; a one-step
+  fix has its fix doc alone (FX18, FX19 and FX20).
+- **The roadmap** is the one other kind: [platform.md](platform.md) says what we build and in which order, and each plan
+  says how. It is the one name allowed outside `Fnn`/`FXnn`/`CLn`, and after its approval it is never edited except to
+  link each phase's plan.
+- **A phase's plan is copied from the roadmap**, as approved, into its own file on the phase's own branch before its
+  first step (`CL15-engine-identities-packs.md`, `F18-simulations.md`, `F40-sales-playground.md`,
+  `F39-orchestration.md`), with its diagrams, namespace map and folder trees; *Approved during the build* goes only in
+  that copy. A phase the roadmap names without a section of its own (5, 7, 8 and 9) gets a new plan, approved by Louis
+  before its first step.
 - **Sections:** *Context* (why now, what the doc says), *Design* (what changes from the doc, and why), *Steps* (one
   commit each, with its test, written and seen failing first; the review stop after each), *Verification* (tests, free manual checks, and any paid run,
   which needs approval first), and the *Concepts* each step teaches, with their skill in the [goal](../GOAL.md).
-- **Three diagrams, always** (Louis, 2026-10-16; the third 2026-10-17, F32), in the *Design*, as mermaid: an
+- **Four diagrams, always** (Louis, 2026-10-16; the third 2026-10-17, F32; the fourth 2026-10-18), in the *Design*, as mermaid: an
   **interface design** (a `classDiagram` with the C# signatures beside it: the interfaces and records the change uses or
   adds, every implementation behind them, old and new, marked with the step that builds it, and who creates, reads and
   calls whom), an **architecture diagram** (a `flowchart`: the containers, hosts and services, and which step builds or
   changes each part) and a **communication diagram** (a `sequenceDiagram`: who calls whom, in order, for the feature's
-  main case, with what each call carries). A plan approved without them gets them under *Approved during the build*.
+  main case, with what each call carries), and an **object diagram** (a `flowchart` of the instances the main case
+  holds in memory, and which holds which). A plan approved without them gets them under *Approved during the build*.
+- **Folder trees** (Louis, 2026-10-18), in the *Design*, whenever a plan adds or splits projects or folders: the tree
+  today and the tree after (after each step when the steps move things).
+- **Reviewed as one page** (Louis, 2026-10-18): a plan is reviewed as one page with its diagrams drawn in place beside
+  its full text, not as markdown with the diagrams as code.
 - **A namespace map, always** (Louis, 2026-10-17, F33: "include in the plan the namespaces, this must be a rule"), in the
   *Design*: a table of every type the plan adds, moves or changes, with its folder, its namespace and the step that
   does it (tests included), so the layout is decided before the code and `ArchitectureTests` holds no surprise.

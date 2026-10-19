@@ -4,7 +4,7 @@
 
 ## Implementation
 
-Built as features in [docs/features/](../features/README.md); each is one line under *Now* in the
+Built as features in [docs/features/](../features/README.md); each planned one is one line in the
 [TODO](../../TODO.md). When a feature is done, mark it here too.
 
 | Section | Feature | Status |

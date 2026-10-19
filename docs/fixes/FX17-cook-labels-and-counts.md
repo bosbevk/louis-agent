@@ -90,4 +90,4 @@ who's working, not only from the call that sent the work: a call can be a follow
   phase while it works.
 
 ---
-[Fixes](README.md) · Previous: [FX16](FX16-short-quote-match.md)
+[Fixes](README.md) · Previous: [FX16](FX16-short-quote-match.md) · Next: [FX18](FX18-auth-fails-closed.md)

@@ -3,7 +3,7 @@
 > **Status:** planned (2026-10-15), on `claude/project-thread-381vmw` · **Milestone:** — · **Depends on:** F5
 > (sub-sessions), F21 (roles), F25 (the cook), F26 (follow-ups), F27 (the checks the portal runs)
 >
-> **In the TODO:** **F28 Team talk** under *Web app*, beside F27 ([TODO](../../TODO.md)) ·
+> **In the TODO:** **F28 Team talk, the rest** under *Puls* (step 1 built; the mood switch, off by default) ([TODO](../../TODO.md)) ·
 > **Plan:** [plans/F28](../plans/F28-team-talk.md)
 
 Puls sends a specialist a task and gets a report back (F5, F26). The task is whatever Puls writes: sometimes the

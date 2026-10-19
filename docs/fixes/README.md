@@ -26,6 +26,9 @@ record (most fixes so far taught something about a model's API).
 | [FX15](FX15-test-needs-env-file.md) | A display-currency test names the tracked rates and prices files instead of relying on a `config/.env` to find them | done | tests: `DisplayCurrencyTests` | The first CI run, on a fresh Ubuntu clone (2026-10-14) | (this commit) | — |
 | [FX16](FX16-short-quote-match.md) | A quote that is only a price is checked against its product (`VerifyQuote`'s `product`): it was *Found* for any product at that price on the page | done | core: `VerifyQuote` (F30) | The review of PR #51 (2026-10-17) | (this commit) | — |
 | [FX17](FX17-cook-labels-and-counts.md) | The cook's labels in the task's language (*Dien*/*Serves*, *Geprys*/*Priced*), a count after the name so the photo stays first, and a follow-up's card names the cook (`session_role` on `message_start`) | done | prompt: `puls-cook.md`; API stream and the delegation card | Cook check `d94597a51d4d` (2026-10-18) | (this commit) | — |
+| [FX18](FX18-auth-fails-closed.md) | The API, and the MCP server over HTTP, refuse to start without a key unless `AGENT_AUTH=off` says so on purpose (today they serve anyone without one) | open | API and MCP server: start-up and key check | Reading the code for the platform plan (2026-10-18) | — | — |
+| [FX19](FX19-git-arguments-as-data.md) | Every git call takes a list, the model's values after `--end-of-options`, and `SetConfig` only `user.name` and `user.email` (today a value can reach git as an option that runs a command) | open | core: git tools | Reading the code and probing git for the platform plan (2026-10-18) | — | — |
+| [FX20](FX20-skill-files-wait-for-approval.md) | A skill file the agent writes waits in `pending/` for `/approve`, as agent-built tools do (today it loads at once for every later session) | open | core: skill authoring | Reading the code for the platform plan (2026-10-18) | — | — |
 
 ## Conventions
 
@@ -36,8 +39,8 @@ record (most fixes so far taught something about a model's API).
 - **Status** is *open* or *done*, the same here and at the top of the fix's doc.
 - **Plans:** a fix that takes more than one step gets its approved plan in [plans/](../plans/README.md)
   (`FXnn-name.md`), committed before its first step.
-- **An open fix** also has one line in the [TODO](../../TODO.md)'s backlog that links here; a fix that removes a known
-  limitation names it.
+- **An open fix** also has one line in the [TODO](../../TODO.md), in its phase's section, that links here; a fix that
+  removes a known limitation names it.
 
 ## Finishing a fix
 
@@ -45,7 +48,7 @@ In the commit that fixes it, or the one right after:
 
 1. **This folder:** *Status* to **done** here and in the doc; fill in *Fix*, *Tests* (the test that reproduced the bug,
    written and seen failing before the fix) and *Confirmed*; add the commit.
-2. **TODO and CHANGELOG:** remove its backlog line and add a one-line entry at the top of the
+2. **TODO and CHANGELOG:** remove its TODO line and add a one-line entry at the top of the
    [CHANGELOG](../../CHANGELOG.md).
 3. **Limitations:** if it removes a known limitation, delete it from the TODO's
    [Known limitations](../../TODO.md#known-limitations); FX4 also removes the note on #9 in

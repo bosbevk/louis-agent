@@ -4,7 +4,8 @@
 >
 > **Spec:** [Optimisation §E](../specs/RESPONSE_OPTIMISATION.md)
 >
-> **In the TODO:** **F10 Route settings** under *Now* ([TODO](../../TODO.md)) · **Replaces:** the known limitation "10 tool rounds per message"
+> **In the TODO:** **F10 Settings per role and per session** under *Later* ([TODO](../../TODO.md);
+> [the platform plan](../plans/platform.md)) · **Replaces:** the known limitation "10 tool rounds per message"
 
 One set of settings serves very different work today: a quick chat, a 20-round fix and the orchestrator's triage. F10
 lets each route have its own thinking level and tool-round limit, fixed per session, so caching isn't affected.

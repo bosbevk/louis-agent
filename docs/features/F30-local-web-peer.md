@@ -4,7 +4,8 @@
 > `feature/F30-local-web-peer` · **Milestone:** — · **Depends on:** F5
 > (sub-sessions), F21 (roles), F25 (the cook's price work and check), F29 (the role gate)
 >
-> **In the TODO:** **F30 Local web peer** under *Now*, beside F25 ([TODO](../../TODO.md)) · **Plan:**
+> **In the TODO:** **F30's minions tested** under *Later*, after [the platform plan](../plans/platform.md) (kept, Louis,
+> 2026-10-19) ([TODO](../../TODO.md)) · **Plan:**
 > [plans/F30](../plans/F30-local-web-peer.md)
 
 Puls reasons on Claude Haiku, and every page it reads for a price is paid for again on each later request. A local

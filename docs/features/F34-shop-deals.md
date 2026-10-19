@@ -3,8 +3,8 @@
 > **Status:** done (2026-10-18), PR #61 · **Milestone:** — · **Depends on:** F33 (the shops
 > toolset and Checkers' catalogue), F22 (the user's place), F25 (the cook)
 >
-> **In the TODO:** done, so its line is gone; its follow-up, **F33 follow-up: more shop catalogues**, is under
-> *Tooling and repositories* ([TODO](../../TODO.md)) · **Plan:**
+> **In the TODO:** done, so its line is gone; its follow-up, **More shops** (Shoprite, Pick n Pay and Woolworths,
+> after *Sources as data*), is under *Puls* ([TODO](../../TODO.md)) · **Plan:**
 > [plans/F34](../plans/F34-shop-deals.md)
 
 F33 reads Checkers' products and prices for the cook, but from Checkers' default store, and without the deals that

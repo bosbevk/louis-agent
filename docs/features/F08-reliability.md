@@ -1,10 +1,14 @@
 # F8 · Reliability: retries, account limits, fallback, structured results
 
-> **Status:** planned · **Milestone:** M3 · **Depends on:** F1
+> **Status:** planned; [the platform plan](../plans/platform.md) (2026-10-19) puts it in Phase 9, taking in timeouts,
+> idempotency and the exception strategy, and moves **F8-S4** (implementation step 6: results as tool calls,
+> `ReportFixResult` and `RecordDecision`) into F39 *Orchestration* (Phase 6, A5 and B5), since typed results are
+> delegation's · **Milestone:** M3 · **Depends on:** F1
 >
 > **Spec:** [Optimisation §F](../specs/RESPONSE_OPTIMISATION.md) · [Usage §6.2](../specs/USAGE_AND_BUDGETS.md)
 >
-> **In the TODO:** **F8 Reliability** under *Now* ([TODO](../../TODO.md)) · **Replaces:** "Retry and back off when the model API refuses", "Add model fallback", "Wire up structured outputs"
+> **In the TODO:** **F8 Reliability** under *Next*, and F8-S4 on **F39 Orchestration** ([TODO](../../TODO.md)) ·
+> **Replaces:** "Retry and back off when the model API refuses", "Add model fallback", "Wire up structured outputs"
 
 Failures cost money twice: the work done before the failure is lost and has to be redone. The demo showed both kinds —
 the account's credit and then its usage limit ran out mid-run, and every remaining error failed one by one. F8 makes
@@ -31,7 +35,8 @@ failing, so that work continues during an outage.
   *then* the request goes to the fallback; the ledger records the fallback model; the log says so once per session.
 - *And* account limits (S2) don't fall back to the same account; a different provider may.
 
-**F8-S4 — Structured results between agents.** As the *orchestrator*, I want louis-agent's result and my own decision as
+**F8-S4 — Structured results between agents** (moved into F39 *Orchestration*, Phase 6 A5 and B5, by
+[the platform plan](../plans/platform.md); kept here as its design). As the *orchestrator*, I want louis-agent's result and my own decision as
 structured data, so that a malformed text line never costs a "continue" round-trip or a wrong decision.
 - *Given* a fix session *then* louis-agent reports its result by calling a `ReportFixResult` tool (status, commit,
   branch, tests, summary, reason); the orchestrator reads it from the `tool_use` block in the stream.

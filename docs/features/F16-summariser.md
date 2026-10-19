@@ -1,12 +1,14 @@
 # F16 · Summariser: one measured component for condensing text
 
-> **Status:** planned · **Milestone:** M4 (with [F18](F18-evaluation.md), before F9) · **Depends on:** F1, F4 (the
-> caching strategy), F18 (its eval)
+> **Status:** merged into [F9](F09-context-management.md) (2026-10-19, [the platform plan](../plans/platform.md)):
+> today's guard already summarises every result over 50,000 characters, so F9 is its second user, not its only one;
+> F16-S1 (the oversized-results report, and the worst offenders paged) is a small cleanup of its own · **Milestone:**
+> M4 (with [F18](F18-evaluation.md), before F9) · **Depends on:** F1, F4 (the caching strategy), F18 (its eval)
 >
 > **Spec:** [Optimisation §D (bounded history), §E (summary model)](../specs/RESPONSE_OPTIMISATION.md)
 >
-> **In the TODO:** **F16 Summariser** under *Now* ([TODO](../../TODO.md)) · **Takes over:** F10-S3 (a cheaper
-> model for summaries)
+> **In the TODO:** merged, so its line is gone; its work is on **F9 Long chats** under *Later*, and **F16-S1** under
+> *Small cleanups* ([TODO](../../TODO.md)) · **Takes over:** F10-S3 (a cheaper model for summaries)
 
 When a tool result passes 50,000 characters, `ToolCallGuards.SummariseToolResultAsync` (`Agent/`) sends up to 200,000 characters of
 it to the main model with an inline prompt and a 16,000-token output cap, the same as a whole turn. Nobody knows how

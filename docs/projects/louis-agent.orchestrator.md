@@ -66,7 +66,8 @@ flowchart TD
 
 - **A method or service:** a runbook in `Skills/<service>/` ([Runbooks](orchestrator-runbooks.md#adding-and-changing-runbooks)).
 - **A tool:** a public method with `[Description]`s on `ServiceTools` — remember every public method becomes a tool.
-- **Build mode** (building methods from runbooks) is planned as a separate sample → *Next* in the [TODO](../../TODO.md).
+- **Build mode** (building methods from runbooks) was cut by [the platform plan](../plans/platform.md) (2026-10-19,
+  never started); it stays a side note in the [TODO](../../TODO.md)'s *Later*.
 
 ## Tests
 

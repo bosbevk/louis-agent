@@ -1,9 +1,11 @@
 # F29 · Validated specialists: only a role that passed its check is on
 
-> **Status:** planned (2026-10-15), on `claude/project-thread-381vmw` · **Milestone:** — · **Depends on:** F5
-> (sub-sessions), F21 (roles), F25 (the cook, the first validated role), F27 (the checks the portal runs)
+> **Status:** done (planned 2026-10-15, on `claude/project-thread-381vmw`; its four steps are in git, `d79dbb1`,
+> `ae257c5`, `d7afa23` and `28c4901`; closed 2026-10-19 by [the platform plan](../plans/platform.md)) ·
+> **Milestone:** — · **Depends on:** F5 (sub-sessions), F21 (roles), F25 (the cook, the first validated role), F27
+> (the checks the portal runs)
 >
-> **In the TODO:** **F29 Validated specialists** under *Sessions and memory*, beside F21 and F25 ([TODO](../../TODO.md)) ·
+> **In the TODO:** done, so its line is gone ([TODO](../../TODO.md)) ·
 > **Plan:** [plans/F29](../plans/F29-validated-specialists.md)
 
 Puls has six roles, and only the cook has been through the process that makes a role trustworthy: a report in a
