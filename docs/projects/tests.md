@@ -2,7 +2,8 @@
 
 > **Kind:** NUnit test projects · **Paths:** `tests/louis-agent.core.tests/`, `tests/louis-agent.api.tests/`,
 > `tests/louis-agent.orchestrator.tests/`, `tests/louis-agent.identity.puls.tests/`, `tests/louis-agent.pack.shops.tests/`,
-> `tests/louis-agent.composition.tests/`; the fakes they share in `tests/louis-agent.testing/` (a class library, CL15) ·
+> `tests/louis-agent.composition.tests/`, `tests/louis-agent.web.shared.tests/`, `tests/louis-agent.puls.tests/`; the
+> fakes they share in `tests/louis-agent.testing/` (a class library, CL15) ·
 > **Run:** `dotnet test louis-agent-solution.sln` (or each project)
 
 ## Purpose
@@ -64,6 +65,18 @@ registers the prompts its identity or pack brings in a `[SetUpFixture]`, as a ho
 (`FakeChatClient`, `FailingStreamClient`, `StubHandler`, `ListUsageSink`, `FakePrompts`, `FakeIdentity`, `FakePack`,
 `TestPaths`), a global using in the four that use them. No test project references another test project, and `core.tests` opens its
 internals to none; `ArchitectureTests` holds both.
+
+## louis-agent.web.shared.tests, louis-agent.puls.tests
+
+The web apps' first tests (T1, CL15: the proof the web sort changes nothing, written before it). The shared library's
+logic with plain NUnit, in folders that mirror it: `TurnStream` (the recorded turn read as the Python harness reads it,
+moved here from the API's tests, and a case per event it folds), `Delegation` and `WorkStatus` (the states a card goes
+through), `UsageFormat` (priced, unpriced, the display currency) and `Markdown` (a table, links, images, raw HTML). Its
+components with bUnit, each rendered from the recorded turn and pinned to the `.html` golden beside its test. Puls's
+tests pin `WorkPanel`, `PulsTile` and `TemplateCard`, and render `ChatPage` end to end against a stub API that opens a
+session and streams the recorded turn: the empty page and the page with the turn, each a golden, and the JS calls the
+page makes, listed. The code-review app has none yet: its logic lives in the shared library, and its components get
+tests when Phase 4 adds the Branches queue.
 
 ## What isn't covered yet
 

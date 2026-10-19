@@ -788,6 +788,10 @@ sequenceDiagram
   code-review app: `Workspace/`, `Git/`; Puls: `Text/`, `Content/`) and `Components/` by concern; no `Services/` or
   `Models/`. Moves and splits only: no markup, CSS, JS or behaviour changed. W2 (CSS isolation, one shared `chat.js`,
   `ChatPage`'s code-behind) is its own commit.
+- **T1 web tests before the web sort** (Louis, 2026-10-19): bUnit moves forward from Phase 4, so the sort is proved by
+  tests, not only by clicking. `tests/louis-agent.web.shared.tests` (the logic with NUnit, the components with bUnit
+  2.12.5, MIT, pinned to goldens) and `tests/louis-agent.puls.tests` (its components and a render of `ChatPage` against
+  a stub API that streams the recorded turn); the TODO's `UsageFormat` line closes with it.
 
 ---
 [Plans](README.md) · [The platform plan](platform.md)

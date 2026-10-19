@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <!-- T1 (CL15, the web layout review): the shared web library's first tests. Its logic with plain NUnit, its components
+       with bUnit (MIT), each rendered from the recorded Puls turn (benchmarks/fixtures/session-stream.sse) and pinned to a
+       golden file beside its test, regenerated with LOUIS_UPDATE_GOLDEN=1 like the other goldens. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>LouisAgent.Web.Shared.Tests</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="bunit" Version="2.12.5" />
+    <PackageReference Include="coverlet.collector" Version="6.0.4" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.0" />
+    <PackageReference Include="NUnit" Version="4.3.2" />
+    <PackageReference Include="NUnit.Analyzers" Version="4.7.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\louis-agent.web.shared\louis-agent.web.shared.csproj" />
+    <!-- The fakes and paths every test project shares (StubHandler, TestPaths). -->
+    <ProjectReference Include="..\louis-agent.testing\louis-agent.testing.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="NUnit.Framework" />
+    <Using Include="Bunit" />
+    <Using Include="LouisAgent.Testing" />
+  </ItemGroup>
+
+</Project>

@@ -198,7 +198,8 @@ src/
 └── louis-agent.composition/  # The one project that knows every identity and pack; a host picks with IDENTITIES and PACKS
 tools/louis-agent.usage-probe/ # A provider's raw usage; prices and totals a ledger (--ledger, --cache-gaps)
 tests/                   # NUnit: core.tests (mirrors core, plus ArchitectureTests, SkillsLayoutTests), api.tests, orchestrator.tests,
-                         #   identity.puls.tests, pack.shops.tests, composition.tests; louis-agent.testing holds the fakes they share
+                         #   identity.puls.tests, pack.shops.tests, composition.tests, web.shared.tests and puls.tests (bUnit);
+                         #   louis-agent.testing holds the fakes they share
 docker/                  # Dockerfiles and compose files (main, demo, puls)
 config/                  # .env + .env.secrets (ignored) and their examples, LLM profiles, prices.json, rates.json
 Skills/                  # What the agent writes: agent/functions/ (CreateSkillFile), tools/ (agent-built tools)

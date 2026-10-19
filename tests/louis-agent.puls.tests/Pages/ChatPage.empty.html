@@ -1,0 +1,132 @@
+
+
+<div class="app"><header class="topbar d-lg-none"><button class="icon menu-button" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar" aria-label="Maak die kieslys oop">☰</button>
+        <div class="brand"><svg class="puls-logo" viewBox="0 0 300 120" role="img" aria-label="Puls"><defs><linearGradient id="puls-ID-bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f7952f"></stop>
+            <stop offset="1" stop-color="#d9660b"></stop></linearGradient>
+        <mask id="puls-ID-cut" maskUnits="userSpaceOnUse" x="0" y="0" width="120" height="120"><circle cx="60" cy="60" r="58" fill="#fff"></circle><circle cx="30" cy="92" r="19.5" fill="none" stroke="#000" stroke-width="28"></circle><circle cx="30" cy="92" r="41.5" fill="none" stroke="#000" stroke-width="9"></circle><circle cx="30" cy="92" r="53.3" fill="none" stroke="#000" stroke-width="7.6"></circle><circle cx="30" cy="92" r="63.75" fill="none" stroke="#000" stroke-width="6.3"></circle><circle cx="30" cy="92" r="72.95" fill="none" stroke="#000" stroke-width="5.1"></circle><circle cx="30" cy="92" r="81" fill="none" stroke="#000" stroke-width="4"></circle><circle cx="30" cy="92" r="88" fill="none" stroke="#000" stroke-width="3"></circle></mask>
+        <clipPath id="puls-ID-disc"><circle cx="60" cy="60" r="58"></circle></clipPath></defs>
+    <rect width="120" height="120" fill="url(#puls-ID-bg)" mask="url(#puls-ID-cut)"></rect>
+    <g clip-path="url(#puls-ID-disc)"><circle class="puls-glow" cx="30" cy="92" r="19.5" fill="none" stroke="#fff" stroke-width="28"></circle><circle class="puls-glow" cx="30" cy="92" r="41.5" fill="none" stroke="#fff" stroke-width="9"></circle><circle class="puls-glow" cx="30" cy="92" r="53.3" fill="none" stroke="#fff" stroke-width="7.6"></circle><circle class="puls-glow" cx="30" cy="92" r="63.75" fill="none" stroke="#fff" stroke-width="6.3"></circle><circle class="puls-glow" cx="30" cy="92" r="72.95" fill="none" stroke="#fff" stroke-width="5.1"></circle><circle class="puls-glow" cx="30" cy="92" r="81" fill="none" stroke="#fff" stroke-width="4"></circle><circle class="puls-glow" cx="30" cy="92" r="88" fill="none" stroke="#fff" stroke-width="3"></circle></g>
+    <circle class="puls-source" cx="30" cy="92" r="7.5" fill="#38b449"></circle>
+    <g transform="translate(140 19) scale(.9)"><path d="M14 26V84M14 44a18 18 0 1 0 36 0a18 18 0 1 0-36 0M64 26v18a18 18 0 0 0 36 0M100 26v36M118 8v54M163 31c-4-4-9-5-13-5c-8 0-13 4-13 9c0 6 6 8 13 9c8 1 14 3 14 9c0 6-6 9-14 9c-6 0-11-2-15-6" fill="none" stroke="#efefeb" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"></path></g></svg></div>
+        <button class="icon" type="button" blazor:onclick="1" aria-label="Nuwe gesprek">＋</button></header>
+
+    <aside class="sidebar offcanvas-lg offcanvas-start" id="sidebar" tabindex="-1" aria-label="Gesprekke"><div class="sidebar-top"><a class="brand brand-stack" href="./" title="Puls se tuisblad"><svg class="puls-logo" viewBox="0 0 300 120" role="img" aria-label="Puls"><defs><linearGradient id="puls-ID-bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f7952f"></stop>
+            <stop offset="1" stop-color="#d9660b"></stop></linearGradient>
+        <mask id="puls-ID-cut" maskUnits="userSpaceOnUse" x="0" y="0" width="120" height="120"><circle cx="60" cy="60" r="58" fill="#fff"></circle><circle cx="30" cy="92" r="19.5" fill="none" stroke="#000" stroke-width="28"></circle><circle cx="30" cy="92" r="41.5" fill="none" stroke="#000" stroke-width="9"></circle><circle cx="30" cy="92" r="53.3" fill="none" stroke="#000" stroke-width="7.6"></circle><circle cx="30" cy="92" r="63.75" fill="none" stroke="#000" stroke-width="6.3"></circle><circle cx="30" cy="92" r="72.95" fill="none" stroke="#000" stroke-width="5.1"></circle><circle cx="30" cy="92" r="81" fill="none" stroke="#000" stroke-width="4"></circle><circle cx="30" cy="92" r="88" fill="none" stroke="#000" stroke-width="3"></circle></mask>
+        <clipPath id="puls-ID-disc"><circle cx="60" cy="60" r="58"></circle></clipPath></defs>
+    <rect width="120" height="120" fill="url(#puls-ID-bg)" mask="url(#puls-ID-cut)"></rect>
+    <g clip-path="url(#puls-ID-disc)"><circle class="puls-glow" cx="30" cy="92" r="19.5" fill="none" stroke="#fff" stroke-width="28"></circle><circle class="puls-glow" cx="30" cy="92" r="41.5" fill="none" stroke="#fff" stroke-width="9"></circle><circle class="puls-glow" cx="30" cy="92" r="53.3" fill="none" stroke="#fff" stroke-width="7.6"></circle><circle class="puls-glow" cx="30" cy="92" r="63.75" fill="none" stroke="#fff" stroke-width="6.3"></circle><circle class="puls-glow" cx="30" cy="92" r="72.95" fill="none" stroke="#fff" stroke-width="5.1"></circle><circle class="puls-glow" cx="30" cy="92" r="81" fill="none" stroke="#fff" stroke-width="4"></circle><circle class="puls-glow" cx="30" cy="92" r="88" fill="none" stroke="#fff" stroke-width="3"></circle></g>
+    <circle class="puls-source" cx="30" cy="92" r="7.5" fill="#38b449"></circle>
+    <g transform="translate(140 19) scale(.9)"><path d="M14 26V84M14 44a18 18 0 1 0 36 0a18 18 0 1 0-36 0M64 26v18a18 18 0 0 0 36 0M100 26v36M118 8v54M163 31c-4-4-9-5-13-5c-8 0-13 4-13 9c0 6 6 8 13 9c8 1 14 3 14 9c0 6-6 9-14 9c-6 0-11-2-15-6" fill="none" stroke="#efefeb" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"></path></g></svg><span class="tagline">Elke vraag op pad na 'n antwoord</span></a>
+            <button class="icon d-none d-lg-inline-grid" type="button" onclick="pulsUi.toggleSidebar()" title="Versteek die kantbalk" aria-label="Versteek die kantbalk">⇤</button>
+            <button class="icon d-lg-none" type="button" data-bs-dismiss="offcanvas" data-bs-target="#sidebar" aria-label="Maak die kieslys toe">×</button></div>
+        <button class="new-chat" blazor:onclick="2">Nuwe gesprek</button>
+        <button class="side-search" id="search-button" type="button" blazor:onclick="3"><span class="ic i-search" aria-hidden="true"></span>Soek gesprekke<kbd>Ctrl K</kbd></button>
+        <nav class="side-nav"><a class="side-link" href="./"><span class="ic i-home" aria-hidden="true"></span>Tuis</a>
+            <a class="side-link " href="verken"><span class="ic i-compass" aria-hidden="true"></span>Verken</a>
+            <a class="side-link " href="studio"><span class="ic i-sparkle" aria-hidden="true"></span>Studio</a></nav>
+
+        <div class="chat-list"><div class="sidebar-label sidebar-label-row">Projekte
+                <button class="icon" type="button" title="Nuwe projek" blazor:onclick="4">+</button></div>
+            <button class="side-link side-link-quiet" type="button" blazor:onclick="5"><span class="ic i-folder" aria-hidden="true"></span>Nuwe projek</button></div>
+
+        <div class="side-footer"><div class="profile-card"><span class="profile-avatar">G</span>
+                <span class="profile-who"><strong>Gas</strong><small>Betaal soos jy gebruik</small></span></div>
+            <details class="sidebar-settings"><summary>Instellings</summary>
+                
+                <label class="settings">
+                    Ligging
+                    <input type="text" blazor:onchange="6" placeholder="bv. Pretoria" maxlength="120" /></label>
+                <div class="locate"><button class="locate-button" type="button" blazor:onclick="7"><span class="ic i-pin" aria-hidden="true"></span>Gebruik my ligging</button>
+                    <small>Name: © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a></small></div>
+                <label class="settings-check"><input type="checkbox" blazor:onchange="8" />
+                    <span>Wys animasies al vra my stelsel minder (jou stelsel vra nie minder nie)</span></label>
+                <label class="settings">
+                    API-sleutel
+                    <input type="password" blazor:onchange="9" placeholder="net as AGENT_API_KEY gestel is" /></label></details></div></aside>
+
+    <div class="resizer d-none d-lg-block" role="separator" aria-orientation="vertical" title="Sleep om die breedte te verander · dubbelklik om terug te stel"></div>
+
+    <main class="conversation"><header class="chat-header d-none d-lg-flex"><button class="icon header-sidebar" type="button" onclick="pulsUi.toggleSidebar()" title="Wys die kantbalk" aria-label="Wys die kantbalk">⇥</button>
+            <div class="chat-heading"><span class="chat-title muted">Nuwe gesprek</span></div>
+            <div class="header-actions"><button class="header-button d-none d-xl-inline-flex work-toggle" type="button" onclick="pulsUi.toggleWork()" title="Wys of versteek die werkpaneel"><span class="ic i-pulse" aria-hidden="true"></span>Werk
+                </button>
+                <button class="header-button d-xl-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#work" aria-controls="work" title="Wys die werkpaneel"><span class="ic i-pulse" aria-hidden="true"></span>Werk
+                </button>
+                <div class="dropdown"><button class="usage-meter" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Krediete en gebruik: $0 hierdie maand"><span class="ic i-coin" aria-hidden="true"></span>Krediete
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-end usage-menu"><h6 class="dropdown-header">Krediete · betaal soos jy gebruik</h6>
+                        <div class="usage-row"><span>Hierdie gesprek</span><strong data-count="—">—</strong></div>
+                        <div class="usage-row"><span>Hierdie maand <small>0 gesprekke</small></span><strong data-count="$0">$0</strong></div>
+                        <p class="usage-note">Geen intekening nie: jy betaal net vir die vrae wat jy vra, spesialiste ingesluit. Volgens die gesprekke in hierdie blaaier.</p>
+                        <hr class="dropdown-divider">
+                        <button class="dropdown-item" type="button" blazor:onclick="10"><span class="ic i-coin" aria-hidden="true"></span>Koop krediete</button></div></div>
+                <div class="dropdown"><button class="header-button" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Taal"><span class="ic i-globe" aria-hidden="true"></span>AF</button>
+                    <ul class="dropdown-menu dropdown-menu-end"><li><h6 class="dropdown-header">Taal</h6></li><li><button class="dropdown-item active" type="button" blazor:onclick="11">Afrikaans<span class="ic i-check ms-auto" aria-hidden="true"></span></button></li><li><button class="dropdown-item " type="button" blazor:onclick="12">English</button></li></ul></div>
+                <div class="dropdown"><button class="profile-button" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Profiel">G</button>
+                    <ul class="dropdown-menu dropdown-menu-end profile-menu"><li class="profile-menu-head"><span class="profile-avatar">G</span>
+                            <span class="profile-who"><strong>Gas</strong><small>Plaaslik in hierdie blaaier</small></span></li>
+                        <li><button class="dropdown-item" type="button" blazor:onclick="13"><span class="ic i-coin" aria-hidden="true"></span>Koop krediete</button></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><h6 class="dropdown-header">Tema</h6></li>
+                        <li><button class="dropdown-item active" type="button"><span class="ic i-moon" aria-hidden="true"></span>Donker <span class="ic i-check ms-auto" aria-hidden="true"></span></button></li>
+                        <li><button class="dropdown-item" type="button" blazor:onclick="14"><span class="ic i-sun" aria-hidden="true"></span>Lig</button></li>
+                        <li><button class="dropdown-item" type="button" blazor:onclick="15"><span class="ic i-auto" aria-hidden="true"></span>Outomaties (stelsel)</button></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><button class="dropdown-item" type="button" blazor:onclick="16"><span class="ic i-user" aria-hidden="true"></span>Profiel</button></li>
+                        <li><button class="dropdown-item" type="button" onclick="pulsUi.openSettings()"><span class="ic i-cog" aria-hidden="true"></span>Instellings</button></li>
+                        <li><a class="dropdown-item" href="admin"><span class="ic i-sliders" aria-hidden="true"></span>Admin</a></li>
+                        <li><button class="dropdown-item" type="button" blazor:onclick="17"><span class="ic i-logout" aria-hidden="true"></span>Teken uit</button></li></ul></div></div></header>
+        <button class="work-tab work-tab-open d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#work" aria-controls="work" title="Wys die werkpaneel">Werk</button><div class="wave-bg" aria-hidden="true"><svg width="0" height="0" style="position:absolute" focusable="false"><defs><linearGradient id="water-ID-w1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6fd87c" stop-opacity=".18"></stop><stop offset=".25" stop-color="#1f4a30" stop-opacity=".22"></stop><stop offset=".6" stop-color="#101a14" stop-opacity=".40"></stop><stop offset="1" stop-color="#0b0e0d" stop-opacity=".55"></stop></linearGradient>
+            <linearGradient id="water-ID-w2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffb366" stop-opacity=".30"></stop><stop offset=".22" stop-color="#f58220" stop-opacity=".20"></stop><stop offset=".6" stop-color="#17191c" stop-opacity=".50"></stop><stop offset="1" stop-color="#0b0d0e" stop-opacity=".65"></stop></linearGradient>
+            <linearGradient id="water-ID-w3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#bfe8c4" stop-opacity=".22"></stop><stop offset=".22" stop-color="#2a5a3a" stop-opacity=".22"></stop><stop offset=".6" stop-color="#0f1713" stop-opacity=".60"></stop><stop offset="1" stop-color="#0a0c0b" stop-opacity=".75"></stop></linearGradient>
+            <linearGradient id="water-ID-w4" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#efefeb" stop-opacity=".14"></stop><stop offset=".25" stop-color="#2a3430" stop-opacity=".55"></stop><stop offset=".7" stop-color="#101412" stop-opacity=".85"></stop><stop offset="1" stop-color="#090b0c" stop-opacity=".95"></stop></linearGradient></defs></svg>
+    <div class="layer l1"><svg viewBox="0 0 2400 400" preserveAspectRatio="none"><path fill="url(#water-ID-w1)" d="M0 150 Q 300 60 600 150 T 1200 150 T 1800 150 T 2400 150 V 400 H 0 Z"></path></svg></div>
+    <div class="layer l2"><svg viewBox="0 0 2400 400" preserveAspectRatio="none"><path fill="url(#water-ID-w2)" d="M0 200 Q 200 110 400 200 T 800 200 T 1200 200 T 1600 200 T 2000 200 T 2400 200 V 400 H 0 Z"></path></svg></div>
+    <div class="layer l3"><svg viewBox="0 0 2400 400" preserveAspectRatio="none"><path fill="url(#water-ID-w3)" d="M0 250 Q 150 170 300 250 T 600 250 T 900 250 T 1200 250 T 1500 250 T 1800 250 T 2100 250 T 2400 250 V 400 H 0 Z"></path></svg></div>
+    <div class="layer l4"><svg viewBox="0 0 2400 400" preserveAspectRatio="none"><path fill="url(#water-ID-w4)" d="M0 300 Q 100 240 200 300 T 400 300 T 600 300 T 800 300 T 1000 300 T 1200 300 T 1400 300 T 1600 300 T 1800 300 T 2000 300 T 2200 300 T 2400 300 V 400 H 0 Z"></path></svg></div></div><div class="messages" blazor:elementReference="ID"><div class="empty"><div class="hero-mark" aria-hidden="true"><div class="pulse-bg"><span></span><span></span><span></span><span></span></div>
+                        <svg class="puls-tile" viewBox="0 0 160 160" aria-hidden="true"><defs><linearGradient id="tile-ID-tile" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a3f45"></stop>
+            <stop offset="1" stop-color="#24282c"></stop></linearGradient>
+        <linearGradient id="tile-ID-bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f7952f"></stop>
+            <stop offset="1" stop-color="#d9660b"></stop></linearGradient>
+        <mask id="tile-ID-cut" maskUnits="userSpaceOnUse" x="0" y="0" width="120" height="120"><circle cx="60" cy="60" r="58" fill="#fff"></circle><circle cx="30" cy="92" r="19.5" fill="none" stroke="#000" stroke-width="28"></circle><circle cx="30" cy="92" r="41.5" fill="none" stroke="#000" stroke-width="9"></circle><circle cx="30" cy="92" r="53.3" fill="none" stroke="#000" stroke-width="7.6"></circle><circle cx="30" cy="92" r="63.75" fill="none" stroke="#000" stroke-width="6.3"></circle><circle cx="30" cy="92" r="72.95" fill="none" stroke="#000" stroke-width="5.1"></circle><circle cx="30" cy="92" r="81" fill="none" stroke="#000" stroke-width="4"></circle><circle cx="30" cy="92" r="88" fill="none" stroke="#000" stroke-width="3"></circle></mask>
+        <clipPath id="tile-ID-disc"><circle cx="60" cy="60" r="58"></circle></clipPath></defs>
+    <rect width="160" height="160" rx="36" fill="url(#tile-ID-tile)"></rect>
+    <g transform="translate(20 20)"><rect width="120" height="120" fill="url(#tile-ID-bg)" mask="url(#tile-ID-cut)"></rect>
+        <g clip-path="url(#tile-ID-disc)"><circle class="puls-glow" cx="30" cy="92" r="19.5" fill="none" stroke="#fff" stroke-width="28"></circle><circle class="puls-glow" cx="30" cy="92" r="41.5" fill="none" stroke="#fff" stroke-width="9"></circle><circle class="puls-glow" cx="30" cy="92" r="53.3" fill="none" stroke="#fff" stroke-width="7.6"></circle><circle class="puls-glow" cx="30" cy="92" r="63.75" fill="none" stroke="#fff" stroke-width="6.3"></circle><circle class="puls-glow" cx="30" cy="92" r="72.95" fill="none" stroke="#fff" stroke-width="5.1"></circle><circle class="puls-glow" cx="30" cy="92" r="81" fill="none" stroke="#fff" stroke-width="4"></circle><circle class="puls-glow" cx="30" cy="92" r="88" fill="none" stroke="#fff" stroke-width="3"></circle></g>
+        <circle class="puls-source" cx="30" cy="92" r="7.5" fill="#38b449"></circle></g></svg></div>
+                    <button class="news-pill" type="button" blazor:onclick="18"><span class="news-tag">Nuut</span> Puls lees PDF's, Word en Excel <span aria-hidden="true">→</span></button>
+                    <h1><span class="w" style="--i:0">Hoe</span> <span class="w" style="--i:1">kan</span> <span class="w" style="--i:2">ek</span> <span class="w" style="--i:3">help?</span></h1>
+                    <p class="hint">Vra enigiets. Puls stuur elke taak na 'n spesialis met net die gereedskap wat dit nodig het, en jy kan sien hoe dit werk.</p>
+                    <div class="composer composer-centred"><div class="input-box"><textarea id="composer-input" rows="1" placeholder="Vra enigiets…" value="" blazor:oninput="19"></textarea>
+            <div class="composer-tools"><div class="dropdown dropup"><button class="tool-button" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Voeg by"><span class="ic i-plus" aria-hidden="true"></span></button>
+                    <ul class="dropdown-menu"><li><label class="dropdown-item file-item"><span class="ic i-file" aria-hidden="true"></span>Laai 'n lêer op
+                                <input multiple type="file" blazor:elementReference="ID"></input></label></li>
+                        <li><button class="dropdown-item" type="button" blazor:onclick="20"><span class="ic i-screen" aria-hidden="true"></span>Voeg 'n skermskoot by</button></li></ul></div>
+                <div class="dropdown dropup"><button class="tool-button tool-button-label" type="button" data-bs-toggle="dropdown" aria-expanded="false"><span class="ic i-sliders" aria-hidden="true"></span>Gereedskap
+                    </button>
+                    <ul class="dropdown-menu"><li><button class="dropdown-item" type="button" blazor:onclick="21"><span class="ic i-search" aria-hidden="true"></span>Soek op die web</button></li>
+                        <li><button class="dropdown-item" type="button" blazor:onclick="22"><span class="ic i-file" aria-hidden="true"></span>Lees 'n lêer</button></li>
+                        <li><button class="dropdown-item" type="button" blazor:onclick="23"><span class="ic i-image" aria-hidden="true"></span>Skep 'n prent</button></li>
+                        <li><button class="dropdown-item" type="button" blazor:onclick="24"><span class="ic i-compass" aria-hidden="true"></span>Diep navorsing</button></li>
+                        <li><button class="dropdown-item" type="button" blazor:onclick="25"><span class="ic i-sparkle" aria-hidden="true"></span>Dink langer</button></li></ul></div>
+                <span class="composer-spacer"></span>
+                <div class="dropdown dropup"><button class="tool-button tool-button-label model-button" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Model">Claude Haiku 5.5 <span class="ic i-chevron" aria-hidden="true"></span></button>
+                    <ul class="dropdown-menu dropdown-menu-end"><li><h6 class="dropdown-header">Model</h6></li>
+                        <li><button class="dropdown-item active" type="button">Claude Haiku 5.5 <span class="ic i-check ms-auto" aria-hidden="true"></span></button></li>
+                        <li><button class="dropdown-item" type="button" blazor:onclick="26">Ander modelle…</button></li></ul></div>
+                <button class="tool-button" type="button" title="Stemboodskap" blazor:onclick="27"><span class="ic i-mic" aria-hidden="true"></span></button><button id="send-button" class="send" blazor:onclick="28" disabled title="Stuur (Enter)">↑</button></div></div></div>
+                    <div class="topics"><button class="topic" type="button" blazor:onclick="29">Gesondheid</button><button class="topic" type="button" blazor:onclick="30">Leer</button><button class="topic" type="button" blazor:onclick="31">Tegnologie</button><button class="topic" type="button" blazor:onclick="32">Lewe</button><button class="topic" type="button" blazor:onclick="33">Wetenskap</button><button class="topic" type="button" blazor:onclick="34">Taal</button></div>
+                    <div class="suggestions"><button class="suggestion" blazor:onclick="35"><strong>Soek aanlyn</strong>
+                                <span>Wat is nuut in .NET 10?</span></button><button class="suggestion" blazor:onclick="36"><strong>Lees 'n lêer</strong>
+                                <span>Som die README op</span></button><button class="suggestion" blazor:onclick="37"><strong>Kyk na die geskiedenis</strong>
+                                <span>Wat het onlangs verander?</span></button><button class="suggestion" blazor:onclick="38"><strong>Tel en reken</strong>
+                                <span>Tel reëls kode</span></button></div></div></div></main>
+
+    <aside class="work offcanvas-xl offcanvas-end" id="work" tabindex="-1" aria-label="Werk"><div class="work-head"><span class="work-title">Werk</span><button class="icon d-none d-xl-inline-grid" type="button" onclick="pulsUi.toggleWork()" title="Versteek die werkpaneel" aria-label="Versteek die werkpaneel">⇥</button>
+    <button class="icon d-xl-none" type="button" data-bs-dismiss="offcanvas" data-bs-target="#work" aria-label="Maak die werkpaneel toe">×</button></div>
+
+<div class="work-body"><div class="work-empty"><img src="brand/puls-mark.svg" alt width="56" height="56">
+            <strong>Nog geen werk nie</strong>
+            <p>Wanneer Puls 'n taak oordra, sien jy hier die spesialis se stappe, gereedskap en koste, terwyl dit gebeur.</p></div></div></aside></div>
