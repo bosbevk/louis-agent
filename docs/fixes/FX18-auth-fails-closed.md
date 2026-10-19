@@ -33,7 +33,8 @@ As designed in [the platform plan](../plans/platform.md), Phase 1 (*FX18 · Auth
 - **One pure rule in core, `Guardrails/HostAuth`,** which both hosts call: `AtStartup(mode, key)` is `Start` when a key
   is set, whatever the mode (so `off` never silences a key), `Refuse` with no key under `required`, and `StartOpen`
   with no key under `off`; `HasKey(x-api-key, authorization, expected)` is the fixed-time check both hosts had, so
-  their `HasApiKey` copies are deleted. Core references no ASP.NET Core, so a host hands it the two header strings.
+  their `HasApiKey` copies are deleted; `Key(candidates)` is the key a host checks, the first that isn't blank,
+  trimmed. Core references no ASP.NET Core, so a host hands it the two header strings.
 - **The hosts:** on `Refuse` the host throws `ErrorMessage.ApiKeyRequired` (*`AGENT_API_KEY is required: set it in
   config/.env.secrets, or set AGENT_AUTH=off to serve without a key on purpose.`*; the MCP server names
   `MCP_API_KEY (or AGENT_API_KEY)`) before it listens, the way `AgentHost.Build` already stops on a bad price table;
@@ -47,6 +48,11 @@ As designed in [the platform plan](../plans/platform.md), Phase 1 (*FX18 · Auth
   that names nothing; and `AGENT_AUTH` is parsed in `HostAuth.Mode`, not `AgentOptions`, because the MCP server gets
   only an engine from `AgentHost.BuildToolHost()` and has no options object. `AdminGate` keeps its own compare and
   header read; folding it onto `HostAuth` is a later tidy.
+- **From the step's review (2026-10-19):** a bare `MCP_API_KEY=` in an env file is `""`, which `??` never falls back
+  from, so the MCP server refused to start with `AGENT_API_KEY` set, and under `off` started open with a key there:
+  the one fail-open path left. Both hosts now take their key through `HostAuth.Key`, as `AdminGate.Key` already did.
+  And `Bearer ` is stripped only as a prefix: `Authorization: k` still passes, as it always did, but
+  `Authorization: kBearer ` no longer does (`Replace` took the word out anywhere).
 - **What it changes for Louis:** his local stacks need `AGENT_API_KEY` in `config/.env.secrets` (both compose files pass
   it in; `puls` already sends it to `puls-agent` as its peer key), or `AGENT_AUTH=off` in his `config/.env`; then
   `up -d`, since `restart` keeps the old environment. The checks and the orchestrator already send the key when set.
@@ -63,7 +69,11 @@ and seen failing (24 cases, all `NotImplementedException`):
   starts open; a key starts under either mode.
 - `HasKey_ReadsXApiKeyThenBearer_AndComparesWhole`: `x-api-key` and `Authorization: Bearer` (either case) pass; a
   wrong key, an empty one, neither header, and one that differs only in length fail; `x-api-key` wins when both are
-  present.
+  present. From the review: a bare key in `Authorization` passes (pinned), `Basic k` and `kBearer ` fail (the last
+  passed before the prefix check).
+- `TheKey_IsTheFirstNonBlankOne_Trimmed` and `ABlankPreferredKey_FallsBackToTheOther_SoStartupStillChecksIt` (from the
+  review, seen failing on a stub): `""`, blank and null fall through to the next key; `" k "` is `k`; none is null; and
+  a blank `MCP_API_KEY` with `AGENT_API_KEY` set starts checked under both modes.
 
 The golden files didn't change: no `ToolMessage` or prompt moved. `HostMessageEnumTests` covers the two reworded
 warnings.
@@ -82,13 +92,16 @@ an Ollama profile so no model key is needed:
 | MCP server, HTTP | no key, no `AGENT_AUTH` | stops: `MCP_API_KEY (or AGENT_API_KEY) is required: …` |
 | MCP server, HTTP | `AGENT_AUTH=off`, no key | starts with its warning; `initialize` 200 |
 | MCP server, HTTP | `MCP_API_KEY=k` | 401 without the key, 200 with it |
+| MCP server, HTTP | `MCP_API_KEY=` (blank), `AGENT_API_KEY=k` | starts checked: 401 without the key, 200 with it (after the review's fix; before it, refused to start) |
 
 ## Lesson
 
 Deny by default (OWASP Top 10:2021, A01): fail closed at start-up rather than at the first request, with one pure rule
 tested without a host. A warning that a door is open is not a guard: the operator who never reads the log never
 closes it, so the host has to refuse, and the one who wants it open says so in a setting that is never set in a
-compose file. Skill map #15 (safety and security).
+compose file. And unset and set-but-empty are different values in the environment: a fail-closed rule has to treat
+them the same everywhere a key is read, or a blank line in an env file opens the door (the review's catch). Skill map
+#15 (safety and security).
 
 ---
 [Fixes](README.md) · Previous: [FX17](FX17-cook-labels-and-counts.md) · Next: [FX19](FX19-git-arguments-as-data.md)

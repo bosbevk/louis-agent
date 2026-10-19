@@ -86,10 +86,11 @@ static async Task RunHttpAsync(string[] args, AgentEngine engine)
     // The published tools run shell commands and write files - gate every request since this is now reachable
     // over the network instead of only a local stdio pipe. MCP_API_KEY is separate from AGENT_API_KEY (the
     // louis-agent.api key) so access to one can be rotated/revoked without affecting the other; it falls back to
-    // AGENT_API_KEY when unset, so a single shared key still works for anyone who hasn't split them. FX18: with
-    // neither the server refuses to start, before it listens, unless AGENT_AUTH=off says it is open on purpose
-    // (HostAuth, core's one rule for this and the API). Over stdio no key is needed: a child process on this machine.
-    string? apiKey = Environment.GetEnvironmentVariable("MCP_API_KEY") ?? Environment.GetEnvironmentVariable("AGENT_API_KEY");
+    // AGENT_API_KEY when unset or blank (HostAuth.Key: a bare MCP_API_KEY= in an env file is no key), so a single
+    // shared key still works for anyone who hasn't split them. FX18: with neither the server refuses to start, before
+    // it listens, unless AGENT_AUTH=off says it is open on purpose (HostAuth, core's one rule for this and the API).
+    // Over stdio no key is needed: a child process on this machine.
+    string? apiKey = HostAuth.Key(Environment.GetEnvironmentVariable("MCP_API_KEY"), Environment.GetEnvironmentVariable("AGENT_API_KEY"));
     switch (HostAuth.AtStartup(HostAuth.Mode(Environment.GetEnvironmentVariable("AGENT_AUTH")), apiKey))
     {
         case HostAuthDecision.Refuse:
@@ -100,7 +101,7 @@ static async Task RunHttpAsync(string[] args, AgentEngine engine)
         case HostAuthDecision.Start:
             app.Use(async (context, next) =>
             {
-                if (HostAuth.HasKey(context.Request.Headers["x-api-key"].FirstOrDefault(), context.Request.Headers.Authorization.FirstOrDefault(), apiKey!))
+                if (HostAuth.HasKey(context.Request.Headers["x-api-key"].FirstOrDefault(), context.Request.Headers.Authorization.FirstOrDefault(), apiKey))
                 {
                     await next(context);
                     return;

@@ -25,6 +25,27 @@ public class HostAuthTests
         Assert.That(error.Message, Does.Contain("AGENT_AUTH").And.Contain(setting).And.Contain("required").And.Contain("off"));
     }
 
+    // Review of the step (2026-10-19): a blank MCP_API_KEY= in an env file is "", which ?? never falls back from, so
+    // the server refused to start with AGENT_API_KEY set, or under off started open with a key there. The first
+    // non-blank key wins, trimmed, as AdminGate.Key does.
+    [TestCase(new[] { "mcp", "agent" }, "mcp")]
+    [TestCase(new[] { "", "agent" }, "agent")]
+    [TestCase(new[] { "   ", "agent" }, "agent")]
+    [TestCase(new[] { null, "agent" }, "agent")]
+    [TestCase(new[] { " k " }, "k")]
+    [TestCase(new string?[] { "", null }, null)]
+    [TestCase(new string?[] { }, null)]
+    public void TheKey_IsTheFirstNonBlankOne_Trimmed(string?[] candidates, string? expected) =>
+        Assert.That(HostAuth.Key(candidates), Is.EqualTo(expected));
+
+    [Test]
+    public void ABlankPreferredKey_FallsBackToTheOther_SoStartupStillChecksIt()
+    {
+        string? key = HostAuth.Key("", "agent");
+        Assert.That(HostAuth.AtStartup(AuthMode.Required, key), Is.EqualTo(HostAuthDecision.Start));
+        Assert.That(HostAuth.AtStartup(AuthMode.Off, key), Is.EqualTo(HostAuthDecision.Start), "off never opens a host that has a key");
+    }
+
     [TestCase(AuthMode.Required, null, HostAuthDecision.Refuse)]
     [TestCase(AuthMode.Required, "  ", HostAuthDecision.Refuse)]
     [TestCase(AuthMode.Off, null, HostAuthDecision.StartOpen)]
@@ -45,6 +66,11 @@ public class HostAuthTests
     // x-api-key wins when both headers are present.
     [TestCase("k", "Bearer wrong", true)]
     [TestCase("wrong", "Bearer k", false)]
+    // "Bearer " is a prefix: a bare key in Authorization still passes (the old behaviour, pinned), but the word
+    // anywhere else is just part of a wrong key.
+    [TestCase(null, "k", true)]
+    [TestCase(null, "Basic k", false)]
+    [TestCase(null, "kBearer ", false)]
     public void HasKey_ReadsXApiKeyThenBearer_AndComparesWhole(string? apiKeyHeader, string? authorization, bool expected) =>
         Assert.That(HostAuth.HasKey(apiKeyHeader, authorization, expected: "k"), Is.EqualTo(expected));
 }

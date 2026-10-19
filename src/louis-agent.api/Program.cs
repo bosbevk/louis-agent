@@ -40,7 +40,7 @@ var app = builder.Build();
 // AGENT_API_KEY. FX18: without one the API refuses to start, here, before it listens, unless AGENT_AUTH=off says it is
 // open on purpose (HostAuth, core's one rule for both this and the MCP server over HTTP).
 // The web app's files stay public: they hold no data, and the app sends the key the user enters in its settings.
-string? apiKey = Environment.GetEnvironmentVariable("AGENT_API_KEY");
+string? apiKey = HostAuth.Key(Environment.GetEnvironmentVariable("AGENT_API_KEY"));
 switch (HostAuth.AtStartup(HostAuth.Mode(Environment.GetEnvironmentVariable("AGENT_AUTH")), apiKey))
 {
     case HostAuthDecision.Refuse:
@@ -54,7 +54,7 @@ switch (HostAuth.AtStartup(HostAuth.Mode(Environment.GetEnvironmentVariable("AGE
             bool isApi = context.Request.Path.StartsWithSegments("/sessions") || context.Request.Path.StartsWithSegments("/workspace") ||
                          context.Request.Path.StartsWithSegments("/git") || context.Request.Path.StartsWithSegments("/toolsets") ||
                          RolesView.Routes.Any(route => context.Request.Path.StartsWithSegments(route)) || context.Request.Path.StartsWithSegments("/model");
-            if (!isApi || HostAuth.HasKey(context.Request.Headers["x-api-key"].FirstOrDefault(), context.Request.Headers.Authorization.FirstOrDefault(), apiKey!))
+            if (!isApi || HostAuth.HasKey(context.Request.Headers["x-api-key"].FirstOrDefault(), context.Request.Headers.Authorization.FirstOrDefault(), apiKey))
             {
                 await next(context);
                 return;
