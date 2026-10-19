@@ -145,7 +145,7 @@ class TheModes(unittest.TestCase):
     # (web and shops), so the check measures the cook's role and its own session, not a toolset Puls lacked. A new
     # name: the portal's trend follows a mode by name, and puls-only's runs had web alone.
     def test_are_puls_with_the_cooks_tools_and_puls_with_its_cook(self):
-        self.assertEqual(cook.MODES, {"puls-tools": ["web", "shops"], "puls-cook": ["skills", "specialists", "web"]})
+        self.assertEqual(cook.MODES, {"puls-tools": ["web", "shops"], "puls-cook": ["specialists", "web"]})
 
 
 if __name__ == "__main__":
