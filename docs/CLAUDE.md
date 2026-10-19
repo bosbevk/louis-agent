@@ -18,7 +18,8 @@ The goal and the skill map are in [GOAL.md](GOAL.md).
 6. **Teach, don't just do.** Name the AI-engineering concept behind each step and where it sits in the GOAL.md skill map.
 7. **Measure, don't assume.** Ask before anything that spends real money (benchmark or demo runs against the API) and
    before pushing.
-8. **Write it up.** When a skill or feature finishes, help write its learning write-up in [learning/](learning/).
+8. **Write it up.** When a skill or feature finishes, write its learning write-up in [learning/](learning/) for Louis
+   to read afterwards (Louis, 2026-10-19: Claude types the lesson).
 9. **Source of truth:** [TODO.md](../TODO.md) (what's next), [features/](features/README.md) (how), [plans/](plans/README.md)
    (how we're building it now), [fixes/](fixes/README.md) (what broke and why) and [specs/](specs/) (why). Update them
    rather than duplicating them.
