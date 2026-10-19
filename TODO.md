@@ -99,6 +99,7 @@ changes instead of relying on training; **a configured agent**, an identity and 
 - [ ] Web tests: the Branches queue, on Phase 4's bUnit project
 - [ ] Tests for the web app's `UsageFormat`
 - [ ] The portal's old benchmark routes and words removed, after Phase 3
+- [ ] A pack can't add itself to a router (CL15 step 4): the shops' routing line lives in its guide, which loads only in a session that already has the toolset, so the coding agent never learns that shops exist. Costs nothing today; with F36 the routing rows come from each toolset's description
 
 ## Known limitations
 

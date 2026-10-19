@@ -761,7 +761,10 @@ sequenceDiagram
 
 ## Approved during the build
 
-None yet.
+- **Step 5 adds the shared test project** (Louis, review of step 4, 2026-10-19): three test projects (the identity's,
+  the pack's and the composition's) now reference `louis-agent.core.tests` for its fakes (`FakeChatClient`,
+  `StubHandler`, `FakePrompts`, `TestPaths`), the trigger flagged at step 2. They move to `tests/louis-agent.testing`,
+  referenced by every test project; `core.tests` opens its internals to no other project.
 
 ---
 [Plans](README.md) · [The platform plan](platform.md)
