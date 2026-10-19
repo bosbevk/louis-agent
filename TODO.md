@@ -29,7 +29,7 @@ changes instead of relying on training; **a configured agent**, an identity and 
 - [ ] Validate demand: ten conversations and 30 real Malmesbury questions, answered blind by Puls, Gemini, ChatGPT and Google Maps (Louis's own, Phase 0 step 4)
 - [ ] [FX20 Skill files wait for approval](docs/fixes/FX20-skill-files-wait-for-approval.md): `CreateSkillFile` writes to `pending/` until `/approve` (Phase 1; opened in Phase 0 step 3)
 - [ ] Louis's F32 to F34 learning write-up, skills 7 and 12, before Phase 2
-- [ ] CL15 Engine, identities and packs (Phase 2; takes in "SA context in the prompt"'s SAST default, `HOST_TIME_ZONE`; F30's minions kept, Puls's minion roles moved with Puls)
+- [ ] CL15 Engine, identities and packs (Phase 2; takes in "SA context in the prompt"'s SAST default, `HOST_TIME_ZONE`; F30's minions kept, Puls's minion roles moved with Puls; `/approve {name} session|agent|shared` for skill files and agent-built tools, [ADR 0033](docs/adr/0033-what-the-agent-writes-has-a-scope.md))
 - [ ] [F18](docs/features/F18-evaluation.md) Simulations in C# (Phase 3; takes in CL11, the Python checks, "evaluation in CI", "prompts compared on the evals", notes on a run (F31 step 11c), the response cache as a replay cache, traces per turn and tool call)
 - [ ] Personal data out of the logs: the place and the user's text hashed in the logs (Phase 3 step 4f, with F18; Part 3 row 14)
 - [ ] F40 The sales playground (Phase 4: the demo identity, the customers pack, the invoice and area-guide simulations, the control room, Try it, on its own compose, `docker/docker-compose.demo.yml`)
@@ -38,7 +38,7 @@ changes instead of relying on training; **a configured agent**, an identity and 
 
 - [ ] [F7](docs/features/F07-budgets.md) Cost you can see and stop (Phase 5; takes in [F6](docs/features/F06-estimates.md), [F11](docs/features/F11-usage-tab-and-reconciliation.md))
 - [ ] F39 Orchestration (Phase 6; takes in [F17](docs/features/F17-orchestrator-agent.md), [F8-S4](docs/features/F08-reliability.md)'s structured results between agents, the orchestrator's end-to-end test, F7's deferral, workflows, multi-agent, the recovery contract for bad data)
-- [ ] [FX4 Append-only history](docs/fixes/FX04-append-only-history.md) (first in Phase 7; the prerequisite of F36 and of F43's durable sessions; removes known limitation 9)
+- [ ] [FX4 Append-only history](docs/fixes/FX04-append-only-history.md) (first in Phase 7; the prerequisite of F36 and of F43's durable sessions; a written or approved skill arrives as a tool result, not a system prompt reload, [ADR 0033](docs/adr/0033-what-the-agent-writes-has-a-scope.md); removes known limitation 9)
 - [ ] F41 Drafts and approvals (Phase 7; takes in drafts, human in the loop, structured outputs, every problem listed at once, `ToolEffect`, the approvals screen with FX20's skill files and a page of the skills)
 - [ ] F42 Safety and audit (Phase 7; takes in the safety gaps, abuse handling and moderation, output guardrails, the untrusted-content frame, `IncludeDetailedErrors` reviewed, the egress proxy, repository mounts, branch protection, merges by person; removes known limitation 5)
 - [ ] F36 MCP servers as packs (Phase 8; takes in "MCP servers as a session toolset", a full MCP client, annotations and output schemas on our MCP server, our guards on every path; removes known limitation 1)

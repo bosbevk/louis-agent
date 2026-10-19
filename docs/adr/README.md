@@ -41,6 +41,7 @@ afterwards from the docs that hold them (each ADR links its sources), with the d
 | [0029](0029-simulations-in-csharp.md) | Simulations in C#: one harness for checks, regressions and demos | Accepted |
 | [0030](0030-build-or-adopt.md) | Build or adopt: the loop stays ours on Microsoft.Extensions.AI | Accepted |
 | [0031](0031-orchestration-is-an-engine-function.md) | Orchestration is an engine function, and the orchestrator stays on core | Accepted |
+| [0033](0033-what-the-agent-writes-has-a-scope.md) | What the agent writes has a scope: session, agent or shared (0032 is kept for *Sources as data*) | Accepted |
 
 ## When to write one
 
