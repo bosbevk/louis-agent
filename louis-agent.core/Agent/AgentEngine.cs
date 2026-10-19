@@ -309,13 +309,29 @@ public class AgentEngine
         string argument = parts.Length > 1 ? parts[1] : "";
         return command switch
         {
-            "/tools" => ListAgentTools() + MessageText.Format(UserText.ToolsHint),
-            "/approve" => _agentBuiltTools.ApproveTool(argument),
-            "/reject" => _agentBuiltTools.RejectTool(argument),
+            "/tools" => ListAgentTools() + PendingSkillFileLines() + MessageText.Format(UserText.ToolsHint),
+            "/approve" => Pending(argument, _agentBuiltTools.ApproveTool, _skillTools.ApproveSkillFile),
+            "/reject" => Pending(argument, _agentBuiltTools.RejectTool, _skillTools.RejectSkillFile),
             "/usage" => sessionUsage is null ? MessageText.Format(UserText.UsageNotTracked) : UsageText.Summary(sessionUsage, Display),
             _ => null,
         };
     }
+
+    /// <summary>
+    /// /approve and /reject reach an agent-built tool or a skill file the agent wrote (FX20), by name: a tool when one
+    /// is pending, else the skill file, else the tool's own "nothing pending" reply; a name that is both is refused.
+    /// </summary>
+    private string Pending(string name, Func<string, string> onTool, Func<string, string> onSkillFile)
+    {
+        bool tool = !string.IsNullOrWhiteSpace(name) && _agentBuiltTools.HasPendingTool(name);
+        bool skillFile = !string.IsNullOrWhiteSpace(name) && _skillTools.HasPendingSkillFile(name);
+        if (tool && skillFile)
+            return MessageText.Format(UserText.PendingToolAndSkillFile, new { Name = name, Tool = $"{name}.tool.md", File = $"{name}.md" });
+        return skillFile ? onSkillFile(name) : onTool(name);
+    }
+
+    private string PendingSkillFileLines() =>
+        _skillTools.ListPendingSkillFiles() is { Length: > 0 } lines ? "\n" + lines : "";
 
     /// <summary>
     /// What the model is sent must be the same bytes on every machine. Text read from the skill files, and a

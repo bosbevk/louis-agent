@@ -17,7 +17,8 @@
 | Examples | `ReadWorkspaceFile`, `GetStatus`, `DotNetTest`, `WebSearch`, `LogTimeByTaskName` | `agent/louis-agent/voice.md` (the coding agent's mode: voice, routing), `toolsets/dotnet.md`, `agent/functions/code-review.md` |
 
 Tools give the agent abilities; skills tell it how and when to use them. The agent can add both: `CreateSkillFile` writes
-a new skill file, and `CreateTool` writes a script-backed tool that waits for your `/approve <Name>`.
+a new skill file and `CreateTool` a script-backed tool, and each waits in a `pending/` folder for your `/approve <Name>`
+before any later session loads it (FX20 for skill files).
 
 ### How tools are registered
 

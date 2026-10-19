@@ -27,7 +27,8 @@ internal sealed partial class SkillTools
     private readonly PowerShellTools _powerShell;
     private Dictionary<string, MarkdownSkillLoader.SkillDef> _skills;
 
-    // Files created this session, so they load even when the agent function's skill set wouldn't pick them up.
+    // Files created this session, so they load even when discovery wouldn't pick them up: a pending file (FX20) lives
+    // here until /approve moves it, and the entry follows the move.
     private readonly List<string> _createdSkillFiles = [];
 
     public SkillTools(ISkillProvider skillProvider, AgentOptions options, string workspaceRoot, PythonTools python, PowerShellTools powerShell)
@@ -46,7 +47,7 @@ internal sealed partial class SkillTools
     /// <summary>The currently loaded skills (refreshed by <see cref="ReloadSkills"/>).</summary>
     public IReadOnlyCollection<MarkdownSkillLoader.SkillDef> Skills => _skills.Values;
 
-    /// <summary>The skills folder; <see cref="CreateSkillFile"/> writes into its agent/functions/; null disables skill authoring.</summary>
+    /// <summary>The skills folder; <see cref="CreateSkillFile"/> writes into its agent/functions/pending/; null disables skill authoring.</summary>
     public string? SkillsDirectory { get; set; }
 
     /// <summary>Rebuilds the skill set from disk for <see cref="ReloadSkills"/>; null disables reloading.</summary>
@@ -147,11 +148,12 @@ internal sealed partial class SkillTools
     }
 
     [Description("""
-        Creates (or updates, with overwrite=true) a reusable skill file, agent/functions/<name>.md in the Skills folder, and loads it
-        immediately so its skills become callable via ExecuteSkill in this same session — the file is saved to disk
-        right away, and every later session with the skills toolset loads it too. Use this when the user asks to save a repeatable
-        procedure as a skill, not for a one-off action that only needs to happen once. A built-in prompt's name (a toolset's
-        guide) can't be taken with this tool. Markdown format, one section per skill:
+        Creates (or updates, with overwrite=true) a reusable skill file, saved as agent/functions/pending/<name>.md in the Skills
+        folder and loaded at once, so its skills are callable via ExecuteSkill in this same session. It is only kept for later
+        sessions once the user approves it: ask them to type '/approve <name>' (or '/reject <name>' to discard it). With
+        overwrite, the new version waits for approval while the approved one stays for other sessions. Use this when the user
+        asks to save a repeatable procedure as a skill, not for a one-off action that only needs to happen once. A built-in
+        prompt's name (a toolset's guide) can't be taken with this tool. Markdown format, one section per skill:
         # <Title>
         <guidance for when/how to use these skills>
         ## Skill: <PascalCaseName>
@@ -168,9 +170,9 @@ internal sealed partial class SkillTools
         Guidance-only files (no Skill sections) are allowed.
         """)]
     public string CreateSkillFile(
-        [Description("Short kebab-case name; the file is saved as agent/functions/<name>.md (e.g. 'csv-reports')")] string name,
+        [Description("Short kebab-case name; the file is saved as agent/functions/pending/<name>.md until approved (e.g. 'csv-reports')")] string name,
         [Description("Full markdown content of the skills file")] string markdown,
-        [Description("Set true to replace an existing file previously created with this name")] bool overwrite = false)
+        [Description("Set true to replace an existing file (approved or pending) with this name; the new version waits for approval")] bool overwrite = false)
     {
         if (SkillsDirectory is null) return MessageText.Format(ToolMessage.SkillAuthoringUnavailable);
         name = (name ?? "").Trim().ToLowerInvariant();
@@ -183,8 +185,9 @@ internal sealed partial class SkillTools
         if (SkillFiles.IsBuiltIn(fileName) || SkillFiles.IsBuiltIn(SkillFiles.Guide(name)))
             return MessageText.Format(ToolMessage.SkillFileBuiltIn, new { File = fileName });
 
-        string path = Path.Combine(SkillsDirectory, fileName.Replace('/', Path.DirectorySeparatorChar));
-        if (File.Exists(path) && !overwrite)
+        // FX20: the file waits in pending/ for the user's /approve; an approved or pending one of the name needs overwrite.
+        string path = PendingPath(name);
+        if ((File.Exists(path) || File.Exists(ApprovedPath(name))) && !overwrite)
             return MessageText.Format(ToolMessage.SkillFileExists, new { File = fileName });
 
         // Validate before saving so a malformed section is reported instead of silently skipped.
@@ -204,7 +207,60 @@ internal sealed partial class SkillTools
 
         string reload = ReloadSkills();
         string skills = parsed.Count == 0 ? MessageText.Format(ToolMessage.SkillGuidanceOnly) : string.Join(", ", parsed.Select(s => s.Name));
-        return MessageText.Format(ToolMessage.SkillFileSaved, new { Path = path, Skills = skills, Reload = reload });
+        return MessageText.Format(ToolMessage.SkillFileSaved, new { Path = path, Skills = skills, Name = name, Reload = reload });
+    }
+
+    // ---- FX20: the user's side of a pending skill file, reached through AgentEngine.HandleUserCommand, never the model ----
+
+    private string PendingPath(string name) => Path.Combine(SkillsDirectory!, SkillFiles.PendingFunction(name).Replace('/', Path.DirectorySeparatorChar));
+    private string ApprovedPath(string name) => Path.Combine(SkillsDirectory!, SkillFiles.Function(name).Replace('/', Path.DirectorySeparatorChar));
+
+    /// <summary>Whether a skill file of this name waits in pending/.</summary>
+    internal bool HasPendingSkillFile(string name) => SkillsDirectory is not null && File.Exists(PendingPath(name));
+
+    /// <summary>
+    /// <c>/approve {name}</c>: the pending file moves over the approved one, so every later session loads it. No reload:
+    /// this engine already runs it, and the entry in its own list follows the move so a later reload finds it once.
+    /// </summary>
+    internal string ApproveSkillFile(string name)
+    {
+        if (SkillsDirectory is null) return MessageText.Format(ToolMessage.SkillAuthoringUnavailable);
+        string pending = PendingPath(name);
+        if (!File.Exists(pending)) return MessageText.Format(UserText.NoPendingToolSeeTools, new { Name = name });
+
+        string approved = ApprovedPath(name);
+        File.Move(pending, approved, overwrite: true);
+        int index = _createdSkillFiles.FindIndex(f => string.Equals(f, pending, StringComparison.OrdinalIgnoreCase));
+        if (index >= 0) _createdSkillFiles[index] = approved;
+        return MessageText.Format(UserText.SkillFileApproved, new { Name = name, Path = approved });
+    }
+
+    /// <summary><c>/reject {name}</c>: the pending file is deleted, and this engine unloads it if it had it.</summary>
+    internal string RejectSkillFile(string name)
+    {
+        if (SkillsDirectory is null) return MessageText.Format(ToolMessage.SkillAuthoringUnavailable);
+        string pending = PendingPath(name);
+        if (!File.Exists(pending)) return MessageText.Format(UserText.NoPendingTool, new { Name = name });
+
+        File.Delete(pending);
+        bool wasActive = _createdSkillFiles.RemoveAll(f => string.Equals(f, pending, StringComparison.OrdinalIgnoreCase)) > 0;
+        if (wasActive) ReloadSkills();
+        return MessageText.Format(UserText.SkillFileRejected, new
+        {
+            Name = name, Path = pending, Removed = wasActive ? MessageText.Format(UserText.SkillFileRejectedFromSession) : "",
+        });
+    }
+
+    /// <summary>For <c>/tools</c>: one line per skill file in pending/, saying whether this engine runs it; empty when none.</summary>
+    internal string ListPendingSkillFiles()
+    {
+        if (SkillsDirectory is null) return "";
+        string folder = Path.Combine(SkillsDirectory, SkillFiles.PendingFunctionsFolder.Replace('/', Path.DirectorySeparatorChar));
+        if (!Directory.Exists(folder)) return "";
+        var lines = Directory.EnumerateFiles(folder, "*.md").Order(StringComparer.OrdinalIgnoreCase).Select(file =>
+            MessageText.Format(_createdSkillFiles.Contains(file, StringComparer.OrdinalIgnoreCase) ? UserText.PendingSkillFileActive : UserText.PendingSkillFileNotLoaded,
+                new { Name = Path.GetFileNameWithoutExtension(file) }));
+        return string.Join('\n', lines);
     }
 
     [Description("Re-reads every skill file from disk — including any created earlier this session with " +

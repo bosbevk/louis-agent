@@ -6,7 +6,7 @@ When no existing tool fits the task, you can extend yourself. Pick the lightest 
 
 1. **Existing tool?** Check your tool list (and `ListAgentTools`) first. Combining existing tools is better than building new ones.
 2. **One-off need** (answer this question, transform this file once) → just run code with `PythonRun`, `PowerShellRun` or `BashRun`. Don't build anything.
-3. **A repeatable procedure** the user wants to keep ("save this as a skill", a multi-step recipe) → `CreateSkillFile`, then run it with `ExecuteSkill`.
+3. **A repeatable procedure** the user wants to keep ("save this as a skill", a multi-step recipe) → `CreateSkillFile`, then run it with `ExecuteSkill`. The file waits for the user's `/approve <name>` before later sessions load it, as a tool does: ask them to.
 4. **A missing capability you'll call repeatedly**, needing typed inputs (you hit the same gap twice, or you're stuck without it) → `CreateTool`, then call the new tool directly.
 
 ## Building a tool with CreateTool

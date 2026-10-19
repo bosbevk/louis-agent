@@ -211,7 +211,7 @@
   "SkillFileBuiltIn": "Error: '<File>' is a built-in skills file and cannot be replaced; choose another name.",
   "SkillFileExists": "Error: '<File>' already exists. Pass overwrite=true to replace it, or pick another name.",
   "SkillFileNameInvalid": "Error: name must be kebab-case letters/digits, e.g. 'csv-reports'.",
-  "SkillFileSaved": "Saved <Path> — <Skills>.\n<Reload>",
+  "SkillFileSaved": "Saved <Path>, pending — <Skills>. It runs in this session now; ask the user to type /approve <Name> to keep it for every later session, or /reject <Name> to discard it.\n<Reload>",
   "SkillGuidanceOnly": "guidance only (no executable skills)",
   "SkillMarkdownEmpty": "Error: markdown content is empty.",
   "SkillNameEmpty": "Error: Skill name cannot be empty.",

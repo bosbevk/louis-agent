@@ -3,6 +3,10 @@
 > **Reference.** What was finished, newest first, one entry per feature, fix or cleanup. **Elsewhere:** what's still
 > open in the [TODO](TODO.md); how each was built in its feature, fix or plan doc (linked from its entry).
 
+- 2026-10-19 — **FX20 Skill files wait for approval** (the platform plan's Phase 1, its last door): a skill file the
+  agent writes goes to `Skills/agent/functions/pending/`, active only in the engine that wrote it, until the user's
+  `/approve <name>` moves it up for every later session; `/reject` deletes it and `/tools` lists it, as agent-built
+  tools already did ([fix](docs/fixes/FX20-skill-files-wait-for-approval.md))
 - 2026-10-19 — **FX19 Git arguments as data** (the platform plan's Phase 1): every git tool runs from a list of
   arguments, the model's values after `--end-of-options` and paths after `--`, a value that starts with `-` refused
   before git runs, and `SetConfig` limited to `user.name` and `user.email`; `ArchitectureTests` keeps a command-line
