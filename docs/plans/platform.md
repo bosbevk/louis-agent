@@ -2169,6 +2169,8 @@ code beat pages read by the model. Phase 2's plan names this gate as its prerequ
 
 ### Phase 2 · CL15 The cut: engine, identities and packs
 
+> **Plan:** [CL15-engine-identities-packs.md](CL15-engine-identities-packs.md), copied on its branch (2026-10-19).
+
 Branch `refactor/CL15-engine-identities-packs`. Before step 0 this section is copied, as Louis approved it, into
 `docs/plans/CL15-engine-identities-packs.md` on that branch, with its four diagrams, namespace map and folder trees;
 *Approved during the build* goes in that file, never in `platform.md` (Phase 0 step 1). The phase starts only after
