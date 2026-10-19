@@ -15,10 +15,14 @@
     <PackageReference Include="NUnit" Version="4.3.2" />
     <PackageReference Include="NUnit.Analyzers" Version="4.7.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="5.0.0" />
+    <!-- CL15 step 4, test only: the MCP SDK's own tool wrapper, so the convertibility test checks what an MCP server would publish. -->
+    <PackageReference Include="ModelContextProtocol.Core" Version="2.2.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\louis-agent.composition\louis-agent.composition.csproj" />
+    <!-- The in-memory prompts core's tests fake (FakePrompts); core.tests opens its internals to this project. -->
+    <ProjectReference Include="..\louis-agent.core.tests\louis-agent.core.tests.csproj" />
   </ItemGroup>
 
   <ItemGroup>

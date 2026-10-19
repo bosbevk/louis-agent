@@ -9,7 +9,6 @@ using LouisAgent.Core.Tools.Git;
 using LouisAgent.Core.Tools.Integrations.DevOps;
 using LouisAgent.Core.Tools.Integrations.Paymo;
 using LouisAgent.Core.Tools.Shell;
-using LouisAgent.Core.Tools.Shops;
 using LouisAgent.Core.Tools.Web;
 using LouisAgent.Core.Tools.Workspace;
 using Microsoft.Extensions.Logging;
@@ -68,17 +67,7 @@ public static class ToolsetCatalog
             CreateTools: ctx => [new WebTools(ctx.WebSearch, rates: ctx.Rates, renderer: ctx.Renderer)],
             ParallelSafe: true),
 
-        // F33: a shop's products from its own catalogue, through the guarded browser; off unless SHOP_CATALOGUES names a
-        // shop (development and benchmarks first, ADR 0023).
-        new("shops", "A shop's products and prices from its own catalogue (Checkers)",
-            GuideFile: SkillFiles.Guide("shops"),
-            MissingSettings: ctx => Missing(ctx,
-                ("SHOP_CATALOGUES", ShopCatalogueFactory.Enabled(ctx.Options.ShopCatalogues).Count > 0 ? "set" : null),
-                ("BROWSER_URL", ctx.Browser is null ? null : "set")),
-            ToolType: typeof(ShopTools),
-            CreateTools: ctx => [new ShopTools(ShopCatalogueFactory.Create(ShopCatalogueFactory.Enabled(ctx.Options.ShopCatalogues), ctx.Browser!, ctx.StoreSessions))],
-            // F34: searches read a catalogue and change nothing; the browser opens at most four pages at once.
-            ParallelSafe: true),
+        // CL15: the shops (F33, F34) are a pack, packs/louis-agent.pack.shops; a host loads it with PACKS=shops or an identity that names it.
 
         new("paymo", "Paymo time tracking: time entries, tasks, projects and summaries",
             GuideFile: SkillFiles.Guide("paymo"),

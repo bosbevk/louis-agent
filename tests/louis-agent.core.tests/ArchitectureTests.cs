@@ -170,9 +170,8 @@ public partial class ArchitectureTests
     private static readonly HashSet<string> PendingProductText =
     [
         // Step 3 moved Puls's files to its identity, split its protocol out of the shared guides, and took the Puls
-        // names out of ToolMessage and MinionTools and South Africa out of GetToday (20 pieces).
-        // Step 4 moves the shops toolset, whose area text names Puls, to its pack.
-        "Tools/Shops/ShopTools.cs: puls",
+        // names out of ToolMessage and MinionTools and South Africa out of GetToday (20 pieces); step 4 moved the shops,
+        // whose area text named Puls, to its pack. Empty since: the cut held.
     ];
 
     private static readonly (string Label, Regex Pattern)[] ProductWords =

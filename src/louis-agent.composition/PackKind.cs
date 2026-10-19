@@ -7,4 +7,5 @@ namespace LouisAgent.Composition;
 /// </summary>
 public enum PackKind
 {
+    Shops,
 }

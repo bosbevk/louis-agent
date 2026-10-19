@@ -19,6 +19,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\identities\louis-agent.identity.puls\louis-agent.identity.puls.csproj" />
+    <!-- The pack Puls names, so its golden builds the cook with the shops as the Puls stack does. -->
+    <ProjectReference Include="..\..\packs\louis-agent.pack.shops\louis-agent.pack.shops.csproj" />
     <!-- The fakes and paths core's tests share (FakeChatClient, TestPaths); core.tests opens its internals to this project. -->
     <ProjectReference Include="..\louis-agent.core.tests\louis-agent.core.tests.csproj" />
   </ItemGroup>

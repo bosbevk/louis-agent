@@ -21,6 +21,7 @@
     <ProjectReference Include="..\..\src\louis-agent.api\louis-agent.api.csproj" />
     <!-- CL15: the API's tests open Puls's sessions, so they register Puls's prompts as the Puls stack does (IDENTITIES=puls). -->
     <ProjectReference Include="..\..\identities\louis-agent.identity.puls\louis-agent.identity.puls.csproj" />
+    <ProjectReference Include="..\..\packs\louis-agent.pack.shops\louis-agent.pack.shops.csproj" />
   </ItemGroup>
 
   <ItemGroup>

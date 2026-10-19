@@ -6,6 +6,7 @@ using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Messages;
 using LouisAgent.Identities.Puls;
+using LouisAgent.Packs.Shops;
 
 /// <summary>
 /// The composition root (CL15, ADR 0027): the one place that knows every identity and pack. A host calls
@@ -52,6 +53,7 @@ public static class Plugins
 
     private static IAgentPack Create(PackKind kind) => kind switch
     {
+        PackKind.Shops => new ShopsPack(ShopsOptions.FromEnvironment()),
         _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null),
     };
 

@@ -33,6 +33,8 @@
   <ItemGroup>
     <!-- CL15: the identity tests reuse the fakes and paths here (FakeChatClient, TestPaths). -->
     <InternalsVisibleTo Include="louis-agent.identity.puls.tests" />
+    <InternalsVisibleTo Include="louis-agent.pack.shops.tests" />
+    <InternalsVisibleTo Include="louis-agent.composition.tests" />
   </ItemGroup>
 
   <ItemGroup>

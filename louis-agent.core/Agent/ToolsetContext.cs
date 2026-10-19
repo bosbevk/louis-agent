@@ -2,7 +2,6 @@ namespace LouisAgent.Core.Agent;
 
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Pricing;
-using LouisAgent.Core.Tools.Shops;
 using LouisAgent.Core.Usage;
 using LouisAgent.Core.Tools.Web.Search;
 using LouisAgent.Core.Tools.Web.Browsing;
@@ -14,12 +13,6 @@ using LouisAgent.Core.Tools.Web.Rendering;
 public sealed record ToolsetContext(AgentOptions Options, IWebSearchProvider WebSearch, ExchangeRates? Rates = null, IUsageSink? UsageSink = null,
     IPageRenderer? PageRenderer = null, IWebBrowser? WebBrowser = null)
 {
-    /// <summary>
-    /// The store each shop answers a town from (F34): one cache for every engine this context builds, in the file
-    /// <c>SHOP_STORE_CACHE</c> names when set, so a town is looked up once a day, not once per engine and restart.
-    /// </summary>
-    public StoreSessionCache StoreSessions { get; } = new(Options.ShopStoreCache);
-
     /// <summary>The page renderer for the web toolset (F25): the one given, else the one configuration picks.</summary>
     public IPageRenderer Renderer => PageRenderer ?? PageRendererFactory.Create(Options);
 

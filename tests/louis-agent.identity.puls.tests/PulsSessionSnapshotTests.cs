@@ -5,6 +5,7 @@ using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Skills.Roles;
 using LouisAgent.Core.Tests;
+using LouisAgent.Packs.Shops;
 using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Identities.Puls.Tests;
@@ -44,9 +45,11 @@ public class PulsSessionSnapshotTests
         {
             WorkspaceRoot = _skillsDir, SkillsDirectory = _skillsDir, RatesUrl = null,
             AgentPeers = new Dictionary<string, Uri> { ["puls"] = new("http://puls-agent.test/") },
-            ShopCatalogues = "checkers", BrowserUrl = "http://browser.test:9222",
+            BrowserUrl = "http://browser.test:9222",
         };
-        return new AgentEngineFactory(new FakeChatClient(), options);
+        // CL15 step 4: the shops are the pack Puls names, with its own settings; the catalogue is what IDENTITIES=puls builds.
+        var catalog = new AgentCatalog([new PulsIdentity()], [new ShopsPack(new ShopsOptions { ShopCatalogues = "checkers" })]);
+        return new AgentEngineFactory(new FakeChatClient(), options, catalog: catalog);
     }
 
     private static object View(AgentEngine engine) => new

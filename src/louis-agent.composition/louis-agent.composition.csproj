@@ -17,6 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\louis-agent.core\louis-agent.core.csproj" />
     <ProjectReference Include="..\..\identities\louis-agent.identity.puls\louis-agent.identity.puls.csproj" />
+    <ProjectReference Include="..\..\packs\louis-agent.pack.shops\louis-agent.pack.shops.csproj" />
   </ItemGroup>
 
 </Project>

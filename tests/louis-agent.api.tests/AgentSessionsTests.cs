@@ -14,9 +14,14 @@ public class AgentSessionsTests
     private static string RepoRoot { get; } =
         Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, "..", "..", "..", "..", ".."));
 
+    // CL15 step 4: the catalogue the Puls stack runs with, Puls and the shops pack it names; with no SHOP_CATALOGUES the
+    // shops toolset is known but unavailable, so the cook's optional `shops?` is skipped, as on an instance without it.
+    private static AgentCatalog PulsCatalog() =>
+        new([new LouisAgent.Identities.Puls.PulsIdentity()], [new LouisAgent.Packs.Shops.ShopsPack(new LouisAgent.Packs.Shops.ShopsOptions())]);
+
     private static AgentSessions Sessions(IReadOnlyList<SessionLlm>? llms = null) => new(new AgentEngineFactory(new NoModel(),
         new AgentOptions { WorkspaceRoot = RepoRoot, SkillsDirectory = Path.Combine(RepoRoot, "Skills"), RatesUrl = null },
-        sessionLlms: llms));
+        sessionLlms: llms, catalog: PulsCatalog()));
 
     private static string[] Names(AgentSession session) => session.Engine.Tools.Select(t => t.Name).ToArray();
 
@@ -79,12 +84,13 @@ public class AgentSessionsTests
     [Test]
     public void TheCook_LoadsItsOwnToolsets_BesideWhatPulsPasses()
     {
-        // F33 step 4 (Louis): the cook always loads the shops; Puls passes `web` only. Here SHOP_CATALOGUES is set.
+        // F33 step 4 (Louis): the cook always loads the shops; Puls passes `web` only. Here SHOP_CATALOGUES is set, on
+        // the shops pack this instance loads (CL15), with the browser the pack reaches through core.
         var sessions = new AgentSessions(new AgentEngineFactory(new NoModel(), new AgentOptions
         {
             WorkspaceRoot = RepoRoot, SkillsDirectory = Path.Combine(RepoRoot, "Skills"), RatesUrl = null,
-            ShopCatalogues = "checkers", BrowserUrl = "http://puls-browser:9222",
-        }));
+            BrowserUrl = "http://puls-browser:9222",
+        }, catalog: new LouisAgent.Core.Agent.AgentCatalog([], [new LouisAgent.Packs.Shops.ShopsPack(new LouisAgent.Packs.Shops.ShopsOptions { ShopCatalogues = "checkers" })])));
 
         var cook = sessions.Create(["web"], depth: 1, role: "puls-cook");
 

@@ -1,5 +1,7 @@
 using LouisAgent.Composition;
 using LouisAgent.Core.Agent;
+using LouisAgent.Core.Config;
+using LouisAgent.Core.Tools.Web.Search;
 
 namespace LouisAgent.Composition.Tests;
 
@@ -14,7 +16,7 @@ public class PluginsTests
     {
         AgentCatalog puls = Plugins.FromSettings("puls", null);
         Assert.That(puls.Identities.Select(i => i.Name), Is.EqualTo(new[] { "puls" }));
-        Assert.That(puls.Packs, Is.Empty, "Puls names no pack until step 4");
+        Assert.That(puls.Packs.Select(p => p.Name), Is.EqualTo(new[] { "shops" }), "Puls names the shops pack (step 4)");
 
         Assert.That(Plugins.FromSettings("puls, PULS", null).Identities, Has.Count.EqualTo(1), "a name twice, any case, is one identity");
         Assert.That(Plugins.FromSettings(null, null).Identities, Is.Empty);
@@ -36,6 +38,38 @@ public class PluginsTests
     {
         Assert.That(Plugins.FromSettings(null, null).Packs, Is.Empty);
         Assert.That(Plugins.FromSettings(null, " ").Packs, Is.Empty);
+    }
+
+    [Test]
+    public void PacksShops_GivesTheCodingAgentShops_WhenItsSettingsAreThere()
+    {
+        // CL15 step 4: the pack loads on its own, with no identity, and reads its own setting at the composition root.
+        Assume.That(Environment.GetEnvironmentVariable("SHOP_CATALOGUES"), Is.Null, "the process has no SHOP_CATALOGUES of its own");
+        Environment.SetEnvironmentVariable("SHOP_CATALOGUES", "checkers");
+        try
+        {
+            AgentCatalog catalog = Plugins.FromSettings(null, "shops");
+            Assert.That(catalog.Identities, Is.Empty);
+            Assert.That(catalog.Packs.Select(p => p.Name), Is.EqualTo(new[] { "shops" }));
+
+            var withBrowser = new ToolsetContext(new AgentOptions { BrowserUrl = "http://puls-browser:9222" }, new NoSearch());
+            Assert.That(catalog.Resolve(["shops"], withBrowser).Select(t => t.Name), Is.EqualTo(new[] { "shops" }));
+
+            var withoutBrowser = new ToolsetContext(new AgentOptions(), new NoSearch());
+            var refused = Assert.Throws<ToolsetException>(() => catalog.Resolve(["shops"], withoutBrowser))!;
+            Assert.That(refused.Message, Does.Contain("shops").And.Contain("BROWSER_URL"));
+        }
+        finally
+        {
+            Environment.SetEnvironmentVariable("SHOP_CATALOGUES", null);
+        }
+    }
+
+    private sealed class NoSearch : IWebSearchProvider
+    {
+        public string Name => "none";
+        public Task<IReadOnlyList<WebSearchResult>> SearchAsync(WebSearchQuery query, CancellationToken cancellationToken = default) =>
+            Task.FromResult<IReadOnlyList<WebSearchResult>>([]);
     }
 
     [Test]

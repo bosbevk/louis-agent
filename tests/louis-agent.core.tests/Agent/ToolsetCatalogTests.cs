@@ -10,13 +10,23 @@ namespace LouisAgent.Core.Tests.Agent;
 // is never skipped in silence.
 public class ToolsetCatalogTests
 {
-    // F34: only toolsets whose calls don't depend on each other's order run in parallel: reading the web and the shops.
-    // Files, shells, git and the specialists keep their order.
+    [Test]
+    public void Core_HasNoShopsToolset_ItIsAPack()
+    {
+        // CL15 step 4: the shops (Checkers' catalogue, the town geocoder) are packs/louis-agent.pack.shops; core names no shop.
+        Assert.That(ToolsetCatalog.Find("shops"), Is.Null);
+        Assert.That(ToolsetCatalog.All.Select(t => t.Name), Has.None.EqualTo("shops"));
+        Assert.That(AgentCatalog.CoreOnly.ToolNames, Has.None.EqualTo("FindProducts"));
+    }
+
+    // F34: only toolsets whose calls don't depend on each other's order run in parallel: reading the web and the shops
+    // (a pack since CL15, so a parallel-safe definition stands in for it here). Files, shells, git and the specialists keep their order.
     [Test]
     public void OnlyTheWebAndTheShops_RunInParallel()
     {
-        Assert.That(ToolsetCatalog.All.Where(t => t.ParallelSafe).Select(t => t.Name), Is.EquivalentTo(new[] { "web", "shops" }));
-        Assert.That(ToolsetCatalog.RunsInParallel([ToolsetCatalog.Find("web")!, ToolsetCatalog.Find("shops")!]), Is.True, "the cook");
+        var shops = new ToolsetDefinition("shops", "a pack's", GuideFile: null, MissingSettings: _ => [], CreateTools: _ => [], ParallelSafe: true);
+        Assert.That(ToolsetCatalog.All.Where(t => t.ParallelSafe).Select(t => t.Name), Is.EquivalentTo(new[] { "web" }));
+        Assert.That(ToolsetCatalog.RunsInParallel([ToolsetCatalog.Find("web")!, shops]), Is.True, "the cook");
         Assert.That(ToolsetCatalog.RunsInParallel([ToolsetCatalog.Find("specialists")!, ToolsetCatalog.Find("web")!]), Is.False, "Puls");
         Assert.That(ToolsetCatalog.RunsInParallel([ToolsetCatalog.Find("files")!, ToolsetCatalog.Find("web")!]), Is.False);
         Assert.That(ToolsetCatalog.RunsInParallel([]), Is.False, "no toolsets: the coding agent's default tools");
@@ -29,28 +39,29 @@ public class ToolsetCatalogTests
             Task.FromResult<IReadOnlyList<WebSearchResult>>([]);
     }
 
-    private static readonly ToolsetContext WithoutShops = new(new AgentOptions(), new NoSearch());
-    private static readonly ToolsetContext WithShops = new(new AgentOptions { ShopCatalogues = "checkers", BrowserUrl = "http://puls-browser:9222" }, new NoSearch());
+    // CL15: the shops are a pack, so core's own optional toolset here is Paymo, which needs a key the same way.
+    private static readonly ToolsetContext WithoutPaymo = new(new AgentOptions(), new NoSearch());
+    private static readonly ToolsetContext WithPaymo = new(new AgentOptions { PaymoApiKey = "key" }, new NoSearch());
 
     private static string[] Resolved(IEnumerable<string> names, ToolsetContext context) =>
         ToolsetCatalog.Resolve(names, context).Select(t => t.Name).ToArray();
 
     [Test]
     public void AnOptionalToolsetThisInstanceHas_Loads() =>
-        Assert.That(Resolved(["web", "shops?"], WithShops), Is.EqualTo(new[] { "web", "shops" }));
+        Assert.That(Resolved(["web", "paymo?"], WithPaymo), Is.EqualTo(new[] { "web", "paymo" }));
 
     [Test]
     public void AnOptionalToolsetThisInstanceLacks_IsSkipped() =>
-        Assert.That(Resolved(["web", "shops?"], WithoutShops), Is.EqualTo(new[] { "web" }));
+        Assert.That(Resolved(["web", "paymo?"], WithoutPaymo), Is.EqualTo(new[] { "web" }));
 
     [Test]
     public void ARequiredToolsetThisInstanceLacks_IsStillRefused() =>
-        Assert.That(() => Resolved(["web", "shops"], WithoutShops),
-            Throws.TypeOf<ToolsetException>().With.Message.Contain("SHOP_CATALOGUES"));
+        Assert.That(() => Resolved(["web", "paymo"], WithoutPaymo),
+            Throws.TypeOf<ToolsetException>().With.Message.Contain("PAYMO_API_KEY"));
 
     [Test]
     public void AnUnknownName_IsRefused_EvenOptional() =>
-        Assert.That(() => Resolved(["web", "shop?"], WithShops),
+        Assert.That(() => Resolved(["web", "shop?"], WithPaymo),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("shop").And.Message.Contain("Valid names"));
 
     [TestCase(new[] { "shops?", " Shops? " }, new[] { "shops?" })]
