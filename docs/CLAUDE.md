@@ -214,7 +214,9 @@ there, so a session pays for them only when they apply:
 ### Adding a skill
 
 A function skill is `Skills/agent/functions/{name}.md`, on disk: the agent writes one with `CreateSkillFile`, or you
-drop one in. Every one loads with the **skills** toolset, no setting needed (CL9 retired `AGENT_FUNCTION`); a session
+drop one in. What the agent writes waits in `Skills/agent/functions/pending/` (git-ignored), active only in the engine
+that wrote it, until you type `/approve {name}` in the chat, which moves it up; `/reject {name}` deletes it and `/tools`
+lists what is pending (FX20, as agent-built tools do). Every approved one loads with the **skills** toolset, no setting needed (CL9 retired `AGENT_FUNCTION`); a session
 without it (Puls's chats: `specialists` and `web`) gets its mode and its toolsets' guides, no skill file. A toolset's
 guide is [Adding a toolset](../louis-agent.core/CLAUDE.md#adding-a-toolset). A name that is a built-in prompt (a
 toolset's guide) is refused: what is embedded is built in (`SkillFiles.IsBuiltIn`). Procedures use `## Skill: Name` with an `Execution:` fence (bash, powershell or python); arguments

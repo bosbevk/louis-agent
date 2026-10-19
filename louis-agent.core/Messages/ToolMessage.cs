@@ -690,7 +690,7 @@ public enum ToolMessage
     [Description("guidance only (no executable skills)")]
     SkillGuidanceOnly,
 
-    [Description("Saved {Path} — {Skills}.\n{Reload}")]
+    [Description("Saved {Path}, pending — {Skills}. It runs in this session now; ask the user to type /approve {Name} to keep it for every later session, or /reject {Name} to discard it.\n{Reload}")]
     SkillFileSaved,
 
     [Description("Skills reloaded. Available skills: {Skills}")]

@@ -137,6 +137,9 @@ internal sealed class AgentBuiltTools(
     }
 
 
+    /// <summary>Whether a tool of this name waits in pending/ (FX20: the engine checks before it routes /approve).</summary>
+    internal bool HasPendingTool(string name) => PendingToolsDirectory is not null && File.Exists(Path.Combine(PendingToolsDirectory, $"{name}.tool.md"));
+
     internal string ApproveTool(string name)
     {
         if (PendingToolsDirectory is null || ToolsDirectory is null) return MessageText.Format(UserText.ToolBuildingNotAvailable);

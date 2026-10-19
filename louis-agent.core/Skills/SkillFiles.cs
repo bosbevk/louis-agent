@@ -25,6 +25,15 @@ internal static class SkillFiles
     /// </summary>
     internal const string FunctionsFolder = "agent/functions";
 
+    /// <summary>
+    /// Where a function skill the agent writes waits for the user's <c>/approve</c> (FX20), as agent-built tools wait in
+    /// <c>tools/pending/</c>: discovery reads only <see cref="FunctionsFolder"/>'s top, so a later session never loads it.
+    /// </summary>
+    internal const string PendingFunctionsFolder = FunctionsFolder + "/pending";
+
+    /// <summary>A pending function skill's file: <c>agent/functions/pending/{name}.md</c>.</summary>
+    internal static string PendingFunction(string name) => $"{PendingFunctionsFolder}/{name}.md";
+
     /// <summary>A toolset guide's file: <c>toolsets/{name}.md</c>.</summary>
     internal static string Guide(string name) => $"{ToolsetsFolder}/{name}.md";
 

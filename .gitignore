@@ -47,8 +47,9 @@ config/.env.searxng
 config/.env.secrets.local
 config/.env.local
 
-# Agent-built tools awaiting /approve (approved ones in Skills/tools/ are committed)
+# Agent-built tools and skill files awaiting /approve (approved ones in Skills/tools/ and Skills/agent/functions/ are committed)
 Skills/tools/pending/
+Skills/agent/functions/pending/
 
 # Working copy and state created by samples/run-demo.ps1
 .demo/

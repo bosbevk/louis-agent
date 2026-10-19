@@ -11,7 +11,7 @@ public enum CliUserText
     [Description("Type 'exit' to quit; Ctrl+C stops a reply; /usage shows this session's tokens and cost;")]
     BannerHelp,
 
-    [Description("/tools, /approve <Name>, /reject <Name> manage agent-built tools\n")]
+    [Description("/tools, /approve <Name>, /reject <Name> manage agent-built tools and skill files\n")]
     BannerCommands,
 
     [Description("You: ")]

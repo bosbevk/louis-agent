@@ -57,13 +57,13 @@ public enum UserText
     [Description("Tool building is not available.")]
     ToolBuildingNotAvailable,
 
-    [Description("Usage: /approve <ToolName>")]
+    [Description("Usage: /approve <Name>")]
     ApproveUsage,
 
-    [Description("Usage: /reject <ToolName>")]
+    [Description("Usage: /reject <Name>")]
     RejectUsage,
 
-    [Description("No pending tool named '{Name}'. Use /tools to see pending tools.")]
+    [Description("No pending tool or skill file named '{Name}'. Use /tools to see what is pending.")]
     NoPendingToolSeeTools,
 
     [Description("Cannot approve '{Name}': the definition is invalid ({Errors}).")]
@@ -78,11 +78,29 @@ public enum UserText
     [Description("Rejected '{Name}': deleted the pending definition{Removed}.")]
     ToolRejected,
 
-    [Description("No pending tool named '{Name}'.")]
+    [Description("No pending tool or skill file named '{Name}'.")]
     NoPendingTool,
 
     [Description("\n\nApprove with /approve <Name>, discard with /reject <Name>.")]
     ToolsHint,
+
+    [Description("Approved skill file '{Name}'. Moved to {Path}; every later session with the skills toolset loads it.")]
+    SkillFileApproved,
+
+    [Description("Rejected skill file '{Name}': deleted {Path}{Removed}.")]
+    SkillFileRejected,
+
+    [Description(" and unloaded it from this session")]
+    SkillFileRejectedFromSession,
+
+    [Description("- {Name} [skill file pending, active here]")]
+    PendingSkillFileActive,
+
+    [Description("- {Name} [skill file pending from an earlier session, not loaded]")]
+    PendingSkillFileNotLoaded,
+
+    [Description("'{Name}' is both a pending tool ({Tool}) and a pending skill file ({File}); nothing was done. Reject one of them first, then approve the other.")]
+    PendingToolAndSkillFile,
 
     [Description("Usage isn't tracked in this session.")]
     UsageNotTracked,

@@ -27,7 +27,6 @@ changes instead of relying on training; **a configured agent**, an identity and 
 ## Now: three doors, the cut, simulations and the sales playground (Phases 0 to 4)
 
 - [ ] Validate demand: ten conversations and 30 real Malmesbury questions, answered blind by Puls, Gemini, ChatGPT and Google Maps (Louis's own, Phase 0 step 4)
-- [ ] [FX20 Skill files wait for approval](docs/fixes/FX20-skill-files-wait-for-approval.md): `CreateSkillFile` writes to `pending/` until `/approve` (Phase 1; opened in Phase 0 step 3)
 - [ ] Louis's F32 to F34 learning write-up, skills 7 and 12, before Phase 2
 - [ ] CL15 Engine, identities and packs (Phase 2; takes in "SA context in the prompt"'s SAST default, `HOST_TIME_ZONE`; F30's minions kept, Puls's minion roles moved with Puls; `/approve {name} session|agent|shared` for skill files and agent-built tools, [ADR 0033](docs/adr/0033-what-the-agent-writes-has-a-scope.md))
 - [ ] [F18](docs/features/F18-evaluation.md) Simulations in C# (Phase 3; takes in CL11, the Python checks, "evaluation in CI", "prompts compared on the evals", notes on a run (F31 step 11c), the response cache as a replay cache, traces per turn and tool call)
