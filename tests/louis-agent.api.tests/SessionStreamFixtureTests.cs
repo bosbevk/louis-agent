@@ -1,7 +1,8 @@
+using LouisAgent.Web.Shared.Api;
+using LouisAgent.Web.Shared.Chat;
 using System.Net.ServerSentEvents;
 using System.Text.Json;
 using LouisAgent.Web.Shared;
-using LouisAgent.Web.Shared.Services;
 
 namespace LouisAgent.Api.Tests;
 

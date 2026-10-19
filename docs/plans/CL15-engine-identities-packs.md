@@ -782,6 +782,12 @@ sequenceDiagram
   (`SessionEndpoints`, `InfoEndpoints`, `ApiErrors`), a turn's stream in `Sessions/` (`TurnStream`, `ClaudeStyleStream`,
   the session and its view, the request records under `Requests/`), `Admin/` for the gate, `Benchmarks/` as `Runs/`,
   `Store/` and `Reports/`; no `Services/`. Moves only: no route, handler body, JSON shape or text changed.
+- **The web apps sorted, one thing per folder** (Louis, core layout review, 2026-10-19; W1 of the web layout): one type
+  per file (both `Models.cs`, `AgentApi.cs`, `ChatStore.cs`, Puls's `Sources.cs` and `Templates.cs` split; `Settings`
+  renamed `ChatSettings`); C# by concern (the shared library: `Api/`, `Chat/`, `Usage/`, `Storage/`, `Text/`; the
+  code-review app: `Workspace/`, `Git/`; Puls: `Text/`, `Content/`) and `Components/` by concern; no `Services/` or
+  `Models/`. Moves and splits only: no markup, CSS, JS or behaviour changed. W2 (CSS isolation, one shared `chat.js`,
+  `ChatPage`'s code-behind) is its own commit.
 
 ---
 [Plans](README.md) · [The platform plan](platform.md)

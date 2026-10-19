@@ -1,4 +1,5 @@
-using LouisAgent.Web.Shared.Services;
+
+using LouisAgent.Web.Shared.Storage;
 
 namespace LouisAgent.Api.Tests.Admin;
 
@@ -6,7 +7,7 @@ namespace LouisAgent.Api.Tests.Admin;
 // ADMIN_API_KEY differs from AGENT_API_KEY. The browser keeps two keys, and each request carries the one its path needs.
 public class AdminKeyTests
 {
-    private static Settings Both() => new() { ApiKey = "chat-key", AdminKey = "admin-key" };
+    private static ChatSettings Both() => new() { ApiKey = "chat-key", AdminKey = "admin-key" };
 
     [Test]
     public void TheChat_KeepsItsOwnKey_WhenAnAdminKeyIsSaved()
@@ -27,7 +28,7 @@ public class AdminKeyTests
     public void WithoutAnAdminKey_ThePortalSendsTheChatKey()
     {
         // The server's admin key falls back to AGENT_API_KEY (AdminGate.Key), so the chat's key opens it then.
-        var chatOnly = new Settings { ApiKey = "chat-key" };
+        var chatOnly = new ChatSettings { ApiKey = "chat-key" };
         Assert.That(chatOnly.KeyFor(new Uri("admin/benchmarks", UriKind.Relative)), Is.EqualTo("chat-key"));
     }
 

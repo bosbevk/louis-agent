@@ -52,13 +52,12 @@ flowchart TB
 | Path | What's in it |
 |---|---|
 | `Pages/ChatPage.razor` | The page: tabs, chat flow, stream handling, opening files / diffs / branches, merge and delete actions |
-| `Components/FileTree.razor`, `FileViewer.razor` | Workspace browser and file view (with "Ask agent to review") |
-| `Components/ChangesPanel.razor`, `DiffViewer.razor` | Changed files, selection, stage / unstage / discard / commit, *Review all* (asks the agent to review every uncommitted change); one file's diff |
-| `Components/BranchesPanel.razor`, `HistoryViewer.razor`, `PatchView.razor` | Branches to merge, merged branches, all commits; a branch's or commit's diff |
+| `Components/Workspace/FileTree.razor`, `FileViewer.razor` | Workspace browser and file view (with "Ask agent to review") |
+| `Components/Git/ChangesPanel.razor`, `DiffViewer.razor` | Changed files, selection, stage / unstage / discard / commit, *Review all* (asks the agent to review every uncommitted change); one file's diff |
+| `Components/Git/BranchesPanel.razor`, `HistoryViewer.razor`, `PatchView.razor` | Branches to merge, merged branches, all commits; a branch's or commit's diff |
 | `Components/ThemeSwitcher.razor` | Theme selection |
-| `Services/AgentApiWorkspace.cs` | The workspace and git calls, on the shared `AgentApi` |
-| `Services/GitState.cs`, `GitHistory.cs` | Shared git state with change events; the merge/delete queue |
-| `Models.cs` | Workspace and git records |
+| `Workspace/` | The workspace records (`WorkspaceEntry`, `WorkspaceFolder`, `WorkspaceFile`, one per file) and `AgentApiWorkspace`, the workspace and git calls on the shared `AgentApi` |
+| `Git/` | The git records (`GitFile`, `GitStatus`, `GitDiff`, `GitBranch`, `GitBranches`, `GitCommit`, `GitLog`, `GitCommitDetail`, `GitBranchDetail`, one per file); `GitState` and `GitHistory`, shared git state with change events and the merge/delete queue |
 | `wwwroot/` | `index.html`, `css/app.css`, themes, `js/chat.js` (scrolling, focus, cross-tab sync of chats) |
 
 **Shared with Puls** (`src/louis-agent.web.shared/`, a Razor class library both apps reference; Markdig is its package):
@@ -68,11 +67,11 @@ flowchart TB
 | `Components/TurnView.razor`, `BlocksView.razor` | One turn: user message, thinking (collapsible), text, tool cards |
 | `Components/DelegationCard.razor` | A sub-session (F5) inside the turn: the specialist, its toolsets, its steps live, its cost |
 | `Components/CurrencySwitcher.razor` | The display currency per browser (F14) |
-| `Services/AgentApi.cs` | Typed client for the session calls; SSE parsing; errors as `AgentApiException` |
-| `Services/ChatStore.cs`, `CurrencyState.cs`, `UsageFormat.cs` | Chats and the API key in `localStorage`; the currency; usage lines |
-| `TurnStream.cs`, `Delegation.cs` | Folds the event stream, sub-session events included, into the turn the page shows |
-| `Models.cs`, `ChatText.cs` | `Chat`, `Turn`, `Block` and the words the components show (the code-review app's by default) |
-| `Markdown.cs` | Markdig pipeline: raw HTML shown as text, only http(s)/mailto links |
+| `Api/` | `AgentApi`, the typed client for the session calls with SSE parsing; `AgentApiException` (errors with their status); `AgentStreamEvent` |
+| `Chat/` | What a chat is in the browser: `Chat`, `Turn`, `Block`, `BlockKind`, `Attachment`; `TurnStream` and `Delegation` fold the event stream, sub-session events included, into the turn the page shows; `WorkStatus` and `RolePhases` say what a specialist is doing |
+| `Usage/` | `TurnUsage` (a turn's tokens and cost), `UsageFormat` (the usage lines), `CurrencyState` and `CurrencyChoice` (the display currency, F14), `RatesTable` and `RatesDisplay` (the API's rates) |
+| `Storage/` | `ChatStore` (chats in `localStorage`) and `ChatSettings` (the API key and the admin key, kept in this browser) |
+| `Text/` | `ChatText` (the words the components show; the code-review app's by default) and `Markdown` (the Markdig pipeline: raw HTML shown as text, only http(s)/mailto links, images only from the shops' hosts) |
 
 ## Configuration
 
