@@ -44,6 +44,9 @@ person widens).
   together, once identities exist; a session's scope needs its session id, which the API and CLI already have.
 - Phase 7 (FX4) makes a written or approved skill arrive as a tool result, which also removes known limitation 9 for
   skills; F41's approvals screen shows each item's scope.
+- A session scope needs the session's own skill and tool state, not the engine's: in the API every chat with the same
+  toolsets, role and level shares one engine (F5), so FX20's pending file is active in all of them, as a pending tool
+  is (noted in FX20).
 - More folders to keep and test, and one more argument on `/approve`.
 
 ## Links
