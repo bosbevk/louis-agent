@@ -80,8 +80,6 @@ example that names a product is a product dependency a grep can't tell from a re
   but not the setting is skipped with a log line; on an instance that doesn't have the pack it is an unknown toolset.
   The tests hit the difference first, and keeping it was a decision: a role naming a toolset nothing provides is a
   configuration error, not a missing setting.
-- **A heredoc is not a file.** Twice in this phase a Python script passed through a shell heredoc lost its backslashes
-  and wrote a backspace character into a regex. Scripts go to a file first; the shell runs the file.
 - **Measure, then stop.** One paid run for the phase, placed at the step that changed what the cook reads, and a diff
   review for every other step. The goldens made the other steps free to prove.
 

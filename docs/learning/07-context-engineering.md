@@ -20,6 +20,8 @@ The cook check (F31) scored each run from its transcript: a price counts only wi
 | F32 `663d065ccca8` | `WebSearch` (SearXNG, Bing only), pages through a headless Chrome | **0 of 32** (0/14, 0/11, 0/7) | $0.057 | 66 |
 | F33 `fc7f8ecfdc87` | + `FindProducts("checkers", …)` | **19 of 23**, 3 more at a price per kg (re-scored) | $0.068 | 61 |
 | F34 `d94597a51d4d` | + the town's store, deals, the shop tools only | **31 of 31 rows right**: 26 priced, Prince Albert's 5 rightly unpriced | $0.118 | 71 |
+| `main` before CL15 `aeb645d53300` (2026-10-19) | the same, the baseline for the cut | **32 of 32 rows right**: 25 priced, Prince Albert's 7 rightly unpriced | $0.112 | 75 |
+| `main` before CL15 `14c0907fdff5` (2026-10-19) | the same, a second baseline | **29 of 29 rows right**: 23 priced, Prince Albert's 6 rightly unpriced | $0.108 | 68 |
 
 The same check ran Puls without the cook, as the control. With only `web` it priced 0 of 3 with a source after F33,
 so the gain was the tool, not the model. Given the cook's own tools (`puls-tools`, F34) it priced 13 of 18: the tools
