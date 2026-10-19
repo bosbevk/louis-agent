@@ -44,7 +44,8 @@ services:
       BROWSER_URL: ${BROWSER_URL-http://puls-browser:9222}
       # F34: each town's store at a shop, kept a day in a file both containers share, so a rebuild doesn't look it up again.
       SHOP_STORE_CACHE: ${SHOP_STORE_CACHE-/data/shop-stores.json}
-    # Localhost only. Set AGENT_API_KEY in config/.env.secrets to require a key.
+    # Localhost only. AGENT_API_KEY in config/.env.secrets is required (FX18): without it both containers refuse to
+    # start, unless AGENT_AUTH=off in config/.env says so on purpose. puls sends the same key to puls-agent (AGENT_PEERS).
     ports:
       - "127.0.0.1:${PULS_PORT:-5070}:8080"
     volumes:

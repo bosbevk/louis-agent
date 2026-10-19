@@ -25,7 +25,8 @@ services:
       # stdio (default): a local client launches this container and speaks over stdin/stdout, e.g. `docker compose run`.
       # http: serves Streamable HTTP instead, for a remote MCP client (an agent on another provider's SDK) - needs
       # MCP_API_KEY (falls back to AGENT_API_KEY) set in .env.secrets, since the same shell/git/file-write tools
-      # are then reachable over the network.
+      # are then reachable over the network; without one it refuses to start (FX18; AGENT_AUTH=off in config/.env
+      # lets a development machine run it open on purpose).
       MCP_TRANSPORT: ${MCP_TRANSPORT:-stdio}
     ports:
       # No-op unless MCP_TRANSPORT=http. Bound to localhost by default, like the api service - only widen this
@@ -104,7 +105,8 @@ services:
       # Sub-sessions (F5): peers StartSubSession may call, from config/.env (empty: none). The general assistant that
       # delegates everything is Puls (docker-compose.puls.yml); this is the code-review app, with every toolset.
       AGENT_PEERS: ${AGENT_PEERS:-}
-    # Localhost only: the agent can run shell commands and write files. Set AGENT_API_KEY in .env.secrets to require a key.
+    # Localhost only: the agent can run shell commands and write files. AGENT_API_KEY in .env.secrets is required
+    # (FX18): without it the container refuses to start, unless AGENT_AUTH=off in config/.env says so on purpose.
     ports:
       - "127.0.0.1:${API_PORT:-5080}:8080"
     volumes:

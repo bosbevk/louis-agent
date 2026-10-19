@@ -3,6 +3,9 @@
 > **Reference.** What was finished, newest first, one entry per feature, fix or cleanup. **Elsewhere:** what's still
 > open in the [TODO](TODO.md); how each was built in its feature, fix or plan doc (linked from its entry).
 
+- 2026-10-19 — **FX18 Auth fails closed** (the platform plan's Phase 1): the API, and the MCP server over HTTP, refuse
+  to start without a key unless `AGENT_AUTH=off` says so on purpose; a key that is set is always checked. One pure
+  rule in core, `Guardrails/HostAuth`, replaces the two hosts' own checks ([fix](docs/fixes/FX18-auth-fails-closed.md))
 - 2026-10-19 — **F29 Validated specialists**, closed by [the platform plan](docs/plans/platform.md) (Phase 0): its
   four steps were in git (`d79dbb1`, `ae257c5`, `d7afa23`, `28c4901`) though its doc said *planned*. `ROLES_ENABLED`
   (`PERSONALITIES_ENABLED` before CL14) gates the roles an instance may use; Puls opens with `specialists` (then

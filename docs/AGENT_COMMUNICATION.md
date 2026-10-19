@@ -70,9 +70,10 @@ no louis-agent judgement is involved. The orchestrator uses the API, because it 
 Base URL: `http://127.0.0.1:5080` for the main Docker setup, `http://127.0.0.1:5081` for the orchestrator demo. Bound
 to `127.0.0.1` only.
 
-**Authentication.** When `AGENT_API_KEY` is set, every `/sessions`, `/workspace` and `/git` call must send it as
-`x-api-key: <key>` or `Authorization: Bearer <key>`; otherwise the reply is `401`. `/health`, `/prices` and the web
-app's own files never need a key.
+**Authentication.** Every `/sessions`, `/workspace`, `/git`, `/toolsets`, `/roles` and `/model` call must send
+`AGENT_API_KEY` as `x-api-key: <key>` or `Authorization: Bearer <key>`; otherwise the reply is `401`. `/health`,
+`/prices`, `/rates` and the web app's own files never need a key. The key is required: without one the API refuses to
+start, unless `AGENT_AUTH=off` says a machine may run it open on purpose (FX18).
 
 **Errors** are JSON in Claude's shape, with a matching status code:
 
@@ -83,7 +84,7 @@ app's own files never need a key.
 | Status | When |
 |---|---|
 | `400` | Bad input: empty message, a path outside the workspace, nothing staged to commit, a branch that is already merged |
-| `401` | `AGENT_API_KEY` is set and the request didn't send it |
+| `401` | The request didn't send `AGENT_API_KEY` |
 | `403` | A secret file (`.env`, keys) or its diff was asked for |
 | `404` | Unknown session or branch |
 | `409` | The session is still answering; a merge would conflict (it is aborted); uncommitted changes block a merge |
@@ -280,7 +281,7 @@ which tool to call (`tools/list`, `tools/call`), and the tool list updates live 
 | Transport | For | Auth |
 |---|---|---|
 | stdio (default) | A local client that starts the server as a subprocess (Rider, Claude Desktop) | None needed: only the parent process can talk to it |
-| Streamable HTTP (`MCP_TRANSPORT=http`, port 5090) | A remote client, e.g. an agent built on another SDK | `MCP_API_KEY` (falls back to `AGENT_API_KEY`); without a key it only logs a warning |
+| Streamable HTTP (`MCP_TRANSPORT=http`, port 5090) | A remote client, e.g. an agent built on another SDK | `MCP_API_KEY` (falls back to `AGENT_API_KEY`), required: without a key it refuses to start, unless `AGENT_AUTH=off` (FX18) |
 
 Approving agent-built tools is never possible over MCP: that stays with the user.
 

@@ -27,7 +27,6 @@ changes instead of relying on training; **a configured agent**, an identity and 
 ## Now: three doors, the cut, simulations and the sales playground (Phases 0 to 4)
 
 - [ ] Validate demand: ten conversations and 30 real Malmesbury questions, answered blind by Puls, Gemini, ChatGPT and Google Maps (Louis's own, Phase 0 step 4)
-- [ ] [FX18 Auth fails closed](docs/fixes/FX18-auth-fails-closed.md): the API and the MCP server's HTTP transport refuse to start without a key (Phase 1; opened in Phase 0 step 3)
 - [ ] [FX19 Git arguments as data](docs/fixes/FX19-git-arguments-as-data.md): every git call takes a list (Phase 1; opened in Phase 0 step 3)
 - [ ] [FX20 Skill files wait for approval](docs/fixes/FX20-skill-files-wait-for-approval.md): `CreateSkillFile` writes to `pending/` until `/approve` (Phase 1; opened in Phase 0 step 3)
 - [ ] Louis's F32 to F34 learning write-up, skills 7 and 12, before Phase 2

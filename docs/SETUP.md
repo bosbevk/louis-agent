@@ -88,6 +88,7 @@ docker compose -f docker/docker-compose.yml --env-file config/.env up -d --build
 | `PULS_PORT`, `PULS_CODER_PORT`, `PULS_WORKSPACE` | Puls (`docker/docker-compose.puls.yml`): its port (default `5070`), its specialist's (`5071`), both bound to `127.0.0.1`, and the folder mounted as its workspace (default the repo) |
 | `PULS_MONGO_PORT`, `BENCHMARKS_MONGO_DATABASE` | The benchmark store (F31): `puls-mongo`'s host port (default `27017`, on `127.0.0.1`) and its database (default `puls_benchmarks`; the Mongo contract tests use `puls_benchmarks_test`) |
 | `MCP_TRANSPORT`, `MCP_PORT` | MCP server transport: `stdio` (default) or `http`; host port in HTTP mode (default `5090`, bound to `127.0.0.1`) |
+| `AGENT_AUTH` | `required` (default) or `off` (FX18): whether the API, and the MCP server over HTTP, may start without a key. `off` is for a development machine whose ports stay on `127.0.0.1`; a key that is set is checked either way. Never set in a compose file |
 | `WEB_SEARCH_PROVIDER` | `tavily`, `google`, `searxng` or `duckduckgo` (default: Tavily when `TAVILY_API_KEY` is set, else Google when its key and engine id are, else SearXNG when `SEARXNG_URL` is, else DuckDuckGo). SearXNG is for development and benchmarks only (ADR 0023) |
 | `SEARXNG_URL` | The SearXNG we run (F32): `http://puls-searxng:8080` in the Puls stack (set there); from the host, for its live tests, `http://127.0.0.1:8888` |
 | `PAGE_RENDERER` | `chrome` or `tavily`, for `ReadRenderedPage` (default: Chrome when `BROWSER_URL` is set, else Tavily when its key is) |
@@ -126,8 +127,8 @@ environment by the tools themselves:
 |---|---|
 | `ANTHROPIC_API_KEY` | Claude API key (required for the default provider) |
 | `ANTHROPIC_WORKSPACE_ID` | Only if the key isn't scoped to a workspace |
-| `AGENT_API_KEY` | When set, required for the HTTP API (`x-api-key` or `Authorization: Bearer`) |
-| `MCP_API_KEY` | Key for the MCP server in HTTP mode, same header rules; falls back to `AGENT_API_KEY`. With neither set, HTTP mode is unauthenticated |
+| `AGENT_API_KEY` | The HTTP API's key, required (FX18): every call but `/health`, `/prices` and `/rates` sends it as `x-api-key` or `Authorization: Bearer`. Without it the API refuses to start, unless `AGENT_AUTH=off` |
+| `MCP_API_KEY` | Key for the MCP server in HTTP mode, same header rules; falls back to `AGENT_API_KEY`. With neither set, HTTP mode refuses to start, unless `AGENT_AUTH=off` |
 | `GIT_AUTHOR_NAME`, `GIT_AUTHOR_EMAIL`, `GIT_COMMITTER_NAME`, `GIT_COMMITTER_EMAIL` | Identity for commits made from the web app's Changes view |
 | `PAYMO_API_KEY` | Enables the Paymo tools |
 | `DEVOPS_API_KEY` | Azure DevOps personal access token; enables the DevOps tools (with the settings below) |

@@ -27,6 +27,12 @@ public enum ErrorMessage
     [Description("Unknown LLM_THINKING '{Value}'. Use off, low, medium or high.")]
     UnknownThinking,
 
+    [Description("Unknown AGENT_AUTH '{Value}'. Use {Supported}.")]
+    UnknownAuthMode,
+
+    [Description("{Setting} is required: set it in config/.env.secrets, or set AGENT_AUTH=off to serve without a key on purpose.")]
+    ApiKeyRequired,
+
     [Description("'{Key}' is not a setting name.")]
     NotASettingName,
 

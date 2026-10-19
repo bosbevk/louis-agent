@@ -29,7 +29,9 @@ flowchart LR
   agent builds or approves a tool, clients get `notifications/tools/list_changed`. `SkillsToolProvider` adds three
   read-only skill tools; skills themselves run through the engine's `ExecuteSkill`.
 - **Auth (HTTP only):** `MCP_API_KEY` (falls back to `AGENT_API_KEY`) as `x-api-key` or `Authorization: Bearer`,
-  compared in constant time. Without a key it logs a warning and accepts every request — so keep it on `127.0.0.1`.
+  compared in constant time by core's `HostAuth`, the API's rule too. Without a key it refuses to start (FX18), unless
+  `AGENT_AUTH=off` says a machine may run it open on purpose — then keep it on `127.0.0.1`. Over stdio no key: the
+  client's child process.
 - **Approval stays with the user:** approving agent-built tools is not exposed over MCP.
 
 ## Structure
@@ -40,7 +42,7 @@ flowchart LR
 
 ## Configuration
 
-Core settings (no `LLM_*` needed), plus `MCP_TRANSPORT`, `MCP_PORT`, `MCP_API_KEY`. Client entry for Rider:
+Core settings (no `LLM_*` needed), plus `MCP_TRANSPORT`, `MCP_PORT`, `MCP_API_KEY`, `AGENT_AUTH`. Client entry for Rider:
 `config/.rider-mcp-servers.json`.
 
 **In stdio mode stdout carries the protocol**: logging goes to stderr only.
@@ -52,12 +54,12 @@ class registered with `.WithTools<…>()` in both transports.
 
 ## Tests
 
-None for the server itself; the tools it publishes are tested in `tests/louis-agent.core.tests`. Checked with an MCP
-client and, for HTTP, with curl (no key → 401, right key → 200).
+None for the server itself; its auth rule is core's `HostAuth` (`HostAuthTests`), and the tools it publishes are tested
+in `tests/louis-agent.core.tests`. Checked with an MCP client and, for HTTP, with curl (no key → 401, right key → 200).
 
 ## Limits and plans
 
-- Without `MCP_API_KEY` the HTTP transport is unauthenticated (by design for local use; documented).
+- `AGENT_AUTH=off` runs the HTTP transport unauthenticated, for local use only (FX18 closed the accidental case).
 - It publishes every toolset the instance can load; choosing some, as API sessions do
   ([F5](../features/F05-toolset-profiles.md)), would need a setting or a per-client profile.
 
