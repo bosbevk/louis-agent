@@ -1,6 +1,6 @@
+using LouisAgent.Core.Pricing.Rates;
 using System.Net;
 using LouisAgent.Core.Config;
-using LouisAgent.Core.Pricing;
 using LouisAgent.Core.Hosting;
 
 namespace LouisAgent.Core.Tests.Hosting;

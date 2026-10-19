@@ -1,8 +1,8 @@
+using LouisAgent.Core.Usage.Records;
 using System.Text.Json;
 using LouisAgent.Api.Messages;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
-using LouisAgent.Core.Usage;
 using Microsoft.Extensions.Logging;
 using static LouisAgent.Api.Services.Benchmarks.BenchmarkDocuments;
 using static LouisAgent.Api.Services.Benchmarks.BenchmarkProtocol;

@@ -39,7 +39,7 @@ touches, and nothing else:
    toolset is a capability of its own (*Building an identity or a pack*); every public method is a tool.
 2. **Catalogue entry:** a `ToolsetDefinition` (the name, a one-line description, the settings it needs
    (`MissingSettings`), its tool class (`ToolType`), the factory for its tool object (`CreateTools`) and its guide
-   (`GuideFile`)) in `Agent/ToolsetCatalog.cs` for core's, or in the pack's `Toolsets` for a pack's. `AgentCatalog`
+   (`GuideFile`)) in `Agent/Toolsets/ToolsetCatalog.cs` for core's, or in the pack's `Toolsets` for a pack's. `AgentCatalog`
    lists both, core's first, and stops start-up on a tool name two toolsets or the engine already use.
 3. **Guide:** `Prompts/toolsets/{toolset}.md`, plain markdown, embedded with the other built-in prompts (a pack's in
    its own `Prompts/`): what the toolset is for, its tools grouped with one line each, and its workflows. Core's guides
@@ -73,15 +73,16 @@ a change to one (a new provider, a new tool, a new guard) touches one folder:
 
 | Folder (core) | Concern |
 |---|---|
-| `Agent/` | The loop: turns, history, system prompt, round limits; the tool registry, the tool-call guards that call the model (cut-off calls, oversized results summarised), the skill tools and the agent-built tools (`/approve`) |
-| `Llm/` + `Llm/{Name}Provider/` | The model: client factory, `IChatClient` middleware (thinking, caching, usage recording), one folder per provider (`AnthropicProvider/`: a folder named `Anthropic` would hide the SDK's own `Anthropic` namespace) |
+| `Agent/` | The loop: turns, history, system prompt, round limits; the tool registry, the tool-call guards that call the model (cut-off calls, oversized results summarised). Three concerns under it, one layer: `EngineTools/` (what the engine registers itself: the skill tools and the agent-built tools, `/approve`), `Toolsets/` (a toolset's definition, context and core's catalogue), `Catalog/` (the contracts an identity or a pack implements, and the catalogue built from them: the seam a later contracts project would be cut from) |
+| `Llm/` | The model: the client factory at the top (`ILlmClientFactory`, `LlmClientFactory`, with the thinking middleware); `Caching/` (how a provider marks a request for its prompt cache: the strategy, the no-op default, the middleware); `UsageMapping/` (a provider's usage into our record: the mapper and the recording middleware); one folder per provider, `{Name}Provider/` (`AnthropicProvider/`: a folder named `Anthropic` would hide the SDK's own `Anthropic` namespace) |
 | `Tools/{Toolset}/` | What the model can do: one folder per toolset (`Workspace`, `Git`, `DotNet`, `Shell`, `Web`, `Scripts`, `Agents`, `Integrations/Paymo`, `Integrations/DevOps`), plus `Clock` (every session) and `Documents` (shared by two toolsets); `ProcessRunner` beside them |
-| `Sessions/` | What a host sets for one session's turn and the tools read: the user's place (F22), the attachments, the sub-sessions a chat keeps (F26), the live feed of a child's events. Not what the model can do, and not the loop |
+| `Sessions/` | What a host sets for one session's turn and the tools read: the user's place (F22) and the attachments at the top; `SubSessions/` (the sub-sessions a chat keeps, F26, and the live feed of a child's events). Not what the model can do, and not the loop |
 | `Skills/` | Loading the markdown skills and a session's role into the prompt: the contract at the top (`ISkillProvider`, the embedded files), its implementations in `Providers/`, and in `Roles/` what a session is (`RoleCatalog`, `RoleLevel`, `RoleHeader`, CL13) |
-| `Guardrails/` | Pure safety checks, no model: the workspace boundary, sensitive files, the SSRF guard (the guards that call a model are in `Agent/`) |
-| `Usage/` and `Pricing/` | The ledger (records, sinks, scopes, reports); prices, cost, rates and the display currency |
+| `Guardrails/` | Pure safety checks, no model: `Auth/` (the hosts' key check, failing closed, FX18), `Network/` (the SSRF guard and the address it blocks), `Workspace/` (the workspace boundary, sensitive files). The guards that call a model are in `Agent/` |
+| `Usage/` | The ledger: `Records/` (a record, its tokens and cost, its purpose, the turn's scope and tags, the session), `Sinks/` (where records go: the monthly JSONL file), `Reports/` (reading a ledger back: totals, the usage text every host shows, the lifetime cost, the cache gaps) |
+| `Pricing/` | `Prices/` (the price table and a model's prices, the cost calculator, the sink that prices each record), `Rates/` (exchange rates, their mappers, the display currency) |
 | `Protocols/Mcp/` | Talking to other agents and tools over MCP |
-| `Hosting/` | Bootstrap shared by every host: `AgentHost`, and wiring done at start-up (Rider's MCP tools) |
+| `Hosting/` | Bootstrap shared by every host: `AgentHost`, its context, the engine factory and the wiring done at start-up (Rider's MCP tools) at the top; `SessionLlms/` (the LLM profiles a session may name, `SESSION_LLMS`) |
 | `Config/`, `Messages/`, `Logging/` | Settings; message enums; logging (`AgentLogging`: Serilog behind `ILogger`) |
 
 The rules:
@@ -157,7 +158,8 @@ it can do in a pack, and only `src/louis-agent.composition` knows them all. The 
 one pack in `packs/` are the worked examples (this guide names neither: core's source, this file included, names no
 product, held by the same test); F40's demo takes over as the simpler one.
 
-**An identity** is a project `identities/louis-agent.identity.{name}` with one class implementing `IAgentIdentity`:
+**An identity** is a project `identities/louis-agent.identity.{name}` with one class implementing `IAgentIdentity`
+(`Agent/Catalog/`, as `IAgentPack` and `AgentCatalog` are):
 its `Name` (what `IDENTITIES` loads it by), its `Prompts` (a `ManifestEmbeddedFileProvider` over its `Prompts/` folder:
 its modes under `agent/{name}/`, its roles under `specialists/` and `minions/`, as *Adding a mode or a role* lays them
 out) and the `Packs` it names, by name, never by reference. Its csproj needs core's two embedding lines

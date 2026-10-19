@@ -1,9 +1,10 @@
+using LouisAgent.Core.Llm.UsageMapping;
+using LouisAgent.Core.Usage.Records;
+using LouisAgent.Core.Usage.Sinks;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Providers;
 using LouisAgent.Core.Agent;
-using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
-using LouisAgent.Core.Llm;
 using LouisAgent.Core.Llm.AnthropicProvider;
 
 namespace LouisAgent.Core.Tests.Agent;

@@ -1,8 +1,8 @@
 namespace LouisAgent.Core.Tools.Workspace;
 
+using LouisAgent.Core.Guardrails.Workspace;
 using System.ComponentModel;
 using System.Text;
-using LouisAgent.Core.Guardrails;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Tools.Documents;
 

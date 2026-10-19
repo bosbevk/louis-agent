@@ -22,7 +22,7 @@ before any later session loads it (FX20 for skill files).
 
 ### How tools are registered
 
-A session names its toolsets when it opens and keeps them (F5). Each toolset is an entry in `Agent/ToolsetCatalog.cs`
+A session names its toolsets when it opens and keeps them (F5). Each toolset is an entry in `Agent/Toolsets/ToolsetCatalog.cs`
 that builds its tool objects, and the engine registers only those:
 
 ```csharp

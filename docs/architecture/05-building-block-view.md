@@ -98,7 +98,7 @@ Each project also has its own design doc in [projects/](../projects/README.md).
   `/git/merge`, `/git/branch/delete`) for the web app. They reuse `WorkspaceTools`' path and secret-file checks.
 - `AGENT_API_KEY` is required for `/sessions`, `/toolsets`, `/roles`, `/model`, `/workspace` and `/git`; the app's own
   files stay public. Without a key the API refuses to start, unless `AGENT_AUTH=off` says so on purpose: one pure rule
-  in core, `Guardrails/HostAuth`, shared with the MCP server (FX18).
+  in core, `Guardrails/Auth/HostAuth`, shared with the MCP server (FX18).
 - The web app (Blazor WebAssembly) is served by the API with `MapStaticAssets` and an `index.html` fallback. It keeps
   chats in the browser's `localStorage`. Themes are CSS files in `wwwroot/css/themes/` listed in `themes.json`.
 - The Branches tab queues merges and deletes (`GitHistory`): every click is kept and they run one at a time, in click
@@ -114,7 +114,7 @@ Each project also has its own design doc in [projects/](../projects/README.md).
   `MCP_TRANSPORT=http` serves Streamable HTTP instead (`MapMcp()`), for remote clients. That exposes the shell, git
   and file-write tools over the network, so set `MCP_API_KEY` (`x-api-key` or `Authorization: Bearer`; falls back to
   `AGENT_API_KEY`). With neither set it refuses to start, unless `AGENT_AUTH=off` says so on purpose (FX18,
-  `Guardrails/HostAuth`, the API's rule too).
+  `Guardrails/Auth/HostAuth`, the API's rule too).
 
 ## Level 3: core's components
 
@@ -198,7 +198,7 @@ Everything it sends uses LF line endings, whatever the checkout:
   toolsets (`AgentEngineFactory`), or another agent's own tools (the orchestrator's `ServiceTools`); `selfExtension:`
   adds `CreateSkillFile`, `ReloadSkills`, `CreateTool` and `ListAgentTools` (the `skills` toolset).
 
-### Toolsets (`Agent/ToolsetCatalog.cs`, `Agent/AgentCatalog.cs`, `Hosting/AgentEngineFactory.cs`)
+### Toolsets (`Agent/Toolsets/ToolsetCatalog.cs`, `Agent/Catalog/AgentCatalog.cs`, `Hosting/AgentEngineFactory.cs`)
 Every toolset is a `ToolsetDefinition`: a name, a one-line description, the settings it needs, its tool class and
 factory, and its guide (docs/CLAUDE.md, *Adding a toolset*). Core's, in `ToolsetCatalog`: `files`, `git`, `dotnet`,
 `python`, `powershell`, `bash`, `web`, `paymo`, `devops`, `specialists` (sub-sessions on a peer, `AGENT_PEERS`),

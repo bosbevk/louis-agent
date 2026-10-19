@@ -1,3 +1,6 @@
+using LouisAgent.Core.Sessions.SubSessions;
+using LouisAgent.Core.Usage.Records;
+using LouisAgent.Core.Agent.Toolsets;
 using System.Collections.Concurrent;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Sessions;
@@ -7,7 +10,6 @@ using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Roles;
 using LouisAgent.Core.Tools.Agents;
 using LouisAgent.Core.Tools.Clock;
-using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Api;

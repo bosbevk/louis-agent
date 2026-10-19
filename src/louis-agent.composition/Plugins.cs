@@ -1,7 +1,7 @@
 namespace LouisAgent.Composition;
 
+using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Composition.Messages;
-using LouisAgent.Core.Agent;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Messages;

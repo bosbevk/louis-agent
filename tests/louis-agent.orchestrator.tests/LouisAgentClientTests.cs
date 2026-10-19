@@ -1,4 +1,4 @@
-using LouisAgent.Core.Usage;
+using LouisAgent.Core.Usage.Reports;
 
 namespace LouisAgent.Orchestrator.Tests;
 

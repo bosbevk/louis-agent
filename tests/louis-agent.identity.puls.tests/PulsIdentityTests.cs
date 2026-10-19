@@ -1,4 +1,4 @@
-using LouisAgent.Core.Agent;
+using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Identities.Puls;
 using LouisAgent.Packs.Shops;
 

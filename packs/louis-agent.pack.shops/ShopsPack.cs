@@ -1,9 +1,10 @@
 namespace LouisAgent.Packs.Shops;
 
+using LouisAgent.Core.Agent.Toolsets;
+using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Packs.Shops.Catalogues;
 using LouisAgent.Packs.Shops.Providers;
 using LouisAgent.Packs.Shops.Tools;
-using LouisAgent.Core.Agent;
 using LouisAgent.Core.Skills;
 using Microsoft.Extensions.FileProviders;
 

@@ -1,11 +1,11 @@
 namespace LouisAgent.Core.Agent;
 
+using LouisAgent.Core.Usage.Records;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using LouisAgent.Core.Llm;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Tools;
-using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
 using LouisAgent.Core.Messages;
 using System.Globalization;

@@ -99,6 +99,8 @@ changes instead of relying on training; **a configured agent**, an identity and 
 - [ ] Web tests: the Branches queue, on Phase 4's bUnit project
 - [ ] Tests for the web app's `UsageFormat`
 - [ ] The portal's old benchmark routes and words removed, after Phase 3
+- [ ] Paymo, DevOps and Rider out of core (core layout review, 2026-10-19): `Tools/Integrations/Paymo` and `Tools/Integrations/DevOps` are packs in waiting (CL17); `Hosting/RiderMcpToolDiscovery` and `Protocols/Mcp/RiderMcpClient` serve only the ACP host and name a product, so they move to `src/louis-agent.acp-server`
+- [ ] `ToolMessage` split per toolset (core layout review, 2026-10-19): one enum of every tool's texts hides which toolset each belongs to; one enum per toolset beside its tools, as the shops pack has (`ShopToolMessage`), with the golden split the same way
 - [ ] A pack can't add itself to a router (CL15 step 4): the shops' routing line lives in its guide, which loads only in a session that already has the toolset, so the coding agent never learns that shops exist. Costs nothing today; with F36 the routing rows come from each toolset's description
 
 ## Known limitations

@@ -1,6 +1,6 @@
+using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Packs.Shops.Catalogues;
 using LouisAgent.Packs.Shops.Tools;
-using LouisAgent.Core.Agent;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Tools.Web.Browsing;
 using LouisAgent.Core.Tools.Web.Search;

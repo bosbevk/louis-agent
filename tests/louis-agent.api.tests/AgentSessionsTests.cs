@@ -1,8 +1,11 @@
-using LouisAgent.Core.Agent;
+using LouisAgent.Core.Hosting.SessionLlms;
+using LouisAgent.Core.Sessions.SubSessions;
+using LouisAgent.Core.Usage.Records;
+using LouisAgent.Core.Agent.Toolsets;
+using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Core.Sessions;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
-using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Api.Tests;
@@ -90,7 +93,7 @@ public class AgentSessionsTests
         {
             WorkspaceRoot = RepoRoot, SkillsDirectory = Path.Combine(RepoRoot, "Skills"), RatesUrl = null,
             BrowserUrl = "http://puls-browser:9222",
-        }, catalog: new LouisAgent.Core.Agent.AgentCatalog([], [new LouisAgent.Packs.Shops.ShopsPack(new LouisAgent.Packs.Shops.ShopsOptions { ShopCatalogues = "checkers" })])));
+        }, catalog: new LouisAgent.Core.Agent.Catalog.AgentCatalog([], [new LouisAgent.Packs.Shops.ShopsPack(new LouisAgent.Packs.Shops.ShopsOptions { ShopCatalogues = "checkers" })])));
 
         var cook = sessions.Create(["web"], depth: 1, role: "puls-cook");
 
@@ -247,7 +250,7 @@ public class AgentSessionsTests
         Assert.That(LouisAgent.Api.Endpoints.RolesView.Routes, Is.EqualTo(new[] { "/roles", "/personalities" }));
     }
 
-    private static LouisAgent.Core.Sessions.OpenSubSession Kept(string sessionId, List<string> closed) =>
+    private static LouisAgent.Core.Sessions.SubSessions.OpenSubSession Kept(string sessionId, List<string> closed) =>
         new(new Uri("http://puls-agent/"), sessionId, "puls-agent", ["web"], "puls-cook", () => { closed.Add(sessionId); return Task.CompletedTask; });
 
     [Test]

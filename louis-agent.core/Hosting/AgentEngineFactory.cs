@@ -1,16 +1,19 @@
 namespace LouisAgent.Core.Hosting;
 
+using LouisAgent.Core.Hosting.SessionLlms;
+using LouisAgent.Core.Llm.UsageMapping;
+using LouisAgent.Core.Pricing.Rates;
+using LouisAgent.Core.Usage.Sinks;
+using LouisAgent.Core.Agent.Toolsets;
+using LouisAgent.Core.Agent.Catalog;
 using System.Collections.Concurrent;
 using System.Text.Json;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Config;
-using LouisAgent.Core.Llm;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
-using LouisAgent.Core.Pricing;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Roles;
-using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
 using LouisAgent.Core.Tools.Web.Search;

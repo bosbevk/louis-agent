@@ -1,3 +1,7 @@
+using LouisAgent.Core.Sessions.SubSessions;
+using LouisAgent.Core.Usage.Records;
+using LouisAgent.Core.Usage.Sinks;
+using LouisAgent.Core.Usage.Reports;
 using System.Net;
 using System.Text;
 using System.Text.Json;
@@ -8,7 +12,6 @@ using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Providers;
 using LouisAgent.Core.Tools.Agents;
 using LouisAgent.Core.Tools.Clock;
-using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Core.Tests.Tools.Agents;

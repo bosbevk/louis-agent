@@ -1,7 +1,7 @@
+using LouisAgent.Core.Guardrails.Workspace;
 using System.Text;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Tools.Workspace;
-using LouisAgent.Core.Guardrails;
 using LouisAgent.Core.Messages;
 using LouisAgent.Api.Messages;
 

@@ -1,9 +1,9 @@
+using LouisAgent.Core.Pricing.Rates;
+using LouisAgent.Core.Usage.Records;
 using System.Collections.Concurrent;
 using System.Text.Json;
 using LouisAgent.Core.Agent;
-using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
-using LouisAgent.Core.Pricing;
 using LouisAgent.Core.Messages;
 using LouisAgent.AcpServer.Messages;
 using LouisAgent.Core.Logging;

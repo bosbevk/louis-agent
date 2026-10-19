@@ -769,6 +769,15 @@ sequenceDiagram
   from core's `Tools/Shops` gets `Tools/`, `Catalogues/` (the contract a second shop plugs into), `Providers/` (the
   shops behind it, with the throttle and the store cache) and `Places/` (what leaves for a places pack later); namespaces
   follow the folders, the tests mirror them, nothing else changes.
+- **Core's `Agent/` sorted by concern** (Louis, core layout review, 2026-10-19; ADR 0010): the loop stays at the top;
+  `Agent/EngineTools/` (was `Agent/Tools/`, a clash with the toolsets' `Tools/`) holds what the engine registers itself,
+  `Agent/Toolsets/` the toolset definition, context and core's catalogue, `Agent/Catalog/` the contracts an identity or
+  a pack implements and the catalogue. One layer still, since the engine reads `AgentCatalog.CoreOnly` and the catalogue
+  reads `ToolsetDefinition`; the namespaces in this plan's tables are the step's, the code's are these.
+- **Core sorted, one thing per folder** (Louis, core layout review, 2026-10-19): the same for `Guardrails/` (`Auth/`,
+  `Network/`, `Workspace/`), `Hosting/SessionLlms/`, `Llm/` (`Caching/`, `UsageMapping/`), `Pricing/` (`Prices/`,
+  `Rates/`), `Sessions/SubSessions/` and `Usage/` (`Records/`, `Sinks/`, `Reports/`); the layers still key on the top
+  folder. Left for later, each a TODO line: `ToolMessage` split per toolset; Paymo, DevOps and Rider out of core.
 
 ---
 [Plans](README.md) · [The platform plan](platform.md)

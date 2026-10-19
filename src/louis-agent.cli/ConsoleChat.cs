@@ -1,7 +1,8 @@
 namespace LouisAgent.Cli;
 
+using LouisAgent.Core.Usage.Records;
+using LouisAgent.Core.Usage.Reports;
 using LouisAgent.Core.Agent;
-using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
 using LouisAgent.Core.Messages;
 using LouisAgent.Cli.Messages;

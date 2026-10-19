@@ -1,9 +1,9 @@
 namespace LouisAgent.Core.Llm.AnthropicProvider;
 
+using LouisAgent.Core.Llm.Caching;
 using Anthropic.Models.Messages;
 using LouisAgent.Core.Config;
 using Microsoft.Extensions.AI;
-using LouisAgent.Core.Llm;
 
 /// <summary>
 /// Anthropic's two cache markers (F4, "How caching works"). The API renders tools, then the system prompt, then the

@@ -1,5 +1,6 @@
+using LouisAgent.Core.Agent.Toolsets;
+using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Composition;
-using LouisAgent.Core.Agent;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Tools.Web.Search;
 

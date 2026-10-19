@@ -1,4 +1,5 @@
-using LouisAgent.Core.Usage;
+using LouisAgent.Core.Usage.Records;
+using LouisAgent.Core.Usage.Sinks;
 
 namespace LouisAgent.Testing;
 

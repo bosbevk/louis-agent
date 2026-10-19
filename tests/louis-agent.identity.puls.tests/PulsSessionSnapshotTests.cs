@@ -1,3 +1,4 @@
+using LouisAgent.Core.Agent.Catalog;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using LouisAgent.Core.Agent;

@@ -1,5 +1,6 @@
 namespace LouisAgent.Core.Agent;
 
+using LouisAgent.Core.Agent.Catalog;
 using System.Reflection;
 using LouisAgent.Core.Messages;
 using Microsoft.Extensions.AI;

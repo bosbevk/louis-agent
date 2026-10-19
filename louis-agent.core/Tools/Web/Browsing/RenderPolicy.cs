@@ -1,7 +1,7 @@
 namespace LouisAgent.Core.Tools.Web.Browsing;
 
+using LouisAgent.Core.Guardrails.Network;
 using System.Net;
-using LouisAgent.Core.Guardrails;
 using PuppeteerSharp;
 
 /// <summary>

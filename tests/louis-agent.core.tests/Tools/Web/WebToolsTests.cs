@@ -1,3 +1,4 @@
+using LouisAgent.Core.Pricing.Rates;
 using System.Net;
 using System.Text;
 using System.Text.Json;
@@ -185,7 +186,7 @@ public class WebToolsTests
     public void ConvertCurrency_UsesTheLoadedRates_ThroughTheBase()
     {
         // F22 step 5: the rates the app shows costs in (F14), base USD: 1 USD = 18 ZAR, 0.9 EUR.
-        var rates = new LouisAgent.Core.Pricing.ExchangeRates { AsOf = "2026-10-13", Base = "USD", Source = "frankfurter.app", Rates = new() { ["ZAR"] = 18m, ["EUR"] = 0.9m } };
+        var rates = new LouisAgent.Core.Pricing.Rates.ExchangeRates { AsOf = "2026-10-13", Base = "USD", Source = "frankfurter.app", Rates = new() { ["ZAR"] = 18m, ["EUR"] = 0.9m } };
         var tools = new WebTools(new FakeSearch(), new StubHandler(_ => Html("")), PublicDns, rates);
 
         Assert.That(tools.ConvertCurrency(1800m, "zar", "USD"), Is.EqualTo("1,800.00 ZAR = 100.00 USD (1 ZAR = 0.055556 USD; rates of 2026-10-13, frankfurter.app)."));

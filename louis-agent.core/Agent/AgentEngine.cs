@@ -1,15 +1,20 @@
 namespace LouisAgent.Core.Agent;
 
+using LouisAgent.Core.Llm.UsageMapping;
+using LouisAgent.Core.Pricing.Rates;
+using LouisAgent.Core.Usage.Records;
+using LouisAgent.Core.Usage.Sinks;
+using LouisAgent.Core.Usage.Reports;
+using LouisAgent.Core.Agent.Toolsets;
+using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Core.Tools.Clock;
-using LouisAgent.Core.Agent.Tools;
+using LouisAgent.Core.Agent.EngineTools;
 using System.ComponentModel;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Skills;
-using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
-using LouisAgent.Core.Pricing;
 using LouisAgent.Core.Llm;
 using LouisAgent.Core.Tools.Shell;
 using LouisAgent.Core.Logging;

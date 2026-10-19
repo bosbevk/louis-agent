@@ -1,5 +1,8 @@
 namespace LouisAgent.Core.Tools.Agents;
 
+using LouisAgent.Core.Sessions.SubSessions;
+using LouisAgent.Core.Usage.Records;
+using LouisAgent.Core.Usage.Sinks;
 using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -11,7 +14,6 @@ using LouisAgent.Core.Config;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Sessions;
 using LouisAgent.Core.Tools.Clock;
-using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
 
 /// <summary>

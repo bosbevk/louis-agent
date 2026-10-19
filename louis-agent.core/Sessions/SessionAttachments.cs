@@ -1,5 +1,6 @@
 namespace LouisAgent.Core.Sessions;
 
+
 /// <summary>
 /// The files the user attached in this conversation, by name (F22): the host (the API's session) sets them for a turn,
 /// and <see cref="SpecialistTools.StartSubSession"/> forwards the ones the model names to the specialist. The model passes

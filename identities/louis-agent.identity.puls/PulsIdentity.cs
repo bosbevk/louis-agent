@@ -1,6 +1,6 @@
 namespace LouisAgent.Identities.Puls;
 
-using LouisAgent.Core.Agent;
+using LouisAgent.Core.Agent.Catalog;
 using Microsoft.Extensions.FileProviders;
 
 /// <summary>

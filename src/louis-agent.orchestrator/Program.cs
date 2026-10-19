@@ -1,3 +1,7 @@
+using LouisAgent.Core.Pricing.Prices;
+using LouisAgent.Core.Pricing.Rates;
+using LouisAgent.Core.Usage.Records;
+using LouisAgent.Core.Usage.Reports;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using LouisAgent.Core.Config;
@@ -5,10 +9,8 @@ using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Providers;
 using LouisAgent.Core.Skills.Roles;
 using LouisAgent.Core.Agent;
-using LouisAgent.Core.Usage;
 using LouisAgent.Orchestrator;
 using LouisAgent.Orchestrator.Tools;
-using LouisAgent.Core.Pricing;
 using LouisAgent.Core.Llm;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Messages;

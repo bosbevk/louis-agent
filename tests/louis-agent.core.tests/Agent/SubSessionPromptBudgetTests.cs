@@ -1,9 +1,10 @@
+using LouisAgent.Core.Pricing.Prices;
+using LouisAgent.Core.Usage.Records;
+using LouisAgent.Core.Usage.Sinks;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Providers;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Config;
-using LouisAgent.Core.Pricing;
-using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Core.Tests.Agent;

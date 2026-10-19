@@ -1,10 +1,11 @@
+using LouisAgent.Core.Llm.UsageMapping;
+using LouisAgent.Core.Usage.Records;
+using LouisAgent.Core.Usage.Sinks;
 using System.Net;
 using System.Text.Json;
 using Anthropic;
 using Anthropic.Core;
-using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
-using LouisAgent.Core.Llm;
 using LouisAgent.Core.Llm.AnthropicProvider;
 
 namespace LouisAgent.Core.Tests.Llm.AnthropicProvider;

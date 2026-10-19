@@ -1,9 +1,9 @@
 namespace LouisAgent.Core.Llm.AnthropicProvider;
 
+using LouisAgent.Core.Llm.UsageMapping;
+using LouisAgent.Core.Usage.Records;
 using Anthropic.Models.Messages;
 using Microsoft.Extensions.AI;
-using LouisAgent.Core.Llm;
-using LouisAgent.Core.Usage;
 
 /// <summary>
 /// The Anthropic adapter reports cache writes in <see cref="UsageDetails.AdditionalCounts"/> (measured in F1 step 1;

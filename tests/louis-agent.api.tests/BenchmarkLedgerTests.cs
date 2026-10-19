@@ -1,7 +1,9 @@
+using LouisAgent.Core.Usage.Records;
+using LouisAgent.Core.Usage.Sinks;
+using LouisAgent.Core.Usage.Reports;
 using System.Text.Json;
 using LouisAgent.Api.Services;
 using LouisAgent.Api.Services.Benchmarks;
-using LouisAgent.Core.Usage;
 using static LouisAgent.Api.Services.Benchmarks.BenchmarkDocuments;
 using static LouisAgent.Api.Services.Benchmarks.BenchmarkProtocol;
 

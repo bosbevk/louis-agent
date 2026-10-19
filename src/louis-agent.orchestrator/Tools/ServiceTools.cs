@@ -1,9 +1,9 @@
+using LouisAgent.Core.Usage.Records;
+using LouisAgent.Core.Usage.Reports;
 using System.ComponentModel;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using LouisAgent.Core.Agent;
-using LouisAgent.Core.Usage;
 using LouisAgent.Core.Tools;
 using LouisAgent.Core.Messages;
 using LouisAgent.Orchestrator.Messages;

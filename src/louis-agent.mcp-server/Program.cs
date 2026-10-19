@@ -1,3 +1,4 @@
+using LouisAgent.Core.Guardrails.Auth;
 using System.ComponentModel;
 using LouisAgent.Composition;
 using LouisAgent.Core.Agent;
@@ -8,7 +9,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using ModelContextProtocol.Server;
-using LouisAgent.Core.Guardrails;
 using LouisAgent.Core.Hosting;
 using LouisAgent.McpServer.Messages;
 using LouisAgent.Core.Logging;

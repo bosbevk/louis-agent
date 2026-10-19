@@ -1,4 +1,5 @@
-using LouisAgent.Core.Agent;
+using LouisAgent.Core.Agent.Toolsets;
+using LouisAgent.Core.Agent.Catalog;
 using Microsoft.Extensions.FileProviders;
 
 namespace LouisAgent.Testing;

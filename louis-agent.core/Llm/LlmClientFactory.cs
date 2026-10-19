@@ -1,5 +1,7 @@
 namespace LouisAgent.Core.Llm;
 
+using LouisAgent.Core.Llm.Caching;
+using LouisAgent.Core.Llm.UsageMapping;
 using System.ClientModel;
 using Anthropic;
 using Anthropic.Core;

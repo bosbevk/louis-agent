@@ -1,13 +1,13 @@
 namespace LouisAgent.Core.Tools.Web;
 
+using LouisAgent.Core.Guardrails.Network;
+using LouisAgent.Core.Pricing.Rates;
 using System.ComponentModel;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using LouisAgent.Core.Config;
-using LouisAgent.Core.Guardrails;
 using LouisAgent.Core.Messages;
-using LouisAgent.Core.Pricing;
 using LouisAgent.Core.Tools.Documents;
 using LouisAgent.Core.Tools.Web.Search;
 using LouisAgent.Core.Tools.Web.Rendering;
