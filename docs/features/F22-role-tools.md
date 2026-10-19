@@ -1,8 +1,9 @@
 # F22 · Role tools: what each specialist needs to do its job
 
-> **Status:** built (2026-10-13), on `feature/F20-puls-look` · **Milestone:** — · **Depends on:** F21 (the specialists' roles), F5 (sub-sessions)
+> **Status:** done (built 2026-10-13, on `feature/F20-puls-look`; closed 2026-10-19 by [the platform plan](../plans/platform.md)) · **Milestone:** — · **Depends on:** F21 (the specialists' roles), F5 (sub-sessions)
 >
-> **In the TODO:** **F22 Role tools** under *Puls* ([TODO](../../TODO.md)) · **Plan:** [plans/F22](../plans/F22-role-tools.md)
+> **In the TODO:** done, so its line is gone; its open item, **FX: binary attachments sent as files, not text**, is
+> under *Puls* ([TODO](../../TODO.md)) · **Plan:** [plans/F22](../plans/F22-role-tools.md)
 
 F21 gave Puls's specialists roles: a researcher, a reader, a historian, an analyst and a general specialist. Looking at
 what each has to do its job, some tools are missing: no agent knows today's date, the user's attachments never reach

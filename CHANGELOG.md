@@ -3,6 +3,30 @@
 > **Reference.** What was finished, newest first, one entry per feature, fix or cleanup. **Elsewhere:** what's still
 > open in the [TODO](TODO.md); how each was built in its feature, fix or plan doc (linked from its entry).
 
+- 2026-10-19 — **F29 Validated specialists**, closed by [the platform plan](docs/plans/platform.md) (Phase 0): its
+  four steps were in git (`d79dbb1`, `ae257c5`, `d7afa23`, `28c4901`) though its doc said *planned*. `ROLES_ENABLED`
+  (`PERSONALITIES_ENABLED` before CL14) gates the roles an instance may use; Puls opens with `specialists` (then
+  `agents`) and `web`, answers the web itself and hands only cooking to the cook, until each other role has a report
+  shape, a relay rule and a check ([feature](docs/features/F29-validated-specialists.md),
+  [plan](docs/plans/F29-validated-specialists.md))
+- 2026-10-19 — **F26 Specialist follow-up**, built 2026-10-15, closed by the platform plan: a sub-session stays open
+  for its chat and Puls continues it by handle (`ContinueSubSession`), so a follow-up on the cook's meal goes to the
+  same cook with its context; the firmer follow-up rule measured 4 of 4 continued, and the Werk panel names the role.
+  Its open item, a continued specialist's ledger rows, is a fix on Puls's track
+  ([feature](docs/features/F26-specialist-follow-up.md), [plan](docs/plans/F26-specialist-follow-up.md))
+- 2026-10-19 — **F25 Local cook**, built 2026-10-15, closed by the platform plan: Puls's first local specialist, a
+  South African meal with its recipe and a shopping list priced in rand at the shops near the user, the routing and
+  the sources measured; Tavily searches without refusals. Its open item, the cook's unconfirmed prices (*geskat* or
+  *unknown*), is on Puls's track ([feature](docs/features/F25-local-cook.md), [plan](docs/plans/F25-local-cook.md))
+- 2026-10-19 — **F22 Role tools**, built 2026-10-13, closed by the platform plan: the tools Puls's specialists need,
+  `GetToday`, attachments by name, documents (PdfPig, OpenXml, ExcelDataReader), `Blame`, `FileHistory` and
+  `SearchCommits` with arguments as a list, `ReadTable`, `ConvertCurrency`, and the user's place. Its open item, binary
+  attachments sent as files, is a fix on Puls's track ([feature](docs/features/F22-role-tools.md),
+  [plan](docs/plans/F22-role-tools.md))
+- 2026-10-19 — **F21 Personalities**, built 2026-10-13, closed by the platform plan: each session (and sub-session)
+  names its personality, now its role; sub-sessions get no router, and all 24 delegations in the three-run delegation
+  check went to the role the router names. Its open item, Louis's corrections to the Afrikaans, is on Puls's track
+  ([feature](docs/features/F21-personalities.md), [plan](docs/plans/F21-personalities.md))
 - 2026-10-18 — **FX17 The cook's labels and counts**: the recipe line and the tally in the task's language (*Dien* /
   *Serves*, *Geprys* / *Priced*), and a count of packs after the name and the price, so the photo stays first; and a
   follow-up's card names the cook while it works, from the role each session's `message_start` now carries

@@ -1,10 +1,13 @@
 # F17 · Orchestrator agent: a routing workflow, with an agent for the exceptions
 
-> **Status:** planned · **Milestone:** M4 (after F10; before build mode) · **Depends on:** F4 (the caching strategy),
+> **Status:** merged into F39 *Orchestration*, Part B (2026-10-19): [the platform plan](../plans/platform.md)'s
+> Phase 6 rebuilds the orchestrator on the identity split, as the `voorman` identity; the local-triage items
+> (`EscalateToHuman` idempotent per error, contradicting decisions refused) are its B5's tests; this doc stays as its
+> design · **Milestone:** M4 (after F10; before build mode) · **Depends on:** F4 (the caching strategy),
 > F8 (S4, results as tool calls), F10 (route settings), F18 (its eval)
 >
-> **Spec:** [Orchestrator design](../specs/ORCHESTRATOR_DESIGN.md) · **In the TODO:** **F17 Orchestrator agent**
-> under *Now* ([TODO](../../TODO.md))
+> **Spec:** [Orchestrator design](../specs/ORCHESTRATOR_DESIGN.md) · **In the TODO:** merged, so its line is gone;
+> its work is on **F39 Orchestration** under *Next* ([TODO](../../TODO.md))
 
 The orchestrator POC triages each error with a model that, for an auto-fixable error, always calls louis-agent and
 then the same three checks in the same order. It already follows much of Anthropic's guidance: a full brief for its

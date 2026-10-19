@@ -57,7 +57,7 @@ planned, next and in the backlog, and links to the rest.
 | Doc | Type | Read it to… |
 |---|---|---|
 | [Goal](GOAL.md) | Explanation | See what the whole plan is for: the skills it teaches, when one counts as learned, and how the work is done |
-| [TODO](../TODO.md) | Plan | See what's still open: planned now (milestones and features), next (the build-mode POC), the backlog by area, and the known limitations |
+| [TODO](../TODO.md) | Plan | See what's still open, one item per line: now and next (the platform plan's phases), Puls's track, later, small cleanups, and the known limitations |
 | [Changelog](../CHANGELOG.md) | Reference | See what was finished and when, newest first, each entry linking to its feature, fix or plan |
 | [Features](features/README.md) | Plan | Follow the step-by-step plan for the usage and optimisation specs and for Puls: each feature with user stories, design, tasks, and what to update when one is finished |
 | [Learning write-ups](learning/README.md) | Explanation | Read what each skill in the goal taught: what was measured before and after, the trade-offs, what didn't work |

@@ -1,10 +1,13 @@
 # F11 · Usage tab, usage API and reconciliation with the bill
 
-> **Status:** planned · **Milestone:** M5 · **Depends on:** F1–F3, F6, F7
+> **Status:** merged into [F7](F07-budgets.md) (2026-10-19): [the platform plan](../plans/platform.md) makes the
+> usage view and the check against the bill F7's step 4 in Phase 5, *Cost you can see and stop* (the control room's
+> cost view); this doc stays as its design · **Milestone:** M5 · **Depends on:** F1–F3, F6, F7
 >
 > **Spec:** [Usage §7.1–7.2, §4.4](../specs/USAGE_AND_BUDGETS.md)
 >
-> **In the TODO:** **F11 Usage tab and reconciliation** under *Now* ([TODO](../../TODO.md)) · **Replaces:** "Track token usage / cost per session" (together with F1–F3, F6, F7)
+> **In the TODO:** merged, so its line is gone; its work is on **F7 Cost you can see and stop** under *Next*
+> ([TODO](../../TODO.md)) · **Replaces:** "Track token usage / cost per session" (together with F1–F3, F6, F7)
 
 F3 shows usage where you're working; F11 adds the overview — what was spent today and this month, where, and against
 which budgets — plus a check that louis-agent's numbers match what the provider actually bills.

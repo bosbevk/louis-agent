@@ -6,7 +6,9 @@
 >
 > **Spec:** [Optimisation §D](../specs/RESPONSE_OPTIMISATION.md) · [Session architecture §2](../specs/SESSION_ARCHITECTURE.md)
 >
-> **In the TODO:** **F9 Bounded history** under *Now* ([TODO](../../TODO.md)) · **Replaces:** "Consider context editing and compaction"
+> **In the TODO:** **F9 Long chats** under *Later*, taking in [F16](F16-summariser.md) and the context-building step
+> ([TODO](../../TODO.md); [the platform plan](../plans/platform.md)) · **Replaces:** "Consider context editing and
+> compaction"
 
 History only grows: every file read and test output stays in the conversation and is re-sent every round until the
 session ends. F9 bounds it in two steps — first replacing stale tool results with short stubs, then summarising old

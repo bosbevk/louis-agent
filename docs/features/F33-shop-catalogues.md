@@ -3,8 +3,8 @@
 > **Status:** done (2026-10-17), on `feature/F33-shop-catalogues`: its run priced 19 of 23 ingredients with sources, 3 more at their price per kg (re-scored after PR #58's review) · **Milestone:** — · **Depends on:** F32 (the
 > headless browser and its guards), F25 (the cook), F31 (the cook check that measures it)
 >
-> **In the TODO:** done, so its line is gone; its follow-up, **F33 follow-up: more shop catalogues**, is under
-> *Tooling and repositories* ([TODO](../../TODO.md)) · **Plan:**
+> **In the TODO:** done, so its line is gone; its follow-up, **More shops** (Shoprite, Pick n Pay and Woolworths,
+> after *Sources as data*), is under *Puls* ([TODO](../../TODO.md)) · **Plan:**
 > [plans/F33](../plans/F33-shop-catalogues.md)
 
 F32 gave Puls search and page rendering with no key, and its cook check still priced nothing with a source. The cook

@@ -1,8 +1,9 @@
 # F21 · Personalities per session
 
-> **Status:** built (2026-10-13), on `feature/F20-puls-look` · **Milestone:** — · **Depends on:** F5 (sessions with their own engine, sub-sessions)
+> **Status:** done (built 2026-10-13, on `feature/F20-puls-look`; closed 2026-10-19 by [the platform plan](../plans/platform.md)) · **Milestone:** — · **Depends on:** F5 (sessions with their own engine, sub-sessions)
 >
-> **In the TODO:** **F21 Personalities** under *Puls* ([TODO](../../TODO.md)) · **Plan:** [plans/F21](../plans/F21-personalities.md)
+> **In the TODO:** done, so its line is gone; its open item, **F21: Louis's corrections to the Afrikaans**, is under
+> *Puls* ([TODO](../../TODO.md)) · **Plan:** [plans/F21](../plans/F21-personalities.md)
 
 Every session gets the same personality today: `Skills/personality.md` ("Louis's Minion"), whatever the host. Puls, a
 general assistant for South Africans, speaks in that voice too, and so do the specialists it hands work to. F5 let a
