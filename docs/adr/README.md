@@ -21,7 +21,7 @@ afterwards from the docs that hold them (each ADR links its sources), with the d
 | [0009](0009-message-text-as-enum-templates.md) | Message text lives in enum templates; logging goes through `ILogger` | Accepted |
 | [0010](0010-folders-by-concern.md) | Folders by concern, the namespace is the folder path, and a test holds it | Accepted |
 | [0011](0011-prompts-are-content.md) | Prompts are content: plain markdown skills, no provider class per toolset | Accepted |
-| [0012](0012-one-orchestrator-per-microservice.md) | One orchestrator per microservice, which asks louis-agent for fixes | Accepted |
+| [0012](0012-one-orchestrator-per-microservice.md) | One orchestrator per microservice, which asks louis-agent for fixes | Accepted (its tier question closed by 0031) |
 | [0013](0013-documentation-structure.md) | Documentation: one type per doc, guides by folder, arc42 and ADRs | Accepted |
 | [0014](0014-test-first.md) | Test first: a step's tests are written and seen failing before the code | Accepted |
 | [0015](0015-licence-agpl.md) | Licence: AGPL-3.0, so improvements to a hosted Puls stay open | Superseded by 0016 |
@@ -31,11 +31,16 @@ afterwards from the docs that hold them (each ADR links its sources), with the d
 | [0019](0019-modes-one-file-per-product.md) | A level-0 session is a mode, in a folder per product; a language shares its product's routing | Accepted |
 | [0020](0020-principles-for-every-agent.md) | Every agent loads the same principles first: never lie, cheat, steal or murder | Accepted |
 | [0021](0021-minions-one-task-one-tool.md) | Minions: a specialist hands one task and one of its own tools down, two levels deep and no further | Accepted |
-| [0022](0022-benchmarks-recorded-from-the-protocol.md) | Benchmark results in MongoDB, recorded by the API from the harness's stdout protocol | Accepted |
+| [0022](0022-benchmarks-recorded-from-the-protocol.md) | Benchmark results in MongoDB, recorded by the API from the harness's stdout protocol | Amended by 0029 |
 | [0023](0023-copyleft-service-beside-us.md) | A copyleft service may run beside us, unchanged; what we link stays MIT, Apache or BSD | Accepted |
 | [0024](0024-choices-are-enums.md) | Choices are enums, not strings, parsed once where they enter | Accepted |
 | [0025](0025-a-role-declares-its-toolsets.md) | A role declares its own toolsets in its file; a `?` toolset loads only where an instance has it | Accepted |
 | [0026](0026-parallel-tool-calls-for-read-only-toolsets.md) | A round's tool calls run at once only where every toolset is parallel-safe | Accepted |
+| [0027](0027-engine-identities-and-packs.md) | The engine, identities and packs: core names no product | Accepted |
+| [0028](0028-packs-stay-convertible-to-mcp.md) | Packs stay convertible to MCP; MCP plugs in at the toolset | Accepted |
+| [0029](0029-simulations-in-csharp.md) | Simulations in C#: one harness for checks, regressions and demos | Accepted |
+| [0030](0030-build-or-adopt.md) | Build or adopt: the loop stays ours on Microsoft.Extensions.AI | Accepted |
+| [0031](0031-orchestration-is-an-engine-function.md) | Orchestration is an engine function, and the orchestrator stays on core | Accepted |
 
 ## When to write one
 
@@ -48,6 +53,8 @@ those) or a bug's cause (the fix doc keeps that). The ADR lands in the same PR a
 - **Numbered** `NNNN-title-in-kebab-case.md`, in order; numbers are never reused.
 - **Never edited once accepted**, except its *Status* line. To change a decision, write a new ADR that supersedes it,
   and set the old one's status to *Superseded by NNNN*, linking the new record.
+- **Amended** when a later ADR changes part of a decision and the rest stands: the old one's status becomes *Amended by
+  NNNN*, linking the new record.
 - **Short:** a page at most. The detail stays in the feature, fix, plan or spec it links to.
 
 ## Template
@@ -55,7 +62,7 @@ those) or a bug's cause (the fix doc keeps that). The ADR lands in the same PR a
 ```markdown
 # NNNN. Title: the decision, in a few words
 
-**Status:** Proposed | Accepted | Superseded by [NNNN](NNNN-….md) · **Date:** YYYY-MM-DD (decided) ·
+**Status:** Proposed | Accepted | Superseded by [NNNN](NNNN-….md) | Amended by [NNNN](NNNN-….md) · **Date:** YYYY-MM-DD (decided) ·
 **Recorded:** YYYY-MM-DD
 
 ## Context

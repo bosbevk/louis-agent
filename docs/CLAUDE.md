@@ -69,7 +69,13 @@ decision's record (its context, and what it cost) in [docs/adr/](adr/README.md).
 - **Reuse before building** — reuse the repo's components and maintained third-party packages (MIT, Apache or BSD);
   write our own only when nothing fits, and say in the plan which were considered.
 - **Microsoft.Extensions.AI** — one `IChatClient` across providers; `FunctionInvokingChatClient` runs the tool loop.
-  Why: [ADR 0002](adr/0002-messages-api-tier-with-our-own-loop.md).
+  Why: [ADR 0002](adr/0002-messages-api-tier-with-our-own-loop.md), [ADR 0030](adr/0030-build-or-adopt.md) (build or
+  adopt: what we take from libraries instead of hand-building).
+- **Engine, identities and packs** (CL15) — core is the engine and names no product or country; an identity
+  (`IAgentIdentity`) is who an agent is (voice, modes, roles, the packs it uses, by name), a pack (`IAgentPack`) what it
+  can do (toolsets, providers, guides, settings); a pack never references another pack or an identity; only
+  `src/louis-agent.composition` knows them all, and a host picks with `IDENTITIES` and `PACKS` at start-up.
+  Why: [ADR 0027](adr/0027-engine-identities-and-packs.md).
 - **Provider strategies** — where Anthropic, OpenAI-compatible and Ollama differ (usage, caching, thinking, limits),
   one interface with an implementation per provider, picked in `LlmClientFactory`; never branch on the provider's
   name anywhere else ([Changing the LLM](../louis-agent.core/CLAUDE.md#changing-the-llm),
@@ -87,11 +93,27 @@ decision's record (its context, and what it cost) in [docs/adr/](adr/README.md).
   ([Adding a toolset](../louis-agent.core/CLAUDE.md#adding-a-toolset)). A role's file may add its own (F33), and a
   name ending in `?` loads only where the instance has that toolset.
   Why: [ADR 0006](adr/0006-toolsets-per-session.md), [ADR 0025](adr/0025-a-role-declares-its-toolsets.md).
+- **Packs stay convertible to MCP** (CL15) — a pack could be served as an MCP server, and an MCP server could stand in
+  for a pack (F36); we convert only when a real need comes. MCP plugs in at the toolset: a server becomes a
+  one-toolset pack, listed when the host starts (or on an admin refresh, for new chats only), so every chat keeps its
+  tool list. A pack's tools take plain data and return text, a failure as text with its reason; what they read from
+  the session also arrives as a parameter, and no description names an identity; a pack frames the outside data it
+  returns and bounds its own output; its guides are prose with no `## Skill:`; it reads its own settings and core's
+  shared services, and names the packs it needs, never referencing their code; its tool names are unique and
+  MCP-safe. `PackConvertibilityTests` holds the shapes, review the rest.
+  Why: [ADR 0028](adr/0028-packs-stay-convertible-to-mcp.md).
 - **Measure every request, and show it** — the usage ledger records each model request with its tokens and its cost,
   priced from a table dated by `as_of`, so later price changes never rewrite history; unknown prices are `null`, never
   0. Every host shows a turn's usage from the same records and totals (`UsageReport.Total`), so the views and the
   ledger agree.
   Why: [ADR 0007](adr/0007-measure-every-request.md).
+- **Simulations in C#** (F18) — every check, regression and demo is a C# simulation of a real task on one harness
+  (`simulations/louis-agent.simulation/`), each simulation beside the identity or pack it proves; cost comes from the
+  ledger, never from a grader; CI runs the graders on recorded transcripts, and a live run waits for Louis's go.
+  Why: [ADR 0029](adr/0029-simulations-in-csharp.md).
+- **Orchestration is an engine function** (F39) — one delegation function: agents as tools, typed results checked in
+  code, one policy per turn tree, credentials per peer; the orchestrator (voorman) is an identity on core.
+  Why: [ADR 0031](adr/0031-orchestration-is-an-engine-function.md).
 - **History is append-only** — newer Claude models (Haiku 5.5 and later) bind thinking blocks to the system prompt,
   tools and earlier messages, so nothing may edit them mid-conversation ([FX1](fixes/FX01-round-limit-tools.md);
   [FX4](fixes/FX04-append-only-history.md) is still open).
