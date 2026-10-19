@@ -23,7 +23,8 @@ flowchart LR
 ```
 
 - **Start-up** (`Program.cs`): `AgentHost.Build()`, register the engine, `AgentSessions` and a `WorkspaceTools` for path
-  checks; add the API-key middleware when `AGENT_API_KEY` is set; map static assets, `/health`, `/prices`, workspace,
+  checks; decide the auth with core's `HostAuth` (FX18: no `AGENT_API_KEY` stops start-up unless `AGENT_AUTH=off`; a
+  key adds the middleware, whose check is `HostAuth.HasKey`); map static assets, `/health`, `/prices`, workspace,
   git and history endpoints, and the session endpoints.
 - **Prices** (`GET /prices`, public): the price table `AgentHost.Build` loaded for this API's usage ledger, so other
   hosts can set `PRICES_URL` to it and price with the same table (the demo's orchestrator does); `404` without one.
@@ -81,7 +82,8 @@ The full endpoint and event reference: [How the agents and endpoints talk](../AG
 
 ## Configuration
 
-Core settings, plus: `AGENT_API_KEY` (required on `/sessions`, `/workspace`, `/git` when set), `API_PORT` (host port in
+Core settings, plus: `AGENT_API_KEY` (required on `/sessions`, `/workspace`, `/git`; without it the API refuses to start
+unless `AGENT_AUTH=off`, FX18), `API_PORT` (host port in
 Docker, bound to `127.0.0.1`), `GIT_AUTHOR_*` / `GIT_COMMITTER_*` (identity for commits and merges from the web app),
 `ASPNETCORE_URLS` / `ASPNETCORE_ENVIRONMENT` outside Docker (an unpublished `dotnet run` only serves the web app in
 `Development`). The admin portal: `ADMIN_API_KEY` (falls back to `AGENT_API_KEY`), `BENCHMARKS_MONGO_URL` and

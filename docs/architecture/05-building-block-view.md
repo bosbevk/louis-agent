@@ -85,8 +85,9 @@ Each project also has its own design doc in [projects/](../projects/README.md).
 - Read-only workspace browsing (`/workspace/entries`, `/workspace/file`) and a git interface (`/git/status`, `/git/diff`,
   `/git/stage`, `unstage`, `discard`, `commit`, plus history: `/git/branches`, `/git/log`, `/git/commit`, `/git/branch`,
   `/git/merge`, `/git/branch/delete`) for the web app. They reuse `WorkspaceTools`' path and secret-file checks.
-- `AGENT_API_KEY`, when set, is required for `/sessions`, `/toolsets`, `/workspace` and `/git`; the app's own files
-  stay public.
+- `AGENT_API_KEY` is required for `/sessions`, `/toolsets`, `/roles`, `/model`, `/workspace` and `/git`; the app's own
+  files stay public. Without a key the API refuses to start, unless `AGENT_AUTH=off` says so on purpose: one pure rule
+  in core, `Guardrails/HostAuth`, shared with the MCP server (FX18).
 - The web app (Blazor WebAssembly) is served by the API with `MapStaticAssets` and an `index.html` fallback. It keeps
   chats in the browser's `localStorage`. Themes are CSS files in `wwwroot/css/themes/` listed in `themes.json`.
 - The Branches tab queues merges and deletes (`GitHistory`): every click is kept and they run one at a time, in click
@@ -101,7 +102,8 @@ Each project also has its own design doc in [projects/](../projects/README.md).
 - Transport: stdio by default, for a local client that launches it as a subprocess (Rider, Claude Desktop).
   `MCP_TRANSPORT=http` serves Streamable HTTP instead (`MapMcp()`), for remote clients. That exposes the shell, git
   and file-write tools over the network, so set `MCP_API_KEY` (`x-api-key` or `Authorization: Bearer`; falls back to
-  `AGENT_API_KEY`). With neither set it only logs a warning and accepts unauthenticated requests.
+  `AGENT_API_KEY`). With neither set it refuses to start, unless `AGENT_AUTH=off` says so on purpose (FX18,
+  `Guardrails/HostAuth`, the API's rule too).
 
 ## Level 3: core's components
 

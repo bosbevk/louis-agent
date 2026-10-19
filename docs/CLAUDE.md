@@ -156,7 +156,7 @@ decision's record (its context, and what it cost) in [docs/adr/](adr/README.md).
 
 ```bash
 cp config/.env.example config/.env
-cp config/.env.secrets.example config/.env.secrets   # add ANTHROPIC_API_KEY
+cp config/.env.secrets.example config/.env.secrets   # add ANTHROPIC_API_KEY and AGENT_API_KEY
 dotnet build louis-agent-solution.sln
 dotnet test tests/louis-agent.core.tests
 dotnet run --project src/louis-agent.cli               # interactive CLI
@@ -299,7 +299,7 @@ tiers and why are in [ADR 0002](adr/0002-messages-api-tier-with-our-own-loop.md)
 own, so `AgentEngine` never calls its own tools through it. To have louis-agent do a whole task and report back (as the
 orchestrator does), call `louis-agent.api`'s session endpoint instead. A `StartSubSession` made over MCP keeps nothing
 open: only a chat's session holds sub-sessions for a follow-up (F26). `MCP_TRANSPORT=http` serves MCP over the network
-and needs `MCP_API_KEY` (falls back to `AGENT_API_KEY`). The full comparison, both transports and the agent-to-agent
+and needs `MCP_API_KEY` (falls back to `AGENT_API_KEY`; without one it refuses to start, FX18). The full comparison, both transports and the agent-to-agent
 flow are in [AGENT_COMMUNICATION.md](AGENT_COMMUNICATION.md).
 
 ## Known limitations
@@ -312,6 +312,10 @@ afterwards (limitation 9, [FX4](fixes/FX04-append-only-history.md)).
 ## Common errors
 
 - **"ANTHROPIC_API_KEY (or LLM_API_KEY) is required for provider 'anthropic'"** — set it in `config/.env.secrets`.
+- **"AGENT_API_KEY is required: set it in config/.env.secrets, or set AGENT_AUTH=off …"** (or `MCP_API_KEY (or
+  AGENT_API_KEY)` from the MCP server over HTTP) — the host fails closed ([FX18](fixes/FX18-auth-fails-closed.md)):
+  set the key, or `AGENT_AUTH=off` in `config/.env` on a machine whose ports stay on `127.0.0.1`. Then recreate the
+  containers (`up -d`): `restart` keeps the old environment.
 - **"prompt is too long"** — something put a huge result into the history; check `logs/oversized-tool-results.jsonl`.
 - **"adaptive thinking is not supported on this model"** — a pre-4.6 Claude model not listed in
   `LlmClientFactory.ThinkingBudgetModelPrefixes`; add its prefix.

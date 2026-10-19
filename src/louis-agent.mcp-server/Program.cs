@@ -1,6 +1,4 @@
 using System.ComponentModel;
-using System.Security.Cryptography;
-using System.Text;
 using LouisAgent.Core.Agent;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -9,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using ModelContextProtocol.Server;
+using LouisAgent.Core.Guardrails;
 using LouisAgent.Core.Hosting;
 using LouisAgent.McpServer.Messages;
 using LouisAgent.Core.Logging;
@@ -87,37 +86,34 @@ static async Task RunHttpAsync(string[] args, AgentEngine engine)
     // The published tools run shell commands and write files - gate every request since this is now reachable
     // over the network instead of only a local stdio pipe. MCP_API_KEY is separate from AGENT_API_KEY (the
     // louis-agent.api key) so access to one can be rotated/revoked without affecting the other; it falls back to
-    // AGENT_API_KEY when unset, so a single shared key still works for anyone who hasn't split them.
+    // AGENT_API_KEY when unset, so a single shared key still works for anyone who hasn't split them. FX18: with
+    // neither the server refuses to start, before it listens, unless AGENT_AUTH=off says it is open on purpose
+    // (HostAuth, core's one rule for this and the API). Over stdio no key is needed: a child process on this machine.
     string? apiKey = Environment.GetEnvironmentVariable("MCP_API_KEY") ?? Environment.GetEnvironmentVariable("AGENT_API_KEY");
-    if (string.IsNullOrWhiteSpace(apiKey))
+    switch (HostAuth.AtStartup(HostAuth.Mode(Environment.GetEnvironmentVariable("AGENT_AUTH")), apiKey))
     {
-        AgentLogging.LoggerFactory.CreateLogger("LouisAgent.McpServer").Log(LogLevel.Warning, McpServerLogMessage.NoApiKey);
-    }
-    else
-    {
-        app.Use(async (context, next) =>
-        {
-            if (HasApiKey(context.Request, apiKey))
+        case HostAuthDecision.Refuse:
+            throw new InvalidOperationException(MessageText.Format(ErrorMessage.ApiKeyRequired, new { Setting = "MCP_API_KEY (or AGENT_API_KEY)" }));
+        case HostAuthDecision.StartOpen:
+            AgentLogging.LoggerFactory.CreateLogger("LouisAgent.McpServer").Log(LogLevel.Warning, McpServerLogMessage.NoApiKey);
+            break;
+        case HostAuthDecision.Start:
+            app.Use(async (context, next) =>
             {
-                await next(context);
-                return;
-            }
+                if (HostAuth.HasKey(context.Request.Headers["x-api-key"].FirstOrDefault(), context.Request.Headers.Authorization.FirstOrDefault(), apiKey!))
+                {
+                    await next(context);
+                    return;
+                }
 
-            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-            await context.Response.WriteAsync(MessageText.Format(McpServerText.InvalidApiKey));
-        });
+                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                await context.Response.WriteAsync(MessageText.Format(McpServerText.InvalidApiKey));
+            });
+            break;
     }
 
     app.MapMcp();
     await app.RunAsync();
-}
-
-static bool HasApiKey(HttpRequest request, string expected)
-{
-    string presented = request.Headers["x-api-key"].FirstOrDefault()
-                       ?? request.Headers.Authorization.FirstOrDefault()?.Replace("Bearer ", "", StringComparison.OrdinalIgnoreCase)
-                       ?? string.Empty;
-    return CryptographicOperations.FixedTimeEquals(Encoding.UTF8.GetBytes(presented), Encoding.UTF8.GetBytes(expected));
 }
 
 /// <summary>
