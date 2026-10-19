@@ -75,7 +75,7 @@ public sealed class MinionTools
         "does one lookup and answers in its role's fixed shape, so what it reads never enters your context. It answers once " +
         "and closes. At most 16 minions per user turn across all specialists, 2 minutes each. See the minions guide.")]
     public async Task<string> StartMinion(
-        [Description("The minion's role, e.g. \"puls-minion-web-price-lookup\" (the minions guide lists them).")] string role,
+        [Description("The minion's role, <product>-minion-<function>, as your role file lists them.")] string role,
         [Description("The one tool the minion gets, one of your own, e.g. \"FetchUrl\" (never a delegation or skills tool).")] string tool,
         [Description("The task, self-contained and in English: the URL, the product with its size, the user's town. The minion " +
             "sees nothing else.")] string task,

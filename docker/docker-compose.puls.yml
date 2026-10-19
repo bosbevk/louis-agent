@@ -24,6 +24,8 @@ services:
     environment:
       # Who this agent is (CL15): Puls, from identities/louis-agent.identity.puls; the code-review stack sets none.
       IDENTITIES: puls
+      # The time GetToday tells when the user shared no zone (CL15: core names no country).
+      HOST_TIME_ZONE: Africa/Johannesburg
       WORKSPACE_ROOT: /workspace
       SKILLS_DIRECTORY: /skills
       GIT_CONFIG_COUNT: "1"
@@ -71,6 +73,7 @@ services:
     environment:
       # The same identity as puls (CL15): its specialists and minion roles are Puls's own.
       IDENTITIES: puls
+      HOST_TIME_ZONE: Africa/Johannesburg
       WORKSPACE_ROOT: /workspace
       SKILLS_DIRECTORY: /skills
       GIT_CONFIG_COUNT: "1"

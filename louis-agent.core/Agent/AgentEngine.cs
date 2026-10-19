@@ -146,7 +146,7 @@ public class AgentEngine
 
         _registry.Add(Function(_skillTools.ExecuteSkill, nameof(ExecuteSkill)));
         // Today's date and time (F22): every session, whatever its toolsets, since a model doesn't know what day it is.
-        _registry.AddPublicMethods(new ClockTools());
+        _registry.AddPublicMethods(new ClockTools(hostTimeZone: options.HostTimeZone));
         if (toolsets is not null)
         {
             foreach (object toolset in toolsets) _registry.AddPublicMethods(toolset);

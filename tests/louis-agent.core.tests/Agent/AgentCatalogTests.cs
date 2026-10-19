@@ -172,12 +172,12 @@ public class AgentCatalogTests
     [Test]
     public void StartUp_RefusesARolesEnabledName_ThisInstanceDoesntHave()
     {
-        var options = new AgentOptions { WorkspaceRoot = TestPaths.RepoRoot, SkillsDirectory = Path.Combine(TestPaths.RepoRoot, "Skills"), RolesEnabled = ["puls-cook", "nope"] };
+        var options = new AgentOptions { WorkspaceRoot = TestPaths.RepoRoot, SkillsDirectory = Path.Combine(TestPaths.RepoRoot, "Skills"), RolesEnabled = ["testprod-specialist", "nope"] };
 
         var error = Assert.Throws<RoleException>(() => AgentHost.CheckRoles(options, RoleCatalog.DefaultVoice))!;
 
         Assert.That(error.Message, Does.StartWith("ROLES_ENABLED names roles this instance doesn't have: nope."), "only the unknown name is named; the known ones follow under Available");
-        Assert.DoesNotThrow(() => AgentHost.CheckRoles(new AgentOptions { WorkspaceRoot = TestPaths.RepoRoot, RolesEnabled = ["puls-cook", "puls/voice-af"] }, RoleCatalog.DefaultVoice));
+        Assert.DoesNotThrow(() => AgentHost.CheckRoles(new AgentOptions { WorkspaceRoot = TestPaths.RepoRoot, RolesEnabled = ["testprod-specialist", "testprod/voice-af"] }, RoleCatalog.DefaultVoice));
     }
 
     [Test]

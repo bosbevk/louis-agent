@@ -23,7 +23,7 @@ public class SkillFileSourceTests
     public void EveryBuiltInFile_IsEmbedded_UnderItsOwnPath()
     {
         var builtIn = ToolsetCatalog.All.Select(t => t.GuideFile).OfType<string>()
-            .Concat(["shared/principles.md", "agent/louis-agent/voice.md", "agent/puls/voice.md", "agent/puls/voice-af.md", "agent/puls/voice-en.md"]);
+            .Concat(["shared/principles.md", "agent/louis-agent/voice.md", "agent/louis-agent/voice-orchestrator.md"]);
 
         Assert.That(SkillFileSource.EmbeddedFiles, Is.SupersetOf(builtIn));
         Assert.That(SkillFileSource.EmbeddedFiles, Has.None.Contains("HelloWorld"), "a test fixture, not a built-in");
@@ -32,8 +32,9 @@ public class SkillFileSourceTests
     [Test]
     public void AFolder_ListsItsFiles()
     {
-        Assert.That(SkillFileSource.Files("specialists"), Does.Contain("puls-cook.md").And.Contain("puls-researcher.md"));
-        Assert.That(SkillFileSource.Files("minions"), Is.EqualTo(new[] { "puls-minion-web-price-lookup.md", "puls-minion.md" }), "F30 step 4: a role and the base");
+        // CL15: the roles here are the tests' own (Prompts/), registered as an identity's are; Puls's live in its identity.
+        Assert.That(SkillFileSource.Files("specialists"), Is.EqualTo(new[] { "testprod-specialist.md" }));
+        Assert.That(SkillFileSource.Files("minions"), Is.EqualTo(new[] { "testprod-minion-lookup.md", "testprod-minion.md" }), "F30 step 4: a role and the base");
     }
 
     [Test]

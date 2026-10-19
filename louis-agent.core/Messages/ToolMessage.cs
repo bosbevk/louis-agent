@@ -216,7 +216,7 @@ public enum ToolMessage
     [Description("Unknown WEB_SEARCH_PROVIDER '{Provider}'. Supported: {Supported}.")]
     UnknownSearchProvider,
 
-    [Description("WEB_SEARCH_PROVIDER=searxng needs SEARXNG_URL: the address of the SearXNG we run (http://puls-searxng:8080 in the Puls stack).")]
+    [Description("WEB_SEARCH_PROVIDER=searxng needs SEARXNG_URL: the address of the SearXNG we run (the compose file names it).")]
     SearxngNotConfigured,
 
     [Description("SearXNG at {Url} refused a JSON search (HTTP 403): its settings.yml needs json under search.formats.")]
@@ -228,10 +228,10 @@ public enum ToolMessage
     [Description("SearXNG search failed: HTTP {Status} {Detail}")]
     SearxngFailed,
 
-    [Description("PAGE_RENDERER=chrome needs BROWSER_URL: the headless Chrome's DevTools address (http://puls-browser:9222 in the Puls stack).")]
+    [Description("PAGE_RENDERER=chrome needs BROWSER_URL: the headless Chrome's DevTools address (the compose file names it).")]
     BrowserNotConfigured,
 
-    [Description("The browser at {Url} didn't answer ({Reason}). Is puls-browser running?")]
+    [Description("The browser at {Url} didn't answer ({Reason}). Is the browser container running?")]
     BrowserUnreachable,
 
     [Description("The page at {Url} couldn't run the browser's script: {Reason}.")]
@@ -799,7 +799,7 @@ public enum ToolMessage
     [Description("Page empty: {Url} has no readable text (a page drawn with JavaScript that couldn't be rendered), so the quote can't be checked. Treat the value as unconfirmed.")]
     QuotePageEmpty,
 
-    [Description("Error: '{Role}' isn't a minion role (a minion role is <product>-minion-<function>, e.g. puls-minion-web-price-lookup; the minions guide lists them).")]
+    [Description("Error: '{Role}' isn't a minion role (a minion role is <product>-minion-<function>; your role file lists them).")]
     MinionRoleInvalid,
 
     [Description("Error: '{Tool}' is never handed to a minion: a minion gets one of your working tools, not delegation or skills.")]

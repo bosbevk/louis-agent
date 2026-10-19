@@ -53,7 +53,7 @@ public static class SkillFileSource
     }
 
     /// <summary>Core's own prompts' paths, whatever was registered: what the catalogue checks a pack's paths against.</summary>
-    internal static IReadOnlyList<string> CoreFiles { get; } = FilesOf(Core).Order(StringComparer.Ordinal).ToList();
+    public static IReadOnlyList<string> CoreFiles { get; } = FilesOf(Core).Order(StringComparer.Ordinal).ToList();
 
     /// <summary>The file names directly in <paramref name="folder"/> (not its subfolders); none when it isn't there.</summary>
     public static IReadOnlyList<string> Files(string folder) =>

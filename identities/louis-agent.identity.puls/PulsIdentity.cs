@@ -12,8 +12,8 @@ public sealed class PulsIdentity : IAgentIdentity
 {
     public string Name => "puls";
 
-    /// <summary>Puls's prompts: none of its own until step 3 moves them here from core's <c>Prompts/</c>.</summary>
-    public IFileProvider Prompts { get; } = new NullFileProvider();
+    /// <summary>Puls's prompts, embedded with their paths (<c>agent/puls/voice.md</c>, <c>specialists/puls-cook.md</c>), read only from this assembly.</summary>
+    public IFileProvider Prompts { get; } = new ManifestEmbeddedFileProvider(typeof(PulsIdentity).Assembly, "Prompts");
 
     /// <summary>Step 4 names <c>shops</c>; F35 adds <c>recipes</c>, CL16 <c>cooking</c>, later <c>places</c>.</summary>
     public IReadOnlyList<string> Packs => [];

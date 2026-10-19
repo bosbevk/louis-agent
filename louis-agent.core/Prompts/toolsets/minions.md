@@ -20,21 +20,19 @@ it reads never enters your context: you get its lines back, and a usage line.
 
 ## The roles
 
-| Role | Hand it | Its answer |
-|---|---|---|
-| `puls-minion-web-price-lookup` | `WebSearch` and a task with one ingredient and the amount to buy, the user's town, and the shops to look in with their websites (it searches each shop twice: the product, then its price; Spar and Usave once, they have no online prices) | `ingredient: …`, then one line per shop: `shop`, `price`, `size`, `per_kg`, `location`, `url`, `quote` (the exact words the price came from), each `unknown` when nothing says, and a `note` when something's off |
+Your own role file lists the minion roles you may hand work to, what to hand each (the tool and the task's shape) and
+what its answer looks like; the minion roles come with your identity, named `<product>-minion-<function>`.
+`StartMinion` refuses a name that isn't one.
 
 ## Writing the task
 
-In English, self-contained: the ingredient as you want it priced (name and size), the user's town, and the shops with
-their websites. For example: `beef mince, 500 g; Malmesbury; shops: Checkers (checkers.co.za), Pick n Pay (pnp.co.za),
-Spar (spar.co.za)`. The minion sees nothing of this conversation and nothing you found elsewhere.
+In English, self-contained: everything the minion needs to find the one thing, as your role file's example shows. The
+minion sees nothing of this conversation and nothing you found elsewhere.
 
 ## Using the answer
 
-A minion's answer is a claim on a cheap model. Use only what its lines say: a price with its `url` and `quote`, or
-`unknown`. Never fill a gap from memory. A price-lookup minion's prices come from the shops' search results, so they
-may be a few days old: say they're from the search index.
+A minion's answer is a claim on a cheap model. Use only what its lines say: a value with its `url` and `quote`, or
+`unknown`. Never fill a gap from memory.
 
 ## Limits and results
 

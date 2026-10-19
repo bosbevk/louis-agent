@@ -168,6 +168,12 @@ public sealed class AgentOptions
     /// <summary>AGENT_API_KEY: this deployment's API key, sent to peers as x-api-key (never taken from the model's arguments).</summary>
     public string? AgentApiKey { get; set; }
 
+    /// <summary>
+    /// HOST_TIME_ZONE (CL15): the zone <c>GetToday</c> and the API's place line use when the user shared none, an IANA name
+    /// (<c>Africa/Johannesburg</c> in the Puls stack); null is the machine's own. Core names no country.
+    /// </summary>
+    public string? HostTimeZone { get; set; }
+
     /// <summary>Parses AGENT_PEERS; an entry without a name or an absolute http(s) URL is skipped.</summary>
     internal static IReadOnlyList<string> ParseNames(string? value) =>
         (value ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
@@ -241,6 +247,7 @@ public sealed class AgentOptions
             SessionLlmProfiles = ParseNames(Get("LLM_SESSION_PROFILES")),
             MinionLlms = ParseMinionLlms(Get("MINION_LLMS")),
             AgentApiKey = Get("AGENT_API_KEY"),
+            HostTimeZone = Get("HOST_TIME_ZONE"),
             SubSessionPromptBudget = int.TryParse(Get("SUB_SESSION_PROMPT_BUDGET"), NumberStyles.None, CultureInfo.InvariantCulture, out int budget)
                 ? budget : DefaultSubSessionPromptBudget,
         };

@@ -157,3 +157,15 @@ tool for, the place you assumed if Puls gave none. One row, `Nothing`, when ther
 |---|---|
 | Fresh coriander, price | not in Checkers' catalogue for this store |
 | Pick n Pay | in town, but no catalogue here yet: not priced |
+
+## Minions
+
+When this instance gives you the `minions` toolset, the one role you may hand work to:
+
+| Role | Hand it | Its answer |
+|---|---|---|
+| `puls-minion-web-price-lookup` | `WebSearch` and a task with one ingredient and the amount to buy, the user's town, and the shops to look in with their websites (it searches each shop twice: the product, then its price; Spar and Usave once, they have no online prices) | `ingredient: …`, then one line per shop: `shop`, `price`, `size`, `per_kg`, `location`, `url`, `quote` (the exact words the price came from), each `unknown` when nothing says, and a `note` when something's off |
+
+The task, in English and self-contained, for example: `beef mince, 500 g; Malmesbury; shops: Checkers (checkers.co.za),
+Pick n Pay (pnp.co.za), Spar (spar.co.za)`. A price-lookup minion's prices come from the shops' search results, so they
+may be a few days old: say they're from the search index.

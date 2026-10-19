@@ -169,28 +169,8 @@ public partial class ArchitectureTests
     // Today's pieces, each "file: what", until steps 3 and 4 move them out; a new one fails, a stale entry fails too.
     private static readonly HashSet<string> PendingProductText =
     [
-        // Step 3 moves Puls's own files to its identity, splits its protocol out of the two shared guides, takes the
-        // Puls names out of ToolMessage and MinionTools, and South Africa out of GetToday.
-        "Messages/ToolMessage.cs: puls",
-        "Prompts/agent/puls/voice-af.md: puls",
-        "Prompts/agent/puls/voice-en.md: South Africa",
-        "Prompts/agent/puls/voice-en.md: puls",
-        "Prompts/agent/puls/voice.md: Afrikaans briefing label",
-        "Prompts/agent/puls/voice.md: puls",
-        "Prompts/minions/puls-minion-web-price-lookup.md: puls",
-        "Prompts/minions/puls-minion.md: puls",
-        "Prompts/specialists/puls-analyst.md: puls",
-        "Prompts/specialists/puls-cook.md: Afrikaans briefing label",
-        "Prompts/specialists/puls-cook.md: South Africa",
-        "Prompts/specialists/puls-cook.md: puls",
-        "Prompts/specialists/puls-historian.md: puls",
-        "Prompts/specialists/puls-reader.md: puls",
-        "Prompts/specialists/puls-researcher.md: puls",
-        "Prompts/toolsets/minions.md: puls",
-        "Prompts/toolsets/specialists.md: Afrikaans briefing label",
-        "Prompts/toolsets/specialists.md: puls",
-        "Tools/Agents/MinionTools.cs: puls",
-        "Tools/Clock/ClockTools.cs: South Africa",
+        // Step 3 moved Puls's files to its identity, split its protocol out of the shared guides, and took the Puls
+        // names out of ToolMessage and MinionTools and South Africa out of GetToday (20 pieces).
         // Step 4 moves the shops toolset, whose area text names Puls, to its pack.
         "Tools/Shops/ShopTools.cs: puls",
     ];

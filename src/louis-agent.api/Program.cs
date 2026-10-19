@@ -220,7 +220,7 @@ app.MapPost("/sessions/{id}/messages", (string id, SendMessageRequest request, A
 
     // Where the user is, said once, in the first message: per session, so not in the shared system prompt (F22).
     if (session.Turns == 1 && session.Place is { Location: { } location } place)
-        prompt = MessageText.Format(ApiModelText.UserPlace, new { Location = location, TimeZone = place.TimeZone ?? "Africa/Johannesburg" }) + "\n\n" + prompt;
+        prompt = MessageText.Format(ApiModelText.UserPlace, new { Location = location, TimeZone = place.TimeZone ?? host.Agent.HostTimeZone ?? TimeZoneInfo.Local.Id }) + "\n\n" + prompt;
 
     return TypedResults.ServerSentEvents(StreamTurnAsync(session.Engine, session, prompt, turn));
 });
