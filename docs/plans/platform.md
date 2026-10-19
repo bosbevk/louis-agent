@@ -22,6 +22,9 @@
 > function*): both are inside it, as Phases 2 and 6. Nothing is built until Louis approves it (question 1). **How it
 > lands** (rule 3 and `docs/plans/README.md`'s conventions): Phase 0 lands this document as the **roadmap**,
 > `docs/plans/platform.md`, on `docs/platform-plan`, and it is never edited afterwards except to link each phase's plan.
+> One change since approval, at Louis's word (2026-10-19): Claude writes each learning write-up and Louis reads it
+> afterwards ("I want you to type the lesson and will read it afterwards"), in place of "written by Louis himself,
+> without the code open"; every gate below says so.
 > Before a phase's first step, its section is copied, as Louis approved it, into **its own plan file on its own branch**
 > (`CL15-engine-identities-packs.md`, `F18-simulations.md`, `F40-sales-playground.md`, `F39-orchestration.md`), with its
 > four diagrams, namespace map and folder trees; *Approved during the build* goes in that file, never in `platform.md`.
@@ -62,7 +65,7 @@ checked in code, guards in code, every agent measured by simulations, their data
 plugged in without code. Both the agent and Puls sell, and no pilot or sale starts before Phase 9: until then a
 configured agent is only shown (the playground's simulations, Phase 4) and priced (the ten conversations, Phase 0).
 
-**What we build, in order.** Docs first; three small security fixes; Louis's own write-up of what F32 to F34 taught;
+**What we build, in order.** Docs first; three small security fixes; Claude's write-up of what F32 to F34 taught, for Louis to read;
 the cut between the engine and Puls; the Python checks rewritten as C# simulations, on recorded web pages, with a
 replay cache and traces; the sales playground on top of them; then the control layer, one pillar at a time (cost,
 orchestration, append-only history with drafts, approvals and audit, then someone else's MCP server); then what a sale
@@ -89,9 +92,10 @@ test, written first and seen failing; Louis reviews each step before the next, a
 line by line; every paid run waits for his go; **one feature at a time**, as GOAL.md asks (`docs/GOAL.md:61`): Puls's
 track takes its turn between phases, never alongside one, and the TODO (Part 5) says which comes next; every phase ends
 with a learning write-up step (Phase 1: skill 15, deny by default and arguments as data; Phase 2 step 5: skills 4 and
-18, an extension point and a composition root; Phases 3 to 6 as their sections say). **A phase is done only when Louis
-has written its learning write-up himself, without the code open** (GOAL.md's fourth criterion, `docs/GOAL.md:53`); if
-he can't, the step he can't explain goes back. **Before Phase 2,** Louis writes the F32 to F34 write-up himself: sourced
+18, an extension point and a composition root; Phases 3 to 6 as their sections say). **A phase is done when Claude has
+written its learning write-up and Louis has read it** (changed 2026-10-19, Louis: "I want you to type the lesson and
+will read it afterwards"; the write-up still answers *why this design*, GOAL.md's fourth criterion, `docs/GOAL.md:53`).
+**Before Phase 2,** Claude writes the F32 to F34 write-up for Louis to read: sourced
 prices went from 0 of 32 (F32) to 19 of 23 (F33), then 31 of 31 rows right (F34: 26 ingredients priced with sources, and
 Prince Albert's 5 rightly left unpriced, `docs/features/F34-shop-deals.md:149-151`), by reading the shop's data in code
 instead of having the model read its pages (skills 7 and 12; `docs/GOAL.md:33`). The gate is there because the learning
@@ -158,7 +162,7 @@ building more platform, and restart the learning, which has stopped.
 | 4 | The agent isn't what makes Puls worth choosing; the local data is, and nobody has been asked: the three big grocers launched AI cooks this year and Google answers place questions in Afrikaans (from the challenge; not checked here), and the TODO's "Validate demand" line is unticked (`TODO.md:131-135`) (**major**) | **Taken.** ADR 0030 records "we own the agent to learn; Puls's edge is local data, an SA voice and businesses that join"; Phase 0 step 4 adds 30 real local questions from Malmesbury people, answered blind by Puls, Gemini, ChatGPT and Google Maps, and we build only for the question types where they fail; *Honest about Puls* (Part 1) names the competitors |
 | 5 | The businesses you picture mostly don't have websites: about 74% of township businesses use WhatsApp and 30% a website (Standard Bank, 2025, from the challenge; not checked here) (**major**) | **Taken.** Businesses that join come first among Puls's sources (Part 2, *Inside a pack*): a form, a WhatsApp listing the owner approves, a feed or an MCP server. *Local businesses* is a Puls feature with two tiers, listed and provider (Part 1, Puls's row) |
 | 6 | A tool per website breaks your own engine: a chat's tools are frozen when it opens (ADR 0006, 0008), and 1,000 site tools would put about 175k tokens in every request (an estimate at 4 characters a token, from 123 tools at about 704 characters each in `ModelRequestSnapshot.json`), past the 100k tokens above which Haiku 5.5 costs five times as much (`config/prices.json:14-19`) (**major**) | **Taken:** a site is an argument (as `shop` is today) or a row, never a tool (Part 2, *Inside a pack*); the place is an input, and a change of town is appended to the chat as a new line, never a new tool list (Part 2's place rule). Question 12 asks you to confirm the answer: one tool per job with a `source` argument |
-| 7 | At this pace Claude drives and you approve: 109 commits on 2026-10-17 would take about 18 hours to review at ten minutes a step (inferred), F27 was replaced two days after it was built, and F30 is built and not in use (**major**) | **Taken:** a day holds only what you can review line by line, and a phase is done only when you have written its write-up yourself, without the code open (*How we work through it*); question 3 asked whether to remove F30, and Louis answered *keep* (2026-10-19): its minions are tested after this plan (*Later*) |
+| 7 | At this pace Claude drives and you approve: 109 commits on 2026-10-17 would take about 18 hours to review at ten minutes a step (inferred), F27 was replaced two days after it was built, and F30 is built and not in use (**major**) | **Taken:** a day holds only what you can review line by line, and a phase is done only when you have read its write-up (Claude writes it, changed 2026-10-19 at your word; *How we work through it*); question 3 asked whether to remove F30, and Louis answered *keep* (2026-10-19): its minions are tested after this plan (*Later*) |
 | 8 | The Puls cut as first drafted wouldn't reach "core names no product": Puls's protocol sits in the shared guides (`Prompts/toolsets/specialists.md:26-96` and `:127-139`), the shop tools tell the model "when Puls gave no place" (`ShopTools.cs:29,40,51`), and the golden file never pinned a Puls session (**major**) | **Taken (Phase 2):** a Puls golden first (step 0); Puls's protocol split out of the shared guides; a ratchet over core's model-visible text (no `puls`, no Afrikaans briefing label, no "South Africa"); `GetToday`'s and the API's South African defaults behind one `HOST_TIME_ZONE` setting; one paid cook run, on your go |
 | 9 | No doc says why not the alternatives, and we hand-build what we already have: no doc names Microsoft Agent Framework, the Copilot SDK or Microsoft.Extensions.AI.Evaluation (a grep of `docs/`, `TODO.md` and `README.md` finds none), core's `RiderMcpClient` is a hand-written 199-line client that only lists tools while the official MCP SDK is already in the solution, and CL15's v6 draft planned third parties' DLLs loaded into our process (F37) (**major**) | **Taken:** ADR 0030 *Build or adopt* (Phase 0); F37 cut, so anyone else's code plugs in only as an MCP server, through F36 on the official SDK's client, which replaces `RiderMcpClient` (Phase 8); Phase 3 reuses Microsoft.Extensions.AI.Evaluation's evaluators; Microsoft.Extensions.AI's own building blocks are named where they are used (engine research, row 7 below) |
 | 10 | "local AI" and "knows your [location]" claim more than exists: Puls runs on cloud Claude (`config/.env.anthropic:8`) and knows a town name said once, in the first turn (`src/louis-agent.api/Program.cs:214-216`) (**minor**) | **Taken:** Puls is described as "a local guide on cloud models" (Part 1), with your words kept as its aim ("local" means local knowledge, not a model on the phone); the landing page's pitch, which today sells reading files and the repository's history and never mentions place (`src/louis-agent.puls/Pages/LandingPage.razor:275-292`), is rewritten around place with *Puls local spec* (Puls's track); town only, as F22 chose; coarse coordinates (about 1 km) only through an ADR when a measured question needs "how far". **Not taken:** the geocoder moving into core now. It moves with the shops pack, its one user (`ShopCatalogueFactory.cs:37`), and into the places pack behind an `IGeocoder` seam when places comes, so core keeps no Nominatim and no South Africa |
@@ -1329,6 +1333,9 @@ flowchart LR
 
 **How it lands** (rule 3 and `docs/plans/README.md`'s conventions). Phase 0 lands this document as the **roadmap**,
 `docs/plans/platform.md`, on `docs/platform-plan`, and it is never edited afterwards except to link each phase's plan.
+> One change since approval, at Louis's word (2026-10-19): Claude writes each learning write-up and Louis reads it
+> afterwards ("I want you to type the lesson and will read it afterwards"), in place of "written by Louis himself,
+> without the code open"; every gate below says so.
 Before a phase's first step, its section is copied, as Louis approved it, into **its own plan file on its own
 branch**, with its four diagrams, namespace map and folder trees, and that branch adds the one link to it in
 `platform.md`; *Approved during the build* goes in that file, never in `platform.md`. FX18, FX19 and FX20 are one step
@@ -1356,9 +1363,9 @@ it.
 
 **How a phase ends: the learning gate.** Each step is one commit with its test, written first and seen failing, and
 Louis reviews each step before the next; a day holds only what he can review line by line. Every phase ends with a
-learning write-up step, and **a phase is done only when Louis has written its write-up himself, without the code open**
-(GOAL.md's fourth criterion, `docs/GOAL.md:53`); if he can't, the step he can't explain goes back. **Before Phase 2,**
-Louis writes the F32 to F34 write-up (end of Phase 1). The reason, with its numbers, is in *How we work through it*.
+learning write-up step, and **a phase is done when Claude has written its write-up and Louis has read it** (changed
+2026-10-19 at Louis's word; GOAL.md's fourth criterion, `docs/GOAL.md:53`, still asks the write-up to say *why*).
+**Before Phase 2,** Claude writes the F32 to F34 write-up (end of Phase 1). The reason, with its numbers, is in *How we work through it*.
 
 **Paid runs** are the one list in the one-page table's last column; each waits for Louis's go. Phases 0 and 1 have
 none.
@@ -1370,7 +1377,7 @@ flowchart LR
     p0["Phase 0<br/>Docs: the roadmap, ADRs 0027-0031, the TODO"]
     talks["Phase 0 step 4, Louis's own<br/>ten conversations, 30 Malmesbury questions"]
     p1["Phase 1<br/>Three doors closed"]
-    gate{"Louis writes the F32 to F34 write-up<br/>skills 7 and 12"}
+    gate{"Claude writes the F32 to F34 write-up, Louis reads it<br/>skills 7 and 12"}
     p2["Phase 2<br/>CL15 The cut"]
     p3["Phase 3<br/>F18 Simulations in C#"]
     p4["Phase 4<br/>F40 The sales playground"]
@@ -1450,7 +1457,7 @@ flowchart TB
     features["docs/features/: merged ones point to their new home;<br/>F21, F22, F25, F26 and F29 done (step 3)"]
     fixes["docs/fixes/: FX18, FX19, FX20 opened (step 3), closed in Phase 1"]
     goal["docs/GOAL.md: Planned and Missing (step 3)"]
-    learning["docs/learning/: one write-up per phase, by Louis"]
+    learning["docs/learning/: one write-up per phase, by Claude, read by Louis"]
     talks["Louis's ten conversations and 30 Malmesbury questions (step 4)"]
     r3 --> roadmap
     conventions --> phasePlans
@@ -1576,7 +1583,7 @@ sequenceDiagram
     opt a change Louis approves during the build
         C->>R: added under Approved during the build, in the phase's plan
     end
-    L->>R: writes the phase's learning write-up himself
+    L->>R: reads the phase's learning write-up, which Claude wrote
     Note over L,R: the phase is done, and the next one starts
 ```
 
@@ -2121,7 +2128,7 @@ docs/
 | 1 | **FX18 Auth fails closed.** Test first, in `tests/louis-agent.core.tests/Guardrails/HostAuthTests.cs` (pure, as `AdminGateTests` is): no key and no setting refuses, naming `AGENT_API_KEY` and `AGENT_AUTH`; `AGENT_AUTH=off` with no key starts open; a key set, with `off` or without, starts and is checked; the key in `x-api-key` or as `Authorization: Bearer` passes, and a wrong one, an empty one, or one that differs only in length fails; `AGENT_AUTH=sometimes` names the setting and its two values. Seen failing: `HostAuth` doesn't exist, then each case is red until written. Then the two hosts call it, and both `HasApiKey` copies go | 15 |
 | 2 | **FX19 Git arguments as data.** Test first, in `tests/louis-agent.core.tests/Tools/Git/` against a real temporary repository (skipped where git isn't installed, as `GitHistoryTests.cs:17` does): `ShowCommit("--output=<a file outside the workspace>")` writes nothing and returns the refusal; `SetConfig("core.fsmonitor", …)` is refused and the key stays unset, while `SetConfig("user.name", "x")` works; `Fetch("--upload-pack=touch <file>")` and `CreateBranch("--orphan")` are refused and no file appears; a branch named `x --upload-pack=touch <file>` arrives as one argument, which git refuses as a name; a commit message with quotes and a leading dash arrives whole (`git log -1 --format=%B`); `ArchitectureTests` is red while `GitTools.cs:348` exists. Seen failing first: today `ShowCommit` writes the file and `SetConfig` sets the key. The golden files are regenerated and their diff reviewed | 15 |
 | 3 | **FX20 Skill files wait for approval.** Test first, extending `tests/louis-agent.core.tests/Agent/SkillAuthoringTests.cs`: `CreateSkillFile` writes under `pending/` and its skill can be called in the same engine; a new engine on the same folder doesn't see it; `/approve {name}` moves it, a new engine sees it, and the engine that wrote it keeps it without a reload; `/reject {name}` deletes it; `/approve` of an unknown name says so, and a name that is both a pending tool and a pending skill file is refused, naming both; with `overwrite`, the approved version stays loaded until the new one is approved. Seen failing first: today the file is written to `agent/functions/` and a new engine loads it. The golden files are regenerated and their diff reviewed | 15 |
-| 4 | **The learning write-up for skill 15**, by Louis, without the code open: deny by default (FX18), arguments as data (FX19), and why a skill the agent writes is memory a person approves (FX20); what was open before (the probe's results), what each test proves, the trade-offs (his local stacks need a key), and what didn't work (v1's test that proved nothing). `docs/learning/15-safety-and-security.md`, and a row in `docs/learning/README.md` | 15 |
+| 4 | **The learning write-up for skill 15**, by Claude, read by Louis: deny by default (FX18), arguments as data (FX19), and why a skill the agent writes is memory a person approves (FX20); what was open before (the probe's results), what each test proves, the trade-offs (his local stacks need a key), and what didn't work (v1's test that proved nothing). `docs/learning/15-safety-and-security.md`, and a row in `docs/learning/README.md` | 15 |
 
 **What to look at closely.** FX18: that the start-up check runs before the host listens, and that `off` never silences
 a key that is set. FX19: each command's exact argument list, one by one, against the probe; `--end-of-options` needs
@@ -2146,11 +2153,12 @@ behaves the same. Paid runs: none.
 | 1 | Deny by default; failing closed at start-up rather than at the first request; one pure rule, tested without a host | 15 |
 | 2 | Argument injection: a list stops splitting, not options; `--end-of-options`; an allow-list rather than a deny-list | 15 |
 | 3 | Memory poisoning: what the agent writes for later sessions is untrusted until a person approves it | 15, 16 |
-| 4 | Explaining a guard without the code open (GOAL.md's fourth criterion) | 15 |
+| 4 | Why each guard is built as it is, in the write-up Louis reads (GOAL.md's fourth criterion) | 15 |
 
-#### Before Phase 2: Louis's F32 to F34 write-up
+#### Before Phase 2: the F32 to F34 write-up
 
-Phase 2 starts only after Louis has written the F32 to F34 write-up himself, without the code open: no code, no paid
+Phase 2 starts only after Claude has written the F32 to F34 write-up and Louis has read it (changed 2026-10-19 at
+Louis's word): no code, no paid
 run. Its subject is the measured lesson in `docs/GOAL.md:33`: sourced prices went from 0 of 32 (F32, run
 `663d065ccca8`) to 19 of 23 (F33, re-scored once the scorer counted prices per kg apart), then 31 of 31 (F34, run
 `d94597a51d4d`), by reading the shop's data in code instead of having the model read its pages. It covers skills 7
@@ -2164,8 +2172,8 @@ code beat pages read by the model. Phase 2's plan names this gate as its prerequ
 Branch `refactor/CL15-engine-identities-packs`. Before step 0 this section is copied, as Louis approved it, into
 `docs/plans/CL15-engine-identities-packs.md` on that branch, with its four diagrams, namespace map and folder trees;
 *Approved during the build* goes in that file, never in `platform.md` (Phase 0 step 1). The phase starts only after
-Louis has written the F32 to F34 write-up himself (*Before Phase 2: Louis's F32 to F34 write-up*, at the end of
-Phase 1), and it is done only when he has written its own write-up (step 5). GOAL skills: 4, 18 and 3. Paid runs: one
+Louis has read the F32 to F34 write-up (*Before Phase 2: the F32 to F34 write-up*, at the end of Phase 1), and it is
+done only when he has read its own write-up, written by Claude (step 5). GOAL skills: 4, 18 and 3. Paid runs: one
 cook run, in step 3, on Louis's go.
 
 Built before F35 (recipe sources), which then builds a recipes pack, `packs/louis-agent.pack.recipes`.
@@ -2854,7 +2862,7 @@ sequenceDiagram
 | 2 | `identities/louis-agent.identity.puls` and its tests, `PulsIdentity` (no packs yet); `src/louis-agent.composition` and its tests, called by the API, CLI, ACP and MCP hosts through `Plugins.FromEnvironment()`, which runs `AgentHost.LoadEnvironment()` before it reads a setting; the Puls compose sets `IDENTITIES=puls` in both agent containers, and `config/.env.example` documents `IDENTITIES` and `PACKS`, unset; `ArchitectureTests`: core references no identity or pack, no pack references another pack or any identity, and a ratchet over core's model-visible text (embedded prompts, `[Description]` attributes, `ToolMessage` members): no `puls`, no Afrikaans briefing label, no "South Africa" | `IDENTITIES=puls` loads Puls, unknown refused, unset none; `PACKS`: unknown refused, unset none (a pack loads from step 4); `IDENTITIES=puls` set only in a temporary `config/.env` is honoured; a pack project referencing another pack fails (a fixture the test reads as text, an inline string or a `.csproj.fixture` file, never a loose `.csproj` and never built); the ratchet lists exactly today's pieces | The composition root chooses (skill 18) |
 | 3 | Puls's prompts move to Puls's project, its minion roles among them (`minions/puls-minion.md`, `puls-minion-web-price-lookup.md`); Puls's protocol is split out of `toolsets/specialists.md` into Puls's `agent/puls/voice.md`, and Puls's minion table and example out of `toolsets/minions.md` (`:25,29-31`) into Puls's project; the Puls names leave `ToolMessage` and `MinionTools.cs:78`; **South Africa leaves core's defaults** (`HOST_TIME_ZONE` for `GetToday` and the API's place line; `GetToday`'s description names no country; Puls's compose sets `Africa/Johannesburg`); core's tests load test roles embedded in `tests/louis-agent.core.tests/Prompts/` (a specialist with a `toolsets:` header, a language mode with its shared voice, a minion base and a minion role, so they cover every level) through one `SkillFileSource.Use` in a `[SetUpFixture]`, in place of Puls's (126 lines in 10 files); `tests/louis-agent.api.tests` references `louis-agent.identity.puls` and calls `Use` with Puls's prompts in its own `[SetUpFixture]`, and its 19 files that mention Puls run with `IDENTITIES=puls` | `RoleCatalog` lists the Puls roles only with Puls loaded; moved files byte-identical; one of Puls's moved prompts is read through `SkillFileSource` (the project's manifest lines work); `SkillsLayoutTests`' language-mode test runs on the test roles, not vacuously; `GetToday` with no shared place gives the host's zone, and SAST with `HOST_TIME_ZONE=Africa/Johannesburg`; the Puls golden changes only where the split moved text and in `GetToday`'s description, reviewed in its diff; the coding agent's golden loses the Puls lines and shows `GetToday`'s new description, reviewed; `ToolMessageSnapshot.json` changes only in the four Puls texts (`ToolMessage.cs:213,225,228,796`), reviewed; **one paid cook run, on Louis's go** | Prompts belong to their identity; mechanism vs protocol (skill 3) |
 | 4 | The shops pack: `Tools/Shops` (with `PlaceCoordinates` and `PlaceUnavailableException`), its tests and fixtures (with `PlaceCoordinatesTests` and `nominatim-malmesbury.json`), `shops.md`, the settings, the store cache and every `Shop…` message (`ShopAreaUnavailable` among them) move to `packs/louis-agent.pack.shops`; the `shops` routing row leaves `agent/louis-agent/voice.md:62` for the pack's guide; `PulsIdentity` names `shops`; `PackKind.Shops`; the `area` text names no identity; a test-only `ModelContextProtocol.Core` 2.2.0 in `composition.tests` (question 9); `HostMessageEnumTests` (`tests/louis-agent.core.tests/Messages/HostMessageEnumTests.cs:10-18`, which reads only `src/*/Messages` and `tools/*/Messages` today) also scans `packs/` and `identities/`, finding a `Messages/` folder at any depth, and `TheHostsHaveMessageEnums` lists `ShopToolMessage` and `ShopLogMessage` | the moved shop tests green in the pack's project; `toolsets/shops.md` read through `SkillFileSource` from the pack; `HostMessageEnumTests` finds `ShopToolMessage` and `ShopLogMessage` and checks their templates (red first: today's scan never reaches `packs/`); core has no `shops` toolset, no Nominatim and no `Shop…` member; the coding agent's golden loses the shop tools and the routing row (reviewed); the Puls golden is unchanged but for the `area` text and the routing line `shops.md` gains; `ToolMessageSnapshot.json` loses the 17 `Shop…` entries, and the pack's `ShopToolMessageSnapshot.json` is byte-equal to them; `PACKS=shops` with `SHOP_CATALOGUES` and `BROWSER_URL` gives the coding agent `shops`, and without `BROWSER_URL` it is listed as missing that setting; **the convertibility test** (`PackConvertibilityTests`, over every `PackKind`): each tool's `AIFunction` built as the engine builds it (`AgentCatalog.ToolMethodsOf` and `FunctionOf`, from its `ToolType` with `AIFunctionFactory.Create(method, createInstance, …)`, so no settings, browser or network), then through the SDK's `McpServerTool.Create`, keeps its name and input schema, and its description equals the function's or starts with it (the SDK appends a *Returns:* line for a `[return: Description]` and rewrites the schema for `[McpHeader]`; the repo has neither today); it returns `string`, `Task<string>` or `ValueTask<string>`; takes only plain data and a `CancellationToken`, which an async tool must take; is named `^[A-Za-z0-9_-]{1,64}\z`; no tool or parameter description names an `IdentityKind` (a whole word, case ignored, so "demonstrate" is not "Demo"); each guide is in the pack's `Prompts` with no `## Skill:` line. Red first on the `area` text, which names Puls; a `FakeUnconvertiblePack` lists exactly its problems | A capability is its own pack, pluggable alone and convertible to MCP (skills 4, 11) |
-| 5 | The cut held: the ratchet's list is empty; core's comments and examples name no product (`RoleCatalog.cs`, `AgentHost.cs`, `AgentOptions.cs`, `ClockTools.cs:10`, `ChromeWebBrowser.cs`, `RenderPolicy.cs:10`, `SearxngSearchProvider.cs:12`, `SpecialistTools.cs:66`, `MinionTools.cs:133`, `SkillFileSource.cs:7`, `RoleLevel.cs:10`, `louis-agent.core/CLAUDE.md`); `louis-agent.core/CLAUDE.md`: *Building an identity or a pack* (Puls and the shops pack as the worked example; F40's demo takes over), with ADR 0028's review checklist, and *Adding a toolset* item 3: core's guides may hold `## Skill:` procedures, a pack's may not (a procedure a pack needs becomes a tool); the building-block view; CHANGELOG; **the learning write-up for skills 4 and 18**, written by Louis himself without the code open (new files `docs/learning/04-tool-design.md` and `docs/learning/18-testing-and-shipping.md`, each with its row in `docs/learning/README.md`): an extension point and a composition root, what the three goldens showed, what the catalogue's checks caught. The phase is done only when he has written it; if he can't explain a step, that step goes back | the ratchet's list empty; a search of core's comments finds no product name; links checked | A guard that keeps the boundary; an extension point and a composition root, explained (skills 4, 18) |
+| 5 | The cut held: the ratchet's list is empty; core's comments and examples name no product (`RoleCatalog.cs`, `AgentHost.cs`, `AgentOptions.cs`, `ClockTools.cs:10`, `ChromeWebBrowser.cs`, `RenderPolicy.cs:10`, `SearxngSearchProvider.cs:12`, `SpecialistTools.cs:66`, `MinionTools.cs:133`, `SkillFileSource.cs:7`, `RoleLevel.cs:10`, `louis-agent.core/CLAUDE.md`); `louis-agent.core/CLAUDE.md`: *Building an identity or a pack* (Puls and the shops pack as the worked example; F40's demo takes over), with ADR 0028's review checklist, and *Adding a toolset* item 3: core's guides may hold `## Skill:` procedures, a pack's may not (a procedure a pack needs becomes a tool); the building-block view; CHANGELOG; **the learning write-up for skills 4 and 18**, written by Claude and read by Louis (new files `docs/learning/04-tool-design.md` and `docs/learning/18-testing-and-shipping.md`, each with its row in `docs/learning/README.md`): an extension point and a composition root, what the three goldens showed, what the catalogue's checks caught. The phase is done only when he has read it | the ratchet's list empty; a search of core's comments finds no product name; links checked | A guard that keeps the boundary; an extension point and a composition root, explained (skills 4, 18) |
 
 #### Verification
 
@@ -2919,8 +2927,8 @@ sequenceDiagram
 Branch `feature/F18-simulations`. Before step 0 this section is copied, as Louis approved it, into
 `docs/plans/F18-simulations.md` on that branch, with its four diagrams, namespace map and folder trees; *Approved during
 the build* goes in that file, never in `platform.md` (Phase 0 step 1). It starts after Phase 2, because Puls's
-simulations open sessions on the Puls identity (`IDENTITIES=puls`), and it is done only when Louis has written its
-write-up himself (step 8). GOAL skills: 12, 17, 13 and 3. Paid runs: one cook and one routing run, in step 5, each on
+simulations open sessions on the Puls identity (`IDENTITIES=puls`), and it is done only when Louis has read its
+write-up, written by Claude (step 8). GOAL skills: 12, 17, 13 and 3. Paid runs: one cook and one routing run, in step 5, each on
 Louis's go, compared with the Python's last runs.
 
 F18 was *Evaluation: a small shared eval harness* (`docs/features/F18-evaluation.md`); F31 then built that harness in
@@ -3618,7 +3626,7 @@ sequenceDiagram
 | 6 | **A model grader where code can't judge:** "a meal for the people asked for", our own `IEvaluator` (Microsoft.Extensions.AI.Evaluation) called through `EvaluatorGrader` (`IEvaluator.EvaluateAsync`, whose 10.10.0 signature takes the messages, the response, a `ChatConfiguration` and evaluation context); no stock Quality evaluator uncalibrated; its prompt a markdown file in `louis-agent.simulations.puls` (ADR 0011); its `IChatClient` wrapped in `UsageRecordingChatClient` with a new `grading` purpose and the run's tag, so its cost is in the run's (ADR 0007); its model, prompt and version stored with each grade; `Unknown` when it can't tell | Louis labels ten stored answers first; the judge matches at least 9 of the 10, the disagreements listed; the calibration runs free on a local model (Ollama, F15); if the local model can't reach 9 of 10, the step stops and Louis decides, because a paid judge is not among this phase's paid runs; it never runs in CI | LLM as a judge, calibrated (12) |
 | 7 | **Python leaves:** `benchmarks/` and CI's Python step (`ci.yml:56-58`) deleted; the three manuals move beside their simulations (`simulations/louis-agent.simulations.puls/Manuals/cook.md` and `routing.md`, the stub's to `simulations/louis-agent.simulation.runner/Manuals/stub.md`), and `BenchmarkManuals` reads from `simulations/` (its root at `BenchmarkManuals.cs:17`, the path `BenchmarkCheck.ManualPath` gives, now from `--list`); `test_manuals.py` becomes an NUnit test in `louis-agent.simulations.puls.tests`; `session-stream.sse` and `session-stream.expected.json` both move to `tests/louis-agent.session-stream.tests/Fixtures/`, and `SessionStreamFixtureTests` reads them there; CI's gate is the C# tests: they cover the harness, the graders on recorded transcripts and what the model reads (the golden files), and an agent regression is caught only by a run; the portal's word becomes *simulation* (the old `/admin/benchmarks` routes still answer until a TODO line removes them) | `GET /admin/benchmarks/{check}/manual` answers for stub, cook and routing from their new places (red first: it reads `benchmarks/`); the manual test fails when a score key is missing from its manual; CI runs no Python and the C# tests pass; the old routes still answer | A regression gate, and what it can't see (12, 18) |
 | 7a | **Why a run behaved as it did** (F31 step 11c's rest, `TODO.md:204-208`): a person's note on a run and on a conversation, kept in the store with when it was written, shown on the run's row and as a marker on its trend point, beside a marker where the prompt hash changed; the search provider and the page renderer (`WEB_SEARCH_PROVIDER`, `PAGE_RENDERER`, `AgentOptions.cs:212,215`) in the run's settings | the store contract test (both stores): a note on a run and on a conversation reads back with its time; a trend point carries its notes and its prompt-hash marker; `BenchmarkSettingsTests`: the provider and the renderer recorded | A run you can explain (12) |
-| 8 | Docs: the feature doc's results; a design doc in `docs/projects/` for each of the four new projects, and the tests design doc; CHANGELOG; GOAL.md's rows 3, 12, 13 and 17 (what is built now, and what stays missing: 12, a gate that sees the agent; 17, dashboards, with F44; 3, the comparison of two prompt versions as a habit); **the learning write-ups**, written by Louis himself without the code open: skill 12's, new (`docs/learning/12-evaluation.md`, with its row in `docs/learning/README.md`: the field's words, code graders first, a calibrated judge, pass@k against pass^k, frozen input, and the limit: a gate on recorded transcripts can't see the agent, only a run can), and skill 13's (`docs/learning/13-cost-and-token-economics.md` gains the replay cache: the hit rate and cost of the replayed cook run against its live run), with a paragraph each on traces and the logs' keyed hashes (17) and the prompt hash (3). The phase is done only when he has written them; if he can't explain a step, that step goes back | links checked | Writing it up (12, 13, 17, 3) |
+| 8 | Docs: the feature doc's results; a design doc in `docs/projects/` for each of the four new projects, and the tests design doc; CHANGELOG; GOAL.md's rows 3, 12, 13 and 17 (what is built now, and what stays missing: 12, a gate that sees the agent; 17, dashboards, with F44; 3, the comparison of two prompt versions as a habit); **the learning write-ups**, written by Claude and read by Louis: skill 12's, new (`docs/learning/12-evaluation.md`, with its row in `docs/learning/README.md`: the field's words, code graders first, a calibrated judge, pass@k against pass^k, frozen input, and the limit: a gate on recorded transcripts can't see the agent, only a run can), and skill 13's (`docs/learning/13-cost-and-token-economics.md` gains the replay cache: the hit rate and cost of the replayed cook run against its live run), with a paragraph each on traces and the logs' keyed hashes (17) and the prompt hash (3). The phase is done only when he has read them | links checked | Writing it up (12, 13, 17, 3) |
 
 #### Verification
 
@@ -3682,7 +3690,7 @@ Branch `feature/F40-sales-playground`. Before step 0 this section is copied, as 
 `docs/plans/F40-sales-playground.md` on that branch, with its four diagrams, namespace map and folder trees; *Approved
 during the build* goes in that file, never in `platform.md` (Phase 0 step 1). It starts after Phase 3, whose harness,
 runner, simulation catalogue, web record and replay and replay cache it runs on, and it is done only when Louis has
-written its learning write-up himself (step 8). GOAL skills: 18, 7 and 12. Paid runs: one per simulation, the invoice
+read its learning write-up, written by Claude (step 8). GOAL skills: 18, 7 and 12. Paid runs: one per simulation, the invoice
 batch in step 3 and the area guide in step 4, each on Louis's go.
 
 Louis: "demos is for selling, the playground". The two pitches are his own: "Agent should easily be configured for say
@@ -4123,7 +4131,7 @@ louis-agent/
 | 5 | **The control room moves to `louis-agent.web.shared`:** the portal's two pages, `AdminLayout`, `RunExplorer`, `TrendChart` and `ChartInfo`, their words identity-neutral; the focus helper and the admin's styles as the shared project's own assets; both routers' `AdditionalAssemblies`; the csproj's note; `tests/louis-agent.web.shared.tests` (bUnit 2.11.3, MIT, built for .NET 10; nuget.org, published 2026-09-13), the repo's first web tests | bUnit renders the moved run page from a recorded cook run with the rows, grades and cost that a hand check on `main` shows for the same run, and no Puls name or logo; hand check: Puls's web app and the code-review app both route `/admin`, and in the code-review stack, with no store, it says runs need one | A screen that sells with numbers (17) |
 | 6 | **Any simulation's grades in the room:** each grader's score per mode and the cost per conversation, so the demo's runs read as clearly as the cook's; the cook keeps its own measures | bUnit renders a recorded `demo-invoice-batch` run: a row per grader per mode, the cost per invoice, and an unknown cost shown as unknown | Graders, not only one check's measures, on the screen (12, 17) |
 | 7 | ***Try it*:** a chat in one of a simulation's modes, opened from the control room | bUnit with the API stubbed: the page lists the simulations' modes and opens a session whose `POST /sessions` carries the mode's role and toolsets (`demo/voice` with `specialists`) | The pitch and its numbers on one screen (17) |
-| 8 | **Docs and the learning write-up:** the feature doc's results (each pitch against its pass and cost bars), how to give a pitch, the project docs, the TODO's web-tests line (the bUnit project exists now), CHANGELOG; **the learning write-up for skills 18, 7 and 12**, written by Louis himself without the code open: `docs/learning/18-testing-and-shipping.md` (Phase 2's) gains the playground (two identities, one pack; a stack apart for showing), `docs/learning/07-context-engineering.md` (the F32 to F34 write-up, written before Phase 2) gains the area guide's grounding (one place, many sources, each fact with its source and date), and skill 12's (`docs/learning/12-evaluation.md`, Phase 3's) gains the answer key kept out of reach and cost as a measure, not a grader; each one's row in `docs/learning/README.md` is updated to say what it now covers. The phase is done only when he has written it; if he can't explain a step, that step goes back | links checked | Writing it up (18, 7, 12) |
+| 8 | **Docs and the learning write-up:** the feature doc's results (each pitch against its pass and cost bars), how to give a pitch, the project docs, the TODO's web-tests line (the bUnit project exists now), CHANGELOG; **the learning write-up for skills 18, 7 and 12**, written by Claude and read by Louis: `docs/learning/18-testing-and-shipping.md` (Phase 2's) gains the playground (two identities, one pack; a stack apart for showing), `docs/learning/07-context-engineering.md` (the F32 to F34 write-up, written before Phase 2) gains the area guide's grounding (one place, many sources, each fact with its source and date), and skill 12's (`docs/learning/12-evaluation.md`, Phase 3's) gains the answer key kept out of reach and cost as a measure, not a grader; each one's row in `docs/learning/README.md` is updated to say what it now covers. The phase is done only when he has read it | links checked | Writing it up (18, 7, 12) |
 
 #### Verification
 
@@ -4204,7 +4212,7 @@ refusal from the provider is not a budget: stopping on it is F8's (Phase 9), and
 | 2 | **Estimates:** a run's or a turn's likely cost from the ledger's history per role and mode, as a range with its basis (F6's stories: the 25th to 75th percentile of at least five similar runs, else an estimate from the model's prices, `docs/features/F06-estimates.md:20-30`) | estimate against actual shown per simulation run; **one paid simulation run, on Louis's go**, to compare the estimate with the actual | An estimate as a range with its basis, checked against the actual (13) |
 | 3 | **Budgets** per session, per customer and per day: warn, ask (a typed question to the user, through `ApprovalRequiredAIFunction` and `ToolApprovalRequestContent`) or stop, cleanly and append-only (ADR 0008): what the turn produced stays in the history, and the stop carries its reason | a fake client's turn stops at its budget with a reason; the ledger shows it; an ask reaches the host as a `ToolApprovalRequestContent`, and nothing more is spent until it is answered | A stop condition beyond a round count, and a budget that asks a person (13, 16; in part 6) |
 | 4 | **The control room's cost view:** per customer, per identity, per simulation, in Phase 4's room; the ledger checked against the provider's own usage report (F11's fourth story). That report needs the provider's organisation admin key, which F11's doc calls `ADMIN_API_KEY` (`docs/features/F11-usage-tab-and-reconciliation.md:31,44`), the name the admin portal's own key has had since F27 (`src/louis-agent.api/Config/AdminOptions.cs:24`), so the plan file gives the provider's key a setting of its own; without one, the view says why the check is unavailable (`:34`) | the two agree, or the difference is shown with its reason | Reconciliation: our own ledger checked against the provider's bill (13) |
-| 5 | **Docs and the learning write-up for skill 13** (it counts as learned here), written by Louis himself without the code open: `docs/learning/13-cost-and-token-economics.md` gains estimates, budgets and the check against the bill, as its index row says it will (`docs/learning/README.md:10`). Skill 13's only *Missing* item closed in Phase 3 (the replay cache), and three of its four *Planned* items, estimates, budgets and reconciliation, are built and measured here (`docs/GOAL.md:34`; the fourth, each model's cache minimum and price step, is F15's, in Phase 9). Skill 16 gains its *Planned* "budgets that ask" (`docs/GOAL.md:37`) and counts only after Phase 7's approval policies. F6, F7 and F11 closed as *Finishing a feature* says (`docs/features/README.md:124`) | Louis's write-up written; links checked | Writing it up (13, 16) |
+| 5 | **Docs and the learning write-up for skill 13** (it counts as learned here), written by Claude and read by Louis: `docs/learning/13-cost-and-token-economics.md` gains estimates, budgets and the check against the bill, as its index row says it will (`docs/learning/README.md:10`). Skill 13's only *Missing* item closed in Phase 3 (the replay cache), and three of its four *Planned* items, estimates, budgets and reconciliation, are built and measured here (`docs/GOAL.md:34`; the fourth, each model's cache minimum and price step, is F15's, in Phase 9). Skill 16 gains its *Planned* "budgets that ask" (`docs/GOAL.md:37`) and counts only after Phase 7's approval policies. F6, F7 and F11 closed as *Finishing a feature* says (`docs/features/README.md:124`) | Write-up written and read by Louis; links checked | Writing it up (13, 16) |
 
 **Moved to Phase 6:** the orchestrator deferring what it can't afford is not a step here. It needs `TriageWorkflow`,
 which only Phase 6 builds, so it is B4's: `TriageWorkflow` defers an error whose estimate exceeds its F7 budget
@@ -4223,8 +4231,8 @@ step 1). Part A needs Phase 2's steps 1-2 and Phase 3's step 1 (the reader); Par
 A. F17 (*Orchestrator agent*) is merged into F39 as Part B (Phase 0 step 3), so Part B's branch carries F39's id, as
 `docs/CLAUDE.md` asks of every branch. GOAL skills: 10, 5 and 6. Paid runs, all in B6 and each on Louis's go: one live
 triage run against the seeded service (question 7), and one rerun each of Puls's routing and cook simulations, because
-Part A touches the path Puls delegates through. The phase is done only when Louis has written its learning write-ups
-himself, without the code open (B7).
+Part A touches the path Puls delegates through. The phase is done only when Louis has read its learning write-ups,
+written by Claude (B7).
 
 Louis asked for it in the thread: "that is correct we need our own plan for a proper orchestrator function". The
 orchestrator is both: the engine's delegation function (Part A), which every identity and every host uses, and the
@@ -5158,14 +5166,14 @@ runbooks: read at run time from a folder setting (OPS_RUNBOOKS, a proposed name)
   (`docs/GOAL.md:22`). Then, **all paid, all on Louis's go**: one live triage run against the seeded service (question
   7), read beside the M1 figures as a guide only, since the service differs; and one rerun each of Puls's routing and
   cook simulations. A re-run of the live run's recording costs a known $0 through Phase 3's replay cache. Skills 12, 13.
-- **B7. Docs and the learning write-ups.** Written by Louis himself without the code open: skill 10's
+- **B7. Docs and the learning write-ups.** Written by Claude and read by Louis: skill 10's
   (`docs/learning/10-multi-agent-orchestration.md`, today a first draft by Claude, `:1-4`, rewritten with a workflow
   against an agent, measured) and new ones for skills 5 and 6 (`docs/learning/05-structured-outputs.md`,
   `06-agent-loop-and-planning.md`, each with its row in `docs/learning/README.md`): typed results, routing and the
   evaluator-optimizer loop. Then GOAL rows 5, 6 and 10 (build mode leaves row 10's *Planned*), the project doc
   (`docs/projects/louis-agent.orchestrator.md`), the runbooks doc (`docs/projects/orchestrator-runbooks.md`),
   `docs/specs/ORCHESTRATOR_DESIGN.md`, F39's feature doc with its results, and the CHANGELOG. The phase is done only
-  when Louis has written the write-ups; if he can't explain a step, that step goes back. Skill 10.
+  when Louis has read the write-ups. Skill 10.
 
 #### Verification
 
@@ -5223,7 +5231,7 @@ on Phase 4's invoice simulation and Phase 5's "ask", which reaches the hosts as 
 (*inferred* from both phases; F41's plan proves it with a test). GOAL skills: 5, 16 and 15. Paid runs: the injection
 simulations, with FX4's hand confirm on Haiku 5.5 in the same sitting (`docs/fixes/FX04-append-only-history.md:78-81`),
 on Louis's go. It removes known limitations 9 (FX4) and 5 (F42) (`TODO.md:400-405`, `:388`). It is done only when Louis
-has written its learning write-up himself, without the code open (part 9).
+has read its learning write-up, written by Claude (part 9).
 
 **FX4 Append-only history, first** (skills 2, 3 and 9, where FX4 is *Planned*, `docs/GOAL.md:23,24,30`, and skill 4's
 frozen tool list, `:25`; ADR 0008). Each conversation keeps the system prompt and the tool list it opened with, the
@@ -5409,7 +5417,7 @@ sequenceDiagram
 | 6 | **F42: the audit log and rate limits**; Phase 6's recovery records move into the audit log, and a recovery with an effect outside the app becomes a draft approved under F41 | every call with an effect writes one append-only line, a read-only call none; the limit per key returns 429 with its reason, and one key's burst leaves another key's requests served; a recovery record becomes an audit line with who, the policy version and the approval, and a `Compensate` waits for a person and runs once after approval |
 | 7 | **F42: moderation and output guardrails, the egress proxy, repository mounts and branch protection; `IncludeDetailedErrors` reviewed** | a flagged message is refused with its reason; Chrome reaches a public address and is refused a private one, a name re-resolved to an internal address included; the review's outcome in F42's doc |
 | 8 | **F42: the injection simulations**, and FX4's hand confirm in the same sitting | graded in code on recorded transcripts first (free); then **the paid run, on Louis's go**: no forbidden tool call, nothing private in an answer or an image address; FX4's confirm: the 400 seen on `main` first, then none on the fix (or, if `main` gives none, that recorded in FX4's doc) |
-| 9 | **Docs and the learning write-ups**, written by Louis himself without the code open: skill 16's new `docs/learning/16-human-in-the-loop.md` (approval per effect, drafts, the control room); skill 15's `docs/learning/15-safety-and-security.md` (written in Phase 1) gains the frame, the audit log, the rate limits, the egress proxy, the injection results and Phase 3's hashed logs (step 4f); skill 5's write-up from Phase 6 (`docs/learning/05-structured-outputs.md`, named by the index's rule, `docs/learning/README.md:3-5`) gains drafts. FX4's lesson stays in its fix doc's *Lesson* (`docs/fixes/FX04-append-only-history.md:83-86`) and opens Phase 9's skill-9 write-up. F41 and F42 closed as *Finishing a feature* says (`docs/features/README.md:124`); limitations 5 and 9 deleted from the TODO | Louis's write-ups written; links checked. The phase is done only then; if he can't explain a part, that part goes back |
+| 9 | **Docs and the learning write-ups**, written by Claude and read by Louis: skill 16's new `docs/learning/16-human-in-the-loop.md` (approval per effect, drafts, the control room); skill 15's `docs/learning/15-safety-and-security.md` (written in Phase 1) gains the frame, the audit log, the rate limits, the egress proxy, the injection results and Phase 3's hashed logs (step 4f); skill 5's write-up from Phase 6 (`docs/learning/05-structured-outputs.md`, named by the index's rule, `docs/learning/README.md:3-5`) gains drafts. FX4's lesson stays in its fix doc's *Lesson* (`docs/fixes/FX04-append-only-history.md:83-86`) and opens Phase 9's skill-9 write-up. F41 and F42 closed as *Finishing a feature* says (`docs/features/README.md:124`); limitations 5 and 9 deleted from the TODO | Write-ups written and read by Louis; links checked. The phase is done only then |
 
 **Verification.** Every part but part 8 is free: fakes, recorded transcripts, the touched projects' tests and the golden
 files (the frame's and the approvals' texts are message members, so they show in `ToolMessageSnapshot.json` and are
@@ -5424,7 +5432,7 @@ first step writes F36's feature doc (none exists yet, checked). GOAL skill 11 (*
 local model can't drive the tools, on Louis's go. It starts after Phase 7, and needs three things from it: FX4, so a
 chat keeps the tool list it opened with; `ToolEffect` and F41's policy, so an orange tool's effect decides whether it
 asks; and F42's frame and egress proxy, for an HTTP server's results and traffic. It removes known limitation 1
-(`TODO.md:382`), and it is done only when Louis has written its learning write-up himself (part 11).
+(`TODO.md:382`), and it is done only when Louis has read its learning write-up, written by Claude (part 11).
 
 **Why it waits for Phase 8.** The challenge recommended F36 right after the cut. It waits for Phase 8 because Louis said
 MCP only when needed ("if needed, we are [alone] in this"; "we [don't] have to do mcp's now, I just want it to [be]
@@ -5587,7 +5595,7 @@ decisions; one commit each, test first, stop after each):
 | 9 | `RiderMcpClient` replaced; discovery removed from every host | a fake Rider server, named in settings, gives today's `rider_` names; a host with no server named starts no discovery |
 | 9a | **New chats pick up new MCP packs without a restart** (question 12): an admin action re-lists the configured servers (the same boundary, pin and drift checks as at start-up) into a new catalogue generation; sessions opened after it get engines from the new generation, keyed by it in `AgentEngineFactory`'s cache; every open chat keeps the engine and tool list it opened with (FX4, Phase 7); `tools/list_changed` stays ignored, so nothing changes by itself | test first: a chat opened before the refresh keeps its request byte-equal (its golden unchanged) and a chat opened after it lists the new server's tool; a refresh whose server fails leaves the current generation in place with the reason; the old generation's engines are dropped when their last chat closes |
 | 10 | The simulation against a test server, run free on a local model, and an injected MCP result in Phase 7's suite | the simulation's graders pass on a free local run (or on the one paid run, on Louis's go, if the local model can't drive the tools) |
-| 11 | **Docs and the learning write-up for skill 11**, written by Louis himself without the code open: the new `docs/learning/11-protocols.md` (MCP both ways, why the list is a start-up snapshot, why annotations can't be trusted); F36's doc records the SDK facts above; known limitation 1 deleted; F36 closed as *Finishing a feature* says | Louis's write-up written; links checked |
+| 11 | **Docs and the learning write-up for skill 11**, written by Claude and read by Louis: the new `docs/learning/11-protocols.md` (MCP both ways, why the list is a start-up snapshot, why annotations can't be trusted); F36's doc records the SDK facts above; known limitation 1 deleted; F36 closed as *Finishing a feature* says | Write-up written and read by Louis; links checked |
 
 HTTP servers and OAuth come later, as their own steps, when a real HTTP server is needed.
 
@@ -5610,8 +5618,7 @@ F15 already have feature docs (`docs/features/F08-reliability.md`, `docs/feature
 theirs in their first step. GOAL skills: 1, 9, 14, 15, 17, 18. Paid runs: none (F15's capability simulation runs free on
 local models). No pilot or sale starts before this phase: until it, a configured agent is only shown (the playground's
 simulations, Phase 4) and priced in the ten conversations (Phase 0). It removes known limitations 2, 3 and 8
-(`TODO.md:384,386,394-399`), and it is done only when Louis has written its learning write-ups himself, without the code
-open.
+(`TODO.md:384,386,394-399`), and it is done only when Louis has read its learning write-ups, written by Claude.
 
 - **F43 Accounts, tenants and durable sessions** (skills 9 and 15). Sign-in; a tenant on every session, ledger and audit
   row; a sandbox per tenant for the tools that run code. **Durable sessions:** the session store is built with its
@@ -5700,7 +5707,7 @@ and this plan's decisions):
 - *F44:* F12-S1; the exporter and `traceparent`; the OpenTelemetry metrics; PublicApiAnalyzers and package validation;
   the notices and the container's licences; the split packages and `AddLouisAgent`; the container; the pipeline;
   hosting.
-- **The learning write-ups**, written by Louis himself without the code open: new
+- **The learning write-ups**, written by Claude and read by Louis: new
   `docs/learning/01-models-and-providers.md` (F8's fallback, F15's limits and capabilities), `docs/learning/09-sessions-and-state.md` (opening with FX4's lesson,
   then durable sessions and resume), `docs/learning/14-reliability.md` and `docs/learning/17-observability.md`;
   `docs/learning/18-testing-and-shipping.md` (Phase 2) gains versioned contracts and the pipeline, and
@@ -5790,7 +5797,7 @@ sites read in our process). After Phase 3, whose record and replay its simulatio
 | 4 | `RecipeTools` (`FindRecipes`, `ReadRecipe`), the `recipes` pack (`PackKind.Recipes`; `PulsIdentity` names `recipes`), its guide and its message texts | the table framed as untrusted, as the shop tools are (`ToolMessage.cs:285-286`) until Phase 7's frame takes both; a page with no block says so; an unknown source lists the ones turned on; the toolset unavailable without `BROWSER_URL`; the convertibility test green; the pack's golden reviewed |
 | 5 | The cook reads its recipe: its header gains `recipes?` (`toolsets: shops?, recipes?`, in Puls's identity project after Phase 2), and its role finds and reads a recipe, links it and scales it to *Serves* | the role's tests on the prompt; Puls's golden reviewed |
 | 6 | **The recipes simulation**, on recorded pages | the three ways' cost per answer and match share in the feature doc; **paid, on Louis's go** |
-| 7 | Docs and the write-up, by Louis himself without the code open: `docs/learning/07-context-engineering.md` gains "data read in code, not pages" for recipes, after F32 to F34's prices | Louis's write-up written; F35 closed as *Finishing a feature* says |
+| 7 | Docs and the write-up, by Claude, read by Louis: `docs/learning/07-context-engineering.md` gains "data read in code, not pages" for recipes, after F32 to F34's prices | Write-up written and read by Louis; F35 closed as *Finishing a feature* says |
 
 **3. CL16 Reusable roles**, after F35. A pack carries roles: the cook moves into `packs/louis-agent.pack.cooking`, which
 requires `recipes` (from F35) and uses `shops` where the instance has it. The identity's frame is loaded before a pack's
@@ -5998,7 +6005,7 @@ line; every planned feature or fix has exactly one line, in its phase's section.
 - [ ] FX18 Auth fails closed: the API and the MCP server's HTTP transport refuse to start without a key (Phase 1; docs/fixes/FX18-auth-fails-closed.md, opened in Phase 0 step 3)
 - [ ] FX19 Git arguments as data: every git call takes a list (Phase 1; docs/fixes/FX19-git-arguments-as-data.md, opened in Phase 0 step 3)
 - [ ] FX20 Skill files wait for approval: CreateSkillFile writes to pending/ until /approve (Phase 1; docs/fixes/FX20-skill-files-wait-for-approval.md, opened in Phase 0 step 3)
-- [ ] Louis's F32 to F34 learning write-up, skills 7 and 12, before Phase 2
+- [ ] The F32 to F34 learning write-up (Claude writes, Louis reads), skills 7 and 12, before Phase 2
 - [ ] CL15 Engine, identities and packs (Phase 2; takes in "SA context in the prompt"'s SAST default, HOST_TIME_ZONE; F30's minions kept, Puls's minion roles moved with Puls)
 - [ ] F18 Simulations in C# (Phase 3; takes in CL11, the Python checks, "evaluation in CI", "prompts compared on the evals", notes on a run (F31 step 11c), the response cache as a replay cache, traces per turn and tool call)
 - [ ] Personal data out of the logs: the place and the user's text hashed in the logs (Phase 3 step 4f, with F18; Part 3 row 14)
@@ -6328,9 +6335,8 @@ the rest are in the tables. 8 + 39 + 16 + 16 + 7 + 4 + 4 + 16 = 110.
 - **The pace is the biggest risk.** A plan this long tempts the pace of 2026-10-17 (the numbers are in *How we work
   through it*). Each step stays one commit that takes about ten minutes to review (`docs/CLAUDE.md:10-11`), and a day
   holds only what Louis can review line by line. Every phase ends with a learning write-up step, Phases 1 and 2
-  included, and a phase is done only when Louis has written its write-up himself, without the code open (GOAL.md's
-  fourth criterion, `docs/GOAL.md:53`); if he can't, the step he can't explain goes back. Before Phase 2, he writes the
-  F32 to F34 write-up.
+  included, and a phase is done when Claude has written its write-up and Louis has read it (changed 2026-10-19
+  at Louis's word). Before Phase 2, Claude writes the F32 to F34 write-up.
 - **Selling before it is safe:** no pilot or sale before Phase 9. Before it, a configured agent is only shown (the
   playground's simulations, Phase 4) and priced in the ten conversations (Phase 0).
 - **The demo turning into a product by accident:** a pitch that sells moves to its own identity or pack, in its own
