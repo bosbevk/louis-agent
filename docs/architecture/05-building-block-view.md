@@ -250,7 +250,7 @@ is exposed to the model** — helpers must be `internal` or `private`). Names an
 | Class | Tools |
 |---|---|
 | `WorkspaceFileTools`, `WorkspaceOrganiseTools`, `WorkspaceBrowseTools`, `WorkspaceSearchTools`, `DocumentTools` | The files toolset: read / write / append; create a directory, delete, rename, copy; list, tree, exists, file info; search text, find files; documents and spreadsheets |
-| `GitTools` | Status, diffs, branches, staging, commit, stash, push/pull/fetch, merge/rebase, tags, config |
+| `GitChangeTools`, `GitBranchTools`, `GitRemoteTools`, `GitHistoryTools`, `GitConfigTools` | The git toolset: status, diffs, staging, commit, stash; branches, merge/rebase, tags; push/pull/fetch; log, blame, history; config |
 | `DotNetTools` | `DotNetBuild`, `DotNetTest`, `DotNetRun`, restore, clean, packages, project and SDK info |
 | `PythonTools`, `PowerShellTools`, `BashTools` | Run code or scripts (bash is Git Bash on Windows, never WSL) |
 | `WebTools`, `QuoteTools`, `CurrencyTools` | The web toolset: `WebSearch` (via `IWebSearchProvider`), `FetchUrl` and `ReadRenderedPage` (through the SSRF-guarded `PageFetcher`); `VerifyQuote`; `ConvertCurrency` |

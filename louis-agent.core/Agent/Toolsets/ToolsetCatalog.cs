@@ -9,6 +9,7 @@ using LouisAgent.Core.Tools.Currency;
 using LouisAgent.Core.Tools.Documents;
 using LouisAgent.Core.Tools.DotNet;
 using LouisAgent.Core.Tools.Git;
+using LouisAgent.Core.Tools.Git.Running;
 using LouisAgent.Core.Tools.Integrations.DevOps;
 using LouisAgent.Core.Tools.Integrations.Paymo;
 using LouisAgent.Core.Tools.Shell;
@@ -43,8 +44,13 @@ public static class ToolsetCatalog
         new("git", "Status, diffs, branches, staging, commits, merges and history for the workspace repository",
             GuideFile: SkillFiles.Guide("git"),
             MissingSettings: _ => [],
-            ToolTypes: [typeof(GitTools)],
-            CreateTools: ctx => [new GitTools(Root(ctx))]),
+            // S (CL15): five classes (changes, branches, remotes, history, config) on one runner.
+            ToolTypes: [typeof(GitChangeTools), typeof(GitBranchTools), typeof(GitRemoteTools), typeof(GitHistoryTools), typeof(GitConfigTools)],
+            CreateTools: ctx =>
+            {
+                var git = new GitRunner(Root(ctx));
+                return [new GitChangeTools(git), new GitBranchTools(git), new GitRemoteTools(git), new GitHistoryTools(git), new GitConfigTools(git)];
+            }),
 
         new("dotnet", "Build, test, run and restore .NET projects; list packages; SDK information",
             GuideFile: SkillFiles.Guide("dotnet"),

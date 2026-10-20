@@ -22,7 +22,6 @@ public class FileSizeTests
         "louis-agent.core/Messages/LogMessage.cs",
         "louis-agent.core/Messages/ToolMessage.cs",
         "louis-agent.core/Tools/DotNet/DotNetTools.cs",
-        "louis-agent.core/Tools/Git/GitTools.cs",
         "louis-agent.core/Tools/Integrations/DevOps/DevOpsTools.cs",
         "louis-agent.core/Tools/Integrations/Paymo/PaymoTools.cs",
         "louis-agent.core/Tools/Shell/BashTools.cs",
