@@ -42,6 +42,7 @@ afterwards from the docs that hold them (each ADR links its sources), with the d
 | [0030](0030-build-or-adopt.md) | Build or adopt: the loop stays ours on Microsoft.Extensions.AI | Accepted |
 | [0031](0031-orchestration-is-an-engine-function.md) | Orchestration is an engine function, and the orchestrator stays on core | Accepted |
 | [0033](0033-what-the-agent-writes-has-a-scope.md) | What the agent writes has a scope: session, agent or shared (0032 is kept for *Sources as data*) | Accepted |
+| [0034](0034-code-a-person-can-maintain.md) | Code a person can maintain: one concern per file, at most 200 lines, no code in razor | Accepted |
 
 ## When to write one
 

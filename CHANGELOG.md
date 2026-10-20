@@ -3,16 +3,20 @@
 > **Reference.** What was finished, newest first, one entry per feature, fix or cleanup. **Elsewhere:** what's still
 > open in the [TODO](TODO.md); how each was built in its feature, fix or plan doc (linked from its entry).
 
-- 2026-10-19 — **CL15 Engine, identities and packs** (the platform plan's Phase 2): core is the engine and names no
+- 2026-10-20 — **CL15 Engine, identities and packs** (the platform plan's Phase 2): core is the engine and names no
   product, shop or country; Puls is an identity (`identities/louis-agent.identity.puls`: its voice, modes, roles and
   the packs it names) and the shops a pack (`packs/louis-agent.pack.shops`: the toolset, its guide, settings and
   texts); one `AgentCatalog`, built by the composition root (`src/louis-agent.composition`) from `IDENTITIES` and
   `PACKS`, checked at start-up; `HOST_TIME_ZONE` replaces the South African default; every pack convertible to an MCP
-  server, held by `PackConvertibilityTests`; the fakes the test projects share in `tests/louis-agent.testing`. Proved
+  server, held by `PackConvertibilityTests`; the fakes the test projects share in `tests/louis-agent.testing`. During the
+  build Louis added two rules, held by ratchet tests: a `.razor` holds markup only (`RazorHasNoCodeTests`) and a file
+  holds at most 200 lines, a test file 400 (`FileSizeTests`), with core, the API, ACP and the web apps sorted and split
+  by concern ([ADR 0034](docs/adr/0034-code-a-person-can-maintain.md)); the ACP host pinned by a transcript test before
+  it moved. Proved
   by three goldens and one paid cook run on the finished branch, `b4a6ea22b178`, read against the two runs on main in
   write-up [07](docs/learning/07-context-engineering.md) ([plan](docs/plans/CL15-engine-identities-packs.md),
   [ADR 0027](docs/adr/0027-engine-identities-and-packs.md), [ADR 0028](docs/adr/0028-packs-stay-convertible-to-mcp.md),
-  write-ups [04](docs/learning/04-tool-design.md) and [18](docs/learning/18-testing-and-shipping.md))
+  PR #71, write-ups [04](docs/learning/04-tool-design.md) and [18](docs/learning/18-testing-and-shipping.md))
 - 2026-10-19 — **FX20 Skill files wait for approval** (the platform plan's Phase 1, its last door): a skill file the
   agent writes goes to `Skills/agent/functions/pending/`, active only in the engine that wrote it, until the user's
   `/approve <name>` moves it up for every later session; `/reject` deletes it and `/tools` lists it, as agent-built
