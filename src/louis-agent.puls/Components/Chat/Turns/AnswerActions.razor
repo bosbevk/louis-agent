@@ -14,16 +14,3 @@
         @sources.Count @(sources.Count == 1 ? "bron" : "bronne")
     </button>
 }
-
-@code {
-    [Parameter, EditorRequired] public Turn Turn { get; set; } = default!;
-    [Parameter] public EventCallback<string> OnCopy { get; set; }
-    [Parameter] public EventCallback<string> OnComingSoon { get; set; }
-
-    /// <summary>The answer's own words: its text after the last tool call or thought (the reply the user reads).</summary>
-    private static string AnswerText(Turn turn)
-    {
-        int last = turn.Blocks.FindLastIndex(b => b.Kind != BlockKind.Text);
-        return string.Join("\n\n", turn.Blocks.Skip(last + 1).Select(b => b.Text).Where(t => t.Length > 0)).Trim();
-    }
-}

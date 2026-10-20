@@ -39,7 +39,6 @@ public class FileSizeTests
         "src/louis-agent.orchestrator/Program.cs",
         "src/louis-agent.orchestrator/Tools/ServiceTools.cs",
         "src/louis-agent.puls/Components/Admin/RunExplorer.razor",
-        "src/louis-agent.puls/Components/Chat/WorkPanel.razor",
         "src/louis-agent.puls/Pages/Admin/Benchmarks.razor",
         "src/louis-agent.puls/Pages/ChatPage.razor.cs",
         "src/louis-agent.web/Pages/ChatPage.razor.cs",

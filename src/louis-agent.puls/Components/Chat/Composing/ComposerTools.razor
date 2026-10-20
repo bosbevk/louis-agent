@@ -38,11 +38,3 @@
     </ul>
 </div>
 <button class="tool-button" type="button" title="Stemboodskap" @onclick='() => OnComingSoon.InvokeAsync("Stemboodskappe")'><span class="ic i-mic" aria-hidden="true"></span></button>
-
-@code {
-    /// <summary>The instance's model, prettified; null until known (the picker then says "Model").</summary>
-    [Parameter] public string? Model { get; set; }
-    [Parameter] public EventCallback<InputFileChangeEventArgs> OnFiles { get; set; }
-    [Parameter] public EventCallback<string> OnDraft { get; set; }
-    [Parameter] public EventCallback<string> OnComingSoon { get; set; }
-}

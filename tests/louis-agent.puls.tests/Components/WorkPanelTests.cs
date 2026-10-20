@@ -1,4 +1,4 @@
-using LouisAgent.Puls.Components.Chat;
+using LouisAgent.Puls.Components.Chat.Panels;
 using LouisAgent.Puls.Text;
 using LouisAgent.Web.Shared.Chats;
 using Microsoft.Extensions.DependencyInjection;

@@ -5,16 +5,3 @@
 <li><button class="dropdown-item" type="button" @onclick="() => OnArchive.InvokeAsync(Chat)"><span class="ic i-archive" aria-hidden="true"></span>@(Chat.Archived ? "Haal uit argief" : "Argiveer")</button></li>
 <li><hr class="dropdown-divider" /></li>
 <li><button class="dropdown-item danger" type="button" @onclick="() => OnDelete.InvokeAsync(Chat)"><span class="ic i-trash" aria-hidden="true"></span>Vee uit</button></li>
-
-@code {
-    [Parameter, EditorRequired] public Chat Chat { get; set; } = default!;
-
-    /// <summary>True in the top bar's menu: the rename field then opens there, not in the sidebar.</summary>
-    [Parameter] public bool InHeader { get; set; }
-
-    [Parameter] public EventCallback<Chat> OnFavourite { get; set; }
-    [Parameter] public EventCallback<(Chat Chat, bool InHeader)> OnRename { get; set; }
-    [Parameter] public EventCallback<Chat> OnArchive { get; set; }
-    [Parameter] public EventCallback<Chat> OnDelete { get; set; }
-    [Parameter] public EventCallback<string> OnComingSoon { get; set; }
-}

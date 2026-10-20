@@ -1,5 +1,12 @@
 @* The sidebar (F20): the brand, a new chat, search, the views, the chats (favourites, projects to come, recent,
    archived) and, at the foot, the profile and the settings. Below Bootstrap's lg breakpoint it is an offcanvas. *@
+@{
+    // One chat in the list (W2b): the markup once, as a template, for the favourites, the recent and the archived.
+    RenderFragment<Chat> Item = chat =>
+        @<ChatListItem @key="chat.SessionId" Chat="chat" Active="@(chat.SessionId == SessionId)" Renaming="@(Renaming == chat.SessionId && !RenameInHeader)"
+                      RenameDraft="@RenameDraft" RenameDraftChanged="RenameDraftChanged" OnRenameKey="OnRenameKey" OnRenameBlur="OnRenameBlur"
+                      OnFavourite="OnFavourite" OnRename="OnRename" OnArchive="OnArchive" OnDelete="OnDelete" OnComingSoon="OnComingSoon" />;
+}
 <aside class="sidebar offcanvas-lg offcanvas-start" id="sidebar" tabindex="-1" aria-label="Gesprekke">
     <div class="sidebar-top">
         <a class="brand brand-stack" href="./" title="Puls se tuisblad"><PulsLogo /><span class="tagline">Elke vraag op pad na 'n antwoord</span></a>
@@ -66,12 +73,3 @@
         </details>
     </div>
 </aside>
-
-@code {
-    private RenderFragment Item(Chat chat) => __builder =>
-    {
-        <ChatListItem @key="chat.SessionId" Chat="chat" Active="@(chat.SessionId == SessionId)" Renaming="@(Renaming == chat.SessionId && !RenameInHeader)"
-                      RenameDraft="@RenameDraft" RenameDraftChanged="RenameDraftChanged" OnRenameKey="OnRenameKey" OnRenameBlur="OnRenameBlur"
-                      OnFavourite="OnFavourite" OnRename="OnRename" OnArchive="OnArchive" OnDelete="OnDelete" OnComingSoon="OnComingSoon" />
-    };
-}

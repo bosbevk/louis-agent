@@ -10,12 +10,3 @@
     </button>
     <small>Name: © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a></small>
 </div>
-
-@code {
-    [Parameter] public string? Location { get; set; }
-    [Parameter] public bool Locating { get; set; }
-
-    /// <summary>The typed place, as typed; the page trims it and keeps it in this browser.</summary>
-    [Parameter] public EventCallback<string?> OnSave { get; set; }
-    [Parameter] public EventCallback OnLocate { get; set; }
-}

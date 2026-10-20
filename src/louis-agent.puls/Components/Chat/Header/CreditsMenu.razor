@@ -13,13 +13,3 @@
         <button class="dropdown-item" type="button" @onclick='() => OnComingSoon.InvokeAsync("Krediete")'><span class="ic i-coin" aria-hidden="true"></span>Koop krediete</button>
     </div>
 </div>
-
-@code {
-    /// <summary>What the shown chat cost, specialists included; "—" without a chat.</summary>
-    [Parameter] public string ChatCost { get; set; } = "—";
-
-    /// <summary>What this month's chats cost, and how many there were.</summary>
-    [Parameter] public string MonthCost { get; set; } = "";
-    [Parameter] public int MonthChats { get; set; }
-    [Parameter] public EventCallback<string> OnComingSoon { get; set; }
-}

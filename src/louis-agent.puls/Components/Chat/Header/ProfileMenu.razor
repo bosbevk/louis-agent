@@ -20,7 +20,3 @@
         <li><button class="dropdown-item" type="button" @onclick='() => OnComingSoon.InvokeAsync("Teken uit")'><span class="ic i-logout" aria-hidden="true"></span>Teken uit</button></li>
     </ul>
 </div>
-
-@code {
-    [Parameter] public EventCallback<string> OnComingSoon { get; set; }
-}

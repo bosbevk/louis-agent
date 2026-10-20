@@ -5,8 +5,3 @@
     <span class="template-text">@Template.Description</span>
     <small>Deur Puls · @Template.Category</small>
 </button>
-
-@code {
-    [Parameter, EditorRequired] public Template Template { get; set; } = default!;
-    [Parameter] public EventCallback<Template> OnStart { get; set; }
-}

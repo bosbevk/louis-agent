@@ -15,23 +15,3 @@
         </div>
     }
 </div>
-
-@code {
-    [Parameter, EditorRequired] public Chat Chat { get; set; } = default!;
-
-    /// <summary>The chat the page shows.</summary>
-    [Parameter] public bool Active { get; set; }
-
-    /// <summary>This chat is being renamed here (not in the top bar): the field replaces the link.</summary>
-    [Parameter] public bool Renaming { get; set; }
-    [Parameter] public string RenameDraft { get; set; } = "";
-    [Parameter] public EventCallback<string> RenameDraftChanged { get; set; }
-    [Parameter] public EventCallback<(KeyboardEventArgs Key, Chat Chat)> OnRenameKey { get; set; }
-    [Parameter] public EventCallback<Chat> OnRenameBlur { get; set; }
-
-    [Parameter] public EventCallback<Chat> OnFavourite { get; set; }
-    [Parameter] public EventCallback<(Chat Chat, bool InHeader)> OnRename { get; set; }
-    [Parameter] public EventCallback<Chat> OnArchive { get; set; }
-    [Parameter] public EventCallback<Chat> OnDelete { get; set; }
-    [Parameter] public EventCallback<string> OnComingSoon { get; set; }
-}

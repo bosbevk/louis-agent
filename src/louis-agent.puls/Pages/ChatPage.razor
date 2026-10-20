@@ -11,6 +11,14 @@
 
 <PageTitle>@(Runner.Chat?.Title ?? "Puls")</PageTitle>
 
+@{
+    // The pieces the shared MessageList and EmptyChat take as fragments (W2b): markup only, named here once.
+    RenderFragment Views = @<ChatViews View="@View" Recent="Store.Chats.Where(c => !c.Archived).Take(5).ToList()" OnStart="StartTemplate" OnNewProject='() => ComingSoon("Projekte")' />;
+    RenderFragment MessageBox = @<MessageBox Runner="Runner" Model="@_model" OnDraft="SetDraft" OnComingSoon="ComingSoon" />;
+    RenderFragment<Turn> UserActionsOf = turn => @<UserActions Turn="turn" OnCopy="Copy" OnComingSoon="ComingSoon" />;
+    RenderFragment<Turn> AnswerActionsOf = turn => @<AnswerActions Turn="turn" OnCopy="Copy" OnComingSoon="ComingSoon" />;
+}
+
 <div class="app">
     @* Below Bootstrap's lg breakpoint (992px) the sidebar is an offcanvas, opened from this bar. *@
     <header class="topbar d-lg-none">
@@ -65,38 +73,3 @@
         <WorkPanel Chat="Runner.Chat" Streaming="Runner.Streaming" Currency="Currency.Current" />
     </aside>
 </div>
-
-@code {
-    /// <summary>Verken or Studio in place of the turns (F20).</summary>
-    private RenderFragment Views => __builder =>
-    {
-        @if (View == "verken")
-        {
-            <ExploreView OnStart="StartTemplate" />
-        }
-        else if (View == "studio")
-        {
-            <StudioView Recent="Store.Chats.Where(c => !c.Archived).Take(5).ToList()" OnStart="StartTemplate" OnNewProject='() => ComingSoon("Projekte")' />
-        }
-    };
-
-    /// <summary>The message box (shared Composer with Puls's toolbar): in the middle of an empty chat, at the bottom once it has turns.</summary>
-    private RenderFragment MessageBox => __builder =>
-    {
-        <Composer @bind-Draft="Runner.Draft" Attachments="Runner.Attachments" Streaming="Runner.Streaming" CanSend="Runner.CanSend" Disabled="@(Runner.Chat?.Ended == true)"
-                  Placeholder="@(Runner.Chat?.Ended == true ? "Hierdie gesprek het geëindig toe die API herbegin het - begin 'n nuwe gesprek" : "Vra enigiets…")"
-                  OnSend="Runner.SendAsync" OnStop="Runner.StopAsync" BoxClass="input-box" SendLabel="↑" StopLabel="■" SendTitle="Stuur (Enter)" StopTitle="Stop">
-            <Tools><ComposerTools Model="@_model" OnFiles="Runner.AddFilesAsync" OnDraft="SetDraft" OnComingSoon="ComingSoon" /></Tools>
-        </Composer>
-    };
-
-    private RenderFragment<Turn> UserActionsOf => turn => __builder =>
-    {
-        <UserActions Turn="turn" OnCopy="Copy" OnComingSoon="ComingSoon" />
-    };
-
-    private RenderFragment<Turn> AnswerActionsOf => turn => __builder =>
-    {
-        <AnswerActions Turn="turn" OnCopy="Copy" OnComingSoon="ComingSoon" />
-    };
-}
