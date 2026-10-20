@@ -32,8 +32,8 @@ step had a diff to review against the plan's prediction:
   lost its country, four `ToolMessage` texts lost the Puls names, and the shared specialists guide lost Puls's protocol
   to Puls's own routing. Each diff was read line by line. The one paid cook run of the phase was not spent here but on the finished branch,
   after the layout reviews (`b4a6ea22b178`, in [write-up 07](07-context-engineering.md)), because a run proves the
-  code that ships, not a step on the way; it found one thing to read before the PR, the no-shop town's rows carrying
-  the default store.
+  code that ships, not a step on the way. It found nothing the cut changed: the no-shop town's rows carrying the
+  default store looked new until the stored events were read, and were Puls alone's, in every run on `main` too.
 - **Step 4 changed exactly four things:** the coding agent lost the three shop tools and the routing row; core's
   `ToolMessage` golden lost 17 entries and the pack's new golden held the same 17, byte-equal; the Puls golden changed
   in three `area` texts and one routing sentence. The first regeneration showed the whole shops guide missing from the
@@ -82,8 +82,8 @@ example that names a product is a product dependency a grep can't tell from a re
   but not the setting is skipped with a log line; on an instance that doesn't have the pack it is an unknown toolset.
   The tests hit the difference first, and keeping it was a decision: a role naming a toolset nothing provides is a
   configuration error, not a missing setting.
-- **Measure, then stop.** One paid run for the phase, placed at the step that changed what the cook reads, and a diff
-  review for every other step. The goldens made the other steps free to prove.
+- **Measure, then stop.** One paid run for the phase, on the finished branch, and a diff review for every step. The
+  goldens made the steps free to prove; the run's one surprise was read from its stored events, not re-run.
 
 ---
 [Learning write-ups](README.md) · [Goal](../GOAL.md) · [Plan](../plans/CL15-engine-identities-packs.md) ·
