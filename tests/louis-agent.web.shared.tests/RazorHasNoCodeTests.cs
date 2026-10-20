@@ -19,19 +19,8 @@ public class RazorHasNoCodeTests
         "src/louis-agent.puls/Components/Admin/ChartInfo.razor",
         "src/louis-agent.puls/Components/Admin/RunExplorer.razor",
         "src/louis-agent.puls/Components/Admin/TrendChart.razor",
-        "src/louis-agent.puls/Components/Brand/PulsLogo.razor",
-        "src/louis-agent.puls/Components/Brand/PulsTile.razor",
-        "src/louis-agent.puls/Components/Brand/Water.razor",
-        "src/louis-agent.puls/Components/Landing/Faq.razor",
-        "src/louis-agent.puls/Components/Landing/Features.razor",
-        "src/louis-agent.puls/Components/Landing/InsideTheApp.razor",
-        "src/louis-agent.puls/Components/Landing/LandingDemo.razor",
-        "src/louis-agent.puls/Components/Landing/MiniChat.razor",
-        "src/louis-agent.puls/Components/Landing/Numbers.razor",
-        "src/louis-agent.puls/Components/Landing/Pricing.razor",
         "src/louis-agent.puls/Pages/Admin/BenchmarkRun.razor",
         "src/louis-agent.puls/Pages/Admin/Benchmarks.razor",
-        "src/louis-agent.puls/Pages/LandingPage.razor",
     ];
 
     [Test]

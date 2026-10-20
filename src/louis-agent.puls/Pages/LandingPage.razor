@@ -1,6 +1,4 @@
 @page "/"
-@inject IJSRuntime JS
-@implements IAsyncDisposable
 
 @* F20: what Puls is, before you chat. A floating pill nav, the hero with the tagline, a picture of the app, how it works,
    the features, questions and a way in. The chat is at /gesels. F24 makes it move: the water behind it, the section
@@ -32,17 +30,3 @@
 </div>
 @* Shown by js/landing.js when the system asks for less motion and the user hasn't switched the animations on. *@
 <button class="motion-pill" id="motion-pill" type="button" hidden><span class="ic i-pulse" aria-hidden="true"></span>Wys die animasies <span>· jou stelsel vra minder beweging</span></button>
-
-@code {
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender) await JS.InvokeVoidAsync("pulsLanding.start");
-    }
-
-    public async ValueTask DisposeAsync()
-    {
-        // The page's listeners and timers go with it; a closed browser tab has no JS runtime to tell.
-        try { await JS.InvokeVoidAsync("pulsLanding.stop"); }
-        catch (JSDisconnectedException) { }
-    }
-}
