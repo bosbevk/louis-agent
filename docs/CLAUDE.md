@@ -126,6 +126,11 @@ decision's record (its context, and what it cost) in [docs/adr/](adr/README.md).
   mode) is an enum, parsed once where it enters with `Config/SettingChoice` (case ignored, aliases, never a number);
   code switches on the enum, and the "supported" list comes from it. Text stays text only up to that point.
   Why: [ADR 0024](adr/0024-choices-are-enums.md).
+- **Separate by concern** — a folder, class or component holds one concern; a folder with two kinds of thing or more
+  than about six files gets subfolders by concern, and a page over about a hundred lines splits into components. A
+  component's markup stays in its `.razor`; any logic beyond a few bindings goes in a `.razor.cs` code-behind, and logic
+  that needs no component (text, search, formatting) goes in a plain class with NUnit tests.
+  Why: [ADR 0010](adr/0010-folders-by-concern.md).
 - **Namespace = folder path, dependencies one way, prompts in markdown, hosts stay thin** — `ArchitectureTests`
   holds the first two ([Project layout](../louis-agent.core/CLAUDE.md#project-layout)).
   Why: [ADR 0010](adr/0010-folders-by-concern.md), [ADR 0011](adr/0011-prompts-are-content.md).
