@@ -807,6 +807,8 @@ sequenceDiagram
   `Chat/` folder is `Chats/`, so no namespace is named like the `Chat` type.
 - **No code in razor** (Louis, 2026-10-20): every `@code` block moves to a code-behind, component-free logic to tested
   plain classes, held by `RazorHasNoCodeTests`; markup, behaviour and the page snapshots stay byte-equal.
+- **A file holds at most 200 lines** (Louis, 2026-10-20): a test file 400; split by responsibility, held by
+  `FileSizeTests`; behaviour, goldens and snapshots unchanged.
 
 ---
 [Plans](README.md) · [The platform plan](platform.md)
