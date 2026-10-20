@@ -4,11 +4,3 @@
 {
     <div class="chat-usage" title="@UsageFormat.Detail(usage, Currency)">@if (ChildContent is null) { @UsageFormat.Total(usage, Currency) } else { @ChildContent(usage) }</div>
 }
-
-@code {
-    [Parameter] public TurnUsage? Usage { get; set; }
-    [Parameter] public CurrencyChoice? Currency { get; set; }
-
-    /// <summary>The line's words, given the usage; the shared "This chat: …" total when null.</summary>
-    [Parameter] public RenderFragment<TurnUsage>? ChildContent { get; set; }
-}

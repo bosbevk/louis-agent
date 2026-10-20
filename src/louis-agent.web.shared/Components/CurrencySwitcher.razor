@@ -1,7 +1,6 @@
 @* F14: the currency costs are shown in, in this browser; the server's (the PC's region) until changed here. *@
 @inject CurrencyState Currency
 @inject ChatText Text
-@implements IDisposable
 
 @if (Currency.Choices.Count > 1 && Currency.Current is { } current)
 {
@@ -14,21 +13,4 @@
             }
         </select>
     </label>
-}
-
-@code {
-    protected override async Task OnInitializedAsync()
-    {
-        Currency.Changed += Redraw;
-        await Currency.LoadAsync();
-    }
-
-    private void Redraw() => InvokeAsync(StateHasChanged);
-
-    private async Task Change(ChangeEventArgs e)
-    {
-        if (e.Value?.ToString() is { } chosen) await Currency.ChooseAsync(chosen);
-    }
-
-    public void Dispose() => Currency.Changed -= Redraw;
 }

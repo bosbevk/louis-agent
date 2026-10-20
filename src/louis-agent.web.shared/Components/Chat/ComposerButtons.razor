@@ -1,0 +1,10 @@
+@* Send, or Stop while a turn streams: the buttons that close the message box, alone after the text or at the end of
+   an app's toolbar (Composer puts them in either place). *@
+@if (Streaming)
+{
+    <button class="stop" @onclick="OnStop" title="@StopTitle">@StopLabel</button>
+}
+else
+{
+    <button id="send-button" class="send" @onclick="OnSend" disabled="@(!CanSend)" title="@SendTitle">@SendLabel</button>
+}
