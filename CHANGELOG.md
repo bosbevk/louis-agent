@@ -9,7 +9,8 @@
   texts); one `AgentCatalog`, built by the composition root (`src/louis-agent.composition`) from `IDENTITIES` and
   `PACKS`, checked at start-up; `HOST_TIME_ZONE` replaces the South African default; every pack convertible to an MCP
   server, held by `PackConvertibilityTests`; the fakes the test projects share in `tests/louis-agent.testing`. Proved
-  by three goldens and one paid cook run ([plan](docs/plans/CL15-engine-identities-packs.md),
+  by three goldens and one paid cook run on the finished branch, `b4a6ea22b178`, read against the two runs on main in
+  write-up [07](docs/learning/07-context-engineering.md) ([plan](docs/plans/CL15-engine-identities-packs.md),
   [ADR 0027](docs/adr/0027-engine-identities-and-packs.md), [ADR 0028](docs/adr/0028-packs-stay-convertible-to-mcp.md),
   write-ups [04](docs/learning/04-tool-design.md) and [18](docs/learning/18-testing-and-shipping.md))
 - 2026-10-19 — **FX20 Skill files wait for approval** (the platform plan's Phase 1, its last door): a skill file the

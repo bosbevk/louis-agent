@@ -30,8 +30,10 @@ step had a diff to review against the plan's prediction:
   project were built with no prompt moving yet. A diff of zero lines was the test.
 - **Step 3 changed them where the plan said:** the Puls lines left the coding agent's prompt, `GetToday`'s description
   lost its country, four `ToolMessage` texts lost the Puls names, and the shared specialists guide lost Puls's protocol
-  to Puls's own routing. Each diff was read line by line, and the one paid cook run of the phase was spent here,
-  because the split changed what the cook reads.
+  to Puls's own routing. Each diff was read line by line. The one paid cook run of the phase was not spent here but on the finished branch,
+  after the layout reviews (`b4a6ea22b178`, in [write-up 07](07-context-engineering.md)), because a run proves the
+  code that ships, not a step on the way; it found one thing to read before the PR, the no-shop town's rows carrying
+  the default store.
 - **Step 4 changed exactly four things:** the coding agent lost the three shop tools and the routing row; core's
   `ToolMessage` golden lost 17 entries and the pack's new golden held the same 17, byte-equal; the Puls golden changed
   in three `area` texts and one routing sentence. The first regeneration showed the whole shops guide missing from the
