@@ -8,8 +8,9 @@ namespace LouisAgent.Web.Testing;
 /// A component's rendered markup pinned to a golden file beside its test, the way the model's request and the tool
 /// texts are pinned (tests/CLAUDE.md, golden files): <c>LOUIS_UPDATE_GOLDEN=1</c> writes it, any other run compares,
 /// and a mismatch leaves what was rendered under the temp folder's <c>louis-agent-snapshots/</c> so the diff can be
-/// read. Per-instance SVG ids, <c>@ref</c> element references and the seconds a thinking block took are normalised,
-/// since none is the component's doing.
+/// read. Normalised, since none is the component's doing: per-instance SVG ids, <c>@ref</c> element references, the
+/// renderer's event-handler numbers, the seconds a thinking block took, and the whitespace between tags (a page split
+/// into components keeps its markup but not its indentation).
 /// </summary>
 public static partial class Snapshots
 {
@@ -19,6 +20,9 @@ public static partial class Snapshots
         text = InstanceIds().Replace(text, "$1-ID-");
         text = ElementReferences().Replace(text, "blazor:elementReference=\"ID\"");
         text = ThoughtFor().Replace(text, "$1Ns");
+        text = EventHandlers().Replace(text, "$1=\"N\"");
+        text = LineBreaksAtTags().Replace(text, "");
+        text = BetweenTags().Replace(text, "><");
         return text.TrimEnd() + "\n";
     }
 
@@ -52,4 +56,16 @@ public static partial class Snapshots
 
     [GeneratedRegex(@"(Thought for |Gedink vir )\d+s")]
     private static partial Regex ThoughtFor();
+
+    /// <summary>bUnit numbers event handlers in the order the renderer meets them, which a component boundary changes.</summary>
+    [GeneratedRegex(@"(blazor:on[a-z]+)=""\d+""")]
+    private static partial Regex EventHandlers();
+
+    /// <summary>A line break and its indentation next to a tag, inside text: indentation, not markup.</summary>
+    [GeneratedRegex(@"\s*\n\s*(?=<)|(?<=>)\s*\n\s*")]
+    private static partial Regex LineBreaksAtTags();
+
+    /// <summary>Whitespace-only text between tags: indentation, not markup.</summary>
+    [GeneratedRegex(@">\s+<")]
+    private static partial Regex BetweenTags();
 }
