@@ -1,5 +1,6 @@
 namespace LouisAgent.Core.Tools.Web.Search.Providers;
 
+using LouisAgent.Core.Tools.Web.Fetching;
 using System.Net;
 using System.Text.Json;
 using LouisAgent.Core.Logging;
@@ -9,7 +10,7 @@ using LouisAgent.Core.Tools.Web;
 using LouisAgent.Core.Tools.Web.Search;
 
 /// <summary>
-/// SearXNG as the search engine (F32 step 1): the metasearch we run ourselves in the Puls stack, for development,
+/// SearXNG as the search engine (F32 step 1): the metasearch we run ourselves in a compose stack, for development,
 /// tests and benchmarks; the sold endpoint keeps a licensed API, since the engines SearXNG asks don't license their
 /// results (ADR 0023). <c>GET {SEARXNG_URL}/search?q=…&amp;format=json</c>: <see cref="WebSearchQuery.Site"/> goes into
 /// the query as <c>site:</c>, <see cref="WebSearchQuery.Recency"/> becomes <c>time_range</c> (day, week, month, year:
@@ -61,9 +62,9 @@ public sealed class SearxngSearchProvider(Uri baseUrl, HttpClient? http = null) 
         var results = root.TryGetProperty("results", out var items) && items.ValueKind == JsonValueKind.Array
             ? items.EnumerateArray()
                 .Select(r => new WebSearchResult(
-                    WebTools.CleanInline(r.TryGetProperty("title", out var t) ? t.GetString() : ""),
+                    HtmlText.CleanInline(r.TryGetProperty("title", out var t) ? t.GetString() : ""),
                     r.TryGetProperty("url", out var u) ? u.GetString() ?? "" : "",
-                    WebTools.CleanInline(r.TryGetProperty("content", out var c) ? c.GetString() : "")))
+                    HtmlText.CleanInline(r.TryGetProperty("content", out var c) ? c.GetString() : "")))
                 .Where(r => r.Url.Length > 0)
                 .Take(maxResults)
                 .ToList()

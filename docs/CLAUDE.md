@@ -126,6 +126,16 @@ decision's record (its context, and what it cost) in [docs/adr/](adr/README.md).
   mode) is an enum, parsed once where it enters with `Config/SettingChoice` (case ignored, aliases, never a number);
   code switches on the enum, and the "supported" list comes from it. Text stays text only up to that point.
   Why: [ADR 0024](adr/0024-choices-are-enums.md).
+- **Separate by concern** — a folder, class or component holds one concern; a folder with two kinds of thing or more
+  than about six files gets subfolders by concern, and a page over about a hundred lines splits into components. A
+  `.razor` holds markup only, no `@code` block: a component's C# goes in its `.razor.cs` code-behind, and logic that
+  needs no component (text, search, formatting) goes in a plain class with NUnit tests. A file holds at most 200
+  lines (a test file 400). Split a bigger class by responsibility: group its methods by the fields they use and the
+  reason they would change, and give each group its own class named for what it does (`PaymoClient`, `DiffFormatter`);
+  the original keeps only the flow and calls them, pure logic gets its own tests, I/O stays at the edge. A `partial`
+  class (other than a code-behind, or one the `[GeneratedRegex]` generator requires), `#region`, or a `Helpers`/`Utils`/`Manager` grab-bag hides the size instead of
+  splitting it.
+  Why: [ADR 0010](adr/0010-folders-by-concern.md).
 - **Namespace = folder path, dependencies one way, prompts in markdown, hosts stay thin** — `ArchitectureTests`
   holds the first two ([Project layout](../louis-agent.core/CLAUDE.md#project-layout)).
   Why: [ADR 0010](adr/0010-folders-by-concern.md), [ADR 0011](adr/0011-prompts-are-content.md).
@@ -183,7 +193,9 @@ Where things are. What's inside each project (files, key types, settings, tests,
 [projects/](projects/README.md); core's folders are in [Project layout](../louis-agent.core/CLAUDE.md#project-layout).
 
 ```
-louis-agent.core/        # The engine: the loop, tools, skills, providers, usage and prices, bootstrap; Prompts/: the built-in prompts
+louis-agent.core/        # The engine: the loop, tools, skills, providers, usage and prices, bootstrap; Prompts/: the built-in prompts (no product)
+identities/              # Who an agent is (CL15): louis-agent.identity.puls (its voice, modes, roles and the packs it names)
+packs/                   # What an agent can do (CL15): louis-agent.pack.shops (the shops toolset, its guide and settings)
 src/
 ├── louis-agent.cli/          # Terminal host
 ├── louis-agent.acp-server/   # Rider (Agent Client Protocol over stdio)
@@ -192,9 +204,12 @@ src/
 ├── louis-agent.puls/         # Puls: the general assistant's web app (the API built with -p:WebApp=puls)
 ├── louis-agent.web.shared/   # What both web apps share
 ├── louis-agent.mcp-server/   # Publishes the tools over MCP (no model)
-└── louis-agent.orchestrator/ # POC: a second agent on core that has louis-agent fix a service's errors
+├── louis-agent.orchestrator/ # POC: a second agent on core that has louis-agent fix a service's errors
+└── louis-agent.composition/  # The one project that knows every identity and pack; a host picks with IDENTITIES and PACKS
 tools/louis-agent.usage-probe/ # A provider's raw usage; prices and totals a ledger (--ledger, --cache-gaps)
-tests/                   # NUnit: core.tests (mirrors core, plus ArchitectureTests, SkillsLayoutTests), api.tests, orchestrator.tests
+tests/                   # NUnit: core.tests (mirrors core, plus ArchitectureTests, SkillsLayoutTests), api.tests, orchestrator.tests,
+                         #   identity.puls.tests, pack.shops.tests, composition.tests, web.shared.tests, puls.tests and web.tests (bUnit);
+                         #   louis-agent.testing and louis-agent.web.testing hold the fakes they share
 docker/                  # Dockerfiles and compose files (main, demo, puls)
 config/                  # .env + .env.secrets (ignored) and their examples, LLM profiles, prices.json, rates.json
 Skills/                  # What the agent writes: agent/functions/ (CreateSkillFile), tools/ (agent-built tools)
@@ -210,7 +225,7 @@ there, so a session pays for them only when they apply:
 |---|---|
 | [tests/CLAUDE.md](../tests/CLAUDE.md) | Running the tests, the golden files (bash and PowerShell), fakes and platform-neutral tests |
 | [src/CLAUDE.md](../src/CLAUDE.md) | The hosts' own message enums, adding a web theme |
-| [louis-agent.core/CLAUDE.md](../louis-agent.core/CLAUDE.md) | Adding a C# tool or a toolset, the project layout, messages and logging, another agent on core, changing the LLM |
+| [louis-agent.core/CLAUDE.md](../louis-agent.core/CLAUDE.md) | Adding a C# tool or a toolset, the project layout, messages and logging, building an identity or a pack, another agent on core, changing the LLM |
 
 ### Adding a skill
 

@@ -39,20 +39,19 @@ as you go: every answer shows what it cost, specialists included.
 
 | Path | What |
 |---|---|
-| `Pages/LandingPage.razor` | The landing page (F20, moving since F24): hero, the app playing a turn, Hoe dit werk, the pinned *In die app* tour, the Kenmerke bento and marquees, Syfers, Pryse, Oor ons, the Vrae accordion; its copy as C# arrays |
-| `Components/LandingDemo.razor` | The app's three panels in the landing page, playing three scripted turns (example data in `data-turns`, played by `landing.js`) |
-| `Components/Water.razor` | The four swells behind the landing page and an empty chat |
-| `Pages/ChatPage.razor` | The shell: sidebar, top bar, the chat, Verken and Studio views, the message box, the Werk panel |
-| `Components/PulsLogo.razor` | The ripple logo inline (its rings glow outward) |
-| `Components/WorkPanel.razor` | The Werk panel |
-| `Components/ChatSearch.razor` | Ctrl/Cmd K search over the chats in this browser |
-| `Components/ExploreView.razor`, `StudioView.razor`, `TemplateCard.razor` | Verken and Studio |
+| `Pages/LandingPage.razor` | The landing page (F20, moving since F24): the water, the progress line and the section index, then the sections in order, and the JS start and stop |
+| `Components/Landing/` | One component per section (W2): `LandingNav`, `Hero`, `Showcase`, `HowItWorks`, `InsideTheApp` (the pinned tour), `Features` (the Kenmerke bento and marquees), `Numbers` (Syfers), `Pricing`, `About`, `Faq` (the accordion), `CallToAction`, `LandingFooter`; a section's copy is a C# array in its own file. `MiniChat` is the little picture of the app the stages and the tour show (a question, a delegation card, the body, sources, usage), six panels from one component; `LandingBars` the example bar heights two sections share. Every section's copy and the brand components' per-instance ids are in `.razor.cs` files (W2b) |
+| `Components/Landing/LandingDemo.razor` | The app's three panels in the landing page, playing three scripted turns (example data in `data-turns`, played by `landing.js`) |
+| `Components/Brand/` | `PulsLogo` (the ripple logo inline, its rings glow outward), `PulsTile` (the app icon), `PulsMark` (the mark's geometry), `Water` (the four swells behind the landing page and an empty chat) |
+| `Pages/ChatPage.razor`, `ChatPage.razor.cs` | The shell, the layout only since W2: sidebar, top bar, the chat (the shared `MessageList` and `Composer`), Verken and Studio views, the Werk panel; its own state and handlers in the code-behind, a turn's life in the shared `ChatRunner` |
+| `Components/Chat/` | `EmptyChat` (the welcome with the message box in the middle) and `Toast` at the top; by concern (W2b): `Search/ChatSearch` (Ctrl/Cmd K over the chats in this browser, matching by `Search/ChatFinder`, tested alone), `Turns/UserActions` and `AnswerActions` (under a message and an answer), `Composing/MessageBox` (the shared Composer with Puls's toolbar, `ComposerTools`), `Panels/WorkPanel` (the Werk panel), `ChatViews`, `ExploreView`, `StudioView` and `TemplateCard` (Verken and Studio). Every component's C# is its `.razor.cs`; the page names its fragments as markup templates |
+| `Components/Chat/Sidebar/` | `ChatSidebar` (the brand, a new chat, search, the views, the chats and the settings), `ChatListItem`, `ChatMenu`, `ProfileCard`, `LocationPicker`, `MotionToggle` |
+| `Components/Chat/Header/` | `ChatHeader` (the top bar), `CreditsMenu`, `LanguageMenu`, `ProfileMenu` |
 | `Layout/AdminLayout.razor` | The admin portal's sidebar and content column |
 | `Pages/Admin/Benchmarks.razor`, `BenchmarkRun.razor` | The checks, a live run and the runs list; one stored run |
-| `Components/RunExplorer.razor`, `TrendChart.razor`, `ChartInfo.razor` | A run at every level, a check's trend, a chart's explanation |
-| `PulsText.cs` | The shared components' words in Afrikaans (`ChatText`) |
-| `Sources.cs` | A turn's sources: the answer's links and the pages its specialists read |
-| `Templates.cs` | The starters on Verken and Studio |
+| `Components/Admin/` | `RunExplorer`, `TrendChart`, `ChartInfo`: a run at every level, a check's trend, a chart's explanation |
+| `Text/PulsText.cs` | The shared components' words in Afrikaans (`ChatText`) |
+| `Content/` | `Source` and `Sources` (a turn's sources: the answer's links and the pages its specialists read); `Template` and `Templates` (the starters on Verken and Studio) |
 | `wwwroot/css/app.css` | The dark theme (orange, green, charcoal, a charcoal-tinted white; Montserrat) |
 | `wwwroot/js/chat.js` | Scrolling, the sidebar and panel toggles, copy, location (browser + Nominatim), focus, the pointer spotlight and tilt, the motion switch, costs counting up |
 | `wwwroot/js/landing.js` | The landing page's motion (F24): progress line, section index, centred links, reveals, counters, the pinned tour, the demo, the accordion; started and stopped by `LandingPage.razor` |

@@ -1,0 +1,24 @@
+@* A titled group of changed files (Staged / Changes) with a select-all box; nothing when the group is empty. The
+   selection is the panel's: a tick, the box and a file's button report up to it. *@
+@if (Files.Count > 0)
+{
+    bool allSelected = Files.All(f => Selected.Contains(ChangesPanel.Key(f, Staged)));
+    <div class="change-group">
+        <label class="group-head">
+            <input type="checkbox" checked="@allSelected" @onchange="e => OnToggleAll.InvokeAsync((bool)e.Value!)" />
+            @Title <span class="count">@Files.Count</span>
+        </label>
+        @foreach (var file in Files)
+        {
+            string key = ChangesPanel.Key(file, Staged);
+            <div class="change-row @(key == OpenKey ? "selected" : "")">
+                <input type="checkbox" checked="@Selected.Contains(key)" @onchange="() => OnToggle.InvokeAsync(key)" />
+                <button class="change-file" title="@file.Path" @onclick="() => OnOpenDiff.InvokeAsync((file, Staged))">
+                    <span class="change-name">@file.FileName</span>
+                    <span class="change-folder">@file.Folder</span>
+                </button>
+                <span class="letter letter-@file.Letter(Staged)">@file.Letter(Staged)</span>
+            </div>
+        }
+    </div>
+}

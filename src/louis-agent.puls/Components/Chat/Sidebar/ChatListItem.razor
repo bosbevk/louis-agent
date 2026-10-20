@@ -1,0 +1,17 @@
+@* One chat in the sidebar: its link (or the rename field), and its menu. *@
+<div class="chat-item @(Active ? "active" : "")">
+    @if (Renaming)
+    {
+        <input id="rename-input" class="rename-input" value="@RenameDraft" @oninput='e => RenameDraftChanged.InvokeAsync(e.Value?.ToString() ?? "")'
+               @onkeydown="e => OnRenameKey.InvokeAsync((e, Chat))" @onblur="() => OnRenameBlur.InvokeAsync(Chat)" aria-label="Nuwe naam" />
+    }
+    else
+    {
+        <a href="gesels/@Chat.SessionId" title="@Chat.Title">@Chat.Title</a>
+        <div class="dropdown">
+            <button class="icon item-menu" type="button" data-bs-toggle="dropdown" data-bs-popper-config='{"strategy":"fixed"}'
+                    aria-expanded="false" aria-label="Meer vir @Chat.Title">⋯</button>
+            <ul class="dropdown-menu dropdown-menu-end"><ChatMenu Chat="Chat" InHeader="false" OnFavourite="OnFavourite" OnRename="OnRename" OnArchive="OnArchive" OnDelete="OnDelete" OnComingSoon="OnComingSoon" /></ul>
+        </div>
+    }
+</div>

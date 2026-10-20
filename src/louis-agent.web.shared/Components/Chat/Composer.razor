@@ -1,0 +1,29 @@
+@* The message box: the attachments as chips, the text, and Send or Stop. Each app lays its own box around the text
+   (the code-review app a prompt sign and an attach button before it, Puls a toolbar after it, where the buttons then
+   sit), so those come as fragments; the draft flows down and up, and sending and stopping are the page's. *@
+@if (Attachments.Count > 0)
+{
+    <div class="attachments">
+        @foreach (var attachment in Attachments)
+        {
+            <span class="chip">@attachment.Name <button class="icon" @onclick="() => Attachments.Remove(attachment)">×</button></span>
+        }
+    </div>
+}
+<div class="@BoxClass">
+    @BeforeInput
+    @* The pages bound the draft with @bind, which writes value and its handler after the other attributes; the same order here. *@
+    <textarea id="composer-input" rows="1" disabled="@Disabled" placeholder="@Placeholder"
+              value="@Draft" @oninput='e => DraftChanged.InvokeAsync(e.Value?.ToString() ?? "")'></textarea>
+    @if (Tools is null)
+    {
+        <ComposerButtons Streaming="Streaming" CanSend="CanSend" OnSend="OnSend" OnStop="OnStop" SendLabel="@SendLabel" StopLabel="@StopLabel" SendTitle="@SendTitle" StopTitle="@StopTitle" />
+    }
+    else
+    {
+        <div class="composer-tools">
+            @Tools
+            <ComposerButtons Streaming="Streaming" CanSend="CanSend" OnSend="OnSend" OnStop="OnStop" SendLabel="@SendLabel" StopLabel="@StopLabel" SendTitle="@SendTitle" StopTitle="@StopTitle" />
+        </div>
+    }
+</div>

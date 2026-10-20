@@ -51,14 +51,15 @@ flowchart TB
 
 | Path | What's in it |
 |---|---|
-| `Pages/ChatPage.razor` | The page: tabs, chat flow, stream handling, opening files / diffs / branches, merge and delete actions |
-| `Components/FileTree.razor`, `FileViewer.razor` | Workspace browser and file view (with "Ask agent to review") |
-| `Components/ChangesPanel.razor`, `DiffViewer.razor` | Changed files, selection, stage / unstage / discard / commit, *Review all* (asks the agent to review every uncommitted change); one file's diff |
-| `Components/BranchesPanel.razor`, `HistoryViewer.razor`, `PatchView.razor` | Branches to merge, merged branches, all commits; a branch's or commit's diff |
+| `Pages/ChatPage.razor` | The page (W2): the layout only, about fifty lines; the sidebar, the viewers and the shared chat pieces (`MessageList`, `Notice`, `ChatUsageBar`, `Composer`); its state (what a viewer shows) and handlers in `ChatPage.razor.cs`, a turn's life in the shared `ChatRunner` |
+| `Components/EmptyChat.razor`, `Components/Workspace/WorkspaceSidebar.razor` | The boot screen until the first message; the sidebar (new chat, the four tabs and their panels, theme, currency, API key), its tab its own, everything else parameters and callbacks of the page |
+| `Components/Workspace/FileTree.razor`, `FileViewer.razor` | Workspace browser and file view (with "Ask agent to review") |
+| `Components/Git/ChangesPanel.razor`, `ChangeGroup.razor`, `DiffViewer.razor` | Changed files, selection, stage / unstage / discard / commit, *Review all* (asks the agent to review every uncommitted change); one titled group of them with its select-all box; one file's diff |
+| `Components/Git/BranchesPanel.razor`, `HistoryViewer.razor`, `PatchView.razor` | Branches to merge, merged branches, all commits; a branch's or commit's diff |
 | `Components/ThemeSwitcher.razor` | Theme selection |
-| `Services/AgentApiWorkspace.cs` | The workspace and git calls, on the shared `AgentApi` |
-| `Services/GitState.cs`, `GitHistory.cs` | Shared git state with change events; the merge/delete queue |
-| `Models.cs` | Workspace and git records |
+| `*.razor.cs` | Every component's C# (W2b): a `.razor` holds markup only |
+| `Workspace/` | The workspace records (`WorkspaceEntry`, `WorkspaceFolder`, `WorkspaceFile`, one per file) and `AgentApiWorkspace`, the workspace and git calls on the shared `AgentApi`; `CodeLanguage` (highlight.js language by file name) and `FileSize` (the header's size) |
+| `Git/` | The git records (`GitFile`, `GitStatus`, `GitDiff`, `GitBranch`, `GitBranches`, `GitCommit`, `GitLog`, `GitCommitDetail`, `GitBranchDetail`, one per file); `GitState` and `GitHistory`, shared git state with change events and the merge/delete queue; `UnifiedDiff` (a diff as rows with line numbers), `Patch` (a multi-file patch per file), `RelativeTime` (a commit's age) and `ReviewActions` (the prompts and chat titles of the reviews a viewer asks for), each with tests |
 | `wwwroot/` | `index.html`, `css/app.css`, themes, `js/chat.js` (scrolling, focus, cross-tab sync of chats) |
 
 **Shared with Puls** (`src/louis-agent.web.shared/`, a Razor class library both apps reference; Markdig is its package):
@@ -68,11 +69,12 @@ flowchart TB
 | `Components/TurnView.razor`, `BlocksView.razor` | One turn: user message, thinking (collapsible), text, tool cards |
 | `Components/DelegationCard.razor` | A sub-session (F5) inside the turn: the specialist, its toolsets, its steps live, its cost |
 | `Components/CurrencySwitcher.razor` | The display currency per browser (F14) |
-| `Services/AgentApi.cs` | Typed client for the session calls; SSE parsing; errors as `AgentApiException` |
-| `Services/ChatStore.cs`, `CurrencyState.cs`, `UsageFormat.cs` | Chats and the API key in `localStorage`; the currency; usage lines |
-| `TurnStream.cs`, `Delegation.cs` | Folds the event stream, sub-session events included, into the turn the page shows |
-| `Models.cs`, `ChatText.cs` | `Chat`, `Turn`, `Block` and the words the components show (the code-review app's by default) |
-| `Markdown.cs` | Markdig pipeline: raw HTML shown as text, only http(s)/mailto links |
+| `Api/` | `AgentApi`, the typed client for the session calls with SSE parsing; `AgentApiException` (errors with their status); `AgentStreamEvent` |
+| `Chats/` | What a chat is in the browser: `Chat`, `Turn`, `Block`, `BlockKind`, `Attachment`; `TurnStream` and `Delegation` fold the event stream, sub-session events included, into the turn the page shows; `WorkStatus` and `RolePhases` say what a specialist is doing; `SpecialistAnswer` splits a sub-turn into its work and its answer for the card; `ChatRunner` (W2) is a turn's life for every chat page: the draft and its attachments, the session opened on the first message, the stream with a redraw raised at most every 50 ms, stop, the save, the errors in the app's words |
+| `Components/Chat/` | The chat pieces both apps lay out (W2): `MessageList` (the turns, with an `Empty` slot and an app's own `Content`; scrolls to the end), `Composer` (the draft, its attachments, with slots for an app's own pieces around the text) and `ComposerButtons` (Send, or Stop while streaming, placed by `Composer`), `ChatUsageBar`, `Notice`; every component's C# is its `.razor.cs` (W2b) |
+| `Usage/` | `TurnUsage` (a turn's tokens and cost), `UsageFormat` (the usage lines), `CurrencyState` and `CurrencyChoice` (the display currency, F14), `RatesTable` and `RatesDisplay` (the API's rates) |
+| `Storage/` | `ChatStore` (chats in `localStorage`) and `ChatSettings` (the API key and the admin key, kept in this browser) |
+| `Text/` | `ChatText` (the words the components show; the code-review app's by default), `ToolArgs` (a tool call's input on one line) and `Markdown` (the Markdig pipeline: raw HTML shown as text, only http(s)/mailto links, images only from the shops' hosts) |
 
 ## Configuration
 

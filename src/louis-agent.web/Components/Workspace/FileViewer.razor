@@ -1,0 +1,21 @@
+@* A workspace file with line numbers and syntax highlighting, and actions to hand it to the agent. *@
+@inject IJSRuntime JS
+
+<div class="file-viewer">
+    <header class="file-header">
+        <div class="file-title">
+            <span class="file-path" title="@File.Path">@File.Path</span>
+            <span class="file-meta">@LineCount lines · @FileSize.Format(File.Size)@(_language is null ? "" : $" · {_language}")</span>
+        </div>
+        <div class="file-actions">
+            <button class="send" disabled="@Busy" @onclick="OnReview">Ask agent to review</button>
+            <button class="secondary" disabled="@Busy" @onclick="OnAsk">Ask about this file</button>
+            <button class="icon" title="Close file" @onclick="OnClose">×</button>
+        </div>
+    </header>
+    <div class="file-body">
+        <pre class="gutter">@_gutter</pre>
+        @* Filled by louisChat.renderCode; Blazor renders no children here so it never overwrites the highlighting. *@
+        <pre class="code"><code @ref="_code"></code></pre>
+    </div>
+</div>

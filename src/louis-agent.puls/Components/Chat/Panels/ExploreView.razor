@@ -1,0 +1,27 @@
+@* Verken (F20): Puls's starters by section, like Preline's Explore. A card opens a new chat with its starter. *@
+<div class="page-view">
+    <header class="page-head">
+        <span class="eyebrow">Verken</span>
+        <h1>Begin met iets gereeds</h1>
+        <p>Kies 'n beginpunt; Puls sit dit in die boodskapblok sodat jy dit kan klaarmaak en stuur.</p>
+        <nav class="page-tabs">
+            @foreach (string section in Templates.Sections)
+            {
+                <a href="verken#@Anchor(section)">@section</a>
+            }
+        </nav>
+    </header>
+
+    @foreach (string section in Templates.Sections)
+    {
+        <section class="page-section" id="@Anchor(section)">
+            <h2>@section</h2>
+            <div class="template-grid">
+                @foreach (var template in Templates.All.Where(t => t.Section == section))
+                {
+                    <TemplateCard Template="template" OnStart="OnStart" />
+                }
+            </div>
+        </section>
+    }
+</div>

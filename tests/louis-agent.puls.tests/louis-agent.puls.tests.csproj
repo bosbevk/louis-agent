@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <!-- T1 (CL15, the web layout review): Puls's first tests, with bUnit (MIT): its own components and a render of its chat
+       page against a fake API that answers from the recorded Puls turn, each pinned to a golden file beside its test
+       (LOUIS_UPDATE_GOLDEN=1 regenerates). -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>LouisAgent.Puls.Tests</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="bunit" Version="2.12.5" />
+    <PackageReference Include="coverlet.collector" Version="6.0.4" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.0" />
+    <PackageReference Include="NUnit" Version="4.3.2" />
+    <PackageReference Include="NUnit.Analyzers" Version="4.7.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\louis-agent.puls\louis-agent.puls.csproj" />
+    <!-- The fixture replay, the stub API and the snapshot helper the web tests share; no test project references another. -->
+    <ProjectReference Include="..\louis-agent.web.testing\louis-agent.web.testing.csproj" />
+    <ProjectReference Include="..\louis-agent.testing\louis-agent.testing.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="NUnit.Framework" />
+    <Using Include="Bunit" />
+    <Using Include="LouisAgent.Testing" />
+    <Using Include="LouisAgent.Web.Testing" />
+  </ItemGroup>
+
+</Project>

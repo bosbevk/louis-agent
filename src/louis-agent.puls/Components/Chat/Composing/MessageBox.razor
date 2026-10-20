@@ -1,0 +1,7 @@
+@* The message box (W2b, from the page): the shared Composer with Puls's toolbar; in the middle of an empty chat, at
+   the bottom once it has turns. The draft, the attachments and sending are the runner's. *@
+<Composer @bind-Draft="Runner.Draft" Attachments="Runner.Attachments" Streaming="Runner.Streaming" CanSend="Runner.CanSend" Disabled="@(Runner.Chat?.Ended == true)"
+          Placeholder="@(Runner.Chat?.Ended == true ? "Hierdie gesprek het geëindig toe die API herbegin het - begin 'n nuwe gesprek" : "Vra enigiets…")"
+          OnSend="Runner.SendAsync" OnStop="Runner.StopAsync" BoxClass="input-box" SendLabel="↑" StopLabel="■" SendTitle="Stuur (Enter)" StopTitle="Stop">
+    <Tools><ComposerTools Model="@Model" OnFiles="Runner.AddFilesAsync" OnDraft="OnDraft" OnComingSoon="OnComingSoon" /></Tools>
+</Composer>

@@ -7,7 +7,7 @@ namespace LouisAgent.Core.Skills.Roles;
 /// </summary>
 public enum RoleLevel
 {
-    /// <summary>Level 0: the agent the user talks to (Puls, the CLI, Rider's chat); its voice is in <c>agent/</c>.</summary>
+    /// <summary>Level 0: the agent the user talks to (a product's chat, the CLI, Rider's chat); its voice is in <c>agent/</c>.</summary>
     Agent = 0,
 
     /// <summary>Level 1: a specialist a level-0 session delegates to; its role is in <c>specialists/</c>.</summary>

@@ -1,6 +1,6 @@
 # FX20 · A skill file the agent writes is loaded at once, for every later session, with no person in between
 
-> **Status:** done · **Area:** core, skill authoring (`Agent/Tools/SkillTools`, `AgentEngine`'s `/approve`, `/reject`
+> **Status:** done · **Area:** core, skill authoring (`Agent/EngineTools/SkillTools`, `AgentEngine`'s `/approve`, `/reject`
 > and `/tools`) · **Found:** 2026-10-18, reading the code for [the platform plan](../plans/platform.md) (at `main`
 > 7894953) · **Fixed:** 2026-10-19 · **Planned:** the plan's Phase 1, one step, so no plan file of its own
 

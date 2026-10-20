@@ -1,5 +1,7 @@
 namespace LouisAgent.Core.Llm;
 
+using LouisAgent.Core.Llm.Caching;
+using LouisAgent.Core.Llm.UsageMapping;
 using System.ClientModel;
 using Anthropic;
 using Anthropic.Core;
@@ -8,7 +10,7 @@ using LouisAgent.Core.Config;
 using Microsoft.Extensions.AI;
 using OllamaSharp;
 using OpenAI;
-using LouisAgent.Core.Llm.AnthropicProvider;
+using LouisAgent.Core.Llm.Providers.AnthropicProvider;
 using LouisAgent.Core.Messages;
 
 /// <summary>Maps <see cref="LlmOptions.Provider"/> to an <see cref="IChatClient"/>. Add a provider by adding one entry.</summary>

@@ -1,5 +1,6 @@
 using LouisAgent.Core.Tools;
 using LouisAgent.Core.Tools.Git;
+using LouisAgent.Core.Tools.Git.Running;
 
 namespace LouisAgent.Core.Tests.Tools.Git;
 
@@ -13,7 +14,11 @@ public class GitToolsTests
     private string _root = null!;
     private string _repo = null!;
     private string _origin = null!;
-    private GitTools _git = null!;
+    private GitChangeTools _changes = null!;
+    private GitBranchTools _branches = null!;
+    private GitRemoteTools _remotes = null!;
+    private GitHistoryTools _history = null!;
+    private GitConfigTools _config = null!;
 
     [SetUp]
     public void SetUp()
@@ -31,7 +36,12 @@ public class GitToolsTests
         Git(_repo, "config", "core.autocrlf", "false");
         Git(_origin, "init", "-q", "--bare", "-b", "main");
         Commit("readme.md", "Hallo\n", "Begin die projek");
-        _git = new GitTools(_repo);
+        var git = new GitRunner(_repo);
+        _changes = new GitChangeTools(git);
+        _branches = new GitBranchTools(git);
+        _remotes = new GitRemoteTools(git);
+        _history = new GitHistoryTools(git);
+        _config = new GitConfigTools(git);
     }
 
     [TearDown]
@@ -62,7 +72,7 @@ public class GitToolsTests
     {
         string file = Outside("written-by-show.txt");
 
-        string result = _git.ShowCommit($"--output={file}");
+        string result = _history.ShowCommit($"--output={file}");
 
         Assert.That(result, Does.Contain("starts with '-'").And.Contain("commitRef"));
         Assert.That(File.Exists(file), Is.False, "git show --output wrote a file outside the repository");
@@ -71,14 +81,14 @@ public class GitToolsTests
     [Test]
     public void SetConfig_SetsOnlyTheUsersNameAndEmail()
     {
-        string refused = _git.SetConfig("core.fsmonitor", "touch " + Outside("fsmonitor.txt"));
+        string refused = _config.SetConfig("core.fsmonitor", "touch " + Outside("fsmonitor.txt"));
 
         Assert.That(refused, Does.Contain("user.name").And.Contain("user.email").And.Contain("core.fsmonitor"));
         Assert.That(Git(_repo, "config", "--get", "core.fsmonitor").ExitCode, Is.Not.Zero, "the key was set");
-        Assert.That(_git.SetConfig("user.name", "Anna"), Does.Not.Contain("Exit Code"));
-        Assert.That(_git.GetConfig("user.name"), Is.EqualTo("Anna"));
-        Assert.That(_git.SetConfig("user.email", "anna@example.com"), Does.Not.Contain("Exit Code"));
-        Assert.That(_git.GetConfig("user.email"), Is.EqualTo("anna@example.com"));
+        Assert.That(_config.SetConfig("user.name", "Anna"), Does.Not.Contain("Exit Code"));
+        Assert.That(_config.GetConfig("user.name"), Is.EqualTo("Anna"));
+        Assert.That(_config.SetConfig("user.email", "anna@example.com"), Does.Not.Contain("Exit Code"));
+        Assert.That(_config.GetConfig("user.email"), Is.EqualTo("anna@example.com"));
     }
 
     [Test]
@@ -86,16 +96,16 @@ public class GitToolsTests
     {
         string file = Outside("touched.txt");
 
-        Assert.That(_git.Fetch($"--upload-pack=touch {file}"), Does.Contain("starts with '-'").And.Contain("remote"));
-        Assert.That(_git.CreateBranch("--orphan"), Does.Contain("starts with '-'").And.Contain("branchName"));
-        Assert.That(_git.SwitchBranch("-"), Does.Contain("starts with '-'"));
-        Assert.That(_git.AddRemote("-x", "https://example.com/r.git"), Does.Contain("starts with '-'").And.Contain("name"));
-        Assert.That(_git.AddRemote("x", "--mirror=fetch"), Does.Contain("starts with '-'").And.Contain("url"));
-        Assert.That(_git.ResetHard("--soft"), Does.Contain("starts with '-'"));
-        Assert.That(_git.GetConfig("--global"), Does.Contain("starts with '-'").And.Contain("key"));
-        Assert.That(_git.DiffUnstaged("--output=" + file), Does.Contain("starts with '-'").And.Contain("filePath"));
+        Assert.That(_remotes.Fetch($"--upload-pack=touch {file}"), Does.Contain("starts with '-'").And.Contain("remote"));
+        Assert.That(_branches.CreateBranch("--orphan"), Does.Contain("starts with '-'").And.Contain("branchName"));
+        Assert.That(_branches.SwitchBranch("-"), Does.Contain("starts with '-'"));
+        Assert.That(_remotes.AddRemote("-x", "https://example.com/r.git"), Does.Contain("starts with '-'").And.Contain("name"));
+        Assert.That(_remotes.AddRemote("x", "--mirror=fetch"), Does.Contain("starts with '-'").And.Contain("url"));
+        Assert.That(_changes.ResetHard("--soft"), Does.Contain("starts with '-'"));
+        Assert.That(_config.GetConfig("--global"), Does.Contain("starts with '-'").And.Contain("key"));
+        Assert.That(_changes.DiffUnstaged("--output=" + file), Does.Contain("starts with '-'").And.Contain("filePath"));
         Assert.That(File.Exists(file), Is.False);
-        Assert.That(_git.GetCurrentBranch(), Is.EqualTo("main"), "nothing ran");
+        Assert.That(_branches.GetCurrentBranch(), Is.EqualTo("main"), "nothing ran");
     }
 
     // Review of PR #66: a refspec isn't an option, so neither guard saw it. "+main" force-pushed with force: false,
@@ -103,18 +113,18 @@ public class GitToolsTests
     [Test]
     public void Push_RefusesARefspec_ThatWouldForceOrDelete()
     {
-        _git.AddRemote("origin", _origin);
+        _remotes.AddRemote("origin", _origin);
         Commit("readme.md", "Hallo\nMore\n", "Second");
-        _git.Push("origin", "main");
+        _remotes.Push("origin", "main");
         Git(_repo, "reset", "-q", "--hard", "HEAD~1");
         Commit("readme.md", "Hallo\nOther\n", "Diverged");
 
-        Assert.That(_git.Push("origin", "+main"), Does.Contain("refspec").And.Contain("branch"), "a forced push, with force: false");
+        Assert.That(_remotes.Push("origin", "+main"), Does.Contain("refspec").And.Contain("branch"), "a forced push, with force: false");
         Assert.That(Git(_origin, "log", "-1", "--format=%s", "main").Output.Trim(), Is.EqualTo("Second"), "origin's main was overwritten");
-        Assert.That(_git.Push("origin", ":main"), Does.Contain("refspec").And.Contain("branch"), "a delete");
+        Assert.That(_remotes.Push("origin", ":main"), Does.Contain("refspec").And.Contain("branch"), "a delete");
         Assert.That(Git(_origin, "rev-parse", "--verify", "refs/heads/main").ExitCode, Is.Zero, "origin's main was deleted");
-        Assert.That(_git.Push("origin", "main:other"), Does.Contain("refspec"), "a push to another ref");
-        Assert.That(_git.Pull("origin", "+main"), Does.Contain("refspec"), "the same value on pull");
+        Assert.That(_remotes.Push("origin", "main:other"), Does.Contain("refspec"), "a push to another ref");
+        Assert.That(_remotes.Pull("origin", "+main"), Does.Contain("refspec"), "the same value on pull");
     }
 
     [Test]
@@ -122,7 +132,7 @@ public class GitToolsTests
     {
         string file = Outside("split.txt");
 
-        string result = _git.CreateBranch($"x --upload-pack=touch {file}");
+        string result = _branches.CreateBranch($"x --upload-pack=touch {file}");
 
         Assert.That(result, Does.Contain("not a valid branch name"), "git saw one name, with the spaces in it");
         Assert.That(File.Exists(file), Is.False);
@@ -133,23 +143,23 @@ public class GitToolsTests
     {
         const string message = "-m \"quoted\" --and dashes; and a 'tail'";
         File.WriteAllText(Path.Combine(_repo, "a.txt"), "a\n");
-        _git.Stage(".");
+        _changes.Stage(".");
 
-        Assert.That(_git.Commit(message), Does.Not.Contain("Exit Code"));
+        Assert.That(_changes.Commit(message), Does.Not.Contain("Exit Code"));
         Assert.That(Out("log", "-1", "--format=%B"), Is.EqualTo(message));
 
-        _git.CreateBranch("topic");
+        _branches.CreateBranch("topic");
         Commit("b.txt", "b\n", "On topic");
-        _git.SwitchBranch("main");
+        _branches.SwitchBranch("main");
         Commit("c.txt", "c\n", "On main");
-        Assert.That(_git.Merge("topic", message), Does.Not.Contain("Exit Code"));
+        Assert.That(_branches.Merge("topic", message), Does.Not.Contain("Exit Code"));
         Assert.That(Out("log", "-1", "--format=%B"), Is.EqualTo(message));
 
-        Assert.That(_git.CreateTag("v1", message), Does.Not.Contain("Exit Code"));
+        Assert.That(_branches.CreateTag("v1", message), Does.Not.Contain("Exit Code"));
         Assert.That(Out("tag", "-l", "--format=%(contents)", "v1"), Is.EqualTo(message));
 
-        Assert.That(_git.SetConfig("user.name", "-Anna-"), Does.Not.Contain("Exit Code"));
-        Assert.That(_git.GetConfig("user.name"), Is.EqualTo("-Anna-"));
+        Assert.That(_config.SetConfig("user.name", "-Anna-"), Does.Not.Contain("Exit Code"));
+        Assert.That(_config.GetConfig("user.name"), Is.EqualTo("-Anna-"));
     }
 
     // ---- Each command's form, pinned on real git ----
@@ -157,13 +167,13 @@ public class GitToolsTests
     [Test]
     public void Branches_CreateSwitchAndDelete()
     {
-        Assert.That(_git.CreateBranch("feature/x"), Does.Not.Contain("Exit Code"));
-        Assert.That(_git.GetCurrentBranch(), Is.EqualTo("feature/x"));
-        Assert.That(_git.SwitchBranch("main"), Does.Not.Contain("Exit Code"));
-        Assert.That(_git.GetCurrentBranch(), Is.EqualTo("main"));
-        Assert.That(_git.ListBranches(), Does.Contain("feature/x").And.Contain("main"));
-        Assert.That(_git.DeleteBranch("feature/x"), Does.Contain("Deleted branch"));
-        Assert.That(_git.ListBranches(), Does.Not.Contain("feature/x"));
+        Assert.That(_branches.CreateBranch("feature/x"), Does.Not.Contain("Exit Code"));
+        Assert.That(_branches.GetCurrentBranch(), Is.EqualTo("feature/x"));
+        Assert.That(_branches.SwitchBranch("main"), Does.Not.Contain("Exit Code"));
+        Assert.That(_branches.GetCurrentBranch(), Is.EqualTo("main"));
+        Assert.That(_branches.ListBranches(), Does.Contain("feature/x").And.Contain("main"));
+        Assert.That(_branches.DeleteBranch("feature/x"), Does.Contain("Deleted branch"));
+        Assert.That(_branches.ListBranches(), Does.Not.Contain("feature/x"));
     }
 
     [Test]
@@ -172,28 +182,28 @@ public class GitToolsTests
         File.WriteAllText(Path.Combine(_repo, "readme.md"), "Hallo\nWêreld\n");
         File.WriteAllText(Path.Combine(_repo, "new.txt"), "new\n");
 
-        Assert.That(_git.HasUncommittedChanges(), Does.Contain("readme.md"));
-        Assert.That(_git.DiffUnstaged("readme.md"), Does.Contain("+Wêreld"));
-        Assert.That(_git.Stage("readme.md"), Does.Not.Contain("Exit Code"));
-        Assert.That(_git.DiffStaged("readme.md"), Does.Contain("+Wêreld"));
-        Assert.That(_git.DiffStaged(), Does.Contain("+Wêreld"));
-        Assert.That(_git.Unstage("readme.md"), Does.Not.Contain("Exit Code"));
-        Assert.That(_git.DiffStaged(), Is.EqualTo("Success (no output)."));
-        Assert.That(_git.GetStatus(), Does.Contain("?? new.txt"));
-        Assert.That(_git.Stage("."), Does.Not.Contain("Exit Code"));
-        Assert.That(_git.Commit("Voeg wêreld by"), Does.Contain("Voeg wêreld by"));
-        Assert.That(_git.ShowCommit("HEAD"), Does.Contain("Voeg wêreld by").And.Contain("readme.md").And.Contain("new.txt"));
-        Assert.That(_git.GetLog(5), Does.Contain("Voeg wêreld by").And.Contain("Begin die projek"));
+        Assert.That(_changes.HasUncommittedChanges(), Does.Contain("readme.md"));
+        Assert.That(_changes.DiffUnstaged("readme.md"), Does.Contain("+Wêreld"));
+        Assert.That(_changes.Stage("readme.md"), Does.Not.Contain("Exit Code"));
+        Assert.That(_changes.DiffStaged("readme.md"), Does.Contain("+Wêreld"));
+        Assert.That(_changes.DiffStaged(), Does.Contain("+Wêreld"));
+        Assert.That(_changes.Unstage("readme.md"), Does.Not.Contain("Exit Code"));
+        Assert.That(_changes.DiffStaged(), Is.EqualTo("Success (no output)."));
+        Assert.That(_changes.GetStatus(), Does.Contain("?? new.txt"));
+        Assert.That(_changes.Stage("."), Does.Not.Contain("Exit Code"));
+        Assert.That(_changes.Commit("Voeg wêreld by"), Does.Contain("Voeg wêreld by"));
+        Assert.That(_history.ShowCommit("HEAD"), Does.Contain("Voeg wêreld by").And.Contain("readme.md").And.Contain("new.txt"));
+        Assert.That(_history.GetLog(5), Does.Contain("Voeg wêreld by").And.Contain("Begin die projek"));
 
         File.WriteAllText(Path.Combine(_repo, "readme.md"), "changed\n");
-        Assert.That(_git.DiscardUnstaged("readme.md"), Does.Not.Contain("Exit Code"));
+        Assert.That(_changes.DiscardUnstaged("readme.md"), Does.Not.Contain("Exit Code"));
         Assert.That(File.ReadAllText(Path.Combine(_repo, "readme.md")), Is.EqualTo("Hallo\nWêreld\n"));
 
         File.WriteAllText(Path.Combine(_repo, "readme.md"), "changed\n");
-        _git.Stage(".");
-        Assert.That(_git.ResetHard("HEAD"), Does.Contain("HEAD is now at"));
-        Assert.That(_git.HasUncommittedChanges(), Is.EqualTo("No uncommitted changes."));
-        Assert.That(_git.AmendCommit(), Does.Contain("Voeg wêreld by"));
+        _changes.Stage(".");
+        Assert.That(_changes.ResetHard("HEAD"), Does.Contain("HEAD is now at"));
+        Assert.That(_changes.HasUncommittedChanges(), Is.EqualTo("No uncommitted changes."));
+        Assert.That(_changes.AmendCommit(), Does.Contain("Voeg wêreld by"));
     }
 
     [Test]
@@ -201,73 +211,73 @@ public class GitToolsTests
     {
         File.WriteAllText(Path.Combine(_repo, "readme.md"), "stashed\n");
 
-        Assert.That(_git.Stash("my work"), Does.Contain("my work"));
+        Assert.That(_changes.Stash("my work"), Does.Contain("my work"));
         Assert.That(File.ReadAllText(Path.Combine(_repo, "readme.md")), Is.EqualTo("Hallo\n"));
-        Assert.That(_git.ListStashes(), Does.Contain("stash@{0}").And.Contain("my work"));
-        Assert.That(_git.ApplyStash("stash@{0}"), Does.Not.Contain("Exit Code"));
+        Assert.That(_changes.ListStashes(), Does.Contain("stash@{0}").And.Contain("my work"));
+        Assert.That(_changes.ApplyStash("stash@{0}"), Does.Not.Contain("Exit Code"));
         Assert.That(File.ReadAllText(Path.Combine(_repo, "readme.md")), Is.EqualTo("stashed\n"));
-        Assert.That(_git.ListStashes(), Does.Contain("my work"), "apply keeps it");
-        _git.DiscardUnstaged(".");
-        Assert.That(_git.ApplyStash("stash@{0}", pop: true), Does.Not.Contain("Exit Code"));
-        Assert.That(_git.ListStashes(), Is.EqualTo("Success (no output)."), "pop removes it");
+        Assert.That(_changes.ListStashes(), Does.Contain("my work"), "apply keeps it");
+        _changes.DiscardUnstaged(".");
+        Assert.That(_changes.ApplyStash("stash@{0}", pop: true), Does.Not.Contain("Exit Code"));
+        Assert.That(_changes.ListStashes(), Is.EqualTo("Success (no output)."), "pop removes it");
 
         File.WriteAllText(Path.Combine(_repo, "readme.md"), "again\n");
-        Assert.That(_git.Stash(), Does.Contain("Saved working directory"));
+        Assert.That(_changes.Stash(), Does.Contain("Saved working directory"));
     }
 
     [Test]
     public void Tags_CreateListAndDelete()
     {
-        Assert.That(_git.CreateTag("light"), Does.Not.Contain("Exit Code"));
-        Assert.That(_git.CreateTag("v1.0", "First release"), Does.Not.Contain("Exit Code"));
-        Assert.That(_git.ListTags(), Does.Contain("light").And.Contain("v1.0"));
+        Assert.That(_branches.CreateTag("light"), Does.Not.Contain("Exit Code"));
+        Assert.That(_branches.CreateTag("v1.0", "First release"), Does.Not.Contain("Exit Code"));
+        Assert.That(_branches.ListTags(), Does.Contain("light").And.Contain("v1.0"));
         Assert.That(Out("tag", "-l", "--format=%(contents)", "v1.0"), Is.EqualTo("First release"));
-        Assert.That(_git.DeleteTag("light"), Does.Contain("Deleted tag"));
-        Assert.That(_git.ListTags(), Does.Not.Contain("light"));
+        Assert.That(_branches.DeleteTag("light"), Does.Contain("Deleted tag"));
+        Assert.That(_branches.ListTags(), Does.Not.Contain("light"));
     }
 
     [Test]
     public void Remotes_AddGetUrlPushFetchAndPull()
     {
-        Assert.That(_git.AddRemote("origin", _origin), Does.Not.Contain("Exit Code"));
-        Assert.That(_git.GetRemoteUrl("origin"), Is.EqualTo(_origin));
-        Assert.That(_git.ListRemotes(), Does.Contain("origin"));
-        Assert.That(_git.GetRepositoryInfo(), Does.Contain("Current Branch: main").And.Contain("origin"));
+        Assert.That(_remotes.AddRemote("origin", _origin), Does.Not.Contain("Exit Code"));
+        Assert.That(_remotes.GetRemoteUrl("origin"), Is.EqualTo(_origin));
+        Assert.That(_remotes.ListRemotes(), Does.Contain("origin"));
+        Assert.That(_history.GetRepositoryInfo(), Does.Contain("Current Branch: main").And.Contain("origin"));
 
-        Assert.That(_git.Push("origin", "main"), Does.Not.Contain("Exit Code"));
+        Assert.That(_remotes.Push("origin", "main"), Does.Not.Contain("Exit Code"));
         Assert.That(Git(_origin, "log", "--oneline", "main").Output, Does.Contain("Begin die projek"));
 
         Git(_repo, "branch", "--set-upstream-to=origin/main", "main");
         Commit("readme.md", "Hallo\nPushed\n", "Second");
-        Assert.That(_git.Push(), Does.Not.Contain("Exit Code"), "defaults: origin, the current branch");
-        Assert.That(_git.Fetch("origin"), Does.Not.Contain("Exit Code"));
-        Assert.That(_git.Pull("origin", "main"), Does.Not.Contain("Exit Code"));
+        Assert.That(_remotes.Push(), Does.Not.Contain("Exit Code"), "defaults: origin, the current branch");
+        Assert.That(_remotes.Fetch("origin"), Does.Not.Contain("Exit Code"));
+        Assert.That(_remotes.Pull("origin", "main"), Does.Not.Contain("Exit Code"));
         Assert.That(Git(_origin, "log", "--oneline", "main").Output, Does.Contain("Second"));
     }
 
     [Test]
     public void History_MergeRebaseAndCherryPick()
     {
-        _git.CreateBranch("topic");
+        _branches.CreateBranch("topic");
         Commit("t.txt", "t\n", "On topic");
-        _git.SwitchBranch("main");
+        _branches.SwitchBranch("main");
         Commit("m.txt", "m\n", "On main");
 
-        Assert.That(_git.Merge("topic", "Merge topic"), Does.Not.Contain("Exit Code"));
+        Assert.That(_branches.Merge("topic", "Merge topic"), Does.Not.Contain("Exit Code"));
         Assert.That(Out("log", "-1", "--format=%s"), Is.EqualTo("Merge topic"));
 
-        _git.CreateBranch("topic2");
+        _branches.CreateBranch("topic2");
         Commit("t2.txt", "t2\n", "On topic2");
-        _git.SwitchBranch("main");
+        _branches.SwitchBranch("main");
         Commit("m2.txt", "m2\n", "On main 2");
-        _git.SwitchBranch("topic2");
-        Assert.That(_git.Rebase("main"), Does.Not.Contain("Exit Code"));
+        _branches.SwitchBranch("topic2");
+        Assert.That(_branches.Rebase("main"), Does.Not.Contain("Exit Code"));
         Assert.That(Out("log", "--oneline", "-3"), Does.Contain("On topic2").And.Contain("On main 2"));
 
         string topic2 = Out("rev-parse", "HEAD");
-        _git.SwitchBranch("main");
-        Assert.That(_git.CherryPick(topic2), Does.Not.Contain("Exit Code"));
+        _branches.SwitchBranch("main");
+        Assert.That(_branches.CherryPick(topic2), Does.Not.Contain("Exit Code"));
         Assert.That(File.Exists(Path.Combine(_repo, "t2.txt")), Is.True);
-        Assert.That(_git.Rebase("main", abort: true), Does.Contain("Exit Code"), "no rebase in progress: git says so, nothing else runs");
+        Assert.That(_branches.Rebase("main", abort: true), Does.Contain("Exit Code"), "no rebase in progress: git says so, nothing else runs");
     }
 }

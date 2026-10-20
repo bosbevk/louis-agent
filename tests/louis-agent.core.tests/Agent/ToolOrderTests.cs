@@ -1,3 +1,4 @@
+using LouisAgent.Core.Hosting.Prompts;
 using System.Text.Json;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Agent;
@@ -37,7 +38,7 @@ public class ToolOrderTests
     private AgentEngine Engine()
     {
         var options = new AgentOptions { WorkspaceRoot = _skillsDir, SkillsDirectory = _skillsDir, RatesUrl = null };
-        var engine = new AgentEngine(AgentHost.LoadSkills(options), new FakeChatClient(), options) { SkillsDirectory = _skillsDir };
+        var engine = new AgentEngine(SkillLoader.Load(options), new FakeChatClient(), options) { SkillsDirectory = _skillsDir };
         engine.LoadApprovedTools();
         return engine;
     }
@@ -70,7 +71,7 @@ public class ToolOrderTests
         // A toolset whose method has the name of a built-in tool: the model couldn't tell them apart.
         var options = new AgentOptions { WorkspaceRoot = _skillsDir, SkillsDirectory = _skillsDir, RatesUrl = null };
 
-        Assert.That(() => new AgentEngine(AgentHost.LoadSkills(options), new FakeChatClient(), options, toolsets: [new Clash(), new Clash()]),
+        Assert.That(() => new AgentEngine(SkillLoader.Load(options), new FakeChatClient(), options, toolsets: [new Clash(), new Clash()]),
             Throws.InvalidOperationException.With.Message.Contain("Two tools are named 'Ping'"));
     }
 

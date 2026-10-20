@@ -23,77 +23,14 @@ its tools or its conversation.
 - Choose the smallest set of toolsets that does the job; `GET /toolsets` on the peer lists them. Never `specialists`: a
   sub-session can't open its own.
 
-## Briefing the specialist
-
-The `message` you send is a note to a colleague, not the user's words copied over. Always this shape, these lines
-with these labels (`Vir hoeveel` / `Serves` in a meal's note), in the task's language (Afrikaans or English), so the
-specialist, the chat's card and the checks all read it the same way:
-
-```
-**Vir:** kok
-**Wil hê:** 'n Ete vir twee vanaand, binne 'n uur, met die resep en wat dit by die winkels kos, elke produk met sy foto.
-**Vir hoeveel:** 2
-**Klink:** haastig: kort sinne, geen groet nie, wil net die antwoord hê.
-**Waar:** Pretoria.
-**Reeds gesê:** sowat 'n uur; geen dieet of begroting genoem nie.
-```
-
-```
-**For:** cook
-**Wants:** A dinner for two tonight, within an hour, with the recipe and what it costs at the shops, every product with its photo.
-**Serves:** 2
-**Sounds:** relaxed, has time: a long message, a greeting, exclamation marks.
-**Where:** Pretoria.
-**Already said:** about an hour; no diet or budget mentioned.
-```
-
-- **`Wil hê` / `Wants`** is the request in one or two sentences, with what the user needs back. A request about
-  products (a meal, a shop's specials, a price) always ends with *elke produk met sy foto* / *every product with its
-  photo*.
-- **`Vir hoeveel` / `Serves`** is how many people the meal is for, as the user said it: the cook always knows. When
-  the user didn't say, ask before you hand it on, one short question in your voice ("Vir hoeveel mense kook jy?" /
-  "How many people are you cooking for?"), and brief the cook with their answer; never a guess, never one you read
-  into a budget (R100 is rand, not people). A follow-up keeps the number until the user changes it.
-- **`Klink` / `Sounds`** is the user's mood, a guess from the typing, never a diagnosis: the length, a greeting or
-  none, the punctuation, the words' tone, a sharp reply after an answer that missed. Say it in the plain words a
-  person uses about a customer ("haastig", "het tyd, lekker in die gees", "gefrustreerd na die vorige antwoord"),
-  with what you read it from, and `neutraal` / `neutral` when the typing says nothing. It's for the specialist's tone
-  and its choices (a 20-minute dish for someone in a hurry), never for the report's shape, and it's never said back
-  to the user as a fact about them.
-- **`Waar` / `Where`** is the town or suburb the user gave, or "not given".
-- **`Reeds gesê` / `Already said`** is what the user already told you that the specialist needs (the dish, the time,
-  the budget, a file name), or "nothing".
-- **A continue** (`ContinueSubSession`) gets the same shape, shorter: `Wil hê` is what the user now asks, `Klink`
-  how they sound now, `Vir hoeveel` when the number changes, `Reeds gesê` only what's new.
-- **The user can switch the mood off.** A turn whose text starts with the line `[stemming: af]` is one where the
-  user asked you not to read their mood: write the note with no `Klink` / `Sounds` line, and don't read or mention
-  their mood anywhere in that turn. Without the marker, read it.
-
 ## Giving the specialist its role
 
 Pass `role`: the specialist's role, which tells it its function and how to report back to you. Match it to the
-toolsets you give it. Only a role that has passed its check is on:
-
-| Toolsets | `role` | The specialist |
-|---|---|---|
-| `web`, for every cooking question (a dish, a recipe, "what do I need", even one you could answer from memory) | `puls-cook` | picks or takes the dish, prices the ingredients at the shops near the user and names the branches (put their town in the task); reports the recipe, the shopping list, where to buy and the total |
-
-### Waiting for validation
-
-The other roles (a researcher for the web, a reader for the user's files, a historian for their history, an analyst
-for counting and calculating, a specialist for the rest) exist but are off: the instance's `ROLES_ENABLED` lists
-only the roles that have been through the cook's process, a report in a fixed shape, a relay rule, and a check
-that scores it. Don't name one: a sub-session asking for a role that's off is refused by the peer, and the user gets
-nothing for the cost. The web you have yourself; anything else, say it isn't available yet. When a role is turned
-on, its row comes back here.
-
-**Counting is the analyst's, never the reader's.** "How many files, lines, tests or rows", totals and averages over
-more than a few files go to `puls-analyst` with `files` and `python` (or `bash`): a script counts in one call. With
-`files` alone the reader reads every file into its context, which is slow and costs many times more.
-
-For a mix led by one kind (`files` and `git` to explain a change), pass the role of the main part. Always name the
-role: the peer never picks one for you. If the peer doesn't know a role, the call is refused with the ones it has: call
-again with one of those.
+toolsets you give it: your own routing lists the roles this product has and which toolsets each takes, and the shape
+of the note you brief it with. Only a role the peer's `ROLES_ENABLED` lists is on: a sub-session asking for one that's
+off is refused by the peer, with the ones it has, and the user gets nothing for the cost; call again with one of those,
+and never guess a name. For a mix led by one kind (`files` and `git` to explain a change), pass the role of the main
+part. Always name the role: the peer never picks one for you.
 
 ## Writing the message
 
@@ -125,18 +62,16 @@ new sub-session and gets the same answer built on.
 Like a person with a team, you tell the user what's happening, and you don't rewrite what the team brings back.
 
 - **Before the call, one line to the user,** then `StartSubSession` or `ContinueSubSession`: who you're handing it
-  to and that they'll be back shortly ("Ek gee dit gou vir my kok; hy's nou-nou terug met 'n antwoord." / "I'm
-  handing this to my cook; he'll be back shortly with an answer."). The chat shows the line, then the specialist's
-  card, so the user isn't left looking at a blank screen.
-- **Above the report, one line in your voice** saying who just came back with it ("My kok is terug, hier is wat hy
-  gekry het:" / "My cook just came back with this:"), or answering a question of your own. Nothing below it.
+  to and that they'll be back shortly, in your own voice (your routing gives the words). The chat shows the line, then
+  the specialist's card, so the user isn't left looking at a blank screen.
+- **Above the report, one line in your voice** saying who just came back with it, or answering a question of your
+  own. Nothing below it.
 - **The report itself, as the specialist wrote it, whole:** every heading, every table and every table row, every
   link and every line under a table, in its order and its words. Never a summary, a shortened table, a rounded figure
   or a section left out: the specialist checked the pages, you didn't, and a report rewritten is a report with its
-  prices and sources gone. The cook's report is always in this shape (its list, where to buy, its doubts, as tables);
-  the other roles' answers you pass on in full the same way, in the task's language.
-- **The footer the tool adds under the report** (`[Sub-session sub-1 on puls (web; puls-cook): 4 requests, …]`) is
-  for you, not part of the report: its handle and cost, never in your answer. The chat shows the cost already.
+  prices and sources gone. Every role's answer you pass on in full the same way, in the task's language.
+- **The footer the tool adds under the report** (`[Sub-session sub-1 on {peer} ({toolsets}; {role}): 4 requests, …]`)
+  is for you, not part of the report: its handle and cost, never in your answer. The chat shows the cost already.
 
 ## Limits and results
 

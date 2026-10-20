@@ -7,13 +7,13 @@ namespace LouisAgent.Core.Tests.Messages;
 // ArchitectureTests: every member has a [Description] template, and its braces are well-formed named holes.
 public partial class HostMessageEnumTests
 {
+    // CL15 step 4: a pack's and an identity's enums leave core too (packs/, identities/, a Messages/ folder at any depth).
     private static IEnumerable<string> HostMessageFiles() =>
-        new[] { "src", "tools" }
+        new[] { "src", "tools", "packs", "identities" }
             .Select(root => Path.Combine(TestPaths.RepoRoot, root))
             .Where(Directory.Exists)
-            .SelectMany(root => Directory.EnumerateDirectories(root))
-            .Select(project => Path.Combine(project, "Messages"))
-            .Where(Directory.Exists)
+            .SelectMany(root => Directory.EnumerateDirectories(root, "Messages", SearchOption.AllDirectories))
+            .Where(folder => !folder.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}") && !folder.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}"))
             .SelectMany(folder => Directory.EnumerateFiles(folder, "*.cs"))
             .Order(StringComparer.Ordinal);
 
@@ -23,7 +23,7 @@ public partial class HostMessageEnumTests
         Assert.That(HostMessageFiles().Select(Path.GetFileNameWithoutExtension),
             Is.SupersetOf(new[] { "AcpLogMessage", "AcpUserText", "AcpModelText", "ApiLogMessage", "McpServerLogMessage", "CliUserText",
                 "OrchestratorToolMessage", "OrchestratorErrorMessage", "OrchestratorLogMessage",
-                "ApiModelText", "ApiUserText", "McpServerText" }));
+                "ApiModelText", "ApiUserText", "McpServerText", "CompositionErrorMessage", "ShopToolMessage", "ShopLogMessage" }));
     }
 
     [Test]

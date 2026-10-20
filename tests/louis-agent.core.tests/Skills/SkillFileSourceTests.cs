@@ -1,4 +1,4 @@
-using LouisAgent.Core.Agent;
+using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Skills;
@@ -23,7 +23,7 @@ public class SkillFileSourceTests
     public void EveryBuiltInFile_IsEmbedded_UnderItsOwnPath()
     {
         var builtIn = ToolsetCatalog.All.Select(t => t.GuideFile).OfType<string>()
-            .Concat(["shared/principles.md", "agent/louis-agent/voice.md", "agent/puls/voice.md", "agent/puls/voice-af.md", "agent/puls/voice-en.md"]);
+            .Concat(["shared/principles.md", "agent/louis-agent/voice.md", "agent/louis-agent/voice-orchestrator.md"]);
 
         Assert.That(SkillFileSource.EmbeddedFiles, Is.SupersetOf(builtIn));
         Assert.That(SkillFileSource.EmbeddedFiles, Has.None.Contains("HelloWorld"), "a test fixture, not a built-in");
@@ -32,8 +32,9 @@ public class SkillFileSourceTests
     [Test]
     public void AFolder_ListsItsFiles()
     {
-        Assert.That(SkillFileSource.Files("specialists"), Does.Contain("puls-cook.md").And.Contain("puls-researcher.md"));
-        Assert.That(SkillFileSource.Files("minions"), Is.EqualTo(new[] { "puls-minion-web-price-lookup.md", "puls-minion.md" }), "F30 step 4: a role and the base");
+        // CL15: the roles here are the tests' own (Prompts/), registered as an identity's are; Puls's live in its identity.
+        Assert.That(SkillFileSource.Files("specialists"), Is.EqualTo(new[] { "testprod-specialist.md" }));
+        Assert.That(SkillFileSource.Files("minions"), Is.EqualTo(new[] { "testprod-minion-lookup.md", "testprod-minion.md" }), "F30 step 4: a role and the base");
     }
 
     [Test]
@@ -50,7 +51,7 @@ public class SkillFileSourceTests
         Directory.CreateDirectory(Path.Combine(_dir, "toolsets"));
         File.WriteAllText(Path.Combine(_dir, "toolsets", "git.md"), "# Git Skills\n\nOur own version.");
 
-        var file = AgentHost.ReadSkillFile(new AgentOptions { SkillsDirectory = _dir }, "toolsets/git.md");
+        var file = SkillFolder.Read(new AgentOptions { SkillsDirectory = _dir }, "toolsets/git.md");
 
         Assert.That(file!.Value.FromDisk, Is.False);
         Assert.That(file.Value.Text, Does.Not.Contain("Our own version."));
@@ -63,7 +64,7 @@ public class SkillFileSourceTests
         Directory.CreateDirectory(Path.Combine(_dir, "agent", "functions"));
         File.WriteAllText(Path.Combine(_dir, "agent", "functions", "greeting.md"), "# Greeting Skills");
 
-        var file = AgentHost.ReadSkillFile(new AgentOptions { SkillsDirectory = _dir }, "agent/functions/greeting.md");
+        var file = SkillFolder.Read(new AgentOptions { SkillsDirectory = _dir }, "agent/functions/greeting.md");
 
         Assert.That(file!.Value.FromDisk, Is.True);
         Assert.That(file.Value.Text, Does.Contain("# Greeting Skills"));
@@ -76,7 +77,7 @@ public class SkillFileSourceTests
         Directory.CreateDirectory(Path.Combine(_dir, "specialists"));
         File.WriteAllText(Path.Combine(_dir, "specialists", "puls-baker.md"), "# Baker");
 
-        Assert.That(AgentHost.ReadSkillFile(new AgentOptions { SkillsDirectory = _dir }, "specialists/puls-baker.md"), Is.Null);
+        Assert.That(SkillFolder.Read(new AgentOptions { SkillsDirectory = _dir }, "specialists/puls-baker.md"), Is.Null);
     }
 
     [Test]

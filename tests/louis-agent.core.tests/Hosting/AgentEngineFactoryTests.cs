@@ -1,3 +1,5 @@
+using LouisAgent.Core.Hosting.SessionLlms;
+using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
@@ -33,16 +35,16 @@ public class AgentEngineFactoryTests
     {
         // F29: Louis switched every specialist but the cook off until it has passed a check like the cook's. The gate is
         // a setting the API enforces, so a prompt slip that names the researcher fails at the peer, not quietly.
-        var factory = FactoryEnabling(["puls/voice-af", "puls-cook"]);
+        var factory = FactoryEnabling(["testprod/voice-af", "testprod-specialist"]);
 
-        Assert.That(factory.AvailableRoles(RoleLevel.Agent), Is.EqualTo(new[] { "puls/voice-af" }), "louis-agent/voice is built in but off");
-        Assert.That(factory.AvailableRoles(RoleLevel.Specialist), Is.EqualTo(new[] { "puls-cook" }), "the other roles are built in but off");
+        Assert.That(factory.AvailableRoles(RoleLevel.Agent), Is.EqualTo(new[] { "testprod/voice-af" }), "louis-agent/voice is built in but off");
+        Assert.That(factory.AvailableRoles(RoleLevel.Specialist), Is.EqualTo(new[] { "testprod-specialist" }), "another role is refused");
 
-        var refused = Assert.Throws<LouisAgent.Core.Skills.Roles.RoleException>(() => factory.GetOrCreate(["web"], "puls-researcher", RoleLevel.Specialist))!;
-        Assert.That(refused.Message, Does.Contain("puls-researcher").And.EndWith("Available: puls-cook."), "named as unknown, with what's on");
+        var refused = Assert.Throws<LouisAgent.Core.Skills.Roles.RoleException>(() => factory.GetOrCreate(["web"], "testprod-other", RoleLevel.Specialist))!;
+        Assert.That(refused.Message, Does.Contain("testprod-other").And.EndWith("Available: testprod-specialist."), "named as unknown, with what's on");
         Assert.That(factory.Profiles, Is.Empty, "refused before anything is built");
 
-        Assert.That(factory.GetOrCreate(["web"], "puls-cook", RoleLevel.Specialist).SkillDocumentation, Does.Contain("Never invent a price"));
+        Assert.That(factory.GetOrCreate(["web"], "testprod-specialist", RoleLevel.Specialist).SkillDocumentation, Does.Contain("Never invent a fact"));
     }
 
     private static Microsoft.Extensions.AI.ChatResponse Answer(string text) =>
@@ -93,9 +95,9 @@ public class AgentEngineFactoryTests
     {
         var factory = FactoryEnabling([]);
 
-        Assert.That(factory.AvailableRoles(RoleLevel.Agent), Is.EqualTo(new[] { "louis-agent/voice", "louis-agent/voice-orchestrator", "puls/voice-af", "puls/voice-en" }));
+        Assert.That(factory.AvailableRoles(RoleLevel.Agent), Is.EqualTo(new[] { "louis-agent/voice", "louis-agent/voice-orchestrator", "testprod/voice-af", "testprod/voice-en" }));
         Assert.That(factory.DefaultVoice, Is.EqualTo("louis-agent/voice"), "GET /personalities' default");
-        Assert.That(factory.AvailableRoles(RoleLevel.Specialist), Does.Contain("puls-cook").And.Contain("puls-researcher"));
+        Assert.That(factory.AvailableRoles(RoleLevel.Specialist), Does.Contain("testprod-specialist"));
     }
 
     [Test]
@@ -126,15 +128,15 @@ public class AgentEngineFactoryTests
         var factory = Factory();
 
         var plain = factory.GetOrCreate(["files"]);
-        var voiced = factory.GetOrCreate(["files"], "puls/voice-af");
+        var voiced = factory.GetOrCreate(["files"], "testprod/voice-af");
         var noRouter = factory.GetOrCreate(["files"], level: RoleLevel.Specialist);
 
         Assert.That(voiced, Is.Not.SameAs(plain));
-        Assert.That(factory.GetOrCreate(["files"], "puls/voice-af"), Is.SameAs(voiced));
-        Assert.That(voiced.SkillDocumentation, Does.Contain("# Puls - Stem").And.Not.Contain("Louis's Minion"));
+        Assert.That(factory.GetOrCreate(["files"], "testprod/voice-af"), Is.SameAs(voiced));
+        Assert.That(voiced.SkillDocumentation, Does.Contain("# Testprod - Stem").And.Not.Contain("Louis's Minion"));
         Assert.That(noRouter.SkillDocumentation, Does.Not.Contain("# Louis Agent - Default Instructions"));
         Assert.That(plain.SkillDocumentation, Does.Contain("# Louis Agent - Default Instructions"));
-        Assert.That(factory.Profiles, Is.EquivalentTo(new[] { "files", "files|puls/voice-af", "files|specialist" }));
+        Assert.That(factory.Profiles, Is.EquivalentTo(new[] { "files", "files|testprod/voice-af", "files|specialist" }));
     }
 
     [Test]
@@ -222,14 +224,14 @@ public class AgentEngineFactoryTests
         // the minion base with that one tool, no toolset guide and no router, so a 4B model reads a prompt it can follow.
         var factory = Factory();
 
-        var minion = factory.GetOrCreate(["web"], "puls-minion-web-price-lookup", RoleLevel.Minion, tool: "FetchUrl");
+        var minion = factory.GetOrCreate(["web"], "testprod-minion-lookup", RoleLevel.Minion, tool: "FetchUrl");
 
         Assert.That(Names(minion), Is.EqualTo(new[] { "FetchUrl" }), "one tool: no clock, no ExecuteSkill, no WebSearch");
-        Assert.That(minion.SkillDocumentation, Does.Contain("# Puls minion: Web price lookup").And.Contain("You are a **minion**")
+        Assert.That(minion.SkillDocumentation, Does.Contain("# Testprod minion: Lookup").And.Contain("You are a **minion**")
             .And.Not.Contain("# Web Skills").And.Not.Contain("# Louis Agent - Default Instructions"));
-        Assert.That(factory.Profiles, Is.EqualTo(new[] { "web|puls-minion-web-price-lookup|minion|tool:FetchUrl" }));
-        Assert.That(factory.GetOrCreate(["web"], "puls-minion-web-price-lookup", RoleLevel.Minion, tool: "FetchUrl"), Is.SameAs(minion));
-        Assert.That(factory.GetOrCreate(["web"], "puls-minion-web-price-lookup", RoleLevel.Minion, tool: "ReadRenderedPage"), Is.Not.SameAs(minion),
+        Assert.That(factory.Profiles, Is.EqualTo(new[] { "web|testprod-minion-lookup|minion|tool:FetchUrl" }));
+        Assert.That(factory.GetOrCreate(["web"], "testprod-minion-lookup", RoleLevel.Minion, tool: "FetchUrl"), Is.SameAs(minion));
+        Assert.That(factory.GetOrCreate(["web"], "testprod-minion-lookup", RoleLevel.Minion, tool: "ReadRenderedPage"), Is.Not.SameAs(minion),
             "the tool is part of the key");
     }
 
@@ -239,7 +241,7 @@ public class AgentEngineFactoryTests
         var factory = Factory();
 
         var ex = Assert.Throws<ToolsetException>(() =>
-            factory.GetOrCreate(["web"], "puls-minion-web-price-lookup", RoleLevel.Minion, tool: "ReadWorkspaceFile"))!;
+            factory.GetOrCreate(["web"], "testprod-minion-lookup", RoleLevel.Minion, tool: "ReadWorkspaceFile"))!;
 
         Assert.That(ex.Message, Does.Contain("ReadWorkspaceFile").And.Contain("web"));
         Assert.That(factory.Profiles, Is.Empty);

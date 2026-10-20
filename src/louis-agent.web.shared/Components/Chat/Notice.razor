@@ -1,0 +1,5 @@
+@* The page's notice (a failed request, a missing key): one line, closed with its button. Nothing when there is none. *@
+@if (Text is not null)
+{
+    <div class="notice">@Text <button class="icon" @onclick="OnClose">×</button></div>
+}

@@ -1,3 +1,5 @@
+using LouisAgent.Web.Shared.Chats;
+using LouisAgent.Web.Shared.Text;
 using LouisAgent.Web.Shared;
 
 namespace LouisAgent.Api.Tests;

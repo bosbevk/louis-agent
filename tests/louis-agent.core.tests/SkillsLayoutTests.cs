@@ -1,4 +1,4 @@
-using LouisAgent.Core.Agent;
+using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Roles;
 
@@ -36,7 +36,7 @@ public class SkillsLayoutTests
     [Test]
     public void EveryPrompt_IsEmbedded_AndNothingElseIs()
     {
-        Assert.That(SkillFileSource.EmbeddedFiles, Is.EquivalentTo(FilesUnder(TestPaths.Prompts)), "the csproj embeds Prompts/** and only that");
+        Assert.That(SkillFileSource.CoreFiles, Is.EquivalentTo(FilesUnder(TestPaths.Prompts)), "the csproj embeds Prompts/** and only that (CL15: the registered test roles are beside them, not among them)");
     }
 
     [Test]

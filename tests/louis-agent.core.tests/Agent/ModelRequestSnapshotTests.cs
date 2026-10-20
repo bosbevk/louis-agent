@@ -1,3 +1,6 @@
+using LouisAgent.Core.Agent.Turns;
+using LouisAgent.Core.Hosting.Prompts;
+using LouisAgent.Core.Agent.Toolsets;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using LouisAgent.Core.Agent;
@@ -42,12 +45,12 @@ public class ModelRequestSnapshotTests
             AgentPeers = new Dictionary<string, Uri> { ["coder"] = new("http://coder.test/") },
             // F30: the minions toolset needs a model map too; the snapshot then holds StartMinion and ContinueMinion.
             MinionLlms = new Dictionary<string, IReadOnlyList<string>> { ["*"] = ["instance"] },
-            // F33: the shops toolset needs a shop and a browser; building the engine connects to neither.
-            ShopCatalogues = "checkers", BrowserUrl = "http://browser.test:9222",
+            // F33: a browser for the web toolset's renderer; building the engine connects to nothing. (The shops are a pack, CL15.)
+            BrowserUrl = "http://browser.test:9222",
         };
         // F5: an engine has only the toolsets it is given, so the snapshot names them all (and self-extension).
         var toolsets = TestPaths.Toolsets(options, ToolsetCatalog.All.Select(t => t.Name));
-        return new AgentEngine(AgentHost.LoadSkills(options), new FakeChatClient(), options, supportsTools, toolsets: toolsets, selfExtension: true)
+        return new AgentEngine(SkillLoader.Load(options), new FakeChatClient(), options, supportsTools, toolsets: toolsets, selfExtension: true)
         {
             SkillsDirectory = _skillsDir,
         };
@@ -64,7 +67,7 @@ public class ModelRequestSnapshotTests
             SystemPrompt = engine.SkillDocumentation,
             NoToolsHistory = Engine(supportsTools: false).NewHistory().Select(m => new { Role = m.Role.Value, m.Text }),
             ToolCallGuards.TruncatedCallMessage,
-            AgentEngine.ContinueAfterCutOffMessage,
+            TurnRunner.ContinueAfterCutOffMessage,
         };
         return JsonSerializer.Serialize(snapshot, Json)
             .Replace(JsonEncodedText.Encode(_skillsDir).ToString(), "<skills>")

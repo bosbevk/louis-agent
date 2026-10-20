@@ -1,16 +1,20 @@
 namespace LouisAgent.Core.Hosting;
 
+using LouisAgent.Core.Hosting.Prompts;
+using LouisAgent.Core.Hosting.SessionLlms;
+using LouisAgent.Core.Llm.UsageMapping;
+using LouisAgent.Core.Pricing.Rates;
+using LouisAgent.Core.Usage.Sinks;
+using LouisAgent.Core.Agent.Toolsets;
+using LouisAgent.Core.Agent.Catalog;
 using System.Collections.Concurrent;
 using System.Text.Json;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Config;
-using LouisAgent.Core.Llm;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
-using LouisAgent.Core.Pricing;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Roles;
-using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
 using LouisAgent.Core.Tools.Web.Search;
@@ -52,8 +56,9 @@ public sealed class AgentEngineFactory
     public AgentEngineFactory(IChatClient chatClient, AgentOptions agent, bool supportsTools = true,
         IUsageSink? usageSink = null, IUsageMapper? usageMapper = null, DisplayCurrency? display = null,
         ReasoningEffort? thinking = null, IWebSearchProvider? webSearch = null, int capacity = DefaultCapacity,
-        ExchangeRates? rates = null, IReadOnlyList<SessionLlm>? sessionLlms = null)
+        ExchangeRates? rates = null, IReadOnlyList<SessionLlm>? sessionLlms = null, AgentCatalog? catalog = null)
     {
+        Catalog = catalog ?? AgentCatalog.CoreOnly;
         _chatClient = chatClient;
         _agent = agent;
         _supportsTools = supportsTools;
@@ -69,14 +74,17 @@ public sealed class AgentEngineFactory
     /// <summary>What the catalogue builds this instance's tools from (settings, the search provider).</summary>
     public ToolsetContext Context { get; }
 
+    /// <summary>The toolsets this instance can load (CL15): core's and its packs'; <see cref="AgentCatalog.CoreOnly"/> when a host passes none.</summary>
+    public AgentCatalog Catalog { get; }
+
     /// <summary>Every toolset this instance can load: those whose settings are all set.</summary>
-    public IReadOnlyList<string> Available => ToolsetCatalog.All.Where(t => t.IsAvailable(Context)).Select(t => t.Name).ToList();
+    public IReadOnlyList<string> Available => Catalog.Toolsets.Where(t => t.IsAvailable(Context)).Select(t => t.Name).ToList();
 
     /// <summary>The LLM profiles a session can name besides the instance's own model (F30, <c>LLM_SESSION_PROFILES</c>).</summary>
     public IReadOnlyList<string> SessionLlms => _sessionLlms.Keys.ToList();
 
     /// <summary>The named roles a session at <paramref name="level"/> can choose (F21, CL8), all built in.</summary>
-    public IReadOnlyList<string> AvailableRoles(RoleLevel level) => AgentHost.EnabledRoles(_agent, level);
+    public IReadOnlyList<string> AvailableRoles(RoleLevel level) => RoleFiles.Enabled(_agent, level);
 
     /// <summary>The mode of a level-0 session that names none (CL9): <c>GET /roles</c>' <c>default</c>.</summary>
     public string DefaultVoice => RoleCatalog.DefaultVoice;
@@ -100,17 +108,17 @@ public sealed class AgentEngineFactory
     public AgentEngine GetOrCreate(IEnumerable<string>? toolsets, string? role = null, RoleLevel level = RoleLevel.Agent,
         string? llm = null, string? tool = null)
     {
-        var resolved = ToolsetCatalog.Resolve(toolsets, Context);
+        var resolved = Catalog.Resolve(toolsets, Context);
         if (string.IsNullOrEmpty(role)) role = null;
         // Checked here, not in Build: a Lazy that throws keeps the exception, and the key would stay broken.
-        AgentHost.RoleFile(_agent, role, level);
+        RoleFiles.FileOf(_agent, role, level);
         if (string.IsNullOrEmpty(llm)) llm = null;
         SessionLlm? model = null;
         if (llm is not null && !_sessionLlms.TryGetValue(llm, out model))
             throw new SessionLlmException(MessageText.Format(ErrorMessage.UnknownSessionLlm,
                 new { Name = llm, Available = _sessionLlms.Count == 0 ? "none" : string.Join(", ", _sessionLlms.Keys) }));
         if (string.IsNullOrWhiteSpace(tool)) tool = null;
-        if (tool is not null && !ToolsetCatalog.ToolNamesOf(resolved).Contains(tool))
+        if (tool is not null && !Catalog.ToolNamesOf(resolved).Contains(tool))
             throw new ToolsetException(MessageText.Format(ErrorMessage.ToolNotInToolsets,
                 new { Tool = tool, Toolsets = resolved.Count == 0 ? "(none)" : string.Join(", ", resolved.Select(t => t.Name)) }));
 
@@ -144,13 +152,15 @@ public sealed class AgentEngineFactory
         var guided = tool is null ? resolved : [];
         // A session's own model (F30) brings its provider's client, usage mapping, tool support and thinking; the
         // ledger, prices and display currency are the instance's.
-        var engine = new AgentEngine(AgentHost.LoadSkills(_agent, guided, role, level), model?.Client ?? _chatClient, _agent,
+        var engine = new AgentEngine(SkillLoader.Load(_agent, guided, role, level), model?.Client ?? _chatClient, _agent,
             model?.SupportsTools ?? _supportsTools, toolsets: ToolsetCatalog.BuildTools(resolved, Context), _usageSink,
             model is null ? _usageMapper : model.UsageMapper, selfExtension, ToolsetCatalog.RunsInParallel(resolved))
         {
-            SkillsDirectory = AgentHost.FindSkillsDirectory(_agent),
+            SkillsDirectory = SkillFolder.Find(_agent),
+            // An agent-built tool may take no name of the catalogue's, a pack's included (CL15).
+            ReservedToolNames = Catalog.ToolNames,
             // ReloadSkills reloads this profile's prompt (its guides, role and router), never another's.
-            SkillReloader = () => AgentHost.LoadSkills(_agent, guided, role, level),
+            SkillReloader = () => SkillLoader.Load(_agent, guided, role, level),
             Thinking = model is null ? _thinking : model.Thinking,
             Display = _display,
         };

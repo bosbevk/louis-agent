@@ -1,3 +1,5 @@
+using LouisAgent.Core.Agent.Turns;
+using LouisAgent.Core.Agent.Toolsets;
 using System.Text.Json;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Config;
@@ -153,7 +155,7 @@ public class AgentEngineTests
         await engine.ProcessPromptAsync(engine.NewHistory(), "log time please");
 
         Assert.That(client.Requests[0].Options!.Tools, Is.Null.Or.Empty);
-        Assert.That(client.Requests[0].Messages.Select(m => m.Text), Does.Contain(AgentEngine.NoToolsNotice));
+        Assert.That(client.Requests[0].Messages.Select(m => m.Text), Does.Contain(TurnRunner.NoToolsNotice));
     }
 
     [Test]
@@ -352,7 +354,7 @@ public class AgentEngineTests
             text.AddRange(update.Contents.OfType<TextContent>().Select(t => t.Text));
 
         Assert.That(text, Is.EqualTo(new[] { "Now I'll append the rest:", "Done in smaller chunks." }));
-        Assert.That(client.Requests[1].Messages.Last().Text, Is.EqualTo(AgentEngine.ContinueAfterCutOffMessage));
+        Assert.That(client.Requests[1].Messages.Last().Text, Is.EqualTo(TurnRunner.ContinueAfterCutOffMessage));
         Assert.That(history.Last().Text, Is.EqualTo("Done in smaller chunks."));
     }
 

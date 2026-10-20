@@ -1,4 +1,5 @@
-using LouisAgent.Core.Agent;
+using LouisAgent.Core.Hosting.Prompts;
+using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Skills;
@@ -39,8 +40,8 @@ public class RoleHeaderTests
     }
 
     [Test]
-    public void TheCook_AlwaysLoadsTheShops_WhereThisInstanceHasThem() =>
-        Assert.That(RoleCatalog.ToolsetsOf("puls-cook", RoleLevel.Specialist), Is.EqualTo(new[] { "shops?" }));
+    public void ARole_AlwaysLoadsItsHeadersToolsets_WhereThisInstanceHasThem() =>
+        Assert.That(RoleCatalog.ToolsetsOf("testprod-specialist", RoleLevel.Specialist), Is.EqualTo(new[] { "web?" }));
 
     [Test]
     public void ARoleWithoutAHeader_DeclaresNone() =>
@@ -59,9 +60,9 @@ public class RoleHeaderTests
     public void TheModel_NeverSeesTheHeader()
     {
         var options = new AgentOptions { WorkspaceRoot = TestPaths.RepoRoot, RatesUrl = null };
-        string prompt = AgentHost.LoadSkills(options, [], "puls-cook", RoleLevel.Specialist).Documentation;
+        string prompt = SkillLoader.Load(options, [], "testprod-specialist", RoleLevel.Specialist).Documentation;
 
-        Assert.That(prompt, Does.Contain("Local cook").And.Not.Contain("toolsets: shops?"));
+        Assert.That(prompt, Does.Contain("Testprod specialist").And.Not.Contain("toolsets: web?"));
     }
 
     private sealed class HeaderComparer : IEqualityComparer<(IReadOnlyList<string>, string)>

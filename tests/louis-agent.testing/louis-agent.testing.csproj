@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- The fakes and paths every test project shares (CL15 step 5, Louis's review of step 4): a scripted chat client, an
+       HTTP stub, in-memory prompts, a fake identity and pack, the repo's paths. A class library, not a test project: it
+       holds no tests, and no test project references another test project for its helpers. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>LouisAgent.Testing</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>false</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- TestPaths reads the test directory from NUnit's TestContext. -->
+    <PackageReference Include="NUnit" Version="4.3.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\louis-agent.core\louis-agent.core.csproj" />
+  </ItemGroup>
+
+</Project>

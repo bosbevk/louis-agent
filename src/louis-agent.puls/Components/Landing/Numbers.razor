@@ -1,0 +1,14 @@
+@* Syfers: the measured numbers (docs/learning, the puls check and the demo), counting up when the band comes in;
+   the brand's pulse rings sit behind the right half. *@
+<section class="section" id="syfers">
+    <div class="stats-band reveal">
+        <div class="pulse-bg stats-pulse" aria-hidden="true"><span></span><span></span><span></span><span></span><i class="source"></i></div>
+        <div><span class="eyebrow">Syfers</span><h2>Gemeet, nie geraai nie.</h2><p>Elke versoek staan in die grootboek met sy tokens en sy koste. Dit is wat die metings tot dusver wys.</p></div>
+        <div class="stats-grid">
+            @foreach (var (to, fmt, start, unit, what, how) in Stats)
+            {
+                <div class="stat"><b><span class="counter" data-to="@to" data-fmt="@fmt">@start</span>@if (unit is not null) { <span class="unit">@unit</span> }</b><span>@what</span><small>@how</small></div>
+            }
+        </div>
+    </div>
+</section>

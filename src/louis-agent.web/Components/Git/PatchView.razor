@@ -1,0 +1,28 @@
+@* A multi-file patch (a commit or a branch): one section per file, each with its own line-numbered diff. *@
+
+@if (_files.Count == 0)
+{
+    <div class="diff-note">No file changes.</div>
+}
+@foreach (var file in _files)
+{
+    <section class="patch-file">
+        <div class="patch-file-head">
+            <span class="change-name" title="@file.Path">@file.Path</span>
+            <span class="file-meta">
+                @if (file.Status is not null) { <text>@file.Status · </text> }
+                <span class="added">+@file.Added</span> <span class="removed">−@file.Removed</span>
+            </span>
+        </div>
+        @foreach (var row in file.Rows)
+        {
+            <div class="diff-row diff-@row.Kind">
+                <span class="ln">@row.Old</span><span class="ln">@row.New</span><span class="diff-text">@row.Text</span>
+            </div>
+        }
+    </section>
+}
+@if (Truncated)
+{
+    <div class="diff-note">Diff truncated.</div>
+}

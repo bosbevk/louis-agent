@@ -1,0 +1,30 @@
+@* An empty chat (F20): the app icon with its pulse, what's new, the question, the message box in the middle, the
+   topics that start a message and the suggestions that send one. *@
+<div class="empty">
+    @* The app icon, with the slow pulse spreading out from it. *@
+    <div class="hero-mark" aria-hidden="true">
+        <div class="pulse-bg"><span></span><span></span><span></span><span></span></div>
+        <PulsTile />
+    </div>
+    <button class="news-pill" type="button" @onclick='() => OnDraft.InvokeAsync("Lees die dokument wat ek aanheg en som dit in vyf punte op.")'>
+        <span class="news-tag">Nuut</span> Puls lees PDF's, Word en Excel <span aria-hidden="true">→</span>
+    </button>
+    <h1><span class="w" style="--i:0">Hoe</span> <span class="w" style="--i:1">kan</span> <span class="w" style="--i:2">ek</span> <span class="w" style="--i:3">help?</span></h1>
+    <p class="hint">Vra enigiets. Puls stuur elke taak na 'n spesialis met net die gereedskap wat dit nodig het, en jy kan sien hoe dit werk.</p>
+    <div class="composer composer-centred">@Composer</div>
+    <div class="topics">
+        @foreach (var (topic, starter) in Topics)
+        {
+            <button class="topic" type="button" @onclick="() => OnDraft.InvokeAsync(starter)">@topic</button>
+        }
+    </div>
+    <div class="suggestions">
+        @foreach (var (title, detail, prompt) in Suggestions)
+        {
+            <button class="suggestion" @onclick="() => OnSuggest.InvokeAsync(prompt)" disabled="@Streaming">
+                <strong>@title</strong>
+                <span>@detail</span>
+            </button>
+        }
+    </div>
+</div>

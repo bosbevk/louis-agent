@@ -15,30 +15,6 @@ public enum LogMessage
     [Description("{Old} is ignored: {New} is set, and wins. In config/.env, rename {Old} to {New} (or remove it if {New} is there already).")]
     RolesSettingIgnored,
 
-    [Description("{Shop} couldn't find the store for {Place} ({Reason}); the default store answers.")]
-    ShopAreaUnavailable,
-
-    [Description("{Shop} serves {Place} (its centre {Latitude}, {Longitude}) from stores {Stores}; searches from there use them.")]
-    ShopStoreForPlace,
-
-    [Description("{Shop} names no store for {Place} (its centre {Latitude}, {Longitude}); searches from there use its default store.")]
-    ShopNoStoreForPlace,
-
-    [Description("The shops' store cache {Path} can't be read ({Reason}); towns are looked up again.")]
-    ShopStoreCacheUnreadable,
-
-    [Description("{Shop} didn't answer the store lookup for {Place} with its store answer (refused, or its site changed); the default store answers, and the town is looked up again next time.")]
-    ShopStoreAnswerUnreadable,
-
-    [Description("A shop refused a search; its next searches wait {Seconds} s.")]
-    ShopRefusedSearch,
-
-    [Description("The shops' store cache {Path} can't be written ({Reason}); towns are kept in memory only.")]
-    ShopStoreCacheUnwritable,
-
-    [Description("{Shop} answered a search from {Place} from store {Store}, not one that serves {Place}; it's said so in the answer.")]
-    ShopStoreNotUsed,
-
     [Description("{Tool} returned {Chars} characters, {Outcome} to {ReturnedChars}; arguments {Arguments}; request: {UserRequest}")]
     OversizedToolResult,
 
@@ -212,7 +188,6 @@ public enum LogMessage
 
     [Description("Sub-session prompt budget: the last request's prompt was {Last} tokens and the next is expected at {Next}, over the budget of {Budget}; the next request answers without tools")]
     SubSessionPromptBudgetReached,
-
 
     [Description("Discovered skills file: {File}")]
     SkillsFileDiscovered,

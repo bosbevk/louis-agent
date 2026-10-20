@@ -1,5 +1,6 @@
 using LouisAgent.Core.Tools;
 using LouisAgent.Core.Tools.Git;
+using LouisAgent.Core.Tools.Git.Running;
 
 namespace LouisAgent.Core.Tests.Tools.Git;
 
@@ -7,7 +8,7 @@ namespace LouisAgent.Core.Tests.Tools.Git;
 public class GitHistoryTests
 {
     private string _repo = null!;
-    private GitTools _git = null!;
+    private GitHistoryTools _history = null!;
 
     [SetUp]
     public void SetUp()
@@ -22,7 +23,8 @@ public class GitHistoryTests
         Commit("readme.md", "Hallo\n", "Begin die projek", "Anna", "2026-09-01T10:00:00+02:00");
         Commit("readme.md", "Hallo\nWêreld\n", "Voeg wêreld by", "Ben", "2026-10-01T10:00:00+02:00");
         Commit("other.txt", "x\n", "Ander lêer", "Anna", "2026-10-05T10:00:00+02:00");
-        _git = new GitTools(_repo);
+        var git = new GitRunner(_repo);
+        _history = new GitHistoryTools(git);
     }
 
     [TearDown]
@@ -46,7 +48,7 @@ public class GitHistoryTests
     [Test]
     public void FileHistory_ListsTheCommitsThatChangedTheFile_NewestFirst()
     {
-        string history = _git.FileHistory("readme.md");
+        string history = _history.FileHistory("readme.md");
 
         Assert.That(history, Does.Contain("Voeg wêreld by").And.Contain("Begin die projek").And.Not.Contain("Ander lêer"));
         Assert.That(history.IndexOf("Voeg wêreld by", StringComparison.Ordinal), Is.LessThan(history.IndexOf("Begin die projek", StringComparison.Ordinal)));
@@ -56,29 +58,29 @@ public class GitHistoryTests
     [Test]
     public void Blame_SaysWhoWroteEachLine()
     {
-        string blame = _git.Blame("readme.md");
+        string blame = _history.Blame("readme.md");
 
         Assert.That(blame, Does.Contain("Anna").And.Contain("Hallo"));
         Assert.That(blame, Does.Contain("Ben").And.Contain("Wêreld"));
-        Assert.That(_git.Blame("readme.md", 2, 2), Does.Contain("Wêreld").And.Not.Contain("Hallo"));
+        Assert.That(_history.Blame("readme.md", 2, 2), Does.Contain("Wêreld").And.Not.Contain("Hallo"));
     }
 
     [Test]
     public void SearchCommits_ByText_Author_AndDate()
     {
-        Assert.That(_git.SearchCommits(text: "WÊRELD"), Does.Contain("Voeg wêreld by").And.Not.Contain("Begin"), "case-insensitive");
-        Assert.That(_git.SearchCommits(author: "anna"), Does.Contain("Begin die projek").And.Contain("Ander lêer").And.Not.Contain("Voeg"));
-        Assert.That(_git.SearchCommits(since: "2026-10-03"), Does.Contain("Ander lêer").And.Not.Contain("Voeg"));
-        Assert.That(_git.SearchCommits(text: "niks hiervan"), Is.EqualTo("No commits match."));
-        Assert.That(_git.SearchCommits(), Does.Contain("at least one of"));
+        Assert.That(_history.SearchCommits(text: "WÊRELD"), Does.Contain("Voeg wêreld by").And.Not.Contain("Begin"), "case-insensitive");
+        Assert.That(_history.SearchCommits(author: "anna"), Does.Contain("Begin die projek").And.Contain("Ander lêer").And.Not.Contain("Voeg"));
+        Assert.That(_history.SearchCommits(since: "2026-10-03"), Does.Contain("Ander lêer").And.Not.Contain("Voeg"));
+        Assert.That(_history.SearchCommits(text: "niks hiervan"), Is.EqualTo("No commits match."));
+        Assert.That(_history.SearchCommits(), Does.Contain("at least one of"));
     }
 
     [Test]
     public void ModelText_IsNeverAnOption()
     {
         // "--output=..." as a path or a search term stays a value: no file is written, no flag is set.
-        _git.FileHistory("--output=hacked.txt");
-        _git.SearchCommits(text: "x --output=hacked.txt");
+        _history.FileHistory("--output=hacked.txt");
+        _history.SearchCommits(text: "x --output=hacked.txt");
 
         Assert.That(File.Exists(Path.Combine(_repo, "hacked.txt")), Is.False);
     }

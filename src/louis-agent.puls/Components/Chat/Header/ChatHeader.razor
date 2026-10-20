@@ -1,0 +1,38 @@
+@* The top bar (lg and up): the chat's title and menu, then the Werk panel, Krediete, the language and the profile. *@
+<header class="chat-header d-none d-lg-flex">
+    <button class="icon header-sidebar" type="button" onclick="pulsUi.toggleSidebar()" title="Wys die kantbalk" aria-label="Wys die kantbalk">⇥</button>
+    <div class="chat-heading">
+        @if (View is "verken" or "studio")
+        {
+            <span class="chat-title">@(View == "verken" ? "Verken" : "Studio")</span>
+        }
+        else if (Chat is null)
+        {
+            <span class="chat-title muted">Nuwe gesprek</span>
+        }
+        else if (Renaming == Chat.SessionId && RenameInHeader)
+        {
+            <input id="rename-input" class="rename-input" value="@RenameDraft" @oninput='e => RenameDraftChanged.InvokeAsync(e.Value?.ToString() ?? "")'
+                   @onkeydown="e => OnRenameKey.InvokeAsync((e, Chat))" @onblur="() => OnRenameBlur.InvokeAsync(Chat)" aria-label="Nuwe naam" />
+        }
+        else
+        {
+            <span class="chat-title" title="@Chat.Title">@Chat.Title</span>
+            <div class="dropdown">
+                <button class="icon item-menu" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Meer vir hierdie gesprek">⋯</button>
+                <ul class="dropdown-menu"><ChatMenu Chat="Chat" InHeader="true" OnFavourite="OnFavourite" OnRename="OnRename" OnArchive="OnArchive" OnDelete="OnDelete" OnComingSoon="OnComingSoon" /></ul>
+            </div>
+        }
+    </div>
+    <div class="header-actions">
+        <button class="header-button d-none d-xl-inline-flex work-toggle" type="button" onclick="pulsUi.toggleWork()" title="Wys of versteek die werkpaneel">
+            <span class="ic i-pulse" aria-hidden="true"></span>Werk
+        </button>
+        <button class="header-button d-xl-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#work" aria-controls="work" title="Wys die werkpaneel">
+            <span class="ic i-pulse" aria-hidden="true"></span>Werk
+        </button>
+        <CreditsMenu ChatCost="@ChatCost" MonthCost="@MonthCost" MonthChats="MonthChats" OnComingSoon="OnComingSoon" />
+        <LanguageMenu Language="@Language" Languages="Languages" OnChoose="OnChooseLanguage" />
+        <ProfileMenu OnComingSoon="OnComingSoon" />
+    </div>
+</header>

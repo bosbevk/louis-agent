@@ -1,9 +1,10 @@
 namespace LouisAgent.Core.Hosting;
 
+using LouisAgent.Core.Pricing.Prices;
+using LouisAgent.Core.Pricing.Rates;
 using dotenv.net;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Agent;
-using LouisAgent.Core.Pricing;
 using LouisAgent.Core.Hosting;
 
 /// <summary>Everything an entry point needs after bootstrap.</summary>

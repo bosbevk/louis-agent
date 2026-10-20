@@ -1,0 +1,47 @@
+@* F20: search the chats saved in this browser (Ctrl/⌘ K): their titles, your messages and the answers. Arrow keys
+   move, Enter opens, Escape closes. Nothing leaves the browser. *@
+@inject NavigationManager Nav
+@inject IJSRuntime JS
+
+@if (Open)
+{
+    <div class="search-backdrop" @onclick="Close"></div>
+    <div class="search-dialog" role="dialog" aria-modal="true" aria-label="Soek gesprekke">
+        <div class="search-input">
+            <span class="ic i-search" aria-hidden="true"></span>
+            <input id="search-input" placeholder="Soek gesprekke…" autocomplete="off"
+                   @bind="_query" @bind:event="oninput" @bind:after="Reset" @onkeydown="Key" @onkeydown:preventDefault="_handled" />
+            <kbd>Esc</kbd>
+        </div>
+        <div class="search-results">
+            @if (Results.Count == 0)
+            {
+                <div class="search-none">Geen gesprekke vir "@_query" nie.</div>
+            }
+            else
+            {
+                <div class="search-group">@(_query.Trim().Length == 0 ? "Onlangs" : "Gesprekke")</div>
+                @for (int i = 0; i < Results.Count; i++)
+                {
+                    var (chat, snippet) = Results[i];
+                    int index = i;
+                    <button class="search-result @(index == _selected ? "selected" : "")" @onclick="() => Go(chat)" @onmouseenter="() => _selected = index">
+                        <span class="ic i-chat" aria-hidden="true"></span>
+                        <span class="search-text">
+                            <strong>@chat.Title</strong>
+                            @if (snippet is not null)
+                            {
+                                <small>@snippet</small>
+                            }
+                        </span>
+                        @if (chat.Archived)
+                        {
+                            <span class="search-tag">Geargiveer</span>
+                        }
+                    </button>
+                }
+            }
+        </div>
+        <div class="search-foot"><kbd>↑</kbd><kbd>↓</kbd> kies · <kbd>Enter</kbd> maak oop</div>
+    </div>
+}

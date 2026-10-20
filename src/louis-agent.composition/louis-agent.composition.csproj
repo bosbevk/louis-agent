@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- The one place that knows every identity and pack (CL15, ADR 0027): a host calls Plugins.FromEnvironment() once at
+       start-up and hands the catalogue to AgentHost. Core never references an identity or a pack; this project references
+       them all. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>LouisAgent.Composition</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="louis-agent.composition.tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\louis-agent.core\louis-agent.core.csproj" />
+    <ProjectReference Include="..\..\identities\louis-agent.identity.puls\louis-agent.identity.puls.csproj" />
+    <ProjectReference Include="..\..\packs\louis-agent.pack.shops\louis-agent.pack.shops.csproj" />
+  </ItemGroup>
+
+</Project>

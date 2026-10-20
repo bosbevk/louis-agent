@@ -35,20 +35,25 @@ A new tool or text changes the golden files on purpose: regenerate them and revi
 guide names its tools and when to use them, and each tool's `[Description]` stays short. The files a new toolset
 touches, and nothing else:
 
-1. **Tools:** a class in `louis-agent.core/Tools/{Toolset}/` (*Adding a C# tool*); every public method is a tool.
-2. **Catalogue entry** in `Agent/ToolsetCatalog.cs`: the name, a one-line description, the settings it needs
-   (`MissingSettings`), its tool class (`ToolType`), the factory for its tool object (`CreateTools`) and its guide
-   (`GuideFile`).
-3. **Guide:** `Prompts/toolsets/{toolset}.md`, plain markdown, embedded with the other built-in prompts: what the toolset is for, its tools grouped with one line
-   each, and its workflows (it may also hold `## Skill:` procedures). `AgentHost.LoadSkills(agent, toolsets)` adds it
-   to the prompt, through `MarkdownSkillProvider`, only when a session loads the toolset. **No provider class per
+1. **Tools:** a class in `louis-agent.core/Tools/{Toolset}/` (*Adding a C# tool*), or in the pack's project when the
+   toolset is a capability of its own (*Building an identity or a pack*); every public method is a tool.
+2. **Catalogue entry:** a `ToolsetDefinition` (the name, a one-line description, the settings it needs
+   (`MissingSettings`), its tool classes (`ToolTypes`), the factory for their objects (`CreateTools`) and its guide
+   (`GuideFile`)) in `Agent/Toolsets/ToolsetCatalog.cs` for core's, or in the pack's `Toolsets` for a pack's. `AgentCatalog`
+   lists both, core's first, and stops start-up on a tool name two toolsets or the engine already use.
+3. **Guide:** `Prompts/toolsets/{toolset}.md`, plain markdown, embedded with the other built-in prompts (a pack's in
+   its own `Prompts/`): what the toolset is for, its tools grouped with one line each, and its workflows. Core's guides
+   may also hold `## Skill:` procedures; a pack's may not, because a guide must be able to travel as an MCP server's
+   instructions (ADR 0028): a procedure a pack needs becomes a tool. `SkillLoader.Load(agent, toolsets)` adds the
+   guide to the prompt, through `MarkdownSkillProvider`, only when a session loads the toolset. **No provider class per
    toolset.**
 4. **Reserved by itself:** the guide is embedded, so the agent can't take its name (`SkillFiles.IsBuiltIn`).
-5. **Routing:** a row in the routing of each mode whose product uses it (`agent/louis-agent/voice.md`, Puls's
-   `agent/puls/voice.md`).
-6. **Tests:** `SkillFilesTests` checks the coding agent's routing names it, the toolset's tests in
-   `tests/louis-agent.core.tests/Tools/{Toolset}/`, and the golden files regenerated
-   ([golden files](../tests/CLAUDE.md#golden-files)).
+5. **Routing:** a row in the routing of each mode whose product uses it (`agent/louis-agent/voice.md` in core; an
+   identity's `agent/{name}/voice.md` in its own project). A pack can't add a row to a router it doesn't own, so a
+   pack's guide opens with the one line that routes to it, read only where the toolset loads (the TODO's small cleanups).
+6. **Tests:** `SkillFilesTests` checks the coding agent's routing names core's toolset, the toolset's tests in
+   `tests/louis-agent.core.tests/Tools/{Toolset}/` (a pack's in `tests/louis-agent.pack.{name}.tests/`), and the golden
+   files regenerated ([golden files](../tests/CLAUDE.md#golden-files)).
 
 Every catalogue toolset follows it; `SkillFilesTests` checks that each has a guide that loads with it.
 
@@ -68,15 +73,16 @@ a change to one (a new provider, a new tool, a new guard) touches one folder:
 
 | Folder (core) | Concern |
 |---|---|
-| `Agent/` | The loop: turns, history, system prompt, round limits; the tool registry, the tool-call guards that call the model (cut-off calls, oversized results summarised), the skill tools and the agent-built tools (`/approve`) |
-| `Llm/` + `Llm/{Name}Provider/` | The model: client factory, `IChatClient` middleware (thinking, caching, usage recording), one folder per provider (`AnthropicProvider/`: a folder named `Anthropic` would hide the SDK's own `Anthropic` namespace) |
-| `Tools/{Toolset}/` | What the model can do: one folder per toolset (`Workspace`, `Git`, `DotNet`, `Shell`, `Web`, `Scripts`, `Agents`, `Integrations/Paymo`, `Integrations/DevOps`), plus `Clock` (every session) and `Documents` (shared by two toolsets); `ProcessRunner` beside them |
-| `Sessions/` | What a host sets for one session's turn and the tools read: the user's place (F22), the attachments, the sub-sessions a chat keeps (F26), the live feed of a child's events. Not what the model can do, and not the loop |
-| `Skills/` | Loading the markdown skills and a session's role into the prompt: the contract at the top (`ISkillProvider`, the embedded files), its implementations in `Providers/`, and in `Roles/` what a session is (`RoleCatalog`, `RoleLevel`, `RoleHeader`, CL13) |
-| `Guardrails/` | Pure safety checks, no model: the workspace boundary, sensitive files, the SSRF guard (the guards that call a model are in `Agent/`) |
-| `Usage/` and `Pricing/` | The ledger (records, sinks, scopes, reports); prices, cost, rates and the display currency |
+| `Agent/` | The engine (`AgentEngine`, the facade that wires one agent) and its tool registry at the top; one folder per thing it does, one layer: `Turns/` (one turn: `TurnRunner`, the `ChatPipeline` middleware order, the tool-call guards that call the model, a call's text for displays), `Commands/` (what the user types that the model never sees: `/tools`, `/approve`, `/reject`, `/usage`), `EngineTools/` (what the engine registers itself: the skill tools and the agent-built tools), `Toolsets/` (a toolset's definition, context and core's catalogue), `Catalog/` (the contracts an identity or a pack implements, and the catalogue built from them: the seam a later contracts project would be cut from) |
+| `Llm/` | The model: the client factory at the top (`ILlmClientFactory`, `LlmClientFactory`, with the thinking middleware); `Caching/` (how a provider marks a request for its prompt cache: the strategy, the no-op default, the middleware); `UsageMapping/` (a provider's usage into our record: the mapper and the recording middleware); one folder per provider under `Providers/`, `{Name}Provider/` (`Providers/AnthropicProvider/`: a folder named `Anthropic` would hide the SDK's own `Anthropic` namespace) |
+| `Tools/{Toolset}/` | What the model can do: one folder per toolset (`Workspace`, `Git`, `DotNet`, `Shell`, `Web`, `Scripts`, `Agents`, `Integrations/Paymo`, `Integrations/DevOps`), plus `Clock` (every session), `Documents` (shared by two toolsets) and `Currency` (listed by the web toolset, no web of its own); `ProcessRunner` beside them |
+| `Sessions/` | What a host sets for one session's turn and the tools read: the user's place (F22) and the attachments at the top; `SubSessions/` (the sub-sessions a chat keeps, F26, and the live feed of a child's events). Not what the model can do, and not the loop |
+| `Skills/` | Loading the markdown skills and a session's role into the prompt: the contract at the top (`ISkillProvider`, the embedded files, `SkillFolder`: where a file comes from), its implementations in `Providers/`, and in `Roles/` what a session is (`RoleCatalog`, `RoleLevel`, `RoleHeader`, CL13; `RoleFiles`: which roles this instance offers) |
+| `Guardrails/` | Pure safety checks, no model: `Auth/` (the hosts' key check, failing closed, FX18), `Network/` (the SSRF guard and the address it blocks), `Workspace/` (the workspace boundary, sensitive files). The guards that call a model are in `Agent/` |
+| `Usage/` | The ledger: `Records/` (a record, its tokens and cost, its purpose, the turn's scope and tags, the session), `Sinks/` (where records go: the monthly JSONL file), `Reports/` (reading a ledger back: totals, the usage text every host shows, the lifetime cost, the cache gaps) |
+| `Pricing/` | `Prices/` (the price table and its loader, a model's prices, the cost calculator, the sink that prices each record), `Rates/` (exchange rates and their loader, the display currency; `Mappers/`: a provider's reply into our format) |
 | `Protocols/Mcp/` | Talking to other agents and tools over MCP |
-| `Hosting/` | Bootstrap shared by every host: `AgentHost`, and wiring done at start-up (Rider's MCP tools) |
+| `Hosting/` | Bootstrap shared by every host: `AgentHost` (the flow), its context, the engine factory, the ledger and the tools-only client at the top; `EnvFiles/` (the .env files a host loads), `Prompts/` (the system prompt assembled from skill files), `Rider/` (Rider's MCP tools at start-up), `SessionLlms/` (the LLM profiles a session may name, `SESSION_LLMS`) |
 | `Config/`, `Messages/`, `Logging/` | Settings; message enums; logging (`AgentLogging`: Serilog behind `ILogger`) |
 
 The rules:
@@ -91,9 +97,11 @@ The rules:
 3. **Prompts are content, not code:** system prompt text and procedures stay in `Prompts/`, in the folder of the level
    that reads them (`agent/`, `specialists/`, `minions/`; `toolsets/` for what every level shares), embedded and read
    only from the assembly; C# only loads them. `SkillsLayoutTests` fails on a misplaced file.
-4. **Hosts stay thin:** a host project maps the agent's stream to its protocol (`Endpoints/`, `Services/`) and holds no
-   agent behaviour; another agent on core (the orchestrator) keeps its own `Tools/` and `Skills/` the same way.
-5. **Tests mirror the source:** `tests/louis-agent.core.tests/Llm/AnthropicProvider/…` tests `Llm/AnthropicProvider/…`.
+4. **Hosts stay thin:** a host project maps the agent's stream to its protocol and holds no agent behaviour. Its
+   `Program.cs` is start-up only; its routes are in `Endpoints/`, one file per group, and the rest sits in a folder per
+   concern (the API: `Sessions/`, `Admin/`, `Benchmarks/`, `Config/`, `Messages/`), never a `Services/` folder, which
+   names a kind of thing, not a concern; another agent on core (the orchestrator) keeps its own `Tools/` and `Skills/` the same way.
+5. **Tests mirror the source:** `tests/louis-agent.core.tests/Llm/Providers/AnthropicProvider/…` tests `Llm/Providers/AnthropicProvider/…`.
 6. **An architecture test enforces 1 and 2:** namespaces match folders, and no type depends against the arrow.
 
 **Held by a test:** `tests/louis-agent.core.tests/ArchitectureTests.cs` reads core's source and fails on a file whose
@@ -143,6 +151,48 @@ Log.Log(LogLevel.Information, McpServerLogMessage.ToolNameTaken, new { Name = na
 - **A unit test checks every message enum:** each member has a `[Description]`, and its template's holes are well formed.
 - **Screen text is not logging:** the CLI's usage line and the usage probe's errors are written to `Console.Error`
   directly (from their enums), so they stay out of the run file.
+
+## Building an identity or a pack
+
+Core is the engine and names no product, shop or country (CL15, [ADR 0027](../docs/adr/0027-engine-identities-and-packs.md));
+`ArchitectureTests` holds it in the model-visible text and in the comments. Who an agent is lives in an identity, what
+it can do in a pack, and only `src/louis-agent.composition` knows them all. The one identity in `identities/` and the
+one pack in `packs/` are the worked examples (this guide names neither: core's source, this file included, names no
+product, held by the same test); F40's demo takes over as the simpler one.
+
+**An identity** is a project `identities/louis-agent.identity.{name}` with one class implementing `IAgentIdentity`
+(`Agent/Catalog/`, as `IAgentPack` and `AgentCatalog` are):
+its `Name` (what `IDENTITIES` loads it by), its `Prompts` (a `ManifestEmbeddedFileProvider` over its `Prompts/` folder:
+its modes under `agent/{name}/`, its roles under `specialists/` and `minions/`, as *Adding a mode or a role* lays them
+out) and the `Packs` it names, by name, never by reference. Its csproj needs core's two embedding lines
+(`GenerateEmbeddedFilesManifest` and the `EmbeddedResource` glob), or its prompts silently vanish: its tests read one
+prompt through `SkillFileSource` to prove the manifest works, after a `[SetUpFixture]` registers the identity's prompts
+and its packs' with `SkillFileSource.Use`, as a host's `Build` does with the catalogue's.
+
+**A pack** is a project `packs/louis-agent.pack.{name}` with one class implementing `IAgentPack`: its `Name`, its
+`Toolsets` (one `ToolsetDefinition` each, *Adding a toolset*), its `Prompts` (its guides) and the packs it `Requires`,
+by name. It reads its own settings in its own options class (`ShopsOptions.FromEnvironment`), never through
+`AgentOptions`, and reaches core's shared services through `ToolsetContext` (the browser, the search provider, the
+rates). Its result texts are its own message enums in its `Messages/` folder (`ShopToolMessage`, `ShopLogMessage`), with
+their own golden; `HostMessageEnumTests` finds them.
+
+**Then the composition root:** a member in `IdentityKind` or `PackKind`, its `Create` arm in `Plugins`, a project
+reference in `louis-agent.composition.csproj`, and the test projects that need it. A host picks with `IDENTITIES` and
+`PACKS` at start-up; `AgentCatalog` refuses a name nothing provides, a name used twice, a tool name two toolsets share
+and a `Requires` cycle, before any engine is built.
+
+**The review checklist for a pack** ([ADR 0028](../docs/adr/0028-packs-stay-convertible-to-mcp.md)):
+`PackConvertibilityTests` holds the shapes (text returned, plain data taken, a `CancellationToken` when it waits, an
+MCP-safe name, no identity named in a description, guides as prose in the pack's prompts, the MCP SDK keeping name,
+schema and description). Review the rest by hand, because a test can't see it:
+
+- A failure is text with its reason, never a thrown exception: served over MCP, the SDK would replace the message.
+- Whatever a tool reads from the session (the user's place) also arrives as a parameter, so an MCP client can pass it.
+- Outside data it returns is framed as data (`--- untrusted … ---`), and its own output is bounded: a call served over
+  MCP skips the engine's guards.
+- It is ready when built: anything slow or async happens before the catalogue is built, once, and its toolsets and
+  tools never change afterwards.
+- It references no other pack and no identity (`ArchitectureTests` reads the csproj), and names the packs it needs.
 
 ## Building another agent on core
 

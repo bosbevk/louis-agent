@@ -27,9 +27,9 @@ changes instead of relying on training; **a configured agent**, an identity and 
 ## Now: three doors, the cut, simulations and the sales playground (Phases 0 to 4)
 
 - [ ] Validate demand: ten conversations and 30 real Malmesbury questions, answered blind by Puls, Gemini, ChatGPT and Google Maps (Louis's own, Phase 0 step 4)
-- [ ] The F32 to F34 learning write-up (Claude writes, Louis reads), skills 7 and 12, before Phase 2
 - [ ] CL15 Engine, identities and packs (Phase 2; takes in "SA context in the prompt"'s SAST default, `HOST_TIME_ZONE`; F30's minions kept, Puls's minion roles moved with Puls; `/approve {name} session|agent|shared` for skill files and agent-built tools, [ADR 0033](docs/adr/0033-what-the-agent-writes-has-a-scope.md))
-- [ ] [F18](docs/features/F18-evaluation.md) Simulations in C# (Phase 3; takes in CL11, the Python checks, "evaluation in CI", "prompts compared on the evals", notes on a run (F31 step 11c), the response cache as a replay cache, traces per turn and tool call)
+- [ ] [F18](docs/features/F18-evaluation.md) Simulations in C# (Phase 3; takes in CL11, the Python checks, "evaluation in CI", "prompts compared on the evals", notes on a run (F31 step 11c), the response cache as a replay cache, traces per turn and tool call; added 2026-10-20, in the platform plan's source until Phase 3's plan is copied: the word *evals* for benchmarks, datasets as files with input and expected behaviour, graders by kind (fixed rule, model, human review) with a fixed rule required, the models a run used, results overall and by category, every eval visible in the admin, the admin pages rebuilt under CL15's rules (W2b.6), and a test for the grader scoring one behaviour two ways)
+- [ ] CL18 A pluggable stream format (Phase 3 step 1e, with the session-stream reader: `ITurnStreamFormat`, `ClaudeStreamFormat`, `"stream"` on `POST /sessions`)
 - [ ] Personal data out of the logs: the place and the user's text hashed in the logs (Phase 3 step 4f, with F18; Part 3 row 14)
 - [ ] F40 The sales playground (Phase 4: the demo identity, the customers pack, the invoice and area-guide simulations, the control room, Try it, on its own compose, `docker/docker-compose.demo.yml`)
 
@@ -58,6 +58,7 @@ changes instead of relying on training; **a configured agent**, an identity and 
 - [ ] Vision: `ScreenshotPage(url)` and images as input (question 15)
 - [ ] Local lookups: scores, SARS dates, load-shedding, "the game" means the Springboks or Bafana, each a pack when a simulation shows demand
 - [ ] F23 Credits (takes in rand pricing and billing)
+- [ ] Puls with its own shop tools prices a town with no shop at the default store (`puls-tools` mode, every cook run, main included: `wrong_store` 5 in `14c0907fdff5`, 6 in `b4a6ea22b178`): Puls looks no town up as the cook does; a fix doc when it's taken up
 - [ ] The cook's unconfirmed prices: *geskat* or *unknown*, decided, then measured ([F25](docs/features/F25-local-cook.md)'s open item)
 - [ ] A shorter cook report
 - [ ] FX: binary attachments sent as files, not text ([F22](docs/features/F22-role-tools.md)'s open item)
@@ -98,8 +99,12 @@ changes instead of relying on training; **a configured agent**, an identity and 
 - [ ] SearXNG's results filtered to the site asked for
 - [ ] F31's review follow-ups
 - [ ] Web tests: the Branches queue, on Phase 4's bUnit project
-- [ ] Tests for the web app's `UsageFormat`
 - [ ] The portal's old benchmark routes and words removed, after Phase 3
+- [ ] Paymo, DevOps and Rider out of core (core layout review, 2026-10-19): `Tools/Integrations/Paymo` and `Tools/Integrations/DevOps` are packs in waiting (CL17); `Hosting/RiderMcpToolDiscovery` and `Protocols/Mcp/RiderMcpClient` serve only the ACP host and name a product, so they move to `src/louis-agent.acp-server`
+- [ ] The rest of the size list (CL15, 2026-10-20): 33 files over 200 lines (400 for tests), held by `FileSizeTests`' `Oversized`; split by responsibility a group at a time, on its own branch
+- [ ] A price format per country (CL15 review, 2026-10-20): `Tools/Web/Quotes/QuoteMatch` knows the rand sign, yet core names no country; an `IPriceFormat` seam in core, the South African one from Puls or the shops pack (with CL17)
+- [ ] `ToolMessage` split per toolset (core layout review, 2026-10-19): one enum of every tool's texts hides which toolset each belongs to; one enum per toolset beside its tools, as the shops pack has (`ShopToolMessage`), with the golden split the same way
+- [ ] A pack can't add itself to a router (CL15 step 4): the shops' routing line lives in its guide, which loads only in a session that already has the toolset, so the coding agent never learns that shops exist. Costs nothing today; with F36 the routing rows come from each toolset's description
 
 ## Known limitations
 

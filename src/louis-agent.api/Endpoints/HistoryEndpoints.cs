@@ -1,9 +1,9 @@
+using LouisAgent.Core.Guardrails.Workspace;
 using System.Text;
 using System.Text.RegularExpressions;
 using LouisAgent.Core.Agent;
 using static LouisAgent.Api.Endpoints.GitEndpoints;
 using LouisAgent.Core.Tools.Workspace;
-using LouisAgent.Core.Guardrails;
 using LouisAgent.Core.Messages;
 using LouisAgent.Api.Messages;
 

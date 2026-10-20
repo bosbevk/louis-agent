@@ -1,12 +1,15 @@
+using LouisAgent.Core.Hosting.SessionLlms;
+using LouisAgent.Core.Sessions.SubSessions;
+using LouisAgent.Core.Usage.Records;
+using LouisAgent.Core.Usage.Sinks;
+using LouisAgent.Core.Agent.Toolsets;
+using LouisAgent.Core.Agent.Catalog;
 using System.Net;
 using System.Text;
 using System.Text.Json;
-using LouisAgent.Core.Agent;
-using LouisAgent.Core.Sessions;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Tools.Agents;
-using LouisAgent.Core.Usage;
 using LouisAgent.Core.Tools.Web.Search;
 
 namespace LouisAgent.Core.Tests.Tools.Agents;
@@ -235,10 +238,10 @@ public class MinionToolsTests
     {
         var agent = new AgentOptions { SessionLlmProfiles = ["ollama-puls"], MinionLlms = new Dictionary<string, IReadOnlyList<string>> { ["*"] = ["ollama-puls", "gpt-local"] } };
 
-        var ex = Assert.Throws<SessionLlmException>(() => AgentHost.CheckMinionLlms(agent))!;
+        var ex = Assert.Throws<SessionLlmException>(() => SessionLlmLoader.CheckMinionLlms(agent))!;
 
         Assert.That(ex.Message, Does.Contain("gpt-local").And.Contain("ollama-puls").And.Contain("instance"));
-        Assert.DoesNotThrow(() => AgentHost.CheckMinionLlms(new AgentOptions { SessionLlmProfiles = ["ollama-puls"], MinionLlms = new Dictionary<string, IReadOnlyList<string>> { ["*"] = ["instance", "ollama-puls"] } }));
+        Assert.DoesNotThrow(() => SessionLlmLoader.CheckMinionLlms(new AgentOptions { SessionLlmProfiles = ["ollama-puls"], MinionLlms = new Dictionary<string, IReadOnlyList<string>> { ["*"] = ["instance", "ollama-puls"] } }));
     }
 
     [Test]
@@ -251,9 +254,9 @@ public class MinionToolsTests
         Assert.That(minions.MissingSettings(without), Is.EqualTo(new[] { "AGENT_PEERS", "MINION_LLMS" }));
         Assert.That(minions.IsAvailable(with), Is.True);
         Assert.That(minions.GuideFile, Is.EqualTo("toolsets/minions.md"));
-        Assert.That(ToolsetCatalog.ToolsetOf("FetchUrl"), Is.EqualTo("web"));
-        Assert.That(ToolsetCatalog.ToolsetOf("ReadWorkspaceFile"), Is.EqualTo("files"));
-        Assert.That(ToolsetCatalog.ToolsetOf("CreateTool"), Is.Null, "engine-provided: no toolset builds it");
+        Assert.That(AgentCatalog.CoreOnly.ToolsetOf("FetchUrl"), Is.EqualTo("web"));
+        Assert.That(AgentCatalog.CoreOnly.ToolsetOf("ReadWorkspaceFile"), Is.EqualTo("files"));
+        Assert.That(AgentCatalog.CoreOnly.ToolsetOf("CreateTool"), Is.Null, "engine-provided: no toolset builds it");
     }
 
     private sealed class NoSearch : LouisAgent.Core.Tools.Web.Search.IWebSearchProvider

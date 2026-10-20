@@ -1,5 +1,8 @@
 namespace LouisAgent.Core.Tools.Agents;
 
+using LouisAgent.Core.Sessions.SubSessions;
+using LouisAgent.Core.Usage.Records;
+using LouisAgent.Core.Usage.Sinks;
 using System.Collections.Concurrent;
 using System.ComponentModel;
 using LouisAgent.Core.Config;
@@ -7,15 +10,15 @@ using LouisAgent.Core.Messages;
 using LouisAgent.Core.Sessions;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Roles;
+using LouisAgent.Core.Tools.Agents.SubSessions;
 using LouisAgent.Core.Tools.Clock;
-using LouisAgent.Core.Usage;
 using Microsoft.Extensions.AI;
 
 /// <summary>
 /// The <c>minions</c> toolset (F30): a specialist hands one task and one of its own tools to a minion, a session at
 /// depth 2 on this instance (<c>AGENT_PEERS</c> names itself) that runs the minion role on the cheap model
 /// <c>MINION_LLMS</c> maps the role to. The page the minion reads never enters the specialist's context: only the
-/// minion's short answer does. The child's path (open, ask, keep or delete, roll up) is <see cref="SpecialistTools"/>'.
+/// minion's short answer does. The child's path (open, ask, keep or delete, roll up) is <see cref="PeerSession"/>, as for the specialists.
 /// </summary>
 /// <remarks>
 /// The limits are in code, not in the prompt (Louis's rule: a minion can never do more than the specialist that sent it):
@@ -52,7 +55,8 @@ public sealed class MinionTools
         "ExecuteSkill", "CreateSkillFile", "ReloadSkills", "CreateTool", "ListAgentTools",
     };
 
-    private readonly SpecialistTools _peers;
+    private readonly IReadOnlyDictionary<string, Uri> _peers;
+    private readonly PeerSession _session;
     private readonly IReadOnlyDictionary<string, IReadOnlyList<string>> _llms;
     private readonly TimeSpan _timeout;
     private readonly ConcurrentDictionary<string, int> _perTree = new(StringComparer.Ordinal);
@@ -68,14 +72,15 @@ public sealed class MinionTools
     {
         _llms = llms;
         _timeout = timeout ?? DefaultTimeout;
-        _peers = new SpecialistTools(peers, apiKey, http, _timeout, time, usageSink);
+        _peers = peers;
+        _session = PeerSession.For(http ?? PeerHttp.Shared, apiKey, usageSink, time ?? TimeProvider.System);
     }
 
     [Description("Hands one task and one of your own tools to a minion: a small worker on a cheap model that reads one page or " +
         "does one lookup and answers in its role's fixed shape, so what it reads never enters your context. It answers once " +
         "and closes. At most 16 minions per user turn across all specialists, 2 minutes each. See the minions guide.")]
     public async Task<string> StartMinion(
-        [Description("The minion's role, e.g. \"puls-minion-web-price-lookup\" (the minions guide lists them).")] string role,
+        [Description("The minion's role, <product>-minion-<function>, as your role file lists them.")] string role,
         [Description("The one tool the minion gets, one of your own, e.g. \"FetchUrl\" (never a delegation or skills tool).")] string tool,
         [Description("The task, self-contained and in English: the URL, the product with its size, the user's town. The minion " +
             "sees nothing else.")] string task,
@@ -91,7 +96,7 @@ public sealed class MinionTools
         if (!mine.Contains(tool))
             return MessageText.Format(ToolMessage.MinionToolNotMine, new { Tool = tool, Tools = mine.Count == 0 ? "(none)" : string.Join(", ", mine.Order()) });
         if (ModelFor(role, stronger, out string? llm) is { } noModel) return noModel;
-        if (_peers.ResolvePeer(null, out Uri peer, out string agent) is { } noPeer) return noPeer;
+        if (SpecialistTools.ResolvePeer(_peers, null, out Uri peer, out string agent) is { } noPeer) return noPeer;
 
         UsageScope? scope = UsageScope.Current;
         string? toolUseId = FunctionInvokingChatClient.CurrentContext?.CallContent.CallId;
@@ -100,15 +105,15 @@ public sealed class MinionTools
         var createBody = new
         {
             depth = 2, role, tool, task = $"minion:{role}", run = scope?.Tags.Run, service = scope?.Tags.Service,
-            parent = SpecialistTools.ParentTag(scope), llm,
+            parent = CallSlots.ParentTag(scope), llm,
             location = UserPlace.Current?.Location, time_zone = UserPlace.Current?.TimeZone,
         };
         string model = llm ?? InstanceLlm;
-        string Answer(SpecialistTools.SubSessionReply reply) =>
+        string Answer(SubSessionMessenger.SubSessionReply reply) =>
             MessageText.Format(ToolMessage.MinionAnswer, new { Answer = reply.Text, Role = role, Tool = tool, Llm = model, Usage = reply.UsageLine });
-        var kind = new SpecialistTools.ChildKind(Kind, role, $"minion:{role}", (_, reply) => Answer(reply), Answer, Llm: model);
+        var kind = new SubSessionKind(Kind, role, $"minion:{role}", (_, reply) => Answer(reply), Answer, Llm: model);
         // Never kept (F30, the fourth hand check): a chat keeps three children, and kept minions evicted its specialists.
-        return await _peers.OpenChildAsync(peer, agent, createBody, new { message = task }, [tool], role, kind, toolUseId, scope, _timeout,
+        return await _session.OpenAsync(peer, agent, createBody, new { message = task }, [tool], role, kind, toolUseId, scope, _timeout,
             cancellationToken, keep: false);
     }
 
@@ -130,12 +135,12 @@ public sealed class MinionTools
     }
 
     /// <summary>
-    /// Takes one of the user turn's minion slots: the specialist's turn carries Puls's turn as its parent, so every
+    /// Takes one of the user turn's minion slots: the specialist's turn carries the router's turn as its parent, so every
     /// specialist under that turn counts against the same sixteen. Outside a turn: the specialist's own, then none.
     /// </summary>
     private string? TakeSlot(UsageScope? scope)
     {
-        string tree = scope?.Tags.Parent ?? SpecialistTools.ParentTag(scope) ?? "(no turn)";
+        string tree = scope?.Tags.Parent ?? CallSlots.ParentTag(scope) ?? "(no turn)";
         if (_perTree.Count > 1000) _perTree.Clear();
         return _perTree.AddOrUpdate(tree, 1, (_, n) => n + 1) <= MaxPerTurn ? null
             : MessageText.Format(ToolMessage.MinionLimit, new { Max = MaxPerTurn });

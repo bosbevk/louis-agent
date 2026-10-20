@@ -1,0 +1,26 @@
+
+@* The app in the landing page (F24): the three panels, playing a scripted turn. The question types itself and is sent,
+   a delegation card opens busy, the Werk panel ticks its steps, the answer streams, the card ends Klaar with the cost
+   counting up; three turns, then Speel weer. The inner pieces use the app's own classes (user-message, delegation,
+   work-item, work-step, work-cost), so the demo looks exactly like the app it stands for; the frame itself is demo-*.
+   The turns are example data, serialised into data-turns for js/landing.js; nothing here calls a model. *@
+<div class="demo" id="landing-demo" data-turns="@TurnsJson" data-tile="brand/puls-icon-tile.svg">
+    <div class="demo-side">
+        <img src="brand/puls-logo-white.svg" alt="" class="demo-logo" />
+        <span class="demo-new">+ Nuwe gesprek</span>
+        <span class="demo-label">Onlangs</span>
+        @for (int i = 0; i < Turns.Length; i++)
+        {
+            <span class="demo-chat-item" data-chat="@i">@Turns[i].Title</span>
+        }
+        <span class="demo-chat-item">Reëls kode per vouer</span>
+    </div>
+    <div class="demo-chat">
+        <div class="demo-messages"></div>
+        <div class="demo-composer"><span class="text"></span><span class="send" aria-hidden="true">↑</span></div>
+    </div>
+    <div class="demo-work">
+        <div class="work-head"><span class="work-title">Werk</span><span class="work-count">0</span></div>
+        <div class="work-body"></div>
+    </div>
+</div>

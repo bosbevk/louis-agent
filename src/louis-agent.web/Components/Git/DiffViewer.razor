@@ -1,0 +1,48 @@
+@* One file's staged or unstaged diff, with old/new line numbers, and the actions for that file. *@
+
+<div class="file-viewer">
+    <header class="file-header">
+        <div class="file-title">
+            <span class="file-path" title="@Diff.Path">@Diff.Path</span>
+            <span class="file-meta">
+                @(Diff.Untracked ? "New file" : Diff.Staged ? "Staged changes" : "Unstaged changes")
+                · <span class="added">+@_added</span> <span class="removed">−@_removed</span>
+                @if (Diff.Truncated) { <text> · diff truncated</text> }
+            </span>
+        </div>
+        <div class="file-actions">
+            @if (_confirmDiscard)
+            {
+                <span class="confirm">Discard these changes? This can't be undone.</span>
+                <button class="danger" disabled="@Busy" @onclick="ConfirmDiscard">Discard</button>
+                <button class="secondary" @onclick="() => _confirmDiscard = false">Cancel</button>
+            }
+            else
+            {
+                <button class="send" disabled="@Busy" @onclick="OnReview">Ask agent to review</button>
+                @if (Diff.Staged)
+                {
+                    <button class="secondary" disabled="@Busy" @onclick="OnUnstage">Unstage</button>
+                }
+                else
+                {
+                    <button class="secondary" disabled="@Busy" @onclick="OnStage">Stage</button>
+                    <button class="secondary" disabled="@Busy" @onclick="() => _confirmDiscard = true">Discard</button>
+                }
+                <button class="icon" title="Close diff" @onclick="OnClose">×</button>
+            }
+        </div>
+    </header>
+    <div class="diff-body">
+        @if (_rows.Count == 0)
+        {
+            <div class="diff-note">No differences.</div>
+        }
+        @foreach (var row in _rows)
+        {
+            <div class="diff-row diff-@row.Kind">
+                <span class="ln">@row.Old</span><span class="ln">@row.New</span><span class="diff-text">@row.Text</span>
+            </div>
+        }
+    </div>
+</div>

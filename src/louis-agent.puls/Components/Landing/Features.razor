@@ -1,0 +1,37 @@
+@* Kenmerke as a bento: six tiles, two tall and one wide, each showing a little of what it says; under them the
+   toolsets and tools a specialist can hold roll past, twice over so the loop is seamless. *@
+<section class="section" id="kenmerke">
+    <span class="eyebrow reveal">Kenmerke</span>
+    <h2 class="reveal" data-delay="1">Alles wat jy nodig het, niks meer nie</h2>
+    <p class="sub reveal" data-delay="2">Elke spesialis kry 'n klein stel gereedskap. Dit hou die antwoord skerp en die koste laag.</p>
+    <div class="bento">
+        @foreach (var (area, icon, title, text) in Tiles)
+        {
+            <div class="card feature reveal t-@area" data-delay="@(area - 'a')">
+                <div>
+                    <span class="feature-icon i-@icon" aria-hidden="true"></span>
+                    <h3>@title</h3>
+                    <p>@text</p>
+                </div>
+                @switch (icon)
+                {
+                    case "pulse":
+                        <ul class="work-steps" aria-hidden="true"><li class="work-step"><span class="work-step-mark">✓</span><span class="work-step-name">GetToday</span></li><li class="work-step"><span class="work-step-mark">✓</span><span class="work-step-name">WebSearch</span><span class="work-step-args">".NET 10"</span></li><li class="work-step"><span class="work-step-mark">✓</span><span class="work-step-name">FetchUrl</span><span class="work-step-args">learn.microsoft.com</span></li><li class="work-step waiting"><span class="work-step-mark">…</span><span class="work-step-name">FetchUrl</span><span class="work-step-args">github.com/dotnet</span></li></ul>
+                        break;
+                    case "search":
+                        <div class="srcs" aria-hidden="true"><span><i>1</i>learn.microsoft.com</span><span><i>2</i>devblogs.microsoft.com</span><span><i>3</i>github.com/dotnet/core</span></div>
+                        break;
+                    case "coin":
+                        <div class="big counter" data-to="0.47" data-fmt="rand">R0,00</div><p class="small">hierdie vraag, spesialis ingesluit</p>
+                        <div class="bars bars-fill" aria-hidden="true">@foreach (var h in LandingBars.Heights[..10]) { <i style="--h:@(h)%"></i> }</div>
+                        break;
+                }
+            </div>
+        }
+    </div>
+    <button class="marquee-pause" type="button" aria-pressed="false">Pouse die lys</button>
+    <div class="marquee" aria-hidden="true">
+        <div class="track">@foreach (var (kind, name) in Marquee.Concat(Marquee)) { <span class="tag @kind">@name</span> }</div>
+        <div class="track rev">@foreach (var (kind, name) in Enumerable.Reverse(Marquee).Concat(Enumerable.Reverse(Marquee))) { <span class="tag @kind">@name</span> }</div>
+    </div>
+</section>

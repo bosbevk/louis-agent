@@ -1,5 +1,6 @@
 namespace LouisAgent.Core.Tools.Web.Search.Providers;
 
+using LouisAgent.Core.Tools.Web.Fetching;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
@@ -63,9 +64,9 @@ public sealed class TavilySearchProvider(string apiKey, HttpClient? http = null)
 
         return results.EnumerateArray()
             .Select(r => new WebSearchResult(
-                WebTools.CleanInline(r.TryGetProperty("title", out var t) ? t.GetString() : ""),
+                HtmlText.CleanInline(r.TryGetProperty("title", out var t) ? t.GetString() : ""),
                 r.TryGetProperty("url", out var u) ? u.GetString() ?? "" : "",
-                WebTools.CleanInline(r.TryGetProperty("content", out var c) ? c.GetString() : "")))
+                HtmlText.CleanInline(r.TryGetProperty("content", out var c) ? c.GetString() : "")))
             .Where(r => r.Url.Length > 0)
             .Take(count)
             .ToList();

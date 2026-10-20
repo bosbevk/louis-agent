@@ -36,17 +36,11 @@ public sealed class AgentOptions
     /// <summary>SEARXNG_URL (F32): the SearXNG we run ourselves, for development, tests and benchmarks (ADR 0023).</summary>
     public string? SearxngUrl { get; set; }
 
-    /// <summary>BROWSER_URL (F32): the headless Chrome we run, its DevTools address (http://puls-browser:9222 in the Puls stack).</summary>
+    /// <summary>BROWSER_URL (F32): the headless Chrome we run, its DevTools address (a compose stack names its browser service: http://browser:9222).</summary>
     public string? BrowserUrl { get; set; }
 
     /// <summary>PAGE_RENDERER (F32): chrome or tavily; null picks Chrome when BROWSER_URL is set, else Tavily when its key is.</summary>
     public string? PageRenderer { get; set; }
-
-    /// <summary>SHOP_CATALOGUES (F33): the shops whose catalogue may be read, comma-separated (checkers); unset, none.</summary>
-    public string? ShopCatalogues { get; set; }
-
-    /// <summary>SHOP_STORE_CACHE (F34): a file that keeps each town's store a day, across restarts; unset, memory only.</summary>
-    public string? ShopStoreCache { get; set; }
 
     /// <summary>Tavily search API key (TAVILY_API_KEY), F25.</summary>
     public string? TavilyApiKey { get; set; }
@@ -121,22 +115,22 @@ public sealed class AgentOptions
 
     /// <summary>
     /// ROLES_ENABLED: the roles this instance may use (F29), comma separated and lowercase, e.g.
-    /// <c>puls/voice-af,puls-cook</c>; a session or sub-session asking for another is refused as for an unknown one.
-    /// Empty: every built-in role. Puls's compose lists only the roles that have passed their check. PERSONALITIES_ENABLED,
+    /// <c>acme/voice-en,acme-cook</c>; a session or sub-session asking for another is refused as for an unknown one.
+    /// Empty: every built-in role. A product's compose lists only the roles that have passed their check. PERSONALITIES_ENABLED,
     /// its name before CL14, is read when it's unset, with a warning, until the TODO's line removes it.
     /// </summary>
     public IReadOnlyList<string> RolesEnabled { get; set; } = [];
 
     /// <summary>
     /// LLM_SESSION_PROFILES: the LLM profiles a session may name when it opens (F30), comma separated, e.g.
-    /// <c>ollama-puls</c>; each is read from <c>config/.env.{name}</c>. Empty: every session runs on the instance's model.
+    /// <c>ollama-local</c>; each is read from <c>config/.env.{name}</c>. Empty: every session runs on the instance's model.
     /// </summary>
     public IReadOnlyList<string> SessionLlmProfiles { get; set; } = [];
 
     /// <summary>
     /// MINION_LLMS (F30): the model a minion role runs on, as <c>role=profile</c> entries separated by commas, with
     /// <c>*</c> for every role not named and <c>instance</c> for this instance's own model; a <c>&gt;</c> lists a cascade,
-    /// cheapest first, e.g. <c>*=ollama-puls&gt;instance,puls-minion-web-summary=instance</c>. Every profile must be in
+    /// cheapest first, e.g. <c>*=ollama-local&gt;instance,acme-minion-web-summary=instance</c>. Every profile must be in
     /// <see cref="SessionLlmProfiles"/> (checked at start-up). Empty: no <c>minions</c> toolset.
     /// </summary>
     public IReadOnlyDictionary<string, IReadOnlyList<string>> MinionLlms { get; set; } = new Dictionary<string, IReadOnlyList<string>>();
@@ -168,6 +162,12 @@ public sealed class AgentOptions
     /// <summary>AGENT_API_KEY: this deployment's API key, sent to peers as x-api-key (never taken from the model's arguments).</summary>
     public string? AgentApiKey { get; set; }
 
+    /// <summary>
+    /// HOST_TIME_ZONE (CL15): the zone <c>GetToday</c> and the API's place line use when the user shared none, an IANA name
+    /// (an IANA name; a product's compose sets its own); null is the machine's own. Core names no country.
+    /// </summary>
+    public string? HostTimeZone { get; set; }
+
     /// <summary>Parses AGENT_PEERS; an entry without a name or an absolute http(s) URL is skipped.</summary>
     internal static IReadOnlyList<string> ParseNames(string? value) =>
         (value ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
@@ -184,7 +184,7 @@ public sealed class AgentOptions
     /// <summary>
     /// ROLES_ENABLED, or PERSONALITIES_ENABLED (its name before CL14) when it's unset. Read raw: set but empty is "every
     /// role on", never "unset" (review of PR #60). The old name, when set, is always said in a warning: renamed when it's
-    /// read, ignored when the new one is set too (Puls's compose sets ROLES_ENABLED, and env_file passes config/.env in).
+    /// read, ignored when the new one is set too (a product's compose sets ROLES_ENABLED, and env_file passes config/.env in).
     /// </summary>
     private static string? RolesSetting(Func<string, string?> raw)
     {
@@ -213,8 +213,6 @@ public sealed class AgentOptions
             SearxngUrl = Get("SEARXNG_URL"),
             BrowserUrl = Get("BROWSER_URL"),
             PageRenderer = Get("PAGE_RENDERER"),
-            ShopCatalogues = Get("SHOP_CATALOGUES"),
-            ShopStoreCache = Get("SHOP_STORE_CACHE"),
             TavilyApiKey = Get("TAVILY_API_KEY"),
             GoogleSearchApiKey = Get("GOOGLE_SEARCH_API_KEY"),
             GoogleSearchEngineId = Get("GOOGLE_SEARCH_ENGINE_ID"),
@@ -241,6 +239,7 @@ public sealed class AgentOptions
             SessionLlmProfiles = ParseNames(Get("LLM_SESSION_PROFILES")),
             MinionLlms = ParseMinionLlms(Get("MINION_LLMS")),
             AgentApiKey = Get("AGENT_API_KEY"),
+            HostTimeZone = TimeZoneChecked(Get("HOST_TIME_ZONE")),
             SubSessionPromptBudget = int.TryParse(Get("SUB_SESSION_PROMPT_BUDGET"), NumberStyles.None, CultureInfo.InvariantCulture, out int budget)
                 ? budget : DefaultSubSessionPromptBudget,
         };
@@ -254,6 +253,15 @@ public sealed class AgentOptions
         options.WorkspaceRoot = Path.GetFullPath(options.WorkspaceRoot);
         return options;
     }
+
+    /// <summary>
+    /// HOST_TIME_ZONE must be a zone this machine knows (review of CL15 step 3): a misspelt one fell back in silence and
+    /// reached the model's place line as written, two hours off; every other setting stops the host when it's wrong.
+    /// </summary>
+    private static string? TimeZoneChecked(string? name) =>
+        name is null || TimeZoneInfo.TryFindSystemTimeZoneById(name, out _)
+            ? name
+            : throw new ArgumentException(MessageText.Format(ErrorMessage.UnknownHostTimeZone, new { Value = name }));
 
     /// <summary>Nearest directory at or above <paramref name="startDirectory"/> containing .git or a .sln file.</summary>
     internal static string? FindRepositoryRoot(string startDirectory)

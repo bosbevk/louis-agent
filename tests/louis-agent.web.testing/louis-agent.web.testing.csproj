@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- What the web apps' test projects share (T1b, CL15): the recorded Puls turn replayed into a Turn, a stub API that
+       answers both apps from it, and the snapshot helper that pins a component's markup to a golden file. A class
+       library, not a test project: no test project references another. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>LouisAgent.Web.Testing</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>false</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Snapshots asserts with NUnit, as the other goldens do. -->
+    <PackageReference Include="NUnit" Version="4.3.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\louis-agent.web.shared\louis-agent.web.shared.csproj" />
+    <ProjectReference Include="..\louis-agent.testing\louis-agent.testing.csproj" />
+  </ItemGroup>
+
+</Project>

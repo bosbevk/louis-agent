@@ -1,0 +1,15 @@
+@* Vrae: an accordion, one open at a time (js/landing.js faq()): a number per question, an orange rail on the open
+   one, a round plus that turns into a minus, the answer fading up once the panel has opened. *@
+<section class="section" id="vrae">
+    <span class="eyebrow reveal">Vrae</span>
+    <h2 class="reveal" data-delay="1">Gereelde vrae</h2>
+    <div class="faq">
+        @for (int i = 0; i < Questions.Length; i++)
+        {
+            <div class="q reveal" data-delay="@Math.Min(i, 5)">
+                <button type="button" aria-expanded="false"><span class="k">0@(i + 1)</span><span class="t">@Questions[i].Question</span></button>
+                <div class="body"><div><p>@Questions[i].Answer</p></div></div>
+            </div>
+        }
+    </div>
+</section>

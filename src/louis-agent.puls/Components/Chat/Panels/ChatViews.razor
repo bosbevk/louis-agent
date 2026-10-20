@@ -1,0 +1,9 @@
+@* Verken or Studio in place of the turns (F20; W2b, from the page). *@
+@if (View == "verken")
+{
+    <ExploreView OnStart="OnStart" />
+}
+else if (View == "studio")
+{
+    <StudioView Recent="Recent" OnStart="OnStart" OnNewProject="OnNewProject" />
+}

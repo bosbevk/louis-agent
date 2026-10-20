@@ -12,6 +12,7 @@ dotnet test tests/louis-agent.core.tests
 dotnet test tests/louis-agent.core.tests --filter "FullyQualifiedName~AgentEngineTests"
 dotnet test tests/louis-agent.api.tests
 dotnet test tests/louis-agent.orchestrator.tests
+dotnet test tests/louis-agent.acp-server.tests     # the ACP transcript (LOUIS_UPDATE_GOLDEN=1 regenerates AcpTranscript.json)
 dotnet test louis-agent-solution.sln          # everything
 ```
 
@@ -54,10 +55,32 @@ The PowerShell variable lasts for the session, hence the `finally`: left set, ev
 instead of checking them. On Windows, `git status` can list a regenerated file as modified while `git diff` shows
 nothing: only its line endings changed, and `git checkout -- <file>` puts it back.
 
+**The web apps' components are pinned the same way** (T1, CL15): `tests/louis-agent.web.shared.tests` renders
+`TurnView`, `BlocksView`, `DelegationCard` and `CurrencySwitcher` with bUnit from the recorded Puls turn
+(`benchmarks/fixtures/session-stream.sse`) and compares each one's markup with the `.html` golden beside its test
+(`Components/TurnView.html`); `tests/louis-agent.puls.tests` does the same for `WorkPanel`, `PulsTile`, `TemplateCard`,
+the landing page and the chat page, empty and with the turn (`Pages/ChatPage.empty.html`, `ChatPage.turn.html`), and
+`tests/louis-agent.web.tests` for the code-review app's chat page, each against the stub API (`FixtureApi` in
+`tests/louis-agent.web.testing`, the library the three share with the fixture replay and the snapshot helper). The
+same switch regenerates them:
+
+```bash
+LOUIS_UPDATE_GOLDEN=1 dotnet test tests/louis-agent.web.shared.tests
+LOUIS_UPDATE_GOLDEN=1 dotnet test tests/louis-agent.puls.tests
+LOUIS_UPDATE_GOLDEN=1 dotnet test tests/louis-agent.web.tests
+```
+
+A mismatch writes what was rendered to `louis-agent-snapshots/` under the temp folder, so the diff can be read. The
+snapshots normalise what isn't the component's doing (per-instance SVG ids, `@ref` element references, the renderer's
+event-handler numbers, a thinking block's seconds, and the line breaks and indentation beside tags, so a page split into
+components keeps its golden; a space between tags stays, since it can be seen) and run with the invariant culture, so they never depend on the machine.
+
 ## Writing tests
 
 Tests use `FakeChatClient` (a scripted `IChatClient` that also streams) and `StubHandler` for HTTP — no network, model or
-Docker. A few tests skip themselves when git, pip or the network isn't available. The agent runs tests on Linux inside
+Docker. The web apps' components render with bUnit (MIT, 2.12.5), its JS interop in loose mode where a component calls
+the page's scripts, so a call is answered with nothing and listed, never a failure. Those, `FakePrompts`, `FakeIdentity`, `FakePack` and `TestPaths` live in `tests/louis-agent.testing`, a class library the
+test projects that use them reference as a global using (CL15); no test project references another, and `ArchitectureTests` holds it. A few tests skip themselves when git, pip or the network isn't available. The agent runs tests on Linux inside
 its containers, so keep them platform-neutral (forward slashes, no Windows-only paths).
 
 The API's sessions are tested (`tests/louis-agent.api.tests`); its endpoints and the web app have no automated tests

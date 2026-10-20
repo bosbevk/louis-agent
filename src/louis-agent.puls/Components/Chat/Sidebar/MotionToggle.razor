@@ -1,0 +1,5 @@
+@* Animations although the system asks for less (F24): this browser's choice, applied at once. *@
+<label class="settings-check">
+    <input type="checkbox" checked="@Motion" @onchange="e => OnChange.InvokeAsync(e.Value is true)" />
+    <span>Wys animasies al vra my stelsel minder@(ReducedMotion ? "" : " (jou stelsel vra nie minder nie)")</span>
+</label>

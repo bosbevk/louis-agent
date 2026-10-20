@@ -1,20 +1,13 @@
+using LouisAgent.Core.Guardrails.Workspace;
 using System.Text;
 using LouisAgent.Core.Agent;
-using LouisAgent.Core.Tools.Workspace;
-using LouisAgent.Core.Guardrails;
+using LouisAgent.Core.Tools.Workspace.Listing;
 using LouisAgent.Core.Messages;
 using LouisAgent.Api.Messages;
 
 namespace LouisAgent.Api.Endpoints;
 
 /// <summary>Errors in Claude's shape: { "type": "error", "error": { "type", "message" } }.</summary>
-internal static class ApiErrors
-{
-    public static object Body(string type, string message) => new { type = "error", error = new { type, message } };
-
-    public static IResult Result(int status, string type, string message) => Results.Json(Body(type, message), statusCode: status);
-}
-
 /// <summary>
 /// Read-only browsing of the agent's workspace for the web app. Paths go through the same checks as the agent's own
 /// file tools: they must stay inside the workspace, can't follow symbolic links, and secret files (.env, keys,
@@ -35,7 +28,7 @@ internal static class WorkspaceEndpoints
 
             var directory = new DirectoryInfo(fullPath!);
             var folders = directory.EnumerateDirectories()
-                .Where(d => !WorkspaceTools.ExcludedDirectories.Contains(d.Name) && !d.Attributes.HasFlag(FileAttributes.ReparsePoint))
+                .Where(d => !WorkspaceFilter.ExcludedDirectories.Contains(d.Name) && !d.Attributes.HasFlag(FileAttributes.ReparsePoint))
                 .OrderBy(d => d.Name, StringComparer.OrdinalIgnoreCase)
                 .Select(d => new { name = d.Name, path = Relative(engine, d.FullName), type = "directory", size = (long?)null, sensitive = false });
             var files = directory.EnumerateFiles()

@@ -1,0 +1,7 @@
+@* A starter's card (F20): Verken's sections and Studio's grid. *@
+<button class="template-card" type="button" @onclick="() => OnStart.InvokeAsync(Template)">
+    <span class="template-icon" aria-hidden="true"><span class="ic @Template.Icon"></span></span>
+    <strong>@Template.Title</strong>
+    <span class="template-text">@Template.Description</span>
+    <small>Deur Puls · @Template.Category</small>
+</button>

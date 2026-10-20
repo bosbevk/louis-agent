@@ -1,3 +1,8 @@
+using LouisAgent.Core.Hosting.EnvFiles;
+using LouisAgent.Core.Pricing.Prices;
+using LouisAgent.Core.Pricing.Rates;
+using LouisAgent.Core.Usage.Records;
+using LouisAgent.Core.Usage.Reports;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using LouisAgent.Core.Config;
@@ -5,10 +10,8 @@ using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Providers;
 using LouisAgent.Core.Skills.Roles;
 using LouisAgent.Core.Agent;
-using LouisAgent.Core.Usage;
 using LouisAgent.Orchestrator;
 using LouisAgent.Orchestrator.Tools;
-using LouisAgent.Core.Pricing;
 using LouisAgent.Core.Llm;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Messages;
@@ -20,7 +23,7 @@ using Microsoft.Extensions.Logging;
 // prompt is the service's runbooks (one skill file per API method) and whose only tools are ServiceTools: it ignores,
 // escalates, or delegates the fix to louis-agent.api and then verifies the commit and the fix itself.
 //   ORCHESTRATOR_SERVICE_ROOT=<service repo> dotnet run --project src/louis-agent.orchestrator [-- --once]
-AgentHost.LoadEnvironment();
+HostEnvironment.Load();
 var options = OrchestratorOptions.FromEnvironment(args);
 var llm = LlmOptions.FromEnvironment();
 
@@ -40,8 +43,8 @@ void Log(OrchestratorLogMessage message, object? values = null) =>
 void Warn(OrchestratorLogMessage message, object? values = null) => log.Log(LogLevel.Warning, message, values);
 // Prices and rates as louis-agent's (in the demo, from demo-api's /prices and /rates), so both agents' costs, and the
 // comms log's sums of them, are in one currency at one rate (F14).
-PriceTable prices = AgentHost.LoadPrices(agentOptions);
-ExchangeRates rates = AgentHost.LoadRates(agentOptions, prices.Currency);
+PriceTable prices = PriceTableLoader.Load(agentOptions);
+ExchangeRates rates = ExchangeRatesLoader.Load(agentOptions, prices.Currency);
 DisplayCurrency display = DisplayCurrency.Resolve(agentOptions, prices.Currency, rates);
 Log(OrchestratorLogMessage.CostsShownIn, new { Display = display });
 
@@ -49,7 +52,7 @@ var comms = new CommsLog(options.CommsLogPath, display);
 var tools = new ServiceTools(options, feed, louisAgent, methods, comms);
 var clientFactory = new LlmClientFactory();
 var engine = new AgentEngine(skills, clientFactory.Create(llm), agentOptions, llm.ResolveSupportsTools(), toolsets: [tools],
-    usageSink: AgentHost.CreateUsageSink(agentOptions, prices), usageMapper: clientFactory.CreateUsageMapper(llm))
+    usageSink: UsageLedger.Open(agentOptions, prices), usageMapper: clientFactory.CreateUsageMapper(llm))
 {
     Thinking = llm.ResolveThinking(),
     Display = display,

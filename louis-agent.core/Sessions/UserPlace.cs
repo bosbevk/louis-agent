@@ -7,7 +7,7 @@ namespace LouisAgent.Core.Sessions;
 /// default, and a host only sets it when the user chose to share it.
 /// </summary>
 /// <param name="Location">The user's place, e.g. "Pretoria, Gauteng, Suid-Afrika"; null when not shared.</param>
-/// <param name="TimeZone">An IANA time zone (Africa/Johannesburg); null for South African time.</param>
+/// <param name="TimeZone">An IANA time zone (Europe/London); null for the host's own (HOST_TIME_ZONE, CL15).</param>
 public sealed record UserPlace(string? Location, string? TimeZone)
 {
     private static readonly AsyncLocal<UserPlace?> CurrentPlace = new();

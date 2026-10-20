@@ -7,23 +7,22 @@ using LouisAgent.Core.Messages;
 
 /// <summary>
 /// Today's date and the time (F22): a model doesn't know what day it is, so "this week", "recent" or "how long ago" would
-/// be guesses. Registered for every session by the engine, like ExecuteSkill, since Puls's own sessions load only the
-/// agents toolset. In the user's time zone when they shared it (<see cref="UserPlace"/>), else South African time.
+/// be guesses. Registered for every session by the engine, like ExecuteSkill, since a chat's sessions may load no
+/// toolset that has it. In the user's time zone when they shared it (<see cref="UserPlace"/>), else the host's
+/// (<c>HOST_TIME_ZONE</c>, CL15; core names no country), else the machine's own.
 /// </summary>
-public sealed class ClockTools(TimeProvider? time = null)
+public sealed class ClockTools(TimeProvider? time = null, string? hostTimeZone = null)
 {
     private readonly TimeProvider _time = time ?? TimeProvider.System;
 
-    // IANA name first (Linux, and Windows with ICU), then the Windows name; SAST has been UTC+2 without daylight saving since 1944.
-    private static readonly TimeZoneInfo SouthAfrica = UserPlace.FindTimeZone("Africa/Johannesburg")
-        ?? UserPlace.FindTimeZone("South Africa Standard Time")
-        ?? TimeZoneInfo.CreateCustomTimeZone("Africa/Johannesburg", TimeSpan.FromHours(2), "South Africa Standard Time", "SAST");
+    // A setting that names no zone this machine knows falls back to the machine's own, not to a crash at start-up.
+    private readonly TimeZoneInfo _host = UserPlace.FindTimeZone(hostTimeZone) ?? TimeZoneInfo.Local;
 
-    [Description("Today's date and the time now where the user is (South Africa unless they shared another time zone), with " +
+    [Description("Today's date and the time now where the user is (the host's time zone unless they shared another), with " +
         "the weekday and the week number. Use it for anything relative to today: 'this week', 'recent', 'how long ago', a deadline.")]
     public string GetToday()
     {
-        TimeZoneInfo zone = UserPlace.FindTimeZone(UserPlace.Current?.TimeZone) ?? SouthAfrica;
+        TimeZoneInfo zone = UserPlace.FindTimeZone(UserPlace.Current?.TimeZone) ?? _host;
         DateTimeOffset now = TimeZoneInfo.ConvertTime(_time.GetUtcNow(), zone);
         var invariant = CultureInfo.InvariantCulture;
         return MessageText.Format(ToolMessage.Today, new

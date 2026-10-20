@@ -8,7 +8,10 @@ when you're about to change a particular project.
 
 | Project | Kind | In one line | Doc |
 |---|---|---|---|
-| `louis-agent.core` | Class library | The engine: tools, skills, the tool loop, providers, bootstrap | [core](louis-agent.core.md) |
+| `louis-agent.core` | Class library | The engine: tools, skills, the tool loop, providers, bootstrap; names no product (CL15) | [core](louis-agent.core.md) |
+| `identities/louis-agent.identity.puls` | Class library | Who Puls is: its voice and modes, its roles, the packs it names (`shops`); its prompts embedded with their paths | in [core](louis-agent.core.md) and the [core guide](../../louis-agent.core/CLAUDE.md#building-an-identity-or-a-pack) |
+| `packs/louis-agent.pack.shops` | Class library | What the shops are: the `shops` toolset (a shop's products, specials and promotions from its own catalogue), its guide, its settings (`SHOP_CATALOGUES`, `SHOP_STORE_CACHE`) and its texts | the same |
+| `src/louis-agent.composition` | Class library | The composition root: the one project that references every identity and pack; `Plugins.FromEnvironment()` builds the `AgentCatalog` a host runs with, from `IDENTITIES` and `PACKS` | the same |
 | `src/louis-agent.cli` | Console app | Chat with the agent in a terminal | [cli](louis-agent.cli.md) |
 | `src/louis-agent.acp-server` | Console app (stdio) | The agent inside JetBrains Rider's AI chat (Agent Client Protocol) | [acp-server](louis-agent.acp-server.md) |
 | `src/louis-agent.api` | ASP.NET Core app | HTTP API with streamed answers, workspace and git endpoints; serves the web app | [api](louis-agent.api.md) |
@@ -18,7 +21,7 @@ when you're about to change a particular project.
 | `src/louis-agent.orchestrator` | Console app | A second agent that watches a service's errors and has louis-agent fix them (POC) | [orchestrator](louis-agent.orchestrator.md) |
 | `tools/louis-agent.usage-probe` | Console app (developer tool) | Prints what a provider reports as token usage and what the ledger makes of it | [usage-probe](louis-agent.usage-probe.md) |
 | `src/louis-agent.web.shared` | Razor class library | What both web apps share: chat models, the API client, the turn and delegation views, markdown, usage and currency | in [web](louis-agent.web.md) and [puls](louis-agent.puls.md) |
-| `tests/louis-agent.core.tests`, `tests/louis-agent.api.tests`, `tests/louis-agent.orchestrator.tests` | NUnit | Unit tests for core, the API's sessions and the orchestrator | [tests](tests.md) |
+| `tests/louis-agent.core.tests`, `tests/louis-agent.api.tests`, `tests/louis-agent.orchestrator.tests`, `tests/louis-agent.identity.puls.tests`, `tests/louis-agent.pack.shops.tests`, `tests/louis-agent.composition.tests` | NUnit | Unit tests for core, the API's sessions, the orchestrator, Puls's prompts and golden, the shops pack and the composition root; `tests/louis-agent.testing` holds the fakes they share | [tests](tests.md) |
 
 ## How they depend on each other
 
@@ -37,6 +40,11 @@ flowchart BT
     Orch["louis-agent.orchestrator"] --> Core
     Probe["louis-agent.usage-probe"] --> Core
     Orch -. "HTTP + SSE<br/>(sessions)" .-> API
+    Comp["louis-agent.composition"] --> Core
+    Comp --> Puls_id["louis-agent.identity.puls"] & Shops["louis-agent.pack.shops"]
+    Puls_id --> Core
+    Shops --> Core
+    CLI & ACP & API & MCP --> Comp
     CoreTests["louis-agent.core.tests"] --> Core
     OrchTests["louis-agent.orchestrator.tests"] --> Orch
     ApiTests["louis-agent.api.tests"] --> API

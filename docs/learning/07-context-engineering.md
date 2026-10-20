@@ -20,6 +20,9 @@ The cook check (F31) scored each run from its transcript: a price counts only wi
 | F32 `663d065ccca8` | `WebSearch` (SearXNG, Bing only), pages through a headless Chrome | **0 of 32** (0/14, 0/11, 0/7) | $0.057 | 66 |
 | F33 `fc7f8ecfdc87` | + `FindProducts("checkers", …)` | **19 of 23**, 3 more at a price per kg (re-scored) | $0.068 | 61 |
 | F34 `d94597a51d4d` | + the town's store, deals, the shop tools only | **31 of 31 rows right**: 26 priced, Prince Albert's 5 rightly unpriced | $0.118 | 71 |
+| `main` before CL15 `aeb645d53300` (2026-10-19) | the same, the baseline for the cut | **32 of 32 rows right**: 25 priced, Prince Albert's 7 rightly unpriced | $0.112 | 75 |
+| `main` before CL15 `14c0907fdff5` (2026-10-19) | the same, a second baseline | **29 of 29 rows right**: 23 priced, Prince Albert's 6 rightly unpriced | $0.108 | 68 |
+| CL15 branch `b4a6ea22b178` (2026-10-20, after the engine, identities and packs cut and the layout reviews) | the same, through the shops pack | by the stored scores, 55 ingredient rows: 40 priced, Prince Albert's 7 rightly unpriced, 0 unsourced; the baseline `aeb645d53300` by the same sums is 48 rows: 38 priced, 7 rightly unpriced, 3 unsourced. Nothing new in the cook: in all three runs it looked Prince Albert up on Nominatim (nothing came back), searched the default store twice and priced nothing (`no_shop_rows` 7). The no-shop town's `wrong_store` 6 and `store_default` 7 are Puls alone (`puls-tools`), which looks no town up and prices at the default store in every run (`wrong_store` 5 in `14c0907fdff5`; `store_default` 6 scored as `unsourced` 3 in `aeb645d53300`), and the English cook priced two of four rows per kilo. Read against the stored events, 2026-10-20 | $0.124 | 80 |
 
 The same check ran Puls without the cook, as the control. With only `web` it priced 0 of 3 with a source after F33,
 so the gain was the tool, not the model. Given the cook's own tools (`puls-tools`, F34) it priced 13 of 18: the tools

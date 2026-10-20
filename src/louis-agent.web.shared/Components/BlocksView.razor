@@ -29,7 +29,7 @@
                     <span class="tool-name">@block.ToolName</span>
                     @if (block.ToolInput is not null)
                     {
-                        <span class="tool-args">@Summarise(block.ToolInput)</span>
+                        <span class="tool-args">@ToolArgs.Summarise(block.ToolInput)</span>
                     }
                 </summary>
                 @if (block.ToolInput is not null)
@@ -44,17 +44,5 @@
                 }
             </details>
             break;
-    }
-}
-
-@code {
-    [Parameter, EditorRequired] public List<Block> Blocks { get; set; } = default!;
-    [Parameter] public bool Streaming { get; set; }
-    [Parameter] public CurrencyChoice? Currency { get; set; }
-
-    private static string Summarise(string json)
-    {
-        string flat = string.Join(" ", json.Split('\n', StringSplitOptions.TrimEntries)).Trim('{', '}', ' ');
-        return flat.Length > 80 ? flat[..80] + "…" : flat;
     }
 }

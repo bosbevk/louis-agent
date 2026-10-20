@@ -1,5 +1,6 @@
 namespace LouisAgent.Core.Tools.Web.Search.Providers;
 
+using LouisAgent.Core.Tools.Web.Fetching;
 using System.Net;
 using System.Text.RegularExpressions;
 using LouisAgent.Core.Messages;
@@ -51,8 +52,8 @@ public sealed partial class DuckDuckGoSearchProvider(HttpClient? http = null) : 
             if (!url.StartsWith("http", StringComparison.OrdinalIgnoreCase)) continue;
 
             var snippet = ResultSnippet().Match(block);
-            results.Add(new WebSearchResult(WebTools.CleanInline(link.Groups["title"].Value), url,
-                snippet.Success ? WebTools.CleanInline(snippet.Groups["text"].Value) : ""));
+            results.Add(new WebSearchResult(HtmlText.CleanInline(link.Groups["title"].Value), url,
+                snippet.Success ? HtmlText.CleanInline(snippet.Groups["text"].Value) : ""));
             if (results.Count == count) break;
         }
         return results;
