@@ -1,7 +1,7 @@
 using LouisAgent.Core.Guardrails.Workspace;
 using System.Text;
 using LouisAgent.Core.Agent;
-using LouisAgent.Core.Tools.Workspace;
+using LouisAgent.Core.Tools.Workspace.Listing;
 using LouisAgent.Core.Messages;
 using LouisAgent.Api.Messages;
 
@@ -28,7 +28,7 @@ internal static class WorkspaceEndpoints
 
             var directory = new DirectoryInfo(fullPath!);
             var folders = directory.EnumerateDirectories()
-                .Where(d => !WorkspaceTools.ExcludedDirectories.Contains(d.Name) && !d.Attributes.HasFlag(FileAttributes.ReparsePoint))
+                .Where(d => !WorkspaceFilter.ExcludedDirectories.Contains(d.Name) && !d.Attributes.HasFlag(FileAttributes.ReparsePoint))
                 .OrderBy(d => d.Name, StringComparer.OrdinalIgnoreCase)
                 .Select(d => new { name = d.Name, path = Relative(engine, d.FullName), type = "directory", size = (long?)null, sensitive = false });
             var files = directory.EnumerateFiles()

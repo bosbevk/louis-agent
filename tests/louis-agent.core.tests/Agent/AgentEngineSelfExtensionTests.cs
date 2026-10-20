@@ -5,6 +5,7 @@ using LouisAgent.Core.Agent;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Providers;
+using LouisAgent.Core.Tools.Documents;
 using LouisAgent.Core.Tools.Workspace;
 using Microsoft.Extensions.AI;
 using NUnit.Framework;
@@ -14,6 +15,13 @@ using NUnit.Framework;
 public sealed class AgentEngineSelfExtensionTests
 {
     private static readonly string[] SelfExtensionTools = ["CreateSkillFile", "ReloadSkills", "CreateTool", "ListAgentTools"];
+
+    /// <summary>The files toolset's objects (S, CL15: five classes), on a root the tests never write to.</summary>
+    private static object[] FilesTools() =>
+    [
+        new WorkspaceFileTools(Path.GetTempPath()), new WorkspaceOrganiseTools(Path.GetTempPath()), new WorkspaceBrowseTools(Path.GetTempPath()),
+        new WorkspaceSearchTools(Path.GetTempPath()), new DocumentTools(Path.GetTempPath()),
+    ];
 
     [Test]
     public void EmptyToolsetsGivesOnlyExecuteSkill()
@@ -34,9 +42,9 @@ public sealed class AgentEngineSelfExtensionTests
     [Test]
     public void FilesPlusSkillsGivesWorkspaceToolsAndSelfExtension()
     {
-        var engine = Build(toolsets: [new WorkspaceTools(Path.GetTempPath())], selfExtension: true);
+        var engine = Build(toolsets: FilesTools(), selfExtension: true);
 
-        var expected = PublicMethodNames(typeof(WorkspaceTools))
+        var expected = FilesTools().SelectMany(t => PublicMethodNames(t.GetType()))
             .Concat(SelfExtensionTools)
             .Append("ExecuteSkill").Append("GetToday");
         Assert.That(Names(engine), Is.EquivalentTo(expected));
@@ -45,7 +53,7 @@ public sealed class AgentEngineSelfExtensionTests
     [Test]
     public void FilesWithoutSkillsHasNoSelfExtension()
     {
-        var engine = Build(toolsets: [new WorkspaceTools(Path.GetTempPath())], selfExtension: false);
+        var engine = Build(toolsets: FilesTools(), selfExtension: false);
 
         Assert.That(Names(engine).Intersect(SelfExtensionTools), Is.Empty);
         Assert.That(Names(engine), Does.Contain("ExecuteSkill"));

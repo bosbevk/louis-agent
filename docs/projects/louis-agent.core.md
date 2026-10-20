@@ -73,7 +73,7 @@ The full step-by-step is in [How a turn works](../architecture/06-runtime-view.m
 | `Skills/Roles/RoleCatalog.cs`, `RoleLevel.cs`, `RoleException.cs` | A session's role (F21; "personality" before CL13 and CL14): its file in its level's folder (`RoleLevel`, CL8), valid names, the ones available, and the toolsets a role declares (`ToolsetsOf`, F33) |
 | `Skills/Roles/RoleHeader.cs` | A role's header (F33, ADR 0025): `toolsets: shops?` between `---` lines at the top of its file, read for the session and stripped before the model sees the file |
 | `Skills/SkillFileSource.cs`, `SkillFiles.cs` | The built-in prompts in `Prompts/`, embedded with a manifest and read only from the assembly (`ManifestEmbeddedFileProvider`); their paths, the files `AgentHost` loads by name; which names the agent may not take |
-| `Tools/Workspace/WorkspaceTools.cs` | Files: read (≤ 1 MB), write, append, list, tree, search, find, copy, rename, delete; workspace boundary and secret-file checks |
+| `Tools/Workspace/` | The files toolset as five classes, one concern each (S, CL15): `WorkspaceFileTools` (read ≤ 1 MB, write, append), `WorkspaceOrganiseTools` (create a directory, delete, rename, copy), `WorkspaceBrowseTools` (list, tree, exists, file info), `WorkspaceSearchTools` (text in files, files by name), each on the workspace boundary with the secret-file checks; `Listing/` holds what they share and is tested alone: `WorkspaceFilter` (what is skipped, what is searched), `DirectoryTree` (the tree drawn), `FileSizeText` |
 | `Tools/Git/GitTools.cs` | 38 git operations, each a list of arguments (`ProcessRunner`), 30-second timeout; the model's values after `--end-of-options`, paths after `--`, a leading `-` refused, `SetConfig` only `user.name` and `user.email` (FX19; the history tools, F22, first) |
 | `Tools/DotNet/DotNetTools.cs` | Build, test, run, restore, clean, packages, SDK info — parsed into compact results |
 | `Tools/Shell/` | `PythonTools`, `PowerShellTools`, `BashTools`: run scripts with arguments as data (Python in its own venv; bash is Git Bash on Windows, never WSL) |
@@ -83,6 +83,7 @@ The full step-by-step is in [How a turn works](../architecture/06-runtime-view.m
 | `Sessions/` | What a host sets for a session's turn: `UserPlace` (where the user is, F22), `SessionAttachments` (files forwarded by name), `SubSessionRegistry` and `OpenSubSession` (the children a chat keeps, F26), `SubSessionFeed` and `SubSessionEvent` (a child's stream, passed to the host live) |
 | `Tools/Clock/` | `ClockTools.GetToday` in every session (F22), in the user's time zone |
 | `Tools/Documents/DocumentText.cs` | PDF (PdfPig), Word (OpenXml), spreadsheets and CSV (ExcelDataReader) as text or tables, for `ReadDocument`, `ReadTable` and `FetchUrl` (F22) |
+| `Tools/Documents/DocumentTools.cs`, `MarkdownTable.cs` | The files toolset's fifth class: `ReadDocument` (a document's text in parts) and `ReadTable` (a sheet as a page of a markdown table, rendered by `MarkdownTable`, tested alone) |
 | `Tools/Scripts/` | Agent-built tools from `*.tool.md` (`ScriptTool`, its definition and parameters): typed parameters, arguments validated and passed as JSON on stdin |
 | `Tools/ProcessRunner.cs` | The one way to start processes: argument lists, no shell, timeouts, bounded output |
 | `Protocols/Mcp/` | `RiderMcpClient` and `DiscoveredTool`: lists Rider's MCP tools |

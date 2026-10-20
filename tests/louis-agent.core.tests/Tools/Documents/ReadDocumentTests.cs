@@ -1,4 +1,4 @@
-using LouisAgent.Core.Tools.Workspace;
+using LouisAgent.Core.Tools.Documents;
 
 namespace LouisAgent.Core.Tests.Tools.Documents;
 
@@ -6,14 +6,14 @@ namespace LouisAgent.Core.Tests.Tools.Documents;
 public class ReadDocumentTests
 {
     private string _root = null!;
-    private WorkspaceTools _tools = null!;
+    private DocumentTools _tools = null!;
 
     [SetUp]
     public void SetUp()
     {
         _root = Path.Combine(Path.GetTempPath(), "read-document-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(_root);
-        _tools = new WorkspaceTools(_root);
+        _tools = new DocumentTools(_root);
     }
 
     [TearDown]

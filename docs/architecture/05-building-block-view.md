@@ -95,7 +95,7 @@ Each project also has its own design doc in [projects/](../projects/README.md).
   usage, when a request had returned).
 - Read-only workspace browsing (`/workspace/entries`, `/workspace/file`) and a git interface (`/git/status`, `/git/diff`,
   `/git/stage`, `unstage`, `discard`, `commit`, plus history: `/git/branches`, `/git/log`, `/git/commit`, `/git/branch`,
-  `/git/merge`, `/git/branch/delete`) for the web app. They reuse `WorkspaceTools`' path and secret-file checks.
+  `/git/merge`, `/git/branch/delete`) for the web app. They reuse the file tools' path and secret-file checks (`WorkspaceBoundary`, `SensitiveFiles`).
 - `AGENT_API_KEY` is required for `/sessions`, `/toolsets`, `/roles`, `/model`, `/workspace` and `/git`; the app's own
   files stay public. Without a key the API refuses to start, unless `AGENT_AUTH=off` says so on purpose: one pure rule
   in core, `Guardrails/Auth/HostAuth`, shared with the MCP server (FX18).
@@ -249,7 +249,7 @@ is exposed to the model** — helpers must be `internal` or `private`). Names an
 
 | Class | Tools |
 |---|---|
-| `WorkspaceTools` | Read / write / append / list / search / find files, directories, copy, rename, delete |
+| `WorkspaceFileTools`, `WorkspaceOrganiseTools`, `WorkspaceBrowseTools`, `WorkspaceSearchTools`, `DocumentTools` | The files toolset: read / write / append; create a directory, delete, rename, copy; list, tree, exists, file info; search text, find files; documents and spreadsheets |
 | `GitTools` | Status, diffs, branches, staging, commit, stash, push/pull/fetch, merge/rebase, tags, config |
 | `DotNetTools` | `DotNetBuild`, `DotNetTest`, `DotNetRun`, restore, clean, packages, project and SDK info |
 | `PythonTools`, `PowerShellTools`, `BashTools` | Run code or scripts (bash is Git Bash on Windows, never WSL) |

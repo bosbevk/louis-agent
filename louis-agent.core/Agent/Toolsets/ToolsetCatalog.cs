@@ -5,6 +5,7 @@ using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Tools.Agents;
+using LouisAgent.Core.Tools.Documents;
 using LouisAgent.Core.Tools.DotNet;
 using LouisAgent.Core.Tools.Git;
 using LouisAgent.Core.Tools.Integrations.DevOps;
@@ -28,8 +29,13 @@ public static class ToolsetCatalog
         new("files", "Read, write, search, copy, rename and delete files in the workspace",
             GuideFile: SkillFiles.Guide("files"),
             MissingSettings: _ => [],
-            ToolTypes: [typeof(WorkspaceTools)],
-            CreateTools: ctx => [new WorkspaceTools(Root(ctx))]),
+            // S (CL15): five classes, one concern each (a file's content, the tree's shape, browsing, searching, documents).
+            ToolTypes: [typeof(WorkspaceFileTools), typeof(WorkspaceOrganiseTools), typeof(WorkspaceBrowseTools), typeof(WorkspaceSearchTools), typeof(DocumentTools)],
+            CreateTools: ctx =>
+            [
+                new WorkspaceFileTools(Root(ctx)), new WorkspaceOrganiseTools(Root(ctx)), new WorkspaceBrowseTools(Root(ctx)),
+                new WorkspaceSearchTools(Root(ctx)), new DocumentTools(Root(ctx)),
+            ]),
 
         new("git", "Status, diffs, branches, staging, commits, merges and history for the workspace repository",
             GuideFile: SkillFiles.Guide("git"),
