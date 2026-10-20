@@ -809,6 +809,11 @@ sequenceDiagram
   plain classes, held by `RazorHasNoCodeTests`; markup, behaviour and the page snapshots stay byte-equal.
 - **A file holds at most 200 lines** (Louis, 2026-10-20): a test file 400; split by responsibility, held by
   `FileSizeTests`; behaviour, goldens and snapshots unchanged.
+- **W2b.6 deferred to Phase 3 step 7b** (Louis, 2026-10-20): the five admin files (`RunExplorer`, `Benchmarks`,
+  `BenchmarkRun`, `TrendChart`, `ChartInfo`) are rebuilt there under the new rules (every eval visible, pass@k, the
+  roll-ups by category, human review, the rename to evals), so splitting them now would split code about to be
+  replaced. They stay on `PendingCode` and `Oversized` until then, so the lists can't grow; step 7b takes them off
+  both ([the platform plan](platform.md), Phase 3).
 
 ---
 [Plans](README.md) · [The platform plan](platform.md)
