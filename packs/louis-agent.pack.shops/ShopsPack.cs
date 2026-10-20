@@ -32,7 +32,7 @@ public sealed class ShopsPack : IAgentPack
                     ShopCatalogueFactory.Enabled(options.ShopCatalogues).Count > 0 ? null : "SHOP_CATALOGUES",
                     ctx.Browser is null ? "BROWSER_URL" : null,
                 }.OfType<string>().ToList(),
-                ToolType: typeof(ShopTools),
+                ToolTypes: [typeof(ShopTools)],
                 CreateTools: ctx => [new ShopTools(ShopCatalogueFactory.Create(ShopCatalogueFactory.Enabled(options.ShopCatalogues), ctx.Browser!, _stores))],
                 // F34: searches read a catalogue and change nothing; the browser opens at most four pages at once.
                 ParallelSafe: true),

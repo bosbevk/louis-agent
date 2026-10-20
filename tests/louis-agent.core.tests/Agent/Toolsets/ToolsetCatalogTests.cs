@@ -33,6 +33,32 @@ public class ToolsetCatalogTests
         Assert.That(ToolsetCatalog.RunsInParallel([]), Is.False, "no toolsets: the coding agent's default tools");
     }
 
+    // S (CL15): a toolset's ToolTypes is how its tool names are known without building it, so the objects CreateTools
+    // builds must be exactly those classes, or the catalogue advertises tools the engine never registers (or the reverse).
+    [Test]
+    public void EveryToolset_BuildsExactlyTheClassesItAdvertises()
+    {
+        // The options every toolset needs to build (as the model-request golden builds them): keys, peers, minion models, a browser.
+        var options = new AgentOptions
+        {
+            WorkspaceRoot = Path.GetTempPath(), SkillsDirectory = Path.GetTempPath(), RatesUrl = null,
+            PaymoApiKey = "key", DevopsApiKey = "key", DevopsOrganization = "org", DevopsProject = "project",
+            AgentPeers = new Dictionary<string, Uri> { ["coder"] = new("http://coder.test/") },
+            MinionLlms = new Dictionary<string, IReadOnlyList<string>> { ["*"] = ["instance"] },
+            BrowserUrl = "http://browser.test:9222",
+        };
+        var context = new ToolsetContext(options, new NoSearch());
+
+        Assert.Multiple(() =>
+        {
+            foreach (var toolset in ToolsetCatalog.All.Where(t => !t.IsEngineProvided))
+            {
+                var built = toolset.CreateTools!(context).Select(o => o.GetType()).ToList();
+                Assert.That(built, Is.EquivalentTo(toolset.ToolTypes ?? []), $"{toolset.Name}: CreateTools and ToolTypes disagree");
+            }
+        });
+    }
+
     private sealed class NoSearch : IWebSearchProvider
     {
         public string Name => "none";

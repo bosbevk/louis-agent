@@ -21,5 +21,5 @@ public sealed class FakePack(
 
     /// <summary>A toolset definition shaped like the catalogue's own, for a tool class a test names.</summary>
     public static ToolsetDefinition Toolset(string name, Type toolType, Func<ToolsetContext, IReadOnlyList<object>> create) =>
-        new(name, $"The {name} toolset", GuideFile: $"toolsets/{name}.md", MissingSettings: _ => [], CreateTools: create, ToolType: toolType);
+        new(name, $"The {name} toolset", GuideFile: $"toolsets/{name}.md", MissingSettings: _ => [], CreateTools: create, ToolTypes: [toolType]);
 }

@@ -54,7 +54,7 @@ public class PackConvertibilityTests
         foreach (ToolsetDefinition toolset in pack.Toolsets)
         {
             problems.AddRange(GuideProblems(pack, toolset));
-            if (toolset.ToolType is null)
+            if (toolset.ToolTypes is null or { Count: 0 })
             {
                 problems.Add($"{toolset.Name}: no tool type, so its tools can't be listed");
                 continue;
@@ -180,9 +180,9 @@ internal sealed class FakeUnconvertiblePack : IAgentPack
     public IReadOnlyList<ToolsetDefinition> Toolsets { get; } =
     [
         new("fakebad", "Breaks the tool rules", GuideFile: "toolsets/fakebad.md", MissingSettings: _ => [],
-            CreateTools: _ => [new FakeUnconvertibleTools()], ToolType: typeof(FakeUnconvertibleTools)),
+            CreateTools: _ => [new FakeUnconvertibleTools()], ToolTypes: [typeof(FakeUnconvertibleTools)]),
         new("fakenoguide", "Its guide isn't in its prompts", GuideFile: "toolsets/fakenoguide.md", MissingSettings: _ => [],
-            CreateTools: _ => [new FakeFineTools()], ToolType: typeof(FakeFineTools)),
+            CreateTools: _ => [new FakeFineTools()], ToolTypes: [typeof(FakeFineTools)]),
     ];
 
     public IFileProvider Prompts { get; } = new FakePrompts(new Dictionary<string, string>

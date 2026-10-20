@@ -20,9 +20,10 @@ using LouisAgent.Core.Agent.Catalog;
 /// so an engine of only such toolsets runs a round's calls at once (F34: the cook's shop searches). False keeps them in
 /// order.
 /// </param>
-/// <param name="ToolType">
-/// The class <see cref="CreateTools"/> builds, so its tool names are known without building it (<see cref="AgentCatalog.ToolNames"/>).
-/// Null when the engine provides the tools.
+/// <param name="ToolTypes">
+/// The classes <see cref="CreateTools"/> builds, one object each, so the toolset's tool names are known without building
+/// them (<see cref="AgentCatalog.ToolNames"/>); a big toolset is several classes, one concern each (S, CL15), and
+/// <c>ToolsetCatalogTests</c> holds that the two lists agree. Null when the engine provides the tools.
 /// </param>
 public sealed record ToolsetDefinition(
     string Name,
@@ -30,7 +31,7 @@ public sealed record ToolsetDefinition(
     string? GuideFile,
     Func<ToolsetContext, IReadOnlyList<string>> MissingSettings,
     Func<ToolsetContext, IReadOnlyList<object>>? CreateTools,
-    Type? ToolType = null,
+    IReadOnlyList<Type>? ToolTypes = null,
     bool ParallelSafe = false)
 {
     /// <summary>True when the engine adds these tools itself rather than from <see cref="CreateTools"/>.</summary>

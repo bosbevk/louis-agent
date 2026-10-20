@@ -250,5 +250,5 @@ public class ShopToolsTests
 
     [Test]
     public void TheToolset_GivesFindProducts() =>
-        Assert.That(ShopsToolset("checkers").ToolType, Is.EqualTo(typeof(ShopTools)));
+        Assert.That(ShopsToolset("checkers").ToolTypes, Is.EqualTo(new[] { typeof(ShopTools) }));
 }

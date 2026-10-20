@@ -38,7 +38,7 @@ touches, and nothing else:
 1. **Tools:** a class in `louis-agent.core/Tools/{Toolset}/` (*Adding a C# tool*), or in the pack's project when the
    toolset is a capability of its own (*Building an identity or a pack*); every public method is a tool.
 2. **Catalogue entry:** a `ToolsetDefinition` (the name, a one-line description, the settings it needs
-   (`MissingSettings`), its tool class (`ToolType`), the factory for its tool object (`CreateTools`) and its guide
+   (`MissingSettings`), its tool classes (`ToolTypes`), the factory for their objects (`CreateTools`) and its guide
    (`GuideFile`)) in `Agent/Toolsets/ToolsetCatalog.cs` for core's, or in the pack's `Toolsets` for a pack's. `AgentCatalog`
    lists both, core's first, and stops start-up on a tool name two toolsets or the engine already use.
 3. **Guide:** `Prompts/toolsets/{toolset}.md`, plain markdown, embedded with the other built-in prompts (a pack's in

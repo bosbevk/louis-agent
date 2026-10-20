@@ -98,7 +98,7 @@ public sealed class AgentCatalog
     /// registers exactly these, and the convertibility test (step 4) checks exactly these.
     /// </summary>
     public static IEnumerable<MethodInfo> ToolMethodsOf(ToolsetDefinition toolset) =>
-        toolset.ToolType is null ? [] : ToolMethodsOfType(toolset.ToolType);
+        toolset.ToolTypes is null ? [] : toolset.ToolTypes.SelectMany(ToolMethodsOfType);
 
     /// <summary>How a tool method becomes the function the model sees: its <c>[Description]</c> with LF line endings, whatever the checkout.</summary>
     public static AIFunction FunctionOf(MethodInfo method, Func<AIFunctionArguments, object> createInstance) =>

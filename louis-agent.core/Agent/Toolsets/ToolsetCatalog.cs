@@ -28,43 +28,43 @@ public static class ToolsetCatalog
         new("files", "Read, write, search, copy, rename and delete files in the workspace",
             GuideFile: SkillFiles.Guide("files"),
             MissingSettings: _ => [],
-            ToolType: typeof(WorkspaceTools),
+            ToolTypes: [typeof(WorkspaceTools)],
             CreateTools: ctx => [new WorkspaceTools(Root(ctx))]),
 
         new("git", "Status, diffs, branches, staging, commits, merges and history for the workspace repository",
             GuideFile: SkillFiles.Guide("git"),
             MissingSettings: _ => [],
-            ToolType: typeof(GitTools),
+            ToolTypes: [typeof(GitTools)],
             CreateTools: ctx => [new GitTools(Root(ctx))]),
 
         new("dotnet", "Build, test, run and restore .NET projects; list packages; SDK information",
             GuideFile: SkillFiles.Guide("dotnet"),
             MissingSettings: _ => [],
-            ToolType: typeof(DotNetTools),
+            ToolTypes: [typeof(DotNetTools)],
             CreateTools: ctx => [new DotNetTools(Root(ctx))]),
 
         new("python", "Run Python code or scripts and manage packages in the agent's own virtual environment",
             GuideFile: SkillFiles.Guide("python"),
             MissingSettings: _ => [],
-            ToolType: typeof(PythonTools),
+            ToolTypes: [typeof(PythonTools)],
             CreateTools: ctx => [new PythonTools(Root(ctx))]),
 
         new("powershell", "Run PowerShell scripts (PowerShell 7, or Windows PowerShell 5.1 on Windows)",
             GuideFile: SkillFiles.Guide("powershell"),
             MissingSettings: _ => [],
-            ToolType: typeof(PowerShellTools),
+            ToolTypes: [typeof(PowerShellTools)],
             CreateTools: ctx => [new PowerShellTools(Root(ctx))]),
 
         new("bash", "Run bash scripts (Git Bash on Windows, /bin/bash elsewhere)",
             GuideFile: SkillFiles.Guide("bash"),
             MissingSettings: _ => [],
-            ToolType: typeof(BashTools),
+            ToolTypes: [typeof(BashTools)],
             CreateTools: ctx => [new BashTools(Root(ctx))]),
 
         new("web", "Search the web and fetch web pages",
             GuideFile: SkillFiles.Guide("web"),
             MissingSettings: _ => [],
-            ToolType: typeof(WebTools),
+            ToolTypes: [typeof(WebTools)],
             CreateTools: ctx => [new WebTools(ctx.WebSearch, rates: ctx.Rates, renderer: ctx.Renderer)],
             ParallelSafe: true),
 
@@ -73,7 +73,7 @@ public static class ToolsetCatalog
         new("paymo", "Paymo time tracking: time entries, tasks, projects and summaries",
             GuideFile: SkillFiles.Guide("paymo"),
             MissingSettings: ctx => Missing(ctx, ("PAYMO_API_KEY", ctx.Options.PaymoApiKey)),
-            ToolType: typeof(PaymoTools),
+            ToolTypes: [typeof(PaymoTools)],
             CreateTools: ctx => [new PaymoTools(ctx.Options)]),
 
         new("devops", "Azure DevOps work items, sprints and team queries",
@@ -82,21 +82,21 @@ public static class ToolsetCatalog
                 ("DEVOPS_API_KEY", ctx.Options.DevopsApiKey),
                 ("DEVOPS_ORGANIZATION", ctx.Options.DevopsOrganization),
                 ("DEVOPS_PROJECT", ctx.Options.DevopsProject)),
-            ToolType: typeof(DevOpsTools),
+            ToolTypes: [typeof(DevOpsTools)],
             CreateTools: ctx => [new DevOpsTools(
                 ctx.Options.DevopsApiKey!, ctx.Options.DevopsOrganization!, ctx.Options.DevopsProject!, ctx.Options.DevopsTeam)]),
 
         new("specialists", "Hand a separate task to a specialist agent: a sub-session on a peer with only the toolsets it needs",
             GuideFile: SkillFiles.Guide("specialists"),
             MissingSettings: ctx => ctx.Options.AgentPeers.Count == 0 ? ["AGENT_PEERS"] : [],
-            ToolType: typeof(SpecialistTools),
+            ToolTypes: [typeof(SpecialistTools)],
             CreateTools: ctx => [new SpecialistTools(ctx.Options, ctx.UsageSink)]),
 
         new("minions", "Hand one task and one of your own tools to a minion on a cheap model (a specialist's toolset, F30)",
             GuideFile: SkillFiles.Guide("minions"),
             MissingSettings: ctx => new[] { ctx.Options.AgentPeers.Count == 0 ? "AGENT_PEERS" : null, ctx.Options.MinionLlms.Count == 0 ? "MINION_LLMS" : null }
                 .OfType<string>().ToList(),
-            ToolType: typeof(MinionTools),
+            ToolTypes: [typeof(MinionTools)],
             CreateTools: ctx => [new MinionTools(ctx.Options, ctx.UsageSink)]),
 
         // Engine-provided: CreateSkillFile, ReloadSkills, CreateTool and ListAgentTools are registered by AgentEngine
