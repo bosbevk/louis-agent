@@ -129,7 +129,12 @@ decision's record (its context, and what it cost) in [docs/adr/](adr/README.md).
 - **Separate by concern** — a folder, class or component holds one concern; a folder with two kinds of thing or more
   than about six files gets subfolders by concern, and a page over about a hundred lines splits into components. A
   `.razor` holds markup only, no `@code` block: a component's C# goes in its `.razor.cs` code-behind, and logic that
-  needs no component (text, search, formatting) goes in a plain class with NUnit tests.
+  needs no component (text, search, formatting) goes in a plain class with NUnit tests. A file holds at most 200
+  lines (a test file 400). Split a bigger class by responsibility: group its methods by the fields they use and the
+  reason they would change, and give each group its own class named for what it does (`PaymoClient`, `DiffFormatter`);
+  the original keeps only the flow and calls them, pure logic gets its own tests, I/O stays at the edge. A `partial`
+  class (other than a code-behind), `#region`, or a `Helpers`/`Utils`/`Manager` grab-bag hides the size instead of
+  splitting it.
   Why: [ADR 0010](adr/0010-folders-by-concern.md).
 - **Namespace = folder path, dependencies one way, prompts in markdown, hosts stay thin** — `ArchitectureTests`
   holds the first two ([Project layout](../louis-agent.core/CLAUDE.md#project-layout)).
