@@ -18,8 +18,23 @@ public static class FixtureApi
     public const string SessionId = "sess_fixture";
 
     /// <summary>The client the pages use, on a stub that answers from the fixture.</summary>
-    public static AgentApi Client(ChatSettings settings) =>
-        new(new HttpClient(new StubHandler(Answer)) { BaseAddress = new Uri("http://localhost/") }, settings);
+    public static AgentApi Client(ChatSettings settings) => Client(settings, out _);
+
+    /// <summary>The same, with the stub's request log, for a test that checks what was asked of the API.</summary>
+    public static AgentApi Client(ChatSettings settings, out StubHandler handler, bool sessionGone = false)
+    {
+        handler = new StubHandler(request => sessionGone ? AnswerSessionGone(request) : Answer(request));
+        return new AgentApi(new HttpClient(handler) { BaseAddress = new Uri("http://localhost/") }, settings);
+    }
+
+    /// <summary>As the API answers after a restart: the session a chat remembers is gone (404 on its message).</summary>
+    private static HttpResponseMessage AnswerSessionGone(HttpRequestMessage request) =>
+        request.RequestUri!.AbsolutePath == $"/sessions/{SessionId}/messages"
+            ? new HttpResponseMessage(HttpStatusCode.NotFound)
+            {
+                Content = new StringContent("""{"type":"error","error":{"type":"not_found_error","message":"No session 'sess_fixture'."}}""", Encoding.UTF8, "application/json"),
+            }
+            : Answer(request);
 
     public static HttpResponseMessage Answer(HttpRequestMessage request)
     {
@@ -27,6 +42,8 @@ public static class FixtureApi
         bool get = request.Method == HttpMethod.Get, post = request.Method == HttpMethod.Post;
         return (path, get, post) switch
         {
+            ($"/sessions/{SessionId}/cancel", _, true) => Json($$"""{"session_id":"{{SessionId}}","cancelled":true}"""),
+            ($"/sessions/{SessionId}", _, _) when request.Method == HttpMethod.Delete => Json($$"""{"session_id":"{{SessionId}}","deleted":true}"""),
             ("/model", true, _) => Json("""{"provider":"anthropic","model":"claude-haiku-5-5"}"""),
             ("/roles", true, _) => Json("""{"default":"louis-agent/voice","agent":["louis-agent/voice","puls/voice-af","puls/voice-en"],"specialist":["puls-cook"],"minion":[]}"""),
             ("/toolsets", true, _) => Json("""{"default":["skills"],"toolsets":[{"name":"files","available":true},{"name":"git","available":true},{"name":"web","available":true},{"name":"specialists","available":true},{"name":"shops","available":true}]}"""),

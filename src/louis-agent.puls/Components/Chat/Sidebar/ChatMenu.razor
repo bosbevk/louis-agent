@@ -1,0 +1,20 @@
+@* A chat's actions, in the sidebar's menu and the top bar's: favourite, share (to come), rename, archive, delete. *@
+<li><button class="dropdown-item" type="button" @onclick="() => OnFavourite.InvokeAsync(Chat)"><span class="ic i-star" aria-hidden="true"></span>@(Chat.Favourite ? "Haal uit gunstelinge" : "Merk as gunsteling")</button></li>
+<li><button class="dropdown-item" type="button" @onclick='() => OnComingSoon.InvokeAsync("Deel")'><span class="ic i-share" aria-hidden="true"></span>Deel</button></li>
+<li><button class="dropdown-item" type="button" @onclick="() => OnRename.InvokeAsync((Chat, InHeader))"><span class="ic i-pencil" aria-hidden="true"></span>Hernoem</button></li>
+<li><button class="dropdown-item" type="button" @onclick="() => OnArchive.InvokeAsync(Chat)"><span class="ic i-archive" aria-hidden="true"></span>@(Chat.Archived ? "Haal uit argief" : "Argiveer")</button></li>
+<li><hr class="dropdown-divider" /></li>
+<li><button class="dropdown-item danger" type="button" @onclick="() => OnDelete.InvokeAsync(Chat)"><span class="ic i-trash" aria-hidden="true"></span>Vee uit</button></li>
+
+@code {
+    [Parameter, EditorRequired] public Chat Chat { get; set; } = default!;
+
+    /// <summary>True in the top bar's menu: the rename field then opens there, not in the sidebar.</summary>
+    [Parameter] public bool InHeader { get; set; }
+
+    [Parameter] public EventCallback<Chat> OnFavourite { get; set; }
+    [Parameter] public EventCallback<(Chat Chat, bool InHeader)> OnRename { get; set; }
+    [Parameter] public EventCallback<Chat> OnArchive { get; set; }
+    [Parameter] public EventCallback<Chat> OnDelete { get; set; }
+    [Parameter] public EventCallback<string> OnComingSoon { get; set; }
+}

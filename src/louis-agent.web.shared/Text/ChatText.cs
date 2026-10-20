@@ -41,6 +41,16 @@ public sealed record ChatText
     public string ThoughtOne { get; init; } = "thought";
     public string ThoughtMany { get; init; } = "thoughts";
 
+    /// <summary>A chat's title when its first message is empty and no attachment names it (W2: ChatRunner).</summary>
+    public string NewChat { get; init; } = "New chat";
+
+    /// <summary>The page's notices and a turn's errors, as the pages wrote them (W2: ChatRunner). {0} is the file's name.</summary>
+    public string AttachmentTooLarge { get; init; } = "{0} is larger than 1 MB and was not attached.";
+    public string SessionGone { get; init; } = "This chat's session no longer exists on the server (the API was restarted). Start a new chat to continue.";
+    public string NeedsKey { get; init; } = "The API needs a key: enter AGENT_API_KEY under API key in the sidebar.";
+    public string StillAnswering { get; init; } = "This chat is still answering; wait for it or press Stop.";
+    public string ApiUnreachable { get; init; } = "Can't reach the agent API. Is the api container running?";
+
     public string Currency { get; init; } = "Currency";
     public string AsCharged { get; init; } = "As charged";
     /// <summary>{0} the base currency, {1} the rate, {2} the shown currency, {3} the rates' date.</summary>

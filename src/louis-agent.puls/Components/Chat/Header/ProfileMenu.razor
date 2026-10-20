@@ -1,0 +1,26 @@
+@* The profile (a guest until F23): credits, the theme (dark; the others to come), profile, settings, admin, sign out. *@
+<div class="dropdown">
+    <button class="profile-button" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Profiel">G</button>
+    <ul class="dropdown-menu dropdown-menu-end profile-menu">
+        <li class="profile-menu-head">
+            <span class="profile-avatar">G</span>
+            <span class="profile-who"><strong>Gas</strong><small>Plaaslik in hierdie blaaier</small></span>
+        </li>
+        <li><button class="dropdown-item" type="button" @onclick='() => OnComingSoon.InvokeAsync("Krediete")'><span class="ic i-coin" aria-hidden="true"></span>Koop krediete</button></li>
+        <li><hr class="dropdown-divider" /></li>
+        <li><h6 class="dropdown-header">Tema</h6></li>
+        <li><button class="dropdown-item active" type="button"><span class="ic i-moon" aria-hidden="true"></span>Donker <span class="ic i-check ms-auto" aria-hidden="true"></span></button></li>
+        <li><button class="dropdown-item" type="button" @onclick='() => OnComingSoon.InvokeAsync("Die ligte tema")'><span class="ic i-sun" aria-hidden="true"></span>Lig</button></li>
+        <li><button class="dropdown-item" type="button" @onclick='() => OnComingSoon.InvokeAsync("Outomatiese tema")'><span class="ic i-auto" aria-hidden="true"></span>Outomaties (stelsel)</button></li>
+        <li><hr class="dropdown-divider" /></li>
+        <li><button class="dropdown-item" type="button" @onclick='() => OnComingSoon.InvokeAsync("Profiel")'><span class="ic i-user" aria-hidden="true"></span>Profiel</button></li>
+        <li><button class="dropdown-item" type="button" onclick="pulsUi.openSettings()"><span class="ic i-cog" aria-hidden="true"></span>Instellings</button></li>
+        @* F27: the admin portal (benchmarks first); the API's admin key gates it, not this menu. *@
+        <li><a class="dropdown-item" href="admin"><span class="ic i-sliders" aria-hidden="true"></span>Admin</a></li>
+        <li><button class="dropdown-item" type="button" @onclick='() => OnComingSoon.InvokeAsync("Teken uit")'><span class="ic i-logout" aria-hidden="true"></span>Teken uit</button></li>
+    </ul>
+</div>
+
+@code {
+    [Parameter] public EventCallback<string> OnComingSoon { get; set; }
+}

@@ -19,7 +19,11 @@ A web app (`louis-agent.web`, `louis-agent.puls`, and `louis-agent.web.shared` b
 Puls: `Brand/`, `Landing/`, `Chat/`, `Admin/`), and puts its C# code in a folder per concern (the shared library: `Api/`,
 `Chat/`, `Usage/`, `Storage/`, `Text/`; the code-review app: `Workspace/`, `Git/`; Puls: `Text/`, `Content/`), one type
 per file, the namespace equal to the folder path. No `Services/` or `Models/`: each names a kind of thing, not a concern.
-`_Imports.razor` carries a `@using` per folder the pages use. The shared library has a namespace named `Chat` and a type
+`_Imports.razor` carries a `@using` per folder the pages use. A page keeps its layout and hands each piece to a component
+(W2): state flows down as parameters and up as `EventCallback`s, a component never reaches into its page, and a
+component's `@code` over about forty lines goes into a code-behind (`X.razor.cs`). A string parameter is passed as
+`@Value`, never `Value`: Razor reads the bare name as a literal. A turn's life (the draft, the session, the stream, the
+save) is the shared `ChatRunner`, never a page's own copy. The shared library has a namespace named `Chat` and a type
 named `Chat`, so a C# file under `LouisAgent.Web.Shared` puts its usings after its `namespace` line, where they resolve
 the type; a Razor file gets this for free.
 

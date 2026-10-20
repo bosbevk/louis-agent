@@ -42,8 +42,10 @@ as you go: every answer shows what it cost, specialists included.
 | `Pages/LandingPage.razor` | The landing page (F20, moving since F24): hero, the app playing a turn, Hoe dit werk, the pinned *In die app* tour, the Kenmerke bento and marquees, Syfers, Pryse, Oor ons, the Vrae accordion; its copy as C# arrays |
 | `Components/Landing/LandingDemo.razor` | The app's three panels in the landing page, playing three scripted turns (example data in `data-turns`, played by `landing.js`) |
 | `Components/Brand/` | `PulsLogo` (the ripple logo inline, its rings glow outward), `PulsTile` (the app icon), `PulsMark` (the mark's geometry), `Water` (the four swells behind the landing page and an empty chat) |
-| `Pages/ChatPage.razor` | The shell: sidebar, top bar, the chat, Verken and Studio views, the message box, the Werk panel |
-| `Components/Chat/` | `WorkPanel` (the Werk panel), `ChatSearch` (Ctrl/Cmd K search over the chats in this browser), `ExploreView`, `StudioView` and `TemplateCard` (Verken and Studio) |
+| `Pages/ChatPage.razor`, `ChatPage.razor.cs` | The shell, the layout only since W2: sidebar, top bar, the chat (the shared `MessageList` and `Composer`), Verken and Studio views, the Werk panel; its own state and handlers in the code-behind, a turn's life in the shared `ChatRunner` |
+| `Components/Chat/` | `EmptyChat` (the welcome with the message box in the middle), `ComposerTools` (the message box's toolbar), `UserActions` and `AnswerActions` (under a message and an answer), `Toast`, `WorkPanel` (the Werk panel), `ChatSearch` (Ctrl/Cmd K search over the chats in this browser), `ExploreView`, `StudioView` and `TemplateCard` (Verken and Studio) |
+| `Components/Chat/Sidebar/` | `ChatSidebar` (the brand, a new chat, search, the views, the chats and the settings), `ChatListItem`, `ChatMenu`, `ProfileCard`, `LocationPicker`, `MotionToggle` |
+| `Components/Chat/Header/` | `ChatHeader` (the top bar), `CreditsMenu`, `LanguageMenu`, `ProfileMenu` |
 | `Layout/AdminLayout.razor` | The admin portal's sidebar and content column |
 | `Pages/Admin/Benchmarks.razor`, `BenchmarkRun.razor` | The checks, a live run and the runs list; one stored run |
 | `Components/Admin/` | `RunExplorer`, `TrendChart`, `ChartInfo`: a run at every level, a check's trend, a chart's explanation |

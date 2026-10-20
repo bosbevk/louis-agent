@@ -1,0 +1,14 @@
+@* The line under a chat with what it cost so far (F3), in the display currency (F14): the shared total by default, or
+   the app's own words for it (Puls counts its specialists in). Nothing until a turn was priced. *@
+@if (Usage is { } usage)
+{
+    <div class="chat-usage" title="@UsageFormat.Detail(usage, Currency)">@if (ChildContent is null) { @UsageFormat.Total(usage, Currency) } else { @ChildContent(usage) }</div>
+}
+
+@code {
+    [Parameter] public TurnUsage? Usage { get; set; }
+    [Parameter] public CurrencyChoice? Currency { get; set; }
+
+    /// <summary>The line's words, given the usage; the shared "This chat: …" total when null.</summary>
+    [Parameter] public RenderFragment<TurnUsage>? ChildContent { get; set; }
+}

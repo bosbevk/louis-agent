@@ -1,0 +1,29 @@
+@* Under a finished answer: copy, regenerate, good and bad, share (to come), and its sources in the Werk panel. *@
+<button class="action" type="button" title="Kopieer die antwoord" @onclick="() => OnCopy.InvokeAsync(AnswerText(Turn))"><span class="ic i-copy" aria-hidden="true"></span></button>
+<button class="action" type="button" title="Probeer weer" @onclick='() => OnComingSoon.InvokeAsync("Probeer weer")'><span class="ic i-refresh" aria-hidden="true"></span></button>
+<button class="action" type="button" title="Goeie antwoord" @onclick='() => OnComingSoon.InvokeAsync("Terugvoer")'><span class="ic i-thumb-up" aria-hidden="true"></span></button>
+<button class="action" type="button" title="Swak antwoord" @onclick='() => OnComingSoon.InvokeAsync("Terugvoer")'><span class="ic i-thumb-down" aria-hidden="true"></span></button>
+<button class="action" type="button" title="Deel" @onclick='() => OnComingSoon.InvokeAsync("Deel")'><span class="ic i-share" aria-hidden="true"></span></button>
+@if (Sources.Of(Turn) is { Count: > 0 } sources)
+{
+    <button class="action action-sources" type="button" onclick="pulsUi.showWork()" title="Wys die bronne in die werkpaneel">
+        @foreach (var site in sources.Select(s => s.Site).Distinct().Take(3))
+        {
+            <span class="source-dot">@site[..1].ToUpperInvariant()</span>
+        }
+        @sources.Count @(sources.Count == 1 ? "bron" : "bronne")
+    </button>
+}
+
+@code {
+    [Parameter, EditorRequired] public Turn Turn { get; set; } = default!;
+    [Parameter] public EventCallback<string> OnCopy { get; set; }
+    [Parameter] public EventCallback<string> OnComingSoon { get; set; }
+
+    /// <summary>The answer's own words: its text after the last tool call or thought (the reply the user reads).</summary>
+    private static string AnswerText(Turn turn)
+    {
+        int last = turn.Blocks.FindLastIndex(b => b.Kind != BlockKind.Text);
+        return string.Join("\n\n", turn.Blocks.Skip(last + 1).Select(b => b.Text).Where(t => t.Length > 0)).Trim();
+    }
+}

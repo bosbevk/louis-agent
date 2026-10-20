@@ -1,0 +1,9 @@
+@* A short word at the bottom of the page (copied, a placeholder's "kom binnekort"), gone after a few seconds. *@
+@if (Text is not null)
+{
+    <div class="toast-pill" role="status" @key="Text"><span class="ic i-sparkle" aria-hidden="true"></span>@Text</div>
+}
+
+@code {
+    [Parameter] public string? Text { get; set; }
+}

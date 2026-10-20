@@ -1,0 +1,48 @@
+@* The message box's toolbar: Media and Tools on the left (a file, the starters), the model and the voice on the right;
+   the page's Send or Stop closes it (shared Composer). *@
+<div class="dropdown dropup">
+    <button class="tool-button" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Voeg by">
+        <span class="ic i-plus" aria-hidden="true"></span>
+    </button>
+    <ul class="dropdown-menu">
+        <li>
+            <label class="dropdown-item file-item">
+                <span class="ic i-file" aria-hidden="true"></span>Laai 'n lêer op
+                <InputFile OnChange="OnFiles" multiple />
+            </label>
+        </li>
+        <li><button class="dropdown-item" type="button" @onclick='() => OnComingSoon.InvokeAsync("Skermskote")'><span class="ic i-screen" aria-hidden="true"></span>Voeg 'n skermskoot by</button></li>
+    </ul>
+</div>
+<div class="dropdown dropup">
+    <button class="tool-button tool-button-label" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <span class="ic i-sliders" aria-hidden="true"></span>Gereedskap
+    </button>
+    <ul class="dropdown-menu">
+        <li><button class="dropdown-item" type="button" @onclick='() => OnDraft.InvokeAsync("Soek aanlyn: ")'><span class="ic i-search" aria-hidden="true"></span>Soek op die web</button></li>
+        <li><button class="dropdown-item" type="button" @onclick='() => OnDraft.InvokeAsync("Lees die lêer ")'><span class="ic i-file" aria-hidden="true"></span>Lees 'n lêer</button></li>
+        <li><button class="dropdown-item" type="button" @onclick='() => OnComingSoon.InvokeAsync("Skep \u0027n prent")'><span class="ic i-image" aria-hidden="true"></span>Skep 'n prent</button></li>
+        <li><button class="dropdown-item" type="button" @onclick='() => OnComingSoon.InvokeAsync("Diep navorsing")'><span class="ic i-compass" aria-hidden="true"></span>Diep navorsing</button></li>
+        <li><button class="dropdown-item" type="button" @onclick='() => OnComingSoon.InvokeAsync("Dink langer")'><span class="ic i-sparkle" aria-hidden="true"></span>Dink langer</button></li>
+    </ul>
+</div>
+<span class="composer-spacer"></span>
+<div class="dropdown dropup">
+    <button class="tool-button tool-button-label model-button" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Model">
+        @(Model ?? "Model") <span class="ic i-chevron" aria-hidden="true"></span>
+    </button>
+    <ul class="dropdown-menu dropdown-menu-end">
+        <li><h6 class="dropdown-header">Model</h6></li>
+        <li><button class="dropdown-item active" type="button">@(Model ?? "Die bediener se model") <span class="ic i-check ms-auto" aria-hidden="true"></span></button></li>
+        <li><button class="dropdown-item" type="button" @onclick='() => OnComingSoon.InvokeAsync("Ander modelle")'>Ander modelle…</button></li>
+    </ul>
+</div>
+<button class="tool-button" type="button" title="Stemboodskap" @onclick='() => OnComingSoon.InvokeAsync("Stemboodskappe")'><span class="ic i-mic" aria-hidden="true"></span></button>
+
+@code {
+    /// <summary>The instance's model, prettified; null until known (the picker then says "Model").</summary>
+    [Parameter] public string? Model { get; set; }
+    [Parameter] public EventCallback<InputFileChangeEventArgs> OnFiles { get; set; }
+    [Parameter] public EventCallback<string> OnDraft { get; set; }
+    [Parameter] public EventCallback<string> OnComingSoon { get; set; }
+}

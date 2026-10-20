@@ -1,0 +1,77 @@
+@* The sidebar (F20): the brand, a new chat, search, the views, the chats (favourites, projects to come, recent,
+   archived) and, at the foot, the profile and the settings. Below Bootstrap's lg breakpoint it is an offcanvas. *@
+<aside class="sidebar offcanvas-lg offcanvas-start" id="sidebar" tabindex="-1" aria-label="Gesprekke">
+    <div class="sidebar-top">
+        <a class="brand brand-stack" href="./" title="Puls se tuisblad"><PulsLogo /><span class="tagline">Elke vraag op pad na 'n antwoord</span></a>
+        <button class="icon d-none d-lg-inline-grid" type="button" onclick="pulsUi.toggleSidebar()" title="Versteek die kantbalk" aria-label="Versteek die kantbalk">⇤</button>
+        <button class="icon d-lg-none" type="button" data-bs-dismiss="offcanvas" data-bs-target="#sidebar" aria-label="Maak die kieslys toe">×</button>
+    </div>
+    <button class="new-chat" @onclick="OnNewChat">Nuwe gesprek</button>
+    <button class="side-search" id="search-button" type="button" @onclick="OnSearch">
+        <span class="ic i-search" aria-hidden="true"></span>Soek gesprekke<kbd>Ctrl K</kbd>
+    </button>
+    <nav class="side-nav">
+        <a class="side-link" href="./"><span class="ic i-home" aria-hidden="true"></span>Tuis</a>
+        <a class="side-link @(View == "verken" ? "active" : "")" href="verken"><span class="ic i-compass" aria-hidden="true"></span>Verken</a>
+        <a class="side-link @(View == "studio" ? "active" : "")" href="studio"><span class="ic i-sparkle" aria-hidden="true"></span>Studio</a>
+    </nav>
+
+    <div class="chat-list">
+        @if (Chats.Any(c => c.Favourite && !c.Archived))
+        {
+            <div class="sidebar-label">Gunstelinge</div>
+            @foreach (var chat in Chats.Where(c => c.Favourite && !c.Archived))
+            {
+                @Item(chat)
+            }
+        }
+
+        <div class="sidebar-label sidebar-label-row">Projekte
+            <button class="icon" type="button" title="Nuwe projek" @onclick='() => OnComingSoon.InvokeAsync("Projekte")'>+</button>
+        </div>
+        <button class="side-link side-link-quiet" type="button" @onclick='() => OnComingSoon.InvokeAsync("Projekte")'><span class="ic i-folder" aria-hidden="true"></span>Nuwe projek</button>
+
+        @if (Chats.Any(c => !c.Favourite && !c.Archived))
+        {
+            <div class="sidebar-label">Onlangs</div>
+            @foreach (var chat in Chats.Where(c => !c.Favourite && !c.Archived))
+            {
+                @Item(chat)
+            }
+        }
+
+        @if (Chats.Count(c => c.Archived) is > 0 and var archived)
+        {
+            <details class="side-archive">
+                <summary><span class="ic i-archive" aria-hidden="true"></span>Geargiveer <span class="side-count">@archived</span></summary>
+                @foreach (var chat in Chats.Where(c => c.Archived))
+                {
+                    @Item(chat)
+                }
+            </details>
+        }
+    </div>
+
+    <div class="side-footer">
+        <ProfileCard />
+        <details class="sidebar-settings">
+            <summary>Instellings</summary>
+            <CurrencySwitcher />
+            <LocationPicker Location="@Location" Locating="Locating" OnSave="OnSaveLocation" OnLocate="OnLocate" />
+            <MotionToggle Motion="Motion" ReducedMotion="ReducedMotion" OnChange="OnSaveMotion" />
+            <label class="settings">
+                API-sleutel
+                <input type="password" value="@ApiKeyDraft" @onchange="e => OnSaveApiKey.InvokeAsync(e.Value?.ToString())" placeholder="net as AGENT_API_KEY gestel is" />
+            </label>
+        </details>
+    </div>
+</aside>
+
+@code {
+    private RenderFragment Item(Chat chat) => __builder =>
+    {
+        <ChatListItem @key="chat.SessionId" Chat="chat" Active="@(chat.SessionId == SessionId)" Renaming="@(Renaming == chat.SessionId && !RenameInHeader)"
+                      RenameDraft="@RenameDraft" RenameDraftChanged="RenameDraftChanged" OnRenameKey="OnRenameKey" OnRenameBlur="OnRenameBlur"
+                      OnFavourite="OnFavourite" OnRename="OnRename" OnArchive="OnArchive" OnDelete="OnDelete" OnComingSoon="OnComingSoon" />
+    };
+}

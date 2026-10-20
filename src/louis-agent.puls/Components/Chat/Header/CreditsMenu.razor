@@ -1,0 +1,25 @@
+@* Krediete (F20, pay as you go): what this chat and this month cost, from the chats in this browser; buying
+   credits comes with F23. No plans. *@
+<div class="dropdown">
+    <button class="usage-meter" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Krediete en gebruik: @MonthCost hierdie maand">
+        <span class="ic i-coin" aria-hidden="true"></span>Krediete
+    </button>
+    <div class="dropdown-menu dropdown-menu-end usage-menu">
+        <h6 class="dropdown-header">Krediete · betaal soos jy gebruik</h6>
+        <div class="usage-row"><span>Hierdie gesprek</span><strong data-count="@ChatCost">@ChatCost</strong></div>
+        <div class="usage-row"><span>Hierdie maand <small>@MonthChats @(MonthChats == 1 ? "gesprek" : "gesprekke")</small></span><strong data-count="@MonthCost">@MonthCost</strong></div>
+        <p class="usage-note">Geen intekening nie: jy betaal net vir die vrae wat jy vra, spesialiste ingesluit. Volgens die gesprekke in hierdie blaaier.</p>
+        <hr class="dropdown-divider" />
+        <button class="dropdown-item" type="button" @onclick='() => OnComingSoon.InvokeAsync("Krediete")'><span class="ic i-coin" aria-hidden="true"></span>Koop krediete</button>
+    </div>
+</div>
+
+@code {
+    /// <summary>What the shown chat cost, specialists included; "—" without a chat.</summary>
+    [Parameter] public string ChatCost { get; set; } = "—";
+
+    /// <summary>What this month's chats cost, and how many there were.</summary>
+    [Parameter] public string MonthCost { get; set; } = "";
+    [Parameter] public int MonthChats { get; set; }
+    [Parameter] public EventCallback<string> OnComingSoon { get; set; }
+}

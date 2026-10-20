@@ -34,6 +34,12 @@ public static class PulsText
         ThoughtOne = "gedagte",
         ThoughtMany = "gedagtes",
 
+        NewChat = "Nuwe gesprek",
+        SessionGone = "Hierdie gesprek se sessie bestaan nie meer op die bediener nie (die API het herbegin). Begin 'n nuwe gesprek om voort te gaan.",
+        NeedsKey = "Die API het 'n sleutel nodig: maak Instellings oop en vul AGENT_API_KEY in.",
+        StillAnswering = "Hierdie gesprek antwoord nog; wag daarvoor of druk Stop.",
+        ApiUnreachable = "Kan nie Puls se API bereik nie. Loop die puls-houer?",
+
         Currency = "Geldeenheid",
         AsCharged = "Soos gehef",
         ConvertedAt = "1 {0} = {1} {2} op {3}; die grootboek hou wat gehef is",

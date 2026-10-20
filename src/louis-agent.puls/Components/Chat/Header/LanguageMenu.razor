@@ -1,0 +1,24 @@
+@* Puls's language (CL9): the languages the API has a puls/voice-{code} for; a new chat speaks the one chosen. *@
+<div class="dropdown">
+    <button class="header-button" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Taal">
+        <span class="ic i-globe" aria-hidden="true"></span>@Language.ToUpperInvariant()
+    </button>
+    <ul class="dropdown-menu dropdown-menu-end">
+        <li><h6 class="dropdown-header">Taal</h6></li>
+        @foreach (string code in Languages)
+        {
+            <li><button class="dropdown-item @(code == Language ? "active" : "")" type="button" @onclick="() => OnChoose.InvokeAsync(code)">
+                @LanguageName(code)@if (code == Language) {<span class="ic i-check ms-auto" aria-hidden="true"></span>}
+            </button></li>
+        }
+    </ul>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public string Language { get; set; } = "af";
+    [Parameter, EditorRequired] public IReadOnlyList<string> Languages { get; set; } = ["af"];
+    [Parameter] public EventCallback<string> OnChoose { get; set; }
+
+    /// <summary>A language's name in the menu; a code without one is shown as it is.</summary>
+    private static string LanguageName(string code) => code switch { "af" => "Afrikaans", "en" => "English", _ => code };
+}

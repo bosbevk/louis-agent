@@ -795,6 +795,12 @@ sequenceDiagram
 - **T1b: the two pages W2 still needed pinned** (Louis, 2026-10-19): Puls's landing page and the code-review app's chat
   page (a third web test project, `tests/louis-agent.web.tests`), and `tests/louis-agent.web.testing` for what the three
   web test projects share (the fixture replay, the stub API, the snapshot helper), so no test project copies another.
+- **W2, one commit per page** (Louis, 2026-10-19): the three big pages split into components with one concern each,
+  behaviour and markup the same, the page snapshots byte-equal under the snapshot rule (indentation beside tags and
+  the renderer's handler numbers normalised). First: `ChatRunner` shared by both chat pages, test first; the shared
+  `MessageList`, `Composer`, `ChatUsageBar` and `Notice`; Puls's chat page in components (`Components/Chat/Sidebar/`,
+  `Header/`, `EmptyChat`, `Toast`, `ComposerTools`, the turn actions), its layout about a hundred lines and its handlers
+  in a code-behind. Then the landing page in sections, then the code-review chat page.
 
 ---
 [Plans](README.md) · [The platform plan](platform.md)
