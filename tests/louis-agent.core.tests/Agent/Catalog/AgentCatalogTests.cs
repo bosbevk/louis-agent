@@ -1,3 +1,4 @@
+using LouisAgent.Core.Hosting.Prompts;
 using LouisAgent.Core.Agent.EngineTools;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Agent.Catalog;
@@ -125,7 +126,7 @@ public class AgentCatalogTests
         try
         {
             var options = new AgentOptions { WorkspaceRoot = skills, SkillsDirectory = skills, RatesUrl = null };
-            var engine = new AgentEngine(AgentHost.LoadSkills(options), new FakeChatClient(), options) { SkillsDirectory = skills, ReservedToolNames = catalog.ToolNames };
+            var engine = new AgentEngine(SkillLoader.Load(options), new FakeChatClient(), options) { SkillsDirectory = skills, ReservedToolNames = catalog.ToolNames };
             string refused = engine.CreateTool("# Tool: FindFakeProducts\n- Description: mine\n- Implementation:\n```python\nprint(1)\n```\n");
             Assert.That(refused, Does.Contain("FindFakeProducts").And.Contain("built-in").IgnoreCase);
         }
@@ -177,10 +178,10 @@ public class AgentCatalogTests
     {
         var options = new AgentOptions { WorkspaceRoot = TestPaths.RepoRoot, SkillsDirectory = Path.Combine(TestPaths.RepoRoot, "Skills"), RolesEnabled = ["testprod-specialist", "nope"] };
 
-        var error = Assert.Throws<RoleException>(() => AgentHost.CheckRoles(options, RoleCatalog.DefaultVoice))!;
+        var error = Assert.Throws<RoleException>(() => RoleFiles.Check(options, RoleCatalog.DefaultVoice))!;
 
         Assert.That(error.Message, Does.StartWith("ROLES_ENABLED names roles this instance doesn't have: nope."), "only the unknown name is named; the known ones follow under Available");
-        Assert.DoesNotThrow(() => AgentHost.CheckRoles(new AgentOptions { WorkspaceRoot = TestPaths.RepoRoot, RolesEnabled = ["testprod-specialist", "testprod/voice-af"] }, RoleCatalog.DefaultVoice));
+        Assert.DoesNotThrow(() => RoleFiles.Check(new AgentOptions { WorkspaceRoot = TestPaths.RepoRoot, RolesEnabled = ["testprod-specialist", "testprod/voice-af"] }, RoleCatalog.DefaultVoice));
     }
 
     [Test]
@@ -188,8 +189,8 @@ public class AgentCatalogTests
     {
         var options = new AgentOptions { WorkspaceRoot = TestPaths.RepoRoot };
 
-        Assert.DoesNotThrow(() => AgentHost.CheckRoles(options, RoleCatalog.DefaultVoice), "core embeds louis-agent/voice until CL17");
-        var error = Assert.Throws<RoleException>(() => AgentHost.CheckRoles(options, "louis-agent/nothing"))!;
+        Assert.DoesNotThrow(() => RoleFiles.Check(options, RoleCatalog.DefaultVoice), "core embeds louis-agent/voice until CL17");
+        var error = Assert.Throws<RoleException>(() => RoleFiles.Check(options, "louis-agent/nothing"))!;
         Assert.That(error.Message, Does.Contain("louis-agent/nothing"));
     }
 }

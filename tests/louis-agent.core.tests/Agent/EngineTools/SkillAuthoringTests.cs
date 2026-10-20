@@ -1,3 +1,4 @@
+using LouisAgent.Core.Hosting.Prompts;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Agent;
@@ -49,10 +50,10 @@ public class SkillAuthoringTests
     private AgentEngine Engine(IChatClient? client = null)
     {
         var options = Options();
-        return new AgentEngine(AgentHost.LoadSkills(options), client ?? new FakeChatClient(), options)
+        return new AgentEngine(SkillLoader.Load(options), client ?? new FakeChatClient(), options)
         {
             SkillsDirectory = _skillsDir,
-            SkillReloader = () => AgentHost.LoadSkills(options),
+            SkillReloader = () => SkillLoader.Load(options),
         };
     }
 
@@ -62,7 +63,7 @@ public class SkillAuthoringTests
         // CL8 step 3: function skills live in agent/functions/; an old *-skills.md at the root isn't loaded.
         File.WriteAllText(Path.Combine(_skillsDir, "farewell-skills.md"), EchoSkill.Replace("Greet", "Farewell"));
 
-        Assert.That(AgentHost.LoadSkills(Options()).Skills.Select(s => s.Name), Does.Not.Contain("Farewell"));
+        Assert.That(SkillLoader.Load(Options()).Skills.Select(s => s.Name), Does.Not.Contain("Farewell"));
     }
 
     private string PendingFile(string name) => Path.Combine(_skillsDir, "agent", "functions", "pending", $"{name}.md");
@@ -242,7 +243,7 @@ public class SkillAuthoringTests
         File.WriteAllText(FunctionFile("greeting"), EchoSkill);
         var options = new AgentOptions { WorkspaceRoot = _skillsDir, SkillsDirectory = _skillsDir };
 
-        Assert.That(AgentHost.LoadSkills(options).Skills.Select(s => s.Name), Does.Contain("Greet"));
+        Assert.That(SkillLoader.Load(options).Skills.Select(s => s.Name), Does.Contain("Greet"));
     }
 
     [Test]

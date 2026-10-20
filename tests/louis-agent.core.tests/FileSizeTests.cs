@@ -20,7 +20,6 @@ public class FileSizeTests
         "louis-agent.core/Agent/ToolCallGuards.cs",
         "louis-agent.core/Agent/Toolsets/ToolsetCatalog.cs",
         "louis-agent.core/Config/AgentOptions.cs",
-        "louis-agent.core/Hosting/AgentHost.cs",
         "louis-agent.core/Messages/LogMessage.cs",
         "louis-agent.core/Messages/ToolMessage.cs",
         "louis-agent.core/Tools/Agents/SpecialistTools.cs",

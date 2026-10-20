@@ -2,9 +2,8 @@ using LouisAgent.Core.Pricing.Prices;
 using System.Net;
 using System.Text.Json;
 using LouisAgent.Core.Config;
-using LouisAgent.Core.Hosting;
 
-namespace LouisAgent.Core.Tests.Hosting;
+namespace LouisAgent.Core.Tests.Pricing.Prices;
 
 // PRICES_URL: the price table over HTTP (e.g. louis-agent.api's GET /prices), falling back to the file when unreachable.
 public class PricesUrlTests
@@ -42,7 +41,7 @@ public class PricesUrlTests
         Console.SetError(stderr);
         try
         {
-            return (AgentHost.LoadPrices(options, handler), stderr.ToString());
+            return (PriceTableLoader.Load(options, handler), stderr.ToString());
         }
         finally
         {
@@ -95,14 +94,14 @@ public class PricesUrlTests
         // Reached, but wrong: like a malformed file, the host doesn't start on it.
         var handler = new StubHandler(_ => new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent("<html>") });
 
-        var ex = Assert.Throws<InvalidDataException>(() => AgentHost.LoadPrices(Options("http://demo-api:8080/prices"), handler));
+        var ex = Assert.Throws<InvalidDataException>(() => PriceTableLoader.Load(Options("http://demo-api:8080/prices"), handler));
         Assert.That(ex!.Message, Does.Contain("http://demo-api:8080/prices"));
     }
 
     [TestCase("demo-api:8080/prices")]
     [TestCase("file:///etc/prices.json")]
     public void LoadPrices_NotAnHttpUrl_Throws(string url) =>
-        Assert.Throws<InvalidDataException>(() => AgentHost.LoadPrices(Options(url), new StubHandler(_ => throw new InvalidOperationException())));
+        Assert.Throws<InvalidDataException>(() => PriceTableLoader.Load(Options(url), new StubHandler(_ => throw new InvalidOperationException())));
 
     [Test]
     public void PricesUrlSetting_IsReadFromTheEnvironment()

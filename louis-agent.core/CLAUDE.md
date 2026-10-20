@@ -44,7 +44,7 @@ touches, and nothing else:
 3. **Guide:** `Prompts/toolsets/{toolset}.md`, plain markdown, embedded with the other built-in prompts (a pack's in
    its own `Prompts/`): what the toolset is for, its tools grouped with one line each, and its workflows. Core's guides
    may also hold `## Skill:` procedures; a pack's may not, because a guide must be able to travel as an MCP server's
-   instructions (ADR 0028): a procedure a pack needs becomes a tool. `AgentHost.LoadSkills(agent, toolsets)` adds the
+   instructions (ADR 0028): a procedure a pack needs becomes a tool. `SkillLoader.Load(agent, toolsets)` adds the
    guide to the prompt, through `MarkdownSkillProvider`, only when a session loads the toolset. **No provider class per
    toolset.**
 4. **Reserved by itself:** the guide is embedded, so the agent can't take its name (`SkillFiles.IsBuiltIn`).
@@ -77,12 +77,12 @@ a change to one (a new provider, a new tool, a new guard) touches one folder:
 | `Llm/` | The model: the client factory at the top (`ILlmClientFactory`, `LlmClientFactory`, with the thinking middleware); `Caching/` (how a provider marks a request for its prompt cache: the strategy, the no-op default, the middleware); `UsageMapping/` (a provider's usage into our record: the mapper and the recording middleware); one folder per provider, `{Name}Provider/` (`AnthropicProvider/`: a folder named `Anthropic` would hide the SDK's own `Anthropic` namespace) |
 | `Tools/{Toolset}/` | What the model can do: one folder per toolset (`Workspace`, `Git`, `DotNet`, `Shell`, `Web`, `Scripts`, `Agents`, `Integrations/Paymo`, `Integrations/DevOps`), plus `Clock` (every session) and `Documents` (shared by two toolsets); `ProcessRunner` beside them |
 | `Sessions/` | What a host sets for one session's turn and the tools read: the user's place (F22) and the attachments at the top; `SubSessions/` (the sub-sessions a chat keeps, F26, and the live feed of a child's events). Not what the model can do, and not the loop |
-| `Skills/` | Loading the markdown skills and a session's role into the prompt: the contract at the top (`ISkillProvider`, the embedded files), its implementations in `Providers/`, and in `Roles/` what a session is (`RoleCatalog`, `RoleLevel`, `RoleHeader`, CL13) |
+| `Skills/` | Loading the markdown skills and a session's role into the prompt: the contract at the top (`ISkillProvider`, the embedded files, `SkillFolder`: where a file comes from), its implementations in `Providers/`, and in `Roles/` what a session is (`RoleCatalog`, `RoleLevel`, `RoleHeader`, CL13; `RoleFiles`: which roles this instance offers) |
 | `Guardrails/` | Pure safety checks, no model: `Auth/` (the hosts' key check, failing closed, FX18), `Network/` (the SSRF guard and the address it blocks), `Workspace/` (the workspace boundary, sensitive files). The guards that call a model are in `Agent/` |
 | `Usage/` | The ledger: `Records/` (a record, its tokens and cost, its purpose, the turn's scope and tags, the session), `Sinks/` (where records go: the monthly JSONL file), `Reports/` (reading a ledger back: totals, the usage text every host shows, the lifetime cost, the cache gaps) |
-| `Pricing/` | `Prices/` (the price table and a model's prices, the cost calculator, the sink that prices each record), `Rates/` (exchange rates, their mappers, the display currency) |
+| `Pricing/` | `Prices/` (the price table and its loader, a model's prices, the cost calculator, the sink that prices each record), `Rates/` (exchange rates and their loader, their mappers, the display currency) |
 | `Protocols/Mcp/` | Talking to other agents and tools over MCP |
-| `Hosting/` | Bootstrap shared by every host: `AgentHost`, its context, the engine factory and the wiring done at start-up (Rider's MCP tools) at the top; `SessionLlms/` (the LLM profiles a session may name, `SESSION_LLMS`) |
+| `Hosting/` | Bootstrap shared by every host: `AgentHost` (the flow), its context, the engine factory, the ledger and the tools-only client at the top; `EnvFiles/` (the .env files a host loads), `Prompts/` (the system prompt assembled from skill files), `Rider/` (Rider's MCP tools at start-up), `SessionLlms/` (the LLM profiles a session may name, `SESSION_LLMS`) |
 | `Config/`, `Messages/`, `Logging/` | Settings; message enums; logging (`AgentLogging`: Serilog behind `ILogger`) |
 
 The rules:

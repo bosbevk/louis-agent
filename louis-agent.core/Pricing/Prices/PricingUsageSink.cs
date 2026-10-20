@@ -6,7 +6,7 @@ using LouisAgent.Core.Usage.Sinks;
 
 /// <summary>
 /// Puts the cost on each record (<see cref="CostCalculator"/>), then hands it to the inner sink. Pricing happens here,
-/// where every host's records already pass (<c>AgentHost.CreateUsageSink</c>), so the engine and the hosts don't change,
+/// where every host's records already pass (<c>UsageLedger.Open</c>), so the engine and the hosts don't change,
 /// and the inner sink's <c>UsageRecorded</c> event sees the cost too.
 /// </summary>
 public sealed class PricingUsageSink(IUsageSink inner, PriceTable prices) : IUsageSink

@@ -1,5 +1,6 @@
 namespace LouisAgent.Composition;
 
+using LouisAgent.Core.Hosting.EnvFiles;
 using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Core.Config;
@@ -22,7 +23,7 @@ public static class Plugins
     /// </summary>
     public static AgentCatalog FromEnvironment()
     {
-        AgentHost.LoadEnvironment();
+        HostEnvironment.Load();
         return FromSettings(Environment.GetEnvironmentVariable("IDENTITIES"), Environment.GetEnvironmentVariable("PACKS"));
     }
 

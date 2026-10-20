@@ -1,15 +1,15 @@
 using LouisAgent.Core.Agent.Toolsets;
 using System.Text.RegularExpressions;
 using LouisAgent.Core.Config;
-using LouisAgent.Core.Hosting;
+using LouisAgent.Core.Hosting.Prompts;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Roles;
 
-namespace LouisAgent.Core.Tests.Hosting;
+namespace LouisAgent.Core.Tests.Hosting.Prompts;
 
 // F5 step 4 (F5-S2): the system prompt has the guides of the session's toolsets and no others, so the model is never
 // told about tools it doesn't have, and the prompt shrinks with the toolset.
-public class AgentHostSkillsTests
+public class SkillLoaderTests
 {
     private static readonly string[] OtherGuides =
         ["# Python Skills", "# PowerShell Skills", "# Bash Skills", "# Web Skills", "# Paymo Skills", "# DevOps Skills"];
@@ -22,7 +22,7 @@ public class AgentHostSkillsTests
     [Test]
     public void FilesAndGit_HaveTheirGuides_AndNoOthers()
     {
-        string docs = AgentHost.LoadSkills(Options(), Toolsets("files", "git")).Documentation;
+        string docs = SkillLoader.Load(Options(), Toolsets("files", "git")).Documentation;
 
         Assert.That(docs, Does.Contain("# Files Skills").And.Contain("# Git Skills"));
         foreach (string guide in OtherGuides)
@@ -36,8 +36,8 @@ public class AgentHostSkillsTests
         string skills = Directory.CreateTempSubdirectory("skills-root-").FullName;
         try
         {
-            Assert.That(AgentHost.FindSkillsDirectory(new AgentOptions { SkillsDirectory = skills }), Is.EqualTo(skills));
-            Assert.That(AgentHost.FindSkillsDirectory(new AgentOptions()), Is.EqualTo(Path.Combine(TestPaths.RepoRoot, "Skills")),
+            Assert.That(SkillFolder.Find(new AgentOptions { SkillsDirectory = skills }), Is.EqualTo(skills));
+            Assert.That(SkillFolder.Find(new AgentOptions()), Is.EqualTo(Path.Combine(TestPaths.RepoRoot, "Skills")),
                 "from the tests' folder up, not tests/louis-agent.core.tests/Skills/");
         }
         finally
@@ -65,7 +65,7 @@ public class AgentHostSkillsTests
     {
         // CL9 step 2: every agent, at every level, whatever its voice or role, gets the shared principles first, so no
         // later file can push them aside.
-        string docs = AgentHost.LoadSkills(Options(), [], role, level).Documentation;
+        string docs = SkillLoader.Load(Options(), [], role, level).Documentation;
 
         Assert.That(docs, Does.StartWith("# Principles"));
         Assert.That(docs, Does.Contain("An agent may never lie, cheat, steal or murder."));
@@ -74,7 +74,7 @@ public class AgentHostSkillsTests
     [Test]
     public void TheRoleAndTheRouter_AreAlwaysThere()
     {
-        string docs = AgentHost.LoadSkills(Options(), []).Documentation;
+        string docs = SkillLoader.Load(Options(), []).Documentation;
 
         Assert.That(docs, Does.Contain("# Louis Agent - Default Instructions"), "default.md, the toolset router");
         Assert.That(docs.Length, Is.GreaterThan(0));
@@ -85,7 +85,7 @@ public class AgentHostSkillsTests
     [Test]
     public void EveryToolset_GivesEachGuideExactlyOnce()
     {
-        string docs = AgentHost.LoadSkills(Options(), ToolsetCatalog.All).Documentation;
+        string docs = SkillLoader.Load(Options(), ToolsetCatalog.All).Documentation;
 
         foreach (string guide in OtherGuides.Append("# Files Skills").Append("# Git Skills").Append("# .NET Skills"))
             Assert.That(Regex.Matches(docs, "^" + Regex.Escape(guide) + @"\r?$", RegexOptions.Multiline).Count, Is.EqualTo(1), guide);
@@ -103,8 +103,8 @@ public class AgentHostSkillsTests
             File.WriteAllText(Path.Combine(skills, "agent", "functions", "greeting.md"), "# Greeting Skills\n\nGreets people.");
             var options = new AgentOptions { SkillsDirectory = skills };
 
-            Assert.That(AgentHost.LoadSkills(options, Toolsets("files", "skills")).Documentation, Does.Contain("# Greeting Skills"));
-            Assert.That(AgentHost.LoadSkills(options, Toolsets("specialists", "web")).Documentation, Does.Not.Contain("# Greeting Skills"));
+            Assert.That(SkillLoader.Load(options, Toolsets("files", "skills")).Documentation, Does.Contain("# Greeting Skills"));
+            Assert.That(SkillLoader.Load(options, Toolsets("specialists", "web")).Documentation, Does.Not.Contain("# Greeting Skills"));
         }
         finally
         {
@@ -115,8 +115,8 @@ public class AgentHostSkillsTests
     [Test]
     public void ThePromptShrinks_WithTheToolset()
     {
-        int all = AgentHost.LoadSkills(Options(), ToolsetCatalog.All).Documentation.Length;
-        int coding = AgentHost.LoadSkills(Options(), Toolsets("files", "git", "dotnet", "skills")).Documentation.Length;
+        int all = SkillLoader.Load(Options(), ToolsetCatalog.All).Documentation.Length;
+        int coding = SkillLoader.Load(Options(), Toolsets("files", "git", "dotnet", "skills")).Documentation.Length;
 
         Assert.That(coding, Is.LessThan(all));
     }

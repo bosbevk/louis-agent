@@ -1,3 +1,4 @@
+using LouisAgent.Core.Hosting.Prompts;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
@@ -59,7 +60,7 @@ public class RoleHeaderTests
     public void TheModel_NeverSeesTheHeader()
     {
         var options = new AgentOptions { WorkspaceRoot = TestPaths.RepoRoot, RatesUrl = null };
-        string prompt = AgentHost.LoadSkills(options, [], "testprod-specialist", RoleLevel.Specialist).Documentation;
+        string prompt = SkillLoader.Load(options, [], "testprod-specialist", RoleLevel.Specialist).Documentation;
 
         Assert.That(prompt, Does.Contain("Testprod specialist").And.Not.Contain("toolsets: web?"));
     }

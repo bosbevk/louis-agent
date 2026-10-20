@@ -1,3 +1,4 @@
+using LouisAgent.Core.Hosting.Prompts;
 using LouisAgent.Core.Agent.Toolsets;
 using System.Text.RegularExpressions;
 using LouisAgent.Core.Config;
@@ -30,7 +31,7 @@ public class SkillFilesTests
             Assert.That(guide, Does.StartWith("toolsets/"), "CL8: every level shares the guides, so they're in toolsets/");
             Assert.That(File.Exists(Path.Combine(SkillsDirectory, guide)), Is.True, $"{guide} exists");
             string title = File.ReadLines(Path.Combine(SkillsDirectory, guide)).First();
-            Assert.That(AgentHost.LoadSkills(options, [toolset]).Documentation, Does.Contain(title), $"{guide} loads with {toolset.Name}");
+            Assert.That(SkillLoader.Load(options, [toolset]).Documentation, Does.Contain(title), $"{guide} loads with {toolset.Name}");
             Assert.That(SkillFiles.IsBuiltIn(guide), Is.True, $"{guide} can't be overwritten by the agent");
         }
     }
@@ -137,7 +138,7 @@ public class SkillFilesTests
     {
         var options = new AgentOptions { SkillsDirectory = SkillsDirectory };
 
-        string docs = AgentHost.LoadSkills(options).Documentation;
+        string docs = SkillLoader.Load(options).Documentation;
 
         Assert.That(Regex.Matches(docs, "# .NET Skills").Count, Is.EqualTo(1));
         Assert.That(Regex.Matches(docs, "# Paymo Skills").Count, Is.EqualTo(1));
@@ -150,7 +151,7 @@ public class SkillFilesTests
         var options = new AgentOptions { SkillsDirectory = SkillsDirectory };
 
         Assert.That(SkillFileSource.ReadEmbedded(SkillFiles.Function("time-logging")), Is.Null);
-        Assert.That(AgentHost.LoadSkills(options).Skills.Select(s => s.Name),
+        Assert.That(SkillLoader.Load(options).Skills.Select(s => s.Name),
             Has.None.AnyOf("LogWorkEntry", "GetWeeklySummary", "ValidateTimeEntry"));
     }
 }

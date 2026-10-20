@@ -1,9 +1,8 @@
 using LouisAgent.Core.Pricing.Rates;
 using System.Net;
 using LouisAgent.Core.Config;
-using LouisAgent.Core.Hosting;
 
-namespace LouisAgent.Core.Tests.Hosting;
+namespace LouisAgent.Core.Tests.Pricing.Rates;
 
 // F14 step 1: RATES_URL (Frankfurter by default, or another louis-agent's GET /rates), mapped by RATES_FORMAT, falling back
 // to RATES_FILE when it can't be used; like PRICES_URL and the price file.
@@ -40,7 +39,7 @@ public class RatesUrlTests
         Console.SetError(stderr);
         try
         {
-            return (AgentHost.LoadRates(options, "USD", handler), stderr.ToString());
+            return (ExchangeRatesLoader.Load(options, "USD", handler), stderr.ToString());
         }
         finally
         {
@@ -129,7 +128,7 @@ public class RatesUrlTests
     {
         File.WriteAllText(_file, FileRates.Replace("\"USD\"", "\"EUR\""));
 
-        Assert.That(() => Load(Options(url: null)), Throws.TypeOf<AgentHost.WrongBaseException>());
+        Assert.That(() => Load(Options(url: null)), Throws.TypeOf<WrongBaseException>());
     }
 
     [Test]

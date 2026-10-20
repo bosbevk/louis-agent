@@ -51,7 +51,7 @@ public class SkillFileSourceTests
         Directory.CreateDirectory(Path.Combine(_dir, "toolsets"));
         File.WriteAllText(Path.Combine(_dir, "toolsets", "git.md"), "# Git Skills\n\nOur own version.");
 
-        var file = AgentHost.ReadSkillFile(new AgentOptions { SkillsDirectory = _dir }, "toolsets/git.md");
+        var file = SkillFolder.Read(new AgentOptions { SkillsDirectory = _dir }, "toolsets/git.md");
 
         Assert.That(file!.Value.FromDisk, Is.False);
         Assert.That(file.Value.Text, Does.Not.Contain("Our own version."));
@@ -64,7 +64,7 @@ public class SkillFileSourceTests
         Directory.CreateDirectory(Path.Combine(_dir, "agent", "functions"));
         File.WriteAllText(Path.Combine(_dir, "agent", "functions", "greeting.md"), "# Greeting Skills");
 
-        var file = AgentHost.ReadSkillFile(new AgentOptions { SkillsDirectory = _dir }, "agent/functions/greeting.md");
+        var file = SkillFolder.Read(new AgentOptions { SkillsDirectory = _dir }, "agent/functions/greeting.md");
 
         Assert.That(file!.Value.FromDisk, Is.True);
         Assert.That(file.Value.Text, Does.Contain("# Greeting Skills"));
@@ -77,7 +77,7 @@ public class SkillFileSourceTests
         Directory.CreateDirectory(Path.Combine(_dir, "specialists"));
         File.WriteAllText(Path.Combine(_dir, "specialists", "puls-baker.md"), "# Baker");
 
-        Assert.That(AgentHost.ReadSkillFile(new AgentOptions { SkillsDirectory = _dir }, "specialists/puls-baker.md"), Is.Null);
+        Assert.That(SkillFolder.Read(new AgentOptions { SkillsDirectory = _dir }, "specialists/puls-baker.md"), Is.Null);
     }
 
     [Test]

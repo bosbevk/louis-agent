@@ -1,3 +1,4 @@
+using LouisAgent.Core.Hosting.Prompts;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Skills;
@@ -31,8 +32,8 @@ public class PulsPromptsTests
         Assert.That(RoleCatalog.Available(RoleLevel.Agent), Is.EqualTo(Modes.Split(", ")));
         Assert.That(RoleCatalog.Available(RoleLevel.Specialist), Is.EqualTo(new[] { "puls-analyst", "puls-cook", "puls-historian", "puls-reader", "puls-researcher" }));
         Assert.That(RoleCatalog.Available(RoleLevel.Minion), Is.EqualTo(new[] { "puls-minion-web-price-lookup" }));
-        Assert.That(AgentHost.LoadSkills(new AgentOptions(), [], "puls/voice-af").Documentation, Does.Contain("# Puls - Stem"));
-        Assert.That(AgentHost.LoadSkills(new AgentOptions(), [], "puls-cook", RoleLevel.Specialist).Documentation, Does.Contain("Never invent a price"));
+        Assert.That(SkillLoader.Load(new AgentOptions(), [], "puls/voice-af").Documentation, Does.Contain("# Puls - Stem"));
+        Assert.That(SkillLoader.Load(new AgentOptions(), [], "puls-cook", RoleLevel.Specialist).Documentation, Does.Contain("Never invent a price"));
         Assert.That(RoleCatalog.ToolsetsOf("puls-cook", RoleLevel.Specialist), Is.EqualTo(new[] { "shops?" }), "F33: the cook's header");
     }
 
@@ -40,12 +41,12 @@ public class PulsPromptsTests
     [TestCase("en", "# Puls - Voice")]
     public void APulsLanguage_LoadsItsVoice_ThenPulsShared(string code, string voice)
     {
-        string docs = AgentHost.LoadSkills(new AgentOptions(), [], $"puls/voice-{code}").Documentation;
+        string docs = SkillLoader.Load(new AgentOptions(), [], $"puls/voice-{code}").Documentation;
 
         Assert.That(docs.IndexOf(voice, StringComparison.Ordinal), Is.GreaterThan(0));
         Assert.That(docs.IndexOf(voice, StringComparison.Ordinal), Is.LessThan(docs.IndexOf("# Puls - Routing", StringComparison.Ordinal)));
         Assert.That(Read("agent/puls/voice.md"), Does.StartWith("# Puls - Routing"), "Puls's shared part");
-        Assert.Throws<RoleException>(() => AgentHost.LoadSkills(new AgentOptions(), [], "puls/voice"), "the shared part is no mode of its own");
+        Assert.Throws<RoleException>(() => SkillLoader.Load(new AgentOptions(), [], "puls/voice"), "the shared part is no mode of its own");
     }
 
     [Test]
@@ -80,7 +81,7 @@ public class PulsPromptsTests
     [Test]
     public void AMinionsPrompt_IsThePrinciples_TheBase_ThenItsRole()
     {
-        string docs = AgentHost.LoadSkills(new AgentOptions(), [], "puls-minion-web-price-lookup", RoleLevel.Minion).Documentation;
+        string docs = SkillLoader.Load(new AgentOptions(), [], "puls-minion-web-price-lookup", RoleLevel.Minion).Documentation;
 
         int principles = docs.IndexOf("# Principles", StringComparison.Ordinal);
         int @base = docs.IndexOf("You are a **minion**", StringComparison.Ordinal);

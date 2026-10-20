@@ -238,10 +238,10 @@ public class MinionToolsTests
     {
         var agent = new AgentOptions { SessionLlmProfiles = ["ollama-puls"], MinionLlms = new Dictionary<string, IReadOnlyList<string>> { ["*"] = ["ollama-puls", "gpt-local"] } };
 
-        var ex = Assert.Throws<SessionLlmException>(() => AgentHost.CheckMinionLlms(agent))!;
+        var ex = Assert.Throws<SessionLlmException>(() => SessionLlmLoader.CheckMinionLlms(agent))!;
 
         Assert.That(ex.Message, Does.Contain("gpt-local").And.Contain("ollama-puls").And.Contain("instance"));
-        Assert.DoesNotThrow(() => AgentHost.CheckMinionLlms(new AgentOptions { SessionLlmProfiles = ["ollama-puls"], MinionLlms = new Dictionary<string, IReadOnlyList<string>> { ["*"] = ["instance", "ollama-puls"] } }));
+        Assert.DoesNotThrow(() => SessionLlmLoader.CheckMinionLlms(new AgentOptions { SessionLlmProfiles = ["ollama-puls"], MinionLlms = new Dictionary<string, IReadOnlyList<string>> { ["*"] = ["instance", "ollama-puls"] } }));
     }
 
     [Test]

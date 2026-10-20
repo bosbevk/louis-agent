@@ -121,7 +121,7 @@ public class PricingUsageSinkTests
         PriceTable prices;
         try
         {
-            prices = AgentHost.LoadPrices(new AgentOptions { PricesFile = Path.Combine(_dir, "missing.json") });
+            prices = PriceTableLoader.Load(new AgentOptions { PricesFile = Path.Combine(_dir, "missing.json") });
         }
         finally
         {
@@ -137,7 +137,7 @@ public class PricingUsageSinkTests
     {
         File.WriteAllText(_prices, "{ not json");
 
-        Assert.Throws<InvalidDataException>(() => AgentHost.CreateUsageSink(new AgentOptions { LogDirectory = _dir, PricesFile = _prices }));
+        Assert.Throws<InvalidDataException>(() => UsageLedger.Open(new AgentOptions { LogDirectory = _dir, PricesFile = _prices }));
     }
 
     [Test]

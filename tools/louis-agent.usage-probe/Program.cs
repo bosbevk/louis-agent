@@ -1,3 +1,4 @@
+using LouisAgent.Core.Hosting.EnvFiles;
 using LouisAgent.Core.Llm.UsageMapping;
 using LouisAgent.Core.Pricing.Prices;
 using LouisAgent.Core.Pricing.Rates;
@@ -25,7 +26,7 @@ using LouisAgent.UsageProbe.Messages;
 // real provider, so with Anthropic this costs money (about $0.05 on Haiku 4.5 with the default prompt). --ledger only
 // reads the file and the price table (PRICES_URL / PRICES_FILE / config/prices.json).
 
-AgentHost.LoadEnvironment();
+HostEnvironment.Load();
 // Read before the line below makes it invariant: --host-culture writes this machine's culture (the Windows region's).
 System.Globalization.CultureInfo machineCulture = System.Globalization.CultureInfo.CurrentCulture;
 // The same numbers on every machine ($0.0546, 531,265), whatever its locale.
@@ -45,7 +46,7 @@ if (Array.IndexOf(args, "--ledger") is var ledgerArg and >= 0)
         return 2;
     }
 
-    PrintLedger(args[ledgerArg + 1], AgentHost.LoadPrices(AgentOptions.FromEnvironment()));
+    PrintLedger(args[ledgerArg + 1], PriceTableLoader.Load(AgentOptions.FromEnvironment()));
     return 0;
 }
 
@@ -57,7 +58,7 @@ if (Array.IndexOf(args, "--cache-gaps") is var gapsArg and >= 0)
         return 2;
     }
 
-    PrintCacheGaps(args[gapsArg + 1], AgentHost.LoadPrices(AgentOptions.FromEnvironment()));
+    PrintCacheGaps(args[gapsArg + 1], PriceTableLoader.Load(AgentOptions.FromEnvironment()));
     return 0;
 }
 
@@ -225,8 +226,8 @@ static int WriteHostCulture(string name)
     var agent = AgentOptions.FromEnvironment();
     agent.HostCulture = name;
     agent.DisplayCurrency = null;
-    PriceTable prices = AgentHost.LoadPrices(agent);
-    ExchangeRates rates = AgentHost.LoadRates(agent, prices.Currency);
+    PriceTable prices = PriceTableLoader.Load(agent);
+    ExchangeRates rates = ExchangeRatesLoader.Load(agent, prices.Currency);
     DisplayCurrency display = DisplayCurrency.Resolve(agent, prices.Currency, rates);
 
     Console.WriteLine(MessageText.Format(ProbeUserText.CultureFound, new { Name = name, Region = region.TwoLetterISORegionName, Code = region.ISOCurrencySymbol, Symbol = region.CurrencySymbol }));

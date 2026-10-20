@@ -3,9 +3,9 @@ using LouisAgent.Core.Config;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Providers;
 using Microsoft.Extensions.AI;
-using LouisAgent.Core.Hosting;
+using LouisAgent.Core.Hosting.Rider;
 
-namespace LouisAgent.Core.Tests.Hosting;
+namespace LouisAgent.Core.Tests.Hosting.Rider;
 
 public class RiderMcpToolDiscoveryTests
 {

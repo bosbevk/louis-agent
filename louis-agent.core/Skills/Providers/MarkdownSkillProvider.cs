@@ -4,7 +4,7 @@ using LouisAgent.Core.Skills;
 
 /// <summary>
 /// One markdown skill file: its text is the documentation, its <c>## Skill:</c> procedures the skills. Who the agent is
-/// and its routing come from <c>AgentHost.LoadSkills</c>, which composes the files; a provider reads only its own.
+/// and its routing come from <c>SkillLoader.Load</c>, which composes the files; a provider reads only its own.
 /// </summary>
 public class MarkdownSkillProvider : ISkillProvider
 {

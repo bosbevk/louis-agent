@@ -1,3 +1,4 @@
+using LouisAgent.Core.Hosting.Prompts;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Skills;
@@ -23,7 +24,7 @@ public class MinionRolesTests
     [Test]
     public void AMinionsPrompt_IsThePrinciples_TheBase_ThenItsRole_AndNoRouter()
     {
-        string docs = AgentHost.LoadSkills(new AgentOptions(), [], "testprod-minion-lookup", RoleLevel.Minion).Documentation;
+        string docs = SkillLoader.Load(new AgentOptions(), [], "testprod-minion-lookup", RoleLevel.Minion).Documentation;
 
         int principles = docs.IndexOf("# Principles", StringComparison.Ordinal);
         int @base = docs.IndexOf("You are a **minion**", StringComparison.Ordinal);
@@ -38,8 +39,8 @@ public class MinionRolesTests
     public void AMinion_AlwaysHasARole_AndTheBaseOrAnUnlistedFile_IsNoRole()
     {
         // A minion with no role would get the default voice: a coding agent's, with one tool. Refused instead.
-        Assert.Throws<RoleException>(() => AgentHost.LoadSkills(new AgentOptions(), [], null, RoleLevel.Minion));
-        var ex = Assert.Throws<RoleException>(() => AgentHost.LoadSkills(new AgentOptions(), [], "testprod-minion", RoleLevel.Minion))!;
+        Assert.Throws<RoleException>(() => SkillLoader.Load(new AgentOptions(), [], null, RoleLevel.Minion));
+        var ex = Assert.Throws<RoleException>(() => SkillLoader.Load(new AgentOptions(), [], "testprod-minion", RoleLevel.Minion))!;
         Assert.That(ex.Message, Does.Contain("testprod-minion'").And.EndWith("Available: testprod-minion-lookup."));
     }
 }

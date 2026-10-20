@@ -1,3 +1,4 @@
+using LouisAgent.Core.Hosting.Prompts;
 using LouisAgent.Core.Agent.Toolsets;
 using System.Text.Encodings.Web;
 using System.Text.Json;
@@ -48,7 +49,7 @@ public class ModelRequestSnapshotTests
         };
         // F5: an engine has only the toolsets it is given, so the snapshot names them all (and self-extension).
         var toolsets = TestPaths.Toolsets(options, ToolsetCatalog.All.Select(t => t.Name));
-        return new AgentEngine(AgentHost.LoadSkills(options), new FakeChatClient(), options, supportsTools, toolsets: toolsets, selfExtension: true)
+        return new AgentEngine(SkillLoader.Load(options), new FakeChatClient(), options, supportsTools, toolsets: toolsets, selfExtension: true)
         {
             SkillsDirectory = _skillsDir,
         };

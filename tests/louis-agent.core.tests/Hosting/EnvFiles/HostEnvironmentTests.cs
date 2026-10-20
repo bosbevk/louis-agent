@@ -1,11 +1,11 @@
-namespace LouisAgent.Core.Tests.Hosting;
+namespace LouisAgent.Core.Tests.Hosting.EnvFiles;
 
-using LouisAgent.Core.Hosting;
+using LouisAgent.Core.Hosting.EnvFiles;
 
 // LLM profiles: config/.env.{LLM_PROFILE} fills in what the shell, .env.secrets and .env left unset.
 // The fake config files use their own variable names, so the real LLM_* settings of other tests are never touched.
 [NonParallelizable]
-public class AgentHostEnvironmentTests
+public class HostEnvironmentTests
 {
     private const string Variable = "LOUIS_AGENT_TEST_MODEL";
     private string _repo = null!;
@@ -40,7 +40,7 @@ public class AgentHostEnvironmentTests
         Write(".env.ollama", $"{Variable}=qwen2.5-coder\n");
         Write(".env.anthropic", $"{Variable}=claude\n");
 
-        AgentHost.LoadEnvironment(_repo);
+        HostEnvironment.Load(_repo);
 
         Assert.That(Environment.GetEnvironmentVariable(Variable), Is.EqualTo("qwen2.5-coder"));
     }
@@ -51,7 +51,7 @@ public class AgentHostEnvironmentTests
         Write(".env", $"LLM_PROFILE=ollama\n{Variable}=pinned-in-dotenv\n");
         Write(".env.ollama", $"{Variable}=qwen2.5-coder\n");
 
-        AgentHost.LoadEnvironment(_repo);
+        HostEnvironment.Load(_repo);
 
         Assert.That(Environment.GetEnvironmentVariable(Variable), Is.EqualTo("pinned-in-dotenv"));
     }
@@ -65,7 +65,7 @@ public class AgentHostEnvironmentTests
         Write(".env.ollama", $"{Variable}=qwen2.5-coder\n");
         Write(".env.anthropic", $"{Variable}=claude\n");
 
-        AgentHost.LoadEnvironment(_repo);
+        HostEnvironment.Load(_repo);
 
         Assert.That(Environment.GetEnvironmentVariable(Variable), Is.EqualTo("qwen2.5-coder"));
     }
@@ -76,7 +76,7 @@ public class AgentHostEnvironmentTests
         Write(".env", "# no LLM_PROFILE\n");
         Write(".env.anthropic", $"{Variable}=claude\n");
 
-        AgentHost.LoadEnvironment(_repo);
+        HostEnvironment.Load(_repo);
 
         Assert.That(Environment.GetEnvironmentVariable(Variable), Is.Null);
     }
@@ -92,7 +92,7 @@ public class AgentHostEnvironmentTests
         Console.SetError(stderr);
         try
         {
-            AgentHost.LoadEnvironment(_repo);
+            HostEnvironment.Load(_repo);
         }
         finally
         {

@@ -1,6 +1,7 @@
-namespace LouisAgent.Core.Hosting;
+namespace LouisAgent.Core.Hosting.Rider;
 
 using LouisAgent.Core.Agent;
+using LouisAgent.Core.Config;
 using LouisAgent.Core.Protocols.Mcp;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
@@ -22,6 +23,36 @@ public sealed class RiderMcpToolDiscovery
     {
         _agentEngine = agentEngine;
         _client = new RiderMcpClient(endpoint ?? "http://127.0.0.1:64482", projectPath);
+    }
+
+    /// <summary>
+    /// Start-up's call (S, CL15, from AgentHost.Build): when RIDER_MCP_AUTO_DISCOVER is on and an endpoint is set, discovers
+    /// and registers in the background, so a host never waits for Rider; else logs that it's off.
+    /// </summary>
+    public static void StartInBackground(AgentEngine engine, AgentOptions agent)
+    {
+        if (agent.RiderMcpAutoDiscover && !string.IsNullOrWhiteSpace(agent.RiderMcpEndpoint))
+        {
+            Log.Log(LogLevel.Information, LogMessage.McpDiscoveryStarting, new { Endpoint = agent.RiderMcpEndpoint });
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    // Use explicit project path if set (for Docker), otherwise use workspace root
+                    var projectPath = agent.RiderMcpProjectPath ?? agent.WorkspaceRoot;
+                    var discovery = new RiderMcpToolDiscovery(engine, agent.RiderMcpEndpoint, projectPath);
+                    await discovery.DiscoverAndRegisterAsync(throwOnError: false);
+                }
+                catch (Exception ex)
+                {
+                    Log.Log(LogLevel.Warning, LogMessage.McpStartupFailed, new { Error = ex.ToString() }, tag: "MCP");
+                }
+            });
+        }
+        else
+        {
+            Log.Log(LogLevel.Information, LogMessage.McpDiscoveryDisabled);
+        }
     }
 
     /// <summary>
