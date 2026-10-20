@@ -92,7 +92,10 @@ The ACP server's first tests (S, CL15). `AcpTranscriptTests` plays a recorded Ri
 the scripted model answers with a thought, a tool call and a reply) through `ScriptedConsole`, Rider's side of the pipe,
 and pins everything the server wrote to stdout, and the prompt the model received, to `AcpTranscript.json` (session and
 message ids numbered, the temp folder named; `LOUIS_UPDATE_GOLDEN=1` regenerates it). It is the proof the split of
-`AcpServer` by responsibility changes nothing the client sees.
+`AcpServer` by responsibility changed nothing the client sees. The pure parts have their own tests, by folder as the
+source: `ToolCards` (a card's kind, the preview cut), `PromptBuilder` (text, an embedded resource, an attached file read
+and capped, the open file left out, an unmounted one reported), `ContainerPaths` (a mapping, a root searched by the last
+path parts, the drive letter), `GitRoots` and `JsonRpcWriter`.
 
 ## What isn't covered yet
 

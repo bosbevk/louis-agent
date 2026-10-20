@@ -52,12 +52,17 @@ sequenceDiagram
 | File | What's in it |
 |---|---|
 | `Program.cs` | `AgentHost.Build()` and `new AcpServer(engine).RunAsync()` |
-| `AcpServer.cs` | The message loop, request handlers, prompt building, streaming to `session/update`, path mapping, cancellation; its reader and writer are constructor arguments (stdin and stdout in Rider, a script and a buffer in the transcript test) |
+| `AcpServer.cs` | The message loop and the dispatch (S, CL15: the flow only); its reader and writer are constructor arguments (stdin and stdout in Rider, a script and a buffer in the transcript test) |
+| `Protocol/` | `JsonRpcWriter` (one JSON-RPC message per line on stdout, under a lock), `AcpCapabilities` (the `initialize` reply) |
+| `Prompting/PromptBuilder.cs` | The model's prompt from the content blocks: text, embedded resources, attached files read and capped, the file open in the IDE left out |
+| `Paths/` | `ContainerPaths` (a Windows path from the IDE as the file in the container: `ACP_MOUNT_MAPPINGS`, the mount roots, the drive letter), `GitRoots` (the repository the active file is in) |
+| `Turns/` | `PromptHandler` (one prompt's turn: the git root, a command or the model, the usage scope, the stop reason), `TurnRelay` (thinking, text and tool cards as `session/update`), `ToolCards` (a card's kind and output preview), `AcpSession` |
 
 ## Tests
 
 `tests/louis-agent.acp-server.tests`: `AcpTranscriptTests` pins what the server writes for a recorded conversation to
-`AcpTranscript.json`, with the prompt the model received ([tests](tests.md#louis-agent.acp-server.tests)).
+`AcpTranscript.json`, with the prompt the model received; the pure parts have their own tests (`ToolCards`, `PromptBuilder`,
+`ContainerPaths`, `GitRoots`, `JsonRpcWriter`) ([tests](tests.md#louis-agent.acp-server.tests)).
 
 ## Configuration
 

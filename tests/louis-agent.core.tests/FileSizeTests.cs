@@ -30,7 +30,6 @@ public class FileSizeTests
         "louis-agent.core/Tools/Shell/PythonTools.cs",
         "louis-agent.core/Tools/Web/Browsing/ChromeWebBrowser.cs",
         "packs/louis-agent.pack.shops/Providers/CheckersCatalogue.cs",
-        "src/louis-agent.acp-server/AcpServer.cs",
         "src/louis-agent.api/Benchmarks/Store/BenchmarkRecorder.cs",
         "src/louis-agent.api/Benchmarks/Store/MongoBenchmarkStore.cs",
         "src/louis-agent.api/Endpoints/AdminEndpoints.cs",
