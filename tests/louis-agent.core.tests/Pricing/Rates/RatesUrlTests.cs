@@ -1,6 +1,7 @@
 using LouisAgent.Core.Pricing.Rates;
 using System.Net;
 using LouisAgent.Core.Config;
+using LouisAgent.Core.Pricing.Rates.Mappers;
 
 namespace LouisAgent.Core.Tests.Pricing.Rates;
 

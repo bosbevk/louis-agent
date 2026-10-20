@@ -3,6 +3,7 @@ namespace LouisAgent.Core.Tools.Web.Browsing;
 using System.Net;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Tools.Web.Browsing.Policy;
 using Microsoft.Extensions.Logging;
 using PuppeteerSharp;
 

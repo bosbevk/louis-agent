@@ -2,7 +2,7 @@ using LouisAgent.Core.Llm.Caching;
 using LouisAgent.Core.Config;
 using Microsoft.Extensions.AI;
 using LouisAgent.Core.Llm;
-using LouisAgent.Core.Llm.AnthropicProvider;
+using LouisAgent.Core.Llm.Providers.AnthropicProvider;
 
 namespace LouisAgent.Core.Tests.Llm.Caching;
 

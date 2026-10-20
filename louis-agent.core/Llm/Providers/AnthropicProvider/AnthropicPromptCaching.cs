@@ -1,4 +1,4 @@
-namespace LouisAgent.Core.Llm.AnthropicProvider;
+namespace LouisAgent.Core.Llm.Providers.AnthropicProvider;
 
 using LouisAgent.Core.Llm.Caching;
 using Anthropic.Models.Messages;

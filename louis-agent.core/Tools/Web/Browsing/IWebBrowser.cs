@@ -1,5 +1,7 @@
 namespace LouisAgent.Core.Tools.Web.Browsing;
 
+using LouisAgent.Core.Tools.Web.Browsing.Policy;
+
 /// <summary>
 /// The guarded headless browser (F33 step 1, from F32's renderer): every user of a browser goes through it, so its
 /// guards live in one place. A visit loads a page with every request it makes put to <see cref="RenderPolicy"/> and no

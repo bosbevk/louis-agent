@@ -7,7 +7,7 @@ using LouisAgent.Core.Config;
 using LouisAgent.Core.Agent;
 using Microsoft.Extensions.AI;
 using LouisAgent.Core.Llm;
-using LouisAgent.Core.Llm.AnthropicProvider;
+using LouisAgent.Core.Llm.Providers.AnthropicProvider;
 using LouisAgent.Core.Hosting;
 
 namespace LouisAgent.Core.Tests.Usage.Sinks;

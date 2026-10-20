@@ -1,4 +1,4 @@
-namespace LouisAgent.Core.Pricing.Rates;
+namespace LouisAgent.Core.Pricing.Rates.Mappers;
 
 using System.Globalization;
 using LouisAgent.Core.Messages;

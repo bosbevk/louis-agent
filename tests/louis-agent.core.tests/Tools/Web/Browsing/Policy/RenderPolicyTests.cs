@@ -1,8 +1,8 @@
 using System.Net;
-using LouisAgent.Core.Tools.Web.Browsing;
+using LouisAgent.Core.Tools.Web.Browsing.Policy;
 using PuppeteerSharp;
 
-namespace LouisAgent.Core.Tests.Tools.Web.Browsing;
+namespace LouisAgent.Core.Tests.Tools.Web.Browsing.Policy;
 
 // F32 step 2: a browser follows redirects and loads scripts, data and frames on its own, so checking the first URL (as
 // ReadRenderedPage does before it hands a page on) isn't enough. Every request the page makes goes through RenderPolicy:

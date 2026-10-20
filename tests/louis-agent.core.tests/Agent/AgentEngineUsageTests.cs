@@ -6,7 +6,7 @@ using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Providers;
 using LouisAgent.Core.Agent;
 using Microsoft.Extensions.AI;
-using LouisAgent.Core.Llm.AnthropicProvider;
+using LouisAgent.Core.Llm.Providers.AnthropicProvider;
 
 namespace LouisAgent.Core.Tests.Agent;
 

@@ -4,6 +4,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Pricing.Rates.Mappers;
 
 /// <summary>
 /// Exchange rates for showing costs in another currency (F14), in louis-agent's own <c>rates.json</c> format, the only

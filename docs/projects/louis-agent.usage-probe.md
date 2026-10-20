@@ -71,7 +71,7 @@ override `config/.env`.
 
 For a new provider, run it and compare the `ledger:` lines with the raw counts. If the provider reports something the
 standard mapping misreads (cache writes under its own key, input that excludes cached tokens), add a mapper next to
-`AnthropicUsageMapper` in `louis-agent.core/Llm/AnthropicProvider/`, pick it in `LlmClientFactory.CreateUsageMapper`, and
+`AnthropicUsageMapper` in `louis-agent.core/Llm/Providers/AnthropicProvider/`, pick it in `LlmClientFactory.CreateUsageMapper`, and
 record the findings in the optimisation spec next to *What the Anthropic adapter reports*.
 
 ## Tests

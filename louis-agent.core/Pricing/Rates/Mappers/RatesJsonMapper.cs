@@ -1,4 +1,4 @@
-namespace LouisAgent.Core.Pricing.Rates;
+namespace LouisAgent.Core.Pricing.Rates.Mappers;
 
 /// <summary>Our own format, passed through: for a host reading another louis-agent's <c>GET /rates</c>.</summary>
 public sealed class RatesJsonMapper : IRatesMapper

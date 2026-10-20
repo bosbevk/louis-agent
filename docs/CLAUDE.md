@@ -133,7 +133,7 @@ decision's record (its context, and what it cost) in [docs/adr/](adr/README.md).
   lines (a test file 400). Split a bigger class by responsibility: group its methods by the fields they use and the
   reason they would change, and give each group its own class named for what it does (`PaymoClient`, `DiffFormatter`);
   the original keeps only the flow and calls them, pure logic gets its own tests, I/O stays at the edge. A `partial`
-  class (other than a code-behind), `#region`, or a `Helpers`/`Utils`/`Manager` grab-bag hides the size instead of
+  class (other than a code-behind, or one the `[GeneratedRegex]` generator requires), `#region`, or a `Helpers`/`Utils`/`Manager` grab-bag hides the size instead of
   splitting it.
   Why: [ADR 0010](adr/0010-folders-by-concern.md).
 - **Namespace = folder path, dependencies one way, prompts in markdown, hosts stay thin** — `ArchitectureTests`
