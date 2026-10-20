@@ -800,7 +800,8 @@ sequenceDiagram
   the renderer's handler numbers normalised). First: `ChatRunner` shared by both chat pages, test first; the shared
   `MessageList`, `Composer`, `ChatUsageBar` and `Notice`; Puls's chat page in components (`Components/Chat/Sidebar/`,
   `Header/`, `EmptyChat`, `Toast`, `ComposerTools`, the turn actions), its layout about a hundred lines and its handlers
-  in a code-behind. Then the landing page in sections, then the code-review chat page.
+  in a code-behind. Then the landing page in sections (`Components/Landing/`, one `MiniChat` with parameters for
+  the six hand-written demo panels), then the code-review chat page.
 - **Two fixes before the PR** (Louis, review of W2's first commit, 2026-10-20): the snapshot rule no longer collapses the
   whitespace between tags, since a space there can be seen (the line breaks beside tags still go); the shared library's
   `Chat/` folder is `Chats/`, so no namespace is named like the `Chat` type.

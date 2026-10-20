@@ -1,0 +1,35 @@
+@* Pryse: no subscription, the cost under every answer (with three examples that count up), credits to come. *@
+<section class="section" id="pryse">
+    <span class="eyebrow reveal">Pryse</span>
+    <h2 class="reveal" data-delay="1">Betaal soos jy gebruik</h2>
+    <p class="sub reveal" data-delay="2">Geen intekening nie. Elke vraag se koste staan onder sy antwoord, spesialiste ingesluit.</p>
+    <div class="pricing">
+        <div class="card feature reveal">
+            <span class="feature-icon i-coin" aria-hidden="true"></span>
+            <h3>Geen intekening nie</h3>
+            <p>Geen maandfooi en geen planne nie: jy betaal net vir die vrae wat jy vra.</p>
+        </div>
+        <div class="card feature reveal" data-delay="1">
+            <span class="feature-icon i-pulse" aria-hidden="true"></span>
+            <h3>Sien wat elke vraag kos</h3>
+            <p>Onder elke antwoord, en vir elke spesialis wat gehelp het, in rand.</p>
+            @foreach (var (question, cost) in Examples)
+            {
+                <div class="example"><span>@question</span><strong class="counter" data-to="@cost" data-fmt="rand">R0,00</strong></div>
+            }
+        </div>
+        <div class="card feature reveal" data-delay="2">
+            <span class="feature-icon i-chart" aria-hidden="true"></span>
+            <h3>Krediete wanneer jy wil</h3>
+            <p>Koop krediete en gebruik dit soos jy vra; jou gebruik vir die maand is altyd een klik weg. (Kom binnekort.)</p>
+        </div>
+    </div>
+</section>
+
+@code {
+    // What a question cost, as the price card's examples (rand).
+    private static readonly (string Question, string Cost)[] Examples =
+    [
+        ("Wat is nuut in .NET 10?", "0.47"), ("Som die README op", "0.09"), ("Laaste drie commits", "0.12"),
+    ];
+}

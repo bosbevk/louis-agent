@@ -1,0 +1,53 @@
+@* In the app, pinned: the block is two screens tall and its inside sticks, so scrolling through it moves from chip
+   to chip and the frame's screen changes with them; a click scrolls to that chip's part (js/landing.js pinned()). *@
+<section class="section" id="indie">
+    <span class="eyebrow reveal">In die app</span>
+    <h2 class="reveal" data-delay="1">Alles in een stil app</h2>
+    <p class="sub reveal" data-delay="2">Soek, lees, kyk na die geskiedenis en sien die koste: so lyk dit in die app.</p>
+    <div class="pin" id="pin">
+        <div class="pin-inner">
+            <div class="pin-text">
+                <div class="chips" id="chips">
+                    @foreach (var (icon, label, title, text) in Tour)
+                    {
+                        <button type="button" data-title="@title" data-text="@text" aria-pressed="false"><span class="ic i-@icon" aria-hidden="true"></span>@label</button>
+                    }
+                </div>
+                <h3 id="pin-title" aria-live="polite">@Tour[0].Title</h3>
+                <p id="pin-text">@Tour[0].Text</p>
+            </div>
+            <div class="pin-frame" id="pin-frame" aria-hidden="true">
+                <MiniChat Question="Wat is die nuutste weergawe van .NET?" Toolset="web" Sources="@(new[] { "learn.microsoft.com", "github.com/dotnet/core" })" Usage="beurt: 6 versoeke · R0,07">
+                    <div class="answer">Die nuutste <b>stabiele</b> weergawe is <b>.NET 10.0.13</b>, 'n LTS-vrystelling van 13 Oktober 2026.</div>
+                </MiniChat>
+                <MiniChat Attachment="verslag.pdf · 12 bladsye" Question="Som die verslag op in drie punte." Toolset="files" Usage="beurt: 3 versoeke · R0,03">
+                    <ul class="work-steps"><li class="work-step"><span class="work-step-mark">✓</span><span class="work-step-name">ReadDocument</span><span class="work-step-args">verslag.pdf</span></li></ul>
+                    <div class="answer"><b>1.</b> Inkomste het 12% gegroei. <b>2.</b> Koste is gelyk gehou. <b>3.</b> Die tweede helfte lyk sterker.</div>
+                </MiniChat>
+                <MiniChat Question="Wat het die laaste drie commits verander?" Toolset="git" Usage="beurt: 4 versoeke · R0,04">
+                    <div class="commit"><code>d577822</code><span>fix(fx15): die toets noem die tariewe-lêer self</span><small>14 Okt</small></div>
+                    <div class="commit"><code>36e63d8</code><span>fix(f5): die afvaardigingstoets slaan opsomrye oor</span><small>14 Okt</small></div>
+                    <div class="commit"><code>9b600ca</code><span>docs(f5): die gebruik rol op in die ouergesprek</span><small>14 Okt</small></div>
+                </MiniChat>
+                <MiniChat Usage="Koop krediete wanneer jy wil. (Kom binnekort.)">
+                    <div class="meter"><span class="ic i-coin" aria-hidden="true"></span>R0,06 <small>hierdie gesprek</small></div>
+                    <div class="cost-row"><span>Puls self</span><strong>R0,01 · 2 versoeke</strong></div>
+                    <div class="cost-row"><span>Spesialis (web)</span><strong>R0,05 · 4 versoeke</strong></div>
+                    <div class="cost-row"><span>Hierdie maand</span><strong>R3,42 · 48 vrae</strong></div>
+                    <div class="bars bars-fill">@foreach (var h in LandingBars.Heights) { <i style="--h:@(h)%"></i> }</div>
+                </MiniChat>
+            </div>
+        </div>
+    </div>
+</section>
+
+@code {
+    // The pinned tour's chips, in the order of its panels.
+    private static readonly (string Icon, string Label, string Title, string Text)[] Tour =
+    [
+        ("search", "Soek", "Soek aanlyn", "Die spesialis soek, lees die bladsye self en gee die bronne by die antwoord."),
+        ("file", "Lees", "Lees lêers", "Heg 'n PDF, 'n Word-dokument of 'n sigblad aan; die spesialis lees dit en som dit op."),
+        ("clock", "Geskiedenis", "Kyk na die geskiedenis", "Wat het verander, wie het dit gedoen en waarom: uit die repository se geskiedenis."),
+        ("coin", "Koste", "Koste sigbaar", "Elke vraag se koste, spesialiste ingesluit, en jou gebruik vir die maand, in rand."),
+    ];
+}

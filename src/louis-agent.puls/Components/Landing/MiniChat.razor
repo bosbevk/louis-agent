@@ -1,0 +1,60 @@
+@* A little picture of the app for the landing page (F20, F24): a question, a delegation card, the body a section gives
+   it (an answer, steps, commits, lines, a cost sheet), its sources and what it cost. The pieces use the app's own
+   classes (user-message, delegation, work-steps, usage), so the picture looks exactly like the app it stands for.
+   One component replaces the six panels the page once wrote by hand. *@
+<div class="@Class">
+    @if (Attachment is not null)
+    {
+        <span class="toolset-chip attach">@Attachment</span>
+    }
+    @if (Question is not null)
+    {
+        <div class="user-message"><div class="user-text">@Question</div></div>
+    }
+    @if (Toolset is not null)
+    {
+        <div class="delegation@(Running ? " running" : "")"><div class="delegation-head"><span class="delegation-avatar"></span><div class="delegation-title">@if (Compact) { <span class="delegation-agent"><strong>puls</strong> · <span class="toolset-chip">@Toolset</span></span> } else { <span class="delegation-agent">Oorgedra aan <strong>puls</strong></span><div class="delegation-toolsets"><span class="toolset-chip">@Toolset</span></div> }</div><span class="delegation-status">@(Running ? "Besig" : "Klaar")</span></div></div>
+    }
+    @ChildContent
+    @if (Sources is { Length: > 0 })
+    {
+        <div class="srcs">@for (int i = 0; i < Sources.Length; i++) { <span><i>@(i + 1)</i>@Sources[i]</span> }</div>
+    }
+    @if (Usage is not null)
+    {
+        @if (UsageInline)
+        {
+            <span class="usage">@Usage</span>
+        }
+        else
+        {
+            <div class="usage">@Usage</div>
+        }
+    }
+</div>
+
+@code {
+    /// <summary>The frame's class: <c>mini</c> on a card's stage, <c>panel</c> in the pinned tour.</summary>
+    [Parameter] public string Class { get; set; } = "panel";
+
+    /// <summary>A chip above the question for a file the user attached ("verslag.pdf · 12 bladsye").</summary>
+    [Parameter] public string? Attachment { get; set; }
+    [Parameter] public string? Question { get; set; }
+
+    /// <summary>The toolset the delegation card shows; none, no card.</summary>
+    [Parameter] public string? Toolset { get; set; }
+
+    /// <summary>Still working: the card says Besig instead of Klaar.</summary>
+    [Parameter] public bool Running { get; set; }
+
+    /// <summary>The card's short head ("puls · web"), as the third step of Hoe dit werk draws it.</summary>
+    [Parameter] public bool Compact { get; set; }
+
+    /// <summary>What the specialist gave: the answer, its steps, the commits, or a cost sheet.</summary>
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string[]? Sources { get; set; }
+    [Parameter] public string? Usage { get; set; }
+
+    /// <summary>The usage as a span (a stage's line) rather than a block (a panel's).</summary>
+    [Parameter] public bool UsageInline { get; set; }
+}

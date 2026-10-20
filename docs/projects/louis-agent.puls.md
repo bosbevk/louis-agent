@@ -39,7 +39,8 @@ as you go: every answer shows what it cost, specialists included.
 
 | Path | What |
 |---|---|
-| `Pages/LandingPage.razor` | The landing page (F20, moving since F24): hero, the app playing a turn, Hoe dit werk, the pinned *In die app* tour, the Kenmerke bento and marquees, Syfers, Pryse, Oor ons, the Vrae accordion; its copy as C# arrays |
+| `Pages/LandingPage.razor` | The landing page (F20, moving since F24): the water, the progress line and the section index, then the sections in order, and the JS start and stop |
+| `Components/Landing/` | One component per section (W2): `LandingNav`, `Hero`, `Showcase`, `HowItWorks`, `InsideTheApp` (the pinned tour), `Features` (the Kenmerke bento and marquees), `Numbers` (Syfers), `Pricing`, `About`, `Faq` (the accordion), `CallToAction`, `LandingFooter`; a section's copy is a C# array in its own file. `MiniChat` is the little picture of the app the stages and the tour show (a question, a delegation card, the body, sources, usage), six panels from one component; `LandingBars` the example bar heights two sections share |
 | `Components/Landing/LandingDemo.razor` | The app's three panels in the landing page, playing three scripted turns (example data in `data-turns`, played by `landing.js`) |
 | `Components/Brand/` | `PulsLogo` (the ripple logo inline, its rings glow outward), `PulsTile` (the app icon), `PulsMark` (the mark's geometry), `Water` (the four swells behind the landing page and an empty chat) |
 | `Pages/ChatPage.razor`, `ChatPage.razor.cs` | The shell, the layout only since W2: sidebar, top bar, the chat (the shared `MessageList` and `Composer`), Verken and Studio views, the Werk panel; its own state and handlers in the code-behind, a turn's life in the shared `ChatRunner` |
