@@ -69,7 +69,20 @@ step 4 the last, and step 5 extended the same rule from the model-visible text t
 with a test that lists each line it finds. Made-up names (`acme`, `{product}`) replaced the real ones, because an
 example that names a product is a product dependency a grep can't tell from a real one.
 
-## What was learned
+## Rules a person can maintain
+
+Halfway through the build Louis stopped a review: "AI likes big files", and he has to keep this code himself. Two rules
+came out of it ([ADR 0034](../adr/0034-code-a-person-can-maintain.md)): a `.razor` holds markup only, and a file holds
+at most 200 lines (a test file 400). Both arrived on a codebase that broke them 38 and 45 times, so each became a
+ratchet like the one above: `FileSizeTests` and `RazorHasNoCodeTests` fail on a new offender *and* on a listed file
+that no longer offends, so the lists (33 and 5 at the merge) can only shrink. A rule in `docs/CLAUDE.md` tells a
+session what to do; the test is what stops the session that forgot.
+
+The splits were refactors, so their proof was the same as the cut's: the goldens and snapshots stayed byte-equal across
+every commit. One host had no golden. The ACP server was about to move into eight classes, so it was pinned first with
+a transcript test (`AcpTranscriptTests`), and only then moved. *Test first for a refactor* means that: the test that
+proves nothing changed, written before the change.
+
 
 - **Fakes are a dependency.** Three test projects referencing `core.tests` for `FakeChatClient` and `StubHandler` made
   core's tests a library by accident, with `InternalsVisibleTo` as the seam. A class library of fakes, referenced as a
@@ -84,6 +97,9 @@ example that names a product is a product dependency a grep can't tell from a re
   configuration error, not a missing setting.
 - **Measure, then stop.** One paid run for the phase, on the finished branch, and a diff review for every step. The
   goldens made the steps free to prove; the run's one surprise was read from its stored events, not re-run.
+- **Read a surprise against the baseline before blaming the change.** The run's `wrong_store` rows looked like a
+  regression from the cut. Its stored events, set beside the two runs on main, showed the same rows in every run, all
+  from Puls answering alone in `puls-tools` mode: an old bug, now a TODO line, and no behaviour the cut changed.
 
 ---
 [Learning write-ups](README.md) · [Goal](../GOAL.md) · [Plan](../plans/CL15-engine-identities-packs.md) ·
