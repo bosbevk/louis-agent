@@ -1,4 +1,4 @@
-using LouisAgent.Web.Shared.Chat;
+using LouisAgent.Web.Shared.Chats;
 using LouisAgent.Web.Shared.Components;
 using LouisAgent.Web.Shared.Text;
 using Microsoft.Extensions.DependencyInjection;

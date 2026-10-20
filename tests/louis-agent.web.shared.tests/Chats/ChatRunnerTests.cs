@@ -1,12 +1,12 @@
 using System.Net;
 using LouisAgent.Web.Shared.Api;
-using LouisAgent.Web.Shared.Chat;
+using LouisAgent.Web.Shared.Chats;
 using LouisAgent.Web.Shared.Storage;
 using LouisAgent.Web.Shared.Text;
 using Microsoft.AspNetCore.Components.Forms;
-using ChatModel = LouisAgent.Web.Shared.Chat.Chat;
+using ChatModel = LouisAgent.Web.Shared.Chats.Chat;
 
-namespace LouisAgent.Web.Shared.Tests.Chat;
+namespace LouisAgent.Web.Shared.Tests.Chats;
 
 // W2: a turn's life, lifted out of the two chat pages into ChatRunner, pinned from what the pages did: a message opens
 // a session and streams through TurnStream; the redraw is raised at most every 50 ms on a clock the test holds; stop

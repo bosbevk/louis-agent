@@ -1,6 +1,6 @@
 namespace LouisAgent.Web.Shared.Text;
 
-using LouisAgent.Web.Shared.Chat;
+using LouisAgent.Web.Shared.Chats;
 
 /// <summary>
 /// The words the shared chat components show (TurnView, BlocksView, DelegationCard, CurrencySwitcher), so each app can

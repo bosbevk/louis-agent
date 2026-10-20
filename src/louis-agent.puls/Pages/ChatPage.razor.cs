@@ -1,6 +1,6 @@
 using LouisAgent.Puls.Content;
 using LouisAgent.Web.Shared.Api;
-using LouisAgent.Web.Shared.Chat;
+using LouisAgent.Web.Shared.Chats;
 using LouisAgent.Web.Shared.Storage;
 using LouisAgent.Web.Shared.Text;
 using LouisAgent.Web.Shared.Usage;
@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
-using ChatModel = LouisAgent.Web.Shared.Chat.Chat;
+using ChatModel = LouisAgent.Web.Shared.Chats.Chat;
 
 namespace LouisAgent.Puls.Pages;
 

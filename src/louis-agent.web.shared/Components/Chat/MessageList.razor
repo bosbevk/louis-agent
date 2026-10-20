@@ -1,7 +1,7 @@
 @* The chat's turns, or what an app shows instead: its own content (Puls's Verken and Studio views) when given, else
    the empty slot while the chat has no turn, else one TurnView per turn. Scrolled to the end through JS when the chat
    changes, a turn starts or the list comes back into view, as the pages did. *@
-@using ChatModel = LouisAgent.Web.Shared.Chat.Chat
+@using ChatModel = LouisAgent.Web.Shared.Chats.Chat
 @inject IJSRuntime JS
 
 <div class="@("messages" + (Class is null ? "" : " " + Class))" @ref="_messages">

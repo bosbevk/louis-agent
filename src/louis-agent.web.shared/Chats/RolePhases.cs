@@ -1,4 +1,4 @@
-namespace LouisAgent.Web.Shared.Chat;
+namespace LouisAgent.Web.Shared.Chats;
 
 /// <summary>
 /// What a specialist's role is doing, in an app's words (F34): <see cref="Gathering"/> while it searches, until it has

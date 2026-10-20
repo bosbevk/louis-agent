@@ -1,4 +1,4 @@
-using LouisAgent.Web.Shared.Chat;
+using LouisAgent.Web.Shared.Chats;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using LouisAgent.Web.Shared;

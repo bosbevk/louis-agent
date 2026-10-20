@@ -1,7 +1,7 @@
-using LouisAgent.Web.Shared.Chat;
+using LouisAgent.Web.Shared.Chats;
 using LouisAgent.Web.Shared.Text;
 
-namespace LouisAgent.Web.Shared.Tests.Chat;
+namespace LouisAgent.Web.Shared.Tests.Chats;
 
 // T1: the line under a running turn (F34): a role's phases while its specialist works ("Soek bestanddele", then "Bou
 // resep" for Puls's cook), else the app's plain "busy".

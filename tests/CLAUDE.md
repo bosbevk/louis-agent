@@ -72,7 +72,7 @@ LOUIS_UPDATE_GOLDEN=1 dotnet test tests/louis-agent.web.tests
 A mismatch writes what was rendered to `louis-agent-snapshots/` under the temp folder, so the diff can be read. The
 snapshots normalise what isn't the component's doing (per-instance SVG ids, `@ref` element references, the renderer's
 event-handler numbers, a thinking block's seconds, and the line breaks and indentation beside tags, so a page split into
-components keeps its golden) and run with the invariant culture, so they never depend on the machine.
+components keeps its golden; a space between tags stays, since it can be seen) and run with the invariant culture, so they never depend on the machine.
 
 ## Writing tests
 

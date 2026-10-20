@@ -3,7 +3,7 @@ using Microsoft.JSInterop;
 
 namespace LouisAgent.Web.Shared.Storage;
 
-using LouisAgent.Web.Shared.Chat;
+using LouisAgent.Web.Shared.Chats;
 
 /// <summary>Chats and settings saved in the browser's localStorage, so a reload keeps the conversation.</summary>
 public sealed class ChatStore(IJSRuntime js, ChatSettings settings)

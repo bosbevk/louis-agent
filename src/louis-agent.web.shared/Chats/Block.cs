@@ -1,4 +1,4 @@
-namespace LouisAgent.Web.Shared.Chat;
+namespace LouisAgent.Web.Shared.Chats;
 
 /// <summary>A piece of the answer: thinking, text, or a tool call with its result.</summary>
 public sealed class Block

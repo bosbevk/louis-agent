@@ -1,9 +1,9 @@
 using System.Text.Json;
 using LouisAgent.Web.Shared.Api;
-using LouisAgent.Web.Shared.Chat;
+using LouisAgent.Web.Shared.Chats;
 using LouisAgent.Web.Shared.Usage;
 
-namespace LouisAgent.Web.Shared.Tests.Chat;
+namespace LouisAgent.Web.Shared.Tests.Chats;
 
 // F31 step 7a: one recorded Puls turn (benchmarks/fixtures/session-stream.sse) is the contract between the session
 // stream's readers. The Python harness (benchmarks/puls_check/stream.py) is held to the counts in

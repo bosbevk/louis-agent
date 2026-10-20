@@ -1,3 +1,3 @@
-namespace LouisAgent.Web.Shared.Chat;
+namespace LouisAgent.Web.Shared.Chats;
 
 public enum BlockKind { Thinking, Text, Tool }

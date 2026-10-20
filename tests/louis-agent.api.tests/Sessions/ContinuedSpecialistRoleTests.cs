@@ -1,5 +1,5 @@
 using LouisAgent.Web.Shared.Api;
-using LouisAgent.Web.Shared.Chat;
+using LouisAgent.Web.Shared.Chats;
 using LouisAgent.Web.Shared.Text;
 using ClaudeStyleStream = LouisAgent.Api.Sessions.ClaudeStyleStream;
 using System.Text.Json;

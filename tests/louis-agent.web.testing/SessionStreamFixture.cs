@@ -2,7 +2,7 @@ using System.Net.ServerSentEvents;
 using System.Text.Json;
 using LouisAgent.Testing;
 using LouisAgent.Web.Shared.Api;
-using LouisAgent.Web.Shared.Chat;
+using LouisAgent.Web.Shared.Chats;
 
 namespace LouisAgent.Web.Testing;
 

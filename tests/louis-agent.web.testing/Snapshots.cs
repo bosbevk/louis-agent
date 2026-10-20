@@ -9,7 +9,7 @@ namespace LouisAgent.Web.Testing;
 /// texts are pinned (tests/CLAUDE.md, golden files): <c>LOUIS_UPDATE_GOLDEN=1</c> writes it, any other run compares,
 /// and a mismatch leaves what was rendered under the temp folder's <c>louis-agent-snapshots/</c> so the diff can be
 /// read. Normalised, since none is the component's doing: per-instance SVG ids, <c>@ref</c> element references, the
-/// renderer's event-handler numbers, the seconds a thinking block took, and the whitespace between tags (a page split
+/// renderer's event-handler numbers, the seconds a thinking block took, and the line breaks beside tags (a page split
 /// into components keeps its markup but not its indentation).
 /// </summary>
 public static partial class Snapshots
@@ -22,7 +22,6 @@ public static partial class Snapshots
         text = ThoughtFor().Replace(text, "$1Ns");
         text = EventHandlers().Replace(text, "$1=\"N\"");
         text = LineBreaksAtTags().Replace(text, "");
-        text = BetweenTags().Replace(text, "><");
         return text.TrimEnd() + "\n";
     }
 
@@ -64,8 +63,4 @@ public static partial class Snapshots
     /// <summary>A line break and its indentation next to a tag, inside text: indentation, not markup.</summary>
     [GeneratedRegex(@"\s*\n\s*(?=<)|(?<=>)\s*\n\s*")]
     private static partial Regex LineBreaksAtTags();
-
-    /// <summary>Whitespace-only text between tags: indentation, not markup.</summary>
-    [GeneratedRegex(@">\s+<")]
-    private static partial Regex BetweenTags();
 }

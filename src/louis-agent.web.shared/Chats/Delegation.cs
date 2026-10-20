@@ -1,7 +1,7 @@
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
-namespace LouisAgent.Web.Shared.Chat;
+namespace LouisAgent.Web.Shared.Chats;
 
 /// <summary>
 /// A <c>StartSubSession</c> or <c>ContinueSubSession</c> call read from its block (F5, F26): the specialist, its role,

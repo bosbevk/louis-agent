@@ -1,6 +1,6 @@
-using LouisAgent.Web.Shared.Chat;
+using LouisAgent.Web.Shared.Chats;
 
-namespace LouisAgent.Web.Shared.Tests.Chat;
+namespace LouisAgent.Web.Shared.Tests.Chats;
 
 // T1: what a delegation card reads from its block (F5, F26, F30): the states it goes through, from the call that
 // opened it to the footer the tool appends when it returns.

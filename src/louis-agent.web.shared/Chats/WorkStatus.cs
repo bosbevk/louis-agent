@@ -1,4 +1,4 @@
-namespace LouisAgent.Web.Shared.Chat;
+namespace LouisAgent.Web.Shared.Chats;
 
 using LouisAgent.Web.Shared.Text;
 

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Http;
 
 namespace LouisAgent.Web.Shared.Api;
 
-using LouisAgent.Web.Shared.Chat;
+using LouisAgent.Web.Shared.Chats;
 using LouisAgent.Web.Shared.Usage;
 using LouisAgent.Web.Shared.Storage;
 
