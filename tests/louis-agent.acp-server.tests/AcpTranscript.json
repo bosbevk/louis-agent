@@ -1,0 +1,143 @@
+{
+  "client": [
+    {
+      "jsonrpc": "2.0",
+      "id": null,
+      "error": {
+        "code": -32700,
+        "message": "Parse error: 'not json at all' is an invalid JSON literal. Expected the literal 'null'. LineNumber: 0 | BytePositionInLine: 1."
+      }
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "error": {
+        "code": -32601,
+        "message": "Method not found: session/nothing"
+      }
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "result": {
+        "protocolVersion": 1,
+        "agentCapabilities": {
+          "loadSession": false,
+          "promptCapabilities": {
+            "image": false,
+            "audio": false,
+            "embeddedContext": true
+          },
+          "mcpCapabilities": {
+            "http": false,
+            "sse": false
+          },
+          "sessionCapabilities": {}
+        },
+        "agentInfo": {
+          "name": "louis-agent",
+          "title": "Louis Agent",
+          "version": "1.0.0"
+        },
+        "authMethods": []
+      }
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "result": {
+        "sessionId": "sess_1"
+      }
+    },
+    {
+      "jsonrpc": "2.0",
+      "method": "session/update",
+      "params": {
+        "sessionId": "sess_1",
+        "update": {
+          "sessionUpdate": "agent_thought_chunk",
+          "content": {
+            "type": "text",
+            "text": "The user attached a note; the tool can read it."
+          }
+        }
+      }
+    },
+    {
+      "jsonrpc": "2.0",
+      "method": "session/update",
+      "params": {
+        "sessionId": "sess_1",
+        "update": {
+          "sessionUpdate": "agent_message_chunk",
+          "messageId": "msg_1",
+          "content": {
+            "type": "text",
+            "text": "Let me check the note."
+          }
+        }
+      }
+    },
+    {
+      "jsonrpc": "2.0",
+      "method": "session/update",
+      "params": {
+        "sessionId": "sess_1",
+        "update": {
+          "sessionUpdate": "tool_call",
+          "toolCallId": "call_1",
+          "title": "ReadNote name=recipe",
+          "kind": "read",
+          "status": "in_progress",
+          "rawInput": {
+            "name": "recipe"
+          }
+        }
+      }
+    },
+    {
+      "jsonrpc": "2.0",
+      "method": "session/update",
+      "params": {
+        "sessionId": "sess_1",
+        "update": {
+          "sessionUpdate": "tool_call_update",
+          "toolCallId": "call_1",
+          "status": "completed",
+          "content": [
+            {
+              "type": "content",
+              "content": {
+                "type": "text",
+                "text": "note recipe: melktert, Sunday"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "jsonrpc": "2.0",
+      "method": "session/update",
+      "params": {
+        "sessionId": "sess_1",
+        "update": {
+          "sessionUpdate": "agent_message_chunk",
+          "messageId": "msg_2",
+          "content": {
+            "type": "text",
+            "text": "The note says: melktert on Sunday."
+          }
+        }
+      }
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 4,
+      "result": {
+        "stopReason": "end_turn"
+      }
+    }
+  ],
+  "prompt": "What does the note say?\n\n[Attached file: notes.md (<tmp>/notes.md)]\n```\n# Notes\n\nMelktert on Sunday.\n\n```"
+}

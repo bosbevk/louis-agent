@@ -85,10 +85,19 @@ snapshot helper. The shared library's tests also hold the web layer's rule: `Raz
 under `src/` for an `@code` block (*Separate by concern*), a ratchet whose `PendingCode` list names the files W2b still
 has to move and can only shrink; when it is empty the list goes and the test is a plain rule.
 
+## louis-agent.acp-server.tests
+
+The ACP server's first tests (S, CL15). `AcpTranscriptTests` plays a recorded Rider conversation through `AcpServer`
+(a bad line, an unknown method, `initialize`, `session/new`, one prompt with a file attached and one open in the IDE, which
+the scripted model answers with a thought, a tool call and a reply) through `ScriptedConsole`, Rider's side of the pipe,
+and pins everything the server wrote to stdout, and the prompt the model received, to `AcpTranscript.json` (session and
+message ids numbered, the temp folder named; `LOUIS_UPDATE_GOLDEN=1` regenerates it). It is the proof the split of
+`AcpServer` by responsibility changes nothing the client sees.
+
 ## What isn't covered yet
 
-- **The API's endpoints, the web app, the ACP and MCP servers** have no automated tests (only the API's sessions do);
-  they're checked by hand (curl, browser, Rider). The orchestrator demo exercises the API and git endpoints end to end
+- **The API's endpoints and the MCP server** have no automated tests (only the API's sessions do); they're checked by
+  hand (curl, Rider). The ACP server has its transcript (`tests/louis-agent.acp-server.tests`) and no more yet. The orchestrator demo exercises the API and git endpoints end to end
   against a real model.
 - **The orchestrator's whole loop** against a scripted louis-agent.api.
 

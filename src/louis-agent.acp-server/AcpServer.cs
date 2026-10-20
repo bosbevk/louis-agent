@@ -14,10 +14,15 @@ namespace LouisAgent.AcpServer;
 
 /// <param name="agent">The engine every session shares.</param>
 /// <param name="usageInChat">USAGE_IN_CHAT: add each turn's usage line to the chat after the answer (F3).</param>
-internal sealed class AcpServer(AgentEngine agent, bool usageInChat = false)
+/// <param name="input">The client's messages, one JSON-RPC message per line; stdin in Rider, a script in a test.</param>
+/// <param name="output">Where the replies and notifications go; stdout in Rider (the protocol), a buffer in a test.</param>
+internal sealed class AcpServer(AgentEngine agent, bool usageInChat = false, TextReader? input = null, TextWriter? output = null)
 {
     private static readonly ILogger Log = AgentLogging.For<AcpServer>();
     private const string Tag = "ACP";
+
+    private readonly TextReader _input = input ?? Console.In;
+    private readonly TextWriter _output = output ?? Console.Out;
 
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
     private readonly ConcurrentDictionary<string, SessionState> _sessions = new();
@@ -28,7 +33,7 @@ internal sealed class AcpServer(AgentEngine agent, bool usageInChat = false)
     {
         while (!cancellationToken.IsCancellationRequested)
         {
-            string? line = await Console.In.ReadLineAsync(cancellationToken);
+            string? line = await _input.ReadLineAsync(cancellationToken);
             if (line is null)
             {
                 break;
@@ -531,8 +536,8 @@ internal sealed class AcpServer(AgentEngine agent, bool usageInChat = false)
         await _writeLock.WaitAsync(cancellationToken);
         try
         {
-            await Console.Out.WriteLineAsync(json.AsMemory(), cancellationToken);
-            await Console.Out.FlushAsync(cancellationToken);
+            await _output.WriteLineAsync(json.AsMemory(), cancellationToken);
+            await _output.FlushAsync(cancellationToken);
         }
         finally
         {

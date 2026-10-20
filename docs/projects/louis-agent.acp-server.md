@@ -52,7 +52,12 @@ sequenceDiagram
 | File | What's in it |
 |---|---|
 | `Program.cs` | `AgentHost.Build()` and `new AcpServer(engine).RunAsync()` |
-| `AcpServer.cs` | The message loop, request handlers, prompt building, streaming to `session/update`, path mapping, cancellation |
+| `AcpServer.cs` | The message loop, request handlers, prompt building, streaming to `session/update`, path mapping, cancellation; its reader and writer are constructor arguments (stdin and stdout in Rider, a script and a buffer in the transcript test) |
+
+## Tests
+
+`tests/louis-agent.acp-server.tests`: `AcpTranscriptTests` pins what the server writes for a recorded conversation to
+`AcpTranscript.json`, with the prompt the model received ([tests](tests.md#louis-agent.acp-server.tests)).
 
 ## Configuration
 

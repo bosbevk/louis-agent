@@ -7,6 +7,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- S (CL15): the transcript test drives AcpServer, which is internal, as Rider does. -->
+    <InternalsVisibleTo Include="louis-agent.acp-server.tests" />
   </ItemGroup>
 
   <PropertyGroup>

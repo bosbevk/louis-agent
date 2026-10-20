@@ -12,6 +12,7 @@ dotnet test tests/louis-agent.core.tests
 dotnet test tests/louis-agent.core.tests --filter "FullyQualifiedName~AgentEngineTests"
 dotnet test tests/louis-agent.api.tests
 dotnet test tests/louis-agent.orchestrator.tests
+dotnet test tests/louis-agent.acp-server.tests     # the ACP transcript (LOUIS_UPDATE_GOLDEN=1 regenerates AcpTranscript.json)
 dotnet test louis-agent-solution.sln          # everything
 ```
 
