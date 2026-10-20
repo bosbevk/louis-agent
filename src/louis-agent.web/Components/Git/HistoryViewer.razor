@@ -16,7 +16,7 @@
                         <text>@b.Branch.Ahead commit@(b.Branch.Ahead == 1 ? "" : "s") to merge into @b.Into</text>
                         @if (b.Branch.Behind > 0) { <text> · @b.Into is @b.Branch.Behind ahead of where it started</text> }
                     }
-                    · last commit by @b.Branch.Author, @BranchesPanel.Ago(b.Branch.Date)
+                    · last commit by @b.Branch.Author, @RelativeTime.Ago(b.Branch.Date)
                 </span>
             </div>
             <div class="file-actions">
@@ -36,7 +36,7 @@
             <div class="file-title">
                 <span class="file-path" title="@c.Commit.Sha"><span class="sha">@c.Commit.ShortSha</span> @c.Commit.Subject</span>
                 <span class="file-meta">
-                    @c.Commit.Author · @BranchesPanel.Ago(c.Commit.Date)
+                    @c.Commit.Author · @RelativeTime.Ago(c.Commit.Date)
                     @if (c.Commit.IsMerge) { <text> · merge commit (diff against its first parent)</text> }
                     @foreach (string reference in c.Commit.Refs)
                     {
@@ -57,7 +57,7 @@
                 @foreach (var commit in withCommits.Commits)
                 {
                     <button class="history-commit" title="Show this commit" @onclick="() => OnOpenCommit.InvokeAsync(commit.Sha)">
-                        <span class="sha">@commit.ShortSha</span> @commit.Subject <span class="change-folder">@commit.Author · @BranchesPanel.Ago(commit.Date)</span>
+                        <span class="sha">@commit.ShortSha</span> @commit.Subject <span class="change-folder">@commit.Author · @RelativeTime.Ago(commit.Date)</span>
                     </button>
                 }
             </div>
@@ -69,13 +69,3 @@
         <PatchView Diff="@(Branch?.Diff ?? Commit?.Diff ?? "")" Truncated="@(Branch?.Truncated ?? Commit?.Truncated ?? false)" />
     </div>
 </div>
-
-@code {
-    [Parameter] public GitBranchDetail? Branch { get; set; }
-    [Parameter] public GitCommitDetail? Commit { get; set; }
-    [Parameter] public bool Busy { get; set; }
-    [Parameter] public EventCallback<string> OnMerge { get; set; }
-    [Parameter] public EventCallback<string> OnDelete { get; set; }
-    [Parameter] public EventCallback<string> OnOpenCommit { get; set; }
-    [Parameter] public EventCallback OnClose { get; set; }
-}

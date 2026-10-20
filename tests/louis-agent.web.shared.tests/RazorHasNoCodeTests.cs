@@ -50,15 +50,6 @@ public class RazorHasNoCodeTests
         "src/louis-agent.puls/Pages/Admin/Benchmarks.razor",
         "src/louis-agent.puls/Pages/ChatPage.razor",
         "src/louis-agent.puls/Pages/LandingPage.razor",
-        "src/louis-agent.web/Components/Git/BranchesPanel.razor",
-        "src/louis-agent.web/Components/Git/ChangesPanel.razor",
-        "src/louis-agent.web/Components/Git/DiffViewer.razor",
-        "src/louis-agent.web/Components/Git/HistoryViewer.razor",
-        "src/louis-agent.web/Components/Git/PatchView.razor",
-        "src/louis-agent.web/Components/ThemeSwitcher.razor",
-        "src/louis-agent.web/Components/Workspace/FileTree.razor",
-        "src/louis-agent.web/Components/Workspace/FileViewer.razor",
-        "src/louis-agent.web/Pages/ChatPage.razor",
     ];
 
     [Test]

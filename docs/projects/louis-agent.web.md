@@ -51,13 +51,15 @@ flowchart TB
 
 | Path | What's in it |
 |---|---|
-| `Pages/ChatPage.razor` | The page: tabs, chat flow, stream handling, opening files / diffs / branches, merge and delete actions |
+| `Pages/ChatPage.razor` | The page (W2): the layout only, about fifty lines; the sidebar, the viewers and the shared chat pieces (`MessageList`, `Notice`, `ChatUsageBar`, `Composer`); its state (what a viewer shows) and handlers in `ChatPage.razor.cs`, a turn's life in the shared `ChatRunner` |
+| `Components/EmptyChat.razor`, `Components/Workspace/WorkspaceSidebar.razor` | The boot screen until the first message; the sidebar (new chat, the four tabs and their panels, theme, currency, API key), its tab its own, everything else parameters and callbacks of the page |
 | `Components/Workspace/FileTree.razor`, `FileViewer.razor` | Workspace browser and file view (with "Ask agent to review") |
-| `Components/Git/ChangesPanel.razor`, `DiffViewer.razor` | Changed files, selection, stage / unstage / discard / commit, *Review all* (asks the agent to review every uncommitted change); one file's diff |
+| `Components/Git/ChangesPanel.razor`, `ChangeGroup.razor`, `DiffViewer.razor` | Changed files, selection, stage / unstage / discard / commit, *Review all* (asks the agent to review every uncommitted change); one titled group of them with its select-all box; one file's diff |
 | `Components/Git/BranchesPanel.razor`, `HistoryViewer.razor`, `PatchView.razor` | Branches to merge, merged branches, all commits; a branch's or commit's diff |
 | `Components/ThemeSwitcher.razor` | Theme selection |
-| `Workspace/` | The workspace records (`WorkspaceEntry`, `WorkspaceFolder`, `WorkspaceFile`, one per file) and `AgentApiWorkspace`, the workspace and git calls on the shared `AgentApi` |
-| `Git/` | The git records (`GitFile`, `GitStatus`, `GitDiff`, `GitBranch`, `GitBranches`, `GitCommit`, `GitLog`, `GitCommitDetail`, `GitBranchDetail`, one per file); `GitState` and `GitHistory`, shared git state with change events and the merge/delete queue |
+| `*.razor.cs` | Every component's C# (W2b): a `.razor` holds markup only |
+| `Workspace/` | The workspace records (`WorkspaceEntry`, `WorkspaceFolder`, `WorkspaceFile`, one per file) and `AgentApiWorkspace`, the workspace and git calls on the shared `AgentApi`; `CodeLanguage` (highlight.js language by file name) and `FileSize` (the header's size) |
+| `Git/` | The git records (`GitFile`, `GitStatus`, `GitDiff`, `GitBranch`, `GitBranches`, `GitCommit`, `GitLog`, `GitCommitDetail`, `GitBranchDetail`, one per file); `GitState` and `GitHistory`, shared git state with change events and the merge/delete queue; `UnifiedDiff` (a diff as rows with line numbers), `Patch` (a multi-file patch per file), `RelativeTime` (a commit's age) and `ReviewActions` (the prompts and chat titles of the reviews a viewer asks for), each with tests |
 | `wwwroot/` | `index.html`, `css/app.css`, themes, `js/chat.js` (scrolling, focus, cross-tab sync of chats) |
 
 **Shared with Puls** (`src/louis-agent.web.shared/`, a Razor class library both apps reference; Markdig is its package):

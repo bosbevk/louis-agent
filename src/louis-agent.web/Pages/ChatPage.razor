@@ -1,77 +1,17 @@
 @page "/"
 @page "/chat/{SessionId}"
-@using System.Net
-@using System.Text.Json
-@inject AgentApi Api
-@inject ChatStore Store
-@inject NavigationManager Nav
-@inject IJSRuntime JS
-@inject GitState Git
-@inject GitHistory History
-@inject CurrencyState Currency
-@inject ChatText Text
-@implements IDisposable
+
+@* The code-review app's one page (W2): the layout only. The sidebar and the viewers are its components, the chat
+   pieces (the turns, the notice, the usage line, the message box) are the shared ones, a turn's life is the shared
+   ChatRunner, and the page's own state and handlers are in ChatPage.razor.cs. *@
 
 <PageTitle>@(Runner.Chat?.Title ?? "Louis Agent")</PageTitle>
 
 <div class="app">
-    <aside class="sidebar">
-        <button class="new-chat" @onclick="NewChat">+ New chat</button>
-        <div class="tabs">
-            <button class="@(_tab == SidebarTab.Chats ? "active" : "")" @onclick="() => _tab = SidebarTab.Chats">Chats</button>
-            <button class="@(_tab == SidebarTab.Files ? "active" : "")" @onclick="() => _tab = SidebarTab.Files">Files</button>
-            <button class="@(_tab == SidebarTab.Changes ? "active" : "")" @onclick="() => _tab = SidebarTab.Changes">
-                <span>Changes</span>
-                @if (Git.ChangeCount > 0)
-                {
-                    <span class="tab-count">@Git.ChangeCount</span>
-                }
-            </button>
-            <button class="@(_tab == SidebarTab.Branches ? "active" : "")" @onclick="() => _tab = SidebarTab.Branches">
-                <span>Branches</span>
-                @if (History.UnmergedCount > 0)
-                {
-                    <span class="tab-count" title="Branches to merge">@History.UnmergedCount</span>
-                }
-            </button>
-        </div>
-        @if (_tab == SidebarTab.Files)
-        {
-            <nav class="file-tree">
-                <FileTree SelectedPath="@_openFile?.Path" OnOpenFile="OpenFile" />
-            </nav>
-        }
-        else if (_tab == SidebarTab.Changes)
-        {
-            <nav class="file-tree">
-                <ChangesPanel OpenKey="@_openDiffKey" OnOpenDiff="OpenDiff" OnReviewAll="ReviewAllChanges" />
-            </nav>
-        }
-        else if (_tab == SidebarTab.Branches)
-        {
-            <nav class="file-tree">
-                <BranchesPanel OpenKey="@_openHistoryKey" OnOpenBranch="OpenBranch" OnOpenCommit="OpenCommit" />
-            </nav>
-        }
-        else
-        {
-            <nav class="chat-list">
-                @foreach (var chat in Store.Chats)
-                {
-                    <div class="chat-item @(chat.SessionId == SessionId && !ViewerOpen ? "active" : "")">
-                        <a href="chat/@chat.SessionId" title="@chat.Title" @onclick="CloseFile">@chat.Title</a>
-                        <button class="icon" title="Delete chat" @onclick="() => DeleteChat(chat)">×</button>
-                    </div>
-                }
-            </nav>
-        }
-        <ThemeSwitcher />
-        <CurrencySwitcher />
-        <label class="settings">
-            API key
-            <input type="password" value="@Store.ApiKeyDraft" @onchange="SaveApiKey" placeholder="only if AGENT_API_KEY is set" />
-        </label>
-    </aside>
+    <WorkspaceSidebar Chats="Store.Chats" SessionId="@SessionId" ChangeCount="Git.ChangeCount" UnmergedCount="History.UnmergedCount" ApiKeyDraft="@Store.ApiKeyDraft"
+                      ViewerOpen="ViewerOpen" OpenFilePath="@_openFile?.Path" OpenDiffKey="@_openDiffKey" OpenHistoryKey="@_openHistoryKey"
+                      OnNewChat="NewChat" OnOpenFile="OpenFile" OnOpenDiff="OpenDiff" OnReviewAll="ReviewAllChanges" OnOpenBranch="OpenBranch"
+                      OnOpenCommit="OpenCommit" OnOpenChat="CloseFile" OnDeleteChat="DeleteChat" OnSaveApiKey="SaveApiKey" />
 
     <main class="conversation">
         @if (_openBranch is not null || _openCommit is not null)
@@ -89,314 +29,28 @@
         {
             <FileViewer File="_openFile" Busy="Runner.Streaming" OnReview="ReviewFile" OnAsk="AskAboutFile" OnClose="CloseFile" />
         }
-        <div class="messages @(ViewerOpen ? "hidden" : "")" @ref="_messages">
-            @if (Runner.Chat is null || Runner.Chat.Turns.Count == 0)
-            {
-                <div class="empty">
-                    <h1>LOUIS AGENT</h1>
-                    @* Each line types out after the previous one (--i staggers the animation). *@
-                    <div class="boot">
-                        <p style="--i:0">LOUIS AGENT BIOS v1.0 (C) LOUIS</p>
-                        <p style="--i:1">MEMORY CHECK ............ OK</p>
-                        <p style="--i:2">LOADING SKILLS .......... OK</p>
-                        <p style="--i:3">WORKSPACE MOUNTED ....... OK</p>
-                        <p style="--i:4">READY.<span class="cursor"></span></p>
-                    </div>
-                    <p class="hint">Ask about your code, run tools in the workspace, or attach a file.</p>
-                </div>
-            }
-            else
-            {
-                @foreach (var turn in Runner.Chat.Turns)
-                {
-                    <TurnView Turn="turn" Streaming="@(Runner.Streaming && turn == Runner.Chat.Turns[^1])" Currency="Currency.Current" />
-                }
-            }
-        </div>
 
-        @if (Runner.Notice is not null)
-        {
-            <div class="notice">@Runner.Notice <button class="icon" @onclick="() => Runner.Notice = null">×</button></div>
-        }
+        <MessageList Chat="Runner.Chat" Streaming="Runner.Streaming" Currency="Currency.Current" Class="@(ViewerOpen ? "hidden" : "")">
+            <Empty><EmptyChat /></Empty>
+        </MessageList>
 
-        @if (!ViewerOpen && Runner.Chat?.Usage() is { } chatUsage)
-        {
-            <div class="chat-usage" title="@UsageFormat.Detail(chatUsage, Currency.Current)">@UsageFormat.Total(chatUsage, Currency.Current)</div>
-        }
+        <Notice Text="@Runner.Notice" OnClose="() => Runner.Notice = null" />
+
+        <ChatUsageBar Usage="@(ViewerOpen ? null : Runner.Chat?.Usage())" Currency="Currency.Current" />
 
         <div class="composer @(ViewerOpen ? "hidden" : "")">
-            @if (Runner.Attachments.Count > 0)
-            {
-                <div class="attachments">
-                    @foreach (var attachment in Runner.Attachments)
-                    {
-                        <span class="chip">@attachment.Name <button class="icon" @onclick="() => Runner.Attachments.Remove(attachment)">×</button></span>
-                    }
-                </div>
-            }
-            <div class="input-row">
-                <label class="attach" title="Attach text files">
-                    📎
-                    <InputFile OnChange="Runner.AddFilesAsync" multiple />
-                </label>
-                <span class="prompt" aria-hidden="true">&gt;</span>
-                <textarea id="composer-input" rows="1" @bind="Runner.Draft" @bind:event="oninput"
-                          disabled="@(Runner.Chat?.Ended == true)"
-                          placeholder="@(Runner.Chat?.Ended == true ? "This chat ended when the API restarted - start a new chat" : "Message Louis Agent (Enter to send, Shift+Enter for a new line)")"></textarea>
-                @if (Runner.Streaming)
-                {
-                    <button class="stop" @onclick="Runner.StopAsync">Stop</button>
-                }
-                else
-                {
-                    <button id="send-button" class="send" @onclick="Runner.SendAsync" disabled="@(!Runner.CanSend)">Send</button>
-                }
-            </div>
+            <Composer @bind-Draft="Runner.Draft" Attachments="Runner.Attachments" Streaming="Runner.Streaming" CanSend="Runner.CanSend"
+                      Disabled="@(Runner.Chat?.Ended == true)"
+                      Placeholder="@(Runner.Chat?.Ended == true ? "This chat ended when the API restarted - start a new chat" : "Message Louis Agent (Enter to send, Shift+Enter for a new line)")"
+                      OnSend="Runner.SendAsync" OnStop="Runner.StopAsync">
+                <BeforeInput>
+                    <label class="attach" title="Attach text files">
+                        📎
+                        <InputFile OnChange="Runner.AddFilesAsync" multiple />
+                    </label>
+                    <span class="prompt" aria-hidden="true">&gt;</span>
+                </BeforeInput>
+            </Composer>
         </div>
     </main>
 </div>
-
-@code {
-    [Parameter] public string? SessionId { get; set; }
-
-    /// <summary>A turn's life (W2): the draft, the session, the stream, the save; the page keeps the layout and its viewers.</summary>
-    private ChatRunner Runner { get; set; } = default!;
-
-    private ElementReference _messages;
-    private bool _scrollToEnd;
-    private enum SidebarTab { Chats, Files, Changes, Branches }
-
-    private SidebarTab _tab = SidebarTab.Chats;
-    private WorkspaceFile? _openFile;
-    private GitDiff? _openDiff;
-    private string? _openDiffKey;
-    private GitBranchDetail? _openBranch;
-    private GitCommitDetail? _openCommit;
-    private string? _openHistoryKey;
-
-    private bool ViewerOpen => _openFile is not null || _openDiff is not null || _openBranch is not null || _openCommit is not null;
-
-    protected override async Task OnInitializedAsync()
-    {
-        // The code-review app gets every toolset this API can load (F5).
-        Runner = new ChatRunner(Api, Store, Text, async () => await Api.CreateSessionAsync(await Api.AvailableToolsetsAsync()));
-        Runner.Changed += OnGitChanged;
-        Runner.SessionOpened += id => Nav.NavigateTo($"chat/{id}");
-        // The agent may have edited files or committed; keep the Changes and Branches badges and panels current.
-        Runner.TurnEnded += () => { _ = Git.RefreshAsync(); _ = History.RefreshAsync(); };
-        Git.Changed += OnGitChanged;
-        History.Changed += OnGitChanged;
-        Currency.Changed += OnGitChanged;
-        if (!Store.Loaded) await Store.LoadAsync();
-        _ = Git.RefreshAsync();
-        _ = History.RefreshAsync();
-    }
-
-    protected override void OnParametersSet()
-    {
-        var chat = Store.Find(SessionId);
-        if (!ReferenceEquals(chat, Runner.Chat)) _scrollToEnd = true;
-        Runner.Chat = chat;
-        if (SessionId is not null && chat is null && !Runner.Streaming)
-            Runner.Notice = "That chat isn't saved in this browser.";
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (Runner.Streaming || _scrollToEnd)
-        {
-            await JS.InvokeVoidAsync("louisChat.scrollToBottom", _messages, _scrollToEnd);
-            _scrollToEnd = false;
-        }
-    }
-
-    private void NewChat()
-    {
-        Runner.Notice = null;
-        _openFile = null;
-        Nav.NavigateTo("");
-    }
-
-    private async Task OpenFile(string path)
-    {
-        try
-        {
-            _openDiff = null;
-            _openDiffKey = null;
-            _openFile = await Api.ReadFileAsync(path);
-            CloseHistory();
-            Runner.Notice = null;
-        }
-        catch (Exception ex)
-        {
-            Runner.Notice = Runner.Describe(ex);
-        }
-    }
-
-    private void CloseFile()
-    {
-        _openFile = null;
-        _openDiff = null;
-        _openDiffKey = null;
-        CloseHistory();
-        _scrollToEnd = true;
-    }
-
-    private void CloseHistory()
-    {
-        _openBranch = null;
-        _openCommit = null;
-        _openHistoryKey = null;
-    }
-
-    private async Task OpenBranch(string name)
-    {
-        try
-        {
-            var detail = await Api.GitBranchAsync(name);
-            CloseFile();
-            _openBranch = detail;
-            _openHistoryKey = BranchesPanel.BranchKey(name);
-            Runner.Notice = null;
-        }
-        catch (Exception ex)
-        {
-            Runner.Notice = Runner.Describe(ex);
-        }
-    }
-
-    private async Task OpenCommit(string sha)
-    {
-        try
-        {
-            var detail = await Api.GitShowCommitAsync(sha);
-            CloseFile();
-            _openCommit = detail;
-            _openHistoryKey = BranchesPanel.CommitKey(sha);
-            Runner.Notice = null;
-        }
-        catch (Exception ex)
-        {
-            Runner.Notice = Runner.Describe(ex);
-        }
-    }
-
-    // After a merge the branch has nothing left to show, so the viewer closes; the panel says what was merged. The action
-    // may wait in the queue behind others, so the outcome is judged by this branch alone, and the viewer only closes if
-    // it still shows this branch.
-    private async Task MergeBranch(string name)
-    {
-        await History.MergeAsync(name);
-        bool merged = History.Branches?.Branches.FirstOrDefault(b => b.Name == name) is null or { Merged: true };
-        if (!merged) Runner.Notice = History.Error ?? $"{name} was not merged.";
-        else if (_openBranch?.Branch.Name == name) CloseFile();
-    }
-
-    private async Task DeleteBranch(string name)
-    {
-        await History.DeleteAsync(name);
-        bool deleted = History.Branches?.Branches.All(b => b.Name != name) ?? false;
-        if (!deleted) Runner.Notice = History.Error ?? $"{name} was not deleted.";
-        else if (_openBranch?.Branch.Name == name) CloseFile();
-    }
-
-    // A review gets its own chat, so it doesn't mix with whatever the current chat is about.
-    private async Task ReviewFile()
-    {
-        if (_openFile is null || Runner.Streaming) return;
-        string path = _openFile.Path;
-        CloseFile();
-        Runner.Chat = null;
-        await Runner.StartTurnAsync(
-            $"Review `{path}` from the workspace. Read it with your tools, then list bugs, risks and improvements, most important first, with line numbers.",
-            [], $"Review {FileName(path)}");
-    }
-
-    private async Task AskAboutFile()
-    {
-        if (_openFile is null) return;
-        Runner.Draft = $"About `{_openFile.Path}`: ";
-        CloseFile();
-        StateHasChanged();
-        await JS.InvokeVoidAsync("louisChat.focusComposer");
-    }
-
-    private static string FileName(string path) => path[(path.LastIndexOf('/') + 1)..];
-
-    private async Task OpenDiff((GitFile File, bool Staged) change)
-    {
-        try
-        {
-            _openDiff = await Api.GitDiffAsync(change.File.Path, change.Staged);
-            _openDiffKey = ChangesPanel.Key(change.File, change.Staged);
-            _openFile = null;
-            CloseHistory();
-            Runner.Notice = null;
-        }
-        catch (Exception ex)
-        {
-            Runner.Notice = Runner.Describe(ex);
-        }
-    }
-
-    // After staging, unstaging or discarding the open file, show what is left of it: the same side if it still has
-    // changes there, otherwise the other side (e.g. staged after Stage), otherwise close the viewer.
-    private async Task ChangeOpenDiff(Func<IEnumerable<string>, Task> change)
-    {
-        if (_openDiff is null) return;
-        string path = _openDiff.Path;
-        bool staged = _openDiff.Staged;
-        await change([path]);
-        if (Git.Error is not null)
-        {
-            Runner.Notice = Git.Error;
-            return;
-        }
-
-        var file = Git.Status?.Files.FirstOrDefault(f => f.Path == path);
-        if (file is not null && (staged ? file.Staged : file.Unstaged)) await OpenDiff((file, staged));
-        else if (file is not null) await OpenDiff((file, !staged));
-        else CloseFile();
-    }
-
-    private async Task ReviewOpenDiff()
-    {
-        if (_openDiff is null || Runner.Streaming) return;
-        string path = _openDiff.Path;
-        string which = _openDiff.Untracked ? "new, untracked file" : _openDiff.Staged ? "staged changes to" : "uncommitted changes to";
-        CloseFile();
-        Runner.Chat = null;
-        await Runner.StartTurnAsync(
-            $"Review the {which} `{path}`. Use your git tools to read the diff (and the file if you need context), then list bugs, " +
-            "risks and improvements in the changed lines, most important first.",
-            [], $"Review changes {FileName(path)}");
-    }
-
-    private async Task ReviewAllChanges()
-    {
-        if (Runner.Streaming) return;
-        CloseFile();
-        Runner.Chat = null;
-        await Runner.StartTurnAsync(
-            "Review all my uncommitted changes. Use your git tools for the status and the staged and unstaged diffs, then for each " +
-            "file list bugs, risks and improvements in the changed lines, most important first, and say whether it looks ready to commit.",
-            [], "Review all changes");
-    }
-
-    private void OnGitChanged() => InvokeAsync(StateHasChanged);
-
-    public void Dispose()
-    {
-        Runner.Changed -= OnGitChanged;
-        Git.Changed -= OnGitChanged;
-        History.Changed -= OnGitChanged;
-        Currency.Changed -= OnGitChanged;
-    }
-
-    private async Task DeleteChat(Chat chat)
-    {
-        if (await Runner.DeleteChatAsync(chat)) Nav.NavigateTo("");
-    }
-
-    private async Task SaveApiKey(ChangeEventArgs e) => await Runner.SaveApiKeyAsync(e.Value?.ToString());
-}

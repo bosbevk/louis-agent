@@ -1,5 +1,4 @@
 @* Branches and history: what's waiting to be merged into the checked-out branch, what's merged, and every commit. *@
-@implements IDisposable
 @inject GitHistory History
 
 <div class="changes-panel">
@@ -79,7 +78,7 @@
                     <button class="change-file history-item" title="@commit.Subject" @onclick="() => OnOpenCommit.InvokeAsync(commit.Sha)">
                         <span class="change-name"><span class="sha">@commit.ShortSha</span> @commit.Subject</span>
                         <span class="change-folder">
-                            @commit.Author · @Ago(commit.Date)
+                            @commit.Author · @RelativeTime.Ago(commit.Date)
                             @foreach (string reference in commit.Refs)
                             {
                                 <span class="ref">@reference</span>
@@ -95,33 +94,3 @@
         <div class="tree-loading">Loading…</div>
     }
 </div>
-
-@code {
-    [Parameter] public string? OpenKey { get; set; }
-    [Parameter] public EventCallback<string> OnOpenBranch { get; set; }
-    [Parameter] public EventCallback<string> OnOpenCommit { get; set; }
-
-    public static string BranchKey(string name) => $"b:{name}";
-    public static string CommitKey(string sha) => $"c:{sha}";
-
-    protected override async Task OnInitializedAsync()
-    {
-        History.Changed += OnChanged;
-        await History.RefreshAsync();
-    }
-
-    private void OnChanged() => InvokeAsync(StateHasChanged);
-
-    public void Dispose() => History.Changed -= OnChanged;
-
-    public static string Ago(string isoDate)
-    {
-        if (!DateTimeOffset.TryParse(isoDate, out var date)) return isoDate;
-        var age = DateTimeOffset.Now - date;
-        return age.TotalMinutes < 1 ? "just now"
-            : age.TotalHours < 1 ? $"{(int)age.TotalMinutes}m ago"
-            : age.TotalDays < 1 ? $"{(int)age.TotalHours}h ago"
-            : age.TotalDays < 30 ? $"{(int)age.TotalDays}d ago"
-            : date.ToString("yyyy-MM-dd");
-    }
-}

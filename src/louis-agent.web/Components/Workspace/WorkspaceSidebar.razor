@@ -1,0 +1,60 @@
+@* The sidebar (W2): a new chat, four tabs (the chats, the workspace's files, the changes, the branches) and the panel
+   of the open one, then the theme, the currency and the API key. The tab is its own; the chats, the badge counts, what
+   is open and every action are the page's. *@
+<aside class="sidebar">
+    <button class="new-chat" @onclick="OnNewChat">+ New chat</button>
+    <div class="tabs">
+        <button class="@(_tab == SidebarTab.Chats ? "active" : "")" @onclick="() => _tab = SidebarTab.Chats">Chats</button>
+        <button class="@(_tab == SidebarTab.Files ? "active" : "")" @onclick="() => _tab = SidebarTab.Files">Files</button>
+        <button class="@(_tab == SidebarTab.Changes ? "active" : "")" @onclick="() => _tab = SidebarTab.Changes">
+            <span>Changes</span>
+            @if (ChangeCount > 0)
+            {
+                <span class="tab-count">@ChangeCount</span>
+            }
+        </button>
+        <button class="@(_tab == SidebarTab.Branches ? "active" : "")" @onclick="() => _tab = SidebarTab.Branches">
+            <span>Branches</span>
+            @if (UnmergedCount > 0)
+            {
+                <span class="tab-count" title="Branches to merge">@UnmergedCount</span>
+            }
+        </button>
+    </div>
+    @if (_tab == SidebarTab.Files)
+    {
+        <nav class="file-tree">
+            <FileTree SelectedPath="@OpenFilePath" OnOpenFile="OnOpenFile" />
+        </nav>
+    }
+    else if (_tab == SidebarTab.Changes)
+    {
+        <nav class="file-tree">
+            <ChangesPanel OpenKey="@OpenDiffKey" OnOpenDiff="OnOpenDiff" OnReviewAll="OnReviewAll" />
+        </nav>
+    }
+    else if (_tab == SidebarTab.Branches)
+    {
+        <nav class="file-tree">
+            <BranchesPanel OpenKey="@OpenHistoryKey" OnOpenBranch="OnOpenBranch" OnOpenCommit="OnOpenCommit" />
+        </nav>
+    }
+    else
+    {
+        <nav class="chat-list">
+            @foreach (var chat in Chats)
+            {
+                <div class="chat-item @(chat.SessionId == SessionId && !ViewerOpen ? "active" : "")">
+                    <a href="chat/@chat.SessionId" title="@chat.Title" @onclick="OnOpenChat">@chat.Title</a>
+                    <button class="icon" title="Delete chat" @onclick="() => OnDeleteChat.InvokeAsync(chat)">×</button>
+                </div>
+            }
+        </nav>
+    }
+    <ThemeSwitcher />
+    <CurrencySwitcher />
+    <label class="settings">
+        API key
+        <input type="password" value="@ApiKeyDraft" @onchange="e => OnSaveApiKey.InvokeAsync(e.Value?.ToString())" placeholder="only if AGENT_API_KEY is set" />
+    </label>
+</aside>
