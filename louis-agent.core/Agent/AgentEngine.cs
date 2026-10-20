@@ -1,49 +1,38 @@
 namespace LouisAgent.Core.Agent;
 
-using LouisAgent.Core.Llm.UsageMapping;
-using LouisAgent.Core.Pricing.Rates;
-using LouisAgent.Core.Usage.Records;
-using LouisAgent.Core.Usage.Sinks;
-using LouisAgent.Core.Usage.Reports;
-using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Agent.Catalog;
-using LouisAgent.Core.Tools.Clock;
+using LouisAgent.Core.Agent.Commands;
 using LouisAgent.Core.Agent.EngineTools;
-using System.ComponentModel;
-using System.Reflection;
-using System.Runtime.CompilerServices;
+using LouisAgent.Core.Agent.Turns;
 using LouisAgent.Core.Config;
-using LouisAgent.Core.Skills;
-using Microsoft.Extensions.AI;
-using LouisAgent.Core.Llm;
-using LouisAgent.Core.Tools.Shell;
+using LouisAgent.Core.Llm.UsageMapping;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Pricing.Rates;
+using LouisAgent.Core.Skills;
+using LouisAgent.Core.Tools.Shell;
+using LouisAgent.Core.Usage.Records;
+using LouisAgent.Core.Usage.Sinks;
+using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
 
 /// <summary>
-/// Orchestrates one chat turn: the model is given the agent's tools and
-/// <see cref="FunctionInvokingChatClient"/> runs the tool-call loop until the model produces a final answer.
-/// Provider specifics live entirely behind <see cref="IChatClient"/>.
+/// One agent: its tools, its skills and the model behind <see cref="IChatClient"/>, wired once (S, CL15: the engine is the
+/// facade). A turn runs on <see cref="TurnRunner"/> over the <see cref="ChatPipeline"/>, where
+/// <see cref="FunctionInvokingChatClient"/> runs the tool-call loop until the model produces a final answer; what the
+/// user types as a command is <see cref="UserCommands"/>'. Provider specifics live entirely behind <see cref="IChatClient"/>.
 /// </summary>
 public class AgentEngine
 {
     private static readonly ILogger Log = AgentLogging.For<AgentEngine>();
 
-    // Room for a sizeable file in one tool call; larger files are written in chunks (see default.md).
-    internal const int MaxOutputTokens = LlmClientFactory.MaxOutputTokens;
-
-    internal static string NoToolsNotice => MessageText.Format(ToolMessage.NoToolsNotice);
-
     private readonly SkillTools _skillTools;
     private readonly PythonTools _python;
     private readonly PowerShellTools _powerShell;
-    private readonly BashTools _bash;
-    private readonly IChatClient _chatClient;
-    private readonly IChatClient _innerChatClient;
-    private readonly AgentOptions _options;
     private readonly ToolRegistry _registry = new();
     private readonly ToolCallGuards _guards;
+    private readonly TurnRunner _turns;
+    private readonly UserCommands _commands;
 
     /// <summary>Combined default instructions and skill documentation used as the system prompt.</summary>
     public string SkillDocumentation => _skillTools.Documentation;
@@ -112,36 +101,20 @@ public class AgentEngine
         IEnumerable<object>? toolsets = null,
         IUsageSink? usageSink = null, IUsageMapper? usageMapper = null, bool selfExtension = false, bool concurrentToolCalls = false)
     {
-        _options = options;
         SupportsTools = supportsTools;
         WorkspaceRoot = Path.GetFullPath(options.WorkspaceRoot);
         _python = new PythonTools(WorkspaceRoot);
         _powerShell = new PowerShellTools(WorkspaceRoot);
-        _bash = new BashTools(WorkspaceRoot);
         _skillTools = new SkillTools(skillProvider, options, WorkspaceRoot, _python, _powerShell);
         _agentBuiltTools = new AgentBuiltTools(_registry, supportsTools, WorkspaceRoot, _python, _powerShell, () => SkillsDirectory, () => ReservedToolNames);
+        _commands = new UserCommands(_agentBuiltTools, _skillTools, () => Display);
 
         // Summaries call the model directly, outside the tool loop, so they are recorded by their own recorder.
         RecordsUsage = usageSink is not null;
-        _innerChatClient = usageSink is null ? chatClient : new UsageRecordingChatClient(chatClient, usageSink, mapper: usageMapper);
-        _guards = new ToolCallGuards(_registry, _innerChatClient, options.SubSessionPromptBudget);
-        var pipeline = new ChatClientBuilder(chatClient)
-            .UseFunctionInvocation(configure: c =>
-            {
-                c.MaximumIterationsPerRequest = 10;
-                // F34: a round's calls at once, for an engine whose toolsets all allow it (ToolsetCatalog.RunsInParallel).
-                c.AllowConcurrentInvocation = concurrentToolCalls;
-                c.FunctionInvoker = _guards.InvokeAsync;
-                // Lets the model see why a call failed (e.g. a missing argument) instead of a generic failure.
-                c.IncludeDetailedErrors = true;
-            })
-            .Use(_guards.KeepToolsOnFinalRequestAsync, _guards.KeepToolsOnFinalRequestStreamingAsync);
-        // Inside the tool loop, so each round is its own request and record; outside it would see one call per turn.
-        if (usageSink is not null)
-            pipeline.Use(inner => new UsageRecordingChatClient(inner, usageSink, mapper: usageMapper));
-        _chatClient = pipeline
-            .Use(ToolCallGuards.MarkTruncatedToolCallsAsync, ToolCallGuards.MarkTruncatedToolCallsStreamingAsync)
-            .Build();
+        IChatClient innerChatClient = usageSink is null ? chatClient : new UsageRecordingChatClient(chatClient, usageSink, mapper: usageMapper);
+        _guards = new ToolCallGuards(_registry, innerChatClient, options.SubSessionPromptBudget);
+        _turns = new TurnRunner(ChatPipeline.Build(chatClient, _guards, usageSink, usageMapper, concurrentToolCalls), _registry,
+            () => SkillDocumentation, () => Thinking, supportsTools);
 
         if (!supportsTools)
         {
@@ -149,17 +122,7 @@ public class AgentEngine
             return;
         }
 
-        _registry.Add(Function(_skillTools.ExecuteSkill, nameof(ExecuteSkill)));
-        // Today's date and time (F22): every session, whatever its toolsets, since a model doesn't know what day it is.
-        _registry.AddPublicMethods(new ClockTools(hostTimeZone: options.HostTimeZone));
-        if (toolsets is not null)
-        {
-            foreach (object toolset in toolsets) _registry.AddPublicMethods(toolset);
-            if (selfExtension) AddSelfExtensionTools();
-            return;
-        }
-
-        AddSelfExtensionTools();
+        OwnTools.Register(_registry, _skillTools, _agentBuiltTools, options, toolsets, selfExtension);
     }
 
     /// <summary>
@@ -188,100 +151,16 @@ public class AgentEngine
         return _registry.RegisterDiscovered(name, description);
     }
 
-    /// <summary>Short, single-line view of a tool call's arguments for progress displays.</summary>
-    public static string DescribeArguments(IDictionary<string, object?>? arguments)
-    {
-        if (arguments is null || arguments.Count == 0) return string.Empty;
-        return string.Join(", ", arguments.Select(a =>
-        {
-            string value = a.Value?.ToString()?.ReplaceLineEndings(" ") ?? "null";
-            return $"{a.Key}={(value.Length > 60 ? value[..60] + "..." : value)}";
-        }));
-    }
-
     /// <summary>A history seeded with the system prompt (and the no-tools notice when applicable).</summary>
-    public List<ChatMessage> NewHistory()
-    {
-        var history = new List<ChatMessage> { new(ChatRole.System, SkillDocumentation) };
-        if (!SupportsTools) history.Add(new ChatMessage(ChatRole.System, NoToolsNotice));
-        return history;
-    }
+    public List<ChatMessage> NewHistory() => _turns.NewHistory();
 
-    /// <summary>
-    /// Processes one prompt without writing to the console, allowing protocol adapters
-    /// to control how the response is transported. Tool calls made by the model are executed
-    /// and recorded in <paramref name="history"/> along with the final answer.
-    /// </summary>
-    public async Task<string> ProcessPromptAsync(
-        List<ChatMessage> history,
-        string userInput,
-        CancellationToken cancellationToken = default)
-    {
-        ChatOptions chatOptions = BeginTurn(history, userInput);
-        ChatResponse response = await _chatClient.GetResponseAsync(history, chatOptions, cancellationToken);
+    /// <summary>One prompt, the reply whole (<see cref="TurnRunner.ProcessAsync"/>): the turn, tool calls included, lands in <paramref name="history"/>.</summary>
+    public Task<string> ProcessPromptAsync(List<ChatMessage> history, string userInput, CancellationToken cancellationToken = default) =>
+        _turns.ProcessAsync(history, userInput, cancellationToken);
 
-        // Includes assistant tool-call and tool-result messages so follow-up turns keep their context.
-        history.AddRange(response.Messages);
-        return response.Text;
-    }
-
-    /// <summary>
-    /// Streaming form of <see cref="ProcessPromptAsync"/>: yields text as the model writes it, each tool call as it is
-    /// made (<see cref="FunctionCallContent"/>) and its outcome (<see cref="FunctionResultContent"/>). The completed turn
-    /// is recorded in <paramref name="history"/> once the stream ends.
-    /// </summary>
-    public async IAsyncEnumerable<ChatResponseUpdate> StreamPromptAsync(
-        List<ChatMessage> history,
-        string userInput,
-        [EnumeratorCancellation] CancellationToken cancellationToken = default)
-    {
-        ChatOptions chatOptions = BeginTurn(history, userInput);
-        for (int continuation = 0; ; continuation++)
-        {
-            var updates = new List<ChatResponseUpdate>();
-            await foreach (var update in _chatClient.GetStreamingResponseAsync(history, chatOptions, cancellationToken))
-            {
-                updates.Add(update);
-                yield return update;
-            }
-
-            history.AddMessages(updates);
-
-            // When streaming, a tool call cut off by the output limit is dropped entirely, so the turn would just stop.
-            bool cutOff = updates.LastOrDefault(u => u.FinishReason is not null)?.FinishReason == ChatFinishReason.Length;
-            if (!cutOff || continuation >= MaxCutOffContinuations) yield break;
-
-            Log.Log(LogLevel.Warning, LogMessage.ReplyCutOff, new { MaxOutputTokens });
-            ToolCallRecords.TruncatedToolCall("(streamed reply)", string.Empty, MaxOutputTokens);
-            history.Add(new ChatMessage(ChatRole.User, ContinueAfterCutOffMessage));
-            // The rest of this turn's requests exist only because of the cut-off; the host's scope says so.
-            if (UsageScope.Current is { } scope) scope.Purpose = UsagePurpose.Continue;
-        }
-    }
-
-    private const int MaxCutOffContinuations = 3;
-
-    internal static string ContinueAfterCutOffMessage => MessageText.Format(ToolMessage.ContinueAfterCutOff);
-
-    private ChatOptions BeginTurn(List<ChatMessage> history, string userInput)
-    {
-        // Skills may have been reloaded since this conversation started; keep its system prompt current.
-        if (history.Count > 0 && history[0].Role == ChatRole.System && history[0].Text != SkillDocumentation)
-            history[0] = new ChatMessage(ChatRole.System, SkillDocumentation);
-
-        history.Add(new ChatMessage(ChatRole.User, userInput));
-
-        var chatOptions = new ChatOptions { MaxOutputTokens = MaxOutputTokens };
-        if (Thinking is { } effort)
-            chatOptions.Reasoning = new ReasoningOptions { Effort = effort, Output = ReasoningOutput.Full };
-        if (SupportsTools)
-        {
-            chatOptions.Tools = _registry.Live;
-            chatOptions.ToolMode = ChatToolMode.Auto;
-        }
-
-        return chatOptions;
-    }
+    /// <summary>One prompt, the reply streamed (<see cref="TurnRunner.StreamAsync"/>): text, each tool call and its outcome as they happen.</summary>
+    public IAsyncEnumerable<ChatResponseUpdate> StreamPromptAsync(List<ChatMessage> history, string userInput, CancellationToken cancellationToken = default) =>
+        _turns.StreamAsync(history, userInput, cancellationToken);
 
     /// <summary>Runs a loaded skill (the <c>ExecuteSkill</c> tool; see <see cref="SkillTools.ExecuteSkill"/>).</summary>
     public string ExecuteSkill(string skillName, string jsonArgs = "{}") => _skillTools.ExecuteSkill(skillName, jsonArgs);
@@ -304,45 +183,10 @@ public class AgentEngine
 
     /// <summary>
     /// Handles commands typed by the user (never exposed to the model): /tools, /approve &lt;Name&gt;, /reject &lt;Name&gt;,
-    /// /usage. Returns the reply, or null when the input is not one of these commands.
+    /// /usage (<see cref="UserCommands"/>). Returns the reply, or null when the input is not one of these commands.
     /// </summary>
-    /// <param name="input">What the user typed.</param>
-    /// <param name="sessionUsage">
-    /// The session's usage records so far, for /usage (F3). The host keeps them: the engine serves every session of a host
-    /// and doesn't know which one is asking. Null when the host doesn't track usage.
-    /// </param>
-    public string? HandleUserCommand(string input, IReadOnlyList<UsageRecord>? sessionUsage = null)
-    {
-        string[] parts = (input ?? "").Trim().Split(' ', 2, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-        if (parts.Length == 0) return null;
-
-        string command = parts[0].ToLowerInvariant();
-        string argument = parts.Length > 1 ? parts[1] : "";
-        return command switch
-        {
-            "/tools" => ListAgentTools() + PendingSkillFileLines() + MessageText.Format(UserText.ToolsHint),
-            "/approve" => Pending(argument, _agentBuiltTools.ApproveTool, _skillTools.ApproveSkillFile),
-            "/reject" => Pending(argument, _agentBuiltTools.RejectTool, _skillTools.RejectSkillFile),
-            "/usage" => sessionUsage is null ? MessageText.Format(UserText.UsageNotTracked) : UsageText.Summary(sessionUsage, Display),
-            _ => null,
-        };
-    }
-
-    /// <summary>
-    /// /approve and /reject reach an agent-built tool or a skill file the agent wrote (FX20), by name: a tool when one
-    /// is pending, else the skill file, else the tool's own "nothing pending" reply; a name that is both is refused.
-    /// </summary>
-    private string Pending(string name, Func<string, string> onTool, Func<string, string> onSkillFile)
-    {
-        bool tool = !string.IsNullOrWhiteSpace(name) && _agentBuiltTools.HasPendingTool(name);
-        bool skillFile = !string.IsNullOrWhiteSpace(name) && _skillTools.HasPendingSkillFile(name);
-        if (tool && skillFile)
-            return MessageText.Format(UserText.PendingToolAndSkillFile, new { Name = name, Tool = $"{name}.tool.md", File = $"{name}.md" });
-        return skillFile ? onSkillFile(name) : onTool(name);
-    }
-
-    private string PendingSkillFileLines() =>
-        _skillTools.ListPendingSkillFiles() is { Length: > 0 } lines ? "\n" + lines : "";
+    /// <param name="sessionUsage">The session's usage records so far, for /usage (F3); null when the host doesn't track usage.</param>
+    public string? HandleUserCommand(string input, IReadOnlyList<UsageRecord>? sessionUsage = null) => _commands.Handle(input, sessionUsage);
 
     /// <summary>
     /// What the model is sent must be the same bytes on every machine. Text read from the skill files, and a
@@ -350,21 +194,4 @@ public class AgentEngine
     /// autocrlf, LF on Linux); everything the engine sends uses LF.
     /// </summary>
     internal static string Normalise(string text) => text.ReplaceLineEndings("\n");
-
-    /// <summary>One of the engine's own methods as a tool, its [Description] with LF line endings (see <see cref="Normalise"/>).</summary>
-    private static AIFunction Function(Delegate method, string name) =>
-        AIFunctionFactory.Create(method, new AIFunctionFactoryOptions
-        {
-            Name = name,
-            Description = method.Method.GetCustomAttribute<DescriptionAttribute>() is { } description ? Normalise(description.Description) : null,
-        });
-    
-    /// <summary>The tools that let the agent extend itself: skills and agent-built tools (toolset "skills", F5).</summary>
-    private void AddSelfExtensionTools()
-    {
-        _registry.Add(Function(_skillTools.CreateSkillFile, nameof(CreateSkillFile)));
-        _registry.Add(Function(_skillTools.ReloadSkills, nameof(ReloadSkills)));
-        _registry.Add(Function(_agentBuiltTools.CreateTool, nameof(CreateTool)));
-        _registry.Add(Function(_agentBuiltTools.ListAgentTools, nameof(ListAgentTools)));
-    }
 }

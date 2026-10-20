@@ -1,5 +1,6 @@
 namespace LouisAgent.AcpServer.Turns;
 
+using LouisAgent.Core.Agent.Turns;
 using LouisAgent.AcpServer.Protocol;
 using LouisAgent.Core.Agent;
 using Microsoft.Extensions.AI;
@@ -44,7 +45,7 @@ internal sealed class TurnRelay(AgentEngine agent, JsonRpcWriter writer)
                             {
                                 sessionUpdate = "tool_call",
                                 toolCallId = call.CallId,
-                                title = $"{call.Name} {AgentEngine.DescribeArguments(call.Arguments)}".Trim(),
+                                title = $"{call.Name} {ToolCallText.Describe(call.Arguments)}".Trim(),
                                 kind = ToolCards.Kind(call.Name),
                                 status = "in_progress",
                                 rawInput = call.Arguments,

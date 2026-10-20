@@ -1,3 +1,4 @@
+using LouisAgent.Core.Agent.Turns;
 using LouisAgent.Core.Hosting.Prompts;
 using LouisAgent.Core.Agent.Toolsets;
 using System.Text.Encodings.Web;
@@ -66,7 +67,7 @@ public class ModelRequestSnapshotTests
             SystemPrompt = engine.SkillDocumentation,
             NoToolsHistory = Engine(supportsTools: false).NewHistory().Select(m => new { Role = m.Role.Value, m.Text }),
             ToolCallGuards.TruncatedCallMessage,
-            AgentEngine.ContinueAfterCutOffMessage,
+            TurnRunner.ContinueAfterCutOffMessage,
         };
         return JsonSerializer.Serialize(snapshot, Json)
             .Replace(JsonEncodedText.Encode(_skillsDir).ToString(), "<skills>")

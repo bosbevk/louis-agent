@@ -1,5 +1,6 @@
 namespace LouisAgent.Cli;
 
+using LouisAgent.Core.Agent.Turns;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Reports;
 using LouisAgent.Core.Agent;
@@ -148,7 +149,7 @@ internal sealed class ConsoleChat(AgentEngine engine)
                     case FunctionCallContent call:
                         if (midLine) Console.WriteLine();
                         inThinking = false;
-                        WriteStatus(MessageText.Format(CliUserText.ToolCallStatus, new { call.Name, Arguments = AgentEngine.DescribeArguments(call.Arguments) }));
+                        WriteStatus(MessageText.Format(CliUserText.ToolCallStatus, new { call.Name, Arguments = ToolCallText.Describe(call.Arguments) }));
                         midLine = false;
                         break;
                     case FunctionResultContent result:

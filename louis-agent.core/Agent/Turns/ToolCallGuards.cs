@@ -1,4 +1,4 @@
-namespace LouisAgent.Core.Agent;
+namespace LouisAgent.Core.Agent.Turns;
 
 using LouisAgent.Core.Usage.Records;
 using System.Runtime.CompilerServices;
