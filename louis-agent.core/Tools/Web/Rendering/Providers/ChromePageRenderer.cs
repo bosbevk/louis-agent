@@ -1,5 +1,6 @@
 namespace LouisAgent.Core.Tools.Web.Rendering.Providers;
 
+using LouisAgent.Core.Tools.Web.Fetching;
 using LouisAgent.Core.Tools.Web.Browsing;
 using LouisAgent.Core.Tools.Web.Rendering;
 
@@ -25,7 +26,7 @@ public sealed class ChromePageRenderer(IWebBrowser browser) : IPageRenderer
             throw new PageRenderException(ex.Message);
         }
 
-        var (title, text) = WebTools.HtmlToText(visit.Html, new Uri(visit.Url));
+        var (title, text) = HtmlText.ToText(visit.Html, new Uri(visit.Url));
         return new RenderedPage(visit.Url, string.IsNullOrWhiteSpace(title) ? text : $"# {title}\n\n{text}");
     }
 }

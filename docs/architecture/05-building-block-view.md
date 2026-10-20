@@ -253,7 +253,7 @@ is exposed to the model** — helpers must be `internal` or `private`). Names an
 | `GitTools` | Status, diffs, branches, staging, commit, stash, push/pull/fetch, merge/rebase, tags, config |
 | `DotNetTools` | `DotNetBuild`, `DotNetTest`, `DotNetRun`, restore, clean, packages, project and SDK info |
 | `PythonTools`, `PowerShellTools`, `BashTools` | Run code or scripts (bash is Git Bash on Windows, never WSL) |
-| `WebTools` | `WebSearch` (Google or DuckDuckGo via `IWebSearchProvider`), `FetchUrl` (SSRF-guarded) |
+| `WebTools`, `QuoteTools`, `CurrencyTools` | The web toolset: `WebSearch` (via `IWebSearchProvider`), `FetchUrl` and `ReadRenderedPage` (through the SSRF-guarded `PageFetcher`); `VerifyQuote`; `ConvertCurrency` |
 | `PaymoTools` | Time entries, tasks, projects, summaries — when `PAYMO_API_KEY` is set |
 | `DevOpsTools` | Azure DevOps work items and sprints (empty sprint = the team's current one) — when `DEVOPS_API_KEY`, `DEVOPS_ORGANIZATION` and `DEVOPS_PROJECT` are set |
 | `AgentEngine` | `ExecuteSkill`, `CreateSkillFile`, `ReloadSkills`, `CreateTool`, `ListAgentTools` |

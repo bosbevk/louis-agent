@@ -29,7 +29,6 @@ public class FileSizeTests
         "louis-agent.core/Tools/Shell/BashTools.cs",
         "louis-agent.core/Tools/Shell/PythonTools.cs",
         "louis-agent.core/Tools/Web/Browsing/ChromeWebBrowser.cs",
-        "louis-agent.core/Tools/Web/WebTools.cs",
         "packs/louis-agent.pack.shops/Providers/CheckersCatalogue.cs",
         "src/louis-agent.acp-server/AcpServer.cs",
         "src/louis-agent.api/Benchmarks/Store/BenchmarkRecorder.cs",
@@ -50,7 +49,6 @@ public class FileSizeTests
         "tests/louis-agent.api.tests/Sessions/AgentSessionsTests.cs",
         "tests/louis-agent.core.tests/Tools/Integrations/DevOps/DevOpsToolsTests.cs",
         "tests/louis-agent.core.tests/Tools/Integrations/Paymo/PaymoToolsTests.cs",
-        "tests/louis-agent.core.tests/Tools/Web/WebToolsTests.cs",
         "tests/louis-agent.orchestrator.tests/OrchestratorTests.cs",
         "tools/louis-agent.usage-probe/Program.cs",
     ];

@@ -1,9 +1,11 @@
 using System.Net;
 using System.Text;
 using LouisAgent.Core.Tools.Web;
+using LouisAgent.Core.Tools.Web.Fetching;
+using LouisAgent.Core.Tools.Web.Quotes;
 using LouisAgent.Core.Tools.Web.Rendering;
 
-namespace LouisAgent.Core.Tests.Tools.Web;
+namespace LouisAgent.Core.Tests.Tools.Web.Quotes;
 
 // F30 step 7: a minion's price is used only when its quote is on the page. The check is code, no model: fetch the page
 // through the SSRF guard, compare with whitespace collapsed and case folded, and say found, not found, empty or failed.
@@ -30,9 +32,9 @@ public class VerifyQuoteTests
     private static HttpResponseMessage Html(string html) =>
         new(HttpStatusCode.OK) { Content = new StringContent(html, Encoding.UTF8, "text/html") };
 
-    private static WebTools Tools(Func<HttpRequestMessage, HttpResponseMessage> respond, IPageRenderer? renderer = null,
+    private static QuoteTools Tools(Func<HttpRequestMessage, HttpResponseMessage> respond, IPageRenderer? renderer = null,
         Func<string, CancellationToken, Task<IPAddress[]>>? dns = null) =>
-        new(handler: new StubHandler(respond), resolve: dns ?? PublicDns, renderer: renderer);
+        new(new PageFetcher(new StubHandler(respond), dns ?? PublicDns), renderer);
 
     private sealed class FakeRenderer(string text) : IPageRenderer
     {
@@ -57,7 +59,9 @@ public class VerifyQuoteTests
         var renderer = new FakeRenderer("R22.99");
         using var turn = new CancellationTokenSource();
 
-        await Tools(_ => Html(""), renderer).ReadRenderedPage("https://www.pnp.co.za/p/1", cancellationToken: turn.Token);
+        // The same renderer serves WebTools.ReadRenderedPage; the token reaches it the same way.
+        var web = new WebTools(fetcher: new PageFetcher(new StubHandler(_ => Html("")), PublicDns), renderer: renderer);
+        await web.ReadRenderedPage("https://www.pnp.co.za/p/1", cancellationToken: turn.Token);
 
         Assert.That(renderer.Token, Is.EqualTo(turn.Token));
     }

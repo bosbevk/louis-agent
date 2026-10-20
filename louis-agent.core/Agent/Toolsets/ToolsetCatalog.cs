@@ -5,6 +5,7 @@ using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Tools.Agents;
+using LouisAgent.Core.Tools.Currency;
 using LouisAgent.Core.Tools.Documents;
 using LouisAgent.Core.Tools.DotNet;
 using LouisAgent.Core.Tools.Git;
@@ -12,6 +13,8 @@ using LouisAgent.Core.Tools.Integrations.DevOps;
 using LouisAgent.Core.Tools.Integrations.Paymo;
 using LouisAgent.Core.Tools.Shell;
 using LouisAgent.Core.Tools.Web;
+using LouisAgent.Core.Tools.Web.Fetching;
+using LouisAgent.Core.Tools.Web.Quotes;
 using LouisAgent.Core.Tools.Workspace;
 using Microsoft.Extensions.Logging;
 
@@ -70,8 +73,13 @@ public static class ToolsetCatalog
         new("web", "Search the web and fetch web pages",
             GuideFile: SkillFiles.Guide("web"),
             MissingSettings: _ => [],
-            ToolTypes: [typeof(WebTools)],
-            CreateTools: ctx => [new WebTools(ctx.WebSearch, rates: ctx.Rates, renderer: ctx.Renderer)],
+            // S (CL15): three classes (finding and reading, a quote's provenance, currency); one guarded fetcher for the two that fetch.
+            ToolTypes: [typeof(WebTools), typeof(QuoteTools), typeof(CurrencyTools)],
+            CreateTools: ctx =>
+            {
+                var fetcher = new PageFetcher();
+                return [new WebTools(ctx.WebSearch, fetcher, ctx.Renderer), new QuoteTools(fetcher, ctx.Renderer), new CurrencyTools(ctx.Rates)];
+            },
             ParallelSafe: true),
 
         // CL15: the shops (F33, F34) are a pack, packs/louis-agent.pack.shops; a host loads it with PACKS=shops or an identity that names it.

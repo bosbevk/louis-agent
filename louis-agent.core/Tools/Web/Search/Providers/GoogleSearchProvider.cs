@@ -1,5 +1,6 @@
 namespace LouisAgent.Core.Tools.Web.Search.Providers;
 
+using LouisAgent.Core.Tools.Web.Fetching;
 using System.Net;
 using System.Text.Json;
 using LouisAgent.Core.Messages;
@@ -53,9 +54,9 @@ public sealed class GoogleSearchProvider(string apiKey, string searchEngineId, H
 
         return items.EnumerateArray()
             .Select(i => new WebSearchResult(
-                WebTools.CleanInline(i.TryGetProperty("title", out var t) ? t.GetString() : ""),
+                HtmlText.CleanInline(i.TryGetProperty("title", out var t) ? t.GetString() : ""),
                 i.TryGetProperty("link", out var l) ? l.GetString() ?? "" : "",
-                WebTools.CleanInline(i.TryGetProperty("snippet", out var s) ? s.GetString() : "")))
+                HtmlText.CleanInline(i.TryGetProperty("snippet", out var s) ? s.GetString() : "")))
             .Where(r => r.Url.Length > 0)
             .Take(count)
             .ToList();
