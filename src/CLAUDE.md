@@ -21,7 +21,9 @@ Puls: `Brand/`, `Landing/`, `Chat/`, `Admin/`), and puts its C# code in a folder
 per file, the namespace equal to the folder path. No `Services/` or `Models/`: each names a kind of thing, not a concern.
 `_Imports.razor` carries a `@using` per folder the pages use. A page keeps its layout and hands each piece to a component
 (W2): state flows down as parameters and up as `EventCallback`s, a component never reaches into its page, and a
-component's `@code` over about forty lines goes into a code-behind (`X.razor.cs`). A string parameter is passed as
+`.razor` holds markup only: its C# is the `X.razor.cs` code-behind (a `partial class` in the folder's namespace), and
+logic that needs no component (text, search, matching, formatting, sums) a plain class in a concern folder with NUnit
+tests (`RazorHasNoCodeTests` holds it; its `PendingCode` list is what W2b still has to move). A string parameter is passed as
 `@Value`, never `Value`: Razor reads the bare name as a literal. A turn's life (the draft, the session, the stream, the
 save) is the shared `ChatRunner`, never a page's own copy. The shared library's chat types are in `Chats/`, not `Chat/`:
 a namespace named like a type shadows the type for every file under its parent.

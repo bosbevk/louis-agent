@@ -805,6 +805,8 @@ sequenceDiagram
 - **Two fixes before the PR** (Louis, review of W2's first commit, 2026-10-20): the snapshot rule no longer collapses the
   whitespace between tags, since a space there can be seen (the line breaks beside tags still go); the shared library's
   `Chat/` folder is `Chats/`, so no namespace is named like the `Chat` type.
+- **No code in razor** (Louis, 2026-10-20): every `@code` block moves to a code-behind, component-free logic to tested
+  plain classes, held by `RazorHasNoCodeTests`; markup, behaviour and the page snapshots stay byte-equal.
 
 ---
 [Plans](README.md) · [The platform plan](platform.md)

@@ -80,7 +80,9 @@ page makes, listed; its landing page is a golden too. The code-review app's test
 empty and with the turn, before W2 splits it; its components get tests when Phase 4 adds the Branches queue.
 `tests/louis-agent.web.testing` holds what the three share: the fixture replay, the stub API (`FixtureApi`: fixed JSON
 for what the apps read at start-up, one session, the recorded turn streamed, the workspace and git reads empty) and the
-snapshot helper.
+snapshot helper. The shared library's tests also hold the web layer's rule: `RazorHasNoCodeTests` scans every `.razor`
+under `src/` for an `@code` block (*Separate by concern*), a ratchet whose `PendingCode` list names the files W2b still
+has to move and can only shrink; when it is empty the list goes and the test is a plain rule.
 
 ## What isn't covered yet
 
