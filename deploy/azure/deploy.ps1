@@ -72,8 +72,10 @@ switch ($Verb) {
             $user = Get-EnvValue $mongoFile 'MONGO_INITDB_ROOT_USERNAME'
             $password = Get-EnvValue $mongoFile 'MONGO_INITDB_ROOT_PASSWORD'
             $url = $null
-            # The home PC's Mongo, at the loopback port the ts-forwarder sidecar forwards.
-            if ($user -and $password) { $url = "mongodb://${user}:${password}@127.0.0.1:27017/?authSource=admin&connectTimeoutMS=10000" }
+            # The home PC's Mongo, at the loopback port the ts-forwarder sidecar forwards. No `&` in the URL: az is a
+            # batch file on Windows, and cmd would cut the value there (connectTimeoutMS was lost that way on 2026-10-24);
+            # the same holds for any secret value, so none of ours may contain & or |.
+            if ($user -and $password) { $url = "mongodb://${user}:${password}@127.0.0.1:27017/?authSource=admin" }
             $wanted += @{ name = 'benchmarks-mongo-url'; value = $url }
         } else {
             $wanted += @{ name = 'searxng-secret'; value = Get-EnvValue $searxngFile 'SEARXNG_SECRET' }
