@@ -2,6 +2,7 @@ using LouisAgent.Web.Shared.Api;
 using LouisAgent.Web.Shared.Chats;
 using ClaudeStyleStream = LouisAgent.Api.Sessions.ClaudeStyleStream;
 using System.Text.Json;
+using LouisAgent.SessionStream;
 using LouisAgent.Web.Shared;
 
 namespace LouisAgent.Api.Tests.Sessions;
@@ -34,7 +35,7 @@ public class DelegationToolsetsTests
         var inner = JsonDocument.Parse("""{"type":"message_start","message":{"session_id":"sess_2","role":"assistant","toolsets":["web","shops"]}}""").RootElement;
         var outer = JsonSerializer.SerializeToElement(new { type = "sub_session", tool_use_id = "toolu_1", agent = "puls", @event = "message_start", data = inner });
 
-        TurnStream.Apply(turn, new AgentStreamEvent("sub_session", outer));
+        TurnStream.Apply(turn, SessionEvent.From("sub_session", outer));
 
         Assert.That(Delegation.From(turn.Blocks[0])!.Toolsets, Is.EqualTo(new[] { "web", "shops" }));
     }

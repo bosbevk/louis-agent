@@ -176,6 +176,19 @@ public class SessionStreamReaderTests
         Assert.That(events[1], Is.InstanceOf<MessageStopped>());
     }
 
+    [Test]
+    public void FromMapsAnEventTheSameWayTheReaderDoes()
+    {
+        using var document = JsonDocument.Parse("{\"type\":\"message_start\",\"message\":{\"toolsets\":[\"web\"],\"session_role\":\"puls-cook\"}}");
+
+        var started = SessionEvent.From("message_start", document.RootElement) as MessageStarted;
+
+        Assert.That(started, Is.Not.Null);
+        Assert.That(started!.Toolsets, Is.EqualTo(new[] { "web" }));
+        Assert.That(started.Role, Is.EqualTo("puls-cook"));
+        Assert.That(SessionEvent.From("ping", document.RootElement), Is.InstanceOf<UnknownEvent>());
+    }
+
     private static readonly string FixtureDirectory = Path.Combine(AppContext.BaseDirectory, "Fixtures");
 
     private static Task<List<SessionEvent>> ReadRecordedTurnAsync() =>

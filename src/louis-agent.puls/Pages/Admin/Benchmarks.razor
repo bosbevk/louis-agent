@@ -5,6 +5,7 @@
 @layout AdminLayout
 @using System.Net
 @using System.Text.Json
+@using LouisAgent.SessionStream
 @using LouisAgent.Web.Shared
 @inject AgentApi Api
 @inject ChatStore Store
@@ -457,7 +458,7 @@ else if (_data is { } data)
             {
                 var row = RowOf(new TurnKey(mode, repeat, task, n));
                 if (e.TryGetProperty("data", out var data) && Str(e, "type") is { } type)
-                    TurnStream.Apply(row.Turn, new AgentStreamEvent(type, data));
+                    TurnStream.Apply(row.Turn, SessionEvent.From(type, data));
                 row.Streamed = true;
                 break;
             }
@@ -502,7 +503,7 @@ else if (_data is { } data)
                 $"admin/benchmarks/runs/{_run.Id}/turns/{Uri.EscapeDataString(key.Mode)}/{key.Repeat}/{Uri.EscapeDataString(key.Task)}/{key.N}/events");
             var turn = new Turn { UserText = row.Turn.UserText };
             foreach (var ev in json.GetProperty("events").EnumerateArray())
-                TurnStream.Apply(turn, new AgentStreamEvent(ev.GetProperty("type").GetString()!, ev.GetProperty("data")));
+                TurnStream.Apply(turn, SessionEvent.From(ev.GetProperty("type").GetString()!, ev.GetProperty("data")));
             row.Turn = turn;
             row.Streamed = true;
         }

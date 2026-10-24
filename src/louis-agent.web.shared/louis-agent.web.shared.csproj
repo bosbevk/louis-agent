@@ -20,4 +20,9 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.12" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- F18 step 1b: the web apps read the session stream through the one reader (CL11). -->
+    <ProjectReference Include="..\..\louis-agent.session-stream\louis-agent.session-stream.csproj" />
+  </ItemGroup>
+
 </Project>

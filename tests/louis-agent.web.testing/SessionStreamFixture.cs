@@ -1,5 +1,5 @@
-using System.Net.ServerSentEvents;
 using System.Text.Json;
+using LouisAgent.SessionStream;
 using LouisAgent.Testing;
 using LouisAgent.Web.Shared.Api;
 using LouisAgent.Web.Shared.Chats;
@@ -21,12 +21,12 @@ public static class SessionStreamFixture
     public static string StreamFile => Path.Combine(Folder, "session-stream.sse");
 
     /// <summary>The stream's events, in order, as the API client hands them to the page.</summary>
-    public static async Task<List<AgentStreamEvent>> EventsAsync()
+    public static async Task<List<SessionEvent>> EventsAsync()
     {
-        var events = new List<AgentStreamEvent>();
+        var events = new List<SessionEvent>();
         await using var stream = File.OpenRead(StreamFile);
-        await foreach (var item in SseParser.Create(stream).EnumerateAsync())
-            events.Add(new AgentStreamEvent(item.EventType, JsonDocument.Parse(item.Data).RootElement));
+        await foreach (var streamEvent in SessionStreamReader.ReadAsync(stream, CancellationToken.None))
+            events.Add(streamEvent);
         return events;
     }
 

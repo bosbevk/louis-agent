@@ -3,6 +3,7 @@ using LouisAgent.Web.Shared.Chats;
 using LouisAgent.Web.Shared.Text;
 using ClaudeStyleStream = LouisAgent.Api.Sessions.ClaudeStyleStream;
 using System.Text.Json;
+using LouisAgent.SessionStream;
 using LouisAgent.Web.Shared;
 
 namespace LouisAgent.Api.Tests.Sessions;
@@ -38,7 +39,7 @@ public class ContinuedSpecialistRoleTests
         };
         var inner = JsonDocument.Parse("""{"type":"message_start","message":{"session_id":"sess_2","role":"assistant","toolsets":["web","shops"],"session_role":"puls-cook"}}""").RootElement;
         var outer = JsonSerializer.SerializeToElement(new { type = "sub_session", tool_use_id = "toolu_9", agent = "puls", @event = "message_start", data = inner });
-        TurnStream.Apply(turn, new AgentStreamEvent("sub_session", outer));
+        TurnStream.Apply(turn, SessionEvent.From("sub_session", outer));
         return turn;
     }
 

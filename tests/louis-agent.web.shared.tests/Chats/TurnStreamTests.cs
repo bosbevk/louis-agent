@@ -1,4 +1,5 @@
 using System.Text.Json;
+using LouisAgent.SessionStream;
 using LouisAgent.Web.Shared.Api;
 using LouisAgent.Web.Shared.Chats;
 using LouisAgent.Web.Shared.Usage;
@@ -44,7 +45,7 @@ public class TurnStreamTests
 
     // ---- One case per event the stream folds. ----
 
-    private static AgentStreamEvent Event(string type, string json) => new(type, JsonDocument.Parse(json).RootElement);
+    private static SessionEvent Event(string type, string json) => SessionEvent.From(type, JsonDocument.Parse(json).RootElement);
 
     private static Turn Apply(params (string Type, string Json)[] events)
     {

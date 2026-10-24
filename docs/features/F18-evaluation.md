@@ -98,6 +98,13 @@ calibrated model grader), 7 (Python leaves), 7a (notes on a run) and 8 (docs and
 - **Review of step 1a:** `MessageStarted` carries its `Toolsets` and `Role` from `message` (the plan's signature; 1b's
   `TurnStream` reads them). A data line that isn't JSON is kept as an `UnknownEvent` whose `Data` is its text, so a cut-off
   connection doesn't lose the events after it.
+- **Step 1b** (`src/louis-agent.web.shared`): `AgentApi.StreamMessageAsync` yields the reader's `SessionEvent`s, and
+  `AgentStreamEvent` is gone. `TurnStream.Apply` matches the records: `MessageStarted` gives the toolsets and the role,
+  `SubSessionStreamed` its inner event (no more second read of the JSON). `SessionEvent.From(type, data)` builds an
+  event from a stored line, for the admin portal's saved runs and the tests. Where the plan said the tests stay
+  unchanged: their assertions do, but the helpers that built an `AgentStreamEvent` now call `SessionEvent.From`, and
+  the shared fixture reads through the reader. One behaviour change: a `message_start` with an empty `toolsets` array
+  leaves the turn's toolsets as they were, where it used to set an empty list; nothing reads the difference today.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

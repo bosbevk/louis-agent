@@ -3,6 +3,7 @@ using System.Net.Http.Json;
 using System.Net.ServerSentEvents;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
+using LouisAgent.SessionStream;
 using Microsoft.AspNetCore.Components.WebAssembly.Http;
 
 namespace LouisAgent.Web.Shared.Api;
@@ -73,7 +74,7 @@ public sealed class AgentApi(HttpClient http, ChatSettings settings)
     }
 
     /// <summary>Sends a message and yields the answer's events as they arrive.</summary>
-    public async IAsyncEnumerable<AgentStreamEvent> StreamMessageAsync(
+    public async IAsyncEnumerable<SessionEvent> StreamMessageAsync(
         string sessionId, string message, IReadOnlyList<Attachment> attachments,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
@@ -89,8 +90,8 @@ public sealed class AgentApi(HttpClient http, ChatSettings settings)
 
         using var response = await SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
         await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
-        await foreach (var item in SseParser.Create(stream).EnumerateAsync(cancellationToken))
-            yield return new AgentStreamEvent(item.EventType, JsonDocument.Parse(item.Data).RootElement);
+        await foreach (var streamEvent in SessionStreamReader.ReadAsync(stream, cancellationToken))
+            yield return streamEvent;
     }
 
     /// <summary>A GET returning plain text (the admin portal's saved stream events, F27).</summary>

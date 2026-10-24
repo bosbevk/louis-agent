@@ -6,6 +6,7 @@
    requests and its transcript, replayed from the stored events through the chat's TurnStream, every mode at once; one
    request's record. One repeat at a time. Motion is off for people who ask for less (the explorer's CSS). *@
 @using System.Text.Json
+@using LouisAgent.SessionStream
 @using LouisAgent.Web.Shared
 @inject AgentApi Api
 @inject IJSRuntime Js
@@ -699,7 +700,7 @@
             int wait = at is { } now && last is { } before ? (int)Math.Clamp((now - before).TotalMilliseconds / 3, 0, 250) : 15;
             last = at ?? last;
             if (wait > 0) await Task.Delay(wait, stop);
-            TurnStream.Apply(turn, new AgentStreamEvent(type, data));
+            TurnStream.Apply(turn, SessionEvent.From(type, data));
             if (++since % 3 == 0 || wait > 0) { StateHasChanged(); since = 0; }
         }
     }
