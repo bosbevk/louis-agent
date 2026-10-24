@@ -15,8 +15,7 @@ public sealed class CookNoError : IGrader
 
     public ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken)
     {
-        var turns = trial.Transcript.Turns.Select(t => TurnView.From(t.Events)).ToList();
-        int errors = CookScorer.Score(trial.Scenario.Id, turns, cookOn: trial.Mode.Name == "puls-cook").Errors;
+        int errors = CookScorer.ScoreTrial(trial).Errors;
         return ValueTask.FromResult(errors == 0
             ? new Grade(Name, Version, 1, GradeOutcome.Pass, "no turn failed")
             : new Grade(Name, Version, 0, GradeOutcome.Fail, $"{errors} turn(s) failed"));

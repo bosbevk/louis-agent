@@ -1,4 +1,6 @@
+using LouisAgent.Evals;
 using LouisAgent.Evals.Puls.Scoring;
+using LouisAgent.Evals.Trials;
 using LouisAgent.Evals.Puls.Transcripts;
 
 namespace LouisAgent.Evals.Puls.Cook;
@@ -17,6 +19,13 @@ public static class CookScorer
 
     /// <summary>The shops' sites, sorted and without repeats (the Python's SHOPS).</summary>
     private static readonly string[] SiteHosts = Shops.Hosts.Select(h => h.Host).Distinct().OrderBy(h => h, StringComparer.Ordinal).ToArray();
+
+    /// <summary>Whether a mode has the cook: the Python's rule, the specialists toolset (cook/run_check.py), whatever the mode is named.</summary>
+    public static bool CookOn(EvalMode mode) => mode.Toolsets.Contains("specialists", StringComparer.Ordinal);
+
+    /// <summary>One trial as the cook's scores: the grader's one helper, so every cook grader scores a trial the same way.</summary>
+    public static CookScores ScoreTrial(Trial trial) =>
+        Score(trial.Scenario.Id, trial.Transcript.Turns.Select(t => TurnView.From(t.Events)).ToList(), CookOn(trial.Mode));
 
     public static CookScores Score(string task, IReadOnlyList<TurnView> turns, bool cookOn)
     {

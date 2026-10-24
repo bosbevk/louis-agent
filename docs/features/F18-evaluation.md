@@ -222,6 +222,7 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   (required: no turn failed), both `FixedRule`, which step 4's eval sets need. They were written first and failed on the
   red run. The priced and no-shop grades are not graders yet: their thresholds are for the cook eval (step 5) to decide,
   not invented here.
+  The cook is on when a mode has the specialists toolset, as the Python decides it (`CookScorer.CookOn`), whatever the mode is named, and both graders score a trial through one helper (`CookScorer.ScoreTrial`). A test with a mode named `puls-cook-sonnet` checks it.
 - **Step 1d** (`louis-agent.orchestrator`): `LouisAgentClient.ReadStreamAsync` takes the response's stream and reads its
   events through the reader, folding them by their record types; the framing loop is gone. Its tests feed the same SSE
   text as bytes instead of a `StringReader`, with no assertion changed.

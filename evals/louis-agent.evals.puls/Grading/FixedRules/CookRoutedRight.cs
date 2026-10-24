@@ -13,11 +13,9 @@ public sealed class CookRoutedRight : IGrader
     public GraderKind Kind => GraderKind.FixedRule;
     public bool Required => true;
 
-    /// <summary>The cook's mode is the one with the cook: only "puls-cook" runs the cook, the rest answer themselves.</summary>
     public ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken)
     {
-        var turns = trial.Transcript.Turns.Select(t => TurnView.From(t.Events)).ToList();
-        var scores = CookScorer.Score(trial.Scenario.Id, turns, cookOn: trial.Mode.Name == "puls-cook");
+        var scores = CookScorer.ScoreTrial(trial);
         return ValueTask.FromResult(scores.RoutedRight
             ? new Grade(Name, Version, 1, GradeOutcome.Pass, "routed to the cook")
             : new Grade(Name, Version, 0, GradeOutcome.Fail, $"handled as {scores.Role ?? "by Puls itself"}"));

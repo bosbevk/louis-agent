@@ -1,3 +1,4 @@
+using LouisAgent.Evals;
 using LouisAgent.Evals.Puls.Cook;
 using LouisAgent.Evals.Puls.Transcripts;
 
@@ -180,6 +181,16 @@ public class CookScorerTests
 
         Assert.That(scores.Errors, Is.EqualTo(1));
         Assert.That(scores.RoutedRight, Is.False);
+    }
+
+    [Test]
+    public void CookOn_IsTheSpecialistsToolset_WhateverTheModeIsNamed()
+    {
+        // The Python's rule: "specialists" in the mode's toolsets. A mode named for the cook with no cook is not on; a
+        // differently named mode with the cook is.
+        Assert.That(CookScorer.CookOn(new EvalMode("puls-cook-sonnet", "puls-cook", ["specialists", "web"])), Is.True);
+        Assert.That(CookScorer.CookOn(new EvalMode("puls-cook", "puls-cook", ["web", "shops"])), Is.False);
+        Assert.That(CookScorer.CookOn(new EvalMode("puls-tools", "puls-cook", ["web", "shops"])), Is.False);
     }
 
     [Test]

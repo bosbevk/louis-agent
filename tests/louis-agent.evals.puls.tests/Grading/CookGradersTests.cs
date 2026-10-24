@@ -23,6 +23,15 @@ public class CookGradersTests
     }
 
     [Test]
+    public async Task RoutedRight_FollowsTheSpecialistsToolset_NotTheModesName()
+    {
+        // A cook mode with another name (a puls-cook-sonnet run) is on the cook all the same.
+        var trial = Trial(new EvalMode("puls-cook-sonnet", "puls-cook", ["specialists", "web"]), "cook-af", [Start(), Text("Resep.")]);
+
+        Assert.That((await new CookRoutedRight().GradeAsync(trial, CancellationToken.None)).Outcome, Is.EqualTo(GradeOutcome.Pass));
+    }
+
+    [Test]
     public async Task RoutedRight_FailsWhenPulsAnsweredItself()
     {
         var trial = Trial(Cook, "cook-af", [Text("Resep.")]);
