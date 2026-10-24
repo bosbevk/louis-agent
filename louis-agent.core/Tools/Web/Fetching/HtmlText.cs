@@ -30,6 +30,8 @@ internal static partial class HtmlText
 
         content = Heading().Replace(content, m =>
             $"\n\n{new string('#', m.Groups[1].Value[0] - '0')} {CleanInline(m.Groups[2].Value)}\n\n");
+        // Images before links: a product tile is often an image alone inside its link, which kept nothing before.
+        content = Image().Replace(content, m => ImageMarkdown(m.Value, baseUri));
         content = Anchor().Replace(content, m =>
         {
             string text = CleanInline(m.Groups["text"].Value);
@@ -49,6 +51,27 @@ internal static partial class HtmlText
         string text = BlankLines().Replace(string.Join('\n', lines), "\n\n").Trim();
         text = Placeholder().Replace(text, m => blocks[int.Parse(m.Groups[1].Value)]);
         return (title, BlankLines().Replace(text, "\n\n").Trim());
+    }
+
+    /// <summary>
+    /// An image as <c>![alt](url)</c> (a product's photo on a shop's page), or nothing: only one with alt text and an
+    /// http(s) file that isn't an SVG, so icons, spacers and logos stay out. A lazy-loaded image's file is in
+    /// <c>data-src</c> or the first entry of <c>srcset</c>, while <c>src</c> holds a placeholder; those win.
+    /// </summary>
+    private static string ImageMarkdown(string tag, Uri baseUri)
+    {
+        var attributes = Attribute().Matches(tag).ToDictionary(a => a.Groups["name"].Value.ToLowerInvariant(),
+            a => WebUtility.HtmlDecode(a.Groups["value"].Value), StringComparer.Ordinal);
+        string alt = CleanInline(attributes.GetValueOrDefault("alt")).Replace('[', '(').Replace(']', ')');
+        if (alt.Length == 0) return "";
+        string? file = attributes.GetValueOrDefault("data-src");
+        if (string.IsNullOrWhiteSpace(file) && attributes.GetValueOrDefault("srcset") is { } set)
+            file = set.Split(',')[0].Trim().Split(' ', 2)[0];
+        if (string.IsNullOrWhiteSpace(file)) file = attributes.GetValueOrDefault("src");
+        if (string.IsNullOrWhiteSpace(file) || !Uri.TryCreate(baseUri, file.Trim(), out var target)
+            || target.Scheme is not ("http" or "https") || target.AbsolutePath.EndsWith(".svg", StringComparison.OrdinalIgnoreCase))
+            return "";
+        return $"![{alt}]({target})";
     }
 
     /// <summary>An inline fragment (a title, a snippet) as one line, tags gone and entities decoded.</summary>
@@ -88,6 +111,12 @@ internal static partial class HtmlText
 
     [GeneratedRegex(@"<a\b[^>]*href=""(?<href>[^""]*)""[^>]*>(?<text>.*?)</a>", RegexOptions.IgnoreCase | RegexOptions.Singleline)]
     private static partial Regex Anchor();
+
+    [GeneratedRegex(@"<img\b[^>]*>", RegexOptions.IgnoreCase)]
+    private static partial Regex Image();
+
+    [GeneratedRegex(@"(?<name>[\w-]+)\s*=\s*(?:""(?<value>[^""]*)""|'(?<value>[^']*)')")]
+    private static partial Regex Attribute();
 
     [GeneratedRegex(@"<li\b[^>]*>", RegexOptions.IgnoreCase)]
     private static partial Regex ListItem();

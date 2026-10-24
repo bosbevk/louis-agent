@@ -26,7 +26,7 @@ public static class Markdown
             if (!IsSafeUrl(link.Url)) link.Url = "#";
             if (link.IsImage && !IsShopImage(link.Url)) link.IsImage = false;
             // A shop's photo opens its original in a dialog when clicked (chat.js): the same file, without the size.
-            if (link.IsImage) link.GetAttributes().AddProperty("data-original", new UriBuilder(link.Url!) { Query = "" }.Uri.AbsoluteUri);
+            if (link.IsImage) link.GetAttributes().AddProperty("data-original", WithoutSize(link.Url!));
         }
 
         foreach (var link in document.Descendants<AutolinkInline>())
@@ -37,12 +37,31 @@ public static class Markdown
         return new MarkupString(document.ToHtml(Pipeline));
     }
 
-    /// <summary>The hosts whose images are shown: the shops' catalogues the cook reads (Checkers' cards load from here).</summary>
-    public static readonly IReadOnlyList<string> ImageHosts = ["catalog.sixty60.co.za"];
+    /// <summary>
+    /// The hosts whose images are shown: the shops' own image hosts, from the catalogue the cook reads (Checkers' cards
+    /// load from here) and the shops' pages it renders (F33). An entry starting with a dot is a domain: Pick n Pay
+    /// numbers its CDN hosts (cdn-prd-01, cdn-prd-02, ...), so any host under its domain counts.
+    /// </summary>
+    public static readonly IReadOnlyList<string> ImageHosts =
+        ["catalog.sixty60.co.za", ".pnp.co.za", "assets.woolworthsstatic.co.za"];
 
     private static bool IsShopImage(string? url) =>
         Uri.TryCreate(url, UriKind.Absolute, out var uri) && uri.Scheme == Uri.UriSchemeHttps &&
-        ImageHosts.Contains(uri.Host, StringComparer.OrdinalIgnoreCase);
+        ImageHosts.Any(host => host.StartsWith('.')
+            ? uri.Host.EndsWith(host, StringComparison.OrdinalIgnoreCase)
+            : string.Equals(uri.Host, host, StringComparison.OrdinalIgnoreCase));
+
+    /// <summary>
+    /// The image's URL without its size parameters (w, h, q), so the dialog loads the full file. The rest of the query
+    /// stays: a host may keep the file's key there (Woolworths' o=…), and without it there is no image at all.
+    /// </summary>
+    private static string WithoutSize(string url)
+    {
+        var builder = new UriBuilder(url);
+        builder.Query = string.Join('&', builder.Query.TrimStart('?').Split('&', StringSplitOptions.RemoveEmptyEntries)
+            .Where(p => p.Split('=')[0] is not ("w" or "h" or "q")));
+        return builder.Uri.AbsoluteUri;
+    }
 
     private static bool IsSafeUrl(string? url) =>
         string.IsNullOrEmpty(url) ||

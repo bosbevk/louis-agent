@@ -213,6 +213,9 @@ public enum ToolMessage
     [Description("the renderer returned no content for it")]
     RenderNoResult,
 
+    [Description("no answer from the browser within {Seconds} s; the page was closed")]
+    RenderTimedOut,
+
     [Description("Unknown WEB_SEARCH_PROVIDER '{Provider}'. Supported: {Supported}.")]
     UnknownSearchProvider,
 

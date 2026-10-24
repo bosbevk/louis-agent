@@ -153,6 +153,22 @@ public class ChromeWebBrowserTests
         Assert.That(watch.Elapsed, Is.LessThan(TimeSpan.FromSeconds(6)), "not the 10 s a page that never goes quiet costs");
     }
 
+    // The cook, 2026-10-21: of six renders fired at once, one never came back, and the cook waited on it for good (the
+    // load and the settle have timeouts; connecting, opening the page and reading it have none). A visit has a budget
+    // for the whole of it: past it, the page is closed and the visit fails with its reason, never hangs.
+    [Test, Category("Live")]
+    public void AVisitThatOutlivesItsBudget_IsAWebBrowserException_NotAHang()
+    {
+        string? url = Environment.GetEnvironmentVariable("BROWSER_URL");
+        Assume.That(url, Is.Not.Null.And.Not.Empty, "BROWSER_URL isn't set: no browser to visit with (the Puls stack's puls-browser).");
+        var browser = new ChromeWebBrowser(new Uri(url!), budget: TimeSpan.FromSeconds(2));
+        var watch = System.Diagnostics.Stopwatch.StartNew();
+
+        Assert.That(() => browser.VisitAsync(new Uri("https://httpbin.org/delay/10")),
+            Throws.TypeOf<WebBrowserException>().With.Message.Contains("within 2 s"));
+        Assert.That(watch.Elapsed, Is.LessThan(TimeSpan.FromSeconds(6)));
+    }
+
     [Test, Category("Live")]
     public void ARedirectToAnInternalAddress_IsRefusedInsideTheBrowser()
     {

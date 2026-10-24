@@ -13,11 +13,29 @@ using PuppeteerSharp;
 /// </summary>
 internal static class RenderPolicy
 {
+    
+    private static readonly HashSet<string> BlockedTrackingHosts = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "facebook.net",
+        "analytics.tiktok.com",
+        "bat.bing.com",
+        "static.ads-twitter.com",
+        "google-analytics.com",
+        "googletagmanager.com"
+    };
+    
     internal static async Task<RenderVerdict> DecideAsync(Uri url, ResourceType type, Func<string, CancellationToken, Task<IPAddress[]>> resolve)
     {
         // Inline data reaches no address.
         if (url.Scheme == "data") return RenderVerdict.Allow;
         if (url.Scheme is not ("http" or "https")) return RenderVerdict.Refuse;
+        
+        // 1. Fast-path: Block tracking & telemetry domains immediately
+        if (BlockedTrackingHosts.Any(host => url.Host.EndsWith(host, StringComparison.OrdinalIgnoreCase)))
+        {
+            return RenderVerdict.Refuse;
+        }
+        
         try
         {
             await SsrfGuard.EnsurePublicHostAsync(url, resolve);

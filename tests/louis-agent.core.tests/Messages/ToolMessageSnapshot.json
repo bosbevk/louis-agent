@@ -154,6 +154,7 @@
   "RenderFailed": "couldn't render <Url>: <Reason>. If FetchUrl read it as empty too, the site blocks readers: mark what it holds as unknown and move on.",
   "RenderNoResult": "the renderer returned no content for it",
   "RenderNotConfigured": "ReadRenderedPage needs a renderer: BROWSER_URL (the headless Chrome we run) or TAVILY_API_KEY (Tavily Extract). Without one, FetchUrl is the only way to read a page.",
+  "RenderTimedOut": "no answer from the browser within <Seconds> s; the page was closed",
   "ScriptCodeEmpty": "The implementation code block is empty.",
   "ScriptFenceNotClosed": "The implementation code block is not closed with ```.",
   "ScriptImplementationMissing": "Missing '- Implementation:' line followed by a fenced code block.",

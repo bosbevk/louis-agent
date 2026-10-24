@@ -19,12 +19,17 @@ using PuppeteerSharp;
 /// browser context of its own, dropped after, and hands back the cookies the site set (F34): one area's store never
 /// reaches another visit. A plain visit shares the browser's default context, as before.
 /// </summary>
-public sealed class ChromeWebBrowser(Uri browserUrl, Func<string, CancellationToken, Task<IPAddress[]>>? resolve = null) : IWebBrowser
+public sealed class ChromeWebBrowser(Uri browserUrl, Func<string, CancellationToken, Task<IPAddress[]>>? resolve = null, TimeSpan? budget = null) : IWebBrowser
 {
     private const int MaxPages = 4;
     private static readonly SemaphoreSlim Pages = new(MaxPages, MaxPages);
     private static readonly TimeSpan Load = TimeSpan.FromSeconds(30);
     private static readonly TimeSpan Settle = TimeSpan.FromSeconds(10);
+    /// <summary>
+    /// The most a whole visit may take (the cook, 2026-10-21: one render of six never came back, and the cook waited on
+    /// it for good; the load and the settle have timeouts, connecting, opening the page and reading it have none).
+    /// </summary>
+    private readonly TimeSpan _budget = budget ?? Load + Settle + TimeSpan.FromSeconds(20);
     private static readonly ILogger Log = AgentLogging.For<ChromeWebBrowser>();
 
     /// <summary>Runs before a page's scripts in every frame: a WebSocket can't be made.</summary>
@@ -36,6 +41,25 @@ public sealed class ChromeWebBrowser(Uri browserUrl, Func<string, CancellationTo
 
     public async Task<BrowserVisit> VisitAsync(Uri url, Func<Uri, bool>? capture = null, BrowserSession? session = null, string? script = null,
         string? readySelector = null, CancellationToken cancellationToken = default)
+    {
+        // Past the budget the visit's token cancels, which closes its page (below) so what hangs on it can end and free
+        // its slot; the caller gets the failure and its reason at once, whether or not that happens.
+        using var timeout = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        timeout.CancelAfter(_budget);
+        var visit = VisitWithinAsync(url, capture, session, script, readySelector, timeout.Token);
+        var clock = Task.Delay(_budget, cancellationToken);
+        if (await Task.WhenAny(visit, clock) == visit && !timeout.IsCancellationRequested) return await visit;
+        if (visit.IsCompletedSuccessfully) return visit.Result;
+        cancellationToken.ThrowIfCancellationRequested();
+        _ = visit.ContinueWith(t => _ = t.Exception, TaskContinuationOptions.OnlyOnFaulted);
+        throw new WebBrowserException(MessageText.Format(ToolMessage.RenderFailed, new
+        {
+            Url = url, Reason = MessageText.Format(ToolMessage.RenderTimedOut, new { Seconds = (int)_budget.TotalSeconds }),
+        }));
+    }
+
+    private async Task<BrowserVisit> VisitWithinAsync(Uri url, Func<Uri, bool>? capture, BrowserSession? session, string? script,
+        string? readySelector, CancellationToken cancellationToken)
     {
         await Pages.WaitAsync(cancellationToken);
         try
@@ -56,11 +80,28 @@ public sealed class ChromeWebBrowser(Uri browserUrl, Func<string, CancellationTo
         }
     }
 
+    private static readonly HttpClient SharedHttpClient = new();
+
     private async Task<IBrowser> ConnectAsync(CancellationToken cancellationToken)
     {
         try
         {
-            return await Puppeteer.ConnectAsync(new ConnectOptions { BrowserURL = (await ByAddressAsync(cancellationToken)).ToString().TrimEnd('/') });
+            var resolvedUri = await ByAddressAsync(cancellationToken);
+            
+            // Chrome's own /json/version says where its DevTools WebSocket is.
+            var jsonString = await SharedHttpClient.GetStringAsync(new Uri(resolvedUri, "/json/version"), cancellationToken);
+            using var doc = System.Text.Json.JsonDocument.Parse(jsonString);
+            var rawWsUrl = doc.RootElement.GetProperty("webSocketDebuggerUrl").GetString();
+
+            // Chrome writes its own idea of its host into that URL; the WebSocket must go to the address we resolved.
+            var wsUri = new Uri(rawWsUrl!);
+            var fixedWsUri = new UriBuilder(wsUri)
+            {
+                Host = resolvedUri.DnsSafeHost,
+                Port = resolvedUri.Port > 0 ? resolvedUri.Port : wsUri.Port
+            }.Uri;
+
+            return await Puppeteer.ConnectAsync(new ConnectOptions { BrowserWSEndpoint = fixedWsUri.ToString() });
         }
         catch (Exception ex) when (ex is not OperationCanceledException and not OutOfMemoryException)
         {
@@ -68,13 +109,25 @@ public sealed class ChromeWebBrowser(Uri browserUrl, Func<string, CancellationTo
         }
     }
 
-    /// <summary>The browser's address with its host as an IP: Chrome refuses a Host header that is a name.</summary>
+    /// <summary>The browser's address with its host as an IP or resolvable endpoint.</summary>
     private async Task<Uri> ByAddressAsync(CancellationToken cancellationToken)
     {
-        if (browserUrl.IsLoopback || IPAddress.TryParse(browserUrl.Host.Trim('[', ']'), out _)) return browserUrl;
-        var addresses = await Dns.GetHostAddressesAsync(browserUrl.DnsSafeHost, cancellationToken);
-        var address = addresses.FirstOrDefault(a => a.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork) ?? addresses.First();
-        return new UriBuilder(browserUrl) { Host = address.ToString() }.Uri;
+        if (browserUrl.IsLoopback || IPAddress.TryParse(browserUrl.Host.Trim('[', ']'), out _)) 
+            return browserUrl;
+
+        try
+        {
+            // A service name (the compose network, or a pod) resolves to the browser's address.
+            var addresses = await _resolve(browserUrl.DnsSafeHost, cancellationToken);
+            var address = addresses.FirstOrDefault(a => a.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork) ?? addresses.First();
+            
+            return new UriBuilder(browserUrl) { Host = address.ToString() }.Uri;
+        }
+        catch
+        {
+            // Outside that network the name doesn't exist: the browser is then the one published on this machine.
+            return new UriBuilder(browserUrl) { Host = "localhost" }.Uri;
+        }
     }
 
     private async Task<BrowserVisit> VisitInAsync(IBrowser browser, Uri url, Func<Uri, bool>? capture, BrowserSession? session,
@@ -82,6 +135,17 @@ public sealed class ChromeWebBrowser(Uri browserUrl, Func<string, CancellationTo
     {
         IBrowserContext? own = session is not null || script is not null ? await browser.CreateBrowserContextAsync() : null;
         var page = own is null ? await browser.NewPageAsync() : await own.NewPageAsync();
+        
+        // What a shop's site sees (2026-10-21: some refuse the headless shell outright):
+        // 1. a desktop Chrome's user agent instead of the default "HeadlessChrome";
+        await page.SetUserAgentAsync("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36");
+    
+        // 2. a normal screen size instead of an empty or tiny viewport;
+        await page.SetViewportAsync(new ViewPortOptions { Width = 1920, Height = 1080 });
+    
+        // 3. no automation marker, which a page's script reads before deciding what to render.
+        await page.EvaluateExpressionOnNewDocumentAsync("Object.defineProperty(navigator, 'webdriver', { get: () => false });");
+        
         if (session is { Cookies.Count: > 0 })
             await page.SetCookieAsync([.. session.Cookies.Select(c => new CookieParam { Name = c.Name, Value = c.Value, Domain = c.Domain, Path = "/" })]);
         // A cancelled turn closes its page, which ends the load or the wait at once and frees its slot (review of PR #56:
@@ -122,7 +186,7 @@ public sealed class ChromeWebBrowser(Uri browserUrl, Func<string, CancellationTo
             // Closed already, or the browser went away: either way the page is gone.
         }
     }
-
+    
     private async Task<BrowserVisit> LoadAsync(IPage page, Uri url, Func<Uri, bool>? capture, string? script, string? readySelector, bool ownContext)
     {
         string? refusedPage = null;
