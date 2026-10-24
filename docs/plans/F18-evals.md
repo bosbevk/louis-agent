@@ -1019,7 +1019,14 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
 
 ## Approved during the build
 
-(Nothing yet.)
+- **Step 7c, protocol v2** (Louis, 2026-10-24). Steps 2 to 7 keep F31's version-1 lines, so the API reads the C#
+  runner exactly as it reads the Python, and step 5's "scores equal the Python's" compares one change at a time. Once
+  step 7 has deleted the Python, the C# runner is the only writer, and step 7c replaces v1 with v2: one C# event model
+  that the runner writes and the API reads (one set of record types, as the session-stream reader is for the session
+  stream), with no `@` prefix or ASCII-only rule beyond what stdout mixed with log lines needs. **v1 runs are
+  discarded** (Louis: "v1 runs can be discarded"): no migration and no v1 parser kept; `python-protocol.txt` and the
+  v1 parse tests go with it, and the trends start again at v2. Before the discard, the last Python cook and routing
+  scores are written into the feature doc as numbers, so the baseline stays on record.
 
 ---
 [Docs index](../README.md) · [Plans](README.md) · [Platform plan](platform.md) · [Feature F18](../features/F18-evaluation.md)
