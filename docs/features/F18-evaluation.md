@@ -381,6 +381,9 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
     own grader, which passed every trial, could not fail a known-bad transcript, so the check caught it; it is removed.
   - The turn line's `error` field is not read by `ProtocolTranscripts`: the error is the sse line's error event, and reading the
     turn's field too would count it twice.
+- **Review of step 4.2a, nits** (2026-10-25): the no-error reason carries the stream's error message (`ErrorInTurnWithMessage`), so a
+  person sees why. `EngineEvents` never throws on an odd event: a content block with no name, a block that isn't an object, a usage
+  count that isn't a number, all read as absent (no route, or an unknown cost). Each has a red test first.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

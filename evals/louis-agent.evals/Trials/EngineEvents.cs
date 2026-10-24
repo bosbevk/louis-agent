@@ -4,12 +4,16 @@ using LouisAgent.SessionStream;
 namespace LouisAgent.Evals.Trials;
 
 /// <summary>
-/// The one reader of the engine's events for the common graders (F18 step 4.2): whether a turn raised an error, what it cost,
-/// and which role its first sub-session went to. It reads the stream as the API sends it: the cost is the usage the stream
-/// reports on message_delta (or on error), which is the ledger's total for the turn, and no price is worked out here.
+/// The one reader of the engine's events for the common graders (F18 step 4.2): whether a turn streamed an error, what it cost, which
+/// role its first sub-session went to, and the error's message. It reads the stream as the API sends it, and never throws on an odd
+/// event: a field it can't read is read as absent, so the grade is Unknown or there is no route, not a crash. The cost is the usage the
+/// stream reports on message_delta (or on error), the ledger's total for the turn; no price is worked out here.
 /// </summary>
 public static class EngineEvents
 {
+    /// <summary>The engine's own tool that hands a question to a role (core's sub-sessions).</summary>
+    private const string StartSubSession = "StartSubSession";
+
     /// <summary>True when the turn streamed an error event: the agent's error. A specialist's error is not the turn's.</summary>
     public static bool StreamedError(TurnTranscript turn) => turn.Events.Any(e => e is ErrorReported);
 
@@ -21,9 +25,12 @@ public static class EngineEvents
     {
         // The usage is on the turn's last message_delta, or on its error when it failed: the stream's end.
         var end = turn.Events.LastOrDefault(e => e is MessageDelta or ErrorReported);
-        if (end is null || !end.Data.TryGetProperty("usage", out var usage) || usage.ValueKind != JsonValueKind.Object) return null;
-        if (usage.TryGetProperty("unpriced", out var unpriced) && unpriced.GetInt32() > 0) return null;
-        return usage.TryGetProperty("cost", out var cost) && cost.ValueKind == JsonValueKind.Number ? cost.GetDecimal() : null;
+        if (end is null || !Field(end.Data, "usage", out var usage)) return null;
+        // An absent count is no unpriced request; any other count that isn't zero, or isn't a number, leaves the total incomplete.
+        if (Field(usage, "unpriced", out var unpriced)
+            && !(unpriced.ValueKind == JsonValueKind.Number && unpriced.TryGetInt32(out int count) && count == 0))
+            return null;
+        return Field(usage, "cost", out var cost) && cost.ValueKind == JsonValueKind.Number && cost.TryGetDecimal(out var value) ? value : null;
     }
 
     /// <summary>The role of the turn's first StartSubSession call, or null when the agent answered itself.</summary>
@@ -31,14 +38,30 @@ public static class EngineEvents
     {
         foreach (var e in turn.Events)
         {
-            if (e is not ContentBlockStarted || !e.Data.TryGetProperty("content_block", out var block)) continue;
-            if (block.GetProperty("type").GetString() == "tool_use" && block.GetProperty("name").GetString() == StartSubSession
-                && block.TryGetProperty("input", out var input) && input.TryGetProperty("role", out var role) && role.ValueKind == JsonValueKind.String)
-                return role.GetString();
+            if (e is not ContentBlockStarted || !Field(e.Data, "content_block", out var block)) continue;
+            if (Text(block, "type") == "tool_use" && Text(block, "name") == StartSubSession
+                && Field(block, "input", out var input) && Text(input, "role") is { } role)
+                return role;
         }
         return null;
     }
 
-    /// <summary>The engine's own tool that hands a question to a role (core's sub-sessions).</summary>
-    private const string StartSubSession = "StartSubSession";
+    /// <summary>The message of the turn's error event, or null when it has none.</summary>
+    public static string? ErrorMessageOf(TurnTranscript turn)
+    {
+        var error = turn.Events.OfType<ErrorReported>().FirstOrDefault();
+        return error is not null && Field(error.Data, "error", out var detail) ? Text(detail, "message") : null;
+    }
+
+    /// <summary>A field of a JSON object; false when the element is not an object, or has no such field.</summary>
+    private static bool Field(JsonElement element, string name, out JsonElement value)
+    {
+        if (element.ValueKind == JsonValueKind.Object) return element.TryGetProperty(name, out value);
+        value = default;
+        return false;
+    }
+
+    /// <summary>A string field of a JSON object; null when it is absent or isn't a string.</summary>
+    private static string? Text(JsonElement element, string name) =>
+        Field(element, name, out var value) && value.ValueKind == JsonValueKind.String ? value.GetString() : null;
 }

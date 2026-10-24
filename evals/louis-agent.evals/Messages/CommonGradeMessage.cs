@@ -11,6 +11,9 @@ public enum CommonGradeMessage
     [Description("turn {Turn} raised an error")]
     ErrorInTurn,
 
+    [Description("turn {Turn} raised an error: {Message}")]
+    ErrorInTurnWithMessage,
+
     [Description("every turn was answered within {Limit} s")]
     WithinTimePass,
 

@@ -1,4 +1,5 @@
 using LouisAgent.Evals.Trials;
+using LouisAgent.SessionStream;
 using static LouisAgent.Evals.Tests.Trials.TrialBuilder;
 
 namespace LouisAgent.Evals.Tests.Trials;
@@ -69,6 +70,32 @@ public class EngineEventsTests
     public void ASpecialistsCallIsNotTheTurnsRoute()
     {
         Assert.That(EngineEvents.RoutedRole(Turn(1, [SubCall("puls-cook")])), Is.Null);
+    }
+
+    [Test]
+    public void AContentBlockWithNoNameIsNoRoute()
+    {
+        // An odd event is read as saying nothing, rather than throwing and failing the whole grade.
+        var odd = SessionEvent.From("content_block_start", Json("""{"type":"content_block_start","index":0,"content_block":{"id":"t1"}}"""));
+        var notAnObject = SessionEvent.From("content_block_start", Json("""{"type":"content_block_start","index":0,"content_block":"text"}"""));
+
+        Assert.That(EngineEvents.RoutedRole(Turn(1, [odd])), Is.Null);
+        Assert.That(EngineEvents.RoutedRole(Turn(1, [notAnObject])), Is.Null);
+    }
+
+    [Test]
+    public void AnUnpricedCountThatIsNotANumberMakesTheCostUnknown()
+    {
+        var odd = SessionEvent.From("message_delta", Json("""{"type":"message_delta","delta":{"stop_reason":"end_turn"},"usage":{"cost":0.25,"unpriced":null}}"""));
+
+        Assert.That(EngineEvents.CostOf(Turn(1, [odd])), Is.Null);
+    }
+
+    [Test]
+    public void TheErrorsMessageIsReadFromTheStream()
+    {
+        Assert.That(EngineEvents.ErrorMessageOf(Turn(1, [Error()])), Is.EqualTo("overloaded"));
+        Assert.That(EngineEvents.ErrorMessageOf(Turn(1, [Text("Hallo")])), Is.Null);
     }
 
     [Test]

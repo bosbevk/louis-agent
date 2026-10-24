@@ -29,6 +29,14 @@ public class CommonGradersTests
     }
 
     [Test]
+    public async Task NoError_TheReasonCarriesTheErrorsMessage()
+    {
+        var grade = await GradeAsync(new NoErrorGrader(), Trial(Turn(1), Turn(2, [Error()])));
+
+        Assert.That(grade.Reason, Does.Contain("overloaded"));
+    }
+
+    [Test]
     public async Task NoError_IsUnknownForAnInfrastructureFailure()
     {
         // A timeout is reported apart and is Unknown: it is not the agent's error.

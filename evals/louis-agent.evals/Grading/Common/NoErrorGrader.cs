@@ -5,8 +5,8 @@ using LouisAgent.Evals.Trials;
 namespace LouisAgent.Evals.Grading.Common;
 
 /// <summary>
-/// No turn of the trial raised an error (F18 step 4.2): the agent's error in the stream. A specialist's error is not the turn's, and
-/// a turn that failed for the infrastructure is Unknown, not a fail.
+/// No turn of the trial raised an error (F18 step 4.2): the agent's error in the stream, with its message in the reason. A specialist's
+/// error is not the turn's, and a turn that failed for the infrastructure is Unknown, not a fail.
 /// </summary>
 public sealed class NoErrorGrader(bool required = true) : IGrader
 {
@@ -20,7 +20,13 @@ public sealed class NoErrorGrader(bool required = true) : IGrader
     {
         var errored = trial.Transcript.Turns.FirstOrDefault(EngineEvents.StreamedError);
         if (errored is not null)
-            return ValueTask.FromResult(Verdict.Fail(Name, Version, MessageText.Format(CommonGradeMessage.ErrorInTurn, new { Turn = errored.Turn })));
+        {
+            string? message = EngineEvents.ErrorMessageOf(errored);
+            string reason = message is null
+                ? MessageText.Format(CommonGradeMessage.ErrorInTurn, new { Turn = errored.Turn })
+                : MessageText.Format(CommonGradeMessage.ErrorInTurnWithMessage, new { Turn = errored.Turn, Message = message });
+            return ValueTask.FromResult(Verdict.Fail(Name, Version, reason));
+        }
         if (Verdict.InfrastructureFailure(Name, Version, trial.Transcript.Turns) is { } unknown) return ValueTask.FromResult(unknown);
         return ValueTask.FromResult(Verdict.Pass(Name, Version, MessageText.Format(CommonGradeMessage.NoErrorPass)));
     }
