@@ -27,8 +27,10 @@ One step, test first:
   every page the browser opens sends it; unset, the browser sends Chrome's own, as it does today. The
   `navigator.webdriver` marker is never touched.
 - **Puls sets it** in `docker/docker-compose.puls.yml` and `deploy/azure/puls-app.yaml`:
-  `Puls/1.0 (+https://puls-app.…/about; reads a page on a user's behalf)`, the conventional form for a service that
-  reads for its users: who is reading, where to learn more, and why. The code-review stack sets nothing.
+  `Puls/1.0 (+https://github.com/bosbevk/louis-agent; reads a page on a user's behalf)`, the conventional form for a
+  service that reads for its users: who is reading, where to learn more, and why. The link must be a page anyone can
+  open: the app's own address is locked to Louis's IP (CL19), so a shop following it would get a 403. The code-review
+  stack sets nothing.
 - **Not the person.** The user agent reaches every site the page touches, trackers included, and lands in their logs;
   a name there is personal information sent to third parties for no gain (POPIA). The user's town says nothing new
   (the cook already gives the shop the town to find its branch) and would be useful context, but it needs the visit to
@@ -44,9 +46,10 @@ One step, test first:
 
 ## Confirmed
 
-Open. When done: one visit to a shop's page from the Puls stack, the request's `User-Agent` read from SearXNG's or the
-shop's response headers where visible, else from a page the fake serves; and the next cook run's sourced-price count
-beside the run of 2026-10-21, to see what the honest agent loses, if anything.
+Open. When done: one `ReadRenderedPage` of `https://httpbin.org/user-agent` from the Puls stack, which echoes the
+request's `User-Agent` in its body (a response's headers never carry it), and the unit test's fake page reading
+`navigator.userAgent`; then the next cook run's sourced-price count beside the run of 2026-10-21, to see what the honest
+agent loses, if anything.
 
 ## Lesson
 
