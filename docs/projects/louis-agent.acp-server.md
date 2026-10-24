@@ -66,7 +66,7 @@ sequenceDiagram
 
 ## Configuration
 
-Core settings plus `ACP_MOUNT_MAPPINGS` and `USAGE_IN_CHAT`. Rider's agent-server entry: `config/rider-acp.example.json`.
+Core settings plus `ACP_MOUNT_MAPPINGS` and `USAGE_IN_CHAT`. Rider's agent-server entry: `config/rider/rider-acp.example.json`.
 
 **stdout carries the protocol:** anything written to `Console.Out` corrupts it — all logging goes to stderr.
 

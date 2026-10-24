@@ -43,7 +43,7 @@ your location under **Instellings** if you want "near me" to work.
 
 ### Rider
 
-Add the agent server from `config/rider-acp.example.json` in Rider's AI Assistant settings, then pick **Louis Agent** in
+Add the agent server from `config/rider/rider-acp.example.json` in Rider's AI Assistant settings, then pick **Louis Agent** in
 the AI chat. Attach files with the paperclip; the agent reads them. Each new chat starts a fresh container.
 
 ### CLI

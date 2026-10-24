@@ -29,6 +29,7 @@ you need otherwise.
 | [Core guide](../louis-agent.core/CLAUDE.md) | How-to | Change `louis-agent.core`: add a tool or a toolset, the layout and message rules, another agent on core, a new model provider |
 | [Tests guide](../tests/CLAUDE.md) | How-to | Run the tests, regenerate the golden files (bash or PowerShell), write tests that run on Linux too |
 | [Hosts guide](../src/CLAUDE.md) | How-to | Change a host in `src/`: its own message enums, adding a web theme |
+| [Deploying Puls to Azure](../deploy/azure/README.md) | How-to | Build, deploy and watch Puls on Azure Container Apps, set its secrets, and run the home end of its tunnel to this PC's browser and Mongo |
 
 ## 4. The orchestrator
 

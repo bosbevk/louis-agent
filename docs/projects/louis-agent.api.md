@@ -2,7 +2,7 @@
 
 > **Kind:** ASP.NET Core minimal API · **Path:** `src/louis-agent.api/` · **References:** louis-agent.core, and the web
 > app it serves as static files: louis-agent.web by default, louis-agent.puls when built with `-p:WebApp=puls` ·
-> **Docker services:** `api` (http://127.0.0.1:5080); `demo-api` in the demo; `puls` and `puls-agent` (5070, 5071)
+> **Docker services:** `api` (http://127.0.0.1:5080); `demo-api` in the demo; `puls` (5070)
 
 ## Purpose
 

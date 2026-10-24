@@ -4,7 +4,7 @@ services:
   mcp-server:
     build:
       context: ..
-      dockerfile: docker/Dockerfile.mcp-server
+      dockerfile: docker/images/Dockerfile.mcp-server
     container_name: rider_mcp_server
     env_file:
       # LLM settings: config/.env.anthropic or .env.ollama, chosen by LLM_PROFILE in config/.env
@@ -45,7 +45,7 @@ services:
   acp-server:
     build:
       context: ..
-      dockerfile: docker/Dockerfile.acp-server
+      dockerfile: docker/images/Dockerfile.acp-server
     image: louis-agent-acp:latest
     env_file:
       # LLM settings: config/.env.anthropic or .env.ollama, chosen by LLM_PROFILE in config/.env
@@ -79,7 +79,7 @@ services:
   api:
     build:
       context: ..
-      dockerfile: docker/Dockerfile.api
+      dockerfile: docker/images/Dockerfile.api
     image: louis-agent-api:latest
     container_name: louis_agent_api
     env_file:
@@ -120,7 +120,7 @@ services:
   local-agent:
     build:
       context: ..
-      dockerfile: docker/Dockerfile.agent
+      dockerfile: docker/images/Dockerfile.agent
     container_name: rider_csharp_agent
     env_file:
       # LLM settings: config/.env.anthropic or .env.ollama, chosen by LLM_PROFILE in config/.env
@@ -154,7 +154,7 @@ services:
 
   ollama:
     build:
-      context: ../services
+      context: images/ollama
       dockerfile: Dockerfile.ollama
     container_name: louis_ollama
     ports:
@@ -177,7 +177,7 @@ services:
   # ollama, ollama-nvidia and ollama-amd at a time: they share the port and the models volume.
   ollama-nvidia:
     build:
-      context: ../services
+      context: images/ollama
       dockerfile: Dockerfile.ollama-nvidia
     container_name: louis_ollama_nvidia
     ports:
@@ -203,7 +203,7 @@ services:
 
   ollama-amd:
     build:
-      context: ../services
+      context: images/ollama
       dockerfile: Dockerfile.ollama-amd
     container_name: louis_ollama_amd
     ports:

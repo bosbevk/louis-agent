@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "usage-probe": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "environmentVariables": {
+        "LOG_DIRECTORY": "../../logs",
+        "PRICES_FILE": "../../config/prices.json",
+        "RATES_FILE": "../../config/rates.json"
+      }
+    },
+    "usage-probe --host-culture": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "commandLineArgs": "--host-culture"
+    }
+  }
+}

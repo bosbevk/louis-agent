@@ -21,8 +21,8 @@ templates.
 | `config/.env.mongo.example` | ✅ tracked | Template for `config/.env.mongo` |
 | `config/.env.searxng` | ❌ git-ignored | The secret of the SearXNG we run, read only by `puls-searxng` (F32); the Puls stack won't start without it |
 | `config/.env.searxng.example` | ✅ tracked | Template for `config/.env.searxng` |
-| `config/rider-acp.example.json` | ✅ tracked | Rider agent-server entry for the ACP server (replace `C:\path\to`) |
-| `config/.rider-mcp-servers.json` | ✅ tracked | MCP client entry for the MCP server (replace `C:\path\to`) |
+| `config/rider/rider-acp.example.json` | ✅ tracked | Rider agent-server entry for the ACP server (replace `C:\path\to`) |
+| `config/rider/rider-mcp-servers.example.json` | ✅ tracked | MCP client entry for the MCP server (replace `C:\path\to`) |
 
 ## First-time setup
 
@@ -65,6 +65,16 @@ docker compose -f docker/docker-compose.yml --env-file config/.env up -d --build
 
 `.env.example`, `.env.secrets.example` and `.env.local` are never loaded.
 
+**Debugging in Rider or with `dotnet run`:** every host has a `Properties/launchSettings.json` (Rider lists each
+profile as a run configuration) that sets what compose sets for its container, as paths relative to the project folder
+(`../../logs`), which is the working directory in Rider and under `dotnet run` alike: `WORKSPACE_ROOT`,
+`SKILLS_DIRECTORY`, `LOG_DIRECTORY`, `PRICES_FILE`, `RATES_FILE`, and for the API's `puls` profile Puls's own settings
+(`IDENTITIES=puls`, its peers, roles, SearXNG at `127.0.0.1:8888` and the browser at `127.0.0.1:9222` from the Puls
+compose stack). The ports sit beside the containers', so both can run at once: `puls` on 5071, `api` (the code-review
+app) on 5081, `mcp-http` on 5091. Secrets still come from
+`config/.env.secrets`, so `BENCHMARKS_MONGO_URL` there names `puls-mongo`, the compose service: for a local run set it
+to `127.0.0.1` in the shell. Which web app the API serves is the build's choice (`-p:WebApp=puls`), not the profile's.
+
 ## Settings
 
 ### `config/.env` (non-secret)
@@ -76,8 +86,8 @@ docker compose -f docker/docker-compose.yml --env-file config/.env up -d --build
 | `LLM_THINKING` | Visible reasoning: `off` / `low` / `medium` / `high` (default `medium` for Anthropic, `off` otherwise) |
 | `LLM_CACHE`, `LLM_CACHE_TTL` | Prompt caching on Anthropic: `on` (default) / `off`, and the cached prefix's lifetime, `5m` (default) or `1h`, chosen with `usage-probe -- --cache-gaps` ([MODELS.md](MODELS.md)) |
 | `LLM_SUPPORTS_TOOLS` | Force tool calling on or off (normally inferred from the model) |
-| `AGENT_PEERS` | Other louis-agent APIs this one may open sub-sessions on (`StartSubSession`, the `specialists` toolset): `name=url` pairs, comma separated. Empty by default for the code-review api; Puls's compose sets it to its specialist (`puls=http://puls-agent:8080`). Peers are called with this deployment's `AGENT_API_KEY` |
-| `ROLES_ENABLED` | The roles this instance may use (F29), comma separated (`puls/voice-af,puls/voice-en,puls-cook,puls-minion-web-price-lookup`); another name is refused as an unknown one, and `GET /roles` lists only these. Empty: every built-in one (`louis-agent.core/Prompts/`). `PERSONALITIES_ENABLED`, its name before CL14, is read when it's unset, with a warning. Puls's compose sets it on both containers, so only a role that has passed its check is reachable |
+| `AGENT_PEERS` | Other louis-agent APIs this one may open sub-sessions on (`StartSubSession`, the `specialists` toolset): `name=url` pairs, comma separated. Empty by default for the code-review api; Puls's compose sets it to itself (`puls=http://puls:8080`): one container, its specialists on the same instance (CL19). Peers are called with this deployment's `AGENT_API_KEY` |
+| `ROLES_ENABLED` | The roles this instance may use (F29), comma separated (`puls/voice-af,puls/voice-en,puls-cook,puls-minion-web-price-lookup`); another name is refused as an unknown one, and `GET /roles` lists only these. Empty: every built-in one (`louis-agent.core/Prompts/`). `PERSONALITIES_ENABLED`, its name before CL14, is read when it's unset, with a warning. Puls's compose sets it, so only a role that has passed its check is reachable |
 | `MINION_LLMS` | The model a minion runs on (F30): `role=profile` entries, comma separated, `*` for every role not named, `instance` for this instance's own model, `>` for a cascade cheapest first (`*=ollama-puls>instance`). Every profile must be in `LLM_SESSION_PROFILES`, else start-up stops; unset: no `minions` toolset |
 | `LLM_SESSION_PROFILES` | The LLM profiles a session may name besides the instance's own model (F30), comma separated (`ollama-puls`); each is read from `config/.env.{name}` (in a container, the mounted workspace's `config/`), and only its API key settings come from the environment. A session that names another is refused; a listed profile without its file stops start-up. Empty: every session runs on the instance's model |
 | `SUB_SESSION_PROMPT_BUDGET` | The most tokens a sub-session's prompt should reach (FX14): when the next request is expected to pass it, the specialist answers from what it has instead of calling more tools. Default `80000`, under Claude Haiku 5.5's long-prompt price step at 100k; `0` turns it off |
@@ -85,7 +95,7 @@ docker compose -f docker/docker-compose.yml --env-file config/.env up -d --build
 | `ACP_MOUNT_MAPPINGS` | `HOST_PATH=/container/path` pairs, so Rider's Windows paths (attachments, open file) resolve in the container |
 | `RIDER_MCP_ENDPOINT`, `RIDER_MCP_AUTO_DISCOVER` | Rider MCP discovery (off by default; it only logs Rider's tools for now) |
 | `API_PORT` | Host port for the API and web app (default `5080`, always bound to `127.0.0.1`) |
-| `PULS_PORT`, `PULS_CODER_PORT`, `PULS_WORKSPACE` | Puls (`docker/docker-compose.puls.yml`): its port (default `5070`), its specialist's (`5071`), both bound to `127.0.0.1`, and the folder mounted as its workspace (default the repo) |
+| `PULS_PORT`, `PULS_WORKSPACE` | Puls (`docker/docker-compose.puls.yml`): its port (default `5070`, bound to `127.0.0.1`) and the folder mounted as its workspace (default the repo) |
 | `PULS_MONGO_PORT`, `BENCHMARKS_MONGO_DATABASE` | The benchmark store (F31): `puls-mongo`'s host port (default `27017`, on `127.0.0.1`) and its database (default `puls_benchmarks`; the Mongo contract tests use `puls_benchmarks_test`) |
 | `MCP_TRANSPORT`, `MCP_PORT` | MCP server transport: `stdio` (default) or `http`; host port in HTTP mode (default `5090`, bound to `127.0.0.1`) |
 | `AGENT_AUTH` | `required` (default) or `off` (FX18): whether the API, and the MCP server over HTTP, may start without a key. `off` is for a development machine whose ports stay on `127.0.0.1`; a key that is set is checked either way. Never set in a compose file |
@@ -144,7 +154,7 @@ container's old environment, so a new key never reaches it that way (found with 
 
 ```bash
 docker compose -f docker/docker-compose.yml --env-file config/.env up -d api          # the API
-docker compose -f docker/docker-compose.puls.yml --env-file config/.env up -d         # Puls and its specialist
+docker compose -f docker/docker-compose.puls.yml --env-file config/.env up -d         # Puls
 ```
 
 A changed file under `Skills/` needs only a restart: the containers mount the folder and read it when a chat opens.

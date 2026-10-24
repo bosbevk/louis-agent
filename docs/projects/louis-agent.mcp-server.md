@@ -43,7 +43,7 @@ flowchart LR
 ## Configuration
 
 Core settings (no `LLM_*` needed), plus `MCP_TRANSPORT`, `MCP_PORT`, `MCP_API_KEY`, `AGENT_AUTH`. Client entry for Rider:
-`config/.rider-mcp-servers.json`.
+`config/rider/rider-mcp-servers.example.json`.
 
 **In stdio mode stdout carries the protocol**: logging goes to stderr only.
 

@@ -28,7 +28,7 @@ own catalogue (Checkers).
    from the lightest pack in *Size* to the heaviest: quote the range, never the price per kg as a pack's price.
 5. **Link the price to its product,** with the link the table gives: that's its source.
 6. **A shop without a catalogue here** (Pick n Pay, Woolworths, Spar): these tools can't price it; your role says
-   whether anything else may (the cook's doesn't: no prices from the web).
+   whether anything else may, and how.
 
 ## Rules
 

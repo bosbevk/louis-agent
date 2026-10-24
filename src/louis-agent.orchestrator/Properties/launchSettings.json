@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "orchestrator": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "environmentVariables": {
+        "LOUIS_AGENT_URL": "http://127.0.0.1:5081",
+        "ORCHESTRATOR_STATE_DIRECTORY": "../../.demo/state",
+        "ORCHESTRATOR_COMMS_LOG": "../../.demo/comms.md",
+        "LOG_DIRECTORY": "../../logs",
+        "PRICES_FILE": "../../config/prices.json",
+        "RATES_FILE": "../../config/rates.json"
+      }
+    }
+  }
+}

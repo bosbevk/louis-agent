@@ -35,6 +35,50 @@ public class HtmlTextTests
         Assert.That(text, Does.Not.Contain("alert").And.Not.Contain("color:red").And.Not.Contain("Home").And.Not.Contain("Copyright"));
     }
 
+    // A shop's product tile (the cook, F33): its photo is an image, often the only content of the link to the product,
+    // and lazy-loaded, so the real file is in data-src or srcset while src holds a placeholder.
+    private const string ProductTileHtml = """
+        <html><body><main>
+          <a href="/prod/Food/Onions/Brown-Onions-1-kg/_/A-20008215"><img src="data:image/gif;base64,R0lGOD" data-src="/images/onions.jpg" alt="Brown Onions 1 kg"></a>
+          <a href="/prod/Food/Carrots/_/A-20008300">Carrots 1 kg <img srcset="//img.example.com/carrots-200.webp 200w, //img.example.com/carrots-400.webp 400w" alt="Carrots 1 kg"></a>
+          <p><img src="/images/chakalaka.png" alt="KOO Chakalaka Mild 410 g"> R24,99</p>
+          <img src="/icons/cart.svg" alt="Add to cart"><img src="/spacer.gif"><img src="/logo.png" alt="">
+        </main></body></html>
+        """;
+
+    [Test]
+    public void AnImage_WithAltText_BecomesAMarkdownImage()
+    {
+        var (_, text) = HtmlText.ToText(ProductTileHtml, new Uri("https://www.example.com/browse"));
+
+        Assert.That(text, Does.Contain("![KOO Chakalaka Mild 410 g](https://www.example.com/images/chakalaka.png) R24,99"));
+    }
+
+    [Test]
+    public void AnImageOnlyLink_KeepsItsHref_AndItsImage()
+    {
+        var (_, text) = HtmlText.ToText(ProductTileHtml, new Uri("https://www.example.com/browse"));
+
+        Assert.That(text, Does.Contain("[![Brown Onions 1 kg](https://www.example.com/images/onions.jpg)](https://www.example.com/prod/Food/Onions/Brown-Onions-1-kg/_/A-20008215)"));
+    }
+
+    [Test]
+    public void ALazyLoadedImage_UsesItsRealFile_FromDataSrcOrSrcset()
+    {
+        var (_, text) = HtmlText.ToText(ProductTileHtml, new Uri("https://www.example.com/browse"));
+
+        Assert.That(text, Does.Contain("Carrots 1 kg ![Carrots 1 kg](https://img.example.com/carrots-200.webp)"));
+        Assert.That(text, Does.Not.Contain("data:image"));
+    }
+
+    [Test]
+    public void AnIcon_ASpacer_OrAnImageWithoutAlt_IsLeftOut()
+    {
+        var (_, text) = HtmlText.ToText(ProductTileHtml, new Uri("https://www.example.com/browse"));
+
+        Assert.That(text, Does.Not.Contain("cart.svg").And.Not.Contain("spacer.gif").And.Not.Contain("logo.png"));
+    }
+
     [Test]
     public void AnInlineFragment_LosesItsTags_AndSpacing_WithEntitiesDecoded() =>
         Assert.That(HtmlText.CleanInline(" <b>Beef</b>   &amp; \t <i>mince</i> "), Is.EqualTo("Beef & mince"));

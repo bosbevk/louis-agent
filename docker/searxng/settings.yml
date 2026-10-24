@@ -10,15 +10,20 @@ use_default_settings:
       - google
       - qwant
       - wikipedia
+      - yahoo
 
-# Bing, Google and Qwant are off in SearXNG's defaults; keeping them doesn't switch them on. (Mojeek and Startpage were
-# planned too, but this version marks both inactive: they now ask for a proof-of-work CAPTCHA.)
+# Bing, Google and Qwant are off in SearXNG's defaults; keeping them doesn't switch them on. (Mojeek, Startpage and
+# Presearch were planned too, but this version marks them inactive: they ask for a proof-of-work CAPTCHA.)
+# Bing is off again (2026-10-21): it soft-blocks this instance and answers most queries with unrelated, sometimes adult,
+# sites that outrank the real results; Yahoo, on Bing's index through its own front, answers them properly.
 engines:
   - name: bing
-    disabled: false
+    disabled: true
   - name: google
     disabled: false
   - name: qwant
+    disabled: false
+  - name: yahoo
     disabled: false
 
 general:
