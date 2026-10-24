@@ -20,7 +20,9 @@ jobs:
     runs-on: ubuntu-latest
     services:
       mongo:
-        image: mongo:8
+        # 7.0, not 8: MongoDB 8.0+ won't start on Linux 6.19 and newer (SERVER-121912), the kernel some runners now have;
+        # the store's contract uses nothing 7.0 lacks. Back to 8 once MongoDB ships the fix.
+        image: mongo:7.0
         env:
           MONGO_INITDB_ROOT_USERNAME: ci
           MONGO_INITDB_ROOT_PASSWORD: ci
