@@ -158,6 +158,15 @@ public class CommonGradersTests
     }
 
     [Test]
+    public async Task CostUnder_PassesWhenThePriceIsInLowerCaseUsd()
+    {
+        // The currency's case is not the grader's to judge: "usd" is USD, as the API's own comparison reads it.
+        var grade = await GradeAsync(new CostUnderGrader(1m), Trial(Turn(1, [Usage("0.25", currency: "usd")])));
+
+        Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Pass));
+    }
+
+    [Test]
     public async Task CostUnder_IsUnknownWhenARequestWasUnpriced()
     {
         var grade = await GradeAsync(new CostUnderGrader(1m), Trial(Turn(1, [Usage("0.25", unpriced: 1)])));

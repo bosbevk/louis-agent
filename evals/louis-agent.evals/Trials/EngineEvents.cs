@@ -37,7 +37,7 @@ public static class EngineEvents
         return Field(usage, "cost", out var cost) && cost.ValueKind == JsonValueKind.Number && cost.TryGetDecimal(out var value) ? value : null;
     }
 
-    /// <summary>The role of the turn's first StartSubSession call, or null when the agent answered itself or the role is blank.</summary>
+    /// <summary>The role of the turn's first StartSubSession call that names a role, or null when the agent answered itself or no such call names one.</summary>
     public static string? RoutedRole(TurnTranscript turn)
     {
         foreach (var e in turn.Events)

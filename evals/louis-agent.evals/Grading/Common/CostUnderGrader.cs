@@ -24,7 +24,7 @@ public sealed class CostUnderGrader(decimal limitUsd, bool required = true) : IG
         {
             if (!EngineEvents.HasUsage(turn))
                 return ValueTask.FromResult(Verdict.Unknown(Name, Version, MessageText.Format(CommonGradeMessage.NoUsage, new { Turn = turn.Turn })));
-            if (EngineEvents.CurrencyOf(turn) is { } currency && !string.Equals(currency, "USD", StringComparison.Ordinal))
+            if (EngineEvents.CurrencyOf(turn) is { } currency && !string.Equals(currency, "USD", StringComparison.OrdinalIgnoreCase))
                 return ValueTask.FromResult(Verdict.Unknown(Name, Version,
                     MessageText.Format(CommonGradeMessage.OtherCurrency, new { Turn = turn.Turn, Currency = currency })));
             var cost = EngineEvents.CostOf(turn);
