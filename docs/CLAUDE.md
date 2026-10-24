@@ -179,7 +179,7 @@ Docker (web app + API on http://127.0.0.1:5080):
 docker compose -f docker/docker-compose.yml --env-file config/.env up -d --build api
 ```
 
-Puls (its web app on http://127.0.0.1:5070, its specialist on 5071):
+Puls (its web app on http://127.0.0.1:5070):
 
 ```bash
 docker compose -f docker/docker-compose.puls.yml --env-file config/.env up -d --build

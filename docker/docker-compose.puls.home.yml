@@ -1,0 +1,13 @@
+# The home end of the Azure tunnel: an override for the Puls stack that also publishes the browser and Mongo on this
+# PC's Tailscale IP, so puls-app on Azure reaches them through its ts-forwarder sidecar (deploy/azure/README.md).
+# Nothing else changes; the 127.0.0.1 bindings stay for the live tests here. PULS_HOME_BIND is this PC's Tailscale IP
+# (100.x.y.z, `tailscale ip -4`), set in config/.env; there is no default, and 0.0.0.0 is never right: neither port
+# has authentication, and only the tailnet may see them.
+#   docker compose -f docker/docker-compose.puls.yml -f docker/docker-compose.puls.home.yml --env-file config/.env up -d puls-browser puls-mongo
+services:
+  puls-browser:
+    ports:
+      - "${PULS_HOME_BIND:?this PC's Tailscale IP, the home end of the Azure tunnel}:${PULS_BROWSER_PORT:-9222}:9222"
+  puls-mongo:
+    ports:
+      - "${PULS_HOME_BIND:?this PC's Tailscale IP, the home end of the Azure tunnel}:${PULS_MONGO_PORT:-27017}:27017"

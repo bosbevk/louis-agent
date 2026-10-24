@@ -8,7 +8,7 @@
 
 Puls is the general assistant's web app: a South African AI assistant in everyday Afrikaans that answers by handing each
 task to a specialist (F5) and shows that work as it happens. It's chat only: its sessions load `specialists` and `web`
-(F29; `agents`, as it was called before CL9, alone before it), so Puls answers the web itself and delegates to its peer (`puls-agent`) with a role
+(F29; `agents`, as it was called before CL9, alone before it), so Puls answers the web itself and delegates to a specialist on its own instance (`AGENT_PEERS` names itself, CL19) with a role
 (F21) and only the toolsets the task needs; only a validated role is on (`ROLES_ENABLED`: the cook, F25). Pay
 as you go: every answer shows what it cost, specialists included.
 
@@ -60,9 +60,9 @@ as you go: every answer shows what it cost, specialists included.
 
 ## Configuration
 
-None of its own: the API it's served by holds the settings (`AGENT_PEERS` names `puls-agent`). The compose file runs
-`puls` (5070, the app and its API), `puls-agent` (5071, the specialists' API; its one peer is itself, for the minions,
-F30), `puls-mongo` (the benchmark store, F31) and, on their own `web` network with `puls` and `puls-agent` (F32),
+None of its own: the API it's served by holds the settings (`AGENT_PEERS` names itself: the specialists, and the minions
+they hand pages to (F30), run on the same instance since CL19). The compose file runs `puls` (5070, the app and its API),
+`puls-mongo` (the benchmark store, F31) and, on their own `web` network with `puls` (F32),
 `puls-searxng` (8888: the search we run, for development and benchmarks; settings in `docker/searxng/settings.yml`, its
 secret in `config/.env.searxng`) and `puls-browser` (9222: the headless Chrome that renders pages). Both images are
 pinned by digest.
