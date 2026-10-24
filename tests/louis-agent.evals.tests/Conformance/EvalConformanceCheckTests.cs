@@ -114,7 +114,7 @@ public class EvalConformanceCheckTests
         var eval = Conforming(graders: [new NoErrorGrader(), new FakeGrader("within", _ => Passed("within"))]);
 
         Assert.That(Joined(await CheckAsync(eval, Case(Clean, Errored))),
-            Does.Contain("no known-bad transcript fails the required grader 'within'"));
+            Does.Contain("no known-bad transcript of any scenario fails the required grader 'within'"));
     }
 
     [Test]
@@ -126,7 +126,7 @@ public class EvalConformanceCheckTests
             : Passed("unknown-on-error"));
 
         Assert.That(Joined(await CheckAsync(Conforming(graders: [unknownOnError]), Case(Clean, Errored))),
-            Does.Contain("no known-bad transcript fails the required grader 'unknown-on-error'"));
+            Does.Contain("no known-bad transcript of any scenario fails the required grader 'unknown-on-error'"));
     }
 
     [Test]
@@ -134,7 +134,7 @@ public class EvalConformanceCheckTests
     {
         var none = new ConformanceCase("bobotie", Mode, Clean, []);
 
-        Assert.That(Joined(await CheckAsync(Conforming(), none)), Does.Contain("no known-bad transcript fails the required grader 'no-error'"));
+        Assert.That(Joined(await CheckAsync(Conforming(), none)), Does.Contain("no known-bad transcript of any scenario fails the required grader 'no-error'"));
     }
 
     [Test]
@@ -152,6 +152,45 @@ public class EvalConformanceCheckTests
 
         Assert.That(Joined(await CheckAsync(eval, Case(Clean, Errored))), Does.Contain("grader 'old' has version 0"));
     }
+
+    [Test]
+    public async Task AGraderMayFailAnyScenariosKnownBad()
+    {
+        // Each required grader fails a known-bad of some scenario, not all: A on the first scenario's, B on the second's. The eval conforms.
+        var eval = Conforming(
+            graders: [new FakeGrader("a", trial => Judge("a", trial, "one")), new FakeGrader("b", trial => Judge("b", trial, "two"))],
+            scenarios: [Named("one"), Named("two")]);
+
+        Assert.That(Joined(await CheckAsync(eval,
+            new ConformanceCase("one", Mode, Clean, [new KnownBad("bad", Errored)]),
+            new ConformanceCase("two", Mode, Clean, [new KnownBad("bad", Errored)]))), Is.Empty);
+    }
+
+    [Test]
+    public async Task AScenarioWithNoKnownBadConformsWhenTheOthersCoverEveryGrader()
+    {
+        var eval = Conforming(graders: [new NoErrorGrader()], scenarios: [Named("one"), Named("two")]);
+
+        Assert.That(Joined(await CheckAsync(eval,
+            new ConformanceCase("one", Mode, Clean, [new KnownBad("bad", Errored)]),
+            new ConformanceCase("two", Mode, Clean, []))), Is.Empty);
+    }
+
+    [Test]
+    public async Task AGraderNameThatIsNotSafeAsAnMCPToolNameFails()
+    {
+        var eval = Conforming(graders: [new FakeGrader("bad name!", _ => Passed("bad name!"))]);
+
+        Assert.That(Joined(await CheckAsync(eval, Case(Clean, Errored))), Does.Contain("grader name 'bad name!' is not safe"));
+    }
+
+    /// <summary>A grader's verdict on the first turn: a fail for the scenario it names, a pass for the others.</summary>
+    private static Grade Judge(string name, Trial trial, string failsOn) =>
+        EngineEvents.StreamedError(trial.Transcript.Turns[0]) && trial.Scenario.Id == failsOn ? Failed(name) : Passed(name);
+
+    private static Grade Failed(string name) => new(name, 1, 0, GradeOutcome.Fail, "failed");
+
+    private static EvalScenario Named(string id) => Bobotie with { Id = id };
 
     private static Grade Passed(string name) => new(name, 1, 1, GradeOutcome.Pass, "passed");
 

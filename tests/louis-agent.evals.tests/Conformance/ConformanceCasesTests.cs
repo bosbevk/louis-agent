@@ -34,21 +34,35 @@ public class ConformanceCasesTests
     }
 
     [Test]
-    public void OmitsAScenarioWithNoReference()
+    public void RefusesAKnownBadWithNoReference()
     {
         using var folder = new DatasetFolder().Write("s.bad.error.txt", string.Join("\n", Conversation));
 
-        Assert.That(ConformanceCases.Load(folder.Root, [Scenario("s")]), Is.Empty);
+        Assert.That(() => ConformanceCases.Load(folder.Root, [Scenario("s")]),
+            Throws.TypeOf<InvalidDataException>().With.Message.Contains("s.bad.error.txt"));
     }
 
     [Test]
-    public void LeavesOutAnotherScenariosKnownBad()
+    public void RefusesAFileOfAScenarioThatIsNotInTheEval()
     {
+        // The scenario was deleted from the eval, and its files were not: they are stray, and the loader says which.
         using var folder = new DatasetFolder()
             .Write("s.reference.txt", string.Join("\n", Conversation))
             .Write("t.bad.error.txt", string.Join("\n", Conversation));
 
-        Assert.That(ConformanceCases.Load(folder.Root, [Scenario("s")]).Single().KnownBad, Is.Empty);
+        Assert.That(() => ConformanceCases.Load(folder.Root, [Scenario("s")]),
+            Throws.TypeOf<InvalidDataException>().With.Message.Contains("t.bad.error.txt"));
+    }
+
+    [Test]
+    public void RefusesAMisspelledReference()
+    {
+        using var folder = new DatasetFolder()
+            .Write("s.reference.txt", string.Join("\n", Conversation))
+            .Write("s.refrence.txt", string.Join("\n", Conversation));
+
+        Assert.That(() => ConformanceCases.Load(folder.Root, [Scenario("s")]),
+            Throws.TypeOf<InvalidDataException>().With.Message.Contains("s.refrence.txt"));
     }
 
     private static EvalScenario Scenario(string id) =>

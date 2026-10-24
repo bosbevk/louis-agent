@@ -26,8 +26,14 @@ public enum CommonGradeMessage
     [Description("cost {Cost} is over the limit {Limit}")]
     CostOver,
 
-    [Description("a request had no price, so the cost is unknown")]
-    CostUnknown,
+    [Description("turn {Turn} reported no usage")]
+    NoUsage,
+
+    [Description("turn {Turn} had a request with no price")]
+    Unpriced,
+
+    [Description("turn {Turn} was priced in {Currency}, not USD")]
+    OtherCurrency,
 
     [Description("routed to {Role}")]
     RoutedPass,

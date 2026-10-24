@@ -131,6 +131,33 @@ public class CommonGradersTests
     }
 
     [Test]
+    public async Task CostUnder_IsUnknownWithoutUsage()
+    {
+        // A turn that reported no usage is not a turn with a price: the grader can't tell, and says which.
+        var grade = await GradeAsync(new CostUnderGrader(1m), Trial(Turn(1, [Usage("0.25")]), Turn(2, [Text("Hallo")])));
+
+        Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Unknown));
+        Assert.That(grade.Reason, Does.Contain("reported no usage"));
+    }
+
+    [Test]
+    public async Task CostUnder_IsUnknownInAnotherCurrency()
+    {
+        var grade = await GradeAsync(new CostUnderGrader(1m), Trial(Turn(1, [Usage("0.25", currency: "ZAR")])));
+
+        Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Unknown));
+        Assert.That(grade.Reason, Does.Contain("ZAR"));
+    }
+
+    [Test]
+    public async Task CostUnder_PassesWhenThePriceIsInUsd()
+    {
+        var grade = await GradeAsync(new CostUnderGrader(1m), Trial(Turn(1, [Usage("0.25", currency: "USD")])));
+
+        Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Pass));
+    }
+
+    [Test]
     public async Task CostUnder_IsUnknownWhenARequestWasUnpriced()
     {
         var grade = await GradeAsync(new CostUnderGrader(1m), Trial(Turn(1, [Usage("0.25", unpriced: 1)])));

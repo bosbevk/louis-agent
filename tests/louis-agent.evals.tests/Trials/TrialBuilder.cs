@@ -18,8 +18,9 @@ internal static class TrialBuilder
         new(number, "sess_1", "Hallo", events ?? [], TimeSpan.FromSeconds(seconds), failure);
 
     /// <summary>The usage a turn's message_delta carries; <paramref name="cost"/> is JSON text: a number, or null.</summary>
-    public static SessionEvent Usage(string cost, int unpriced = 0) =>
-        SessionEvent.From("message_delta", Json("""{"type":"message_delta","delta":{"stop_reason":"end_turn"},"usage":{"cost":COST,"unpriced":UNPRICED}}""".Replace("COST", cost).Replace("UNPRICED", unpriced.ToString())));
+    public static SessionEvent Usage(string cost, int unpriced = 0, string? currency = null) =>
+        SessionEvent.From("message_delta", Json("""{"type":"message_delta","delta":{"stop_reason":"end_turn"},"usage":{"cost":COST,"unpriced":UNPRICED,"currency":CURRENCY}}"""
+            .Replace("COST", cost).Replace("UNPRICED", unpriced.ToString()).Replace("CURRENCY", currency is null ? "null" : $"\"{currency}\"")));
 
     public static SessionEvent Error() =>
         SessionEvent.From("error", Json("""{"type":"error","error":{"type":"api_error","message":"overloaded"}}"""));

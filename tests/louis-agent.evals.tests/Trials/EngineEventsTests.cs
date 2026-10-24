@@ -99,6 +99,30 @@ public class EngineEventsTests
     }
 
     [Test]
+    public void ABlankRoleIsNoRoute()
+    {
+        var empty = SessionEvent.From("content_block_start", Json("""{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"t1","name":"StartSubSession","input":{"role":""}}}"""));
+        var spaces = SessionEvent.From("content_block_start", Json("""{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"t1","name":"StartSubSession","input":{"role":"   "}}}"""));
+
+        Assert.That(EngineEvents.RoutedRole(Turn(1, [empty])), Is.Null);
+        Assert.That(EngineEvents.RoutedRole(Turn(1, [spaces])), Is.Null);
+    }
+
+    [Test]
+    public void HasUsageIsWhetherTheTurnReportedUsage()
+    {
+        Assert.That(EngineEvents.HasUsage(Turn(1, [Usage("0.25")])), Is.True);
+        Assert.That(EngineEvents.HasUsage(Turn(1, [Text("Hallo")])), Is.False);
+    }
+
+    [Test]
+    public void TheCurrencyIsTheUsagesCurrency()
+    {
+        Assert.That(EngineEvents.CurrencyOf(Turn(1, [Usage("0.25", currency: "ZAR")])), Is.EqualTo("ZAR"));
+        Assert.That(EngineEvents.CurrencyOf(Turn(1, [Usage("0.25")])), Is.Null);
+    }
+
+    [Test]
     public void TheRoleIsTheFirstStartSubSessionsRole()
     {
         Assert.That(EngineEvents.RoutedRole(Turn(1, [Call("puls-cook")])), Is.EqualTo("puls-cook"));

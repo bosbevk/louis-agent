@@ -35,8 +35,11 @@ public enum ConformanceMessage
     [Description("scenario '{Scenario}': the known-bad transcript '{Label}' passes every required grader, so the graders can't tell.")]
     BadPasses,
 
-    [Description("scenario '{Scenario}': no known-bad transcript fails the required grader '{Grader}', so that grader is never shown to fail.")]
+    [Description("eval '{Name}': no known-bad transcript of any scenario fails the required grader '{Grader}', so that grader is never shown to fail.")]
     NoKnownBadFails,
+
+    [Description("grader name '{Grader}' is not safe as an MCP tool name: use letters, digits, '-' and '_', at most 64.")]
+    GraderNameNotSafe,
 
     [Description("eval '{Name}' has two graders named '{Grader}'.")]
     DuplicateGrader,

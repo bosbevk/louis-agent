@@ -35,7 +35,7 @@ try
             var runner = new EvalRunner(session, new ProtocolWriter(Console.Out, TimeProvider.System), TimeProvider.System,
                 AgentLogging.For<EvalRunner>());
             // The run's name is the ledger's tag: BENCHMARK_RUN, as the Python checks read it.
-            await runner.RunAsync(eval, new EvalRun(BenchmarkRun.Of(Environment.GetEnvironmentVariable("BENCHMARK_RUN")), run.Repeat),
+            await runner.RunAsync(eval, new EvalRun(BenchmarkRun.Of(Environment.GetEnvironmentVariable("BENCHMARK_RUN"), TimeProvider.System), run.Repeat),
                 CancellationToken.None);
             return 0;
 

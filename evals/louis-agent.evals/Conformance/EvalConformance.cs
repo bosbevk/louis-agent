@@ -26,6 +26,8 @@ public static class EvalConformance
         var failures = new List<string>();
         CheckShape(eval, failures);
         var required = eval.Graders.Where(grader => grader.Required).ToList();
+        // Per eval: a grader needs a Fail on a known-bad of any scenario, so each scenario can cover the graders the others don't.
+        var failedBy = new HashSet<string>(StringComparer.Ordinal);
 
         foreach (EvalScenario scenario in eval.Scenarios)
         {
@@ -46,7 +48,6 @@ public static class EvalConformance
                         new { Scenario = scenario.Id, Grader = grader.Name, Reason = grade.Reason }));
             }
 
-            var failedBy = new HashSet<string>(StringComparer.Ordinal);
             foreach (KnownBad bad in conformanceCase.KnownBad)
             {
                 var grades = await GradeAllAsync(eval, Trial(scenario, conformanceCase.Mode, bad.Transcript), failures, cancellationToken);
@@ -57,11 +58,12 @@ public static class EvalConformance
                     if (grade.Outcome == GradeOutcome.Fail) failedBy.Add(grade.Grader);
             }
 
-            // A known-bad that a grader only calls Unknown doesn't show it failing: only a Fail counts.
-            foreach (IGrader grader in required)
-                if (!failedBy.Contains(grader.Name))
-                    failures.Add(MessageText.Format(ConformanceMessage.NoKnownBadFails, new { Scenario = scenario.Id, Grader = grader.Name }));
         }
+
+        // A known-bad that a grader only calls Unknown doesn't show it failing: only a Fail counts.
+        foreach (IGrader grader in required)
+            if (!failedBy.Contains(grader.Name))
+                failures.Add(MessageText.Format(ConformanceMessage.NoKnownBadFails, new { Name = eval.Name, Grader = grader.Name }));
         return failures;
     }
 
@@ -78,6 +80,7 @@ public static class EvalConformance
         var names = new HashSet<string>(StringComparer.Ordinal);
         foreach (IGrader grader in eval.Graders)
         {
+            if (!McpName.IsMatch(grader.Name)) failures.Add(MessageText.Format(ConformanceMessage.GraderNameNotSafe, new { Grader = grader.Name }));
             if (!names.Add(grader.Name)) failures.Add(MessageText.Format(ConformanceMessage.DuplicateGrader, new { Name = eval.Name, Grader = grader.Name }));
             if (grader.Version < 1)
                 failures.Add(MessageText.Format(ConformanceMessage.GraderVersionBelowOne, new { Grader = grader.Name, Version = grader.Version }));

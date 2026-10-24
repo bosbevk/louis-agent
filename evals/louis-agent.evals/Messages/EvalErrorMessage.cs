@@ -14,6 +14,9 @@ public enum EvalErrorMessage
     [Description("the protocol's lines have no mode line, so the conversation's mode is unknown.")]
     NoModeLine,
 
+    [Description("transcript file '{File}' is neither a reference nor a known-bad of one of the eval's scenarios.")]
+    StrayTranscript,
+
     [Description("it holds no JSON object")]
     EmptyFile,
 
