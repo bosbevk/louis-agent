@@ -1019,7 +1019,11 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
 
 ## Approved during the build
 
-- **Step 3 split into 3a, 3b and 3c** (Louis, 2026-10-24): step 3 is about 1,100 lines of C# and tests, too big for the review a step gets. 3a is `scoring.py`'s rules with its 27 tests (`test_scoring.py`), and nothing else. 3b is the turn's reader (the Python's `read_turn` and `hosts`), the cook's scores and its graders, with `test_cook.py` (18). 3c is the routing's scores and graders with `test_routing.py` (10), and the one-key rule as a red test, which Louis confirms at 3c's review, since the design says so.
+- Step 3 split into 3.1, 3.2 and 3.3 (Louis, 2026-10-24). Step 3 is about 1,100 lines of C# and tests, too big for the
+  review a step gets. 3.1 is `scoring.py`'s rules with its 27 tests (`test_scoring.py`), and nothing else. 3.2 is the
+  turn's reader (the Python's `read_turn` and `hosts`), the cook's scores and its graders, with `test_cook.py` (18). 3.3
+  is the routing's scores and graders with `test_routing.py` (10), and the one-key rule as a red test, which Louis
+  confirms at 3.3's review, since the design says so. The plan's own 3a (datasets, step 3a) keeps its name.
 
 - **Step 7c, protocol v2** (Louis, 2026-10-24). Steps 2 to 7 keep F31's version-1 lines, so the API reads the C#
   runner exactly as it reads the Python, and step 5's "scores equal the Python's" compares one change at a time. Once
