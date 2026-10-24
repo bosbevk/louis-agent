@@ -204,6 +204,16 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   the no-shop rule, is step 3.3's, and its red test comes there. Where the C# checks a guess, it rebuilds the row from
   its cells, which the rules read the same way (only pipes and spacing differ). Uri is stricter than Python's `urlparse`
   on odd URLs; nothing in the recordings hits that, and step 5's scores-equal check would catch it.
+- **Step 3.2** (`evals/louis-agent.evals.puls`: `Transcripts`, `Cook`, and the tests in
+  `tests/louis-agent.evals.puls.tests`): the turn's reader (`TurnView.From` over the session's typed events, the
+  Python's `read_turn`), the hosts a turn read (`ToolHosts`, the Python's `hosts`), the cook's score function
+  (`CookScorer.Score`, with the score record `CookScores`, whose properties are the Python's keys) and the setup the
+  tests read (`CookSetup`: the two modes and the places of two conversations). The 18 tests of `test_cook.py` are ported
+  with the Python's expected values; two of them read the setup, which holds only what they need: the full list of
+  conversations comes with the cook eval in step 5. The turn reader has two tests of its own, since it's new code that
+  no Python test covers. The cook's behaviour is the Python's as it is today: the no-shop rule changes in step 3.3.
+  Checked by a mutation: the cook is made never expected, and two tests fail (the handed-to-the-cook one and the
+  answered-itself one); with the rule restored, all 47 pass. No red run for the port itself, as in 3.1.
 - **Step 1d** (`louis-agent.orchestrator`): `LouisAgentClient.ReadStreamAsync` takes the response's stream and reads its
   events through the reader, folding them by their record types; the framing loop is gone. Its tests feed the same SSE
   text as bytes instead of a `StringReader`, with no assertion changed.
