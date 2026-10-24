@@ -7,7 +7,7 @@ FROM ollama/ollama:rocm
 # of ~4 GB for llama3.1). Ollama puts as many layers on the GPU as fit and runs the rest on the CPU from system RAM.
 ENV OLLAMA_CONTEXT_LENGTH=32768     OLLAMA_FLASH_ATTENTION=1     OLLAMA_KV_CACHE_TYPE=q8_0
 
-COPY ollama-entrypoint.sh /entrypoint.sh
+COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]

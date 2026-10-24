@@ -210,7 +210,7 @@ tools/louis-agent.usage-probe/ # A provider's raw usage; prices and totals a led
 tests/                   # NUnit: core.tests (mirrors core, plus ArchitectureTests, SkillsLayoutTests), api.tests, orchestrator.tests,
                          #   identity.puls.tests, pack.shops.tests, composition.tests, web.shared.tests, puls.tests and web.tests (bUnit);
                          #   louis-agent.testing and louis-agent.web.testing hold the fakes they share
-docker/                  # Dockerfiles and compose files (main, demo, puls)
+docker/                  # This PC: images/ (the Dockerfiles; ollama/ for the local model), the compose stacks (main, puls) and searxng/
 config/                  # .env + .env.secrets (ignored) and their examples, LLM profiles, prices.json, rates.json
 Skills/                  # What the agent writes: agent/functions/ (CreateSkillFile), tools/ (agent-built tools)
 docs/                    # This guide, features/, plans/, fixes/, specs/, projects/, learning/

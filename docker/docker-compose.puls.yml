@@ -17,7 +17,7 @@ services:
   puls:
     build:
       context: ..
-      dockerfile: docker/Dockerfile.puls
+      dockerfile: docker/images/Dockerfile.puls
     image: louis-agent-puls:latest
     container_name: puls
     <<: *puls-env
