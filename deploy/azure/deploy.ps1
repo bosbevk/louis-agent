@@ -6,8 +6,9 @@ Deploys Puls to Azure Container Apps (rg-puls-za): five verbs, each one az comma
   deploy.ps1 build   [-Tag 2026-10-24-1732]       builds louis-agent-puls and ts-forwarder in the registry, tagged alike
   deploy.ps1 secrets [-App puls-app|puls-searxng] copies the secrets from config/.env.secrets, .env.mongo and .env.searxng
                                                   onto the app (never printed); a missing value is skipped, by name
-  deploy.ps1 update  -Revision v018 [-Tag ...] [-App ...]
-                                                  fills TAG and REVISION into deploy/azure/<App>.yaml and updates the app
+  deploy.ps1 update  -Tag 2026-10-24-1732 -Revision v018 [-App ...]
+                                                  fills TAG (an image already built) and REVISION into deploy/azure/<App>.yaml
+                                                  and updates the app
   deploy.ps1 searxng-settings                     uploads docker/searxng/settings.yml to the searxng-config share
   deploy.ps1 logs    [-App ...] [-Container ...] [-Follow]
   deploy.ps1 lock    [-Ip 1.2.3.4]                 allows only this PC's public IP (or -Ip) on puls-app's ingress: the
@@ -22,8 +23,9 @@ param(
     [ValidateSet('build', 'secrets', 'update', 'searxng-settings', 'logs', 'lock', 'release')]
     [string]$Verb,
     [string]$Ip,
-    # Date and time, so two releases on one day keep both images and either can be rolled back to (review, 2026-10-24).
-    [string]$Tag = (Get-Date -Format 'yyyy-MM-dd-HHmm'),
+    # build and release make one from the date and time when none is given, so two releases on one day keep both images
+    # and either can be rolled back to; update needs the tag of an image already built (review, 2026-10-24).
+    [string]$Tag,
     [string]$Revision,
     [ValidateSet('puls-app', 'puls-searxng')]
     [string]$App = 'puls-app',
@@ -31,6 +33,7 @@ param(
     [switch]$Follow
 )
 $ErrorActionPreference = 'Stop'
+if (-not $Tag -and $Verb -in @('build', 'release')) { $Tag = Get-Date -Format 'yyyy-MM-dd-HHmm' }
 $ResourceGroup = 'rg-puls-za'
 $Registry = 'acrpulsza'
 $StorageAccount = 'pulsstorage'
@@ -96,6 +99,7 @@ switch ($Verb) {
     }
     'update' {
         if (-not $Revision) { throw 'update needs -Revision (vNNN, one more than the running revision; Single mode refuses a repeat).' }
+        if (-not $Tag) { throw 'update needs -Tag: the tag of an image already built (deploy.ps1 build; or release, which does both).' }
         $template = Join-Path $Here "$App.yaml"
         $resolved = Join-Path ([System.IO.Path]::GetTempPath()) "$App.$Revision.yaml"
         (Get-Content $template -Raw).Replace(':TAG', ":$Tag").Replace("'REVISION'", "'$Revision'") | Set-Content $resolved -Encoding utf8 -NoNewline
