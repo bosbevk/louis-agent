@@ -103,7 +103,7 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
 - **6a** Human review as a grader
 - **7** Python leaves
 - **7a** Why a run behaved as it did
-- **7b** Every eval visible in the admin portal, and the API names no product
+- **7b** Every eval visible in the admin portal, and the API names no product; the store split by record (approved during the build)
 - **7c** Protocol v2: one event model for the runner and the API; v1 runs discarded (approved during the build)
 - **8** Docs and the write-ups
 

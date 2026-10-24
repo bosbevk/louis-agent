@@ -1027,6 +1027,16 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
   discarded** (Louis: "v1 runs can be discarded"): no migration and no v1 parser kept; `python-protocol.txt` and the
   v1 parse tests go with it, and the trends start again at v2. Before the discard, the last Python cook and routing
   scores are written into the feature doc as numbers, so the baseline stays on record.
+- **Step 7b splits the store by record** (Louis, 2026-10-24). `IBenchmarkStore` is already the repository (one
+  interface, an in-memory and a MongoDB implementation, one contract test), but `MongoBenchmarkStore` holds four
+  records in one class (runs, conversations, turns with their events, requests: each its own collection, mapping and
+  indexes; 320 lines, on `FileSizeTests`' list). With 7b's rename (`Benchmarks/` to `Evals/`, `IEvalStore`), it
+  becomes one store per record: `IRunStore`, `IConversationStore`, `ITurnStore`, `IRequestStore`, each with a MongoDB
+  and an in-memory class and its own contract test, and a hand-written mapper per record (the mapping stays by hand,
+  so what `mongosh` shows is what the portal reads, and scores and events stay the JSON they came as). `IEvalStore`
+  goes, or stays only as the four together for the recorder. No generic `Repository<T>`: the driver's
+  `IMongoCollection<T>` already is one, and a wrapper would leak its queries or hide each record's indexes and upserts.
+  `MongoBenchmarkStore.cs` leaves `FileSizeTests`' list. The old v1 fields are still read until 7c discards them.
 
 ---
 [Docs index](../README.md) · [Plans](README.md) · [Platform plan](platform.md) · [Feature F18](../features/F18-evaluation.md)
