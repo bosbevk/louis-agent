@@ -4,6 +4,9 @@ namespace LouisAgent.Orchestrator.Tests;
 
 public class LouisAgentClientTests
 {
+    /// <summary>The stream as the client reads it: the same SSE text, as bytes.</summary>
+    private static MemoryStream Bytes(string sse) => new(System.Text.Encoding.UTF8.GetBytes(sse));
+
     // The shape louis-agent.api streams (see ClaudeStyleStream in src/louis-agent.api/Program.cs).
     private const string Stream = """
         event: message_start
@@ -39,7 +42,7 @@ public class LouisAgentClientTests
     public async Task ReadStream_CollectsTextToolCallsAndStopReason()
     {
         var progress = new List<string>();
-        var reply = await LouisAgentClient.ReadStreamAsync(new StringReader(Stream), progress.Add);
+        var reply = await LouisAgentClient.ReadStreamAsync(Bytes(Stream), progress.Add);
 
         Assert.That(reply.ToolCalls.Select(t => t.Name), Is.EqualTo(new[] { "DotNetTest" }));
         Assert.That(reply.ToolCalls[0].Result, Is.EqualTo("Error: 1 failed"));
@@ -61,7 +64,7 @@ public class LouisAgentClientTests
 
             """;
 
-        var reply = await LouisAgentClient.ReadStreamAsync(new StringReader(stream));
+        var reply = await LouisAgentClient.ReadStreamAsync(Bytes(stream));
 
         Assert.That(reply.Usage, Is.EqualTo(new UsageTotal("louis-agent", 3, 1_900, 3_000, 26_000, 412, 0.0061m, 0)));
         Assert.That(reply.Currency, Is.EqualTo("USD"));
@@ -76,7 +79,7 @@ public class LouisAgentClientTests
 
             """;
 
-        var reply = await LouisAgentClient.ReadStreamAsync(new StringReader(stream));
+        var reply = await LouisAgentClient.ReadStreamAsync(Bytes(stream));
 
         Assert.That((reply.Usage!.Cost, reply.Usage.Unpriced, reply.Currency), Is.EqualTo(((decimal?)null, 1, (string?)null)));
     }
@@ -91,7 +94,7 @@ public class LouisAgentClientTests
 
             """;
 
-        var reply = await LouisAgentClient.ReadStreamAsync(new StringReader(stream));
+        var reply = await LouisAgentClient.ReadStreamAsync(Bytes(stream));
 
         Assert.That(reply.Error, Is.EqualTo("HttpRequestException: 529 overloaded"));
         Assert.That(reply.Usage, Is.EqualTo(new UsageTotal("louis-agent", 2, 1_200, 0, 24_000, 300, 0.004m, 0)));
@@ -101,7 +104,7 @@ public class LouisAgentClientTests
     public async Task ReadStream_NoUsage_IsNull()
     {
         // An API that doesn't record usage, or an older one: the orchestrator works as before.
-        var reply = await LouisAgentClient.ReadStreamAsync(new StringReader(Stream));
+        var reply = await LouisAgentClient.ReadStreamAsync(Bytes(Stream));
 
         Assert.That(reply.Usage, Is.Null);
     }
@@ -126,7 +129,7 @@ public class LouisAgentClientTests
             data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":"Now the fix."}}
 
             """;
-        var reply = await LouisAgentClient.ReadStreamAsync(new StringReader(stream));
+        var reply = await LouisAgentClient.ReadStreamAsync(Bytes(stream));
 
         Assert.That(reply.Text, Is.EqualTo("Let me look at the code:\n\nNow the fix."));
     }
@@ -139,7 +142,7 @@ public class LouisAgentClientTests
             data: {"type":"error","error":{"type":"api_error","message":"prompt is too long"}}
 
             """;
-        var reply = await LouisAgentClient.ReadStreamAsync(new StringReader(stream));
+        var reply = await LouisAgentClient.ReadStreamAsync(Bytes(stream));
 
         Assert.That(reply.Error, Is.EqualTo("prompt is too long"));
     }
@@ -147,7 +150,7 @@ public class LouisAgentClientTests
     [Test]
     public async Task ParseFixResult_ReadsTheStreamedResultLine()
     {
-        var reply = await LouisAgentClient.ReadStreamAsync(new StringReader(Stream));
+        var reply = await LouisAgentClient.ReadStreamAsync(Bytes(Stream));
         var result = LouisAgentClient.ParseFixResult(reply.Text);
 
         Assert.That(result, Is.Not.Null);

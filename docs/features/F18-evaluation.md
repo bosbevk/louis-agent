@@ -136,6 +136,10 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   as the last event, a stop as the last) depend on it. The reader gets the blank line from a wrapper stream
   (`EndedByBlankLine`), with its own test written first and seen failing. A cut-off connection's last event is read
   the same way, and one cut inside a line is kept as an `UnknownEvent`.
+- **Step 1d** (`louis-agent.orchestrator`): `LouisAgentClient.ReadStreamAsync` takes the response's stream and reads its
+  events through the reader, folding them by their record types; the framing loop is gone. Its tests feed the same SSE
+  text as bytes instead of a `StringReader`, with no assertion changed. The file was already on the size ratchet
+  (`FileSizeTests`) and is now shorter (216 to 206 lines).
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

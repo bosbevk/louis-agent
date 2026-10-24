@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using LouisAgent.Core.Messages;
+using LouisAgent.SessionStream;
 using LouisAgent.Orchestrator.Messages;
 
 namespace LouisAgent.Orchestrator;
@@ -68,8 +69,7 @@ internal sealed partial class LouisAgentClient(HttpClient http, string? apiKey)
             return new AgentReply("", [], null, MessageText.Format(OrchestratorToolMessage.HttpFailed, new { Status = (int)response.StatusCode, Body = body }));
         }
 
-        using var reader = new StreamReader(await response.Content.ReadAsStreamAsync(cancellationToken));
-        return await ReadStreamAsync(reader, onProgress, cancellationToken);
+        return await ReadStreamAsync(await response.Content.ReadAsStreamAsync(cancellationToken), onProgress, cancellationToken);
     }
 
     public async Task DeleteSessionAsync(string sessionId)
@@ -86,37 +86,24 @@ internal sealed partial class LouisAgentClient(HttpClient http, string? apiKey)
     }
 
     /// <summary>Folds the event stream into a reply; <paramref name="onProgress"/> sees each tool call as it happens.</summary>
-    internal static async Task<AgentReply> ReadStreamAsync(TextReader reader, Action<string>? onProgress = null,
+    internal static async Task<AgentReply> ReadStreamAsync(Stream stream, Action<string>? onProgress = null,
         CancellationToken cancellationToken = default)
     {
         var text = new StringBuilder();
         var tools = new List<AgentToolCall>();
-        string? stopReason = null, error = null, eventName = null, currency = null;
+        string? stopReason = null, error = null, currency = null;
         UsageTotal? usage = null;
-        var data = new StringBuilder();
 
-        while (await reader.ReadLineAsync(cancellationToken) is { } line)
-        {
-            if (line.StartsWith("event:", StringComparison.Ordinal)) eventName = line[6..].Trim();
-            else if (line.StartsWith("data:", StringComparison.Ordinal)) data.Append(line[5..].TrimStart());
-            else if (line.Length == 0 && data.Length > 0)
-            {
-                Dispatch(eventName, data.ToString());
-                eventName = null;
-                data.Clear();
-            }
-        }
-        if (data.Length > 0) Dispatch(eventName, data.ToString());
+        await foreach (var streamEvent in SessionStreamReader.ReadAsync(stream, cancellationToken)) Dispatch(streamEvent);
 
         return new AgentReply(text.ToString(), tools, stopReason, error, usage, currency);
 
-        void Dispatch(string? name, string json)
+        void Dispatch(SessionEvent streamEvent)
         {
-            using var doc = JsonDocument.Parse(json);
-            var root = doc.RootElement;
-            switch (name)
+            switch (streamEvent)
             {
-                case "content_block_start" when root.GetProperty("content_block") is var block:
+                case ContentBlockStarted started:
+                    var block = started.Data.GetProperty("content_block");
                     string type = block.GetProperty("type").GetString() ?? "";
                     // Text blocks are separated by tool calls; keep them apart instead of running sentences together.
                     if (type == "text" && text.Length > 0 && !text.ToString().EndsWith('\n')) text.Append("\n\n");
@@ -141,19 +128,19 @@ internal sealed partial class LouisAgentClient(HttpClient http, string? apiKey)
                         if (failed) onProgress?.Invoke(MessageText.Format(OrchestratorLogMessage.LouisAgentToolFailed));
                     }
                     break;
-                case "content_block_delta" when root.GetProperty("delta") is var delta &&
-                                                delta.GetProperty("type").GetString() == "text_delta":
-                    text.Append(delta.GetProperty("text").GetString());
+                case ContentBlockDelta delta when delta.Data.GetProperty("delta") is var change
+                                                  && change.GetProperty("type").GetString() == "text_delta":
+                    text.Append(change.GetProperty("text").GetString());
                     break;
-                case "message_delta":
-                    stopReason = root.GetProperty("delta").GetProperty("stop_reason").GetString();
-                    if (root.TryGetProperty("usage", out var used) && used.ValueKind == JsonValueKind.Object)
+                case MessageDelta messageDelta:
+                    stopReason = messageDelta.Data.GetProperty("delta").GetProperty("stop_reason").GetString();
+                    if (messageDelta.Data.TryGetProperty("usage", out var used) && used.ValueKind == JsonValueKind.Object)
                         (usage, currency) = ReadUsage(used);
                     break;
-                case "error":
-                    error = root.GetProperty("error").GetProperty("message").GetString();
+                case ErrorReported:
+                    error = streamEvent.Data.GetProperty("error").GetProperty("message").GetString();
                     // FX6: a failed reply still reports what it used, so the fix's cost isn't under-counted.
-                    if (root.TryGetProperty("usage", out var failedUsage) && failedUsage.ValueKind == JsonValueKind.Object)
+                    if (streamEvent.Data.TryGetProperty("usage", out var failedUsage) && failedUsage.ValueKind == JsonValueKind.Object)
                         (usage, currency) = ReadUsage(failedUsage);
                     break;
             }
