@@ -1,6 +1,6 @@
 using System.Text.Json;
 
-namespace LouisAgent.Evals.Evals;
+namespace LouisAgent.Evals;
 
 /// <summary>
 /// An eval's scores for one conversation: written as snake_case JSON into the protocol's <c>conversation</c> line. Each eval

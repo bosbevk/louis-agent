@@ -1,4 +1,3 @@
-using LouisAgent.Evals.Evals;
 
 namespace LouisAgent.Evals.Api;
 

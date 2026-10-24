@@ -1,7 +1,6 @@
 using LouisAgent.Evals;
 using LouisAgent.Evals.Puls.Cook;
 using LouisAgent.Evals.Puls.Transcripts;
-using LouisAgent.Evals.Evals;
 
 namespace LouisAgent.Evals.Puls.Tests.Cook;
 

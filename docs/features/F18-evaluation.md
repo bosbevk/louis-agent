@@ -241,10 +241,10 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   rows) describes the one-key rule. A grader's message reads "handled by {role}" or "answered by Puls itself". Step 5's
   `CookEval` starts at a new version, so the trend never joins runs made under the old rule with runs made under the new
   one.
-- **Review fixes before step 4:** the graders' reasons are a message enum (`GradeMessage`, ADR 0009); the harness root is
-  split into `Evals/` and `Running/` (namespaces `LouisAgent.Evals.Evals` and `LouisAgent.Evals.Running`, by the folder-namespace
-  rule); `evals` is on the file-size ratchet; the grader tests sit in `Grading/FixedRules/`. No behaviour changed. Core
-  (1290), API (174), Puls (76) and harness (9) tests pass.
+- **Review fixes before step 4:** the graders' reasons are a message enum (`GradeMessage`, ADR 0009); `IEval`, `EvalMode`
+  and `EvalScores` sit in the harness root (`LouisAgent.Evals`), `EvalScenario` and `EvalInput` in `Datasets/`, and the runner
+  in `Running/`; `evals` is on the file-size ratchet; the grader tests sit in `Grading/FixedRules/`. No behaviour changed.
+  Core (1290), API (174), Puls (76) and harness (9) tests pass.
 - **Step 1d** (`louis-agent.orchestrator`): `LouisAgentClient.ReadStreamAsync` takes the response's stream and reads its
   events through the reader, folding them by their record types; the framing loop is gone. Its tests feed the same SSE
   text as bytes instead of a `StringReader`, with no assertion changed.

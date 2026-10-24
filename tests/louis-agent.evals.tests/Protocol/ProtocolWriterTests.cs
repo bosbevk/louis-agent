@@ -6,7 +6,7 @@ using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Protocol;
 using LouisAgent.Evals.Trials;
 
-namespace LouisAgent.Evals.Tests;
+namespace LouisAgent.Evals.Tests.Protocol;
 
 // F18 step 2: the lines the eval writes are the portal's protocol (F31, version 1). Each one parses as the API reads it, to the
 // same record as the Python's line for the same event: the fixture is the Python writer's own output, with the clock fixed.

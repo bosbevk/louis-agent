@@ -1,4 +1,5 @@
-using LouisAgent.Evals.Evals;
+
+using LouisAgent.Evals.Datasets;
 
 namespace LouisAgent.Evals.Trials;
 

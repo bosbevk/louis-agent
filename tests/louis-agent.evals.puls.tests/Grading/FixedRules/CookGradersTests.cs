@@ -2,7 +2,7 @@ using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Puls.Grading.FixedRules;
 using LouisAgent.Evals.Trials;
 using LouisAgent.SessionStream;
-using LouisAgent.Evals.Evals;
+using LouisAgent.Evals.Datasets;
 
 namespace LouisAgent.Evals.Puls.Tests.Grading.FixedRules;
 

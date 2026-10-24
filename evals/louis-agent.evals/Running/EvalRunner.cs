@@ -7,7 +7,7 @@ using LouisAgent.Evals.Protocol;
 using LouisAgent.Evals.Trials;
 using LouisAgent.SessionStream;
 using Microsoft.Extensions.Logging;
-using LouisAgent.Evals.Evals;
+using LouisAgent.Evals.Datasets;
 
 namespace LouisAgent.Evals.Running;
 

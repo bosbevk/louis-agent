@@ -5,7 +5,6 @@ using LouisAgent.Evals.Puls.Routing;
 using LouisAgent.Evals.Puls.Transcripts;
 using LouisAgent.Evals.Trials;
 using LouisAgent.SessionStream;
-using LouisAgent.Evals.Evals;
 
 namespace LouisAgent.Evals.Puls.Tests.Routing;
 

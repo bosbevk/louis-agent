@@ -1,6 +1,6 @@
 using System.Text.Json;
 
-namespace LouisAgent.Evals.Evals;
+namespace LouisAgent.Evals.Datasets;
 
 /// <summary>
 /// One scenario of a task: its input (what the user sends) and its success criteria (<see cref="Expected"/>, the values the

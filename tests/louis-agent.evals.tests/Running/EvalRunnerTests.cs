@@ -6,10 +6,10 @@ using LouisAgent.Evals.Protocol;
 using LouisAgent.Evals.Trials;
 using LouisAgent.SessionStream;
 using Microsoft.Extensions.Logging.Abstractions;
-using LouisAgent.Evals.Evals;
 using LouisAgent.Evals.Running;
+using LouisAgent.Evals.Datasets;
 
-namespace LouisAgent.Evals.Tests;
+namespace LouisAgent.Evals.Tests.Running;
 
 // F18 step 2: one canned trial, written in order. The client answers from canned events and never calls the API, so the
 // lines are the runner's own: the mode, the question, each event the session sent, the turn, the conversation and the mode's end.
