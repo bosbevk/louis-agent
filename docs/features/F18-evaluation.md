@@ -96,7 +96,7 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
 - **4.2b** `EvalConformanceTests` and the reference transcripts: each scenario has one transcript that passes its required graders and one that fails them
 - **4.3a** The API lists the C# evals and starts the runner: `BenchmarkCheck` names an eval (`BenchmarkCheckKind`), `BenchmarkCatalog` from the runner's `--list` (`EvalListing`), `BenchmarkRunner` starts `run`, `EVAL_RUNNER`, the stub's parity
 - **4.3b** Both images carry the runner at `/app/evals` (compose sets no `EVAL_RUNNER`), and a by-hand Docker check
-- **4.4** The developer's how-to, `docs/guides/add-an-eval-set.md`
+- **4.4** The developer's how-to, `docs/guides/add-an-eval-set.md`: its example checked against the code, and what writing it found (the build notes)
 - **4a** Web input recorded and replayed: the browser
 - **4b** The same for search, fetch and the clock
 - **4c** The prompt's hash on every ledger row
@@ -424,7 +424,8 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   record the absolute path. The listing's lines are read by `EvalListing.Parse`, which is pure, with System.Text.Json's required and
   nullable rules on: `{}` and a null name are refused, not listed with no id (`EvalListingMessage.NotAnEval`). The API reads the listing
   at start-up (`BenchmarkCatalog.Warm`, off the start-up path), so a warning lands in the start-up log; a failed listing lasts until a
-  restart. An eval check's settings refuse a missing runner path (`ArgumentNullException`) rather than guess a default (ADR 0007).
+  restart. An eval check's settings take the runner path as a required parameter of `BenchmarkSettings.Of`, so the compiler refuses a missing
+  one rather than a guessed default (ADR 0007).
   `Benchmarks/Runs/` has 12 files: ADR 0010's split by concern is left for step 7b, which moves the Python checks and the evals'
   folders, and is not decided here. Red first: 9 tests for these fixes.
 - **Step 4.3b** (`docker/images/Dockerfile.api` and `Dockerfile.puls`, `config/.env.example`, the docs): both images publish the
@@ -442,6 +443,29 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   0010). The namespace is `LouisAgent.Evals.Puls.Turns`. The conformance test builds every `EvalSetKind` and the fake set, so a new
   set is checked with no edit to the test. A refactor: the tests were green before and after, with nothing to see red. The step 3.2
   note above names the old folder as it was then.
+- **Step 4.4** (`docs/guides/add-an-eval-set.md`, the two index rows, the link in `change-the-api.md`): the guide's example is `acme`,
+  not Puls, because Puls's set is empty until step 5. Each step names the file that does the same thing today. Checked by building,
+  outside the repo: the guide's grader, eval, set and `Scenarios` line compile against the harness; a dataset with a placeholder hash is
+  refused with the hash it needs, loads with that hash, and refuses an unknown field; the example's reference passes the three required
+  graders, and its `wrong-area` known-bad fails the area grader. What writing it found, against the plan and the code:
+  - `IGrader.GradeAsync` returns `Grade`, not a `Verdict`. `Verdict` is internal to the harness, so a grader builds its `Grade` directly,
+    as the Puls graders do.
+  - The `Scenarios` initialiser can't read an instance `Graders` property. The example keeps its graders in a static list; the first
+    draft of the guide had this wrong, and building it found it.
+  - No eval loads its dataset from its folder yet. `StubEval` keeps its scenarios in code, the Puls tests load theirs with
+    `DatasetLoader`, and step 5's evals will load theirs the same way; the guide documents that path.
+  - The runner doesn't select held-out scenarios yet; the split is recorded only.
+  - A dataset that fails to load surfaces at the catalogue's build as an unhandled exception, since the runner catches only its own
+    refusals. The portal's listing warning then shows only the exit code, because the API reads the runner's stdout, not its stderr.
+    Open: the runner could refuse with its own message, or the API could read its stderr.
+  - The spec's "every project links its docs" is not true of the evals projects: the identity and pack projects do, and the evals
+    projects don't. The guide asks for the link; the evals projects are unchanged.
+  - `TurnView`, the answer reader, lives in Puls's set, so an identity's grader reads the answer itself. Two sets sharing one reader
+    should move it into the harness.
+  - The first draft's example had two messages, and its reference didn't match its expected answer. The example now has one
+    message, and the check above holds for it.
+  - `NoErrorGrader` judges the stream's errors only (an infrastructure failure is `Unknown`), and `RoutedToGrader` judges the first
+    turn only. The first draft said otherwise; the guide now says what the code does.
 - **Notes for step 5** (from the review of 4.2): `PulsEvalSet`'s `TurnView` builds on `EngineEvents`, so the route, the errors and the
   cost come from one reader. If an expected route goes in a scenario's `expected`, `RoutedToGrader` must declare that key in its
   `ExpectedKeys`. When the HTTP client sets a turn's `Failure`, the turn line must carry it, so `ProtocolTranscripts` reads it back. A
