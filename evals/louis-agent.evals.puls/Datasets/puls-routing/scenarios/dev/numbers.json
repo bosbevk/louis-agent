@@ -1,0 +1,14 @@
+{
+  "id": "numbers",
+  "input": {
+    "place": "Stellenbosch, Wes-Kaap, Suid-Afrika",
+    "time_zone": "Africa/Johannesburg",
+    "messages": [
+      "Hoeveel .cs-lêers is daar onder louis-agent.core, en hoeveel reëls het hulle saam?"
+    ]
+  },
+  "expected": {},
+  "categories": [
+    "kind:numbers"
+  ]
+}

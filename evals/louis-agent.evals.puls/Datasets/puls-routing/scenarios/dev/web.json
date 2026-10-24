@@ -1,0 +1,14 @@
+{
+  "id": "web",
+  "input": {
+    "place": "Stellenbosch, Wes-Kaap, Suid-Afrika",
+    "time_zone": "Africa/Johannesburg",
+    "messages": [
+      "Wat is die nuutste weergawe van .NET en wanneer is dit vrygestel? Gee jou bronne."
+    ]
+  },
+  "expected": {},
+  "categories": [
+    "kind:web"
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "id": "git",
+  "input": {
+    "place": "Stellenbosch, Wes-Kaap, Suid-Afrika",
+    "time_zone": "Africa/Johannesburg",
+    "messages": [
+      "Wat het die laaste drie commits in hierdie repository verander?"
+    ]
+  },
+  "expected": {},
+  "categories": [
+    "kind:git"
+  ]
+}

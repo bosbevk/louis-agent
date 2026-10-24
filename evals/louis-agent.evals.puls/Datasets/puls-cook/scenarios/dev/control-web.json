@@ -1,0 +1,15 @@
+{
+  "id": "control-web",
+  "input": {
+    "place": "Stellenbosch, Wes-Kaap, Suid-Afrika",
+    "time_zone": "Africa/Johannesburg",
+    "messages": [
+      "Wat is die huidige prima uitleenkoers in Suid-Afrika, en wanneer het dit laas verander? Gee jou bronne."
+    ]
+  },
+  "expected": {},
+  "categories": [
+    "language:af",
+    "control"
+  ]
+}

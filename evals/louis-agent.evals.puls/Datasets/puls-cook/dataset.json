@@ -1,0 +1,9 @@
+{
+  "name": "puls-cook",
+  "version": 1,
+  "covers": "Puls's cook: a meal in Afrikaans or English, its prices at the shops (a town with a shop and one without), a budget, a follow-up, and a plain web question the cook is not for (the control). The cook check (benchmarks/cook/run_check.py) asked these.",
+  "content_hash": "075ed7bb490c3e801b3ac85ae23c9a161c474a40e46da02ac16b46dcb464f0fd",
+  "changes": [
+    "2026-10-24: first version, the scenarios of benchmarks/cook/run_check.py (CONVERSATIONS) as files"
+  ]
+}

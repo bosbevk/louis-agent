@@ -1,0 +1,14 @@
+{
+  "id": "files-2",
+  "input": {
+    "place": "Stellenbosch, Wes-Kaap, Suid-Afrika",
+    "time_zone": "Africa/Johannesburg",
+    "messages": [
+      "Watter instellings in config/.env.example gaan oor die LLM? Lys hulle met 'n kort verduideliking."
+    ]
+  },
+  "expected": {},
+  "categories": [
+    "kind:files"
+  ]
+}

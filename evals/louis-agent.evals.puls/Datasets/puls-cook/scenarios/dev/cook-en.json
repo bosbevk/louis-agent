@@ -1,0 +1,16 @@
+{
+  "id": "cook-en",
+  "input": {
+    "place": null,
+    "time_zone": "Africa/Johannesburg",
+    "messages": [
+      "What should I cook tonight in Pretoria for two? I have about an hour. Give me the recipe and what it'll cost at the shops.",
+      "Swap the meat for chicken. What does the shopping list look like now?"
+    ]
+  },
+  "expected": {},
+  "categories": [
+    "language:en",
+    "follow-up"
+  ]
+}

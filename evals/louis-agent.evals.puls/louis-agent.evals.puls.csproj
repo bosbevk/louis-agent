@@ -8,6 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <!-- F18 step 3a.2: the datasets are data, copied beside the assembly (plan F18 step 3a). -->
+    <None Update="Datasets\**\*" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
     <!-- F18 step 3: Puls's rules, which name Puls's shops and its cook; the harness (ADR 0029) names no identity. -->
     <ProjectReference Include="..\louis-agent.evals\louis-agent.evals.csproj" />
   </ItemGroup>

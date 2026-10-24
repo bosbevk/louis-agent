@@ -1,0 +1,14 @@
+{
+  "id": "cook",
+  "input": {
+    "place": "Stellenbosch, Wes-Kaap, Suid-Afrika",
+    "time_zone": "Africa/Johannesburg",
+    "messages": [
+      "Ek is in Stellenbosch. Wat kan ek vanaand vir vier mense kook? Gee die resep en 'n inkopielys met pryse."
+    ]
+  },
+  "expected": {},
+  "categories": [
+    "kind:cook"
+  ]
+}

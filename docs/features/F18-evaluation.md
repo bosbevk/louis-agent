@@ -88,6 +88,7 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
 - **2a** What a run ran, recorded
 - **3** Fixed-rule graders and the scores document
 - **3a.1** The dataset loader and its hash (harness: `Datasets/`; the Puls datasets are 3a.2)
+- **3a.2** Puls's datasets: `puls-cook` and `puls-routing`, the Python checks' scenarios as files
 - **3a** Datasets as files, one folder per eval
 - **4** The runner and the stub eval; the eval sets pluggable (`IEvalSet`, `EVALS=`) and the common graders; the developer's how-to `docs/guides/add-an-eval-set.md` (approved during the build)
 - **4a** Web input recorded and replayed: the browser
@@ -280,6 +281,20 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   options are `EvalJson.SnakeCase`, shared with the scores.
   A later review (before 3a.2) found the hash compared before the files were read, so a stray file such as `desktop.ini`
   read as a change to bump. The files are now read first; `AStrayFileIsRefusedBeforeAHashChange` is red before the fix.
+- **Step 3a.2** (`evals/louis-agent.evals.puls/Datasets/`: `puls-cook`, 6 scenarios, and `puls-routing`, 12; their tests in
+  `tests/louis-agent.evals.puls.tests/Datasets/`): the scenarios the Python checks ran, as files. Each `input` is the Python's:
+  the test compares every one with `Fixtures/python-scenarios.json`, which an `ast` read of `benchmarks/cook/run_check.py` and
+  `benchmarks/routing/run_check.py` wrote (nothing imported or run). The loader accepts each dataset with Puls's own graders,
+  and the hash in `dataset.json` is computed by an independent Python implementation of the rule. The datasets are copied
+  beside the Puls assembly and beside the tests. Red: 7 tests failed while the folders were absent. Green: 83 of 83.
+  Decisions to review (not yet approved by Louis):
+  - Every scenario is `dev`. `held-out/` is absent until Louis picks which scenarios it holds out; an empty folder can't be
+    committed.
+  - `categories` are decided by hand from the Python's own terms: cook `language:af|en`, `budget`, `follow-up`, `shop:none`,
+    `control`. Routing's are `kind:{kind}`, which the plan doesn't name.
+  - `expected` is `{}` everywhere. The graders read no keys yet, and the loader refuses a key no grader reads; the keys
+    come with the graders that read them in step 5.
+  - The loader orders scenarios by file name, not the Python's order, so the tests compare sets.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

@@ -25,4 +25,10 @@
     <Using Include="NUnit.Framework" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- F18 step 3a.2: the Python's scenarios (read from benchmarks/*/run_check.py with ast), and Puls's datasets beside the tests. -->
+    <None Include="Fixtures\python-scenarios.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\evals\louis-agent.evals.puls\Datasets\**\*" Link="Datasets\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>

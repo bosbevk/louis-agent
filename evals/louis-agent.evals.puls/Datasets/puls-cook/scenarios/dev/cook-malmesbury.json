@@ -1,0 +1,15 @@
+{
+  "id": "cook-malmesbury",
+  "input": {
+    "place": "Malmesbury, Wes-Kaap, Suid-Afrika",
+    "time_zone": "Africa/Johannesburg",
+    "messages": [
+      "Ek het R150 vir aandete vir vier mense. Wat kan ek maak, en wat kos dit by die winkel? Gebruik spesiale as daar is."
+    ]
+  },
+  "expected": {},
+  "categories": [
+    "language:af",
+    "budget"
+  ]
+}

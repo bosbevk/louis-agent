@@ -1,0 +1,14 @@
+{
+  "id": "files",
+  "input": {
+    "place": "Stellenbosch, Wes-Kaap, Suid-Afrika",
+    "time_zone": "Africa/Johannesburg",
+    "messages": [
+      "Lees README.md in die werkruimte en som in drie punte op wat die projek doen."
+    ]
+  },
+  "expected": {},
+  "categories": [
+    "kind:files"
+  ]
+}

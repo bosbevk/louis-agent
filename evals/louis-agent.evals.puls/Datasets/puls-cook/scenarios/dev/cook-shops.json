@@ -1,0 +1,14 @@
+{
+  "id": "cook-shops",
+  "input": {
+    "place": "Stellenbosch, Wes-Kaap, Suid-Afrika",
+    "time_zone": "Africa/Johannesburg",
+    "messages": [
+      "Ek is in Stellenbosch, kook vanaand vir vier mense en het so 'n uur. Wat moet ek maak? Gee my die resep, elke bestanddeel se prys by twee winkels hier naby met die skakel waar jy die prys gekry het, by watter winkel ek alles in een slag kry, die takke se adresse, en wat die goedkoopste mandjie kos."
+    ]
+  },
+  "expected": {},
+  "categories": [
+    "language:af"
+  ]
+}

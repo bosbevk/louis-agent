@@ -1,0 +1,14 @@
+{
+  "id": "chat",
+  "input": {
+    "place": "Stellenbosch, Wes-Kaap, Suid-Afrika",
+    "time_zone": "Africa/Johannesburg",
+    "messages": [
+      "Gee my drie name vir 'n Jack Russell, met 'n Afrikaanse knipoog."
+    ]
+  },
+  "expected": {},
+  "categories": [
+    "kind:chat"
+  ]
+}
