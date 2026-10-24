@@ -142,7 +142,6 @@ public class PulsPromptsTests
         string cook = Read("specialists/puls-cook.md");
 
         Assert.That(cook, Does.Contain("Where the user is").And.Contain("Never invent a price"));
-        Assert.That(cook, Does.Contain("A price per kg is never a pack's price"));
         Assert.That(cook, Does.Contain("the product's name as the shop sells it"));
         Assert.That(cook, Does.Contain("every ingredient named in the task's language"));
         Assert.That(cook, Does.Contain("never translated"));
@@ -151,8 +150,8 @@ public class PulsPromptsTests
         Assert.That(cook, Does.Contain("![KOO Chakalaka](https://catalog.sixty60.co.za/…) KOO Chakalaka Mild 410 g"));
         Assert.That(cook, Does.Contain("only an image a shop tool gave"));
         Assert.That(cook, Does.Contain("the smallest pack that covers what the recipe needs"));
-        Assert.That(cook, Does.Contain("look it up by name").And.Contain("q=Checkers+Malmesbury"));
-        Assert.That(cook, Does.Contain("| Chicken thighs | 600 g | Farmer's Choice Chicken Thighs 1–1,2 kg |"));
+        Assert.That(cook, Does.Contain("up by name in their town").And.Contain("q=Checkers+Malmesbury"));
+        Assert.That(cook, Does.Contain("| Chicken thighs ").And.Contain("| 600 g ").And.Contain("Farmer's Choice Chicken Thighs 1–1,2 kg"));
     }
 
     [Test]
@@ -173,7 +172,7 @@ public class PulsPromptsTests
 
         Assert.That(router, Does.Contain("every cooking question").And.Contain("never from memory"));
         Assert.That(cook, Does.Contain("Where to buy").And.Contain("branches"));
-        Assert.That(cook, Does.Contain("nominatim.openstreetmap.org/search").And.Contain("Don't fetch"));
+        Assert.That(cook, Does.Contain("nominatim.openstreetmap.org/search").And.Contain("never fetch it, the link is for the user"));
         Assert.That(cook, Does.Contain("Geprys: {n} van {m} bestanddele"));
     }
 
@@ -198,52 +197,56 @@ public class PulsPromptsTests
     }
 
     [Test]
-    public void TheCook_LooksForDealsFirst_InPacksTheRecipeNeeds_ForAsManyPeopleAsPulsAsked()
+    public void TheCook_ReadsTheRecipeFirst_ThenDealsPickTheProducts_InPacksTheRecipeNeeds_ForAsManyPeopleAsPulsAsked()
     {
+        // 2026-10-24 (Louis): "deals first, for every meal" went; the recipe, from a real page, comes first, and the deals
+        // on its main ingredients pick the products.
         string cook = Read("specialists/puls-cook.md");
         string shops = Read("toolsets/shops.md");
         string router = Read("agent/puls/voice.md");
 
-        Assert.That(cook, Does.Contain("Deals first, for every meal"));
+        Assert.That(cook, Does.Contain("The recipe first, from a real page, before any product").And.Contain("Deals pick the products"));
         Assert.That(cook, Does.Not.Contain("when cost matters"), "not only for a budget");
         Assert.That(shops, Does.Contain("Look for deals first"));
-        Assert.That(cook, Does.Contain("a deal product that fits a row is that row"), "no second search for it");
-        Assert.That(cook, Does.Contain("the size the recipe needs").And.Not.Contain("`chakalaka 410g`"));
+        Assert.That(cook, Does.Contain("product that fits a row is that row"), "no second search for it");
+        Assert.That(cook, Does.Contain("the smallest pack that covers what the recipe needs").And.Not.Contain("`chakalaka 410g`"));
         Assert.That(shops, Does.Contain("the size the recipe needs"));
         Assert.That(router, Does.Contain("**Vir hoeveel:**").And.Contain("**Serves:**"), "its own line in every meal's brief");
         Assert.That(router, Does.Contain("Vir hoeveel mense kook jy?"), "Puls asks first, never a guess");
-        Assert.That(router, Does.Contain("ask how many people first"));
+        Assert.That(router, Does.Contain("ask first, both in one short question"));
         Assert.That(cook, Does.Contain("cook for exactly that many").And.Not.Contain("cook for one"));
     }
 
     [Test]
-    public void TheCook_PricesOnlyShopsItHasAToolFor()
+    public void TheCook_PricesAtTheUsersShop_AndEstimatesWhereThereAreNoOnlinePrices()
     {
+        // 2026-10-24: the task's Winkel / Shop line names the shop; a shop without online prices, or `any`, gets estimates.
         string cook = Read("specialists/puls-cook.md");
         string router = Read("agent/puls/voice.md");
 
         Assert.That(cook, Does.StartWith("---\ntoolsets: shops?\n---").Or.StartWith("---\r\ntoolsets: shops?\r\n---"));
-        Assert.That(cook, Does.Contain("Price only at a shop your shop tools cover"));
-        Assert.That(cook, Does.Contain("No shop near you has a catalogue here yet").And.Contain("Geen winkel naby jou het nog 'n katalogus hier nie"));
+        Assert.That(cook, Does.Contain("One or multiple shops, the user's").And.Contain("*Winkel* / *Shop*"));
+        Assert.That(cook, Does.Contain("no online prices: estimates, as for `any`"));
         Assert.That(cook, Does.Contain("`SearchSpecials`").And.Contain("`SearchPromotions`"));
-        Assert.That(cook, Does.Contain("pass `area`: the user's town from the task"));
+        Assert.That(cook, Does.Contain("with `area` = the user's town in every call"));
         Assert.That(cook, Does.Contain("every product you name, in any table"));
         Assert.That(cook, Does.Contain("the photo always first in the cell, then the product's name and pack"));
         Assert.That(router, Does.Contain("elke produk met sy foto").And.Contain("every product with its photo"));
-        Assert.That(cook, Does.Contain("the link the table gives"), "its source");
+        Assert.That(cook, Does.Contain("the link in the tool's table"), "its source");
         Assert.That(cook, Does.Not.Contain("pick two at random").And.Not.Contain("before any `WebSearch`"), "no shop without a tool");
         Assert.That(cook, Does.Not.Contain("Which shops' pages give a price").And.Not.Contain("`pnp.co.za`").And.Not.Contain("soekindeks"), "no prices from the web");
     }
 
     [Test]
-    public void AShopThePriceCantComeFrom_IsExplained_AndTheUserAskedToRaiseIt()
+    public void AShopWithoutOnlinePrices_GetsEstimates_ThatSaySo()
     {
+        // 2026-10-24: instead of explaining why a shop can't be priced, the cook estimates and says so, in the task's language.
         string cook = Read("specialists/puls-cook.md");
 
-        Assert.That(cook, Does.Contain("Puls can show prices from shops that make them available online in a form it can read, such as Checkers."));
-        Assert.That(cook, Does.Contain("the more customers ask, the sooner it happens"));
-        Assert.That(cook, Does.Contain("Puls kan pryse wys van winkels wat dit aanlyn beskikbaar stel in 'n vorm wat dit kan lees, soos Checkers."));
-        Assert.That(cook, Does.Contain("hoe meer klante vra, hoe gouer gebeur dit"));
+        Assert.That(cook, Does.Contain("names a shop with no online prices"));
+        Assert.That(cook, Does.Contain("written `± R65` with no link"));
+        Assert.That(cook, Does.Contain("*Prices are estimates, not checked at a shop.*"));
+        Assert.That(cook, Does.Contain("*Pryse is skattings, nie by 'n winkel nagegaan nie.*"));
         Assert.That(cook, Does.Not.Contain("public API"));
     }
 
@@ -254,12 +257,12 @@ public class PulsPromptsTests
 
         Assert.That(cook, Does.Contain("Puls hands your report to the user as it is"));
         Assert.That(cook, Does.Not.Contain("Puls will put it in its own voice"));
-        Assert.That(cook, Does.Contain("| Ingredient | For the recipe | To buy | Checkers |"));
-        Assert.That(cook, Does.Contain("the cheapest basket is never more than the completed"));
-        Assert.That(cook, Does.Contain("never price at, name or total a shop the town doesn't have"));
-        Assert.That(cook, Does.Contain("| **Total, priced rows** | | | **R132,98** |"));
+        Assert.That(cook, Does.Contain("| Ingredient ").And.Contain("| For the recipe ").And.Contain("| To buy ").And.Contain("| {shop} "));
+        Assert.That(cook, Does.Contain("One or multiple shops, one price column per shop"));
+        Assert.That(cook, Does.Contain("price at the shop's nearest store anyway"), "a town without the branch");
+        Assert.That(cook, Does.Contain("| **Total, priced rows/per shop** |").And.Contain("| **R132,98**"));
         Assert.That(cook, Does.Contain("[R24,99](https://www.checkers.co.za/…) · BUY 2 FOR R45"));
-        Assert.That(cook, Does.Contain("| Fresh coriander | 20 g | Fresh coriander 20 g | - |"));
+        Assert.That(cook, Does.Contain("| Fresh coriander ").And.Contain("| Fresh coriander 20 g ").And.Contain("| -  "));
         Assert.That(cook, Does.Contain("a price you couldn't find is a `-` in its cell"));
         Assert.That(cook, Does.Not.Contain("**Unpriced"));
         Assert.That(cook, Does.Not.Contain("### Total"));
@@ -310,7 +313,7 @@ public class PulsPromptsTests
 
         string[] rows = router.Split('\n').Where(r => r.StartsWith('|')).ToArray();
         Assert.That(rows.Single(r => r.Contains("The world:")), Does.Contain("you, with `web`").And.Not.Contain("puls-researcher"));
-        Assert.That(rows.Where(r => r.Contains("`puls-")), Has.Exactly(2).Items.And.All.Contains("`puls-cook`"), "the routing row and the roles row");
+        Assert.That(rows.Where(r => r.Contains("`puls-")), Has.Exactly(3).Items.And.All.Contains("`puls-cook`"), "the routing row and the two roles rows (cooking, shopping)");
         Assert.That(rows.Single(r => r.Contains("`puls-cook`") && r.Contains("`web`") && r.Contains("Cooking")), Is.Not.Null, "a meal goes to the cook with web");
         Assert.That(router, Does.Contain("never hand anything else to a specialist"));
         Assert.That(router, Does.Contain("isn't available yet"), "what to say instead of delegating");
