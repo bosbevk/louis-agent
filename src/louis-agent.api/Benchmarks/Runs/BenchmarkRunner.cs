@@ -10,7 +10,8 @@ namespace LouisAgent.Api.Benchmarks.Runs;
 /// ledger and timings. Its lines (stdout and stderr) are kept on the run and streamed to listeners.
 /// </summary>
 /// <param name="interpreter">The Python to run; <c>python3</c> in the containers.</param>
-public sealed class BenchmarkRunner(BenchmarkCatalog catalog, string workspaceRoot, string pulsApi, string interpreter = "python3")
+public sealed class BenchmarkRunner(BenchmarkCatalog catalog, string workspaceRoot, string pulsApi, string interpreter = "python3",
+    string evalRunner = LouisAgent.Api.Config.AdminOptions.DefaultEvalRunner)
 {
     /// <summary>Repeats one run may ask for.</summary>
     public const int MaxRepeat = 5;
@@ -47,9 +48,13 @@ public sealed class BenchmarkRunner(BenchmarkCatalog catalog, string workspaceRo
         await foreach (string line in live.ReadAllAsync(cancellationToken)) yield return line;
     }
 
-    private void Launch(BenchmarkRun run, BenchmarkCheck check)
+    /// <summary>
+    /// The start of one run's process (F18 step 4.3): an eval's <c>dotnet {EVAL_RUNNER} run {name} --repeat N</c>, or a script's
+    /// interpreter with its arguments. Either way an argument list (ADR 0004), and the same environment.
+    /// </summary>
+    internal ProcessStartInfo StartInfoFor(BenchmarkCheck check, BenchmarkRun run)
     {
-        var start = new ProcessStartInfo(interpreter)
+        var start = new ProcessStartInfo(check.Kind == BenchmarkCheckKind.Eval ? "dotnet" : interpreter)
         {
             WorkingDirectory = workspaceRoot,
             UseShellExecute = false,
@@ -57,16 +62,32 @@ public sealed class BenchmarkRunner(BenchmarkCatalog catalog, string workspaceRo
             RedirectStandardError = true,
             CreateNoWindow = true,
         };
-        // Arguments as data (ADR 0004): the script's path and its arguments are a list, never a command string.
-        start.ArgumentList.Add(check.Script);
+        // Arguments as data (ADR 0004): the runner's or the script's path and its arguments are a list, never a command string.
+        if (check.Kind == BenchmarkCheckKind.Eval)
+        {
+            start.ArgumentList.Add(evalRunner);
+            start.ArgumentList.Add("run");
+            start.ArgumentList.Add(check.Id);
+        }
+        else
+        {
+            start.ArgumentList.Add(check.Script);
+        }
         start.ArgumentList.Add("--repeat");
         start.ArgumentList.Add(run.Repeat.ToString());
-        foreach (string argument in check.Arguments) start.ArgumentList.Add(argument);
+        if (check.Kind == BenchmarkCheckKind.Script)
+            foreach (string argument in check.Arguments) start.ArgumentList.Add(argument);
         start.Environment["PULS_API"] = pulsApi;
-        // F31: the script tags its sessions {BENCHMARK_RUN}:{mode}:{repeat}, so the ledger's rows find their run.
+        // F31: the script (and the runner) tags its sessions {BENCHMARK_RUN}:{mode}:{repeat}, so the ledger's rows find their run.
         start.Environment["BENCHMARK_RUN"] = run.Id;
         start.Environment["PYTHONUNBUFFERED"] = "1";      // so each line arrives as it is printed
         start.Environment["PYTHONIOENCODING"] = "utf-8";
+        return start;
+    }
+
+    private void Launch(BenchmarkRun run, BenchmarkCheck check)
+    {
+        var start = StartInfoFor(check, run);
 
         var process = new Process { StartInfo = start, EnableRaisingEvents = true };
         process.OutputDataReceived += (_, e) => { if (e.Data is not null) run.Add(e.Data); };

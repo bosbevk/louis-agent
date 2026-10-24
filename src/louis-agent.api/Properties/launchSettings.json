@@ -11,6 +11,7 @@
         "WORKSPACE_ROOT": "../..",
         "SKILLS_DIRECTORY": "../../Skills",
         "LOG_DIRECTORY": "../../logs",
+        "EVAL_RUNNER": "../../evals/louis-agent.evals.runner/bin/Debug/net10.0/louis-agent.evals.runner.dll",
         "PRICES_FILE": "../../config/prices.json",
         "RATES_FILE": "../../config/rates.json"
       }
@@ -27,6 +28,7 @@
         "WORKSPACE_ROOT": "../..",
         "SKILLS_DIRECTORY": "../../Skills",
         "LOG_DIRECTORY": "../../logs/puls",
+        "EVAL_RUNNER": "../../evals/louis-agent.evals.runner/bin/Debug/net10.0/louis-agent.evals.runner.dll",
         "PRICES_FILE": "../../config/prices.json",
         "RATES_FILE": "../../config/rates.json",
         "AGENT_PEERS": "puls=http://127.0.0.1:5071",

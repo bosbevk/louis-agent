@@ -25,4 +25,13 @@ public class BenchmarkSettingsTests
     [Test]
     public void EveryRole_IsOn_WhenNoneAreListed() =>
         Assert.That(BenchmarkSettings.Of(new BenchmarkCheck("c", "C", "s.py", []), "anthropic", "m", [])["roles_enabled"], Is.EqualTo("(all)"));
+
+    [Test]
+    public void AnEvalCheckRecordsItsEvalAndItsRunner()
+    {
+        var settings = BenchmarkSettings.Of(BenchmarkCheck.ForEval("stub", "Stub"), "anthropic", "m", [], "/app/evals/x.dll");
+
+        Assert.That((settings["eval"], settings["eval_runner"]), Is.EqualTo(("stub", "/app/evals/x.dll")));
+        Assert.That(settings.ContainsKey("script"), Is.False);
+    }
 }

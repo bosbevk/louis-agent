@@ -94,7 +94,8 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
 - **4.1** The eval sets (`IEvalSet`), the runner project with its catalogue, arguments and the stub eval, and the stub's parity with the Python stub's protocol lines
 - **4.2a** The common graders in `Grading/Common/`: no error, answered within a time, cost under a limit, routed to a role; one reader of the engine's events
 - **4.2b** `EvalConformanceTests` and the reference transcripts: each scenario has one transcript that passes its required graders and one that fails them
-- **4.3** The API and Docker: `BenchmarkCheck` names an eval, `BenchmarkRunner` starts the runner, `BenchmarkCatalog` from `run --list`, `StubCheckTests`
+- **4.3a** The API lists the C# evals and starts the runner: `BenchmarkCheck` names an eval (`BenchmarkCheckKind`), `BenchmarkCatalog` from the runner's `--list` (`EvalListing`), `BenchmarkRunner` starts `run`, `EVAL_RUNNER`, the stub's parity
+- **4.3b** Both images carry the runner (the default `EVAL_RUNNER` path), and a by-hand Docker check
 - **4.4** The developer's how-to, `docs/guides/add-an-eval-set.md`
 - **4a** Web input recorded and replayed: the browser
 - **4b** The same for search, fetch and the clock
@@ -404,6 +405,20 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   reasons apart, each Unknown with its own text: no usage, a request with no price, a currency other than USD; the cost grader's limit is
   `limitUsd`. The run's name is `local-{yyyyMMdd-HHmmss}` from the clock's local time, as the Python checks name it
   (`BenchmarkRun.Of(value, clock)`). The runner's comment names the step that reads the model: none yet. Red first: 17 tests.
+- **Step 4.3a** (`src/louis-agent.api/Benchmarks/Runs/`, `Messages/EvalListingMessage.cs`, the tests in
+  `tests/louis-agent.api.tests/Benchmarks/Runs/`): the API lists the evals with `dotnet {EVAL_RUNNER} --list`, once, on the first read of
+  the catalogue's `Checks`, as an argument list with a 30 s timeout. Each line is read as the API's own `EvalLine` (the runner writes
+  snake_case: `name`, `identity`, `version`, `proves`). A listing that can't be read (the file missing, a timeout, a non-zero exit, a line
+  that isn't JSON) is a warning (`ApiLogMessage.BenchmarkListingUnavailable`) and the Python checks stay. A listed eval hides the Python
+  check with its id; the rest are the Python checks until steps 5 and 7. An eval check has no script: its manual is
+  `benchmarks/{id}/HANDLEIDING.md` until step 7 moves the manuals beside the evals, and its settings record `eval` and `eval_runner` in
+  place of `script` and `arguments`. The runner starts with `dotnet {runner} run {name} --repeat N`, under the same environment as a script
+  (`PULS_API`, `BENCHMARK_RUN`). The parity test runs the Python stub and the C# stub through the recorder and compares what each stores,
+  key for key, with the times stripped; the store writes PascalCase keys, so the strip matches names whatever their case. `EVAL_RUNNER`
+  defaults to `/app/evals/louis-agent.evals.runner.dll`, and `launchSettings.json` and `config/.env.example` carry it. The API references
+  no evals project (ADR 0027): the test project references the runner with `ReferenceOutputAssembly="false"`, so the tests list and run
+  the real dll. Red first: 15 tests, each failing on the missing behaviour. Open: the admin endpoint still shows each check's `script`,
+  blank for an eval; left as it is until step 7b makes every eval visible in the admin portal.
 - **Notes for step 5** (from the review of 4.2): `PulsEvalSet`'s `TurnView` builds on `EngineEvents`, so the route, the errors and the
   cost come from one reader. If an expected route goes in a scenario's `expected`, `RoutedToGrader` must declare that key in its
   `ExpectedKeys`. When the HTTP client sets a turn's `Failure`, the turn line must carry it, so `ProtocolTranscripts` reads it back. A

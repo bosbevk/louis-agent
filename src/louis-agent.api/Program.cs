@@ -70,9 +70,9 @@ app.MapHistory();
 // F31: each run is recorded into the benchmark store (BENCHMARKS_MONGO_URL), its cost joined from this instance's
 // ledger; without a store no run starts. At start-up nothing runs, so a run still "running" was cut off by a restart.
 var admin = AdminOptions.FromEnvironment();
-// The checks: the free stub (for the hand checks), the cook check and the routing check.
-var benchmarks = new BenchmarkCatalog(BenchmarkCatalog.Default);
 var benchmarkLog = AgentLogging.LoggerFactory.CreateLogger("LouisAgent.Api.Benchmarks");
+// The checks: the C# evals the runner lists (read on first use), and the Python checks it doesn't list yet.
+var benchmarks = BenchmarkCatalog.From(EvalListing.ForRunner(admin.EvalRunner), BenchmarkCatalog.Default, benchmarkLog);
 IBenchmarkStore? benchmarkStore = admin.BenchmarksMongoUrl is { } mongoUrl ? new MongoBenchmarkStore(mongoUrl, admin.BenchmarksDatabase) : null;
 BenchmarkRecorder? recorder = benchmarkStore is null ? null : new BenchmarkRecorder(benchmarkStore, benchmarkLog, host.Agent.LogDirectory);
 if (benchmarkStore is not null)
@@ -88,8 +88,8 @@ if (benchmarkStore is not null)
             benchmarkLog.Log(LogLevel.Warning, ApiLogMessage.BenchmarkStoreUnreachable, exception: ex, tag: "API");
         }
     });
-app.MapAdmin(benchmarks, new BenchmarkRunner(benchmarks, host.Engine.WorkspaceRoot, admin.BenchmarkApiUrl), admin.AdminKey, benchmarkStore, recorder,
-    check => BenchmarkSettings.Of(check, host.Llm.Provider, host.Llm.Model, host.Agent.RolesEnabled), host.Engine.WorkspaceRoot);
+app.MapAdmin(benchmarks, new BenchmarkRunner(benchmarks, host.Engine.WorkspaceRoot, admin.BenchmarkApiUrl, "python3", admin.EvalRunner), admin.AdminKey, benchmarkStore, recorder,
+    check => BenchmarkSettings.Of(check, host.Llm.Provider, host.Llm.Model, host.Agent.RolesEnabled, admin.EvalRunner), host.Engine.WorkspaceRoot);
 
 app.MapSessions(host);
 

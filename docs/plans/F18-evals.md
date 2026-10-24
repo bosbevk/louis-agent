@@ -1019,6 +1019,11 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
 
 ## Approved during the build
 
+- **Step 4.3 split into 4.3a and 4.3b** (Louis, 2026-10-25). 4.3a is the API: it lists the C# evals from the runner's `--list`, starts
+  the runner for an eval check, and keeps the Python checks the portal offers until steps 5 and 7. 4.3b is the images: both Dockerfiles
+  publish the runner to `/app/evals`, the compose files keep its default path, and a by-hand Docker check follows. `EVAL_RUNNER` and its
+  docs come in 4.3a, with the code that reads it.
+
 - **Step 4 makes the eval sets pluggable** (Louis, 2026-10-24: "say we want to add evals for a new identity? is this
   pluggable"). The harness gains `IEvalSet` (the identity it proves, and its `IEval`s), as CL15 gave identities and
   packs their interfaces: each evals project (`louis-agent.evals.puls`, later `.demo`, `.voorman`) has one set, and the

@@ -46,4 +46,12 @@ public class AdminOptionsTests
     [Test]
     public void ABlankMongoUrl_IsNoStore() =>
         Assert.That(From(("BENCHMARKS_MONGO_URL", "   ")).BenchmarksMongoUrl, Is.Null);
+
+    [Test]
+    public void TheEvalRunnerIsReadFromEVAL_RUNNER() =>
+        Assert.That(From(("EVAL_RUNNER", "/x/louis-agent.evals.runner.dll")).EvalRunner, Is.EqualTo("/x/louis-agent.evals.runner.dll"));
+
+    [Test]
+    public void TheEvalRunnerDefaultsToTheImagesPath() =>
+        Assert.That(From().EvalRunner, Is.EqualTo("/app/evals/louis-agent.evals.runner.dll"));
 }

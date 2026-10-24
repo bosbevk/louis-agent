@@ -153,4 +153,18 @@ public class BenchmarkRunnerTests
 
         Assert.That(lines, Is.EqualTo(new[] { run.Id }));
     }
+
+    [Test]
+    public void AnEvalCheckStartsTheRunnerWithItsRunAndRepeat()
+    {
+        // The argument list and the environment, from the start info, so nothing has to run: dotnet, the runner, its run and repeat.
+        var eval = BenchmarkCheck.ForEval("stub", "Stub");
+        var runner = new BenchmarkRunner(new BenchmarkCatalog([eval]), _workspace, "http://127.0.0.1:1/", Python, "/app/evals/x.dll");
+
+        var start = runner.StartInfoFor(eval, new BenchmarkRun("run_1", "stub", 2));
+
+        Assert.That(start.FileName, Is.EqualTo("dotnet"));
+        Assert.That(start.ArgumentList, Is.EqualTo(new[] { "/app/evals/x.dll", "run", "stub", "--repeat", "2" }));
+        Assert.That((start.Environment["BENCHMARK_RUN"], start.Environment["PULS_API"]), Is.EqualTo(("run_1", "http://127.0.0.1:1/")));
+    }
 }

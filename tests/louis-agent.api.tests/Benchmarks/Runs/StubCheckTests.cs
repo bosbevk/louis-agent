@@ -1,3 +1,5 @@
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using LouisAgent.Api.Benchmarks.Runs;
 using LouisAgent.Api.Benchmarks.Store;
 using static LouisAgent.Api.Benchmarks.Runs.BenchmarkProtocol;
@@ -59,4 +61,67 @@ public class StubCheckTests
         Assert.That(events.Select(e => e.Type), Does.Contain("sub_session"), "the specialist's events, for the replay");
         Assert.That(stored.Log, Is.Not.Empty, "its plain lines");
     }
+
+    /// <summary>The C# stub through the runner's own listing, the real runner, and the recorder: an eval check, not the Python script.</summary>
+    private static async Task<(BenchmarkRun Run, List<string> Lines)> RunEvalStub(InMemoryBenchmarkStore store, int repeat = 1)
+    {
+        var catalog = new BenchmarkCatalog([BenchmarkCheck.ForEval("stub", "Stub")]);
+        var runner = new BenchmarkRunner(catalog, RepoRoot, "http://127.0.0.1:1/", Python, RunnerBuild.Dll);
+        var run = runner.Start("stub", repeat)!;
+        var recording = new BenchmarkRecorder(store).RecordAsync(run);
+        var lines = new List<string>();
+        await foreach (string line in runner.EventsAsync(run.Id)) lines.Add(line);
+        await recording;
+        Assume.That(run.ExitCode, Is.Not.EqualTo(-1), "dotnet isn't here to run the eval runner");
+        return (run, lines);
+    }
+
+    [Test]
+    public async Task TheEvalStubRunsThroughTheRunnerAndTheRecorder()
+    {
+        var store = new InMemoryBenchmarkStore();
+        var (run, _) = await RunEvalStub(store);
+
+        Assert.That(run.Status, Is.EqualTo(BenchmarkRunStatus.Done));
+        Assert.That((await store.ConversationsAsync(run.Id)).Count, Is.EqualTo(4), "two modes × two conversations");
+    }
+
+    [Test]
+    public async Task TheTwoStubs_StoreTheSameModesConversationsAndTurns()
+    {
+        // The parity plan (F18 step 4.3): the Python stub's documents and the C# stub's are the same, key for key, but the times and the
+        // settings, which name a script or an eval by design.
+        var python = new InMemoryBenchmarkStore();
+        var (pythonRun, _) = await RunStub(python);
+        var csharp = new InMemoryBenchmarkStore();
+        var (csharpRun, _) = await RunEvalStub(csharp);
+
+        Assume.That(pythonRun.ExitCode, Is.Not.EqualTo(-1), $"{Python} isn't here to run the Python stub");
+        Assert.That(await Shape(csharp, csharpRun.Id), Is.EqualTo(await Shape(python, pythonRun.Id)));
+    }
+
+    /// <summary>
+    /// The run's modes, conversations, turns and their events as JSON, without the times ("seconds" and "at"). The store writes its
+    /// documents in PascalCase (<c>Seconds</c>, <c>At</c>), so the names match whatever their case.
+    /// </summary>
+    private static async Task<string> Shape(InMemoryBenchmarkStore store, string runId)
+    {
+        var modes = (await store.GetRunAsync(runId))!.Modes;
+        var conversations = await store.ConversationsAsync(runId);
+        var turns = new List<object>();
+        foreach (var conversation in conversations)
+            foreach (var turn in await store.TurnsAsync(runId, conversation.Key))
+                turns.Add(new { turn, events = await store.TurnEventsAsync(runId, turn.Key) });
+        var document = JsonSerializer.SerializeToNode(new { modes, conversations, turns });
+        return Strip(document)!.ToJsonString();
+    }
+
+    private static bool IsTime(string key) => key.Equals("seconds", StringComparison.OrdinalIgnoreCase) || key.Equals("at", StringComparison.OrdinalIgnoreCase);
+
+    private static JsonNode? Strip(JsonNode? node) => node switch
+    {
+        JsonObject obj => new JsonObject(obj.Where(p => !IsTime(p.Key)).Select(p => KeyValuePair.Create(p.Key, Strip(p.Value)?.DeepClone())).ToList()),
+        JsonArray array => new JsonArray(array.Select(item => Strip(item)?.DeepClone()).ToArray()),
+        _ => node?.DeepClone(),
+    };
 }
