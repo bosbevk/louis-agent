@@ -2926,6 +2926,9 @@ sequenceDiagram
 
 ### Phase 3 · F18 Simulations in C#
 
+> **Plan:** [F18-evals.md](F18-evals.md), copied on its branch `feature/F18-evals` (2026-10-24), from the plan's working
+> source with the 2026-10-20 and 2026-10-24 decisions; the word is now *eval* everywhere (Louis, 2026-10-24).
+
 Branch `feature/F18-simulations`. Before step 0 this section is copied, as Louis approved it, into
 `docs/plans/F18-simulations.md` on that branch, with its four diagrams, namespace map and folder trees; *Approved during
 the build* goes in that file, never in `platform.md` (Phase 0 step 1). It starts after Phase 2, because Puls's
