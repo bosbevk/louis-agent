@@ -19,8 +19,12 @@ using PuppeteerSharp;
 /// browser context of its own, dropped after, and hands back the cookies the site set (F34): one area's store never
 /// reaches another visit. A plain visit shares the browser's default context, as before.
 /// </summary>
-public sealed class ChromeWebBrowser(Uri browserUrl, Func<string, CancellationToken, Task<IPAddress[]>>? resolve = null, TimeSpan? budget = null) : IWebBrowser
+public sealed class ChromeWebBrowser(Uri browserUrl, Func<string, CancellationToken, Task<IPAddress[]>>? resolve = null, TimeSpan? budget = null,
+    string? userAgent = null) : IWebBrowser
 {
+    /// <summary>What every page this browser opens tells the site it is (FX21); null leaves Chrome's own.</summary>
+    internal string? UserAgent => userAgent;
+
     private const int MaxPages = 4;
     private static readonly SemaphoreSlim Pages = new(MaxPages, MaxPages);
     private static readonly TimeSpan Load = TimeSpan.FromSeconds(30);
@@ -136,9 +140,10 @@ public sealed class ChromeWebBrowser(Uri browserUrl, Func<string, CancellationTo
         IBrowserContext? own = session is not null || script is not null ? await browser.CreateBrowserContextAsync() : null;
         var page = own is null ? await browser.NewPageAsync() : await own.NewPageAsync();
         
-        // A normal screen size instead of an empty or tiny viewport, so a page lays out as it would for a person. The
-        // browser says what it is otherwise (its own user agent, the automation marker left as it is): a site that
-        // refuses automated readers refuses this one (Louis, 2026-10-24; FX21 names it as what reads on a user's behalf).
+        // What the site is told (FX21): the name the options give, which says who reads and on whose behalf, else
+        // Chrome's own; the automation marker is left as Chrome reports it. A site that refuses automated readers
+        // refuses this one (Louis, 2026-10-24). A normal screen size, so a page lays out as it would for a person.
+        if (userAgent is not null) await page.SetUserAgentAsync(userAgent);
         await page.SetViewportAsync(new ViewPortOptions { Width = 1920, Height = 1080 });
 
         if (session is { Cookies.Count: > 0 })

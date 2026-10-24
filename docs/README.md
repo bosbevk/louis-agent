@@ -11,6 +11,7 @@ you need otherwise.
 | [Quick start](QUICK_START_AGENT.md) | Tutorial | Start the web app, Rider or the CLI, try example prompts, approve agent-built tools, troubleshoot |
 | [Setup](SETUP.md) | Reference | Configure `config/.env` and `config/.env.secrets`: every setting, how they are loaded, keeping secrets safe |
 | [Models](MODELS.md) | How-to | Choose and switch the model: Claude (default), Ollama, OpenAI-compatible servers; thinking and limits |
+| [For site owners](SITE_OWNERS.md) | Reference | What a site sees when Puls reads a page for a user: the user agent, what is read and how much, how to ask us to stop or to offer a feed |
 
 ## 2. Understand it
 

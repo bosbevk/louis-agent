@@ -29,7 +29,6 @@ changes instead of relying on training; **a configured agent**, an identity and 
 - [ ] Validate demand: ten conversations and 30 real Malmesbury questions, answered blind by Puls, Gemini, ChatGPT and Google Maps (Louis's own, Phase 0 step 4)
 - [ ] [F18](docs/features/F18-evaluation.md) Simulations in C# (Phase 3; takes in CL11, the Python checks, "evaluation in CI", "prompts compared on the evals", notes on a run (F31 step 11c), the response cache as a replay cache, traces per turn and tool call; added 2026-10-20, in the platform plan's source until Phase 3's plan is copied: the word *evals* for benchmarks, datasets as files with input and expected behaviour, graders by kind (fixed rule, model, human review) with a fixed rule required, the models a run used, results overall and by category, every eval visible in the admin, the admin pages rebuilt under CL15's rules (W2b.6), and a test for the grader scoring one behaviour two ways)
 - [ ] CL18 A pluggable stream format (Phase 3 step 1e, with the session-stream reader: `ITurnStreamFormat`, `ClaudeStreamFormat`, `"stream"` on `POST /sessions`)
-- [ ] [FX21](docs/fixes/FX21-the-browser-says-what-it-is.md) The browser says what it is: `BROWSER_USER_AGENT`, set by Puls to name itself (after CL19's merge; the user's town per visit later)
 - [ ] Personal data out of the logs: the place and the user's text hashed in the logs (Phase 3 step 4f, with F18; Part 3 row 14)
 - [ ] F40 The sales playground (Phase 4: the demo identity, the customers pack, the invoice and area-guide simulations, the control room, Try it, on its own compose, `docker/docker-compose.demo.yml`)
 
@@ -80,6 +79,7 @@ changes instead of relying on training; **a configured agent**, an identity and 
 - [ ] [F9](docs/features/F09-context-management.md) Long chats (takes in [F16](docs/features/F16-summariser.md) and the context-building step)
 - [ ] [F10](docs/features/F10-route-settings.md) Settings per role and per session (takes in `max_tool_rounds` per session, thinking measured per level and interleaved thinking, stop conditions beyond a round count, the model per role; removes known limitation 6)
 - [ ] CL17 The coding identity (takes in CL12, a pull-request tool, the web app chosen by `IDENTITIES`, the default mode named by an identity)
+- [ ] The browser's user agent names the user's town per visit (FX21's later step: the visit receives the user's place as the shop tools receive `area`; never the person)
 - [ ] A tool added mid-chat, after FX4 (`tool_addition` behind `LlmClientFactory`)
 - [ ] F38 Tool search, when a measured need comes
 - [ ] Planning and a self-check before answering, tried on a simulation first

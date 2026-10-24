@@ -32,6 +32,17 @@ public class ToolsetContextTests
     }
 
     [Test]
+    public void TheChromeItNames_SaysWhatTheOptionsSay_ToEverySite()
+    {
+        // FX21: the user agent travels from the setting to the browser; unset, the browser keeps Chrome's own.
+        var named = new ToolsetContext(new AgentOptions { BrowserUrl = "http://browser:9222", BrowserUserAgent = "Puls/1.0 (+https://example.test)" }, new NoSearch());
+        var plain = new ToolsetContext(new AgentOptions { BrowserUrl = "http://browser:9222" }, new NoSearch());
+
+        Assert.That(((ChromeWebBrowser)named.Browser!).UserAgent, Is.EqualTo("Puls/1.0 (+https://example.test)"));
+        Assert.That(((ChromeWebBrowser)plain.Browser!).UserAgent, Is.Null);
+    }
+
+    [Test]
     public void BrowserUrl_GivesTheChromeItNames() =>
         Assert.That(new ToolsetContext(new AgentOptions { BrowserUrl = "http://puls-browser:9222" }, new NoSearch()).Browser,
             Is.TypeOf<ChromeWebBrowser>());

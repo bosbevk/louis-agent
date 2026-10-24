@@ -21,5 +21,5 @@ public sealed record ToolsetContext(AgentOptions Options, IWebSearchProvider Web
     /// that needs one is unavailable.
     /// </summary>
     public IWebBrowser? Browser => WebBrowser
-        ?? (Uri.TryCreate(Options.BrowserUrl?.Trim(), UriKind.Absolute, out var url) ? new ChromeWebBrowser(url) : null);
+        ?? (Uri.TryCreate(Options.BrowserUrl?.Trim(), UriKind.Absolute, out var url) ? new ChromeWebBrowser(url, userAgent: Options.BrowserUserAgent) : null);
 }

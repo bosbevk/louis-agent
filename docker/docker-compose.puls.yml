@@ -47,6 +47,8 @@ services:
       # it) and the headless Chrome that renders pages drawn with JavaScript.
       SEARXNG_URL: ${SEARXNG_URL-http://puls-searxng:8080}
       BROWSER_URL: ${BROWSER_URL-http://puls-browser:9222}
+      # What the browser tells the sites it reads for a user (FX21): who reads, where to learn more, and why; never a person.
+      BROWSER_USER_AGENT: "${BROWSER_USER_AGENT-Puls/1.0 (+https://github.com/bosbevk/louis-agent/blob/main/docs/SITE_OWNERS.md; reads a page on a user's behalf)}"
       # F34: each town's store at a shop, kept a day in a file both containers share, so a rebuild doesn't look it up again.
       SHOP_STORE_CACHE: ${SHOP_STORE_CACHE-/data/shop-stores.json}
     # Localhost only. AGENT_API_KEY in config/.env.secrets is required (FX18): without it the container refuses to
