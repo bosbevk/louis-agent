@@ -42,13 +42,14 @@ public static class DatasetLoader
         if (manifest.Version < 1 || manifest.Changes.Count != manifest.Version)
             throw Refuse(EvalErrorMessage.ChangesNotVersion, new { Dataset = manifest.Name, Version = manifest.Version, Count = manifest.Changes.Count });
 
+        // The files are read before the hash is compared: a stray file is then named as the problem, not as a change to bump.
         string scenarios = Path.Combine(folder, ScenariosFolder);
+        IReadOnlySet<string> readKeys = graders.SelectMany(grader => grader.ExpectedKeys).ToHashSet();
+        List<EvalScenario> found = ReadScenarios(scenarios, readKeys);
+
         string hash = DatasetHash.Of(scenarios);
         if (!string.Equals(hash, manifest.ContentHash, StringComparison.OrdinalIgnoreCase))
             throw Refuse(EvalErrorMessage.HashChanged, new { Dataset = manifest.Name, Hash = hash, Recorded = manifest.ContentHash });
-
-        IReadOnlySet<string> readKeys = graders.SelectMany(grader => grader.ExpectedKeys).ToHashSet();
-        List<EvalScenario> found = ReadScenarios(scenarios, readKeys);
 
         var ids = new HashSet<string>(StringComparer.Ordinal);
         foreach (EvalScenario scenario in found)

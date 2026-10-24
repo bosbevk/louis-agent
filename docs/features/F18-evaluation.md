@@ -278,6 +278,8 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   `HashChanged` text says what was found: the scenarios hash to one value, not the recorded `content_hash`. Split names
   stay case-insensitive, as ADR 0024's parser is; a folder `Dev` and a folder `dev` on Linux are not yet refused. The JSON
   options are `EvalJson.SnakeCase`, shared with the scores.
+  A later review (before 3a.2) found the hash compared before the files were read, so a stray file such as `desktop.ini`
+  read as a change to bump. The files are now read first; `AStrayFileIsRefusedBeforeAHashChange` is red before the fix.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

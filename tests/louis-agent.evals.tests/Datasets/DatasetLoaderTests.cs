@@ -209,6 +209,20 @@ public class DatasetLoaderTests
             Throws.TypeOf<InvalidDataException>().With.Message.Contains("'dev/Cook-AF.JSON'"));
     }
 
+    [Test]
+    public void AStrayFileIsRefusedBeforeAHashChange()
+    {
+        // A stray file (notes.txt, desktop.ini) is in the hash, so it also makes the hash stale. The file is the problem, so it is
+        // what the loader names: a version bump would only hash the stray file in.
+        using var folder = new DatasetFolder()
+            .Write("scenarios/dev/a.json", DatasetFolder.Scenario("a"))
+            .WithManifest()
+            .Write("scenarios/dev/desktop.ini", "stray");
+
+        Assert.That(() => DatasetLoader.Load(folder.Root, Graders),
+            Throws.TypeOf<InvalidDataException>().With.Message.Contains("'dev/desktop.ini'"));
+    }
+
     /// <summary>A grader that is named only for the keys it reads; it never grades.</summary>
     private sealed class ReadsKeys(params string[] keys) : IGrader
     {
