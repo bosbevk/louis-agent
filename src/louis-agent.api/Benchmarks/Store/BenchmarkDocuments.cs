@@ -25,7 +25,15 @@ public static class BenchmarkDocuments
         IReadOnlyList<Mode>? Modes = null,
         Total? Total = null,
         IReadOnlyList<string>? Log = null,
-        string? StoreError = null);
+        string? StoreError = null,
+        string? Eval = null,
+        int? EvalVersion = null,
+        string? Commit = null,
+        IReadOnlyList<Grader>? Graders = null,
+        IReadOnlyDictionary<string, string>? Models = null);
+
+    /// <summary>One of the eval's graders, as the run started (F18 step 2a).</summary>
+    public sealed record Grader(string Name, int Version, string Kind);
 
     /// <summary>A mode's repeat as it opened its sessions.</summary>
     public sealed record Mode(string Name, int Repeat, IReadOnlyList<string> Toolsets, string? Role, string? Llm);
@@ -34,7 +42,11 @@ public static class BenchmarkDocuments
     public sealed record Total(decimal? Cost, string Currency, long Tokens, int Requests);
 
     /// <summary>A conversation's result; <see cref="Order"/> is when it started in its run, so the check's order holds.</summary>
-    public sealed record Conversation(ConversationKey Key, int Order, string? Role, JsonElement Scores, int Errors, double Seconds);
+    public sealed record Conversation(ConversationKey Key, int Order, string? Role, JsonElement Scores, int Errors, double Seconds,
+        IReadOnlyList<Grade>? Grades = null, string? Outcome = null);
+
+    /// <summary>One grader's verdict on a conversation (F18 step 2a).</summary>
+    public sealed record Grade(string Grader, int Version, double Score, string Outcome, string Reason);
 
     /// <summary>
     /// One turn, without its stream events (<see cref="IBenchmarkStore.TurnEventsAsync"/>). <see cref="Tools"/> is what

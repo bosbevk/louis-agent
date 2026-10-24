@@ -7,6 +7,18 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <!-- F18 step 2a: the commit a run was built from, stamped at build (dotnet build -p:EvalCommit=$(git rev-parse HEAD)); "unknown" when absent. -->
+    <EvalCommit Condition="'$(EvalCommit)' == ''">unknown</EvalCommit>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+      <_Parameter1>Commit</_Parameter1>
+      <_Parameter2>$(EvalCommit)</_Parameter2>
+    </AssemblyAttribute>
+  </ItemGroup>
+
   <ItemGroup>
     <!-- F18 step 2: the harness, sold with the engine (ADR 0029): the engine's message helpers and the session stream's reader. -->
     <ProjectReference Include="..\..\louis-agent.core\louis-agent.core.csproj" />

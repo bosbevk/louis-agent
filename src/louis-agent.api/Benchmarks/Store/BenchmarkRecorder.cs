@@ -74,6 +74,7 @@ public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = n
         private readonly Dictionary<TurnKey, OpenTurn> _open = [];
         private readonly Dictionary<string, ConversationKey> _sessions = [];
         private Total? _total;
+        private ProtocolStarted? _protocol;
         private string? _storeError;
 
         private sealed class OpenTurn(string session, string question)
@@ -92,8 +93,16 @@ public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = n
                 case LogLine line:
                     _log.Add(line.Text);
                     break;
-                case ProtocolStarted { Version: not BenchmarkProtocol.Version } started:
+                case ProtocolStarted started when started.Version != BenchmarkProtocol.Version:
                     _log.Add(MessageText.Format(ApiUserText.BenchmarkProtocolUnknown, new { started.Version, Supported = BenchmarkProtocol.Version }));
+                    break;
+                case ProtocolStarted started:
+                    // F18 step 2a: what the run ran (its eval, graders and models), kept on the run once the line says so.
+                    if (started.Eval is not null)
+                    {
+                        _protocol = started;
+                        await SaveRunAsync();
+                    }
                     break;
                 case ModeStarted mode:
                     _modes.Add(new Mode(mode.Mode, mode.Repeat, mode.Toolsets, mode.Role, mode.Llm));
@@ -118,7 +127,9 @@ public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = n
                     break;
                 case ConversationEnded conversation:
                     await WriteAsync(() => store.SaveConversationAsync(run.Id, new Conversation(conversation.Key, OrderOf(conversation.Key),
-                        conversation.Role, conversation.Scores, conversation.Errors, conversation.Seconds), cancellationToken));
+                        conversation.Role, conversation.Scores, conversation.Errors, conversation.Seconds,
+                        conversation.Grades?.Select(g => new Grade(g.Grader, g.Version, g.Score, g.Outcome, g.Reason)).ToArray(),
+                        conversation.Outcome), cancellationToken));
                     break;
             }
         }
@@ -185,7 +196,9 @@ public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = n
 
         private Run Document() =>
             new(run.Id, run.Check, run.Repeat, run.Status, run.StartedAt, run.EndedAt, run.ExitCode, settings, _modes.ToArray(),
-                _total, Log: run.Status == BenchmarkRunStatus.Running ? null : _log.ToArray(), StoreError: _storeError);
+                _total, Log: run.Status == BenchmarkRunStatus.Running ? null : _log.ToArray(), StoreError: _storeError,
+                Eval: _protocol?.Eval, EvalVersion: _protocol?.EvalVersion, Commit: _protocol?.Commit,
+                Graders: _protocol?.Graders?.Select(g => new Grader(g.Name, g.Version, g.Kind)).ToArray(), Models: _protocol?.Models);
 
         /// <summary>One write; after the first failure none are tried, so a store that is down doesn't slow the run.</summary>
         private async Task WriteAsync(Func<Task> write)

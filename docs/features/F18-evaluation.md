@@ -169,7 +169,14 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   the graders' calls in `EvalRunner` (step 3, so each trial's scores are the eval's with no grades), `HttpSessionClient`
   (step 4), and `RescoreAsync` (5b). The protocol's extra fields (`puls_calls`, `hosts`, `errors`) come with the cook and
   routing evals (step 5), so a turn here carries the answer, the role and the seconds only.
-  Review of step 2: the session is closed in a `finally`, so a turn that throws (a timeout, later) doesn't leave it open, and a test checks it (the close, removed, fails it). A content block delta without its `delta` no longer throws. The runner logs through core's `Log(LogLevel, Enum, values)`; `NoMessages` is a log line, so `EvalMessage` (empty until a person reads a text) is gone and `EvalLogMessage` has it. A close that fails in the `finally` is logged as `CloseFailed` (a warning), not thrown, so the turn's own error is the one the run reports (the Python swallows it too, `routing/run_check.py:96-100`); a test has both the send and the close throw.
+  Review of step 2: the session is closed in a `finally`, so a turn that throws (a timeout, later) doesn't leave it
+  open, and a test checks it (the close, removed, fails it). A content block delta without its `delta` no longer throws.
+  The runner logs through core's `Log(LogLevel, Enum, values)`; `NoMessages` is a log line, so `EvalMessage` (empty
+  until a person reads a text) is gone and `EvalLogMessage` has it. A close that fails in the `finally` is logged as
+  `CloseFailed` (a warning), not thrown, so the turn's own error is the one the run reports (the Python swallows it too,
+  `routing/run_check.py:96-100`); a test has both the send and the close throw.
+
+- **Step 2a** (`evals/louis-agent.evals`, `src/louis-agent.api/Benchmarks`): the run records what it ran. The protocol's first line carries the eval, its version, the commit (`EvalBuild.Commit`, stamped at build with `-p:EvalCommit=…`, `unknown` when absent), its graders and the model each mode ran on, which is `unknown` until step 4 reads the session's settings. The conversation line carries its `grades` and `outcome` (none until step 3: `grades` is `[]` and `outcome` is absent). `BenchmarkProtocol` reads both, the recorder keeps them on the run and the conversation, and both stores write them. Tests red first: the parser and the writer's `Begin` and grades tests failed on the old code, and the store contract test passes in memory; the Mongo mapping is written but not run here (`BENCHMARKS_MONGO_URL` is not set). Not in this step yet: the portal filter by model, trend lines split by model, and the flag for a ledger row whose model is not in `models`.
 - **Step 1d** (`louis-agent.orchestrator`): `LouisAgentClient.ReadStreamAsync` takes the response's stream and reads its
   events through the reader, folding them by their record types; the framing loop is gone. Its tests feed the same SSE
   text as bytes instead of a `StringReader`, with no assertion changed.

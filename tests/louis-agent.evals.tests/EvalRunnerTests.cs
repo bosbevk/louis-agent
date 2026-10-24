@@ -31,7 +31,9 @@ public class EvalRunnerTests
 
         var lines = sink.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(BenchmarkProtocol.Parse).ToList();
         Assert.That(lines.Select(l => l.GetType().Name),
-            Is.EqualTo(new[] { "ModeStarted", "QuestionAsked", "SseEvent", "SseEvent", "TurnEnded", "ConversationEnded", "ModeEnded" }));
+            Is.EqualTo(new[] { "ProtocolStarted", "ModeStarted", "QuestionAsked", "SseEvent", "SseEvent", "TurnEnded", "ConversationEnded", "ModeEnded" }));
+        var first = (BenchmarkProtocol.ProtocolStarted)lines[0];
+        Assert.That((first.Eval, first.Commit, first.Models!["cook"]), Is.EqualTo(("stub-cook", EvalBuild.Commit, "unknown")));
         Assert.That(lines.OfType<BenchmarkProtocol.TurnEnded>().Single().Answer, Is.EqualTo("Hallo"));
         Assert.That(lines.OfType<BenchmarkProtocol.ConversationEnded>().Single().Scores.GetProperty("routed_right").GetBoolean(), Is.True);
     }

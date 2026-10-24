@@ -183,6 +183,15 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
         },
         ["log"] = run.Log is null ? BsonNull.Value : new BsonArray(run.Log),
         ["store_error"] = Nullable(run.StoreError),
+        // F18 step 2a: what the run ran. Absent in a run stored before it; read as null.
+        ["eval"] = Nullable(run.Eval),
+        ["eval_version"] = Nullable(run.EvalVersion),
+        ["commit"] = Nullable(run.Commit),
+        ["graders"] = run.Graders is null ? BsonNull.Value : new BsonArray(run.Graders.Select(g => new BsonDocument
+        {
+            ["name"] = g.Name, ["version"] = g.Version, ["kind"] = g.Kind,
+        })),
+        ["models"] = run.Models is null ? BsonNull.Value : new BsonDocument(run.Models.ToDictionary(m => m.Key, m => (object)m.Value)),
     };
 
     /// <summary>A run as stored; a mode recorded before CL14 keeps "personality", read as its role (never rewritten).</summary>
@@ -201,18 +210,32 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
         d["total"].IsBsonNull ? null : new Total(DecimalOf(d["total"]["cost"]), d["total"]["currency"].AsString,
             d["total"]["tokens"].ToInt64(), d["total"]["requests"].AsInt32),
         d["log"].IsBsonNull ? null : d["log"].AsBsonArray.Select(l => l.AsString).ToArray(),
-        StringOf(d["store_error"]));
+        StringOf(d["store_error"]),
+        StringOf(d.GetValue("eval", BsonNull.Value)),
+        d.GetValue("eval_version", BsonNull.Value).IsBsonNull ? null : d["eval_version"].AsInt32,
+        StringOf(d.GetValue("commit", BsonNull.Value)),
+        d.GetValue("graders", BsonNull.Value).IsBsonNull ? null : d["graders"].AsBsonArray.Select(g => g.AsBsonDocument)
+            .Select(g => new Grader(g["name"].AsString, g["version"].AsInt32, g["kind"].AsString)).ToArray(),
+        d.GetValue("models", BsonNull.Value).IsBsonNull ? null : d["models"].AsBsonDocument.ToDictionary(e => e.Name, e => e.Value.AsString));
 
     private static BsonDocument ToBson(string run, Conversation c) => new()
     {
         ["_id"] = ConversationId(run, c.Key),
         ["run"] = run, ["mode"] = c.Key.Mode, ["repeat"] = c.Key.Repeat, ["task"] = c.Key.Task,
         ["order"] = c.Order, ["role"] = Nullable(c.Role), ["scores"] = Bson(c.Scores), ["errors"] = c.Errors, ["seconds"] = c.Seconds,
+        ["grades"] = c.Grades is null ? BsonNull.Value : new BsonArray(c.Grades.Select(g => new BsonDocument
+        {
+            ["grader"] = g.Grader, ["version"] = g.Version, ["score"] = g.Score, ["outcome"] = g.Outcome, ["reason"] = g.Reason,
+        })),
+        ["outcome"] = Nullable(c.Outcome),
     };
 
     private static Conversation ConversationOf(BsonDocument d) => new(
         new ConversationKey(d["mode"].AsString, d["repeat"].AsInt32, d["task"].AsString),
-        d["order"].AsInt32, StringOf(d["role"]), Json(d["scores"]), d["errors"].AsInt32, d["seconds"].ToDouble());
+        d["order"].AsInt32, StringOf(d["role"]), Json(d["scores"]), d["errors"].AsInt32, d["seconds"].ToDouble(),
+        d.GetValue("grades", BsonNull.Value).IsBsonNull ? null : d["grades"].AsBsonArray.Select(g => g.AsBsonDocument)
+            .Select(g => new Grade(g["grader"].AsString, g["version"].AsInt32, g["score"].ToDouble(), g["outcome"].AsString, g["reason"].AsString)).ToArray(),
+        StringOf(d.GetValue("outcome", BsonNull.Value)));
 
     private static BsonDocument ToBson(string run, Turn t, IReadOnlyList<StreamEvent> events) => new()
     {

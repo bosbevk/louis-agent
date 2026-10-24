@@ -2,6 +2,7 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Unicode;
+using LouisAgent.Evals.Grading;
 
 namespace LouisAgent.Evals.Protocol;
 
@@ -65,7 +66,8 @@ public sealed class ProtocolWriter(TextWriter stdout, TimeProvider clock)
         });
 
     /// <summary>A conversation's result: the eval's scores, written as the JSON they are.</summary>
-    public void Conversation(string mode, int repeat, string task, string? role, JsonElement scores, double seconds) =>
+    public void Conversation(string mode, int repeat, string task, string? role, JsonElement scores, double seconds,
+        IReadOnlyList<Grade>? grades = null, string? outcome = null) =>
         Emit("conversation", json =>
         {
             json.WriteString("mode", mode);
@@ -75,6 +77,45 @@ public sealed class ProtocolWriter(TextWriter stdout, TimeProvider clock)
             json.WritePropertyName("scores");
             scores.WriteTo(json);
             json.WriteNumber("seconds", seconds);
+            if (grades is not null)
+            {
+                json.WriteStartArray("grades");
+                foreach (var grade in grades)
+                {
+                    json.WriteStartObject();
+                    json.WriteString("grader", grade.Grader);
+                    json.WriteNumber("version", grade.Version);
+                    json.WriteNumber("score", grade.Score);
+                    json.WriteString("outcome", grade.Outcome.ToString());
+                    json.WriteString("reason", grade.Reason);
+                    json.WriteEndObject();
+                }
+                json.WriteEndArray();
+            }
+            if (outcome is not null) json.WriteString("outcome", outcome);
+        });
+
+    /// <summary>The run's first line (F18 step 2a): the eval, its version, the commit, its graders and the model each mode ran on.</summary>
+    public void Begin(string eval, int evalVersion, string commit, IReadOnlyList<IGrader> graders, IReadOnlyDictionary<string, string> models) =>
+        Emit("protocol", json =>
+        {
+            json.WriteNumber("version", Version);
+            json.WriteString("eval", eval);
+            json.WriteNumber("eval_version", evalVersion);
+            json.WriteString("commit", commit);
+            json.WriteStartArray("graders");
+            foreach (var grader in graders)
+            {
+                json.WriteStartObject();
+                json.WriteString("name", grader.Name);
+                json.WriteNumber("version", grader.Version);
+                json.WriteString("kind", grader.Kind.ToString());
+                json.WriteEndObject();
+            }
+            json.WriteEndArray();
+            json.WriteStartObject("models");
+            foreach (var (mode, model) in models) json.WriteString(mode, model);
+            json.WriteEndObject();
         });
 
     public void ModeDone(string mode, int repeat) =>

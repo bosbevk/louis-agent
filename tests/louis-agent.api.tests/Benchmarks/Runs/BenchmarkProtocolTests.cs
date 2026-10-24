@@ -17,6 +17,25 @@ public class BenchmarkProtocolTests
     }
 
     [Test]
+    public void TheFirstLine_CarriesTheEvalItRuns()
+    {
+        var started = (ProtocolStarted)Parse("""@{"event":"protocol","version":1,"eval":"cook","eval_version":2,"commit":"abc123","graders":[{"name":"priced-with-source","version":1,"kind":"FixedRule"}],"models":{"cook":"claude-haiku-5-5"}}""");
+
+        Assert.That((started.Eval, started.EvalVersion, started.Commit), Is.EqualTo(("cook", (int?)2, "abc123")));
+        Assert.That(started.Graders!.Single(), Is.EqualTo(new GraderInfo("priced-with-source", 1, "FixedRule")));
+        Assert.That(started.Models!["cook"], Is.EqualTo("claude-haiku-5-5"));
+    }
+
+    [Test]
+    public void AConversation_CarriesItsGradesAndOutcome()
+    {
+        var ended = (ConversationEnded)Parse("""@{"event":"conversation","mode":"cook","repeat":1,"task":"pannekoek","role":"puls-cook","scores":{},"seconds":3,"grades":[{"grader":"priced-with-source","version":1,"score":1,"outcome":"Pass","reason":"2 of 2 priced with a source"}],"outcome":"Pass"}""");
+
+        Assert.That(ended.Outcome, Is.EqualTo("Pass"));
+        Assert.That(ended.Grades!.Single(), Is.EqualTo(new GradeInfo("priced-with-source", 1, 1, "Pass", "2 of 2 priced with a source")));
+    }
+
+    [Test]
     public void AMode_CarriesItsRepeatToolsetsAndTheSessionFieldsItOpensWith()
     {
         var parsed = Parse("""@{"event":"mode","mode":"puls-cook","repeat":2,"toolsets":["specialists","web"],"role":"puls/voice-af","llm":null,"conversations":4,"t":1760700000.5}""");

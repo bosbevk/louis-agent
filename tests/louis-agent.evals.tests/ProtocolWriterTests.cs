@@ -2,7 +2,9 @@ using System.Collections;
 using System.Globalization;
 using System.Text.Json;
 using LouisAgent.Api.Benchmarks.Runs;
+using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Protocol;
+using LouisAgent.Evals.Trials;
 
 namespace LouisAgent.Evals.Tests;
 
@@ -54,6 +56,43 @@ public class ProtocolWriterTests
         for (int i = 0; i < python.Length; i++)
             Assert.That(Describe(BenchmarkProtocol.Parse(mine[i])), Is.EqualTo(Describe(BenchmarkProtocol.Parse(python[i]))),
                 $"line {i + 1}: {mine[i]}");
+    }
+
+    [Test]
+    public void TheFirstLine_NamesTheEvalItRuns()
+    {
+        var sink = new StringWriter();
+
+        new ProtocolWriter(sink, new FixedClock(At)).Begin("cook", 2, "abc123",
+            [new FakeGrader("priced-with-source", 1, GraderKind.FixedRule)], new Dictionary<string, string> { ["cook"] = "claude-haiku-5-5" });
+
+        var started = (BenchmarkProtocol.ProtocolStarted)BenchmarkProtocol.Parse(Lines(sink)[0]);
+        Assert.That((started.Version, started.Eval, started.EvalVersion, started.Commit), Is.EqualTo((1, "cook", (int?)2, "abc123")));
+        Assert.That(started.Graders!.Single(), Is.EqualTo(new BenchmarkProtocol.GraderInfo("priced-with-source", 1, "FixedRule")));
+        Assert.That(started.Models!["cook"], Is.EqualTo("claude-haiku-5-5"));
+    }
+
+    [Test]
+    public void AConversation_WritesItsGradesAndOutcome()
+    {
+        var sink = new StringWriter();
+
+        new ProtocolWriter(sink, new FixedClock(At)).Conversation("cook", 1, "pannekoek", "puls-cook", Json("{}"), 3.25,
+            [new Grade("priced-with-source", 1, 1, GradeOutcome.Pass, "2 of 2 priced with a source")], "Pass");
+
+        var ended = (BenchmarkProtocol.ConversationEnded)BenchmarkProtocol.Parse(Lines(sink)[0]);
+        Assert.That(ended.Outcome, Is.EqualTo("Pass"));
+        Assert.That(ended.Grades!.Single(), Is.EqualTo(new BenchmarkProtocol.GradeInfo("priced-with-source", 1, 1, "Pass", "2 of 2 priced with a source")));
+    }
+
+    /// <summary>A grader that is only named here: the protocol's first line says what graders the eval has.</summary>
+    private sealed class FakeGrader(string name, int version, GraderKind kind) : IGrader
+    {
+        public string Name { get; } = name;
+        public int Version { get; } = version;
+        public GraderKind Kind { get; } = kind;
+        public bool Required => true;
+        public ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken) => throw new NotImplementedException();
     }
 
     private static string[] Lines(StringWriter sink) => sink.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries);

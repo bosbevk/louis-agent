@@ -19,11 +19,15 @@ public sealed class EvalRunner(ISessionClient sessions, ProtocolWriter protocol,
     // The scores are the eval's own record, written in the snake_case the scores document uses (routed_right, priced).
     private static readonly JsonSerializerOptions ScoreJson = new() { PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower };
 
+    /// <summary>The model a mode is recorded with when the mode names none: the session's settings aren't read until step 4.</summary>
+    private const string UnknownModel = "unknown";
+
     public async Task RunAsync(IEval eval, EvalRun run, CancellationToken cancellationToken)
     {
         var modes = await eval.ModesAsync(sessions, cancellationToken);
         logger.Log(LogLevel.Information, EvalLogMessage.RunStarted,
             new { Eval = eval.Name, Modes = modes.Count, Repeats = run.Repeats, Run = run.RunId });
+        protocol.Begin(eval.Name, eval.Version, EvalBuild.Commit, eval.Graders, modes.ToDictionary(m => m.Name, m => m.Llm ?? UnknownModel));
 
         foreach (var mode in modes)
             for (int repeat = 1; repeat <= run.Repeats; repeat++)
@@ -74,7 +78,7 @@ public sealed class EvalRunner(ISessionClient sessions, ProtocolWriter protocol,
         var scores = eval.ScoresOf(trial, []);
         // The eval's own record, serialized as its runtime type: as EvalScores, which has no properties, it would be {}.
         protocol.Conversation(mode.Name, repeat, scenario.Id, mode.Role, JsonSerializer.SerializeToElement<object>(scores, ScoreJson),
-            (clock.GetUtcNow() - started).TotalSeconds);
+            (clock.GetUtcNow() - started).TotalSeconds, grades: [], outcome: null);
     }
 
     private async Task<TurnTranscript> RunTurnAsync(EvalMode mode, int repeat, string task, int number, string session, string message,
