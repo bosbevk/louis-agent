@@ -193,6 +193,14 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   level of a run at once, the agent, each specialist and minion role it calls and the grader; declared one at a time,
   the flag fires on every specialist and grader row as soon as the agent's model is real. Nothing is unknown but the
   models themselves until step 4 reads them from the session.
+
+  Step 3a (`evals/louis-agent.evals.puls/Scoring`, the tests in `tests/louis-agent.evals.puls.tests`): the shared
+  scoring rules of `scoring.py`, split by concern: the shops and their facts (`Shops`), the links and whether a price is
+  sourced (`Links`), the shopping list's tables (`Lists`), and the price rules (`Prices`, with `PriceCount`). The 27
+  tests of `test_scoring.py` are ported with the Python's expected values. This is a port of rules that already pass in
+  Python, so 3a has no red run; the one new behaviour, the no-shop rule, is 3c's, and its red test comes there. Where
+  the C# checks a guess, it rebuilds the row from its cells, which the rules read the same way (only pipes and spacing
+  differ).
 - **Step 1d** (`louis-agent.orchestrator`): `LouisAgentClient.ReadStreamAsync` takes the response's stream and reads its
   events through the reader, folding them by their record types; the framing loop is gone. Its tests feed the same SSE
   text as bytes instead of a `StringReader`, with no assertion changed.
