@@ -211,7 +211,7 @@ tests/                   # NUnit: core.tests (mirrors core, plus ArchitectureTes
                          #   identity.puls.tests, pack.shops.tests, composition.tests, web.shared.tests, puls.tests and web.tests (bUnit);
                          #   louis-agent.testing and louis-agent.web.testing hold the fakes they share
 docker/                  # This PC: images/ (the Dockerfiles; ollama/ for the local model), the compose stacks (main, puls) and searxng/
-config/                  # .env + .env.secrets (ignored) and their examples, LLM profiles, prices.json, rates.json
+config/                  # What the app reads at run time: .env + .env.secrets (ignored) and their examples, LLM profiles, prices.json, rates.json; rider/ for the IDE client templates
 Skills/                  # What the agent writes: agent/functions/ (CreateSkillFile), tools/ (agent-built tools)
 docs/                    # This guide, features/, plans/, fixes/, specs/, projects/, learning/
 ```

@@ -107,7 +107,7 @@ Open **http://127.0.0.1:5080**.
 
 ### Rider
 
-Add an agent server in Rider's AI Assistant settings (see [config/rider-acp.example.json](config/rider-acp.example.json)),
+Add an agent server in Rider's AI Assistant settings (see [config/rider/rider-acp.example.json](config/rider/rider-acp.example.json)),
 pointing at your checkout:
 
 ```json
