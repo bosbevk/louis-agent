@@ -136,20 +136,13 @@ attributes (121 tools with every toolset, Paymo and DevOps included). Helpers mu
 
 ## Extending it
 
-- **A tool:** a public method with `[Description]`s on a tool class in `Tools/{Toolset}/`; a new class is registered in
-  the `AgentEngine` constructor; mention it in a skill file; test it in `tests/louis-agent.core.tests/Tools/{Toolset}/`.
-- **A skill:** `Skills/agent/functions/{name}.md`, written by the agent or dropped in; loaded with the `skills` toolset.
-- **A provider:** a branch in `LlmClientFactory`; provider differences never go into `AgentEngine` or the tools. Where
-  it needs its own logic for a concern (usage, caching, …), add its implementation of that concern's strategy, in
-  `Llm/{Name}Provider/`
-  ([Architecture: Provider strategies](../architecture/05-building-block-view.md#provider-strategies)).
-- **Another agent:** `new AgentEngine(skills, client, options, toolsets: [yourTools])`, as the orchestrator does; pass
-  `usageSink: AgentHost.CreateUsageSink(options)` and the factory's `CreateUsageMapper` to record its usage.
-- **A host:** open a `UsageScope` per turn, or its records have no host, session or turn.
-- **A provider's usage:** if `tools/louis-agent.usage-probe` shows it reports differently, add an `IUsageMapper` and pick
-  it in `LlmClientFactory.CreateUsageMapper`.
-
-Details: [Development guide](../CLAUDE.md#development-workflow).
+The steps are in [Change the engine](../guides/change-the-engine.md). In short: a tool is a public method with
+`[Description]`s on a toolset's class in `Tools/{Toolset}/`, named in the toolset's guide; a toolset is a
+`ToolsetDefinition` in `Agent/Toolsets/ToolsetCatalog.cs` and its guide in `Prompts/toolsets/`; a provider difference
+is a strategy chosen in `LlmClientFactory`, with the provider's own classes in `Llm/Providers/{Name}Provider/`
+([Architecture: Provider strategies](../architecture/05-building-block-view.md#provider-strategies)); a new capability
+for one agent is a pack, not core. Another agent on core is
+[Building another agent on core](../../louis-agent.core/CLAUDE.md#building-another-agent-on-core).
 
 ## Security
 

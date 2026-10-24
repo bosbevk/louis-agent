@@ -2,7 +2,7 @@
 
 > **How-to.** Change the terminal host, `src/louis-agent.cli`: how a turn is shown, a chat command, its texts, and
 > trying it. **Elsewhere:** how it works in [louis-agent.cli](../projects/louis-agent.cli.md); the engine it runs in
-> [louis-agent.core](../projects/louis-agent.core.md).
+> [Change the engine](change-the-engine.md).
 
 The CLI is the thinnest host: `Program.cs` builds the agent and `ConsoleChat` maps the engine's stream to the terminal.
 That makes it the quickest place to try a change to core, and the wrong place for behaviour: anything the agent should

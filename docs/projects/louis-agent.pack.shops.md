@@ -60,10 +60,10 @@ evals until those are checked ([F33](../features/F33-shop-catalogues.md)).
 
 ## Extending it
 
-How to build a pack like this one is [Build a pack](../guides/build-a-pack.md). A new shop here is a member in
-`ShopKind`, a provider in `Providers/` implementing `IShopCatalogue` (with its own throttle, created in
-`ShopCatalogueFactory`), tests on a recorded answer, and a line in the guide; each only with the retailer's permission
-or feed.
+A new shop is [Add a shop](../guides/add-a-shop.md); a pack like this one from scratch is
+[Build a pack](../guides/build-a-pack.md). In short: a member in `ShopKind`, a provider in `Providers/` implementing
+`IShopCatalogue` (with its own throttle, created in `ShopCatalogueFactory`), tests on a recorded answer, and a line in
+the guide; each only with the retailer's permission or feed.
 
 ## Tests
 

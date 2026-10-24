@@ -51,8 +51,8 @@ None of its own. A Puls stack (`docker/docker-compose.puls.yml`) sets `IDENTITIE
 
 ## Extending it
 
-The steps are in [Build an identity](../guides/build-an-identity.md) (for a new identity, with Puls as the worked
-example) and in the development guide's [Adding a mode or a role](../CLAUDE.md#adding-a-mode-or-a-role). In short: a
+The steps are in [Change Puls](../guides/change-puls.md); a new identity from scratch, with Puls as the worked
+example, is [Build an identity](../guides/build-an-identity.md). In short: a
 language is a `voice-{xx}.md` with the same sections as `voice-af.md`; a specialist is `specialists/puls-{name}.md`, a
 row in the routing, and a place in `ROLES_ENABLED` once its eval passes. A changed word in any prompt changes the
 session golden: regenerate it and read the diff.

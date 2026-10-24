@@ -11,6 +11,8 @@
 |---|---|
 | [Build a pack](build-a-pack.md) | Give an agent a new capability: a pack's project, tools, guide, settings, registration and tests |
 | [Build an identity](build-an-identity.md) | Make a new agent: its voice and routing, its specialists, the packs it names, its tests, running it |
+| [Add a shop](add-a-shop.md) | Price a list at another retailer: its catalogue, throttle, tests on recorded answers, and turning it on |
+| [Write and run tests](write-tests.md) | Run the tests, write one first, use the shared fakes, regenerate a golden, add a test project |
 
 ## Change a project
 
@@ -25,6 +27,11 @@
 | [Change the code-review web app](change-the-web-app.md) | `src/louis-agent.web` | Add a tab, call a new endpoint, add a theme, test the page |
 | [Change the Puls web app](change-the-puls-app.md) | `src/louis-agent.puls` | Run it, change the chat, the landing page or the admin portal, add a starter |
 | [Change the shared web library](change-the-web-shared.md) | `src/louis-agent.web.shared` | Decide what is shared, add an API call, follow a new event, add a component |
+| [Change the engine](change-the-engine.md) | `louis-agent.core` | Add a tool or a toolset, change a built-in prompt, add a setting or a message, handle a provider difference |
+| [Change Puls](change-puls.md) | `identities/louis-agent.identity.puls` | Change what Puls says or routes, add a language, a specialist or a minion's function |
+| [Add a shop](add-a-shop.md) | `packs/louis-agent.pack.shops` | Add a retailer to the shops pack |
+| [Build a pack](build-a-pack.md#6-register-it-in-the-composition-root), [Build an identity](build-an-identity.md#5-register-it-in-the-composition-root) | `src/louis-agent.composition` | Register a new pack or identity: its enum member, its arm, its reference |
+| [Write and run tests](write-tests.md) | `tests/` | Everything about the test projects |
 
 Each project also links its guide and design doc in its `.csproj`, so they show under `docs/` in the IDE's solution
 explorer.

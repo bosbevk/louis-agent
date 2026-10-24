@@ -13,7 +13,7 @@ and mirrors the engine's tools into MCP.
 
 Nothing to do here. Every tool the engine has is published, and kept in step by `EngineToolSync`: a core tool, a
 pack's tool, an agent-built tool once approved. Clients are told with `notifications/tools/list_changed`. So add the
-tool in core ([louis-agent.core](../projects/louis-agent.core.md)) or in a pack ([Build a pack](build-a-pack.md)); a pack's
+tool in core ([Change the engine](change-the-engine.md#add-a-tool-to-a-toolset)) or in a pack ([Build a pack](build-a-pack.md)); a pack's
 tools are already held to MCP's shapes by `PackConvertibilityTests` ([ADR 0028](../adr/0028-packs-stay-convertible-to-mcp.md)).
 
 ## Add an MCP-only tool
