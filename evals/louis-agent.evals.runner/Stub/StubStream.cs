@@ -9,10 +9,9 @@ namespace LouisAgent.Evals.Runner.Stub;
 /// </summary>
 public static class StubStream
 {
-    private const string CookReply = "Die kok se resep.";
-
     public static IReadOnlyList<(string Type, object Data)> Turn(string task, int turn, bool cook)
     {
+        string cookReply = MessageText.Format(StubMessage.CookReply);
         var events = new List<(string Type, object Data)>
         {
             ("message_start", new { type = "message_start", message = new { id = $"msg_{task}_{turn}" } }),
@@ -39,12 +38,12 @@ public static class StubStream
             var inner = new (string Event, object Data)[]
             {
                 ("content_block_start", new { type = "content_block_start", index = 0, content_block = new { type = "text", text = "" } }),
-                ("content_block_delta", new { type = "content_block_delta", index = 0, delta = new { type = "text_delta", text = CookReply } }),
+                ("content_block_delta", new { type = "content_block_delta", index = 0, delta = new { type = "text_delta", text = cookReply } }),
                 ("content_block_stop", new { type = "content_block_stop", index = 0 }),
             };
             foreach (var (name, data) in inner)
                 events.Add(("sub_session", new { tool_use_id = call, agent = "puls", @event = name, data }));
-            Block(new { type = "tool_result", tool_use_id = call, content = CookReply, is_error = false });
+            Block(new { type = "tool_result", tool_use_id = call, content = cookReply, is_error = false });
         }
 
         Block(new { type = "text", text = "" },

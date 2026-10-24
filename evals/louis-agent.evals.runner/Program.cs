@@ -27,15 +27,16 @@ try
             return 0;
 
         case RunRequest run:
-            var eval = catalog.Find(run.Name) ?? throw new RunnerException(MessageText.Format(RunnerMessage.UnknownEval,
-                new { Name = run.Name, Supported = string.Join(", ", catalog.Evals.Select(e => e.Name)) }));
+            var eval = catalog.Get(run.Name);
             // Only the stub has a session client now; the HTTP client comes with the first real eval (step 5).
             ISessionClient session = eval is StubEval
                 ? new StubSessionClient()
                 : throw new RunnerException(MessageText.Format(RunnerMessage.NoSessionClient, new { Name = eval.Name }));
             var runner = new EvalRunner(session, new ProtocolWriter(Console.Out, TimeProvider.System), TimeProvider.System,
                 AgentLogging.For<EvalRunner>());
-            await runner.RunAsync(eval, new EvalRun("run_" + Guid.NewGuid().ToString("N")[..8], run.Repeat), CancellationToken.None);
+            // The run's name is the ledger's tag: BENCHMARK_RUN, as the Python checks read it.
+            await runner.RunAsync(eval, new EvalRun(BenchmarkRun.Of(Environment.GetEnvironmentVariable("BENCHMARK_RUN")), run.Repeat),
+                CancellationToken.None);
             return 0;
 
         default:

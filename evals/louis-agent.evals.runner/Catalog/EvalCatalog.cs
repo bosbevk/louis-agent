@@ -17,6 +17,11 @@ public sealed class EvalCatalog(IEnumerable<IEvalSet> sets, IEval stub)
 
     public IEval? Find(string name) => _evals.FirstOrDefault(eval => string.Equals(eval.Name, name, StringComparison.Ordinal));
 
+    /// <summary>The eval a name names; a name no eval has is refused, naming the evals there are.</summary>
+    public IEval Get(string name) =>
+        Find(name) ?? throw new RunnerException(MessageText.Format(RunnerMessage.UnknownEval,
+            new { Name = name, Supported = string.Join(", ", _evals.Select(eval => eval.Name)) }));
+
     /// <summary>One line per eval, in the catalogue's order: what the API's catalogue reads (F18 step 4.3).</summary>
     public IReadOnlyList<ListedEval> Listing() =>
         _evals.Select(eval => new ListedEval(eval.Name, eval.Identity, eval.Version, eval.Proves)).ToList();

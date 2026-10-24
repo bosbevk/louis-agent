@@ -53,7 +53,7 @@ public sealed class StubEval : IEval
         return new TurnFacts(
             Role: cook ? "puls-cook" : null,
             Continued: cook && turn.Turn > 1 ? "sub-1" : null,
-            PulsCalls: cook ? 1 : 0,
+            AgentCalls: cook ? 1 : 0,
             SpecialistCalls: cook ? 3 : 0,
             Hosts: cook ? [CheckersHost] : [],
             Error: null);

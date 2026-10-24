@@ -146,7 +146,7 @@ public sealed class ProtocolWriter(TextWriter stdout, TimeProvider clock)
     private static void WriteFacts(Utf8JsonWriter json, TurnFacts facts)
     {
         WriteText(json, "continued", facts.Continued);
-        json.WriteNumber("puls_calls", facts.PulsCalls);
+        json.WriteNumber("puls_calls", facts.AgentCalls);
         json.WriteNumber("specialist_calls", facts.SpecialistCalls);
         json.WriteStartArray("hosts");
         foreach (var host in facts.Hosts) json.WriteStringValue(host);

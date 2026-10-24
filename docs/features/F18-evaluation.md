@@ -317,7 +317,7 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   for line, with two stated masks: `t` and `seconds` are clock readings, and the header is left out, since the Python's first
   line is the version alone and the runner's carries the eval, its graders and its models, which the store needs. Mutation:
   one canned fact (`specialist_calls` 3 to 2) fails the parity test at the turn line.
-  Decisions to review (not yet approved by Louis):
+  Decisions approved by Louis on the review of `6d26a1a` (2026-10-24):
   - The protocol gains what the API reads: the mode's `conversations`, the turn's `continued`, `puls_calls`,
     `specialist_calls`, `hosts` and `error`, the conversation's `errors`. The eval says the turn's facts (`IEval.TurnFactsOf`,
     a new member); the runner takes the turn's role from them and no longer falls back to the mode's. Step 5's Puls evals derive
@@ -328,6 +328,12 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
     give. `SessionRequest` gains the `Repeat` for it.
   - `--list` escapes an apostrophe as `'`: valid JSON, read back the same by the API.
   - A mode whose eval has no session client is refused until step 5 brings the HTTP client; only the stub runs now.
+  Review fixes (the same review, 2026-10-24): the run's name is `BENCHMARK_RUN` (default `local`, as the Python reads it), so
+  every session's tag, and the ledger's rows, carry the run (`BenchmarkRunTests`, `EverySessionIsTaggedWithTheRunsName`); the
+  catalogue refuses an unknown name (`EvalCatalog.Get`, tested), and the host only calls it; the stub's cook reply is the
+  `StubMessage` member it was always meant to be (the inline copy is gone); `TurnFacts.PulsCalls` is `AgentCalls`, with the
+  protocol's key `puls_calls` unchanged, since the API reads that name. The stub's host (`www.checkers.co.za`) and its
+  time zone are data, not text, and stay literals.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

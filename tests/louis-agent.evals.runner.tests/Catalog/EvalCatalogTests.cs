@@ -84,6 +84,17 @@ public class EvalCatalogTests
     }
 
     [Test]
+    public void GetRefusesAnUnknownNameNamingTheEvals()
+    {
+        // The name is refused by the catalogue, the one place that knows the evals, not by the host (F18 step 4.1 review).
+        var catalog = new EvalCatalog([], Stub);
+
+        Assert.That(catalog.Get("stub"), Is.SameAs(Stub));
+        Assert.That(() => catalog.Get("nope"),
+            Throws.InstanceOf<RunnerException>().With.Message.Contains("'nope'").And.Message.Contains("stub"));
+    }
+
+    [Test]
     public void TheListingIsOneJsonObjectPerEval_AsTheAPIReadsIt()
     {
         // The line is read back as JSON, not compared as text: the encoder may escape an apostrophe, and the API parses it either way.

@@ -1,6 +1,8 @@
 using System.Text.Json;
+using LouisAgent.Evals.Api;
 using LouisAgent.Evals.Protocol;
 using LouisAgent.Evals.Running;
+using LouisAgent.SessionStream;
 using LouisAgent.Evals.Runner.Stub;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -39,6 +41,40 @@ public class StubEvalTests
             .ToList();
         Assert.That(sessions, Has.Count.EqualTo(8));
         Assert.That(sessions, Does.Contain("sess_stub_puls-only_2_bobotie"));
+    }
+
+    [Test]
+    public async Task EverySessionIsTaggedWithTheRunsName()
+    {
+        // The ledger's rows find their run by this tag (F18 step 4.1 review): {run}:{mode}:{repeat}, the run being BENCHMARK_RUN.
+        var client = new RecordingClient(new StubSessionClient());
+        var runner = new EvalRunner(client, new ProtocolWriter(new StringWriter(), TimeProvider.System), TimeProvider.System,
+            NullLogger<EvalRunner>.Instance);
+
+        await runner.RunAsync(new StubEval(), new EvalRun("portal-run-7", 1), CancellationToken.None);
+
+        Assert.That(client.Tags, Has.Count.EqualTo(4));
+        Assert.That(client.Tags, Does.Contain("portal-run-7:puls-cook:1"));
+        Assert.That(client.Tags.All(tag => tag.StartsWith("portal-run-7:", StringComparison.Ordinal)), Is.True);
+    }
+
+    /// <summary>A session client that records each open's tag and passes everything through.</summary>
+    private sealed class RecordingClient(ISessionClient inner) : ISessionClient
+    {
+        public List<string> Tags { get; } = [];
+
+        public Task<IReadOnlyList<string>> ToolsetsAsync(CancellationToken cancellationToken) => inner.ToolsetsAsync(cancellationToken);
+
+        public async Task<string> OpenAsync(SessionRequest request, CancellationToken cancellationToken)
+        {
+            Tags.Add(request.RunTag);
+            return await inner.OpenAsync(request, cancellationToken);
+        }
+
+        public IAsyncEnumerable<SessionEvent> SendAsync(string session, string message, CancellationToken cancellationToken) =>
+            inner.SendAsync(session, message, cancellationToken);
+
+        public Task CloseAsync(string session, CancellationToken cancellationToken) => inner.CloseAsync(session, cancellationToken);
     }
 
     private static async Task<string[]> RunAsync(int repeat)

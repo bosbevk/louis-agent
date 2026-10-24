@@ -1122,6 +1122,13 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
        measured and never decide a pass.
      - The scorers then shrink to the rules behind the graders plus a metrics reader. Until 7c, v1's keys stay as they
        are.
+- **Step 4.1's decisions approved** (Louis, 2026-10-24, on the review of `6d26a1a`). The protocol gains the facts the API
+  reads (the mode's conversations, the turn's continued, agent calls, specialist calls, hosts and error, the conversation's
+  errors), and each eval says its turns' facts (`IEval.TurnFactsOf`); the conversation's `grades` is left out until the graders
+  join the runner; the stub brings its own session client, since the Python's session ids depend on mode, repeat and task;
+  `--list` escapes an apostrophe, which is valid JSON; a mode whose eval has no session client is refused until step 5. The
+  review's fixes (the run's name from `BENCHMARK_RUN`, the catalogue's refusal of an unknown name, the stub's cook reply in its
+  enum, `AgentCalls` for the harness's field) are recorded in the feature doc.
 
 ---
 [Docs index](../README.md) · [Plans](README.md) · [Platform plan](platform.md) · [Feature F18](../features/F18-evaluation.md)
