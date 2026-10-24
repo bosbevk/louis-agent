@@ -267,6 +267,17 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   fails the pinned-hash test and the CRLF test; removing the expected-key check fails the refusal test.
   The `Datasets/` folder holds seven files: the plan's six and `DatasetHash`, which the plan allowed as its own class. Under
   the folders rule's "about six", it is flagged for Louis's review rather than split into subfolders.
+- **Review of step 3a.1** (commit `bf297a5`'s review, 2026-10-24): each finding is a red test first, then the fix.
+  The strict read now refuses a missing constructor parameter and a null where the type isn't nullable
+  (`RespectRequiredConstructorParameters`, `RespectNullableAnnotations`), so a missing `time_zone` or `"categories": null` fails
+  at the file, not in the run. The loader reads the same files the hash covers, so a file under `scenarios/` is loaded or
+  refused: outside `dev/` or `held-out/`, nested, not `.json`, or not lowercase (checked ordinally, never by the file system).
+  A missing `dataset.json` is `NoManifest`, not a bare `FileNotFoundException`. `changes` must hold one dated line per
+  version, from 1. The limit: that checks the count, not the history. Whether a bumped version came with its line, and
+  whether the line describes the change, needs the base branch's `dataset.json` (later, with the release check). The
+  `HashChanged` text says what was found: the scenarios hash to one value, not the recorded `content_hash`. Split names
+  stay case-insensitive, as ADR 0024's parser is; a folder `Dev` and a folder `dev` on Linux are not yet refused. The JSON
+  options are `EvalJson.SnakeCase`, shared with the scores.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

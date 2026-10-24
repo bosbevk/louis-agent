@@ -1060,7 +1060,8 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
   runner. `evals` joins `FileSizeTests.SourceRoots`. The grader tests move to
   `tests/louis-agent.evals.puls.tests/Grading/FixedRules/` (`CookGradersTests`, and the routing grader in
   `RoutingRoutedRightTests`). None of these changes behaviour; the tests stay green.
-- **Step 3a.1 decisions** (Louis, 2026-10-24, in the step 3a.1 brief). The
+- **Step 3a split into 3a.1 and 3a.2** (as step 3 was): 3a.1 is the loader and its hash, in the harness; 3a.2 is Puls's
+  dataset files. The decisions below are 3a.1's (Louis, 2026-10-24, in the step 3a.1 brief). The
   loader reads each JSON file with System.Text.Json and `UnmappedMemberHandling.Disallow` (ADR 0030: reuse first). The split
   comes from the folder's name (`dev`, `held-out`), parsed with `SettingChoice` (ADR 0024). `IGrader` gains a required
   `ExpectedKeys`, so a grader names the keys it reads; today's graders read none. The hash is SHA-256 over `scenarios/` only:

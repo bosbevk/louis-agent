@@ -8,30 +8,44 @@ using LouisAgent.Evals.Messages;
 namespace LouisAgent.Evals.Datasets;
 
 /// <summary>
-/// Reads a dataset folder (F18 step 3a) strictly: no JSON field it doesn't know, the split from the folder's name, every id
-/// once, every expected key read by a grader, and the scenarios' hash equal to the manifest's. A folder it can't check is
-/// refused with its text from <see cref="EvalErrorMessage"/>, as an <see cref="InvalidDataException"/>.
+/// Reads a dataset folder (F18 step 3a) strictly: no JSON field it doesn't know, no missing required one, the split from the
+/// folder's name, every scenario file where the hash sees it, every id once, every expected key read by a grader, one dated
+/// change line per version, and the scenarios' hash equal to the manifest's. A folder it can't check is refused with its text
+/// from <see cref="EvalErrorMessage"/>, as an <see cref="InvalidDataException"/>.
 /// </summary>
 public static class DatasetLoader
 {
     private const string ManifestFileName = "dataset.json";
     private const string ScenariosFolder = "scenarios";
 
-    /// <summary>The snake_case JSON of the eval's records, with a field the loader doesn't know refused.</summary>
-    private static readonly JsonSerializerOptions Strict = new(EvalScores.Json) { UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow };
+    /// <summary>
+    /// The eval's JSON, strict: a field the loader doesn't know is refused, and so is a missing constructor parameter or a null
+    /// where the type isn't nullable. Without the last two, a missing <c>time_zone</c> would load as null and fail later.
+    /// </summary>
+    private static readonly JsonSerializerOptions Strict = new(EvalJson.SnakeCase)
+    {
+        UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow,
+        RespectRequiredConstructorParameters = true,
+        RespectNullableAnnotations = true,
+    };
 
     /// <summary>The folder names a split can have, parsed once where they enter (ADR 0024).</summary>
     private static readonly IReadOnlyDictionary<string, DatasetSplit> SplitAliases = new Dictionary<string, DatasetSplit> { ["held-out"] = DatasetSplit.HeldOut };
 
     public static Dataset Load(string folder, IReadOnlyList<IGrader> graders)
     {
-        ManifestFile file = Read<ManifestFile>(Path.Combine(folder, ManifestFileName), EvalErrorMessage.InvalidManifest);
-        var manifest = new DatasetManifest(file.Name, file.Version, file.Covers, file.ContentHash, file.Changes);
-        string scenarios = Path.Combine(folder, ScenariosFolder);
+        string manifestPath = Path.Combine(folder, ManifestFileName);
+        if (!File.Exists(manifestPath)) throw Refuse(EvalErrorMessage.NoManifest, new { Folder = folder });
 
+        ManifestFile file = Read<ManifestFile>(manifestPath, EvalErrorMessage.InvalidManifest);
+        var manifest = new DatasetManifest(file.Name, file.Version, file.Covers, file.ContentHash, file.Changes);
+        if (manifest.Version < 1 || manifest.Changes.Count != manifest.Version)
+            throw Refuse(EvalErrorMessage.ChangesNotVersion, new { Dataset = manifest.Name, Version = manifest.Version, Count = manifest.Changes.Count });
+
+        string scenarios = Path.Combine(folder, ScenariosFolder);
         string hash = DatasetHash.Of(scenarios);
         if (!string.Equals(hash, manifest.ContentHash, StringComparison.OrdinalIgnoreCase))
-            throw Refuse(EvalErrorMessage.HashChanged, new { Dataset = manifest.Name, Hash = hash });
+            throw Refuse(EvalErrorMessage.HashChanged, new { Dataset = manifest.Name, Hash = hash, Recorded = manifest.ContentHash });
 
         IReadOnlySet<string> readKeys = graders.SelectMany(grader => grader.ExpectedKeys).ToHashSet();
         List<EvalScenario> found = ReadScenarios(scenarios, readKeys);
@@ -44,27 +58,26 @@ public static class DatasetLoader
         return new Dataset(manifest, found);
     }
 
-    /// <summary>Every scenario, dev first, then held-out; each folder's files in name order.</summary>
-    private static List<EvalScenario> ReadScenarios(string scenarios, IReadOnlySet<string> readKeys)
+    /// <summary>
+    /// Every scenario, dev first, then held-out. It reads the same files the hash covers, so a file is loaded or refused, never
+    /// skipped.
+    /// </summary>
+    private static List<EvalScenario> ReadScenarios(string scenarios, IReadOnlySet<string> readKeys) =>
+        DatasetHash.Files(scenarios)
+            .Select(file => ReadScenario(file.Relative, file.Full, readKeys))
+            .OrderBy(scenario => scenario.Split)
+            .ToList();
+
+    /// <summary>A scenario file must be <c>{dev|held-out}/{name}.json</c>, with the name in lowercase and the extension ordinal.</summary>
+    private static EvalScenario ReadScenario(string relative, string full, IReadOnlySet<string> readKeys)
     {
-        var found = new List<EvalScenario>();
-        if (!Directory.Exists(scenarios)) return found;
+        string[] parts = relative.Split('/');
+        if (parts is [var folder, _] && !TryParseSplit(folder, out _))
+            throw Refuse(EvalErrorMessage.UnknownSplitFolder, new { Folder = folder });
+        if (parts is not [var split, var name] || !TryParseSplit(split, out DatasetSplit parsed) || !IsScenarioName(name))
+            throw Refuse(EvalErrorMessage.UnexpectedFile, new { File = relative });
 
-        foreach (string directory in Directory.GetDirectories(scenarios))
-        {
-            string name = Path.GetFileName(directory);
-            if (!SettingChoice.TryParse(name, out DatasetSplit? split, SplitAliases) || split is null)
-                throw Refuse(EvalErrorMessage.UnknownSplitFolder, new { Folder = name });
-
-            foreach (string file in Directory.GetFiles(directory, "*.json").Order(StringComparer.Ordinal))
-                found.Add(ReadScenario(file, split.Value, readKeys));
-        }
-        return found.OrderBy(scenario => scenario.Split).ToList();
-    }
-
-    private static EvalScenario ReadScenario(string file, DatasetSplit split, IReadOnlySet<string> readKeys)
-    {
-        ScenarioFile scenario = Read<ScenarioFile>(file, EvalErrorMessage.InvalidScenario);
+        ScenarioFile scenario = Read<ScenarioFile>(full, EvalErrorMessage.InvalidScenario);
         if (scenario.Expected.ValueKind != JsonValueKind.Object)
             throw Refuse(EvalErrorMessage.ExpectedNotAnObject, new { Id = scenario.Id });
 
@@ -72,8 +85,18 @@ public static class DatasetLoader
             if (!readKeys.Contains(criterion.Name))
                 throw Refuse(EvalErrorMessage.UnreadExpectedKey, new { Id = scenario.Id, Key = criterion.Name });
 
-        return new EvalScenario(scenario.Id, scenario.Input, scenario.Expected, scenario.Categories, split);
+        return new EvalScenario(scenario.Id, scenario.Input, scenario.Expected, scenario.Categories, parsed);
     }
+
+    private static bool TryParseSplit(string folder, out DatasetSplit split)
+    {
+        split = default;
+        if (!SettingChoice.TryParse(folder, out DatasetSplit? parsed, SplitAliases) || parsed is null) return false;
+        split = parsed.Value;
+        return true;
+    }
+
+    private static bool IsScenarioName(string name) => name.EndsWith(".json", StringComparison.Ordinal) && name == name.ToLowerInvariant();
 
     /// <summary>A JSON file read strictly; a file that doesn't parse, or holds no object, is refused with the given text.</summary>
     private static T Read<T>(string file, EvalErrorMessage refusal) where T : class

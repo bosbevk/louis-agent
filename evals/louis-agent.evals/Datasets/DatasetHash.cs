@@ -26,8 +26,11 @@ public static class DatasetHash
         return Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
     }
 
-    /// <summary>Every file under the folder, as its forward-slash path from the folder and its full path, in ordinal path order.</summary>
-    private static IEnumerable<(string Relative, string Full)> Files(string folder)
+    /// <summary>
+    /// Every file under the folder, as its forward-slash path from the folder and its full path, in ordinal path order. The loader
+    /// reads these same files, so what is hashed is what is loaded.
+    /// </summary>
+    internal static IEnumerable<(string Relative, string Full)> Files(string folder)
     {
         if (!Directory.Exists(folder)) return [];
         string root = Path.GetFullPath(folder);

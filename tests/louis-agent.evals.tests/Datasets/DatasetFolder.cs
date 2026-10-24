@@ -18,14 +18,21 @@ internal sealed class DatasetFolder : IDisposable
         return this;
     }
 
-    /// <summary>Writes <c>dataset.json</c> with the scenarios' current hash, so a test breaks only what it means to break.</summary>
-    public DatasetFolder WithManifest(int version = 1) =>
-        Write("dataset.json", "{\"name\": \"puls-cook\", \"version\": " + version + ", \"covers\": \"Cooking meals\", \"content_hash\": \""
-            + DatasetHash.Of(Path.Combine(Root, "scenarios")) + "\", \"changes\": [\"2026-10-24: first version\"]}");
+    /// <summary>
+    /// Writes <c>dataset.json</c> with the scenarios' current hash and <paramref name="lines"/> dated change lines, so a test
+    /// breaks only what it means to break.
+    /// </summary>
+    public DatasetFolder WithManifest(int version = 1, int lines = 1)
+    {
+        string hash = DatasetHash.Of(Path.Combine(Root, "scenarios"));
+        string changes = string.Join(", ", Enumerable.Repeat("\"2026-10-24: a sample change\"", lines));
+        return Write("dataset.json", "{\"name\": \"sample-eval\", \"version\": " + version + ", \"covers\": \"A sample task\", \"content_hash\": \""
+            + hash + "\", \"changes\": [" + changes + "]}");
+    }
 
-    /// <summary>One scenario file's text: the input is fixed, the expected and categories are the test's.</summary>
+    /// <summary>One scenario file's text: the input is a sample, the expected and categories are the test's.</summary>
     public static string Scenario(string id, string expected = "{\"routed\": true}", string categories = "[]", string extra = "") =>
-        "{\"id\": \"" + id + "\", \"input\": {\"place\": \"Pretoria\", \"time_zone\": \"Africa/Johannesburg\", \"messages\": [\"Gee my resep\"]},"
+        "{\"id\": \"" + id + "\", \"input\": {\"place\": \"Sample town\", \"time_zone\": \"Etc/UTC\", \"messages\": [\"Hello\"]},"
         + " \"expected\": " + expected + ", \"categories\": " + categories + extra + "}";
 
     public void Dispose()

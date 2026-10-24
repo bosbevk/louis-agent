@@ -26,6 +26,15 @@ public enum EvalErrorMessage
     [Description("Folder '{Folder}' in scenarios/ is neither dev nor held-out.")]
     UnknownSplitFolder,
 
-    [Description("Dataset '{Dataset}' changed without a new version: the scenarios now hash to {Hash}. Bump the version, add a dated line to changes, and set content_hash to {Hash}.")]
+    [Description("Scenario file '{File}' must sit in dev/ or held-out/, named in lowercase ending .json.")]
+    UnexpectedFile,
+
+    [Description("Dataset folder '{Folder}' has no dataset.json.")]
+    NoManifest,
+
+    [Description("Dataset '{Dataset}' is at version {Version}, so changes needs {Version} dated line(s), not {Count}: one per version, from 1.")]
+    ChangesNotVersion,
+
+    [Description("Dataset '{Dataset}' changed without a new version: the scenarios hash to {Hash}, not content_hash {Recorded}. Bump the version, add a dated line to changes, and set content_hash to {Hash}.")]
     HashChanged,
 }
