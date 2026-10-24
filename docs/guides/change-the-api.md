@@ -13,7 +13,7 @@ stream in `Sessions/`. Behaviour that every host needs belongs in core.
 
 ```bash
 docker compose -f docker/docker-compose.yml --env-file config/.env up -d --build api   # http://127.0.0.1:5080
-dotnet run --project src/louis-agent.api --launch-profile puls                          # or from Rider, a profile per stack
+dotnet run --project src/louis-agent.api --launch-profile puls --property:WebApp=puls  # Puls's settings and web app
 ```
 
 Every API call needs `AGENT_API_KEY` as `x-api-key` (or `Authorization: Bearer`); without a key the API refuses to start

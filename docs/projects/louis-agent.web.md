@@ -73,14 +73,17 @@ None of its own: it calls the API on the same origin. If the API requires `AGENT
 
 ## Extending it
 
-- A new tab: a `…Panel` component in the sidebar plus a viewer for the main area, wired in `ChatPage` (the Branches tab
-  is the most recent example); shared data in a `…State` service with a `Changed` event.
-- New API calls in `AgentApi`; never call `HttpClient` from components.
-- A theme: copy `paper.css`, set the variables, add a line to `themes.json`.
+The steps are in [Change the code-review web app](../guides/change-the-web-app.md). In short: a new tab is a `…Panel`
+and a viewer wired in `ChatPage`, with shared data in a `…State` service; calls go through `AgentApi`, never
+`HttpClient` in a component; a theme is a CSS file and a line in `themes.json`.
 
 ## Tests
 
-None automated yet (backlog: *Automated tests for the API and the web app*, Branches queue first); checked in a browser.
+`tests/louis-agent.web.tests`, NUnit with bUnit, mirroring the folders: `Git/` (`UnifiedDiffTests`, `PatchTests`,
+`RelativeTimeTests`, `ReviewActionsTests`) and `Workspace/` (`CodeLanguageTests`, `FileSizeTests`) test the plain
+classes; `Pages/ChatPageTests` renders the page against `FixtureApi` (`tests/louis-agent.web.testing`), streams the
+recorded turn, lists the page's JavaScript calls and pins the markup to `ChatPage.empty.html` and `ChatPage.turn.html`.
+The panels' own behaviour (the merge queue, staging) is still checked in a browser.
 
 ## Limits and plans
 

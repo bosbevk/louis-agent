@@ -22,6 +22,9 @@
 | [Change the MCP server](change-the-mcp-server.md) | `src/louis-agent.mcp-server` | Publish a tool, add an MCP-only tool, pick the transport, check it with a client |
 | [Change the orchestrator](change-the-orchestrator.md) | `src/louis-agent.orchestrator` | Change a runbook, add a tool or a setting, test and run it |
 | [Change the usage probe](change-the-usage-probe.md) | `tools/louis-agent.usage-probe` | Check a provider's usage, fix a mapper, total a ledger, add a command |
+| [Change the code-review web app](change-the-web-app.md) | `src/louis-agent.web` | Add a tab, call a new endpoint, add a theme, test the page |
+| [Change the Puls web app](change-the-puls-app.md) | `src/louis-agent.puls` | Run it, change the chat, the landing page or the admin portal, add a starter |
+| [Change the shared web library](change-the-web-shared.md) | `src/louis-agent.web.shared` | Decide what is shared, add an API call, follow a new event, add a component |
 
 Each project also links its guide and design doc in its `.csproj`, so they show under `docs/` in the IDE's solution
 explorer.

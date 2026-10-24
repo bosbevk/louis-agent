@@ -53,11 +53,10 @@ and kept in that browser.
 
 ## Extending it
 
-Put a piece here only when both apps need it; anything one app needs stays in that app. A new API call goes in
-`AgentApi`. A component's words go in `ChatText` with the code-review app's text as the default, and Puls sets its
-Afrikaans in `src/louis-agent.puls/Text/PulsText.cs`. A component holds markup only, with its C# in a `.razor.cs` and
-its logic in a plain class with NUnit tests ([ADR 0034](../adr/0034-code-a-person-can-maintain.md)). Then rebuild the
-image of each app that uses it.
+The steps are in [Change the shared web library](../guides/change-the-web-shared.md). In short: a piece belongs here
+only when both apps need it; a new API call goes in `AgentApi`; a component's words go in `ChatText` (English
+default) and in Puls's `PulsText`; markup only in a `.razor`, logic in a plain class with tests
+([ADR 0034](../adr/0034-code-a-person-can-maintain.md)). Then rebuild the image of each app that uses it.
 
 ## Tests
 
