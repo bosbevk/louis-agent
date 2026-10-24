@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "api": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "applicationUrl": "http://127.0.0.1:5081",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "WORKSPACE_ROOT": "../..",
+        "SKILLS_DIRECTORY": "../../Skills",
+        "LOG_DIRECTORY": "../../logs",
+        "PRICES_FILE": "../../config/prices.json",
+        "RATES_FILE": "../../config/rates.json"
+      }
+    },
+    "puls": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "applicationUrl": "http://127.0.0.1:5071",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "IDENTITIES": "puls",
+        "HOST_TIME_ZONE": "Africa/Johannesburg",
+        "WORKSPACE_ROOT": "../..",
+        "SKILLS_DIRECTORY": "../../Skills",
+        "LOG_DIRECTORY": "../../logs/puls",
+        "PRICES_FILE": "../../config/prices.json",
+        "RATES_FILE": "../../config/rates.json",
+        "AGENT_PEERS": "puls=http://127.0.0.1:5071",
+        "ROLES_ENABLED": "puls/voice-af,puls/voice-en,puls-cook,puls-minion-web-price-lookup",
+        "WEB_SEARCH_PROVIDER": "searxng",
+        "SEARXNG_URL": "http://127.0.0.1:8888",
+        "BROWSER_URL": "http://127.0.0.1:9222",
+        "SHOP_CATALOGUES": "checkers",
+        "SHOP_STORE_CACHE": "../../data/puls/shop-stores.json"
+      }
+    }
+  }
+}

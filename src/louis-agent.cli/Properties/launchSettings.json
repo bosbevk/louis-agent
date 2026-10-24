@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "cli": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "environmentVariables": {
+        "WORKSPACE_ROOT": "../..",
+        "SKILLS_DIRECTORY": "../../Skills",
+        "LOG_DIRECTORY": "../../logs",
+        "PRICES_FILE": "../../config/prices.json",
+        "RATES_FILE": "../../config/rates.json"
+      }
+    }
+  }
+}

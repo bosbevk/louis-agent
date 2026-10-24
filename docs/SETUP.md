@@ -65,6 +65,16 @@ docker compose -f docker/docker-compose.yml --env-file config/.env up -d --build
 
 `.env.example`, `.env.secrets.example` and `.env.local` are never loaded.
 
+**Debugging in Rider or with `dotnet run`:** every host has a `Properties/launchSettings.json` (Rider lists each
+profile as a run configuration) that sets what compose sets for its container, as paths relative to the project folder
+(`../../logs`), which is the working directory in Rider and under `dotnet run` alike: `WORKSPACE_ROOT`,
+`SKILLS_DIRECTORY`, `LOG_DIRECTORY`, `PRICES_FILE`, `RATES_FILE`, and for the API's `puls` profile Puls's own settings
+(`IDENTITIES=puls`, its peers, roles, SearXNG at `127.0.0.1:8888` and the browser at `127.0.0.1:9222` from the Puls
+compose stack). The ports sit beside the containers', so both can run at once: `puls` on 5071, `api` (the code-review
+app) on 5081, `mcp-http` on 5091. Secrets still come from
+`config/.env.secrets`, so `BENCHMARKS_MONGO_URL` there names `puls-mongo`, the compose service: for a local run set it
+to `127.0.0.1` in the shell. Which web app the API serves is the build's choice (`-p:WebApp=puls`), not the profile's.
+
 ## Settings
 
 ### `config/.env` (non-secret)

@@ -28,6 +28,13 @@ tests (`RazorHasNoCodeTests` holds it; its `PendingCode` list is what W2b still 
 save) is the shared `ChatRunner`, never a page's own copy. The shared library's chat types are in `Chats/`, not `Chat/`:
 a namespace named like a type shadows the type for every file under its parent.
 
+## Running a host from Rider
+
+Each host's `Properties/launchSettings.json` holds its run profiles: the settings its compose service gets, as paths
+relative to the project folder (`../../logs`), on a port beside the container's (5071, 5081, 5091), and (`WORKSPACE_ROOT`, `SKILLS_DIRECTORY`, `LOG_DIRECTORY`, the price and rates
+files; the API's `puls` profile adds Puls's own). A new setting a compose file passes to a container goes in the host's
+profile too, so a debug run sees what the container sees ([Setup](../docs/SETUP.md#how-settings-are-loaded)).
+
 ## Adding a web theme
 
 Copy `src/louis-agent.web/wwwroot/css/themes/paper.css` to `{id}.css`, set the variables listed at the top of

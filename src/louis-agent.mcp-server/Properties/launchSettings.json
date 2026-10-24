@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "mcp-http": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "applicationUrl": "http://127.0.0.1:5091",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "MCP_TRANSPORT": "http",
+        "WORKSPACE_ROOT": "../..",
+        "SKILLS_DIRECTORY": "../../Skills",
+        "LOG_DIRECTORY": "../../logs"
+      }
+    },
+    "mcp-stdio": {
+      "commandName": "Project",
+      "dotnetRunMessages": false,
+      "environmentVariables": {
+        "MCP_TRANSPORT": "stdio",
+        "WORKSPACE_ROOT": "../..",
+        "SKILLS_DIRECTORY": "../../Skills",
+        "LOG_DIRECTORY": "../../logs"
+      }
+    }
+  }
+}
