@@ -287,7 +287,8 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   `benchmarks/routing/run_check.py` wrote (nothing imported or run). The loader accepts each dataset with Puls's own graders,
   and the hash in `dataset.json` is computed by an independent Python implementation of the rule. The datasets are copied
   beside the Puls assembly and beside the tests. Red: 7 tests failed while the folders were absent. Green: 83 of 83.
-  Decisions to review (not yet approved by Louis):
+  Decisions (approved by Louis on the review, recorded under the plan's *Approved during the build*; held-out is new
+  scenarios in step 5):
   - Every scenario is `dev`. `held-out/` is absent until Louis picks which scenarios it holds out; an empty folder can't be
     committed.
   - `categories` are decided by hand from the Python's own terms: cook `language:af|en`, `budget`, `follow-up`, `shop:none`,

@@ -1076,6 +1076,14 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
   `EVALS=` and `run {name}`. It is written in step 4, once `IEvalSet` and the catalogue exist, listed in the docs index
   under *Change it*; the `CLAUDE.md` guides link to it rather than repeat it. Step 5 checks it
   still matches by following it for `CookEval` and `RoutingEval`.
+- **Step 3a.2's decisions** (Louis, 2026-10-24, on the review of `1f5b410`). Every scenario that came from the Python
+  checks is `dev`: each Python run asked all 18, so the prompts were tuned on every one, and moving some into `held-out/`
+  would set them aside without making them unseen. The held-out set is new scenarios, written in step 5 with the
+  `expected` keys and never read while tuning: about three for the cook (a second town with a shop, an English budget, a
+  follow-up) and one new question per kind for the routing. The categories are the cook's from step 5c (`language:af|en`,
+  `budget`, `follow-up`, `shop:none`, `control`) and `kind:{kind}` for the routing. `expected` is `{}` until step 5, since
+  the loader refuses a key no grader reads and no grader reads one yet; the plan's "a grader no scenario feeds fails" is
+  tested in step 5 with them. The loader orders scenarios by split and file name, so the tests compare sets.
 
 ---
 [Docs index](../README.md) · [Plans](README.md) · [Platform plan](platform.md) · [Feature F18](../features/F18-evaluation.md)
