@@ -3,6 +3,7 @@
 @* The Afrikaans address the portal had first, so links already shared still open. *@
 @page "/admin/maatstawwe"
 @layout AdminLayout
+@using LouisAgent.Puls.Admin
 @using System.Net
 @using System.Text.Json
 @using LouisAgent.SessionStream
@@ -208,10 +209,19 @@ else if (_data is { } data)
         @{
             var chosen = data.Checks.FirstOrDefault(c => c.Id == _selected);
             var runs = chosen is null ? [] : data.Runs.Where(r => r.Check == chosen.Id).ToList();
+            var models = RunModelFilter.ModelsOf(runs.Select(r => r.Models));
+            var shown = runs.Where(r => RunModelFilter.Matches(r.Models, _model)).ToList();
             var costs = runs.Select(r => r.Total?.Cost).Where(c => c is not null).ToList();
         }
         <div class="card-head">
             <strong>Runs@(chosen is null ? "" : $" · {chosen.Title}")</strong>
+            @if (models.Count > 0)
+            {
+                <select class="model-filter" @bind="_model" aria-label="Model">
+                    <option value="">All models</option>
+                    @foreach (var model in models) { <option value="@model">@model</option> }
+                </select>
+            }
             @if (chosen is not null) { <span class="muted">@runs.Count @(runs.Count == 1 ? "run" : "runs")@(costs.Count > 0 ? $" · {Cost(costs.Sum())} together" : "")</span> }
         </div>
         @if (chosen is null)
@@ -225,7 +235,7 @@ else if (_data is { } data)
         else
         {
             <ol class="runs">
-                @foreach (var run in runs)
+                @foreach (var run in shown)
                 {
                     <li class="run-row">
                         <a class="run-row-main" href="admin/benchmarks/@run.Id">
@@ -244,7 +254,8 @@ else if (_data is { } data)
     private sealed record Check(string Id, string Title, string Script, bool Manual);
     private sealed record Manual(string Title, string Markdown);
     private sealed record Total(decimal? Cost, int Requests);
-    private sealed record Run(string Id, string Check, int Repeat, string Status, DateTimeOffset StartedAt, Total? Total, string? StoreError);
+    private sealed record Run(string Id, string Check, int Repeat, string Status, DateTimeOffset StartedAt, Total? Total, string? StoreError,
+        IReadOnlyDictionary<string, string>? Models = null);
     private sealed record StoreState(bool Configured, string? Error);
     private sealed record Page(List<Check> Checks, StoreState Store, List<Run> Runs);
     private sealed record LiveRun(string Id, string Check, int Repeat, string Status, int? ExitCode, DateTimeOffset StartedAt, bool? Stored, string? StoreError);
@@ -285,6 +296,9 @@ else if (_data is { } data)
 
     private bool _checksOpen = true;
     private string? _selected;
+
+    /// <summary>The model the runs list is filtered to (F18 step 2a); null shows every run.</summary>
+    private string? _model;
 
     private void Select(string check) => _selected = check;
 
@@ -342,7 +356,10 @@ else if (_data is { } data)
         r.GetProperty("id").GetString()!, r.GetProperty("check").GetString()!, r.GetProperty("repeat").GetInt32(),
         r.GetProperty("status").GetString()!, r.GetProperty("started_at").GetDateTimeOffset(),
         r.TryGetProperty("total", out var t) && t.ValueKind == JsonValueKind.Object ? new Total(Dec(t, "cost"), t.GetProperty("requests").GetInt32()) : null,
-        Str(r, "store_error"));
+        Str(r, "store_error"),
+        r.TryGetProperty("models", out var models) && models.ValueKind == JsonValueKind.Object
+            ? models.EnumerateObject().Where(p => p.Value.ValueKind == JsonValueKind.String).ToDictionary(p => p.Name, p => p.Value.GetString()!)
+            : null);
 
     /// <summary>A run started before this page opened (a reload): its finished turns from the store, then its events.</summary>
     private async Task ResumeAsync()

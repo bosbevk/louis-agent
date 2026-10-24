@@ -178,6 +178,9 @@ public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = n
             }
             _total = BenchmarkLedger.TotalOf(ofRun);
             var requests = BenchmarkLedger.Join(run.Id, ofRun, _sessions);
+            // F18 step 2a: a row on a model the run didn't declare is named in the run's log, so a trend can't mix it in silently.
+            var unlisted = RunModels.Unlisted(_protocol?.Models, requests.Select(r => r.Model));
+            if (unlisted.Count > 0) _log.Add(MessageText.Format(ApiUserText.BenchmarkModelUnlisted, new { Model = string.Join(", ", unlisted) }));
             if (requests.Count > 0) await WriteAsync(() => store.AddRequestsAsync(run.Id, requests, cancellationToken));
         }
 

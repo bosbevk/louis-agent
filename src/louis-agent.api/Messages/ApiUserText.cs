@@ -136,4 +136,7 @@ public enum ApiUserText
 
     [Description("Unknown stream format '{Format}'. Use one of: {Supported}.")]
     UnknownStreamFormat,
+
+    [Description("The ledger's rows name model '{Model}', which the run's modes don't list, so a trend may mix models.")]
+    BenchmarkModelUnlisted,
 }

@@ -180,6 +180,7 @@ internal static class AdminEndpoints
         started_at = r.StartedAt, ended_at = r.EndedAt,
         total = r.Total is null ? null : new { cost = r.Total.Cost, currency = r.Total.Currency, tokens = r.Total.Tokens, requests = r.Total.Requests },
         store_error = r.StoreError,
+        models = r.Models,
     };
 
     private static object ConversationRow(BenchmarkDocuments.Conversation c) => new

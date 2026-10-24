@@ -21,9 +21,10 @@ public class BenchmarkTrendTests
     private static JsonElement Scores(bool right) => JsonDocument.Parse($$"""{"routed_right":{{(right ? "true" : "false")}}}""").RootElement.Clone();
 
     /// <summary>A run of <paramref name="check"/> whose modes each cost <paramref name="costs"/> per conversation, and the first <paramref name="right"/> conversations routed right.</summary>
-    private async Task Run(string id, string check, int hour, int repeat, BenchmarkRunStatus status, decimal? cookCost, int right)
+    private async Task Run(string id, string check, int hour, int repeat, BenchmarkRunStatus status, decimal? cookCost, int right,
+        IReadOnlyDictionary<string, string>? models = null)
     {
-        await _store.SaveRunAsync(new Run(id, check, repeat, status, T0.AddHours(hour)));
+        await _store.SaveRunAsync(new Run(id, check, repeat, status, T0.AddHours(hour), Models: models));
         int order = 0;
         for (int r = 1; r <= repeat; r++)
             foreach (string mode in new[] { "puls-only", "puls-cook" })
@@ -50,6 +51,24 @@ public class BenchmarkTrendTests
         Assert.That(cook.Points.Select(p => p.Run), Is.EqualTo(new[] { "a", "b" }), "a run still going isn't a point yet");
         Assert.That(cook.Points.Select(p => p.Cost), Is.EqualTo(new decimal?[] { 0.08m, 0.10m }), "two conversations each");
         Assert.That(cook.Points[0].At, Is.EqualTo(T0.AddHours(1)));
+    }
+
+    [Test]
+    public async Task ARunOnAnotherModel_IsAnotherLine_AndAModeWithoutOneKeepsItsName()
+    {
+        await Run("a", "cook", hour: 1, repeat: 1, BenchmarkRunStatus.Done, cookCost: 0.04m, right: 3,
+            models: new Dictionary<string, string> { ["puls-cook"] = "claude-haiku-5-5" });
+        await Run("b", "cook", hour: 2, repeat: 1, BenchmarkRunStatus.Done, cookCost: 0.05m, right: 3,
+            models: new Dictionary<string, string> { ["puls-cook"] = "claude-sonnet-5-5" });
+
+        var trend = await BenchmarkTrends.ComputeAsync(_store, "cook");
+
+        Assert.That(trend.Modes.Select(m => m.Name), Is.EquivalentTo(new[]
+        {
+            "puls-only", "puls-cook (claude-haiku-5-5)", "puls-cook (claude-sonnet-5-5)",
+        }));
+        Assert.That(trend.Modes.Single(m => m.Name == "puls-cook (claude-sonnet-5-5)").Points.Select(p => p.Run), Is.EqualTo(new[] { "b" }));
+        Assert.That(trend.Modes.Single(m => m.Name == "puls-only").Points.Select(p => p.Run), Is.EqualTo(new[] { "a", "b" }));
     }
 
     [Test]

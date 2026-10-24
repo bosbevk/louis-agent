@@ -20,12 +20,18 @@ public static class BenchmarkTrends
         long? Tokens = null, double? SecondsPerTurn = null, double? CacheShare = null, double? Sourced = null,
         double? ToolsFailed = null, decimal? CostPerAnswer = null, int? Sites = null);
 
-    public sealed record Series(string Name, IReadOnlyList<Point> Points);
+    /// <summary>One line of the trend: a mode on one model. Its name is the mode, with its model in brackets when the model is named (F18 step 2a).</summary>
+    public sealed record Series(string Name, IReadOnlyList<Point> Points, string? Model = null);
 
     public sealed record Trend(string Check, IReadOnlyList<Series> Modes);
 
     /// <summary>A meal's real answer: at least this share of its ingredients priced with a source (as the explorer's Waarde ring).</summary>
     private const double AnsweredShare = 0.8;
+
+    /// <summary>The model a run recorded for a mode that names none (a run from before step 2a, or a harness that doesn't know it).</summary>
+    private const string UnknownModel = "unknown";
+
+    private static string SeriesName(string mode, string model) => model == UnknownModel ? mode : $"{mode} ({model})";
 
     public static async Task<Trend> ComputeAsync(IBenchmarkStore store, string check, int limit = 20, CancellationToken cancellationToken = default)
     {
@@ -33,8 +39,9 @@ public static class BenchmarkTrends
         var runs = (await store.ListRunsAsync(check, limit + 1, cancellationToken))
             .Where(r => r.Status != BenchmarkRunStatus.Running).Take(limit).Reverse().ToList();
 
-        var modes = new List<string>();
-        var points = new Dictionary<string, List<Point>>();
+        // A line is a mode on one model: runs on two models of one mode are two lines, never one line joining them.
+        var lines = new List<(string Mode, string Model)>();
+        var points = new Dictionary<(string Mode, string Model), List<Point>>();
         foreach (var run in runs)
         {
             var conversations = await store.ConversationsAsync(run.Id, cancellationToken);
@@ -42,7 +49,9 @@ public static class BenchmarkTrends
             int repeats = Math.Max(1, run.Repeat);
             foreach (var mode in conversations.GroupBy(c => c.Key.Mode))
             {
-                if (!modes.Contains(mode.Key)) { modes.Add(mode.Key); points[mode.Key] = []; }
+                string model = run.Models?.GetValueOrDefault(mode.Key) ?? UnknownModel;
+                var line = (mode.Key, model);
+                if (!points.ContainsKey(line)) { lines.Add(line); points[line] = []; }
                 var mine = requests.Where(r => r.Turn?.Mode == mode.Key).ToList();
                 var costs = mine.Where(r => r.Cost is not null).Select(r => r.Cost!.Value).ToList();
                 int right = mode.Count(Right);
@@ -63,7 +72,7 @@ public static class BenchmarkTrends
                 var answered = mode.Where(Answered).Select(c => c.Key).ToHashSet();
                 var answeredCosts = mine.Where(r => r.Turn is not null && answered.Contains(r.Turn.Conversation) && r.Cost is not null).Sum(r => r.Cost!.Value);
 
-                points[mode.Key].Add(new Point(run.Id, run.StartedAt,
+                points[line].Add(new Point(run.Id, run.StartedAt,
                     costs.Count == 0 ? null : costs.Sum() / repeats,
                     mode.Any() ? (double)right / mode.Count() : null,
                     mode.Count(),
@@ -76,7 +85,7 @@ public static class BenchmarkTrends
                     Sites: turns.SelectMany(t => t.Hosts).Distinct().Count()));
             }
         }
-        return new Trend(check, modes.Select(m => new Series(m, points[m])).ToList());
+        return new Trend(check, lines.Select(l => new Series(SeriesName(l.Mode, l.Model), points[l], l.Model)).ToList());
     }
 
     private static bool Right(Conversation c) =>
