@@ -2,16 +2,17 @@
 
 One design doc per project in the solution: what it's for, how it works, its parts, its settings, how to extend it,
 how it's tested, and its limits. For the whole system at once, read [Architecture](../architecture/README.md) first; come here
-when you're about to change a particular project.
+when you're about to change a particular project. Each project's `.csproj` links its design doc and its how-to from
+[Guides](../guides/README.md), so both show under `docs/` in the IDE's solution explorer.
 
 ## The projects
 
 | Project | Kind | In one line | Doc |
 |---|---|---|---|
 | `louis-agent.core` | Class library | The engine: tools, skills, the tool loop, providers, bootstrap; names no product (CL15) | [core](louis-agent.core.md) |
-| `identities/louis-agent.identity.puls` | Class library | Who Puls is: its voice and modes, its roles, the packs it names (`shops`); its prompts embedded with their paths | in [core](louis-agent.core.md) and the [core guide](../../louis-agent.core/CLAUDE.md#building-an-identity-or-a-pack) |
-| `packs/louis-agent.pack.shops` | Class library | What the shops are: the `shops` toolset (a shop's products, specials and promotions from its own catalogue), its guide, its settings (`SHOP_CATALOGUES`, `SHOP_STORE_CACHE`) and its texts | the same |
-| `src/louis-agent.composition` | Class library | The composition root: the one project that references every identity and pack; `Plugins.FromEnvironment()` builds the `AgentCatalog` a host runs with, from `IDENTITIES` and `PACKS` | the same |
+| `identities/louis-agent.identity.puls` | Class library | Who Puls is: its voice and modes, its roles, the packs it names (`shops`); its prompts embedded with their paths | [identity.puls](louis-agent.identity.puls.md) |
+| `packs/louis-agent.pack.shops` | Class library | What the shops are: the `shops` toolset (a shop's products, specials and promotions from its own catalogue), its guide, its settings (`SHOP_CATALOGUES`, `SHOP_STORE_CACHE`) and its texts | [pack.shops](louis-agent.pack.shops.md) |
+| `src/louis-agent.composition` | Class library | The composition root: the one project that references every identity and pack; `Plugins.FromEnvironment()` builds the `AgentCatalog` a host runs with, from `IDENTITIES` and `PACKS` | [composition](louis-agent.composition.md) |
 | `src/louis-agent.cli` | Console app | Chat with the agent in a terminal | [cli](louis-agent.cli.md) |
 | `src/louis-agent.acp-server` | Console app (stdio) | The agent inside JetBrains Rider's AI chat (Agent Client Protocol) | [acp-server](louis-agent.acp-server.md) |
 | `src/louis-agent.api` | ASP.NET Core app | HTTP API with streamed answers, workspace and git endpoints; serves the web app | [api](louis-agent.api.md) |
@@ -20,8 +21,8 @@ when you're about to change a particular project.
 | `src/louis-agent.mcp-server` | Console / ASP.NET Core | Hands the agent's tools to any MCP client (no model of its own) | [mcp-server](louis-agent.mcp-server.md) |
 | `src/louis-agent.orchestrator` | Console app | A second agent that watches a service's errors and has louis-agent fix them (POC) | [orchestrator](louis-agent.orchestrator.md) |
 | `tools/louis-agent.usage-probe` | Console app (developer tool) | Prints what a provider reports as token usage and what the ledger makes of it | [usage-probe](louis-agent.usage-probe.md) |
-| `src/louis-agent.web.shared` | Razor class library | What both web apps share: chat models, the API client, the turn and delegation views, markdown, usage and currency | in [web](louis-agent.web.md) and [puls](louis-agent.puls.md) |
-| `tests/louis-agent.core.tests`, `tests/louis-agent.api.tests`, `tests/louis-agent.orchestrator.tests`, `tests/louis-agent.identity.puls.tests`, `tests/louis-agent.pack.shops.tests`, `tests/louis-agent.composition.tests` | NUnit | Unit tests for core, the API's sessions, the orchestrator, Puls's prompts and golden, the shops pack and the composition root; `tests/louis-agent.testing` holds the fakes they share | [tests](tests.md) |
+| `src/louis-agent.web.shared` | Razor class library | What both web apps share: chat models, the API client, the turn and delegation views, markdown, usage and currency | [web.shared](louis-agent.web.shared.md) |
+| `tests/louis-agent.*.tests` | NUnit | The tests of core, the API's sessions, the orchestrator, the ACP server, Puls's prompts and golden, the shops pack, the composition root and the three web projects (bUnit); `tests/louis-agent.testing` and `tests/louis-agent.web.testing` hold the fakes they share | [tests](tests.md) |
 
 ## How they depend on each other
 

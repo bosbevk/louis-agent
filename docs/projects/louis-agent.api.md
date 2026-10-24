@@ -108,6 +108,9 @@ Docker, bound to `127.0.0.1`), `GIT_AUTHOR_*` / `GIT_COMMITTER_*` (identity for 
 - New stream content goes through `ITurnStreamFormat` (its Claude format, `Sessions/Streaming/Claude`), so every client sees the same event shapes.
 - Anything that changes agent behaviour belongs in core, not here.
 
+The steps are in [Change the API](../guides/change-the-api.md). In short: an endpoint in its own `*Endpoints.cs`, its
+prefix added to the key check; a session option in `CreateSessionRequest`; new stream events added, never changed.
+
 ## Tests
 
 `tests/louis-agent.api.tests`: the sessions' toolsets, the default, unknown names, depth and the `specialists` rule, shared
@@ -115,8 +118,8 @@ engines and separate histories, roles, a role opening only at its own level, and
 never called). The benchmarks (F31): the protocol, the recorder, the ledger join, the runner, the catalogue, the
 manuals, the trends, the tool failures, and one store contract run against the in-memory store and, when
 `BENCHMARKS_MONGO_URL` is set, MongoDB (CI sets it). The endpoints and the web app are checked with
-curl and the browser (backlog: *Automated tests for the API and the web app*); the orchestrator demo exercises
-sessions, streaming and the git endpoints end to end.
+curl and the browser (backlog: *Automated tests for the API and the web app*); nothing exercises sessions, streaming
+and the git endpoints end to end since CL10 removed the orchestrator demo.
 
 ## Limits and plans
 

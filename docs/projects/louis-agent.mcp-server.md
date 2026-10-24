@@ -49,8 +49,8 @@ Core settings (no `LLM_*` needed), plus `MCP_TRANSPORT`, `MCP_PORT`, `MCP_API_KE
 
 ## Extending it
 
-New engine tools appear automatically. MCP-only additions (like the skill tools) go in their own `[McpServerToolType]`
-class registered with `.WithTools<…>()` in both transports.
+The steps are in [Change the MCP server](../guides/change-the-mcp-server.md). In short: engine tools appear by
+themselves; an MCP-only tool is an `[McpServerToolType]` class registered in both transports.
 
 ## Tests
 
@@ -69,4 +69,4 @@ in `tests/louis-agent.core.tests`. Checked with an MCP client and, for HTTP, wit
 [Architecture § MCP server](../architecture/05-building-block-view.md#mcp-server) · [Setup](../SETUP.md)
 
 ---
-[Projects](README.md) · Previous: [louis-agent.web](louis-agent.web.md) · Next: [louis-agent.orchestrator](louis-agent.orchestrator.md)
+[Projects](README.md) · Previous: [louis-agent.web.shared](louis-agent.web.shared.md) · Next: [louis-agent.orchestrator](louis-agent.orchestrator.md)

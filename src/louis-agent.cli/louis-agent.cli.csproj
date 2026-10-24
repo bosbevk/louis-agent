@@ -14,4 +14,11 @@
     <ProjectReference Include="..\louis-agent.composition\louis-agent.composition.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+        <!-- This project's design doc and how-to, shown under docs/ in the IDE's solution explorer; nothing is
+             built or copied. -->
+        <None Include="..\..\docs\projects\louis-agent.cli.md" Link="docs\louis-agent.cli.md" />
+        <None Include="..\..\docs\guides\change-the-cli.md" Link="docs\change-the-cli.md" />
+    </ItemGroup>
+
 </Project>

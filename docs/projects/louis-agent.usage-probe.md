@@ -69,10 +69,8 @@ override `config/.env`.
 
 ## Extending it
 
-For a new provider, run it and compare the `ledger:` lines with the raw counts. If the provider reports something the
-standard mapping misreads (cache writes under its own key, input that excludes cached tokens), add a mapper next to
-`AnthropicUsageMapper` in `louis-agent.core/Llm/Providers/AnthropicProvider/`, pick it in `LlmClientFactory.CreateUsageMapper`, and
-record the findings in the optimisation spec next to *What the Anthropic adapter reports*.
+The steps are in [Change the usage probe](../guides/change-the-usage-probe.md). In short: a new provider is checked by
+running the probe; a misread is a mapper in its provider's folder, chosen in `LlmClientFactory.CreateUsageMapper`.
 
 ## Tests
 

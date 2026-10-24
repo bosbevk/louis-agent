@@ -22,4 +22,11 @@
     <ProjectReference Include="..\..\louis-agent.core\louis-agent.core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- This project's design doc and how-to, shown under docs/ in the IDE's solution explorer; nothing is
+         built or copied. -->
+    <None Include="..\..\docs\projects\tests.md" Link="docs\tests.md" />
+    <None Include="..\..\docs\guides\write-tests.md" Link="docs\write-tests.md" />
+  </ItemGroup>
+
 </Project>

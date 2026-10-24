@@ -32,7 +32,7 @@ The folders mirror `louis-agent.core`'s, and each test's namespace is its folder
 | `ArchitectureTests.cs` | The layout rules on core's source: namespace = folder, one type per file, dependencies one way |
 | `FileSizeTests.cs` | A file holds at most 200 lines, a test file 400, over every project (*Separate by concern*): a ratchet whose `Oversized` list names the files S still has to split and can only shrink |
 | `SkillsLayoutTests.cs` | Skill files follow the levels (CL8): every built-in prompt in a known folder of `Prompts/` and embedded, no name at two levels, a guide per toolset, and the repo's `Skills/` holding only what the agent writes |
-| `TestHelpers.cs` | `TestPaths` (repository root, options), `FakeChatClient` (a scripted `IChatClient` that also streams), `StubHandler`, `ListUsageSink`, `FailingStreamClient` |
+| `TestPrompts.cs` | The `[SetUpFixture]` that registers the tests' own prompts (`Prompts/`: a product, a specialist, a minion) before the first is read; the shared fakes are in `tests/louis-agent.testing` (below) |
 
 - HTTP is stubbed with handlers, so Paymo, DevOps and web tests never call out.
 - A few tests skip themselves when an external tool (git, pip, a live network) isn't available.
@@ -65,7 +65,7 @@ registers the prompts its identity or pack brings in a `[SetUpFixture]`, as a ho
 
 `tests/louis-agent.testing` is a class library, not a test project: the fakes and paths every test project shares
 (`FakeChatClient`, `FailingStreamClient`, `StubHandler`, `ListUsageSink`, `FakePrompts`, `FakeIdentity`, `FakePack`,
-`TestPaths`), a global using in the four that use them. No test project references another test project, and `core.tests` opens its
+`TestPaths`), a global using in each test project that uses them (all but the API's and the orchestrator's). No test project references another test project, and `core.tests` opens its
 internals to none; `ArchitectureTests` holds both.
 
 ## louis-agent.web.shared.tests, louis-agent.puls.tests, louis-agent.web.tests
@@ -100,18 +100,18 @@ path parts, the drive letter), `GitRoots` and `JsonRpcWriter`.
 ## What isn't covered yet
 
 - **The API's endpoints and the MCP server** have no automated tests (only the API's sessions do); they're checked by
-  hand (curl, Rider). The ACP server has its transcript (`tests/louis-agent.acp-server.tests`) and no more yet. The orchestrator demo exercises the API and git endpoints end to end
-  against a real model.
+  hand (curl, Rider). The ACP server has its transcript (`tests/louis-agent.acp-server.tests`) and no more yet. Nothing has exercised the
+  API and git endpoints end to end against a real model since CL10 removed the orchestrator demo.
 - **The orchestrator's whole loop** against a scripted louis-agent.api.
 
-Both are in the TODO backlog (*Quality and CI*), along with CI to run these suites on every push.
+Both are in the TODO backlog (*Quality and CI*). CI (`.github/workflows/ci.yml`) runs every suite here on each push
+and pull request.
 
 ## Adding tests
 
-- Core tool: `tests/louis-agent.core.tests/Tools/{Toolset}/<Class>Tests.cs`, using `TestPaths.Agent()` and, for engine behaviour,
-  `FakeChatClient` with a script of responses.
-- Anything else: the folder of the class it tests, with the matching namespace.
-- Every feature doc in [docs/features/](../features/README.md) names the tests each step adds.
+The steps are in [Write and run tests](../guides/write-tests.md). In short: the test goes in the folder that mirrors
+the class it tests, with the matching namespace; it uses the fakes in `tests/louis-agent.testing`; and every feature
+doc in [docs/features/](../features/README.md) names the tests each step adds.
 
 ## Related docs
 

@@ -92,7 +92,7 @@ decision's record (its context, and what it cost) in [docs/adr/](adr/README.md).
 - **The browser says what it is** (FX21) — the headless browser sends Chrome's own user agent or a name that says who
   reads and why (`BROWSER_USER_AGENT`, set by an identity, never a person's name or place), and never alters what it
   reports about automation; a site that refuses automated readers refuses this one.
-  Why: [ADR 0035](adr/0035-the-browser-says-what-it-is.md).
+  Why: [ADR 0038](adr/0038-the-browser-says-what-it-is.md).
 - **Toolsets per session** (F5) — a session names its toolsets when it opens and keeps them, so its prefix stays
   cacheable; an engine per toolset list, with only those tools and their guides
   ([Adding a toolset](../louis-agent.core/CLAUDE.md#adding-a-toolset)). A role's file may add its own (F33), and a

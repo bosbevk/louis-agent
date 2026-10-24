@@ -23,6 +23,11 @@
   <ItemGroup>
     <!-- F18 step 1b: the web apps read the session stream through the one reader (CL11). -->
     <ProjectReference Include="..\..\louis-agent.session-stream\louis-agent.session-stream.csproj" />
+
+    <!-- This project's design doc and how-to, shown under docs/ in the IDE's solution explorer; nothing is
+         built or copied. -->
+    <None Include="..\..\docs\projects\louis-agent.web.shared.md" Link="docs\louis-agent.web.shared.md" />
+    <None Include="..\..\docs\guides\change-the-web-shared.md" Link="docs\change-the-web-shared.md" />
   </ItemGroup>
 
 </Project>
