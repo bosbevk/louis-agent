@@ -59,7 +59,15 @@ public sealed class EvalRunner(ISessionClient sessions, ProtocolWriter protocol,
         }
         finally
         {
-            await sessions.CloseAsync(session, CancellationToken.None);
+            // A failed close is logged, not thrown: it would replace the turn's own error, which is the one to report.
+            try
+            {
+                await sessions.CloseAsync(session, CancellationToken.None);
+            }
+            catch (Exception ex)
+            {
+                logger.Log(LogLevel.Warning, EvalLogMessage.CloseFailed, new { Session = session, Reason = ex.Message }, exception: ex);
+            }
         }
 
         var trial = new Trial(run.RunId, mode, repeat, scenario, new Transcript(turns));

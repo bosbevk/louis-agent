@@ -10,4 +10,7 @@ public enum EvalLogMessage
 
     [Description("Scenario '{Scenario}' has no messages, so it is skipped.")]
     NoMessages,
+
+    [Description("Could not close session '{Session}', so the run goes on: {Reason}.")]
+    CloseFailed,
 }

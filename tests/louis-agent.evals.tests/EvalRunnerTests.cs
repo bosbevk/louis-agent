@@ -49,6 +49,18 @@ public class EvalRunnerTests
     }
 
     [Test]
+    public void TheSendsErrorSurvivesAFailedClose()
+    {
+        var client = new ThrowingSessionClient(closeFails: true);
+        var runner = new EvalRunner(client, new ProtocolWriter(new StringWriter(), new FixedClock(At)), new FixedClock(At),
+            NullLogger<EvalRunner>.Instance);
+
+        Assert.That(async () => await runner.RunAsync(new CannedEval(), new EvalRun("run_1", 1), CancellationToken.None),
+            Throws.InstanceOf<InvalidOperationException>().With.Message.EqualTo("the connection timed out"));
+        Assert.That(client.Closed, Is.EqualTo(new[] { "sess_throws" }));
+    }
+
+    [Test]
     public async Task ADeltaWithoutItsDeltaDoesNotStopTheRun()
     {
         var turn = new[]
@@ -67,7 +79,7 @@ public class EvalRunnerTests
     }
 
     /// <summary>A session whose send fails, as a timed-out connection does; it records which sessions were closed.</summary>
-    private sealed class ThrowingSessionClient : ISessionClient
+    private sealed class ThrowingSessionClient(bool closeFails = false) : ISessionClient
     {
         public List<string> Closed { get; } = [];
 
@@ -82,6 +94,7 @@ public class EvalRunnerTests
         public Task CloseAsync(string session, CancellationToken cancellationToken)
         {
             Closed.Add(session);
+            if (closeFails) throw new InvalidOperationException("the API is down");
             return Task.CompletedTask;
         }
     }
