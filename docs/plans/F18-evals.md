@@ -1134,6 +1134,13 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
   unknown; the route is the first turn's first `StartSubSession` role, not the stream's `session_role`; and each common grader
   takes a `required` flag, default true. The review's fixes (the expected role per trial, the error that fails a route, the
   infrastructure failure as Unknown, the specialist's events not counted) are recorded in the feature doc.
+- **Step 4.2 split into 4.2a and 4.2b** (Louis, 2026-10-25, on the review of the first 4.2 commits). 4.2a is the four common graders
+  (no error, within a time, cost under a limit, routed to a role) and the one reader of the engine's events they share. 4.2b is the
+  conformance check (`EvalConformance`), the reference transcripts beside each eval, and the runner's test of every eval.
+- **The conformance check's references** (Louis, 2026-10-25). Each eval keeps `Transcripts/{eval}/` with `{scenario}.reference.txt` (one
+  conversation's protocol lines, its mode line first) and `{scenario}.bad.{label}.txt` (the same, wrong in one way). Every required grader
+  fails at least one known-bad of its eval, and only `Fail` counts. Step 5's Puls evals bring theirs, cut from a stored run where one
+  passed, or built by hand.
 
 ---
 [Docs index](../README.md) · [Plans](README.md) · [Platform plan](platform.md) · [Feature F18](../features/F18-evaluation.md)

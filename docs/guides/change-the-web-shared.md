@@ -23,12 +23,14 @@ extension method in that app (the code-review app's `Workspace/AgentApiWorkspace
 
 ## Follow a new event in the stream
 
-1. Write the test first in `tests/louis-agent.web.shared.tests/Chats/TurnStreamTests.cs`, with the event as the API
+1. Map the event to its record in `louis-agent.session-stream/SessionEventMapper.cs` (and its record in `SessionEvents.cs`), with a test
+   in `tests/louis-agent.session-stream.tests`. The reader hands the web apps `SessionEvent`s, so the event exists there first.
+2. Write the test first in `tests/louis-agent.web.shared.tests/Chats/TurnStreamTests.cs`, with the event as the API
    sends it ([the event stream](../AGENT_COMMUNICATION.md#the-event-stream)).
-2. `Chats/TurnStream.cs` folds the events into the `Turn` and its `Block`s. A specialist's events arrive wrapped in
+3. `Chats/TurnStream.cs` folds the events into the `Turn` and its `Block`s. A specialist's events arrive wrapped in
    `sub_session` and go to that call's `Delegation`. Add the case there, and keep an unknown event harmless: it is
    ignored, never an error.
-3. If a view must show it, add it to the `Turn` or `Block` record and to the view (`TurnView`, `BlocksView` or
+4. If a view must show it, add it to the `Turn` or `Block` record and to the view (`TurnView`, `BlocksView` or
    `DelegationCard`).
 
 ## Add a component

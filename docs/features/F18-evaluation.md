@@ -327,7 +327,9 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   - The stub brings its own session client (`StubSessionClient`), not the harness's `CannedSessionClient`: the Python's session
     ids and events depend on the mode, the repeat and the task, which the canned client, one id and its turns in order, can't
     give. `SessionRequest` gains the `Repeat` for it.
-  - `--list` escapes an apostrophe as `'`: valid JSON, read back the same by the API.
+  - `--list` escapes an apostrophe as `\u0027`: valid JSON, read back the same by the API. Its refusals go to `Console.Error`,
+    since stdout carries `--list`'s JSON lines and the protocol. The Python stub's turn `seconds` is the constant 0.1, not a measure,
+    which is why the parity test masks the seconds.
   - A mode whose eval has no session client is refused until step 5 brings the HTTP client; only the stub runs now.
   Review fixes (the same review, 2026-10-24): the run's name is `BENCHMARK_RUN` (default `local`, as the Python reads it), so
   every session's tag, and the ledger's rows, carry the run (`BenchmarkRunTests`, `EverySessionIsTaggedWithTheRunsName`); the
@@ -344,7 +346,6 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   true). A grade's score is 1 for a pass and 0 for a fail or an unknown, so the score agrees with the outcome.
   Red first: the 21 tests that call a stub failed with `NotImplementedException`, and the enum test failed with
   `Missing items: CommonGradeMessage`. Mutation: an unknown cost made a pass fails two cost tests.
-  Decisions to review:
   Decisions approved by Louis on the review (2026-10-25):
   - The cost is the sum of the turns' `usage.cost` from the stream, which is the ledger's total per turn; no price is worked out
     in the harness. A turn with an unpriced request has no known cost (the stream's `unpriced` count is above zero).
@@ -395,6 +396,18 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   Decisions to review:
   - A known-bad that's a file beside the eval, not code in the test: the references are data, reviewed as data.
   - The check is a function in the harness that any eval set can call (a package user's check), and the runner only runs it.
+- **Review of step 4.2, commit 1** (`4d0aa6b`, 2026-10-25): the known-bad rule is per eval (Louis, 2026-10-25): each required grader
+  must fail at least one known-bad of any of the eval's scenarios, and only a `Fail` counts; a scenario may have none when the others
+  cover every grader. Every scenario still needs its reference, and no known-bad may pass every required grader. `ConformanceCases.Load`
+  refuses a stray file (a misspelling, a deleted scenario's files, a known-bad with no reference; `EvalErrorMessage.StrayTranscript`).
+  Grader names are checked as MCP tool names, as the eval names are. A blank `StartSubSession` role is no route. The cost reads three
+  reasons apart, each Unknown with its own text: no usage, a request with no price, a currency other than USD; the cost grader's limit is
+  `limitUsd`. The run's name is `local-{yyyyMMdd-HHmmss}` from the clock's local time, as the Python checks name it
+  (`BenchmarkRun.Of(value, clock)`). The runner's comment names the step that reads the model: none yet. Red first: 17 tests.
+- **Notes for step 5** (from the review of 4.2): `PulsEvalSet`'s `TurnView` builds on `EngineEvents`, so the route, the errors and the
+  cost come from one reader. If an expected route goes in a scenario's `expected`, `RoutedToGrader` must declare that key in its
+  `ExpectedKeys`. When the HTTP client sets a turn's `Failure`, the turn line must carry it, so `ProtocolTranscripts` reads it back. A
+  reference may need its mode in its file name (`{scenario}.{mode}.reference.txt`) when an eval's modes expect different routes.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

@@ -55,10 +55,16 @@ A session's options are fixed when it opens, as its toolsets are, so its prompt 
 
 ## Change the event stream
 
-`Sessions/TurnStream.cs` runs a turn and `Sessions/ClaudeStyleStream.cs` writes it as Claude-shaped events
-(`message_start`, `content_block_start`, `_delta` and `_stop` for thinking, text, `tool_use` and `tool_result`,
-`message_stop`). Three kinds of client read it: the web apps (`TurnStream` in web.shared), the orchestrator, and the benchmarks. Add a
-new event or field without changing an existing one, test it, and update the stream's section in
+`Sessions/TurnStream.cs` runs a turn, and `ITurnStreamFormat` (`Sessions/Streaming/`) writes it. Its one format is
+`Sessions/Streaming/Claude/ClaudeStreamFormat.cs`: Claude-shaped events (`message_start`, `content_block_start`, `_delta` and `_stop`
+for thinking, text, `tool_use` and `tool_result`, `message_delta` with the turn's usage, `message_stop`). A client picks the format
+with `"stream"` on `POST /sessions` (`StreamFormat`; Claude by default), and the session keeps it. Three kinds of client read the
+stream: the web apps (through the session-stream reader, `louis-agent.session-stream`), the orchestrator, and the benchmarks.
+
+To add a new event or field to the Claude format, add it without changing an existing one, test it, and regenerate
+`tests/louis-agent.api.tests/Sessions/StreamGolden.sse` with `LOUIS_UPDATE_GOLDEN=1 dotnet test tests/louis-agent.api.tests --filter
+StreamGoldenTests`. Read the golden's diff before you commit it. A new format is a new `StreamFormat` member and its
+`ITurnStreamFormat` writer, tested beside `StreamGoldenTests`. Then update the stream's section in
 [How the agents and endpoints talk](../AGENT_COMMUNICATION.md#the-event-stream).
 
 ## Serve the other web app
