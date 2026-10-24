@@ -63,4 +63,4 @@ No CLI-specific tests; the loop and commands are covered through `AgentEngine` i
 [Quick start](../QUICK_START_AGENT.md) · [louis-agent.core](louis-agent.core.md)
 
 ---
-[Projects](README.md) · Previous: [louis-agent.core](louis-agent.core.md) · Next: [louis-agent.acp-server](louis-agent.acp-server.md)
+[Projects](README.md) · Previous: [louis-agent.composition](louis-agent.composition.md) · Next: [louis-agent.acp-server](louis-agent.acp-server.md)

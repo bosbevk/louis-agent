@@ -175,4 +175,4 @@ variables, never model text spliced into a command line; `FetchUrl` blocks priva
 [Setup](../SETUP.md) · [Models](../MODELS.md)
 
 ---
-[Projects](README.md) · Next: [louis-agent.cli](louis-agent.cli.md)
+[Projects](README.md) · Next: [louis-agent.identity.puls](louis-agent.identity.puls.md)

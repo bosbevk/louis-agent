@@ -69,4 +69,4 @@ in `tests/louis-agent.core.tests`. Checked with an MCP client and, for HTTP, wit
 [Architecture § MCP server](../architecture/05-building-block-view.md#mcp-server) · [Setup](../SETUP.md)
 
 ---
-[Projects](README.md) · Previous: [louis-agent.web](louis-agent.web.md) · Next: [louis-agent.orchestrator](louis-agent.orchestrator.md)
+[Projects](README.md) · Previous: [louis-agent.web.shared](louis-agent.web.shared.md) · Next: [louis-agent.orchestrator](louis-agent.orchestrator.md)

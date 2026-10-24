@@ -62,19 +62,9 @@ flowchart TB
 | `Git/` | The git records (`GitFile`, `GitStatus`, `GitDiff`, `GitBranch`, `GitBranches`, `GitCommit`, `GitLog`, `GitCommitDetail`, `GitBranchDetail`, one per file); `GitState` and `GitHistory`, shared git state with change events and the merge/delete queue; `UnifiedDiff` (a diff as rows with line numbers), `Patch` (a multi-file patch per file), `RelativeTime` (a commit's age) and `ReviewActions` (the prompts and chat titles of the reviews a viewer asks for), each with tests |
 | `wwwroot/` | `index.html`, `css/app.css`, themes, `js/chat.js` (scrolling, focus, cross-tab sync of chats) |
 
-**Shared with Puls** (`src/louis-agent.web.shared/`, a Razor class library both apps reference; Markdig is its package):
-
-| Path | What's in it |
-|---|---|
-| `Components/TurnView.razor`, `BlocksView.razor` | One turn: user message, thinking (collapsible), text, tool cards |
-| `Components/DelegationCard.razor` | A sub-session (F5) inside the turn: the specialist, its toolsets, its steps live, its cost |
-| `Components/CurrencySwitcher.razor` | The display currency per browser (F14) |
-| `Api/` | `AgentApi`, the typed client for the session calls with SSE parsing; `AgentApiException` (errors with their status); `AgentStreamEvent` |
-| `Chats/` | What a chat is in the browser: `Chat`, `Turn`, `Block`, `BlockKind`, `Attachment`; `TurnStream` and `Delegation` fold the event stream, sub-session events included, into the turn the page shows; `WorkStatus` and `RolePhases` say what a specialist is doing; `SpecialistAnswer` splits a sub-turn into its work and its answer for the card; `ChatRunner` (W2) is a turn's life for every chat page: the draft and its attachments, the session opened on the first message, the stream with a redraw raised at most every 50 ms, stop, the save, the errors in the app's words |
-| `Components/Chat/` | The chat pieces both apps lay out (W2): `MessageList` (the turns, with an `Empty` slot and an app's own `Content`; scrolls to the end), `Composer` (the draft, its attachments, with slots for an app's own pieces around the text) and `ComposerButtons` (Send, or Stop while streaming, placed by `Composer`), `ChatUsageBar`, `Notice`; every component's C# is its `.razor.cs` (W2b) |
-| `Usage/` | `TurnUsage` (a turn's tokens and cost), `UsageFormat` (the usage lines), `CurrencyState` and `CurrencyChoice` (the display currency, F14), `RatesTable` and `RatesDisplay` (the API's rates) |
-| `Storage/` | `ChatStore` (chats in `localStorage`) and `ChatSettings` (the API key and the admin key, kept in this browser) |
-| `Text/` | `ChatText` (the words the components show; the code-review app's by default), `ToolArgs` (a tool call's input on one line) and `Markdown` (the Markdig pipeline: raw HTML shown as text, only http(s)/mailto links, images only from the shops' hosts) |
+**Shared with Puls:** the chat as data, the API client, a turn's life, the turn and delegation views, markdown, usage
+and currency are in `src/louis-agent.web.shared/`, a Razor class library both apps reference; its design is in
+[louis-agent.web.shared](louis-agent.web.shared.md).
 
 ## Configuration
 
@@ -106,4 +96,4 @@ None automated yet (backlog: *Automated tests for the API and the web app*, Bran
 [README § Web app](../../README.md#web-app) · [Quick start](../QUICK_START_AGENT.md) · [louis-agent.api](louis-agent.api.md)
 
 ---
-[Projects](README.md) · Previous: [louis-agent.api](louis-agent.api.md) · Next: [louis-agent.mcp-server](louis-agent.mcp-server.md)
+[Projects](README.md) · Previous: [louis-agent.api](louis-agent.api.md) · Next: [louis-agent.web.shared](louis-agent.web.shared.md)
