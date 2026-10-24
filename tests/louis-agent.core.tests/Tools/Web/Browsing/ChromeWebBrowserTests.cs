@@ -22,17 +22,22 @@ public class ChromeWebBrowserTests
 
     private static Uri Page(string html) => new("data:text/html," + Uri.EscapeDataString(html));
 
+    private const string Named = "Agent/1.0 (+https://example.test; reads a page on a user's behalf)";
+
     [Test, Category("Live")]
     public async Task AVisit_SaysWhatItIs_WhenTheBrowserIsGivenAName()
     {
-        // FX21: the page's own script sees the configured user agent, and the automation marker is whatever Chrome reports.
+        // FX21: the header a server receives (httpbin echoes it: a real request, not a page's script), and the automation
+        // marker left as Chrome reports it.
         string? url = Environment.GetEnvironmentVariable("BROWSER_URL");
         Assume.That(url, Is.Not.Null.And.Not.Empty, "BROWSER_URL isn't set: no browser to visit with.");
-        var browser = new ChromeWebBrowser(new Uri(url!), userAgent: "Agent/1.0 (+https://example.test; reads a page on a user's behalf)");
+        var browser = new ChromeWebBrowser(new Uri(url!), userAgent: Named);
 
-        var visit = await browser.VisitAsync(Page("<body>x</body>"), script: "navigator.userAgent + '|' + navigator.webdriver");
+        var echoed = await browser.VisitAsync(new Uri("https://httpbin.org/user-agent"), script: "document.body.textContent");
+        var marker = await browser.VisitAsync(Page("<body>x</body>"), script: "String(navigator.webdriver)");
 
-        Assert.That(visit.ScriptResult, Is.EqualTo("Agent/1.0 (+https://example.test; reads a page on a user's behalf)|true"));
+        Assert.That(echoed.ScriptResult, Does.Contain(Named));
+        Assert.That(marker.ScriptResult, Is.EqualTo("true"));
     }
 
     [Test, Category("Live")]

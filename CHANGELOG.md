@@ -4,7 +4,7 @@
 > open in the [TODO](TODO.md); how each was built in its feature, fix or plan doc (linked from its entry).
 
 - 2026-10-24 — **FX21 The browser says what it is**: `BROWSER_USER_AGENT`, what the headless browser tells every site it
-  reads for a user; the Puls stack, its launch profile and the Azure app set `Puls/1.0 (+https://github.com/bosbevk/louis-agent;
+  reads for a user; the Puls stack, its launch profile and the Azure app set `Puls/1.0 (+https://github.com/bosbevk/louis-agent/blob/main/docs/SITE_OWNERS.md;
   reads a page on a user's behalf)`, unset sends Chrome's own, the automation marker is never touched, and never a
   person's name or place ([fix](docs/fixes/FX21-the-browser-says-what-it-is.md))
 - 2026-10-24 — **CL19 Config and Docker by place**: a folder is one kind of thing for one place. `config/` is what the
