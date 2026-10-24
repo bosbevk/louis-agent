@@ -28,7 +28,11 @@ stack, and `puls-app` reaches them over Tailscale (*The tunnel* below).
 2. Fill `config/.env.secrets` (as for the local stack) and add `TS_AUTHKEY`, a Tailscale auth key made **reusable and
    ephemeral** in the Tailscale admin console; `config/.env.mongo` and `config/.env.searxng` as for the local stack.
 3. Put the secrets on the apps: `deploy.ps1 secrets` and `deploy.ps1 secrets -App puls-searxng`.
-4. Start the home end of the tunnel (*The tunnel*).
+4. Start the home end of the tunnel (*The tunnel*); a new PC has a new Tailscale IP, so `FORWARD_TO_HOST` in
+   `puls-app.yaml` changes with it.
+5. `deploy.ps1 lock`: the ingress allows one public IP, and a new PC or network has a new one (*Locked to one
+   address*), so until this runs the app answers 403 from here.
+6. `deploy.ps1 release` for the first deploy from this PC, then `deploy.ps1 logs` to watch it come up.
 
 ## Every-day deploy
 
