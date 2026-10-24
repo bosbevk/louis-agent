@@ -1,8 +1,8 @@
 # FX21 · The browser reads shops' pages for a user without saying what it is
 
-> **Status:** open · **Area:** core, the headless browser (`Tools/Web/Browsing/ChromeWebBrowser`), its settings;
-> Puls's compose and Azure yaml · **Found:** 2026-10-24, the review of the CL19 branch · **Planned:** one step, so no
-> plan file of its own; after CL19 is merged
+> **Status:** done · **Area:** core, the headless browser (`Tools/Web/Browsing/ChromeWebBrowser`), its settings;
+> Puls's compose and Azure yaml · **Found:** 2026-10-24, the review of the CL19 branch · **Fixed:** 2026-10-24 · **Planned:** one step,
+> so no plan file of its own; built after CL19 merged
 
 ## Symptom
 
@@ -10,8 +10,9 @@ The cook run of 2026-10-21 had some shop pages refuse the headless shell, and th
 pass as a person's desktop Chrome: a desktop user agent, and `navigator.webdriver` answered `false` to a page's script.
 Both answered a site's questions falsely. Louis's view, and the one this fix keeps: reading a page on a user's behalf is
 legitimate (that is what a user agent is), so the browser should say so rather than hide. CL19 took the two lines out
-again (the viewport stays); with them gone the browser sends Chrome's own headless user agent, which is truthful but
-says nothing about who is reading or why, and gives a retailer nothing to allow or to contact.
+again (the viewport stays); with them gone the browser sends Chrome's own user agent, which is truthful but says
+nothing about who is reading or why (the headless shell's reads as plain Chrome 156; HeadlessChrome isn't in it), and
+gives a retailer nothing to allow or to contact.
 
 ## Cause
 
@@ -39,17 +40,21 @@ One step, test first:
 
 ## Tests
 
-- `ChromeWebBrowserTests`: a visit with the setting sends that user agent (the fake page reads it back); a visit
-  without it sends none of ours; `navigator.webdriver` is whatever the browser reports.
-- `AgentOptionsTests` (or the browser options' tests): the setting is read, and empty means unset.
-- The golden files don't move: no tool, description or prompt changes.
+Written first, seen failing on their assertions (the setting read as null, the page seeing Chrome's own agent):
+
+- `AgentOptionsTests.BrowserUserAgent_IsRead_AndAnEmptyOneIsNone`: the setting is read, trimmed; blank or unset is null.
+- `ToolsetContextTests.TheChromeItNames_SaysWhatTheOptionsSay_ToEverySite`: the name travels from the options to the
+  browser the context builds; unset, the browser has none (`PageRendererFactory` passes it the same way).
+- `ChromeWebBrowserTests` (live, against the stack's browser): a named browser's page sees that agent and
+  `navigator.webdriver` as `true`, Chrome's own report; an unnamed one sees Chrome's own agent and nothing of ours.
+- The golden files don't move: no tool, description or prompt changed. Core's suite: 1,306 green with the live tests.
 
 ## Confirmed
 
-Open. When done: one `ReadRenderedPage` of `https://httpbin.org/user-agent` from the Puls stack, which echoes the
-request's `User-Agent` in its body (a response's headers never carry it), and the unit test's fake page reading
-`navigator.userAgent`; then the next cook run's sourced-price count beside the run of 2026-10-21, to see what the honest
-agent loses, if anything.
+The two live tests ran against the Puls stack's browser on 2026-10-24: a data page's script read the configured agent
+back exactly, and `navigator.webdriver` stayed `true`. What a shop's server receives is the same header, so the
+`httpbin.org/user-agent` check adds nothing the page's own script doesn't show. Still to measure: the next cook run's
+sourced-price count beside the run of 2026-10-21, to see what the honest agent loses, if anything.
 
 ## Lesson
 

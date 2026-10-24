@@ -72,6 +72,9 @@ properties:
             value: https://puls-searxng.greenwater-cdd33adc.southafricanorth.azurecontainerapps.io
           - name: BROWSER_URL
             value: http://127.0.0.1:9222
+          # What the browser tells the sites it reads for a user (FX21): who reads, where to learn more, and why; never a person.
+          - name: BROWSER_USER_AGENT
+            value: "Puls/1.0 (+https://github.com/bosbevk/louis-agent; reads a page on a user's behalf)"
           - name: SHOP_CATALOGUES
             value: checkers
           - name: SHOP_STORE_CACHE

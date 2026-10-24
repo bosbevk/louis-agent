@@ -69,6 +69,16 @@ public class AgentOptionsTests
 
     // CL14 step 1: ROLES_ENABLED is the setting's name; PERSONALITIES_ENABLED, its name before, is still read, with a
     // warning, until the TODO's line removes it, so a config/.env written before CL14 keeps working.
+    [Test]
+    public void BrowserUserAgent_IsRead_AndAnEmptyOneIsNone()
+    {
+        // FX21: an identity names itself to the sites its browser reads for a user; unset or blank, Chrome's own is sent.
+        Assert.That(With(("BROWSER_USER_AGENT", "Puls/1.0 (+https://example.test; reads a page on a user's behalf)")).BrowserUserAgent,
+            Is.EqualTo("Puls/1.0 (+https://example.test; reads a page on a user's behalf)"));
+        Assert.That(With(("BROWSER_USER_AGENT", "   ")).BrowserUserAgent, Is.Null);
+        Assert.That(With().BrowserUserAgent, Is.Null);
+    }
+
     private static AgentOptions With(params (string Name, string Value)[] variables) =>
         AgentOptions.FromEnvironment(name => variables.FirstOrDefault(v => v.Name == name).Value);
 

@@ -105,6 +105,13 @@ az containerapp exec -n puls-app -g rg-puls-za --container puls-app --command "c
 | `logs/` | The run files (`agent-api-*.log`), the usage ledger (`usage-YYYY-MM.jsonl`) and the tool-result records |
 | `data/` | `shop-stores.json`, the shops' store-per-town cache (F34) |
 
+## What the browser says it is
+
+The home PC's browser reads shops' pages for the app's users, and tells every site so: `BROWSER_USER_AGENT` in
+`puls-app.yaml` is `Puls/1.0 (+https://github.com/bosbevk/louis-agent; reads a page on a user's behalf)`, who reads, a public page to learn more, and
+why (FX21). Never a person's name or place: the string reaches every site and tracker a page touches. A site that
+refuses automated readers refuses this one; the cook then falls back to the catalogue tool and estimates.
+
 ## Locked to one address
 
 `puls-app` serves a public address with `AGENT_AUTH=off`, so anyone who reached it would chat on the Anthropic key, and

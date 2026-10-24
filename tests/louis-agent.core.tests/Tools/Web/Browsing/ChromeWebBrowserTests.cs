@@ -23,6 +23,28 @@ public class ChromeWebBrowserTests
     private static Uri Page(string html) => new("data:text/html," + Uri.EscapeDataString(html));
 
     [Test, Category("Live")]
+    public async Task AVisit_SaysWhatItIs_WhenTheBrowserIsGivenAName()
+    {
+        // FX21: the page's own script sees the configured user agent, and the automation marker is whatever Chrome reports.
+        string? url = Environment.GetEnvironmentVariable("BROWSER_URL");
+        Assume.That(url, Is.Not.Null.And.Not.Empty, "BROWSER_URL isn't set: no browser to visit with.");
+        var browser = new ChromeWebBrowser(new Uri(url!), userAgent: "Agent/1.0 (+https://example.test; reads a page on a user's behalf)");
+
+        var visit = await browser.VisitAsync(Page("<body>x</body>"), script: "navigator.userAgent + '|' + navigator.webdriver");
+
+        Assert.That(visit.ScriptResult, Is.EqualTo("Agent/1.0 (+https://example.test; reads a page on a user's behalf)|true"));
+    }
+
+    [Test, Category("Live")]
+    public async Task AVisit_WithoutAName_SendsChromesOwn()
+    {
+        // The headless shell's own agent reads as plain Chrome (156: no "HeadlessChrome" in it), so this holds nothing of ours.
+        var visit = await Live().VisitAsync(Page("<body>x</body>"), script: "navigator.userAgent");
+
+        Assert.That(visit.ScriptResult, Does.Contain("Chrome/").And.Not.Contain("Agent/").And.Not.Contain("behalf"));
+    }
+
+    [Test, Category("Live")]
     public async Task AVisit_KeepsTheResponsesAskedFor_AndOnlyThose()
     {
         // The page fetches two JSON documents; the caller asks for one of them, as a catalogue asks for its search answer.

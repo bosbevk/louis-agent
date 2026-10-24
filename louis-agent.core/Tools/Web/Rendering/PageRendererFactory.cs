@@ -28,11 +28,11 @@ public static class PageRendererFactory
 
         return choice switch
         {
-            null when browser is not null => new ChromePageRenderer(new ChromeWebBrowser(browser)),
+            null when browser is not null => new ChromePageRenderer(new ChromeWebBrowser(browser, userAgent: options.BrowserUserAgent)),
             null when hasTavily => new TavilyPageRenderer(options.TavilyApiKey!, http),
             null => new UnavailablePageRenderer(MessageText.Format(ToolMessage.RenderNotConfigured)),
             PageRendererKind.Chrome => browser is not null
-                ? new ChromePageRenderer(new ChromeWebBrowser(browser))
+                ? new ChromePageRenderer(new ChromeWebBrowser(browser, userAgent: options.BrowserUserAgent))
                 : new UnavailablePageRenderer(MessageText.Format(ToolMessage.BrowserNotConfigured)),
             PageRendererKind.Tavily => hasTavily
                 ? new TavilyPageRenderer(options.TavilyApiKey!, http)
