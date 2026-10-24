@@ -17,7 +17,7 @@ as you go: every answer shows what it cost, specialists included.
 - **Pages:** `/` is the landing page (`LandingPage.razor`). The app is one page, `ChatPage.razor`, at `/gesels`,
   `/gesels/{id}` (old `/chat/{id}` links move there), `/verken` and `/studio`; it redraws on every address change, since
   Blazor wouldn't for the same page with the same parameters.
-- **A chat** opens `POST /sessions` with `toolsets: ["agents", "web"]` (F29), `role: "puls/voice-af"` (F21, CL9, CL14) and, when the user shared it,
+- **A chat** opens `POST /sessions` with `toolsets: ["specialists", "web"]` where the instance has them (F29), `role: "puls/voice-{language}"` (`puls/voice-af` by default; F21, CL9, CL14) and, when the user shared it,
   `location` and `time_zone` (F22). Messages stream over SSE; `TurnStream` (shared) folds them, sub-session events
   included, into the turn the page shows.
 - **Three panels:** the sidebar (search, Verken, Studio, favourites, projects, recent, archive, profile and settings),
@@ -69,14 +69,17 @@ pinned by digest.
 
 ## Extending it
 
-- **A starter:** a line in `Templates.cs`.
-- **Puls's voice or a specialist's role:** `louis-agent.core/Prompts/agent/puls/voice-af.md` (its mode: voice and routing) and `specialists/puls-*.md` (F21); built in, so a change is a rebuild.
-- **A placeholder made real:** replace its `ComingSoon(...)` with the feature; keep the label.
+The steps are in [Change the Puls web app](../guides/change-the-puls-app.md). In short: a starter is a line in
+`Content/Templates.cs`; a chat piece is a component under `Components/Chat/` by concern; a placeholder made real
+replaces its "kom binnekort" toast and keeps the label. Puls's voice and roles are the Puls identity's prompts
+([Build an identity](../guides/build-an-identity.md)); built in, so a change is a rebuild.
 
 ## Tests
 
-None automated (like louis-agent.web): checked by hand and by headless-Chrome screenshots with sample chats at 1440,
-1100 and 420 px wide. The API's sessions and core's tools under it are tested.
+`tests/louis-agent.puls.tests`, NUnit with bUnit: `Pages/ChatPageTests` renders the chat against `FixtureApi`, streams
+the recorded Puls turn, lists the page's JavaScript calls and pins `ChatPage.empty.html` and `ChatPage.turn.html`;
+`Pages/LandingPageTests` pins the landing page; `Components/` pins `WorkPanel`, `TemplateCard` and `PulsTile`;
+`Search/ChatFinderTests` tests the search. The layout at 1440, 1100 and 420 px wide is still checked by hand.
 
 ## Limits and plans
 

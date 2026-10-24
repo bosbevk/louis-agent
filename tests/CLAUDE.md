@@ -1,8 +1,9 @@
 # Tests: development guide
 
 > **How-to.** Running the tests, the golden files that pin what the model reads, and how tests are written here.
-> **Elsewhere:** what each test project covers in the [tests design doc](../docs/projects/tests.md), the steps for a
-> change in the [development guide](../docs/CLAUDE.md). Claude Code loads this file when it works on files in this
+> **Elsewhere:** what each test project covers in the [tests design doc](../docs/projects/tests.md), the same for a
+> person in [Write and run tests](../docs/guides/write-tests.md), the steps for a change in the
+> [development guide](../docs/CLAUDE.md). Claude Code loads this file when it works on files in this
 > folder.
 
 ## Running the tests
@@ -83,6 +84,7 @@ the page's scripts, so a call is answered with nothing and listed, never a failu
 test projects that use them reference as a global using (CL15); no test project references another, and `ArchitectureTests` holds it. A few tests skip themselves when git, pip or the network isn't available. The agent runs tests on Linux inside
 its containers, so keep them platform-neutral (forward slashes, no Windows-only paths).
 
-The API's sessions are tested (`tests/louis-agent.api.tests`); its endpoints and the web app have no automated tests
-yet, so check them by hand (curl and a browser) after changes. The orchestrator demo that exercised the whole loop
+The API's sessions are tested (`tests/louis-agent.api.tests`) and the web apps' components and pages are pinned
+(above); the API's endpoints and the MCP server have no automated tests yet, so check them by hand (curl, a browser,
+Rider) after changes. The orchestrator demo that exercised the whole loop
 against a real model was removed in CL10; it comes back with the rewritten benchmarks.
