@@ -140,6 +140,12 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   One behaviour change comes with the SSE framing: an event with no `event:` line gets the type `message`, and the name
   resets for each event, where the old loop kept the last name. Nothing changes today, because our API always sends
   `event:`.
+- **Step 1e** (`tests/louis-agent.api.tests/Sessions/StreamGolden.sse`): the writer's bytes, pinned before anything moves.
+  A scripted turn of each kind goes through `TurnStream.StreamTurnAsync` on a real engine and a `FakeChatClient`: a
+  thinking, text and tool-call turn; a sub-session's event; a command reply (`/tools`); a cancel (the model's request is
+  cut off, as a cancelled HTTP call is, and the stop is `cancelled`); and an error. The golden passes against today's code
+  (nothing fails: the step pins the bytes), and reading it back through the reader gives the same types and data in
+  order. The API tests reference `louis-agent.testing` for the fake model. Regenerate with `LOUIS_UPDATE_GOLDEN=1`.
 - **Step 1d** (`louis-agent.orchestrator`): `LouisAgentClient.ReadStreamAsync` takes the response's stream and reads its
   events through the reader, folding them by their record types; the framing loop is gone. Its tests feed the same SSE
   text as bytes instead of a `StringReader`, with no assertion changed. The file was already on the size ratchet

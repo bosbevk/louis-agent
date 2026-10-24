@@ -22,10 +22,13 @@
     <!-- CL15: the API's tests open Puls's sessions, so they register Puls's prompts as the Puls stack does (IDENTITIES=puls). -->
     <ProjectReference Include="..\..\identities\louis-agent.identity.puls\louis-agent.identity.puls.csproj" />
     <ProjectReference Include="..\..\packs\louis-agent.pack.shops\louis-agent.pack.shops.csproj" />
+    <!-- F18 step 1e: the scripted turns of the stream golden run on the shared fake model. -->
+    <ProjectReference Include="..\louis-agent.testing\louis-agent.testing.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Using Include="NUnit.Framework" />
+    <Using Include="LouisAgent.Testing" />
   </ItemGroup>
 
 </Project>
