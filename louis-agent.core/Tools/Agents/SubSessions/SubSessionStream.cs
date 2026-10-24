@@ -2,8 +2,10 @@ namespace LouisAgent.Core.Tools.Agents.SubSessions;
 
 using System.Text;
 using System.Text.Json;
+using LouisAgent.SessionStream;
 
-/// <summary>A sub-session's SSE stream read to the end (S, CL15, from SpecialistTools; Phase 3 step 1c replaces the loop with the one session-stream reader).</summary>
+/// <summary>A sub-session's SSE stream read to the end (S, CL15, from SpecialistTools), through the one session-stream
+/// reader (F18 step 1c).</summary>
 internal static class SubSessionStream
 {
     /// <summary>
@@ -15,28 +17,23 @@ internal static class SubSessionStream
     {
         var text = new StringBuilder();
         SubSessionUsage? usage = null;
-        string? error = null, eventName = null;
-        using var reader = new StreamReader(stream);
-        while (await reader.ReadLineAsync(cancellationToken) is { } line)
+        string? error = null;
+        await foreach (var streamEvent in SessionStreamReader.ReadAsync(stream, cancellationToken))
         {
-            if (line.StartsWith("event:", StringComparison.Ordinal)) { eventName = line[6..].Trim(); continue; }
-            if (!line.StartsWith("data:", StringComparison.Ordinal)) continue;
-
-            string json = line[5..].Trim();
-            if (eventName is not null) onEvent(eventName, json);
-            using var doc = JsonDocument.Parse(json);
-            var root = doc.RootElement;
-            switch (eventName)
+            onEvent(streamEvent.Type, streamEvent.Data.GetRawText());
+            switch (streamEvent)
             {
-                case "content_block_delta" when root.GetProperty("delta") is var delta && delta.GetProperty("type").GetString() == "text_delta":
+                case ContentBlockDelta when streamEvent.Data.GetProperty("delta") is var delta
+                    && delta.GetProperty("type").GetString() == "text_delta":
                     text.Append(delta.GetProperty("text").GetString());
                     break;
-                case "message_delta" when root.TryGetProperty("usage", out var used) && used.ValueKind == JsonValueKind.Object:
+                case MessageDelta when streamEvent.Data.TryGetProperty("usage", out var used) && used.ValueKind == JsonValueKind.Object:
                     usage = SubSessionUsage.From(used);
                     break;
-                case "error":
-                    error = root.GetProperty("error").GetProperty("message").GetString();
-                    if (root.TryGetProperty("usage", out var failed) && failed.ValueKind == JsonValueKind.Object) usage = SubSessionUsage.From(failed);
+                case ErrorReported:
+                    error = streamEvent.Data.GetProperty("error").GetProperty("message").GetString();
+                    if (streamEvent.Data.TryGetProperty("usage", out var failed) && failed.ValueKind == JsonValueKind.Object)
+                        usage = SubSessionUsage.From(failed);
                     break;
             }
         }

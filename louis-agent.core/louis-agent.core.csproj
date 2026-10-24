@@ -10,6 +10,11 @@
     </PropertyGroup>
 
     <ItemGroup>
+    <!-- F18 step 1c: core reads a peer's stream through the one session-stream reader (CL11); the reader references nothing. -->
+    <ProjectReference Include="..\louis-agent.session-stream\louis-agent.session-stream.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
       <InternalsVisibleTo Include="louis-agent.core.tests" />
       <!-- The API's file browser applies the same workspace and secret-file rules as the agent's tools. -->
       <InternalsVisibleTo Include="louis-agent.api" />

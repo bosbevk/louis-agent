@@ -10,7 +10,7 @@ public static class SessionStreamReader
         Stream stream,
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        await foreach (var item in SseParser.Create(stream).EnumerateAsync(cancellationToken))
+        await foreach (var item in SseParser.Create(new EndedByBlankLine(stream)).EnumerateAsync(cancellationToken))
         {
             yield return SessionEventMapper.Map(item.EventType, item.Data);
         }

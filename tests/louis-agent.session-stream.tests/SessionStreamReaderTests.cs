@@ -106,6 +106,17 @@ public class SessionStreamReaderTests
     }
 
     [Test]
+    public async Task AnEventCutOffByTheEndOfTheStreamIsStillRead()
+    {
+        var events = await ReadAsync(
+            "event: message_start\ndata: {\"type\":\"message_start\"}\n\n" +
+            "event: message_stop\ndata: {\"type\":\"message_stop\"}");
+
+        Assert.That(events, Has.Count.EqualTo(2));
+        Assert.That(events[1], Is.InstanceOf<MessageStopped>());
+    }
+
+    [Test]
     public async Task MultiLineDataIsJoinedWithNewlines()
     {
         var events = await ReadAsync("event: content_block_delta\ndata: {\"a\":\ndata: 1}\n\n");

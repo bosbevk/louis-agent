@@ -105,6 +105,12 @@ calibrated model grader), 7 (Python leaves), 7a (notes on a run) and 8 (docs and
   unchanged: their assertions do, but the helpers that built an `AgentStreamEvent` now call `SessionEvent.From`, and
   the shared fixture reads through the reader. One behaviour change: a `message_start` with an empty `toolsets` array
   leaves the turn's toolsets as they were, where it used to set an empty list; nothing reads the difference today.
+- **Step 1c** (`louis-agent.core`): core references the reader, and `SubSessionStream` reads a peer's stream through
+  it, keeping its signature and its contract tests. The reader now delivers an event the stream ends before its blank
+  line: SSE discards such an event, but the line-by-line loop this replaces read it, and seven contract tests (an error
+  as the last event, a stop as the last) depend on it. The reader gets the blank line from a wrapper stream
+  (`EndedByBlankLine`), with its own test written first and seen failing. A cut-off connection's last event is read
+  the same way, and one cut inside a line is kept as an `UnknownEvent`.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)
