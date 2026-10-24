@@ -244,4 +244,4 @@ needs `PACKS` (or `IDENTITIES`) and the pack's settings in its environment.
 - [ ] Tests written first, every file under 200 lines (tests 400), folders mirrored.
 
 ---
-[Docs index](../README.md) · Next: [Build an identity](build-an-identity.md)
+[Guides](README.md) · [Docs index](../README.md) · Next: [Build an identity](build-an-identity.md)

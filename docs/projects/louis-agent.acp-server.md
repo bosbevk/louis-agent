@@ -72,13 +72,9 @@ Core settings plus `ACP_MOUNT_MAPPINGS` and `USAGE_IN_CHAT`. Rider's agent-serve
 
 ## Extending it
 
-Add a method in `HandleRequestAsync`'s switch; add a new `session/update` kind in the streaming method. Keep behaviour
-in core: the server should only translate.
-
-## Tests
-
-No automated tests for the server itself (see [tests](tests.md)); check it in Rider after changes. Start a **New Chat**
-to get a container with the new build.
+The steps are in [Change the ACP server](../guides/change-the-acp-server.md). In short: a method is a `case` in
+`AcpServer.HandleRequestAsync` with its handler in its concern's folder; an update kind a case in `TurnRelay`; the
+server only translates.
 
 ## Limits and plans
 

@@ -46,8 +46,8 @@ The core settings ([Setup](../SETUP.md)); nothing CLI-specific.
 
 ## Extending it
 
-Rendering lives in `ConsoleChat` (this project); commands (`/tools`, `/approve`, `/reject`, `/usage`) are core's
-`AgentEngine.HandleUserCommand`, shared with Rider and the API. Keep `Program.cs` a bootstrap.
+The steps are in [Change the CLI](../guides/change-the-cli.md). In short: rendering lives in `ConsoleChat`; commands are
+core's `UserCommands`, shared with Rider and the API; `Program.cs` stays a bootstrap.
 
 ## Tests
 

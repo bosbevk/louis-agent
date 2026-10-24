@@ -223,4 +223,4 @@ Puls has in `src/louis-agent.puls`) is a separate project and optional; any clie
 - [ ] `ROLES_ENABLED` lists only the roles that have passed their check.
 
 ---
-[Docs index](../README.md) · Previous: [Build a pack](build-a-pack.md)
+[Guides](README.md) · [Docs index](../README.md) · Previous: [Build a pack](build-a-pack.md)

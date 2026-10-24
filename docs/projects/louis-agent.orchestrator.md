@@ -60,20 +60,19 @@ flowchart TD
 
 `ORCHESTRATOR_SERVICE_ROOT` (required), `ORCHESTRATOR_SERVICE`, `ORCHESTRATOR_SERVICE_PROJECT`, `LOUIS_AGENT_URL`,
 `LOUIS_AGENT_API_KEY` (falls back to `AGENT_API_KEY`), `ORCHESTRATOR_STATE_DIRECTORY`, `ORCHESTRATOR_COMMS_LOG`,
-`ORCHESTRATOR_POLL_SECONDS`; the model from the usual `LLM_*` settings. The demo compose file sets them all.
+`ORCHESTRATOR_POLL_SECONDS`; the model from the usual `LLM_*` settings. Its demo compose file, which set them all, was
+removed in CL10, so a run sets them by hand.
 
 ## Extending it
 
-- **A method or service:** a runbook in `Skills/<service>/` ([Runbooks](orchestrator-runbooks.md#adding-and-changing-runbooks)).
-- **A tool:** a public method with `[Description]`s on `ServiceTools` — remember every public method becomes a tool.
-- **Build mode** (building methods from runbooks) was cut by [the platform plan](../plans/platform.md) (2026-10-19,
-  never started); it stays a side note in the [TODO](../../TODO.md)'s *Later*.
+The steps are in [Change the orchestrator](../guides/change-the-orchestrator.md). In short: a behaviour change is a
+runbook where it can be; a tool is a public method on `ServiceTools`.
 
 ## Tests
 
 `tests/louis-agent.orchestrator.tests` — see [tests](tests.md): the feed, the SSE client and `FIX-RESULT`, decisions,
-runbook loading, the comms log, and the git checks against a throwaway repository. The whole loop runs in the demo
-against a real model.
+runbook loading, the comms log, and the git checks against a throwaway repository. The whole loop against a real model
+ran in the demo, removed in CL10; it returns with the evals.
 
 ## Limits and plans
 

@@ -28,6 +28,7 @@ you need otherwise.
 |---|---|---|
 | [Development guide](CLAUDE.md) | How-to | Work with Louis step by step, the rules that always apply, find your way around the code, add a skill, a mode or a role, run and debug; known limitations, common errors |
 | [Core guide](../louis-agent.core/CLAUDE.md) | How-to | Change `louis-agent.core`: add a tool or a toolset, the layout and message rules, another agent on core, a new model provider |
+| [Guides](guides/README.md) | How-to | Find the step-by-step guide for the project you are changing, or for what you are building |
 | [Build a pack](guides/build-a-pack.md) | How-to | Give an agent a new capability: a pack's project, tools, guide, settings, registration and tests, step by step |
 | [Build an identity](guides/build-an-identity.md) | How-to | Make a new agent: an identity's project, its voice and routing, its specialists, the packs it names, its tests, and running it |
 | [Tests guide](../tests/CLAUDE.md) | How-to | Run the tests, regenerate the golden files (bash or PowerShell), write tests that run on Linux too |

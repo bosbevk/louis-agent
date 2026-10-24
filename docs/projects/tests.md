@@ -100,8 +100,8 @@ path parts, the drive letter), `GitRoots` and `JsonRpcWriter`.
 ## What isn't covered yet
 
 - **The API's endpoints and the MCP server** have no automated tests (only the API's sessions do); they're checked by
-  hand (curl, Rider). The ACP server has its transcript (`tests/louis-agent.acp-server.tests`) and no more yet. The orchestrator demo exercises the API and git endpoints end to end
-  against a real model.
+  hand (curl, Rider). The ACP server has its transcript (`tests/louis-agent.acp-server.tests`) and no more yet. Nothing has exercised the
+  API and git endpoints end to end against a real model since CL10 removed the orchestrator demo.
 - **The orchestrator's whole loop** against a scripted louis-agent.api.
 
 Both are in the TODO backlog (*Quality and CI*), along with CI to run these suites on every push.

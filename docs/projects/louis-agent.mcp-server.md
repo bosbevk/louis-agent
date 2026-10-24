@@ -49,8 +49,8 @@ Core settings (no `LLM_*` needed), plus `MCP_TRANSPORT`, `MCP_PORT`, `MCP_API_KE
 
 ## Extending it
 
-New engine tools appear automatically. MCP-only additions (like the skill tools) go in their own `[McpServerToolType]`
-class registered with `.WithTools<…>()` in both transports.
+The steps are in [Change the MCP server](../guides/change-the-mcp-server.md). In short: engine tools appear by
+themselves; an MCP-only tool is an `[McpServerToolType]` class registered in both transports.
 
 ## Tests
 
