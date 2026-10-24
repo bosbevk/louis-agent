@@ -1067,6 +1067,14 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
   files in ordinal path order, each path and then its content, each followed by a NUL byte, with CRLF read as LF, so the
   Windows and Linux hashes agree. When it differs the refusal names the hash, so a person bumps the version, adds a dated
   line to `changes` and pastes it. Every refusal text is an `EvalErrorMessage` member (ADR 0009).
+- **Step 4 writes the developer's how-to for an eval set** (Louis, 2026-10-24: "a guide for the project a developer to
+  read"). `docs/guides/add-an-eval-set.md`, a how-to for a person (one type per doc, ADR 0013), not a `CLAUDE.md`: what it
+  answers first, then the steps with the Puls evals as the worked example: a new `evals/louis-agent.evals.{name}` project
+  and its tests, one `IEvalSet`, an `IEval` with its modes, the dataset folder (`dataset.json`, `scenarios/{dev,held-out}/`,
+  the hash), graders with their `ExpectedKeys` and at least one required fixed rule, the catalogue line, and running it with
+  `EVALS=` and `run {name}`. It is written in step 4, once `IEvalSet` and the catalogue exist, listed in the docs index
+  under *Change it*; the `CLAUDE.md` guides link to it rather than repeat it. Step 5 checks it
+  still matches by following it for `CookEval` and `RoutingEval`.
 
 ---
 [Docs index](../README.md) · [Plans](README.md) · [Platform plan](platform.md) · [Feature F18](../features/F18-evaluation.md)

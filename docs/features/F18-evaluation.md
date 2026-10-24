@@ -89,7 +89,7 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
 - **3** Fixed-rule graders and the scores document
 - **3a.1** The dataset loader and its hash (harness: `Datasets/`; the Puls datasets are 3a.2)
 - **3a** Datasets as files, one folder per eval
-- **4** The runner and the stub eval; the eval sets pluggable (`IEvalSet`, `EVALS=`) and the common graders (approved during the build)
+- **4** The runner and the stub eval; the eval sets pluggable (`IEvalSet`, `EVALS=`) and the common graders; the developer's how-to `docs/guides/add-an-eval-set.md` (approved during the build)
 - **4a** Web input recorded and replayed: the browser
 - **4b** The same for search, fetch and the clock
 - **4c** The prompt's hash on every ledger row
