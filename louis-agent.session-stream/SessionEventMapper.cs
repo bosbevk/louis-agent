@@ -20,7 +20,14 @@ internal static class SessionEventMapper
         }
     }
 
-    public static SessionEvent Map(string type, JsonElement data) => type switch
+    public static SessionEvent Map(string type, JsonElement data)
+    {
+        // Every event is a JSON object; a value that isn't one is kept as it came, like any other unknown event.
+        if (data.ValueKind != JsonValueKind.Object) return new UnknownEvent(type, data);
+        return MapObject(type, data);
+    }
+
+    private static SessionEvent MapObject(string type, JsonElement data) => type switch
     {
         "message_start" => MapMessageStarted(data),
         "content_block_start" => new ContentBlockStarted(data),

@@ -38,7 +38,7 @@ afterwards from the docs that hold them (each ADR links its sources), with the d
 | [0026](0026-parallel-tool-calls-for-read-only-toolsets.md) | A round's tool calls run at once only where every toolset is parallel-safe | Accepted |
 | [0027](0027-engine-identities-and-packs.md) | The engine, identities and packs: core names no product | Accepted |
 | [0028](0028-packs-stay-convertible-to-mcp.md) | Packs stay convertible to MCP; MCP plugs in at the toolset | Accepted |
-| [0029](0029-simulations-in-csharp.md) | Simulations in C#: one harness for checks, regressions and demos | Accepted |
+| [0029](0029-simulations-in-csharp.md) | Simulations in C#, called evals: one harness for checks, regressions and demos (amended 2026-10-24: the word is *eval*) | Accepted |
 | [0030](0030-build-or-adopt.md) | Build or adopt: the loop stays ours on Microsoft.Extensions.AI | Accepted |
 | [0031](0031-orchestration-is-an-engine-function.md) | Orchestration is an engine function, and the orchestrator stays on core | Accepted |
 | [0033](0033-what-the-agent-writes-has-a-scope.md) | What the agent writes has a scope: session, agent or shared (0032 is kept for *Sources as data*) | Accepted |

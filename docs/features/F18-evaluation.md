@@ -5,8 +5,9 @@
 >
 > **In the TODO:** **F18 Evals in C#** under *Now*, which also takes in the CI gate · **Decided in:**
 > [ADR 0029](../adr/0029-simulations-in-csharp.md) (amended 2026-10-24: the word is *eval*) · **Replaces:** the earlier
-> *F18 Evaluation* design (an `evals/` folder of cases with `exact`, `contains` and `judge` scorers, run from a CLI,
-> built on F16 and F17) and the backlog's *Evaluation* gap
+> *F18 Evaluation* design, a `tools/louis-agent.evals` console app over suites in `evals/<suite>/` (`cases.jsonl`, the
+> scorers `exact`, `contains` and `judge`), built on F16 and F17, which is not built; its name and folder are the new
+> harness's now. It also replaces the backlog's *Evaluation* gap.
 
 Today the only quality check is the orchestrator demo: ten fixes, each verified, at about $0.66 a run. It says whether
 the whole system still works, but not whether one part (a summary, a triage decision, a cook's price list) is right, and
@@ -37,7 +38,7 @@ so that a new one is a class, not a script.
 
 **F18-S2 — One runner, one stream reader.** As a *developer*, I want one runner and one reader for the session stream, so
 that a new event is learnt once.
-- *Given* `dotnet /app/evals/louis-agent.evals.runner.dll eval {name} --repeat N` *then* each trial runs and writes the
+- *Given* `dotnet /app/evals/louis-agent.evals.runner.dll run {name} --repeat N` *then* each trial runs and writes the
   existing version-1 protocol lines, which the API stores as it does today.
 - *And* `--repeat` gives pass@k and pass^k per mode and task; a trial that failed for the infrastructure (a timeout, a
   dead container, a replay miss) is reported apart and counts in neither.
@@ -74,19 +75,43 @@ The full design, steps, namespace map and diagrams are in [the plan](../plans/F1
 
 ## Implementation steps
 
-The steps are the plan's: step 0 (the plan, the word, this doc, the ADR and the package pin, docs only), 1a to 1d (one
-session-stream reader), 2 to 2a (the harness and the protocol in C#), 3 (code graders), 4 to 4f (runner, web replay,
-prompt hash, traces, replay cache, logs), 5 (the cook and routing evals), 5a to 5b (pass@k and re-scoring), 6 (a
-calibrated model grader), 7 (Python leaves), 7a (notes on a run) and 8 (docs and the two learning write-ups).
+The steps are the plan's, in order; each one's tests, and what it changes from this doc, are in the plan's table and the *What the build changed* notes below:
+
+- **0** The plan and the word
+- **1a** The one session-stream reader
+- **1b** `TurnStream` and `AgentApi` read through it
+- **1c** `SubSessionStream` reads a peer's stream through it
+- **1d** `LouisAgentClient` reads through it
+- **1e** The stream's golden, before the seam
+- **1f** The writer's seam, a pluggable stream format
+- **2** The harness's contracts and the protocol in C#
+- **2a** What a run ran, recorded
+- **3** Fixed-rule graders and the scores document
+- **3a** Datasets as files, one folder per eval
+- **4** The runner and the stub eval
+- **4a** Web input recorded and replayed: the browser
+- **4b** The same for search, fetch and the clock
+- **4c** The prompt's hash on every ledger row
+- **4d** Traces per turn and tool call
+- **4e** A replay cache for recorded evals
+- **4f** Personal data out of the logs
+- **5** Puls's cook and routing evals
+- **5a** pass@k and pass^k
+- **5b** Re-scoring for $0
+- **5c** Results rolled up: overall and by category
+- **6** A model grader where code can't judge
+- **6a** Human review as a grader
+- **7** Python leaves
+- **7a** Why a run behaved as it did
+- **7b** Every eval visible in the admin portal, and the API names no product
+- **8** Docs and the write-ups
 
 ## Done when
 
 - The plan's steps pass their tests; the golden files are unchanged, or reviewed.
-- Puls's cook and routing evals score as the Python checks did, on recorded transcripts; one paid run of each, on
-  Louis's go, is recorded beside the last Python runs, and a free replay of each costs $0.
-- Louis has read the two learning write-ups (skill 12 and skill 13, with traces and the prompt hash).
-- **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)): move **F18** to the CHANGELOG, set
-  *Status* to done here and in the features table, and update skill 12 in the goal map.
+- Louis has read the write-ups (step 8): skill 12's, the new evaluation one, and skill 13's, with the replay cache, traces and the prompt hash (skills 17 and 3).
+- The paid runs are made only on Louis's go: one cook and one routing run in step 5, recorded beside the last Python runs; a free replay of each costs $0.
+- **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)): move **F18** to the CHANGELOG, set *Status* to done here and in the features table, and update skill 12 in the goal map.
 
 ## What the build changed
 

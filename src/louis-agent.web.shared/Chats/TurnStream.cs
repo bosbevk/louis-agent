@@ -94,6 +94,8 @@ public static class TurnStream
         string? callId = sub.ToolUseId.Length > 0 ? sub.ToolUseId : null;
         var call = (callId is null ? null : turn.Blocks.LastOrDefault(b => b.ToolUseId == callId))
                    ?? turn.Blocks.LastOrDefault(b => Delegation.IsDelegationTool(b.ToolName));
+        // No call to fold into, or an event with no name (its "event" is missing): there is nothing to show, so it is
+        // skipped. The reader gives such an event an empty EventType (SessionEventMapper.MapSubSession).
         if (call is null || sub.Inner is UnknownEvent { EventType: "" }) return;
         call.SubTurn ??= new Turn();
         if (sub.Data.TryGetProperty("agent", out var peer)) call.SubAgent ??= peer.GetString();

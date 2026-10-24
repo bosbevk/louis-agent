@@ -117,6 +117,20 @@ public class SessionStreamReaderTests
     }
 
     [Test]
+    public async Task AJsonValueThatIsNotAnObjectIsKeptAsUnknownAndTheReadGoesOn()
+    {
+        var events = await ReadAsync(
+            "event: message_start\ndata: 42\n\n" +
+            "event: message_stop\ndata: {\"type\":\"message_stop\"}\n\n");
+
+        Assert.That(events, Has.Count.EqualTo(2));
+        var odd = events[0] as UnknownEvent;
+        Assert.That(odd, Is.Not.Null);
+        Assert.That(odd!.EventType, Is.EqualTo("message_start"));
+        Assert.That(events[1], Is.InstanceOf<MessageStopped>());
+    }
+
+    [Test]
     public async Task MultiLineDataIsJoinedWithNewlines()
     {
         var events = await ReadAsync("event: content_block_delta\ndata: {\"a\":\ndata: 1}\n\n");
