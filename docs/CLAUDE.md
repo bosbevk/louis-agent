@@ -112,8 +112,8 @@ decision's record (its context, and what it cost) in [docs/adr/](adr/README.md).
   0. Every host shows a turn's usage from the same records and totals (`UsageReport.Total`), so the views and the
   ledger agree.
   Why: [ADR 0007](adr/0007-measure-every-request.md).
-- **Simulations in C#** (F18) — every check, regression and demo is a C# simulation of a real task on one harness
-  (`simulations/louis-agent.simulation/`), each simulation beside the identity or pack it proves; cost comes from the
+- **Evals in C#** (F18) — every check, regression and demo is a C# eval of a real task on one harness
+  (`evals/louis-agent.evals/`), each eval beside the identity or pack it proves; cost comes from the
   ledger, never from a grader; CI runs the graders on recorded transcripts, and a live run waits for Louis's go.
   Why: [ADR 0029](adr/0029-simulations-in-csharp.md).
 - **Orchestration is an engine function** (F39) — one delegation function: agents as tools, typed results checked in
