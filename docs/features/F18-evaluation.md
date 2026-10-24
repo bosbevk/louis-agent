@@ -88,9 +88,6 @@ calibrated model grader), 7 (Python leaves), 7a (notes on a run) and 8 (docs and
 - **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)): move **F18** to the CHANGELOG, set
   *Status* to done here and in the features table, and update skill 12 in the goal map.
 
----
-[Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)
-
 ## What the build changed
 
 - **Step 1a** (`louis-agent.session-stream/`, its tests in `tests/louis-agent.session-stream.tests/`): the reader frames
@@ -98,3 +95,9 @@ calibrated model grader), 7 (Python leaves), 7a (notes on a run) and 8 (docs and
   stream has no usage event (usage is in `message_delta`), so it waits for the step that needs it. The recorded
   fixture's `StartSubSession` still names its role under `personality`, so the test reads both keys, as the Python does.
   The hosts are worked out in the test from the URLs, since the reader doesn't score them (step 3 does).
+- **Review of step 1a:** `MessageStarted` carries its `Toolsets` and `Role` from `message` (the plan's signature; 1b's
+  `TurnStream` reads them). A data line that isn't JSON is kept as an `UnknownEvent` whose `Data` is its text, so a cut-off
+  connection doesn't lose the events after it.
+
+---
+[Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

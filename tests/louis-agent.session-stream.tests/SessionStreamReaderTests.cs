@@ -138,6 +138,44 @@ public class SessionStreamReaderTests
         Assert.That(sub.Inner.Data.GetProperty("delta").GetProperty("thinking").GetString(), Is.EqualTo("hm"));
     }
 
+    [Test]
+    public async Task MessageStartedCarriesItsToolsetsAndRole()
+    {
+        var events = await ReadAsync(
+            "event: message_start\ndata: {\"type\":\"message_start\",\"message\":{\"session_id\":\"s\"," +
+            "\"toolsets\":[\"web\",\"shops\"],\"session_role\":\"puls-cook\"}}\n\n");
+
+        var started = events.Single() as MessageStarted;
+        Assert.That(started, Is.Not.Null);
+        Assert.That(started!.Toolsets, Is.EqualTo(new[] { "web", "shops" }));
+        Assert.That(started.Role, Is.EqualTo("puls-cook"));
+    }
+
+    [Test]
+    public async Task MessageStartedWithoutToolsetsOrRoleReadsEmptyAndNull()
+    {
+        var events = await ReadAsync("event: message_start\ndata: {\"type\":\"message_start\",\"message\":{}}\n\n");
+
+        var started = (MessageStarted)events.Single();
+        Assert.That(started.Toolsets, Is.Empty);
+        Assert.That(started.Role, Is.Null);
+    }
+
+    [Test]
+    public async Task AMalformedDataLineIsKeptAsUnknownAndTheReadGoesOn()
+    {
+        var events = await ReadAsync(
+            "event: content_block_delta\ndata: {not json\n\n" +
+            "event: message_stop\ndata: {\"type\":\"message_stop\"}\n\n");
+
+        Assert.That(events, Has.Count.EqualTo(2));
+        var broken = events[0] as UnknownEvent;
+        Assert.That(broken, Is.Not.Null);
+        Assert.That(broken!.EventType, Is.EqualTo("content_block_delta"));
+        Assert.That(broken.Data.GetString(), Is.EqualTo("{not json"));
+        Assert.That(events[1], Is.InstanceOf<MessageStopped>());
+    }
+
     private static readonly string FixtureDirectory = Path.Combine(AppContext.BaseDirectory, "Fixtures");
 
     private static Task<List<SessionEvent>> ReadRecordedTurnAsync() =>

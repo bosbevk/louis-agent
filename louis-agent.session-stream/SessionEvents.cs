@@ -4,8 +4,9 @@ namespace LouisAgent.SessionStream;
 
 /// <summary>One event of a session's stream: its SSE event name as sent, and its JSON as sent.</summary>
 public abstract record SessionEvent(string Type, JsonElement Data);
-
-public sealed record MessageStarted(JsonElement Data) : SessionEvent("message_start", Data);
+/// <summary>The turn's start: the toolsets the session opened with and the role it runs as, read from the message's toolsets and session_role.</summary>
+/// <summary>The turn's start: the toolsets the session opened with and the role it runs as from the message's toolsets and session_role.</summary>
+public sealed record MessageStarted(JsonElement Data, IReadOnlyList<string> Toolsets, string? Role) : SessionEvent("message_start", Data);
 
 public sealed record ContentBlockStarted(JsonElement Data) : SessionEvent("content_block_start", Data);
 

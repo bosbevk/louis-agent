@@ -5,15 +5,24 @@ namespace LouisAgent.SessionStream;
 /// <summary>Maps an SSE item to its record. The JSON is cloned out of its document, so each event outlives the parse.</summary>
 internal static class SessionEventMapper
 {
+    /// <summary>A data line that isn't JSON (a cut-off connection, say) is kept as an UnknownEvent whose Data is its text,
+    /// so the events after it are still read.</summary>
     public static SessionEvent Map(string type, string data)
     {
-        using var document = JsonDocument.Parse(data);
-        return Map(type, document.RootElement.Clone());
+        try
+        {
+            using var document = JsonDocument.Parse(data);
+            return Map(type, document.RootElement.Clone());
+        }
+        catch (JsonException)
+        {
+            return new UnknownEvent(type, JsonSerializer.SerializeToElement(data));
+        }
     }
 
     public static SessionEvent Map(string type, JsonElement data) => type switch
     {
-        "message_start" => new MessageStarted(data),
+        "message_start" => MapMessageStarted(data),
         "content_block_start" => new ContentBlockStarted(data),
         "content_block_delta" => new ContentBlockDelta(data),
         "content_block_stop" => new ContentBlockStopped(data),
@@ -23,6 +32,23 @@ internal static class SessionEventMapper
         "sub_session" => MapSubSession(data),
         _ => new UnknownEvent(type, data),
     };
+
+    /// <summary>The toolsets and the role sit in "message", beside the session's id.</summary>
+    private static SessionEvent MapMessageStarted(JsonElement data)
+    {
+        var message = data.TryGetProperty("message", out var m) && m.ValueKind == JsonValueKind.Object ? m : default;
+        var toolsets = new List<string>();
+        if (message.ValueKind == JsonValueKind.Object
+            && message.TryGetProperty("toolsets", out var list) && list.ValueKind == JsonValueKind.Array)
+        {
+            toolsets.AddRange(list.EnumerateArray().Where(t => t.ValueKind == JsonValueKind.String).Select(t => t.GetString()!));
+        }
+        var role = message.ValueKind == JsonValueKind.Object
+            && message.TryGetProperty("session_role", out var r) && r.ValueKind == JsonValueKind.String
+            ? r.GetString()
+            : null;
+        return new MessageStarted(data, toolsets, role);
+    }
 
     /// <summary>A specialist's event carries the event it sent in "event" and its JSON in "data"; the inner one is mapped too.</summary>
     private static SessionEvent MapSubSession(JsonElement data)
