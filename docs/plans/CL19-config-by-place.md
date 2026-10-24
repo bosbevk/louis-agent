@@ -271,6 +271,10 @@ step names, so CL15's uncommitted code changes stay in the working tree untouche
   app had been using, and Docker can't bind the same tailnet ports beside it. The override and `PULS_HOME_BIND` go;
   the two serve commands, with `--bg`, are documented in the Azure how-to. Docker stays on `127.0.0.1` everywhere.
 
+- **The minions stay off for now** (Louis, 2026-10-24, after the review): `MINION_LLMS` and `LLM_SESSION_PROFILES` left
+  with the `puls-agent` service and were not moved onto `puls`, locally or on Azure, so the cook prices with its own
+  tools and no minion runs. Turning them back on is two lines in `config/.env` (or the compose and the Azure yaml).
+
 ## Concepts
 
 Configuration as code by environment (one folder per place, templates tracked, values injected), the sidecar pattern
