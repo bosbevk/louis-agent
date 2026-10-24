@@ -1,37 +1,37 @@
-# Proefkontrole (`stub`): gratis, geen model
+# Stub check (`stub`): free, no model
 
-## Wat dit meet
+## What it measures
 
-Niks van Puls nie: dit toets die portaal self. Die skrip druk 'n vaste lopie in die portaal se protokol sonder om 'n
-sessie oop te maak of 'n model te vra, so dit kos niks. Gebruik dit om te sien of die stoor, die tabel, die verkenner
-en die afspeel werk, voor 'n betaalde lopie.
+Nothing of Puls: it tests the portal itself. The script prints a fixed run in the portal's protocol without opening a
+session or asking a model, so it costs nothing. Use it to see whether the store, the table, the explorer and the
+replay work, before a paid run.
 
-## Die modes
+## The modes
 
-| Modus | Gereedskap (net as etiket) |
+| Mode | Tools (only as a label) |
 |---|---|
 | `puls-only` | `web` |
 | `puls-cook` | `specialists`, `web` |
 
-## Die gesprekke
+## The conversations
 
-| Gesprek | Beurte | Wat dit wys |
+| Conversation | Turns | What it shows |
 |---|---|---|
-| `bobotie` | 2 (met 'n opvolg) | denke, teks, en in `puls-cook` 'n oorgawe aan die kok met sy eie gebeure |
-| `cottage-pie` | 1 | dieselfde, een beurt |
+| `bobotie` | 2 (with a follow-up) | thinking, text, and in `puls-cook` a hand-over to the cook with its own events |
+| `cottage-pie` | 1 | the same, one turn |
 
-## Die tellings
+## The scores
 
-| Telling | Beteken |
+| Score | Means |
 |---|---|
-| `routed_right` | Altyd ja: die lopie is vas |
-| `turns` | Hoeveel beurte die gesprek gehad het |
+| `routed_right` | Always yes: the run is fixed |
+| `turns` | How many turns the conversation had |
 
-## Wat dit kos
+## What it costs
 
-Niks: geen versoeke nie, so die koste wys as *—* (onbekend: die grootboek het niks vir die lopie nie).
+Nothing: no requests, so the cost shows as *—* (unknown: the ledger has nothing for the run).
 
-## Met die hand
+## By hand
 
 ```
 python3 benchmarks/stub/run_check.py --repeat 2
