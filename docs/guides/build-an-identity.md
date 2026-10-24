@@ -40,12 +40,18 @@ Delete `Class1.cs`, and give the csproj the same embedding lines a pack has:
   <ItemGroup>
     <EmbeddedResource Include="Prompts\**\*.md" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\docs\projects\louis-agent.identity.acme.md" Link="docs\louis-agent.identity.acme.md" />
+  </ItemGroup>
 </Project>
 ```
 
 The only project reference is core, even though `acme` uses the `units` pack: an identity names its packs, and the
 composition root brings them. Reference a pack's project only when the identity holds workflow code that calls the
 pack's public types (ADR 0027); a pack may never reference an identity.
+
+The last group shows the identity's design doc under `docs/` in the IDE's solution explorer, as every project does;
+nothing is built or copied. Write the doc (`docs/projects/louis-agent.identity.acme.md`) once the identity works.
 
 ## 2. Write the identity class
 

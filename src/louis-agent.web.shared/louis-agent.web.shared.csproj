@@ -20,4 +20,11 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.12" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- This project's design doc and how-to, shown under docs/ in the IDE's solution explorer; nothing is
+         built or copied. -->
+    <None Include="..\..\docs\projects\louis-agent.web.shared.md" Link="docs\louis-agent.web.shared.md" />
+    <None Include="..\..\docs\guides\change-the-web-shared.md" Link="docs\change-the-web-shared.md" />
+  </ItemGroup>
+
 </Project>

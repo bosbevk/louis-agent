@@ -24,4 +24,11 @@
     <ProjectReference Include="..\louis-agent.composition\louis-agent.composition.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- This project's design doc and how-to, shown under docs/ in the IDE's solution explorer; nothing is
+         built or copied. -->
+    <None Include="..\..\docs\projects\louis-agent.mcp-server.md" Link="docs\louis-agent.mcp-server.md" />
+    <None Include="..\..\docs\guides\change-the-mcp-server.md" Link="docs\change-the-mcp-server.md" />
+  </ItemGroup>
+
 </Project>

@@ -25,8 +25,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- The how-to for a person changing this project, shown under docs/ in the IDE's solution explorer; nothing is
+    <!-- This project's design doc and how-to, shown under docs/ in the IDE's solution explorer; nothing is
          built or copied. -->
+    <None Include="..\..\docs\projects\louis-agent.pack.shops.md" Link="docs\louis-agent.pack.shops.md" />
+    <None Include="..\..\docs\guides\add-a-shop.md" Link="docs\add-a-shop.md" />
     <None Include="..\..\docs\guides\build-a-pack.md" Link="docs\build-a-pack.md" />
   </ItemGroup>
 

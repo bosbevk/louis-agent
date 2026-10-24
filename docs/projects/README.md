@@ -2,7 +2,8 @@
 
 One design doc per project in the solution: what it's for, how it works, its parts, its settings, how to extend it,
 how it's tested, and its limits. For the whole system at once, read [Architecture](../architecture/README.md) first; come here
-when you're about to change a particular project.
+when you're about to change a particular project. Each project's `.csproj` links its design doc and its how-to from
+[Guides](../guides/README.md), so both show under `docs/` in the IDE's solution explorer.
 
 ## The projects
 
@@ -21,7 +22,7 @@ when you're about to change a particular project.
 | `src/louis-agent.orchestrator` | Console app | A second agent that watches a service's errors and has louis-agent fix them (POC) | [orchestrator](louis-agent.orchestrator.md) |
 | `tools/louis-agent.usage-probe` | Console app (developer tool) | Prints what a provider reports as token usage and what the ledger makes of it | [usage-probe](louis-agent.usage-probe.md) |
 | `src/louis-agent.web.shared` | Razor class library | What both web apps share: chat models, the API client, the turn and delegation views, markdown, usage and currency | [web.shared](louis-agent.web.shared.md) |
-| `tests/louis-agent.core.tests`, `tests/louis-agent.api.tests`, `tests/louis-agent.orchestrator.tests`, `tests/louis-agent.identity.puls.tests`, `tests/louis-agent.pack.shops.tests`, `tests/louis-agent.composition.tests` | NUnit | Unit tests for core, the API's sessions, the orchestrator, Puls's prompts and golden, the shops pack and the composition root; `tests/louis-agent.testing` holds the fakes they share | [tests](tests.md) |
+| `tests/louis-agent.*.tests` | NUnit | The tests of core, the API's sessions, the orchestrator, the ACP server, Puls's prompts and golden, the shops pack, the composition root and the three web projects (bUnit); `tests/louis-agent.testing` and `tests/louis-agent.web.testing` hold the fakes they share | [tests](tests.md) |
 
 ## How they depend on each other
 

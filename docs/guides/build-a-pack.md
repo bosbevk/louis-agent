@@ -43,10 +43,16 @@ Delete the template's `Class1.cs`, and make the csproj look like the shops pack'
   <ItemGroup>
     <EmbeddedResource Include="Prompts\**\*.md" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\docs\projects\louis-agent.pack.units.md" Link="docs\louis-agent.pack.units.md" />
+  </ItemGroup>
 </Project>
 ```
 
 The only project reference is core. A reference to another pack or to an identity fails `ArchitectureTests`.
+
+The last group shows the pack's design doc under `docs/` in the IDE's solution explorer, as every project does;
+nothing is built or copied. Write the doc (`docs/projects/louis-agent.pack.units.md`) once the pack works.
 
 ## 2. Write the tools
 

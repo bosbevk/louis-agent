@@ -17,4 +17,12 @@
       <None Include="Skills\**\*.md" CopyToOutputDirectory="PreserveNewest" />
     </ItemGroup>
 
+    <ItemGroup>
+        <!-- This project's design doc and how-to, shown under docs/ in the IDE's solution explorer; nothing is
+             built or copied. -->
+        <None Include="..\..\docs\projects\louis-agent.orchestrator.md" Link="docs\louis-agent.orchestrator.md" />
+        <None Include="..\..\docs\projects\orchestrator-runbooks.md" Link="docs\orchestrator-runbooks.md" />
+        <None Include="..\..\docs\guides\change-the-orchestrator.md" Link="docs\change-the-orchestrator.md" />
+    </ItemGroup>
+
 </Project>

@@ -26,4 +26,11 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <!-- This project's design doc and how-to, shown under docs/ in the IDE's solution explorer; nothing is
+         built or copied. -->
+    <None Include="..\..\docs\projects\louis-agent.api.md" Link="docs\louis-agent.api.md" />
+    <None Include="..\..\docs\guides\change-the-api.md" Link="docs\change-the-api.md" />
+  </ItemGroup>
+
 </Project>
