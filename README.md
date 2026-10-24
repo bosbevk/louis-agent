@@ -48,7 +48,7 @@ script) and a general specialist. Puls then writes the answer in its own voice.
 docker compose -f docker/docker-compose.puls.yml --env-file config/.env up -d --build
 ```
 
-Open **http://127.0.0.1:5070**. Design: [Puls's web app](docs/projects/louis-agent.puls.md),
+Open **http://127.0.0.1:5070** (the same app runs on Azure: [deploy/azure](deploy/azure/README.md)). Design: [Puls's web app](docs/projects/louis-agent.puls.md),
 [F5 toolset profiles](docs/features/F05-toolset-profiles.md) (sub-sessions), [F21 personalities](docs/features/F21-personalities.md)
 (the roles), [F22 role tools](docs/features/F22-role-tools.md).
 

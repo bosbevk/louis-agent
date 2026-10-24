@@ -3,6 +3,13 @@
 > **Reference.** What was finished, newest first, one entry per feature, fix or cleanup. **Elsewhere:** what's still
 > open in the [TODO](TODO.md); how each was built in its feature, fix or plan doc (linked from its entry).
 
+- 2026-10-24 — **CL19 Config and Docker by place**: a folder is one kind of thing for one place. `config/` is what the
+  app reads at run time (unchanged, so no code moved; `rider/` for the IDE templates); `docker/` is this PC (`images/`
+  for every Dockerfile, Ollama's from `services/`; two stacks, one Puls container that peers with itself); `deploy/azure/`
+  is the cloud: `puls-app` on a `ts-forwarder` sidecar that carries both tunnel ports from one tailnet node, its yaml
+  and SearXNG's tracked with `secretRef`s and no secret value, `deploy.ps1` (build, secrets, update, searxng-settings,
+  logs) and the how-to; `tailscale serve` on the PC is the home end. A README in each of the three folders
+  ([plan](docs/plans/CL19-config-by-place.md))
 - 2026-10-19 — **CL15 Engine, identities and packs** (the platform plan's Phase 2): core is the engine and names no
   product, shop or country; Puls is an identity (`identities/louis-agent.identity.puls`: its voice, modes, roles and
   the packs it names) and the shops a pack (`packs/louis-agent.pack.shops`: the toolset, its guide, settings and
