@@ -1,8 +1,8 @@
 # 18 · Testing and shipping: how the cut was proved
 
 > **Skill:** #18 in the [goal](../GOAL.md)'s map, with #12 (evaluation) for the goldens · **Stage:** the platform
-> plan's Phase 2, CL15 *Engine, identities and packs* (2026-10-19) · **Written by** Claude, for Louis to read
-> (2026-10-19) · **Next:** simulations in C# as the release gate (F18, Phase 3); the web app's first tests (F40,
+> plan's Phase 2, CL15 *Engine, identities and packs* (2026-10-19), and CL19 *Config and Docker by place*
+> (2026-10-24) · **Written by** Claude, for Louis to read (2026-10-19, 2026-10-24) · **Next:** simulations in C# as the release gate (F18, Phase 3); the web app's first tests (F40,
 > Phase 4); a deploy pipeline with versioned contracts (F44, Phase 9)
 
 What this answers: how a refactor that moved 30 files, split prompts and changed two contracts was shown to change
@@ -69,6 +69,31 @@ step 4 the last, and step 5 extended the same rule from the model-visible text t
 with a test that lists each line it finds. Made-up names (`acme`, `{product}`) replaced the real ones, because an
 example that names a product is a product dependency a grep can't tell from a real one.
 
+## Shipping: one folder per place (CL19)
+
+Five days after the cut, Puls ran on Azure Container Apps, and getting it there had left the configuration in four
+places with no line between this PC and the cloud: the app's definition git-ignored with its secrets inline, a
+start-up script that installed Tailscale on every boot, two copied compose files, Dockerfiles in two folders. The
+app crash-looped for three hours on a `nc` that wasn't in the image, and 44 dead tailnet nodes piled up before anyone
+could read why. CL19 sorted it by one rule, **a folder is one kind of thing for one place**: `config/` is what the app
+reads wherever it runs (unchanged, because the code finds it by name), `docker/` is this PC, `deploy/azure/` is the
+cloud. Four things carried the shipping lesson:
+
+- **The sidecar pattern.** The app image is the one the local compose builds, untouched. A second container in the
+  same pod owns the one cross-cutting concern, the network path to the home PC, and talks to the app over the pod's
+  loopback. Restarts take seconds instead of an apt-get, and the app's log is the app's.
+- **Secrets by reference.** The tracked yaml names every secret by `secretRef` and sets no `secrets:` block; the
+  update is a patch, so values set once on the app survive every deploy. The deploy script copies them from the same
+  git-ignored files the local stack uses and prints only their names. A grep for the four values over the tree is
+  part of the check.
+- **Verify the environment, not the plan.** The plan's home end of the tunnel was a compose override publishing two
+  ports on the Tailscale IP. The cloud check found the PC already forwarding them with `tailscale serve`, which the
+  app had been using all along, and Docker couldn't bind the same ports beside it; the override briefly took the local
+  browser and Mongo down. The override went, the serve commands went in the how-to, and the plan records the reversal.
+- **Config has tests too.** `docker compose config` on every stack after every move, a failing `until` loop for a
+  missing variable, a probe from inside the pod with curl's exit code (52 is Mongo closing an HTTP request; 7 would be
+  a refused tunnel). None is a unit test; each is the cheapest check that the paths still resolve.
+
 ## What was learned
 
 - **Fakes are a dependency.** Three test projects referencing `core.tests` for `FakeChatClient` and `StubHandler` made
@@ -84,7 +109,12 @@ example that names a product is a product dependency a grep can't tell from a re
   configuration error, not a missing setting.
 - **Measure, then stop.** One paid run for the phase, on the finished branch, and a diff review for every step. The
   goldens made the steps free to prove; the run's one surprise was read from its stored events, not re-run.
+- **A deploy is config, and config is code** (CL19). What runs in the cloud is readable only when it is in the repo,
+  tracked, with its secrets by name and its how-to beside it; the day it lived in a git-ignored folder was the day it
+  crash-looped for three hours. The first real step toward F44's pipeline is a yaml and five `az` calls, not a pipeline.
+- **A shell script in a container is a test surface.** `wait -n` is bash, the sidecar's shell is busybox; `nc` was
+  assumed and absent. `sh -n` and a look at the base image cost seconds; a crash loop cost an afternoon.
 
 ---
-[Learning write-ups](README.md) · [Goal](../GOAL.md) · [Plan](../plans/CL15-engine-identities-packs.md) ·
+[Learning write-ups](README.md) · [Goal](../GOAL.md) · [Plans](../plans/CL15-engine-identities-packs.md), [CL19](../plans/CL19-config-by-place.md) · [Deploying to Azure](../../deploy/azure/README.md) ·
 [Tests](../../tests/CLAUDE.md) · [ADR 0027](../adr/0027-engine-identities-and-packs.md)
