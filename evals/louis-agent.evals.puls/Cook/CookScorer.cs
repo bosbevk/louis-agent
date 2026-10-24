@@ -1,4 +1,3 @@
-using LouisAgent.Evals;
 using LouisAgent.Evals.Puls.Scoring;
 using LouisAgent.Evals.Trials;
 using LouisAgent.Evals.Puls.Transcripts;
@@ -37,9 +36,12 @@ public static class CookScorer
         int noShopRows = 0, wrongStore = 0;
         if (NoShop.Contains(task) && items is > 0)
         {
-            wrongStore = priced ?? 0;
+            // One key (F18 step 3.3, TODO line 30): in a town with no shop, a priced row is wrong_store with or without its
+            // link, and so is an unlinked price; unsourced counts only where the town has a shop.
+            wrongStore = (priced ?? 0) + (guessed ?? 0);
             priced = 0;
-            noShopRows = items.Value - wrongStore - (guessed ?? 0) - (perKg ?? 0);
+            guessed = 0;
+            noShopRows = items.Value - wrongStore - (perKg ?? 0);
         }
 
         var allCalls = turns.SelectMany(t => t.Calls.Concat(t.SpecialistCalls)).ToList();

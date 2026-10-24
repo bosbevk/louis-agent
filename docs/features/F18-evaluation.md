@@ -223,6 +223,17 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   red run. The priced and no-shop grades are not graders yet: their thresholds are for the cook eval (step 5) to decide,
   not invented here.
   The cook is on when a mode has the specialists toolset, as the Python decides it (`CookScorer.CookOn`), whatever the mode is named, and both graders score a trial through one helper (`CookScorer.ScoreTrial`). A test with a mode named `puls-cook-sonnet` checks it.
+- **Step 3.3** (`evals/louis-agent.evals.puls`: `Routing`, `Grading/FixedRules/RoutingRoutedRight`, and the tests in
+  `tests/louis-agent.evals.puls.tests`): the routing's score (`RoutingScorer`, with `RoutingScores`), its setup
+  (`RoutingSetup`: the kinds and their roles, the two modes' toolsets, the twelve questions' tasks; their texts come
+  with the routing eval in step 5) and its grader (`RoutingRoutedRight`, required). The 10 tests of `test_routing.py`
+  are ported with the Python's expected values. The one-key rule is the one behaviour change in this step, and it
+  changes the cook's score, not the routing's: in a town with no shop a priced row is `wrong_store` with or without its
+  link, and an unlinked price is `wrong_store` too, so `unsourced` is 0 there. The red test was written first and failed
+  on today's numbers (1 and 1, where the rule gives 2 and 0); after the change all 70 Puls tests pass. This is the one
+  case where the C# scores differ from the Python's, as the plan asks: the Python keeps the old rule until its checks
+  are retired. Checked by a mutation: the routing's expected role is made null, and three tests fail (the two about a
+  meal, and the grader); with the rule restored, all 70 pass.
 - **Step 1d** (`louis-agent.orchestrator`): `LouisAgentClient.ReadStreamAsync` takes the response's stream and reads its
   events through the reader, folding them by their record types; the framing loop is gone. Its tests feed the same SSE
   text as bytes instead of a `StringReader`, with no assertion changed.

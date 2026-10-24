@@ -65,6 +65,18 @@ public class CookScorerTests
     }
 
     [Test]
+    public void OneKey_InATownWithNoShop_AnUnlinkedPriceIsWrongStoreToo()
+    {
+        // F18 step 3.3, the one-key rule (TODO line 30): a priced row is wrong_store whether or not it carries a link, and an
+        // unlinked price is wrong_store too; unsourced counts only where the town has a shop. Today's Python gives 1 and 1.
+        string answer = "| Bestanddeel | Prys |\n|---|---|\n| Meel | [R22.99](https://www.checkers.co.za/p/1) |\n| Eiers | R45 |\n";
+
+        var scores = CookScorer.Score("cook-no-shop", [Turn(answer)], cookOn: false);
+
+        Assert.That((scores.WrongStore, scores.Unsourced, scores.Priced, scores.NoShopRows), Is.EqualTo((2, (int?)0, (int?)0, 0)));
+    }
+
+    [Test]
     public void TheListsRuleScores_AreReported()
     {
         string answer = "| Ingredient | For the recipe | To buy | Price |\n|---|---|---|---|\n| Rice | 300 g | Rice 1 kg | - |\n\n"
