@@ -65,7 +65,7 @@ internal sealed class ClaudeStreamFormat(string sessionId, IReadOnlyList<string>
     public IEnumerable<SseItem<string>> Stop(string stopReason, TurnUsage? usage)
     {
         foreach (var item in CloseBlock()) yield return item;
-        object? rendered = Usage(usage);
+        object? rendered = RenderUsage(usage);
         yield return Event("message_delta", rendered is null
             ? (object)new { type = "message_delta", delta = new { stop_reason = stopReason } }
             : new { type = "message_delta", delta = new { stop_reason = stopReason }, usage = rendered });
@@ -79,7 +79,7 @@ internal sealed class ClaudeStreamFormat(string sessionId, IReadOnlyList<string>
     public IEnumerable<SseItem<string>> Fail(string error, TurnUsage? usage)
     {
         foreach (var item in CloseBlock()) yield return item;
-        object? rendered = Usage(usage);
+        object? rendered = RenderUsage(usage);
         yield return Event("error", rendered is null
             ? ApiErrors.Body("api_error", error)
             : new { type = "error", error = new { type = "api_error", message = error }, usage = rendered });
@@ -91,7 +91,7 @@ internal sealed class ClaudeStreamFormat(string sessionId, IReadOnlyList<string>
     /// kinds don't overlap (F1), as in Claude's own usage: <c>input_tokens</c> is the uncached input. Cost is null when
     /// no request was priced ("price unknown", never 0); <c>unpriced</c> counts the requests without a price.
     /// </summary>
-    public object? Usage(TurnUsage? usage)
+    public object? RenderUsage(TurnUsage? usage)
     {
         if (usage is null) return null;
         UsageTotal total = usage.Total;

@@ -16,7 +16,7 @@ louis-agent a whole task.
 flowchart LR
     Client["Web app · curl · orchestrator"] -- "POST /sessions/{id}/messages" --> Turn["StreamTurnAsync"]
     Turn --> Engine["AgentEngine.StreamPromptAsync"]
-    Engine -- "updates" --> SSE["ClaudeStyleStream<br/>→ SSE events"] --> Client
+    Engine -- "updates" --> SSE["ITurnStreamFormat<br/>(Streaming/Claude) → SSE events"] --> Client
     Client -- "/workspace/*" --> WS["WorkspaceEndpoints"] --> Files[("Workspace")]
     Client -- "/git/*" --> Git["GitEndpoints + HistoryEndpoints"] --> Files
     Static["MapStaticAssets + index.html fallback"] --> Client
@@ -53,7 +53,7 @@ flowchart LR
   not in the system prompt, which engines share; without a `time_zone` the note and `GetToday` use
   `Africa/Johannesburg`. Files attached to a message are
   remembered by name, so `StartSubSession` can forward them to a specialist without the model copying them.
-- **Streaming** (`ClaudeStyleStream`): engine updates become `message_start`, `content_block_start/delta/stop`
+- **Streaming** (`Sessions/Streaming/`, F18 step 1f): the writer is `ITurnStreamFormat`, and the turn and the session view call only it. Its one format is `Claude/ClaudeStreamFormat`; `"stream"` on `POST /sessions` picks the format (`StreamFormat`, Claude by default) and the session keeps it. Engine updates become `message_start`, `content_block_start/delta/stop`
   (thinking, text, tool_use, tool_result), `message_delta` (stop reason and the turn's `usage`, F3) and `message_stop`;
   failures become an `error` event in Claude's shape, with the turn's `usage` when a request had returned (FX6).
   `/tools`, `/approve`, `/reject` and `/usage` are answered without the model.
@@ -73,13 +73,14 @@ The full endpoint and event reference: [How the agents and endpoints talk](../AG
 |---|---|
 | `Program.cs` | Start-up only (CL15, the core layout review): `AgentHost.Build`, the services, the API-key middleware (FX18), the web app's files, then each endpoint group mapped |
 | `Endpoints/InfoEndpoints.cs` | `/health`, `/prices`, `/rates`, `/rates/display`, `/toolsets`, `/model`, `/roles` (`/personalities`), `/llm-profiles`: what this instance is and has |
-| `Endpoints/SessionEndpoints.cs` | `POST /sessions`, `GET` and `DELETE /sessions/{id}`, `POST /sessions/{id}/cancel` and `/messages` (the turn as SSE, through `TurnStream`) |
+| `Endpoints/SessionEndpoints.cs` | `POST /sessions` (with `"stream"`, the format, refused as a 400 when unknown), `GET` and `DELETE /sessions/{id}`, `POST /sessions/{id}/cancel` and `/messages` (the turn as SSE, through `TurnStream`) |
 | `Endpoints/ApiErrors.cs` | The one error body every endpoint returns |
 | `Endpoints/WorkspaceEndpoints.cs` | `GET /workspace/entries`, `GET /workspace/file` (text ≤ 1 MB; secret files listed but not readable) |
 | `Endpoints/GitEndpoints.cs` | `GET /git/status`, `GET /git/diff`, `POST /git/stage` · `unstage` · `discard` · `commit`; the git runner |
 | `Endpoints/HistoryEndpoints.cs` | `GET /git/branches`, `/git/log`, `/git/commit`, `/git/branch`; `POST /git/merge`, `/git/branch/delete` |
 | `Sessions/AgentSession.cs`, `AgentSessions.cs` | One conversation (id, engine, toolsets, depth, role, place, attachments, history, turn lock, cancellation) and the in-memory session store, which picks each session's engine |
-| `Sessions/TurnStream.cs`, `ClaudeStyleStream.cs` | A turn as the API streams it: the prompt from the message and its attachments, the engine's updates as Claude-style events, a sub-session's events live among them, the usage at the end |
+| `Sessions/Streaming/` | The stream formats (F18 step 1f): `ITurnStreamFormat`, the writer's seam; `StreamFormat`, the enum `"stream"` names; `StreamFormats`, which makes a turn's format; `TurnUsage`, a turn's usage computed once from the ledger; `Claude/ClaudeStreamFormat.cs`, the Claude-style events |
+| `Sessions/TurnStream.cs` | A turn as the API streams it: the prompt from the message and its attachments, the engine's updates as Claude-style events, a sub-session's events live among them, the usage at the end |
 | `Sessions/SessionView.cs`, `Sessions/Requests/` | A session as the API shows it; the request bodies (`CreateSessionRequest`, `SendMessageRequest`, `AttachmentRequest`) |
 | `Admin/AdminGate.cs`, `AdminAccess.cs` | The gate on `/admin` (F27): the admin key, else the agent's, else closed; what it decided |
 | `Endpoints/AdminEndpoints.cs` | The admin portal's API under `/admin` (F27, F31), behind `AdminGate`: the checks and runs, a run started (503 without a store), its live events over SSE, a check's manual and trend, a stored run with its levels, a turn's events, a run deleted |
@@ -101,7 +102,7 @@ Docker, bound to `127.0.0.1`), `GIT_AUTHOR_*` / `GIT_COMMITTER_*` (identity for 
 
 - New endpoints in their own `*Endpoints.cs` with a `Map…` extension, following `HistoryEndpoints`; reuse
   `GitEndpoints.RunAsync` for git and `ApiErrors.Result` for errors (Claude's error shape).
-- New stream content goes through `ClaudeStyleStream`, so every client sees the same event shapes.
+- New stream content goes through `ITurnStreamFormat` (its Claude format, `Sessions/Streaming/Claude`), so every client sees the same event shapes.
 - Anything that changes agent behaviour belongs in core, not here.
 
 ## Tests

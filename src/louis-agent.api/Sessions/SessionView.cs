@@ -28,7 +28,7 @@ internal static class SessionView
         task = session.Tags.Task, run = session.Tags.Run, service = session.Tags.Service,
         sub_sessions = session.SubSessions.Open.Select(o => new { handle = o.Handle, agent = o.Agent, toolsets = o.Toolsets, role = o.Role }),
         usage = session.Engine.RecordsUsage
-            ? StreamFormats.Create(session.StreamFormat, session.Id, session.Toolsets, session.Role).Usage(TurnUsage.From(session.Usage.Records, session.Engine.Display))
+            ? StreamFormats.Create(session.StreamFormat, session.Id, session.Toolsets, session.Role).RenderUsage(TurnUsage.From(session.Usage.Records, session.Engine.Display))
             : null,
     };
 }

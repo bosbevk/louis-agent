@@ -26,6 +26,9 @@ public interface ITurnStreamFormat
     /// <summary>A failed turn: the error, with the usage of the requests made before the failure when there are any.</summary>
     IEnumerable<SseItem<string>> Fail(string error, TurnUsage? usage);
 
-    /// <summary>The usage as this format shows it, or null when there is none.</summary>
-    object? Usage(TurnUsage? usage);
+    /// <summary>
+    /// The usage as this format shows it, or null when there is none. The session view shows a session's usage in the same
+    /// shape as a turn's, so the format renders it there too: the writer is the one place that knows the shape.
+    /// </summary>
+    object? RenderUsage(TurnUsage? usage);
 }
