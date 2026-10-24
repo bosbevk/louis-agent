@@ -22,12 +22,16 @@ public sealed class EvalRunner(ISessionClient sessions, ProtocolWriter protocol,
     /// <summary>The model a mode is recorded with when the mode names none: the session's settings aren't read until step 4.</summary>
     private const string UnknownModel = "unknown";
 
+    /// <summary>The level of a mode itself: the agent a mode talks to. Specialists and minions are added with their steps.</summary>
+    private const string AgentLevel = "agent";
+
     public async Task RunAsync(IEval eval, EvalRun run, CancellationToken cancellationToken)
     {
         var modes = await eval.ModesAsync(sessions, cancellationToken);
         logger.Log(LogLevel.Information, EvalLogMessage.RunStarted,
             new { Eval = eval.Name, Modes = modes.Count, Repeats = run.Repeats, Run = run.RunId });
-        protocol.Begin(eval.Name, eval.Version, EvalBuild.Commit, eval.Graders, modes.ToDictionary(m => m.Name, m => m.Llm ?? UnknownModel));
+        protocol.Begin(eval.Name, eval.Version, EvalBuild.Commit, eval.Graders,
+            modes.Select(m => new ModelUse(m.Name, AgentLevel, m.Llm ?? UnknownModel)).ToList());
 
         foreach (var mode in modes)
             for (int repeat = 1; repeat <= run.Repeats; repeat++)

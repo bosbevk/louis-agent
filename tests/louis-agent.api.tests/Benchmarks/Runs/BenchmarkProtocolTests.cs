@@ -1,4 +1,5 @@
 using System.Text.Json;
+using LouisAgent.Api.Benchmarks.Runs;
 using static LouisAgent.Api.Benchmarks.Runs.BenchmarkProtocol;
 
 namespace LouisAgent.Api.Tests.Benchmarks.Runs;
@@ -19,11 +20,11 @@ public class BenchmarkProtocolTests
     [Test]
     public void TheFirstLine_CarriesTheEvalItRuns()
     {
-        var started = (ProtocolStarted)Parse("""@{"event":"protocol","version":1,"eval":"cook","eval_version":2,"commit":"abc123","graders":[{"name":"priced-with-source","version":1,"kind":"FixedRule"}],"models":{"cook":"claude-haiku-5-5"}}""");
+        var started = (ProtocolStarted)Parse("""@{"event":"protocol","version":1,"eval":"cook","eval_version":2,"commit":"abc123","graders":[{"name":"priced-with-source","version":1,"kind":"FixedRule"}],"models":[{"mode":"cook","level":"agent","model":"claude-haiku-5-5"}]}""");
 
         Assert.That((started.Eval, started.EvalVersion, started.Commit), Is.EqualTo(("cook", (int?)2, "abc123")));
-        Assert.That(started.Graders!.Single(), Is.EqualTo(new GraderInfo("priced-with-source", 1, "FixedRule")));
-        Assert.That(started.Models!["cook"], Is.EqualTo("claude-haiku-5-5"));
+        Assert.That(started.Graders!.Single(), Is.EqualTo(new GraderInfo("priced-with-source", 1, BenchmarkGraderKind.FixedRule)));
+        Assert.That(started.Models!.Single(), Is.EqualTo(new ModelInfo("cook", "agent", "claude-haiku-5-5")));
     }
 
     [Test]
@@ -31,8 +32,8 @@ public class BenchmarkProtocolTests
     {
         var ended = (ConversationEnded)Parse("""@{"event":"conversation","mode":"cook","repeat":1,"task":"pannekoek","role":"puls-cook","scores":{},"seconds":3,"grades":[{"grader":"priced-with-source","version":1,"score":1,"outcome":"Pass","reason":"2 of 2 priced with a source"}],"outcome":"Pass"}""");
 
-        Assert.That(ended.Outcome, Is.EqualTo("Pass"));
-        Assert.That(ended.Grades!.Single(), Is.EqualTo(new GradeInfo("priced-with-source", 1, 1, "Pass", "2 of 2 priced with a source")));
+        Assert.That(ended.Outcome, Is.EqualTo(BenchmarkOutcome.Pass));
+        Assert.That(ended.Grades!.Single(), Is.EqualTo(new GradeInfo("priced-with-source", 1, 1, BenchmarkOutcome.Pass, "2 of 2 priced with a source")));
     }
 
     [Test]

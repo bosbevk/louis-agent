@@ -177,6 +177,15 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   `routing/run_check.py:96-100`); a test has both the send and the close throw.
 
 - **Step 2a** (`evals/louis-agent.evals`, `src/louis-agent.api/Benchmarks`): the run records what it ran. The protocol's first line carries the eval, its version, the commit (`EvalBuild.Commit`, stamped at build with `-p:EvalCommit=…`, `unknown` when absent), its graders and the model each mode ran on, which is `unknown` until step 4 reads the session's settings. The conversation line carries its `grades` and `outcome` (none until step 3: `grades` is `[]` and `outcome` is absent). `BenchmarkProtocol` reads both, the recorder keeps them on the run and the conversation, and both stores write them. Tests red first: the parser and the writer's `Begin` and grades tests failed on the old code, and the store contract test passes in memory; the Mongo mapping is written but not run here (`BENCHMARKS_MONGO_URL` is not set). The three leftovers are done too: the trend lines are per mode and model (a run on another model is another line, named with its model; a run that named none keeps the mode's name); a ledger row on a model the run didn't declare is named in the run's log (`RunModels.Unlisted`, ignoring `unknown`); and the admin portal's runs list has a model picker (`RunModelFilter`, in `louis-agent.puls/Admin/`, the page only calls it; the page's `@code` is on the pending list until step 7b).
+
+  Review of step 2a: the models are a list of `{mode, level, model}`, one entry per level a mode runs at. Only the
+  mode's own level (`agent`) is written so far, with `unknown` as the model; the specialist, minion and grader levels
+  and their models come with step 4, which reads the session's settings. The outcomes and the grader kinds are enums in
+  the API (`BenchmarkOutcome`, `BenchmarkGraderKind`), parsed once where the protocol line enters with `SettingChoice`;
+  the writer takes `TrialOutcome` and `GradeOutcome`. The three checks listed above (the model filter, the trend split,
+  the ledger flag) were built in 9942318; step 4 re-checks them once the models are real. `Started()` is kept only for
+  the parity test against the Python's first line; a run writes `Begin`. Nothing stamps `-p:EvalCommit` yet, so every
+  run says `unknown` until the runner's image is built in step 4, which stamps the commit.
 - **Step 1d** (`louis-agent.orchestrator`): `LouisAgentClient.ReadStreamAsync` takes the response's stream and reads its
   events through the reader, folding them by their record types; the framing loop is gone. Its tests feed the same SSE
   text as bytes instead of a `StringReader`, with no assertion changed.

@@ -1,5 +1,6 @@
 using LouisAgent.Api.Benchmarks.Runs;
 using LouisAgent.Api.Benchmarks.Reports;
+using LouisAgent.Api.Benchmarks.Runs;
 using System.Text.Json;
 using static LouisAgent.Api.Benchmarks.Runs.BenchmarkProtocol;
 
@@ -30,10 +31,13 @@ public static class BenchmarkDocuments
         int? EvalVersion = null,
         string? Commit = null,
         IReadOnlyList<Grader>? Graders = null,
-        IReadOnlyDictionary<string, string>? Models = null);
+        IReadOnlyList<ModelUse>? Models = null);
 
     /// <summary>One of the eval's graders, as the run started (F18 step 2a).</summary>
-    public sealed record Grader(string Name, int Version, string Kind);
+    public sealed record Grader(string Name, int Version, BenchmarkGraderKind Kind);
+
+    /// <summary>The model one level of the run ran on (F18 step 2a): its mode, its level and the model ("unknown" when not known).</summary>
+    public sealed record ModelUse(string Mode, string Level, string Model);
 
     /// <summary>A mode's repeat as it opened its sessions.</summary>
     public sealed record Mode(string Name, int Repeat, IReadOnlyList<string> Toolsets, string? Role, string? Llm);
@@ -43,10 +47,10 @@ public static class BenchmarkDocuments
 
     /// <summary>A conversation's result; <see cref="Order"/> is when it started in its run, so the check's order holds.</summary>
     public sealed record Conversation(ConversationKey Key, int Order, string? Role, JsonElement Scores, int Errors, double Seconds,
-        IReadOnlyList<Grade>? Grades = null, string? Outcome = null);
+        IReadOnlyList<Grade>? Grades = null, BenchmarkOutcome? Outcome = null);
 
     /// <summary>One grader's verdict on a conversation (F18 step 2a).</summary>
-    public sealed record Grade(string Grader, int Version, double Score, string Outcome, string Reason);
+    public sealed record Grade(string Grader, int Version, double Score, BenchmarkOutcome Outcome, string Reason);
 
     /// <summary>
     /// One turn, without its stream events (<see cref="IBenchmarkStore.TurnEventsAsync"/>). <see cref="Tools"/> is what

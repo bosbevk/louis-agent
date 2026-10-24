@@ -1,4 +1,5 @@
 using System.Text.Json;
+using LouisAgent.Core.Config;
 
 namespace LouisAgent.Api.Benchmarks.Runs;
 
@@ -25,13 +26,16 @@ public static class BenchmarkProtocol
     /// built from, its graders and the model each level ran on. A line from a harness without them reads them as null.
     /// </summary>
     public sealed record ProtocolStarted(int Version, DateTimeOffset? At = null, string? Eval = null, int? EvalVersion = null,
-        string? Commit = null, IReadOnlyList<GraderInfo>? Graders = null, IReadOnlyDictionary<string, string>? Models = null) : Event;
+        string? Commit = null, IReadOnlyList<GraderInfo>? Graders = null, IReadOnlyList<ModelInfo>? Models = null) : Event;
 
     /// <summary>One of the eval's graders: its name, its version and its kind ("FixedRule", "Model", "Human").</summary>
-    public sealed record GraderInfo(string Name, int Version, string Kind);
+    public sealed record GraderInfo(string Name, int Version, BenchmarkGraderKind Kind);
+
+    /// <summary>The model one level of the run ran on: its mode, its level (agent, specialist, minion, grader) and the model.</summary>
+    public sealed record ModelInfo(string Mode, string Level, string Model);
 
     /// <summary>One grader's verdict on a conversation: its score, its outcome ("Pass", "Fail", "Unknown") and the reason.</summary>
-    public sealed record GradeInfo(string Grader, int Version, double Score, string Outcome, string Reason);
+    public sealed record GradeInfo(string Grader, int Version, double Score, BenchmarkOutcome Outcome, string Reason);
 
     /// <summary>A mode begins one repeat: what its sessions open with.</summary>
     public sealed record ModeStarted(string Mode, int Repeat, IReadOnlyList<string> Toolsets, string? Role, string? Llm,
@@ -47,7 +51,7 @@ public static class BenchmarkProtocol
 
     /// <summary>A conversation's result; <see cref="Scores"/> is the check's own document (each check scores its own way).</summary>
     public sealed record ConversationEnded(ConversationKey Key, string? Role, JsonElement Scores, int Errors, double Seconds,
-        DateTimeOffset? At = null, IReadOnlyList<GradeInfo>? Grades = null, string? Outcome = null) : Event;
+        DateTimeOffset? At = null, IReadOnlyList<GradeInfo>? Grades = null, BenchmarkOutcome? Outcome = null) : Event;
 
     /// <summary>A mode's repeat is done: a marker only.</summary>
     public sealed record ModeEnded(string Mode, int Repeat, DateTimeOffset? At = null) : Event;
@@ -83,7 +87,7 @@ public static class BenchmarkProtocol
                     Strings(e, "hosts"), OptionalNumber(e, "seconds") ?? 0, Text(e, "error"), at),
                 "conversation" => new ConversationEnded(new ConversationKey(Required(e, "mode"), Int(e, "repeat"), Required(e, "task")),
                     Text(e, "role"), Json(e, "scores"), OptionalInt(e, "errors") ?? 0, OptionalNumber(e, "seconds") ?? 0, at,
-                    Grades(e), Text(e, "outcome")),
+                    Grades(e), Outcome(e, "outcome")),
                 "mode_done" => new ModeEnded(Required(e, "mode"), Int(e, "repeat"), at),
                 _ => new LogLine(line),
             };
@@ -97,22 +101,29 @@ public static class BenchmarkProtocol
     /// <summary>The eval's graders, from the protocol line's <c>graders</c>; null when the line doesn't name any.</summary>
     private static IReadOnlyList<GraderInfo>? Graders(JsonElement e) =>
         e.TryGetProperty("graders", out var value) && value.ValueKind == JsonValueKind.Array
-            ? value.EnumerateArray().Select(g => new GraderInfo(Required(g, "name"), Int(g, "version"), Required(g, "kind"))).ToArray()
+            ? value.EnumerateArray().Select(g => new GraderInfo(Required(g, "name"), Int(g, "version"), Choice<BenchmarkGraderKind>(g, "kind"))).ToArray()
             : null;
 
     /// <summary>The model each level ran on, from the protocol line's <c>models</c>; null when the line doesn't name any.</summary>
-    private static IReadOnlyDictionary<string, string>? Models(JsonElement e) =>
-        e.TryGetProperty("models", out var value) && value.ValueKind == JsonValueKind.Object
-            ? value.EnumerateObject().Where(p => p.Value.ValueKind == JsonValueKind.String)
-                .ToDictionary(p => p.Name, p => p.Value.GetString()!)
+    private static IReadOnlyList<ModelInfo>? Models(JsonElement e) =>
+        e.TryGetProperty("models", out var value) && value.ValueKind == JsonValueKind.Array
+            ? value.EnumerateArray().Select(m => new ModelInfo(Required(m, "mode"), Required(m, "level"), Required(m, "model"))).ToArray()
             : null;
 
     /// <summary>The grades of a conversation, from its <c>grades</c>; null when the line doesn't carry any.</summary>
     private static IReadOnlyList<GradeInfo>? Grades(JsonElement e) =>
         e.TryGetProperty("grades", out var value) && value.ValueKind == JsonValueKind.Array
             ? value.EnumerateArray().Select(g => new GradeInfo(Required(g, "grader"), Int(g, "version"),
-                OptionalNumber(g, "score") ?? throw new MissingField(), Required(g, "outcome"), Text(g, "reason") ?? "")).ToArray()
+                OptionalNumber(g, "score") ?? throw new MissingField(), Choice<BenchmarkOutcome>(g, "outcome"), Text(g, "reason") ?? "")).ToArray()
             : null;
+
+    /// <summary>An outcome that is absent is null; one that names no outcome is a line the protocol can't read.</summary>
+    private static BenchmarkOutcome? Outcome(JsonElement e, string name) =>
+        Text(e, name) is null ? null : Choice<BenchmarkOutcome>(e, name);
+
+    /// <summary>A choice from the fixed set its enum names, parsed once where the line enters (ADR 0024); a name that isn't one is a line the protocol can't read.</summary>
+    private static T Choice<T>(JsonElement e, string name) where T : struct, Enum =>
+        SettingChoice.TryParse(Text(e, name), out T? choice) && choice is { } value ? value : throw new MissingField();
 
     private static TurnKey Turn(JsonElement e) => new(Required(e, "mode"), Int(e, "repeat"), Required(e, "task"), Int(e, "turn"));
 

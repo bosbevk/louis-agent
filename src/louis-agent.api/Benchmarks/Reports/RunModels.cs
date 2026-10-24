@@ -1,3 +1,5 @@
+using LouisAgent.Api.Benchmarks.Runs;
+
 namespace LouisAgent.Api.Benchmarks.Reports;
 
 /// <summary>
@@ -7,10 +9,10 @@ namespace LouisAgent.Api.Benchmarks.Reports;
 public static class RunModels
 {
     /// <summary>The models the ledger's rows name that the run's declared models don't list; none when the run declared none.</summary>
-    public static IReadOnlyList<string> Unlisted(IReadOnlyDictionary<string, string>? declared, IEnumerable<string?> rowModels)
+    public static IReadOnlyList<string> Unlisted(IReadOnlyList<BenchmarkProtocol.ModelInfo>? declared, IEnumerable<string?> rowModels)
     {
         // "unknown" declares nothing: a mode whose model the harness didn't know names no model to check the rows against.
-        var listed = declared?.Values.Where(m => m != Unknown).ToHashSet();
+        var listed = declared?.Select(m => m.Model).Where(m => m != Unknown).ToHashSet();
         if (listed is null || listed.Count == 0) return [];
         return rowModels.OfType<string>().Where(m => !listed.Contains(m)).Distinct().ToList();
     }

@@ -21,6 +21,10 @@ public sealed class ProtocolWriter(TextWriter stdout, TimeProvider clock)
         Encoder = JavaScriptEncoder.Create(UnicodeRanges.BasicLatin),
     };
 
+    /// <summary>
+    /// The old first line, the version alone. Kept only for the parity test against the Python's first line; a run writes
+    /// <see cref="Begin"/>, which carries the eval.
+    /// </summary>
     public void Started() => Emit("protocol", json => json.WriteNumber("version", Version));
 
     public void Mode(string mode, int repeat, IReadOnlyList<string> toolsets, string? role, string? llm) =>
@@ -67,7 +71,7 @@ public sealed class ProtocolWriter(TextWriter stdout, TimeProvider clock)
 
     /// <summary>A conversation's result: the eval's scores, written as the JSON they are.</summary>
     public void Conversation(string mode, int repeat, string task, string? role, JsonElement scores, double seconds,
-        IReadOnlyList<Grade>? grades = null, string? outcome = null) =>
+        IReadOnlyList<Grade>? grades = null, TrialOutcome? outcome = null) =>
         Emit("conversation", json =>
         {
             json.WriteString("mode", mode);
@@ -92,11 +96,11 @@ public sealed class ProtocolWriter(TextWriter stdout, TimeProvider clock)
                 }
                 json.WriteEndArray();
             }
-            if (outcome is not null) json.WriteString("outcome", outcome);
+            if (outcome is not null) json.WriteString("outcome", outcome.Value.ToString());
         });
 
     /// <summary>The run's first line (F18 step 2a): the eval, its version, the commit, its graders and the model each mode ran on.</summary>
-    public void Begin(string eval, int evalVersion, string commit, IReadOnlyList<IGrader> graders, IReadOnlyDictionary<string, string> models) =>
+    public void Begin(string eval, int evalVersion, string commit, IReadOnlyList<IGrader> graders, IReadOnlyList<ModelUse> models) =>
         Emit("protocol", json =>
         {
             json.WriteNumber("version", Version);
@@ -113,9 +117,16 @@ public sealed class ProtocolWriter(TextWriter stdout, TimeProvider clock)
                 json.WriteEndObject();
             }
             json.WriteEndArray();
-            json.WriteStartObject("models");
-            foreach (var (mode, model) in models) json.WriteString(mode, model);
-            json.WriteEndObject();
+            json.WriteStartArray("models");
+            foreach (var use in models)
+            {
+                json.WriteStartObject();
+                json.WriteString("mode", use.Mode);
+                json.WriteString("level", use.Level);
+                json.WriteString("model", use.Model);
+                json.WriteEndObject();
+            }
+            json.WriteEndArray();
         });
 
     public void ModeDone(string mode, int repeat) =>

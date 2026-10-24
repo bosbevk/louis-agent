@@ -132,8 +132,8 @@ public abstract class BenchmarkStoreContract
             Eval = "cook",
             EvalVersion = 2,
             Commit = "abc123",
-            Graders = [new Grader("priced-with-source", 1, "FixedRule")],
-            Models = new Dictionary<string, string> { ["cook"] = "claude-haiku-5-5" },
+            Graders = [new Grader("priced-with-source", 1, BenchmarkGraderKind.FixedRule)],
+            Models = [new ModelUse("cook", "agent", "claude-haiku-5-5")],
         };
 
         await _store.SaveRunAsync(run);
@@ -141,19 +141,19 @@ public abstract class BenchmarkStoreContract
 
         Assert.That((read!.Eval, read.EvalVersion, read.Commit), Is.EqualTo(("cook", (int?)2, "abc123")));
         Assert.That(read.Graders, Is.EqualTo(run.Graders));
-        Assert.That(read.Models!["cook"], Is.EqualTo("claude-haiku-5-5"));
+        Assert.That(read.Models, Is.EqualTo(run.Models));
     }
 
     [Test]
     public async Task AConversation_CarriesItsGradesAndOutcome()
     {
         string run = NewId();
-        var grades = new[] { new Grade("priced-with-source", 1, 1, "Pass", "2 of 2 priced with a source") };
-        await _store.SaveConversationAsync(run, NewConversation("bobotie", 1) with { Grades = grades, Outcome = "Pass" });
+        var grades = new[] { new Grade("priced-with-source", 1, 1, BenchmarkOutcome.Pass, "2 of 2 priced with a source") };
+        await _store.SaveConversationAsync(run, NewConversation("bobotie", 1) with { Grades = grades, Outcome = BenchmarkOutcome.Pass });
 
         var read = (await _store.ConversationsAsync(run)).Single();
 
-        Assert.That(read.Outcome, Is.EqualTo("Pass"));
+        Assert.That(read.Outcome, Is.EqualTo(BenchmarkOutcome.Pass));
         Assert.That(read.Grades, Is.EqualTo(grades));
     }
 

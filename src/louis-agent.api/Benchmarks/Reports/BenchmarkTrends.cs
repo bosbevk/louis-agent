@@ -31,6 +31,9 @@ public static class BenchmarkTrends
     /// <summary>The model a run recorded for a mode that names none (a run from before step 2a, or a harness that doesn't know it).</summary>
     private const string UnknownModel = "unknown";
 
+    /// <summary>The level a mode's own model is recorded at (F18 step 2a).</summary>
+    private const string AgentLevel = "agent";
+
     private static string SeriesName(string mode, string model) => model == UnknownModel ? mode : $"{mode} ({model})";
 
     public static async Task<Trend> ComputeAsync(IBenchmarkStore store, string check, int limit = 20, CancellationToken cancellationToken = default)
@@ -49,7 +52,7 @@ public static class BenchmarkTrends
             int repeats = Math.Max(1, run.Repeat);
             foreach (var mode in conversations.GroupBy(c => c.Key.Mode))
             {
-                string model = run.Models?.GetValueOrDefault(mode.Key) ?? UnknownModel;
+                string model = run.Models?.FirstOrDefault(m => m.Mode == mode.Key && m.Level == AgentLevel)?.Model ?? UnknownModel;
                 var line = (mode.Key, model);
                 if (!points.ContainsKey(line)) { lines.Add(line); points[line] = []; }
                 var mine = requests.Where(r => r.Turn?.Mode == mode.Key).ToList();

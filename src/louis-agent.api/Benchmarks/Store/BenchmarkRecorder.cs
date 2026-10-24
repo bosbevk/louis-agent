@@ -201,7 +201,8 @@ public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = n
             new(run.Id, run.Check, run.Repeat, run.Status, run.StartedAt, run.EndedAt, run.ExitCode, settings, _modes.ToArray(),
                 _total, Log: run.Status == BenchmarkRunStatus.Running ? null : _log.ToArray(), StoreError: _storeError,
                 Eval: _protocol?.Eval, EvalVersion: _protocol?.EvalVersion, Commit: _protocol?.Commit,
-                Graders: _protocol?.Graders?.Select(g => new Grader(g.Name, g.Version, g.Kind)).ToArray(), Models: _protocol?.Models);
+                Graders: _protocol?.Graders?.Select(g => new Grader(g.Name, g.Version, g.Kind)).ToArray(),
+                Models: _protocol?.Models?.Select(m => new ModelUse(m.Mode, m.Level, m.Model)).ToArray());
 
         /// <summary>One write; after the first failure none are tried, so a store that is down doesn't slow the run.</summary>
         private async Task WriteAsync(Func<Task> write)

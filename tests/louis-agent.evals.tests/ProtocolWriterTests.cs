@@ -64,12 +64,12 @@ public class ProtocolWriterTests
         var sink = new StringWriter();
 
         new ProtocolWriter(sink, new FixedClock(At)).Begin("cook", 2, "abc123",
-            [new FakeGrader("priced-with-source", 1, GraderKind.FixedRule)], new Dictionary<string, string> { ["cook"] = "claude-haiku-5-5" });
+            [new FakeGrader("priced-with-source", 1, GraderKind.FixedRule)], [new ModelUse("cook", "agent", "claude-haiku-5-5")]);
 
         var started = (BenchmarkProtocol.ProtocolStarted)BenchmarkProtocol.Parse(Lines(sink)[0]);
         Assert.That((started.Version, started.Eval, started.EvalVersion, started.Commit), Is.EqualTo((1, "cook", (int?)2, "abc123")));
-        Assert.That(started.Graders!.Single(), Is.EqualTo(new BenchmarkProtocol.GraderInfo("priced-with-source", 1, "FixedRule")));
-        Assert.That(started.Models!["cook"], Is.EqualTo("claude-haiku-5-5"));
+        Assert.That(started.Graders!.Single(), Is.EqualTo(new BenchmarkProtocol.GraderInfo("priced-with-source", 1, BenchmarkGraderKind.FixedRule)));
+        Assert.That(started.Models!.Single(), Is.EqualTo(new BenchmarkProtocol.ModelInfo("cook", "agent", "claude-haiku-5-5")));
     }
 
     [Test]
@@ -78,11 +78,11 @@ public class ProtocolWriterTests
         var sink = new StringWriter();
 
         new ProtocolWriter(sink, new FixedClock(At)).Conversation("cook", 1, "pannekoek", "puls-cook", Json("{}"), 3.25,
-            [new Grade("priced-with-source", 1, 1, GradeOutcome.Pass, "2 of 2 priced with a source")], "Pass");
+            [new Grade("priced-with-source", 1, 1, GradeOutcome.Pass, "2 of 2 priced with a source")], TrialOutcome.Pass);
 
         var ended = (BenchmarkProtocol.ConversationEnded)BenchmarkProtocol.Parse(Lines(sink)[0]);
-        Assert.That(ended.Outcome, Is.EqualTo("Pass"));
-        Assert.That(ended.Grades!.Single(), Is.EqualTo(new BenchmarkProtocol.GradeInfo("priced-with-source", 1, 1, "Pass", "2 of 2 priced with a source")));
+        Assert.That(ended.Outcome, Is.EqualTo(BenchmarkOutcome.Pass));
+        Assert.That(ended.Grades!.Single(), Is.EqualTo(new BenchmarkProtocol.GradeInfo("priced-with-source", 1, 1, BenchmarkOutcome.Pass, "2 of 2 priced with a source")));
     }
 
     /// <summary>A grader that is only named here: the protocol's first line says what graders the eval has.</summary>

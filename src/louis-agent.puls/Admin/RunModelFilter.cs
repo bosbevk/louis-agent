@@ -7,18 +7,18 @@ namespace LouisAgent.Puls.Admin;
 public static class RunModelFilter
 {
     /// <summary>The distinct models the runs name, in the order they first appear, without "unknown".</summary>
-    public static IReadOnlyList<string> ModelsOf(IEnumerable<IReadOnlyDictionary<string, string>?> runs)
+    public static IReadOnlyList<string> ModelsOf(IEnumerable<IReadOnlyList<string>?> runs)
     {
         var models = new List<string>();
         foreach (var run in runs)
-            foreach (string model in run?.Values ?? [])
+            foreach (string model in run ?? [])
                 if (model != Unknown && !models.Contains(model)) models.Add(model);
         return models;
     }
 
     /// <summary>Whether a run that named <paramref name="runModels"/> is shown for the picked model (null: every run is shown).</summary>
-    public static bool Matches(IReadOnlyDictionary<string, string>? runModels, string? picked) =>
-        picked is null || (runModels is not null && runModels.Values.Contains(picked));
+    public static bool Matches(IReadOnlyList<string>? runModels, string? picked) =>
+        picked is null || (runModels is not null && runModels.Contains(picked));
 
     private const string Unknown = "unknown";
 }

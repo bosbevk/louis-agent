@@ -6,9 +6,9 @@ namespace LouisAgent.Puls.Tests.Admin;
 // model, and a run that named none shows only when no model is picked.
 public class RunModelFilterTests
 {
-    private static readonly Dictionary<string, string> Haiku = new() { ["puls-cook"] = "claude-haiku-5-5" };
-    private static readonly Dictionary<string, string> Sonnet = new() { ["puls-cook"] = "claude-sonnet-5-5", ["puls-only"] = "claude-haiku-5-5" };
-    private static readonly Dictionary<string, string> Unknown = new() { ["puls-cook"] = "unknown" };
+    private static readonly string[] Haiku = ["claude-haiku-5-5"];
+    private static readonly string[] Sonnet = ["claude-sonnet-5-5", "claude-haiku-5-5"];
+    private static readonly string[] Unknown = ["unknown"];
 
     [Test]
     public void TheModelsListed_AreTheNamedOnes_DistinctAndInOrder() =>

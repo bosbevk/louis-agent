@@ -255,7 +255,7 @@ else if (_data is { } data)
     private sealed record Manual(string Title, string Markdown);
     private sealed record Total(decimal? Cost, int Requests);
     private sealed record Run(string Id, string Check, int Repeat, string Status, DateTimeOffset StartedAt, Total? Total, string? StoreError,
-        IReadOnlyDictionary<string, string>? Models = null);
+        IReadOnlyList<string>? Models = null);
     private sealed record StoreState(bool Configured, string? Error);
     private sealed record Page(List<Check> Checks, StoreState Store, List<Run> Runs);
     private sealed record LiveRun(string Id, string Check, int Repeat, string Status, int? ExitCode, DateTimeOffset StartedAt, bool? Stored, string? StoreError);
@@ -357,8 +357,8 @@ else if (_data is { } data)
         r.GetProperty("status").GetString()!, r.GetProperty("started_at").GetDateTimeOffset(),
         r.TryGetProperty("total", out var t) && t.ValueKind == JsonValueKind.Object ? new Total(Dec(t, "cost"), t.GetProperty("requests").GetInt32()) : null,
         Str(r, "store_error"),
-        r.TryGetProperty("models", out var models) && models.ValueKind == JsonValueKind.Object
-            ? models.EnumerateObject().Where(p => p.Value.ValueKind == JsonValueKind.String).ToDictionary(p => p.Name, p => p.Value.GetString()!)
+        r.TryGetProperty("models", out var models) && models.ValueKind == JsonValueKind.Array
+            ? models.EnumerateArray().Select(m => m.GetProperty("model").GetString()!).ToList()
             : null);
 
     /// <summary>A run started before this page opened (a reload): its finished turns from the store, then its events.</summary>
