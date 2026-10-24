@@ -214,6 +214,14 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   no Python test covers. The cook's behaviour is the Python's as it is today: the no-shop rule changes in step 3.3.
   Checked by a mutation: the cook is made never expected, and two tests fail (the handed-to-the-cook one and the
   answered-itself one); with the rule restored, all 47 pass. No red run for the port itself, as in 3.1.
+- **Review of step 3.2:** a specialist's error is the specialist's, not the turn's, so the reader reads an error only
+  from the turn's own events, as the Python does (a test, which fails when the guard is removed). A tool result whose
+  content is not a string, and an error that is a string rather than an object, no longer throw: they're read as their
+  JSON. An empty role, handle or error is none, as the Python's truthiness reads it, and an empty role falls through to
+  `personality`. The cook's fixed-rule graders are in: `CookRoutedRight` (required: the route) and `CookNoError`
+  (required: no turn failed), both `FixedRule`, which step 4's eval sets need. They were written first and failed on the
+  red run. The priced and no-shop grades are not graders yet: their thresholds are for the cook eval (step 5) to decide,
+  not invented here.
 - **Step 1d** (`louis-agent.orchestrator`): `LouisAgentClient.ReadStreamAsync` takes the response's stream and reads its
   events through the reader, folding them by their record types; the framing loop is gone. Its tests feed the same SSE
   text as bytes instead of a `StringReader`, with no assertion changed.

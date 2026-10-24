@@ -40,5 +40,49 @@ public class TurnViewTests
         Assert.That(ToolHosts.Of(turn.SpecialistCalls), Is.EqualTo(new[] { "checkers.co.za" }));
     }
 
+    [Test]
+    public void AnErrorInASpecialist_IsNotTheTurnsError()
+    {
+        // The Python reads a turn's error from its own events only; a specialist's error is its own, shown in its card.
+        var events = new[]
+        {
+            SessionEvent.From("sub_session", Json("""{"type":"sub_session","tool_use_id":"t1","agent":"puls-cook","event":"error","data":{"type":"error","error":{"type":"api_error","message":"the specialist failed"}}}""")),
+        };
+
+        Assert.That(TurnView.From(events).Error, Is.Null);
+    }
+
+    [Test]
+    public void AToolResultWhoseContentIsNotAString_IsReadAsItsText()
+    {
+        var events = new[]
+        {
+            SessionEvent.From("content_block_start", Json("""{"type":"content_block_start","index":1,"content_block":{"type":"tool_result","tool_use_id":"t1","content":[{"type":"text","text":"Die resep."}]}}""")),
+        };
+
+        Assert.That(TurnView.From(events).Results.Single(), Does.Contain("Die resep."));
+    }
+
+    [Test]
+    public void AnErrorThatIsAString_IsTheTurnsError_ReadAsItsJson()
+    {
+        var events = new[] { SessionEvent.From("error", Json("""{"type":"error","error":"the connection dropped"}""")) };
+
+        Assert.That(TurnView.From(events).Error, Does.Contain("the connection dropped"));
+    }
+
+    [Test]
+    public void AnEmptyRole_IsNoRole_AndTheNextStartIsTheRole()
+    {
+        // The Python's `role or personality`, and `is None`: an empty role is no role.
+        var events = new[]
+        {
+            SessionEvent.From("content_block_start", Json("""{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"t1","name":"StartSubSession","input":{"role":""}}}""")),
+            SessionEvent.From("content_block_start", Json("""{"type":"content_block_start","index":1,"content_block":{"type":"tool_use","id":"t2","name":"StartSubSession","input":{"role":"puls-cook"}}}""")),
+        };
+
+        Assert.That(TurnView.From(events).Role, Is.EqualTo("puls-cook"));
+    }
+
     private static System.Text.Json.JsonElement Json(string text) => System.Text.Json.JsonDocument.Parse(text).RootElement.Clone();
 }
