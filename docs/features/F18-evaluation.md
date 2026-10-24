@@ -92,7 +92,8 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
 - **3a** Datasets as files, one folder per eval
 - **4** The runner and the stub eval; the eval sets pluggable (`IEvalSet`, `EVALS=`) and the common graders; the developer's how-to `docs/guides/add-an-eval-set.md` (approved during the build)
 - **4.1** The eval sets (`IEvalSet`), the runner project with its catalogue, arguments and the stub eval, and the stub's parity with the Python stub's protocol lines
-- **4.2** The common graders in `Grading/Common/` (no `error` event, answered within a time, cost under a limit)
+- **4.2a** The common graders in `Grading/Common/`: no error, answered within a time, cost under a limit, routed to a role; one reader of the engine's events
+- **4.2b** `EvalConformanceTests` and the reference transcripts: each scenario has one transcript that passes its required graders and one that fails them
 - **4.3** The API and Docker: `BenchmarkCheck` names an eval, `BenchmarkRunner` starts the runner, `BenchmarkCatalog` from `run --list`, `StubCheckTests`
 - **4.4** The developer's how-to, `docs/guides/add-an-eval-set.md`
 - **4a** Web input recorded and replayed: the browser
@@ -334,6 +335,21 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   `StubMessage` member it was always meant to be (the inline copy is gone); `TurnFacts.PulsCalls` is `AgentCalls`, with the
   protocol's key `puls_calls` unchanged, since the API reads that name. The stub's host (`www.checkers.co.za`) and its
   time zone are data, not text, and stay literals.
+- **Step 4.2a** (`evals/louis-agent.evals/Grading/Common/`, `Trials/EngineEvents.cs`, the tests in
+  `tests/louis-agent.evals.tests/Grading/Common/`): the four common graders and the one reader of the engine's events they share.
+  `NoErrorGrader` passes when no turn streamed an error event or ended in a failure. `WithinTimeGrader` passes when every
+  turn's duration, by the harness's clock, is within the limit. `CostUnderGrader` sums the turns' costs and passes at or under
+  the limit; an unknown cost is Unknown, never a pass. `RoutedToGrader` passes when the first turn's first `StartSubSession`
+  call went to the role, and fails when it went elsewhere or the agent answered itself. Each takes a `required` flag (default
+  true). A grade's score is 1 for a pass and 0 for a fail or an unknown, so the score agrees with the outcome.
+  Red first: the 21 tests that call a stub failed with `NotImplementedException`, and the enum test failed with
+  `Missing items: CommonGradeMessage`. Mutation: an unknown cost made a pass fails two cost tests.
+  Decisions to review:
+  - The cost is the sum of the turns' `usage.cost` from the stream, which is the ledger's total per turn; no price is worked out
+    in the harness. A turn with an unpriced request has no known cost (the stream's `unpriced` count is above zero).
+  - The route is the first turn's first `StartSubSession` role, the engine's own tool, and not the `session_role` the stream
+    reports on message_start: "went to role X" is a call to X, as Anthropic's tool-call grader checks.
+  - `EngineEvents` is the one reader; a grader does not parse the stream itself.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)
