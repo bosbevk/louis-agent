@@ -136,16 +136,11 @@ public sealed class ChromeWebBrowser(Uri browserUrl, Func<string, CancellationTo
         IBrowserContext? own = session is not null || script is not null ? await browser.CreateBrowserContextAsync() : null;
         var page = own is null ? await browser.NewPageAsync() : await own.NewPageAsync();
         
-        // What a shop's site sees (2026-10-21: some refuse the headless shell outright):
-        // 1. a desktop Chrome's user agent instead of the default "HeadlessChrome";
-        await page.SetUserAgentAsync("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36");
-    
-        // 2. a normal screen size instead of an empty or tiny viewport;
+        // A normal screen size instead of an empty or tiny viewport, so a page lays out as it would for a person. The
+        // browser says what it is otherwise (its own user agent, the automation marker left as it is): a site that
+        // refuses automated readers refuses this one (Louis, 2026-10-24; FX21 names it as what reads on a user's behalf).
         await page.SetViewportAsync(new ViewPortOptions { Width = 1920, Height = 1080 });
-    
-        // 3. no automation marker, which a page's script reads before deciding what to render.
-        await page.EvaluateExpressionOnNewDocumentAsync("Object.defineProperty(navigator, 'webdriver', { get: () => false });");
-        
+
         if (session is { Cookies.Count: > 0 })
             await page.SetCookieAsync([.. session.Cookies.Select(c => new CookieParam { Name = c.Name, Value = c.Value, Domain = c.Domain, Path = "/" })]);
         // A cancelled turn closes its page, which ends the load or the wait at once and frees its slot (review of PR #56:

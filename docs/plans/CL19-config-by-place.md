@@ -271,6 +271,15 @@ step names, so CL15's uncommitted code changes stay in the working tree untouche
   app had been using, and Docker can't bind the same tailnet ports beside it. The override and `PULS_HOME_BIND` go;
   the two serve commands, with `--bg`, are documented in the Azure how-to. Docker stays on `127.0.0.1` everywhere.
 
+- **Four commits that are not CL19 ride on its branch** (Louis, 2026-10-24: "commit all the uncommitted changes",
+  and the review's choice to record rather than split): the cook run's code follow-ups (a budget per browser visit,
+  product images, Yahoo for Bing, `5075f78`), the cook's new prompt with its tests and golden (`9d4ff14`), a launch
+  profile per host (`3dbb3e9`) and the image dialog's `width`/`height` fix main's test caught after the merge
+  (`e1c3bbf`). The plan's "no C# changes" holds for CL19's own steps; these are CL15's loose ends, named as such.
+- **The browser's disguise is out** (Louis, 2026-10-24, after the review): the desktop user agent and the hidden
+  `navigator.webdriver` that came with the follow-ups are removed; the viewport stays. Reading on a user's behalf is
+  legitimate, answering a site's questions falsely is not; FX21 makes the browser say what it is (`BROWSER_USER_AGENT`,
+  set by Puls to name itself), the town per visit a later step.
 - **The minions stay off for now** (Louis, 2026-10-24, after the review): `MINION_LLMS` and `LLM_SESSION_PROFILES` left
   with the `puls-agent` service and were not moved onto `puls`, locally or on Azure, so the cook prices with its own
   tools and no minion runs. Turning them back on is two lines in `config/.env` (or the compose and the Azure yaml).
