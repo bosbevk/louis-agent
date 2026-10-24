@@ -3,6 +3,7 @@ using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Api;
 using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Grading;
+using LouisAgent.Evals.Grading.Common;
 using LouisAgent.Evals.Runner.Messages;
 using LouisAgent.Evals.Trials;
 
@@ -41,7 +42,8 @@ public sealed class StubEval : IEval
             JsonDocument.Parse("{}").RootElement.Clone(), [], DatasetSplit.Dev),
     ];
 
-    public IReadOnlyList<IGrader> Graders { get; } = [new StubGrader()];
+    /// <summary>The stub's graders: no turn errored, and each turn was answered within a minute (a stuck run, the only slow one).</summary>
+    public IReadOnlyList<IGrader> Graders { get; } = [new NoErrorGrader(), new WithinTimeGrader(TimeSpan.FromMinutes(1))];
 
     /// <summary>The stub's run is fixed, so its route is always right, and the score counts the turns (the Python's scores).</summary>
     public EvalScores ScoresOf(Trial trial, IReadOnlyList<Grade> grades) => new StubScores(RoutedRight: true, Turns: trial.Transcript.Turns.Count);

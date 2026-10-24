@@ -362,6 +362,25 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   (`EvalErrorMessage.NoMessages`, tested). The runner's own skip stays as a guard, now unreachable from a catalogue. The
   runner's summary no longer says the graders join in step 3: it writes no grades yet, and the conformance test runs the
   graders (4.2b).
+- **Step 4.2b** (`evals/louis-agent.evals/Conformance/`, `Protocol/ProtocolTranscripts.cs`, the tests in
+  `tests/louis-agent.evals.tests/Conformance/` and `Protocol/`, and `tests/louis-agent.evals.runner.tests/Conformance/`): the
+  conformance check (`EvalConformance.CheckAsync`), and the reference transcripts it reads. The shape: a name safe as an MCP tool
+  name (`^[A-Za-z0-9_-]{1,64}$`), a version of at least 1, a required fixed rule, every expected key read by a grader. Every
+  grade: a reason, a score from 0 to 1, an outcome that agrees with the score. Every scenario: a reference transcript that passes
+  its required graders, and a known-bad one that fails them. A grader that throws is reported, not rethrown. The runner's
+  `EveryEvalOfEverySetConforms` runs it on the stub, on the empty Puls set and on a fake set (Puls's evals join in step 5).
+  Red first: the three protocol-reader tests, the 12 checker tests and the runner's two conformance tests failed on their stubs,
+  and the enum test failed with `Missing items: ConformanceMessage`. Mutations: a no-error grader that passes everything fails
+  the runner's conformance test with `the known-bad transcript passes every required grader`, and the stub's grader that passed
+  everything is gone.
+  Decisions to review:
+  - The reference transcripts are the Python stub's own protocol lines, read back by `ProtocolTranscripts`; the known-bad one is
+    the same conversation with an error event added to its first turn, as the stream would send it. A scenario with no reference
+    fails the check (`NoCase`), so a new eval brings its references.
+  - The stub's graders are now the common no-error grader and the within-time grader at one minute, both required. The stub's
+    own grader, which passed every trial, could not fail a known-bad transcript, so the check caught it; it is removed.
+  - The turn line's `error` field is not read by `ProtocolTranscripts`: the error is the sse line's error event, and reading the
+    turn's field too would count it twice.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

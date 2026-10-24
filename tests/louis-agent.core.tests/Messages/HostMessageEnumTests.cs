@@ -24,7 +24,7 @@ public partial class HostMessageEnumTests
             Is.SupersetOf(new[] { "AcpLogMessage", "AcpUserText", "AcpModelText", "ApiLogMessage", "McpServerLogMessage", "CliUserText",
                 "OrchestratorToolMessage", "OrchestratorErrorMessage", "OrchestratorLogMessage",
                 "ApiModelText", "ApiUserText", "McpServerText", "CompositionErrorMessage", "ShopToolMessage", "ShopLogMessage",
-                "EvalLogMessage", "GradeMessage", "EvalErrorMessage", "RunnerMessage", "StubMessage", "CommonGradeMessage" }));
+                "EvalLogMessage", "GradeMessage", "EvalErrorMessage", "RunnerMessage", "StubMessage", "CommonGradeMessage", "ConformanceMessage" }));
     }
 
     [Test]
