@@ -53,8 +53,11 @@ flowchart LR
   not in the system prompt, which engines share; without a `time_zone` the note and `GetToday` use
   `Africa/Johannesburg`. Files attached to a message are
   remembered by name, so `StartSubSession` can forward them to a specialist without the model copying them.
-- **Streaming** (`Sessions/Streaming/`, F18 step 1f): the writer is `ITurnStreamFormat`, and the turn and the session view call only it. Its one format is `Claude/ClaudeStreamFormat`; `"stream"` on `POST /sessions` picks the format (`StreamFormat`, Claude by default) and the session keeps it. Engine updates become `message_start`, `content_block_start/delta/stop`
-  (thinking, text, tool_use, tool_result), `message_delta` (stop reason and the turn's `usage`, F3) and `message_stop`;
+- **Streaming** (`Sessions/Streaming/`, F18 step 1f): the writer is `ITurnStreamFormat`, and the turn and the session
+  view call only it. Its one format is `Claude/ClaudeStreamFormat`; `"stream"` on `POST /sessions` picks the format
+  (`StreamFormat`, Claude by default) and the session keeps it. Engine updates become `message_start`,
+  `content_block_start/delta/stop` (thinking, text, tool_use, tool_result), `message_delta` (stop reason and the
+  turn's `usage`, F3) and `message_stop`;
   failures become an `error` event in Claude's shape, with the turn's `usage` when a request had returned (FX6).
   `/tools`, `/approve`, `/reject` and `/usage` are answered without the model.
 - **Usage** (F3): each session keeps its finished turns' records (`UsageSession`) for `/usage` and the `usage` of

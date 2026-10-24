@@ -152,7 +152,7 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   is `Streaming/Claude/ClaudeStreamFormat`, the only format today. `"stream"` on `POST /sessions` picks the format (the
   enum `StreamFormat`, parsed with `SettingChoice`, Claude when none is sent) and the session keeps it. A name none of
   the format's names fits is a 400 before any engine is built; the request's parse is tested, the endpoint's branch is
-  not (the API has no endpoint tests yet), so it was checked by reading. The turn's usage is a `TurnUsage`, computed once
+  not (the API has no endpoint tests yet), so it was checked by reading. **Not tested yet:** the endpoint's 400 for an unknown `"stream"`; the first endpoint test takes that case. The turn's usage is a `TurnUsage`, computed once
   from the ledger and only rendered by a format. The golden and the recorded fixture are unchanged; a second format waits
   for a client that needs one.
 - **Step 1d** (`louis-agent.orchestrator`): `LouisAgentClient.ReadStreamAsync` takes the response's stream and reads its
