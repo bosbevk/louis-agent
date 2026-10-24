@@ -34,4 +34,8 @@ public class BenchmarkSettingsTests
         Assert.That((settings["eval"], settings["eval_runner"]), Is.EqualTo(("stub", "/app/evals/x.dll")));
         Assert.That(settings.ContainsKey("script"), Is.False);
     }
+
+    [Test]
+    public void AnEvalCheckWithoutTheRunnersPath_IsRefused() =>
+        Assert.That(() => BenchmarkSettings.Of(BenchmarkCheck.ForEval("stub", "Stub"), "anthropic", "m", []), Throws.ArgumentNullException);
 }

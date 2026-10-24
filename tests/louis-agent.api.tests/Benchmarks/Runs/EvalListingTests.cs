@@ -50,10 +50,31 @@ public class EvalListingTests
     [Test]
     public void ANonJsonLineIsAWarningAndNoEvals()
     {
-        // `dotnet --version` exits 0 and prints a version, not a line of the listing.
-        var result = new EvalListing("dotnet", ["--version"], TimeSpan.FromSeconds(30)).Read();
+        var result = EvalListing.Parse("a line that isn't JSON");
 
         Assert.That(result.Evals, Is.Empty);
-        Assert.That(result.Failure, Does.Contain("isn't JSON"));
+        Assert.That(result.Failure, Does.Contain("isn't a JSON eval"));
+    }
+
+    // System.Text.Json fills missing parameters with defaults unless told not to: these lines must still be refused.
+    [TestCase("{}")]
+    [TestCase("""{"name":null,"identity":null,"version":1,"proves":"x"}""")]
+    [TestCase("""{"name":"stub","identity":null,"version":null,"proves":"x"}""")]
+    [TestCase("""{"name":"stub","identity":null,"version":1}""")]
+    public void ALineThatIsNotAnEvalIsRefused(string line)
+    {
+        var result = EvalListing.Parse(line);
+
+        Assert.That(result.Evals, Is.Empty);
+        Assert.That(result.Failure, Does.Contain("isn't a JSON eval"));
+    }
+
+    [Test]
+    public void AListedEvalLineIsRead()
+    {
+        var result = EvalListing.Parse("""{"name":"stub","identity":"puls","version":2,"proves":"A canned run"}""");
+
+        Assert.That(result.Failure, Is.Null);
+        Assert.That(result.Evals.Single(), Is.EqualTo(new EvalLine("stub", "puls", 2, "A canned run")));
     }
 }

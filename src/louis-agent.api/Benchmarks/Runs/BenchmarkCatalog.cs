@@ -34,6 +34,9 @@ public sealed class BenchmarkCatalog
 
     private BenchmarkCatalog(Func<IReadOnlyList<BenchmarkCheck>> checks) => _checks = new Lazy<IReadOnlyList<BenchmarkCheck>>(checks);
 
+    /// <summary>Reads the listing now, so a warning lands in the start-up log rather than on the first request.</summary>
+    public void Warm() => _ = _checks.Value;
+
     /// <summary>The checks the portal offers; the runner is listed the first time this is read.</summary>
     public IReadOnlyList<BenchmarkCheck> Checks => _checks.Value;
 

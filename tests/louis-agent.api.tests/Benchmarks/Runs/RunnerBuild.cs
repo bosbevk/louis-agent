@@ -7,9 +7,9 @@ internal static class RunnerBuild
     {
         get
         {
-            string repo = Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, "..", "..", "..", "..", ".."));
-            string configuration = new DirectoryInfo(TestContext.CurrentContext.TestDirectory).Parent!.Name;
-            return Path.Combine(repo, "evals", "louis-agent.evals.runner", "bin", configuration, "net10.0", "louis-agent.evals.runner.dll");
+            // tests/{project}/bin/{configuration}/{framework}: the runner is built in the same two folders.
+            var build = new DirectoryInfo(TestContext.CurrentContext.TestDirectory);
+            return Path.Combine(TestPaths.RepoRoot, "evals", "louis-agent.evals.runner", "bin", build.Parent!.Name, build.Name, "louis-agent.evals.runner.dll");
         }
     }
 }

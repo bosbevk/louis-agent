@@ -1,5 +1,4 @@
 using System.Text.Json;
-using LouisAgent.Api.Config;
 
 namespace LouisAgent.Api.Benchmarks.Runs;
 
@@ -21,8 +20,9 @@ public static class BenchmarkSettings
         };
         if (check.Kind == BenchmarkCheckKind.Eval)
         {
+            ArgumentNullException.ThrowIfNull(evalRunner);
             settings["eval"] = check.Id;
-            settings["eval_runner"] = evalRunner ?? AdminOptions.DefaultEvalRunner;
+            settings["eval_runner"] = evalRunner;
         }
         else
         {

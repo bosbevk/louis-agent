@@ -20,6 +20,6 @@ public enum ApiLogMessage
     [Description("The benchmark store isn't answering at start-up; a run will say so when it can't write")]
     BenchmarkStoreUnreachable,
 
-    [Description("the eval runner can't be listed ({Reason}), so the Python checks stay")]
+    [Description("The eval runner can't be listed ({Reason}), so the Python checks stay")]
     BenchmarkListingUnavailable,
 }

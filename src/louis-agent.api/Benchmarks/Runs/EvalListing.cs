@@ -22,8 +22,14 @@ public sealed class EvalListing(string command, IReadOnlyList<string> arguments,
     public static EvalListing ForRunner(string runnerPath, TimeSpan? timeout = null) =>
         new("dotnet", [runnerPath, "--list"], timeout ?? TimeSpan.FromSeconds(30), runnerPath);
 
-    // The runner writes snake_case (EvalJson.SnakeCase in the runner): name, identity, version, proves.
-    private static readonly JsonSerializerOptions RunnerJson = new() { PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower };
+    // The runner writes snake_case (EvalJson.SnakeCase in the runner): name, identity, version, proves. A missing or null required
+    // field refuses the line, not a default filled in (the review's fix: a {} line is no eval).
+    private static readonly JsonSerializerOptions RunnerJson = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower,
+        RespectRequiredConstructorParameters = true,
+        RespectNullableAnnotations = true,
+    };
 
     public EvalListingResult Read()
     {
@@ -42,27 +48,36 @@ public sealed class EvalListing(string command, IReadOnlyList<string> arguments,
             }
             if (process.ExitCode != 0) return Failed(EvalListingMessage.ExitCode, new { Code = process.ExitCode });
 
-            var evals = new List<EvalLine>();
-            foreach (string line in output.Result.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
-            {
-                EvalLine? eval;
-                try
-                {
-                    eval = JsonSerializer.Deserialize<EvalLine>(line, RunnerJson);
-                }
-                catch (JsonException)
-                {
-                    eval = null;
-                }
-                if (eval is null) return Failed(EvalListingMessage.NotJson, new { Line = line });
-                evals.Add(eval);
-            }
-            return new EvalListingResult(evals, null);
+            return Parse(output.Result);
         }
-        catch (System.ComponentModel.Win32Exception)
+        catch (Exception ex) when (ex is System.ComponentModel.Win32Exception or InvalidOperationException)
         {
             return Failed(EvalListingMessage.Missing, new { Path = command });
         }
+    }
+
+    /// <summary>
+    /// Reads the runner's listing text: one JSON eval per line. A line that isn't an eval (not JSON, or JSON missing its name, version
+    /// or proof) refuses the whole listing, with the line in the reason.
+    /// </summary>
+    public static EvalListingResult Parse(string stdout)
+    {
+        var evals = new List<EvalLine>();
+        foreach (string line in stdout.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+        {
+            EvalLine? eval;
+            try
+            {
+                eval = JsonSerializer.Deserialize<EvalLine>(line, RunnerJson);
+            }
+            catch (JsonException)
+            {
+                eval = null;
+            }
+            if (eval is null) return Failed(EvalListingMessage.NotAnEval, new { Line = line });
+            evals.Add(eval);
+        }
+        return new EvalListingResult(evals, null);
     }
 
     private static EvalListingResult Failed(EvalListingMessage message, object values) =>

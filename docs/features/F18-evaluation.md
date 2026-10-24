@@ -419,6 +419,14 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   no evals project (ADR 0027): the test project references the runner with `ReferenceOutputAssembly="false"`, so the tests list and run
   the real dll. Red first: 15 tests, each failing on the missing behaviour. Open: the admin endpoint still shows each check's `script`,
   blank for an eval; left as it is until step 7b makes every eval visible in the admin portal.
+- **Review of step 4.3a** (2026-10-25): `EVAL_RUNNER` is made absolute where it enters (`Path.GetFullPath` in `AdminOptions`),
+  because a run's working directory is the workspace root, where a relative path from a Rider debug run didn't resolve; the settings
+  record the absolute path. The listing's lines are read by `EvalListing.Parse`, which is pure, with System.Text.Json's required and
+  nullable rules on: `{}` and a null name are refused, not listed with no id (`EvalListingMessage.NotAnEval`). The API reads the listing
+  at start-up (`BenchmarkCatalog.Warm`, off the start-up path), so a warning lands in the start-up log; a failed listing lasts until a
+  restart. An eval check's settings refuse a missing runner path (`ArgumentNullException`) rather than guess a default (ADR 0007).
+  `Benchmarks/Runs/` has 12 files: ADR 0010's split by concern is left for step 7b, which moves the Python checks and the evals'
+  folders, and is not decided here. Red first: 9 tests for these fixes.
 - **Notes for step 5** (from the review of 4.2): `PulsEvalSet`'s `TurnView` builds on `EngineEvents`, so the route, the errors and the
   cost come from one reader. If an expected route goes in a scenario's `expected`, `RoutedToGrader` must declare that key in its
   `ExpectedKeys`. When the HTTP client sets a turn's `Failure`, the turn line must carry it, so `ProtocolTranscripts` reads it back. A

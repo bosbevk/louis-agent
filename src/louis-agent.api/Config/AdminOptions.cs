@@ -11,6 +11,7 @@ namespace LouisAgent.Api.Config;
 /// <param name="BenchmarkApiUrl">Where a check's script calls this API back (<c>BENCHMARK_API_URL</c>; the container's own port).</param>
 /// <param name="BenchmarksMongoUrl">The benchmark store (<c>BENCHMARKS_MONGO_URL</c>, in <c>.env.secrets</c>); none: runs aren't started.</param>
 /// <param name="BenchmarksDatabase">Its database (<c>BENCHMARKS_MONGO_DATABASE</c>; <c>puls_benchmarks</c>, the tests' <c>puls_benchmarks_test</c>).</param>
+/// <param name="EvalRunner">The eval runner's dll (<c>EVAL_RUNNER</c>), absolute: a relative path is resolved here, once, so a run from another folder finds it.</param>
 public sealed record AdminOptions(string? AdminKey, string BenchmarkApiUrl, string? BenchmarksMongoUrl, string BenchmarksDatabase, string EvalRunner)
 {
     /// <summary>Where the C# eval runner's dll is in the image (F18 step 4.3); the API starts it with <c>dotnet</c>.</summary>
@@ -29,6 +30,6 @@ public sealed record AdminOptions(string? AdminKey, string BenchmarkApiUrl, stri
             Get("BENCHMARK_API_URL") ?? DefaultBenchmarkApiUrl,
             Get("BENCHMARKS_MONGO_URL"),
             Get("BENCHMARKS_MONGO_DATABASE") ?? DefaultBenchmarksDatabase,
-            Get("EVAL_RUNNER") ?? DefaultEvalRunner);
+            Get("EVAL_RUNNER") is { } runner ? Path.GetFullPath(runner) : DefaultEvalRunner);
     }
 }

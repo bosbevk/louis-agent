@@ -14,13 +14,10 @@ public class StubCheckTests
 {
     private static readonly string Python = OperatingSystem.IsWindows() ? "python" : "python3";
 
-    private static string RepoRoot { get; } =
-        Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, "..", "..", "..", "..", ".."));
-
     private static async Task<(BenchmarkRun Run, List<string> Lines)> RunStub(InMemoryBenchmarkStore store, int repeat = 1)
     {
         var catalog = new BenchmarkCatalog([BenchmarkCatalog.Stub]);
-        var runner = new BenchmarkRunner(catalog, RepoRoot, "http://127.0.0.1:1/", Python);
+        var runner = new BenchmarkRunner(catalog, TestPaths.RepoRoot, "http://127.0.0.1:1/", Python);
         var run = runner.Start("stub", repeat)!;
         var recording = new BenchmarkRecorder(store).RecordAsync(run);
         var lines = new List<string>();
@@ -66,7 +63,7 @@ public class StubCheckTests
     private static async Task<(BenchmarkRun Run, List<string> Lines)> RunEvalStub(InMemoryBenchmarkStore store, int repeat = 1)
     {
         var catalog = new BenchmarkCatalog([BenchmarkCheck.ForEval("stub", "Stub")]);
-        var runner = new BenchmarkRunner(catalog, RepoRoot, "http://127.0.0.1:1/", Python, RunnerBuild.Dll);
+        var runner = new BenchmarkRunner(catalog, TestPaths.RepoRoot, "http://127.0.0.1:1/", Python, RunnerBuild.Dll);
         var run = runner.Start("stub", repeat)!;
         var recording = new BenchmarkRecorder(store).RecordAsync(run);
         var lines = new List<string>();

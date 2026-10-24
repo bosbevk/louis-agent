@@ -7,9 +7,6 @@ namespace LouisAgent.Api.Tests.Benchmarks.Runs;
 // F27 step 1 (F27-S3): the checks the portal can run; F31 brings them back, each with its script under benchmarks/.
 public class BenchmarkCatalogTests
 {
-    private static string RepoRoot { get; } =
-        Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, "..", "..", "..", "..", ".."));
-
     [Test]
     public void AnEmptyCatalog_HasNoChecks() =>
         Assert.That(new BenchmarkCatalog().Checks, Is.Empty);
@@ -20,7 +17,7 @@ public class BenchmarkCatalogTests
         // F31 steps 6c, 7b and 8.
         Assert.That(BenchmarkCatalog.Default.Select(c => c.Id), Is.EqualTo(new[] { "stub", "cook", "routing" }));
         foreach (var check in BenchmarkCatalog.Default)
-            Assert.That(File.Exists(Path.Combine(RepoRoot, check.Script)), check.Script);
+            Assert.That(File.Exists(Path.Combine(TestPaths.RepoRoot, check.Script)), check.Script);
     }
 
     [Test]
@@ -70,6 +67,17 @@ public class BenchmarkCatalogTests
 
         _ = catalog.Checks;
         Assert.That(log.Messages, Is.Not.Empty);
+    }
+
+    [Test]
+    public void WarmReadsTheListingNow()
+    {
+        var log = new CapturingLogger();
+        var catalog = BenchmarkCatalog.From(EvalListing.ForRunner("/nope/louis-agent.evals.runner.dll"), BenchmarkCatalog.Default, log);
+
+        catalog.Warm();
+
+        Assert.That(log.Messages, Has.Some.Contains("isn't at /nope/louis-agent.evals.runner.dll"), "start-up says why, not the first request");
     }
 
     /// <summary>Keeps what the catalogue logs, formatted, so a test can read the warning.</summary>

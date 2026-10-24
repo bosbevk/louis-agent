@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using LouisAgent.Api.Config;
 
 namespace LouisAgent.Api.Benchmarks.Runs;
 
@@ -11,7 +12,7 @@ namespace LouisAgent.Api.Benchmarks.Runs;
 /// </summary>
 /// <param name="interpreter">The Python to run; <c>python3</c> in the containers.</param>
 public sealed class BenchmarkRunner(BenchmarkCatalog catalog, string workspaceRoot, string pulsApi, string interpreter = "python3",
-    string evalRunner = LouisAgent.Api.Config.AdminOptions.DefaultEvalRunner)
+    string evalRunner = AdminOptions.DefaultEvalRunner)
 {
     /// <summary>Repeats one run may ask for.</summary>
     public const int MaxRepeat = 5;

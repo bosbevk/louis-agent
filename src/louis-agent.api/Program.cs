@@ -88,7 +88,9 @@ if (benchmarkStore is not null)
             benchmarkLog.Log(LogLevel.Warning, ApiLogMessage.BenchmarkStoreUnreachable, exception: ex, tag: "API");
         }
     });
-app.MapAdmin(benchmarks, new BenchmarkRunner(benchmarks, host.Engine.WorkspaceRoot, admin.BenchmarkApiUrl, "python3", admin.EvalRunner), admin.AdminKey, benchmarkStore, recorder,
+// The listing is read off the start-up path, so a warning lands in the start-up log (the first request would wait for it).
+_ = Task.Run(benchmarks.Warm);
+app.MapAdmin(benchmarks, new BenchmarkRunner(benchmarks, host.Engine.WorkspaceRoot, admin.BenchmarkApiUrl, evalRunner: admin.EvalRunner), admin.AdminKey, benchmarkStore, recorder,
     check => BenchmarkSettings.Of(check, host.Llm.Provider, host.Llm.Model, host.Agent.RolesEnabled, admin.EvalRunner), host.Engine.WorkspaceRoot);
 
 app.MapSessions(host);
