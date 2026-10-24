@@ -2,7 +2,7 @@
 
 > **Reference.** If `Puls/1.0 (+this page)` appears in your server's logs, this says what it is, what it reads, how
 > often, and how to ask us to stop or to talk. **Elsewhere:** the decision behind it in
-> [ADR 0035](adr/0035-the-browser-says-what-it-is.md); the project in the [README](../README.md).
+> [ADR 0038](adr/0038-the-browser-says-what-it-is.md); the project in the [README](../README.md).
 
 ## What Puls is
 
@@ -16,7 +16,7 @@ not crawl, index or republish sites.
 Every request from its browser carries the user agent
 `Puls/1.0 (+https://github.com/bosbevk/louis-agent/blob/main/docs/SITE_OWNERS.md; reads a page on a user's behalf)`,
 so you can tell it apart from a person's browser, allow it, or block it. It does not pretend to be a desktop browser
-and does not hide that it is automated ([ADR 0035](adr/0035-the-browser-says-what-it-is.md)). It never sends the
+and does not hide that it is automated ([ADR 0038](adr/0038-the-browser-says-what-it-is.md)). It never sends the
 person's name, address or anything else about them.
 
 ## What it reads, and how much
@@ -28,7 +28,7 @@ person's name, address or anything else about them.
   WebSocket connections.
 - Images are shown to the person from your own image host, as your page serves them.
 - It does not read `robots.txt` yet (that comes with *Sources as data* in the TODO). If your site disallows automated
-  readers there, tell us (below) and your domain is honoured by name until the fetcher reads the file itself.
+  readers there, tell us (below): your domain goes on our list of sites the browser won't read.
 
 ## Where it comes from
 
@@ -39,4 +39,5 @@ South Africa North; the browser that reads pages runs on the home connection. Th
 
 Open an issue at <https://github.com/bosbevk/louis-agent/issues> with your domain and what you'd like: to be excluded,
 rate-limited, or to offer a feed or an API instead, which we would far rather use than your pages. A request to stop is
-honoured without argument.
+honoured without argument. Today that list is a change to the code, shipped in the next release; a list the browser
+reads at run time is planned (the TODO's *A domain stop-list for the browser*).
