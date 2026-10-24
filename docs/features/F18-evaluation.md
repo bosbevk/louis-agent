@@ -90,3 +90,11 @@ calibrated model grader), 7 (Python leaves), 7a (notes on a run) and 8 (docs and
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)
+
+## What the build changed
+
+- **Step 1a** (`louis-agent.session-stream/`, its tests in `tests/louis-agent.session-stream.tests/`): the reader frames
+  with the BCL's `SseParser` and maps each item to a record. The plan's `UsageReported` is not in it: the recorded
+  stream has no usage event (usage is in `message_delta`), so it waits for the step that needs it. The recorded
+  fixture's `StartSubSession` still names its role under `personality`, so the test reads both keys, as the Python does.
+  The hosts are worked out in the test from the URLs, since the reader doesn't score them (step 3 does).

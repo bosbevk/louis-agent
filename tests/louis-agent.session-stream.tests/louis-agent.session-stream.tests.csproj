@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>LouisAgent.SessionStream.Tests</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="6.0.4" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.0" />
+    <PackageReference Include="NUnit" Version="4.3.2" />
+    <PackageReference Include="NUnit.Analyzers" Version="4.7.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\louis-agent.session-stream\louis-agent.session-stream.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The recorded Puls turn and its expected counts, read where they are until step 7 moves them here. -->
+    <None Include="..\..\benchmarks\fixtures\session-stream.sse" Link="Fixtures\session-stream.sse" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\benchmarks\fixtures\session-stream.expected.json" Link="Fixtures\session-stream.expected.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="NUnit.Framework" />
+  </ItemGroup>
+
+</Project>
