@@ -64,6 +64,17 @@ public class CookGradersTests
     }
 
     [Test]
+    public async Task RoutedRight_SaysWhatTheFirstTurnDid_WhenALaterOneFailed()
+    {
+        // Puls answered the first question itself (a wrong route) and the follow-up errored: the reason names the miss, not the error.
+        var trial = Trial(Cook, "cook-af", [Text("Resep."), Error("overloaded")]);
+
+        var grade = await new CookRoutedRight().GradeAsync(trial, CancellationToken.None);
+
+        Assert.That(grade.Reason, Is.EqualTo("answered by Puls itself"));
+    }
+
+    [Test]
     public async Task NoError_FailsOnAnErroredTurn()
     {
         var trial = Trial(Cook, "cook-af", [Start(), Error("overloaded")]);

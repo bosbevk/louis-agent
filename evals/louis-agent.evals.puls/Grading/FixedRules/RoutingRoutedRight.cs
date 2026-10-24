@@ -19,6 +19,6 @@ public sealed class RoutingRoutedRight : IGrader
         var scores = RoutingScorer.Score(trial.Scenario.Id, turn, RoutingScorer.Delegating(trial.Mode));
         return ValueTask.FromResult(scores.RoutedRight
             ? new Grade(Name, Version, 1, GradeOutcome.Pass, "routed where its kind goes")
-            : new Grade(Name, Version, 0, GradeOutcome.Fail, (scores.Errors > 0 ? "the turn failed" : scores.Role is null ? "answered by Puls itself" : $"handled by {scores.Role}")));
+            : new Grade(Name, Version, 0, GradeOutcome.Fail, RouteReason.Of(turn, scores.Role)));
     }
 }
