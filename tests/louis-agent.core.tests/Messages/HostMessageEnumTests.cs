@@ -9,7 +9,7 @@ public partial class HostMessageEnumTests
 {
     // CL15 step 4: a pack's and an identity's enums leave core too (packs/, identities/, a Messages/ folder at any depth).
     private static IEnumerable<string> HostMessageFiles() =>
-        new[] { "src", "tools", "packs", "identities" }
+        new[] { "src", "tools", "packs", "identities", "evals" }
             .Select(root => Path.Combine(TestPaths.RepoRoot, root))
             .Where(Directory.Exists)
             .SelectMany(root => Directory.EnumerateDirectories(root, "Messages", SearchOption.AllDirectories))
@@ -23,7 +23,8 @@ public partial class HostMessageEnumTests
         Assert.That(HostMessageFiles().Select(Path.GetFileNameWithoutExtension),
             Is.SupersetOf(new[] { "AcpLogMessage", "AcpUserText", "AcpModelText", "ApiLogMessage", "McpServerLogMessage", "CliUserText",
                 "OrchestratorToolMessage", "OrchestratorErrorMessage", "OrchestratorLogMessage",
-                "ApiModelText", "ApiUserText", "McpServerText", "CompositionErrorMessage", "ShopToolMessage", "ShopLogMessage" }));
+                "ApiModelText", "ApiUserText", "McpServerText", "CompositionErrorMessage", "ShopToolMessage", "ShopLogMessage",
+                "EvalMessage", "EvalLogMessage" }));
     }
 
     [Test]

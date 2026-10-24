@@ -1,0 +1,7 @@
+@{"event": "protocol", "t": 1700000000.123, "version": 1}
+@{"event": "mode", "t": 1700000000.123, "mode": "cook", "repeat": 1, "toolsets": ["web", "shops"], "role": "puls-cook", "llm": null}
+@{"event": "question", "t": 1700000000.123, "mode": "cook", "repeat": 1, "task": "pannekoek", "turn": 1, "session": "sess_1", "text": "Gee my 'n resep vir pannekoek \u2013 rand"}
+@{"event": "sse", "t": 1700000000.123, "mode": "cook", "repeat": 1, "task": "pannekoek", "turn": 1, "type": "content_block_delta", "data": {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "Hallo \u2013 w\u00eareld"}}}
+@{"event": "turn", "t": 1700000000.123, "mode": "cook", "repeat": 1, "task": "pannekoek", "turn": 1, "session": "sess_1", "question": "Gee my 'n resep vir pannekoek \u2013 rand", "answer": "Hallo \u2013 w\u00eareld", "role": "puls-cook", "seconds": 1.5}
+@{"event": "conversation", "t": 1700000000.123, "mode": "cook", "repeat": 1, "task": "pannekoek", "role": "puls-cook", "scores": {"routed_right": true, "priced": 2}, "seconds": 3.25}
+@{"event": "mode_done", "t": 1700000000.123, "mode": "cook", "repeat": 1}
