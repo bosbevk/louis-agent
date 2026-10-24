@@ -7,4 +7,7 @@ public enum EvalLogMessage
 {
     [Description("Eval '{Eval}' runs {Modes} mode(s), {Repeats} repeat(s), as run {Run}.")]
     RunStarted,
+
+    [Description("Scenario '{Scenario}' has no messages, so it is skipped.")]
+    NoMessages,
 }

@@ -169,6 +169,7 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   the graders' calls in `EvalRunner` (step 3, so each trial's scores are the eval's with no grades), `HttpSessionClient`
   (step 4), and `RescoreAsync` (5b). The protocol's extra fields (`puls_calls`, `hosts`, `errors`) come with the cook and
   routing evals (step 5), so a turn here carries the answer, the role and the seconds only.
+  Review of step 2: the session is closed in a `finally`, so a turn that throws (a timeout, later) doesn't leave it open, and a test checks it (the close, removed, fails it). A content block delta without its `delta` no longer throws. The runner logs through core's `Log(LogLevel, Enum, values)`; `NoMessages` is a log line, so `EvalMessage` (empty until a person reads a text) is gone and `EvalLogMessage` has it.
 - **Step 1d** (`louis-agent.orchestrator`): `LouisAgentClient.ReadStreamAsync` takes the response's stream and reads its
   events through the reader, folding them by their record types; the framing loop is gone. Its tests feed the same SSE
   text as bytes instead of a `StringReader`, with no assertion changed.

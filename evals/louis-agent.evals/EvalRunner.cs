@@ -1,6 +1,6 @@
 using System.Text;
 using System.Text.Json;
-using LouisAgent.Core.Messages;
+using LouisAgent.Core.Logging;
 using LouisAgent.Evals.Api;
 using LouisAgent.Evals.Messages;
 using LouisAgent.Evals.Protocol;
@@ -22,8 +22,8 @@ public sealed class EvalRunner(ISessionClient sessions, ProtocolWriter protocol,
     public async Task RunAsync(IEval eval, EvalRun run, CancellationToken cancellationToken)
     {
         var modes = await eval.ModesAsync(sessions, cancellationToken);
-        logger.LogInformation(MessageText.Format(EvalLogMessage.RunStarted,
-            new { Eval = eval.Name, Modes = modes.Count, Repeats = run.Repeats, Run = run.RunId }));
+        logger.Log(LogLevel.Information, EvalLogMessage.RunStarted,
+            new { Eval = eval.Name, Modes = modes.Count, Repeats = run.Repeats, Run = run.RunId });
 
         foreach (var mode in modes)
             for (int repeat = 1; repeat <= run.Repeats; repeat++)
@@ -40,7 +40,7 @@ public sealed class EvalRunner(ISessionClient sessions, ProtocolWriter protocol,
     {
         if (scenario.Input.Messages.Count == 0)
         {
-            logger.LogWarning(MessageText.Format(EvalMessage.NoMessages, new { Scenario = scenario.Id }));
+            logger.Log(LogLevel.Warning, EvalLogMessage.NoMessages, new { Scenario = scenario.Id });
             return;
         }
 
@@ -49,11 +49,18 @@ public sealed class EvalRunner(ISessionClient sessions, ProtocolWriter protocol,
             new SessionRequest(mode, scenario.Input.Place, scenario.Input.TimeZone, scenario.Id, $"{run.RunId}:{mode.Name}:{repeat}"),
             cancellationToken);
 
+        // The session is closed however its turns end: a turn that throws (a timeout, a dead connection) must not leave it open.
+        // The close is not cancelled with the run, so a cancelled run still closes what it opened.
         var turns = new List<TurnTranscript>();
-        for (int number = 1; number <= scenario.Input.Messages.Count; number++)
-            turns.Add(await RunTurnAsync(mode, repeat, scenario.Id, number, session, scenario.Input.Messages[number - 1], cancellationToken));
-
-        await sessions.CloseAsync(session, cancellationToken);
+        try
+        {
+            for (int number = 1; number <= scenario.Input.Messages.Count; number++)
+                turns.Add(await RunTurnAsync(mode, repeat, scenario.Id, number, session, scenario.Input.Messages[number - 1], cancellationToken));
+        }
+        finally
+        {
+            await sessions.CloseAsync(session, CancellationToken.None);
+        }
 
         var trial = new Trial(run.RunId, mode, repeat, scenario, new Transcript(turns));
         var scores = eval.ScoresOf(trial, []);
@@ -74,7 +81,8 @@ public sealed class EvalRunner(ISessionClient sessions, ProtocolWriter protocol,
         {
             events.Add(streamEvent);
             protocol.Sse(mode.Name, repeat, task, number, streamEvent.Type, streamEvent.Data);
-            if (streamEvent is ContentBlockDelta { Data: var data } && data.GetProperty("delta") is var delta
+            if (streamEvent is ContentBlockDelta { Data: var data }
+                && data.TryGetProperty("delta", out var delta) && delta.ValueKind == JsonValueKind.Object
                 && delta.TryGetProperty("type", out var type) && type.GetString() == "text_delta"
                 && delta.TryGetProperty("text", out var text))
                 answer.Append(text.GetString());
