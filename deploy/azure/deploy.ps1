@@ -3,7 +3,7 @@
 Deploys Puls to Azure Container Apps (rg-puls-za): five verbs, each one az command with the names filled in (CL19).
 
 .DESCRIPTION
-  deploy.ps1 build   [-Tag 2026-10-24]            builds louis-agent-puls and ts-forwarder in the registry, tagged alike
+  deploy.ps1 build   [-Tag 2026-10-24-1732]       builds louis-agent-puls and ts-forwarder in the registry, tagged alike
   deploy.ps1 secrets [-App puls-app|puls-searxng] copies the secrets from config/.env.secrets, .env.mongo and .env.searxng
                                                   onto the app (never printed); a missing value is skipped, by name
   deploy.ps1 update  -Revision v018 [-Tag ...] [-App ...]
@@ -12,7 +12,7 @@ Deploys Puls to Azure Container Apps (rg-puls-za): five verbs, each one az comma
   deploy.ps1 logs    [-App ...] [-Container ...] [-Follow]
   deploy.ps1 lock    [-Ip 1.2.3.4]                 allows only this PC's public IP (or -Ip) on puls-app's ingress: the
                                                   app answers without a key (AGENT_AUTH=off), so nobody else may reach it
-  deploy.ps1 release [-Tag ...]                   the every-day deploy in one go: build (today's tag), then update as the
+  deploy.ps1 release [-Tag ...]                   the every-day deploy in one go: build (date-and-time tag), then update as the
                                                   next revision after the one Azure runs (v018 -> v019)
 The how-to, and what each piece is, is README.md beside this file. Run `az login` first.
 #>
@@ -22,7 +22,8 @@ param(
     [ValidateSet('build', 'secrets', 'update', 'searxng-settings', 'logs', 'lock', 'release')]
     [string]$Verb,
     [string]$Ip,
-    [string]$Tag = (Get-Date -Format 'yyyy-MM-dd'),
+    # Date and time, so two releases on one day keep both images and either can be rolled back to (review, 2026-10-24).
+    [string]$Tag = (Get-Date -Format 'yyyy-MM-dd-HHmm'),
     [string]$Revision,
     [ValidateSet('puls-app', 'puls-searxng')]
     [string]$App = 'puls-app',
