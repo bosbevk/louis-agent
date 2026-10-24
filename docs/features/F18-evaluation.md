@@ -146,6 +146,15 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   cut off, as a cancelled HTTP call is, and the stop is `cancelled`); and an error. The golden passes against today's code
   (nothing fails: the step pins the bytes), and reading it back through the reader gives the same types and data in
   order. The API tests reference `louis-agent.testing` for the fake model. Usage is in the bytes: the turns that call the model carry it (unpriced, so no price table is read), and a turn that fails on its second request, with its text block open, closes the block and reports its usage in the error. The golden is written and compared as the endpoint writes it, with `SseFormatter` and byte for byte (`StreamGolden.sse` is `-text` in `.gitattributes`). Regenerate with `LOUIS_UPDATE_GOLDEN=1`.
+
+- **Step 1f** (`louis-agent.api`, `Sessions/Streaming/`): the writer is behind `ITurnStreamFormat` (`Start`, `Content`,
+  `Text`, `SubSession`, `Stop`, `Fail`, and `Usage`), and the turn and the session view call only that. `ClaudeStyleStream`
+  is `Streaming/Claude/ClaudeStreamFormat`, the only format today. `"stream"` on `POST /sessions` picks the format (the
+  enum `StreamFormat`, parsed with `SettingChoice`, Claude when none is sent) and the session keeps it. A name none of
+  the format's names fits is a 400 before any engine is built; the request's parse is tested, the endpoint's branch is
+  not (the API has no endpoint tests yet), so it was checked by reading. The turn's usage is a `TurnUsage`, computed once
+  from the ledger and only rendered by a format. The golden and the recorded fixture are unchanged; a second format waits
+  for a client that needs one.
 - **Step 1d** (`louis-agent.orchestrator`): `LouisAgentClient.ReadStreamAsync` takes the response's stream and reads its
   events through the reader, folding them by their record types; the framing loop is gone. Its tests feed the same SSE
   text as bytes instead of a `StringReader`, with no assertion changed.

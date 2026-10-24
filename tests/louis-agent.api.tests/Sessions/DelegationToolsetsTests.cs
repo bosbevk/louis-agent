@@ -1,6 +1,6 @@
 using LouisAgent.Web.Shared.Api;
 using LouisAgent.Web.Shared.Chats;
-using ClaudeStyleStream = LouisAgent.Api.Sessions.ClaudeStyleStream;
+using ClaudeStreamFormat = LouisAgent.Api.Sessions.Streaming.Claude.ClaudeStreamFormat;
 using System.Text.Json;
 using LouisAgent.SessionStream;
 using LouisAgent.Web.Shared;
@@ -14,7 +14,7 @@ public class DelegationToolsetsTests
     [Test]
     public void ASessionsStream_StartsWithTheToolsetsItLoaded()
     {
-        var start = new ClaudeStyleStream("sess_1", ["web", "shops"]).MessageStart();
+        var start = new ClaudeStreamFormat("sess_1", ["web", "shops"]).Start();
 
         using var data = JsonDocument.Parse(start.Data);
         Assert.That(data.RootElement.GetProperty("message").GetProperty("toolsets").EnumerateArray().Select(t => t.GetString()),

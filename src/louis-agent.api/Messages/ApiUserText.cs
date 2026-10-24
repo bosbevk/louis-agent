@@ -133,4 +133,7 @@ public enum ApiUserText
 
     [Description("The check '{Check}' has no manual (benchmarks/{Check}/HANDLEIDING.md).")]
     NoManual,
+
+    [Description("Unknown stream format '{Format}'. Use one of: {Supported}.")]
+    UnknownStreamFormat,
 }

@@ -1,3 +1,5 @@
+using LouisAgent.Api.Sessions.Streaming;
+
 namespace LouisAgent.Api.Sessions;
 
 /// <summary>
@@ -25,6 +27,8 @@ internal static class SessionView
         tools = session.Engine.Tools.Count,
         task = session.Tags.Task, run = session.Tags.Run, service = session.Tags.Service,
         sub_sessions = session.SubSessions.Open.Select(o => new { handle = o.Handle, agent = o.Agent, toolsets = o.Toolsets, role = o.Role }),
-        usage = session.Engine.RecordsUsage ? ClaudeStyleStream.Usage(session.Usage.Records, session.Engine.Display) : null,
+        usage = session.Engine.RecordsUsage
+            ? StreamFormats.Create(session.StreamFormat, session.Id, session.Toolsets, session.Role).Usage(TurnUsage.From(session.Usage.Records, session.Engine.Display))
+            : null,
     };
 }

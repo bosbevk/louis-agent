@@ -1,5 +1,6 @@
 using System.Net.ServerSentEvents;
 using LouisAgent.Api.Sessions;
+using LouisAgent.Api.Sessions.Streaming;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Sessions;
 using LouisAgent.Core.Sessions.SubSessions;
@@ -94,7 +95,7 @@ public class StreamGoldenTests
             "Read the recipe note.", toolsets: [new NoteTools()]));
 
         // A sub-session's event, as the specialist's stream reached the chat while its call ran.
-        events.Add(ClaudeStyleStream.SubSession(new SubSessionEvent("call_sub", "puls", "message_start",
+        events.Add(StreamFormats.Create(StreamFormat.Claude, "sess_golden", ["web"], null).SubSession(new SubSessionEvent("call_sub", "puls", "message_start",
             """{"type":"message_start","message":{"session_id":"sess_peer","role":"assistant","toolsets":["web"]}}""")));
 
         // A command is answered without the model.

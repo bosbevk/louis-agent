@@ -1,3 +1,4 @@
+using LouisAgent.Api.Sessions.Streaming;
 using LouisAgent.Core.Sessions.SubSessions;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Agent.Toolsets;
@@ -54,7 +55,7 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
     /// tool. Every other depth refuses a tool, and only depth 1 loads <see cref="MinionsToolset"/>.
     /// </summary>
     public AgentSession Create(IEnumerable<string>? toolsets = null, UsageTags? tags = null, int depth = 0, string? role = null,
-        UserPlace? place = null, string? llm = null, string? tool = null)
+        UserPlace? place = null, string? llm = null, string? tool = null, StreamFormat format = StreamFormat.Claude)
     {
         if (depth is < 0 or > MaxDepth)
             throw new ToolsetException(MessageText.Format(ErrorMessage.SessionDepthInvalid, new { Max = MaxDepth }));
@@ -85,7 +86,7 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
 
         DropIdle(DateTimeOffset.UtcNow);
 
-        var session = new AgentSession($"sess_{Guid.NewGuid():N}", engine, names, depth, tags ?? UsageTags.None, role, place, llm, tool);
+        var session = new AgentSession($"sess_{Guid.NewGuid():N}", engine, names, depth, tags ?? UsageTags.None, role, place, llm, tool, format);
         _sessions[session.Id] = session;
         return session;
     }

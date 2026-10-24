@@ -5,6 +5,8 @@ using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Hosting.SessionLlms;
 using LouisAgent.Core.Messages;
+using LouisAgent.Api.Sessions.Streaming;
+using LouisAgent.Core.Config;
 using LouisAgent.Core.Sessions;
 using LouisAgent.Core.Skills.Roles;
 using LouisAgent.Core.Usage.Records;
@@ -34,12 +36,19 @@ internal static class SessionEndpoints
                 return Results.Json(Error("invalid_request_error", MessageText.Format(ApiUserText.UnknownTimeZone, new { request.TimeZone })),
                     statusCode: StatusCodes.Status400BadRequest);
 
+            // "stream" names the format the session's events are written in (F18 step 1f), refused before any engine is built.
+            StreamFormat? format = request is null ? StreamFormat.Claude : request.StreamFormatOrNull();
+            if (format is null)
+                return Results.Json(Error("invalid_request_error",
+                        MessageText.Format(ApiUserText.UnknownStreamFormat, new { Format = request!.Stream, Supported = string.Join(", ", SettingChoice.Names<StreamFormat>()) })),
+                    statusCode: StatusCodes.Status400BadRequest);
+
             AgentSession session;
             try
             {
                 session = sessions.Create(request?.Toolsets,
                     request is null ? null : new UsageTags(request.Task, request.Run, request.Service, request.Parent), request?.Depth ?? 0,
-                    request?.RoleOrAlias(), request?.Place(), request?.Llm, request?.Tool);
+                    request?.RoleOrAlias(), request?.Place(), request?.Llm, request?.Tool, format.Value);
             }
             catch (Exception ex) when (ex is ToolsetException or RoleException or SessionLlmException)
             {

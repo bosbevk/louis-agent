@@ -1,3 +1,4 @@
+using LouisAgent.Api.Sessions.Streaming;
 using LouisAgent.Core.Sessions.SubSessions;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Agent.Toolsets;
@@ -19,12 +20,15 @@ namespace LouisAgent.Api.Sessions;
 /// progress, if any.
 /// </summary>
 internal sealed class AgentSession(string id, AgentEngine engine, IReadOnlyList<string> toolsets, int depth, UsageTags tags,
-    string? role = null, UserPlace? place = null, string? llm = null, string? tool = null)
+    string? role = null, UserPlace? place = null, string? llm = null, string? tool = null, StreamFormat format = StreamFormat.Claude)
 {
     private readonly SemaphoreSlim _turnLock = new(1, 1);
     private CancellationTokenSource? _activeTurn;
 
     public string Id { get; } = id;
+
+    /// <summary>The format this session's events are written in, chosen when it opened and kept for its lifetime (F18 step 1f).</summary>
+    public StreamFormat StreamFormat { get; } = format;
 
     /// <summary>The engine of this session's toolset profile, shared with every session that chose the same toolsets.</summary>
     public AgentEngine Engine { get; } = engine;

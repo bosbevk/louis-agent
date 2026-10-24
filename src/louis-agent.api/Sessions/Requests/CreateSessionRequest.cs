@@ -1,4 +1,6 @@
 using LouisAgent.Api.Messages;
+using LouisAgent.Api.Sessions.Streaming;
+using LouisAgent.Core.Config;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Sessions;
 using LouisAgent.Core.Skills.Roles;
@@ -13,7 +15,7 @@ internal sealed record CreateSessionRequest(
     string? Task, string? Run, string? Service, List<string>? Toolsets = null, int Depth = 0, string? Parent = null,
     string? Personality = null, string? Location = null,
     [property: System.Text.Json.Serialization.JsonPropertyName("time_zone")] string? TimeZone = null, string? Llm = null,
-    string? Tool = null, string? Role = null)
+    string? Tool = null, string? Role = null, string? Stream = null)
 {
     internal const int MaxTagLength = 200;
 
@@ -29,6 +31,10 @@ internal sealed record CreateSessionRequest(
             throw new RoleException(MessageText.Format(ApiUserText.RoleAndPersonalityDiffer, new { Role = role, Personality = alias }));
         return role ?? alias;
     }
+
+    /// <summary>The format asked for with <c>stream</c>: Claude when none is sent; null when the name is unknown (the API's 400).</summary>
+    public StreamFormat? StreamFormatOrNull() =>
+        SettingChoice.TryParse(Stream, out StreamFormat? format) ? format ?? StreamFormat.Claude : null;
 
     /// <summary>Where the user is (F22): their location when they shared it, their time zone when sent; null with neither.</summary>
     public UserPlace? Place() => string.IsNullOrWhiteSpace(Location) && string.IsNullOrWhiteSpace(TimeZone)

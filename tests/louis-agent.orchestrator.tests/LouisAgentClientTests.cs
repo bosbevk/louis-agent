@@ -7,7 +7,7 @@ public class LouisAgentClientTests
     /// <summary>The stream as the client reads it: the same SSE text, as bytes.</summary>
     private static MemoryStream Bytes(string sse) => new(System.Text.Encoding.UTF8.GetBytes(sse));
 
-    // The shape louis-agent.api streams (see ClaudeStyleStream in src/louis-agent.api/Program.cs).
+    // The shape louis-agent.api streams (see the Claude format in src/louis-agent.api/Sessions/Streaming/Claude).
     private const string Stream = """
         event: message_start
         data: {"type":"message_start","message":{"session_id":"sess_1","role":"assistant"}}

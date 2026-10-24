@@ -10,6 +10,7 @@ using LouisAgent.Core.Messages;
 using LouisAgent.Core.Sessions;
 using LouisAgent.Core.Sessions.SubSessions;
 using LouisAgent.Core.Tools.Agents;
+using LouisAgent.Api.Sessions.Streaming;
 using LouisAgent.Core.Usage.Records;
 using Microsoft.Extensions.Logging;
 
@@ -45,17 +46,17 @@ internal static class TurnStream
     public static async IAsyncEnumerable<SseItem<string>> StreamTurnAsync(
         AgentEngine engine, AgentSession session, string prompt, CancellationTokenSource turn)
     {
-        var stream = new ClaudeStyleStream(session.Id, session.Toolsets, session.Role);
+        var stream = StreamFormats.Create(session.StreamFormat, session.Id, session.Toolsets, session.Role);
         UsageScope? usage = null;
         try
         {
-            yield return stream.MessageStart();
+            yield return stream.Start();
 
             // /tools, /approve, /reject and /usage are answered directly, never by the model (so they have no usage).
             if (engine.HandleUserCommand(prompt, engine.RecordsUsage ? session.Usage.Records : null) is { } commandReply)
             {
                 foreach (var item in stream.Text(commandReply)) yield return item;
-                foreach (var item in stream.Stop("end_turn")) yield return item;
+                foreach (var item in stream.Stop("end_turn", null)) yield return item;
                 yield break;
             }
 
@@ -83,9 +84,9 @@ internal static class TurnStream
                 while (!next.IsCompleted)
                 {
                     await Task.WhenAny(next, subSessions.Reader.WaitToReadAsync().AsTask());
-                    while (subSessions.Reader.TryRead(out var sub)) yield return ClaudeStyleStream.SubSession(sub);
+                    while (subSessions.Reader.TryRead(out var sub)) yield return stream.SubSession(sub);
                 }
-                while (subSessions.Reader.TryRead(out var sub)) yield return ClaudeStyleStream.SubSession(sub);
+                while (subSessions.Reader.TryRead(out var sub)) yield return stream.SubSession(sub);
 
                 try
                 {
@@ -111,15 +112,10 @@ internal static class TurnStream
             // The stream has ended (or thrown), so every request of the turn, a cancelled or failed one too, is in the scope.
             // None when no request returned (e.g. the first one failed): there is nothing to report.
             IReadOnlyList<UsageRecord> turnRecords = usage.Records;
-            object? turnUsage = engine.RecordsUsage && turnRecords.Count > 0 ? ClaudeStyleStream.Usage(turnRecords, engine.Display) : null;
+            TurnUsage? turnUsage = engine.RecordsUsage && turnRecords.Count > 0 ? TurnUsage.From(turnRecords, engine.Display) : null;
             if (error is not null)
             {
-                foreach (var item in stream.CloseBlock()) yield return item;
-                // FX6: the requests made before the failure were charged, so the error carries the turn's usage too (an
-                // extra field: Claude's error event has none, and its clients ignore what they don't know).
-                yield return ClaudeStyleStream.Event("error", turnUsage is null
-                    ? ApiErrors.Body("api_error", error)
-                    : new { type = "error", error = new { type = "api_error", message = error }, usage = turnUsage });
+                foreach (var item in stream.Fail(error, turnUsage)) yield return item;
             }
             else
             {
