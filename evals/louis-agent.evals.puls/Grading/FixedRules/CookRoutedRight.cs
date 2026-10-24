@@ -17,6 +17,6 @@ public sealed class CookRoutedRight : IGrader
         var scores = CookScorer.ScoreTrial(trial);
         return ValueTask.FromResult(scores.RoutedRight
             ? new Grade(Name, Version, 1, GradeOutcome.Pass, "routed to the cook")
-            : new Grade(Name, Version, 0, GradeOutcome.Fail, (scores.Role is null ? "answered by Puls itself" : $"handled by {scores.Role}")));
+            : new Grade(Name, Version, 0, GradeOutcome.Fail, (scores.Errors > 0 ? "the turn failed" : scores.Role is null ? "answered by Puls itself" : $"handled by {scores.Role}")));
     }
 }

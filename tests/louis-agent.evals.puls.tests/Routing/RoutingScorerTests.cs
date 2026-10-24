@@ -102,6 +102,17 @@ public class RoutingScorerTests
         Assert.That((await new RoutingRoutedRight().GradeAsync(trial, CancellationToken.None)).Outcome, Is.EqualTo(GradeOutcome.Pass));
     }
 
+    [Test]
+    public async Task RoutedRight_SaysItFailedWhenTheTurnErrored()
+    {
+        var mode = new EvalMode("puls-as-built", "puls/voice-af", RoutingSetup.Delegated);
+        var events = new[] { SessionEvent.From("error", Json("{\"type\":\"error\",\"error\":{\"type\":\"api_error\",\"message\":\"overloaded\"}}")) };
+
+        var grade = await new RoutingRoutedRight().GradeAsync(Trial(mode, "web", [events]), CancellationToken.None);
+
+        Assert.That(grade.Reason, Does.Contain("failed"));
+    }
+
     private static TurnView Turn(string? role = null, ToolCall[]? calls = null, string? error = null) =>
         new("Antwoord.", calls ?? [], [], role, null, error, [], []);
 

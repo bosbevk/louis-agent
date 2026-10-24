@@ -53,6 +53,17 @@ public class CookGradersTests
     }
 
     [Test]
+    public async Task RoutedRight_SaysItFailedWhenTheTurnErrored()
+    {
+        // An errored turn with no role is a failure, not an answer by Puls: the reason must say so.
+        var trial = Trial(Cook, "cook-af", [Error("overloaded")]);
+
+        var grade = await new CookRoutedRight().GradeAsync(trial, CancellationToken.None);
+
+        Assert.That(grade.Reason, Does.Contain("failed"));
+    }
+
+    [Test]
     public async Task NoError_FailsOnAnErroredTurn()
     {
         var trial = Trial(Cook, "cook-af", [Start(), Error("overloaded")]);
