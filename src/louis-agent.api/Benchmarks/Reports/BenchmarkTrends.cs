@@ -28,13 +28,7 @@ public static class BenchmarkTrends
     /// <summary>A meal's real answer: at least this share of its ingredients priced with a source (as the explorer's Waarde ring).</summary>
     private const double AnsweredShare = 0.8;
 
-    /// <summary>The model a run recorded for a mode that names none (a run from before step 2a, or a harness that doesn't know it).</summary>
-    private const string UnknownModel = "unknown";
-
-    /// <summary>The level a mode's own model is recorded at (F18 step 2a).</summary>
-    private const string AgentLevel = "agent";
-
-    private static string SeriesName(string mode, string model) => model == UnknownModel ? mode : $"{mode} ({model})";
+    private static string SeriesName(string mode, string? model) => model is null ? mode : $"{mode} ({model})";
 
     public static async Task<Trend> ComputeAsync(IBenchmarkStore store, string check, int limit = 20, CancellationToken cancellationToken = default)
     {
@@ -43,8 +37,8 @@ public static class BenchmarkTrends
             .Where(r => r.Status != BenchmarkRunStatus.Running).Take(limit).Reverse().ToList();
 
         // A line is a mode on one model: runs on two models of one mode are two lines, never one line joining them.
-        var lines = new List<(string Mode, string Model)>();
-        var points = new Dictionary<(string Mode, string Model), List<Point>>();
+        var lines = new List<(string Mode, string? Model)>();
+        var points = new Dictionary<(string Mode, string? Model), List<Point>>();
         foreach (var run in runs)
         {
             var conversations = await store.ConversationsAsync(run.Id, cancellationToken);
@@ -52,7 +46,7 @@ public static class BenchmarkTrends
             int repeats = Math.Max(1, run.Repeat);
             foreach (var mode in conversations.GroupBy(c => c.Key.Mode))
             {
-                string model = run.Models?.FirstOrDefault(m => m.Mode == mode.Key && m.Level == AgentLevel)?.Model ?? UnknownModel;
+                string? model = run.Models?.FirstOrDefault(m => m.Mode == mode.Key && m.Level == BenchmarkModelLevel.Agent)?.Model;
                 var line = (mode.Key, model);
                 if (!points.ContainsKey(line)) { lines.Add(line); points[line] = []; }
                 var mine = requests.Where(r => r.Turn?.Mode == mode.Key).ToList();

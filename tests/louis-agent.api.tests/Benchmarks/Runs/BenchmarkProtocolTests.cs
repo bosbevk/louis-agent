@@ -24,7 +24,7 @@ public class BenchmarkProtocolTests
 
         Assert.That((started.Eval, started.EvalVersion, started.Commit), Is.EqualTo(("cook", (int?)2, "abc123")));
         Assert.That(started.Graders!.Single(), Is.EqualTo(new GraderInfo("priced-with-source", 1, BenchmarkGraderKind.FixedRule)));
-        Assert.That(started.Models!.Single(), Is.EqualTo(new ModelInfo("cook", "agent", "claude-haiku-5-5")));
+        Assert.That(started.Models!.Single(), Is.EqualTo(new ModelInfo("cook", BenchmarkModelLevel.Agent, null, "claude-haiku-5-5")));
     }
 
     [Test]

@@ -193,7 +193,7 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
         })),
         ["models"] = run.Models is null ? BsonNull.Value : new BsonArray(run.Models.Select(m => new BsonDocument
         {
-            ["mode"] = m.Mode, ["level"] = m.Level, ["model"] = m.Model,
+            ["mode"] = m.Mode, ["level"] = m.Level.ToString(), ["role"] = Nullable(m.Role), ["model"] = Nullable(m.Model),
         })),
     };
 
@@ -220,7 +220,7 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
         d.GetValue("graders", BsonNull.Value).IsBsonNull ? null : d["graders"].AsBsonArray.Select(g => g.AsBsonDocument)
             .Select(g => new Grader(g["name"].AsString, g["version"].AsInt32, Enum.Parse<BenchmarkGraderKind>(g["kind"].AsString, ignoreCase: true))).ToArray(),
         d.GetValue("models", BsonNull.Value).IsBsonNull ? null : d["models"].AsBsonArray.Select(m => m.AsBsonDocument)
-            .Select(m => new ModelUse(m["mode"].AsString, m["level"].AsString, m["model"].AsString)).ToArray());
+            .Select(m => new ModelUse(m["mode"].AsString, Enum.Parse<BenchmarkModelLevel>(m["level"].AsString, ignoreCase: true), StringOf(m["role"]), StringOf(m["model"]))).ToArray());
 
     private static BsonDocument ToBson(string run, Conversation c) => new()
     {

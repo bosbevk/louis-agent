@@ -8,7 +8,7 @@ public class RunModelFilterTests
 {
     private static readonly string[] Haiku = ["claude-haiku-5-5"];
     private static readonly string[] Sonnet = ["claude-sonnet-5-5", "claude-haiku-5-5"];
-    private static readonly string[] Unknown = ["unknown"];
+    private static readonly string[] Unknown = [];
 
     [Test]
     public void TheModelsListed_AreTheNamedOnes_DistinctAndInOrder() =>

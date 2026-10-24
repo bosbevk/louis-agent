@@ -10,7 +10,7 @@ public class RunModelsTests
     [Test]
     public void AModelTheRunDidNotDeclare_IsFlagged_ThoseItDid_AreNot()
     {
-        var declared = new[] { new BenchmarkProtocol.ModelInfo("puls-cook", "agent", "claude-haiku-5-5") };
+        var declared = new[] { new BenchmarkProtocol.ModelInfo("puls-cook", BenchmarkModelLevel.Agent, null, "claude-haiku-5-5") };
 
         Assert.That(RunModels.Unlisted(declared, ["claude-haiku-5-5", "claude-sonnet-5-5", null, "claude-sonnet-5-5"]),
             Is.EqualTo(new[] { "claude-sonnet-5-5" }));
@@ -22,5 +22,5 @@ public class RunModelsTests
 
     [Test]
     public void ARunThatDeclaredOnlyUnknown_FlagsNothing() =>
-        Assert.That(RunModels.Unlisted([new BenchmarkProtocol.ModelInfo("puls-cook", "agent", "unknown")], ["claude-haiku-5-5"]), Is.Empty);
+        Assert.That(RunModels.Unlisted([new BenchmarkProtocol.ModelInfo("puls-cook", BenchmarkModelLevel.Agent, null, null)], ["claude-haiku-5-5"]), Is.Empty);
 }

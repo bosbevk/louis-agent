@@ -1,4 +1,3 @@
-using LouisAgent.Api.Benchmarks.Runs;
 using LouisAgent.Api.Benchmarks.Reports;
 using LouisAgent.Api.Benchmarks.Runs;
 using System.Text.Json;
@@ -37,7 +36,7 @@ public static class BenchmarkDocuments
     public sealed record Grader(string Name, int Version, BenchmarkGraderKind Kind);
 
     /// <summary>The model one level of the run ran on (F18 step 2a): its mode, its level and the model ("unknown" when not known).</summary>
-    public sealed record ModelUse(string Mode, string Level, string Model);
+    public sealed record ModelUse(string Mode, BenchmarkModelLevel Level, string? Role, string? Model);
 
     /// <summary>A mode's repeat as it opened its sessions.</summary>
     public sealed record Mode(string Name, int Repeat, IReadOnlyList<string> Toolsets, string? Role, string? Llm);

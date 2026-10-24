@@ -32,7 +32,7 @@ public static class BenchmarkProtocol
     public sealed record GraderInfo(string Name, int Version, BenchmarkGraderKind Kind);
 
     /// <summary>The model one level of the run ran on: its mode, its level (agent, specialist, minion, grader) and the model.</summary>
-    public sealed record ModelInfo(string Mode, string Level, string Model);
+    public sealed record ModelInfo(string Mode, BenchmarkModelLevel Level, string? Role, string? Model);
 
     /// <summary>One grader's verdict on a conversation: its score, its outcome ("Pass", "Fail", "Unknown") and the reason.</summary>
     public sealed record GradeInfo(string Grader, int Version, double Score, BenchmarkOutcome Outcome, string Reason);
@@ -107,7 +107,7 @@ public static class BenchmarkProtocol
     /// <summary>The model each level ran on, from the protocol line's <c>models</c>; null when the line doesn't name any.</summary>
     private static IReadOnlyList<ModelInfo>? Models(JsonElement e) =>
         e.TryGetProperty("models", out var value) && value.ValueKind == JsonValueKind.Array
-            ? value.EnumerateArray().Select(m => new ModelInfo(Required(m, "mode"), Required(m, "level"), Required(m, "model"))).ToArray()
+            ? value.EnumerateArray().Select(m => new ModelInfo(Required(m, "mode"), Choice<BenchmarkModelLevel>(m, "level"), Text(m, "role"), Text(m, "model"))).ToArray()
             : null;
 
     /// <summary>The grades of a conversation, from its <c>grades</c>; null when the line doesn't carry any.</summary>

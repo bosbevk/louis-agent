@@ -57,9 +57,9 @@ public class BenchmarkTrendTests
     public async Task ARunOnAnotherModel_IsAnotherLine_AndAModeWithoutOneKeepsItsName()
     {
         await Run("a", "cook", hour: 1, repeat: 1, BenchmarkRunStatus.Done, cookCost: 0.04m, right: 3,
-            models: [new ModelUse("puls-cook", "agent", "claude-haiku-5-5")]);
+            models: [new ModelUse("puls-cook", BenchmarkModelLevel.Agent, "puls-cook", "claude-haiku-5-5")]);
         await Run("b", "cook", hour: 2, repeat: 1, BenchmarkRunStatus.Done, cookCost: 0.05m, right: 3,
-            models: [new ModelUse("puls-cook", "agent", "claude-sonnet-5-5")]);
+            models: [new ModelUse("puls-cook", BenchmarkModelLevel.Agent, "puls-cook", "claude-sonnet-5-5")]);
 
         var trend = await BenchmarkTrends.ComputeAsync(_store, "cook");
 

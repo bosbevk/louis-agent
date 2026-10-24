@@ -133,7 +133,7 @@ public abstract class BenchmarkStoreContract
             EvalVersion = 2,
             Commit = "abc123",
             Graders = [new Grader("priced-with-source", 1, BenchmarkGraderKind.FixedRule)],
-            Models = [new ModelUse("cook", "agent", "claude-haiku-5-5")],
+            Models = [new ModelUse("cook", BenchmarkModelLevel.Agent, "puls-cook", "claude-haiku-5-5")],
         };
 
         await _store.SaveRunAsync(run);

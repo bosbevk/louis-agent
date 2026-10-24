@@ -64,12 +64,12 @@ public class ProtocolWriterTests
         var sink = new StringWriter();
 
         new ProtocolWriter(sink, new FixedClock(At)).Begin("cook", 2, "abc123",
-            [new FakeGrader("priced-with-source", 1, GraderKind.FixedRule)], [new ModelUse("cook", "agent", "claude-haiku-5-5")]);
+            [new FakeGrader("priced-with-source", 1, GraderKind.FixedRule)], [new ModelUse("cook", ModelLevel.Agent, "puls-cook", "claude-haiku-5-5")]);
 
         var started = (BenchmarkProtocol.ProtocolStarted)BenchmarkProtocol.Parse(Lines(sink)[0]);
         Assert.That((started.Version, started.Eval, started.EvalVersion, started.Commit), Is.EqualTo((1, "cook", (int?)2, "abc123")));
         Assert.That(started.Graders!.Single(), Is.EqualTo(new BenchmarkProtocol.GraderInfo("priced-with-source", 1, BenchmarkGraderKind.FixedRule)));
-        Assert.That(started.Models!.Single(), Is.EqualTo(new BenchmarkProtocol.ModelInfo("cook", "agent", "claude-haiku-5-5")));
+        Assert.That(started.Models!.Single(), Is.EqualTo(new BenchmarkProtocol.ModelInfo("cook", BenchmarkModelLevel.Agent, "puls-cook", "claude-haiku-5-5")));
     }
 
     [Test]

@@ -122,8 +122,9 @@ public sealed class ProtocolWriter(TextWriter stdout, TimeProvider clock)
             {
                 json.WriteStartObject();
                 json.WriteString("mode", use.Mode);
-                json.WriteString("level", use.Level);
-                json.WriteString("model", use.Model);
+                json.WriteString("level", use.Level.ToString());
+                WriteText(json, "role", use.Role);
+                WriteText(json, "model", use.Model);
                 json.WriteEndObject();
             }
             json.WriteEndArray();

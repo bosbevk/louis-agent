@@ -12,7 +12,7 @@ public static class RunModelFilter
         var models = new List<string>();
         foreach (var run in runs)
             foreach (string model in run ?? [])
-                if (model != Unknown && !models.Contains(model)) models.Add(model);
+                if (!models.Contains(model)) models.Add(model);
         return models;
     }
 
@@ -20,5 +20,4 @@ public static class RunModelFilter
     public static bool Matches(IReadOnlyList<string>? runModels, string? picked) =>
         picked is null || (runModels is not null && runModels.Contains(picked));
 
-    private const string Unknown = "unknown";
 }

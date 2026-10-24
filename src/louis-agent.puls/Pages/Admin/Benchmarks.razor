@@ -358,7 +358,7 @@ else if (_data is { } data)
         r.TryGetProperty("total", out var t) && t.ValueKind == JsonValueKind.Object ? new Total(Dec(t, "cost"), t.GetProperty("requests").GetInt32()) : null,
         Str(r, "store_error"),
         r.TryGetProperty("models", out var models) && models.ValueKind == JsonValueKind.Array
-            ? models.EnumerateArray().Select(m => m.GetProperty("model").GetString()!).ToList()
+            ? models.EnumerateArray().Select(m => m.GetProperty("model")).Where(v => v.ValueKind == JsonValueKind.String).Select(v => v.GetString()!).ToList()
             : null);
 
     /// <summary>A run started before this page opened (a reload): its finished turns from the store, then its events.</summary>

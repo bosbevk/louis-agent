@@ -186,6 +186,13 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   the ledger flag) were built in 9942318; step 4 re-checks them once the models are real. `Started()` is kept only for
   the parity test against the Python's first line; a run writes `Begin`. Nothing stamps `-p:EvalCommit` yet, so every
   run says `unknown` until the runner's image is built in step 4, which stamps the commit.
+
+  Second review of step 2a: the level is an enum (`ModelLevel` in the harness, `BenchmarkModelLevel` in the API: Agent,
+  Specialist, Minion, Grader), and a specialist's role is its own field, so two specialists are both Specialist. An
+  unknown model is null, not a string, as an unpriced cost is null: the readers skip null. Step 4 must declare every
+  level of a run at once, the agent, each specialist and minion role it calls and the grader; declared one at a time,
+  the flag fires on every specialist and grader row as soon as the agent's model is real. Nothing is unknown but the
+  models themselves until step 4 reads them from the session.
 - **Step 1d** (`louis-agent.orchestrator`): `LouisAgentClient.ReadStreamAsync` takes the response's stream and reads its
   events through the reader, folding them by their record types; the framing loop is gone. Its tests feed the same SSE
   text as bytes instead of a `StringReader`, with no assertion changed.
