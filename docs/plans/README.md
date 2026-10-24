@@ -11,6 +11,7 @@ or fix doc (*What the build changed*), not here.
 | Plan | For | Approved | Notes |
 |---|---|---|---|
 | [platform.md](platform.md) | The roadmap: CL15, F18, F40, F7, F39, FX4, F41, F42, F36, F43, F8, F15, F44, Puls's track | 2026-10-19 | One engine, its identities and packs (CL15), C# simulations (F18), the sales playground (F40), then the control layer phase by phase; replaces the CL15 and F39 drafts; the 15 questions answered in it (orchestrator `voorman`, a place specialist with sites as data) |
+| [F18-evals.md](F18-evals.md) | TODO: *F18* (Phase 3 of [platform.md](platform.md)); [F18](../features/F18-evaluation.md) | 2026-10-24 | The platform plan's Phase 3, copied with the 2026-10-20 and 2026-10-24 decisions: the word *eval* everywhere (`IEval`, `evals/`, `/admin/evals`); one stream reader and a pluggable writer (CL11, CL18); the Python checks rewritten in C# with datasets as files and graders by kind; recorded web input, a replay cache, the prompt's hash, traces and hashed logs; pass@k, pass^k and categories; every eval in the admin, the API naming no product (ADR 0037) |
 | [CL19-config-by-place.md](CL19-config-by-place.md) | TODO: *CL19 Config and Docker by place* (cleanup) | 2026-10-24 | A folder is one kind of thing for one place: `config/` what the app reads (unchanged, so no code moves), `docker/` this PC (`images/`, the stacks, a home override that publishes the browser and Mongo on the Tailscale IP), `deploy/azure/` the cloud (the app yamls with `secretRef`s, one `ts-forwarder` sidecar for both ports, `deploy.ps1`, the how-to); `puls-agent` deleted; `services/` and `config/azure/` go |
 | [CL15-engine-identities-packs.md](CL15-engine-identities-packs.md) | TODO: *CL15 Engine, identities and packs* (Phase 2 of [platform.md](platform.md)) | 2026-10-19 | The platform plan's Phase 2, copied as approved: a Puls golden first (step 0); `IAgentIdentity`, `IAgentPack` and one `AgentCatalog`; Puls an identity and shops a pack; `HOST_TIME_ZONE`; every pack convertible to MCP. Done: PR #71 (2026-10-20), its paid cook run on the finished branch |
 | [platform-summary.md](platform-summary.md) | The platform plan, for someone outside the project | 2026-10-19 | Two pages to give an investor or partner: what Puls is, what's built and measured, the ten phases, how it makes money, competition and risks; its ask is for Louis to fill in |
@@ -58,7 +59,7 @@ or fix doc (*What the build changed*), not here.
   says how. It is the one name allowed outside `Fnn`/`FXnn`/`CLn`, and after its approval it is never edited except to
   link each phase's plan.
 - **A phase's plan is copied from the roadmap**, as approved, into its own file on the phase's own branch before its
-  first step (`CL15-engine-identities-packs.md`, `F18-simulations.md`, `F40-sales-playground.md`,
+  first step (`CL15-engine-identities-packs.md`, `F18-evals.md`, `F40-sales-playground.md`,
   `F39-orchestration.md`), with its diagrams, namespace map and folder trees; *Approved during the build* goes only in
   that copy. A phase the roadmap names without a section of its own (5, 7, 8 and 9) gets a new plan, approved by Louis
   before its first step.
