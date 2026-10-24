@@ -374,9 +374,9 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   the runner's conformance test with `the known-bad transcript passes every required grader`, and the stub's grader that passed
   everything is gone.
   Decisions to review:
-  - The reference transcripts are the Python stub's own protocol lines, read back by `ProtocolTranscripts`; the known-bad one is
-    the same conversation with an error event added to its first turn, as the stream would send it. A scenario with no reference
-    fails the check (`NoCase`), so a new eval brings its references.
+  - The reference transcripts are the Python stub's own protocol lines, read back by `ProtocolTranscripts`. The known-bad ones
+    are the same conversation wrong in one way each (see the review note below). A scenario with no reference fails the check
+    (`NoCase`), so a new eval brings its references.
   - The stub's graders are now the common no-error grader and the within-time grader at one minute, both required. The stub's
     own grader, which passed every trial, could not fail a known-bad transcript, so the check caught it; it is removed.
   - The turn line's `error` field is not read by `ProtocolTranscripts`: the error is the sse line's error event, and reading the
@@ -384,6 +384,17 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
 - **Review of step 4.2a, nits** (2026-10-25): the no-error reason carries the stream's error message (`ErrorInTurnWithMessage`), so a
   person sees why. `EngineEvents` never throws on an odd event: a content block with no name, a block that isn't an object, a usage
   count that isn't a number, all read as absent (no route, or an unknown cost). Each has a red test first.
+- **Review of step 4.2b** (2026-10-25): the conformance cases are files beside the eval, `Transcripts/{eval}/` (the stub's in the
+  runner, the fake set's in the runner's tests, Puls's in step 5): `{scenario}.reference.txt` and `{scenario}.bad.{label}.txt`, read by
+  `ConformanceCases.Load`. The known-bad transcripts are no longer one error-only transcript: each required grader must FAIL at least one
+  of them (an Unknown is not a fail), and no known-bad may pass every required grader. The stub's known-bads are the error (no-error
+  fails) and a first turn of 61 s (within-time fails). Shape checks added: grader names unique, grader versions at least 1. The
+  runner's conformance test is one test per eval (`TestCaseSource`), so each eval shows on its own line. Red first: 22 harness
+  tests and 3 runner tests failed on their stubs. Mutation: a within-time grader that never flags a slow turn fails the runner's
+  conformance test with `no known-bad transcript fails the required grader 'within-time'`.
+  Decisions to review:
+  - A known-bad that's a file beside the eval, not code in the test: the references are data, reviewed as data.
+  - The check is a function in the harness that any eval set can call (a package user's check), and the runner only runs it.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

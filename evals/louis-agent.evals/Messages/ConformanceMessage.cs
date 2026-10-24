@@ -32,8 +32,17 @@ public enum ConformanceMessage
     [Description("scenario '{Scenario}': the reference transcript fails the required grader '{Grader}': {Reason}")]
     ReferenceFails,
 
-    [Description("scenario '{Scenario}': the known-bad transcript passes every required grader, so the graders can't tell.")]
+    [Description("scenario '{Scenario}': the known-bad transcript '{Label}' passes every required grader, so the graders can't tell.")]
     BadPasses,
+
+    [Description("scenario '{Scenario}': no known-bad transcript fails the required grader '{Grader}', so that grader is never shown to fail.")]
+    NoKnownBadFails,
+
+    [Description("eval '{Name}' has two graders named '{Grader}'.")]
+    DuplicateGrader,
+
+    [Description("grader '{Grader}' has version {Version}; versions start at 1.")]
+    GraderVersionBelowOne,
 
     [Description("grader '{Grader}' threw: {Reason}.")]
     GraderThrew,

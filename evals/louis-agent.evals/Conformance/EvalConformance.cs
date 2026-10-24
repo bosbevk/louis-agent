@@ -10,9 +10,10 @@ namespace LouisAgent.Evals.Conformance;
 
 /// <summary>
 /// The conformance check every eval must pass (F18 step 4.2b): its shape (a name safe as an MCP tool name, a version of at least 1,
-/// a required fixed rule, every expected key read by a grader), every grade (a reason, a score from 0 to 1, an outcome that agrees
-/// with its score), and each scenario's reference transcripts (the reference passes the required graders, the known-bad one fails
-/// them). Returns the failures, each as a sentence a person reads.
+/// graders with unique names and versions of at least 1, a required fixed rule, every expected key read by a grader), every grade (a
+/// reason, a score from 0 to 1, an outcome that agrees with its score), and each scenario's references: the reference passes the required
+/// graders, no known-bad passes them all, and every required grader fails at least one known-bad. Unknown is not a fail. Returns the
+/// failures, each as a sentence a person reads.
 /// </summary>
 public static class EvalConformance
 {
@@ -45,10 +46,21 @@ public static class EvalConformance
                         new { Scenario = scenario.Id, Grader = grader.Name, Reason = grade.Reason }));
             }
 
-            var knownBad = await GradeAllAsync(eval, Trial(scenario, conformanceCase.Mode, conformanceCase.KnownBad), failures, cancellationToken);
-            var requiredBad = knownBad.Where(g => required.Any(r => r.Name == g.Grader)).ToList();
-            if (required.Count > 0 && requiredBad.Count == required.Count && requiredBad.All(g => g.Outcome == GradeOutcome.Pass))
-                failures.Add(MessageText.Format(ConformanceMessage.BadPasses, new { Scenario = scenario.Id }));
+            var failedBy = new HashSet<string>(StringComparer.Ordinal);
+            foreach (KnownBad bad in conformanceCase.KnownBad)
+            {
+                var grades = await GradeAllAsync(eval, Trial(scenario, conformanceCase.Mode, bad.Transcript), failures, cancellationToken);
+                var requiredGrades = grades.Where(g => required.Any(r => r.Name == g.Grader)).ToList();
+                if (required.Count > 0 && requiredGrades.Count == required.Count && requiredGrades.All(g => g.Outcome == GradeOutcome.Pass))
+                    failures.Add(MessageText.Format(ConformanceMessage.BadPasses, new { Scenario = scenario.Id, Label = bad.Label }));
+                foreach (Grade grade in grades)
+                    if (grade.Outcome == GradeOutcome.Fail) failedBy.Add(grade.Grader);
+            }
+
+            // A known-bad that a grader only calls Unknown doesn't show it failing: only a Fail counts.
+            foreach (IGrader grader in required)
+                if (!failedBy.Contains(grader.Name))
+                    failures.Add(MessageText.Format(ConformanceMessage.NoKnownBadFails, new { Scenario = scenario.Id, Grader = grader.Name }));
         }
         return failures;
     }
@@ -62,6 +74,14 @@ public static class EvalConformance
         if (eval.Version < 1) failures.Add(MessageText.Format(ConformanceMessage.VersionBelowOne, new { Name = eval.Name, Version = eval.Version }));
         if (!eval.Graders.Any(grader => grader.Required && grader.Kind == GraderKind.FixedRule))
             failures.Add(MessageText.Format(ConformanceMessage.NoRequiredFixedRule, new { Name = eval.Name }));
+
+        var names = new HashSet<string>(StringComparer.Ordinal);
+        foreach (IGrader grader in eval.Graders)
+        {
+            if (!names.Add(grader.Name)) failures.Add(MessageText.Format(ConformanceMessage.DuplicateGrader, new { Name = eval.Name, Grader = grader.Name }));
+            if (grader.Version < 1)
+                failures.Add(MessageText.Format(ConformanceMessage.GraderVersionBelowOne, new { Grader = grader.Name, Version = grader.Version }));
+        }
 
         var keys = eval.Graders.SelectMany(grader => grader.ExpectedKeys).ToHashSet();
         foreach (EvalScenario scenario in eval.Scenarios)

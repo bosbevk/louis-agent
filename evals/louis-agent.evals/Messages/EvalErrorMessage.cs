@@ -11,6 +11,9 @@ public enum EvalErrorMessage
     [Description("Scenario '{Id}' has no messages, so there is nothing to run.")]
     NoMessages,
 
+    [Description("the protocol's lines have no mode line, so the conversation's mode is unknown.")]
+    NoModeLine,
+
     [Description("it holds no JSON object")]
     EmptyFile,
 

@@ -107,8 +107,56 @@ public class EvalConformanceCheckTests
         Assert.That(Joined(await CheckAsync(Conforming(), [])), Does.Contain("no reference transcript"));
     }
 
+    [Test]
+    public async Task AKnownBadMustFailEveryRequiredGrader()
+    {
+        // A grader that passes every trial fails no known-bad: an error-only known-bad never caught the stub's within-time grader.
+        var eval = Conforming(graders: [new NoErrorGrader(), new FakeGrader("within", _ => Passed("within"))]);
+
+        Assert.That(Joined(await CheckAsync(eval, Case(Clean, Errored))),
+            Does.Contain("no known-bad transcript fails the required grader 'within'"));
+    }
+
+    [Test]
+    public async Task AnUnknownIsNotAFail()
+    {
+        // Unknown means the grader can't tell: it doesn't show that a grader fails on a known-bad transcript.
+        var unknownOnError = new FakeGrader("unknown-on-error", trial => EngineEvents.StreamedError(trial.Transcript.Turns[0])
+            ? new Grade("unknown-on-error", 1, 0, GradeOutcome.Unknown, "can't tell")
+            : Passed("unknown-on-error"));
+
+        Assert.That(Joined(await CheckAsync(Conforming(graders: [unknownOnError]), Case(Clean, Errored))),
+            Does.Contain("no known-bad transcript fails the required grader 'unknown-on-error'"));
+    }
+
+    [Test]
+    public async Task ANoKnownBadAtAllFails()
+    {
+        var none = new ConformanceCase("bobotie", Mode, Clean, []);
+
+        Assert.That(Joined(await CheckAsync(Conforming(), none)), Does.Contain("no known-bad transcript fails the required grader 'no-error'"));
+    }
+
+    [Test]
+    public async Task TwoGradersWithOneNameFail()
+    {
+        var eval = Conforming(graders: [new NoErrorGrader(), new NoErrorGrader()]);
+
+        Assert.That(Joined(await CheckAsync(eval, Case(Clean, Errored))), Does.Contain("two graders named 'no-error'"));
+    }
+
+    [Test]
+    public async Task AGraderVersionBelowOneFails()
+    {
+        var eval = Conforming(graders: [new FakeGrader("old", _ => Passed("old"), version: 0)]);
+
+        Assert.That(Joined(await CheckAsync(eval, Case(Clean, Errored))), Does.Contain("grader 'old' has version 0"));
+    }
+
+    private static Grade Passed(string name) => new(name, 1, 1, GradeOutcome.Pass, "passed");
+
     private static ConformanceCase Case(Transcript reference, Transcript knownBad, string scenario = "bobotie") =>
-        new(scenario, Mode, reference, knownBad);
+        new(scenario, Mode, reference, [new KnownBad("bad", knownBad)]);
 
     private static FakeEval Conforming(string name = "cook", int version = 1, IReadOnlyList<IGrader>? graders = null,
         IReadOnlyList<EvalScenario>? scenarios = null) =>
@@ -134,10 +182,10 @@ public class EvalConformanceCheckTests
     }
 
     /// <summary>A grader whose verdict is the function's; a function that throws is a grader that throws.</summary>
-    private sealed class FakeGrader(string name, Func<Trial, Grade> grade) : IGrader
+    private sealed class FakeGrader(string name, Func<Trial, Grade> grade, int version = 1) : IGrader
     {
         public string Name { get; } = name;
-        public int Version => 1;
+        public int Version { get; } = version;
         public GraderKind Kind => GraderKind.FixedRule;
         public bool Required => true;
         public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string>();

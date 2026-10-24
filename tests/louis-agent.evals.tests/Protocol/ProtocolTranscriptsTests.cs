@@ -39,6 +39,24 @@ public class ProtocolTranscriptsTests
     }
 
     [Test]
+    public void ReadsTheModeOfTheConversation()
+    {
+        var mode = ProtocolTranscripts.ReadMode(Lines);
+
+        Assert.That((mode.Name, mode.Role), Is.EqualTo(("puls-cook", "puls/voice-af")));
+    }
+
+    [Test]
+    public void ReadsEveryLineOfAFileWithNoFilter()
+    {
+        // A file is one conversation: the reader takes all its lines, the other mode's error line too.
+        var transcript = ProtocolTranscripts.ReadConversation(Lines);
+
+        Assert.That(transcript.Turns.Select(turn => turn.Turn), Is.EqualTo(new[] { 1 }));
+        Assert.That(transcript.Turns.Single().Events.Select(e => e.Type), Does.Contain("error"));
+    }
+
+    [Test]
     public void LeavesOutAnotherModesLines()
     {
         // The puls-only error line is another conversation's: it doesn't reach this one's turn.

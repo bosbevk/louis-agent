@@ -30,4 +30,12 @@
     <None Include="Fixtures\python-stub.txt" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- F18 step 4.2b review: each eval's conformance transcripts sit beside it and are copied beside the tests: the stub's, the
+         Puls evals' (step 5), and the fake set's, which live here. -->
+    <None Include="..\..\evals\louis-agent.evals.runner\Transcripts\**\*" Link="Transcripts\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\evals\louis-agent.evals.puls\Transcripts\**\*" Link="Transcripts\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="Transcripts\**\*" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>
