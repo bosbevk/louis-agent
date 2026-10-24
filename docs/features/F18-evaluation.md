@@ -345,11 +345,18 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   Red first: the 21 tests that call a stub failed with `NotImplementedException`, and the enum test failed with
   `Missing items: CommonGradeMessage`. Mutation: an unknown cost made a pass fails two cost tests.
   Decisions to review:
+  Decisions approved by Louis on the review (2026-10-25):
   - The cost is the sum of the turns' `usage.cost` from the stream, which is the ledger's total per turn; no price is worked out
     in the harness. A turn with an unpriced request has no known cost (the stream's `unpriced` count is above zero).
   - The route is the first turn's first `StartSubSession` role, the engine's own tool, and not the `session_role` the stream
     reports on message_start: "went to role X" is a call to X, as Anthropic's tool-call grader checks.
   - `EngineEvents` is the one reader; a grader does not parse the stream itself.
+  Review fixes (2026-10-25): `RoutedToGrader` takes the expected role per trial (`Func<Trial, string?>`; null means the agent
+  answers itself, as Puls-only's cook mode expects), and a turn that streamed an error fails the route, as the Python check does.
+  An infrastructure failure (a timeout, a dropped connection: `TrialFailure`) is reported apart: `Verdict.InfrastructureFailure`
+  makes it Unknown in all four graders, never a Fail. A specialist's error, its own hand-over and its usage are not the turn's:
+  the reader reads the top-level events only, and each of those is pinned by a test (one mutation of the error rule fails two).
+  `EngineEventsTests` moved to `Trials/`, with `TrialBuilder`, to mirror the source.
 - **Review of step 4.1, leftovers** (2026-10-25): a scenario with no messages is refused, not skipped: the catalogue refuses
   it when it is built (`RunnerMessage.NoMessages`, tested), and the dataset loader refuses it when the file is read
   (`EvalErrorMessage.NoMessages`, tested). The runner's own skip stays as a guard, now unreachable from a catalogue. The

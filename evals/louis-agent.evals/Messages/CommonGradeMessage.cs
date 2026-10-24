@@ -37,4 +37,16 @@ public enum CommonGradeMessage
 
     [Description("there was no turn to route")]
     NoTurn,
+
+    [Description("turn {Turn} failed for the infrastructure ({Failure}), so it can't be judged")]
+    InfrastructureFailure,
+
+    [Description("the turn failed")]
+    TurnFailed,
+
+    [Description("answered itself, as expected")]
+    AnsweredAsExpected,
+
+    [Description("handed to {Actual}, not answered itself")]
+    HandedAway,
 }

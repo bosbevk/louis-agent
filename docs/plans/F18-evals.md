@@ -1129,6 +1129,11 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
   `--list` escapes an apostrophe, which is valid JSON; a mode whose eval has no session client is refused until step 5. The
   review's fixes (the run's name from `BENCHMARK_RUN`, the catalogue's refusal of an unknown name, the stub's cook reply in its
   enum, `AgentCalls` for the harness's field) are recorded in the feature doc.
+- **Step 4.2a's decisions approved** (Louis, 2026-10-25, on the review of `d277378`). The cost is the stream's `usage.cost`, the
+  ledger's total per turn, summed over the turns, with no price worked out in the harness and an unpriced request making it
+  unknown; the route is the first turn's first `StartSubSession` role, not the stream's `session_role`; and each common grader
+  takes a `required` flag, default true. The review's fixes (the expected role per trial, the error that fails a route, the
+  infrastructure failure as Unknown, the specialist's events not counted) are recorded in the feature doc.
 
 ---
 [Docs index](../README.md) · [Plans](README.md) · [Platform plan](platform.md) · [Feature F18](../features/F18-evaluation.md)

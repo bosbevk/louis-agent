@@ -1,7 +1,7 @@
 using LouisAgent.Evals.Trials;
-using static LouisAgent.Evals.Tests.Grading.Common.TrialBuilder;
+using static LouisAgent.Evals.Tests.Trials.TrialBuilder;
 
-namespace LouisAgent.Evals.Tests.Grading.Common;
+namespace LouisAgent.Evals.Tests.Trials;
 
 // The one reader of the engine's events (F18 step 4.2). Written first: the reader threw NotImplementedException on the red run.
 public class EngineEventsTests
@@ -38,11 +38,37 @@ public class EngineEventsTests
     }
 
     [Test]
-    public void AnErrorEventOrAFailureIsAnError()
+    public void AStreamedErrorIsTheTurnsError()
     {
-        Assert.That(EngineEvents.RaisedError(Turn(1, [Error()])), Is.True);
-        Assert.That(EngineEvents.RaisedError(Turn(1, failure: TrialFailure.Timeout)), Is.True);
-        Assert.That(EngineEvents.RaisedError(Turn(1, [Text("Hallo")])), Is.False);
+        Assert.That(EngineEvents.StreamedError(Turn(1, [Error()])), Is.True);
+        Assert.That(EngineEvents.StreamedError(Turn(1, [Text("Hallo")])), Is.False);
+    }
+
+    [Test]
+    public void AnInfrastructureFailureIsReportedApart()
+    {
+        // A timeout is the infrastructure's, not the agent's: it is reported as its own failure, and no error event.
+        Assert.That(EngineEvents.InfrastructureFailure(Turn(1, failure: TrialFailure.Timeout)), Is.EqualTo(TrialFailure.Timeout));
+        Assert.That(EngineEvents.StreamedError(Turn(1, failure: TrialFailure.Timeout)), Is.False);
+        Assert.That(EngineEvents.InfrastructureFailure(Turn(1, [Text("Hallo")])), Is.Null);
+    }
+
+    [Test]
+    public void ASpecialistsErrorIsNotTheTurnsError()
+    {
+        Assert.That(EngineEvents.StreamedError(Turn(1, [SubError()])), Is.False);
+    }
+
+    [Test]
+    public void ASpecialistsUsageIsNotAddedToTheTurnsCost()
+    {
+        Assert.That(EngineEvents.CostOf(Turn(1, [SubUsage("0.5"), Usage("0.25")])), Is.EqualTo(0.25m));
+    }
+
+    [Test]
+    public void ASpecialistsCallIsNotTheTurnsRoute()
+    {
+        Assert.That(EngineEvents.RoutedRole(Turn(1, [SubCall("puls-cook")])), Is.Null);
     }
 
     [Test]

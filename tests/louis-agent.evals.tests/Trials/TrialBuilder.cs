@@ -3,7 +3,7 @@ using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Trials;
 using LouisAgent.SessionStream;
 
-namespace LouisAgent.Evals.Tests.Grading.Common;
+namespace LouisAgent.Evals.Tests.Trials;
 
 /// <summary>Builds the trials the common graders are scored on: canned events, and turns with their durations and failures.</summary>
 internal static class TrialBuilder
@@ -34,6 +34,18 @@ internal static class TrialBuilder
 
     public static SessionEvent Text(string text) =>
         SessionEvent.From("content_block_delta", Json("""{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"TEXT"}}""".Replace("TEXT", text)));
+
+    /// <summary>A specialist's error, carried on the turn's stream as a sub_session event (it is not the turn's error).</summary>
+    public static SessionEvent SubError() =>
+        SessionEvent.From("sub_session", Json("""{"tool_use_id":"t0","agent":"puls","event":"error","data":{"type":"error","error":{"type":"api_error","message":"overloaded"}}}"""));
+
+    /// <summary>A specialist's own StartSubSession call, carried as a sub_session event (it is not the turn's route).</summary>
+    public static SessionEvent SubCall(string role) =>
+        SessionEvent.From("sub_session", Json("""{"tool_use_id":"t0","agent":"puls","event":"content_block_start","data":{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"t2","name":"StartSubSession","input":{"agent":"puls","role":"ROLE"}}}}""".Replace("ROLE", role)));
+
+    /// <summary>A specialist's usage, carried as a sub_session event (the turn's usage is the top-level one).</summary>
+    public static SessionEvent SubUsage(string cost) =>
+        SessionEvent.From("sub_session", Json("""{"tool_use_id":"t0","agent":"puls","event":"message_delta","data":{"type":"message_delta","delta":{"stop_reason":"end_turn"},"usage":{"cost":COST,"unpriced":0}}}""".Replace("COST", cost)));
 
     public static JsonElement Json(string text) => JsonDocument.Parse(text).RootElement.Clone();
 }

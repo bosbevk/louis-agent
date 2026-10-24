@@ -18,6 +18,7 @@ public sealed class CostUnderGrader(decimal limit, bool required = true) : IGrad
 
     public ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken)
     {
+        if (Verdict.InfrastructureFailure(Name, Version, trial.Transcript.Turns) is { } unknown) return ValueTask.FromResult(unknown);
         decimal total = 0;
         foreach (var turn in trial.Transcript.Turns)
         {

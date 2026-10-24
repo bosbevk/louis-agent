@@ -10,8 +10,11 @@ namespace LouisAgent.Evals.Trials;
 /// </summary>
 public static class EngineEvents
 {
-    /// <summary>True when the turn streamed an error event, or ended in a failure.</summary>
-    public static bool RaisedError(TurnTranscript turn) => turn.Failure is not null || turn.Events.Any(e => e is ErrorReported);
+    /// <summary>True when the turn streamed an error event: the agent's error. A specialist's error is not the turn's.</summary>
+    public static bool StreamedError(TurnTranscript turn) => turn.Events.Any(e => e is ErrorReported);
+
+    /// <summary>The infrastructure's failure of the turn (a timeout, a dropped connection), reported apart from the agent's errors.</summary>
+    public static TrialFailure? InfrastructureFailure(TurnTranscript turn) => turn.Failure;
 
     /// <summary>The turn's cost in the ledger's currency; null when unknown (no usage, no cost, or a request with no price).</summary>
     public static decimal? CostOf(TurnTranscript turn)
