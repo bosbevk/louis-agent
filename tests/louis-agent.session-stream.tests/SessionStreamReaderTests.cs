@@ -131,6 +131,20 @@ public class SessionStreamReaderTests
     }
 
     [Test]
+    public async Task TheByteArrayReadOfAStreamEndedByBlankLineGivesTheBlankLine()
+    {
+        // The plain Stream overload too: it must not block on the inner stream to give the blank line.
+        var stream = new EndedByBlankLine(new MemoryStream());
+        var buffer = new byte[4];
+
+        int count = await stream.ReadAsync(buffer, 0, buffer.Length, CancellationToken.None);
+
+        Assert.That(count, Is.EqualTo(2));
+        Assert.That(buffer.AsSpan(0, 2).ToArray(), Is.EqualTo("\n\n"u8.ToArray()));
+        Assert.That(await stream.ReadAsync(buffer, 0, buffer.Length, CancellationToken.None), Is.EqualTo(0));
+    }
+
+    [Test]
     public async Task MultiLineDataIsJoinedWithNewlines()
     {
         var events = await ReadAsync("event: content_block_delta\ndata: {\"a\":\ndata: 1}\n\n");

@@ -7,6 +7,10 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="louis-agent.session-stream.tests" />
+  </ItemGroup>
+
   <!-- F18 step 1a: the one reader of a session's stream. No package: SseParser is in the BCL (System.Net.ServerSentEvents). -->
 
 </Project>

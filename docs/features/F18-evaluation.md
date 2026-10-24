@@ -111,6 +111,7 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
 - The plan's steps pass their tests; the golden files are unchanged, or reviewed.
 - Louis has read the write-ups (step 8): skill 12's, the new evaluation one, and skill 13's, with the replay cache, traces and the prompt hash (skills 17 and 3).
 - The paid runs are made only on Louis's go: one cook and one routing run in step 5, recorded beside the last Python runs; a free replay of each costs $0.
+- Every eval is listed in the admin portal, including one never run, and `ApiNamesNoProductTests` passes (step 7b).
 - **Then finish up** (see [Finishing a feature](README.md#finishing-a-feature)): move **F18** to the CHANGELOG, set *Status* to done here and in the features table, and update skill 12 in the goal map.
 
 ## What the build changed
@@ -136,6 +137,9 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   as the last event, a stop as the last) depend on it. The reader gets the blank line from a wrapper stream
   (`EndedByBlankLine`), with its own test written first and seen failing. A cut-off connection's last event is read
   the same way, and one cut inside a line is kept as an `UnknownEvent`.
+  One behaviour change comes with the SSE framing: an event with no `event:` line gets the type `message`, and the name
+  resets for each event, where the old loop kept the last name. Nothing changes today, because our API always sends
+  `event:`.
 - **Step 1d** (`louis-agent.orchestrator`): `LouisAgentClient.ReadStreamAsync` takes the response's stream and reads its
   events through the reader, folding them by their record types; the framing loop is gone. Its tests feed the same SSE
   text as bytes instead of a `StringReader`, with no assertion changed. The file was already on the size ratchet
