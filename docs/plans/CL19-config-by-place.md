@@ -261,6 +261,12 @@ step names, so CL15's uncommitted code changes stay in the working tree untouche
 - The `mongo-data` share and the `mongo` image in the registry are unused with Mongo on the PC; the how-to lists
   them as such, deleting them is Louis's call.
 
+## Approved during the build
+
+- **A short README in each of the three folders** (Louis, 2026-10-24, during step 5): `config/README.md`,
+  `docker/README.md` and `deploy/README.md` (which points at `azure/`), each a reference of a few lines saying what the
+  folder holds and where the how-to is, written in step 6 beside the Azure how-to.
+
 ## Concepts
 
 Configuration as code by environment (one folder per place, templates tracked, values injected), the sidecar pattern

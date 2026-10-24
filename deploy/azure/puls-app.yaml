@@ -1,0 +1,153 @@
+# puls-app: Puls on Azure Container Apps (rg-puls-za), deployed with deploy.ps1 (CL19; the how-to is README.md here).
+#   deploy.ps1 update -Tag 2026-10-24 -Revision v017     # fills TAG and REVISION below, then az containerapp update --yaml
+# Two containers in one pod: the app, on the same image as docker/docker-compose.puls.yml builds, and the ts-forwarder
+# sidecar that carries its browser and Mongo ports over Tailscale to the home PC (docker-compose.puls.home.yml is the
+# other end). No secret value lives in this file: every key is a secretRef to a secret deploy.ps1 secrets has set on
+# the app, and the file sets no `secrets:` block, so an update never overwrites one.
+name: puls-app
+resourceGroup: rg-puls-za
+location: South Africa North
+type: Microsoft.App/containerApps
+properties:
+  configuration:
+    activeRevisionsMode: Single
+    ingress:
+      external: true
+      targetPort: 8080
+      transport: Auto
+      allowInsecure: false
+      traffic:
+        - latestRevision: true
+          weight: 100
+    registries:
+      - server: acrpulsza.azurecr.io
+        identity: system-environment
+  template:
+    revisionSuffix: 'REVISION'
+    containers:
+      # The app. Its settings mirror the puls service in docker/docker-compose.puls.yml; what differs is where its web
+      # and its store are: the loopback ports the sidecar forwards, and a SearXNG that is its own Container App.
+      - name: puls-app
+        image: acrpulsza.azurecr.io/louis-agent-puls:TAG
+        env:
+          - name: IDENTITIES
+            value: puls
+          - name: HOST_TIME_ZONE
+            value: Africa/Johannesburg
+          - name: HOST_CULTURE
+            value: en-ZA
+          - name: WORKSPACE_ROOT
+            value: /workspace
+          - name: SKILLS_DIRECTORY
+            value: /skills
+          - name: LOG_DIRECTORY
+            value: /logs
+          - name: PRICES_FILE
+            value: /workspace/config/prices.json
+          - name: RATES_FILE
+            value: /workspace/config/rates.json
+          - name: USAGE_IN_CHAT
+            value: 'true'
+          - name: GIT_CONFIG_COUNT
+            value: '1'
+          - name: GIT_CONFIG_KEY_0
+            value: core.autocrlf
+          - name: GIT_CONFIG_VALUE_0
+            value: 'true'
+          - name: LLM_PROVIDER
+            value: anthropic
+          - name: LLM_MODEL
+            value: claude-haiku-5-5
+          - name: ANTHROPIC_API_KEY
+            secretRef: anthropic-api-key
+          # Peers and roles as in the compose: one instance, its specialists on itself.
+          - name: AGENT_PEERS
+            value: puls=http://127.0.0.1:8080
+          - name: ROLES_ENABLED
+            value: puls/voice-af,puls/voice-en,puls-cook,puls-minion-web-price-lookup
+          # OPEN TO THE INTERNET WITHOUT A KEY. AGENT_AUTH=off is meant for a port that stays on 127.0.0.1; here the
+          # ingress is public, so anyone who finds the address chats on the Anthropic key above. Kept only until the Puls
+          # web app can send AGENT_API_KEY (the TODO's "The Azure app behind a key"); point no one but Louis at it.
+          - name: AGENT_AUTH
+            value: 'off'
+          - name: ADMIN_API_KEY
+            secretRef: admin-api-key
+          # The web it reads: the SearXNG Container App (puls-searxng.yaml) and, through the sidecar, the home PC's browser.
+          - name: WEB_SEARCH_PROVIDER
+            value: searxng
+          - name: SEARXNG_URL
+            value: https://puls-searxng.greenwater-cdd33adc.southafricanorth.azurecontainerapps.io
+          - name: BROWSER_URL
+            value: http://127.0.0.1:9222
+          - name: SHOP_CATALOGUES
+            value: checkers
+          - name: SHOP_STORE_CACHE
+            value: /data/shop-stores.json
+          # The benchmark store: the home PC's puls-mongo, through the sidecar; the URL carries the password, so it is a secret.
+          - name: BENCHMARKS_MONGO_URL
+            secretRef: benchmarks-mongo-url
+        resources:
+          cpu: 1
+          memory: 2Gi
+          ephemeralStorage: 4Gi
+        # The share puls-app-workspace (storage puls-app-vol on the environment): config/ with the price tables at the
+        # paths above, logs/ for the run files and the usage ledger, data/ for the shop store cache.
+        volumeMounts:
+          - volumeName: puls-app-vol
+            mountPath: /workspace
+          - volumeName: puls-app-vol
+            subPath: logs
+            mountPath: /logs
+          - volumeName: puls-app-vol
+            subPath: data
+            mountPath: /data
+        probes:
+          # The start-up budget is generous from the days the app installed Tailscale at boot; it now needs seconds.
+          - type: Startup
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 1
+            periodSeconds: 1
+            failureThreshold: 240
+            timeoutSeconds: 3
+          - type: Readiness
+            tcpSocket:
+              port: 8080
+            periodSeconds: 5
+            failureThreshold: 48
+            timeoutSeconds: 5
+          - type: Liveness
+            tcpSocket:
+              port: 8080
+            periodSeconds: 10
+            failureThreshold: 3
+            timeoutSeconds: 5
+      # The tunnel's cloud end (ts-forwarder/): Tailscale in userspace mode and a forwarder per port, on the pod's
+      # loopback, which both containers share. Its state is on ephemeral storage, so every replica joins the tailnet as
+      # a new node: the auth key must be reusable and ephemeral, and a dead replica's node then vanishes by itself.
+      - name: ts-forwarder
+        image: acrpulsza.azurecr.io/ts-forwarder:TAG
+        env:
+          - name: TS_AUTHKEY
+            secretRef: ts-authkey
+          - name: TS_USERSPACE
+            value: 'true'
+          - name: TS_STATE_DIR
+            value: /var/lib/tailscale
+          - name: TS_EXTRA_ARGS
+            value: --hostname=puls-app
+          - name: FORWARD_TO_HOST
+            value: 100.126.210.70
+          - name: FORWARD_PORTS
+            value: 9222,27017
+        resources:
+          cpu: 0.25
+          memory: 0.5Gi
+          ephemeralStorage: 1Gi
+    scale:
+      minReplicas: 1
+      maxReplicas: 1
+    volumes:
+      - name: puls-app-vol
+        storageType: AzureFile
+        storageName: puls-app-vol
