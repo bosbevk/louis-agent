@@ -52,14 +52,15 @@ public static class Markdown
             : string.Equals(uri.Host, host, StringComparison.OrdinalIgnoreCase));
 
     /// <summary>
-    /// The image's URL without its size parameters (w, h, q), so the dialog loads the full file. The rest of the query
-    /// stays: a host may keep the file's key there (Woolworths' o=…), and without it there is no image at all.
+    /// The image's URL without its size parameters (Checkers' width and height, Pick n Pay's w, h and q), so the dialog
+    /// loads the full file. The rest of the query stays: a host may keep the file's key there (Woolworths' o=…), and
+    /// without it there is no image at all.
     /// </summary>
     private static string WithoutSize(string url)
     {
         var builder = new UriBuilder(url);
         builder.Query = string.Join('&', builder.Query.TrimStart('?').Split('&', StringSplitOptions.RemoveEmptyEntries)
-            .Where(p => p.Split('=')[0] is not ("w" or "h" or "q")));
+            .Where(p => p.Split('=')[0] is not ("w" or "h" or "q" or "width" or "height")));
         return builder.Uri.AbsoluteUri;
     }
 
