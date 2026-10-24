@@ -35,7 +35,7 @@ public class BenchmarkCatalogTests
     [Test]
     public void AListedEvalHidesThePythonCheckWithItsId()
     {
-        var merged = BenchmarkCatalog.Merge([new EvalLine("stub", "puls", 1, "A canned run")], BenchmarkCatalog.Default);
+        var merged = BenchmarkCatalog.Merge([new EvalLine("stub", 1, "A canned run", "puls")], BenchmarkCatalog.Default);
 
         Assert.That(merged.Select(c => c.Id), Is.EqualTo(new[] { "stub", "cook", "routing" }));
         Assert.That((merged[0].Kind, merged[0].Title), Is.EqualTo((BenchmarkCheckKind.Eval, "A canned run")));

@@ -9,7 +9,8 @@ namespace LouisAgent.Api.Benchmarks.Runs;
 /// </summary>
 public static class BenchmarkSettings
 {
-    public static IReadOnlyDictionary<string, string> Of(BenchmarkCheck check, string provider, string model, IReadOnlyList<string> roles, string? evalRunner = null)
+    /// <param name="evalRunner">The runner's path the API starts an eval check from; a script check ignores it. Required, so a caller can't leave it out.</param>
+    public static IReadOnlyDictionary<string, string> Of(BenchmarkCheck check, string provider, string model, IReadOnlyList<string> roles, string evalRunner)
     {
         var settings = new Dictionary<string, string>
         {
@@ -20,7 +21,6 @@ public static class BenchmarkSettings
         };
         if (check.Kind == BenchmarkCheckKind.Eval)
         {
-            ArgumentNullException.ThrowIfNull(evalRunner);
             settings["eval"] = check.Id;
             settings["eval_runner"] = evalRunner;
         }

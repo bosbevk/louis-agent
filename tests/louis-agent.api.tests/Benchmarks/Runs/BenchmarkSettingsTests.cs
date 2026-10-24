@@ -5,12 +5,14 @@ namespace LouisAgent.Api.Tests.Benchmarks.Runs;
 // F31 step 6a: a run keeps what it ran with, so a later run is compared with an earlier one knowing what changed.
 public class BenchmarkSettingsTests
 {
+    private const string Runner = "/app/evals/louis-agent.evals.runner.dll";
+
     [Test]
     public void ARun_KeepsTheModelThePersonalitiesAndTheChecksScriptAndArguments()
     {
         var check = new BenchmarkCheck("cook", "Die kokkontrole", "benchmarks/cook/run_check.py", ["--personalities", "puls-cook"]);
 
-        var settings = BenchmarkSettings.Of(check, "anthropic", "claude-haiku-5-5", ["puls/voice-af", "puls-cook"]);
+        var settings = BenchmarkSettings.Of(check, "anthropic", "claude-haiku-5-5", ["puls/voice-af", "puls-cook"], Runner);
 
         Assert.That(settings, Is.EquivalentTo(new Dictionary<string, string>
         {
@@ -24,7 +26,7 @@ public class BenchmarkSettingsTests
 
     [Test]
     public void EveryRole_IsOn_WhenNoneAreListed() =>
-        Assert.That(BenchmarkSettings.Of(new BenchmarkCheck("c", "C", "s.py", []), "anthropic", "m", [])["roles_enabled"], Is.EqualTo("(all)"));
+        Assert.That(BenchmarkSettings.Of(new BenchmarkCheck("c", "C", "s.py", []), "anthropic", "m", [], Runner)["roles_enabled"], Is.EqualTo("(all)"));
 
     [Test]
     public void AnEvalCheckRecordsItsEvalAndItsRunner()
@@ -34,8 +36,4 @@ public class BenchmarkSettingsTests
         Assert.That((settings["eval"], settings["eval_runner"]), Is.EqualTo(("stub", "/app/evals/x.dll")));
         Assert.That(settings.ContainsKey("script"), Is.False);
     }
-
-    [Test]
-    public void AnEvalCheckWithoutTheRunnersPath_IsRefused() =>
-        Assert.That(() => BenchmarkSettings.Of(BenchmarkCheck.ForEval("stub", "Stub"), "anthropic", "m", []), Throws.ArgumentNullException);
 }

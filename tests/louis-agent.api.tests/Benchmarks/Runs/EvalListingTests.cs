@@ -75,6 +75,16 @@ public class EvalListingTests
         var result = EvalListing.Parse("""{"name":"stub","identity":"puls","version":2,"proves":"A canned run"}""");
 
         Assert.That(result.Failure, Is.Null);
-        Assert.That(result.Evals.Single(), Is.EqualTo(new EvalLine("stub", "puls", 2, "A canned run")));
+        Assert.That(result.Evals.Single(), Is.EqualTo(new EvalLine("stub", 2, "A canned run", "puls")));
+    }
+
+    [Test]
+    public void AListedEvalWithoutAnIdentityIsRead()
+    {
+        // The runner writes identity: null today; a runner that leaves a null out must not have its whole listing refused.
+        var result = EvalListing.Parse("""{"name":"stub","version":1,"proves":"A canned run"}""");
+
+        Assert.That(result.Failure, Is.Null);
+        Assert.That((result.Evals.Single().Name, result.Evals.Single().Identity), Is.EqualTo(("stub", (string?)null)));
     }
 }
