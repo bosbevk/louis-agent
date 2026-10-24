@@ -33,10 +33,12 @@ stack, and `puls-app` reaches them over Tailscale (*The tunnel* below).
 ## Every-day deploy
 
 ```powershell
-deploy\azure\deploy.ps1 build                        # both images, tagged with today's date (or -Tag)
-deploy\azure\deploy.ps1 update -Revision v018        # one more than the running revision; Single mode refuses a repeat
+deploy\azure\deploy.ps1 release                      # build both images (today's tag) and deploy the next revision, in one go
 deploy\azure\deploy.ps1 logs                         # the app; -Container ts-forwarder for the sidecar; -Follow to tail
 ```
+
+`release` is `build` then `update` with the revision after the one Azure runs (`v018` becomes `v019`); the two verbs
+stay for a deploy of an image already built (`update -Tag 2026-10-22b -Revision v017`, as the first sidecar deploy was).
 
 `update` fills `TAG` and `REVISION` into `puls-app.yaml` and runs `az containerapp update --yaml`. The yaml sets no
 `secrets:` block and names every secret by `secretRef`, and the update is a patch, so the secrets set on the app stay.

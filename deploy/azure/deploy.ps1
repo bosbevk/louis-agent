@@ -12,12 +12,14 @@ Deploys Puls to Azure Container Apps (rg-puls-za): five verbs, each one az comma
   deploy.ps1 logs    [-App ...] [-Container ...] [-Follow]
   deploy.ps1 lock    [-Ip 1.2.3.4]                 allows only this PC's public IP (or -Ip) on puls-app's ingress: the
                                                   app answers without a key (AGENT_AUTH=off), so nobody else may reach it
+  deploy.ps1 release [-Tag ...]                   the every-day deploy in one go: build (today's tag), then update as the
+                                                  next revision after the one Azure runs (v018 -> v019)
 The how-to, and what each piece is, is README.md beside this file. Run `az login` first.
 #>
 [CmdletBinding()]
 param(
     [Parameter(Mandatory = $true, Position = 0)]
-    [ValidateSet('build', 'secrets', 'update', 'searxng-settings', 'logs', 'lock')]
+    [ValidateSet('build', 'secrets', 'update', 'searxng-settings', 'logs', 'lock', 'release')]
     [string]$Verb,
     [string]$Ip,
     [string]$Tag = (Get-Date -Format 'yyyy-MM-dd'),
@@ -105,6 +107,14 @@ switch ($Verb) {
             Invoke-Az containerapp ingress access-restriction list -n $App -g $ResourceGroup --query '[].{name:name, ip:ipAddressRange, action:action}' -o table
         }
         Write-Host "Watch it come up with: deploy.ps1 logs -App $App"
+    }
+    'release' {
+        $latest = (& az containerapp show -n 'puls-app' -g $ResourceGroup --query 'properties.latestRevisionName' -o tsv)
+        if ($LASTEXITCODE -ne 0 -or $latest -notmatch '--v(\d+)$') { throw "Could not read puls-app's latest revision ($latest)." }
+        $next = 'v{0:D3}' -f ([int]$Matches[1] + 1)
+        Write-Host "Release: images tagged $Tag, then puls-app revision $next (after $latest)."
+        & $PSCommandPath build -Tag $Tag
+        & $PSCommandPath update -Tag $Tag -Revision $next -App 'puls-app'
     }
     'lock' {
         # An IPv4-only lookup: the restriction takes IPv4 ranges, and a dual-stack PC answers IPv6 first elsewhere.
