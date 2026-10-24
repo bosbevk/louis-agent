@@ -2,8 +2,9 @@ using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Puls.Grading.FixedRules;
 using LouisAgent.Evals.Trials;
 using LouisAgent.SessionStream;
+using LouisAgent.Evals.Evals;
 
-namespace LouisAgent.Evals.Puls.Tests.Grading;
+namespace LouisAgent.Evals.Puls.Tests.Grading.FixedRules;
 
 // The cook's fixed-rule graders (F31): the route and the errors, read from a trial's turns. Written first: the graders
 // threw NotImplementedException on the red run.

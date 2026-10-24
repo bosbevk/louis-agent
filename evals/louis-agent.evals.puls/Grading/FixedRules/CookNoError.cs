@@ -1,5 +1,7 @@
+using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Puls.Cook;
+using LouisAgent.Evals.Puls.Messages;
 using LouisAgent.Evals.Trials;
 
 namespace LouisAgent.Evals.Puls.Grading.FixedRules;
@@ -16,7 +18,7 @@ public sealed class CookNoError : IGrader
     {
         int errors = CookScorer.ScoreTrial(trial).Errors;
         return ValueTask.FromResult(errors == 0
-            ? new Grade(Name, Version, 1, GradeOutcome.Pass, "no turn failed")
-            : new Grade(Name, Version, 0, GradeOutcome.Fail, $"{errors} turn(s) failed"));
+            ? new Grade(Name, Version, 1, GradeOutcome.Pass, MessageText.Format(GradeMessage.NoTurnFailed))
+            : new Grade(Name, Version, 0, GradeOutcome.Fail, MessageText.Format(GradeMessage.TurnsFailed, new { Count = errors })));
     }
 }

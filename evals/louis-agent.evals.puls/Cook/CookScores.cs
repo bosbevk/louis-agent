@@ -1,4 +1,5 @@
 using LouisAgent.Evals.Puls.Scoring;
+using LouisAgent.Evals.Evals;
 
 namespace LouisAgent.Evals.Puls.Cook;
 

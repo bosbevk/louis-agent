@@ -1,5 +1,7 @@
+using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Puls.Cook;
+using LouisAgent.Evals.Puls.Messages;
 using LouisAgent.Evals.Puls.Transcripts;
 using LouisAgent.Evals.Trials;
 
@@ -17,7 +19,7 @@ public sealed class CookRoutedRight : IGrader
     {
         var scores = CookScorer.ScoreTrial(trial);
         return ValueTask.FromResult(scores.RoutedRight
-            ? new Grade(Name, Version, 1, GradeOutcome.Pass, "routed to the cook")
+            ? new Grade(Name, Version, 1, GradeOutcome.Pass, MessageText.Format(GradeMessage.RoutedToCook))
             : new Grade(Name, Version, 0, GradeOutcome.Fail, RouteReason.Of(TurnView.From(trial.Transcript.Turns[0].Events), scores.Role)));
     }
 }

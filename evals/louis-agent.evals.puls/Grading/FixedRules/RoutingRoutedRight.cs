@@ -1,4 +1,6 @@
+using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Grading;
+using LouisAgent.Evals.Puls.Messages;
 using LouisAgent.Evals.Puls.Routing;
 using LouisAgent.Evals.Puls.Transcripts;
 using LouisAgent.Evals.Trials;
@@ -18,7 +20,7 @@ public sealed class RoutingRoutedRight : IGrader
         var turn = TurnView.From(trial.Transcript.Turns[0].Events);
         var scores = RoutingScorer.Score(trial.Scenario.Id, turn, RoutingScorer.Delegating(trial.Mode));
         return ValueTask.FromResult(scores.RoutedRight
-            ? new Grade(Name, Version, 1, GradeOutcome.Pass, "routed where its kind goes")
+            ? new Grade(Name, Version, 1, GradeOutcome.Pass, MessageText.Format(GradeMessage.RoutedWhereKindGoes))
             : new Grade(Name, Version, 0, GradeOutcome.Fail, RouteReason.Of(turn, scores.Role)));
     }
 }

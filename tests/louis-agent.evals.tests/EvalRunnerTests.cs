@@ -6,6 +6,8 @@ using LouisAgent.Evals.Protocol;
 using LouisAgent.Evals.Trials;
 using LouisAgent.SessionStream;
 using Microsoft.Extensions.Logging.Abstractions;
+using LouisAgent.Evals.Evals;
+using LouisAgent.Evals.Running;
 
 namespace LouisAgent.Evals.Tests;
 

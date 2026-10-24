@@ -2,7 +2,7 @@ using LouisAgent.Evals.Api;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Trials;
 
-namespace LouisAgent.Evals;
+namespace LouisAgent.Evals.Evals;
 
 /// <summary>
 /// An eval: a real task, its scenarios and its graders (F18 step 2). The harness runs it; the eval says what its task is,

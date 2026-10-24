@@ -1055,3 +1055,11 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
 
 ---
 [Docs index](../README.md) · [Plans](README.md) · [Platform plan](platform.md) · [Feature F18](../features/F18-evaluation.md)
+
+- **Review fixes before step 4** (Louis, 2026-10-24: one fix commit, before step 4). The graders' reasons move into a
+  message enum, `GradeMessage` (`evals/louis-agent.evals.puls/Messages/`), as ADR 0009 asks, with a test that fails until
+  it is in `TheHostsHaveMessageEnums`. The harness root is split: `Evals/` (`IEval`, `EvalScenario`, `EvalInput`,
+  `EvalMode`, `EvalScores`, namespace `LouisAgent.Evals.Evals`) and `Running/` (`EvalRunner`, `EvalRun`, `EvalBuild`,
+  namespace `LouisAgent.Evals.Running`), as the folder-namespace rule asks. `evals` joins `FileSizeTests.SourceRoots`. The
+  grader tests move to `tests/louis-agent.evals.puls.tests/Grading/FixedRules/` (`CookGradersTests`, and the routing
+  grader in `RoutingRoutedRightTests`). None of these changes behaviour; the tests stay green.

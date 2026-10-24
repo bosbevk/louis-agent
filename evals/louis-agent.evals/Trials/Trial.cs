@@ -1,3 +1,5 @@
+using LouisAgent.Evals.Evals;
+
 namespace LouisAgent.Evals.Trials;
 
 /// <summary>One run of a scenario in one mode: the transcript it left, which the graders score.</summary>

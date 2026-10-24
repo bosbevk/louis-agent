@@ -1,6 +1,6 @@
 using System.Reflection;
 
-namespace LouisAgent.Evals;
+namespace LouisAgent.Evals.Running;
 
 /// <summary>What this build of the harness is: the commit it was built from, stamped by the project (F18 step 2a).</summary>
 public static class EvalBuild

@@ -1,3 +1,5 @@
+using LouisAgent.Evals.Evals;
+
 namespace LouisAgent.Evals.Api;
 
 /// <summary>A session an eval opens: its mode, where the user is, the task it runs, and the run's tag on its usage.</summary>

@@ -1,3 +1,5 @@
+using LouisAgent.Core.Messages;
+using LouisAgent.Evals.Puls.Messages;
 using LouisAgent.Evals.Puls.Transcripts;
 
 namespace LouisAgent.Evals.Puls.Grading.FixedRules;
@@ -9,7 +11,7 @@ namespace LouisAgent.Evals.Puls.Grading.FixedRules;
 internal static class RouteReason
 {
     public static string Of(TurnView first, string? role) =>
-        first.Error is not null ? "the turn failed"
-        : role is null ? "answered by Puls itself"
-        : $"handled by {role}";
+        first.Error is not null ? MessageText.Format(GradeMessage.TurnFailed)
+        : role is null ? MessageText.Format(GradeMessage.AnsweredByPuls)
+        : MessageText.Format(GradeMessage.HandledBy, new { Role = role });
 }

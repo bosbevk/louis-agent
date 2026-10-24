@@ -7,8 +7,9 @@ using LouisAgent.Evals.Protocol;
 using LouisAgent.Evals.Trials;
 using LouisAgent.SessionStream;
 using Microsoft.Extensions.Logging;
+using LouisAgent.Evals.Evals;
 
-namespace LouisAgent.Evals;
+namespace LouisAgent.Evals.Running;
 
 /// <summary>
 /// Runs an eval (F18 step 2): each mode, each repeat, each scenario; each message is sent to the API and the session's events
