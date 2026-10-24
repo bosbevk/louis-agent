@@ -437,6 +437,11 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   with exit 0 and 109 lines; the store returned the run with `eval: stub` and `eval_runner: /app/evals/louis-agent.evals.runner.dll`.
   The API image was built with `docker compose -f docker/docker-compose.yml --env-file config/.env build api` and not started, so the
   code-review app kept its container. On Git Bash, `docker exec` needs `MSYS_NO_PATHCONV=1`, or `/app` is rewritten to a Windows path.
+- **Step 4.4 prep** (`evals/louis-agent.evals.puls/Turns/`, `tests/louis-agent.evals.puls.tests/Turns/`): Puls's turn readers
+  (`TurnView`, `ToolHosts`) moved out of `Transcripts/`, so that folder holds only reference transcripts, in every evals project (ADR
+  0010). The namespace is `LouisAgent.Evals.Puls.Turns`. The conformance test builds every `EvalSetKind` and the fake set, so a new
+  set is checked with no edit to the test. A refactor: the tests were green before and after, with nothing to see red. The step 3.2
+  note above names the old folder as it was then.
 - **Notes for step 5** (from the review of 4.2): `PulsEvalSet`'s `TurnView` builds on `EngineEvents`, so the route, the errors and the
   cost come from one reader. If an expected route goes in a scenario's `expected`, `RoutedToGrader` must declare that key in its
   `ExpectedKeys`. When the HTTP client sets a turn's `Failure`, the turn line must carry it, so `ProtocolTranscripts` reads it back. A

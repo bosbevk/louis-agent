@@ -1,7 +1,7 @@
-using LouisAgent.Evals.Puls.Transcripts;
+using LouisAgent.Evals.Puls.Turns;
 using LouisAgent.SessionStream;
 
-namespace LouisAgent.Evals.Puls.Tests.Transcripts;
+namespace LouisAgent.Evals.Puls.Tests.Turns;
 
 // The turn reader (the Python's read_turn and hosts), read from the session's typed events: the answer, the calls, the role,
 // and the hosts a turn read. Added with 3.2, since the cook scores read the turn it makes.

@@ -1,5 +1,5 @@
 using LouisAgent.Evals.Puls.Scoring;
-namespace LouisAgent.Evals.Puls.Transcripts;
+namespace LouisAgent.Evals.Puls.Turns;
 
 /// <summary>
 /// The hosts a turn read (the Python's <c>stream.hosts</c>): the page a fetch or a rendered page read, and the shop a shop

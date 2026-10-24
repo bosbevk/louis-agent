@@ -2,7 +2,7 @@ using System.Text;
 using System.Text.Json;
 using LouisAgent.SessionStream;
 
-namespace LouisAgent.Evals.Puls.Transcripts;
+namespace LouisAgent.Evals.Puls.Turns;
 
 /// <summary>One tool call a turn made: its name and its input, as the model sent it.</summary>
 public sealed record ToolCall(string Name, JsonElement Input);

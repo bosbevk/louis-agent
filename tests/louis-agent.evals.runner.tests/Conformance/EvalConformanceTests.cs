@@ -16,7 +16,9 @@ public class EvalConformanceTests
 {
     private static IEnumerable<TestCaseData> EvalsOfEverySet()
     {
-        var catalog = new EvalCatalog([EvalSets.Create(EvalSetKind.Puls), new FakeSet()], new StubEval());
+        // Every set the runner knows, so a new set's evals are checked with no edit here.
+        var sets = Enum.GetValues<EvalSetKind>().Select(EvalSets.Create).Append(new FakeSet());
+        var catalog = new EvalCatalog(sets.ToList(), new StubEval());
         foreach (IEval eval in catalog.Evals)
             yield return new TestCaseData(eval).SetName(eval.Name);
     }

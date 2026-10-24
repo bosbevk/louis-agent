@@ -2,7 +2,7 @@ using LouisAgent.Evals;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Puls.Grading.FixedRules;
 using LouisAgent.Evals.Puls.Routing;
-using LouisAgent.Evals.Puls.Transcripts;
+using LouisAgent.Evals.Puls.Turns;
 using LouisAgent.Evals.Trials;
 using LouisAgent.SessionStream;
 

@@ -1,6 +1,6 @@
 using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Puls.Messages;
-using LouisAgent.Evals.Puls.Transcripts;
+using LouisAgent.Evals.Puls.Turns;
 
 namespace LouisAgent.Evals.Puls.Grading.FixedRules;
 

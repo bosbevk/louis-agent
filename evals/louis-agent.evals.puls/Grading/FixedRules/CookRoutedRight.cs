@@ -3,7 +3,7 @@ using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Puls.Cook;
 using LouisAgent.Evals.Puls.Messages;
-using LouisAgent.Evals.Puls.Transcripts;
+using LouisAgent.Evals.Puls.Turns;
 using LouisAgent.Evals.Trials;
 
 namespace LouisAgent.Evals.Puls.Grading.FixedRules;
