@@ -289,13 +289,17 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   beside the Puls assembly and beside the tests. Red: 7 tests failed while the folders were absent. Green: 83 of 83.
   Decisions (approved by Louis on the review, recorded under the plan's *Approved during the build*; held-out is new
   scenarios in step 5):
-  - Every scenario is `dev`. `held-out/` is absent until Louis picks which scenarios it holds out; an empty folder can't be
-    committed.
+  - Every scenario is `dev`, and every Python run used all 18, so the prompts were tuned on every one of them: moving some
+    into `held-out/` would not make them unseen. The held-out set is new scenarios, written in step 5; `held-out/` stays
+    absent until then, since an empty folder can't be committed.
   - `categories` are decided by hand from the Python's own terms: cook `language:af|en`, `budget`, `follow-up`, `shop:none`,
     `control`. Routing's are `kind:{kind}`, which the plan doesn't name.
   - `expected` is `{}` everywhere. The graders read no keys yet, and the loader refuses a key no grader reads; the keys
     come with the graders that read them in step 5.
   - The loader orders scenarios by file name, not the Python's order, so the tests compare sets.
+  - Carried to later steps (review of 3a.2): step 4's how-to explains re-hashing with C# (`DatasetHash`), not with the
+    Python script; step 5 deletes `CookSetup.Places` and `RoutingSetup.Tasks`, which now repeat what the datasets hold; step 7
+    retires the Python parity tests.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- F18 step 3a.2: the datasets are data, copied beside the assembly (plan F18 step 3a). -->
+    <!-- F18 step 3a.2: the datasets are data, copied beside the assembly so the runner can load them (how it finds them is step 4's decision). -->
     <None Update="Datasets\**\*" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
