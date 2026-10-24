@@ -1,5 +1,4 @@
 # For site owners: what Puls reads, and how to reach us
-
 > **Reference.** If `Puls/1.0 (+this page)` appears in your server's logs, this says what it is, what it reads, how
 > often, and how to ask us to stop or to talk. **Elsewhere:** the decision behind it in
 > [ADR 0035](adr/0035-the-browser-says-what-it-is.md); the project in the [README](../README.md).
