@@ -32,4 +32,7 @@ public interface IEval
 
     /// <summary>The eval's scores for one trial, in F31's scores document (its keys unchanged).</summary>
     EvalScores ScoresOf(Trial trial, IReadOnlyList<Grade> grades);
+
+    /// <summary>What the protocol records about one turn: who answered, its calls, its hosts and its error (F18 step 4.1).</summary>
+    TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode);
 }

@@ -3,6 +3,7 @@ using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Unicode;
 using LouisAgent.Evals.Grading;
+using LouisAgent.Evals.Trials;
 
 namespace LouisAgent.Evals.Protocol;
 
@@ -27,7 +28,7 @@ public sealed class ProtocolWriter(TextWriter stdout, TimeProvider clock)
     /// </summary>
     public void Started() => Emit("protocol", json => json.WriteNumber("version", Version));
 
-    public void Mode(string mode, int repeat, IReadOnlyList<string> toolsets, string? role, string? llm) =>
+    public void Mode(string mode, int repeat, IReadOnlyList<string> toolsets, string? role, string? llm, int? conversations = null) =>
         Emit("mode", json =>
         {
             json.WriteString("mode", mode);
@@ -37,6 +38,7 @@ public sealed class ProtocolWriter(TextWriter stdout, TimeProvider clock)
             json.WriteEndArray();
             WriteText(json, "role", role);
             WriteText(json, "llm", llm);
+            if (conversations is not null) json.WriteNumber("conversations", conversations.Value);
         });
 
     public void Question(string mode, int repeat, string task, int turn, string session, string text) =>
@@ -58,7 +60,7 @@ public sealed class ProtocolWriter(TextWriter stdout, TimeProvider clock)
         });
 
     public void Turn(string mode, int repeat, string task, int turn, string session, string question, string? answer, string? role,
-        double seconds) =>
+        double seconds, TurnFacts? facts = null) =>
         Emit("turn", json =>
         {
             WriteTurnKey(json, mode, repeat, task, turn);
@@ -66,12 +68,14 @@ public sealed class ProtocolWriter(TextWriter stdout, TimeProvider clock)
             json.WriteString("question", question);
             WriteText(json, "answer", answer);
             WriteText(json, "role", role);
+            if (facts is not null) WriteFacts(json, facts);
             json.WriteNumber("seconds", seconds);
+            if (facts is not null) WriteText(json, "error", facts.Error);
         });
 
     /// <summary>A conversation's result: the eval's scores, written as the JSON they are.</summary>
     public void Conversation(string mode, int repeat, string task, string? role, JsonElement scores, double seconds,
-        IReadOnlyList<Grade>? grades = null, TrialOutcome? outcome = null) =>
+        IReadOnlyList<Grade>? grades = null, TrialOutcome? outcome = null, int? errors = null) =>
         Emit("conversation", json =>
         {
             json.WriteString("mode", mode);
@@ -80,6 +84,7 @@ public sealed class ProtocolWriter(TextWriter stdout, TimeProvider clock)
             WriteText(json, "role", role);
             json.WritePropertyName("scores");
             scores.WriteTo(json);
+            if (errors is not null) json.WriteNumber("errors", errors.Value);
             json.WriteNumber("seconds", seconds);
             if (grades is not null)
             {
@@ -136,6 +141,17 @@ public sealed class ProtocolWriter(TextWriter stdout, TimeProvider clock)
             json.WriteString("mode", mode);
             json.WriteNumber("repeat", repeat);
         });
+
+    /// <summary>What the eval says about the turn, in the Python's order: the continuation, the calls, the hosts (the error follows the seconds).</summary>
+    private static void WriteFacts(Utf8JsonWriter json, TurnFacts facts)
+    {
+        WriteText(json, "continued", facts.Continued);
+        json.WriteNumber("puls_calls", facts.PulsCalls);
+        json.WriteNumber("specialist_calls", facts.SpecialistCalls);
+        json.WriteStartArray("hosts");
+        foreach (var host in facts.Hosts) json.WriteStringValue(host);
+        json.WriteEndArray();
+    }
 
     private static void WriteTurnKey(Utf8JsonWriter json, string mode, int repeat, string task, int turn)
     {

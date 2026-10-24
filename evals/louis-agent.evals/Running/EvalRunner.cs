@@ -28,7 +28,7 @@ public sealed class EvalRunner(ISessionClient sessions, ProtocolWriter protocol,
         foreach (var mode in modes)
             for (int repeat = 1; repeat <= run.Repeats; repeat++)
             {
-                protocol.Mode(mode.Name, repeat, mode.Toolsets, mode.Role, mode.Llm);
+                protocol.Mode(mode.Name, repeat, mode.Toolsets, mode.Role, mode.Llm, eval.Scenarios.Count);
                 foreach (var scenario in eval.Scenarios)
                     await RunScenarioAsync(eval, run, mode, repeat, scenario, cancellationToken);
                 protocol.ModeDone(mode.Name, repeat);
@@ -46,16 +46,22 @@ public sealed class EvalRunner(ISessionClient sessions, ProtocolWriter protocol,
 
         var started = clock.GetUtcNow();
         string session = await sessions.OpenAsync(
-            new SessionRequest(mode, scenario.Input.Place, scenario.Input.TimeZone, scenario.Id, $"{run.RunId}:{mode.Name}:{repeat}"),
+            new SessionRequest(mode, scenario.Input.Place, scenario.Input.TimeZone, scenario.Id, repeat, $"{run.RunId}:{mode.Name}:{repeat}"),
             cancellationToken);
 
         // The session is closed however its turns end: a turn that throws (a timeout, a dead connection) must not leave it open.
         // The close is not cancelled with the run, so a cancelled run still closes what it opened.
         var turns = new List<TurnTranscript>();
+        var facts = new List<TurnFacts>();
         try
         {
             for (int number = 1; number <= scenario.Input.Messages.Count; number++)
-                turns.Add(await RunTurnAsync(mode, repeat, scenario.Id, number, session, scenario.Input.Messages[number - 1], cancellationToken));
+            {
+                var turn = await RunTurnAsync(eval, mode, repeat, scenario.Id, number, session, scenario.Input.Messages[number - 1],
+                    cancellationToken);
+                turns.Add(turn.Transcript);
+                facts.Add(turn.Facts);
+            }
         }
         finally
         {
@@ -73,11 +79,13 @@ public sealed class EvalRunner(ISessionClient sessions, ProtocolWriter protocol,
         var trial = new Trial(run.RunId, mode, repeat, scenario, new Transcript(turns));
         var scores = eval.ScoresOf(trial, []);
         // The eval's own record, serialized as its runtime type: as EvalScores, which has no properties, it would be {}.
-        protocol.Conversation(mode.Name, repeat, scenario.Id, mode.Role, JsonSerializer.SerializeToElement<object>(scores, EvalScores.Json),
-            (clock.GetUtcNow() - started).TotalSeconds, grades: [], outcome: null);
+        // The conversation's role is the one that answered its first turn; its errors are the turns that failed.
+        protocol.Conversation(mode.Name, repeat, scenario.Id, facts[0].Role, JsonSerializer.SerializeToElement<object>(scores, EvalScores.Json),
+            (clock.GetUtcNow() - started).TotalSeconds, grades: null, outcome: null, errors: facts.Count(f => f.Error is not null));
     }
 
-    private async Task<TurnTranscript> RunTurnAsync(EvalMode mode, int repeat, string task, int number, string session, string message,
+    private async Task<(TurnTranscript Transcript, TurnFacts Facts)> RunTurnAsync(IEval eval, EvalMode mode, int repeat, string task, int number,
+        string session, string message,
         CancellationToken cancellationToken)
     {
         protocol.Question(mode.Name, repeat, task, number, session, message);
@@ -97,8 +105,9 @@ public sealed class EvalRunner(ISessionClient sessions, ProtocolWriter protocol,
         }
 
         var duration = clock.GetUtcNow() - started;
-        string? role = events.OfType<MessageStarted>().FirstOrDefault()?.Role ?? mode.Role;
-        protocol.Turn(mode.Name, repeat, task, number, session, message, answer.ToString().Trim(), role, duration.TotalSeconds);
-        return new TurnTranscript(number, session, message, events, duration, null);
+        var transcript = new TurnTranscript(number, session, message, events, duration, null);
+        var facts = eval.TurnFactsOf(transcript, mode);
+        protocol.Turn(mode.Name, repeat, task, number, session, message, answer.ToString().Trim(), facts.Role, duration.TotalSeconds, facts);
+        return (transcript, facts);
     }
 }

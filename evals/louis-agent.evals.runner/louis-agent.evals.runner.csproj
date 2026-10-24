@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>LouisAgent.Evals.Runner</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- F18 step 4 (ADR 0027): the runner, like the composition root, is the one project that knows every evals project. -->
+    <ProjectReference Include="..\louis-agent.evals\louis-agent.evals.csproj" />
+    <ProjectReference Include="..\louis-agent.evals.puls\louis-agent.evals.puls.csproj" />
+  </ItemGroup>
+
+</Project>

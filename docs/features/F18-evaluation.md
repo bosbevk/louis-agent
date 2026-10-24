@@ -91,6 +91,10 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
 - **3a.2** Puls's datasets: `puls-cook` and `puls-routing`, the Python checks' scenarios as files
 - **3a** Datasets as files, one folder per eval
 - **4** The runner and the stub eval; the eval sets pluggable (`IEvalSet`, `EVALS=`) and the common graders; the developer's how-to `docs/guides/add-an-eval-set.md` (approved during the build)
+- **4.1** The eval sets (`IEvalSet`), the runner project with its catalogue, arguments and the stub eval, and the stub's parity with the Python stub's protocol lines
+- **4.2** The common graders in `Grading/Common/` (no `error` event, answered within a time, cost under a limit)
+- **4.3** The API and Docker: `BenchmarkCheck` names an eval, `BenchmarkRunner` starts the runner, `BenchmarkCatalog` from `run --list`, `StubCheckTests`
+- **4.4** The developer's how-to, `docs/guides/add-an-eval-set.md`
 - **4a** Web input recorded and replayed: the browser
 - **4b** The same for search, fetch and the clock
 - **4c** The prompt's hash on every ledger row
@@ -300,6 +304,30 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   - Carried to later steps (review of 3a.2): step 4's how-to explains re-hashing with C# (`DatasetHash`), not with the
     Python script; step 5 deletes `CookSetup.Places` and `RoutingSetup.Tasks`, which now repeat what the datasets hold; step 7
     retires the Python parity tests.
+- **Step 4.1** (`evals/louis-agent.evals.runner/`, its tests in `tests/louis-agent.evals.runner.tests/`; `IEvalSet` in the
+  harness root, `PulsEvalSet` in `evals/louis-agent.evals.puls/`): the runner's catalogue (`EvalCatalog`) lists the chosen sets
+  and the stub, each name once, and refuses an eval with no graders, with only model or human graders, or with no required
+  fixed rule. `EVALS=` is an `EvalSetKind` enum parsed with `SettingChoice`, as `IDENTITIES` is. `run {name} --repeat N` is
+  clamped to 1..5 with the API's own constant (the two must match). `--list` writes one JSON object per line, and stdout is
+  the protocol and nothing else: refusals and the run's progress go to stderr. The stub is the Python stub in C#, two modes,
+  two conversations, with its events and session ids the Python's. Red first: the runner's 27 tests failed on the stubs, the
+  enum test failed with `Missing items: RunnerMessage, StubMessage` (its folder moved aside to show it), and the protocol
+  writer's three key-order tests failed before the writer wrote the fields.
+  Parity: the Python stub's `@` lines are saved as `Fixtures/python-stub.txt` (free, no model). The C# run matches them line
+  for line, with two stated masks: `t` and `seconds` are clock readings, and the header is left out, since the Python's first
+  line is the version alone and the runner's carries the eval, its graders and its models, which the store needs. Mutation:
+  one canned fact (`specialist_calls` 3 to 2) fails the parity test at the turn line.
+  Decisions to review (not yet approved by Louis):
+  - The protocol gains what the API reads: the mode's `conversations`, the turn's `continued`, `puls_calls`,
+    `specialist_calls`, `hosts` and `error`, the conversation's `errors`. The eval says the turn's facts (`IEval.TurnFactsOf`,
+    a new member); the runner takes the turn's role from them and no longer falls back to the mode's. Step 5's Puls evals derive
+    them from `TurnView`. The stub's are canned (its hosts and continuation are constants, as in the Python).
+  - `grades` is left out of the conversation line (it was `[]`): the graders don't run in the runner until 4.2 and step 3.
+  - The stub brings its own session client (`StubSessionClient`), not the harness's `CannedSessionClient`: the Python's session
+    ids and events depend on the mode, the repeat and the task, which the canned client, one id and its turns in order, can't
+    give. `SessionRequest` gains the `Repeat` for it.
+  - `--list` escapes an apostrophe as `'`: valid JSON, read back the same by the API.
+  - A mode whose eval has no session client is refused until step 5 brings the HTTP client; only the stub runs now.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

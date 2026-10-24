@@ -96,6 +96,48 @@ public class ProtocolWriterTests
         public ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken) => throw new NotImplementedException();
     }
 
+    // F18 step 4.1: the stub's parity with the Python stub needs these fields, in the Python's order. Written first: the writer
+    // took the parameters but wrote nothing for them, so these failed on the key order, not on the compiler.
+    [Test]
+    public void AModeLineCarriesItsConversations_AfterItsLlm()
+    {
+        var sink = new StringWriter();
+
+        new ProtocolWriter(sink, new FixedClock(At)).Mode("puls-only", 1, ["web"], "puls/voice-af", null, conversations: 2);
+
+        Assert.That(Keys(Lines(sink)[0]), Is.EqualTo(new[] { "event", "t", "mode", "repeat", "toolsets", "role", "llm", "conversations" }));
+    }
+
+    [Test]
+    public void ATurnWithItsFacts_WritesThemInThePythonsOrder()
+    {
+        var sink = new StringWriter();
+        var facts = new TurnFacts("puls-cook", "sub-1", 1, 3, ["www.checkers.co.za"], null);
+
+        new ProtocolWriter(sink, new FixedClock(At)).Turn("puls-cook", 1, "bobotie", 2, "sess_1", "En as ek dit vir 6 wil maak?",
+            "Hier is bobotie.", "puls-cook", 0.1, facts);
+
+        Assert.That(Keys(Lines(sink)[0]), Is.EqualTo(new[]
+        {
+            "event", "t", "mode", "repeat", "task", "turn", "session", "question", "answer", "role", "continued", "puls_calls",
+            "specialist_calls", "hosts", "seconds", "error",
+        }));
+    }
+
+    [Test]
+    public void AConversationWritesItsErrors_BeforeItsSeconds()
+    {
+        var sink = new StringWriter();
+
+        new ProtocolWriter(sink, new FixedClock(At)).Conversation("puls-cook", 1, "bobotie", "puls-cook", Json("""{"routed_right":true,"turns":2}"""),
+            3.25, errors: 1);
+
+        Assert.That(Keys(Lines(sink)[0]), Is.EqualTo(new[] { "event", "t", "mode", "repeat", "task", "role", "scores", "errors", "seconds" }));
+    }
+
+    private static string[] Keys(string line) =>
+        JsonDocument.Parse(line.TrimStart('@')).RootElement.EnumerateObject().Select(p => p.Name).ToArray();
+
     private static string[] Lines(StringWriter sink) => sink.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
     private static JsonElement Json(string text) => JsonDocument.Parse(text).RootElement.Clone();

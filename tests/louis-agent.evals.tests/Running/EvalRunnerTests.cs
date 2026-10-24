@@ -82,6 +82,30 @@ public class EvalRunnerTests
         Assert.That(lines.OfType<BenchmarkProtocol.TurnEnded>().Single().Answer, Is.EqualTo(""));
     }
 
+    [Test]
+    public async Task ATurnsFactsAreWritten_BesideTheModeAndTheConversation()
+    {
+        // F18 step 4.1: the runner writes what the eval says about each turn (who answered, the calls, the hosts), and the mode's
+        // number of conversations and the conversation's errors.
+        var turn = new[] { SessionEvent.From("content_block_delta", Json("""{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Hallo"}}""")) };
+        var facts = new TurnFacts("puls-cook", null, 1, 3, ["www.checkers.co.za"], null);
+        var sink = new StringWriter();
+        var runner = new EvalRunner(new CannedSessionClient(turn), new ProtocolWriter(sink, new FixedClock(At)), new FixedClock(At),
+            NullLogger<EvalRunner>.Instance);
+
+        await runner.RunAsync(new CannedEval(facts), new EvalRun("run_1", 1), CancellationToken.None);
+
+        var lines = sink.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries)
+            .Select(l => JsonDocument.Parse(l.TrimStart('@')).RootElement).ToList();
+        var turnLine = lines.Single(e => e.GetProperty("event").GetString() == "turn");
+        Assert.That(turnLine.GetProperty("role").GetString(), Is.EqualTo("puls-cook"));
+        Assert.That(turnLine.GetProperty("puls_calls").GetInt32(), Is.EqualTo(1));
+        Assert.That(turnLine.GetProperty("specialist_calls").GetInt32(), Is.EqualTo(3));
+        Assert.That(turnLine.GetProperty("hosts").EnumerateArray().Select(h => h.GetString()), Is.EqualTo(new[] { "www.checkers.co.za" }));
+        Assert.That(lines.Single(e => e.GetProperty("event").GetString() == "mode").GetProperty("conversations").GetInt32(), Is.EqualTo(1));
+        Assert.That(lines.Single(e => e.GetProperty("event").GetString() == "conversation").GetProperty("errors").GetInt32(), Is.EqualTo(0));
+    }
+
     /// <summary>A session whose send fails, as a timed-out connection does; it records which sessions were closed.</summary>
     private sealed class ThrowingSessionClient(bool closeFails = false) : ISessionClient
     {
@@ -106,7 +130,7 @@ public class EvalRunnerTests
     private static JsonElement Json(string text) => JsonDocument.Parse(text).RootElement.Clone();
 
     /// <summary>The stub eval: one mode, one scenario with one message, scores that say the route was right.</summary>
-    private sealed class CannedEval : IEval
+    private sealed class CannedEval(TurnFacts? facts = null) : IEval
     {
         public string Name => "stub-cook";
         public string? Identity => null;
@@ -122,6 +146,8 @@ public class EvalRunnerTests
         public IReadOnlyList<IGrader> Graders { get; } = [];
 
         public EvalScores ScoresOf(Trial trial, IReadOnlyList<Grade> grades) => new CannedScores(RoutedRight: true);
+
+        public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) => facts ?? new TurnFacts(null, null, 0, 0, [], null);
     }
 
     private sealed record CannedScores(bool RoutedRight) : EvalScores;

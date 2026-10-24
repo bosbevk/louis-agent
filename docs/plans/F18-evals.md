@@ -1084,6 +1084,12 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
   `budget`, `follow-up`, `shop:none`, `control`) and `kind:{kind}` for the routing. `expected` is `{}` until step 5, since
   the loader refuses a key no grader reads and no grader reads one yet; the plan's "a grader no scenario feeds fails" is
   tested in step 5 with them. The loader orders scenarios by split and file name, so the tests compare sets.
+- **Step 4 split into 4.1 to 4.4** (Louis, 2026-10-24, on the step 4 brief: "too big for one review"). 4.1 is the eval sets
+  (`IEvalSet`, Puls's set empty until step 5), the runner project with its catalogue, arguments and the stub eval, and the
+  stub's parity with the Python stub's protocol lines. 4.2 is the common graders in `Grading/Common/` (no `error` event,
+  answered within a time, cost under a limit). 4.3 is the API and Docker: `BenchmarkCheck` names an eval, `BenchmarkRunner`
+  starts `dotnet {EVAL_RUNNER} run {name}`, `BenchmarkCatalog` comes from `run --list`, both Dockerfiles publish the runner,
+  and `StubCheckTests` runs the C# stub. 4.4 is the developer's how-to, `docs/guides/add-an-eval-set.md`.
 
 ---
 [Docs index](../README.md) · [Plans](README.md) · [Platform plan](platform.md) · [Feature F18](../features/F18-evaluation.md)
