@@ -3,8 +3,8 @@
 #   Stop:   docker compose -f docker/docker-compose.puls.yml --env-file config/.env stop
 #   Remove: docker compose -f docker/docker-compose.puls.yml --env-file config/.env down
 # Then open http://127.0.0.1:5070. One container: a chat answers the web itself and hands cooking to a specialist on
-# this same instance (AGENT_PEERS names itself, F29; CL19 dropped the second container). To publish the browser and
-# Mongo on this PC's Tailscale IP for the Azure app, add docker-compose.puls.home.yml (see its header).
+# this same instance (AGENT_PEERS names itself, F29; CL19 dropped the second container). puls-app on Azure reaches the
+# browser and Mongo below over Tailscale: `tailscale serve` on this PC forwards the two ports (deploy/azure/README.md).
 name: puls
 
 x-puls-env: &puls-env
@@ -113,8 +113,8 @@ services:
     container_name: puls_browser
     networks: [web]
     ports:
-      # Never wider than 127.0.0.1 here: the DevTools port has no authentication. The Tailscale binding for the Azure
-      # app is docker-compose.puls.home.yml's.
+      # Never wider than 127.0.0.1: the DevTools port has no authentication. The Azure app comes in through
+      # `tailscale serve` on this PC, which forwards the tailnet's 9222 to this loopback port (deploy/azure/README.md).
       - "127.0.0.1:${PULS_BROWSER_PORT:-9222}:9222"
     command:
       - --disable-gpu

@@ -86,7 +86,6 @@ docker compose -f docker/docker-compose.yml --env-file config/.env up -d --build
 | `RIDER_MCP_ENDPOINT`, `RIDER_MCP_AUTO_DISCOVER` | Rider MCP discovery (off by default; it only logs Rider's tools for now) |
 | `API_PORT` | Host port for the API and web app (default `5080`, always bound to `127.0.0.1`) |
 | `PULS_PORT`, `PULS_WORKSPACE` | Puls (`docker/docker-compose.puls.yml`): its port (default `5070`, bound to `127.0.0.1`) and the folder mounted as its workspace (default the repo) |
-| `PULS_HOME_BIND` | This PC's Tailscale IP, read only by `docker/docker-compose.puls.home.yml`: the override that also publishes `puls-browser` and `puls-mongo` there for the Azure app (CL19, [deploy/azure](../deploy/azure/README.md)). No default; never `0.0.0.0` |
 | `PULS_MONGO_PORT`, `BENCHMARKS_MONGO_DATABASE` | The benchmark store (F31): `puls-mongo`'s host port (default `27017`, on `127.0.0.1`) and its database (default `puls_benchmarks`; the Mongo contract tests use `puls_benchmarks_test`) |
 | `MCP_TRANSPORT`, `MCP_PORT` | MCP server transport: `stdio` (default) or `http`; host port in HTTP mode (default `5090`, bound to `127.0.0.1`) |
 | `AGENT_AUTH` | `required` (default) or `off` (FX18): whether the API, and the MCP server over HTTP, may start without a key. `off` is for a development machine whose ports stay on `127.0.0.1`; a key that is set is checked either way. Never set in a compose file |

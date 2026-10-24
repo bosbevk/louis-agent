@@ -266,6 +266,10 @@ step names, so CL15's uncommitted code changes stay in the working tree untouche
 - **A short README in each of the three folders** (Louis, 2026-10-24, during step 5): `config/README.md`,
   `docker/README.md` and `deploy/README.md` (which points at `azure/`), each a reference of a few lines saying what the
   folder holds and where the how-to is, written in step 6 beside the Azure how-to.
+- **`tailscale serve` is the home end of the tunnel, not a compose override** (Louis, 2026-10-24, after step 5's
+  cloud check): the PC already ran `tailscale serve --tcp 9222` and `--tcp 27017` to loopback, which is what the Azure
+  app had been using, and Docker can't bind the same tailnet ports beside it. The override and `PULS_HOME_BIND` go;
+  the two serve commands, with `--bg`, are documented in the Azure how-to. Docker stays on `127.0.0.1` everywhere.
 
 ## Concepts
 
