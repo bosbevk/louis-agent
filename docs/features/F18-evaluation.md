@@ -234,6 +234,13 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   case where the C# scores differ from the Python's, as the plan asks: the Python keeps the old rule until its checks
   are retired. Checked by a mutation: the routing's expected role is made null, and three tests fail (the two about a
   meal, and the grader); with the rule restored, all 70 pass.
+- **Review of step 3.3:** a mode is delegating when it has the specialists toolset, as `routing/run_check.py` decides
+  it, so a minions-only mode is not (a test, red first). The score records' key sets are held by tests (the cook's 27,
+  the routing's 9), which fail on a renamed property; the shared snake_case options are now `EvalScores.Json`, public,
+  for the runner and the tests. The cook's manual (`benchmarks/cook/HANDLEIDING.md`, the `wrong_store` and `unsourced`
+  rows) describes the one-key rule. A grader's message reads "handled by {role}" or "answered by Puls itself". Step 5's
+  `CookEval` starts at a new version, so the trend never joins runs made under the old rule with runs made under the new
+  one.
 - **Step 1d** (`louis-agent.orchestrator`): `LouisAgentClient.ReadStreamAsync` takes the response's stream and reads its
   events through the reader, folding them by their record types; the framing loop is gone. Its tests feed the same SSE
   text as bytes instead of a `StringReader`, with no assertion changed.

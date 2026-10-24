@@ -1,5 +1,3 @@
-using LouisAgent.Evals;
-
 namespace LouisAgent.Evals.Puls.Routing;
 
 /// <summary>One routing question as numbers (F31, the routing check's scores document): the call made, not the words.</summary>

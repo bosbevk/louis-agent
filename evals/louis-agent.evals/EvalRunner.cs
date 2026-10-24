@@ -16,9 +16,6 @@ namespace LouisAgent.Evals;
 /// </summary>
 public sealed class EvalRunner(ISessionClient sessions, ProtocolWriter protocol, TimeProvider clock, ILogger<EvalRunner> logger)
 {
-    // The scores are the eval's own record, written in the snake_case the scores document uses (routed_right, priced).
-    private static readonly JsonSerializerOptions ScoreJson = new() { PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower };
-
     public async Task RunAsync(IEval eval, EvalRun run, CancellationToken cancellationToken)
     {
         var modes = await eval.ModesAsync(sessions, cancellationToken);
@@ -75,7 +72,7 @@ public sealed class EvalRunner(ISessionClient sessions, ProtocolWriter protocol,
         var trial = new Trial(run.RunId, mode, repeat, scenario, new Transcript(turns));
         var scores = eval.ScoresOf(trial, []);
         // The eval's own record, serialized as its runtime type: as EvalScores, which has no properties, it would be {}.
-        protocol.Conversation(mode.Name, repeat, scenario.Id, mode.Role, JsonSerializer.SerializeToElement<object>(scores, ScoreJson),
+        protocol.Conversation(mode.Name, repeat, scenario.Id, mode.Role, JsonSerializer.SerializeToElement<object>(scores, EvalScores.Json),
             (clock.GetUtcNow() - started).TotalSeconds, grades: [], outcome: null);
     }
 

@@ -65,6 +65,14 @@ public class CookScorerTests
     }
 
     [Test]
+    public void TheScoresDocumentKeys_AreThePythonsKeys()
+    {
+        // A renamed property would rename the key in the scores document: this holds the Python's 27 names.
+        var element = System.Text.Json.JsonSerializer.SerializeToElement<object>(CookScorer.Score("cook-af", [Turn()], cookOn: false), EvalScores.Json);
+        Assert.That(element.EnumerateObject().Select(p => p.Name), Is.EquivalentTo(new[] { "role", "routed_right", "answered_itself", "hosts", "local_hosts", "shop_hosts", "sources_local", "priced_at_shops", "shop_tool_calls", "deal_tool_calls", "deals_named", "untooled_shops", "no_catalogue_line", "store_for_area", "store_default", "ingredients", "priced", "unsourced", "per_kg", "no_shop_rows", "wrong_store", "priced_ratio", "rand_amounts", "unconfirmed_marks", "errors", "follow_up", "follow_up_handle" }));
+    }
+
+    [Test]
     public void OneKey_InATownWithNoShop_AnUnlinkedPriceIsWrongStoreToo()
     {
         // F18 step 3.3, the one-key rule (TODO line 30): a priced row is wrong_store whether or not it carries a link, and an

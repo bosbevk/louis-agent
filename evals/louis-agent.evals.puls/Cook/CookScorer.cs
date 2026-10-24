@@ -7,7 +7,7 @@ namespace LouisAgent.Evals.Puls.Cook;
 /// <summary>
 /// The cook check's score function (the Python's <c>cook/run_check.py</c> <c>score</c>): one conversation's turns as numbers.
 /// A meal goes to the cook when the mode has it; otherwise, and for the control question, Puls answers itself. An errored
-/// first turn is never right. Behaviour is the Python's as it is today; the no-shop rule changes in step 3.3.
+/// first turn is never right. The no-shop rule is the one-key rule (step 3.3), the one place the C# differs from the Python.
 /// </summary>
 public static class CookScorer
 {

@@ -14,8 +14,8 @@ public static class RoutingScorer
     /// <summary>The role a question's kind goes to, or null where Puls answers it itself.</summary>
     public static string? ExpectedRole(string task) => RoutingSetup.Kinds[task.Split('-')[0]];
 
-    /// <summary>Whether a mode can hand a question on: it has a delegating toolset.</summary>
-    public static bool Delegating(EvalMode mode) => mode.Toolsets.Any(t => RoutingSetup.DelegatingToolsets.Contains(t));
+    /// <summary>Whether a mode can hand a question on: it has the specialists toolset, as the Python decides it (routing/run_check.py).</summary>
+    public static bool Delegating(EvalMode mode) => mode.Toolsets.Contains("specialists", StringComparer.Ordinal);
 
     /// <summary>One agent with every toolset this instance has, but none it could delegate with.</summary>
     public static IReadOnlyList<string> Baseline(IEnumerable<string> available) =>

@@ -15,6 +15,14 @@ public class RoutingScorerTests
     private static readonly ToolCall Start = new("StartSubSession", Json("{}"));
 
     [Test]
+    public void TheScoresDocumentKeys_AreThePythonsKeys()
+    {
+        // A renamed property would rename the key in the scores document: this holds the Python's 9 names.
+        var element = System.Text.Json.JsonSerializer.SerializeToElement<object>(RoutingScorer.Score("cook", Turn(), delegating: true), EvalScores.Json);
+        Assert.That(element.EnumerateObject().Select(p => p.Name), Is.EquivalentTo(new[] { "role", "expected_role", "routed_right", "answered_itself", "delegations", "puls_calls", "specialist_calls", "hosts", "errors" }));
+    }
+
+    [Test]
     public void TheExpectedRole_IsTheCookForAMealAndNobodyOtherwise()
     {
         Assert.That(RoutingScorer.ExpectedRole("cook-2"), Is.EqualTo("puls-cook"));
@@ -67,6 +75,14 @@ public class RoutingScorerTests
 
         Assert.That(scores.RoutedRight, Is.False);
         Assert.That(scores.Errors, Is.EqualTo(1));
+    }
+
+    [Test]
+    public void Delegating_IsTheSpecialistsToolset_NotMinions()
+    {
+        // The Python's rule is "specialists" in the mode's toolsets (routing/run_check.py); a minions-only mode can't hand on.
+        Assert.That(RoutingScorer.Delegating(new EvalMode("minions-only", "puls-cook", ["minions", "web"])), Is.False);
+        Assert.That(RoutingScorer.Delegating(new EvalMode("puls-as-built", "puls-cook", ["specialists", "web"])), Is.True);
     }
 
     [Test]
