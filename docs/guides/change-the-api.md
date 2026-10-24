@@ -87,6 +87,21 @@ curl -s -o /dev/null -w "%{http_code}\n" http://127.0.0.1:5080/your-endpoint    
 curl -s -H "x-api-key: $AGENT_API_KEY" http://127.0.0.1:5080/your-endpoint                           # its answer
 ```
 
+## Add an eval to the portal
+
+The portal lists the C# evals the runner lists, so a new eval needs no change in the API or the portal. The runner's
+`--list` gives each eval its name, identity, version and `proves` line, and the portal shows the `proves` as the check's
+title. The eval's name is its check's id; a Python check with the same id is hidden.
+
+1. Write the eval in its eval set's project (`evals/louis-agent.evals.{identity}/`), with its scenarios, graders and
+   reference transcripts.
+2. Check the runner lists it: `dotnet evals/louis-agent.evals.runner/bin/Debug/net10.0/louis-agent.evals.runner.dll --list`
+   prints one line for it (build the runner first).
+3. Rebuild the image that serves the portal. The runner is in the image, so the new eval comes with the rebuild:
+   `docker compose -f docker/docker-compose.puls.yml --env-file config/.env up -d --build`.
+4. Open the admin portal: the check is listed with its `proves` as its title. Its manual is
+   `benchmarks/{id}/HANDLEIDING.md` until step 7 moves the manuals beside the evals.
+
 ## Before you ask for a review
 
 - [ ] A new prefix is in the key check, or is public on purpose and says why.

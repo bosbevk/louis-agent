@@ -95,7 +95,7 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
 - **4.2a** The common graders in `Grading/Common/`: no error, answered within a time, cost under a limit, routed to a role; one reader of the engine's events
 - **4.2b** `EvalConformanceTests` and the reference transcripts: each scenario has one transcript that passes its required graders and one that fails them
 - **4.3a** The API lists the C# evals and starts the runner: `BenchmarkCheck` names an eval (`BenchmarkCheckKind`), `BenchmarkCatalog` from the runner's `--list` (`EvalListing`), `BenchmarkRunner` starts `run`, `EVAL_RUNNER`, the stub's parity
-- **4.3b** Both images carry the runner (the default `EVAL_RUNNER` path), and a by-hand Docker check
+- **4.3b** Both images carry the runner at `/app/evals` (compose sets no `EVAL_RUNNER`), and a by-hand Docker check
 - **4.4** The developer's how-to, `docs/guides/add-an-eval-set.md`
 - **4a** Web input recorded and replayed: the browser
 - **4b** The same for search, fetch and the clock
@@ -427,6 +427,16 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   restart. An eval check's settings refuse a missing runner path (`ArgumentNullException`) rather than guess a default (ADR 0007).
   `Benchmarks/Runs/` has 12 files: ADR 0010's split by concern is left for step 7b, which moves the Python checks and the evals'
   folders, and is not decided here. Red first: 9 tests for these fixes.
+- **Step 4.3b** (`docker/images/Dockerfile.api` and `Dockerfile.puls`, `config/.env.example`, the docs): both images publish the
+  runner in the build stage to `/app/evals-publish` and copy it to `/app/evals`, its own folder, because it ships its own copies of
+  core and the session-stream reader. The publish carries the Puls datasets (`puls-cook`, `puls-routing`). Images, before and
+  after: `louis-agent-puls` 1.47 GB to 1.53 GB, `louis-agent-api` 1.47 GB to 1.53 GB (the runner's own dlls and the datasets). By
+  hand, against the rebuilt Puls container (`docker compose -f docker/docker-compose.puls.yml --env-file config/.env up -d --build`):
+  `dotnet /app/evals/louis-agent.evals.runner.dll --list` printed the stub's line; the start-up log had no
+  `BenchmarkListingUnavailable` warning; the admin endpoint listed the stub with its `proves` as the title; the stub run finished
+  with exit 0 and 109 lines; the store returned the run with `eval: stub` and `eval_runner: /app/evals/louis-agent.evals.runner.dll`.
+  The API image was built with `docker compose -f docker/docker-compose.yml --env-file config/.env build api` and not started, so the
+  code-review app kept its container. On Git Bash, `docker exec` needs `MSYS_NO_PATHCONV=1`, or `/app` is rewritten to a Windows path.
 - **Notes for step 5** (from the review of 4.2): `PulsEvalSet`'s `TurnView` builds on `EngineEvents`, so the route, the errors and the
   cost come from one reader. If an expected route goes in a scenario's `expected`, `RoutedToGrader` must declare that key in its
   `ExpectedKeys`. When the HTTP client sets a turn's `Failure`, the turn line must carry it, so `ProtocolTranscripts` reads it back. A
