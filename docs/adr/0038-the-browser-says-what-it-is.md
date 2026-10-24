@@ -1,4 +1,4 @@
-# 0035. The browser says what it is: it never disguises itself to a site
+# 0038. The browser says what it is: it never disguises itself to a site
 
 **Status:** Accepted · **Date:** 2026-10-24 (Louis, after the review of CL19) · **Recorded:** 2026-10-24
 

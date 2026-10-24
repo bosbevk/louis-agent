@@ -51,6 +51,7 @@ changes instead of relying on training; **a configured agent**, an identity and 
 - [ ] Puls local spec (`docs/specs/puls-local.md`: the place registry, the business registry and its tiers, the municipality theme, POPIA for location)
 - [ ] F35 Recipe sources (`packs/louis-agent.pack.recipes`; free sources only; the JSON-LD reader first; `research/sa-recipes-api.md` in the Claude project; question 14)
 - [ ] CL16 Reusable roles (the cook into `packs/louis-agent.pack.cooking`, under the identity's frame)
+- [ ] A domain stop-list for the browser: `RenderPolicy` refuses a listed domain, read from a setting or a file, so a site that asks us to stop ([SITE_OWNERS.md](docs/SITE_OWNERS.md)) is honoured without a release (FX21's review)
 - [ ] Sources as data (ADR 0032; `ShopKind` becomes the platform; shops and recipe sites as rows; robots.txt and sitemap indexing)
 - [ ] Places (`packs/louis-agent.pack.places`; takes in municipal services; the geocoder behind `IGeocoder`; the area guide moves into Puls)
 - [ ] Local businesses (listed, always marked as an ad; providers through their platform, a price list or their MCP server)
