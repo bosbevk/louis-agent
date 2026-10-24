@@ -154,6 +154,9 @@ Log.Log(LogLevel.Information, McpServerLogMessage.ToolNameTaken, new { Name = na
 
 ## Building an identity or a pack
 
+The steps, for a person, are in [Build a pack](../docs/guides/build-a-pack.md) and
+[Build an identity](../docs/guides/build-an-identity.md); this section keeps the rules they follow.
+
 Core is the engine and names no product, shop or country (CL15, [ADR 0027](../docs/adr/0027-engine-identities-and-packs.md));
 `ArchitectureTests` holds it in the model-visible text and in the comments. Who an agent is lives in an identity, what
 it can do in a pack, and only `src/louis-agent.composition` knows them all. The one identity in `identities/` and the

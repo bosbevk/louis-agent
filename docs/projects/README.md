@@ -9,9 +9,9 @@ when you're about to change a particular project.
 | Project | Kind | In one line | Doc |
 |---|---|---|---|
 | `louis-agent.core` | Class library | The engine: tools, skills, the tool loop, providers, bootstrap; names no product (CL15) | [core](louis-agent.core.md) |
-| `identities/louis-agent.identity.puls` | Class library | Who Puls is: its voice and modes, its roles, the packs it names (`shops`); its prompts embedded with their paths | in [core](louis-agent.core.md) and the [core guide](../../louis-agent.core/CLAUDE.md#building-an-identity-or-a-pack) |
-| `packs/louis-agent.pack.shops` | Class library | What the shops are: the `shops` toolset (a shop's products, specials and promotions from its own catalogue), its guide, its settings (`SHOP_CATALOGUES`, `SHOP_STORE_CACHE`) and its texts | the same |
-| `src/louis-agent.composition` | Class library | The composition root: the one project that references every identity and pack; `Plugins.FromEnvironment()` builds the `AgentCatalog` a host runs with, from `IDENTITIES` and `PACKS` | the same |
+| `identities/louis-agent.identity.puls` | Class library | Who Puls is: its voice and modes, its roles, the packs it names (`shops`); its prompts embedded with their paths | in [core](louis-agent.core.md); how-to: [Build an identity](../guides/build-an-identity.md) |
+| `packs/louis-agent.pack.shops` | Class library | What the shops are: the `shops` toolset (a shop's products, specials and promotions from its own catalogue), its guide, its settings (`SHOP_CATALOGUES`, `SHOP_STORE_CACHE`) and its texts | in [core](louis-agent.core.md); how-to: [Build a pack](../guides/build-a-pack.md) |
+| `src/louis-agent.composition` | Class library | The composition root: the one project that references every identity and pack; `Plugins.FromEnvironment()` builds the `AgentCatalog` a host runs with, from `IDENTITIES` and `PACKS` | in [core](louis-agent.core.md); how-to: the registration step of [Build a pack](../guides/build-a-pack.md#6-register-it-in-the-composition-root) and [Build an identity](../guides/build-an-identity.md#5-register-it-in-the-composition-root) |
 | `src/louis-agent.cli` | Console app | Chat with the agent in a terminal | [cli](louis-agent.cli.md) |
 | `src/louis-agent.acp-server` | Console app (stdio) | The agent inside JetBrains Rider's AI chat (Agent Client Protocol) | [acp-server](louis-agent.acp-server.md) |
 | `src/louis-agent.api` | ASP.NET Core app | HTTP API with streamed answers, workspace and git endpoints; serves the web app | [api](louis-agent.api.md) |

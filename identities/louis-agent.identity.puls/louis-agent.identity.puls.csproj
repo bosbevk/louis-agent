@@ -21,4 +21,10 @@
     <EmbeddedResource Include="Prompts\**\*.md" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- The how-to for a person changing this project, shown under docs/ in the IDE's solution explorer; nothing is
+         built or copied. -->
+    <None Include="..\..\docs\guides\build-an-identity.md" Link="docs\build-an-identity.md" />
+  </ItemGroup>
+
 </Project>
