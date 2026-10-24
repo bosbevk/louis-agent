@@ -1019,6 +1019,15 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
 
 ## Approved during the build
 
+- **Step 4 makes the eval sets pluggable** (Louis, 2026-10-24: "say we want to add evals for a new identity? is this
+  pluggable"). The harness gains `IEvalSet` (the identity it proves, and its `IEval`s), as CL15 gave identities and
+  packs their interfaces: each evals project (`louis-agent.evals.puls`, later `.demo`, `.voorman`) has one set, and the
+  runner's `EvalCatalog` lists the sets, not every eval, picked with `EVALS=` (all when unset) as a host picks with
+  `IDENTITIES`. A new identity's evals are then one project and one set, with no list of evals to edit in the runner.
+  The harness also gets the graders every identity needs, ready made as `IGrader`s in `Grading/Common/`: no `error`
+  event, answered within a time, cost under a limit (from the ledger, never from the grader's own sums, ADR 0029). A
+  set's evals keep the identity's own rules (Puls's `Scoring/`) behind its own graders.
+
 - **Step 3 split into 3.1, 3.2 and 3.3** (Louis, 2026-10-24). Step 3 is about 1,100 lines of C# and tests, too big for the
   review a step gets. 3.1 is `scoring.py`'s rules with its 27 tests (`test_scoring.py`), and nothing else. 3.2 is the
   turn's reader (the Python's `read_turn` and `hosts`), the cook's scores and its graders, with `test_cook.py` (18). 3.3
