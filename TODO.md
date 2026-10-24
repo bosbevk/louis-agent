@@ -87,7 +87,7 @@ changes instead of relying on training; **a configured agent**, an identity and 
 - [ ] Computer use, when a simulation needs it
 - [ ] [F30](docs/features/F30-local-web-peer.md)'s minions tested: the cook measured with and without minions, after this plan (Louis, 2026-10-19)
 - [ ] Build mode, a side note: an idea to look into after this plan, not planned (question 5, Louis, 2026-10-19)
-- [ ] The Azure app behind a key: `puls-app` serves a public ingress with `AGENT_AUTH=off` (CL19 kept it, loudly commented), so the Puls web app must send `AGENT_API_KEY` (or a sign-in) before anyone but Louis is pointed at it
+- [ ] The Azure app behind a key: `puls-app` serves a public ingress with `AGENT_AUTH=off` (CL19 kept it, loudly commented, and locked the ingress to Louis's home IP with `deploy.ps1 lock`), so the Puls web app must send `AGENT_API_KEY` (or a sign-in) before the lock can come off
 
 ## Small cleanups (each when its code is next touched)
 

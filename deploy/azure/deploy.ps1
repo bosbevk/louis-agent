@@ -10,13 +10,16 @@ Deploys Puls to Azure Container Apps (rg-puls-za): five verbs, each one az comma
                                                   fills TAG and REVISION into deploy/azure/<App>.yaml and updates the app
   deploy.ps1 searxng-settings                     uploads docker/searxng/settings.yml to the searxng-config share
   deploy.ps1 logs    [-App ...] [-Container ...] [-Follow]
+  deploy.ps1 lock    [-Ip 1.2.3.4]                 allows only this PC's public IP (or -Ip) on puls-app's ingress: the
+                                                  app answers without a key (AGENT_AUTH=off), so nobody else may reach it
 The how-to, and what each piece is, is README.md beside this file. Run `az login` first.
 #>
 [CmdletBinding()]
 param(
     [Parameter(Mandatory = $true, Position = 0)]
-    [ValidateSet('build', 'secrets', 'update', 'searxng-settings', 'logs')]
+    [ValidateSet('build', 'secrets', 'update', 'searxng-settings', 'logs', 'lock')]
     [string]$Verb,
+    [string]$Ip,
     [string]$Tag = (Get-Date -Format 'yyyy-MM-dd'),
     [string]$Revision,
     [ValidateSet('puls-app', 'puls-searxng')]
@@ -42,8 +45,11 @@ function Get-EnvValue([string]$File, [string]$Key) {
 }
 
 function Invoke-Az {
-    # az is a native command: run it, and stop on a non-zero exit (its own stderr has already said why).
+    # az is a native command: its progress spinner and warnings go to stderr, which Windows PowerShell turns into errors
+    # when the output is redirected, so judge it by its exit code alone (its own stderr has already said why).
+    $ErrorActionPreference = 'Continue'
     & az @args
+    $ErrorActionPreference = 'Stop'
     if ($LASTEXITCODE -ne 0) { throw "az $($args[0]) $($args[1]) failed ($LASTEXITCODE)" }
 }
 
@@ -91,7 +97,19 @@ switch ($Verb) {
         Write-Host "Updating $App to revision $Revision (tag $Tag) from $template..."
         Invoke-Az containerapp update -n $App -g $ResourceGroup --yaml $resolved --query '{revision:properties.latestRevisionName, ready:properties.latestReadyRevisionName, state:properties.provisioningState}' -o json
         Remove-Item $resolved -ErrorAction SilentlyContinue
+        if ($App -eq 'puls-app') {
+            # The allow-list lives in Azure, not in the yaml: show it after every update, so a wiped rule is seen at once.
+            Write-Host 'Ingress allow-list after the update (empty means open to the internet: run deploy.ps1 lock):'
+            Invoke-Az containerapp ingress access-restriction list -n $App -g $ResourceGroup --query '[].{name:name, ip:ipAddressRange, action:action}' -o table
+        }
         Write-Host "Watch it come up with: deploy.ps1 logs -App $App"
+    }
+    'lock' {
+        # An IPv4-only lookup: the restriction takes IPv4 ranges, and a dual-stack PC answers IPv6 first elsewhere.
+        if (-not $Ip) { $Ip = (Invoke-RestMethod -Uri 'https://ipv4.icanhazip.com' -TimeoutSec 10).Trim() }
+        if ($Ip -notmatch '^\d{1,3}(\.\d{1,3}){3}$') { throw "Not an IPv4 address: $Ip. Pass -Ip." }
+        Write-Host "Allowing only $Ip on puls-app's ingress (rule 'home'); every other address gets a 403."
+        Invoke-Az containerapp ingress access-restriction set -n 'puls-app' -g $ResourceGroup --rule-name 'home' --ip-address "$Ip/32" --action Allow --description 'The home PC: the app answers without a key' --query '[].{name:name, ip:ipAddressRange, action:action}' -o table
     }
     'searxng-settings' {
         $key = (& az storage account keys list -g $ResourceGroup -n $StorageAccount --query '[0].value' -o tsv)

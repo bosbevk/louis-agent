@@ -99,10 +99,15 @@ az containerapp exec -n puls-app -g rg-puls-za --container puls-app --command "c
 | `logs/` | The run files (`agent-api-*.log`), the usage ledger (`usage-YYYY-MM.jsonl`) and the tool-result records |
 | `data/` | `shop-stores.json`, the shops' store-per-town cache (F34) |
 
-## Known gap
+## Locked to one address
 
-`puls-app` serves a public address with `AGENT_AUTH=off`: anyone who finds it chats on the Anthropic key. The TODO's
-*The Azure app behind a key* closes it; until then, point no one but Louis at the address.
+`puls-app` serves a public address with `AGENT_AUTH=off`, so anyone who reached it would chat on the Anthropic key, and
+this file names the address. Until the TODO's *The Azure app behind a key* closes that, the ingress allows one IP:
+the home PC's, as an access restriction on the app in Azure (never in the repo, since a home IP is personal and
+changes). `deploy.ps1 lock` sets it to this PC's public IP (or `-Ip`); every other source gets a 403, checked from
+inside Azure itself on 2026-10-24. The rule is not in `puls-app.yaml`, so `deploy.ps1 update` lists the allow-list
+afterwards: an empty list means the update wiped it, and `lock` puts it back. A new home IP (the ISP's doing) shows
+as a 403 from the browser; `lock` again. A spend cap on the Anthropic key, in the console, is the other half.
 
 ---
 [Docs index](../../docs/README.md) · Related: [Setup](../../docs/SETUP.md) · [Deployment view](../../docs/architecture/07-deployment-view.md)
