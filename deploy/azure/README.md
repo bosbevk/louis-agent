@@ -37,7 +37,7 @@ stack, and `puls-app` reaches them over Tailscale (*The tunnel* below).
 ## Every-day deploy
 
 ```powershell
-deploy\azure\deploy.ps1 release                      # build both images (today's tag) and deploy the next revision, in one go
+deploy\azure\deploy.ps1 release                      # build both images (tagged date and time) and deploy the next revision, in one go
 deploy\azure\deploy.ps1 logs                         # the app; -Container ts-forwarder for the sidecar; -Follow to tail
 ```
 
