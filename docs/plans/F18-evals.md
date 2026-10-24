@@ -1091,5 +1091,37 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
   starts `dotnet {EVAL_RUNNER} run {name}`, `BenchmarkCatalog` comes from `run --list`, both Dockerfiles publish the runner,
   and `StubCheckTests` runs the C# stub. 4.4 is the developer's how-to, `docs/guides/add-an-eval-set.md`.
 
+- **A verdict is a grade, and nothing else** (Louis, 2026-10-24, on "should these scorers not be more locked down to
+  interfaces?", after a comparison with Anthropic's *Demystifying evals for AI agents* and Microsoft.Extensions.AI.Evaluation,
+  both read 2026-10-24). Neither has a scorer contract beside the grader. Anthropic judges in graders and keeps
+  `tracked_metrics` (turns, tool calls, tokens, latency) apart. MEAI's `IEvaluator` returns named metrics, each with its
+  own interpretation. Puls's scorers both judge and measure, so a verdict is worked out twice, in `CookScorer` and again
+  in its graders. So:
+  1. **No `IScorer`; `IGrader` stays the one contract for a verdict.** MEAI's `IEvaluator` was considered for that
+     contract. It grades one `ChatResponse` from a list of `ChatMessage`s (`EvaluateAsync(messages, modelResponse,
+     chatConfiguration, additionalContext)`). A trial's turns, sub-sessions, timings and failures would then ride in an
+     `EvaluationContext` that every code grader casts. So `IGrader` takes the `Trial`, and `EvaluatorGrader` wraps an
+     `IEvaluator` for the model graders (step 6), as planned.
+  2. **Step 4.2's `Grading/Common/` gains the route as a kind**: "went to role X", Anthropic's `tool_calls` grader. It
+     sits beside no error, answered within a time, and cost under a limit. A new identity's author starts from these.
+  3. **Step 4.2 adds `EvalConformanceTests`**, which every eval of every set must pass, as every pack passes
+     `PackConvertibilityTests`. It checks the shape:
+     - names unique and MCP-safe, and versions of at least 1;
+     - at least one required `FixedRule` grader;
+     - every `expected` key read by a grader;
+     - every grade with a reason, a `Score` from 0 to 1, and an outcome that agrees with it.
+
+     It also checks Anthropic's reference solution: each scenario has a transcript that passes all its required
+     graders, taken from a stored run or built by hand as the graders' tests already are. Our own addition is a
+     known-bad transcript that fails them, so a grader that passes everything is caught. In 4.2 the test runs on the
+     stub eval and a fake set; Puls's evals meet it when they join `PulsEvalSet` in step 5.
+  4. **Step 7c splits the scores document.**
+     - Verdicts become grades, with partial credit in `Score` (Anthropic: "build in partial credit"), so `priced_ratio`
+       becomes the `priced-with-source` grade's score.
+     - The rest become tracked metrics: calls, hosts, turns, tokens, seconds, and cost from the ledger. They are
+       measured and never decide a pass.
+     - The scorers then shrink to the rules behind the graders plus a metrics reader. Until 7c, v1's keys stay as they
+       are.
+
 ---
 [Docs index](../README.md) · [Plans](README.md) · [Platform plan](platform.md) · [Feature F18](../features/F18-evaluation.md)
