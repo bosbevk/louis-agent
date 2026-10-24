@@ -94,7 +94,7 @@ public class CookGradersTests
     }
 
     private static Trial Trial(EvalMode mode, string task, IReadOnlyList<IReadOnlyList<SessionEvent>> turns) =>
-        new("run_1", mode, 1, new EvalScenario(task, new EvalInput(null, "Africa/Johannesburg", ["x"]), default),
+        new("run_1", mode, 1, new EvalScenario(task, new EvalInput(null, "Africa/Johannesburg", ["x"]), default, [], DatasetSplit.Dev),
             new Transcript(turns.Select((events, i) => new TurnTranscript(i + 1, "sess", "q", events, TimeSpan.Zero, null)).ToList()));
 
     private static IReadOnlyList<SessionEvent> Start() =>

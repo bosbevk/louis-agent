@@ -1,3 +1,4 @@
+using System.Collections.Frozen;
 using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Puls.Cook;
@@ -13,6 +14,7 @@ public sealed class CookNoError : IGrader
     public int Version => 1;
     public GraderKind Kind => GraderKind.FixedRule;
     public bool Required => true;
+    public IReadOnlySet<string> ExpectedKeys => FrozenSet<string>.Empty;
 
     public ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken)
     {

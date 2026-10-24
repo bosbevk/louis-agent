@@ -92,6 +92,7 @@ public class ProtocolWriterTests
         public int Version { get; } = version;
         public GraderKind Kind { get; } = kind;
         public bool Required => true;
+        public IReadOnlySet<string> ExpectedKeys => System.Collections.Frozen.FrozenSet<string>.Empty;
         public ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken) => throw new NotImplementedException();
     }
 

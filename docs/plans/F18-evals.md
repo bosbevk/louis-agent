@@ -1060,6 +1060,13 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
   runner. `evals` joins `FileSizeTests.SourceRoots`. The grader tests move to
   `tests/louis-agent.evals.puls.tests/Grading/FixedRules/` (`CookGradersTests`, and the routing grader in
   `RoutingRoutedRightTests`). None of these changes behaviour; the tests stay green.
+- **Step 3a.1 decisions** (Louis, 2026-10-24, in the step 3a.1 brief). The
+  loader reads each JSON file with System.Text.Json and `UnmappedMemberHandling.Disallow` (ADR 0030: reuse first). The split
+  comes from the folder's name (`dev`, `held-out`), parsed with `SettingChoice` (ADR 0024). `IGrader` gains a required
+  `ExpectedKeys`, so a grader names the keys it reads; today's graders read none. The hash is SHA-256 over `scenarios/` only:
+  files in ordinal path order, each path and then its content, each followed by a NUL byte, with CRLF read as LF, so the
+  Windows and Linux hashes agree. When it differs the refusal names the hash, so a person bumps the version, adds a dated
+  line to `changes` and pastes it. Every refusal text is an `EvalErrorMessage` member (ADR 0009).
 
 ---
 [Docs index](../README.md) · [Plans](README.md) · [Platform plan](platform.md) · [Feature F18](../features/F18-evaluation.md)

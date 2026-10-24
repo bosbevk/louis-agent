@@ -117,7 +117,7 @@ public class EvalRunnerTests
             ValueTask.FromResult<IReadOnlyList<EvalMode>>([new EvalMode("cook", "puls-cook", ["web"])]);
 
         public IReadOnlyList<EvalScenario> Scenarios { get; } =
-            [new EvalScenario("pannekoek", new EvalInput(null, "Africa/Johannesburg", ["Gee my resep"]), default)];
+            [new EvalScenario("pannekoek", new EvalInput(null, "Africa/Johannesburg", ["Gee my resep"]), default, [], DatasetSplit.Dev)];
 
         public IReadOnlyList<IGrader> Graders { get; } = [];
 

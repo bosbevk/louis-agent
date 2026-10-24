@@ -16,6 +16,12 @@ public interface IGrader
 
     GraderKind Kind { get; }
 
+    /// <summary>
+    /// The expected keys this grader reads (<c>expected</c> in a scenario): a key no grader reads is refused by the loader, so
+    /// each criterion is checked by a named grader. A grader that reads none says so with an empty set.
+    /// </summary>
+    IReadOnlySet<string> ExpectedKeys { get; }
+
     /// <summary>A trial passes only when every required grader passes.</summary>
     bool Required { get; }
 
