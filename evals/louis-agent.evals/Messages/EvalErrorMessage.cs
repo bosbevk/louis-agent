@@ -8,6 +8,9 @@ public enum EvalErrorMessage
     [Description("Dataset '{Dataset}' has the scenario id '{Id}' twice.")]
     DuplicateScenarioId,
 
+    [Description("Scenario '{Id}' has no messages, so there is nothing to run.")]
+    NoMessages,
+
     [Description("it holds no JSON object")]
     EmptyFile,
 

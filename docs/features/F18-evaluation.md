@@ -350,6 +350,11 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   - The route is the first turn's first `StartSubSession` role, the engine's own tool, and not the `session_role` the stream
     reports on message_start: "went to role X" is a call to X, as Anthropic's tool-call grader checks.
   - `EngineEvents` is the one reader; a grader does not parse the stream itself.
+- **Review of step 4.1, leftovers** (2026-10-25): a scenario with no messages is refused, not skipped: the catalogue refuses
+  it when it is built (`RunnerMessage.NoMessages`, tested), and the dataset loader refuses it when the file is read
+  (`EvalErrorMessage.NoMessages`, tested). The runner's own skip stays as a guard, now unreachable from a catalogue. The
+  runner's summary no longer says the graders join in step 3: it writes no grades yet, and the conformance test runs the
+  graders (4.2b).
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

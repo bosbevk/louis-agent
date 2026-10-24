@@ -108,20 +108,30 @@ public class EvalCatalogTests
         Assert.That(line.GetProperty("proves").GetString(), Is.EqualTo(MessageText.Format(RunnerMessage.StubProves)));
     }
 
+    [Test]
+    public void RefusesAScenarioWithNoMessages()
+    {
+        // Nothing to send is nothing to run: refused when the catalogue is built, not skipped by the runner (F18 step 4.1 review).
+        var empty = new EvalScenario("empty", new EvalInput(null, "Africa/Johannesburg", []), default, [], DatasetSplit.Dev);
+
+        Assert.That(() => new EvalCatalog([new FakeSet(new FakeEval("cook", scenarios: [empty]))], Stub),
+            Throws.InstanceOf<RunnerException>().With.Message.Contains("'empty'").And.Message.Contains("no messages"));
+    }
+
     private sealed class FakeSet(IEval eval) : IEvalSet
     {
         public string Identity => "puls";
         public IReadOnlyList<IEval> Evals { get; } = [eval];
     }
 
-    private sealed class FakeEval(string name, IReadOnlyList<IGrader>? graders = null) : IEval
+    private sealed class FakeEval(string name, IReadOnlyList<IGrader>? graders = null, IReadOnlyList<EvalScenario>? scenarios = null) : IEval
     {
         public string Name { get; } = name;
         public string? Identity => "puls";
         public int Version => 1;
         public string Proves => "A fake eval, to test the catalogue.";
         public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions, CancellationToken cancellationToken) => throw new NotImplementedException();
-        public IReadOnlyList<EvalScenario> Scenarios { get; } = [];
+        public IReadOnlyList<EvalScenario> Scenarios { get; } = scenarios ?? [];
         public IReadOnlyList<IGrader> Graders { get; } = graders ?? [new FakeGrader(GraderKind.FixedRule, required: true)];
         public EvalScores ScoresOf(Trial trial, IReadOnlyList<Grade> grades) => throw new NotImplementedException();
         public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) => throw new NotImplementedException();

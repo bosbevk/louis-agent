@@ -35,6 +35,8 @@ public sealed class EvalCatalog(IEnumerable<IEvalSet> sets, IEval stub)
             if (eval.Graders.Count == 0) throw Refuse(RunnerMessage.NoGraders, new { Name = eval.Name });
             if (!eval.Graders.Any(grader => grader.Required && grader.Kind == GraderKind.FixedRule))
                 throw Refuse(RunnerMessage.NoFixedRuleGrader, new { Name = eval.Name });
+            foreach (var scenario in eval.Scenarios)
+                if (scenario.Input.Messages.Count == 0) throw Refuse(RunnerMessage.NoMessages, new { Name = eval.Name, Scenario = scenario.Id });
         }
         return evals;
     }

@@ -14,6 +14,9 @@ public enum RunnerMessage
     [Description("No eval is named '{Name}'. The evals are {Supported}.")]
     UnknownEval,
 
+    [Description("Eval '{Name}' has a scenario, '{Scenario}', with no messages, so there is nothing to run.")]
+    NoMessages,
+
     [Description("Two evals are named '{Name}'.")]
     DuplicateEval,
 

@@ -13,7 +13,8 @@ namespace LouisAgent.Evals.Running;
 
 /// <summary>
 /// Runs an eval (F18 step 2): each mode, each repeat, each scenario; each message is sent to the API and the session's events
-/// are written as they arrive, then the turn, the conversation's scores and the mode's end. The graders join in step 3.
+/// are written as they arrive, then the turn, the conversation's scores and the mode's end. The runner writes no grades yet:
+/// each eval's graders are checked by the catalogue and run by the conformance test (F18 step 4.2).
 /// </summary>
 public sealed class EvalRunner(ISessionClient sessions, ProtocolWriter protocol, TimeProvider clock, ILogger<EvalRunner> logger)
 {

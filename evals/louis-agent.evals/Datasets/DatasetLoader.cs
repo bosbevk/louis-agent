@@ -79,6 +79,7 @@ public static class DatasetLoader
             throw Refuse(EvalErrorMessage.UnexpectedFile, new { File = relative });
 
         ScenarioFile scenario = Read<ScenarioFile>(full, EvalErrorMessage.InvalidScenario);
+        if (scenario.Input.Messages.Count == 0) throw Refuse(EvalErrorMessage.NoMessages, new { Id = scenario.Id });
         if (scenario.Expected.ValueKind != JsonValueKind.Object)
             throw Refuse(EvalErrorMessage.ExpectedNotAnObject, new { Id = scenario.Id });
 

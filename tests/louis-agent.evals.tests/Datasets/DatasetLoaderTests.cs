@@ -223,6 +223,17 @@ public class DatasetLoaderTests
             Throws.TypeOf<InvalidDataException>().With.Message.Contains("'dev/desktop.ini'"));
     }
 
+    [Test]
+    public void RefusesAScenarioWithNoMessages()
+    {
+        using var folder = new DatasetFolder()
+            .Write("scenarios/dev/a.json", "{\"id\": \"a\", \"input\": {\"place\": null, \"time_zone\": \"Etc/UTC\", \"messages\": []}, \"expected\": {\"routed\": true}, \"categories\": []}")
+            .WithManifest();
+
+        Assert.That(() => DatasetLoader.Load(folder.Root, Graders),
+            Throws.TypeOf<InvalidDataException>().With.Message.Contains("no messages"));
+    }
+
     /// <summary>A grader that is named only for the keys it reads; it never grades.</summary>
     private sealed class ReadsKeys(params string[] keys) : IGrader
     {
