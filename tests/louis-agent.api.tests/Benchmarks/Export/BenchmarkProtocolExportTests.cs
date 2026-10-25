@@ -1,14 +1,14 @@
 using System.Net;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using LouisAgent.Api.Benchmarks.Reports;
+using LouisAgent.Api.Benchmarks.Export;
 using LouisAgent.Api.Benchmarks.Runs;
 using LouisAgent.Api.Benchmarks.Store;
 using LouisAgent.Api.Tests.Endpoints.Routing;
 using Microsoft.AspNetCore.TestHost;
 using static LouisAgent.Api.Benchmarks.Runs.BenchmarkProtocol;
 
-namespace LouisAgent.Api.Tests.Benchmarks.Reports;
+namespace LouisAgent.Api.Tests.Benchmarks.Export;
 
 // F18 step 5.2: a stored run as the protocol's own lines. A run recorded from protocol lines, exported and read back by
 // BenchmarkProtocol, is the same run: key for key, in the same order, times aside. The lines are the Python stub's (the runner's
@@ -91,6 +91,30 @@ public class BenchmarkProtocolExportTests
 
         Assert.That(Events(text.Split('\n', StringSplitOptions.RemoveEmptyEntries)), Is.EqualTo(Events(lines)));
         Assert.That(text.All(c => c < 128), Is.True, "ASCII only, as the harness writes it: the é is escaped");
+    }
+
+    [Test]
+    public async Task ATurnsInfrastructureFailure_SurvivesTheExport()
+    {
+        string At(object e) => "@" + JsonSerializer.Serialize(e);
+        var lines = new[]
+        {
+            At(new { @event = "protocol", version = 1 }),
+            At(new { @event = "mode", mode = "puls-cook", repeat = 1, toolsets = new[] { "web" }, role = "puls/voice-af", llm = (string?)null, conversations = 1 }),
+            At(new { @event = "question", mode = "puls-cook", repeat = 1, task = "bobotie", turn = 1, session = "sess_1", text = "Maak bobotie" }),
+            At(new { @event = "turn", mode = "puls-cook", repeat = 1, task = "bobotie", turn = 1, session = "sess_1", question = "Maak bobotie", answer = "", role = (string?)null,
+                seconds = 600.0, failure = "replay_miss" }),
+            At(new { @event = "conversation", mode = "puls-cook", repeat = 1, task = "bobotie", role = (string?)null, scores = new { }, errors = 0, seconds = 600.0 }),
+            At(new { @event = "mode_done", mode = "puls-cook", repeat = 1 }),
+        };
+        var store = await Recorded(lines);
+
+        string text = await Export(store);
+
+        var exported = text.Split((char)10, StringSplitOptions.RemoveEmptyEntries);
+        var turn = (TurnEnded)Parse(exported.Single(l => l.Contains("\"event\":\"turn\"")));
+        Assert.That(turn.Failure, Is.EqualTo(BenchmarkTurnFailure.ReplayMiss));
+        Assert.That(Events(exported), Is.EqualTo(Events(lines)));
     }
 
     [Test]

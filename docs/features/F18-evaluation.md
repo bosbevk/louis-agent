@@ -877,6 +877,17 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   Not done, on purpose: the by-hand export of the Python's last runs. Louis had deleted them and made the first C# run the baseline
   (plan, *Approved during the build*). `mode.conversations` is counted from the stored conversations, and a line's `t` is the last stream
   time known, as the store keeps no other clock.
+- **Step 5.2 review fix (CI run 358, and two findings of the review).** (1) `AdminEndpoints.cs` grew to 202 lines (`FileSizeTests`): the stored-run
+  routes (read, events, protocol, delete) are `StoredRunEndpoints.cs`, mapped from the same `/admin` group, so the key gate still covers
+  them. (2) The export writes `"scores"`, so `PortalReadsNoScoreKeyTests` flagged it in `Benchmarks/Reports/`: it is the protocol reader's other
+  half, not a report, and now sits in `Benchmarks/Export/`; the test's list is untouched, because it may only shrink. (3) `HttpClient.Timeout`
+  stops counting once the headers arrive, so a stream that stalled after them hung the runner (shown on a real socket: headers and one event, then
+  silence). `HttpSessionClient.SendAsync` now has an idle limit (`DefaultStreamIdle`, 10 minutes, the Python's per-read 600 s) restarted after
+  each event and not counting the caller's time between them; its cancellation is a `Timeout` in `TurnFailures`. A learning test pins the
+  library behaviour. With the guard off, the two stall tests fail (15 s each, the test's own limit). (4) A turn's failure is now read
+  (`BenchmarkProtocol.TurnEnded.Failure`, `BenchmarkTurnFailure`, snake-case names), stored (recorder, in-memory and Mongo) and exported, so a stored
+  run read back never grades an infrastructure failure as the agent's (5b needs it). The Mongo contract tests skip without a login; the Mongo
+  mapping of `failure` was reviewed, not run. The whole solution passed before the push.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

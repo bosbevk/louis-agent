@@ -53,7 +53,8 @@ public static class BenchmarkDocuments
 
     /// <summary>
     /// One turn, without its stream events (<see cref="IBenchmarkStore.TurnEventsAsync"/>). <see cref="Tools"/> is what
-    /// its tools did, counted when it was recorded; null for a turn recorded before the counts were kept.
+    /// its tools did, counted when it was recorded; null for a turn recorded before the counts were kept. <see cref="Failure"/> is
+    /// the infrastructure's failure that ended it (F18 step 5.1), null when it ended on its own.
     /// </summary>
     public sealed record Turn(
         TurnKey Key,
@@ -67,7 +68,8 @@ public static class BenchmarkDocuments
         IReadOnlyList<string> Hosts,
         double Seconds,
         string? Error,
-        BenchmarkTools.Summary? Tools = null);
+        BenchmarkTools.Summary? Tools = null,
+        BenchmarkTurnFailure? Failure = null);
 
     /// <summary>One stream event of a turn, kept for its replay.</summary>
     public sealed record StreamEvent(string Type, JsonElement Data, DateTimeOffset? At);

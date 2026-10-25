@@ -92,6 +92,22 @@ public class BenchmarkRecorderTests
     }
 
     [Test]
+    public async Task ATurnsInfrastructureFailure_IsKept_SoAStoredRunNeverGradesItAsTheAgents()
+    {
+        var recording = new BenchmarkRecorder(_store).RecordAsync(_run);
+        Add(Protocol(), Mode(), Question("bobotie"),
+            At(new { @event = "turn", mode = "puls-cook", repeat = 1, task = "bobotie", turn = 1, session = "sess_bobotie", question = "bobotie?",
+                answer = "", role = (string?)null, seconds = 600.0, failure = "api_error" }),
+            ConversationDone("bobotie"), ModeDone());
+        _run.Complete(0);
+        await recording;
+
+        var turn = (await _store.TurnsAsync(_run.Id, new ConversationKey("puls-cook", 1, "bobotie"))).Single();
+
+        Assert.That(turn.Failure, Is.EqualTo(BenchmarkTurnFailure.ApiError));
+    }
+
+    [Test]
     public async Task ATurnsToolCounts_AreKept_WhenItEnds()
     {
         // Review of PR #55: counted once when the turn is recorded, so reading a run never needs its events for them.

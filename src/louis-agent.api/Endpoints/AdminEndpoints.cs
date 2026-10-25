@@ -83,48 +83,7 @@ internal static class AdminEndpoints
             });
         }));
 
-        // A stored run with its conversations, their turns (without their events) and its requests: the explorer's levels.
-        admin.MapGet("/benchmarks/runs/{id}", (string id, CancellationToken cancellationToken) => FromStore(store, async s =>
-        {
-            if (await s.GetRunAsync(id, cancellationToken) is not { } run) return NoRun(id);
-            var conversations = await s.ConversationsAsync(id, cancellationToken);
-            var turns = new List<object>();
-            foreach (var conversation in conversations)
-                foreach (var turn in await s.TurnsAsync(id, conversation.Key, cancellationToken))
-                    turns.Add(TurnRow(turn, await BenchmarkTools.OfTurnAsync(s, id, turn, cancellationToken)));
-            var requests = await s.RequestsAsync(id, cancellationToken);
-            return Results.Json(new
-            {
-                run = RunRow(run),
-                settings = run.Settings,
-                modes = (run.Modes ?? []).Select(m => new { name = m.Name, repeat = m.Repeat, toolsets = m.Toolsets, role = m.Role, llm = m.Llm }),
-                log = run.Log,
-                conversations = conversations.Select(ConversationRow),
-                turns,
-                requests = requests.Select(RequestRow),
-            });
-        }));
-
-        // One turn's stream events, for its replay: the heaviest read, so only on demand.
-        admin.MapGet("/benchmarks/runs/{id}/turns/{mode}/{repeat:int}/{task}/{turn:int}/events",
-            (string id, string mode, int repeat, string task, int turn, CancellationToken cancellationToken) => FromStore(store, async s =>
-            {
-                var events = await s.TurnEventsAsync(id, new BenchmarkProtocol.TurnKey(mode, repeat, task, turn), cancellationToken);
-                return Results.Json(new { events = events.Select(e => new { type = e.Type, data = e.Data, at = e.At }) });
-            }));
-
-        // A stored run as the protocol's own lines (F18 step 5.2): what a recorded run hands back to the harness as a transcript.
-        admin.MapGet("/benchmarks/runs/{id}/protocol", (string id, CancellationToken cancellationToken) => FromStore(store, async s =>
-            await s.GetRunAsync(id, cancellationToken) is { } run
-                ? Results.Text(await BenchmarkProtocolExport.BuildAsync(s, run, cancellationToken), "text/plain; charset=utf-8")
-                : NoRun(id)));
-
-        admin.MapDelete("/benchmarks/runs/{id}", (string id, CancellationToken cancellationToken) => FromStore(store, async s =>
-        {
-            if (runner.Current is { Status: BenchmarkRunStatus.Running } live && live.Id == id)
-                return ApiErrors.Result(StatusCodes.Status409Conflict, "conflict_error", MessageText.Format(ApiUserText.StoredRunStillRunning, new { Id = id }));
-            return await s.DeleteRunAsync(id, cancellationToken) ? Results.NoContent() : NoRun(id);
-        }));
+        admin.MapStoredRuns(store, runner);
 
         // A run from the page. 202 with the run, recorded as it goes; 503 without a store (a paid run whose results vanish
         // is the worst outcome); 409 while one runs; its lines as SSE, then "done" with whether it was stored.
@@ -164,7 +123,7 @@ internal static class AdminEndpoints
     }
 
     /// <summary>A read of the store: 503 without one, or when it doesn't answer, saying why.</summary>
-    private static async Task<IResult> FromStore(IBenchmarkStore? store, Func<IBenchmarkStore, Task<IResult>> read)
+    internal static async Task<IResult> FromStore(IBenchmarkStore? store, Func<IBenchmarkStore, Task<IResult>> read)
     {
         if (store is null)
             return ApiErrors.Result(StatusCodes.Status503ServiceUnavailable, "api_error", MessageText.Format(ApiUserText.NoBenchmarkStore));
@@ -178,10 +137,7 @@ internal static class AdminEndpoints
         }
     }
 
-    private static string Unavailable(Exception ex) => MessageText.Format(ApiUserText.BenchmarkStoreUnavailable, new { Reason = ex.Message });
-
-    private static IResult NoRun(string id) =>
-        ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error", MessageText.Format(ApiUserText.NoStoredRun, new { Id = id }));
+    internal static string Unavailable(Exception ex) => MessageText.Format(ApiUserText.BenchmarkStoreUnavailable, new { Reason = ex.Message });
 
     /// <summary>Whether the run's recording kept everything; false when it failed, took too long or never started.</summary>
     private static async Task<BenchmarkRecorder.Result> StoredAsync(BenchmarkRecorder? recorder, string id, CancellationToken cancellationToken)

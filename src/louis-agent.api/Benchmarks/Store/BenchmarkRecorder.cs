@@ -123,7 +123,7 @@ public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = n
                     _sessions.TryAdd(turn.Session, turn.Key.Conversation);
                     var events = _open.Remove(turn.Key, out var open) ? open.Events : [];
                     await WriteAsync(() => store.SaveTurnAsync(run.Id, new Turn(turn.Key, turn.Session, turn.Question, turn.Answer, turn.Role,
-                        turn.Continued, turn.PulsCalls, turn.SpecialistCalls, turn.Hosts, turn.Seconds, turn.Error, BenchmarkTools.Of(events)),
+                        turn.Continued, turn.PulsCalls, turn.SpecialistCalls, turn.Hosts, turn.Seconds, turn.Error, BenchmarkTools.Of(events), turn.Failure),
                         events, cancellationToken));
                     break;
                 case ConversationEnded conversation:

@@ -10,9 +10,14 @@ namespace LouisAgent.Evals.Api;
 /// given (<see cref="CreateHttp"/> builds the runner's); the stream is read with the session-stream reader (ADR 0030) as the headers
 /// arrive, so nothing waits for a whole turn. A status that is not a success throws <see cref="EvalApiException"/>.
 /// </summary>
-public sealed class HttpSessionClient(HttpClient http) : ISessionClient
+public sealed class HttpSessionClient(HttpClient http, TimeSpan? streamIdle = null) : ISessionClient
 {
     private const string DefaultApi = "http://127.0.0.1:5070/";
+
+    /// <summary>How long a turn's stream may stay silent: the Python's 600 seconds, per read. <c>HttpClient.Timeout</c> stops counting once the headers arrive.</summary>
+    public static readonly TimeSpan DefaultStreamIdle = TimeSpan.FromMinutes(10);
+
+    private readonly TimeSpan _streamIdle = streamIdle ?? DefaultStreamIdle;
 
     /// <summary>
     /// The runner's one client: <paramref name="api"/> (PULS_API, Puls's port by default), ten minutes for a turn (a cook turn takes
@@ -54,9 +59,17 @@ public sealed class HttpSessionClient(HttpClient http) : ISessionClient
         using var response = await http.SendAsync(send, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
         await EnsureSuccessAsync(response, cancellationToken);
 
+        // An idle limit, restarted after each event: a stream that stalls after its headers ends the turn as a timeout (TurnFailures maps the
+        // cancellation to Timeout, as the run's own token is not the one that fired) instead of hanging the run. The time the caller spends
+        // between events is not counted: the clock restarts when it asks for the next one.
         await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
-        await foreach (var streamEvent in SessionStreamReader.ReadAsync(stream, cancellationToken))
+        using var idle = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        idle.CancelAfter(_streamIdle);
+        await foreach (var streamEvent in SessionStreamReader.ReadAsync(stream, idle.Token))
+        {
             yield return streamEvent;
+            idle.CancelAfter(_streamIdle);
+        }
     }
 
     public async Task CloseAsync(string session, CancellationToken cancellationToken)

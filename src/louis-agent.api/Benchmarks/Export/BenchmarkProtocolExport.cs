@@ -6,7 +6,7 @@ using LouisAgent.Api.Benchmarks.Runs;
 using LouisAgent.Api.Benchmarks.Store;
 using static LouisAgent.Api.Benchmarks.Store.BenchmarkDocuments;
 
-namespace LouisAgent.Api.Benchmarks.Reports;
+namespace LouisAgent.Api.Benchmarks.Export;
 
 /// <summary>
 /// A stored run as the protocol's own lines (F18 step 5.2): <c>@</c> and one JSON object per event, in the order
@@ -128,6 +128,7 @@ public static class BenchmarkProtocolExport
             json.WriteEndArray();
             json.WriteNumber("seconds", turn.Seconds);
             Text(json, "error", turn.Error);
+            if (turn.Failure is { } failure) json.WriteString("failure", BenchmarkTurnFailureName.Of(failure));
         });
 
         public void Conversation(Conversation conversation) => Emit("conversation", json =>

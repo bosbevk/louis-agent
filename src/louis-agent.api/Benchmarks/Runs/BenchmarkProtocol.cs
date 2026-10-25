@@ -47,7 +47,8 @@ public static class BenchmarkProtocol
     public sealed record SseEvent(TurnKey Key, string Type, JsonElement Data, DateTimeOffset? At = null) : Event;
 
     public sealed record TurnEnded(TurnKey Key, string Session, string Question, string? Answer, string? Role, string? Continued,
-        int PulsCalls, int SpecialistCalls, IReadOnlyList<string> Hosts, double Seconds, string? Error, DateTimeOffset? At = null) : Event;
+        int PulsCalls, int SpecialistCalls, IReadOnlyList<string> Hosts, double Seconds, string? Error, DateTimeOffset? At = null,
+        BenchmarkTurnFailure? Failure = null) : Event;
 
     /// <summary>A conversation's result; <see cref="Scores"/> is the check's own document (each check scores its own way).</summary>
     public sealed record ConversationEnded(ConversationKey Key, string? Role, JsonElement Scores, int Errors, double Seconds,
@@ -84,7 +85,7 @@ public static class BenchmarkProtocol
                 "sse" => new SseEvent(Turn(e), Required(e, "type"), Json(e, "data"), at),
                 "turn" => new TurnEnded(Turn(e), Required(e, "session"), Required(e, "question"), Text(e, "answer"), Text(e, "role"),
                     Text(e, "continued"), OptionalInt(e, "puls_calls") ?? 0, OptionalInt(e, "specialist_calls") ?? 0,
-                    Strings(e, "hosts"), OptionalNumber(e, "seconds") ?? 0, Text(e, "error"), at),
+                    Strings(e, "hosts"), OptionalNumber(e, "seconds") ?? 0, Text(e, "error"), at, Failure(e)),
                 "conversation" => new ConversationEnded(new ConversationKey(Required(e, "mode"), Int(e, "repeat"), Required(e, "task")),
                     Text(e, "role"), Json(e, "scores"), OptionalInt(e, "errors") ?? 0, OptionalNumber(e, "seconds") ?? 0, at,
                     Grades(e), Outcome(e, "outcome")),
@@ -122,8 +123,12 @@ public static class BenchmarkProtocol
         Text(e, name) is null ? null : Choice<BenchmarkOutcome>(e, name);
 
     /// <summary>A choice from the fixed set its enum names, parsed once where the line enters (ADR 0024); a name that isn't one is a line the protocol can't read.</summary>
-    private static T Choice<T>(JsonElement e, string name) where T : struct, Enum =>
-        SettingChoice.TryParse(Text(e, name), out T? choice) && choice is { } value ? value : throw new MissingField();
+    private static T Choice<T>(JsonElement e, string name, IReadOnlyDictionary<string, T>? aliases = null) where T : struct, Enum =>
+        SettingChoice.TryParse(Text(e, name), out T? choice, aliases) && choice is { } value ? value : throw new MissingField();
+
+    /// <summary>The infrastructure failure that ended a turn (F18 step 5.1), by its snake-case name; absent is none, an unknown name an unreadable line.</summary>
+    private static BenchmarkTurnFailure? Failure(JsonElement e) =>
+        Text(e, "failure") is null ? null : Choice(e, "failure", BenchmarkTurnFailureName.Aliases);
 
     private static TurnKey Turn(JsonElement e) => new(Required(e, "mode"), Int(e, "repeat"), Required(e, "task"), Int(e, "turn"));
 

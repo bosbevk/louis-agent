@@ -87,6 +87,26 @@ public class BenchmarkProtocolTests
         Assert.That(turn.Error, Is.Null);
     }
 
+    [TestCase("timeout", BenchmarkTurnFailure.Timeout)]
+    [TestCase("transport", BenchmarkTurnFailure.Transport)]
+    [TestCase("api_error", BenchmarkTurnFailure.ApiError)]
+    [TestCase("replay_miss", BenchmarkTurnFailure.ReplayMiss)]
+    public void ATurnsFailure_IsTheInfrastructuresNotTheAgents_ReadByItsSnakeCaseName(string name, BenchmarkTurnFailure expected)
+    {
+        // F18 step 5.1 wrote it on the turn line; the store must keep it, or a stored run reads infrastructure failures as the agent's.
+        var line = """@{"event":"turn","mode":"puls-cook","repeat":1,"task":"bobotie","turn":1,"session":"s","question":"q","answer":"","role":null,"seconds":1.5,"failure":"NAME"}""".Replace("NAME", name);
+
+        Assert.That(((TurnEnded)Parse(line)).Failure, Is.EqualTo(expected));
+    }
+
+    [Test]
+    public void ATurnWithNoFailureField_HasNone_AndOneThatNamesNoFailureIsAnUnreadableLine()
+    {
+        Assert.That(((TurnEnded)Parse("""@{"event":"turn","mode":"m","repeat":1,"task":"t","turn":1,"session":"s","question":"q","seconds":1}""")).Failure, Is.Null);
+        Assert.That(Parse("""@{"event":"turn","mode":"m","repeat":1,"task":"t","turn":1,"session":"s","question":"q","seconds":1,"failure":"gremlins"}"""),
+            Is.InstanceOf<LogLine>());
+    }
+
     [Test]
     public void AConversation_KeepsTheChecksScoresAsTheyCame()
     {

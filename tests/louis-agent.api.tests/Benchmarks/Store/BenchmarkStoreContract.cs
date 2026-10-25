@@ -210,6 +210,18 @@ public abstract class BenchmarkStoreContract
     }
 
     [Test]
+    public async Task ATurnsFailure_ReadsBackAsItWasWritten_AndATurnWithNoneHasNone()
+    {
+        string run = NewId();
+        await _store.SaveTurnAsync(run, NewTurn("bobotie", 1) with { Failure = BenchmarkTurnFailure.ReplayMiss }, []);
+        await _store.SaveTurnAsync(run, NewTurn("bobotie", 2), []);
+
+        var read = await _store.TurnsAsync(run, new ConversationKey("puls-cook", 1, "bobotie"));
+
+        Assert.That(read.Select(t => t.Failure), Is.EqualTo(new BenchmarkTurnFailure?[] { BenchmarkTurnFailure.ReplayMiss, null }));
+    }
+
+    [Test]
     public async Task ATurnsEvents_ReadBackApart_InTheOrderTheyCame()
     {
         string run = NewId();

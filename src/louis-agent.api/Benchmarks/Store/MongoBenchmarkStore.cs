@@ -1,4 +1,5 @@
 using LouisAgent.Api.Benchmarks.Runs;
+using LouisAgent.Core.Config;
 using LouisAgent.Api.Benchmarks.Reports;
 using System.Text.Json;
 using MongoDB.Bson;
@@ -248,6 +249,7 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
         ["session"] = t.Session, ["question"] = t.Question, ["answer"] = Nullable(t.Answer), ["role"] = Nullable(t.Role),
         ["continued"] = Nullable(t.Continued), ["puls_calls"] = t.PulsCalls, ["specialist_calls"] = t.SpecialistCalls,
         ["hosts"] = new BsonArray(t.Hosts), ["seconds"] = t.Seconds, ["error"] = Nullable(t.Error),
+        ["failure"] = Nullable(t.Failure is { } failure ? BenchmarkTurnFailureName.Of(failure) : null),
         ["tools"] = t.Tools is { } tools
             ? new BsonDocument
             {
@@ -262,7 +264,12 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
         new TurnKey(d["mode"].AsString, d["repeat"].AsInt32, d["task"].AsString, d["turn"].AsInt32),
         d["session"].AsString, d["question"].AsString, StringOf(d["answer"]), StringOf(d["role"]), StringOf(d["continued"]),
         d["puls_calls"].AsInt32, d["specialist_calls"].AsInt32, d["hosts"].AsBsonArray.Select(h => h.AsString).ToArray(),
-        d["seconds"].ToDouble(), StringOf(d["error"]), ToolsOf(d.GetValue("tools", BsonNull.Value)));
+        d["seconds"].ToDouble(), StringOf(d["error"]), ToolsOf(d.GetValue("tools", BsonNull.Value)),
+        FailureOf(d.GetValue("failure", BsonNull.Value)));
+
+    /// <summary>A turn's kept failure; a turn recorded before it was kept has none.</summary>
+    private static BenchmarkTurnFailure? FailureOf(BsonValue v) =>
+        v is { IsString: true } && SettingChoice.TryParse(v.AsString, out BenchmarkTurnFailure? failure, BenchmarkTurnFailureName.Aliases) ? failure : null;
 
     /// <summary>A turn's kept tool counts; a turn recorded before they were kept has none (null, never 0 calls).</summary>
     private static BenchmarkTools.Summary? ToolsOf(BsonValue v) => v is BsonDocument t
