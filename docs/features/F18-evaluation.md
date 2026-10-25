@@ -491,6 +491,14 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   now leave the conversations' `grades` and `outcome` out, because the Python stub never wrote them. Red first: six `PassRatesTests`,
   three `TrialGradingTests` and three `EvalRunnerTests` (`NotImplementedException` from the stubs, the `InvalidOperationException` of
   the number text, a missing grade in `ScoresOf`), and the stub check's new assertion (`Grades` was null).
+- **Step 4.5b** (`src/louis-agent.api/Admin/AdminRows.cs`, `tests/louis-agent.api.tests/Admin/AdminRowsTests.cs`): the row builders
+  left `AdminEndpoints.cs` (232 lines, on `FileSizeTests`' list) for `AdminRows`, an internal static class the endpoints call through a
+  `using static`; the move sends the same bytes, and the existing tests stayed green. The run row gains `eval`, `eval_version`, `commit`
+  and `graders` (`{ name, version, kind }` in the run's order); the conversation row gains `grades` (`{ grader, version, score, outcome,
+  reason }` in the stored order) and `outcome`. Enums are written with `ToString()`, as `models[].level` already was, so `FixedRule` and
+  `Pass` run from the runner's line through the store to the portal unchanged; a run from before 2a sends null for each, never `[]`
+  or 0. `AdminEndpoints.cs` is 176 lines and off the list. Red first: the four `AdminRowsTests` failed with `KeyNotFoundException`
+  (no such key on the row). The tests serialize with `JsonSerializerDefaults.Web`, which is what `Results.Json` uses with no options.
 - **Notes for step 5** (from the review of 4.2): `PulsEvalSet`'s `TurnView` builds on `EngineEvents`, so the route, the errors and the
   cost come from one reader. If an expected route goes in a scenario's `expected`, `RoutedToGrader` must declare that key in its
   `ExpectedKeys`. When the HTTP client sets a turn's `Failure`, the turn line must carry it, so `ProtocolTranscripts` reads it back. A

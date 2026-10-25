@@ -5,13 +5,15 @@ using LouisAgent.Api.Benchmarks.Reports;
 using System.Net.ServerSentEvents;
 using LouisAgent.Api.Messages;
 using LouisAgent.Core.Messages;
+using static LouisAgent.Api.Admin.AdminRows;
 
 namespace LouisAgent.Api.Endpoints;
 
 /// <summary>
 /// The admin portal's endpoints (F27), all under <c>/admin</c> and all behind <see cref="AdminGate"/>: with no admin
 /// key configured every call is 403 and says what to set; with one, a call must present it. The checks and a run of
-/// one, recorded into the benchmark store as it runs (F31); without a store no run starts.
+/// one, recorded into the benchmark store as it runs (F31); without a store no run starts. The rows they send are
+/// <see cref="AdminRows"/>.
 /// </summary>
 internal static class AdminEndpoints
 {
@@ -174,38 +176,6 @@ internal static class AdminEndpoints
     private static IResult NoRun(string id) =>
         ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error", MessageText.Format(ApiUserText.NoStoredRun, new { Id = id }));
 
-    private static object RunRow(BenchmarkDocuments.Run r) => new
-    {
-        id = r.Id, check = r.Check, repeat = r.Repeat, status = r.Status.ToString().ToLowerInvariant(), exit_code = r.ExitCode,
-        started_at = r.StartedAt, ended_at = r.EndedAt,
-        total = r.Total is null ? null : new { cost = r.Total.Cost, currency = r.Total.Currency, tokens = r.Total.Tokens, requests = r.Total.Requests },
-        store_error = r.StoreError,
-        models = r.Models?.Select(m => new { m.Mode, level = m.Level.ToString(), m.Role, m.Model }),
-    };
-
-    private static object ConversationRow(BenchmarkDocuments.Conversation c) => new
-    {
-        mode = c.Key.Mode, repeat = c.Key.Repeat, task = c.Key.Task, order = c.Order, role = c.Role, scores = c.Scores,
-        errors = c.Errors, seconds = c.Seconds,
-    };
-
-    /// <summary>A turn, with what its tools did, read from its stored events (step 11c's first half): every run has it.</summary>
-    private static object TurnRow(BenchmarkDocuments.Turn t, BenchmarkTools.Summary tools) => new
-    {
-        tools = new { calls = tools.Calls, failed = tools.Failed, reasons = tools.Reasons.Select(r => new { tool = r.Tool, reason = r.Reason, count = r.Count }) },
-        mode = t.Key.Mode, repeat = t.Key.Repeat, task = t.Key.Task, turn = t.Key.Turn, session = t.Session, question = t.Question,
-        answer = t.Answer, role = t.Role, continued = t.Continued, puls_calls = t.PulsCalls, specialist_calls = t.SpecialistCalls,
-        hosts = t.Hosts, seconds = t.Seconds, error = t.Error,
-    };
-
-    private static object RequestRow(BenchmarkDocuments.Request r) => new
-    {
-        turn = r.Turn is null ? null : new { mode = r.Turn.Mode, repeat = r.Turn.Repeat, task = r.Turn.Task, turn = r.Turn.Turn },
-        at = r.At, purpose = r.Purpose, session = r.Session, parent = r.Parent, model = r.Model,
-        input_tokens = r.InputTokens, output_tokens = r.OutputTokens, cache_read_tokens = r.CacheReadTokens,
-        cache_write_tokens = r.CacheWriteTokens, cost = r.Cost, duration_ms = r.DurationMs,
-    };
-
     /// <summary>Whether the run's recording kept everything; false when it failed, took too long or never started.</summary>
     private static async Task<BenchmarkRecorder.Result> StoredAsync(BenchmarkRecorder? recorder, string id, CancellationToken cancellationToken)
     {
@@ -219,13 +189,6 @@ internal static class AdminEndpoints
             return new BenchmarkRecorder.Result(false, null);
         }
     }
-
-    private static object Row(BenchmarkRun run, BenchmarkRecorder.Result? stored = null) => new
-    {
-        id = run.Id, check = run.Check, repeat = run.Repeat, status = run.Status.ToString().ToLowerInvariant(),
-        exit_code = run.ExitCode, started_at = run.StartedAt, ended_at = run.EndedAt, lines = run.Lines.Count,
-        stored = stored?.Stored, store_error = stored?.StoreError,
-    };
 }
 
 /// <summary>The body of <c>POST /admin/benchmarks/{check}/runs</c>: how many repeats (1 to the runner's cap).</summary>

@@ -30,7 +30,6 @@ public class FileSizeTests
         "packs/louis-agent.pack.shops/Providers/CheckersCatalogue.cs",
         "src/louis-agent.api/Benchmarks/Store/BenchmarkRecorder.cs",
         "src/louis-agent.api/Benchmarks/Store/MongoBenchmarkStore.cs",
-        "src/louis-agent.api/Endpoints/AdminEndpoints.cs",
         "src/louis-agent.api/Endpoints/GitEndpoints.cs",
         "src/louis-agent.api/Endpoints/HistoryEndpoints.cs",
         "src/louis-agent.mcp-server/Program.cs",
