@@ -27,7 +27,7 @@ that passes, so the guard holds. It is the `recipe-image` grader's rule enforced
 intent, guards enforce). Everything is in `louis-agent.web.shared`: no change to core, the API or the stream format.
 
 - **`ImageLinks.Of(markdown)`** (`Text/`) reads the images of a text with Markdig's `LinkInline.IsImage`, the parser
-  `ToHtml` renders with, so "an image" means the same on both sides. Only `http(s)` URLs count.
+  `ToHtml` renders with, so "an image" means the same on both sides. Only `https` URLs count: an `http` image on Puls's https page is mixed content (blocked or upgraded, and sent unencrypted).
 - **`Block.Images`** takes the list in `TurnStream`'s `tool_result` case, when the result arrives, before
   `ChatStore.SaveAsync` can cut the text to 4 000 characters (in memory too). It is a plain list, so it round-trips
   through the store's JSON. A failed result gives none, and neither does the result of a delegation call
@@ -76,6 +76,9 @@ Written first, seen failing on their assertions or on the stub (`Block.Images` e
 Per turn, not per chat: an answer can't show an image that only an earlier turn's tool read. A follow-up that wants the
 image again has the cook read the page again (a continued specialist does, as its text is a new answer). Widen the set to
 the chat only when a real case needs it.
+
+A tool that echoes its input could make a model-chosen URL look like a tool gave it. Low risk: `FetchUrl` can already reach any
+host, so the URL a model wants is one it could have fetched; a tool that merely echoes would be the new way in, and none does today.
 
 ## Confirmed
 
