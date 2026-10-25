@@ -100,6 +100,36 @@ public class ReplayStoreTests
     }
 
 
+    // F18 step 5a: a trial run twice after a transport failure records under the same key both times. The store appends and answers an ask from its FIRST
+    // recording, so without a fresh start the second attempt's later requests (built on its own, different answers) would miss on a replay.
+    [Test]
+    public async Task ATrialStartedAgain_ReplacesItsEarlierAttempt_SoAReplaySeesTheSecond()
+    {
+        using var folder = new ReplayFolder();
+        var second = new ReplayPage("https://example.com/", "<html>second</html>", [], null, null);
+        await folder.Store.SaveAnswerAsync("run:cook:1/bobotie", Ask, Page);
+        await folder.Store.SaveAnswerAsync("run:cook:1/bobotie", Other, Page);
+
+        await folder.Store.StartTrialAsync("run:cook:1/bobotie");
+        await folder.Store.SaveAnswerAsync("run:cook:1/bobotie", Ask, second);
+
+        var found = (ReplayAnswer<ReplayPage>.Answered)(await folder.Store.FindAsync<ReplayPage>("run:cook:1/bobotie", Ask))!;
+        Assert.That(found.Value.Html, Is.EqualTo("<html>second</html>"), "the second attempt's answer, not the first's");
+        Assert.That(await folder.Store.FindAsync<ReplayPage>("run:cook:1/bobotie", Other), Is.Null, "nothing of the first attempt is left");
+        Assert.That(await folder.Store.AsksAsync("run:cook:1/bobotie", ReplayKind.Visit), Is.EqualTo(new[] { Ask }));
+    }
+
+    [Test]
+    public async Task StartingATrialNobodyRecorded_IsNoError_AndLeavesTheOthersAlone()
+    {
+        using var folder = new ReplayFolder();
+        await folder.Store.SaveAnswerAsync("other", Ask, Page);
+
+        await folder.Store.StartTrialAsync("never");
+
+        Assert.That(await folder.Store.FindAsync<ReplayPage>("other", Ask), Is.Not.Null);
+    }
+
     [Test]
     public async Task AnAnswerSavedAsASearch_IsNotFoundAsAVisitWithTheSameKey()
     {

@@ -8,7 +8,7 @@ namespace LouisAgent.Evals.Protocol;
 
 /// <summary>
 /// A conversation's transcript, read back from the protocol's own lines (F18 step 4.2b): each turn's events from its sse lines, and its
-/// session, question and duration from its turn line. The stream's error is the sse line's error event, as the API sent it; the turn
+/// session, question and duration from its turn line; a turn written twice (a retried trial) reads as its last attempt. The stream's error is the sse line's error event, as the API sent it; the turn
 /// line's own error field is the same error, and is not read twice.
 /// </summary>
 public static class ProtocolTranscripts
@@ -46,10 +46,12 @@ public static class ProtocolTranscripts
             using var document = JsonDocument.Parse(line[1..]);
             var element = document.RootElement;
             string? kind = element.GetProperty("event").GetString();
-            if (kind is not ("sse" or "turn") || !keep(element)) continue;
+            if (kind is not ("question" or "sse" or "turn") || !keep(element)) continue;
 
             int turn = element.GetProperty("turn").GetInt32();
-            if (kind == "sse")
+            // A turn's question opens it afresh: a trial run twice after a transport failure (step 5a) writes the same turn twice, and the last attempt is the turn.
+            if (kind == "question") events.Remove(turn);
+            else if (kind == "sse")
             {
                 if (!events.TryGetValue(turn, out var list))
                 {

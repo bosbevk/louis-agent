@@ -22,4 +22,7 @@ public enum EvalLogMessage
 
     [Description("Turn {Turn} of '{Scenario}' failed ({Failure}), recorded, and the run goes on: {Reason}.")]
     TurnFailed,
+
+    [Description("Retrying '{Scenario}' once, from a new session, after a transport failure at turn {Turn}.")]
+    TrialRetried,
 }

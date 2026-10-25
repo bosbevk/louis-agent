@@ -110,41 +110,22 @@ public sealed class ProtocolWriter(TextWriter stdout, TimeProvider clock)
     /// <summary>The run's first line (F18 step 2a): the eval, its version, the commit, the scenarios it asked for (its split, step 5.4), its graders and the model each mode ran on.</summary>
     public void Begin(string eval, int evalVersion, string commit, IReadOnlyList<IGrader> graders, IReadOnlyList<ModelUse> models,
         SplitSelection split = SplitSelection.Dev) =>
-        Emit("protocol", json =>
-        {
-            json.WriteNumber("version", Version);
-            json.WriteString("eval", eval);
-            json.WriteNumber("eval_version", evalVersion);
-            json.WriteString("commit", commit);
-            json.WriteString("split", SplitSelections.WireName(split));
-            json.WriteStartArray("graders");
-            foreach (var grader in graders)
-            {
-                json.WriteStartObject();
-                json.WriteString("name", grader.Name);
-                json.WriteNumber("version", grader.Version);
-                json.WriteString("kind", grader.Kind.ToString());
-                json.WriteEndObject();
-            }
-            json.WriteEndArray();
-            json.WriteStartArray("models");
-            foreach (var use in models)
-            {
-                json.WriteStartObject();
-                json.WriteString("mode", use.Mode);
-                json.WriteString("level", use.Level.ToString());
-                WriteText(json, "role", use.Role);
-                WriteText(json, "model", use.Model);
-                json.WriteEndObject();
-            }
-            json.WriteEndArray();
-        });
+        Emit("protocol", json => RunBeginLine.Write(json, eval, evalVersion, commit, graders, models, split));
 
-    public void ModeDone(string mode, int repeat) =>
+    /// <summary>
+    /// A mode's repeat is done (F18 step 5a). With <paramref name="rates"/> the line also carries the mode's pass@k and pass^k over the repeats so far (left
+    /// out when null: no trial counted, never 0), the <paramref name="k"/> they are over, and how many trials were left out for the infrastructure or run twice.
+    /// </summary>
+    public void ModeDone(string mode, int repeat, PassShare? rates = null, int? k = null, int? infrastructure = null, int? retried = null) =>
         Emit("mode_done", json =>
         {
             json.WriteString("mode", mode);
             json.WriteNumber("repeat", repeat);
+            if (rates?.PassAtK is { } passAtK) json.WriteNumber("pass_at_k", passAtK);
+            if (rates?.PassHatK is { } passHatK) json.WriteNumber("pass_hat_k", passHatK);
+            if (k is not null) json.WriteNumber("k", k.Value);
+            if (infrastructure is not null) json.WriteNumber("infrastructure", infrastructure.Value);
+            if (retried is not null) json.WriteNumber("retried", retried.Value);
         });
 
     /// <summary>What the eval says about the turn, in the Python's order: the continuation, the calls, the hosts (the error follows the seconds).</summary>

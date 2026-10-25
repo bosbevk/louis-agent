@@ -9,4 +9,5 @@ public enum TrialOutcome
     Pass,
     Fail,
     Unknown,
+    Infrastructure,
 }

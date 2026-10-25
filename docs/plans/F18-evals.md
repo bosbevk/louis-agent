@@ -1241,6 +1241,9 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
   transcript the way a reference does. (5) A scenario states its requirements in `expected`, each key read by a named grader and not by a rule on its id: `routes_to` (the harness's
   `RoutedToGrader`, which takes its keys), and for the cook `town`, `serves` (`ServesAsAsked`, not required), `budget` (`WithinBudget`) and `shop` (`PricedAtShop`); the scorers keep their v1 keys until 7c.
   The portal passes the web on (`web` `record` or `replay` {runId}), and a run asks for the `dev` scenarios unless `--split held-out` or `--split all`.
+- **Step 5a: the rates are the runner's** (Louis's prompt, 2026-10-25). The plan's row has `BenchmarkTrends` compute pass@k and pass^k over stored conversations; the runner computes them instead, from its
+  trials, and writes them on the `mode_done` line (`pass_at_k`, `pass_hat_k`, `k`, `infrastructure`, `retried`). The API doesn't reference the harness, so a formula there would be a second copy that drifts;
+  it reads what the runner wrote, and a re-score (5b) writes new `mode_done` lines with new rates. A transport failure is run once more, and a recorded trial starts afresh when it is recorded again.
 - **Step 5.6: PnP and Woolworths, and a town with no branch** (Louis, 2026-10-25). Checkers refuses the headless browser, so the cook scenarios name PnP and Woolworths, read with `ReadRenderedPage`
   (`shop`: `pnp`, `woolworths`). A shop with no branch in the user's town (`cook-no-branch`, `shop`: `no-branch`) is priced nowhere: the cook answers with estimates, reads no shop page, links no
   price, and says there is no branch; the cook's prompt says the same. A page of a shop read for `any` now fails too (the prompt says no shop page).

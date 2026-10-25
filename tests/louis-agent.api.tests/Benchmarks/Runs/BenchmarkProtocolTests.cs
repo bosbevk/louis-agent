@@ -37,6 +37,15 @@ public class BenchmarkProtocolTests
     }
 
     [Test]
+    public void AConversationThatFailedForTheInfrastructure_ReadsAsInfrastructure_NotAsALostLine()
+    {
+        // F18 step 5a: the runner writes "Infrastructure" as such a trial's outcome; a reader that didn't know it would drop the whole conversation line.
+        var ended = (ConversationEnded)Parse("""@{"event":"conversation","mode":"cook","repeat":1,"task":"pannekoek","role":null,"scores":{},"seconds":3,"errors":0,"outcome":"Infrastructure"}""");
+
+        Assert.That(ended.Outcome, Is.EqualTo(BenchmarkOutcome.Infrastructure));
+    }
+
+    [Test]
     public void AMode_CarriesItsRepeatToolsetsAndTheSessionFieldsItOpensWith()
     {
         var parsed = Parse("""@{"event":"mode","mode":"puls-cook","repeat":2,"toolsets":["specialists","web"],"role":"puls/voice-af","llm":null,"conversations":4,"t":1760700000.5}""");

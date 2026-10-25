@@ -44,11 +44,12 @@ public class EvalRunnerFailureTests
     {
         var (lines, client) = await Run(new FailingClient { Events = [Hallo], SendFails = new HttpRequestException("the connection was reset") });
 
-        Assert.That(Of("sse").Count(), Is.EqualTo(1), "the event read before the break is kept");
-        var turn = Of("turn").Single();
+        // A transport failure is run once more (step 5a): this client breaks every time, so the trial has two attempts, each recorded and each closed.
+        Assert.That(Of("sse").Count(), Is.EqualTo(2), "the event read before the break is kept, in each attempt");
+        var turn = Of("turn").Last();
         Assert.That(turn.GetProperty("failure").GetString(), Is.EqualTo("transport"));
         Assert.That(turn.GetProperty("answer").GetString(), Is.EqualTo("Hallo"));
-        Assert.That(client.Closed, Is.EqualTo(new[] { "sess_f" }), "the session is closed");
+        Assert.That(client.Closed, Is.EqualTo(new[] { "sess_f", "sess_f" }), "each attempt's session is closed");
         Assert.That(Of("conversation").Count(), Is.EqualTo(1), "the run goes on to the conversation's end");
         Assert.That(lines.Last().GetProperty("event").GetString(), Is.EqualTo("mode_done"));
     }
@@ -108,7 +109,7 @@ public class EvalRunnerFailureTests
         var read = ProtocolTranscripts.ReadConversation(Lines.Select(l => "@" + l.GetRawText()));
 
         Assert.That(read.Turns.Single().Failure, Is.EqualTo(TrialFailure.Transport));
-        Assert.That(read.Turns.Single().Events.Count, Is.EqualTo(1));
+        Assert.That(read.Turns.Single().Events.Count, Is.EqualTo(1), "the retried turn reads as its last attempt, not both attempts' events together");
     }
 
     private sealed class FailingClient : ISessionClient

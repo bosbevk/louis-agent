@@ -30,16 +30,20 @@ public sealed class EvalRunner(ISessionClient sessions, ProtocolWriter protocol,
             modes.Select(m => new ModelUse(m.Name, ModelLevel.Agent, m.Role, null)).ToList(), run.Split);
 
         foreach (var mode in modes)
+        {
+            var tally = new ModeTally();
             for (int repeat = 1; repeat <= run.Repeats; repeat++)
             {
                 protocol.Mode(mode.Name, repeat, mode.Toolsets, mode.Role, mode.Llm, scenarios.Count);
                 foreach (var scenario in scenarios)
-                    await RunScenarioAsync(eval, run, mode, repeat, scenario, cancellationToken);
-                protocol.ModeDone(mode.Name, repeat);
+                    await RunScenarioAsync(eval, run, mode, repeat, scenario, tally, cancellationToken);
+                // The rates over the repeats so far: the last line of a mode is the mode's (F18 step 5a).
+                protocol.ModeDone(mode.Name, repeat, tally.Share, repeat, tally.Infrastructure, tally.Retried);
             }
+        }
     }
 
-    private async Task RunScenarioAsync(IEval eval, EvalRun run, EvalMode mode, int repeat, EvalScenario scenario,
+    private async Task RunScenarioAsync(IEval eval, EvalRun run, EvalMode mode, int repeat, EvalScenario scenario, ModeTally tally,
         CancellationToken cancellationToken)
     {
         if (scenario.Input.Messages.Count == 0)
@@ -49,6 +53,31 @@ public sealed class EvalRunner(ISessionClient sessions, ProtocolWriter protocol,
         }
 
         var started = clock.GetUtcNow();
+        var (turns, facts) = await AttemptAsync(eval, run, mode, repeat, scenario, cancellationToken);
+        // One retry, for a transport failure only: a timeout, an API error or a replay miss would not change on a second try (F18 step 5a). The
+        // second attempt is a new session and the trial's; the failed one stays in the protocol, and the same turn keys written again replace it in the store.
+        if (turns.FirstOrDefault(turn => turn.Failure is not null) is { Failure: TrialFailure.Transport } failed)
+        {
+            logger.Log(LogLevel.Warning, EvalLogMessage.TrialRetried, new { Scenario = scenario.Id, Turn = failed.Turn });
+            tally.CountRetry();
+            (turns, facts) = await AttemptAsync(eval, run, mode, repeat, scenario, cancellationToken);
+        }
+
+        var trial = new Trial(run.RunId, mode, repeat, scenario, new Transcript(turns));
+        var grades = await TrialGrading.GradeAsync(eval, trial, logger, cancellationToken);
+        var outcome = PassRates.Of(trial, grades, eval.Graders);
+        tally.Add(scenario.Id, outcome);
+        var scores = eval.ScoresOf(trial, grades);
+        // The eval's own record, serialized as its runtime type: as EvalScores, which has no properties, it would be {}.
+        // The conversation's role is the one that answered its first turn; its errors are the turns that failed.
+        protocol.Conversation(mode.Name, repeat, scenario.Id, facts[0].Role, JsonSerializer.SerializeToElement<object>(scores, EvalScores.Json),
+            (clock.GetUtcNow() - started).TotalSeconds, grades, outcome, errors: facts.Count(f => f.Error is not null));
+    }
+
+    /// <summary>One attempt at a scenario: a session, its turns, and the session closed however they end.</summary>
+    private async Task<(List<TurnTranscript> Turns, List<TurnFacts> Facts)> AttemptAsync(IEval eval, EvalRun run, EvalMode mode, int repeat,
+        EvalScenario scenario, CancellationToken cancellationToken)
+    {
         // A session that can't open fails every turn of its scenario the same way, and there is nothing to close (F18 step 5.1).
         string? session = null;
         TrialFailure? openFailure = null;
@@ -93,14 +122,7 @@ public sealed class EvalRunner(ISessionClient sessions, ProtocolWriter protocol,
                 }
         }
 
-        var trial = new Trial(run.RunId, mode, repeat, scenario, new Transcript(turns));
-        var grades = await TrialGrading.GradeAsync(eval, trial, logger, cancellationToken);
-        var outcome = PassRates.Of(grades, eval.Graders);
-        var scores = eval.ScoresOf(trial, grades);
-        // The eval's own record, serialized as its runtime type: as EvalScores, which has no properties, it would be {}.
-        // The conversation's role is the one that answered its first turn; its errors are the turns that failed.
-        protocol.Conversation(mode.Name, repeat, scenario.Id, facts[0].Role, JsonSerializer.SerializeToElement<object>(scores, EvalScores.Json),
-            (clock.GetUtcNow() - started).TotalSeconds, grades, outcome, errors: facts.Count(f => f.Error is not null));
+        return (turns, facts);
     }
 
     /// <summary>The run tag of one mode's repeat: its sessions carry it, and the ledger's rows find their run by it (F18 step 4a: a replay's trial key starts with it).</summary>

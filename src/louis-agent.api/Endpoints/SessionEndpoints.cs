@@ -10,6 +10,7 @@ using LouisAgent.Api.Sessions.Streaming;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Sessions;
 using LouisAgent.Core.Sessions.Replay;
+using LouisAgent.Core.Sessions.Replay.Store;
 using LouisAgent.Core.Skills.Roles;
 using LouisAgent.Core.Usage.Records;
 
@@ -31,7 +32,8 @@ internal static class SessionEndpoints
         // "replay" (F18 step 4a): what an eval session does with the web. WEB_REPLAY is its default, parsed here once, at start-up, so a
         // bad value stops the API as AGENT_AUTH does; the rules are ReplayResolution's, and each refusal is a 400 before any engine is built.
         var defaultReplay = SessionReplay.DefaultMode(host.Agent.WebReplay);
-        routes.MapPost("/sessions", (CreateSessionRequest? request, AgentSessions sessions) =>
+        var recordings = ReplayStore.From(host.Agent);
+        routes.MapPost("/sessions", async (CreateSessionRequest? request, AgentSessions sessions) =>
         {
             if (request?.InvalidTag() is { } invalid)
                 return Results.Json(Error("invalid_request_error",
@@ -50,6 +52,9 @@ internal static class SessionEndpoints
 
             if (!ReplayResolution.TryResolve(request, defaultReplay, host.Agent.KeepsRecordings, out var replay, out string? refusal))
                 return Results.Json(Error("invalid_request_error", refusal!), statusCode: StatusCodes.Status400BadRequest);
+
+            // A trial recorded again (the runner's one retry) starts afresh, so a replay sees the second attempt, not the first (F18 step 5a).
+            if (recordings is not null && ReplayResolution.FreshTrial(request, replay) is { } fresh) await recordings.StartTrialAsync(fresh);
 
             AgentSession session;
             try

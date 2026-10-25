@@ -91,12 +91,12 @@ public class StubEvalTests
 
     private static JsonElement Parse(string line) => JsonDocument.Parse(line.TrimStart('@')).RootElement;
 
-    /// <summary>One line as its keys, in order, and its values: the clock readings masked, the grades left out, everything else compared as written.</summary>
+    /// <summary>One line as its keys, in order, and its values: the clock readings masked, the grades and the pass rates (the harness adds them; the Python has none) left out, everything else compared as written.</summary>
     private static string Canonical(string line) => Canonical(Parse(line), null);
 
     private static string Canonical(JsonElement element, string? name) => element.ValueKind switch
     {
-        JsonValueKind.Object => "{" + string.Join(",", element.EnumerateObject().Where(p => p.Name is not ("grades" or "outcome"))
+        JsonValueKind.Object => "{" + string.Join(",", element.EnumerateObject().Where(p => p.Name is not ("grades" or "outcome" or "pass_at_k" or "pass_hat_k" or "k" or "infrastructure" or "retried"))
             .Select(p => JsonSerializer.Serialize(p.Name) + ":" + Canonical(p.Value, p.Name))) + "}",
         JsonValueKind.Array => "[" + string.Join(",", element.EnumerateArray().Select(v => Canonical(v, null))) + "]",
         _ when name is "t" or "seconds" => "<clock>",

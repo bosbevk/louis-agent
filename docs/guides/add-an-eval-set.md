@@ -247,7 +247,7 @@ The rules every set must keep, which the catalogue and the conformance check hol
 
 - at least one required grader is a fixed rule (`Kind == FixedRule`), so no eval runs without a check that needs no model;
 - every key in a scenario's `expected` is in some grader's `ExpectedKeys`;
-- `Unknown` (an infrastructure failure, a cost with no price, no usage) never counts as a pass;
+- `Unknown` (a cost with no price, no usage) never counts as a pass; a trial whose turn failed for the infrastructure (a timeout, a dropped connection, an API error, a replay miss) is `Infrastructure` for the run: neither a pass nor a fail, left out of pass@k and pass^k and counted apart (a transport failure is run once more first);
 - the cost comes from the stream's usage (`EngineEvents.CostOf`), never from a grader's own sum (ADR 0029);
 - names are MCP-safe and unique, and versions are at least 1. The check requires the number; bumping it when a rule
   changes is your job, and nothing checks it.

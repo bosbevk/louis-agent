@@ -42,6 +42,14 @@ internal static class ReplayResolution
         return true;
     }
 
+    /// <summary>
+    /// The trial a recording starts afresh (F18 step 5a), or null. The runner runs a trial once more after a transport failure, under the same key, and the
+    /// replay store appends and answers from an ask's first recording, so a top-level eval session that records clears what an earlier attempt wrote. A
+    /// sub-session (it is sent its parent's <c>of</c>) records into its parent's trial and must never clear it.
+    /// </summary>
+    public static string? FreshTrial(CreateSessionRequest? request, SessionReplay? replay) =>
+        replay is { Web: WebReplayMode.Record, Of: { } trial } && Clean(request?.Replay?.Of) is null ? trial : null;
+
     private static string? Clean(string? text) => string.IsNullOrWhiteSpace(text) ? null : text.Trim();
 
     private static bool Refuse(ApiUserText message, object? values, out string? refusal)

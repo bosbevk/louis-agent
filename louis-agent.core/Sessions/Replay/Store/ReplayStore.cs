@@ -32,6 +32,21 @@ public sealed class ReplayStore(string directory, TimeProvider? clock = null)
     /// <summary>The process's one store: where <c>REPLAY_DIRECTORY</c> is set, else null. The only place outside the setting that names it.</summary>
     public static ReplayStore? From(AgentOptions options) => options.ReplayDirectory is { } directory ? new ReplayStore(directory) : null;
 
+    /// <summary>A trial's recording starts afresh (F18 step 5a): what an earlier attempt of it wrote is removed. A retried trial records under the same key.</summary>
+    public async Task StartTrialAsync(string trial, CancellationToken cancellationToken = default)
+    {
+        string path = TrialFileName.Under(Trials, TrialFileName.Of(trial) + ".jsonl");
+        await _indexLock.WaitAsync(cancellationToken);
+        try
+        {
+            if (File.Exists(path)) File.Delete(path);
+        }
+        finally
+        {
+            _indexLock.Release();
+        }
+    }
+
     public async Task SaveAnswerAsync<T>(string trial, ReplayAsk ask, T answer, CancellationToken cancellationToken = default)
     {
         byte[] bytes = JsonSerializer.SerializeToUtf8Bytes(answer, Json);

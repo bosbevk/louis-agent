@@ -975,5 +975,20 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   **A town with no branch** (`cook-no-branch`, PnP in Prince Albert): the scenario expects no prices, estimates and a line saying there is no branch (`shop`: `no-branch`, dataset version 4), and the
   cook's prompt says it; `any` and `no-branch` now fail a page of a shop read. The first recorded cook run that had the old grader (`65dfb9aa5e86`, $0.1316, 98 requests) failed `priced-at-shop` in every shop scenario for "no checkers tool"; it was recorded with the old prompt and graders, so it and the routing run `bc4b25269a30` are kept only as history. A `--replay` sends the cook's system prompt, and step 5.6 changed that prompt, so its first request would miss: the next recorded runs are the first baseline.
 
+- **Step 5a.1 (pass@k and pass^k in the runner, infrastructure apart, one retry).** `PassRates` (harness, pure, static) holds the one copy of the formula: `Of(trial, grades, graders)` is `Infrastructure` when a turn
+  failed for the infrastructure, else the grades' rules; `Over(outcomes)` gives one scenario's `PassRate(PassAtK, PassHatK, K)` (it passed at least once; it passed every time; the trials that count,
+  an infrastructure one left out; null when none counts); `ShareOf` gives a mode's `PassShare`, the share of its scenarios that pass that way. The summary says the words in one place, and that this is the
+  "any of k" form, exact when every trial is counted (the HumanEval estimator is for n greater than k). The runner writes the rates on the mode's `mode_done` line (`pass_at_k`, `pass_hat_k`, `k`,
+  `infrastructure`, `retried`), over the repeats so far, so the last line of a mode is the mode's and a cut run still has its lines true; the API only reads them (this differs from the plan's row, which
+  had `BenchmarkTrends` compute them: the API doesn't reference the harness, and a second copy would drift). **The retry:** a trial whose first failed turn is `Transport` (only that) is run once more from a
+  new session, and the log says so (`EvalLogMessage.TrialRetried`). What it does to a recording, found by reading the code: the benchmark store keys a turn by (run, mode, repeat, task, turn) and
+  *replaces* it (an upsert in both stores), so the second attempt's turn is the stored one, and `ProtocolTranscripts` now reads a turn written twice as its last attempt (a `question` line opens it afresh).
+  But the replay store *appends* each trial's asks and answers an ask from its *first* recording, and a retry records under the same `{run tag}/{task}`: a replay would find the first attempt's answers, and the
+  second attempt's later requests (built on its own different answers) would miss. So `ReplayStore.StartTrialAsync` clears a trial's index, and a top-level eval session that records (one sent no `of`;
+  a sub-session is sent its parent's and never clears it) starts its trial afresh (`ReplayResolution.FreshTrial`, called when the session opens). `BenchmarkOutcome` gains `Infrastructure` here, not in
+  5a.2, because the runner now writes it as a conversation's outcome and a reader that didn't know it would drop the line. Red first: `PassRatesOverTrialsTests` 11 of 11, `EvalRunnerPassRatesTests` 4 of 5
+  (the fifth, that only transport is retried, passed before the retry existed and guards it), the reader's read-back, the store's two and the fresh-trial four; the two 5.1 transport tests changed to
+  the two attempts a transport failure now makes. Harness 199 tests (was 183), API 329 (was 323), core +2.
+
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)
