@@ -82,6 +82,31 @@ public class JsonlUsageSinkTests
     }
 
     [Test]
+    public void Record_WithAPromptHash_IsTheSameLinePlusTheHashLast()
+    {
+        var at = new DateTimeOffset(2026, 10, 25, 9, 0, 0, TimeSpan.Zero);
+        string hash = new('a', 64);
+        var sink = new JsonlUsageSink(_directory);
+
+        sink.Record(Record(at));
+        sink.Record(Record(at) with { PromptHash = hash });
+
+        string[] lines = Lines("usage-2026-10.jsonl");
+        Assert.That(lines[1], Is.EqualTo(lines[0][..^1] + $",\"prompt_hash\":\"{hash}\"}}"));
+        Assert.That(lines[0], Does.Not.Contain("prompt_hash"));
+    }
+
+    [Test]
+    public void Record_LineWrittenBeforeStep4c_ReadsBackWithANullPromptHash()
+    {
+        const string line = """{"at":"2026-10-10T17:43:20+00:00","round":1,"purpose":"turn","host":"api","session":"sess_1","turn":1,"task":null,"run":null,"service":null,"model":"claude-haiku-5-5","tokens":{"input":47605,"cache_write":null,"cache_read":0,"output":470,"reasoning":null},"duration_ms":3730,"stop":"tool_calls"}""";
+
+        UsageRecord record = JsonSerializer.Deserialize<UsageRecord>(line, JsonlUsageSink.Json)!;
+
+        Assert.That(record.PromptHash, Is.Null, "unknown, never \"\"");
+    }
+
+    [Test]
     public void Record_FileNamedByRecordMonth()
     {
         var sink = new JsonlUsageSink(_directory);

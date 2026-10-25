@@ -81,7 +81,8 @@ is off, with a warning.
   "tokens": { "input": 1840, "cache_write": 26110, "cache_read": 0, "output": 412, "reasoning": 210 },
   "cost": { "currency": "USD", "amount": 0.0365, "price_table": "2026-10-01" },  // 1,840×$1 + 26,110×$1.25 + 412×$5 per M
   "duration_ms": 3120,
-  "stop": "tool_use"
+  "stop": "tool_use",
+  "prompt_hash": "3f9c0a1b…"          // the system prompt and tools, F18 step 4c; 64 lowercase hex characters
 }
 ```
 
@@ -92,6 +93,14 @@ is off, with a warning.
   reports*). Reasoning (thinking) tokens are part of the output count and billed as output; they are recorded
   separately only to show how much of the output was thinking. The Anthropic adapter doesn't report them, so
   `reasoning` is `null` there. Providers that report nothing (some Ollama models) record counts as `null`, never as 0.
+- **The prompt's hash** (F18 step 4c): `prompt_hash` is a SHA-256 over the leading system messages, `ChatOptions.Instructions`
+  and the tools in the order sent (each one's name, description and JSON schema), written as compact UTF-8 JSON. The
+  conversation after the prompt, the model and the settings (temperature, output limit, thinking) are not hashed, so two runs
+  whose rows differ only in `prompt_hash` are an A/B comparison of a prompt change. It is taken in
+  `UsageRecordingChatClient` when the request starts, before any provider strategy, so the same prompt hashes the same on
+  every provider, and every round of a turn carries the same one. A cancelled request has its hash too; a sub-session roll-up
+  has none (it is no request of its own) and its line is unchanged. Rows written before 2026-10-25 read back as null: unknown,
+  never `""`. The encoding is pinned by a test: changing it changes every hash.
 - The file is append-only and rotates monthly (`usage-2026-10.jsonl`, by UTC month); it is the source for every total
   below. Several processes can append to it at once (the API and the orchestrator share one in the demo).
 - Sessions are in memory, but the ledger is not: totals survive restarts.

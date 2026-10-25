@@ -688,6 +688,12 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   failure other than a `WebSearchException`. Known gaps: the Tavily renderer (`PAGE_RENDERER=tavily`) is live, because the page goes to a
   third party even in a replay; `ReadRenderedPage`'s pre-check still resolves DNS in a replay; a failed fetch replays as a miss; and model
   answers replay only from 4e. The guide says how to record and replay (*Add an eval set*, section 11).
+- **Step 4c.1** (`PromptHash`, `UsageRecordingChatClient`, `UsageRecord`): every ledger row of a model request carries `prompt_hash`, a
+  SHA-256 over the leading system messages, `Instructions` and the tools in the order sent, taken when the request starts (so before any
+  provider strategy, and the same on every round of a turn). The encoding is compact UTF-8 JSON with the relaxed escaper and is pinned by a
+  test. The field is last on the record and left out when null, so a roll-up's line is byte-equal to before. Red first: 15 tests failed, 14
+  on the stub's `NotImplementedException` and one on a null `PromptHash`; the sink and report tests passed at once, since they pin what the
+  new field must not change. Golden files unchanged. Core tests: 1419 passing.
 - **Notes for step 5** (from the review of 4.2): `PulsEvalSet`'s `TurnView` builds on `EngineEvents`, so the route, the errors and the
   cost come from one reader. If an expected route goes in a scenario's `expected`, `RoutedToGrader` must declare that key in its
   `ExpectedKeys`. When the HTTP client sets a turn's `Failure`, the turn line must carry it, so `ProtocolTranscripts` reads it back. A

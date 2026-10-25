@@ -8,7 +8,8 @@ using Microsoft.Extensions.AI;
 
 /// <summary>
 /// Writes one <see cref="UsageRecord"/> per model request. Sits inside <c>UseFunctionInvocation</c> in
-/// <c>AgentEngine</c>, so it sees every round of the tool loop as its own request.
+/// <c>AgentEngine</c>, so it sees every round of the tool loop as its own request, and the prompt's hash, taken when the
+/// request starts (F18 step 4c).
 /// </summary>
 /// <param name="innerClient">The provider client (or the next middleware).</param>
 /// <param name="sink">Where records go.</param>
@@ -25,6 +26,7 @@ public sealed class UsageRecordingChatClient(
     {
         UsageScope? scope = UsageScope.Current;
         int round = NextRound(scope);
+        string promptHash = PromptHash.Of(messages, options);
         var stopwatch = Stopwatch.StartNew();
         ChatResponse response;
         try
@@ -35,13 +37,13 @@ public sealed class UsageRecordingChatClient(
         {
             // A timeout or a stopped caller (FX9): recorded as the streaming path records a cancelled stream. A cancelled
             // call returns no usage, so its tokens stay unknown (null), never 0. Provider errors stay unrecorded.
-            Store(scope, CreateRecord(scope, round, usage: null, model: null, Cancelled, stopwatch.Elapsed));
+            Store(scope, CreateRecord(scope, round, usage: null, model: null, Cancelled, stopwatch.Elapsed, promptHash: promptHash));
             throw;
         }
 
         // Non-streaming responses carry their usage on ChatResponse.Usage, not as UsageContent.
         object[] raw = response.RawRepresentation is { } r && _mapper.Keeps(r) ? [r] : [];
-        Store(scope, CreateRecord(scope, round, response.Usage, response.ModelId, response.FinishReason?.Value, stopwatch.Elapsed, raw));
+        Store(scope, CreateRecord(scope, round, response.Usage, response.ModelId, response.FinishReason?.Value, stopwatch.Elapsed, promptHash, raw));
         return response;
     }
 
@@ -52,6 +54,7 @@ public sealed class UsageRecordingChatClient(
         // Taken when the request starts: the stream may end where the scope isn't current (disposed by the host).
         UsageScope? scope = UsageScope.Current;
         int round = NextRound(scope);
+        string promptHash = PromptHash.Of(messages, options);
         var stopwatch = Stopwatch.StartNew();
         UsageDetails? usage = null;
         List<object> raw = [];
@@ -97,7 +100,7 @@ public sealed class UsageRecordingChatClient(
         {
             // Reached on normal completion, an exception, or the caller disposing the stream early (a cancelled turn).
             if (!failed)
-                Store(scope, CreateRecord(scope, round, usage, model, completed ? stop : Cancelled, stopwatch.Elapsed, raw));
+                Store(scope, CreateRecord(scope, round, usage, model, completed ? stop : Cancelled, stopwatch.Elapsed, promptHash, raw));
         }
     }
 
@@ -123,7 +126,8 @@ public sealed class UsageRecordingChatClient(
 
     /// <summary>Builds the record for a finished request from the scope it started in.</summary>
     internal UsageRecord CreateRecord(
-        UsageScope? scope, int round, UsageDetails? usage, string? model, string? stop, TimeSpan duration, IReadOnlyList<object>? raw = null) =>
+        UsageScope? scope, int round, UsageDetails? usage, string? model, string? stop, TimeSpan duration, string? promptHash,
+        IReadOnlyList<object>? raw = null) =>
         new(
             At: DateTimeOffset.UtcNow,
             Round: round,
@@ -138,5 +142,6 @@ public sealed class UsageRecordingChatClient(
             Model: model ?? defaultModel,
             Tokens: _mapper.Map(usage, raw ?? []),
             DurationMs: (long)duration.TotalMilliseconds,
-            Stop: stop);
+            Stop: stop,
+            PromptHash: promptHash);
 }

@@ -86,6 +86,16 @@ public class UsageReportTests
     }
 
     [Test]
+    public void Total_ALedgerWrittenBeforeStep4c_EqualsTheTotalOfTheSameRowsWithHashes()
+    {
+        var before = UsageReport.Price(UsageReport.Read(WriteLedger(Ledger)), Prices).ToList();
+        var hashed = before.Select(r => r with { PromptHash = new string('b', 64) }).ToList();
+
+        Assert.That(before.All(r => r.PromptHash is null), Is.True);
+        Assert.That(UsageReport.Total("all", before), Is.EqualTo(UsageReport.Total("all", hashed)));
+    }
+
+    [Test]
     public void Price_StoredCost_IsKept()
     {
         var charged = new UsageCost("USD", 1.23m, "2026-09-01");

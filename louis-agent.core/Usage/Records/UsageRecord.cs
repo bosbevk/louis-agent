@@ -3,8 +3,8 @@ namespace LouisAgent.Core.Usage.Records;
 using System.Text.Json.Serialization;
 
 /// <summary>
-/// One model request in the usage ledger (Usage spec §4.1). Holds counts, ids, names and timings only: never prompt text
-/// or tool output (F1-S4).
+/// One model request in the usage ledger (Usage spec §4.1). Holds counts, ids, names, timings and the prompt's hash:
+/// never prompt text or tool output (F1-S4).
 /// </summary>
 /// <param name="At">When the request finished.</param>
 /// <param name="Round">Model request number within the turn, 1-based (F1-S1).</param>
@@ -25,6 +25,11 @@ using System.Text.Json.Serialization;
 /// How many model requests a <see cref="UsagePurpose.SubSession"/> roll-up stands for (F5); null, meaning one, on every
 /// other record, and then left out of its ledger line, so the format of a model request's row is unchanged.
 /// </param>
+/// <param name="PromptHash">
+/// SHA-256, as 64 lowercase hex characters, over the leading system messages, the instructions and the tools of the request
+/// as the engine sent it (F18 step 4c, <c>PromptHash.Of</c>). Null, meaning unknown, on a roll-up and on a line written
+/// before step 4c, and then left out of its ledger line; never "".
+/// </param>
 public sealed record UsageRecord(
     DateTimeOffset At,
     int Round,
@@ -41,4 +46,5 @@ public sealed record UsageRecord(
     string? Stop,
     UsageCost? Cost = null,
     string? Parent = null,
-    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] int? Requests = null);
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] int? Requests = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] string? PromptHash = null);

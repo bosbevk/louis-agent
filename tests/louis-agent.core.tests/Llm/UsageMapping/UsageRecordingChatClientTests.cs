@@ -279,4 +279,64 @@ public class UsageRecordingChatClientTests
 
         Assert.That(JsonSerializer.Serialize(sink.Records.Single()), Does.Not.Contain(marker));
     }
+
+    private static List<ChatMessage> Prompted(params ChatMessage[] after) =>
+        [new(ChatRole.System, "Jy is Puls."), new(ChatRole.User, "hi"), .. after];
+
+    private static readonly ChatOptions Tooled = new()
+    {
+        Tools = [AIFunctionFactory.CreateDeclaration("GetToday", "Today's date.", JsonDocument.Parse("""{"type":"object","properties":{}}""").RootElement)],
+    };
+
+    [Test]
+    public async Task GetResponse_RecordsThePromptHashOfWhatItWasSent()
+    {
+        var sink = new ListUsageSink();
+        using var client = new UsageRecordingChatClient(new FakeChatClient(_ => Reply("hi")), sink);
+
+        await client.GetResponseAsync(Prompted(), Tooled);
+
+        Assert.That(sink.Records.Single().PromptHash, Is.EqualTo(PromptHash.Of(Prompted(), Tooled)));
+    }
+
+    [Test]
+    public async Task GetStreamingResponse_RecordsThePromptHashOfWhatItWasSent()
+    {
+        var sink = new ListUsageSink();
+        using var client = new UsageRecordingChatClient(new FakeChatClient(_ => Reply("hi")), sink);
+
+        await client.GetStreamingResponseAsync(Prompted(), Tooled).ToListAsync();
+
+        Assert.That(sink.Records.Single().PromptHash, Is.EqualTo(PromptHash.Of(Prompted(), Tooled)));
+    }
+
+    [Test]
+    public async Task TwoRoundsOfOneTurn_RecordTheSameHash()
+    {
+        // The second round adds the first's reply and a tool result after the same prompt and tools.
+        var sink = new ListUsageSink();
+        using var client = new UsageRecordingChatClient(new FakeChatClient(_ => Reply("one"), _ => Reply("two")), sink);
+
+        using (UsageScope.Begin())
+        {
+            await client.GetResponseAsync(Prompted(), Tooled);
+            await client.GetResponseAsync(Prompted(
+                new ChatMessage(ChatRole.Assistant, [new FunctionCallContent("c1", "GetToday")]),
+                new ChatMessage(ChatRole.Tool, [new FunctionResultContent("c1", "2026-10-25")])), Tooled);
+        }
+
+        Assert.That(sink.Records[0].PromptHash, Is.Not.Null);
+        Assert.That(sink.Records[1].PromptHash, Is.EqualTo(sink.Records[0].PromptHash));
+    }
+
+    [Test]
+    public void ACancelledRequest_RecordsItsHashToo()
+    {
+        var sink = new ListUsageSink();
+        using var client = new UsageRecordingChatClient(new FailingStreamClient(new TaskCanceledException("timeout")), sink);
+
+        Assert.ThrowsAsync<TaskCanceledException>(async () => await client.GetResponseAsync(Prompted(), Tooled));
+
+        Assert.That(sink.Records.Single().PromptHash, Is.EqualTo(PromptHash.Of(Prompted(), Tooled)));
+    }
 }
