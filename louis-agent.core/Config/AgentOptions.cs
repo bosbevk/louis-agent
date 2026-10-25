@@ -48,7 +48,7 @@ public sealed class AgentOptions
     /// </summary>
     public string? BrowserUserAgent { get; set; }
 
-    /// <summary>WEB_REPLAY (F18 step 4a): off, record or replay; the default for eval sessions (those with a run tag). Text: <c>SessionReplay.DefaultMode</c> parses it once at start-up.</summary>
+    /// <summary>WEB_REPLAY (F18 step 4a): off, record or replay; the default web of an eval session, one that sends <c>replay</c> (a run tag alone is not one). Text: <c>SessionReplay.DefaultMode</c> parses it once at start-up.</summary>
     public string? WebReplay { get; set; }
 
     /// <summary>REPLAY_DIRECTORY (F18 step 4a): where the saved web pages live. Private, never served; null keeps no recordings.</summary>

@@ -565,7 +565,16 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   (`sometimes`), `model: true`, and `web: replay` with no `of` each gave a 400 with its own text (the unknown `web` lists
   `off, record, replay`); a run-tagged `web: record`, a run tag alone (the default, `WEB_REPLAY` unset) and a plain live chat each
   gave a 201. The 201s were deleted again.
-- **Notes for step 5** (from the review of 4.2):
+- **Review of step 4a.2** (2026-10-25), one rule changed (the mistake was in step 4a's prompt, not in the build): a run tag does not make
+  a session an eval. The orchestrator sends `run` on every fix session, so `WEB_REPLAY=record` would have recorded its real sessions and
+  `WEB_REPLAY=replay` would have made each of them fail with a 400; and an explicit `web: off` was not passed on to a sub-session, which
+  fell back to the instance default and recorded behind its parent. Now an eval marks itself by sending `replay`, even `{}`, and
+  `ReplayResolution` returns none for a session that sends none, whatever the default and the run tag; the default only fills in a missing
+  `web`. One rule fixes both: a parent resolved to off has no `SessionReplay.Current`, so its child is sent nothing and is not an eval
+  either. `ReplayResolutionTests` now say it (`replay: {}` is the eval's mark in each case that wanted the default); red first: three
+  tests (a run tag alone under a `record` default and under a `replay` default, and a child sent nothing under `record`); the other 29
+  passed already. The plan's *Approved during the build* has the entry, and 4a.3's runner sends `replay` on every session it opens.
+  A slip of mine in the 4a.2 note, found here: it left a second, empty "Notes for step 5" line above the real one; it is gone.
 - **Notes for step 5** (from the review of 4.2): `PulsEvalSet`'s `TurnView` builds on `EngineEvents`, so the route, the errors and the
   cost come from one reader. If an expected route goes in a scenario's `expected`, `RoutedToGrader` must declare that key in its
   `ExpectedKeys`. When the HTTP client sets a turn's `Failure`, the turn line must carry it, so `ProtocolTranscripts` reads it back. A

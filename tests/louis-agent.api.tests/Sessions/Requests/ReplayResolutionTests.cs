@@ -4,10 +4,16 @@ using LouisAgent.Core.Sessions.Replay;
 namespace LouisAgent.Api.Tests.Sessions.Requests;
 
 // F18 step 4a.2: what an eval session does with the web is decided here, never by the runner (ADR 0029): one test per rule, in the
-// order the rules apply. Written first: TryResolve threw NotImplementedException on the red run.
+// order the rules apply. Written first: TryResolve threw NotImplementedException on the red run. Review of 4a.2 (Louis, 2026-10-25): a
+// run tag doesn't make a session an eval (the orchestrator sends one on every fix session), so an eval marks itself by sending `replay`,
+// even an empty {}, and the instance default only fills in a missing `web`: the tests below that send no `replay` expect none, whatever
+// the default, and were red against the rule that applied the default to every run-tagged session.
 public class ReplayResolutionTests
 {
     private const string Run = "run_1:puls-cook:1";
+
+    /// <summary>An eval session's own mark: <c>replay: {}</c>, which takes the instance default for its web and nothing else.</summary>
+    private static readonly ReplayRequest Eval = new(null, null);
 
     private static CreateSessionRequest Request(string? run = Run, string? task = "bobotie", ReplayRequest? replay = null) =>
         new(task, run, null, Replay: replay);
@@ -39,17 +45,46 @@ public class ReplayResolutionTests
         Assert.That(refusal, Does.Contain("replay").And.Contain("run"));
     }
 
-    // 2. A run tag and no replay: the default.
     [Test]
-    public void ARunTagAndNoReplay_IsTheDefault_OffGivesNone()
+    public void AnEmptyReplayWithNoRunTag_IsRefusedToo_ItIsTheMarkThatCounts()
     {
-        Assert.That(Resolve(Request(), WebReplayMode.Off), Is.EqualTo((true, (SessionReplay?)null, (string?)null)));
+        Assert.That(Resolve(Request(run: null, replay: Eval)).Ok, Is.False);
+        Assert.That(Resolve(Request(run: "  ", replay: Eval), WebReplayMode.Record).Refusal, Does.Contain("run"));
+    }
+
+    // 2. A run tag is not an eval: with no `replay` the session is left alone, whatever the instance's default. The orchestrator
+    //    sends a run tag on every fix session, so a default of record would have recorded its real work and one of replay refused it.
+    [TestCase(WebReplayMode.Off)]
+    [TestCase(WebReplayMode.Record)]
+    [TestCase(WebReplayMode.Replay)]
+    public void ARunTagAlone_IsNotAnEval_AndGetsNoReplay_WhateverTheDefault(WebReplayMode defaultMode)
+    {
+        Assert.That(Resolve(Request(), defaultMode), Is.EqualTo((true, (SessionReplay?)null, (string?)null)));
+        Assert.That(Resolve(Request(), defaultMode, keepsRecordings: false), Is.EqualTo((true, (SessionReplay?)null, (string?)null)),
+            "and an instance that keeps no recordings has nothing to refuse");
     }
 
     [Test]
-    public void TheDefaultRecord_WithARunTag_RecordsIntoRunSlashTask()
+    public void AChildSentNothing_GetsNothing_EvenWhereTheDefaultRecords()
     {
-        var (ok, replay, _) = Resolve(Request(), WebReplayMode.Record);
+        // A parent that said off passes none on (SessionReplay.Current is null for it), so its specialist is not an eval either, and
+        // doesn't fall back to the instance's default and record behind its parent's back.
+        var child = Request(task: "sub-session:puls-cook");
+
+        Assert.That(Resolve(child, WebReplayMode.Record).Replay, Is.Null);
+    }
+
+    // An eval's `replay: {}` takes the default for its web.
+    [Test]
+    public void AnEmptyReplay_TakesTheDefault_OffGivesNone()
+    {
+        Assert.That(Resolve(Request(replay: Eval), WebReplayMode.Off), Is.EqualTo((true, (SessionReplay?)null, (string?)null)));
+    }
+
+    [Test]
+    public void AnEmptyReplay_WithTheDefaultRecord_RecordsIntoRunSlashTask()
+    {
+        var (ok, replay, _) = Resolve(Request(replay: Eval), WebReplayMode.Record);
 
         Assert.That((ok, replay), Is.EqualTo((true, new SessionReplay(WebReplayMode.Record, $"{Run}/bobotie", false))));
     }
@@ -57,14 +92,14 @@ public class ReplayResolutionTests
     [Test]
     public void ARecordingWithNoTask_UsesTheRunTagAlone()
     {
-        Assert.That(Resolve(Request(task: null), WebReplayMode.Record).Replay, Is.EqualTo(new SessionReplay(WebReplayMode.Record, Run, false)));
-        Assert.That(Resolve(Request(task: " "), WebReplayMode.Record).Replay!.Of, Is.EqualTo(Run));
+        Assert.That(Resolve(Request(task: null, replay: Eval), WebReplayMode.Record).Replay, Is.EqualTo(new SessionReplay(WebReplayMode.Record, Run, false)));
+        Assert.That(Resolve(Request(task: " ", replay: Eval), WebReplayMode.Record).Replay!.Of, Is.EqualTo(Run));
     }
 
     [Test]
-    public void TheDefaultReplay_NeedsAnOf_SoItIsRefused()
+    public void AnEmptyReplay_WithTheDefaultReplay_NeedsAnOf_SoItIsRefused()
     {
-        var (ok, _, refusal) = Resolve(Request(), WebReplayMode.Replay);
+        var (ok, _, refusal) = Resolve(Request(replay: Eval), WebReplayMode.Replay);
 
         Assert.That(ok, Is.False);
         Assert.That(refusal, Does.Contain("needs 'of'"));
@@ -119,7 +154,7 @@ public class ReplayResolutionTests
     {
         Assert.That(Resolve(Request(replay: new ReplayRequest("record", null)), keepsRecordings: false).Refusal, Does.Contain("keeps no recordings"));
         Assert.That(Resolve(Request(replay: new ReplayRequest("replay", "x")), keepsRecordings: false).Refusal, Does.Contain("keeps no recordings"));
-        Assert.That(Resolve(Request(), WebReplayMode.Record, keepsRecordings: false).Refusal, Does.Contain("keeps no recordings"), "the default is held to it too");
+        Assert.That(Resolve(Request(replay: Eval), WebReplayMode.Record, keepsRecordings: false).Refusal, Does.Contain("keeps no recordings"), "the default is held to it too");
     }
 
     [Test]

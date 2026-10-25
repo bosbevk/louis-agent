@@ -1025,6 +1025,14 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
   tag (`{runId}:{mode}:{repeat}`) holds every scenario of a mode and repeat, so a sub-session that worked out its own key would mix one
   scenario's pages with another's.
 
+- **Step 4a: an eval marks itself by sending `replay`, and a run tag does not** (Louis, 2026-10-25, the review of 4a.2; the mistake was
+  in step 4a's prompt, which made a run tag the mark). The orchestrator sends a run tag on every fix session
+  (`LouisAgentClient.cs:49`), so `WEB_REPLAY=record` would have recorded its real work, and `WEB_REPLAY=replay` would have refused it.
+  And an explicit `web: off` was not passed on to a sub-session, which then fell back to the instance default. So: a session that sends
+  `replay`, even an empty `{}`, is an eval, and the instance default only fills in a `web` it left out; with no `replay` the session
+  is left alone. The runner (4a.3) sends `replay` on every session it opens. This replaces the plan's "a run tag, no `replay`: the
+  default"; the rest of the 4a row stands.
+
 - **Step 4.5: the portal shows every eval the same way, from one template** (Louis, 2026-10-25: "the front end should probably also
   update to reflect the standard we now implement I mean all future evals will display the same, that's the point?" and, on the choice,
   "A, so it will be generic, and work from a template"). Three commits: 4.5a, the runner grades each trial (today it writes

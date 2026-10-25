@@ -54,11 +54,13 @@ flowchart LR
   `Africa/Johannesburg`. Files attached to a message are
   remembered by name, so `StartSubSession` can forward them to a specialist without the model copying them.
 - **Web input recorded and replayed** (F18 step 4a): `POST /sessions` takes `replay` (`{ web, of, model }`) only on a session with
-  a run tag, and `ReplayResolution` decides, before any engine is built (each refusal a 400): a `replay` with no run tag; an unknown
-  `web` (the supported names are listed); `model: true`, until step 4e's cache; `record` or `replay` on an instance with no
-  replay folder; `replay` without `of`. With a run tag and no `replay`, the instance's `WEB_REPLAY` applies (parsed once at start-up,
-  so a bad value stops the API). A recording without `of` writes `{run tag}/{task}`; a sub-session is sent its parent's `of` and
-  keeps it, so it never works out a key of its own. The session keeps the result, and `TurnStream` sets it for each turn as it sets
+  a run tag, and **sending it, even an empty `{}`, is what marks a session as an eval**: a run tag alone marks nothing (the orchestrator
+  sends one on every fix session), so with no `replay` the session is left alone whatever `WEB_REPLAY` says. `ReplayResolution` decides,
+  before any engine is built (each refusal a 400): a `replay` with no run tag; an unknown `web` (the supported names are listed);
+  `model: true`, until step 4e's cache; `record` or `replay` on an instance with no replay folder; `replay` without `of`. The
+  instance's `WEB_REPLAY` (parsed once at start-up, so a bad value stops the API) only fills in a `web` the eval didn't send. A
+  recording without `of` writes `{run tag}/{task}`; a sub-session is sent its parent's `of` and keeps it, so it never works out a key of
+  its own, and a child of a parent that said `off` is sent nothing and stays live. The session keeps the result, and `TurnStream` sets it for each turn as it sets
   the user's place.
 - **Streaming** (`Sessions/Streaming/`, F18 step 1f): the writer is `ITurnStreamFormat`, and the turn and the session
   view call only it. Its one format is `Claude/ClaudeStreamFormat`; `"stream"` on `POST /sessions` picks the format
