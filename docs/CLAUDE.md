@@ -133,6 +133,11 @@ decision's record (its context, and what it cost) in [docs/adr/](adr/README.md).
 - **Records for values, classes for things** — a request, an answer, a key or a line of a file is a record; what owns a
   lock, a client or a file, or changes over time, is a class; a record holds no resource; both are sealed by default.
   Why: [ADR 0040](adr/0040-records-for-values-classes-for-things.md).
+- **JSON through records** — a known shape (a body, a reply, a file) is a record the serializer writes and reads, with
+  one options object per wire, never changed for one caller; `JsonObject` only for a shape decided at run time,
+  `JsonElement` for input we don't own (a string with `GetString()`, never `GetRawText()`), `Utf8JsonWriter` only when
+  the bytes are the contract (the protocol's lines, a hash's input).
+  Why: [ADR 0041](adr/0041-json-through-records-by-hand-only-for-bytes.md).
 - **Separate by concern** — a folder, class or component holds one concern; a folder with two kinds of thing or more
   than about six files gets subfolders by concern, and a page over about a hundred lines splits into components. A
   `.razor` holds markup only, no `@code` block: a component's C# goes in its `.razor.cs` code-behind, and logic that
