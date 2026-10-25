@@ -1181,6 +1181,12 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
   conversation's protocol lines, its mode line first) and `{scenario}.bad.{label}.txt` (the same, wrong in one way). Every required grader
   fails at least one known-bad of its eval, and only `Fail` counts. Step 5's Puls evals bring theirs, cut from a stored run where one
   passed, or built by hand.
+- **Step 4b: the engine factory's cache and profile key move to `Hosting/Engines/`, before 4b.4** (Louis, 2026-10-25, on
+  `AgentEngineFactory.GetOrCreate`: "can't we move this, when files get too big"). The factory was at 190 lines with 4b.4 still to add.
+  `GetOrCreate` did three jobs: it checked the request (it stays), it built the key (`ProfileKey`, a record: a value, ADR 0040), and it
+  kept the cache (`EngineCache`, a class: the only code that used the dictionary, the last-used map, the lock and the counter). ADR 0034
+  splits a class by the fields each part uses, never into a `Utils` class or extension methods, which could not reach the private state
+  anyway. No behaviour changed: `ProfileKey.Text` is byte-equal to the old key, and `AgentEngineFactoryTests` asserts what it did.
 
 ---
 [Docs index](../README.md) · [Plans](README.md) · [Platform plan](platform.md) · [Feature F18](../features/F18-evaluation.md)

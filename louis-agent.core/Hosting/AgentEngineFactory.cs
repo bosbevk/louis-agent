@@ -1,5 +1,6 @@
 namespace LouisAgent.Core.Hosting;
 
+using LouisAgent.Core.Hosting.Engines;
 using LouisAgent.Core.Hosting.Prompts;
 using LouisAgent.Core.Hosting.SessionLlms;
 using LouisAgent.Core.Llm.UsageMapping;
@@ -7,7 +8,6 @@ using LouisAgent.Core.Pricing.Rates;
 using LouisAgent.Core.Usage.Sinks;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Agent.Catalog;
-using System.Collections.Concurrent;
 using System.Text.Json;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Config;
@@ -50,12 +50,8 @@ public sealed class AgentEngineFactory
     private readonly IUsageMapper? _usageMapper;
     private readonly DisplayCurrency? _display;
     private readonly ReasoningEffort? _thinking;
-    private readonly int _capacity;
     private readonly Dictionary<string, SessionLlm> _sessionLlms;
-    private readonly ConcurrentDictionary<string, Lazy<AgentEngine>> _engines = new(StringComparer.Ordinal);
-    private readonly ConcurrentDictionary<string, long> _lastUsed = new(StringComparer.Ordinal);
-    private readonly Lock _evicting = new();
-    private long _clock;
+    private readonly EngineCache _engines;
 
     public AgentEngineFactory(IChatClient chatClient, AgentOptions agent, bool supportsTools = true,
         IUsageSink? usageSink = null, IUsageMapper? usageMapper = null, DisplayCurrency? display = null,
@@ -70,7 +66,7 @@ public sealed class AgentEngineFactory
         _usageMapper = usageMapper;
         _display = display;
         _thinking = thinking;
-        _capacity = capacity;
+        _engines = new EngineCache(capacity);
         _sessionLlms = (sessionLlms ?? []).ToDictionary(l => l.Name, StringComparer.Ordinal);
         // One store where recordings are kept, and one browser, for every engine of this process (F18 steps 4a and 4b): the shops and the page renderer read through them.
         var replay = WebReplayStore.From(agent);
@@ -97,8 +93,8 @@ public sealed class AgentEngineFactory
     public string DefaultVoice => RoleCatalog.DefaultVoice;
 
     /// <summary>The profiles built so far: each its toolsets joined with commas, then |role, |level below level 0,
-    /// |llm:{profile} and |tool:{name} when set.</summary>
-    public IReadOnlyCollection<string> Profiles => _engines.Keys.ToList();
+    /// |llm:{profile} and |tool:{name} when set (<see cref="ProfileKey.Text"/>; the cache that holds them is <see cref="EngineCache"/>).</summary>
+    public IReadOnlyCollection<string> Profiles => _engines.Keys;
 
     /// <summary>
     /// The engine for <paramref name="toolsets"/> (any order or case; duplicates ignored), <paramref name="role"/>
@@ -129,28 +125,8 @@ public sealed class AgentEngineFactory
             throw new ToolsetException(MessageText.Format(HostingErrorMessage.ToolNotInToolsets,
                 new { Tool = tool, Toolsets = resolved.Count == 0 ? "(none)" : string.Join(", ", resolved.Select(t => t.Name)) }));
 
-        string key = string.Join(",", resolved.Select(t => t.Name)) + (role is null ? "" : "|" + role) + LevelSuffix(level)
-            + (llm is null ? "" : "|llm:" + llm) + (tool is null ? "" : "|tool:" + tool);
-        _lastUsed[key] = Interlocked.Increment(ref _clock);
-        if (_engines.TryGetValue(key, out var existing)) return existing.Value;
-
-        Lazy<AgentEngine> engine;
-        lock (_evicting)
-        {
-            while (_engines.Count >= _capacity && !_engines.ContainsKey(key))
-            {
-                string oldest = _engines.Keys.Where(k => k != key).MinBy(k => _lastUsed.GetValueOrDefault(k))!;
-                _engines.TryRemove(oldest, out _);
-                _lastUsed.TryRemove(oldest, out _);
-                Log.Log(LogLevel.Information, HostingLogMessage.ToolsetProfileDropped, new { Toolsets = oldest.Length == 0 ? "(none)" : oldest, Capacity = _capacity });
-            }
-            engine = _engines.GetOrAdd(key, _ => new Lazy<AgentEngine>(() => Build(resolved, role, level, model, tool)));
-        }
-        return engine.Value;   // built outside the lock: building one profile doesn't hold up another
+        return _engines.GetOrAdd(ProfileKey.Of(resolved, role, level, llm, tool), () => Build(resolved, role, level, model, tool));
     }
-
-    /// <summary>Level 0 adds nothing to the key, so its profiles keep the names they had before CL8.</summary>
-    private static string LevelSuffix(RoleLevel level) => level == RoleLevel.Agent ? "" : "|" + level.ToString().ToLowerInvariant();
 
     private AgentEngine Build(IReadOnlyList<ToolsetDefinition> resolved, string? role, RoleLevel level, SessionLlm? model, string? tool)
     {

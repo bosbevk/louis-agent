@@ -85,7 +85,7 @@ a change to one (a new provider, a new tool, a new guard) touches one folder:
 | `Usage/` | The ledger: `Records/` (a record, its tokens and cost, its purpose, the turn's scope and tags, the session), `Sinks/` (where records go: the monthly JSONL file), `Reports/` (reading a ledger back: totals, the usage text every host shows, the lifetime cost, the cache gaps) |
 | `Pricing/` | `Prices/` (the price table and its loader, a model's prices, the cost calculator, the sink that prices each record), `Rates/` (exchange rates and their loader, the display currency; `Mappers/`: a provider's reply into our format) |
 | `Protocols/Mcp/` | Talking to other agents and tools over MCP |
-| `Hosting/` | Bootstrap shared by every host: `AgentHost` (the flow), its context, the engine factory, the ledger and the tools-only client at the top; `EnvFiles/` (the .env files a host loads), `Prompts/` (the system prompt assembled from skill files), `Rider/` (Rider's MCP tools at start-up), `SessionLlms/` (the LLM profiles a session may name, `SESSION_LLMS`) |
+| `Hosting/` | Bootstrap shared by every host: `AgentHost` (the flow), its context, the engine factory, the ledger and the tools-only client at the top; `Engines/` (the factory's cache and the key it holds engines by), `EnvFiles/` (the .env files a host loads), `Prompts/` (the system prompt assembled from skill files), `Rider/` (Rider's MCP tools at start-up), `SessionLlms/` (the LLM profiles a session may name, `SESSION_LLMS`) |
 | `Config/`, `Messages/`, `Logging/` | Settings; message enums; logging (`AgentLogging`: Serilog behind `ILogger`) |
 
 The rules:
