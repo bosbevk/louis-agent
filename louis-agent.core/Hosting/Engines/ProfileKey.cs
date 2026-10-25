@@ -9,8 +9,13 @@ using LouisAgent.Core.Skills.Roles;
 /// </summary>
 public sealed record ProfileKey(string Toolsets, string? Role, RoleLevel Level, string? Llm, string? Tool)
 {
+    /// <summary>
+    /// Empty means none, stated once: an empty <paramref name="role"/> or <paramref name="llm"/> is null, and so is a blank
+    /// <paramref name="tool"/>, so two spellings of one request are one key. A blank role or LLM name is kept, to be refused as unknown.
+    /// </summary>
     public static ProfileKey Of(IEnumerable<ToolsetDefinition> resolved, string? role, RoleLevel level, string? llm, string? tool) =>
-        new(string.Join(",", resolved.Select(t => t.Name)), role, level, llm, tool);
+        new(string.Join(",", resolved.Select(t => t.Name)), string.IsNullOrEmpty(role) ? null : role, level,
+            string.IsNullOrEmpty(llm) ? null : llm, string.IsNullOrWhiteSpace(tool) ? null : tool);
 
     /// <summary>
     /// Exactly the text the factory used before (<c>Profiles</c> and the drop log show it): toolsets, then |role, |level below level 0,

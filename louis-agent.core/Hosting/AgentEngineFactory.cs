@@ -112,24 +112,28 @@ public sealed class AgentEngineFactory
         string? llm = null, string? tool = null)
     {
         var resolved = Catalog.Resolve(toolsets, Context);
-        if (string.IsNullOrEmpty(role)) role = null;
+        var key = ProfileKey.Of(resolved, role, level, llm, tool);
         // Checked here, not in Build: a Lazy that throws keeps the exception, and the key would stay broken.
-        RoleFiles.FileOf(_agent, role, level);
-        if (string.IsNullOrEmpty(llm)) llm = null;
-        SessionLlm? model = null;
-        if (llm is not null && !_sessionLlms.TryGetValue(llm, out model))
-            throw new SessionLlmException(MessageText.Format(HostingErrorMessage.UnknownSessionLlm,
-                new { Name = llm, Available = _sessionLlms.Count == 0 ? "none" : string.Join(", ", _sessionLlms.Keys) }));
-        if (string.IsNullOrWhiteSpace(tool)) tool = null;
-        if (tool is not null && !Catalog.ToolNamesOf(resolved).Contains(tool))
+        RoleFiles.FileOf(_agent, key.Role, key.Level);
+        var model = FindLlm(key.Llm);
+        if (key.Tool is not null && !Catalog.ToolNamesOf(resolved).Contains(key.Tool))
             throw new ToolsetException(MessageText.Format(HostingErrorMessage.ToolNotInToolsets,
-                new { Tool = tool, Toolsets = resolved.Count == 0 ? "(none)" : string.Join(", ", resolved.Select(t => t.Name)) }));
+                new { Tool = key.Tool, Toolsets = resolved.Count == 0 ? "(none)" : string.Join(", ", resolved.Select(t => t.Name)) }));
 
-        return _engines.GetOrAdd(ProfileKey.Of(resolved, role, level, llm, tool), () => Build(resolved, role, level, model, tool));
+        return _engines.GetOrAdd(key, () => Build(resolved, key, model));
     }
 
-    private AgentEngine Build(IReadOnlyList<ToolsetDefinition> resolved, string? role, RoleLevel level, SessionLlm? model, string? tool)
+    private SessionLlm? FindLlm(string? llm)
     {
+        if (llm is null) return null;
+        if (_sessionLlms.TryGetValue(llm, out var model)) return model;
+        throw new SessionLlmException(MessageText.Format(HostingErrorMessage.UnknownSessionLlm,
+            new { Name = llm, Available = _sessionLlms.Count == 0 ? "none" : string.Join(", ", _sessionLlms.Keys) }));
+    }
+
+    private AgentEngine Build(IReadOnlyList<ToolsetDefinition> resolved, ProfileKey key, SessionLlm? model)
+    {
+        var (_, role, level, _, tool) = key;
         bool selfExtension = resolved.Any(t => t.IsEngineProvided);
         // A minion's prompt has no toolset guide (F30): its role says what to do with its one tool.
         var guided = tool is null ? resolved : [];

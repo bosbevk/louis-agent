@@ -30,6 +30,26 @@ public class ProfileKeyTests
     }
 
     [Test]
+    public void EmptyMeansNone_ForTheRoleTheLlmAndTheTool_SoTwoSpellingsOfOneRequestAreOneKey()
+    {
+        // The factory used to turn "" into null before building the key; the key states the rule once, and the factory reads its parts back.
+        var spelledOut = ProfileKey.Of(Toolsets("web"), "", RoleLevel.Specialist, "", "   ");
+        var none = ProfileKey.Of(Toolsets("web"), null, RoleLevel.Specialist, null, null);
+
+        Assert.That((spelledOut.Role, spelledOut.Llm, spelledOut.Tool), Is.EqualTo(((string?)null, (string?)null, (string?)null)));
+        Assert.That(spelledOut, Is.EqualTo(none));
+        Assert.That(spelledOut.Text, Is.EqualTo("web|specialist"));
+    }
+
+    [Test]
+    public void OnlyTheToolTreatsWhitespaceAsNone_AsTheFactoryDid()
+    {
+        var key = ProfileKey.Of(Toolsets("web"), " ", RoleLevel.Agent, " ", "ReadPage");
+
+        Assert.That((key.Role, key.Llm), Is.EqualTo((" ", " ")), "a blank role or LLM name is kept, so it is refused as unknown, not taken for none");
+    }
+
+    [Test]
     public void TwoKeysBuiltFromTheSameParts_AreEqual_AndWorkAsOneDictionaryKey()
     {
         var a = ProfileKey.Of(Toolsets("files", "git"), "cook", RoleLevel.Specialist, "ollama-puls", "ReadPage");
