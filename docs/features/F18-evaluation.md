@@ -592,6 +592,9 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   runner tests failed on the stub's raw run id where the trial's key belongs (`run_A` for `run_A:cook:1/pannekoek`). Two passed at once
   (a run with no flags, and a recording's `of` null), since the stub already sent the mark and no trial. Green: runner tests 62, harness
   131, all 14 suites of the solution.
+  By hand, in the rebuilt Puls container (`docker compose -f docker/docker-compose.puls.yml exec -T puls dotnet /app/evals/louis-agent.evals.runner.dll ...`,
+  the stub only, so nothing is spent or recorded): `--web sometimes`, `--of` without a replay, `--of ../x` and `--web replay` with no `--of`
+  each exited 1 with their own texts; `run stub --web replay --of run_A` and `run stub --web record` each exited 0 with 108 protocol lines.
 - **Close of step 4a.** What is recorded: each visit the browser makes in a recording session (its address, script, ready selector, time,
   the page's HTML, captured answers, script result and cookies), once per hash under `pages/` and one index line per visit under
   `trials/`, in the API's `REPLAY_DIRECTORY` (`data/puls/replay` on the host, under the Puls compose). A failed visit is recorded as its
