@@ -560,6 +560,11 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   settings, the factory, the renderer and the shared-browser tests failed on `NotImplementedException` and on the old renderer building
   its own Chrome (an 8 s timeout against a browser that isn't there); the sub-session bodies had no `replay` key; 28 of the 30 API tests
   failed on the stub (the `AgentSessions` one passed at once, since its plumbing is only a parameter passed on).
+  **By hand, against the rebuilt Puls container** (`docker compose -f docker/docker-compose.puls.yml --env-file config/.env up -d --build`, which
+  sets `REPLAY_DIRECTORY: /data/replay`), `POST /sessions` with no model spend: `replay` with no run tag, an unknown `web`
+  (`sometimes`), `model: true`, and `web: replay` with no `of` each gave a 400 with its own text (the unknown `web` lists
+  `off, record, replay`); a run-tagged `web: record`, a run tag alone (the default, `WEB_REPLAY` unset) and a plain live chat each
+  gave a 201. The 201s were deleted again.
 - **Notes for step 5** (from the review of 4.2):
 - **Notes for step 5** (from the review of 4.2): `PulsEvalSet`'s `TurnView` builds on `EngineEvents`, so the route, the errors and the
   cost come from one reader. If an expected route goes in a scenario's `expected`, `RoutedToGrader` must declare that key in its
