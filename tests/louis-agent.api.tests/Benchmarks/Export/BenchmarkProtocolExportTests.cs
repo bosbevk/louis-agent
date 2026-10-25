@@ -57,6 +57,25 @@ public class BenchmarkProtocolExportTests
     }
 
     [Test]
+    public async Task AHeldOutRun_KeepsItsSplitOnTheBeginLine_SoAnExportedRunReadsBackAsHeldOut()
+    {
+        string At(object e) => "@" + JsonSerializer.Serialize(e);
+        var lines = new[]
+        {
+            At(new { @event = "protocol", t = 1700000000.5, version = 1, eval = "puls-cook", eval_version = 3, commit = "abc123", split = "held_out", graders = Array.Empty<object>(), models = Array.Empty<object>() }),
+            At(new { @event = "mode", t = 1700000001.0, mode = "puls-cook", repeat = 1, toolsets = new[] { "web" }, role = (string?)null, llm = (string?)null, conversations = 0 }),
+            At(new { @event = "mode_done", t = 1700000005.0, mode = "puls-cook", repeat = 1 }),
+        };
+        var store = await Recorded(lines);
+
+        string text = await Export(store);
+
+        var begin = Parse(text.Split('\n', StringSplitOptions.RemoveEmptyEntries)[0]);
+        Assert.That(text.Split('\n')[0], Does.Contain("\"split\":\"held_out\""));
+        Assert.That(((ProtocolStarted)begin).Split, Is.EqualTo(BenchmarkRunSplit.HeldOut));
+    }
+
+    [Test]
     public async Task AnEvalRunKeepsItsEvalGradersAndModels_AndEachConversationsGradesAndOutcome()
     {
         string At(object e) => "@" + JsonSerializer.Serialize(e);

@@ -59,6 +59,7 @@ public static class BenchmarkProtocolExport
             json.WriteString("eval", run.Eval);
             if (run.EvalVersion is { } version) json.WriteNumber("eval_version", version);
             if (run.Commit is { } commit) json.WriteString("commit", commit);
+            if (run.Split is { } split) json.WriteString("split", BenchmarkRunSplitName.Of(split));
             json.WriteStartArray("graders");
             foreach (var grader in run.Graders ?? [])
             {

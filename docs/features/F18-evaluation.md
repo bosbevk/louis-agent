@@ -973,7 +973,7 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   and the prices link to it (no `area`: a page has none); `Shops.ToolShopHosts` counts them as shops the cook can read, so the *no-tool shops* chip no longer flags them. The dataset is version 3 and the
   conformance transcripts are cut again for PnP (the two Checkers-only known-bad ones, wrong town and no area, are replaced by a wrong-shop one). Red first: 5 of the 9 new tests. The first
   **A town with no branch** (`cook-no-branch`, PnP in Prince Albert): the scenario expects no prices, estimates and a line saying there is no branch (`shop`: `no-branch`, dataset version 4), and the
-  cook's prompt says it; `any` and `no-branch` now fail a page of a shop read. The first recorded cook run that had the old grader (`65dfb9aa5e86`, $0.1316, 98 requests) failed `priced-at-shop` in every shop scenario for "no checkers tool"; replay it after this step to see the new grader on it.
+  cook's prompt says it; `any` and `no-branch` now fail a page of a shop read. The first recorded cook run that had the old grader (`65dfb9aa5e86`, $0.1316, 98 requests) failed `priced-at-shop` in every shop scenario for "no checkers tool"; it was recorded with the old prompt and graders, so it and the routing run `bc4b25269a30` are kept only as history. A `--replay` sends the cook's system prompt, and step 5.6 changed that prompt, so its first request would miss: the next recorded runs are the first baseline.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

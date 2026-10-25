@@ -1,7 +1,7 @@
 {
   "name": "puls-routing",
   "version": 3,
-  "covers": "Puls's routing: twelve questions, two of each kind (web, files, git, numbers, chat, cook), each in its own session in Stellenbosch. The routing check (benchmarks/routing/run_check.py) asked these.",
+  "covers": "Puls's routing: eighteen questions, each in its own session in Stellenbosch: twelve for the dev split, two of each kind (web, files, git, numbers, chat, cook), and six held out, one of each kind.",
   "content_hash": "6d17a43bc669d41037ac78db3f0060ffb753dac27670275a3183daf0ff799e7a",
   "changes": [
     "2026-10-24: first version, the questions of benchmarks/routing/run_check.py (QUESTIONS) as files",

@@ -15,8 +15,9 @@ namespace LouisAgent.Evals.Puls.Evals.Cook;
 
 /// <summary>
 /// The cook check as an eval (F18 step 5.3): a meal in Afrikaans or English, asked of Puls with the cook's own tools and of Puls with its
-/// cook, in a town with a shop and one without, with a budget and a follow-up, and a web question the cook is not for (the control). The
-/// scenarios are the <c>puls-cook</c> dataset, each stating its requirements in `expected` (F18 step 5.4); the scores are the Python check's, key for key.
+/// cook, priced at PnP and Woolworths from their search pages, in a town where the shop has no branch, with no shop chosen, with a budget and a follow-up,
+/// and a web question the cook is not for (the control). The scenarios are the <c>puls-cook</c> dataset, each stating its requirements in `expected`
+/// (F18 step 5.4); the scores keep the keys of the Python check this replaced.
 /// </summary>
 public sealed class CookEval : IEval
 {

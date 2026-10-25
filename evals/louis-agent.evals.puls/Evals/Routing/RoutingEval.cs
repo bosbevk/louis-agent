@@ -13,7 +13,7 @@ using LouisAgent.Evals.Puls.Shared.Turns;
 namespace LouisAgent.Evals.Puls.Evals.Routing;
 
 /// <summary>
-/// The routing check as an eval (F18 step 5.3): twelve questions, two of each kind, each in a session of its own, in two modes: the
+/// The routing check as an eval (F18 step 5.3): eighteen questions (twelve for the dev split, two of each kind, and six held out, one of each), each in a session of its own, in two modes: the
 /// baseline, one agent with every toolset the instance has but the delegating ones, and the delegated, Puls as built. A meal must go to
 /// the cook; every other question is right when Puls answers it itself. The scenarios are the <c>puls-routing</c> dataset.
 /// </summary>

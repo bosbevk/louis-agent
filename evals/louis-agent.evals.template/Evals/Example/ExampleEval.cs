@@ -10,7 +10,7 @@ using LouisAgent.Evals.Trials;
 namespace LouisAgent.Evals.Template.Evals.Example;
 
 /// <summary>
-/// One eval of the template (docs/guides/add-an-eval-set.md, section 4). Copy the project, rename <c>Example</c> and <c>Template</c>, and write what throws
+/// One eval of this set (docs/guides/add-an-eval-set.md, section 4). Copy the project, rename <c>Example</c> and <c>Template</c>, and write what throws
 /// <see cref="NotImplementedException"/>. Its references and known-bad transcripts go in <c>Transcripts/</c> beside this file (section 7); the folder is
 /// not here because git keeps no empty folder and the conformance check refuses a stray file.
 /// </summary>
