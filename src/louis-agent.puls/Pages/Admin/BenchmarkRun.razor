@@ -104,14 +104,14 @@ else
         _error = null;
         try
         {
-            var run = await Api.GetAsync<JsonElement>($"admin/benchmarks/runs/{Uri.EscapeDataString(RunId)}");
-            var list = await Api.GetAsync<JsonElement>("admin/benchmarks");
+            var run = await Api.GetAsync<JsonElement>($"v1/admin/benchmarks/runs/{Uri.EscapeDataString(RunId)}");
+            var list = await Api.GetAsync<JsonElement>("v1/admin/benchmarks");
             string check = run.GetProperty("run").GetProperty("check").GetString()!;
             _title = list.GetProperty("checks").EnumerateArray().Where(c => c.GetProperty("id").GetString() == check)
                 .Select(c => c.GetProperty("title").GetString()).FirstOrDefault() ?? check;
             _run = run;
             _labels = Labels(run);
-            try { _trend = await Api.GetAsync<JsonElement>($"admin/benchmarks/checks/{Uri.EscapeDataString(check)}/trend"); }
+            try { _trend = await Api.GetAsync<JsonElement>($"v1/admin/benchmarks/checks/{Uri.EscapeDataString(check)}/trend"); }
             catch (AgentApiException) { _trend = null; }
         }
         catch (AgentApiException ex)

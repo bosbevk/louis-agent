@@ -34,7 +34,7 @@ internal sealed class PeerSession(PeerHttp http, SubSessionMessenger messenger)
         string? sessionId = null;
         try
         {
-            using var create = http.Request(HttpMethod.Post, new Uri(peer, "sessions"), createBody);
+            using var create = http.Request(HttpMethod.Post, new Uri(peer, "v1/sessions"), createBody);
             using var created = await http.SendAsync(create, timeoutSource.Token);
             string createdBody = await created.Content.ReadAsStringAsync(timeoutSource.Token);
             if (!created.IsSuccessStatusCode)
@@ -131,7 +131,7 @@ internal sealed class PeerSession(PeerHttp http, SubSessionMessenger messenger)
     {
         try
         {
-            using var delete = http.Request(HttpMethod.Delete, new Uri(peer, $"sessions/{Uri.EscapeDataString(sessionId)}"), null);
+            using var delete = http.Request(HttpMethod.Delete, new Uri(peer, $"v1/sessions/{Uri.EscapeDataString(sessionId)}"), null);
             using var _ = await http.SendAsync(delete, CancellationToken.None);
         }
         catch (HttpRequestException) { }

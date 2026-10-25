@@ -76,7 +76,7 @@ public partial class ChatPage : IDisposable
         _reducedMotion = await JS.InvokeAsync<bool>("pulsUi.reducedMotion");
         try
         {
-            var model = await Api.GetAsync<System.Text.Json.JsonElement>("model");
+            var model = await Api.GetAsync<System.Text.Json.JsonElement>("v1/model");
             _model = Pretty(model.GetProperty("model").GetString());
         }
         catch (Exception)
@@ -104,7 +104,7 @@ public partial class ChatPage : IDisposable
     {
         try
         {
-            var roles = await Api.GetAsync<System.Text.Json.JsonElement>("roles");
+            var roles = await Api.GetAsync<System.Text.Json.JsonElement>("v1/roles");
             var codes = roles.GetProperty("agent").EnumerateArray().Select(p => p.GetString() ?? "")
                 .Where(p => p.StartsWith("puls/voice-", StringComparison.Ordinal)).Select(p => p["puls/voice-".Length..]).ToList();
             if (codes.Count > 0) _languages = codes;

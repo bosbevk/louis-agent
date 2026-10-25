@@ -20,7 +20,7 @@ class Puls(BaseHTTPRequestHandler):
 
     def do_POST(self):
         Puls.seen.append((self.command, self.path, self.headers.get("x-api-key"), self._body()))
-        if self.path == "/sessions":
+        if self.path == "/v1/sessions":
             payload = json.dumps({"session_id": "sess_1"}).encode()
             self.send_response(201)
             self.send_header("Content-Type", "application/json")
@@ -65,11 +65,11 @@ class TheClient(unittest.TestCase):
 
         self.assertEqual(session, "sess_1")
         self.assertEqual([e for e, _ in events], ["content_block_delta", "message_stop"])
-        self.assertEqual(Puls.seen[0][:3], ("POST", "/sessions", "k3y"))
+        self.assertEqual(Puls.seen[0][:3], ("POST", "/v1/sessions", "k3y"))
         self.assertEqual(Puls.seen[0][3], {"toolsets": ["web"], "role": "puls/voice-af", "run": "r1:puls-only:1", "task": "bobotie"})
-        self.assertEqual(Puls.seen[1][:2], ("POST", "/sessions/sess_1/messages"))
+        self.assertEqual(Puls.seen[1][:2], ("POST", "/v1/sessions/sess_1/messages"))
         self.assertEqual(Puls.seen[1][3], {"message": "Bobotie?"})
-        self.assertEqual(Puls.seen[2][:2], ("DELETE", "/sessions/sess_1"))
+        self.assertEqual(Puls.seen[2][:2], ("DELETE", "/v1/sessions/sess_1"))
 
     def test_a_field_left_none_isnt_sent(self):
         self.client.open_session(toolsets=["web"], location=None)
