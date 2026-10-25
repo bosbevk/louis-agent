@@ -10,5 +10,6 @@ public enum ShopExpectation
     Checkers,
     Pnp,
     Woolworths,
+    NoBranch,
     Any,
 }

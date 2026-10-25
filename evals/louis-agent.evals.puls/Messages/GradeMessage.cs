@@ -68,7 +68,10 @@ public enum GradeMessage
     [Description("priced at {Shop}: its tool ran for the town and the prices link to its site")]
     ShopRight,
 
-    [Description("a shop tool was called although the user chose no shop")]
+    [Description("the answer does not say the shop has no branch in the town")]
+    ShopNoBranchNotSaid,
+
+    [Description("a shop tool was called or a shop's page was read although the user chose no shop")]
     ShopCalledForAny,
 
     [Description("a price is given as fact (linked to a shop, or without ±) although the user chose no shop")]

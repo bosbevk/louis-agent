@@ -1,11 +1,12 @@
 {
   "name": "puls-cook",
-  "version": 3,
+  "version": 4,
   "covers": "Puls's cook: a meal in Afrikaans or English, its prices at the shops (a town with a shop and one without), a budget, a follow-up, and a plain web question the cook is not for (the control). The cook check (benchmarks/cook/run_check.py) asked these.",
-  "content_hash": "a6be13b953a15e0b05f96fc08d26bc4dbd5b26744da13064da5cca46df22ac39",
+  "content_hash": "6ce56c18c860df35b8a31acf7af81c5993dc35982bd22b2423bfa79b2b854834",
   "changes": [
     "2026-10-24: first version, the scenarios of benchmarks/cook/run_check.py (CONVERSATIONS) as files",
     "2026-10-25: step 5.4 - the cook scenarios follow the prompts: each question names its people and its shop (or says any shop will do) and each states them in expected (routes_to, town, serves, budget, shop); cook-no-shop is cook-no-branch (priced at the nearest store), cook-recipe-only and cook-asks-first are new; three held-out scenarios, never used while tuning a prompt",
-    "2026-10-25: the shop named in each question is PnP (was Checkers), and Woolworths where Pick n Pay was, for a run while Checkers refuses the browser; the shop requirement is pnp (a page of its site, read with ReadRenderedPage), as PnP has no catalogue tool"
+    "2026-10-25: the shop named in each question is PnP (was Checkers), and Woolworths where Pick n Pay was, for a run while Checkers refuses the browser; the shop requirement is pnp (a page of its site, read with ReadRenderedPage), as PnP has no catalogue tool",
+    "2026-10-25: cook-no-branch expects no prices (shop no-branch): the shop has no branch in the town, so the answer is estimates, reads no shop page, links no price, and says there is no branch (was: price at the nearest store and say so under Unsure)"
   ]
 }

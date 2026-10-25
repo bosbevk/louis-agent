@@ -55,7 +55,11 @@ public class PricedAtRenderedShopTests
     }
 
     [Test]
-    public async Task APageOfTheShopRead_IsNoShopToolForAnyShop() =>
-        Assert.That((await Grade("""{"town":"Paarl","shop":"any"}""", ReadsPnp, Text("Resep.\n*Pryse is skattings, nie by 'n winkel nagegaan nie.*"))).Outcome,
-            Is.EqualTo(GradeOutcome.Pass), "any: no shop tool is called, and a page read is not one");
+    public async Task WithNoShopChosen_APageOfAShopRead_Fails_BecauseTheCooksPromptSaysNoShopPage()
+    {
+        var grade = await Grade("""{"town":"Paarl","shop":"any"}""", ReadsPnp, Text("Resep.\n*Pryse is skattings, nie by 'n winkel nagegaan nie.*"));
+
+        Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Fail));
+        Assert.That(grade.Reason, Does.Contain("page"));
+    }
 }

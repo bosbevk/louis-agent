@@ -259,7 +259,7 @@ public class PulsPromptsTests
         Assert.That(cook, Does.Not.Contain("Puls will put it in its own voice"));
         Assert.That(cook, Does.Contain("| Ingredient ").And.Contain("| For the recipe ").And.Contain("| To buy ").And.Contain("| {shop} "));
         Assert.That(cook, Does.Contain("One or multiple shops, one price column per shop"));
-        Assert.That(cook, Does.Contain("price at the shop's nearest store anyway"), "a town without the branch");
+        Assert.That(cook, Does.Contain("price nothing, at that shop or any other"), "a town without the branch");
         Assert.That(cook, Does.Contain("| **Total, priced rows/per shop** |").And.Contain("| **R132,98**"));
         Assert.That(cook, Does.Contain("[R24,99](https://www.checkers.co.za/…) · BUY 2 FOR R45"));
         Assert.That(cook, Does.Contain("| Fresh coriander ").And.Contain("| Fresh coriander 20 g ").And.Contain("| -  "));

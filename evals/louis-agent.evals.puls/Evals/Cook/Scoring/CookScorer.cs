@@ -32,7 +32,7 @@ public static class CookScorer
         var price = Prices.Priced(first.Answer);
         int? items = price?.Listed, priced = price?.Priced, guessed = price?.Guessed, perKg = price?.PerKg;
         int noShopRows = 0, wrongStore = 0;
-        if (expected.Shop == ShopExpectation.Any && items is > 0)
+        if (expected.Shop is ShopExpectation.Any or ShopExpectation.NoBranch && items is > 0)
         {
             // One key (F18 step 3.3, TODO line 30): in a town with no shop, a priced row is wrong_store with or without its
             // link, and so is an unlinked price; unsourced counts only where the town has a shop.

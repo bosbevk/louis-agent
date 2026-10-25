@@ -62,6 +62,9 @@ public static partial class Shops
     /// </summary>
     public static bool EstimatesLine(string? answer) => Estimates().IsMatch(answer ?? "");
 
+    /// <summary>Whether the answer says the shop has no branch in the town ("no PnP branch", "geen PnP-tak"), in either language.</summary>
+    public static bool NoBranchLine(string? answer) => NoBranch().IsMatch(answer ?? "");
+
     /// <summary>Whether the answer says no shop near the user has a catalogue here yet, in either language.</summary>
     public static bool NoCatalogueLine(string? answer) => NoCatalogue().IsMatch(answer ?? "");
 
@@ -76,6 +79,9 @@ public static partial class Shops
 
     [GeneratedRegex(@"Prices are estimates|Pryse is skattings", RegexOptions.IgnoreCase)]
     private static partial Regex Estimates();
+
+    [GeneratedRegex(@"\b(?:no|geen)\b[^.\n|]{0,40}\b(?:branch|tak)\b", RegexOptions.IgnoreCase)]
+    private static partial Regex NoBranch();
 
     [GeneratedRegex(@"No shop near you has a catalogue|Geen winkel naby jou het nog 'n katalogus", RegexOptions.IgnoreCase)]
     private static partial Regex NoCatalogue();

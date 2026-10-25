@@ -56,12 +56,14 @@ public sealed record CookExpectations(string? RoutesTo, string? Town, IReadOnlyL
         return rand;
     }
 
+    private static readonly IReadOnlyDictionary<string, ShopExpectation> Aliases = new Dictionary<string, ShopExpectation> { ["no-branch"] = ShopExpectation.NoBranch };
+
     /// <summary>The shop the user chose; null when the scenario names none.</summary>
     public static ShopExpectation? ShopOf(EvalScenario scenario)
     {
         string id = scenario.Id;
         if (!TryGet(scenario, "shop", out var shop)) return null;
-        if (shop.ValueKind != JsonValueKind.String || !SettingChoice.TryParse(shop.GetString(), out ShopExpectation? parsed) || parsed is null)
+        if (shop.ValueKind != JsonValueKind.String || !SettingChoice.TryParse(shop.GetString(), out ShopExpectation? parsed, Aliases) || parsed is null)
             throw new InvalidDataException(MessageText.Format(ExpectationMessage.BadShop,
                 new { Id = id, Supported = string.Join(", ", SettingChoice.Names<ShopExpectation>()) }));
         return parsed;

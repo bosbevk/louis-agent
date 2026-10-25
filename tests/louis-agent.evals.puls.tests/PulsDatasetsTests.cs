@@ -16,14 +16,14 @@ public class PulsDatasetsTests
 {
     private static IReadOnlyList<IGrader> GradersOf(string dataset) => dataset == "puls-cook" ? new CookEval().Graders : new RoutingEval().Graders;
 
-    [TestCase("puls-cook")]
-    [TestCase("puls-routing")]
-    public void EachDatasetLoadsStrictly(string name)
+    [TestCase("puls-cook", 4)]
+    [TestCase("puls-routing", 3)]
+    public void EachDatasetLoadsStrictly(string name, int version)
     {
         Dataset dataset = Load(name);
 
         Assert.That(dataset.Manifest.Name, Is.EqualTo(name));
-        Assert.That(dataset.Manifest.Version, Is.EqualTo(3));
+        Assert.That(dataset.Manifest.Version, Is.EqualTo(version));
     }
 
     [Test]
@@ -71,7 +71,7 @@ public class PulsDatasetsTests
             ["cook-af"] = """{"routes_to":"puls-cook","town":"Stellenbosch","serves":[4,6],"budget":250,"shop":"pnp"}""",
             ["cook-en"] = """{"routes_to":"puls-cook","town":"Pretoria","serves":2,"shop":"pnp"}""",
             ["cook-malmesbury"] = """{"routes_to":"puls-cook","town":"Malmesbury","serves":4,"budget":150,"shop":"pnp"}""",
-            ["cook-no-branch"] = """{"routes_to":"puls-cook","town":"Prince Albert","serves":2,"shop":"pnp"}""",
+            ["cook-no-branch"] = """{"routes_to":"puls-cook","town":"Prince Albert","serves":2,"shop":"no-branch"}""",
             ["cook-recipe-only"] = """{"routes_to":"puls-cook","town":"Stellenbosch","serves":4,"shop":"any"}""",
             ["cook-asks-first"] = """{"routes_to":null}""",
             ["cook-shops"] = """{"routes_to":"puls-cook","town":"Stellenbosch","serves":4,"shop":"pnp"}""",

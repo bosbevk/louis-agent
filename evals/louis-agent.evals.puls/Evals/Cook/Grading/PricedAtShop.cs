@@ -45,7 +45,8 @@ public sealed class PricedAtShop : IGrader
         var calls = all.Where(call => Shops.ShopTools.Contains(call.Name)).ToList();
         return shop switch
         {
-            ShopExpectation.Any => ForAny(calls, views[0].Answer),
+            ShopExpectation.Any => ForNone(calls, all, views[0].Answer, noBranch: false),
+            ShopExpectation.NoBranch => ForNone(calls, all, views[0].Answer, noBranch: true),
             ShopExpectation.Checkers => ForShop("checkers", CookExpectations.TownOf(trial.Scenario)!, calls, views[0].Answer),
             _ => ForPage(shop.ToString().ToLowerInvariant(), all, views[0].Answer),
         };
@@ -76,16 +77,19 @@ public sealed class PricedAtShop : IGrader
             : Verdict.Fail(Name, Version, MessageText.Format(GradeMessage.ShopPricesNotLinked, new { Shop = shop }));
     }
 
-    private Grade ForAny(IReadOnlyList<ToolCall> shopCalls, string answer)
+    /// <summary>No shop is priced: the user chose none (<c>any</c>), or the shop has no branch in their town, which the answer then says (<paramref name="noBranch"/>).</summary>
+    private Grade ForNone(IReadOnlyList<ToolCall> shopCalls, IReadOnlyList<ToolCall> allCalls, string answer, bool noBranch)
     {
-        if (shopCalls.Count > 0) return Verdict.Fail(Name, Version, MessageText.Format(GradeMessage.ShopCalledForAny));
+        bool pageRead = allCalls.Any(call => call.Name == Shops.PageTool && Text(call.Input, "url") is { } url && Shops.SiteOf(url) is not null);
+        if (shopCalls.Count > 0 || pageRead) return Verdict.Fail(Name, Version, MessageText.Format(GradeMessage.ShopCalledForAny));
         // An estimate is `± R65` with no link: Prices counts it neither priced nor guessed, so anything it does count is a price given as fact.
         var priced = Prices.Priced(answer);
         if ((priced?.Priced ?? 0) + (priced?.Guessed ?? 0) > 0 || Prices.PriceLinkHosts(answer).Count > 0)
             return Verdict.Fail(Name, Version, MessageText.Format(GradeMessage.ShopPriceForAny));
-        return Shops.EstimatesLine(answer)
-            ? Verdict.Pass(Name, Version, MessageText.Format(GradeMessage.ShopAnyRight))
-            : Verdict.Fail(Name, Version, MessageText.Format(GradeMessage.ShopEstimatesNotSaid));
+        if (!Shops.EstimatesLine(answer)) return Verdict.Fail(Name, Version, MessageText.Format(GradeMessage.ShopEstimatesNotSaid));
+        return noBranch && !Shops.NoBranchLine(answer)
+            ? Verdict.Fail(Name, Version, MessageText.Format(GradeMessage.ShopNoBranchNotSaid))
+            : Verdict.Pass(Name, Version, MessageText.Format(GradeMessage.ShopAnyRight));
     }
 
     /// <summary>Whether a tool's <c>area</c> names the town: either contains the other, case ignored ("malmesbury, western cape" is Malmesbury). No area names none.</summary>

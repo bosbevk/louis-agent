@@ -1241,6 +1241,9 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
   transcript the way a reference does. (5) A scenario states its requirements in `expected`, each key read by a named grader and not by a rule on its id: `routes_to` (the harness's
   `RoutedToGrader`, which takes its keys), and for the cook `town`, `serves` (`ServesAsAsked`, not required), `budget` (`WithinBudget`) and `shop` (`PricedAtShop`); the scorers keep their v1 keys until 7c.
   The portal passes the web on (`web` `record` or `replay` {runId}), and a run asks for the `dev` scenarios unless `--split held-out` or `--split all`.
+- **Step 5.6: PnP and Woolworths, and a town with no branch** (Louis, 2026-10-25). Checkers refuses the headless browser, so the cook scenarios name PnP and Woolworths, read with `ReadRenderedPage`
+  (`shop`: `pnp`, `woolworths`). A shop with no branch in the user's town (`cook-no-branch`, `shop`: `no-branch`) is priced nowhere: the cook answers with estimates, reads no shop page, links no
+  price, and says there is no branch; the cook's prompt says the same. A page of a shop read for `any` now fails too (the prompt says no shop page).
 
 ---
 [Docs index](../README.md) · [Plans](README.md) · [Platform plan](platform.md) · [Feature F18](../features/F18-evaluation.md)
