@@ -36,6 +36,9 @@ public partial class TurnView
 
     protected override bool ShouldRender() => _shouldRender;
 
+    /// <summary>The images the turn's tools gave, its cook's included (FX22): drawn as images wherever the turn's text or a delegation card's answer shows them.</summary>
+    private IReadOnlySet<string> Shown => ImageSources.Of(Turn);
+
     private ElementReference _answer;
 
     // Only runs after this turn actually re-rendered (see ShouldRender), so finished turns aren't rescanned.

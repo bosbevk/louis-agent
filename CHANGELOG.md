@@ -3,6 +3,9 @@
 > **Reference.** What was finished, newest first, one entry per feature, fix or cleanup. **Elsewhere:** what's still
 > open in the [TODO](TODO.md); how each was built in its feature, fix or plan doc (linked from its entry).
 
+- 2026-10-25 — **FX22 The recipe's image renders**: an image in an answer renders when its exact URL came back in a tool
+  result of the same turn, the cook's sub-session included (`ImageSources`, `Block.Images`, `Markdown.ToHtml(markdown, shown)`),
+  not only from a shop's host; a delegation call's own result proves nothing; per turn ([fix](docs/fixes/FX22-images-from-tool-results.md))
 - 2026-10-25 — **CL20 API standards**: every route of the agent API under `/v1` but `/health`, mapped in one place
   (`ApiMap`); resources as nouns (the git routes by resource: `commits`, `commits/{sha}`, `branches/{name}` with its
   slashes, a merged branch deleted with `DELETE`), and both creates answer `201` with `Location`; every `/v1` route
