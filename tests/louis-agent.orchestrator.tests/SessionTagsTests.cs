@@ -90,7 +90,7 @@ public class SessionTagsTests
             new HashSet<string> { "order-total" }, new CommsLog(Path.Combine(_dir, "agent-comms.md")));
     }
 
-    /// <summary>Answers POST /sessions like louis-agent.api and keeps what was sent.</summary>
+    /// <summary>Answers POST /v1/sessions like louis-agent.api and keeps what was sent.</summary>
     private sealed class CapturingHandler : HttpMessageHandler
     {
         public string? Path { get; private set; }

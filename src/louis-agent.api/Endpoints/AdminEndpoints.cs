@@ -228,5 +228,5 @@ internal static class AdminEndpoints
     };
 }
 
-/// <summary>The body of <c>POST /admin/benchmarks/{check}/runs</c>: how many repeats (1 to the runner's cap).</summary>
+/// <summary>The body of <c>POST /v1/admin/benchmarks/{check}/runs</c>: how many repeats (1 to the runner's cap).</summary>
 internal sealed record StartRunRequest(int? Repeat);

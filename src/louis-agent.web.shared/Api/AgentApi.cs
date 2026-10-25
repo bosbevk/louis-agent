@@ -31,7 +31,7 @@ public sealed class AgentApi(HttpClient http, ChatSettings settings)
         return body.GetProperty("session_id").GetString()!;
     }
 
-    /// <summary>The toolsets this API can load (<c>GET /toolsets</c>, those whose settings are set).</summary>
+    /// <summary>The toolsets this API can load (<c>GET /v1/toolsets</c>, those whose settings are set).</summary>
     public async Task<string[]> AvailableToolsetsAsync()
     {
         using var response = await SendAsync(new HttpRequestMessage(HttpMethod.Get, "v1/toolsets"));

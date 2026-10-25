@@ -16,7 +16,7 @@ so any identity can use it, and it could be served as an MCP server unchanged
 ## How it works
 
 - **One toolset, `shops`.** `ShopsPack` defines it with its guide (`Prompts/toolsets/shops.md`) and its three tools. It
-  loads only where `SHOP_CATALOGUES` names a shop and `BROWSER_URL` gives a browser; otherwise `GET /toolsets` lists it
+  loads only where `SHOP_CATALOGUES` names a shop and `BROWSER_URL` gives a browser; otherwise `GET /v1/toolsets` lists it
   with the two settings it lacks.
 - **A search.** `ShopTools.FindProducts(shop, query, maxResults, area)` asks the shop's `IShopCatalogue` and returns at
   most 20 products as a table, framed `--- untrusted shop data … ---`: name, size, pack price (a range for what's sold

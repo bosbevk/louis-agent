@@ -81,7 +81,7 @@ public partial class ChatPage : IDisposable
         }
         catch (Exception)
         {
-            _model = null;   // An older API without /model: the picker says "Model".
+            _model = null;   // An older API without /v1/model: the picker says "Model".
         }
     }
 
@@ -99,7 +99,7 @@ public partial class ChatPage : IDisposable
         return await Api.CreateSessionAsync(available.Contains("specialists") ? own.Where(available.Contains).ToArray() : available, Role, _location, timeZone);
     }
 
-    /// <summary>The languages Puls can speak: a puls/voice-{code} for each in GET /roles, so the menu and the API agree.</summary>
+    /// <summary>The languages Puls can speak: a puls/voice-{code} for each in GET /v1/roles, so the menu and the API agree.</summary>
     private async Task LoadLanguagesAsync()
     {
         try
@@ -111,7 +111,7 @@ public partial class ChatPage : IDisposable
         }
         catch (Exception)
         {
-            // An API without /roles or its levels: Afrikaans, as before CL9.
+            // An API without /v1/roles or its levels: Afrikaans, as before CL9.
         }
         string? saved = await JS.InvokeAsync<string?>("pulsUi.loadLanguage");
         _language = saved is not null && _languages.Contains(saved) ? saved : _languages.Contains(DefaultLanguage) ? DefaultLanguage : _languages[0];

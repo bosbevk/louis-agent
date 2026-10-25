@@ -77,11 +77,11 @@ Each project also has its own design doc in [projects/](../projects/README.md).
 
 ### HTTP API and web app
 - In-memory sessions (`AgentSessions`); one reply at a time per session (409 while busy); a client disconnect or
-  `POST /sessions/{id}/cancel` stops the reply; idle sessions are dropped after 4 hours.
-- **A session chooses its toolsets when it opens** (F5): `POST /sessions` with `{ "toolsets": [...] }` gets the engine of
+  `POST /v1/sessions/{id}/cancel` stops the reply; idle sessions are dropped after 4 hours.
+- **A session chooses its toolsets when it opens** (F5): `POST /v1/sessions` with `{ "toolsets": [...] }` gets the engine of
   that profile from `AgentEngineFactory`, fixed for the session's life; no list means `skills` only; an unknown or
   unavailable name is a 400 listing the valid ones. Sessions with the same list share one engine and one cacheable
-  prefix. `GET /toolsets` lists names, descriptions and availability (never tool definitions); `GET /sessions/{id}`
+  prefix. `GET /v1/toolsets` lists names, descriptions and availability (never tool definitions); `GET /v1/sessions/{id}`
   returns a session's toolsets. A session opened by another agent (`depth: 1`) may not load `specialists`.
 - Two web apps share one API codebase and `louis-agent.web.shared`: the code-review app (`louis-agent.web`, every
   toolset; served by default) and **Puls** (`louis-agent.puls`, the general assistant: chats load `specialists` and `web` and
@@ -93,12 +93,16 @@ Each project also has its own design doc in [projects/](../projects/README.md).
   `thinking`, `text`, `tool_use` and `tool_result`, `message_delta` (stop reason and the turn's usage and cost),
   `message_stop`. Errors use Claude's `{ "type": "error", "error": { "type", "message" } }` shape (plus the turn's
   usage, when a request had returned).
-- Read-only workspace browsing (`/workspace/entries`, `/workspace/file`) and a git interface (`/git/status`, `/git/diff`,
-  `/git/stage`, `unstage`, `discard`, `commit`, plus history: `/git/branches`, `/git/log`, `/git/commit`, `/git/branch`,
-  `/git/merge`, `/git/branch/delete`) for the web app. They reuse the file tools' path and secret-file checks (`WorkspaceBoundary`, `SensitiveFiles`).
-- `AGENT_API_KEY` is required for `/sessions`, `/toolsets`, `/roles`, `/model`, `/workspace` and `/git`; the app's own
-  files stay public. Without a key the API refuses to start, unless `AGENT_AUTH=off` says so on purpose: one pure rule
-  in core, `Guardrails/Auth/HostAuth`, shared with the MCP server (FX18).
+- Every route is under `/v1` but `/health`, as nouns, mapped in one place (`ApiMap`) and pinned by a golden file (CL20,
+  [ADR 0039](../adr/0039-api-routes-under-v1.md)).
+- Read-only workspace browsing (`/v1/workspace/entries`, `/v1/workspace/file`) and a git interface for the web app: the
+  working tree (`/v1/git/status`, `/v1/git/diff`, `/v1/git/stage`, `unstage`, `discard`), commits (`/v1/git/commits`,
+  `/v1/git/commits/{sha}`) and branches (`/v1/git/branches`, `/v1/git/branches/{name}`, `/v1/git/merge`). They reuse
+  the file tools' path and secret-file checks (`WorkspaceBoundary`, `SensitiveFiles`).
+- `AGENT_API_KEY` is required on every `/v1` route unless the code marks it open (the prices and the rates); the admin
+  routes take the admin key, and `/health` and the app's own files stay public. Without a key the API refuses to start,
+  unless `AGENT_AUTH=off` says so on purpose: one pure rule in core, `Guardrails/Auth/HostAuth`, shared with the MCP
+  server (FX18).
 - The web app (Blazor WebAssembly) is served by the API with `MapStaticAssets` and an `index.html` fallback. It keeps
   chats in the browser's `localStorage`. Themes are CSS files in `wwwroot/css/themes/` listed in `themes.json`.
 - The Branches tab queues merges and deletes (`GitHistory`): every click is kept and they run one at a time, in click

@@ -23,7 +23,7 @@ class Client:
         return urllib.request.urlopen(urllib.request.Request(self.api + path, data=data, method=method, headers=headers), timeout=TIMEOUT)
 
     def toolsets(self):
-        """The toolsets this instance can load (GET /toolsets: those whose settings are there)."""
+        """The toolsets this instance can load (GET /v1/toolsets: those whose settings are there)."""
         with self._request("GET", "v1/toolsets") as response:
             return [t["name"] for t in json.loads(response.read())["toolsets"] if t.get("available")]
 

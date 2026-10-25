@@ -3,7 +3,7 @@ using System.Text.Json;
 
 namespace LouisAgent.Api.Tests.Sessions.Requests;
 
-// CL14 step 1, CL20 step 5: POST /sessions takes "role". "personality", its name before CL14, was read for a client one deploy
+// CL14 step 1, CL20 step 5: POST /v1/sessions takes "role". "personality", its name before CL14, was read for a client one deploy
 // behind; that client calls the unversioned routes, which are gone, so it is not read any more.
 public class CreateSessionRequestTests
 {

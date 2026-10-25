@@ -68,7 +68,7 @@ When a request could mean either the user's files or the world, follow their wor
 files; a URL, a site or "online" means the web. If it's still unclear, ask. A request can need several toolsets (a
 file's history: `files` and `git`); pick every one it needs, and no more.
 
-`GET /toolsets` lists these with a one-line description and whether this instance can use each one.
+`GET /v1/toolsets` lists these with a one-line description and whether this instance can use each one.
 
 ## How to use them
 

@@ -79,7 +79,7 @@ internal sealed class AgentSession(string id, AgentEngine engine, IReadOnlyList<
     /// <summary>Messages started in this session; the current one's number is the usage ledger's turn.</summary>
     public int Turns { get; private set; }
 
-    /// <summary>The usage of the session's finished turns, for /usage and GET /sessions/{id} (F3), in the display currency (F14).</summary>
+    /// <summary>The usage of the session's finished turns, for /usage and GET /v1/sessions/{id} (F3), in the display currency (F14).</summary>
     public UsageSession Usage { get; } = new(engine.Display);
 
     /// <summary>Starts a turn unless one is already running; the turn stops if the client disconnects.</summary>

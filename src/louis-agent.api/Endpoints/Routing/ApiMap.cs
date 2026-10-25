@@ -21,7 +21,7 @@ internal static class ApiMap
     /// <summary>The services the endpoints take, from the host the agent was built as.</summary>
     public static IServiceCollection AddApi(this IServiceCollection services, AgentHostContext host)
     {
-        // host.Engine (every toolset this instance can load) serves /workspace and /git; sessions get their own (F5).
+        // host.Engine (every toolset this instance can load) serves /v1/workspace and /v1/git; sessions get their own (F5).
         services.AddSingleton(host.Engine);
         services.AddSingleton(host.Engines);
         services.AddSingleton<AgentSessions>();

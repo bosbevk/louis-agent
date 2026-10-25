@@ -64,7 +64,7 @@ public sealed class SpecialistTools(IReadOnlyDictionary<string, Uri> peers, stri
         [Description("Names of files the user attached in this conversation that the task needs; they are sent with the task " +
             "(the sub-session sees nothing else of the conversation).")] string[]? attachments = null,
         [Description("The LLM profile the sub-session runs on, when the specialists guide names one for the task (the peer lists " +
-            "them at /llm-profiles). Empty: the peer's own model.")] string? llm = null,
+            "them at /v1/llm-profiles). Empty: the peer's own model.")] string? llm = null,
         CancellationToken cancellationToken = default)
     {
         if (ForwardAttachments(attachments, out var forwarded) is { } unknownAttachment) return unknownAttachment;

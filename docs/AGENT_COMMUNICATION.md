@@ -33,7 +33,7 @@ flowchart LR
 
     Browser -- "REST + SSE" --> Api
     Script -- "REST + SSE" --> Api
-    Orch -- "sessions + SSE<br/>(one session per fix);<br/>/prices, /rates" --> Api
+    Orch -- "sessions + SSE<br/>(one session per fix);<br/>/v1/prices, /v1/rates" --> Api
     Rider -- "ACP (stdio)" --> Acp
     McpClient -- "tools/list, tools/call" --> Mcp
     Api --> Engine
@@ -42,7 +42,7 @@ flowchart LR
     Mcp -- "tools only, no model" --> Engine
     Engine -- "IChatClient" --> Model
     Engine -- "tool calls" --> Repo
-    Api -- "/workspace, /git" --> Repo
+    Api -- "/v1/workspace, /v1/git" --> Repo
     Orch -. "verifies: git, replay, tests" .-> Repo
     Api -- "StartSubSession:<br/>sessions + SSE (F5)" --> Peer["another louis-agent.api<br/>(a specialist, e.g. Puls's)"]
 ```
@@ -70,10 +70,17 @@ no louis-agent judgement is involved. The orchestrator uses the API, because it 
 Base URL: `http://127.0.0.1:5080` for the main Docker setup, `http://127.0.0.1:5081` for the orchestrator demo. Bound
 to `127.0.0.1` only.
 
-**Authentication.** Every `/sessions`, `/workspace`, `/git`, `/toolsets`, `/roles` and `/model` call must send
-`AGENT_API_KEY` as `x-api-key: <key>` or `Authorization: Bearer <key>`; otherwise the reply is `401`. `/health`,
-`/prices`, `/rates` and the web app's own files never need a key. The key is required: without one the API refuses to
-start, unless `AGENT_AUTH=off` says a machine may run it open on purpose (FX18).
+**Versions.** Every route is under `/v1`, except `/health` (CL20, [ADR 0039](adr/0039-api-routes-under-v1.md)). A
+client names the whole route, `v1/sessions`, and is configured with the host alone. A breaking change to a route's
+shape adds `/v2` beside it, never a change in place. Resources are nouns: a create is a `POST` to the collection and
+answers `201` with a `Location` header, a delete is `DELETE`, and an action no method names is
+`POST /v1/{resource}/{verb}` (`/cancel`, `/stage`, `/merge`).
+
+**Authentication.** Every `/v1` call must send `AGENT_API_KEY` as `x-api-key: <key>` or `Authorization: Bearer <key>`,
+unless the route is marked open; otherwise the reply is `401`. The open ones are `/v1/prices`, `/v1/rates` and
+`/v1/rates/display`; the admin portal's `/v1/admin` routes take the admin key instead. `/health` and the web app's own
+files never need a key. The key is required: without one the API refuses to start, unless `AGENT_AUTH=off` says a
+machine may run it open on purpose (FX18).
 
 **Errors** are JSON in Claude's shape, with a matching status code:
 
@@ -86,7 +93,7 @@ start, unless `AGENT_AUTH=off` says a machine may run it open on purpose (FX18).
 | `400` | Bad input: empty message, a path outside the workspace, nothing staged to commit, a branch that is already merged |
 | `401` | The request didn't send `AGENT_API_KEY` |
 | `403` | A secret file (`.env`, keys) or its diff was asked for |
-| `404` | Unknown session or branch |
+| `404` | Unknown session or branch; a `/v1` path no route matches, or a known one with the wrong method (with the key) |
 | `409` | The session is still answering; a merge would conflict (it is aborted); uncommitted changes block a merge |
 | `413` / `415` | A workspace file is over 1 MB or binary |
 
@@ -102,9 +109,9 @@ sequenceDiagram
     participant E as AgentEngine
     participant M as Model
 
-    C->>A: POST /sessions
+    C->>A: POST /v1/sessions
     A-->>C: 201 { "session_id": "sess_…" }
-    C->>A: POST /sessions/{id}/messages { "message": "…" }
+    C->>A: POST /v1/sessions/{id}/messages { "message": "…" }
     A-->>C: 200 text/event-stream (stays open)
     A->>E: StreamPromptAsync(history, message)
     loop up to 10 tool rounds
@@ -115,20 +122,20 @@ sequenceDiagram
         E->>E: run each tool call, add the result
     end
     A-->>C: message_delta (stop_reason, usage), message_stop
-    C->>A: DELETE /sessions/{id} (when done)
+    C->>A: DELETE /v1/sessions/{id} (when done)
 ```
 
 | Endpoint | Request | Reply |
 |---|---|---|
-| `POST /sessions` | All optional. `task`, `run`, `service`: tags every usage record of the session (the orchestrator sends `fix:<error id>`, its run id and the service); each at most 200 printable characters. `toolsets`: the toolsets the session loads and keeps (F5; none gives `skills`). `role`: a built-in one at the session's level (F21, CL8: a mode such as `puls/voice-af` at depth 0; none gives the default mode, `louis-agent/voice`, CL9; `personality`, its name before CL14, is still read when `role` is absent, and both, differing, is a `400`). `llm`: a profile in the instance's `LLM_SESSION_PROFILES` (F30; none gives the instance's own model). `location` and `time_zone` (IANA): where the user is (F22). `depth` (0 or 1) and `parent` are sent by `StartSubSession` for a sub-session | `201 { "session_id", "created_at", "toolsets", "depth", "role", "llm", "task", "run", "service", "parent" }`; a `400` for an unknown toolset, role, LLM profile or time zone |
-| `POST /sessions/{id}/messages` | `{ "message": "…", "attachments": [{ "name", "content" }] }`; each attachment is cut at 100,000 characters | Server-Sent Events (below) |
-| `POST /sessions/{id}/cancel` | — | `{ "cancelled": true }`; the stream ends with stop reason `cancelled` |
-| `GET /sessions/{id}` | — | `{ "session_id", "created_at", "last_activity", "busy", "toolsets", "depth", "role", "llm", "tools", "task", "run", "service", "sub_sessions", "usage" }`: `tools` is how many tools the session's engine has; `usage` totals the session's finished turns (the object below), `null` when the API records no usage |
-| `DELETE /sessions/{id}` | — | `{ "deleted": true }` |
-| `GET /toolsets` | — | `{ "default", "toolsets": [{ "name", "description", "available", "missing_settings" }] }`: what a session can load here, never the tool definitions |
-| `GET /roles` | — | `{ "default", "agent": [...], "specialists": [...], "minions": [...] }`: the roles a session can choose, by level (`GET /personalities`, its name before CL14, answers the same) |
-| `GET /llm-profiles` | — | `{ "default": null, "profiles": [...] }`: the profiles a session may name besides the instance's model (F30) |
-| `GET /model` | — | `{ "provider", "model" }` |
+| `POST /v1/sessions` | All optional. `task`, `run`, `service`: tags every usage record of the session (the orchestrator sends `fix:<error id>`, its run id and the service); each at most 200 printable characters. `toolsets`: the toolsets the session loads and keeps (F5; none gives `skills`). `role`: a built-in one at the session's level (F21, CL8: a mode such as `puls/voice-af` at depth 0; none gives the default mode, `louis-agent/voice`, CL9). `llm`: a profile in the instance's `LLM_SESSION_PROFILES` (F30; none gives the instance's own model). `location` and `time_zone` (IANA): where the user is (F22). `depth` (0 or 1) and `parent` are sent by `StartSubSession` for a sub-session | `201` with `Location: /v1/sessions/{id}` and `{ "session_id", "created_at", "toolsets", "depth", "role", "llm", "task", "run", "service", "parent" }`; a `400` for an unknown toolset, role, LLM profile or time zone |
+| `POST /v1/sessions/{id}/messages` | `{ "message": "…", "attachments": [{ "name", "content" }] }`; each attachment is cut at 100,000 characters | Server-Sent Events (below) |
+| `POST /v1/sessions/{id}/cancel` | — | `{ "cancelled": true }`; the stream ends with stop reason `cancelled` |
+| `GET /v1/sessions/{id}` | — | `{ "session_id", "created_at", "last_activity", "busy", "toolsets", "depth", "role", "llm", "tools", "task", "run", "service", "sub_sessions", "usage" }`: `tools` is how many tools the session's engine has; `usage` totals the session's finished turns (the object below), `null` when the API records no usage |
+| `DELETE /v1/sessions/{id}` | — | `{ "deleted": true }` |
+| `GET /v1/toolsets` | — | `{ "default", "toolsets": [{ "name", "description", "available", "missing_settings" }] }`: what a session can load here, never the tool definitions |
+| `GET /v1/roles` | — | `{ "default", "agent": [...], "specialists": [...], "minions": [...] }`: the roles a session can choose, by level |
+| `GET /v1/llm-profiles` | — | `{ "default": null, "profiles": [...] }`: the profiles a session may name besides the instance's model (F30) |
+| `GET /v1/model` | — | `{ "provider", "model" }` |
 
 Closing the connection also cancels the reply. A message of `/tools`, `/approve <Name>`, `/reject <Name>` or `/usage` (the
 session's tokens and cost, by purpose) is answered by the API itself and never reaches the model.
@@ -195,8 +202,8 @@ request returned. Claude clients ignore the extra fields.
 Try it:
 
 ```bash
-SID=$(curl -s -X POST http://127.0.0.1:5080/sessions | jq -r .session_id)
-curl -N -X POST http://127.0.0.1:5080/sessions/$SID/messages \
+SID=$(curl -s -X POST http://127.0.0.1:5080/v1/sessions | jq -r .session_id)
+curl -N -X POST http://127.0.0.1:5080/v1/sessions/$SID/messages \
      -H "Content-Type: application/json" -d '{"message":"What branch am I on?"}'
 ```
 
@@ -218,22 +225,22 @@ checked against the workspace, and secret files are never shown.
 
 | Endpoint | Request | What it does |
 |---|---|---|
-| `GET /workspace/entries?path=` | — | List a folder |
-| `GET /workspace/file?path=` | — | Read a text file (≤ 1 MB) |
-| `GET /git/status` | — | Branch and changed files |
-| `GET /git/diff?path=&staged=` | — | One file's staged or unstaged diff |
-| `POST /git/stage` · `/git/unstage` · `/git/discard` | `{ "paths": [...] }` | Change the index or working tree; returns the new status |
-| `POST /git/commit` | `{ "message" }` | Commit what is staged |
-| `GET /git/branches` | — | Every branch, with how many commits it is ahead/behind the checked-out branch |
-| `GET /git/log?count=` | — | Commits across all branches |
-| `GET /git/commit?sha=` | — | A commit and its diff |
-| `GET /git/branch?name=` | — | A branch's commits and the diff merging it would bring |
-| `POST /git/merge` | `{ "branch" }` | Merge into the checked-out branch (`--no-ff`); a conflict aborts it (`409`) |
-| `POST /git/branch/delete` | `{ "branch" }` | Delete a merged branch |
+| `GET /v1/workspace/entries?path=` | — | List a folder |
+| `GET /v1/workspace/file?path=` | — | Read a text file (≤ 1 MB) |
+| `GET /v1/git/status` | — | Branch and changed files |
+| `GET /v1/git/diff?path=&staged=` | — | One file's staged or unstaged diff |
+| `POST /v1/git/stage` · `/v1/git/unstage` · `/v1/git/discard` | `{ "paths": [...] }` | Change the index or working tree; returns the new status |
+| `POST /v1/git/commits` | `{ "message" }` | Commit what is staged: `201` with `Location: /v1/git/commits/{sha}`, and the new status |
+| `GET /v1/git/branches` | — | Every branch, with how many commits it is ahead/behind the checked-out branch |
+| `GET /v1/git/commits?count=` | — | Commits across all branches |
+| `GET /v1/git/commits/{sha}` | — | A commit and its diff |
+| `GET /v1/git/branches/{name}` | — | A branch's commits and the diff merging it would bring; the name keeps its slashes (`feature/x`) |
+| `POST /v1/git/merge` | `{ "branch" }` | Merge into the checked-out branch (`--no-ff`); a conflict aborts it (`409`) |
+| `DELETE /v1/git/branches/{name}` | — | Delete a merged branch |
 | `GET /health` | — | `{ "status": "ok" }` |
-| `GET /prices` | — | The price table the API's usage ledger prices with (`config/prices.json`'s format, comments removed), for other hosts' `PRICES_URL`; `404` when it has none. No key needed |
-| `GET /rates` | — | The exchange rates the API loaded (F14), in our `rates.json` format (`{as_of, base, source, rates}`), for other hosts' `RATES_URL` with `RATES_FORMAT=rates-json`; `404` when it has none. No key needed |
-| `GET /rates/display` | — | `{ display_currency, display_symbol, base, rate_as_of, symbols }`: the server's display currency and a symbol per currency, for the web app's currency picker. No key needed |
+| `GET /v1/prices` | — | The price table the API's usage ledger prices with (`config/prices.json`'s format, comments removed), for other hosts' `PRICES_URL`; `404` when it has none. No key needed |
+| `GET /v1/rates` | — | The exchange rates the API loaded (F14), in our `rates.json` format (`{as_of, base, source, rates}`), for other hosts' `RATES_URL` with `RATES_FORMAT=rates-json`; `404` when it has none. No key needed |
+| `GET /v1/rates/display` | — | `{ display_currency, display_symbol, base, rate_as_of, symbols }`: the server's display currency and a symbol per currency, for the web app's currency picker. No key needed |
 
 Nothing here pushes: pushing is always left to you.
 
@@ -243,10 +250,10 @@ The web app is a Blazor WebAssembly app served by louis-agent.api from the same 
 
 | Tab | Endpoints it uses |
 |---|---|
-| Chats | `POST /sessions`, `POST /sessions/{id}/messages` (renders the event stream: thinking, text, tool cards), `/cancel`, `DELETE` |
-| Files | `/workspace/entries`, `/workspace/file` |
-| Changes | `/git/status`, `/git/diff`, `/git/stage`, `/git/unstage`, `/git/discard`, `/git/commit` |
-| Branches | `/git/branches`, `/git/log`, `/git/branch`, `/git/commit`, `/git/merge`, `/git/branch/delete` |
+| Chats | `POST /v1/sessions`, `POST /v1/sessions/{id}/messages` (renders the event stream: thinking, text, tool cards), `/cancel`, `DELETE` |
+| Files | `/v1/workspace/entries`, `/v1/workspace/file` |
+| Changes | `/v1/git/status`, `/v1/git/diff`, `/v1/git/stage`, `/v1/git/unstage`, `/v1/git/discard`, `POST /v1/git/commits` |
+| Branches | `/v1/git/branches`, `/v1/git/commits`, `/v1/git/branches/{name}`, `/v1/git/commits/{sha}`, `/v1/git/merge`, `DELETE /v1/git/branches/{name}` |
 
 Chats are kept in the browser (`localStorage`); the server only holds the session. In the Branches tab, merges and
 deletes are queued: every click is kept and they run one at a time, in order, with each row showing "Merging…",
@@ -292,7 +299,7 @@ service's error log, decides what each error needs from a runbook per API method
 louis-agent fix the ones the runbook allows — over the same session API any client uses. It then checks louis-agent's work itself.
 
 Besides the sessions, it calls `GET /health` at start-up and, in the demo, takes its prices and exchange rates from
-louis-agent.api's `/prices` and `/rates` (`PRICES_URL`, `RATES_URL`), so both agents' costs are priced with one table
+louis-agent.api's `/v1/prices` and `/v1/rates` (`PRICES_URL`, `RATES_URL`), so both agents' costs are priced with one table
 and shown at one rate. Its triage can run on another model than the fixes, a local one included
 (`ORCHESTRATOR_LLM_PROFILE`; see [Local triage](https://github.com/bosbevk/louis-agent/blob/pre-cl10/docs/BENCHMARKS.md#local-triage-2026-10-12)).
 
@@ -308,8 +315,8 @@ sequenceDiagram
     O->>O: triage with the method's runbook:<br/>expected / auto-fixable / escalate
     alt auto-fixable
         O->>G: check out main (stash any leftovers)
-        O->>A: POST /sessions { task: fix:<error id>, run, service }
-        O->>A: POST /sessions/{id}/messages (the fix request)
+        O->>A: POST /v1/sessions { task: fix:<error id>, run, service }
+        O->>A: POST /v1/sessions/{id}/messages (the fix request)
         A->>L: run the task
         L->>G: branch, edit, test, build, commit
         A-->>O: SSE: every tool call, then text ending in FIX-RESULT
@@ -317,7 +324,7 @@ sequenceDiagram
             O->>A: "Continue the fix … Finish with the FIX-RESULT line."
             A-->>O: SSE … FIX-RESULT
         end
-        O->>A: DELETE /sessions/{id}
+        O->>A: DELETE /v1/sessions/{id}
         O->>G: VerifyFixCommit (git), ReplayRequest, RunServiceTests
         O->>O: DECISION: fixed, or escalate if any check fails
     else expected
@@ -426,7 +433,7 @@ next poll ([FX7](fixes/FX07-timeout-ends-run.md)). Only Ctrl+C ends a run early.
 Puls (F5, F20–F22) is the same API built with its own web app. Its chats load the `specialists` and `web` toolsets, so for a cooking
 task the model calls `StartSubSession(toolsets, message, role, attachments)`, and the tool:
 
-1. opens `POST /sessions` on the peer named in `AGENT_PEERS` (or the only one), with the toolsets, `depth: 1`, the
+1. opens `POST /v1/sessions` on the peer named in `AGENT_PEERS` (or the only one), with the toolsets, `depth: 1`, the
    `role` (always named: the peer never derives one, CL10), the parent turn
    (`{session}#{turn}`) and the user's place;
 2. sends the task with the named attachments, which come from the session, never through the model's output;
@@ -436,7 +443,7 @@ task the model calls `StartSubSession(toolsets, message, role, attachments)`, an
    and a usage line as the tool's result (F26). A follow-up on that work is `ContinueSubSession(handle, message)`: a
    second message in the same session, with its context and cached prefix. The chat's session owns its open
    sub-sessions (at most 3; the oldest closed when a fourth starts) and deletes them on the peer when it is deleted or
-   dropped as idle; `GET /sessions/{id}` lists them. Outside a chat (an MCP call) the session is deleted at once, as
+   dropped as idle; `GET /v1/sessions/{id}` lists them. Outside a chat (an MCP call) the session is deleted at once, as
    before.
 
 A sub-session can't delegate again (`specialists` at depth 1 is a `400`); a turn may make at most 3 sub-session calls
@@ -452,10 +459,10 @@ Planned features change parts of this page; each one's doc lists updating it in 
 | Feature | What changes here |
 |---|---|
 | [F8 Reliability](features/F08-reliability.md) (S4) | Results become tool calls: louis-agent reports with a `ReportFixResult` tool and the orchestrator decides with `RecordDecision`, read from the `tool_use` block in the stream; the `FIX-RESULT` and `DECISION` lines stay as a fallback |
-| [F10 Route settings](features/F10-route-settings.md) | `POST /sessions` takes a `profile` (`chat` or `task`, with its own tool rounds and thinking); the orchestrator asks for `task`, so most "continue" follow-ups go away |
+| [F10 Route settings](features/F10-route-settings.md) | `POST /v1/sessions` takes a `profile` (`chat` or `task`, with its own tool rounds and thinking); the orchestrator asks for `task`, so most "continue" follow-ups go away |
 | [F5 Toolset profiles](features/F05-toolset-profiles.md) | The demo's louis-agent.api loads only the coding tools, so each fix session sends a smaller prefix |
-| [F7 Budgets](features/F07-budgets.md) | A turn can stop at a budget: a `budget` stop reason and a `budget_error` event, `POST /sessions/{id}/budget` to raise the limit; the orchestrator defers a fix it can't afford |
-| [F11 Usage tab](features/F11-usage-tab-and-reconciliation.md) | New endpoints: `GET /usage`, `GET /usage/sessions/{id}`, `GET /budgets`, `POST /estimates` |
+| [F7 Budgets](features/F07-budgets.md) | A turn can stop at a budget: a `budget` stop reason and a `budget_error` event, `POST /v1/sessions/{id}/budget` to raise the limit; the orchestrator defers a fix it can't afford |
+| [F11 Usage tab](features/F11-usage-tab-and-reconciliation.md) | New endpoints: `GET /v1/usage`, `GET /v1/usage/sessions/{id}`, `GET /v1/budgets`, `POST /v1/estimates` |
 | [F17 Orchestrator agent](features/F17-orchestrator-agent.md) | Triage becomes a routing workflow: a model classifies each error, the known paths (fix and verify, acknowledge, escalate) run as code, and an agent handles only the exceptions; the three checks become one `ConfirmFix` tool; the fix still goes to louis-agent.api the same way, and the comms log names the path |
 
 ---
