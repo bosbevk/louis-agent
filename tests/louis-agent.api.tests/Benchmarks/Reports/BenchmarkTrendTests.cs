@@ -70,6 +70,22 @@ public class BenchmarkTrendTests
     }
 
     [Test]
+    public async Task AReScore_IsNeverAPoint_AndTheOriginalRunsPointIsUnchanged()
+    {
+        // F18 step 5b: a trend point means "the agent was measured here". A re-score grades transcripts recorded on another day, so it adds no point.
+        await _store.SaveRunAsync(new Run("live", "puls-cook", 1, BenchmarkRunStatus.Done, T0));
+        await _store.SaveConversationAsync("live", new Conversation(new ConversationKey("puls-cook", 1, "cook-af"), 1, null, Scores(true), 0, 1));
+        var before = (await BenchmarkTrends.ComputeAsync(_store, "puls-cook")).Modes.Single().Points.Single();
+        await _store.SaveRunAsync(new Run("graded-again", "puls-cook", 1, BenchmarkRunStatus.Done, T0.AddDays(3), Total: new Total(0m, "USD", 0, 0), RescoreOf: "live"));
+        await _store.SaveConversationAsync("graded-again", new Conversation(new ConversationKey("puls-cook", 1, "cook-af"), 1, null, Scores(false), 0, 1));
+
+        var points = (await BenchmarkTrends.ComputeAsync(_store, "puls-cook")).Modes.Single().Points;
+
+        Assert.That(points.Select(p => p.Run), Is.EqualTo(new[] { "live" }));
+        Assert.That(points.Single(), Is.EqualTo(before));
+    }
+
+    [Test]
     public async Task EachFinishedRun_IsAPointPerMode_OldestFirst()
     {
         await Run("b", "cook", hour: 2, repeat: 1, BenchmarkRunStatus.Done, cookCost: 0.05m, right: 4);

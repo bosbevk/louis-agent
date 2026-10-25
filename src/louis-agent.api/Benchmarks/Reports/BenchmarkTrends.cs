@@ -40,6 +40,8 @@ public static class BenchmarkTrends
             .Where(r => r.Split is null or BenchmarkRunSplit.Dev)
             // A replay (F18 step 5.5) is the recorded run again: its scores are that run's and it costs nothing, so it is no point of its own.
             .Where(r => r.Settings is null || !r.Settings.ContainsKey("replay_of"))
+            // A re-score (F18 step 5b) measures nothing new: it grades transcripts recorded on another day, so a point would put their quality at its date and its $0 on the cost line.
+            .Where(r => r.RescoreOf is null)
             .Take(limit).Reverse().ToList();
 
         // A line is a mode on one model: runs on two models of one mode are two lines, never one line joining them.
