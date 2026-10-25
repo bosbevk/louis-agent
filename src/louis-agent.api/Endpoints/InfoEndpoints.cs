@@ -13,21 +13,21 @@ namespace LouisAgent.Api.Endpoints;
 /// </summary>
 internal static class InfoEndpoints
 {
-    public static void MapInfo(this WebApplication app, AgentHostContext host)
+    public static void MapInfo(this IEndpointRouteBuilder routes, AgentHostContext host)
     {
-        app.MapGet("/health", () => Results.Json(new { status = "ok" }));
+        routes.MapGet("/health", () => Results.Json(new { status = "ok" }));
 
         // The price table this API's usage ledger prices with, for other hosts' PRICES_URL (the orchestrator in the demo). Public
         // like /health: prices aren't secret, and a host fetches them without the API key. 404 when there is no table, so a
         // caller falls back to its own file.
-        app.MapGet("/prices", () => host.Prices.IsEmpty
+        routes.MapGet("/prices", () => host.Prices.IsEmpty
             ? Results.Json(Error("not_found_error", MessageText.Format(ApiUserText.NoPriceTable)),
                 statusCode: StatusCodes.Status404NotFound)
             : Results.Json(host.Prices, PriceTable.Json));
 
         // The exchange rates this API loaded (F14), in our rates.json format, for other hosts' RATES_URL (with
         // RATES_FORMAT=rates-json; the demo's orchestrator) and the web app. Public like /prices; 404 when it has none.
-        app.MapGet("/rates", () => host.Rates.IsEmpty
+        routes.MapGet("/rates", () => host.Rates.IsEmpty
             ? Results.Json(Error("not_found_error", MessageText.Format(ApiUserText.NoRates)),
                 statusCode: StatusCodes.Status404NotFound)
             : Results.Text(host.Rates.ToJson(), "application/json"));
@@ -40,7 +40,7 @@ internal static class InfoEndpoints
         // What the web app needs to show costs in another currency (F14): the server's display currency (from HOST_CULTURE or
         // DISPLAY_CURRENCY; the browser's own locale is the display language, not the region) and a symbol for every currency
         // in /rates, worked out here, since the browser's .NET carries little culture data. Public like /rates.
-        app.MapGet("/rates/display", () => Results.Json(new
+        routes.MapGet("/rates/display", () => Results.Json(new
         {
             display_currency = host.Display.Code,
             display_symbol = host.Display.Symbol,
@@ -51,7 +51,7 @@ internal static class InfoEndpoints
 
         // The toolsets a session can load (F5-S3): names, what each is for and whether this instance has its settings. Never
         // the tool definitions, so a general agent can choose without loading them.
-        app.MapGet("/toolsets", (AgentEngineFactory engines) => Results.Json(new
+        routes.MapGet("/toolsets", (AgentEngineFactory engines) => Results.Json(new
         {
             @default = AgentSessions.DefaultToolsets,
             toolsets = engines.Catalog.Toolsets.Select(t => new
@@ -62,14 +62,14 @@ internal static class InfoEndpoints
         }));
 
         // The model this instance answers with (F20: Puls's model picker shows it).
-        app.MapGet("/model", () => Results.Json(new { provider = host.Llm.Provider, model = host.Llm.Model }));
+        routes.MapGet("/model", () => Results.Json(new { provider = host.Llm.Provider, model = host.Llm.Model }));
 
         // The roles a session can choose, per level: GET /roles, and GET /personalities for a client one deploy behind (CL14).
         foreach (string route in RolesView.Routes)
-            app.MapGet(route, (AgentEngineFactory engines) => Results.Json(RolesView.Of(engines)));
+            routes.MapGet(route, (AgentEngineFactory engines) => Results.Json(RolesView.Of(engines)));
 
         // The LLM profiles a session can name besides this instance's model (F30): null is the instance's own.
-        app.MapGet("/llm-profiles", (AgentEngineFactory engines) => Results.Json(new
+        routes.MapGet("/llm-profiles", (AgentEngineFactory engines) => Results.Json(new
         {
             @default = (string?)null,
             profiles = engines.SessionLlms,

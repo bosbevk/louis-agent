@@ -18,11 +18,11 @@ internal static class GitEndpoints
     private const int MaxDiffChars = 500_000;
     private static readonly TimeSpan GitTimeout = TimeSpan.FromSeconds(30);
 
-    public static void MapGit(this WebApplication app)
+    public static void MapGit(this IEndpointRouteBuilder routes)
     {
-        app.MapGet("/git/status", async (AgentEngine engine) => await StatusResultAsync(engine));
+        routes.MapGet("/git/status", async (AgentEngine engine) => await StatusResultAsync(engine));
 
-        app.MapGet("/git/diff", async (string? path, bool? staged, AgentEngine engine, WorkspaceBoundary workspace) =>
+        routes.MapGet("/git/diff", async (string? path, bool? staged, AgentEngine engine, WorkspaceBoundary workspace) =>
         {
             if (string.IsNullOrWhiteSpace(path))
                 return ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error", MessageText.Format(ApiUserText.PathRequired));
@@ -45,15 +45,15 @@ internal static class GitEndpoints
             return Results.Json(new { path, staged = staged == true, untracked, diff = truncated ? text[..MaxDiffChars] : text, truncated });
         });
 
-        app.MapPost("/git/stage", async (GitPathsRequest request, AgentEngine engine, WorkspaceBoundary workspace) =>
+        routes.MapPost("/git/stage", async (GitPathsRequest request, AgentEngine engine, WorkspaceBoundary workspace) =>
             await OnPathsAsync(request, engine, workspace, paths => RunAsync(engine, ["add", "--", .. paths])));
 
-        app.MapPost("/git/unstage", async (GitPathsRequest request, AgentEngine engine, WorkspaceBoundary workspace) =>
+        routes.MapPost("/git/unstage", async (GitPathsRequest request, AgentEngine engine, WorkspaceBoundary workspace) =>
             await OnPathsAsync(request, engine, workspace, paths => RunAsync(engine, ["restore", "--staged", "--", .. paths])));
 
         // Throws away working-tree changes: tracked files go back to their staged/committed content, untracked files are
         // deleted. Staged changes are kept (unstage first to drop those too). The web app asks for confirmation.
-        app.MapPost("/git/discard", async (GitPathsRequest request, AgentEngine engine, WorkspaceBoundary workspace) =>
+        routes.MapPost("/git/discard", async (GitPathsRequest request, AgentEngine engine, WorkspaceBoundary workspace) =>
             await OnPathsAsync(request, engine, workspace, async paths =>
             {
                 var status = ParseStatus((await RunAsync(engine, ["status", "--porcelain=v1", "-z", "--untracked-files=all"])).Output);
@@ -65,7 +65,7 @@ internal static class GitEndpoints
                 return tracked.Count == 0 ? new GitResult(0, "", "") : await RunAsync(engine, ["restore", "--worktree", "--", .. tracked]);
             }));
 
-        app.MapPost("/git/commit", async (GitCommitRequest request, AgentEngine engine) =>
+        routes.MapPost("/git/commit", async (GitCommitRequest request, AgentEngine engine) =>
         {
             if (string.IsNullOrWhiteSpace(request.Message))
                 return ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error", MessageText.Format(ApiUserText.CommitMessageRequired));

@@ -20,11 +20,11 @@ internal static partial class HistoryEndpoints
     private const int MaxDiffChars = 500_000;
     private const char Field = '\x1f', Record = '\x1e';
 
-    public static void MapHistory(this WebApplication app)
+    public static void MapHistory(this IEndpointRouteBuilder routes)
     {
-        app.MapGet("/git/branches", async (AgentEngine engine) => await BranchesResultAsync(engine));
+        routes.MapGet("/git/branches", async (AgentEngine engine) => await BranchesResultAsync(engine));
 
-        app.MapGet("/git/log", async (int? count, AgentEngine engine) =>
+        routes.MapGet("/git/log", async (int? count, AgentEngine engine) =>
         {
             int limit = Math.Clamp(count ?? 200, 1, 1000);
             var log = await RunAsync(engine, ["log", "--all", "--date-order", "-n", limit.ToString(), $"--format={CommitFormat}{Record}"]);
@@ -33,7 +33,7 @@ internal static partial class HistoryEndpoints
             return Results.Json(new { commits = ParseCommits(log.Output) });
         });
 
-        app.MapGet("/git/commit", async (string? sha, AgentEngine engine) =>
+        routes.MapGet("/git/commit", async (string? sha, AgentEngine engine) =>
         {
             if (sha is null || !CommitHash().IsMatch(sha))
                 return ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error", MessageText.Format(ApiUserText.ShaRequired));
@@ -51,7 +51,7 @@ internal static partial class HistoryEndpoints
             return Results.Json(new { commit, body, diff, truncated });
         });
 
-        app.MapGet("/git/branch", async (string? name, AgentEngine engine) =>
+        routes.MapGet("/git/branch", async (string? name, AgentEngine engine) =>
         {
             var branches = await ListBranchesAsync(engine);
             if (branches.Error is { } error) return error;
@@ -68,7 +68,7 @@ internal static partial class HistoryEndpoints
             return Results.Json(new { branch, into = branches.Current, commits = ParseCommits(log.Output), diff, truncated });
         });
 
-        app.MapPost("/git/merge", async (GitBranchRequest request, AgentEngine engine) =>
+        routes.MapPost("/git/merge", async (GitBranchRequest request, AgentEngine engine) =>
         {
             var branches = await ListBranchesAsync(engine);
             if (branches.Error is { } error) return error;
@@ -104,7 +104,7 @@ internal static partial class HistoryEndpoints
         });
 
         // Only merged branches: git branch -d refuses to delete unmerged work.
-        app.MapPost("/git/branch/delete", async (GitBranchRequest request, AgentEngine engine) =>
+        routes.MapPost("/git/branch/delete", async (GitBranchRequest request, AgentEngine engine) =>
         {
             var branches = await ListBranchesAsync(engine);
             if (branches.Error is { } error) return error;

@@ -2,11 +2,10 @@ using LouisAgent.Api.Benchmarks.Runs;
 using LouisAgent.Api.Benchmarks.Store;
 using LouisAgent.Api.Config;
 using LouisAgent.Api.Endpoints;
+using LouisAgent.Api.Endpoints.Routing;
 using LouisAgent.Api.Messages;
-using LouisAgent.Api.Sessions;
 using LouisAgent.Composition;
 using LouisAgent.Core.Guardrails.Auth;
-using LouisAgent.Core.Guardrails.Workspace;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
@@ -18,11 +17,7 @@ using Microsoft.Extensions.Logging;
 var host = AgentHost.Build(Plugins.FromEnvironment());
 
 var builder = WebApplication.CreateBuilder(args);
-// host.Engine (every toolset this instance can load) serves /workspace and /git; sessions get their own (F5).
-builder.Services.AddSingleton(host.Engine);
-builder.Services.AddSingleton(host.Engines);
-builder.Services.AddSingleton<AgentSessions>();
-builder.Services.AddSingleton(new WorkspaceBoundary(host.Engine.WorkspaceRoot));
+builder.Services.AddApi(host);
 var app = builder.Build();
 
 // The agent can run shell commands and write files, so every /sessions, /workspace and /git call must present
@@ -38,20 +33,7 @@ switch (HostAuth.AtStartup(HostAuth.Mode(Environment.GetEnvironmentVariable("AGE
         AgentLogging.LoggerFactory.CreateLogger("LouisAgent.Api").Log(LogLevel.Warning, ApiLogMessage.NoApiKey);
         break;
     case HostAuthDecision.Start:
-        app.Use(async (context, next) =>
-        {
-            bool isApi = context.Request.Path.StartsWithSegments("/sessions") || context.Request.Path.StartsWithSegments("/workspace") ||
-                         context.Request.Path.StartsWithSegments("/git") || context.Request.Path.StartsWithSegments("/toolsets") ||
-                         RolesView.Routes.Any(route => context.Request.Path.StartsWithSegments(route)) || context.Request.Path.StartsWithSegments("/model");
-            if (!isApi || HostAuth.HasKey(context.Request.Headers["x-api-key"].FirstOrDefault(), context.Request.Headers.Authorization.FirstOrDefault(), apiKey))
-            {
-                await next(context);
-                return;
-            }
-
-            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-            await context.Response.WriteAsJsonAsync(ApiErrors.Body("authentication_error", MessageText.Format(ApiUserText.InvalidApiKey)));
-        });
+        app.UseAgentKey(apiKey!);   // apiKey is set whenever the decision is Start
         break;
 }
 
@@ -60,10 +42,9 @@ switch (HostAuth.AtStartup(HostAuth.Mode(Environment.GetEnvironmentVariable("AGE
 app.MapStaticAssets();
 app.MapFallbackToFile("index.html");
 
-app.MapInfo(host);
-app.MapWorkspace();
-app.MapGit();
-app.MapHistory();
+// Every route of the agent's API is mapped by ApiMap (CL20), so the route tests build what runs; the admin portal's parts, which
+// F18 changes, are built below and mapped on what it returns.
+var api = app.MapApi(host);
 
 // F27: the admin portal, behind its own key (ADMIN_API_KEY, else AGENT_API_KEY; neither: closed); its settings in
 // AdminOptions (F31). A run's script calls this API back at BENCHMARK_API_URL (the container's own port, by default).
@@ -88,9 +69,7 @@ if (benchmarkStore is not null)
             benchmarkLog.Log(LogLevel.Warning, ApiLogMessage.BenchmarkStoreUnreachable, exception: ex, tag: "API");
         }
     });
-app.MapAdmin(benchmarks, new BenchmarkRunner(benchmarks, host.Engine.WorkspaceRoot, admin.BenchmarkApiUrl), admin.AdminKey, benchmarkStore, recorder,
+api.MapAdmin(benchmarks, new BenchmarkRunner(benchmarks, host.Engine.WorkspaceRoot, admin.BenchmarkApiUrl), admin.AdminKey, benchmarkStore, recorder,
     check => BenchmarkSettings.Of(check, host.Llm.Provider, host.Llm.Model, host.Agent.RolesEnabled), host.Engine.WorkspaceRoot);
-
-app.MapSessions(host);
 
 app.Run();
