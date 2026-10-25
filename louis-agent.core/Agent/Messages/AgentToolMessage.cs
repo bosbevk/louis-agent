@@ -6,7 +6,7 @@ using System.ComponentModel;
 // [Description] is the text, with named holes filled by MessageText.Format (or by the structured logger). Members are added
 // as code is written or moved; the refactor after F4 moves the existing messages here.
 
-/// <summary>Strings for the the agent's own tools, skills and turn, returned to the model: what went wrong and what to do instead.</summary>
+/// <summary>Strings for the agent's own tools, skills and turn, returned to the model: what went wrong and what to do instead.</summary>
 public enum AgentToolMessage
 {
     [Description("No tools are available in this session because the configured model does not support tool calling. If the user asks you to perform an action (log time, run a skill, read or write files), say plainly that the current model cannot do that and suggest switching LLM_MODEL to a tool-capable model. Never pretend to have performed an action.")]

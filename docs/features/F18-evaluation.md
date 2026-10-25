@@ -614,7 +614,7 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   (the list had no area enums yet) and `FileSizeTests` (`ToolMessage.cs` over, once it left `Oversized`). Two findings while moving:
   the architecture test refused `ReplayMessage`'s doc cross-reference, because a `using` for `WebToolMessage` made layer 0 use a tool
   area (fixed: the reference is named in full, no `using`); and `GitRunner.Run`'s `whenEmpty` parameter was typed as the shared enum, so it
-  became `Enum?` (no text changed: `MessageText.Format` takes any enum, and a null means `SucceededNoOutput`). Checks: no `tests/*.json`
+  became `Enum?` (no text changed). Corrected in the next commit: it is `GitToolMessage?` (the git toolset's own texts only), and a null means `ToolMessage.SucceededNoOutput`. Checks: no `tests/*.json`
   changed against `HEAD`; the `[Description(` lines in core and the API are 820 before and 820 after, and their sorted diff is empty.
   The TODO line *`ToolMessage` split per toolset* is closed.
 - **Notes for step 5** (from the review of 4.2): `PulsEvalSet`'s `TurnView` builds on `EngineEvents`, so the route, the errors and the

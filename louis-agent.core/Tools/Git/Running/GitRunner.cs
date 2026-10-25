@@ -10,13 +10,14 @@ using LouisAgent.Core.Tools.Git.Messages;
 /// </summary>
 public sealed class GitRunner(string workspaceRoot)
 {
-    /// <param name="whenEmpty">The text when git printed nothing: any message enum (the git toolset's own, or the shared one); null for <c>ToolMessage.SucceededNoOutput</c>.</param>
-    public string Run(IReadOnlyList<string> args, Enum? whenEmpty = null)
+    /// <param name="whenEmpty">The git toolset's own text for when git printed nothing; null for <c>ToolMessage.SucceededNoOutput</c>.</param>
+    public string Run(IReadOnlyList<string> args, GitToolMessage? whenEmpty = null)
     {
         string workingDir = Environment.GetEnvironmentVariable("AGENT_WORKING_DIRECTORY") ?? workspaceRoot;
         var result = ProcessRunner.Run("git", args, workingDir, TimeSpan.FromSeconds(30));
         if (result.TimedOut) return MessageText.Format(GitToolMessage.GitTimeout);
         if (result.ExitCode != 0) return MessageText.Format(ToolMessage.ExitCode, new { Code = result.ExitCode, Output = result.Output.Trim() }).Trim();
-        return string.IsNullOrWhiteSpace(result.Output) ? MessageText.Format(whenEmpty ?? ToolMessage.SucceededNoOutput) : ProcessRunner.Truncate(result.Output.Trim());
+        if (!string.IsNullOrWhiteSpace(result.Output)) return ProcessRunner.Truncate(result.Output.Trim());
+        return whenEmpty is { } own ? MessageText.Format(own) : MessageText.Format(ToolMessage.SucceededNoOutput);
     }
 }

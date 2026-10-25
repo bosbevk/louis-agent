@@ -5,7 +5,7 @@ namespace LouisAgent.Core.Tests.Messages;
 
 // docs/CLAUDE.md, "Messages and logging": every message is an enum member whose [Description] is its template, with
 // named holes. This checks every message enum in core, so a member added without text, or with a broken hole, fails here.
-// The message enums are the enums of a `Messages` folder at any depth (F-refactor, the split by area): an area's enum sits in its
+// The message enums are the enums of a `Messages` folder at any depth (the split by area, F18): an area's enum sits in its
 // own area's `Messages` namespace, and the shared ones in core's.
 public class MessageEnumTests
 {
