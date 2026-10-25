@@ -48,7 +48,7 @@ internal static class GitProcess
         catch (OperationCanceledException)
         {
             process.Kill(entireProcessTree: true);
-            return new GitResult(-1, "", $"git timed out after {GitTimeout.TotalSeconds:0}s.");
+            return new GitResult(-1, "", MessageText.Format(ApiUserText.GitTimedOut, new { Seconds = (int)GitTimeout.TotalSeconds }));
         }
 
         return new GitResult(process.ExitCode, await output, await error);

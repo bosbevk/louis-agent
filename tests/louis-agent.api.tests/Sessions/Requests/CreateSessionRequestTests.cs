@@ -1,33 +1,24 @@
 using LouisAgent.Api.Sessions.Requests;
-using LouisAgent.Core.Skills.Roles;
 
 namespace LouisAgent.Api.Tests.Sessions.Requests;
 
-// CL14 step 1: POST /sessions takes "role"; "personality", the word before CL14, is still read for a client one deploy
-// behind, until the TODO's line removes it. Expand, then contract: the API accepts both before any caller changes.
+// CL14 step 1, CL20 step 5: POST /sessions takes "role". "personality", its name before CL14, was read for a client one deploy
+// behind; that client calls the unversioned routes, which are gone, so it is not read any more.
 public class CreateSessionRequestTests
 {
-    private static CreateSessionRequest Request(string? role = null, string? personality = null) =>
-        new(null, null, null, Role: role, Personality: personality);
+    private static CreateSessionRequest Request(string? role = null) =>
+        new(null, null, null, Role: role);
 
     [Test]
     public void TheRole_IsTheNewWord() =>
-        Assert.That(Request(role: "puls-cook").RoleOrAlias(), Is.EqualTo("puls-cook"));
+        Assert.That(Request(role: "puls-cook").RoleOrNull(), Is.EqualTo("puls-cook"));
 
     [Test]
-    public void ThePersonality_IsStillRead_WhenNoRole() =>
-        Assert.That(Request(personality: "puls-cook").RoleOrAlias(), Is.EqualTo("puls-cook"));
-
-    [Test]
-    public void BothTheSame_IsFine() =>
-        Assert.That(Request("puls-cook", "puls-cook").RoleOrAlias(), Is.EqualTo("puls-cook"));
-
-    [Test]
-    public void BothDiffering_IsRefused_NamingTheTwo() =>
-        Assert.That(() => Request("puls-cook", "puls/voice-af").RoleOrAlias(),
-            Throws.TypeOf<RoleException>().With.Message.Contains("puls-cook").And.Message.Contains("puls/voice-af"));
+    public void APersonality_IsNotRead() =>
+        Assert.That(System.Text.Json.JsonSerializer.Deserialize<CreateSessionRequest>("""{"personality":"puls-cook"}""", System.Text.Json.JsonSerializerOptions.Web)!.RoleOrNull(),
+            Is.Null);
 
     [Test]
     public void Neither_IsNoRole_TheDefault() =>
-        Assert.That(Request().RoleOrAlias(), Is.Null);
+        Assert.That(Request().RoleOrNull(), Is.Null);
 }

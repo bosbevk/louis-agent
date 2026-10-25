@@ -88,7 +88,7 @@ public sealed class GitHistory(AgentApi api, GitState git)
         Changed?.Invoke();
         try
         {
-            Branches = await api.GitBranchActionAsync(action == BranchAction.Merge ? "merge" : "branch/delete", branch);
+            Branches = await (action == BranchAction.Merge ? api.GitMergeAsync(branch) : api.GitDeleteBranchAsync(branch));
             Message = Branches.Message;
             Commits = (await api.GitLogAsync()).Commits;
         }

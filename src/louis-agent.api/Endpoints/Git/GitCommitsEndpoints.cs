@@ -1,4 +1,5 @@
 using LouisAgent.Api.Endpoints.Git.Requests;
+using LouisAgent.Api.Endpoints.Routing;
 using LouisAgent.Api.Messages;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Messages;
@@ -15,7 +16,7 @@ internal static class GitCommitsEndpoints
 {
     public static void MapGitCommits(this IEndpointRouteBuilder routes)
     {
-        routes.MapPost("/git/commit", async (GitCommitRequest request, AgentEngine engine) =>
+        routes.MapPost("/git/commits", async (GitCommitRequest request, AgentEngine engine) =>
         {
             if (string.IsNullOrWhiteSpace(request.Message))
                 return ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error", MessageText.Format(ApiUserText.CommitMessageRequired));
@@ -32,10 +33,12 @@ internal static class GitCommitsEndpoints
             }
 
             var head = await RunAsync(engine, ["log", "-1", "--format=%h %s"]);
-            return await GitChangesEndpoints.StatusResultAsync(engine, committed: head.Output.Trim());
+            var sha = await RunAsync(engine, ["rev-parse", "HEAD"]);
+            return await GitChangesEndpoints.StatusResultAsync(engine, committed: head.Output.Trim(),
+                created: $"{ApiMap.Version}/git/commits/{sha.Output.Trim()}");
         });
 
-        routes.MapGet("/git/log", async (int? count, AgentEngine engine) =>
+        routes.MapGet("/git/commits", async (int? count, AgentEngine engine) =>
         {
             int limit = Math.Clamp(count ?? 200, 1, 1000);
             var log = await RunAsync(engine, ["log", "--all", "--date-order", "-n", limit.ToString(), $"--format={CommitFormat}{Record}"]);
@@ -44,9 +47,9 @@ internal static class GitCommitsEndpoints
             return Results.Json(new { commits = ParseCommits(log.Output) });
         });
 
-        routes.MapGet("/git/commit", async (string? sha, AgentEngine engine) =>
+        routes.MapGet("/git/commits/{sha}", async (string sha, AgentEngine engine) =>
         {
-            if (sha is null || !CommitHash().IsMatch(sha))
+            if (!CommitHash().IsMatch(sha))
                 return ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error", MessageText.Format(ApiUserText.ShaRequired));
 
             var meta = await RunAsync(engine, ["show", "-s", $"--format={CommitFormat}{Field}%B", sha]);

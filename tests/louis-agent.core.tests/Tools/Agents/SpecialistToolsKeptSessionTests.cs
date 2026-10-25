@@ -102,9 +102,9 @@ public class SpecialistToolsKeptSessionTests
     }
 
     [Test]
-    public async Task APeerADeployBehind_ReportsItsRoleAsPersonality_AndItIsRead()
+    public async Task APeerThatSaysPersonality_IsNotRead_TheRolePassedIsKept()
     {
-        // CL14: a peer on the build before CL14 answers {"personality": …}; the kept sub-session still has the role it reported.
+        // CL20 step 5: a peer that knows /v1 says "role"; the old word "personality" is not read, so the kept sub-session keeps the role passed.
         var handler = new StubHandler(request => request.Method.Method switch
         {
             "POST" when request.RequestUri!.AbsolutePath == "/v1/sessions" => Json(HttpStatusCode.Created, """{"session_id":"sess_child","personality":"puls-reader"}"""),
@@ -117,7 +117,7 @@ public class SpecialistToolsKeptSessionTests
         using (SubSessionRegistry.Use(registry))
             await ToolsOn(handler).StartSubSession(["web"], "x", agent: "coder", role: "puls-cook");
 
-        Assert.That(registry.Open.Single().Role, Is.EqualTo("puls-reader"));
+        Assert.That(registry.Open.Single().Role, Is.EqualTo("puls-cook"));
     }
 
     [Test]

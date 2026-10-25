@@ -148,7 +148,7 @@ public class SpecialistToolsTests
     }
 
     [Test]
-    public async Task APersonality_IsSentToThePeer()
+    public async Task ARole_IsSentToThePeer()
     {
         // F21: the specialist's role (its function) is the role its session opens with (CL14: the body says role).
         var handler = Peer();

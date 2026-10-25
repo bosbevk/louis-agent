@@ -25,10 +25,14 @@ internal static class ApiTestHost
     public static string RepoRoot { get; } =
         Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, "..", "..", "..", "..", ".."));
 
-    /// <summary>The API with every route mapped; <paramref name="apiKey"/> adds the key gate, as a key set in the environment does.</summary>
-    public static WebApplication Build(string? apiKey = null)
+    /// <summary>
+    /// The API with every route mapped; <paramref name="apiKey"/> adds the key gate, as a key set in the environment does, and
+    /// <paramref name="workspaceRoot"/> is the folder the agent works in (this repository when none: a test that writes or commits
+    /// names a folder of its own).
+    /// </summary>
+    public static WebApplication Build(string? apiKey = null, string? workspaceRoot = null)
     {
-        var host = HostContext();
+        var host = HostContext(workspaceRoot ?? RepoRoot);
         var builder = WebApplication.CreateBuilder();
         builder.WebHost.UseTestServer();
         builder.Services.AddApi(host);
@@ -66,9 +70,9 @@ internal static class ApiTestHost
     /// <summary>Who may call the route, as the key gate reads it.</summary>
     public static RouteAccess Access(RouteEndpoint endpoint) => AgentKeyGate.AccessFor(new PathString(Pattern(endpoint)), endpoint);
 
-    private static AgentHostContext HostContext()
+    private static AgentHostContext HostContext(string workspaceRoot)
     {
-        var options = new AgentOptions { WorkspaceRoot = RepoRoot, SkillsDirectory = Path.Combine(RepoRoot, "Skills"), RatesUrl = null };
+        var options = new AgentOptions { WorkspaceRoot = workspaceRoot, SkillsDirectory = Path.Combine(RepoRoot, "Skills"), RatesUrl = null };
         var catalog = new AgentCatalog([new LouisAgent.Identities.Puls.PulsIdentity()],
             [new LouisAgent.Packs.Shops.ShopsPack(new LouisAgent.Packs.Shops.ShopsOptions())]);
         var engines = new AgentEngineFactory(new NoModel(), options, catalog: catalog);

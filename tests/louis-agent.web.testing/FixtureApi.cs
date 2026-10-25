@@ -51,7 +51,7 @@ public static class FixtureApi
             ($"/v1/sessions/{SessionId}/messages", _, true) => Stream(),
             ("/v1/git/status", true, _) => Json("""{"branch":"main","files":[],"committed":null}"""),
             ("/v1/git/branches", true, _) => Json("""{"current":"main","branches":[],"message":null}"""),
-            ("/v1/git/log", true, _) => Json("""{"commits":[]}"""),
+            ("/v1/git/commits", true, _) => Json("""{"commits":[]}"""),
             ("/v1/workspace/entries", true, _) => Json("""{"path":"","entries":[]}"""),
             // The code-review app's theme list, as its wwwroot ships it.
             ("/css/themes/themes.json", true, _) => Json(File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "src", "louis-agent.web", "wwwroot", "css", "themes", "themes.json"))),

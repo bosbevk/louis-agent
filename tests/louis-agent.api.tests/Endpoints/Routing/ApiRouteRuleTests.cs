@@ -1,10 +1,22 @@
 using LouisAgent.Api.Endpoints.Routing;
+using Microsoft.AspNetCore.Routing;
 
 namespace LouisAgent.Api.Tests.Endpoints.Routing;
 
-// CL20 step 2 (ADR 0039, rules 1 and 6): the rules of the API's route table, checked on the real table, not on a list kept beside it.
+// CL20 steps 2 and 5 (ADR 0039, rules 1, 2, 4, 5 and 6): the rules of the API's route table, checked on the real table, not on a
+// list kept beside it.
 public class ApiRouteRuleTests
 {
+    // Rules 2 and 4: a path names a resource, and the method says what is done to it, so no segment is a verb for it.
+    private static readonly string[] Verbs = ["delete", "remove", "create", "add", "new", "update", "edit", "set"];
+
+    // Rule 5: an action that is no create, read, replace or delete is the last segment of a POST.
+    private static readonly string[] Actions = ["cancel", "stage", "unstage", "discard", "merge"];
+
+    /// <summary>A route's literal segments: its pattern split on slashes, without the parameters (<c>{id}</c>, <c>{**name}</c>).</summary>
+    private static string[] Words(RouteEndpoint endpoint) =>
+        ApiTestHost.Pattern(endpoint).Split('/', StringSplitOptions.RemoveEmptyEntries).Where(s => !s.StartsWith('{')).ToArray();
+
     [Test]
     public void EveryRouteButHealth_IsUnderV1()
     {
@@ -39,5 +51,45 @@ public class ApiRouteRuleTests
             .Select(ApiTestHost.Line).ToList();
 
         Assert.That(wrong, Is.Empty, "A route is AdminKey if and only if it is under /v1/admin/:\n  " + string.Join("\n  ", wrong));
+    }
+
+    [Test]
+    public void NoSegment_IsAVerb()
+    {
+        using var app = ApiTestHost.Build();
+
+        var wrong = ApiTestHost.Routes(app).Where(e => Words(e).Intersect(Verbs).Any()).Select(ApiTestHost.Line).Order(StringComparer.Ordinal).ToList();
+
+        Assert.That(wrong, Is.Empty, "A path names a resource, and the method is the verb (ADR 0039, rules 2 and 4):\n  " + string.Join("\n  ", wrong));
+    }
+
+    [Test]
+    public void AnAction_IsOnlyTheLastSegmentOfAPost()
+    {
+        using var app = ApiTestHost.Build();
+
+        var wrong = new List<string>();
+        foreach (var endpoint in ApiTestHost.Routes(app))
+        {
+            var segments = ApiTestHost.Pattern(endpoint).Split('/', StringSplitOptions.RemoveEmptyEntries);
+            bool isPost = endpoint.Metadata.GetMetadata<IHttpMethodMetadata>()?.HttpMethods.SequenceEqual(new[] { "POST" }) == true;
+            for (int i = 0; i < segments.Length; i++)
+                if (Actions.Contains(segments[i]) && !(i == segments.Length - 1 && isPost)) wrong.Add(ApiTestHost.Line(endpoint));
+        }
+
+        Assert.That(wrong, Is.Empty, "An action is the last segment of a POST (ADR 0039, rule 5):\n  " + string.Join("\n  ", wrong));
+    }
+
+    [Test]
+    public void NoResource_IsNamedBothSingularAndPlural()
+    {
+        using var app = ApiTestHost.Build();
+        var words = ApiTestHost.Routes(app).SelectMany(Words).ToHashSet();
+
+        var pairs = words
+            .SelectMany(w => new[] { w + "s", w + "es", w.EndsWith('y') ? w[..^1] + "ies" : null }.OfType<string>().Where(words.Contains).Select(plural => $"{w} and {plural}"))
+            .Order(StringComparer.Ordinal).ToList();
+
+        Assert.That(pairs, Is.Empty, "A resource has one name, plural, for the collection and its items (ADR 0039, rule 2): " + string.Join(", ", pairs));
     }
 }

@@ -76,18 +76,20 @@ internal static class GitChangesEndpoints
     }
 
     /// <summary>Current branch and changed files; also the reply to every change, so the web app refreshes in one call.</summary>
-    internal static async Task<IResult> StatusResultAsync(AgentEngine engine, string? committed = null)
+    internal static async Task<IResult> StatusResultAsync(AgentEngine engine, string? committed = null, string? created = null)
     {
         var status = await RunAsync(engine, ["status", "--porcelain=v1", "-z", "--untracked-files=all"]);
         if (status.ExitCode != 0) return GitError(status);
         var branch = await RunAsync(engine, ["rev-parse", "--abbrev-ref", "HEAD"]);
 
-        return Results.Json(new
+        var body = new
         {
             branch = branch.ExitCode == 0 ? branch.Output.Trim() : null,
             files = ParseStatus(status.Output),
             committed,
-        });
+        };
+        // A create answers 201 and names what it made in Location (ADR 0039, rule 3).
+        return created is null ? Results.Json(body) : Results.Created(created, body);
     }
 
     private static IResult? CheckPaths(WorkspaceBoundary workspace, IEnumerable<string> paths)
@@ -101,7 +103,7 @@ internal static class GitChangesEndpoints
             catch (ArgumentException ex)
             {
                 string message = ex.ParamName is null ? ex.Message : ex.Message.Replace($" (Parameter '{ex.ParamName}')", "");
-                return ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error", $"{path}: {message}");
+                return ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error", MessageText.Format(ApiUserText.PathRefused, new { Path = path, Reason = message }));
             }
         }
 

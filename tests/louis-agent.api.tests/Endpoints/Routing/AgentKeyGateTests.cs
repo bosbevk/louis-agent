@@ -103,6 +103,9 @@ public partial class AgentKeyGateTests
     public async Task AnUnknownV1Path_IsAJson404_WithTheKey_AndA401Without()
     {
         await using var app = ApiTestHost.Build(Key);
+        // As Program.cs maps the web app: its fallback and /v1's are both fallbacks of the same order, so only route precedence keeps
+        // the JSON 404 in front of the web app's page, and this test is what holds that.
+        app.MapFallbackToFile("index.html");
         await app.StartAsync();
         var client = app.GetTestClient();
 

@@ -472,7 +472,16 @@ After the merge:
 
 ## Approved during the build
 
-(Nothing yet.)
+- **Step 5 also removes two CL14 aliases that CL20 makes unreachable** (Louis, 2026-10-25, on the step 2 review):
+  - `personality` on `POST /v1/sessions` (`CreateSessionRequest.Personality`, `ApiUserText.RoleAndPersonalityDiffer`);
+  - `PeerSession`'s read of a peer's `personality`.
+
+  `GET /personalities` went in step 2 for the same reason. A client or peer one deploy behind calls the unversioned
+  routes, which are 404s now, and every client that knows `/v1` sends `role`. `PERSONALITIES_ENABLED` and the reads of
+  recorded data (delegation cards, stored runs) stay under the TODO's line, which step 6 rewrites to name what is left.
+- **Step 5 moves five inline texts into `ApiUserText`, not three** (Louis, 2026-10-25, on the step 4 review). Step 4's
+  split showed two more beside the merge route's three: git's timeout in `GitProcess`, and a refused path in
+  `GitChangesEndpoints.CheckPaths`. All five are text a person reads (ADR 0009).
 
 ## Concepts
 

@@ -8,9 +8,6 @@ public enum ApiUserText
     [Description("'{Tag}' must be at most {Max} printable characters.")]
     InvalidTag,
 
-    [Description("'role' is '{Role}' but 'personality' is '{Personality}': send role only ('personality' is its name before CL14).")]
-    RoleAndPersonalityDiffer,
-
     [Description("Unknown time zone '{TimeZone}'. Use an IANA name, e.g. Africa/Johannesburg.")]
     UnknownTimeZone,
 
@@ -50,6 +47,9 @@ public enum ApiUserText
     [Description("Pass at least one path in 'paths'.")]
     PathsRequired,
 
+    [Description("{Path}: {Reason}")]
+    PathRefused,
+
     [Description("No folder at '{Path}'.")]
     NoFolder,
 
@@ -64,6 +64,15 @@ public enum ApiUserText
 
     [Description("No branch named '{Name}'.")]
     NoBranch,
+
+    [Description("'{Branch}' is the checked-out branch.")]
+    MergeCheckedOutBranch,
+
+    [Description("'{Branch}' is already merged into {Current}.")]
+    MergeAlreadyMerged,
+
+    [Description("{Current} has uncommitted changes: commit, unstage or discard them in Changes before merging.")]
+    MergeUncommittedChanges,
 
     [Description("Merge branch '{Branch}' into {Current}")]
     MergeCommitMessage,
@@ -91,6 +100,9 @@ public enum ApiUserText
 
     [Description("git exited with code {ExitCode}.")]
     GitExited,
+
+    [Description("git timed out after {Seconds}s.")]
+    GitTimedOut,
 
     [Description("Can't delete the checked-out branch.")]
     DeleteCurrentBranch,

@@ -165,7 +165,7 @@ public class AgentSessionsTests
     }
 
     [Test]
-    public void AnUnknownPersonality_IsRefused()
+    public void AnUnknownRole_IsRefused()
     {
         Assert.Throws<LouisAgent.Core.Skills.Roles.RoleException>(() => Sessions().Create(["files"], role: "nobody-here"));
     }
@@ -183,7 +183,7 @@ public class AgentSessionsTests
     }
 
     [Test]
-    public void NoPersonality_IsTheDefault()
+    public void NoRole_IsTheDefault()
     {
         var session = Sessions().Create(["files"], role: "");
 

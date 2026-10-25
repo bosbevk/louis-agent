@@ -18,7 +18,7 @@ internal static class GitBranchesEndpoints
     {
         routes.MapGet("/git/branches", async (AgentEngine engine) => await BranchesResultAsync(engine));
 
-        routes.MapGet("/git/branch", async (string? name, AgentEngine engine) =>
+        routes.MapGet("/git/branches/{**name}", async (string name, AgentEngine engine) =>
         {
             var branches = await ListBranchesAsync(engine);
             if (branches.Error is { } error) return error;
@@ -42,15 +42,15 @@ internal static class GitBranchesEndpoints
             if (branches.Items.FirstOrDefault(b => b.Name == request.Branch) is not { } branch)
                 return ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error", MessageText.Format(ApiUserText.NoBranch, new { Name = request.Branch }));
             if (branch.Current)
-                return ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error", $"'{branch.Name}' is the checked-out branch.");
+                return ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error", MessageText.Format(ApiUserText.MergeCheckedOutBranch, new { Branch = branch.Name }));
             if (branch.Ahead == 0)
-                return ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error", $"'{branch.Name}' is already merged into {branches.Current}.");
+                return ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error", MessageText.Format(ApiUserText.MergeAlreadyMerged, new { Branch = branch.Name, branches.Current }));
 
             // A merge on top of uncommitted work would mix the two; untracked files are fine.
             var dirty = await RunAsync(engine, ["status", "--porcelain", "--untracked-files=no"]);
             if (dirty.Output.Trim().Length > 0)
                 return ApiErrors.Result(StatusCodes.Status409Conflict, "conflict_error",
-                    $"{branches.Current} has uncommitted changes: commit, unstage or discard them in Changes before merging.");
+                    MessageText.Format(ApiUserText.MergeUncommittedChanges, new { branches.Current }));
 
             var merge = await RunAsync(engine, ["merge", "--no-ff", "--no-edit", "-m", MessageText.Format(ApiUserText.MergeCommitMessage, new { Branch = branch.Name, branches.Current }), $"refs/heads/{branch.Name}"]);
             if (merge.ExitCode != 0)
@@ -71,12 +71,12 @@ internal static class GitBranchesEndpoints
         });
 
         // Only merged branches: git branch -d refuses to delete unmerged work.
-        routes.MapPost("/git/branch/delete", async (GitBranchRequest request, AgentEngine engine) =>
+        routes.MapDelete("/git/branches/{**name}", async (string name, AgentEngine engine) =>
         {
             var branches = await ListBranchesAsync(engine);
             if (branches.Error is { } error) return error;
-            if (branches.Items.FirstOrDefault(b => b.Name == request.Branch) is not { } branch)
-                return ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error", MessageText.Format(ApiUserText.NoBranch, new { Name = request.Branch }));
+            if (branches.Items.FirstOrDefault(b => b.Name == name) is not { } branch)
+                return ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error", MessageText.Format(ApiUserText.NoBranch, new { Name = name }));
             if (branch.Current || branch.Ahead > 0)
                 return ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error",
                     branch.Current ? MessageText.Format(ApiUserText.DeleteCurrentBranch) : MessageText.Format(ApiUserText.BranchNotMerged, new { Branch = branch.Name }));

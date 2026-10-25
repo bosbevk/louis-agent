@@ -1,3 +1,4 @@
+using LouisAgent.Api.Endpoints.Routing;
 using LouisAgent.Api.Messages;
 using LouisAgent.Api.Sessions;
 using LouisAgent.Api.Sessions.Requests;
@@ -20,7 +21,7 @@ internal static class SessionEndpoints
     public static void MapSessions(this IEndpointRouteBuilder routes, AgentHostContext host)
     {
         // The body is optional: { "toolsets": [...] } chooses the session's tools for its lifetime (F5; none sent: skills only);
-        // "role" its role (F21; none sent: the default voice, CL9; "personality", its name before CL14, still read); "llm" the LLM profile it runs on (F30; none sent: this
+        // "role" its role (F21; none sent: the default voice, CL9); "llm" the LLM profile it runs on (F30; none sent: this
         // instance's model); "tool" a minion's one tool (F30; depth 2 only, with "parent" the specialist's session and turn);
         // { "task", "run", "service" } tag every usage record of the session (the orchestrator sends them for a fix); "depth" is
         // set by an agent opening a sub-session.
@@ -39,14 +40,14 @@ internal static class SessionEndpoints
             {
                 session = sessions.Create(request?.Toolsets,
                     request is null ? null : new UsageTags(request.Task, request.Run, request.Service, request.Parent), request?.Depth ?? 0,
-                    request?.RoleOrAlias(), request?.Place(), request?.Llm, request?.Tool);
+                    request?.RoleOrNull(), request?.Place(), request?.Llm, request?.Tool);
             }
             catch (Exception ex) when (ex is ToolsetException or RoleException or SessionLlmException)
             {
                 return Results.Json(Error("invalid_request_error", ex.Message), statusCode: StatusCodes.Status400BadRequest);
             }
 
-            return Results.Json(SessionView.Created(session), statusCode: StatusCodes.Status201Created);
+            return Results.Created($"{ApiMap.Version}/sessions/{session.Id}", SessionView.Created(session));
         });
 
         routes.MapGet("/sessions/{id}", (string id, AgentSessions sessions) =>
