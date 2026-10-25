@@ -50,8 +50,14 @@ internal static partial class HtmlText
         var lines = content.Split('\n').Select(l => Whitespace().Replace(l, " ").Trim());
         string text = BlankLines().Replace(string.Join('\n', lines), "\n\n").Trim();
         text = Placeholder().Replace(text, m => blocks[int.Parse(m.Groups[1].Value)]);
-        return (title, BlankLines().Replace(text, "\n\n").Trim());
+        text = BlankLines().Replace(text, "\n\n").Trim();
+        // The page's own photo (FX24): from its JSON-LD Recipe.image or og:image, first, unless the text already shows that very file.
+        if (LeadImage.Of(html, baseUri, title) is { } lead && !text.Contains(UrlOf(lead), StringComparison.Ordinal))
+            text = text.Length == 0 ? lead : lead + "\n\n" + text;
+        return (title, text);
     }
+
+    private static string UrlOf(string imageMarkdown) => imageMarkdown[(imageMarkdown.LastIndexOf("](", StringComparison.Ordinal) + 2)..^1];
 
     /// <summary>
     /// An image as <c>![alt](url)</c> (a product's photo on a shop's page), or nothing: only one with alt text and an
@@ -64,7 +70,9 @@ internal static partial class HtmlText
             a => WebUtility.HtmlDecode(a.Groups["value"].Value), StringComparer.Ordinal);
         string alt = CleanInline(attributes.GetValueOrDefault("alt")).Replace('[', '(').Replace(']', ')');
         if (alt.Length == 0) return "";
-        string? file = attributes.GetValueOrDefault("data-src");
+        // A lazy-loading plugin keeps the real file in one of these while src holds a placeholder (FX24: WordPress sites use all four).
+        string? file = new[] { "data-src", "data-lazy-src", "data-orig-file", "data-original" }
+            .Select(name => attributes.GetValueOrDefault(name)).FirstOrDefault(value => !string.IsNullOrWhiteSpace(value));
         if (string.IsNullOrWhiteSpace(file) && attributes.GetValueOrDefault("srcset") is { } set)
             file = set.Split(',')[0].Trim().Split(' ', 2)[0];
         if (string.IsNullOrWhiteSpace(file)) file = attributes.GetValueOrDefault("src");

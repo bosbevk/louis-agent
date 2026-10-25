@@ -1,6 +1,6 @@
 # FX24 · The cook's recipe photo and its estimates: the grader, the chip, the box and the prompt
 
-> **Status:** done, with one cause still open (the fetch drops some images, below) · **Area:** the cook eval (`recipe-image`, `CookScorer`,
+> **Status:** done · **Area:** the cook eval (`recipe-image`, `CookScorer`,
 > `Prices`), the admin portal's chips, Puls's stylesheet, the cook's prompt · **Found:** 2026-10-25, the first cook run on F18 step 5.7
 > (`bd2138243795`, $0.076) · **Fixed:** 2026-10-26, on the F18 branch at Louis's override, with no plan file of its own
 
@@ -19,7 +19,7 @@ size to fit in our chat screen"; "i need to see here recipe-image". The cook's a
   a list of estimates read 0 of 5, in red.
 - **The size.** Nothing sized an image outside a table cell: a 1024-wide photo filled the chat.
 - **The prompt.** It asked for one image but not for a recipe page that has one.
-- **Still open: the fetch.** Louis opened the cited pages: they do have photos. `HtmlText.ImageMarkdown` keeps an image only with alt text, and
+- **The fetch.** Louis opened the cited pages: they do have photos. `HtmlText.ImageMarkdown` keeps an image only with alt text, and
   reads only `data-src` and `srcset`, and only inside the page's `main` or `article`. A photo with no alt, in `data-lazy-src`, in a `<picture>`, or
   in a header above the article is dropped, and the page's `og:image` and its JSON-LD `Recipe.image` are not read at all. The cook cannot show
   what its fetch never gave it.
@@ -33,6 +33,7 @@ size to fit in our chat screen"; "i need to see here recipe-image". The cook's a
    the shop's own price, so `estimates-at-shop` is unchanged. The scores also carry `images` (the photos the answer shows), and the row has an
    `image shown` / `no image` chip (`ImageChip`).
 3. The recipe photo is a fixed box, 480 × 320 px at most, cropped to fit, with 16px rounded corners (`.markdown img:not(td img)`).
+5. **The fetch** (`LeadImage`, called by `HtmlText.ToText`, so FetchUrl and ReadRenderedPage both): the page's own photo is read from its JSON-LD `Recipe.image` (a string, an `ImageObject`, a list, or inside a `@graph`), else its `og:image` or `twitter:image`, made absolute from the page, and put first as `![title](url)`, unless the text already shows that file; a data URI, an SVG or a non-recipe JSON-LD gives none. A lazy image's file is also read from `data-lazy-src`, `data-orig-file` and `data-original`. The alt-less image rule stays (icons and spacers).
 4. The cook's prompt drops a recipe page with no photo of the dish for the next result (three pages at most) and puts the photo on a line of
    its own above *Recipe*.
 
