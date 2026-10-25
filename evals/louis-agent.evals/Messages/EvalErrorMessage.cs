@@ -46,4 +46,7 @@ public enum EvalErrorMessage
 
     [Description("Dataset '{Dataset}': the scenarios hash to {Hash}, not content_hash {Recorded}. If a scenario changed, bump the version and add a dated line to changes; then set content_hash to {Hash}.")]
     HashChanged,
+
+    [Description("The API answered {Status}: {Reason}")]
+    ApiRefused,
 }

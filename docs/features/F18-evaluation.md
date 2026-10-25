@@ -863,6 +863,13 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   `ExpectedKeys`. When the HTTP client sets a turn's `Failure`, the turn line must carry it, so `ProtocolTranscripts` reads it back. A
   reference may need its mode in its file name (`{scenario}.{mode}.reference.txt`) when an eval's modes expect different routes.
   The HTTP client's body test pins `replay.model` too: a `--replay` run sends `"replay": {"web": "replay", "of": "{trial}", "model": true}`, and the others `model: false`.
+- **Step 5.1 (the HTTP session client, and turn failures in the protocol).** `HttpSessionClient` (`Api/`) is the Python `client.py` over one
+  `HttpClient` (`CreateHttp`: `PULS_API`, ten minutes, `x-api-key`); its bodies and replies are records (`SessionWire`) serialized with
+  `EvalJson`, null fields left out. A turn that fails for the infrastructure is recorded, not thrown: `TurnFailures.Of` maps the exception to a
+  `TrialFailure`, the `turn` line carries `failure` (snake case, `FailureName`), `ProtocolTranscripts` reads it back, and a session that
+  can't open fails all its turns the same way. A cancelled run still throws. Red before the code: 21 of 157 tests (12 `NotImplementedException`
+  from the client, 9 assertions); green after: 157. Not done on purpose: after a failed turn the scenario's next turn is still sent, as the
+  Python's per-turn `except` did; 5a decides whether that should stop.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

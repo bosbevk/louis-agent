@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace LouisAgent.Evals;
 
@@ -9,4 +10,14 @@ namespace LouisAgent.Evals;
 public static class EvalJson
 {
     public static readonly JsonSerializerOptions SnakeCase = new() { PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower };
+
+    /// <summary>
+    /// The same, for what is sent to the API (ADR 0041): a null property is left out, so the API's own default holds, and an enum goes by
+    /// its name in snake case (<c>record</c>), never by number.
+    /// </summary>
+    public static readonly JsonSerializerOptions SnakeCaseNoNulls = new(SnakeCase)
+    {
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+        Converters = { new JsonStringEnumConverter(JsonNamingPolicy.SnakeCaseLower) },
+    };
 }

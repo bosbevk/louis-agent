@@ -1,6 +1,5 @@
 using System.Text.Json;
 using LouisAgent.Core.Logging;
-using LouisAgent.Core.Messages;
 using LouisAgent.Evals;
 using LouisAgent.Evals.Api;
 using LouisAgent.Evals.Protocol;
@@ -29,10 +28,11 @@ try
 
         case RunRequest run:
             var eval = catalog.Get(run.Name);
-            // Only the stub has a session client now; the HTTP client comes with the first real eval (step 5).
+            // The stub answers from canned turns; every other eval talks to the API (F18 step 5.1): PULS_API, and AGENT_API_KEY when set.
             ISessionClient session = eval is StubEval
                 ? new StubSessionClient()
-                : throw new RunnerException(MessageText.Format(RunnerMessage.NoSessionClient, new { Name = eval.Name }));
+                : new HttpSessionClient(HttpSessionClient.CreateHttp(Environment.GetEnvironmentVariable("PULS_API"),
+                    Environment.GetEnvironmentVariable("AGENT_API_KEY")));
             var runner = new EvalRunner(session, new ProtocolWriter(Console.Out, TimeProvider.System), TimeProvider.System,
                 AgentLogging.For<EvalRunner>());
             // The run's name is the ledger's tag: BENCHMARK_RUN, as the Python checks read it.

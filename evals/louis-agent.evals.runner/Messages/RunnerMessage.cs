@@ -50,9 +50,6 @@ public enum RunnerMessage
     [Description("--of takes a run id's letters, digits, '-' and '_', not '{Value}'.")]
     BadOf,
 
-    [Description("Eval '{Name}' needs an HTTP session, which step 5 brings; only the stub runs for now.")]
-    NoSessionClient,
-
     [Description("The stub's canned run: it proves the portal, not Puls, and costs nothing.")]
     StubProves,
 }

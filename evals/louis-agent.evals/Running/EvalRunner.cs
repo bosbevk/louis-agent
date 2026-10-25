@@ -48,10 +48,21 @@ public sealed class EvalRunner(ISessionClient sessions, ProtocolWriter protocol,
         }
 
         var started = clock.GetUtcNow();
-        string session = await sessions.OpenAsync(
-            new SessionRequest(mode, scenario.Input.Place, scenario.Input.TimeZone, scenario.Id, repeat, RunTag(run.RunId, mode, repeat),
-                ReplayFor(run, mode, repeat, scenario)),
-            cancellationToken);
+        // A session that can't open fails every turn of its scenario the same way, and there is nothing to close (F18 step 5.1).
+        string? session = null;
+        TrialFailure? openFailure = null;
+        try
+        {
+            session = await sessions.OpenAsync(
+                new SessionRequest(mode, scenario.Input.Place, scenario.Input.TimeZone, scenario.Id, repeat, RunTag(run.RunId, mode, repeat),
+                    ReplayFor(run, mode, repeat, scenario)),
+                cancellationToken);
+        }
+        catch (Exception ex) when (TurnFailures.Of(ex, cancellationToken) is { } failure)
+        {
+            openFailure = failure;
+            logger.Log(LogLevel.Warning, EvalLogMessage.OpenFailed, new { Scenario = scenario.Id, Failure = failure, Reason = ex.Message }, exception: ex);
+        }
 
         // The session is closed however its turns end: a turn that throws (a timeout, a dead connection) must not leave it open.
         // The close is not cancelled with the run, so a cancelled run still closes what it opened.
@@ -61,7 +72,7 @@ public sealed class EvalRunner(ISessionClient sessions, ProtocolWriter protocol,
         {
             for (int number = 1; number <= scenario.Input.Messages.Count; number++)
             {
-                var turn = await RunTurnAsync(eval, mode, repeat, scenario.Id, number, session, scenario.Input.Messages[number - 1],
+                var turn = await RunTurnAsync(eval, mode, repeat, scenario.Id, number, session, openFailure, scenario.Input.Messages[number - 1],
                     cancellationToken);
                 turns.Add(turn.Transcript);
                 facts.Add(turn.Facts);
@@ -70,14 +81,15 @@ public sealed class EvalRunner(ISessionClient sessions, ProtocolWriter protocol,
         finally
         {
             // A failed close is logged, not thrown: it would replace the turn's own error, which is the one to report.
-            try
-            {
-                await sessions.CloseAsync(session, CancellationToken.None);
-            }
-            catch (Exception ex)
-            {
-                logger.Log(LogLevel.Warning, EvalLogMessage.CloseFailed, new { Session = session, Reason = ex.Message }, exception: ex);
-            }
+            if (session is not null)
+                try
+                {
+                    await sessions.CloseAsync(session, CancellationToken.None);
+                }
+                catch (Exception ex)
+                {
+                    logger.Log(LogLevel.Warning, EvalLogMessage.CloseFailed, new { Session = session, Reason = ex.Message }, exception: ex);
+                }
         }
 
         var trial = new Trial(run.RunId, mode, repeat, scenario, new Transcript(turns));
@@ -103,26 +115,40 @@ public sealed class EvalRunner(ISessionClient sessions, ProtocolWriter protocol,
             ? new WebReplayRequest(run.Web, $"{RunTag(recorded, mode, repeat)}/{scenario.Id}", run.Model)
             : new WebReplayRequest(run.Web, null, run.Model);
 
+    /// <summary>
+    /// One turn. A failure of the infrastructure (<see cref="TurnFailures"/>) ends it with its <see cref="TrialFailure"/>, keeping the events read
+    /// before it; a turn whose session never opened (<paramref name="session"/> null) is that failure from the start. A cancelled run throws.
+    /// </summary>
     private async Task<(TurnTranscript Transcript, TurnFacts Facts)> RunTurnAsync(IEval eval, EvalMode mode, int repeat, string task, int number,
-        string session, string message,
+        string? session, TrialFailure? openFailure, string message,
         CancellationToken cancellationToken)
     {
-        protocol.Question(mode.Name, repeat, task, number, session, message);
+        protocol.Question(mode.Name, repeat, task, number, session ?? string.Empty, message);
 
         var started = clock.GetUtcNow();
         var events = new List<SessionEvent>();
-        await foreach (var streamEvent in sessions.SendAsync(session, message, cancellationToken))
-        {
-            events.Add(streamEvent);
-            protocol.Sse(mode.Name, repeat, task, number, streamEvent.Type, streamEvent.Data);
-        }
+        var failure = openFailure;
+        if (session is not null)
+            try
+            {
+                await foreach (var streamEvent in sessions.SendAsync(session, message, cancellationToken))
+                {
+                    events.Add(streamEvent);
+                    protocol.Sse(mode.Name, repeat, task, number, streamEvent.Type, streamEvent.Data);
+                }
+            }
+            catch (Exception ex) when (TurnFailures.Of(ex, cancellationToken) is { } turnFailure)
+            {
+                failure = turnFailure;
+                logger.Log(LogLevel.Warning, EvalLogMessage.TurnFailed, new { Scenario = task, Turn = number, Failure = turnFailure, Reason = ex.Message }, exception: ex);
+            }
 
         var duration = clock.GetUtcNow() - started;
-        var transcript = new TurnTranscript(number, session, message, events, duration, null);
+        var transcript = new TurnTranscript(number, session ?? string.Empty, message, events, duration, failure);
         var facts = eval.TurnFactsOf(transcript, mode);
         // The answer through the one reader of the engine's events: the runner's own loop called GetString() on each delta's text, which
         // throws on a number, so one odd delta stopped the run; AnswerOf skips it (F18 step 4.5a, ADR 0030).
-        protocol.Turn(mode.Name, repeat, task, number, session, message, EngineEvents.AnswerOf(transcript), facts.Role, duration.TotalSeconds, facts);
+        protocol.Turn(mode.Name, repeat, task, number, transcript.Session, message, EngineEvents.AnswerOf(transcript), facts.Role, duration.TotalSeconds, facts, failure);
         return (transcript, facts);
     }
 }

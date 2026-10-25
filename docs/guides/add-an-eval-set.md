@@ -326,9 +326,10 @@ EVALS=acme dotnet run --project evals/louis-agent.evals.runner -- --list
 PowerShell: `$env:EVALS = 'acme'`, then the same command. Each line is one eval's JSON: its name, identity, version and
 `proves`.
 
-Running it is not free. `run {name} --repeat N` refuses every eval but the stub until step 5 brings the HTTP session
-client: the runner has no client for a real eval yet, and says so with the eval's name (`RunnerMessage.NoSessionClient`).
-Once a client is wired, a run against the real API spends money, so ask before starting one.
+Running it is not free. `run {name} --repeat N` gives every eval but the stub the HTTP session client (F18 step 5.1): the API
+at `PULS_API` (default `http://127.0.0.1:5070/`), with `AGENT_API_KEY` as `x-api-key` when it is set. A run against the real
+API spends money, so ask before starting one. A turn that fails for the infrastructure (a timeout, a refused connection, a
+broken stream, a non-2xx answer) is recorded in its `turn` line as `failure` and the run goes on.
 
 ## 10. See it in the portal
 

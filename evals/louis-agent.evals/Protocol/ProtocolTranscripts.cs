@@ -39,7 +39,7 @@ public static class ProtocolTranscripts
     private static Transcript Collect(IEnumerable<string> lines, Func<JsonElement, bool> keep)
     {
         var events = new Dictionary<int, List<SessionEvent>>();
-        var sessions = new SortedDictionary<int, (string Session, string Question, double Seconds)>();
+        var sessions = new SortedDictionary<int, (string Session, string Question, double Seconds, TrialFailure? Failure)>();
         foreach (string line in lines)
         {
             if (!line.StartsWith('@')) continue;
@@ -61,12 +61,13 @@ public static class ProtocolTranscripts
             else
             {
                 sessions[turn] = (element.GetProperty("session").GetString()!, element.GetProperty("question").GetString()!,
-                    element.GetProperty("seconds").GetDouble());
+                    element.GetProperty("seconds").GetDouble(),
+                    element.TryGetProperty("failure", out var failure) ? FailureName.Parse(failure.GetString()) : null);
             }
         }
 
         return new Transcript(sessions.Select(s => new TurnTranscript(s.Key, s.Value.Session, s.Value.Question,
-            events.TryGetValue(s.Key, out var list) ? list : [], TimeSpan.FromSeconds(s.Value.Seconds), null)).ToList());
+            events.TryGetValue(s.Key, out var list) ? list : [], TimeSpan.FromSeconds(s.Value.Seconds), s.Value.Failure)).ToList());
     }
 
     private static bool IsOf(JsonElement element, string mode, int repeat, string task) =>

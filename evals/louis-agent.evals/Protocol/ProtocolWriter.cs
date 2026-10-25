@@ -59,8 +59,9 @@ public sealed class ProtocolWriter(TextWriter stdout, TimeProvider clock)
             data.WriteTo(json);
         });
 
+    /// <summary>A turn; <paramref name="failure"/> is the infrastructure failure that ended it (F18 step 5.1), left out when it ended on its own.</summary>
     public void Turn(string mode, int repeat, string task, int turn, string session, string question, string? answer, string? role,
-        double seconds, TurnFacts? facts = null) =>
+        double seconds, TurnFacts? facts = null, TrialFailure? failure = null) =>
         Emit("turn", json =>
         {
             WriteTurnKey(json, mode, repeat, task, turn);
@@ -71,6 +72,7 @@ public sealed class ProtocolWriter(TextWriter stdout, TimeProvider clock)
             if (facts is not null) WriteFacts(json, facts);
             json.WriteNumber("seconds", seconds);
             if (facts is not null) WriteText(json, "error", facts.Error);
+            if (failure is not null) json.WriteString("failure", FailureName.Of(failure.Value));
         });
 
     /// <summary>A conversation's result: the eval's scores, written as the JSON they are.</summary>
