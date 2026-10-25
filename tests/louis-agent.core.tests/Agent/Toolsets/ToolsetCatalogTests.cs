@@ -59,6 +59,19 @@ public class ToolsetCatalogTests
         });
     }
 
+    [Test]
+    public async Task TheWebToolset_FetchesThroughTheContextsStore()
+    {
+        // F18 step 4b.3: ToolsetCatalog hands ctx.Replay to the fetcher. In a replay of a trial that fetched nothing, an address that
+        // cannot resolve is a recorded-run miss, not a lookup that fails.
+        string folder = Path.Combine(Path.GetTempPath(), "louis-replay-" + Guid.NewGuid().ToString("N"));
+        var context = new ToolsetContext(new AgentOptions(), new NoSearch(), Replay: new LouisAgent.Core.Tools.Web.Replay.Store.WebReplayStore(folder));
+        var web = (LouisAgent.Core.Tools.Web.WebTools)ToolsetCatalog.BuildTools([ToolsetCatalog.Find("web")!], context).Single(t => t is LouisAgent.Core.Tools.Web.WebTools);
+
+        using (LouisAgent.Core.Sessions.Replay.SessionReplay.Use(new LouisAgent.Core.Sessions.Replay.SessionReplay(LouisAgent.Core.Sessions.Replay.WebReplayMode.Replay, "t", Model: false)))
+            Assert.That(await web.FetchUrl("https://no-such-host.invalid/page"), Does.Contain("was not read in the recorded run"));
+    }
+
     private sealed class NoSearch : IWebSearchProvider
     {
         public string Name => "none";

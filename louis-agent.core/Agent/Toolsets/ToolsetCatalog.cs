@@ -84,7 +84,7 @@ public static class ToolsetCatalog
             ToolTypes: [typeof(WebTools), typeof(QuoteTools), typeof(CurrencyTools)],
             CreateTools: ctx =>
             {
-                var fetcher = new PageFetcher();
+                var fetcher = new PageFetcher(replay: ctx.Replay);
                 return [new WebTools(ctx.WebSearch, fetcher, ctx.Renderer), new QuoteTools(fetcher, ctx.Renderer), new CurrencyTools(ctx.Rates)];
             },
             ParallelSafe: true),
