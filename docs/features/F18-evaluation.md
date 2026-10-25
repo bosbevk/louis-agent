@@ -803,7 +803,7 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   - **What changed:** the `[TOOL]` call line (every argument hashed, names kept, in order), a failure's reason and the summary's failure reason
     (an exception's message can quote an argument; the error type stays), the result (`Of(text, cut: 300)`), and both records
     (`Arguments`, and `UserRequest` cut at 500 under `full`). **Unchanged on purpose:** the arrows, the order, tool names, counts and outcomes;
-    the `AgentLogMessage` templates (no golden file changed); the usage ledger (it never held text); and the string sent to the summarising
+    the `AgentLogMessage` templates (no golden file changed); the usage ledger (it holds no prompt or tool text; see the 4f.3 note on its tags); and the string sent to the summarising
     model, which keeps the full arguments (`TheSummaryRequest_KeepsTheFullArguments…`; mutation: hashing it fails that test).
     `ToolCallGuards.cs` stays at 210 lines.
   - **Red and green:** the stubs threw `NotImplementedException`; 31 tests in the touched classes ran, **22 failed** (the hash and its shape,
@@ -826,7 +826,8 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
     `#` + 12 hex digits of an HMAC-SHA256 under a random per-process key + the length. `LOG_CONTENT=full` writes the values, for a developer's
     own machine and never a hosted instance. An unknown value stops the host at start-up.
   - **Stays in clear:** the tool, shop and event names, the arrows and their order, counts and sizes, the error type, durations, the usage
-    ledger (it never held text), and the `AgentLogMessage` templates.
+    ledger (no prompt or tool text; its caller-set tags such as `task` can hold a scenario name, e.g. `cook-malmesbury`: the 4f.3 note), and the
+    `AgentLogMessage` templates.
   - **Known limit (for F44's trace and log pass):** the headless browser's two warnings (`RenderRequestRefused` and `RenderRequestUnhandled`)
     still carry the URL of the sub-request and the page. A URL the model reads can hold the user's words, but the lines warn about a refused
     sub-request, testing them needs a live Chrome, and `ChromeWebBrowser.cs` is on the oversized list.
@@ -836,9 +837,27 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
     show what ran, not what it was given; s19 (protected): the key is random, per process, never written or logged, so a hash can't be
     reversed by hashing a list. OWASP LLM02:2025 (sensitive information in logs): each of those lines. Concept: skill 17 (observability) with
     skill 15's practice; the audit of every `Log.Log` call site for user-derived fields found no other.
-  - **The hand check, still to run (a live Puls chat, a few cents: on Louis's go).** Rebuild the Puls image, open a Puls chat from Malmesbury,
-    ask for a meal, then `grep -ri malmesbury logs/puls/` finds nothing but this step's own hashes, and the chat's own view still shows each
-    call in full. A coding-agent chat in Rider with `LOG_CONTENT=full` logs as today.
+  - **The hand check: done, in the 4f.3 note.** A coding-agent chat in Rider with `LOG_CONTENT=full` logging as today is covered by the unit
+    tests, not run by hand.
+- **Step 4f.3: a string argument from the model hashes as its text.** Found by the live hand check of 4f (a Puls chat from Malmesbury), not by
+  a test: the model's arguments arrive as `JsonElement`, not `string`, and `OfArguments` hashed such an element as its JSON, quotes included. The
+  area `Malmesbury` showed as `#138099225789 (12)`, while the shops pack hashes the same town as a plain string, `(10)`. So one town had two
+  hashes in one log, and a reader could not follow it from the tool call into the shop's lines, which is what one key per process is for. None
+  of 4f.1's tests passed a `JsonElement`: they passed `string` and anonymous objects. The fix is one `switch` in `LogContent.OfArguments`
+  (`ArgumentOf`): a string hashes as is, a `JsonElement` of kind string as `GetString()` (which also unescapes `é`, where the serializer
+  would hash the escaped form), a JSON null as `null`, anything else as its JSON, as before.
+  - **Red and green:** two new tests, `Hashed_Arguments_FromTheModel_AreJsonElements…` (the length is `(10)` and the hash equals
+    `LogContent.Of("Malmesbury")`, for a string with `é`, a number, an object and a bool too) and `…AJsonStringAndAPlainStringOfTheSameText_HashAlike`.
+    On the 4f.1 code they failed with the live run's own output (`area=#b830e49e284f (12)`, expected `(10)`); with the fix core passes 1491
+    (1489 + 2), and the other projects are unchanged.
+  - **The ledger's tags (a correction to the close of 4f).** The close said the usage ledger "never held text". It holds no prompt or tool
+    text (F1-S4), but its caller-set tags (`task`, `run`, `service`) can hold a name the caller chose: 40 rows from 17 to 20 October carry
+    `task: "cook-malmesbury"`, a benchmark scenario's name, not anything a user typed. The grep of `logs/` after the rebuild found exactly those 40
+    and nothing in this chat's 11 rows. The wording above is fixed; nothing in the ledger changes.
+  - **The hand check, done (2026-10-25, a few cents: $0.0175).** After the rebuild, `grep -ri malmesbury logs/` matched no file written since
+    (the new run file, the other run files and the record files); the chat's own stream still showed all 13 calls and their 13 results in
+    full, against 13 hashed `[TOOL] ->` and `<-` lines. Not exercised live: Checkers refused the store lookup, so the line with the centre's
+    coordinates and the store ids ran only in the unit tests.
 - **Notes for step 5** (from the review of 4.2): `PulsEvalSet`'s `TurnView` builds on `EngineEvents`, so the route, the errors and the
   cost come from one reader. If an expected route goes in a scenario's `expected`, `RoutedToGrader` must declare that key in its
   `ExpectedKeys`. When the HTTP client sets a turn's `Failure`, the turn line must carry it, so `ProtocolTranscripts` reads it back. A

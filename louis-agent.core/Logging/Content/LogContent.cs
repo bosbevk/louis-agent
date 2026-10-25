@@ -51,8 +51,20 @@ public static class LogContent
         if (arguments is null || _mode == LogContentMode.Full) return JsonSerializer.Serialize(arguments);
         if (arguments.Count == 0) return "{}";
 
-        return string.Join(", ", arguments.Select(a => $"{a.Key}={(a.Value is null ? "null" : Hash(a.Value as string ?? JsonSerializer.Serialize(a.Value), Key))}"));
+        return string.Join(", ", arguments.Select(a => $"{a.Key}={ArgumentOf(a.Value)}"));
     }
+
+    /// <summary>
+    /// One argument. The model's arguments arrive as <see cref="JsonElement"/>, so a string element hashes as its text (unescaped, without its
+    /// quotes): the same town then has one hash whether the tool call or the shop's own line logs it, which is the point of one key per process.
+    /// </summary>
+    private static string ArgumentOf(object? value) => value switch
+    {
+        null or JsonElement { ValueKind: JsonValueKind.Null } => "null",
+        string text => Hash(text, Key),
+        JsonElement { ValueKind: JsonValueKind.String } element => Hash(element.GetString()!, Key),
+        _ => Hash(JsonSerializer.Serialize(value), Key),
+    };
 
     /// <summary>The pure part: the keyed hash and the length of <paramref name="value"/>, so a test can show that two keys hash one value differently.</summary>
     internal static string Hash(string value, byte[] key) =>

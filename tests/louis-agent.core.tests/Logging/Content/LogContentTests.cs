@@ -90,6 +90,34 @@ public class LogContentTests
         Assert.That(text, Does.Contain($"area={LogContent.Of("Malmesbury")}").And.Contain($"limit={LogContent.Of("5")}").And.Contain($"near={LogContent.Of("{\"lat\":1}")}"));
     }
 
+    [Test]
+    public void Hashed_Arguments_FromTheModel_AreJsonElements_AndAStringHashesAsItsText()
+    {
+        // The model's arguments arrive as JsonElement, not string. Hashed as JSON, "Malmesbury" kept its quotes (length 12) and hashed
+        // differently from the same town logged by the shops as a plain string, so one town had two hashes in one log. The live check of
+        // 4f found it (#138099225789 (12)): a string element hashes as its text, so the tool call and the shop's lines can be followed.
+        AgentLogging.Configure(null, LogContentMode.Hashed);
+        using var document = JsonDocument.Parse("""{"area":"Malmesbury","q":"café","limit":5,"near":{"lat":1},"on":true}""");
+        var arguments = document.RootElement.EnumerateObject().ToDictionary(p => p.Name, p => (object?)p.Value.Clone());
+
+        string text = LogContent.OfArguments(arguments);
+
+        Assert.That(text, Does.Contain($"area={LogContent.Of("Malmesbury")}").And.Contain("(10)"));
+        Assert.That(text, Does.Contain($"q={LogContent.Of("café")}"), "the text, unescaped, not the serializer's \\u00e9");
+        Assert.That(text, Does.Contain($"limit={LogContent.Of("5")}").And.Contain($"near={LogContent.Of("{\"lat\":1}")}").And.Contain($"on={LogContent.Of("true")}"),
+            "anything else hashes as its JSON, as before");
+    }
+
+    [Test]
+    public void Hashed_Arguments_AJsonStringAndAPlainStringOfTheSameText_HashAlike()
+    {
+        AgentLogging.Configure(null, LogContentMode.Hashed);
+        using var document = JsonDocument.Parse("\"Malmesbury\"");
+
+        Assert.That(LogContent.OfArguments(new Dictionary<string, object?> { ["area"] = document.RootElement.Clone() }),
+            Is.EqualTo(LogContent.OfArguments(new Dictionary<string, object?> { ["area"] = "Malmesbury" })));
+    }
+
     [TestCase(null, LogContentMode.Hashed)]
     [TestCase("", LogContentMode.Hashed)]
     [TestCase("  ", LogContentMode.Hashed)]
