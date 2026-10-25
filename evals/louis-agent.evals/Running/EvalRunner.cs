@@ -1,7 +1,7 @@
-using System.Text;
 using System.Text.Json;
 using LouisAgent.Core.Logging;
 using LouisAgent.Evals.Api;
+using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Messages;
 using LouisAgent.Evals.Protocol;
 using LouisAgent.Evals.Trials;
@@ -13,8 +13,8 @@ namespace LouisAgent.Evals.Running;
 
 /// <summary>
 /// Runs an eval (F18 step 2): each mode, each repeat, each scenario; each message is sent to the API and the session's events
-/// are written as they arrive, then the turn, the conversation's scores and the mode's end. The runner writes no grades yet:
-/// each eval's graders are checked by the catalogue and run by the conformance test (F18 step 4.2).
+/// are written as they arrive, then the turn, and the conversation with its grades (every grader of the eval, <see cref="TrialGrading"/>),
+/// its outcome (<see cref="PassRates.Of"/>) and its scores, then the mode's end (F18 step 4.5a).
 /// </summary>
 public sealed class EvalRunner(ISessionClient sessions, ProtocolWriter protocol, TimeProvider clock, ILogger<EvalRunner> logger)
 {
@@ -79,11 +79,13 @@ public sealed class EvalRunner(ISessionClient sessions, ProtocolWriter protocol,
         }
 
         var trial = new Trial(run.RunId, mode, repeat, scenario, new Transcript(turns));
-        var scores = eval.ScoresOf(trial, []);
+        var grades = await TrialGrading.GradeAsync(eval, trial, logger, cancellationToken);
+        var outcome = PassRates.Of(grades, eval.Graders);
+        var scores = eval.ScoresOf(trial, grades);
         // The eval's own record, serialized as its runtime type: as EvalScores, which has no properties, it would be {}.
         // The conversation's role is the one that answered its first turn; its errors are the turns that failed.
         protocol.Conversation(mode.Name, repeat, scenario.Id, facts[0].Role, JsonSerializer.SerializeToElement<object>(scores, EvalScores.Json),
-            (clock.GetUtcNow() - started).TotalSeconds, grades: null, outcome: null, errors: facts.Count(f => f.Error is not null));
+            (clock.GetUtcNow() - started).TotalSeconds, grades, outcome, errors: facts.Count(f => f.Error is not null));
     }
 
     private async Task<(TurnTranscript Transcript, TurnFacts Facts)> RunTurnAsync(IEval eval, EvalMode mode, int repeat, string task, int number,
@@ -94,22 +96,18 @@ public sealed class EvalRunner(ISessionClient sessions, ProtocolWriter protocol,
 
         var started = clock.GetUtcNow();
         var events = new List<SessionEvent>();
-        var answer = new StringBuilder();
         await foreach (var streamEvent in sessions.SendAsync(session, message, cancellationToken))
         {
             events.Add(streamEvent);
             protocol.Sse(mode.Name, repeat, task, number, streamEvent.Type, streamEvent.Data);
-            if (streamEvent is ContentBlockDelta { Data: var data }
-                && data.TryGetProperty("delta", out var delta) && delta.ValueKind == JsonValueKind.Object
-                && delta.TryGetProperty("type", out var type) && type.GetString() == "text_delta"
-                && delta.TryGetProperty("text", out var text))
-                answer.Append(text.GetString());
         }
 
         var duration = clock.GetUtcNow() - started;
         var transcript = new TurnTranscript(number, session, message, events, duration, null);
         var facts = eval.TurnFactsOf(transcript, mode);
-        protocol.Turn(mode.Name, repeat, task, number, session, message, answer.ToString().Trim(), facts.Role, duration.TotalSeconds, facts);
+        // The answer through the one reader of the engine's events: the runner's own loop called GetString() on each delta's text, which
+        // throws on a number, so one odd delta stopped the run; AnswerOf skips it (F18 step 4.5a, ADR 0030).
+        protocol.Turn(mode.Name, repeat, task, number, session, message, EngineEvents.AnswerOf(transcript), facts.Role, duration.TotalSeconds, facts);
         return (transcript, facts);
     }
 }

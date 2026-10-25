@@ -9,7 +9,8 @@ using Microsoft.Extensions.Logging.Abstractions;
 namespace LouisAgent.Evals.Runner.Tests.Stub;
 
 // The stub (F18 step 4.1), the C# port of benchmarks/stub/run_check.py: its protocol lines are the Python's, line for line, with
-// the clock readings masked (t, and the seconds, which both write as measured time) and the header left out: the Python's first
+// the clock readings masked (t, and the seconds, which both write as measured time), the conversation's grades and outcome left
+// out (step 4.5a: the runner grades every trial, and the Python stub never did) and the header left out: the Python's first
 // line is the version alone, and the runner's carries the eval, its graders and its models, which the store reads. Written first:
 // the stub threw NotImplementedException on the red run.
 public class StubEvalTests
@@ -90,12 +91,13 @@ public class StubEvalTests
 
     private static JsonElement Parse(string line) => JsonDocument.Parse(line.TrimStart('@')).RootElement;
 
-    /// <summary>One line as its keys, in order, and its values: the clock readings masked, everything else compared as written.</summary>
+    /// <summary>One line as its keys, in order, and its values: the clock readings masked, the grades left out, everything else compared as written.</summary>
     private static string Canonical(string line) => Canonical(Parse(line), null);
 
     private static string Canonical(JsonElement element, string? name) => element.ValueKind switch
     {
-        JsonValueKind.Object => "{" + string.Join(",", element.EnumerateObject().Select(p => JsonSerializer.Serialize(p.Name) + ":" + Canonical(p.Value, p.Name))) + "}",
+        JsonValueKind.Object => "{" + string.Join(",", element.EnumerateObject().Where(p => p.Name is not ("grades" or "outcome"))
+            .Select(p => JsonSerializer.Serialize(p.Name) + ":" + Canonical(p.Value, p.Name))) + "}",
         JsonValueKind.Array => "[" + string.Join(",", element.EnumerateArray().Select(v => Canonical(v, null))) + "]",
         _ when name is "t" or "seconds" => "<clock>",
         JsonValueKind.String => JsonSerializer.Serialize(element.GetString()),

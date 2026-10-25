@@ -2,7 +2,7 @@ using System.ComponentModel;
 
 namespace LouisAgent.Evals.Messages;
 
-/// <summary>The reasons the common graders give, in words a person reads (ADR 0009: a text is a message enum member).</summary>
+/// <summary>The reasons the harness's grades give (the common graders', and the runner's for a grader that threw), in words a person reads (ADR 0009: a text is a message enum member).</summary>
 public enum CommonGradeMessage
 {
     [Description("no turn raised an error")]
@@ -58,4 +58,7 @@ public enum CommonGradeMessage
 
     [Description("handed to {Actual}, not answered itself")]
     HandedAway,
+
+    [Description("the grader threw, so it can't tell: {Reason}")]
+    GraderThrew,
 }

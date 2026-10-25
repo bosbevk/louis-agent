@@ -80,14 +80,22 @@ public class StubCheckTests
         var (run, _) = await RunEvalStub(store);
 
         Assert.That(run.Status, Is.EqualTo(BenchmarkRunStatus.Done));
-        Assert.That((await store.ConversationsAsync(run.Id)).Count, Is.EqualTo(4), "two modes × two conversations");
+        var conversations = await store.ConversationsAsync(run.Id);
+        Assert.That(conversations.Count, Is.EqualTo(4), "two modes × two conversations");
+        // F18 step 4.5a: the runner grades each trial with the eval's graders, so every stored conversation carries the stub's two, in order.
+        foreach (var conversation in conversations)
+        {
+            Assert.That(conversation.Grades?.Select(g => g.Grader), Is.EqualTo(new[] { "no-error", "within-time" }), conversation.Key.ToString());
+            Assert.That(conversation.Outcome, Is.EqualTo(BenchmarkOutcome.Pass), conversation.Key.ToString());
+        }
     }
 
     [Test]
     public async Task TheTwoStubs_StoreTheSameModesConversationsAndTurns()
     {
         // The parity plan (F18 step 4.3): the Python stub's documents and the C# stub's are the same, key for key, but the times and the
-        // settings, which name a script or an eval by design.
+        // settings, which name a script or an eval by design, and the conversations' grades and outcome (step 4.5a), which the Python
+        // stub never writes.
         var python = new InMemoryBenchmarkStore();
         var (pythonRun, _) = await RunStub(python);
         var csharp = new InMemoryBenchmarkStore();
@@ -98,8 +106,9 @@ public class StubCheckTests
     }
 
     /// <summary>
-    /// The run's modes, conversations, turns and their events as JSON, without the times ("seconds" and "at"). The store writes its
-    /// documents in PascalCase (<c>Seconds</c>, <c>At</c>), so the names match whatever their case.
+    /// The run's modes, conversations, turns and their events as JSON, without the times ("seconds" and "at") and without the
+    /// conversations' grades and outcome. The store writes its documents in PascalCase (<c>Seconds</c>, <c>At</c>), so the names match
+    /// whatever their case.
     /// </summary>
     private static async Task<string> Shape(InMemoryBenchmarkStore store, string runId)
     {
@@ -113,11 +122,13 @@ public class StubCheckTests
         return Strip(document)!.ToJsonString();
     }
 
-    private static bool IsTime(string key) => key.Equals("seconds", StringComparison.OrdinalIgnoreCase) || key.Equals("at", StringComparison.OrdinalIgnoreCase);
+    private static readonly string[] Stripped = ["seconds", "at", "grades", "outcome"];
+
+    private static bool IsStripped(string key) => Stripped.Any(s => key.Equals(s, StringComparison.OrdinalIgnoreCase));
 
     private static JsonNode? Strip(JsonNode? node) => node switch
     {
-        JsonObject obj => new JsonObject(obj.Where(p => !IsTime(p.Key)).Select(p => KeyValuePair.Create(p.Key, Strip(p.Value)?.DeepClone())).ToList()),
+        JsonObject obj => new JsonObject(obj.Where(p => !IsStripped(p.Key)).Select(p => KeyValuePair.Create(p.Key, Strip(p.Value)?.DeepClone())).ToList()),
         JsonArray array => new JsonArray(array.Select(item => Strip(item)?.DeepClone()).ToArray()),
         _ => node?.DeepClone(),
     };

@@ -97,6 +97,9 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
 - **4.3a** The API lists the C# evals and starts the runner: `BenchmarkCheck` names an eval (`BenchmarkCheckKind`), `BenchmarkCatalog` from the runner's `--list` (`EvalListing`), `BenchmarkRunner` starts `run`, `EVAL_RUNNER`, the stub's parity
 - **4.3b** Both images carry the runner at `/app/evals` (compose sets no `EVAL_RUNNER`), and a by-hand Docker check
 - **4.4** The developer's how-to, `docs/guides/add-an-eval-set.md`: its example checked against the code, and what writing it found (the build notes), and the review's three gaps fixed
+- **4.5a** The runner grades each trial: every grader of the eval (`TrialGrading`), the outcome (`PassRates.Of`), both on the conversation line (approved during the build)
+- **4.5b** The admin rows carry the standard records: the run's eval, version, commit and graders; a conversation's grades and outcome; null from before 2a
+- **4.5c** Every eval's grades in the portal, from one template: `GradeChips` and `GraderList`, and the `PortalReadsNoScoreKeyTests` ratchet
 - **4a** Web input recorded and replayed: the browser
 - **4b** The same for search, fetch and the clock
 - **4c** The prompt's hash on every ledger row
@@ -476,6 +479,18 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   says what to do both when a scenario changed and when the hash is a placeholder. Red first: five harness tests (four for `AnswerOf`,
   and the `HashChanged` pin), four runner tests, two API tests (the no-stderr one passes: it pins the existing message), and the Puls
   tests: the visibility test didn't compile until `Verdict` was public (CS0122), and the parity test failed on the stub when run alone.
+- **Step 4.5a** (`evals/louis-agent.evals/Running/TrialGrading.cs`, `Grading/PassRates.cs`, `EvalRunner`): the runner grades every
+  trial with the eval's graders, in the eval's order, and writes the grades and the outcome on the conversation line; `ScoresOf` gets
+  the grades it was always declared to take. A grader that throws is one Unknown grade with its reason (`CommonGradeMessage.GraderThrew`)
+  and one warning line (`EvalLogMessage.GraderThrew`: the eval, the grader, the scenario, the reason), and the run goes on; a cancel still
+  stops it. The conformance check keeps its own loop: there a throw is a conformance failure with no grade, here an Unknown grade.
+  `PassRates.Of` is the outcome rule: only required graders count; Fail beats Unknown, Unknown beats Pass, a required grader with no
+  grade or no required grader at all is Unknown. The turn's answer now comes from `EngineEvents.AnswerOf`: the runner's own loop called
+  `GetString()` on each delta's `text`, which throws on a number, so one odd delta stopped a run; the reuse fixes it. Two parity tests
+  changed: `StubCheckTests.TheTwoStubs_StoreTheSameModesConversationsAndTurns` and `StubEvalTests.ARunIsThePythonStubsLineForLine`
+  now leave the conversations' `grades` and `outcome` out, because the Python stub never wrote them. Red first: six `PassRatesTests`,
+  three `TrialGradingTests` and three `EvalRunnerTests` (`NotImplementedException` from the stubs, the `InvalidOperationException` of
+  the number text, a missing grade in `ScoresOf`), and the stub check's new assertion (`Grades` was null).
 - **Notes for step 5** (from the review of 4.2): `PulsEvalSet`'s `TurnView` builds on `EngineEvents`, so the route, the errors and the
   cost come from one reader. If an expected route goes in a scenario's `expected`, `RoutedToGrader` must declare that key in its
   `ExpectedKeys`. When the HTTP client sets a turn's `Failure`, the turn line must carry it, so `ProtocolTranscripts` reads it back. A

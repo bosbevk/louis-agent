@@ -2,6 +2,7 @@ using System.Text.Json;
 using LouisAgent.Api.Benchmarks.Runs;
 using LouisAgent.Evals.Api;
 using LouisAgent.Evals.Grading;
+using LouisAgent.Evals.Grading.Common;
 using LouisAgent.Evals.Protocol;
 using LouisAgent.Evals.Trials;
 using LouisAgent.SessionStream;
@@ -106,6 +107,59 @@ public class EvalRunnerTests
         Assert.That(lines.Single(e => e.GetProperty("event").GetString() == "conversation").GetProperty("errors").GetInt32(), Is.EqualTo(0));
     }
 
+    [Test]
+    public async Task TheConversationLineCarriesOneGradePerGraderInOrder_AndTheOutcome()
+    {
+        // F18 step 4.5a: the runner grades the trial with the eval's graders and writes the grades and the outcome on the conversation.
+        var turn = new[] { SessionEvent.From("content_block_delta", Json("""{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Hallo"}}""")) };
+        var sink = new StringWriter();
+        var runner = new EvalRunner(new CannedSessionClient(turn), new ProtocolWriter(sink, new FixedClock(At)), new FixedClock(At),
+            NullLogger<EvalRunner>.Instance);
+
+        await runner.RunAsync(new CannedEval(graders: [new WithinTimeGrader(TimeSpan.FromMinutes(1)), new NoErrorGrader()]), new EvalRun("run_1", 1),
+            CancellationToken.None);
+
+        var lines = sink.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(BenchmarkProtocol.Parse).ToList();
+        var conversation = lines.OfType<BenchmarkProtocol.ConversationEnded>().Single();
+        Assert.That(conversation.Grades!.Select(g => (g.Grader, g.Outcome)),
+            Is.EqualTo(new[] { ("within-time", BenchmarkOutcome.Pass), ("no-error", BenchmarkOutcome.Pass) }));
+        Assert.That(conversation.Outcome, Is.EqualTo(BenchmarkOutcome.Pass));
+    }
+
+    [Test]
+    public async Task ScoresOfReceivesTheGrades()
+    {
+        var turn = new[] { SessionEvent.From("content_block_delta", Json("""{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Hallo"}}""")) };
+        var eval = new CannedEval(graders: [new NoErrorGrader()]);
+        var runner = new EvalRunner(new CannedSessionClient(turn), new ProtocolWriter(new StringWriter(), new FixedClock(At)), new FixedClock(At),
+            NullLogger<EvalRunner>.Instance);
+
+        await runner.RunAsync(eval, new EvalRun("run_1", 1), CancellationToken.None);
+
+        Assert.That(eval.GradesScored.Select(g => g.Grader), Is.EqualTo(new[] { "no-error" }));
+    }
+
+    [Test]
+    public async Task ADeltaWhoseTextIsANumberDoesNotStopTheRun_AndTheAnswerIsWhatAnswerOfGives()
+    {
+        // The runner's own loop called GetString() on the text, which throws on a number; EngineEvents.AnswerOf skips such a delta.
+        var turn = new[]
+        {
+            SessionEvent.From("content_block_delta", Json("""{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":42}}""")),
+            SessionEvent.From("content_block_delta", Json("""{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":" Ja "}}""")),
+        };
+        var sink = new StringWriter();
+        var runner = new EvalRunner(new CannedSessionClient(turn), new ProtocolWriter(sink, new FixedClock(At)), new FixedClock(At),
+            NullLogger<EvalRunner>.Instance);
+
+        await runner.RunAsync(new CannedEval(), new EvalRun("run_1", 1), CancellationToken.None);
+
+        var lines = sink.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(BenchmarkProtocol.Parse).ToList();
+        var turnLine = lines.OfType<BenchmarkProtocol.TurnEnded>().Single();
+        Assert.That(turnLine.Answer, Is.EqualTo(EngineEvents.AnswerOf(new TurnTranscript(1, "sess_canned", "Gee my resep", turn, TimeSpan.Zero, null))));
+        Assert.That(turnLine.Answer, Is.EqualTo("Ja"));
+    }
+
     /// <summary>A session whose send fails, as a timed-out connection does; it records which sessions were closed.</summary>
     private sealed class ThrowingSessionClient(bool closeFails = false) : ISessionClient
     {
@@ -129,9 +183,11 @@ public class EvalRunnerTests
 
     private static JsonElement Json(string text) => JsonDocument.Parse(text).RootElement.Clone();
 
-    /// <summary>The stub eval: one mode, one scenario with one message, scores that say the route was right.</summary>
-    private sealed class CannedEval(TurnFacts? facts = null) : IEval
+    /// <summary>The stub eval: one mode, one scenario with one message, scores that say the route was right; it keeps the grades it was scored with.</summary>
+    private sealed class CannedEval(TurnFacts? facts = null, IReadOnlyList<IGrader>? graders = null) : IEval
     {
+        public IReadOnlyList<Grade> GradesScored { get; private set; } = [];
+
         public string Name => "stub-cook";
         public string? Identity => null;
         public int Version => 1;
@@ -143,9 +199,13 @@ public class EvalRunnerTests
         public IReadOnlyList<EvalScenario> Scenarios { get; } =
             [new EvalScenario("pannekoek", new EvalInput(null, "Africa/Johannesburg", ["Gee my resep"]), default, [], DatasetSplit.Dev)];
 
-        public IReadOnlyList<IGrader> Graders { get; } = [];
+        public IReadOnlyList<IGrader> Graders { get; } = graders ?? [];
 
-        public EvalScores ScoresOf(Trial trial, IReadOnlyList<Grade> grades) => new CannedScores(RoutedRight: true);
+        public EvalScores ScoresOf(Trial trial, IReadOnlyList<Grade> grades)
+        {
+            GradesScored = grades;
+            return new CannedScores(RoutedRight: true);
+        }
 
         public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) => facts ?? new TurnFacts(null, null, 0, 0, [], null);
     }

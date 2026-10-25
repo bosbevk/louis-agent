@@ -1019,6 +1019,18 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
 
 ## Approved during the build
 
+- **Step 4.5: the portal shows every eval the same way, from one template** (Louis, 2026-10-25: "the front end should probably also
+  update to reflect the standard we now implement I mean all future evals will display the same, that's the point?" and, on the choice,
+  "A, so it will be generic, and work from a template"). Three commits: 4.5a, the runner grades each trial (today it writes
+  `grades: null, outcome: null`); 4.5b, the admin rows carry the standard records; 4.5c, every eval's grades in the portal, from one
+  template. The views read only the standard records: the run's eval, version, commit and graders; each conversation's grades and
+  outcome; the tracked metrics. No view names an eval's own score key. A ratchet test (`PortalReadsNoScoreKeyTests`) lists today's
+  readers of Puls's keys (`RunExplorer.razor`, `Benchmarks.razor`, `BenchmarkTrends.cs`), and 7c empties it when the scores split.
+  A run from before step 2a shows "no grades", never 0 (ADR 0007). `PassRates.Of` arrives here, because the runner needs a trial's
+  outcome; 5a adds `Over` and the `TrialFailure` case. **Built to move** (Louis, 2026-10-25: "split admin from puls, admin can be a
+  package in future"): F18 doesn't split the admin from Puls, but the new admin code names nothing of Puls (no `PulsText`, no
+  `Components.Brand`), so the split becomes a folder move; the engine package's plan notes the split, after 7b at the earliest.
+
 - **Step 4.3 split into 4.3a and 4.3b** (Louis, 2026-10-25). 4.3a is the API: it lists the C# evals from the runner's `--list`, starts
   the runner for an eval check, and keeps the Python checks the portal offers until steps 5 and 7. 4.3b is the images: both Dockerfiles
   publish the runner to `/app/evals`, the compose files keep its default path, and a by-hand Docker check follows. `EVAL_RUNNER` and its
