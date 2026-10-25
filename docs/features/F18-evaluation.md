@@ -710,6 +710,23 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
     the same agent's in the other run; an agent in only one run is "not used", not "changed". The setting can't say which agent a hash
     belongs to, so 7a reads the ledger's rows, not the setting.
   - **What is left:** the trend marker (7a), the cache key (4e, which reuses `PromptHash`) and `ttft_ms` (F44's first step).
+- **Step 4d: traces per turn and tool call.** Every model request and tool call is now a span, from Microsoft.Extensions.AI's own
+  `UseOpenTelemetry` (source `Experimental.Microsoft.Extensions.AI`, named by the OpenTelemetry GenAI conventions); no decorator of ours.
+  - **The tree a turn makes:** `orchestrate_tools` (the tool loop) holds a `chat` span for each request and an `execute_tool {name}` span
+    for each call. A summary is a `chat` span under the `execute_tool` of the call it summarises, so the traces count the same requests as
+    the ledger (`ChatPipeline.BuildSummaryClient`; approved during the build). The tracing layer is the innermost one, so a span is the
+    request the provider got and its duration is the provider's alone. A sub-session's spans nest under its parent's `StartSubSession`
+    tool span through `Activity.Current`, with no code.
+  - **No content, whatever the environment says.** `WithoutContent` sets `EnableSensitiveData = false` on both clients, so
+    `OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT=true` has no effect on our spans. MEAI reads that variable once per process (a static
+    readonly), so a test that sets it midway proves nothing: `TelemetryCapture`, a `[SetUpFixture]`, turns it on before the first client is
+    built, and the test checks that precondition first. A span keeps the tool names, ids, descriptions and schemas, never the arguments,
+    results or messages.
+  - **Red and green:** with no tracing, `ChatPipelineTests` failed on the missing spans (4 of 4); with it, 4 pass. Mutation: with
+    `WithoutContent` removed from the pipeline, the no-content test fails and lists `gen_ai.input.messages` and `gen_ai.output.messages`
+    among the tags. Core: 1423 passing. No golden file changed.
+  - **What F44 adds:** an exporter and a dashboard, `traceparent` across processes, metrics views and `ttft_ms`; and, if it needs content
+    in a trace, a setting that is off by default.
 - **Notes for step 5** (from the review of 4.2): `PulsEvalSet`'s `TurnView` builds on `EngineEvents`, so the route, the errors and the
   cost come from one reader. If an expected route goes in a scenario's `expected`, `RoutedToGrader` must declare that key in its
   `ExpectedKeys`. When the HTTP client sets a turn's `Failure`, the turn line must carry it, so `ProtocolTranscripts` reads it back. A

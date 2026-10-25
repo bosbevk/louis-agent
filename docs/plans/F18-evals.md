@@ -1019,6 +1019,8 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
 
 ## Approved during the build
 
+- **Step 4d: the summaries are traced too** (Louis, 2026-10-25, step 4d's prompt, decision 3). A summary is a model request the ledger records (`UsagePurpose.Summary`), so `ChatPipeline.BuildSummaryClient` traces it as well, and the traces count the same requests as the ledger.
+
 - **The message enums split by area, before step 4b** (Louis, 2026-10-25: "these files is getting huge, should we not split them
   also by it's purpose?", then "After 4a, before 4b"). Three commits, one per enum (`ToolMessage`, `LogMessage`, `ErrorMessage`), each
   test first and each stopped after. Each area's texts go in its own `Messages/` folder, beside its code, named `{Area}ToolMessage`,

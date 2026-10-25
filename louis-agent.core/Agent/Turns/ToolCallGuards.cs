@@ -19,7 +19,7 @@ using LouisAgent.Core.Agent.Messages;
 /// client pipeline. The pure safety checks (paths, secret files, SSRF) are in <c>Guardrails/</c>.
 /// </summary>
 /// <param name="registry">The engine's tools, kept on the loop's final request.</param>
-/// <param name="summaryClient">The client for summaries: the provider's, outside the tool loop, with its own usage record.</param>
+/// <param name="summaryClient">The client for summaries: the provider's, outside the tool loop, with its own usage record and its own trace span.</param>
 /// <param name="subSessionPromptBudget">The most tokens a sub-session's prompt should reach (FX14); 0: no limit.</param>
 internal sealed class ToolCallGuards(ToolRegistry registry, IChatClient summaryClient, int subSessionPromptBudget = 0)
 {

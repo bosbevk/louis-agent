@@ -110,10 +110,8 @@ public class AgentEngine
         _agentBuiltTools = new AgentBuiltTools(_registry, supportsTools, WorkspaceRoot, _python, _powerShell, () => SkillsDirectory, () => ReservedToolNames);
         _commands = new UserCommands(_agentBuiltTools, _skillTools, () => Display);
 
-        // Summaries call the model directly, outside the tool loop, so they are recorded by their own recorder.
         RecordsUsage = usageSink is not null;
-        IChatClient innerChatClient = usageSink is null ? chatClient : new UsageRecordingChatClient(chatClient, usageSink, mapper: usageMapper);
-        _guards = new ToolCallGuards(_registry, innerChatClient, options.SubSessionPromptBudget);
+        _guards = new ToolCallGuards(_registry, ChatPipeline.BuildSummaryClient(chatClient, usageSink, usageMapper), options.SubSessionPromptBudget);
         _turns = new TurnRunner(ChatPipeline.Build(chatClient, _guards, usageSink, usageMapper, concurrentToolCalls), _registry,
             () => SkillDocumentation, () => Thinking, supportsTools);
 
