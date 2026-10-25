@@ -53,7 +53,7 @@ public sealed class WebReplayStore(string directory, TimeProvider? clock = null)
         {
             if (ParseLine(text) is not { } line || line.Ask != ask) continue;
             if (line.Error is not null) return new ReplayAnswer<T>.Failed(line.Error);
-            if (await ReadAnswerAsync<T>(line.Hash, cancellationToken) is { } answer) return new ReplayAnswer<T>.Answered(answer);
+            if (await ReadAnswerAsync<T>(line.Hash, cancellationToken) is { } answered) return answered;
         }
         return null;
     }
@@ -65,13 +65,16 @@ public sealed class WebReplayStore(string directory, TimeProvider? clock = null)
         catch (JsonException) { return null; }
     }
 
-    /// <summary>The answer a hash names; the hash comes from a file, so it must be 64 lowercase hex digits before it is part of a path (ADR 0004).</summary>
-    private async Task<T?> ReadAnswerAsync<T>(string? hash, CancellationToken cancellationToken)
+    /// <summary>
+    /// The answer a hash names; the hash comes from a file, so it must be 64 lowercase hex digits before it is part of a path (ADR 0004).
+    /// Returns the wrapper, never a bare <typeparamref name="T"/>: for a struct, "no file" as <c>T?</c> would be <c>default</c>, a real value.
+    /// </summary>
+    private async Task<ReplayAnswer<T>.Answered?> ReadAnswerAsync<T>(string? hash, CancellationToken cancellationToken)
     {
-        if (hash is not { Length: 64 } || !hash.All(char.IsAsciiHexDigitLower)) return default;
+        if (hash is not { Length: 64 } || !hash.All(char.IsAsciiHexDigitLower)) return null;
         string path = Path.Combine(Answers, hash + ".json");
-        if (!File.Exists(path)) return default;
-        return JsonSerializer.Deserialize<T>(await File.ReadAllBytesAsync(path, cancellationToken), Json);
+        if (!File.Exists(path)) return null;
+        return JsonSerializer.Deserialize<T>(await File.ReadAllBytesAsync(path, cancellationToken), Json) is { } value ? new ReplayAnswer<T>.Answered(value) : null;
     }
 
     /// <summary>Written to a temporary name and moved into place; a hash that is already there is skipped, and a racing writer is no error.</summary>

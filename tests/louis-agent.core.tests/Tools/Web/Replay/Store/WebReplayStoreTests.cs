@@ -143,6 +143,44 @@ public class WebReplayStoreTests
         Assert.That(System.Text.Json.JsonSerializer.Serialize(ReplayKind.Visit, WebReplayStore.Json), Is.EqualTo("\"visit\""));
     }
 
+    [Test]
+    public async Task AStructAnswer_RoundTrips()
+    {
+        using var folder = new ReplayFolder();
+        var clock = ReplayAsk.Of(ReplayKind.Clock, new { });
+        var time = new DateTimeOffset(2026, 10, 25, 6, 0, 0, TimeSpan.Zero);
+
+        await folder.Store.SaveAnswerAsync("t", clock, time);
+
+        var found = await folder.Store.FindAsync<DateTimeOffset>("t", clock);
+        Assert.That(found, Is.EqualTo(new ReplayAnswer<DateTimeOffset>.Answered(time)));
+    }
+
+    [Test]
+    public async Task AnAnswerFileThatIsGone_IsAMiss_EvenForAStruct_NotTheStructsDefault()
+    {
+        // Review of 4b.1: ReadAnswerAsync<T> returned T?, which for a struct is plain T, so a missing file answered default (1 January 0001).
+        using var folder = new ReplayFolder();
+        var clock = ReplayAsk.Of(ReplayKind.Clock, new { });
+        await folder.Store.SaveAnswerAsync("t", clock, new DateTimeOffset(2026, 10, 25, 6, 0, 0, TimeSpan.Zero));
+        File.Delete(folder.Answers.Single());
+
+        Assert.That(await folder.Store.FindAsync<DateTimeOffset>("t", clock), Is.Null);
+    }
+
+    [Test]
+    public async Task AHashThatIsNotSixtyFourHexDigits_IsAMiss_EvenForAStruct()
+    {
+        using var folder = new ReplayFolder();
+        var clock = ReplayAsk.Of(ReplayKind.Clock, new { });
+        await folder.Store.SaveAnswerAsync("t", clock, new DateTimeOffset(2026, 10, 25, 6, 0, 0, TimeSpan.Zero));
+        string index = folder.Trials.Single();
+        string hash = System.Text.Json.JsonDocument.Parse(File.ReadAllLines(index).Single()).RootElement.GetProperty("hash").GetString()!;
+        File.WriteAllText(index, File.ReadAllText(index).Replace(hash, "../../x"));
+
+        Assert.That(await folder.Store.FindAsync<DateTimeOffset>("t", clock), Is.Null);
+    }
+
     private static bool SamePage(ReplayPage? a, ReplayPage? b) =>
         a is not null && b is not null && a.Url == b.Url && a.Html == b.Html && a.Captured.SequenceEqual(b.Captured)
         && a.ScriptResult == b.ScriptResult && (a.Cookies ?? []).SequenceEqual(b.Cookies ?? []) && (a.Cookies is null) == (b.Cookies is null);
