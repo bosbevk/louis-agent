@@ -95,8 +95,11 @@ write-up [15](15-safety-and-security.md)) applied to routes: fail closed, and op
 
 ## Trade-offs accepted
 
-- **Every client changed at once, and the hosts deploy together.** No unversioned alias was kept, so an old client
-  meets 404s. An alias is a second table to keep: CL14's aliases are still not all gone, a deploy later.
+- **Every client changed at once, and the hosts deploy together.** No unversioned alias was kept. An old client's
+  `GET` outside `/v1` isn't a 404: the web app's fallback (`MapFallbackToFile`, which keeps its links working on a
+  reload) answers it with its page and a `200`, as the by-hand check of `GET /sessions/nope` showed. A `PRICES_URL`
+  without `/v1` gets that page, and the host stops at start-up on a price table that isn't one, which is loud. An
+  alias is a second table to keep: CL14's aliases are still not all gone, a deploy later.
 - **A wrong method answers 404, not 405** (above).
 - **The docs of the past keep their routes.** Plans, ADRs, fix and feature docs and the CHANGELOG record what was true
   when they were written; only the living docs moved to `/v1`.
