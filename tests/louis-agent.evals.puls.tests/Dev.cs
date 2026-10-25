@@ -1,6 +1,8 @@
-using LouisAgent.Evals.Puls.Cook;
-using LouisAgent.Evals.Puls.Expectations;
-using LouisAgent.Evals.Puls.Routing;
+
+using LouisAgent.Evals.Puls.Evals.Cook;
+using LouisAgent.Evals.Puls.Evals.Cook.Expectations;
+using LouisAgent.Evals.Puls.Evals.Routing;
+using LouisAgent.Evals.Puls.Shared.Expectations;
 
 namespace LouisAgent.Evals.Puls.Tests;
 

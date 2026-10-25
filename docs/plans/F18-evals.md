@@ -1229,6 +1229,12 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
   only: the cook prices nothing and estimates). The old `none` ("no shop near you has a catalogue") is gone, because no prompt or tool produces that line any more.
   The datasets' `expected` keys: `routes_to` (both), `town`, `serves`, `budget`, `shop` (the cook), and `--split dev|held-out|all`, dev by default, with the run's split
   on its first line.
+- **Step 5.4b: one folder per eval** (Louis, 2026-10-25: "I'm still wondering how we can make this conform to a specific structure", then on the
+  proposal: "cool"). An eval project is cut per eval: `Evals/{Folder}/` holds the eval, its grading, scoring, dataset and transcripts; what two evals or
+  more use is in `Shared/`; `Messages/` is the set's enums. The harness's `EvalFiles` says where an eval's data is at run time, so no eval builds a path.
+  A layout test (`EvalLayoutTests`) holds it for every set and the stub.
+- **Step 5.4c: a template eval project** (Louis, 2026-10-25: "cool, but maybe also add a demo project with the template with empty interfaces"):
+  `evals/louis-agent.evals.template`, the layout with every member present and empty, to copy when starting a new eval set; never registered with the runner.
 
 ---
 [Docs index](../README.md) · [Plans](README.md) · [Platform plan](platform.md) · [Feature F18](../features/F18-evaluation.md)

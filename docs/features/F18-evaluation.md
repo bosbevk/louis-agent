@@ -926,6 +926,19 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   (4) The three infrastructure-failure checks of 5.3's graders were unproven: removing each still passed the tests, because the failed turn in them had no answer. Each
   test now uses a turn that failed but has a whole, right answer, and checks the reason, so removing a check fails it (6 tests, run by hand). Noted for 5a: a grader
   that does not apply to a scenario (no `budget`, no `shop`) passes, so a pass rate has to read that as "not asked", not as a pass.
+- **Step 5.4b (one folder per eval).** An eval project is cut per eval (ADR 0010: the concern is the eval, not the kind of file): `Evals/{Folder}/` holds
+  `{Folder}Eval.cs`, its `Grading/`, `Scoring/`, `Dataset/` and `Transcripts/`; `Shared/` holds what two evals or more use, and `Messages/` the set's
+  enums; the set class is the only file at the root. `EvalLayoutTests` (the runner's tests) holds it for every set and the stub: red first, 6 of 14 on
+  the old tree, then green. Its rule for `Shared/` counts use through another `Shared/` file (the routing uses `ToolHosts`, which reads the shop table,
+  so `Shops`, `Links` and `Lists` stay shared, though much of `Shops` is the cook's: a split for later), and `Shared/` may not name an eval. The test
+  also found one shared rule that two evals each held (`CookScorer.CookOn`, `RoutingScorer.Delegating`): `PulsModes.CanDelegate` is in `Shared/` now.
+  `EvalFiles` (harness) says where an eval's data is at run time, so no eval builds a path; each eval project has one data item with a `TargetPath` of
+  `EvalFiles/{assembly}/%(RecursiveDir)...`. **A learning test** (`EvalFilesCopyTests`) showed: `%(RecursiveDir)` is the whole path from the project
+  root, so the files land under `EvalFiles/{assembly}/Evals/{Folder}/Dataset/`; the files reach the runner's and the tests' output through the
+  project reference alone; and `Link` would show each file a second time in the IDE under a folder named like the project (Louis saw it: "why is this
+  referencing itself"), so the item uses `TargetPath`, which MSBuild honours for the copy. The explicit `Transcripts` and `Datasets` link lines of the
+  test projects are gone; the fake set keeps its transcripts beside its test. Moved with `git mv`, the tests mirror it; every score, golden file and
+  conformance result is unchanged.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

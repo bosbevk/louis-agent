@@ -5,13 +5,13 @@ using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Grading.Common;
 using LouisAgent.Evals.Runner.Catalog;
-using LouisAgent.Evals.Runner.Stub;
 using LouisAgent.Evals.Trials;
+using LouisAgent.Evals.Runner.Evals.Stub;
 
 namespace LouisAgent.Evals.Runner.Tests.Conformance;
 
 // The conformance test (F18 step 4.2b): one test per eval, of every set. An eval's references are the files beside it, in
-// Transcripts/{eval}/ (copied beside the tests): the stub's from the runner, the fake set's here. Puls's evals bring their own in step 5.
+// Evals/{Folder}/Transcripts (EvalFiles finds them for any eval, F18 step 5.4b); the fake set's are here, beside this test.
 public class EvalConformanceTests
 {
     private static IEnumerable<TestCaseData> EvalsOfEverySet()
@@ -26,7 +26,7 @@ public class EvalConformanceTests
     [TestCaseSource(nameof(EvalsOfEverySet))]
     public async Task EvalConforms(IEval eval)
     {
-        var cases = ConformanceCases.Load(Path.Combine(AppContext.BaseDirectory, "Transcripts", eval.Name), eval.Scenarios);
+        var cases = ConformanceCases.Load(eval is FakeEval ? Path.Combine(AppContext.BaseDirectory, "Transcripts", "fake") : EvalFiles.TranscriptsOf(eval), eval.Scenarios);
 
         var failures = await EvalConformance.CheckAsync(eval, cases, CancellationToken.None);
 
@@ -36,7 +36,7 @@ public class EvalConformanceTests
     [Test]
     public void TheStubsReferencesAreThePythonsConversations()
     {
-        var cases = ConformanceCases.Load(Path.Combine(AppContext.BaseDirectory, "Transcripts", "stub"), new StubEval().Scenarios);
+        var cases = ConformanceCases.Load(EvalFiles.TranscriptsOf(new StubEval()), new StubEval().Scenarios);
 
         var bobotie = cases.Single(c => c.Scenario == "bobotie");
         Assert.That(bobotie.Mode.Name, Is.EqualTo("puls-cook"));

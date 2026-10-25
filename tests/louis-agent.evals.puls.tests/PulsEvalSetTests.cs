@@ -1,5 +1,5 @@
 using LouisAgent.Evals.Grading;
-using LouisAgent.Evals.Puls.Cook;
+using LouisAgent.Evals.Puls.Evals.Cook;
 using static LouisAgent.Evals.Puls.Tests.PulsTrials;
 
 namespace LouisAgent.Evals.Puls.Tests;

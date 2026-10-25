@@ -31,10 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- F18 step 4.2b review: each eval's conformance transcripts sit beside it and are copied beside the tests: the stub's, the
-         Puls evals' (step 5), and the fake set's, which live here. -->
-    <None Include="..\..\evals\louis-agent.evals.runner\Transcripts\**\*" Link="Transcripts\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
-    <None Include="..\..\evals\louis-agent.evals.puls\Transcripts\**\*" Link="Transcripts\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <!-- F18 step 5.4b: the stub's and Puls's transcripts reach this project through the project references (EvalFiles); the fake set's live here. -->
     <None Update="Transcripts\**\*" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 

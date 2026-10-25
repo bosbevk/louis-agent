@@ -1,4 +1,5 @@
 using LouisAgent.Evals.Conformance;
+using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Puls;
 using LouisAgent.Evals.Trials;
@@ -12,7 +13,7 @@ public class PulsReferencesTests
     private static IEnumerable<TestCaseData> References()
     {
         foreach (IEval eval in new PulsEvalSet().Evals)
-            foreach (var conformanceCase in ConformanceCases.Load(Path.Combine(AppContext.BaseDirectory, "Transcripts", eval.Name), eval.Scenarios))
+            foreach (var conformanceCase in ConformanceCases.Load(EvalFiles.TranscriptsOf(eval), eval.Scenarios))
                 yield return new TestCaseData(eval, conformanceCase).SetName($"{eval.Name}/{conformanceCase.Scenario}");
     }
 

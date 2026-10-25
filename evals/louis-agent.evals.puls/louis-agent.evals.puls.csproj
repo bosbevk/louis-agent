@@ -8,8 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- F18 step 3a.2: the datasets are data, copied beside the assembly so the runner can load them (how it finds them is step 4's decision). -->
-    <None Update="Datasets\**\*" CopyToOutputDirectory="PreserveNewest" />
+    <!-- F18 step 5.4b: an eval's data is beside it (Evals/{Folder}/Dataset and Transcripts). One item, the same in every eval project, copies it to
+         EvalFiles/{assembly}/..., where EvalFiles (the harness) finds it for any eval. TargetPath, not Link: Link would show the files a second time
+         in the IDE under a folder named like the project. -->
+    <None Update="Evals\**\Dataset\**\*;Evals\**\Transcripts\**\*" TargetPath="EvalFiles\$(AssemblyName)\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>

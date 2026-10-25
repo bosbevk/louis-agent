@@ -8,8 +8,8 @@ using LouisAgent.Evals.Runner.Arguments;
 using LouisAgent.Evals.Runner.Catalog;
 using LouisAgent.Evals.Runner.Messages;
 using LouisAgent.Evals.Runner.Refusal;
-using LouisAgent.Evals.Runner.Stub;
 using LouisAgent.Evals.Running;
+using LouisAgent.Evals.Runner.Evals.Stub;
 
 // The runner's bootstrap (F18 step 4.1): the command line and EVALS= choose the evals, the catalogue checks them, and the runner
 // runs the one named. stdout is the protocol and the --list lines, and nothing else: refusals and logs go to stderr.

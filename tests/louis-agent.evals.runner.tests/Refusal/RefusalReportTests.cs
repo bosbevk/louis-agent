@@ -6,8 +6,8 @@ using LouisAgent.Evals.Grading.Common;
 using LouisAgent.Evals.Runner;
 using LouisAgent.Evals.Runner.Catalog;
 using LouisAgent.Evals.Runner.Refusal;
-using LouisAgent.Evals.Runner.Stub;
 using LouisAgent.Evals.Trials;
+using LouisAgent.Evals.Runner.Evals.Stub;
 
 namespace LouisAgent.Evals.Runner.Tests.Refusal;
 

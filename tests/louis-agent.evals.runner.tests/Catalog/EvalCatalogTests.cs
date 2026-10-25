@@ -5,9 +5,9 @@ using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Runner;
 using LouisAgent.Evals.Runner.Catalog;
 using LouisAgent.Evals.Runner.Messages;
-using LouisAgent.Evals.Runner.Stub;
 using LouisAgent.Evals.Trials;
 using LouisAgent.Core.Messages;
+using LouisAgent.Evals.Runner.Evals.Stub;
 
 namespace LouisAgent.Evals.Runner.Tests.Catalog;
 

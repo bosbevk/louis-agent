@@ -30,8 +30,35 @@ dotnet sln louis-agent-solution.sln add --solution-folder evals evals/louis-agen
 dotnet sln louis-agent-solution.sln add --solution-folder tests tests/louis-agent.evals.acme.tests/louis-agent.evals.acme.tests.csproj
 ```
 
-The evals project's csproj copies its datasets beside the assembly, as `louis-agent.evals.puls` does, and references the
-harness. The harness names no identity, so nothing in it changes:
+**An eval project is cut per eval** (F18 step 5.4b, ADR 0010): one folder holds everything only that eval uses, with the same
+names every time, and what two evals or more use is in `Shared/`, and only then. Adding, changing or deleting an eval touches
+one folder. The namespace is the folder path, as everywhere (`LouisAgent.Evals.Puls.Evals.Cook`):
+
+```
+louis-agent.evals.acme/
+  AcmeEvalSet.cs               the only file at the root
+  Evals/
+    Quotes/                    one folder per eval, named for the eval type (QuotesEval)
+      QuotesEval.cs            the IEval
+      QuotesSetup.cs           its modes, if it has any setup (optional)
+      Grading/                 the graders only this eval uses
+      Scoring/                 its scorer and its scores record
+      Dataset/                 dataset.json, scenarios/dev/, scenarios/held-out/
+      Transcripts/             {scenario}.reference.txt, {scenario}.bad.{label}.txt
+  Shared/                      used by two evals or more: Grading/, Scoring/, Turns/, and the set's constants
+  Messages/                    the set's message enums (ADR 0009)
+```
+
+`EvalLayoutTests` (the runner's tests) holds it for every set and for the stub: an eval's file, namespace, dataset and transcripts;
+where each grader is; that every file of `Shared/` is used by two evals or more (directly, or through another `Shared/` file),
+and names no eval; and what the project's root holds. A misplaced file fails there and names the rule. `louis-agent.evals.puls` is
+the worked example to open beside this guide; the cook (`Evals/Cook/`) is the bigger eval, the routing the smaller.
+
+The evals project's csproj has one data item, the same in every eval project: it copies each eval's `Dataset/` and `Transcripts/`
+beside the assembly under `EvalFiles/{assembly}/...`, which reaches the runner and the tests through the project reference, and the
+harness's `EvalFiles` finds it for any eval (no eval builds a path). `TargetPath`, not `Link`, because `Link` shows every file a
+second time in the IDE, under a folder named like the project. The project references the harness, which names no identity, so
+nothing in it changes:
 
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
@@ -43,8 +70,8 @@ harness. The harness names no identity, so nothing in it changes:
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- The dataset is data, copied beside the assembly so the runner can load it. -->
-    <None Update="Datasets\**\*" CopyToOutputDirectory="PreserveNewest" />
+    <!-- An eval's data is beside it, and copied beside the assembly so the runner and the tests find it with EvalFiles. -->
+    <None Update="Evals\**\Dataset\**\*;Evals\**\Transcripts\**\*" TargetPath="EvalFiles\$(AssemblyName)\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>
@@ -57,8 +84,8 @@ harness. The harness names no identity, so nothing in it changes:
 </Project>
 ```
 
-The tests project is the Puls tests' csproj with the names changed, and it also references the acme project and copies
-its datasets beside the tests, as `louis-agent.evals.puls.tests` does:
+The tests project is the Puls tests' csproj with the names changed, and it also references the acme project. Its tests mirror the
+project's folders (`Evals/Quotes/...`, `Shared/...`), and the data reaches them through that reference, so there is nothing to copy:
 
 ```xml
   <ItemGroup>
@@ -66,7 +93,6 @@ its datasets beside the tests, as `louis-agent.evals.puls.tests` does:
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\..\evals\louis-agent.evals.acme\Datasets\**\*" Link="Datasets\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="..\..\docs\guides\add-an-eval-set.md" Link="docs\add-an-eval-set.md" />
   </ItemGroup>
 ```
@@ -75,10 +101,10 @@ The identity, pack and evals projects link their guides this way, so a reader of
 
 ## 2. Write the dataset
 
-A dataset is a folder, `Datasets/{name}/`, with a manifest and its scenarios. The loader reads it strictly:
+A dataset is the eval's `Dataset/` folder, with a manifest and its scenarios. The loader reads it strictly:
 
 ```
-evals/louis-agent.evals.acme/Datasets/acme-quotes/
+evals/louis-agent.evals.acme/Evals/Quotes/Dataset/
   dataset.json
   scenarios/dev/quote-tiles.json
   scenarios/held-out/
@@ -207,7 +233,7 @@ The rules every set must keep, which the catalogue and the conformance check hol
 
 ## 4. Write the eval
 
-An eval implements `IEval`. The stub's (`evals/louis-agent.evals.runner/Stub/StubEval.cs`) is the one complete example
+An eval implements `IEval`. The stub's (`evals/louis-agent.evals.runner/Evals/Stub/StubEval.cs`) is the one complete example
 today:
 
 ```csharp
@@ -228,7 +254,7 @@ public sealed class QuotesEval : IEval
     public IReadOnlyList<IGrader> Graders => GraderList;
 
     public IReadOnlyList<EvalScenario> Scenarios { get; } =
-        DatasetLoader.Load(Path.Combine(AppContext.BaseDirectory, "Datasets", "acme-quotes"), GraderList).Scenarios;
+        DatasetLoader.Load(EvalFiles.DatasetOf(typeof(QuotesEval)), GraderList).Scenarios;
 
     public EvalScores ScoresOf(Trial trial, IReadOnlyList<Grade> grades) =>
         new QuotesScores(AreaRight: grades.All(grade => grade.Outcome == GradeOutcome.Pass));
@@ -251,8 +277,8 @@ Two choices here, to check against the code:
 
 - **The scenarios come from the dataset folder.** `StubEval` keeps its scenarios in code, because the stub proves the
   protocol and isn't a dataset. `CookEval` and `RoutingEval` load theirs with `DatasetLoader.Load`, and so do the Puls tests
-  (`tests/louis-agent.evals.puls.tests/Datasets/PulsDatasetsTests.cs`). The path is `AppContext.BaseDirectory`, which is where
-  the csproj copies the folder.
+  (`tests/louis-agent.evals.puls.tests/PulsDatasetsTests.cs`). The path comes from `EvalFiles.DatasetOf`, never built by the eval:
+  it is where the csproj's one data item copied the folder.
 - **The load happens when the eval is built.** A dataset that fails to load stops the runner before a run. The runner
   refuses with the loader's reason on stderr and exit code 1, as it does its own, and the portal's listing
   warning shows the same reason.
@@ -275,21 +301,20 @@ public sealed class AcmeEvalSet : IEvalSet
 
 ## 6. Register it in the runner
 
-The runner is the one project that knows every evals project, as the composition root knows every pack (ADR 0027). Four
+The runner is the one project that knows every evals project, as the composition root knows every pack (ADR 0027). Three
 lines:
 
 1. `EvalSetKind.Acme` in `evals/louis-agent.evals.runner/Catalog/EvalSetKind.cs`;
 2. its arm in `EvalSets.Create` (`evals/louis-agent.evals.runner/Catalog/EvalSets.cs`): `EvalSetKind.Acme => new AcmeEvalSet(),`;
-3. a `ProjectReference` to `..\louis-agent.evals.acme\louis-agent.evals.acme.csproj` in `louis-agent.evals.runner.csproj`;
-4. the line that copies its reference transcripts into the runner tests, in `louis-agent.evals.runner.tests.csproj`:
-   `<None Include="..\..\evals\louis-agent.evals.acme\Transcripts\**\*" Link="Transcripts\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />`.
+3. a `ProjectReference` to `..\louis-agent.evals.acme\louis-agent.evals.acme.csproj` in `louis-agent.evals.runner.csproj`.
 
-`EVALS=acme` picks this set, and unset `EVALS` lists every set. The conformance test already builds every set (F18 step
-4.4 prep), so the new set's evals are checked with no edit to it.
+`EVALS=acme` picks this set, and unset `EVALS` lists every set. The conformance test and `EvalLayoutTests` already build every
+set the runner knows, so the new set's evals are checked with no edit to either, and its data reaches the runner's and the runner
+tests' output through that one reference (nothing to copy).
 
 ## 7. Add the reference transcripts
 
-An eval proves its checks work with transcripts in `Transcripts/{eval}/`, beside the eval:
+An eval proves its checks work with transcripts in its own `Transcripts/` folder (`Evals/Quotes/Transcripts/`), beside the eval:
 
 - `{scenario}.reference.txt`: one per scenario, a conversation that passes every required grader;
 - `{scenario}.bad.{label}.txt`: a conversation wrong in one way, one per way (`error`, `wrong-area`).
@@ -313,7 +338,7 @@ The rules the conformance check holds:
 
 Where the files come from: cut from a stored run where one passed (`GET /v1/admin/benchmarks/runs/{id}/protocol` returns a stored
 run as these lines, with the admin key in `x-api-key`; take one conversation's lines), or built by hand from a reference, as the stub's are
-(`evals/louis-agent.evals.runner/Transcripts/stub/`) and as Puls's first ones are: no run was recorded yet, so each is a short conversation
+(`evals/louis-agent.evals.runner/Evals/Stub/Transcripts/`) and as Puls's first ones are: no run was recorded yet, so each is a short conversation
 written to pass the required graders. A script that writes them is fine; the files are what is committed.
 
 Two things the reference decides without saying so. Its `mode` line names the mode the graders judge it in: a mode without the delegating
@@ -325,7 +350,7 @@ with an `error` event; a known-bad `wrong-area` is a reference whose answer give
 
 Three kinds of test, each in the acme tests project:
 
-- **Each grader on made-up transcripts**, a pass and a fail, as `tests/louis-agent.evals.puls.tests/Grading/FixedRules/`
+- **Each grader on made-up transcripts**, a pass and a fail, as `tests/louis-agent.evals.puls.tests/Evals/Cook/Grading/`
   does: build a `Trial` with the transcript it needs, grade it, and assert the outcome.
 - **The dataset loads strictly and its hash holds**, as `PulsDatasetsTests` does: load the folder with the eval's graders.
   When the hash is wrong, this test is where `HashChanged` names the new one.
