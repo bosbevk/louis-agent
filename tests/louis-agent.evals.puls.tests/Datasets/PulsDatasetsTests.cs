@@ -32,8 +32,24 @@ public class PulsDatasetsTests
         Assert.That(Inputs(Load("puls-routing")), Is.EquivalentTo(PythonInputs("puls-routing")));
 
     [Test]
-    public void TheRoutingScenariosAreTheRoutingSetupsTasks() =>
-        Assert.That(Load("puls-routing").Scenarios.Select(s => s.Id), Is.EquivalentTo(RoutingSetup.Tasks));
+    public void TheRoutingScenariosAreTwelveQuestions_EachOfAKindTheCheckKnows()
+    {
+        var scenarios = Load("puls-routing").Scenarios;
+
+        Assert.That(scenarios, Has.Count.EqualTo(12));
+        foreach (EvalScenario scenario in scenarios)
+            Assert.That(RoutingSetup.Kinds.ContainsKey(scenario.Id.Split('-')[0]), Is.True, scenario.Id);
+    }
+
+    [Test]
+    public void TheCheckAsksInMalmesburyAndInATownWithoutACheckers()
+    {
+        // Moved here from CookSetup.Places: the place of each conversation is the dataset's.
+        var places = Load("puls-cook").Scenarios.ToDictionary(s => s.Id, s => s.Input.Place);
+
+        Assert.That(places["cook-malmesbury"], Is.EqualTo("Malmesbury, Wes-Kaap, Suid-Afrika"));
+        Assert.That(places["cook-no-shop"], Is.EqualTo("Prince Albert, Wes-Kaap, Suid-Afrika"));
+    }
 
     [Test]
     public void TheCookCategoriesAreTheDecidedOnes()

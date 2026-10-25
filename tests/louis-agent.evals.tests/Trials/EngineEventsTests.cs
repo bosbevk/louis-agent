@@ -128,4 +128,15 @@ public class EngineEventsTests
         Assert.That(EngineEvents.RoutedRole(Turn(1, [Call("puls-cook")])), Is.EqualTo("puls-cook"));
         Assert.That(EngineEvents.RoutedRole(Turn(1, [Text("Hallo")])), Is.Null);
     }
+
+    [Test]
+    public void TheErrorText_IsItsMessage_ElseItsJson_ElseNothing()
+    {
+        // F18 step 5.3: the reader Puls's TurnView builds on. A message-less error is still an error, so its JSON is the text.
+        var noMessage = SessionEvent.From("error", Json("""{"type":"error","error":"the connection dropped"}"""));
+
+        Assert.That(EngineEvents.ErrorTextOf(Turn(1, [Error()])), Is.EqualTo("overloaded"));
+        Assert.That(EngineEvents.ErrorTextOf(Turn(1, [noMessage])), Does.Contain("the connection dropped"));
+        Assert.That(EngineEvents.ErrorTextOf(Turn(1, [Text("Hallo")])), Is.Null);
+    }
 }

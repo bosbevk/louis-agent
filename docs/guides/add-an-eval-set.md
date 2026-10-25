@@ -11,7 +11,8 @@ An **eval** is a real task an identity has to do well, run against the real agen
 transcript. An **eval set** is one identity's evals, in one evals project, with one `IEvalSet` class that lists them (one
 set per project, ADR 0027). The harness, `evals/louis-agent.evals`, runs any set and knows none of them. The runner,
 `evals/louis-agent.evals.runner`, is the one project that knows every set: it picks them with `EVALS=` and lists them for
-the portal. Puls's set is in `evals/louis-agent.evals.puls`; it is empty until step 5 adds its cook and routing evals.
+the portal. Puls's set is in `evals/louis-agent.evals.puls`; it has two evals, the cook's (`CookEval`) and the routing's (`RoutingEval`), which are the
+working examples to open beside this guide.
 
 The example is `acme`, the identity [Build an identity](build-an-identity.md) makes: a hardware shop's assistant, whose
 evals here are a quote for the tiles a room needs. `acme` is not in the repo, and the steps don't create it. Each step
@@ -234,9 +235,9 @@ public sealed record QuotesScores(bool AreaRight) : EvalScores;
 Two choices here, to check against the code:
 
 - **The scenarios come from the dataset folder.** `StubEval` keeps its scenarios in code, because the stub proves the
-  protocol and isn't a dataset. No eval reads its dataset yet; the Puls tests load theirs with `DatasetLoader.Load`
-  (`tests/louis-agent.evals.puls.tests/Datasets/PulsDatasetsTests.cs`), and step 5's evals load theirs the same way. The
-  path is `AppContext.BaseDirectory`, which is where the csproj copies the folder.
+  protocol and isn't a dataset. `CookEval` and `RoutingEval` load theirs with `DatasetLoader.Load`, and so do the Puls tests
+  (`tests/louis-agent.evals.puls.tests/Datasets/PulsDatasetsTests.cs`). The path is `AppContext.BaseDirectory`, which is where
+  the csproj copies the folder.
 - **The load happens when the eval is built.** A dataset that fails to load stops the runner before a run. The runner
   refuses with the loader's reason on stderr and exit code 1, as it does its own, and the portal's listing
   warning shows the same reason.
@@ -295,8 +296,14 @@ The rules the conformance check holds:
 - a file that is neither a scenario's reference nor one of its known-bads is stray, and refused: a misspelling, or a
   deleted scenario's files.
 
-Where the files come from: cut from a stored run where one passed (its conversation's protocol lines), or built by hand
-from a reference, as the stub's are (`evals/louis-agent.evals.runner/Transcripts/stub/`). A known-bad `error` is a turn
+Where the files come from: cut from a stored run where one passed (`GET /v1/admin/benchmarks/runs/{id}/protocol` returns a stored
+run as these lines, with the admin key in `x-api-key`; take one conversation's lines), or built by hand from a reference, as the stub's are
+(`evals/louis-agent.evals.runner/Transcripts/stub/`) and as Puls's first ones are: no run was recorded yet, so each is a short conversation
+written to pass the required graders. A script that writes them is fine; the files are what is committed.
+
+Two things the reference decides without saying so. Its `mode` line names the mode the graders judge it in: a mode without the delegating
+toolsets expects the agent to answer itself, so a reference that hands a question on needs a mode that can. And the lines the reader keeps are
+`sse` (type and data) and `turn` (`session`, `question`, `seconds`; `failure` when the turn failed for the infrastructure); the rest are ignored. A known-bad `error` is a turn
 with an `error` event; a known-bad `wrong-area` is a reference whose answer gives a different area.
 
 ## 8. Test it
@@ -375,8 +382,8 @@ EVALS=acme BENCHMARK_RUN=acme-after  dotnet run --project evals/louis-agent.eval
   and the clock ("never read the clock"). The time stands still within a trial, so a replay shows the time the recording did.
 - **What is still live.** The Tavily renderer (`PAGE_RENDERER=tavily`) reads the page itself, and `ReadRenderedPage` still resolves DNS in
   a replay. A failed fetch replays as a miss.
-- **Until step 5** only the stub runs, and the stub reads no web: a recording of it saves nothing. The commands above check the
-  flags; a real recording waits for the HTTP session client and for Louis's go, since it spends money. A replay with `--replay` is free.
+- **Only a real eval records.** The stub reads no web, so a recording of it saves nothing. A recording of `puls-cook` or `puls-routing`
+  spends money and waits for Louis's go. A replay with `--replay` is free.
 
 ## Before you ask for a review
 

@@ -1,0 +1,5 @@
+@{"event": "mode", "t": 1792877067.0, "mode": "puls-cook", "repeat": 1, "toolsets": ["specialists", "web"], "role": "puls/voice-af", "llm": null, "conversations": 1}
+@{"event": "question", "t": 1792877067.0, "mode": "puls-cook", "repeat": 1, "task": "cook-af", "turn": 1, "session": "sess_puls-cook_cook-af", "text": "Wat kan ek vanaand vir vier mense kook vir onder R250? Gee die resep en 'n inkopielys met pryse."}
+@{"event": "sse", "t": 1792877067.0, "mode": "puls-cook", "repeat": 1, "task": "cook-af", "turn": 1, "type": "error", "data": {"type": "error", "error": {"type": "api_error", "message": "overloaded"}}}
+@{"event": "sse", "t": 1792877067.0, "mode": "puls-cook", "repeat": 1, "task": "cook-af", "turn": 1, "type": "message_stop", "data": {"type": "message_stop"}}
+@{"event": "turn", "t": 1792877067.0, "mode": "puls-cook", "repeat": 1, "task": "cook-af", "turn": 1, "session": "sess_puls-cook_cook-af", "question": "Wat kan ek vanaand vir vier mense kook vir onder R250? Gee die resep en 'n inkopielys met pryse.", "answer": "", "role": null, "continued": null, "puls_calls": 0, "specialist_calls": 0, "hosts": [], "seconds": 12.5, "error": "overloaded"}

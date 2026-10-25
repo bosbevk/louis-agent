@@ -7,7 +7,7 @@ namespace LouisAgent.Evals;
 /// </summary>
 public interface IEvalSet
 {
-    /// <summary>The identity the evals prove ("puls").</summary>
+    /// <summary>The identity the evals prove ("acme").</summary>
     string Identity { get; }
 
     IReadOnlyList<IEval> Evals { get; }

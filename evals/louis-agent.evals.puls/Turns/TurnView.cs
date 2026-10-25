@@ -1,5 +1,5 @@
-using System.Text;
 using System.Text.Json;
+using LouisAgent.Evals.Trials;
 using LouisAgent.SessionStream;
 
 namespace LouisAgent.Evals.Puls.Turns;
@@ -9,21 +9,26 @@ public sealed record ToolCall(string Name, JsonElement Input);
 
 /// <summary>
 /// What one turn says (the Python's <c>read_turn</c>): its answer, the calls Puls made, the calls its specialists made, the role
-/// it handed to, the sub-session it continued, its error, and the results its tools returned. A specialist's error is the
-/// specialist's, not the turn's; an empty role, handle or error is none, as the Python's truthiness reads it.
+/// it handed to, the sub-session it continued, its error, and the results its tools returned. The answer, the role and the error come
+/// from <see cref="EngineEvents"/>, the harness's one reader of them (F18 step 5.3), so a grader and the protocol's facts can't disagree;
+/// the calls, the results and the handle are read here, as only an identity cares about them. A specialist's error is the specialist's,
+/// not the turn's; an empty handle is none, as the Python's truthiness reads it.
 /// </summary>
 public sealed record TurnView(string Answer, IReadOnlyList<ToolCall> Calls, IReadOnlyList<ToolCall> SpecialistCalls,
     string? Role, string? Continued, string? Error, IReadOnlyList<string> Results, IReadOnlyList<string> SpecialistResults)
 {
-    /// <summary>Reads a turn's events: the answer's text, its calls and results, and the role or sub-session it names.</summary>
-    public static TurnView From(IEnumerable<SessionEvent> events)
+    /// <summary>Reads some events as a turn: for the scorer, which holds events and no turn.</summary>
+    public static TurnView From(IEnumerable<SessionEvent> events) =>
+        From(new TurnTranscript(1, string.Empty, string.Empty, events.ToList(), TimeSpan.Zero, null));
+
+    /// <summary>Reads a turn: the answer, the role and the error from <see cref="EngineEvents"/>; its calls, results and sub-session handle here.</summary>
+    public static TurnView From(TurnTranscript turn)
     {
-        var text = new StringBuilder();
         var calls = new List<ToolCall>();
         var specialistCalls = new List<ToolCall>();
         var results = new List<string>();
         var specialistResults = new List<string>();
-        string? role = null, continued = null, error = null;
+        string? continued = null;
 
         void Read(SessionEvent streamEvent, bool specialist)
         {
@@ -38,26 +43,18 @@ public sealed record TurnView(string Answer, IReadOnlyList<ToolCall> Calls, IRea
                         string name = Str(block, "name") ?? "";
                         var input = Object(block, "input") ?? Empty;
                         (specialist ? specialistCalls : calls).Add(new ToolCall(name, input));
-                        if (!specialist && name == "StartSubSession" && role is null) role = Truthy(Str(input, "role")) ?? Str(input, "personality");
                         if (!specialist && name == "ContinueSubSession" && continued is null) continued = Str(input, "handle");
                     }
-                    break;
-                case ContentBlockDelta { Data: var data } when Object(data, "delta") is { } delta && Str(delta, "type") == "text_delta":
-                    if (!specialist && Str(delta, "text") is { } piece) text.Append(piece);
                     break;
                 case SubSessionStreamed sub:
                     Read(sub.Inner, specialist: true);
                     break;
-                case ErrorReported { Data: var data } when !specialist:
-                    error = Object(data, "error") is { } detail && Str(detail, "message") is { Length: > 0 } message
-                        ? message : data.GetRawText();
-                    break;
             }
         }
 
-        foreach (var streamEvent in events) Read(streamEvent, specialist: false);
-        return new TurnView(text.ToString().Trim(), calls, specialistCalls, Truthy(role), Truthy(continued), Truthy(error),
-            results, specialistResults);
+        foreach (var streamEvent in turn.Events) Read(streamEvent, specialist: false);
+        return new TurnView(EngineEvents.AnswerOf(turn), calls, specialistCalls, EngineEvents.RoutedRole(turn), Truthy(continued),
+            Truthy(EngineEvents.ErrorTextOf(turn)), results, specialistResults);
     }
 
     private static readonly JsonElement Empty = JsonDocument.Parse("{}").RootElement.Clone();

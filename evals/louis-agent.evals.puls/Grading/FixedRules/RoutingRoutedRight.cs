@@ -1,6 +1,7 @@
 using System.Collections.Frozen;
 using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Grading;
+using LouisAgent.Evals.Grading.Common;
 using LouisAgent.Evals.Puls.Messages;
 using LouisAgent.Evals.Puls.Routing;
 using LouisAgent.Evals.Puls.Turns;
@@ -19,6 +20,9 @@ public sealed class RoutingRoutedRight : IGrader
 
     public ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken)
     {
+        // A turn that failed for the infrastructure is not the agent's: Unknown, never a fail (F18 step 5.3).
+        if (Verdict.InfrastructureFailure(Name, Version, [trial.Transcript.Turns[0]]) is { } unknown) return ValueTask.FromResult(unknown);
+
         var turn = TurnView.From(trial.Transcript.Turns[0].Events);
         var scores = RoutingScorer.Score(trial.Scenario.Id, turn, RoutingScorer.Delegating(trial.Mode));
         return ValueTask.FromResult(scores.RoutedRight

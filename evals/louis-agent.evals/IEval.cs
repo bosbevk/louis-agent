@@ -14,7 +14,7 @@ public interface IEval
     /// <summary>The eval's name, as the runner's verb names it ("cook").</summary>
     string Name { get; }
 
-    /// <summary>The identity the eval proves ("puls"); null for an eval that proves none.</summary>
+    /// <summary>The identity the eval proves ("acme"); null for an eval that proves none.</summary>
     string? Identity { get; }
 
     /// <summary>Bumped by any change to a scenario, a mode or a grader.</summary>
@@ -23,7 +23,7 @@ public interface IEval
     /// <summary>One sentence, shown in the portal.</summary>
     string Proves { get; }
 
-    /// <summary>The modes the task runs in (Puls alone, or Puls with its cook). Some evals read them from the instance.</summary>
+    /// <summary>The modes the task runs in (the agent alone, or with a helper). Some evals read them from the instance.</summary>
     ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions, CancellationToken cancellationToken);
 
     IReadOnlyList<EvalScenario> Scenarios { get; }

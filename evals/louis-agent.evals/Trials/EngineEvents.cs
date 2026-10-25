@@ -58,6 +58,14 @@ public static class EngineEvents
         return error is not null && Field(error.Data, "error", out var detail) ? Text(detail, "message") : null;
     }
 
+    /// <summary>The turn's error as text: its message, else the error event's JSON when it has none; null when the turn streamed no error.</summary>
+    public static string? ErrorTextOf(TurnTranscript turn)
+    {
+        var error = turn.Events.OfType<ErrorReported>().FirstOrDefault();
+        if (error is null) return null;
+        return ErrorMessageOf(turn) is { Length: > 0 } message ? message : error.Data.GetRawText();
+    }
+
     /// <summary>
     /// The turn's own answer: its text deltas joined in order and trimmed, as <c>TurnView.Answer</c> reads them. A sub-session's text is
     /// not the answer, and an odd delta (no type, a text that isn't a string) is skipped, never thrown on.

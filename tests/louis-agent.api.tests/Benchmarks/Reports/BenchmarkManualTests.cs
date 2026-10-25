@@ -20,7 +20,7 @@ public class BenchmarkManualTests
     [Test]
     public void AManual_IsBesideItsScript()
     {
-        Assert.That(BenchmarkCatalog.Cook.ManualPath, Is.EqualTo("benchmarks/cook/HANDLEIDING.md"));
+        Assert.That(new BenchmarkCheck("cook", "Kook", "benchmarks/cook/run_check.py").ManualPath, Is.EqualTo("benchmarks/cook/HANDLEIDING.md"));
     }
 
     [Test]

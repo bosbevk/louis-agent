@@ -12,10 +12,10 @@ public class BenchmarkCatalogTests
         Assert.That(new BenchmarkCatalog().Checks, Is.Empty);
 
     [Test]
-    public void ThePortalsChecks_AreTheStubTheCookAndTheRouting_EachWithItsScript()
+    public void ThePortalsPythonChecks_AreTheStubAlone_EachWithItsScript()
     {
-        // F31 steps 6c, 7b and 8.
-        Assert.That(BenchmarkCatalog.Default.Select(c => c.Id), Is.EqualTo(new[] { "stub", "cook", "routing" }));
+        // F18 step 5.3: the cook and the routing are the runner's evals (puls-cook, puls-routing) now; their Python scripts stay on disk until step 7.
+        Assert.That(BenchmarkCatalog.Default.Select(c => c.Id), Is.EqualTo(new[] { "stub" }));
         foreach (var check in BenchmarkCatalog.Default)
             Assert.That(File.Exists(Path.Combine(TestPaths.RepoRoot, check.Script)), check.Script);
     }
@@ -35,7 +35,8 @@ public class BenchmarkCatalogTests
     [Test]
     public void AListedEvalHidesThePythonCheckWithItsId()
     {
-        var merged = BenchmarkCatalog.Merge([new EvalLine("stub", 1, "A canned run", "puls")], BenchmarkCatalog.Default);
+        var python = new[] { BenchmarkCatalog.Stub, new BenchmarkCheck("cook", "Kook", "benchmarks/cook/run_check.py"), new BenchmarkCheck("routing", "Roetes", "benchmarks/routing/run_check.py") };
+        var merged = BenchmarkCatalog.Merge([new EvalLine("stub", 1, "A canned run", "puls")], python);
 
         Assert.That(merged.Select(c => c.Id), Is.EqualTo(new[] { "stub", "cook", "routing" }));
         Assert.That((merged[0].Kind, merged[0].Title), Is.EqualTo((BenchmarkCheckKind.Eval, "A canned run")));
@@ -44,7 +45,7 @@ public class BenchmarkCatalogTests
 
     [Test]
     public void WithNoListedEvals_ThePythonChecksStay() =>
-        Assert.That(BenchmarkCatalog.Merge([], BenchmarkCatalog.Default).Select(c => c.Id), Is.EqualTo(new[] { "stub", "cook", "routing" }));
+        Assert.That(BenchmarkCatalog.Merge([], BenchmarkCatalog.Default).Select(c => c.Id), Is.EqualTo(new[] { "stub" }));
 
     [Test]
     public void AListingThatFails_KeepsThePythonChecksAndSaysWhy()
@@ -53,7 +54,7 @@ public class BenchmarkCatalogTests
 
         var catalog = BenchmarkCatalog.From(EvalListing.ForRunner("/nope/louis-agent.evals.runner.dll"), BenchmarkCatalog.Default, log);
 
-        Assert.That(catalog.Checks.Select(c => c.Id), Is.EqualTo(new[] { "stub", "cook", "routing" }));
+        Assert.That(catalog.Checks.Select(c => c.Id), Is.EqualTo(new[] { "stub" }));
         Assert.That(log.Messages, Has.Some.Contains("isn't at /nope/louis-agent.evals.runner.dll"));
     }
 

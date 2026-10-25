@@ -142,13 +142,6 @@ public class CookScorerTests
     }
 
     [Test]
-    public void TheCheckAsksInMalmesburyAndInATownWithoutACheckers()
-    {
-        Assert.That(CookSetup.Places["cook-malmesbury"], Is.EqualTo("Malmesbury, Wes-Kaap, Suid-Afrika"));
-        Assert.That(CookSetup.Places["cook-no-shop"], Is.EqualTo("Prince Albert, Wes-Kaap, Suid-Afrika"));
-    }
-
-    [Test]
     public void AnsweredByPulsItself_IsRoutedWrongWhenTheCookWasOn()
     {
         var scores = CookScorer.Score("cook-en", [Turn("A recipe.")], cookOn: true);

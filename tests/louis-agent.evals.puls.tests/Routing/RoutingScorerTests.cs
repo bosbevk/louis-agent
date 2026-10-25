@@ -31,14 +31,6 @@ public class RoutingScorerTests
     }
 
     [Test]
-    public void EveryQuestion_HasAKindTheCheckKnows()
-    {
-        Assert.That(RoutingSetup.Tasks, Has.Count.EqualTo(12));
-        foreach (string task in RoutingSetup.Tasks)
-            Assert.That(RoutingSetup.Kinds.ContainsKey(task.Split('-')[0]), Is.True, task);
-    }
-
-    [Test]
     public void AMealHandedToTheCook_IsRight()
     {
         var scores = RoutingScorer.Score("cook", Turn(role: "puls-cook", calls: [Start]), delegating: true);

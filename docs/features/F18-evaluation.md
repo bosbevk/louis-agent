@@ -888,6 +888,18 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   (`BenchmarkProtocol.TurnEnded.Failure`, `BenchmarkTurnFailure`, snake-case names), stored (recorder, in-memory and Mongo) and exported, so a stored
   run read back never grades an infrastructure failure as the agent's (5b needs it). The Mongo contract tests skip without a login; the Mongo
   mapping of `failure` was reviewed, not run. The whole solution passed before the push.
+- **Step 5.3 (`CookEval` and `RoutingEval` in `PulsEvalSet`).** `puls-cook` (modes `puls-tools` and `puls-cook`; graders `CookNoError`, `CookRoutedRight`) and
+  `puls-routing` (modes `baseline` from `GET /v1/toolsets` minus the delegating toolsets, and `delegated`; grader `RoutingRoutedRight`) load their
+  scenarios from the datasets; `CookSetup.Places` and `RoutingSetup.Tasks` are gone, their tests moved to the dataset. A no-error grader would add
+  nothing to the routing: a one-turn question is routed right only without an error. `TurnView` now takes its answer, role and error from
+  `EngineEvents` (new `ErrorTextOf`), the one reader the 4.2 review asked for, so a grader and the protocol's facts cannot disagree; the parity
+  test between the two readers went with it. The three graders return `Unknown` for a turn that failed for the infrastructure (5.1 now records
+  those). The conformance cases are 11 references and 6 known-bads, **built, not recorded**: no run exists to cut them from (the Python's were
+  deleted; the first C# run is the baseline), and a script wrote them. The portal's `BenchmarkCatalog.Default` is the stub alone; the cook and
+  routing scripts stay on disk until step 7. Their manuals (`benchmarks/cook/HANDLEIDING.md`, `routing/`) describe the Python run, so the new
+  checks show no manual until 7b writes them. Red before the code: 17 of 101 Puls tests, and 2 conformance cases; green after: Puls 100,
+  evals 162, runner 75, API 290. **Guide fixes:** the intro and the dataset bullet said Puls's set was empty and no eval read its dataset; section 11
+  said only the stub runs; section 7 now says where references come from when no run exists, and that a reference's mode decides what the graders expect.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

@@ -9,14 +9,16 @@ public class EvalListingTests
     [Test]
     public void TheRunnersOwnListingReadsAsEvalLines()
     {
+        // F18 step 5.3: the stub, and Puls's two evals (the runner loads their datasets from its own output folder).
         var result = EvalListing.ForRunner(RunnerBuild.Dll).Read();
 
         Assert.That(result.Failure, Is.Null);
-        var stub = result.Evals.Single();
-        Assert.That(stub.Name, Is.EqualTo("stub"));
+        Assert.That(result.Evals.Select(e => e.Name), Is.EquivalentTo(new[] { "stub", "puls-cook", "puls-routing" }));
+        var stub = result.Evals.Single(e => e.Name == "stub");
         Assert.That(stub.Identity, Is.Null);
         Assert.That(stub.Version, Is.EqualTo(1));
         Assert.That(stub.Proves, Is.Not.Empty);
+        Assert.That(result.Evals.Where(e => e.Name != "stub").Select(e => e.Identity).Distinct(), Is.EqualTo(new[] { "puls" }));
     }
 
     [Test]
