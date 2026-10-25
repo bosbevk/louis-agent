@@ -7,7 +7,7 @@ How to research on the internet with `WebSearch` and `FetchUrl`. Use the web for
 | Tool | Use it to |
 |------|-----------|
 | `WebSearch` | Find pages: returns titles, URLs and snippets. Options: `maxResults` (1-10), `site` (e.g. `learn.microsoft.com`), `freshness` (`day`, `week`, `month`, `year`). |
-| `FetchUrl` | Read a page as text (headings, lists, links, code blocks). Long pages come in chunks: call again with the `startIndex` it gives you. Also reads plain text, JSON (e.g. raw GitHub files, APIs) and PDFs (as text, page by page). |
+| `FetchUrl` | Read a page as text (headings, lists, links, code blocks). Long pages come in chunks: call again with the `startIndex` it gives you. Also reads plain text, JSON (e.g. raw GitHub files, APIs) and PDFs (as text, page by page). The first line may be `![title](url)`: the page's declared photo (its structured data or `og:image`), which a page that draws its photo with a script would not show in its text. |
 | `ReadRenderedPage` | Read a page as a browser shows it, for sites that draw their content with JavaScript (a shop's product page and its price, a store finder). Only after `FetchUrl` came back with "(no readable text)" or without the part you need: it is slower. |
 | `VerifyQuote` | Check that the exact words a value came from are on the page (`url`, `quote`, and `product` for a price: it must stand right after the product's name): answers *Found*, *Not found*, *Not found with the product* or *Page empty*. Code, no model; use it on every quote a minion returns before you use its value. |
 | `ConvertCurrency` | Convert an amount between currencies at the day's reference rates (ZAR, USD, EUR…). |

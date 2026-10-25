@@ -51,7 +51,7 @@ internal static partial class HtmlText
         string text = BlankLines().Replace(string.Join('\n', lines), "\n\n").Trim();
         text = Placeholder().Replace(text, m => blocks[int.Parse(m.Groups[1].Value)]);
         text = BlankLines().Replace(text, "\n\n").Trim();
-        // The page's own photo (FX24): from its JSON-LD Recipe.image or og:image, first, unless the text already shows that very file.
+        // The page's own photo (FX24): from its main JSON-LD entity's image or og:image, first, unless the text already shows that very file.
         if (LeadImage.Of(html, baseUri, title) is { } lead && !text.Contains(UrlOf(lead), StringComparison.Ordinal))
             text = text.Length == 0 ? lead : lead + "\n\n" + text;
         return (title, text);

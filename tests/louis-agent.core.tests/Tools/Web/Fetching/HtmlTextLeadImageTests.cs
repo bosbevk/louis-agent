@@ -69,13 +69,32 @@ public class HtmlTextLeadImageTests
 
     [TestCase("""{"@type":"Recipe","image":"data:image/png;base64,AAAA"}""")]
     [TestCase("""{"@type":"Recipe","image":"https://r.example.co.za/logo.svg"}""")]
-    [TestCase("""{"@type":"Article","image":"https://r.example.co.za/not-a-recipe.jpg"}""")]
+    [TestCase("""{"@type":"Organization","image":"https://r.example.co.za/the-company.jpg"}""")]
     [TestCase("""{"@type":"Recipe","image":""")]
     public void NoImage_OrOneThatCannotBeShown_AddsNothing(string json)
     {
         var (_, text) = HtmlText.ToText(Html(JsonLd(json)), Page);
 
         Assert.That(text, Does.Not.Contain("!["));
+    }
+
+    // Review of FX24: core names no product or domain (ADR 0027), so the lead image is the page's main JSON-LD entity's, whatever its type: a recipe, an article, a product. The entities
+    // that describe the site, not the page's subject (an organization, a website, a web page, a person, an image), are skipped.
+    [Test]
+    public void ANonRecipePage_GivesItsMainEntitiesImage_SkippingTheEntitiesThatDescribeTheSite()
+    {
+        string graph = JsonLd("""{"@graph":[{"@type":"Organization","image":"https://r.example.co.za/logo-photo.jpg"},{"@type":"WebSite"},{"@type":"WebPage","image":"https://r.example.co.za/page.jpg"},{"@type":"Person","image":"https://r.example.co.za/author.jpg"},{"@type":"NewsArticle","image":["https://r.example.co.za/story.jpg"]}]}""");
+
+        Assert.That(HtmlText.ToText(Html(graph), Page).Text, Does.StartWith("![Pap en wors tert](https://r.example.co.za/story.jpg)"));
+    }
+
+    [Test]
+    public void APageWhoseOnlyEntitiesDescribeTheSite_FallsBackToItsOgImage()
+    {
+        string only = JsonLd("""{"@graph":[{"@type":"Organization","image":"https://r.example.co.za/the-company.jpg"},{"@type":"ImageObject","url":"https://r.example.co.za/x.jpg"}]}""");
+        string og = """<meta property="og:image" content="https://r.example.co.za/og.jpg">""";
+
+        Assert.That(HtmlText.ToText(Html(only + og), Page).Text, Does.StartWith("![Pap en wors tert](https://r.example.co.za/og.jpg)"));
     }
 
     [Test]

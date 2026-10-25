@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 /// <summary>
 /// A page's lead image as <c>![title](url)</c> (FX24): the photo of the dish on a recipe page, found where a page declares it, not where its body
 /// shows it. A recipe page's photo is often a lazy-loaded image outside <c>main</c>, or one with no alt text, which the page text keeps none of; the
-/// page's JSON-LD <c>Recipe.image</c> (the recipe's own, first) or its <c>og:image</c> names it for machines. Only an http(s) file that isn't an SVG
+/// page's JSON-LD (the <c>image</c> of its main entity: a recipe, an article, a product) or its <c>og:image</c> names it for machines. Only an http(s) file that isn't an SVG
 /// counts, so a data URI or a logo is no lead image.
 /// </summary>
 internal static partial class LeadImage
@@ -15,7 +15,7 @@ internal static partial class LeadImage
     /// <summary>The lead image's markdown, or null when the page declares none the text can show.</summary>
     internal static string? Of(string html, Uri baseUri, string? title)
     {
-        string? file = RecipeImage(html) ?? OpenGraphImage(html);
+        string? file = MainEntityImage(html) ?? OpenGraphImage(html);
         if (file is null || !Uri.TryCreate(baseUri, file.Trim(), out var target)
             || target.Scheme is not ("http" or "https") || target.AbsolutePath.EndsWith(".svg", StringComparison.OrdinalIgnoreCase))
             return null;
@@ -23,15 +23,18 @@ internal static partial class LeadImage
         return $"![{(alt.Length > 0 ? alt : "image")}]({target})";
     }
 
-    /// <summary>The first <c>image</c> of a JSON-LD object whose <c>@type</c> is Recipe, wherever it sits (the document, an array, a <c>@graph</c>).</summary>
-    private static string? RecipeImage(string html)
+    /// <summary>
+    /// The first <c>image</c> of a JSON-LD entity that is the page's subject, wherever it sits (the document, an array, a <c>@graph</c>). Core names no type of
+    /// subject (ADR 0027): any is taken, but the entities that describe the site, not the page, are skipped (<see cref="SiteEntities"/>).
+    /// </summary>
+    private static string? MainEntityImage(string html)
     {
         foreach (Match block in JsonLd().Matches(html))
         {
             try
             {
                 using var document = JsonDocument.Parse(WebUtility.HtmlDecode(block.Groups[1].Value));
-                if (ImageOfRecipe(document.RootElement) is { } file) return file;
+                if (ImageOfEntity(document.RootElement) is { } file) return file;
             }
             catch (JsonException)
             {
@@ -41,27 +44,35 @@ internal static partial class LeadImage
         return null;
     }
 
-    private static string? ImageOfRecipe(JsonElement node)
+    private static string? ImageOfEntity(JsonElement node)
     {
         switch (node.ValueKind)
         {
             case JsonValueKind.Array:
-                return node.EnumerateArray().Select(ImageOfRecipe).FirstOrDefault(file => file is not null);
+                return node.EnumerateArray().Select(ImageOfEntity).FirstOrDefault(file => file is not null);
             case JsonValueKind.Object:
-                if (node.TryGetProperty("@graph", out var graph) && ImageOfRecipe(graph) is { } inGraph) return inGraph;
-                return IsRecipe(node) && node.TryGetProperty("image", out var image) ? FirstFile(image) : null;
+                if (node.TryGetProperty("@graph", out var graph) && ImageOfEntity(graph) is { } inGraph) return inGraph;
+                return IsSubject(node) && node.TryGetProperty("image", out var image) ? FirstFile(image) : null;
             default:
                 return null;
         }
     }
 
-    private static bool IsRecipe(JsonElement node) =>
-        node.TryGetProperty("@type", out var type) && type.ValueKind switch
+    /// <summary>The types of entity that describe the site or the page's furniture, never its subject: their image is a logo, an author's face or the page's own.</summary>
+    private static readonly HashSet<string> SiteEntities = new(["Organization", "WebSite", "WebPage", "Person", "ImageObject"], StringComparer.Ordinal);
+
+    /// <summary>Whether an entity is a page's subject: it has a type, and not only site types (<c>["Article","WebPage"]</c> is an article).</summary>
+    private static bool IsSubject(JsonElement node)
+    {
+        if (!node.TryGetProperty("@type", out var type)) return false;
+        var types = type.ValueKind switch
         {
-            JsonValueKind.String => type.GetString() == "Recipe",
-            JsonValueKind.Array => type.EnumerateArray().Any(t => t.ValueKind == JsonValueKind.String && t.GetString() == "Recipe"),
-            _ => false,
+            JsonValueKind.String => [type.GetString()!],
+            JsonValueKind.Array => type.EnumerateArray().Where(t => t.ValueKind == JsonValueKind.String).Select(t => t.GetString()!).ToList(),
+            _ => new List<string>(),
         };
+        return types.Any(t => !SiteEntities.Contains(t));
+    }
 
     /// <summary>An <c>image</c> is a URL, an ImageObject with a <c>url</c>, or a list of either: the first one that names a file.</summary>
     private static string? FirstFile(JsonElement image) => image.ValueKind switch
