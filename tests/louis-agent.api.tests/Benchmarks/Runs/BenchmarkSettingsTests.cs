@@ -24,6 +24,30 @@ public class BenchmarkSettingsTests
         }));
     }
 
+    private static readonly IReadOnlyDictionary<string, string> Started = new Dictionary<string, string> { ["provider"] = "anthropic", ["model"] = "m" };
+
+    [Test]
+    public void WithPromptHashes_AddsThemJoinedWithCommas_InTheOrderGiven()
+    {
+        var settings = BenchmarkSettings.WithPromptHashes(Started, ["a", "b"]);
+
+        Assert.That(settings, Is.EquivalentTo(new Dictionary<string, string> { ["provider"] = "anthropic", ["model"] = "m", ["prompt_hashes"] = "a,b" }));
+    }
+
+    [Test]
+    public void WithPromptHashes_WithNone_ReturnsTheSettingsUnchanged_WithNoKey()
+    {
+        var settings = BenchmarkSettings.WithPromptHashes(Started, []);
+
+        Assert.That(settings, Is.SameAs(Started));
+        Assert.That(settings!.ContainsKey("prompt_hashes"), Is.False, "absent, never empty");
+        Assert.That(BenchmarkSettings.WithPromptHashes(null, []), Is.Null);
+    }
+
+    [Test]
+    public void WithPromptHashes_OnNullSettings_ReturnsOnlyThatKey() =>
+        Assert.That(BenchmarkSettings.WithPromptHashes(null, ["a"]), Is.EquivalentTo(new Dictionary<string, string> { ["prompt_hashes"] = "a" }));
+
     [Test]
     public void EveryRole_IsOn_WhenNoneAreListed() =>
         Assert.That(BenchmarkSettings.Of(new BenchmarkCheck("c", "C", "s.py", []), "anthropic", "m", [], Runner)["roles_enabled"], Is.EqualTo("(all)"));

@@ -74,6 +74,14 @@ public static class BenchmarkLedger
         return new Total(total.Cost, currency, total.Input + total.CacheWrite + total.CacheRead + total.Output, total.Requests);
     }
 
+    /// <summary>
+    /// The distinct prompt hashes of the run's rows, sorted ordinally so two runs on the same prompts give byte-equal lists
+    /// (F18 step 4c). Rows with none (from before 4c) are skipped. It is the set of prompts the run <i>used</i>, not what it has:
+    /// an agent the run never called leaves no hash, so compare per agent, not list against list.
+    /// </summary>
+    public static IReadOnlyList<string> PromptHashesOf(IReadOnlyList<UsageRecord> ofRun) =>
+        ofRun.Select(r => r.PromptHash).OfType<string>().Distinct().Order(StringComparer.Ordinal).ToArray();
+
     /// <summary><c>{session}#{turn}</c> as its parts; null for a row with no parent.</summary>
     private static (string Session, int Turn)? ParentOf(UsageRecord record) =>
         record.Parent is { } parent && parent.LastIndexOf('#') is > 0 and var hash && int.TryParse(parent.AsSpan(hash + 1), out int turn)

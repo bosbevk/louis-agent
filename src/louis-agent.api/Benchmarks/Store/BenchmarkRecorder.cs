@@ -74,6 +74,7 @@ public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = n
         private readonly Dictionary<TurnKey, OpenTurn> _open = [];
         private readonly Dictionary<string, ConversationKey> _sessions = [];
         private Total? _total;
+        private IReadOnlyDictionary<string, string>? _settings = settings;
         private ProtocolStarted? _protocol;
         private string? _storeError;
 
@@ -177,6 +178,7 @@ public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = n
                 return;
             }
             _total = BenchmarkLedger.TotalOf(ofRun);
+            _settings = BenchmarkSettings.WithPromptHashes(_settings, BenchmarkLedger.PromptHashesOf(ofRun));
             var requests = BenchmarkLedger.Join(run.Id, ofRun, _sessions);
             // F18 step 2a: a row on a model the run didn't declare is named in the run's log, so a trend can't mix it in silently.
             var unlisted = RunModels.Unlisted(_protocol?.Models, requests.Select(r => r.Model));
@@ -198,7 +200,7 @@ public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = n
         }
 
         private Run Document() =>
-            new(run.Id, run.Check, run.Repeat, run.Status, run.StartedAt, run.EndedAt, run.ExitCode, settings, _modes.ToArray(),
+            new(run.Id, run.Check, run.Repeat, run.Status, run.StartedAt, run.EndedAt, run.ExitCode, _settings, _modes.ToArray(),
                 _total, Log: run.Status == BenchmarkRunStatus.Running ? null : _log.ToArray(), StoreError: _storeError,
                 Eval: _protocol?.Eval, EvalVersion: _protocol?.EvalVersion, Commit: _protocol?.Commit,
                 Graders: _protocol?.Graders?.Select(g => new Grader(g.Name, g.Version, g.Kind)).ToArray(),

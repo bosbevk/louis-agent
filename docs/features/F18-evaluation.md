@@ -694,6 +694,22 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   test. The field is last on the record and left out when null, so a roll-up's line is byte-equal to before. Red first: 15 tests failed, 14
   on the stub's `NotImplementedException` and one on a null `PromptHash`; the sink and report tests passed at once, since they pin what the
   new field must not change. Golden files unchanged. Core tests: 1419 passing.
+- **Step 4c.2** (`BenchmarkLedger.PromptHashesOf`, `BenchmarkSettings.WithPromptHashes`, `BenchmarkRecorder`): when a run ends, the recorder
+  adds the distinct hashes of its ledger rows (without the roll-ups, sorted ordinally, joined with commas) to the run's settings as
+  `prompt_hashes`; a run with none gets no key. Both stores already keep settings, so neither changed, nor did the request documents.
+  `BenchmarkRecorder` gained 2 lines net (a field, one line in `JoinLedgerAsync`, `Document()` reading the field; 230 lines, still on
+  `FileSizeTests`' list): splitting it is not this step. Red first: 5 tests failed, 4 on the stubs and the end-to-end on the missing key;
+  the no-hash end-to-end passed at once, as it pins today's behaviour. API tests: 273 passing; the whole solution is green.
+- **Close of step 4c.** What a run now says about its prompt: each ledger row of a model request carries `prompt_hash`, and the run's
+  settings carry `prompt_hashes`, the sorted set of the hashes its rows used.
+  - **`prompt_hashes` is the set of prompts a run used, not the set it has.** A run that never called the cook, or never summarised, lacks
+    those agents' hashes. Equal lists show the same prompts; different lists prove nothing by themselves, since the difference may be a
+    changed prompt or only another path through the same eval.
+  - **To compare two runs:** the same eval, and rows from the same agent that differ only in `prompt_hash`. **Step 7a must compare per
+    agent**: group a run's rows by the agent that sent them (the purpose, or the sub-session task tag) and compare each agent's hashes with
+    the same agent's in the other run; an agent in only one run is "not used", not "changed". The setting can't say which agent a hash
+    belongs to, so 7a reads the ledger's rows, not the setting.
+  - **What is left:** the trend marker (7a), the cache key (4e, which reuses `PromptHash`) and `ttft_ms` (F44's first step).
 - **Notes for step 5** (from the review of 4.2): `PulsEvalSet`'s `TurnView` builds on `EngineEvents`, so the route, the errors and the
   cost come from one reader. If an expected route goes in a scenario's `expected`, `RoutedToGrader` must declare that key in its
   `ExpectedKeys`. When the HTTP client sets a turn's `Failure`, the turn line must carry it, so `ProtocolTranscripts` reads it back. A

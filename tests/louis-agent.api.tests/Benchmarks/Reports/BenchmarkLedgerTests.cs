@@ -129,6 +129,54 @@ public class BenchmarkLedgerTests
     }
 
     [Test]
+    public void PromptHashesOf_AreTheDistinctOnesSorted_AndRowsWithNoneAreSkipped()
+    {
+        UsageRecord[] rows = [Row(1, "s", 1) with { PromptHash = "b" }, Row(2, "s", 1) with { PromptHash = "a" }, Row(3, "s", 1) with { PromptHash = "b" }, Row(4, "s", 1)];
+
+        Assert.That(BenchmarkLedger.PromptHashesOf(rows), Is.EqualTo(new[] { "a", "b" }));
+        Assert.That(BenchmarkLedger.PromptHashesOf([Row(1, "s", 1)]), Is.Empty);
+    }
+
+    private static async Task<Run> RecordedWith(IReadOnlyDictionary<string, string> settings, params string?[] hashes)
+    {
+        string directory = Path.Combine(Path.GetTempPath(), "louis-ledger-" + Guid.NewGuid().ToString("N"));
+        try
+        {
+            var store = new InMemoryBenchmarkStore();
+            var run = new BenchmarkRun(Run, "cook", 1);
+            var sink = new JsonlUsageSink(directory);
+            foreach (string? hash in hashes) sink.Record(Row(0, "sess_puls_bobotie", 1) with { At = DateTimeOffset.UtcNow, PromptHash = hash });
+
+            var recording = new BenchmarkRecorder(store, ledgerDirectory: directory).RecordAsync(run, settings);
+            run.Add("@" + JsonSerializer.Serialize(new { @event = "protocol", version = 1 }));
+            run.Complete(0);
+            await recording;
+            return (await store.GetRunAsync(Run))!;
+        }
+        finally
+        {
+            if (Directory.Exists(directory)) Directory.Delete(directory, recursive: true);
+        }
+    }
+
+    [Test]
+    public async Task ARunWhoseRowsCarryTwoHashes_IsStoredWithThemSorted_BesideItsOwnSettings()
+    {
+        var stored = await RecordedWith(new Dictionary<string, string> { ["model"] = "m" }, "b", "a", "b");
+
+        Assert.That(stored.Settings, Is.EquivalentTo(new Dictionary<string, string> { ["model"] = "m", ["prompt_hashes"] = "a,b" }));
+    }
+
+    [Test]
+    public async Task ARunWhoseLedgerHasNoHashes_IsStoredWithoutTheKey_AndTheSameTotal()
+    {
+        var stored = await RecordedWith(new Dictionary<string, string> { ["model"] = "m" }, null, null);
+
+        Assert.That(stored.Settings, Is.EquivalentTo(new Dictionary<string, string> { ["model"] = "m" }));
+        Assert.That(stored.Total, Is.EqualTo(new Total(0.02m, "USD", 2 * 5200, 2)));
+    }
+
+    [Test]
     public async Task WhenARunEnds_TheRecorderWritesItsRequestsAndTotal()
     {
         string directory = Path.Combine(Path.GetTempPath(), "louis-ledger-" + Guid.NewGuid().ToString("N"));

@@ -31,4 +31,14 @@ public static class BenchmarkSettings
         }
         return settings;
     }
+
+    /// <summary>
+    /// The settings plus <c>prompt_hashes</c>, the run's hashes joined with commas (F18 step 4c); as given, with no key, when there are
+    /// none (absent, never empty). <b>It is the set of prompts the run used, not what it has.</b> A run that never called the cook, or
+    /// never summarised, lacks those agents' hashes, so two runs with different lists prove nothing by themselves: the difference may be
+    /// a changed prompt or only a different path through the same eval. Equal lists show the same prompts; to compare a prompt change,
+    /// compare per agent (step 7a), from the ledger's rows.
+    /// </summary>
+    public static IReadOnlyDictionary<string, string>? WithPromptHashes(IReadOnlyDictionary<string, string>? settings, IReadOnlyList<string> hashes) =>
+        hashes.Count == 0 ? settings : new Dictionary<string, string>(settings ?? new Dictionary<string, string>()) { ["prompt_hashes"] = string.Join(",", hashes) };
 }
