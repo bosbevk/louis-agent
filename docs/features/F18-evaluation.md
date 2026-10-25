@@ -575,6 +575,10 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   tests (a run tag alone under a `record` default and under a `replay` default, and a child sent nothing under `record`); the other 29
   passed already. The plan's *Approved during the build* has the entry, and 4a.3's runner sends `replay` on every session it opens.
   A slip of mine in the 4a.2 note, found here: it left a second, empty "Notes for step 5" line above the real one; it is gone.
+  By hand, against the rebuilt container (`WEB_REPLAY` unset, so the default is off and the container can't show a session *not*
+  being recorded; the unit tests hold that): a run tag alone, `replay: {}` with a run tag, `replay: {"web":"record"}` and
+  `replay: {"web":"off"}` each gave a 201; `replay: {}` with no run tag gave a 400 (an eval needs its run), and `web: "replay"` with
+  no `of` a 400.
 - **Notes for step 5** (from the review of 4.2): `PulsEvalSet`'s `TurnView` builds on `EngineEvents`, so the route, the errors and the
   cost come from one reader. If an expected route goes in a scenario's `expected`, `RoutedToGrader` must declare that key in its
   `ExpectedKeys`. When the HTTP client sets a turn's `Failure`, the turn line must carry it, so `ProtocolTranscripts` reads it back. A
