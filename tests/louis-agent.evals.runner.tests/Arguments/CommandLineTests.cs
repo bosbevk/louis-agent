@@ -70,6 +70,49 @@ public class CommandLineTests
     public void AFlagGivenTwice_KeepsTheLastValue() =>
         Assert.That(CommandLine.Parse(["run", "stub", "--web", "record", "--web", "off"]), Is.EqualTo(new RunRequest("stub", 1, WebReplayMode.Off, null)));
 
+    // F18 step 4e.4: --replay is --web replay --of {runId} with the model's answers too.
+    [Test]
+    public void Replay_IsTheWebReplayOfARun_WithTheModelsAnswersToo() =>
+        Assert.That(CommandLine.Parse(["run", "stub", "--replay", "run_A"]), Is.EqualTo(new RunRequest("stub", 1, WebReplayMode.Replay, "run_A", Model: true)));
+
+    [Test]
+    public void Replay_TakesAnyOrder_MixedWithRepeat() =>
+        Assert.That(CommandLine.Parse(["run", "stub", "--replay", "local-20261025-064900", "--repeat", "3"]),
+            Is.EqualTo(new RunRequest("stub", 3, WebReplayMode.Replay, "local-20261025-064900", Model: true)));
+
+    [Test]
+    public void TheOtherWebFlags_NeverAskForTheModel() =>
+        Assert.That(((RunRequest)CommandLine.Parse(["run", "stub", "--web", "replay", "--of", "run_A"])).Model, Is.False);
+
+    [TestCase("--web", "replay")]
+    [TestCase("--web", "record")]
+    [TestCase("--of", "run_B")]
+    public void RefusesReplayGivenWithWebOrOf_InEitherOrder(string flag, string value)
+    {
+        Assert.That(() => CommandLine.Parse(["run", "stub", "--replay", "run_A", flag, value]),
+            Throws.InstanceOf<RunnerException>().With.Message.Contains("--replay").And.Message.Contains("--web or --of"));
+        Assert.That(() => CommandLine.Parse(["run", "stub", flag, value, "--replay", "run_A"]),
+            Throws.InstanceOf<RunnerException>().With.Message.Contains("--web or --of"));
+    }
+
+    [TestCase("")]
+    [TestCase("a/b")]
+    [TestCase("run A")]
+    [TestCase("..")]
+    public void RefusesABadRunIdAsReplay_AsOfRefusesOne(string value)
+    {
+        var error = Assert.Throws<RunnerException>(() => CommandLine.Parse(["run", "stub", "--replay", value]))!;
+
+        Assert.That(error.Message, Is.EqualTo(Assert.Throws<RunnerException>(() => CommandLine.Parse(["run", "stub", "--of", value]))!.Message));
+    }
+
+    [Test]
+    public void TheUsageText_NamesReplay()
+    {
+        Assert.That(Assert.Throws<RunnerException>(() => CommandLine.Parse(["run"]))!.Message, Does.Contain("--replay <runId>"));
+        Assert.That(Assert.Throws<RunnerException>(() => CommandLine.Parse(["frobnicate"]))!.Message, Does.Contain("--replay <runId>"));
+    }
+
     [TestCase("sometimes", "'sometimes'")]
     [TestCase("1", "'1'")]
     [TestCase("", "''")]

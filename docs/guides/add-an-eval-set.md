@@ -338,11 +338,23 @@ run page reads only the standard records (your eval's name, version and graders 
 outcome), so every grader you wrote is a chip on its conversation, in your `Graders` order, with its reason on hover
 ([Change the Puls app](change-the-puls-app.md#change-the-admin-portal)).
 
-## 11. Record a run's web input, and replay it
+## 11. Record a run, and replay it
 
 A run that reads the live web measures the website as much as the agent. `--web record` saves every page, search, fetch and the time
 the run reads; `--web replay --of {runId}` answers from those saved inputs later, without the browser, the search engine, the network or the clock. Both are
 flags of the same command, and the runner has no web of its own: the API writes and reads the recordings.
+
+A recording also keeps the model's answers (step 4e), so a run can be replayed three ways. Pick by what you changed:
+
+| Command | The web | The model | What it tests | Cost |
+|---|---|---|---|---|
+| `--web record` | live, saved | live, saved | the baseline: the recording itself | the run's own |
+| `--web replay --of {runId}` | the recording's | **live** | **a prompt change**: the same pages, a new model answer, so two runs differ only in the prompt (`prompt_hash` in the ledger says which) | the run's own |
+| `--replay {runId}` | the recording's | the recording's | **everything around the model**: the graders, the harness, the engine's code | $0, in seconds |
+
+`--replay {runId}` is `--web replay --of {runId}` with the model's answers too, and it can't be given with `--web` or `--of`. It can't test a
+prompt change: a changed prompt is a different request, so it misses, and the miss says where the request changed (the model, the system
+prompt, a tool, the settings, or message *n*). Test a prompt change with the second row.
 
 ```bash
 EVALS=acme BENCHMARK_RUN=acme-before dotnet run --project evals/louis-agent.evals.runner -- run acme --web record
@@ -353,16 +365,17 @@ EVALS=acme BENCHMARK_RUN=acme-after  dotnet run --project evals/louis-agent.eval
   know what to replay: `--of` takes the recorded run's id, and only its letters, digits, `-` and `_`.
 - **Where the pages live.** The API writes them, into its `REPLAY_DIRECTORY` (the Puls compose sets `/data/replay`, which is
   `data/puls/replay` on the host). The runner never touches that folder. Without `REPLAY_DIRECTORY` the API refuses a record or
-  a replay with a 400 that says this instance keeps no recordings.
+  a replay with a 400 that says this instance keeps no recordings. The recording holds one answer per distinct request in a trial, so an
+  identical request twice in one trial is answered by its first recording.
 - **They stay on that machine.** Recordings are private: nothing serves them, and `/data/` is git-ignored, so they never go in
   the repo.
 - **A replay that misses.** What the recorded run didn't read comes back to the model as a short text, and the model treats it as
   unknown: a page by its address ("was not read in the recorded run"), a search by its query ("was not run in the recorded run"),
   and the clock ("never read the clock"). The time stands still within a trial, so a replay shows the time the recording did.
 - **What is still live.** The Tavily renderer (`PAGE_RENDERER=tavily`) reads the page itself, and `ReadRenderedPage` still resolves DNS in
-  a replay. A failed fetch replays as a miss, and model answers replay only from step 4e.
+  a replay. A failed fetch replays as a miss.
 - **Until step 5** only the stub runs, and the stub reads no web: a recording of it saves nothing. The commands above check the
-  flags; a real recording waits for the HTTP session client and for Louis's go, since it spends money.
+  flags; a real recording waits for the HTTP session client and for Louis's go, since it spends money. A replay with `--replay` is free.
 
 ## Before you ask for a review
 

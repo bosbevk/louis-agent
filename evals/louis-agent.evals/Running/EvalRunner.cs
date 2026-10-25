@@ -96,12 +96,12 @@ public sealed class EvalRunner(ISessionClient sessions, ProtocolWriter protocol,
     /// <summary>
     /// What a session sends for the web (F18 step 4a). Every eval session sends one, even when it names nothing: that is the mark of an
     /// eval. A recording leaves its trial out, so the API writes {run tag}/{task}; a replay names the trial the recorded run wrote, the
-    /// key the API wrote there, from the same run tag and the scenario's id.
+    /// key the API wrote there, from the same run tag and the scenario's id; <c>Model</c> asks for the model's answers from it too (step 4e).
     /// </summary>
     private static WebReplayRequest ReplayFor(EvalRun run, EvalMode mode, int repeat, EvalScenario scenario) =>
         run.Web == WebReplayMode.Replay && run.Of is { } recorded
-            ? new WebReplayRequest(run.Web, $"{RunTag(recorded, mode, repeat)}/{scenario.Id}")
-            : new WebReplayRequest(run.Web, null);
+            ? new WebReplayRequest(run.Web, $"{RunTag(recorded, mode, repeat)}/{scenario.Id}", run.Model)
+            : new WebReplayRequest(run.Web, null, run.Model);
 
     private async Task<(TurnTranscript Transcript, TurnFacts Facts)> RunTurnAsync(IEval eval, EvalMode mode, int repeat, string task, int number,
         string session, string message,

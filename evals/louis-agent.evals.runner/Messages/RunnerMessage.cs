@@ -29,10 +29,10 @@ public enum RunnerMessage
     [Description("--repeat needs a whole number, not '{Value}'.")]
     BadRepeat,
 
-    [Description("Usage: run <eval> [--repeat N] [--web off|record|replay] [--of <runId>], or --list.")]
+    [Description("Usage: run <eval> [--repeat N] [--web off|record|replay] [--of <runId>] [--replay <runId>], or --list.")]
     Usage,
 
-    [Description("Unknown argument '{Argument}'. Usage: run <eval> [--repeat N] [--web off|record|replay] [--of <runId>], or --list.")]
+    [Description("Unknown argument '{Argument}'. Usage: run <eval> [--repeat N] [--web off|record|replay] [--of <runId>] [--replay <runId>], or --list.")]
     UnknownArgument,
 
     [Description("Unknown --web '{Value}'. Use one of: {Supported}.")]
@@ -43,6 +43,9 @@ public enum RunnerMessage
 
     [Description("--of needs --web replay: it names the recorded run to replay, and only a replay reads one.")]
     OfNeedsReplay,
+
+    [Description("--replay <runId> is --web replay --of <runId> with the model's answers too, so it can't be given with --web or --of.")]
+    ReplayExcludesWebAndOf,
 
     [Description("--of takes a run id's letters, digits, '-' and '_', not '{Value}'.")]
     BadOf,

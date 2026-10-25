@@ -202,6 +202,25 @@ public class EvalRunnerTests
     }
 
     [Test]
+    public async Task AReplayWithTheModel_SendsModelTrue_WithEachTrialsKey_AndEveryOtherRunSendsFalse()
+    {
+        // F18 step 4e.4: --replay is the web replay plus the model's answers; the API decides whether it accepts it.
+        var withModel = await RunAndOpened(new EvalRun("run_new", 2, WebReplayMode.Replay, "run_A", Model: true), turns: 2);
+        var webOnly = await RunAndOpened(new EvalRun("run_new", 1, WebReplayMode.Replay, "run_A"));
+        var recording = await RunAndOpened(new EvalRun("run_R", 1, WebReplayMode.Record));
+        var noFlags = await RunAndOpened(new EvalRun("run_1", 1));
+
+        Assert.That(withModel.Opened.Select(s => s.Replay), Is.EqualTo(new[]
+        {
+            new WebReplayRequest(WebReplayMode.Replay, "run_A:cook:1/pannekoek", true),
+            new WebReplayRequest(WebReplayMode.Replay, "run_A:cook:2/pannekoek", true),
+        }));
+        Assert.That(webOnly.Opened.Single().Replay.Model, Is.False);
+        Assert.That(recording.Opened.Single().Replay.Model, Is.False);
+        Assert.That(noFlags.Opened.Single().Replay.Model, Is.False);
+    }
+
+    [Test]
     public async Task AReplayReadsTheKeyTheRecordingWrote()
     {
         // The cross-check: a recording's sessions carry a run tag and a task, and the API writes {run tag}/{task} as the trial's key.

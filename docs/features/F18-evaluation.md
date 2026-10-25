@@ -771,10 +771,32 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   - **Red and green:** with `AgentEngine` taking `replay` but ignoring it, the two replay cases and the factory case failed ("the model was
     called"), and six API cases failed (the old refusal). The two "no replay in the flow" cases passed on the red run, as they should: they
     pin that nothing is written or read. Core: 1467 passing, API: 277. No golden file changed.
+- **Step 4e.4: the runner's `--replay`.** `run {name} --replay {runId}` is `--web replay --of {runId}` with the model's answers too: it
+  parses to `RunRequest(name, repeat, Replay, runId, Model: true)`, and `RunRequest`, `EvalRun` and `WebReplayRequest` carry `Model` (false by
+  default, so every other run sends exactly what it sent). `ReplayFor` passes `run.Model`. Given with `--web` or `--of` (either order) it is
+  refused (`RunnerMessage.ReplayExcludesWebAndOf`); its value is held to `--of`'s rule for a run id, through the same `ParseOf`, so the two
+  refuse a bad id with the same text. A flag, not a new string choice (ADR 0024). The guide's section 11 now has the three ways, in a table.
+  - **Red and green:** with `Model` on the records but the parser ignorant of `--replay`, the runner's 10 new cases failed (the flag, its two
+    refusals, a bad id, the usage text) and the evals' 1 (`ReplayFor` sent `Model` false); with the code, runner 73 and evals 132 pass. Whole
+    solution green: core 1467, API 277.
+- **Close of step 4e.** What the cache is, and what it isn't:
+  - **A replay proves** that everything around the model still works on the same inputs: the graders, the harness, the engine's code
+    (the pipeline, the guards, the recorder, the tools), all against the model's recorded answers. It costs $0 and takes seconds, and gives the
+    same answers. It is a regression check for those, and it can't pass if the run's own requests changed.
+  - **A replay can't test a prompt change.** A changed prompt is a different request, so it misses, and the miss names the part that changed.
+    A prompt change is tested by `--web replay --of`, which keeps the pages and asks the live model.
+  - **Known limits, not solved.** (1) One identical request twice in one trial is answered by its first recording: the store keeps no counters
+    (as for the web seams in 4b). (2) A sub-session that hit its prompt budget (FX14) in the recording won't in a replay, because a hit counts 0
+    tokens; its later requests then differ and miss, and the miss says where. (3) A setting that reaches the provider only through
+    `RawRepresentationFactory` (a function, which the options' JSON leaves out) is not in the key, so changing it alone does not make a miss.
+  - **Measured check: still to run (a paid run, on Louis's go).** Record the cook eval live (`run cook --web record`), then replay it
+    (`run cook --replay {runId}`). Expected: a hit rate of 100% and a cost of $0.00 on the replay, against the recording's cost. Until the
+    HTTP session client (step 5) exists only the stub runs, so this waits for step 5 as well; the plan's line 197 stays unmeasured until then.
 - **Notes for step 5** (from the review of 4.2): `PulsEvalSet`'s `TurnView` builds on `EngineEvents`, so the route, the errors and the
   cost come from one reader. If an expected route goes in a scenario's `expected`, `RoutedToGrader` must declare that key in its
   `ExpectedKeys`. When the HTTP client sets a turn's `Failure`, the turn line must carry it, so `ProtocolTranscripts` reads it back. A
   reference may need its mode in its file name (`{scenario}.{mode}.reference.txt`) when an eval's modes expect different routes.
+  The HTTP client's body test pins `replay.model` too: a `--replay` run sends `"replay": {"web": "replay", "of": "{trial}", "model": true}`, and the others `model: false`.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)
