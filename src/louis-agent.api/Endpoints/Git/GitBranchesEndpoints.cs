@@ -1,57 +1,24 @@
-using LouisAgent.Core.Guardrails.Workspace;
-using System.Text;
-using System.Text.RegularExpressions;
-using LouisAgent.Core.Agent;
-using static LouisAgent.Api.Endpoints.GitEndpoints;
-using LouisAgent.Core.Tools.Workspace;
-using LouisAgent.Core.Messages;
+using LouisAgent.Api.Endpoints.Git.Output;
+using LouisAgent.Api.Endpoints.Git.Requests;
 using LouisAgent.Api.Messages;
+using LouisAgent.Core.Agent;
+using LouisAgent.Core.Messages;
+using static LouisAgent.Api.Endpoints.Git.GitProcess;
+using static LouisAgent.Api.Endpoints.Git.Output.GitOutputParser;
 
-namespace LouisAgent.Api.Endpoints;
+namespace LouisAgent.Api.Endpoints.Git;
 
 /// <summary>
-/// History for the web app's Branches tab: every branch with how far it is ahead of the checked-out branch, the commit
-/// log across all branches, each commit's or branch's diff, and merging a branch into the checked-out one (or deleting a
-/// merged branch). Branch names are only accepted if they exist, and diffs of secret files are never returned.
-/// Nothing here pushes.
+/// The Branches tab: every branch with how far it is ahead of the checked-out branch, a branch's diff, merging a branch into
+/// the checked-out one, and deleting a merged branch. Branch names are only accepted if they exist. Nothing here pushes.
 /// </summary>
-internal static partial class HistoryEndpoints
+internal static class GitBranchesEndpoints
 {
-    private const int MaxDiffChars = 500_000;
-    private const char Field = '\x1f', Record = '\x1e';
-
-    public static void MapHistory(this WebApplication app)
+    public static void MapGitBranches(this IEndpointRouteBuilder routes)
     {
-        app.MapGet("/git/branches", async (AgentEngine engine) => await BranchesResultAsync(engine));
+        routes.MapGet("/git/branches", async (AgentEngine engine) => await BranchesResultAsync(engine));
 
-        app.MapGet("/git/log", async (int? count, AgentEngine engine) =>
-        {
-            int limit = Math.Clamp(count ?? 200, 1, 1000);
-            var log = await RunAsync(engine, ["log", "--all", "--date-order", "-n", limit.ToString(), $"--format={CommitFormat}{Record}"]);
-            // A repository without commits has no log; that's an empty list, not an error.
-            if (log.ExitCode != 0) return log.Error.Contains("does not have any commits") ? Results.Json(new { commits = Array.Empty<object>() }) : GitError(log);
-            return Results.Json(new { commits = ParseCommits(log.Output) });
-        });
-
-        app.MapGet("/git/commit", async (string? sha, AgentEngine engine) =>
-        {
-            if (sha is null || !CommitHash().IsMatch(sha))
-                return ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error", MessageText.Format(ApiUserText.ShaRequired));
-
-            var meta = await RunAsync(engine, ["show", "-s", $"--format={CommitFormat}{Field}%B", sha]);
-            if (meta.ExitCode != 0) return GitError(meta);
-            string[] fields = meta.Output.Split(Field);
-            var commit = ParseCommit(string.Join(Field, fields.Take(7)));
-            string body = fields.Length > 7 ? fields[7].Trim() : "";
-
-            // A merge commit shows what it brought in: its diff against the first parent.
-            var patch = await RunAsync(engine, ["show", "--format=", "-M", "--diff-merges=first-parent", "--patch", sha]);
-            if (patch.ExitCode != 0) return GitError(patch);
-            var (diff, truncated) = SafeDiff(patch.Output);
-            return Results.Json(new { commit, body, diff, truncated });
-        });
-
-        app.MapGet("/git/branch", async (string? name, AgentEngine engine) =>
+        routes.MapGet("/git/branches/{**name}", async (string name, AgentEngine engine) =>
         {
             var branches = await ListBranchesAsync(engine);
             if (branches.Error is { } error) return error;
@@ -68,22 +35,22 @@ internal static partial class HistoryEndpoints
             return Results.Json(new { branch, into = branches.Current, commits = ParseCommits(log.Output), diff, truncated });
         });
 
-        app.MapPost("/git/merge", async (GitBranchRequest request, AgentEngine engine) =>
+        routes.MapPost("/git/merge", async (GitBranchRequest request, AgentEngine engine) =>
         {
             var branches = await ListBranchesAsync(engine);
             if (branches.Error is { } error) return error;
             if (branches.Items.FirstOrDefault(b => b.Name == request.Branch) is not { } branch)
                 return ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error", MessageText.Format(ApiUserText.NoBranch, new { Name = request.Branch }));
             if (branch.Current)
-                return ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error", $"'{branch.Name}' is the checked-out branch.");
+                return ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error", MessageText.Format(ApiUserText.MergeCheckedOutBranch, new { Branch = branch.Name }));
             if (branch.Ahead == 0)
-                return ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error", $"'{branch.Name}' is already merged into {branches.Current}.");
+                return ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error", MessageText.Format(ApiUserText.MergeAlreadyMerged, new { Branch = branch.Name, branches.Current }));
 
             // A merge on top of uncommitted work would mix the two; untracked files are fine.
             var dirty = await RunAsync(engine, ["status", "--porcelain", "--untracked-files=no"]);
             if (dirty.Output.Trim().Length > 0)
                 return ApiErrors.Result(StatusCodes.Status409Conflict, "conflict_error",
-                    $"{branches.Current} has uncommitted changes: commit, unstage or discard them in Changes before merging.");
+                    MessageText.Format(ApiUserText.MergeUncommittedChanges, new { branches.Current }));
 
             var merge = await RunAsync(engine, ["merge", "--no-ff", "--no-edit", "-m", MessageText.Format(ApiUserText.MergeCommitMessage, new { Branch = branch.Name, branches.Current }), $"refs/heads/{branch.Name}"]);
             if (merge.ExitCode != 0)
@@ -104,12 +71,12 @@ internal static partial class HistoryEndpoints
         });
 
         // Only merged branches: git branch -d refuses to delete unmerged work.
-        app.MapPost("/git/branch/delete", async (GitBranchRequest request, AgentEngine engine) =>
+        routes.MapDelete("/git/branches/{**name}", async (string name, AgentEngine engine) =>
         {
             var branches = await ListBranchesAsync(engine);
             if (branches.Error is { } error) return error;
-            if (branches.Items.FirstOrDefault(b => b.Name == request.Branch) is not { } branch)
-                return ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error", MessageText.Format(ApiUserText.NoBranch, new { Name = request.Branch }));
+            if (branches.Items.FirstOrDefault(b => b.Name == name) is not { } branch)
+                return ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error", MessageText.Format(ApiUserText.NoBranch, new { Name = name }));
             if (branch.Current || branch.Ahead > 0)
                 return ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error",
                     branch.Current ? MessageText.Format(ApiUserText.DeleteCurrentBranch) : MessageText.Format(ApiUserText.BranchNotMerged, new { Branch = branch.Name }));
@@ -118,9 +85,6 @@ internal static partial class HistoryEndpoints
             return delete.ExitCode == 0 ? await BranchesResultAsync(engine, message: MessageText.Format(ApiUserText.BranchDeleted, new { Branch = branch.Name })) : GitError(delete);
         });
     }
-
-    // hash, short hash, author, author date, subject, refs, parents
-    private const string CommitFormat = "%H%x1f%h%x1f%an%x1f%aI%x1f%s%x1f%D%x1f%P";
 
     private static async Task<IResult> BranchesResultAsync(AgentEngine engine, string? message = null)
     {
@@ -160,54 +124,4 @@ internal static partial class HistoryEndpoints
 
         return new BranchList(current, items, null);
     }
-
-    internal static List<GitCommitInfo> ParseCommits(string output) =>
-        output.Split(Record).Select(r => r.Trim('\n', '\r')).Where(r => r.Length > 0).Select(ParseCommit).ToList();
-
-    private static GitCommitInfo ParseCommit(string record)
-    {
-        string[] f = record.Split(Field);
-        string Get(int i) => i < f.Length ? f[i].Trim() : "";
-        var refs = Get(5).Split(", ", StringSplitOptions.RemoveEmptyEntries).Select(r => r.Replace("HEAD -> ", "")).Where(r => r != "HEAD").ToList();
-        var parents = Get(6).Split(' ', StringSplitOptions.RemoveEmptyEntries).ToList();
-        return new GitCommitInfo(Get(0), Get(1), Get(2), Get(3), Get(4), refs, parents);
-    }
-
-    /// <summary>Drops the content of secret files from a multi-file patch, and caps its size.</summary>
-    internal static (string Diff, bool Truncated) SafeDiff(string patch)
-    {
-        var result = new StringBuilder();
-        foreach (string section in Regex.Split(patch, "(?=^diff --git )", RegexOptions.Multiline))
-        {
-            var header = DiffHeader().Match(section);
-            if (!header.Success || !SensitiveFiles.IsSensitive(header.Groups[1].Value))
-            {
-                result.Append(section);
-                continue;
-            }
-
-            // Keep the "diff --git" line so the file is still listed, but none of its content.
-            int end = section.IndexOf('\n');
-            result.Append(end < 0 ? section + "\n" : section[..(end + 1)]).Append(MessageText.Format(ApiUserText.SecretDiffBinary));
-        }
-
-        string text = result.ToString();
-        return text.Length > MaxDiffChars ? (text[..MaxDiffChars], true) : (text, false);
-    }
-
-    [GeneratedRegex("^diff --git a/.+? b/(.+)$", RegexOptions.Multiline)]
-    private static partial Regex DiffHeader();
-
-    [GeneratedRegex("^[0-9a-fA-F]{7,40}$")]
-    private static partial Regex CommitHash();
 }
-
-/// <summary>A local branch; Ahead/Behind count commits relative to the checked-out branch (Ahead 0 = merged).</summary>
-internal sealed record GitBranchInfo(string Name, string Commit, string Subject, string Author, string Date, bool Current, int Ahead, int Behind)
-{
-    public bool Merged => !Current && Ahead == 0;
-}
-
-internal sealed record GitCommitInfo(string Sha, string ShortSha, string Author, string Date, string Subject, List<string> Refs, List<string> Parents);
-
-internal sealed record GitBranchRequest(string? Branch);

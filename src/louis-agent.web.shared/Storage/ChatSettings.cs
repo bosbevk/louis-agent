@@ -11,12 +11,12 @@ public sealed class ChatSettings
     /// <summary>The admin portal's key (ADMIN_API_KEY), kept apart so saving it never replaces the chat's (F31).</summary>
     public string? AdminKey { get; set; }
 
-    /// <summary>The key a request to <paramref name="uri"/> carries: the admin key under <c>admin/</c>, else the chat's.</summary>
+    /// <summary>The key a request to <paramref name="uri"/> carries: the admin key under <c>v1/admin/</c>, else the chat's.</summary>
     public string? KeyFor(Uri? uri)
     {
         string path = uri is null ? "" : uri.IsAbsoluteUri ? uri.AbsolutePath : uri.OriginalString;
         path = path.TrimStart('/');
-        bool admin = path == "admin" || path.StartsWith("admin/", StringComparison.Ordinal) || path.StartsWith("admin?", StringComparison.Ordinal);
+        bool admin = path == "v1/admin" || path.StartsWith("v1/admin/", StringComparison.Ordinal) || path.StartsWith("v1/admin?", StringComparison.Ordinal);
         return admin && !string.IsNullOrWhiteSpace(AdminKey) ? AdminKey : ApiKey;
     }
 }

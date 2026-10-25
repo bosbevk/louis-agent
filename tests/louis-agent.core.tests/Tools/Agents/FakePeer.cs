@@ -45,7 +45,7 @@ internal static class FakePeer
     /// <summary>A peer that creates sess_child, answers with <paramref name="answer"/> and accepts the delete.</summary>
     public static StubHandler Peer(Func<HttpResponseMessage>? answer = null) => new(request => request.Method.Method switch
     {
-        "POST" when request.RequestUri!.AbsolutePath == "/sessions" => Json(HttpStatusCode.Created, """{"session_id":"sess_child"}"""),
+        "POST" when request.RequestUri!.AbsolutePath == "/v1/sessions" => Json(HttpStatusCode.Created, """{"session_id":"sess_child"}"""),
         "POST" => answer?.Invoke() ?? new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(AnswerStream, Encoding.UTF8, "text/event-stream") },
         "DELETE" => Json(HttpStatusCode.OK, """{"deleted":true}"""),
         _ => new HttpResponseMessage(HttpStatusCode.NotFound),
@@ -67,7 +67,7 @@ internal static class FakePeer
         int created = 0;
         return new StubHandler(request => request.Method.Method switch
         {
-            "POST" when request.RequestUri!.AbsolutePath == "/sessions" => Json(HttpStatusCode.Created, $$"""{"session_id":"sess_{{++created}}"}"""),
+            "POST" when request.RequestUri!.AbsolutePath == "/v1/sessions" => Json(HttpStatusCode.Created, $$"""{"session_id":"sess_{{++created}}"}"""),
             "POST" => new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(AnswerStream, Encoding.UTF8, "text/event-stream") },
             "DELETE" => Json(HttpStatusCode.OK, """{"deleted":true}"""),
             _ => new HttpResponseMessage(HttpStatusCode.NotFound),
@@ -100,7 +100,7 @@ internal static class FakePeer
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             if (request.Method == HttpMethod.Delete) { Deleted = true; return new HttpResponseMessage(HttpStatusCode.OK); }
-            if (request.RequestUri!.AbsolutePath == "/sessions") return Json(HttpStatusCode.Created, """{"session_id":"sess_child"}""");
+            if (request.RequestUri!.AbsolutePath == "/v1/sessions") return Json(HttpStatusCode.Created, """{"session_id":"sess_child"}""");
             await Task.Delay(Timeout.Infinite, cancellationToken);
             return new HttpResponseMessage(HttpStatusCode.OK);
         }

@@ -16,27 +16,38 @@ docker compose -f docker/docker-compose.yml --env-file config/.env up -d --build
 dotnet run --project src/louis-agent.api --launch-profile puls --property:WebApp=puls  # Puls's settings and web app
 ```
 
-Every API call needs `AGENT_API_KEY` as `x-api-key` (or `Authorization: Bearer`); without a key the API refuses to start
-unless `AGENT_AUTH=off` ([FX18](../fixes/FX18-auth-fails-closed.md)).
+Every route is under `/v1` but `/health` ([ADR 0039](../adr/0039-api-routes-under-v1.md)), and every `/v1` call needs
+`AGENT_API_KEY` as `x-api-key` (or `Authorization: Bearer`) unless the route is marked open; without a key the API
+refuses to start unless `AGENT_AUTH=off` ([FX18](../fixes/FX18-auth-fails-closed.md)).
 
 ## Add an endpoint
 
-1. **Test first** where you can: a rule the endpoint keeps (a limit, a parse, a refusal) goes in a plain class with
-   NUnit tests in `tests/louis-agent.api.tests`, mirroring the folder.
-2. **Put it with its concern.** A new area gets its own `Endpoints/{Area}Endpoints.cs` with a `Map{Area}` extension on
-   `WebApplication` (`HistoryEndpoints` is the model), called from `Program.cs` beside the others. Take what it needs
-   from the container as parameters (`AgentEngine`, `AgentEngineFactory`, `AgentSessions`).
-3. **Protect it.** The key check in `Program.cs` covers only the path prefixes it lists (`/sessions`, `/workspace`,
-   `/git`, `/toolsets`, `/roles`, `/model`). **An endpoint under a new prefix is public until you add it there.** The
-   admin endpoints have their own key (`AdminGate`).
-4. **Keep the guards.** A path from a client goes through `WorkspaceBoundary`; a git call through
-   `GitEndpoints.RunAsync`, with its arguments as a list, never a shell line
+1. **Test first.** A rule the endpoint keeps (a limit, a parse, a refusal) goes in a plain class with NUnit tests in
+   `tests/louis-agent.api.tests`, mirroring the folder; what the route answers (its status, its `Location`, its `401`)
+   is tested in memory with `ApiTestHost`, as `SessionCreatedTests` does.
+2. **Name it by the rule** ([ADR 0039](../adr/0039-api-routes-under-v1.md)): a noun, one plural name for a collection
+   and its items (`/v1/git/branches`, `/v1/git/branches/{name}`); a create is a `POST` to the collection that answers
+   `201` with `Location` (`Results.Created`, the path built from `ApiMap.Version`); a delete is `DELETE`; an action no
+   method names is `POST /v1/{resource}/{verb}`, the verb last.
+3. **Put it with its concern.** A new area gets its own `Endpoints/{Area}Endpoints.cs` (or a folder, as `Endpoints/Git/`
+   is) with a `Map{Area}` extension on `IEndpointRouteBuilder` (`GitBranchesEndpoints` is the model), called from
+   `ApiMap.MapApi` on the `v1` group beside the others, never from `Program.cs`. Its paths leave the version out
+   (`"/git/branches"`): the group adds it. Take what it needs from the container as parameters (`AgentEngine`,
+   `AgentEngineFactory`, `AgentSessions`).
+4. **Protect it.** A route under `/v1` needs the key unless the code marks it otherwise, so a new one is closed until
+   you open it. Mark it `.WithAccess(RouteAccess.Open)` only when it holds nothing private, and say why in a comment,
+   as the prices and the rates do. The admin endpoints have their own key (`AdminGate`, `RouteAccess.AdminKey`).
+5. **Regenerate the route golden** (`LOUIS_UPDATE_GOLDEN=1 dotnet test tests/louis-agent.api.tests --filter
+   ApiRoutesSnapshotTests`) and review its diff: one line per route, with its method and who may call it.
+   `ApiRouteRuleTests` checks the rule on the real table.
+6. **Keep the guards.** A path from a client goes through `WorkspaceBoundary`; a git call through
+   `GitProcess.RunAsync`, with its arguments as a list, never a shell line
    ([ADR 0004](../adr/0004-arguments-as-data.md)).
-5. **Errors and texts.** An error is `ApiErrors.Body(type, message)`, the shape Claude's API uses; every text is a
+7. **Errors and texts.** An error is `ApiErrors.Body(type, message)`, the shape Claude's API uses; every text is a
    member of `Messages/ApiUserText` (what a client sees) or `ApiLogMessage` (a log line)
    ([ADR 0009](../adr/0009-message-text-as-enum-templates.md)).
-6. **Document it** in [How the agents and endpoints talk](../AGENT_COMMUNICATION.md#the-http-api-louis-agentapi) and the
-   API's design doc.
+8. **Document it** in [How the agents and endpoints talk](../AGENT_COMMUNICATION.md#the-http-api-louis-agentapi) and the
+   API's design doc. A client names the whole route, version included (`"v1/git/branches"`).
 
 ## Add a session option
 
@@ -73,17 +84,20 @@ dotnet test tests/louis-agent.api.tests
 ```
 
 The sessions run against a fake model client that is never called; the benchmark store's contract runs against the
-in-memory store, and against MongoDB when `BENCHMARKS_MONGO_URL` is set (CI sets it). The endpoints themselves have no
-automated tests yet, so check a new one with curl, with and without the key:
+in-memory store, and against MongoDB when `BENCHMARKS_MONGO_URL` is set (CI sets it). The routes run in memory
+(`ApiTestHost`): the table is pinned by `ApiRoutesSnapshot.json`, the key gate is tried on every route
+(`AgentKeyGateTests`), and the git routes run in a temporary repository (`GitResourceTests`). A streamed turn needs
+the model, so check one by hand, and check a new route on the running stack with and without the key:
 
 ```bash
-curl -s -o /dev/null -w "%{http_code}\n" http://127.0.0.1:5080/your-endpoint                        # 401
-curl -s -H "x-api-key: $AGENT_API_KEY" http://127.0.0.1:5080/your-endpoint                           # its answer
+curl -s -o /dev/null -w "%{http_code}\n" http://127.0.0.1:5080/v1/your-endpoint                     # 401
+curl -s -H "x-api-key: $AGENT_API_KEY" http://127.0.0.1:5080/v1/your-endpoint                        # its answer
 ```
 
 ## Before you ask for a review
 
-- [ ] A new prefix is in the key check, or is public on purpose and says why.
+- [ ] Every new route is under `/v1`, named by the rule, and needs the key, or is marked open on purpose and says why.
+- [ ] The route golden regenerated and its diff reviewed.
 - [ ] Paths through `WorkspaceBoundary`, git arguments as a list.
 - [ ] Errors in `ApiErrors`' shape; every text a message enum member.
 - [ ] New session options validated before an engine is built.

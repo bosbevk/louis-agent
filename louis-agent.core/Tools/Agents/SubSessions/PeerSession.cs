@@ -34,7 +34,7 @@ internal sealed class PeerSession(PeerHttp http, SubSessionMessenger messenger)
         string? sessionId = null;
         try
         {
-            using var create = http.Request(HttpMethod.Post, new Uri(peer, "sessions"), createBody);
+            using var create = http.Request(HttpMethod.Post, new Uri(peer, "v1/sessions"), createBody);
             using var created = await http.SendAsync(create, timeoutSource.Token);
             string createdBody = await created.Content.ReadAsStringAsync(timeoutSource.Token);
             if (!created.IsSuccessStatusCode)
@@ -42,9 +42,7 @@ internal sealed class PeerSession(PeerHttp http, SubSessionMessenger messenger)
             using var createdJson = JsonDocument.Parse(createdBody);
             sessionId = createdJson.RootElement.GetProperty("session_id").GetString() ?? throw new JsonException("no session_id");
             // The role it opened with, as the peer reports it (the one passed: CL10, a role is never derived).
-            // CL14: "role" from a peer on this build, "personality" from one a deploy behind.
-            string? reported = (createdJson.RootElement.TryGetProperty("role", out var p) && p.ValueKind == JsonValueKind.String) ||
-                               (createdJson.RootElement.TryGetProperty("personality", out p) && p.ValueKind == JsonValueKind.String)
+            string? reported = createdJson.RootElement.TryGetProperty("role", out var p) && p.ValueKind == JsonValueKind.String
                 ? p.GetString() : role;
             // F34: the toolsets it loaded, as the peer reports them: a role may add its own to the ones sent.
             IReadOnlyList<string> loaded = createdJson.RootElement.TryGetProperty("toolsets", out var t) && t.ValueKind == JsonValueKind.Array
@@ -131,7 +129,7 @@ internal sealed class PeerSession(PeerHttp http, SubSessionMessenger messenger)
     {
         try
         {
-            using var delete = http.Request(HttpMethod.Delete, new Uri(peer, $"sessions/{Uri.EscapeDataString(sessionId)}"), null);
+            using var delete = http.Request(HttpMethod.Delete, new Uri(peer, $"v1/sessions/{Uri.EscapeDataString(sessionId)}"), null);
             using var _ = await http.SendAsync(delete, CancellationToken.None);
         }
         catch (HttpRequestException) { }

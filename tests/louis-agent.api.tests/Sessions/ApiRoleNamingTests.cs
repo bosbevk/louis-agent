@@ -6,23 +6,15 @@ using System.Runtime.CompilerServices;
 
 namespace LouisAgent.Api.Tests.Sessions;
 
-// CL14 step 1: RoleNamingTests' rule for the API: what a session is, is its role; "personality" is left only in the
-// aliases a client one deploy behind still sends, and in what CL14's later steps rename.
+// CL14 step 1: RoleNamingTests' rule for the API: what a session is, is its role. From CL20 step 5 nothing in the API is named
+// personality: the alias a client one deploy behind sent went with the unversioned routes it called.
 public class ApiRoleNamingTests
 {
-    private static readonly HashSet<string> Allowed =
-    [
-        "CreateSessionRequest.Personality",                 // the alias POST /sessions still reads (removed by the TODO's line)
-        "CreateSessionRequest.get_Personality", "CreateSessionRequest.set_Personality",
-        "CreateSessionRequest..ctor(Personality)", "CreateSessionRequest.Deconstruct(Personality)",
-        "ApiUserText.RoleAndPersonalityDiffer",             // the 400 for a request that sends both, differing
-    ];
-
     private const BindingFlags All = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance |
                                      BindingFlags.Static | BindingFlags.DeclaredOnly;
 
     [Test]
-    public void NothingInTheApi_IsNamedPersonality_ButTheAliases()
+    public void NothingInTheApi_IsNamedPersonality()
     {
         var names = new List<string>();
         foreach (var type in typeof(AgentSessions).Assembly.GetTypes().Where(t => !t.IsDefined(typeof(CompilerGeneratedAttribute)) && !t.Name.Contains('<')))
@@ -36,7 +28,7 @@ public class ApiRoleNamingTests
             }
         }
 
-        var left = names.Distinct().Except(Allowed).Order().ToList();
+        var left = names.Distinct().Order().ToList();
         Assert.That(left, Is.Empty, "call it a role: " + string.Join(", ", left));
     }
 

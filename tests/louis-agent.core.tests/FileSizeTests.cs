@@ -31,8 +31,6 @@ public class FileSizeTests
         "src/louis-agent.api/Benchmarks/Store/BenchmarkRecorder.cs",
         "src/louis-agent.api/Benchmarks/Store/MongoBenchmarkStore.cs",
         "src/louis-agent.api/Endpoints/AdminEndpoints.cs",
-        "src/louis-agent.api/Endpoints/GitEndpoints.cs",
-        "src/louis-agent.api/Endpoints/HistoryEndpoints.cs",
         "src/louis-agent.mcp-server/Program.cs",
         "src/louis-agent.orchestrator/CommsLog.cs",
         "src/louis-agent.orchestrator/LouisAgentClient.cs",

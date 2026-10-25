@@ -25,7 +25,7 @@ public class SpecialistToolsRollUpTests
     public async Task ASubSessionsUsage_IsRolledUpIntoTheParentTurn_AsOneLedgerRow()
     {
         // F5 follow-up: the specialist's 3 requests count in the parent's turn (its usage line, chat total, /usage,
-        // GET /sessions/{id} all total the scope) and leave one sub_session row in the parent's ledger.
+        // GET /v1/sessions/{id} all total the scope) and leave one sub_session row in the parent's ledger.
         var sink = new ListUsageSink();
         var handler = Peer();
 

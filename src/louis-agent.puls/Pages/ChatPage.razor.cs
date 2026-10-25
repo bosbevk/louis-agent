@@ -76,12 +76,12 @@ public partial class ChatPage : IDisposable
         _reducedMotion = await JS.InvokeAsync<bool>("pulsUi.reducedMotion");
         try
         {
-            var model = await Api.GetAsync<System.Text.Json.JsonElement>("model");
+            var model = await Api.GetAsync<System.Text.Json.JsonElement>("v1/model");
             _model = Pretty(model.GetProperty("model").GetString());
         }
         catch (Exception)
         {
-            _model = null;   // An older API without /model: the picker says "Model".
+            _model = null;   // An older API without /v1/model: the picker says "Model".
         }
     }
 
@@ -99,19 +99,19 @@ public partial class ChatPage : IDisposable
         return await Api.CreateSessionAsync(available.Contains("specialists") ? own.Where(available.Contains).ToArray() : available, Role, _location, timeZone);
     }
 
-    /// <summary>The languages Puls can speak: a puls/voice-{code} for each in GET /roles, so the menu and the API agree.</summary>
+    /// <summary>The languages Puls can speak: a puls/voice-{code} for each in GET /v1/roles, so the menu and the API agree.</summary>
     private async Task LoadLanguagesAsync()
     {
         try
         {
-            var roles = await Api.GetAsync<System.Text.Json.JsonElement>("roles");
+            var roles = await Api.GetAsync<System.Text.Json.JsonElement>("v1/roles");
             var codes = roles.GetProperty("agent").EnumerateArray().Select(p => p.GetString() ?? "")
                 .Where(p => p.StartsWith("puls/voice-", StringComparison.Ordinal)).Select(p => p["puls/voice-".Length..]).ToList();
             if (codes.Count > 0) _languages = codes;
         }
         catch (Exception)
         {
-            // An API without /roles or its levels: Afrikaans, as before CL9.
+            // An API without /v1/roles or its levels: Afrikaans, as before CL9.
         }
         string? saved = await JS.InvokeAsync<string?>("pulsUi.loadLanguage");
         _language = saved is not null && _languages.Contains(saved) ? saved : _languages.Contains(DefaultLanguage) ? DefaultLanguage : _languages[0];

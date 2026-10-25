@@ -6,7 +6,7 @@ using LouisAgent.Core.Agent.Catalog;
 /// One named toolset: what it is, which settings it needs on this instance, its guide, and how to build its tools.
 /// </summary>
 /// <param name="Name">The name clients send in <c>toolsets</c>, lowercase.</param>
-/// <param name="Description">One line, shown by <c>GET /toolsets</c>.</param>
+/// <param name="Description">One line, shown by <c>GET /v1/toolsets</c>.</param>
 /// <param name="GuideFile">
 /// The skill file that guides the model on these tools, or null when the guide is a section of <c>default.md</c>.
 /// </param>

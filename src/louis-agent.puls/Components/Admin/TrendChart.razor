@@ -41,7 +41,7 @@ else
 }
 
 @code {
-    /// <summary>The trend as GET /admin/benchmarks/checks/{check}/trend answers it.</summary>
+    /// <summary>The trend as GET /v1/admin/benchmarks/checks/{check}/trend answers it.</summary>
     [Parameter, EditorRequired] public JsonElement Trend { get; set; }
     [Parameter] public CurrencyChoice? Currency { get; set; }
     [Parameter] public bool Small { get; set; }

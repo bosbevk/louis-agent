@@ -18,9 +18,9 @@ internal static class WorkspaceEndpoints
     // Bigger files aren't useful to read in a browser and would be slow to render.
     private const long MaxFileBytes = 1_000_000;
 
-    public static void MapWorkspace(this WebApplication app)
+    public static void MapWorkspace(this IEndpointRouteBuilder routes)
     {
-        app.MapGet("/workspace/entries", (string? path, WorkspaceBoundary workspace, AgentEngine engine) =>
+        routes.MapGet("/workspace/entries", (string? path, WorkspaceBoundary workspace, AgentEngine engine) =>
         {
             if (Resolve(workspace, path ?? "", out string? fullPath) is { } invalid) return invalid;
             if (!Directory.Exists(fullPath))
@@ -39,7 +39,7 @@ internal static class WorkspaceEndpoints
             return Results.Json(new { path = Relative(engine, fullPath!), entries = folders.Concat(files) });
         });
 
-        app.MapGet("/workspace/file", (string? path, WorkspaceBoundary workspace, AgentEngine engine) =>
+        routes.MapGet("/workspace/file", (string? path, WorkspaceBoundary workspace, AgentEngine engine) =>
         {
             if (string.IsNullOrWhiteSpace(path))
                 return ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error", MessageText.Format(ApiUserText.PathRequired));

@@ -10,9 +10,9 @@ Built as features in [docs/features/](../features/README.md); each planned one i
 | Section | Feature | Status |
 |---|---|---|
 | §4.1, §4.3 Recording | [F1 Usage ledger](../features/F01-usage-ledger.md) | **done** (2026-10-10): `input` is uncached input (the adapter's count minus cache reads and writes); `reasoning` is null on Claude; triage records are tied to their run, not to a task |
-| §4.2 Prices | [F2 Prices and cost](../features/F02-prices-and-cost.md) | **done** (2026-10-10): `config/prices.json` is tracked; a `long_prompt` tier (Haiku 5.5); also served at the API's `GET /prices` and read with `PRICES_URL` |
+| §4.2 Prices | [F2 Prices and cost](../features/F02-prices-and-cost.md) | **done** (2026-10-10): `config/prices.json` is tracked; a `long_prompt` tier (Haiku 5.5); also served at the API's `GET /v1/prices` and read with `PRICES_URL` |
 | §7.2–7.4 Showing it (and the stream in §7.1) | [F3 Show usage](../features/F03-usage-display.md) | **done** (2026-10-11): the stream's `usage` is Claude's four token fields summed over the turn, plus `requests`, `cost`, `currency` and `unpriced`, also on `error` (FX6); every view totals with `UsageReport.Total`, and the short demo's comms log equals its ledger exactly ($0.252605); Rider's chat line is opt-in (`USAGE_IN_CHAT`); the web line shows cache writes on their own |
-| §4.2, §7 Costs in another currency | [F14 Display currency](../features/F14-display-currency.md) | **done** (2026-10-11): shown in the PC's region's currency (`HOST_CULTURE`) at a dated rate (Frankfurter, mapped into our `rates.json`; `config/rates.json` as the fallback; `GET /rates`), with the rate and the USD charged beside converted totals; the ledger and the jsonl files stay in USD |
+| §4.2, §7 Costs in another currency | [F14 Display currency](../features/F14-display-currency.md) | **done** (2026-10-11): shown in the PC's region's currency (`HOST_CULTURE`) at a dated rate (Frankfurter, mapped into our `rates.json`; `config/rates.json` as the fallback; `GET /v1/rates`), with the rate and the USD charged beside converted totals; the ledger and the jsonl files stay in USD |
 | §5 Estimates | [F6 Estimates](../features/F06-estimates.md) | planned |
 | §6 Budgets | [F7 Budgets](../features/F07-budgets.md) (account-limit refusals: [F8](../features/F08-reliability.md)) | planned |
 | §7.1–7.2 Usage tab and API, §4.4 Reconciliation | [F11 Usage tab and reconciliation](../features/F11-usage-tab-and-reconciliation.md) | planned |
@@ -99,7 +99,7 @@ is off, with a warning.
   with `purpose: "sub_session"`, `round: 0`, `stop: "sub_session"`, `model: "sub-session:{peer}"`, the parent's host,
   session and turn, the child's four token counts and charged cost, and a `requests` field saying how many model
   requests it stands for (`requests` is written on these rows only). It is written to the parent's ledger *and* added
-  to the parent turn's in-memory records, so the usage line, the chat total, `/usage` and `GET /sessions/{id}` count the
+  to the parent turn's in-memory records, so the usage line, the chat total, `/usage` and `GET /v1/sessions/{id}` count the
   specialist's work, weighted by `requests`. The specialist's own rows are in the ledger it ran on (the same file when
   peers share `LOG_DIRECTORY`, as Puls and its specialist do), linked by `parent`, so **ledger reports list roll-ups
   without totalling them** (`usage-probe --ledger`, `--cache-gaps`): a turn counts its roll-up, a ledger counts the
@@ -113,7 +113,7 @@ is off, with a warning.
 
 A price table in `config/prices.json`, **tracked** (prices aren't secret, so every clone and container prices the same
 way; `PRICES_FILE` points elsewhere). A host can also fetch it over HTTP with `PRICES_URL`, e.g. from louis-agent.api's
-public `GET /prices`, so several hosts price with one table; if the URL can't be reached at start-up it falls back to the
+public `GET /v1/prices`, so several hosts price with one table; if the URL can't be reached at start-up it falls back to the
 file. Comments are allowed in the file:
 
 ```json
@@ -141,7 +141,7 @@ read as free. Local models (Ollama) are priced at 0 on purpose; a model without 
 
 A session can be tagged so its usage rolls up to a task and a run:
 
-- `POST /sessions` accepts optional `{ "task": "fix:<error id>", "run": "<run id>", "service": "<name>" }`; the
+- `POST /v1/sessions` accepts optional `{ "task": "fix:<error id>", "run": "<run id>", "service": "<name>" }`; the
   orchestrator sets them for every fix (and build, in the build-mode POC).
 - The orchestrator's own triage requests are recorded with `host: "orchestrator"`, `purpose: "triage"`, session
   `triage_{error id}` and the same run id (no task), so a run's total includes both agents.
@@ -235,10 +235,10 @@ budget can be passed through as a hint — it never replaces the checks above.
 
 | Endpoint | Returns |
 |---|---|
-| `GET /usage?from=&to=&group_by=day,model,host,service,session,task,run` | Totals per group: tokens by kind, cost, request count, cache-hit rate |
-| `GET /usage/sessions/{id}` | The session's turns with tokens and cost per turn |
-| `GET /budgets` | Each budget: limit, used, remaining, period end, status (`ok` / `warning` / `reached`) |
-| `POST /estimates` | `{ "kind": "fix" \| "build" \| "run", "count": n, "service": "…" }` → low / median / high, with the basis |
+| `GET /v1/usage?from=&to=&group_by=day,model,host,service,session,task,run` | Totals per group: tokens by kind, cost, request count, cache-hit rate |
+| `GET /v1/usage/sessions/{id}` | The session's turns with tokens and cost per turn |
+| `GET /v1/budgets` | Each budget: limit, used, remaining, period end, status (`ok` / `warning` / `reached`) |
+| `POST /v1/estimates` | `{ "kind": "fix" \| "build" \| "run", "count": n, "service": "…" }` → low / median / high, with the basis |
 | SSE `message_delta` | Adds `usage` (tokens and cost for the turn so far) — Claude's own event shape carries it |
 
 Same `AGENT_API_KEY` rules as the other endpoints.
@@ -273,7 +273,7 @@ Same `AGENT_API_KEY` rules as the other endpoints.
 |---|---|---|
 | `USAGE_LEDGER` | `on` | Write `{LOG_DIRECTORY}/usage-YYYY-MM.jsonl` (needs `LOG_DIRECTORY`; off with a warning without it) |
 | `PRICES_FILE` | `config/prices.json` | Price table (missing file → tokens only, with a warning; a malformed one stops the host) |
-| `PRICES_URL` | unset | Fetch the price table over HTTP, e.g. louis-agent.api's `GET /prices`; unreachable → `PRICES_FILE` |
+| `PRICES_URL` | unset | Fetch the price table over HTTP, e.g. louis-agent.api's `GET /v1/prices`; unreachable → `PRICES_FILE` |
 | `BUDGETS_FILE` | `config/budgets.json` | Budgets (missing file → no louis-agent budgets; the account's limits still apply) |
 | `USAGE_IN_CHAT` | `true` web/CLI, `false` Rider | Show the per-answer usage line |
 | `ADMIN_API_KEY` *(secret)* | unset | Enables daily reconciliation with Anthropic's Usage and Cost reports (4.4) |

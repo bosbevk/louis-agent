@@ -159,7 +159,7 @@ What each part of a `ToolsetDefinition` is for:
 | Field | What it is |
 |---|---|
 | `Name` | What a session asks for in `toolsets` (`"units"`), lowercase |
-| `Description` | One line, shown by `GET /toolsets` |
+| `Description` | One line, shown by `GET /v1/toolsets` |
 | `GuideFile` | `SkillFiles.Guide("units")`, which is `toolsets/units.md` in the pack's `Prompts/` |
 | `MissingSettings` | The settings this instance lacks, by name; empty when the toolset can load. The shops pack returns `SHOP_CATALOGUES` until a shop is named, and `BROWSER_URL` until there is a browser |
 | `ToolTypes` | The tool classes, so the catalogue knows the tool names without building anything |
@@ -228,12 +228,12 @@ it and read the diff, since that is exactly what the model will be sent.
 Set `PACKS=units` in `config/.env` (or name the pack in an identity), start the API, and check that it is there:
 
 ```bash
-curl -s -H "x-api-key: $AGENT_API_KEY" http://127.0.0.1:5080/toolsets
+curl -s -H "x-api-key: $AGENT_API_KEY" http://127.0.0.1:5080/v1/toolsets
 curl -s -H "x-api-key: $AGENT_API_KEY" -H "Content-Type: application/json" \
-     -d '{"toolsets": ["units"]}' http://127.0.0.1:5080/sessions
+     -d '{"toolsets": ["units"]}' http://127.0.0.1:5080/v1/sessions
 ```
 
-`GET /toolsets` lists `units` with `available: true`, or the settings it misses. A session that names it gets its tools
+`GET /v1/toolsets` lists `units` with `available: true`, or the settings it misses. A session that names it gets its tools
 and its guide, and keeps them for its whole life. The images build every project (`COPY . .`), so a compose stack only
 needs `PACKS` (or `IDENTITIES`) and the pack's settings in its environment.
 

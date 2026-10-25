@@ -27,7 +27,7 @@ public static class ToolsetCatalog
 {
     private static readonly ILogger Log = AgentLogging.For<ToolsetDefinition>();
 
-    /// <summary>Every toolset, in the order <c>GET /toolsets</c> lists them.</summary>
+    /// <summary>Every toolset, in the order <c>GET /v1/toolsets</c> lists them.</summary>
     public static IReadOnlyList<ToolsetDefinition> All { get; } =
     [
         new("files", "Read, write, search, copy, rename and delete files in the workspace",

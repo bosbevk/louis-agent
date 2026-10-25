@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace LouisAgent.Puls.Tests.Pages;
 
 // T1: Puls's chat page rendered end to end against the stub API (FixtureApi): the API client is the real one, over a
-// stub that answers /model, /roles and /toolsets with fixed JSON, opens one session, and streams the recorded Puls turn
+// stub that answers /v1/model, /v1/roles and /v1/toolsets with fixed JSON, opens one session, and streams the recorded Puls turn
 // for its message. The empty page and the page with the turn are pinned to ChatPage.empty.html and ChatPage.turn.html. The
 // page's JS (pulsUi.*, louisChat.*, localStorage) runs through bUnit's loose interop, which answers every call with
 // nothing; the test lists the calls it made, so a new one is a review point.

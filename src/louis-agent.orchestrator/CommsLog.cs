@@ -26,7 +26,7 @@ internal sealed class CommsLog(string path, DisplayCurrency? display = null)
     private EventSummary? _current;
     private bool _checksHeaderWritten;
 
-    // One currency per run: both agents price from the same table (the demo's orchestrator reads louis-agent's /prices).
+    // One currency per run: both agents price from the same table (the demo's orchestrator reads louis-agent's /v1/prices).
     private string _currency = "USD";
 
     public string Path { get; } = System.IO.Path.GetFullPath(path);

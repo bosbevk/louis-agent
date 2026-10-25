@@ -96,7 +96,7 @@ public class AgentEngineFactoryTests
         var factory = FactoryEnabling([]);
 
         Assert.That(factory.AvailableRoles(RoleLevel.Agent), Is.EqualTo(new[] { "louis-agent/voice", "louis-agent/voice-orchestrator", "testprod/voice-af", "testprod/voice-en" }));
-        Assert.That(factory.DefaultVoice, Is.EqualTo("louis-agent/voice"), "GET /personalities' default");
+        Assert.That(factory.DefaultVoice, Is.EqualTo("louis-agent/voice"), "GET /v1/roles' default");
         Assert.That(factory.AvailableRoles(RoleLevel.Specialist), Does.Contain("testprod-specialist"));
     }
 

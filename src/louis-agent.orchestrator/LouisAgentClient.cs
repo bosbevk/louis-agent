@@ -43,7 +43,7 @@ internal sealed partial class LouisAgentClient(HttpClient http, string? apiKey)
     public async Task<string> CreateSessionAsync(UsageTags? tags = null, CancellationToken cancellationToken = default,
         IReadOnlyList<string>? toolsets = null)
     {
-        using var request = new HttpRequestMessage(HttpMethod.Post, "sessions");
+        using var request = new HttpRequestMessage(HttpMethod.Post, "v1/sessions");
         if (tags is not null || toolsets is not null)
             request.Content = JsonContent.Create(new { task = tags?.Task, run = tags?.Run, service = tags?.Service, toolsets });
         AddKey(request);
@@ -56,7 +56,7 @@ internal sealed partial class LouisAgentClient(HttpClient http, string? apiKey)
     public async Task<AgentReply> SendAsync(string sessionId, string message, Action<string>? onProgress = null,
         CancellationToken cancellationToken = default)
     {
-        using var request = new HttpRequestMessage(HttpMethod.Post, $"sessions/{Uri.EscapeDataString(sessionId)}/messages")
+        using var request = new HttpRequestMessage(HttpMethod.Post, $"v1/sessions/{Uri.EscapeDataString(sessionId)}/messages")
         {
             Content = JsonContent.Create(new { message }),
         };
@@ -74,7 +74,7 @@ internal sealed partial class LouisAgentClient(HttpClient http, string? apiKey)
 
     public async Task DeleteSessionAsync(string sessionId)
     {
-        using var request = new HttpRequestMessage(HttpMethod.Delete, $"sessions/{Uri.EscapeDataString(sessionId)}");
+        using var request = new HttpRequestMessage(HttpMethod.Delete, $"v1/sessions/{Uri.EscapeDataString(sessionId)}");
         AddKey(request);
         try { using var _ = await http.SendAsync(request); }
         catch (HttpRequestException) { /* the session times out on its own */ }

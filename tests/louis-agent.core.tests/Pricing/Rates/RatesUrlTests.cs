@@ -5,7 +5,7 @@ using LouisAgent.Core.Pricing.Rates.Mappers;
 
 namespace LouisAgent.Core.Tests.Pricing.Rates;
 
-// F14 step 1: RATES_URL (Frankfurter by default, or another louis-agent's GET /rates), mapped by RATES_FORMAT, falling back
+// F14 step 1: RATES_URL (Frankfurter by default, or another louis-agent's GET /v1/rates), mapped by RATES_FORMAT, falling back
 // to RATES_FILE when it can't be used; like PRICES_URL and the price file.
 public class RatesUrlTests
 {
@@ -63,7 +63,7 @@ public class RatesUrlTests
     [Test]
     public void LoadRates_AnotherLouisAgentsRates_ReadAsOurs()
     {
-        // The demo's orchestrator reads demo-api's GET /rates, which is already in our format.
+        // The demo's orchestrator reads demo-api's GET /v1/rates, which is already in our format.
         var handler = Answer(HttpStatusCode.OK, FileRates.Replace("\"file\"", "\"api\""));
 
         var (rates, _) = Load(Options("http://demo-api:8080/rates", RatesJsonMapper.FormatName), handler);

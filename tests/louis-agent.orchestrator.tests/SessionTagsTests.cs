@@ -29,7 +29,7 @@ public class SessionTagsTests
         string id = await client.CreateSessionAsync(new UsageTags("fix:e8b0b572223d", "run-20261010-160000", "order-service"));
 
         Assert.That(id, Is.EqualTo("sess_1"));
-        Assert.That(handler.Path, Is.EqualTo("/sessions"));
+        Assert.That(handler.Path, Is.EqualTo("/v1/sessions"));
         using var body = JsonDocument.Parse(handler.Body!);
         Assert.That(body.RootElement.GetProperty("task").GetString(), Is.EqualTo("fix:e8b0b572223d"));
         Assert.That(body.RootElement.GetProperty("run").GetString(), Is.EqualTo("run-20261010-160000"));
@@ -90,7 +90,7 @@ public class SessionTagsTests
             new HashSet<string> { "order-total" }, new CommsLog(Path.Combine(_dir, "agent-comms.md")));
     }
 
-    /// <summary>Answers POST /sessions like louis-agent.api and keeps what was sent.</summary>
+    /// <summary>Answers POST /v1/sessions like louis-agent.api and keeps what was sent.</summary>
     private sealed class CapturingHandler : HttpMessageHandler
     {
         public string? Path { get; private set; }

@@ -461,7 +461,7 @@
 </div>
 
 @code {
-    /// <summary>The run as GET /admin/benchmarks/runs/{id} answers it.</summary>
+    /// <summary>The run as GET /v1/admin/benchmarks/runs/{id} answers it.</summary>
     [Parameter, EditorRequired] public JsonElement Run { get; set; }
     [Parameter] public CurrencyChoice? Currency { get; set; }
 
@@ -667,7 +667,7 @@
             try
             {
                 var json = await Api.GetAsync<JsonElement>(
-                    $"admin/benchmarks/runs/{_runId}/turns/{Uri.EscapeDataString(m.Name)}/{_repeat}/{Uri.EscapeDataString(_task)}/{_turn}/events");
+                    $"v1/admin/benchmarks/runs/{_runId}/turns/{Uri.EscapeDataString(m.Name)}/{_repeat}/{Uri.EscapeDataString(_task)}/{_turn}/events");
                 var events = json.GetProperty("events").EnumerateArray()
                     .Select(e => (e.TryGetProperty("at", out var at) && at.ValueKind == JsonValueKind.String ? at.GetDateTimeOffset() : (DateTimeOffset?)null,
                         e.GetProperty("type").GetString()!, e.GetProperty("data").Clone()))
@@ -736,7 +736,7 @@
                 try
                 {
                     var json = await Api.GetAsync<JsonElement>(
-                        $"admin/benchmarks/runs/{_runId}/turns/{Uri.EscapeDataString(m.Name)}/{_repeat}/{Uri.EscapeDataString(_chatTask)}/{tu.N}/events");
+                        $"v1/admin/benchmarks/runs/{_runId}/turns/{Uri.EscapeDataString(m.Name)}/{_repeat}/{Uri.EscapeDataString(_chatTask)}/{tu.N}/events");
                     events = json.GetProperty("events").EnumerateArray()
                         .Select(e => (e.TryGetProperty("at", out var at) && at.ValueKind == JsonValueKind.String ? at.GetDateTimeOffset() : (DateTimeOffset?)null,
                             e.GetProperty("type").GetString()!, e.GetProperty("data").Clone()))

@@ -14,7 +14,7 @@ woorde nie. Die koste per modus kom uit die grootboek.
 | `baseline` | elke stel wat hierdie instansie het, behalwe `specialists` en `minions` | een agent wat alles self doen en niks kan oorgee nie |
 | `delegated` | `specialists`, `web` | Puls soos gebou; die kok wat dit kry, kry net `web` |
 
-Die `baseline` se stelle kom uit `GET /toolsets` wanneer die lopie begin: Paymo en DevOps is daarby as hul sleutels
+Die `baseline` se stelle kom uit `GET /v1/toolsets` wanneer die lopie begin: Paymo en DevOps is daarby as hul sleutels
 gestel is.
 
 ## Die vrae

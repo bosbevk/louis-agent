@@ -3,6 +3,15 @@
 > **Reference.** What was finished, newest first, one entry per feature, fix or cleanup. **Elsewhere:** what's still
 > open in the [TODO](TODO.md); how each was built in its feature, fix or plan doc (linked from its entry).
 
+- 2026-10-25 — **CL20 API standards**: every route of the agent API under `/v1` but `/health`, mapped in one place
+  (`ApiMap`); resources as nouns (the git routes by resource: `commits`, `commits/{sha}`, `branches/{name}` with its
+  slashes, a merged branch deleted with `DELETE`), and both creates answer `201` with `Location`; every `/v1` route
+  needs the key unless the code marks it open (the prices and the rates), so `GET /llm-profiles`, open by omission,
+  is closed, and an unknown `/v1` path is a JSON 404, not the web app's page; every client names the whole route
+  (`v1/sessions`), its setting only the host; CL14's `GET /personalities` and `personality` field gone; the git
+  endpoints split by resource (`Endpoints/Git/`); the route table pinned by a golden file, ADR 0039's rule checked on
+  it by tests ([plan](docs/plans/CL20-api-standards.md), [ADR 0039](docs/adr/0039-api-routes-under-v1.md), write-up
+  [11](docs/learning/11-protocols.md))
 - 2026-10-24 — **FX21 The browser says what it is**: `BROWSER_USER_AGENT`, what the headless browser tells every site it
   reads for a user; the Puls stack, its launch profile and the Azure app set `Puls/1.0 (+https://github.com/bosbevk/louis-agent/blob/main/docs/SITE_OWNERS.md;
   reads a page on a user's behalf)`, unset sends Chrome's own, the automation marker is never touched, and never a

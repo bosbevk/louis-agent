@@ -23,20 +23,20 @@ class Client:
         return urllib.request.urlopen(urllib.request.Request(self.api + path, data=data, method=method, headers=headers), timeout=TIMEOUT)
 
     def toolsets(self):
-        """The toolsets this instance can load (GET /toolsets: those whose settings are there)."""
-        with self._request("GET", "toolsets") as response:
+        """The toolsets this instance can load (GET /v1/toolsets: those whose settings are there)."""
+        with self._request("GET", "v1/toolsets") as response:
             return [t["name"] for t in json.loads(response.read())["toolsets"] if t.get("available")]
 
     def open_session(self, **body):
         """A new session; fields left None aren't sent, so the API's defaults hold. Returns its id."""
-        with self._request("POST", "sessions", {k: v for k, v in body.items() if v is not None}) as response:
+        with self._request("POST", "v1/sessions", {k: v for k, v in body.items() if v is not None}) as response:
             return json.loads(response.read())["session_id"]
 
     def message(self, session, text):
         """The message's stream, as (event, data) pairs as they arrive."""
-        with self._request("POST", f"sessions/{session}/messages", {"message": text}) as response:
+        with self._request("POST", f"v1/sessions/{session}/messages", {"message": text}) as response:
             yield from parse_sse(response)
 
     def close(self, session):
-        with self._request("DELETE", f"sessions/{session}") as response:
+        with self._request("DELETE", f"v1/sessions/{session}") as response:
             response.read()

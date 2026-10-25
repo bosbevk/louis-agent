@@ -59,7 +59,7 @@ public class ChatRunnerTests
         Assert.That(h.Ended, Is.EqualTo(1));
         Assert.That(h.Handler.Requests.Select(r => $"{r.Method} {r.Url}"), Is.EqualTo(new[]
         {
-            "POST http://localhost/sessions", $"POST http://localhost/sessions/{FixtureApi.SessionId}/messages",
+            "POST http://localhost/v1/sessions", $"POST http://localhost/v1/sessions/{FixtureApi.SessionId}/messages",
         }));
     }
 
@@ -85,7 +85,7 @@ public class ChatRunnerTests
 
         await h.Runner.StopAsync();
 
-        Assert.That(h.Handler.Requests.Single().Url, Is.EqualTo($"http://localhost/sessions/{FixtureApi.SessionId}/cancel"));
+        Assert.That(h.Handler.Requests.Single().Url, Is.EqualTo($"http://localhost/v1/sessions/{FixtureApi.SessionId}/cancel"));
         Assert.That(h.Runner.Notice, Is.Null);
     }
 
