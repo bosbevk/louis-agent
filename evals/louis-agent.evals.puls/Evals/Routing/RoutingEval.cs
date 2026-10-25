@@ -33,14 +33,18 @@ public sealed class RoutingEval : IEval
         return [new EvalMode("baseline", PulsVoice.Role, baseline), new EvalMode("delegated", PulsVoice.Role, RoutingSetup.Delegated)];
     }
 
-    public IReadOnlyList<EvalScenario> Scenarios { get; } = Load();
+    private static readonly Dataset Loaded = Load();
+
+    public IReadOnlyList<EvalScenario> Scenarios { get; } = Loaded.Scenarios;
+
+    public DatasetManifest? Dataset => Loaded.Manifest;
 
     /// <summary>The dataset, with every scenario's route read once: a scenario without a readable `routes_to` refuses the runner before a run.</summary>
-    private static IReadOnlyList<EvalScenario> Load()
+    private static Dataset Load()
     {
-        var scenarios = DatasetLoader.Load(EvalFiles.DatasetOf(typeof(RoutingEval)), GraderList).Scenarios;
-        foreach (var scenario in scenarios) ExpectedRoute.Of(scenario);
-        return scenarios;
+        var dataset = DatasetLoader.Load(EvalFiles.DatasetOf(typeof(RoutingEval)), GraderList);
+        foreach (var scenario in dataset.Scenarios) ExpectedRoute.Of(scenario);
+        return dataset;
     }
 
     public IReadOnlyList<IGrader> Graders => GraderList;

@@ -28,6 +28,9 @@ public interface IEval
 
     IReadOnlyList<EvalScenario> Scenarios { get; }
 
+    /// <summary>The dataset the scenarios came from (its name, version and hash), which a run's first line records; null for an eval with no dataset file, such as the stub (F18 step 5b).</summary>
+    DatasetManifest? Dataset => null;
+
     IReadOnlyList<IGrader> Graders { get; }
 
     /// <summary>The eval's scores for one trial, in F31's scores document (its keys unchanged).</summary>

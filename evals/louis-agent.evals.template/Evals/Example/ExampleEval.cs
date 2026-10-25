@@ -35,7 +35,12 @@ public sealed class ExampleEval : IEval
     public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions, CancellationToken cancellationToken) => throw new NotImplementedException();
 
     // The scenarios, from the dataset beside this eval: EvalFiles finds it, so no eval builds a path (sections 2 and 4).
-    public IReadOnlyList<EvalScenario> Scenarios { get; } = DatasetLoader.Load(EvalFiles.DatasetOf(typeof(ExampleEval)), GraderList).Scenarios;
+    private static readonly Dataset Loaded = DatasetLoader.Load(EvalFiles.DatasetOf(typeof(ExampleEval)), GraderList);
+
+    public IReadOnlyList<EvalScenario> Scenarios { get; } = Loaded.Scenarios;
+
+    // The dataset's name, version and hash: a run's first line records them, so a later run (or a re-score) can say which scenarios it graded.
+    public DatasetManifest? Dataset => Loaded.Manifest;
 
     // The graders, in the order the portal shows them; at least one required fixed rule (section 3).
     public IReadOnlyList<IGrader> Graders => GraderList;

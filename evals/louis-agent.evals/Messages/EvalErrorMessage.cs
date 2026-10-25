@@ -52,4 +52,10 @@ public enum EvalErrorMessage
 
     [Description("Dataset '{Dataset}': a grader reads '{Key}', which no scenario sets in expected, so it would grade nothing.")]
     UnfedKey,
+
+    [Description("The stored run has no first line naming its eval, so there is nothing to re-score.")]
+    NoBeginLine,
+
+    [Description("A re-score opens no session and calls no model, so '{Call}' was never meant to be reached.")]
+    NoSessionInARescore,
 }

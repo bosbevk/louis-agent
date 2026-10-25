@@ -33,14 +33,18 @@ public sealed class CookEval : IEval
     public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions, CancellationToken cancellationToken) =>
         ValueTask.FromResult<IReadOnlyList<EvalMode>>(CookSetup.Modes.Select(mode => new EvalMode(mode.Key, PulsVoice.Role, mode.Value)).ToList());
 
-    public IReadOnlyList<EvalScenario> Scenarios { get; } = Load();
+    private static readonly Dataset Loaded = Load();
+
+    public IReadOnlyList<EvalScenario> Scenarios { get; } = Loaded.Scenarios;
+
+    public DatasetManifest? Dataset => Loaded.Manifest;
 
     /// <summary>The dataset, with every scenario's expectations read once: a scenario that asks for something unreadable refuses the runner before a run.</summary>
-    private static IReadOnlyList<EvalScenario> Load()
+    private static Dataset Load()
     {
-        var scenarios = DatasetLoader.Load(EvalFiles.DatasetOf(typeof(CookEval)), GraderList).Scenarios;
-        foreach (var scenario in scenarios) CookExpectations.Of(scenario);
-        return scenarios;
+        var dataset = DatasetLoader.Load(EvalFiles.DatasetOf(typeof(CookEval)), GraderList);
+        foreach (var scenario in dataset.Scenarios) CookExpectations.Of(scenario);
+        return dataset;
     }
 
     public IReadOnlyList<IGrader> Graders => GraderList;

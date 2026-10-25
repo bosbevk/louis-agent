@@ -10,6 +10,7 @@ using LouisAgent.SessionStream;
 using Microsoft.Extensions.Logging;
 using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Grading.Outcomes;
+using LouisAgent.Evals.Running.Rescoring;
 
 namespace LouisAgent.Evals.Running;
 
@@ -43,6 +44,16 @@ public sealed class EvalRunner(ISessionClient sessions, ProtocolWriter protocol,
             }
         }
     }
+
+    /// <summary>
+    /// Grades a stored run's transcripts again, with today's graders, and records the result as a new run that names the one it re-scored
+    /// (<c>rescore_of</c>). No session is opened, no model is called and no ledger row is written; the stored lines are only read. A grader
+    /// change shouldn't cost a paid run: this is "evals as regression tests over recorded behaviour", the transcripts the fixed input and
+    /// the graders the code under test (GOAL skills 12 and 13). The plan's signature took a <c>StoredRun</c> the API would build; the runner reads
+    /// the protocol's own lines instead (the same reader a run and the conformance check use), so the API only pipes its export.
+    /// </summary>
+    public Task RescoreAsync(IEval eval, string runId, string rescoreOf, IEnumerable<string> storedLines, CancellationToken cancellationToken) =>
+        new Rescorer(protocol, logger).RunAsync(eval, runId, rescoreOf, storedLines, cancellationToken);
 
     private async Task RunScenarioAsync(IEval eval, EvalRun run, EvalMode mode, int repeat, EvalScenario scenario, ModeTally tally,
         CancellationToken cancellationToken)

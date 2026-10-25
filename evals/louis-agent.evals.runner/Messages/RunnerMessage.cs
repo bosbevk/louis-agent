@@ -29,10 +29,10 @@ public enum RunnerMessage
     [Description("--repeat needs a whole number, not '{Value}'.")]
     BadRepeat,
 
-    [Description("Usage: run <eval> [--repeat N] [--web off|record|replay] [--of <runId>] [--replay <runId>] [--split dev|held-out|all], or --list.")]
+    [Description("Usage: run <eval> [--repeat N] [--web off|record|replay] [--of <runId>] [--replay <runId>] [--split dev|held-out|all], run <eval> --rescore <runId>, or --list.")]
     Usage,
 
-    [Description("Unknown argument '{Argument}'. Usage: run <eval> [--repeat N] [--web off|record|replay] [--of <runId>] [--replay <runId>] [--split dev|held-out|all], or --list.")]
+    [Description("Unknown argument '{Argument}'. Usage: run <eval> [--repeat N] [--web off|record|replay] [--of <runId>] [--replay <runId>] [--split dev|held-out|all], run <eval> --rescore <runId>, or --list.")]
     UnknownArgument,
 
     [Description("Unknown --web '{Value}'. Use one of: {Supported}.")]
@@ -52,6 +52,9 @@ public enum RunnerMessage
 
     [Description("--of takes a run id's letters, digits, '-' and '_', not '{Value}'.")]
     BadOf,
+
+    [Description("--rescore <runId> re-grades a stored run's transcripts and opens no session, so it can't be given with --web, --replay, --repeat or --split (the repeats come from the stored run).")]
+    RescoreExcludesRunFlags,
 
     [Description("The stub's canned run: it proves the portal, not Puls, and costs nothing.")]
     StubProves,

@@ -27,4 +27,7 @@ public sealed class ModeTally
     }
 
     public void CountRetry() => Retried++;
+
+    /// <summary>A re-score keeps the count the stored run recorded (F18 step 5b): it ran no trial, so it retried none.</summary>
+    public void CarryRetried(int retried) => Retried = retried;
 }

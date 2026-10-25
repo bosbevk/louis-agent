@@ -8,13 +8,23 @@ namespace LouisAgent.Evals.Protocol;
 internal static class RunBeginLine
 {
     public static void Write(Utf8JsonWriter json, string eval, int evalVersion, string commit, IReadOnlyList<IGrader> graders, IReadOnlyList<ModelUse> models,
-        SplitSelection split)
+        SplitSelection split, string? rescoreOf = null, DatasetManifest? dataset = null)
     {
         json.WriteNumber("version", ProtocolWriter.Version);
         json.WriteString("eval", eval);
         json.WriteNumber("eval_version", evalVersion);
         json.WriteString("commit", commit);
         json.WriteString("split", SplitSelections.WireName(split));
+        // F18 step 5b: the run this one re-scored, and the dataset it graded against as it was then (a run of an eval with no dataset file names none).
+        if (rescoreOf is not null) json.WriteString("rescore_of", rescoreOf);
+        if (dataset is not null)
+        {
+            json.WriteStartObject("dataset");
+            json.WriteString("name", dataset.Name);
+            json.WriteNumber("version", dataset.Version);
+            json.WriteString("hash", dataset.ContentHash);
+            json.WriteEndObject();
+        }
         json.WriteStartArray("graders");
         foreach (var grader in graders)
         {

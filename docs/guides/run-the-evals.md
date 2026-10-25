@@ -22,6 +22,7 @@ BENCHMARK_RUN=cook-1 PULS_API=http://127.0.0.1:5070/ \
 | `--repeat N` | Each mode N times (1 to 5). |
 | `--split dev\|held-out\|all` | The scenarios a run asks for. `dev` is the default, and all the portal runs; the held-out ones are for a release check, never tuned against. The run's first line says which. |
 | `--web off\|record\|replay` | What the run does with the web: nothing special (the instance's `WEB_REPLAY`), saves every page, search, fetch and the time it reads, or answers from a recording. `replay` needs `--of {runId}`. |
+| `--rescore {runId}` | Grades a stored run's transcripts again with today's graders, for $0, and records the result as a new run (`rescore_of`). It reads the stored run's protocol lines from stdin and takes no other flag. |
 | `--replay {runId}` | A replay of that run **with the model's answers too**: every model request is a cache hit, the run costs $0, and its scores equal the recorded run's. It tests everything around the model (the graders, the harness, the engine's code), not a prompt: a changed prompt is a different request, so it misses. |
 
 The run's id is `BENCHMARK_RUN`, else `local-` and the time it started: set it yourself, so you know what to replay. The runner
@@ -50,6 +51,12 @@ Pick by what you changed:
 | nothing: the baseline | `--web record` | live, saved | live, saved | the run's own |
 | a prompt | `--web replay --of {runId}` | the recording's | live | the run's own |
 | the graders, the harness, the engine's code | `--replay {runId}` | the recording's | the recording's | $0 |
+
+### Re-scoring a run
+
+A grader change shouldn't cost a paid run. `run {name} --rescore {runId} < run.txt` (the file is `GET /v1/admin/benchmarks/runs/{id}/protocol`) grades the
+stored run's conversations again with the graders as they are today and records a new run that names the old one. No session opens and no model is
+called, so it costs nothing, and the old run stays as it was. A scenario the dataset no longer has is graded `Unknown`, never `Fail`.
 
 A replay that misses says where the request changed (the model, the system prompt, a tool, the settings, or message *n*); what
 the recording never read comes back to the model as a short text it treats as unknown.

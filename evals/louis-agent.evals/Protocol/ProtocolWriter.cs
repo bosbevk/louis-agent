@@ -110,8 +110,16 @@ public sealed class ProtocolWriter(TextWriter stdout, TimeProvider clock)
 
     /// <summary>The run's first line (F18 step 2a): the eval, its version, the commit, the scenarios it asked for (its split, step 5.4), its graders and the model each mode ran on.</summary>
     public void Begin(string eval, int evalVersion, string commit, IReadOnlyList<IGrader> graders, IReadOnlyList<ModelUse> models,
-        SplitSelection split = SplitSelection.Dev) =>
-        Emit("protocol", json => RunBeginLine.Write(json, eval, evalVersion, commit, graders, models, split));
+        SplitSelection split = SplitSelection.Dev, string? rescoreOf = null, DatasetManifest? dataset = null) =>
+        Emit("protocol", json => RunBeginLine.Write(json, eval, evalVersion, commit, graders, models, split, rescoreOf, dataset));
+
+    /// <summary>A line of a stored run, written as it was (F18 step 5b): a re-score keeps the questions, events and turns it grades again.</summary>
+    public void Copy(string line)
+    {
+        stdout.Write(line);
+        stdout.Write('\n');
+        stdout.Flush();
+    }
 
     /// <summary>
     /// A mode's repeat is done (F18 step 5a). With <paramref name="rates"/> the line also carries the mode's pass@k and pass^k over the repeats so far (left

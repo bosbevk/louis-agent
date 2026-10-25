@@ -14,13 +14,14 @@ public abstract record CommandLineRequest;
 public sealed record ListRequest : CommandLineRequest;
 
 /// <summary>
-/// <c>run {name} [--repeat N] [--web off|record|replay] [--of &lt;runId&gt;] [--replay &lt;runId&gt;] [--split dev|held-out|all]</c>: one eval, each mode repeated N times,
+/// <c>run {name} [--repeat N] [--web off|record|replay] [--of &lt;runId&gt;] [--replay &lt;runId&gt;] [--split dev|held-out|all] | --rescore &lt;runId&gt;</c>: one eval, each mode repeated N times,
 /// its web input recorded or replayed (F18 step 4a). A null <paramref name="Web"/> sends no choice, so the instance's <c>WEB_REPLAY</c>
 /// decides; <paramref name="Of"/> is the recorded run's id, and is set only with a replay. <c>--replay {runId}</c> is a replay of that run
 /// with <paramref name="Model"/> set: the model's answers come from the recording too (step 4e), so it costs nothing.
+/// <paramref name="RescoreOf"/> (F18 step 5b, <c>--rescore {runId}</c>) re-grades that stored run's transcripts, read from stdin, and opens no session.
 /// </summary>
 public sealed record RunRequest(string Name, int Repeat, WebReplayMode? Web = null, string? Of = null, bool Model = false,
-    SplitSelection Split = SplitSelection.Dev) : CommandLineRequest;
+    SplitSelection Split = SplitSelection.Dev, string? RescoreOf = null) : CommandLineRequest;
 
 /// <summary>The command line: <c>--list</c>, or <c>run {name}</c> and its flags. A refusal is a <see cref="RunnerException"/>.</summary>
 public static class CommandLine
@@ -44,8 +45,10 @@ public static class CommandLine
     {
         int repeat = 1;
         WebReplayMode? web = null;
-        string? of = null, replay = null;
+        string? of = null, replay = null, rescore = null;
         var split = SplitSelection.Dev;
+        // What shapes a session or a run, which a re-score has none of: given at all, whatever its value (F18 step 5b).
+        bool shapesARun = false;
         for (int i = 0; i < rest.Count; i++)
         {
             string flag = rest[i];
@@ -53,13 +56,19 @@ public static class CommandLine
             string value = rest[++i];
             switch (flag)
             {
-                case "--repeat": repeat = ParseRepeat(value); break;
-                case "--web": web = ParseWeb(value); break;
+                case "--repeat": repeat = ParseRepeat(value); shapesARun = true; break;
+                case "--web": web = ParseWeb(value); shapesARun = true; break;
                 case "--of": of = ParseOf(value); break;
-                case "--replay": replay = ParseOf(value); break;
-                case "--split": split = ParseSplit(value); break;
+                case "--replay": replay = ParseOf(value); shapesARun = true; break;
+                case "--split": split = ParseSplit(value); shapesARun = true; break;
+                case "--rescore": rescore = ParseOf(value); break;
                 default: throw Refuse(RunnerMessage.UnknownArgument, new { Argument = flag });
             }
+        }
+        if (rescore is not null)
+        {
+            if (shapesARun || of is not null) throw Refuse(RunnerMessage.RescoreExcludesRunFlags, null);
+            return new RunRequest(name, repeat, RescoreOf: rescore);
         }
         if (replay is not null)
         {

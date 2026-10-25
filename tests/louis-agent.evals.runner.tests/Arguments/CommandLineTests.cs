@@ -179,4 +179,26 @@ public class CommandLineTests
     public void ASplitComesWithAnyOtherFlag() =>
         Assert.That(CommandLine.Parse(["run", "stub", "--split", "all", "--repeat", "2", "--web", "record"]),
             Is.EqualTo(new RunRequest("stub", 2, LouisAgent.Core.Sessions.Replay.WebReplayMode.Record, Split: LouisAgent.Evals.Datasets.SplitSelection.All)));
+
+    // F18 step 5b: --rescore {runId} re-grades a stored run's transcripts; it opens no session, so the flags that shape a session or a run are refused with it.
+    [Test]
+    public void ARescoreNamesTheRunItGradesAgain() =>
+        Assert.That(CommandLine.Parse(["run", "stub", "--rescore", "run_A"]), Is.EqualTo(new RunRequest("stub", 1, RescoreOf: "run_A")));
+
+    [TestCase("--web", "record")]
+    [TestCase("--replay", "run_B")]
+    [TestCase("--repeat", "2")]
+    [TestCase("--split", "all")]
+    public void RefusesARescoreGivenWithAFlagThatShapesARun_InEitherOrder(string flag, string value)
+    {
+        Assert.That(() => CommandLine.Parse(["run", "stub", "--rescore", "run_A", flag, value]),
+            Throws.InstanceOf<RunnerException>().With.Message.Contains("opens no session"));
+        Assert.That(() => CommandLine.Parse(["run", "stub", flag, value, "--rescore", "run_A"]),
+            Throws.InstanceOf<RunnerException>().With.Message.Contains("opens no session"));
+    }
+
+    [Test]
+    public void RefusesARescoreOfARunIdWithOtherCharacters() =>
+        Assert.That(() => CommandLine.Parse(["run", "stub", "--rescore", "run/A"]),
+            Throws.InstanceOf<RunnerException>().With.Message.Contains("'run/A'"));
 }

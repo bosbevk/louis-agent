@@ -25,4 +25,10 @@ public enum EvalLogMessage
 
     [Description("Retrying '{Scenario}' once, from a new session, after a transport failure at turn {Turn}.")]
     TrialRetried,
+
+    [Description("Re-scoring run '{Source}' as run {Run}: {Conversations} conversation(s), no session opened.")]
+    RescoreStarted,
+
+    [Description("Scenario '{Scenario}' is no longer in the dataset, so its conversation is Unknown.")]
+    ScenarioGone,
 }

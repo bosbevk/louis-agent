@@ -28,6 +28,16 @@ try
 
         case RunRequest run:
             var eval = catalog.Get(run.Name);
+            // A re-score (F18 step 5b) grades the stored run's lines, which the API pipes to stdin, and opens no session: it has no client to call.
+            if (run.RescoreOf is { } source)
+            {
+                var rescorer = new EvalRunner(new NoSessionClient(), new ProtocolWriter(Console.Out, TimeProvider.System), TimeProvider.System,
+                    AgentLogging.For<EvalRunner>());
+                string[] stored = Console.In.ReadToEnd().Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                await rescorer.RescoreAsync(eval, BenchmarkRun.Of(Environment.GetEnvironmentVariable("BENCHMARK_RUN"), TimeProvider.System), source, stored,
+                    CancellationToken.None);
+                return 0;
+            }
             // The stub answers from canned turns; every other eval talks to the API (F18 step 5.1): PULS_API, and AGENT_API_KEY when set.
             ISessionClient session = eval is StubEval
                 ? new StubSessionClient()
