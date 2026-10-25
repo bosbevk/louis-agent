@@ -3,6 +3,7 @@ namespace LouisAgent.Core.Tools.Web.Fetching;
 using System.Net;
 using LouisAgent.Core.Guardrails.Network;
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Tools.Web.Messages;
 
 /// <summary>
 /// The guarded client the web tools fetch pages with (S, CL15, from WebTools): it refuses private, loopback and
@@ -47,9 +48,9 @@ public sealed class PageFetcher
             if ((int)response.StatusCode is < 300 or >= 400 || response.Headers.Location is null) return (response, uri);
 
             response.Dispose();
-            if (hop == MaxRedirects) throw new HttpRequestException(MessageText.Format(ToolMessage.FetchTooManyRedirects, new { Count = MaxRedirects }));
+            if (hop == MaxRedirects) throw new HttpRequestException(MessageText.Format(WebToolMessage.FetchTooManyRedirects, new { Count = MaxRedirects }));
             var next = response.Headers.Location.IsAbsoluteUri ? response.Headers.Location : new Uri(uri, response.Headers.Location);
-            if (next.Scheme is not ("http" or "https")) throw new BlockedAddressException(MessageText.Format(ToolMessage.FetchRedirectScheme, new { next.Scheme }));
+            if (next.Scheme is not ("http" or "https")) throw new BlockedAddressException(MessageText.Format(WebToolMessage.FetchRedirectScheme, new { next.Scheme }));
             uri = next;
         }
     }

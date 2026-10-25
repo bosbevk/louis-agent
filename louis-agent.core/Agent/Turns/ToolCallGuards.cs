@@ -10,6 +10,7 @@ using Microsoft.Extensions.AI;
 using LouisAgent.Core.Messages;
 using System.Globalization;
 using Microsoft.Extensions.Logging;
+using LouisAgent.Core.Agent.Messages;
 
 /// <summary>
 /// The guards around each tool call in the loop: every call is logged; a call the model was still writing when it hit
@@ -33,7 +34,7 @@ internal sealed class ToolCallGuards(ToolRegistry registry, IChatClient summaryC
     // Set on tool calls from a response that hit the output limit: their arguments are incomplete.
     private const string TruncatedCallKey = "louis.truncated";
 
-    internal static string TruncatedCallMessage => MessageText.Format(ToolMessage.TruncatedCall);
+    internal static string TruncatedCallMessage => MessageText.Format(AgentToolMessage.TruncatedCall);
 
     public async ValueTask<object?> InvokeAsync(FunctionInvocationContext context, CancellationToken cancellationToken)
     {
@@ -170,10 +171,10 @@ internal sealed class ToolCallGuards(ToolRegistry registry, IChatClient summaryC
     internal async Task<string> SummariseToolResultAsync(
         string toolName, string arguments, string output, string? userRequest, CancellationToken cancellationToken = default)
     {
-        string note = MessageText.Format(ToolMessage.OversizedResultNote, new { Tool = toolName, Chars = output.Length.ToString("N0", CultureInfo.InvariantCulture) });
+        string note = MessageText.Format(AgentToolMessage.OversizedResultNote, new { Tool = toolName, Chars = output.Length.ToString("N0", CultureInfo.InvariantCulture) });
         string input = output.Length <= MaxSummaryInputChars
             ? output
-            : output[..MaxSummaryInputChars] + MessageText.Format(ToolMessage.SummaryInputCut, new { Chars = (output.Length - MaxSummaryInputChars).ToString("N0", CultureInfo.InvariantCulture) });
+            : output[..MaxSummaryInputChars] + MessageText.Format(AgentToolMessage.SummaryInputCut, new { Chars = (output.Length - MaxSummaryInputChars).ToString("N0", CultureInfo.InvariantCulture) });
 
         try
         {
@@ -181,9 +182,9 @@ internal sealed class ToolCallGuards(ToolRegistry registry, IChatClient summaryC
             var messages = new List<ChatMessage>
             {
                 new(ChatRole.System,
-                    MessageText.Format(ToolMessage.SummarySystemPrompt)),
+                    MessageText.Format(AgentToolMessage.SummarySystemPrompt)),
                 new(ChatRole.User,
-                    MessageText.Format(ToolMessage.SummaryRequest, new { Request = userRequest ?? "(unknown)", Tool = toolName, Arguments = arguments, Output = input })),
+                    MessageText.Format(AgentToolMessage.SummaryRequest, new { Request = userRequest ?? "(unknown)", Tool = toolName, Arguments = arguments, Output = input })),
             };
             ChatResponse response;
             // Its own scope: recorded as "summary", numbered apart from the turn's rounds.
@@ -192,7 +193,7 @@ internal sealed class ToolCallGuards(ToolRegistry registry, IChatClient summaryC
                     messages, new ChatOptions { MaxOutputTokens = LlmClientFactory.MaxOutputTokens }, cancellationToken);
             if (!string.IsNullOrWhiteSpace(response.Text))
             {
-                string summary = MessageText.Format(ToolMessage.SummarisedResult, new { Note = note, Summary = response.Text });
+                string summary = MessageText.Format(AgentToolMessage.SummarisedResult, new { Note = note, Summary = response.Text });
                 ToolCallRecords.OversizedToolResult(toolName, arguments, output.Length, userRequest, "summarised", summary.Length);
                 return summary;
             }

@@ -11,6 +11,7 @@ using LouisAgent.Core.Tools.Web.Rendering;
 using LouisAgent.Core.Tools.Web.Rendering.Providers;
 using LouisAgent.Core.Tools.Web.Search;
 using LouisAgent.Core.Tools.Web.Search.Providers;
+using LouisAgent.Core.Tools.Web.Messages;
 
 /// <summary>
 /// The web toolset's finding and reading (S: one of its three classes, with <c>QuoteTools</c> and <c>CurrencyTools</c>):
@@ -36,7 +37,7 @@ public sealed class WebTools
     {
         _search = search ?? new DuckDuckGoSearchProvider();
         _fetcher = fetcher ?? new PageFetcher();
-        _renderer = renderer ?? new UnavailablePageRenderer(MessageText.Format(ToolMessage.RenderNotConfigured));
+        _renderer = renderer ?? new UnavailablePageRenderer(MessageText.Format(WebToolMessage.RenderNotConfigured));
     }
 
     [Description("Searches the web through the configured provider (Google Custom Search if configured, otherwise " +
@@ -52,20 +53,20 @@ public sealed class WebTools
         [Description("Optional domain to restrict to, e.g. 'learn.microsoft.com'")] string site = "",
         [Description("Optional recency filter: day, week, month or year")] string freshness = "")
     {
-        if (string.IsNullOrWhiteSpace(query)) return MessageText.Format(ToolMessage.SearchQueryEmpty);
+        if (string.IsNullOrWhiteSpace(query)) return MessageText.Format(WebToolMessage.SearchQueryEmpty);
         maxResults = Math.Clamp(maxResults, 1, 10);
 
         if (!SettingChoice.TryParse(freshness, out SearchRecency? recency, RecencyLetters))
-            return MessageText.Format(ToolMessage.SearchFreshnessInvalid);
+            return MessageText.Format(WebToolMessage.SearchFreshnessInvalid);
 
         var request = new WebSearchQuery(query.Trim(), maxResults, string.IsNullOrWhiteSpace(site) ? null : site.Trim(), recency);
         string described = request.Site is null ? $"'{request.Text}'" : $"'{request.Text}' on {request.Site}";
         try
         {
             var results = (await _search.SearchAsync(request)).Take(maxResults).ToList();
-            if (results.Count == 0) return MessageText.Format(ToolMessage.NoSearchResults, new { Query = described, Provider = _search.Name });
+            if (results.Count == 0) return MessageText.Format(WebToolMessage.NoSearchResults, new { Query = described, Provider = _search.Name });
 
-            var sb = new StringBuilder(MessageText.Format(ToolMessage.SearchResults, new { Query = described, Provider = _search.Name }));
+            var sb = new StringBuilder(MessageText.Format(WebToolMessage.SearchResults, new { Query = described, Provider = _search.Name }));
             for (int i = 0; i < results.Count; i++)
             {
                 var r = results[i];
@@ -81,7 +82,7 @@ public sealed class WebTools
         }
         catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException or System.Text.Json.JsonException)
         {
-            return MessageText.Format(ToolMessage.SearchFailed, new { Provider = _search.Name, Reason = ex.Message });
+            return MessageText.Format(WebToolMessage.SearchFailed, new { Provider = _search.Name, Reason = ex.Message });
         }
     }
 
@@ -97,7 +98,7 @@ public sealed class WebTools
         CancellationToken cancellationToken = default)
     {
         if (!Uri.TryCreate((url ?? "").Trim(), UriKind.Absolute, out var uri) || uri.Scheme is not ("http" or "https"))
-            return MessageText.Format(ToolMessage.FetchUrlInvalid);
+            return MessageText.Format(WebToolMessage.FetchUrlInvalid);
         maxChars = Math.Clamp(maxChars, 500, 30_000);
         startIndex = Math.Max(0, startIndex);
 
@@ -118,7 +119,7 @@ public sealed class WebTools
         }
         catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException or System.Text.Json.JsonException)
         {
-            return MessageText.Format(ToolMessage.ErrorWithReason, new { Reason = MessageText.Format(ToolMessage.RenderFailed, new { Url = uri, Reason = ex.Message }) });
+            return MessageText.Format(ToolMessage.ErrorWithReason, new { Reason = MessageText.Format(WebToolMessage.RenderFailed, new { Url = uri, Reason = ex.Message }) });
         }
     }
 
@@ -138,7 +139,7 @@ public sealed class WebTools
         [Description("Character offset to continue from, as given in a previous truncated result (default 0)")] int startIndex = 0)
     {
         if (!Uri.TryCreate((url ?? "").Trim(), UriKind.Absolute, out var uri) || uri.Scheme is not ("http" or "https"))
-            return MessageText.Format(ToolMessage.FetchUrlInvalid);
+            return MessageText.Format(WebToolMessage.FetchUrlInvalid);
         maxChars = Math.Clamp(maxChars, 500, 30_000);
         startIndex = Math.Max(0, startIndex);
 
@@ -147,7 +148,7 @@ public sealed class WebTools
             var (response, finalUri) = await _fetcher.GetFollowingRedirectsAsync(uri);
             using var _ = response;
             if (!response.IsSuccessStatusCode)
-                return MessageText.Format(ToolMessage.FetchHttpError, new { Url = finalUri, Status = (int)response.StatusCode, Reason = response.ReasonPhrase });
+                return MessageText.Format(WebToolMessage.FetchHttpError, new { Url = finalUri, Status = (int)response.StatusCode, Reason = response.ReasonPhrase });
 
             string mediaType = response.Content.Headers.ContentType?.MediaType?.ToLowerInvariant() ?? "text/html";
 
@@ -175,7 +176,7 @@ public sealed class WebTools
             else if (mediaType.StartsWith("text/") || mediaType.Contains("json") || mediaType.Contains("xml"))
                 text = body.Trim();
             else
-                return MessageText.Format(ToolMessage.FetchNotText, new { Url = finalUri, MediaType = mediaType });
+                return MessageText.Format(WebToolMessage.FetchNotText, new { Url = finalUri, MediaType = mediaType });
 
             return PageText.Frame(finalUri.ToString(), title, text, startIndex, maxChars, nameof(FetchUrl));
         }
@@ -189,11 +190,11 @@ public sealed class WebTools
         }
         catch (HttpRequestException ex) when (ex.Message.Contains("buffer", StringComparison.OrdinalIgnoreCase))
         {
-            return MessageText.Format(ToolMessage.FetchTooLarge, new { Megabytes = PageFetcher.MaxResponseBytes / (1024 * 1024) });
+            return MessageText.Format(WebToolMessage.FetchTooLarge, new { Megabytes = PageFetcher.MaxResponseBytes / (1024 * 1024) });
         }
         catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException)
         {
-            return MessageText.Format(ToolMessage.FetchFailed, new { Url = uri, Reason = ex.Message });
+            return MessageText.Format(WebToolMessage.FetchFailed, new { Url = uri, Reason = ex.Message });
         }
     }
 }

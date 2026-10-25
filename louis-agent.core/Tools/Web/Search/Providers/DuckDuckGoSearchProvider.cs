@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Tools.Web;
 using LouisAgent.Core.Tools.Web.Search;
+using LouisAgent.Core.Tools.Web.Messages;
 
 /// <summary>Keyless search through DuckDuckGo's HTML endpoint. Convenient, but it may refuse automated traffic.</summary>
 public sealed partial class DuckDuckGoSearchProvider(HttpClient? http = null) : IWebSearchProvider
@@ -26,7 +27,7 @@ public sealed partial class DuckDuckGoSearchProvider(HttpClient? http = null) : 
         using var response = await _http.SendAsync(request, cancellationToken);
         string html = await response.Content.ReadAsStringAsync(cancellationToken);
         if (!response.IsSuccessStatusCode || html.Contains("anomaly-modal", StringComparison.Ordinal))
-            throw new WebSearchException(MessageText.Format(ToolMessage.DuckDuckGoRefused));
+            throw new WebSearchException(MessageText.Format(WebToolMessage.DuckDuckGoRefused));
 
         return ParseResults(html, query.MaxResults);
     }

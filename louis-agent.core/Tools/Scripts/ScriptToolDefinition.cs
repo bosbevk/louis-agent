@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using Microsoft.Extensions.AI;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Tools.Scripts.Messages;
 
 /// <summary>
 /// An agent-built tool defined in a *.tool.md file: name, description, typed parameters and a script implementation
@@ -55,7 +56,7 @@ public sealed partial record ScriptToolDefinition(
                         break;
                     case "timeout":
                         if (!int.TryParse(value, out timeout) || timeout is < 1 or > 600)
-                            errors.Add(MessageText.Format(ToolMessage.ScriptTimeoutInvalid, new { Value = value }));
+                            errors.Add(MessageText.Format(ScriptToolMessage.ScriptTimeoutInvalid, new { Value = value }));
                         break;
                     case "parameters":
                         inParameters = true;
@@ -73,23 +74,23 @@ public sealed partial record ScriptToolDefinition(
                 {
                     string type = p.Groups["type"].Value.ToLowerInvariant();
                     if (!SupportedTypes.Contains(type))
-                        errors.Add(MessageText.Format(ToolMessage.ScriptParameterTypeUnsupported, new { Name = p.Groups["name"].Value, Type = type, Supported = string.Join(", ", SupportedTypes) }));
+                        errors.Add(MessageText.Format(ScriptToolMessage.ScriptParameterTypeUnsupported, new { Name = p.Groups["name"].Value, Type = type, Supported = string.Join(", ", SupportedTypes) }));
                     parameters.Add(new ScriptToolParameter(p.Groups["name"].Value, type,
                         p.Groups["req"].Value.Equals("required", StringComparison.OrdinalIgnoreCase), p.Groups["desc"].Value.Trim()));
                 }
                 else
                 {
-                    errors.Add(MessageText.Format(ToolMessage.ScriptParameterLineInvalid, new { Line = trimmed }));
+                    errors.Add(MessageText.Format(ScriptToolMessage.ScriptParameterLineInvalid, new { Line = trimmed }));
                 }
             }
         }
 
         if (name is null) errors.Add("Missing '# Tool: <PascalCaseName>' header.");
-        else if (!ToolName().IsMatch(name)) errors.Add(MessageText.Format(ToolMessage.ScriptToolNameInvalid, new { Name = name }));
+        else if (!ToolName().IsMatch(name)) errors.Add(MessageText.Format(ScriptToolMessage.ScriptToolNameInvalid, new { Name = name }));
         if (string.IsNullOrWhiteSpace(description)) errors.Add("Missing '- Description:' line.");
-        if (code is null && !errors.Any(e => e.Contains("Implementation"))) errors.Add(MessageText.Format(ToolMessage.ScriptImplementationMissing));
+        if (code is null && !errors.Any(e => e.Contains("Implementation"))) errors.Add(MessageText.Format(ScriptToolMessage.ScriptImplementationMissing));
         foreach (var duplicate in parameters.GroupBy(p => p.Name, StringComparer.OrdinalIgnoreCase).Where(g => g.Count() > 1))
-            errors.Add(MessageText.Format(ToolMessage.ScriptParameterDuplicate, new { Name = duplicate.Key }));
+            errors.Add(MessageText.Format(ScriptToolMessage.ScriptParameterDuplicate, new { Name = duplicate.Key }));
 
         return errors.Count > 0
             ? (null, errors)
@@ -102,21 +103,21 @@ public sealed partial record ScriptToolDefinition(
         while (i < lines.Length && string.IsNullOrWhiteSpace(lines[i])) i++;
         if (i >= lines.Length || !lines[i].TrimStart().StartsWith("```"))
         {
-            errors.Add(MessageText.Format(ToolMessage.ScriptImplementationNotFenced));
+            errors.Add(MessageText.Format(ScriptToolMessage.ScriptImplementationNotFenced));
             return (null, null, i);
         }
 
         string fence = lines[i].Trim()[3..].Trim().ToLowerInvariant();
         string language = MarkdownSkillLoader.NormalizeLanguage(fence);
         if (fence.Length > 0 && language == "bash" && fence is not ("bash" or "sh" or "shell"))
-            errors.Add(MessageText.Format(ToolMessage.ScriptLanguageUnsupported, new { Language = fence }));
+            errors.Add(MessageText.Format(ScriptToolMessage.ScriptLanguageUnsupported, new { Language = fence }));
 
         var body = new List<string>();
         for (i++; i < lines.Length && !lines[i].TrimStart().StartsWith("```"); i++) body.Add(lines[i]);
-        if (i >= lines.Length) errors.Add(MessageText.Format(ToolMessage.ScriptFenceNotClosed));
+        if (i >= lines.Length) errors.Add(MessageText.Format(ScriptToolMessage.ScriptFenceNotClosed));
 
         string code = string.Join('\n', body).Trim();
-        if (code.Length == 0) errors.Add(MessageText.Format(ToolMessage.ScriptCodeEmpty));
+        if (code.Length == 0) errors.Add(MessageText.Format(ScriptToolMessage.ScriptCodeEmpty));
         return (language, code, i);
     }
 

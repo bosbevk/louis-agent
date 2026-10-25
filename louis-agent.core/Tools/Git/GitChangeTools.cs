@@ -4,6 +4,7 @@ using System.ComponentModel;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Tools.Git.Running;
 using static LouisAgent.Core.Tools.Git.Running.GitArguments;
+using LouisAgent.Core.Tools.Git.Messages;
 
 /// <summary>The git toolset's working tree and index (S, CL15: one of its five classes): status, staging, commits, diffs, discards, the stash. Every value from the model passes <see cref="GitArguments"/> (FX19) and runs on <see cref="GitRunner"/> (ADR 0004).</summary>
 public sealed class GitChangeTools(GitRunner git)
@@ -17,8 +18,8 @@ public sealed class GitChangeTools(GitRunner git)
     [Description("Check whether the working tree has any staged or unstaged changes (git status --porcelain), returning a plain yes/no-style message along with the changed files if any exist. Read-only. Use this instead of GetStatus when you only need to know whether there's anything uncommitted, not the full detailed status.")]
     public string HasUncommittedChanges()
     {
-        string status = git.Run(["status", "--porcelain"], whenEmpty: ToolMessage.NoUncommittedChanges);
-        return status == MessageText.Format(ToolMessage.NoUncommittedChanges) ? status : MessageText.Format(ToolMessage.UncommittedChanges, new { Status = status });
+        string status = git.Run(["status", "--porcelain"], whenEmpty: GitToolMessage.NoUncommittedChanges);
+        return status == MessageText.Format(GitToolMessage.NoUncommittedChanges) ? status : MessageText.Format(GitToolMessage.UncommittedChanges, new { Status = status });
     }
 
     [Description("Add file changes to the index so they will be included in the next commit (git add). Pass a specific path to stage just that file, or the default '.' to stage every change in the workspace. This does not create a commit by itself — follow with Commit; use Unstage to reverse a staging mistake before committing.")]

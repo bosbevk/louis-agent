@@ -4,6 +4,7 @@ using System.ComponentModel;
 using LouisAgent.Core.Sessions;
 using System.Globalization;
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Tools.Clock.Messages;
 
 /// <summary>
 /// Today's date and the time (F22): a model doesn't know what day it is, so "this week", "recent" or "how long ago" would
@@ -25,7 +26,7 @@ public sealed class ClockTools(TimeProvider? time = null, string? hostTimeZone =
         TimeZoneInfo zone = UserPlace.FindTimeZone(UserPlace.Current?.TimeZone) ?? _host;
         DateTimeOffset now = TimeZoneInfo.ConvertTime(_time.GetUtcNow(), zone);
         var invariant = CultureInfo.InvariantCulture;
-        return MessageText.Format(ToolMessage.Today, new
+        return MessageText.Format(ClockToolMessage.Today, new
         {
             Weekday = now.ToString("dddd", invariant),
             Date = now.ToString("d MMMM yyyy", invariant),

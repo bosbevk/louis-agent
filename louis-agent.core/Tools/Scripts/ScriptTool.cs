@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using Microsoft.Extensions.AI;
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Tools.Scripts.Messages;
 
 /// <summary>
 /// Exposes a <see cref="ScriptToolDefinition"/> to the model as a real function with a JSON schema.
@@ -32,7 +33,7 @@ public sealed class ScriptTool : AIFunction
 
     public override string Name => Definition.Name;
     public override string Description =>
-        MessageText.Format(Approved ? ToolMessage.ScriptToolDescription : ToolMessage.ScriptToolDescriptionPending,
+        MessageText.Format(Approved ? ScriptToolMessage.ScriptToolDescription : ScriptToolMessage.ScriptToolDescriptionPending,
             new { Definition.Description });
     public override JsonElement JsonSchema => _schema;
 
@@ -54,7 +55,7 @@ public sealed class ScriptTool : AIFunction
         var known = Definition.Parameters.ToDictionary(p => p.Name, StringComparer.OrdinalIgnoreCase);
         if (arguments.Keys.FirstOrDefault(k => !known.ContainsKey(k)) is { } unknown)
         {
-            error = MessageText.Format(ToolMessage.ScriptToolUnknownParameter, new { Name = unknown, Known = string.Join(", ", known.Keys) });
+            error = MessageText.Format(ScriptToolMessage.ScriptToolUnknownParameter, new { Name = unknown, Known = string.Join(", ", known.Keys) });
             return false;
         }
 
@@ -73,7 +74,7 @@ public sealed class ScriptTool : AIFunction
             {
                 if (parameter.Required)
                 {
-                    error = MessageText.Format(ToolMessage.ScriptToolMissingParameter, new { parameter.Name, parameter.Type });
+                    error = MessageText.Format(ScriptToolMessage.ScriptToolMissingParameter, new { parameter.Name, parameter.Type });
                     return false;
                 }
                 continue;
@@ -81,7 +82,7 @@ public sealed class ScriptTool : AIFunction
 
             if (!TryConvert(value.Value, parameter.Type, out JsonNode? node))
             {
-                error = MessageText.Format(ToolMessage.ScriptToolWrongType, new { parameter.Name, parameter.Type, Value = value.Value.GetRawText() });
+                error = MessageText.Format(ScriptToolMessage.ScriptToolWrongType, new { parameter.Name, parameter.Type, Value = value.Value.GetRawText() });
                 return false;
             }
 

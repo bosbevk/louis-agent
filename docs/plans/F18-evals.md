@@ -1019,6 +1019,13 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
 
 ## Approved during the build
 
+- **The message enums split by area, before step 4b** (Louis, 2026-10-25: "these files is getting huge, should we not split them
+  also by it's purpose?", then "After 4a, before 4b"). Three commits, one per enum (`ToolMessage`, `LogMessage`, `ErrorMessage`), each
+  test first and each stopped after. Each area's texts go in its own `Messages/` folder, beside its code, named `{Area}ToolMessage`,
+  `{Area}LogMessage` or `{Area}ErrorMessage`; a text that two areas use stays in core's `Messages/`. No text changes: every
+  `[Description]` moves verbatim, `ToolMessageSnapshot.json` stays byte-equal, and the only deletions are five dead log members.
+  The split closes the TODO line *`ToolMessage` split per toolset*, and steps 4b and later add their texts to the small enums.
+
 - **Step 4a: a replay names the recorded trial, not only the run** (Louis, 2026-10-25, step 4a's prompt). `SessionReplay.Of` is the
   recorded trial a session writes or reads, and the API resolves it when the session opens: a recording uses `{run tag}/{task}`, a replay
   the `of` it is sent, and a sub-session is sent its parent's resolved `Of`. A sub-session's own task is `sub-session:{name}`, and one run

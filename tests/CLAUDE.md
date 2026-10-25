@@ -38,7 +38,7 @@ app) says so in its explanation, with how it was checked instead.
 
 **What the model reads is pinned by two golden files:** `ModelRequestSnapshotTests` compares the tools, their
 descriptions, the system prompt and the engine's fixed texts with `Agent/ModelRequestSnapshot.json`;
-`ToolMessageSnapshotTests` compares every `ToolMessage` template with `Messages/ToolMessageSnapshot.json`. A deliberate
+`ToolMessageSnapshotTests` compares every `*ToolMessage` enum's template (the shared one and each area's) with `Messages/ToolMessageSnapshot.json`. A deliberate
 change (a new tool or text, an edited description or skill file) regenerates them, and you review their diff before
 committing:
 

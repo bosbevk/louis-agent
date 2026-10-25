@@ -2,6 +2,7 @@ using LouisAgent.Core.Messages;
 using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Tools.Web.Browsing;
 using LouisAgent.Core.Tools.Web.Replay.Store;
+using LouisAgent.Core.Tools.Web.Messages;
 
 namespace LouisAgent.Core.Tools.Web.Replay;
 
@@ -48,7 +49,7 @@ public sealed class RecordedWebBrowser(IWebBrowser inner, WebReplayStore store) 
     private async Task<BrowserVisit> ReplayAsync(string trial, ReplayAsk ask, CancellationToken cancellationToken)
     {
         if (await store.FindAsync(trial, ask, cancellationToken) is not { } recorded)
-            throw new WebBrowserException(MessageText.Format(ToolMessage.ReplayMiss, new { Url = ask.Url }));
+            throw new WebBrowserException(MessageText.Format(WebToolMessage.ReplayMiss, new { Url = ask.Url }));
         return recorded.ToVisit();
     }
 }

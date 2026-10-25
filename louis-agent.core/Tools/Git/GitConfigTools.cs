@@ -4,6 +4,7 @@ using System.ComponentModel;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Tools.Git.Running;
 using static LouisAgent.Core.Tools.Git.Running.GitArguments;
+using LouisAgent.Core.Tools.Git.Messages;
 
 /// <summary>
 /// The git toolset's configuration (S, CL15: one of its five classes). <c>SetConfig</c> sets only <c>user.name</c> and
@@ -28,7 +29,7 @@ public sealed class GitConfigTools(GitRunner git)
     {
         string name = key.Trim();
         if (!ConfigKeysAllowed.Contains(name, StringComparer.OrdinalIgnoreCase))
-            return MessageText.Format(ToolMessage.GitConfigKeyRefused, new { Key = key, Allowed = string.Join(" and ", ConfigKeysAllowed) });
+            return MessageText.Format(GitToolMessage.GitConfigKeyRefused, new { Key = key, Allowed = string.Join(" and ", ConfigKeysAllowed) });
         return git.Run(["config", EndOfOptions, name.ToLowerInvariant(), value]);
     }
 }

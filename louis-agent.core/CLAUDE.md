@@ -24,8 +24,11 @@ start-up.
 Return strings the model can act on: say what went wrong and what to do instead. Keep output bounded — results over
 50,000 characters get summarised; most toolsets cap their own output at 12,000.
 
-**The texts a tool returns are `ToolMessage` members** (*Messages and logging*), errors and results alike:
-`return MessageText.Format(ToolMessage.FileNotFound, new { Path = relativePath });`. Its descriptions are attributes.
+**The texts a tool returns are members of its toolset's own `{Area}ToolMessage`** (*Messages and logging*), errors and results
+alike. The enum sits in the toolset's folder beside its tools (`Tools/Workspace/Messages/WorkspaceToolMessage`), and a text that
+two areas return stays in core's `Messages/ToolMessage`:
+`return MessageText.Format(WorkspaceToolMessage.FileWritten, new { Path = relativePath, Length = content.Length });`. Its
+descriptions are attributes.
 A new tool or text changes the golden files on purpose: regenerate them and review the diff
 ([golden files](../tests/CLAUDE.md#golden-files)).
 
@@ -128,17 +131,20 @@ Log.Log(LogLevel.Information, McpServerLogMessage.ToolNameTaken, new { Name = na
 ```
 
 - **What counts:** exception messages, log lines, the error strings tools return to the model, and user-facing text
-  (`/usage`, the usage line, CLI help). Enums by kind (`ErrorMessage`, `LogMessage`, `ToolMessage`, `UserText`), each
-  member named for what happened, not for its wording; `ReplayMessage` holds the exception texts of recorded and replayed
-  web input (F18 step 4a), because `ErrorMessage` is at its 200 lines.
+  (`/usage`, the usage line, CLI help). Enums by kind and area: the shared `ErrorMessage`, `LogMessage`, `ToolMessage` and
+  `UserText` sit in core's `Messages/`; an area's own sit in its `Messages/` folder, named `{Area}ToolMessage`,
+  `{Area}LogMessage` or `{Area}ErrorMessage` (the split by area, F18 refactor). A text two areas use stays shared. Each member
+  is named for what happened, not for its wording; `ReplayMessage` holds the exception texts of recorded and replayed web input
+  (F18 step 4a), because `ErrorMessage` is at its 200 lines.
 - **Each host keeps its own texts** in its own `Messages/` folder
   ([src/CLAUDE.md](../src/CLAUDE.md#each-hosts-own-texts)).
 - **Not messages:** prompts (system prompt and procedures in `Prompts/`; the orchestrator's triage and fix prompts),
   keywords another program matches on (`FIX-RESULT`, `DECISION`, `PASS`/`FAIL`, `VERIFIED`), the comms log's Markdown
   layout, and key=value or table formatting.
-- **Text the model reads is pinned:** `ToolMessageSnapshotTests` renders every `ToolMessage` template into
-  `Messages/ToolMessageSnapshot.json`, as the model-request snapshot does for the tools and prompt; a deliberate change
-  regenerates it ([golden files](../tests/CLAUDE.md#golden-files)). Numbers in messages are invariant (`12,345`).
+- **Text the model reads is pinned:** `ToolMessageSnapshotTests` renders every `*ToolMessage` enum's template (the shared one
+  and each area's) into `Messages/ToolMessageSnapshot.json`, keyed by member name, as the model-request snapshot does for the
+  tools and prompt; no two of them share a member name (a test holds that). A deliberate change regenerates it
+  ([golden files](../tests/CLAUDE.md#golden-files)). Numbers in messages are invariant (`12,345`).
 - **Logging goes through `ILogger` (Microsoft.Extensions.Logging) with Serilog behind it**, configured in code by
   `Logging/AgentLogging` (`AgentHost` calls `Configure`; another agent on core calls it itself). Get a logger with
   `AgentLogging.For<T>()` and log a message member with `logger.Log(level, Member, new { Hole = value })`

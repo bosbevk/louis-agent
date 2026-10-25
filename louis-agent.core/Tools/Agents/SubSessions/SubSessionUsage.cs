@@ -3,6 +3,7 @@ namespace LouisAgent.Core.Tools.Agents.SubSessions;
 using System.Globalization;
 using System.Text.Json;
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Tools.Agents.Messages;
 
 /// <summary>
 /// What one reply of a sub-session reported it used: the API's usage object on <c>message_delta</c> (or on the
@@ -28,8 +29,8 @@ internal sealed record SubSessionUsage(long Input, long CacheWrite, long CacheRe
     {
         string cost = Cost is { } amount
             ? $"{amount.ToString("0.####", CultureInfo.InvariantCulture)} {Currency ?? ""}".Trim()
-            : MessageText.Format(ToolMessage.SubSessionCostUnknown);
-        return MessageText.Format(ToolMessage.SubSessionUsage, new
+            : MessageText.Format(SubSessionToolMessage.SubSessionCostUnknown);
+        return MessageText.Format(SubSessionToolMessage.SubSessionUsage, new
         {
             Requests = Requests ?? 0,
             Tokens = (Input + CacheWrite + CacheRead + Output).ToString("N0", CultureInfo.InvariantCulture),

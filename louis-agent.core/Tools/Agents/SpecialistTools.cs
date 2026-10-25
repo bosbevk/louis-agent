@@ -11,6 +11,7 @@ using LouisAgent.Core.Tools.Clock;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Sinks;
 using Microsoft.Extensions.AI;
+using LouisAgent.Core.Tools.Agents.Messages;
 
 /// <summary>
 /// The <c>specialists</c> toolset (F5-S5): opens a session on another louis-agent (a peer in AGENT_PEERS) with only the
@@ -86,7 +87,7 @@ public sealed class SpecialistTools(IReadOnlyDictionary<string, Uri> peers, stri
             // An eval's web input: the parent's own trial, so the specialist's pages are recorded and replayed with its (F18 step 4a).
             replay = SessionReplay.ForSubSession(),
         };
-        var kind = new SubSessionKind(Kind, name, $"sub-session:{name}", KeptAnswer, reply => MessageText.Format(ToolMessage.SubSessionAnswer, new
+        var kind = new SubSessionKind(Kind, name, $"sub-session:{name}", KeptAnswer, reply => MessageText.Format(SubSessionToolMessage.SubSessionAnswer, new
         {
             Answer = reply.Text, Agent = name, Toolsets = string.Join(", ", toolsets), Usage = reply.UsageLine,
         }));
@@ -103,9 +104,9 @@ public sealed class SpecialistTools(IReadOnlyDictionary<string, Uri> peers, stri
         [Description("Names of files the user attached in this conversation that the follow-up needs.")] string[]? attachments = null,
         CancellationToken cancellationToken = default)
     {
-        if (SubSessionRegistry.Current is not { } registry) return MessageText.Format(ToolMessage.SubSessionNoneKept);
+        if (SubSessionRegistry.Current is not { } registry) return MessageText.Format(SubSessionToolMessage.SubSessionNoneKept);
         if (registry.Find(handle) is not { } open || open.Kind != Kind)
-            return MessageText.Format(ToolMessage.SubSessionUnknownHandle, new { Handle = handle.Trim(), Open = OpenList(registry, Kind) });
+            return MessageText.Format(SubSessionToolMessage.SubSessionUnknownHandle, new { Handle = handle.Trim(), Open = OpenList(registry, Kind) });
         if (ForwardAttachments(attachments, out var forwarded) is { } unknownAttachment) return unknownAttachment;
 
         UsageScope? scope = UsageScope.Current;
@@ -124,19 +125,19 @@ public sealed class SpecialistTools(IReadOnlyDictionary<string, Uri> peers, stri
         string peerNames = peers.Count == 0 ? "(none)" : string.Join(", ", peers.Keys.Order());
         if (name.Length == 0)
         {
-            if (peers.Count != 1) return MessageText.Format(ToolMessage.PeerNameNeeded, new { Peers = peerNames });
+            if (peers.Count != 1) return MessageText.Format(SubSessionToolMessage.PeerNameNeeded, new { Peers = peerNames });
             name = peers.Keys.Single();
         }
-        if (!peers.TryGetValue(name, out Uri? found)) return MessageText.Format(ToolMessage.UnknownPeer, new { Agent = name, Peers = peerNames });
+        if (!peers.TryGetValue(name, out Uri? found)) return MessageText.Format(SubSessionToolMessage.UnknownPeer, new { Agent = name, Peers = peerNames });
         peer = found;
         return null;
     }
 
     /// <summary>The answer's footer for a sub-session the chat keeps: its handle, and how to continue it.</summary>
-    private static string KeptAnswer(OpenSubSession open, SubSessionMessenger.SubSessionReply reply) => MessageText.Format(ToolMessage.SubSessionAnswerKept, new
+    private static string KeptAnswer(OpenSubSession open, SubSessionMessenger.SubSessionReply reply) => MessageText.Format(SubSessionToolMessage.SubSessionAnswerKept, new
     {
         Answer = reply.Text, open.Handle, open.Agent, Toolsets = string.Join(", ", open.Toolsets),
-        Role = string.IsNullOrWhiteSpace(open.Role) ? MessageText.Format(ToolMessage.SubSessionDefaultRole) : open.Role, Usage = reply.UsageLine,
+        Role = string.IsNullOrWhiteSpace(open.Role) ? MessageText.Format(SubSessionToolMessage.SubSessionDefaultRole) : open.Role, Usage = reply.UsageLine,
     });
 
     /// <summary>The kept children of <paramref name="kind"/>, for a refusal that lists what is open.</summary>
@@ -144,8 +145,8 @@ public sealed class SpecialistTools(IReadOnlyDictionary<string, Uri> peers, stri
     {
         var open = registry.Open.Where(o => o.Kind == kind).ToList();
         return open.Count == 0
-            ? MessageText.Format(ToolMessage.SubSessionNoneOpen)
-            : string.Join(", ", open.Select(o => $"{o.Handle} ({o.Agent}: {string.Join(", ", o.Toolsets)}; {o.Role ?? MessageText.Format(ToolMessage.SubSessionDefaultRole)})"));
+            ? MessageText.Format(SubSessionToolMessage.SubSessionNoneOpen)
+            : string.Join(", ", open.Select(o => $"{o.Handle} ({o.Agent}: {string.Join(", ", o.Toolsets)}; {o.Role ?? MessageText.Format(SubSessionToolMessage.SubSessionDefaultRole)})"));
     }
 
     /// <summary>
@@ -159,7 +160,7 @@ public sealed class SpecialistTools(IReadOnlyDictionary<string, Uri> peers, stri
         foreach (string name in attachments ?? [])
         {
             if (!available.TryGetValue(name.Trim(), out string? content))
-                return MessageText.Format(ToolMessage.AttachmentUnknown, new
+                return MessageText.Format(SubSessionToolMessage.AttachmentUnknown, new
                 {
                     Name = name, Attached = available.Count == 0 ? "(none)" : string.Join(", ", available.Keys.Order()),
                 });

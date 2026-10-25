@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Text;
 using System.Text.RegularExpressions;
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Tools.DotNet.Messages;
 
 /// <summary>
 /// .NET SDK toolset: build, test, run and inspect projects inside the workspace.
@@ -38,7 +39,7 @@ public sealed class DotNetTools
             .OrderBy(f => f.EndsWith(".sln") || f.EndsWith(".slnx") ? 0 : 1)
             .ThenBy(f => f)
             .ToList();
-        return files.Count == 0 ? MessageText.Format(ToolMessage.NoDotNetProjects) : string.Join('\n', files);
+        return files.Count == 0 ? MessageText.Format(DotNetToolMessage.NoDotNetProjects) : string.Join('\n', files);
     }
 
     [Description("Reports the .NET SDKs and runtimes installed on the machine running the agent, via `dotnet --list-sdks` and `dotnet --list-runtimes`. Use this to check whether a specific SDK or runtime version is available before a build fails with a version-mismatch error, or when asked what .NET version is installed. It reports nothing about the workspace's own projects -- use DotNetListProjects for that.")]
@@ -105,7 +106,7 @@ public sealed class DotNetTools
         [Description("Maximum seconds to let the program run before it is killed (default 60)")] int timeoutSeconds = 60,
         [Description("Build configuration, e.g. Debug or Release")] string configuration = "Debug")
     {
-        if (string.IsNullOrWhiteSpace(project)) return MessageText.Format(ToolMessage.DotNetProjectRequired);
+        if (string.IsNullOrWhiteSpace(project)) return MessageText.Format(DotNetToolMessage.DotNetProjectRequired);
         if (!TryResolveTarget(project, out var target, out var error)) return error;
 
         // Build separately so compile errors come back as a clean diagnostic summary.
@@ -139,7 +140,7 @@ public sealed class DotNetTools
             case "": break;
             case "outdated": args.Add("--outdated"); break;
             case "vulnerable": args.AddRange(["--vulnerable", "--include-transitive"]); break;
-            default: return MessageText.Format(ToolMessage.DotNetPackageFilterInvalid);
+            default: return MessageText.Format(DotNetToolMessage.DotNetPackageFilterInvalid);
         }
 
         var result = RunDotNet(args, TimeSpan.FromMinutes(2));
@@ -188,7 +189,7 @@ public sealed class DotNetTools
 
         if (!File.Exists(full) && !Directory.Exists(full))
         {
-            error = MessageText.Format(ToolMessage.DotNetProjectNotFound, new { Project = project });
+            error = MessageText.Format(DotNetToolMessage.DotNetProjectNotFound, new { Project = project });
             return false;
         }
 
@@ -198,7 +199,7 @@ public sealed class DotNetTools
 
     internal static string SummarizeBuild(ProcessRunner.Result result, bool includeWarnings)
     {
-        if (result.TimedOut) return MessageText.Format(ToolMessage.TimedOutWithOutput, new { Output = Tail(result.Output) });
+        if (result.TimedOut) return MessageText.Format(DotNetToolMessage.TimedOutWithOutput, new { Output = Tail(result.Output) });
 
         var diagnostics = DiagnosticLine.Matches(result.Output)
             .Select(m => (Kind: m.Groups["kind"].Value, Text: m.Groups["text"].Value.Trim()))
@@ -208,13 +209,13 @@ public sealed class DotNetTools
         var warnings = diagnostics.Where(d => d.Kind == "warning").Select(d => d.Text).ToList();
 
         var sb = new StringBuilder();
-        sb.AppendLine(result.ExitCode == 0 ? MessageText.Format(ToolMessage.BuildSucceeded) : MessageText.Format(ToolMessage.BuildFailed, new { result.ExitCode }));
+        sb.AppendLine(result.ExitCode == 0 ? MessageText.Format(DotNetToolMessage.BuildSucceeded) : MessageText.Format(DotNetToolMessage.BuildFailed, new { result.ExitCode }));
         sb.AppendLine($"{errors.Count} error(s), {warnings.Count} warning(s).");
         foreach (var e in errors.Take(50)) sb.AppendLine(e);
         if (includeWarnings)
         {
             foreach (var w in warnings.Take(30)) sb.AppendLine(w);
-            if (warnings.Count > 30) sb.AppendLine(MessageText.Format(ToolMessage.MoreWarnings, new { Count = warnings.Count - 30 }));
+            if (warnings.Count > 30) sb.AppendLine(MessageText.Format(DotNetToolMessage.MoreWarnings, new { Count = warnings.Count - 30 }));
         }
 
         // A failure with no parsed diagnostics (e.g. missing SDK, bad path): show the raw tail instead.
@@ -224,13 +225,13 @@ public sealed class DotNetTools
 
     internal static string SummarizeTests(ProcessRunner.Result result)
     {
-        if (result.TimedOut) return MessageText.Format(ToolMessage.TestRunTimedOut, new { Output = Tail(result.Output) });
+        if (result.TimedOut) return MessageText.Format(DotNetToolMessage.TestRunTimedOut, new { Output = Tail(result.Output) });
 
         var lines = result.Output.Split('\n').Select(l => l.TrimEnd('\r')).ToList();
 
         // Compile errors stop the run before any tests execute.
         if (DiagnosticLine.Matches(result.Output).Any(m => m.Groups["kind"].Value == "error"))
-            return MessageText.Format(ToolMessage.BuildFailedBeforeTests, new { Build = SummarizeBuild(result, includeWarnings: false) });
+            return MessageText.Format(DotNetToolMessage.BuildFailedBeforeTests, new { Build = SummarizeBuild(result, includeWarnings: false) });
 
         var sb = new StringBuilder();
         foreach (var summary in lines.Where(l => Regex.IsMatch(l, @"^\s*(Passed!|Failed!|Total tests:|\s*Passed:|\s*Failed:|\s*Skipped:)")))
@@ -243,7 +244,7 @@ public sealed class DotNetTools
         {
             if (Regex.IsMatch(line, @"^\s{2}Failed\s+\S"))
             {
-                if (++failures > 20) { sb.AppendLine(MessageText.Format(ToolMessage.MoreFailures)); break; }
+                if (++failures > 20) { sb.AppendLine(MessageText.Format(DotNetToolMessage.MoreFailures)); break; }
                 inFailure = true;
                 sb.AppendLine().AppendLine(line.Trim());
                 continue;
@@ -258,7 +259,7 @@ public sealed class DotNetTools
             if (inFailure && !string.IsNullOrWhiteSpace(line)) sb.AppendLine(line);
         }
 
-        if (sb.Length == 0) sb.AppendLine(result.ExitCode == 0 ? MessageText.Format(ToolMessage.TestsPassed) : Tail(result.Output));
+        if (sb.Length == 0) sb.AppendLine(result.ExitCode == 0 ? MessageText.Format(DotNetToolMessage.TestsPassed) : Tail(result.Output));
         else if (result.ExitCode != 0 && failures == 0) sb.AppendLine(Tail(result.Output));
         return Truncate(sb.ToString().TrimEnd());
     }
@@ -296,7 +297,7 @@ public sealed class DotNetTools
         ProcessRunner.Run("dotnet", args, WorkingDirectory, timeout, standardInput, DotNetEnvironment);
 
     private static string FormatResult(ProcessRunner.Result result) =>
-        result.TimedOut ? MessageText.Format(ToolMessage.TimedOutWithOutput, new { Output = Tail(result.Output) })
+        result.TimedOut ? MessageText.Format(DotNetToolMessage.TimedOutWithOutput, new { Output = Tail(result.Output) })
         : result.ExitCode == 0 ? (string.IsNullOrWhiteSpace(result.Output) ? MessageText.Format(ToolMessage.SucceededNoOutput) : result.Output.Trim())
         : MessageText.Format(ToolMessage.ExitCode, new { Code = result.ExitCode, Output = result.Output.Trim() });
 

@@ -603,6 +603,20 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   what it holds as unknown." The runner never touches the folder. Still live until 4b: search, `FetchUrl` and the clock (a replay doesn't
   yet answer them from the recording). Model answers replay in 4e; `replay.model` is refused until then. Recordings stay on the machine
   that made them, and the guide says how to record and replay (*Add an eval set*, section 11).
+- **Refactor: the message enums split by area, commit 1 of 3 (`ToolMessage`)** (approved 2026-10-25, before 4b; see the plan's
+  *Approved during the build*). The 260 members of `ToolMessage` split: 250 moved to 14 area enums in each area's `Messages/`
+  (`Agent` 41, `Guardrails` 7, `Tools/Agents` 28, `Tools/Clock` 1, `Tools/Currency` 3, `Tools/Documents` 9, `Tools/DotNet` 12, `Tools/Git` 8,
+  `Tools/Integrations/DevOps` 14, `Tools/Integrations/Paymo` 19, `Tools/Scripts` 15, `Tools/Shell` 16, `Tools/Web` 45, `Tools/Workspace` 32);
+  10 stay in core's `Messages/ToolMessage` because more than one area returns them (`ExitCode`, `ErrorWithReason` among them, the shops
+  pack's). The file is 792 lines, over `FileSizeTests`' 200; the next member would have failed it. Member texts, names and order are
+  unchanged, and `ToolMessageSnapshot.json` is byte-equal. The move ran from a table checked against the code first (260 in both, no
+  duplicates, every member with one `[Description]`), so no member went anywhere the table didn't say. Red first: `TheMessageEnumsExist`
+  (the list had no area enums yet) and `FileSizeTests` (`ToolMessage.cs` over, once it left `Oversized`). Two findings while moving:
+  the architecture test refused `ReplayMessage`'s doc cross-reference, because a `using` for `WebToolMessage` made layer 0 use a tool
+  area (fixed: the reference is named in full, no `using`); and `GitRunner.Run`'s `whenEmpty` parameter was typed as the shared enum, so it
+  became `Enum?` (no text changed: `MessageText.Format` takes any enum, and a null means `SucceededNoOutput`). Checks: no `tests/*.json`
+  changed against `HEAD`; the `[Description(` lines in core and the API are 820 before and 820 after, and their sorted diff is empty.
+  The TODO line *`ToolMessage` split per toolset* is closed.
 - **Notes for step 5** (from the review of 4.2): `PulsEvalSet`'s `TurnView` builds on `EngineEvents`, so the route, the errors and the
   cost come from one reader. If an expected route goes in a scenario's `expected`, `RoutedToGrader` must declare that key in its
   `ExpectedKeys`. When the HTTP client sets a turn's `Failure`, the turn line must carry it, so `ProtocolTranscripts` reads it back. A

@@ -7,6 +7,7 @@ using LouisAgent.Core.Messages;
 using LouisAgent.Core.Usage.Records;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
+using LouisAgent.Core.Agent.Messages;
 
 /// <summary>
 /// One chat turn (S, CL15, from AgentEngine): the history seeded and kept current, the prompt sent on the pipeline,
@@ -23,9 +24,9 @@ internal sealed class TurnRunner(IChatClient chatClient, ToolRegistry registry, 
 
     private const int MaxCutOffContinuations = 3;
 
-    internal static string NoToolsNotice => MessageText.Format(ToolMessage.NoToolsNotice);
+    internal static string NoToolsNotice => MessageText.Format(AgentToolMessage.NoToolsNotice);
 
-    internal static string ContinueAfterCutOffMessage => MessageText.Format(ToolMessage.ContinueAfterCutOff);
+    internal static string ContinueAfterCutOffMessage => MessageText.Format(AgentToolMessage.ContinueAfterCutOff);
 
     /// <summary>A history seeded with the system prompt (and the no-tools notice when applicable).</summary>
     public List<ChatMessage> NewHistory()

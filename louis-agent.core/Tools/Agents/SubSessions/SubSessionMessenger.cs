@@ -4,6 +4,7 @@ using System.Diagnostics;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Sessions.SubSessions;
 using LouisAgent.Core.Usage.Records;
+using LouisAgent.Core.Tools.Agents.Messages;
 
 /// <summary>One message to a sub-session (S, CL15, from SpecialistTools): sent, read to the end, asked again once when empty, its usage rolled up.</summary>
 internal sealed class SubSessionMessenger(PeerHttp http, UsageRollUp rollUp)
@@ -25,15 +26,15 @@ internal sealed class SubSessionMessenger(PeerHttp http, UsageRollUp rollUp)
         if (string.IsNullOrWhiteSpace(text))
         {
             var (again, againUsage, againFailure, againStatus) = await SendAsync(peer, sessionId,
-                new { message = MessageText.Format(ToolMessage.SubSessionAskForAnswer) }, kind, toolUseId, scope, cancellationToken);
+                new { message = MessageText.Format(SubSessionToolMessage.SubSessionAskForAnswer) }, kind, toolUseId, scope, cancellationToken);
             if (againFailure is not null) return new SubSessionReply("", "", againFailure, againStatus);
             text = again;
             usage = string.Join(" + ", new[] { usage, againUsage }.OfType<string>());
             if (string.IsNullOrWhiteSpace(text))
-                return new SubSessionReply("", "", MessageText.Format(ToolMessage.SubSessionNoAnswer,
-                    new { Agent = kind.Label, Usage = usage.Length > 0 ? usage : MessageText.Format(ToolMessage.SubSessionNoUsage) }));
+                return new SubSessionReply("", "", MessageText.Format(SubSessionToolMessage.SubSessionNoAnswer,
+                    new { Agent = kind.Label, Usage = usage.Length > 0 ? usage : MessageText.Format(SubSessionToolMessage.SubSessionNoUsage) }));
         }
-        return new SubSessionReply(text.Trim(), string.IsNullOrEmpty(usage) ? MessageText.Format(ToolMessage.SubSessionNoUsage) : usage, null);
+        return new SubSessionReply(text.Trim(), string.IsNullOrEmpty(usage) ? MessageText.Format(SubSessionToolMessage.SubSessionNoUsage) : usage, null);
     }
 
     /// <summary>
@@ -48,7 +49,7 @@ internal sealed class SubSessionMessenger(PeerHttp http, UsageRollUp rollUp)
         using var send = http.Request(HttpMethod.Post, new Uri(peer, $"sessions/{Uri.EscapeDataString(sessionId)}/messages"), body);
         using var reply = await http.SendAsync(send, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
         if (!reply.IsSuccessStatusCode)
-            return ("", null, MessageText.Format(ToolMessage.SubSessionRefused,
+            return ("", null, MessageText.Format(SubSessionToolMessage.SubSessionRefused,
                 new { Agent = kind.Label, Status = (int)reply.StatusCode, Reason = PeerHttp.ErrorText(await reply.Content.ReadAsStringAsync(cancellationToken)) }), (int)reply.StatusCode);
 
         var (text, usage, error) = await SubSessionStream.ReadAsync(await reply.Content.ReadAsStreamAsync(cancellationToken),
@@ -56,6 +57,6 @@ internal sealed class SubSessionMessenger(PeerHttp http, UsageRollUp rollUp)
         // A failed reply's usage was charged too (FX6); a reply with none (a timeout before any event) leaves no record.
         if (usage is not null) rollUp.Record(scope, kind.LedgerModel, usage, stopwatch.Elapsed);
         string? line = usage?.Line();
-        return error is null ? (text, line, null, null) : ("", line, MessageText.Format(ToolMessage.SubSessionFailed, new { Agent = kind.Label, Reason = error }), null);
+        return error is null ? (text, line, null, null) : ("", line, MessageText.Format(SubSessionToolMessage.SubSessionFailed, new { Agent = kind.Label, Reason = error }), null);
     }
 }

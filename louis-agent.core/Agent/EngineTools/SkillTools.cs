@@ -11,6 +11,7 @@ using LouisAgent.Core.Skills.Providers;
 using LouisAgent.Core.Tools;
 using LouisAgent.Core.Tools.Shell;
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Agent.Messages;
 
 /// <summary>
 /// The skill tools (<see cref="ExecuteSkill"/>, <see cref="CreateSkillFile"/>, <see cref="ReloadSkills"/>) and the skill
@@ -66,14 +67,14 @@ internal sealed partial class SkillTools
     {
         if (string.IsNullOrWhiteSpace(skillName))
         {
-            return MessageText.Format(ToolMessage.SkillNameEmpty);
+            return MessageText.Format(AgentToolMessage.SkillNameEmpty);
         }
 
         skillName = skillName.Trim();
 
         if (!_skills.TryGetValue(skillName, out var skill))
         {
-            return MessageText.Format(ToolMessage.SkillNotFound, new { Name = skillName, Available = string.Join(", ", _skills.Keys) });
+            return MessageText.Format(AgentToolMessage.SkillNotFound, new { Name = skillName, Available = string.Join(", ", _skills.Keys) });
         }
 
         try
@@ -99,7 +100,7 @@ internal sealed partial class SkillTools
                     using var doc = JsonDocument.Parse(jsonArgs);
                     if (doc.RootElement.ValueKind != JsonValueKind.Object)
                     {
-                        return MessageText.Format(ToolMessage.SkillArgumentsNotObject);
+                        return MessageText.Format(AgentToolMessage.SkillArgumentsNotObject);
                     }
 
                     foreach (var prop in doc.RootElement.EnumerateObject())
@@ -110,7 +111,7 @@ internal sealed partial class SkillTools
                 }
                 catch (JsonException jsonEx)
                 {
-                    return MessageText.Format(ToolMessage.SkillArgumentsInvalid, new { Reason = jsonEx.Message });
+                    return MessageText.Format(AgentToolMessage.SkillArgumentsInvalid, new { Reason = jsonEx.Message });
                 }
             }
 
@@ -129,7 +130,7 @@ internal sealed partial class SkillTools
 
             if (string.IsNullOrWhiteSpace(resolvedCommand))
             {
-                return MessageText.Format(ToolMessage.SkillTemplateEmpty, new { Name = skillName });
+                return MessageText.Format(AgentToolMessage.SkillTemplateEmpty, new { Name = skillName });
             }
 
             return skill.Language switch
@@ -143,7 +144,7 @@ internal sealed partial class SkillTools
         }
         catch (Exception ex)
         {
-            return MessageText.Format(ToolMessage.SkillFailed, new { Name = skillName, Reason = ex.Message });
+            return MessageText.Format(AgentToolMessage.SkillFailed, new { Name = skillName, Reason = ex.Message });
         }
     }
 
@@ -174,21 +175,21 @@ internal sealed partial class SkillTools
         [Description("Full markdown content of the skills file")] string markdown,
         [Description("Set true to replace an existing file (approved or pending) with this name; the new version waits for approval")] bool overwrite = false)
     {
-        if (SkillsDirectory is null) return MessageText.Format(ToolMessage.SkillAuthoringUnavailable);
+        if (SkillsDirectory is null) return MessageText.Format(AgentToolMessage.SkillAuthoringUnavailable);
         name = (name ?? "").Trim().ToLowerInvariant();
         if (name.EndsWith("-skills")) name = name[..^"-skills".Length];
-        if (!SkillFileName().IsMatch(name)) return MessageText.Format(ToolMessage.SkillFileNameInvalid);
-        if (string.IsNullOrWhiteSpace(markdown)) return MessageText.Format(ToolMessage.SkillMarkdownEmpty);
+        if (!SkillFileName().IsMatch(name)) return MessageText.Format(AgentToolMessage.SkillFileNameInvalid);
+        if (string.IsNullOrWhiteSpace(markdown)) return MessageText.Format(AgentToolMessage.SkillMarkdownEmpty);
 
         string fileName = SkillFiles.Function(name);
         // A toolset's guide (toolsets/{name}.md, CL8) keeps its name too, so a skill file never passes for one.
         if (SkillFiles.IsBuiltIn(fileName) || SkillFiles.IsBuiltIn(SkillFiles.Guide(name)))
-            return MessageText.Format(ToolMessage.SkillFileBuiltIn, new { File = fileName });
+            return MessageText.Format(AgentToolMessage.SkillFileBuiltIn, new { File = fileName });
 
         // FX20: the file waits in pending/ for the user's /approve; an approved or pending one of the name needs overwrite.
         string path = PendingPath(name);
         if ((File.Exists(path) || File.Exists(ApprovedPath(name))) && !overwrite)
-            return MessageText.Format(ToolMessage.SkillFileExists, new { File = fileName });
+            return MessageText.Format(AgentToolMessage.SkillFileExists, new { File = fileName });
 
         // Validate before saving so a malformed section is reported instead of silently skipped.
         string tempPath = Path.Combine(Path.GetTempPath(), $"skill-check-{Guid.NewGuid():N}.md");
@@ -199,15 +200,15 @@ internal sealed partial class SkillTools
 
         int declared = SkillHeader().Matches(markdown).Count;
         if (parsed.Count < declared)
-            return MessageText.Format(ToolMessage.SkillSectionsInvalid, new { Declared = declared, Valid = parsed.Count });
+            return MessageText.Format(AgentToolMessage.SkillSectionsInvalid, new { Declared = declared, Valid = parsed.Count });
 
         Directory.CreateDirectory(Path.GetDirectoryName(path)!);
         File.WriteAllText(path, markdown);
         if (!_createdSkillFiles.Contains(path, StringComparer.OrdinalIgnoreCase)) _createdSkillFiles.Add(path);
 
         string reload = ReloadSkills();
-        string skills = parsed.Count == 0 ? MessageText.Format(ToolMessage.SkillGuidanceOnly) : string.Join(", ", parsed.Select(s => s.Name));
-        return MessageText.Format(ToolMessage.SkillFileSaved, new { Path = path, Skills = skills, Name = name, Reload = reload });
+        string skills = parsed.Count == 0 ? MessageText.Format(AgentToolMessage.SkillGuidanceOnly) : string.Join(", ", parsed.Select(s => s.Name));
+        return MessageText.Format(AgentToolMessage.SkillFileSaved, new { Path = path, Skills = skills, Name = name, Reload = reload });
     }
 
     // ---- FX20: the user's side of a pending skill file, reached through AgentEngine.HandleUserCommand, never the model ----
@@ -225,7 +226,7 @@ internal sealed partial class SkillTools
     /// </summary>
     internal string ApproveSkillFile(string name)
     {
-        if (SkillsDirectory is null) return MessageText.Format(ToolMessage.SkillAuthoringUnavailable);
+        if (SkillsDirectory is null) return MessageText.Format(AgentToolMessage.SkillAuthoringUnavailable);
         string pending = PendingPath(name);
         if (!File.Exists(pending)) return MessageText.Format(UserText.NoPendingToolSeeTools, new { Name = name });
 
@@ -239,7 +240,7 @@ internal sealed partial class SkillTools
     /// <summary><c>/reject {name}</c>: the pending file is deleted, and this engine unloads it if it had it.</summary>
     internal string RejectSkillFile(string name)
     {
-        if (SkillsDirectory is null) return MessageText.Format(ToolMessage.SkillAuthoringUnavailable);
+        if (SkillsDirectory is null) return MessageText.Format(AgentToolMessage.SkillAuthoringUnavailable);
         string pending = PendingPath(name);
         if (!File.Exists(pending)) return MessageText.Format(UserText.NoPendingTool, new { Name = name });
 
@@ -272,7 +273,7 @@ internal sealed partial class SkillTools
         "Returns an error if the host wasn't configured with a skill reloader.")]
     public string ReloadSkills()
     {
-        if (SkillReloader is null) return MessageText.Format(ToolMessage.SkillReloadUnavailable);
+        if (SkillReloader is null) return MessageText.Format(AgentToolMessage.SkillReloadUnavailable);
 
         var provider = new CompositeSkillProvider(SkillReloader());
         string loadedDocs = provider.Documentation;
@@ -285,7 +286,7 @@ internal sealed partial class SkillTools
 
         _skills = ToSkillMap(provider);
         Documentation = AgentEngine.Normalise(provider.Documentation);
-        return MessageText.Format(ToolMessage.SkillsReloaded, new { Skills = _skills.Count == 0 ? "(none)" : string.Join(", ", _skills.Keys.Order()) });
+        return MessageText.Format(AgentToolMessage.SkillsReloaded, new { Skills = _skills.Count == 0 ? "(none)" : string.Join(", ", _skills.Keys.Order()) });
     }
 
     private static Dictionary<string, MarkdownSkillLoader.SkillDef> ToSkillMap(ISkillProvider provider) =>
@@ -296,11 +297,11 @@ internal sealed partial class SkillTools
     private static string FormatSkillResult(ProcessRunner.Result? result, string? notInstalled)
     {
         if (notInstalled is not null) return MessageText.Format(ToolMessage.ErrorWithReason, new { Reason = notInstalled });
-        if (result!.TimedOut) return MessageText.Format(ToolMessage.CommandTimeout, new { Milliseconds = ShellTimeoutMs });
+        if (result!.TimedOut) return MessageText.Format(AgentToolMessage.CommandTimeout, new { Milliseconds = ShellTimeoutMs });
 
         string output = result.Output.Trim();
-        if (result.ExitCode != 0) return MessageText.Format(ToolMessage.ExitCodeError, new { Code = result.ExitCode, Output = output });
-        return string.IsNullOrWhiteSpace(output) ? MessageText.Format(ToolMessage.CommandRanNoOutput) : output;
+        if (result.ExitCode != 0) return MessageText.Format(AgentToolMessage.ExitCodeError, new { Code = result.ExitCode, Output = output });
+        return string.IsNullOrWhiteSpace(output) ? MessageText.Format(AgentToolMessage.CommandRanNoOutput) : output;
     }
 
 
@@ -336,7 +337,7 @@ internal sealed partial class SkillTools
         if (!process.WaitForExit(ShellTimeoutMs))
         {
             process.Kill(entireProcessTree: true);
-            return MessageText.Format(ToolMessage.CommandTimeout, new { Milliseconds = ShellTimeoutMs });
+            return MessageText.Format(AgentToolMessage.CommandTimeout, new { Milliseconds = ShellTimeoutMs });
         }
 
         string output = stdout.GetAwaiter().GetResult();
@@ -344,10 +345,10 @@ internal sealed partial class SkillTools
 
         if (process.ExitCode != 0 && !string.IsNullOrWhiteSpace(error))
         {
-            return MessageText.Format(ToolMessage.ExitCodeError, new { Code = process.ExitCode, Output = error.Trim() });
+            return MessageText.Format(AgentToolMessage.ExitCodeError, new { Code = process.ExitCode, Output = error.Trim() });
         }
 
-        return string.IsNullOrWhiteSpace(output) ? MessageText.Format(ToolMessage.CommandRanNoOutput) : output.Trim();
+        return string.IsNullOrWhiteSpace(output) ? MessageText.Format(AgentToolMessage.CommandRanNoOutput) : output.Trim();
     }
 
 

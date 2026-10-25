@@ -14,6 +14,7 @@ using LouisAgent.Core.Skills.Roles;
 using LouisAgent.Core.Tools.Agents.SubSessions;
 using LouisAgent.Core.Tools.Clock;
 using Microsoft.Extensions.AI;
+using LouisAgent.Core.Tools.Agents.Messages;
 
 /// <summary>
 /// The <c>minions</c> toolset (F30): a specialist hands one task and one of its own tools to a minion, a session at
@@ -91,11 +92,11 @@ public sealed class MinionTools
     {
         role = role.Trim();
         tool = tool.Trim();
-        if (RoleCatalog.MinionBaseOf(role) is null) return MessageText.Format(ToolMessage.MinionRoleInvalid, new { Role = role });
-        if (NeverHandedDown.Contains(tool)) return MessageText.Format(ToolMessage.MinionToolNeverHandedDown, new { Tool = tool });
+        if (RoleCatalog.MinionBaseOf(role) is null) return MessageText.Format(SubSessionToolMessage.MinionRoleInvalid, new { Role = role });
+        if (NeverHandedDown.Contains(tool)) return MessageText.Format(SubSessionToolMessage.MinionToolNeverHandedDown, new { Tool = tool });
         var mine = AgentTools.Current;
         if (!mine.Contains(tool))
-            return MessageText.Format(ToolMessage.MinionToolNotMine, new { Tool = tool, Tools = mine.Count == 0 ? "(none)" : string.Join(", ", mine.Order()) });
+            return MessageText.Format(SubSessionToolMessage.MinionToolNotMine, new { Tool = tool, Tools = mine.Count == 0 ? "(none)" : string.Join(", ", mine.Order()) });
         if (ModelFor(role, stronger, out string? llm) is { } noModel) return noModel;
         if (SpecialistTools.ResolvePeer(_peers, null, out Uri peer, out string agent) is { } noPeer) return noPeer;
 
@@ -112,7 +113,7 @@ public sealed class MinionTools
         };
         string model = llm ?? InstanceLlm;
         string Answer(SubSessionMessenger.SubSessionReply reply) =>
-            MessageText.Format(ToolMessage.MinionAnswer, new { Answer = reply.Text, Role = role, Tool = tool, Llm = model, Usage = reply.UsageLine });
+            MessageText.Format(SubSessionToolMessage.MinionAnswer, new { Answer = reply.Text, Role = role, Tool = tool, Llm = model, Usage = reply.UsageLine });
         var kind = new SubSessionKind(Kind, role, $"minion:{role}", (_, reply) => Answer(reply), Answer, Llm: model);
         // Never kept (F30, the fourth hand check): a chat keeps three children, and kept minions evicted its specialists.
         return await _session.OpenAsync(peer, agent, createBody, new { message = task }, [tool], role, kind, toolUseId, scope, _timeout,
@@ -128,10 +129,10 @@ public sealed class MinionTools
     {
         llm = null;
         if (!_llms.TryGetValue(role, out var cascade) && !_llms.TryGetValue(AnyRole, out cascade))
-            return MessageText.Format(ToolMessage.MinionNoLlm, new { Role = role });
+            return MessageText.Format(SubSessionToolMessage.MinionNoLlm, new { Role = role });
         int index = stronger ? 1 : 0;
         if (index >= cascade.Count)
-            return MessageText.Format(ToolMessage.MinionNoStronger, new { Role = role, Models = string.Join(" > ", cascade) });
+            return MessageText.Format(SubSessionToolMessage.MinionNoStronger, new { Role = role, Models = string.Join(" > ", cascade) });
         llm = cascade[index] == InstanceLlm ? null : cascade[index];
         return null;
     }
@@ -145,6 +146,6 @@ public sealed class MinionTools
         string tree = scope?.Tags.Parent ?? CallSlots.ParentTag(scope) ?? "(no turn)";
         if (_perTree.Count > 1000) _perTree.Clear();
         return _perTree.AddOrUpdate(tree, 1, (_, n) => n + 1) <= MaxPerTurn ? null
-            : MessageText.Format(ToolMessage.MinionLimit, new { Max = MaxPerTurn });
+            : MessageText.Format(SubSessionToolMessage.MinionLimit, new { Max = MaxPerTurn });
     }
 }

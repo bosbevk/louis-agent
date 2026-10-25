@@ -8,6 +8,7 @@ using System.Text.Json;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Tools.Web;
 using LouisAgent.Core.Tools.Web.Search;
+using LouisAgent.Core.Tools.Web.Messages;
 
 /// <summary>
 /// Tavily's search API (F25 step 6; Louis's choice over Google, whose Custom Search API ends on 2027-01-01): a search
@@ -46,11 +47,11 @@ public sealed class TavilySearchProvider(string apiKey, HttpClient? http = null)
             string detail = TryReadError(json) ?? response.ReasonPhrase ?? "";
             throw new WebSearchException(response.StatusCode switch
             {
-                HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden => MessageText.Format(ToolMessage.TavilyRejected, new { Detail = detail }),
+                HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden => MessageText.Format(WebToolMessage.TavilyRejected, new { Detail = detail }),
                 // 429 is the rate limit; 432 and 433 are Tavily's own codes for a plan's usage limit.
                 HttpStatusCode.TooManyRequests or (HttpStatusCode)432 or (HttpStatusCode)433 =>
-                    MessageText.Format(ToolMessage.TavilyLimit, new { Detail = detail }),
-                _ => MessageText.Format(ToolMessage.TavilyFailed, new { Status = (int)response.StatusCode, Detail = detail }),
+                    MessageText.Format(WebToolMessage.TavilyLimit, new { Detail = detail }),
+                _ => MessageText.Format(WebToolMessage.TavilyFailed, new { Status = (int)response.StatusCode, Detail = detail }),
             });
         }
 

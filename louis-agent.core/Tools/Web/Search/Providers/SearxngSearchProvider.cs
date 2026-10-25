@@ -8,6 +8,7 @@ using LouisAgent.Core.Messages;
 using Microsoft.Extensions.Logging;
 using LouisAgent.Core.Tools.Web;
 using LouisAgent.Core.Tools.Web.Search;
+using LouisAgent.Core.Tools.Web.Messages;
 
 /// <summary>
 /// SearXNG as the search engine (F32 step 1): the metasearch we run ourselves in a compose stack, for development,
@@ -33,9 +34,9 @@ public sealed class SearxngSearchProvider(Uri baseUrl, HttpClient? http = null) 
         string json = await response.Content.ReadAsStringAsync(cancellationToken);
 
         if (response.StatusCode == HttpStatusCode.Forbidden)
-            throw new WebSearchException(MessageText.Format(ToolMessage.SearxngJsonOff, new { Url = baseUrl }));
+            throw new WebSearchException(MessageText.Format(WebToolMessage.SearxngJsonOff, new { Url = baseUrl }));
         if (!response.IsSuccessStatusCode)
-            throw new WebSearchException(MessageText.Format(ToolMessage.SearxngFailed, new { Status = (int)response.StatusCode, Detail = response.ReasonPhrase ?? "" }));
+            throw new WebSearchException(MessageText.Format(WebToolMessage.SearxngFailed, new { Status = (int)response.StatusCode, Detail = response.ReasonPhrase ?? "" }));
 
         var answer = Parse(json, query.MaxResults);
         if (answer.SilentEngines.Count > 0)
@@ -79,7 +80,7 @@ public sealed class SearxngSearchProvider(Uri baseUrl, HttpClient? http = null) 
             : [];
 
         if (results.Count == 0 && silent.Count > 0)
-            throw new WebSearchException(MessageText.Format(ToolMessage.SearxngNoEngineAnswered, new { Reasons = string.Join("; ", silent) }));
+            throw new WebSearchException(MessageText.Format(WebToolMessage.SearxngNoEngineAnswered, new { Reasons = string.Join("; ", silent) }));
         return new SearxngAnswer(results, silent);
     }
 }

@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using LouisAgent.Core.Tools.DotNet;
 using LouisAgent.Core.Tools.Workspace;
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Tools.Shell.Messages;
 
 /// <summary>
 /// Python toolset: run inline code or workspace scripts and manage packages in a dedicated virtual environment,
@@ -58,13 +59,13 @@ public sealed partial class PythonTools
     {
         bool hasCode = !string.IsNullOrWhiteSpace(code);
         bool hasScript = !string.IsNullOrWhiteSpace(scriptPath);
-        if (hasCode == hasScript) return MessageText.Format(ToolMessage.PassCodeOrScriptPath);
+        if (hasCode == hasScript) return MessageText.Format(ShellToolMessage.PassCodeOrScriptPath);
 
         string? script = null;
         if (hasScript)
         {
             if (!TryResolveWorkspacePath(scriptPath, out script, out var error)) return error;
-            if (!File.Exists(script)) return MessageText.Format(ToolMessage.ScriptNotFound, new { Path = scriptPath });
+            if (!File.Exists(script)) return MessageText.Format(ShellToolMessage.ScriptNotFound, new { Path = scriptPath });
         }
 
         var result = RunScript(hasCode ? code : null, script, DotNetTools.SplitArguments(arguments), standardInput,
@@ -136,21 +137,21 @@ public sealed partial class PythonTools
         [Description("Space-separated pip requirement specifiers, e.g. 'requests' or 'numpy>=2 pandas==2.2.2'")] string packages)
     {
         var specs = (packages ?? "").Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-        if (specs.Length == 0) return MessageText.Format(ToolMessage.PackagesRequired);
+        if (specs.Length == 0) return MessageText.Format(ShellToolMessage.PackagesRequired);
         // Requirement specifiers only — no pip options such as --index-url or -r.
         if (specs.FirstOrDefault(s => !RequirementSpec().IsMatch(s)) is { } invalid)
-            return MessageText.Format(ToolMessage.PackageSpecifierInvalid, new { Specifier = invalid });
+            return MessageText.Format(ShellToolMessage.PackageSpecifierInvalid, new { Specifier = invalid });
 
         if (EnsureVirtualEnvironment() is { } venvError) return venvError;
 
         var result = ProcessRunner.Run(VenvPython, ["-m", "pip", "install", "--disable-pip-version-check", .. specs],
             WorkingDirectory, InstallTimeout, environment: PythonEnvironment);
-        if (result.TimedOut) return MessageText.Format(ToolMessage.PipTimedOut, new { Output = ProcessRunner.Tail(result.Output) });
+        if (result.TimedOut) return MessageText.Format(ShellToolMessage.PipTimedOut, new { Output = ProcessRunner.Tail(result.Output) });
 
         // pip is chatty; the final lines say what was installed or why it failed.
         return result.ExitCode == 0
             ? ProcessRunner.Tail(result.Output, 1500)
-            : MessageText.Format(ToolMessage.PipFailed, new { result.ExitCode, Output = ProcessRunner.Tail(result.Output) });
+            : MessageText.Format(ShellToolMessage.PipFailed, new { result.ExitCode, Output = ProcessRunner.Tail(result.Output) });
     }
 
     [Description("Reports which Python interpreter PythonRun will use, its version, the virtual environment's " +
@@ -167,7 +168,7 @@ public sealed partial class PythonTools
         var sb = new StringBuilder();
         sb.AppendLine($"Interpreter: {python.FileName} {string.Join(' ', python.PrefixArgs)}".TrimEnd());
         sb.AppendLine($"Version: {version.Output.Trim()}");
-        sb.AppendLine($"Virtual environment: {_venvDirectory} ({(File.Exists(VenvPython) ? MessageText.Format(ToolMessage.VenvCreated) : MessageText.Format(ToolMessage.VenvNotCreatedYet))})");
+        sb.AppendLine($"Virtual environment: {_venvDirectory} ({(File.Exists(VenvPython) ? MessageText.Format(ShellToolMessage.VenvCreated) : MessageText.Format(ShellToolMessage.VenvNotCreatedYet))})");
 
         if (File.Exists(VenvPython))
         {
@@ -182,7 +183,7 @@ public sealed partial class PythonTools
 
     internal sealed record Interpreter(string FileName, string[] PrefixArgs);
 
-    private static string NotInstalledMessage => MessageText.Format(ToolMessage.PythonNotInstalled);
+    private static string NotInstalledMessage => MessageText.Format(ShellToolMessage.PythonNotInstalled);
 
     private string WorkingDirectory =>
         Environment.GetEnvironmentVariable("AGENT_WORKING_DIRECTORY") is { Length: > 0 } dir ? dir : _workspaceRoot;
@@ -219,7 +220,7 @@ public sealed partial class PythonTools
         var result = ProcessRunner.Run(python.FileName, [.. python.PrefixArgs, "-m", "venv", _venvDirectory],
             WorkingDirectory, InstallTimeout, environment: PythonEnvironment);
         if (result.ExitCode != 0 || !File.Exists(VenvPython))
-            return MessageText.Format(ToolMessage.VenvNotCreated, new { Directory = _venvDirectory, Output = ProcessRunner.Tail(result.Output) });
+            return MessageText.Format(ShellToolMessage.VenvNotCreated, new { Directory = _venvDirectory, Output = ProcessRunner.Tail(result.Output) });
 
         _baseInterpreter = null;
         return null;

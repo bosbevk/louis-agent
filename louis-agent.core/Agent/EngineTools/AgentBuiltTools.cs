@@ -7,6 +7,7 @@ using LouisAgent.Core.Tools.Shell;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
 using Microsoft.Extensions.Logging;
+using LouisAgent.Core.Agent.Messages;
 
 /// <summary>
 /// Tools the agent builds for itself (<c>*.tool.md</c>): <see cref="CreateTool"/> makes one, active at once but only
@@ -58,20 +59,20 @@ internal sealed class AgentBuiltTools(
         [Description("The full tool definition markdown")] string definition,
         [Description("Set true to replace a pending tool you created earlier with the same name")] bool overwrite = false)
     {
-        if (!supportsTools) return MessageText.Format(ToolMessage.ToolsNotSupported);
-        if (PendingToolsDirectory is null) return MessageText.Format(ToolMessage.ToolBuildingUnavailable);
+        if (!supportsTools) return MessageText.Format(AgentToolMessage.ToolsNotSupported);
+        if (PendingToolsDirectory is null) return MessageText.Format(AgentToolMessage.ToolBuildingUnavailable);
 
         var (parsed, errors) = ScriptToolDefinition.Parse(definition);
-        if (parsed is null) return MessageText.Format(ToolMessage.ToolDefinitionInvalid, new { Errors = string.Join("\n- ", errors) });
+        if (parsed is null) return MessageText.Format(AgentToolMessage.ToolDefinitionInvalid, new { Errors = string.Join("\n- ", errors) });
 
         if (_scriptTools.TryGetValue(parsed.Name, out var existing))
         {
-            if (existing.Approved) return MessageText.Format(ToolMessage.ApprovedToolExists, new { parsed.Name });
-            if (!overwrite) return MessageText.Format(ToolMessage.PendingToolExists, new { parsed.Name });
+            if (existing.Approved) return MessageText.Format(AgentToolMessage.ApprovedToolExists, new { parsed.Name });
+            if (!overwrite) return MessageText.Format(AgentToolMessage.PendingToolExists, new { parsed.Name });
         }
         else if (registry.Contains(parsed.Name, StringComparison.OrdinalIgnoreCase) || reservedNames().Contains(parsed.Name))
         {
-            return MessageText.Format(ToolMessage.BuiltInToolName, new { parsed.Name });
+            return MessageText.Format(AgentToolMessage.BuiltInToolName, new { parsed.Name });
         }
 
         Directory.CreateDirectory(PendingToolsDirectory);
@@ -79,9 +80,9 @@ internal sealed class AgentBuiltTools(
         RegisterScriptTool(parsed, approved: false);
 
         string parameters = parsed.Parameters.Count == 0
-            ? MessageText.Format(ToolMessage.NoParameters)
+            ? MessageText.Format(AgentToolMessage.NoParameters)
             : string.Join(", ", parsed.Parameters.Select(p => $"{p.Name}: {p.Type}{(p.Required ? "" : "?")}"));
-        return MessageText.Format(ToolMessage.ToolCreated, new { parsed.Name, parsed.Language, Parameters = parameters });
+        return MessageText.Format(AgentToolMessage.ToolCreated, new { parsed.Name, parsed.Language, Parameters = parameters });
     }
 
     [Description("Lists every agent-built tool known right now: approved ones that load in every session, ones " +
@@ -96,13 +97,13 @@ internal sealed class AgentBuiltTools(
             : [];
 
         var lines = _scriptTools.Values.OrderBy(t => t.Name)
-            .Select(t => MessageText.Format(t.Approved ? ToolMessage.AgentToolApproved : ToolMessage.AgentToolPending,
+            .Select(t => MessageText.Format(t.Approved ? AgentToolMessage.AgentToolApproved : AgentToolMessage.AgentToolPending,
                 new { t.Name, t.Definition.Description }))
             .Concat(pendingOnDisk.Where(n => !_scriptTools.ContainsKey(n)).Order()
-                .Select(n => MessageText.Format(ToolMessage.AgentToolNotLoaded, new { Name = n })))
+                .Select(n => MessageText.Format(AgentToolMessage.AgentToolNotLoaded, new { Name = n })))
             .ToList();
 
-        return lines.Count == 0 ? MessageText.Format(ToolMessage.NoAgentTools) : string.Join('\n', lines);
+        return lines.Count == 0 ? MessageText.Format(AgentToolMessage.NoAgentTools) : string.Join('\n', lines);
     }
 
     /// <summary>
@@ -211,11 +212,11 @@ internal sealed class AgentBuiltTools(
         };
 
         if (notInstalled is not null) return MessageText.Format(ToolMessage.ErrorWithReason, new { Reason = notInstalled });
-        if (result!.TimedOut) return MessageText.Format(ToolMessage.AgentToolTimeout, new { definition.Name, Seconds = definition.TimeoutSeconds, Output = ProcessRunner.Tail(result.Output) });
+        if (result!.TimedOut) return MessageText.Format(AgentToolMessage.AgentToolTimeout, new { definition.Name, Seconds = definition.TimeoutSeconds, Output = ProcessRunner.Tail(result.Output) });
 
         string output = ProcessRunner.Truncate(result.Output.Trim());
         if (result.ExitCode != 0) return MessageText.Format(ToolMessage.ExitCode, new { Code = result.ExitCode, Output = output });
-        return string.IsNullOrWhiteSpace(output) ? MessageText.Format(ToolMessage.ToolRanNoOutput) : output;
+        return string.IsNullOrWhiteSpace(output) ? MessageText.Format(AgentToolMessage.ToolRanNoOutput) : output;
     }
 
 }

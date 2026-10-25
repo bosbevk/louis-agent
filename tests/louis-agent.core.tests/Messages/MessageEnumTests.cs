@@ -5,10 +5,12 @@ namespace LouisAgent.Core.Tests.Messages;
 
 // docs/CLAUDE.md, "Messages and logging": every message is an enum member whose [Description] is its template, with
 // named holes. This checks every message enum in core, so a member added without text, or with a broken hole, fails here.
+// The message enums are the enums of a `Messages` folder at any depth (F-refactor, the split by area): an area's enum sits in its
+// own area's `Messages` namespace, and the shared ones in core's.
 public class MessageEnumTests
 {
     private static readonly Type[] MessageEnums =
-        typeof(MessageText).Assembly.GetTypes().Where(t => t.IsEnum && t.Namespace == typeof(MessageText).Namespace).ToArray();
+        typeof(MessageText).Assembly.GetTypes().Where(t => t.IsEnum && t.Namespace?.Split('.').Last() == "Messages").ToArray();
 
     private static IEnumerable<Enum> AllMembers() =>
         MessageEnums.SelectMany(t => Enum.GetValues(t).Cast<Enum>());
@@ -16,8 +18,25 @@ public class MessageEnumTests
     [Test]
     public void TheMessageEnumsExist()
     {
-        // ReplayMessage (F18 step 4a): the replay's exception texts, in an enum of their own because ErrorMessage is at its 200 lines.
-        Assert.That(MessageEnums.Select(t => t.Name), Is.EquivalentTo(new[] { "ErrorMessage", "LogMessage", "ReplayMessage", "ToolMessage", "UserText" }));
+        Assert.That(MessageEnums.Select(t => t.Name), Is.EquivalentTo(new[]
+        {
+            "AgentToolMessage", "ClockToolMessage", "CurrencyToolMessage", "DevOpsToolMessage", "DocumentToolMessage", "DotNetToolMessage",
+            "ErrorMessage", "GitToolMessage", "GuardrailToolMessage", "LogMessage", "PaymoToolMessage", "ReplayMessage", "ScriptToolMessage",
+            "ShellToolMessage", "SubSessionToolMessage", "ToolMessage", "UserText", "WebToolMessage", "WorkspaceToolMessage",
+        }));
+    }
+
+    [Test]
+    public void EveryMessageOrTextEnum_LivesInAMessagesFolder()
+    {
+        // An enum named for messages but placed outside a Messages folder would skip every check above, so it fails here.
+        var stray = typeof(MessageText).Assembly.GetTypes()
+            .Where(t => t.IsEnum && (t.Name.EndsWith("Message", StringComparison.Ordinal) || t.Name.EndsWith("Text", StringComparison.Ordinal)))
+            .Where(t => t.Namespace?.Split('.').Last() != "Messages")
+            .Select(t => t.FullName)
+            .ToList();
+
+        Assert.That(stray, Is.Empty);
     }
 
     [Test]

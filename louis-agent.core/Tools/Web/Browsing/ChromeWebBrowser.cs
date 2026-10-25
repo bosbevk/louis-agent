@@ -6,6 +6,7 @@ using LouisAgent.Core.Messages;
 using LouisAgent.Core.Tools.Web.Browsing.Policy;
 using Microsoft.Extensions.Logging;
 using PuppeteerSharp;
+using LouisAgent.Core.Tools.Web.Messages;
 
 /// <summary>
 /// The headless Chrome we run (F32; a seam of its own since F33 step 1, so a shop's catalogue uses the same guards as the
@@ -56,9 +57,9 @@ public sealed class ChromeWebBrowser(Uri browserUrl, Func<string, CancellationTo
         if (visit.IsCompletedSuccessfully) return visit.Result;
         cancellationToken.ThrowIfCancellationRequested();
         _ = visit.ContinueWith(t => _ = t.Exception, TaskContinuationOptions.OnlyOnFaulted);
-        throw new WebBrowserException(MessageText.Format(ToolMessage.RenderFailed, new
+        throw new WebBrowserException(MessageText.Format(WebToolMessage.RenderFailed, new
         {
-            Url = url, Reason = MessageText.Format(ToolMessage.RenderTimedOut, new { Seconds = (int)_budget.TotalSeconds }),
+            Url = url, Reason = MessageText.Format(WebToolMessage.RenderTimedOut, new { Seconds = (int)_budget.TotalSeconds }),
         }));
     }
 
@@ -109,7 +110,7 @@ public sealed class ChromeWebBrowser(Uri browserUrl, Func<string, CancellationTo
         }
         catch (Exception ex) when (ex is not OperationCanceledException and not OutOfMemoryException)
         {
-            throw new WebBrowserException(MessageText.Format(ToolMessage.BrowserUnreachable, new { Url = browserUrl, Reason = ex.Message }));
+            throw new WebBrowserException(MessageText.Format(WebToolMessage.BrowserUnreachable, new { Url = browserUrl, Reason = ex.Message }));
         }
     }
 
@@ -258,9 +259,9 @@ public sealed class ChromeWebBrowser(Uri browserUrl, Func<string, CancellationTo
         catch (Exception ex) when (ex is NavigationException or TimeoutException)
         {
             string reason = refusedPage is { } address
-                ? MessageText.Format(ToolMessage.RenderBlockedAddress, new { Address = address })
+                ? MessageText.Format(WebToolMessage.RenderBlockedAddress, new { Address = address })
                 : ex.Message;
-            throw new WebBrowserException(MessageText.Format(ToolMessage.RenderFailed, new { Url = url, Reason = reason }));
+            throw new WebBrowserException(MessageText.Format(WebToolMessage.RenderFailed, new { Url = url, Reason = reason }));
         }
 
         if (capture is not null)
@@ -285,7 +286,7 @@ public sealed class ChromeWebBrowser(Uri browserUrl, Func<string, CancellationTo
             }
             catch (EvaluationFailedException ex)
             {
-                throw new WebBrowserException(MessageText.Format(ToolMessage.BrowserScriptFailed, new { Url = url, Reason = ex.Message }));
+                throw new WebBrowserException(MessageText.Format(WebToolMessage.BrowserScriptFailed, new { Url = url, Reason = ex.Message }));
             }
 
         Task[] pending;

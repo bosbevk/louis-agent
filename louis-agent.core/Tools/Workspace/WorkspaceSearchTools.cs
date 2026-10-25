@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Text;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Tools.Workspace.Listing;
+using LouisAgent.Core.Tools.Workspace.Messages;
 
 /// <summary>Finding across the tree (the files toolset, S: one of its five classes): text in files, files by name.</summary>
 public sealed class WorkspaceSearchTools
@@ -25,7 +26,7 @@ public sealed class WorkspaceSearchTools
     {
         if (string.IsNullOrWhiteSpace(query))
         {
-            return MessageText.Format(ToolMessage.WorkspaceSearchQueryEmpty);
+            return MessageText.Format(WorkspaceToolMessage.WorkspaceSearchQueryEmpty);
         }
 
         maxResults = Math.Clamp(maxResults, 1, 100);
@@ -71,7 +72,7 @@ public sealed class WorkspaceSearchTools
             }
         }
 
-        return matches.Count == 0 ? MessageText.Format(ToolMessage.NoMatches) : string.Join(Environment.NewLine, matches);
+        return matches.Count == 0 ? MessageText.Format(WorkspaceToolMessage.NoMatches) : string.Join(Environment.NewLine, matches);
     }
 
     [Description("Recursively search the workspace for files whose name matches a wildcard pattern (* for any characters, ? for a single character), such as '*.cs' or 'test*.txt' — this matches file names only, not file content. Excluded directories (.git, node_modules, bin, obj, etc.) are skipped and results are capped at 500 files. Use SearchWorkspace instead when you're looking for a piece of text inside files rather than files by name.")]
@@ -82,7 +83,7 @@ public sealed class WorkspaceSearchTools
         string directory = ResolvePath(searchPath);
         if (!Directory.Exists(directory))
         {
-            return MessageText.Format(ToolMessage.DirectoryNotFound, new { Path = searchPath });
+            return MessageText.Format(WorkspaceToolMessage.DirectoryNotFound, new { Path = searchPath });
         }
 
         try
@@ -95,7 +96,7 @@ public sealed class WorkspaceSearchTools
 
             if (files.Count == 0)
             {
-                return MessageText.Format(ToolMessage.NoFilesMatching, new { Pattern = pattern });
+                return MessageText.Format(WorkspaceToolMessage.NoFilesMatching, new { Pattern = pattern });
             }
 
             var result = new StringBuilder();
@@ -108,14 +109,14 @@ public sealed class WorkspaceSearchTools
 
             if (files.Count == 500)
             {
-                result.AppendLine(MessageText.Format(ToolMessage.FindTruncated));
+                result.AppendLine(MessageText.Format(WorkspaceToolMessage.FindTruncated));
             }
 
             return result.ToString();
         }
         catch (Exception ex)
         {
-            return MessageText.Format(ToolMessage.FileSearchFailed, new { Reason = ex.Message });
+            return MessageText.Format(WorkspaceToolMessage.FileSearchFailed, new { Reason = ex.Message });
         }
     }
 

@@ -4,6 +4,7 @@ using LouisAgent.Core.Config;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Tools.Web.Browsing;
 using LouisAgent.Core.Tools.Web.Rendering.Providers;
+using LouisAgent.Core.Tools.Web.Messages;
 
 /// <summary>
 /// Picks the page renderer from configuration: PAGE_RENDERER = chrome | tavily (F32; an enum, ADR 0024). When unset, the
@@ -23,7 +24,7 @@ public static class PageRendererFactory
         if (!SettingChoice.TryParse(options.PageRenderer, out PageRendererKind? choice))
         {
             string named = options.PageRenderer!.Trim();
-            return new UnavailablePageRenderer(MessageText.Format(ToolMessage.UnknownPageRenderer,
+            return new UnavailablePageRenderer(MessageText.Format(WebToolMessage.UnknownPageRenderer,
                 new { Renderer = named, Supported = string.Join(", ", SupportedRenderers) }));
         }
 
@@ -31,13 +32,13 @@ public static class PageRendererFactory
         {
             null when browserUrl is not null => new ChromePageRenderer(browser ?? new ChromeWebBrowser(browserUrl, userAgent: options.BrowserUserAgent)),
             null when hasTavily => new TavilyPageRenderer(options.TavilyApiKey!, http),
-            null => new UnavailablePageRenderer(MessageText.Format(ToolMessage.RenderNotConfigured)),
+            null => new UnavailablePageRenderer(MessageText.Format(WebToolMessage.RenderNotConfigured)),
             PageRendererKind.Chrome => browserUrl is not null
                 ? new ChromePageRenderer(browser ?? new ChromeWebBrowser(browserUrl, userAgent: options.BrowserUserAgent))
-                : new UnavailablePageRenderer(MessageText.Format(ToolMessage.BrowserNotConfigured)),
+                : new UnavailablePageRenderer(MessageText.Format(WebToolMessage.BrowserNotConfigured)),
             PageRendererKind.Tavily => hasTavily
                 ? new TavilyPageRenderer(options.TavilyApiKey!, http)
-                : new UnavailablePageRenderer(MessageText.Format(ToolMessage.RenderNotConfigured)),
+                : new UnavailablePageRenderer(MessageText.Format(WebToolMessage.RenderNotConfigured)),
             _ => throw new ArgumentOutOfRangeException(nameof(options), choice, null),
         };
     }

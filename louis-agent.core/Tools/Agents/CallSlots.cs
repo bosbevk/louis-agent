@@ -3,6 +3,7 @@ namespace LouisAgent.Core.Tools.Agents;
 using System.Collections.Concurrent;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Usage.Records;
+using LouisAgent.Core.Tools.Agents.Messages;
 
 /// <summary>
 /// The sub-session calls a turn may make (S, CL15, from SpecialistTools): at most <paramref name="maxPerTurn"/> per turn
@@ -18,7 +19,7 @@ internal sealed class CallSlots(int maxPerTurn, TimeSpan noTurnWindow, TimeProvi
     {
         parent = ParentTag(scope);
         if (parent is null ? !TakeNoTurnSlot() : !TakeTurnSlot(parent))
-            return MessageText.Format(parent is null ? ToolMessage.SubSessionRateLimit : ToolMessage.SubSessionLimit, new { Max = maxPerTurn });
+            return MessageText.Format(parent is null ? SubSessionToolMessage.SubSessionRateLimit : SubSessionToolMessage.SubSessionLimit, new { Max = maxPerTurn });
         return null;
     }
 

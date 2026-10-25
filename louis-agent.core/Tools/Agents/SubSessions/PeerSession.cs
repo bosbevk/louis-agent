@@ -6,6 +6,7 @@ using LouisAgent.Core.Messages;
 using LouisAgent.Core.Sessions.SubSessions;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Sinks;
+using LouisAgent.Core.Tools.Agents.Messages;
 
 /// <summary>
 /// A sub-session's life on a peer (S, CL15, from SpecialistTools): opened with only the toolsets a task needs, sent the
@@ -38,7 +39,7 @@ internal sealed class PeerSession(PeerHttp http, SubSessionMessenger messenger)
             using var created = await http.SendAsync(create, timeoutSource.Token);
             string createdBody = await created.Content.ReadAsStringAsync(timeoutSource.Token);
             if (!created.IsSuccessStatusCode)
-                return MessageText.Format(ToolMessage.SubSessionRefused, new { Agent = kind.Label, Status = (int)created.StatusCode, Reason = PeerHttp.ErrorText(createdBody) });
+                return MessageText.Format(SubSessionToolMessage.SubSessionRefused, new { Agent = kind.Label, Status = (int)created.StatusCode, Reason = PeerHttp.ErrorText(createdBody) });
             using var createdJson = JsonDocument.Parse(createdBody);
             sessionId = createdJson.RootElement.GetProperty("session_id").GetString() ?? throw new JsonException("no session_id");
             // The role it opened with, as the peer reports it (the one passed: CL10, a role is never derived).
@@ -67,16 +68,16 @@ internal sealed class PeerSession(PeerHttp http, SubSessionMessenger messenger)
         }
         catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
         {
-            return MessageText.Format(ToolMessage.SubSessionTimedOut, new { Agent = kind.Label, Minutes = timeout.TotalMinutes.ToString("0.##", CultureInfo.InvariantCulture) });
+            return MessageText.Format(SubSessionToolMessage.SubSessionTimedOut, new { Agent = kind.Label, Minutes = timeout.TotalMinutes.ToString("0.##", CultureInfo.InvariantCulture) });
         }
         catch (HttpRequestException ex)
         {
-            return MessageText.Format(ToolMessage.SubSessionFailed, new { Agent = kind.Label, Reason = ex.Message });
+            return MessageText.Format(SubSessionToolMessage.SubSessionFailed, new { Agent = kind.Label, Reason = ex.Message });
         }
         catch (Exception ex) when (ex is JsonException or KeyNotFoundException or InvalidOperationException or FormatException)
         {
             // A peer that answers with something other than its API's JSON: an answer the model can act on, not a crash.
-            return MessageText.Format(ToolMessage.SubSessionUnreadable, new { Agent = kind.Label, Reason = ex.Message });
+            return MessageText.Format(SubSessionToolMessage.SubSessionUnreadable, new { Agent = kind.Label, Reason = ex.Message });
         }
         finally
         {
@@ -100,7 +101,7 @@ internal sealed class PeerSession(PeerHttp http, SubSessionMessenger messenger)
             {
                 // The peer dropped it (idle, or restarted): nothing to close, and the model starts over with the whole context.
                 registry.Remove(open.Handle);
-                return MessageText.Format(ToolMessage.SubSessionGone, new { open.Handle, Agent = kind.Label });
+                return MessageText.Format(SubSessionToolMessage.SubSessionGone, new { open.Handle, Agent = kind.Label });
             }
             if (reply.Failure is not null) return reply.Failure;
             answered = true;
@@ -108,15 +109,15 @@ internal sealed class PeerSession(PeerHttp http, SubSessionMessenger messenger)
         }
         catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
         {
-            return MessageText.Format(ToolMessage.SubSessionTimedOut, new { Agent = kind.Label, Minutes = timeout.TotalMinutes.ToString("0.##", CultureInfo.InvariantCulture) });
+            return MessageText.Format(SubSessionToolMessage.SubSessionTimedOut, new { Agent = kind.Label, Minutes = timeout.TotalMinutes.ToString("0.##", CultureInfo.InvariantCulture) });
         }
         catch (HttpRequestException ex)
         {
-            return MessageText.Format(ToolMessage.SubSessionFailed, new { Agent = kind.Label, Reason = ex.Message });
+            return MessageText.Format(SubSessionToolMessage.SubSessionFailed, new { Agent = kind.Label, Reason = ex.Message });
         }
         catch (Exception ex) when (ex is JsonException or KeyNotFoundException or InvalidOperationException or FormatException)
         {
-            return MessageText.Format(ToolMessage.SubSessionUnreadable, new { Agent = kind.Label, Reason = ex.Message });
+            return MessageText.Format(SubSessionToolMessage.SubSessionUnreadable, new { Agent = kind.Label, Reason = ex.Message });
         }
         finally
         {

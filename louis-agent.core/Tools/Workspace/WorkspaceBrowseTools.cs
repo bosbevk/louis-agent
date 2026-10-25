@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Text;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Tools.Workspace.Listing;
+using LouisAgent.Core.Tools.Workspace.Messages;
 
 /// <summary>Looking around one place (the files toolset, S: one of its five classes): a folder's entries, its tree, whether a path exists, a file's details.</summary>
 public sealed class WorkspaceBrowseTools
@@ -25,7 +26,7 @@ public sealed class WorkspaceBrowseTools
         string directory = ResolvePath(relativePath);
         if (!Directory.Exists(directory))
         {
-            return MessageText.Format(ToolMessage.DirectoryNotFound, new { Path = relativePath });
+            return MessageText.Format(WorkspaceToolMessage.DirectoryNotFound, new { Path = relativePath });
         }
 
         var entries = new List<string>();
@@ -40,12 +41,12 @@ public sealed class WorkspaceBrowseTools
             entries.Add($"{(Directory.Exists(path) ? "[dir] " : "[file] ")}{Path.GetRelativePath(_root, path)}");
             if (entries.Count == 200)
             {
-                entries.Add(MessageText.Format(ToolMessage.ListTruncated));
+                entries.Add(MessageText.Format(WorkspaceToolMessage.ListTruncated));
                 break;
             }
         }
 
-        return entries.Count == 0 ? MessageText.Format(ToolMessage.DirectoryEmpty) : string.Join(Environment.NewLine, entries);
+        return entries.Count == 0 ? MessageText.Format(WorkspaceToolMessage.DirectoryEmpty) : string.Join(Environment.NewLine, entries);
     }
 
     [Description("Return a file's metadata — size in bytes and a human-readable unit, creation time, last-modified time, and OS attributes — without reading its content. Use ReadWorkspaceFile instead when you need what's actually inside the file. Returns an error message if the path doesn't exist.")]
@@ -75,11 +76,11 @@ public sealed class WorkspaceBrowseTools
         string path = ResolvePath(relativePath);
         if (!Directory.Exists(path))
         {
-            return MessageText.Format(ToolMessage.DirectoryNotFound, new { Path = relativePath });
+            return MessageText.Format(WorkspaceToolMessage.DirectoryNotFound, new { Path = relativePath });
         }
 
         var sb = new StringBuilder();
-        sb.AppendLine(MessageText.Format(ToolMessage.DirectoryTree, new { Path = Path.GetRelativePath(_root, path), Depth = maxDepth }));
+        sb.AppendLine(MessageText.Format(WorkspaceToolMessage.DirectoryTree, new { Path = Path.GetRelativePath(_root, path), Depth = maxDepth }));
         sb.Append(DirectoryTree.Draw(path, maxDepth));
         return sb.ToString();
     }
@@ -91,15 +92,15 @@ public sealed class WorkspaceBrowseTools
         string path = ResolvePath(relativePath);
         if (File.Exists(path))
         {
-            return MessageText.Format(ToolMessage.FileExists, new { Path = relativePath });
+            return MessageText.Format(WorkspaceToolMessage.FileExists, new { Path = relativePath });
         }
 
         if (Directory.Exists(path))
         {
-            return MessageText.Format(ToolMessage.DirectoryExists, new { Path = relativePath });
+            return MessageText.Format(WorkspaceToolMessage.DirectoryExists, new { Path = relativePath });
         }
 
-        return MessageText.Format(ToolMessage.PathDoesNotExist, new { Path = relativePath });
+        return MessageText.Format(WorkspaceToolMessage.PathDoesNotExist, new { Path = relativePath });
     }
 
     private string ResolvePath(string relativePath) => _boundary.Resolve(relativePath);

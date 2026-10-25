@@ -4,6 +4,7 @@ using LouisAgent.Core.Guardrails.Workspace;
 using System.ComponentModel;
 using System.Text;
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Tools.Workspace.Messages;
 
 /// <summary>A file's content in and out (the files toolset, S: one of its five classes): read, write, append.</summary>
 public sealed class WorkspaceFileTools
@@ -34,7 +35,7 @@ public sealed class WorkspaceFileTools
 
         if (new FileInfo(path).Length > 1_000_000)
         {
-            return MessageText.Format(ToolMessage.FileTooLarge);
+            return MessageText.Format(WorkspaceToolMessage.FileTooLarge);
         }
 
         return File.ReadAllText(path, Encoding.UTF8);
@@ -48,18 +49,18 @@ public sealed class WorkspaceFileTools
         string path = ResolvePath(relativePath);
         if (SensitiveFiles.IsSensitive(path))
         {
-            return MessageText.Format(ToolMessage.SensitiveWrite);
+            return MessageText.Format(WorkspaceToolMessage.SensitiveWrite);
         }
 
         string? directory = Path.GetDirectoryName(path);
         if (directory is null)
         {
-            return MessageText.Format(ToolMessage.InvalidFilePath);
+            return MessageText.Format(WorkspaceToolMessage.InvalidFilePath);
         }
 
         Directory.CreateDirectory(directory);
         File.WriteAllText(path, content, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
-        return MessageText.Format(ToolMessage.FileWritten, new { Path = Path.GetRelativePath(_root, path), content.Length });
+        return MessageText.Format(WorkspaceToolMessage.FileWritten, new { Path = Path.GetRelativePath(_root, path), content.Length });
     }
 
     [Description("Append text to the end of an existing file, or create it if it doesn't exist yet, without touching what's already there. This is the companion to WriteWorkspaceFile for files too long to send in one call: write the first ~300-line chunk with WriteWorkspaceFile, then add further chunks in order with this tool. Writing is blocked for secret files (.env*, *.pem, *.key, etc.), the same as the other write tools.")]
@@ -70,7 +71,7 @@ public sealed class WorkspaceFileTools
         string path = ResolvePath(relativePath);
         if (SensitiveFiles.IsSensitive(path))
         {
-            return MessageText.Format(ToolMessage.SensitiveAppend);
+            return MessageText.Format(WorkspaceToolMessage.SensitiveAppend);
         }
 
         string? directory = Path.GetDirectoryName(path);
@@ -80,7 +81,7 @@ public sealed class WorkspaceFileTools
         }
 
         File.AppendAllText(path, content, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
-        return MessageText.Format(ToolMessage.FileAppended, new { Path = Path.GetRelativePath(_root, path), content.Length });
+        return MessageText.Format(WorkspaceToolMessage.FileAppended, new { Path = Path.GetRelativePath(_root, path), content.Length });
     }
 
     private string ResolvePath(string relativePath) => _boundary.Resolve(relativePath);

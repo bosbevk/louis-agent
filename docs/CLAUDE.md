@@ -38,7 +38,7 @@ Docs-only and configuration-only steps have no test to write first.
 
 1. `dotnet build louis-agent-solution.sln`, and `dotnet test` on the projects the step touches ([Tests](../tests/CLAUDE.md)); the whole
    solution before a PR.
-2. If tools, their descriptions, `ToolMessage` texts or the prompts in `louis-agent.core/Prompts/` changed, regenerate the golden files and review
+2. If tools, their descriptions, the tool texts (the `*ToolMessage` enums) or the prompts in `louis-agent.core/Prompts/` changed, regenerate the golden files and review
    their diff ([golden files](../tests/CLAUDE.md#golden-files)).
 3. Update the feature or fix doc with what the step learned; on the last step, follow *Finishing a feature* or
    *Finishing a fix* in their READMEs. The plan changes only under *Approved during the build*. New text goes in the

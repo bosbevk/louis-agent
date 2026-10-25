@@ -4,6 +4,7 @@ using System.Net;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Tools.Web.Search.Providers;
+using LouisAgent.Core.Tools.Web.Messages;
 
 /// <summary>
 /// Picks the search engine from configuration: WEB_SEARCH_PROVIDER = tavily | google | searxng | duckduckgo. When unset,
@@ -28,7 +29,7 @@ public static class WebSearchProviderFactory
         if (!SettingChoice.TryParse(options.WebSearchProvider, out WebSearchProviderKind? choice, Aliases))
         {
             string named = options.WebSearchProvider!.Trim();
-            return new UnavailableSearchProvider(named, MessageText.Format(ToolMessage.UnknownSearchProvider,
+            return new UnavailableSearchProvider(named, MessageText.Format(WebToolMessage.UnknownSearchProvider,
                 new { Provider = named, Supported = string.Join(", ", SupportedProviders) }));
         }
 
@@ -40,13 +41,13 @@ public static class WebSearchProviderFactory
             null => new DuckDuckGoSearchProvider(http),
             WebSearchProviderKind.Tavily => hasTavily
                 ? new TavilySearchProvider(options.TavilyApiKey!, http)
-                : new UnavailableSearchProvider("Tavily", MessageText.Format(ToolMessage.TavilyNotConfigured)),
+                : new UnavailableSearchProvider("Tavily", MessageText.Format(WebToolMessage.TavilyNotConfigured)),
             WebSearchProviderKind.Google => hasGoogle
                 ? new GoogleSearchProvider(options.GoogleSearchApiKey!, options.GoogleSearchEngineId!, http)
-                : new UnavailableSearchProvider("Google", MessageText.Format(ToolMessage.GoogleNotConfigured)),
+                : new UnavailableSearchProvider("Google", MessageText.Format(WebToolMessage.GoogleNotConfigured)),
             WebSearchProviderKind.Searxng => searxng is not null
                 ? new SearxngSearchProvider(searxng, http)
-                : new UnavailableSearchProvider("SearXNG", MessageText.Format(ToolMessage.SearxngNotConfigured)),
+                : new UnavailableSearchProvider("SearXNG", MessageText.Format(WebToolMessage.SearxngNotConfigured)),
             WebSearchProviderKind.DuckDuckGo => new DuckDuckGoSearchProvider(http),
             _ => throw new ArgumentOutOfRangeException(nameof(options), choice, null),
         };

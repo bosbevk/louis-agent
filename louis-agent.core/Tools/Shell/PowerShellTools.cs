@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Text;
 using LouisAgent.Core.Tools.DotNet;
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Tools.Shell.Messages;
 
 /// <summary>
 /// PowerShell toolset: run inline scripts or workspace .ps1 files with PowerShell 7 (pwsh) or, on Windows,
@@ -54,14 +55,14 @@ public sealed class PowerShellTools
     {
         bool hasScript = !string.IsNullOrWhiteSpace(script);
         bool hasPath = !string.IsNullOrWhiteSpace(scriptPath);
-        if (hasScript == hasPath) return MessageText.Format(ToolMessage.PassScriptOrScriptPath);
+        if (hasScript == hasPath) return MessageText.Format(ShellToolMessage.PassScriptOrScriptPath);
 
         string target;
         if (hasPath)
         {
             if (!TryResolveWorkspacePath(scriptPath, out target, out var error)) return error;
-            if (!File.Exists(target)) return MessageText.Format(ToolMessage.ScriptNotFound, new { Path = scriptPath });
-            if (!target.EndsWith(".ps1", StringComparison.OrdinalIgnoreCase)) return MessageText.Format(ToolMessage.ScriptPathNotPs1);
+            if (!File.Exists(target)) return MessageText.Format(ShellToolMessage.ScriptNotFound, new { Path = scriptPath });
+            if (!target.EndsWith(".ps1", StringComparison.OrdinalIgnoreCase)) return MessageText.Format(ShellToolMessage.ScriptPathNotPs1);
         }
         else target = "";
 
@@ -71,7 +72,7 @@ public sealed class PowerShellTools
 
         var sb = new StringBuilder();
         sb.AppendLine(result!.TimedOut
-            ? MessageText.Format(ToolMessage.ScriptKilled, new { Seconds = timeoutSeconds })
+            ? MessageText.Format(ShellToolMessage.ScriptKilled, new { Seconds = timeoutSeconds })
             : MessageText.Format(ToolMessage.ProcessExitCode, new { result.ExitCode }));
         sb.AppendLine("--- output ---");
         sb.Append(result.Output.Trim());
@@ -140,7 +141,7 @@ public sealed class PowerShellTools
 
     internal sealed record Interpreter(string FileName, string[] BaseArgs);
 
-    private static string NotInstalledMessage => MessageText.Format(ToolMessage.PowerShellNotInstalled);
+    private static string NotInstalledMessage => MessageText.Format(ShellToolMessage.PowerShellNotInstalled);
 
     private string WorkingDirectory =>
         Environment.GetEnvironmentVariable("AGENT_WORKING_DIRECTORY") is { Length: > 0 } dir ? dir : _workspaceRoot;

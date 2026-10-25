@@ -6,6 +6,7 @@ using System.Text;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Tools.Git.Running;
 using static LouisAgent.Core.Tools.Git.Running.GitArguments;
+using LouisAgent.Core.Tools.Git.Messages;
 
 /// <summary>The git toolset's reading of history (S, CL15: one of its five classes): the log, a commit, the historian's tools (F22) and the repository overview. Every value from the model passes <see cref="GitArguments"/> (FX19) and runs on <see cref="GitRunner"/> (ADR 0004).</summary>
 public sealed class GitHistoryTools(GitRunner git)
@@ -50,7 +51,7 @@ public sealed class GitHistoryTools(GitRunner git)
         var args = new List<string> { "blame", "--date=short", "-w" };
         if (startLine > 0 && endLine >= startLine) args.AddRange(["-L", $"{startLine},{endLine}"]);
         args.AddRange(["--", relativePath]);
-        return git.Run(args, ToolMessage.GitNoCommits);
+        return git.Run(args, GitToolMessage.GitNoCommits);
     }
 
     [Description("The commits that changed one file, newest first, following renames: hash, date, author and message. " +
@@ -60,7 +61,7 @@ public sealed class GitHistoryTools(GitRunner git)
         [Description("How many commits (1-100, default 20)")] int count = 20)
     {
         return git.Run(["log", "--follow", "-n", Math.Clamp(count, 1, 100).ToString(CultureInfo.InvariantCulture), "--date=short",
-            HistoryFormat, "--", relativePath], ToolMessage.GitNoCommits);
+            HistoryFormat, "--", relativePath], GitToolMessage.GitNoCommits);
     }
 
     [Description("Find commits by words in their message, by author, or by date range (any combination), newest first: hash, " +
@@ -73,13 +74,13 @@ public sealed class GitHistoryTools(GitRunner git)
         [Description("How many commits (1-100, default 20)")] int count = 20)
     {
         if (string.IsNullOrWhiteSpace(text) && string.IsNullOrWhiteSpace(author) && string.IsNullOrWhiteSpace(since) && string.IsNullOrWhiteSpace(until))
-            return MessageText.Format(ToolMessage.GitSearchNeedsCriteria);
+            return MessageText.Format(GitToolMessage.GitSearchNeedsCriteria);
 
         var args = new List<string> { "log", "-i", "-n", Math.Clamp(count, 1, 100).ToString(CultureInfo.InvariantCulture), "--date=short", HistoryFormat };
         if (!string.IsNullOrWhiteSpace(text)) args.Add("--grep=" + text.Trim());
         if (!string.IsNullOrWhiteSpace(author)) args.Add("--author=" + author.Trim());
         if (!string.IsNullOrWhiteSpace(since)) args.Add("--since=" + since.Trim());
         if (!string.IsNullOrWhiteSpace(until)) args.Add("--until=" + until.Trim());
-        return git.Run(args, ToolMessage.GitNoCommits);
+        return git.Run(args, GitToolMessage.GitNoCommits);
     }
 }

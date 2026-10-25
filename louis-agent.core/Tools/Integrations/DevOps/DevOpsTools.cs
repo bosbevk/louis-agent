@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Tools.Integrations.DevOps.Messages;
 
 /// <summary>
 /// Azure DevOps work items for one project (DEVOPS_ORGANIZATION / DEVOPS_PROJECT, optional DEVOPS_TEAM). Sprints are
@@ -45,7 +46,7 @@ public sealed class DevOpsTools
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return MessageText.Format(ToolMessage.DevOpsKeyNotSet);
+            return MessageText.Format(DevOpsToolMessage.DevOpsKeyNotSet);
         }
 
         return await ExecuteWiqlQuery(wiqlQuery);
@@ -58,7 +59,7 @@ public sealed class DevOpsTools
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return MessageText.Format(ToolMessage.DevOpsKeyNotSet);
+            return MessageText.Format(DevOpsToolMessage.DevOpsKeyNotSet);
         }
 
         var (iteration, sprintError) = await ResolveIterationPathAsync(sprint);
@@ -80,7 +81,7 @@ public sealed class DevOpsTools
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return MessageText.Format(ToolMessage.DevOpsKeyNotSet);
+            return MessageText.Format(DevOpsToolMessage.DevOpsKeyNotSet);
         }
 
         var (iteration, sprintError) = await ResolveIterationPathAsync(sprint);
@@ -102,7 +103,7 @@ public sealed class DevOpsTools
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return MessageText.Format(ToolMessage.DevOpsKeyNotSet);
+            return MessageText.Format(DevOpsToolMessage.DevOpsKeyNotSet);
         }
 
         var (iteration, sprintError) = await ResolveIterationPathAsync(sprint);
@@ -124,7 +125,7 @@ public sealed class DevOpsTools
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return MessageText.Format(ToolMessage.DevOpsKeyNotSet);
+            return MessageText.Format(DevOpsToolMessage.DevOpsKeyNotSet);
         }
 
         var (iteration, sprintError) = await ResolveIterationPathAsync(sprint);
@@ -146,7 +147,7 @@ public sealed class DevOpsTools
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return MessageText.Format(ToolMessage.DevOpsKeyNotSet);
+            return MessageText.Format(DevOpsToolMessage.DevOpsKeyNotSet);
         }
 
         try
@@ -157,7 +158,7 @@ public sealed class DevOpsTools
 
             if (!response.IsSuccessStatusCode)
             {
-                return MessageText.Format(ToolMessage.DevOpsHttpError, new { Status = response.StatusCode, Content = content });
+                return MessageText.Format(DevOpsToolMessage.DevOpsHttpError, new { Status = response.StatusCode, Content = content });
             }
 
             var json = JsonDocument.Parse(content);
@@ -165,7 +166,7 @@ public sealed class DevOpsTools
         }
         catch (Exception ex)
         {
-            return MessageText.Format(ToolMessage.DevOpsWorkItemFailed, new { Id = id, Reason = ex.Message });
+            return MessageText.Format(DevOpsToolMessage.DevOpsWorkItemFailed, new { Id = id, Reason = ex.Message });
         }
     }
 
@@ -176,7 +177,7 @@ public sealed class DevOpsTools
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return MessageText.Format(ToolMessage.DevOpsKeyNotSet);
+            return MessageText.Format(DevOpsToolMessage.DevOpsKeyNotSet);
         }
 
         var (iteration, sprintError) = await ResolveIterationPathAsync(sprint);
@@ -200,7 +201,7 @@ public sealed class DevOpsTools
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return MessageText.Format(ToolMessage.DevOpsKeyNotSet);
+            return MessageText.Format(DevOpsToolMessage.DevOpsKeyNotSet);
         }
 
         var (iteration, sprintError) = await ResolveIterationPathAsync(sprint);
@@ -224,7 +225,7 @@ public sealed class DevOpsTools
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return MessageText.Format(ToolMessage.DevOpsKeyNotSet);
+            return MessageText.Format(DevOpsToolMessage.DevOpsKeyNotSet);
         }
 
         var (iteration, sprintError) = await ResolveIterationPathAsync(sprint);
@@ -247,7 +248,7 @@ public sealed class DevOpsTools
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return MessageText.Format(ToolMessage.DevOpsKeyNotSet);
+            return MessageText.Format(DevOpsToolMessage.DevOpsKeyNotSet);
         }
 
         var (iteration, sprintError) = await ResolveIterationPathAsync(sprint);
@@ -269,7 +270,7 @@ public sealed class DevOpsTools
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return MessageText.Format(ToolMessage.DevOpsKeyNotSet);
+            return MessageText.Format(DevOpsToolMessage.DevOpsKeyNotSet);
         }
 
         var (iteration, sprintError) = await ResolveIterationPathAsync(sprint);
@@ -292,7 +293,7 @@ public sealed class DevOpsTools
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return MessageText.Format(ToolMessage.DevOpsKeyNotSet);
+            return MessageText.Format(DevOpsToolMessage.DevOpsKeyNotSet);
         }
 
         var (iteration, sprintError) = await ResolveIterationPathAsync(sprint);
@@ -316,7 +317,7 @@ public sealed class DevOpsTools
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return MessageText.Format(ToolMessage.DevOpsKeyNotSet);
+            return MessageText.Format(DevOpsToolMessage.DevOpsKeyNotSet);
         }
 
         var (iteration, sprintError) = await ResolveIterationPathAsync(sprint);
@@ -337,7 +338,7 @@ public sealed class DevOpsTools
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return MessageText.Format(ToolMessage.DevOpsKeyNotSet);
+            return MessageText.Format(DevOpsToolMessage.DevOpsKeyNotSet);
         }
 
         try
@@ -348,7 +349,7 @@ public sealed class DevOpsTools
 
             if (!response.IsSuccessStatusCode)
             {
-                return MessageText.Format(ToolMessage.DevOpsHttpError, new { Status = response.StatusCode, Content = content });
+                return MessageText.Format(DevOpsToolMessage.DevOpsHttpError, new { Status = response.StatusCode, Content = content });
             }
 
             var json = JsonDocument.Parse(content);
@@ -366,12 +367,12 @@ public sealed class DevOpsTools
             }
 
             return sprints.Count == 0
-                ? MessageText.Format(ToolMessage.NoSprints)
+                ? MessageText.Format(DevOpsToolMessage.NoSprints)
                 : "Available sprints:\n" + string.Join("\n", sprints.OrderBy(s => s));
         }
         catch (Exception ex)
         {
-            return MessageText.Format(ToolMessage.DevOpsSprintsFailed, new { Reason = ex.Message });
+            return MessageText.Format(DevOpsToolMessage.DevOpsSprintsFailed, new { Reason = ex.Message });
         }
     }
 
@@ -381,7 +382,7 @@ public sealed class DevOpsTools
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return MessageText.Format(ToolMessage.DevOpsKeyNotSet);
+            return MessageText.Format(DevOpsToolMessage.DevOpsKeyNotSet);
         }
 
         var (iteration, sprintError) = await ResolveIterationPathAsync(sprint);
@@ -414,7 +415,7 @@ public sealed class DevOpsTools
             string content = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode)
             {
-                return ("", MessageText.Format(ToolMessage.DevOpsCurrentSprintHttpError, new { Status = response.StatusCode, Content = content }));
+                return ("", MessageText.Format(DevOpsToolMessage.DevOpsCurrentSprintHttpError, new { Status = response.StatusCode, Content = content }));
             }
 
             using var json = JsonDocument.Parse(content);
@@ -424,11 +425,11 @@ public sealed class DevOpsTools
                 return (iterationPath.Replace("\\", "\\\\"), null);
             }
 
-            return ("", MessageText.Format(ToolMessage.DevOpsNoCurrentSprint));
+            return ("", MessageText.Format(DevOpsToolMessage.DevOpsNoCurrentSprint));
         }
         catch (Exception ex)
         {
-            return ("", MessageText.Format(ToolMessage.DevOpsCurrentSprintFailed, new { Reason = ex.Message }));
+            return ("", MessageText.Format(DevOpsToolMessage.DevOpsCurrentSprintFailed, new { Reason = ex.Message }));
         }
     }
 
@@ -446,7 +447,7 @@ public sealed class DevOpsTools
 
             if (!response.IsSuccessStatusCode)
             {
-                return MessageText.Format(ToolMessage.DevOpsHttpError, new { Status = response.StatusCode, Content = responseContent });
+                return MessageText.Format(DevOpsToolMessage.DevOpsHttpError, new { Status = response.StatusCode, Content = responseContent });
             }
 
             var jsonDoc = JsonDocument.Parse(responseContent);
@@ -454,7 +455,7 @@ public sealed class DevOpsTools
         }
         catch (Exception ex)
         {
-            return MessageText.Format(ToolMessage.DevOpsQueryFailed, new { Reason = ex.Message });
+            return MessageText.Format(DevOpsToolMessage.DevOpsQueryFailed, new { Reason = ex.Message });
         }
     }
 
@@ -466,7 +467,7 @@ public sealed class DevOpsTools
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return MessageText.Format(ToolMessage.DevOpsKeyNotSet);
+            return MessageText.Format(DevOpsToolMessage.DevOpsKeyNotSet);
         }
 
         try
@@ -490,20 +491,20 @@ public sealed class DevOpsTools
 
             if (!response.IsSuccessStatusCode)
             {
-                return MessageText.Format(ToolMessage.DevOpsHttpError, new { Status = response.StatusCode, Content = responseContent });
+                return MessageText.Format(DevOpsToolMessage.DevOpsHttpError, new { Status = response.StatusCode, Content = responseContent });
             }
 
             var jsonDoc = JsonDocument.Parse(responseContent);
             if (jsonDoc.RootElement.TryGetProperty("id", out var idElement))
             {
-                return MessageText.Format(ToolMessage.WorkItemCreated, new { Type = workItemType, Id = idElement.GetInt32(), Title = title });
+                return MessageText.Format(DevOpsToolMessage.WorkItemCreated, new { Type = workItemType, Id = idElement.GetInt32(), Title = title });
             }
 
-            return MessageText.Format(ToolMessage.WorkItemCreatedRaw, new { Response = responseContent });
+            return MessageText.Format(DevOpsToolMessage.WorkItemCreatedRaw, new { Response = responseContent });
         }
         catch (Exception ex)
         {
-            return MessageText.Format(ToolMessage.DevOpsCreateFailed, new { Reason = ex.Message });
+            return MessageText.Format(DevOpsToolMessage.DevOpsCreateFailed, new { Reason = ex.Message });
         }
     }
 
@@ -515,7 +516,7 @@ public sealed class DevOpsTools
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return MessageText.Format(ToolMessage.DevOpsKeyNotSet);
+            return MessageText.Format(DevOpsToolMessage.DevOpsKeyNotSet);
         }
 
         try
@@ -534,14 +535,14 @@ public sealed class DevOpsTools
 
             if (!response.IsSuccessStatusCode)
             {
-                return MessageText.Format(ToolMessage.DevOpsHttpError, new { Status = response.StatusCode, Content = responseContent });
+                return MessageText.Format(DevOpsToolMessage.DevOpsHttpError, new { Status = response.StatusCode, Content = responseContent });
             }
 
-            return MessageText.Format(ToolMessage.WorkItemUpdated, new { Id = id, Field = fieldName, Value = fieldValue });
+            return MessageText.Format(DevOpsToolMessage.WorkItemUpdated, new { Id = id, Field = fieldName, Value = fieldValue });
         }
         catch (Exception ex)
         {
-            return MessageText.Format(ToolMessage.DevOpsUpdateFailed, new { Reason = ex.Message });
+            return MessageText.Format(DevOpsToolMessage.DevOpsUpdateFailed, new { Reason = ex.Message });
         }
     }
 }
