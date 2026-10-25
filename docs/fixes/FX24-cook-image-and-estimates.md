@@ -36,6 +36,9 @@ size to fit in our chat screen"; "i need to see here recipe-image". The cook's a
 5. **The fetch** (`LeadImage`, called by `HtmlText.ToText`, so FetchUrl and ReadRenderedPage both): the page's own photo is read from its JSON-LD `Recipe.image` (a string, an `ImageObject`, a list, or inside a `@graph`), else its `og:image` or `twitter:image`, made absolute from the page, and put first as `![title](url)`, unless the text already shows that file; a data URI, an SVG or a non-recipe JSON-LD gives none. A lazy image's file is also read from `data-lazy-src`, `data-orig-file` and `data-original`. The alt-less image rule stays (icons and spacers).
 4. The cook's prompt drops a recipe page with no photo of the dish for the next result (three pages at most) and puts the photo on a line of
    its own above *Recipe*.
+6. **AMP pages** (Louis, on `af.hiloved.com/maklike-kerrie-hoender-resep/`, the page `cook-en` cited): it has no `og:image`, no JSON-LD and no `<img>`; its photo is an `<amp-img alt="…">`, which the page text ignored. `<amp-img>` is read as an image (alt text still required).
+7. **`within-budget` v2** (`puls-cook` eval v5): the shopping list's own bold total row (`**Totaal** … **± R323**`) is the basket's total (`TotalSource.ListTotalRow`, `Lists.TotalRows`). Version 1 read every line that said "total", and answers say it elsewhere too (a sentence, the unsure table) with the budget or a saving beside it, so the lines disagreed and the grade was `Unknown` (`cook-af`, `cook-malmesbury`). Per person is no total; two total rows that disagree are none.
+8. **Estimates in a town with no shop** (Louis, on `cook-no-branch` and `cook-recipe-only`: "these ones did price and it is fine, it's estimates"): an estimated row is an estimate there too, not "no shop, no price"; the chip reads "priced 14 / 14 · estimated 14".
 
 ## How it is tested
 

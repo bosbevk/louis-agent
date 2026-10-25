@@ -19,7 +19,7 @@ namespace LouisAgent.Evals.Puls.Evals.Cook.Grading;
 public sealed class WithinBudget : IGrader
 {
     public string Name => "within-budget";
-    public int Version => 1;
+    public int Version => 2;
     public GraderKind Kind => GraderKind.FixedRule;
     public bool Required => true;
     public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string> { "budget" }.ToFrozenSet();
@@ -44,7 +44,12 @@ public sealed class WithinBudget : IGrader
         {
             Total = total.Amount.ToString("0.00", CultureInfo.InvariantCulture),
             Budget = budget.ToString("0.##", CultureInfo.InvariantCulture),
-            Source = MessageText.Format(total.Source == TotalSource.TotalLine ? GradeMessage.SourceTotalLine : GradeMessage.SourceRowSum),
+            Source = MessageText.Format(total.Source switch
+            {
+                TotalSource.TotalLine => GradeMessage.SourceTotalLine,
+                TotalSource.ListTotalRow => GradeMessage.SourceListTotalRow,
+                _ => GradeMessage.SourceRowSum,
+            }),
         };
         return total.Amount <= budget
             ? Verdict.Pass(Name, Version, MessageText.Format(GradeMessage.BudgetWithin, values))

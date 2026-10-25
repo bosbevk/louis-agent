@@ -49,7 +49,7 @@ public class PricesTotalTests
     {
         string answer = Table(Row("uie", "R45,99"), "| **Totaal** | **R200,00** |");
 
-        Assert.That(Prices.Total(answer), Is.EqualTo(new BasketTotal(200m, TotalSource.TotalLine)));
+        Assert.That(Prices.Total(answer), Is.EqualTo(new BasketTotal(200m, TotalSource.ListTotalRow)), "a bold total row of the list is read as the list's total row (FX24)");
     }
 
     [Test]

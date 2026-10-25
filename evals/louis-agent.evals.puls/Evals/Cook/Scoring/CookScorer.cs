@@ -39,9 +39,8 @@ public static class CookScorer
             wrongStore = (priced ?? 0) + (guessed ?? 0);
             priced = 0;
             guessed = 0;
-            // The rows below are counted as "no shop, no price" already.
-            estimated = 0;
-            noShopRows = items.Value - wrongStore - (perKg ?? 0);
+            // An estimate is no store's price, so it is right in any town and counts as an estimate here too (FX24); "no shop, no price" is only a row with no amount.
+            noShopRows = items.Value - wrongStore - (perKg ?? 0) - (estimated ?? 0);
         }
 
         var allCalls = turns.SelectMany(t => t.Calls.Concat(t.SpecialistCalls)).ToList();

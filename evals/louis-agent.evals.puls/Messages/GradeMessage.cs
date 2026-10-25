@@ -44,6 +44,9 @@ public enum GradeMessage
     [Description("sum of the priced rows")]
     SourceRowSum,
 
+    [Description("the shopping list's total row")]
+    SourceListTotalRow,
+
     [Description("the scenario names no shop to price at")]
     ShopNotSet,
 

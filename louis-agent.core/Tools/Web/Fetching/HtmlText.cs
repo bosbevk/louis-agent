@@ -120,7 +120,8 @@ internal static partial class HtmlText
     [GeneratedRegex(@"<a\b[^>]*href=""(?<href>[^""]*)""[^>]*>(?<text>.*?)</a>", RegexOptions.IgnoreCase | RegexOptions.Singleline)]
     private static partial Regex Anchor();
 
-    [GeneratedRegex(@"<img\b[^>]*>", RegexOptions.IgnoreCase)]
+    // An AMP page draws its images as <amp-img> (FX24): an image like any other.
+    [GeneratedRegex(@"<(?:amp-)?img\b[^>]*>", RegexOptions.IgnoreCase)]
     private static partial Regex Image();
 
     [GeneratedRegex(@"(?<name>[\w-]+)\s*=\s*(?:""(?<value>[^""]*)""|'(?<value>[^']*)')")]

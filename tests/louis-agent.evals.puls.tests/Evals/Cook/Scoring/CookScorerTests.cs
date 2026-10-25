@@ -158,6 +158,20 @@ public class CookScorerTests
     }
 
     [Test]
+    public void WhereThereIsNoShop_EstimatedRowsAreEstimates_NotNoShopRows()
+    {
+        // FX24 (Louis, 2026-10-26, on cook-no-branch and cook-recipe-only: "these ones did price and it is fine, it's estimates"): the cook gives estimates in every town, since no shop's
+        // price is read. An estimate in a town with no shop is no price from a store that isn't the town's: it is counted as an estimate, as anywhere, not as "no shop, no price".
+        string answer = "| Bestanddeel | Vir die resep | Om te koop | Geskatte prys |\n|---|---|---|---|\n"
+                        + "| Wors | 500 g | boerewors 500 g | ± R55 |\n| Ui | 1 ui | ui, 1 stuk | ± R6 |\n| Sout | na smaak | sout | - |\n";
+
+        var scores = CookScorer.Score(Dev.Cook("cook-recipe-only"), [Turn(answer, calls: [Start], role: "puls-cook")], cookOn: true);
+
+        Assert.That((scores.Estimated, scores.NoShopRows, scores.WrongStore, scores.Ingredients), Is.EqualTo(((int?)2, 1, 0, (int?)3)));
+        Assert.That(scores.PricedRatio, Is.EqualTo(1.0));
+    }
+
+    [Test]
     public void WhereThereIsAShop_ADashIsStillNoPrice()
     {
         var scores = CookScorer.Score(Dev.Cook("cook-malmesbury"), [Turn(NoShopList, calls: [Start], role: "puls-cook")], cookOn: true);

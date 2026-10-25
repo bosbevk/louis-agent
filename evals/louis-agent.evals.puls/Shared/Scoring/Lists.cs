@@ -49,6 +49,10 @@ public static partial class Lists
                 table.Skip(1).Where(row => !IsSeparator(row) && !IsTotal(row)).Select(Cells).ToList()))
             .ToList();
 
+    /// <summary>The bold rows that close a shopping list (`**Totaal** … **± R312**`, `**Per persoon** …`), as their cells, in order (FX24); none for another table.</summary>
+    public static List<List<string>> TotalRows(string? answer) =>
+        Tables(answer ?? "").Where(table => IsList(table[0])).SelectMany(table => table.Skip(1).Where(IsTotal).Select(Cells)).ToList();
+
     /// <summary>Whether a table's header is a shopping list's: an ingredient column first, and no why column.</summary>
     public static bool IsList(string header) => Header().IsMatch(header) && !WhyColumn().IsMatch(header);
 

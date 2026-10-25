@@ -12,6 +12,7 @@ public enum TotalSource
 {
     TotalLine,
     RowSum,
+    ListTotalRow,
 }
 
 /// <summary>A basket's total in rand, and the reading it came from.</summary>
@@ -90,6 +91,13 @@ public static partial class Prices
     public static BasketTotal? Total(string? answer)
     {
         answer ??= "";
+        // The shopping list's own total row is the basket's total (FX24): an answer says "total" elsewhere too, in a sentence or in the unsure table, with the budget or a
+        // saving beside it, and those lines would disagree. Per person is a share, not a total. Two total rows that disagree are no total.
+        var listTotals = Lists.TotalRows(answer).Where(cells => TotalWord().IsMatch(cells[0]))
+            .SelectMany(cells => cells.Skip(1)).SelectMany(Money.Amounts).Distinct().ToList();
+        if (listTotals.Count == 1) return new BasketTotal(listTotals[0], TotalSource.ListTotalRow);
+        if (listTotals.Count > 1) return null;
+
         var lines = answer.Split(["\r\n", "\n", "\r"], StringSplitOptions.None);
         var amounts = lines.Where(line => TotalWord().IsMatch(line) && !Saving().IsMatch(line)).SelectMany(Money.Amounts).Distinct().ToList();
         if (amounts.Count == 1) return new BasketTotal(amounts[0], TotalSource.TotalLine);
