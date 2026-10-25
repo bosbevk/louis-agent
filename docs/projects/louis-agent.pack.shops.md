@@ -44,7 +44,7 @@ so any identity can use it, and it could be served as an MCP server unchanged
 | `Catalogues/` | The shop contract (`IShopCatalogue`), the records (`ShopProduct`, `ShopDeal`, `ShopSearch`), the choices (`ShopKind`, `ShopDealKind`) and `ShopCatalogueFactory`, which builds a catalogue per enabled shop |
 | `Providers/` | Checkers: `CheckersCatalogue` (search and parse), `CheckersStore` (the store for a town), `ShopThrottle`, `StoreSessionCache` |
 | `Places/PlaceCoordinates.cs` | A town's centre from Nominatim, for a shop that serves by area |
-| `Messages/` | `ShopToolMessage` (what the tools return) and `ShopLogMessage` (its log lines) |
+| `Messages/` | `ShopToolMessage` (what the tools return) and `ShopLogMessage` (its log lines: the shop and what happened stay in clear; the town, its centre's coordinates, the store ids and a failure's reason show as keyed hashes and lengths through core's `LogContent`, F18 step 4f; `LOG_CONTENT=full` shows them) |
 | `Prompts/toolsets/shops.md` | The guide the model reads with the toolset: its routing line, the tools, how to search and price |
 
 ## Configuration

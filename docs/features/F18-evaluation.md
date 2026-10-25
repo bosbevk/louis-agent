@@ -811,6 +811,34 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
     21). Mutation: logging the raw result text fails the hashed-line test.
   - **Where the standards land:** POPIA s13 and s14 (kept only for its purpose): the tool lines and the two records; s19 (protected): the key
     is never written. OWASP LLM02:2025 (logs as a leak): every line that carried an argument, a result or the request.
+- **Step 4f.2: the shops' town and Rider's prompt logged as hashes.** The pack reads core's shared `LogContent` (ADR 0028) and names no
+  identity. **Hashed in the shops:** the town (`Place`) in every shop line, the centre's latitude and longitude, the store ids (`Stores`, and
+  `Store` in `ShopStoreNotUsed`: an id names its town as surely as the coordinates), and the reasons of the two `ShopAreaUnavailable` lines
+  (an exception's message can quote the town). The shop's name, the outcome and the counts stay. `CheckersCatalogue.cs` stays at 210 lines (a
+  redundant `using` of its parent namespace made room for the new one). **In Rider's host:** `PromptHandler` logs the raw parameters and the
+  prompt through `LogContent.Of` (the prompt cut at 300 under `full`); `AcpTranscript.json` (stdout) did not change.
+  - **Red and green:** 7 of the 8 new cases failed on the existing code (the town, the coordinates or the ids reached stderr in clear; the
+    Rider test found the prompt's words in the log); the eighth, Rider's `LOG_CONTENT=full` case, pins today's lines and passes before and after. With the code: shops 99, ACP server 33, and the whole solution
+    green (core 1489, API 277). Mutation: logging the store ids in clear fails `AStoreForTheTown_LogsTheTownTheCentreAndTheStoreIdsAsHashes`.
+- **Close of step 4f.** A log keeps what it is for (what ran, in what order, how long, how it ended) and hides what it was given.
+  - **Hashed (default):** every tool argument, a tool result and a failure's quoted reason (`[TOOL]` lines); the two JSON-line records'
+    arguments and the user's request; the shops' town, coordinates, store ids and reasons; Rider's raw parameters and prompt. Each shows as
+    `#` + 12 hex digits of an HMAC-SHA256 under a random per-process key + the length. `LOG_CONTENT=full` writes the values, for a developer's
+    own machine and never a hosted instance. An unknown value stops the host at start-up.
+  - **Stays in clear:** the tool, shop and event names, the arrows and their order, counts and sizes, the error type, durations, the usage
+    ledger (it never held text), and the `AgentLogMessage` templates.
+  - **Known limit (for F44's trace and log pass):** the headless browser's two warnings (`RenderRequestRefused` and `RenderRequestUnhandled`)
+    still carry the URL of the sub-request and the page. A URL the model reads can hold the user's words, but the lines warn about a refused
+    sub-request, testing them needs a live Chrome, and `ChromeWebBrowser.cs` is on the oversized list.
+  - **Out of scope:** the orchestrator's own lines (a monitored service's errors, on Louis's machine), and paths and file names in Rider's
+    host (a developer's own files).
+  - **Standards:** POPIA s13 and s14 (kept only for its purpose): the `[TOOL]` lines, the records, the shops' lines and Rider's prompt lines
+    show what ran, not what it was given; s19 (protected): the key is random, per process, never written or logged, so a hash can't be
+    reversed by hashing a list. OWASP LLM02:2025 (sensitive information in logs): each of those lines. Concept: skill 17 (observability) with
+    skill 15's practice; the audit of every `Log.Log` call site for user-derived fields found no other.
+  - **The hand check, still to run (a live Puls chat, a few cents: on Louis's go).** Rebuild the Puls image, open a Puls chat from Malmesbury,
+    ask for a meal, then `grep -ri malmesbury logs/puls/` finds nothing but this step's own hashes, and the chat's own view still shows each
+    call in full. A coding-agent chat in Rider with `LOG_CONTENT=full` logs as today.
 - **Notes for step 5** (from the review of 4.2): `PulsEvalSet`'s `TurnView` builds on `EngineEvents`, so the route, the errors and the
   cost come from one reader. If an expected route goes in a scenario's `expected`, `RoutedToGrader` must declare that key in its
   `ExpectedKeys`. When the HTTP client sets a turn's `Failure`, the turn line must carry it, so `ProtocolTranscripts` reads it back. A

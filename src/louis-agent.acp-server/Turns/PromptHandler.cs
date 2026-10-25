@@ -7,6 +7,7 @@ using LouisAgent.AcpServer.Prompting;
 using LouisAgent.AcpServer.Protocol;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Logging;
+using LouisAgent.Core.Logging.Content;
 using LouisAgent.Core.Usage.Records;
 using Microsoft.Extensions.Logging;
 
@@ -54,8 +55,8 @@ internal sealed class PromptHandler(AgentEngine agent, bool usageInChat, JsonRpc
         }
 
         string prompt = prompts.Build(parameters);
-        Log.Log(LogLevel.Information, AcpLogMessage.RawParameters, new { Parameters = parameters.GetRawText() }, tag: Tag);
-        Log.Log(LogLevel.Information, AcpLogMessage.PromptReceived, new { Chars = prompt.Length, Prompt = (prompt.Length > 300 ? prompt[..300] + "..." : prompt) }, tag: Tag);
+        Log.Log(LogLevel.Information, AcpLogMessage.RawParameters, new { Parameters = LogContent.Of(parameters.GetRawText()) }, tag: Tag);
+        Log.Log(LogLevel.Information, AcpLogMessage.PromptReceived, new { Chars = prompt.Length, Prompt = LogContent.Of(prompt, cut: 300) }, tag: Tag);
 
         using var turnCancellation = CancellationTokenSource.CreateLinkedTokenSource(serverCancellationToken);
 

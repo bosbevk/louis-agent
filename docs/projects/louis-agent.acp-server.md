@@ -46,6 +46,10 @@ sequenceDiagram
   `USAGE_IN_CHAT=true` it is also added to the chat after the answer, in italics, as its own message chunk. Off by
   default, since in Rider it becomes part of the conversation. A cancelled or failed turn counts toward the session
   but adds nothing to the chat.
+- **What the log shows of a prompt** (F18 step 4f): the raw parameters and the prompt's first 300 characters are logged as a keyed hash
+  and a length (`Prompt: 412 chars: #3f9c0a1b2d4e (412)`), since what a developer types is personal data once the host runs for anyone
+  else; `LOG_CONTENT=full` shows the text, on your own machine. The protocol on stdout is unchanged. Paths to a developer's own files
+  stay in the log: they are out of scope.
 
 ## Structure
 

@@ -4,6 +4,7 @@ using LouisAgent.Packs.Shops.Places;
 using System.Globalization;
 using System.Text.Json;
 using LouisAgent.Core.Logging;
+using LouisAgent.Core.Logging.Content;
 using LouisAgent.Core.Messages;
 using LouisAgent.Packs.Shops.Messages;
 using LouisAgent.Packs.Shops;
@@ -67,7 +68,7 @@ public sealed class CheckersStore(IWebBrowser browser, Func<string, Cancellation
         }
         catch (WebBrowserException ex)
         {
-            Log.Log(LogLevel.Warning, ShopLogMessage.ShopAreaUnavailable, new { Shop = "Checkers", Place = town, Reason = ex.Message });
+            Log.Log(LogLevel.Warning, ShopLogMessage.ShopAreaUnavailable, new { Shop = "Checkers", Place = LogContent.Of(town), Reason = LogContent.Of(ex.Message) });
             return (null, false);
         }
 
@@ -75,7 +76,7 @@ public sealed class CheckersStore(IWebBrowser browser, Func<string, Cancellation
         if (Serves(visit.ScriptResult) is not { } serves)
         {
             _throttle.Refused();
-            Log.Log(LogLevel.Warning, ShopLogMessage.ShopStoreAnswerUnreadable, new { Shop = "Checkers", Place = town });
+            Log.Log(LogLevel.Warning, ShopLogMessage.ShopStoreAnswerUnreadable, new { Shop = "Checkers", Place = LogContent.Of(town) });
             return (null, false);
         }
         BrowserSession? session = serves && visit.Cookies?.Where(c => StoreCookies.Contains(c.Name)).ToList() is { Count: > 0 } cookies
@@ -84,9 +85,10 @@ public sealed class CheckersStore(IWebBrowser browser, Func<string, Cancellation
         // Louis: "see the logs, it did not set my address": the lookup says what it found, once per town.
         Log.Log(LogLevel.Information, session is null ? ShopLogMessage.ShopNoStoreForPlace : ShopLogMessage.ShopStoreForPlace, new
         {
-            Shop = "Checkers", Place = town, Latitude = centre.Latitude.ToString("0.####", CultureInfo.InvariantCulture),
-            Longitude = centre.Longitude.ToString("0.####", CultureInfo.InvariantCulture),
-            Stores = session?.Cookies.FirstOrDefault(c => c.Name == "storeids")?.Value ?? "",
+            // The town, its centre and the store ids (an id names its town as surely as the coordinates) are hashes unless LOG_CONTENT=full (F18 step 4f).
+            Shop = "Checkers", Place = LogContent.Of(town), Latitude = LogContent.Of(centre.Latitude.ToString("0.####", CultureInfo.InvariantCulture)),
+            Longitude = LogContent.Of(centre.Longitude.ToString("0.####", CultureInfo.InvariantCulture)),
+            Stores = LogContent.Of(session?.Cookies.FirstOrDefault(c => c.Name == "storeids")?.Value ?? ""),
         });
         return (session, true);
     }

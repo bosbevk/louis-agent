@@ -4,6 +4,7 @@ using LouisAgent.Packs.Shops.Catalogues;
 using System.Globalization;
 using System.Text.Json;
 using LouisAgent.Core.Logging;
+using LouisAgent.Core.Logging.Content;
 using LouisAgent.Core.Messages;
 using LouisAgent.Packs.Shops.Messages;
 using Microsoft.Extensions.Logging;
@@ -66,7 +67,7 @@ public static class PlaceCoordinates
         }
         catch (Exception ex) when (ex is HttpRequestException or JsonException or TaskCanceledException && !cancellationToken.IsCancellationRequested)
         {
-            Log.Log(LogLevel.Warning, ShopLogMessage.ShopAreaUnavailable, new { Shop = "OpenStreetMap", Place = place, Reason = ex.Message });
+            Log.Log(LogLevel.Warning, ShopLogMessage.ShopAreaUnavailable, new { Shop = "OpenStreetMap", Place = LogContent.Of(place), Reason = LogContent.Of(ex.Message) });
             throw new PlaceUnavailableException(ex.Message);
         }
         return Parse(answer);

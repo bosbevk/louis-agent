@@ -187,6 +187,19 @@ public class CheckersCatalogueTests
     }
 
     [Test]
+    [NonParallelizable]
+    public async Task AnAnswerFromAnotherStore_LogsTheTownAndTheStoreAsHashes()
+    {
+        // F18 step 4f.2: the warning says the search was answered from a store that doesn't serve the town; neither is in clear.
+        using var stderr = new CapturedStderr();
+
+        await new CheckersCatalogue(new FakeBrowser(AnswerFrom("5ece6935faafe599532665b2")), Store()).SearchAsync("rice", 5, "Malmesbury");
+
+        Assert.That(stderr.Text, Does.Contain("Checkers answered a search from #").And.Contain("from store #"));
+        Assert.That(stderr.Text, Does.Not.Contain("Malmesbury").And.Not.Contain("5ece6935faafe599532665b2"));
+    }
+
+    [Test]
     public async Task WithNoPlace_OrNoStoreForIt_TheSearchIsTheDefaultStores()
     {
         var browser = new FakeBrowser(Json);

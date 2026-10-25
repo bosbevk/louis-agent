@@ -36,6 +36,19 @@ public class PlaceCoordinatesTests
     }
 
     [Test]
+    [NonParallelizable]
+    public void NominatimNotAnswering_LogsTheTownAsAHash()
+    {
+        // F18 step 4f.2: the line says which service failed; the town the user named is a keyed hash and a length.
+        using var stderr = new CapturedStderr();
+        var http = new HttpClient(new StubHandler(_ => new HttpResponseMessage(System.Net.HttpStatusCode.OK) { Content = new StringContent("<html>blocked</html>") }));
+
+        Assert.That(() => PlaceCoordinates.OfAsync("Malmesbury", http, CancellationToken.None), Throws.TypeOf<PlaceUnavailableException>());
+
+        Assert.That(stderr.Text, Does.Contain("OpenStreetMap couldn't find the store for #").And.Contain("(10)").And.Not.Contain("Malmesbury"));
+    }
+
+    [Test]
     public async Task ATownNominatimDoesntKnow_IsNoCentre()
     {
         var http = new HttpClient(new StubHandler(_ => new HttpResponseMessage(System.Net.HttpStatusCode.OK) { Content = new StringContent("[]") }));

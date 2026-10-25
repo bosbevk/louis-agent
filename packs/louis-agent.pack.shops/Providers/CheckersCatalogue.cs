@@ -6,9 +6,9 @@ using System.Net;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using LouisAgent.Core.Logging;
+using LouisAgent.Core.Logging.Content;
 using LouisAgent.Core.Messages;
 using LouisAgent.Packs.Shops.Messages;
-using LouisAgent.Packs.Shops;
 using LouisAgent.Core.Tools.Web.Browsing;
 using Microsoft.Extensions.Logging;
 
@@ -71,7 +71,7 @@ public sealed partial class CheckersCatalogue(IWebBrowser browser, CheckersStore
             if (area is null) return new ShopSearch(products, null, answered);
             if (answered is not null && StoresOf(area).Contains(answered)) return new ShopSearch(products, place!.Trim(), answered);
             if (answered is null) return new ShopSearch(products, null);
-            Log.Log(LogLevel.Warning, ShopLogMessage.ShopStoreNotUsed, new { Shop = "Checkers", Place = place!.Trim(), Store = answered });
+            Log.Log(LogLevel.Warning, ShopLogMessage.ShopStoreNotUsed, new { Shop = "Checkers", Place = LogContent.Of(place!.Trim()), Store = LogContent.Of(answered) });
             return new ShopSearch(products, null, answered, AreaIgnored: true);
         }
         catch (Exception ex) when (ex is JsonException or KeyNotFoundException or InvalidOperationException or FormatException)
