@@ -4,6 +4,7 @@ namespace LouisAgent.Web.Shared.Chats;
 
 using LouisAgent.SessionStream;
 using LouisAgent.Web.Shared.Api;
+using LouisAgent.Web.Shared.Text;
 using LouisAgent.Web.Shared.Usage;
 
 /// <summary>Folds louis-agent.api's streamed events (Claude's shape, read by the session-stream reader) into a
@@ -82,6 +83,9 @@ public static class TurnStream
                 {
                     tool.ToolResult = block.GetProperty("content").GetString() ?? "";
                     tool.ToolFailed = block.GetProperty("is_error").GetBoolean();
+                    // FX22: the images a tool read, taken now, before the saved chat cuts the text. A delegation call's result is the
+                    // specialist's own answer, written by a model, so it proves nothing.
+                    if (!tool.ToolFailed && !Delegation.IsDelegationTool(tool.ToolName)) tool.Images = [.. ImageLinks.Of(tool.ToolResult)];
                 }
                 break;
         }

@@ -15,11 +15,11 @@
             break;
 
         case BlockKind.Text:
-            <div class="markdown">@Markdown.ToHtml(block.Text)</div>
+            <div class="markdown">@Markdown.ToHtml(block.Text, Shown)</div>
             break;
 
         case BlockKind.Tool when Delegation.From(block) is { } delegation:
-            <DelegationCard Delegation="delegation" Block="block" Streaming="Streaming" Currency="Currency" />
+            <DelegationCard Delegation="delegation" Block="block" Streaming="Streaming" Currency="Currency" Shown="Shown" />
             break;
 
         case BlockKind.Tool:

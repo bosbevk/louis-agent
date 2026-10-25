@@ -23,7 +23,7 @@
     }
 
     <div class="assistant-message" @ref="_answer">
-        <BlocksView Blocks="Turn.Blocks" Streaming="Streaming" Currency="Currency" />
+        <BlocksView Blocks="Turn.Blocks" Streaming="Streaming" Currency="Currency" Shown="Shown" />
 
         @if (Streaming && (Turn.Blocks.Count == 0 || Turn.Blocks[^1] is { Kind: BlockKind.Tool }))
         {
