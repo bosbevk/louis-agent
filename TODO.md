@@ -29,7 +29,6 @@ changes instead of relying on training; **a configured agent**, an identity and 
 - [ ] Validate demand: ten conversations and 30 real Malmesbury questions, answered blind by Puls, Gemini, ChatGPT and Google Maps (Louis's own, Phase 0 step 4)
 - [ ] [F18](docs/features/F18-evaluation.md) Simulations in C# (Phase 3; takes in CL11, the Python checks, "evaluation in CI", "prompts compared on the evals", notes on a run (F31 step 11c), the response cache as a replay cache, traces per turn and tool call; added 2026-10-20, in the platform plan's source until Phase 3's plan is copied: the word *evals* for benchmarks, datasets as files with input and expected behaviour, graders by kind (fixed rule, model, human review) with a fixed rule required, the models a run used, results overall and by category, every eval visible in the admin, the admin pages rebuilt under CL15's rules (W2b.6), and a test for the grader scoring one behaviour two ways)
 - [ ] CL18 A pluggable stream format (Phase 3 step 1e, with the session-stream reader: `ITurnStreamFormat`, `ClaudeStreamFormat`, `"stream"` on `POST /v1/sessions`)
-
 - [ ] Personal data out of the logs: the place and the user's text hashed in the logs (Phase 3 step 4f, with F18; Part 3 row 14)
 - [ ] F40 The sales playground (Phase 4: the demo identity, the customers pack, the invoice and area-guide simulations, the control room, Try it, on its own compose, `docker/docker-compose.demo.yml`)
 

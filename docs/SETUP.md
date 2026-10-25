@@ -115,7 +115,7 @@ to `127.0.0.1` in the shell. Which web app the API serves is the build's choice 
 | `RATES_URL` | Where exchange rates come from (default `https://api.frankfurter.dev/v1/latest?base=USD`, the ECB's reference rates); `off` uses `RATES_FILE` only. If it can't be reached, or answers with rates from another currency, the file is used. The demo's orchestrator reads demo-api's `GET /v1/rates` |
 | `RATES_FORMAT` | The format of `RATES_URL`'s reply, turned into ours by its mapper: `frankfurter` (default) or `rates-json` (another louis-agent's `GET /v1/rates`) |
 | `RATES_FILE` | The fallback rates (default `config/rates.json`; compose sets it). Costs are only converted for display: the ledger always keeps what was charged |
-| `PRICES_URL` | Fetch the price table over HTTP instead, e.g. louis-agent.api's public `GET /v1/prices` (the demo's orchestrator uses `http://demo-api:8080/prices`). If it can't be reached at start-up, the host warns and uses the file above |
+| `PRICES_URL` | Fetch the price table over HTTP instead, e.g. louis-agent.api's public `GET /v1/prices` (the demo's orchestrator uses `http://demo-api:8080/v1/prices`). If it can't be reached at start-up, the host warns and uses the file above |
 | `USAGE_IN_CHAT` | `true` adds each turn's usage line to the chat in Rider (ACP), after the answer; off by default. The CLI and web app always show it beside the answer |
 | `LOG_DIRECTORY` | Run logs and the usage ledger. Compose sets it for the containers (`logs/` on the host); for `dotnet run`, set it (for example `LOG_DIRECTORY=logs`) or the ledger is off, with a warning |
 
