@@ -61,7 +61,7 @@ See the [README](../README.md#http-api): create a session, then POST messages an
 
 **Code and files**
 ```
-Review src/louis-agent.api/GitEndpoints.cs for bugs, most important first
+Review src/louis-agent.api/Endpoints/Git/GitBranchesEndpoints.cs for bugs, most important first
 Find all TODO comments in the codebase
 Add XML doc comments to the public methods in WorkspaceTools.cs
 ```
@@ -137,7 +137,7 @@ by token kind. Local models are priced at $0; a model missing from
 
 ## Tips
 
-1. **Be specific** — "Review GitEndpoints.cs for path-handling bugs" beats "check my code".
+1. **Be specific** — "Review GitBranchesEndpoints.cs for path-handling bugs" beats "check my code".
 2. **Review before keeping** — after the agent edits files, use the web app's **Changes** tab to read the diffs and
    stage only what you want.
 3. **Big outputs** — ask for a file path or a filter ("diff of just AgentEngine.cs"); huge tool output gets summarised.

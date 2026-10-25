@@ -26,14 +26,14 @@ flowchart TB
 
 - **One page, four tabs.** `ChatPage` holds the sidebar (Chats, Files, Changes, Branches, theme, API key) and the main
   area, which shows a chat, a file, a diff, or a branch/commit.
-- **Chats** stream from `POST /sessions/{id}/messages`: `ChatPage.Apply` turns each SSE event into `Turn` / `Block`
+- **Chats** stream from `POST /v1/sessions/{id}/messages`: `ChatPage.Apply` turns each SSE event into `Turn` / `Block`
   objects (thinking, text, tool card); `TurnView` renders them, re-rendering at most every 50 ms while streaming.
   Answers are rendered from Markdown **without raw HTML** (`Markdown.cs`), and code is highlighted.
 - **Usage** (F3): `message_delta.usage` (or an `error`'s, FX6) becomes `Turn.Usage`, shown as a quiet line under the
   answer (`1.9k in · 26k cached · 412 out · $0.004`, exact figures on hover), and the chat's total sits above the
   message box. `UsageFormat` follows core's `UsageText` rules (the app doesn't reference core). The total is summed in
   the browser and saved with the chat, since the chat outlives the API's session.
-- **Currency** (F14): `CurrencyState` loads `GET /rates` and `/rates/display` and starts with the server's currency
+- **Currency** (F14): `CurrencyState` loads `GET /v1/rates` and `/v1/rates/display` and starts with the server's currency
   (the PC's region; the browser's locale is the display language, not the region). The sidebar's Currency select
   changes it for this browser (`localStorage`, like the theme). Chats keep their costs as charged and `UsageFormat`
   converts when drawing, so a change re-labels every saved chat.

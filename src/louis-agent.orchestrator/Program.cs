@@ -41,7 +41,7 @@ var log = AgentLogging.LoggerFactory.CreateLogger("LouisAgent.Orchestrator");
 void Log(OrchestratorLogMessage message, object? values = null) =>
     log.Log(LogLevel.Information, message, values, tag: "orchestrator");
 void Warn(OrchestratorLogMessage message, object? values = null) => log.Log(LogLevel.Warning, message, values);
-// Prices and rates as louis-agent's (in the demo, from demo-api's /prices and /rates), so both agents' costs, and the
+// Prices and rates as louis-agent's (in the demo, from demo-api's /v1/prices and /v1/rates), so both agents' costs, and the
 // comms log's sums of them, are in one currency at one rate (F14).
 PriceTable prices = PriceTableLoader.Load(agentOptions);
 ExchangeRates rates = ExchangeRatesLoader.Load(agentOptions, prices.Currency);

@@ -32,7 +32,7 @@ public class SpecialistToolsTests
         Assert.That(result, Does.StartWith("Fixed the null check; 14/14 tests pass."));
         Assert.That(result, Does.Contain("[Sub-session on coder (files, git): 3 requests, 10,200 tokens, 0.0123 USD]"));
         Assert.That(handler.Requests.Select(r => $"{r.Method} {new Uri(r.Url).AbsolutePath}"),
-            Is.EqualTo(new[] { "POST /sessions", "POST /sessions/sess_child/messages", "DELETE /sessions/sess_child" }));
+            Is.EqualTo(new[] { "POST /v1/sessions", "POST /v1/sessions/sess_child/messages", "DELETE /v1/sessions/sess_child" }));
         using var create = JsonDocument.Parse(handler.Requests[0].Body!);
         Assert.That(create.RootElement.GetProperty("depth").GetInt32(), Is.EqualTo(1), "one level deep");
         Assert.That(create.RootElement.GetProperty("toolsets").EnumerateArray().Select(t => t.GetString()), Is.EqualTo(new[] { "files", "git" }));
@@ -47,7 +47,7 @@ public class SpecialistToolsTests
     {
         var handler = new StubHandler(request => request.Method.Method switch
         {
-            "POST" when request.RequestUri!.AbsolutePath == "/sessions" =>
+            "POST" when request.RequestUri!.AbsolutePath == "/v1/sessions" =>
                 Json(HttpStatusCode.Created, """{"session_id":"sess_child","toolsets":["web","shops"],"role":"puls-cook"}"""),
             "POST" => new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(AnswerStream, Encoding.UTF8, "text/event-stream") },
             _ => new HttpResponseMessage(HttpStatusCode.NotFound),
@@ -74,7 +74,7 @@ public class SpecialistToolsTests
         Assert.That(result, Does.Contain("11 requests, 204 tokens, 0.0081 USD + 3 requests, 10,200 tokens, 0.0123 USD"), "both turns' usage");
         Assert.That(handler.Requests.Select(r => $"{r.Method} {new Uri(r.Url).AbsolutePath}"), Is.EqualTo(new[]
         {
-            "POST /sessions", "POST /sessions/sess_child/messages", "POST /sessions/sess_child/messages", "DELETE /sessions/sess_child",
+            "POST /v1/sessions", "POST /v1/sessions/sess_child/messages", "POST /v1/sessions/sess_child/messages", "DELETE /v1/sessions/sess_child",
         }));
         using var followUp = JsonDocument.Parse(handler.Requests[2].Body!);
         Assert.That(followUp.RootElement.GetProperty("message").GetString(), Does.Contain("answer the task now from what you found"));
@@ -177,7 +177,7 @@ public class SpecialistToolsTests
     }
 
     [Test]
-    public async Task APersonality_IsSentToThePeer()
+    public async Task ARole_IsSentToThePeer()
     {
         // F21: the specialist's role (its function) is the role its session opens with (CL14: the body says role).
         var handler = Peer();

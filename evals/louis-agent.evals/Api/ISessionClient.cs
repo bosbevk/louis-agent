@@ -8,13 +8,13 @@ namespace LouisAgent.Evals.Api;
 /// </summary>
 public interface ISessionClient
 {
-    /// <summary>GET /toolsets: every toolset the instance has.</summary>
+    /// <summary>GET /v1/toolsets: every toolset the instance has.</summary>
     Task<IReadOnlyList<string>> ToolsetsAsync(CancellationToken cancellationToken);
 
-    /// <summary>POST /sessions: returns the session's id.</summary>
+    /// <summary>POST /v1/sessions: returns the session's id.</summary>
     Task<string> OpenAsync(SessionRequest request, CancellationToken cancellationToken);
 
-    /// <summary>POST /sessions/{id}/messages: the turn's events, as they arrive.</summary>
+    /// <summary>POST /v1/sessions/{id}/messages: the turn's events, as they arrive.</summary>
     IAsyncEnumerable<SessionEvent> SendAsync(string session, string message, CancellationToken cancellationToken);
 
     Task CloseAsync(string session, CancellationToken cancellationToken);

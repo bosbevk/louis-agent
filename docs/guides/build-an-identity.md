@@ -209,12 +209,12 @@ file or `config/.env`:
 Then check it is there, and open a chat in its mode:
 
 ```bash
-curl -s -H "x-api-key: $AGENT_API_KEY" http://127.0.0.1:5080/roles
+curl -s -H "x-api-key: $AGENT_API_KEY" http://127.0.0.1:5080/v1/roles
 curl -s -H "x-api-key: $AGENT_API_KEY" -H "Content-Type: application/json" \
-     -d '{"role": "acme/voice", "toolsets": ["specialists", "units"]}' http://127.0.0.1:5080/sessions
+     -d '{"role": "acme/voice", "toolsets": ["specialists", "units"]}' http://127.0.0.1:5080/v1/sessions
 ```
 
-`GET /roles` lists `acme/voice` under `agent` and `acme-estimator` under `specialists`. A session must name
+`GET /v1/roles` lists `acme/voice` under `agent` and `acme-estimator` under `specialists`. A session must name
 its mode: one that names none gets core's default, the coding agent's (`louis-agent/voice`). A web app of its own (as
 Puls has in `src/louis-agent.puls`) is a separate project and optional; any client that opens sessions this way works.
 

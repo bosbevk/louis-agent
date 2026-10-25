@@ -40,7 +40,7 @@ public sealed class PriceTable
     public static PriceTable Load(string path) => File.Exists(path) ? Parse(File.ReadAllText(path), path) : Empty;
 
     /// <summary>
-    /// Fetches the table from <paramref name="url"/> (e.g. louis-agent.api's <c>GET /prices</c>). Throws
+    /// Fetches the table from <paramref name="url"/> (e.g. louis-agent.api's <c>GET /v1/prices</c>). Throws
     /// <see cref="HttpRequestException"/> when it can't be fetched (unreachable, or not a success status), so the caller
     /// can fall back to the file; a body that isn't a valid table throws <see cref="InvalidDataException"/>.
     /// </summary>

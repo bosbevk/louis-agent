@@ -36,7 +36,7 @@ public class SpecialistToolsKeptSessionTests
         Assert.That(result, Does.StartWith("Fixed the null check; 14/14 tests pass."));
         Assert.That(result, Does.Contain("[Sub-session sub-1 on coder (web; puls-cook): 3 requests, 10,200 tokens, 0.0123 USD")
             .And.Contain("ContinueSubSession(\"sub-1\""));
-        Assert.That(Calls(handler), Is.EqualTo(new[] { "POST /sessions", "POST /sessions/sess_child/messages" }), "no DELETE");
+        Assert.That(Calls(handler), Is.EqualTo(new[] { "POST /v1/sessions", "POST /v1/sessions/sess_child/messages" }), "no DELETE");
         OpenSubSession open = registry.Open.Single();
         Assert.That((open.Handle, open.SessionId, open.Agent, open.Role), Is.EqualTo(("sub-1", "sess_child", "coder", "puls-cook")));
         Assert.That(open.Toolsets, Is.EqualTo(new[] { "web" }));
@@ -70,7 +70,7 @@ public class SpecialistToolsKeptSessionTests
                 Assert.That(await tools.StartSubSession(["files"], "x", agent: "coder"), Does.Not.StartWith("Error"));
         }
 
-        Assert.That(Calls(handler).Where(c => c.StartsWith("DELETE")), Is.EqualTo(new[] { "DELETE /sessions/sess_1" }));
+        Assert.That(Calls(handler).Where(c => c.StartsWith("DELETE")), Is.EqualTo(new[] { "DELETE /v1/sessions/sess_1" }));
         Assert.That(registry.Open.Select(o => o.SessionId), Is.EqualTo(new[] { "sess_2", "sess_3" }));
     }
 
@@ -94,7 +94,7 @@ public class SpecialistToolsKeptSessionTests
 
         Assert.That(result, Does.StartWith("Fixed the null check; 14/14 tests pass."));
         Assert.That(result, Does.Contain("[Sub-session sub-1 on coder (web; puls-cook): 3 requests").And.Contain("ContinueSubSession(\"sub-1\""));
-        Assert.That(Calls(handler), Is.EqualTo(new[] { "POST /sessions", "POST /sessions/sess_child/messages", "POST /sessions/sess_child/messages" }));
+        Assert.That(Calls(handler), Is.EqualTo(new[] { "POST /v1/sessions", "POST /v1/sessions/sess_child/messages", "POST /v1/sessions/sess_child/messages" }));
         using var followUp = JsonDocument.Parse(handler.Requests[2].Body!);
         Assert.That(followUp.RootElement.GetProperty("message").GetString(), Is.EqualTo("Maak dit vir ses mense."));
         Assert.That(registry.Open.Single().Handle, Is.EqualTo("sub-1"), "still open");
@@ -102,12 +102,12 @@ public class SpecialistToolsKeptSessionTests
     }
 
     [Test]
-    public async Task APeerADeployBehind_ReportsItsRoleAsPersonality_AndItIsRead()
+    public async Task APeerThatSaysPersonality_IsNotRead_TheRolePassedIsKept()
     {
-        // CL14: a peer on the build before CL14 answers {"personality": …}; the kept sub-session still has the role it reported.
+        // CL20 step 5: a peer that knows /v1 says "role"; the old word "personality" is not read, so the kept sub-session keeps the role passed.
         var handler = new StubHandler(request => request.Method.Method switch
         {
-            "POST" when request.RequestUri!.AbsolutePath == "/sessions" => Json(HttpStatusCode.Created, """{"session_id":"sess_child","personality":"puls-reader"}"""),
+            "POST" when request.RequestUri!.AbsolutePath == "/v1/sessions" => Json(HttpStatusCode.Created, """{"session_id":"sess_child","personality":"puls-reader"}"""),
             "POST" => new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(AnswerStream, Encoding.UTF8, "text/event-stream") },
             "DELETE" => Json(HttpStatusCode.OK, """{"deleted":true}"""),
             _ => new HttpResponseMessage(HttpStatusCode.NotFound),
@@ -117,7 +117,7 @@ public class SpecialistToolsKeptSessionTests
         using (SubSessionRegistry.Use(registry))
             await ToolsOn(handler).StartSubSession(["web"], "x", agent: "coder", role: "puls-cook");
 
-        Assert.That(registry.Open.Single().Role, Is.EqualTo("puls-reader"));
+        Assert.That(registry.Open.Single().Role, Is.EqualTo("puls-cook"));
     }
 
     [Test]
@@ -157,7 +157,7 @@ public class SpecialistToolsKeptSessionTests
         int messages = 0;
         var handler = new StubHandler(request => request.Method.Method switch
         {
-            "POST" when request.RequestUri!.AbsolutePath == "/sessions" => Json(HttpStatusCode.Created, """{"session_id":"sess_child"}"""),
+            "POST" when request.RequestUri!.AbsolutePath == "/v1/sessions" => Json(HttpStatusCode.Created, """{"session_id":"sess_child"}"""),
             "POST" when ++messages == 1 => new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(AnswerStream, Encoding.UTF8, "text/event-stream") },
             "POST" => Json(HttpStatusCode.NotFound, """{"type":"error","error":{"type":"not_found_error","message":"No session 'sess_child'"}}"""),
             _ => new HttpResponseMessage(HttpStatusCode.OK),

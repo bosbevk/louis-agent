@@ -5,7 +5,7 @@ using LouisAgent.Core.Config;
 
 namespace LouisAgent.Core.Tests.Pricing.Prices;
 
-// PRICES_URL: the price table over HTTP (e.g. louis-agent.api's GET /prices), falling back to the file when unreachable.
+// PRICES_URL: the price table over HTTP (e.g. louis-agent.api's GET /v1/prices), falling back to the file when unreachable.
 public class PricesUrlTests
 {
     private const string UrlTable = """
@@ -114,10 +114,10 @@ public class PricesUrlTests
     [Test]
     public void PriceTable_WrittenAsJson_ReadsBackTheSame()
     {
-        // GET /prices serves the API's table as JSON; another host must read back exactly the same prices.
+        // GET /v1/prices serves the API's table as JSON; another host must read back exactly the same prices.
         PriceTable shipped = PriceTable.Load(Path.Combine(TestPaths.RepoRoot, "config", "prices.json"));
 
-        PriceTable copy = PriceTable.Parse(JsonSerializer.Serialize(shipped, PriceTable.Json), "GET /prices");
+        PriceTable copy = PriceTable.Parse(JsonSerializer.Serialize(shipped, PriceTable.Json), "GET /v1/prices");
 
         Assert.That(copy.AsOf, Is.EqualTo(shipped.AsOf));
         Assert.That(copy.Models.Keys, Is.EquivalentTo(shipped.Models.Keys));

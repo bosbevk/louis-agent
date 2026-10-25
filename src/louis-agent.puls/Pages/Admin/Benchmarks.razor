@@ -331,7 +331,7 @@ else if (_data is { } data)
         _error = null;
         try
         {
-            var json = await Api.GetAsync<JsonElement>("admin/benchmarks");
+            var json = await Api.GetAsync<JsonElement>("v1/admin/benchmarks");
             var store = json.GetProperty("store");
             _data = new Page(
                 json.GetProperty("checks").EnumerateArray().Select(c => new Check(c.GetProperty("id").GetString()!, c.GetProperty("title").GetString()!, c.GetProperty("script").GetString()!,
@@ -367,7 +367,7 @@ else if (_data is { } data)
         if (_data is null) return;
         try
         {
-            var current = ReadLive(await Api.GetAsync<JsonElement>("admin/benchmarks/runs/current"));
+            var current = ReadLive(await Api.GetAsync<JsonElement>("v1/admin/benchmarks/runs/current"));
             if (current.Status != "running") return;
             await FromStoreAsync(current.Id);
             await FollowAsync(current, keepRows: true);
@@ -383,7 +383,7 @@ else if (_data is { } data)
         _error = null;
         try
         {
-            var started = ReadLive(await Api.PostAsync($"admin/benchmarks/{check}/runs", new { repeat = RepeatFor(check) }));
+            var started = ReadLive(await Api.PostAsync($"v1/admin/benchmarks/{check}/runs", new { repeat = RepeatFor(check) }));
             _selected = check;
             await FollowAsync(started, keepRows: false);
         }
@@ -400,7 +400,7 @@ else if (_data is { } data)
         _scores.Clear();
         try
         {
-            var json = await Api.GetAsync<JsonElement>($"admin/benchmarks/runs/{id}");
+            var json = await Api.GetAsync<JsonElement>($"v1/admin/benchmarks/runs/{id}");
             foreach (var t in json.GetProperty("turns").EnumerateArray())
             {
                 var row = RowOf(new TurnKey(t.GetProperty("mode").GetString()!, t.GetProperty("repeat").GetInt32(), t.GetProperty("task").GetString()!, t.GetProperty("turn").GetInt32()));
@@ -429,7 +429,7 @@ else if (_data is { } data)
         StateHasChanged();
         try
         {
-            await foreach (var (type, line) in Api.StreamLinesAsync($"admin/benchmarks/runs/{run.Id}/events"))
+            await foreach (var (type, line) in Api.StreamLinesAsync($"v1/admin/benchmarks/runs/{run.Id}/events"))
             {
                 if (type == "done")
                 {
@@ -517,7 +517,7 @@ else if (_data is { } data)
         try
         {
             var json = await Api.GetAsync<JsonElement>(
-                $"admin/benchmarks/runs/{_run.Id}/turns/{Uri.EscapeDataString(key.Mode)}/{key.Repeat}/{Uri.EscapeDataString(key.Task)}/{key.N}/events");
+                $"v1/admin/benchmarks/runs/{_run.Id}/turns/{Uri.EscapeDataString(key.Mode)}/{key.Repeat}/{Uri.EscapeDataString(key.Task)}/{key.N}/events");
             var turn = new Turn { UserText = row.Turn.UserText };
             foreach (var ev in json.GetProperty("events").EnumerateArray())
                 TurnStream.Apply(turn, SessionEvent.From(ev.GetProperty("type").GetString()!, ev.GetProperty("data")));
@@ -535,7 +535,7 @@ else if (_data is { } data)
     {
         try
         {
-            var json = await Api.GetAsync<JsonElement>($"admin/benchmarks/runs/{id}");
+            var json = await Api.GetAsync<JsonElement>($"v1/admin/benchmarks/runs/{id}");
             foreach (var r in json.GetProperty("requests").EnumerateArray())
             {
                 if (!r.TryGetProperty("turn", out var t) || t.ValueKind != JsonValueKind.Object) continue;
@@ -636,7 +636,7 @@ else if (_data is { } data)
         if (_data is not { Store.Configured: true }) return;
         foreach (var check in _data.Checks)
         {
-            try { _trends[check.Id] = await Api.GetAsync<JsonElement>($"admin/benchmarks/checks/{Uri.EscapeDataString(check.Id)}/trend"); }
+            try { _trends[check.Id] = await Api.GetAsync<JsonElement>($"v1/admin/benchmarks/checks/{Uri.EscapeDataString(check.Id)}/trend"); }
             catch (AgentApiException) { _trends.Remove(check.Id); }
         }
     }
@@ -649,7 +649,7 @@ else if (_data is { } data)
     {
         try
         {
-            var json = await Api.GetAsync<JsonElement>($"admin/benchmarks/{Uri.EscapeDataString(check)}/manual");
+            var json = await Api.GetAsync<JsonElement>($"v1/admin/benchmarks/{Uri.EscapeDataString(check)}/manual");
             _manual = new Manual(json.GetProperty("title").GetString()!, json.GetProperty("markdown").GetString()!);
             _focusManual = true;
         }

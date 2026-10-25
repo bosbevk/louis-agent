@@ -165,7 +165,7 @@ public class AgentSessionsTests
     }
 
     [Test]
-    public void AnUnknownPersonality_IsRefused()
+    public void AnUnknownRole_IsRefused()
     {
         Assert.Throws<LouisAgent.Core.Skills.Roles.RoleException>(() => Sessions().Create(["files"], role: "nobody-here"));
     }
@@ -183,7 +183,7 @@ public class AgentSessionsTests
     }
 
     [Test]
-    public void NoPersonality_IsTheDefault()
+    public void NoRole_IsTheDefault()
     {
         var session = Sessions().Create(["files"], role: "");
 
@@ -251,16 +251,15 @@ public class AgentSessionsTests
     }
 
     [Test]
-    public void GetRoles_AndGetPersonalities_AnswerAlike()
+    public void TheRolesBody_HasTheDefaultAndTheRolesPerLevel()
     {
-        // One body for both routes: /roles is the word from CL14 on, /personalities the alias a client one deploy behind reads.
+        // The roles body, served at GET /v1/roles (CL14's word; the /personalities alias went with CL20, ADR 0039).
         var engines = new AgentEngineFactory(new NoModel(),
             new AgentOptions { WorkspaceRoot = RepoRoot, SkillsDirectory = Path.Combine(RepoRoot, "Skills"), RatesUrl = null });
 
         string roles = Json(LouisAgent.Api.Endpoints.RolesView.Of(engines));
 
         Assert.That(roles, Does.Contain("\"default\":\"louis-agent/voice\"").And.Contain("\"specialists\":[").And.Contain("puls-cook"));
-        Assert.That(LouisAgent.Api.Endpoints.RolesView.Routes, Is.EqualTo(new[] { "/roles", "/personalities" }));
     }
 
     private static LouisAgent.Core.Sessions.SubSessions.OpenSubSession Kept(string sessionId, List<string> closed) =>

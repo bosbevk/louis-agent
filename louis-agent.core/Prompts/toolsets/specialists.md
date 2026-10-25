@@ -20,7 +20,7 @@ its tools or its conversation.
 - **Every sub-session costs money:** it starts cold (its own prompt is written to the cache), and its answer is written
   twice (its report, then your reply). Send one sub-session per task, not one per step, and choose the toolsets that let
   the specialist answer in the fewest calls: a script to count, a search before reading.
-- Choose the smallest set of toolsets that does the job; `GET /toolsets` on the peer lists them. Never `specialists`: a
+- Choose the smallest set of toolsets that does the job; `GET /v1/toolsets` on the peer lists them. Never `specialists`: a
   sub-session can't open its own.
 
 ## Giving the specialist its role

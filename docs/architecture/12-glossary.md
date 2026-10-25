@@ -12,7 +12,7 @@
 | **Ledger** | The usage ledger: one JSON line per model request, with its tokens and cost |
 | **Mode** | What a level-0 session names (CL9, ADR 0019): one file, its voice then its routing, `agent/{product}/{mode}.md`; the default is `louis-agent/voice` |
 | **Peer** | Another louis-agent API this one may open sub-sessions on (`AGENT_PEERS`) |
-| **Personality** | A role's name before CL13 (the code) and CL14 (the API); still read in recorded runs and as an alias |
+| **Personality** | A role's name before CL13 (the code) and CL14 (the API); still read in recorded runs and from `PERSONALITIES_ENABLED`; CL20 took it out of the API |
 | **Principles** | `shared/principles.md`: never lie, cheat, steal or murder; first in every agent's prompt (ADR 0020) |
 | **Prefix** | The start of every request (tools, system prompt) that stays the same and is cached |
 | **Puls** | The general assistant in Afrikaans or English, which answers the web itself and hands cooking to its cook |

@@ -22,7 +22,7 @@ public sealed class AgentApi(HttpClient http, ChatSettings settings)
     public async Task<string> CreateSessionAsync(IEnumerable<string> toolsets, string? role = null,
         string? location = null, string? timeZone = null)
     {
-        using var response = await SendAsync(new HttpRequestMessage(HttpMethod.Post, "sessions")
+        using var response = await SendAsync(new HttpRequestMessage(HttpMethod.Post, "v1/sessions")
         {
             // role (F21; "personality" before CL14): the session's voice; null is the API's default voice (CL9). location
             // and time_zone (F22): where the user is, only when they shared it.
@@ -32,10 +32,10 @@ public sealed class AgentApi(HttpClient http, ChatSettings settings)
         return body.GetProperty("session_id").GetString()!;
     }
 
-    /// <summary>The toolsets this API can load (<c>GET /toolsets</c>, those whose settings are set).</summary>
+    /// <summary>The toolsets this API can load (<c>GET /v1/toolsets</c>, those whose settings are set).</summary>
     public async Task<string[]> AvailableToolsetsAsync()
     {
-        using var response = await SendAsync(new HttpRequestMessage(HttpMethod.Get, "toolsets"));
+        using var response = await SendAsync(new HttpRequestMessage(HttpMethod.Get, "v1/toolsets"));
         var body = await response.Content.ReadFromJsonAsync<JsonElement>();
         return body.GetProperty("toolsets").EnumerateArray()
             .Where(t => t.GetProperty("available").GetBoolean())
@@ -45,14 +45,14 @@ public sealed class AgentApi(HttpClient http, ChatSettings settings)
 
     public async Task CancelAsync(string sessionId)
     {
-        using var _ = await SendAsync(new HttpRequestMessage(HttpMethod.Post, $"sessions/{sessionId}/cancel"));
+        using var _ = await SendAsync(new HttpRequestMessage(HttpMethod.Post, $"v1/sessions/{sessionId}/cancel"));
     }
 
     public async Task DeleteSessionAsync(string sessionId)
     {
         try
         {
-            using var _ = await SendAsync(new HttpRequestMessage(HttpMethod.Delete, $"sessions/{sessionId}"));
+            using var _ = await SendAsync(new HttpRequestMessage(HttpMethod.Delete, $"v1/sessions/{sessionId}"));
         }
         catch (AgentApiException ex) when (ex.Status == HttpStatusCode.NotFound)
         {
@@ -61,10 +61,10 @@ public sealed class AgentApi(HttpClient http, ChatSettings settings)
     }
 
     /// <summary>The exchange rates the API loaded (F14).</summary>
-    public Task<RatesTable> GetRatesAsync() => GetAsync<RatesTable>("rates");
+    public Task<RatesTable> GetRatesAsync() => GetAsync<RatesTable>("v1/rates");
 
     /// <summary>The server's display currency and a symbol for each currency (F14).</summary>
-    public Task<RatesDisplay> GetRatesDisplayAsync() => GetAsync<RatesDisplay>("rates/display");
+    public Task<RatesDisplay> GetRatesDisplayAsync() => GetAsync<RatesDisplay>("v1/rates/display");
 
     /// <summary>A GET returning JSON, for an app's own endpoints (the code-review app's workspace and git).</summary>
     public async Task<T> GetAsync<T>(string url)
@@ -78,7 +78,7 @@ public sealed class AgentApi(HttpClient http, ChatSettings settings)
         string sessionId, string message, IReadOnlyList<Attachment> attachments,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        var request = new HttpRequestMessage(HttpMethod.Post, $"sessions/{sessionId}/messages")
+        var request = new HttpRequestMessage(HttpMethod.Post, $"v1/sessions/{sessionId}/messages")
         {
             Content = JsonContent.Create(new
             {

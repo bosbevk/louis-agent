@@ -3,7 +3,7 @@ using LouisAgent.Api.Sessions.Streaming;
 
 namespace LouisAgent.Api.Tests.Sessions;
 
-// F18 step 1f: "stream" on POST /sessions names the format the session's events are written in (ADR 0024: an enum, parsed
+// F18 step 1f: "stream" on POST /v1/sessions names the format the session's events are written in (ADR 0024: an enum, parsed
 // once in the request). Nothing sent is Claude; a name that is none of the format's names is refused (the API's 400),
 // before any engine is built. Only the parse is tested here: the endpoint's 400 has no test, since the API has no endpoint
 // tests yet, and the first one should take that case.

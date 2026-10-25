@@ -9,16 +9,16 @@ using Microsoft.Extensions.DependencyInjection;
 namespace LouisAgent.Web.Shared.Tests.Components;
 
 // T1: the currency switcher (F14): the choices the API's rates give, the server's region first, pinned to
-// CurrencySwitcher.html; a choice converts every cost from then on. The API is a stub answering /rates and
-// /rates/display; the saved choice comes from JS (localStorage), which the loose interop answers with nothing.
+// CurrencySwitcher.html; a choice converts every cost from then on. The API is a stub answering /v1/rates and
+// /v1/rates/display; the saved choice comes from JS (localStorage), which the loose interop answers with nothing.
 public class CurrencySwitcherTests
 {
     private static CurrencyState State(BunitContext ctx)
     {
         var http = new HttpClient(new StubHandler(request => request.RequestUri!.AbsolutePath switch
         {
-            "/rates" => Json("""{"as_of":"2026-10-13","base":"USD","rates":{"ZAR":18.0,"EUR":0.9}}"""),
-            "/rates/display" => Json("""{"display_currency":"ZAR","display_symbol":"R","base":"USD","symbols":{"USD":"$","ZAR":"R","EUR":"€"}}"""),
+            "/v1/rates" => Json("""{"as_of":"2026-10-13","base":"USD","rates":{"ZAR":18.0,"EUR":0.9}}"""),
+            "/v1/rates/display" => Json("""{"display_currency":"ZAR","display_symbol":"R","base":"USD","symbols":{"USD":"$","ZAR":"R","EUR":"€"}}"""),
             _ => new HttpResponseMessage(HttpStatusCode.NotFound),
         })) { BaseAddress = new Uri("http://localhost/") };
         return new CurrencyState(new AgentApi(http, new ChatSettings()), ctx.JSInterop.JSRuntime);

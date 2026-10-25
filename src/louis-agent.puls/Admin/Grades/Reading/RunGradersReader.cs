@@ -3,7 +3,7 @@ using System.Text.Json;
 namespace LouisAgent.Puls.Admin.Grades.Reading;
 
 /// <summary>
-/// Reads a run's eval and graders from <c>GET /admin/benchmarks/runs/{id}</c>'s answer (its <c>run</c> object); null where the run
+/// Reads a run's eval and graders from <c>GET /v1/admin/benchmarks/runs/{id}</c>'s answer (its <c>run</c> object); null where the run
 /// recorded none, and a grader's version null where it is missing, never 0 (ADR 0007).
 /// </summary>
 public static class RunGradersReader

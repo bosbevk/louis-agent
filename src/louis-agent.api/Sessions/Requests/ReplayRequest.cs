@@ -1,7 +1,7 @@
 namespace LouisAgent.Api.Sessions.Requests;
 
 /// <summary>
-/// What an eval session asks of the web (F18 step 4a), the <c>replay</c> of <c>POST /sessions</c>: <c>web</c> (off, record or replay;
+/// What an eval session asks of the web (F18 step 4a), the <c>replay</c> of <c>POST /v1/sessions</c>: <c>web</c> (off, record or replay;
 /// none sent: the instance's <c>WEB_REPLAY</c>), <c>of</c> (the recorded trial: a replay reads it, a sub-session records into its
 /// parent's) and <c>model</c> (replay the model's answers too; refused until step 4e's cache). <b>Sending it, even an empty <c>{}</c>, is
 /// what marks a session as an eval</b>, and only a session with a run tag may send one; a run tag alone marks nothing.

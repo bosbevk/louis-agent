@@ -92,7 +92,7 @@ public sealed class AgentOptions
     public string? PricesFile { get; set; }
 
     /// <summary>
-    /// PRICES_URL: fetch the price table over HTTP instead, e.g. louis-agent.api's GET /prices; if it can't be reached,
+    /// PRICES_URL: fetch the price table over HTTP instead, e.g. louis-agent.api's GET /v1/prices; if it can't be reached,
     /// the file (PricesFile or config/prices.json) is used.
     /// </summary>
     public string? PricesUrl { get; set; }
@@ -103,7 +103,7 @@ public sealed class AgentOptions
 
     /// <summary>
     /// RATES_URL: where a host fetches exchange rates for showing costs in another currency (F14), e.g. Frankfurter (the
-    /// default) or louis-agent.api's GET /rates; "off" skips the fetch. If it can't be reached, RATES_FILE is used.
+    /// default) or louis-agent.api's GET /v1/rates; "off" skips the fetch. If it can't be reached, RATES_FILE is used.
     /// </summary>
     public string? RatesUrl { get; set; } = DefaultRatesUrl;
 

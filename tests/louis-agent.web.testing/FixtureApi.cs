@@ -29,7 +29,7 @@ public static class FixtureApi
 
     /// <summary>As the API answers after a restart: the session a chat remembers is gone (404 on its message).</summary>
     private static HttpResponseMessage AnswerSessionGone(HttpRequestMessage request) =>
-        request.RequestUri!.AbsolutePath == $"/sessions/{SessionId}/messages"
+        request.RequestUri!.AbsolutePath == $"/v1/sessions/{SessionId}/messages"
             ? new HttpResponseMessage(HttpStatusCode.NotFound)
             {
                 Content = new StringContent("""{"type":"error","error":{"type":"not_found_error","message":"No session 'sess_fixture'."}}""", Encoding.UTF8, "application/json"),
@@ -42,17 +42,17 @@ public static class FixtureApi
         bool get = request.Method == HttpMethod.Get, post = request.Method == HttpMethod.Post;
         return (path, get, post) switch
         {
-            ($"/sessions/{SessionId}/cancel", _, true) => Json($$"""{"session_id":"{{SessionId}}","cancelled":true}"""),
-            ($"/sessions/{SessionId}", _, _) when request.Method == HttpMethod.Delete => Json($$"""{"session_id":"{{SessionId}}","deleted":true}"""),
-            ("/model", true, _) => Json("""{"provider":"anthropic","model":"claude-haiku-5-5"}"""),
-            ("/roles", true, _) => Json("""{"default":"louis-agent/voice","agent":["louis-agent/voice","puls/voice-af","puls/voice-en"],"specialist":["puls-cook"],"minion":[]}"""),
-            ("/toolsets", true, _) => Json("""{"default":["skills"],"toolsets":[{"name":"files","available":true},{"name":"git","available":true},{"name":"web","available":true},{"name":"specialists","available":true},{"name":"shops","available":true}]}"""),
-            ("/sessions", _, true) => Json($$"""{"session_id":"{{SessionId}}","toolsets":["specialists","web"]}"""),
-            ($"/sessions/{SessionId}/messages", _, true) => Stream(),
-            ("/git/status", true, _) => Json("""{"branch":"main","files":[],"committed":null}"""),
-            ("/git/branches", true, _) => Json("""{"current":"main","branches":[],"message":null}"""),
-            ("/git/log", true, _) => Json("""{"commits":[]}"""),
-            ("/workspace/entries", true, _) => Json("""{"path":"","entries":[]}"""),
+            ($"/v1/sessions/{SessionId}/cancel", _, true) => Json($$"""{"session_id":"{{SessionId}}","cancelled":true}"""),
+            ($"/v1/sessions/{SessionId}", _, _) when request.Method == HttpMethod.Delete => Json($$"""{"session_id":"{{SessionId}}","deleted":true}"""),
+            ("/v1/model", true, _) => Json("""{"provider":"anthropic","model":"claude-haiku-5-5"}"""),
+            ("/v1/roles", true, _) => Json("""{"default":"louis-agent/voice","agent":["louis-agent/voice","puls/voice-af","puls/voice-en"],"specialist":["puls-cook"],"minion":[]}"""),
+            ("/v1/toolsets", true, _) => Json("""{"default":["skills"],"toolsets":[{"name":"files","available":true},{"name":"git","available":true},{"name":"web","available":true},{"name":"specialists","available":true},{"name":"shops","available":true}]}"""),
+            ("/v1/sessions", _, true) => Json($$"""{"session_id":"{{SessionId}}","toolsets":["specialists","web"]}"""),
+            ($"/v1/sessions/{SessionId}/messages", _, true) => Stream(),
+            ("/v1/git/status", true, _) => Json("""{"branch":"main","files":[],"committed":null}"""),
+            ("/v1/git/branches", true, _) => Json("""{"current":"main","branches":[],"message":null}"""),
+            ("/v1/git/commits", true, _) => Json("""{"commits":[]}"""),
+            ("/v1/workspace/entries", true, _) => Json("""{"path":"","entries":[]}"""),
             // The code-review app's theme list, as its wwwroot ships it.
             ("/css/themes/themes.json", true, _) => Json(File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "src", "louis-agent.web", "wwwroot", "css", "themes", "themes.json"))),
             _ => new HttpResponseMessage(HttpStatusCode.NotFound)

@@ -14,7 +14,7 @@ words. The cost per mode comes from the ledger.
 | `baseline` | every toolset this instance has, except `specialists` and `minions` | one agent that does everything itself and can hand nothing over |
 | `delegated` | `specialists`, `web` | Puls as built; the cook that gets a question gets only `web` |
 
-The `baseline`'s toolsets come from `GET /toolsets` when the run starts: Paymo and DevOps are among them if their keys
+The `baseline`'s toolsets come from `GET /v1/toolsets` when the run starts: Paymo and DevOps are among them if their keys
 are set.
 
 ## The questions

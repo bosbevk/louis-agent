@@ -11,7 +11,7 @@ using LouisAgent.Core.Pricing.Rates.Mappers;
 /// Exchange rates for showing costs in another currency (F14), in louis-agent's own <c>rates.json</c> format, the only
 /// one read: <c>{"as_of", "base", "source", "rates": {"ZAR": 16.5331, …}}</c>, each rate the price of one
 /// <see cref="Base"/> in that currency. A provider's reply is turned into it by an <see cref="IRatesMapper"/>; the
-/// tracked <c>config/rates.json</c> and louis-agent.api's <c>GET /rates</c> are in it already.
+/// tracked <c>config/rates.json</c> and louis-agent.api's <c>GET /v1/rates</c> are in it already.
 /// </summary>
 /// <remarks>Costs are only converted for display: the ledger keeps what was charged, in the price table's currency.</remarks>
 public sealed partial class ExchangeRates
@@ -99,7 +99,7 @@ public sealed partial class ExchangeRates
         return rates;
     }
 
-    /// <summary>Our format as JSON, for <c>GET /rates</c> and the mappers.</summary>
+    /// <summary>Our format as JSON, for <c>GET /v1/rates</c> and the mappers.</summary>
     public string ToJson() => JsonSerializer.Serialize(this, Json);
 
     /// <summary>An ISO 4217 code: three capital letters.</summary>

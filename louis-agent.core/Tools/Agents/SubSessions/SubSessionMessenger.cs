@@ -46,7 +46,7 @@ internal sealed class SubSessionMessenger(PeerHttp http, UsageRollUp rollUp)
         SubSessionKind kind, string? toolUseId, UsageScope? scope, CancellationToken cancellationToken)
     {
         var stopwatch = Stopwatch.StartNew();
-        using var send = http.Request(HttpMethod.Post, new Uri(peer, $"sessions/{Uri.EscapeDataString(sessionId)}/messages"), body);
+        using var send = http.Request(HttpMethod.Post, new Uri(peer, $"v1/sessions/{Uri.EscapeDataString(sessionId)}/messages"), body);
         using var reply = await http.SendAsync(send, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
         if (!reply.IsSuccessStatusCode)
             return ("", null, MessageText.Format(SubSessionToolMessage.SubSessionRefused,

@@ -2,6 +2,7 @@ using LouisAgent.Api.Admin;
 using LouisAgent.Api.Benchmarks.Runs;
 using LouisAgent.Api.Benchmarks.Store;
 using LouisAgent.Api.Benchmarks.Reports;
+using LouisAgent.Api.Endpoints.Routing;
 using System.Net.ServerSentEvents;
 using LouisAgent.Api.Messages;
 using LouisAgent.Core.Messages;
@@ -23,11 +24,11 @@ internal static class AdminEndpoints
     /// <summary>How many runs the Benchmarks page lists.</summary>
     private const int ListedRuns = 50;
 
-    public static void MapAdmin(this WebApplication app, BenchmarkCatalog catalog, BenchmarkRunner runner, string? adminKey,
+    public static void MapAdmin(this IEndpointRouteBuilder routes, BenchmarkCatalog catalog, BenchmarkRunner runner, string? adminKey,
         IBenchmarkStore? store, BenchmarkRecorder? recorder, Func<BenchmarkCheck, IReadOnlyDictionary<string, string>> settingsOf,
         string workspaceRoot)
     {
-        var admin = app.MapGroup("/admin").AddEndpointFilter(async (context, next) =>
+        var admin = routes.MapGroup("/admin").WithAccess(RouteAccess.AdminKey).AddEndpointFilter(async (context, next) =>
         {
             switch (AdminGate.Check(adminKey, AdminGate.Presented(context.HttpContext.Request)))
             {
@@ -191,5 +192,5 @@ internal static class AdminEndpoints
     }
 }
 
-/// <summary>The body of <c>POST /admin/benchmarks/{check}/runs</c>: how many repeats (1 to the runner's cap).</summary>
+/// <summary>The body of <c>POST /v1/admin/benchmarks/{check}/runs</c>: how many repeats (1 to the runner's cap).</summary>
 internal sealed record StartRunRequest(int? Repeat);

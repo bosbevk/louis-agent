@@ -3,12 +3,12 @@ using LouisAgent.Api.Sessions.Streaming;
 namespace LouisAgent.Api.Sessions;
 
 /// <summary>
-/// A session as the API returns it: what <c>POST /sessions</c> answers and what <c>GET /sessions/{id}</c> shows. Its
+/// A session as the API returns it: what <c>POST /v1/sessions</c> answers and what <c>GET /v1/sessions/{id}</c> shows. Its
 /// role is <c>role</c> (CL14; "personality" before), and so is each sub-session's the chat keeps open (F26).
 /// </summary>
 internal static class SessionView
 {
-    /// <summary>The answer to <c>POST /sessions</c>: what the session opened with.</summary>
+    /// <summary>The answer to <c>POST /v1/sessions</c>: what the session opened with.</summary>
     public static object Created(AgentSession session) => new
     {
         session_id = session.Id, created_at = session.CreatedAt, toolsets = session.Toolsets, depth = session.Depth,
@@ -17,7 +17,7 @@ internal static class SessionView
     };
 
     /// <summary>
-    /// <c>GET /sessions/{id}</c>: the session now, with its tools, the specialists it keeps open by handle (never the
+    /// <c>GET /v1/sessions/{id}</c>: the session now, with its tools, the specialists it keeps open by handle (never the
     /// peer's session id, F26) and its usage, like message_delta's (null when the API doesn't record usage).
     /// </summary>
     public static object Of(AgentSession session) => new

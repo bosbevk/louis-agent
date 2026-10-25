@@ -89,7 +89,7 @@ public sealed class AgentEngineFactory
     /// <summary>The named roles a session at <paramref name="level"/> can choose (F21, CL8), all built in.</summary>
     public IReadOnlyList<string> AvailableRoles(RoleLevel level) => RoleFiles.Enabled(_agent, level);
 
-    /// <summary>The mode of a level-0 session that names none (CL9): <c>GET /roles</c>' <c>default</c>.</summary>
+    /// <summary>The mode of a level-0 session that names none (CL9): <c>GET /v1/roles</c>' <c>default</c>.</summary>
     public string DefaultVoice => RoleCatalog.DefaultVoice;
 
     /// <summary>The profiles built so far: each its toolsets joined with commas, then |role, |level below level 0,

@@ -38,7 +38,7 @@ public class MinionToolsTests
     /// <summary>The specialist's own instance: creates sess_minion, answers with the stream and accepts the delete; keeps every create body.</summary>
     private static StubHandler Peer(List<JsonDocument> creates, Func<HttpResponseMessage>? answer = null) => new(request =>
     {
-        if (request.Method == HttpMethod.Post && request.RequestUri!.AbsolutePath == "/sessions")
+        if (request.Method == HttpMethod.Post && request.RequestUri!.AbsolutePath == "/v1/sessions")
         {
             creates.Add(JsonDocument.Parse(request.Content!.ReadAsStringAsync().Result));
             return Json(HttpStatusCode.Created, """{"session_id":"sess_minion","role":"puls-minion-web-price-lookup"}""");
@@ -196,7 +196,7 @@ public class MinionToolsTests
         var handler = new StubHandler(request =>
         {
             if (request.Method == HttpMethod.Delete) { deleted = true; return Json(HttpStatusCode.OK, "{}"); }
-            if (request.RequestUri!.AbsolutePath == "/sessions") { creates.Add(JsonDocument.Parse(request.Content!.ReadAsStringAsync().Result)); return Json(HttpStatusCode.Created, """{"session_id":"sess_minion"}"""); }
+            if (request.RequestUri!.AbsolutePath == "/v1/sessions") { creates.Add(JsonDocument.Parse(request.Content!.ReadAsStringAsync().Result)); return Json(HttpStatusCode.Created, """{"session_id":"sess_minion"}"""); }
             Thread.Sleep(2000);
             return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(Stream, Encoding.UTF8, "text/event-stream") };
         });
@@ -220,7 +220,7 @@ public class MinionToolsTests
         var handler = new StubHandler(request =>
         {
             if (request.Method == HttpMethod.Delete) { deletes++; return Json(HttpStatusCode.OK, "{}"); }
-            if (request.RequestUri!.AbsolutePath == "/sessions")
+            if (request.RequestUri!.AbsolutePath == "/v1/sessions")
             {
                 creates.Add(JsonDocument.Parse(request.Content!.ReadAsStringAsync().Result));
                 return Json(HttpStatusCode.Created, """{"session_id":"sess_minion"}""");

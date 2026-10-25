@@ -12,16 +12,16 @@ public class AdminKeyTests
     [Test]
     public void TheChat_KeepsItsOwnKey_WhenAnAdminKeyIsSaved()
     {
-        Assert.That(Both().KeyFor(new Uri("sessions", UriKind.Relative)), Is.EqualTo("chat-key"));
-        Assert.That(Both().KeyFor(new Uri("http://127.0.0.1:5070/sessions/abc/messages")), Is.EqualTo("chat-key"));
+        Assert.That(Both().KeyFor(new Uri("v1/sessions", UriKind.Relative)), Is.EqualTo("chat-key"));
+        Assert.That(Both().KeyFor(new Uri("http://127.0.0.1:5070/v1/sessions/abc/messages")), Is.EqualTo("chat-key"));
     }
 
     [Test]
     public void TheAdminPortal_SendsTheAdminKey()
     {
-        Assert.That(Both().KeyFor(new Uri("admin/benchmarks", UriKind.Relative)), Is.EqualTo("admin-key"));
-        Assert.That(Both().KeyFor(new Uri("/admin/benchmarks/runs/x", UriKind.Relative)), Is.EqualTo("admin-key"));
-        Assert.That(Both().KeyFor(new Uri("http://127.0.0.1:5070/admin/benchmarks")), Is.EqualTo("admin-key"));
+        Assert.That(Both().KeyFor(new Uri("v1/admin/benchmarks", UriKind.Relative)), Is.EqualTo("admin-key"));
+        Assert.That(Both().KeyFor(new Uri("/v1/admin/benchmarks/runs/x", UriKind.Relative)), Is.EqualTo("admin-key"));
+        Assert.That(Both().KeyFor(new Uri("http://127.0.0.1:5070/v1/admin/benchmarks")), Is.EqualTo("admin-key"));
     }
 
     [Test]
@@ -29,10 +29,10 @@ public class AdminKeyTests
     {
         // The server's admin key falls back to AGENT_API_KEY (AdminGate.Key), so the chat's key opens it then.
         var chatOnly = new ChatSettings { ApiKey = "chat-key" };
-        Assert.That(chatOnly.KeyFor(new Uri("admin/benchmarks", UriKind.Relative)), Is.EqualTo("chat-key"));
+        Assert.That(chatOnly.KeyFor(new Uri("v1/admin/benchmarks", UriKind.Relative)), Is.EqualTo("chat-key"));
     }
 
     [Test]
     public void APathThatOnlyStartsLikeAdmin_IsNotTheAdminPortal() =>
-        Assert.That(Both().KeyFor(new Uri("administer", UriKind.Relative)), Is.EqualTo("chat-key"));
+        Assert.That(Both().KeyFor(new Uri("v1/administer", UriKind.Relative)), Is.EqualTo("chat-key"));
 }

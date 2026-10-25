@@ -1,3 +1,4 @@
+using LouisAgent.Api.Endpoints.Routing;
 using LouisAgent.Api.Messages;
 using LouisAgent.Api.Sessions;
 using LouisAgent.Api.Sessions.Requests;
@@ -20,17 +21,17 @@ namespace LouisAgent.Api.Endpoints;
 /// </summary>
 internal static class SessionEndpoints
 {
-    public static void MapSessions(this WebApplication app, AgentHostContext host)
+    public static void MapSessions(this IEndpointRouteBuilder routes, AgentHostContext host)
     {
         // The body is optional: { "toolsets": [...] } chooses the session's tools for its lifetime (F5; none sent: skills only);
-        // "role" its role (F21; none sent: the default voice, CL9; "personality", its name before CL14, still read); "llm" the LLM profile it runs on (F30; none sent: this
+        // "role" its role (F21; none sent: the default voice, CL9); "llm" the LLM profile it runs on (F30; none sent: this
         // instance's model); "tool" a minion's one tool (F30; depth 2 only, with "parent" the specialist's session and turn);
         // { "task", "run", "service" } tag every usage record of the session (the orchestrator sends them for a fix); "depth" is
         // set by an agent opening a sub-session.
         // "replay" (F18 step 4a): what an eval session does with the web. WEB_REPLAY is its default, parsed here once, at start-up, so a
         // bad value stops the API as AGENT_AUTH does; the rules are ReplayResolution's, and each refusal is a 400 before any engine is built.
         var defaultReplay = SessionReplay.DefaultMode(host.Agent.WebReplay);
-        app.MapPost("/sessions", (CreateSessionRequest? request, AgentSessions sessions) =>
+        routes.MapPost("/sessions", (CreateSessionRequest? request, AgentSessions sessions) =>
         {
             if (request?.InvalidTag() is { } invalid)
                 return Results.Json(Error("invalid_request_error",
@@ -55,28 +56,28 @@ internal static class SessionEndpoints
             {
                 session = sessions.Create(request?.Toolsets,
                     request is null ? null : new UsageTags(request.Task, request.Run, request.Service, request.Parent), request?.Depth ?? 0,
-                    request?.RoleOrAlias(), request?.Place(), request?.Llm, request?.Tool, format.Value, replay);
+                    request?.RoleOrNull(), request?.Place(), request?.Llm, request?.Tool, format.Value, replay);
             }
             catch (Exception ex) when (ex is ToolsetException or RoleException or SessionLlmException)
             {
                 return Results.Json(Error("invalid_request_error", ex.Message), statusCode: StatusCodes.Status400BadRequest);
             }
 
-            return Results.Json(SessionView.Created(session), statusCode: StatusCodes.Status201Created);
+            return Results.Created($"{ApiMap.Version}/sessions/{session.Id}", SessionView.Created(session));
         });
 
-        app.MapGet("/sessions/{id}", (string id, AgentSessions sessions) =>
+        routes.MapGet("/sessions/{id}", (string id, AgentSessions sessions) =>
             sessions.Get(id) is { } session ? Results.Json(SessionView.Of(session)) : UnknownSession(id));
 
-        app.MapDelete("/sessions/{id}", (string id, AgentSessions sessions) =>
+        routes.MapDelete("/sessions/{id}", (string id, AgentSessions sessions) =>
             sessions.Remove(id) ? Results.Json(new { session_id = id, deleted = true }) : UnknownSession(id));
 
-        app.MapPost("/sessions/{id}/cancel", (string id, AgentSessions sessions) =>
+        routes.MapPost("/sessions/{id}/cancel", (string id, AgentSessions sessions) =>
             sessions.Get(id) is { } session
                 ? Results.Json(new { session_id = id, cancelled = session.Cancel() })
                 : UnknownSession(id));
 
-        app.MapPost("/sessions/{id}/messages", (string id, SendMessageRequest request, AgentSessions sessions, HttpContext http) =>
+        routes.MapPost("/sessions/{id}/messages", (string id, SendMessageRequest request, AgentSessions sessions, HttpContext http) =>
         {
             if (sessions.Get(id) is not { } session) return UnknownSession(id);
 
