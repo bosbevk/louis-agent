@@ -1,8 +1,8 @@
 using LouisAgent.Core.Tools.Web.Browsing;
 using LouisAgent.Core.Tools.Web.Replay.Answers;
-using LouisAgent.Core.Tools.Web.Replay.Store;
+using LouisAgent.Core.Sessions.Replay.Store;
 
-namespace LouisAgent.Core.Tests.Tools.Web.Replay.Store;
+namespace LouisAgent.Core.Tests.Sessions.Replay.Store;
 
 // F18 step 4a.2 (Louis's fold-in), generic since 4b.1: a recording is an answer or a failure, never both. OrThrow gives the value, or throws
 // the exception the caller's function builds from the recorded text. Written first: ReplayAnswer<T> didn't exist on the red run.

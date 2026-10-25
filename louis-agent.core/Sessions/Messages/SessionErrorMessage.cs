@@ -11,4 +11,10 @@ public enum SessionErrorMessage
 {
     [Description("Unknown WEB_REPLAY '{Value}'. Use {Supported}.")]
     UnknownWebReplay,
+
+    [Description("Web replay mode '{Mode}' needs the recorded trial to use (SessionReplay.Of); the API resolves it when a session opens.")]
+    NeedsTrial,
+
+    [Description("'{Name}' would sit outside the replay folder: trial files are named only by TrialFileName.")]
+    OutsideFolder,
 }

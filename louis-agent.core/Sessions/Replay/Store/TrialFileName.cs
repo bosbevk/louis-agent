@@ -1,9 +1,9 @@
 using System.Security.Cryptography;
 using System.Text;
 using LouisAgent.Core.Messages;
-using LouisAgent.Core.Tools.Web.Messages;
+using LouisAgent.Core.Sessions.Messages;
 
-namespace LouisAgent.Core.Tools.Web.Replay.Store;
+namespace LouisAgent.Core.Sessions.Replay.Store;
 
 /// <summary>
 /// A trial's key as a file name (ADR 0004: model- and run-supplied text never becomes a path except through this map). Every
@@ -30,7 +30,7 @@ public static class TrialFileName
         string root = Path.GetFullPath(folder);
         string full = Path.GetFullPath(Path.Combine(root, fileName));
         if (!full.StartsWith(root + Path.DirectorySeparatorChar, StringComparison.Ordinal))
-            throw new InvalidOperationException(MessageText.Format(WebErrorMessage.OutsideFolder, new { Name = fileName }));
+            throw new InvalidOperationException(MessageText.Format(SessionErrorMessage.OutsideFolder, new { Name = fileName }));
         return full;
     }
 }

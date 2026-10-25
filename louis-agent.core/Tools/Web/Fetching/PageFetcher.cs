@@ -1,11 +1,12 @@
 namespace LouisAgent.Core.Tools.Web.Fetching;
 
+using LouisAgent.Core.Sessions.Replay;
 using System.Net;
 using LouisAgent.Core.Guardrails.Network;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Tools.Web.Messages;
 using LouisAgent.Core.Tools.Web.Replay;
-using LouisAgent.Core.Tools.Web.Replay.Store;
+using LouisAgent.Core.Sessions.Replay.Store;
 
 /// <summary>
 /// The guarded client the web tools fetch pages with (S, CL15, from WebTools): it refuses private, loopback and
@@ -25,13 +26,13 @@ public sealed class PageFetcher
 
     private readonly HttpClient _http;
     private readonly Func<string, CancellationToken, Task<IPAddress[]>> _resolve;
-    private readonly WebReplayStore? _replay;
+    private readonly ReplayStore? _replay;
 
     /// <param name="handler">Test seam; production uses a handler that re-checks the address at connect time.</param>
     /// <param name="resolve">Test seam for DNS resolution.</param>
     /// <param name="replay">The process's store of recorded web answers, or null where none is kept.</param>
     public PageFetcher(HttpMessageHandler? handler = null, Func<string, CancellationToken, Task<IPAddress[]>>? resolve = null,
-        WebReplayStore? replay = null)
+        ReplayStore? replay = null)
     {
         _resolve = resolve ?? ((host, ct) => Dns.GetHostAddressesAsync(host, ct));
         _replay = replay;

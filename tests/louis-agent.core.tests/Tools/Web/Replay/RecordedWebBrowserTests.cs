@@ -3,7 +3,7 @@ using System.Text.Json;
 using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Tools.Web.Browsing;
 using LouisAgent.Core.Tools.Web.Replay;
-using LouisAgent.Core.Tools.Web.Replay.Store;
+using LouisAgent.Core.Sessions.Replay.Store;
 
 namespace LouisAgent.Core.Tests.Tools.Web.Replay;
 

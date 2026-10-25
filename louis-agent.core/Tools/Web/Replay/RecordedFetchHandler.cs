@@ -1,8 +1,9 @@
+using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Tools.Web.Fetching;
 using LouisAgent.Core.Tools.Web.Messages;
 using LouisAgent.Core.Tools.Web.Replay.Answers;
-using LouisAgent.Core.Tools.Web.Replay.Store;
+using LouisAgent.Core.Sessions.Replay.Store;
 
 namespace LouisAgent.Core.Tools.Web.Replay;
 
@@ -14,7 +15,7 @@ namespace LouisAgent.Core.Tools.Web.Replay;
 /// answer is recorded: a network error, a timeout, a body over the limit and a connect-time refusal propagate unrecorded, and in a replay
 /// that request is a miss. Replay never calls the inner handler and answers a miss with <see cref="WebToolMessage.ReplayMiss"/> (ADR 0005).
 /// </summary>
-public sealed class RecordedFetchHandler(WebReplayStore store) : DelegatingHandler
+public sealed class RecordedFetchHandler(ReplayStore store) : DelegatingHandler
 {
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {

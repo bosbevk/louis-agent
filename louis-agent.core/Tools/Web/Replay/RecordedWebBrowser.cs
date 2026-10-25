@@ -3,7 +3,7 @@ using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Tools.Web.Browsing;
 using LouisAgent.Core.Tools.Web.Messages;
 using LouisAgent.Core.Tools.Web.Replay.Answers;
-using LouisAgent.Core.Tools.Web.Replay.Store;
+using LouisAgent.Core.Sessions.Replay.Store;
 
 namespace LouisAgent.Core.Tools.Web.Replay;
 
@@ -14,7 +14,7 @@ namespace LouisAgent.Core.Tools.Web.Replay;
 /// from the first recording of the ask, throws a recorded failure's own text, and a miss as a text that names the URL (ADR 0005).
 /// Nothing here changes what the inner browser sends or reports (FX21).
 /// </summary>
-public sealed class RecordedWebBrowser(IWebBrowser inner, WebReplayStore store) : IWebBrowser
+public sealed class RecordedWebBrowser(IWebBrowser inner, ReplayStore store) : IWebBrowser
 {
     public async Task<BrowserVisit> VisitAsync(Uri url, Func<Uri, bool>? capture = null, BrowserSession? session = null, string? script = null,
         string? readySelector = null, CancellationToken cancellationToken = default)

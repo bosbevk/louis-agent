@@ -1,4 +1,4 @@
-namespace LouisAgent.Core.Tools.Web.Replay.Store;
+namespace LouisAgent.Core.Sessions.Replay.Store;
 
 /// <summary>
 /// What a recording holds for an ask: the value the seam answered (<see cref="Answered"/>) or the failure's text it showed the agent

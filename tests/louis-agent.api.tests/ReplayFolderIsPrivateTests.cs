@@ -16,7 +16,7 @@ public class ReplayFolderIsPrivateTests
     private static readonly string[] MayName =
     [
         "louis-agent.core/Config/AgentOptions.cs",
-        "louis-agent.core/Tools/Web/Replay/Store/WebReplayStore.cs",
+        "louis-agent.core/Sessions/Replay/Store/ReplayStore.cs",
     ];
 
     [Test]

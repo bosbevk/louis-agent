@@ -1,6 +1,6 @@
 using LouisAgent.Core.Tools.Web.Browsing;
 using LouisAgent.Core.Tools.Web.Search;
-using LouisAgent.Core.Tools.Web.Replay.Store;
+using LouisAgent.Core.Sessions.Replay.Store;
 using Microsoft.Extensions.Time.Testing;
 
 namespace LouisAgent.Core.Tests.Tools.Web.Replay;
@@ -12,7 +12,7 @@ internal sealed class ReplayFolder : IDisposable
 
     public string Path { get; } = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "louis-replay-" + Guid.NewGuid().ToString("N"));
 
-    public WebReplayStore Store => new(Path, new FakeTimeProvider(At));
+    public ReplayStore Store => new(Path, new FakeTimeProvider(At));
 
     public string[] Answers => Files("answers");
 

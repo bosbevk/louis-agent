@@ -727,6 +727,12 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
     among the tags. Core: 1423 passing. No golden file changed.
   - **What F44 adds:** an exporter and a dashboard, `traceparent` across processes, metrics views and `ttft_ms`; and, if it needs content
     in a trace, a setting that is off by default.
+- **Step 4e.1: the replay store serves every kind.** A move and a rename, no behaviour: the model's answers (4e.2) go in the 4b store, which
+  is no longer web-only. `Tools/Web/Replay/Store/` is now `Sessions/Replay/Store/`, `WebReplayStore` is `ReplayStore`, and `ReplayTrial`
+  moved to `Sessions/Replay/` beside `SessionReplay`, which it reads. Its two texts, `NeedsTrial` and `OutsideFolder`, moved verbatim to
+  `SessionErrorMessage`, which left `WebErrorMessage` empty, so that enum is gone (and `MessageEnumTests`' list with it). The files on disk
+  are unchanged: the store's tests pin `answers/` and `trials/`. No new test (a move); the tests moved to mirror
+  (`Sessions/Replay/Store/ReplayStoreTests`). Whole solution green (core 1423). No golden file changed.
 - **Notes for step 5** (from the review of 4.2): `PulsEvalSet`'s `TurnView` builds on `EngineEvents`, so the route, the errors and the
   cost come from one reader. If an expected route goes in a scenario's `expected`, `RoutedToGrader` must declare that key in its
   `ExpectedKeys`. When the HTTP client sets a turn's `Failure`, the turn line must carry it, so `ProtocolTranscripts` reads it back. A

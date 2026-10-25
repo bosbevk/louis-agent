@@ -19,7 +19,7 @@ using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
 using LouisAgent.Core.Tools.Web.Browsing;
 using LouisAgent.Core.Tools.Web.Replay;
-using LouisAgent.Core.Tools.Web.Replay.Store;
+using LouisAgent.Core.Sessions.Replay.Store;
 using LouisAgent.Core.Tools.Web.Search;
 using LouisAgent.Core.Hosting.Messages;
 
@@ -70,7 +70,7 @@ public sealed class AgentEngineFactory
         _engines = new EngineCache(capacity);
         _sessionLlms = (sessionLlms ?? []).ToDictionary(l => l.Name, StringComparer.Ordinal);
         // One store where recordings are kept, and one browser, for every engine of this process (F18 steps 4a and 4b): the shops and the page renderer read through them.
-        var replay = WebReplayStore.From(agent);
+        var replay = ReplayStore.From(agent);
         _clock = replay is null ? null : new ReplayClock(replay);   // one clock per process, so a trial's frozen time is shared by every engine and sub-session
         Context = new ToolsetContext(agent, RecordedSearchProvider.Around(webSearch ?? WebSearchProviderFactory.Create(agent), replay), rates, usageSink,
             WebBrowser: WebBrowserFactory.Create(agent, replay), Replay: replay);

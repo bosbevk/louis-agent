@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace LouisAgent.Core.Tools.Web.Replay.Store;
+namespace LouisAgent.Core.Sessions.Replay.Store;
 
 /// <summary>
 /// One ask in a trial's index (<c>trials/{safe name}.jsonl</c>, one snake_case JSON line each): the seam and key that were asked, when, and

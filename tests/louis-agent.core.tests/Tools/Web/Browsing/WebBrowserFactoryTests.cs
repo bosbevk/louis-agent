@@ -1,7 +1,7 @@
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Tools.Web.Browsing;
 using LouisAgent.Core.Tools.Web.Replay;
-using LouisAgent.Core.Tools.Web.Replay.Store;
+using LouisAgent.Core.Sessions.Replay.Store;
 
 namespace LouisAgent.Core.Tests.Tools.Web.Browsing;
 
@@ -13,7 +13,7 @@ public class WebBrowserFactoryTests
     [TestCase("")]
     [TestCase("not a url")]
     public void WithoutAUsableBrowserUrl_ThereIsNoBrowser_EvenWithAStore(string? url) =>
-        Assert.That(WebBrowserFactory.Create(new AgentOptions { BrowserUrl = url }, new WebReplayStore("/data/replay")), Is.Null);
+        Assert.That(WebBrowserFactory.Create(new AgentOptions { BrowserUrl = url }, new ReplayStore("/data/replay")), Is.Null);
 
     [Test]
     public void WithoutAStore_ItIsTheChromeItself_WithTheUserAgentTheSettingSays()
@@ -27,7 +27,7 @@ public class WebBrowserFactoryTests
     [Test]
     public void WithAStore_ItIsRecordedAroundTheSameChrome()
     {
-        var browser = WebBrowserFactory.Create(new AgentOptions { BrowserUrl = "http://puls-browser:9222" }, new WebReplayStore("/data/replay"));
+        var browser = WebBrowserFactory.Create(new AgentOptions { BrowserUrl = "http://puls-browser:9222" }, new ReplayStore("/data/replay"));
 
         Assert.That(browser, Is.TypeOf<RecordedWebBrowser>());
     }

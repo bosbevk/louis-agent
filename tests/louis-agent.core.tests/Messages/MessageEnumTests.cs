@@ -26,7 +26,7 @@ public class MessageEnumTests
             "GuardrailErrorMessage", "GuardrailToolMessage", "HostingErrorMessage", "HostingLogMessage", "LlmErrorMessage",
             "LoggingLogMessage", "PaymoToolMessage", "PricingErrorMessage", "PricingLogMessage", "ProtocolLogMessage", "ScriptToolMessage",
             "SessionErrorMessage", "ShellToolMessage", "SkillErrorMessage", "SkillLogMessage", "SubSessionToolMessage", "ToolMessage",
-            "UserText", "UsageErrorMessage", "UsageLogMessage", "WebErrorMessage", "WebLogMessage", "WebToolMessage", "WorkspaceToolMessage",
+            "UserText", "UsageErrorMessage", "UsageLogMessage", "WebLogMessage", "WebToolMessage", "WorkspaceToolMessage",
         }));
     }
 

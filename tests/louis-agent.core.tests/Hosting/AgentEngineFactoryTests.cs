@@ -54,7 +54,7 @@ public class AgentEngineFactoryTests
     [Test]
     public void TheContextHoldsAStoreOnlyWhereARecordingDirectoryIsSet()
     {
-        // F18 step 4b.1: one store per process, built from REPLAY_DIRECTORY in one place (WebReplayStore.From) and handed to the context.
+        // F18 step 4b.1: one store per process, built from REPLAY_DIRECTORY in one place (ReplayStore.From) and handed to the context.
         var without = new AgentEngineFactory(new FakeChatClient(), Options());
         var with = new AgentEngineFactory(new FakeChatClient(), new AgentOptions { WorkspaceRoot = TestPaths.RepoRoot, RatesUrl = null, ReplayDirectory = "/data/replay" });
 

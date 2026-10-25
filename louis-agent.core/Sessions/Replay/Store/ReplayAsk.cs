@@ -1,6 +1,6 @@
 using System.Text.Json;
 
-namespace LouisAgent.Core.Tools.Web.Replay.Store;
+namespace LouisAgent.Core.Sessions.Replay.Store;
 
 /// <summary>
 /// What a seam was asked, as the replay keys it: the seam (<see cref="ReplayKind"/>) and the key, the ask as compact JSON built from an
@@ -10,5 +10,5 @@ namespace LouisAgent.Core.Tools.Web.Replay.Store;
 /// </summary>
 public sealed record ReplayAsk(ReplayKind Kind, string Key)
 {
-    public static ReplayAsk Of(ReplayKind kind, object key) => new(kind, JsonSerializer.Serialize(key, WebReplayStore.Json));
+    public static ReplayAsk Of(ReplayKind kind, object key) => new(kind, JsonSerializer.Serialize(key, ReplayStore.Json));
 }

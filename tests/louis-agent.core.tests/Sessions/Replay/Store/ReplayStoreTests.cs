@@ -1,13 +1,13 @@
 using LouisAgent.Core.Tools.Web.Browsing;
 using LouisAgent.Core.Tests.Tools.Web.Replay;
 using LouisAgent.Core.Tools.Web.Replay.Answers;
-using LouisAgent.Core.Tools.Web.Replay.Store;
+using LouisAgent.Core.Sessions.Replay.Store;
 
-namespace LouisAgent.Core.Tests.Tools.Web.Replay.Store;
+namespace LouisAgent.Core.Tests.Sessions.Replay.Store;
 
 // F18 step 4a.1: a trial's key reaches the disk only through the safe-name map (ADR 0004), and a missing trial is a miss, not an
 // exception (ADR 0007). Written first: the store and the map threw NotImplementedException on the red run.
-public class WebReplayStoreTests
+public class ReplayStoreTests
 {
     private static readonly ReplayAsk Ask = ReplayAsk.Of(ReplayKind.Visit, new { Url = "https://example.com/" });
     private static readonly ReplayAsk Other = ReplayAsk.Of(ReplayKind.Visit, new { Url = "https://example.com/other" });
@@ -139,8 +139,8 @@ public class WebReplayStoreTests
     public void ANumberWhereAnEnumNameBelongs_IsRefused_ADR0024()
     {
         Assert.Throws<System.Text.Json.JsonException>(() =>
-            System.Text.Json.JsonSerializer.Deserialize<ReplayKind>("0", WebReplayStore.Json));
-        Assert.That(System.Text.Json.JsonSerializer.Serialize(ReplayKind.Visit, WebReplayStore.Json), Is.EqualTo("\"visit\""));
+            System.Text.Json.JsonSerializer.Deserialize<ReplayKind>("0", ReplayStore.Json));
+        Assert.That(System.Text.Json.JsonSerializer.Serialize(ReplayKind.Visit, ReplayStore.Json), Is.EqualTo("\"visit\""));
     }
 
     [Test]

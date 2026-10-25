@@ -1019,6 +1019,20 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
 
 ## Approved during the build
 
+- **Step 4e: the model's answers go in the replay store under our own key, not in `DistributedCachingChatClient` and a disk cache**
+  (Louis, 2026-10-25, step 4e's prompt, decision 1; row 912 and the *A replay cache* line above name the other way). Checked with a
+  throwaway probe on Microsoft.Extensions.AI 10.10.0 (finding numbers are the prompt's): (2) MEAI's key hashes whole messages, and the
+  tool loop stamps each tool message with the time it ran and a random `MessageId`, so a whole-message key misses on every turn after a
+  tool call; the key must leave out `CreatedAt` and `MessageId`, and its docs say it is "not guaranteed to be stable across releases".
+  (3) A key without those two fields hit on all 3 requests of a two-turn recording, streamed or not, with the thinking signature
+  byte-equal. (4) `CachingChatClient` with coalescing on stores a streamed request as one `ChatResponse`; a hit tag on the response
+  reaches the usage recorder once per request and never the history, while a tag on each streamed update does reach the messages and
+  changes the next key. (5) The evaluation package's `DiskBasedResponseCacheProvider` expires entries after 14 days and its keys are
+  opaque, so a miss cannot say what changed. So: a `CachingChatClient` subclass (MEAI's streaming flow, reused) over the 4b store, one
+  folder and one index per trial, no new package; the rest of the row (a hit tagged, recorded as a known 0 with `cache_hit`, a miss that
+  names the first changed part, `--replay` on the runner) stands. The store is no longer web-only, so it moves to `Sessions/Replay/` as
+  `ReplayStore` (step 4e.1).
+
 - **Step 4d: the summaries are traced too** (Louis, 2026-10-25, step 4d's prompt, decision 3). A summary is a model request the ledger records (`UsagePurpose.Summary`), so `ChatPipeline.BuildSummaryClient` traces it as well, and the traces count the same requests as the ledger.
 
 - **The message enums split by area, before step 4b** (Louis, 2026-10-25: "these files is getting huge, should we not split them

@@ -1,6 +1,7 @@
+using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Tools.Web.Messages;
-using LouisAgent.Core.Tools.Web.Replay.Store;
+using LouisAgent.Core.Sessions.Replay.Store;
 using LouisAgent.Core.Tools.Web.Search;
 
 namespace LouisAgent.Core.Tools.Web.Replay;
@@ -12,12 +13,12 @@ namespace LouisAgent.Core.Tools.Web.Replay;
 /// the first recording of the ask, rethrows a recorded failure's text, and a miss as a text that names the query (ADR 0005). The key is the
 /// provider's name and the query's fields; the request to the provider, and so its key, is never saved.
 /// </summary>
-public sealed class RecordedSearchProvider(IWebSearchProvider inner, WebReplayStore store) : IWebSearchProvider
+public sealed class RecordedSearchProvider(IWebSearchProvider inner, ReplayStore store) : IWebSearchProvider
 {
     public string Name => inner.Name;
 
     /// <summary><paramref name="inner"/> as it is where no store is kept, else recorded around.</summary>
-    public static IWebSearchProvider Around(IWebSearchProvider inner, WebReplayStore? store) =>
+    public static IWebSearchProvider Around(IWebSearchProvider inner, ReplayStore? store) =>
         store is null ? inner : new RecordedSearchProvider(inner, store);
 
     public async Task<IReadOnlyList<WebSearchResult>> SearchAsync(WebSearchQuery query, CancellationToken cancellationToken = default)

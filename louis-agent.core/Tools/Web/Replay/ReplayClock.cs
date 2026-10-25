@@ -2,7 +2,7 @@ using System.Collections.Concurrent;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Tools.Web.Messages;
-using LouisAgent.Core.Tools.Web.Replay.Store;
+using LouisAgent.Core.Sessions.Replay.Store;
 
 namespace LouisAgent.Core.Tools.Web.Replay;
 
@@ -20,7 +20,7 @@ namespace LouisAgent.Core.Tools.Web.Replay;
 /// trial. The <see cref="Lazy{T}"/> is what lets a parent and its sub-session, reading at the same moment, save one line and not two. The
 /// dictionary keeps one small entry per trial until the process restarts.
 /// </remarks>
-public sealed class ReplayClock(WebReplayStore store, TimeProvider? inner = null) : TimeProvider
+public sealed class ReplayClock(ReplayStore store, TimeProvider? inner = null) : TimeProvider
 {
     private static readonly ReplayAsk Ask = ReplayAsk.Of(ReplayKind.Clock, new { });
 

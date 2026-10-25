@@ -3,7 +3,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using LouisAgent.Core.Config;
 
-namespace LouisAgent.Core.Tools.Web.Replay.Store;
+namespace LouisAgent.Core.Sessions.Replay.Store;
 
 /// <summary>
 /// The saved web input of eval runs (F18 steps 4a and 4b): every kind of answer (<see cref="ReplayKind"/>) once per hash in
@@ -13,7 +13,7 @@ namespace LouisAgent.Core.Tools.Web.Replay.Store;
 /// the seams open it, nothing serves it, and <c>/data/</c> is git-ignored. A replay keeps no counters: an ask is answered from its
 /// first recording.
 /// </summary>
-public sealed class WebReplayStore(string directory, TimeProvider? clock = null)
+public sealed class ReplayStore(string directory, TimeProvider? clock = null)
 {
     /// <summary>snake_case properties; enums as snake_case names, never numbers (ADR 0024).</summary>
     internal static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web)
@@ -30,7 +30,7 @@ public sealed class WebReplayStore(string directory, TimeProvider? clock = null)
     private string Trials => Path.Combine(directory, "trials");
 
     /// <summary>The process's one store: where <c>REPLAY_DIRECTORY</c> is set, else null. The only place outside the setting that names it.</summary>
-    public static WebReplayStore? From(AgentOptions options) => options.ReplayDirectory is { } directory ? new WebReplayStore(directory) : null;
+    public static ReplayStore? From(AgentOptions options) => options.ReplayDirectory is { } directory ? new ReplayStore(directory) : null;
 
     public async Task SaveAnswerAsync<T>(string trial, ReplayAsk ask, T answer, CancellationToken cancellationToken = default)
     {
