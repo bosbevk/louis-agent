@@ -28,6 +28,7 @@
   "GET /v1/toolsets (Key)",
   "GET /v1/workspace/entries (Key)",
   "GET /v1/workspace/file (Key)",
+  "POST /v1/admin/benchmarks/runs/{id}/rescore (AdminKey)",
   "POST /v1/admin/benchmarks/{check}/runs (AdminKey)",
   "POST /v1/git/commits (Key)",
   "POST /v1/git/discard (Key)",

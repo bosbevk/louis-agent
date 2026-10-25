@@ -27,7 +27,7 @@ public static class BenchmarkProtocol
     /// </summary>
     public sealed record ProtocolStarted(int Version, DateTimeOffset? At = null, string? Eval = null, int? EvalVersion = null,
         string? Commit = null, IReadOnlyList<GraderInfo>? Graders = null, IReadOnlyList<ModelInfo>? Models = null,
-        BenchmarkRunSplit? Split = null) : Event;
+        BenchmarkRunSplit? Split = null, string? RescoreOf = null) : Event;
 
     /// <summary>One of the eval's graders: its name, its version and its kind ("FixedRule", "Model", "Human").</summary>
     public sealed record GraderInfo(string Name, int Version, BenchmarkGraderKind Kind);
@@ -81,7 +81,7 @@ public static class BenchmarkProtocol
             return Text(e, "event") switch
             {
                 "protocol" => new ProtocolStarted(Int(e, "version"), at, Text(e, "eval"), OptionalInt(e, "eval_version"), Text(e, "commit"),
-                    Graders(e), Models(e), Split(e)),
+                    Graders(e), Models(e), Split(e), Text(e, "rescore_of")),
                 "mode" => new ModeStarted(Required(e, "mode"), Int(e, "repeat"), Strings(e, "toolsets"),
                     Text(e, "role") ?? Text(e, "personality"),   // CL14: a harness before CL14 said personality
                     Text(e, "llm"), OptionalInt(e, "conversations"), at),

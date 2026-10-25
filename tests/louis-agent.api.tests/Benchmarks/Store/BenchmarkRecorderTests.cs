@@ -270,4 +270,46 @@ public class BenchmarkRecorderTests
         Assert.That((await recording!).Stored, Is.True);
         Assert.That(recorder.RecordingOf("unknown"), Is.Null);
     }
+
+    // F18 step 5b.2: a re-score asks the model nothing, so the ledger has no rows under its tag and its cost is a known 0 (never null, which is "unknown"),
+    // and never the stored run's: whatever the ledger holds, the re-score's total is 0 requests and $0.
+    [TestCase(false)]
+    [TestCase(true)]
+    public async Task ARescoresTotal_IsZeroRequestsAndZeroCost_WhateverTheLedgerHolds(bool ledgerHoldsTheOriginalsRows)
+    {
+        string directory = Path.Combine(Path.GetTempPath(), "louis-rescore-ledger-" + Guid.NewGuid().ToString("N"));
+        try
+        {
+            if (ledgerHoldsTheOriginalsRows)
+                new LouisAgent.Core.Usage.Sinks.JsonlUsageSink(directory).Record(new LouisAgent.Core.Usage.Records.UsageRecord(
+                    DateTimeOffset.UtcNow, 1, LouisAgent.Core.Usage.Records.UsagePurpose.Turn, "api", "sess_old", 1, null, "old123456789:cook:1", null, "claude-haiku-5-5",
+                    new LouisAgent.Core.Usage.Records.UsageTokens(1000, 0, 0, 200, null), 1500, "stop",
+                    new LouisAgent.Core.Usage.Records.UsageCost("USD", 0.5m, "2026-10-10"), null, null));
+            var run = new BenchmarkRun("new123456789", "cook", 1, rescoreOf: "old123456789");
+            var recording = new BenchmarkRecorder(_store, ledgerDirectory: directory).RecordAsync(run);
+            run.Add(At(new { @event = "protocol", version = 1, eval = "cook", eval_version = 1, rescore_of = "old123456789", graders = Array.Empty<object>(), models = Array.Empty<object>() }));
+            run.Complete(0);
+            await recording;
+
+            var stored = (await _store.GetRunAsync("new123456789"))!;
+            Assert.That(stored.Total, Is.EqualTo(new Total(0m, "USD", 0, 0)));
+            Assert.That(stored.RescoreOf, Is.EqualTo("old123456789"));
+            Assert.That(await _store.RequestsAsync("new123456789"), Is.Empty);
+        }
+        finally
+        {
+            if (Directory.Exists(directory)) Directory.Delete(directory, recursive: true);
+        }
+    }
+
+    [Test]
+    public async Task ARescoreWithNoLedgerAtAll_StillCostsAKnownZero()
+    {
+        var run = new BenchmarkRun("new123456789", "cook", 1, rescoreOf: "old123456789");
+        var recording = new BenchmarkRecorder(_store).RecordAsync(run);
+        run.Complete(0);
+        await recording;
+
+        Assert.That((await _store.GetRunAsync("new123456789"))!.Total, Is.EqualTo(new Total(0m, "USD", 0, 0)));
+    }
 }

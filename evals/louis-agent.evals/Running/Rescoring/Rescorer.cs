@@ -84,6 +84,6 @@ internal sealed class Rescorer(ProtocolWriter protocol, ILogger logger)
         var outcome = PassRates.Of(trial, grades, eval.Graders);
         tally.Add(stored.Task, outcome);
         protocol.Conversation(stored.Mode, stored.Repeat, stored.Task, stored.Text("role"), scores,
-            stored.Json.GetProperty("seconds").GetDouble(), grades, outcome, stored.Number("errors"));
+            stored.Decimal("seconds") ?? 0, grades, outcome, stored.Number("errors"));
     }
 }

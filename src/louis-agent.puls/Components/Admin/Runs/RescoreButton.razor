@@ -1,0 +1,9 @@
+@* F18 step 5b.2: starts a re-score of a stored run: the same transcripts, graded again with today's graders. It asks no model, so it is free. *@
+<button type="button" class="header-button rescore" disabled="@(Disabled || _starting)" @onclick="StartAsync"
+        title="Grade this run's transcripts again with today's graders. Free: no session, no model.">
+    <span class="ic i-refresh" aria-hidden="true"></span>Re-score
+</button>
+@if (_error is { } error)
+{
+    <small class="danger rescore-error">@error</small>
+}

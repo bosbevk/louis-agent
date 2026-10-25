@@ -40,6 +40,24 @@ public sealed class BenchmarkRunner(BenchmarkCatalog catalog, string workspaceRo
         }
     }
 
+    /// <summary>
+    /// Starts a re-score of a stored run (F18 step 5b.2): the eval runner with <c>--rescore {rescoreOf}</c>, and the stored run's export on its stdin. Null when
+    /// the check is unknown, is not an eval, or a run is already running. The runner grades; this only starts it and keeps its lines.
+    /// </summary>
+    public BenchmarkRun? StartRescore(string checkId, string rescoreOf, string export)
+    {
+        if (catalog.Checks.FirstOrDefault(c => c.Id == checkId) is not { Kind: BenchmarkCheckKind.Eval } check) return null;
+
+        lock (_lock)
+        {
+            if (IsRunning) return null;
+            var run = new BenchmarkRun(Guid.NewGuid().ToString("N")[..12], check.Id, 1, rescoreOf: rescoreOf, input: export);
+            Current = run;
+            Launch(run, check);
+            return run;
+        }
+    }
+
     /// <summary>The run's lines: those so far, then each new one until it ends. Empty for an unknown id.</summary>
     public async IAsyncEnumerable<string> EventsAsync(string id, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
@@ -61,6 +79,8 @@ public sealed class BenchmarkRunner(BenchmarkCatalog catalog, string workspaceRo
             UseShellExecute = false,
             RedirectStandardOutput = true,
             RedirectStandardError = true,
+            // A re-score reads the stored run's export on stdin (F18 step 5b.2); any other run reads nothing.
+            RedirectStandardInput = run.Input is not null,
             CreateNoWindow = true,
         };
         // Arguments as data (ADR 0004): the runner's or the script's path and its arguments are a list, never a command string.
@@ -74,10 +94,19 @@ public sealed class BenchmarkRunner(BenchmarkCatalog catalog, string workspaceRo
         {
             start.ArgumentList.Add(check.Script);
         }
-        start.ArgumentList.Add("--repeat");
-        start.ArgumentList.Add(run.Repeat.ToString());
+        // A re-score takes the repeats, the web and the split from the stored run: its only flag is the run it grades again.
+        if (run.RescoreOf is { } rescoreOf)
+        {
+            start.ArgumentList.Add("--rescore");
+            start.ArgumentList.Add(rescoreOf);
+        }
+        else
+        {
+            start.ArgumentList.Add("--repeat");
+            start.ArgumentList.Add(run.Repeat.ToString());
+        }
         // The web (F18 step 5.5), an eval's alone: a recording, or a replay of another run with the model's answers too (--replay). Never a script's.
-        if (check.Kind == BenchmarkCheckKind.Eval)
+        if (check.Kind == BenchmarkCheckKind.Eval && run.RescoreOf is null)
         {
             if (run.Options.Replay is { } replayOf)
             {
@@ -100,6 +129,19 @@ public sealed class BenchmarkRunner(BenchmarkCatalog catalog, string workspaceRo
         return start;
     }
 
+    /// <summary>Writes the stored run's export to the runner's stdin and closes it; a runner that ended without reading it is not an error here, its exit code says how it ended.</summary>
+    private static void PipeInput(Process process, string input)
+    {
+        try
+        {
+            process.StandardInput.Write(input);
+            process.StandardInput.Close();
+        }
+        catch (IOException)
+        {
+        }
+    }
+
     private void Launch(BenchmarkRun run, BenchmarkCheck check)
     {
         var start = StartInfoFor(check, run);
@@ -119,6 +161,7 @@ public sealed class BenchmarkRunner(BenchmarkCatalog catalog, string workspaceRo
             process.Start();
             process.BeginOutputReadLine();
             process.BeginErrorReadLine();
+            if (run.Input is { } input) PipeInput(process, input);
         }
         catch (Exception ex) when (ex is System.ComponentModel.Win32Exception or InvalidOperationException)
         {

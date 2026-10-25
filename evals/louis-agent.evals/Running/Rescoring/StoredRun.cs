@@ -28,6 +28,8 @@ internal sealed record StoredLine(string Raw, string Kind, JsonElement Json)
 
     public string? Text(string name) => Json.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.String ? value.GetString() : null;
 
+    public double? Decimal(string name) => Json.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.Number ? value.GetDouble() : null;
+
     public int? Number(string name) => Json.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.Number ? value.GetInt32() : null;
 }
 

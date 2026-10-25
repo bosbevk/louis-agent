@@ -23,6 +23,7 @@
             {
                 <span> · @Started(head) · @Status(head) · @Repeat(head)</span>
                 @if (Total(head) is { } total) { <span> · @total</span> }
+                @if (S(head.GetProperty("run"), "rescore_of") is { } source) { <span> · </span><RescoredFrom Id="@source" /> }
             }
         </p>
     </div>

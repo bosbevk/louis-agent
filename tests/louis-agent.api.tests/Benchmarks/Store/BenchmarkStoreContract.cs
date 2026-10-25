@@ -165,6 +165,29 @@ public abstract class BenchmarkStoreContract
         Assert.That(read.Models, Is.EqualTo(run.Models));
     }
 
+    [Test]
+    public async Task ARunsRescoreOf_ReadsBackAsItWasWritten_AndARunBeforeItHasNone()
+    {
+        string rescored = NewId(), ordinary = NewId();
+
+        await _store.SaveRunAsync(NewRun(rescored, T0) with { RescoreOf = "old123456789" });
+        await _store.SaveRunAsync(NewRun(ordinary, T0));
+
+        Assert.That((await _store.GetRunAsync(rescored))!.RescoreOf, Is.EqualTo("old123456789"));
+        Assert.That((await _store.GetRunAsync(ordinary))!.RescoreOf, Is.Null);
+    }
+
+    [Test]
+    public async Task ATotalOfZero_ReadsBackAsZero_NotAsUnknown()
+    {
+        // F18 step 5b.2: a re-score asked nothing, so its cost is known to be 0; null is "unknown" (ADR 0007).
+        string id = NewId();
+
+        await _store.SaveRunAsync(NewRun(id, T0) with { Total = new Total(0m, "USD", 0, 0) });
+
+        Assert.That((await _store.GetRunAsync(id))!.Total, Is.EqualTo(new Total(0m, "USD", 0, 0)));
+    }
+
     [TestCase(BenchmarkRunSplit.Dev)]
     [TestCase(BenchmarkRunSplit.HeldOut)]
     [TestCase(BenchmarkRunSplit.All)]

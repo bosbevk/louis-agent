@@ -1251,5 +1251,11 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
   access. The earlier 5.7 (Checkers through its rendered page) was dropped after its probe. The cook looks up no prices (ADR 0038: Checkers refuses our browser, and PnP's and Woolworths' robots.txt disallow
   their search pages); it names the shop's branch under *Where to buy*. Added the same day (Louis: "i want at least one image to render from the recipe"): the answer shows an image the recipe page gave.
 
+- **Step 5b: `RescoreAsync` takes the protocol's lines, not a `StoredRun`** (Louis, 2026-10-25, the 5b prompt and its review). The plan's signature was
+  `RescoreAsync(IEval eval, StoredRun stored, string runId, ct)`, with the API handing the runner a built record. It is `RescoreAsync(IEval eval, string runId,
+  string rescoreOf, IEnumerable<string> storedLines, ct)`: the API pipes its own export (`GET …/runs/{id}/protocol`) to the runner's stdin, and the runner reads the
+  lines with `ProtocolTranscripts`, the reader a run and the conformance check already use, so no second format exists to drift. The first line of every run with a
+  dataset now also carries the dataset's `name`, `version` and `hash`, which step 3a built and nothing wrote.
+
 ---
 [Docs index](../README.md) · [Plans](README.md) · [Platform plan](platform.md) · [Feature F18](../features/F18-evaluation.md)

@@ -28,11 +28,12 @@ internal static class ApiTestHost
 
     /// <summary>
     /// The API with every route mapped; <paramref name="apiKey"/> adds the key gate, as a key set in the environment does, and
-    /// <paramref name="adminKey"/> and <paramref name="store"/> open the admin portal and its benchmark store (none: closed, no store; F18 step 5.2),
+    /// <paramref name="adminKey"/> and <paramref name="store"/> open the admin portal and its benchmark store (none: closed, no store; F18 step 5.2), and a test of the runs gives its own <paramref name="catalog"/>, <paramref name="runner"/> and <paramref name="recorder"/> (F18 step 5b.2),
     /// and <paramref name="workspaceRoot"/> is the folder the agent works in (this repository when none: a test that writes or commits
     /// names a folder of its own).
     /// </summary>
-    public static WebApplication Build(string? apiKey = null, string? workspaceRoot = null, string? adminKey = null, IBenchmarkStore? store = null)
+    public static WebApplication Build(string? apiKey = null, string? workspaceRoot = null, string? adminKey = null, IBenchmarkStore? store = null,
+        BenchmarkRunner? runner = null, BenchmarkRecorder? recorder = null, BenchmarkCatalog? catalog = null)
     {
         var host = HostContext(workspaceRoot ?? RepoRoot);
         var builder = WebApplication.CreateBuilder();
@@ -43,8 +44,8 @@ internal static class ApiTestHost
         if (apiKey is not null) app.UseAgentKey(apiKey);
         var api = app.MapApi(host);
 
-        var benchmarks = new BenchmarkCatalog(BenchmarkCatalog.Default);
-        api.MapAdmin(benchmarks, new BenchmarkRunner(benchmarks, host.Engine.WorkspaceRoot, "http://127.0.0.1:1/"), adminKey, store, null,
+        var benchmarks = catalog ?? new BenchmarkCatalog(BenchmarkCatalog.Default);
+        api.MapAdmin(benchmarks, runner ?? new BenchmarkRunner(benchmarks, host.Engine.WorkspaceRoot, "http://127.0.0.1:1/"), adminKey, store, recorder,
             _ => new Dictionary<string, string>(), host.Engine.WorkspaceRoot);
         return app;
     }

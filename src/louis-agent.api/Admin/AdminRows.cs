@@ -20,7 +20,7 @@ internal static class AdminRows
         total = r.Total is null ? null : new { cost = r.Total.Cost, currency = r.Total.Currency, tokens = r.Total.Tokens, requests = r.Total.Requests },
         store_error = r.StoreError,
         models = r.Models?.Select(m => new { m.Mode, level = m.Level.ToString(), m.Role, m.Model }),
-        eval = r.Eval, eval_version = r.EvalVersion, commit = r.Commit,
+        eval = r.Eval, eval_version = r.EvalVersion, commit = r.Commit, rescore_of = r.RescoreOf,
         graders = r.Graders?.Select(g => new { name = g.Name, version = g.Version, kind = g.Kind.ToString() }),
     };
 

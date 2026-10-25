@@ -25,6 +25,7 @@ internal sealed class ProtocolLines(DateTimeOffset start)
         if (run.EvalVersion is { } version) json.WriteNumber("eval_version", version);
         if (run.Commit is { } commit) json.WriteString("commit", commit);
         if (run.Split is { } split) json.WriteString("split", BenchmarkRunSplitName.Of(split));
+        if (run.RescoreOf is { } rescoreOf) json.WriteString("rescore_of", rescoreOf);
         json.WriteStartArray("graders");
         foreach (var grader in run.Graders ?? [])
         {

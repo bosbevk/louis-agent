@@ -85,6 +85,7 @@ internal static class AdminEndpoints
         }));
 
         admin.MapStoredRuns(store, runner);
+        admin.MapRescore(catalog, runner, store, recorder, settingsOf);
 
         // A run from the page. 202 with the run, recorded as it goes; 503 without a store (a paid run whose results vanish
         // is the worst outcome); 409 while one runs; its lines as SSE, then "done" with whether it was stored.

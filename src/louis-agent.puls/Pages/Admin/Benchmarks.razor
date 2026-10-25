@@ -237,13 +237,7 @@ else if (_data is { } data)
             <ol class="runs">
                 @foreach (var run in shown)
                 {
-                    <li class="run-row">
-                        <a class="run-row-main" href="admin/benchmarks/@run.Id">
-                            <code>@run.Id</code>
-                            <small>@run.StartedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm") · @run.Repeat× · @Status(run.Status)@(run.Total is { } t ? $" · {t.Requests} requests" : "")@(run.StoreError is not null ? " · not everything stored" : "")</small>
-                        </a>
-                        <strong class="run-row-cost">@Cost(run.Total?.Cost)</strong>
-                    </li>
+                    <RunListItem Run="run" Currency="Currency.Current" Disabled="Running" OnRescored="FollowRescoreAsync" />
                 }
             </ol>
         }
@@ -253,11 +247,8 @@ else if (_data is { } data)
 @code {
     private sealed record Check(string Id, string Title, string Script, bool Manual);
     private sealed record Manual(string Title, string Markdown);
-    private sealed record Total(decimal? Cost, int Requests);
-    private sealed record Run(string Id, string Check, int Repeat, string Status, DateTimeOffset StartedAt, Total? Total, string? StoreError,
-        IReadOnlyList<string>? Models = null);
     private sealed record StoreState(bool Configured, string? Error);
-    private sealed record Page(List<Check> Checks, StoreState Store, List<Run> Runs);
+    private sealed record Page(List<Check> Checks, StoreState Store, List<RunSummary> Runs);
     private sealed record LiveRun(string Id, string Check, int Repeat, string Status, int? ExitCode, DateTimeOffset StartedAt, bool? Stored, string? StoreError);
     private readonly record struct TurnKey(string Mode, int Repeat, string Task, int N);
 
@@ -352,14 +343,15 @@ else if (_data is { } data)
         _loading = false;
     }
 
-    private static Run ReadRun(JsonElement r) => new(
+    private static RunSummary ReadRun(JsonElement r) => new(
         r.GetProperty("id").GetString()!, r.GetProperty("check").GetString()!, r.GetProperty("repeat").GetInt32(),
         r.GetProperty("status").GetString()!, r.GetProperty("started_at").GetDateTimeOffset(),
-        r.TryGetProperty("total", out var t) && t.ValueKind == JsonValueKind.Object ? new Total(Dec(t, "cost"), t.GetProperty("requests").GetInt32()) : null,
+        r.TryGetProperty("total", out var t) && t.ValueKind == JsonValueKind.Object ? new TotalSummary(Dec(t, "cost"), t.GetProperty("requests").GetInt32()) : null,
         Str(r, "store_error"),
         r.TryGetProperty("models", out var models) && models.ValueKind == JsonValueKind.Array
             ? models.EnumerateArray().Select(m => m.GetProperty("model")).Where(v => v.ValueKind == JsonValueKind.String).Select(v => v.GetString()!).ToList()
-            : null);
+            : null,
+        Str(r, "rescore_of"));
 
     /// <summary>A run started before this page opened (a reload): its finished turns from the store, then its events.</summary>
     private async Task ResumeAsync()
@@ -375,6 +367,20 @@ else if (_data is { } data)
         catch (AgentApiException ex) when (ex.Status == HttpStatusCode.NotFound)
         {
             // No run yet.
+        }
+    }
+
+    /// <summary>A re-score was started from a run's row (F18 step 5b.2): follow it like any run, from the API's current one.</summary>
+    private async Task FollowRescoreAsync(string id)
+    {
+        _error = null;
+        try
+        {
+            await FollowAsync(ReadLive(await Api.GetAsync<JsonElement>("v1/admin/benchmarks/runs/current")), keepRows: false);
+        }
+        catch (AgentApiException ex)
+        {
+            _error = ex.Message;
         }
     }
 

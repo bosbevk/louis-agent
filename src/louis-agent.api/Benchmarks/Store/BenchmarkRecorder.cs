@@ -175,6 +175,12 @@ public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = n
         /// </summary>
         private async Task JoinLedgerAsync()
         {
+            // A re-score asked nothing: its total is a known 0, not the null of an unknown price and not the stored run's rows (F18 step 5b.2, ADR 0007).
+            if (RescoreOf is not null)
+            {
+                _total = new Total(0m, "USD", 0, 0);
+                return;
+            }
             if (ledgerDirectory is null) return;
             IReadOnlyList<UsageRecord> ofRun;
             try
@@ -213,7 +219,11 @@ public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = n
                 _total, Log: run.Status == BenchmarkRunStatus.Running ? null : _log.ToArray(), StoreError: _storeError,
                 Eval: _protocol?.Eval, EvalVersion: _protocol?.EvalVersion, Commit: _protocol?.Commit,
                 Graders: _protocol?.Graders?.Select(g => new Grader(g.Name, g.Version, g.Kind)).ToArray(),
-                Models: _protocol?.Models?.Select(m => new ModelUse(m.Mode, m.Level, m.Role, m.Model)).ToArray(), Split: _protocol?.Split);
+                Models: _protocol?.Models?.Select(m => new ModelUse(m.Mode, m.Level, m.Role, m.Model)).ToArray(), Split: _protocol?.Split,
+                RescoreOf: RescoreOf);
+
+        /// <summary>The run this one re-scored (F18 step 5b.2): what it was started with, else what its first line says.</summary>
+        private string? RescoreOf => run.RescoreOf ?? _protocol?.RescoreOf;
 
         /// <summary>One write; after the first failure none are tried, so a store that is down doesn't slow the run.</summary>
         private async Task WriteAsync(Func<Task> write)

@@ -58,6 +58,8 @@ A grader change shouldn't cost a paid run. `run {name} --rescore {runId} < run.t
 stored run's conversations again with the graders as they are today and records a new run that names the old one. No session opens and no model is
 called, so it costs nothing, and the old run stays as it was. A scenario the dataset no longer has is graded `Unknown`, never `Fail`.
 
+In the portal, a finished run's row has a *Re-score* button (`POST /v1/admin/benchmarks/runs/{id}/rescore`). The new run says "re-scored from" the original, with a link, and costs $0.
+
 A replay that misses says where the request changed (the model, the system prompt, a tool, the settings, or message *n*); what
 the recording never read comes back to the model as a short text it treats as unknown.
 

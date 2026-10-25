@@ -1,0 +1,10 @@
+@* F18 step 5b.2: a stored run's row in the Benchmarks page. A re-scored run says which run it re-scored; a finished run can be re-scored. *@
+<li class="run-row">
+    <a class="run-row-main" href="admin/benchmarks/@Run.Id">
+        <code>@Run.Id</code>
+        <small>@Summary</small>
+    </a>
+    @if (Run.RescoreOf is { } source) { <RescoredFrom Id="@source" /> }
+    @if (Run.Status == "done") { <RescoreButton RunId="@Run.Id" Disabled="Disabled" OnStarted="OnRescored" /> }
+    <strong class="run-row-cost">@Cost</strong>
+</li>

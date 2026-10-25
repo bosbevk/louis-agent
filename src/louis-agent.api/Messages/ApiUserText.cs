@@ -140,6 +140,9 @@ public enum ApiUserText
     [Description("No stored run '{Id}'.")]
     NoStoredRun,
 
+    [Description("Run {Id} is a run of '{Check}', which is not an eval, so there are no transcripts to grade again.")]
+    RescoreNeedsEval,
+
     [Description("Run {Id} is still running: delete it once it has ended.")]
     StoredRunStillRunning,
 

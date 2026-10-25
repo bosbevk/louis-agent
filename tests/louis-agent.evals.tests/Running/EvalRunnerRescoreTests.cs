@@ -141,6 +141,30 @@ public class EvalRunnerRescoreTests
         Assert.That(done.TryGetProperty("pass_at_k", out _), Is.False, "no counted trial, so no rate: never 0");
     }
 
+    [Test]
+    public async Task ATrialsRetryCount_CarriesOverFromTheStoredRun()
+    {
+        // The re-score runs no trial, so it retries none; the count the stored run recorded is part of what that run was.
+        string[] stored = (await StoredRunAsync(new RescoreEval())).Select(line => line.Contains("\"event\":\"mode_done\"") ? line.Replace("\"retried\":0", "\"retried\":1") : line).ToArray();
+        Assume.That(stored.Count(line => line.Contains("\"retried\":1")), Is.EqualTo(1), "the stored run says it retried one trial");
+
+        string[] rescored = await RescoreAsync(new RescoreEval(), stored);
+
+        Assert.That(Events(rescored, "mode_done").Single().GetProperty("retried").GetInt32(), Is.EqualTo(1));
+    }
+
+    [Test]
+    public async Task AConversationLineWithNoSeconds_IsRescoredAsZeroSeconds_NotACrash()
+    {
+        string[] stored = (await StoredRunAsync(new RescoreEval(scenarios: ["pannekoek"])))
+            .Select(line => line.Contains("\"event\":\"conversation\"") ? System.Text.RegularExpressions.Regex.Replace(line, ",\"seconds\":[0-9.]+", "") : line).ToArray();
+        Assume.That(stored.Single(line => line.Contains("\"event\":\"conversation\"")), Does.Not.Contain("seconds"));
+
+        string[] rescored = await RescoreAsync(new RescoreEval(scenarios: ["pannekoek"]), stored);
+
+        Assert.That(Events(rescored, "conversation").Single().GetProperty("seconds").GetDouble(), Is.Zero);
+    }
+
     private static string[] Lines(StringWriter sink) => sink.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
     private static List<JsonElement> Events(IEnumerable<string> lines, string kind) =>
