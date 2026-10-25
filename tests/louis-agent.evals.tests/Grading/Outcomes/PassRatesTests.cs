@@ -1,8 +1,9 @@
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Grading.Common;
 using LouisAgent.Evals.Trials;
+using LouisAgent.Evals.Grading.Outcomes;
 
-namespace LouisAgent.Evals.Tests.Grading;
+namespace LouisAgent.Evals.Tests.Grading.Outcomes;
 
 // A trial's outcome from its grades (F18 step 4.5a, the first part of 5a): only the required graders count; a fail beats an
 // unknown, an unknown beats a pass, and a required grader with no grade, or no required grader at all, is Unknown. Written first:

@@ -6,6 +6,7 @@ using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Protocol;
 using LouisAgent.Evals.Trials;
+using LouisAgent.Evals.Grading.Outcomes;
 
 namespace LouisAgent.Evals.Tests.Protocol;
 

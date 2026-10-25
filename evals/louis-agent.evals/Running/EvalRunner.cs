@@ -9,6 +9,7 @@ using LouisAgent.Evals.Trials;
 using LouisAgent.SessionStream;
 using Microsoft.Extensions.Logging;
 using LouisAgent.Evals.Datasets;
+using LouisAgent.Evals.Grading.Outcomes;
 
 namespace LouisAgent.Evals.Running;
 

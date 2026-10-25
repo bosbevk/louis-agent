@@ -5,6 +5,7 @@ using System.Text.Unicode;
 using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Trials;
+using LouisAgent.Evals.Grading.Outcomes;
 
 namespace LouisAgent.Evals.Protocol;
 

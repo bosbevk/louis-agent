@@ -32,7 +32,14 @@ public sealed class ReplayStore(string directory, TimeProvider? clock = null)
     /// <summary>The process's one store: where <c>REPLAY_DIRECTORY</c> is set, else null. The only place outside the setting that names it.</summary>
     public static ReplayStore? From(AgentOptions options) => options.ReplayDirectory is { } directory ? new ReplayStore(directory) : null;
 
-    /// <summary>A trial's recording starts afresh (F18 step 5a): what an earlier attempt of it wrote is removed. A retried trial records under the same key.</summary>
+    /// <summary>
+    /// A trial's recording starts afresh (F18 step 5a): what an earlier attempt of it wrote is removed. A retried trial records under the same key.
+    /// <para>
+    /// A known gap, rare: the earlier attempt's session may still be running or closing (a dropped connection is why it was retried), and a late write
+    /// of its own lands in the index after this clear. Its ask would then sit beside the second attempt's, and an ask is answered from the first recording
+    /// of it. It needs the old session to keep working after its client has gone, so it is left as it is; if it ever shows, key the index by session.
+    /// </para>
+    /// </summary>
     public async Task StartTrialAsync(string trial, CancellationToken cancellationToken = default)
     {
         string path = TrialFileName.Under(Trials, TrialFileName.Of(trial) + ".jsonl");

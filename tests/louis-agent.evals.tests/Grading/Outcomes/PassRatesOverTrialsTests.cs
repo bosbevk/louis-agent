@@ -2,8 +2,9 @@ using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Grading.Common;
 using LouisAgent.Evals.Trials;
+using LouisAgent.Evals.Grading.Outcomes;
 
-namespace LouisAgent.Evals.Tests.Grading;
+namespace LouisAgent.Evals.Tests.Grading.Outcomes;
 
 // F18 step 5a: pass@k and pass^k over a scenario's trials. pass@k: it passed at least once in its k trials ("can the agent do this?"); pass^k: it passed
 // every time ("can a customer rely on it?"). An Unknown never counts as a pass; an infrastructure trial is neither a pass nor a fail and is left out of k.

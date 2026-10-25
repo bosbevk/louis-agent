@@ -1,6 +1,6 @@
 using LouisAgent.Evals.Trials;
 
-namespace LouisAgent.Evals.Grading;
+namespace LouisAgent.Evals.Grading.Outcomes;
 
 /// <summary>
 /// A trial's outcome from its grades (F18 step 4.5a), and pass@k and pass^k over a scenario's trials (step 5a). Pure and static: it holds

@@ -1,4 +1,4 @@
-using LouisAgent.Evals.Grading;
+using LouisAgent.Evals.Grading.Outcomes;
 
 namespace LouisAgent.Evals.Running;
 

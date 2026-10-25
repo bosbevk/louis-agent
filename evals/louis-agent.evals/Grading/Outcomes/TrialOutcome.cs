@@ -1,4 +1,4 @@
-namespace LouisAgent.Evals.Grading;
+namespace LouisAgent.Evals.Grading.Outcomes;
 
 /// <summary>
 /// A trial's outcome (F18 step 2a): a pass only when every required grader passes; Unknown when a required grader couldn't
