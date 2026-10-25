@@ -69,7 +69,7 @@ public static partial class Links
     }
 
     /// <summary>Whether a URL is on the site or one of its subdomains (shop.woolworths.co.za is Woolworths; notcheckers isn't).</summary>
-    private static bool IsHost(string url, string site)
+    internal static bool IsHost(string url, string site)
     {
         string host = Uri.TryCreate(url, UriKind.Absolute, out var uri) ? uri.Host.ToLowerInvariant() : "";
         return host == site || host.EndsWith("." + site, StringComparison.Ordinal);

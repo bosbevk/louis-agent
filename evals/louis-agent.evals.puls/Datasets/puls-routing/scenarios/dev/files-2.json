@@ -7,7 +7,9 @@
       "Watter instellings in config/.env.example gaan oor die LLM? Lys hulle met 'n kort verduideliking."
     ]
   },
-  "expected": {},
+  "expected": {
+    "routes_to": null
+  },
   "categories": [
     "kind:files"
   ]

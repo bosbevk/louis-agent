@@ -1,0 +1,16 @@
+{
+  "id": "files-3",
+  "input": {
+    "place": "Stellenbosch, Wes-Kaap, Suid-Afrika",
+    "time_zone": "Africa/Johannesburg",
+    "messages": [
+      "Lees docs/GOAL.md en vertel my in twee sinne wat die doel van die projek is."
+    ]
+  },
+  "expected": {
+    "routes_to": null
+  },
+  "categories": [
+    "kind:files"
+  ]
+}

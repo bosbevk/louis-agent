@@ -1,5 +1,5 @@
 using LouisAgent.Evals.Grading;
-using LouisAgent.Evals.Puls.Grading.FixedRules;
+using LouisAgent.Evals.Puls.Cook;
 using static LouisAgent.Evals.Puls.Tests.PulsTrials;
 
 namespace LouisAgent.Evals.Puls.Tests;
@@ -18,17 +18,15 @@ public class PulsEvalSetTests
     }
 
     [TestCase("cook-no-error")]
-    [TestCase("cook-routed-right")]
-    [TestCase("routing-routed-right")]
+    [TestCase("routed-to")]
+    [TestCase("within-budget")]
+    [TestCase("priced-at-shop")]
+    [TestCase("serves-as-asked")]
     public async Task ATurnThatFailedForTheInfrastructure_IsUnknown_NeverAFail(string name)
     {
-        IGrader grader = name switch
-        {
-            "cook-no-error" => new CookNoError(),
-            "cook-routed-right" => new CookRoutedRight(),
-            _ => new RoutingRoutedRight(),
-        };
-        var trial = Trial(CookMode, "cook", Turn(1, [], failure: LouisAgent.Evals.Trials.TrialFailure.Timeout));
+        IGrader grader = new CookEval().Graders.Single(g => g.Name == name);
+        var trial = Trial(CookMode, "cook", """{"routes_to":"puls-cook","town":"Malmesbury","serves":4,"budget":150,"shop":"checkers"}""", "Malmesbury, Wes-Kaap, Suid-Afrika",
+            Turn(1, [], failure: LouisAgent.Evals.Trials.TrialFailure.Timeout));
 
         var grade = await grader.GradeAsync(trial, CancellationToken.None);
 

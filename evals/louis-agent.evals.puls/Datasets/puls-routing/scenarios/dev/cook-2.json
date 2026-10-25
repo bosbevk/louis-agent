@@ -4,10 +4,12 @@
     "place": "Stellenbosch, Wes-Kaap, Suid-Afrika",
     "time_zone": "Africa/Johannesburg",
     "messages": [
-      "What should I cook tonight in Pretoria for two? I have about an hour. Give me the recipe and what it'll cost at the shops."
+      "What should I cook tonight in Pretoria for two? I have about an hour and I shop at Checkers. Give me the recipe and what it'll cost."
     ]
   },
-  "expected": {},
+  "expected": {
+    "routes_to": "puls-cook"
+  },
   "categories": [
     "kind:cook"
   ]

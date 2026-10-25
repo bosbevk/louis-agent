@@ -9,7 +9,7 @@ namespace LouisAgent.Evals.Datasets;
 
 /// <summary>
 /// Reads a dataset folder (F18 step 3a) strictly: no JSON field it doesn't know, no missing required one, the split from the
-/// folder's name, every scenario file where the hash sees it, every id once, every expected key read by a grader, one dated
+/// folder's name, every scenario file where the hash sees it, every id once, every expected key read by a grader and every key a grader reads fed by a scenario, one dated
 /// change line per version, and the scenarios' hash equal to the manifest's. A folder it can't check is refused with its text
 /// from <see cref="EvalErrorMessage"/>, as an <see cref="InvalidDataException"/>.
 /// </summary>
@@ -55,6 +55,11 @@ public static class DatasetLoader
         foreach (EvalScenario scenario in found)
             if (!ids.Add(scenario.Id))
                 throw Refuse(EvalErrorMessage.DuplicateScenarioId, new { Dataset = manifest.Name, Id = scenario.Id });
+
+        // A grader that reads a key no scenario sets would grade nothing, and say so nowhere (F18 step 5.4).
+        foreach (string key in readKeys.Order(StringComparer.Ordinal))
+            if (!found.Any(scenario => scenario.Expected.TryGetProperty(key, out _)))
+                throw Refuse(EvalErrorMessage.UnfedKey, new { Dataset = manifest.Name, Key = key });
 
         return new Dataset(manifest, found);
     }

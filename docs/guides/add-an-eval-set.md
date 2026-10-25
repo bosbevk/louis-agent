@@ -125,7 +125,7 @@ The loader refuses what it doesn't know, so a misspelled field is an error, not 
 - a field it doesn't know, or a missing required one, or a null where the type isn't nullable;
 - a scenario file that isn't `dev/{name}.json` or `held-out/{name}.json`, with the name in lowercase;
 - an `id` used twice;
-- an `expected` key that no grader reads (step 3 names the keys);
+- an `expected` key that no grader reads, or a key a grader reads that no scenario sets (step 3 names the keys);
 - a scenario whose hash doesn't match `content_hash`, or a `changes` list that isn't one line per version.
 
 **The hash.** Any change to a scenario changes the hash, so the loader refuses the folder until you bump `version`, add a
@@ -133,7 +133,14 @@ dated line to `changes`, and set `content_hash`. You don't compute the hash by h
 placeholder, run the dataset's test (step 8), and paste the hash it reports.
 
 `dev` scenarios are the ones you tune against. `held-out` scenarios are for a release check, which must not tune against
-them. The runner doesn't select the held-out folder yet, so the split is recorded for when it does.
+them. A run asks for the dev ones by default (and the portal always does); `--split held-out` runs the held-out ones and
+`--split all` both (step 9). Write the held-out scenarios fresh, and read them to nobody who is tuning.
+
+**A scenario states what it asks for.** Everything a grader checks is a key of `expected`, and the question carries the same
+facts, so nothing depends on a rule about the scenario's name: a cook question names its town, its people and its shop (the
+`routes_to`, `town`, `serves`, `budget` and `shop` of Puls's cook), because Puls asks first when they are missing. A test that
+reads the dataset and checks each question against its `expected` keys keeps the two from drifting apart
+(`PulsDatasetsTests.EveryQuestionForTheCook_NamesItsTownItsPeopleAndItsShop_ElsePulsWouldAskFirst`).
 
 ## 3. Choose the graders
 
@@ -142,8 +149,10 @@ Start from the common graders in `evals/louis-agent.evals/Grading/Common/`:
 - `NoErrorGrader()`: no turn's stream reported an error;
 - `WithinTimeGrader(TimeSpan limit)`: every turn was answered within the limit;
 - `CostUnderGrader(decimal limitUsd)`: the trial's cost, from the stream's own usage, is under the limit;
-- `RoutedToGrader(Func<Trial, string?> expectedRole)`: the first turn was routed to the role `expectedRole` gives for the
-  trial (null means it must answer itself). A later turn's hand-over is no reason for a miss.
+- `RoutedToGrader(Func<Trial, string?> expectedRole, bool required = true, IReadOnlySet<string>? expectedKeys = null)`: the first
+  turn was routed to the role `expectedRole` gives for the trial (null means it must answer itself). A later turn's hand-over
+  is no reason for a miss. An eval whose route is a scenario's key names it in `expectedKeys` (Puls: `routes_to`), so the loader
+  can check it is read and fed.
 
 Each is `required` by default, and the stub uses two of them (`NoErrorGrader` and `WithinTimeGrader`, in
 `StubEval.cs`). An infrastructure failure (a timeout, a dropped connection) is `Unknown` in each of them, never a fail.
@@ -207,7 +216,7 @@ public sealed class QuotesEval : IEval
     public string Name => "quotes";                       // MCP-safe; also the portal's check id (a Python check with the same id is hidden)
     public string? Identity => "acme";
     public int Version => 1;                              // bumped by any change to a scenario, a mode or a grader
-    public string Proves => "Acme's assistant works out the tiles a room needs from its measurements.";   // the portal's title
+    public string Proves => MessageText.Format(AcmeEvalMessage.QuotesProves);   // the portal's title: a message enum member (ADR 0009)
 
     public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions, CancellationToken cancellationToken) =>
         ValueTask.FromResult<IReadOnlyList<EvalMode>>([new EvalMode("acme-only", "acme/voice", ["web"])]);
@@ -230,6 +239,12 @@ public sealed class QuotesEval : IEval
 }
 
 public sealed record QuotesScores(bool AreaRight) : EvalScores;
+
+public enum AcmeEvalMessage
+{
+    [Description("Acme's assistant works out the tiles a room needs from its measurements.")]
+    QuotesProves,
+}
 ```
 
 Two choices here, to check against the code:
@@ -333,7 +348,7 @@ EVALS=acme dotnet run --project evals/louis-agent.evals.runner -- --list
 PowerShell: `$env:EVALS = 'acme'`, then the same command. Each line is one eval's JSON: its name, identity, version and
 `proves`.
 
-Running it is not free. `run {name} --repeat N` gives every eval but the stub the HTTP session client (F18 step 5.1): the API
+Running it is not free. `run {name} --repeat N [--split dev|held-out|all]` gives every eval but the stub the HTTP session client (F18 step 5.1): the API
 at `PULS_API` (default `http://127.0.0.1:5070/`), with `AGENT_API_KEY` as `x-api-key` when it is set. A run against the real
 API spends money, so ask before starting one. A turn that fails for the infrastructure (a timeout, a refused connection, a
 broken stream, a non-2xx answer) is recorded in its `turn` line as `failure` and the run goes on.

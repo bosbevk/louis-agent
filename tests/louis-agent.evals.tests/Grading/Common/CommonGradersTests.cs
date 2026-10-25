@@ -270,4 +270,12 @@ public class CommonGradersTests
 
         Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Fail));
     }
+
+    [Test]
+    public void RoutedTo_DeclaresTheExpectedKeysItsEvalGivesIt()
+    {
+        // F18 step 5.4: an eval whose route is a scenario's `routes_to` says so, so the loader can check the key is read and fed.
+        Assert.That(new RoutedToGrader(_ => null).ExpectedKeys, Is.Empty);
+        Assert.That(new RoutedToGrader(_ => null, expectedKeys: new HashSet<string> { "routes_to" }).ExpectedKeys, Is.EqualTo(new[] { "routes_to" }));
+    }
 }

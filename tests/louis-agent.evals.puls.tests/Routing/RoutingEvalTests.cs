@@ -1,7 +1,10 @@
 using System.Runtime.CompilerServices;
 using System.Text.Json;
+using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Api;
+using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Grading;
+using LouisAgent.Evals.Puls.Messages;
 using LouisAgent.Evals.Puls.Routing;
 using LouisAgent.SessionStream;
 using static LouisAgent.Evals.Puls.Tests.PulsTrials;
@@ -16,8 +19,8 @@ public class RoutingEvalTests
     [Test]
     public void ItIsPulsRoutingEval_UnderTheNameItsDatasetCarries()
     {
-        Assert.That((Eval.Name, Eval.Identity, Eval.Version), Is.EqualTo(("puls-routing", "puls", 1)));
-        Assert.That(Eval.Proves, Is.Not.Empty);
+        Assert.That((Eval.Name, Eval.Identity, Eval.Version), Is.EqualTo(("puls-routing", "puls", 2)));
+        Assert.That(Eval.Proves, Is.EqualTo(MessageText.Format(PulsEvalMessage.RoutingProves)), "the portal's title is a message enum member (ADR 0009)");
     }
 
     [Test]
@@ -33,23 +36,29 @@ public class RoutingEvalTests
     }
 
     [Test]
-    public void ItsTwelveQuestionsAreTheDatasetsOnes() =>
-        Assert.That(Eval.Scenarios.Select(s => s.Id), Is.EquivalentTo(new[]
+    public void ItsTwelveDevQuestionsAndSixHeldOutOnesAreTheDatasetsOnes()
+    {
+        Assert.That(Eval.Scenarios.Where(s => s.Split == DatasetSplit.Dev).Select(s => s.Id), Is.EquivalentTo(new[]
         {
             "web", "files", "git", "numbers", "chat", "cook", "web-2", "files-2", "git-2", "numbers-2", "chat-2", "cook-2",
         }));
+        Assert.That(Eval.Scenarios.Where(s => s.Split == DatasetSplit.HeldOut).Select(s => s.Id), Is.EquivalentTo(new[]
+        {
+            "web-3", "files-3", "git-3", "numbers-3", "chat-3", "cook-3",
+        }));
+    }
 
     [Test]
     public void ItsOneGraderIsTheRequiredRoute_AndNoErrorGraderWouldAddToIt()
     {
         // A route is right only without an error (RoutingScorer), so a no-error grader on a one-turn question repeats it.
-        Assert.That(Eval.Graders.Select(g => (g.Name, g.Required, g.Kind)), Is.EqualTo(new[] { ("routing-routed-right", true, GraderKind.FixedRule) }));
+        Assert.That(Eval.Graders.Select(g => (g.Name, g.Required, g.Kind)), Is.EqualTo(new[] { ("routed-to", true, GraderKind.FixedRule) }));
     }
 
     [Test]
     public void ItsScoresAreTheRoutingScorers_KeyForKey()
     {
-        var trial = Trial(CookMode, "cook", Turn(1, [Start("puls-cook"), Text("Resep.")]));
+        var trial = Trial(CookMode, "cook", """{"routes_to":"puls-cook"}""", null, Turn(1, [Start("puls-cook"), Text("Resep.")]));
 
         var scores = Eval.ScoresOf(trial, []);
 
@@ -59,7 +68,7 @@ public class RoutingEvalTests
     [Test]
     public void ABaselineQuestionIsScoredWithoutDelegation()
     {
-        var trial = Trial(new EvalMode("baseline", Role, ["web"]), "cook", Turn(1, [Text("Ek kan nie.")]));
+        var trial = Trial(new EvalMode("baseline", Role, ["web"]), "cook", """{"routes_to":"puls-cook"}""", null, Turn(1, [Text("Ek kan nie.")]));
 
         Assert.That(Json(Eval.ScoresOf(trial, [])), Does.Contain("\"expected_role\":null").And.Contain("\"routed_right\":true"));
     }

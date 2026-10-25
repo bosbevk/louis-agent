@@ -7,7 +7,9 @@
       "Wat is die nuutste weergawe van .NET en wanneer is dit vrygestel? Gee jou bronne."
     ]
   },
-  "expected": {},
+  "expected": {
+    "routes_to": null
+  },
   "categories": [
     "kind:web"
   ]

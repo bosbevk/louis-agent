@@ -154,4 +154,29 @@ public class CommandLineTests
     [TestCase("--repeat")]
     public void AFlagWithNothingAfterIt_IsRefused_AsTheFlag(string flag) =>
         Assert.That(() => CommandLine.Parse(["run", "stub", flag]), Throws.InstanceOf<RunnerException>().With.Message.Contains($"'{flag}'"));
+
+    // F18 step 5.4: --split picks the scenarios; a run asks for the dev ones unless it says otherwise.
+    [Test]
+    public void ARunWithNoSplit_IsTheDevScenarios() =>
+        Assert.That(((RunRequest)CommandLine.Parse(["run", "stub"])).Split, Is.EqualTo(LouisAgent.Evals.Datasets.SplitSelection.Dev));
+
+    [TestCase("dev", LouisAgent.Evals.Datasets.SplitSelection.Dev)]
+    [TestCase("held-out", LouisAgent.Evals.Datasets.SplitSelection.HeldOut)]
+    [TestCase("HeldOut", LouisAgent.Evals.Datasets.SplitSelection.HeldOut)]
+    [TestCase("all", LouisAgent.Evals.Datasets.SplitSelection.All)]
+    [TestCase("ALL", LouisAgent.Evals.Datasets.SplitSelection.All)]
+    public void ASplitIsParsedOnceByItsName(string value, LouisAgent.Evals.Datasets.SplitSelection expected) =>
+        Assert.That(CommandLine.Parse(["run", "stub", "--split", value]), Is.EqualTo(new RunRequest("stub", 1, Split: expected)));
+
+    [TestCase("tuning")]
+    [TestCase("1")]
+    [TestCase("2")]
+    public void RefusesAnUnknownSplit_AndANumber(string value) =>
+        Assert.That(() => CommandLine.Parse(["run", "stub", "--split", value]),
+            Throws.InstanceOf<RunnerException>().With.Message.Contains($"'{value}'").And.Message.Contains("dev, heldout, all"));
+
+    [Test]
+    public void ASplitComesWithAnyOtherFlag() =>
+        Assert.That(CommandLine.Parse(["run", "stub", "--split", "all", "--repeat", "2", "--web", "record"]),
+            Is.EqualTo(new RunRequest("stub", 2, LouisAgent.Core.Sessions.Replay.WebReplayMode.Record, Split: LouisAgent.Evals.Datasets.SplitSelection.All)));
 }

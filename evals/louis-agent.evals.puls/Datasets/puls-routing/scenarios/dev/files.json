@@ -7,7 +7,9 @@
       "Lees README.md in die werkruimte en som in drie punte op wat die projek doen."
     ]
   },
-  "expected": {},
+  "expected": {
+    "routes_to": null
+  },
   "categories": [
     "kind:files"
   ]

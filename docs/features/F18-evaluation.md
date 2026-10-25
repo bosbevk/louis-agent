@@ -900,6 +900,24 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   checks show no manual until 7b writes them. Red before the code: 17 of 101 Puls tests, and 2 conformance cases; green after: Puls 100,
   evals 162, runner 75, API 290. **Guide fixes:** the intro and the dataset bullet said Puls's set was empty and no eval read its dataset; section 11
   said only the stub runs; section 7 now says where references come from when no run exists, and that a reference's mode decides what the graders expect.
+- **Step 5.4 (the scenarios state their requirements, and the held-out set).** Every scenario's `expected` says what it asks for, each key read by a named
+  grader: `routes_to` (the harness's `RoutedToGrader`, which now takes its keys in its constructor, replaces `CookRoutedRight` and `RoutingRoutedRight`),
+  and for the cook `town`, `serves` (`ServesAsAsked`, not required: the real check that quantities scale is step 6's), `budget` (`WithinBudget`, required
+  where set, from `Prices.Total`: the total line, else the sum of the priced rows, and the reason says which) and `shop` (`PricedAtShop`, required where
+  set). The loader refuses a grader key no scenario feeds; a run asks for `dev` unless `--split held-out` or `--split all` (`SplitSelection`, parsed with
+  `SettingChoice`); the portal runs dev. **The datasets were stale against the prompts and were rewritten (Louis, 2026-10-25: "the cook requires town,
+  serving size and shop, or just the recipe, then no prices"; "compare it with the prompts").** Puls's routing prompt asks first when a meal doesn't say
+  for how many or where the user shops, so a question that should reach the cook now names its people and its shop (the routing's two meals too, and
+  a test holds each question to its `expected`); the cook's prompt prices at the user's shop with `area` = the town in every call, or, for `enige`/`any`,
+  prices nothing and writes `± R…` estimates under a line that says so. So `shop` is `checkers` or `any`; the old `none` ("no shop near you has a
+  catalogue") is gone, because nothing produces that line any more; `cook-no-shop` became `cook-no-branch` (priced at the nearest store), `cook-recipe-only`
+  and `cook-asks-first` are new, and the Python-parity test of the inputs went with the Python's runs. Six held-out routing questions and three held-out
+  cook scenarios (Paarl, an English budget in Worcester, a follow-up in Somerset-Wes) were written for this. The conformance references are built, not
+  recorded, now with answers that really pass every grader (`PulsReferencesTests` holds all of them, the non-required too); after the first paid run
+  they should be cut again from that run. The scorer's v1 keys now read the scenario's `shop` and `routes_to` instead of its name. The Puls evals' `Proves`
+  text is a message enum member (ADR 0009), as the stub's is. Not done: a grader that the answer to `cook-asks-first` really asks for the people and the
+  shop (its route, null, is checked; the wording waits for step 6's model grader). Red before the code: the harness 13 tests, the Puls side its stubs;
+  green after: the whole solution.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

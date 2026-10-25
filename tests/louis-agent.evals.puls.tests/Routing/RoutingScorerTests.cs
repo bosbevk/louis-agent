@@ -18,22 +18,23 @@ public class RoutingScorerTests
     public void TheScoresDocumentKeys_AreThePythonsKeys()
     {
         // A renamed property would rename the key in the scores document: this holds the Python's 9 names.
-        var element = System.Text.Json.JsonSerializer.SerializeToElement<object>(RoutingScorer.Score("cook", Turn(), delegating: true), EvalScores.Json);
+        var element = System.Text.Json.JsonSerializer.SerializeToElement<object>(RoutingScorer.Score(Dev.Route("cook"), Turn(), delegating: true), EvalScores.Json);
         Assert.That(element.EnumerateObject().Select(p => p.Name), Is.EquivalentTo(new[] { "role", "expected_role", "routed_right", "answered_itself", "delegations", "puls_calls", "specialist_calls", "hosts", "errors" }));
     }
 
     [Test]
-    public void TheExpectedRole_IsTheCookForAMealAndNobodyOtherwise()
+    public void TheExpectedRole_IsTheScenariosRoute_TheCookForAMealAndNobodyOtherwise()
     {
-        Assert.That(RoutingScorer.ExpectedRole("cook-2"), Is.EqualTo("puls-cook"));
+        // F18 step 5.4: from the dataset's routes_to, no longer from the question's name.
+        Assert.That(Dev.Route("cook-2"), Is.EqualTo("puls-cook"));
         foreach (string task in new[] { "web", "files-2", "git", "numbers", "chat-2" })
-            Assert.That(RoutingScorer.ExpectedRole(task), Is.Null, task);
+            Assert.That(Dev.Route(task), Is.Null, task);
     }
 
     [Test]
     public void AMealHandedToTheCook_IsRight()
     {
-        var scores = RoutingScorer.Score("cook", Turn(role: "puls-cook", calls: [Start]), delegating: true);
+        var scores = RoutingScorer.Score(Dev.Route("cook"), Turn(role: "puls-cook", calls: [Start]), delegating: true);
 
         Assert.That(scores.RoutedRight, Is.True);
         Assert.That(scores.Delegations, Is.EqualTo(1));
@@ -41,19 +42,19 @@ public class RoutingScorerTests
 
     [Test]
     public void AMealPulsCookedItself_IsWrong() =>
-        Assert.That(RoutingScorer.Score("cook", Turn(), delegating: true).RoutedRight, Is.False);
+        Assert.That(RoutingScorer.Score(Dev.Route("cook"), Turn(), delegating: true).RoutedRight, Is.False);
 
     [Test]
     public void AWebQuestionPulsAnsweredItself_IsRight() =>
-        Assert.That(RoutingScorer.Score("web", Turn(), delegating: true).RoutedRight, Is.True);
+        Assert.That(RoutingScorer.Score(Dev.Route("web"), Turn(), delegating: true).RoutedRight, Is.True);
 
     [Test]
     public void AWebQuestionHandedAway_IsWrong() =>
-        Assert.That(RoutingScorer.Score("web-2", Turn(role: "puls-cook"), delegating: true).RoutedRight, Is.False);
+        Assert.That(RoutingScorer.Score(Dev.Route("web-2"), Turn(role: "puls-cook"), delegating: true).RoutedRight, Is.False);
 
     [Test]
     public void WithoutDelegation_AnsweringItselfIsAlwaysRight() =>
-        Assert.That(RoutingScorer.Score("cook", Turn(), delegating: false).RoutedRight, Is.True);
+        Assert.That(RoutingScorer.Score(Dev.Route("cook"), Turn(), delegating: false).RoutedRight, Is.True);
 
     [Test]
     public void TheBaseline_IsEveryAvailableToolsetButTheDelegatingOnes() =>
@@ -63,7 +64,7 @@ public class RoutingScorerTests
     [Test]
     public void AnError_IsNeverRight()
     {
-        var scores = RoutingScorer.Score("chat", Turn(error: "overloaded"), delegating: false);
+        var scores = RoutingScorer.Score(Dev.Route("chat"), Turn(error: "overloaded"), delegating: false);
 
         Assert.That(scores.RoutedRight, Is.False);
         Assert.That(scores.Errors, Is.EqualTo(1));

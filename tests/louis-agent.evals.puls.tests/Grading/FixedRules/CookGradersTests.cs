@@ -6,74 +6,10 @@ using LouisAgent.Evals.Datasets;
 
 namespace LouisAgent.Evals.Puls.Tests.Grading.FixedRules;
 
-// The cook's fixed-rule graders (F31): the route and the errors, read from a trial's turns. Written first: the graders
-// threw NotImplementedException on the red run.
+// The cook's no-error grader (F31): the errors, read from a trial's turns. Its route cases are PulsRouteTests now (F18 step 5.4).
 public class CookGradersTests
 {
     private static readonly EvalMode Cook = new("puls-cook", "puls-cook", ["specialists", "web"]);
-    private static readonly EvalMode Tools = new("puls-tools", "puls-tools", ["web", "shops"]);
-
-    [Test]
-    public async Task RoutedRight_PassesWhenTheCookAnswered()
-    {
-        var trial = Trial(Cook, "cook-af", [Start(), Text("Resep.")]);
-
-        var grade = await new CookRoutedRight().GradeAsync(trial, CancellationToken.None);
-
-        Assert.That((grade.Outcome, grade.Score), Is.EqualTo((GradeOutcome.Pass, 1.0)));
-    }
-
-    [Test]
-    public async Task RoutedRight_FollowsTheSpecialistsToolset_NotTheModesName()
-    {
-        // A cook mode with another name (a puls-cook-sonnet run) is on the cook all the same.
-        var trial = Trial(new EvalMode("puls-cook-sonnet", "puls-cook", ["specialists", "web"]), "cook-af", [Start(), Text("Resep.")]);
-
-        Assert.That((await new CookRoutedRight().GradeAsync(trial, CancellationToken.None)).Outcome, Is.EqualTo(GradeOutcome.Pass));
-    }
-
-    [Test]
-    public async Task RoutedRight_FailsWhenPulsAnsweredItself()
-    {
-        var trial = Trial(Cook, "cook-af", [Text("Resep.")]);
-
-        var grade = await new CookRoutedRight().GradeAsync(trial, CancellationToken.None);
-
-        Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Fail));
-    }
-
-    [Test]
-    public async Task RoutedRight_IsNotCookedForWhereTheCookIsNotOn()
-    {
-        // Puls with its own tools answers itself: that's right in its mode.
-        var trial = Trial(Tools, "control-web", [Text("Die koers is 10.5%.")]);
-
-        var grade = await new CookRoutedRight().GradeAsync(trial, CancellationToken.None);
-
-        Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Pass));
-    }
-
-    [Test]
-    public async Task RoutedRight_SaysItFailedWhenTheTurnErrored()
-    {
-        // An errored turn with no role is a failure, not an answer by Puls: the reason must say so.
-        var trial = Trial(Cook, "cook-af", [Error("overloaded")]);
-
-        var grade = await new CookRoutedRight().GradeAsync(trial, CancellationToken.None);
-
-        Assert.That(grade.Reason, Does.Contain("failed"));
-    }
-
-    [Test]
-    public async Task RoutedRight_SaysWhatTheFirstTurnDid_WhenALaterOneFailed()
-    {
-        // Puls answered the first question itself (a wrong route) and the follow-up errored: the reason names the miss, not the error.
-        var trial = Trial(Cook, "cook-af", [Text("Resep."), Error("overloaded")]);
-
-        var grade = await new CookRoutedRight().GradeAsync(trial, CancellationToken.None);
-
-        Assert.That(grade.Reason, Is.EqualTo("answered by Puls itself"));
-    }
 
     [Test]
     public async Task NoError_FailsOnAnErroredTurn()
@@ -91,6 +27,17 @@ public class CookGradersTests
         var trial = Trial(Cook, "cook-af", [Start(), Text("Resep.")]);
 
         Assert.That((await new CookNoError().GradeAsync(trial, CancellationToken.None)).Outcome, Is.EqualTo(GradeOutcome.Pass));
+    }
+
+    [Test]
+    public async Task NoError_IsUnknown_WhenAnyTurnFailedForTheInfrastructure_NotOnlyTheFirst()
+    {
+        // The follow-up timed out: whether it would have errored is unknown, so the conversation is not a pass. A check of the first turn only
+        // would call this one a pass (a mutation of step 5.3 that no test noticed).
+        var trial = Trial(Cook, "cook-af", [Start(), Text("Hier is dit vir ses.")]);
+        trial = trial with { Transcript = new Transcript([trial.Transcript.Turns[0], trial.Transcript.Turns[1] with { Failure = TrialFailure.Timeout }]) };
+
+        Assert.That((await new CookNoError().GradeAsync(trial, CancellationToken.None)).Outcome, Is.EqualTo(GradeOutcome.Unknown));
     }
 
     private static Trial Trial(EvalMode mode, string task, IReadOnlyList<IReadOnlyList<SessionEvent>> turns) =>

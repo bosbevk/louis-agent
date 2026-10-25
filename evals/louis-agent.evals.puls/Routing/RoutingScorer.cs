@@ -11,9 +11,6 @@ public static class RoutingScorer
     /// <summary>The calls that hand a question on (the Python's stream.DELEGATIONS).</summary>
     private static readonly IReadOnlySet<string> Delegations = new HashSet<string> { "StartSubSession", "ContinueSubSession" };
 
-    /// <summary>The role a question's kind goes to, or null where Puls answers it itself.</summary>
-    public static string? ExpectedRole(string task) => RoutingSetup.Kinds[task.Split('-')[0]];
-
     /// <summary>Whether a mode can hand a question on: it has the specialists toolset, as the Python decides it (routing/run_check.py).</summary>
     public static bool Delegating(EvalMode mode) => mode.Toolsets.Contains("specialists", StringComparer.Ordinal);
 
@@ -21,9 +18,10 @@ public static class RoutingScorer
     public static IReadOnlyList<string> Baseline(IEnumerable<string> available) =>
         available.Where(t => !RoutingSetup.DelegatingToolsets.Contains(t)).ToList();
 
-    public static RoutingScores Score(string task, TurnView turn, bool delegating)
+    /// <summary>One question as numbers; <paramref name="routesTo"/> is the scenario's `routes_to` (F18 step 5.4), where a mode that delegates should send it.</summary>
+    public static RoutingScores Score(string? routesTo, TurnView turn, bool delegating)
     {
-        string? expected = delegating ? ExpectedRole(task) : null;
+        string? expected = delegating ? routesTo : null;
         return new RoutingScores(
             Role: turn.Role,
             ExpectedRole: expected,

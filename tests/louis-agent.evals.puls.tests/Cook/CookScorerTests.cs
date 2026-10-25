@@ -21,7 +21,7 @@ public class CookScorerTests
             calls: [Start], role: "puls-cook",
             specialistCalls: [Fetch("https://www.checkers.co.za/p/1"), Fetch("https://www.pnp.co.za/p/2"), Fetch("https://www.bbc.co.uk/food")]);
 
-        var scores = CookScorer.Score("cook-af", [first], cookOn: true);
+        var scores = CookScorer.Score(Dev.Cook("cook-af"), [first], cookOn: true);
 
         Assert.That(scores.Role, Is.EqualTo("puls-cook"));
         Assert.That(scores.RoutedRight, Is.True);
@@ -43,7 +43,7 @@ public class CookScorerTests
             Fetch("https://nominatim.openstreetmap.org/search?q=Checkers+Malmesbury"),
         };
 
-        var scores = CookScorer.Score("cook-malmesbury", [Turn("Resep.", calls: [Start], role: "puls-cook", specialistCalls: calls)], cookOn: true);
+        var scores = CookScorer.Score(Dev.Cook("cook-malmesbury"), [Turn("Resep.", calls: [Start], role: "puls-cook", specialistCalls: calls)], cookOn: true);
 
         Assert.That((scores.ShopToolCalls, scores.DealToolCalls), Is.EqualTo((3, 2)));
         Assert.That(scores.PricedAtShops, Is.True, "no shop page read, but its catalogue asked");
@@ -59,7 +59,7 @@ public class CookScorerTests
             "Products at Checkers (its default store, store 5ece6935: Malmesbury's wasn't used) for 'onions' (1)",
         ];
 
-        var scores = CookScorer.Score("cook-malmesbury", [Turn("Resep.", calls: [Start], role: "puls-cook", specialistResults: results)], cookOn: true);
+        var scores = CookScorer.Score(Dev.Cook("cook-malmesbury"), [Turn("Resep.", calls: [Start], role: "puls-cook", specialistResults: results)], cookOn: true);
 
         Assert.That((scores.StoreForArea, scores.StoreDefault), Is.EqualTo((1, 1)));
     }
@@ -68,7 +68,7 @@ public class CookScorerTests
     public void TheScoresDocumentKeys_AreThePythonsKeys()
     {
         // A renamed property would rename the key in the scores document: this holds the Python's 27 names.
-        var element = System.Text.Json.JsonSerializer.SerializeToElement<object>(CookScorer.Score("cook-af", [Turn()], cookOn: false), EvalScores.Json);
+        var element = System.Text.Json.JsonSerializer.SerializeToElement<object>(CookScorer.Score(Dev.Cook("cook-af"), [Turn()], cookOn: false), EvalScores.Json);
         Assert.That(element.EnumerateObject().Select(p => p.Name), Is.EquivalentTo(new[] { "role", "routed_right", "answered_itself", "hosts", "local_hosts", "shop_hosts", "sources_local", "priced_at_shops", "shop_tool_calls", "deal_tool_calls", "deals_named", "untooled_shops", "no_catalogue_line", "store_for_area", "store_default", "ingredients", "priced", "unsourced", "per_kg", "no_shop_rows", "wrong_store", "priced_ratio", "rand_amounts", "unconfirmed_marks", "errors", "follow_up", "follow_up_handle" }));
     }
 
@@ -79,7 +79,7 @@ public class CookScorerTests
         // unlinked price is wrong_store too; unsourced counts only where the town has a shop. Today's Python gives 1 and 1.
         string answer = "| Bestanddeel | Prys |\n|---|---|\n| Meel | [R22.99](https://www.checkers.co.za/p/1) |\n| Eiers | R45 |\n";
 
-        var scores = CookScorer.Score("cook-no-shop", [Turn(answer)], cookOn: false);
+        var scores = CookScorer.Score(Dev.Cook("cook-recipe-only"), [Turn(answer)], cookOn: false);
 
         Assert.That((scores.WrongStore, scores.Unsourced, scores.Priced, scores.NoShopRows), Is.EqualTo((2, (int?)0, (int?)0, 0)));
     }
@@ -90,7 +90,7 @@ public class CookScorerTests
         string answer = "| Ingredient | For the recipe | To buy | Price |\n|---|---|---|---|\n| Rice | 300 g | Rice 1 kg | - |\n\n"
                         + "*Geen winkel naby jou het nog 'n katalogus hier nie.*";
 
-        var scores = CookScorer.Score("cook-no-shop", [Turn(answer, calls: [Start], role: "puls-cook")], cookOn: true);
+        var scores = CookScorer.Score(Dev.Cook("cook-recipe-only"), [Turn(answer, calls: [Start], role: "puls-cook")], cookOn: true);
 
         Assert.That((scores.DealsNamed, scores.UntooledShops, scores.NoCatalogueLine), Is.EqualTo((0, 0, true)));
         Assert.That((scores.Priced, scores.Ingredients), Is.EqualTo(((int?)0, (int?)1)));
@@ -106,7 +106,7 @@ public class CookScorerTests
             Fetch("https://nominatim.openstreetmap.org/search?q=Checkers+Malmesbury"),
         };
 
-        var scores = CookScorer.Score("cook-malmesbury", [Turn("Resep.", calls: [Start], role: "puls-cook", specialistCalls: calls)], cookOn: true);
+        var scores = CookScorer.Score(Dev.Cook("cook-malmesbury"), [Turn("Resep.", calls: [Start], role: "puls-cook", specialistCalls: calls)], cookOn: true);
 
         Assert.That(scores.ShopHosts, Is.EqualTo(new[] { "checkers.co.za" }));
         Assert.That(scores.SourcesLocal, Is.True, "a branch looked up on a map is no source");
@@ -115,7 +115,7 @@ public class CookScorerTests
     [Test]
     public void WhereThereIsNoShop_NoPriceIsRight()
     {
-        var scores = CookScorer.Score("cook-no-shop", [Turn(NoShopList, calls: [Start], role: "puls-cook")], cookOn: true);
+        var scores = CookScorer.Score(Dev.Cook("cook-recipe-only"), [Turn(NoShopList, calls: [Start], role: "puls-cook")], cookOn: true);
 
         Assert.That((scores.Priced, scores.NoShopRows, scores.WrongStore, scores.Ingredients), Is.EqualTo(((int?)0, 2, 0, (int?)2)));
         Assert.That(scores.PricedRatio, Is.EqualTo(1.0));
@@ -127,7 +127,7 @@ public class CookScorerTests
         // Puls alone in Prince Albert priced at Checkers' default store, linked: sourced, but not where the user is.
         string answer = "| Wat | Prys |\n|---|---|\n| [Uie](https://www.checkers.co.za/product/onions-1kg-10135699EA) | R34.99 |\n| Rys | - |\n";
 
-        var scores = CookScorer.Score("cook-no-shop", [Turn(answer)], cookOn: false);
+        var scores = CookScorer.Score(Dev.Cook("cook-recipe-only"), [Turn(answer)], cookOn: false);
 
         Assert.That((scores.Priced, scores.NoShopRows, scores.WrongStore, scores.Ingredients), Is.EqualTo(((int?)0, 1, 1, (int?)2)));
         Assert.That(scores.PricedRatio, Is.EqualTo(0.5));
@@ -136,7 +136,7 @@ public class CookScorerTests
     [Test]
     public void WhereThereIsAShop_ADashIsStillNoPrice()
     {
-        var scores = CookScorer.Score("cook-malmesbury", [Turn(NoShopList, calls: [Start], role: "puls-cook")], cookOn: true);
+        var scores = CookScorer.Score(Dev.Cook("cook-malmesbury"), [Turn(NoShopList, calls: [Start], role: "puls-cook")], cookOn: true);
 
         Assert.That((scores.Priced, scores.NoShopRows, scores.PricedRatio), Is.EqualTo(((int?)0, 0, (double?)0.0)));
     }
@@ -144,7 +144,7 @@ public class CookScorerTests
     [Test]
     public void AnsweredByPulsItself_IsRoutedWrongWhenTheCookWasOn()
     {
-        var scores = CookScorer.Score("cook-en", [Turn("A recipe.")], cookOn: true);
+        var scores = CookScorer.Score(Dev.Cook("cook-en"), [Turn("A recipe.")], cookOn: true);
 
         Assert.That(scores.RoutedRight, Is.False);
         Assert.That(scores.AnsweredItself, Is.True);
@@ -153,7 +153,7 @@ public class CookScorerTests
     [Test]
     public void WithoutTheCook_PulsCookingItselfIsRight_AndItsOwnReadsCount()
     {
-        var scores = CookScorer.Score("cook-af", [Turn("R50", calls: [Fetch("https://www.checkers.co.za/p/1")])], cookOn: false);
+        var scores = CookScorer.Score(Dev.Cook("cook-af"), [Turn("R50", calls: [Fetch("https://www.checkers.co.za/p/1")])], cookOn: false);
 
         Assert.That(scores.RoutedRight, Is.True);
         Assert.That(scores.ShopHosts, Is.EqualTo(new[] { "checkers.co.za" }));
@@ -162,7 +162,7 @@ public class CookScorerTests
     [Test]
     public void Continued_IsTheSameCook()
     {
-        var scores = CookScorer.Score("cook-af", [Turn(calls: [Start], role: "puls-cook"), Turn(continued: "sub-1")], cookOn: true);
+        var scores = CookScorer.Score(Dev.Cook("cook-af"), [Turn(calls: [Start], role: "puls-cook"), Turn(continued: "sub-1")], cookOn: true);
 
         Assert.That((scores.FollowUp, scores.FollowUpHandle), Is.EqualTo(("continued", "sub-1")));
     }
@@ -170,27 +170,27 @@ public class CookScorerTests
     [Test]
     public void ANewCook_IsNotContinued()
     {
-        var scores = CookScorer.Score("cook-af", [Turn(calls: [Start], role: "puls-cook"), Turn(calls: [Start], role: "puls-cook")], cookOn: true);
+        var scores = CookScorer.Score(Dev.Cook("cook-af"), [Turn(calls: [Start], role: "puls-cook"), Turn(calls: [Start], role: "puls-cook")], cookOn: true);
 
         Assert.That(scores.FollowUp, Is.EqualTo("new sub-session"));
     }
 
     [Test]
     public void OneQuestion_HasNoFollowUp() =>
-        Assert.That(CookScorer.Score("cook-shops", [Turn()], cookOn: true).FollowUp, Is.Null);
+        Assert.That(CookScorer.Score(Dev.Cook("cook-shops"), [Turn()], cookOn: true).FollowUp, Is.Null);
 
     [Test]
     public void AWebQuestionPulsAnswersItself_IsRight() =>
-        Assert.That(CookScorer.Score("control-web", [Turn("Die koers is 10.5%.")], cookOn: true).RoutedRight, Is.True);
+        Assert.That(CookScorer.Score(Dev.Cook("control-web"), [Turn("Die koers is 10.5%.")], cookOn: true).RoutedRight, Is.True);
 
     [Test]
     public void HandedToTheCook_IsWrong() =>
-        Assert.That(CookScorer.Score("control-web", [Turn(calls: [Start], role: "puls-cook")], cookOn: true).RoutedRight, Is.False);
+        Assert.That(CookScorer.Score(Dev.Cook("control-web"), [Turn(calls: [Start], role: "puls-cook")], cookOn: true).RoutedRight, Is.False);
 
     [Test]
     public void ErrorsAreCounted_AndAnErroredTurnIsNeverRight()
     {
-        var scores = CookScorer.Score("control-web", [Turn(error: "overloaded")], cookOn: true);
+        var scores = CookScorer.Score(Dev.Cook("control-web"), [Turn(error: "overloaded")], cookOn: true);
 
         Assert.That(scores.Errors, Is.EqualTo(1));
         Assert.That(scores.RoutedRight, Is.False);

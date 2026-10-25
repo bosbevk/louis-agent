@@ -7,7 +7,9 @@
       "Skryf 'n kort verjaardagboodskap vir my ma in Afrikaans."
     ]
   },
-  "expected": {},
+  "expected": {
+    "routes_to": null
+  },
   "categories": [
     "kind:chat"
   ]

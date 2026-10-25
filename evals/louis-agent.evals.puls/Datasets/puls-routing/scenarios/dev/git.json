@@ -7,7 +7,9 @@
       "Wat het die laaste drie commits in hierdie repository verander?"
     ]
   },
-  "expected": {},
+  "expected": {
+    "routes_to": null
+  },
   "categories": [
     "kind:git"
   ]

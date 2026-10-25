@@ -1,0 +1,16 @@
+{
+  "id": "git-3",
+  "input": {
+    "place": "Stellenbosch, Wes-Kaap, Suid-Afrika",
+    "time_zone": "Africa/Johannesburg",
+    "messages": [
+      "Watter lêers het die meeste verander in die laaste vyf commits?"
+    ]
+  },
+  "expected": {
+    "routes_to": null
+  },
+  "categories": [
+    "kind:git"
+  ]
+}

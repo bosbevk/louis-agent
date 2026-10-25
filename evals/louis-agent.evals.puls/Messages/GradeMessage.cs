@@ -5,24 +5,72 @@ namespace LouisAgent.Evals.Puls.Messages;
 /// <summary>The graders' reasons, in words a person reads (ADR 0009: a text is a message enum member with its template).</summary>
 public enum GradeMessage
 {
-    [Description("routed to the cook")]
-    RoutedToCook,
-
-    [Description("routed where its kind goes")]
-    RoutedWhereKindGoes,
-
     [Description("no turn failed")]
     NoTurnFailed,
 
     [Description("{Count} turn(s) failed")]
     TurnsFailed,
 
-    [Description("the turn failed")]
-    TurnFailed,
+    [Description("the scenario asks for no number of people")]
+    ServesNotAsked,
 
-    [Description("answered by Puls itself")]
-    AnsweredByPuls,
+    [Description("every answer names the number of people asked for")]
+    ServesRight,
 
-    [Description("handled by {Role}")]
-    HandledBy,
+    [Description("turn {Turn} gave no answer to read the number of people from")]
+    ServesNothingToRead,
+
+    [Description("turn {Turn} doesn't say it serves {Asked}")]
+    ServesForgotten,
+
+    [Description("turn {Turn} says it serves {Found}, not the {Asked} asked for")]
+    ServesWrong,
+
+    [Description("the scenario sets no budget")]
+    BudgetNotSet,
+
+    [Description("the answer gives no amount to read a basket total from")]
+    BudgetNoAmount,
+
+    [Description("the total R{Total} (from the {Source}) is within the budget R{Budget}")]
+    BudgetWithin,
+
+    [Description("the total R{Total} (from the {Source}) is over the budget R{Budget}")]
+    BudgetOver,
+
+    [Description("total line")]
+    SourceTotalLine,
+
+    [Description("sum of the priced rows")]
+    SourceRowSum,
+
+    [Description("the scenario names no shop to price at")]
+    ShopNotSet,
+
+    [Description("turn {Turn} gave no answer to read the prices from")]
+    ShopNothingToRead,
+
+    [Description("no {Shop} tool was called")]
+    ShopNotCalled,
+
+    [Description("a {Shop} tool call did not name {Town} as its area")]
+    ShopWrongArea,
+
+    [Description("no price links to {Shop}'s site")]
+    ShopPricesNotLinked,
+
+    [Description("priced at {Shop}: its tool ran for the town and the prices link to its site")]
+    ShopRight,
+
+    [Description("a shop tool was called although the user chose no shop")]
+    ShopCalledForAny,
+
+    [Description("a price is given as fact (linked to a shop, or without ±) although the user chose no shop")]
+    ShopPriceForAny,
+
+    [Description("the answer doesn't say the prices are estimates")]
+    ShopEstimatesNotSaid,
+
+    [Description("nothing was searched, no price is linked, and the answer says the prices are estimates")]
+    ShopAnyRight,
 }

@@ -235,6 +235,28 @@ public class DatasetLoaderTests
             Throws.TypeOf<InvalidDataException>().With.Message.Contains("no messages"));
     }
 
+    [Test]
+    public void RefusesAGraderKeyNoScenarioFeeds()
+    {
+        // F18 step 5.4 (the plan's 3a test, left for step 5): a grader that reads a key no scenario sets would grade nothing, and say so nowhere.
+        using var folder = new DatasetFolder()
+            .Write("scenarios/dev/a.json", DatasetFolder.Scenario("a"))
+            .WithManifest();
+
+        Assert.That(() => DatasetLoader.Load(folder.Root, [new ReadsKeys("routed", "budget")]),
+            Throws.TypeOf<InvalidDataException>().With.Message.Contains("'budget'"));
+    }
+
+    [Test]
+    public void AGraderThatReadsNoKeyNeedsNoScenarioToFeedIt()
+    {
+        using var folder = new DatasetFolder()
+            .Write("scenarios/dev/a.json", DatasetFolder.Scenario("a", expected: "{}"))
+            .WithManifest();
+
+        Assert.That(DatasetLoader.Load(folder.Root, [new ReadsKeys()]).Scenarios, Has.Count.EqualTo(1));
+    }
+
     /// <summary>A grader that is named only for the keys it reads; it never grades.</summary>
     private sealed class ReadsKeys(params string[] keys) : IGrader
     {

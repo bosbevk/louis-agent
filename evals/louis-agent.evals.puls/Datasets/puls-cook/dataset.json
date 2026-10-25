@@ -1,9 +1,10 @@
 {
   "name": "puls-cook",
-  "version": 1,
+  "version": 2,
   "covers": "Puls's cook: a meal in Afrikaans or English, its prices at the shops (a town with a shop and one without), a budget, a follow-up, and a plain web question the cook is not for (the control). The cook check (benchmarks/cook/run_check.py) asked these.",
-  "content_hash": "075ed7bb490c3e801b3ac85ae23c9a161c474a40e46da02ac16b46dcb464f0fd",
+  "content_hash": "23d49f16a7f508f3fa1aed4612ebe436af632d02ca3f1fd28a6e12c5ccb7b088",
   "changes": [
-    "2026-10-24: first version, the scenarios of benchmarks/cook/run_check.py (CONVERSATIONS) as files"
+    "2026-10-24: first version, the scenarios of benchmarks/cook/run_check.py (CONVERSATIONS) as files",
+    "2026-10-25: step 5.4 - the cook scenarios follow the prompts: each question names its people and its shop (or says any shop will do) and each states them in expected (routes_to, town, serves, budget, shop); cook-no-shop is cook-no-branch (priced at the nearest store), cook-recipe-only and cook-asks-first are new; three held-out scenarios, never used while tuning a prompt"
   ]
 }

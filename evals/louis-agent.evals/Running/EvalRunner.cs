@@ -13,7 +13,7 @@ using LouisAgent.Evals.Datasets;
 namespace LouisAgent.Evals.Running;
 
 /// <summary>
-/// Runs an eval (F18 step 2): each mode, each repeat, each scenario; each message is sent to the API and the session's events
+/// Runs an eval (F18 step 2): each mode, each repeat, each scenario the run's split asks for (step 5.4); each message is sent to the API and the session's events
 /// are written as they arrive, then the turn, and the conversation with its grades (every grader of the eval, <see cref="TrialGrading"/>),
 /// its outcome (<see cref="PassRates.Of"/>) and its scores, then the mode's end (F18 step 4.5a).
 /// </summary>
@@ -22,6 +22,7 @@ public sealed class EvalRunner(ISessionClient sessions, ProtocolWriter protocol,
     public async Task RunAsync(IEval eval, EvalRun run, CancellationToken cancellationToken)
     {
         var modes = await eval.ModesAsync(sessions, cancellationToken);
+        var scenarios = eval.Scenarios.Where(scenario => run.Split.Includes(scenario.Split)).ToList();
         logger.Log(LogLevel.Information, EvalLogMessage.RunStarted,
             new { Eval = eval.Name, Modes = modes.Count, Repeats = run.Repeats, Run = run.RunId });
         // The model isn't reported yet: the session client that could read it is the HTTP client, which is step 5.
@@ -31,8 +32,8 @@ public sealed class EvalRunner(ISessionClient sessions, ProtocolWriter protocol,
         foreach (var mode in modes)
             for (int repeat = 1; repeat <= run.Repeats; repeat++)
             {
-                protocol.Mode(mode.Name, repeat, mode.Toolsets, mode.Role, mode.Llm, eval.Scenarios.Count);
-                foreach (var scenario in eval.Scenarios)
+                protocol.Mode(mode.Name, repeat, mode.Toolsets, mode.Role, mode.Llm, scenarios.Count);
+                foreach (var scenario in scenarios)
                     await RunScenarioAsync(eval, run, mode, repeat, scenario, cancellationToken);
                 protocol.ModeDone(mode.Name, repeat);
             }

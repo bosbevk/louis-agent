@@ -49,4 +49,7 @@ public enum EvalErrorMessage
 
     [Description("The API answered {Status}: {Reason}")]
     ApiRefused,
+
+    [Description("Dataset '{Dataset}': a grader reads '{Key}', which no scenario sets in expected, so it would grade nothing.")]
+    UnfedKey,
 }

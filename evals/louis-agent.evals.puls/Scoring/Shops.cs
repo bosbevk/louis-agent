@@ -32,6 +32,9 @@ public static partial class Shops
         return Hosts.FirstOrDefault(shop => name.Contains(shop.Name, StringComparison.Ordinal)).Host;
     }
 
+    /// <summary>The shop site a URL is on (a subdomain counts), or null when it is on none of them.</summary>
+    public static string? SiteOf(string url) => Hosts.Select(shop => shop.Host).Distinct().FirstOrDefault(site => Links.IsHost(url, site));
+
     /// <summary>How many of the list's rows name a deal beside a linked price (`· BUY 2 FOR R45`, `SAVE`).</summary>
     public static int DealsNamed(string? answer) =>
         Lists.Of(answer).Sum(list => list.Rows.Count(cells =>
@@ -50,6 +53,12 @@ public static partial class Shops
     /// <summary>How many shop searches the shop's default store answered: no town, none served, or the town's not used.</summary>
     public static int StoreDefault(IEnumerable<string?> results) => results.Count(result => StoreDefaulted().IsMatch(result ?? ""));
 
+    /// <summary>
+    /// Whether the answer says its prices are estimates, not checked at a shop, in either language: the line the cook writes under its list when the user
+    /// chose no shop (`any`), in place of the tally.
+    /// </summary>
+    public static bool EstimatesLine(string? answer) => Estimates().IsMatch(answer ?? "");
+
     /// <summary>Whether the answer says no shop near the user has a catalogue here yet, in either language.</summary>
     public static bool NoCatalogueLine(string? answer) => NoCatalogue().IsMatch(answer ?? "");
 
@@ -61,6 +70,9 @@ public static partial class Shops
 
     [GeneratedRegex(@"^(?:Products|Specials \(multi-buys\)|Promotions) at [^(]+\(its default store")]
     private static partial Regex StoreDefaulted();
+
+    [GeneratedRegex(@"Prices are estimates|Pryse is skattings", RegexOptions.IgnoreCase)]
+    private static partial Regex Estimates();
 
     [GeneratedRegex(@"No shop near you has a catalogue|Geen winkel naby jou het nog 'n katalogus", RegexOptions.IgnoreCase)]
     private static partial Regex NoCatalogue();

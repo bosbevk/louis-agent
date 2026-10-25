@@ -1,0 +1,20 @@
+{
+  "id": "cook-no-branch",
+  "input": {
+    "place": "Prince Albert, Wes-Kaap, Suid-Afrika",
+    "time_zone": "Africa/Johannesburg",
+    "messages": [
+      "Wat kan ek vanaand vir twee kook? Ek koop by Checkers in Prince Albert. Gee die resep en wat dit by die winkel kos."
+    ]
+  },
+  "expected": {
+    "routes_to": "puls-cook",
+    "town": "Prince Albert",
+    "serves": 2,
+    "shop": "checkers"
+  },
+  "categories": [
+    "language:af",
+    "shop:no-branch"
+  ]
+}

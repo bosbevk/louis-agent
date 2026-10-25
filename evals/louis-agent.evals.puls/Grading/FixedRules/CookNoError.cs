@@ -2,7 +2,6 @@ using System.Collections.Frozen;
 using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Grading.Common;
-using LouisAgent.Evals.Puls.Cook;
 using LouisAgent.Evals.Puls.Messages;
 using LouisAgent.Evals.Trials;
 
@@ -22,7 +21,7 @@ public sealed class CookNoError : IGrader
         // A turn that failed for the infrastructure is not the agent's: Unknown, never a fail (F18 step 5.3).
         if (Verdict.InfrastructureFailure(Name, Version, trial.Transcript.Turns) is { } unknown) return ValueTask.FromResult(unknown);
 
-        int errors = CookScorer.ScoreTrial(trial).Errors;
+        int errors = trial.Transcript.Turns.Count(EngineEvents.StreamedError);
         return ValueTask.FromResult(errors == 0
             ? new Grade(Name, Version, 1, GradeOutcome.Pass, MessageText.Format(GradeMessage.NoTurnFailed))
             : new Grade(Name, Version, 0, GradeOutcome.Fail, MessageText.Format(GradeMessage.TurnsFailed, new { Count = errors })));

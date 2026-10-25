@@ -29,14 +29,17 @@ public enum RunnerMessage
     [Description("--repeat needs a whole number, not '{Value}'.")]
     BadRepeat,
 
-    [Description("Usage: run <eval> [--repeat N] [--web off|record|replay] [--of <runId>] [--replay <runId>], or --list.")]
+    [Description("Usage: run <eval> [--repeat N] [--web off|record|replay] [--of <runId>] [--replay <runId>] [--split dev|held-out|all], or --list.")]
     Usage,
 
-    [Description("Unknown argument '{Argument}'. Usage: run <eval> [--repeat N] [--web off|record|replay] [--of <runId>] [--replay <runId>], or --list.")]
+    [Description("Unknown argument '{Argument}'. Usage: run <eval> [--repeat N] [--web off|record|replay] [--of <runId>] [--replay <runId>] [--split dev|held-out|all], or --list.")]
     UnknownArgument,
 
     [Description("Unknown --web '{Value}'. Use one of: {Supported}.")]
     UnknownWeb,
+
+    [Description("Unknown --split '{Value}'. Use one of: {Supported} (held-out may be written with its dash).")]
+    UnknownSplit,
 
     [Description("--web replay needs --of: the recorded run whose pages it replays.")]
     ReplayNeedsOf,

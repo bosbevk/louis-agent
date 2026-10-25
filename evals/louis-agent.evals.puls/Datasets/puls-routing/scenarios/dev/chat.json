@@ -7,7 +7,9 @@
       "Gee my drie name vir 'n Jack Russell, met 'n Afrikaanse knipoog."
     ]
   },
-  "expected": {},
+  "expected": {
+    "routes_to": null
+  },
   "categories": [
     "kind:chat"
   ]

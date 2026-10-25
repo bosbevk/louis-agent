@@ -38,7 +38,7 @@ try
             // The run's name is the ledger's tag: BENCHMARK_RUN, as the Python checks read it.
             // --web, --of and --replay pass on as the run asked; a run with neither leaves the web to the instance's WEB_REPLAY (the API decides).
             var recorded = new EvalRun(BenchmarkRun.Of(Environment.GetEnvironmentVariable("BENCHMARK_RUN"), TimeProvider.System), run.Repeat,
-                run.Web, run.Of, run.Model);
+                run.Web, run.Of, run.Model, run.Split);
             await runner.RunAsync(eval, recorded, CancellationToken.None);
             return 0;
 

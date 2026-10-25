@@ -1,0 +1,16 @@
+{
+  "id": "cook-3",
+  "input": {
+    "place": "Stellenbosch, Wes-Kaap, Suid-Afrika",
+    "time_zone": "Africa/Johannesburg",
+    "messages": [
+      "Ek is in Stellenbosch. Wat kan ek vanaand vir ses mense kook as een van hulle vegetaries is? Ek koop by Checkers. Gee die resep en 'n inkopielys met pryse."
+    ]
+  },
+  "expected": {
+    "routes_to": "puls-cook"
+  },
+  "categories": [
+    "kind:cook"
+  ]
+}

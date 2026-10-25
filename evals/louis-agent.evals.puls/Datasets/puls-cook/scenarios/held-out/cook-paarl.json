@@ -1,0 +1,19 @@
+{
+  "id": "cook-paarl",
+  "input": {
+    "place": "Paarl, Wes-Kaap, Suid-Afrika",
+    "time_zone": "Africa/Johannesburg",
+    "messages": [
+      "Ek is in Paarl en wil vanaand vir vyf mense kook. Ek koop by Checkers en het ongeveer 'n uur. Wat stel jy voor? Gee die resep en wat die bestanddele by die winkel kos."
+    ]
+  },
+  "expected": {
+    "routes_to": "puls-cook",
+    "town": "Paarl",
+    "serves": 5,
+    "shop": "checkers"
+  },
+  "categories": [
+    "language:af"
+  ]
+}

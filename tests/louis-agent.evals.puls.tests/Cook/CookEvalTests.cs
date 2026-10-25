@@ -1,7 +1,10 @@
 using System.Text.Json;
+using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Api;
+using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Puls.Cook;
+using LouisAgent.Evals.Puls.Messages;
 using LouisAgent.Evals.Trials;
 using static LouisAgent.Evals.Puls.Tests.PulsTrials;
 
@@ -15,8 +18,8 @@ public class CookEvalTests
     [Test]
     public void ItIsPulsCooksEval_UnderTheNameItsDatasetCarries()
     {
-        Assert.That((Eval.Name, Eval.Identity, Eval.Version), Is.EqualTo(("puls-cook", "puls", 1)));
-        Assert.That(Eval.Proves, Is.Not.Empty);
+        Assert.That((Eval.Name, Eval.Identity, Eval.Version), Is.EqualTo(("puls-cook", "puls", 2)));
+        Assert.That(Eval.Proves, Is.EqualTo(MessageText.Format(PulsEvalMessage.CookProves)), "the portal's title is a message enum member (ADR 0009)");
     }
 
     [Test]
@@ -34,21 +37,29 @@ public class CookEvalTests
     [Test]
     public void ItsScenariosAreTheCookDatasets()
     {
-        Assert.That(Eval.Scenarios.Select(s => s.Id), Is.EquivalentTo(
-            new[] { "cook-af", "cook-en", "cook-shops", "cook-malmesbury", "cook-no-shop", "control-web" }));
+        Assert.That(Eval.Scenarios.Where(s => s.Split == DatasetSplit.Dev).Select(s => s.Id), Is.EquivalentTo(
+            new[] { "cook-af", "cook-en", "cook-shops", "cook-malmesbury", "cook-no-branch", "cook-recipe-only", "cook-asks-first", "control-web" }));
+        Assert.That(Eval.Scenarios.Where(s => s.Split == DatasetSplit.HeldOut).Select(s => s.Id), Is.EquivalentTo(
+            new[] { "cook-paarl", "cook-worcester-budget", "cook-follow-up" }));
         Assert.That(Eval.Scenarios.Single(s => s.Id == "cook-malmesbury").Input.Place, Is.EqualTo("Malmesbury, Wes-Kaap, Suid-Afrika"));
-        Assert.That(Eval.Scenarios.Single(s => s.Id == "cook-no-shop").Input.Place, Is.EqualTo("Prince Albert, Wes-Kaap, Suid-Afrika"));
+        Assert.That(Eval.Scenarios.Single(s => s.Id == "cook-no-branch").Input.Place, Is.EqualTo("Prince Albert, Wes-Kaap, Suid-Afrika"));
     }
 
     [Test]
-    public void ItsGradersAreTheTwoRequiredFixedRules() =>
-        Assert.That(Eval.Graders.Select(g => (g.Name, g.Required, g.Kind)),
-            Is.EqualTo(new[] { ("cook-no-error", true, GraderKind.FixedRule), ("cook-routed-right", true, GraderKind.FixedRule) }));
+    public void ItsGradersAreTheRouteTheErrorsTheBudgetAndTheShop_AndTheServesRuleThatIsNotRequired() =>
+        Assert.That(Eval.Graders.Select(g => (g.Name, g.Required, g.Kind)), Is.EqualTo(new[]
+        {
+            ("cook-no-error", true, GraderKind.FixedRule),
+            ("routed-to", true, GraderKind.FixedRule),
+            ("within-budget", true, GraderKind.FixedRule),
+            ("priced-at-shop", true, GraderKind.FixedRule),
+            ("serves-as-asked", false, GraderKind.FixedRule),
+        }));
 
     [Test]
     public void ItsScoresAreTheCookScorers_KeyForKey()
     {
-        var trial = Trial(CookMode, "cook-af", Turn(1, [Start("puls-cook"), Fetch("https://www.checkers.co.za/x"), Text("Resep.")]));
+        var trial = Trial(CookMode, "cook-af", """{"routes_to":"puls-cook","serves":4}""", null, Turn(1, [Start("puls-cook"), Fetch("https://www.checkers.co.za/x"), Text("Resep.")]));
 
         var scores = Eval.ScoresOf(trial, []);
 

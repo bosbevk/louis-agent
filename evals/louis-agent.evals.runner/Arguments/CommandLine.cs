@@ -2,6 +2,7 @@ using System.Globalization;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Sessions.Replay;
+using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Runner.Messages;
 
 namespace LouisAgent.Evals.Runner.Arguments;
@@ -13,12 +14,13 @@ public abstract record CommandLineRequest;
 public sealed record ListRequest : CommandLineRequest;
 
 /// <summary>
-/// <c>run {name} [--repeat N] [--web off|record|replay] [--of &lt;runId&gt;] [--replay &lt;runId&gt;]</c>: one eval, each mode repeated N times,
+/// <c>run {name} [--repeat N] [--web off|record|replay] [--of &lt;runId&gt;] [--replay &lt;runId&gt;] [--split dev|held-out|all]</c>: one eval, each mode repeated N times,
 /// its web input recorded or replayed (F18 step 4a). A null <paramref name="Web"/> sends no choice, so the instance's <c>WEB_REPLAY</c>
 /// decides; <paramref name="Of"/> is the recorded run's id, and is set only with a replay. <c>--replay {runId}</c> is a replay of that run
 /// with <paramref name="Model"/> set: the model's answers come from the recording too (step 4e), so it costs nothing.
 /// </summary>
-public sealed record RunRequest(string Name, int Repeat, WebReplayMode? Web = null, string? Of = null, bool Model = false) : CommandLineRequest;
+public sealed record RunRequest(string Name, int Repeat, WebReplayMode? Web = null, string? Of = null, bool Model = false,
+    SplitSelection Split = SplitSelection.Dev) : CommandLineRequest;
 
 /// <summary>The command line: <c>--list</c>, or <c>run {name}</c> and its flags. A refusal is a <see cref="RunnerException"/>.</summary>
 public static class CommandLine
@@ -43,6 +45,7 @@ public static class CommandLine
         int repeat = 1;
         WebReplayMode? web = null;
         string? of = null, replay = null;
+        var split = SplitSelection.Dev;
         for (int i = 0; i < rest.Count; i++)
         {
             string flag = rest[i];
@@ -54,17 +57,18 @@ public static class CommandLine
                 case "--web": web = ParseWeb(value); break;
                 case "--of": of = ParseOf(value); break;
                 case "--replay": replay = ParseOf(value); break;
+                case "--split": split = ParseSplit(value); break;
                 default: throw Refuse(RunnerMessage.UnknownArgument, new { Argument = flag });
             }
         }
         if (replay is not null)
         {
             if (web is not null || of is not null) throw Refuse(RunnerMessage.ReplayExcludesWebAndOf, null);
-            return new RunRequest(name, repeat, WebReplayMode.Replay, replay, Model: true);
+            return new RunRequest(name, repeat, WebReplayMode.Replay, replay, Model: true, Split: split);
         }
         if (web == WebReplayMode.Replay && of is null) throw Refuse(RunnerMessage.ReplayNeedsOf, null);
         if (web != WebReplayMode.Replay && of is not null) throw Refuse(RunnerMessage.OfNeedsReplay, null);
-        return new RunRequest(name, repeat, web, of);
+        return new RunRequest(name, repeat, web, of, Split: split);
     }
 
     private static int ParseRepeat(string value)
@@ -81,6 +85,16 @@ public static class CommandLine
             throw Refuse(RunnerMessage.UnknownWeb, new { Value = value, Supported = string.Join(", ", SettingChoice.Names<WebReplayMode>()) });
         return web.Value;
     }
+
+    /// <summary>The split, parsed once with <c>SettingChoice</c> (ADR 0024): <c>dev</c>, <c>held-out</c> (or <c>heldout</c>) or <c>all</c>, never a number.</summary>
+    private static SplitSelection ParseSplit(string value)
+    {
+        if (!SettingChoice.TryParse(value, out SplitSelection? split, SplitAliases) || split is null)
+            throw Refuse(RunnerMessage.UnknownSplit, new { Value = value, Supported = string.Join(", ", SettingChoice.Names<SplitSelection>()) });
+        return split.Value;
+    }
+
+    private static readonly IReadOnlyDictionary<string, SplitSelection> SplitAliases = new Dictionary<string, SplitSelection> { ["held-out"] = SplitSelection.HeldOut };
 
     /// <summary>A run id's characters only, <c>[A-Za-z0-9_-]</c>: the API writes the trial's key from it, so it never carries a separator.</summary>
     private static string ParseOf(string value)

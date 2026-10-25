@@ -1,9 +1,10 @@
 {
   "name": "puls-routing",
-  "version": 1,
+  "version": 2,
   "covers": "Puls's routing: twelve questions, two of each kind (web, files, git, numbers, chat, cook), each in its own session in Stellenbosch. The routing check (benchmarks/routing/run_check.py) asked these.",
-  "content_hash": "caa724f9bc16be85a43113d2506eadb3e0a14c259758ebebef4a3912f4b5f791",
+  "content_hash": "bc97c7c9df50f74d46bc8ac7ca47ef006651b849d04fabb9708be239174ac212",
   "changes": [
-    "2026-10-24: first version, the questions of benchmarks/routing/run_check.py (QUESTIONS) as files"
+    "2026-10-24: first version, the questions of benchmarks/routing/run_check.py (QUESTIONS) as files",
+    "2026-10-25: step 5.4 - the two meal questions name their people and their shop, as Puls asks first without them; every scenario states where it should go (routes_to); six held-out questions, one new one of each kind, never used while tuning a prompt"
   ]
 }
