@@ -3,10 +3,9 @@ using System.Text.RegularExpressions;
 namespace LouisAgent.Api.Tests;
 
 /// <summary>
-/// The saved web pages are private (F18 step 4a: "no endpoint serves the folder"): only the browser opens <c>REPLAY_DIRECTORY</c>, so
-/// nothing can serve it. A source test, as <c>PortalReadsNoScoreKeyTests</c> is: outside the setting's own class and the factory that
-/// hands it to the browser, no .cs or .razor file under core, the hosts, the identities or the packs names it. What the API needs to know
-/// is <c>AgentOptions.KeepsRecordings</c>, not where. A scanned folder that isn't there fails, rather than passing empty.
+/// The saved web pages are private (F18 step 4a: "no endpoint serves the folder"): only the store opens <c>REPLAY_DIRECTORY</c>, so
+/// nothing can serve it. A source test, as <c>PortalReadsNoScoreKeyTests</c> is: outside the setting's own class and the store's factory method, no .cs or .razor file
+/// under core, the hosts, the identities or the packs names it. What the API needs to know is <c>AgentOptions.KeepsRecordings</c>, not where. A scanned folder that isn't there fails, rather than passing empty.
 /// </summary>
 public class ReplayFolderIsPrivateTests
 {
@@ -17,16 +16,16 @@ public class ReplayFolderIsPrivateTests
     private static readonly string[] MayName =
     [
         "louis-agent.core/Config/AgentOptions.cs",
-        "louis-agent.core/Tools/Web/Browsing/WebBrowserFactory.cs",
+        "louis-agent.core/Tools/Web/Replay/Store/WebReplayStore.cs",
     ];
 
     [Test]
-    public void OnlyTheSettingAndTheBrowsersFactoryNameTheReplayFolder()
+    public void OnlyTheSettingAndTheStoreNameTheReplayFolder()
     {
         var naming = Scanned.SelectMany(Files).Where(f => Names.IsMatch(File.ReadAllText(f))).Select(Relative).Except(MayName).Order().ToList();
 
         Assert.That(naming, Is.Empty,
-            "Only the browser opens the replay folder, so no endpoint can serve it (use AgentOptions.KeepsRecordings to ask whether one is kept):\n  "
+            "Only the store opens the replay folder, so no endpoint can serve it (use AgentOptions.KeepsRecordings to ask whether one is kept):\n  "
             + string.Join("\n  ", naming));
     }
 

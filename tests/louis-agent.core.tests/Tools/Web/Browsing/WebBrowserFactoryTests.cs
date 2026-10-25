@@ -1,22 +1,22 @@
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Tools.Web.Browsing;
 using LouisAgent.Core.Tools.Web.Replay;
+using LouisAgent.Core.Tools.Web.Replay.Store;
 
 namespace LouisAgent.Core.Tests.Tools.Web.Browsing;
 
 // F18 step 4a.2: the process's one browser, built from configuration: none without a usable BROWSER_URL; the Chrome it names with the
-// user agent the setting says (FX21); and a recording browser around it when REPLAY_DIRECTORY is set. Written first: Create threw
-// NotImplementedException on the red run.
+// user agent the setting says (FX21); and a recording browser around it when a store is passed (4b.1: the factory no longer reads REPLAY_DIRECTORY; the store's From does).
 public class WebBrowserFactoryTests
 {
     [TestCase(null)]
     [TestCase("")]
     [TestCase("not a url")]
-    public void WithoutAUsableBrowserUrl_ThereIsNoBrowser_EvenWithAReplayDirectory(string? url) =>
-        Assert.That(WebBrowserFactory.Create(new AgentOptions { BrowserUrl = url, ReplayDirectory = "/data/replay" }), Is.Null);
+    public void WithoutAUsableBrowserUrl_ThereIsNoBrowser_EvenWithAStore(string? url) =>
+        Assert.That(WebBrowserFactory.Create(new AgentOptions { BrowserUrl = url }, new WebReplayStore("/data/replay")), Is.Null);
 
     [Test]
-    public void WithoutAReplayDirectory_ItIsTheChromeItself_WithTheUserAgentTheSettingSays()
+    public void WithoutAStore_ItIsTheChromeItself_WithTheUserAgentTheSettingSays()
     {
         var browser = WebBrowserFactory.Create(new AgentOptions { BrowserUrl = "http://puls-browser:9222", BrowserUserAgent = "Puls/1.0 (+https://example.test)" });
 
@@ -25,10 +25,15 @@ public class WebBrowserFactoryTests
     }
 
     [Test]
-    public void WithAReplayDirectory_ItIsRecordedAroundTheSameChrome()
+    public void WithAStore_ItIsRecordedAroundTheSameChrome()
     {
-        var browser = WebBrowserFactory.Create(new AgentOptions { BrowserUrl = "http://puls-browser:9222", ReplayDirectory = "/data/replay" });
+        var browser = WebBrowserFactory.Create(new AgentOptions { BrowserUrl = "http://puls-browser:9222" }, new WebReplayStore("/data/replay"));
 
         Assert.That(browser, Is.TypeOf<RecordedWebBrowser>());
     }
+
+    [Test]
+    public void AReplayDirectoryWithNoStorePassed_IsStillTheChromeItself() =>
+        Assert.That(WebBrowserFactory.Create(new AgentOptions { BrowserUrl = "http://puls-browser:9222", ReplayDirectory = "/data/replay" }),
+            Is.TypeOf<ChromeWebBrowser>(), "the factory no longer names the folder: the store does");
 }

@@ -1,9 +1,9 @@
 using LouisAgent.Core.Tools.Web.Browsing;
 
-namespace LouisAgent.Core.Tools.Web.Replay.Store;
+namespace LouisAgent.Core.Tools.Web.Replay.Answers;
 
 /// <summary>
-/// What a visit answered, as a page file holds it (<c>pages/{sha256}.json</c>): its address after any redirect, its HTML, the
+/// What a visit answered, as its answer file holds it (<c>answers/{sha256}.json</c>): its address after any redirect, its HTML, the
 /// captured bodies, the script's result and the cookies the site set. Its hash is the SHA-256 of exactly the JSON bytes of this record.
 /// </summary>
 public sealed record ReplayPage(string Url, string Html, IReadOnlyList<string> Captured, string? ScriptResult, IReadOnlyList<BrowserCookie>? Cookies)

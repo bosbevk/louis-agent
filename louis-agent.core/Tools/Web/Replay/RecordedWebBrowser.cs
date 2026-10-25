@@ -2,6 +2,7 @@ using LouisAgent.Core.Messages;
 using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Tools.Web.Browsing;
 using LouisAgent.Core.Tools.Web.Messages;
+using LouisAgent.Core.Tools.Web.Replay.Answers;
 using LouisAgent.Core.Tools.Web.Replay.Store;
 
 namespace LouisAgent.Core.Tools.Web.Replay;
@@ -18,38 +19,35 @@ public sealed class RecordedWebBrowser(IWebBrowser inner, WebReplayStore store) 
     public async Task<BrowserVisit> VisitAsync(Uri url, Func<Uri, bool>? capture = null, BrowserSession? session = null, string? script = null,
         string? readySelector = null, CancellationToken cancellationToken = default)
     {
-        if (SessionReplay.Current is not { Web: not WebReplayMode.Off } replay)
+        if (ReplayTrial.Current is not { } trial)
             return await inner.VisitAsync(url, capture, session, script, readySelector, cancellationToken);
-        if (replay.Of is not { } trial)
-            throw new InvalidOperationException(MessageText.Format(WebErrorMessage.NeedsTrial, new { Mode = replay.Web }));
 
-        var ask = new ReplayAsk(url.AbsoluteUri, script, readySelector);
-        return replay.Web == WebReplayMode.Replay
-            ? await ReplayAsync(trial, ask, cancellationToken)
-            : await RecordAsync(trial, ask, url, capture, session, cancellationToken);
+        var ask = ReplayAsk.Of(ReplayKind.Visit, new { Url = url.AbsoluteUri, Script = script, ReadySelector = readySelector });
+        return trial.Replaying
+            ? await ReplayAsync(trial.Of, ask, url, cancellationToken)
+            : await RecordAsync(trial.Of, ask, () => inner.VisitAsync(url, capture, session, script, readySelector, cancellationToken), cancellationToken);
     }
 
-    private async Task<BrowserVisit> RecordAsync(string trial, ReplayAsk ask, Uri url, Func<Uri, bool>? capture, BrowserSession? session,
-        CancellationToken cancellationToken)
+    private async Task<BrowserVisit> RecordAsync(string trial, ReplayAsk ask, Func<Task<BrowserVisit>> visitInner, CancellationToken cancellationToken)
     {
         BrowserVisit visit;
         try
         {
-            visit = await inner.VisitAsync(url, capture, session, ask.Script, ask.ReadySelector, cancellationToken);
+            visit = await visitInner();
         }
         catch (WebBrowserException failure)
         {
             await store.SaveFailureAsync(trial, ask, failure.Message, cancellationToken);
             throw;
         }
-        await store.SavePageAsync(trial, ask, ReplayPage.Of(visit), cancellationToken);
+        await store.SaveAnswerAsync(trial, ask, ReplayPage.Of(visit), cancellationToken);
         return visit;
     }
 
-    private async Task<BrowserVisit> ReplayAsync(string trial, ReplayAsk ask, CancellationToken cancellationToken)
+    private async Task<BrowserVisit> ReplayAsync(string trial, ReplayAsk ask, Uri url, CancellationToken cancellationToken)
     {
-        if (await store.FindAsync(trial, ask, cancellationToken) is not { } recorded)
-            throw new WebBrowserException(MessageText.Format(WebToolMessage.ReplayMiss, new { Url = ask.Url }));
-        return recorded.ToVisit();
+        if (await store.FindAsync<ReplayPage>(trial, ask, cancellationToken) is not { } recorded)
+            throw new WebBrowserException(MessageText.Format(WebToolMessage.ReplayMiss, new { Url = url.AbsoluteUri }));
+        return recorded.OrThrow(error => new WebBrowserException(error)).ToVisit();
     }
 }

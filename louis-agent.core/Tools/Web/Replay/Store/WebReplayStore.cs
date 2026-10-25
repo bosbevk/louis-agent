@@ -1,39 +1,50 @@
 using System.Security.Cryptography;
 using System.Text.Json;
+using System.Text.Json.Serialization;
+using LouisAgent.Core.Config;
 
 namespace LouisAgent.Core.Tools.Web.Replay.Store;
 
 /// <summary>
-/// The saved web input of eval runs (F18 step 4a): each answer once per hash in <c>{directory}/pages/{sha256}.json</c> (the JSON bytes
-/// of a <see cref="ReplayPage"/>, hashed as they are), and each trial's index in <c>{directory}/trials/{safe name}.jsonl</c>, one
-/// <see cref="ReplayIndexLine"/> per visit, appended under one lock because a parent and its sub-session write at once. Private: only
-/// the browser opens it, nothing serves it, and <c>/data/</c> is git-ignored. A replay keeps no counters: an ask is answered from its
+/// The saved web input of eval runs (F18 steps 4a and 4b): every kind of answer (<see cref="ReplayKind"/>) once per hash in
+/// <c>{directory}/answers/{sha256}.json</c> (the JSON bytes of the answer, hashed as they are), and each trial's index in
+/// <c>{directory}/trials/{safe name}.jsonl</c>, one <see cref="ReplayIndexLine"/> per ask, appended under one lock because a parent and its
+/// sub-session write at once. An ask is a kind plus a key and an answer is any JSON value, so a new seam needs no new store. Private: only
+/// the seams open it, nothing serves it, and <c>/data/</c> is git-ignored. A replay keeps no counters: an ask is answered from its
 /// first recording.
 /// </summary>
 public sealed class WebReplayStore(string directory, TimeProvider? clock = null)
 {
-    private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web) { PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower };
+    /// <summary>snake_case properties; enums as snake_case names, never numbers (ADR 0024).</summary>
+    internal static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web)
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower,
+        Converters = { new JsonStringEnumConverter(JsonNamingPolicy.SnakeCaseLower, allowIntegerValues: false) },
+    };
 
     private readonly SemaphoreSlim _indexLock = new(1, 1);
     private readonly TimeProvider _clock = clock ?? TimeProvider.System;
 
-    private string Pages => Path.Combine(directory, "pages");
+    private string Answers => Path.Combine(directory, "answers");
 
     private string Trials => Path.Combine(directory, "trials");
 
-    public async Task SavePageAsync(string trial, ReplayAsk ask, ReplayPage page, CancellationToken cancellationToken = default)
+    /// <summary>The process's one store: where <c>REPLAY_DIRECTORY</c> is set, else null. The only place outside the setting that names it.</summary>
+    public static WebReplayStore? From(AgentOptions options) => options.ReplayDirectory is { } directory ? new WebReplayStore(directory) : null;
+
+    public async Task SaveAnswerAsync<T>(string trial, ReplayAsk ask, T answer, CancellationToken cancellationToken = default)
     {
-        byte[] bytes = JsonSerializer.SerializeToUtf8Bytes(page, Json);
+        byte[] bytes = JsonSerializer.SerializeToUtf8Bytes(answer, Json);
         string hash = Convert.ToHexStringLower(SHA256.HashData(bytes));
-        await WritePageOnceAsync(hash, bytes, cancellationToken);
-        await AppendAsync(new ReplayIndexLine(trial, ask.Url, ask.Script, ask.ReadySelector, _clock.GetUtcNow(), hash, null), cancellationToken);
+        await WriteAnswerOnceAsync(hash, bytes, cancellationToken);
+        await AppendAsync(new ReplayIndexLine(trial, ask.Kind, ask.Key, _clock.GetUtcNow(), hash, null), cancellationToken);
     }
 
     public Task SaveFailureAsync(string trial, ReplayAsk ask, string error, CancellationToken cancellationToken = default) =>
-        AppendAsync(new ReplayIndexLine(trial, ask.Url, ask.Script, ask.ReadySelector, _clock.GetUtcNow(), null, error), cancellationToken);
+        AppendAsync(new ReplayIndexLine(trial, ask.Kind, ask.Key, _clock.GetUtcNow(), null, error), cancellationToken);
 
     /// <summary>The first recording of <paramref name="ask"/> in the trial, or null when there is none (or no such trial).</summary>
-    public async Task<ReplayedVisit?> FindAsync(string trial, ReplayAsk ask, CancellationToken cancellationToken = default)
+    public async Task<ReplayAnswer<T>?> FindAsync<T>(string trial, ReplayAsk ask, CancellationToken cancellationToken = default)
     {
         string index = TrialFileName.Under(Trials, TrialFileName.Of(trial) + ".jsonl");
         if (!File.Exists(index)) return null;
@@ -41,8 +52,8 @@ public sealed class WebReplayStore(string directory, TimeProvider? clock = null)
         foreach (string text in await File.ReadAllLinesAsync(index, cancellationToken))
         {
             if (ParseLine(text) is not { } line || line.Ask != ask) continue;
-            if (line.Error is not null) return new ReplayedVisit.Failed(line.Error);
-            if (await ReadPageAsync(line.Hash, cancellationToken) is { } page) return new ReplayedVisit.Answered(page);
+            if (line.Error is not null) return new ReplayAnswer<T>.Failed(line.Error);
+            if (await ReadAnswerAsync<T>(line.Hash, cancellationToken) is { } answer) return new ReplayAnswer<T>.Answered(answer);
         }
         return null;
     }
@@ -54,20 +65,20 @@ public sealed class WebReplayStore(string directory, TimeProvider? clock = null)
         catch (JsonException) { return null; }
     }
 
-    /// <summary>The page a hash names; the hash comes from a file, so it must be 64 lowercase hex digits before it is part of a path (ADR 0004).</summary>
-    private async Task<ReplayPage?> ReadPageAsync(string? hash, CancellationToken cancellationToken)
+    /// <summary>The answer a hash names; the hash comes from a file, so it must be 64 lowercase hex digits before it is part of a path (ADR 0004).</summary>
+    private async Task<T?> ReadAnswerAsync<T>(string? hash, CancellationToken cancellationToken)
     {
-        if (hash is not { Length: 64 } || !hash.All(char.IsAsciiHexDigitLower)) return null;
-        string path = Path.Combine(Pages, hash + ".json");
-        if (!File.Exists(path)) return null;
-        return JsonSerializer.Deserialize<ReplayPage>(await File.ReadAllBytesAsync(path, cancellationToken), Json);
+        if (hash is not { Length: 64 } || !hash.All(char.IsAsciiHexDigitLower)) return default;
+        string path = Path.Combine(Answers, hash + ".json");
+        if (!File.Exists(path)) return default;
+        return JsonSerializer.Deserialize<T>(await File.ReadAllBytesAsync(path, cancellationToken), Json);
     }
 
     /// <summary>Written to a temporary name and moved into place; a hash that is already there is skipped, and a racing writer is no error.</summary>
-    private async Task WritePageOnceAsync(string hash, byte[] bytes, CancellationToken cancellationToken)
+    private async Task WriteAnswerOnceAsync(string hash, byte[] bytes, CancellationToken cancellationToken)
     {
-        Directory.CreateDirectory(Pages);
-        string path = Path.Combine(Pages, hash + ".json");
+        Directory.CreateDirectory(Answers);
+        string path = Path.Combine(Answers, hash + ".json");
         if (File.Exists(path)) return;
 
         string temporary = $"{path}.{Guid.NewGuid():N}.tmp";

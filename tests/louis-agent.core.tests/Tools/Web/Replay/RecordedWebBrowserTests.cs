@@ -60,11 +60,11 @@ public class RecordedWebBrowserTests
             await new RecordedWebBrowser(new FakeBrowser(Visit), folder.Store).VisitAsync(Page, script: "return 1", readySelector: ".price");
 
         var line = JsonDocument.Parse(File.ReadAllLines(folder.Trials.Single()).Single()).RootElement;
-        string pageFile = folder.Pages.Single();
+        string pageFile = folder.Answers.Single();
         Assert.That(line.GetProperty("trial").GetString(), Is.EqualTo("run_1:cook:1/bobotie"));
-        Assert.That(line.GetProperty("url").GetString(), Is.EqualTo(Page.AbsoluteUri));
-        Assert.That(line.GetProperty("script").GetString(), Is.EqualTo("return 1"));
-        Assert.That(line.GetProperty("ready_selector").GetString(), Is.EqualTo(".price"));
+        Assert.That(line.GetProperty("kind").GetString(), Is.EqualTo("visit"));
+        Assert.That(line.GetProperty("key").GetString(),
+            Is.EqualTo($"{{\"url\":\"{Page.AbsoluteUri}\",\"script\":\"return 1\",\"ready_selector\":\".price\"}}"));
         Assert.That(line.GetProperty("at").GetDateTimeOffset(), Is.EqualTo(ReplayFolder.At));
         Assert.That(line.GetProperty("error").ValueKind, Is.EqualTo(JsonValueKind.Null));
         string hash = line.GetProperty("hash").GetString()!;
@@ -81,7 +81,7 @@ public class RecordedWebBrowserTests
         using (Using(WebReplayMode.Record, "run_1:cook:1/bobotie")) await browser.VisitAsync(Page);
         using (Using(WebReplayMode.Record, "run_1:cook:1/cottage-pie")) await browser.VisitAsync(Page);
 
-        Assert.That(folder.Pages, Has.Length.EqualTo(1));
+        Assert.That(folder.Answers, Has.Length.EqualTo(1));
         Assert.That(folder.Trials, Has.Length.EqualTo(2));
         Assert.That(folder.Trials.Select(t => File.ReadAllLines(t).Length), Is.EqualTo(new[] { 1, 1 }));
     }
@@ -132,7 +132,7 @@ public class RecordedWebBrowserTests
         }
         var line = JsonDocument.Parse(File.ReadAllLines(folder.Trials.Single()).Single()).RootElement;
         Assert.That(line.GetProperty("hash").ValueKind, Is.EqualTo(JsonValueKind.Null));
-        Assert.That(folder.Pages, Is.Empty);
+        Assert.That(folder.Answers, Is.Empty);
 
         using (Using(WebReplayMode.Replay, "t"))
         {
@@ -186,7 +186,7 @@ public class RecordedWebBrowserTests
         }
 
         Assert.That(File.ReadAllLines(folder.Trials.Single()), Has.Length.EqualTo(2));
-        Assert.That(folder.Pages, Has.Length.EqualTo(2));
+        Assert.That(folder.Answers, Has.Length.EqualTo(2));
         using (Using(WebReplayMode.Replay, "t"))
         {
             var replay = new RecordedWebBrowser(new FakeBrowser(), folder.Store);

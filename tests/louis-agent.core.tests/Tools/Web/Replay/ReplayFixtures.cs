@@ -13,7 +13,7 @@ internal sealed class ReplayFolder : IDisposable
 
     public WebReplayStore Store => new(Path, new FakeTimeProvider(At));
 
-    public string[] Pages => Files("pages");
+    public string[] Answers => Files("answers");
 
     public string[] Trials => Files("trials");
 
