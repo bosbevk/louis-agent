@@ -1187,6 +1187,13 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
   kept the cache (`EngineCache`, a class: the only code that used the dictionary, the last-used map, the lock and the counter). ADR 0034
   splits a class by the fields each part uses, never into a `Utils` class or extension methods, which could not reach the private state
   anyway. No behaviour changed: `ProfileKey.Text` is byte-equal to the old key, and `AgentEngineFactoryTests` asserts what it did.
+- **Step 4b: one store for every kind of answer, the clock standing still, and the replay skipping the fetch's DNS check** (Louis,
+  2026-10-25, his approval of the step 4b prompt). It covers what the plan did not say. (1) One store keeps visits, searches, fetches and the
+  clock: an ask is a kind and a key, an answer is any JSON value, under `answers/` and not `pages/`. (2) Within a trial the clock stands
+  still: the first read is saved and every later read, recording or replaying, answers it, so a replay shows the model the same time as the
+  recording and step 4e's cache of model answers keeps hitting. (3) A replay skips `FetchUrl`'s per-hop DNS check, and only there, only
+  where the fetcher has a store and the flow is a replay: nothing leaves the process, and a site that no longer resolves must still replay.
+  `ReadRenderedPage`'s check stays, because with `PAGE_RENDERER=tavily` the page goes to a third party even in a replay.
 
 ---
 [Docs index](../README.md) · [Plans](README.md) · [Platform plan](platform.md) · [Feature F18](../features/F18-evaluation.md)

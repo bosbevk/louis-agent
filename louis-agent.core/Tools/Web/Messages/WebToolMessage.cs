@@ -99,6 +99,9 @@ public enum WebToolMessage
     [Description("The search '{Query}' was not run in the recorded run, so this replay has no results for it: replays answer only recorded searches. Treat what it would find as unknown.")]
     ReplaySearchMiss,
 
+    [Description("The recorded run never read the clock, so this replay can't tell the time: treat today's date and the time as unknown.")]
+    ReplayClockMiss,
+
     [Description("Unknown PAGE_RENDERER '{Renderer}'. Supported: {Supported}.")]
     UnknownPageRenderer,
 

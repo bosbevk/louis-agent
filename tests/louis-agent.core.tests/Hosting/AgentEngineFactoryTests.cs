@@ -4,6 +4,7 @@ using LouisAgent.Core.Agent;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Skills;
+using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Skills.Roles;
 using LouisAgent.Core.Tests.Tools.Web.Replay;
 using LouisAgent.Core.Tools.Web.Replay;
@@ -74,6 +75,35 @@ public class AgentEngineFactoryTests
         Assert.That(recorded, Is.TypeOf<RecordedSearchProvider>());
         Assert.That(recorded.Name, Is.EqualTo("Own"));
         Assert.That(plain, Is.SameAs(own));
+    }
+
+    [Test]
+    public async Task TheEnginesGetToday_IsRecordedAndReplayedThroughTheFactorysClock()
+    {
+        // F18 step 4b.4: one ReplayClock per factory (so per process) reaches the engine's own GetToday. A second factory over the same folder
+        // stands in for a later process: it replays the saved time, not its own.
+        string folder = Path.Combine(Path.GetTempPath(), "louis-replay-" + Guid.NewGuid().ToString("N"));
+        try
+        {
+            AgentEngineFactory Factory() => new(new FakeChatClient(), new AgentOptions
+            {
+                WorkspaceRoot = TestPaths.RepoRoot, RatesUrl = null, ReplayDirectory = folder, HostTimeZone = "Africa/Johannesburg",
+            });
+            async Task<string> TodayAsync() =>
+                (await Factory().GetOrCreate(["files"]).Tools.OfType<Microsoft.Extensions.AI.AIFunction>().Single(t => t.Name == "GetToday")
+                    .InvokeAsync(new Microsoft.Extensions.AI.AIFunctionArguments()))!.ToString()!;
+
+            string recorded, replayed;
+            using (SessionReplay.Use(new SessionReplay(WebReplayMode.Record, "t", Model: false))) recorded = await TodayAsync();
+            using (SessionReplay.Use(new SessionReplay(WebReplayMode.Replay, "t", Model: false))) replayed = await TodayAsync();
+
+            Assert.That(replayed, Is.EqualTo(recorded));
+            Assert.That(File.ReadAllText(Directory.GetFiles(Path.Combine(folder, "trials")).Single()), Does.Contain("\"kind\":\"clock\""));
+        }
+        finally
+        {
+            if (Directory.Exists(folder)) Directory.Delete(folder, recursive: true);
+        }
     }
 
     private static Microsoft.Extensions.AI.ChatResponse Answer(string text) =>

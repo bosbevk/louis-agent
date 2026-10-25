@@ -8,7 +8,7 @@ using System.ComponentModel;
 
 /// <summary>
 /// The exception texts of recorded and replayed web input (F18 step 4a; ADR 0009), for the developer: a model never reads them (what it
-/// reads when a replay misses is <see cref="WebToolMessage.ReplayMiss"/>). Step 4b adds its web-replay texts here.
+/// reads when a replay misses is <see cref="WebToolMessage.ReplayMiss"/>).
 /// </summary>
 public enum WebErrorMessage
 {

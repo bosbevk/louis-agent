@@ -100,7 +100,7 @@ public class AgentEngine
     /// </param>
     public AgentEngine(ISkillProvider skillProvider, IChatClient chatClient, AgentOptions options, bool supportsTools = true,
         IEnumerable<object>? toolsets = null,
-        IUsageSink? usageSink = null, IUsageMapper? usageMapper = null, bool selfExtension = false, bool concurrentToolCalls = false)
+        IUsageSink? usageSink = null, IUsageMapper? usageMapper = null, bool selfExtension = false, bool concurrentToolCalls = false, TimeProvider? clock = null)
     {
         SupportsTools = supportsTools;
         WorkspaceRoot = Path.GetFullPath(options.WorkspaceRoot);
@@ -123,7 +123,7 @@ public class AgentEngine
             return;
         }
 
-        OwnTools.Register(_registry, _skillTools, _agentBuiltTools, options, toolsets, selfExtension);
+        OwnTools.Register(_registry, _skillTools, _agentBuiltTools, options, toolsets, selfExtension, clock);
     }
 
     /// <summary>

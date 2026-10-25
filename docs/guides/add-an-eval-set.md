@@ -340,8 +340,8 @@ outcome), so every grader you wrote is a chip on its conversation, in your `Grad
 
 ## 11. Record a run's web input, and replay it
 
-A run that reads the live web measures the website as much as the agent. `--web record` saves every page the browser reads
-during the run; `--web replay --of {runId}` answers from those saved pages later, without opening the browser. Both are
+A run that reads the live web measures the website as much as the agent. `--web record` saves every page, search, fetch and the time
+the run reads; `--web replay --of {runId}` answers from those saved inputs later, without the browser, the search engine, the network or the clock. Both are
 flags of the same command, and the runner has no web of its own: the API writes and reads the recordings.
 
 ```bash
@@ -356,8 +356,11 @@ EVALS=acme BENCHMARK_RUN=acme-after  dotnet run --project evals/louis-agent.eval
   a replay with a 400 that says this instance keeps no recordings.
 - **They stay on that machine.** Recordings are private: nothing serves them, and `/data/` is git-ignored, so they never go in
   the repo.
-- **A replay that misses.** A page the recorded run didn't read comes back to the model as a short text naming its address and
-  saying it can't be opened, so the model treats what it holds as unknown.
+- **A replay that misses.** What the recorded run didn't read comes back to the model as a short text, and the model treats it as
+  unknown: a page by its address ("was not read in the recorded run"), a search by its query ("was not run in the recorded run"),
+  and the clock ("never read the clock"). The time stands still within a trial, so a replay shows the time the recording did.
+- **What is still live.** The Tavily renderer (`PAGE_RENDERER=tavily`) reads the page itself, and `ReadRenderedPage` still resolves DNS in
+  a replay. A failed fetch replays as a miss, and model answers replay only from step 4e.
 - **Until step 5** only the stub runs, and the stub reads no web: a recording of it saves nothing. The commands above check the
   flags; a real recording waits for the HTTP session client and for Louis's go, since it spends money.
 

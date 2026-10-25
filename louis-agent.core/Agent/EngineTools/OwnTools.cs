@@ -15,11 +15,11 @@ internal static class OwnTools
 {
     /// <param name="toolsets">A session's tool objects; null means an engine with every self-extension tool, whatever <paramref name="selfExtension"/> says.</param>
     public static void Register(ToolRegistry registry, SkillTools skillTools, AgentBuiltTools agentBuiltTools, AgentOptions options,
-        IEnumerable<object>? toolsets, bool selfExtension)
+        IEnumerable<object>? toolsets, bool selfExtension, TimeProvider? clock = null)
     {
         registry.Add(Function(skillTools.ExecuteSkill, nameof(AgentEngine.ExecuteSkill)));
         // Today's date and time (F22): every session, whatever its toolsets, since a model doesn't know what day it is.
-        registry.AddPublicMethods(new ClockTools(hostTimeZone: options.HostTimeZone));
+        registry.AddPublicMethods(new ClockTools(clock, options.HostTimeZone));
         if (toolsets is not null)
         {
             foreach (object toolset in toolsets) registry.AddPublicMethods(toolset);

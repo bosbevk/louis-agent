@@ -600,8 +600,7 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   `trials/`, in the API's `REPLAY_DIRECTORY` (`data/puls/replay` on the host, under the Puls compose). A failed visit is recorded as its
   text. A replay answers each ask from the trial's first recording of it and never opens Chrome; an ask the recording didn't read comes
   back to the model as: "{url} was not read in the recorded run, so this replay can't open it: replays read only recorded pages. Treat
-  what it holds as unknown." The runner never touches the folder. Still live until 4b: search, `FetchUrl` and the clock (a replay doesn't
-  yet answer them from the recording). Model answers replay in 4e; `replay.model` is refused until then. Recordings stay on the machine
+  what it holds as unknown." The runner never touches the folder. Search, `FetchUrl` and the clock were still live after 4a; step 4b records them. Model answers replay in 4e; `replay.model` is refused until then. Recordings stay on the machine
   that made them, and the guide says how to record and replay (*Add an eval set*, section 11).
 - **Refactor: the message enums split by area, commit 1 of 3 (`ToolMessage`)** (approved 2026-10-25, before 4b; see the plan's
   *Approved during the build*). The 260 members of `ToolMessage` split: 250 moved to 14 area enums in each area's `Messages/`
@@ -648,6 +647,47 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   a `using` for `Config.Messages`, which the doc example doesn't need, so it is removed. Checks: no `tests/*.json` changed against `HEAD`;
   the `[Description(` lines are 815 before and 815 after, and their diff is empty (the API's texts are read as well). Core tests: 1342
   passing.
+- **Step 4b.1** (`Tools/Web/Replay/{Store,Answers}/`, `Hosting/AgentEngineFactory.cs`): one store keeps every kind of answer. An ask is a
+  `ReplayKind` and a key (the seam's ask as compact JSON, built by `ReplayAsk.Of` from an anonymous object, compared ordinally); an answer
+  is any JSON value, once per hash in `answers/` (renamed from `pages/`). Enums in the files are names (`JsonStringEnumConverter`,
+  snake_case, `allowIntegerValues: false`, ADR 0024). `ReplayAnswer<T>` (`Answered` / `Failed`, `OrThrow`) replaced `ReplayedVisit`;
+  `ReplayTrial.Current` is the one place the seams read the session's mode and trial; `WebReplayStore.From` is the only place outside
+  `AgentOptions` that names `REPLAY_DIRECTORY` (`ReplayFolderIsPrivateTests` now allows the store, not the browser's factory). Red first: the
+  test project would not compile (the `Answers` namespace, `ReplayKind`, `ReplayAnswer<T>` and the generic store calls did not exist).
+  The review found one fault: `ReadAnswerAsync<T>` returned `T?`, which for a struct is plain `T`, so a deleted answer file replayed as
+  `default` (a clock as 1 January 0001). It now returns `ReplayAnswer<T>.Answered?`, never a struct (`7db44c3`; red: `Answered { Value =
+  0001/01/01 }`). The only recording-format change for the browser is that an index line holds `kind` and `key` instead of `url`, `script`
+  and `ready_selector`; no real recording existed.
+- **Step 4b.2** (`RecordedSearchProvider`): the key is the provider's name, text, `max_results`, site and recency (as a name); the answer is
+  the results. A `WebSearchException` is recorded as its text and rethrown; any other exception and a cancel are not recorded. The provider's
+  request is never saved, so a search key never reaches the folder. A host's own provider is wrapped too, so a fake records like a real one.
+  One new text: `WebToolMessage.ReplaySearchMiss`. Red first: 11 tests on the stub's `NotImplementedException`.
+- **Step 4b.3** (`RecordedFetchHandler`, `ReplayResponse`, `PageFetcher`): the recorder is a `DelegatingHandler` outside the SSRF guard's, so
+  a recording's request still meets the connect-time check. A response is saved as an allow list (status, reason, content type, `Location`,
+  body), so no `Set-Cookie`, no other response header and no request header reaches the folder. Only an answer is recorded: a network error,
+  a timeout, a body over 5 MB and a connect-time refusal propagate, and in a replay that request is a miss with 4a's `ReplayMiss` text. A
+  replay skips the per-hop DNS pre-check, and only where the fetcher has a store and the flow is a replay; `EnsurePublicAsync` (the
+  renderer's) is unchanged. Red first: 8 of 12 tests failed on the stubs; the 4 that passed are the guard's behaviours that must not
+  change. The review found one fault: `FetchUrl` called a response too large when the error text held "buffer", so a replay miss on
+  `/wiki/Buffer_overflow` said the page was over 5 MB. It now switches on `HttpRequestError.ConfigurationLimitExceeded` (`58210fe`; ADR
+  0024's lesson), and a guard test covers the live path with no store (`4c69878`).
+- **Before 4b.4: the engine factory's cache and key moved to `Hosting/Engines/`** (`EngineCache`, `ProfileKey`; `202bf5a`), and the key
+  states "empty means none" once (`5d0b653`). See the plan's *Approved during the build*.
+- **Step 4b.4** (`ReplayClock`, `AgentEngine`, `OwnTools`, `AgentEngineFactory`): within a trial the clock stands still. The first read is
+  saved while recording and read back while replaying, and every later read in the trial answers it, so a replay shows the model the same
+  time as the recording (step 4e's cache of model answers would otherwise miss). One `Lazy` per trial and mode makes a parent and its
+  sub-session save one line; the store call blocks once per trial (`GetAwaiter().GetResult()`, safe because ASP.NET Core has no
+  synchronization context). A recording that never read the clock leaves a replay with a miss, `WebToolMessage.ReplayClockMiss`, and a
+  `Lazy` keeps its exception, so a miss stays a miss for the trial. `AgentEngine` takes `clock` on its existing parameter line (198 lines,
+  unchanged); the factory builds one `ReplayClock` per process. Red first: 7 tests on the stub's `NotImplementedException`. Golden files: only
+  `ToolMessageSnapshot.json` gained `ReplaySearchMiss` and `ReplayClockMiss`; `ModelRequestSnapshot.json` is unchanged. Core tests: 1401
+  passing.
+- **Close of step 4b.** What is recorded now: each visit the browser makes, each search (its results), each fetch (`FetchUrl` and
+  `VerifyQuote`, a hop at a time) and the time, in a recording session; a replay answers all four from the trial's first recording of the ask
+  and uses no browser, search engine, network or DNS. What isn't: model answers (4e); a failed fetch (it replays as a miss); a search
+  failure other than a `WebSearchException`. Known gaps: the Tavily renderer (`PAGE_RENDERER=tavily`) is live, because the page goes to a
+  third party even in a replay; `ReadRenderedPage`'s pre-check still resolves DNS in a replay; a failed fetch replays as a miss; and model
+  answers replay only from 4e. The guide says how to record and replay (*Add an eval set*, section 11).
 - **Notes for step 5** (from the review of 4.2): `PulsEvalSet`'s `TurnView` builds on `EngineEvents`, so the route, the errors and the
   cost come from one reader. If an expected route goes in a scenario's `expected`, `RoutedToGrader` must declare that key in its
   `ExpectedKeys`. When the HTTP client sets a turn's `Failure`, the turn line must carry it, so `ProtocolTranscripts` reads it back. A
