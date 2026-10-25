@@ -88,6 +88,7 @@ changes instead of relying on training; **a configured agent**, an identity and 
 - [ ] An error tracker behind `IErrorFeed`, after F39
 - [ ] A webhook trigger beside polling, after F39
 - [ ] Computer use, when a simulation needs it
+- [ ] CL21 Mutation testing with Stryker.NET (`dotnet-stryker` 5.0.0, Apache 2.0, a dotnet local tool in `.config/dotnet-tools.json`; Louis, 2026-10-25): it breaks the code one change at a time and runs the tests, so a line no test guards shows up as a mutant that survived; run by hand on the files a step changed (`dotnet stryker --mutate …`), its report kept out of the repo. It replaces the throwaway mutation probes in reviews; a library fact our code relies on (MEAI reads the content-capture variable once per process) stays a learning test beside that code, so CI runs it. Its own branch off `main`, with its plan
 - [ ] [F30](docs/features/F30-local-web-peer.md)'s minions tested: the cook measured with and without minions, after this plan (Louis, 2026-10-19)
 - [ ] Build mode, a side note: an idea to look into after this plan, not planned (question 5, Louis, 2026-10-19)
 - [ ] The Azure app behind a key: `puls-app` serves a public ingress with `AGENT_AUTH=off` (CL19 kept it, loudly commented, and locked the ingress to Louis's home IP with `deploy.ps1 lock`), so the Puls web app must send `AGENT_API_KEY` (or a sign-in) before the lock can come off
