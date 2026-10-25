@@ -1,3 +1,4 @@
+using LouisAgent.Api.Endpoints.Git;
 using LouisAgent.Api.Messages;
 using LouisAgent.Api.Sessions;
 using LouisAgent.Core.Guardrails.Workspace;
@@ -36,8 +37,9 @@ internal static class ApiMap
         var v1 = app.MapGroup(Version);
         v1.MapInfo(host);
         v1.MapWorkspace();
-        v1.MapGit();
-        v1.MapHistory();
+        v1.MapGitChanges();
+        v1.MapGitCommits();
+        v1.MapGitBranches();
         v1.MapSessions(host);
 
         // A /v1 path no route matches is the API's JSON 404, not the web app's page (which the fallback outside /v1 would serve).

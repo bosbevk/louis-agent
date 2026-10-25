@@ -1,24 +1,21 @@
-using LouisAgent.Core.Guardrails.Workspace;
-using System.Diagnostics;
-using System.Text;
-using LouisAgent.Core.Agent;
-using LouisAgent.Core.Tools.Workspace;
-using LouisAgent.Core.Messages;
+using LouisAgent.Api.Endpoints.Git.Requests;
 using LouisAgent.Api.Messages;
+using LouisAgent.Core.Agent;
+using LouisAgent.Core.Guardrails.Workspace;
+using LouisAgent.Core.Messages;
+using static LouisAgent.Api.Endpoints.Git.GitProcess;
+using static LouisAgent.Api.Endpoints.Git.Output.GitOutputParser;
 
-namespace LouisAgent.Api.Endpoints;
+namespace LouisAgent.Api.Endpoints.Git;
 
 /// <summary>
-/// A small git interface for the web app: see what changed, read each diff, then stage, unstage, discard or commit.
+/// A small git interface for the web app: see what changed, read each diff, then stage, unstage or discard.
 /// git runs without a shell (arguments are passed as a list) and every path goes through the agent's workspace checks;
 /// secret files (.env, keys) are listed but their diffs are never returned. Pushing is left to the user.
 /// </summary>
-internal static class GitEndpoints
+internal static class GitChangesEndpoints
 {
-    private const int MaxDiffChars = 500_000;
-    private static readonly TimeSpan GitTimeout = TimeSpan.FromSeconds(30);
-
-    public static void MapGit(this IEndpointRouteBuilder routes)
+    public static void MapGitChanges(this IEndpointRouteBuilder routes)
     {
         routes.MapGet("/git/status", async (AgentEngine engine) => await StatusResultAsync(engine));
 
@@ -64,26 +61,6 @@ internal static class GitEndpoints
                 var tracked = paths.Where(p => !untracked.Contains(p)).ToList();
                 return tracked.Count == 0 ? new GitResult(0, "", "") : await RunAsync(engine, ["restore", "--worktree", "--", .. tracked]);
             }));
-
-        routes.MapPost("/git/commit", async (GitCommitRequest request, AgentEngine engine) =>
-        {
-            if (string.IsNullOrWhiteSpace(request.Message))
-                return ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error", MessageText.Format(ApiUserText.CommitMessageRequired));
-
-            var commit = await RunAsync(engine, ["commit", "-m", request.Message.Trim()]);
-            if (commit.ExitCode != 0)
-            {
-                string error = (commit.Error + commit.Output).Trim();
-                if (error.Contains("Please tell me who you are", StringComparison.Ordinal) || error.Contains("empty ident", StringComparison.Ordinal))
-                    error = MessageText.Format(ApiUserText.CommitNoIdentity);
-                else if (error.Contains("nothing to commit", StringComparison.Ordinal) || error.Contains("no changes added", StringComparison.Ordinal))
-                    error = MessageText.Format(ApiUserText.NothingStaged);
-                return ApiErrors.Result(StatusCodes.Status400BadRequest, "git_error", error);
-            }
-
-            var head = await RunAsync(engine, ["log", "-1", "--format=%h %s"]);
-            return await StatusResultAsync(engine, committed: head.Output.Trim());
-        });
     }
 
     private static async Task<IResult> OnPathsAsync(
@@ -99,7 +76,7 @@ internal static class GitEndpoints
     }
 
     /// <summary>Current branch and changed files; also the reply to every change, so the web app refreshes in one call.</summary>
-    private static async Task<IResult> StatusResultAsync(AgentEngine engine, string? committed = null)
+    internal static async Task<IResult> StatusResultAsync(AgentEngine engine, string? committed = null)
     {
         var status = await RunAsync(engine, ["status", "--porcelain=v1", "-z", "--untracked-files=all"]);
         if (status.ExitCode != 0) return GitError(status);
@@ -111,24 +88,6 @@ internal static class GitEndpoints
             files = ParseStatus(status.Output),
             committed,
         });
-    }
-
-    /// <summary>Parses `git status --porcelain=v1 -z`: "XY path", with renames followed by their original path.</summary>
-    internal static List<GitFileStatus> ParseStatus(string output)
-    {
-        var files = new List<GitFileStatus>();
-        var entries = output.Split('\0', StringSplitOptions.RemoveEmptyEntries);
-        for (int i = 0; i < entries.Length; i++)
-        {
-            string entry = entries[i];
-            if (entry.Length < 4) continue;
-            char index = entry[0], workTree = entry[1];
-            string path = entry[3..];
-            string? oldPath = index is 'R' or 'C' && i + 1 < entries.Length ? entries[++i] : null;
-            files.Add(new GitFileStatus(path, oldPath, index.ToString(), workTree.ToString()));
-        }
-
-        return files;
     }
 
     private static IResult? CheckPaths(WorkspaceBoundary workspace, IEnumerable<string> paths)
@@ -148,58 +107,4 @@ internal static class GitEndpoints
 
         return null;
     }
-
-    internal static IResult GitError(GitResult result) =>
-        ApiErrors.Result(StatusCodes.Status400BadRequest, "git_error",
-            string.IsNullOrWhiteSpace(result.Error) ? MessageText.Format(ApiUserText.GitExited, new { result.ExitCode }) : result.Error.Trim());
-
-    // stdout and stderr are kept apart: git prints warnings (e.g. about line endings) on stderr that would corrupt
-    // the porcelain and diff output.
-    internal static async Task<GitResult> RunAsync(AgentEngine engine, IEnumerable<string> args)
-    {
-        var psi = new ProcessStartInfo("git")
-        {
-            WorkingDirectory = engine.WorkspaceRoot,
-            RedirectStandardOutput = true,
-            RedirectStandardError = true,
-            UseShellExecute = false,
-            CreateNoWindow = true,
-            StandardOutputEncoding = Encoding.UTF8,
-            StandardErrorEncoding = Encoding.UTF8,
-        };
-        // Report non-ASCII paths as-is instead of octal-escaped.
-        psi.ArgumentList.Add("-c");
-        psi.ArgumentList.Add("core.quotepath=false");
-        foreach (string arg in args) psi.ArgumentList.Add(arg);
-
-        using var process = Process.Start(psi)!;
-        var output = process.StandardOutput.ReadToEndAsync();
-        var error = process.StandardError.ReadToEndAsync();
-        using var timeout = new CancellationTokenSource(GitTimeout);
-        try
-        {
-            await process.WaitForExitAsync(timeout.Token);
-        }
-        catch (OperationCanceledException)
-        {
-            process.Kill(entireProcessTree: true);
-            return new GitResult(-1, "", $"git timed out after {GitTimeout.TotalSeconds:0}s.");
-        }
-
-        return new GitResult(process.ExitCode, await output, await error);
-    }
-
-    internal sealed record GitResult(int ExitCode, string Output, string Error);
 }
-
-/// <summary>One changed file. Index/WorkTree are git's X/Y status letters (" " = unchanged, "?" = untracked).</summary>
-internal sealed record GitFileStatus(string Path, string? OldPath, string Index, string WorkTree)
-{
-    public bool Untracked => Index == "?";
-    public bool Staged => Index is not (" " or "?");
-    public bool Unstaged => Untracked || WorkTree != " ";
-}
-
-internal sealed record GitPathsRequest(List<string>? Paths);
-
-internal sealed record GitCommitRequest(string? Message);
