@@ -5,9 +5,9 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 
 /// <summary>
-/// A page's lead image as <c>![title](url)</c> (FX24): the photo of the dish on a recipe page, found where a page declares it, not where its body
-/// shows it. A recipe page's photo is often a lazy-loaded image outside <c>main</c>, or one with no alt text, which the page text keeps none of; the
-/// page's JSON-LD (the <c>image</c> of its main entity: a recipe, an article, a product) or its <c>og:image</c> names it for machines. Only an http(s) file that isn't an SVG
+/// A page's lead image as <c>![title](url)</c> (FX24): the page's own declared photo, found where a page declares it, not where its body shows it. A page's
+/// photo is often a lazy-loaded image outside <c>main</c>, or one with no alt text, which the page text keeps none of; the page's JSON-LD (the <c>image</c> of its
+/// main item) or its <c>og:image</c> names it for machines. Only an http(s) file that isn't an SVG
 /// counts, so a data URI or a logo is no lead image.
 /// </summary>
 internal static partial class LeadImage
@@ -59,7 +59,7 @@ internal static partial class LeadImage
     }
 
     /// <summary>The types of entity that describe the site or the page's furniture, never its subject: their image is a logo, an author's face or the page's own.</summary>
-    private static readonly HashSet<string> SiteEntities = new(["Organization", "WebSite", "WebPage", "Person", "ImageObject"], StringComparer.Ordinal);
+    private static readonly HashSet<string> SiteEntities = new(["Organization", "WebSite", "WebPage", "Person", "ImageObject", "BreadcrumbList"], StringComparer.Ordinal);
 
     /// <summary>Whether an entity is a page's subject: it has a type, and not only site types (<c>["Article","WebPage"]</c> is an article).</summary>
     private static bool IsSubject(JsonElement node)

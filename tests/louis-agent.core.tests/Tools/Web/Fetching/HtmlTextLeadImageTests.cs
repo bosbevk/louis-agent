@@ -97,6 +97,32 @@ public class HtmlTextLeadImageTests
         Assert.That(HtmlText.ToText(Html(only + og), Page).Text, Does.StartWith("![Pap en wors tert](https://r.example.co.za/og.jpg)"));
     }
 
+    // The page's main item, whatever it is (ADR 0027: core names no domain). A breadcrumb trail is the page's furniture too.
+    [Test]
+    public void AnArticlePage_GivesItsNewsArticlesImage() =>
+        Assert.That(HtmlText.ToText(Html(JsonLd("""{"@type":"NewsArticle","headline":"Big news","image":["https://r.example.co.za/story.jpg"]}""")), Page).Text,
+            Does.StartWith("![Pap en wors tert](https://r.example.co.za/story.jpg)"));
+
+    [Test]
+    public void AnOrganizationsLogo_BesideARecipe_IsNotTheLeadImage() =>
+        Assert.That(HtmlText.ToText(Html(JsonLd("""[{"@type":"Organization","image":"https://r.example.co.za/logo-photo.jpg"},{"@type":"Recipe","image":"https://r.example.co.za/dish.jpg"}]""")), Page).Text,
+            Does.StartWith("![Pap en wors tert](https://r.example.co.za/dish.jpg)"));
+
+    [Test]
+    public void AnOrganizationAndAWebSiteOnly_GiveNoImageFromJsonLd_SoOgImageIsUsed()
+    {
+        string site = JsonLd("""{"@graph":[{"@type":"Organization","image":"https://r.example.co.za/the-company.jpg"},{"@type":"WebSite","image":"https://r.example.co.za/site.jpg"}]}""");
+
+        Assert.That(HtmlText.ToText(Html(site), Page).Text, Does.Not.Contain("!["), "nothing declared by the page itself");
+        Assert.That(HtmlText.ToText(Html(site + """<meta property="og:image" content="https://r.example.co.za/og.jpg">"""), Page).Text,
+            Does.StartWith("![Pap en wors tert](https://r.example.co.za/og.jpg)"));
+    }
+
+    [Test]
+    public void ABreadcrumbList_IsNoSubject() =>
+        Assert.That(HtmlText.ToText(Html(JsonLd("""{"@graph":[{"@type":"BreadcrumbList","image":"https://r.example.co.za/crumb.jpg"},{"@type":"Article","image":"https://r.example.co.za/story.jpg"}]}""")), Page).Text,
+            Does.StartWith("![Pap en wors tert](https://r.example.co.za/story.jpg)"));
+
     [Test]
     public void ALazyImageWithItsFileInAnotherAttribute_IsKept()
     {
