@@ -1,6 +1,7 @@
 using System.Text.RegularExpressions;
 using LouisAgent.Evals.Runner.Catalog;
 using LouisAgent.Evals.Runner.Evals.Stub;
+using LouisAgent.Evals.Template;
 
 namespace LouisAgent.Evals.Runner.Tests.Layout;
 
@@ -31,6 +32,11 @@ public class EvalLayoutTests
             yield return ProjectOf(set.GetType().Assembly.GetName().Name!, set.GetType().Namespace!, isSet: true, set.Evals, set.GetType());
         var stub = new StubEval();
         yield return ProjectOf(stub.GetType().Assembly.GetName().Name!, "LouisAgent.Evals.Runner", isSet: false, [stub], null);
+
+        // The template (F18 step 5.4c) is never registered, so the runner doesn't know it: this project references it for this test alone, and it is
+        // held to the layout like any set, so a copy of it starts right and the template can't drift from the rule.
+        var template = new TemplateEvalSet();
+        yield return ProjectOf(template.GetType().Assembly.GetName().Name!, template.GetType().Namespace!, isSet: true, template.Evals, template.GetType());
     }
 
     private static EvalProject ProjectOf(string assembly, string rootNamespace, bool isSet, IReadOnlyList<IEval> evals, Type? setType) =>
@@ -74,7 +80,8 @@ public class EvalLayoutTests
             // The stub's scenarios are in code: it proves the protocol, it is not a dataset.
             if (eval.Name != "stub" && !File.Exists(Path.Combine(root, "Dataset", "dataset.json")))
                 missing.Add($"{eval.Name}: Evals/{FolderOf(eval)}/Dataset/dataset.json is missing");
-            if (!Directory.Exists(Path.Combine(root, "Transcripts")))
+            // The template's one exception: git keeps no empty folder, and the conformance rule refuses a stray file such as a README, so it has none yet.
+            if (project.Name != "louis-agent.evals.template" && !Directory.Exists(Path.Combine(root, "Transcripts")))
                 missing.Add($"{eval.Name}: Evals/{FolderOf(eval)}/Transcripts/ is missing");
         }
         Assert.That(missing, Is.Empty, "An eval keeps its data beside it:\n  " + string.Join("\n  ", missing));
@@ -149,12 +156,22 @@ public class EvalLayoutTests
         // A set's root is the set class, the csproj, and Evals/, Shared/ and Messages/. The runner is not a set: its rule is only that the stub is under Evals/.
         if (!project.IsSet) return;
         var allowedFiles = new[] { project.SetType!.Name + ".cs", project.Name + ".csproj" };
-        var allowedFolders = new[] { "Evals", "Shared", "Messages", "bin", "obj" };
+        // The template alone also holds the `dotnet new` template's config (.template.config); a real set doesn't.
+        var allowedFolders = new[] { "Evals", "Shared", "Messages", "bin", "obj" }
+            .Concat(project.Name == "louis-agent.evals.template" ? new[] { ".template.config" } : []).ToArray();
         var stray = Directory.EnumerateFileSystemEntries(project.Folder)
             .Select(Path.GetFileName)
             .Where(name => Directory.Exists(Path.Combine(project.Folder, name!)) ? !allowedFolders.Contains(name) : !allowedFiles.Contains(name) && !name!.EndsWith(".user", StringComparison.Ordinal))
             .ToList();
         Assert.That(stray, Is.Empty, $"{project.Name}'s root holds {string.Join(", ", allowedFiles)} and the folders Evals/, Shared/ and Messages/ only:\n  " + string.Join("\n  ", stray));
+    }
+
+    [Test]
+    public void TheTemplate_IsNeverRegistered_SoNoRunAndNoPortalShowsIt()
+    {
+        Assert.That(Enum.GetNames<EvalSetKind>(), Does.Not.Contain("Template"), "EvalSetKind doesn't list the template");
+        Assert.That(new EvalCatalog(Enum.GetValues<EvalSetKind>().Select(EvalSets.Create).ToList(), new StubEval()).Evals.Select(e => e.Name),
+            Does.Not.Contain("template-example"));
     }
 
     [TestCaseSource(nameof(EachProject))]

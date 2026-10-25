@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- F18 step 5.4c: a project to copy when you start a new eval set (docs/guides/add-an-eval-set.md): the layout of an eval project, with every member
+       present and empty. It is never registered with the runner (EvalSetKind doesn't list it), so no run and no portal ever shows it. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>LouisAgent.Evals.Template</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- An eval's data is beside it (Evals/{Folder}/Dataset and Transcripts). One item, the same in every eval project, copies it to
+         EvalFiles/{assembly}/..., where EvalFiles (the harness) finds it for any eval. TargetPath, not Link: Link would show the files a second time
+         in the IDE under a folder named like the project. -->
+    <None Update="Evals\**\Dataset\**\*;Evals\**\Transcripts\**\*" TargetPath="EvalFiles\$(AssemblyName)\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The harness (ADR 0029) names no identity: an eval project references it and nothing of any identity's. -->
+    <ProjectReference Include="..\louis-agent.evals\louis-agent.evals.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\docs\guides\add-an-eval-set.md" Link="docs\add-an-eval-set.md" />
+  </ItemGroup>
+
+</Project>

@@ -19,6 +19,27 @@ evals here are a quote for the tiles a room needs. `acme` is not in the repo, an
 names the file in the repo that does the same thing today (`StubEval`, `PulsEvalSet`, the Puls dataset, `NoErrorGrader`,
 the stub's transcripts), so you can open working code beside this guide.
 
+## Start from the template
+
+`evals/louis-agent.evals.template` is the project to copy: the layout below with every member present and empty (F18 step 5.4c).
+Its one eval, `Example`, has every `IEval` member with a comment saying what goes there and which section of this guide explains
+it; what needs real work throws `NotImplementedException`, and the dataset has one working scenario, so the loader's rules (the hash,
+the split from the folder, the expected key) are shown working. Copy the folder to `evals/louis-agent.evals.{name}`, rename
+`Template` and `Example`, and follow sections 2 to 9 to fill it in. The template is never registered with the runner (`EvalSetKind`
+doesn't list it), so no run and no portal shows it; `EvalLayoutTests` holds it to the layout, so a copy starts right.
+
+A renamed copy can also be made with `dotnet new` (the template carries its `.template.config`). From `evals/`:
+
+```bash
+dotnet new install louis-agent.evals.template
+dotnet new louis-eval-set -n Acme -o louis-agent.evals.acme    # Template becomes Acme, template becomes acme; rename Example by hand
+dotnet new uninstall louis-agent.evals.template                 # when you are done: the install is on your machine, not in the repo
+```
+
+Then add the project to the solution and give it a tests project as in section 1 below (the commands there create an empty project
+by hand; the copy replaces them, but not the solution entries and the tests project). Everything the copy has is described in the
+sections that follow, so read on with it open.
+
 ## 1. Create the projects
 
 ```bash

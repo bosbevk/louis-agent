@@ -939,6 +939,19 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   referencing itself"), so the item uses `TargetPath`, which MSBuild honours for the copy. The explicit `Transcripts` and `Datasets` link lines of the
   test projects are gone; the fake set keeps its transcripts beside its test. Moved with `git mv`, the tests mirror it; every score, golden file and
   conformance result is unchanged.
+- **Step 5.4c (a template eval project).** `evals/louis-agent.evals.template` is a project to copy when you start a new eval set: the 5.4b layout with every
+  member present and empty. `TemplateEvalSet` lists one eval, `Example` (`Evals/Example/`): every `IEval` member has a one-line comment saying what goes there and
+  which section of `add-an-eval-set.md` explains it; `Name`, `Version`, `Proves` (from `TemplateMessage`, ADR 0009), `Scenarios` (through `EvalFiles`) and `Graders`
+  are real; `ModesAsync`, `ScoresOf` (through `ExampleScorer`), `TurnFactsOf` and the grader's `GradeAsync` throw `NotImplementedException` with no text. Its dataset
+  is valid, with one scenario, so the loader's rules are shown working. It has no `Transcripts/` (git keeps no empty folder, and the conformance rule refuses a
+  stray README): the layout test allows that as the template's one exception, and the same for its `.template.config` at the root. It is never registered
+  (`EvalSetKind` doesn't list it, and a test says so); `EvalLayoutTests` includes it through a project reference that only the tests have, so the template can't
+  drift from the layout. Its tests are `tests/louis-agent.evals.template.tests` (a project of its own, because tests mirror the project): the dataset loads with
+  its grader, the names are set, and each member that should throw does, which tells the next person what is left. The optional `dotnet new` template worked
+  at the first try: `dotnet new install evals/louis-agent.evals.template`, then `dotnet new louis-eval-set -n Acme -o louis-agent.evals.acme` (from `evals/`) gave
+  `AcmeEvalSet`, `LouisAgent.Evals.Acme`, `acme-example`, `louis-agent.evals.acme.csproj`, and the copy built with no warnings; `Example` is renamed by hand. I
+  uninstalled it afterwards (the install lives on the machine, not in the repo). Red before the content: all 5 template tests, and the layout test could not build
+  the template at all; green after: template 5, runner 140. The guide's `run-the-evals.md` link waits for 5.5, which writes it.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

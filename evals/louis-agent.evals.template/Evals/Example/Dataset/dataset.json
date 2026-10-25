@@ -1,0 +1,9 @@
+{
+  "name": "template-example",
+  "version": 1,
+  "covers": "One example scenario, to show the loader's rules working: replace it with what the eval asks of the agent.",
+  "content_hash": "24ce6293f147af0e2c759c073f6b6132ddd413d42adada92df79eb123961481d",
+  "changes": [
+    "2026-10-25: first version, the template's one example scenario"
+  ]
+}

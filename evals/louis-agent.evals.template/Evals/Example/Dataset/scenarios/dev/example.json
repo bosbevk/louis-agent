@@ -1,0 +1,16 @@
+{
+  "id": "example",
+  "input": {
+    "place": null,
+    "time_zone": "Etc/UTC",
+    "messages": [
+      "Replace this with what the user sends."
+    ]
+  },
+  "expected": {
+    "example": true
+  },
+  "categories": [
+    "example"
+  ]
+}
