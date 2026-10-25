@@ -27,7 +27,7 @@ public sealed class CookEval : IEval
 
     public string Name => "puls-cook";
     public string? Identity => "puls";
-    public int Version => 3;
+    public int Version => 4;
     public string Proves => MessageText.Format(PulsEvalMessage.CookProves);
 
     public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions, CancellationToken cancellationToken) =>

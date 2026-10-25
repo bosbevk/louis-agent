@@ -799,7 +799,10 @@
         if (c.Scores.TryGetProperty("ingredients", out var items) && items.ValueKind == JsonValueKind.Number)
         {
             decimal ratio = D(c.Scores, "priced_ratio") ?? 0;
-            yield return new Chip($"priced {c.Scores.GetProperty("priced").GetRawText()} / {items.GetRawText()}", ratio >= 0.8m ? "ok" : ratio < 0.5m ? "bad" : "");
+            // FX24: an estimate counts as priced (the cook's answer while the stores' prices are awaited), said apart.
+            int? estimated = c.Scores.TryGetProperty("estimated", out var estimates) && estimates.ValueKind == JsonValueKind.Number ? estimates.GetInt32() : null;
+            int priced = c.Scores.TryGetProperty("priced", out var shopPrices) && shopPrices.ValueKind == JsonValueKind.Number ? shopPrices.GetInt32() : 0;
+            foreach (var chip in PricedChips.Of(priced, estimated, items.GetInt32(), ratio)) yield return new Chip(chip.Text, chip.Kind);
             // A price without its source is a guess (Louis): orange, never counted as priced.
             if (c.Scores.TryGetProperty("unsourced", out var guessed) && guessed.ValueKind == JsonValueKind.Number && guessed.GetInt32() > 0)
                 yield return new Chip($"guessed {guessed.GetInt32()}", "warn");

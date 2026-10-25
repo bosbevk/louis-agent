@@ -162,8 +162,12 @@ public class PulsPromptsTests
         string cook = Read("specialists/puls-cook.md");
 
         Assert.That(cook, Does.Contain("one image of the dish").And.Contain("![Bobotie](https://…)"));
-        Assert.That(cook, Does.Contain("never one you build from a pattern, never one from another site"));
+        Assert.That(cook, Does.Contain("take the image link itself, whole").And.Contain("never one from another site"));
+        Assert.That(cook, Does.Contain("never a share button, a print or PDF icon, a logo or an avatar"));
         Assert.That(cook, Does.Contain("no image, and nothing said about it"));
+        // FX24 (Louis, 2026-10-26: "there might be some websites who do not have images, we should just exclude them"): a page with no photo is dropped for the next result.
+        Assert.That(cook, Does.Contain("So is a page whose text shows no image of the dish"));
+        Assert.That(cook, Does.Contain("Read at most").And.Contain("show no image"));
     }
 
     [Test]

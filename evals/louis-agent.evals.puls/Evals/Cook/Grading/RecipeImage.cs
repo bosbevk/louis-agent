@@ -19,7 +19,7 @@ namespace LouisAgent.Evals.Puls.Evals.Cook.Grading;
 public sealed class RecipeImage : IGrader
 {
     public string Name => "recipe-image";
-    public int Version => 1;
+    public int Version => 2;
     public GraderKind Kind => GraderKind.FixedRule;
     public bool Required => true;
     public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string> { "recipe_image" }.ToFrozenSet();
@@ -37,15 +37,39 @@ public sealed class RecipeImage : IGrader
         if (view is null || view.Error is not null || view.Answer.Length == 0)
             return Verdict.Unknown(Name, Version, MessageText.Format(GradeMessage.ShopNothingToRead, new { Turn = 1 }));
 
-        var onPages = view.Results.Concat(view.SpecialistResults).SelectMany(Links.ImageUrls).ToHashSet();
+        var onPages = CitedPages(view).SelectMany(Links.RecipePhotos).ToHashSet();
         if (onPages.Count == 0) return Verdict.Unknown(Name, Version, MessageText.Format(GradeMessage.RecipeImageNoneOnPages));
 
-        var shown = Links.ImageUrls(view.Answer);
+        var shown = Links.RecipePhotos(view.Answer);
         if (shown.Count == 0) return Verdict.Fail(Name, Version, MessageText.Format(GradeMessage.RecipeImageMissing));
         return shown.Any(onPages.Contains)
             ? Verdict.Pass(Name, Version, MessageText.Format(GradeMessage.RecipeImageRight))
             : Verdict.Fail(Name, Version, MessageText.Format(GradeMessage.RecipeImageNotFromPage));
     }
+
+    /// <summary>
+    /// The pages whose images count (version 2): the pages the answer links to, found by the <c>URL:</c> line a fetched page's text starts with. An answer built on a
+    /// page with no photo is not failed for the photo of another page the cook only read on the way. When the answer links to no page the cook fetched (or the
+    /// results name none), every result counts, as in version 1.
+    /// </summary>
+    private static IReadOnlyList<string> CitedPages(TurnView view)
+    {
+        var results = view.Results.Concat(view.SpecialistResults).ToList();
+        string answer = Plain(view.Answer);
+        var cited = results.Where(result => UrlOf(result) is { } url && answer.Contains(Plain(url), StringComparison.OrdinalIgnoreCase)).ToList();
+        return cited.Count > 0 ? cited : results;
+    }
+
+    private static string? UrlOf(string result)
+    {
+        const string Marker = "URL:";
+        if (!result.StartsWith(Marker, StringComparison.Ordinal)) return null;
+        string line = result.Split('\n', 2)[0][Marker.Length..].Trim();
+        return line.Length > 0 ? line : null;
+    }
+
+    /// <summary>An address without its scheme, its <c>www.</c> and its closing slash, so the same page written two ways is the same page.</summary>
+    private static string Plain(string text) => text.Replace("https://", "").Replace("http://", "").Replace("www.", "").TrimEnd('/');
 
     private static bool Asked(JsonElement expected) =>
         expected.ValueKind == JsonValueKind.Object && expected.TryGetProperty("recipe_image", out var value) && value.ValueKind == JsonValueKind.True;

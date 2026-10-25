@@ -21,7 +21,7 @@ public class PricesTests
         string answer = "| Bestanddeel | Checkers |\n|---|---|\n| Meel | [R22.99](https://www.checkers.co.za/p/1) |\n"
                         + "| Eiers | onbekend |\n| Melk | ±R18 |\n";
 
-        Assert.That(Prices.Priced(answer), Is.EqualTo(new PriceCount(1, 3, 0, 0)));
+        Assert.That(Prices.Priced(answer), Is.EqualTo(new PriceCount(1, 3, 0, 0, 1)), "the unknown row is neither priced nor an estimate; the Melk one is an estimate");
     }
 
     [Test]
@@ -192,6 +192,17 @@ public class PricesTests
         string answer = HeaderAf + "| Uie | 2 | 1 kg sak | [R34,99](https://www.checkers.co.za/product/onions-1kg-10135699EA) | - | R34,99 Checkers |\n";
 
         Assert.That(Prices.Priced(answer), Is.EqualTo(new PriceCount(1, 1, 0, 0)));
+    }
+
+    // F18 FX24 (Louis, 2026-10-26: "if we give estimates it must now count as priced"): the cook gives estimates, awaiting the stores' word. A row with a rand amount marked
+    // ± or as an estimate is counted as estimated, apart from priced (which stays the shop's own, linked price: EstimatesAtShop reads it) and never as guessed.
+    [Test]
+    public void ARowWithAPlusMinusAmountOrAnEstimateWord_IsEstimated_NotPricedNorGuessed()
+    {
+        string answer = "| Bestanddeel | Vir die resep | Om te koop | Geskatte prys |\n|---|---|---|---|\n"
+                        + "| Wors | 500 g | boerewors 500 g | ± R55 |\n| Ui | 1 ui | ui, 1 stuk | R6 geskat |\n| Sout | na smaak | sout | |\n";
+
+        Assert.That(Prices.Priced(answer), Is.EqualTo(new PriceCount(0, 3, 0, 0, 2)));
     }
 
     [Test]

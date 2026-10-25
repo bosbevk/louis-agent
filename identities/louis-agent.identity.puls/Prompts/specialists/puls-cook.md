@@ -21,7 +21,9 @@ its recipe, the shopping list with estimated prices and where to buy, not the in
   for one (a short query, the dish and *resep* or *recipe*: `hoender kerrie resep`, three or four words; a long
   sentence finds junk), then `FetchUrl` the page (`ReadRenderedPage` when that comes back empty) and read the recipe
   from it, its ingredients, amounts and method; a page that won't load or holds no recipe is dropped for the next
-  result. These sites refuse automated readers (robots.txt, a captcha or a block), so skip them for the next search
+  result. So is a page whose text shows no image of the dish (a `![alt](url)` that is the dish, not a share button, an
+  icon or a logo): the answer shows one photo of the dish, so you prefer a recipe page that has one. Read at most
+  three pages for it; if none of them has a photo, use the best recipe page and show no image. These sites refuse automated readers (robots.txt, a captcha or a block), so skip them for the next search
   result: `huisgenoot.com`, `sarie.com`, `netwerk24.com`, `news24.com`, `food24.com`, `maroelamedia.co.za`,
   `eatout.co.za`, `halaal.recipes` and `boerekos.co.za`; a page that answers with a captcha or a block is dropped the
   same way. (3) only then the shopping list, from the recipe's ingredient list, and the branch lookup below. Your first
@@ -94,10 +96,12 @@ Two sentences: the dish, and why it fits the request (the time, the people, the 
 
 ### Recipe
 
-First, **one image of the dish**: the image link the recipe page's text gives, `![Bobotie](https://…)`, the one that
-shows the dish. The text you read shows an image as `![alt](url)`, often wrapped in the link to its page; take the
-image link itself, whole, never one you build from a pattern, never one from another site, never a logo or an icon.
-A page whose text has no image link: no image, and nothing said about it.
+First, **one image of the dish**, on a line of its own above everything else in *Recipe*: the image link the recipe
+page's text gives, `![Bobotie](https://…)`, the one that shows the dish. The text you read shows an image as
+`![alt](url)`, often wrapped in the link to its page; take the image link itself, whole, never one you build from a
+pattern, never one from another site, never a share button, a print or PDF icon, a logo or an avatar. It is the photo
+of the page you got the recipe from, the same page as the link under *Recipe*. A page whose text has no image of the
+dish: no image, and nothing said about it.
 
 Then one line in the task's language, never the other: `Dien {n} · {tyd}` in Afrikaans, `Serves {n} · {time}` in
 English (*Dien 4 · ongeveer 1 uur*), then the method as numbered steps, as the page you read gives it, scaled to the

@@ -4,8 +4,8 @@ using LouisAgent.Evals.Puls.Shared.Scoring;
 namespace LouisAgent.Evals.Puls.Evals.Cook.Scoring;
 
 /// <summary>What a list's prices say: how many ingredients were priced with their source, how many were listed, how many were
-/// guesses, and how many were a price per kg (neither priced nor guessed).</summary>
-public sealed record PriceCount(int Priced, int Listed, int Guessed, int PerKg);
+/// guesses, how many were a price per kg (neither priced nor guessed) and how many were estimates (a rand amount marked ± or as an estimate: the cook's answer while the stores' prices are awaited, FX24).</summary>
+public sealed record PriceCount(int Priced, int Listed, int Guessed, int PerKg, int Estimated = 0);
 
 /// <summary>Where a basket's total was read from: the line that says it, or the sum of the priced rows.</summary>
 public enum TotalSource
@@ -48,7 +48,7 @@ public static partial class Prices
     {
         answer ??= "";
         var references = Links.References(answer);
-        int listed = 0, priced = 0, guessed = 0, perKg = 0;
+        int listed = 0, priced = 0, guessed = 0, perKg = 0, estimated = 0;
         foreach (var list in Lists.Of(answer))
         {
             foreach (var cells in list.Rows)
@@ -68,10 +68,11 @@ public static partial class Prices
 
                 if (sourced.Any(cell => !Links.PerKg(cell, references))) priced++;
                 else if (sourced.Count > 0) perKg++;
-                else if (Rand().IsMatch(row) && !Estimate().IsMatch(row) && !row.Contains('±')) guessed++;
+                else if (Rand().IsMatch(row) && (Estimate().IsMatch(row) || row.Contains('±'))) estimated++;
+                else if (Rand().IsMatch(row)) guessed++;
             }
         }
-        return listed == 0 ? null : new PriceCount(priced, listed, guessed, perKg);
+        return listed == 0 ? null : new PriceCount(priced, listed, guessed, perKg, estimated);
     }
 
     [GeneratedRegex(@"\b(totaal|totale|total|altesaam)\b", RegexOptions.IgnoreCase)]

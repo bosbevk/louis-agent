@@ -30,7 +30,7 @@ public static class CookScorer
         var follow = turns.Count > 1 ? turns[1] : null;
 
         var price = Prices.Priced(first.Answer);
-        int? items = price?.Listed, priced = price?.Priced, guessed = price?.Guessed, perKg = price?.PerKg;
+        int? items = price?.Listed, priced = price?.Priced, guessed = price?.Guessed, perKg = price?.PerKg, estimated = price?.Estimated;
         int noShopRows = 0, wrongStore = 0;
         if (expected.Shop is ShopExpectation.Any or ShopExpectation.NoBranch && items is > 0)
         {
@@ -39,6 +39,8 @@ public static class CookScorer
             wrongStore = (priced ?? 0) + (guessed ?? 0);
             priced = 0;
             guessed = 0;
+            // The rows below are counted as "no shop, no price" already.
+            estimated = 0;
             noShopRows = items.Value - wrongStore - (perKg ?? 0);
         }
 
@@ -76,10 +78,11 @@ public static class CookScorer
             Priced: priced,
             Unsourced: guessed,
             PerKg: perKg,
+            Estimated: estimated,
             NoShopRows: noShopRows,
             WrongStore: wrongStore,
-            // Right rows over the list's: priced with their source, or rightly without a price where there's no shop.
-            PricedRatio: items is > 0 ? Math.Round((double)(priced!.Value + noShopRows) / items.Value, 2, MidpointRounding.ToEven) : null,
+            // Right rows over the list's: priced with their source, estimated (the cook's answer while the stores' prices are awaited, FX24), or rightly without a price where there's no shop.
+            PricedRatio: items is > 0 ? Math.Round((double)(priced!.Value + estimated!.Value + noShopRows) / items.Value, 2, MidpointRounding.ToEven) : null,
             RandAmounts: turns.Sum(t => Prices.RandAmounts(t.Answer)),
             UnconfirmedMarks: turns.Sum(t => Prices.UnconfirmedMarks(t.Answer)),
             Errors: turns.Count(t => t.Error is not null),

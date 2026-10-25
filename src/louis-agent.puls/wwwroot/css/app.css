@@ -227,6 +227,8 @@ a { color: var(--blue); text-decoration-thickness: 1px; text-underline-offset: 2
 /* Louis: "a min padding around the pics", then bigger, three times: 104 px, a cell tall enough for 10 px above and below. */
 .markdown td:has(> img) { position: relative; padding-left: 128px; height: 124px; }
 .markdown img[data-original] { cursor: zoom-in; }
+/* The recipe's photo (FX24, Louis: "a fixed size to fit in our chat screen", "some rounded corners"): one fixed box, cropped to fit and never stretched, so a tall or a wide photo takes the same room; the product photos in a list's cells keep their own size above. */
+.markdown img:not(td img) { display: block; width: 100%; max-width: 480px; height: 320px; object-fit: cover; border-radius: 16px; margin: 10px 0; background: var(--border); }
 .photo-dialog { padding: 16px; border: 1px solid var(--border); border-radius: 18px; background: #fff; max-width: calc(100vw - 32px); max-height: calc(100vh - 32px); cursor: zoom-out; animation: fade .2s both; }
 .photo-dialog::backdrop { background: rgba(0, 0, 0, .7); }
 .photo-dialog img { display: block; width: min(560px, calc(100vw - 64px)); max-height: calc(100vh - 120px); object-fit: contain; }

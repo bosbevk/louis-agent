@@ -26,6 +26,7 @@ public sealed record CookScores(
     int? Priced,
     int? Unsourced,
     int? PerKg,
+    int? Estimated,
     int NoShopRows,
     int WrongStore,
     double? PricedRatio,

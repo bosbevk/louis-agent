@@ -60,6 +60,16 @@ public static partial class Links
     /// <summary>The images a text shows, as <c>![alt](url)</c> (also inside a link to a page), in order; a plain link is no image.</summary>
     public static IReadOnlyList<string> ImageUrls(string? text) => Image().Matches(text ?? "").Select(m => m.Groups[1].Value).ToList();
 
+    /// <summary>The words in an image's address that make it a share button, an icon or a logo: furniture of the page, never the dish (F18, FX24).</summary>
+    [GeneratedRegex(@"(/plugins/|/icons?/|/emoji/|gravatar|sprite|\b(logo|icon|avatar|badge|button|buttons|share|print|pdf|facebook|twitter|pinterest|linkedin|whatsapp|instagram|youtube|email)\b|[-_./](logo|icon|avatar|badge|button|share|print|pdf|facebook|twitter|pinterest|linkedin|whatsapp)[-_.0-9]*\.(png|jpe?g|gif|svg|webp))", RegexOptions.IgnoreCase)]
+    private static partial Regex PageFurniture();
+
+    /// <summary>
+    /// The images of a text that could be a photo of the dish: <see cref="ImageUrls"/> without the page's share buttons, print and PDF icons, logos and
+    /// avatars, which the pages the cook reads carry (a recipe page's own plugin images are not its recipe's photo).
+    /// </summary>
+    public static IReadOnlyList<string> RecipePhotos(string? text) => ImageUrls(text).Where(url => !PageFurniture().IsMatch(url)).ToList();
+
     /// <summary>Whether a price is a price per kg: it says so, or it's one amount for a product sold by weight.</summary>
     public static bool PerKg(string cell, IReadOnlyDictionary<string, string> references)
     {

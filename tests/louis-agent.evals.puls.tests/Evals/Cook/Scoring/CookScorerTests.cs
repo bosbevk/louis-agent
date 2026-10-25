@@ -69,9 +69,9 @@ public class CookScorerTests
     [Test]
     public void TheScoresDocumentKeys_AreThePythonsKeys()
     {
-        // A renamed property would rename the key in the scores document: this holds the Python's 27 names.
+        // A renamed property would rename the key in the scores document: this holds the Python's 27 names and the estimated count (F18, FX24).
         var element = System.Text.Json.JsonSerializer.SerializeToElement<object>(CookScorer.Score(Dev.Cook("cook-af"), [Turn()], cookOn: false), EvalScores.Json);
-        Assert.That(element.EnumerateObject().Select(p => p.Name), Is.EquivalentTo(new[] { "role", "routed_right", "answered_itself", "hosts", "local_hosts", "shop_hosts", "sources_local", "priced_at_shops", "shop_tool_calls", "deal_tool_calls", "deals_named", "untooled_shops", "no_catalogue_line", "store_for_area", "store_default", "ingredients", "priced", "unsourced", "per_kg", "no_shop_rows", "wrong_store", "priced_ratio", "rand_amounts", "unconfirmed_marks", "errors", "follow_up", "follow_up_handle" }));
+        Assert.That(element.EnumerateObject().Select(p => p.Name), Is.EquivalentTo(new[] { "role", "routed_right", "answered_itself", "hosts", "local_hosts", "shop_hosts", "sources_local", "priced_at_shops", "shop_tool_calls", "deal_tool_calls", "deals_named", "untooled_shops", "no_catalogue_line", "store_for_area", "store_default", "ingredients", "priced", "unsourced", "per_kg", "estimated", "no_shop_rows", "wrong_store", "priced_ratio", "rand_amounts", "unconfirmed_marks", "errors", "follow_up", "follow_up_handle" }));
     }
 
     [Test]
@@ -133,6 +133,18 @@ public class CookScorerTests
 
         Assert.That((scores.Priced, scores.NoShopRows, scores.WrongStore, scores.Ingredients), Is.EqualTo(((int?)0, 1, 1, (int?)2)));
         Assert.That(scores.PricedRatio, Is.EqualTo(0.5));
+    }
+
+    [Test]
+    public void WhereThereIsAShop_EstimatedRowsCountAsPriced_InTheRatio_ButNotInPriced()
+    {
+        // FX24: the cook gives estimates while the stores' answer is awaited; the ratio counts them, `priced` (the shop's own price) stays 0, and `estimated` says how many.
+        string answer = "| Bestanddeel | Vir die resep | Om te koop | Geskatte prys |\n|---|---|---|---|\n"
+                        + "| Wors | 500 g | boerewors 500 g | ± R55 |\n| Ui | 1 ui | ui, 1 stuk | ± R6 |\n| Sout | na smaak | sout | - |\n| Kruie | na smaak | kruie | ± R15 |\n";
+
+        var scores = CookScorer.Score(Dev.Cook("cook-malmesbury"), [Turn(answer, calls: [Start], role: "puls-cook")], cookOn: true);
+
+        Assert.That((scores.Priced, scores.Estimated, scores.Ingredients, scores.PricedRatio), Is.EqualTo(((int?)0, (int?)3, (int?)4, (double?)0.75)));
     }
 
     [Test]

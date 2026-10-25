@@ -568,7 +568,8 @@ else if (_data is { } data)
         if (Int(s, "ingredients") is { } items)
         {
             decimal ratio = Dec(s, "priced_ratio") ?? 0;
-            yield return new Chip($"priced {Str(s, "priced")} / {items}", ratio >= 0.8m ? "ok" : ratio < 0.5m ? "bad" : "");
+            // FX24: an estimate counts as priced (the cook's answer while the stores' prices are awaited), said apart.
+            foreach (var chip in PricedChips.Of(Int(s, "priced") ?? 0, Int(s, "estimated"), items, ratio)) yield return new Chip(chip.Text, chip.Kind);
             if (Int(s, "unsourced") is > 0 and var guessed) yield return new Chip($"guessed {guessed}", "warn");
             // A price per kg given as a pack's (review of PR #58): sourced, but not what the pack costs.
             if (Int(s, "per_kg") is > 0 and var perKg) yield return new Chip($"per kg {perKg}", "warn");
