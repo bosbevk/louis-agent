@@ -1,5 +1,6 @@
 using System.Text.Json;
 using LouisAgent.Core.Logging;
+using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Evals.Api;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Messages;
@@ -48,7 +49,8 @@ public sealed class EvalRunner(ISessionClient sessions, ProtocolWriter protocol,
 
         var started = clock.GetUtcNow();
         string session = await sessions.OpenAsync(
-            new SessionRequest(mode, scenario.Input.Place, scenario.Input.TimeZone, scenario.Id, repeat, $"{run.RunId}:{mode.Name}:{repeat}"),
+            new SessionRequest(mode, scenario.Input.Place, scenario.Input.TimeZone, scenario.Id, repeat, RunTag(run.RunId, mode, repeat),
+                ReplayFor(run, mode, repeat, scenario)),
             cancellationToken);
 
         // The session is closed however its turns end: a turn that throws (a timeout, a dead connection) must not leave it open.
@@ -87,6 +89,19 @@ public sealed class EvalRunner(ISessionClient sessions, ProtocolWriter protocol,
         protocol.Conversation(mode.Name, repeat, scenario.Id, facts[0].Role, JsonSerializer.SerializeToElement<object>(scores, EvalScores.Json),
             (clock.GetUtcNow() - started).TotalSeconds, grades, outcome, errors: facts.Count(f => f.Error is not null));
     }
+
+    /// <summary>The run tag of one mode's repeat: its sessions carry it, and the ledger's rows find their run by it (F18 step 4a: a replay's trial key starts with it).</summary>
+    private static string RunTag(string runId, EvalMode mode, int repeat) => $"{runId}:{mode.Name}:{repeat}";
+
+    /// <summary>
+    /// What a session sends for the web (F18 step 4a). Every eval session sends one, even when it names nothing: that is the mark of an
+    /// eval. A recording leaves its trial out, so the API writes {run tag}/{task}; a replay names the trial the recorded run wrote, the
+    /// key the API wrote there, from the same run tag and the scenario's id.
+    /// </summary>
+    private static WebReplayRequest ReplayFor(EvalRun run, EvalMode mode, int repeat, EvalScenario scenario) =>
+        run.Web == WebReplayMode.Replay && run.Of is { } recorded
+            ? new WebReplayRequest(run.Web, $"{RunTag(recorded, mode, repeat)}/{scenario.Id}")
+            : new WebReplayRequest(run.Web, null);
 
     private async Task<(TurnTranscript Transcript, TurnFacts Facts)> RunTurnAsync(IEval eval, EvalMode mode, int repeat, string task, int number,
         string session, string message,

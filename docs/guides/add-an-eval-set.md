@@ -338,6 +338,29 @@ run page reads only the standard records (your eval's name, version and graders 
 outcome), so every grader you wrote is a chip on its conversation, in your `Graders` order, with its reason on hover
 ([Change the Puls app](change-the-puls-app.md#change-the-admin-portal)).
 
+## 11. Record a run's web input, and replay it
+
+A run that reads the live web measures the website as much as the agent. `--web record` saves every page the browser reads
+during the run; `--web replay --of {runId}` answers from those saved pages later, without opening the browser. Both are
+flags of the same command, and the runner has no web of its own: the API writes and reads the recordings.
+
+```bash
+EVALS=acme BENCHMARK_RUN=acme-before dotnet run --project evals/louis-agent.evals.runner -- run acme --web record
+EVALS=acme BENCHMARK_RUN=acme-after  dotnet run --project evals/louis-agent.evals.runner -- run acme --web replay --of acme-before
+```
+
+- **The run's id** is `BENCHMARK_RUN` when you set it, else `local-` and the time the run started. Set it yourself, so you
+  know what to replay: `--of` takes the recorded run's id, and only its letters, digits, `-` and `_`.
+- **Where the pages live.** The API writes them, into its `REPLAY_DIRECTORY` (the Puls compose sets `/data/replay`, which is
+  `data/puls/replay` on the host). The runner never touches that folder. Without `REPLAY_DIRECTORY` the API refuses a record or
+  a replay with a 400 that says this instance keeps no recordings.
+- **They stay on that machine.** Recordings are private: nothing serves them, and `/data/` is git-ignored, so they never go in
+  the repo.
+- **A replay that misses.** A page the recorded run didn't read comes back to the model as a short text naming its address and
+  saying it can't be opened, so the model treats what it holds as unknown.
+- **Until step 5** only the stub runs, and the stub reads no web: a recording of it saves nothing. The commands above check the
+  flags; a real recording waits for the HTTP session client and for Louis's go, since it spends money.
+
 ## Before you ask for a review
 
 - [ ] The eval's and every grader's names are MCP-safe and unique; versions are at least 1, and bumped with each change.

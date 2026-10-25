@@ -29,11 +29,23 @@ public enum RunnerMessage
     [Description("--repeat needs a whole number, not '{Value}'.")]
     BadRepeat,
 
-    [Description("Usage: run <eval> [--repeat N], or --list.")]
+    [Description("Usage: run <eval> [--repeat N] [--web off|record|replay] [--of <runId>], or --list.")]
     Usage,
 
-    [Description("Unknown argument '{Argument}'. Usage: run <eval> [--repeat N], or --list.")]
+    [Description("Unknown argument '{Argument}'. Usage: run <eval> [--repeat N] [--web off|record|replay] [--of <runId>], or --list.")]
     UnknownArgument,
+
+    [Description("Unknown --web '{Value}'. Use one of: {Supported}.")]
+    UnknownWeb,
+
+    [Description("--web replay needs --of: the recorded run whose pages it replays.")]
+    ReplayNeedsOf,
+
+    [Description("--of needs --web replay: it names the recorded run to replay, and only a replay reads one.")]
+    OfNeedsReplay,
+
+    [Description("--of takes a run id's letters, digits, '-' and '_', not '{Value}'.")]
+    BadOf,
 
     [Description("Eval '{Name}' needs an HTTP session, which step 5 brings; only the stub runs for now.")]
     NoSessionClient,

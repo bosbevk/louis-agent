@@ -1031,7 +1031,9 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
   And an explicit `web: off` was not passed on to a sub-session, which then fell back to the instance default. So: a session that sends
   `replay`, even an empty `{}`, is an eval, and the instance default only fills in a `web` it left out; with no `replay` the session
   is left alone. The runner (4a.3) sends `replay` on every session it opens. This replaces the plan's "a run tag, no `replay`: the
-  default"; the rest of the 4a row stands.
+  default"; the rest of the 4a row stands. The runner's records are `EvalRun(RunId, Repeats, Web?, Of?)` and `SessionRequest`'s
+  `WebReplayRequest(Web?, Of?)`, not the plan's `SessionReplay`, because the runner must be able to leave `web` out so the instance's
+  default applies, and `SessionReplay.Web` isn't nullable.
 
 - **Step 4.5: the portal shows every eval the same way, from one template** (Louis, 2026-10-25: "the front end should probably also
   update to reflect the standard we now implement I mean all future evals will display the same, that's the point?" and, on the choice,

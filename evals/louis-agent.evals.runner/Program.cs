@@ -36,8 +36,10 @@ try
             var runner = new EvalRunner(session, new ProtocolWriter(Console.Out, TimeProvider.System), TimeProvider.System,
                 AgentLogging.For<EvalRunner>());
             // The run's name is the ledger's tag: BENCHMARK_RUN, as the Python checks read it.
-            await runner.RunAsync(eval, new EvalRun(BenchmarkRun.Of(Environment.GetEnvironmentVariable("BENCHMARK_RUN"), TimeProvider.System), run.Repeat),
-                CancellationToken.None);
+            // --web and --of pass on as the run asked; a run with neither leaves the web to the instance's WEB_REPLAY (the API decides).
+            var recorded = new EvalRun(BenchmarkRun.Of(Environment.GetEnvironmentVariable("BENCHMARK_RUN"), TimeProvider.System), run.Repeat,
+                run.Web, run.Of);
+            await runner.RunAsync(eval, recorded, CancellationToken.None);
             return 0;
 
         default:

@@ -579,6 +579,27 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   being recorded; the unit tests hold that): a run tag alone, `replay: {}` with a run tag, `replay: {"web":"record"}` and
   `replay: {"web":"off"}` each gave a 201; `replay: {}` with no run tag gave a 400 (an eval needs its run), and `web: "replay"` with
   no `of` a 400.
+- **Step 4a.3** (`evals/louis-agent.evals.runner/Arguments/CommandLine.cs`, `evals/louis-agent.evals/Running/`, `Api/WebReplayRequest.cs`):
+  the runner takes `run {name} [--repeat N] [--web off|record|replay] [--of <runId>]`, the flags in any order, a flag given twice keeping
+  its last value. `--web` is parsed with `SettingChoice` (ADR 0024); each refusal is a `RunnerMessage` member: `UnknownWeb`, `ReplayNeedsOf`,
+  `OfNeedsReplay`, `BadOf`. Every session the runner opens sends `replay` (the eval's mark), with `web` left out when no `--web` was named,
+  so the instance's `WEB_REPLAY` decides. A replay's `of` is `{ofRunId}:{mode}:{repeat}/{scenario}`, the trial the recording wrote; a
+  recording's is null, so the API writes `{run tag}/{task}`. The runner doesn't check `REPLAY_DIRECTORY` or work out a key the API would
+  refuse (ADR 0029). `EvalRun` and `SessionRequest` carry the flags; the runner's `CannedSessionClient` gains `Opened`, the sessions it was
+  asked to open, so the tests can see what was sent. A cross-check test runs a recording and a replay of its run and compares the replay's
+  `of` with the recorded session's run tag and task, so a later change to the run tag can't break replays quietly.
+  Red first: 17 of the 32 argument tests failed on their assertions (the flags were ignored, so a refusal never came), and 2 of the 12
+  runner tests failed on the stub's raw run id where the trial's key belongs (`run_A` for `run_A:cook:1/pannekoek`). Two passed at once
+  (a run with no flags, and a recording's `of` null), since the stub already sent the mark and no trial. Green: runner tests 62, harness
+  131, all 14 suites of the solution.
+- **Close of step 4a.** What is recorded: each visit the browser makes in a recording session (its address, script, ready selector, time,
+  the page's HTML, captured answers, script result and cookies), once per hash under `pages/` and one index line per visit under
+  `trials/`, in the API's `REPLAY_DIRECTORY` (`data/puls/replay` on the host, under the Puls compose). A failed visit is recorded as its
+  text. A replay answers each ask from the trial's first recording of it and never opens Chrome; an ask the recording didn't read comes
+  back to the model as: "{url} was not read in the recorded run, so this replay can't open it: replays read only recorded pages. Treat
+  what it holds as unknown." The runner never touches the folder. Still live until 4b: search, `FetchUrl` and the clock (a replay doesn't
+  yet answer them from the recording). Model answers replay in 4e; `replay.model` is refused until then. Recordings stay on the machine
+  that made them, and the guide says how to record and replay (*Add an eval set*, section 11).
 - **Notes for step 5** (from the review of 4.2): `PulsEvalSet`'s `TurnView` builds on `EngineEvents`, so the route, the errors and the
   cost come from one reader. If an expected route goes in a scenario's `expected`, `RoutedToGrader` must declare that key in its
   `ExpectedKeys`. When the HTTP client sets a turn's `Failure`, the turn line must carry it, so `ProtocolTranscripts` reads it back. A

@@ -8,7 +8,8 @@ namespace LouisAgent.Evals.Runner.Stub;
 
 /// <summary>
 /// A session client that answers the stub's canned turns and never calls the API. Its session ids are the Python stub's
-/// (<c>sess_stub_{mode}_{repeat}_{task}</c>), so the protocol's lines match line for line.
+/// (<c>sess_stub_{mode}_{repeat}_{task}</c>), so the protocol's lines match line for line. It ignores the session's replay: the
+/// stub reads no web, so a recording of it has nothing to save and a replay nothing to answer from (F18 step 4a).
 /// </summary>
 public sealed class StubSessionClient : ISessionClient
 {

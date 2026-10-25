@@ -5,6 +5,7 @@ using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Grading.Common;
 using LouisAgent.Evals.Protocol;
 using LouisAgent.Evals.Trials;
+using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.SessionStream;
 using Microsoft.Extensions.Logging.Abstractions;
 using LouisAgent.Evals.Running;
@@ -158,6 +159,57 @@ public class EvalRunnerTests
         var turnLine = lines.OfType<BenchmarkProtocol.TurnEnded>().Single();
         Assert.That(turnLine.Answer, Is.EqualTo(EngineEvents.AnswerOf(new TurnTranscript(1, "sess_canned", "Gee my resep", turn, TimeSpan.Zero, null))));
         Assert.That(turnLine.Answer, Is.EqualTo("Ja"));
+    }
+
+    // F18 step 4a.3: every session the runner opens sends a replay (the eval's mark); its web and its trial follow the run's flags.
+    private static readonly IReadOnlyList<SessionEvent> OneAnswer =
+        [SessionEvent.From("content_block_delta", Json("""{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Hallo"}}"""))];
+
+    /// <summary>Runs one eval with its sessions answered from <paramref name="turns"/> canned turns; returns the client, with what it was asked to open.</summary>
+    private static async Task<CannedSessionClient> RunAndOpened(EvalRun run, int turns = 1)
+    {
+        var client = new CannedSessionClient(Enumerable.Repeat(OneAnswer, turns).ToArray());
+        var runner = new EvalRunner(client, new ProtocolWriter(new StringWriter(), new FixedClock(At)), new FixedClock(At),
+            NullLogger<EvalRunner>.Instance);
+
+        await runner.RunAsync(new CannedEval(), run, CancellationToken.None);
+        return client;
+    }
+
+    [Test]
+    public async Task WithNoWebFlags_EverySessionStillSendsTheMark_WithNeitherWebNorTrial()
+    {
+        var client = await RunAndOpened(new EvalRun("run_1", 1));
+
+        Assert.That(client.Opened.Select(s => s.Replay), Is.EqualTo(new[] { new WebReplayRequest(null, null) }));
+    }
+
+    [Test]
+    public async Task ARecording_SendsWebRecord_AndNoTrial_SoTheApiResolvesIt()
+    {
+        var client = await RunAndOpened(new EvalRun("run_1", 1, WebReplayMode.Record));
+
+        Assert.That(client.Opened.Select(s => s.Replay), Is.EqualTo(new[] { new WebReplayRequest(WebReplayMode.Record, null) }));
+    }
+
+    [Test]
+    public async Task AReplay_NamesEachTrialTheRecordingWrote_OnePerSessionAndRepeat()
+    {
+        var client = await RunAndOpened(new EvalRun("run_new", 2, WebReplayMode.Replay, "run_A"), turns: 2);
+
+        Assert.That(client.Opened.Select(s => s.Replay.Of), Is.EqualTo(new[] { "run_A:cook:1/pannekoek", "run_A:cook:2/pannekoek" }));
+        Assert.That(client.Opened.Select(s => s.Replay.Web).Distinct(), Is.EqualTo(new[] { WebReplayMode.Replay }));
+    }
+
+    [Test]
+    public async Task AReplayReadsTheKeyTheRecordingWrote()
+    {
+        // The cross-check: a recording's sessions carry a run tag and a task, and the API writes {run tag}/{task} as the trial's key.
+        // A replay of that run must name exactly that key, so a later change to the run tag can't break replays silently.
+        var recorded = (await RunAndOpened(new EvalRun("run_R", 1, WebReplayMode.Record))).Opened.Single();
+        var replayed = (await RunAndOpened(new EvalRun("run_new", 1, WebReplayMode.Replay, "run_R"))).Opened.Single();
+
+        Assert.That(replayed.Replay.Of, Is.EqualTo($"{recorded.RunTag}/{recorded.Task}"));
     }
 
     /// <summary>A session whose send fails, as a timed-out connection does; it records which sessions were closed.</summary>
