@@ -38,6 +38,18 @@ public class FetchUrlTests
     }
 
     [Test]
+    public async Task APageOverTheLimit_WithNoStore_IsTooLarge()
+    {
+        // 58210fe: "too large" is decided by HttpRequestError.ConfigurationLimitExceeded. Its other tests go through the recorder or a stub's own
+        // error; this is the path every live chat takes, where the limit is HttpClient.MaxResponseContentBufferSize.
+        var tools = WebToolsOn(_ => new HttpResponseMessage(HttpStatusCode.OK) { Content = new ByteArrayContent(new byte[6 * 1024 * 1024]) });
+
+        string result = await tools.FetchUrl("https://example.com/big");
+
+        Assert.That(result, Does.Contain("larger than 5 MB"));
+    }
+
+    [Test]
     public async Task ADamagedPdf_IsAnAnswer_NotACrash()
     {
         // PR #28 review: only one of PdfPig's exception types was caught.
