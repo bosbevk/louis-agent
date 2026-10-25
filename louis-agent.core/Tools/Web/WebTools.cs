@@ -188,7 +188,7 @@ public sealed class WebTools
         {
             return MessageText.Format(ToolMessage.ErrorWithReason, new { Reason = blocked.Message });
         }
-        catch (HttpRequestException ex) when (ex.Message.Contains("buffer", StringComparison.OrdinalIgnoreCase))
+        catch (HttpRequestException ex) when (ex.HttpRequestError == HttpRequestError.ConfigurationLimitExceeded)
         {
             return MessageText.Format(WebToolMessage.FetchTooLarge, new { Megabytes = PageFetcher.MaxResponseBytes / (1024 * 1024) });
         }

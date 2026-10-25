@@ -197,6 +197,28 @@ public class RecordedFetchHandlerTests
     }
 
     [Test]
+    public async Task AMissOnAnAddressWithBufferInIt_IsAMiss_NotTheTooLargeText()
+    {
+        // Review of 4b.3: FetchUrl decided "too large" by looking for "buffer" in the error text, and a miss carries its address.
+        using var folder = new ReplayFolder();
+
+        string text;
+        using (Using(WebReplayMode.Replay, "t")) text = await ToolsOn(new StubHandler(NoNetwork), folder, NoDns).FetchUrl("https://en.wikipedia.org/wiki/Buffer_overflow");
+
+        Assert.That(text, Does.Contain("was not read in the recorded run").And.Not.Contain("larger than"));
+    }
+
+    [Test]
+    public async Task AFailureWhoseTextSaysBuffer_IsStillAFetchFailure_NotTheTooLargeText()
+    {
+        using var folder = new ReplayFolder();
+
+        string text = await ToolsOn(new StubHandler(_ => throw new HttpRequestException("the buffer pool is exhausted")), folder).FetchUrl(Page);
+
+        Assert.That(text, Does.Contain("buffer pool").And.Not.Contain("larger than"));
+    }
+
+    [Test]
     public async Task AReplayWithNoStore_StillChecksTheAddress()
     {
         // The pre-check is skipped only when the fetcher has a store and the flow is a replay: a fetcher without one resolves as always.
