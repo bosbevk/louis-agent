@@ -90,4 +90,54 @@ public class BenchmarkRescoreTests
 
     private static string GradesOf(BenchmarkDocuments.Conversation conversation) =>
         JsonSerializer.Serialize(conversation.Grades?.Select(g => (g.Grader, g.Version, g.Outcome))) + conversation.Outcome;
+
+    // Review of 5b.2: the export was written to the runner's stdin inside the runner's lock, so a runner that is slow to read it (or never does) held every other start
+    // behind it. It is written on its own task now. The stand-in "runner" is a Python script that sleeps and never reads its stdin; with a big export, a write inside
+    // StartRescore would not return until the process ended.
+    [Test]
+    public async Task StartRescore_ReturnsAtOnce_EvenWhenTheRunnerNeverReadsItsStdin()
+    {
+        string script = Path.Combine(Path.GetTempPath(), "louis-sleeper-" + Guid.NewGuid().ToString("N") + ".py");
+        File.WriteAllText(script, "import time\ntime.sleep(4)\n");
+        try
+        {
+            var runner = new BenchmarkRunner(new BenchmarkCatalog([Stub]), TestPaths.RepoRoot, "http://127.0.0.1:1/", Python, script, evalHost: Python);
+            string export = new('x', 20_000_000);
+            var started = System.Diagnostics.Stopwatch.StartNew();
+
+            var run = runner.StartRescore("stub", "old123456789", export)!;
+
+            Assert.That(started.Elapsed, Is.LessThan(TimeSpan.FromSeconds(2)), "the write must not hold the start");
+            await foreach (string _ in runner.EventsAsync(run.Id)) { }
+        }
+        finally
+        {
+            File.Delete(script);
+        }
+    }
+
+    [Test]
+    public async Task ThePump_WritesEverythingAndCloses_AndToleratesARunnerThatHasGone()
+    {
+        var writer = new RecordingWriter();
+        await BenchmarkRunner.PumpAsync(writer, "@{}\n");
+        Assert.That((writer.Text, writer.Closed), Is.EqualTo(("@{}\n", true)));
+
+        Assert.That(async () => await BenchmarkRunner.PumpAsync(new RecordingWriter(throwOnWrite: true), "@{}\n"), Throws.Nothing, "a runner that ended without reading is not an error here");
+    }
+
+    private sealed class RecordingWriter(bool throwOnWrite = false) : StringWriter
+    {
+        public bool Closed { get; private set; }
+
+        public string Text => ToString();
+
+        public override Task WriteAsync(string? value) => throwOnWrite ? throw new IOException("Broken pipe") : base.WriteAsync(value);
+
+        public override void Close()
+        {
+            Closed = true;
+            base.Close();
+        }
+    }
 }

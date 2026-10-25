@@ -79,6 +79,8 @@ public static class CookScorer
             Unsourced: guessed,
             PerKg: perKg,
             Estimated: estimated,
+            // FX24: the photos of the dish the answer shows (share buttons and logos are none), so the portal can say whether the answer had one.
+            Images: Links.RecipePhotos(first.Answer).Count,
             NoShopRows: noShopRows,
             WrongStore: wrongStore,
             // Right rows over the list's: priced with their source, estimated (the cook's answer while the stores' prices are awaited, FX24), or rightly without a price where there's no shop.

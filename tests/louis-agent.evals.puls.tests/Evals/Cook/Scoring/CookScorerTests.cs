@@ -71,7 +71,7 @@ public class CookScorerTests
     {
         // A renamed property would rename the key in the scores document: this holds the Python's 27 names and the estimated count (F18, FX24).
         var element = System.Text.Json.JsonSerializer.SerializeToElement<object>(CookScorer.Score(Dev.Cook("cook-af"), [Turn()], cookOn: false), EvalScores.Json);
-        Assert.That(element.EnumerateObject().Select(p => p.Name), Is.EquivalentTo(new[] { "role", "routed_right", "answered_itself", "hosts", "local_hosts", "shop_hosts", "sources_local", "priced_at_shops", "shop_tool_calls", "deal_tool_calls", "deals_named", "untooled_shops", "no_catalogue_line", "store_for_area", "store_default", "ingredients", "priced", "unsourced", "per_kg", "estimated", "no_shop_rows", "wrong_store", "priced_ratio", "rand_amounts", "unconfirmed_marks", "errors", "follow_up", "follow_up_handle" }));
+        Assert.That(element.EnumerateObject().Select(p => p.Name), Is.EquivalentTo(new[] { "role", "routed_right", "answered_itself", "hosts", "local_hosts", "shop_hosts", "sources_local", "priced_at_shops", "shop_tool_calls", "deal_tool_calls", "deals_named", "untooled_shops", "no_catalogue_line", "store_for_area", "store_default", "ingredients", "priced", "unsourced", "per_kg", "estimated", "images", "no_shop_rows", "wrong_store", "priced_ratio", "rand_amounts", "unconfirmed_marks", "errors", "follow_up", "follow_up_handle" }));
     }
 
     [Test]
@@ -145,6 +145,16 @@ public class CookScorerTests
         var scores = CookScorer.Score(Dev.Cook("cook-malmesbury"), [Turn(answer, calls: [Start], role: "puls-cook")], cookOn: true);
 
         Assert.That((scores.Priced, scores.Estimated, scores.Ingredients, scores.PricedRatio), Is.EqualTo(((int?)0, (int?)3, (int?)4, (double?)0.75)));
+    }
+
+    [Test]
+    public void TheScores_CountTheRecipePhotosTheAnswerShows_NotTheShareButtons()
+    {
+        // FX24 (Louis, 2026-10-26: "i need to see here recipe-image"): the portal's row says whether the answer showed a photo of the dish.
+        string shown = "![Bobotie](https://marindakook.co.za/wp-content/bobotie.jpg)\n\n![](https://x.co.za/wp-content/plugins/share/facebook.png)\n\nDien 4";
+
+        Assert.That(CookScorer.Score(Dev.Cook("cook-af"), [Turn(shown, calls: [Start], role: "puls-cook")], cookOn: true).Images, Is.EqualTo(1));
+        Assert.That(CookScorer.Score(Dev.Cook("cook-af"), [Turn("Dien 4", calls: [Start], role: "puls-cook")], cookOn: true).Images, Is.EqualTo(0));
     }
 
     [Test]

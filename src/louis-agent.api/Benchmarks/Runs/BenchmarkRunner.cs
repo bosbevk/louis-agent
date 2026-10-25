@@ -11,8 +11,9 @@ namespace LouisAgent.Api.Benchmarks.Runs;
 /// ledger and timings. Its lines (stdout and stderr) are kept on the run and streamed to listeners.
 /// </summary>
 /// <param name="interpreter">The Python to run; <c>python3</c> in the containers.</param>
+/// <param name="evalHost">What runs the eval runner's dll: <c>dotnet</c>; a test gives a stand-in.</param>
 public sealed class BenchmarkRunner(BenchmarkCatalog catalog, string workspaceRoot, string pulsApi, string interpreter = "python3",
-    string evalRunner = AdminOptions.DefaultEvalRunner)
+    string evalRunner = AdminOptions.DefaultEvalRunner, string evalHost = "dotnet")
 {
     /// <summary>Repeats one run may ask for.</summary>
     public const int MaxRepeat = 5;
@@ -73,7 +74,7 @@ public sealed class BenchmarkRunner(BenchmarkCatalog catalog, string workspaceRo
     /// </summary>
     internal ProcessStartInfo StartInfoFor(BenchmarkCheck check, BenchmarkRun run)
     {
-        var start = new ProcessStartInfo(check.Kind == BenchmarkCheckKind.Eval ? "dotnet" : interpreter)
+        var start = new ProcessStartInfo(check.Kind == BenchmarkCheckKind.Eval ? evalHost : interpreter)
         {
             WorkingDirectory = workspaceRoot,
             UseShellExecute = false,
@@ -130,14 +131,14 @@ public sealed class BenchmarkRunner(BenchmarkCatalog catalog, string workspaceRo
     }
 
     /// <summary>Writes the stored run's export to the runner's stdin and closes it; a runner that ended without reading it is not an error here, its exit code says how it ended.</summary>
-    private static void PipeInput(Process process, string input)
+    internal static async Task PumpAsync(TextWriter stdin, string input)
     {
         try
         {
-            process.StandardInput.Write(input);
-            process.StandardInput.Close();
+            await stdin.WriteAsync(input);
+            stdin.Close();
         }
-        catch (IOException)
+        catch (Exception ex) when (ex is IOException or ObjectDisposedException or InvalidOperationException)
         {
         }
     }
@@ -161,7 +162,8 @@ public sealed class BenchmarkRunner(BenchmarkCatalog catalog, string workspaceRo
             process.Start();
             process.BeginOutputReadLine();
             process.BeginErrorReadLine();
-            if (run.Input is { } input) PipeInput(process, input);
+            // On its own task: a runner slow to read its stdin (or one that never does) must not hold the start, which holds the runner's lock.
+            if (run.Input is { } input) _ = Task.Run(() => PumpAsync(process.StandardInput, input));
         }
         catch (Exception ex) when (ex is System.ComponentModel.Win32Exception or InvalidOperationException)
         {

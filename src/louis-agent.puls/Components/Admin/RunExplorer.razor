@@ -803,6 +803,8 @@
             int? estimated = c.Scores.TryGetProperty("estimated", out var estimates) && estimates.ValueKind == JsonValueKind.Number ? estimates.GetInt32() : null;
             int priced = c.Scores.TryGetProperty("priced", out var shopPrices) && shopPrices.ValueKind == JsonValueKind.Number ? shopPrices.GetInt32() : 0;
             foreach (var chip in PricedChips.Of(priced, estimated, items.GetInt32(), ratio)) yield return new Chip(chip.Text, chip.Kind);
+            int? images = c.Scores.TryGetProperty("images", out var shown) && shown.ValueKind == JsonValueKind.Number ? shown.GetInt32() : null;
+            if (ImageChip.Of(images) is { } image) yield return new Chip(image.Text, image.Kind);
             // A price without its source is a guess (Louis): orange, never counted as priced.
             if (c.Scores.TryGetProperty("unsourced", out var guessed) && guessed.ValueKind == JsonValueKind.Number && guessed.GetInt32() > 0)
                 yield return new Chip($"guessed {guessed.GetInt32()}", "warn");
