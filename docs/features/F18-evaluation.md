@@ -101,6 +101,9 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
 - **4.5b** The admin rows carry the standard records: the run's eval, version, commit and graders; a conversation's grades and outcome; null from before 2a
 - **4.5c** Every eval's grades in the portal, from one template: `GradeChips` and `GraderList`, and the `PortalReadsNoScoreKeyTests` ratchet
 - **4a** Web input recorded and replayed: the browser
+  - **4a.1** The replay store and the recorded browser (core only; nothing uses them yet)
+  - **4a.2** Sessions record and replay the browser: the settings, one browser per process, `replay` on `POST /sessions`, sub-sessions
+  - **4a.3** The runner's `--web record|replay` and `--of`
 - **4b** The same for search, fetch and the clock
 - **4c** The prompt's hash on every ledger row
 - **4d** Traces per turn and tool call
@@ -526,6 +529,19 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   FixedRule`); on the Conversations level each of the four rows shows, under its Puls chip (`Puls itself ✓` or `puls-cook ✓`), a
   green `Pass` outcome chip and then `no-error` and `within-time`, both green, in the grader order. `commit` is `unknown` in the image: the Docker build has no git, so
   `EvalBuild.Commit` falls back (step 2a's "unknown when absent"); a build argument would carry it, left for step 7b.
+- **Step 4a.1** (`louis-agent.core/Sessions/Replay/`, `Tools/Web/Replay/`): `WebReplayMode { Off, Record, Replay }` and `SessionReplay(Web, Of,
+  Model)`, held in an `AsyncLocal` as `UserPlace` is, with `DefaultMode` parsing `WEB_REPLAY` once with `SettingChoice`; `WebReplayStore`
+  (a page once per SHA-256 of its JSON bytes in `pages/`, one index line per visit in `trials/{safe name}.jsonl`, appended under one lock);
+  `RecordedWebBrowser` around `IWebBrowser`. The key of an ask is its `AbsoluteUri`, script and ready selector, ordinal; `capture` and
+  the cookies a visit starts with are not saved. A replay answers from the *first* recording and keeps no counters; a failed visit is
+  recorded as its text with no hash and replays as the same `WebBrowserException`; a cancel is never recorded. A trial key reaches the
+  disk only through `TrialFileName` (unsafe characters to `_`, cut to 100, then `-` and 12 hex digits of the key's SHA-256), and
+  `TrialFileName.Under` refuses any path outside the folder. Two findings against the brief: `Tools/Web/Replay/` is at its six files
+  (`ReplayedVisit` was folded into a tuple from `FindAsync`), so 4b's decorators need a subfolder or a split; and `ErrorMessage.cs` had
+  room for one member, not three, so `UnknownWebReplay` is there and the two developer-facing exceptions are in a new `ReplayMessage`
+  (`MessageEnumTests` pins core's enums by name, and its expected list gained that one name; the other way out was adding `ErrorMessage.cs`
+  to `FileSizeTests`' oversized list, which only shrinks). The one golden change is the new `ToolMessage.ReplayMiss`; `ModelRequestSnapshot.json`
+  is unchanged. Red first: 33 tests on `NotImplementedException` from the stubs.
 - **Notes for step 5** (from the review of 4.2): `PulsEvalSet`'s `TurnView` builds on `EngineEvents`, so the route, the errors and the
   cost come from one reader. If an expected route goes in a scenario's `expected`, `RoutedToGrader` must declare that key in its
   `ExpectedKeys`. When the HTTP client sets a turn's `Failure`, the turn line must carry it, so `ProtocolTranscripts` reads it back. A

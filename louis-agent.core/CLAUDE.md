@@ -129,7 +129,8 @@ Log.Log(LogLevel.Information, McpServerLogMessage.ToolNameTaken, new { Name = na
 
 - **What counts:** exception messages, log lines, the error strings tools return to the model, and user-facing text
   (`/usage`, the usage line, CLI help). Enums by kind (`ErrorMessage`, `LogMessage`, `ToolMessage`, `UserText`), each
-  member named for what happened, not for its wording.
+  member named for what happened, not for its wording; `ReplayMessage` holds the exception texts of recorded and replayed
+  web input (F18 step 4a), because `ErrorMessage` is at its 200 lines.
 - **Each host keeps its own texts** in its own `Messages/` folder
   ([src/CLAUDE.md](../src/CLAUDE.md#each-hosts-own-texts)).
 - **Not messages:** prompts (system prompt and procedures in `Prompts/`; the orchestrator's triage and fix prompts),

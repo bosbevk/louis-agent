@@ -30,6 +30,9 @@ public enum ErrorMessage
     [Description("Unknown AGENT_AUTH '{Value}'. Use {Supported}.")]
     UnknownAuthMode,
 
+    [Description("Unknown WEB_REPLAY '{Value}'. Use {Supported}.")]
+    UnknownWebReplay,
+
     [Description("{Setting} is required: set it in config/.env.secrets, or set AGENT_AUTH=off to serve without a key on purpose.")]
     ApiKeyRequired,
 

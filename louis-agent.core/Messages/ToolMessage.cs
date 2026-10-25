@@ -240,6 +240,9 @@ public enum ToolMessage
     [Description("The page at {Url} couldn't run the browser's script: {Reason}.")]
     BrowserScriptFailed,
 
+    [Description("{Url} was not read in the recorded run, so this replay can't open it: replays read only recorded pages. Treat what it holds as unknown.")]
+    ReplayMiss,
+
     [Description("Unknown PAGE_RENDERER '{Renderer}'. Supported: {Supported}.")]
     UnknownPageRenderer,
 

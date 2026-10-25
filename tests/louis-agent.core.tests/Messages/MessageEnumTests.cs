@@ -14,9 +14,10 @@ public class MessageEnumTests
         MessageEnums.SelectMany(t => Enum.GetValues(t).Cast<Enum>());
 
     [Test]
-    public void TheFourMessageEnumsExist()
+    public void TheMessageEnumsExist()
     {
-        Assert.That(MessageEnums.Select(t => t.Name), Is.EquivalentTo(new[] { "ErrorMessage", "LogMessage", "ToolMessage", "UserText" }));
+        // ReplayMessage (F18 step 4a): the replay's exception texts, in an enum of their own because ErrorMessage is at its 200 lines.
+        Assert.That(MessageEnums.Select(t => t.Name), Is.EquivalentTo(new[] { "ErrorMessage", "LogMessage", "ReplayMessage", "ToolMessage", "UserText" }));
     }
 
     [Test]
