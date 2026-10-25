@@ -21,7 +21,7 @@ public sealed class RecordedWebBrowser(IWebBrowser inner, WebReplayStore store) 
         if (SessionReplay.Current is not { Web: not WebReplayMode.Off } replay)
             return await inner.VisitAsync(url, capture, session, script, readySelector, cancellationToken);
         if (replay.Of is not { } trial)
-            throw new InvalidOperationException(MessageText.Format(ReplayMessage.NeedsTrial, new { Mode = replay.Web }));
+            throw new InvalidOperationException(MessageText.Format(WebErrorMessage.NeedsTrial, new { Mode = replay.Web }));
 
         var ask = new ReplayAsk(url.AbsoluteUri, script, readySelector);
         return replay.Web == WebReplayMode.Replay

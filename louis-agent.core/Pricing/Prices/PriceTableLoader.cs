@@ -23,7 +23,7 @@ public static class PriceTableLoader
         if (agent.PricesUrl is { } pricesUrl)
         {
             if (!Uri.TryCreate(pricesUrl, UriKind.Absolute, out Uri? url) || url.Scheme is not ("http" or "https"))
-                throw new InvalidDataException(MessageText.Format(ErrorMessage.PricesUrlInvalid, new { Url = pricesUrl }));
+                throw new InvalidDataException(MessageText.Format(PricingErrorMessage.PricesUrlInvalid, new { Url = pricesUrl }));
 
             using var http = handler is null ? new HttpClient() : new HttpClient(handler, disposeHandler: false);
             http.Timeout = PricesUrlTimeout;

@@ -1,4 +1,5 @@
 using System.Reflection;
+using LouisAgent.Core.Config.Messages;
 using LouisAgent.Core.Messages;
 
 namespace LouisAgent.Core.Tests.Messages;
@@ -20,11 +21,12 @@ public class MessageEnumTests
     {
         Assert.That(MessageEnums.Select(t => t.Name), Is.EquivalentTo(new[]
         {
-            "AgentLogMessage", "AgentToolMessage", "ClockToolMessage", "ConfigLogMessage", "CurrencyToolMessage", "DevOpsToolMessage",
-            "DocumentToolMessage", "DotNetToolMessage", "ErrorMessage", "GitToolMessage", "GuardrailToolMessage", "HostingLogMessage",
-            "LoggingLogMessage", "PaymoToolMessage", "PricingLogMessage", "ProtocolLogMessage", "ReplayMessage", "ScriptToolMessage",
-            "ShellToolMessage", "SkillLogMessage", "SubSessionToolMessage", "ToolMessage", "UserText", "UsageLogMessage", "WebLogMessage",
-            "WebToolMessage", "WorkspaceToolMessage",
+            "AgentErrorMessage", "AgentLogMessage", "AgentToolMessage", "ClockToolMessage", "ConfigErrorMessage", "ConfigLogMessage",
+            "CurrencyToolMessage", "DevOpsToolMessage", "DocumentToolMessage", "DotNetToolMessage", "ErrorMessage", "GitToolMessage",
+            "GuardrailErrorMessage", "GuardrailToolMessage", "HostingErrorMessage", "HostingLogMessage", "LlmErrorMessage",
+            "LoggingLogMessage", "PaymoToolMessage", "PricingErrorMessage", "PricingLogMessage", "ProtocolLogMessage", "ScriptToolMessage",
+            "SessionErrorMessage", "ShellToolMessage", "SkillErrorMessage", "SkillLogMessage", "SubSessionToolMessage", "ToolMessage",
+            "UserText", "UsageErrorMessage", "UsageLogMessage", "WebErrorMessage", "WebLogMessage", "WebToolMessage", "WorkspaceToolMessage",
         }));
     }
 
@@ -66,21 +68,21 @@ public class MessageEnumTests
     [Test]
     public void Format_FillsNamedHoles()
     {
-        Assert.That(MessageText.Format(ErrorMessage.UnknownCacheTtl, new { Value = "10m" }), Is.EqualTo("Unknown LLM_CACHE_TTL '10m'. Use 5m or 1h."));
+        Assert.That(MessageText.Format(ConfigErrorMessage.UnknownCacheTtl, new { Value = "10m" }), Is.EqualTo("Unknown LLM_CACHE_TTL '10m'. Use 5m or 1h."));
     }
 
     [Test]
     public void Format_AMissingValue_Throws()
     {
         // A message never goes out with a gap in it.
-        Assert.That(() => MessageText.Format(ErrorMessage.UnknownCacheTtl, new { Other = "x" }),
-            Throws.ArgumentException.With.Message.Contain("ErrorMessage.UnknownCacheTtl needs a value for '{Value}'"));
+        Assert.That(() => MessageText.Format(ConfigErrorMessage.UnknownCacheTtl, new { Other = "x" }),
+            Throws.ArgumentException.With.Message.Contain("ConfigErrorMessage.UnknownCacheTtl needs a value for '{Value}'"));
     }
 
     [Test]
     public void Template_KeepsTheHolesForAStructuredLogger()
     {
-        Assert.That(MessageText.Template(ErrorMessage.UnknownCacheTtl), Is.EqualTo("Unknown LLM_CACHE_TTL '{Value}'. Use 5m or 1h."));
-        Assert.That(MessageText.Holes(MessageText.Template(ErrorMessage.UnknownCacheTtl)), Is.EqualTo(new[] { "Value" }));
+        Assert.That(MessageText.Template(ConfigErrorMessage.UnknownCacheTtl), Is.EqualTo("Unknown LLM_CACHE_TTL '{Value}'. Use 5m or 1h."));
+        Assert.That(MessageText.Holes(MessageText.Template(ConfigErrorMessage.UnknownCacheTtl)), Is.EqualTo(new[] { "Value" }));
     }
 }

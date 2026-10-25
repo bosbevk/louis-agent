@@ -118,11 +118,11 @@ public sealed class AgentEngineFactory
         if (string.IsNullOrEmpty(llm)) llm = null;
         SessionLlm? model = null;
         if (llm is not null && !_sessionLlms.TryGetValue(llm, out model))
-            throw new SessionLlmException(MessageText.Format(ErrorMessage.UnknownSessionLlm,
+            throw new SessionLlmException(MessageText.Format(HostingErrorMessage.UnknownSessionLlm,
                 new { Name = llm, Available = _sessionLlms.Count == 0 ? "none" : string.Join(", ", _sessionLlms.Keys) }));
         if (string.IsNullOrWhiteSpace(tool)) tool = null;
         if (tool is not null && !Catalog.ToolNamesOf(resolved).Contains(tool))
-            throw new ToolsetException(MessageText.Format(ErrorMessage.ToolNotInToolsets,
+            throw new ToolsetException(MessageText.Format(HostingErrorMessage.ToolNotInToolsets,
                 new { Tool = tool, Toolsets = resolved.Count == 0 ? "(none)" : string.Join(", ", resolved.Select(t => t.Name)) }));
 
         string key = string.Join(",", resolved.Select(t => t.Name)) + (role is null ? "" : "|" + role) + LevelSuffix(level)

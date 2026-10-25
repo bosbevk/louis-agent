@@ -33,7 +33,7 @@ unless `AGENT_AUTH=off` ([FX18](../fixes/FX18-auth-fails-closed.md)).
    `GitEndpoints.RunAsync`, with its arguments as a list, never a shell line
    ([ADR 0004](../adr/0004-arguments-as-data.md)).
 5. **Errors and texts.** An error is `ApiErrors.Body(type, message)`, the shape Claude's API uses; every text is a
-   member of `Messages/ApiUserText` (what a client sees) or `ApiLogMessage` (a log line)
+   member of `Messages/ApiUserText` (what a client sees), `ApiLogMessage` (a log line) or `ApiErrorMessage` (an exception's text)
    ([ADR 0009](../adr/0009-message-text-as-enum-templates.md)).
 6. **Document it** in [How the agents and endpoints talk](../AGENT_COMMUNICATION.md#the-http-api-louis-agentapi) and the
    API's design doc.

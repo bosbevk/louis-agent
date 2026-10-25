@@ -21,8 +21,9 @@ too (CL17), so add to core only what every agent needs.
 2. Add a public method with a `[Description]` on it and on each parameter to the toolset's class in
    `Tools/{Toolset}/`. **Every public method on a tool class is a tool**, so helpers stay `private` or `internal`.
    Tool names are unique across every toolset; a duplicate stops start-up.
-3. Return text the model can act on: what went wrong and what to do instead. Every text is a `ToolMessage` member
-   ([ADR 0009](../adr/0009-message-text-as-enum-templates.md)). Keep the output bounded: results over 50,000
+3. Return text the model can act on: what went wrong and what to do instead. Every text is a member of its toolset's
+   `{Area}ToolMessage`, in the toolset's `Tools/{Area}/Messages/` folder; a text two areas return stays in core's
+   `Messages/ToolMessage` ([ADR 0009](../adr/0009-message-text-as-enum-templates.md)). Keep the output bounded: results over 50,000
    characters are summarised, and most toolsets cap their own at 12,000.
 4. If it touches the outside world, use the guards: a path through `WorkspaceBoundary` and `SensitiveFiles`, a URL
    through `SsrfGuard`, and a process through `ProcessRunner` with an argument list, never a command line built from
@@ -60,9 +61,10 @@ and roles live in its identity, not here.
 
 ## Add a message
 
-Pick the enum by kind (`ErrorMessage`, `LogMessage`, `ToolMessage`, `UserText`) and name the member for what happened,
-not for its wording; its `[Description]` is the text, with named holes:
-`MessageText.Format(ErrorMessage.UnknownCacheTtl, new { Value = other })`. A host's own texts live in that host's
+Pick the enum by kind and area: `{Area}ErrorMessage`, `{Area}LogMessage` or `{Area}ToolMessage`, in the area's own
+`Messages/` folder (settings: `Config/Messages/`). A text two areas use goes in core's shared `Messages/` (`ErrorMessage`,
+`ToolMessage`, `UserText`). Name the member for what happened, not for its wording; its `[Description]` is the text,
+with named holes: `MessageText.Format(ConfigErrorMessage.UnknownCacheTtl, new { Value = other })`. A host's own texts live in that host's
 `Messages/` folder. Log through `ILogger` (`AgentLogging.For<T>()`): stderr only, since stdout carries the ACP and MCP
 protocols. The rules are in [Messages and logging](../../louis-agent.core/CLAUDE.md#messages-and-logging).
 

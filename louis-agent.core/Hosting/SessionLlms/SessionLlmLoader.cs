@@ -31,10 +31,10 @@ public static class SessionLlmLoader
         foreach (string name in agent.SessionLlmProfiles)
         {
             if (!HostEnvironment.IsProfileName(name))
-                throw new SessionLlmException(MessageText.Format(ErrorMessage.SessionLlmNameInvalid, new { Name = name }));
+                throw new SessionLlmException(MessageText.Format(HostingErrorMessage.SessionLlmNameInvalid, new { Name = name }));
             string file = Path.Combine(configDirectory ?? "", $".env.{name}");
             if (configDirectory is null || !File.Exists(file))
-                throw new SessionLlmException(MessageText.Format(ErrorMessage.SessionLlmFileMissing, new { Name = name, File = $"config/.env.{name}" }));
+                throw new SessionLlmException(MessageText.Format(HostingErrorMessage.SessionLlmFileMissing, new { Name = name, File = $"config/.env.{name}" }));
 
             var settings = DotEnv.Read(new DotEnvOptions(ignoreExceptions: false, envFilePaths: [file]));
             var llm = LlmOptions.FromEnvironment(key => settings.TryGetValue(key, out string? value) ? value
@@ -59,7 +59,7 @@ public static class SessionLlmLoader
         foreach (var (role, models) in agent.MinionLlms)
             foreach (string model in models)
                 if (model != MinionTools.InstanceLlm && !agent.SessionLlmProfiles.Contains(model, StringComparer.Ordinal))
-                    throw new SessionLlmException(MessageText.Format(ErrorMessage.MinionLlmUnknown, new
+                    throw new SessionLlmException(MessageText.Format(HostingErrorMessage.MinionLlmUnknown, new
                     {
                         Name = model, Role = role, Available = agent.SessionLlmProfiles.Count == 0 ? "none" : string.Join(", ", agent.SessionLlmProfiles),
                     }));

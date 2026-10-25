@@ -186,7 +186,7 @@ public static class ToolsetCatalog
 
         var unknown = requested.Where(n => Find(NameOf(n), toolsets) is null).ToList();
         if (unknown.Count > 0)
-            throw new ToolsetException(MessageText.Format(ErrorMessage.UnknownToolsets,
+            throw new ToolsetException(MessageText.Format(AgentErrorMessage.UnknownToolsets,
                 new { Names = string.Join(", ", unknown), Valid = string.Join(", ", toolsets.Select(t => t.Name)) }));
 
         var optional = requested.Where(IsOptional).Select(NameOf).ToHashSet(StringComparer.Ordinal);
@@ -203,7 +203,7 @@ public static class ToolsetCatalog
         }
         var refused = unavailable.Where(x => !optional.Contains(x.Toolset.Name)).ToList();
         if (refused.Count > 0)
-            throw new ToolsetException(string.Join(" ", refused.Select(x => MessageText.Format(ErrorMessage.ToolsetSettingsMissing,
+            throw new ToolsetException(string.Join(" ", refused.Select(x => MessageText.Format(AgentErrorMessage.ToolsetSettingsMissing,
                 new { x.Toolset.Name, Settings = string.Join(", ", x.Missing) }))));
 
         return resolved;

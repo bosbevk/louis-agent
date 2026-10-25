@@ -1,5 +1,6 @@
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Sessions.Messages;
 
 namespace LouisAgent.Core.Sessions.Replay;
 
@@ -38,7 +39,7 @@ public sealed record SessionReplay(WebReplayMode Web, string? Of, bool Model)
     public static WebReplayMode DefaultMode(string? setting)
     {
         if (!SettingChoice.TryParse(setting, out WebReplayMode? mode))
-            throw new ArgumentException(MessageText.Format(ErrorMessage.UnknownWebReplay,
+            throw new ArgumentException(MessageText.Format(SessionErrorMessage.UnknownWebReplay,
                 new { Value = setting?.Trim(), Supported = string.Join(" or ", SettingChoice.Names<WebReplayMode>()) }));
         return mode ?? WebReplayMode.Off;
     }

@@ -1,6 +1,7 @@
 namespace LouisAgent.Core.Usage.Reports;
 
 using LouisAgent.Core.Pricing.Prices;
+using LouisAgent.Core.Usage.Messages;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Sinks;
 using System.Text.Json;
@@ -25,7 +26,7 @@ public static class UsageReport
             }
             catch (JsonException ex)
             {
-                throw new InvalidDataException(MessageText.Format(ErrorMessage.NotAUsageRecord, new { Path = path, Number = number, Reason = ex.Message }), ex);
+                throw new InvalidDataException(MessageText.Format(UsageErrorMessage.NotAUsageRecord, new { Path = path, Number = number, Reason = ex.Message }), ex);
             }
 
             if (record is not null) yield return record;

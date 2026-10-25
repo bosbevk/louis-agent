@@ -13,7 +13,7 @@ internal sealed class WorkspaceBoundary
     {
         if (string.IsNullOrWhiteSpace(root))
         {
-            throw new ArgumentException(MessageText.Format(ErrorMessage.WorkspaceRootEmpty), nameof(root));
+            throw new ArgumentException(MessageText.Format(GuardrailErrorMessage.WorkspaceRootEmpty), nameof(root));
         }
 
         Root = Path.GetFullPath(root);

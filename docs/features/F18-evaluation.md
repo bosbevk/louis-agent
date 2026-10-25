@@ -632,6 +632,22 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   `Messages/` is allowed everywhere, and its comment says so. `DisplayCurrency.Warn`'s parameter is `PricingLogMessage`. Checks: no
   `tests/*.json` changed against `HEAD`; the `[Description(` lines are 820 before and 815 after, and the diff is exactly the five deleted
   members' lines, nothing added or changed.
+- **Refactor: the message enums split by area, commit 3 of 3 (`ErrorMessage`, and `ReplayMessage` folded in)**. The split closes here:
+  three commits, from `ToolMessage` and `LogMessage` to `ErrorMessage`. The 62 members of `ErrorMessage` went to ten area enums in each
+  area's `Messages/`: `AgentErrorMessage` 8, `ConfigErrorMessage` 6, `GuardrailErrorMessage` 2, `HostingErrorMessage` 6,
+  `LlmErrorMessage` 4 (a new `Llm/Messages/`), `PricingErrorMessage` 15, `SessionErrorMessage` 1 (a new `Sessions/Messages/`),
+  `SkillErrorMessage` 6, `UsageErrorMessage` 1, and `WebErrorMessage` (the two `ReplayMessage` members, renamed from `ReplayMessage`,
+  which is deleted). The API's ten texts left core for `src/louis-agent.api/Messages/ApiErrorMessage`, since only the API's sessions use
+  them. Three texts stay in core's `ErrorMessage` (`MessageNeedsValue` and `MessageHasNoTemplate`, the message system's own, and
+  `ApiKeyRequired`, which the API and the MCP server share). Core's shared `Messages/` now keeps `ErrorMessage`, `ToolMessage`,
+  `UserText` and `MessageText`. Red first: `TheMessageEnumsExist` (the list still had `ReplayMessage` and no area error enums) and
+  `TheHostsHaveMessageEnums` (no `ApiErrorMessage`); the samples that used `ErrorMessage.UnknownCacheTtl` moved to
+  `ConfigErrorMessage` with the green step, since the test project could not compile with the enum missing (the same reason as in commit
+  2). Two things the move needed: `WebErrorMessage`'s two files that use it are in `Tools/Web/Replay/`, a child namespace, so they need a
+  `using` for `Tools.Web.Messages` (a child namespace is not visible to its parent's code); and a `MessageText` doc example had pulled in
+  a `using` for `Config.Messages`, which the doc example doesn't need, so it is removed. Checks: no `tests/*.json` changed against `HEAD`;
+  the `[Description(` lines are 815 before and 815 after, and their diff is empty (the API's texts are read as well). Core tests: 1342
+  passing.
 - **Notes for step 5** (from the review of 4.2): `PulsEvalSet`'s `TurnView` builds on `EngineEvents`, so the route, the errors and the
   cost come from one reader. If an expected route goes in a scenario's `expected`, `RoutedToGrader` must declare that key in its
   `ExpectedKeys`. When the HTTP client sets a turn's `Failure`, the turn line must carry it, so `ProtocolTranscripts` reads it back. A

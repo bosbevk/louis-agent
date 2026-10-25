@@ -31,7 +31,7 @@ template with named holes; the texts the model reads are pinned by a golden file
 
 ## Logging
 
-`ILogger` with Serilog behind it (`Logging/AgentLogging`), every line from a message enum (`LogMessage` in core, each
+`ILogger` with Serilog behind it (`Logging/AgentLogging`), every line from a message enum (an area's `{Area}LogMessage` in core, each
 host's own in its `Messages/`), its holes kept as fields:
 - the console on **stderr only** (stdout carries ACP and MCP), `[INFO]`, `[WARN]`, `[ERROR]` or the call's tag
   (`[TOOL]`, `[MCP]`, `[orchestrator]`);

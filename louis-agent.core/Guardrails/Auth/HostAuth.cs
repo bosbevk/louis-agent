@@ -3,6 +3,7 @@ namespace LouisAgent.Core.Guardrails.Auth;
 using System.Security.Cryptography;
 using System.Text;
 using LouisAgent.Core.Config;
+using LouisAgent.Core.Guardrails.Messages;
 using LouisAgent.Core.Messages;
 
 /// <summary>
@@ -28,7 +29,7 @@ public static class HostAuth
     public static AuthMode Mode(string? setting)
     {
         if (!SettingChoice.TryParse(setting, out AuthMode? mode))
-            throw new ArgumentException(MessageText.Format(ErrorMessage.UnknownAuthMode,
+            throw new ArgumentException(MessageText.Format(GuardrailErrorMessage.UnknownAuthMode,
                 new { Value = setting?.Trim(), Supported = string.Join(" or ", SupportedModes) }));
         return mode ?? AuthMode.Required;
     }

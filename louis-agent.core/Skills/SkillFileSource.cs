@@ -1,6 +1,7 @@
 namespace LouisAgent.Core.Skills;
 
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Skills.Messages;
 using Microsoft.Extensions.FileProviders;
 
 /// <summary>
@@ -30,7 +31,7 @@ public static class SkillFileSource
             var fresh = prompts.Where(p => !ReferenceEquals(p, Core) && !Extra.Contains(p)).Distinct().ToList();
             if (fresh.Count == 0) return;
             if (_provider is not null)
-                throw new InvalidOperationException(MessageText.Format(ErrorMessage.PromptsAddedAfterRead));
+                throw new InvalidOperationException(MessageText.Format(SkillErrorMessage.PromptsAddedAfterRead));
             Extra.AddRange(fresh);
         }
     }

@@ -4,6 +4,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Pricing.Messages;
 using LouisAgent.Core.Pricing.Rates.Mappers;
 
 /// <summary>
@@ -81,18 +82,18 @@ public sealed partial class ExchangeRates
         }
         catch (JsonException ex)
         {
-            throw new InvalidDataException(MessageText.Format(ErrorMessage.RatesNotRatesJson, new { Source = source, Reason = ex.Message }), ex);
+            throw new InvalidDataException(MessageText.Format(PricingErrorMessage.RatesNotRatesJson, new { Source = source, Reason = ex.Message }), ex);
         }
 
-        if (rates is null) throw new InvalidDataException(MessageText.Format(ErrorMessage.RatesEmpty, new { Source = source }));
+        if (rates is null) throw new InvalidDataException(MessageText.Format(PricingErrorMessage.RatesEmpty, new { Source = source }));
         if (!CurrencyCode().IsMatch(rates.Base))
-            throw new InvalidDataException(MessageText.Format(ErrorMessage.RatesBaseNotACurrency, new { Source = source, rates.Base }));
+            throw new InvalidDataException(MessageText.Format(PricingErrorMessage.RatesBaseNotACurrency, new { Source = source, rates.Base }));
         foreach (var (code, rate) in rates.Rates)
         {
             if (!CurrencyCode().IsMatch(code))
-                throw new InvalidDataException(MessageText.Format(ErrorMessage.RatesCodeNotACurrency, new { Source = source, Code = code }));
+                throw new InvalidDataException(MessageText.Format(PricingErrorMessage.RatesCodeNotACurrency, new { Source = source, Code = code }));
             if (rate <= 0)
-                throw new InvalidDataException(MessageText.Format(ErrorMessage.RateNotPositive, new { Source = source, Code = code }));
+                throw new InvalidDataException(MessageText.Format(PricingErrorMessage.RateNotPositive, new { Source = source, Code = code }));
         }
 
         return rates;

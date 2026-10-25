@@ -1,3 +1,4 @@
+using LouisAgent.Api.Messages;
 using LouisAgent.Api.Sessions.Streaming;
 using LouisAgent.Core.Sessions.SubSessions;
 using LouisAgent.Core.Usage.Records;
@@ -60,25 +61,25 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
         SessionReplay? replay = null)
     {
         if (depth is < 0 or > MaxDepth)
-            throw new ToolsetException(MessageText.Format(ErrorMessage.SessionDepthInvalid, new { Max = MaxDepth }));
+            throw new ToolsetException(MessageText.Format(ApiErrorMessage.SessionDepthInvalid, new { Max = MaxDepth }));
         if (string.IsNullOrWhiteSpace(tool)) tool = null;
         if (depth == MinionDepth) CheckMinion(tags, tool);
         else if (tool is not null)
-            throw new ToolsetException(MessageText.Format(ErrorMessage.ToolOnlyForMinions, new { MinionDepth, Depth = depth }));
+            throw new ToolsetException(MessageText.Format(ApiErrorMessage.ToolOnlyForMinions, new { MinionDepth, Depth = depth }));
         // A minion names its tool; the toolset that builds it is implied (StartMinion sends none).
         var names = ToolsetCatalog.Normalise(depth == MinionDepth && toolsets is null ? [engines.Catalog.ToolsetOf(tool!)
-                ?? throw new ToolsetException(MessageText.Format(ErrorMessage.NoToolsetForTool, new { Tool = tool }))]
+                ?? throw new ToolsetException(MessageText.Format(ApiErrorMessage.NoToolsetForTool, new { Tool = tool }))]
             : toolsets ?? DefaultToolsets);
         // A role's own toolsets (F33: the cook's `shops?`, from its file's header) come with it, beside what its parent
         // passed; then every name, optional or not, is held to the same rules.
         names = ToolsetCatalog.Normalise(names.Concat(RoleCatalog.ToolsetsOf(role, (RoleLevel)depth)));
         var plain = names.Select(ToolsetCatalog.NameOf).ToList();
         if (depth > 0 && plain.Contains(SpecialistsToolset))
-            throw new ToolsetException(MessageText.Format(ErrorMessage.SubSessionCannotDelegate, new { Toolset = SpecialistsToolset }));
+            throw new ToolsetException(MessageText.Format(ApiErrorMessage.SubSessionCannotDelegate, new { Toolset = SpecialistsToolset }));
         if (depth == MinionDepth && plain.Contains(MinionsToolset))
-            throw new ToolsetException(MessageText.Format(ErrorMessage.SubSessionCannotDelegate, new { Toolset = MinionsToolset }));
+            throw new ToolsetException(MessageText.Format(ApiErrorMessage.SubSessionCannotDelegate, new { Toolset = MinionsToolset }));
         if (depth == 0 && plain.Contains(MinionsToolset))
-            throw new ToolsetException(MessageText.Format(ErrorMessage.MinionsOnlyForSpecialists));
+            throw new ToolsetException(MessageText.Format(ApiErrorMessage.MinionsOnlyForSpecialists));
         if (string.IsNullOrEmpty(role)) role = null;
         // A sub-session's role is named by its parent (CL10); with none it gets the default mode's voice, no routing.
         if (string.IsNullOrWhiteSpace(llm)) llm = null;
@@ -102,16 +103,16 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
     private void CheckMinion(UsageTags? tags, string? tool)
     {
         if (tool is null)
-            throw new ToolsetException(MessageText.Format(ErrorMessage.MinionNeedsTool, new { Depth = MinionDepth }));
+            throw new ToolsetException(MessageText.Format(ApiErrorMessage.MinionNeedsTool, new { Depth = MinionDepth }));
         if (string.IsNullOrWhiteSpace(tags?.Parent))
-            throw new ToolsetException(MessageText.Format(ErrorMessage.MinionNeedsParent, new { Example = "sess_…#3" }));
+            throw new ToolsetException(MessageText.Format(ApiErrorMessage.MinionNeedsParent, new { Example = "sess_…#3" }));
         string parentId = tags.Parent.Split('#')[0];
         if (Get(parentId) is not { } parent)
-            throw new ToolsetException(MessageText.Format(ErrorMessage.MinionParentUnknown, new { Session = parentId }));
+            throw new ToolsetException(MessageText.Format(ApiErrorMessage.MinionParentUnknown, new { Session = parentId }));
         if (MinionTools.NeverHandedDown.Contains(tool))
-            throw new ToolsetException(MessageText.Format(ErrorMessage.ToolNeverHandedDown, new { Tool = tool }));
+            throw new ToolsetException(MessageText.Format(ApiErrorMessage.ToolNeverHandedDown, new { Tool = tool }));
         if (!parent.Engine.Tools.Any(t => string.Equals(t.Name, tool, StringComparison.Ordinal)))
-            throw new ToolsetException(MessageText.Format(ErrorMessage.ParentLacksTool, new { Tool = tool }));
+            throw new ToolsetException(MessageText.Format(ApiErrorMessage.ParentLacksTool, new { Tool = tool }));
     }
 
     public AgentSession? Get(string id) => _sessions.GetValueOrDefault(id);

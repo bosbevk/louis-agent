@@ -33,7 +33,7 @@ internal sealed class ToolRegistry
     {
         int at = Live.BinarySearch(tool, ByName);
         if (at >= 0)
-            throw new InvalidOperationException(MessageText.Format(ErrorMessage.DuplicateToolName, new { tool.Name }));
+            throw new InvalidOperationException(MessageText.Format(AgentErrorMessage.DuplicateToolName, new { tool.Name }));
         Live.Insert(~at, tool);
     }
 

@@ -1,5 +1,6 @@
 namespace LouisAgent.Core.Config;
 
+using LouisAgent.Core.Config.Messages;
 using LouisAgent.Core.Messages;
 using Microsoft.Extensions.AI;
 
@@ -43,7 +44,7 @@ public sealed class LlmOptions
             "medium" => ReasoningEffort.Medium,
             "high" => ReasoningEffort.High,
             "off" or "none" or "false" => null,
-            var other => throw new ArgumentException(MessageText.Format(ErrorMessage.UnknownThinking, new { Value = other })),
+            var other => throw new ArgumentException(MessageText.Format(ConfigErrorMessage.UnknownThinking, new { Value = other })),
         };
 
     /// <summary>LLM_CACHE: on | off. Null means on. Only providers with a caching strategy act on it (F4: Anthropic).</summary>
@@ -54,7 +55,7 @@ public sealed class LlmOptions
     {
         "on" or "true" => true,
         "off" or "false" => false,
-        var other => throw new ArgumentException(MessageText.Format(ErrorMessage.UnknownCacheSetting, new { Value = other })),
+        var other => throw new ArgumentException(MessageText.Format(ConfigErrorMessage.UnknownCacheSetting, new { Value = other })),
     };
 
     /// <summary>
@@ -69,7 +70,7 @@ public sealed class LlmOptions
     {
         "5m" => CacheLifetime.FiveMinutes,
         "1h" => CacheLifetime.OneHour,
-        var other => throw new ArgumentException(MessageText.Format(ErrorMessage.UnknownCacheTtl, new { Value = other })),
+        var other => throw new ArgumentException(MessageText.Format(ConfigErrorMessage.UnknownCacheTtl, new { Value = other })),
     };
 
     public bool ResolveSupportsTools()

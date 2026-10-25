@@ -30,7 +30,7 @@ public static class ExchangeRatesLoader
         if (agent.RatesUrl is { } ratesUrl)
         {
             if (!Uri.TryCreate(ratesUrl, UriKind.Absolute, out Uri? url) || url.Scheme is not ("http" or "https"))
-                throw new InvalidDataException(MessageText.Format(ErrorMessage.RatesUrlInvalid, new { Url = ratesUrl }));
+                throw new InvalidDataException(MessageText.Format(PricingErrorMessage.RatesUrlInvalid, new { Url = ratesUrl }));
 
             using var http = handler is null ? new HttpClient() : new HttpClient(handler, disposeHandler: false);
             http.Timeout = RatesUrlTimeout;
@@ -69,6 +69,6 @@ public static class ExchangeRatesLoader
     {
         if (!string.Equals(rates.Base, baseCurrency, StringComparison.OrdinalIgnoreCase))
             throw new WrongBaseException(
-                MessageText.Format(ErrorMessage.RatesWrongBase, new { Source = source, rates.Base, Currency = baseCurrency }));
+                MessageText.Format(PricingErrorMessage.RatesWrongBase, new { Source = source, rates.Base, Currency = baseCurrency }));
     }
 }

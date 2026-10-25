@@ -1,6 +1,7 @@
 namespace LouisAgent.Core.Llm;
 
 using LouisAgent.Core.Llm.Caching;
+using LouisAgent.Core.Llm.Messages;
 using LouisAgent.Core.Llm.UsageMapping;
 using System.ClientModel;
 using Anthropic;
@@ -31,11 +32,11 @@ public sealed class LlmClientFactory : ILlmClientFactory
     public IChatClient Create(LlmOptions options)
     {
         if (string.IsNullOrWhiteSpace(options.Model))
-            throw new ArgumentException(MessageText.Format(ErrorMessage.LlmModelRequired), nameof(options));
+            throw new ArgumentException(MessageText.Format(LlmErrorMessage.LlmModelRequired), nameof(options));
 
         if (!_providers.TryGetValue(options.Provider ?? string.Empty, out var create))
             throw new ArgumentException(
-                MessageText.Format(ErrorMessage.UnknownProvider, new { options.Provider, Supported = string.Join(", ", _providers.Keys) }),
+                MessageText.Format(LlmErrorMessage.UnknownProvider, new { options.Provider, Supported = string.Join(", ", _providers.Keys) }),
                 nameof(options));
 
         // Innermost in the engine's pipeline, under the tool loop, so every round is marked.
@@ -64,7 +65,7 @@ public sealed class LlmClientFactory : ILlmClientFactory
     private static IChatClient CreateAnthropic(LlmOptions o)
     {
         if (string.IsNullOrWhiteSpace(o.ApiKey))
-            throw new InvalidOperationException(MessageText.Format(ErrorMessage.AnthropicKeyRequired));
+            throw new InvalidOperationException(MessageText.Format(LlmErrorMessage.AnthropicKeyRequired));
 
         var clientOptions = new ClientOptions { ApiKey = o.ApiKey };
         if (!string.IsNullOrWhiteSpace(o.Endpoint)) clientOptions.BaseUrl = o.Endpoint;
@@ -134,7 +135,7 @@ public sealed class LlmClientFactory : ILlmClientFactory
     private static IChatClient CreateOpenAiCompatible(LlmOptions o)
     {
         if (string.IsNullOrWhiteSpace(o.Endpoint))
-            throw new InvalidOperationException(MessageText.Format(ErrorMessage.OpenAiEndpointRequired));
+            throw new InvalidOperationException(MessageText.Format(LlmErrorMessage.OpenAiEndpointRequired));
 
         // Local servers (LM Studio, vLLM, ...) often need no key, but the SDK requires a non-empty credential.
         var client = new OpenAIClient(

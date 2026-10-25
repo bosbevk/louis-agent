@@ -3,6 +3,7 @@ namespace LouisAgent.Core.Pricing.Prices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Pricing.Messages;
 
 /// <summary>
 /// The operator's price table (<c>config/prices.json</c>, Usage spec §4.2): prices per million tokens, matched to a
@@ -60,18 +61,18 @@ public sealed class PriceTable
         }
         catch (JsonException ex)
         {
-            throw new InvalidDataException(MessageText.Format(ErrorMessage.PriceTableNotValid, new { Source = source, Reason = ex.Message }), ex);
+            throw new InvalidDataException(MessageText.Format(PricingErrorMessage.PriceTableNotValid, new { Source = source, Reason = ex.Message }), ex);
         }
 
-        if (table is null) throw new InvalidDataException(MessageText.Format(ErrorMessage.PriceTableEmpty, new { Source = source }));
+        if (table is null) throw new InvalidDataException(MessageText.Format(PricingErrorMessage.PriceTableEmpty, new { Source = source }));
         foreach (var (model, price) in table.Models)
         {
             IEnumerable<(string Name, decimal Value)> prices = price.All().Concat(
                 price.LongPrompt?.All().Select(p => (Name: $"long_prompt.{p.Name}", p.Value)) ?? []);
             if (prices.FirstOrDefault(p => p.Value < 0) is { Name: { } negative })
-                throw new InvalidDataException(MessageText.Format(ErrorMessage.PriceTableNegativePrice, new { Source = source, Model = model, Price = negative }));
+                throw new InvalidDataException(MessageText.Format(PricingErrorMessage.PriceTableNegativePrice, new { Source = source, Model = model, Price = negative }));
             if (price.LongPrompt is { AboveTokens: <= 0 })
-                throw new InvalidDataException(MessageText.Format(ErrorMessage.PriceTableLongPromptNotPositive, new { Source = source, Model = model }));
+                throw new InvalidDataException(MessageText.Format(PricingErrorMessage.PriceTableLongPromptNotPositive, new { Source = source, Model = model }));
         }
 
         return table;

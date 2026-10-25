@@ -119,13 +119,13 @@ the arrow. A new concern is a new row here and in the test's layers. Every other
 template with **named** holes:
 
 ```csharp
-public enum ErrorMessage
+public enum ConfigErrorMessage
 {
     [Description("Unknown LLM_CACHE_TTL '{Value}'. Use 5m or 1h.")]
     UnknownCacheTtl,
 }
 
-throw new ArgumentException(MessageText.Format(ErrorMessage.UnknownCacheTtl, new { Value = other }));
+throw new ArgumentException(MessageText.Format(ConfigErrorMessage.UnknownCacheTtl, new { Value = other }));
 Log.Log(LogLevel.Warning, PricingLogMessage.RatesUrlUnusable, new { Url = url, Reason = ex.Message });   // holes kept as fields
 Log.Log(LogLevel.Information, McpServerLogMessage.ToolNameTaken, new { Name = name }, tag: "MCP");   // [MCP] …
 ```
@@ -133,9 +133,8 @@ Log.Log(LogLevel.Information, McpServerLogMessage.ToolNameTaken, new { Name = na
 - **What counts:** exception messages, log lines, the error strings tools return to the model, and user-facing text
   (`/usage`, the usage line, CLI help). Enums by kind and area: the shared `ErrorMessage`, `ToolMessage` and
   `UserText` sit in core's `Messages/`; an area's own sit in its `Messages/` folder, named `{Area}ToolMessage`,
-  `{Area}LogMessage` or `{Area}ErrorMessage` (the split by area, F18 refactor). A text two areas use stays shared. Each member
-  is named for what happened, not for its wording; `ReplayMessage` holds the exception texts of recorded and replayed web input
-  (F18 step 4a), because `ErrorMessage` is at its 200 lines.
+  `{Area}LogMessage` or `{Area}ErrorMessage` (the split by area, F18). A text two areas use stays shared. Each member is named
+  for what happened, not for its wording.
 - **Each host keeps its own texts** in its own `Messages/` folder
   ([src/CLAUDE.md](../src/CLAUDE.md#each-hosts-own-texts)).
 - **Not messages:** prompts (system prompt and procedures in `Prompts/`; the orchestrator's triage and fix prompts),

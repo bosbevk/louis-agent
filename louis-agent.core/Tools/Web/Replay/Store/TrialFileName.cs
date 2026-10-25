@@ -1,6 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Tools.Web.Messages;
 
 namespace LouisAgent.Core.Tools.Web.Replay.Store;
 
@@ -29,7 +30,7 @@ public static class TrialFileName
         string root = Path.GetFullPath(folder);
         string full = Path.GetFullPath(Path.Combine(root, fileName));
         if (!full.StartsWith(root + Path.DirectorySeparatorChar, StringComparison.Ordinal))
-            throw new InvalidOperationException(MessageText.Format(ReplayMessage.OutsideFolder, new { Name = fileName }));
+            throw new InvalidOperationException(MessageText.Format(WebErrorMessage.OutsideFolder, new { Name = fileName }));
         return full;
     }
 }

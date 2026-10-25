@@ -280,7 +280,7 @@ public sealed class AgentOptions
     private static string? TimeZoneChecked(string? name) =>
         name is null || TimeZoneInfo.TryFindSystemTimeZoneById(name, out _)
             ? name
-            : throw new ArgumentException(MessageText.Format(ErrorMessage.UnknownHostTimeZone, new { Value = name }));
+            : throw new ArgumentException(MessageText.Format(ConfigErrorMessage.UnknownHostTimeZone, new { Value = name }));
 
     /// <summary>Nearest directory at or above <paramref name="startDirectory"/> containing .git or a .sln file.</summary>
     internal static string? FindRepositoryRoot(string startDirectory)

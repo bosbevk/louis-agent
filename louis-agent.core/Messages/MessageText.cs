@@ -6,9 +6,10 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 
 /// <summary>
-/// The text of every message, kept in message enums (<see cref="ErrorMessage"/>, an area's <c>{Area}LogMessage</c>,
-/// <see cref="ToolMessage"/>, <see cref="UserText"/>): each member's <see cref="DescriptionAttribute"/> is a template with
-/// named holes, e.g. <c>"Unknown LLM_CACHE_TTL '{Value}'. Use 5m or 1h."</c> (docs/CLAUDE.md, *Messages and logging*).
+/// The text of every message, kept in message enums: the shared <see cref="ErrorMessage"/>, <see cref="ToolMessage"/> and
+/// <see cref="UserText"/>, and an area's <c>{Area}ToolMessage</c>, <c>{Area}LogMessage</c> or <c>{Area}ErrorMessage</c>. Each member's
+/// <see cref="DescriptionAttribute"/> is a template with named holes, e.g. <c>"Unknown LLM_CACHE_TTL '{Value}'. Use 5m or 1h."</c>
+/// (docs/CLAUDE.md, *Messages and logging*).
 /// </summary>
 public static partial class MessageText
 {
@@ -19,7 +20,7 @@ public static partial class MessageText
 
     /// <summary>
     /// The member's text with its holes filled from <paramref name="values"/>' properties of the same names, e.g.
-    /// <c>Format(ErrorMessage.UnknownCacheTtl, new { Value = "10m" })</c>. A hole without a value throws, so a message never
+    /// <c>Format(ConfigErrorMessage.UnknownCacheTtl, new { Value = "10m" })</c>. A hole without a value throws, so a message never
     /// goes out with a gap in it.
     /// </summary>
     public static string Format(Enum message, object? values = null)
