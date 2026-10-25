@@ -204,17 +204,16 @@
             @if (_modes.Any(m => Priced(m) is not null))
             {
                 <section class="chart">
-                    <div class="chart-head"><ChartInfo Topic="accuracy" Title="Accuracy per mode" /><span class="legend"><span><span class="sw" style="background: @Right"></span>right</span><span><span class="sw" style="background: @Guess"></span>guessed</span><span><span class="sw" style="background: @Wrong"></span>no price</span></span></div>
+                    <div class="chart-head"><ChartInfo Topic="accuracy" Title="Accuracy per mode" /><span class="legend"><span><span class="sw" style="background: @Right"></span>right</span><span><span class="sw" style="background: @Estimate"></span>estimated</span><span><span class="sw" style="background: @Guess"></span>guessed</span><span><span class="sw" style="background: @Wrong"></span>no price</span></span></div>
                     <div class="donuts">
                         @foreach (var (m, i) in Columns)
                         {
                             <figure class="donut-fig" style="--i: @i">
                                 @if (Priced(m) is { } priced)
                                 {
-                                    int unknown = priced.Ingredients - priced.Priced - priced.Guessed;
-                                    @Ring([priced.Priced, priced.Guessed, unknown], [Right, Guess, Wrong],
-                                        [$"right {priced.Priced}", $"guessed {priced.Guessed}", $"no price {unknown}"],
-                                        $"{(double)priced.Priced / priced.Ingredients:0%}", $"{priced.Priced} / {priced.Ingredients}")
+                                    @Ring([priced.Right, priced.Estimated, priced.Guessed, priced.NoPrice], [Right, Estimate, Guess, Wrong],
+                                        [$"right {priced.Right}", $"estimated {priced.Estimated}", $"guessed {priced.Guessed}", $"no price {priced.NoPrice}"],
+                                        priced.Share, priced.Over)
                                 }
                                 else
                                 {
@@ -472,7 +471,7 @@
     private static readonly string[] Palette = ["#3987e5", "#d95926", "#199e70", "#c98500", "#d55181", "#008300"];
     private const string Own = "#3987e5", Spec = "#f58220";
     // Right and wrong: Puls's own green and danger red, which read on its dark surface.
-    private const string Right = "#38b449", Wrong = "#f26b4f", Guess = "#f58220", Other = "#8a8f98";
+    private const string Right = "#38b449", Estimate = "#9ad6a2", Wrong = "#f26b4f", Guess = "#f58220", Other = "#8a8f98";
 
     /// <summary>The shops the cook prices at (its role's list, F25).</summary>
     private static readonly string[] Shops = ["checkers.co.za", "pnp.co.za", "woolworths.co.za", "spar.co.za", "shoprite.co.za", "usave.co.za"];
@@ -854,17 +853,19 @@
     /// Right is priced with its source, or rightly without a price in a town with no shop (F34: <c>no_shop_rows</c>; a
     /// price there, <c>wrong_store</c>, is red with the rest).
     /// </summary>
-    private static (int Priced, int Ingredients, int Guessed)? Priced(ModeNode m)
+    private static AccuracyRing? Priced(ModeNode m)
     {
-        int priced = 0, items = 0, guessed = 0;
+        int priced = 0, noShop = 0, items = 0, guessed = 0, estimated = 0;
         foreach (var c in m.Conversations)
         {
             if (c.Scores.ValueKind != JsonValueKind.Object || !c.Scores.TryGetProperty("ingredients", out var n) || n.ValueKind != JsonValueKind.Number) continue;
             items += n.GetInt32();
-            priced += Count(c.Scores, "priced") + Count(c.Scores, "no_shop_rows");
+            priced += Count(c.Scores, "priced");
+            noShop += Count(c.Scores, "no_shop_rows");
             guessed += Count(c.Scores, "unsourced");
+            estimated += Count(c.Scores, "estimated");
         }
-        return items == 0 ? null : (priced, items, guessed);
+        return items == 0 ? null : AccuracyRing.Of(priced, noShop, guessed, estimated, items);
     }
 
     private static int Count(JsonElement scores, string name) =>
