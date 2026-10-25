@@ -8,7 +8,6 @@ using LouisAgent.Evals.Puls.Evals.Routing.Scoring;
 using LouisAgent.Evals.Puls.Shared;
 using LouisAgent.Evals.Puls.Shared.Expectations;
 using LouisAgent.Evals.Puls.Shared.Grading;
-using LouisAgent.Evals.Puls.Shared;
 using LouisAgent.Evals.Puls.Shared.Turns;
 
 namespace LouisAgent.Evals.Puls.Evals.Routing;

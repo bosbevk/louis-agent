@@ -952,6 +952,10 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   `AcmeEvalSet`, `LouisAgent.Evals.Acme`, `acme-example`, `louis-agent.evals.acme.csproj`, and the copy built with no warnings; `Example` is renamed by hand. I
   uninstalled it afterwards (the install lives on the machine, not in the repo). Red before the content: all 5 template tests, and the layout test could not build
   the template at all; green after: template 5, runner 140. The guide's `run-the-evals.md` link waits for 5.5, which writes it.
+- **Step 5.4b review fix.** The unit check of the price reader (5.4's weight fix) applied to every amount, and its `x` part caught multipliers: `R69,99 x 2` read as
+  R69, and in `R45 x 2` the R45 was lost, which understates a basket and could pass an over-budget trial. The check now applies only to the thousands-grouped
+  reading (a unit after a grouped number refuses the grouping and takes the plain digits), and there is no `x` part; four test cases pin it (red first: 69.00 and no
+  amount). Two compiler warnings of this branch are gone: a duplicated `using` in `RoutingEval.cs` and a nullable key in the layout test (CS0105, CS8714).
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

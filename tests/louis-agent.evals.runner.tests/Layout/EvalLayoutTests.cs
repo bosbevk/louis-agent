@@ -109,7 +109,7 @@ public class EvalLayoutTests
     {
         string shared = Path.Combine(project.Folder, "Shared");
         var evalFolders = Directory.Exists(Path.Combine(project.Folder, "Evals")) ? Directory.GetDirectories(Path.Combine(project.Folder, "Evals")) : [];
-        var texts = evalFolders.ToDictionary(Path.GetFileName, f => string.Join(Environment.NewLine, SourceFiles(f).Select(File.ReadAllText)))!;
+        var texts = evalFolders.ToDictionary(f => Path.GetFileName(f)!, f => string.Join(Environment.NewLine, SourceFiles(f).Select(File.ReadAllText)));
         var files = SourceFiles(shared).ToDictionary(f => f, f => (Text: File.ReadAllText(f), Types: DeclaredTypes(f).ToList()));
 
         // A file is used by an eval that names one of its types; and by every eval that uses another Shared file that names it (ToolHosts reads the

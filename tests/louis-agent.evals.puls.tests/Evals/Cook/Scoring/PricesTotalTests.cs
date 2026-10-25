@@ -77,6 +77,11 @@ public class PricesTotalTests
     [TestCase("R45 1 kg", 45)]
     [TestCase("R45,99 250 g", 45.99)]
     [TestCase("R1 250,00 500 g", 1250)]
+    // A multiplier after the price is not a unit: the price stays whole (reviewed on 5.4b: the unit check had read R69,99 x 2 as R69, and lost R45 x 2).
+    [TestCase("R69,99 x 2", 69.99)]
+    [TestCase("R45 x 2", 45)]
+    [TestCase("R19,99 × 2", 19.99)]
+    [TestCase("R12 x 3", 12)]
     public void APacksWeightAfterThePrice_IsNotPartOfIt(string price, double expected)
     {
         // `R45 250 g` is R45 for a 250 g pack, not R45 250: a space before a group of three digits looks like a thousands separator.
