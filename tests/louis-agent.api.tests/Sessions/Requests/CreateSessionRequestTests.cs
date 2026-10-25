@@ -1,4 +1,5 @@
 using LouisAgent.Api.Sessions.Requests;
+using System.Text.Json;
 
 namespace LouisAgent.Api.Tests.Sessions.Requests;
 
@@ -15,7 +16,7 @@ public class CreateSessionRequestTests
 
     [Test]
     public void APersonality_IsNotRead() =>
-        Assert.That(System.Text.Json.JsonSerializer.Deserialize<CreateSessionRequest>("""{"personality":"puls-cook"}""", System.Text.Json.JsonSerializerOptions.Web)!.RoleOrNull(),
+        Assert.That(JsonSerializer.Deserialize<CreateSessionRequest>("""{"personality":"puls-cook"}""", JsonSerializerOptions.Web)!.RoleOrNull(),
             Is.Null);
 
     [Test]

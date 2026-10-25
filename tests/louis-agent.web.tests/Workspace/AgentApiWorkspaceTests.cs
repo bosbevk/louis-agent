@@ -57,7 +57,7 @@ public class AgentApiWorkspaceTests
     }
 
     [Test]
-    public async Task AMerge_IsAPostToTheMerges()
+    public async Task AMerge_IsAnAction_APostToMerge()
     {
         await Api().GitMergeAsync("feature/x");
 
