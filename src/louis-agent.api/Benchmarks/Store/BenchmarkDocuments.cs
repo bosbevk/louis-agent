@@ -39,8 +39,17 @@ public static class BenchmarkDocuments
     /// <summary>The model one level of the run ran on (F18 step 2a): its mode, its level and the model ("unknown" when not known).</summary>
     public sealed record ModelUse(string Mode, BenchmarkModelLevel Level, string? Role, string? Model);
 
-    /// <summary>A mode's repeat as it opened its sessions.</summary>
-    public sealed record Mode(string Name, int Repeat, IReadOnlyList<string> Toolsets, string? Role, string? Llm);
+    /// <summary>
+    /// A mode's repeat as it opened its sessions, and (F18 step 5a) the pass@k and pass^k the runner wrote when it was done, over the repeats up to
+    /// this one; null for a run from before the rates, or a repeat still going.
+    /// </summary>
+    public sealed record Mode(string Name, int Repeat, IReadOnlyList<string> Toolsets, string? Role, string? Llm, ModeRates? Rates = null);
+
+    /// <summary>
+    /// What the runner wrote on a mode's <c>mode_done</c> line (F18 step 5a): its pass@k and pass^k (null when no trial counted: never 0), the k they are
+    /// over, and how many trials were left out for the infrastructure or run a second time. The API only keeps them; the formula is the harness's.
+    /// </summary>
+    public sealed record ModeRates(double? PassAtK, double? PassHatK, int K, int Infrastructure, int Retried);
 
     /// <summary>The run's cost, from the ledger with <c>UsageReport.Total</c>; <see cref="Cost"/> null when a price was unknown.</summary>
     public sealed record Total(decimal? Cost, string Currency, long Tokens, int Requests);

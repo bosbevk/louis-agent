@@ -55,8 +55,11 @@ public static class BenchmarkProtocol
     public sealed record ConversationEnded(ConversationKey Key, string? Role, JsonElement Scores, int Errors, double Seconds,
         DateTimeOffset? At = null, IReadOnlyList<GradeInfo>? Grades = null, BenchmarkOutcome? Outcome = null) : Event;
 
-    /// <summary>A mode's repeat is done: a marker only.</summary>
-    public sealed record ModeEnded(string Mode, int Repeat, DateTimeOffset? At = null) : Event;
+    /// <summary>A mode's repeat is done; its rates when the runner wrote them (F18 step 5a), null on a line from before.</summary>
+    public sealed record ModeEnded(string Mode, int Repeat, DateTimeOffset? At = null, RatesInfo? Rates = null) : Event;
+
+    /// <summary>The rates on a <c>mode_done</c> line: pass@k and pass^k (left out when no trial counted), k, and the trials left out or retried.</summary>
+    public sealed record RatesInfo(double? PassAtK, double? PassHatK, int K, int Infrastructure, int Retried);
 
     public sealed record ConversationKey(string Mode, int Repeat, string Task);
 
@@ -90,7 +93,7 @@ public static class BenchmarkProtocol
                 "conversation" => new ConversationEnded(new ConversationKey(Required(e, "mode"), Int(e, "repeat"), Required(e, "task")),
                     Text(e, "role"), Json(e, "scores"), OptionalInt(e, "errors") ?? 0, OptionalNumber(e, "seconds") ?? 0, at,
                     Grades(e), Outcome(e, "outcome")),
-                "mode_done" => new ModeEnded(Required(e, "mode"), Int(e, "repeat"), at),
+                "mode_done" => new ModeEnded(Required(e, "mode"), Int(e, "repeat"), at, Rates(e)),
                 _ => new LogLine(line),
             };
         }
@@ -144,6 +147,12 @@ public static class BenchmarkProtocol
         e.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.String ? value.GetString() : null;
 
     private static string Required(JsonElement e, string name) => Text(e, name) ?? throw new MissingField();
+
+    /// <summary>The rates on a mode_done line (F18 step 5a): there when it names its k, null on a line from before; a rate left out is null, never 0.</summary>
+    private static RatesInfo? Rates(JsonElement e) =>
+        OptionalInt(e, "k") is { } k
+            ? new RatesInfo(OptionalNumber(e, "pass_at_k"), OptionalNumber(e, "pass_hat_k"), k, OptionalInt(e, "infrastructure") ?? 0, OptionalInt(e, "retried") ?? 0)
+            : null;
 
     private static int Int(JsonElement e, string name) => OptionalInt(e, name) ?? throw new MissingField();
 

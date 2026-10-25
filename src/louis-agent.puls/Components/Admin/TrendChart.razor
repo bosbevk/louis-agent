@@ -35,6 +35,8 @@ else
                 @Panel("tools", "Tools (refused or failed)", p => p.ToolsFailed, Percent, fixedTop: 1)
                 @Panel("sources", "Sources (sites read)", p => p.Sites, v => v.ToString("0", CultureInfo.InvariantCulture))
                 @Panel("value", "Value (cost per answer)", p => p.CostPerAnswer is { } c ? (double)c : null, v => Money((decimal)v))
+                @Panel("passat", "pass@k (passed at least once)", p => p.PassAtK, Percent, fixedTop: 1)
+                @Panel("passhat", "pass^k (passed every time)", p => p.PassHatK, Percent, fixedTop: 1)
             </div>
         }
     </div>
@@ -58,7 +60,7 @@ else
     private static string Series(int i) => Palette[i % Palette.Length];
 
     private sealed record Point(string Run, DateTimeOffset At, decimal? Cost, double? Score, double? Tokens, double? SecondsPerTurn,
-        double? CacheShare, double? Sourced, double? ToolsFailed, decimal? CostPerAnswer, double? Sites);
+        double? CacheShare, double? Sourced, double? ToolsFailed, decimal? CostPerAnswer, double? Sites, double? PassAtK = null, double? PassHatK = null);
     private sealed record Line(string Name, List<Point> Points);
 
     private readonly string _id = Guid.NewGuid().ToString("N")[..8];
@@ -70,7 +72,8 @@ else
         _series = Trend.GetProperty("modes").EnumerateArray().Select(m => new Line(m.GetProperty("name").GetString()!,
             m.GetProperty("points").EnumerateArray().Select(p => new Point(p.GetProperty("run").GetString()!, p.GetProperty("at").GetDateTimeOffset(),
                 Money(p, "cost"), Number(p, "score"), Number(p, "tokens"), Number(p, "seconds_per_turn"), Number(p, "cache_share"),
-                Number(p, "sourced"), Number(p, "tools_failed"), Money(p, "cost_per_answer"), Number(p, "sites"))).ToList())).ToList();
+                Number(p, "sourced"), Number(p, "tools_failed"), Money(p, "cost_per_answer"), Number(p, "sites"),
+                Number(p, "pass_at_k"), Number(p, "pass_hat_k"))).ToList())).ToList();
         // Every run on one x axis, in time: a mode missing from a run leaves a gap, not a shifted line.
         _runs = _series.SelectMany(s => s.Points).Select(p => (p.Run, p.At)).Distinct().OrderBy(r => r.At).ToList();
     }

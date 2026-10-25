@@ -78,6 +78,7 @@ internal static class AdminEndpoints
                         run = p.Run, at = p.At, cost = p.Cost, score = p.Score, conversations = p.Conversations,
                         tokens = p.Tokens, seconds_per_turn = p.SecondsPerTurn, cache_share = p.CacheShare, sourced = p.Sourced,
                         tools_failed = p.ToolsFailed, cost_per_answer = p.CostPerAnswer, sites = p.Sites,
+                        pass_at_k = p.PassAtK, pass_hat_k = p.PassHatK, k = p.K,
                     }),
                 }),
             });

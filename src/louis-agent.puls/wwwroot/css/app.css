@@ -1435,6 +1435,10 @@ html:has(.landing) { scroll-behavior: smooth; }
 .tree-mode > summary strong { color: var(--orange-text); font-size: 15px; }
 .tree-meta { color: var(--dim); font-size: 12.5px; }
 .tree-chips { display: inline-flex; flex-wrap: wrap; gap: 5px; margin-left: auto; }
+/* F18 step 5a: a run's pass rates, one line per mode. */
+.mode-rates { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.mode-rate { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.mode-rate-name { font-weight: 600; margin-right: 4px; }
 .chip { font-size: 11px; font-weight: 600; letter-spacing: .2px; padding: 2px 8px; border-radius: 999px; background: rgba(255, 255, 255, .06); color: var(--muted); white-space: nowrap; }
 .chip.ok { background: var(--green-soft); color: var(--green-light); }
 .chip.bad { background: rgba(242, 107, 79, .14); color: var(--danger); }

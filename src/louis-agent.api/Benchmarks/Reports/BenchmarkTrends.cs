@@ -18,7 +18,7 @@ public static class BenchmarkTrends
     /// <summary>One run in one mode.</summary>
     public sealed record Point(string Run, DateTimeOffset At, decimal? Cost, double? Score, int Conversations,
         long? Tokens = null, double? SecondsPerTurn = null, double? CacheShare = null, double? Sourced = null,
-        double? ToolsFailed = null, decimal? CostPerAnswer = null, int? Sites = null);
+        double? ToolsFailed = null, decimal? CostPerAnswer = null, int? Sites = null, double? PassAtK = null, double? PassHatK = null, int? K = null);
 
     /// <summary>One line of the trend: a mode on one model. Its name is the mode, with its model in brackets when the model is named (F18 step 2a).</summary>
     public sealed record Series(string Name, IReadOnlyList<Point> Points, string? Model = null);
@@ -75,6 +75,8 @@ public static class BenchmarkTrends
                 var answered = mode.Where(Answered).Select(c => c.Key).ToHashSet();
                 var answeredCosts = mine.Where(r => r.Turn is not null && answered.Contains(r.Turn.Conversation) && r.Cost is not null).Sum(r => r.Cost!.Value);
 
+                // The runner's rates for this mode, from its last repeat (F18 step 5a): they are cumulative over the repeats, so the last is the mode's.
+                var rates = run.Modes?.Where(m => m.Name == mode.Key && m.Rates is not null).OrderBy(m => m.Repeat).LastOrDefault()?.Rates;
                 points[line].Add(new Point(run.Id, run.StartedAt,
                     costs.Count == 0 ? null : costs.Sum() / repeats,
                     mode.Any() ? (double)right / mode.Count() : null,
@@ -85,7 +87,8 @@ public static class BenchmarkTrends
                     Sourced: listed == 0 ? null : (double)priced / listed,
                     ToolsFailed: calls == 0 ? null : (double)failed / calls,
                     CostPerAnswer: answered.Count == 0 || costs.Count == 0 ? null : answeredCosts / answered.Count,
-                    Sites: turns.SelectMany(t => t.Hosts).Distinct().Count()));
+                    Sites: turns.SelectMany(t => t.Hosts).Distinct().Count(),
+                    PassAtK: rates?.PassAtK, PassHatK: rates?.PassHatK, K: rates?.K));
             }
         }
         return new Trend(check, lines.Select(l => new Series(SeriesName(l.Mode, l.Model), points[l], l.Model)).ToList());

@@ -112,7 +112,8 @@ public class StubCheckTests
     /// </summary>
     private static async Task<string> Shape(InMemoryBenchmarkStore store, string runId)
     {
-        var modes = (await store.GetRunAsync(runId))!.Modes;
+        // The harness adds the pass rates to each mode (F18 step 5a); the Python stub has none, so they are left out of the comparison, like the grades.
+        var modes = (await store.GetRunAsync(runId))!.Modes!.Select(mode => mode with { Rates = null }).ToList();
         var conversations = await store.ConversationsAsync(runId);
         var turns = new List<object>();
         foreach (var conversation in conversations)

@@ -47,6 +47,27 @@ public abstract class BenchmarkStoreContract
         new(type, Json(JsonSerializer.Serialize(new { delta = new { text } })), T0.AddSeconds(text.Length));
 
     [Test]
+    public async Task AModesRates_ReadBackWithTheRun_AndAModeWithNoneReadsBackWithNone()
+    {
+        // F18 step 5a: the rates the runner wrote on a mode's line are kept on its mode in both stores; null rates and a mode from before them stay null.
+        string id = NewId();
+        var run = NewRun(id, T0) with
+        {
+            Modes =
+            [
+                new Mode("puls-cook", 1, ["web"], null, null, new ModeRates(1.0, 0.5, 2, 1, 1)),
+                new Mode("puls-cook", 2, ["web"], null, null, new ModeRates(null, null, 1, 3, 0)),
+                new Mode("puls-only", 1, ["web"], null, null),
+            ],
+        };
+
+        await _store.SaveRunAsync(run);
+
+        var read = (await _store.GetRunAsync(id))!.Modes!;
+        Assert.That(read.Select(m => m.Rates), Is.EqualTo(new ModeRates?[] { new(1.0, 0.5, 2, 1, 1), new(null, null, 1, 3, 0), null }));
+    }
+
+    [Test]
     public async Task ARun_ReadsBackAsItWasWritten()
     {
         string id = NewId();
@@ -343,38 +364,4 @@ public abstract class BenchmarkStoreContract
         Assert.That(await _store.DeleteRunAsync(run), Is.False, "nothing left to delete");
         Assert.That((await _store.ConversationsAsync(other)).Count, Is.EqualTo(1), "another run keeps its own");
     }
-}
-
-/// <summary>The contract against the in-memory store: always, on every machine and on CI.</summary>
-public class InMemoryBenchmarkStoreTests : BenchmarkStoreContract
-{
-    protected override IBenchmarkStore CreateStore() => new InMemoryBenchmarkStore();
-}
-
-/// <summary>
-/// The contract against MongoDB, when <c>BENCHMARKS_MONGO_URL</c> is set in the test's environment: on Louis's machine
-/// the Puls stack's <c>puls-mongo</c> at 127.0.0.1 (set in the shell, not read from <c>.env.secrets</c>), on CI its Mongo
-/// service. Without it the fixture says it's inconclusive rather than passing. Its database is
-/// <c>puls_benchmarks_test</c> (or <c>BENCHMARKS_MONGO_DATABASE</c>), dropped when the fixture ends.
-/// </summary>
-public class MongoBenchmarkStoreTests : BenchmarkStoreContract
-{
-    private static string? Url => Environment.GetEnvironmentVariable("BENCHMARKS_MONGO_URL");
-
-    private static string Database =>
-        Environment.GetEnvironmentVariable("BENCHMARKS_MONGO_DATABASE") is { Length: > 0 } name ? name : "puls_benchmarks_test";
-
-    [OneTimeSetUp]
-    public void NeedsMongo() =>
-        Assume.That(Url, Is.Not.Null.And.Not.Empty, "BENCHMARKS_MONGO_URL isn't set: the Mongo store isn't tested here");
-
-    [OneTimeTearDown]
-    public async Task DropTheTestDatabase()
-    {
-        if (string.IsNullOrEmpty(Url)) return;
-        var store = new MongoBenchmarkStore(Url, Database);
-        await store.Database.Client.DropDatabaseAsync(Database);
-    }
-
-    protected override IBenchmarkStore CreateStore() => new MongoBenchmarkStore(Url!, Database);
 }

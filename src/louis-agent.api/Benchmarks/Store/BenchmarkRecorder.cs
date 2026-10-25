@@ -109,6 +109,15 @@ public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = n
                     _modes.Add(new Mode(mode.Mode, mode.Repeat, mode.Toolsets, mode.Role, mode.Llm));
                     await SaveRunAsync();
                     break;
+                case ModeEnded { Rates: { } rates } ended:
+                    // The rates the runner wrote for the repeats up to this one (F18 step 5a); the API keeps them, it computes none.
+                    int at = _modes.FindLastIndex(m => m.Name == ended.Mode && m.Repeat == ended.Repeat);
+                    if (at >= 0)
+                    {
+                        _modes[at] = _modes[at] with { Rates = new ModeRates(rates.PassAtK, rates.PassHatK, rates.K, rates.Infrastructure, rates.Retried) };
+                        await SaveRunAsync();
+                    }
+                    break;
                 case QuestionAsked question:
                     _open[question.Key] = new OpenTurn(question.Session, question.Text);
                     _sessions.TryAdd(question.Session, question.Key.Conversation);

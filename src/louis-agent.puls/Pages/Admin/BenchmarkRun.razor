@@ -54,6 +54,11 @@ else
     <section class="card-p holds-modal">
         <RunExplorer Run="run" Currency="Currency.Current" />
     </section>
+    <section class="card-p">
+        <details class="fold" open><summary class="fold-head"><span class="fold-chevron" aria-hidden="true"></span>Pass rates</summary>
+            <ModeRatesList Run="run" />
+        </details>
+    </section>
     @if (_trend is { } trend)
     {
         <section class="card-p">

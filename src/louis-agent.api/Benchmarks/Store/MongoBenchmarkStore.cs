@@ -177,6 +177,9 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
         {
             ["name"] = m.Name, ["repeat"] = m.Repeat, ["toolsets"] = new BsonArray(m.Toolsets),
             ["role"] = Nullable(m.Role), ["llm"] = Nullable(m.Llm),
+            ["rates"] = m.Rates is { } r
+                ? new BsonDocument { ["pass_at_k"] = Nullable(r.PassAtK), ["pass_hat_k"] = Nullable(r.PassHatK), ["k"] = r.K, ["infrastructure"] = r.Infrastructure, ["retried"] = r.Retried }
+                : BsonNull.Value,
         })),
         ["total"] = run.Total is null ? BsonNull.Value : new BsonDocument
         {
@@ -212,7 +215,7 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
         d["settings"].IsBsonNull ? null : d["settings"].AsBsonDocument.ToDictionary(e => e.Name, e => e.Value.AsString),
         d["modes"].AsBsonArray.Select(m => m.AsBsonDocument).Select(m => new Mode(m["name"].AsString, m["repeat"].AsInt32,
             m["toolsets"].AsBsonArray.Select(t => t.AsString).ToArray(),
-            StringOf(m.GetValue("role", null) ?? m.GetValue("personality", BsonNull.Value)), StringOf(m["llm"]))).ToArray(),
+            StringOf(m.GetValue("role", null) ?? m.GetValue("personality", BsonNull.Value)), StringOf(m["llm"]), RatesOf(m.GetValue("rates", BsonNull.Value)))).ToArray(),
         d["total"].IsBsonNull ? null : new Total(DecimalOf(d["total"]["cost"]), d["total"]["currency"].AsString,
             d["total"]["tokens"].ToInt64(), d["total"]["requests"].AsInt32),
         d["log"].IsBsonNull ? null : d["log"].AsBsonArray.Select(l => l.AsString).ToArray(),
@@ -225,6 +228,12 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
         d.GetValue("models", BsonNull.Value).IsBsonNull ? null : d["models"].AsBsonArray.Select(m => m.AsBsonDocument)
             .Select(m => new ModelUse(m["mode"].AsString, Enum.Parse<BenchmarkModelLevel>(m["level"].AsString, ignoreCase: true), StringOf(m.GetValue("role", BsonNull.Value)), StringOf(m.GetValue("model", BsonNull.Value)))).ToArray(),
         SplitOf(d.GetValue("split", BsonNull.Value)));
+
+    /// <summary>A mode's kept rates (F18 step 5a); a mode stored before them has none.</summary>
+    private static ModeRates? RatesOf(BsonValue v) =>
+        v is not { IsBsonDocument: true } ? null
+            : new ModeRates(v["pass_at_k"].IsBsonNull ? null : v["pass_at_k"].ToDouble(), v["pass_hat_k"].IsBsonNull ? null : v["pass_hat_k"].ToDouble(),
+                v["k"].AsInt32, v["infrastructure"].AsInt32, v["retried"].AsInt32);
 
     /// <summary>A run's kept split; a run stored before it was kept has none.</summary>
     private static BenchmarkRunSplit? SplitOf(BsonValue v) =>
@@ -314,6 +323,7 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
 
     private static BsonValue Nullable(string? value) => value is null ? BsonNull.Value : new BsonString(value);
     private static BsonValue Nullable(int? value) => value is null ? BsonNull.Value : new BsonInt32(value.Value);
+    private static BsonValue Nullable(double? value) => value is null ? BsonNull.Value : new BsonDouble(value.Value);
     private static BsonValue Nullable(long? value) => value is null ? BsonNull.Value : new BsonInt64(value.Value);
     private static BsonValue Nullable(decimal? value) => value is null ? BsonNull.Value : new BsonDecimal128(value.Value);
 

@@ -31,7 +31,12 @@ internal static class StoredRunEndpoints
             {
                 run = RunRow(run),
                 settings = run.Settings,
-                modes = (run.Modes ?? []).Select(m => new { name = m.Name, repeat = m.Repeat, toolsets = m.Toolsets, role = m.Role, llm = m.Llm }),
+                modes = (run.Modes ?? []).Select(m => new
+                {
+                    name = m.Name, repeat = m.Repeat, toolsets = m.Toolsets, role = m.Role, llm = m.Llm,
+                    // The runner's rates for the repeats up to this one (F18 step 5a): null on a mode from before them, never 0.
+                    pass_at_k = m.Rates?.PassAtK, pass_hat_k = m.Rates?.PassHatK, k = m.Rates?.K, infrastructure = m.Rates?.Infrastructure, retried = m.Rates?.Retried,
+                }),
                 log = run.Log,
                 conversations = conversations.Select(ConversationRow),
                 turns,

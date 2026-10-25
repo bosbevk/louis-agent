@@ -58,7 +58,7 @@ the recording never read comes back to the model as a short text it treats as un
 
 A run's conversations carry their grades and an outcome (a trial passes only when every required grader passes, and an
 `Unknown` never counts as a pass); a turn that failed for the infrastructure (a timeout, a refused connection, a broken stream, a
-non-2xx answer) is recorded with its failure and left out of the pass rates. A grader that does not apply to a scenario (no budget
+non-2xx answer) is recorded with its failure and left out of the pass rates, and counted apart. A run page shows each mode's pass@k (the share of scenarios that passed at least once in their k trials) and pass^k (the share that passed every time), labelled with k, and the trend draws both; a rate no trial made is a dash, never 0. A grader that does not apply to a scenario (no budget
 set, no shop named) passes: read it as "not asked". The cost is the usage ledger's (`{LOG_DIRECTORY}/usage-YYYY-MM.jsonl`), per
 request, priced from a dated table.
 
