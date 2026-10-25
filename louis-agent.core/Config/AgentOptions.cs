@@ -52,6 +52,9 @@ public sealed class AgentOptions
     /// <summary>WEB_REPLAY (F18 step 4a): off, record or replay; the default web of an eval session, one that sends <c>replay</c> (a run tag alone is not one). Text: <c>SessionReplay.DefaultMode</c> parses it once at start-up.</summary>
     public string? WebReplay { get; set; }
 
+    /// <summary>LOG_CONTENT (F18 step 4f): <c>hashed</c> (the default) or <c>full</c>; what the log lines show of the values they were given. Text: <c>LogContent.ModeOf</c> parses it once at start-up.</summary>
+    public string? LogContent { get; set; }
+
     /// <summary>REPLAY_DIRECTORY (F18 step 4a): where the saved web pages live. Private, never served; null keeps no recordings.</summary>
     public string? ReplayDirectory { get; set; }
 
@@ -231,6 +234,7 @@ public sealed class AgentOptions
             PageRenderer = Get("PAGE_RENDERER"),
             BrowserUserAgent = string.IsNullOrWhiteSpace(Get("BROWSER_USER_AGENT")) ? null : Get("BROWSER_USER_AGENT")!.Trim(),
             WebReplay = Get("WEB_REPLAY"),
+            LogContent = Get("LOG_CONTENT"),
             ReplayDirectory = Get("REPLAY_DIRECTORY"),
             TavilyApiKey = Get("TAVILY_API_KEY"),
             GoogleSearchApiKey = Get("GOOGLE_SEARCH_API_KEY"),

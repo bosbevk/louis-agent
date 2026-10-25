@@ -2,6 +2,7 @@ namespace LouisAgent.Core.Logging;
 
 using System.Globalization;
 using System.Reflection;
+using LouisAgent.Core.Logging.Content;
 using LouisAgent.Core.Logging.Messages;
 using LouisAgent.Core.Messages;
 using Microsoft.Extensions.Logging;
@@ -66,8 +67,9 @@ public static class AgentLogging
     /// containers run with --rm, so their own logs disappear on exit) and the record files too. Replaces (and flushes) the
     /// previous configuration, so it is safe to call again.
     /// </summary>
-    public static void Configure(string? logDirectory)
+    public static void Configure(string? logDirectory, LogContentMode content = LogContentMode.Hashed)
     {
+        LogContent.Use(content);
         var configuration = new SerilogConfiguration()
             .MinimumLevel.Verbose()
             .Enrich.FromLogContext()

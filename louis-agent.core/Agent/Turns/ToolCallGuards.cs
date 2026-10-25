@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Text.Json;
 using LouisAgent.Core.Llm;
 using LouisAgent.Core.Logging;
+using LouisAgent.Core.Logging.Content;
 using LouisAgent.Core.Tools;
 using Microsoft.Extensions.AI;
 using LouisAgent.Core.Messages;
@@ -39,7 +40,7 @@ internal sealed class ToolCallGuards(ToolRegistry registry, IChatClient summaryC
     public async ValueTask<object?> InvokeAsync(FunctionInvocationContext context, CancellationToken cancellationToken)
     {
         string arguments = JsonSerializer.Serialize(context.Arguments);
-        Log.Log(LogLevel.Information, AgentLogMessage.ToolCall, new { Tool = context.Function.Name, Arguments = arguments }, tag: Tag);
+        Log.Log(LogLevel.Information, AgentLogMessage.ToolCall, new { Tool = context.Function.Name, Arguments = LogContent.OfArguments(context.Arguments) }, tag: Tag);
 
         if (context.CallContent.AdditionalProperties?.ContainsKey(TruncatedCallKey) == true)
         {
@@ -56,13 +57,12 @@ internal sealed class ToolCallGuards(ToolRegistry registry, IChatClient summaryC
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            Log.Log(LogLevel.Information, AgentLogMessage.ToolCallFailed, new { Tool = context.Function.Name, ErrorType = ex.GetType().Name, Reason = ex.Message }, tag: Tag);
+            Log.Log(LogLevel.Information, AgentLogMessage.ToolCallFailed, new { Tool = context.Function.Name, ErrorType = ex.GetType().Name, Reason = LogContent.Of(ex.Message) }, tag: Tag);
             throw;
         }
 
         string text = result?.ToString() ?? string.Empty;
-        Log.Log(LogLevel.Information, AgentLogMessage.ToolCallResult, new { Tool = context.Function.Name, Result = text.Length > 300 ? text[..300] + "..." : text }, tag: Tag);
-
+        Log.Log(LogLevel.Information, AgentLogMessage.ToolCallResult, new { Tool = context.Function.Name, Result = LogContent.Of(text, cut: 300) }, tag: Tag);
         if (text.Length <= MaxToolResultChars) return result;
 
         // An oversized result (e.g. a huge diff) would blow the model's context window on the next request.
@@ -200,7 +200,7 @@ internal sealed class ToolCallGuards(ToolRegistry registry, IChatClient summaryC
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            Log.Log(LogLevel.Warning, AgentLogMessage.SummaryFailed, new { Tool = toolName, Reason = ex.Message });
+            Log.Log(LogLevel.Warning, AgentLogMessage.SummaryFailed, new { Tool = toolName, Reason = LogContent.Of(ex.Message) });
         }
 
         string truncated = $"{note}\n{ProcessRunner.Truncate(output, MaxToolResultChars)}";

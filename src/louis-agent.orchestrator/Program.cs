@@ -36,7 +36,7 @@ var louisAgent = new LouisAgentClient(http, options.LouisAgentApiKey);
 // LOG_DIRECTORY and USAGE_LEDGER come from the environment, so triage lands in the same usage ledger as the fixes.
 var agentOptions = AgentOptions.FromEnvironment();
 agentOptions.WorkspaceRoot = options.ServiceRoot;
-AgentLogging.Configure(agentOptions.LogDirectory);
+AgentLogging.Configure(agentOptions.LogDirectory, LouisAgent.Core.Logging.Content.LogContent.ModeOf(agentOptions.LogContent));
 var log = AgentLogging.LoggerFactory.CreateLogger("LouisAgent.Orchestrator");
 void Log(OrchestratorLogMessage message, object? values = null) =>
     log.Log(LogLevel.Information, message, values, tag: "orchestrator");

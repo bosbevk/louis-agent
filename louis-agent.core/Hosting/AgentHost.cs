@@ -3,6 +3,7 @@ namespace LouisAgent.Core.Hosting;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Core.Config;
+using LouisAgent.Core.Logging.Content;
 using LouisAgent.Core.Hosting.EnvFiles;
 using LouisAgent.Core.Hosting.Messages;
 using LouisAgent.Core.Hosting.Rider;
@@ -38,7 +39,7 @@ public static class AgentHost
     {
         HostEnvironment.Load();
         var agent = AgentOptions.FromEnvironment();
-        AgentLogging.Configure(agent.LogDirectory);
+        AgentLogging.Configure(agent.LogDirectory, LogContent.ModeOf(agent.LogContent));
         SkillFileSource.Use(catalog.Prompts);
         RoleFiles.Check(agent, RoleCatalog.DefaultVoice);
         var engines = new AgentEngineFactory(new ToolsOnlyChatClient(), agent, catalog: catalog);
@@ -54,7 +55,7 @@ public static class AgentHost
 
         var llm = LlmOptions.FromEnvironment();
         var agent = AgentOptions.FromEnvironment();
-        AgentLogging.Configure(agent.LogDirectory);
+        AgentLogging.Configure(agent.LogDirectory, LogContent.ModeOf(agent.LogContent));
         return Build(llm, agent, clientFactory ?? new LlmClientFactory(), catalog);
     }
 

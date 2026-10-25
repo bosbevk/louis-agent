@@ -792,6 +792,25 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   - **Measured check: still to run (a paid run, on Louis's go).** Record the cook eval live (`run cook --web record`), then replay it
     (`run cook --replay {runId}`). Expected: a hit rate of 100% and a cost of $0.00 on the replay, against the recording's cost. Until the
     HTTP session client (step 5) exists only the stub runs, so this waits for step 5 as well; the plan's line 197 stays unmeasured until then.
+- **Step 4f.1: tool calls logged as keyed hashes and lengths; `LOG_CONTENT=full` keeps the text.** Core only; the shops pack and Rider's host
+  are 4f.2.
+  - **The setting:** `LOG_CONTENT`, `hashed` (the default) or `full`, an enum (`LogContentMode`, ADR 0024) parsed once by `LogContent.ModeOf`
+    with `SettingChoice`; an unknown value throws `UnknownLogContent` (a `LoggingErrorMessage` member) and stops the host at start-up.
+    `AgentLogging.Configure(dir, content)` sets it; `AgentHost` and the orchestrator pass `ModeOf(options.LogContent)`.
+  - **The hash:** `#` + the first 12 hex digits of HMAC-SHA256 under a 32-byte random key + the length. The key is made when the class
+    loads, never written or logged, and kept across `Configure` calls (`AgentHost` configures twice). A plain SHA-256 of a town can be
+    reversed by hashing a list of towns; a keyed one can't without the key, and the test pins that the plain digest is not what is written.
+  - **What changed:** the `[TOOL]` call line (every argument hashed, names kept, in order), a failure's reason and the summary's failure reason
+    (an exception's message can quote an argument; the error type stays), the result (`Of(text, cut: 300)`), and both records
+    (`Arguments`, and `UserRequest` cut at 500 under `full`). **Unchanged on purpose:** the arrows, the order, tool names, counts and outcomes;
+    the `AgentLogMessage` templates (no golden file changed); the usage ledger (it never held text); and the string sent to the summarising
+    model, which keeps the full arguments (`TheSummaryRequest_KeepsTheFullArguments…`; mutation: hashing it fails that test).
+    `ToolCallGuards.cs` stays at 210 lines.
+  - **Red and green:** the stubs threw `NotImplementedException`; 31 tests in the touched classes ran, **22 failed** (the hash and its shape,
+    `Full`, the arguments, `ModeOf`, the records, the existing `[TOOL]` test and the new hashed one). With the code, 1488 pass in core (1467 +
+    21). Mutation: logging the raw result text fails the hashed-line test.
+  - **Where the standards land:** POPIA s13 and s14 (kept only for its purpose): the tool lines and the two records; s19 (protected): the key
+    is never written. OWASP LLM02:2025 (logs as a leak): every line that carried an argument, a result or the request.
 - **Notes for step 5** (from the review of 4.2): `PulsEvalSet`'s `TurnView` builds on `EngineEvents`, so the route, the errors and the
   cost come from one reader. If an expected route goes in a scenario's `expected`, `RoutedToGrader` must declare that key in its
   `ExpectedKeys`. When the HTTP client sets a turn's `Failure`, the turn line must carry it, so `ProtocolTranscripts` reads it back. A

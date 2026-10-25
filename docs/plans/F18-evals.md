@@ -1019,6 +1019,15 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
 
 ## Approved during the build
 
+- **Step 4f: the mode lives in `Logging/Content/`, and two additions to the list of what is hashed** (Louis, 2026-10-25, step 4f's
+  prompt, decisions 2 and 7). The plan puts `LogContentMode` in `Config/`, but `Config/` and `Logging/` both hold six files already and
+  ADR 0010 gives a seventh a subfolder; the mode belongs with the content it governs, so `LogContent` and `LogContentMode` go in
+  `Logging/Content/`. Added to the hashed values: the shops' **store ids** (`Stores` in `CheckersStore`, `Store` in `ShopStoreNotUsed`),
+  because a store's id names its town as surely as the coordinates do, the plan's own reason for hashing those. Left in clear for now, as a
+  known limit for F44's trace and log pass: the headless browser's two warnings (`RenderRequestRefused` and `RenderRequestUnhandled`) keep
+  their URLs, because they warn about a refused sub-request, testing them needs a live Chrome, and `ChromeWebBrowser.cs` is on the
+  oversized list.
+
 - **Step 4e: the model's answers go in the replay store under our own key, not in `DistributedCachingChatClient` and a disk cache**
   (Louis, 2026-10-25, step 4e's prompt, decision 1; row 912 and the *A replay cache* line above name the other way). Checked with a
   throwaway probe on Microsoft.Extensions.AI 10.10.0 (finding numbers are the prompt's): (2) MEAI's key hashes whole messages, and the
