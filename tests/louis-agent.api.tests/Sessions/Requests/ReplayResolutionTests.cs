@@ -136,17 +136,43 @@ public class ReplayResolutionTests
         Assert.That(Resolve(Request(replay: new ReplayRequest(null, null)), WebReplayMode.Off).Replay, Is.Null);
     }
 
-    // 4. model: true is refused until step 4e, never pretended.
-    [TestCase("record")]
-    [TestCase("replay")]
-    [TestCase("off")]
-    public void ModelTrue_IsRefused_UntilStep4e(string web)
+    // 4. model: true is for web replay only (F18 step 4e): the model's answers can only be replayed from a recording, with its web.
+    [Test]
+    public void ModelTrue_WithWebReplay_GivesAReplayThatAsksForTheModelsAnswers()
     {
+        var (ok, replay, _) = Resolve(Request(replay: new ReplayRequest("replay", "run_0:puls-cook:1/bobotie", Model: true)));
+
+        Assert.That((ok, replay), Is.EqualTo((true, new SessionReplay(WebReplayMode.Replay, "run_0:puls-cook:1/bobotie", Model: true))));
+    }
+
+    [Test]
+    public void ModelTrue_WithNoWeb_OnAnInstanceThatDefaultsToReplay_IsAReplayToo()
+    {
+        Assert.That(Resolve(Request(replay: new ReplayRequest(null, "run_0:puls-cook:1/bobotie", Model: true)), WebReplayMode.Replay).Replay!.Model, Is.True);
+    }
+
+    [TestCase("record")]
+    [TestCase("off")]
+    [TestCase(null)]
+    public void ModelTrue_WithAnyOtherWeb_IsRefused(string? web)
+    {
+        // null is the instance's default, off here: the model's answers need a replay to come from, so it can't be asked for.
         var (ok, replay, refusal) = Resolve(Request(replay: new ReplayRequest(web, "run_0:puls-cook:1/bobotie", Model: true)));
 
         Assert.That((ok, replay), Is.EqualTo((false, (SessionReplay?)null)));
-        Assert.That(refusal, Does.Contain("replay.model").And.Contain("4e"));
+        Assert.That(refusal, Does.Contain("replay.model").And.Contain("'replay'"));
     }
+
+    [Test]
+    public void ModelTrue_WithWebReplay_StillNeedsOf_AndAnInstanceThatKeepsRecordings()
+    {
+        Assert.That(Resolve(Request(replay: new ReplayRequest("replay", null, Model: true))).Refusal, Does.Contain("needs 'of'"));
+        Assert.That(Resolve(Request(replay: new ReplayRequest("replay", "x", Model: true)), keepsRecordings: false).Refusal, Does.Contain("keeps no recordings"));
+    }
+
+    [Test]
+    public void ModelFalse_GivesAReplayThatLeavesTheModelAlone() =>
+        Assert.That(Resolve(Request(replay: new ReplayRequest("replay", "x"))).Replay!.Model, Is.False);
 
     // 5. record or replay without REPLAY_DIRECTORY.
     [Test]

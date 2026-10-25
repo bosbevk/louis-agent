@@ -53,6 +53,7 @@ public sealed class AgentEngineFactory
     private readonly Dictionary<string, SessionLlm> _sessionLlms;
     private readonly EngineCache _engines;
     private readonly TimeProvider? _clock;
+    private readonly ReplayStore? _replay;
 
     public AgentEngineFactory(IChatClient chatClient, AgentOptions agent, bool supportsTools = true,
         IUsageSink? usageSink = null, IUsageMapper? usageMapper = null, DisplayCurrency? display = null,
@@ -70,7 +71,7 @@ public sealed class AgentEngineFactory
         _engines = new EngineCache(capacity);
         _sessionLlms = (sessionLlms ?? []).ToDictionary(l => l.Name, StringComparer.Ordinal);
         // One store where recordings are kept, and one browser, for every engine of this process (F18 steps 4a and 4b): the shops and the page renderer read through them.
-        var replay = ReplayStore.From(agent);
+        var replay = _replay = ReplayStore.From(agent);
         _clock = replay is null ? null : new ReplayClock(replay);   // one clock per process, so a trial's frozen time is shared by every engine and sub-session
         Context = new ToolsetContext(agent, RecordedSearchProvider.Around(webSearch ?? WebSearchProviderFactory.Create(agent), replay), rates, usageSink,
             WebBrowser: WebBrowserFactory.Create(agent, replay), Replay: replay);
@@ -143,7 +144,7 @@ public sealed class AgentEngineFactory
         // ledger, prices and display currency are the instance's.
         var engine = new AgentEngine(SkillLoader.Load(_agent, guided, role, level), model?.Client ?? _chatClient, _agent,
             model?.SupportsTools ?? _supportsTools, toolsets: ToolsetCatalog.BuildTools(resolved, Context), _usageSink,
-            model is null ? _usageMapper : model.UsageMapper, selfExtension, ToolsetCatalog.RunsInParallel(resolved), clock: _clock)
+            model is null ? _usageMapper : model.UsageMapper, selfExtension, ToolsetCatalog.RunsInParallel(resolved), clock: _clock, replay: _replay)
         {
             SkillsDirectory = SkillFolder.Find(_agent),
             // An agent-built tool may take no name of the catalogue's, a pack's included (CL15).

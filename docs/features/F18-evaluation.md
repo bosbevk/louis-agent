@@ -756,6 +756,21 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
     Mutations: without `response.Usage = null` the hit test fails in both modes (it needed a streaming fake that reports a
     `UsageContent`; the first version could not see it); with `MessageId` in the key, four fail. Core: 1462 passing (1423 + 39). No
     golden file changed. `ModelAsk`'s two small records are nested in it (the layout test allows one top-level type per file).
+- **Step 4e.3: the engine and the API replay the model.** `ChatPipeline.Build` and `BuildSummaryClient` take the process's `ReplayStore?` and
+  put `ModelReplayChatClient` innermost (`… MarkTruncated → OpenTelemetry → ModelReplay → provider`; the summaries' client the same, so a free
+  replay doesn't pay for its summaries). `AgentEngine` takes `replay` and passes it on (196 lines, as before); `AgentEngineFactory` keeps its
+  store in `_replay` beside `_clock`. The API accepts `model: true` only with web `replay` (a 400, `ApiUserText.ReplayModelNeedsReplay`, which
+  replaces `ReplayModelNotYet`): with `record`, `off` or the instance's default being off it is refused, and a replay with `model` still needs
+  `of` and an instance that keeps recordings. A sub-session inherits `model` through `SessionReplay.ForSubSession`, as before.
+  - **The test that matters:** `ChatPipelineReplayTests` records two streamed turns with a tool call through a real `AgentEngine`
+    (`files` toolset, `PricingUsageSink` over a table that prices no model), then replays them on a client that throws. The answers are
+    equal, the model is never asked, every ledger row of the replay has `cache_hit` and a known $0 cost, while the recording's rows stay
+    `cache_hit` null and cost null; the history holds no `replay_hit`. It runs with a small result and with an oversized one, whose summary
+    replays too. Mutation: with `MessageId` and `CreatedAt` in the key, both cases fail with the miss text "message 3 (tool) changed", which is
+    exactly the probe's finding 2 (turn 2's first request carries the stamps the tool loop put on the tool message).
+  - **Red and green:** with `AgentEngine` taking `replay` but ignoring it, the two replay cases and the factory case failed ("the model was
+    called"), and six API cases failed (the old refusal). The two "no replay in the flow" cases passed on the red run, as they should: they
+    pin that nothing is written or read. Core: 1467 passing, API: 277. No golden file changed.
 - **Notes for step 5** (from the review of 4.2): `PulsEvalSet`'s `TurnView` builds on `EngineEvents`, so the route, the errors and the
   cost come from one reader. If an expected route goes in a scenario's `expected`, `RoutedToGrader` must declare that key in its
   `ExpectedKeys`. When the HTTP client sets a turn's `Failure`, the turn line must carry it, so `ProtocolTranscripts` reads it back. A

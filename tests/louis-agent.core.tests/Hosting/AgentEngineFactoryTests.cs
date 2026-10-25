@@ -106,6 +106,36 @@ public class AgentEngineFactoryTests
         }
     }
 
+    [Test]
+    public async Task TheEnginesModelAnswers_AreRecordedAndReplayedThroughTheFactorysStore()
+    {
+        // F18 step 4e.3: the factory hands its one store to every engine, so a recording run's answers replay on a later factory (a later
+        // process) over the same folder, with a client that throws if the model is asked.
+        string folder = Path.Combine(Path.GetTempPath(), "louis-replay-" + Guid.NewGuid().ToString("N"));
+        try
+        {
+            AgentEngineFactory Factory(Microsoft.Extensions.AI.IChatClient client) =>
+                new(client, new AgentOptions { WorkspaceRoot = TestPaths.RepoRoot, RatesUrl = null, ReplayDirectory = folder });
+            async Task<string> AskAsync(AgentEngineFactory factory)
+            {
+                var engine = factory.GetOrCreate([]);
+                return await engine.ProcessPromptAsync(engine.NewHistory(), "hello");
+            }
+
+            string recorded, replayed;
+            using (SessionReplay.Use(new SessionReplay(WebReplayMode.Record, "t", Model: false))) recorded = await AskAsync(Factory(new FakeChatClient(_ => Answer("recorded answer"))));
+            var throwing = new FakeChatClient(_ => throw new InvalidOperationException("the model was called"));
+            using (SessionReplay.Use(new SessionReplay(WebReplayMode.Replay, "t", Model: true))) replayed = await AskAsync(Factory(throwing));
+
+            Assert.That((recorded, replayed), Is.EqualTo(("recorded answer", "recorded answer")));
+            Assert.That(throwing.Requests, Is.Empty);
+        }
+        finally
+        {
+            if (Directory.Exists(folder)) Directory.Delete(folder, recursive: true);
+        }
+    }
+
     private static Microsoft.Extensions.AI.ChatResponse Answer(string text) =>
         new(new Microsoft.Extensions.AI.ChatMessage(Microsoft.Extensions.AI.ChatRole.Assistant, text));
 

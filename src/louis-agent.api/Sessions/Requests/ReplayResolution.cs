@@ -11,8 +11,8 @@ namespace LouisAgent.Api.Sessions.Requests;
 /// sending <c>replay</c>, even an empty <c>{}</c>; a run tag does not</b> (the orchestrator sends one on every fix session): with no
 /// <c>replay</c> the session is left alone, whatever <c>WEB_REPLAY</c> says, and a child sent none (its parent said off) stays live. The
 /// rules, in order: a <c>replay</c> with no run tag is refused (a live chat is never recorded); <c>web</c> is parsed with
-/// <c>SettingChoice</c>, and the instance default only fills in a missing one; <c>model: true</c> is refused until step 4e, whatever the
-/// mode; <c>off</c> is none; record or replay needs an instance that keeps recordings (<c>AgentOptions.KeepsRecordings</c>); replay
+/// <c>SettingChoice</c>, and the instance default only fills in a missing one; <c>model: true</c> is for web <c>replay</c> only (step 4e: the
+/// model's answers come from a recording, with its web) and is refused with any other mode, <c>off</c> included; <c>off</c> is none; record or replay needs an instance that keeps recordings (<c>AgentOptions.KeepsRecordings</c>); replay
 /// needs <c>of</c>; a recording without one writes <c>{run}/{task}</c>, and one with one (a sub-session, sent its parent's) keeps it, so
 /// a child never works out a key of its own.
 /// </summary>
@@ -29,16 +29,16 @@ internal static class ReplayResolution
         if (!SettingChoice.TryParse(sent.Web, out WebReplayMode? choice))
             return Refuse(ApiUserText.UnknownReplayWeb,
                 new { Value = sent.Web!.Trim(), Supported = string.Join(", ", SettingChoice.Names<WebReplayMode>()) }, out refusal);
-        if (sent.Model) return Refuse(ApiUserText.ReplayModelNotYet, null, out refusal);
 
         var mode = choice ?? defaultMode;
+        if (sent.Model && mode != WebReplayMode.Replay) return Refuse(ApiUserText.ReplayModelNeedsReplay, null, out refusal);
         if (mode == WebReplayMode.Off) return true;
         if (!keepsRecordings) return Refuse(ApiUserText.ReplayNoRecordings, null, out refusal);
 
         string? of = Clean(sent.Of);
         if (mode == WebReplayMode.Replay && of is null) return Refuse(ApiUserText.ReplayNeedsOf, null, out refusal);
         of ??= Clean(request.Task) is { } task ? $"{run}/{task}" : run;
-        replay = new SessionReplay(mode, of, Model: false);
+        replay = new SessionReplay(mode, of, sent.Model);
         return true;
     }
 

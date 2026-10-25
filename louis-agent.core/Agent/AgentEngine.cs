@@ -100,7 +100,7 @@ public class AgentEngine
     /// </param>
     public AgentEngine(ISkillProvider skillProvider, IChatClient chatClient, AgentOptions options, bool supportsTools = true,
         IEnumerable<object>? toolsets = null,
-        IUsageSink? usageSink = null, IUsageMapper? usageMapper = null, bool selfExtension = false, bool concurrentToolCalls = false, TimeProvider? clock = null)
+        IUsageSink? usageSink = null, IUsageMapper? usageMapper = null, bool selfExtension = false, bool concurrentToolCalls = false, TimeProvider? clock = null, Sessions.Replay.Store.ReplayStore? replay = null)
     {
         SupportsTools = supportsTools;
         WorkspaceRoot = Path.GetFullPath(options.WorkspaceRoot);
@@ -111,8 +111,8 @@ public class AgentEngine
         _commands = new UserCommands(_agentBuiltTools, _skillTools, () => Display);
 
         RecordsUsage = usageSink is not null;
-        _guards = new ToolCallGuards(_registry, ChatPipeline.BuildSummaryClient(chatClient, usageSink, usageMapper), options.SubSessionPromptBudget);
-        _turns = new TurnRunner(ChatPipeline.Build(chatClient, _guards, usageSink, usageMapper, concurrentToolCalls), _registry,
+        _guards = new ToolCallGuards(_registry, ChatPipeline.BuildSummaryClient(chatClient, usageSink, usageMapper, replay), options.SubSessionPromptBudget);
+        _turns = new TurnRunner(ChatPipeline.Build(chatClient, _guards, usageSink, usageMapper, concurrentToolCalls, replay), _registry,
             () => SkillDocumentation, () => Thinking, supportsTools);
 
         if (!supportsTools)

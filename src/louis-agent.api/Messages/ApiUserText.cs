@@ -158,8 +158,8 @@ public enum ApiUserText
     [Description("Unknown replay.web '{Value}'. Use one of: {Supported}.")]
     UnknownReplayWeb,
 
-    [Description("replay.model isn't available yet: replaying the model's answers waits for the replay cache (F18 step 4e).")]
-    ReplayModelNotYet,
+    [Description("replay.model is only for web 'replay': the model's answers are replayed from a recording, so send replay.web 'replay' with it (and 'of').")]
+    ReplayModelNeedsReplay,
 
     [Description("This instance keeps no recordings, so it can't record or replay web pages: its replay folder isn't set (config/.env.example says how).")]
     ReplayNoRecordings,
