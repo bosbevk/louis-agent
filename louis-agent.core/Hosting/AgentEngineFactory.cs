@@ -18,6 +18,7 @@ using LouisAgent.Core.Skills.Roles;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
 using LouisAgent.Core.Tools.Web.Browsing;
+using LouisAgent.Core.Tools.Web.Replay;
 using LouisAgent.Core.Tools.Web.Replay.Store;
 using LouisAgent.Core.Tools.Web.Search;
 using LouisAgent.Core.Hosting.Messages;
@@ -73,7 +74,7 @@ public sealed class AgentEngineFactory
         _sessionLlms = (sessionLlms ?? []).ToDictionary(l => l.Name, StringComparer.Ordinal);
         // One store where recordings are kept, and one browser, for every engine of this process (F18 steps 4a and 4b): the shops and the page renderer read through them.
         var replay = WebReplayStore.From(agent);
-        Context = new ToolsetContext(agent, webSearch ?? WebSearchProviderFactory.Create(agent), rates, usageSink,
+        Context = new ToolsetContext(agent, RecordedSearchProvider.Around(webSearch ?? WebSearchProviderFactory.Create(agent), replay), rates, usageSink,
             WebBrowser: WebBrowserFactory.Create(agent, replay), Replay: replay);
     }
 

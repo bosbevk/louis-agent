@@ -96,6 +96,9 @@ public enum WebToolMessage
     [Description("{Url} was not read in the recorded run, so this replay can't open it: replays read only recorded pages. Treat what it holds as unknown.")]
     ReplayMiss,
 
+    [Description("The search '{Query}' was not run in the recorded run, so this replay has no results for it: replays answer only recorded searches. Treat what it would find as unknown.")]
+    ReplaySearchMiss,
+
     [Description("Unknown PAGE_RENDERER '{Renderer}'. Supported: {Supported}.")]
     UnknownPageRenderer,
 

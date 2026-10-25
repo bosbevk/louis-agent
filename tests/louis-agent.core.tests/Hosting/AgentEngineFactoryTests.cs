@@ -5,6 +5,8 @@ using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Roles;
+using LouisAgent.Core.Tests.Tools.Web.Replay;
+using LouisAgent.Core.Tools.Web.Replay;
 
 namespace LouisAgent.Core.Tests.Hosting;
 
@@ -57,6 +59,21 @@ public class AgentEngineFactoryTests
 
         Assert.That(without.Context.Replay, Is.Null);
         Assert.That(with.Context.Replay, Is.Not.Null);
+    }
+
+    [Test]
+    public void TheSearchProvider_IsRecordedAroundOnlyWhereAStoreIsKept_AHostsOwnIncluded()
+    {
+        // F18 step 4b.2: a fake given by a host records like a real provider, so a test can prove a replay with one.
+        var own = new CountingSearch(name: "Own");
+        var options = new AgentOptions { WorkspaceRoot = TestPaths.RepoRoot, RatesUrl = null, ReplayDirectory = "/data/replay" };
+
+        var recorded = new AgentEngineFactory(new FakeChatClient(), options, webSearch: own).Context.WebSearch;
+        var plain = new AgentEngineFactory(new FakeChatClient(), Options(), webSearch: own).Context.WebSearch;
+
+        Assert.That(recorded, Is.TypeOf<RecordedSearchProvider>());
+        Assert.That(recorded.Name, Is.EqualTo("Own"));
+        Assert.That(plain, Is.SameAs(own));
     }
 
     private static Microsoft.Extensions.AI.ChatResponse Answer(string text) =>

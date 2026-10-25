@@ -1,4 +1,5 @@
 using LouisAgent.Core.Tools.Web.Browsing;
+using LouisAgent.Core.Tools.Web.Search;
 using LouisAgent.Core.Tools.Web.Replay.Store;
 using Microsoft.Extensions.Time.Testing;
 
@@ -26,6 +27,21 @@ internal sealed class ReplayFolder : IDisposable
     public void Dispose()
     {
         if (Directory.Exists(Path)) Directory.Delete(Path, recursive: true);
+    }
+}
+
+/// <summary>A search provider that counts calls and answers fixed results, or throws: the inner provider of a replay test.</summary>
+internal sealed class CountingSearch(IReadOnlyList<WebSearchResult>? results = null, Exception? throws = null, string name = "FakeSearch") : IWebSearchProvider
+{
+    public int Calls { get; private set; }
+
+    public string Name => name;
+
+    public Task<IReadOnlyList<WebSearchResult>> SearchAsync(WebSearchQuery query, CancellationToken cancellationToken = default)
+    {
+        Calls++;
+        if (throws is not null) throw throws;
+        return Task.FromResult(results ?? []);
     }
 }
 
