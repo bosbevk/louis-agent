@@ -385,6 +385,8 @@ dotnet test tests/louis-agent.evals.runner.tests
 
 ## 9. List it and run it
 
+The flags, record and replay, the dev and held-out scenarios and the portal are in [Run the evals](run-the-evals.md); this section is the short version.
+
 Listing is free and calls no model. With `EVALS=acme`, the list has the acme eval, and the stub, which is always there:
 
 ```bash

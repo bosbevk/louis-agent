@@ -33,6 +33,19 @@ public static class BenchmarkSettings
     }
 
     /// <summary>
+    /// The settings plus how the run's web was handled (F18 step 5.5): <c>web</c> when it asked for one, <c>replay_of</c> when it replayed another run, which the
+    /// trend uses to leave a replay out (it is the recorded run again, at no cost). As given when it asked for nothing.
+    /// </summary>
+    public static IReadOnlyDictionary<string, string> WithOptions(IReadOnlyDictionary<string, string> settings, BenchmarkRunOptions options)
+    {
+        if (options.Web is null && options.Replay is null) return settings;
+        var withOptions = new Dictionary<string, string>(settings);
+        if (options.Web is { } web) withOptions["web"] = web.ToString().ToLowerInvariant();
+        if (options.Replay is { } replayOf) withOptions["replay_of"] = replayOf;
+        return withOptions;
+    }
+
+    /// <summary>
     /// The settings plus <c>prompt_hashes</c>, the run's hashes joined with commas (F18 step 4c); as given, with no key, when there are
     /// none (absent, never empty). <b>It is the set of prompts the run used, not what it has.</b> A run that never called the cook, or
     /// never summarised, lacks those agents' hashes, so two runs with different lists prove nothing by themselves: the difference may be

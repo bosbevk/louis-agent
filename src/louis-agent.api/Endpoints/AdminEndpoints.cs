@@ -92,13 +92,17 @@ internal static class AdminEndpoints
             if (catalog.Checks.FirstOrDefault(c => c.Id == check) is not { } known)
                 return ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error",
                     MessageText.Format(ApiUserText.NoCheck, new { Check = check, Checks = string.Join(", ", catalog.Checks.Select(c => c.Id)) }));
+            // The web (F18 step 5.5), checked before anything that costs: a request that can't be what a run does is a 400 on its own.
+            var (options, refusal) = BenchmarkRunOptions.Parse(request?.Web, request?.Replay, known);
+            if (refusal is not null)
+                return ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error", refusal);
             if (recorder is null)
                 return ApiErrors.Result(StatusCodes.Status503ServiceUnavailable, "api_error", MessageText.Format(ApiUserText.NoBenchmarkStore));
             if (runner.IsRunning)
                 return ApiErrors.Result(StatusCodes.Status409Conflict, "conflict_error", MessageText.Format(ApiUserText.BenchmarkRunning, new { runner.Current!.Check }));
-            if (runner.Start(check, request?.Repeat ?? 1) is not { } run)
+            if (runner.Start(check, request?.Repeat ?? 1, options) is not { } run)
                 return ApiErrors.Result(StatusCodes.Status409Conflict, "conflict_error", MessageText.Format(ApiUserText.BenchmarkRunning, new { runner.Current!.Check }));
-            recorder.Attach(run, settingsOf(known));
+            recorder.Attach(run, BenchmarkSettings.WithOptions(settingsOf(known), run.Options));
             return Results.Json(Row(run), statusCode: StatusCodes.Status202Accepted);
         });
 
@@ -154,5 +158,8 @@ internal static class AdminEndpoints
     }
 }
 
-/// <summary>The body of <c>POST /v1/admin/benchmarks/{check}/runs</c>: how many repeats (1 to the runner's cap).</summary>
-internal sealed record StartRunRequest(int? Repeat);
+/// <summary>
+/// The body of <c>POST /v1/admin/benchmarks/{check}/runs</c>: how many repeats (1 to the runner's cap), and for an eval how it handles the web
+/// (F18 step 5.5): <c>web</c> (<c>record</c> or <c>off</c>) or <c>replay</c> (a recorded run's id, with the model's answers), not both.
+/// </summary>
+internal sealed record StartRunRequest(int? Repeat, string? Web = null, string? Replay = null);

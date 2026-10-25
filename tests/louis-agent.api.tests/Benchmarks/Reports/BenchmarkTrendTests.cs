@@ -54,6 +54,22 @@ public class BenchmarkTrendTests
     }
 
     [Test]
+    public async Task AReplayOfAnotherRun_IsNeverAPoint_BecauseItsScoresAreThatRunsAndItCostsNothing()
+    {
+        // F18 step 5.5: a run started with replay is the recorded run again (its scores equal it, its cost is 0): drawn on the trend it would be a second
+        // point of the same run, with a cost of 0.
+        await _store.SaveRunAsync(new Run("live", "puls-cook", 1, BenchmarkRunStatus.Done, T0));
+        await _store.SaveRunAsync(new Run("again", "puls-cook", 1, BenchmarkRunStatus.Done, T0.AddHours(1),
+            Settings: new Dictionary<string, string> { ["replay_of"] = "live" }));
+        foreach (string id in new[] { "live", "again" })
+            await _store.SaveConversationAsync(id, new Conversation(new ConversationKey("puls-cook", 1, "cook-af"), 1, null, Scores(true), 0, 1));
+
+        var trend = await BenchmarkTrends.ComputeAsync(_store, "puls-cook");
+
+        Assert.That(trend.Modes.Single().Points.Select(p => p.Run), Is.EqualTo(new[] { "live" }));
+    }
+
+    [Test]
     public async Task EachFinishedRun_IsAPointPerMode_OldestFirst()
     {
         await Run("b", "cook", hour: 2, repeat: 1, BenchmarkRunStatus.Done, cookCost: 0.05m, right: 4);

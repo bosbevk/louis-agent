@@ -169,4 +169,19 @@ public enum ApiUserText
 
     [Description("The ledger's rows name model '{Model}', which the run's modes don't list, so a trend may mix models.")]
     BenchmarkModelUnlisted,
+
+    [Description("The check '{Check}' is a script: only an eval records or replays the web, so web and replay are for an eval's run.")]
+    RunScriptNoWeb,
+
+    [Description("Send web or replay, not both: a replay is a recorded run's web again, and a record is a new one.")]
+    RunWebAndReplay,
+
+    [Description("Unknown web '{Value}'. Use one of: {Supported}.")]
+    RunBadWeb,
+
+    [Description("web can't be 'replay' on its own: a replay names its run, so send replay with the recorded run's id.")]
+    RunWebIsReplay,
+
+    [Description("replay takes a run id's letters, digits, '-' and '_', not '{Value}'.")]
+    RunBadReplay,
 }

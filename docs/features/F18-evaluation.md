@@ -956,6 +956,18 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   R69, and in `R45 x 2` the R45 was lost, which understates a basket and could pass an over-budget trial. The check now applies only to the thousands-grouped
   reading (a unit after a grouped number refuses the grouping and takes the plain digits), and there is no `x` part; four test cases pin it (red first: 69.00 and no
   amount). Two compiler warnings of this branch are gone: a duplicated `using` in `RoutingEval.cs` and a nullable key in the layout test (CS0105, CS8714).
+- **Step 5.5 (the portal passes the web on, the docs), and step 5 as a whole.** `POST /v1/admin/benchmarks/{check}/runs` takes `{"repeat": 1, "web": "record"}` or
+  `{"repeat": 1, "replay": "{runId}"}` (a replay is the runner's `--replay`, the model's answers too). `BenchmarkRunOptions` parses it once with `SettingChoice` (a `web` of
+  `record` or `off`; `replay` is a run id's letters, digits, `-` and `_`; not both; `web: replay` is refused because a replay names its run); a Python check refuses both with a 400, before
+  anything that costs. `BenchmarkRunner.StartInfoFor` turns it into `--web record` or `--replay {runId}`, for an eval only, as an argument list. The run's settings keep `web` or
+  `replay_of`, and the trend leaves a replay out (it is the recorded run again, with a cost of 0: drawn, it would be a second point of one run). Red first: 20 of 22 new tests;
+  green: the API's suite is 322. The route snapshot is unchanged, `.env.example` too (no setting changed). New: the guide [Run the evals](../guides/run-the-evals.md), and the plan's
+  *Approved during the build* holds step 5's decisions. The projects' design docs: only the API's exists (the evals, Puls's evals and the runner have the guides and this doc), and it is updated.
+  **Step 5 as a whole:** the HTTP session client with its failures in the protocol and an idle limit on the stream (5.1); a stored run as protocol lines (5.2); `puls-cook` and
+  `puls-routing` on the harness, with a layout of one folder per eval, a template project, and the portal's Python cook and routing gone (5.3 to 5.4c); scenarios that state what they ask for,
+  and a held-out set (5.4). **The parity result:** none against the Python. Its runs were deleted before they could be exported, so the first C# run is the baseline and the C# trends
+  start new; what holds the scorers instead is step 3's tests and references that pass every grader. **Still to do, each on Louis's go:** the recorded cook run, the recorded routing run,
+  and a free replay of each; their cost, scores, hit counts and misses go in a last commit here.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

@@ -1235,6 +1235,12 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
   A layout test (`EvalLayoutTests`) holds it for every set and the stub.
 - **Step 5.4c: a template eval project** (Louis, 2026-10-25: "cool, but maybe also add a demo project with the template with empty interfaces"):
   `evals/louis-agent.evals.template`, the layout with every member present and empty, to copy when starting a new eval set; never registered with the runner.
+- **Step 5: the decisions of its prompt** (Louis, 2026-10-25). (1) The Puls evals are `puls-cook` and `puls-routing`, the names their datasets carry; the portal's `BenchmarkCatalog.Default`
+  drops the Python `cook` and `routing` once the C# evals list, the Python runs stay readable under `cook` and `routing`, and the C# runs start new trends, because the harness changed
+  and step 3 changed one key. (4) A stored run as the protocol's own lines (`GET /v1/admin/benchmarks/runs/{id}/protocol`) is the export format, so a run goes back to the harness as a
+  transcript the way a reference does. (5) A scenario states its requirements in `expected`, each key read by a named grader and not by a rule on its id: `routes_to` (the harness's
+  `RoutedToGrader`, which takes its keys), and for the cook `town`, `serves` (`ServesAsAsked`, not required), `budget` (`WithinBudget`) and `shop` (`PricedAtShop`); the scorers keep their v1 keys until 7c.
+  The portal passes the web on (`web` `record` or `replay` {runId}), and a run asks for the `dev` scenarios unless `--split held-out` or `--split all`.
 
 ---
 [Docs index](../README.md) · [Plans](README.md) · [Platform plan](platform.md) · [Feature F18](../features/F18-evaluation.md)

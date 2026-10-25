@@ -115,6 +115,12 @@ title. The eval's name is its check's id; a Python check with the same id is hid
 4. Open the admin portal: the check is listed with its `proves` as its title. Its manual is
    `benchmarks/{id}/HANDLEIDING.md` until step 7 moves the manuals beside the evals.
 
+A run starts with `POST /v1/admin/benchmarks/{check}/runs`. Its body takes `repeat`, and for an eval `web` (`record` or `off`) or
+`replay` (a recorded run's id, with the model's answers: the runner's `--replay`), not both; a Python check answers 400 to either.
+`BenchmarkRunOptions` parses it once, `BenchmarkRunner.StartInfoFor` turns it into the runner's arguments, and the run's settings keep
+`web` or `replay_of`. A portal run is always the dev scenarios, and a replay is no point of the check's trend. [Run the evals](run-the-evals.md)
+says when to record and when to replay.
+
 ## Before you ask for a review
 
 - [ ] Every new route is under `/v1`, named by the rule, and needs the key, or is marked open on purpose and says why.

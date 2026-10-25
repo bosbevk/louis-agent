@@ -38,6 +38,8 @@ public static class BenchmarkTrends
             // The trend is the dev scenarios (F18 step 5.4 review): a held-out run, or one of all of them, is a different set of conversations, and a run
             // before splits were kept (no split) was a dev run. Joining them would draw a line through two different things.
             .Where(r => r.Split is null or BenchmarkRunSplit.Dev)
+            // A replay (F18 step 5.5) is the recorded run again: its scores are that run's and it costs nothing, so it is no point of its own.
+            .Where(r => r.Settings is null || !r.Settings.ContainsKey("replay_of"))
             .Take(limit).Reverse().ToList();
 
         // A line is a mode on one model: runs on two models of one mode are two lines, never one line joining them.

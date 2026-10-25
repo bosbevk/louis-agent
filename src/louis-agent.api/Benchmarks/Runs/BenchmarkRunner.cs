@@ -24,8 +24,8 @@ public sealed class BenchmarkRunner(BenchmarkCatalog catalog, string workspaceRo
 
     public bool IsRunning => Current?.Status == BenchmarkRunStatus.Running;
 
-    /// <summary>Starts a run; null when the check is unknown or one is already running.</summary>
-    public BenchmarkRun? Start(string checkId, int repeat)
+    /// <summary>Starts a run; null when the check is unknown or one is already running. <paramref name="options"/> say how an eval handles the web (F18 step 5.5).</summary>
+    public BenchmarkRun? Start(string checkId, int repeat, BenchmarkRunOptions? options = null)
     {
         if (catalog.Checks.FirstOrDefault(c => c.Id == checkId) is not { } check) return null;
         repeat = Math.Clamp(repeat, 1, MaxRepeat);
@@ -33,7 +33,7 @@ public sealed class BenchmarkRunner(BenchmarkCatalog catalog, string workspaceRo
         lock (_lock)
         {
             if (IsRunning) return null;
-            var run = new BenchmarkRun(Guid.NewGuid().ToString("N")[..12], check.Id, repeat);
+            var run = new BenchmarkRun(Guid.NewGuid().ToString("N")[..12], check.Id, repeat, options);
             Current = run;
             Launch(run, check);
             return run;
@@ -50,7 +50,7 @@ public sealed class BenchmarkRunner(BenchmarkCatalog catalog, string workspaceRo
     }
 
     /// <summary>
-    /// The start of one run's process (F18 step 4.3): an eval's <c>dotnet {EVAL_RUNNER} run {name} --repeat N</c>, or a script's
+    /// The start of one run's process (F18 step 4.3): an eval's <c>dotnet {EVAL_RUNNER} run {name} --repeat N [--web record | --replay {runId}]</c>, or a script's
     /// interpreter with its arguments. Either way an argument list (ADR 0004), and the same environment.
     /// </summary>
     internal ProcessStartInfo StartInfoFor(BenchmarkCheck check, BenchmarkRun run)
@@ -76,6 +76,20 @@ public sealed class BenchmarkRunner(BenchmarkCatalog catalog, string workspaceRo
         }
         start.ArgumentList.Add("--repeat");
         start.ArgumentList.Add(run.Repeat.ToString());
+        // The web (F18 step 5.5), an eval's alone: a recording, or a replay of another run with the model's answers too (--replay). Never a script's.
+        if (check.Kind == BenchmarkCheckKind.Eval)
+        {
+            if (run.Options.Replay is { } replayOf)
+            {
+                start.ArgumentList.Add("--replay");
+                start.ArgumentList.Add(replayOf);
+            }
+            else if (run.Options.Web is { } web)
+            {
+                start.ArgumentList.Add("--web");
+                start.ArgumentList.Add(web.ToString().ToLowerInvariant());
+            }
+        }
         if (check.Kind == BenchmarkCheckKind.Script)
             foreach (string argument in check.Arguments) start.ArgumentList.Add(argument);
         start.Environment["PULS_API"] = pulsApi;
