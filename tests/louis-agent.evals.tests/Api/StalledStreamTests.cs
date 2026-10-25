@@ -82,6 +82,26 @@ public class StalledStreamTests
     }
 
     [Test, CancelAfter(15_000)]
+    public async Task TheCallersOwnTimeBetweenEvents_IsNotCountedAgainstTheStream()
+    {
+        // The idle limit is the stream's silence, not the caller's work: the runner writes protocol lines between events.
+        await using var server = new SlowSseServer((None, SlowSseServer.Event("een")), (TimeSpan.FromMilliseconds(100), SlowSseServer.Event("twee")));
+        var client = ClientTo(server, TimeSpan.FromSeconds(30), idle: TimeSpan.FromMilliseconds(300));
+        var seen = new List<string>();
+
+        Assert.CatchAsync<Exception>(async () =>
+        {
+            await foreach (var streamEvent in client.SendAsync("s", "Hallo", Run))
+            {
+                seen.Add(streamEvent.Type);
+                if (seen.Count == 1) await Task.Delay(700, Run);   // slower than the idle limit
+            }
+        });
+
+        Assert.That(seen, Has.Count.EqualTo(2), "the second event was waiting; the caller's 700 ms was not the stream's silence");
+    }
+
+    [Test, CancelAfter(15_000)]
     public async Task ACancelledRunIsNoTimeout()
     {
         await using var server = new SlowSseServer((None, SlowSseServer.Event("een")));

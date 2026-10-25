@@ -20,7 +20,7 @@ public sealed class HttpSessionClient(HttpClient http, TimeSpan? streamIdle = nu
     private readonly TimeSpan _streamIdle = streamIdle ?? DefaultStreamIdle;
 
     /// <summary>
-    /// The runner's one client: <paramref name="api"/> (PULS_API, Puls's port by default), ten minutes for a turn (a cook turn takes
+    /// The runner's one client: <paramref name="api"/> (PULS_API; http://127.0.0.1:5070/ by default), ten minutes for a turn (a cook turn takes
     /// minutes), and <c>x-api-key</c> when <paramref name="key"/> (AGENT_API_KEY) is set.
     /// </summary>
     public static HttpClient CreateHttp(string? api, string? key, HttpMessageHandler? handler = null)
@@ -59,14 +59,15 @@ public sealed class HttpSessionClient(HttpClient http, TimeSpan? streamIdle = nu
         using var response = await http.SendAsync(send, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
         await EnsureSuccessAsync(response, cancellationToken);
 
-        // An idle limit, restarted after each event: a stream that stalls after its headers ends the turn as a timeout (TurnFailures maps the
-        // cancellation to Timeout, as the run's own token is not the one that fired) instead of hanging the run. The time the caller spends
-        // between events is not counted: the clock restarts when it asks for the next one.
+        // An idle limit on the stream's silence: a stream that stalls after its headers ends the turn as a timeout (TurnFailures maps the
+        // cancellation to Timeout, as the run's own token is not the one that fired) instead of hanging the run. The clock is paused while the
+        // caller holds an event, and restarts when it asks for the next one, so the caller's own work is not counted.
         await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
         using var idle = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         idle.CancelAfter(_streamIdle);
         await foreach (var streamEvent in SessionStreamReader.ReadAsync(stream, idle.Token))
         {
+            idle.CancelAfter(Timeout.InfiniteTimeSpan);
             yield return streamEvent;
             idle.CancelAfter(_streamIdle);
         }
