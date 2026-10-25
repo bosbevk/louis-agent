@@ -39,12 +39,12 @@ internal sealed class ToolCallGuards(ToolRegistry registry, IChatClient summaryC
     public async ValueTask<object?> InvokeAsync(FunctionInvocationContext context, CancellationToken cancellationToken)
     {
         string arguments = JsonSerializer.Serialize(context.Arguments);
-        Log.Log(LogLevel.Information, LogMessage.ToolCall, new { Tool = context.Function.Name, Arguments = arguments }, tag: Tag);
+        Log.Log(LogLevel.Information, AgentLogMessage.ToolCall, new { Tool = context.Function.Name, Arguments = arguments }, tag: Tag);
 
         if (context.CallContent.AdditionalProperties?.ContainsKey(TruncatedCallKey) == true)
         {
             // Running it would act on partial input, e.g. half a script or a file missing its content.
-            Log.Log(LogLevel.Information, LogMessage.ToolCallSkipped, new { Tool = context.Function.Name, LlmClientFactory.MaxOutputTokens }, tag: Tag);
+            Log.Log(LogLevel.Information, AgentLogMessage.ToolCallSkipped, new { Tool = context.Function.Name, LlmClientFactory.MaxOutputTokens }, tag: Tag);
             ToolCallRecords.TruncatedToolCall(context.Function.Name, arguments, LlmClientFactory.MaxOutputTokens);
             return TruncatedCallMessage;
         }
@@ -56,12 +56,12 @@ internal sealed class ToolCallGuards(ToolRegistry registry, IChatClient summaryC
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            Log.Log(LogLevel.Information, LogMessage.ToolCallFailed, new { Tool = context.Function.Name, ErrorType = ex.GetType().Name, Reason = ex.Message }, tag: Tag);
+            Log.Log(LogLevel.Information, AgentLogMessage.ToolCallFailed, new { Tool = context.Function.Name, ErrorType = ex.GetType().Name, Reason = ex.Message }, tag: Tag);
             throw;
         }
 
         string text = result?.ToString() ?? string.Empty;
-        Log.Log(LogLevel.Information, LogMessage.ToolCallResult, new { Tool = context.Function.Name, Result = text.Length > 300 ? text[..300] + "..." : text }, tag: Tag);
+        Log.Log(LogLevel.Information, AgentLogMessage.ToolCallResult, new { Tool = context.Function.Name, Result = text.Length > 300 ? text[..300] + "..." : text }, tag: Tag);
 
         if (text.Length <= MaxToolResultChars) return result;
 
@@ -112,7 +112,7 @@ internal sealed class ToolCallGuards(ToolRegistry registry, IChatClient summaryC
         long next = last + (prompts.Count > 1 ? Math.Max(0, last - prompts[^2]) : 0);
         if (next < subSessionPromptBudget) return options;
 
-        Log.Log(LogLevel.Information, LogMessage.SubSessionPromptBudgetReached, new
+        Log.Log(LogLevel.Information, AgentLogMessage.SubSessionPromptBudgetReached, new
         {
             Last = last.ToString("N0", CultureInfo.InvariantCulture), Next = next.ToString("N0", CultureInfo.InvariantCulture),
             Budget = subSessionPromptBudget.ToString("N0", CultureInfo.InvariantCulture),
@@ -178,7 +178,7 @@ internal sealed class ToolCallGuards(ToolRegistry registry, IChatClient summaryC
 
         try
         {
-            Log.Log(LogLevel.Information, LogMessage.ToolResultSummarising, new { Tool = toolName, Chars = output.Length.ToString("N0", CultureInfo.InvariantCulture) }, tag: Tag);
+            Log.Log(LogLevel.Information, AgentLogMessage.ToolResultSummarising, new { Tool = toolName, Chars = output.Length.ToString("N0", CultureInfo.InvariantCulture) }, tag: Tag);
             var messages = new List<ChatMessage>
             {
                 new(ChatRole.System,
@@ -200,7 +200,7 @@ internal sealed class ToolCallGuards(ToolRegistry registry, IChatClient summaryC
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            Log.Log(LogLevel.Warning, LogMessage.SummaryFailed, new { Tool = toolName, Reason = ex.Message });
+            Log.Log(LogLevel.Warning, AgentLogMessage.SummaryFailed, new { Tool = toolName, Reason = ex.Message });
         }
 
         string truncated = $"{note}\n{ProcessRunner.Truncate(output, MaxToolResultChars)}";

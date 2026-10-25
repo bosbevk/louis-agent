@@ -6,6 +6,7 @@ using System.Text.Json;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
 using Microsoft.Extensions.Logging;
+using LouisAgent.Core.Usage.Messages;
 
 /// <summary>
 /// Appends each record as one JSON line to <c>{directory}/usage-YYYY-MM.jsonl</c> (monthly, append-only), and raises
@@ -44,7 +45,7 @@ public sealed class JsonlUsageSink(string directory) : IUsageSink
         }
         catch (Exception ex)
         {
-            Log.Log(LogLevel.Warning, LogMessage.LedgerWriteFailed, new { File = fileName, Reason = ex.Message });
+            Log.Log(LogLevel.Warning, UsageLogMessage.LedgerWriteFailed, new { File = fileName, Reason = ex.Message });
         }
 
         UsageRecorded?.Invoke(record);

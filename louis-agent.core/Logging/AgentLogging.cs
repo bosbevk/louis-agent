@@ -10,6 +10,7 @@ using Serilog.Extensions.Logging;
 using Serilog.Filters;
 using Serilog.Sinks.SystemConsole.Themes;
 using SerilogConfiguration = Serilog.LoggerConfiguration;
+using LouisAgent.Core.Logging.Messages;
 
 /// <summary>
 /// Logging for every host: <see cref="ILogger"/> (Microsoft.Extensions.Logging) with Serilog behind it, configured once
@@ -107,9 +108,9 @@ public static class AgentLogging
 
         var log = Factory.CreateLogger(typeof(AgentLogging));
         if (unusable is not null)
-            log.Log(LogLevel.Warning, LogMessage.FileLoggingDisabled, new { Directory = logDirectory, Reason = unusable.Message });
+            log.Log(LogLevel.Warning, LoggingLogMessage.FileLoggingDisabled, new { Directory = logDirectory, Reason = unusable.Message });
         else if (announce)
-            log.Log(LogLevel.Information, LogMessage.LoggingTo, new { Path = runFile });
+            log.Log(LogLevel.Information, LoggingLogMessage.LoggingTo, new { Path = runFile });
     }
 
     private static string NewRunFile(string directory)

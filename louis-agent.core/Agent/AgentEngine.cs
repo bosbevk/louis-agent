@@ -15,6 +15,7 @@ using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Sinks;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
+using LouisAgent.Core.Agent.Messages;
 
 /// <summary>
 /// One agent: its tools, its skills and the model behind <see cref="IChatClient"/>, wired once (S, CL15: the engine is the
@@ -118,7 +119,7 @@ public class AgentEngine
 
         if (!supportsTools)
         {
-            Log.Log(LogLevel.Warning, LogMessage.ModelWithoutTools);
+            Log.Log(LogLevel.Warning, AgentLogMessage.ModelWithoutTools);
             return;
         }
 
@@ -144,7 +145,7 @@ public class AgentEngine
     {
         if (!SupportsTools)
         {
-            Log.Log(LogLevel.Warning, LogMessage.McpCannotRegister, new { Name = name }, tag: "MCP");
+            Log.Log(LogLevel.Warning, AgentLogMessage.McpCannotRegister, new { Name = name }, tag: "MCP");
             return false;
         }
 

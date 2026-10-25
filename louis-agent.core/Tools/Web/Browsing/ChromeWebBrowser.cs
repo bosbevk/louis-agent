@@ -216,14 +216,14 @@ public sealed class ChromeWebBrowser(Uri browserUrl, Func<string, CancellationTo
                 if (verdict == RenderVerdict.Refuse)
                 {
                     if (request.IsNavigationRequest && request.Frame == page.MainFrame) refusedPage = request.Url;
-                    Log.Log(LogLevel.Warning, LogMessage.RenderRequestRefused, new { Request = request.Url, Page = url });
+                    Log.Log(LogLevel.Warning, WebLogMessage.RenderRequestRefused, new { Request = request.Url, Page = url });
                 }
                 await request.AbortAsync(RequestAbortErrorCode.BlockedByClient);
                 answered = true;
             }
             catch (Exception ex) when (ex is not OutOfMemoryException)
             {
-                Log.Log(LogLevel.Warning, LogMessage.RenderRequestUnhandled, new { Request = request.Url, Page = url, Reason = ex.Message });
+                Log.Log(LogLevel.Warning, WebLogMessage.RenderRequestUnhandled, new { Request = request.Url, Page = url, Reason = ex.Message });
                 // Not answered yet: ended now, not left until the page's timeout (re-review of PR #56). Not made either.
                 if (!answered)
                     try
@@ -331,7 +331,7 @@ public sealed class ChromeWebBrowser(Uri browserUrl, Func<string, CancellationTo
         }
         catch (Exception ex) when (ex is not OutOfMemoryException)
         {
-            Log.Log(LogLevel.Warning, LogMessage.RenderRequestUnhandled, new { Request = response.Url, Page = response.Url, Reason = ex.Message });
+            Log.Log(LogLevel.Warning, WebLogMessage.RenderRequestUnhandled, new { Request = response.Url, Page = response.Url, Reason = ex.Message });
         }
     }
 }

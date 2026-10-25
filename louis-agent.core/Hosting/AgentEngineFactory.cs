@@ -19,6 +19,7 @@ using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
 using LouisAgent.Core.Tools.Web.Browsing;
 using LouisAgent.Core.Tools.Web.Search;
+using LouisAgent.Core.Hosting.Messages;
 
 /// <summary>
 /// One engine per toolset profile (F5): a session names its toolsets, and gets an engine with only those tools and
@@ -137,7 +138,7 @@ public sealed class AgentEngineFactory
                 string oldest = _engines.Keys.Where(k => k != key).MinBy(k => _lastUsed.GetValueOrDefault(k))!;
                 _engines.TryRemove(oldest, out _);
                 _lastUsed.TryRemove(oldest, out _);
-                Log.Log(LogLevel.Information, LogMessage.ToolsetProfileDropped, new { Toolsets = oldest.Length == 0 ? "(none)" : oldest, Capacity = _capacity });
+                Log.Log(LogLevel.Information, HostingLogMessage.ToolsetProfileDropped, new { Toolsets = oldest.Length == 0 ? "(none)" : oldest, Capacity = _capacity });
             }
             engine = _engines.GetOrAdd(key, _ => new Lazy<AgentEngine>(() => Build(resolved, role, level, model, tool)));
         }
@@ -171,7 +172,7 @@ public sealed class AgentEngineFactory
         if (tool is not null) engine.KeepOnlyTool(tool);
 
         string toolsJson = JsonSerializer.Serialize(engine.Tools.OfType<AIFunction>().Select(t => new { t.Name, t.Description, t.JsonSchema }));
-        Log.Log(LogLevel.Information, LogMessage.ToolsetProfileBuilt, new
+        Log.Log(LogLevel.Information, HostingLogMessage.ToolsetProfileBuilt, new
         {
             Toolsets = (resolved.Count == 0 ? "(none)" : string.Join(", ", resolved.Select(t => t.Name)))
                 + (role is null ? "" : $" · role {role}") + (level == RoleLevel.Agent ? "" : $" · {level.ToString().ToLowerInvariant()}")

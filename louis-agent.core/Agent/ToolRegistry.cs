@@ -6,6 +6,7 @@ using LouisAgent.Core.Messages;
 using Microsoft.Extensions.AI;
 using LouisAgent.Core.Logging;
 using Microsoft.Extensions.Logging;
+using LouisAgent.Core.Agent.Messages;
 
 /// <summary>
 /// The agent's tools, kept in name order (ordinal), so the tool list, and with it the start of every request, is the
@@ -62,13 +63,13 @@ internal sealed class ToolRegistry
     {
         if (Contains(name))
         {
-            Log.Log(LogLevel.Information, LogMessage.McpToolAlreadyRegistered, new { Name = name }, tag: "MCP");
+            Log.Log(LogLevel.Information, AgentLogMessage.McpToolAlreadyRegistered, new { Name = name }, tag: "MCP");
             return false;
         }
 
         // Log discovered tool for informational purposes
         // Full MCP tool invocation would require a complete MCP protocol client
-        Log.Log(LogLevel.Information, LogMessage.McpToolDiscovered, new { Name = name, Description = description }, tag: "MCP");
+        Log.Log(LogLevel.Information, AgentLogMessage.McpToolDiscovered, new { Name = name, Description = description }, tag: "MCP");
         return true;
     }
 }

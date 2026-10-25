@@ -20,9 +20,11 @@ public class MessageEnumTests
     {
         Assert.That(MessageEnums.Select(t => t.Name), Is.EquivalentTo(new[]
         {
-            "AgentToolMessage", "ClockToolMessage", "CurrencyToolMessage", "DevOpsToolMessage", "DocumentToolMessage", "DotNetToolMessage",
-            "ErrorMessage", "GitToolMessage", "GuardrailToolMessage", "LogMessage", "PaymoToolMessage", "ReplayMessage", "ScriptToolMessage",
-            "ShellToolMessage", "SubSessionToolMessage", "ToolMessage", "UserText", "WebToolMessage", "WorkspaceToolMessage",
+            "AgentLogMessage", "AgentToolMessage", "ClockToolMessage", "ConfigLogMessage", "CurrencyToolMessage", "DevOpsToolMessage",
+            "DocumentToolMessage", "DotNetToolMessage", "ErrorMessage", "GitToolMessage", "GuardrailToolMessage", "HostingLogMessage",
+            "LoggingLogMessage", "PaymoToolMessage", "PricingLogMessage", "ProtocolLogMessage", "ReplayMessage", "ScriptToolMessage",
+            "ShellToolMessage", "SkillLogMessage", "SubSessionToolMessage", "ToolMessage", "UserText", "UsageLogMessage", "WebLogMessage",
+            "WebToolMessage", "WorkspaceToolMessage",
         }));
     }
 

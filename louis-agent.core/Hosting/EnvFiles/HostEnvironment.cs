@@ -6,6 +6,7 @@ using LouisAgent.Core.Config;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
 using Microsoft.Extensions.Logging;
+using LouisAgent.Core.Hosting.Messages;
 
 /// <summary>The .env files a host loads before it reads its options (S, CL15, from AgentHost), and the rule a profile's name follows.</summary>
 public static partial class HostEnvironment
@@ -37,7 +38,7 @@ public static partial class HostEnvironment
         string profileFile = Path.Combine(configDir, $".env.{profile}");
         if (!IsProfileName(profile) || !File.Exists(profileFile))
         {
-            Log.Log(LogLevel.Warning, LogMessage.LlmProfileMissing, new { Profile = profile, File = $"config/.env.{profile}" });
+            Log.Log(LogLevel.Warning, HostingLogMessage.LlmProfileMissing, new { Profile = profile, File = $"config/.env.{profile}" });
             return;
         }
         LoadFiles([profileFile]);

@@ -14,6 +14,7 @@ using LouisAgent.Core.Pricing.Rates;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Roles;
 using Microsoft.Extensions.Logging;
+using LouisAgent.Core.Hosting.Messages;
 
 /// <summary>
 /// Single bootstrap shared by the CLI, ACP, API and MCP entry points: the flow only (S, CL15). The .env files are
@@ -74,7 +75,7 @@ public static class AgentHost
         PriceTable prices = PriceTableLoader.Load(agent);
         ExchangeRates rates = ExchangeRatesLoader.Load(agent, prices.Currency);
         DisplayCurrency display = DisplayCurrency.Resolve(agent, prices.Currency, rates);
-        Log.Log(LogLevel.Information, LogMessage.DisplayCurrencyChosen, new { Display = display });
+        Log.Log(LogLevel.Information, HostingLogMessage.DisplayCurrencyChosen, new { Display = display });
         // The profiles sit beside .env: the repo's config/ when run from it, the mounted workspace's in a container.
         string configDirectory = EnvFile.FindConfigDirectory(Environment.CurrentDirectory) ?? Path.Combine(agent.WorkspaceRoot, "config");
         var sessionLlms = SessionLlmLoader.Load(agent, clientFactory, configDirectory, Environment.GetEnvironmentVariable);
@@ -82,7 +83,7 @@ public static class AgentHost
         var engines = new AgentEngineFactory(chatClient, agent, llm.ResolveSupportsTools(), UsageLedger.Open(agent, prices),
             clientFactory.CreateUsageMapper(llm), display, llm.ResolveThinking(), rates: rates, sessionLlms: sessionLlms, catalog: catalog);
         var engine = engines.GetOrCreate(engines.Available);
-        Log.Log(LogLevel.Information, LogMessage.LlmChosen,
+        Log.Log(LogLevel.Information, HostingLogMessage.LlmChosen,
             new { Llm = llm, Tools = engine.SupportsTools ? "on" : "off", Thinking = engine.Thinking?.ToString().ToLowerInvariant() ?? "off" });
 
         RiderMcpToolDiscovery.StartInBackground(engine, agent);

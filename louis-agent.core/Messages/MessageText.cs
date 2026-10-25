@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 
 /// <summary>
-/// The text of every message, kept in message enums (<see cref="ErrorMessage"/>, <see cref="LogMessage"/>,
+/// The text of every message, kept in message enums (<see cref="ErrorMessage"/>, an area's <c>{Area}LogMessage</c>,
 /// <see cref="ToolMessage"/>, <see cref="UserText"/>): each member's <see cref="DescriptionAttribute"/> is a template with
 /// named holes, e.g. <c>"Unknown LLM_CACHE_TTL '{Value}'. Use 5m or 1h."</c> (docs/CLAUDE.md, *Messages and logging*).
 /// </summary>

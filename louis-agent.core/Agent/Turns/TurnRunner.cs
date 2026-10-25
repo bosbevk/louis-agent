@@ -75,7 +75,7 @@ internal sealed class TurnRunner(IChatClient chatClient, ToolRegistry registry, 
             bool cutOff = updates.LastOrDefault(u => u.FinishReason is not null)?.FinishReason == ChatFinishReason.Length;
             if (!cutOff || continuation >= MaxCutOffContinuations) yield break;
 
-            Log.Log(LogLevel.Warning, LogMessage.ReplyCutOff, new { MaxOutputTokens });
+            Log.Log(LogLevel.Warning, AgentLogMessage.ReplyCutOff, new { MaxOutputTokens });
             ToolCallRecords.TruncatedToolCall("(streamed reply)", string.Empty, MaxOutputTokens);
             history.Add(new ChatMessage(ChatRole.User, ContinueAfterCutOffMessage));
             // The rest of this turn's requests exist only because of the cut-off; the host's scope says so.

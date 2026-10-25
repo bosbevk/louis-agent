@@ -6,6 +6,7 @@ using LouisAgent.Core.Config;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
 using Microsoft.Extensions.Logging;
+using LouisAgent.Core.Pricing.Messages;
 
 /// <summary>
 /// The currency costs are shown in (F14), with the rate from the price table's currency and that rate's date. Costs are
@@ -47,7 +48,7 @@ public sealed partial record DisplayCurrency(string Code, string Symbol, decimal
 
         if (rates.RateFor(choice.Code) is not { } rate)
         {
-            Log.Log(LogLevel.Warning, LogMessage.DisplayCurrencyHasNoRate, new { choice.Code, choice.Source, Base = baseCurrency });
+            Log.Log(LogLevel.Warning, PricingLogMessage.DisplayCurrencyHasNoRate, new { choice.Code, choice.Source, Base = baseCurrency });
             return Charged(baseCurrency);
         }
 
@@ -74,7 +75,7 @@ public sealed partial record DisplayCurrency(string Code, string Symbol, decimal
         string upper = code.Trim().ToUpperInvariant();
         if (CurrencyCode().IsMatch(upper)) return (upper, SymbolFor(upper), "DISPLAY_CURRENCY");
 
-        Log.Log(LogLevel.Warning, LogMessage.DisplayCurrencyNotACode, new { Code = code });
+        Log.Log(LogLevel.Warning, PricingLogMessage.DisplayCurrencyNotACode, new { Code = code });
         return null;
     }
 
@@ -84,14 +85,14 @@ public sealed partial record DisplayCurrency(string Code, string Symbol, decimal
         try
         {
             return FromCulture(CultureInfo.GetCultureInfo(name.Trim()), $"{setting} {name.Trim()}")
-                   ?? Warn(LogMessage.CultureHasNoRegion);
+                   ?? Warn(PricingLogMessage.CultureHasNoRegion);
         }
         catch (CultureNotFoundException)
         {
-            return Warn(LogMessage.CultureUnknown);
+            return Warn(PricingLogMessage.CultureUnknown);
         }
 
-        (string, string, string)? Warn(LogMessage why)
+        (string, string, string)? Warn(PricingLogMessage why)
         {
             Log.Log(LogLevel.Warning, why, new { Setting = setting, Name = name });
             return null;

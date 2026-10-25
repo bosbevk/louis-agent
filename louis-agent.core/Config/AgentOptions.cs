@@ -4,6 +4,7 @@ using System.Globalization;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
 using Microsoft.Extensions.Logging;
+using LouisAgent.Core.Config.Messages;
 
 /// <summary>Agent runtime settings, resolved once at startup instead of read from the environment inside core.</summary>
 public sealed class AgentOptions
@@ -206,7 +207,7 @@ public sealed class AgentOptions
         string? roles = raw("ROLES_ENABLED");
         string? old = raw("PERSONALITIES_ENABLED");
         if (old is not null)
-            Log.Log(LogLevel.Warning, roles is null ? LogMessage.RolesSettingRenamed : LogMessage.RolesSettingIgnored,
+            Log.Log(LogLevel.Warning, roles is null ? ConfigLogMessage.RolesSettingRenamed : ConfigLogMessage.RolesSettingIgnored,
                 new { Old = "PERSONALITIES_ENABLED", New = "ROLES_ENABLED" });
         return roles ?? old;
     }
@@ -265,9 +266,9 @@ public sealed class AgentOptions
         else if (FindRepositoryRoot(Environment.CurrentDirectory) is { } repoRoot)
         {
             options.WorkspaceRoot = repoRoot;
-            Log.Log(LogLevel.Information, LogMessage.WorkspaceRootFromRepository, new { Path = repoRoot });
+            Log.Log(LogLevel.Information, ConfigLogMessage.WorkspaceRootFromRepository, new { Path = repoRoot });
         }
-        else Log.Log(LogLevel.Warning, LogMessage.WorkspaceRootFromCurrentDirectory, new { Path = options.WorkspaceRoot });
+        else Log.Log(LogLevel.Warning, ConfigLogMessage.WorkspaceRootFromCurrentDirectory, new { Path = options.WorkspaceRoot });
         options.WorkspaceRoot = Path.GetFullPath(options.WorkspaceRoot);
         return options;
     }

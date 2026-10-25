@@ -120,13 +120,13 @@ internal sealed class AgentBuiltTools(
             var (parsed, errors) = ScriptToolDefinition.Parse(File.ReadAllText(file));
             if (parsed is null)
             {
-                Log.Log(LogLevel.Warning, LogMessage.AgentToolInvalid, new { File = Path.GetFileName(file), Errors = string.Join("; ", errors) });
+                Log.Log(LogLevel.Warning, AgentLogMessage.AgentToolInvalid, new { File = Path.GetFileName(file), Errors = string.Join("; ", errors) });
                 continue;
             }
 
             if (registry.Contains(parsed.Name, StringComparison.OrdinalIgnoreCase))
             {
-                Log.Log(LogLevel.Warning, LogMessage.AgentToolNameInUse, new { File = Path.GetFileName(file), parsed.Name });
+                Log.Log(LogLevel.Warning, AgentLogMessage.AgentToolNameInUse, new { File = Path.GetFileName(file), parsed.Name });
                 continue;
             }
 
@@ -134,7 +134,7 @@ internal sealed class AgentBuiltTools(
             loaded++;
         }
 
-        if (loaded > 0) Log.Log(LogLevel.Information, LogMessage.AgentToolsLoaded, new { Count = loaded, Directory = ToolsDirectory });
+        if (loaded > 0) Log.Log(LogLevel.Information, AgentLogMessage.AgentToolsLoaded, new { Count = loaded, Directory = ToolsDirectory });
         return loaded;
     }
 

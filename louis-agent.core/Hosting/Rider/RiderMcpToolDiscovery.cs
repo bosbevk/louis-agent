@@ -6,6 +6,7 @@ using LouisAgent.Core.Protocols.Mcp;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
 using Microsoft.Extensions.Logging;
+using LouisAgent.Core.Hosting.Messages;
 
 /// <summary>
 /// Orchestrates tool discovery from Rider's MCP server and registers them with AgentEngine.
@@ -33,7 +34,7 @@ public sealed class RiderMcpToolDiscovery
     {
         if (agent.RiderMcpAutoDiscover && !string.IsNullOrWhiteSpace(agent.RiderMcpEndpoint))
         {
-            Log.Log(LogLevel.Information, LogMessage.McpDiscoveryStarting, new { Endpoint = agent.RiderMcpEndpoint });
+            Log.Log(LogLevel.Information, HostingLogMessage.McpDiscoveryStarting, new { Endpoint = agent.RiderMcpEndpoint });
             _ = Task.Run(async () =>
             {
                 try
@@ -45,13 +46,13 @@ public sealed class RiderMcpToolDiscovery
                 }
                 catch (Exception ex)
                 {
-                    Log.Log(LogLevel.Warning, LogMessage.McpStartupFailed, new { Error = ex.ToString() }, tag: "MCP");
+                    Log.Log(LogLevel.Warning, HostingLogMessage.McpStartupFailed, new { Error = ex.ToString() }, tag: "MCP");
                 }
             });
         }
         else
         {
-            Log.Log(LogLevel.Information, LogMessage.McpDiscoveryDisabled);
+            Log.Log(LogLevel.Information, HostingLogMessage.McpDiscoveryDisabled);
         }
     }
 
@@ -67,7 +68,7 @@ public sealed class RiderMcpToolDiscovery
 
             if (tools.Count == 0)
             {
-                Log.Log(LogLevel.Information, LogMessage.McpNoToolsDiscovered, tag: "MCP");
+                Log.Log(LogLevel.Information, HostingLogMessage.McpNoToolsDiscovered, tag: "MCP");
                 return;
             }
 
@@ -86,15 +87,15 @@ public sealed class RiderMcpToolDiscovery
                 }
                 catch (Exception ex)
                 {
-                    Log.Log(LogLevel.Warning, LogMessage.McpRegisterFailed, new { tool.Name, Reason = ex.Message }, tag: "MCP");
+                    Log.Log(LogLevel.Warning, HostingLogMessage.McpRegisterFailed, new { tool.Name, Reason = ex.Message }, tag: "MCP");
                 }
             }
 
-            Log.Log(LogLevel.Information, LogMessage.McpRegistered, new { Registered = registeredCount, tools.Count }, tag: "MCP");
+            Log.Log(LogLevel.Information, HostingLogMessage.McpRegistered, new { Registered = registeredCount, tools.Count }, tag: "MCP");
         }
         catch (Exception ex)
         {
-            Log.Log(LogLevel.Warning, LogMessage.McpDiscoveryFailed, new { Reason = ex.Message }, tag: "MCP");
+            Log.Log(LogLevel.Warning, HostingLogMessage.McpDiscoveryFailed, new { Reason = ex.Message }, tag: "MCP");
             if (throwOnError)
                 throw;
         }

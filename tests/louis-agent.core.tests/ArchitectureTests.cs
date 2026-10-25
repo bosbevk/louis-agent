@@ -83,7 +83,8 @@ public partial class ArchitectureTests
     // CL13, review of PR #59: inside Skills/, the top (the contract and the embedded files) uses neither subfolder, and
     // Providers/ and Roles/ use the top, never each other; SkillFiles once used RoleCatalog while RoleCatalog read
     // SkillFileSource, a cycle the layers above can't see. Skills only: a factory at a seam's top (Tools/Shops) may
-    // create its providers.
+    // create its providers. The one exception is Messages/ (the split by area, F18): every folder of Skills/ may use it, as
+    // every folder of core may use core's Messages/, because its enums are the texts, not the code under test.
     [Test]
     public void InsideSkills_TheTopUsesNothingBelow_AndItsFoldersOnlyTheTop()
     {
@@ -94,10 +95,10 @@ public partial class ArchitectureTests
             string file = Path.GetRelativePath(skills, path).Replace('\\', '/');
             string folder = Path.GetDirectoryName(file)!.Replace('\\', '/');
             foreach (string used in SkillsUsing().Matches(File.ReadAllText(path)).Select(u => u.Groups[1].Value).Distinct())
-                if (used != folder) found.Add($"Skills/{file} uses Skills.{used}");
+                if (used != folder && used != "Messages") found.Add($"Skills/{file} uses Skills.{used}");
         }
 
-        Assert.That(found, Is.Empty, "Skills/: the top uses nothing below it; Providers/ and Roles/ use only the top");
+        Assert.That(found, Is.Empty, "Skills/: the top uses nothing below it except Messages/; Providers/ and Roles/ use only the top and Messages/");
     }
 
     // FX19 (ADR 0004): a process starts from an argument list, never from one command-line string, so a value from the

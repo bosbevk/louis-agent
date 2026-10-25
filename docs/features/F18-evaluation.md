@@ -617,6 +617,21 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   became `Enum?` (no text changed). Corrected in the next commit: it is `GitToolMessage?` (the git toolset's own texts only), and a null means `ToolMessage.SucceededNoOutput`. Checks: no `tests/*.json`
   changed against `HEAD`; the `[Description(` lines in core and the API are 820 before and 820 after, and their sorted diff is empty.
   The TODO line *`ToolMessage` split per toolset* is closed.
+- **Refactor: the message enums split by area, commit 2 of 3 (`LogMessage`)**. The 71 members of `LogMessage` moved to nine area enums,
+  each in its area's `Messages/`: `AgentLogMessage` 16, `ConfigLogMessage` 4, `HostingLogMessage` 18, `LoggingLogMessage` 4,
+  `PricingLogMessage` 10, `ProtocolLogMessage` 9, `SkillLogMessage` 1, `WebLogMessage` 3, `UsageLogMessage` 1. `LogMessage` had no member
+  shared by two areas, so the file is deleted. Five members were dead and are deleted with it: `SkillsLoaded`, `PaymoKeyMissing`,
+  `DevOpsKeyMissing`, `DevOpsSettingsMissing` (nothing logged them) and `SkillFileLoadFailed` (only a test sample used it). The move
+  ran from a table checked against the code first (71 in both, no duplicates, every member with one `[Description]`), with the five
+  as the table's deletions. Red first: `TheMessageEnumsExist` (the list still had `LogMessage`) and `FileSizeTests` (`LogMessage.cs`
+  over 200 lines once it left `Oversized`). Two places needed more than the move. `AgentLoggingTests.TheBrackets_…` logged
+  `SkillFileLoadFailed` as its sample; the brief said it logs `LedgerWriteFailed` and asserts "Could not write", but the test asserted
+  "Failed to load" (today's text of the deleted member), so the sample became `UsageLogMessage.LedgerWriteFailed` and its assertion
+  takes that member's text: the same holes and the same check for the bracket. And `ArchitectureTests`' Skills rule refused
+  `SkillFolder.cs`'s use of `Skills.Messages`; the rule now allows the `Messages/` folder from every folder of `Skills/`, as core's
+  `Messages/` is allowed everywhere, and its comment says so. `DisplayCurrency.Warn`'s parameter is `PricingLogMessage`. Checks: no
+  `tests/*.json` changed against `HEAD`; the `[Description(` lines are 820 before and 815 after, and the diff is exactly the five deleted
+  members' lines, nothing added or changed.
 - **Notes for step 5** (from the review of 4.2): `PulsEvalSet`'s `TurnView` builds on `EngineEvents`, so the route, the errors and the
   cost come from one reader. If an expected route goes in a scenario's `expected`, `RoutedToGrader` must declare that key in its
   `ExpectedKeys`. When the HTTP client sets a turn's `Failure`, the turn line must carry it, so `ProtocolTranscripts` reads it back. A

@@ -40,7 +40,7 @@ public sealed class SearxngSearchProvider(Uri baseUrl, HttpClient? http = null) 
 
         var answer = Parse(json, query.MaxResults);
         if (answer.SilentEngines.Count > 0)
-            Log.Log(LogLevel.Warning, LogMessage.SearxngEnginesSilent, new { Engines = string.Join("; ", answer.SilentEngines) });
+            Log.Log(LogLevel.Warning, WebLogMessage.SearxngEnginesSilent, new { Engines = string.Join("; ", answer.SilentEngines) });
         return answer.Results;
     }
 

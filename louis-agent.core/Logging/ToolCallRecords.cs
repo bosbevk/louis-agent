@@ -2,6 +2,7 @@ namespace LouisAgent.Core.Logging;
 
 using LouisAgent.Core.Messages;
 using Microsoft.Extensions.Logging;
+using LouisAgent.Core.Logging.Messages;
 
 /// <summary>
 /// Records of tool calls the guards had to step in on, one JSON line each under the log directory
@@ -16,7 +17,7 @@ public static class ToolCallRecords
         string tool, string arguments, int chars, string? userRequest, string outcome, int returnedChars)
     {
         using (Records.BeginScope(new Dictionary<string, object> { [AgentLogging.RecordProperty] = "oversized-tool-result" }))
-            Records.Log(LogLevel.Information, LogMessage.OversizedToolResult, new
+            Records.Log(LogLevel.Information, LoggingLogMessage.OversizedToolResult, new
             {
                 Tool = tool, Chars = chars, Outcome = outcome, ReturnedChars = returnedChars, Arguments = arguments,
                 UserRequest = userRequest is { Length: > 500 } ? userRequest[..500] + "..." : userRequest,
@@ -27,7 +28,7 @@ public static class ToolCallRecords
     public static void TruncatedToolCall(string tool, string arguments, int maxOutputTokens)
     {
         using (Records.BeginScope(new Dictionary<string, object> { [AgentLogging.RecordProperty] = "truncated-tool-call" }))
-            Records.Log(LogLevel.Information, LogMessage.TruncatedToolCall,
+            Records.Log(LogLevel.Information, LoggingLogMessage.TruncatedToolCall,
                 new { Tool = tool, MaxOutputTokens = maxOutputTokens, Arguments = arguments });
     }
 }

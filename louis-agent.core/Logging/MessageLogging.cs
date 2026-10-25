@@ -4,14 +4,14 @@ using LouisAgent.Core.Messages;
 using Microsoft.Extensions.Logging;
 
 /// <summary>
-/// Logging a message enum member (<see cref="LogMessage"/>, or a host's own): its template is the message template, so
+/// Logging a message enum member (an area's <c>{Area}LogMessage</c>, or a host's own): its template is the message template, so
 /// the logger keeps each hole as a field.
 /// </summary>
 public static class MessageLogging
 {
     /// <summary>
     /// Logs <paramref name="message"/> with the values of <paramref name="values"/>' properties named like its holes, in the
-    /// template's order, so a name can't drift from its argument: <c>logger.Log(LogLevel.Warning, LogMessage.X, new { Url })</c>.
+    /// template's order, so a name can't drift from its argument: <c>logger.Log(LogLevel.Warning, AreaLogMessage.X, new { Url })</c>.
     /// A hole without a value throws, as in <see cref="MessageText.Format"/>. <paramref name="tag"/> replaces the level in
     /// the console's brackets (<c>[MCP]</c>, <c>[TOOL]</c>).
     /// </summary>

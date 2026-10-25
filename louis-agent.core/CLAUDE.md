@@ -126,12 +126,12 @@ public enum ErrorMessage
 }
 
 throw new ArgumentException(MessageText.Format(ErrorMessage.UnknownCacheTtl, new { Value = other }));
-Log.Log(LogLevel.Warning, LogMessage.RatesUrlUnusable, new { Url = url, Reason = ex.Message });   // holes kept as fields
+Log.Log(LogLevel.Warning, PricingLogMessage.RatesUrlUnusable, new { Url = url, Reason = ex.Message });   // holes kept as fields
 Log.Log(LogLevel.Information, McpServerLogMessage.ToolNameTaken, new { Name = name }, tag: "MCP");   // [MCP] …
 ```
 
 - **What counts:** exception messages, log lines, the error strings tools return to the model, and user-facing text
-  (`/usage`, the usage line, CLI help). Enums by kind and area: the shared `ErrorMessage`, `LogMessage`, `ToolMessage` and
+  (`/usage`, the usage line, CLI help). Enums by kind and area: the shared `ErrorMessage`, `ToolMessage` and
   `UserText` sit in core's `Messages/`; an area's own sit in its `Messages/` folder, named `{Area}ToolMessage`,
   `{Area}LogMessage` or `{Area}ErrorMessage` (the split by area, F18 refactor). A text two areas use stays shared. Each member
   is named for what happened, not for its wording; `ReplayMessage` holds the exception texts of recorded and replayed web input

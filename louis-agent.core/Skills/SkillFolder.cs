@@ -4,6 +4,7 @@ using LouisAgent.Core.Config;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
 using Microsoft.Extensions.Logging;
+using LouisAgent.Core.Skills.Messages;
 
 /// <summary>
 /// Where skill files come from (S, CL15, from AgentHost): a built-in one from the assembly only, the agent's own
@@ -44,7 +45,7 @@ public static class SkillFolder
         string? onDisk = Find(agent) is { } dir ? Path.Combine(dir, fileName.Replace('/', Path.DirectorySeparatorChar)) : null;
         if (SkillFileSource.ReadEmbedded(fileName) is { } builtIn)
         {
-            if (onDisk is not null && File.Exists(onDisk)) Log.Log(LogLevel.Warning, LogMessage.BuiltInCopyIgnored, new { File = onDisk });
+            if (onDisk is not null && File.Exists(onDisk)) Log.Log(LogLevel.Warning, SkillLogMessage.BuiltInCopyIgnored, new { File = onDisk });
             return (builtIn, false);
         }
         // Only the agent's own files are read from disk: a role or a guide is built in, or it isn't one.

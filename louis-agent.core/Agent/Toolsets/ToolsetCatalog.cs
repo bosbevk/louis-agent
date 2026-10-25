@@ -18,6 +18,7 @@ using LouisAgent.Core.Tools.Web.Fetching;
 using LouisAgent.Core.Tools.Web.Quotes;
 using LouisAgent.Core.Tools.Workspace;
 using Microsoft.Extensions.Logging;
+using LouisAgent.Core.Agent.Messages;
 
 /// <summary>
 /// The toolsets a session can load (F5). Nothing is loaded by default: a session names the toolsets it needs, and
@@ -197,7 +198,7 @@ public static class ToolsetCatalog
             .ToList();
         foreach (var skipped in unavailable.Where(x => optional.Contains(x.Toolset.Name)))
         {
-            Log.Log(LogLevel.Information, LogMessage.OptionalToolsetSkipped, new { skipped.Toolset.Name, Settings = string.Join(", ", skipped.Missing) });
+            Log.Log(LogLevel.Information, AgentLogMessage.OptionalToolsetSkipped, new { skipped.Toolset.Name, Settings = string.Join(", ", skipped.Missing) });
             resolved.Remove(skipped.Toolset);
         }
         var refused = unavailable.Where(x => !optional.Contains(x.Toolset.Name)).ToList();

@@ -19,7 +19,6 @@ public class FileSizeTests
         "louis-agent.core/Agent/Turns/ToolCallGuards.cs",
         "louis-agent.core/Agent/Toolsets/ToolsetCatalog.cs",
         "louis-agent.core/Config/AgentOptions.cs",
-        "louis-agent.core/Messages/LogMessage.cs",
         "louis-agent.core/Tools/DotNet/DotNetTools.cs",
         "louis-agent.core/Tools/Integrations/DevOps/DevOpsTools.cs",
         "louis-agent.core/Tools/Integrations/Paymo/PaymoTools.cs",
