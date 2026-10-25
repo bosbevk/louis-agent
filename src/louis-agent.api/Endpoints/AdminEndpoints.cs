@@ -113,6 +113,12 @@ internal static class AdminEndpoints
                 return Results.Json(new { events = events.Select(e => new { type = e.Type, data = e.Data, at = e.At }) });
             }));
 
+        // A stored run as the protocol's own lines (F18 step 5.2): what a recorded run hands back to the harness as a transcript.
+        admin.MapGet("/benchmarks/runs/{id}/protocol", (string id, CancellationToken cancellationToken) => FromStore(store, async s =>
+            await s.GetRunAsync(id, cancellationToken) is { } run
+                ? Results.Text(await BenchmarkProtocolExport.BuildAsync(s, run, cancellationToken), "text/plain; charset=utf-8")
+                : NoRun(id)));
+
         admin.MapDelete("/benchmarks/runs/{id}", (string id, CancellationToken cancellationToken) => FromStore(store, async s =>
         {
             if (runner.Current is { Status: BenchmarkRunStatus.Running } live && live.Id == id)

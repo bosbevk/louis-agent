@@ -870,6 +870,13 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   can't open fails all its turns the same way. A cancelled run still throws. Red before the code: 21 of 157 tests (12 `NotImplementedException`
   from the client, 9 assertions); green after: 157. Not done on purpose: after a failed turn the scenario's next turn is still sent, as the
   Python's per-turn `except` did; 5a decides whether that should stop.
+- **Step 5.2 (a stored run as protocol lines).** `GET /v1/admin/benchmarks/runs/{id}/protocol` (admin gate: `x-api-key` or a bearer token, `ADMIN_API_KEY`
+  then `AGENT_API_KEY`) returns a stored run as the protocol's own lines, written by `BenchmarkProtocolExport` with `Utf8JsonWriter` (the bytes are the
+  contract, ADR 0041). Red before the code: 6 of 7 new tests; green after: 7, and the API's suite is 282. The Python stub's lines, recorded,
+  exported and read back by `BenchmarkProtocol`, are the same events key for key; so is an eval run with graders, models, grades and an outcome.
+  Not done, on purpose: the by-hand export of the Python's last runs. Louis had deleted them and made the first C# run the baseline
+  (plan, *Approved during the build*). `mode.conversations` is counted from the stored conversations, and a line's `t` is the last stream
+  time known, as the store keeps no other clock.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

@@ -1219,6 +1219,9 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
   recording and step 4e's cache of model answers keeps hitting. (3) A replay skips `FetchUrl`'s per-hop DNS check, and only there, only
   where the fetcher has a store and the flow is a replay: nothing leaves the process, and a site that no longer resolves must still replay.
   `ReadRenderedPage`'s check stays, because with `PAGE_RENDERER=tavily` the page goes to a third party even in a replay.
+- **Step 5.2: the first C# run is the baseline, there is no Python run to match** (Louis, 2026-10-25: he had deleted the old runs, and said "this run will
+  become the baseline, our first run"). The by-hand export of the Python's last runs, and 5.3's parity test against them, are dropped; the
+  scorers stay held by step 3's tests and the hand-cut references of 5.3. The export route stays: it is how a stored run becomes a transcript.
 
 ---
 [Docs index](../README.md) · [Plans](README.md) · [Platform plan](platform.md) · [Feature F18](../features/F18-evaluation.md)

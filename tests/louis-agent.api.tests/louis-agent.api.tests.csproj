@@ -37,6 +37,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- F18 step 5.2: the Python stub's recorded protocol lines (the runner's own fixture), which the export is read back against. -->
+    <None Include="..\louis-agent.evals.runner.tests\Fixtures\python-stub.txt" Link="Fixtures\python-stub.txt" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
     <!-- This project's design doc and how-to, shown under docs/ in the IDE's solution explorer; nothing is
          built or copied. -->
     <None Include="..\..\docs\projects\tests.md" Link="docs\tests.md" />

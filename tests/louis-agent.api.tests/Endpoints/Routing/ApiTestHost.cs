@@ -1,4 +1,5 @@
 using LouisAgent.Api.Benchmarks.Runs;
+using LouisAgent.Api.Benchmarks.Store;
 using LouisAgent.Api.Endpoints;
 using LouisAgent.Api.Endpoints.Routing;
 using LouisAgent.Core.Agent.Catalog;
@@ -18,7 +19,7 @@ namespace LouisAgent.Api.Tests.Endpoints.Routing;
 /// The API as <c>Program.cs</c> builds it, in memory (CL20 step 1, ADR 0039): the same <c>AddApi</c>, the same key gate and the same
 /// <c>MapApi</c> and <c>MapAdmin</c>, on a test server with no port. The agent behind it needs no network and no model call: its
 /// engine is built on a client that is never called, as <c>AgentSessionsTests</c> builds its sessions. The admin parts are built as
-/// <c>Program.cs</c> builds them with no store: the default checks, no admin key, no recorder.
+/// <c>Program.cs</c> builds them, with no store and no admin key unless the test gives them: the default checks, no recorder.
 /// </summary>
 internal static class ApiTestHost
 {
@@ -27,10 +28,11 @@ internal static class ApiTestHost
 
     /// <summary>
     /// The API with every route mapped; <paramref name="apiKey"/> adds the key gate, as a key set in the environment does, and
-    /// <paramref name="workspaceRoot"/> is the folder the agent works in (this repository when none: a test that writes or commits
+    /// <paramref name="adminKey"/> and <paramref name="store"/> open the admin portal and its benchmark store (none: closed, no store; F18 step 5.2),
+    /// and <paramref name="workspaceRoot"/> is the folder the agent works in (this repository when none: a test that writes or commits
     /// names a folder of its own).
     /// </summary>
-    public static WebApplication Build(string? apiKey = null, string? workspaceRoot = null)
+    public static WebApplication Build(string? apiKey = null, string? workspaceRoot = null, string? adminKey = null, IBenchmarkStore? store = null)
     {
         var host = HostContext(workspaceRoot ?? RepoRoot);
         var builder = WebApplication.CreateBuilder();
@@ -42,7 +44,7 @@ internal static class ApiTestHost
         var api = app.MapApi(host);
 
         var benchmarks = new BenchmarkCatalog(BenchmarkCatalog.Default);
-        api.MapAdmin(benchmarks, new BenchmarkRunner(benchmarks, host.Engine.WorkspaceRoot, "http://127.0.0.1:1/"), null, null, null,
+        api.MapAdmin(benchmarks, new BenchmarkRunner(benchmarks, host.Engine.WorkspaceRoot, "http://127.0.0.1:1/"), adminKey, store, null,
             _ => new Dictionary<string, string>(), host.Engine.WorkspaceRoot);
         return app;
     }

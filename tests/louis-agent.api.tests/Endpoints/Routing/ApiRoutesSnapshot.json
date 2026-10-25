@@ -9,6 +9,7 @@
   "GET /v1/admin/benchmarks/runs/current (AdminKey)",
   "GET /v1/admin/benchmarks/runs/{id} (AdminKey)",
   "GET /v1/admin/benchmarks/runs/{id}/events (AdminKey)",
+  "GET /v1/admin/benchmarks/runs/{id}/protocol (AdminKey)",
   "GET /v1/admin/benchmarks/runs/{id}/turns/{mode}/{repeat:int}/{task}/{turn:int}/events (AdminKey)",
   "GET /v1/admin/benchmarks/{check}/manual (AdminKey)",
   "GET /v1/git/branches (Key)",
