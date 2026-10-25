@@ -541,7 +541,26 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   room for one member, not three, so `UnknownWebReplay` is there and the two developer-facing exceptions are in a new `ReplayMessage`
   (`MessageEnumTests` pins core's enums by name, and its expected list gained that one name; the other way out was adding `ErrorMessage.cs`
   to `FileSizeTests`' oversized list, which only shrinks). The one golden change is the new `ToolMessage.ReplayMiss`; `ModelRequestSnapshot.json`
-  is unchanged. Red first: 33 tests on `NotImplementedException` from the stubs.
+  is unchanged. Red first: 33 tests on `NotImplementedException` from the stubs. (The tuple did not last: see 4a.2's fold-in.)
+- **Step 4a.2** (`louis-agent.core/Tools/Web/{Browsing,Replay}/`, `Config/AgentOptions.cs`, `Hosting/AgentEngineFactory.cs`,
+  `src/louis-agent.api/Sessions/`): *Fold-in first* (Louis's review of 4a.1: the size rule splits folders, it does not weaken types).
+  The store and its records moved to `Replay/Store/`, and `ReplayedVisit` is back as a record with two cases, `Answered(page)` and
+  `Failed(error)`, and a `ToVisit()` that returns the visit or throws the recorded `WebBrowserException`; `FindAsync` returns it, and
+  the browser no longer reads a pair with `Page!`. Then the settings (`WEB_REPLAY`, `REPLAY_DIRECTORY`, and `AgentOptions.KeepsRecordings`,
+  the one thing the API may ask about the folder), `WebBrowserFactory` (the process's one browser, recorded when a folder is set),
+  `ToolsetContext.Browser` falling back to it and `Renderer` reading through `Browser` (`PageRendererFactory.Create` takes it), and
+  `AgentEngineFactory` handing the one browser to the one context, so the shops and `ReadRenderedPage` share it and its store. On the
+  API: `ReplayRequest`, `CreateSessionRequest.Replay`, and `ReplayResolution.TryResolve`, which holds the seven rules and returns the
+  reason of a 400 (`ApiUserText`, five new members) before any engine is built; `WEB_REPLAY` is parsed once in `MapSessions`, so a bad
+  value stops start-up; `AgentSession.Replay`, and `TurnStream` sets it per turn beside the place. `SpecialistTools` and `MinionTools`
+  send `replay` (`SessionReplay.ForSubSession()`: the web mode in lower case, the parent's `Of`, the model flag), so a child records
+  into and replays from its parent's trial. Three small findings: `model: true` is refused in every mode, `off` included (never
+  pretended); a default `replay` with no `of` is refused like a sent one; and the privacy test (`ReplayFolderIsPrivateTests`) caught
+  my own 400 text and two comments naming `REPLAY_DIRECTORY`, so the message now points to `config/.env.example`. Red first: the
+  settings, the factory, the renderer and the shared-browser tests failed on `NotImplementedException` and on the old renderer building
+  its own Chrome (an 8 s timeout against a browser that isn't there); the sub-session bodies had no `replay` key; 28 of the 30 API tests
+  failed on the stub (the `AgentSessions` one passed at once, since its plumbing is only a parameter passed on).
+- **Notes for step 5** (from the review of 4.2):
 - **Notes for step 5** (from the review of 4.2): `PulsEvalSet`'s `TurnView` builds on `EngineEvents`, so the route, the errors and the
   cost come from one reader. If an expected route goes in a scenario's `expected`, `RoutedToGrader` must declare that key in its
   `ExpectedKeys`. When the HTTP client sets a turn's `Failure`, the turn line must carry it, so `ProtocolTranscripts` reads it back. A

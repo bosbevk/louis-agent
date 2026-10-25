@@ -1,7 +1,8 @@
 using LouisAgent.Core.Tools.Web.Browsing;
-using LouisAgent.Core.Tools.Web.Replay;
+using LouisAgent.Core.Tests.Tools.Web.Replay;
+using LouisAgent.Core.Tools.Web.Replay.Store;
 
-namespace LouisAgent.Core.Tests.Tools.Web.Replay;
+namespace LouisAgent.Core.Tests.Tools.Web.Replay.Store;
 
 // F18 step 4a.1: a trial's key reaches the disk only through the safe-name map (ADR 0004), and a missing trial is a miss, not an
 // exception (ADR 0007). Written first: the store and the map threw NotImplementedException on the red run.
@@ -90,10 +91,9 @@ public class WebReplayStoreTests
         var found = await folder.Store.FindAsync("t", Ask);
         var failed = await folder.Store.FindAsync("t", Ask with { Url = "https://example.com/bad" });
 
-        Assert.That(found!.Value.Error, Is.Null);
-        Assert.That(found.Value.Page, Is.EqualTo(page).Using<ReplayPage>(SamePage));
-        Assert.That(failed!.Value.Page, Is.Null);
-        Assert.That(failed.Value.Error, Is.EqualTo("it refused: ‘quoted’"));
+        Assert.That(found, Is.InstanceOf<ReplayedVisit.Answered>());
+        Assert.That(((ReplayedVisit.Answered)found!).Page, Is.EqualTo(page).Using<ReplayPage>(SamePage));
+        Assert.That(failed, Is.EqualTo(new ReplayedVisit.Failed("it refused: ‘quoted’")));
     }
 
     private static bool SamePage(ReplayPage? a, ReplayPage? b) =>

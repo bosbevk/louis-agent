@@ -79,6 +79,18 @@ public class AgentOptionsTests
         Assert.That(With().BrowserUserAgent, Is.Null);
     }
 
+    [Test]
+    public void TheReplaySettings_AreRead_TrimmedAndNullWhenBlank()
+    {
+        // F18 step 4a: WEB_REPLAY is the text SessionReplay.DefaultMode parses; REPLAY_DIRECTORY decides whether recordings are kept.
+        var set = With(("WEB_REPLAY", " record "), ("REPLAY_DIRECTORY", " /data/replay "));
+        Assert.That((set.WebReplay, set.ReplayDirectory, set.KeepsRecordings), Is.EqualTo(("record", "/data/replay", true)));
+
+        var blank = With(("WEB_REPLAY", "  "), ("REPLAY_DIRECTORY", "   "));
+        Assert.That((blank.WebReplay, blank.ReplayDirectory, blank.KeepsRecordings), Is.EqualTo(((string?)null, (string?)null, false)));
+        Assert.That(With().KeepsRecordings, Is.False);
+    }
+
     private static AgentOptions With(params (string Name, string Value)[] variables) =>
         AgentOptions.FromEnvironment(name => variables.FirstOrDefault(v => v.Name == name).Value);
 

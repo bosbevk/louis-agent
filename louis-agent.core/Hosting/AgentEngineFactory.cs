@@ -17,6 +17,7 @@ using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Roles;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
+using LouisAgent.Core.Tools.Web.Browsing;
 using LouisAgent.Core.Tools.Web.Search;
 
 /// <summary>
@@ -68,7 +69,8 @@ public sealed class AgentEngineFactory
         _thinking = thinking;
         _capacity = capacity;
         _sessionLlms = (sessionLlms ?? []).ToDictionary(l => l.Name, StringComparer.Ordinal);
-        Context = new ToolsetContext(agent, webSearch ?? WebSearchProviderFactory.Create(agent), rates, usageSink);
+        // One browser, and where recordings are kept one store, for every engine of this process (F18 step 4a): the shops and the page renderer read through it.
+        Context = new ToolsetContext(agent, webSearch ?? WebSearchProviderFactory.Create(agent), rates, usageSink, WebBrowser: WebBrowserFactory.Create(agent));
     }
 
     /// <summary>What the catalogue builds this instance's tools from (settings, the search provider).</summary>

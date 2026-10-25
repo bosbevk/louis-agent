@@ -8,6 +8,7 @@ using LouisAgent.Core.Agent;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Sessions;
+using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Sessions.SubSessions;
 using LouisAgent.Core.Tools.Agents;
 using LouisAgent.Api.Sessions.Streaming;
@@ -77,6 +78,7 @@ internal static class TurnStream
                 using (SessionAttachments.Use(session.Attachments))
                 using (AgentTools.Use(session.Engine.Tools.Select(t => t.Name)))
                 using (UserPlace.Use(session.Place))
+                using (SessionReplay.Use(session.Replay))
                 using (SubSessionRegistry.Use(session.SubSessions))
                 using (SubSessionFeed.Observe(e => subSessions.Writer.TryWrite(e)))
                     next = updates.MoveNextAsync().AsTask();

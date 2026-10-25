@@ -48,6 +48,15 @@ public sealed class AgentOptions
     /// </summary>
     public string? BrowserUserAgent { get; set; }
 
+    /// <summary>WEB_REPLAY (F18 step 4a): off, record or replay; the default for eval sessions (those with a run tag). Text: <c>SessionReplay.DefaultMode</c> parses it once at start-up.</summary>
+    public string? WebReplay { get; set; }
+
+    /// <summary>REPLAY_DIRECTORY (F18 step 4a): where the saved web pages live. Private, never served; null keeps no recordings.</summary>
+    public string? ReplayDirectory { get; set; }
+
+    /// <summary>Whether this instance keeps recordings (F18 step 4a): a recording or a replay needs a <see cref="ReplayDirectory"/>.</summary>
+    public bool KeepsRecordings => ReplayDirectory is not null;
+
     /// <summary>Tavily search API key (TAVILY_API_KEY), F25.</summary>
     public string? TavilyApiKey { get; set; }
 
@@ -220,6 +229,8 @@ public sealed class AgentOptions
             BrowserUrl = Get("BROWSER_URL"),
             PageRenderer = Get("PAGE_RENDERER"),
             BrowserUserAgent = string.IsNullOrWhiteSpace(Get("BROWSER_USER_AGENT")) ? null : Get("BROWSER_USER_AGENT")!.Trim(),
+            WebReplay = Get("WEB_REPLAY"),
+            ReplayDirectory = Get("REPLAY_DIRECTORY"),
             TavilyApiKey = Get("TAVILY_API_KEY"),
             GoogleSearchApiKey = Get("GOOGLE_SEARCH_API_KEY"),
             GoogleSearchEngineId = Get("GOOGLE_SEARCH_ENGINE_ID"),

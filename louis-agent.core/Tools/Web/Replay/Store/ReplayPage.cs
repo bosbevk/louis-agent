@@ -1,6 +1,6 @@
 using LouisAgent.Core.Tools.Web.Browsing;
 
-namespace LouisAgent.Core.Tools.Web.Replay;
+namespace LouisAgent.Core.Tools.Web.Replay.Store;
 
 /// <summary>
 /// What a visit answered, as a page file holds it (<c>pages/{sha256}.json</c>): its address after any redirect, its HTML, the

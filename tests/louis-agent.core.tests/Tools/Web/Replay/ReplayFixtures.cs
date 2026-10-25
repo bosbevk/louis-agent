@@ -1,5 +1,5 @@
 using LouisAgent.Core.Tools.Web.Browsing;
-using LouisAgent.Core.Tools.Web.Replay;
+using LouisAgent.Core.Tools.Web.Replay.Store;
 using Microsoft.Extensions.Time.Testing;
 
 namespace LouisAgent.Core.Tests.Tools.Web.Replay;

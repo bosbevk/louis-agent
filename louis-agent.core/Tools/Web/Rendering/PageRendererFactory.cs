@@ -15,10 +15,11 @@ public static class PageRendererFactory
     /// <summary>The names <c>PAGE_RENDERER</c> takes, from <see cref="PageRendererKind"/>.</summary>
     public static IReadOnlyList<string> SupportedRenderers { get; } = SettingChoice.Names<PageRendererKind>();
 
-    public static IPageRenderer Create(AgentOptions options, HttpClient? http = null)
+    /// <param name="browser">The process's one guarded browser (F18 step 4a: the shops read through it too, so a recorded run holds every page); the Chrome renderer builds its own only when none is given.</param>
+    public static IPageRenderer Create(AgentOptions options, HttpClient? http = null, IWebBrowser? browser = null)
     {
         bool hasTavily = !string.IsNullOrWhiteSpace(options.TavilyApiKey);
-        Uri? browser = Uri.TryCreate(options.BrowserUrl?.Trim(), UriKind.Absolute, out var url) ? url : null;
+        Uri? browserUrl = Uri.TryCreate(options.BrowserUrl?.Trim(), UriKind.Absolute, out var url) ? url : null;
         if (!SettingChoice.TryParse(options.PageRenderer, out PageRendererKind? choice))
         {
             string named = options.PageRenderer!.Trim();
@@ -28,11 +29,11 @@ public static class PageRendererFactory
 
         return choice switch
         {
-            null when browser is not null => new ChromePageRenderer(new ChromeWebBrowser(browser, userAgent: options.BrowserUserAgent)),
+            null when browserUrl is not null => new ChromePageRenderer(browser ?? new ChromeWebBrowser(browserUrl, userAgent: options.BrowserUserAgent)),
             null when hasTavily => new TavilyPageRenderer(options.TavilyApiKey!, http),
             null => new UnavailablePageRenderer(MessageText.Format(ToolMessage.RenderNotConfigured)),
-            PageRendererKind.Chrome => browser is not null
-                ? new ChromePageRenderer(new ChromeWebBrowser(browser, userAgent: options.BrowserUserAgent))
+            PageRendererKind.Chrome => browserUrl is not null
+                ? new ChromePageRenderer(browser ?? new ChromeWebBrowser(browserUrl, userAgent: options.BrowserUserAgent))
                 : new UnavailablePageRenderer(MessageText.Format(ToolMessage.BrowserNotConfigured)),
             PageRendererKind.Tavily => hasTavily
                 ? new TavilyPageRenderer(options.TavilyApiKey!, http)

@@ -1,6 +1,7 @@
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Tools.Web.Browsing;
+using LouisAgent.Core.Tools.Web.Replay.Store;
 
 namespace LouisAgent.Core.Tools.Web.Replay;
 
@@ -48,6 +49,6 @@ public sealed class RecordedWebBrowser(IWebBrowser inner, WebReplayStore store) 
     {
         if (await store.FindAsync(trial, ask, cancellationToken) is not { } recorded)
             throw new WebBrowserException(MessageText.Format(ToolMessage.ReplayMiss, new { Url = ask.Url }));
-        return recorded.Error is { } error ? throw new WebBrowserException(error) : recorded.Page!.ToVisit();
+        return recorded.ToVisit();
     }
 }

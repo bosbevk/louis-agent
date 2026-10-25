@@ -219,6 +219,16 @@ public class AgentSessionsTests
         Assert.That(session.Place!.Location, Is.EqualTo("Pretoria"));
     }
 
+    [Test]
+    public void ASessionKeepsTheReplayItWasOpenedWith()
+    {
+        // F18 step 4a: resolved once when the session opens (ReplayResolution), then kept for its turns.
+        var replay = new LouisAgent.Core.Sessions.Replay.SessionReplay(LouisAgent.Core.Sessions.Replay.WebReplayMode.Record, "run_1:cook:1/bobotie", false);
+
+        Assert.That(Sessions().Create(["files"], replay: replay).Replay, Is.EqualTo(replay));
+        Assert.That(Sessions().Create(["files"]).Replay, Is.Null);
+    }
+
     // CL14 step 1: what the API returns for a session says "role", the word callers see from CL14 on.
     private static string Json(object view) => System.Text.Json.JsonSerializer.Serialize(view);
 

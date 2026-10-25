@@ -8,6 +8,7 @@ using LouisAgent.Core.Messages;
 using LouisAgent.Api.Sessions.Streaming;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Sessions;
+using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Skills.Roles;
 using LouisAgent.Core.Usage.Records;
 
@@ -26,6 +27,9 @@ internal static class SessionEndpoints
         // instance's model); "tool" a minion's one tool (F30; depth 2 only, with "parent" the specialist's session and turn);
         // { "task", "run", "service" } tag every usage record of the session (the orchestrator sends them for a fix); "depth" is
         // set by an agent opening a sub-session.
+        // "replay" (F18 step 4a): what an eval session does with the web. WEB_REPLAY is its default, parsed here once, at start-up, so a
+        // bad value stops the API as AGENT_AUTH does; the rules are ReplayResolution's, and each refusal is a 400 before any engine is built.
+        var defaultReplay = SessionReplay.DefaultMode(host.Agent.WebReplay);
         app.MapPost("/sessions", (CreateSessionRequest? request, AgentSessions sessions) =>
         {
             if (request?.InvalidTag() is { } invalid)
@@ -43,12 +47,15 @@ internal static class SessionEndpoints
                         MessageText.Format(ApiUserText.UnknownStreamFormat, new { Format = request!.Stream, Supported = string.Join(", ", SettingChoice.Names<StreamFormat>()) })),
                     statusCode: StatusCodes.Status400BadRequest);
 
+            if (!ReplayResolution.TryResolve(request, defaultReplay, host.Agent.KeepsRecordings, out var replay, out string? refusal))
+                return Results.Json(Error("invalid_request_error", refusal!), statusCode: StatusCodes.Status400BadRequest);
+
             AgentSession session;
             try
             {
                 session = sessions.Create(request?.Toolsets,
                     request is null ? null : new UsageTags(request.Task, request.Run, request.Service, request.Parent), request?.Depth ?? 0,
-                    request?.RoleOrAlias(), request?.Place(), request?.Llm, request?.Tool, format.Value);
+                    request?.RoleOrAlias(), request?.Place(), request?.Llm, request?.Tool, format.Value, replay);
             }
             catch (Exception ex) when (ex is ToolsetException or RoleException or SessionLlmException)
             {

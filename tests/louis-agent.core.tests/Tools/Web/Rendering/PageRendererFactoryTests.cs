@@ -1,4 +1,5 @@
 using LouisAgent.Core.Config;
+using LouisAgent.Core.Tools.Web.Browsing;
 using LouisAgent.Core.Tools.Web.Rendering;
 using LouisAgent.Core.Tools.Web.Rendering.Providers;
 
@@ -25,6 +26,37 @@ public class PageRendererFactoryTests
         var options = new AgentOptions { PageRenderer = renderer, BrowserUrl = browserUrl, TavilyApiKey = tavilyKey };
 
         Assert.That(PageRendererFactory.Create(options), Is.TypeOf(expected));
+    }
+
+    [TestCase(null)]
+    [TestCase("chrome")]
+    public async Task TheBrowserGiven_IsTheOneTheChromeRendererReadsThrough(string? renderer)
+    {
+        // F18 step 4a: the process builds one browser and hands it in, so the renderer's reads are recorded with the shops'.
+        var browser = new CountingBrowser();
+
+        var made = PageRendererFactory.Create(new AgentOptions { PageRenderer = renderer, BrowserUrl = Browser }, browser: browser);
+        await made.RenderAsync(new Uri("https://example.com/recipe"));
+
+        Assert.That(made, Is.TypeOf<ChromePageRenderer>());
+        Assert.That(browser.Calls, Is.EqualTo(1));
+    }
+
+    [Test]
+    public void ABrowserGiven_NeverMakesChromeAvailableWhereBrowserUrlIsNotSet() =>
+        Assert.That(PageRendererFactory.Create(new AgentOptions { PageRenderer = "chrome" }, browser: new CountingBrowser()),
+            Is.TypeOf<UnavailablePageRenderer>());
+
+    private sealed class CountingBrowser : IWebBrowser
+    {
+        public int Calls { get; private set; }
+
+        public Task<BrowserVisit> VisitAsync(Uri url, Func<Uri, bool>? capture = null, BrowserSession? session = null, string? script = null,
+            string? readySelector = null, CancellationToken cancellationToken = default)
+        {
+            Calls++;
+            return Task.FromResult(new BrowserVisit(url.ToString(), "<html><body>hello</body></html>", []));
+        }
     }
 
     [Test]

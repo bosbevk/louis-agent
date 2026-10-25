@@ -1,4 +1,4 @@
-namespace LouisAgent.Core.Tools.Web.Replay;
+namespace LouisAgent.Core.Tools.Web.Replay.Store;
 
 /// <summary>
 /// What a visit asked for, as the replay keys it: the address (<see cref="Uri.AbsoluteUri"/>), the script and the ready selector,

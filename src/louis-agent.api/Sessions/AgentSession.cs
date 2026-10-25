@@ -5,6 +5,7 @@ using LouisAgent.Core.Agent.Toolsets;
 using System.Collections.Concurrent;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Sessions;
+using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Skills;
@@ -20,7 +21,8 @@ namespace LouisAgent.Api.Sessions;
 /// progress, if any.
 /// </summary>
 internal sealed class AgentSession(string id, AgentEngine engine, IReadOnlyList<string> toolsets, int depth, UsageTags tags,
-    string? role = null, UserPlace? place = null, string? llm = null, string? tool = null, StreamFormat format = StreamFormat.Claude)
+    string? role = null, UserPlace? place = null, string? llm = null, string? tool = null, StreamFormat format = StreamFormat.Claude,
+    SessionReplay? replay = null)
 {
     private readonly SemaphoreSlim _turnLock = new(1, 1);
     private CancellationTokenSource? _activeTurn;
@@ -44,6 +46,9 @@ internal sealed class AgentSession(string id, AgentEngine engine, IReadOnlyList<
 
     /// <summary>Where the user is, when they shared it (F22): set for every turn; the first message says it.</summary>
     public UserPlace? Place { get; } = place;
+
+    /// <summary>What the session does with the web (F18 step 4a), resolved when it opened; null for a live chat and for an eval that leaves the web live.</summary>
+    public SessionReplay? Replay { get; } = replay;
 
     /// <summary>The LLM profile the session runs on (F30), or null for the instance's own model.</summary>
     public string? Llm { get; } = llm;

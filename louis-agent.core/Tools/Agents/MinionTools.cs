@@ -8,6 +8,7 @@ using System.ComponentModel;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Sessions;
+using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Roles;
 using LouisAgent.Core.Tools.Agents.SubSessions;
@@ -107,6 +108,7 @@ public sealed class MinionTools
             depth = 2, role, tool, task = $"minion:{role}", run = scope?.Tags.Run, service = scope?.Tags.Service,
             parent = CallSlots.ParentTag(scope), llm,
             location = UserPlace.Current?.Location, time_zone = UserPlace.Current?.TimeZone,
+            replay = SessionReplay.ForSubSession(),
         };
         string model = llm ?? InstanceLlm;
         string Answer(SubSessionMessenger.SubSessionReply reply) =>

@@ -1019,6 +1019,12 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
 
 ## Approved during the build
 
+- **Step 4a: a replay names the recorded trial, not only the run** (Louis, 2026-10-25, step 4a's prompt). `SessionReplay.Of` is the
+  recorded trial a session writes or reads, and the API resolves it when the session opens: a recording uses `{run tag}/{task}`, a replay
+  the `of` it is sent, and a sub-session is sent its parent's resolved `Of`. A sub-session's own task is `sub-session:{name}`, and one run
+  tag (`{runId}:{mode}:{repeat}`) holds every scenario of a mode and repeat, so a sub-session that worked out its own key would mix one
+  scenario's pages with another's.
+
 - **Step 4.5: the portal shows every eval the same way, from one template** (Louis, 2026-10-25: "the front end should probably also
   update to reflect the standard we now implement I mean all future evals will display the same, that's the point?" and, on the choice,
   "A, so it will be generic, and work from a template"). Three commits: 4.5a, the runner grades each trial (today it writes

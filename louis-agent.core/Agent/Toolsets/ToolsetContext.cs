@@ -13,13 +13,12 @@ using LouisAgent.Core.Tools.Web.Rendering;
 public sealed record ToolsetContext(AgentOptions Options, IWebSearchProvider WebSearch, ExchangeRates? Rates = null, IUsageSink? UsageSink = null,
     IPageRenderer? PageRenderer = null, IWebBrowser? WebBrowser = null)
 {
-    /// <summary>The page renderer for the web toolset (F25): the one given, else the one configuration picks.</summary>
-    public IPageRenderer Renderer => PageRenderer ?? PageRendererFactory.Create(Options);
+    /// <summary>The page renderer for the web toolset (F25): the one given, else the one configuration picks, reading through <see cref="Browser"/> (F18 step 4a).</summary>
+    public IPageRenderer Renderer => PageRenderer ?? PageRendererFactory.Create(Options, browser: Browser);
 
     /// <summary>
-    /// The guarded browser (F33): the one given, else the headless Chrome <c>BROWSER_URL</c> names, else none, and a toolset
-    /// that needs one is unavailable.
+    /// The guarded browser (F33): the one given (a host builds one per process, so every engine shares it and its recordings), else
+    /// what <see cref="WebBrowserFactory"/> builds from <c>BROWSER_URL</c>, else none, and a toolset that needs one is unavailable.
     /// </summary>
-    public IWebBrowser? Browser => WebBrowser
-        ?? (Uri.TryCreate(Options.BrowserUrl?.Trim(), UriKind.Absolute, out var url) ? new ChromeWebBrowser(url, userAgent: Options.BrowserUserAgent) : null);
+    public IWebBrowser? Browser => WebBrowser ?? WebBrowserFactory.Create(Options);
 }

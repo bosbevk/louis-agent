@@ -4,6 +4,7 @@ using System.ComponentModel;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Sessions;
+using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Sessions.SubSessions;
 using LouisAgent.Core.Tools.Agents.SubSessions;
 using LouisAgent.Core.Tools.Clock;
@@ -82,6 +83,8 @@ public sealed class SpecialistTools(IReadOnlyDictionary<string, Uri> peers, stri
             llm = string.IsNullOrWhiteSpace(llm) ? null : llm.Trim(),
             // The user's place, when they shared it, so the specialist's time and "near me" are theirs (F22).
             location = UserPlace.Current?.Location, time_zone = UserPlace.Current?.TimeZone,
+            // An eval's web input: the parent's own trial, so the specialist's pages are recorded and replayed with its (F18 step 4a).
+            replay = SessionReplay.ForSubSession(),
         };
         var kind = new SubSessionKind(Kind, name, $"sub-session:{name}", KeptAnswer, reply => MessageText.Format(ToolMessage.SubSessionAnswer, new
         {

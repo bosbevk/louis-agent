@@ -22,6 +22,16 @@ public class SessionReplayTests
         Assert.That(SessionReplay.Current, Is.Null);
     }
 
+    [Test]
+    public void ForSubSession_IsThisFlowsSettingsAsTheApiReadsThem_AndNullWithNone()
+    {
+        Assert.That(SessionReplay.ForSubSession(), Is.Null);
+
+        using (SessionReplay.Use(new SessionReplay(WebReplayMode.Record, "run_1:a:1/bobotie", false)))
+            Assert.That(System.Text.Json.JsonSerializer.Serialize(SessionReplay.ForSubSession()),
+                Is.EqualTo("""{"web":"record","of":"run_1:a:1/bobotie","model":false}"""));
+    }
+
     [TestCase(null, WebReplayMode.Off)]
     [TestCase("", WebReplayMode.Off)]
     [TestCase("record", WebReplayMode.Record)]

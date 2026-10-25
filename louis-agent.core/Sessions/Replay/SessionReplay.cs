@@ -26,6 +26,14 @@ public sealed record SessionReplay(WebReplayMode Web, string? Of, bool Model)
         return new Restore(previous);
     }
 
+    /// <summary>
+    /// The <c>replay</c> a session sends when it opens a sub-session (F18 step 4a): this flow's settings as the API reads them
+    /// (<c>web</c> in lower case, <c>of</c>, <c>model</c>), so the child records into, or replays from, the parent's own trial and
+    /// never works out a key of its own; null when this flow has none.
+    /// </summary>
+    public static object? ForSubSession() =>
+        Current is { } replay ? new { web = replay.Web.ToString().ToLowerInvariant(), of = replay.Of, model = replay.Model } : null;
+
     /// <summary>WEB_REPLAY, parsed once where it enters: unset is <see cref="WebReplayMode.Off"/>; anything unknown throws.</summary>
     public static WebReplayMode DefaultMode(string? setting)
     {

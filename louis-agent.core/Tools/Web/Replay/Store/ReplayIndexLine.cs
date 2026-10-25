@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace LouisAgent.Core.Tools.Web.Replay;
+namespace LouisAgent.Core.Tools.Web.Replay.Store;
 
 /// <summary>
 /// One visit in a trial's index (<c>trials/{safe name}.jsonl</c>, one snake_case JSON line each): what was asked, when, and either the

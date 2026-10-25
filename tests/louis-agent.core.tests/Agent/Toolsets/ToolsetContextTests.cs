@@ -19,9 +19,27 @@ public class ToolsetContextTests
 
     private sealed class FakeBrowser : IWebBrowser
     {
+        public int Calls { get; private set; }
+
         public Task<BrowserVisit> VisitAsync(Uri url, Func<Uri, bool>? capture = null, BrowserSession? session = null, string? script = null,
-            string? readySelector = null, CancellationToken cancellationToken = default) =>
-            Task.FromResult(new BrowserVisit(url.ToString(), "", []));
+            string? readySelector = null, CancellationToken cancellationToken = default)
+        {
+            Calls++;
+            return Task.FromResult(new BrowserVisit(url.ToString(), "", []));
+        }
+    }
+
+    [Test]
+    public async Task TheRendererAndTheShops_ReadThroughTheSameBrowser()
+    {
+        // F18 step 4a: one browser per process, so a recorded run holds every page, whichever tool read it; the renderer had built its own.
+        var fake = new FakeBrowser();
+        var context = new ToolsetContext(new AgentOptions { BrowserUrl = "http://puls-browser:9222" }, new NoSearch(), WebBrowser: fake);
+
+        await context.Renderer.RenderAsync(new Uri("https://example.com/recipe"));
+
+        Assert.That(context.Browser, Is.SameAs(fake));
+        Assert.That(fake.Calls, Is.EqualTo(1), "the page the renderer read went through the browser the shops get");
     }
 
     [Test]

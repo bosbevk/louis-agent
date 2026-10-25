@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.Json;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Sessions;
+using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Providers;
@@ -145,6 +146,34 @@ public class SpecialistToolsTests
         using var create = JsonDocument.Parse(handler.Requests[0].Body!);
         Assert.That(create.RootElement.GetProperty("location").GetString(), Is.EqualTo("Pretoria, Gauteng, Suid-Afrika"));
         Assert.That(create.RootElement.GetProperty("time_zone").GetString(), Is.EqualTo("Africa/Johannesburg"));
+    }
+
+    [TestCase(WebReplayMode.Record, "record")]
+    [TestCase(WebReplayMode.Replay, "replay")]
+    public async Task TheReplay_GoesToTheSpecialist_AsTheParentsOwnTrial(WebReplayMode mode, string expected)
+    {
+        // F18 step 4a: the child never works out a key of its own (its task is sub-session:{name}, and one run tag holds every scenario).
+        var handler = Peer();
+
+        using (SessionReplay.Use(new SessionReplay(mode, "run_1:puls-cook:1/bobotie", Model: false)))
+            await ToolsOn(handler).StartSubSession(["web"], "Maak 'n bobotie.", agent: "coder");
+
+        using var create = JsonDocument.Parse(handler.Requests[0].Body!);
+        var replay = create.RootElement.GetProperty("replay");
+        Assert.That(replay.GetProperty("web").GetString(), Is.EqualTo(expected));
+        Assert.That(replay.GetProperty("of").GetString(), Is.EqualTo("run_1:puls-cook:1/bobotie"));
+        Assert.That(replay.GetProperty("model").GetBoolean(), Is.False);
+    }
+
+    [Test]
+    public async Task WithoutAReplay_TheSpecialistIsToldNone()
+    {
+        var handler = Peer();
+
+        await ToolsOn(handler).StartSubSession(["web"], "Maak 'n bobotie.", agent: "coder");
+
+        using var create = JsonDocument.Parse(handler.Requests[0].Body!);
+        Assert.That(create.RootElement.TryGetProperty("replay", out var replay) && replay.ValueKind == JsonValueKind.Object, Is.False);
     }
 
     [Test]

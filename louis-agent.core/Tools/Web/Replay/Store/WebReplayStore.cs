@@ -1,7 +1,7 @@
 using System.Security.Cryptography;
 using System.Text.Json;
 
-namespace LouisAgent.Core.Tools.Web.Replay;
+namespace LouisAgent.Core.Tools.Web.Replay.Store;
 
 /// <summary>
 /// The saved web input of eval runs (F18 step 4a): each answer once per hash in <c>{directory}/pages/{sha256}.json</c> (the JSON bytes
@@ -33,7 +33,7 @@ public sealed class WebReplayStore(string directory, TimeProvider? clock = null)
         AppendAsync(new ReplayIndexLine(trial, ask.Url, ask.Script, ask.ReadySelector, _clock.GetUtcNow(), null, error), cancellationToken);
 
     /// <summary>The first recording of <paramref name="ask"/> in the trial, or null when there is none (or no such trial).</summary>
-    public async Task<(ReplayPage? Page, string? Error)?> FindAsync(string trial, ReplayAsk ask, CancellationToken cancellationToken = default)
+    public async Task<ReplayedVisit?> FindAsync(string trial, ReplayAsk ask, CancellationToken cancellationToken = default)
     {
         string index = TrialFileName.Under(Trials, TrialFileName.Of(trial) + ".jsonl");
         if (!File.Exists(index)) return null;
@@ -41,8 +41,8 @@ public sealed class WebReplayStore(string directory, TimeProvider? clock = null)
         foreach (string text in await File.ReadAllLinesAsync(index, cancellationToken))
         {
             if (ParseLine(text) is not { } line || line.Ask != ask) continue;
-            if (line.Error is not null) return (null, line.Error);
-            if (await ReadPageAsync(line.Hash, cancellationToken) is { } page) return (page, null);
+            if (line.Error is not null) return new ReplayedVisit.Failed(line.Error);
+            if (await ReadPageAsync(line.Hash, cancellationToken) is { } page) return new ReplayedVisit.Answered(page);
         }
         return null;
     }

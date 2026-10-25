@@ -2,7 +2,7 @@ using System.Security.Cryptography;
 using System.Text;
 using LouisAgent.Core.Messages;
 
-namespace LouisAgent.Core.Tools.Web.Replay;
+namespace LouisAgent.Core.Tools.Web.Replay.Store;
 
 /// <summary>
 /// A trial's key as a file name (ADR 0004: model- and run-supplied text never becomes a path except through this map). Every

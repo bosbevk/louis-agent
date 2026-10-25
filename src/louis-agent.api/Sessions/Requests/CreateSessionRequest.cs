@@ -15,7 +15,7 @@ internal sealed record CreateSessionRequest(
     string? Task, string? Run, string? Service, List<string>? Toolsets = null, int Depth = 0, string? Parent = null,
     string? Personality = null, string? Location = null,
     [property: System.Text.Json.Serialization.JsonPropertyName("time_zone")] string? TimeZone = null, string? Llm = null,
-    string? Tool = null, string? Role = null, string? Stream = null)
+    string? Tool = null, string? Role = null, string? Stream = null, ReplayRequest? Replay = null)
 {
     internal const int MaxTagLength = 200;
 
@@ -43,6 +43,6 @@ internal sealed record CreateSessionRequest(
 
     /// <summary>The name of the first tag that is too long or holds control characters, or null when all are fine.</summary>
     public string? InvalidTag() =>
-        new[] { ("task", Task), ("run", Run), ("service", Service), ("parent", Parent), ("location", Location) }
+        new[] { ("task", Task), ("run", Run), ("service", Service), ("parent", Parent), ("location", Location), ("replay.of", Replay?.Of) }
             .FirstOrDefault(t => t.Item2 is { } value && (value.Length > MaxTagLength || value.Any(char.IsControl))).Item1;
 }

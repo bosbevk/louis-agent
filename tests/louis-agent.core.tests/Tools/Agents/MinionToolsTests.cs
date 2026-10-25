@@ -1,4 +1,5 @@
 using LouisAgent.Core.Hosting.SessionLlms;
+using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Sessions.SubSessions;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Sinks;
@@ -88,6 +89,24 @@ public class MinionToolsTests
         UsageRecord row = sink.Records.Single();
         Assert.That((row.Purpose, row.Model, row.Session, row.Turn, row.Parent), Is.EqualTo(("sub_session", $"minion:{Role}", "sess_cook", (int?)2, "sess_puls#1")));
         Assert.That(row.Cost, Is.EqualTo(new UsageCost("USD", 0m, null)), "the local model's cost, 0, is still a number: never unknown");
+    }
+
+    [Test]
+    public async Task TheReplay_GoesToTheMinion_AsTheParentsOwnTrial_AndNoneWhenThereIsNone()
+    {
+        // F18 step 4a: a minion that reads a page records into, or replays from, the trial of the chat it works for.
+        var withReplay = new List<JsonDocument>();
+        using (SessionReplay.Use(new SessionReplay(WebReplayMode.Replay, "run_1:puls-cook:1/bobotie", Model: false)))
+        using (CooksTurn())
+            await Tools(Peer(withReplay)).StartMinion(Role, "FetchUrl", "https://shop.test/mince; beef mince 500 g; Stellenbosch");
+        var without = new List<JsonDocument>();
+        using (CooksTurn())
+            await Tools(Peer(without)).StartMinion(Role, "FetchUrl", "https://shop.test/mince; beef mince 500 g; Stellenbosch");
+
+        var replay = withReplay.Single().RootElement.GetProperty("replay");
+        Assert.That((replay.GetProperty("web").GetString(), replay.GetProperty("of").GetString(), replay.GetProperty("model").GetBoolean()),
+            Is.EqualTo(("replay", "run_1:puls-cook:1/bobotie", false)));
+        Assert.That(without.Single().RootElement.TryGetProperty("replay", out var none) && none.ValueKind == JsonValueKind.Object, Is.False);
     }
 
     [Test]

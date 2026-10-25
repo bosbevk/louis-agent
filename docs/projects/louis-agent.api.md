@@ -53,6 +53,13 @@ flowchart LR
   not in the system prompt, which engines share; without a `time_zone` the note and `GetToday` use
   `Africa/Johannesburg`. Files attached to a message are
   remembered by name, so `StartSubSession` can forward them to a specialist without the model copying them.
+- **Web input recorded and replayed** (F18 step 4a): `POST /sessions` takes `replay` (`{ web, of, model }`) only on a session with
+  a run tag, and `ReplayResolution` decides, before any engine is built (each refusal a 400): a `replay` with no run tag; an unknown
+  `web` (the supported names are listed); `model: true`, until step 4e's cache; `record` or `replay` on an instance with no
+  replay folder; `replay` without `of`. With a run tag and no `replay`, the instance's `WEB_REPLAY` applies (parsed once at start-up,
+  so a bad value stops the API). A recording without `of` writes `{run tag}/{task}`; a sub-session is sent its parent's `of` and
+  keeps it, so it never works out a key of its own. The session keeps the result, and `TurnStream` sets it for each turn as it sets
+  the user's place.
 - **Streaming** (`Sessions/Streaming/`, F18 step 1f): the writer is `ITurnStreamFormat`, and the turn and the session
   view call only it. Its one format is `Claude/ClaudeStreamFormat`; `"stream"` on `POST /sessions` picks the format
   (`StreamFormat`, Claude by default) and the session keeps it. Engine updates become `message_start`,
@@ -84,7 +91,7 @@ The full endpoint and event reference: [How the agents and endpoints talk](../AG
 | `Sessions/AgentSession.cs`, `AgentSessions.cs` | One conversation (id, engine, toolsets, depth, role, place, attachments, history, turn lock, cancellation) and the in-memory session store, which picks each session's engine |
 | `Sessions/Streaming/` | The stream formats (F18 step 1f): `ITurnStreamFormat`, the writer's seam; `StreamFormat`, the enum `"stream"` names; `StreamFormats`, which makes a turn's format; `TurnUsage`, a turn's usage computed once from the ledger; `Claude/ClaudeStreamFormat.cs`, the Claude-style events |
 | `Sessions/TurnStream.cs` | A turn as the API streams it: the prompt from the message and its attachments, the engine's updates as Claude-style events, a sub-session's events live among them, the usage at the end |
-| `Sessions/SessionView.cs`, `Sessions/Requests/` | A session as the API shows it; the request bodies (`CreateSessionRequest`, `SendMessageRequest`, `AttachmentRequest`) |
+| `Sessions/SessionView.cs`, `Sessions/Requests/` | A session as the API shows it; the request bodies (`CreateSessionRequest`, `SendMessageRequest`, `AttachmentRequest`, `ReplayRequest`) and what `replay` resolves to (`ReplayResolution`, F18 step 4a) |
 | `Admin/AdminGate.cs`, `AdminAccess.cs` | The gate on `/admin` (F27): the admin key, else the agent's, else closed; what it decided |
 | `Admin/AdminRows.cs` | The JSON rows the admin endpoints send (a run, a conversation, a turn, a request, a live run), with the standard records: the run's eval, version, commit and graders, a conversation's grades and outcome; null from before F18 step 2a (step 4.5b) |
 | `Endpoints/AdminEndpoints.cs` | The admin portal's API under `/admin` (F27, F31), behind `AdminGate`: the checks and runs, a run started (503 without a store), its live events over SSE, a check's manual and trend, a stored run with its levels, a turn's events, a run deleted |
@@ -95,7 +102,7 @@ The full endpoint and event reference: [How the agents and endpoints talk](../AG
 
 ## Configuration
 
-Core settings, plus: `AGENT_API_KEY` (required on `/sessions`, `/workspace`, `/git`; without it the API refuses to start
+Core settings (`WEB_REPLAY` and `REPLAY_DIRECTORY` among them: F18 step 4a, read through `ReplayResolution` and `AgentOptions.KeepsRecordings`), plus: `AGENT_API_KEY` (required on `/sessions`, `/workspace`, `/git`; without it the API refuses to start
 unless `AGENT_AUTH=off`, FX18), `API_PORT` (host port in
 Docker, bound to `127.0.0.1`), `GIT_AUTHOR_*` / `GIT_COMMITTER_*` (identity for commits and merges from the web app),
 `ASPNETCORE_URLS` / `ASPNETCORE_ENVIRONMENT` outside Docker (an unpublished `dotnet run` only serves the web app in

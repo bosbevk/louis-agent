@@ -137,6 +137,21 @@ public enum ApiUserText
     [Description("Unknown stream format '{Format}'. Use one of: {Supported}.")]
     UnknownStreamFormat,
 
+    [Description("'replay' is only for an eval session: send a 'run' tag with it. A live chat is never recorded or replayed.")]
+    ReplayNeedsRunTag,
+
+    [Description("Unknown replay.web '{Value}'. Use one of: {Supported}.")]
+    UnknownReplayWeb,
+
+    [Description("replay.model isn't available yet: replaying the model's answers waits for the replay cache (F18 step 4e).")]
+    ReplayModelNotYet,
+
+    [Description("This instance keeps no recordings, so it can't record or replay web pages: its replay folder isn't set (config/.env.example says how).")]
+    ReplayNoRecordings,
+
+    [Description("replay.web 'replay' needs 'of': the recorded trial to read its pages from.")]
+    ReplayNeedsOf,
+
     [Description("The ledger's rows name model '{Model}', which the run's modes don't list, so a trend may mix models.")]
     BenchmarkModelUnlisted,
 }
