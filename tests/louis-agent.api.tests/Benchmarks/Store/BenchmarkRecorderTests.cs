@@ -92,6 +92,17 @@ public class BenchmarkRecorderTests
     }
 
     [Test]
+    public async Task ARunsSplit_IsKept_FromItsFirstLine()
+    {
+        var recording = new BenchmarkRecorder(_store).RecordAsync(_run);
+        Add(At(new { @event = "protocol", version = 1, eval = "puls-cook", eval_version = 2, commit = "abc", split = "held_out" }), Mode(), ModeDone());
+        _run.Complete(0);
+        await recording;
+
+        Assert.That((await _store.GetRunAsync(_run.Id))!.Split, Is.EqualTo(BenchmarkRunSplit.HeldOut));
+    }
+
+    [Test]
     public async Task ATurnsInfrastructureFailure_IsKept_SoAStoredRunNeverGradesItAsTheAgents()
     {
         var recording = new BenchmarkRecorder(_store).RecordAsync(_run);

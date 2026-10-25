@@ -144,6 +144,19 @@ public abstract class BenchmarkStoreContract
         Assert.That(read.Models, Is.EqualTo(run.Models));
     }
 
+    [TestCase(BenchmarkRunSplit.Dev)]
+    [TestCase(BenchmarkRunSplit.HeldOut)]
+    [TestCase(BenchmarkRunSplit.All)]
+    [TestCase(null)]
+    public async Task ARunsSplit_ReadsBackAsItWasWritten_AndARunBeforeItHasNone(BenchmarkRunSplit? split)
+    {
+        string id = NewId();
+
+        await _store.SaveRunAsync(NewRun(id, T0) with { Split = split });
+
+        Assert.That((await _store.GetRunAsync(id))!.Split, Is.EqualTo(split));
+    }
+
     [Test]
     public async Task AConversation_CarriesItsGradesAndOutcome()
     {

@@ -26,7 +26,8 @@ public static class BenchmarkProtocol
     /// built from, its graders and the model each level ran on. A line from a harness without them reads them as null.
     /// </summary>
     public sealed record ProtocolStarted(int Version, DateTimeOffset? At = null, string? Eval = null, int? EvalVersion = null,
-        string? Commit = null, IReadOnlyList<GraderInfo>? Graders = null, IReadOnlyList<ModelInfo>? Models = null) : Event;
+        string? Commit = null, IReadOnlyList<GraderInfo>? Graders = null, IReadOnlyList<ModelInfo>? Models = null,
+        BenchmarkRunSplit? Split = null) : Event;
 
     /// <summary>One of the eval's graders: its name, its version and its kind ("FixedRule", "Model", "Human").</summary>
     public sealed record GraderInfo(string Name, int Version, BenchmarkGraderKind Kind);
@@ -77,7 +78,7 @@ public static class BenchmarkProtocol
             return Text(e, "event") switch
             {
                 "protocol" => new ProtocolStarted(Int(e, "version"), at, Text(e, "eval"), OptionalInt(e, "eval_version"), Text(e, "commit"),
-                    Graders(e), Models(e)),
+                    Graders(e), Models(e), Split(e)),
                 "mode" => new ModeStarted(Required(e, "mode"), Int(e, "repeat"), Strings(e, "toolsets"),
                     Text(e, "role") ?? Text(e, "personality"),   // CL14: a harness before CL14 said personality
                     Text(e, "llm"), OptionalInt(e, "conversations"), at),
@@ -98,6 +99,10 @@ public static class BenchmarkProtocol
             return new LogLine(line);
         }
     }
+
+    /// <summary>The scenarios the run asked for (F18 step 5.4), by their snake-case name; absent is none, an unknown name an unreadable line.</summary>
+    private static BenchmarkRunSplit? Split(JsonElement e) =>
+        Text(e, "split") is null ? null : Choice(e, "split", BenchmarkRunSplitName.Aliases);
 
     /// <summary>The eval's graders, from the protocol line's <c>graders</c>; null when the line doesn't name any.</summary>
     private static IReadOnlyList<GraderInfo>? Graders(JsonElement e) =>

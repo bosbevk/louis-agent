@@ -30,6 +30,17 @@ public class EvalRunnerSplitTests
     private static IEnumerable<string> Tasks(IEnumerable<JsonElement> lines) =>
         lines.Where(l => l.GetProperty("event").GetString() == "conversation").Select(l => l.GetProperty("task").GetString()!);
 
+    [TestCase(SplitSelection.Dev, "dev")]
+    [TestCase(SplitSelection.HeldOut, "held_out")]
+    [TestCase(SplitSelection.All, "all")]
+    public async Task TheRunsFirstLine_CarriesItsSplit(SplitSelection split, string wire)
+    {
+        var lines = await Run(split);
+
+        Assert.That(lines[0].GetProperty("event").GetString(), Is.EqualTo("protocol"));
+        Assert.That(lines[0].GetProperty("split").GetString(), Is.EqualTo(wire));
+    }
+
     [Test]
     public async Task ARunAsksForTheDevScenariosByDefault()
     {

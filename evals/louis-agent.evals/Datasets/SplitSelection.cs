@@ -14,6 +14,9 @@ public enum SplitSelection
 
 public static class SplitSelections
 {
+    /// <summary>The selection as the protocol's first line names it: the enum's name in snake case (<c>held_out</c>).</summary>
+    public static string WireName(SplitSelection selection) => System.Text.Json.JsonNamingPolicy.SnakeCaseLower.ConvertName(selection.ToString());
+
     /// <summary>Whether a run with this selection runs a scenario of the split.</summary>
     public static bool Includes(this SplitSelection selection, DatasetSplit split) => selection switch
     {

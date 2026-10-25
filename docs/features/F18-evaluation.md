@@ -918,6 +918,14 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   text is a message enum member (ADR 0009), as the stub's is. Not done: a grader that the answer to `cook-asks-first` really asks for the people and the
   shop (its route, null, is checked; the wording waits for step 6's model grader). Red before the code: the harness 13 tests, the Puls side its stubs;
   green after: the whole solution.
+- **Step 5.4 review fix.** (1) The price reader added a pack's weight to the price: `R45 250 g` read as R45 250, because a space before three digits looks like
+  a thousands separator, which would fail a good basket on the required budget grader. `Money` refuses a grouped reading that a unit (`g`, `kg`, `ml`, `l`, `x`)
+  follows, and takes the plain digits (red first: 45250). (2) The dataset decision is in the plan under *Approved during the build*. (3) A run records its
+  split: the first line says `"split": "dev|held_out|all"`, the store keeps it (`BenchmarkRunSplit`, snake-case names, memory and Mongo), and the dev trend leaves out
+  a held-out run or one of all, so the baseline carries it; a run before splits were kept is a dev run. A test pins the harness's and the API's names to one set.
+  (4) The three infrastructure-failure checks of 5.3's graders were unproven: removing each still passed the tests, because the failed turn in them had no answer. Each
+  test now uses a turn that failed but has a whole, right answer, and checks the reason, so removing a check fails it (6 tests, run by hand). Noted for 5a: a grader
+  that does not apply to a scenario (no `budget`, no `shop`) passes, so a pass rate has to read that as "not asked", not as a pass.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

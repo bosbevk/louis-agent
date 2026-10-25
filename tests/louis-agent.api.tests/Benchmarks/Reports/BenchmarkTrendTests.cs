@@ -37,6 +37,23 @@ public class BenchmarkTrendTests
     }
 
     [Test]
+    public async Task AHeldOutRun_IsNeverAPointOfTheDevTrend_AndARunBeforeSplitsIs()
+    {
+        // F18 step 5.4 review: a held-out run is stored like a dev one, and would join the same trend. A run that names no split (one before they were
+        // kept) is a dev run, as it always was; a run of all of them has held-out conversations among its own.
+        await _store.SaveRunAsync(new Run("dev", "puls-cook", 1, BenchmarkRunStatus.Done, T0, Split: BenchmarkRunSplit.Dev));
+        await _store.SaveRunAsync(new Run("old", "puls-cook", 1, BenchmarkRunStatus.Done, T0.AddHours(1)));
+        await _store.SaveRunAsync(new Run("held", "puls-cook", 1, BenchmarkRunStatus.Done, T0.AddHours(2), Split: BenchmarkRunSplit.HeldOut));
+        await _store.SaveRunAsync(new Run("all", "puls-cook", 1, BenchmarkRunStatus.Done, T0.AddHours(3), Split: BenchmarkRunSplit.All));
+        foreach (string id in new[] { "dev", "old", "held", "all" })
+            await _store.SaveConversationAsync(id, new Conversation(new ConversationKey("puls-cook", 1, "cook-af"), 1, null, Scores(true), 0, 1));
+
+        var trend = await BenchmarkTrends.ComputeAsync(_store, "puls-cook");
+
+        Assert.That(trend.Modes.Single().Points.Select(p => p.Run), Is.EqualTo(new[] { "dev", "old" }));
+    }
+
+    [Test]
     public async Task EachFinishedRun_IsAPointPerMode_OldestFirst()
     {
         await Run("b", "cook", hour: 2, repeat: 1, BenchmarkRunStatus.Done, cookCost: 0.05m, right: 4);

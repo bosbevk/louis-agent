@@ -136,10 +136,14 @@ public class PricedAtShopTests
     [Test]
     public async Task ItIsUnknown_ForAnInfrastructureFailure_AndForATurnThatErred()
     {
-        var failed = Trial(CookMode, "cook-x", Checkers, null, Turn(1, [], TrialFailure.Timeout));
+        // The failed turn is a whole, right answer (the tool ran for the town, the prices link to the shop): without the infrastructure check it would pass.
+        var failed = Trial(CookMode, "cook-x", Checkers, null, Turn(1, [FindsInMalmesbury, Text(CheckersList)], TrialFailure.Timeout));
         var erred = Trial(CookMode, "cook-x", Checkers, null, Turn(1, [Error()]));
 
-        Assert.That((await new PricedAtShop().GradeAsync(failed, CancellationToken.None)).Outcome, Is.EqualTo(GradeOutcome.Unknown));
+        var failedGrade = await new PricedAtShop().GradeAsync(failed, CancellationToken.None);
+
+        Assert.That(failedGrade.Outcome, Is.EqualTo(GradeOutcome.Unknown));
+        Assert.That(failedGrade.Reason, Does.Contain("infrastructure"));
         Assert.That((await new PricedAtShop().GradeAsync(erred, CancellationToken.None)).Outcome, Is.EqualTo(GradeOutcome.Unknown));
     }
 }

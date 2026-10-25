@@ -71,6 +71,24 @@ public class PricesTotalTests
         Assert.That(Prices.Total(answer), Is.Null);
     }
 
+    [TestCase("R45 250 g", 45)]
+    [TestCase("R12 500 ml", 12)]
+    [TestCase("R45 1 kg", 45)]
+    [TestCase("R45,99 250 g", 45.99)]
+    [TestCase("R1 250,00 500 g", 1250)]
+    public void APacksWeightAfterThePrice_IsNotPartOfIt(string price, double expected)
+    {
+        // `R45 250 g` is R45 for a 250 g pack, not R45 250: a space before a group of three digits looks like a thousands separator.
+        // Reviewed on 5.4: it would have failed a good basket on the budget grader.
+        string answer = Table($"| mielies | {price} [kyk](https://www.checkers.co.za/p/mielies) |");
+
+        Assert.That(Prices.Total(answer), Is.EqualTo(new BasketTotal((decimal)expected, TotalSource.RowSum)));
+    }
+
+    [Test]
+    public void ARow_WithAThousandsSeparator_StillReadsItsWholeAmount() =>
+        Assert.That(Prices.Total(Table("| braai | R1 250 [kyk](https://www.checkers.co.za/p/braai) |")), Is.EqualTo(new BasketTotal(1250m, TotalSource.RowSum)));
+
     [Test]
     public void ARowWithARange_IsNoSum() =>
         Assert.That(Prices.Total(Table("| bees | R87,99–R103,99 [kyk](https://www.checkers.co.za/p/1) |")), Is.Null);

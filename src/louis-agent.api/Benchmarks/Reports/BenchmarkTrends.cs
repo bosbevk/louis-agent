@@ -34,7 +34,11 @@ public static class BenchmarkTrends
     {
         // One run at a time (the runner's rule), so one more than the limit covers a run still going.
         var runs = (await store.ListRunsAsync(check, limit + 1, cancellationToken))
-            .Where(r => r.Status != BenchmarkRunStatus.Running).Take(limit).Reverse().ToList();
+            .Where(r => r.Status != BenchmarkRunStatus.Running)
+            // The trend is the dev scenarios (F18 step 5.4 review): a held-out run, or one of all of them, is a different set of conversations, and a run
+            // before splits were kept (no split) was a dev run. Joining them would draw a line through two different things.
+            .Where(r => r.Split is null or BenchmarkRunSplit.Dev)
+            .Take(limit).Reverse().ToList();
 
         // A line is a mode on one model: runs on two models of one mode are two lines, never one line joining them.
         var lines = new List<(string Mode, string? Model)>();

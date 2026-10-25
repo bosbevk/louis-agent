@@ -99,6 +99,19 @@ public class BenchmarkProtocolTests
         Assert.That(((TurnEnded)Parse(line)).Failure, Is.EqualTo(expected));
     }
 
+    [TestCase("dev", BenchmarkRunSplit.Dev)]
+    [TestCase("held_out", BenchmarkRunSplit.HeldOut)]
+    [TestCase("all", BenchmarkRunSplit.All)]
+    public void TheFirstLine_NamesTheSplitTheRunAskedFor(string wire, BenchmarkRunSplit expected) =>
+        Assert.That(((ProtocolStarted)Parse("""@{"event":"protocol","version":1,"eval":"puls-cook","split":"WIRE"}""".Replace("WIRE", wire))).Split, Is.EqualTo(expected));
+
+    [Test]
+    public void AFirstLineWithNoSplit_HasNone_AndOneThatNamesNoSplitIsAnUnreadableLine()
+    {
+        Assert.That(((ProtocolStarted)Parse("""@{"event":"protocol","version":1,"eval":"puls-cook"}""")).Split, Is.Null);
+        Assert.That(Parse("""@{"event":"protocol","version":1,"eval":"puls-cook","split":"some"}"""), Is.InstanceOf<LogLine>());
+    }
+
     [Test]
     public void ATurnWithNoFailureField_HasNone_AndOneThatNamesNoFailureIsAnUnreadableLine()
     {

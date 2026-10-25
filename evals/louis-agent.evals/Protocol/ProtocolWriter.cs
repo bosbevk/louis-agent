@@ -2,6 +2,7 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Unicode;
+using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Trials;
 
@@ -106,14 +107,16 @@ public sealed class ProtocolWriter(TextWriter stdout, TimeProvider clock)
             if (outcome is not null) json.WriteString("outcome", outcome.Value.ToString());
         });
 
-    /// <summary>The run's first line (F18 step 2a): the eval, its version, the commit, its graders and the model each mode ran on.</summary>
-    public void Begin(string eval, int evalVersion, string commit, IReadOnlyList<IGrader> graders, IReadOnlyList<ModelUse> models) =>
+    /// <summary>The run's first line (F18 step 2a): the eval, its version, the commit, the scenarios it asked for (its split, step 5.4), its graders and the model each mode ran on.</summary>
+    public void Begin(string eval, int evalVersion, string commit, IReadOnlyList<IGrader> graders, IReadOnlyList<ModelUse> models,
+        SplitSelection split = SplitSelection.Dev) =>
         Emit("protocol", json =>
         {
             json.WriteNumber("version", Version);
             json.WriteString("eval", eval);
             json.WriteNumber("eval_version", evalVersion);
             json.WriteString("commit", commit);
+            json.WriteString("split", SplitSelections.WireName(split));
             json.WriteStartArray("graders");
             foreach (var grader in graders)
             {

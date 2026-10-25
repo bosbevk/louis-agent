@@ -1222,6 +1222,13 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
 - **Step 5.2: the first C# run is the baseline, there is no Python run to match** (Louis, 2026-10-25: he had deleted the old runs, and said "this run will
   become the baseline, our first run"). The by-hand export of the Python's last runs, and 5.3's parity test against them, are dropped; the
   scorers stay held by step 3's tests and the hand-cut references of 5.3. The export route stays: it is how a stored run becomes a transcript.
+- **Step 5.4: a cook question names its town, its people and its shop, and the datasets follow the prompts** (Louis, 2026-10-25: "the cook requires town,
+  serving size and shop, or if specified just recipe then no prices", then "datasets are outdated, compare it with the prompts"). Puls's routing prompt asks
+  first when a meal doesn't say for how many or where the user shops, so a question that should reach the cook states both (the routing's two meals too);
+  `expected` repeats `town`, `serves` and `shop`, each read by a named grader; `shop` is `checkers` or `any` (the user said it doesn't matter, or asked for the recipe
+  only: the cook prices nothing and estimates). The old `none` ("no shop near you has a catalogue") is gone, because no prompt or tool produces that line any more.
+  The datasets' `expected` keys: `routes_to` (both), `town`, `serves`, `budget`, `shop` (the cook), and `--split dev|held-out|all`, dev by default, with the run's split
+  on its first line.
 
 ---
 [Docs index](../README.md) · [Plans](README.md) · [Platform plan](platform.md) · [Feature F18](../features/F18-evaluation.md)

@@ -72,10 +72,21 @@ public class ServesAndBudgetGradersTests
         var erred = Trial(CookMode, "cook-x", """{"serves":4}""", null, Turn(1, [Error()]));
         var blank = Asked("""{"serves":4}""", "");
         var missingTurn = Asked("""{"serves":[4,6]}""", "Vir 4 mense.");
-        var failed = Trial(CookMode, "cook-x", """{"serves":4}""", null, Turn(1, [], TrialFailure.Timeout));
 
-        foreach (var trial in new[] { erred, blank, missingTurn, failed })
+        foreach (var trial in new[] { erred, blank, missingTurn })
             Assert.That((await Serves(trial)).Outcome, Is.EqualTo(GradeOutcome.Unknown));
+    }
+
+    [Test]
+    public async Task ServesIsUnknown_ForAnInfrastructureFailure_EvenWhenTheAnswerNamesTheNumber()
+    {
+        // The turn has a good answer: without the infrastructure check this would pass, so the reason shows the check ran.
+        var failed = Trial(CookMode, "cook-x", """{"serves":4}""", null, Turn(1, [Text("Hier is bobotie vir 4 mense.")], TrialFailure.Timeout));
+
+        var grade = await Serves(failed);
+
+        Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Unknown));
+        Assert.That(grade.Reason, Does.Contain("infrastructure"));
     }
 
     [Test]
@@ -138,7 +149,11 @@ public class ServesAndBudgetGradersTests
     public async Task BudgetPasses_WhenTheScenarioSetsNone_AndIsUnknownForAnInfrastructureFailure()
     {
         Assert.That((await Budget(Asked("{}", "Totaal: R999,00"))).Outcome, Is.EqualTo(GradeOutcome.Pass));
-        Assert.That((await Budget(Trial(CookMode, "cook-x", """{"budget":150}""", null, Turn(1, [], TrialFailure.Transport)))).Outcome,
-            Is.EqualTo(GradeOutcome.Unknown));
+
+        // A turn that failed but whose answer is within the budget: without the infrastructure check this would pass.
+        var failed = await Budget(Trial(CookMode, "cook-x", """{"budget":150}""", null, Turn(1, [Text("Totaal: R100,00")], TrialFailure.Transport)));
+
+        Assert.That(failed.Outcome, Is.EqualTo(GradeOutcome.Unknown));
+        Assert.That(failed.Reason, Does.Contain("infrastructure"));
     }
 }

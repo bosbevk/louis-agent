@@ -27,7 +27,7 @@ public sealed class EvalRunner(ISessionClient sessions, ProtocolWriter protocol,
             new { Eval = eval.Name, Modes = modes.Count, Repeats = run.Repeats, Run = run.RunId });
         // The model isn't reported yet: the session client that could read it is the HTTP client, which is step 5.
         protocol.Begin(eval.Name, eval.Version, EvalBuild.Commit, eval.Graders,
-            modes.Select(m => new ModelUse(m.Name, ModelLevel.Agent, m.Role, null)).ToList());
+            modes.Select(m => new ModelUse(m.Name, ModelLevel.Agent, m.Role, null)).ToList(), run.Split);
 
         foreach (var mode in modes)
             for (int repeat = 1; repeat <= run.Repeats; repeat++)

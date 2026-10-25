@@ -30,7 +30,8 @@ public static class BenchmarkDocuments
         int? EvalVersion = null,
         string? Commit = null,
         IReadOnlyList<Grader>? Graders = null,
-        IReadOnlyList<ModelUse>? Models = null);
+        IReadOnlyList<ModelUse>? Models = null,
+        BenchmarkRunSplit? Split = null);
 
     /// <summary>One of the eval's graders, as the run started (F18 step 2a).</summary>
     public sealed record Grader(string Name, int Version, BenchmarkGraderKind Kind);

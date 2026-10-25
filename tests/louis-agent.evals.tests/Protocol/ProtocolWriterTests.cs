@@ -2,6 +2,7 @@ using System.Collections;
 using System.Globalization;
 using System.Text.Json;
 using LouisAgent.Api.Benchmarks.Runs;
+using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Protocol;
 using LouisAgent.Evals.Trials;
@@ -70,6 +71,20 @@ public class ProtocolWriterTests
         Assert.That((started.Version, started.Eval, started.EvalVersion, started.Commit), Is.EqualTo((1, "cook", (int?)2, "abc123")));
         Assert.That(started.Graders!.Single(), Is.EqualTo(new BenchmarkProtocol.GraderInfo("priced-with-source", 1, BenchmarkGraderKind.FixedRule)));
         Assert.That(started.Models!.Single(), Is.EqualTo(new BenchmarkProtocol.ModelInfo("cook", BenchmarkModelLevel.Agent, "puls-cook", "claude-haiku-5-5")));
+    }
+
+    [TestCase(SplitSelection.Dev, BenchmarkRunSplit.Dev, "dev")]
+    [TestCase(SplitSelection.HeldOut, BenchmarkRunSplit.HeldOut, "held_out")]
+    [TestCase(SplitSelection.All, BenchmarkRunSplit.All, "all")]
+    public void TheFirstLine_SaysWhichScenariosTheRunAskedFor(SplitSelection split, BenchmarkRunSplit expected, string wire)
+    {
+        // F18 step 5.4 review: a held-out run is stored like a dev one unless it says what it was, and would join the dev trend.
+        var sink = new StringWriter();
+
+        new ProtocolWriter(sink, new FixedClock(At)).Begin("cook", 2, "abc123", [], [], split);
+
+        Assert.That(Lines(sink)[0], Does.Contain($"\"split\":\"{wire}\""));
+        Assert.That(((BenchmarkProtocol.ProtocolStarted)BenchmarkProtocol.Parse(Lines(sink)[0])).Split, Is.EqualTo(expected));
     }
 
     [Test]
