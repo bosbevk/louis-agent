@@ -36,18 +36,33 @@ public sealed class EvalListing(string command, IReadOnlyList<string> arguments,
     {
         if (requiredFile is not null && !File.Exists(requiredFile)) return Failed(EvalListingMessage.Missing, new { Path = requiredFile });
 
-        var start = new ProcessStartInfo(command) { UseShellExecute = false, RedirectStandardOutput = true, CreateNoWindow = true };
+        var start = new ProcessStartInfo(command)
+        {
+            UseShellExecute = false,
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            CreateNoWindow = true,
+        };
         foreach (string argument in arguments) start.ArgumentList.Add(argument);
         try
         {
             using var process = Process.Start(start)!;
+            // Both pipes are read while the process runs, so neither can fill and hang it.
             var output = process.StandardOutput.ReadToEndAsync();
+            var errors = process.StandardError.ReadToEndAsync();
             if (!process.WaitForExit(timeout))
             {
                 process.Kill(entireProcessTree: true);
                 return Failed(EvalListingMessage.TimedOut, new { Seconds = timeout.TotalSeconds });
             }
-            if (process.ExitCode != 0) return Failed(EvalListingMessage.ExitCode, new { Code = process.ExitCode });
+            if (process.ExitCode != 0)
+            {
+                // The runner's refusal is the last line it writes to stderr: that line is the reason, when there is one.
+                string? reason = errors.Result.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).LastOrDefault();
+                return reason is null
+                    ? Failed(EvalListingMessage.ExitCode, new { Code = process.ExitCode })
+                    : Failed(EvalListingMessage.ExitCodeWithReason, new { Code = process.ExitCode, Reason = reason });
+            }
 
             return Parse(output.Result);
         }

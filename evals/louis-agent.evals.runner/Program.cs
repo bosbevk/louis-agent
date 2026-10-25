@@ -8,6 +8,7 @@ using LouisAgent.Evals.Runner;
 using LouisAgent.Evals.Runner.Arguments;
 using LouisAgent.Evals.Runner.Catalog;
 using LouisAgent.Evals.Runner.Messages;
+using LouisAgent.Evals.Runner.Refusal;
 using LouisAgent.Evals.Runner.Stub;
 using LouisAgent.Evals.Running;
 
@@ -43,8 +44,7 @@ try
             return 1;
     }
 }
-catch (RunnerException error)
+catch (Exception error) when (RefusalReport.IsRefusal(error))
 {
-    Console.Error.WriteLine(error.Message);
-    return 1;
+    return RefusalReport.Report(error, Console.Error);
 }

@@ -44,6 +44,6 @@ public enum EvalErrorMessage
     [Description("Dataset '{Dataset}' is at version {Version}, so changes needs {Version} dated line(s), not {Count}: one per version, from 1.")]
     ChangesNotVersion,
 
-    [Description("Dataset '{Dataset}' changed without a new version: the scenarios hash to {Hash}, not content_hash {Recorded}. Bump the version, add a dated line to changes, and set content_hash to {Hash}.")]
+    [Description("Dataset '{Dataset}': the scenarios hash to {Hash}, not content_hash {Recorded}. If a scenario changed, bump the version and add a dated line to changes; then set content_hash to {Hash}.")]
     HashChanged,
 }

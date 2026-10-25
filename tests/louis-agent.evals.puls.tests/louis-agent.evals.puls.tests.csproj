@@ -31,4 +31,10 @@
     <None Include="..\..\evals\louis-agent.evals.puls\Datasets\**\*" Link="Datasets\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="..\..\docs\projects\tests.md" Link="docs\tests.md" />
+    <None Include="..\..\docs\guides\write-tests.md" Link="docs\write-tests.md" />
+    <None Include="..\..\docs\guides\add-an-eval-set.md" Link="docs\add-an-eval-set.md" />
+  </ItemGroup>
+
 </Project>

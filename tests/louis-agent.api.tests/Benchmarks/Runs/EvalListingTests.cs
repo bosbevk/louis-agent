@@ -45,6 +45,7 @@ public class EvalListingTests
 
         Assert.That(result.Evals, Is.Empty);
         Assert.That(result.Failure, Does.Contain("exited with 1"));
+        Assert.That(result.Failure, Does.Contain("nope"), "the warning carries the runner's reason, which names the eval");
     }
 
     [Test]
@@ -86,5 +87,30 @@ public class EvalListingTests
 
         Assert.That(result.Failure, Is.Null);
         Assert.That((result.Evals.Single().Name, result.Evals.Single().Identity), Is.EqualTo(("stub", (string?)null)));
+    }
+
+    [Test]
+    public void TheLastLineOfStderrIsTheReason()
+    {
+        var result = ExitingWith(2, "first line", "last line").Read();
+
+        Assert.That(result.Failure, Is.EqualTo("the eval runner's --list exited with 2: last line"));
+    }
+
+    [Test]
+    public void ANonZeroExitWithNoStderrIsOnlyTheCode()
+    {
+        var result = ExitingWith(3).Read();
+
+        Assert.That(result.Failure, Is.EqualTo("the eval runner's --list exited with 3"));
+    }
+
+    /// <summary>A process that writes each line to stderr and exits with the code: the platform's shell, so the test needs no runner.</summary>
+    private static EvalListing ExitingWith(int code, params string[] stderr)
+    {
+        var timeout = TimeSpan.FromSeconds(30);
+        if (OperatingSystem.IsWindows())
+            return new EvalListing("cmd", ["/c", string.Concat(stderr.Select(line => $"echo {line} 1>&2 & ")) + $"exit {code}"], timeout);
+        return new EvalListing("sh", ["-c", string.Concat(stderr.Select(line => $"echo '{line}' >&2; ")) + $"exit {code}"], timeout);
     }
 }

@@ -4,8 +4,11 @@ using LouisAgent.Evals.Trials;
 
 namespace LouisAgent.Evals.Grading.Common;
 
-/// <summary>A common grader's verdict, with its score in step with its outcome: a pass scores 1, a fail and an unknown score 0.</summary>
-internal static class Verdict
+/// <summary>
+/// The grades a grader returns (F18 step 4.4 review): the common graders and an identity's own grader build theirs with these, so a pass
+/// scores 1, a fail and an unknown score 0, and an infrastructure failure is Unknown everywhere.
+/// </summary>
+public static class Verdict
 {
     public static Grade Pass(string grader, int version, string reason) => new(grader, version, 1, GradeOutcome.Pass, reason);
 

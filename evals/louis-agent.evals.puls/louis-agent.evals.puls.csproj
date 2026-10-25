@@ -17,4 +17,8 @@
     <ProjectReference Include="..\louis-agent.evals\louis-agent.evals.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="..\..\docs\guides\add-an-eval-set.md" Link="docs\add-an-eval-set.md" />
+  </ItemGroup>
+
 </Project>

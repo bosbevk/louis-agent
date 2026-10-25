@@ -70,8 +70,7 @@ its datasets beside the tests, as `louis-agent.evals.puls.tests` does:
   </ItemGroup>
 ```
 
-The identity and pack projects link their guides this way, so a reader of the code finds the guide. The evals projects
-don't link theirs yet; this guide asks for it.
+The identity, pack and evals projects link their guides this way, so a reader of the code finds the guide.
 
 ## 2. Write the dataset
 
@@ -147,8 +146,8 @@ Start from the common graders in `evals/louis-agent.evals/Grading/Common/`:
 
 Each is `required` by default, and the stub uses two of them (`NoErrorGrader` and `WithinTimeGrader`, in
 `StubEval.cs`). An infrastructure failure (a timeout, a dropped connection) is `Unknown` in each of them, never a fail.
-The helper that builds these grades, `Verdict`, is internal to the harness, so your grader builds its `Grade` directly,
-as the Puls graders do. For your identity's rules, write your own `IGrader`. Its members are what the conformance check reads:
+Your grader builds its grades with `Verdict`, which the common graders use too: `Verdict.Pass`, `Verdict.Fail`
+and `Verdict.Unknown`. For your identity's rules, write your own `IGrader`. Its members are what the conformance check reads:
 
 ```csharp
 public sealed class SquareMetresRight : IGrader
@@ -161,25 +160,16 @@ public sealed class SquareMetresRight : IGrader
 
     public ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken)
     {
-        // An infrastructure failure (a timeout, a dropped connection) is not the agent's: it is Unknown, never a Fail.
-        if (trial.Transcript.Turns.Any(turn => EngineEvents.InfrastructureFailure(turn) is not null))
-            return ValueTask.FromResult(new Grade(Name, Version, 0, GradeOutcome.Unknown,
-                MessageText.Format(AcmeGradeMessage.Infrastructure)));
+        // A turn that failed in the infrastructure (a timeout, a dropped connection) is not the agent's: Unknown, never a Fail.
+        if (Verdict.InfrastructureFailure(Name, Version, trial.Transcript.Turns) is { } unknown) return ValueTask.FromResult(unknown);
 
         double want = trial.Scenario.Expected.GetProperty("square_metres").GetDouble();
-        string answer = AnswerOf(trial.Transcript.Turns[^1]);
+        string answer = EngineEvents.AnswerOf(trial.Transcript.Turns[^1]);
         bool right = answer.Contains(want.ToString("0.00", CultureInfo.InvariantCulture), StringComparison.Ordinal);
-        return ValueTask.FromResult(new Grade(Name, Version, right ? 1 : 0,
-            right ? GradeOutcome.Pass : GradeOutcome.Fail,
-            MessageText.Format(right ? AcmeGradeMessage.AreaRight : AcmeGradeMessage.AreaWrong, new { Want = want })));
+        return ValueTask.FromResult(right
+            ? Verdict.Pass(Name, Version, MessageText.Format(AcmeGradeMessage.AreaRight, new { Want = want }))
+            : Verdict.Fail(Name, Version, MessageText.Format(AcmeGradeMessage.AreaWrong, new { Want = want })));
     }
-
-    // The answer's text: the content_block_delta events of type text_delta, joined in order. Puls's set reads them the same way in
-    // TurnView.Answer (evals/louis-agent.evals.puls/Turns/TurnView.cs); if two sets need it, move the reader into the harness.
-    private static string AnswerOf(TurnTranscript turn) =>
-        string.Concat(turn.Events.OfType<ContentBlockDelta>()
-            .Where(e => e.Data.TryGetProperty("delta", out var delta) && delta.GetProperty("type").GetString() == "text_delta")
-            .Select(e => e.Data.GetProperty("delta").GetProperty("text").GetString()));
 }
 ```
 
@@ -193,9 +183,6 @@ public enum AcmeGradeMessage
 
     [Description("The area should be {Want} square metres, and the answer doesn't give it.")]
     AreaWrong,
-
-    [Description("The turn was not answered: the stream failed, not the agent.")]
-    Infrastructure,
 }
 ```
 
@@ -250,9 +237,9 @@ Two choices here, to check against the code:
   protocol and isn't a dataset. No eval reads its dataset yet; the Puls tests load theirs with `DatasetLoader.Load`
   (`tests/louis-agent.evals.puls.tests/Datasets/PulsDatasetsTests.cs`), and step 5's evals load theirs the same way. The
   path is `AppContext.BaseDirectory`, which is where the csproj copies the folder.
-- **The load happens when the eval is built.** A dataset that fails to load stops the runner before a run, with the
-  loader's text. The runner catches only its own refusals, so this shows as an unhandled exception, and the portal's
-  listing warning says only the exit code, since the runner's error text isn't read by the API yet.
+- **The load happens when the eval is built.** A dataset that fails to load stops the runner before a run. The runner
+  refuses with the loader's reason on stderr and exit code 1, as it refuses its own refusals, and the portal's listing
+  warning shows the same reason.
 
 `TurnFactsOf` is what the protocol records about a turn: who answered, the calls it made, the hosts it read and its
 error. The stub returns canned facts. A real eval reads them from the turn's events, with the harness's helpers
@@ -298,7 +285,7 @@ shortened:
 ```
 @{"event": "mode", "t": 1792877067.683, "mode": "acme-only", "repeat": 1, "toolsets": ["web"], "role": "acme/voice", "llm": null, "conversations": 1}
 @{"event": "sse", "t": 1792877067.7, "mode": "acme-only", "repeat": 1, "task": "quote-tiles", "turn": 1, "type": "content_block_delta", "data": {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "You need 4.32 square metres: 2.4 by 1.8."}}}
-@{"event": "turn", "t": 1792877071.9, "mode": "acme-only", "repeat": 1, "task": "quote-tiles", "turn": 1, "session": "sess_acme-only_1_quote-tiles", "question": "How many square metres of tile does a bathroom 2.6 by 1.8 metres need?", "seconds": 4.2}
+@{"event": "turn", "t": 1792877071.9, "mode": "acme-only", "repeat": 1, "task": "quote-tiles", "turn": 1, "session": "sess_acme-only_1_quote-tiles", "question": "How many square metres of tile does a bathroom 2.4 by 1.8 metres need?", "seconds": 4.2}
 ```
 
 The rules the conformance check holds:
@@ -314,7 +301,7 @@ with an `error` event; a known-bad `wrong-area` is a reference whose answer give
 
 ## 8. Test it
 
-Four kinds of test, each in the acme tests project:
+Three kinds of test, each in the acme tests project:
 
 - **Each grader on made-up transcripts**, a pass and a fail, as `tests/louis-agent.evals.puls.tests/Grading/FixedRules/`
   does: build a `Trial` with the transcript it needs, grade it, and assert the outcome.

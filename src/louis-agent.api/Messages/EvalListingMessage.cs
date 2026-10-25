@@ -14,6 +14,9 @@ public enum EvalListingMessage
     [Description("the eval runner's --list exited with {Code}")]
     ExitCode,
 
+    [Description("the eval runner's --list exited with {Code}: {Reason}")]
+    ExitCodeWithReason,
+
     [Description("a line of the eval runner's --list isn't a JSON eval: {Line}")]
     NotAnEval,
 }

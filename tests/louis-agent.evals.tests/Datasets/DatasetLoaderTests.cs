@@ -82,7 +82,8 @@ public class DatasetLoaderTests
         string actual = DatasetHash.Of(Path.Combine(folder.Root, "scenarios"));
 
         Assert.That(() => DatasetLoader.Load(folder.Root, Graders),
-            Throws.TypeOf<InvalidDataException>().With.Message.Contains(actual).And.Message.Contains(recorded));
+            Throws.TypeOf<InvalidDataException>().With.Message.Contains(actual).And.Message.Contains(recorded)
+                .And.Message.Contains("If a scenario changed").And.Not.Message.Contains("without a new version"));
     }
 
     [Test]

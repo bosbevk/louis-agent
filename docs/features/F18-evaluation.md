@@ -96,7 +96,7 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
 - **4.2b** `EvalConformanceTests` and the reference transcripts: each scenario has one transcript that passes its required graders and one that fails them
 - **4.3a** The API lists the C# evals and starts the runner: `BenchmarkCheck` names an eval (`BenchmarkCheckKind`), `BenchmarkCatalog` from the runner's `--list` (`EvalListing`), `BenchmarkRunner` starts `run`, `EVAL_RUNNER`, the stub's parity
 - **4.3b** Both images carry the runner at `/app/evals` (compose sets no `EVAL_RUNNER`), and a by-hand Docker check
-- **4.4** The developer's how-to, `docs/guides/add-an-eval-set.md`: its example checked against the code, and what writing it found (the build notes)
+- **4.4** The developer's how-to, `docs/guides/add-an-eval-set.md`: its example checked against the code, and what writing it found (the build notes), and the review's three gaps fixed
 - **4a** Web input recorded and replayed: the browser
 - **4b** The same for search, fetch and the clock
 - **4c** The prompt's hash on every ledger row
@@ -466,6 +466,16 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
     message, and the check above holds for it.
   - `NoErrorGrader` judges the stream's errors only (an infrastructure failure is `Unknown`), and `RoutedToGrader` judges the first
     turn only. The first draft said otherwise; the guide now says what the code does.
+- **Review of step 4.4** (2026-10-25): three gaps fixed, and the guide uses the fixes. `Verdict` is public: a grader in an identity's own
+  project builds its grades with it (ADR 0030), so the 4.4 note's Verdict bullet above is superseded. `EngineEvents.AnswerOf` reads the
+  turn's own answer as `TurnView.Answer` does; a parity test keeps the two readers on one rule until step 5 makes `TurnView` build on
+  `EngineEvents`. The runner refuses with the harness's refusals as it does its own (`RefusalReport`: an `InvalidDataException` or a
+  `RunnerException`): the reason goes to stderr with exit code 1, so a dataset that won't load shows its reason, not an unhandled
+  exception. The API's listing reads both pipes, and a refusal's last stderr line is the warning's reason (`ExitCodeWithReason`); a
+  non-zero exit with nothing on stderr keeps `ExitCode`. The three evals projects and their test projects link the guide. `HashChanged`
+  says what to do both when a scenario changed and when the hash is a placeholder. Red first: five harness tests (four for `AnswerOf`,
+  and the `HashChanged` pin), four runner tests, two API tests (the no-stderr one passes: it pins the existing message), and the Puls
+  tests: the visibility test didn't compile until `Verdict` was public (CS0122), and the parity test failed on the stub when run alone.
 - **Notes for step 5** (from the review of 4.2): `PulsEvalSet`'s `TurnView` builds on `EngineEvents`, so the route, the errors and the
   cost come from one reader. If an expected route goes in a scenario's `expected`, `RoutedToGrader` must declare that key in its
   `ExpectedKeys`. When the HTTP client sets a turn's `Failure`, the turn line must carry it, so `ProtocolTranscripts` reads it back. A

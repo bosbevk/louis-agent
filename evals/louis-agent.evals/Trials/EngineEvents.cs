@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.Json;
 using LouisAgent.SessionStream;
 
@@ -55,6 +56,20 @@ public static class EngineEvents
     {
         var error = turn.Events.OfType<ErrorReported>().FirstOrDefault();
         return error is not null && Field(error.Data, "error", out var detail) ? Text(detail, "message") : null;
+    }
+
+    /// <summary>
+    /// The turn's own answer: its text deltas joined in order and trimmed, as <c>TurnView.Answer</c> reads them. A sub-session's text is
+    /// not the answer, and an odd delta (no type, a text that isn't a string) is skipped, never thrown on.
+    /// </summary>
+    public static string AnswerOf(TurnTranscript turn)
+    {
+        var text = new StringBuilder();
+        foreach (var e in turn.Events)
+            if (e is ContentBlockDelta && Field(e.Data, "delta", out var delta) && Text(delta, "type") == "text_delta"
+                && Text(delta, "text") is { } piece)
+                text.Append(piece);
+        return text.ToString().Trim();
     }
 
     /// <summary>The usage object on the turn's last message_delta, or on its error when it failed: the stream's end. Null when there is none.</summary>

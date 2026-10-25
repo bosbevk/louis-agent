@@ -25,4 +25,8 @@
     <ProjectReference Include="..\..\louis-agent.session-stream\louis-agent.session-stream.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="..\..\docs\guides\add-an-eval-set.md" Link="docs\add-an-eval-set.md" />
+  </ItemGroup>
+
 </Project>
