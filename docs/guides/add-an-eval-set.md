@@ -238,7 +238,7 @@ Two choices here, to check against the code:
   (`tests/louis-agent.evals.puls.tests/Datasets/PulsDatasetsTests.cs`), and step 5's evals load theirs the same way. The
   path is `AppContext.BaseDirectory`, which is where the csproj copies the folder.
 - **The load happens when the eval is built.** A dataset that fails to load stops the runner before a run. The runner
-  refuses with the loader's reason on stderr and exit code 1, as it refuses its own refusals, and the portal's listing
+  refuses with the loader's reason on stderr and exit code 1, as it does its own, and the portal's listing
   warning shows the same reason.
 
 `TurnFactsOf` is what the protocol records about a turn: who answered, the calls it made, the hosts it read and its
@@ -333,7 +333,10 @@ Once a client is wired, a run against the real API spends money, so ask before s
 ## 10. See it in the portal
 
 The portal lists the runner's evals with no change in the API. [Change the API](change-the-api.md#add-an-eval-to-the-portal)
-says what the portal shows and how to rebuild the image that serves it.
+says what the portal shows and how to rebuild the image that serves it. Its grades show in the run with nothing to add: the
+run page reads only the standard records (your eval's name, version and graders on the run; each conversation's grades and
+outcome), so every grader you wrote is a chip on its conversation, in your `Graders` order, with its reason on hover
+([Change the Puls app](change-the-puls-app.md#change-the-admin-portal)).
 
 ## Before you ask for a review
 

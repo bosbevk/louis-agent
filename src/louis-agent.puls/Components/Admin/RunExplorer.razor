@@ -345,6 +345,7 @@
                                 <span class="xbar-label" title="@Question(c.Task)">
                                     <code>@c.Task</code><small>@Blurb(Question(c.Task))</small>
                                     <span class="tree-chips">@foreach (var chip in Chips(c)) { <span class="chip @chip.Kind">@chip.Text</span> }</span>
+                                    <GradeChips Grades="c.Grades" Order="_graders" />
                                 </span>
                                 <span class="xbar stacked" title="@($"{c.Task}: Puls {Money(own)}, {Roles(m)} {Money(spec)}")">
                                     <span class="xbar-fill" style="width: @Pct(own ?? 0, topConv)%; background: @Own"></span><span class="xbar-fill" style="width: @Pct(spec ?? 0, topConv)%; background: @Spec"></span>
@@ -504,6 +505,8 @@
     private sealed class ConversationNode
     {
         public string Task = ""; public string? Role; public JsonElement Scores; public int Errors; public List<TurnNode> Turns = [];
+        /// <summary>The standard records (F18 step 4.5c): its grades and outcome, shown the same for every eval.</summary>
+        public ConversationGrades Grades = ConversationGrades.None;
         public List<Request> Rows => Turns.SelectMany(t => t.Rows).ToList();
         public decimal? Cost => UsageFormat.KnownSum(Rows.Select(r => r.Cost));
         public bool Right => Scores.ValueKind == JsonValueKind.Object && Scores.TryGetProperty("routed_right", out var v) && v.ValueKind == JsonValueKind.True;
@@ -523,6 +526,8 @@
     private sealed record Chip(string Text, string Kind = "");
 
     private List<ModeNode> _modes = [];
+    /// <summary>The run's graders, for the grade chips' order; null for a run from before F18 step 2a.</summary>
+    private IReadOnlyList<GraderRow>? _graders;
     private string _runId = "";
     private int _repeats = 1, _repeat = 1;
 
@@ -600,6 +605,7 @@
     /// <summary>The run's tree for the shown repeat: modes in the run's order, their conversations, turns and requests.</summary>
     private void Build()
     {
+        _graders = RunGradersReader.Read(Run).Graders;
         var modes = new List<ModeNode>();
         foreach (var m in Run.GetProperty("modes").EnumerateArray().Where(m => m.GetProperty("repeat").GetInt32() == _repeat))
             modes.Add(new ModeNode { Name = m.GetProperty("name").GetString()!, Toolsets = m.GetProperty("toolsets").EnumerateArray().Select(t => t.GetString()!).ToList() });
@@ -616,6 +622,7 @@
             {
                 Task = c.GetProperty("task").GetString()!, Role = S(c, "role"), Scores = c.GetProperty("scores").Clone(),
                 Errors = c.TryGetProperty("errors", out var e) && e.ValueKind == JsonValueKind.Number ? e.GetInt32() : 0,
+                Grades = ConversationGradesReader.Read(c),
             });
 
         foreach (var t in Run.GetProperty("turns").EnumerateArray().Where(t => t.GetProperty("repeat").GetInt32() == _repeat))

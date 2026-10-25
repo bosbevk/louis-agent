@@ -46,6 +46,9 @@ else
     {
         <section class="card-p store-banner"><strong>Not all of this run was stored.</strong><p>@storeError</p></section>
     }
+    <section class="card-p">
+        <GraderList Run="run" />
+    </section>
     @* No entrance animation on this card: a filled transform animation makes it the frame of every fixed child, so the
        explorer's chats modal would be clipped to the card and painted under the cards after it. *@
     <section class="card-p holds-modal">

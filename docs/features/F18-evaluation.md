@@ -477,7 +477,7 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   exception. The API's listing reads both pipes, and a refusal's last stderr line is the warning's reason (`ExitCodeWithReason`); a
   non-zero exit with nothing on stderr keeps `ExitCode`. The three evals projects and their test projects link the guide. `HashChanged`
   says what to do both when a scenario changed and when the hash is a placeholder. Red first: five harness tests (four for `AnswerOf`,
-  and the `HashChanged` pin), four runner tests, two API tests (the no-stderr one passes: it pins the existing message), and the Puls
+  and the `HashChanged` pin), four runner tests, two API tests red and a third green (it pins the existing no-stderr message), and the Puls
   tests: the visibility test didn't compile until `Verdict` was public (CS0122), and the parity test failed on the stub when run alone.
 - **Step 4.5a** (`evals/louis-agent.evals/Running/TrialGrading.cs`, `Grading/PassRates.cs`, `EvalRunner`): the runner grades every
   trial with the eval's graders, in the eval's order, and writes the grades and the outcome on the conversation line; `ScoresOf` gets
@@ -497,8 +497,20 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   and `graders` (`{ name, version, kind }` in the run's order); the conversation row gains `grades` (`{ grader, version, score, outcome,
   reason }` in the stored order) and `outcome`. Enums are written with `ToString()`, as `models[].level` already was, so `FixedRule` and
   `Pass` run from the runner's line through the store to the portal unchanged; a run from before 2a sends null for each, never `[]`
-  or 0. `AdminEndpoints.cs` is 176 lines and off the list. Red first: the four `AdminRowsTests` failed with `KeyNotFoundException`
+  or 0. `AdminEndpoints.cs` is 195 lines and off the list (the 4.5b commit message says 176; 195 is right, counted by `FileSizeTests`' rule). Red first: the four `AdminRowsTests` failed with `KeyNotFoundException`
   (no such key on the row). The tests serialize with `JsonSerializerDefaults.Web`, which is what `Results.Json` uses with no options.
+- **Step 4.5c** (`src/louis-agent.puls/Admin/Grades/`, `Components/Admin/Grades/`, `tests/louis-agent.web.shared.tests/PortalReadsNoScoreKeyTests.cs`):
+  every eval's grades in the portal from one template. The readers (`RunGradersReader`, `ConversationGradesReader`) read only the
+  standard records the admin rows send; `GradeOutcomes.Parse` is the one place an outcome enters (case ignored, an unknown word is
+  `Unknown`, never a number: the web app has no `SettingChoice`, so it is a three-arm switch); `GradeChipList.Of` orders the chips by
+  the run's graders, an unlisted grader last, and gives one "no grades" chip with no kind where there are none. `GradeChips` sits
+  beside the Puls chips on each conversation's row (one tag, a `Grades` field on `ConversationNode` and a `_graders` field, both
+  filled in `Build()`); `GraderList` sits above the explorer (one tag). Neither folder names anything of Puls, held by the ratchet's
+  second test. `Admin/Grades/` has eleven files, over the "about six" of ADR 0010; they are one concern (the grades view) and split
+  into records, readers and chips only by name, for Louis to say whether a subfolder is worth it. Red first: the ratchet with two of
+  its three files listed (`BenchmarkTrends.cs` as a new offender), 15 NUnit tests on `NotImplementedException`, and the four bUnit
+  goldens with no file; the goldens were then generated and read (the outcome chip first, then the grades in order with their
+  reasons as titles; a `<p class="muted">` for a run from before 2a).
 - **Notes for step 5** (from the review of 4.2): `PulsEvalSet`'s `TurnView` builds on `EngineEvents`, so the route, the errors and the
   cost come from one reader. If an expected route goes in a scenario's `expected`, `RoutedToGrader` must declare that key in its
   `ExpectedKeys`. When the HTTP client sets a turn's `Failure`, the turn line must carry it, so `ProtocolTranscripts` reads it back. A

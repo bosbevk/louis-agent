@@ -1,0 +1,11 @@
+@* F18 step 4.5c: a conversation's outcome and its grades as chips, the same for every eval, from the standard records alone. *@
+<span class="tree-chips grade-chips">
+    @if (OutcomeKind is { } kind)
+    {
+        <span class="chip @kind"><strong>@Grades.Outcome</strong></span>
+    }
+    @foreach (var chip in Chips)
+    {
+        <span class="chip @chip.Kind" title="@chip.Title">@chip.Text</span>
+    }
+</span>
