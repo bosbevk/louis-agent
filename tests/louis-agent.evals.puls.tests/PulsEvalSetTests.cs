@@ -20,7 +20,7 @@ public class PulsEvalSetTests
     [TestCase("cook-no-error")]
     [TestCase("routed-to")]
     [TestCase("within-budget")]
-    [TestCase("priced-at-shop")]
+    [TestCase("estimates-at-shop")]
     [TestCase("serves-as-asked")]
     public async Task ATurnThatFailedForTheInfrastructure_IsUnknown_NeverAFail(string name)
     {

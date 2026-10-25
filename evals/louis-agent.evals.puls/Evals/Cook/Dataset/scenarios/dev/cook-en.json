@@ -12,7 +12,8 @@
     "routes_to": "puls-cook",
     "town": "Pretoria",
     "serves": 2,
-    "shop": "pnp"
+    "shop": "pnp",
+    "recipe_image": true
   },
   "categories": [
     "language:en",

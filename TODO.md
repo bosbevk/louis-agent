@@ -65,6 +65,7 @@ changes instead of relying on training; **a configured agent**, an identity and 
 - [ ] FX: a continued specialist's ledger rows name the turn that continued it ([F26](docs/features/F26-specialist-follow-up.md)'s open item)
 - [ ] [F21](docs/features/F21-personalities.md): Louis's corrections to the Afrikaans
 - [ ] [F28 Team talk](docs/features/F28-team-talk.md), the rest: the mood switch, off by default (question 4: switch), the card as a thread and the Werk chip, the briefing and the mood graded by Puls's simulations
+- [ ] Shop prices come back per retailer, with its permission or feed (emails to PnP, Woolworths and Checkers sent 2026-10-25), through *Sources as data* and *More shops*; until then the cook gives estimates and names the shop's branch (F18 step 5.7)
 - [ ] More shops: Shoprite, Pick n Pay and Woolworths, and a delivery area per shop, after Sources as data, each only with the retailer's permission or feed
 
 ### Later for Puls

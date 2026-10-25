@@ -19,7 +19,7 @@ public class CookEvalTests
     [Test]
     public void ItIsPulsCooksEval_UnderTheNameItsDatasetCarries()
     {
-        Assert.That((Eval.Name, Eval.Identity, Eval.Version), Is.EqualTo(("puls-cook", "puls", 2)));
+        Assert.That((Eval.Name, Eval.Identity, Eval.Version), Is.EqualTo(("puls-cook", "puls", 3)));
         Assert.That(Eval.Proves, Is.EqualTo(MessageText.Format(PulsEvalMessage.CookProves)), "the portal's title is a message enum member (ADR 0009)");
     }
 
@@ -47,13 +47,14 @@ public class CookEvalTests
     }
 
     [Test]
-    public void ItsGradersAreTheRouteTheErrorsTheBudgetAndTheShop_AndTheServesRuleThatIsNotRequired() =>
+    public void ItsGradersAreTheRouteTheErrorsTheBudgetTheEstimatesAndTheRecipeImage_AndTheServesRuleThatIsNotRequired() =>
         Assert.That(Eval.Graders.Select(g => (g.Name, g.Required, g.Kind)), Is.EqualTo(new[]
         {
             ("cook-no-error", true, GraderKind.FixedRule),
             ("routed-to", true, GraderKind.FixedRule),
             ("within-budget", true, GraderKind.FixedRule),
-            ("priced-at-shop", true, GraderKind.FixedRule),
+            ("estimates-at-shop", true, GraderKind.FixedRule),
+            ("recipe-image", true, GraderKind.FixedRule),
             ("serves-as-asked", false, GraderKind.FixedRule),
         }));
 

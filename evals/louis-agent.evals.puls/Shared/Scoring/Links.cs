@@ -42,6 +42,12 @@ public static partial class Links
     }
 
     /// <summary>The URLs a cell links to: inline ones, and reference-style ones by their label.</summary>
+    [GeneratedRegex(@"!\[[^\]]*\]\((https?://[^)\s]+)\)")]
+    private static partial Regex Image();
+
+    /// <summary>The images a text shows, as <c>![alt](url)</c> (also inside a link to a page), in order; a plain link is no image.</summary>
+    public static IReadOnlyList<string> ImageUrls(string? text) => Image().Matches(text ?? "").Select(m => m.Groups[1].Value).ToList();
+
     public static List<string> Urls(string cell, IReadOnlyDictionary<string, string> references)
     {
         var urls = InlineLink().Matches(cell).Select(m => m.Groups[1].Value).ToList();

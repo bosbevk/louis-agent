@@ -15,7 +15,8 @@
       4,
       6
     ],
-    "shop": "pnp"
+    "shop": "pnp",
+    "recipe_image": true
   },
   "categories": [
     "language:af",

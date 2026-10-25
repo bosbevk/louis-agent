@@ -12,7 +12,8 @@
     "town": "Malmesbury",
     "serves": 4,
     "budget": 150,
-    "shop": "pnp"
+    "shop": "pnp",
+    "recipe_image": true
   },
   "categories": [
     "language:af",

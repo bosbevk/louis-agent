@@ -23,13 +23,16 @@ public class PricedAtShopTests
     private const string EstimateList = "| Ingredient | For the recipe | To buy | Estimated price |\n|---|---|---|---|\n| Uie | 2 | onions 1 kg | ± R25 |\n";
     private const string EstimatesLine = "*Pryse is skattings, nie by 'n winkel nagegaan nie.*";
 
+    private static Task<Grade> Estimate(string expected, params SessionEvent[] events) =>
+        new EstimatesAtShop().GradeAsync(Trial(CookMode, "cook-x", expected, null, Turn(1, events)), CancellationToken.None).AsTask();
+
     private static Task<Grade> Grade(string expected, params SessionEvent[] events) =>
-        new PricedAtShop().GradeAsync(Trial(CookMode, "cook-x", expected, null, Turn(1, events)), CancellationToken.None).AsTask();
+        new PricedAtRetailer().GradeAsync(Trial(CookMode, "cook-x", expected, null, Turn(1, events)), CancellationToken.None).AsTask();
 
     [Test]
     public void ItIsARequiredFixedRule_ThatReadsTheShopAndTheTownKeys()
     {
-        var grader = new PricedAtShop();
+        var grader = new PricedAtRetailer();
 
         Assert.That((grader.Name, grader.Kind, grader.Required), Is.EqualTo(("priced-at-shop", GraderKind.FixedRule, true)));
         Assert.That(grader.ExpectedKeys, Is.EquivalentTo(new[] { "shop", "town" }));
@@ -89,16 +92,16 @@ public class PricedAtShopTests
 
     [Test]
     public async Task WithAnyShop_ItPasses_WhenNothingWasSearchedNoPriceIsLinkedAndTheAnswerSaysTheyAreEstimates() =>
-        Assert.That((await Grade(Any, Text(EstimateList + EstimatesLine))).Outcome, Is.EqualTo(GradeOutcome.Pass));
+        Assert.That((await Estimate(Any, Text(EstimateList + EstimatesLine))).Outcome, Is.EqualTo(GradeOutcome.Pass));
 
     [Test]
     public async Task WithAnyShop_TheEnglishLineCountsToo() =>
-        Assert.That((await Grade(Any, Text(EstimateList + "Prices are estimates, not checked at a shop."))).Outcome, Is.EqualTo(GradeOutcome.Pass));
+        Assert.That((await Estimate(Any, Text(EstimateList + "Prices are estimates, not checked at a shop."))).Outcome, Is.EqualTo(GradeOutcome.Pass));
 
     [Test]
     public async Task WithAnyShop_ItFails_WhenAShopToolWasCalled()
     {
-        var grade = await Grade(Any, FindsInMalmesbury, Text(EstimateList + EstimatesLine));
+        var grade = await Estimate(Any, FindsInMalmesbury, Text(EstimateList + EstimatesLine));
 
         Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Fail));
         Assert.That(grade.Reason, Does.Contain("shop tool"));
@@ -108,7 +111,7 @@ public class PricedAtShopTests
     public async Task WithAnyShop_ItFails_WhenAPriceIsLinkedToAShop()
     {
         // A price from a shop for a user who chose none: step 3's wrong_store.
-        var grade = await Grade(Any, Text(CheckersList + EstimatesLine));
+        var grade = await Estimate(Any, Text(CheckersList + EstimatesLine));
 
         Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Fail));
         Assert.That(grade.Reason, Does.Contain("price"));
@@ -116,13 +119,13 @@ public class PricedAtShopTests
 
     [Test]
     public async Task WithAnyShop_ItFails_WhenAPriceIsGivenAsFact_NotAsAnEstimate() =>
-        Assert.That((await Grade(Any, Text("| Ingredient | For the recipe | To buy | Prys |\n|---|---|---|---|\n| Uie | 2 | uie | R20,00 |\n" + EstimatesLine))).Outcome,
+        Assert.That((await Estimate(Any, Text("| Ingredient | For the recipe | To buy | Prys |\n|---|---|---|---|\n| Uie | 2 | uie | R20,00 |\n" + EstimatesLine))).Outcome,
             Is.EqualTo(GradeOutcome.Fail));
 
     [Test]
     public async Task WithAnyShop_ItFails_WhenTheAnswerDoesNotSayTheyAreEstimates()
     {
-        var grade = await Grade(Any, Text(EstimateList));
+        var grade = await Estimate(Any, Text(EstimateList));
 
         Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Fail));
         Assert.That(grade.Reason, Does.Contain("estimates"));
@@ -141,10 +144,10 @@ public class PricedAtShopTests
         var failed = Trial(CookMode, "cook-x", Checkers, null, Turn(1, [FindsInMalmesbury, Text(CheckersList)], TrialFailure.Timeout));
         var erred = Trial(CookMode, "cook-x", Checkers, null, Turn(1, [Error()]));
 
-        var failedGrade = await new PricedAtShop().GradeAsync(failed, CancellationToken.None);
+        var failedGrade = await new PricedAtRetailer().GradeAsync(failed, CancellationToken.None);
 
         Assert.That(failedGrade.Outcome, Is.EqualTo(GradeOutcome.Unknown));
         Assert.That(failedGrade.Reason, Does.Contain("infrastructure"));
-        Assert.That((await new PricedAtShop().GradeAsync(erred, CancellationToken.None)).Outcome, Is.EqualTo(GradeOutcome.Unknown));
+        Assert.That((await new PricedAtRetailer().GradeAsync(erred, CancellationToken.None)).Outcome, Is.EqualTo(GradeOutcome.Unknown));
     }
 }

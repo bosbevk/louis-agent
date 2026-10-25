@@ -975,6 +975,27 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   **A town with no branch** (`cook-no-branch`, PnP in Prince Albert): the scenario expects no prices, estimates and a line saying there is no branch (`shop`: `no-branch`, dataset version 4), and the
   cook's prompt says it; `any` and `no-branch` now fail a page of a shop read. The first recorded cook run that had the old grader (`65dfb9aa5e86`, $0.1316, 98 requests) failed `priced-at-shop` in every shop scenario for "no checkers tool"; it was recorded with the old prompt and graders, so it and the routing run `bc4b25269a30` are kept only as history. A `--replay` sends the cook's system prompt, and step 5.6 changed that prompt, so its first request would miss: the next recorded runs are the first baseline.
 
+- **Step 5.7 (the cook gives estimates and where to buy, and reads no shop page).** Louis, 2026-10-25: "keep cook but just rework it to not lookup prices but just focus on local recipes and where to shop";
+  the rework comes before the end run, so the first baseline measures the cook we keep. Why: Checkers refuses our browser, and PnP's and Woolworths' robots.txt disallow the search pages the cook read
+  (ADR 0038); emails asking for access went out on 2026-10-25. This replaces the earlier 5.7 (Checkers through its rendered page), which its probe ended. **The shops pack is unchanged**
+  (`git diff --stat 58c1c3d -- packs/` is empty). **The cook's prompt:** the shop table, the *Item* rules and *A rendered page* go; *No prices are looked up* says why, every answer is *Estimates*, and the
+  user's shop is named under *Where to buy* (the Nominatim lookup stays, once, after the recipe page; so does the no-branch line). The `shops?` header is gone, so the cook loads `web` only
+  (the header comes back with the routes when a retailer says yes); the cook's price-lookup minion table went too (the minion role file stays). Finding and reading a recipe is unchanged
+  (`WebSearch`, `FetchUrl`, `ReadRenderedPage` only when `FetchUrl` is empty). **The image** (Louis, same day: "i want at least one image to render from the recipe"): the *Recipe* section opens with one
+  image of the dish, an image link from the recipe page's text (`FetchUrl` and `ReadRenderedPage` both return `![alt](url)`), never a built one. **The graders:** `priced-at-shop` is `estimates-at-shop`
+  (v1; the old name said the opposite of what it checks; stored runs keep the old name, and only the portal's grade rows read it): no shop tool, no shop page read with `ReadRenderedPage` *or* `FetchUrl`,
+  no price linked or given as fact, the estimates line, and for a named shop its branch under *Where to buy* (`Shops.NamesBranch`: the shop's name and a place, in both languages; `any` and `no-branch` keep
+  their rules and tests). The old grader lives on as `PricedAtRetailer` (name `priced-at-shop`, `ForShop` and `ForPage`), with its tests, out of `CookEval`'s graders, for when a retailer says yes.
+  `recipe-image` (v1, required where a scenario sets `recipe_image`) passes when the answer shows an image the recipe page gave, fails for none or for one not on a page, and is Unknown when no page had one.
+  **The budget on estimates:** `Prices.Total` already reads the estimates' total row (`**± R112**`, English or Afrikaans), so `within-budget` needed no change, only tests; an estimates answer with no total row
+  stays Unknown (no row is summed without its link). **The dataset** is version 5 (`recipe_image: true` on the nine scenarios that want a recipe; the questions are unchanged), the eval version 3, and the
+  cook's reference transcripts are cut again for estimates with an image, with known-bad ones for a shop page read, a price linked, no branch named, no image, an image not from the page, and an
+  estimated total over the budget. **Robots.txt of the recipe sites** (read with Puls's user agent, 2026-10-25): none of the 25 local sites kept disallows its recipe pages for `*` or sets a crawl delay for
+  it; the walls are bot checks and rate limits (Boerekos serves a captcha page, News24/Food24 a 429), and Huisgenoot, SARIE, Maroela Media, Eat Out and halaal.recipes block Claude by name. The best sources
+  allow us and carry `Recipe` JSON-LD: Marinda Kook, Minkie se Kombuis, Rooi Rose, Drizzle & Dip, The Cinnamon Jar, Food & Home, Woolworths TASTE, Simply Delicious, Aninas Recipes and Cooksister. Not
+  done: the router's brief (`agent/puls/voice.md`) still says the cook prices at the shop and shows every product with its photo, and its tests pin that wording. **The end run's baseline measures this cook.**
+  Red first: the new graders, the branch rule, the image rule and the estimates budget tests failed on stubs; the golden file `PulsSessionSnapshot.json` moved (the cook's prompt text) and was reviewed.
+
 - **Step 5a.1 (pass@k and pass^k in the runner, infrastructure apart, one retry).** `PassRates` (harness, pure, static) holds the one copy of the formula: `Of(trial, grades, graders)` is `Infrastructure` when a turn
   failed for the infrastructure, else the grades' rules; `Over(outcomes)` gives one scenario's `PassRate(PassAtK, PassHatK, K)` (it passed at least once; it passed every time; the trials that count,
   an infrastructure one left out; null when none counts); `ShareOf` gives a mode's `PassShare`, the share of its scenarios that pass that way. The summary says the words in one place, and that this is the

@@ -13,13 +13,13 @@ using LouisAgent.Evals.Puls.Shared.Turns;
 namespace LouisAgent.Evals.Puls.Evals.Cook.Grading;
 
 /// <summary>
-/// The shop the user chose priced the conversation (F18 step 5.4: the scenario's <c>shop</c> and <c>town</c>), as the cook's prompt says it works. With
-/// Checkers: its shop tool was called, with the user's town as <c>area</c> in every call, and the list's prices link to its site. With PnP or Woolworths
-/// (no catalogue): a page of its site was read with ReadRenderedPage, and the prices link to its site. With <c>any</c> (the
-/// user chose no shop, or asked for the recipe only): no shop tool was called, no price is given as fact (a link to a shop, or an amount without ±),
-/// and the answer says the prices are estimates. Required where a scenario names a shop. A fixed rule over the calls and the answer, so it needs no model.
+/// The shop the user chose priced the conversation, as the cook's prompt worked until F18 step 5.7 (Checkers: its shop tool was called, with the user's town as
+/// <c>area</c> in every call, and the list's prices link to its site; PnP or Woolworths, which have no catalogue: a page of the site was read with ReadRenderedPage,
+/// and the prices link to it). Kept, with its tests, for when a retailer gives access and the cook prices again (emails to PnP, Woolworths and Checkers
+/// went out on 2026-10-25); it is not in <see cref="CookEval"/>'s graders now, <see cref="EstimatesAtShop"/> is. It keeps its old name and version, so the runs
+/// it graded still read. A scenario that names no shop, or one with no priced shop (<c>any</c>, <c>no-branch</c>), passes: those are the estimates rules.
 /// </summary>
-public sealed class PricedAtShop : IGrader
+public sealed class PricedAtRetailer : IGrader
 {
     public string Name => "priced-at-shop";
     public int Version => 1;
@@ -34,7 +34,7 @@ public sealed class PricedAtShop : IGrader
     {
         var turns = trial.Transcript.Turns;
         if (Verdict.InfrastructureFailure(Name, Version, turns) is { } unknown) return unknown;
-        if (CookExpectations.ShopOf(trial.Scenario) is not { } shop)
+        if (CookExpectations.ShopOf(trial.Scenario) is not { } shop || shop is ShopExpectation.Any or ShopExpectation.NoBranch)
             return Verdict.Pass(Name, Version, MessageText.Format(GradeMessage.ShopNotSet));
 
         var views = turns.Select(TurnView.From).ToList();
@@ -43,13 +43,9 @@ public sealed class PricedAtShop : IGrader
 
         var all = views.SelectMany(view => view.Calls.Concat(view.SpecialistCalls)).ToList();
         var calls = all.Where(call => Shops.ShopTools.Contains(call.Name)).ToList();
-        return shop switch
-        {
-            ShopExpectation.Any => ForNone(calls, all, views[0].Answer, noBranch: false),
-            ShopExpectation.NoBranch => ForNone(calls, all, views[0].Answer, noBranch: true),
-            ShopExpectation.Checkers => ForShop("checkers", CookExpectations.TownOf(trial.Scenario)!, calls, views[0].Answer),
-            _ => ForPage(shop.ToString().ToLowerInvariant(), all, views[0].Answer),
-        };
+        return shop == ShopExpectation.Checkers
+            ? ForShop("checkers", CookExpectations.TownOf(trial.Scenario)!, calls, views[0].Answer)
+            : ForPage(shop.ToString().ToLowerInvariant(), all, views[0].Answer);
     }
 
     /// <summary>A shop with no catalogue (PnP, Woolworths): a page of its site was read with ReadRenderedPage, and the prices link to its site. No area: a page has none.</summary>
@@ -75,21 +71,6 @@ public sealed class PricedAtShop : IGrader
         return Prices.PriceLinkHosts(answer).Contains(host)
             ? Verdict.Pass(Name, Version, MessageText.Format(GradeMessage.ShopRight, new { Shop = shop }))
             : Verdict.Fail(Name, Version, MessageText.Format(GradeMessage.ShopPricesNotLinked, new { Shop = shop }));
-    }
-
-    /// <summary>No shop is priced: the user chose none (<c>any</c>), or the shop has no branch in their town, which the answer then says (<paramref name="noBranch"/>).</summary>
-    private Grade ForNone(IReadOnlyList<ToolCall> shopCalls, IReadOnlyList<ToolCall> allCalls, string answer, bool noBranch)
-    {
-        bool pageRead = allCalls.Any(call => call.Name == Shops.PageTool && Text(call.Input, "url") is { } url && Shops.SiteOf(url) is not null);
-        if (shopCalls.Count > 0 || pageRead) return Verdict.Fail(Name, Version, MessageText.Format(GradeMessage.ShopCalledForAny));
-        // An estimate is `± R65` with no link: Prices counts it neither priced nor guessed, so anything it does count is a price given as fact.
-        var priced = Prices.Priced(answer);
-        if ((priced?.Priced ?? 0) + (priced?.Guessed ?? 0) > 0 || Prices.PriceLinkHosts(answer).Count > 0)
-            return Verdict.Fail(Name, Version, MessageText.Format(GradeMessage.ShopPriceForAny));
-        if (!Shops.EstimatesLine(answer)) return Verdict.Fail(Name, Version, MessageText.Format(GradeMessage.ShopEstimatesNotSaid));
-        return noBranch && !Shops.NoBranchLine(answer)
-            ? Verdict.Fail(Name, Version, MessageText.Format(GradeMessage.ShopNoBranchNotSaid))
-            : Verdict.Pass(Name, Version, MessageText.Format(GradeMessage.ShopAnyRight));
     }
 
     /// <summary>Whether a tool's <c>area</c> names the town: either contains the other, case ignored ("malmesbury, western cape" is Malmesbury). No area names none.</summary>

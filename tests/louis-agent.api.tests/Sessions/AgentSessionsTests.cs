@@ -88,10 +88,11 @@ public class AgentSessionsTests
     }
 
     [Test]
-    public void TheCook_LoadsItsOwnToolsets_BesideWhatPulsPasses()
+    public void TheCook_LoadsNoShops_EvenWhereTheInstanceHasThem()
     {
-        // F33 step 4 (Louis): the cook always loads the shops; Puls passes `web` only. Here SHOP_CATALOGUES is set, on
-        // the shops pack this instance loads (CL15), with the browser the pack reaches through core.
+        // F18 step 5.7 (Louis, 2026-10-25): the cook looks up no prices, so its `shops?` header is gone (F33 step 4 had it always load the shops); the pack
+        // stays, off for the cook, until a retailer gives access. Here SHOP_CATALOGUES is set, on the shops pack this instance loads (CL15), with the browser
+        // the pack reaches through core: the cook still gets `web` only.
         var sessions = new AgentSessions(new AgentEngineFactory(new NoModel(), new AgentOptions
         {
             WorkspaceRoot = RepoRoot, SkillsDirectory = Path.Combine(RepoRoot, "Skills"), RatesUrl = null,
@@ -100,8 +101,8 @@ public class AgentSessionsTests
 
         var cook = sessions.Create(["web"], depth: 1, role: "puls-cook");
 
-        Assert.That(cook.Toolsets, Is.EqualTo(new[] { "web", "shops" }));
-        Assert.That(Names(cook), Does.Contain("FindProducts").And.Contain("WebSearch"));
+        Assert.That(cook.Toolsets, Is.EqualTo(new[] { "web" }));
+        Assert.That(Names(cook), Does.Contain("WebSearch").And.Not.Contain("FindProducts"));
     }
 
     [Test]

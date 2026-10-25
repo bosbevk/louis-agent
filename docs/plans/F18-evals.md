@@ -1247,6 +1247,9 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
 - **Step 5.6: PnP and Woolworths, and a town with no branch** (Louis, 2026-10-25). Checkers refuses the headless browser, so the cook scenarios name PnP and Woolworths, read with `ReadRenderedPage`
   (`shop`: `pnp`, `woolworths`). A shop with no branch in the user's town (`cook-no-branch`, `shop`: `no-branch`) is priced nowhere: the cook answers with estimates, reads no shop page, links no
   price, and says there is no branch; the cook's prompt says the same. A page of a shop read for `any` now fails too (the prompt says no shop page).
+- **Step 5.7: the cook gives estimates and where to buy** (Louis, 2026-10-25). Step 5.7 is now "the cook gives estimates and where to buy"; the shops pack stays, off for the cook, until a retailer gives
+  access. The earlier 5.7 (Checkers through its rendered page) was dropped after its probe. The cook looks up no prices (ADR 0038: Checkers refuses our browser, and PnP's and Woolworths' robots.txt disallow
+  their search pages); it names the shop's branch under *Where to buy*. Added the same day (Louis: "i want at least one image to render from the recipe"): the answer shows an image the recipe page gave.
 
 ---
 [Docs index](../README.md) · [Plans](README.md) · [Platform plan](platform.md) · [Feature F18](../features/F18-evaluation.md)

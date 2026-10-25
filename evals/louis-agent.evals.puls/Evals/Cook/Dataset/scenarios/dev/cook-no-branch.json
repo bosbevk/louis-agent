@@ -11,7 +11,8 @@
     "routes_to": "puls-cook",
     "town": "Prince Albert",
     "serves": 2,
-    "shop": "no-branch"
+    "shop": "no-branch",
+    "recipe_image": true
   },
   "categories": [
     "language:af",

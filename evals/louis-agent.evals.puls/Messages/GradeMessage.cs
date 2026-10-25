@@ -82,4 +82,25 @@ public enum GradeMessage
 
     [Description("nothing was searched, no price is linked, and the answer says the prices are estimates")]
     ShopAnyRight,
+
+    [Description("the answer names no {Shop} branch under where to buy (the shop and a place)")]
+    ShopBranchNotNamed,
+
+    [Description("no shop page was read, no price is linked, the answer says the prices are estimates and names a {Shop} branch")]
+    ShopEstimatesRight,
+
+    [Description("the scenario asks for no image of the recipe")]
+    RecipeImageNotSet,
+
+    [Description("no page the cook read had an image to show")]
+    RecipeImageNoneOnPages,
+
+    [Description("the answer shows no image of the recipe, though the recipe page had one")]
+    RecipeImageMissing,
+
+    [Description("the answer's image is not one the recipe page gave")]
+    RecipeImageNotFromPage,
+
+    [Description("the answer shows an image the recipe page gave")]
+    RecipeImageRight,
 }

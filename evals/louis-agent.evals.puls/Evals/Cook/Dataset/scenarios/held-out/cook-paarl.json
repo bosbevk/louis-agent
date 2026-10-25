@@ -11,7 +11,8 @@
     "routes_to": "puls-cook",
     "town": "Paarl",
     "serves": 5,
-    "shop": "pnp"
+    "shop": "pnp",
+    "recipe_image": true
   },
   "categories": [
     "language:af"

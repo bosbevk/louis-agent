@@ -23,11 +23,11 @@ public sealed class CookEval : IEval
 {
     // Static, so the scenarios can load with them: the dataset checks its expected keys against these graders when it loads.
     private static readonly IReadOnlyList<IGrader> GraderList =
-        [new CookNoError(), PulsRoute.Grader(), new WithinBudget(), new PricedAtShop(), new ServesAsAsked()];
+        [new CookNoError(), PulsRoute.Grader(), new WithinBudget(), new EstimatesAtShop(), new RecipeImage(), new ServesAsAsked()];
 
     public string Name => "puls-cook";
     public string? Identity => "puls";
-    public int Version => 2;
+    public int Version => 3;
     public string Proves => MessageText.Format(PulsEvalMessage.CookProves);
 
     public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions, CancellationToken cancellationToken) =>

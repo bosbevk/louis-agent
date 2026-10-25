@@ -12,7 +12,8 @@
     "town": "Worcester",
     "serves": 3,
     "budget": 180,
-    "shop": "pnp"
+    "shop": "pnp",
+    "recipe_image": true
   },
   "categories": [
     "language:en",

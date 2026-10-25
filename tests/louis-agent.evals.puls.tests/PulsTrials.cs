@@ -33,6 +33,11 @@ internal static class PulsTrials
         Event("sub_session", """{"tool_use_id":"t0","agent":"puls","event":"content_block_start","data":{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"t3","name":"NAME","input":INPUT}}}"""
             .Replace("NAME", name).Replace("INPUT", inputJson));
 
+    /// <summary>What a tool the cook called returned, as the stream carries it: a tool_result inside a sub_session event.</summary>
+    public static SessionEvent SpecialistResult(string text) =>
+        Event("sub_session", """{"tool_use_id":"t0","agent":"puls","event":"content_block_start","data":{"type":"content_block_start","index":0,"content_block":{"type":"tool_result","tool_use_id":"t3","content":CONTENT}}}"""
+            .Replace("CONTENT", JsonSerializer.Serialize(text)));
+
     public static SessionEvent Text(string text) =>
         Event("content_block_delta", JsonSerializer.Serialize(new { type = "content_block_delta", index = 0, delta = new { type = "text_delta", text } }));
 

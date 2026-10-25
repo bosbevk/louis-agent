@@ -21,8 +21,11 @@ public class PricedAtRenderedShopTests
     private const string PnpList = "| Ingredient | For the recipe | To buy | PnP |\n|---|---|---|---|\n| Uie | 2 | Uie 1 kg | [R47,00](https://www.pnp.co.za/p/1) |\n";
     private const string WoolworthsList = "| Ingredient | For the recipe | To buy | Woolworths |\n|---|---|---|---|\n| Uie | 2 | Uie 1 kg | [R52,00](https://www.woolworths.co.za/p/1) |\n";
 
+    private static Task<Grade> Estimate(string expected, params SessionEvent[] events) =>
+        new EstimatesAtShop().GradeAsync(Trial(CookMode, "cook-x", expected, null, Turn(1, events)), CancellationToken.None).AsTask();
+
     private static Task<Grade> Grade(string expected, params SessionEvent[] events) =>
-        new PricedAtShop().GradeAsync(Trial(CookMode, "cook-x", expected, null, Turn(1, events)), CancellationToken.None).AsTask();
+        new PricedAtRetailer().GradeAsync(Trial(CookMode, "cook-x", expected, null, Turn(1, events)), CancellationToken.None).AsTask();
 
     [Test]
     public async Task PnP_Passes_WhenItsPageWasReadAndThePricesLinkToItsSite() =>
@@ -57,7 +60,7 @@ public class PricedAtRenderedShopTests
     [Test]
     public async Task WithNoShopChosen_APageOfAShopRead_Fails_BecauseTheCooksPromptSaysNoShopPage()
     {
-        var grade = await Grade("""{"town":"Paarl","shop":"any"}""", ReadsPnp, Text("Resep.\n*Pryse is skattings, nie by 'n winkel nagegaan nie.*"));
+        var grade = await Estimate("""{"town":"Paarl","shop":"any"}""", ReadsPnp, Text("Resep.\n*Pryse is skattings, nie by 'n winkel nagegaan nie.*"));
 
         Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Fail));
         Assert.That(grade.Reason, Does.Contain("page"));
