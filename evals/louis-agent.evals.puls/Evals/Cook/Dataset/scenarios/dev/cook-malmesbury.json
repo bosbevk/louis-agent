@@ -4,7 +4,7 @@
     "place": "Malmesbury, Wes-Kaap, Suid-Afrika",
     "time_zone": "Africa/Johannesburg",
     "messages": [
-      "Ek het R150 vir aandete vir vier mense. Ek koop by Checkers in Malmesbury. Wat kan ek maak, en wat kos dit by die winkel? Gebruik spesiale as daar is."
+      "Ek het R150 vir aandete vir vier mense. Ek koop by PnP in Malmesbury. Wat kan ek maak, en wat kos dit by die winkel? Gebruik spesiale as daar is."
     ]
   },
   "expected": {
@@ -12,7 +12,7 @@
     "town": "Malmesbury",
     "serves": 4,
     "budget": 150,
-    "shop": "checkers"
+    "shop": "pnp"
   },
   "categories": [
     "language:af",

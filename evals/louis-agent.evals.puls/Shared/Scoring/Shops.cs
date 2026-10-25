@@ -18,8 +18,11 @@ public static partial class Shops
     /// <summary>Where a branch is looked up (the cook's OpenStreetMap search): a map, not a source of the answer.</summary>
     public static readonly IReadOnlyList<string> MapHosts = ["openstreetmap.org"];
 
-    /// <summary>The shops the cook has a tool for, by their sites (Checkers today).</summary>
-    public static readonly IReadOnlyList<string> ToolShopHosts = ["checkers.co.za"];
+    /// <summary>The shops the cook can read, by their sites: Checkers with its shop tools, PnP and Woolworths as a rendered page (ReadRenderedPage).</summary>
+    public static readonly IReadOnlyList<string> ToolShopHosts = ["checkers.co.za", "pnp.co.za", "woolworths.co.za"];
+
+    /// <summary>The tool that reads a shop with no catalogue: a page of its site, rendered.</summary>
+    public const string PageTool = "ReadRenderedPage";
 
     /// <summary>The shop tools, and the two that name a deal.</summary>
     public static readonly IReadOnlyList<string> ShopTools = ["FindProducts", "SearchSpecials", "SearchPromotions"];

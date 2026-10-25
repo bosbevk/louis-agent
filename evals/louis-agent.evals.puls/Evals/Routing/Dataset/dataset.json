@@ -1,10 +1,11 @@
 {
   "name": "puls-routing",
-  "version": 2,
+  "version": 3,
   "covers": "Puls's routing: twelve questions, two of each kind (web, files, git, numbers, chat, cook), each in its own session in Stellenbosch. The routing check (benchmarks/routing/run_check.py) asked these.",
-  "content_hash": "bc97c7c9df50f74d46bc8ac7ca47ef006651b849d04fabb9708be239174ac212",
+  "content_hash": "6d17a43bc669d41037ac78db3f0060ffb753dac27670275a3183daf0ff799e7a",
   "changes": [
     "2026-10-24: first version, the questions of benchmarks/routing/run_check.py (QUESTIONS) as files",
-    "2026-10-25: step 5.4 - the two meal questions name their people and their shop, as Puls asks first without them; every scenario states where it should go (routes_to); six held-out questions, one new one of each kind, never used while tuning a prompt"
+    "2026-10-25: step 5.4 - the two meal questions name their people and their shop, as Puls asks first without them; every scenario states where it should go (routes_to); six held-out questions, one new one of each kind, never used while tuning a prompt",
+    "2026-10-25: the shop named in each question is PnP (was Checkers), and Woolworths where Pick n Pay was, for a run while Checkers refuses the browser; the shop requirement keeps its value"
   ]
 }

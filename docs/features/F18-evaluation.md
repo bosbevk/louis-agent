@@ -968,6 +968,11 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   and a held-out set (5.4). **The parity result:** none against the Python. Its runs were deleted before they could be exported, so the first C# run is the baseline and the C# trends
   start new; what holds the scorers instead is step 3's tests and references that pass every grader. **Still to do, each on Louis's go:** the recorded cook run, the recorded routing run,
   and a free replay of each; their cost, scores, hit counts and misses go in a last commit here.
+- **Step 5.6 (PnP and Woolworths, for the first recorded run).** Checkers refuses the headless browser's catalogue call (the page renders, the answer is never captured), so the cook's scenarios
+  name PnP (and Woolworths where Pick n Pay was), shops it reads with `ReadRenderedPage`. `ShopExpectation` gains `Pnp` and `Woolworths`; `PricedAtShop` passes them when a page of the shop's site was read
+  and the prices link to it (no `area`: a page has none); `Shops.ToolShopHosts` counts them as shops the cook can read, so the *no-tool shops* chip no longer flags them. The dataset is version 3 and the
+  conformance transcripts are cut again for PnP (the two Checkers-only known-bad ones, wrong town and no area, are replaced by a wrong-shop one). Red first: 5 of the 9 new tests. The first
+  recorded cook run that had the old grader (`65dfb9aa5e86`, $0.1316, 98 requests) failed `priced-at-shop` in every shop scenario for "no checkers tool"; replay it after this step to see the new grader on it.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

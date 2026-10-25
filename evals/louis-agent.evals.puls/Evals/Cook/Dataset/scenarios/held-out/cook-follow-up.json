@@ -4,7 +4,7 @@
     "place": "Somerset-Wes, Wes-Kaap, Suid-Afrika",
     "time_zone": "Africa/Johannesburg",
     "messages": [
-      "Wat kan ek vanaand vir vier mense kook met hoender? Ek koop by Checkers in Somerset-Wes. Gee die resep en 'n inkopielys met pryse.",
+      "Wat kan ek vanaand vir vier mense kook met hoender? Ek koop by PnP in Somerset-Wes. Gee die resep en 'n inkopielys met pryse.",
       "Maak dit eerder vegetaries, vir ses mense. Wat kos dit nou?"
     ]
   },
@@ -15,7 +15,7 @@
       4,
       6
     ],
-    "shop": "checkers"
+    "shop": "pnp"
   },
   "categories": [
     "language:af",

@@ -23,7 +23,7 @@ public class PulsDatasetsTests
         Dataset dataset = Load(name);
 
         Assert.That(dataset.Manifest.Name, Is.EqualTo(name));
-        Assert.That(dataset.Manifest.Version, Is.EqualTo(2));
+        Assert.That(dataset.Manifest.Version, Is.EqualTo(3));
     }
 
     [Test]
@@ -68,13 +68,13 @@ public class PulsDatasetsTests
         var expected = new Dictionary<string, string>
         {
             ["control-web"] = """{"routes_to":null}""",
-            ["cook-af"] = """{"routes_to":"puls-cook","town":"Stellenbosch","serves":[4,6],"budget":250,"shop":"checkers"}""",
-            ["cook-en"] = """{"routes_to":"puls-cook","town":"Pretoria","serves":2,"shop":"checkers"}""",
-            ["cook-malmesbury"] = """{"routes_to":"puls-cook","town":"Malmesbury","serves":4,"budget":150,"shop":"checkers"}""",
-            ["cook-no-branch"] = """{"routes_to":"puls-cook","town":"Prince Albert","serves":2,"shop":"checkers"}""",
+            ["cook-af"] = """{"routes_to":"puls-cook","town":"Stellenbosch","serves":[4,6],"budget":250,"shop":"pnp"}""",
+            ["cook-en"] = """{"routes_to":"puls-cook","town":"Pretoria","serves":2,"shop":"pnp"}""",
+            ["cook-malmesbury"] = """{"routes_to":"puls-cook","town":"Malmesbury","serves":4,"budget":150,"shop":"pnp"}""",
+            ["cook-no-branch"] = """{"routes_to":"puls-cook","town":"Prince Albert","serves":2,"shop":"pnp"}""",
             ["cook-recipe-only"] = """{"routes_to":"puls-cook","town":"Stellenbosch","serves":4,"shop":"any"}""",
             ["cook-asks-first"] = """{"routes_to":null}""",
-            ["cook-shops"] = """{"routes_to":"puls-cook","town":"Stellenbosch","serves":4,"shop":"checkers"}""",
+            ["cook-shops"] = """{"routes_to":"puls-cook","town":"Stellenbosch","serves":4,"shop":"pnp"}""",
         };
 
         var dev = Load("puls-cook").Scenarios.Where(s => s.Split == DatasetSplit.Dev);
@@ -95,7 +95,7 @@ public class PulsDatasetsTests
         Assert.That(CookExpectations.ServesOf(held["cook-follow-up"]), Is.EqualTo(new[] { 4, 6 }));
         Assert.That(held["cook-follow-up"].Categories, Is.EqualTo(new[] { "language:af", "follow-up" }));
         Assert.That(held.Values.Select(s => CookExpectations.TownOf(s)), Is.EqualTo(new[] { "Somerset-Wes", "Paarl", "Worcester" }).Or.EquivalentTo(new[] { "Somerset-Wes", "Paarl", "Worcester" }));
-        Assert.That(held.Values.Select(s => CookExpectations.ShopOf(s)), Is.All.EqualTo(ShopExpectation.Checkers));
+        Assert.That(held.Values.Select(s => CookExpectations.ShopOf(s)), Is.All.EqualTo(ShopExpectation.Pnp));
     }
 
     [Test]
@@ -117,7 +117,7 @@ public class PulsDatasetsTests
             {
                 string first = scenario.Input.Messages[0];
                 Assert.That(Servings.Of(first), Is.Not.Empty, $"{scenario.Id}: the people");
-                Assert.That(first, Does.Contain("Checkers").Or.Contain("maak nie saak").Or.Contain("doesn't matter"), $"{scenario.Id}: the shop");
+                Assert.That(first, Does.Contain("PnP").Or.Contain("maak nie saak").Or.Contain("doesn't matter"), $"{scenario.Id}: the shop");
                 if (name == "puls-cook")
                 {
                     var expected = CookExpectations.Of(scenario);

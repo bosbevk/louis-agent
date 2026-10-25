@@ -36,6 +36,9 @@ public class ExpectationsTests
     [TestCase("any", ShopExpectation.Any)]
     [TestCase("Any", ShopExpectation.Any)]
     [TestCase("checkers", ShopExpectation.Checkers)]
+    [TestCase("pnp", ShopExpectation.Pnp)]
+    [TestCase("PnP", ShopExpectation.Pnp)]
+    [TestCase("woolworths", ShopExpectation.Woolworths)]
     public void TheShopIsParsedOnceByItsName_CaseIgnored(string name, ShopExpectation expected) =>
         Assert.That(CookExpectations.Of(Scenario("""{"routes_to":null,"town":"Paarl","shop":"NAME"}""".Replace("NAME", name))).Shop, Is.EqualTo(expected));
 

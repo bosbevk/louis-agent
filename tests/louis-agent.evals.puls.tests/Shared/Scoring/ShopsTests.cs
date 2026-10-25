@@ -26,12 +26,13 @@ public class ShopsTests
     [Test]
     public void AShopWithoutATool_IsCountedInTheList()
     {
-        // Checkers has a tool (FindProducts); Pick n Pay and Shoprite don't: their columns break the rule.
+        // Checkers has a tool (FindProducts) and PnP and Woolworths a rendered page (ReadRenderedPage); Shoprite has neither: its column breaks the rule.
         string answer = "| Ingredient | For the recipe | To buy | Checkers | Pick n Pay | Shoprite | Best price |\n|---|---|---|---|---|---|---|\n"
                         + "| Onions | 2 | Onions 1 kg | [R34,99](https://www.checkers.co.za/p/3) | - | - | R34,99 Checkers |\n";
 
-        Assert.That(Shops.UntooledShops(answer), Is.EqualTo(2));
-        Assert.That(Shops.UntooledShops(OneShop + "| Onions | 2 | Onions 1 kg | - |\n"), Is.EqualTo(0));
+        Assert.That(Shops.UntooledShops(answer), Is.EqualTo(1));
+        Assert.That(Shops.UntooledShops(OneShop.Replace("Checkers", "Woolworths") + "| Onions | 2 | Onions 1 kg | - |\n"), Is.EqualTo(0));
+        Assert.That(Shops.UntooledShops(OneShop +"| Onions | 2 | Onions 1 kg | - |\n"), Is.EqualTo(0));
     }
 
     [Test]

@@ -53,6 +53,12 @@ public enum GradeMessage
     [Description("no {Shop} tool was called")]
     ShopNotCalled,
 
+    [Description("no page of {Shop}'s site was read")]
+    ShopPageNotRead,
+
+    [Description("priced at {Shop}: its page was read and the prices link to its site")]
+    ShopPageRight,
+
     [Description("a {Shop} tool call did not name {Town} as its area")]
     ShopWrongArea,
 

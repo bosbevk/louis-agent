@@ -4,7 +4,7 @@
     "place": "Stellenbosch, Wes-Kaap, Suid-Afrika",
     "time_zone": "Africa/Johannesburg",
     "messages": [
-      "Wat kan ek vanaand vir vier mense kook vir onder R250? Ek koop by Checkers. Gee die resep en 'n inkopielys met pryse.",
+      "Wat kan ek vanaand vir vier mense kook vir onder R250? Ek koop by PnP. Gee die resep en 'n inkopielys met pryse.",
       "Maak dit eerder vir ses mense. Wat kos dit nou?"
     ]
   },
@@ -16,7 +16,7 @@
       6
     ],
     "budget": 250,
-    "shop": "checkers"
+    "shop": "pnp"
   },
   "categories": [
     "language:af",

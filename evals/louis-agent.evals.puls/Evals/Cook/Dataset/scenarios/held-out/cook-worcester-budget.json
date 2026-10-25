@@ -4,7 +4,7 @@
     "place": "Worcester, Wes-Kaap, Suid-Afrika",
     "time_zone": "Africa/Johannesburg",
     "messages": [
-      "I have R180 to cook dinner for three tonight in Worcester, and I shop at Checkers. What can I make, and what does it cost? Please give the recipe and a shopping list with prices."
+      "I have R180 to cook dinner for three tonight in Worcester, and I shop at PnP. What can I make, and what does it cost? Please give the recipe and a shopping list with prices."
     ]
   },
   "expected": {
@@ -12,7 +12,7 @@
     "town": "Worcester",
     "serves": 3,
     "budget": 180,
-    "shop": "checkers"
+    "shop": "pnp"
   },
   "categories": [
     "language:en",

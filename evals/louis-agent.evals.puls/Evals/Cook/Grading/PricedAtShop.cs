@@ -14,7 +14,8 @@ namespace LouisAgent.Evals.Puls.Evals.Cook.Grading;
 
 /// <summary>
 /// The shop the user chose priced the conversation (F18 step 5.4: the scenario's <c>shop</c> and <c>town</c>), as the cook's prompt says it works. With
-/// Checkers: its shop tool was called, with the user's town as <c>area</c> in every call, and the list's prices link to its site. With <c>any</c> (the
+/// Checkers: its shop tool was called, with the user's town as <c>area</c> in every call, and the list's prices link to its site. With PnP or Woolworths
+/// (no catalogue): a page of its site was read with ReadRenderedPage, and the prices link to its site. With <c>any</c> (the
 /// user chose no shop, or asked for the recipe only): no shop tool was called, no price is given as fact (a link to a shop, or an amount without ±),
 /// and the answer says the prices are estimates. Required where a scenario names a shop. A fixed rule over the calls and the answer, so it needs no model.
 /// </summary>
@@ -40,10 +41,25 @@ public sealed class PricedAtShop : IGrader
         if (views.Count == 0 || views[0].Error is not null || views[0].Answer.Length == 0)
             return Verdict.Unknown(Name, Version, MessageText.Format(GradeMessage.ShopNothingToRead, new { Turn = 1 }));
 
-        var calls = views.SelectMany(view => view.Calls.Concat(view.SpecialistCalls)).Where(call => Shops.ShopTools.Contains(call.Name)).ToList();
-        return shop == ShopExpectation.Any
-            ? ForAny(calls, views[0].Answer)
-            : ForShop(shop.ToString().ToLowerInvariant(), CookExpectations.TownOf(trial.Scenario)!, calls, views[0].Answer);
+        var all = views.SelectMany(view => view.Calls.Concat(view.SpecialistCalls)).ToList();
+        var calls = all.Where(call => Shops.ShopTools.Contains(call.Name)).ToList();
+        return shop switch
+        {
+            ShopExpectation.Any => ForAny(calls, views[0].Answer),
+            ShopExpectation.Checkers => ForShop("checkers", CookExpectations.TownOf(trial.Scenario)!, calls, views[0].Answer),
+            _ => ForPage(shop.ToString().ToLowerInvariant(), all, views[0].Answer),
+        };
+    }
+
+    /// <summary>A shop with no catalogue (PnP, Woolworths): a page of its site was read with ReadRenderedPage, and the prices link to its site. No area: a page has none.</summary>
+    private Grade ForPage(string shop, IReadOnlyList<ToolCall> allCalls, string answer)
+    {
+        string host = Shops.Hosts.First(known => known.Name == shop).Host;
+        bool read = allCalls.Any(call => call.Name == Shops.PageTool && Text(call.Input, "url") is { } url && Links.IsHost(url, host));
+        if (!read) return Verdict.Fail(Name, Version, MessageText.Format(GradeMessage.ShopPageNotRead, new { Shop = shop }));
+        return Prices.PriceLinkHosts(answer).Contains(host)
+            ? Verdict.Pass(Name, Version, MessageText.Format(GradeMessage.ShopPageRight, new { Shop = shop }))
+            : Verdict.Fail(Name, Version, MessageText.Format(GradeMessage.ShopPricesNotLinked, new { Shop = shop }));
     }
 
     private Grade ForShop(string shop, string town, IReadOnlyList<ToolCall> shopCalls, string answer)
