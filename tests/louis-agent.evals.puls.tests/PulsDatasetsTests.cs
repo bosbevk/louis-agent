@@ -16,7 +16,7 @@ public class PulsDatasetsTests
 {
     private static IReadOnlyList<IGrader> GradersOf(string dataset) => dataset == "puls-cook" ? new CookEval().Graders : new RoutingEval().Graders;
 
-    [TestCase("puls-cook", 5)]
+    [TestCase("puls-cook", 6)]
     [TestCase("puls-routing", 3)]
     public void EachDatasetLoadsStrictly(string name, int version)
     {

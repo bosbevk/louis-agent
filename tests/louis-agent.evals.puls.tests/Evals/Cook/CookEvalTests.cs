@@ -19,7 +19,7 @@ public class CookEvalTests
     [Test]
     public void ItIsPulsCooksEval_UnderTheNameItsDatasetCarries()
     {
-        Assert.That((Eval.Name, Eval.Identity, Eval.Version), Is.EqualTo(("puls-cook", "puls", 6)));
+        Assert.That((Eval.Name, Eval.Identity, Eval.Version), Is.EqualTo(("puls-cook", "puls", 7)));
         Assert.That(Eval.Proves, Is.EqualTo(MessageText.Format(PulsEvalMessage.CookProves)), "the portal's title is a message enum member (ADR 0009)");
     }
 

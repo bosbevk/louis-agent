@@ -166,8 +166,8 @@ public class PulsPromptsTests
         Assert.That(cook, Does.Contain("never a share button, a print or PDF icon, a logo or an avatar"));
         Assert.That(cook, Does.Contain("no image, and nothing said about it"));
         // FX24 (Louis, 2026-10-26: "there might be some websites who do not have images, we should just exclude them"): a page with no photo is dropped for the next result.
-        Assert.That(cook, Does.Contain("So is a page whose text shows no image of the dish"));
-        Assert.That(cook, Does.Contain("Read at most").And.Contain("show no image"));
+        Assert.That(Flat(cook), Does.Contain("Stop at the first page that has the recipe and a photo of the dish"));
+        Assert.That(Flat(cook), Does.Contain("use the best recipe page of them and show no image"));
     }
 
     [Test]
@@ -230,6 +230,33 @@ public class PulsPromptsTests
         Assert.That(router, Does.Contain("Vir hoeveel mense kook jy?"), "Puls asks first, never a guess");
         Assert.That(router, Does.Contain("ask first, both in one short question"));
         Assert.That(cook, Does.Contain("cook for exactly that many").And.Not.Contain("cook for one"));
+    }
+
+    [Test]
+    public void TheCook_SearchesTen_SkipsTheBlockedSites_ReadsInOrder_AndStopsAtTheFirstPageWithAPhoto()
+    {
+        // Louis, 2026-10-26: "search 10, skip the blocked sites, read the results in order, and stop at the first page with a recipe and a photo (at most three pages)".
+        string cook = Flat(Read("specialists/puls-cook.md"));
+
+        Assert.That(cook, Does.Contain("`WebSearch` for one with `maxResults` 10"));
+        Assert.That(cook, Does.Contain("Skip the results on these sites").And.Contain("`boerekos.co.za`"));
+        Assert.That(cook, Does.Contain("Read the rest in the order the search gave them, the best first; never at random"));
+        Assert.That(cook, Does.Contain("Stop at the first page that has the recipe and a photo of the dish"));
+        Assert.That(cook, Does.Contain("Read at most three pages"));
+        Assert.That(cook, Does.Contain("If none of the three has a photo, use the best recipe page of them and show no image"));
+    }
+
+    [Test]
+    public void TheCook_ChoosesTheDishToFitTheBudget_BeforeItWritesTheList()
+    {
+        // Louis, 2026-10-26, after cook-malmesbury (R421 on a R150 budget): the budget picks the dish; it is not checked after the list is written.
+        string cook = Flat(Read("specialists/puls-cook.md"));
+
+        Assert.That(cook, Does.Contain("With a budget, the dish is chosen to fit it, before the list is written"));
+        Assert.That(cook, Does.Contain("Estimate the dish's total first"));
+        Assert.That(cook, Does.Contain("a dish that comes out over the budget is swapped for a cheaper one"));
+        Assert.That(cook, Does.Contain("Only if no reasonable dish fits does the answer go over, and then *Unsure* says by how much and why"));
+        Assert.That(cook, Does.Contain("pantry staples the user has (oil, salt and pepper)"), "listed as in the pantry, with no price");
     }
 
     [Test]

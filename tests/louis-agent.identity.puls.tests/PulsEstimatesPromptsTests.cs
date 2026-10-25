@@ -74,7 +74,7 @@ public class PulsEstimatesPromptsTests
 
         foreach (string domain in new[] { "huisgenoot.com", "sarie.com", "netwerk24.com", "news24.com", "food24.com", "maroelamedia.co.za", "eatout.co.za", "halaal.recipes", "boerekos.co.za" })
             Assert.That(cook, Does.Contain($"`{domain}`"), domain);
-        Assert.That(cook, Does.Contain("skip them for the next search result"));
-        Assert.That(cook, Does.Contain("a page that answers with a captcha or a block is dropped the same way"));
+        Assert.That(cook, Does.Contain("Skip the results on these sites"));
+        Assert.That(cook, Does.Contain("answers with a captcha or a block, or holds no recipe is dropped for the next result"));
     }
 }
