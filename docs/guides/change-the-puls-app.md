@@ -58,8 +58,8 @@ version, commit and graders; each conversation's grades and outcome), so an eval
 the way every other does: `GraderList` above the explorer, `GradeChips` on each conversation's row (F18 step 4.5c). Don't
 read an eval's own score key in a view: `PortalReadsNoScoreKeyTests` (in `tests/louis-agent.web.shared.tests`) fails on a
 new read of `scores` or a test on a task's name; the three files still doing so are listed there and only come off. The
-grades code lives in `Admin/Grades/` (the readers, the outcome parsed once, the chip list, its words in `GradesText`) and
-`Components/Admin/Grades/`, and names nothing of Puls (no `PulsText`, no `Components.Brand`; the same test holds it), so the
+grades code lives in `Admin/Grades/` (the records and their words in `GradesText`; `Reading/` the readers and the outcome parsed
+once; `Chips/` the chip list and an outcome's chip class) and `Components/Admin/Grades/`, and names nothing of Puls (no `PulsText`, no `Components.Brand`; the same test holds it), so the
 admin can later move out as a folder. A new class there uses the theme's CSS variables and the existing `.chip` kinds.
 
 ## Words

@@ -1,6 +1,7 @@
 using LouisAgent.Puls.Admin.Grades;
+using LouisAgent.Puls.Admin.Grades.Chips;
 
-namespace LouisAgent.Puls.Tests.Admin.Grades;
+namespace LouisAgent.Puls.Tests.Admin.Grades.Chips;
 
 // The chips of a conversation's grades (F18 step 4.5c): in the run's grader order, an unlisted grade last; the kinds from the outcomes,
 // a partial score beside the name, the reason as the title, and "no grades" with no kind when there are none. Written first:
@@ -9,8 +10,8 @@ public class GradeChipListTests
 {
     private static readonly GraderRow[] Order = [new("no-error", 1, "FixedRule"), new("within-time", 1, "FixedRule"), new("priced", 1, "FixedRule")];
 
-    private static GradeRow Grade(string grader, GradeOutcome outcome, double score = -1, string reason = "because") =>
-        new(grader, 1, score >= 0 ? score : outcome == GradeOutcome.Pass ? 1 : 0, outcome, reason);
+    private static GradeRow Grade(string grader, GradeOutcome outcome, double? score = null, string reason = "because") =>
+        new(grader, 1, score ?? (outcome == GradeOutcome.Pass ? 1 : 0), outcome, reason);
 
     [Test]
     public void TheChipsFollowTheGraderOrder_AndAnUnlistedGradeGoesLast()
@@ -43,11 +44,13 @@ public class GradeChipListTests
     }
 
     [Test]
-    public void AScoreOf1Or0ShowsOnlyTheName()
+    public void AScoreOf1Or0OrNone_ShowsOnlyTheName()
     {
-        var chips = GradeChipList.Of(new ConversationGrades([Grade("no-error", GradeOutcome.Pass, score: 1), Grade("priced", GradeOutcome.Fail, score: 0)], GradeOutcome.Fail), Order);
+        var grades = new ConversationGrades(
+            [Grade("no-error", GradeOutcome.Pass, score: 1), Grade("priced", GradeOutcome.Fail, score: 0), new GradeRow("meal", null, null, GradeOutcome.Unknown, "pending")],
+            GradeOutcome.Fail);
 
-        Assert.That(chips.Select(c => c.Text), Is.EqualTo(new[] { "no-error", "priced" }));
+        Assert.That(GradeChipList.Of(grades, Order).Select(c => c.Text), Is.EqualTo(new[] { "no-error", "priced", "meal" }));
     }
 
     [Test]

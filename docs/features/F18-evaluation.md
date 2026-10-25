@@ -506,11 +506,26 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   the run's graders, an unlisted grader last, and gives one "no grades" chip with no kind where there are none. `GradeChips` sits
   beside the Puls chips on each conversation's row (one tag, a `Grades` field on `ConversationNode` and a `_graders` field, both
   filled in `Build()`); `GraderList` sits above the explorer (one tag). Neither folder names anything of Puls, held by the ratchet's
-  second test. `Admin/Grades/` has eleven files, over the "about six" of ADR 0010; they are one concern (the grades view) and split
-  into records, readers and chips only by name, for Louis to say whether a subfolder is worth it. Red first: the ratchet with two of
+  second test. `Admin/Grades/` had eleven flat files, over the "about six" of ADR 0010; the review below sorts them. Red first: the ratchet with two of
   its three files listed (`BenchmarkTrends.cs` as a new offender), 15 NUnit tests on `NotImplementedException`, and the four bUnit
   goldens with no file; the goldens were then generated and read (the outcome chip first, then the grades in order with their
   reasons as titles; a `<p class="muted">` for a run from before 2a).
+- **Review of step 4.5c** (2026-10-25): `Admin/Grades/` sorted by concern (Louis: eleven flat files mixing records, readers and chip logic
+  break *Separate by concern*). `Grades/` keeps the records both components use and `GradesText`; `Reading/` holds the two readers and
+  `GradeOutcomes.Parse`; `Chips/` holds `GradeChip`, `GradeChipList` and `ChipKind.Of`, moved out of `GradeOutcomes` because choosing a
+  chip's class is the view's job. The tests mirror the folders. Two fixes: a grade's missing score or version, and a grader's missing
+  version, read as null now (`double?`, `int?`), never 0 (ADR 0007), so the chip and the grader line show nothing for an unknown
+  number; and the ratchet fails on a scanned folder that isn't there (step 7b renames `Benchmarks/`), instead of scanning it as empty.
+  Red first: the no-score test read `Version = 0, Score = 0`; the ratchet with `Evals/Reports` in its list failed with "No folder".
+  **By hand, the first stored run through the template** (the Puls image rebuilt with `docker compose -f docker/docker-compose.puls.yml
+  --env-file config/.env up -d --build`, the C# stub started with `POST /admin/benchmarks/stub/runs`): done with exit 0, 109 lines,
+  stored; `GET /admin/benchmarks/runs/{id}` answered `eval: stub`, `eval_version: 1`, the two graders `no-error v1 FixedRule` and
+  `within-time v1 FixedRule` in that order, and all four conversations (`puls-only` and `puls-cook` × `bobotie` and `cottage-pie`)
+  with the outcome `Pass` and both grades `Pass` at score 1. The run page, with the admin key in: `GraderList` above the explorer
+  reads `eval stub · version 1`, `commit unknown`, and the two graders as chips (`no-error v1 · FixedRule`, `within-time v1 ·
+  FixedRule`); on the Conversations level each of the four rows shows, under its Puls chip (`Puls itself ✓` or `puls-cook ✓`), a
+  green `Pass` outcome chip and then `no-error` and `within-time`, both green, in the grader order. `commit` is `unknown` in the image: the Docker build has no git, so
+  `EvalBuild.Commit` falls back (step 2a's "unknown when absent"); a build argument would carry it, left for step 7b.
 - **Notes for step 5** (from the review of 4.2): `PulsEvalSet`'s `TurnView` builds on `EngineEvents`, so the route, the errors and the
   cost come from one reader. If an expected route goes in a scenario's `expected`, `RoutedToGrader` must declare that key in its
   `ExpectedKeys`. When the HTTP client sets a turn's `Failure`, the turn line must carry it, so `ProtocolTranscripts` reads it back. A

@@ -9,10 +9,11 @@ public static class GradesText
 
     public const string NoGraders = "This run recorded no graders.";
 
-    /// <summary>A grader's chip: its name, and a partial score beside it ("priced-with-source 0.6").</summary>
-    public static string Chip(string grader, double score) =>
-        score > 0 && score < 1 ? $"{grader} {score.ToString("0.##", CultureInfo.InvariantCulture)}" : grader;
+    /// <summary>A grader's chip: its name, and a partial score beside it ("priced-with-source 0.6"); an unknown score shows nothing.</summary>
+    public static string Chip(string grader, double? score) =>
+        score is > 0 and < 1 ? $"{grader} {score.Value.ToString("0.##", CultureInfo.InvariantCulture)}" : grader;
 
-    /// <summary>A grader's line in the run's list: its name, version and kind ("no-error v1 · FixedRule").</summary>
-    public static string Grader(GraderRow grader) => $"{grader.Name} v{grader.Version} · {grader.Kind}";
+    /// <summary>A grader's line in the run's list: its name, version and kind ("no-error v1 · FixedRule"); no version when the run recorded none.</summary>
+    public static string Grader(GraderRow grader) =>
+        grader.Version is { } v ? $"{grader.Name} v{v} · {grader.Kind}" : $"{grader.Name} · {grader.Kind}";
 }

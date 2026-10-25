@@ -56,7 +56,7 @@ as you go: every answer shows what it cost, specialists included.
 | `Pages/Admin/Benchmarks.razor`, `BenchmarkRun.razor` | The checks, a live run and the runs list; one stored run |
 | `Components/Admin/` | `RunExplorer`, `TrendChart`, `ChartInfo`: a run at every level, a check's trend, a chart's explanation |
 | `Components/Admin/Grades/` | `GradeChips`, `GraderList`: a conversation's outcome and grades, the run's eval and graders, from the standard records (F18 step 4.5c) |
-| `Admin/` | `RunModelFilter`: the runs list's model filter; `Grades/`: the readers of the run's graders and a conversation's grades (`RunGradersReader`, `ConversationGradesReader`), the outcome parsed once (`GradeOutcomes`), the chip list (`GradeChipList`) and its words (`GradesText`) |
+| `Admin/` | `RunModelFilter`: the runs list's model filter; `Grades/`: the records both components use (`GradeOutcome`, `GraderRow`, `GradeRow`, `RunGraders`, `ConversationGrades`) and their words (`GradesText`); `Grades/Reading/`: the readers of the run's graders and a conversation's grades (`RunGradersReader`, `ConversationGradesReader`) and the outcome parsed once (`GradeOutcomes`); `Grades/Chips/`: the chip list (`GradeChip`, `GradeChipList`) and an outcome's chip class (`ChipKind`) |
 | `Text/PulsText.cs` | The shared components' words in Afrikaans (`ChatText`) |
 | `Content/` | `Source` and `Sources` (a turn's sources: the answer's links and the pages its specialists read); `Template` and `Templates` (the starters on Verken and Studio) |
 | `wwwroot/css/app.css` | The dark theme (orange, green, charcoal, a charcoal-tinted white; Montserrat) |

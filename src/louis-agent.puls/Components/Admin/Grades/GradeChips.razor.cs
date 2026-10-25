@@ -1,4 +1,5 @@
 using LouisAgent.Puls.Admin.Grades;
+using LouisAgent.Puls.Admin.Grades.Chips;
 using Microsoft.AspNetCore.Components;
 
 namespace LouisAgent.Puls.Components.Admin.Grades;
@@ -13,5 +14,5 @@ public partial class GradeChips
 
     private IReadOnlyList<GradeChip> Chips => GradeChipList.Of(Grades, Order);
 
-    private string? OutcomeKind => Grades.Outcome is { } outcome ? GradeOutcomes.KindOf(outcome) : null;
+    private string? OutcomeKind => Grades.Outcome is { } outcome ? ChipKind.Of(outcome) : null;
 }

@@ -1,8 +1,11 @@
-using System.Text.Json;
+﻿using System.Text.Json;
 
-namespace LouisAgent.Puls.Admin.Grades;
+namespace LouisAgent.Puls.Admin.Grades.Reading;
 
-/// <summary>Reads a conversation row's <c>grades</c> and <c>outcome</c>; null where the conversation recorded none.</summary>
+/// <summary>
+/// Reads a conversation row's <c>grades</c> and <c>outcome</c>; null where the conversation recorded none, and a grade's score or
+/// version null where it is missing or isn't a number, never 0 (ADR 0007).
+/// </summary>
 public static class ConversationGradesReader
 {
     public static ConversationGrades Read(JsonElement conversation)
@@ -16,11 +19,10 @@ public static class ConversationGradesReader
         return new ConversationGrades(grades, outcome);
     }
 
-    /// <summary>A score that isn't a number reads as 0: an unknown score is never shown as partial credit.</summary>
-    private static double Score(JsonElement grade) =>
-        grade.TryGetProperty("score", out var v) && v.ValueKind == JsonValueKind.Number && v.TryGetDouble(out double d) ? d : 0;
+    private static double? Score(JsonElement grade) =>
+        grade.TryGetProperty("score", out var v) && v.ValueKind == JsonValueKind.Number && v.TryGetDouble(out double d) ? d : null;
 
     private static string? Text(JsonElement e, string name) => e.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.String ? v.GetString() : null;
 
-    private static int Int(JsonElement e, string name) => e.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.Number && v.TryGetInt32(out int n) ? n : 0;
+    private static int? Int(JsonElement e, string name) => e.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.Number && v.TryGetInt32(out int n) ? n : null;
 }

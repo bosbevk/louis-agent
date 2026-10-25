@@ -1,4 +1,4 @@
-namespace LouisAgent.Puls.Admin.Grades;
+namespace LouisAgent.Puls.Admin.Grades.Chips;
 
 /// <summary>
 /// A conversation's grades as chips (F18 step 4.5c), one template for every eval: one chip per grade in the run's grader order, a grade
@@ -13,7 +13,7 @@ public static class GradeChipList
         return list
             .Select((grade, stored) => (grade, rank: Rank(order, grade.Grader), stored))
             .OrderBy(g => g.rank).ThenBy(g => g.stored)
-            .Select(g => new GradeChip(GradesText.Chip(g.grade.Grader, g.grade.Score), GradeOutcomes.KindOf(g.grade.Outcome), g.grade.Reason))
+            .Select(g => new GradeChip(GradesText.Chip(g.grade.Grader, g.grade.Score), ChipKind.Of(g.grade.Outcome), g.grade.Reason))
             .ToList();
     }
 

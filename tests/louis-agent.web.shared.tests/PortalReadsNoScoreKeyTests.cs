@@ -68,10 +68,11 @@ public class PortalReadsNoScoreKeyTests
             + string.Join("\n  ", naming));
     }
 
+    /// <summary>A folder that isn't there fails, never scans as empty: step 7b renames the API's <c>Benchmarks/</c>, and this list must follow it.</summary>
     private static IEnumerable<string> Files(string folder)
     {
         string dir = Path.Combine(TestPaths.RepoRoot, folder.Replace('/', Path.DirectorySeparatorChar));
-        if (!Directory.Exists(dir)) return [];
+        Assert.That(Directory.Exists(dir), Is.True, $"No folder {folder}: it was moved or renamed, so update this test's list.");
         return Directory.EnumerateFiles(dir, "*", SearchOption.AllDirectories)
             .Where(f => (f.EndsWith(".cs") || f.EndsWith(".razor"))
                         && !f.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}")

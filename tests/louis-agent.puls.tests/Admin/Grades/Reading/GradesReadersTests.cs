@@ -1,11 +1,12 @@
 using System.Text.Json;
 using LouisAgent.Puls.Admin.Grades;
+using LouisAgent.Puls.Admin.Grades.Reading;
 
-namespace LouisAgent.Puls.Tests.Admin.Grades;
+namespace LouisAgent.Puls.Tests.Admin.Grades.Reading;
 
 // The readers of the admin API's standard records (F18 step 4.5c): the run's eval and graders in order, a conversation's grades and
 // outcome, and null for a run or a conversation from before step 2a. Written first: both readers threw NotImplementedException on the
-// red run.
+// red run; the no-score test (the 4.5c review) read 0 on its red run.
 public class GradesReadersTests
 {
     private static JsonElement Json(string text) => JsonDocument.Parse(text).RootElement.Clone();
@@ -55,6 +56,17 @@ public class GradesReadersTests
             new GradeRow("no-error", 1, 0, GradeOutcome.Fail, "turn 2 raised an error"),
         }));
         Assert.That(grades.Outcome, Is.EqualTo(GradeOutcome.Fail));
+    }
+
+    [Test]
+    public void AGradeWithNoScoreOrVersion_ReadsNull_Never0()
+    {
+        // ADR 0007: a missing number is unknown; a grader whose row carries no version is unversioned, not version 0.
+        var grades = ConversationGradesReader.Read(Json("""{"grades":[{"grader":"meal","outcome":"Unknown","reason":"pending"}],"outcome":"Unknown"}"""));
+        var run = RunGradersReader.Read(Json("""{"run":{"graders":[{"name":"meal","kind":"Human"}]}}"""));
+
+        Assert.That(grades.Grades!.Single(), Is.EqualTo(new GradeRow("meal", null, null, GradeOutcome.Unknown, "pending")));
+        Assert.That(run.Graders!.Single(), Is.EqualTo(new GraderRow("meal", null, "Human")));
     }
 
     [Test]
