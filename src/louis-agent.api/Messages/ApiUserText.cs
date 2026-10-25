@@ -17,6 +17,9 @@ public enum ApiUserText
     [Description("Missing or invalid API key (x-api-key or Authorization: Bearer).")]
     InvalidApiKey,
 
+    [Description("This API has no route /v1/{Path}.")]
+    UnknownRoute,
+
     [Description("No price table loaded: set PRICES_FILE or add config/prices.json.")]
     NoPriceTable,
 
@@ -26,7 +29,7 @@ public enum ApiUserText
     [Description("Send a non-empty 'message' and/or 'attachments'.")]
     EmptyMessage,
 
-    [Description("This session is still answering a message; wait for it or POST /sessions/{Id}/cancel.")]
+    [Description("This session is still answering a message; wait for it or POST /v1/sessions/{Id}/cancel.")]
     SessionBusy,
 
     [Description("Unknown session: {Id}")]

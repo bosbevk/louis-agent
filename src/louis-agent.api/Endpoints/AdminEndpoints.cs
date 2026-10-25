@@ -2,6 +2,7 @@ using LouisAgent.Api.Admin;
 using LouisAgent.Api.Benchmarks.Runs;
 using LouisAgent.Api.Benchmarks.Store;
 using LouisAgent.Api.Benchmarks.Reports;
+using LouisAgent.Api.Endpoints.Routing;
 using System.Net.ServerSentEvents;
 using LouisAgent.Api.Messages;
 using LouisAgent.Core.Messages;
@@ -25,7 +26,7 @@ internal static class AdminEndpoints
         IBenchmarkStore? store, BenchmarkRecorder? recorder, Func<BenchmarkCheck, IReadOnlyDictionary<string, string>> settingsOf,
         string workspaceRoot)
     {
-        var admin = routes.MapGroup("/admin").AddEndpointFilter(async (context, next) =>
+        var admin = routes.MapGroup("/admin").WithAccess(RouteAccess.AdminKey).AddEndpointFilter(async (context, next) =>
         {
             switch (AdminGate.Check(adminKey, AdminGate.Presented(context.HttpContext.Request)))
             {

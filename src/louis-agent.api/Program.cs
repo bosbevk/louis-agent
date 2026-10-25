@@ -20,10 +20,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddApi(host);
 var app = builder.Build();
 
-// The agent can run shell commands and write files, so every /sessions, /workspace and /git call must present
-// AGENT_API_KEY. FX18: without one the API refuses to start, here, before it listens, unless AGENT_AUTH=off says it is
+// The agent can run shell commands and write files, so its calls must present AGENT_API_KEY; which calls is AgentKeyGate's
+// rule. FX18: without one the API refuses to start, here, before it listens, unless AGENT_AUTH=off says it is
 // open on purpose (HostAuth, core's one rule for both this and the MCP server over HTTP).
-// The web app's files stay public: they hold no data, and the app sends the key the user enters in its settings.
 string? apiKey = HostAuth.Key(Environment.GetEnvironmentVariable("AGENT_API_KEY"));
 switch (HostAuth.AtStartup(HostAuth.Mode(Environment.GetEnvironmentVariable("AGENT_AUTH")), apiKey))
 {

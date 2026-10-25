@@ -7,6 +7,7 @@ using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Pricing.Prices;
 using LouisAgent.Core.Pricing.Rates;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.AI;
@@ -45,6 +46,25 @@ internal static class ApiTestHost
     /// <summary>Every route the API maps, endpoint by endpoint.</summary>
     public static IReadOnlyList<RouteEndpoint> Routes(WebApplication app) =>
         ((IEndpointRouteBuilder)app).DataSources.SelectMany(source => source.Endpoints).OfType<RouteEndpoint>().ToList();
+
+    /// <summary>The route's pattern with its group prefix and constraints (<c>/v1/admin/benchmarks/runs/{id}</c>); every route's starts with a slash.</summary>
+    public static string Pattern(RouteEndpoint endpoint)
+    {
+        string text = endpoint.RoutePattern.RawText ?? "";
+        Assert.That(text, Does.StartWith("/"), "a route's raw pattern names its whole path, group prefix included");
+        return text;
+    }
+
+    /// <summary>The route as <c>METHOD /pattern</c>: its methods joined with commas, or <c>ANY</c> for a route that takes every method.</summary>
+    public static string Line(RouteEndpoint endpoint)
+    {
+        var methods = endpoint.Metadata.GetMetadata<IHttpMethodMetadata>()?.HttpMethods;
+        string method = methods is { Count: > 0 } ? string.Join(",", methods) : "ANY";
+        return $"{method} {Pattern(endpoint)}";
+    }
+
+    /// <summary>Who may call the route, as the key gate reads it.</summary>
+    public static RouteAccess Access(RouteEndpoint endpoint) => AgentKeyGate.AccessFor(new PathString(Pattern(endpoint)), endpoint);
 
     private static AgentHostContext HostContext()
     {
