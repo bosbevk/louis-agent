@@ -39,10 +39,11 @@ size to fit in our chat screen"; "i need to see here recipe-image". The cook's a
 6. **AMP pages** (Louis, on `af.hiloved.com/maklike-kerrie-hoender-resep/`, the page `cook-en` cited): it has no `og:image`, no JSON-LD and no `<img>`; its photo is an `<amp-img alt="…">`, which the page text ignored. `<amp-img>` is read as an image (alt text still required).
 7. **`within-budget` v2** (`puls-cook` eval v5): the shopping list's own bold total row (`**Totaal** … **± R323**`) is the basket's total (`TotalSource.ListTotalRow`, `Lists.TotalRows`). Version 1 read every line that said "total", and answers say it elsewhere too (a sentence, the unsure table) with the budget or a saving beside it, so the lines disagreed and the grade was `Unknown` (`cook-af`, `cook-malmesbury`). Per person is no total; two total rows that disagree are none.
 8. **Estimates in a town with no shop** (Louis, on `cook-no-branch` and `cook-recipe-only`: "these ones did price and it is fine, it's estimates"): an estimated row is an estimate there too, not "no shop, no price"; the chip reads "priced 14 / 14 · estimated 14".
+9. **The branch grader reads what a person reads** (`estimates-at-shop` v2, `puls-cook` eval v6; `BranchReading`, `BranchFinding`): the reply is Puls's rewrite of the cook's report, and a probe found four ways a person reads "the branch is named" that v1 rejected: a bold line for the heading, an emoji or a number before its words, and an em dash between the shop and its place. The *Where to buy* section is now the shop table when it has one (a row whose shop cell names the shop and whose branch or street cell holds a place; "nearest" with no place does not count) and the prose otherwise. The reason names the case: no section, no branch of that shop with a place, or only a nearest one.
 
 ## How it is tested
 
-The grader (version, the cited page, icons), the scorer, the chips, the style rule and the prompt each have tests; the golden file
+The grader (version, the cited page, icons), the scorer, the chips, the style rule and the prompt each have tests; the branch reading has the four shapes in both languages, the table rows (a place in the branch or the street cell, "nearest", another shop) and the three reasons (`ShopsBranchTests`, `EstimatesAtShopTests`); the golden file
 `PulsSessionSnapshot.json` moved by one line. The estimates code and the chip class were written beside their tests before a red run.
 
 ## Confirmed

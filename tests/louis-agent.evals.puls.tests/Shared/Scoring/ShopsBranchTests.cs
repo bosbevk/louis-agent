@@ -43,4 +43,50 @@ public class ShopsBranchTests
     [Test]
     public void NoWhereToBuySection_IsNoBranch() =>
         Assert.That(Shops.NamesBranch("Pick n Pay Malmesbury", "pnp"), Is.False);
+
+    // FX24 follow-up (review of 0ea184ef1953): the grader reads Puls's reply, which rewrites the cook's report in its own voice, and a probe found four ways a person reads
+    // "the branch is named" that it rejected: a bold line for the heading, an emoji or a number before the words, and an em dash between the shop and its place.
+    private const string Table = "| Shop | Branch | Street or mall |\n|---|---|---|\n";
+
+    [TestCase("**Where to buy**\n\nPick n Pay Menlyn")]
+    [TestCase("**Waar om te koop**\n\nPnP in Menlyn")]
+    [TestCase("### 🛒 Where to buy\n\nPick n Pay Menlyn")]
+    [TestCase("## 4. Where to buy\n\nPick n Pay Menlyn")]
+    [TestCase("### Where to buy\n\nPick n Pay — Brooklyn Mall")]
+    [TestCase("### Waar om te koop\n\nPick n Pay – Brooklyn Mall")]
+    public void AHeadingInAnyOfTheShapesAPersonReads_AndAnEmDash_StillNameTheBranch(string answer) =>
+        Assert.That(Shops.NamesBranch(answer, "pnp"), Is.True);
+
+    [TestCase("| PnP | Pick n Pay Menlyn | Menlyn Park |")]
+    [TestCase("| Pick n Pay | | Menlyn Park |")]
+    [TestCase("| Pick n Pay | Pick n Pay Menlyn | |")]
+    public void ATableRowOfTheShop_WhoseBranchOrStreetCellHoldsAPlace_NamesTheBranch(string row) =>
+        Assert.That(Shops.NamesBranch(Heading + Table + row + "\n", "pnp"), Is.True);
+
+    [Test]
+    public void TheTableIsReadByItsColumns_InAfrikaansToo() =>
+        Assert.That(Shops.NamesBranch("### Waar om te koop\n\n| Winkel | Tak | Straat |\n|---|---|---|\n| Pick n Pay | Pick n Pay Menlyn | Atterburystraat |\n", "pnp"), Is.True);
+
+    [TestCase("| Pick n Pay | nearest Pick n Pay | |", BranchFinding.OnlyNearest)]
+    [TestCase("| Pick n Pay | naaste Pick n Pay | |", BranchFinding.OnlyNearest)]
+    [TestCase("| Woolworths | Woolworths Menlyn | Menlyn Park |", BranchFinding.NoBranchOfShop)]
+    [TestCase("| Pick n Pay | | |", BranchFinding.NoBranchOfShop)]
+    public void ATableRowThatNamesNoPlace_OrAnotherShop_IsNoBranch(string row, BranchFinding expected) =>
+        Assert.That(BranchReading.Of(Heading + Table + row + "\n", "pnp"), Is.EqualTo(expected));
+
+    [Test]
+    public void TheTableDecides_WhenThereIsOne_SoAnotherShopsBranchInTheTextBesideItDoesNotCount() =>
+        Assert.That(BranchReading.Of(Heading + "Woolworths Paarl Mall\n\n" + Table + "| Pick n Pay | nearest Pick n Pay | |\n", "pnp"), Is.EqualTo(BranchFinding.OnlyNearest));
+
+    [TestCase("### Recipe\n\nPick n Pay Menlyn", BranchFinding.NoSection)]
+    [TestCase("### Where to buy\n\nAny supermarket near you.", BranchFinding.NoBranchOfShop)]
+    [TestCase("### Where to buy\n\nPick n Pay", BranchFinding.NoBranchOfShop)]
+    [TestCase("### Where to buy\n\nNearest Pick n Pay branch", BranchFinding.OnlyNearest)]
+    [TestCase("### Where to buy\n\nPick n Pay Menlyn", BranchFinding.Named)]
+    public void TheFinding_SaysWhichCaseItIs(string answer, BranchFinding expected) =>
+        Assert.That(BranchReading.Of(answer, "pnp"), Is.EqualTo(expected));
+
+    [Test]
+    public void ABoldLineEndsTheSection_AsAHeadingDoes() =>
+        Assert.That(BranchReading.Of("**Where to buy**\n\nAny supermarket.\n\n**Unsure**\n\nPick n Pay Menlyn", "pnp"), Is.EqualTo(BranchFinding.NoBranchOfShop));
 }

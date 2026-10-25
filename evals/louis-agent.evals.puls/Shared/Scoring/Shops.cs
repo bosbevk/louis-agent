@@ -65,42 +65,8 @@ public static partial class Shops
     /// <summary>Whether the answer says the shop has no branch in the town ("no PnP branch", "geen PnP-tak"), in either language.</summary>
     public static bool NoBranchLine(string? answer) => NoBranch().IsMatch(answer ?? "");
 
-    /// <summary>
-    /// Whether the answer names the shop's branch under Where to buy (F18 step 5.7), in either language: the shop's name (<c>Pick n Pay</c>, <c>PnP</c>) and then a
-    /// place (<c>Pick n Pay Malmesbury</c>, <c>PnP in Paarl Mall</c>, <c>Pick n Pay se tak in Malmesbury</c>). A shop with no place after it, a name only in a link,
-    /// or another shop's branch is none, and so is a branch named outside the section.
-    /// </summary>
-    public static bool NamesBranch(string? answer, string shop)
-    {
-        string host = Hosts.First(known => known.Name == shop).Host;
-        string names = string.Join("|", Hosts.Where(known => known.Host == host).Select(known => Regex.Escape(known.Name)));
-        string section = InlineLinkText().Replace(WhereToBuySection(answer), " ").Replace("*", "");
-        foreach (Match name in Regex.Matches(section, $@"\b(?:{names})\b", RegexOptions.IgnoreCase))
-        {
-            string rest = section[(name.Index + name.Length)..].Split('\n')[0];
-            string? place = Regex.Split(rest, @"[\s|,:;()\-–.]+").FirstOrDefault(token => token.Length > 0 && !BranchWords.Contains(token.ToLowerInvariant()));
-            if (place is { Length: > 0 } && char.IsUpper(place[0]) && !Hosts.Any(known => known.Name.StartsWith(place, StringComparison.OrdinalIgnoreCase)))
-                return true;
-        }
-        return false;
-    }
-
-    /// <summary>The words between a shop's name and its place that name no place ("PnP in Paarl", "Pick n Pay se tak in Malmesbury").</summary>
-    private static readonly HashSet<string> BranchWords = ["in", "te", "by", "at", "near", "naby", "se", "tak", "branch", "op", "website", "shop", "winkel"];
-
-    /// <summary>The lines under the Where to buy heading (<c>Waar om te koop</c>), up to the next heading; none when there is no such heading.</summary>
-    private static string WhereToBuySection(string? answer)
-    {
-        var lines = (answer ?? "").Split('\n');
-        int start = Array.FindIndex(lines, line => WhereToBuyHeading().IsMatch(line));
-        return start < 0 ? "" : string.Join('\n', lines.Skip(start + 1).TakeWhile(line => !line.TrimStart().StartsWith('#')));
-    }
-
-    [GeneratedRegex(@"^\s*#{1,6}\s*(?:where to buy|waar om te koop)\b", RegexOptions.IgnoreCase)]
-    private static partial Regex WhereToBuyHeading();
-
-    [GeneratedRegex(@"\[[^\]]*\]\([^)]*\)|https?://\S+")]
-    private static partial Regex InlineLinkText();
+    /// <summary>Whether the answer names the shop's branch under Where to buy, in either language (<see cref="BranchReading"/> says which case it is when it doesn't).</summary>
+    public static bool NamesBranch(string? answer, string shop) => BranchReading.Of(answer, shop) == BranchFinding.Named;
 
     /// <summary>Whether the answer says no shop near the user has a catalogue here yet, in either language.</summary>
     public static bool NoCatalogueLine(string? answer) => NoCatalogue().IsMatch(answer ?? "");

@@ -33,7 +33,7 @@ public class EstimatesAtShopTests
     {
         var grader = new EstimatesAtShop();
 
-        Assert.That((grader.Name, grader.Version, grader.Kind, grader.Required), Is.EqualTo(("estimates-at-shop", 1, GraderKind.FixedRule, true)));
+        Assert.That((grader.Name, grader.Version, grader.Kind, grader.Required), Is.EqualTo(("estimates-at-shop", 2, GraderKind.FixedRule, true)));
         Assert.That(grader.ExpectedKeys, Is.EquivalentTo(new[] { "shop", "town" }));
     }
 
@@ -102,4 +102,38 @@ public class EstimatesAtShopTests
 
         Assert.That((await new EstimatesAtShop().GradeAsync(failed, CancellationToken.None)).Outcome, Is.EqualTo(GradeOutcome.Unknown));
     }
+
+    // Version 2 (review of 0ea184ef1953): a fail says which case it is, so it can be told apart without the answer, and the branch is read the way a person reads it.
+    [Test]
+    public async Task ItFails_SayingThereIsNoWhereToBuySection_WhenThereIsNone()
+    {
+        var grade = await Grade(Pnp, ReadsRecipe, Text(Estimates + EstimatesLine + "\n### Recipe\n\nPick n Pay Malmesbury\n"));
+
+        Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Fail));
+        Assert.That(grade.Reason, Does.Contain("no Where to buy section"));
+    }
+
+    [Test]
+    public async Task ItFails_SayingNoBranchOfTheShopWithAPlace_WhenTheSectionNamesNone()
+    {
+        var grade = await Grade(Pnp, ReadsRecipe, Text(Estimates + EstimatesLine + "\n### Where to buy\n\nAny supermarket near you.\n"));
+
+        Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Fail));
+        Assert.That(grade.Reason, Does.Contain("no pnp branch with a place"));
+    }
+
+    [Test]
+    public async Task ItFails_SayingOnlyANearestBranch_WhenThatIsAllItGives()
+    {
+        var grade = await Grade(Pnp, ReadsRecipe, Text(Estimates + EstimatesLine
+            + "\n### Where to buy\n\n| Shop | Branch | Street or mall |\n|---|---|---|\n| Pick n Pay | nearest Pick n Pay | |\n"));
+
+        Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Fail));
+        Assert.That(grade.Reason, Does.Contain("only a nearest pnp branch"));
+    }
+
+    [Test]
+    public async Task ItPasses_WhenTheTableOfAPlainBoldHeadingNamesTheBranch() =>
+        Assert.That((await Grade(Pnp, ReadsRecipe, Text(Estimates + EstimatesLine
+            + "\n**Where to buy**\n\n| Shop | Branch | Street or mall |\n|---|---|---|\n| PnP | Pick n Pay Menlyn | Menlyn Park |\n"))).Outcome, Is.EqualTo(GradeOutcome.Pass));
 }

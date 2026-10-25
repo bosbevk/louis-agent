@@ -44,7 +44,7 @@ public enum GradeMessage
     [Description("sum of the priced rows")]
     SourceRowSum,
 
-    [Description("the shopping list's total row")]
+    [Description("shopping list's total row")]
     SourceListTotalRow,
 
     [Description("the scenario names no shop to price at")]
@@ -86,8 +86,14 @@ public enum GradeMessage
     [Description("nothing was searched, no price is linked, and the answer says the prices are estimates")]
     ShopAnyRight,
 
-    [Description("the answer names no {Shop} branch under where to buy (the shop and a place)")]
-    ShopBranchNotNamed,
+    [Description("the answer has no Where to buy section")]
+    ShopNoWhereToBuySection,
+
+    [Description("the Where to buy section names no {Shop} branch with a place (the shop and a place)")]
+    ShopNoBranchWithPlace,
+
+    [Description("the Where to buy section gives only a nearest {Shop} branch, with no place")]
+    ShopOnlyNearestBranch,
 
     [Description("no shop page was read, no price is linked, the answer says the prices are estimates and names a {Shop} branch")]
     ShopEstimatesRight,

@@ -22,7 +22,7 @@ namespace LouisAgent.Evals.Puls.Evals.Cook.Grading;
 public sealed class EstimatesAtShop : IGrader
 {
     public string Name => "estimates-at-shop";
-    public int Version => 1;
+    public int Version => 2;
     public GraderKind Kind => GraderKind.FixedRule;
     public bool Required => true;
     public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string> { "shop", "town" }.ToFrozenSet();
@@ -57,11 +57,18 @@ public sealed class EstimatesAtShop : IGrader
             ShopExpectation.NoBranch => Shops.NoBranchLine(answer)
                 ? Verdict.Pass(Name, Version, MessageText.Format(GradeMessage.ShopAnyRight))
                 : Verdict.Fail(Name, Version, MessageText.Format(GradeMessage.ShopNoBranchNotSaid)),
-            _ => Shops.NamesBranch(answer, shop.ToString().ToLowerInvariant())
-                ? Verdict.Pass(Name, Version, MessageText.Format(GradeMessage.ShopEstimatesRight, new { Shop = shop.ToString().ToLowerInvariant() }))
-                : Verdict.Fail(Name, Version, MessageText.Format(GradeMessage.ShopBranchNotNamed, new { Shop = shop.ToString().ToLowerInvariant() })),
+            _ => BranchVerdict(answer, shop.ToString().ToLowerInvariant()),
         };
     }
+
+    /// <summary>The branch under Where to buy: named, or the case it is not (no section, no branch with a place, only a nearest one), so a fail says why.</summary>
+    private Grade BranchVerdict(string answer, string shop) => BranchReading.Of(answer, shop) switch
+    {
+        BranchFinding.Named => Verdict.Pass(Name, Version, MessageText.Format(GradeMessage.ShopEstimatesRight, new { Shop = shop })),
+        BranchFinding.NoSection => Verdict.Fail(Name, Version, MessageText.Format(GradeMessage.ShopNoWhereToBuySection)),
+        BranchFinding.OnlyNearest => Verdict.Fail(Name, Version, MessageText.Format(GradeMessage.ShopOnlyNearestBranch, new { Shop = shop })),
+        _ => Verdict.Fail(Name, Version, MessageText.Format(GradeMessage.ShopNoBranchWithPlace, new { Shop = shop })),
+    };
 
     /// <summary>A page of a shop's site read, by either tool that reads a page: the cook looks up no shop now.</summary>
     private static bool ReadsAShop(ToolCall call) =>
