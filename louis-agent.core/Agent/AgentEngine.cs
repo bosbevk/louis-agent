@@ -3,6 +3,7 @@ namespace LouisAgent.Core.Agent;
 using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Core.Agent.Commands;
 using LouisAgent.Core.Agent.EngineTools;
+using LouisAgent.Core.Agent.Messages;
 using LouisAgent.Core.Agent.Turns;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Llm.UsageMapping;
@@ -15,7 +16,6 @@ using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Sinks;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
-using LouisAgent.Core.Agent.Messages;
 
 /// <summary>
 /// One agent: its tools, its skills and the model behind <see cref="IChatClient"/>, wired once (S, CL15: the engine is the

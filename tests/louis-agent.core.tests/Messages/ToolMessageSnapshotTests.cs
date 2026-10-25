@@ -5,8 +5,8 @@ using LouisAgent.Core.Messages;
 namespace LouisAgent.Core.Tests.Messages;
 
 // CL3: the texts tools return to the model (errors, timeouts, what to do instead) are part of what the model reads, like
-// the tool descriptions in ModelRequestSnapshotTests. Every *ToolMessage enum (the shared one and each area's, the split by area, F18:
-// the split by area) is rendered with a fixed sample per hole ({Path} becomes <Path>), keyed by the member's bare name, and
+// the tool descriptions in ModelRequestSnapshotTests. Every *ToolMessage enum (the shared one and each area's, from the
+// split by area, F18) is rendered with a fixed sample per hole ({Path} becomes <Path>), keyed by the member's bare name, and
 // compared with a committed golden file, so a wording change is deliberate and reviewed. Member names are unique across them
 // (a test below holds that), so the keys don't depend on which enum a text lives in. To change one: set LOUIS_UPDATE_GOLDEN=1,
 // run this test, review the file's diff, commit it.

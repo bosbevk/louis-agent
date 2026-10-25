@@ -2,15 +2,15 @@ namespace LouisAgent.Core.Logging;
 
 using System.Globalization;
 using System.Reflection;
+using LouisAgent.Core.Logging.Messages;
 using LouisAgent.Core.Messages;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
 using Serilog.Extensions.Logging;
 using Serilog.Filters;
-using Serilog.Sinks.SystemConsole.Themes;
 using SerilogConfiguration = Serilog.LoggerConfiguration;
-using LouisAgent.Core.Logging.Messages;
+using Serilog.Sinks.SystemConsole.Themes;
 
 /// <summary>
 /// Logging for every host: <see cref="ILogger"/> (Microsoft.Extensions.Logging) with Serilog behind it, configured once

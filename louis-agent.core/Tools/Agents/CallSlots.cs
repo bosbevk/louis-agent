@@ -2,8 +2,8 @@ namespace LouisAgent.Core.Tools.Agents;
 
 using System.Collections.Concurrent;
 using LouisAgent.Core.Messages;
-using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Tools.Agents.Messages;
+using LouisAgent.Core.Usage.Records;
 
 /// <summary>
 /// The sub-session calls a turn may make (S, CL15, from SpecialistTools): at most <paramref name="maxPerTurn"/> per turn

@@ -5,8 +5,8 @@ using System.Text.RegularExpressions;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
-using Microsoft.Extensions.Logging;
 using LouisAgent.Core.Pricing.Messages;
+using Microsoft.Extensions.Logging;
 
 /// <summary>
 /// The currency costs are shown in (F14), with the rate from the price table's currency and that rate's date. Costs are

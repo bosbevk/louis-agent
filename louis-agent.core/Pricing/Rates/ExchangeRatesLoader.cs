@@ -3,9 +3,9 @@ namespace LouisAgent.Core.Pricing.Rates;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Pricing.Messages;
 using LouisAgent.Core.Pricing.Rates.Mappers;
 using Microsoft.Extensions.Logging;
-using LouisAgent.Core.Pricing.Messages;
 
 /// <summary>The exchange rates a host loads at start-up (F14; S, CL15, from AgentHost): from a URL when its reply is usable, else the file, from the right base.</summary>
 public static class ExchangeRatesLoader

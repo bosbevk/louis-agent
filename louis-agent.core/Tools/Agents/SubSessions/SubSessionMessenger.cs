@@ -3,8 +3,8 @@ namespace LouisAgent.Core.Tools.Agents.SubSessions;
 using System.Diagnostics;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Sessions.SubSessions;
-using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Tools.Agents.Messages;
+using LouisAgent.Core.Usage.Records;
 
 /// <summary>One message to a sub-session (S, CL15, from SpecialistTools): sent, read to the end, asked again once when empty, its usage rolled up.</summary>
 internal sealed class SubSessionMessenger(PeerHttp http, UsageRollUp rollUp)

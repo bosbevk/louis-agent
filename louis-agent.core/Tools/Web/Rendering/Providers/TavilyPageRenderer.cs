@@ -5,8 +5,8 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
 using LouisAgent.Core.Messages;
-using LouisAgent.Core.Tools.Web.Rendering;
 using LouisAgent.Core.Tools.Web.Messages;
+using LouisAgent.Core.Tools.Web.Rendering;
 
 /// <summary>
 /// Tavily's Extract endpoint as the page renderer (F25 step 7; Louis's choice over a hosted reader and a headless

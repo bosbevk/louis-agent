@@ -3,8 +3,8 @@ namespace LouisAgent.Core.Pricing.Prices;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
-using Microsoft.Extensions.Logging;
 using LouisAgent.Core.Pricing.Messages;
+using Microsoft.Extensions.Logging;
 
 /// <summary>The price table a host loads at start-up (S, CL15, from AgentHost): from a URL when it answers, else the file.</summary>
 public static class PriceTableLoader

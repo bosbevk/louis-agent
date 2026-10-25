@@ -1,7 +1,7 @@
 namespace LouisAgent.Core.Guardrails.Workspace;
 
-using LouisAgent.Core.Messages;
 using LouisAgent.Core.Guardrails.Messages;
+using LouisAgent.Core.Messages;
 
 /// <summary>
 /// Keeps paths inside the workspace: relative only, never above the root, never through a symbolic link. The agent's

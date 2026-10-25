@@ -2,13 +2,13 @@ namespace LouisAgent.Core.Hosting.Prompts;
 
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Config;
+using LouisAgent.Core.Hosting.Messages;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Providers;
 using LouisAgent.Core.Skills.Roles;
 using Microsoft.Extensions.Logging;
-using LouisAgent.Core.Hosting.Messages;
 
 /// <summary>The system prompt assembled from skill files (S, CL15, from AgentHost): the principles, the role, the guides, the function skills.</summary>
 public static class SkillLoader

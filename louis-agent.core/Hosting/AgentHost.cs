@@ -4,6 +4,7 @@ using LouisAgent.Core.Agent;
 using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting.EnvFiles;
+using LouisAgent.Core.Hosting.Messages;
 using LouisAgent.Core.Hosting.Rider;
 using LouisAgent.Core.Hosting.SessionLlms;
 using LouisAgent.Core.Llm;
@@ -14,7 +15,6 @@ using LouisAgent.Core.Pricing.Rates;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Roles;
 using Microsoft.Extensions.Logging;
-using LouisAgent.Core.Hosting.Messages;
 
 /// <summary>
 /// Single bootstrap shared by the CLI, ACP, API and MCP entry points: the flow only (S, CL15). The .env files are

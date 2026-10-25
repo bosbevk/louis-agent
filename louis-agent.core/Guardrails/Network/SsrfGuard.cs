@@ -2,8 +2,8 @@ namespace LouisAgent.Core.Guardrails.Network;
 
 using System.Net;
 using System.Net.Sockets;
-using LouisAgent.Core.Messages;
 using LouisAgent.Core.Guardrails.Messages;
+using LouisAgent.Core.Messages;
 
 /// <summary>
 /// Server-side request forgery guard for fetching URLs: only public addresses, checked before every request (and every

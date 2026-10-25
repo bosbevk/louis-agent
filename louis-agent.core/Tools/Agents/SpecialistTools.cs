@@ -6,12 +6,12 @@ using LouisAgent.Core.Messages;
 using LouisAgent.Core.Sessions;
 using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Sessions.SubSessions;
+using LouisAgent.Core.Tools.Agents.Messages;
 using LouisAgent.Core.Tools.Agents.SubSessions;
 using LouisAgent.Core.Tools.Clock;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Sinks;
 using Microsoft.Extensions.AI;
-using LouisAgent.Core.Tools.Agents.Messages;
 
 /// <summary>
 /// The <c>specialists</c> toolset (F5-S5): opens a session on another louis-agent (a peer in AGENT_PEERS) with only the

@@ -1,10 +1,10 @@
 namespace LouisAgent.Core.Config;
 
 using System.Globalization;
+using LouisAgent.Core.Config.Messages;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
 using Microsoft.Extensions.Logging;
-using LouisAgent.Core.Config.Messages;
 
 /// <summary>Agent runtime settings, resolved once at startup instead of read from the environment inside core.</summary>
 public sealed class AgentOptions

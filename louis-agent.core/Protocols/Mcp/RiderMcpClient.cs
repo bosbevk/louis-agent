@@ -3,8 +3,8 @@ namespace LouisAgent.Core.Protocols.Mcp;
 using System.Text.Json;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
-using Microsoft.Extensions.Logging;
 using LouisAgent.Core.Protocols.Messages;
+using Microsoft.Extensions.Logging;
 
 /// <summary>
 /// MCP client for discovering tools from Rider's MCP server.

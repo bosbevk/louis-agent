@@ -1,8 +1,8 @@
 namespace LouisAgent.Core.Logging;
 
+using LouisAgent.Core.Logging.Messages;
 using LouisAgent.Core.Messages;
 using Microsoft.Extensions.Logging;
-using LouisAgent.Core.Logging.Messages;
 
 /// <summary>
 /// Records of tool calls the guards had to step in on, one JSON line each under the log directory

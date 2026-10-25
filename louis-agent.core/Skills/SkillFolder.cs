@@ -3,8 +3,8 @@ namespace LouisAgent.Core.Skills;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
-using Microsoft.Extensions.Logging;
 using LouisAgent.Core.Skills.Messages;
+using Microsoft.Extensions.Logging;
 
 /// <summary>
 /// Where skill files come from (S, CL15, from AgentHost): a built-in one from the assembly only, the agent's own

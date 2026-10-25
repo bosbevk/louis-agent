@@ -3,8 +3,8 @@ namespace LouisAgent.Core.Tools.Web.Rendering;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Tools.Web.Browsing;
-using LouisAgent.Core.Tools.Web.Rendering.Providers;
 using LouisAgent.Core.Tools.Web.Messages;
+using LouisAgent.Core.Tools.Web.Rendering.Providers;
 
 /// <summary>
 /// Picks the page renderer from configuration: PAGE_RENDERER = chrome | tavily (F32; an enum, ADR 0024). When unset, the

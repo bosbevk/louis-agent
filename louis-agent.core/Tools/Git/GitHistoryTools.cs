@@ -4,9 +4,9 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Text;
 using LouisAgent.Core.Messages;
-using LouisAgent.Core.Tools.Git.Running;
-using static LouisAgent.Core.Tools.Git.Running.GitArguments;
 using LouisAgent.Core.Tools.Git.Messages;
+using static LouisAgent.Core.Tools.Git.Running.GitArguments;
+using LouisAgent.Core.Tools.Git.Running;
 
 /// <summary>The git toolset's reading of history (S, CL15: one of its five classes): the log, a commit, the historian's tools (F22) and the repository overview. Every value from the model passes <see cref="GitArguments"/> (FX19) and runs on <see cref="GitRunner"/> (ADR 0004).</summary>
 public sealed class GitHistoryTools(GitRunner git)

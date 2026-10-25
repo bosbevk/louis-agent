@@ -2,9 +2,9 @@ namespace LouisAgent.Core.Tools.Git;
 
 using System.ComponentModel;
 using LouisAgent.Core.Messages;
-using LouisAgent.Core.Tools.Git.Running;
-using static LouisAgent.Core.Tools.Git.Running.GitArguments;
 using LouisAgent.Core.Tools.Git.Messages;
+using static LouisAgent.Core.Tools.Git.Running.GitArguments;
+using LouisAgent.Core.Tools.Git.Running;
 
 /// <summary>
 /// The git toolset's configuration (S, CL15: one of its five classes). <c>SetConfig</c> sets only <c>user.name</c> and

@@ -4,9 +4,9 @@ using System.Net;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Tools.Web.Browsing.Policy;
+using LouisAgent.Core.Tools.Web.Messages;
 using Microsoft.Extensions.Logging;
 using PuppeteerSharp;
-using LouisAgent.Core.Tools.Web.Messages;
 
 /// <summary>
 /// The headless Chrome we run (F32; a seam of its own since F33 step 1, so a shop's catalogue uses the same guards as the

@@ -1,6 +1,7 @@
 namespace LouisAgent.Core.Agent.Toolsets;
 
 using LouisAgent.Core.Agent.Catalog;
+using LouisAgent.Core.Agent.Messages;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Skills;
@@ -18,7 +19,6 @@ using LouisAgent.Core.Tools.Web.Fetching;
 using LouisAgent.Core.Tools.Web.Quotes;
 using LouisAgent.Core.Tools.Workspace;
 using Microsoft.Extensions.Logging;
-using LouisAgent.Core.Agent.Messages;
 
 /// <summary>
 /// The toolsets a session can load (F5). Nothing is loaded by default: a session names the toolsets it needs, and

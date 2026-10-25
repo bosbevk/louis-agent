@@ -1,12 +1,12 @@
 namespace LouisAgent.Core.Hosting;
 
 using LouisAgent.Core.Config;
+using LouisAgent.Core.Hosting.Messages;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Pricing.Prices;
 using LouisAgent.Core.Usage.Sinks;
 using Microsoft.Extensions.Logging;
-using LouisAgent.Core.Hosting.Messages;
 
 /// <summary>Where a host's usage records go (ADR 0007; S, CL15, from AgentHost).</summary>
 public static class UsageLedger

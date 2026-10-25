@@ -1,8 +1,8 @@
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Tools.Web.Browsing;
-using LouisAgent.Core.Tools.Web.Replay.Store;
 using LouisAgent.Core.Tools.Web.Messages;
+using LouisAgent.Core.Tools.Web.Replay.Store;
 
 namespace LouisAgent.Core.Tools.Web.Replay;
 

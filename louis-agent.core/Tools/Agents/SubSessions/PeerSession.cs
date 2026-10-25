@@ -4,9 +4,9 @@ using System.Globalization;
 using System.Text.Json;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Sessions.SubSessions;
+using LouisAgent.Core.Tools.Agents.Messages;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Sinks;
-using LouisAgent.Core.Tools.Agents.Messages;
 
 /// <summary>
 /// A sub-session's life on a peer (S, CL15, from SpecialistTools): opened with only the toolsets a task needs, sent the

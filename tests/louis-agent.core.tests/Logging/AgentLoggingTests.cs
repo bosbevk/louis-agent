@@ -1,10 +1,10 @@
 using System.Text.Json;
 using LouisAgent.Core.Logging;
-using LouisAgent.Core.Messages;
-using Microsoft.Extensions.Logging;
 using LouisAgent.Core.Logging.Messages;
+using LouisAgent.Core.Messages;
 using LouisAgent.Core.Protocols.Messages;
 using LouisAgent.Core.Usage.Messages;
+using Microsoft.Extensions.Logging;
 
 namespace LouisAgent.Core.Tests.Logging;
 

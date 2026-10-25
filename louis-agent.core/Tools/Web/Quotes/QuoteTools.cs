@@ -5,9 +5,9 @@ using System.Net;
 using LouisAgent.Core.Guardrails.Network;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Tools.Web.Fetching;
+using LouisAgent.Core.Tools.Web.Messages;
 using LouisAgent.Core.Tools.Web.Rendering;
 using LouisAgent.Core.Tools.Web.Rendering.Providers;
-using LouisAgent.Core.Tools.Web.Messages;
 
 /// <summary>
 /// The web toolset's check of a price's provenance (F30, FX16; S: one of its three classes): the exact words a value

@@ -1,13 +1,13 @@
 namespace LouisAgent.Core.Agent.Turns;
 
 using System.Runtime.CompilerServices;
+using LouisAgent.Core.Agent.Messages;
 using LouisAgent.Core.Llm;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Usage.Records;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
-using LouisAgent.Core.Agent.Messages;
 
 /// <summary>
 /// One chat turn (S, CL15, from AgentEngine): the history seeded and kept current, the prompt sent on the pipeline,

@@ -2,9 +2,9 @@ namespace LouisAgent.Core.Tools.Git;
 
 using System.ComponentModel;
 using LouisAgent.Core.Messages;
-using LouisAgent.Core.Tools.Git.Running;
-using static LouisAgent.Core.Tools.Git.Running.GitArguments;
 using LouisAgent.Core.Tools.Git.Messages;
+using static LouisAgent.Core.Tools.Git.Running.GitArguments;
+using LouisAgent.Core.Tools.Git.Running;
 
 /// <summary>The git toolset's working tree and index (S, CL15: one of its five classes): status, staging, commits, diffs, discards, the stash. Every value from the model passes <see cref="GitArguments"/> (FX19) and runs on <see cref="GitRunner"/> (ADR 0004).</summary>
 public sealed class GitChangeTools(GitRunner git)
