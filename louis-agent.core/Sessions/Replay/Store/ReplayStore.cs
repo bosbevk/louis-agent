@@ -58,6 +58,19 @@ public sealed class ReplayStore(string directory, TimeProvider? clock = null)
         return null;
     }
 
+    /// <summary>
+    /// Every distinct ask of <paramref name="kind"/> recorded in the trial, in the order recorded; empty when there is none (or no such
+    /// trial). A miss compares its request with these to say what changed (F18 step 4e).
+    /// </summary>
+    public async Task<IReadOnlyList<ReplayAsk>> AsksAsync(string trial, ReplayKind kind, CancellationToken cancellationToken = default)
+    {
+        string index = TrialFileName.Under(Trials, TrialFileName.Of(trial) + ".jsonl");
+        if (!File.Exists(index)) return [];
+
+        return (await File.ReadAllLinesAsync(index, cancellationToken))
+            .Select(ParseLine).OfType<ReplayIndexLine>().Where(line => line.Kind == kind).Select(line => line.Ask).Distinct().ToList();
+    }
+
     private static ReplayIndexLine? ParseLine(string text)
     {
         if (string.IsNullOrWhiteSpace(text)) return null;

@@ -82,7 +82,8 @@ is off, with a warning.
   "cost": { "currency": "USD", "amount": 0.0365, "price_table": "2026-10-01" },  // 1,840×$1 + 26,110×$1.25 + 412×$5 per M
   "duration_ms": 3120,
   "stop": "tool_use",
-  "prompt_hash": "3f9c0a1b…"          // the system prompt and tools, F18 step 4c; 64 lowercase hex characters
+  "prompt_hash": "3f9c0a1b…",         // the system prompt and tools, F18 step 4c; 64 lowercase hex characters
+  "cache_hit": true                   // only on a replayed answer, F18 step 4e; absent otherwise
 }
 ```
 
@@ -101,6 +102,11 @@ is off, with a warning.
   every provider, and every round of a turn carries the same one. A cancelled request has its hash too; a sub-session roll-up
   has none (it is no request of its own) and its line is unchanged. Rows written before 2026-10-25 read back as null: unknown,
   never `""`. The encoding is pinned by a test: changing it changes every hash.
+- **A replayed answer** (F18 step 4e): when an eval replays a recording's model answers, the request is still a row, with
+  `cache_hit: true` (written only then; every other line is unchanged). Its tokens are known zeros (`0`, never `null`, and never the
+  recorded counts) and its cost is a known `0` in the table's currency and `as_of`, even for a model the table doesn't price
+  (`CostCalculator`), so a replay's total is $0 and a ledger reading adds a hit up like any other row (ADR 0007). Rows written
+  before step 4e read back with `cache_hit` null.
 - The file is append-only and rotates monthly (`usage-2026-10.jsonl`, by UTC month); it is the source for every total
   below. Several processes can append to it at once (the API and the orchestrator share one in the demo).
 - Sessions are in memory, but the ledger is not: totals survive restarts.

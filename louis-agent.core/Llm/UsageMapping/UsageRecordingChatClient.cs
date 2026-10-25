@@ -1,5 +1,6 @@
 namespace LouisAgent.Core.Llm.UsageMapping;
 
+using LouisAgent.Core.Llm.Replay;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Sinks;
 using System.Diagnostics;
@@ -43,7 +44,8 @@ public sealed class UsageRecordingChatClient(
 
         // Non-streaming responses carry their usage on ChatResponse.Usage, not as UsageContent.
         object[] raw = response.RawRepresentation is { } r && _mapper.Keeps(r) ? [r] : [];
-        Store(scope, CreateRecord(scope, round, response.Usage, response.ModelId, response.FinishReason?.Value, stopwatch.Elapsed, promptHash, raw));
+        bool hit = response.AdditionalProperties?.ContainsKey(ModelReplayChatClient.HitTag) == true;
+        Store(scope, CreateRecord(scope, round, response.Usage, response.ModelId, response.FinishReason?.Value, stopwatch.Elapsed, promptHash, raw, hit));
         return response;
     }
 
@@ -59,7 +61,7 @@ public sealed class UsageRecordingChatClient(
         UsageDetails? usage = null;
         List<object> raw = [];
         string? model = null, stop = null;
-        bool completed = false, failed = false;
+        bool completed = false, failed = false, hit = false;
 
         // Enumerated by hand rather than with await foreach: C# allows no catch around a yield, and the catch is what
         // tells a provider error (not recorded, like a failed non-streaming call) from a cancellation (recorded).
@@ -88,6 +90,7 @@ public sealed class UsageRecordingChatClient(
                 }
                 // Only what the mapper asks for (on Anthropic, one event per request), not the whole stream.
                 if (update.RawRepresentation is { } r && _mapper.Keeps(r)) raw.Add(r);
+                hit |= update.AdditionalProperties?.ContainsKey(ModelReplayChatClient.HitTag) == true;
                 model ??= update.ModelId;
                 if (update.FinishReason is { } finishReason) stop = finishReason.Value;
 
@@ -100,7 +103,7 @@ public sealed class UsageRecordingChatClient(
         {
             // Reached on normal completion, an exception, or the caller disposing the stream early (a cancelled turn).
             if (!failed)
-                Store(scope, CreateRecord(scope, round, usage, model, completed ? stop : Cancelled, stopwatch.Elapsed, promptHash, raw));
+                Store(scope, CreateRecord(scope, round, usage, model, completed ? stop : Cancelled, stopwatch.Elapsed, promptHash, raw, hit));
         }
     }
 
@@ -127,7 +130,7 @@ public sealed class UsageRecordingChatClient(
     /// <summary>Builds the record for a finished request from the scope it started in.</summary>
     internal UsageRecord CreateRecord(
         UsageScope? scope, int round, UsageDetails? usage, string? model, string? stop, TimeSpan duration, string? promptHash,
-        IReadOnlyList<object>? raw = null) =>
+        IReadOnlyList<object>? raw = null, bool cacheHit = false) =>
         new(
             At: DateTimeOffset.UtcNow,
             Round: round,
@@ -140,8 +143,10 @@ public sealed class UsageRecordingChatClient(
             Service: scope?.Tags.Service,
             Parent: scope?.Tags.Parent,
             Model: model ?? defaultModel,
-            Tokens: _mapper.Map(usage, raw ?? []),
+            // A replayed answer cost nothing: known zeros, never the recorded tokens and never unknown (ADR 0007).
+            Tokens: cacheHit ? new UsageTokens(0, 0, 0, 0, 0) : _mapper.Map(usage, raw ?? []),
             DurationMs: (long)duration.TotalMilliseconds,
             Stop: stop,
-            PromptHash: promptHash);
+            PromptHash: promptHash,
+            CacheHit: cacheHit ? true : null);
 }

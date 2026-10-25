@@ -733,6 +733,29 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   `SessionErrorMessage`, which left `WebErrorMessage` empty, so that enum is gone (and `MessageEnumTests`' list with it). The files on disk
   are unchanged: the store's tests pin `answers/` and `trials/`. No new test (a move); the tests moved to mirror
   (`Sessions/Replay/Store/ReplayStoreTests`). Whole solution green (core 1423). No golden file changed.
+- **Step 4e.2: the model's answers recorded and replayed, a hit a known 0.** Core only, tested with fakes; nothing is wired into the
+  engine until 4e.3. `Llm/Replay/` holds `ModelReplayChatClient`, `ModelAsk` and `ReplayMiss` (decisions 3 to 7 of the step's prompt).
+  - **What it does:** per request, from the flow (`ReplayTrial.Current` and `SessionReplay.Current`): web `Record` calls the model and
+    saves the answer, and never reads; web `Replay` with `Model` answers only from the recording, and a miss throws without calling the
+    model; everything else passes through. The answer is the `ChatResponse` as MEAI writes it (`AIJsonUtilities.DefaultOptions`), saved
+    as a `JsonElement` under `ReplayKind.Model`. A hit has `replay_hit` on the response and no `Usage`; `UsageRecordingChatClient` sees
+    the tag (on the response, or on any update of a stream) and writes zero tokens and `cache_hit: true`; `CostCalculator` prices a hit
+    as a known 0 before it looks the model up.
+  - **The key leaves out `CreatedAt` and `MessageId`** (the probe's finding 2, the test `MessagesThatDifferOnlyInCreatedAtAndMessageId…`).
+    The mutation check: with `MessageId` added to a message's hash, four tests fail (the key test, the hit test through the thinking
+    round trip, streamed and not).
+  - **A miss says what changed:** the model, the system prompt, the tool `'{Name}'` (changed, added, gone, or the tools reordered), the
+    settings, or message *n* (from 1, after the system prompt, with its role), against the recording that matches longest; a trial with
+    no model answers says it was recorded before step 4e or is a different run. `PromptHash` gained `SystemOf` and `ToolOf` and a
+    shared `Digest`; `Of` is byte-equal and its pinned test did not change. The store gained `AsksAsync(trial, kind)`.
+  - **Not in the key:** a setting that reaches the provider only through `RawRepresentationFactory` (a function; the options' own JSON
+    leaves it out). A provider's thinking budget set that way would not make a miss. Said in the close of step 4e.
+  - **Red and green:** the stubs threw `NotImplementedException`; 71 tests in the new and touched classes ran, **33 failed** (the key, the
+    miss texts, the client's six cases streamed and not, the recorder's tagged case, the unpriced hit). The sink's two tests and the
+    priced-model cost case passed already, because `UsageRecord.CacheHit` had to exist for the tests to compile. With the code, 82 pass.
+    Mutations: without `response.Usage = null` the hit test fails in both modes (it needed a streaming fake that reports a
+    `UsageContent`; the first version could not see it); with `MessageId` in the key, four fail. Core: 1462 passing (1423 + 39). No
+    golden file changed. `ModelAsk`'s two small records are nested in it (the layout test allows one top-level type per file).
 - **Notes for step 5** (from the review of 4.2): `PulsEvalSet`'s `TurnView` builds on `EngineEvents`, so the route, the errors and the
   cost come from one reader. If an expected route goes in a scenario's `expected`, `RoutedToGrader` must declare that key in its
   `ExpectedKeys`. When the HTTP client sets a turn's `Failure`, the turn line must carry it, so `ProtocolTranscripts` reads it back. A

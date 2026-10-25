@@ -216,4 +216,27 @@ public class JsonlUsageSinkTests
         public IChatClient Create(LlmOptions options) => client;
         public IUsageMapper CreateUsageMapper(LlmOptions options) => mapper;
     }
+
+    [Test]
+    public void ACacheHit_IsTheSameLineWithCacheHitBeforeTheClosingBrace()
+    {
+        // F18 step 4e.2: a replayed answer is flagged; every other line stays byte-equal.
+        var at = new DateTimeOffset(2026, 10, 10, 9, 0, 0, TimeSpan.Zero);
+        var sink = new JsonlUsageSink(_directory);
+        sink.Record(Record(at));
+        sink.Record(Record(at) with { CacheHit = true });
+
+        string[] lines = Lines("usage-2026-10.jsonl");
+        Assert.That(lines[1], Is.EqualTo(lines[0][..^1] + ",\"cache_hit\":true}"));
+        Assert.That(lines[0], Does.Not.Contain("cache_hit"));
+    }
+
+    [Test]
+    public void ALineWithoutCacheHit_ReadsBackWithNull()
+    {
+        string line = JsonSerializer.Serialize(Record(new DateTimeOffset(2026, 10, 10, 9, 0, 0, TimeSpan.Zero)), JsonlUsageSink.Json);
+
+        Assert.That(JsonSerializer.Deserialize<UsageRecord>(line, JsonlUsageSink.Json)!.CacheHit, Is.Null);
+        Assert.That(JsonSerializer.Deserialize<UsageRecord>(line[..^1] + ",\"cache_hit\":true}", JsonlUsageSink.Json)!.CacheHit, Is.True);
+    }
 }

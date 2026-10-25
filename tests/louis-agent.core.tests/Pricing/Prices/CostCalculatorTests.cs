@@ -150,4 +150,20 @@ public class CostCalculatorTests
 
         Assert.That(cost!.Amount, Is.EqualTo(0m));
     }
+
+    [TestCase("claude-haiku-4-5")]
+    [TestCase("a-model-the-table-does-not-price")]
+    public void For_ACacheHit_IsAKnownZero_InTheTablesCurrencyAndAsOf_EvenForAnUnpricedModel(string model)
+    {
+        // F18 step 4e.2 (ADR 0007): a replayed answer cost nothing, and "nothing" is known, never null.
+        UsageRecord hit = Record(model, new UsageTokens(0, 0, 0, 0, 0)) with { CacheHit = true };
+
+        Assert.That(CostCalculator.For(hit, Table), Is.EqualTo(new UsageCost("USD", 0m, "2026-10-10")));
+    }
+
+    [Test]
+    public void For_ARecordThatIsNotAHit_AndHasAnUnpricedModel_IsStillUnknown()
+    {
+        Assert.That(CostCalculator.For(Record("a-model-the-table-does-not-price", new UsageTokens(0, 0, 0, 0, 0)), Table), Is.Null);
+    }
 }

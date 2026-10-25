@@ -7,4 +7,5 @@ public enum ReplayKind
     Search,
     Fetch,
     Clock,
+    Model,
 }
