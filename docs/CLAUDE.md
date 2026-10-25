@@ -130,6 +130,9 @@ decision's record (its context, and what it cost) in [docs/adr/](adr/README.md).
   mode) is an enum, parsed once where it enters with `Config/SettingChoice` (case ignored, aliases, never a number);
   code switches on the enum, and the "supported" list comes from it. Text stays text only up to that point.
   Why: [ADR 0024](adr/0024-choices-are-enums.md).
+- **Records for values, classes for things** — a request, an answer, a key or a line of a file is a record; what owns a
+  lock, a client or a file, or changes over time, is a class; a record holds no resource; both are sealed by default.
+  Why: [ADR 0040](adr/0040-records-for-values-classes-for-things.md).
 - **Separate by concern** — a folder, class or component holds one concern; a folder with two kinds of thing or more
   than about six files gets subfolders by concern, and a page over about a hundred lines splits into components. A
   `.razor` holds markup only, no `@code` block: a component's C# goes in its `.razor.cs` code-behind, and logic that
