@@ -102,6 +102,11 @@ public sealed class ProtocolWriter(TextWriter stdout, TimeProvider clock)
                     json.WriteNumber("score", grade.Score);
                     json.WriteString("outcome", grade.Outcome.ToString());
                     json.WriteString("reason", grade.Reason);
+                    if (grade.Judge is { } judge)
+                    {
+                        json.WriteString("judge_model", judge.Model);
+                        json.WriteString("judge_prompt_hash", judge.PromptHash);
+                    }
                     json.WriteEndObject();
                 }
                 json.WriteEndArray();

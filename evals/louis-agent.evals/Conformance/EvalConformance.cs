@@ -4,6 +4,7 @@ using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Messages;
+using LouisAgent.Evals.Running;
 using LouisAgent.Evals.Trials;
 
 namespace LouisAgent.Evals.Conformance;
@@ -107,7 +108,7 @@ public static class EvalConformance
             {
                 grade = await grader.GradeAsync(trial, cancellationToken);
             }
-            catch (Exception error) when (error is not OperationCanceledException)
+            catch (Exception error) when (!GraderFailures.IsRunCancel(error, cancellationToken))
             {
                 failures.Add(MessageText.Format(ConformanceMessage.GraderThrew, new { Grader = grader.Name, Reason = error.Message }));
                 continue;

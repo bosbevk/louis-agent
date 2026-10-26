@@ -58,4 +58,7 @@ public enum EvalErrorMessage
 
     [Description("A re-score opens no session and calls no model, so '{Call}' was never meant to be reached.")]
     NoSessionInARescore,
+
+    [Description("EVAL_JUDGE_PROVIDER '{Value}' is not supported. Use one of: {Supported}.")]
+    UnknownJudgeProvider,
 }

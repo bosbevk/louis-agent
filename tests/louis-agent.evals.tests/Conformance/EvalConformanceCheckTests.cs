@@ -101,6 +101,19 @@ public class EvalConformanceCheckTests
         Assert.That(failures, Does.Contain("threw").And.Contain("boom"));
     }
 
+    // F18 step 6.1: a judge that times out throws OperationCanceledException too (HttpClient's); only the check's own cancel stops the check.
+    [Test]
+    public async Task AGradersOwnTimeoutIsReportedAsAThrow_AndTheChecksCancelStillStopsIt()
+    {
+        var eval = Conforming(graders: [new FakeGrader("slow", _ => throw new TaskCanceledException("the judge timed out"))]);
+
+        Assert.That(Joined(await CheckAsync(eval, Case(Clean, Errored))), Does.Contain("threw").And.Contain("the judge timed out"));
+
+        using var cancelled = new CancellationTokenSource();
+        cancelled.Cancel();
+        Assert.That(async () => await EvalConformance.CheckAsync(eval, [Case(Clean, Errored)], cancelled.Token), Throws.InstanceOf<OperationCanceledException>());
+    }
+
     [Test]
     public async Task AScenarioWithoutReferenceTranscriptsIsCaught()
     {

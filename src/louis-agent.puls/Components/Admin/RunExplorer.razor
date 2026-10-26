@@ -570,7 +570,13 @@
 
     public void Dispose() { _replayStop?.Cancel(); _chatStop?.Cancel(); }
 
-    private void ShowRepeat(int repeat) { _repeat = repeat; Build(); int to = RepeatSwitch.LevelAfter(_level, _task, _turn, _modes.SelectMany(m => m.Conversations).Select(c => (c.Task, c.Turns.Select(t => t.N)))); Go(to, stay: to > 0); }
+    private void ShowRepeat(int repeat)
+    {
+        _repeat = repeat;
+        Build();
+        int to = RepeatSwitch.LevelAfter(_level, _task, _turn, _modes.SelectMany(m => m.Conversations).Select(c => (c.Task, c.Turns.Select(t => t.N))));
+        Go(to, stay: to > 0);
+    }
 
     private void Open(Action set) { _dir = "in"; ResetReplay(); set(); }
 

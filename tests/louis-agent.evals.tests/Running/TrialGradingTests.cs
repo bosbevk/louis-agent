@@ -5,12 +5,13 @@ using LouisAgent.Evals.Grading.Common;
 using LouisAgent.Evals.Running;
 using LouisAgent.Evals.Trials;
 using Microsoft.Extensions.Logging;
+using LouisAgent.Evals.Tests.Trials;
 using static LouisAgent.Evals.Tests.Trials.TrialBuilder;
 
 namespace LouisAgent.Evals.Tests.Running;
 
 // Grading a trial in the runner (F18 step 4.5a): every grader of the eval in the eval's order; one that throws gives Unknown with its
-// reason and one warning, and the next grader still runs; a cancel stops the run. Written first: TrialGrading.GradeAsync threw
+// reason and one warning, and the next grader still runs; a cancel of the run stops it, a grader's own timeout does not. Written first: TrialGrading.GradeAsync threw
 // NotImplementedException on the red run.
 public class TrialGradingTests
 {
@@ -39,12 +40,27 @@ public class TrialGradingTests
     }
 
     [Test]
-    public void ACancelPropagates()
+    public void ACancelOfTheRunsOwnToken_Propagates()
     {
+        using var cancelled = new CancellationTokenSource();
+        cancelled.Cancel();
         var eval = new GradedEval(new CancellingGrader(), new PassingGrader("never"));
 
-        Assert.That(async () => await TrialGrading.GradeAsync(eval, Trial(Turn(1)), new CapturingLogger(), CancellationToken.None),
+        Assert.That(async () => await TrialGrading.GradeAsync(eval, Trial(Turn(1)), new CapturingLogger(), cancelled.Token),
             Throws.InstanceOf<OperationCanceledException>());
+    }
+
+    // F18 step 6.1 (the note kept for step 6): a judge's own timeout is an OperationCanceledException too (HttpClient's), and it is the grader's trouble, not the run's.
+    [Test]
+    public async Task AGradersOwnTimeout_IsUnknown_WhenTheRunWasNotCancelled_AndTheNextGraderStillRuns()
+    {
+        var eval = new GradedEval(new CancellingGrader(), new PassingGrader("fine"));
+        var log = new CapturingLogger();
+
+        var grades = await TrialGrading.GradeAsync(eval, Trial(Turn(1)), log, CancellationToken.None);
+
+        Assert.That(grades.Select(g => (g.Grader, g.Outcome)), Is.EqualTo(new[] { ("cancels", GradeOutcome.Unknown), ("fine", GradeOutcome.Pass) }));
+        Assert.That(log.Warnings, Has.Count.EqualTo(1));
     }
 
     private sealed class PassingGrader(string name) : IGrader
@@ -78,22 +94,5 @@ public class TrialGradingTests
         public bool Required => true;
 
         public ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken) => throw new OperationCanceledException();
-    }
-
-    /// <summary>An eval that is only its graders; the trial comes from the builder.</summary>
-    private sealed class GradedEval(params IGrader[] graders) : IEval
-    {
-        public string Name => "stub-cook";
-        public string? Identity => null;
-        public int Version => 1;
-        public string Proves => "The grading step.";
-
-        public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions, CancellationToken cancellationToken) =>
-            ValueTask.FromResult<IReadOnlyList<EvalMode>>([Mode]);
-
-        public IReadOnlyList<EvalScenario> Scenarios { get; } = [];
-        public IReadOnlyList<IGrader> Graders { get; } = graders;
-        public EvalScores ScoresOf(Trial trial, IReadOnlyList<Grade> grades) => throw new NotSupportedException();
-        public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) => throw new NotSupportedException();
     }
 }

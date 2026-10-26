@@ -101,6 +101,28 @@ public class ProtocolWriterTests
         Assert.That(ended.Grades!.Single(), Is.EqualTo(new BenchmarkProtocol.GradeInfo("priced-with-source", 1, 1, BenchmarkOutcome.Pass, "2 of 2 priced with a source")));
     }
 
+    // F18 step 6.1: a model grader's grade says what judged (the judge's model and its prompt's hash); a code grader's has neither field. The API's reader still reads the line.
+    [Test]
+    public void AModelGradersGrade_CarriesWhatJudged_AndACodeGradersDoesNot()
+    {
+        var sink = new StringWriter();
+        Grade[] grades =
+        [
+            new Grade("meal-for-people", 3, 1, GradeOutcome.Pass, "feeds four", new GradeJudge("qwen3:8b", "abc123def456")),
+            new Grade("priced-with-source", 1, 1, GradeOutcome.Pass, "2 of 2 priced with a source"),
+        ];
+
+        new ProtocolWriter(sink, new FixedClock(At)).Conversation("cook", 1, "pannekoek", "puls-cook", Json("{}"), 3.25, grades, TrialOutcome.Pass);
+
+        var written = Json(Lines(sink)[0].TrimStart('@')).GetProperty("grades").EnumerateArray().ToList();
+        Assert.That(written[0].GetProperty("judge_model").GetString(), Is.EqualTo("qwen3:8b"));
+        Assert.That(written[0].GetProperty("judge_prompt_hash").GetString(), Is.EqualTo("abc123def456"));
+        Assert.That(written[1].TryGetProperty("judge_model", out _), Is.False);
+        Assert.That(written[1].TryGetProperty("judge_prompt_hash", out _), Is.False);
+        var ended = (BenchmarkProtocol.ConversationEnded)BenchmarkProtocol.Parse(Lines(sink)[0]);
+        Assert.That(ended.Grades!.Select(g => g.Grader), Is.EqualTo(new[] { "meal-for-people", "priced-with-source" }));
+    }
+
     /// <summary>A grader that is only named here: the protocol's first line says what graders the eval has.</summary>
     private sealed class FakeGrader(string name, int version, GraderKind kind) : IGrader
     {

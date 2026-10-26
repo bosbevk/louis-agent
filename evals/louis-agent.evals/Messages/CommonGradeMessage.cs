@@ -62,6 +62,18 @@ public enum CommonGradeMessage
     [Description("the grader threw, so it can't tell: {Reason}")]
     GraderThrew,
 
+    [Description("no judge configured")]
+    NoJudge,
+
+    [Description("the judge gave no yes-or-no verdict")]
+    JudgeNoVerdict,
+
+    [Description("the judge said yes")]
+    JudgeSaidYes,
+
+    [Description("the judge said no")]
+    JudgeSaidNo,
+
     [Description("scenario '{Scenario}' is no longer in the dataset, so this conversation can't be graded")]
     ScenarioGone,
 }
