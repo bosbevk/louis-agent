@@ -56,7 +56,7 @@ public class LabelSheetTests
         {
             var names = LabelSheet.Write(Scenarios, "meal-for-people", ["serves"], "8f7802b9a72e", Stored(["cook-af"], ["puls-cook"], 1), folder, count: 10);
 
-            Assert.That(names, Is.EqualTo(new[] { "cook-af.puls-cook.8f7802b9a72e.1.json" }));
+            Assert.That(names, Is.EqualTo(new[] { "meal-for-people.cook-af.puls-cook.8f7802b9a72e.1.json" }));
             var file = Written(folder).Single();
             Assert.That((file.Scenario, file.Mode, file.Run, file.Repeat, file.Turn, file.Answer), Is.EqualTo(("cook-af", "puls-cook", "8f7802b9a72e", 1, 1, "answer of cook-af/puls-cook/1")));
             Assert.That(file.Label, Is.Null, "the person's part");
@@ -121,14 +121,34 @@ public class LabelSheetTests
         {
             var stored = Stored(["cook-af", "cook-en"], ["puls-cook"], 3);
             LabelSheet.Write(Scenarios, "meal-for-people", ["serves"], "run", stored, folder, count: 2);
-            string labelled = Path.Combine(folder, "cook-af.puls-cook.run.1.json");
+            string labelled = Path.Combine(folder, "meal-for-people.cook-af.puls-cook.run.1.json");
             File.WriteAllText(labelled, File.ReadAllText(labelled).Replace("\"label\": null", "\"label\": { \"meal\": true, \"note\": \"mine\" }"));
 
             var second = LabelSheet.Write(Scenarios, "meal-for-people", ["serves"], "run", stored, folder, count: 2);
 
             Assert.That(File.ReadAllText(labelled), Does.Contain("mine"), "the person's label is still there");
-            Assert.That(second, Is.EqualTo(new[] { "cook-af.puls-cook.run.2.json", "cook-en.puls-cook.run.2.json" }), "two new files, from the next repeat");
+            Assert.That(second, Is.EqualTo(new[] { "meal-for-people.cook-af.puls-cook.run.2.json", "meal-for-people.cook-en.puls-cook.run.2.json" }), "two new files, from the next repeat");
             Assert.That(Directory.GetFiles(folder), Has.Length.EqualTo(4));
+        }
+        finally { Directory.Delete(folder, true); }
+    }
+
+    // F18 step 6a.0b (the review): the grader is in the file's name, so two graders labelling the same answer have two files. Without it the second sheet would find the first grader's file
+    // already there and, because a sheet never overwrites, silently write nothing for the second grader.
+    [Test]
+    public void TwoGradersLabellingTheSameAnswers_HaveTwoFilesEach_NoneSkipped()
+    {
+        string folder = TempFolder();
+        try
+        {
+            var stored = Stored(["cook-af"], ["puls-cook"], 1);
+
+            var first = LabelSheet.Write(Scenarios, "meal-for-people", ["serves"], "run", stored, folder, count: 10);
+            var second = LabelSheet.Write(Scenarios, "another-judge", ["serves"], "run", stored, folder, count: 10);
+
+            Assert.That(first, Is.EqualTo(new[] { "meal-for-people.cook-af.puls-cook.run.1.json" }));
+            Assert.That(second, Is.EqualTo(new[] { "another-judge.cook-af.puls-cook.run.1.json" }), "not skipped for the first grader's file");
+            Assert.That(Written(folder).Select(f => f.Grader), Is.EquivalentTo(new[] { "meal-for-people", "another-judge" }));
         }
         finally { Directory.Delete(folder, true); }
     }

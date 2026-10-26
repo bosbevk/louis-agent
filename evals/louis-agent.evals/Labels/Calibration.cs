@@ -72,11 +72,11 @@ public sealed record CalibrationReport(int Agreed, int Total, IReadOnlyList<Disa
 
     private string Result()
     {
-        var short_ = new[] { ClassOf(pass: true), ClassOf(pass: false) }.Where(c => !c.Clears).ToList();
-        if (short_.Count == 0) return MessageText.Format(CalibrationMessage.ResultPass, new { Bar });
+        var shortClasses = new[] { ClassOf(pass: true), ClassOf(pass: false) }.Where(c => !c.Clears).ToList();
+        if (shortClasses.Count == 0) return MessageText.Format(CalibrationMessage.ResultPass, new { Bar });
         return MessageText.Format(CalibrationMessage.ResultNotEnough, new
         {
-            Short = string.Join("; ", short_.Select(c => c.Total == 0
+            Short = string.Join("; ", shortClasses.Select(c => c.Total == 0
                 ? MessageText.Format(CalibrationMessage.ShortNone, new { Label = Word(c.Pass) })
                 : MessageText.Format(CalibrationMessage.ShortOf, new { Label = Word(c.Pass), c.Agreed, c.Total, Bar }))),
         });

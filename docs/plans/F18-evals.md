@@ -1271,5 +1271,6 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
   hash with it. Cost: a `--repeat 3` run is about $0.60 instead of $0.26 (about 1 cent a trial). Inspect AI's log
   format is not in F18: a TODO line, for when a run must be read by other tools.
 
+- **Step 6: the judge's bar is 90% (0.9) of each class of label, not 9 of 10 overall** (Louis, 2026-10-26, on the review of 6.3: "90% or .9"). Row 6 and the plan's *Design* point 2 said the judge must match at least 9 of 10 of the labelled answers. The labels are 14 pass and 4 fail, so a judge that always says pass scores 14 of 18 (78%) without judging anything; the bar is therefore held in each class: at least 90% of the labels of the class, in whole numbers (a class of four needs all four, ten of eleven passes), a class with no labels is untested and does not pass, and a class of fewer than ten is marked *few labels*. The labels are generic (`grader`, `pass`; one file per grader, the grader in its name), so 6a's human grades export to them.
 ---
 [Docs index](../README.md) · [Plans](README.md) · [Platform plan](platform.md) · [Feature F18](../features/F18-evaluation.md)

@@ -50,7 +50,8 @@ public static class LabelSheet
         return [.. chosen.Select(NameOf)];
     }
 
-    private static string NameOf(LabelFile file) => $"{file.Scenario}.{file.Mode}.{file.Run}.{file.Repeat}.json";
+    /// <summary>The grader is in the name, so two graders labelling the same answer have two files, and the sheet's never-overwrite rule never skips one grader for another's.</summary>
+    private static string NameOf(LabelFile file) => $"{file.Grader}.{file.Scenario}.{file.Mode}.{file.Run}.{file.Repeat}.json";
 
     /// <summary>The first of each scenario, then the second of each, and so on: scenarios in name order, a scenario's conversations by repeat and mode.</summary>
     private static List<LabelFile> Spread(IEnumerable<LabelFile> files, int count)

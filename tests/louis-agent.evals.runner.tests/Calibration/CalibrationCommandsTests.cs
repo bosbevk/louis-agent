@@ -126,7 +126,7 @@ public class CalibrationCommandsTests
             int code = LabelSheetCommand.Run(new LabelSheetRequest("fake", "meal-for-people", "8f7802b9a72e", folder, 10), new FakeEval([]), stored, output);
 
             Assert.That(code, Is.Zero);
-            Assert.That(Directory.GetFiles(folder).Select(Path.GetFileName), Is.EqualTo(new[] { "cook-en.puls-cook.8f7802b9a72e.1.json" }));
+            Assert.That(Directory.GetFiles(folder).Select(Path.GetFileName), Is.EqualTo(new[] { "meal-for-people.cook-en.puls-cook.8f7802b9a72e.1.json" }));
             Assert.That(output.ToString(), Does.Contain("1 label file").And.Contain(folder));
         }
         finally { if (Directory.Exists(folder)) Directory.Delete(folder, true); }

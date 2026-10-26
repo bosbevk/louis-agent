@@ -7,7 +7,7 @@ namespace LouisAgent.Evals.Labels;
 public sealed record AnswerLabel([property: JsonRequired] bool? Pass, string Note = "");
 
 /// <summary>
-/// One label file, <c>labels/{scenario}.{mode}.{run}.{repeat}.json</c>: the grader it labels for, which answer it labels (the scenario, the mode and repeat, the run it came from, the turn
+/// One label file, <c>labels/{grader}.{scenario}.{mode}.{run}.{repeat}.json</c>: the grader it labels for, which answer it labels (the scenario, the mode and repeat, the run it came from, the turn
 /// whose answer it is, and the answer's text, so the label survives the run being deleted) and the person's <see cref="Label"/>, null until they give it. Nothing in it names a product, so
 /// the next judge uses the same shape.
 /// </summary>
