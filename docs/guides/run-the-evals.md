@@ -75,3 +75,12 @@ Records of a run are private: the recordings are in the API's `REPLAY_DIRECTORY`
 
 ---
 [Guides](README.md) · [Docs index](../README.md)
+
+
+### Reading the results by category
+
+A run's page has a *Results by category* table for each mode (a mode is one configuration of the agent, such as `puls-cook`, so its trials are never mixed with another's). The first line is **overall**; under it, one line per **category** its scenarios carry (`language:af`, `shop:pnp`, `budget`, a follow-up). A category is a label on a scenario, set in its file; a scenario can have several, and then it counts in each of their lines and once in the overall one. One overall number hides where an agent fails; the lines by category show it.
+
+Each line says how many trials it holds (`n`), how many passed of the ones that counted (a trial that failed for the infrastructure is counted apart, in *Infra*, and left out of the rates), how many were Unknown (a check that couldn't tell is never a pass), the pass rate, **pass@k** (the scenarios that passed at least once) and **pass^k** (the ones that passed every time), and the cost per trial and per pass, from the ledger. Two things to read carefully: `n` counts **trials**, while pass@k and pass^k are shares of **scenarios** (a scenario run three times is three trials and one scenario), and a cost is "unknown" when a price was unknown, "$0" for a re-score.
+
+**Why "too few for a rate" appears.** Fewer than five counted trials in a slice give no percentage, only the counts (`2 of 3 passed · too few for a rate`): one trial moves a share of three by a third, so a rate would look precise and not be. A run with one repeat has about one trial per scenario, so most categories are too few; that is why the end-of-F18 runs use `--repeat 3` or more. A run from before categories existed says so, with a *Re-score* button that gives it its lines for $0. A line's tasks link to their conversations in the explorer below.

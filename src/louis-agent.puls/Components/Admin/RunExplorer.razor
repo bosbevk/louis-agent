@@ -466,6 +466,11 @@
     [Parameter, EditorRequired] public JsonElement Run { get; set; }
     [Parameter] public CurrencyChoice? Currency { get; set; }
 
+    /// <summary>A task to open at once, from a category's line (F18 step 5c.3).</summary>
+    [Parameter] public string? OpenTask { get; set; }
+
+    private string? _opened;
+
     // The dataviz reference palette's dark column, in its validated order: slots 1–4 for the token kinds, slots 1–3 for
     // modes side by side. Puls's own and the specialist's requests: slot 1 and Puls's orange.
     private static readonly string[] Palette = ["#3987e5", "#d95926", "#199e70", "#c98500", "#d55181", "#008300"];
@@ -549,6 +554,7 @@
         _repeats = Math.Max(1, Run.GetProperty("run").GetProperty("repeat").GetInt32());
         _repeat = Math.Clamp(_repeat, 1, _repeats);
         Build();
+        if (OpenTask is not null && OpenTask != _opened) OpenConversation(_opened = OpenTask);
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

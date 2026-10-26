@@ -40,7 +40,7 @@ internal static class StoredRunEndpoints
                 }),
                 log = run.Log,
                 // F18 step 5c.2: each mode's roll-up as the runner wrote it, priced from the ledger; null for a run from before it.
-                summaries = SummaryRows.Of(run.Slices, run.Total, requests),
+                summaries = SummaryRow.Of(run.Slices, run.Total, requests),
                 conversations = conversations.Select(ConversationRow),
                 turns,
                 requests = requests.Select(RequestRow),

@@ -53,7 +53,12 @@ else
     @* No entrance animation on this card: a filled transform animation makes it the frame of every fixed child, so the
        explorer's chats modal would be clipped to the card and painted under the cards after it. *@
     <section class="card-p holds-modal">
-        <RunExplorer Run="run" Currency="Currency.Current" />
+        <RunExplorer Run="run" Currency="Currency.Current" OpenTask="FocusTask" />
+    </section>
+    <section class="card-p">
+        <details class="fold" open><summary class="fold-head"><span class="fold-chevron" aria-hidden="true"></span>Results by category</summary>
+            <SummaryPanel Run="run" Currency="Currency.Current" />
+        </details>
     </section>
     <section class="card-p">
         <details class="fold" open><summary class="fold-head"><span class="fold-chevron" aria-hidden="true"></span>Pass rates</summary>
@@ -92,6 +97,9 @@ else
 
 @code {
     [Parameter] public string RunId { get; set; } = "";
+
+    /// <summary>A task a category's line linked to (<c>?task=</c>): its conversation opens in the explorer.</summary>
+    [SupplyParameterFromQuery(Name = "task")] public string? FocusTask { get; set; }
 
     private JsonElement? _run, _trend;
     private Dictionary<string, string> _labels = [];

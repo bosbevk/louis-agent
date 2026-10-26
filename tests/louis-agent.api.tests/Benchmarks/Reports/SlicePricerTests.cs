@@ -47,6 +47,22 @@ public class SlicePricerTests
     public void ARowOfAnotherSlice_WithAnUnknownPrice_DoesNotSpoilThisOne() =>
         Assert.That(SlicePricer.Of(Slice(["a"], n: 2, passed: 2), Known, [Row("a", 0.4m), Row("z", null)]).PerTrial, Is.EqualTo(0.2m));
 
+    // Review of 5c.2: a ledger row that can't be placed on a conversation still counts in the run's total, so a slice priced from the rows that were placed would be "a sum of the rest" and
+    // come out lower than what the mode really cost. A run with such a row prices no slice: unknown, as an unknown price does (ADR 0007).
+    [Test]
+    public void ARowNobodyCouldPlaceOnAConversation_MakesEverySlicesCostUnknown()
+    {
+        var unplaced = Row("a", 0.3m) with { Turn = null };
+
+        var cost = SlicePricer.Of(Slice(["a"], n: 2, passed: 2), Known, [Row("a", 0.4m), unplaced]);
+
+        Assert.That((cost.PerTrial, cost.PerPass), Is.EqualTo(((decimal?)null, (decimal?)null)));
+    }
+
+    [Test]
+    public void AnUnplacedRowWithNoPrice_AlsoMakesTheCostUnknown() =>
+        Assert.That(SlicePricer.Of(Slice(["a"]), Known, [Row("a", 0.4m), Row("a", null) with { Turn = null }]).PerTrial, Is.Null);
+
     [Test]
     public void WhenNothingPassed_ThereIsNoCostPerPass()
     {
