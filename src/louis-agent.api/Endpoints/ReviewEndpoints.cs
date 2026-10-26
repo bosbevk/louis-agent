@@ -1,4 +1,5 @@
 using LouisAgent.Api.Benchmarks.Reviews;
+using LouisAgent.Api.Benchmarks.Reviews.Store;
 using LouisAgent.Api.Benchmarks.Runs;
 using LouisAgent.Api.Benchmarks.Store;
 using LouisAgent.Api.Messages;
@@ -19,6 +20,9 @@ internal static class ReviewEndpoints
     /// <summary>What the portal sends: the verdict as a word, a note, and the reviewer's name.</summary>
     internal sealed record ReviewRequest(string? Verdict, string? Note, string? Reviewer);
 
+    /// <summary>The longest note and reviewer name a grade may carry (F18 step 6a.2b): a request cannot fill the store with one grade.</summary>
+    internal const int MaxNoteLength = 2000, MaxReviewerLength = 100;
+
     private const string HumanSuffix = ".human";
 
     public static void MapReviews(this RouteGroupBuilder admin, IBenchmarkStore? store, IHumanReviewStore? reviews)
@@ -32,6 +36,10 @@ internal static class ReviewEndpoints
                 if (!SettingChoice.TryParse(verdictText, out HumanVerdict? verdict, null) || verdict is null || int.TryParse(verdictText, out _))
                     return Bad(MessageText.Format(ReviewUserText.ReviewVerdictUnknown, new { Verdict = verdictText, Supported = string.Join(", ", SettingChoice.Names<HumanVerdict>()) }));
                 if (string.IsNullOrWhiteSpace(request?.Reviewer)) return Bad(MessageText.Format(ReviewUserText.ReviewerBlank));
+                if (request.Reviewer.Trim().Length > MaxReviewerLength)
+                    return Bad(MessageText.Format(ReviewUserText.ReviewerTooLong, new { Limit = MaxReviewerLength, Length = request.Reviewer.Trim().Length }));
+                if ((request.Note ?? "").Length > MaxNoteLength)
+                    return Bad(MessageText.Format(ReviewUserText.NoteTooLong, new { Limit = MaxNoteLength, Length = request.Note!.Length }));
                 var humans = HumanReviewsOf(run);
                 if (!humans.Contains(grader))
                     return Bad(MessageText.Format(ReviewUserText.ReviewGraderNotHuman, new { Grader = grader, Id = id, Graders = string.Join(", ", humans.Order(StringComparer.Ordinal)) }));

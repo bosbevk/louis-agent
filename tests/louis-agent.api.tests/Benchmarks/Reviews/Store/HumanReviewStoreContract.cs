@@ -1,7 +1,8 @@
 using LouisAgent.Api.Benchmarks.Reviews;
+using LouisAgent.Api.Benchmarks.Reviews.Store;
 using LouisAgent.Api.Benchmarks.Runs;
 
-namespace LouisAgent.Api.Tests.Benchmarks.Reviews;
+namespace LouisAgent.Api.Tests.Benchmarks.Reviews.Store;
 
 /// <summary>
 /// F18 step 6a.2: what every store of people's grades does, in memory and in MongoDB alike. A grade is added, never overwritten: the latest of a reviewer's grades on a conversation is

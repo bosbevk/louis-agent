@@ -3,6 +3,7 @@ using LouisAgent.Api.Benchmarks.Runs;
 using LouisAgent.Api.Benchmarks.Store;
 using LouisAgent.Api.Benchmarks.Reports;
 using LouisAgent.Api.Benchmarks.Reviews;
+using LouisAgent.Api.Benchmarks.Reviews.Store;
 using LouisAgent.Api.Endpoints.Routing;
 using System.Net.ServerSentEvents;
 using LouisAgent.Api.Messages;

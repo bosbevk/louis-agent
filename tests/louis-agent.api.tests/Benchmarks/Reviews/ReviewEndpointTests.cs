@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
 using LouisAgent.Api.Benchmarks.Reviews;
+using LouisAgent.Api.Benchmarks.Reviews.Store;
 using LouisAgent.Api.Benchmarks.Runs;
 using LouisAgent.Api.Benchmarks.Store;
 using LouisAgent.Api.Tests.Endpoints.Routing;
@@ -115,6 +116,41 @@ public class ReviewEndpointTests
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
         Assert.That(await host.Reviews.OfRunAsync(RunId), Is.Empty);
+    }
+
+    // F18 step 6a.2b (the review's nit): a note and a name are bounded, so a request cannot fill the store with one grade. The limit is named in the answer, and nothing is stored.
+    [Test]
+    public async Task ANoteOver2000Characters_Is400_NamingTheLimit_AndNothingIsStored()
+    {
+        await using var host = await StartAsync();
+
+        var response = await Send(host.Client, HttpMethod.Put, Path("/puls-cook/1/bobotie/meal-for-people.human"), Body(note: new string('x', 2001)));
+
+        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
+        Assert.That((await response.Content.ReadAsStringAsync()), Does.Contain("2000"));
+        Assert.That(await host.Reviews.OfRunAsync(RunId), Is.Empty);
+    }
+
+    [Test]
+    public async Task AReviewerNameOver100Characters_Is400_NamingTheLimit_AndNothingIsStored()
+    {
+        await using var host = await StartAsync();
+
+        var response = await Send(host.Client, HttpMethod.Put, Path("/puls-cook/1/bobotie/meal-for-people.human"), Body(reviewer: new string('L', 101)));
+
+        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
+        Assert.That((await response.Content.ReadAsStringAsync()), Does.Contain("100"));
+        Assert.That(await host.Reviews.OfRunAsync(RunId), Is.Empty);
+    }
+
+    [Test]
+    public async Task ANoteOfExactly2000_AndANameOfExactly100_AreAccepted()
+    {
+        await using var host = await StartAsync();
+
+        var response = await Send(host.Client, HttpMethod.Put, Path("/puls-cook/1/bobotie/meal-for-people.human"), Body(note: new string('x', 2000), reviewer: new string('L', 100)));
+
+        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
     }
 
     [TestCase("")]

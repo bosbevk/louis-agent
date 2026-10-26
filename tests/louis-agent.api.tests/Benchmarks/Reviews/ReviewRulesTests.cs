@@ -26,6 +26,23 @@ public class ReviewRulesTests
         Assert.That(latest.Select(g => (g.Reviewer, g.Verdict)), Is.EquivalentTo(new[] { ("Louis", HumanVerdict.Pass), ("Anna", HumanVerdict.Fail) }));
     }
 
+    // F18 step 6a.2b (the review's nit): a name typed as "Louis" once and "louis" the next time is one person, so the later grade is their latest and an unsure takes back their pass.
+    [Test]
+    public void AReviewersName_IsTheSameNameWhateverItsCase_AndTheLaterGradeIsTheirLatest()
+    {
+        var latest = HumanGrades.Latest([Grade("a", 1, HumanVerdict.Fail, reviewer: "Louis"), Grade("a", 5, HumanVerdict.Pass, reviewer: "louis")]);
+
+        Assert.That(latest.Select(g => (g.Reviewer, g.Verdict)), Is.EqualTo(new[] { ("louis", HumanVerdict.Pass) }), "one reviewer, and the name is kept as the later grade typed it");
+    }
+
+    [Test]
+    public void AnUnsureInAnotherCase_StillTakesBackTheSameReviewersPass()
+    {
+        var decided = HumanGrades.Decided([Grade("a", 1, HumanVerdict.Pass, reviewer: "Louis"), Grade("a", 2, HumanVerdict.Unsure, reviewer: "LOUIS")]);
+
+        Assert.That(decided, Is.Empty);
+    }
+
     [Test]
     public void ADecidedGrade_IsTheLatestPassOrFail_AcrossReviewers()
     {

@@ -3,7 +3,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using static LouisAgent.Api.Benchmarks.Runs.BenchmarkProtocol;
 
-namespace LouisAgent.Api.Benchmarks.Reviews;
+namespace LouisAgent.Api.Benchmarks.Reviews.Store;
 
 /// <summary>
 /// People's grades in MongoDB (F18 step 6a.2): one collection, <c>human_grades</c>, in the benchmark store's database, a document per grade, mapped by hand in snake case like the

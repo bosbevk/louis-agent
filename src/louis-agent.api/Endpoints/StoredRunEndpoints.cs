@@ -2,6 +2,7 @@ using LouisAgent.Api.Admin;
 using LouisAgent.Api.Benchmarks.Export;
 using LouisAgent.Api.Benchmarks.Reports;
 using LouisAgent.Api.Benchmarks.Reviews;
+using LouisAgent.Api.Benchmarks.Reviews.Store;
 using LouisAgent.Api.Benchmarks.Runs;
 using LouisAgent.Api.Benchmarks.Store;
 using LouisAgent.Api.Messages;

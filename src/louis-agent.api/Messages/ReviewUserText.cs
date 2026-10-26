@@ -11,6 +11,12 @@ public enum ReviewUserText
     [Description("A review needs the name of who gave it.")]
     ReviewerBlank,
 
+    [Description("A reviewer's name is at most {Limit} characters; this one has {Length}.")]
+    ReviewerTooLong,
+
+    [Description("A review's note is at most {Limit} characters; this one has {Length}.")]
+    NoteTooLong,
+
     [Description("'{Grader}' is not a human review of run {Id}. Its human reviews are: {Graders}.")]
     ReviewGraderNotHuman,
 

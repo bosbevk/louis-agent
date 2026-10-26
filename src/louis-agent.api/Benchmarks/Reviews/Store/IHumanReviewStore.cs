@@ -1,4 +1,4 @@
-namespace LouisAgent.Api.Benchmarks.Reviews;
+namespace LouisAgent.Api.Benchmarks.Reviews.Store;
 
 /// <summary>
 /// Where people's grades of stored runs are kept (F18 step 6a.2), beside the benchmark store and not in it: in memory for the tests, in MongoDB for Louis's runs.
