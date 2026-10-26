@@ -18,7 +18,7 @@ public partial class GradeChips : IDisposable
     /// <summary>Which conversation this is, for the judge's chip to know whether this reviewer graded it; null where the chips are not of one conversation.</summary>
     [Parameter] public ConversationRef? Conversation { get; set; }
 
-    private IReadOnlyList<GradeChip> Chips => GradeChipList.Of(Grades, Order, Hidden);
+    private IReadOnlyList<GradeChip> Chips => GradeChipList.Of(Grades, Order, Hidden, Reviewer.Name);
 
     private IReadOnlySet<string> Hidden => BlindReview.HiddenJudges(Grades, Order, Reviewer.Name, judge => Conversation is not null && Reviewer.Graded(Conversation, judge));
 

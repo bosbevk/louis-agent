@@ -52,6 +52,24 @@ public class GradeChipListTests
         Assert.That(GradeChipList.Of(grades, Order), Is.EqualTo(new[] { new GradeChip("meal-for-people.human · waiting for review", "", "waits for a person") }));
     }
 
+    // 6a.4e (Louis, on a card that said "reviewed" beside a chip that said "waiting for review"): the review grader's chip shows this reviewer's own verdict once they have graded (the
+    // run's line only ever says "waiting", since the grade lives in the API's store); another reviewer's grade keeps it "waiting", so nobody is anchored (blind review).
+    [Test]
+    public void TheReviewChip_ShowsThisReviewersVerdict_AndStaysWaitingOnAnotherReviewers()
+    {
+        var mine = new HumanGradeRow("meal-for-people.human", "meal-for-people", "pass", "feeds four", "louis", DateTimeOffset.UnixEpoch);
+        var later = mine with { Verdict = "unsure", Note = "", At = DateTimeOffset.UnixEpoch.AddHours(1) };
+        var anna = mine with { Reviewer = "Anna" };
+        ConversationGrades With(params HumanGradeRow[] humans) =>
+            new([Grade("meal-for-people.human", GradeOutcome.Pending, score: 0, reason: "waits for a person")], GradeOutcome.Pass, humans);
+
+        Assert.That(GradeChipList.Of(With(mine), Order, reviewer: "Louis").Single(), Is.EqualTo(new GradeChip("meal-for-people.human · pass (Louis)", "ok", "feeds four")));
+        Assert.That(GradeChipList.Of(With(mine, later), Order, reviewer: "Louis").Single().Text, Is.EqualTo("meal-for-people.human · unsure (Louis)"), "the latest one");
+        Assert.That(GradeChipList.Of(With(mine with { Verdict = "fail" }), Order, reviewer: "Louis").Single().Kind, Is.EqualTo("bad"));
+        Assert.That(GradeChipList.Of(With(anna), Order, reviewer: "Louis").Single().Text, Is.EqualTo("meal-for-people.human · waiting for review"), "Anna's verdict stays out of sight");
+        Assert.That(GradeChipList.Of(With(mine), Order, reviewer: null).Single().Text, Is.EqualTo("meal-for-people.human · waiting for review"));
+    }
+
     [Test]
     public void AScoreOf1Or0OrNone_ShowsOnlyTheName()
     {
