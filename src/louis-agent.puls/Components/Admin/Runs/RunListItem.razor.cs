@@ -17,11 +17,6 @@ public partial class RunListItem
     /// <summary>The id of the new run, once a re-score was started.</summary>
     [Parameter] public EventCallback<string> OnRescored { get; set; }
 
-    private string Summary =>
-        $"{Run.StartedAt.ToLocalTime():yyyy-MM-dd HH:mm} · {Run.Repeat}× · {StatusText}"
-        + (Run.Total is { } total ? $" · {total.Requests} requests" : "")
-        + (Run.StoreError is not null ? " · not everything stored" : "");
-
     private string StatusText => Run.Status switch { "running" => "running", "done" => "done", _ => "failed" };
 
     // The ledger's costs are USD; shown in the browser's currency at the app's rate (F14), as the chat does. A 0 is a known $0 (a re-score), the dash an unknown price.

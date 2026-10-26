@@ -1401,17 +1401,46 @@ html:has(.landing) { scroll-behavior: smooth; }
 .runs-list { max-height: calc(100vh - 150px); overflow: auto; }
 .runs { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
 /* F31: a check card selects its check (Louis); the selected one glows in Puls's orange. */
-.check-card { cursor: pointer; transition: border-color .2s, box-shadow .2s; }
-.check-card:hover { border-color: rgba(245, 130, 32, .3); }
+/* The Benchmarks page's cards and rows (the rework of 2026-10-26, Louis: "make it user friendly and readable"): a card lifts on hover and is marked by an orange edge when selected;
+   a status pill reads the same on a card and a row; the runs are a grid of fixed columns with a head row, so they read as a table. */
+.check-card { position: relative; cursor: pointer; transition: border-color .2s, box-shadow .2s, transform .2s var(--ease); }
+.check-card::before { content: ""; position: absolute; left: 0; top: 14px; bottom: 14px; width: 3px; border-radius: 0 3px 3px 0; background: var(--orange); opacity: 0; transition: opacity .2s; }
+.check-card:hover { border-color: rgba(245, 130, 32, .35); transform: translateY(-1px); }
 .check-card.selected { border-color: rgba(245, 130, 32, .65); box-shadow: var(--shadow-glow); }
+.check-card.selected::before { opacity: 1; }
 .check-card:focus-visible { outline: 2px solid rgba(245, 130, 32, .6); outline-offset: 2px; }
-.run-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 9px 8px; border-radius: 10px; cursor: pointer; border-bottom: 1px solid rgba(255, 255, 255, .05); transition: background .15s; }
+.check-name code { font-size: 15px; font-weight: 700; color: var(--ink); background: none; padding: 0; }
+.check-proves { margin: 0; color: var(--text); font-size: 13.5px; line-height: 1.45; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.check-card:not(.open) .check-proves { -webkit-line-clamp: 1; }
+.check-script { margin: 0; font-size: 12px; }
+.check-last { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 13px; color: var(--text); text-decoration: none; padding: 6px 10px; margin: 0 -10px; border-radius: 9px; transition: background .15s, color .15s; }
+.check-last:hover { background: rgba(255, 255, 255, .05); color: var(--ink); }
+.check-last strong { color: var(--ink); }
+.check-last-go { color: var(--orange-text); margin-left: 2px; }
+.checks-hint { font-size: 12.5px; margin-left: 6px; }
+.run-estimate { font-size: 12.5px; }
+.status-pill { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 700; letter-spacing: .4px; text-transform: uppercase; padding: 3px 9px; border-radius: 999px; background: var(--green-soft); color: var(--green-light); white-space: nowrap; }
+.status-pill::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.status-pill.running { background: var(--orange-soft); color: var(--orange-text); }
+.status-pill.failed { background: rgba(242, 107, 79, .14); color: var(--danger); }
+.runs-head, .run-row { display: grid; grid-template-columns: 130px 150px 70px 100px 80px minmax(0, 1fr) 90px; align-items: center; gap: 12px; padding: 8px 10px; }
+.runs-head { font-size: 11px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; color: var(--dim); border-bottom: 1px solid var(--border); }
+.runs-head .num, .run-row .num { text-align: right; font-variant-numeric: tabular-nums; }
+.run-row { border-radius: 10px; border-bottom: 1px solid rgba(255, 255, 255, .05); transition: background .15s; }
 .run-row:hover { background: rgba(255, 255, 255, .04); }
 .run-row.selected { background: var(--orange-soft); }
-.run-row-main { display: flex; flex-direction: column; min-width: 0; }
-.run-row-main code { font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.run-row-main small { color: var(--muted); font-size: 11.5px; }
-.run-row-cost { font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--ink); font-size: 13px; }
+.run-row-main { min-width: 0; text-decoration: none; }
+.run-row-main code { font-size: 12.5px; color: var(--orange-text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.run-row-main:hover code { text-decoration: underline; }
+.run-row-when, .run-row-repeat, .run-row-requests { font-size: 13px; color: var(--text); white-space: nowrap; }
+.run-row-notes { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; min-width: 0; }
+.run-row-notes .rescore { height: 28px; padding: 0 10px; font-size: 12px; }
+.run-row-cost { font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--ink); font-size: 13.5px; }
+@media (max-width: 1100px) { .runs-head { display: none; } .run-row { grid-template-columns: 1fr 1fr; } .run-row-notes { grid-column: 1 / -1; } }
+.rescored-from { font-size: 12px; color: var(--muted); text-decoration: none; border: 1px solid var(--border); border-radius: 999px; padding: 3px 9px; white-space: nowrap; transition: color .15s, border-color .15s; }
+.rescored-from:hover { color: var(--orange-text); border-color: rgba(245, 130, 32, .45); }
+.rescore-error { display: block; font-size: 12px; }
+.model-filter { background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 9px; padding: 5px 10px; font: inherit; font-size: 13px; }
 @media (max-width: 1199.98px) {
     .admin-cols { grid-template-columns: minmax(0, 1fr); }
     .admin-col-side { position: static; }

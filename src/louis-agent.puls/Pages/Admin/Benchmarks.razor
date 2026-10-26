@@ -74,12 +74,14 @@ else if (_data is { } data)
     }
 
     @* One fold for all the checks (Louis: "do not roll up 3 times, have one that rolls up them all"): folded, each card
-       keeps its head (title, manual, chip) and loses its body. *@
+       keeps its head (name, status, manual) and loses its body. A card names its check and says what it proves under
+       that; its last run is a link; the Run button says what a run will roughly cost (the rework of 2026-10-26). *@
     <div class="checks-head">
-        <span class="sidebar-label">Checks</span>
+        <span class="sidebar-label">Checks · @data.Checks.Count</span>
         <button type="button" class="checks-toggle @(_checksOpen ? "open" : "")" aria-expanded="@_checksOpen" title="@(_checksOpen ? "Fold the checks" : "Unfold the checks")" @onclick="() => _checksOpen = !_checksOpen">
             <span class="chevron" aria-hidden="true"></span>
         </button>
+        <span class="muted checks-hint">Click a check to see its runs below.</span>
     </div>
     <div class="cards">
         @foreach (var check in data.Checks)
@@ -89,20 +91,33 @@ else if (_data is { } data)
             <section class="card-p check-card @(_checksOpen ? "open" : "") @(_selected == check.Id ? "selected" : "")" role="button" tabindex="0"
                      aria-pressed="@(_selected == check.Id)" @onclick="() => Select(check.Id)" @onkeydown="e => SelectKey(e, check.Id)">
                 <div class="card-head">
-                    <strong>@check.Title</strong>
+                    <strong class="check-name"><code>@check.Id</code></strong>
                     <span class="check-card-meta">
-                        @(last?.Total is { } t ? Cost(t.Cost) : "")
+                        @if (last is not null) { <span class="status-pill @last.Status">@Status(last.Status)</span> }
                         @if (check.Manual)
                         {
                             <button type="button" class="manual-button" title="The manual" @onclick="() => OpenManualAsync(check.Id)" @onclick:stopPropagation>Manual</button>
                         }
-                        <span class="toolset-chip">@check.Id</span>
                     </span>
                 </div>
+                <p class="check-proves" title="@check.Title">@check.Title</p>
                 @if (_checksOpen)
                 {
-                <p class="muted"><code>@check.Script</code></p>
-                <p class="muted">@(last is null ? "No run in the store yet." : $"Last run: {last.StartedAt.ToLocalTime():yyyy-MM-dd HH:mm}, {Status(last.Status)}, {Cost(last.Total?.Cost)}")</p>
+                @if (check.Script.Length > 0) { <p class="muted check-script"><code>@check.Script</code></p> }
+                @if (last is null)
+                {
+                    <p class="muted">No run in the store yet.</p>
+                }
+                else
+                {
+                    <a class="check-last" href="admin/benchmarks/@last.Id" @onclick:stopPropagation>
+                        <span class="muted">Last run</span>
+                        <span>@last.StartedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</span>
+                        <span class="muted">·</span><span>@last.Repeat @(last.Repeat == 1 ? "repeat" : "repeats")</span>
+                        <span class="muted">·</span><strong>@Cost(last.Total?.Cost)</strong>
+                        <span class="check-last-go" aria-hidden="true">›</span>
+                    </a>
+                }
                 @if (_trends.TryGetValue(check.Id, out var trend))
                 {
                     <TrendChart Trend="trend" Small="true" Currency="Currency.Current" />
@@ -117,10 +132,11 @@ else if (_data is { } data)
                             <button type="button" role="radio" aria-checked="@(RepeatFor(check.Id) == count)" class="@(RepeatFor(check.Id) == count ? "active" : "")" disabled="@Running" @onclick="() => _repeats[check.Id] = count" @onclick:stopPropagation>@count</button>
                         }
                     </div>
-                    <button class="header-button" type="button" disabled="@(Running || !CanRun(data))"
+                    <button class="header-button run-button" type="button" disabled="@(Running || !CanRun(data))"
                             title="@(check.Id == "stub" ? "Free: no session, no model" : "Spends money: every run asks the model")" @onclick="() => StartAsync(check.Id)" @onclick:stopPropagation>
                         <span class="ic i-pulse" aria-hidden="true"></span>Run
                     </button>
+                    <span class="muted run-estimate">@Estimate(check.Id, data)</span>
                 </div>
                 }
             </section>
@@ -214,7 +230,7 @@ else if (_data is { } data)
             var costs = runs.Select(r => r.Total?.Cost).Where(c => c is not null).ToList();
         }
         <div class="card-head">
-            <strong>Runs@(chosen is null ? "" : $" · {chosen.Title}")</strong>
+            <strong>Runs@if (chosen is not null) { <span> · </span><code>@chosen.Id</code> }</strong>
             @if (models.Count > 0)
             {
                 <select class="model-filter" @bind="_model" aria-label="Model">
@@ -226,7 +242,7 @@ else if (_data is { } data)
         </div>
         @if (chosen is null)
         {
-            <p class="muted">Choose a check above to see its runs.</p>
+            <p class="muted">Click a check above to see its runs.</p>
         }
         else if (runs.Count == 0)
         {
@@ -234,6 +250,7 @@ else if (_data is { } data)
         }
         else
         {
+            <div class="runs-head" aria-hidden="true"><span>Run</span><span>Started</span><span>Repeats</span><span>Status</span><span class="num">Requests</span><span></span><span class="num">Cost</span></div>
             <ol class="runs">
                 @foreach (var run in shown)
                 {
@@ -293,6 +310,14 @@ else if (_data is { } data)
 
     private void Select(string check) => _selected = check;
 
+    /// <summary>What a run of the check will roughly cost at the repeats chosen, from its last measured run; nothing when none has a known cost.</summary>
+    private string Estimate(string check, Page data)
+    {
+        if (check == "stub") return "free";
+        int repeats = RepeatFor(check);
+        return RunEstimate.For(check, data.Runs, repeats) is { } cost ? $"≈ {Cost(cost)} for {repeats} {(repeats == 1 ? "repeat" : "repeats")}" : "";
+    }
+
     private void SelectKey(KeyboardEventArgs e, string check)
     {
         if (e.Key is "Enter" or " ") Select(check);
@@ -329,6 +354,8 @@ else if (_data is { } data)
                     c.TryGetProperty("manual", out var m) && m.ValueKind == JsonValueKind.True)).ToList(),
                 new StoreState(store.GetProperty("configured").GetBoolean(), Str(store, "error")),
                 json.GetProperty("runs").EnumerateArray().Select(ReadRun).ToList());
+            // A check is selected on arrival, the one with the newest run, so the runs list is never empty (the rework of 2026-10-26).
+            _selected ??= RunEstimate.DefaultCheck(_data.Checks.Select(c => c.Id).ToList(), _data.Runs);
         }
         catch (AgentApiException ex)
         {
