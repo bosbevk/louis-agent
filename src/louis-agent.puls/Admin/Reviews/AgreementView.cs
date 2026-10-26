@@ -38,7 +38,10 @@ public static class AgreementView
             Class(judge.GetProperty("person_pass"), personPassed: true), Class(judge.GetProperty("person_fail"), personPassed: false)))];
     }
 
-    private static ClassAgreement Class(JsonElement counts, bool personPassed) =>
+    private static ClassAgreement Class(JsonElement counts, bool personPassed) => ClassOf(counts, personPassed);
+
+    /// <summary>One class's counts (<c>judge_pass</c>, <c>judge_fail</c>, <c>judge_unknown</c>) as the agreement and the judge checks (6a.5c) both send them.</summary>
+    public static ClassAgreement ClassOf(JsonElement counts, bool personPassed) =>
         new(Count(counts, "judge_pass"), Count(counts, "judge_fail"), Count(counts, "judge_unknown"), personPassed);
 
     private static int Count(JsonElement counts, string name) => counts.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.Number ? v.GetInt32() : 0;

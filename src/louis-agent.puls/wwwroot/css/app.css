@@ -1772,3 +1772,15 @@ button.tile:hover { transform: translateY(-2px); border-color: rgba(245, 130, 32
 .agreement-share { color: var(--muted); font-size: 12.5px; white-space: nowrap; font-variant-numeric: tabular-nums; }
 .agreement-download { align-self: flex-start; }
 .agreement-none { margin: 0; font-size: 13px; }
+/* F18 step 6a.5c: the judge check under a judge's agreement card. */
+.calibration { display: flex; flex-direction: column; gap: 10px; margin-top: 6px; padding-top: 10px; border-top: 1px solid var(--border); }
+.calibration-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.calibration-status { font-size: 12.5px; }
+.calibration-report { display: flex; flex-direction: column; gap: 8px; }
+.calibration-headline { margin: 0; color: var(--ink); font-size: 13.5px; font-weight: 600; }
+.calibration-verdict { margin: 0; font-size: 13px; font-weight: 700; color: var(--green-light); }
+.calibration-verdict.short { color: var(--orange-text); }
+.calibration-disagreements, .calibration-earlier { margin: 4px 0 0; padding-left: 18px; font-size: 13px; display: flex; flex-direction: column; gap: 6px; }
+.calibration-where { color: var(--ink); }
+.calibration-reason { display: block; font-size: 12.5px; }
+.calibration-none { margin: 0; font-size: 13px; }

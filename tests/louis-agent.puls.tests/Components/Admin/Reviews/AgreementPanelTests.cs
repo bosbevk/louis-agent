@@ -22,7 +22,10 @@ public class AgreementPanelTests
     {
         var ctx = new BunitContext();
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
-        var handler = new StubHandler(_ => new HttpResponseMessage(HttpStatusCode.OK) { Content = new ByteArrayContent([80, 75, 3, 4]) });
+        // The labels download gets a zip; the judge check's read (6a.5c) gets an empty list.
+        var handler = new StubHandler(request => request.RequestUri!.AbsolutePath.EndsWith("/calibrations")
+            ? new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent("{\"calibrations\":[]}", System.Text.Encoding.UTF8, "application/json") }
+            : new HttpResponseMessage(HttpStatusCode.OK) { Content = new ByteArrayContent([80, 75, 3, 4]) });
         ctx.Services.AddSingleton(new AgentApi(new HttpClient(handler) { BaseAddress = new Uri("http://localhost/") }, new ChatSettings()));
         return (ctx.Render<AgreementPanel>(p => p.Add(x => x.Run, Run(agreement)).Add(x => x.RunId, "run1")), handler, ctx);
     }
@@ -71,8 +74,8 @@ public class AgreementPanelTests
 
         cut.Find(".agreement-download").Click();
 
-        cut.WaitForAssertion(() => Assert.That(handler.Requests, Has.Count.EqualTo(1)));
-        Assert.That(handler.Requests.Single().Url, Does.EndWith("v1/admin/benchmarks/runs/run1/labels?grader=meal-for-people"));
+        cut.WaitForAssertion(() => Assert.That(handler.Requests.Count(r => r.Url.Contains("/labels")), Is.EqualTo(1)));
+        Assert.That(handler.Requests.Single(r => r.Url.Contains("/labels")).Url, Does.EndWith("v1/admin/benchmarks/runs/run1/labels?grader=meal-for-people"));
         cut.WaitForAssertion(() => Assert.That(ctx.JSInterop.Invocations.Any(i => i.Identifier == "louisDownload" && (string)i.Arguments[0]! == "meal-for-people-labels-run1.zip"), Is.True));
     }
 

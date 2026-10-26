@@ -1,10 +1,11 @@
 @* F18 step 6a.3: per reviewed judge, how often it agreed with the people (counts from the API, shares worked out in AgreementView), and the labels as a zip.
-   Reworked 2026-10-26 (Louis: "I do not understand what I'm reading"): a card per judge; each class of your grades is one plain sentence (AgreementText) with a full-width bar under it. *@
+   Reworked 2026-10-26 (Louis: "I do not understand what I'm reading"): a card per judge; each class of your grades is one plain sentence (AgreementText) with a full-width bar under it.
+   6a.5c: under them, the check of the judge against your grades (CalibrationCard): the judge asked again today, with today's prompt. *@
 @if (Judges.Count > 0)
 {
     <section class="card-p agreement-panel">
         <details class="fold" open><summary class="fold-head"><span class="fold-chevron" aria-hidden="true"></span>Judge against people<span class="fold-note">does the judge see what you see?</span></summary>
-            <p class="muted mode-rates-lead agreement-lead">Does the judge see what you see? For every answer you graded, whether the judge said the same. Under ten answers a line is shaky and says <strong>few labels</strong>.</p>
+            <p class="muted mode-rates-lead agreement-lead">Does the judge see what you see? For every answer you graded, whether the judge said the same when the run was graded. Under ten answers a line is shaky and says <strong>few labels</strong>. <em>Check the judge now</em> asks it again, with today's prompt, and keeps the report.</p>
             <div class="category-grid">
                 @foreach (var judge in Judges)
                 {
@@ -26,6 +27,7 @@
                         {
                             <p class="agreement-none muted">Nobody has graded this judge's answers yet.</p>
                         }
+                        <CalibrationCard RunId="@RunId" Grader="@judge.Grader" HasLabels="judge.AnyLabels" />
                     </section>
                 }
             </div>

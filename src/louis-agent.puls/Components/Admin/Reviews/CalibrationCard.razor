@@ -1,0 +1,59 @@
+@* F18 step 6a.5c (Louis: "we needed a gui for calibration in admin"): in a judge's agreement card, the check of the judge against the answers you graded. The button asks the API to
+   run it (the eval runner, with today's prompt), the card follows the run to its end, fetches the reports again (ADR 0042) and shows the latest in plain sentences, the earlier ones folded. *@
+<div class="calibration">
+    <div class="calibration-head">
+        <button type="button" class="header-button calibration-check" disabled="@(!HasLabels || _running)" @onclick="CheckAsync"
+                title="Ask the judge, with today's prompt, about every answer you graded, and see how often it agrees with you. Free on a local judge; a minute or two.">
+            <span class="ic i-refresh" aria-hidden="true"></span>Check the judge now
+        </button>
+        @if (_running)
+        {
+            <span class="calibration-status muted">Asking the judge about your answers… a minute or two on a local judge.</span>
+        }
+    </div>
+    @if (_error is not null)
+    {
+        <p class="review-error">@_error</p>
+    }
+    @if (Latest is { } latest)
+    {
+        <div class="calibration-report">
+            <p class="calibration-headline">@CalibrationText.Headline(latest, When(latest))</p>
+            <p class="calibration-verdict @(latest.Passes ? "pass" : "short")">@CalibrationText.Verdict(latest)</p>
+            <div class="agreement-class calibration-pass">
+                <p class="agreement-sentence">@AgreementText.Sentence(latest.PersonPass)</p>
+                <div class="agreement-bar"><span class="rate-track"><span class="rate-fill" style="width: @Width(latest.PersonPass)"></span></span><strong class="agreement-share">@AgreementText.Share(latest.PersonPass)</strong></div>
+            </div>
+            <div class="agreement-class calibration-fail">
+                <p class="agreement-sentence">@AgreementText.Sentence(latest.PersonFail)</p>
+                <div class="agreement-bar"><span class="rate-track"><span class="rate-fill hat" style="width: @Width(latest.PersonFail)"></span></span><strong class="agreement-share">@AgreementText.Share(latest.PersonFail)</strong></div>
+            </div>
+            @if (latest.Disagreements.Count > 0)
+            {
+                <details class="admin-details"><summary>Where the judge differed (@latest.Disagreements.Count)</summary>
+                    <ul class="calibration-disagreements">
+                        @foreach (var d in latest.Disagreements)
+                        {
+                            <li><span class="calibration-where">@CalibrationText.Where(d)</span> <span class="calibration-reason muted">@d.Reason</span></li>
+                        }
+                    </ul>
+                </details>
+            }
+            @if (Earlier.Count > 0)
+            {
+                <details class="admin-details"><summary>Earlier checks (@Earlier.Count)</summary>
+                    <ul class="calibration-earlier">
+                        @foreach (var r in Earlier)
+                        {
+                            <li>@CalibrationText.Earlier(r, When(r))</li>
+                        }
+                    </ul>
+                </details>
+            }
+        </div>
+    }
+    else if (!_loading)
+    {
+        <p class="calibration-none muted">@(HasLabels ? "Not checked yet: press the button to ask the judge about every answer you graded, with today's prompt." : "Grade some answers first; then the judge can be checked against them.")</p>
+    }
+</div>

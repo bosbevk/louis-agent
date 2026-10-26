@@ -266,7 +266,8 @@ else if (_data is { } data)
     private sealed record Manual(string Title, string Markdown);
     private sealed record StoreState(bool Configured, string? Error);
     private sealed record Page(List<Check> Checks, StoreState Store, List<RunSummary> Runs);
-    private sealed record LiveRun(string Id, string Check, int Repeat, string Status, int? ExitCode, DateTimeOffset StartedAt, bool? Stored, string? StoreError);
+    /// <summary><paramref name="CalibrationOf"/> (F18 step 6a.5c): the run whose judge this one checks; such a run is the runner's, not this page's, and is left alone.</summary>
+    private sealed record LiveRun(string Id, string Check, int Repeat, string Status, int? ExitCode, DateTimeOffset StartedAt, bool? Stored, string? StoreError, string? CalibrationOf = null);
     private readonly record struct TurnKey(string Mode, int Repeat, string Task, int N);
 
     /// <summary>One turn of the live run: its question and stream (for TurnView), and its figures once it has ended.</summary>
@@ -377,7 +378,7 @@ else if (_data is { } data)
         try
         {
             var current = ReadLive(await Api.GetAsync<JsonElement>("v1/admin/benchmarks/runs/current"));
-            if (current.Status != "running") return;
+            if (current.Status != "running" || current.CalibrationOf is not null) return;
             await FromStoreAsync(current.Id);
             await FollowAsync(current, keepRows: true);
         }
@@ -619,7 +620,7 @@ else if (_data is { } data)
         r.GetProperty("id").GetString()!, r.GetProperty("check").GetString()!, r.GetProperty("repeat").GetInt32(),
         r.GetProperty("status").GetString()!, Int(r, "exit_code"), r.GetProperty("started_at").GetDateTimeOffset(),
         r.TryGetProperty("stored", out var s) && s.ValueKind is JsonValueKind.True or JsonValueKind.False ? s.GetBoolean() : null,
-        Str(r, "store_error"));
+        Str(r, "store_error"), Str(r, "calibration_of"));
 
     private static bool TryParse(string json, out JsonElement element)
     {
