@@ -119,6 +119,8 @@ internal sealed class ProtocolLines(DateTimeOffset start)
                 json.WriteNumber("score", grade.Score);
                 json.WriteString("outcome", grade.Outcome.ToString());
                 json.WriteString("reason", grade.Reason);
+                if (grade.JudgeModel is not null) json.WriteString("judge_model", grade.JudgeModel);
+                if (grade.JudgePromptHash is not null) json.WriteString("judge_prompt_hash", grade.JudgePromptHash);
                 json.WriteEndObject();
             }
             json.WriteEndArray();

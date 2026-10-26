@@ -302,6 +302,35 @@ public class BenchmarkRecorderTests
         }
     }
 
+    // F18 step 6.1b: a re-score is free only until a grader asks a paid model. Its own ledger rows (the judge's, tagged with the re-score's id) are its cost, shown as any run's;
+    // with none it stays a known $0.
+    [Test]
+    public async Task AReScoreThatAskedAJudge_IsPricedFromItsOwnRows_NotShownAsFree()
+    {
+        string directory = Path.Combine(Path.GetTempPath(), "louis-rescore-judge-" + Guid.NewGuid().ToString("N"));
+        try
+        {
+            new LouisAgent.Core.Usage.Sinks.JsonlUsageSink(directory).Record(new LouisAgent.Core.Usage.Records.UsageRecord(
+                DateTimeOffset.UtcNow, 1, LouisAgent.Core.Usage.Records.UsagePurpose.Grading, "api", "sess_1", 1, "bobotie", "new123456789:cook:1", null, "claude-haiku-5-5",
+                new LouisAgent.Core.Usage.Records.UsageTokens(1000, 0, 0, 200, null), 1500, "stop",
+                new LouisAgent.Core.Usage.Records.UsageCost("USD", 0.25m, "2026-10-10"), null, null));
+            var run = new BenchmarkRun("new123456789", "cook", 1, rescoreOf: "old123456789");
+            var recording = new BenchmarkRecorder(_store, ledgerDirectory: directory).RecordAsync(run);
+            run.Add(At(new { @event = "protocol", version = 1, eval = "cook", eval_version = 1, rescore_of = "old123456789", graders = Array.Empty<object>(), models = Array.Empty<object>() }));
+            run.Add(At(new { @event = "question", mode = "cook", repeat = 1, task = "bobotie", turn = 1, session = "sess_1", text = "Maak bobotie" }));
+            run.Complete(0);
+            await recording;
+
+            var stored = (await _store.GetRunAsync("new123456789"))!;
+            Assert.That(stored.Total, Is.EqualTo(new Total(0.25m, "USD", 1200, 1)));
+            Assert.That((await _store.RequestsAsync("new123456789")).Single().Purpose, Is.EqualTo("grading"));
+        }
+        finally
+        {
+            if (Directory.Exists(directory)) Directory.Delete(directory, recursive: true);
+        }
+    }
+
     [Test]
     public async Task ARescoreWithNoLedgerAtAll_StillCostsAKnownZero()
     {

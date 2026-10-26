@@ -36,6 +36,16 @@ public class BenchmarkProtocolTests
         Assert.That(ended.Grades!.Single(), Is.EqualTo(new GradeInfo("priced-with-source", 1, 1, BenchmarkOutcome.Pass, "2 of 2 priced with a source")));
     }
 
+    // F18 step 6.1b: what judged a model grader's grade is read with the grade, and a code grader's grade has none.
+    [Test]
+    public void AModelGradersGrade_CarriesTheJudgeThatGaveIt()
+    {
+        var ended = (ConversationEnded)Parse("""@{"event":"conversation","mode":"cook","repeat":1,"task":"pannekoek","role":"puls-cook","scores":{},"seconds":3,"grades":[{"grader":"meal-for-people","version":1,"score":1,"outcome":"Pass","reason":"feeds four","judge_model":"qwen3:8b","judge_prompt_hash":"abc123def456"},{"grader":"priced-with-source","version":1,"score":1,"outcome":"Pass","reason":"ok"}],"outcome":"Pass"}""");
+
+        Assert.That(ended.Grades![0], Is.EqualTo(new GradeInfo("meal-for-people", 1, 1, BenchmarkOutcome.Pass, "feeds four", "qwen3:8b", "abc123def456")));
+        Assert.That(ended.Grades[1].JudgeModel, Is.Null);
+    }
+
     [Test]
     public void AConversationThatFailedForTheInfrastructure_ReadsAsInfrastructure_NotAsALostLine()
     {

@@ -11,6 +11,9 @@ namespace LouisAgent.Evals.Grading.Models;
 /// </summary>
 public sealed record JudgeSettings(JudgeProvider Provider, string Model, string? Endpoint, string? ApiKey)
 {
+    /// <summary>Never the key: a record prints all its members, and a log line with a key in it is a leaked key.</summary>
+    public override string ToString() => $"{Provider}:{Model} (endpoint={Endpoint ?? "default"}, apiKey={(string.IsNullOrEmpty(ApiKey) ? "unset" : "set")})";
+
     private static readonly Dictionary<string, JudgeProvider> Aliases = new() { ["openai-compatible"] = JudgeProvider.OpenAiCompatible };
 
     public static JudgeSettings? FromEnvironment(Func<string, string?>? getVariable = null)

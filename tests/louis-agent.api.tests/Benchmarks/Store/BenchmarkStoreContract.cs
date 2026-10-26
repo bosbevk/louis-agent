@@ -191,6 +191,20 @@ public abstract class BenchmarkStoreContract
         Assert.That(read.Grades, Is.EqualTo(grades));
     }
 
+    // F18 step 6.1b: the plan says what judged is stored with each grade; a code grader's grade has none.
+    [Test]
+    public async Task AGrade_KeepsTheJudgeThatGaveIt()
+    {
+        string run = NewId();
+        var grades = new[] { new Grade("meal-for-people", 1, 1, BenchmarkOutcome.Pass, "feeds four", "qwen3:8b", "abc123def456"), new Grade("no-error", 1, 1, BenchmarkOutcome.Pass, "ok") };
+        await _store.SaveConversationAsync(run, NewConversation("bobotie", 1) with { Grades = grades });
+
+        var read = (await _store.ConversationsAsync(run)).Single();
+
+        Assert.That(read.Grades, Is.EqualTo(grades));
+        Assert.That(read.Grades![1].JudgeModel, Is.Null);
+    }
+
     [Test]
     public async Task Conversations_ReadBackInTheirOrder_AndASecondSaveReplacesOne()
     {

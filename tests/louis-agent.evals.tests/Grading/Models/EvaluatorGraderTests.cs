@@ -125,7 +125,7 @@ public class EvaluatorGraderTests
     }
 
     [Test]
-    public async Task ItsRequests_AreRecordedAsGrading_OnTheRun_NotOnATurn()
+    public async Task ItsRequests_AreRecordedAsGrading_TaggedLikeTheTurns_OnTheConversationsLastTurn()
     {
         var sink = new ListUsageSink();
         var recorded = new UsageRecordingChatClient(new FakeChatClient(_ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "yes"))), sink, "qwen3:8b");
@@ -137,8 +137,11 @@ public class EvaluatorGraderTests
         var row = sink.Records.Single();
         Assert.That(row.Purpose, Is.EqualTo(UsagePurpose.Grading));
         Assert.That(UsagePurpose.Grading, Is.EqualTo("grading"));
-        Assert.That(row.Run, Is.EqualTo("run_1"), "the run's tag, so the API's join finds it");
-        Assert.That(row.Session, Is.Null, "no session, so no turn");
+        // F18 step 6.1b (the review): tagged as the turns are, {run}:{mode}:{repeat}, with the conversation's session and its last turn, so the API's join places the row on
+        // its conversation and the slice's cost counts the judging; a row with no turn made every slice's cost unknown.
+        Assert.That(row.Run, Is.EqualTo("run_1:puls-cook:1"));
+        Assert.That(row.Task, Is.EqualTo("bobotie"));
+        Assert.That((row.Session, row.Turn), Is.EqualTo(("sess_1", 1)));
         Assert.That(UsageScope.Current, Is.Null, "the scope closed with the grade");
     }
 }

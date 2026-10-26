@@ -28,7 +28,7 @@ internal static class AdminRows
     {
         mode = c.Key.Mode, repeat = c.Key.Repeat, task = c.Key.Task, order = c.Order, role = c.Role, scores = c.Scores,
         errors = c.Errors, seconds = c.Seconds,
-        grades = c.Grades?.Select(g => new { grader = g.Grader, version = g.Version, score = g.Score, outcome = g.Outcome.ToString(), reason = g.Reason }),
+        grades = c.Grades?.Select(g => new { grader = g.Grader, version = g.Version, score = g.Score, outcome = g.Outcome.ToString(), reason = g.Reason, judge_model = g.JudgeModel, judge_prompt_hash = g.JudgePromptHash }),
         outcome = c.Outcome?.ToString(),
     };
 

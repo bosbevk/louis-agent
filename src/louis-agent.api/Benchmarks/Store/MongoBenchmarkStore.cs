@@ -249,6 +249,7 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
         ["grades"] = c.Grades is null ? BsonNull.Value : new BsonArray(c.Grades.Select(g => new BsonDocument
         {
             ["grader"] = g.Grader, ["version"] = g.Version, ["score"] = g.Score, ["outcome"] = g.Outcome.ToString(), ["reason"] = g.Reason,
+            ["judge_model"] = Nullable(g.JudgeModel), ["judge_prompt_hash"] = Nullable(g.JudgePromptHash),
         })),
         ["outcome"] = Nullable(c.Outcome?.ToString()),
     };
@@ -257,7 +258,8 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
         new ConversationKey(d["mode"].AsString, d["repeat"].AsInt32, d["task"].AsString),
         d["order"].AsInt32, StringOf(d["role"]), Json(d["scores"]), d["errors"].AsInt32, d["seconds"].ToDouble(),
         d.GetValue("grades", BsonNull.Value).IsBsonNull ? null : d["grades"].AsBsonArray.Select(g => g.AsBsonDocument)
-            .Select(g => new Grade(g["grader"].AsString, g["version"].AsInt32, g["score"].ToDouble(), Enum.Parse<BenchmarkOutcome>(g["outcome"].AsString, ignoreCase: true), g["reason"].AsString)).ToArray(),
+            .Select(g => new Grade(g["grader"].AsString, g["version"].AsInt32, g["score"].ToDouble(), Enum.Parse<BenchmarkOutcome>(g["outcome"].AsString, ignoreCase: true), g["reason"].AsString,
+                StringOf(g.GetValue("judge_model", BsonNull.Value)), StringOf(g.GetValue("judge_prompt_hash", BsonNull.Value)))).ToArray(),
         d.GetValue("outcome", BsonNull.Value).IsBsonNull ? null : Enum.Parse<BenchmarkOutcome>(d["outcome"].AsString, ignoreCase: true));
 
     private static BsonDocument ToBson(string run, Turn t, IReadOnlyList<StreamEvent> events) => new()

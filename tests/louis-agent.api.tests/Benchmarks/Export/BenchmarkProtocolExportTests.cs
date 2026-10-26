@@ -112,6 +112,29 @@ public class BenchmarkProtocolExportTests
         Assert.That(text.All(c => c < 128), Is.True, "ASCII only, as the harness writes it: the é is escaped");
     }
 
+    // F18 step 6.1b: the judge of a grade survives the export, as the rest of the grade does.
+    [Test]
+    public async Task AGradesJudge_SurvivesTheExport()
+    {
+        string At(object e) => "@" + JsonSerializer.Serialize(e);
+        var lines = new[]
+        {
+            At(new { @event = "protocol", version = 1 }),
+            At(new { @event = "mode", mode = "puls-cook", repeat = 1, toolsets = new[] { "web" }, role = "puls/voice-af", llm = (string?)null, conversations = 1 }),
+            At(new { @event = "question", mode = "puls-cook", repeat = 1, task = "bobotie", turn = 1, session = "sess_1", text = "Maak bobotie" }),
+            At(new { @event = "turn", mode = "puls-cook", repeat = 1, task = "bobotie", turn = 1, session = "sess_1", question = "Maak bobotie", answer = "", role = (string?)null, seconds = 3.0 }),
+            At(new { @event = "conversation", mode = "puls-cook", repeat = 1, task = "bobotie", role = (string?)null, scores = new { }, errors = 0, seconds = 3.0,
+                grades = new[] { new { grader = "meal-for-people", version = 1, score = 1.0, outcome = "Pass", reason = "feeds four", judge_model = "qwen3:8b", judge_prompt_hash = "abc123def456" } } }),
+            At(new { @event = "mode_done", mode = "puls-cook", repeat = 1 }),
+        };
+        var store = await Recorded(lines);
+
+        string text = await Export(store);
+
+        var conversation = (ConversationEnded)Parse(text.Split((char)10, StringSplitOptions.RemoveEmptyEntries).Single(l => l.Contains("\"event\":\"conversation\"")));
+        Assert.That((conversation.Grades!.Single().JudgeModel, conversation.Grades!.Single().JudgePromptHash), Is.EqualTo(("qwen3:8b", "abc123def456")));
+    }
+
     [Test]
     public async Task ATurnsInfrastructureFailure_SurvivesTheExport()
     {

@@ -13,6 +13,16 @@ public class JudgeSettingsTests
     private static JudgeSettings? Read(params (string Name, string Value)[] env) =>
         JudgeSettings.FromEnvironment(name => env.Where(e => e.Name == name).Select(e => e.Value).FirstOrDefault());
 
+    // F18 step 6.1b: a record prints all its members, and a key in a log line is a leaked key.
+    [Test]
+    public void TheSettingsText_NeverPrintsTheKey()
+    {
+        var settings = Read(("EVAL_JUDGE_MODEL", "claude-haiku-5-5"), ("EVAL_JUDGE_API_KEY", "sk-secret-123"))!;
+
+        Assert.That(settings.ApiKey, Is.EqualTo("sk-secret-123"));
+        Assert.That(settings.ToString(), Does.Not.Contain("sk-secret-123").And.Contain("claude-haiku-5-5").And.Contain("set"));
+    }
+
     [Test]
     public void WithNoSettings_ThereIsNoJudge()
     {

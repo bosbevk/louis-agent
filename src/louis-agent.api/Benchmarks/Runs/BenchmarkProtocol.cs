@@ -36,7 +36,7 @@ public static class BenchmarkProtocol
     public sealed record ModelInfo(string Mode, BenchmarkModelLevel Level, string? Role, string? Model);
 
     /// <summary>One grader's verdict on a conversation: its score, its outcome ("Pass", "Fail", "Unknown") and the reason.</summary>
-    public sealed record GradeInfo(string Grader, int Version, double Score, BenchmarkOutcome Outcome, string Reason);
+    public sealed record GradeInfo(string Grader, int Version, double Score, BenchmarkOutcome Outcome, string Reason, string? JudgeModel = null, string? JudgePromptHash = null);
 
     /// <summary>A mode begins one repeat: what its sessions open with.</summary>
     public sealed record ModeStarted(string Mode, int Repeat, IReadOnlyList<string> Toolsets, string? Role, string? Llm,
@@ -127,7 +127,8 @@ public static class BenchmarkProtocol
     private static IReadOnlyList<GradeInfo>? Grades(JsonElement e) =>
         e.TryGetProperty("grades", out var value) && value.ValueKind == JsonValueKind.Array
             ? value.EnumerateArray().Select(g => new GradeInfo(Required(g, "grader"), Int(g, "version"),
-                OptionalNumber(g, "score") ?? throw new MissingField(), Choice<BenchmarkOutcome>(g, "outcome"), Text(g, "reason") ?? "")).ToArray()
+                OptionalNumber(g, "score") ?? throw new MissingField(), Choice<BenchmarkOutcome>(g, "outcome"), Text(g, "reason") ?? "",
+                Text(g, "judge_model"), Text(g, "judge_prompt_hash"))).ToArray()
             : null;
 
     /// <summary>An outcome that is absent is null; one that names no outcome is a line the protocol can't read.</summary>

@@ -142,7 +142,7 @@ public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = n
                 case ConversationEnded conversation:
                     await WriteAsync(() => store.SaveConversationAsync(run.Id, new Conversation(conversation.Key, OrderOf(conversation.Key),
                         conversation.Role, conversation.Scores, conversation.Errors, conversation.Seconds,
-                        conversation.Grades?.Select(g => new Grade(g.Grader, g.Version, g.Score, g.Outcome, g.Reason)).ToArray(),
+                        conversation.Grades?.Select(g => new Grade(g.Grader, g.Version, g.Score, g.Outcome, g.Reason, g.JudgeModel, g.JudgePromptHash)).ToArray(),
                         conversation.Outcome), cancellationToken));
                     break;
             }

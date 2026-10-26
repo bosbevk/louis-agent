@@ -12,7 +12,7 @@ namespace LouisAgent.Evals.Grading.Models;
 /// A model grader (F18 step 6.1): an <see cref="IEvaluator"/> from Microsoft.Extensions.AI.Evaluation behind <see cref="IGrader"/>, for what code can't judge. It hands the
 /// evaluator the trial's messages and its answer, and maps the evaluator's one yes-or-no metric: true is a pass, false a fail, and no value (or a rating of unknown or
 /// inconclusive) is Unknown, never a guessed pass. With no judge configured the grade is Unknown too, and the run goes on. Each grade says what judged
-/// (<see cref="GradeJudge"/>), and the judge's requests run in a <see cref="UsagePurpose.Grading"/> scope tagged with the run, so the ledger counts them on the run. Not
+/// (<see cref="GradeJudge"/>), and the judge's requests run in a <see cref="UsagePurpose.Grading"/> scope tagged like the trial's turns, so the ledger counts them on the conversation and its run. Not
 /// required until its calibration passes (the plan's step 6).
 /// </summary>
 public sealed class EvaluatorGrader(IEvaluator evaluator, ConfiguredJudge? judge, string name, int version, string promptHash,
@@ -30,7 +30,10 @@ public sealed class EvaluatorGrader(IEvaluator evaluator, ConfiguredJudge? judge
         if (Verdict.InfrastructureFailure(Name, Version, trial.Transcript.Turns) is { } failed) return failed;
 
         var (messages, answer) = Conversation(trial);
-        using var scope = UsageScope.Begin(UsagePurpose.Grading, tags: new UsageTags(trial.Scenario.Id, trial.RunId, null));
+        // Tagged as the turns are, {run}:{mode}:{repeat}, and placed on the conversation's last turn, so the API's join puts the judging on its conversation and a slice's cost counts it.
+        var last = trial.Transcript.Turns.Count == 0 ? null : trial.Transcript.Turns[^1];
+        using var scope = UsageScope.Begin(UsagePurpose.Grading, session: last?.Session, turn: last?.Turn,
+            tags: new UsageTags(trial.Scenario.Id, $"{trial.RunId}:{trial.Mode.Name}:{trial.Repeat}", null));
         var result = await evaluator.EvaluateAsync(messages, answer, judge.Chat, null, cancellationToken);
         return Read(result) with { Judge = new GradeJudge(judge.Model, promptHash) };
     }
