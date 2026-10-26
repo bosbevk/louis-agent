@@ -43,6 +43,12 @@ public partial class ReviewPanel : IDisposable
     private string? PersonVerdict => _verdict ?? Grades.Human.Where(h => h.ModelGrader == Judge && string.Equals(h.Reviewer, Reviewer.Name, StringComparison.OrdinalIgnoreCase))
         .OrderByDescending(h => h.At).Select(h => h.Verdict).FirstOrDefault();
 
+    /// <summary>The segmented group's lit class on the button of the verdict this reviewer gave.</summary>
+    private string Pressed(string verdict) => PersonVerdict == verdict ? "active" : "";
+
+    /// <summary>aria-checked wants the words, and Blazor writes a bool as an empty attribute.</summary>
+    private string Checked(string verdict) => PersonVerdict == verdict ? "true" : "false";
+
     private string ResultText => PersonVerdict is { } person && JudgeGrade is { } judge ? BlindReview.Compare(person, judge.Outcome) switch
     {
         ReviewVerdictKind.Agreed => "You agreed with the judge.",
@@ -71,6 +77,9 @@ public partial class ReviewPanel : IDisposable
         await Reviewer.SetAsync(_typedName);
         _typedName = Reviewer.Name ?? _typedName;
     }
+
+    /// <summary>"Not you?": lets the kept name go, so the panel asks for one again (6a.4).</summary>
+    private Task ChangeNameAsync() => Reviewer.ClearAsync();
 
     private async Task GradeAsync(string verdict)
     {

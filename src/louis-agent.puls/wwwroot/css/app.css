@@ -1303,12 +1303,20 @@ html:has(.landing) { scroll-behavior: smooth; }
 /* The by-category table (F18 step 5c, Louis: "look at how nice everything looks and then we see this"): cells with room between them, numbers on the right, the overall line standing out. */
 .summary-mode { margin: 18px 0 26px; }
 .summary-mode h3 { margin: 0 0 8px; font-size: 18px; font-weight: 600; }
-.summary-table { width: 100%; border-collapse: collapse; }
-.summary-table th, .summary-table td { padding: 9px 14px; text-align: left; vertical-align: top; white-space: nowrap; }
-.summary-table th { color: var(--muted); font-size: 12px; font-weight: 600; border-bottom: 1px solid var(--border); }
-.summary-table tbody tr + tr td { border-top: 1px solid rgba(255, 255, 255, .05); }
+/* 6a.4 (Louis: "too flat"): each row is a rounded card like the pass-rates list (the table keeps its columns), the overall row edged orange, a bar behind each rate. */
+.summary-table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
+.summary-table th, .summary-table td { padding: 9px 14px; text-align: left; vertical-align: middle; white-space: nowrap; }
+.summary-table th { color: var(--muted); font-size: 12px; font-weight: 600; padding-top: 0; padding-bottom: 0; }
+.summary-table .summary-row td { background: var(--bg); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.summary-table .summary-row td:first-child { border-left: 1px solid var(--border); border-radius: 12px 0 0 12px; }
+.summary-table .summary-row td:last-child { border-right: 1px solid var(--border); border-radius: 0 12px 12px 0; }
+.summary-table .summary-row:hover td { border-color: rgba(245, 130, 32, .35); }
 .summary-table .num { text-align: right; font-variant-numeric: tabular-nums; }
-.summary-table tr.overall td { font-weight: 600; background: rgba(255, 255, 255, .04); }
+.summary-table tr.overall td { font-weight: 600; border-color: rgba(245, 130, 32, .4); color: var(--ink); }
+.summary-table .s-rate, .summary-table .s-at-k, .summary-table .s-hat-k { min-width: 7.5rem; }
+.summary-table .rate-track { display: inline-block; vertical-align: middle; width: 48px; height: 6px; margin-right: 8px; border-radius: 3px; background: rgba(255, 255, 255, .06); overflow: hidden; }
+.summary-table .rate-fill { display: block; height: 100%; border-radius: 3px; background: var(--green-light); animation: grow .7s var(--ease) both; }
+.summary-table .rate-fill.hat { background: var(--orange); }
 .summary-table .s-slice { font-family: var(--font-code); font-size: 12.5px; }
 .summary-table .s-passed { min-width: 17rem; white-space: normal; }
 .summary-table .s-tasks details > summary { cursor: pointer; color: var(--muted); }
@@ -1720,15 +1728,25 @@ button.tile:hover { transform: translateY(-2px); border-color: rgba(245, 130, 32
 @media (max-width: 991.98px) { .xbar-row { grid-template-columns: 1fr; gap: 4px; } .xbar .xbar-value { position: static; } .lane { grid-template-columns: 70px 1fr; } }
 @media (prefers-reduced-motion: reduce) { :root:not([data-motion="on"]) .explorer * { animation: none !important; transition: none !important; } }
 
-/* F18 step 6a.3: the blind review panel and the judge-against-people table */
-.review-panel { margin-top: 1rem; padding: 1rem; border: 1px solid var(--border, #ccc); border-radius: 8px; display: grid; gap: .6rem; }
-.review-question { margin: 0; }
-.review-ask p { margin: 0 0 .25rem; color: var(--muted, #666); }
-.review-note { width: 100%; min-height: 4rem; }
-.review-buttons { display: flex; gap: .5rem; }
-.review-error { color: var(--bad, #b00020); }
-.review-result { font-weight: 600; margin: 0; }
-.review-judge { margin: 0; }
-.agreement-panel { margin: 1rem 0; }
-.agreement-table { border-collapse: collapse; margin-bottom: .5rem; }
-.agreement-table th, .agreement-table td { padding: .3rem .8rem; border-bottom: 1px solid var(--border, #ddd); text-align: left; }
+/* F18 step 6a.3: the blind review panel and the judge-against-people card, in the portal's own parts (card-p, segmented, admin-table, header-button). */
+.review-panel { margin-top: 12px; gap: 8px; }
+.review-question { margin: 0; font-size: 15px; color: var(--ink); }
+.review-ask p { margin: 0; color: var(--muted); font-size: 13px; }
+.review-answer { font-size: 13.5px; }
+.review-name-row { display: flex; gap: 8px; }
+.review-name, .review-note { background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 9px; padding: 7px 10px; font: inherit; font-size: 13px; }
+.review-name { flex: 1; }
+.review-note { width: 100%; min-height: 56px; resize: vertical; }
+.review-name:focus, .review-note:focus { outline: none; border-color: rgba(245, 130, 32, .55); }
+.review-buttons { align-self: flex-start; }
+.review-buttons button:disabled { opacity: .45; cursor: not-allowed; }
+.review-error { color: var(--danger); margin: 0; }
+.review-result { font-weight: 700; color: var(--ink); margin: 0; }
+.review-judge { margin: 0; font-size: 13px; }
+.review-who { margin: 0; font-size: 13px; }
+.link-button { background: none; border: 0; padding: 0; font: inherit; color: var(--orange-text); cursor: pointer; text-decoration: underline; }
+.agreement-judge.mode-rate { grid-template-columns: 150px minmax(200px, 1fr) minmax(200px, 1fr) auto; }
+.agreement-judge .rate-bar { grid-template-columns: 66px minmax(0, 1fr) auto; }
+.agreement-judge .rate-bar strong { white-space: nowrap; }
+button.agreement-download { cursor: pointer; border: 1px solid var(--border); color: var(--text); background: rgba(255, 255, 255, .04); transition: border-color .2s, color .2s; }
+button.agreement-download:hover { color: var(--ink); border-color: rgba(245, 130, 32, .45); }

@@ -1,32 +1,34 @@
-@* F18 step 6a.3: per reviewed judge, how often it agreed with the people (counts from the API, shares worked out in AgreementView), and the labels as a zip. *@
+@* F18 step 6a.3: per reviewed judge, how often it agreed with the people (counts from the API, shares worked out in AgreementView), and the labels as a zip.
+   Reworked 2026-10-26 (Louis: "like the pass rates"): a card with a fold, a lead line, then a row per judge with a bar per class of the people's grades, the 2x2 counts on hover. *@
 @if (Judges.Count > 0)
 {
-    <section class="agreement-panel">
-        <h2>Judge against people</h2>
-        @foreach (var judge in Judges)
-        {
-            <div class="agreement-judge">
-                <h3>@judge.Grader</h3>
-                @if (!judge.AnyLabels)
+    <section class="card-p agreement-panel">
+        <details class="fold" open><summary class="fold-head"><span class="fold-chevron" aria-hidden="true"></span>Judge against people<span class="fold-note">of the answers people graded, how often the judge said the same</span></summary>
+            <p class="muted mode-rates-lead agreement-lead">Of the answers you <strong>passed</strong>, the share the judge passed too; of the ones you <strong>failed</strong>, the share it failed. A judge that couldn't tell didn't agree. Under ten labels in a class it says <strong>few labels</strong>: a share of four is four answers.</p>
+            <ul class="mode-rates">
+                @foreach (var (judge, i) in Judges.Select((j, i) => (j, i)))
                 {
-                    <p class="agreement-none">Nobody has graded this judge's answers yet.</p>
+                    <li class="mode-rate agreement-judge" style="--i: @i">
+                        <span class="mode-rate-name"><code>@judge.Grader</code></span>
+                        <span class="chip rate-bar agreement-pass" title="@Hover("passed", judge.PersonPass)"><span class="rate-label">you passed</span><span class="rate-track"><span class="rate-fill" style="width: @Width(judge.PersonPass)"></span></span><strong>@judge.PersonPass.Text</strong></span>
+                        <span class="chip rate-bar agreement-fail" title="@Hover("failed", judge.PersonFail)"><span class="rate-label">you failed</span><span class="rate-track"><span class="rate-fill hat" style="width: @Width(judge.PersonFail)"></span></span><strong>@judge.PersonFail.Text</strong></span>
+                        <span class="mode-rate-notes">
+                            @if (judge.AnyLabels)
+                            {
+                                <button type="button" class="chip agreement-download" @onclick="() => DownloadAsync(judge.Grader)">Download the labels (zip)</button>
+                            }
+                            else
+                            {
+                                <span class="chip agreement-none">Nobody has graded this judge's answers yet.</span>
+                            }
+                        </span>
+                    </li>
                 }
-                else
-                {
-                    <table class="agreement-table">
-                        <thead><tr><th></th><th>Judge: pass</th><th>Judge: fail</th><th>Judge: can't tell</th><th>Agreed</th></tr></thead>
-                        <tbody>
-                            <tr><td>You passed</td><td>@judge.PersonPass.JudgePass</td><td>@judge.PersonPass.JudgeFail</td><td>@judge.PersonPass.JudgeUnknown</td><td>@judge.PersonPass.Text</td></tr>
-                            <tr><td>You failed</td><td>@judge.PersonFail.JudgePass</td><td>@judge.PersonFail.JudgeFail</td><td>@judge.PersonFail.JudgeUnknown</td><td>@judge.PersonFail.Text</td></tr>
-                        </tbody>
-                    </table>
-                    <button type="button" class="agreement-download" @onclick="() => DownloadAsync(judge.Grader)">Download the labels (zip)</button>
-                }
-            </div>
-        }
-        @if (_error is not null)
-        {
-            <p class="review-error">@_error</p>
-        }
+            </ul>
+            @if (_error is not null)
+            {
+                <p class="review-error">@_error</p>
+            }
+        </details>
     </section>
 }

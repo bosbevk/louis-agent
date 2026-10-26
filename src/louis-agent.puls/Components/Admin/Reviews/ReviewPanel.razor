@@ -1,5 +1,6 @@
-@* F18 step 6a.3: the blind review. The judge's verdict and reason sit inside the JudgeShown branch, so before this reviewer grades they are not in the markup at all. *@
-<section class="review-panel">
+@* F18 step 6a.3: the blind review. The judge's verdict and reason sit inside the JudgeShown branch, so before this reviewer grades they are not in the markup at all.
+   The pick is a segmented radio group like the explorer's repeat picker, the chosen one lit (Louis, 2026-10-26: the pick stays pressed, in the theme). *@
+<section class="review-panel card-p">
     <h4 class="review-question">@QuestionText</h4>
     <div class="review-ask">
         @foreach (var ask in Asked)
@@ -9,19 +10,25 @@
     </div>
     @if (Answer is not null)
     {
-        <div class="review-answer markdown">@LouisAgent.Web.Shared.Text.Markdown.ToHtml(Answer)</div>
+        <div class="review-answer markdown admin-markdown">@LouisAgent.Web.Shared.Text.Markdown.ToHtml(Answer)</div>
     }
     @if (!HasName)
     {
-        <p class="review-need-name">Who is grading? Type your name once, and it is kept in this browser.</p>
-        <input class="review-name" placeholder="Your name" maxlength="@ReviewerName.MaxLength" @bind="_typedName" />
-        <button type="button" class="review-name-keep" @onclick="KeepNameAsync">Keep</button>
+        <p class="review-need-name muted">Who is grading? Type your name once, and it is kept in this browser.</p>
+        <div class="review-name-row">
+            <input class="review-name" placeholder="Your name" maxlength="@ReviewerName.MaxLength" @bind="_typedName" />
+            <button type="button" class="review-name-keep header-button" @onclick="KeepNameAsync">Keep</button>
+        </div>
+    }
+    @if (HasName)
+    {
+        <p class="review-who muted">Grading as <strong>@Reviewer.Name</strong>. <button type="button" class="review-change-name link-button" @onclick="ChangeNameAsync">Not you?</button></p>
     }
     <textarea class="review-note" placeholder="A note (optional)" maxlength="2000" @bind="_note"></textarea>
-    <div class="review-buttons">
-        <button type="button" class="review-pass" disabled="@(!HasName || _busy)" @onclick='() => GradeAsync("pass")'>Pass</button>
-        <button type="button" class="review-fail" disabled="@(!HasName || _busy)" @onclick='() => GradeAsync("fail")'>Fail</button>
-        <button type="button" class="review-unsure" disabled="@(!HasName || _busy)" @onclick='() => GradeAsync("unsure")'>Unsure</button>
+    <div class="review-buttons segmented" role="radiogroup" aria-label="Your grade">
+        <button type="button" role="radio" class="review-pass @Pressed("pass")" aria-checked="@Checked("pass")" disabled="@(!HasName || _busy)" @onclick='() => GradeAsync("pass")'>Pass</button>
+        <button type="button" role="radio" class="review-fail @Pressed("fail")" aria-checked="@Checked("fail")" disabled="@(!HasName || _busy)" @onclick='() => GradeAsync("fail")'>Fail</button>
+        <button type="button" role="radio" class="review-unsure @Pressed("unsure")" aria-checked="@Checked("unsure")" disabled="@(!HasName || _busy)" @onclick='() => GradeAsync("unsure")'>Unsure</button>
     </div>
     @if (_error is not null)
     {
@@ -30,6 +37,6 @@
     @if (JudgeShown && PersonVerdict is not null && JudgeGrade is { } judge)
     {
         <p class="review-result">@ResultText</p>
-        <p class="review-judge">@JudgeText @judge.Reason</p>
+        <p class="review-judge muted">@JudgeText @judge.Reason</p>
     }
 </section>

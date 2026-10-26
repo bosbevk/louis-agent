@@ -1,4 +1,5 @@
-@* One mode's roll-up (F18 step 5c.3): a line per slice, the overall one first. Counts are the runner's; the costs are the ledger's. *@
+@* One mode's roll-up (F18 step 5c.3): a line per slice, the overall one first. Counts are the runner's; the costs are the ledger's.
+   Reworked 2026-10-26 (Louis: "too flat"): each row a rounded card and a bar behind each rate, in the pass-rates list's shape; the columns stay. *@
 <div class="summary-mode">
     <h3>@Mode.Mode</h3>
     <div class="table-wrap">
@@ -18,9 +19,9 @@
                         <td class="s-slice">@slice.Slice</td>
                         <td class="s-n num">@slice.N</td>
                         <td class="s-passed">@SummaryText.Passed(slice)</td>
-                        <td class="s-rate num">@SummaryText.Rate(slice, slice.PassRate)</td>
-                        <td class="s-at-k num">@SummaryText.Rate(slice, slice.PassAtK)</td>
-                        <td class="s-hat-k num">@SummaryText.Rate(slice, slice.PassHatK)</td>
+                        <td class="s-rate num">@Bar(slice, slice.PassRate, hat: false)@SummaryText.Rate(slice, slice.PassRate)</td>
+                        <td class="s-at-k num">@Bar(slice, slice.PassAtK, hat: false)@SummaryText.Rate(slice, slice.PassAtK)</td>
+                        <td class="s-hat-k num">@Bar(slice, slice.PassHatK, hat: true)@SummaryText.Rate(slice, slice.PassHatK)</td>
                         <td class="s-unknown num">@slice.Unknown</td>
                         <td class="s-infra num">@slice.Infrastructure</td>
                         <td class="s-cost-trial num">@SummaryText.Cost(slice.CostPerTrial, Currency)</td>

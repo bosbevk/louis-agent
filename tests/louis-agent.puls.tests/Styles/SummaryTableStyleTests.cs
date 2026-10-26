@@ -20,7 +20,7 @@ public class SummaryTableStyleTests
     public void TheCells_AreSpacedApart_AndTheTableFillsItsCard()
     {
         Assert.That(RuleOf(".summary-table th, .summary-table td"), Does.Match(@"padding:\s*\d+px\s+\d+px"));
-        Assert.That(RuleOf(".summary-table"), Does.Contain("width: 100%").And.Contain("border-collapse: collapse"));
+        Assert.That(RuleOf(".summary-table"), Does.Contain("width: 100%").And.Contain("border-collapse: separate").And.Match(@"border-spacing:\s*0\s+\d+px"), "rows apart, as rounded cards (6a.4)");
     }
 
     [Test]
@@ -34,7 +34,8 @@ public class SummaryTableStyleTests
     [Test]
     public void TheOverallLine_StandsOut_AndTheModeHeadingIsHeadingSized()
     {
-        Assert.That(RuleOf(".summary-table tr.overall td"), Does.Contain("font-weight: 600"));
+        Assert.That(RuleOf(".summary-table tr.overall td"), Does.Contain("font-weight: 600").And.Contain("245, 130, 32"), "and edged orange, like the overall category card");
+        Assert.That(RuleOf(".summary-table .summary-row td"), Does.Contain("background: var(--bg)").And.Contain("border-top"), "each row its own rounded card");
         Assert.That(RuleOf(".summary-mode h3"), Does.Match(@"font-size:\s*(1\d|2[0-2])px"), "a heading, not the page's title");
     }
 

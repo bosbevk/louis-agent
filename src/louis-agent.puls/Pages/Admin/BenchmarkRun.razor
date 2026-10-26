@@ -8,6 +8,7 @@
 @inject AgentApi Api
 @inject ChatStore Store
 @inject CurrencyState Currency
+@inject ReviewerState Reviewer
 @implements IDisposable
 
 @* F31 step 10: one stored run: what it ran with, and its explorer (RunExplorer), read from the benchmark store. *@
@@ -147,7 +148,21 @@ else
         }
     }
 
-    public void Dispose() => Currency.Changed -= StateHasChanged;
+    // ADR 0042: after a grade the page fetches the run again, so every panel shows what the store holds; the explorer keeps its open conversation.
+    protected override void OnInitialized() => Reviewer.Changed += Refetch;
+
+    private void Refetch() => _ = InvokeAsync(async () =>
+    {
+        try { _run = await Api.GetAsync<JsonElement>($"v1/admin/benchmarks/runs/{Uri.EscapeDataString(RunId)}"); }
+        catch (AgentApiException ex) { _error = ex.Message; }
+        StateHasChanged();
+    });
+
+    public void Dispose()
+    {
+        Currency.Changed -= StateHasChanged;
+        Reviewer.Changed -= Refetch;
+    }
 
     private static string? S(JsonElement e, string name) => e.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.String ? v.GetString() : null;
 

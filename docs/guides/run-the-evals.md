@@ -142,7 +142,7 @@ The judge is only worth trusting if people agree with it, so the portal lets you
 
 **Using your grades as labels.** Press *Download the labels (zip)*, unzip the files into `evals/louis-agent.evals.puls/Evals/Cook/Dataset/labels/` and run the check from *Checking the judge* (`--calibrate`).
 
-**What the name means.** The portal has one shared key, so nobody logs in: the name records who *said* they graded, not who proved it.
+**What the name means.** The portal has one shared key, so nobody logs in: the name records who *said* they graded, not who proved it. The panel says who it is grading as; *Not you?* lets the name go so you can type your own.
 
 ---
 [Guides](README.md) · [Docs index](../README.md)

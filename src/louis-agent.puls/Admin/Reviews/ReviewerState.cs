@@ -53,6 +53,21 @@ public sealed class ReviewerState(IJSRuntime js)
         return true;
     }
 
+    /// <summary>Lets the kept name go (6a.4, "not you?"), so another person can grade in this browser; the panels ask for a name again.</summary>
+    public async Task ClearAsync()
+    {
+        Name = null;
+        try
+        {
+            await js.InvokeVoidAsync("localStorage.removeItem", StorageKey);
+        }
+        catch (Exception ex) when (ex is JSException or InvalidOperationException or TaskCanceledException)
+        {
+            // Not forgotten by the browser, but gone for this visit.
+        }
+        Changed?.Invoke();
+    }
+
     public bool Graded(ConversationRef conversation, string judge) => _graded.Contains((conversation, judge));
 
     public void Record(ConversationRef conversation, string judge)

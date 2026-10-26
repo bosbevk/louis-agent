@@ -117,4 +117,18 @@ public class SummaryPanelTests
         cut.WaitForAssertion(() => Assert.That(handler.Requests.Select(r => (r.Method, r.Url)),
             Is.EqualTo(new[] { (HttpMethod.Post, "http://localhost/v1/admin/benchmarks/runs/old123456789/rescore") })));
     }
+
+    // 6a.4 (Louis: "too flat"): the three rate cells carry a bar as wide as the rate, green for the pass rate and pass@k, orange for pass^k; a slice too few for a rate has no bar.
+    [Test]
+    public void TheRateCells_CarryABarAsWideAsTheRate_AndATooFewSliceHasNone()
+    {
+        var (cut, _) = Render(Run);
+        var rows = cut.FindAll(".summary-row");
+
+        Assert.That(rows[0].QuerySelector(".s-rate .rate-fill")!.GetAttribute("style"), Does.Contain("75%"));
+        Assert.That(rows[0].QuerySelector(".s-at-k .rate-fill")!.GetAttribute("style"), Does.Contain("100%"));
+        Assert.That(rows[0].QuerySelector(".s-hat-k .rate-fill")!.ClassList, Does.Contain("hat"));
+        Assert.That(rows[0].QuerySelector(".s-hat-k .rate-fill")!.GetAttribute("style"), Does.Contain("50%"));
+        Assert.That(rows[1].QuerySelectorAll(".rate-fill"), Is.Empty, "too few for a rate: no bar");
+    }
 }

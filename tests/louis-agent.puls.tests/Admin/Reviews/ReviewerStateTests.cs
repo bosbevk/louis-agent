@@ -58,6 +58,25 @@ public class ReviewerStateTests
         Assert.That(ctx.JSInterop.Invocations.Single(i => i.Identifier == "localStorage.setItem").Arguments, Is.EqualTo(new object?[] { ReviewerState.StorageKey, "Louis" }));
     }
 
+    // 6a.4 (Louis, "not you?"): a kept name can be let go, so another person can grade in this browser; the page is told, so the panels ask for a name again.
+    [Test]
+    public async Task AKeptName_CanBeCleared_AndThePageIsTold()
+    {
+        using var ctx = new BunitContext();
+        ctx.JSInterop.SetupVoid("localStorage.setItem", _ => true).SetVoidResult();
+        ctx.JSInterop.SetupVoid("localStorage.removeItem", ReviewerState.StorageKey).SetVoidResult();
+        var state = new ReviewerState(ctx.JSInterop.JSRuntime);
+        await state.SetAsync("Test");
+        int changes = 0;
+        state.Changed += () => changes++;
+
+        await state.ClearAsync();
+
+        Assert.That(state.Name, Is.Null);
+        Assert.That(changes, Is.EqualTo(1));
+        Assert.That(ctx.JSInterop.Invocations.Any(i => i.Identifier == "localStorage.removeItem"), Is.True);
+    }
+
     [Test]
     public async Task ABlankNameIsNotKept()
     {

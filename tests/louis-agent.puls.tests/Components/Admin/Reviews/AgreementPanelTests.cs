@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace LouisAgent.Puls.Tests.Components.Admin.Reviews;
 
-// F18 step 6a.3: the run's page shows, per judge, how often it agreed with the people (the API's counts as a small table: the person's pass or fail against the judge's answer, and each class's
+// F18 step 6a.3: the run's page shows, per judge, how often it agreed with the people (the API's counts as a row per judge: the person's pass or fail against the judge's answer, and each class's
 // share, "few labels" under ten), with a link to download the people's labels as the zip of label files the API exports. Written first: the panel did not exist.
 public class AgreementPanelTests
 {
@@ -27,24 +27,29 @@ public class AgreementPanelTests
         return (ctx.Render<AgreementPanel>(p => p.Add(x => x.Run, Run(agreement)).Add(x => x.RunId, "run1")), handler, ctx);
     }
 
+    // Louis, 2026-10-26: "like the pass rates": a row per judge, with a bar per class of the people's grades (what you passed, what you failed) that shows the share the judge agreed,
+    // the 2x2 counts on the bar's hover, and the download as a chip in the row.
     [Test]
-    public void EachJudgeHasATable_OfThePersonsPassAndFailAgainstTheJudgesAnswers()
+    public void EachJudgeIsARow_WithABarPerClassOfYourGrades_AndTheCountsOnHover()
     {
         var (cut, _, _) = Render(Cook);
 
-        Assert.That(cut.Find(".agreement-judge h3").TextContent, Is.EqualTo("meal-for-people"));
-        var rows = cut.FindAll(".agreement-table tbody tr");
-        Assert.That(rows[0].QuerySelectorAll("td").Select(c => c.TextContent), Is.EqualTo(new[] { "You passed", "13", "1", "0", "13 of 14 (93%)" }));
-        Assert.That(rows[1].QuerySelectorAll("td").Select(c => c.TextContent), Is.EqualTo(new[] { "You failed", "0", "4", "0", "4 of 4 (100%), few labels" }));
-        Assert.That(cut.FindAll(".agreement-table thead th").Select(h => h.TextContent), Is.EqualTo(new[] { "", "Judge: pass", "Judge: fail", "Judge: can't tell", "Agreed" }));
+        Assert.That(cut.Find(".agreement-judge .mode-rate-name").TextContent, Is.EqualTo("meal-for-people"));
+        Assert.That(cut.Find(".agreement-pass strong").TextContent, Is.EqualTo("13 of 14 (93%)"));
+        Assert.That(cut.Find(".agreement-pass .rate-fill").GetAttribute("style"), Does.Contain("93%"));
+        Assert.That(cut.Find(".agreement-pass").GetAttribute("title"), Does.Contain("passed 13").And.Contain("failed 1").And.Contain("tell 0"));
+        Assert.That(cut.Find(".agreement-fail strong").TextContent, Is.EqualTo("4 of 4 (100%), few labels"));
+        Assert.That(cut.Find(".agreement-lead").TextContent, Does.Contain("few labels"));
+        Assert.That(cut.Markup, Does.Not.Contain("<table"));
     }
 
     [Test]
-    public void AClassNobodyHasGraded_SaysNoLabels()
+    public void AClassNobodyHasGraded_SaysNoLabels_WithAnEmptyBar()
     {
         var (cut, _, _) = Render("""[{"grader":"g","person_pass":{"judge_pass":3,"judge_fail":0,"judge_unknown":0},"person_fail":{"judge_pass":0,"judge_fail":0,"judge_unknown":0}}]""");
 
-        Assert.That(cut.FindAll(".agreement-table tbody tr")[1].QuerySelectorAll("td")[4].TextContent, Is.EqualTo("no labels"));
+        Assert.That(cut.Find(".agreement-fail strong").TextContent, Is.EqualTo("no labels"));
+        Assert.That(cut.Find(".agreement-fail .rate-fill").GetAttribute("style"), Does.Contain("0%"));
     }
 
     [Test]
@@ -53,7 +58,7 @@ public class AgreementPanelTests
         var (cut, _, _) = Render("[]");
 
         Assert.That(cut.FindAll(".agreement-judge"), Is.Empty);
-        Assert.That(cut.Markup, Does.Not.Contain("<table"));
+        Assert.That(cut.FindAll(".agreement-lead"), Is.Empty);
     }
 
     [Test]

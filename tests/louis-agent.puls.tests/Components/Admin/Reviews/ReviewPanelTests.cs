@@ -163,6 +163,39 @@ public class ReviewPanelTests
         Assert.That(state.Graded(Bobotie, "meal-for-people"), Is.False);
     }
 
+    // Louis, 2026-10-26: the pick must stay pressed. The three buttons are one segmented radio group, as the explorer's repeat picker is, and the chosen one is aria-checked:
+    // right after the click, and again on a reload from the stored grade.
+    [Test]
+    public void ThePickStaysPressed_AsTheCheckedOneOfASegmentedGroup_AfterTheClickAndFromAStoredGrade()
+    {
+        var (cut, _, _) = Render("Louis", Grades());
+        Assert.That(cut.FindAll(".review-buttons [role=radio]"), Has.Count.EqualTo(3));
+        Assert.That(cut.FindAll(".review-buttons [aria-checked=true]"), Is.Empty, "nothing chosen yet");
+
+        cut.Find(".review-fail").Click();
+
+        cut.WaitForAssertion(() => Assert.That(cut.Find(".review-fail").GetAttribute("aria-checked"), Is.EqualTo("true")));
+        Assert.That(cut.Find(".review-fail").ClassList, Does.Contain("active"));
+        Assert.That(cut.Find(".review-pass").GetAttribute("aria-checked"), Is.EqualTo("false"));
+
+        var stored = new HumanGradeRow("meal-for-people.human", "meal-for-people", "unsure", "", "Louis", DateTimeOffset.UnixEpoch);
+        Assert.That(Render("Louis", Grades(GradeOutcome.Pass, stored)).Cut.Find(".review-unsure").GetAttribute("aria-checked"), Is.EqualTo("true"));
+    }
+
+    // 6a.4 (Louis: the grades went out under a name typed in another tab): with a name kept, the panel says whose grades these are and offers "not you?", which lets the name go.
+    [Test]
+    public void WithANameKept_ThePanelSaysWhoIsGrading_AndNotYouLetsTheNameGo()
+    {
+        var (cut, _, state) = Render("Test", Grades());
+        Assert.That(cut.Find(".review-who").TextContent, Does.Contain("Test"));
+
+        cut.Find(".review-change-name").Click();
+
+        cut.WaitForAssertion(() => Assert.That(cut.FindAll(".review-need-name"), Has.Count.EqualTo(1)));
+        Assert.That(state.Name, Is.Null);
+        Assert.That(cut.Find(".review-pass").HasAttribute("disabled"), Is.True);
+    }
+
     [Test]
     public void ARunWithNoQuestionOnItsFirstLine_StillAsksSomething_TheGradersName()
     {

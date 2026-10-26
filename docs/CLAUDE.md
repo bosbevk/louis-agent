@@ -117,6 +117,10 @@ decision's record (its context, and what it cost) in [docs/adr/](adr/README.md).
   shared services, and names the packs it needs, never referencing their code; its tool names are unique and
   MCP-safe. `PackConvertibilityTests` holds the shapes, review the rest.
   Why: [ADR 0028](adr/0028-packs-stay-convertible-to-mcp.md).
+- **The web shows the live results** (Louis, 2026-10-26) — a page renders what it last fetched from the API and fetches
+  again after any write it makes (a grade, a re-score, a kept name); it never adds its own write to a copy, never keeps a
+  count the API keeps, and never asks the person to reload. Change travels through a scoped state's `Changed` event.
+  Why: [ADR 0042](adr/0042-the-web-shows-the-live-results.md).
 - **Measure every request, and show it** — the usage ledger records each model request with its tokens and its cost,
   priced from a table dated by `as_of`, so later price changes never rewrite history; unknown prices are `null`, never
   0. Every host shows a turn's usage from the same records and totals (`UsageReport.Total`), so the views and the
