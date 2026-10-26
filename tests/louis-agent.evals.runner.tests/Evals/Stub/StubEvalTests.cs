@@ -21,7 +21,8 @@ public class StubEvalTests
     [Test]
     public async Task ARunIsThePythonStubsLineForLine()
     {
-        string[] mine = (await RunAsync(repeat: 1)).Skip(1).ToArray();
+        // The mode's roll-up (F18 step 5c) is the harness's, like the grades: the Python stub wrote none.
+        string[] mine = (await RunAsync(repeat: 1)).Skip(1).Where(line => !line.StartsWith("@{\"event\":\"summary\"", StringComparison.Ordinal)).ToArray();
         string[] python = PythonLines.Skip(1).ToArray();
 
         Assert.That(mine, Has.Length.EqualTo(python.Length));

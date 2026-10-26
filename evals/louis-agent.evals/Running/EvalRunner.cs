@@ -10,6 +10,7 @@ using LouisAgent.SessionStream;
 using Microsoft.Extensions.Logging;
 using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Grading.Outcomes;
+using LouisAgent.Evals.Reports;
 using LouisAgent.Evals.Running.Rescoring;
 
 namespace LouisAgent.Evals.Running;
@@ -42,6 +43,8 @@ public sealed class EvalRunner(ISessionClient sessions, ProtocolWriter protocol,
                 // The rates over the repeats so far: the last line of a mode is the mode's (F18 step 5a).
                 protocol.ModeDone(mode.Name, repeat, tally.Share, repeat, tally.Infrastructure, tally.Retried);
             }
+            // The mode rolled up, overall and by category (F18 step 5c), after its last mode_done.
+            foreach (var line in RunSummary.Of(mode.Name, tally.Results, eval.Graders)) protocol.Summary(line);
         }
     }
 
@@ -78,11 +81,11 @@ public sealed class EvalRunner(ISessionClient sessions, ProtocolWriter protocol,
         var trial = new Trial(run.RunId, mode, repeat, scenario, new Transcript(turns));
         var grades = await TrialGrading.GradeAsync(eval, trial, logger, cancellationToken);
         var outcome = PassRates.Of(trial, grades, eval.Graders);
-        tally.Add(scenario.Id, outcome);
-        var scores = eval.ScoresOf(trial, grades);
         // The eval's own record, serialized as its runtime type: as EvalScores, which has no properties, it would be {}.
+        var scores = JsonSerializer.SerializeToElement<object>(eval.ScoresOf(trial, grades), EvalScores.Json);
+        tally.Add(new TrialResult(scenario.Id, scenario.Categories, outcome, grades, scores));
         // The conversation's role is the one that answered its first turn; its errors are the turns that failed.
-        protocol.Conversation(mode.Name, repeat, scenario.Id, facts[0].Role, JsonSerializer.SerializeToElement<object>(scores, EvalScores.Json),
+        protocol.Conversation(mode.Name, repeat, scenario.Id, facts[0].Role, scores,
             (clock.GetUtcNow() - started).TotalSeconds, grades, outcome, errors: facts.Count(f => f.Error is not null));
     }
 

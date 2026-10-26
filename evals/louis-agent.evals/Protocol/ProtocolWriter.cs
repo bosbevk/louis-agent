@@ -6,6 +6,7 @@ using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Trials;
 using LouisAgent.Evals.Grading.Outcomes;
+using LouisAgent.Evals.Reports;
 
 namespace LouisAgent.Evals.Protocol;
 
@@ -136,6 +137,9 @@ public sealed class ProtocolWriter(TextWriter stdout, TimeProvider clock)
             if (infrastructure is not null) json.WriteNumber("infrastructure", infrastructure.Value);
             if (retried is not null) json.WriteNumber("retried", retried.Value);
         });
+
+    /// <summary>One slice of a mode's roll-up (F18 step 5c), written after the mode's last <c>mode_done</c>.</summary>
+    public void Summary(SummaryLine line) => Emit("summary", json => SummaryLineFields.Write(json, line));
 
     /// <summary>What the eval says about the turn, in the Python's order: the continuation, the calls, the hosts (the error follows the seconds).</summary>
     private static void WriteFacts(Utf8JsonWriter json, TurnFacts facts)

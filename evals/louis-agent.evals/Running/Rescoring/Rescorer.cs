@@ -7,6 +7,7 @@ using LouisAgent.Evals.Grading.Common;
 using LouisAgent.Evals.Grading.Outcomes;
 using LouisAgent.Evals.Messages;
 using LouisAgent.Evals.Protocol;
+using LouisAgent.Evals.Reports;
 using LouisAgent.Evals.Trials;
 using Microsoft.Extensions.Logging;
 
@@ -26,6 +27,7 @@ internal sealed class Rescorer(ProtocolWriter protocol, ILogger logger)
             new { Source = rescoreOf, Run = runId, Conversations = stored.Lines.Count(line => line.Kind == "conversation") });
         protocol.Begin(eval.Name, eval.Version, EvalBuild.Commit, eval.Graders, stored.Models, stored.Split, rescoreOf, eval.Dataset);
 
+        string? current = null;
         var modes = new Dictionary<string, EvalMode>(StringComparer.Ordinal);
         var tallies = new Dictionary<string, ModeTally>(StringComparer.Ordinal);
         var turns = new Dictionary<(string Mode, int Repeat, string Task), List<string>>();
@@ -34,6 +36,9 @@ internal sealed class Rescorer(ProtocolWriter protocol, ILogger logger)
             switch (line.Kind)
             {
                 case "mode":
+                    // A mode's repeats are consecutive: when the next mode begins, the last one is done (F18 step 5c).
+                    if (current is not null && current != line.Mode) WriteSummary(eval, current, tallies[current]);
+                    current = line.Mode;
                     modes[line.Mode] = StoredRun.ModeOf(line);
                     tallies.TryAdd(line.Mode, new ModeTally());
                     protocol.Copy(line.Raw);
@@ -54,6 +59,13 @@ internal sealed class Rescorer(ProtocolWriter protocol, ILogger logger)
                     break;
             }
         }
+        if (current is not null) WriteSummary(eval, current, tallies[current]);
+    }
+
+    /// <summary>The mode rolled up from its new grades (F18 step 5c); the stored run's own <c>summary</c> lines are never copied, since they are of the old grades.</summary>
+    private void WriteSummary(IEval eval, string mode, ModeTally tally)
+    {
+        foreach (var line in RunSummary.Of(mode, tally.Results, eval.Graders)) protocol.Summary(line);
     }
 
     private async Task RescoreConversationAsync(IEval eval, string runId, EvalMode mode, StoredLine stored, List<string> turnLines, ModeTally tally,
@@ -82,7 +94,7 @@ internal sealed class Rescorer(ProtocolWriter protocol, ILogger logger)
         }
 
         var outcome = PassRates.Of(trial, grades, eval.Graders);
-        tally.Add(stored.Task, outcome);
+        tally.Add(new TrialResult(stored.Task, gone ? [] : scenario.Categories, outcome, grades, scores));
         protocol.Conversation(stored.Mode, stored.Repeat, stored.Task, stored.Text("role"), scores,
             stored.Decimal("seconds") ?? 0, grades, outcome, stored.Number("errors"));
     }

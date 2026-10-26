@@ -1,4 +1,5 @@
 using LouisAgent.Evals.Grading.Outcomes;
+using LouisAgent.Evals.Reports;
 
 namespace LouisAgent.Evals.Running;
 
@@ -19,6 +20,18 @@ public sealed class ModeTally
 
     /// <summary>The mode's pass@k and pass^k over the trials so far; null when none counts.</summary>
     public PassShare Share => PassRates.ShareOf(_outcomes.Values.Select(outcomes => PassRates.Over(outcomes)));
+
+    /// <summary>Every graded trial of the mode, in order: what <see cref="RunSummary"/> rolls up (F18 step 5c).</summary>
+    public IReadOnlyList<TrialResult> Results => _results;
+
+    private readonly List<TrialResult> _results = [];
+
+    /// <summary>A graded trial: its outcome counts as in 5a, and the trial is kept for the roll-up.</summary>
+    public void Add(TrialResult result)
+    {
+        Add(result.Scenario, result.Outcome);
+        _results.Add(result);
+    }
 
     public void Add(string scenario, TrialOutcome outcome)
     {

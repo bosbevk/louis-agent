@@ -51,7 +51,8 @@ public class EvalRunnerFailureTests
         Assert.That(turn.GetProperty("answer").GetString(), Is.EqualTo("Hallo"));
         Assert.That(client.Closed, Is.EqualTo(new[] { "sess_f", "sess_f" }), "each attempt's session is closed");
         Assert.That(Of("conversation").Count(), Is.EqualTo(1), "the run goes on to the conversation's end");
-        Assert.That(lines.Last().GetProperty("event").GetString(), Is.EqualTo("mode_done"));
+        // The mode's roll-up follows its last mode_done (F18 step 5c).
+        Assert.That(lines.Select(l => l.GetProperty("event").GetString()).TakeLast(2), Is.EqualTo(new[] { "mode_done", "summary" }));
     }
 
     [TestCase(typeof(TimeoutException), "timeout")]
