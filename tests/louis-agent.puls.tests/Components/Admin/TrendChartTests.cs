@@ -46,4 +46,59 @@ public class TrendChartTests
         Assert.That(panel.QuerySelector(".trend-top")!.TextContent, Is.EqualTo("no known values yet"));
         Assert.That(panel.QuerySelectorAll(".trend-line"), Is.Empty);
     }
+
+    // The trend rework (Louis, 2026-10-26: "more explanatory and maybe more interactive"): each panel's head reads the shown run's value per mode, with a delta against the run
+    // before it; the shown run is the one hovered, else the one marked, else the last; dates sit under the axis; the scale says its two ends. Written first: the head said only "top".
+    private const string TwoRuns = """
+        {"check":"puls-cook","modes":[{"name":"puls-cook","points":[
+          {"run":"run_1","at":"2026-10-24T09:00:00+00:00","cost":0.10,"score":1,"conversations":8,"tokens":1000,"seconds_per_turn":9.5,"cache_share":0.5,"sourced":0.8,"tools_failed":0,"cost_per_answer":0.02,"sites":3,"pass_at_k":0.5,"pass_hat_k":0.5,"k":2},
+          {"run":"run_2","at":"2026-10-25T09:00:00+00:00","cost":0.20,"score":1,"conversations":8,"tokens":1000,"seconds_per_turn":9.5,"cache_share":0.5,"sourced":0.8,"tools_failed":0,"cost_per_answer":0.02,"sites":3,"pass_at_k":0.75,"pass_hat_k":0.25,"k":2}]}]}
+        """;
+
+    /// <summary>The panel whose title starts so; an info tip may name another panel's measure, so the whole head is no match.</summary>
+    private static AngleSharp.Dom.IElement PanelTitled(IRenderedComponent<TrendChart> cut, string title) =>
+        cut.FindAll(".trend-panel").First(p => p.QuerySelector(".chart-title > strong")!.TextContent.StartsWith(title, StringComparison.Ordinal));
+
+    private static IRenderedComponent<TrendChart> RenderMarked(string trend, string highlight)
+    {
+        var ctx = new BunitContext();
+        ctx.JSInterop.Mode = JSRuntimeMode.Loose;
+        return ctx.Render<TrendChart>(p => p.Add(x => x.Trend, Json(trend)).Add(x => x.Highlight, highlight));
+    }
+
+    [Test]
+    public void EachPanelsHead_ReadsTheMarkedRunsValue_WithItsDeltaAgainstTheRunBefore()
+    {
+        var cut = RenderMarked(TwoRuns, "run_2");
+
+        var passAt = PanelTitled(cut, "pass@k");
+        Assert.That(passAt.QuerySelector(".trend-values")!.TextContent, Does.Contain("75%"));
+        Assert.That(passAt.QuerySelector(".trend-delta.up")!.TextContent, Does.Contain("+25"), "run_2 against run_1");
+        var passHat = PanelTitled(cut, "pass^k");
+        Assert.That(passHat.QuerySelector(".trend-delta.down")!.TextContent, Does.Contain("25"));
+        Assert.That(cut.Find(".trend-shown").TextContent, Does.Contain("run_2"), "the trend says which run it is reading");
+    }
+
+    [Test]
+    public void TheScaleSaysItsEnds_AndTheDatesSitUnderTheAxis()
+    {
+        var cut = RenderMarked(TwoRuns, "run_2");
+
+        var cost = PanelTitled(cut, "Cost");
+        Assert.That(cost.QuerySelector(".trend-top")!.TextContent, Does.StartWith("0 –"));
+        Assert.That(cost.QuerySelector(".trend-x")!.TextContent, Does.Contain("2026-10-24").And.Contain("2026-10-25"));
+    }
+
+    [Test]
+    public void HoveringAPoint_ReadsThatRunInEveryPanel()
+    {
+        var cut = RenderMarked(TwoRuns, "run_2");
+
+        cut.FindAll("a.trend-run").First(a => a.GetAttribute("href")!.EndsWith("run_1")).MouseEnter();
+
+        Assert.That(cut.Find(".trend-shown").TextContent, Does.Contain("run_1"));
+        var passAt = PanelTitled(cut, "pass@k");
+        Assert.That(passAt.QuerySelector(".trend-values")!.TextContent, Does.Contain("50%"));
+        Assert.That(passAt.QuerySelectorAll(".trend-hover"), Has.Count.EqualTo(1), "a guide line at the hovered run in every panel");
+    }
 }

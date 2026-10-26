@@ -154,6 +154,23 @@ public class BenchmarkTrendTests
         Assert.That(point.Cost, Is.Null);
     }
 
+    // FX24 follow-up (Louis, 2026-10-26, the trend's Accuracy panel fell to 0 the day the cook began giving estimates): an estimated row and a row rightly without a price in a town with no
+    // shop count as accurate in the trend, as they do in the run explorer's accuracy ring (AccuracyRing); only a guess and a row with no price do not.
+    [Test]
+    public async Task AnEstimatedRow_AndARowRightlyWithoutAPrice_CountAsAccurate_InTheTrend()
+    {
+        await _store.SaveRunAsync(new Run("a", "cook", 1, BenchmarkRunStatus.Done, T0));
+        JsonElement S(string json) => JsonDocument.Parse(json).RootElement.Clone();
+        await _store.SaveConversationAsync("a", new Conversation(new ConversationKey("puls-cook", 1, "cook-af"), 1, "puls-cook",
+            S("""{"routed_right":true,"ingredients":5,"priced":0,"estimated":4,"unsourced":1,"priced_ratio":0.8}"""), 0, 10));
+        await _store.SaveConversationAsync("a", new Conversation(new ConversationKey("puls-cook", 1, "cook-recipe-only"), 2, "puls-cook",
+            S("""{"routed_right":true,"ingredients":5,"priced":0,"estimated":0,"no_shop_rows":5,"priced_ratio":1}"""), 0, 10));
+
+        var point = (await BenchmarkTrends.ComputeAsync(_store, "cook")).Modes.Single().Points.Single();
+
+        Assert.That(point.Sourced, Is.EqualTo(0.9), "4 estimated and 5 rightly unpriced of 10; the one guess is not");
+    }
+
     [Test]
     public async Task EveryRingHasItsLine_TheTokensTimeCacheAccuracyToolsValueAndSites()
     {

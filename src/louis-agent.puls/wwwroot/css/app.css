@@ -1381,7 +1381,21 @@ html:has(.landing) { scroll-behavior: smooth; }
 .trend-point { stroke-width: 7; stroke-linecap: round; vector-effect: non-scaling-stroke; cursor: pointer; animation: fade .4s ease both; animation-delay: calc(var(--i, 0) * 120ms + 1s); }
 .trend-point.here { stroke-width: 11; }
 .trend.small .trend-point { stroke-width: 5; }
-.trend-point:hover { filter: brightness(1.25); }
+.trend-point:hover, .trend-point.hovered { filter: brightness(1.25); stroke-width: 10; }
+/* The trend reworked (2026-10-26): the run being read, its value per mode in each panel's head with the change since the run before, a guide line under the mouse, dates under the axis. */
+.trend-shown { font-size: 12.5px; }
+.trend-shown a { color: var(--orange-text); text-decoration: none; }
+.trend-shown a:hover code { text-decoration: underline; }
+.trend-hint { color: var(--dim); }
+.trend-values { display: inline-flex; align-items: center; gap: 12px; flex-wrap: wrap; font-size: 12.5px; color: var(--text); }
+.trend-values > span { display: inline-flex; align-items: center; gap: 5px; }
+.trend-values strong { color: var(--ink); font-variant-numeric: tabular-nums; }
+.trend-delta { font-size: 11px; font-weight: 700; padding: 1px 6px; border-radius: 999px; font-variant-numeric: tabular-nums; }
+.trend-delta.up { color: var(--green-light); background: var(--green-soft); }
+.trend-delta.down { color: var(--danger); background: rgba(242, 107, 79, .14); }
+.trend-hover { stroke: rgba(255, 255, 255, .35); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.trend-x { display: flex; justify-content: space-between; font-size: 11px; margin-top: -2px; font-variant-numeric: tabular-nums; }
+@media (max-width: 1200px) { .trend-hint { display: none; } }
 @media (prefers-reduced-motion: reduce) { :root:not([data-motion="on"]) :is(.trend-reveal, .trend-point) { animation: none; } }
 .manual-body h2 { font-size: 16px; color: var(--orange-text); }
 .runs-list .run-row-main:hover code { color: var(--orange-text); }

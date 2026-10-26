@@ -63,7 +63,9 @@ public static class BenchmarkTrends
                     }
 
                 long cached = mine.Sum(r => r.CacheReadTokens ?? 0), input = cached + mine.Sum(r => (r.InputTokens ?? 0) + (r.CacheWriteTokens ?? 0));
-                var (priced, listed) = mode.Aggregate((0, 0), (sum, c) => (sum.Item1 + Number(c, "priced"), sum.Item2 + Number(c, "ingredients")));
+                // Accurate rows (FX24, as the explorer's AccuracyRing counts them): priced with a source, estimated (the cook's answer while no shop's prices are read), or
+                // rightly without a price in a town with no shop. A guess and a row with no price are not.
+                var (priced, listed) = mode.Aggregate((0, 0), (sum, c) => (sum.Item1 + Number(c, "priced") + Number(c, "estimated") + Number(c, "no_shop_rows"), sum.Item2 + Number(c, "ingredients")));
                 var answered = mode.Where(Answered).Select(c => c.Key).ToHashSet();
                 var answeredCosts = mine.Where(r => r.Turn is not null && answered.Contains(r.Turn.Conversation) && r.Cost is not null).Sum(r => r.Cost!.Value);
 
