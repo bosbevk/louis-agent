@@ -24,7 +24,7 @@ BENCHMARK_RUN=cook-1 PULS_API=http://127.0.0.1:5070/ \
 | `--web off\|record\|replay` | What the run does with the web: nothing special (the instance's `WEB_REPLAY`), saves every page, search, fetch and the time it reads, or answers from a recording. `replay` needs `--of {runId}`. |
 | `--rescore {runId}` | Grades a stored run's transcripts again with today's graders, for $0, and records the result as a new run (`rescore_of`). It reads the stored run's protocol lines from stdin and takes no other flag. |
 | `--label-sheet {eval} {grader} {runId} {folder} [{count}]` | Writes the files a person labels, from a stored run on stdin; free. See *Checking the judge*. |
-| `--calibrate {eval} {grader}` | Asks a model grader about every labelled answer and prints how often it agrees with the person; never in CI. See *Checking the judge*. |
+| `--calibrate {eval} {grader} [--labels -]` | Asks a model grader about every labelled answer and prints how often it agrees with the person, then the report as one `@` line of data; never in CI. With `--labels -` the labels are read from stdin, one per line (what the portal's *Check the judge now* does). See *Checking the judge*. |
 | `--replay {runId}` | A replay of that run **with the model's answers too**: every model request is a cache hit, the run costs $0, and its scores equal the recorded run's. It tests everything around the model (the graders, the harness, the engine's code), not a prompt: a changed prompt is a different request, so it misses. |
 
 The run's id is `BENCHMARK_RUN`, else `local-` and the time it started: set it yourself, so you know what to replay. The runner
@@ -91,7 +91,9 @@ Each line says how many trials it holds (`n`), how many passed of the ones that 
 
 Some things code can't judge: *is this recipe a meal for four?* An eval then asks a model, a **judge**, and its answer is a measurement like any other. A measurement is only worth having if it is checked, so a judge is checked against a person before its grade counts for anything: you read some answers and say yes or no, and the judge is asked about the same answers. If it agrees with you on **9 of 10** or more, **in each class of your labels**, it sees what you see: a judge that says "pass" to everything agrees with every label that is a pass, so the check also asks it to say "fail" where you did. If it doesn't, its grades are noise, and the fix is a better prompt or a better model, not trusting it anyway. Until a judge passes, its grade is shown and counted but **never required**: the outcome of a trial doesn't wait on it.
 
-The check costs nothing on a local model (Ollama), and it **never runs in CI**: it asks a model. Set the judge first (`EVAL_JUDGE_PROVIDER`, `EVAL_JUDGE_MODEL`, and `EVAL_JUDGE_ENDPOINT` for a local server; see `config/.env.example`).
+The check costs nothing on a local model (Ollama), and it **never runs in CI**: it asks a model. Set the judge first (`EVAL_JUDGE_PROVIDER`, `EVAL_JUDGE_MODEL`, and `EVAL_JUDGE_ENDPOINT` for a local server; see `config/.env.example`). **Without a judge model set, every answer is "can't tell"** and the report says so: a check that agrees on nothing is the sign.
+
+**The short way is the portal** (*From the portal*, below): grade answers in a run's explorer, then press *Check the judge now* in the *Judge against people* card. The steps here are the long way, for labels you keep in the dataset.
 
 **1. Make a sheet.** From a stored run (the export is the same text a re-score reads), write ten files to label:
 
@@ -122,7 +124,10 @@ It prints the headline (`Agreement: 17 of 18`), then the agreement in each class
 Labelled pass: judge pass 13, fail 1, can't tell 0 (13 of 14, 93%)
 Labelled fail: judge pass 0, fail 4, can't tell 0 (4 of 4, 100%), few labels
 Result: pass, at least 90% in each class
+@{"event":"calibration","eval":"puls-cook","grader":"meal-for-people","judge_model":"qwen3:8b","agreed":17,"total":18,…}
 ```
+
+The last line is the same report as data (the classes in the portal's shape, each disagreement with its reason), for whatever started the runner: the portal keeps it as the check's report. Read the lines above it.
 
 The bar is **90% of each class** (a class of four needs all four); a class with no labels is untested and does not pass; a class of fewer than ten is marked *few labels*. After that, for each answer where the judge differed: the scenario, the run, which way you labelled it, which way the judge went (*can't tell* counts as a disagreement) and its reason. Read those first: a disagreement is either the judge's mistake or yours, and the judge's reason says which.
 
@@ -140,7 +145,9 @@ The judge is only worth trusting if people agree with it, so the portal lets you
 
 **How often the judge agreed.** The run's page has a *Judge against people* table per reviewed judge: of the answers you passed, how many the judge passed too; of the ones you failed, how many it failed. Under ten labels in a class it says *few labels*, because a share of four is just four answers.
 
-**Using your grades as labels.** Press *Download the labels (zip)*, unzip the files into `evals/louis-agent.evals.puls/Evals/Cook/Dataset/labels/` and run the check from *Checking the judge* (`--calibrate`).
+**Checking the judge against your grades: from the portal.** In the same card, press **Check the judge now**. The API writes your decided grades (pass or fail, each with its whole conversation) to the eval runner's stdin and runs `--calibrate … --labels -` with the judge the API's instance is set to (`EVAL_JUDGE_*`), so a prompt change needs the image rebuilt first; nothing else can run meanwhile (one run at a time: the judge is shared). A minute or two on a local judge; the card says it is asking. When it ends, the card shows the report: when and with which judge, how often it agreed with you, whether it clears the bar (90% in each class) or which class fell short, your passes and your fails with what the judge said to each, *Where the judge differed* with the judge's reason for each, and *Earlier checks* folded under it, so you can see a prompt change move the number. A check that ended without a report says the runner's last line, which is the reason. The reports are kept in the store (`calibrations`), beside your grades, and go when the run is deleted. The API's routes: `POST /v1/admin/benchmarks/runs/{id}/calibrations/{grader}` and `GET /v1/admin/benchmarks/runs/{id}/calibrations`.
+
+**Using your grades as labels in the dataset.** Press *Download the labels (zip)*, unzip the files into `evals/louis-agent.evals.puls/Evals/Cook/Dataset/labels/` and run the check from *Checking the judge* (`--calibrate`). The dataset's labels are the ones a developer runs against without a store; the portal's check reads the store.
 
 **What the name means.** The portal has one shared key, so nobody logs in: the name records who *said* they graded, not who proved it. The panel says who it is grading as; *Not you?* lets the name go so you can type your own. The store keeps the name with each grade; the downloaded label files don't carry it, so a label is a label whoever gave it.
 
