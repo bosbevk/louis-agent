@@ -41,7 +41,8 @@ public class MealForPeopleGraderTests
         Assert.That((grade.Outcome, grade.Reason), Is.EqualTo((GradeOutcome.Pass, "feeds four")));
         Assert.That(grade.Judge, Is.EqualTo(new GradeJudge("qwen3:8b", MealForPeoplePrompt.Hash)));
         string user = client.Sent.Single()[1].Text;
-        Assert.That(user, Does.Contain("People: 4").And.Contain("Budget: R150").And.Contain("Town: Malmesbury").And.Contain("antwoord 1"));
+        // 6a.4g: the judge is not told the budget. It must never judge it, and a small model judged it anyway when told; another grader checks the cost.
+        Assert.That(user, Does.Contain("People: 4").And.Not.Contain("Budget").And.Contain("Town: Malmesbury").And.Contain("antwoord 1"));
     }
 
     [TestCase("""{"serves":[4,6]}""", 2, 6)]
@@ -54,7 +55,9 @@ public class MealForPeopleGraderTests
         await Grader(client).GradeAsync(Cook(expected, turns), CancellationToken.None);
 
         string user = client.Sent.Single()[1].Text;
-        Assert.That(user, Does.Contain($"People: {people}").And.Contain($"antwoord {turns}").And.Not.Contain("antwoord " + (turns - 1) + "\n"));
+        // 6a.4f: the earlier answers are sent too, under "the conversation so far", and the judged one last, under "the answer to judge".
+        Assert.That(user, Does.Contain($"People: {people}").And.EndWith($"The answer to judge:\nantwoord {turns}"));
+        if (turns > 1) Assert.That(user, Does.Contain("The conversation so far:").And.Contain($"Assistant: antwoord {turns - 1}"));
     }
 
     [Test]

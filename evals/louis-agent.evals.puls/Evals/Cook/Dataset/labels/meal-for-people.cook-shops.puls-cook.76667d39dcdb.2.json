@@ -1,0 +1,17 @@
+{
+  "grader": "meal-for-people",
+  "scenario": "cook-shops",
+  "mode": "puls-cook",
+  "run": "76667d39dcdb",
+  "repeat": 2,
+  "turns": [
+    {
+      "question": "Ek is in Stellenbosch, kook vanaand vir vier mense en het so 'n uur. Ek koop by PnP en Woolworths. Wat moet ek maak? Gee my die resep, ongeveer wat dit kos, en die takke se adresse.",
+      "answer": "Ek gee dit gou vir my kok; hy's nou-nou terug met 'n antwoord.My kok is terug, hier is wat hy gekry het:\n\n**Die gereg**\nHoender-in-die-oond met blatjang-mayonnaise en sampioensop: 'n eenvoudige, vinnige ete wat in een oondbak gaar word. Dit pas by vier mense en 'n uur se tyd.\n\n**Resep**\n\n![Vinnige Maandaghoender - bruin en lekker](https://marindakook.co.za/wp-content/uploads/2017/10/featured-brood-en-botter-031.jpg)\n\nDien 4 · ongeveer 1 uur 15 min\n\n1. Verhit die oond tot 180 °C.\n2. Sny 1 ui in ringe en plaas dit onderin 'n oondvaste bak.\n3. Pak die 4 hoenderporsies bo-op die ui en strooi die sampioensop-poeier oor die hoender.\n4. Meng 165 ml mayonnaise, 165 ml blatjang en 165 ml melk. Gooi dit oor die hoender en strooi sout en peper na smaak.\n5. Bak toe vir 45 minute.\n6. Maak die bak oop en bak nog 20 minute tot die hoender mooi bruin is.\n7. Dien op met rys, groente of slaai.\n\nSkakel: https://marindakook.co.za/vinnige-maandag-hoender-bruin-en-lekker/\n\n**Inkopielys**\n\n| Bestanddeel | Vir die resep | Om te koop | Geskatte prys |\n|---|---|---|---|\n| Hoenderporsies | 4 porsies (± 1,2 kg) | hoenderporsies 1,2 kg | ± R95 |\n| Ui | 1 middelgrote | uie 1 kg | ± R25 |\n| Mayonnaise | 165 ml | mayonnaise 400 g | ± R35 |\n| Blatjang | 165 ml | blatjang 350 g | ± R30 |\n| Melk | 165 ml | melk 500 ml | ± R16 |\n| Sampioensop-poeier | 1 pakkie | sampioensop-poeier 50 g | ± R18 |\n| **Totaal** | | | **± R219** |\n| **Per persoon** | | | **± R55** |\n\nPryse is skattings, nie by 'n winkel nagegaan nie.\n\nUit die voorraadkas: sout en peper.\n\n**Waar om te koop**\n\n| Winkel | Tak | Straat of winkelsentrum | Webwerf |\n|---|---|---|---|\n| Pick n Pay | Pick n Pay Stellenbosch (Bird Street) | Bird Street, Stellenbosch Sentraal | [pnp.co.za](https://www.pnp.co.za) |\n| Pick n Pay | Pick n Pay Technopark | Strand Road, Technopark, Stellenbosch | [pnp.co.za](https://www.pnp.co.za) |\n| Woolworths | Woolworths Stellenbosch (Andringa Street) | Andringa Street, Stellenbosch Sentraal | [woolworths.co.za](https://www.woolworths.co.za) |\n| Woolworths | Woolworths Technopark (Webersvallei Road) | Webersvallei Road, De Vleie, Technopark | [woolworths.co.za](https://www.woolworths.co.za) |\n\n**Onseker**\n\n| Wat | Hoekom |\n|---|---|\n| Alle pryse | Skattings: geen winkel se pryse is vir hierdie lys nagegaan nie. Woolworths se pryse is dalk hoër as dié van Pick n Pay. |\n| Tyd | Die oond is 65 minute, so dit neem ongeveer 1 uur 15 min. Vir 'n vinniger ete kan jy ontbeende dye gebruik, maar dan moet jy self nagaan of dit gaar is; dit is nie in die resep nie en nie nagegaan nie. |\n| Porsies en hoeveelhede | Die resep is vir 6 porsies. Ek het dit na 4 porsies geskaal (4 porsies hoender, sowat 1,2 kg; saus 2/3 van die hoeveelheid). |\n| Takke | Die adresse kom van OpenStreetMap. Die webskakels gaan na die winkels se tuisblaaie, nie na die takke se eie bladsye nie. |\n\nLet wel: die kok se tyd is 1 uur 15 min, en jy het net 'n uur. As jy wil, kan ek hom vra vir 'n vinniger opsie met ontbeende dye."
+    }
+  ],
+  "label": {
+    "pass": true,
+    "note": ""
+  }
+}

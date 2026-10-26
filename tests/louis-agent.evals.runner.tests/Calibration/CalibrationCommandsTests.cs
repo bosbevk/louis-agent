@@ -18,7 +18,7 @@ public class CalibrationCommandsTests
         new("cook-en", new EvalInput(null, "Africa/Johannesburg", ["For two"]), JsonDocument.Parse("""{"serves":2}""").RootElement.Clone(), [], DatasetSplit.Dev);
 
     private static LabeledAnswer Answer(string text, bool pass, int repeat = 1, string grader = "meal-for-people") =>
-        new($"cook-en.{repeat}.json", grader, "cook-en", "puls-cook", "8f7802b9a72e", repeat, 1, text, pass, "");
+        new($"cook-en.{repeat}.json", grader, "cook-en", "puls-cook", "8f7802b9a72e", repeat, [new LabelTurn("For two", text)], pass, "");
 
     private static string? NoCi(string name) => null;
 

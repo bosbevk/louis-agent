@@ -1,0 +1,21 @@
+{
+  "grader": "meal-for-people",
+  "scenario": "cook-en",
+  "mode": "puls-tools",
+  "run": "76667d39dcdb",
+  "repeat": 1,
+  "turns": [
+    {
+      "question": "What should I cook tonight in Pretoria for two? I have about an hour and I shop at PnP. Give me the recipe and what it'll cost.",
+      "answer": "Ek kon nie 'n kok (specialis) vanaand inkry nie, so ek het self 'n resep gesoek. Hier is 'n ete vir twee, binne ongeveer 'n uur.\n\n**Lemongrasse-knoffel hoender-en-aartappel-oond** (halwe hoeveelhede van Woolworths TASTE se resep vir vier)\n\n**Wat jy nodig het (vir twee):**\n- 4 hoenderdye, bene en vel aan (bone-in, skin-on)\n- 2 aartappels en 2 patats, dun gesny\n- 2 knoflooktenne, dun gesny\n- 5 g vars roosmaryn (of 'n paar takkies)\n- 1 stokkie gekonsentreerde hoendervleisbouillon, opgelos in ½ tot 1 koppie warm water\n- 40 g botter\n- ½ suurlemoen (rasper en sap)\n- 1 eetlepel olyfolie, sout\n\n**Hoe:**\n1. Verhit die oond tot 180 °C. Smeer 'n bakdis van sowat 20–25 cm in. Lê die aartappels en patats in lae met knoffel, roosmaryn en sout, tot die dis dreig-vol is.\n2. Maak die bouillon aan en giet dit oor die groente, sonder dat dit bedek word.\n3. Stop die botter, suurlemoenrasper en die res van die roosmaryn onder die vel van die hoenderdye. Vryf sout op die vel sodat dit lekker bruin word. Lê die hoender bo-op, sprinkel die olyfolie oor, en bak dit **40–45 minute**, tot goudbruin en die aartappels deur gaar is.\n\nDie bron se voorbereiding is 30 minute vir agt dye; vir twee is dit darem minder, maar die snywerk is die tydrower. Begin dus die oond eerste voorverhit en sny terwyl dit warm word. Dan haal jy die uur darem gerieflik. As jy dit vinnig wil hê, sny die aartappels dunner.\n\n**Wat dit sal kos (my eie skatting, nie PnP se pryse nie):**\nEk kyk nie na PnP se pryse nie, want hulle is nie een van die winkels waarvoor ek pryse kan nagaan nie. Dit is dus net 'n ruwe skatting in rand, en jy moet by jou winkel nagaan:\n- Hoenderdye (ongeveer 600–800 g): R70–R110\n- Aartappels, patats en knoffel: R40–R60\n- Roosmaryn en suurlemoen: R20–R35\n- Hoenderbouillon en botter (die deel wat jy gebruik): R25–R35\n- Olyfolie en sout: waarskynlik al in die kas\n\n**Totaal: sowat R155–R240 vir twee,** of ongeveer R80–R120 per persoon.\n\n**Bronne:**\n- Woolworths TASTE, \"Lemony garlic chicken-and-potato bake\": https://taste.co.za/recipes/lemony-garlic-chicken-and-potato-bake/ (die bakinstruksie is nagegaan)\n- Bona, \"Quick & Easy South African Dinner Recipes\": https://www.bona.co.za/lifestyle/quick-easy-south-african-dinner-recipes/ (idees vir vinnige ete)"
+    },
+    {
+      "question": "Swap the meat for chicken. What does the shopping list look like now?",
+      "answer": "Die resep is al hoender. Die hoofvleis in die ete wat ek voorgestel het, is hoenderdye, so daar is niks om te ruil nie. Het jy dalk 'n ander vleis in gedagte, soos beesvleis of wors, of wil jy net die inkopielys hê? Sê gerus, dan pas ek dit aan.\n\nDis die inkopielys soos dit nou staan, vir twee:\n\n- 4 hoenderdye, bene en vel aan\n- 2 aartappels\n- 2 patats\n- 1 pakkie knoffel (2 tenne nodig)\n- 1 bossie vars roosmaryn (of 'n paar takkies)\n- 1 stokkie gekonsentreerde hoendervleisbouillon\n- 1 suurlemoen (half nodig)\n- 40 g botter (die kleinste pakkie wat hulle het)\n- Olyfolie en sout, as jy dit nie in die kas het nie\n\nEk kyk nie na PnP se pryse nie, so ek kan nie sê wat elkeen by PnP in Pretoria kos nie. Die skatting van vorige keer, R155 tot R240, bly 'n ruwe gissing."
+    }
+  ],
+  "label": {
+    "pass": false,
+    "note": ""
+  }
+}

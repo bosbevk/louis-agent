@@ -1,0 +1,17 @@
+{
+  "grader": "meal-for-people",
+  "scenario": "cook-malmesbury",
+  "mode": "puls-tools",
+  "run": "76667d39dcdb",
+  "repeat": 1,
+  "turns": [
+    {
+      "question": "Ek het R150 vir aandete vir vier mense. Ek koop by PnP in Malmesbury. Wat kan ek maak, en wat kos dit by die winkel? Gebruik spesiale as daar is.",
+      "answer": "Ek kan nie vir jou PnP se pryse of spesiale hier nagaan nie. Ek kan net Checkers se katalogus sien, en PnP is nie daarby nie. Ek het ook nie my kok hier beskikbaar om 'n resep met kosteskattings vir jou te maak nie. Dit beteken ek kan nie vir jou sê wat R150 by PnP in Malmesbury vir vier mense kry nie.\n\nWat ek wel gevind het, is 'n paar resepidees vir vier mense wat nie baie kos nie:\n\n1. **Hoenderlewertjiepasta** (genoeg vir 4, ongeveer 20 minute om voor te berei). Hoenderlewertjies is gewoonlik een van die goedkoopste vleisoorte. Bron: [5 vinnige en goedkoop resepte vir aandete, Rooi Rose](https://novanews.co.za/rooirose/5-vinnige-en-goedkoop-resepte-vir-aandete/)\n2. **Hoenderresepte vir 'n vinnige aandete**: 'n paar eenvoudige opsies in dieselfde Rooi Rose-artikel. Bron: [9 Maklike hoenderresepte, Rooi Rose](https://novanews.co.za/rooirose/10-maklike-hoenderresepte-vir-n-vinnige-aandete/)\n3. **Macaroni-la-Vienna**, 'n Boerekos-klassieker wat maklik is om vir vier te maak. Bron: [Boerekos, vinnige aandetes](https://boerekos.co.za/tag/vinnige-aandetes/)\n\nDit is net opskrifte wat ek uit die soek-uittreksels gesien het. Ek het nie die resepte self gelees nie, en ek weet nie hoeveel dit by PnP kos nie.\n\nWil jy hê ek moet een van hierdie bladsye oopmaak en die resep vir jou uitskryf? Dan kan jy self by PnP se app of webwerf kyk wat die bestanddele kos. As jy wil, kan ek ook Checkers se pryse vir die bestanddele nagaan, want daarvoor het ek 'n katalogus."
+    }
+  ],
+  "label": {
+    "pass": false,
+    "note": ""
+  }
+}

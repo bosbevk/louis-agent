@@ -29,7 +29,24 @@ public class MealForPeopleTests
         var sent = client.Sent.Single();
         Assert.That(sent.Select(m => m.Role), Is.EqualTo(new[] { ChatRole.System, ChatRole.User }));
         Assert.That(sent[0].Text, Is.EqualTo("THE PROMPT"));
-        Assert.That(sent[1].Text, Does.Contain("People: 4").And.Contain("Budget: R150").And.Contain("Town: Malmesbury").And.Contain(Answer));
+        Assert.That(sent[1].Text, Does.Contain("People: 4").And.Not.Contain("Budget").And.Contain("Town: Malmesbury").And.Contain(Answer), "6a.4g: the budget is not the judge's to see");
+    }
+
+    // 6a.4f (Louis: the judge failed a follow-up turn that swapped the meat and gave the list, since the recipe was in the turn before): the judge is sent the earlier turns too, question
+    // and answer, before the answer it judges, and the prompt tells it a follow-up may rely on them. A single-turn conversation is sent as before.
+    [Test]
+    public async Task TheEarlierTurns_AreSentBeforeTheAnswer_SoAFollowUpIsJudgedWithWhatItReliesOn()
+    {
+        var client = new ScriptedJudge("""{"meal": true, "reason": "r"}""");
+        ChatMessage[] conversation = [new(ChatRole.User, "Wat kan ek kook vir vier?"), new(ChatRole.Assistant, "Bobotie vir vier: 500 g maalvleis, rys; bak 40 minute."), new(ChatRole.User, "Maak dit vir ses.")];
+
+        await new MealForPeople("THE PROMPT").EvaluateAsync(conversation, new ChatResponse(new ChatMessage(ChatRole.Assistant, "Vir ses: 750 g maalvleis, meer rys.")), new ChatConfiguration(client), [Ask]);
+
+        string sent = client.Sent.Single()[1].Text!;
+        Assert.That(sent, Does.Contain("The conversation so far:").And.Contain("User: Wat kan ek kook vir vier?").And.Contain("Assistant: Bobotie vir vier").And.Contain("User: Maak dit vir ses."));
+        Assert.That(sent.IndexOf("The conversation so far:"), Is.LessThan(sent.IndexOf("The answer to judge:")));
+        Assert.That(sent, Does.EndWith("Vir ses: 750 g maalvleis, meer rys."));
+        Assert.That(MealForPeoplePrompt.Text, Does.Contain("follow-up"), "the prompt says a follow-up may rely on the turns before");
     }
 
     // F18 step 6a.1: the question a person is asked to review is the judge prompt's own title, read from it, so the judge and the person answer the same words.
@@ -88,7 +105,7 @@ public class MealForPeopleTests
     {
         var (_, client) = await JudgeAsync("""{"meal": null, "reason": "r"}""", new CookAsk(people: null, budget: null, town: null));
 
-        Assert.That(client.Sent.Single()[1].Text, Does.Contain("People: not said").And.Contain("Budget: none").And.Contain("Town: not said"));
+        Assert.That(client.Sent.Single()[1].Text, Does.Contain("People: not said").And.Not.Contain("Budget").And.Contain("Town: not said"));
     }
 
     // The prompt is a markdown file beside the eval (ADR 0011), embedded; its hash is of its bytes, so a re-score with a changed prompt is a different measure.

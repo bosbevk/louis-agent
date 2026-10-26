@@ -1,0 +1,17 @@
+{
+  "grader": "meal-for-people",
+  "scenario": "cook-recipe-only",
+  "mode": "puls-cook",
+  "run": "76667d39dcdb",
+  "repeat": 2,
+  "turns": [
+    {
+      "question": "Gee my net 'n resep vir bobotie vir vier mense in Stellenbosch. Dit maak nie saak waar ek koop nie.",
+      "answer": "Ek gee dit gou vir my kok; hy's nou-nou terug met 'n resep.My kok is terug, hier is wat hy gekry het:\n\n### Die gereg\n\nBobotie is 'n klassieke Suid-Afrikaanse hoofgereg wat met maalvleis, appelkooskonfyt en kerrie maak en in een oondbak gaar. Die resep is basies en maklik, ongeveer 1½ uur, en vir vier mense 'n geskikte etes op 'n gewone aand.\n\n### Resep\n\n![Bobotie vir ete](https://marindakook.co.za/wp-content/uploads/2017/10/featured-bobotie-blog-018-1024x768.jpg)\n\nDien 4 · ongeveer 1½ uur\n\n1. Sit die brood in 'n diep bord en gooi die 100 ml melk oor die brood.\n2. Braai die uie tot glaserig in 'n bietjie olie bo-op die stoof.\n3. Gooi al die res van die bestandele, behalwe die eier, die bolaag en die suurlemoen- of lourierblare, in 'n mengbak en meng deeglik.\n4. Druk die melk uit die brood en meng die brood saam met die uie by die vleismengsel.\n5. Skep die mengsel in 'n gesmeerde oondbak.\n6. Klits die eier met die 60 ml melk en gooi dit oor die vleis.\n7. Sit die lourierblare bo-op.\n8. Bak 60 minute by 190 °C.\n\nSkakel: https://marindakook.co.za/bobotie/\n\n### Inkopielys\n\n| Ingredient | For the recipe | To buy | Estimated price |\n|---|---|---|---|\n| Beef mince | 1 kg | beef mince 1 kg | ± R139 |\n| Onions | 2 | onions 1 kg bag | ± R22 |\n| White bread | 2 slices | white bread 700 g loaf | ± R22 |\n| Milk | 160 ml (100 ml + 60 ml) | milk 1 l | ± R28 |\n| Apricot jam | 80 ml | apricot jam 450 g jar | ± R38 |\n| Curry powder | 40 ml | curry powder 100 g | ± R30 |\n| Worcestershire sauce (borrie) | 15 ml | Worcestershire sauce 150 ml | ± R35 |\n| Ground cumin | 5 ml (optional) | ground cumin 50 g | ± R25 |\n| White vinegar | 30 ml | white vinegar 750 ml | ± R15 |\n| Bay leaves (or lemon) | 3 | bay leaves 10 g | ± R18 |\n| Eggs | 1 | eggs 6 pack | ± R50 |\n| **Total** | | | **± R422** |\n| **Per person** | | | **± R106** |\n\nUit die voorraadkas: kookolie, sout en peper.\n\nPryse is skattings, nie by 'n winkel nagegaan nie.\n\n### Waar om te koop\n\nEnige supermark naby jou.\n\n### Onseker\n\n| Wat | Hoekom |\n|---|---|\n| Alle pryse | Skattings: geen winkel se pryse is vir nou nagegaan nie. Pryse is vir Oktober 2026. |\n| Porsies | Die bladsy noem nie hoeveel porsies die resep gee nie. Ek het die hoeveelhede soos geskryf gelaat (1 kg vleis), wat vir 4 mense ruim is. |\n| Borrie | Aanvaar dit is Worcestershire-sous. |\n| Rys | Die resep self gebruik nie rys nie, maar bobotie word gewoonlik met geelrys bedien; dit is nie op die lys nie. |"
+    }
+  ],
+  "label": {
+    "pass": true,
+    "note": ""
+  }
+}

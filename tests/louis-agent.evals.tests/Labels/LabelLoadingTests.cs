@@ -13,9 +13,11 @@ public class LabelLoadingTests
 {
     private static readonly IReadOnlyList<IGrader> Graders = [new ReadsKeys("routed")];
 
+    // 6a.4f (Louis): a label carries the conversation's turns, every question and answer, so a judge can see what a follow-up relies on; the last turn's answer is the one labelled.
     private static string Label(string scenario = "sample-dev", string label = "{\"pass\": true, \"note\": \"feeds four\"}", int turn = 1, string extra = "", string grader = "reads-keys") =>
-        "{\"grader\": \"" + grader + "\", \"scenario\": \"" + scenario + "\", \"mode\": \"puls-cook\", \"run\": \"8f7802b9a72e\", \"repeat\": 2, \"turn\": " + turn + ", \"answer\": \"Bobotie vir vier\", \"label\": "
-        + label + extra + "}";
+        "{\"grader\": \"" + grader + "\", \"scenario\": \"" + scenario + "\", \"mode\": \"puls-cook\", \"run\": \"8f7802b9a72e\", \"repeat\": 2, \"turns\": ["
+        + string.Join(", ", Enumerable.Range(1, turn).Select(n => n == turn ? "{\"question\": \"Vir vier\", \"answer\": \"Bobotie vir vier\"}" : "{\"question\": \"Hallo\", \"answer\": \"Hallo!\"}"))
+        + "], \"label\": " + label + extra + "}";
 
     private static DatasetFolder Folder() =>
         new DatasetFolder().Write("scenarios/dev/sample-dev.json", DatasetFolder.Scenario("sample-dev")).WithManifest();
@@ -27,6 +29,7 @@ public class LabelLoadingTests
 
         var labels = DatasetLoader.Load(folder.Root, Graders).Labels;
 
+        Assert.That(labels[0].Turns, Is.EqualTo(new[] { new LabelTurn("Vir vier", "Bobotie vir vier") }));
         Assert.That(labels.Select(l => (l.File, l.Grader, l.Scenario, l.Mode, l.Run, l.Repeat, l.Turn, l.Answer, l.Pass, l.Note)), Is.EqualTo(new[]
         {
             ("a.json", "reads-keys", "sample-dev", "puls-cook", "8f7802b9a72e", 2, 1, "Bobotie vir vier", true, "feeds four"),
@@ -73,9 +76,20 @@ public class LabelLoadingTests
     [Test]
     public void ALabelStillInTheOldShape_IsRefused_NotQuietlyReadAsUnlabelled()
     {
-        using var folder = Folder().Write("labels/a.json", Label(label: "{\"meal\": true, \"note\": \"old\"}"));
+        using var folder = Folder().Write("labels/a.json", Label(label: "{\"meal\": true, \"note\": \"old\"}"))
+            .Write("labels/b.json", """{"grader": "reads-keys", "scenario": "sample-dev", "mode": "puls-cook", "run": "r", "repeat": 1, "turn": 1, "answer": "Bobotie", "label": {"pass": true, "note": ""}}""");
 
-        Assert.That(() => DatasetLoader.Load(folder.Root, Graders), Throws.TypeOf<InvalidDataException>().With.Message.Contains("a.json"));
+        var error = Assert.Throws<InvalidDataException>(() => DatasetLoader.Load(folder.Root, Graders))!;
+
+        Assert.That(error.Message, Does.Contain("a.json").Or.Contain("b.json"), "the 6a.2 shape (one answer, no turns) is refused too");
+    }
+
+    [Test]
+    public void ALabelWithNoTurns_HasNoAnswerToLabel_AndIsRefused()
+    {
+        using var folder = Folder().Write("labels/a.json", Label(turn: 0));
+
+        Assert.That(() => DatasetLoader.Load(folder.Root, Graders), Throws.TypeOf<InvalidDataException>().With.Message.Contains("a.json").And.Message.Contains("turn 0"));
     }
 
     [Test]

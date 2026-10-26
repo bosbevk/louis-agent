@@ -23,8 +23,9 @@ public sealed class CookAsk(int? people, decimal? budget, string? town) : Evalua
         return new CookAsk(people, CookExpectations.BudgetOf(trial.Scenario), CookExpectations.TownOf(trial.Scenario));
     }
 
+    // 6a.4f (Louis): the budget is kept on the ask but never described to the judge. Told it, the small judge model judged the cost, which its prompt forbids and another grader checks;
+    // a model can't misuse what it isn't told.
     private static string Describe(int? people, decimal? budget, string? town) => string.Join("\n",
         $"People: {(people is { } n ? n.ToString(CultureInfo.InvariantCulture) : "not said")}",
-        $"Budget: {(budget is { } rand ? "R" + rand.ToString("0.##", CultureInfo.InvariantCulture) : "none")}",
         $"Town: {(string.IsNullOrWhiteSpace(town) ? "not said" : town)}");
 }

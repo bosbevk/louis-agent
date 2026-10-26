@@ -1,5 +1,6 @@
 using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Grading;
+using LouisAgent.Evals.Labels;
 using LouisAgent.Evals.Tests.Datasets;
 using LouisAgent.Evals.Trials;
 
@@ -23,12 +24,14 @@ public class ExportedLabelLoadingTests
     public void TheFileTheApiExports_IsAccepted_ByTheLoaderThatReadsTheDatasetsLabels()
     {
         string fixture = Path.Combine(TestPaths.RepoRoot, "tests", "louis-agent.evals.tests", "Labels", "Fixtures", "exported-label.json");
-        using var folder = new DatasetFolder().Write("scenarios/dev/sample-dev.json", DatasetFolder.Scenario("sample-dev")).WithManifest()
+        // The fixture is a two-turn conversation (6a.4f), so the scenario has two messages.
+        using var folder = new DatasetFolder().Write("scenarios/dev/sample-dev.json", DatasetFolder.Scenario("sample-dev").Replace("\"messages\": [\"Hello\"]", "\"messages\": [\"Hello\", \"Make it six\"]")).WithManifest()
             .Write("labels/meal-for-people.sample-dev.puls-cook.8f7802b9a72e.1.json", File.ReadAllText(fixture));
 
         var label = DatasetLoader.Load(folder.Root, [new MealGrader()]).Labels.Single();
 
         Assert.That((label.Grader, label.Scenario, label.Mode, label.Run, label.Repeat, label.Turn, label.Answer, label.Pass, label.Note),
-            Is.EqualTo(("meal-for-people", "sample-dev", "puls-cook", "8f7802b9a72e", 1, 1, "Bobotie vir vier", true, "feeds four")));
+            Is.EqualTo(("meal-for-people", "sample-dev", "puls-cook", "8f7802b9a72e", 1, 2, "Bobotie vir ses", true, "feeds four")));
+        Assert.That(label.Turns, Is.EqualTo(new[] { new LabelTurn("Hello", "Bobotie vir vier"), new LabelTurn("Make it six", "Bobotie vir ses") }), "6a.4f: the whole conversation");
     }
 }

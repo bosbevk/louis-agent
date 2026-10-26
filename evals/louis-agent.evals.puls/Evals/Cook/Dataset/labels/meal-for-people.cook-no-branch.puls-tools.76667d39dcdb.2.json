@@ -1,0 +1,17 @@
+{
+  "grader": "meal-for-people",
+  "scenario": "cook-no-branch",
+  "mode": "puls-tools",
+  "run": "76667d39dcdb",
+  "repeat": 2,
+  "turns": [
+    {
+      "question": "Wat kan ek vanaand vir twee kook? Ek koop by PnP in Prince Albert. Gee die resep en wat dit by die winkel kos.",
+      "answer": "Ek kan nie vir PnP se pryse kyk nie; ek het hulle nog nie toestemming gevra nie, so die koste hieronder is **skattings**. Ek het ook nie my kok se gereedskap in hierdie gesprek nie, so die resep kom uit my eie kennis en is nie teen 'n bron nagegaan nie.\n\n**Vanaand se ete: oondhoender met aartappels en wortels (vir 2)**\n\nDit is maklik, neem sowat 'n uur, en dit werk met gewone winkelgoed.\n\n**Wat jy nodig het (skattings by PnP Prince Albert):**\n- 4 hoenderbouddye met vel en been, sowat 800 g: ±R90–R110\n- 4 medium aartappels, sowat 600 g: ±R15–R20\n- 2 wortels: ±R5\n- 1 ui: ±R5\n- 3 knoffelspykers: ±R3\n- ½ suurlemoen: ±R5\n- 2 eetlepels olyfolie: ±R5 (as jy dit nie het nie)\n- Paprika, gedroogde origanum, sout en swartpeper: ±R5–R10 as jy niks in die kas het nie\n\n**Geskatte totaal: ±R130–R160**, of minder as jy kruie al het.\n\n**Metode:**\n1. Verhit die oond tot 200 °C.\n2. Skil die aartappels en wortels en sny dit in blokkies. Ui in ringe of partjies. Gooi alles in 'n bak met 'n eetlepel olie, sout, paprika en origanum.\n3. Vryf die hoender met die suurlemoensap, gehakte knoffel, sout, peper en 'n bietjie paprika in.\n4. Lê die groente op 'n growwe pan, die hoender bo-op met die vel na bo.\n5. Rooster sowat 40–45 minute, tot die hoender deur gaar is (die dikste deel moet 75 °C wees, of die vloeistof wat uitloop moet helder wees, nie pienk nie).\n\nDie pryse is my beste skatting en nie PnP se werklike etikette nie. Kontroleer die prys by die rak voor jy betaal."
+    }
+  ],
+  "label": {
+    "pass": true,
+    "note": ""
+  }
+}

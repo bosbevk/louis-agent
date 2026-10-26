@@ -22,8 +22,10 @@ public class CalibrationTests
         Scenario("cook-en", """{"serves":2}""", "For two"),
     ];
 
+    /// <summary>A label of <paramref name="text"/> as the answer of turn <paramref name="turn"/>; the turns before it answered "earlier n" (6a.4f: a label carries the whole conversation).</summary>
     private static LabeledAnswer Answer(string scenario, string text, bool pass, int turn = 1, int repeat = 1) =>
-        new($"{scenario}.{repeat}.json", "meal-for-people", scenario, "puls-cook", "8f7802b9a72e", repeat, turn, text, pass, $"note on {text}");
+        new($"{scenario}.{repeat}.json", "meal-for-people", scenario, "puls-cook", "8f7802b9a72e", repeat,
+            [.. Enumerable.Range(1, turn).Select(n => new LabelTurn($"question {n}", n == turn ? text : $"earlier {n}"))], pass, $"note on {text}");
 
     /// <summary>A model grader that answers by what the answer says: "yes" passes, "no" fails, anything else it can't tell. It keeps the trials it was asked about.</summary>
     private sealed class WordGrader : IGrader
@@ -74,7 +76,7 @@ public class CalibrationTests
     }
 
     [Test]
-    public async Task TheTrialHasTheAnswerInItsTurn_AfterTheTurnsBeforeIt_WithTheScenariosAsk()
+    public async Task TheTrialHasTheWholeConversation_TheEarlierAnswersToo_AndTheLabelledAnswerLast()
     {
         var grader = new WordGrader();
 
@@ -83,8 +85,8 @@ public class CalibrationTests
         var trial = grader.Asked.Single();
         Assert.That(trial.Scenario.Id, Is.EqualTo("cook-af"));
         Assert.That(trial.Transcript.Turns.Select(t => t.Turn), Is.EqualTo(new[] { 1, 2 }));
-        Assert.That(trial.Transcript.Turns.Select(t => t.Question), Is.EqualTo(new[] { "Vir vier mense", "Maak dit vir ses" }));
-        Assert.That(EngineEvents.AnswerOf(trial.Transcript.Turns[0]), Is.Empty, "the earlier turns are not what is labelled");
+        Assert.That(trial.Transcript.Turns.Select(t => t.Question), Is.EqualTo(new[] { "question 1", "question 2" }), "the questions as the label recorded them");
+        Assert.That(EngineEvents.AnswerOf(trial.Transcript.Turns[0]), Is.EqualTo("earlier 1"), "6a.4f: the judge sees what a follow-up relies on");
         Assert.That(EngineEvents.AnswerOf(trial.Transcript.Turns[1]), Is.EqualTo("yes"));
         Assert.That(trial.Mode.Name, Is.EqualTo("puls-cook"));
     }

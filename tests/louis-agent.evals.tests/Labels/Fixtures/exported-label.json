@@ -4,8 +4,16 @@
   "mode": "puls-cook",
   "run": "8f7802b9a72e",
   "repeat": 1,
-  "turn": 1,
-  "answer": "Bobotie vir vier",
+  "turns": [
+    {
+      "question": "Hello",
+      "answer": "Bobotie vir vier"
+    },
+    {
+      "question": "Make it six",
+      "answer": "Bobotie vir ses"
+    }
+  ],
   "label": {
     "pass": true,
     "note": "feeds four"

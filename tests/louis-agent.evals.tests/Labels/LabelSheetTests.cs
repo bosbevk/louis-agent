@@ -59,6 +59,7 @@ public class LabelSheetTests
             Assert.That(names, Is.EqualTo(new[] { "meal-for-people.cook-af.puls-cook.8f7802b9a72e.1.json" }));
             var file = Written(folder).Single();
             Assert.That((file.Scenario, file.Mode, file.Run, file.Repeat, file.Turn, file.Answer), Is.EqualTo(("cook-af", "puls-cook", "8f7802b9a72e", 1, 1, "answer of cook-af/puls-cook/1")));
+            Assert.That(file.Turns, Is.EqualTo(new[] { new LabelTurn("q", "answer of cook-af/puls-cook/1") }), "6a.4f: every turn, question and answer");
             Assert.That(file.Label, Is.Null, "the person's part");
             Assert.That(file.Grader, Is.EqualTo("meal-for-people"), "the grader it is a label for");
         }

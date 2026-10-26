@@ -1,0 +1,17 @@
+{
+  "grader": "meal-for-people",
+  "scenario": "cook-recipe-only",
+  "mode": "puls-cook",
+  "run": "76667d39dcdb",
+  "repeat": 3,
+  "turns": [
+    {
+      "question": "Gee my net 'n resep vir bobotie vir vier mense in Stellenbosch. Dit maak nie saak waar ek koop nie.",
+      "answer": "Ek gee dit gou vir my kok; hy's nou-nou terug met 'n resep en 'n skatting van die koste.My kok is terug, hier is wat hy gekry het:\n\n**Die gereg**\nBobotie is 'n klassieke Suid-Afrikaanse gehaktskottel met 'n eierbolaag, en dit werk goed vir vier mense op 'n gewone aand. Dit is 'n oondgereg wat ongeveer 1½ uur neem, en dit pas by geelrys en 'n groen bykos.\n\n**Resep**\n\n![Bobotie vir ete](https://marindakook.co.za/wp-content/uploads/2017/10/featured-bobotie-blog-018-1024x768.jpg)\n\nDien 4 · ongeveer 1 uur 30 minute\n\n1. Sit die brood in 'n diep bord en gooi die melk oor die brood.\n2. Braai die uie tot glaserig in 'n bietjie olie bo-op die stoof.\n3. Gooi al die res van die bestandele (behalwe die lourierblare, die eier en die bolaagmelk) in 'n mengbak en meng deeglik.\n4. Druk die melk uit die brood en meng saam met die uie by die vleismengsel.\n5. Skep dit in 'n gesmeerde oondbak.\n6. Klits die eier met die bolaagmelk en gooi dit oor die vleis.\n7. Sit die lourierblare bo-op alles.\n8. Bak vir 60 minute by 190 °C.\n\nSkakel: https://marindakook.co.za/bobotie/\n\n**Inkopielys**\n\n| Bestanddeel | Vir die resep | Om te koop | Geskatte prys |\n|---|---|---|---|\n| Bees maalvleis | 670 g | bees maalvleis 1 kg | ± R130 |\n| Uie | 1 groot ui | uie 1 kg sak | ± R25 |\n| Brood | 1 snee | brood 700 g | ± R22 |\n| Melk | 105 ml (67 ml + 40 ml) | melk 500 ml | ± R13 |\n| Appelkooskonfyt | 53 ml | appelkooskonfyt 250 g | ± R35 |\n| Kerriepoeier | 27 ml | kerriepoeier 100 g | ± R30 |\n| Borrie | 10 ml | borrie 50 g | ± R25 |\n| Komyn, fyn gemaal | 3 ml | komyn gemaal 50 g | ± R20 |\n| Asyn | 20 ml | witwynasyn 375 ml | ± R15 |\n| Lourierblare | 2 | lourierblare 10 g | ± R15 |\n| Eiers | 1 | eiers 6 stuks | ± R45 |\n| **Totaal** | | | **± R375** |\n| **Per persoon** | | | **± R94** |\n\nUit die voorraadkas: kookolie, sout en peper.\n\nPryse is skattings, nie by 'n winkel nagegaan nie.\n\n**Waar om te koop**\n\nEnige supermark naby jou.\n\n**Onseker**\n\n| Wat | Hoekom |\n|---|---|\n| Alle pryse | Skattings: geen winkel se pryse is vir nou nagegaan nie. |\n| Porsies | Die resep se hoeveelheid is nie genoem nie. Ek het aanvaar dit is vir 6 mense en dit na 4 geskaal. Kontroleer met die smaak. |\n| Lourierblare | Die bron sê \"suurlemoen of lourierblare\". Ek het lourierblare gekies, want dit is die gebruiklike keuse vir bobotie. |\n| Maalvleis | Die resep gebruik 1 kg. Ek het 670 g gebruik en 'n 1 kg pak voorgestel; die oorskot kan jy vir 'n volgende keer gebruik. |"
+    }
+  ],
+  "label": {
+    "pass": true,
+    "note": ""
+  }
+}

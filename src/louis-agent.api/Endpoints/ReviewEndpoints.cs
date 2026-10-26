@@ -72,9 +72,9 @@ internal static class ReviewEndpoints
             if (decided.Count == 0)
                 return ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error", MessageText.Format(ReviewUserText.NoLabelsYet, new { Grader = grader, Id = id }));
 
-            var labels = new List<(HumanGrade, Turn)>();
+            var labels = new List<(HumanGrade, IReadOnlyList<Turn>)>();
             foreach (var grade in decided)
-                if ((await s.TurnsAsync(id, grade.Conversation, cancellationToken)).OrderBy(t => t.Key.Turn).LastOrDefault() is { } last) labels.Add((grade, last));
+                if ((await s.TurnsAsync(id, grade.Conversation, cancellationToken)).OrderBy(t => t.Key.Turn).ToList() is { Count: > 0 } turns) labels.Add((grade, turns));
             return Results.File(ReviewLabels.Zip(labels), "application/zip", $"{grader}-labels-{id}.zip");
         }));
     }

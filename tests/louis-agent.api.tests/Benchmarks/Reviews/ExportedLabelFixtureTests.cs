@@ -17,9 +17,14 @@ public class ExportedLabelFixtureTests
     {
         var key = new BenchmarkProtocol.ConversationKey("puls-cook", 1, "sample-dev");
         var grade = new HumanGrade("8f7802b9a72e", key, "meal-for-people", HumanVerdict.Pass, "feeds four", "Louis", DateTimeOffset.UnixEpoch);
-        var turn = new Turn(new BenchmarkProtocol.TurnKey("puls-cook", 1, "sample-dev", 1), "sess_1", "Hello", "Bobotie vir vier", "puls-cook", null, 1, 1, [], 1.0, null);
+        // 6a.4f: a label carries every turn of its conversation, so the fixture pins a two-turn one.
+        var turns = new[]
+        {
+            new Turn(new BenchmarkProtocol.TurnKey("puls-cook", 1, "sample-dev", 1), "sess_1", "Hello", "Bobotie vir vier", "puls-cook", null, 1, 1, [], 1.0, null),
+            new Turn(new BenchmarkProtocol.TurnKey("puls-cook", 1, "sample-dev", 2), "sess_1", "Make it six", "Bobotie vir ses", "puls-cook", null, 1, 1, [], 1.0, null),
+        };
 
-        return ReviewLabels.Content(grade, turn);
+        return ReviewLabels.Content(grade, turns);
     }
 
     [Test]

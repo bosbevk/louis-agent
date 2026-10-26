@@ -1,0 +1,21 @@
+{
+  "grader": "meal-for-people",
+  "scenario": "cook-en",
+  "mode": "puls-tools",
+  "run": "76667d39dcdb",
+  "repeat": 2,
+  "turns": [
+    {
+      "question": "What should I cook tonight in Pretoria for two? I have about an hour and I shop at PnP. Give me the recipe and what it'll cost.",
+      "answer": "Eerstens, 'n eerlike noot: my kok (die kok-spesialis) is nie beskikbaar in hierdie sessie nie, so ek kan nie sy volle verslag met winkel-pryse gee nie. Ek het self 'n resep gesoek. Die pryse hieronder is my eie skattings, nie PnP se pryse nie. Ek kan nie PnP se katalogus naslaan nie, en ek het nie winkel-pryse opgesoek nie.\n\n**Peri-peri hoender-dye met rys en 'n slaai (vir twee, sowat 1 uur)**\n\nDie resep is van [Mama Chicken Recipes](https://mamachickenrecipes.com/south-african-chicken-recipe/). Die hoeveelhede hieronder is vir ongeveer 700 g hoenderdye, wat vir twee mense met 'n bysit genoeg is. Die bysit (rys en slaai) is my eie voorstel.\n\n**Bestanddele**\n- 700 g hoenderdye (bene en vel, as jy kan)\n- ½ koppie peri-peri-sous (winkel- of self-gemaak)\n- 2 eetlepels olyfolie\n- 4 knoffelgehakte\n- 2 eetlepels suurlemoensap\n- 1 teelepel paprika\n- ½ teelepel cayenne (pas aan vir hitte)\n- 1 teelepel sout en ½ teelepel swart peper\n- ¼ koppie gehakte pietersielie en 2 suurlemoenpartjies om saam te dien\n- Bysit: 1 koppie rys, 1 tamatie, ½ ui, en 'n bietjie sout en olie vir die slaai\n\n**Metode**\n1. Verhit die oond tot 200 °C (400 °F).\n2. Meng olie, knoffel, suurlemoensap, paprika, cayenne, sout en peper in 'n groot bak. Gooi die hoender daarin, dek af en laat staan vir minstens 30 minute. Terwyl dit staan, kook die rys en maak die slaai.\n3. Sit die hoender op 'n bakplaat met bakpapier en bak 25–30 minute tot goudbruin en gaar.\n4. Smeer die laaste 5 minute die peri-peri-sous oor die hoender. Let op, dit kan vinnig verbrand.\n5. Laat dit 5 minute rus. Strooi die pietersielie oor en dien met die suurlemoen en die rys en slaai op.\n\n**Wat dit ongeveer kos (my skatting, nie PnP se pryse nie)**\n- Hoenderdye, 700 g: ±R55–R75\n- Peri-peri-sous, ½ koppie: ±R20–R30 (deel van 'n bottel)\n- Olie, knoffel, suurlemoen, kruie en sout: ±R15–R25\n- Rys, 1 koppie droog: ±R8–R12\n- Tamatie, ui en slaai-bietjies: ±R10–R15\n\n**Totaal: sowat R110–R160 vir twee mense.** Sien dit as 'n ruwe raming. Jy moet self by PnP kyk, want hulle pryse wissel en ek het dit nie nagegaan nie.\n\nWil jy dat ek 'n ander aand se kos soek, of 'n ander bysit?"
+    },
+    {
+      "question": "Swap the meat for chicken. What does the shopping list look like now?",
+      "answer": "The dish already uses chicken thighs, so there's nothing to swap. Did you mean a different meat, like beef, lamb, or pork? Or a different chicken cut, like drumsticks or breast?\n\nHere's the shopping list as it stands:\n\n- 700 g chicken thighs (bone-in, skin-on if you can)\n- ½ cup peri-peri sauce\n- Olive oil (2 tbsp)\n- 4 garlic cloves\n- 2 tbsp lemon juice, plus 2 lemon wedges to serve\n- Paprika, cayenne, salt and black pepper (spices you may already have)\n- Fresh parsley (¼ cup)\n- 1 cup rice\n- 1 tomato, ½ onion, and a bit of oil and salt for the salad\n\nTell me which meat you want and I'll redo the list with its price estimate. These are my own estimates, not PnP prices."
+    }
+  ],
+  "label": {
+    "pass": false,
+    "note": ""
+  }
+}

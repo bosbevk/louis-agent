@@ -113,10 +113,10 @@ public static class Calibration
         return new CalibrationReport(labels.Count - disagreements.Count, labels.Count, disagreements, judged);
     }
 
+    /// <summary>The trial as the judge is to see it: every turn of the labelled conversation, question and answer (6a.4f), the labelled answer last, so a follow-up is judged with what it relies on.</summary>
     private static Trial TrialOf(LabeledAnswer label, EvalScenario scenario)
     {
-        var turns = Enumerable.Range(1, label.Turn).Select(n => new TurnTranscript(n, "calibration",
-            n <= scenario.Input.Messages.Count ? scenario.Input.Messages[n - 1] : "", n == label.Turn ? [Answer(label.Answer)] : [], TimeSpan.Zero, null)).ToList();
+        var turns = label.Turns.Select((turn, i) => new TurnTranscript(i + 1, "calibration", turn.Question, [Answer(turn.Answer)], TimeSpan.Zero, null)).ToList();
         return new Trial("calibration", new EvalMode(label.Mode, "", []), label.Repeat, scenario, new Transcript(turns));
     }
 

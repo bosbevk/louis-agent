@@ -7,8 +7,8 @@ using LouisAgent.Evals.Trials;
 namespace LouisAgent.Evals.Labels;
 
 /// <summary>
-/// The files a person labels (F18 step 6.3), made from a stored run's protocol export, the lines <c>--rescore</c> reads: one <see cref="LabelFile"/> per conversation, holding the
-/// answer of its last turn and no label yet. Only a scenario that sets what the grader reads (<paramref name="keys"/>) is in the sheet: "a meal for four" can't be labelled where no
+/// The files a person labels (F18 step 6.3), made from a stored run's protocol export, the lines <c>--rescore</c> reads: one <see cref="LabelFile"/> per conversation, holding every
+/// turn's question and answer (the last answer is the one to label) and no label yet. Only a scenario that sets what the grader reads (<paramref name="keys"/>) is in the sheet: "a meal for four" can't be labelled where no
 /// four is asked. The sheet is a spread, not a dump: one conversation of each scenario first, then a second of each, and so on up to the count, in a fixed order, so ten labels are not ten
 /// repeats of one dish and asking twice gives the same sheet. A conversation whose last turn failed or answered nothing has nothing to label, and a file that already exists is left as it is.
 /// </summary>
@@ -39,7 +39,8 @@ public static class LabelSheet
             var turns = ProtocolTranscripts.Read(turnLines.GetValueOrDefault(line.Key) ?? [], line.Mode, line.Repeat, line.Task).Turns;
             if (turns.Count == 0 || turns[^1].Failure is not null) continue;
             string answer = EngineEvents.AnswerOf(turns[^1]);
-            if (answer.Length > 0) files.Add(new LabelFile(grader, line.Task, line.Mode, runId, line.Repeat, turns[^1].Turn, answer, null));
+            // 6a.4f: every turn, question and answer, so the judge sees what a follow-up relies on when the labels are calibrated against.
+            if (answer.Length > 0) files.Add(new LabelFile(grader, line.Task, line.Mode, runId, line.Repeat, [.. turns.Select(t => new LabelTurn(t.Question, EngineEvents.AnswerOf(t)))], null));
         }
 
         // A label a person has given (or a sheet already made) is never written over: the next conversation is taken instead, so a second sheet for the same run is all new files.

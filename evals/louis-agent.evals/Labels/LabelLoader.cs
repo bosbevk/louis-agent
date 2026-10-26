@@ -46,7 +46,7 @@ public static class LabelLoader
         if (file.Turn < 1 || file.Turn > scenario.Input.Messages.Count)
             throw Refuse(EvalErrorMessage.LabelTurnUnknown, new { File = name, file.Turn, file.Scenario });
 
-        return new LabeledAnswer(name, file.Grader, file.Scenario, file.Mode, file.Run, file.Repeat, file.Turn, file.Answer, pass, file.Label.Note);
+        return new LabeledAnswer(name, file.Grader, file.Scenario, file.Mode, file.Run, file.Repeat, file.Turns, pass, file.Label.Note);
     }
 
     private static InvalidDataException Refuse(EvalErrorMessage message, object values) => new(MessageText.Format(message, values));

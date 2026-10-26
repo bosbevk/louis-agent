@@ -233,7 +233,8 @@ public class ReviewEndpointTests
         Assert.That(zip.Entries.Select(e => e.FullName), Is.EqualTo(new[] { $"meal-for-people.bobotie.puls-cook.{RunId}.1.json" }), "the unsure is not a label");
         var label = JsonDocument.Parse(new StreamReader(zip.Entries.Single().Open()).ReadToEnd()).RootElement;
         Assert.That(label.GetProperty("grader").GetString(), Is.EqualTo("meal-for-people"));
-        Assert.That((label.GetProperty("scenario").GetString(), label.GetProperty("turn").GetInt32(), label.GetProperty("answer").GetString()), Is.EqualTo(("bobotie", 1, "Bobotie vir vier")));
+        var turns = label.GetProperty("turns").EnumerateArray().Select(t => (t.GetProperty("question").GetString(), t.GetProperty("answer").GetString())).ToList();
+        Assert.That((label.GetProperty("scenario").GetString(), turns), Is.EqualTo(("bobotie", new List<(string?, string?)> { ("Vraag", "Bobotie vir vier") })), "6a.4f: the turns, question and answer");
         Assert.That((label.GetProperty("label").GetProperty("pass").GetBoolean(), label.GetProperty("label").GetProperty("note").GetString()), Is.EqualTo((true, "a main dish")));
     }
 
