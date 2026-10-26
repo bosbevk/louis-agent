@@ -1,4 +1,5 @@
 {
+  "grader": "meal-for-people",
   "scenario": "cook-recipe-only",
   "mode": "puls-tools",
   "run": "8f7802b9a72e",
@@ -6,7 +7,7 @@
   "turn": 1,
   "answer": "Ek het nie 'n kok-spesialis beskikbaar in hierdie gesprek nie, so ek het die resep self gaan soek. Hier is 'n tradisionele bobotie uit Getaway Magazine. Die oorspronklike is vir tot agt mense, so ek het dit vir vier gehalveer.\n\n**Bobotie vir 4**\n\n**Bestanddele**\n- ½ snytjie dik brood, sonder korsie (wit of bruin)\n- ±190 ml melk\n- 12,5 ml olie\n- 5 ml botter\n- 1 ui, in ringe gesny\n- 1 knoffelhuisie, fyngedruk\n- 12,5 ml kerriepoeier\n- 2,5 ml sout\n- 12,5 ml blatjang\n- 7,5 ml gladde appelkooskonfyt\n- 7,5 ml Worcestershire-sous\n- 2,5 ml borrie (turmeric)\n- 12,5 ml bruin asyn\n- 500 g rou maalvleis\n- 50 ml sultanas (nie rosyntjies nie, want dit is te soet)\n- 1 eier\n- 'n knippie sout en borrie vir die roomvulsel\n- 1 eier en die oorblywende melk (±150 ml) vir die bo-laag\n- 'n paar lourierblare\n\n**Metode**\n1. Week die brood in die melk. Hou 'n bietjie melk oor vir later.\n2. Verhit die olie en botter in 'n groot pan en fruit die ui en knoffel tot sag.\n3. Voeg die kerrie, sout, blatjang, konfyt, Worcestershire-sous, borrie en asyn by en roer goed.\n4. Druk die brood uit en vermors dit. Voeg die brood, die vleis en die sultanas by die pan.\n5. Kook op lae hitte, en roer, tot die vleis nie meer pienk is nie. Haal dit van die stoof af.\n6. Klits die 1 eier en roer dit deur die vleismengsel. Skep dit in 'n ingevette bakdish (sowat 20 x 14 cm, die helfte van die oorspronklike 28 x 16 cm) en gelyk die bokant.\n7. Klits die oorblywende eier met die gereserveerde melk, plus 'n knippie sout en borrie. Gooi dit oor die vleis en lê 'n paar lourierblare bo-op.\n8. Sit die dish in 'n groter pan met water (dit voorkom dat dit droog word) en bak dit onbedek by 180 °C vir ±45 minute tot 1 uur, tot die eier-laag vas is.\n\n**Bedien met** rys, klapper, blatjang, neute en piesangs. As jy wil, gooi 'n handjie gekwarteerde amandels in die vleis; die resep sê dit is hoe dit tradisioneel moet.\n\n**Kosteskattings:** Ek kon nie 'n kok se skattings gee nie, en ek kyk nie na winkels se pryse op nie (ek het hulle om toestemming gevra). So ek het nie 'n prys vir jou nie.\n\n**Bron:** [Traditional South African bobotie recipe, Getaway Magazine](https://www.getaway.co.za/food/recipes-food/traditional-south-african-bobotie-recipe/)",
   "label": {
-    "meal": true,
+    "pass": true,
     "note": "Louis, fresh set (labelled after the prompt was tightened, on the meal question only)."
   }
 }

@@ -1,4 +1,5 @@
 {
+  "grader": "meal-for-people",
   "scenario": "cook-en",
   "mode": "puls-tools",
   "run": "8f7802b9a72e",
@@ -6,7 +7,7 @@
   "turn": 2,
   "answer": "Die resep is al hoender. Die hoofvleis in die ete wat ek voorgestel het, is hoenderdye, so daar is niks om te ruil nie. Het jy dalk 'n ander vleis in gedagte, soos beesvleis of wors, of wil jy net die inkopielys hê? Sê gerus, dan pas ek dit aan.\n\nDis die inkopielys soos dit nou staan, vir twee:\n\n- 4 hoenderdye, bene en vel aan\n- 2 aartappels\n- 2 patats\n- 1 pakkie knoffel (2 tenne nodig)\n- 1 bossie vars roosmaryn (of 'n paar takkies)\n- 1 stokkie gekonsentreerde hoendervleisbouillon\n- 1 suurlemoen (half nodig)\n- 40 g botter (die kleinste pakkie wat hulle het)\n- Olyfolie en sout, as jy dit nie in die kas het nie\n\nEk kyk nie na PnP se pryse nie, so ek kan nie sê wat elkeen by PnP in Pretoria kos nie. Die skatting van vorige keer, R155 tot R240, bly 'n ruwe gissing.",
   "label": {
-    "meal": false,
+    "pass": false,
     "note": "A shopping list for two with no recipe. Louis: estimates not here, should specify the price difference the meat makes."
   }
 }

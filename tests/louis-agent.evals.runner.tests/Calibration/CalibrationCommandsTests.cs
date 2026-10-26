@@ -17,8 +17,8 @@ public class CalibrationCommandsTests
     private static readonly EvalScenario Scenario =
         new("cook-en", new EvalInput(null, "Africa/Johannesburg", ["For two"]), JsonDocument.Parse("""{"serves":2}""").RootElement.Clone(), [], DatasetSplit.Dev);
 
-    private static LabeledAnswer Answer(string text, bool meal, int repeat = 1) =>
-        new($"cook-en.{repeat}.json", "cook-en", "puls-cook", "8f7802b9a72e", repeat, 1, text, meal, "");
+    private static LabeledAnswer Answer(string text, bool pass, int repeat = 1, string grader = "meal-for-people") =>
+        new($"cook-en.{repeat}.json", grader, "cook-en", "puls-cook", "8f7802b9a72e", repeat, 1, text, pass, "");
 
     private static string? NoCi(string name) => null;
 
@@ -32,14 +32,16 @@ public class CalibrationCommandsTests
     [Test]
     public async Task ItPrintsTheAgreement_ThenEachDisagreement()
     {
-        var eval = new FakeEval([Answer("yes", meal: true), Answer("yes", meal: false, repeat: 2)]);
+        var eval = new FakeEval([Answer("yes", pass: true), Answer("yes", pass: false, repeat: 2)]);
 
         var (code, output) = await CalibrateAsync(eval, NoCi);
 
         Assert.That(code, Is.Zero);
         string[] lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
         Assert.That(lines[0], Is.EqualTo("Agreement: 1 of 2"));
-        Assert.That(lines[1], Does.Contain("cook-en").And.Contain("repeat 2").And.Contain("label: not a meal").And.Contain("judge: a meal"));
+        Assert.That(lines.Any(l => l.StartsWith("Labelled pass:")) && lines.Any(l => l.StartsWith("Labelled fail:")), Is.True, "the agreement by class");
+        Assert.That(lines.Single(l => l.StartsWith("Result:")), Does.StartWith("Result: not enough"));
+        Assert.That(lines.Single(l => l.Contains("repeat 2")), Does.Contain("cook-en").And.Contain("repeat 2").And.Contain("label: fail").And.Contain("judge: pass"));
     }
 
     // Louis: "Never in CI". It asks a model, so it costs or needs a local one that CI does not have; the guard is the first thing it does.
@@ -48,7 +50,7 @@ public class CalibrationCommandsTests
     [TestCase("anything")]
     public void InCi_ItRefusesBeforeAnythingElse(string ci)
     {
-        var eval = new FakeEval([Answer("yes", meal: true)]);
+        var eval = new FakeEval([Answer("yes", pass: true)]);
 
         Assert.That(async () => await CalibrateAsync(eval, name => name == "CI" ? ci : null),
             Throws.InstanceOf<RunnerException>().With.Message.Contains("CI"));
@@ -59,7 +61,7 @@ public class CalibrationCommandsTests
     [TestCase("  ")]
     public async Task AnEmptyCiIsNotCi(string ci)
     {
-        var (code, _) = await CalibrateAsync(new FakeEval([Answer("yes", meal: true)]), name => name == "CI" ? ci : null);
+        var (code, _) = await CalibrateAsync(new FakeEval([Answer("yes", pass: true)]), name => name == "CI" ? ci : null);
 
         Assert.That(code, Is.Zero);
     }
@@ -76,6 +78,24 @@ public class CalibrationCommandsTests
     {
         Assert.That(async () => await CalibrateAsync(new FakeEval([Answer("yes", true)]), NoCi, grader: "no-error"),
             Throws.InstanceOf<RunnerException>().With.Message.Contains("'no-error'").And.Message.Contains("model"));
+    }
+
+    // F18 step 6a.0: the labels folder may hold labels of more than one grader; a calibration reads those of the grader it is asked about, and says if it has none.
+    [Test]
+    public async Task OnlyTheLabelsOfTheGraderAskedAbout_AreUsed()
+    {
+        var eval = new FakeEval([Answer("yes", pass: true), Answer("no", pass: true, repeat: 2, grader: "another-judge")]);
+
+        var (_, output) = await CalibrateAsync(eval, NoCi);
+
+        Assert.That(output, Does.StartWith("Agreement: 1 of 1"));
+    }
+
+    [Test]
+    public void LabelsOnlyOfAnotherGrader_ArePerhapsNoLabelsForThisOne()
+    {
+        Assert.That(async () => await CalibrateAsync(new FakeEval([Answer("yes", pass: true, grader: "another-judge")]), NoCi),
+            Throws.InstanceOf<RunnerException>().With.Message.Contains("meal-for-people").And.Message.Contains("--label-sheet"));
     }
 
     [Test]

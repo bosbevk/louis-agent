@@ -15,7 +15,7 @@ namespace LouisAgent.Evals.Labels;
 public static class LabelSheet
 {
     /// <returns>The names of the files written, in the order they were chosen.</returns>
-    public static IReadOnlyList<string> Write(IReadOnlyList<EvalScenario> scenarios, IReadOnlyCollection<string> keys, string runId, IEnumerable<string> storedLines,
+    public static IReadOnlyList<string> Write(IReadOnlyList<EvalScenario> scenarios, string grader, IReadOnlyCollection<string> keys, string runId, IEnumerable<string> storedLines,
         string folder, int count)
     {
         var stored = StoredRun.Read(storedLines);
@@ -39,7 +39,7 @@ public static class LabelSheet
             var turns = ProtocolTranscripts.Read(turnLines.GetValueOrDefault(line.Key) ?? [], line.Mode, line.Repeat, line.Task).Turns;
             if (turns.Count == 0 || turns[^1].Failure is not null) continue;
             string answer = EngineEvents.AnswerOf(turns[^1]);
-            if (answer.Length > 0) files.Add(new LabelFile(line.Task, line.Mode, runId, line.Repeat, turns[^1].Turn, answer, null));
+            if (answer.Length > 0) files.Add(new LabelFile(grader, line.Task, line.Mode, runId, line.Repeat, turns[^1].Turn, answer, null));
         }
 
         // A label a person has given (or a sheet already made) is never written over: the next conversation is taken instead, so a second sheet for the same run is all new files.

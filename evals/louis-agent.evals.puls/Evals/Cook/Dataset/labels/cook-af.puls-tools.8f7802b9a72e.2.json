@@ -1,4 +1,5 @@
 {
+  "grader": "meal-for-people",
   "scenario": "cook-af",
   "mode": "puls-tools",
   "run": "8f7802b9a72e",
@@ -6,7 +7,7 @@
   "turn": 2,
   "answer": "Vir ses mense is dit **ongeveer R325**. Dit is nie meer onder R250 nie.\n\nDie hoeveelhede is 1½ keer die resep vir vier. Die pryse is nog steeds my skattings, nie PnP se etiketpryse nie.\n\n| Item | Vir 4 | Vir 6 | Skatting |\n|---|---|---|---|\n| Hoenderdye met been | 1 kg | 1,5 kg | R130 |\n| Aartappels | 1 kg | 1,5 kg | R30 |\n| Uie | 2 | 3 | R22 |\n| Wortels | 2 | 3 | R12 |\n| Tamatie | 1 groot | 2 | R20 |\n| Tamatiepasta (klein tube) | 2 eetl | 3 eetl | R12 |\n| Vrugteblatjang (huismerk) | 80 ml | 120 ml | R30 |\n| Hoenderbouillonblokkies | 2 | 3 | R15 |\n| Knoffel en gemmer | 1 bol + stukkie gemmer | 1½ bol + 'n groter stukkie | R20 |\n| Rys | 500 g | 750 g | R33 |\n| **Totaal** | | | **±R325** |\n\nDie speserye is nie ingesluit nie. Jy moet die hoeveelhede ook 1½ keer maak: 3 tee garam masala, 2¼ tee gemaalde komyn, 2¼ tee koljander, 2¼ tee borrie, 1½ tee chillivlokkies, 1½ tee komyn­saadjies, 1½ tee mosterssaad en ¾ tee kaneel. As jy dit alles moet koop, kom dit bo-op R325. Ook: meel 3 eetl, sout ¾ tee, olie 3–4 eetl (pantry).\n\nDit is R54 per persoon, teenoor R58 vir vier. Die kerrie kook dieselfde 35–40 minute, maar jy het 'n groter pot of pan nodig, want die hoender en aartappels moet almal pas.\n\nWil jy binne R250 bly, kan jy net 1 kg hoender neem en die aartappels op 1 kg hou. Dan is jy by sowat R280, sonder speserye.",
   "label": {
-    "meal": true,
+    "pass": true,
     "note": "Louis, fresh set (labelled after the prompt was tightened, on the meal question only)."
   }
 }

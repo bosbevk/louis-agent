@@ -54,12 +54,13 @@ public class LabelSheetTests
         string folder = TempFolder();
         try
         {
-            var names = LabelSheet.Write(Scenarios, ["serves"], "8f7802b9a72e", Stored(["cook-af"], ["puls-cook"], 1), folder, count: 10);
+            var names = LabelSheet.Write(Scenarios, "meal-for-people", ["serves"], "8f7802b9a72e", Stored(["cook-af"], ["puls-cook"], 1), folder, count: 10);
 
             Assert.That(names, Is.EqualTo(new[] { "cook-af.puls-cook.8f7802b9a72e.1.json" }));
             var file = Written(folder).Single();
             Assert.That((file.Scenario, file.Mode, file.Run, file.Repeat, file.Turn, file.Answer), Is.EqualTo(("cook-af", "puls-cook", "8f7802b9a72e", 1, 1, "answer of cook-af/puls-cook/1")));
             Assert.That(file.Label, Is.Null, "the person's part");
+            Assert.That(file.Grader, Is.EqualTo("meal-for-people"), "the grader it is a label for");
         }
         finally { Directory.Delete(folder, true); }
     }
@@ -70,7 +71,7 @@ public class LabelSheetTests
         string folder = TempFolder();
         try
         {
-            LabelSheet.Write(Scenarios, ["serves"], "run", Stored(["cook-af", "control-web"], ["puls-cook"], 1), folder, count: 10);
+            LabelSheet.Write(Scenarios, "meal-for-people", ["serves"], "run", Stored(["cook-af", "control-web"], ["puls-cook"], 1), folder, count: 10);
 
             Assert.That(Written(folder).Select(f => f.Scenario), Is.EqualTo(new[] { "cook-af" }), "the control question sets no serves: no meal to label");
         }
@@ -83,7 +84,7 @@ public class LabelSheetTests
         string folder = TempFolder();
         try
         {
-            var names = LabelSheet.Write(Scenarios, ["serves"], "run", Stored(["cook-af", "cook-en", "cook-shops"], ["puls-tools", "puls-cook"], 3), folder, count: 4);
+            var names = LabelSheet.Write(Scenarios, "meal-for-people", ["serves"], "run", Stored(["cook-af", "cook-en", "cook-shops"], ["puls-tools", "puls-cook"], 3), folder, count: 4);
 
             var files = Written(folder);
             Assert.That(names, Has.Count.EqualTo(4));
@@ -102,8 +103,8 @@ public class LabelSheetTests
         {
             var stored = Stored(["cook-af", "cook-en", "cook-shops"], ["puls-tools", "puls-cook"], 3);
 
-            var first = LabelSheet.Write(Scenarios, ["serves"], "run", stored, one, count: 5);
-            var second = LabelSheet.Write(Scenarios, ["serves"], "run", stored, two, count: 5);
+            var first = LabelSheet.Write(Scenarios, "meal-for-people", ["serves"], "run", stored, one, count: 5);
+            var second = LabelSheet.Write(Scenarios, "meal-for-people", ["serves"], "run", stored, two, count: 5);
 
             Assert.That(second, Is.EqualTo(first), "a person who asks twice labels the same answers");
         }
@@ -119,11 +120,11 @@ public class LabelSheetTests
         try
         {
             var stored = Stored(["cook-af", "cook-en"], ["puls-cook"], 3);
-            LabelSheet.Write(Scenarios, ["serves"], "run", stored, folder, count: 2);
+            LabelSheet.Write(Scenarios, "meal-for-people", ["serves"], "run", stored, folder, count: 2);
             string labelled = Path.Combine(folder, "cook-af.puls-cook.run.1.json");
             File.WriteAllText(labelled, File.ReadAllText(labelled).Replace("\"label\": null", "\"label\": { \"meal\": true, \"note\": \"mine\" }"));
 
-            var second = LabelSheet.Write(Scenarios, ["serves"], "run", stored, folder, count: 2);
+            var second = LabelSheet.Write(Scenarios, "meal-for-people", ["serves"], "run", stored, folder, count: 2);
 
             Assert.That(File.ReadAllText(labelled), Does.Contain("mine"), "the person's label is still there");
             Assert.That(second, Is.EqualTo(new[] { "cook-af.puls-cook.run.2.json", "cook-en.puls-cook.run.2.json" }), "two new files, from the next repeat");
@@ -137,7 +138,7 @@ public class LabelSheetTests
     {
         string folder = TempFolder();
 
-        Assert.That(() => LabelSheet.Write(Scenarios, ["serves"], "run", [At(new { @event = "protocol", version = 1 })], folder, count: 10),
+        Assert.That(() => LabelSheet.Write(Scenarios, "meal-for-people", ["serves"], "run", [At(new { @event = "protocol", version = 1 })], folder, count: 10),
             Throws.TypeOf<InvalidDataException>());
     }
 }

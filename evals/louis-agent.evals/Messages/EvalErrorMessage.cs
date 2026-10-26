@@ -62,8 +62,11 @@ public enum EvalErrorMessage
     [Description("Label file '{File}' is not valid: {Reason}.")]
     InvalidLabel,
 
-    [Description("Label file '{File}' has no label yet. Give it a label (\"meal\" true or false, and a note), or delete the file.")]
+    [Description("Label file '{File}' has no label yet. Give it a label (\"pass\" true or false, and a note), or delete the file.")]
     LabelNotGiven,
+
+    [Description("Label file '{File}' is a label for the grader '{Grader}', which the eval does not have. Its graders are {Graders}.")]
+    LabelGraderUnknown,
 
     [Description("Label file '{File}' labels the scenario '{Scenario}', which the dataset does not have.")]
     LabelScenarioUnknown,

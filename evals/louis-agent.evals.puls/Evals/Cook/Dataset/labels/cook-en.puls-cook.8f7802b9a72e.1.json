@@ -1,4 +1,5 @@
 {
+  "grader": "meal-for-people",
   "scenario": "cook-en",
   "mode": "puls-cook",
   "run": "8f7802b9a72e",
@@ -6,7 +7,7 @@
   "turn": 2,
   "answer": "Ek vra my kok gou, hy's nou-nou terug.My kok is terug, hier is wat hy gekry het:\n\n**Die gereg**\nDie gereg het al hoender, so daar is niks om te vervang nie. Die lys hieronder is dieselfde as vorige keer.\n\n**Inkopielys**\n\n| Ingredient | For the recipe | To buy | Geskatte prys |\n|---|---|---|---|\n| Hoenderborsies | 340 g | hoenderborsies 500 g | ± R70 |\n| Aartappels | 2 medium | aartappels 1 kg | ± R25 |\n| Rooi ui | 1 | rooi ui 500 g | ± R15 |\n| Baba wortels | 10 | baba wortels 250 g | ± R20 |\n| Kerriepasta | 2 eetlepels | kerriepasta 100 g | ± R30 |\n| Hoenderbouillon | 250 ml (1 koppie) | hoenderbouillon 1 l | ± R35 |\n| **Totaal** | | | **± R195** |\n| **Per persoon** | | | **± R98** |\n\nUit die voorraadkas: kookolie, suiker, sout en peper.\n\nPryse is skattings, nie by 'n winkel nagegaan nie.\n\n**Waar om te koop**\n\n| Winkel | Tak | Straat of winkelsentrum | Webwerf |\n|---|---|---|---|\n| Pick n Pay | Pick n Pay Menlyn | Atterbury Road, Menlyn | [pnp.co.za](https://www.pnp.co.za) |\n| Pick n Pay | Pick n Pay New Muckleneuk | Middel Street, New Muckleneuk | [pnp.co.za](https://www.pnp.co.za) |\n\n**Onseker**\n\n| Wat | Waarom |\n|---|---|\n| Alle pryse | Skattings: geen winkel se pryse is vir nou nagegaan nie. |\n| Vleis | Geen ander vleis nie; as jy 'n ander vleis wil hê, moet dit as 'n nuwe gereg nagevra word. |\n\nDie kerrie is dus al met hoender, en die lys is dieselfde. As jy eerder iets anders as hoender wou hê, sê net wat, dan vra ek die kok vir 'n nuwe gereg.",
   "label": {
-    "meal": true,
+    "pass": true,
     "note": "Louis: sizes match, price there and shops mentioned."
   }
 }

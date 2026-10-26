@@ -1,4 +1,5 @@
 {
+  "grader": "meal-for-people",
   "scenario": "cook-en",
   "mode": "puls-tools",
   "run": "8f7802b9a72e",
@@ -6,7 +7,7 @@
   "turn": 2,
   "answer": "The dish already uses chicken thighs, so there's nothing to swap. Did you mean a different meat, like beef, lamb, or pork? Or a different chicken cut, like drumsticks or breast?\n\nHere's the shopping list as it stands:\n\n- 700 g chicken thighs (bone-in, skin-on if you can)\n- ½ cup peri-peri sauce\n- Olive oil (2 tbsp)\n- 4 garlic cloves\n- 2 tbsp lemon juice, plus 2 lemon wedges to serve\n- Paprika, cayenne, salt and black pepper (spices you may already have)\n- Fresh parsley (¼ cup)\n- 1 cup rice\n- 1 tomato, ½ onion, and a bit of oil and salt for the salad\n\nTell me which meat you want and I'll redo the list with its price estimate. These are my own estimates, not PnP prices.",
   "label": {
-    "meal": true,
+    "pass": true,
     "note": "Louis, fresh set (labelled after the prompt was tightened, on the meal question only)."
   }
 }

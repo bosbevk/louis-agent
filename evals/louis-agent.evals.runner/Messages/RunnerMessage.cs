@@ -44,10 +44,10 @@ public enum RunnerMessage
     [Description("Grader '{Grader}' of eval '{Eval}' is a fixed rule, not a model. Only a model grader is calibrated against a person.")]
     GraderNotModel,
 
-    [Description("Eval '{Eval}' has no labels. Make a sheet from a stored run with --label-sheet {Eval} <grader> <runId> <folder>, label it, and put the files in its dataset's labels/ folder.")]
+    [Description("Eval '{Eval}' has no labels for the grader '{Grader}'. Make a sheet from a stored run with --label-sheet {Eval} <grader> <runId> <folder>, label it, and put the files in its dataset's labels/ folder.")]
     NoLabels,
 
-    [Description("{Count} label file(s) written to {Folder}. Give each a label (\"meal\" true or false, and a note) and copy them to the eval's dataset in labels/; a file with no label stops the eval from loading.")]
+    [Description("{Count} label file(s) written to {Folder}. Give each a label (\"pass\" true or false, and a note) and copy them to the eval's dataset in labels/; a file with no label stops the eval from loading.")]
     LabelSheetWritten,
 
     [Description("--label-sheet's count needs a whole number of at least 1, not '{Value}'.")]

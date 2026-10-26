@@ -89,7 +89,7 @@ Each line says how many trials it holds (`n`), how many passed of the ones that 
 
 ## Checking the judge
 
-Some things code can't judge: *is this recipe a meal for four?* An eval then asks a model, a **judge**, and its answer is a measurement like any other. A measurement is only worth having if it is checked, so a judge is checked against a person before its grade counts for anything: you read some answers and say yes or no, and the judge is asked about the same answers. If it agrees with you on **9 of 10** or more, it sees what you see. If it doesn't, its grades are noise, and the fix is a better prompt or a better model, not trusting it anyway. Until a judge passes, its grade is shown and counted but **never required**: the outcome of a trial doesn't wait on it.
+Some things code can't judge: *is this recipe a meal for four?* An eval then asks a model, a **judge**, and its answer is a measurement like any other. A measurement is only worth having if it is checked, so a judge is checked against a person before its grade counts for anything: you read some answers and say yes or no, and the judge is asked about the same answers. If it agrees with you on **9 of 10** or more, **in each class of your labels**, it sees what you see: a judge that says "pass" to everything agrees with every label that is a pass, so the check also asks it to say "fail" where you did. If it doesn't, its grades are noise, and the fix is a better prompt or a better model, not trusting it anyway. Until a judge passes, its grade is shown and counted but **never required**: the outcome of a trial doesn't wait on it.
 
 The check costs nothing on a local model (Ollama), and it **never runs in CI**: it asks a model. Set the judge first (`EVAL_JUDGE_PROVIDER`, `EVAL_JUDGE_MODEL`, and `EVAL_JUDGE_ENDPOINT` for a local server; see `config/.env.example`).
 
@@ -102,13 +102,13 @@ EVALS=puls dotnet run --project evals/louis-agent.evals.runner -- --label-sheet 
 
 The sheet holds only scenarios that ask for a number of people (a meal for four can't be labelled where no four is asked), one conversation of each scenario before a second of any, so ten labels are not ten repeats of one dish. Asking twice gives the same sheet.
 
-**2. Label it.** Each file holds the scenario, the mode and repeat, the run, the turn and the answer, and `"label": null`. Read the answer as the user would and set the label:
+**2. Label it.** Each file holds the grader it is a label for, the scenario, the mode and repeat, the run, the turn and the answer, and `"label": null`. Read the answer as the user would and set the label. **Answer the one question the judge is asked, and nothing else**: not the price, not the shop, not whether you like it, which other graders already check; a label that answers two questions measures two things at once. Give it before you read the judge's reason, so it is yours alone:
 
 ```json
-"label": { "meal": true, "note": "a main dish, feeds four" }
+"label": { "pass": true, "note": "a main dish, feeds four" }
 ```
 
-`meal` is `true` for a main dish that feeds the number of people asked, `false` for a snack, a side, or portions that don't add up. Write the note for yourself: when the judge disagrees, it is what you will read. **A file with `"label": null` stops the eval from loading**, naming the file; label them all, or delete the ones you don't want. The labels are part of the dataset, but the dataset's version and hash cover the scenarios only, so labelling changes neither.
+`pass` is what the grader should say: for `meal-for-people`, `true` for a main dish that feeds the number of people asked, `false` for a snack, a side, a refusal, or portions that don't add up. Write the note for yourself: when the judge disagrees, it is what you will read. **A file with `"label": null` stops the eval from loading**, naming the file; label them all, or delete the ones you don't want. The labels are part of the dataset, but the dataset's version and hash cover the scenarios only, so labelling changes neither.
 
 **3. Calibrate.** `dotnet run` builds first, which copies the labels beside the runner. Then:
 
@@ -116,9 +116,17 @@ The sheet holds only scenarios that ask for a number of people (a meal for four 
 EVALS=puls EVAL_JUDGE_MODEL=qwen3:8b EVAL_JUDGE_ENDPOINT=http://localhost:11434   dotnet run --project evals/louis-agent.evals.runner -- --calibrate puls-cook meal-for-people
 ```
 
-It prints `Agreement: 9 of 10`, then each answer where the judge differed: the scenario, the run, which way you labelled it, which way the judge went (*can't tell* counts as a disagreement) and its reason. Read those first: a disagreement is either the judge's mistake or yours, and the judge's reason says which.
+It prints the headline (`Agreement: 17 of 18`), then the agreement in each class of your labels, the result, and each answer where the judge differed:
 
-If the agreement is under 9 of 10, stop and decide: a clearer prompt (`Prompts/judges/meal-for-people.md`, which changes the prompt's hash, so the old grades are of another measure), a better model, or a paid judge, which is a decision to make before it is a bill.
+```
+Labelled pass: judge pass 13, fail 1, can't tell 0 (13 of 14, 93%)
+Labelled fail: judge pass 0, fail 4, can't tell 0 (4 of 4, 100%), few labels
+Result: pass, at least 90% in each class
+```
+
+The bar is **90% of each class** (a class of four needs all four); a class with no labels is untested and does not pass; a class of fewer than ten is marked *few labels*. After that, for each answer where the judge differed: the scenario, the run, which way you labelled it, which way the judge went (*can't tell* counts as a disagreement) and its reason. Read those first: a disagreement is either the judge's mistake or yours, and the judge's reason says which.
+
+If a class is under the bar, stop and decide: a clearer prompt (`Prompts/judges/meal-for-people.md`, which changes the prompt's hash, so the old grades are of another measure), a better model, or a paid judge, which is a decision to make before it is a bill.
 
 ---
 [Guides](README.md) · [Docs index](../README.md)

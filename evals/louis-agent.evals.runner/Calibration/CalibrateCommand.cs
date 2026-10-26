@@ -17,9 +17,11 @@ public static class CalibrateCommand
         if (!string.IsNullOrWhiteSpace(getVariable("CI"))) throw new RunnerException(MessageText.Format(RunnerMessage.CalibrationNotInCi));
 
         var grader = ModelGraderOf(eval, request.Grader);
-        if (eval.Labels.Count == 0) throw new RunnerException(MessageText.Format(RunnerMessage.NoLabels, new { Eval = eval.Name }));
+        // The labels folder may hold labels of more than one grader: this calibration reads those of the one it is asked about.
+        var labels = eval.Labels.Where(label => label.Grader == grader.Name).ToList();
+        if (labels.Count == 0) throw new RunnerException(MessageText.Format(RunnerMessage.NoLabels, new { Eval = eval.Name, Grader = grader.Name }));
 
-        var report = await Labels.Calibration.RunAsync(grader, eval.Scenarios, eval.Labels, cancellationToken);
+        var report = await Labels.Calibration.RunAsync(grader, eval.Scenarios, labels, cancellationToken);
         foreach (string line in report.Lines()) stdout.WriteLine(line);
         return 0;
     }

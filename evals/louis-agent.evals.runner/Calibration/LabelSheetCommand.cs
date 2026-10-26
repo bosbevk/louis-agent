@@ -14,7 +14,7 @@ public static class LabelSheetCommand
     public static int Run(LabelSheetRequest request, IEval eval, IEnumerable<string> storedLines, TextWriter stdout)
     {
         var grader = CalibrateCommand.ModelGraderOf(eval, request.Grader);
-        var names = LabelSheet.Write(eval.Scenarios, grader.ExpectedKeys, request.RunId, storedLines, request.Folder, request.Count);
+        var names = LabelSheet.Write(eval.Scenarios, grader.Name, grader.ExpectedKeys, request.RunId, storedLines, request.Folder, request.Count);
         stdout.WriteLine(MessageText.Format(RunnerMessage.LabelSheetWritten, new { Count = names.Count, Folder = request.Folder }));
         return 0;
     }
