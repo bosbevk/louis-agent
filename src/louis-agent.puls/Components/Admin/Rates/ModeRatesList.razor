@@ -1,20 +1,24 @@
 @* F18 step 5a: each mode's pass@k and pass^k, labelled with the k they are over, from the run's JSON. A trial that failed for the infrastructure is left out of k and
-   said apart. A run from before the rates has none, and says so. *@
+   said apart. A run from before the rates has none, and says so. Reworked 2026-10-26 (Louis: "make this prettier"): a row per mode with the two rates as bars and numbers,
+   in the same shape as the category cards. *@
 @if (Rates.All(rate => rate.K is null))
 {
     <p class="muted mode-rates-none">This run has no pass rates (it ran before they were recorded).</p>
 }
 else
 {
+    <p class="muted mode-rates-lead"><strong>pass@k</strong>: the scenarios the mode passed at least once in its k trials (can the agent do it?). <strong>pass^k</strong>: the ones it passed every time (can a customer rely on it?).</p>
     <ul class="mode-rates">
-        @foreach (var rate in Rates)
+        @foreach (var (rate, i) in Rates.Select((r, i) => (r, i)))
         {
-            <li class="mode-rate">
-                <span class="mode-rate-name">@rate.Mode</span>
-                <span class="chip pass-at" title="Passed at least once in its k trials: can the agent do this?">@RatesText.PassAt(rate.K) @RatesText.Share(rate.PassAtK)</span>
-                <span class="chip pass-hat" title="Passed every time in its k trials: can a customer rely on it?">@RatesText.PassHat(rate.K) @RatesText.Share(rate.PassHatK)</span>
-                @if (rate.Infrastructure > 0) { <span class="chip left-out" title="Failed for the infrastructure, not the agent: neither a pass nor a fail.">@RatesText.LeftOut(rate.Infrastructure)</span> }
-                @if (rate.Retried > 0) { <span class="chip retried" title="Run a second time after a transport failure.">@RatesText.Retried(rate.Retried)</span> }
+            <li class="mode-rate" style="--i: @i">
+                <span class="mode-rate-name"><code>@rate.Mode</code></span>
+                <span class="chip pass-at rate-bar" title="Passed at least once in its k trials: can the agent do this?"><span class="rate-label">@(RatesText.PassAt(rate.K) + " ")</span><span class="rate-track"><span class="rate-fill" style="width: @Width(rate.PassAtK)"></span></span><strong>@RatesText.Share(rate.PassAtK)</strong></span>
+                <span class="chip pass-hat rate-bar" title="Passed every time in its k trials: can a customer rely on it?"><span class="rate-label">@(RatesText.PassHat(rate.K) + " ")</span><span class="rate-track"><span class="rate-fill hat" style="width: @Width(rate.PassHatK)"></span></span><strong>@RatesText.Share(rate.PassHatK)</strong></span>
+                <span class="mode-rate-notes">
+                    @if (rate.Infrastructure > 0) { <span class="chip left-out" title="Failed for the infrastructure, not the agent: neither a pass nor a fail.">@RatesText.LeftOut(rate.Infrastructure)</span> }
+                    @if (rate.Retried > 0) { <span class="chip retried" title="Run a second time after a transport failure.">@RatesText.Retried(rate.Retried)</span> }
+                </span>
             </li>
         }
     </ul>
