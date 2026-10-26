@@ -56,6 +56,25 @@ public class BenchmarkProtocolExportTests
         Assert.That(Events(text.Split('\n', StringSplitOptions.RemoveEmptyEntries)), Is.EqualTo(Events(StubLines())));
     }
 
+    // F18 step 6a.3: an exported run keeps the human review's question on the first line, so a re-score of it still says what was asked.
+    [Test]
+    public async Task AHumanReviewsQuestion_SurvivesTheExport()
+    {
+        string At(object e) => "@" + JsonSerializer.Serialize(e);
+        var lines = new[]
+        {
+            At(new { @event = "protocol", version = 1, eval = "puls-cook", eval_version = 9, commit = "abc", graders = new object[] { new { name = "meal-for-people.human", version = 1, kind = "Human", question = "Is this a meal?" } }, models = Array.Empty<object>() }),
+            At(new { @event = "mode", mode = "puls-cook", repeat = 1, toolsets = new[] { "web" }, role = (string?)null, llm = (string?)null, conversations = 0 }),
+            At(new { @event = "mode_done", mode = "puls-cook", repeat = 1 }),
+        };
+        var store = await Recorded(lines);
+
+        string text = await Export(store);
+
+        var begin = (ProtocolStarted)Parse(text.Split('\n', StringSplitOptions.RemoveEmptyEntries)[0]);
+        Assert.That(begin.Graders!.Single().Question, Is.EqualTo("Is this a meal?"));
+    }
+
     [Test]
     public async Task AHeldOutRun_KeepsItsSplitOnTheBeginLine_SoAnExportedRunReadsBackAsHeldOut()
     {

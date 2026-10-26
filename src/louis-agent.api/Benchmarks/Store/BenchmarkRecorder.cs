@@ -198,7 +198,7 @@ public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = n
             new(run.Id, run.Check, run.Repeat, run.Status, run.StartedAt, run.EndedAt, run.ExitCode, _settings, _modes.ToArray(),
                 _total, Log: run.Status == BenchmarkRunStatus.Running ? null : _log.ToArray(), StoreError: _storeError,
                 Eval: _protocol?.Eval, EvalVersion: _protocol?.EvalVersion, Commit: _protocol?.Commit,
-                Graders: _protocol?.Graders?.Select(g => new Grader(g.Name, g.Version, g.Kind)).ToArray(),
+                Graders: _protocol?.Graders?.Select(g => new Grader(g.Name, g.Version, g.Kind, g.Question)).ToArray(),
                 Models: _protocol?.Models?.Select(m => new ModelUse(m.Mode, m.Level, m.Role, m.Model)).ToArray(), Split: _protocol?.Split,
                 RescoreOf: RescoreOf, Slices: _slices.Count == 0 ? null : _slices.ToArray());
 

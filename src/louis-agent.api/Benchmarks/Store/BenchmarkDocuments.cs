@@ -36,7 +36,7 @@ public static class BenchmarkDocuments
         IReadOnlyList<BenchmarkSlice>? Slices = null);
 
     /// <summary>One of the eval's graders, as the run started (F18 step 2a).</summary>
-    public sealed record Grader(string Name, int Version, BenchmarkGraderKind Kind);
+    public sealed record Grader(string Name, int Version, BenchmarkGraderKind Kind, string? Question = null);
 
     /// <summary>The model one level of the run ran on (F18 step 2a): its mode, its level and the model ("unknown" when not known).</summary>
     public sealed record ModelUse(string Mode, BenchmarkModelLevel Level, string? Role, string? Model);

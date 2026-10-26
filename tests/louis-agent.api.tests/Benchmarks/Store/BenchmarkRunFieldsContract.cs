@@ -25,6 +25,20 @@ public abstract class BenchmarkRunFieldsContract
 
     private static Run NewRun(string id) => new(id, "check-" + id[..6], 2, BenchmarkRunStatus.Running, T0);
 
+    // F18 step 6a.3: the question of a human review is kept with the run's graders, in both stores.
+    [Test]
+    public async Task AHumanReviewsQuestion_ReadsBackWithTheRunsGraders()
+    {
+        string id = NewId();
+        var graders = new[] { new Grader("routed-to", 1, BenchmarkGraderKind.FixedRule), new Grader("meal-for-people.human", 1, BenchmarkGraderKind.Human, "Is this a meal for the people asked for?") };
+        await _store.SaveRunAsync(NewRun(id) with { Graders = graders });
+
+        var read = (await _store.GetRunAsync(id))!;
+
+        Assert.That(read.Graders, Is.EqualTo(graders));
+        Assert.That(read.Graders![0].Question, Is.Null);
+    }
+
     [Test]
     public async Task ARunsRescoreOf_ReadsBackAsItWasWritten_AndARunBeforeItHasNone()
     {

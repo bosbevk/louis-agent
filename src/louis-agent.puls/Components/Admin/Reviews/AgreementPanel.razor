@@ -1,0 +1,32 @@
+@* F18 step 6a.3: per reviewed judge, how often it agreed with the people (counts from the API, shares worked out in AgreementView), and the labels as a zip. *@
+@if (Judges.Count > 0)
+{
+    <section class="agreement-panel">
+        <h2>Judge against people</h2>
+        @foreach (var judge in Judges)
+        {
+            <div class="agreement-judge">
+                <h3>@judge.Grader</h3>
+                @if (!judge.AnyLabels)
+                {
+                    <p class="agreement-none">Nobody has graded this judge's answers yet.</p>
+                }
+                else
+                {
+                    <table class="agreement-table">
+                        <thead><tr><th></th><th>Judge: pass</th><th>Judge: fail</th><th>Judge: can't tell</th><th>Agreed</th></tr></thead>
+                        <tbody>
+                            <tr><td>You passed</td><td>@judge.PersonPass.JudgePass</td><td>@judge.PersonPass.JudgeFail</td><td>@judge.PersonPass.JudgeUnknown</td><td>@judge.PersonPass.Text</td></tr>
+                            <tr><td>You failed</td><td>@judge.PersonFail.JudgePass</td><td>@judge.PersonFail.JudgeFail</td><td>@judge.PersonFail.JudgeUnknown</td><td>@judge.PersonFail.Text</td></tr>
+                        </tbody>
+                    </table>
+                    <button type="button" class="agreement-download" @onclick="() => DownloadAsync(judge.Grader)">Download the labels (zip)</button>
+                }
+            </div>
+        }
+        @if (_error is not null)
+        {
+            <p class="review-error">@_error</p>
+        }
+    </section>
+}

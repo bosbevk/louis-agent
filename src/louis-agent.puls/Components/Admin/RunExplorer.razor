@@ -344,7 +344,7 @@
                                 <span class="xbar-label" title="@Question(c.Task)">
                                     <code>@c.Task</code><small>@Blurb(Question(c.Task))</small>
                                     <span class="tree-chips">@foreach (var chip in Chips(c)) { <span class="chip @chip.Kind">@chip.Text</span> }</span>
-                                    <GradeChips Grades="c.Grades" Order="_graders" />
+                                    <GradeChips Grades="c.Grades" Order="_graders" Conversation="new ConversationRef(_runId, m.Name, _repeat, c.Task)" />
                                 </span>
                                 <span class="xbar stacked" title="@($"{c.Task}: Puls {Money(own)}, {Roles(m)} {Money(spec)}")">
                                     <span class="xbar-fill" style="width: @Pct(own ?? 0, topConv)%; background: @Own"></span><span class="xbar-fill" style="width: @Pct(spec ?? 0, topConv)%; background: @Spec"></span>
@@ -408,6 +408,10 @@
                                 </div>
                                 @Timeline(tu, null)
                             </section>
+                        }
+                        @if (_graders?.FirstOrDefault(g => g.Kind == "Human" && g.Name.EndsWith(".human")) is { } review && c.Turns.Count > 0)
+                        {
+                            <ReviewPanel Conversation="new ConversationRef(_runId, m.Name, _repeat, c.Task)" Review="review" Asked="c.Turns.Select(t => t.Question).ToList()" Answer="@c.Turns[^1].Answer" Grades="c.Grades" />
                         }
                     }
                 </section>

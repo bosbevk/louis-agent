@@ -38,6 +38,16 @@ public class BenchmarkProtocolTests
 
     // F18 step 6.1b: what judged a model grader's grade is read with the grade, and a code grader's grade has none.
     // F18 step 6a.1: a human review's grade is Pending until a person gives one; the reader keeps it, and it is no Unknown.
+    // F18 step 6a.3: a human review's entry on the run's first line carries the question a person is asked; another grader's entry has none.
+    [Test]
+    public void AHumanReviewsEntryOnTheFirstLine_CarriesItsQuestion()
+    {
+        var started = (ProtocolStarted)Parse("""@{"event":"protocol","version":1,"eval":"puls-cook","eval_version":9,"commit":"abc","graders":[{"name":"routed-to","version":1,"kind":"FixedRule"},{"name":"meal-for-people.human","version":1,"kind":"Human","question":"Is this a meal for the people asked for?"}],"models":[]}""");
+
+        Assert.That(started.Graders![0].Question, Is.Null);
+        Assert.That(started.Graders![1].Question, Is.EqualTo("Is this a meal for the people asked for?"));
+    }
+
     [Test]
     public void APendingGrade_IsReadAsPending_NotLostAndNotUnknown()
     {

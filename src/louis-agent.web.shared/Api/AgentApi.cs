@@ -101,6 +101,13 @@ public sealed class AgentApi(HttpClient http, ChatSettings settings)
         return await response.Content.ReadAsStringAsync();
     }
 
+    /// <summary>A GET returning a file's bytes (the people's labels, a zip; F18 step 6a.3): through the client, which carries the admin key a plain link cannot.</summary>
+    public async Task<byte[]> GetBytesAsync(string url)
+    {
+        using var response = await SendAsync(new HttpRequestMessage(HttpMethod.Get, url));
+        return await response.Content.ReadAsByteArrayAsync();
+    }
+
     /// <summary>A POST returning JSON, for an app's own endpoints (the admin portal's runs, F27).</summary>
     public async Task<JsonElement> PostAsync(string url, object body)
     {

@@ -33,6 +33,7 @@ internal sealed class ProtocolLines(DateTimeOffset start)
             json.WriteString("name", grader.Name);
             json.WriteNumber("version", grader.Version);
             json.WriteString("kind", grader.Kind.ToString());
+            if (grader.Question is { } question) json.WriteString("question", question);
             json.WriteEndObject();
         }
         json.WriteEndArray();

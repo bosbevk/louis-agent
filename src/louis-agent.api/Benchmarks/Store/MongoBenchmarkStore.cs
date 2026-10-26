@@ -193,7 +193,7 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
         ["commit"] = Nullable(run.Commit),
         ["graders"] = run.Graders is null ? BsonNull.Value : new BsonArray(run.Graders.Select(g => new BsonDocument
         {
-            ["name"] = g.Name, ["version"] = g.Version, ["kind"] = g.Kind.ToString(),
+            ["name"] = g.Name, ["version"] = g.Version, ["kind"] = g.Kind.ToString(), ["question"] = Nullable(g.Question),
         })),
         ["models"] = run.Models is null ? BsonNull.Value : new BsonArray(run.Models.Select(m => new BsonDocument
         {
@@ -225,7 +225,7 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
         d.GetValue("eval_version", BsonNull.Value).IsBsonNull ? null : d["eval_version"].AsInt32,
         StringOf(d.GetValue("commit", BsonNull.Value)),
         d.GetValue("graders", BsonNull.Value).IsBsonNull ? null : d["graders"].AsBsonArray.Select(g => g.AsBsonDocument)
-            .Select(g => new Grader(g["name"].AsString, g["version"].AsInt32, Enum.Parse<BenchmarkGraderKind>(g["kind"].AsString, ignoreCase: true))).ToArray(),
+            .Select(g => new Grader(g["name"].AsString, g["version"].AsInt32, Enum.Parse<BenchmarkGraderKind>(g["kind"].AsString, ignoreCase: true), StringOf(g.GetValue("question", BsonNull.Value)))).ToArray(),
         d.GetValue("models", BsonNull.Value).IsBsonNull ? null : d["models"].AsBsonArray.Select(m => m.AsBsonDocument)
             .Select(m => new ModelUse(m["mode"].AsString, Enum.Parse<BenchmarkModelLevel>(m["level"].AsString, ignoreCase: true), StringOf(m.GetValue("role", BsonNull.Value)), StringOf(m.GetValue("model", BsonNull.Value)))).ToArray(),
         SplitOf(d.GetValue("split", BsonNull.Value)),

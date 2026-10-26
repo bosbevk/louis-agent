@@ -128,5 +128,21 @@ The bar is **90% of each class** (a class of four needs all four); a class with 
 
 If a class is under the bar, stop and decide: a clearer prompt (`Prompts/judges/meal-for-people.md`, which changes the prompt's hash, so the old grades are of another measure), a better model, or a paid judge, which is a decision to make before it is a bill.
 
+## Reviewing answers yourself
+
+The judge is only worth trusting if people agree with it, so the portal lets you grade real answers and then shows how often the judge said the same.
+
+**Do it.** Open a run, go into one conversation (the explorer's second level), and the *review* panel is under the turns. It shows the question the judge was asked, what was asked of the agent and the answer. Type your name the first time (it stays in this browser; the buttons wait for it), then press **Pass**, **Fail** or **Unsure**, with a note if you like. A grade can be changed: your latest one counts.
+
+**Why you can't see the judge first.** If you see the judge's verdict before giving yours, you tend to agree with it, and then the judge is being measured against itself. So the judge's verdict, its reason and its chip are hidden everywhere in the explorer until you have graded that conversation; after that they show, with a line saying whether you agreed.
+
+**What Unsure is for.** It's for the answers you can't call. It is kept and shown, but never counted as a label: a label has to be a yes or a no you stand by. An *Unsure* after a *Pass* takes the pass back.
+
+**How often the judge agreed.** The run's page has a *Judge against people* table per reviewed judge: of the answers you passed, how many the judge passed too; of the ones you failed, how many it failed. Under ten labels in a class it says *few labels*, because a share of four is just four answers.
+
+**Using your grades as labels.** Press *Download the labels (zip)*, unzip the files into `evals/louis-agent.evals.puls/Evals/Cook/Dataset/labels/` and run the check from *Checking the judge* (`--calibrate`).
+
+**What the name means.** The portal has one shared key, so nobody logs in: the name records who *said* they graded, not who proved it.
+
 ---
 [Guides](README.md) · [Docs index](../README.md)

@@ -12,7 +12,7 @@ public static class RunGradersReader
     {
         if (!response.TryGetProperty("run", out var run) || run.ValueKind != JsonValueKind.Object) return new RunGraders(null, null, null, null);
         IReadOnlyList<GraderRow>? graders = run.TryGetProperty("graders", out var list) && list.ValueKind == JsonValueKind.Array
-            ? list.EnumerateArray().Select(g => new GraderRow(Text(g, "name") ?? "", Int(g, "version"), Text(g, "kind") ?? "")).ToList()
+            ? list.EnumerateArray().Select(g => new GraderRow(Text(g, "name") ?? "", Int(g, "version"), Text(g, "kind") ?? "", Text(g, "question"))).ToList()
             : null;
         return new RunGraders(Text(run, "eval"), Int(run, "eval_version"), Text(run, "commit"), graders);
     }

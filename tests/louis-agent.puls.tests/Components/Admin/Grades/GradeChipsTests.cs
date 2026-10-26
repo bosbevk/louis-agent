@@ -1,5 +1,7 @@
 using LouisAgent.Puls.Admin.Grades;
+using LouisAgent.Puls.Admin.Reviews;
 using LouisAgent.Puls.Components.Admin.Grades;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LouisAgent.Puls.Tests.Components.Admin.Grades;
 
@@ -13,6 +15,8 @@ public class GradeChipsTests
     public void ThreeGrades_MatchTheGoldenFile()
     {
         using var ctx = new BunitContext();
+        ctx.JSInterop.Mode = JSRuntimeMode.Loose;
+        ctx.Services.AddSingleton(new ReviewerState(ctx.JSInterop.JSRuntime));
         var grades = new ConversationGrades(
         [
             new GradeRow("no-error", 1, 1, GradeOutcome.Pass, "no turn raised an error"),
@@ -31,6 +35,8 @@ public class GradeChipsTests
     public void NoGrades_MatchTheGoldenFile()
     {
         using var ctx = new BunitContext();
+        ctx.JSInterop.Mode = JSRuntimeMode.Loose;
+        ctx.Services.AddSingleton(new ReviewerState(ctx.JSInterop.JSRuntime));
 
         var cut = ctx.Render<GradeChips>(p => p.Add(c => c.Grades, ConversationGrades.None));
 

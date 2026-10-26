@@ -1719,3 +1719,16 @@ button.tile:hover { transform: translateY(-2px); border-color: rgba(245, 130, 32
 @keyframes sweep { from { stroke-dasharray: 0 100; } }
 @media (max-width: 991.98px) { .xbar-row { grid-template-columns: 1fr; gap: 4px; } .xbar .xbar-value { position: static; } .lane { grid-template-columns: 70px 1fr; } }
 @media (prefers-reduced-motion: reduce) { :root:not([data-motion="on"]) .explorer * { animation: none !important; transition: none !important; } }
+
+/* F18 step 6a.3: the blind review panel and the judge-against-people table */
+.review-panel { margin-top: 1rem; padding: 1rem; border: 1px solid var(--border, #ccc); border-radius: 8px; display: grid; gap: .6rem; }
+.review-question { margin: 0; }
+.review-ask p { margin: 0 0 .25rem; color: var(--muted, #666); }
+.review-note { width: 100%; min-height: 4rem; }
+.review-buttons { display: flex; gap: .5rem; }
+.review-error { color: var(--bad, #b00020); }
+.review-result { font-weight: 600; margin: 0; }
+.review-judge { margin: 0; }
+.agreement-panel { margin: 1rem 0; }
+.agreement-table { border-collapse: collapse; margin-bottom: .5rem; }
+.agreement-table th, .agreement-table td { padding: .3rem .8rem; border-bottom: 1px solid var(--border, #ddd); text-align: left; }

@@ -38,6 +38,16 @@ public class AdminRowsTests
     }
 
     [Test]
+    public void AHumanReviewsQuestion_RidesOnItsGraderRow_AndAnotherGradersHasNone()
+    {
+        var row = Json(AdminRows.RunRow(Run("stub", [new("no-error", 1, BenchmarkGraderKind.FixedRule), new("meal.human", 1, BenchmarkGraderKind.Human, "Is this a meal?")])));
+
+        var graders = row.GetProperty("graders").EnumerateArray().ToList();
+        Assert.That(graders[0].GetProperty("question").ValueKind, Is.EqualTo(JsonValueKind.Null));
+        Assert.That(graders[1].GetProperty("question").GetString(), Is.EqualTo("Is this a meal?"));
+    }
+
+    [Test]
     public void ARunFromBeforeStep2a_GivesNulls()
     {
         var row = Json(AdminRows.RunRow(Run(null, null)));

@@ -7,14 +7,16 @@ namespace LouisAgent.Puls.Admin.Grades.Chips;
 /// </summary>
 public static class GradeChipList
 {
-    public static IReadOnlyList<GradeChip> Of(ConversationGrades grades, IReadOnlyList<GraderRow>? order)
+    public static IReadOnlyList<GradeChip> Of(ConversationGrades grades, IReadOnlyList<GraderRow>? order, IReadOnlySet<string>? hidden = null)
     {
         if (grades.Grades is not { Count: > 0 } list) return [new GradeChip(GradesText.NoGrades)];
         return list
             .Select((grade, stored) => (grade, rank: Rank(order, grade.Grader), stored))
             .OrderBy(g => g.rank).ThenBy(g => g.stored)
-            .Select(g => new GradeChip(g.grade.Outcome == GradeOutcome.Pending ? GradesText.PendingChip(g.grade.Grader) : GradesText.Chip(g.grade.Grader, g.grade.Score),
-                ChipKind.Of(g.grade.Outcome), g.grade.Reason))
+            .Select(g => hidden?.Contains(g.grade.Grader) == true
+                ? new GradeChip(g.grade.Grader)
+                : new GradeChip(g.grade.Outcome == GradeOutcome.Pending ? GradesText.PendingChip(g.grade.Grader) : GradesText.Chip(g.grade.Grader, g.grade.Score),
+                    ChipKind.Of(g.grade.Outcome), g.grade.Reason))
             .ToList();
     }
 

@@ -23,6 +23,18 @@ public class GradesReadersTests
         Assert.That(run.Graders, Is.EqualTo(new[] { new GraderRow("no-error", 1, "FixedRule"), new GraderRow("meal", 2, "Model") }));
     }
 
+    // F18 step 6a.3: a human review's question rides on its grader row; the other graders have none.
+    [Test]
+    public void AHumanReviewsQuestion_IsReadWithItsGrader_AndAnotherGradersHasNone()
+    {
+        var run = RunGradersReader.Read(Json("""
+            {"run":{"id":"run_1","eval":"puls-cook","eval_version":9,"commit":"abc",
+                    "graders":[{"name":"no-error","version":1,"kind":"FixedRule","question":null},{"name":"meal.human","version":1,"kind":"Human","question":"Is this a meal?"}]}}
+            """));
+
+        Assert.That(run.Graders, Is.EqualTo(new[] { new GraderRow("no-error", 1, "FixedRule"), new GraderRow("meal.human", 1, "Human", "Is this a meal?") }));
+    }
+
     [Test]
     public void ARunFromBeforeStep2a_HasNullGraders()
     {
@@ -56,6 +68,23 @@ public class GradesReadersTests
             new GradeRow("no-error", 1, 0, GradeOutcome.Fail, "turn 2 raised an error"),
         }));
         Assert.That(grades.Outcome, Is.EqualTo(GradeOutcome.Fail));
+    }
+
+    // F18 step 6a.3: the people's grades of a conversation ride on its row (`human_grades`); a conversation nobody graded has none, and an older API sends the field not at all.
+    [Test]
+    public void APeoplesGradesAreReadWithTheConversation_AndNoFieldIsNoGrades()
+    {
+        var graded = ConversationGradesReader.Read(Json("""
+            {"mode":"puls-cook","task":"bobotie","grades":[],"outcome":"Pass",
+             "human_grades":[{"grader":"meal-for-people.human","model_grader":"meal-for-people","verdict":"pass","note":"feeds four","reviewer":"Louis","at":"2026-10-26T09:00:00+00:00","latest":true}]}
+            """));
+        var older = ConversationGradesReader.Read(Json("""{"mode":"puls-cook","task":"bobotie","grades":[],"outcome":"Pass"}"""));
+
+        Assert.That(graded.Human, Is.EqualTo(new[]
+        {
+            new HumanGradeRow("meal-for-people.human", "meal-for-people", "pass", "feeds four", "Louis", new DateTimeOffset(2026, 10, 26, 9, 0, 0, TimeSpan.Zero)),
+        }));
+        Assert.That(older.Human, Is.Empty);
     }
 
     [Test]

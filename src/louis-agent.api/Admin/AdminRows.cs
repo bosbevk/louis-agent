@@ -21,7 +21,7 @@ internal static class AdminRows
         store_error = r.StoreError,
         models = r.Models?.Select(m => new { m.Mode, level = m.Level.ToString(), m.Role, m.Model }),
         eval = r.Eval, eval_version = r.EvalVersion, commit = r.Commit, rescore_of = r.RescoreOf,
-        graders = r.Graders?.Select(g => new { name = g.Name, version = g.Version, kind = g.Kind.ToString() }),
+        graders = r.Graders?.Select(g => new { name = g.Name, version = g.Version, kind = g.Kind.ToString(), question = g.Question }),
     };
 
     public static object ConversationRow(BenchmarkDocuments.Conversation c, IReadOnlyList<Benchmarks.Reviews.HumanGrade>? human = null) => new

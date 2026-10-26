@@ -16,8 +16,15 @@ public static class ConversationGradesReader
                 GradeOutcomes.Parse(Text(g, "outcome")), Text(g, "reason") ?? "")).ToList()
             : null;
         GradeOutcome? outcome = Text(conversation, "outcome") is { } word ? GradeOutcomes.Parse(word) : null;
-        return new ConversationGrades(grades, outcome);
+        return new ConversationGrades(grades, outcome, Human(conversation));
     }
+
+    /// <summary>The people's grades (step 6a.3); null where the field is missing, so an older API reads as no grades.</summary>
+    private static IReadOnlyList<HumanGradeRow>? Human(JsonElement conversation) =>
+        conversation.TryGetProperty("human_grades", out var list) && list.ValueKind == JsonValueKind.Array
+            ? list.EnumerateArray().Select(h => new HumanGradeRow(Text(h, "grader") ?? "", Text(h, "model_grader") ?? "", Text(h, "verdict") ?? "", Text(h, "note") ?? "",
+                Text(h, "reviewer") ?? "", Text(h, "at") is { } at && DateTimeOffset.TryParse(at, out var when) ? when : default)).ToList()
+            : null;
 
     private static double? Score(JsonElement grade) =>
         grade.TryGetProperty("score", out var v) && v.ValueKind == JsonValueKind.Number && v.TryGetDouble(out double d) ? d : null;

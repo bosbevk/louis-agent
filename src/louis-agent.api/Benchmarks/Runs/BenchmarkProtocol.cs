@@ -30,7 +30,7 @@ public static class BenchmarkProtocol
         BenchmarkRunSplit? Split = null, string? RescoreOf = null) : Event;
 
     /// <summary>One of the eval's graders: its name, its version and its kind ("FixedRule", "Model", "Human").</summary>
-    public sealed record GraderInfo(string Name, int Version, BenchmarkGraderKind Kind);
+    public sealed record GraderInfo(string Name, int Version, BenchmarkGraderKind Kind, string? Question = null);
 
     /// <summary>The model one level of the run ran on: its mode, its level (agent, specialist, minion, grader) and the model.</summary>
     public sealed record ModelInfo(string Mode, BenchmarkModelLevel Level, string? Role, string? Model);
@@ -114,7 +114,7 @@ public static class BenchmarkProtocol
     /// <summary>The eval's graders, from the protocol line's <c>graders</c>; null when the line doesn't name any.</summary>
     private static IReadOnlyList<GraderInfo>? Graders(JsonElement e) =>
         e.TryGetProperty("graders", out var value) && value.ValueKind == JsonValueKind.Array
-            ? value.EnumerateArray().Select(g => new GraderInfo(Required(g, "name"), Int(g, "version"), Choice<BenchmarkGraderKind>(g, "kind"))).ToArray()
+            ? value.EnumerateArray().Select(g => new GraderInfo(Required(g, "name"), Int(g, "version"), Choice<BenchmarkGraderKind>(g, "kind"), Text(g, "question"))).ToArray()
             : null;
 
     /// <summary>The model each level ran on, from the protocol line's <c>models</c>; null when the line doesn't name any.</summary>

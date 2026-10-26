@@ -32,6 +32,8 @@ internal static class RunBeginLine
             json.WriteString("name", grader.Name);
             json.WriteNumber("version", grader.Version);
             json.WriteString("kind", grader.Kind.ToString());
+            // A human review carries the question a person is asked (F18 step 6a.3), so the portal shows what that run was asked.
+            if (grader is Grading.Human.HumanReviewGrader review) json.WriteString("question", review.Question);
             json.WriteEndObject();
         }
         json.WriteEndArray();
