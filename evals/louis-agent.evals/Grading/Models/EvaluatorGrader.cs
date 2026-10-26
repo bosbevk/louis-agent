@@ -15,27 +15,46 @@ namespace LouisAgent.Evals.Grading.Models;
 /// (<see cref="GradeJudge"/>), and the judge's requests run in a <see cref="UsagePurpose.Grading"/> scope tagged like the trial's turns, so the ledger counts them on the conversation and its run. Not
 /// required until its calibration passes (the plan's step 6).
 /// </summary>
-public sealed class EvaluatorGrader(IEvaluator evaluator, ConfiguredJudge? judge, string name, int version, string promptHash,
-    IReadOnlySet<string>? expectedKeys = null) : IGrader
+public sealed class EvaluatorGrader : IGrader
 {
-    public string Name => name;
-    public int Version => version;
+    private readonly IEvaluator _evaluator;
+    private readonly Lazy<ConfiguredJudge?> _judge;
+    private readonly string _name, _promptHash;
+    private readonly int _version;
+    private readonly Func<Trial, IEnumerable<EvaluationContext>>? _context;
+
+    public EvaluatorGrader(IEvaluator evaluator, ConfiguredJudge? judge, string name, int version, string promptHash, IReadOnlySet<string>? expectedKeys = null,
+        Func<Trial, IEnumerable<EvaluationContext>>? context = null)
+        : this(evaluator, () => judge, name, version, promptHash, expectedKeys, context)
+    {
+    }
+
+    /// <summary>The judge is built when a trial is first graded, not when the eval is listed, so listing reads no settings and opens no ledger.</summary>
+    public EvaluatorGrader(IEvaluator evaluator, Func<ConfiguredJudge?> judge, string name, int version, string promptHash, IReadOnlySet<string>? expectedKeys = null,
+        Func<Trial, IEnumerable<EvaluationContext>>? context = null)
+    {
+        (_evaluator, _judge, _name, _version, _promptHash, _context) = (evaluator, new Lazy<ConfiguredJudge?>(judge), name, version, promptHash, context);
+        ExpectedKeys = expectedKeys ?? new HashSet<string>();
+    }
+
+    public string Name => _name;
+    public int Version => _version;
     public GraderKind Kind => GraderKind.Model;
-    public IReadOnlySet<string> ExpectedKeys { get; } = expectedKeys ?? new HashSet<string>();
+    public IReadOnlySet<string> ExpectedKeys { get; }
     public bool Required => false;
 
     public async ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken)
     {
-        if (judge is null) return Verdict.Unknown(Name, Version, MessageText.Format(CommonGradeMessage.NoJudge));
         if (Verdict.InfrastructureFailure(Name, Version, trial.Transcript.Turns) is { } failed) return failed;
+        if (_judge.Value is not { } judge) return Verdict.Unknown(Name, Version, MessageText.Format(CommonGradeMessage.NoJudge));
 
         var (messages, answer) = Conversation(trial);
         // Tagged as the turns are, {run}:{mode}:{repeat}, and placed on the conversation's last turn, so the API's join puts the judging on its conversation and a slice's cost counts it.
         var last = trial.Transcript.Turns.Count == 0 ? null : trial.Transcript.Turns[^1];
         using var scope = UsageScope.Begin(UsagePurpose.Grading, session: last?.Session, turn: last?.Turn,
             tags: new UsageTags(trial.Scenario.Id, $"{trial.RunId}:{trial.Mode.Name}:{trial.Repeat}", null));
-        var result = await evaluator.EvaluateAsync(messages, answer, judge.Chat, null, cancellationToken);
-        return Read(result) with { Judge = new GradeJudge(judge.Model, promptHash) };
+        var result = await _evaluator.EvaluateAsync(messages, answer, judge.Chat, _context?.Invoke(trial), cancellationToken);
+        return Read(result) with { Judge = new GradeJudge(judge.Model, _promptHash) };
     }
 
     /// <summary>The user's side of the conversation, the earlier answers between, and the last answer as the response being judged.</summary>

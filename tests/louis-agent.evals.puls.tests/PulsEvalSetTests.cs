@@ -22,6 +22,7 @@ public class PulsEvalSetTests
     [TestCase("within-budget")]
     [TestCase("estimates-at-shop")]
     [TestCase("serves-as-asked")]
+    [TestCase("meal-for-people")]
     public async Task ATurnThatFailedForTheInfrastructure_IsUnknown_NeverAFail(string name)
     {
         IGrader grader = new CookEval().Graders.Single(g => g.Name == name);

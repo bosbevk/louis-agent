@@ -26,6 +26,12 @@ public enum GradeMessage
     [Description("turn {Turn} says it serves {Found}, not the {Asked} asked for")]
     ServesWrong,
 
+    [Description("the scenario asks for no number of people, so there is no meal to judge")]
+    MealNotAsked,
+
+    [Description("the judge's reply is not a verdict: {Reply}")]
+    JudgeReplyUnreadable,
+
     [Description("the scenario sets no budget")]
     BudgetNotSet,
 

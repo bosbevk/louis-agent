@@ -7,7 +7,8 @@ using LouisAgent.Evals.Trials;
 namespace LouisAgent.Evals.Runner.Tests.Conformance;
 
 // F18 step 5.4: a reference conversation is one that is right in every way the eval can tell, not only in the required graders. The conformance
-// check holds the required ones; this holds the rest (the serves rule is not required, yet a reference that forgot the number would teach the wrong thing).
+// check holds the required ones; this holds the rest of the fixed rules (the serves rule is not required, yet a reference that forgot the number would teach the wrong thing).
+// A model grader is left out: it passes nothing without a judge, and whether its judge agrees with a person is step 6.3's calibration, not a fixed rule of the references.
 public class PulsReferencesTests
 {
     private static IEnumerable<TestCaseData> References()
@@ -23,7 +24,7 @@ public class PulsReferencesTests
         var scenario = eval.Scenarios.Single(s => s.Id == conformanceCase.Scenario);
         var trial = new Trial("conformance", conformanceCase.Mode, 1, scenario, conformanceCase.Reference);
 
-        foreach (IGrader grader in eval.Graders)
+        foreach (IGrader grader in eval.Graders.Where(g => g.Kind == GraderKind.FixedRule))
         {
             var grade = await grader.GradeAsync(trial, CancellationToken.None);
 

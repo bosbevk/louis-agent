@@ -18,6 +18,8 @@ public class EvaluatorGraderTests
 {
     private static readonly ConfiguredJudge Judge = new(new ChatConfiguration(new FakeChatClient()), "qwen3:8b");
 
+    private sealed class AskContext(string text) : EvaluationContext("ask", text);
+
     private static EvaluatorGrader Grader(IEvaluator evaluator, ConfiguredJudge? judge = null, bool noJudge = false) =>
         new(evaluator, noJudge ? null : judge ?? Judge, "meal-for-people", 3, "abc123def456");
 
@@ -45,6 +47,52 @@ public class EvaluatorGraderTests
         Assert.That(evaluator.Messages.Select(m => (m.Role, m.Text)), Is.EqualTo(new[] { (ChatRole.User, "Hallo") }), "the user's side of the conversation");
         Assert.That(evaluator.Response!.Text, Is.EqualTo("Bobotie vir vier"));
         Assert.That(evaluator.Chat, Is.SameAs(Judge.Chat), "the judge's own client");
+    }
+
+    // F18 step 6.2: a judge needs the scenario's ask ("a meal for four" needs the four), which the bridge hands the evaluator as an EvaluationContext built from the trial.
+    [Test]
+    public async Task TheContext_IsBuiltFromTheTrial_AndHandedToTheEvaluator()
+    {
+        var evaluator = new FakeEvaluator(Metric(true));
+        var grader = new EvaluatorGrader(evaluator, Judge, "meal-for-people", 3, "abc123def456", context: trial => [new AskContext("for " + trial.Scenario.Id)]);
+
+        await grader.GradeAsync(Trial(Turn(1)), CancellationToken.None);
+
+        Assert.That(evaluator.Context.Select(c => (c.Name, ((TextContent)c.Contents.Single()).Text)), Is.EqualTo(new[] { ("ask", "for bobotie") }));
+    }
+
+    [Test]
+    public async Task WithNoContext_TheEvaluatorIsHandedNone()
+    {
+        var evaluator = new FakeEvaluator(Metric(true));
+
+        await Grader(evaluator).GradeAsync(Trial(Turn(1)), CancellationToken.None);
+
+        Assert.That(evaluator.Context, Is.Empty);
+    }
+
+    // The judge is built when a trial is first graded, not when the eval is listed: listing the evals reads no settings and opens no ledger.
+    [Test]
+    public async Task ALazyJudge_IsResolvedOnTheFirstGrade_AndOnlyOnce()
+    {
+        int resolved = 0;
+        var grader = new EvaluatorGrader(new FakeEvaluator(Metric(true)), () => { resolved++; return Judge; }, "meal-for-people", 3, "abc123def456");
+        Assert.That(resolved, Is.Zero, "not at construction");
+
+        await grader.GradeAsync(Trial(Turn(1)), CancellationToken.None);
+        await grader.GradeAsync(Trial(Turn(1)), CancellationToken.None);
+
+        Assert.That(resolved, Is.EqualTo(1));
+    }
+
+    [Test]
+    public async Task ALazyJudgeThatIsNone_GivesTheNoJudgeGrade()
+    {
+        var grader = new EvaluatorGrader(new FakeEvaluator(Metric(true)), () => null, "meal-for-people", 3, "abc123def456");
+
+        var grade = await grader.GradeAsync(Trial(Turn(1)), CancellationToken.None);
+
+        Assert.That((grade.Outcome, grade.Reason), Is.EqualTo((GradeOutcome.Unknown, "no judge configured")));
     }
 
     [Test]

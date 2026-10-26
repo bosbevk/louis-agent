@@ -87,6 +87,29 @@ public class JudgeSettingsTests
         Assert.That(response.Text, Is.EqualTo("yes"));
     }
 
+    // F18 step 6.2: the judge a run uses is built from the environment, and only when a model is named.
+    [Test]
+    public void FromTheEnvironment_NoModelIsNoJudge_AndTheFactoryIsNeverAsked()
+    {
+        var factory = new FakeFactory();
+
+        var judge = JudgeClients.FromEnvironment(_ => null, factory, () => throw new InvalidOperationException("no ledger is opened for no judge"));
+
+        Assert.That(judge, Is.Null);
+        Assert.That(factory.Asked, Is.Null);
+    }
+
+    [Test]
+    public void FromTheEnvironment_AModelIsAJudge_RecordedInTheLedgerTheCallerOpens()
+    {
+        var sink = new ListUsageSink();
+        var judge = JudgeClients.FromEnvironment(name => name == "EVAL_JUDGE_MODEL" ? "qwen3:8b" : null, new FakeFactory(), () => sink);
+
+        Assert.That(judge!.Model, Is.EqualTo("qwen3:8b"));
+        judge.Chat.ChatClient.GetResponseAsync([new ChatMessage(ChatRole.User, "x")]).GetAwaiter().GetResult();
+        Assert.That(sink.Records, Has.Count.EqualTo(1));
+    }
+
     private sealed class FakeFactory : ILlmClientFactory
     {
         public LlmOptions? Asked { get; private set; }

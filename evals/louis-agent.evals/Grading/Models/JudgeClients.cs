@@ -1,4 +1,5 @@
 using LouisAgent.Core.Config;
+using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Llm;
 using LouisAgent.Core.Llm.UsageMapping;
 using LouisAgent.Core.Usage.Sinks;
@@ -13,6 +14,14 @@ namespace LouisAgent.Evals.Grading.Models;
 /// </summary>
 public static class JudgeClients
 {
+    /// <summary>The judge the environment names, or null when it names none; the ledger is opened (by <paramref name="ledger"/>) only for a judge there is.</summary>
+    public static ConfiguredJudge? FromEnvironment(Func<string, string?> getVariable, ILlmClientFactory factory, Func<IUsageSink?> ledger) =>
+        JudgeSettings.FromEnvironment(getVariable) is { } settings ? Create(settings, factory, ledger()) : null;
+
+    /// <summary>The judge this process's environment names, with the real client factory and the ledger the process writes (<c>LOG_DIRECTORY</c>); null when it names none.</summary>
+    public static ConfiguredJudge? FromEnvironment() =>
+        FromEnvironment(Environment.GetEnvironmentVariable, new LlmClientFactory(), () => UsageLedger.Open(AgentOptions.FromEnvironment()));
+
     public static ConfiguredJudge Create(JudgeSettings settings, ILlmClientFactory factory, IUsageSink? sink)
     {
         var options = new LlmOptions

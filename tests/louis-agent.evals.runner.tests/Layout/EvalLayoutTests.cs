@@ -9,7 +9,7 @@ namespace LouisAgent.Evals.Runner.Tests.Layout;
 // what two evals or more use is in Shared/ and only then. Adding, changing or deleting an eval touches one folder. A ratchet in the style of
 // SkillsLayoutTests, read from the source tree, so a misplaced file fails here before anyone has to find it.
 //
-//   louis-agent.evals.{set}/   {Set}EvalSet.cs and the folders Evals/, Shared/ and Messages/ only
+//   louis-agent.evals.{set}/   {Set}EvalSet.cs and the folders Evals/, Shared/, Messages/ and Prompts/ (the judges' prompts, F18 step 6.2) only
 //     Evals/{Folder}/          {Folder}Eval.cs, {Folder}Setup.cs (optional), Grading/, Scoring/, Dataset/, Transcripts/
 //     Shared/                  Grading/, Scoring/, Turns/ ... used by two evals or more
 public class EvalLayoutTests
@@ -153,17 +153,17 @@ public class EvalLayoutTests
     [TestCaseSource(nameof(EachProject))]
     public void TheProjectRoot_HoldsOnlyTheSetAndItsFolders(EvalProject project)
     {
-        // A set's root is the set class, the csproj, and Evals/, Shared/ and Messages/. The runner is not a set: its rule is only that the stub is under Evals/.
+        // A set's root is the set class, the csproj, and Evals/, Shared/, Messages/ and Prompts/ (a judge's prompt, ADR 0011). The runner is not a set: its rule is only that the stub is under Evals/.
         if (!project.IsSet) return;
         var allowedFiles = new[] { project.SetType!.Name + ".cs", project.Name + ".csproj" };
         // The template alone also holds the `dotnet new` template's config (.template.config); a real set doesn't.
-        var allowedFolders = new[] { "Evals", "Shared", "Messages", "bin", "obj" }
+        var allowedFolders = new[] { "Evals", "Shared", "Messages", "Prompts", "bin", "obj" }
             .Concat(project.Name == "louis-agent.evals.template" ? new[] { ".template.config" } : []).ToArray();
         var stray = Directory.EnumerateFileSystemEntries(project.Folder)
             .Select(Path.GetFileName)
             .Where(name => Directory.Exists(Path.Combine(project.Folder, name!)) ? !allowedFolders.Contains(name) : !allowedFiles.Contains(name) && !name!.EndsWith(".user", StringComparison.Ordinal))
             .ToList();
-        Assert.That(stray, Is.Empty, $"{project.Name}'s root holds {string.Join(", ", allowedFiles)} and the folders Evals/, Shared/ and Messages/ only:\n  " + string.Join("\n  ", stray));
+        Assert.That(stray, Is.Empty, $"{project.Name}'s root holds {string.Join(", ", allowedFiles)} and the folders Evals/, Shared/, Messages/ and Prompts/ only:\n  " + string.Join("\n  ", stray));
     }
 
     [Test]

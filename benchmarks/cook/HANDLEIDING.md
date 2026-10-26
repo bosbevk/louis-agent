@@ -70,6 +70,15 @@ Each conversation gets these scores, under its turns in the run's table and in t
 | `follow_up` | What happened with the follow-up: *continued* (the same cook), *new sub-session* (a new cook) or *answered itself* | *continued* |
 | `follow_up_handle` | The cook's handle that continued the follow-up | — |
 
+## The model grader
+
+Besides the fixed rules above, the C# eval (`puls-cook`, version 8) has one grader that is a model, `meal-for-people` (F18 step 6.2): *is the last answer a meal for the number of people asked for?* A judge model reads the ask (how many people, the budget, the town) and the answer, and says yes, no, or "can't tell". It judges the answer only, never the prices.
+
+- It is **shown and counted but not required**: the trial's outcome does not wait on it until its answers agree with a person's labels (step 6.3).
+- **Unknown is an answer.** With no judge configured (`EVAL_JUDGE_MODEL` unset), a reply it can't read, or a judge that can't tell, the grade is Unknown with the reason, never a guessed pass. A scenario that asks for no number of people has no meal to judge and passes without a request.
+- Each grade says what judged (`judge_model`, `judge_prompt_hash`), and the judge's requests are in the ledger as `grading` on the conversation, so the run's cost includes them.
+- Set it with `EVAL_JUDGE_PROVIDER`, `EVAL_JUDGE_MODEL` and `EVAL_JUDGE_ENDPOINT` (see `config/.env.example`); the local Ollama model is free.
+
 ## What it costs
 
 It spends money: every turn asks Claude. The first paid run (F31 step 11b, `474faef30ff0`, 1 repeat, 12 turns) cost

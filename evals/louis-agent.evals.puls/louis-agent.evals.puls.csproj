@@ -15,6 +15,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- F18 step 6.2: a judge's prompt is a markdown file beside the eval (ADR 0011), embedded, so its hash is of the bytes the judge was given. -->
+    <EmbeddedResource Include="Prompts\**\*.md" />
+  </ItemGroup>
+
+  <ItemGroup>
     <!-- F18 step 3: Puls's rules, which name Puls's shops and its cook; the harness (ADR 0029) names no identity. -->
     <ProjectReference Include="..\louis-agent.evals\louis-agent.evals.csproj" />
   </ItemGroup>

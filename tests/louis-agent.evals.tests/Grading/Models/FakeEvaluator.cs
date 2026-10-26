@@ -21,6 +21,7 @@ internal sealed class FakeEvaluator : IEvaluator
     public List<ChatMessage> Messages { get; private set; } = [];
     public ChatResponse? Response { get; private set; }
     public ChatConfiguration? Chat { get; private set; }
+    public List<EvaluationContext> Context { get; private set; } = [];
 
     /// <summary>What a real evaluator does with the judge: it asks the model.</summary>
     public Func<ChatConfiguration, Task>? OnEvaluate { get; init; }
@@ -34,6 +35,7 @@ internal sealed class FakeEvaluator : IEvaluator
         Messages = messages.ToList();
         Response = modelResponse;
         Chat = chatConfiguration;
+        Context = additionalContext?.ToList() ?? [];
         if (_error is not null) throw _error;
         if (OnEvaluate is not null) await OnEvaluate(chatConfiguration!);
         return new EvaluationResult(_metrics);
