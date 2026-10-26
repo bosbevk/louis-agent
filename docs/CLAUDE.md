@@ -23,6 +23,12 @@ The goal and the skill map are in [GOAL.md](GOAL.md).
 9. **Source of truth:** [TODO.md](../TODO.md) (what's next), [features/](features/README.md) (how), [plans/](plans/README.md)
    (how we're building it now), [fixes/](fixes/README.md) (what broke and why) and [specs/](specs/) (why). Update them
    rather than duplicating them.
+10. **Ask about every finding, with three options** (Louis, 2026-10-26). When a step turns up a finding that needs a
+    choice the plan or the brief doesn't settle (a design point, a rule that clashes with the brief, a layout or
+    naming question, a test that can't be written as asked), don't choose: stop and put **each finding to Louis on its
+    own**, with **three options**, each with what it changes and what it costs, and the one you recommend and why.
+    Wait for his pick before writing the code it decides. A mechanical call (a local variable's name, a test's
+    wording) is not a finding.
 
 ## Steps, branches and commits
 
