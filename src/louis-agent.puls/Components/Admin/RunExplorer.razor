@@ -10,6 +10,7 @@
 @using LouisAgent.Web.Shared
 @inject AgentApi Api
 @inject IJSRuntime Js
+@inject ReviewerState Reviewer
 @implements IDisposable
 
 <div class="explorer">
@@ -318,8 +319,14 @@
         @* One grid, a row per conversation with every mode's cell in it (Louis: "this must always align"): a row is as
            tall as its tallest cell, so the same conversation sits level across the modes, and one scale for both
            modes' bars, so a longer bar is a dearer conversation whichever side it is on. *@
-        <div class="chart-head lead"><strong>Conversations</strong><span class="legend"><span><span class="sw" style="background: @Own"></span>Puls itself</span><span><span class="sw" style="background: @Spec"></span>@Roles()</span></span></div>
-        var tasks = Tasks();
+        @* 6a.4d (Louis: "which ones to check"): a filter keeps only the conversations this reviewer still has to grade. *@
+        <div class="chart-head lead"><strong>Conversations</strong>
+            <div class="segmented conv-filter" role="radiogroup" aria-label="Show">
+                <button type="button" role="radio" data-filter="all" aria-checked="@(!_onlyToReview ? "true" : "false")" class="@(!_onlyToReview ? "active" : "")" @onclick="() => _onlyToReview = false">All</button>
+                <button type="button" role="radio" data-filter="to-review" aria-checked="@(_onlyToReview ? "true" : "false")" class="@(_onlyToReview ? "active" : "")" @onclick="() => _onlyToReview = true">To review</button>
+            </div>
+            <span class="legend"><span><span class="sw" style="background: @Own"></span>Puls itself</span><span><span class="sw" style="background: @Spec"></span>@Roles()</span></span></div>
+        var tasks = Tasks().Where(t => !_onlyToReview || _modes.Any(m => m.Conversations.FirstOrDefault(x => x.Task == t) is { } x && Status(x, m) == ReviewState.ToReview)).ToList();
         decimal topConv = Math.Max(0.000001m, _modes.SelectMany(m => m.Conversations).Select(c => c.Cost ?? 0m).DefaultIfEmpty(0m).Max());
         long topTok = Math.Max(1, _modes.SelectMany(m => m.Conversations).Select(c => c.Rows.Sum(r => r.Tokens)).DefaultIfEmpty(0L).Max());
         <div class="compare-grid" style="--cols: @_modes.Count">
@@ -339,18 +346,26 @@
                         }
                         else
                         {
+                            @* 6a.4d (Louis: "a lot of unused space"): a card per conversation, the chips in one line across its width, the review pill in front, the cost strip only when the run cost something. *@
                             decimal? own = Part(c.Rows, specialist: false), spec = Part(c.Rows, specialist: true);
-                            <div class="conv-row">
-                                <span class="xbar-label" title="@Question(c.Task)">
-                                    <code>@c.Task</code><small>@Blurb(Question(c.Task))</small>
+                            var where = new ConversationRef(_runId, m.Name, _repeat, c.Task);
+                            <div class="conv-card" data-review="@ReviewStatus.Slug(Status(c, m))">
+                                <div class="conv-head" title="@Question(c.Task)">
+                                    <code>@c.Task</code><small class="conv-q">@Blurb(Question(c.Task))</small>
+                                    <span class="row-cost small">@Money(c.Cost)</span>
+                                    @Actions(c.Task, null)
+                                </div>
+                                <div class="conv-chips">
+                                    <ReviewPill Grades="c.Grades" Order="_graders" Conversation="where" />
                                     <span class="tree-chips">@foreach (var chip in Chips(c)) { <span class="chip @chip.Kind">@chip.Text</span> }</span>
-                                    <GradeChips Grades="c.Grades" Order="_graders" Conversation="new ConversationRef(_runId, m.Name, _repeat, c.Task)" />
-                                </span>
-                                <span class="xbar stacked" title="@($"{c.Task}: Puls {Money(own)}, {Roles(m)} {Money(spec)}")">
-                                    <span class="xbar-fill" style="width: @Pct(own ?? 0, topConv)%; background: @Own"></span><span class="xbar-fill" style="width: @Pct(spec ?? 0, topConv)%; background: @Spec"></span>
-                                </span>
-                                <span class="row-cost" data-count="@Money(c.Cost)">@Money(c.Cost)</span>
-                                @Actions(c.Task, null)
+                                    <GradeChips Grades="c.Grades" Order="_graders" Conversation="where" />
+                                </div>
+                                @if ((c.Cost ?? 0) > 0)
+                                {
+                                    <span class="conv-strip xbar stacked" title="@($"{c.Task}: Puls {Money(own)}, {Roles(m)} {Money(spec)}")">
+                                        <span class="xbar-fill" style="width: @Pct(own ?? 0, topConv)%; background: @Own"></span><span class="xbar-fill" style="width: @Pct(spec ?? 0, topConv)%; background: @Spec"></span>
+                                    </span>
+                                }
                             </div>
                         }
                     </div>
@@ -736,6 +751,12 @@
     private CancellationTokenSource? _chatStop;
 
     private List<string> Tasks() => _modes.SelectMany(m => m.Conversations.Select(c => c.Task)).Distinct().ToList();
+
+    // 6a.4d: the list's filter and each card's review state (ReviewStatus, a plain class; the pill redraws itself, the card's attribute on the page's next fetch).
+    private bool _onlyToReview;
+
+    private ReviewState Status(ConversationNode c, ModeNode m) =>
+        ReviewStatus.Of(c.Grades, _graders, Reviewer.Name, judge => Reviewer.Graded(new ConversationRef(_runId, m.Name, _repeat, c.Task), judge));
 
     private async Task OpenChatsAsync(string? task)
     {

@@ -1,4 +1,5 @@
 using System.Text.Json;
+using LouisAgent.Puls.Admin.Reviews;
 using LouisAgent.Puls.Components.Admin;
 using LouisAgent.Web.Shared.Api;
 using LouisAgent.Web.Shared.Storage;
@@ -20,6 +21,7 @@ public class RunExplorerOpenTaskTests
         var ctx = new BunitContext();
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
         ctx.Services.AddSingleton(new AgentApi(new HttpClient(new StubHandler(_ => new HttpResponseMessage())) { BaseAddress = new Uri("http://localhost/") }, new ChatSettings()));
+        ctx.Services.AddSingleton(new ReviewerState(ctx.JSInterop.JSRuntime));
         return ctx.Render<RunExplorer>(p => p.Add(x => x.Run, JsonDocument.Parse(Run(repeats)).RootElement.Clone()).Add(x => x.OpenTask, openTask));
     }
 
