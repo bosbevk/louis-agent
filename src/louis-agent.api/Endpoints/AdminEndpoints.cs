@@ -2,6 +2,7 @@ using LouisAgent.Api.Admin;
 using LouisAgent.Api.Benchmarks.Runs;
 using LouisAgent.Api.Benchmarks.Store;
 using LouisAgent.Api.Benchmarks.Reports;
+using LouisAgent.Api.Benchmarks.Reviews;
 using LouisAgent.Api.Endpoints.Routing;
 using System.Net.ServerSentEvents;
 using LouisAgent.Api.Messages;
@@ -26,7 +27,7 @@ internal static class AdminEndpoints
 
     public static void MapAdmin(this IEndpointRouteBuilder routes, BenchmarkCatalog catalog, BenchmarkRunner runner, string? adminKey,
         IBenchmarkStore? store, BenchmarkRecorder? recorder, Func<BenchmarkCheck, IReadOnlyDictionary<string, string>> settingsOf,
-        string workspaceRoot)
+        string workspaceRoot, IHumanReviewStore? reviews = null)
     {
         var admin = routes.MapGroup("/admin").WithAccess(RouteAccess.AdminKey).AddEndpointFilter(async (context, next) =>
         {
@@ -86,7 +87,8 @@ internal static class AdminEndpoints
             });
         }));
 
-        admin.MapStoredRuns(store, runner);
+        admin.MapStoredRuns(store, runner, reviews);
+        admin.MapReviews(store, reviews);
         admin.MapRescore(catalog, runner, store, recorder, settingsOf);
 
         // A run from the page. 202 with the run, recorded as it goes; 503 without a store (a paid run whose results vanish

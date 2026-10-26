@@ -1,6 +1,7 @@
 using LouisAgent.Api.Admin;
 using LouisAgent.Api.Benchmarks.Export;
 using LouisAgent.Api.Benchmarks.Reports;
+using LouisAgent.Api.Benchmarks.Reviews;
 using LouisAgent.Api.Benchmarks.Runs;
 using LouisAgent.Api.Benchmarks.Store;
 using LouisAgent.Api.Messages;
@@ -16,7 +17,7 @@ namespace LouisAgent.Api.Endpoints;
 /// </summary>
 internal static class StoredRunEndpoints
 {
-    public static void MapStoredRuns(this RouteGroupBuilder admin, IBenchmarkStore? store, BenchmarkRunner runner)
+    public static void MapStoredRuns(this RouteGroupBuilder admin, IBenchmarkStore? store, BenchmarkRunner runner, IHumanReviewStore? reviews = null)
     {
         // A stored run with its conversations, their turns (without their events) and its requests: the explorer's levels.
         admin.MapGet("/benchmarks/runs/{id}", (string id, CancellationToken cancellationToken) => AdminEndpoints.FromStore(store, async s =>
@@ -28,6 +29,9 @@ internal static class StoredRunEndpoints
                 foreach (var turn in await s.TurnsAsync(id, conversation.Key, cancellationToken))
                     turns.Add(TurnRow(turn, await BenchmarkTools.OfTurnAsync(s, id, turn, cancellationToken)));
             var requests = await s.RequestsAsync(id, cancellationToken);
+            var people = reviews is null ? [] : await reviews.OfRunAsync(id, cancellationToken);
+            var latest = HumanGrades.Latest(people);
+            var decided = HumanGrades.Decided(people);
             return Results.Json(new
             {
                 run = RunRow(run),
@@ -41,7 +45,18 @@ internal static class StoredRunEndpoints
                 log = run.Log,
                 // F18 step 5c.2: each mode's roll-up as the runner wrote it, priced from the ledger; null for a run from before it.
                 summaries = SummaryRow.Of(run.Slices, run.Total, requests),
-                conversations = conversations.Select(ConversationRow),
+                conversations = conversations.Select(c => ConversationRow(c, [.. latest.Where(g => g.Conversation == c.Key)])),
+                // F18 step 6a.2: per judge with a human review, how often it agreed with the people, as counts (the API reads, it doesn't rate).
+                agreement = ReviewEndpoints.HumanReviewsOf(run).Select(human => human[..^".human".Length]).Order(StringComparer.Ordinal).Select(grader =>
+                {
+                    var t = ReviewAgreement.Of(conversations, decided, grader);
+                    return new
+                    {
+                        grader,
+                        person_pass = new { judge_pass = t.PersonPassJudgePass, judge_fail = t.PersonPassJudgeFail, judge_unknown = t.PersonPassJudgeUnknown },
+                        person_fail = new { judge_pass = t.PersonFailJudgePass, judge_fail = t.PersonFailJudgeFail, judge_unknown = t.PersonFailJudgeUnknown },
+                    };
+                }),
                 turns,
                 requests = requests.Select(RequestRow),
             });
@@ -65,7 +80,9 @@ internal static class StoredRunEndpoints
         {
             if (runner.Current is { Status: BenchmarkRunStatus.Running } live && live.Id == id)
                 return ApiErrors.Result(StatusCodes.Status409Conflict, "conflict_error", MessageText.Format(ApiUserText.StoredRunStillRunning, new { Id = id }));
-            return await s.DeleteRunAsync(id, cancellationToken) ? Results.NoContent() : NoRun(id);
+            if (!await s.DeleteRunAsync(id, cancellationToken)) return NoRun(id);
+            if (reviews is not null) await reviews.DeleteRunAsync(id, cancellationToken);
+            return Results.NoContent();
         }));
     }
 

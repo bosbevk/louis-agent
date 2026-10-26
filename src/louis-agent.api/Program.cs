@@ -1,3 +1,4 @@
+using LouisAgent.Api.Benchmarks.Reviews;
 using LouisAgent.Api.Benchmarks.Runs;
 using LouisAgent.Api.Benchmarks.Store;
 using LouisAgent.Api.Config;
@@ -54,6 +55,7 @@ var benchmarkLog = AgentLogging.LoggerFactory.CreateLogger("LouisAgent.Api.Bench
 // The checks: the C# evals the runner lists (read on first use), and the Python checks it doesn't list yet.
 var benchmarks = BenchmarkCatalog.From(EvalListing.ForRunner(admin.EvalRunner), BenchmarkCatalog.Default, benchmarkLog);
 IBenchmarkStore? benchmarkStore = admin.BenchmarksMongoUrl is { } mongoUrl ? new MongoBenchmarkStore(mongoUrl, admin.BenchmarksDatabase) : null;
+IHumanReviewStore? reviewStore = admin.BenchmarksMongoUrl is { } reviewsUrl ? new MongoHumanReviewStore(reviewsUrl, admin.BenchmarksDatabase) : null;
 BenchmarkRecorder? recorder = benchmarkStore is null ? null : new BenchmarkRecorder(benchmarkStore, benchmarkLog, host.Agent.LogDirectory);
 if (benchmarkStore is not null)
     _ = Task.Run(async () =>
@@ -71,6 +73,6 @@ if (benchmarkStore is not null)
 // The listing is read off the start-up path, so a warning lands in the start-up log (the first request would wait for it).
 _ = Task.Run(benchmarks.Warm);
 api.MapAdmin(benchmarks, new BenchmarkRunner(benchmarks, host.Engine.WorkspaceRoot, admin.BenchmarkApiUrl, evalRunner: admin.EvalRunner), admin.AdminKey, benchmarkStore, recorder,
-    check => BenchmarkSettings.Of(check, host.Llm.Provider, host.Llm.Model, host.Agent.RolesEnabled, admin.EvalRunner), host.Engine.WorkspaceRoot);
+    check => BenchmarkSettings.Of(check, host.Llm.Provider, host.Llm.Model, host.Agent.RolesEnabled, admin.EvalRunner), host.Engine.WorkspaceRoot, reviewStore);
 
 app.Run();

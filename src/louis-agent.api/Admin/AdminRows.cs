@@ -24,12 +24,14 @@ internal static class AdminRows
         graders = r.Graders?.Select(g => new { name = g.Name, version = g.Version, kind = g.Kind.ToString() }),
     };
 
-    public static object ConversationRow(BenchmarkDocuments.Conversation c) => new
+    public static object ConversationRow(BenchmarkDocuments.Conversation c, IReadOnlyList<Benchmarks.Reviews.HumanGrade>? human = null) => new
     {
         mode = c.Key.Mode, repeat = c.Key.Repeat, task = c.Key.Task, order = c.Order, role = c.Role, scores = c.Scores,
         errors = c.Errors, seconds = c.Seconds,
         grades = c.Grades?.Select(g => new { grader = g.Grader, version = g.Version, score = g.Score, outcome = g.Outcome.ToString(), reason = g.Reason, judge_model = g.JudgeModel, judge_prompt_hash = g.JudgePromptHash }),
         outcome = c.Outcome?.ToString(),
+        // People's grades of this conversation (F18 step 6a.2): each reviewer's latest, beside the grades above; empty when nobody has graded it.
+        human_grades = (human ?? []).Select(g => Endpoints.ReviewEndpoints.Row(g, latest: true)),
     };
 
     /// <summary>A turn, with what its tools did, read from its stored events (step 11c's first half): every run has it.</summary>
