@@ -78,6 +78,14 @@ public class HumanReviewGraderTests
         Assert.That(ReviewQuestion.From(prompt), Is.EqualTo(expected));
     }
 
+    [TestCase("# Judge:")]
+    [TestCase("# Judge:   \n\nBody")]
+    [TestCase("#  \n\nBody")]
+    public void ATitleWithNothingAfterIt_IsNoTitle_NotACrash(string prompt)
+    {
+        Assert.That(() => ReviewQuestion.From(prompt), Throws.TypeOf<InvalidDataException>().With.Message.Contains("title"));
+    }
+
     [Test]
     public void APromptWithNoTitle_HasNoQuestion_SoNoReviewIsMadeForIt()
     {

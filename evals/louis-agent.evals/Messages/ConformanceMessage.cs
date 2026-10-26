@@ -5,6 +5,9 @@ namespace LouisAgent.Evals.Messages;
 /// <summary>The failures of the conformance check, each a sentence a person reads (ADR 0009: a text is a message enum member).</summary>
 public enum ConformanceMessage
 {
+    [Description("human review '{Grader}' must be named '<a model grader of this eval>.human', and '{Reviews}' is not a model grader of this eval.")]
+    HumanReviewReviewsNoModelGrader,
+
     [Description("grader '{Grader}' is a human review and is required, so every run would wait for a person. A human review is never required.")]
     HumanGraderRequired,
 

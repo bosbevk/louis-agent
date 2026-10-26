@@ -3,10 +3,10 @@ using LouisAgent.Evals.Grading;
 namespace LouisAgent.Evals.Reports;
 
 /// <summary>How many of a slice's counted trials one grader passed, failed, and could not tell on (a trial it gave no grade counts as Unknown).</summary>
-public sealed record GraderCount(string Grader, GraderKind Kind, int Passed, int Failed, int Unknown, int Pending = 0);
+public sealed record GraderCount(string Grader, GraderKind Kind, int Passed, int Failed, int Unknown);
 
 /// <summary>The same counts summed over the required graders of one kind.</summary>
-public sealed record KindCount(GraderKind Kind, int Passed, int Failed, int Unknown, int Pending = 0);
+public sealed record KindCount(GraderKind Kind, int Passed, int Failed, int Unknown);
 
 /// <summary>The mean of one numeric score over the trials that have it, and how many that is.</summary>
 public sealed record ScoreMean(string Key, double Mean, int N);

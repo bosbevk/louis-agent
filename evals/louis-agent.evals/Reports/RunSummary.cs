@@ -43,7 +43,7 @@ public static class RunSummary
         var share = tooFew ? null : PassRates.ShareOf(trials.GroupBy(trial => trial.Scenario).Select(scenario => PassRates.Over([.. scenario.Select(trial => trial.Outcome)])));
         var graders = required.Select(grader => GraderCountOf(grader, counted)).ToList();
         var kinds = graders.GroupBy(count => count.Kind).OrderBy(group => group.Key)
-            .Select(group => new KindCount(group.Key, group.Sum(c => c.Passed), group.Sum(c => c.Failed), group.Sum(c => c.Unknown), group.Sum(c => c.Pending))).ToList();
+            .Select(group => new KindCount(group.Key, group.Sum(c => c.Passed), group.Sum(c => c.Failed), group.Sum(c => c.Unknown))).ToList();
 
         return new SummaryLine(mode, slice, trials.Count, passed, Count(TrialOutcome.Fail), Count(TrialOutcome.Unknown), Count(TrialOutcome.Infrastructure),
             [.. trials.Select(trial => trial.Scenario).Distinct().Order(StringComparer.Ordinal)], tooFew,
@@ -55,6 +55,6 @@ public static class RunSummary
     {
         var outcomes = counted.Select(trial => trial.Grades.FirstOrDefault(grade => grade.Grader == grader.Name)?.Outcome).ToList();
         return new GraderCount(grader.Name, grader.Kind, outcomes.Count(o => o == GradeOutcome.Pass), outcomes.Count(o => o == GradeOutcome.Fail),
-            outcomes.Count(o => o is null or GradeOutcome.Unknown), outcomes.Count(o => o == GradeOutcome.Pending));
+            outcomes.Count(o => o is null or GradeOutcome.Unknown));
     }
 }

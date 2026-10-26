@@ -21,6 +21,8 @@ public static class EvalConformance
     /// <summary>An MCP tool name: letters, digits, '-' and '_', at most 64.</summary>
     private static readonly Regex McpName = new("^[A-Za-z0-9_-]{1,64}$", RegexOptions.CultureInvariant);
 
+    private const string HumanSuffix = ".human";
+
     /// <summary>A grader's name may also hold a dot, for a human review's <c>{grader}.human</c> (F18 step 6a); an eval's name may not.</summary>
     private static readonly Regex GraderName = new("^[A-Za-z0-9_.-]{1,64}$", RegexOptions.CultureInvariant);
 
@@ -85,7 +87,14 @@ public static class EvalConformance
         foreach (IGrader grader in eval.Graders)
         {
             // A human review waits for a person, so a required one would make every run wait on one (F18 step 6a): it is never required.
-            if (grader.Kind == GraderKind.Human && grader.Required) failures.Add(MessageText.Format(ConformanceMessage.HumanGraderRequired, new { Grader = grader.Name }));
+            if (grader.Kind == GraderKind.Human)
+            {
+                if (grader.Required) failures.Add(MessageText.Format(ConformanceMessage.HumanGraderRequired, new { Grader = grader.Name }));
+                // A person's review checks a judge, so it names one (F18 step 6a.1b): `{x}.human`, with x a model grader of this same eval.
+                string reviews = grader.Name.EndsWith(HumanSuffix, StringComparison.Ordinal) ? grader.Name[..^HumanSuffix.Length] : grader.Name;
+                if (reviews.Length == 0 || reviews == grader.Name || !eval.Graders.Any(other => other.Kind == GraderKind.Model && other.Name == reviews))
+                    failures.Add(MessageText.Format(ConformanceMessage.HumanReviewReviewsNoModelGrader, new { Grader = grader.Name, Reviews = reviews }));
+            }
             if (!GraderName.IsMatch(grader.Name)) failures.Add(MessageText.Format(ConformanceMessage.GraderNameNotSafe, new { Grader = grader.Name }));
             if (!names.Add(grader.Name)) failures.Add(MessageText.Format(ConformanceMessage.DuplicateGrader, new { Name = eval.Name, Grader = grader.Name }));
             if (grader.Version < 1)

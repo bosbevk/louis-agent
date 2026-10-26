@@ -34,6 +34,7 @@ public class PendingOutcomeTests
     }
 
     private static readonly IGrader Fixed = new Rule("routed-to", GraderKind.FixedRule, required: true);
+    private static readonly IGrader Judge = new Rule("meal-for-people", GraderKind.Model, required: false);
     private static readonly IGrader Review = new Rule("meal-for-people.human", GraderKind.Human, required: false);
 
     [Test]
@@ -65,50 +66,10 @@ public class PendingOutcomeTests
     }
 
     [Test]
-    public void InTheRollUp_PendingIsItsOwnCountPerGraderAndKind_NotUnknown()
-    {
-        var required = new Rule("meal-for-people.human", GraderKind.Human, required: true);
-        TrialResult Trial(string id, GradeOutcome outcome) =>
-            new(id, [], TrialOutcome.Pass, [new Grade("meal-for-people.human", 1, 0, outcome, "r")], JsonDocument.Parse("{}").RootElement.Clone());
-
-        var line = RunSummary.Of("puls-cook", [Trial("a", GradeOutcome.Pending), Trial("b", GradeOutcome.Pending), Trial("c", GradeOutcome.Unknown), Trial("d", GradeOutcome.Pass)],
-            [required]).First();
-
-        var grader = line.Graders.Single();
-        Assert.That((grader.Passed, grader.Failed, grader.Unknown, grader.Pending), Is.EqualTo((1, 0, 1, 2)));
-        Assert.That(line.Kinds.Single().Pending, Is.EqualTo(2));
-    }
-
-    [Test]
-    public void ARoll_UpWithNothingPending_WritesNoPendingField()
-    {
-        var line = RunSummary.Of("m", [new TrialResult("a", [], TrialOutcome.Pass, [Verdict.Pass("routed-to", 1, "ok")], JsonDocument.Parse("{}").RootElement.Clone())], [Fixed]).First();
-        var sink = new StringWriter();
-
-        new ProtocolWriter(sink, new FixedClock(DateTimeOffset.UnixEpoch)).Summary(line);
-        string text = sink.ToString();
-
-        Assert.That(text, Does.Not.Contain("pending"), "an old run's summary lines are unchanged");
-    }
-
-    [Test]
-    public void ARoll_UpWithAPending_WritesItsCount()
-    {
-        var required = new Rule("meal-for-people.human", GraderKind.Human, required: true);
-        var line = RunSummary.Of("m", [new TrialResult("a", [], TrialOutcome.Pass, [Verdict.Pending("meal-for-people.human", 1, "w")], JsonDocument.Parse("{}").RootElement.Clone())],
-            [required]).First();
-        var sink = new StringWriter();
-
-        new ProtocolWriter(sink, new FixedClock(DateTimeOffset.UnixEpoch)).Summary(line);
-
-        Assert.That(sink.ToString(), Does.Contain("\"pending\":1"));
-    }
-
-    [Test]
     public async Task TheConformanceCheck_AcceptsAHumanGraderThatIsNotRequired_AndRefusesOneThatIs()
     {
-        var accepted = await EvalConformance.CheckAsync(new Eval(Fixed, Review), [], CancellationToken.None);
-        var refused = await EvalConformance.CheckAsync(new Eval(Fixed, new Rule("meal-for-people.human", GraderKind.Human, required: true)), [], CancellationToken.None);
+        var accepted = await EvalConformance.CheckAsync(new Eval(Fixed, Judge, Review), [], CancellationToken.None);
+        var refused = await EvalConformance.CheckAsync(new Eval(Fixed, Judge, new Rule("meal-for-people.human", GraderKind.Human, required: true)), [], CancellationToken.None);
 
         Assert.That(accepted.Where(f => f.Contains("meal-for-people.human")), Is.Empty);
         Assert.That(refused.Where(f => f.Contains("meal-for-people.human")), Is.Not.Empty);
@@ -118,7 +79,7 @@ public class PendingOutcomeTests
     [Test]
     public async Task AGraderNameMayHoldADot_ForAHumanReviews_ButAnEvalsNameMayNot()
     {
-        var dotted = await EvalConformance.CheckAsync(new Eval(Fixed, new Rule("meal.for.people.human", GraderKind.Human, required: false)), [], CancellationToken.None);
+        var dotted = await EvalConformance.CheckAsync(new Eval(Fixed, new Rule("meal.for.people", GraderKind.Model, required: false), new Rule("meal.for.people.human", GraderKind.Human, required: false)), [], CancellationToken.None);
         var evalName = await EvalConformance.CheckAsync(new Eval("a.dotted.eval", Fixed), [], CancellationToken.None);
 
         Assert.That(dotted.Where(f => f.Contains("not safe")), Is.Empty);

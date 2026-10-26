@@ -16,6 +16,8 @@ public static class ReviewQuestion
 
         string question = title[2..].Trim();
         if (question.StartsWith("Judge:", StringComparison.OrdinalIgnoreCase)) question = question["Judge:".Length..].Trim();
+        // A title with nothing after it asks nothing: no title, not a crash on its first letter.
+        if (question.Length == 0) throw new InvalidDataException(MessageText.Format(EvalErrorMessage.PromptHasNoTitle));
         question = char.ToUpperInvariant(question[0]) + question[1..];
         return question.EndsWith('?') ? question : question + "?";
     }
