@@ -14,6 +14,10 @@ The goal and the skill map are in [GOAL.md](GOAL.md).
    or `FXnn-name.md` and committed on its branch. Don't rewrite it afterwards: a change Louis approves during the build
    is added under *Approved during the build*; anything else the build learns goes in the feature or fix doc.
 4. **Explain every change:** what changed, why this design and not the alternatives, and what to look at closely.
+   **In plain words** (Louis, 2026-10-26): the way a friend would explain it, casual but straight to the point, in
+   short everyday sentences. Lead with what it means, then the detail; when a technical term is needed, say what it
+   means the first time; name code (a class, a file) only where Louis needs to find it. This holds for every
+   explanation: a step, a finding, a review, an answer.
 5. **Stop after each step** and wait for Louis to review and understand it before starting the next one.
 6. **Teach, don't just do.** Name the AI-engineering concept behind each step and where it sits in the GOAL.md skill map.
 7. **Measure, don't assume.** Ask before anything that spends real money (benchmark or demo runs against the API) and
