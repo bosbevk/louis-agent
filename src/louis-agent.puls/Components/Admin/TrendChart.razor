@@ -2,9 +2,9 @@
    Jitter's line charts draw themselves (a clipping rectangle that grows; a dash pattern breaks once the stroke doesn't
    scale with the chart); a point opens its run. Small on the check card (cost only), full in the explorer: the nine rings
    as lines, the open run marked. Reworked 2026-10-26 (Louis: "more explanatory, more interactive"): one run is read at a
-   time, the hovered one, else the marked one, else the last, and each panel's head gives its value per mode with the
-   change since the run before; hovering a point reads that run in every panel; the scale says its ends; dates sit under
-   the axis. Motion is off for people who ask for less. *@
+   time, the marked one, else the last, and each panel's head gives its value per mode with the change since the run
+   before; hovering a point reads that run in that panel only (Louis: "only update the graph I'm on"); the scale says
+   its ends; dates sit under the axis. Motion is off for people who ask for less. *@
 @using System.Globalization
 @using System.Text.Json
 @using LouisAgent.Web.Shared
@@ -15,11 +15,11 @@
 }
 else
 {
-    <div class="trend @(Small ? "small" : "") @(Compact ? "compact" : "")" @onmouseleave="() => _hover = null">
+    <div class="trend @(Small ? "small" : "") @(Compact ? "compact" : "")">
         @if (!Small)
         {
             <div class="chart-head">@if (ShowTitle) { <strong>Trend</strong> }<span class="muted">@_runs.Count runs</span>
-                <span class="trend-shown muted">reading run <a href="admin/benchmarks/@Shown.Run"><code>@Shown.Run</code></a> · @Shown.At.ToLocalTime().ToString("yyyy-MM-dd HH:mm")<span class="trend-hint"> · hover a point to read that run in every panel, click it to open the run</span></span>
+                <span class="trend-shown muted">reading run <a href="admin/benchmarks/@Shown.Run"><code>@Shown.Run</code></a> · @Shown.At.ToLocalTime().ToString("yyyy-MM-dd HH:mm")<span class="trend-hint"> · hover a point to read that run in its panel, click it to open the run</span></span>
                 <span class="legend">@foreach (var (s, i) in _series.Select((s, i) => (s, i))) { <span><span class="sw" style="background: @Series(i)"></span>@(Labels?.GetValueOrDefault(s.Name) ?? s.Name)</span> }</span></div>
         }
         @if (Small)
@@ -77,11 +77,13 @@ else
     private readonly string _id = Guid.NewGuid().ToString("N")[..8];
     private List<Line> _series = [];
     private List<(string Run, DateTimeOffset At)> _runs = [];
-    /// <summary>The run under the mouse, read in every panel while it is; null reads the marked run, else the last.</summary>
-    private string? _hover;
+    /// <summary>The run under the mouse and the panel it is in: that panel reads it while the mouse is there; the others read the marked run, else the last.</summary>
+    private (string Topic, string Run)? _hover;
 
-    private (string Run, DateTimeOffset At) Shown =>
-        _runs.FirstOrDefault(r => r.Run == _hover, _runs.FirstOrDefault(r => r.Run == Highlight, _runs[^1]));
+    private (string Run, DateTimeOffset At) Shown => _runs.FirstOrDefault(r => r.Run == Highlight, _runs[^1]);
+
+    private (string Run, DateTimeOffset At) ShownIn(string topic) =>
+        _hover is { } h && h.Topic == topic ? _runs.FirstOrDefault(r => r.Run == h.Run, Shown) : Shown;
 
     protected override void OnParametersSet()
     {
@@ -103,10 +105,10 @@ else
     private bool Known(Func<Point, double?> value) => _series.SelectMany(s => s.Points).Any(p => value(p) is not null);
 
     /// <summary>The shown run's value on a line, and the change since that line's run before it (null when either is unknown).</summary>
-    private (double? Value, double? Delta) Read(Line s, Func<Point, double?> value)
+    private (double? Value, double? Delta) Read(string topic, Line s, Func<Point, double?> value)
     {
         var known = s.Points.Where(p => value(p) is not null).OrderBy(p => p.At).ToList();
-        int at = known.FindIndex(p => p.Run == Shown.Run);
+        int at = known.FindIndex(p => p.Run == ShownIn(topic).Run);
         if (at < 0) return (null, null);
         return (value(known[at]), at > 0 ? value(known[at]) - value(known[at - 1]) : null);
     }
@@ -125,20 +127,21 @@ else
                     <span class="trend-values">
                         @foreach (var (s, i) in _series.Select((s, i) => (s, i)))
                         {
-                            var (v, d) = Read(s, value);
+                            var (v, d) = Read(topic, s, value);
                             <span title="@s.Name"><span class="sw" style="background: @Series(i)"></span><strong>@(v is { } x ? label(x) : "–")</strong>
                                 @if (d is { } delta && delta != 0) { <span class="trend-delta @(delta > 0 ? "up" : "down")">@(delta > 0 ? "▲ +" : "▼ −")@label(Math.Abs(delta))</span> }
                             </span>
                         }
                     </span>
                 }
+                @if (!Small && _hover is { } hv0 && hv0.Topic == topic) { <span class="muted trend-reading">run <code>@ShownIn(topic).Run</code> · @ShownIn(topic).At.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</span> }
                 <span class="muted trend-top">0 – @label(top)</span></div>
             @{ string clip = $"trend-clip-{_id}-{topic}"; }
-            <svg class="trend-svg" viewBox="0 0 @F(W) @F(H)" preserveAspectRatio="none" role="img" aria-label="@title">
+            <svg class="trend-svg" viewBox="0 0 @F(W) @F(H)" preserveAspectRatio="none" role="img" aria-label="@title" @onmouseleave="() => { if (_hover?.Topic == topic) _hover = null; }">
                 <defs><clipPath id="@clip"><rect class="trend-reveal" x="-10" y="-10" width="@F(W + 20)" height="@F(H + 20)" /></clipPath></defs>
                 <line class="trend-axis" x1="0" y1="@F(H - Pad)" x2="@F(W)" y2="@F(H - Pad)" />
                 @if (Highlight is { } h && _runs.Any(r => r.Run == h)) { <line class="trend-mark" x1="@F(X(h))" y1="0" x2="@F(X(h))" y2="@F(H)" /> }
-                @if (_hover is { } hv && _runs.Any(r => r.Run == hv)) { <line class="trend-hover" x1="@F(X(hv))" y1="0" x2="@F(X(hv))" y2="@F(H)" /> }
+                @if (_hover is { } hv && hv.Topic == topic && _runs.Any(r => r.Run == hv.Run)) { <line class="trend-hover" x1="@F(X(hv.Run))" y1="0" x2="@F(X(hv.Run))" y2="@F(H)" /> }
                 @foreach (var (s, i) in _series.Select((s, i) => (s, i)))
                 {
                     var known = s.Points.Where(p => value(p) is not null).OrderBy(p => p.At).ToList();
@@ -149,9 +152,9 @@ else
                     }
                     @foreach (var p in known)
                     {
-                        <a class="trend-run" href="admin/benchmarks/@p.Run" @onmouseenter="() => _hover = p.Run">
+                        <a class="trend-run" href="admin/benchmarks/@p.Run" @onmouseenter="() => _hover = (topic, p.Run)">
                             @* A zero-length line with a round cap: a circle at any width, where a stretched circle would be an oval. *@
-                            <line class="trend-point @(p.Run == Highlight ? "here" : "") @(p.Run == _hover ? "hovered" : "")" x1="@F(X(p.Run))" y1="@F(Y(value(p)!.Value))" x2="@F(X(p.Run))" y2="@F(Y(value(p)!.Value))" style="--i: @i; stroke: @Series(i)">
+                            <line class="trend-point @(p.Run == Highlight ? "here" : "") @(_hover is { } hp && hp.Topic == topic && hp.Run == p.Run ? "hovered" : "")" x1="@F(X(p.Run))" y1="@F(Y(value(p)!.Value))" x2="@F(X(p.Run))" y2="@F(Y(value(p)!.Value))" style="--i: @i; stroke: @Series(i)">
                                 <title>@s.Name · @p.At.ToLocalTime().ToString("yyyy-MM-dd HH:mm") · @label(value(p)!.Value)</title>
                             </line>
                         </a>

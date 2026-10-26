@@ -89,16 +89,21 @@ public class TrendChartTests
         Assert.That(cost.QuerySelector(".trend-x")!.TextContent, Does.Contain("2026-10-24").And.Contain("2026-10-25"));
     }
 
+    // Louis, 2026-10-26 ("can we only update the graph I'm on?"): hovering a point reads that run in its own panel only; the other panels keep reading the marked run.
     [Test]
-    public void HoveringAPoint_ReadsThatRunInEveryPanel()
+    public void HoveringAPoint_ReadsThatRunInItsOwnPanelOnly()
     {
         var cut = RenderMarked(TwoRuns, "run_2");
 
-        cut.FindAll("a.trend-run").First(a => a.GetAttribute("href")!.EndsWith("run_1")).MouseEnter();
+        PanelTitled(cut, "pass@k").QuerySelectorAll("a.trend-run").First(a => a.GetAttribute("href")!.EndsWith("run_1")).MouseEnter();
 
-        Assert.That(cut.Find(".trend-shown").TextContent, Does.Contain("run_1"));
         var passAt = PanelTitled(cut, "pass@k");
-        Assert.That(passAt.QuerySelector(".trend-values")!.TextContent, Does.Contain("50%"));
-        Assert.That(passAt.QuerySelectorAll(".trend-hover"), Has.Count.EqualTo(1), "a guide line at the hovered run in every panel");
+        Assert.That(passAt.QuerySelector(".trend-values")!.TextContent, Does.Contain("50%"), "run_1 in the panel hovered");
+        Assert.That(passAt.QuerySelector(".trend-reading")!.TextContent, Does.Contain("run_1"), "the panel says which run it reads");
+        Assert.That(passAt.QuerySelectorAll(".trend-hover"), Has.Count.EqualTo(1), "a guide line at the hovered run, in this panel");
+        var passHat = PanelTitled(cut, "pass^k");
+        Assert.That(passHat.QuerySelector(".trend-values")!.TextContent, Does.Contain("25%"), "run_2 still, the marked run");
+        Assert.That(passHat.QuerySelectorAll(".trend-hover"), Is.Empty);
+        Assert.That(cut.Find(".trend-shown").TextContent, Does.Contain("run_2"), "the trend's own line keeps the marked run");
     }
 }
