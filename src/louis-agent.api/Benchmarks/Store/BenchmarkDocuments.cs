@@ -61,7 +61,7 @@ public static class BenchmarkDocuments
         IReadOnlyList<Grade>? Grades = null, BenchmarkOutcome? Outcome = null);
 
     /// <summary>One grader's verdict on a conversation (F18 step 2a).</summary>
-NonSerializedAttribute    public sealed record Grade(string Grader, int Version, double Score, BenchmarkOutcome Outcome, string Reason, string? JudgeModel = null, string? JudgePromptHash = null);
+    public sealed record Grade(string Grader, int Version, double Score, BenchmarkOutcome Outcome, string Reason, string? JudgeModel = null, string? JudgePromptHash = null);
 
     /// <summary>
     /// One turn, without its stream events (<see cref="IBenchmarkStore.TurnEventsAsync"/>). <see cref="Tools"/> is what
