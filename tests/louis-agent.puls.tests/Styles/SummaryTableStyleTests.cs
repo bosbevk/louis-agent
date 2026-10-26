@@ -34,7 +34,8 @@ public class SummaryTableStyleTests
     [Test]
     public void TheOverallLine_StandsOut_AndTheModeHeadingIsHeadingSized()
     {
-        Assert.That(RuleOf(".summary-table tr.overall td"), Does.Contain("font-weight: 600").And.Contain("245, 130, 32"), "and edged orange, like the overall category card");
+        Assert.That(RuleOf(".summary-table tr.overall td"), Does.Contain("font-weight: 600").And.Not.Contain("245, 130, 32"), "bold, not edged (Louis: an orange heading instead)");
+        Assert.That(RuleOf(".summary-mode h3"), Does.Contain("var(--orange-text)"), "the mode's heading is the orange, as the run table's mode lines are");
         Assert.That(RuleOf(".summary-table .summary-row td"), Does.Contain("background: var(--bg)").And.Contain("border-top"), "each row its own rounded card");
         Assert.That(RuleOf(".summary-mode h3"), Does.Match(@"font-size:\s*(1\d|2[0-2])px"), "a heading, not the page's title");
     }

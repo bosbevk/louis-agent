@@ -42,17 +42,18 @@ public sealed class BenchmarkRunner(BenchmarkCatalog catalog, string workspaceRo
     }
 
     /// <summary>
-    /// Starts a re-score of a stored run (F18 step 5b.2): the eval runner with <c>--rescore {rescoreOf}</c>, and the stored run's export on its stdin. Null when
+    /// Starts a re-score of a stored run (F18 step 5b.2): the eval runner with <c>--rescore {rescoreOf}</c>, and the stored run's export on its stdin. The new run keeps the
+    /// stored run's repeats (6a.4c: it holds the same conversations, and the explorer offers the repeats this number says). Null when
     /// the check is unknown, is not an eval, or a run is already running. The runner grades; this only starts it and keeps its lines.
     /// </summary>
-    public BenchmarkRun? StartRescore(string checkId, string rescoreOf, string export)
+    public BenchmarkRun? StartRescore(string checkId, string rescoreOf, string export, int repeat)
     {
         if (catalog.Checks.FirstOrDefault(c => c.Id == checkId) is not { Kind: BenchmarkCheckKind.Eval } check) return null;
 
         lock (_lock)
         {
             if (IsRunning) return null;
-            var run = new BenchmarkRun(Guid.NewGuid().ToString("N")[..12], check.Id, 1, rescoreOf: rescoreOf, input: export);
+            var run = new BenchmarkRun(Guid.NewGuid().ToString("N")[..12], check.Id, Math.Clamp(repeat, 1, MaxRepeat), rescoreOf: rescoreOf, input: export);
             Current = run;
             Launch(run, check);
             return run;

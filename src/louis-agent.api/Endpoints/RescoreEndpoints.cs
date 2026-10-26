@@ -31,7 +31,7 @@ internal static class RescoreEndpoints
                 return Busy(runner);
 
             string export = await BenchmarkProtocolExport.BuildAsync(s, stored, cancellationToken);
-            if (runner.StartRescore(check.Id, id, export) is not { } run) return Busy(runner);
+            if (runner.StartRescore(check.Id, id, export, stored.Repeat) is not { } run) return Busy(runner);
             recorder.Attach(run, settingsOf(check));
             return Results.Created($"/v1/admin/benchmarks/runs/{run.Id}", Row(run));
         }));

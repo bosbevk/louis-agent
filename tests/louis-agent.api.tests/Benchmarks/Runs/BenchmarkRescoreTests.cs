@@ -74,7 +74,7 @@ public class BenchmarkRescoreTests
         Assume.That(first.ExitCode, Is.EqualTo(0), "dotnet isn't here to run the eval runner");
         string export = await BenchmarkProtocolExport.BuildAsync(store, (await store.GetRunAsync(first.Id))!, CancellationToken.None);
 
-        var second = runner.StartRescore("stub", first.Id, export)!;
+        var second = runner.StartRescore("stub", first.Id, export, repeat: 2)!;
         var secondRecording = new BenchmarkRecorder(store).RecordAsync(second);
         var lines = new List<string>();
         await foreach (string line in runner.EventsAsync(second.Id)) lines.Add(line);
@@ -86,6 +86,8 @@ public class BenchmarkRescoreTests
         Assert.That(rescored, Is.Not.Empty);
         Assert.That(rescored, Is.EqualTo(original), "the stub's graders are today's graders, so the grades are the same");
         Assert.That((await store.GetRunAsync(second.Id))!.RescoreOf, Is.EqualTo(first.Id));
+        // 6a.4c (Louis, on a re-score of a --repeat 3 run that said "1 repeat" and hid repeats 2 and 3 in the explorer): a re-score keeps the stored run's repeats.
+        Assert.That((await store.GetRunAsync(second.Id))!.Repeat, Is.EqualTo(2), "the re-score has the repeats of the run it grades again");
     }
 
     private static string GradesOf(BenchmarkDocuments.Conversation conversation) =>
@@ -105,7 +107,7 @@ public class BenchmarkRescoreTests
             string export = new('x', 20_000_000);
             var started = System.Diagnostics.Stopwatch.StartNew();
 
-            var run = runner.StartRescore("stub", "old123456789", export)!;
+            var run = runner.StartRescore("stub", "old123456789", export, repeat: 1)!;
 
             Assert.That(started.Elapsed, Is.LessThan(TimeSpan.FromSeconds(2)), "the write must not hold the start");
             await foreach (string _ in runner.EventsAsync(run.Id)) { }

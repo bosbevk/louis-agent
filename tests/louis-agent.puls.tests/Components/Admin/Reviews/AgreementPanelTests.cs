@@ -29,26 +29,29 @@ public class AgreementPanelTests
 
     // Louis, 2026-10-26: "like the pass rates": a row per judge, with a bar per class of the people's grades (what you passed, what you failed) that shows the share the judge agreed,
     // the 2x2 counts on the bar's hover, and the download as a chip in the row.
+    // Louis, 2026-10-26 ("I do not understand what I'm reading"): a small card per judge; each class is one plain sentence with a full-width bar under it and a short share beside the bar.
     [Test]
-    public void EachJudgeIsARow_WithABarPerClassOfYourGrades_AndTheCountsOnHover()
+    public void EachJudgeIsACard_WithASentenceAndABarPerClassOfYourGrades()
     {
         var (cut, _, _) = Render(Cook);
 
-        Assert.That(cut.Find(".agreement-judge .mode-rate-name").TextContent, Is.EqualTo("meal-for-people"));
-        Assert.That(cut.Find(".agreement-pass strong").TextContent, Is.EqualTo("13 of 14 (93%)"));
+        Assert.That(cut.Find(".agreement-judge h4").TextContent, Is.EqualTo("meal-for-people"));
+        Assert.That(cut.Find(".agreement-pass .agreement-sentence").TextContent, Is.EqualTo("You passed 14 answers. The judge passed 13 of them."));
         Assert.That(cut.Find(".agreement-pass .rate-fill").GetAttribute("style"), Does.Contain("93%"));
-        Assert.That(cut.Find(".agreement-pass").GetAttribute("title"), Does.Contain("passed 13").And.Contain("failed 1").And.Contain("tell 0"));
-        Assert.That(cut.Find(".agreement-fail strong").TextContent, Is.EqualTo("4 of 4 (100%), few labels"));
-        Assert.That(cut.Find(".agreement-lead").TextContent, Does.Contain("few labels"));
+        Assert.That(cut.Find(".agreement-pass .agreement-share").TextContent, Is.EqualTo("93%"));
+        Assert.That(cut.Find(".agreement-fail .agreement-sentence").TextContent, Is.EqualTo("You failed 4 answers. The judge failed all 4."));
+        Assert.That(cut.Find(".agreement-fail .agreement-share").TextContent, Is.EqualTo("100% · few labels"));
+        Assert.That(cut.Find(".agreement-lead").TextContent, Does.Contain("see what you see"));
         Assert.That(cut.Markup, Does.Not.Contain("<table"));
     }
 
     [Test]
-    public void AClassNobodyHasGraded_SaysNoLabels_WithAnEmptyBar()
+    public void AClassNobodyHasGraded_SaysSo_WithAnEmptyBar()
     {
         var (cut, _, _) = Render("""[{"grader":"g","person_pass":{"judge_pass":3,"judge_fail":0,"judge_unknown":0},"person_fail":{"judge_pass":0,"judge_fail":0,"judge_unknown":0}}]""");
 
-        Assert.That(cut.Find(".agreement-fail strong").TextContent, Is.EqualTo("no labels"));
+        Assert.That(cut.Find(".agreement-fail .agreement-sentence").TextContent, Is.EqualTo("You have failed no answers yet."));
+        Assert.That(cut.Find(".agreement-fail .agreement-share").TextContent, Is.EqualTo("no labels"));
         Assert.That(cut.Find(".agreement-fail .rate-fill").GetAttribute("style"), Does.Contain("0%"));
     }
 
