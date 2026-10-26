@@ -68,15 +68,21 @@ internal static class ReviewEndpoints
             if (grader is null || !humans.Contains(grader + HumanSuffix))
                 return Bad(MessageText.Format(ReviewUserText.LabelsNeedAGrader, new { Graders = string.Join(", ", humans.Select(h => h[..^HumanSuffix.Length]).Order(StringComparer.Ordinal)) }));
 
-            var decided = HumanGrades.Decided(await r.OfRunAsync(id, cancellationToken)).Where(g => g.Grader == grader).ToList();
-            if (decided.Count == 0)
+            var labels = await DecidedLabelsAsync(s, r, id, grader, cancellationToken);
+            if (labels.Count == 0)
                 return ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error", MessageText.Format(ReviewUserText.NoLabelsYet, new { Grader = grader, Id = id }));
-
-            var labels = new List<(HumanGrade, IReadOnlyList<Turn>)>();
-            foreach (var grade in decided)
-                if ((await s.TurnsAsync(id, grade.Conversation, cancellationToken)).OrderBy(t => t.Key.Turn).ToList() is { Count: > 0 } turns) labels.Add((grade, turns));
             return Results.File(ReviewLabels.Zip(labels), "application/zip", $"{grader}-labels-{id}.zip");
         }));
+    }
+
+    /// <summary>The labels of a judge in a run: each decided grade of it with its conversation's turns in order (6a.4f); a conversation with no turns stored labels nothing. The zip and the judge check (6a.5b) read the same.</summary>
+    internal static async Task<List<(HumanGrade Grade, IReadOnlyList<Turn> Turns)>> DecidedLabelsAsync(IBenchmarkStore s, IHumanReviewStore r, string id, string grader,
+        CancellationToken cancellationToken)
+    {
+        var labels = new List<(HumanGrade, IReadOnlyList<Turn>)>();
+        foreach (var grade in HumanGrades.Decided(await r.OfRunAsync(id, cancellationToken)).Where(g => g.Grader == grader))
+            if ((await s.TurnsAsync(id, grade.Conversation, cancellationToken)).OrderBy(t => t.Key.Turn).ToList() is { Count: > 0 } turns) labels.Add((grade, turns));
+        return labels;
     }
 
     /// <summary>The human reviews a run has, by name: the run's Human graders.</summary>

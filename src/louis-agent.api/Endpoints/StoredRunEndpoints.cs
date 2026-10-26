@@ -1,4 +1,5 @@
 using LouisAgent.Api.Admin;
+using LouisAgent.Api.Benchmarks.Calibrations.Store;
 using LouisAgent.Api.Benchmarks.Export;
 using LouisAgent.Api.Benchmarks.Reports;
 using LouisAgent.Api.Benchmarks.Reviews;
@@ -18,7 +19,8 @@ namespace LouisAgent.Api.Endpoints;
 /// </summary>
 internal static class StoredRunEndpoints
 {
-    public static void MapStoredRuns(this RouteGroupBuilder admin, IBenchmarkStore? store, BenchmarkRunner runner, IHumanReviewStore? reviews = null)
+    public static void MapStoredRuns(this RouteGroupBuilder admin, IBenchmarkStore? store, BenchmarkRunner runner, IHumanReviewStore? reviews = null,
+        ICalibrationStore? calibrations = null)
     {
         // A stored run with its conversations, their turns (without their events) and its requests: the explorer's levels.
         admin.MapGet("/benchmarks/runs/{id}", (string id, CancellationToken cancellationToken) => AdminEndpoints.FromStore(store, async s =>
@@ -83,6 +85,7 @@ internal static class StoredRunEndpoints
                 return ApiErrors.Result(StatusCodes.Status409Conflict, "conflict_error", MessageText.Format(ApiUserText.StoredRunStillRunning, new { Id = id }));
             if (!await s.DeleteRunAsync(id, cancellationToken)) return NoRun(id);
             if (reviews is not null) await reviews.DeleteRunAsync(id, cancellationToken);
+            if (calibrations is not null) await calibrations.DeleteRunAsync(id, cancellationToken);
             return Results.NoContent();
         }));
     }

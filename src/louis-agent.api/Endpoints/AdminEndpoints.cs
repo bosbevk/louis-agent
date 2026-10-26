@@ -3,6 +3,8 @@ using LouisAgent.Api.Benchmarks.Runs;
 using LouisAgent.Api.Benchmarks.Store;
 using LouisAgent.Api.Benchmarks.Reports;
 using LouisAgent.Api.Benchmarks.Reviews;
+using LouisAgent.Api.Benchmarks.Calibrations;
+using LouisAgent.Api.Benchmarks.Calibrations.Store;
 using LouisAgent.Api.Benchmarks.Reviews.Store;
 using LouisAgent.Api.Endpoints.Routing;
 using System.Net.ServerSentEvents;
@@ -28,7 +30,7 @@ internal static class AdminEndpoints
 
     public static void MapAdmin(this IEndpointRouteBuilder routes, BenchmarkCatalog catalog, BenchmarkRunner runner, string? adminKey,
         IBenchmarkStore? store, BenchmarkRecorder? recorder, Func<BenchmarkCheck, IReadOnlyDictionary<string, string>> settingsOf,
-        string workspaceRoot, IHumanReviewStore? reviews = null)
+        string workspaceRoot, IHumanReviewStore? reviews = null, ICalibrationStore? calibrations = null, CalibrationRecorder? calibrationRecorder = null)
     {
         var admin = routes.MapGroup("/admin").WithAccess(RouteAccess.AdminKey).AddEndpointFilter(async (context, next) =>
         {
@@ -88,9 +90,10 @@ internal static class AdminEndpoints
             });
         }));
 
-        admin.MapStoredRuns(store, runner, reviews);
+        admin.MapStoredRuns(store, runner, reviews, calibrations);
         admin.MapReviews(store, reviews);
         admin.MapRescore(catalog, runner, store, recorder, settingsOf);
+        admin.MapCalibrations(catalog, runner, store, reviews, calibrations, calibrationRecorder);
 
         // A run from the page. 202 with the run, recorded as it goes; 503 without a store (a paid run whose results vanish
         // is the worst outcome); 409 while one runs; its lines as SSE, then "done" with whether it was stored.

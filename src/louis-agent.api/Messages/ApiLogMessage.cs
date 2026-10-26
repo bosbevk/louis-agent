@@ -22,4 +22,7 @@ public enum ApiLogMessage
 
     [Description("The eval runner can't be listed ({Reason}), so the Python checks stay")]
     BenchmarkListingUnavailable,
+
+    [Description("Judge check of run {Run} ({Grader}) kept no report: {Reason}")]
+    CalibrationNotStored,
 }

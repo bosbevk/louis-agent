@@ -25,11 +25,18 @@ public static class ReviewLabels
 
     public static string FileName(string grader, ConversationKey key, string run) => $"{grader}.{key.Task}.{key.Mode}.{run}.{key.Repeat}.json";
 
-    /// <summary>One label file's text for a decided grade and the last turn of its conversation.</summary>
+    /// <summary>The same wire on one line (6a.5b): what the runner reads on its stdin, one label per line.</summary>
+    private static readonly JsonSerializerOptions LineWire = new(Wire) { WriteIndented = false };
+
     /// <summary>One label file's text for a decided grade and every turn of its conversation (6a.4f), in turn order; the last turn's answer is the one the grade is of.</summary>
-    public static string Content(HumanGrade grade, IReadOnlyList<Turn> turns) =>
-        JsonSerializer.Serialize(new LabelRecord(grade.Grader, grade.Conversation.Task, grade.Conversation.Mode, grade.Run, grade.Conversation.Repeat,
-            [.. turns.OrderBy(t => t.Key.Turn).Select(t => new LabelTurnRecord(t.Question, t.Answer ?? ""))], new LabelBody(grade.Verdict == HumanVerdict.Pass, grade.Note)), Wire) + "\n";
+    public static string Content(HumanGrade grade, IReadOnlyList<Turn> turns) => JsonSerializer.Serialize(Record(grade, turns), Wire) + "\n";
+
+    /// <summary>The same label on one line, for the runner's stdin (6a.5b).</summary>
+    public static string Line(HumanGrade grade, IReadOnlyList<Turn> turns) => JsonSerializer.Serialize(Record(grade, turns), LineWire);
+
+    private static LabelRecord Record(HumanGrade grade, IReadOnlyList<Turn> turns) =>
+        new(grade.Grader, grade.Conversation.Task, grade.Conversation.Mode, grade.Run, grade.Conversation.Repeat,
+            [.. turns.OrderBy(t => t.Key.Turn).Select(t => new LabelTurnRecord(t.Question, t.Answer ?? ""))], new LabelBody(grade.Verdict == HumanVerdict.Pass, grade.Note));
 
     /// <summary>The zip of the files, one per decided grade with its conversation's turns.</summary>
     public static byte[] Zip(IReadOnlyList<(HumanGrade Grade, IReadOnlyList<Turn> Turns)> labels)

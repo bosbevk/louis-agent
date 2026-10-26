@@ -7,7 +7,8 @@ namespace LouisAgent.Api.Benchmarks.Runs;
 /// the lines so far and then each new one as it arrives (<see cref="BenchmarkRunner.EventsAsync"/>), so a page that
 /// opens late sees the whole story.
 /// </summary>
-public sealed class BenchmarkRun(string id, string check, int repeat, BenchmarkRunOptions? options = null, string? rescoreOf = null, string? input = null)
+public sealed class BenchmarkRun(string id, string check, int repeat, BenchmarkRunOptions? options = null, string? rescoreOf = null, string? input = null,
+    BenchmarkCalibration? calibration = null)
 {
     // The cook check forwards every stream event of its conversations as a line (the portal replays them as the chat),
     // a few thousand per conversation; a late listener needs the whole story.
@@ -28,7 +29,10 @@ public sealed class BenchmarkRun(string id, string check, int repeat, BenchmarkR
     /// <summary>The stored run this one re-scores (F18 step 5b.2); null for a run that asks the model.</summary>
     public string? RescoreOf { get; } = rescoreOf;
 
-    /// <summary>What the process reads on stdin: the stored run's export, for a re-score; null for any other run.</summary>
+    /// <summary>The judge check this run is (F18 step 6a.5b): the stored run whose labels it checks and the judge; null for a benchmark run.</summary>
+    public BenchmarkCalibration? Calibration { get; } = calibration;
+
+    /// <summary>What the process reads on stdin: the stored run's export for a re-score, the label lines for a judge check; null for any other run.</summary>
     internal string? Input { get; } = input;
 
     public DateTimeOffset StartedAt { get; } = DateTimeOffset.UtcNow;

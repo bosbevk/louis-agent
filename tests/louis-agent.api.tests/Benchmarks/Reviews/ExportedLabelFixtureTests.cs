@@ -13,18 +13,26 @@ public class ExportedLabelFixtureTests
 {
     private static readonly string Fixture = System.IO.Path.Combine(ApiTestHost.RepoRoot, "tests", "louis-agent.evals.tests", "Labels", "Fixtures", "exported-label.json");
 
-    private static string Written()
-    {
-        var key = new BenchmarkProtocol.ConversationKey("puls-cook", 1, "sample-dev");
-        var grade = new HumanGrade("8f7802b9a72e", key, "meal-for-people", HumanVerdict.Pass, "feeds four", "Louis", DateTimeOffset.UnixEpoch);
-        // 6a.4f: a label carries every turn of its conversation, so the fixture pins a two-turn one.
-        var turns = new[]
-        {
-            new Turn(new BenchmarkProtocol.TurnKey("puls-cook", 1, "sample-dev", 1), "sess_1", "Hello", "Bobotie vir vier", "puls-cook", null, 1, 1, [], 1.0, null),
-            new Turn(new BenchmarkProtocol.TurnKey("puls-cook", 1, "sample-dev", 2), "sess_1", "Make it six", "Bobotie vir ses", "puls-cook", null, 1, 1, [], 1.0, null),
-        };
+    private static readonly HumanGrade Grade =
+        new("8f7802b9a72e", new BenchmarkProtocol.ConversationKey("puls-cook", 1, "sample-dev"), "meal-for-people", HumanVerdict.Pass, "feeds four", "Louis", DateTimeOffset.UnixEpoch);
 
-        return ReviewLabels.Content(grade, turns);
+    // 6a.4f: a label carries every turn of its conversation, so the fixture pins a two-turn one.
+    private static readonly Turn[] Turns =
+    [
+        new(new BenchmarkProtocol.TurnKey("puls-cook", 1, "sample-dev", 1), "sess_1", "Hello", "Bobotie vir vier", "puls-cook", null, 1, 1, [], 1.0, null),
+        new(new BenchmarkProtocol.TurnKey("puls-cook", 1, "sample-dev", 2), "sess_1", "Make it six", "Bobotie vir ses", "puls-cook", null, 1, 1, [], 1.0, null),
+    ];
+
+    private static string Written() => ReviewLabels.Content(Grade, Turns);
+
+    // 6a.5b: the same label on one line, for the runner's stdin: the file's JSON with no line breaks, nothing more or less.
+    [Test]
+    public void TheLine_IsTheFileOnOneLine()
+    {
+        string line = ReviewLabels.Line(Grade, Turns);
+
+        Assert.That(line, Does.Not.Contain("\n").And.Not.Contain("\r"));
+        Assert.That(System.Text.Json.Nodes.JsonNode.Parse(line)!.ToJsonString(), Is.EqualTo(System.Text.Json.Nodes.JsonNode.Parse(Written())!.ToJsonString()));
     }
 
     [Test]

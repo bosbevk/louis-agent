@@ -1,3 +1,4 @@
+using LouisAgent.Api.Benchmarks.Calibrations;
 using LouisAgent.Api.Benchmarks.Reports;
 using LouisAgent.Api.Benchmarks.Runs;
 using LouisAgent.Api.Benchmarks.Store;
@@ -51,11 +52,25 @@ internal static class AdminRows
         cache_write_tokens = r.CacheWriteTokens, cost = r.Cost, duration_ms = r.DurationMs,
     };
 
-    /// <summary>A live run: the runner's view, and whether its recording kept everything once it is done.</summary>
+    /// <summary>
+    /// A live run: the runner's view, and whether its recording kept everything once it is done. A judge check (F18 step 6a.5b) says which run and judge it checks, and its last line,
+    /// since its lines are not streamed to a page: the runner's refusal, when it refused, is the last.
+    /// </summary>
     public static object Row(BenchmarkRun run, BenchmarkRecorder.Result? stored = null) => new
     {
         id = run.Id, check = run.Check, repeat = run.Repeat, status = run.Status.ToString().ToLowerInvariant(),
         exit_code = run.ExitCode, started_at = run.StartedAt, ended_at = run.EndedAt, lines = run.Lines.Count,
         stored = stored?.Stored, store_error = stored?.StoreError,
+        calibration_of = run.Calibration?.Of, grader = run.Calibration?.Grader,
+        last_line = run.Calibration is null ? null : run.Lines.LastOrDefault(l => !string.IsNullOrWhiteSpace(l)),
+    };
+
+    /// <summary>A judge check's report (F18 step 6a.5b), in the agreement card's shape: each class as the judge's pass, fail and unknown counts.</summary>
+    public static object CalibrationRow(CalibrationRecord c) => new
+    {
+        run = c.Run, grader = c.Grader, judge_model = c.JudgeModel, at = c.At, agreed = c.Agreed, total = c.Total, bar = c.Bar, passes = c.Passes,
+        person_pass = new { judge_pass = c.PersonPass.JudgePass, judge_fail = c.PersonPass.JudgeFail, judge_unknown = c.PersonPass.JudgeUnknown },
+        person_fail = new { judge_pass = c.PersonFail.JudgePass, judge_fail = c.PersonFail.JudgeFail, judge_unknown = c.PersonFail.JudgeUnknown },
+        disagreements = c.Disagreements.Select(d => new { scenario = d.Scenario, mode = d.Mode, repeat = d.Repeat, label = d.Label, judge = d.Judge, reason = d.Reason }),
     };
 }

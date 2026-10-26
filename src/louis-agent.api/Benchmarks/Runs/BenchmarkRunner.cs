@@ -6,7 +6,7 @@ namespace LouisAgent.Api.Benchmarks.Runs;
 
 /// <summary>
 /// Runs a check's script as a child process (F27): the interpreter with an argument list, never a shell string, in the
-/// workspace, with <c>PULS_API</c> pointing at this API and <c>BENCHMARK_RUN</c> its id; a run's results go to the
+/// workspace, with <c>PULS_API</c> pointing at this API and <c>BENCHMARK_RUN</c> its id (<see cref="RunnerStartInfo"/> builds it); a run's results go to the
 /// benchmark store through <c>BenchmarkRecorder</c> (F31). One run at a time: the containers are shared, and a second run would skew the first's
 /// ledger and timings. Its lines (stdout and stderr) are kept on the run and streamed to listeners.
 /// </summary>
@@ -19,6 +19,7 @@ public sealed class BenchmarkRunner(BenchmarkCatalog catalog, string workspaceRo
     public const int MaxRepeat = 5;
 
     private readonly Lock _lock = new();
+    private readonly RunnerPaths _paths = new(workspaceRoot, pulsApi, interpreter, evalRunner, evalHost);
 
     /// <summary>The run in progress, or the last one; null before the first.</summary>
     public BenchmarkRun? Current { get; private set; }
@@ -29,16 +30,7 @@ public sealed class BenchmarkRunner(BenchmarkCatalog catalog, string workspaceRo
     public BenchmarkRun? Start(string checkId, int repeat, BenchmarkRunOptions? options = null)
     {
         if (catalog.Checks.FirstOrDefault(c => c.Id == checkId) is not { } check) return null;
-        repeat = Math.Clamp(repeat, 1, MaxRepeat);
-
-        lock (_lock)
-        {
-            if (IsRunning) return null;
-            var run = new BenchmarkRun(Guid.NewGuid().ToString("N")[..12], check.Id, repeat, options);
-            Current = run;
-            Launch(run, check);
-            return run;
-        }
+        return StartLocked(check, new BenchmarkRun(NewId(), check.Id, Math.Clamp(repeat, 1, MaxRepeat), options));
     }
 
     /// <summary>
@@ -48,16 +40,19 @@ public sealed class BenchmarkRunner(BenchmarkCatalog catalog, string workspaceRo
     /// </summary>
     public BenchmarkRun? StartRescore(string checkId, string rescoreOf, string export, int repeat)
     {
-        if (catalog.Checks.FirstOrDefault(c => c.Id == checkId) is not { Kind: BenchmarkCheckKind.Eval } check) return null;
+        if (EvalCheck(checkId) is not { } check) return null;
+        return StartLocked(check, new BenchmarkRun(NewId(), check.Id, Math.Clamp(repeat, 1, MaxRepeat), rescoreOf: rescoreOf, input: export));
+    }
 
-        lock (_lock)
-        {
-            if (IsRunning) return null;
-            var run = new BenchmarkRun(Guid.NewGuid().ToString("N")[..12], check.Id, Math.Clamp(repeat, 1, MaxRepeat), rescoreOf: rescoreOf, input: export);
-            Current = run;
-            Launch(run, check);
-            return run;
-        }
+    /// <summary>
+    /// Starts a judge check (F18 step 6a.5b): the eval runner with <c>--calibrate {eval} {grader} --labels -</c>, and the people's grades of <paramref name="calibrationOf"/> as
+    /// label lines on its stdin. It is a run of the runner's one at a time (the judge is shared), but no benchmark run: nothing records it in the benchmark store, and
+    /// <c>CalibrationRecorder</c> keeps its report. Null when the check is unknown, is not an eval, or a run is already running.
+    /// </summary>
+    public BenchmarkRun? StartCalibration(string checkId, string calibrationOf, string grader, string labels)
+    {
+        if (EvalCheck(checkId) is not { } check) return null;
+        return StartLocked(check, new BenchmarkRun(NewId(), check.Id, 1, calibration: new BenchmarkCalibration(calibrationOf, grader), input: labels));
     }
 
     /// <summary>The run's lines: those so far, then each new one until it ends. Empty for an unknown id.</summary>
@@ -69,67 +64,8 @@ public sealed class BenchmarkRunner(BenchmarkCatalog catalog, string workspaceRo
         await foreach (string line in live.ReadAllAsync(cancellationToken)) yield return line;
     }
 
-    /// <summary>
-    /// The start of one run's process (F18 step 4.3): an eval's <c>dotnet {EVAL_RUNNER} run {name} --repeat N [--web record | --replay {runId}]</c>, or a script's
-    /// interpreter with its arguments. Either way an argument list (ADR 0004), and the same environment.
-    /// </summary>
-    internal ProcessStartInfo StartInfoFor(BenchmarkCheck check, BenchmarkRun run)
-    {
-        var start = new ProcessStartInfo(check.Kind == BenchmarkCheckKind.Eval ? evalHost : interpreter)
-        {
-            WorkingDirectory = workspaceRoot,
-            UseShellExecute = false,
-            RedirectStandardOutput = true,
-            RedirectStandardError = true,
-            // A re-score reads the stored run's export on stdin (F18 step 5b.2); any other run reads nothing.
-            RedirectStandardInput = run.Input is not null,
-            CreateNoWindow = true,
-        };
-        // Arguments as data (ADR 0004): the runner's or the script's path and its arguments are a list, never a command string.
-        if (check.Kind == BenchmarkCheckKind.Eval)
-        {
-            start.ArgumentList.Add(evalRunner);
-            start.ArgumentList.Add("run");
-            start.ArgumentList.Add(check.Id);
-        }
-        else
-        {
-            start.ArgumentList.Add(check.Script);
-        }
-        // A re-score takes the repeats, the web and the split from the stored run: its only flag is the run it grades again.
-        if (run.RescoreOf is { } rescoreOf)
-        {
-            start.ArgumentList.Add("--rescore");
-            start.ArgumentList.Add(rescoreOf);
-        }
-        else
-        {
-            start.ArgumentList.Add("--repeat");
-            start.ArgumentList.Add(run.Repeat.ToString());
-        }
-        // The web (F18 step 5.5), an eval's alone: a recording, or a replay of another run with the model's answers too (--replay). Never a script's.
-        if (check.Kind == BenchmarkCheckKind.Eval && run.RescoreOf is null)
-        {
-            if (run.Options.Replay is { } replayOf)
-            {
-                start.ArgumentList.Add("--replay");
-                start.ArgumentList.Add(replayOf);
-            }
-            else if (run.Options.Web is { } web)
-            {
-                start.ArgumentList.Add("--web");
-                start.ArgumentList.Add(web.ToString().ToLowerInvariant());
-            }
-        }
-        if (check.Kind == BenchmarkCheckKind.Script)
-            foreach (string argument in check.Arguments) start.ArgumentList.Add(argument);
-        start.Environment["PULS_API"] = pulsApi;
-        // F31: the script (and the runner) tags its sessions {BENCHMARK_RUN}:{mode}:{repeat}, so the ledger's rows find their run.
-        start.Environment["BENCHMARK_RUN"] = run.Id;
-        start.Environment["PYTHONUNBUFFERED"] = "1";      // so each line arrives as it is printed
-        start.Environment["PYTHONIOENCODING"] = "utf-8";
-        return start;
-    }
+    /// <summary>The start of one run's process (F18 step 4.3), as <see cref="RunnerStartInfo"/> builds it with this runner's paths.</summary>
+    internal ProcessStartInfo StartInfoFor(BenchmarkCheck check, BenchmarkRun run) => RunnerStartInfo.For(check, run, _paths);
 
     /// <summary>Writes the stored run's export to the runner's stdin and closes it; a runner that ended without reading it is not an error here, its exit code says how it ended.</summary>
     internal static async Task PumpAsync(TextWriter stdin, string input)
@@ -141,6 +77,21 @@ public sealed class BenchmarkRunner(BenchmarkCatalog catalog, string workspaceRo
         }
         catch (Exception ex) when (ex is IOException or ObjectDisposedException or InvalidOperationException)
         {
+        }
+    }
+
+    private static string NewId() => Guid.NewGuid().ToString("N")[..12];
+
+    private BenchmarkCheck? EvalCheck(string checkId) => catalog.Checks.FirstOrDefault(c => c.Id == checkId) is { Kind: BenchmarkCheckKind.Eval } check ? check : null;
+
+    private BenchmarkRun? StartLocked(BenchmarkCheck check, BenchmarkRun run)
+    {
+        lock (_lock)
+        {
+            if (IsRunning) return null;
+            Current = run;
+            Launch(run, check);
+            return run;
         }
     }
 

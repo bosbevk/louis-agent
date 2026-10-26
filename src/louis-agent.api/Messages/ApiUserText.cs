@@ -187,4 +187,13 @@ public enum ApiUserText
 
     [Description("replay takes a run id's letters, digits, '-' and '_', not '{Value}'.")]
     RunBadReplay,
+
+    [Description("Run {Run} is not a judge check, so there is no report to keep.")]
+    CalibrationNotACheck,
+
+    [Description("The judge check ended with exit code {Code} and no report. Its last line: {Last}")]
+    CalibrationRunFailed,
+
+    [Description("The judge check ended without its report line. Its last line: {Last}")]
+    CalibrationNoReport,
 }

@@ -1,3 +1,5 @@
+using LouisAgent.Api.Benchmarks.Calibrations;
+using LouisAgent.Api.Benchmarks.Calibrations.Store;
 using LouisAgent.Api.Benchmarks.Reviews;
 using LouisAgent.Api.Benchmarks.Reviews.Store;
 using LouisAgent.Api.Benchmarks.Runs;
@@ -35,7 +37,8 @@ internal static class ApiTestHost
     /// names a folder of its own).
     /// </summary>
     public static WebApplication Build(string? apiKey = null, string? workspaceRoot = null, string? adminKey = null, IBenchmarkStore? store = null,
-        BenchmarkRunner? runner = null, BenchmarkRecorder? recorder = null, BenchmarkCatalog? catalog = null, IHumanReviewStore? reviews = null)
+        BenchmarkRunner? runner = null, BenchmarkRecorder? recorder = null, BenchmarkCatalog? catalog = null, IHumanReviewStore? reviews = null,
+        ICalibrationStore? calibrations = null, CalibrationRecorder? calibrationRecorder = null)
     {
         var host = HostContext(workspaceRoot ?? RepoRoot);
         var builder = WebApplication.CreateBuilder();
@@ -48,7 +51,7 @@ internal static class ApiTestHost
 
         var benchmarks = catalog ?? new BenchmarkCatalog(BenchmarkCatalog.Default);
         api.MapAdmin(benchmarks, runner ?? new BenchmarkRunner(benchmarks, host.Engine.WorkspaceRoot, "http://127.0.0.1:1/"), adminKey, store, recorder,
-            _ => new Dictionary<string, string>(), host.Engine.WorkspaceRoot, reviews);
+            _ => new Dictionary<string, string>(), host.Engine.WorkspaceRoot, reviews, calibrations, calibrationRecorder);
         return app;
     }
 

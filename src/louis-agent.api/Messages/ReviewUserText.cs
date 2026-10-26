@@ -28,4 +28,10 @@ public enum ReviewUserText
 
     [Description("No one has passed or failed an answer of {Grader} in run {Id} yet, so there are no labels to export.")]
     NoLabelsYet,
+
+    [Description("'{Grader}' is not a judge with a human review in run {Id}, so there is nothing to check it against. The judges with one: {Graders}.")]
+    CalibrationNeedsAJudge,
+
+    [Description("Run {Id} is of '{Check}', which is not an eval: only an eval's judge is checked against the people.")]
+    CalibrationNeedsEval,
 }
