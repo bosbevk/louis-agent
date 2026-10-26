@@ -53,21 +53,21 @@ public sealed record CalibrationReport(int Agreed, int Total, IReadOnlyList<Disa
 
     private static string Word(bool pass) => MessageText.Format(pass ? CalibrationMessage.Pass : CalibrationMessage.Fail);
 
-    /// <summary>The judge's answers to the labels of one class: how many it passed, failed and could not tell, and how many agreed.</summary>
-    private ClassTally ClassOf(bool pass)
+    /// <summary>The judge's answers to the labels of one class: how many it passed, failed and could not tell, and how many agreed. Public since 6a.5a: the data line carries it.</summary>
+    public ClassReport ClassOf(bool pass)
     {
         var verdicts = Judged.Where(j => j.Answer.Pass == pass).Select(j => j.Verdict).ToList();
         int agreed = verdicts.Count(v => v == (pass ? GradeOutcome.Pass : GradeOutcome.Fail));
-        return new ClassTally(pass, verdicts.Count, agreed, verdicts.Count(v => v == GradeOutcome.Pass), verdicts.Count(v => v == GradeOutcome.Fail),
+        return new ClassReport(pass, verdicts.Count, agreed, verdicts.Count(v => v == GradeOutcome.Pass), verdicts.Count(v => v == GradeOutcome.Fail),
             verdicts.Count(v => v == GradeOutcome.Unknown));
     }
 
-    private static string ClassLine(ClassTally c) => c.Total == 0
+    private static string ClassLine(ClassReport c) => c.Total == 0
         ? MessageText.Format(CalibrationMessage.ClassNone, new { Label = Word(c.Pass) })
         : MessageText.Format(CalibrationMessage.ClassLine, new
         {
             Label = Word(c.Pass), c.Passed, c.Failed, c.CantTell, c.Agreed, c.Total, Percent = c.Percent,
-            Few = c.Total < FewLabels ? MessageText.Format(CalibrationMessage.FewLabels) : "",
+            Few = c.Few ? MessageText.Format(CalibrationMessage.FewLabels) : "",
         });
 
     private string Result()
@@ -82,13 +82,18 @@ public sealed record CalibrationReport(int Agreed, int Total, IReadOnlyList<Disa
         });
     }
 
-    private sealed record ClassTally(bool Pass, int Total, int Agreed, int Passed, int Failed, int CantTell)
-    {
-        public int Percent => Total == 0 ? 0 : (int)Math.Round(100.0 * Agreed / Total, MidpointRounding.AwayFromZero);
+}
 
-        /// <summary>Whole numbers: at least 90% of a class, and a class with no labels clears nothing.</summary>
-        public bool Clears => Total > 0 && Agreed * 100 >= Total * Bar;
-    }
+/// <summary>One class of a person's labels (those they passed, or those they failed) and what the judge said to each: the total, how many agreed, and the judge's pass, fail and can't-tell counts.</summary>
+public sealed record ClassReport(bool Pass, int Total, int Agreed, int Passed, int Failed, int CantTell)
+{
+    public int Percent => Total == 0 ? 0 : (int)Math.Round(100.0 * Agreed / Total, MidpointRounding.AwayFromZero);
+
+    /// <summary>Whole numbers: at least 90% of a class, and a class with no labels clears nothing.</summary>
+    public bool Clears => Total > 0 && Agreed * 100 >= Total * CalibrationReport.Bar;
+
+    /// <summary>Fewer labels than <see cref="CalibrationReport.FewLabels"/>: a share of four is four answers.</summary>
+    public bool Few => Total < CalibrationReport.FewLabels;
 }
 
 /// <summary>

@@ -21,17 +21,17 @@ public static class LabelLoader
 
         var labels = new List<LabeledAnswer>();
         foreach (string path in Directory.GetFiles(folder, "*.json").Order(StringComparer.Ordinal))
-            labels.Add(Read(path, scenarios, graders));
+            labels.Add(Parse(Path.GetFileName(path), File.ReadAllText(path), scenarios, graders));
         return labels;
     }
 
-    private static LabeledAnswer Read(string path, IReadOnlyList<EvalScenario> scenarios, IReadOnlySet<string> graders)
+    /// <summary>One label from its text (6a.5a: the API writes them to the runner's stdin), with the same checks as a file's; <paramref name="name"/> is how a refusal names it.</summary>
+    public static LabeledAnswer Parse(string name, string text, IReadOnlyList<EvalScenario> scenarios, IReadOnlySet<string> graders)
     {
-        string name = Path.GetFileName(path);
         LabelFile file;
         try
         {
-            file = JsonSerializer.Deserialize<LabelFile>(File.ReadAllText(path), LabelJson.Options)
+            file = JsonSerializer.Deserialize<LabelFile>(text, LabelJson.Options)
                    ?? throw Refuse(EvalErrorMessage.InvalidLabel, new { File = name, Reason = MessageText.Format(EvalErrorMessage.EmptyFile) });
         }
         catch (JsonException error)

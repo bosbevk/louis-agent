@@ -25,7 +25,7 @@ public class CalibrationCommandsTests
     private static async Task<(int Code, string Out)> CalibrateAsync(FakeEval eval, Func<string, string?> env, string grader = "meal-for-people")
     {
         var output = new StringWriter();
-        int code = await CalibrateCommand.RunAsync(new CalibrateRequest(eval.Name, grader), eval, env, output, CancellationToken.None);
+        int code = await CalibrateCommand.RunAsync(new CalibrateRequest(eval.Name, grader), eval, env, TextReader.Null, output, CancellationToken.None);
         return (code, output.ToString().ReplaceLineEndings("\n"));
     }
 

@@ -23,8 +23,11 @@ public sealed record ListRequest : CommandLineRequest;
 public sealed record RunRequest(string Name, int Repeat, WebReplayMode? Web = null, string? Of = null, bool Model = false,
     SplitSelection Split = SplitSelection.Dev, string? RescoreOf = null) : CommandLineRequest;
 
-/// <summary><c>--calibrate {eval} {grader}</c> (F18 step 6.3): asks a model grader about every labelled answer of the eval and prints how often it agrees with the person.</summary>
-public sealed record CalibrateRequest(string Eval, string Grader) : CommandLineRequest;
+/// <summary>
+/// <c>--calibrate {eval} {grader} [--labels -]</c> (F18 step 6.3): asks a model grader about every labelled answer of the eval and prints how often it agrees with the person.
+/// With <paramref name="LabelsOnStdin"/> (6a.5a, <c>--labels -</c>) the labels are the label files on stdin, one JSON object per line, as the API writes them, instead of the dataset's.
+/// </summary>
+public sealed record CalibrateRequest(string Eval, string Grader, bool LabelsOnStdin = false) : CommandLineRequest;
 
 /// <summary>
 /// <c>--label-sheet {eval} {grader} {runId} {folder} [{count}]</c> (F18 step 6.3): writes up to <paramref name="Count"/> label files, for a person to fill in, from a stored run's
@@ -49,6 +52,7 @@ public static class CommandLine
         if (args is ["--list"]) return new ListRequest();
         if (args is ["run", var name, ..]) return ParseRun(name, args.Skip(2).ToList());
         if (args is ["--calibrate", var calibrated, var grader]) return new CalibrateRequest(calibrated, grader);
+        if (args is ["--calibrate", var fromStdin, var judged, "--labels", var where]) return new CalibrateRequest(fromStdin, judged, LabelsOnStdin: ParseLabels(where));
         if (args is ["--label-sheet", var sheeted, var graded, var runId, var folder]) return new LabelSheetRequest(sheeted, graded, ParseOf(runId), folder, DefaultLabelCount);
         if (args is ["--label-sheet", var named, var by, var run, var into, var count]) return new LabelSheetRequest(named, by, ParseOf(run), into, ParseCount(count));
         if (args is ["--calibrate", ..] or ["--label-sheet", ..]) throw Refuse(RunnerMessage.Usage, null);
@@ -95,6 +99,9 @@ public static class CommandLine
         if (web != WebReplayMode.Replay && of is not null) throw Refuse(RunnerMessage.OfNeedsReplay, null);
         return new RunRequest(name, repeat, web, of, Split: split);
     }
+
+    /// <summary><c>--labels</c> takes only <c>-</c>, stdin (6a.5a): the dataset's folder is where labels live otherwise.</summary>
+    private static bool ParseLabels(string value) => value == "-" ? true : throw Refuse(RunnerMessage.LabelsOnlyStdin, new { Value = value });
 
     private static int ParseCount(string value)
     {

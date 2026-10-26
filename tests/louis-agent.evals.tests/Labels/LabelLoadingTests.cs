@@ -140,4 +140,19 @@ public class LabelLoadingTests
         public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string>(keys);
         public ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken) => throw new NotImplementedException();
     }
+
+    // 6a.5a: the API writes a label's text to the runner's stdin, so one label is read from its text with the same checks as from a file, named by the caller.
+    [Test]
+    public void OneLabel_IsReadFromItsText_WithTheSameChecks()
+    {
+        using var folder = Folder();
+        var scenarios = DatasetLoader.Load(folder.Root, Graders).Scenarios;
+        var graders = Graders.Select(g => g.Name).ToHashSet();
+
+        var label = LabelLoader.Parse("line 1", Label(), scenarios, graders);
+
+        Assert.That((label.File, label.Scenario, label.Repeat, label.Answer, label.Pass), Is.EqualTo(("line 1", "sample-dev", 2, "Bobotie vir vier", true)));
+        Assert.That(() => LabelLoader.Parse("line 2", Label(scenario: "nope"), scenarios, graders),
+            Throws.InstanceOf<InvalidDataException>().With.Message.Contains("line 2").And.Message.Contains("nope"));
+    }
 }

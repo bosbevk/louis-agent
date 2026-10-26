@@ -7,23 +7,43 @@ using LouisAgent.Evals.Runner.Messages;
 namespace LouisAgent.Evals.Runner.Calibration;
 
 /// <summary>
-/// <c>--calibrate {eval} {grader}</c> (F18 step 6.3): runs a model grader on every labelled answer of the eval and prints how often it agrees with the person, then each answer where
-/// it did not. It asks a model, so it is never run in CI: the guard is the first thing it does. Only a model grader is calibrated; a fixed rule needs no person to vouch for it.
+/// <c>--calibrate {eval} {grader} [--labels -]</c> (F18 step 6.3): runs a model grader on every labelled answer of the eval and prints how often it agrees with the person, then each
+/// answer where it did not, and last the report as one <c>@</c> line of data (6a.5a, <see cref="CalibrationLine"/>) for the API that started it. The labels are the dataset's, or with
+/// <c>--labels -</c> the label files on stdin, one per line, as the API writes a run's grades (6a.5a). It asks a model, so it is never run in CI: the guard is the first thing it does.
+/// Only a model grader is calibrated; a fixed rule needs no person to vouch for it.
 /// </summary>
 public static class CalibrateCommand
 {
-    public static async Task<int> RunAsync(CalibrateRequest request, IEval eval, Func<string, string?> getVariable, TextWriter stdout, CancellationToken cancellationToken)
+    public static async Task<int> RunAsync(CalibrateRequest request, IEval eval, Func<string, string?> getVariable, TextReader stdin, TextWriter stdout,
+        CancellationToken cancellationToken)
     {
         if (!string.IsNullOrWhiteSpace(getVariable("CI"))) throw new RunnerException(MessageText.Format(RunnerMessage.CalibrationNotInCi));
 
         var grader = ModelGraderOf(eval, request.Grader);
-        // The labels folder may hold labels of more than one grader: this calibration reads those of the one it is asked about.
-        var labels = eval.Labels.Where(label => label.Grader == grader.Name).ToList();
-        if (labels.Count == 0) throw new RunnerException(MessageText.Format(RunnerMessage.NoLabels, new { Eval = eval.Name, Grader = grader.Name }));
+        // The labels folder (or stdin) may hold labels of more than one grader: this calibration reads those of the one it is asked about.
+        var labels = (request.LabelsOnStdin ? FromStdin(stdin, eval) : eval.Labels).Where(label => label.Grader == grader.Name).ToList();
+        if (labels.Count == 0)
+            throw new RunnerException(MessageText.Format(request.LabelsOnStdin ? RunnerMessage.NoLabelsOnStdin : RunnerMessage.NoLabels, new { Eval = eval.Name, Grader = grader.Name }));
 
         var report = await Labels.Calibration.RunAsync(grader, eval.Scenarios, labels, cancellationToken);
         foreach (string line in report.Lines()) stdout.WriteLine(line);
+        string? judgeModel = getVariable("EVAL_JUDGE_MODEL") is { } model && !string.IsNullOrWhiteSpace(model) ? model.Trim() : null;
+        stdout.WriteLine(CalibrationLine.Of(eval.Name, grader.Name, judgeModel, report).ToLine());
         return 0;
+    }
+
+    /// <summary>The label files on stdin, one JSON object per line, each checked as the loader checks a file and named by its line for a refusal; blank lines are skipped.</summary>
+    private static List<LabeledAnswer> FromStdin(TextReader stdin, IEval eval)
+    {
+        var graders = eval.Graders.Select(g => g.Name).ToHashSet();
+        var labels = new List<LabeledAnswer>();
+        int number = 0;
+        while (stdin.ReadLine() is { } line)
+        {
+            number++;
+            if (!string.IsNullOrWhiteSpace(line)) labels.Add(LabelLoader.Parse($"line {number}", line, eval.Scenarios, graders));
+        }
+        return labels;
     }
 
     /// <summary>The eval's model grader of that name; a name it has not, or a fixed rule, is refused.</summary>

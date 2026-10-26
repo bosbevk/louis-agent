@@ -29,11 +29,17 @@ public enum RunnerMessage
     [Description("--repeat needs a whole number, not '{Value}'.")]
     BadRepeat,
 
-    [Description("Usage: run <eval> [--repeat N] [--web off|record|replay] [--of <runId>] [--replay <runId>] [--split dev|held-out|all], run <eval> --rescore <runId>, --list, --calibrate <eval> <grader>, or --label-sheet <eval> <grader> <runId> <folder> [<count>].")]
+    [Description("Usage: run <eval> [--repeat N] [--web off|record|replay] [--of <runId>] [--replay <runId>] [--split dev|held-out|all], run <eval> --rescore <runId>, --list, --calibrate <eval> <grader> [--labels -], or --label-sheet <eval> <grader> <runId> <folder> [<count>].")]
     Usage,
 
-    [Description("Unknown argument '{Argument}'. Usage: run <eval> [--repeat N] [--web off|record|replay] [--of <runId>] [--replay <runId>] [--split dev|held-out|all], run <eval> --rescore <runId>, --list, --calibrate <eval> <grader>, or --label-sheet <eval> <grader> <runId> <folder> [<count>].")]
+    [Description("Unknown argument '{Argument}'. Usage: run <eval> [--repeat N] [--web off|record|replay] [--of <runId>] [--replay <runId>] [--split dev|held-out|all], run <eval> --rescore <runId>, --list, --calibrate <eval> <grader> [--labels -], or --label-sheet <eval> <grader> <runId> <folder> [<count>].")]
     UnknownArgument,
+
+    [Description("--labels takes only '-': the label files on stdin, one JSON object per line, not '{Value}'. Labels in a folder are the dataset's labels/, read without --labels.")]
+    LabelsOnlyStdin,
+
+    [Description("No label files for the grader '{Grader}' of eval '{Eval}' arrived on stdin (--labels -): one JSON object per line, as the API's label export writes them.")]
+    NoLabelsOnStdin,
 
     [Description("--calibrate asks a model, so it is never run in CI. Run it by hand, with the judge you mean to measure (EVAL_JUDGE_*).")]
     CalibrationNotInCi,
