@@ -166,8 +166,8 @@ public class PulsPromptsTests
         Assert.That(cook, Does.Contain("never a share button, a print or PDF icon, a logo or an avatar"));
         Assert.That(cook, Does.Contain("no image, and nothing said about it"));
         // FX24 (Louis, 2026-10-26: "there might be some websites who do not have images, we should just exclude them"): a page with no photo is dropped for the next result.
-        Assert.That(Flat(cook), Does.Contain("Stop at the first page that has the recipe and a photo of the dish"));
-        Assert.That(Flat(cook), Does.Contain("use the best recipe page of them and show no image"));
+        Assert.That(Flat(cook), Does.Contain("Stop at the first page that has the recipe, a photo of the dish"));
+        Assert.That(Flat(cook), Does.Contain("use the best recipe page of them that fits and show no image"));
     }
 
     [Test]
@@ -241,9 +241,25 @@ public class PulsPromptsTests
         Assert.That(cook, Does.Contain("`WebSearch` for one with `maxResults` 10"));
         Assert.That(cook, Does.Contain("Skip the results on these sites").And.Contain("`boerekos.co.za`"));
         Assert.That(cook, Does.Contain("Read the rest in the order the search gave them, the best first; never at random"));
-        Assert.That(cook, Does.Contain("Stop at the first page that has the recipe and a photo of the dish"));
+        Assert.That(cook, Does.Contain("Stop at the first page that has the recipe, a photo of the dish"));
         Assert.That(cook, Does.Contain("Read at most three pages"));
-        Assert.That(cook, Does.Contain("If none of the three has a photo, use the best recipe page of them and show no image"));
+        Assert.That(cook, Does.Contain("If none of the three has a photo, use the best recipe page of them that fits and show no image"));
+    }
+
+    [Test]
+    public void TheCook_HasOneStopRule_TheBudgetWinsOverThePhoto()
+    {
+        // FX24 round 3 (the ccecce0 review): the search said "stop at the first page with the recipe and a photo", the budget paragraph said "an over-budget recipe is dropped for the next page".
+        // One rule now, in the search section: the budget is required, the photo only breaks a tie between pages that fit; the budget paragraph points to it.
+        string cook = Flat(Read("specialists/puls-cook.md"));
+
+        Assert.That(cook, Does.Not.Contain("Stop at the first page that has the recipe and a photo"), "the old rule is gone");
+        Assert.That(cook, Does.Contain("and, with a budget, an estimated total within it"));
+        Assert.That(cook, Does.Contain("If none of the three fits the budget, use the cheapest of them"));
+        Assert.That(cook, Does.Contain("A photo only breaks a tie between pages that fit"));
+        Assert.That(cook, Does.Contain("The stop rule under *The recipe first* decides which page to use"));
+        Assert.That(cook, Does.Not.Contain("is dropped for the next page you read, within the three pages"), "the budget paragraph no longer says when to stop");
+        Assert.That(cook, Does.Not.Contain("If none of the three fits, use the cheapest of them"), "said once, in the search section");
     }
 
     [Test]
@@ -266,8 +282,8 @@ public class PulsPromptsTests
         // (R74 of spices in one answer, R163 of condiments in another), took the first recipe it read, and said so under the budget row. The budget rule picks the recipe, and the pantry is not bought.
         string cook = Flat(Read("specialists/puls-cook.md"));
 
-        Assert.That(cook, Does.Contain("A recipe whose estimated total is over the budget is dropped for the next page you read"));
-        Assert.That(cook, Does.Contain("none of the three fits, use the cheapest of them"));
+        Assert.That(cook, Does.Contain("a recipe over the budget is dropped for the next page"));
+        Assert.That(cook, Does.Contain("use the cheapest of them"));
         Assert.That(cook, Does.Contain("A dish that needs a dozen small packs of spices, sauces and sweeteners is not a dish for a small budget"));
         Assert.That(cook, Does.Contain("one cheap main ingredient (mince, chicken portions, eggs, beans, a soup)"));
         Assert.That(cook, Does.Contain("pantry staples the user has (cooking oil, salt, pepper, sugar, flour, vinegar, stock cubes and the usual dried spices and herbs)"));
