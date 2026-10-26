@@ -69,6 +69,7 @@ public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = n
         ILogger? logger, string? ledgerDirectory, CancellationToken cancellationToken)
     {
         private readonly List<Mode> _modes = [];
+        private readonly List<BenchmarkSlice> _slices = [];
         private readonly List<string> _log = [];
         private readonly Dictionary<ConversationKey, int> _order = [];
         private readonly Dictionary<TurnKey, OpenTurn> _open = [];
@@ -117,6 +118,9 @@ public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = n
                         _modes[at] = _modes[at] with { Rates = new ModeRates(rates.PassAtK, rates.PassHatK, rates.K, rates.Infrastructure, rates.Retried) };
                         await SaveRunAsync();
                     }
+                    break;
+                case SummaryReported summary:
+                    _slices.Add(summary.Slice);
                     break;
                 case QuestionAsked question:
                     _open[question.Key] = new OpenTurn(question.Session, question.Text);
@@ -168,37 +172,13 @@ public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = n
             return new Result(stored, _storeError);
         }
 
-        /// <summary>
-        /// The run's requests and total from the ledger, read once the script has ended. A request's row is written when
-        /// it finishes, so the last turn's rows should be there by then; the first real run (step 11b) checks that the
-        /// run's request count matches the turns' (the old scripts waited two seconds to be sure).
-        /// </summary>
+        /// <summary>The run's requests and total from the ledger (<see cref="LedgerJoin"/>), once the script has ended.</summary>
         private async Task JoinLedgerAsync()
         {
-            // A re-score asked nothing: its total is a known 0, not the null of an unknown price and not the stored run's rows (F18 step 5b.2, ADR 0007).
-            if (RescoreOf is not null)
-            {
-                _total = new Total(0m, "USD", 0, 0);
-                return;
-            }
-            if (ledgerDirectory is null) return;
-            IReadOnlyList<UsageRecord> ofRun;
-            try
-            {
-                ofRun = BenchmarkLedger.OfRun(run.Id, BenchmarkLedger.Read(ledgerDirectory, run.StartedAt, run.EndedAt ?? DateTimeOffset.UtcNow));
-            }
-            catch (Exception ex) when (ex is IOException or InvalidDataException or UnauthorizedAccessException)
-            {
-                _log.Add(MessageText.Format(ApiUserText.BenchmarkLedgerUnreadable, new { Reason = ex.Message }));
-                return;
-            }
-            _total = BenchmarkLedger.TotalOf(ofRun);
-            _settings = BenchmarkSettings.WithPromptHashes(_settings, BenchmarkLedger.PromptHashesOf(ofRun));
-            var requests = BenchmarkLedger.Join(run.Id, ofRun, _sessions);
-            // F18 step 2a: a row on a model the run didn't declare is named in the run's log, so a trend can't mix it in silently.
-            var unlisted = RunModels.Unlisted(_protocol?.Models, requests.Select(r => r.Model));
-            if (unlisted.Count > 0) _log.Add(MessageText.Format(ApiUserText.BenchmarkModelUnlisted, new { Model = string.Join(", ", unlisted) }));
-            if (requests.Count > 0) await WriteAsync(() => store.AddRequestsAsync(run.Id, requests, cancellationToken));
+            var joined = LedgerJoin.Of(run, RescoreOf, ledgerDirectory, _settings, _protocol?.Models, _sessions);
+            (_total, _settings) = (joined.Total, joined.Settings);
+            _log.AddRange(joined.Log);
+            if (joined.Requests.Count > 0) await WriteAsync(() => store.AddRequestsAsync(run.Id, joined.Requests, cancellationToken));
         }
 
         private int OrderOf(ConversationKey key)
@@ -220,7 +200,7 @@ public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = n
                 Eval: _protocol?.Eval, EvalVersion: _protocol?.EvalVersion, Commit: _protocol?.Commit,
                 Graders: _protocol?.Graders?.Select(g => new Grader(g.Name, g.Version, g.Kind)).ToArray(),
                 Models: _protocol?.Models?.Select(m => new ModelUse(m.Mode, m.Level, m.Role, m.Model)).ToArray(), Split: _protocol?.Split,
-                RescoreOf: RescoreOf);
+                RescoreOf: RescoreOf, Slices: _slices.Count == 0 ? null : _slices.ToArray());
 
         /// <summary>The run this one re-scored (F18 step 5b.2): what it was started with, else what its first line says.</summary>
         private string? RescoreOf => run.RescoreOf ?? _protocol?.RescoreOf;

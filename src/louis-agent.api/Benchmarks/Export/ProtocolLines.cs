@@ -126,6 +126,9 @@ internal sealed class ProtocolLines(DateTimeOffset start)
         if (conversation.Outcome is { } outcome) json.WriteString("outcome", outcome.ToString());
     });
 
+    /// <summary>A line of the runner's own shape, written by <see cref="SummaryExport"/>.</summary>
+    internal void Line(string name, Action<Utf8JsonWriter> fields) => Emit(name, fields);
+
     public void ModeDone(Mode mode) => Emit("mode_done", json =>
     {
         json.WriteString("mode", mode.Name);

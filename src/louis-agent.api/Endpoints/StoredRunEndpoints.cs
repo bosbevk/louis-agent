@@ -1,3 +1,4 @@
+using LouisAgent.Api.Admin;
 using LouisAgent.Api.Benchmarks.Export;
 using LouisAgent.Api.Benchmarks.Reports;
 using LouisAgent.Api.Benchmarks.Runs;
@@ -38,6 +39,8 @@ internal static class StoredRunEndpoints
                     pass_at_k = m.Rates?.PassAtK, pass_hat_k = m.Rates?.PassHatK, k = m.Rates?.K, infrastructure = m.Rates?.Infrastructure, retried = m.Rates?.Retried,
                 }),
                 log = run.Log,
+                // F18 step 5c.2: each mode's roll-up as the runner wrote it, priced from the ledger; null for a run from before it.
+                summaries = SummaryRows.Of(run.Slices, run.Total, requests),
                 conversations = conversations.Select(ConversationRow),
                 turns,
                 requests = requests.Select(RequestRow),

@@ -94,6 +94,18 @@ public class RunSummaryTests
     }
 
     [Test]
+    public void ExactlyFourCountedTrials_AreTooFew_AndExactlyFiveHaveRates()
+    {
+        // The threshold is five: one short of it has no rates, and the fifth trial gives them (a change of the constant fails here).
+        var four = Line(Of(Pass("a"), Pass("b"), Pass("c"), Fail("d")), "overall");
+        var five = Line(Of(Pass("a"), Pass("b"), Pass("c"), Fail("d"), Pass("e")), "overall");
+
+        Assert.That(RunSummary.MinimumForRates, Is.EqualTo(5));
+        Assert.That((four.TooFew, four.PassRate), Is.EqualTo((true, (double?)null)));
+        Assert.That((five.TooFew, five.PassRate), Is.EqualTo((false, (double?)0.8)));
+    }
+
+    [Test]
     public void FiveTrialsOfWhichOnlyThreeCount_AreTooFew()
     {
         var lines = Of(Pass("a"), Pass("b"), Pass("c"), T("d", TrialOutcome.Infrastructure), T("e", TrialOutcome.Infrastructure));

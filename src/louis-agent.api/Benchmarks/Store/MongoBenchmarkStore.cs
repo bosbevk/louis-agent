@@ -199,10 +199,9 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
         {
             ["mode"] = m.Mode, ["level"] = m.Level.ToString(), ["role"] = Nullable(m.Role), ["model"] = Nullable(m.Model),
         })),
-        // F18 step 5.4 review: which scenarios the run asked for. Absent in a run stored before it; read as null.
+        // Absent in a run stored before each; read as null: the scenarios the run asked for (F18 step 5.4), the run it re-scored (5b.2) and its roll-up (5c.2).
         ["split"] = Nullable(run.Split is { } split ? BenchmarkRunSplitName.Of(split) : null),
-        // F18 step 5b.2: the run this one re-scored. Absent in a run stored before it; read as null.
-        ["rescore_of"] = Nullable(run.RescoreOf),
+        ["rescore_of"] = Nullable(run.RescoreOf), ["slices"] = SliceDocuments.ToBson(run.Slices),
     };
 
     /// <summary>A run as stored; a mode recorded before CL14 keeps "personality", read as its role (never rewritten).</summary>
@@ -230,7 +229,7 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
         d.GetValue("models", BsonNull.Value).IsBsonNull ? null : d["models"].AsBsonArray.Select(m => m.AsBsonDocument)
             .Select(m => new ModelUse(m["mode"].AsString, Enum.Parse<BenchmarkModelLevel>(m["level"].AsString, ignoreCase: true), StringOf(m.GetValue("role", BsonNull.Value)), StringOf(m.GetValue("model", BsonNull.Value)))).ToArray(),
         SplitOf(d.GetValue("split", BsonNull.Value)),
-        StringOf(d.GetValue("rescore_of", BsonNull.Value)));
+        StringOf(d.GetValue("rescore_of", BsonNull.Value)), SliceDocuments.Of(d.GetValue("slices", BsonNull.Value)));
 
     /// <summary>A mode's kept rates (F18 step 5a); a mode stored before them has none.</summary>
     private static ModeRates? RatesOf(BsonValue v) =>

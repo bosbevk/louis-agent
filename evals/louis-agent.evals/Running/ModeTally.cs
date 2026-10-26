@@ -29,14 +29,9 @@ public sealed class ModeTally
     /// <summary>A graded trial: its outcome counts as in 5a, and the trial is kept for the roll-up.</summary>
     public void Add(TrialResult result)
     {
-        Add(result.Scenario, result.Outcome);
+        if (!_outcomes.TryGetValue(result.Scenario, out var outcomes)) _outcomes[result.Scenario] = outcomes = [];
+        outcomes.Add(result.Outcome);
         _results.Add(result);
-    }
-
-    public void Add(string scenario, TrialOutcome outcome)
-    {
-        if (!_outcomes.TryGetValue(scenario, out var outcomes)) _outcomes[scenario] = outcomes = [];
-        outcomes.Add(outcome);
     }
 
     public void CountRetry() => Retried++;

@@ -39,6 +39,9 @@ public static class BenchmarkProtocolExport
                 lines.Conversation(conversation);
             }
             lines.ModeDone(mode);
+            // After the mode's last mode_done, its roll-up as the runner wrote it (F18 step 5c.2): none for a run from before it.
+            if (run.Modes!.Last(m => m.Name == mode.Name) == mode)
+                foreach (var slice in (run.Slices ?? []).Where(s => s.Mode == mode.Name)) SummaryExport.Write(lines, slice);
         }
         return lines.ToString();
     }

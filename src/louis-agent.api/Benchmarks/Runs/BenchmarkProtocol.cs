@@ -94,6 +94,7 @@ public static class BenchmarkProtocol
                     Text(e, "role"), Json(e, "scores"), OptionalInt(e, "errors") ?? 0, OptionalNumber(e, "seconds") ?? 0, at,
                     Grades(e), Outcome(e, "outcome")),
                 "mode_done" => new ModeEnded(Required(e, "mode"), Int(e, "repeat"), at, Rates(e)),
+                "summary" => SummaryLineReader.Of(e, at) is { } summary ? summary : new LogLine(line),
                 _ => new LogLine(line),
             };
         }
@@ -106,6 +107,9 @@ public static class BenchmarkProtocol
     /// <summary>The scenarios the run asked for (F18 step 5.4), by their snake-case name; absent is none, an unknown name an unreadable line.</summary>
     private static BenchmarkRunSplit? Split(JsonElement e) =>
         Text(e, "split") is null ? null : Choice(e, "split", BenchmarkRunSplitName.Aliases);
+
+    /// <summary>One slice of a mode's roll-up (F18 step 5c), written after the mode's last mode_done.</summary>
+    public sealed record SummaryReported(BenchmarkSlice Slice, DateTimeOffset? At = null) : Event;
 
     /// <summary>The eval's graders, from the protocol line's <c>graders</c>; null when the line doesn't name any.</summary>
     private static IReadOnlyList<GraderInfo>? Graders(JsonElement e) =>
