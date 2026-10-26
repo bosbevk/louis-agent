@@ -72,6 +72,11 @@ else
                 <TrendChart Trend="trend" Highlight="@RunId" Labels="_labels" ShowTitle="false" Currency="Currency.Current" />
             </details>
         </section>
+        <section class="card-p">
+            <details class="fold" open><summary class="fold-head"><span class="fold-chevron" aria-hidden="true"></span>Trend by category</summary>
+                <CategoryTrends Trend="trend" Highlight="@RunId" Currency="Currency.Current" />
+            </details>
+        </section>
     }
     <section class="card-p">
         <details class="admin-details">

@@ -32,17 +32,7 @@ public static class BenchmarkTrends
 
     public static async Task<Trend> ComputeAsync(IBenchmarkStore store, string check, int limit = 20, CancellationToken cancellationToken = default)
     {
-        // One run at a time (the runner's rule), so one more than the limit covers a run still going.
-        var runs = (await store.ListRunsAsync(check, limit + 1, cancellationToken))
-            .Where(r => r.Status != BenchmarkRunStatus.Running)
-            // The trend is the dev scenarios (F18 step 5.4 review): a held-out run, or one of all of them, is a different set of conversations, and a run
-            // before splits were kept (no split) was a dev run. Joining them would draw a line through two different things.
-            .Where(r => r.Split is null or BenchmarkRunSplit.Dev)
-            // A replay (F18 step 5.5) is the recorded run again: its scores are that run's and it costs nothing, so it is no point of its own.
-            .Where(r => r.Settings is null || !r.Settings.ContainsKey("replay_of"))
-            // A re-score (F18 step 5b) measures nothing new: it grades transcripts recorded on another day, so a point would put their quality at its date and its $0 on the cost line.
-            .Where(r => r.RescoreOf is null)
-            .Take(limit).Reverse().ToList();
+        var runs = await FinishedRunsAsync(store, check, limit, cancellationToken);
 
         // A line is a mode on one model: runs on two models of one mode are two lines, never one line joining them.
         var lines = new List<(string Mode, string? Model)>();
@@ -94,6 +84,26 @@ public static class BenchmarkTrends
             }
         }
         return new Trend(check, lines.Select(l => new Series(SeriesName(l.Mode, l.Model), points[l], l.Model)).ToList());
+    }
+
+    /// <summary>
+    /// The runs that are points of a check's trends, oldest first (the overall trend's and the categories', F18 step 5c.4): the finished dev runs that measured the agent. A replay and a
+    /// re-score are left out (the recorded run again, and old transcripts graded again), a held-out run or one of all of them is a different set of conversations, and a run still going
+    /// has an incomplete cost.
+    /// </summary>
+    internal static async Task<List<Run>> FinishedRunsAsync(IBenchmarkStore store, string check, int limit, CancellationToken cancellationToken)
+    {
+        // One run at a time (the runner's rule), so one more than the limit covers a run still going.
+        return (await store.ListRunsAsync(check, limit + 1, cancellationToken))
+            .Where(r => r.Status != BenchmarkRunStatus.Running)
+            // The trend is the dev scenarios (F18 step 5.4 review): a held-out run, or one of all of them, is a different set of conversations, and a run
+            // before splits were kept (no split) was a dev run. Joining them would draw a line through two different things.
+            .Where(r => r.Split is null or BenchmarkRunSplit.Dev)
+            // A replay (F18 step 5.5) is the recorded run again: its scores are that run's and it costs nothing, so it is no point of its own.
+            .Where(r => r.Settings is null || !r.Settings.ContainsKey("replay_of"))
+            // A re-score (F18 step 5b) measures nothing new: it grades transcripts recorded on another day, so a point would put their quality at its date and its $0 on the cost line.
+            .Where(r => r.RescoreOf is null)
+            .Take(limit).Reverse().ToList();
     }
 
     private static bool Right(Conversation c) =>

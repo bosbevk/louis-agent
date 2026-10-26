@@ -1,0 +1,17 @@
+@* F18 step 5c.4: the trend per category, per model. One chart for each category (the overall line is one of them): a line per mode on its model, a point per run that had a rate. Only
+   pass@k and pass^k are drawn, since a category has no cost or token trend of its own. A slice with too few trials has no rate, so the API sends no point for it and the line has a gap
+   there, never a 0. *@
+@if (Categories.Count == 0)
+{
+    <p class="muted category-trend-none">No category has five counted trials in a run yet: a category needs them for a rate (run with <code>--repeat 3</code> or more).</p>
+}
+else
+{
+    @foreach (var category in Categories)
+    {
+        <div class="category-trend">
+            <h4>@category.Name</h4>
+            <TrendChart Trend="category.Chart" Currency="Currency" Panels="Panels" ShowTitle="false" Highlight="Highlight" />
+        </div>
+    }
+}

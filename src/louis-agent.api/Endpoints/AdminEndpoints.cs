@@ -70,6 +70,8 @@ internal static class AdminEndpoints
             return Results.Json(new
             {
                 check = trend.Check,
+                // F18 step 5c.4: the same trend per category, a chart of lines each, in the shape the overall trend's modes are.
+                categories = CategoryTrendRow.Of(await CategoryTrends.ComputeAsync(s, check, cancellationToken: cancellationToken)),
                 modes = trend.Modes.Select(m => new
                 {
                     name = m.Name,

@@ -26,17 +26,17 @@ else
         else
         {
             <div class="trend-grid">
-                @Panel("cost", "Cost per repeat", p => p.Cost is { } c ? (double)c : null, v => Money((decimal)v))
-                @Panel("tokens", "Tokens per repeat", p => p.Tokens, v => UsageFormat.Tokens((long)v))
-                @Panel("time", "Seconds per turn", p => p.SecondsPerTurn, v => v.ToString("0.0", CultureInfo.InvariantCulture) + " s")
-                @Panel("routing", "Routing (routed right)", p => p.Score, Percent, fixedTop: 1)
-                @Panel("accuracy", "Accuracy (sourced)", p => p.Sourced, Percent, fixedTop: 1)
-                @Panel("cache", "Cache (from the cache)", p => p.CacheShare, Percent, fixedTop: 1)
-                @Panel("tools", "Tools (refused or failed)", p => p.ToolsFailed, Percent, fixedTop: 1)
-                @Panel("sources", "Sources (sites read)", p => p.Sites, v => v.ToString("0", CultureInfo.InvariantCulture))
-                @Panel("value", "Value (cost per answer)", p => p.CostPerAnswer is { } c ? (double)c : null, v => Money((decimal)v))
-                @Panel("passat", "pass@k (passed at least once)", p => p.PassAtK, Percent, fixedTop: 1)
-                @Panel("passhat", "pass^k (passed every time)", p => p.PassHatK, Percent, fixedTop: 1)
+                @if (Shows("cost")) { @Panel("cost", "Cost per repeat", p => p.Cost is { } c ? (double)c : null, v => Money((decimal)v)) }
+                @if (Shows("tokens")) { @Panel("tokens", "Tokens per repeat", p => p.Tokens, v => UsageFormat.Tokens((long)v)) }
+                @if (Shows("time")) { @Panel("time", "Seconds per turn", p => p.SecondsPerTurn, v => v.ToString("0.0", CultureInfo.InvariantCulture) + " s") }
+                @if (Shows("routing")) { @Panel("routing", "Routing (routed right)", p => p.Score, Percent, fixedTop: 1) }
+                @if (Shows("accuracy")) { @Panel("accuracy", "Accuracy (sourced)", p => p.Sourced, Percent, fixedTop: 1) }
+                @if (Shows("cache")) { @Panel("cache", "Cache (from the cache)", p => p.CacheShare, Percent, fixedTop: 1) }
+                @if (Shows("tools")) { @Panel("tools", "Tools (refused or failed)", p => p.ToolsFailed, Percent, fixedTop: 1) }
+                @if (Shows("sources")) { @Panel("sources", "Sources (sites read)", p => p.Sites, v => v.ToString("0", CultureInfo.InvariantCulture)) }
+                @if (Shows("value")) { @Panel("value", "Value (cost per answer)", p => p.CostPerAnswer is { } c ? (double)c : null, v => Money((decimal)v)) }
+                @if (Shows("passat")) { @Panel("passat", "pass@k (passed at least once)", p => p.PassAtK, Percent, fixedTop: 1) }
+                @if (Shows("passhat")) { @Panel("passhat", "pass^k (passed every time)", p => p.PassHatK, Percent, fixedTop: 1) }
             </div>
         }
     </div>
@@ -48,6 +48,11 @@ else
     [Parameter] public CurrencyChoice? Currency { get; set; }
     [Parameter] public bool Small { get; set; }
     [Parameter] public string? Highlight { get; set; }
+
+    /// <summary>The panels to draw, by their topic (<c>passat</c>, <c>passhat</c>); every panel when null (F18 step 5c.4: a category's chart shows the pass rates only).</summary>
+    [Parameter] public IReadOnlyList<string>? Panels { get; set; }
+
+    private bool Shows(string topic) => Panels is null || Panels.Contains(topic);
 
     /// <summary>Its own title; off when a folding section above already names it.</summary>
     [Parameter] public bool ShowTitle { get; set; } = true;
