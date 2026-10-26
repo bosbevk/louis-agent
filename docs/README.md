@@ -71,6 +71,7 @@ planned, next and in the backlog, and links to the rest.
 | [Spec: usage, estimates and budgets](specs/USAGE_AND_BUDGETS.md) | Explanation | Read the design for recording what every request costs, estimating runs before they start, and budgets that warn, ask or stop |
 | [Spec: response optimisation](specs/RESPONSE_OPTIMISATION.md) | Explanation | Read the design for cheaper, faster responses: prompt caching, smaller toolsets, clearing and summarising history, reliability |
 | [Design: session architecture](specs/SESSION_ARCHITECTURE.md) | Explanation | Read the longer-term idea for durable sessions, a context-building pipeline and memory (not planned yet) |
+| [Design: searching PDFs](specs/PDF_SEARCH.md) | Explanation | See what searching PDFs by meaning takes today (ingest, hybrid search, cited answers, measuring it) and how it might fit the engine (not planned yet) |
 | [Design: orchestrators and self-healing](specs/ORCHESTRATOR_DESIGN.md) | Explanation | See the orchestrator design decisions, what the POC proved, and what's still open |
 
 ## Writing docs: one type per doc

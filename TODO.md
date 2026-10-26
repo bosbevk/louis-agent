@@ -80,6 +80,7 @@ changes instead of relying on training; **a configured agent**, an identity and 
 ## Later (and every GOAL Missing item no phase plans yet)
 
 - [ ] F45 Knowledge and retrieval (likely the first after Phase 9, if the conversations confirm it; takes in knowledge on demand, grounding's retrieval, long-term memory and retrieval)
+- [ ] Searching PDFs, investigate much later (Louis, 2026-10-26): the engine or a pack takes in PDFs and searches them by meaning and by keyword (contextual chunks, hybrid search fused by rank, a reranker), each result citing its page; part of F45. The standard pipeline and the open questions: [Design: searching PDFs](docs/specs/PDF_SEARCH.md)
 - [ ] F47 The CLI and Rider's host on the agent API (after the engine package; Louis, 2026-10-25: "after the engine package we refactor the acp fully", "the cli must also", "make it one Feature"): both become thin clients of the one agent API (`POST /v1/sessions` and its SSE stream), so the engine, its logs and the ledger live in one host; open: how the API reaches Rider's own tools (Rider's MCP server on the developer's machine) and the repository each chat has open
 - [ ] [F9](docs/features/F09-context-management.md) Long chats (takes in [F16](docs/features/F16-summariser.md) and the context-building step)
 - [ ] [F10](docs/features/F10-route-settings.md) Settings per role and per session (takes in `max_tool_rounds` per session, thinking measured per level and interleaved thinking, stop conditions beyond a round count, the model per role; removes known limitation 6)
