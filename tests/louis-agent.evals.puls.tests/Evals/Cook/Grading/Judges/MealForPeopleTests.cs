@@ -32,6 +32,15 @@ public class MealForPeopleTests
         Assert.That(sent[1].Text, Does.Contain("People: 4").And.Contain("Budget: R150").And.Contain("Town: Malmesbury").And.Contain(Answer));
     }
 
+    // The calibration compares the judge with a person on the same answers, so the same answer must get the same verdict: temperature 0 is part of the measure (6.2 review).
+    [Test]
+    public async Task ItAsksAtTemperatureZero()
+    {
+        var (_, client) = await JudgeAsync("""{"meal": true, "reason": "r"}""");
+
+        Assert.That(client.Options.Single()?.Temperature, Is.EqualTo(0f));
+    }
+
     [Test]
     public async Task ATrueVerdict_AFalseOne_AndACantTell_AreThreeAnswers()
     {
@@ -111,10 +120,12 @@ public class MealForPeopleTests
     internal sealed class ScriptedJudge(string reply) : IChatClient
     {
         public List<List<ChatMessage>> Sent { get; } = [];
+        public List<ChatOptions?> Options { get; } = [];
 
         public Task<ChatResponse> GetResponseAsync(IEnumerable<ChatMessage> messages, ChatOptions? options = null, CancellationToken cancellationToken = default)
         {
             Sent.Add(messages.ToList());
+            Options.Add(options);
             return Task.FromResult(new ChatResponse(new ChatMessage(ChatRole.Assistant, reply)));
         }
 

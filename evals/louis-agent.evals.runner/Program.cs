@@ -5,6 +5,7 @@ using LouisAgent.Evals.Api;
 using LouisAgent.Evals.Protocol;
 using LouisAgent.Evals.Runner;
 using LouisAgent.Evals.Runner.Arguments;
+using LouisAgent.Evals.Runner.Calibration;
 using LouisAgent.Evals.Runner.Catalog;
 using LouisAgent.Evals.Runner.Messages;
 using LouisAgent.Evals.Runner.Refusal;
@@ -25,6 +26,14 @@ try
             foreach (var listed in catalog.Listing())
                 Console.Out.WriteLine(JsonSerializer.Serialize(listed, EvalJson.SnakeCase));
             return 0;
+
+        // F18 step 6.3: the two commands that check a model grader against a person. Neither opens a session; --calibrate asks the judge, so it refuses in CI.
+        case CalibrateRequest calibrate:
+            return await CalibrateCommand.RunAsync(calibrate, catalog.Get(calibrate.Eval), Environment.GetEnvironmentVariable, Console.Out, CancellationToken.None);
+
+        case LabelSheetRequest sheet:
+            return LabelSheetCommand.Run(sheet, catalog.Get(sheet.Eval), Console.In.ReadToEnd().Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries),
+                Console.Out);
 
         case RunRequest run:
             var eval = catalog.Get(run.Name);

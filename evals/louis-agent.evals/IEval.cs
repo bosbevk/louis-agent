@@ -33,6 +33,9 @@ public interface IEval
 
     IReadOnlyList<IGrader> Graders { get; }
 
+    /// <summary>A person's labels of stored answers, which a model grader is calibrated against (F18 step 6.3); none for an eval with no <c>labels/</c> folder.</summary>
+    IReadOnlyList<LouisAgent.Evals.Labels.LabeledAnswer> Labels => [];
+
     /// <summary>The eval's scores for one trial, in F31's scores document (its keys unchanged).</summary>
     EvalScores ScoresOf(Trial trial, IReadOnlyList<Grade> grades);
 

@@ -23,6 +23,15 @@ public sealed record ListRequest : CommandLineRequest;
 public sealed record RunRequest(string Name, int Repeat, WebReplayMode? Web = null, string? Of = null, bool Model = false,
     SplitSelection Split = SplitSelection.Dev, string? RescoreOf = null) : CommandLineRequest;
 
+/// <summary><c>--calibrate {eval} {grader}</c> (F18 step 6.3): asks a model grader about every labelled answer of the eval and prints how often it agrees with the person.</summary>
+public sealed record CalibrateRequest(string Eval, string Grader) : CommandLineRequest;
+
+/// <summary>
+/// <c>--label-sheet {eval} {grader} {runId} {folder} [{count}]</c> (F18 step 6.3): writes up to <paramref name="Count"/> label files, for a person to fill in, from a stored run's
+/// protocol export on stdin (as <c>--rescore</c> reads it).
+/// </summary>
+public sealed record LabelSheetRequest(string Eval, string Grader, string RunId, string Folder, int Count) : CommandLineRequest;
+
 /// <summary>The command line: <c>--list</c>, or <c>run {name}</c> and its flags. A refusal is a <see cref="RunnerException"/>.</summary>
 public static class CommandLine
 {
@@ -32,10 +41,17 @@ public static class CommandLine
     /// </summary>
     public const int MaxRepeat = 5;
 
+    /// <summary>The labels a sheet asks for when it is not told (F18 step 6.3): ten, the calibration's size.</summary>
+    public const int DefaultLabelCount = 10;
+
     public static CommandLineRequest Parse(IReadOnlyList<string> args)
     {
         if (args is ["--list"]) return new ListRequest();
         if (args is ["run", var name, ..]) return ParseRun(name, args.Skip(2).ToList());
+        if (args is ["--calibrate", var calibrated, var grader]) return new CalibrateRequest(calibrated, grader);
+        if (args is ["--label-sheet", var sheeted, var graded, var runId, var folder]) return new LabelSheetRequest(sheeted, graded, ParseOf(runId), folder, DefaultLabelCount);
+        if (args is ["--label-sheet", var named, var by, var run, var into, var count]) return new LabelSheetRequest(named, by, ParseOf(run), into, ParseCount(count));
+        if (args is ["--calibrate", ..] or ["--label-sheet", ..]) throw Refuse(RunnerMessage.Usage, null);
         if (args.Count == 0 || args[0] == "run") throw Refuse(RunnerMessage.Usage, null);
         throw Refuse(RunnerMessage.UnknownArgument, new { Argument = args[0] });
     }
@@ -78,6 +94,12 @@ public static class CommandLine
         if (web == WebReplayMode.Replay && of is null) throw Refuse(RunnerMessage.ReplayNeedsOf, null);
         if (web != WebReplayMode.Replay && of is not null) throw Refuse(RunnerMessage.OfNeedsReplay, null);
         return new RunRequest(name, repeat, web, of, Split: split);
+    }
+
+    private static int ParseCount(string value)
+    {
+        if (!int.TryParse(value, NumberStyles.None, CultureInfo.InvariantCulture, out int n) || n < 1) throw Refuse(RunnerMessage.BadLabelCount, new { Value = value });
+        return n;
     }
 
     private static int ParseRepeat(string value)

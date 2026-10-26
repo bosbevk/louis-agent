@@ -23,6 +23,8 @@ BENCHMARK_RUN=cook-1 PULS_API=http://127.0.0.1:5070/ \
 | `--split dev\|held-out\|all` | The scenarios a run asks for. `dev` is the default, and all the portal runs; the held-out ones are for a release check, never tuned against. The run's first line says which. |
 | `--web off\|record\|replay` | What the run does with the web: nothing special (the instance's `WEB_REPLAY`), saves every page, search, fetch and the time it reads, or answers from a recording. `replay` needs `--of {runId}`. |
 | `--rescore {runId}` | Grades a stored run's transcripts again with today's graders, for $0, and records the result as a new run (`rescore_of`). It reads the stored run's protocol lines from stdin and takes no other flag. |
+| `--label-sheet {eval} {grader} {runId} {folder} [{count}]` | Writes the files a person labels, from a stored run on stdin; free. See *Checking the judge*. |
+| `--calibrate {eval} {grader}` | Asks a model grader about every labelled answer and prints how often it agrees with the person; never in CI. See *Checking the judge*. |
 | `--replay {runId}` | A replay of that run **with the model's answers too**: every model request is a cache hit, the run costs $0, and its scores equal the recorded run's. It tests everything around the model (the graders, the harness, the engine's code), not a prompt: a changed prompt is a different request, so it misses. |
 
 The run's id is `BENCHMARK_RUN`, else `local-` and the time it started: set it yourself, so you know what to replay. The runner
@@ -84,6 +86,39 @@ A run's page has a *Results by category* table for each mode (a mode is one conf
 Each line says how many trials it holds (`n`), how many passed of the ones that counted (a trial that failed for the infrastructure is counted apart, in *Infra*, and left out of the rates), how many were Unknown (a check that couldn't tell is never a pass), the pass rate, **pass@k** (the scenarios that passed at least once) and **pass^k** (the ones that passed every time), and the cost per trial and per pass, from the ledger. Two things to read carefully: `n` counts **trials**, while pass@k and pass^k are shares of **scenarios** (a scenario run three times is three trials and one scenario), and a cost is "unknown" when a price was unknown, "$0" for a re-score.
 
 **Why "too few for a rate" appears.** Fewer than five counted trials in a slice give no percentage, only the counts (`2 of 3 passed · too few for a rate`): one trial moves a share of three by a third, so a rate would look precise and not be. A run with one repeat has about one trial per scenario, so most categories are too few; that is why the end-of-F18 runs use `--repeat 3` or more. A run from before categories existed says so, with a *Re-score* button that gives it its lines for $0. A line's tasks link to their conversations in the explorer below.
+
+## Checking the judge
+
+Some things code can't judge: *is this recipe a meal for four?* An eval then asks a model, a **judge**, and its answer is a measurement like any other. A measurement is only worth having if it is checked, so a judge is checked against a person before its grade counts for anything: you read some answers and say yes or no, and the judge is asked about the same answers. If it agrees with you on **9 of 10** or more, it sees what you see. If it doesn't, its grades are noise, and the fix is a better prompt or a better model, not trusting it anyway. Until a judge passes, its grade is shown and counted but **never required**: the outcome of a trial doesn't wait on it.
+
+The check costs nothing on a local model (Ollama), and it **never runs in CI**: it asks a model. Set the judge first (`EVAL_JUDGE_PROVIDER`, `EVAL_JUDGE_MODEL`, and `EVAL_JUDGE_ENDPOINT` for a local server; see `config/.env.example`).
+
+**1. Make a sheet.** From a stored run (the export is the same text a re-score reads), write ten files to label:
+
+```bash
+# run.txt is GET /v1/admin/benchmarks/runs/8f7802b9a72e/protocol (the same file a re-score reads)
+EVALS=puls dotnet run --project evals/louis-agent.evals.runner -- --label-sheet puls-cook meal-for-people 8f7802b9a72e   evals/louis-agent.evals.puls/Evals/Cook/Dataset/labels 10 < run.txt
+```
+
+The sheet holds only scenarios that ask for a number of people (a meal for four can't be labelled where no four is asked), one conversation of each scenario before a second of any, so ten labels are not ten repeats of one dish. Asking twice gives the same sheet.
+
+**2. Label it.** Each file holds the scenario, the mode and repeat, the run, the turn and the answer, and `"label": null`. Read the answer as the user would and set the label:
+
+```json
+"label": { "meal": true, "note": "a main dish, feeds four" }
+```
+
+`meal` is `true` for a main dish that feeds the number of people asked, `false` for a snack, a side, or portions that don't add up. Write the note for yourself: when the judge disagrees, it is what you will read. **A file with `"label": null` stops the eval from loading**, naming the file; label them all, or delete the ones you don't want. The labels are part of the dataset, but the dataset's version and hash cover the scenarios only, so labelling changes neither.
+
+**3. Calibrate.** `dotnet run` builds first, which copies the labels beside the runner. Then:
+
+```bash
+EVALS=puls EVAL_JUDGE_MODEL=qwen3:8b EVAL_JUDGE_ENDPOINT=http://localhost:11434   dotnet run --project evals/louis-agent.evals.runner -- --calibrate puls-cook meal-for-people
+```
+
+It prints `Agreement: 9 of 10`, then each answer where the judge differed: the scenario, the run, which way you labelled it, which way the judge went (*can't tell* counts as a disagreement) and its reason. Read those first: a disagreement is either the judge's mistake or yours, and the judge's reason says which.
+
+If the agreement is under 9 of 10, stop and decide: a clearer prompt (`Prompts/judges/meal-for-people.md`, which changes the prompt's hash, so the old grades are of another measure), a better model, or a paid judge, which is a decision to make before it is a bill.
 
 ---
 [Guides](README.md) · [Docs index](../README.md)

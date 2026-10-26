@@ -13,6 +13,9 @@ A meal, in plain words:
   of meat, rice or vegetables that could feed four, is a meal for four. One chicken breast for six people is not.
 - The recipe and its shopping list **agree**: the list holds what the recipe needs, in amounts that match the number of
   people.
+- The answer **gives the dish**: a chosen dish with its recipe. An answer that only apologises or refuses, only lists
+  things to buy, or only suggests ideas to pick from, without a chosen dish and its recipe, is **not a meal**, however
+  often it says "for four". Say `false`.
 
 Judge the answer only, **never the prices**: the budget is there so you know what was asked, not for you to check
 what the answer costs. Another check does that. Do not judge the town, the shop, the spelling or the language.

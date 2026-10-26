@@ -41,6 +41,9 @@ public sealed class CookEval : IEval
 
     public DatasetManifest? Dataset => Loaded.Manifest;
 
+    /// <summary>A person's labels of stored answers (F18 step 6.3), which <c>meal-for-people</c> is calibrated against.</summary>
+    public IReadOnlyList<LouisAgent.Evals.Labels.LabeledAnswer> Labels => Loaded.Labels;
+
     /// <summary>The dataset, with every scenario's expectations read once: a scenario that asks for something unreadable refuses the runner before a run.</summary>
     private static Dataset Load()
     {

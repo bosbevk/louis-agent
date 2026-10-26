@@ -29,11 +29,29 @@ public enum RunnerMessage
     [Description("--repeat needs a whole number, not '{Value}'.")]
     BadRepeat,
 
-    [Description("Usage: run <eval> [--repeat N] [--web off|record|replay] [--of <runId>] [--replay <runId>] [--split dev|held-out|all], run <eval> --rescore <runId>, or --list.")]
+    [Description("Usage: run <eval> [--repeat N] [--web off|record|replay] [--of <runId>] [--replay <runId>] [--split dev|held-out|all], run <eval> --rescore <runId>, --list, --calibrate <eval> <grader>, or --label-sheet <eval> <grader> <runId> <folder> [<count>].")]
     Usage,
 
-    [Description("Unknown argument '{Argument}'. Usage: run <eval> [--repeat N] [--web off|record|replay] [--of <runId>] [--replay <runId>] [--split dev|held-out|all], run <eval> --rescore <runId>, or --list.")]
+    [Description("Unknown argument '{Argument}'. Usage: run <eval> [--repeat N] [--web off|record|replay] [--of <runId>] [--replay <runId>] [--split dev|held-out|all], run <eval> --rescore <runId>, --list, --calibrate <eval> <grader>, or --label-sheet <eval> <grader> <runId> <folder> [<count>].")]
     UnknownArgument,
+
+    [Description("--calibrate asks a model, so it is never run in CI. Run it by hand, with the judge you mean to measure (EVAL_JUDGE_*).")]
+    CalibrationNotInCi,
+
+    [Description("Eval '{Eval}' has no grader '{Grader}'. Its graders are {Graders}.")]
+    NoSuchGrader,
+
+    [Description("Grader '{Grader}' of eval '{Eval}' is a fixed rule, not a model. Only a model grader is calibrated against a person.")]
+    GraderNotModel,
+
+    [Description("Eval '{Eval}' has no labels. Make a sheet from a stored run with --label-sheet {Eval} <grader> <runId> <folder>, label it, and put the files in its dataset's labels/ folder.")]
+    NoLabels,
+
+    [Description("{Count} label file(s) written to {Folder}. Give each a label (\"meal\" true or false, and a note) and copy them to the eval's dataset in labels/; a file with no label stops the eval from loading.")]
+    LabelSheetWritten,
+
+    [Description("--label-sheet's count needs a whole number of at least 1, not '{Value}'.")]
+    BadLabelCount,
 
     [Description("Unknown --web '{Value}'. Use one of: {Supported}.")]
     UnknownWeb,

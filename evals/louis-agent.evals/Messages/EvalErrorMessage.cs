@@ -59,6 +59,18 @@ public enum EvalErrorMessage
     [Description("A re-score opens no session and calls no model, so '{Call}' was never meant to be reached.")]
     NoSessionInARescore,
 
+    [Description("Label file '{File}' is not valid: {Reason}.")]
+    InvalidLabel,
+
+    [Description("Label file '{File}' has no label yet. Give it a label (\"meal\" true or false, and a note), or delete the file.")]
+    LabelNotGiven,
+
+    [Description("Label file '{File}' labels the scenario '{Scenario}', which the dataset does not have.")]
+    LabelScenarioUnknown,
+
+    [Description("Label file '{File}' labels turn {Turn}, which scenario '{Scenario}' does not have.")]
+    LabelTurnUnknown,
+
     [Description("EVAL_JUDGE_PROVIDER '{Value}' is not supported. Use one of: {Supported}.")]
     UnknownJudgeProvider,
 }

@@ -61,7 +61,7 @@ public static class DatasetLoader
             if (!found.Any(scenario => scenario.Expected.TryGetProperty(key, out _)))
                 throw Refuse(EvalErrorMessage.UnfedKey, new { Dataset = manifest.Name, Key = key });
 
-        return new Dataset(manifest, found);
+        return new Dataset(manifest, found, Labels.LabelLoader.Load(folder, found));
     }
 
     /// <summary>
