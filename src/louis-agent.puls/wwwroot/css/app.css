@@ -1437,6 +1437,13 @@ html:has(.landing) { scroll-behavior: smooth; }
 .run-row-notes .rescore { height: 28px; padding: 0 10px; font-size: 12px; }
 .run-row-cost { font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--ink); font-size: 13.5px; }
 @media (max-width: 1100px) { .runs-head { display: none; } .run-row { grid-template-columns: 1fr 1fr; } .run-row-notes { grid-column: 1 / -1; } }
+/* A run's page (the rework of 2026-10-26): the check's name as the title, the sentence it proves under it, the facts in one line; each fold says in a note what it holds. */
+.run-head h1 code { font-size: 24px; font-weight: 800; color: var(--ink); background: none; padding: 0; letter-spacing: -.4px; }
+.run-proves { margin: 4px 0 0; color: var(--text); font-size: 14.5px; max-width: 90ch; }
+.run-facts { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 10px !important; font-size: 13px; }
+.run-facts > code { color: var(--orange-text); }
+.fold-note { font-weight: 400; font-size: 12.5px; color: var(--muted); margin-left: 4px; }
+.fold:not([open]) > .fold-head .fold-note::before { content: "— "; }
 .rescored-from { font-size: 12px; color: var(--muted); text-decoration: none; border: 1px solid var(--border); border-radius: 999px; padding: 3px 9px; white-space: nowrap; transition: color .15s, border-color .15s; }
 .rescored-from:hover { color: var(--orange-text); border-color: rgba(245, 130, 32, .45); }
 .rescore-error { display: block; font-size: 12px; }

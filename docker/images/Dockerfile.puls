@@ -1,11 +1,13 @@
 # Puls: louis-agent.api serving the Puls web app (the general assistant) instead of the code-review app (-p:WebApp=puls).
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+# The commit the runner stamps on every run's first line (F18 step 2a): the compose file passes EVAL_COMMIT; "unknown" when it is not set.
+ARG EVAL_COMMIT=unknown
 WORKDIR /src
 COPY . .
 RUN dotnet publish "src/louis-agent.api/louis-agent.api.csproj" -c Release -p:WebApp=puls -o /app/publish
 # The eval runner (F18 step 4.3) publishes to its own folder: it ships its own copies of core and the session-stream reader,
 # and beside the API's they would overwrite each other.
-RUN dotnet publish "evals/louis-agent.evals.runner/louis-agent.evals.runner.csproj" -c Release -o /app/evals-publish
+RUN dotnet publish "evals/louis-agent.evals.runner/louis-agent.evals.runner.csproj" -c Release -p:EvalCommit=$EVAL_COMMIT -o /app/evals-publish
 
 # The SDK image is kept for the final stage because the RunDotNet workspace tool shells out to `dotnet build/test`.
 FROM mcr.microsoft.com/dotnet/sdk:10.0

@@ -16,7 +16,7 @@ else
     <div class="trend @(Small ? "small" : "")">
         @if (!Small)
         {
-            <div class="chart-head">@if (ShowTitle) { <strong>Tendens</strong> }<span class="muted">@_runs.Count runs</span>
+            <div class="chart-head">@if (ShowTitle) { <strong>Trend</strong> }<span class="muted">@_runs.Count runs</span>
                 <span class="legend">@foreach (var (s, i) in _series.Select((s, i) => (s, i))) { <span><span class="sw" style="background: @Series(i)"></span>@(Labels?.GetValueOrDefault(s.Name) ?? s.Name)</span> }</span></div>
         }
         @if (Small)

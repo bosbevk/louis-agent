@@ -17,7 +17,7 @@
     {
         <div class="run-controls">
             <span class="muted">Repeat</span>
-            <div class="segmented" role="radiogroup" aria-label="Herhaling">
+            <div class="segmented" role="radiogroup" aria-label="Repeat">
                 @for (int n = 1; n <= _repeats; n++)
                 {
                     int r = n;
@@ -27,11 +27,11 @@
         </div>
     }
 
-    <nav class="crumbs" aria-label="Pad">
+    <nav class="crumbs" aria-label="Where you are in the run">
         <button type="button" class="crumb @(_level == 0 ? "here" : "")" @onclick="() => Go(0)">Run</button>
         @if (_level >= 1) { <span class="crumb-sep">›</span><button type="button" class="crumb @(_level == 1 ? "here" : "")" @onclick="() => Go(1)">Conversations</button> }
         @if (_level >= 2) { <span class="crumb-sep">›</span><button type="button" class="crumb @(_level == 2 ? "here" : "")" @onclick="() => Go(2)"><code>@_task</code></button> }
-        @if (_level >= 3) { <span class="crumb-sep">›</span><button type="button" class="crumb @(_level == 3 ? "here" : "")" @onclick="() => Go(3)">Beurt @_turn</button> }
+        @if (_level >= 3) { <span class="crumb-sep">›</span><button type="button" class="crumb @(_level == 3 ? "here" : "")" @onclick="() => Go(3)">Turn @_turn</button> }
         @if (_level == 4 && _request is { } rq) { <span class="crumb-sep">›</span><span class="crumb here">@_requestMode?.Name · request at @rq.At.ToLocalTime().ToString("HH:mm:ss")</span> }
         @* Louis: the chats side by side in a modal, Puls alone against Puls with its cook. *@
         <button type="button" class="header-button chat-open" @onclick="() => OpenChatsAsync(_task)"><span class="ic i-chat" aria-hidden="true"></span>Replay conversations</button>
@@ -43,7 +43,7 @@
         <div class="search-dialog chats-dialog" id="chats-dialog" role="dialog" aria-modal="true" aria-label="The conversations side by side" tabindex="-1" @onkeydown="ChatsKey">
             <div class="manual-head">
                 <strong>The conversations side by side</strong>
-                <div class="segmented" role="radiogroup" aria-label="Gesprek">
+                <div class="segmented" role="radiogroup" aria-label="Conversation">
                     @foreach (string task in Tasks())
                     {
                         string t = task;
@@ -53,7 +53,7 @@
                 @if (_chatPlaying) { <span class="muted working">replaying…</span> }
                 else { <button type="button" class="header-button" @onclick="() => OpenChatsAsync(_chatTask)"><span class="ic i-pulse" aria-hidden="true"></span>Replay again</button> }
                 <kbd>Esc</kbd>
-                <button type="button" class="icon" aria-label="Maak toe" @onclick="CloseChats">×</button>
+                <button type="button" class="icon" aria-label="Close" @onclick="CloseChats">×</button>
             </div>
             <div class="chats-body compare">
                 @foreach (var (m, i) in Columns)
@@ -257,7 +257,7 @@
                         var topReason = turns.SelectMany(t => t.ToolReasons).GroupBy(r => (r.Tool, r.Reason)).Select(g => (g.Key.Tool, g.Key.Reason, Count: g.Sum(r => r.Count)))
                             .OrderByDescending(r => r.Count).FirstOrDefault();
                         <figure class="donut-fig" style="--i: @i">
-                            @Ring([calls - failed, failed], [Right, Wrong], [$"gewerk {calls - failed}", $"geweier {failed}"],
+                            @Ring([calls - failed, failed], [Right, Wrong], [$"worked {calls - failed}", $"refused or failed {failed}"],
                                 calls == 0 ? "—" : failed.ToString(), $"of {calls}")
                             <figcaption><span class="sw" style="background: @Series(i)"></span>@Who(m)</figcaption>
                             @if (topReason.Count > 0)
@@ -399,7 +399,7 @@
                         {
                             <section class="chart turn-chart" style="--i: @j">
                                 <div class="turn-head">
-                                    <span class="tree-turn-n">Beurt @tu.N</span><span class="tree-question">@tu.Question</span>
+                                    <span class="tree-turn-n">Turn @tu.N</span><span class="tree-question">@tu.Question</span>
                                     <span class="chip">@(tu.Role ?? (tu.Continued is { } h ? $"continued · {h}" : "Puls itself"))</span>
                                     <span class="chip">@tu.Rows.Count requests</span><span class="chip">@Secs(tu.Seconds) s</span>
                                     <span class="row-cost turn-cost" data-count="@Money(tu.Cost)">@Money(tu.Cost)</span>
@@ -416,7 +416,7 @@
     }
     else if (_level == 3)
     {
-        <div class="chart-head lead"><strong>Beurt @_turn</strong><span class="muted"><code>@_task</code></span>
+        <div class="chart-head lead"><strong>Turn @_turn</strong><span class="muted"><code>@_task</code></span>
             <span class="legend"><span><span class="sw" style="background: @Own"></span>Puls itself</span><span><span class="sw" style="background: @Spec"></span>@Roles()</span></span></div>
         <div class="replay-bar">
             @if (_replaying) { <button type="button" class="header-button" @onclick="StopReplay"><span class="ic i-pulse" aria-hidden="true"></span>Stop</button><span class="muted working">replaying as typed…</span> }
@@ -433,7 +433,7 @@
                         @Timeline(tu, r => Open(() => { _level = 4; _request = r; _requestMode = m; }))
                         <div class="explorer-turn">
                             <div class="xreplay"><TurnView Turn="@(_replays.GetValueOrDefault(m.Name) ?? tu.Shown)" Streaming="_replaying" Currency="Currency" /></div>
-                            @if (tu.Hosts.Count > 0) { <p class="muted">Gelees: @string.Join(", ", tu.Hosts)</p> }
+                            @if (tu.Hosts.Count > 0) { <p class="muted">Read: @string.Join(", ", tu.Hosts)</p> }
                         </div>
                     }
                 </section>
@@ -578,8 +578,8 @@
 
     /// <summary>
     /// A conversation's or a turn's two ways on (Louis: "the button is enough, why not just open the modal"; "this must be
-    /// just another button"): *Speel af* opens the chats side by side on its conversation; *Beurte* (a conversation's
-    /// turns) or *Versoeke* (a turn's requests) goes into what the modal doesn't show.
+    /// just another button"): *Replay* opens the chats side by side on its conversation; *Turns* (a conversation's
+    /// turns) or *Requests* (a turn's requests) goes into what the modal doesn't show.
     /// </summary>
     private RenderFragment Actions(string task, int? turn) => __builder =>
     {
@@ -847,7 +847,7 @@
     private static List<string> RolesOf(ModeNode m) =>
         m.Conversations.SelectMany(c => c.Turns).Select(t => t.Role).Where(r => !string.IsNullOrEmpty(r)).Distinct().ToList()!;
 
-    /// <summary>The specialists' name for a legend: the roles in the mode (or the run), "spesialis" only when there's none.</summary>
+    /// <summary>The specialists' name for a legend: the roles in the mode (or the run), "specialist" only when there's none.</summary>
     private string Roles(ModeNode? m = null)
     {
         var roles = (m is null ? _modes.SelectMany(RolesOf) : RolesOf(m)).Distinct().ToList();

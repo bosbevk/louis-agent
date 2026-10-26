@@ -30,6 +30,10 @@ writes the protocol on stdout and its logs on stderr, and needs `AGENT_API_KEY` 
 
 ## From the portal
 
+A run records the commit the runner was built from. The container build takes it as `EVAL_COMMIT`:
+`EVAL_COMMIT=$(git rev-parse --short HEAD) docker compose -f docker/docker-compose.puls.yml --env-file config/.env up -d --build`;
+without it the run says `unknown`.
+
 The admin portal lists the evals the runner lists and starts them with `POST /v1/admin/benchmarks/{check}/runs`:
 
 ```json

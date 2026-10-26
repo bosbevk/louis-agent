@@ -19,6 +19,9 @@ services:
     build:
       context: ..
       dockerfile: docker/images/Dockerfile.puls
+      args:
+        # The commit the eval runner stamps on a run: EVAL_COMMIT=$(git rev-parse --short HEAD) docker compose … up -d --build
+        EVAL_COMMIT: ${EVAL_COMMIT:-unknown}
     image: louis-agent-puls:latest
     container_name: puls
     <<: *puls-env

@@ -14,21 +14,24 @@
 
 <PageTitle>Run @RunId · Puls Admin</PageTitle>
 
-<div class="page-head">
+@* The head (the rework of 2026-10-26): the check's name as the title, the sentence it proves under it, then the run's facts in one line with a status pill. *@
+<div class="page-head run-head">
     <div>
-        <h1>@(_title ?? "Run")</h1>
-        <p>
+        <h1><code>@(_check ?? "run")</code></h1>
+        @if (_title is { } title) { <p class="run-proves">@title</p> }
+        <p class="run-facts">
             <code>@RunId</code>
             @if (_run is { } head)
             {
-                <span> · @Started(head) · @Status(head) · @Repeat(head)</span>
-                @if (Total(head) is { } total) { <span> · @total</span> }
-                @if (S(head.GetProperty("run"), "rescore_of") is { } source) { <span> · </span><RescoredFrom Id="@source" /> }
+                <span class="status-pill @S(head.GetProperty("run"), "status")">@Status(head)</span>
+                <span>@Started(head)</span><span class="muted">·</span><span>@Repeat(head)</span>
+                @if (Total(head) is { } total) { <span class="muted">·</span><span>@total</span> }
+                @if (S(head.GetProperty("run"), "rescore_of") is { } source) { <RescoredFrom Id="@source" /> }
             }
         </p>
     </div>
     <div class="page-actions">
-        <a class="header-button" href="admin/benchmarks"><span class="ic i-chart" aria-hidden="true"></span>Benchmarks</a>
+        <a class="header-button" href="admin/benchmarks"><span class="ic i-chart" aria-hidden="true"></span>All benchmarks</a>
     </div>
 </div>
 
@@ -47,40 +50,41 @@ else
     {
         <section class="card-p store-banner"><strong>Not all of this run was stored.</strong><p>@storeError</p></section>
     }
+    @* The sections in reading order (the rework of 2026-10-26): the roll-up first, the explorer to drill into a conversation, then the rates and the trends folded,
+       since they are long, and last what the run ran with. *@
     <section class="card-p">
-        <GraderList Run="run" />
+        <details class="fold" open><summary class="fold-head"><span class="fold-chevron" aria-hidden="true"></span>Results by category<span class="fold-note">per mode: overall, then each category</span></summary>
+            <SummaryPanel Run="run" Currency="Currency.Current" />
+        </details>
     </section>
     @* No entrance animation on this card: a filled transform animation makes it the frame of every fixed child, so the
        explorer's chats modal would be clipped to the card and painted under the cards after it. *@
     <section class="card-p holds-modal">
-        <RunExplorer Run="run" Currency="Currency.Current" OpenTask="FocusTask" />
-    </section>
-    <section class="card-p">
-        <details class="fold" open><summary class="fold-head"><span class="fold-chevron" aria-hidden="true"></span>Results by category</summary>
-            <SummaryPanel Run="run" Currency="Currency.Current" />
+        <details class="fold" open><summary class="fold-head"><span class="fold-chevron" aria-hidden="true"></span>Explore the run<span class="fold-note">the modes side by side: conversations, turns, requests</span></summary>
+            <RunExplorer Run="run" Currency="Currency.Current" OpenTask="@FocusTask" />
         </details>
     </section>
     <section class="card-p">
-        <details class="fold" open><summary class="fold-head"><span class="fold-chevron" aria-hidden="true"></span>Pass rates</summary>
+        <details class="fold"><summary class="fold-head"><span class="fold-chevron" aria-hidden="true"></span>Pass rates per mode<span class="fold-note">as the runner wrote them on the last repeat</span></summary>
             <ModeRatesList Run="run" />
         </details>
     </section>
     @if (_trend is { } trend)
     {
         <section class="card-p">
-            <details class="fold" open><summary class="fold-head"><span class="fold-chevron" aria-hidden="true"></span>Trend</summary>
+            <details class="fold"><summary class="fold-head"><span class="fold-chevron" aria-hidden="true"></span>Trend<span class="fold-note">this check over its runs, this run marked</span></summary>
                 <TrendChart Trend="trend" Highlight="@RunId" Labels="_labels" ShowTitle="false" Currency="Currency.Current" />
             </details>
         </section>
         <section class="card-p">
-            <details class="fold" open><summary class="fold-head"><span class="fold-chevron" aria-hidden="true"></span>Trend by category</summary>
+            <details class="fold"><summary class="fold-head"><span class="fold-chevron" aria-hidden="true"></span>Trend by category<span class="fold-note">pass@k and pass^k per category, per model</span></summary>
                 <CategoryTrends Trend="trend" Highlight="@RunId" Currency="Currency.Current" />
             </details>
         </section>
     }
     <section class="card-p">
-        <details class="admin-details">
-            <summary>What it ran with</summary>
+        <details class="fold"><summary class="fold-head"><span class="fold-chevron" aria-hidden="true"></span>What it ran with<span class="fold-note">the eval, its graders, the settings, the modes</span></summary>
+            <GraderList Run="run" />
             <dl class="explorer-fields">
                 @if (run.TryGetProperty("settings", out var settings) && settings.ValueKind == JsonValueKind.Object)
                 {
@@ -115,7 +119,7 @@ else
             .GroupBy(t => t.GetProperty("mode").GetString()!)
             .ToDictionary(g => g.Key, g => g.Select(t => S(t, "role")).Where(r => !string.IsNullOrEmpty(r)).Distinct().ToList() is { Count: > 0 } roles
                 ? $"Puls with {string.Join(" and ", roles)}" : "Puls alone");
-    private string? _title, _error;
+    private string? _title, _check, _error;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -128,9 +132,9 @@ else
         {
             var run = await Api.GetAsync<JsonElement>($"v1/admin/benchmarks/runs/{Uri.EscapeDataString(RunId)}");
             var list = await Api.GetAsync<JsonElement>("v1/admin/benchmarks");
-            string check = run.GetProperty("run").GetProperty("check").GetString()!;
+            string check = _check = run.GetProperty("run").GetProperty("check").GetString()!;
             _title = list.GetProperty("checks").EnumerateArray().Where(c => c.GetProperty("id").GetString() == check)
-                .Select(c => c.GetProperty("title").GetString()).FirstOrDefault() ?? check;
+                .Select(c => c.GetProperty("title").GetString()).FirstOrDefault();
             _run = run;
             _labels = Labels(run);
             try { _trend = await Api.GetAsync<JsonElement>($"v1/admin/benchmarks/checks/{Uri.EscapeDataString(check)}/trend"); }
