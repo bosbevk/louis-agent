@@ -570,15 +570,7 @@
 
     public void Dispose() { _replayStop?.Cancel(); _chatStop?.Cancel(); }
 
-    /// <summary>Another repeat of the same run: the conversation (or turn) you are in stays open when that repeat has it too; else back to the overview.</summary>
-    private void ShowRepeat(int repeat)
-    {
-        _repeat = repeat;
-        Build();
-        bool still = _task is not null && _modes.Any(m => ConversationIn(m) is { } c && (_turn is null || c.Turns.Any(t => t.N == _turn)));
-        if (!still) Go(0);
-        else { _dir = "in"; ResetReplay(); if (_level == 4) { _level = 3; _request = null; _requestMode = null; } }
-    }
+    private void ShowRepeat(int repeat) { _repeat = repeat; Build(); int to = RepeatSwitch.LevelAfter(_level, _task, _turn, _modes.SelectMany(m => m.Conversations).Select(c => (c.Task, c.Turns.Select(t => t.N)))); Go(to, stay: to > 0); }
 
     private void Open(Action set) { _dir = "in"; ResetReplay(); set(); }
 
@@ -604,9 +596,9 @@
         </span>
     };
 
-    private void Go(int level)
+    private void Go(int level, bool stay = false)
     {
-        _dir = "out"; ResetReplay();
+        _dir = stay ? "in" : "out"; ResetReplay();
         _level = level;
         if (level < 2) _task = null;
         if (level < 3) _turn = null;

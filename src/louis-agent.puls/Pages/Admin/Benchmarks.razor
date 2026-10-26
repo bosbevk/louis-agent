@@ -136,7 +136,7 @@ else if (_data is { } data)
                             title="@(check.Id == "stub" ? "Free: no session, no model" : "Spends money: every run asks the model")" @onclick="() => StartAsync(check.Id)" @onclick:stopPropagation>
                         <span class="ic i-pulse" aria-hidden="true"></span>Run
                     </button>
-                    <span class="muted run-estimate">@Estimate(check.Id, data)</span>
+                    <span class="muted run-estimate">@RunEstimate.Text(check.Id, data.Runs, RepeatFor(check.Id), c => Cost(c))</span>
                 </div>
                 }
             </section>
@@ -301,7 +301,6 @@ else if (_data is { } data)
     private bool _needsKey, _loading;
     private string _keyDraft = "";
     private readonly Dictionary<string, int> _repeats = [];
-
     private bool _checksOpen = true;
     private string? _selected;
 
@@ -309,14 +308,6 @@ else if (_data is { } data)
     private string? _model;
 
     private void Select(string check) => _selected = check;
-
-    /// <summary>What a run of the check will roughly cost at the repeats chosen, from its last measured run; nothing when none has a known cost.</summary>
-    private string Estimate(string check, Page data)
-    {
-        if (check == "stub") return "free";
-        int repeats = RepeatFor(check);
-        return RunEstimate.For(check, data.Runs, repeats) is { } cost ? $"≈ {Cost(cost)} for {repeats} {(repeats == 1 ? "repeat" : "repeats")}" : "";
-    }
 
     private void SelectKey(KeyboardEventArgs e, string check)
     {
@@ -354,7 +345,6 @@ else if (_data is { } data)
                     c.TryGetProperty("manual", out var m) && m.ValueKind == JsonValueKind.True)).ToList(),
                 new StoreState(store.GetProperty("configured").GetBoolean(), Str(store, "error")),
                 json.GetProperty("runs").EnumerateArray().Select(ReadRun).ToList());
-            // A check is selected on arrival, the one with the newest run, so the runs list is never empty (the rework of 2026-10-26).
             _selected ??= RunEstimate.DefaultCheck(_data.Checks.Select(c => c.Id).ToList(), _data.Runs);
         }
         catch (AgentApiException ex)

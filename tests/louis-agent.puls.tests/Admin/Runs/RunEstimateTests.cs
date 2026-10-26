@@ -51,4 +51,29 @@ public class RunEstimateTests
         Assert.That(RunEstimate.DefaultCheck(checks, []), Is.EqualTo("stub"));
         Assert.That(RunEstimate.DefaultCheck([], []), Is.Null);
     }
+
+    // 6.0b (the 30ab27f..6533d8d review): the text beside the Run button left the razor page for this class. Written first: only the page had it.
+    private static string Dollars(decimal cost) => "$" + cost.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
+
+    [Test]
+    public void TheStub_IsFree_WhateverItsRuns()
+    {
+        Assert.That(RunEstimate.Text("stub", [Run("a", "stub", 1, 9m, hoursAgo: 1)], 3, Dollars), Is.EqualTo("free"));
+    }
+
+    [Test]
+    public void TheText_SaysTheCostAndTheRepeats_InThePagesMoney()
+    {
+        var runs = new[] { Run("new", "puls-cook", 3, 0.24m, hoursAgo: 1) };
+
+        Assert.That(RunEstimate.Text("puls-cook", runs, 2, Dollars), Is.EqualTo("≈ $0.16 for 2 repeats"));
+        Assert.That(RunEstimate.Text("puls-cook", runs, 1, Dollars), Is.EqualTo("≈ $0.08 for 1 repeat"), "one repeat is singular");
+    }
+
+    [Test]
+    public void AnUnknownCost_GivesNoText_NotAZero()
+    {
+        Assert.That(RunEstimate.Text("puls-cook", [], 2, Dollars), Is.Empty);
+        Assert.That(RunEstimate.Text("puls-cook", [Run("unpriced", "puls-cook", 1, null, hoursAgo: 1)], 2, Dollars), Is.Empty);
+    }
 }
