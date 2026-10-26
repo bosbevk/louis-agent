@@ -1275,5 +1275,67 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
 - **Step 6a: the human review is built on the model grader it reviews, blind, and the people's grades are stored by the API** (Louis, 2026-10-26, 6a's prompt). Row 6a stands, with these made precise: a human review belongs to one model grader and is named `{grader}.human`; `GradeOutcome` gains `Pending`; the API keeps each grade with who (a name the portal asks for once; the gate is one shared key) and when, the latest per reviewer winning and the earlier kept, and exports a person's pass or fail as a label file the harness's loader accepts; the portal's review screen hides the judge's verdict until the person has graded; their grades are shown beside the others and never hold a run up. Four commits (6a.1 the grader, 6a.2 the API, 6a.3 the portal, 6a.4 the calibration on labels given in the portal). **One change the build made:** a grader's name may hold a dot (an eval's still may not), so that `{grader}.human` passes the conformance check.
 - **Step 6a.1b** (Louis, 2026-10-26, review cards): the roll-up has no pending count; every human review is named for a model grader of the same eval, checked by conformance.
 - **Step 6a.2** (Louis, 2026-10-26: build pick and review cards): the label export is a zip of label files; a reviewer's later unsure takes back their earlier pass or fail (the judge is checked only against labels the person still stands by); the review store has its own folder.
+- **Step 6a.5: the calibration from the portal** (Louis, 2026-10-26, after step 6a.4f: "we needed a gui for calibration in
+  admin"; of three options, his pick: "1. just build the GUI as best you can"). Today the loop is: grade in the portal, download
+  the labels as a zip, unzip them into the dataset, run `--calibrate` in a terminal; 6a.4f ran it four times by hand. The
+  options were (1) a *Check the judge* button on the run page that runs the calibration on the grades in the store and shows the
+  report in the agreement card; (2) the portal shows the last terminal report, which the command writes to the store; (3) the
+  button runs the calibration on the label files on disk, which the container would need mounted. Pick: 1.
+
+  **Design.** The API never references the harness (ADR 0022, step 5a): as a re-score does, it starts the eval runner as a child
+  process and writes to its stdin. The runner's `--calibrate {eval} {grader} --labels -` reads the label files on stdin, one
+  JSON object per line (the same shape as a file, checked by the same loader rules), instead of the dataset's `labels/`
+  folder; it prints the report's human lines as before and then **one `@` line**, `{"event":"calibration", …}`, with the eval,
+  the grader, the judge model, the agreement, whether it passes the bar, each class's counts (`person_pass`, `person_fail`:
+  `judge_pass`, `judge_fail`, `judge_unknown`, the agreement card's shape) and each disagreement with the judge's reason. The API
+  keeps the report in its own store, `calibrations`, beside the grades (`ICalibrationStore`, in memory and MongoDB): a
+  calibration is a check of the judge, not a benchmark run, so the benchmark store never sees it and the run list never shows
+  it. One run at a time still holds: a calibration is the runner's current run (the judge is shared), with `calibration_of` and
+  `grader` on its row, and the Benchmarks page leaves such a run alone.
+
+  ```mermaid
+  sequenceDiagram
+      participant P as Portal (AgreementPanel)
+      participant A as API (CalibrationEndpoints)
+      participant R as Eval runner (child process)
+      participant S as Calibration store
+      P->>A: POST /v1/admin/benchmarks/runs/{id}/calibrations/{grader}
+      A->>A: the decided grades as label lines (ReviewLabels.Line)
+      A->>R: dotnet runner --calibrate {eval} {grader} --labels -  (the lines on stdin)
+      A-->>P: 202, the run row (calibration_of, grader)
+      R->>R: the judge, every labelled conversation
+      R-->>A: the human lines, then @{"event":"calibration",…}
+      A->>S: CalibrationRecorder stores the report when the run ends well
+      P->>A: GET …/runs/current until it is not running
+      P->>A: GET …/runs/{id}/calibrations
+      A-->>P: the reports, newest first
+  ```
+
+  **Steps**, one commit each, test first: **6a.5a** the runner: `--labels -`, `LabelLoader.Parse` (one label from its text),
+  `CalibrationLine` (the `@` line, written with `EvalJson.SnakeCase`), the judge model on the report; **6a.5b** the API:
+  `Benchmarks/Calibrations/` (`CalibrationRecord`, `ICalibrationStore` with `InMemoryCalibrationStore` and
+  `MongoCalibrationStore`, `CalibrationLineReader`, `CalibrationRecorder`), `BenchmarkRunner.StartCalibration` (its argument
+  building moved to `RunnerStartInfo`, since the runner is near its size), `ReviewLabels.Line`, `POST …/calibrations/{grader}`
+  (202; 400 for a grader without a human review; 404 for no run or no labels yet; 409 while a run runs; 503 without a store),
+  `GET …/calibrations`, a deleted run's calibrations deleted with it, the route golden; **6a.5c** the portal: a *Check the
+  judge* button in the judge's agreement card, a waiting line while it runs, then the latest report in plain sentences
+  (`CalibrationText`, reusing `AgreementText` for the classes) with the disagreements and the earlier checks folded
+  (`CalibrationCard`, `CalibrationView`), the page fetching again when the run ends (ADR 0042); **6a.5d** the docs: the guide's
+  *Checking the judge* gains *From the portal*, the project docs, the feature doc's record. Louis: "we will not calibrate
+  again until next feature", so the live check of the button is the next feature's first calibration.
+
+  | Type | Folder | Namespace | Step |
+  |---|---|---|---|
+  | `CalibrateRequest.LabelsOnStdin` (changed), `CommandLine` (changed) | `evals/louis-agent.evals.runner/Arguments/` | `LouisAgent.Evals.Runner.Arguments` | 6a.5a |
+  | `CalibrateCommand` (changed: stdin labels, the `@` line) | `evals/louis-agent.evals.runner/Calibration/` | `LouisAgent.Evals.Runner.Calibration` | 6a.5a |
+  | `LabelLoader.Parse` (changed), `CalibrationLine`, `CalibrationReport.ClassReport` (new, the class made public) | `evals/louis-agent.evals/Labels/` | `LouisAgent.Evals.Labels` | 6a.5a |
+  | `CalibrationRecord`, `CalibrationLineReader`, `CalibrationRecorder` | `src/louis-agent.api/Benchmarks/Calibrations/` | `LouisAgent.Api.Benchmarks.Calibrations` | 6a.5b |
+  | `ICalibrationStore`, `InMemoryCalibrationStore`, `MongoCalibrationStore` | `src/louis-agent.api/Benchmarks/Calibrations/Store/` | `LouisAgent.Api.Benchmarks.Calibrations.Store` | 6a.5b |
+  | `BenchmarkRun` (changed: `Calibration`), `BenchmarkCalibration`, `RunnerStartInfo` (moved out of `BenchmarkRunner`) | `src/louis-agent.api/Benchmarks/Runs/` | `LouisAgent.Api.Benchmarks.Runs` | 6a.5b |
+  | `ReviewLabels.Line` (changed) | `src/louis-agent.api/Benchmarks/Reviews/` | `LouisAgent.Api.Benchmarks.Reviews` | 6a.5b |
+  | `CalibrationEndpoints` | `src/louis-agent.api/Endpoints/` | `LouisAgent.Api.Endpoints` | 6a.5b |
+  | `CalibrationView`, `CalibrationText` | `src/louis-agent.puls/Admin/Reviews/` | `LouisAgent.Puls.Admin.Reviews` | 6a.5c |
+  | `CalibrationCard` (`.razor` + `.razor.cs`), `AgreementPanel` (changed) | `src/louis-agent.puls/Components/Admin/Reviews/` | `LouisAgent.Puls.Components.Admin.Reviews` | 6a.5c |
+
 ---
 [Docs index](../README.md) · [Plans](README.md) · [Platform plan](platform.md) · [Feature F18](../features/F18-evaluation.md)
