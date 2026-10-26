@@ -149,7 +149,7 @@ public class PulsPromptsTests
         Assert.That(cook, Does.Contain("Where the user is").And.Contain("they are never a quote"));
         Assert.That(cook, Does.Contain("every ingredient named in the task's language"));
         Assert.That(cook, Does.Contain("What isn't bought is never a row"));
-        Assert.That(cook, Does.Contain("*Uit die voorraadkas: kookolie, sout en peper.*"));
+        Assert.That(cook, Does.Contain("*Uit die voorraadkas: kookolie, sout, peper, suiker en speserye.*"));
         Assert.That(cook, Does.Contain("no brand, no photo"));
         Assert.That(cook, Does.Contain("up by name in their town").And.Contain("q=Pick+n+Pay+Malmesbury"));
         Assert.That(cook, Does.Contain("| Chicken thighs ").And.Contain("| 600 g ").And.Contain("chicken thighs 1 kg"));
@@ -256,7 +256,23 @@ public class PulsPromptsTests
         Assert.That(cook, Does.Contain("Estimate the dish's total first"));
         Assert.That(cook, Does.Contain("a dish that comes out over the budget is swapped for a cheaper one"));
         Assert.That(cook, Does.Contain("Only if no reasonable dish fits does the answer go over, and then *Unsure* says by how much and why"));
-        Assert.That(cook, Does.Contain("pantry staples the user has (oil, salt and pepper)"), "listed as in the pantry, with no price");
+        Assert.That(cook, Does.Contain("pantry staples the user has (cooking oil, salt, pepper, sugar, flour, vinegar, stock cubes and the usual dried spices and herbs)"), "listed as in the pantry, with no price");
+    }
+
+    [Test]
+    public void TheCook_KeepsAMealWithinTheBudget_ByDroppingAnOverBudgetRecipe_AndNotPricingThePantry()
+    {
+        // Louis, 2026-10-26, after the --repeat 3 run (cook-malmesbury: R258 and R289 on R150, and a pass at R129): the cook priced every spice, sauce and sweetener as a whole pack
+        // (R74 of spices in one answer, R163 of condiments in another), took the first recipe it read, and said so under the budget row. The budget rule picks the recipe, and the pantry is not bought.
+        string cook = Flat(Read("specialists/puls-cook.md"));
+
+        Assert.That(cook, Does.Contain("A recipe whose estimated total is over the budget is dropped for the next page you read"));
+        Assert.That(cook, Does.Contain("none of the three fits, use the cheapest of them"));
+        Assert.That(cook, Does.Contain("A dish that needs a dozen small packs of spices, sauces and sweeteners is not a dish for a small budget"));
+        Assert.That(cook, Does.Contain("one cheap main ingredient (mince, chicken portions, eggs, beans, a soup)"));
+        Assert.That(cook, Does.Contain("pantry staples the user has (cooking oil, salt, pepper, sugar, flour, vinegar, stock cubes and the usual dried spices and herbs)"));
+        Assert.That(cook, Does.Contain("*From the pantry: cooking oil, salt, pepper, sugar and spices.*"));
+        Assert.That(cook, Does.Contain("*Uit die voorraadkas: kookolie, sout, peper, suiker en speserye.*"));
     }
 
     [Test]

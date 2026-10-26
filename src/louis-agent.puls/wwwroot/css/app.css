@@ -1300,6 +1300,19 @@ html:has(.landing) { scroll-behavior: smooth; }
 .run-table tr.mode td { color: var(--orange-text); padding-top: 12px; }
 .run-table tr.failed td { color: var(--danger); }
 .run-table tbody tr { cursor: default; }
+/* The by-category table (F18 step 5c, Louis: "look at how nice everything looks and then we see this"): cells with room between them, numbers on the right, the overall line standing out. */
+.summary-mode { margin: 18px 0 26px; }
+.summary-mode h3 { margin: 0 0 8px; font-size: 18px; font-weight: 600; }
+.summary-table { width: 100%; border-collapse: collapse; }
+.summary-table th, .summary-table td { padding: 9px 14px; text-align: left; vertical-align: top; white-space: nowrap; }
+.summary-table th { color: var(--muted); font-size: 12px; font-weight: 600; border-bottom: 1px solid var(--border); }
+.summary-table tbody tr + tr td { border-top: 1px solid rgba(255, 255, 255, .05); }
+.summary-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+.summary-table tr.overall td { font-weight: 600; background: rgba(255, 255, 255, .04); }
+.summary-table .s-slice { font-family: var(--font-code); font-size: 12.5px; }
+.summary-table .s-passed { min-width: 17rem; white-space: normal; }
+.summary-table .s-tasks details > summary { cursor: pointer; color: var(--muted); }
+.summary-table a.s-task { display: block; padding: 2px 0; font-size: 12.5px; }
 .run-log { max-height: none; font-size: 12.5px; }
 /* F31: the store's state beside the page's actions, the banner when there is none, and the live table's open row. */
 .store-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--muted); border: 1px solid var(--border); border-radius: 999px; padding: 4px 10px; }

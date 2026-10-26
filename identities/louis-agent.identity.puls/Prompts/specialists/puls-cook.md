@@ -51,7 +51,11 @@ saying the prices are estimates and why.
 
 **The budget picks the dish.** With a budget, the dish is chosen to fit it, before the list is written. Estimate the dish's
 total first; a dish that comes out over the budget is swapped for a cheaper one (fewer or cheaper cuts, a pantry dish).
-Only if no reasonable dish fits does the answer go over, and then *Unsure* says by how much and why.
+Only if no reasonable dish fits does the answer go over, and then *Unsure* says by how much and why. A recipe whose estimated total
+is over the budget is dropped for the next page you read, within the three pages; if none of the three fits, use the cheapest of
+them. A dish that needs a dozen small packs of spices, sauces and sweeteners is not a dish for a small budget: choose one built
+on one cheap main ingredient (mince, chicken portions, eggs, beans, a soup). Count only what the user has to buy: the pantry is
+not bought (the list rule below).
 
 **The shop's branch.** Look the user's shop up by name in their town, once, with `FetchUrl`,
 `https://nominatim.openstreetmap.org/search?q=Pick+n+Pay+Malmesbury&format=json&limit=5&countrycodes=za` (a branch in
@@ -120,9 +124,10 @@ One table, one row per ingredient, every ingredient of the recipe, every ingredi
 pack, `beef mince 500 g`, with its pack size and never the size alone, no brand, no photo; when the recipe needs more
 than one pack, a count after it, `× 2`), and its estimated price (one column, headed *Estimated price* /
 *Geskatte prys*); then the total rows in bold.
-What isn't bought is never a row: tap water, and pantry staples the user has (oil, salt and pepper). They go on one
-line under the list, in the task's language (*From the pantry: cooking oil, salt and pepper.*; Afrikaans:
-*Uit die voorraadkas: kookolie, sout en peper.*).
+What isn't bought is never a row: tap water, and pantry staples the user has (cooking oil, salt, pepper, sugar, flour, vinegar, stock cubes and the usual dried spices and herbs).
+They go on one line under the list, in the task's language (*From the pantry: cooking oil, salt, pepper, sugar and spices.*;
+Afrikaans: *Uit die voorraadkas: kookolie, sout, peper, suiker en speserye.*). A spice, sauce or sweetener the dish is built
+on (the curry powder of a curry, for one) is still a row.
 
 | Ingredient     | For the recipe | To buy                 | Estimated price |
 |----------------|----------------|------------------------|-----------------|

@@ -5,10 +5,10 @@
         <table class="run-table summary-table">
             <thead>
                 <tr>
-                    <th>Slice</th><th title="Trials in the slice">n</th><th>Passed</th><th title="Passed over the counted trials">Pass rate</th>
-                    <th title="Passed at least once in its trials: can the agent do this?">pass@k</th>
-                    <th title="Passed every time: can a customer rely on it?">pass^k</th>
-                    <th>Unknown</th><th title="Left out of the rates: not the agent's failure">Infra</th><th>Cost / trial</th><th>Cost / pass</th><th>Tasks</th>
+                    <th>Slice</th><th class="num" title="Trials in the slice">n</th><th>Passed</th><th class="num" title="Passed over the counted trials">Pass rate</th>
+                    <th class="num" title="Passed at least once in its trials: can the agent do this?">pass@k</th>
+                    <th class="num" title="Passed every time: can a customer rely on it?">pass^k</th>
+                    <th class="num">Unknown</th><th class="num" title="Left out of the rates: not the agent's failure">Infra</th><th class="num">Cost / trial</th><th class="num">Cost / pass</th><th>Tasks</th>
                 </tr>
             </thead>
             <tbody>
@@ -16,15 +16,15 @@
                 {
                     <tr class="summary-row @(slice.Slice == "overall" ? "overall" : "")">
                         <td class="s-slice">@slice.Slice</td>
-                        <td class="s-n">@slice.N</td>
+                        <td class="s-n num">@slice.N</td>
                         <td class="s-passed">@SummaryText.Passed(slice)</td>
-                        <td class="s-rate">@SummaryText.Rate(slice, slice.PassRate)</td>
-                        <td class="s-at-k">@SummaryText.Rate(slice, slice.PassAtK)</td>
-                        <td class="s-hat-k">@SummaryText.Rate(slice, slice.PassHatK)</td>
-                        <td class="s-unknown">@slice.Unknown</td>
-                        <td class="s-infra">@slice.Infrastructure</td>
-                        <td class="s-cost-trial">@SummaryText.Cost(slice.CostPerTrial, Currency)</td>
-                        <td class="s-cost-pass">@SummaryText.CostPerPass(slice, Currency)</td>
+                        <td class="s-rate num">@SummaryText.Rate(slice, slice.PassRate)</td>
+                        <td class="s-at-k num">@SummaryText.Rate(slice, slice.PassAtK)</td>
+                        <td class="s-hat-k num">@SummaryText.Rate(slice, slice.PassHatK)</td>
+                        <td class="s-unknown num">@slice.Unknown</td>
+                        <td class="s-infra num">@slice.Infrastructure</td>
+                        <td class="s-cost-trial num">@SummaryText.Cost(slice.CostPerTrial, Currency)</td>
+                        <td class="s-cost-pass num">@SummaryText.CostPerPass(slice, Currency)</td>
                         <td class="s-tasks">
                             <details>
                                 <summary>@slice.Tasks.Count</summary>
