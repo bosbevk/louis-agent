@@ -11,4 +11,5 @@ public enum BenchmarkOutcome
     Fail,
     Unknown,
     Infrastructure,
+    Pending,
 }

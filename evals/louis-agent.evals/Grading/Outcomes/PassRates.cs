@@ -40,7 +40,7 @@ public static class PassRates
 
         var outcomes = required.Select(grader => grades.FirstOrDefault(grade => grade.Grader == grader.Name)?.Outcome).ToList();
         if (outcomes.Any(outcome => outcome == GradeOutcome.Fail)) return TrialOutcome.Fail;
-        if (outcomes.Any(outcome => outcome is null or GradeOutcome.Unknown)) return TrialOutcome.Unknown;
+        if (outcomes.Any(outcome => outcome is null or GradeOutcome.Unknown or GradeOutcome.Pending)) return TrialOutcome.Unknown;
         return TrialOutcome.Pass;
     }
 

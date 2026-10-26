@@ -5,6 +5,7 @@ using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Puls.Messages;
 using LouisAgent.Evals.Trials;
 using LouisAgent.Evals.Puls.Evals.Cook.Expectations;
+using LouisAgent.Evals.Grading.Human;
 using LouisAgent.Evals.Grading.Models;
 using LouisAgent.Evals.Puls.Evals.Cook.Grading;
 using LouisAgent.Evals.Puls.Evals.Cook.Grading.Judges;
@@ -24,12 +25,19 @@ namespace LouisAgent.Evals.Puls.Evals.Cook;
 public sealed class CookEval : IEval
 {
     // Static, so the scenarios can load with them: the dataset checks its expected keys against these graders when it loads.
-    private static readonly IReadOnlyList<IGrader> GraderList =
-        [new CookNoError(), PulsRoute.Grader(), new WithinBudget(), new EstimatesAtShop(), new RecipeImage(), new ServesAsAsked(), MealForPeopleGrader.Create(() => JudgeClients.FromEnvironment())];
+    private static readonly IReadOnlyList<IGrader> GraderList = BuildGraders();
+
+    /// <summary>The fixed rules, then the model judge and a person's review of its question (F18 step 6a), made for the judge it reviews and asked the judge prompt's own title.</summary>
+    private static IReadOnlyList<IGrader> BuildGraders()
+    {
+        var judge = MealForPeopleGrader.Create(() => JudgeClients.FromEnvironment());
+        return [new CookNoError(), PulsRoute.Grader(), new WithinBudget(), new EstimatesAtShop(), new RecipeImage(), new ServesAsAsked(), judge,
+            HumanReviewGrader.For(judge, MealForPeoplePrompt.Question)];
+    }
 
     public string Name => "puls-cook";
     public string? Identity => "puls";
-    public int Version => 8;
+    public int Version => 9;
     public string Proves => MessageText.Format(PulsEvalMessage.CookProves);
 
     public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions, CancellationToken cancellationToken) =>

@@ -32,6 +32,13 @@ public class MealForPeopleTests
         Assert.That(sent[1].Text, Does.Contain("People: 4").And.Contain("Budget: R150").And.Contain("Town: Malmesbury").And.Contain(Answer));
     }
 
+    // F18 step 6a.1: the question a person is asked to review is the judge prompt's own title, read from it, so the judge and the person answer the same words.
+    [Test]
+    public void ThePersonIsAskedTheQuestionTheJudgeIs_ReadFromItsPromptsTitle()
+    {
+        Assert.That(MealForPeoplePrompt.Question, Is.EqualTo("Is this a meal for the people asked for?"));
+    }
+
     // The calibration compares the judge with a person on the same answers, so the same answer must get the same verdict: temperature 0 is part of the measure (6.2 review).
     [Test]
     public async Task ItAsksAtTemperatureZero()

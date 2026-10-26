@@ -62,6 +62,9 @@ public enum CommonGradeMessage
     [Description("the grader threw, so it can't tell: {Reason}")]
     GraderThrew,
 
+    [Description("waits for a person to answer: {Question}")]
+    HumanWaits,
+
     [Description("no judge configured")]
     NoJudge,
 

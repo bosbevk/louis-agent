@@ -193,6 +193,19 @@ public abstract class BenchmarkStoreContract
 
     // F18 step 6.1b: the plan says what judged is stored with each grade; a code grader's grade has none.
     [Test]
+    public async Task APendingGrade_ReadsBackPending_InBothStores()
+    {
+        string run = NewId();
+        var grades = new[] { new Grade("meal-for-people.human", 1, 0, BenchmarkOutcome.Pending, "waits for a person") };
+        await _store.SaveConversationAsync(run, NewConversation("bobotie", 1) with { Grades = grades, Outcome = BenchmarkOutcome.Pass });
+
+        var read = (await _store.ConversationsAsync(run)).Single();
+
+        Assert.That(read.Grades, Is.EqualTo(grades));
+        Assert.That(read.Outcome, Is.EqualTo(BenchmarkOutcome.Pass));
+    }
+
+    [Test]
     public async Task AGrade_KeepsTheJudgeThatGaveIt()
     {
         string run = NewId();

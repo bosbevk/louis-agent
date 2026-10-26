@@ -37,6 +37,16 @@ public class BenchmarkProtocolTests
     }
 
     // F18 step 6.1b: what judged a model grader's grade is read with the grade, and a code grader's grade has none.
+    // F18 step 6a.1: a human review's grade is Pending until a person gives one; the reader keeps it, and it is no Unknown.
+    [Test]
+    public void APendingGrade_IsReadAsPending_NotLostAndNotUnknown()
+    {
+        var ended = (ConversationEnded)Parse("""@{"event":"conversation","mode":"cook","repeat":1,"task":"pannekoek","role":"puls-cook","scores":{},"seconds":3,"grades":[{"grader":"meal-for-people.human","version":1,"score":0,"outcome":"Pending","reason":"waits for a person"}],"outcome":"Pass"}""");
+
+        Assert.That(ended.Grades!.Single().Outcome, Is.EqualTo(BenchmarkOutcome.Pending));
+        Assert.That(ended.Outcome, Is.EqualTo(BenchmarkOutcome.Pass), "the trial's outcome is the fixed rules'");
+    }
+
     [Test]
     public void AModelGradersGrade_CarriesTheJudgeThatGaveIt()
     {

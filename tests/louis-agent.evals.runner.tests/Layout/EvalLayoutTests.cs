@@ -96,8 +96,8 @@ public class EvalLayoutTests
             {
                 string? ns = grader.GetType().Namespace;
                 string own = $"{project.RootNamespace}.Evals.{FolderOf(eval)}.Grading", shared = $"{project.RootNamespace}.Shared.Grading";
-                bool ok = In(ns, own) || In(ns, shared) || In(ns, "LouisAgent.Evals.Grading.Common");
-                if (!ok) wrong.Add($"{eval.Name}: {grader.GetType().Name} is in {ns}, not {own}, {shared} or the harness's Grading.Common");
+                bool ok = In(ns, own) || In(ns, shared) || In(ns, "LouisAgent.Evals.Grading.Common") || In(ns, "LouisAgent.Evals.Grading.Human");
+                if (!ok) wrong.Add($"{eval.Name}: {grader.GetType().Name} is in {ns}, not {own}, {shared} or the harness's Grading.Common or Grading.Human");
             }
         Assert.That(wrong, Is.Empty, "A grader only one eval uses is in its Grading/; one two evals use is in Shared/Grading/:\n  " + string.Join("\n  ", wrong));
     }

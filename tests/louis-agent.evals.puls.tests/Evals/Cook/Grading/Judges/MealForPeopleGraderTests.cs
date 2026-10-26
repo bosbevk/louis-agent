@@ -97,6 +97,7 @@ public class MealForPeopleGraderTests
 
         Assert.That((grader.Kind, grader.Required), Is.EqualTo((GraderKind.Model, false)));
         Assert.That(eval.Graders.Where(g => g.Required).Select(g => g.Kind), Has.All.EqualTo(GraderKind.FixedRule));
-        Assert.That(eval.Graders.Last(), Is.SameAs(grader));
+        Assert.That(eval.Graders[^2], Is.SameAs(grader), "the judge, then the person's review of its question");
+        Assert.That(eval.Graders[^1].Name, Is.EqualTo("meal-for-people.human"));
     }
 }

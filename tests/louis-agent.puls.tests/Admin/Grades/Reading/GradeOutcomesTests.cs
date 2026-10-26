@@ -11,6 +11,8 @@ public class GradeOutcomesTests
     [TestCase("pass", GradeOutcome.Pass)]
     [TestCase("FAIL", GradeOutcome.Fail)]
     [TestCase("unknown", GradeOutcome.Unknown)]
+    [TestCase("Pending", GradeOutcome.Pending)]
+    [TestCase("pending", GradeOutcome.Pending)]
     public void TheCaseIsIgnored(string text, GradeOutcome expected) => Assert.That(GradeOutcomes.Parse(text), Is.EqualTo(expected));
 
     [TestCase("Passed")]

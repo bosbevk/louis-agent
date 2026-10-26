@@ -74,6 +74,12 @@ public enum EvalErrorMessage
     [Description("Label file '{File}' labels turn {Turn}, which scenario '{Scenario}' does not have.")]
     LabelTurnUnknown,
 
+    [Description("Grader '{Grader}' is not a model grader, so there is no judge for a person to be checked against.")]
+    ReviewNeedsAModelGrader,
+
+    [Description("The judge prompt has no title line ('# ...'), so there is no question to ask a person.")]
+    PromptHasNoTitle,
+
     [Description("EVAL_JUDGE_PROVIDER '{Value}' is not supported. Use one of: {Supported}.")]
     UnknownJudgeProvider,
 }

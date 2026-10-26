@@ -12,5 +12,6 @@ public class ChipKindTests
         Assert.That(ChipKind.Of(GradeOutcome.Pass), Is.EqualTo("ok"));
         Assert.That(ChipKind.Of(GradeOutcome.Fail), Is.EqualTo("bad"));
         Assert.That(ChipKind.Of(GradeOutcome.Unknown), Is.EqualTo("warn"));
+        Assert.That(ChipKind.Of(GradeOutcome.Pending), Is.Empty, "waiting for a person is neither good nor bad nor a warning");
     }
 }

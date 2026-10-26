@@ -43,6 +43,15 @@ public class GradeChipListTests
         }));
     }
 
+    // F18 step 6a.1: a grade nobody has given yet is "waiting for review", not unknown (a person has not been asked and failed to say).
+    [Test]
+    public void APendingGrade_ReadsAsWaitingForReview_WithNoKind()
+    {
+        var grades = new ConversationGrades([Grade("meal-for-people.human", GradeOutcome.Pending, score: 0, reason: "waits for a person")], GradeOutcome.Pass);
+
+        Assert.That(GradeChipList.Of(grades, Order), Is.EqualTo(new[] { new GradeChip("meal-for-people.human · waiting for review", "", "waits for a person") }));
+    }
+
     [Test]
     public void AScoreOf1Or0OrNone_ShowsOnlyTheName()
     {

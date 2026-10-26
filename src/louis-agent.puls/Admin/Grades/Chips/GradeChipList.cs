@@ -13,7 +13,8 @@ public static class GradeChipList
         return list
             .Select((grade, stored) => (grade, rank: Rank(order, grade.Grader), stored))
             .OrderBy(g => g.rank).ThenBy(g => g.stored)
-            .Select(g => new GradeChip(GradesText.Chip(g.grade.Grader, g.grade.Score), ChipKind.Of(g.grade.Outcome), g.grade.Reason))
+            .Select(g => new GradeChip(g.grade.Outcome == GradeOutcome.Pending ? GradesText.PendingChip(g.grade.Grader) : GradesText.Chip(g.grade.Grader, g.grade.Score),
+                ChipKind.Of(g.grade.Outcome), g.grade.Reason))
             .ToList();
     }
 

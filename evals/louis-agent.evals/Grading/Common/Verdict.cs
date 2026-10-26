@@ -14,6 +14,8 @@ public static class Verdict
 
     public static Grade Fail(string grader, int version, string reason) => new(grader, version, 0, GradeOutcome.Fail, reason);
 
+    public static Grade Pending(string grader, int version, string reason) => new(grader, version, 0, GradeOutcome.Pending, reason);
+
     public static Grade Unknown(string grader, int version, string reason) => new(grader, version, 0, GradeOutcome.Unknown, reason);
 
     /// <summary>

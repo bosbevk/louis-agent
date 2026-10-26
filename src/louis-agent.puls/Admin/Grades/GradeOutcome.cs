@@ -6,4 +6,5 @@ public enum GradeOutcome
     Pass,
     Fail,
     Unknown,
+    Pending,
 }

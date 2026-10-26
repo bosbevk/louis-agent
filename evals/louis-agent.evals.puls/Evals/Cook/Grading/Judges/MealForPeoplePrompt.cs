@@ -1,5 +1,6 @@
 using System.Security.Cryptography;
 using System.Text;
+using LouisAgent.Evals.Grading.Human;
 
 namespace LouisAgent.Evals.Puls.Evals.Cook.Grading.Judges;
 
@@ -12,6 +13,9 @@ public static class MealForPeoplePrompt
     private static readonly byte[] Bytes = Read();
 
     public static string Text { get; } = new UTF8Encoding(false).GetString(Bytes);
+
+    /// <summary>What a person is asked to review (F18 step 6a): the prompt's own title line as a question, so the judge and the person answer the same words.</summary>
+    public static string Question { get; } = ReviewQuestion.From(Text);
 
     /// <summary>The first 12 hex digits of the SHA-256 of the prompt's text: as long as a prompt hash is anywhere else in the ledger and the portal.</summary>
     public static string Hash { get; } = Convert.ToHexStringLower(SHA256.HashData(Encoding.UTF8.GetBytes(Text)))[..12];

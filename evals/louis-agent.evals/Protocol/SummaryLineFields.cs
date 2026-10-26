@@ -33,7 +33,7 @@ internal static class SummaryLineFields
             json.WriteStartObject();
             json.WriteString("grader", grader.Grader);
             json.WriteString("kind", grader.Kind.ToString());
-            Counts(json, grader.Passed, grader.Failed, grader.Unknown);
+            Counts(json, grader.Passed, grader.Failed, grader.Unknown, grader.Pending);
             json.WriteEndObject();
         }
         json.WriteEndArray();
@@ -43,7 +43,7 @@ internal static class SummaryLineFields
         {
             json.WriteStartObject();
             json.WriteString("kind", kind.Kind.ToString());
-            Counts(json, kind.Passed, kind.Failed, kind.Unknown);
+            Counts(json, kind.Passed, kind.Failed, kind.Unknown, kind.Pending);
             json.WriteEndObject();
         }
         json.WriteEndArray();
@@ -60,10 +60,12 @@ internal static class SummaryLineFields
         json.WriteEndArray();
     }
 
-    private static void Counts(Utf8JsonWriter json, int passed, int failed, int unknown)
+    /// <summary>The counts of a grader or a kind; <c>pending</c> (F18 step 6a, grades nobody has given yet) only when there is one, so a run with none writes the lines it always wrote.</summary>
+    private static void Counts(Utf8JsonWriter json, int passed, int failed, int unknown, int pending)
     {
         json.WriteNumber("passed", passed);
         json.WriteNumber("failed", failed);
         json.WriteNumber("unknown", unknown);
+        if (pending > 0) json.WriteNumber("pending", pending);
     }
 }
