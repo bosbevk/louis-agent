@@ -570,7 +570,15 @@
 
     public void Dispose() { _replayStop?.Cancel(); _chatStop?.Cancel(); }
 
-    private void ShowRepeat(int repeat) { _repeat = repeat; Build(); Go(0); }
+    /// <summary>Another repeat of the same run: the conversation (or turn) you are in stays open when that repeat has it too; else back to the overview.</summary>
+    private void ShowRepeat(int repeat)
+    {
+        _repeat = repeat;
+        Build();
+        bool still = _task is not null && _modes.Any(m => ConversationIn(m) is { } c && (_turn is null || c.Turns.Any(t => t.N == _turn)));
+        if (!still) Go(0);
+        else { _dir = "in"; ResetReplay(); if (_level == 4) { _level = 3; _request = null; _requestMode = null; } }
+    }
 
     private void Open(Action set) { _dir = "in"; ResetReplay(); set(); }
 

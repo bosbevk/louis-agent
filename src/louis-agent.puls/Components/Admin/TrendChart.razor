@@ -13,7 +13,7 @@
 }
 else
 {
-    <div class="trend @(Small ? "small" : "")">
+    <div class="trend @(Small ? "small" : "") @(Compact ? "compact" : "")">
         @if (!Small)
         {
             <div class="chart-head">@if (ShowTitle) { <strong>Trend</strong> }<span class="muted">@_runs.Count runs</span>
@@ -53,6 +53,9 @@ else
     [Parameter] public IReadOnlyList<string>? Panels { get; set; }
 
     private bool Shows(string topic) => Panels is null || Panels.Contains(topic);
+
+    /// <summary>A small chart inside a card (the category cards): shorter panels, no top value, the titles muted.</summary>
+    [Parameter] public bool Compact { get; set; }
 
     /// <summary>Its own title; off when a folding section above already names it.</summary>
     [Parameter] public bool ShowTitle { get; set; } = true;

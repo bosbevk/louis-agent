@@ -30,26 +30,44 @@ public class CategoryTrendsTests
         return ctx.Render<CategoryTrends>(p => p.Add(x => x.Trend, Json(trend)));
     }
 
+    // Reworked 2026-10-26 (Louis: "I need to know what it tells me"): a card per category, with the latest run's pass@k and pass^k per mode as bars and numbers; the trend lines only once
+    // a line has two runs, else the card says there is no trend yet instead of drawing a lone dot.
     [Test]
-    public void EachCategory_HasItsOwnChart_NamedForIt_WithOnlyThePassRatePanels()
+    public void EachCategory_IsACard_WithTheLatestRatesPerMode_AsNumbers()
     {
         var cut = Render(Trend);
 
-        var charts = cut.FindAll(".category-trend");
-        Assert.That(charts.Select(c => c.QuerySelector("h4")!.TextContent), Is.EqualTo(new[] { "language:af", "overall" }));
-        Assert.That(charts[0].QuerySelectorAll(".trend-panel").Select(p => p.QuerySelector(".chart-head")!.TextContent), Has.All.Matches<string>(t => t.Contains("pass@k") || t.Contains("pass^k")));
-        Assert.That(charts[0].QuerySelectorAll(".trend-panel"), Has.Count.EqualTo(2), "pass@k and pass^k, none of the nine others");
+        var cards = cut.FindAll(".category-card");
+        Assert.That(cards.Select(c => c.QuerySelector("h4 code")!.TextContent), Is.EqualTo(new[] { "language:af", "overall" }));
+        var af = cards[0];
+        Assert.That(af.QuerySelector("h4 .muted")!.TextContent, Is.EqualTo("3 runs"));
+        var lines = af.QuerySelectorAll(".category-line");
+        Assert.That(lines[0].QuerySelector(".category-line-name")!.TextContent, Does.StartWith("puls-cook (claude-haiku-5-5)"));
+        Assert.That(lines[0].QuerySelectorAll(".cat-bar-value").Select(v => v.TextContent), Is.EqualTo(new[] { "75%", "50%" }), "the latest run, r3");
+        Assert.That(lines[1].QuerySelectorAll(".cat-bar-value").Select(v => v.TextContent), Is.EqualTo(new[] { "10%", "10%" }));
     }
 
     [Test]
-    public void ARunWithNoPointForALine_IsAGapInIt_NotAZero()
+    public void ACategoryWithTwoRunsOnALine_DrawsTheTrend_WithOnlyThePassRatePanels()
     {
         var cut = Render(Trend);
 
-        // language:af: the cook line has r1 and r3 (r2 had too few trials for it: no point), the tools line has r2 only; the x axis is every run, so each line has a gap.
-        var passAt = cut.FindAll(".category-trend")[0].QuerySelectorAll(".trend-panel")[0];
-        Assert.That(passAt.QuerySelectorAll("line.trend-point"), Has.Count.EqualTo(3), "2 points on the cook line, 1 on the tools line, none at 0");
-        Assert.That(passAt.QuerySelectorAll("path.trend-line"), Has.Count.EqualTo(1), "only the cook line has two points to join");
+        var af = cut.FindAll(".category-card")[0];
+        var panels = af.QuerySelectorAll(".trend-panel");
+        Assert.That(panels, Has.Count.EqualTo(2), "pass@k and pass^k, none of the nine others");
+        Assert.That(panels.Select(p => p.QuerySelector(".chart-head")!.TextContent), Has.All.Matches<string>(t => t.Contains("pass@k") || t.Contains("pass^k")));
+        Assert.That(af.QuerySelectorAll("line.trend-point"), Has.Count.GreaterThanOrEqualTo(3), "r1 and r3 on the cook line, r2 on the tools line; r2 is a gap on the cook line, never a 0");
+        Assert.That(af.QuerySelectorAll("path.trend-line"), Has.Count.GreaterThanOrEqualTo(1), "only the cook line has two points to join");
+    }
+
+    [Test]
+    public void ACategoryWithOneRun_SaysThereIsNoTrendYet_InsteadOfALoneDot()
+    {
+        var overall = Render(Trend).FindAll(".category-card")[1];
+
+        Assert.That(overall.QuerySelector(".category-no-trend")!.TextContent, Does.Contain("One run so far"));
+        Assert.That(overall.QuerySelectorAll(".trend-panel"), Is.Empty);
+        Assert.That(overall.QuerySelectorAll(".cat-bar-value").Select(v => v.TextContent), Is.EqualTo(new[] { "50%", "25%" }), "the numbers are still there to read");
     }
 
     [Test]
@@ -57,7 +75,7 @@ public class CategoryTrendsTests
     {
         var cut = Render("""{"check":"puls-cook","modes":[],"categories":[]}""");
 
-        Assert.That(cut.FindAll(".category-trend"), Is.Empty);
+        Assert.That(cut.FindAll(".category-card"), Is.Empty);
         Assert.That(cut.Find(".category-trend-none").TextContent, Does.Contain("No category has five counted trials"));
     }
 
@@ -66,7 +84,7 @@ public class CategoryTrendsTests
     {
         var cut = Render("""{"check":"puls-cook","modes":[]}""");
 
-        Assert.That(cut.FindAll(".category-trend"), Is.Empty);
+        Assert.That(cut.FindAll(".category-card"), Is.Empty);
         Assert.That(cut.Find(".category-trend-none"), Is.Not.Null);
     }
 }
