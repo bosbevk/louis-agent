@@ -27,7 +27,7 @@ public class HumanReviewGraderTests
     {
         var grader = HumanReviewGrader.For(new ModelGrader(), Question);
 
-        Assert.That((grader.Name, grader.Kind, grader.Required, grader.Version), Is.EqualTo(("meal-for-people.human", GraderKind.Human, false, 1)));
+        Assert.That((grader.Name, grader.Kind, grader.Required, grader.Version), Is.EqualTo(("meal-for-people.human", GraderKind.Human, false, 2)));
         Assert.That((grader.Reviews, grader.Question), Is.EqualTo(("meal-for-people", Question)));
         Assert.That(grader.ExpectedKeys, Is.Empty);
     }

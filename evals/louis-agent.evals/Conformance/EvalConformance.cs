@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Grading;
+using LouisAgent.Evals.Grading.Human;
 using LouisAgent.Evals.Messages;
 using LouisAgent.Evals.Running;
 using LouisAgent.Evals.Trials;
@@ -117,6 +118,7 @@ public static class EvalConformance
         var grades = new List<Grade>();
         foreach (IGrader grader in eval.Graders)
         {
+            if (grader is HumanReviewGrader review && !review.AppliesTo(trial)) continue;
             Grade grade;
             try
             {

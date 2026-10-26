@@ -71,6 +71,21 @@ public class BlindInTheExplorerTests
     }
 
     [Test]
+    public void AConversationWithNoPendingReviewGrade_ShowsNoPanel_ThoughTheRunHasAReview()
+    {
+        // A control the judge had nothing to judge: the review grader gave it no grade (step 6a.4), so there is nothing for a person to answer.
+        var run = Run.Replace("""{"grader":"meal-for-people.human","version":1,"score":0,"outcome":"Pending","reason":"waits for a person"}""", """{"grader":"no-error","version":1,"score":1,"outcome":"Pass","reason":"again"}""");
+        var ctx = new BunitContext();
+        ctx.JSInterop.Mode = JSRuntimeMode.Loose;
+        ctx.Services.AddSingleton(new AgentApi(new HttpClient(new StubHandler(_ => new HttpResponseMessage())) { BaseAddress = new Uri("http://localhost/") }, new ChatSettings()));
+        ctx.Services.AddSingleton(new ReviewerState(ctx.JSInterop.JSRuntime));
+
+        var cut = ctx.Render<RunExplorer>(p => p.Add(x => x.Run, JsonDocument.Parse(run).RootElement.Clone()).Add(x => x.OpenTask, "bobotie"));
+
+        Assert.That(cut.FindAll(".review-panel"), Is.Empty);
+    }
+
+    [Test]
     public void ARunWithNoHumanReview_ShowsNoPanel_AndTheJudgesChipAsItWas()
     {
         var run = Run.Replace("""{"name":"meal-for-people.human","version":1,"kind":"Human","question":"Is this a meal for the people asked for?"}""", """{"name":"x","version":1,"kind":"FixedRule","question":null}""");

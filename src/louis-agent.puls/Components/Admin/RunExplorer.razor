@@ -409,7 +409,7 @@
                                 @Timeline(tu, null)
                             </section>
                         }
-                        @if (_graders?.FirstOrDefault(g => g.Kind == "Human" && g.Name.EndsWith(".human")) is { } review && c.Turns.Count > 0)
+                        @if (_graders?.FirstOrDefault(g => g.Kind == "Human" && g.Name.EndsWith(".human")) is { } review && c.Turns.Count > 0 && c.Grades.Grades?.Any(g => g.Grader == review.Name && g.Outcome == GradeOutcome.Pending) == true)
                         {
                             <ReviewPanel Conversation="new ConversationRef(_runId, m.Name, _repeat, c.Task)" Review="review" Asked="c.Turns.Select(t => t.Question).ToList()" Answer="@c.Turns[^1].Answer" Grades="c.Grades" />
                         }

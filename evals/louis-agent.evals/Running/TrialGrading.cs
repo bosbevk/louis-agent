@@ -2,6 +2,7 @@ using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Grading.Common;
+using LouisAgent.Evals.Grading.Human;
 using LouisAgent.Evals.Messages;
 using LouisAgent.Evals.Trials;
 using Microsoft.Extensions.Logging;
@@ -21,6 +22,7 @@ public static class TrialGrading
         var grades = new List<Grade>(eval.Graders.Count);
         foreach (IGrader grader in eval.Graders)
         {
+            if (grader is HumanReviewGrader review && !review.AppliesTo(trial)) continue;
             try
             {
                 grades.Add(await grader.GradeAsync(trial, cancellationToken));
