@@ -93,6 +93,9 @@ now stops a setting going missing quietly.
 
 - **36 labels, one judge, one person.** Nine fails is "few labels" by the card's own rule. A pass at 100% on nine is
   weaker than it sounds.
+- **The prompt was tuned on the same 36 answers it is scored on.** That was your pick, and it is how the four rounds worked,
+  but it means 35 or 36 of 36 shows the prompt fits *those* answers. It does not prove it works on new ones. Check it on
+  fresh labels: the next grading round, or the new scenarios F48 brings.
 - **The labels are yours alone.** A second reviewer's grades would be a stronger check and the store already allows them.
 - **A prompt change means a rebuild.** The judge's prompt is baked into the image, so the loop is edit, rebuild, press.
 - **The button hasn't been pressed in anger on a new prompt yet.** Its first real use (35 of 36, 2026-10-27) was on the
