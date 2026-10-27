@@ -23,6 +23,7 @@ public sealed class CookAsk(int? people, string? town) : EvaluationContext("cook
         return new CookAsk(people, CookExpectations.TownOf(trial.Scenario));
     }
 
+    // The judge is never told the budget: a small model judged the cost when it was.
     private static string Describe(int? people, string? town) => string.Join("\n",
         $"People: {(people is { } n ? n.ToString(CultureInfo.InvariantCulture) : "not said")}",
         $"Town: {(string.IsNullOrWhiteSpace(town) ? "not said" : town)}");
