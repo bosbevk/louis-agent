@@ -44,7 +44,7 @@ internal static class AdminReplies
         /// Every check with its manual flag, the store's state, and the runs as the page shows them.
         /// </summary>
         public static BenchmarkListReply Of(BenchmarkCatalog catalog, string workspaceRoot, StoreRow store,
-            IReadOnlyList<object> runs) =>
+            IReadOnlyList<StoredRunRow> runs) =>
             new([.. catalog.Checks.Select(c => CheckRow.Of(c, BenchmarkManuals.Has(workspaceRoot, c)))], store, runs);
     }
 

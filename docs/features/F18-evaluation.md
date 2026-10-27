@@ -1107,6 +1107,14 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
 - **Unattended run, Part 1.2 (`ApiError`).** Every error is the contract's `ApiError` record (`type`, and
   `error { type, message }`), and `ApiErrors.Result` answers `JsonHttpResult<ApiError>`; the anonymous object is gone.
   `ApiErrorJsonTests` pinned the JSON first and it is unchanged, the sessions stream's error line included.
+- **Unattended run, Part 1.3 (typed answers on the admin handlers).** Each `AdminHandlers` method returns
+  `TypedResults` and declares its answers (`ManualAnswer`, `TrendAnswer`, `RunAnswer`, `EventsAnswer`, named once as
+  using aliases); `AdminHandlersTests` calls each with no HTTP and checks both its declared and its actual answer. The
+  stored and the live run rows it sends became contract records (`StoredRunRow`, `LiveRunRow`), and
+  `RunRowRecordTests` shows each writes the bytes the anonymous row wrote. The old `AdminRows.RunRow` and `Row` stay
+  for the endpoint files not swept yet (stored runs, calibrations, re-scores), which still write them with the
+  default options; each goes when its last caller is swept. One thing learned: `TypedResults.ServerSentEvents` over
+  `SseItem<string>` answers `ServerSentEventsResult<string>`, not `…<SseItem<string>>`.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

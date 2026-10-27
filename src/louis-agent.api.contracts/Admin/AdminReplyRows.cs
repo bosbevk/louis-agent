@@ -14,11 +14,10 @@ public sealed record CheckRow(string Id, string Title, bool Manual);
 public sealed record StoreRow(bool Configured, string? Error);
 
 /// <summary>What the admin page reads first: the checks, the store's state and the stored runs.</summary>
-/// <remarks>
-/// The runs are still the API's own rows (<c>AdminRows.RunRow</c>), written by their runtime type, until the sweep
-/// turns that row into a record of this project.
-/// </remarks>
-public sealed record BenchmarkListReply(IReadOnlyList<CheckRow> Checks, StoreRow Store, IReadOnlyList<object> Runs);
+public sealed record BenchmarkListReply(
+    IReadOnlyList<CheckRow> Checks,
+    StoreRow Store,
+    IReadOnlyList<StoredRunRow> Runs);
 
 /// <summary>A check's manual: which check, its title and the markdown beside its script.</summary>
 public sealed record ManualReply(string Check, string Title, string Markdown);

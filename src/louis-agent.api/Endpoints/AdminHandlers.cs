@@ -5,24 +5,40 @@ using LouisAgent.Api.Admin;
 using LouisAgent.Api.Benchmarks.Reports;
 using LouisAgent.Api.Benchmarks.Runs;
 using LouisAgent.Api.Benchmarks.Store;
+using LouisAgent.Api.Contracts;
 using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Messages;
 using LouisAgent.Core.Messages;
-using static LouisAgent.Api.Admin.AdminRows;
+using Microsoft.AspNetCore.Http.HttpResults;
+using ManualAnswer = Microsoft.AspNetCore.Http.HttpResults.Results<
+    Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.Api.Contracts.Admin.ManualReply>,
+    Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.Api.Contracts.ApiError>>;
+using TrendAnswer = Microsoft.AspNetCore.Http.HttpResults.Results<
+    Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.Api.Contracts.Admin.TrendReply>,
+    Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.Api.Contracts.ApiError>>;
+using RunAnswer = Microsoft.AspNetCore.Http.HttpResults.Results<
+    Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.Api.Contracts.Admin.LiveRunRow>,
+    Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.Api.Contracts.ApiError>>;
+using EventsAnswer = Microsoft.AspNetCore.Http.HttpResults.Results<
+    Microsoft.AspNetCore.Http.HttpResults.ServerSentEventsResult<string>,
+    Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.Api.Contracts.ApiError>>;
 
 namespace LouisAgent.Api.Endpoints;
 
 /// <summary>
 /// The admin portal's own routes as named methods: the checks, a check's manual and trend, and starting and following
-/// a run. Each one stops early with its error and leaves the happy path for last.
+/// a run. Each one stops early with its error and leaves the happy path for last, and says in its signature every
+/// answer it can give.
 /// </summary>
 /// <remarks>
 /// Introduce Parameter Object (Fowler), with the object also owning the behaviour. The routes share the catalogue, the
-/// runner, the store and the recorder, which `MapAdmin` is given as parameters and which aren't services. Holding them
-/// here lets each route be a named method that `MapGet` points straight at, where a lambda would have to close over
-/// them. Without it the routes stay lambdas, or every one takes seven arguments.
+/// runner, the store and the recorder, which <c>MapAdmin</c> is given as parameters and which aren't services. Holding
+/// them here lets each route be a named method that <c>MapGet</c> points straight at, and a test call it with no HTTP.
+/// Each method returns <c>TypedResults</c> with its answers declared (<c>ManualAnswer</c> and the rest, named once
+/// above), Microsoft's preferred minimal-API style, so the build checks that a handler only answers what it says.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 internal sealed class AdminHandlers(
     BenchmarkCatalog catalog,
     BenchmarkRunner runner,
@@ -57,7 +73,7 @@ internal sealed class AdminHandlers(
     /// <summary>
     /// The page's first read: the checks, whether the store is there (the page's banner), and the stored runs.
     /// </summary>
-    public async Task<IResult> GetList(CancellationToken cancellationToken)
+    public async Task<JsonHttpResult<BenchmarkListReply>> GetList(CancellationToken cancellationToken)
     {
         if (store is null) return ListOf([], null);
         try
@@ -74,33 +90,41 @@ internal sealed class AdminHandlers(
     /// <summary>
     /// A check's manual: the markdown beside its script, found from the catalogue, never from the request.
     /// </summary>
-    public IResult GetManual(string check)
+    public ManualAnswer GetManual(string check)
     {
         if (catalog.Checks.FirstOrDefault(c => c.Id == check) is not { } known) return NoManual(check);
         if (BenchmarkManuals.Read(workspaceRoot, known) is not { } markdown) return NoManual(check);
-        return Results.Json(ManualReply.Of(known, markdown), AdminJson.SnakeCase);
+        return TypedResults.Json(ManualReply.Of(known, markdown), AdminJson.SnakeCase);
     }
 
     /// <summary>
     /// A check's trend over its finished runs: per mode, the explorer's nine rings as lines over the runs, and the same
     /// per category.
     /// </summary>
-    public Task<IResult> GetTrend(string check, CancellationToken cancellationToken) =>
-        AdminEndpoints.FromStore(store, async s =>
+    public async Task<TrendAnswer> GetTrend(string check, CancellationToken cancellationToken)
+    {
+        if (store is null) return NoStore();
+        try
         {
-            var trend = await BenchmarkTrends.ComputeAsync(s, check, cancellationToken: cancellationToken);
-            // F18 step 5c.4: the same trend per category, a chart of lines each, in the shape the overall trend's modes
-            // are.
+            var trend = await BenchmarkTrends.ComputeAsync(store, check, cancellationToken: cancellationToken);
+            // F18 step 5c.4: the same trend per category, a chart of lines each, in the shape the overall trend's
+            // modes are.
             var categories = CategoryTrendRow.Of(
-                await CategoryTrends.ComputeAsync(s, check, cancellationToken: cancellationToken));
-            return Results.Json(TrendReply.Of(trend, categories), AdminJson.SnakeCase);
-        });
+                await CategoryTrends.ComputeAsync(store, check, cancellationToken: cancellationToken));
+            return TypedResults.Json(TrendReply.Of(trend, categories), AdminJson.SnakeCase);
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            return ApiErrors.Result(StatusCodes.Status503ServiceUnavailable, "api_error",
+                AdminEndpoints.Unavailable(ex));
+        }
+    }
 
     /// <summary>
     /// Starts a run from the page: 202 with the run, recorded as it goes; 503 without a store (a paid run whose results
     /// vanish is the worst outcome); 409 while one runs.
     /// </summary>
-    public IResult StartRun(string check, StartRunRequest? request)
+    public RunAnswer StartRun(string check, StartRunRequest? request)
     {
         if (catalog.Checks.FirstOrDefault(c => c.Id == check) is not { } known)
             return ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error",
@@ -116,47 +140,50 @@ internal sealed class AdminHandlers(
         var (options, refusal) = BenchmarkRunOptions.Parse(request?.Web, request?.Replay);
         if (refusal is not null)
             return ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error", refusal);
-        if (recorder is null)
-            return ApiErrors.Result(StatusCodes.Status503ServiceUnavailable, "api_error",
-                MessageText.Format(ApiUserText.NoBenchmarkStore));
+        if (recorder is null) return NoStore();
         if (runner.IsRunning) return Running();
         if (runner.Start(check, request?.Repeat ?? 1, options) is not { } run) return Running();
 
         recorder.Attach(run, BenchmarkSettings.WithOptions(settingsOf(known), run.Options));
-        return Results.Json(Row(run), statusCode: StatusCodes.Status202Accepted);
+        return TypedResults.Json(LiveRunRow.Of(run), AdminJson.SnakeCase, statusCode: StatusCodes.Status202Accepted);
     }
 
     /// <summary>The run in progress, or the last one, so a reloaded page can pick it up again.</summary>
-    public IResult GetCurrent()
+    public RunAnswer GetCurrent()
     {
         if (runner.Current is not { } run) return NoRun();
-        return Results.Json(Row(run));
+        return TypedResults.Json(LiveRunRow.Of(run), AdminJson.SnakeCase);
     }
 
     /// <summary>A run's lines as server-sent events, then "done" with whether it was stored.</summary>
-    public IResult GetEvents(string id, CancellationToken cancellationToken)
+    public EventsAnswer GetEvents(string id, CancellationToken cancellationToken)
     {
         if (runner.Current is not { } run || run.Id != id) return NoRun();
         return TypedResults.ServerSentEvents(Events(run, cancellationToken));
     }
 
     /// <summary>The list reply for these runs, with the store's state beside them.</summary>
-    private IResult ListOf(IReadOnlyList<BenchmarkDocuments.Run> runs, string? error) =>
-        Results.Json(BenchmarkListReply.Of(catalog, workspaceRoot, StoreRow.Of(store is not null, error),
-            [.. runs.Select(RunRow)]), AdminJson.SnakeCase);
+    private JsonHttpResult<BenchmarkListReply> ListOf(IReadOnlyList<BenchmarkDocuments.Run> runs, string? error) =>
+        TypedResults.Json(BenchmarkListReply.Of(catalog, workspaceRoot, StoreRow.Of(store is not null, error),
+            [.. runs.Select(StoredRunRow.Of)]), AdminJson.SnakeCase);
 
     /// <summary>The 404 for a check with no manual.</summary>
-    private static IResult NoManual(string check) =>
+    private static JsonHttpResult<ApiError> NoManual(string check) =>
         ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error",
             MessageText.Format(ApiUserText.NoManual, new { Check = check }));
 
+    /// <summary>The 503 for a call that needs the store when there is none.</summary>
+    private static JsonHttpResult<ApiError> NoStore() =>
+        ApiErrors.Result(StatusCodes.Status503ServiceUnavailable, "api_error",
+            MessageText.Format(ApiUserText.NoBenchmarkStore));
+
     /// <summary>The 404 for a run that isn't the current one.</summary>
-    private static IResult NoRun() =>
+    private static JsonHttpResult<ApiError> NoRun() =>
         ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error",
             MessageText.Format(ApiUserText.NoBenchmarkRun));
 
     /// <summary>The 409 for a start while another run is still going.</summary>
-    private IResult Running() =>
+    private JsonHttpResult<ApiError> Running() =>
         ApiErrors.Result(StatusCodes.Status409Conflict, "conflict_error",
             MessageText.Format(ApiUserText.BenchmarkRunning, new { runner.Current!.Check }));
 
@@ -170,7 +197,8 @@ internal sealed class AdminHandlers(
         await foreach (string line in runner.EventsAsync(run.Id, cancellationToken))
             yield return new SseItem<string>(line, "line");
         var stored = await StoredAsync(run.Id, cancellationToken);
-        yield return new SseItem<string>(JsonSerializer.Serialize(Row(run, stored)), "done");
+        yield return new SseItem<string>(JsonSerializer.Serialize(LiveRunRow.Of(run, stored), AdminJson.SnakeCase),
+            "done");
     }
 
     /// <summary>
