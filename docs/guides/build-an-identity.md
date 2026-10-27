@@ -151,6 +151,24 @@ A **minion** (level 2) is smaller still: one task with one tool, which a special
 `Prompts/minions/acme-minion-{function}.md`, plus the `MINION_LLMS` setting. Start without one. Puls's price lookup
 (`minions/puls-minion-web-price-lookup.md`) is the worked example when you need one.
 
+### Your names are an enum
+
+The roles the identity offers (`acme-estimator`, `acme-minion-lookup`) are written in its tests, in a request and in the stream, so they are an enum
+([ADR 0043](../adr/0043-repeated-names-are-enums.md)), in the identity's project and no one else's:
+
+```csharp
+public enum AcmeRole
+{
+    [WireName("acme-estimator")] Estimator,        // the role's file name: specialists/acme-estimator.md
+    [WireName("acme-minion-lookup")] MinionLookup, // minions/acme-minion-lookup.md
+}
+```
+
+Write a role out with `.Wire()`, read one in with `SettingChoice.TryParse`, and have a test check that each member is a file of the identity
+(`PulsRoleTests` is the model). The packs the identity names (`Packs => ["units"]`) stay text, because a pack is data to its identity; the composition root's
+`CrossBoundaryNamesTests` checks that each one exists. A mode (`acme/voice`) is still its file's name. Tests that only store or show a role use a sample
+(`SampleRole`); a test that opens a session on a real role uses your enum member. Add your enum's file to the list in `RepeatedNameTests`.
+
 ## 5. Register it in the composition root
 
 Three edits in `src/louis-agent.composition`, as for a pack:

@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Api;
 using LouisAgent.Evals.Datasets;
@@ -19,8 +20,8 @@ public sealed class ExampleEval : IEval
     // Static, so the scenarios can load with them: the loader checks every expected key against these graders (section 3).
     private static readonly IReadOnlyList<IGrader> GraderList = [new ExampleGrader()];
 
-    // The eval's name: MCP-safe (letters, digits, '-' and '_'), and the portal's check id (section 4).
-    public string Name => "template-example";
+    // The eval's name: MCP-safe (letters, digits, '-' and '_'), the portal's check id, and a member of this set's own enum (section 4).
+    public string Name => TemplateEvalName.Example.Wire();
 
     // The identity the eval proves; null for an eval that proves none (section 4).
     public string? Identity => "template";

@@ -39,6 +39,7 @@ so any identity can use it, and it could be served as an MCP server unchanged
 | Path | What's in it |
 |---|---|
 | `ShopsPack.cs` | The pack: the `shops` toolset, what it needs, how its tools are built; one store cache for every engine |
+| `ShopsToolset.cs`, `Catalogues/ShopKind.cs` | The pack's own toolset enum (ADR 0043); `ShopKinds.DisplayName` is the shop's name as a person reads it, its own table and never the wire name (F18 step 7.5) |
 | `ShopsOptions.cs` | The pack's own settings, read once from the environment |
 | `Tools/ShopTools.cs` | The three tools and the table they return |
 | `Catalogues/` | The shop contract (`IShopCatalogue`), the records (`ShopProduct`, `ShopDeal`, `ShopSearch`), the choices (`ShopKind`, `ShopDealKind`) and `ShopCatalogueFactory`, which builds a catalogue per enabled shop |

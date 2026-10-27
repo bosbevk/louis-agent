@@ -26,6 +26,7 @@ public class RepeatedNameTests
         "evals/louis-agent.evals.runner/Evals/Stub/StubRole.cs",
         "identities/louis-agent.identity.puls/PulsRole.cs",
         "src/louis-agent.puls/Text/PulsWebRole.cs",
+        "evals/louis-agent.evals.template/Evals/Example/TemplateEvalName.cs",
     ];
 
     /// <summary>A literal that is a name of something else, with the file (or the folder, ending in /) it is in, a text on its line, and why. Few on purpose (Louis, 2026-10-27: a dozen is too many).</summary>

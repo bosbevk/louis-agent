@@ -267,13 +267,13 @@ today:
 ```csharp
 public sealed class QuotesEval : IEval
 {
-    public string Name => "quotes";                       // MCP-safe; also the portal's check id
+    public string Name => QuotesEvalName.Quotes.Wire();   // MCP-safe; also the portal's check id; a member of the set's own enum
     public string? Identity => "acme";
     public int Version => 1;                              // bumped by any change to a scenario, a mode or a grader
     public string Proves => MessageText.Format(AcmeEvalMessage.QuotesProves);   // the portal's title: a message enum member (ADR 0009)
 
     public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions, CancellationToken cancellationToken) =>
-        ValueTask.FromResult<IReadOnlyList<EvalMode>>([new EvalMode("acme-only", "acme/voice", ["web"])]);
+        ValueTask.FromResult<IReadOnlyList<EvalMode>>([new EvalMode(QuotesMode.Only.Wire(), "acme/voice", ["web"])]);
 
     // Static, so the scenarios can load with them: the dataset checks its expected keys against these graders when it loads.
     private static readonly IReadOnlyList<IGrader> GraderList =
@@ -314,6 +314,23 @@ Two choices here, to check against the code:
 `TurnFactsOf` is what the protocol records about a turn: who answered, the calls it made, the hosts it read and its
 error. The stub returns canned facts. A real eval reads them from the turn's events, with the harness's helpers
 (`EngineEvents`).
+
+### Your names are an enum
+
+The names an eval set writes more than once are an enum **of the set's own** ([ADR 0043](../adr/0043-repeated-names-are-enums.md)): its eval names
+(`TemplateEvalName` in the template), the modes its evals run in, the roles and toolsets they name. The set never uses another set's, a pack's or an
+identity's enum; two sets may both list `puls-cook`, each in its own.
+
+```csharp
+public enum QuotesEvalName { [WireName("quotes")] Quotes }
+public enum QuotesMode { [WireName("acme-only")] Only, [WireName("acme-fast")] Fast }
+// Name => QuotesEvalName.Quotes.Wire();   new EvalMode(QuotesMode.Only.Wire(), "acme/voice", ["web"])
+```
+
+A run's protocol, the store and the portal carry the text, so a wire name never changes without a migration: `.Wire()` out, `SettingChoice.TryParse` in.
+In tests, what only stores, lists or parses a name uses the samples (`SampleEval`, `SampleMode`, `SampleRole` in `tests/louis-agent.testing`, with `Fill` for a test's JSON);
+a test of the set itself uses its own enum. **Recorded data stays as recorded:** a fixture, a golden or a real runner's output keeps its names, and a test that
+compares with it is an entry (with its reason) in the exemptions of `RepeatedNameTests`, which fails when one goes stale and wants the list narrowed past a dozen. Add the enum's file to that test's list.
 
 ## 5. Write the set
 

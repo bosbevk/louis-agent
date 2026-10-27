@@ -1,3 +1,5 @@
+using LouisAgent.Evals.Template.Evals.Example;
+using LouisAgent.Choices;
 using System.Text.RegularExpressions;
 using LouisAgent.Evals.Runner.Catalog;
 using LouisAgent.Evals.Runner.Evals.Stub;
@@ -171,7 +173,7 @@ public class EvalLayoutTests
     {
         Assert.That(Enum.GetNames<EvalSetKind>(), Does.Not.Contain("Template"), "EvalSetKind doesn't list the template");
         Assert.That(new EvalCatalog(Enum.GetValues<EvalSetKind>().Select(EvalSets.Create).ToList(), new StubEval()).Evals.Select(e => e.Name),
-            Does.Not.Contain("template-example"));
+            Does.Not.Contain(TemplateEvalName.Example.Wire()));
     }
 
     [TestCaseSource(nameof(EachProject))]

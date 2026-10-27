@@ -40,7 +40,7 @@ touches, and nothing else:
 
 1. **Tools:** a class in `louis-agent.core/Tools/{Toolset}/` (*Adding a C# tool*), or in the pack's project when the
    toolset is a capability of its own (*Building an identity or a pack*); every public method is a tool.
-2. **Catalogue entry:** a `ToolsetDefinition` (the name, a one-line description, the settings it needs
+2. **Catalogue entry:** a `ToolsetDefinition` (the name, a member of an enum: `CoreToolset` for core's, a pack's own enum for a pack's, written with `.Wire()`, [ADR 0043](../docs/adr/0043-repeated-names-are-enums.md); a one-line description, the settings it needs
    (`MissingSettings`), its tool classes (`ToolTypes`), the factory for their objects (`CreateTools`) and its guide
    (`GuideFile`)) in `Agent/Toolsets/ToolsetCatalog.cs` for core's, or in the pack's `Toolsets` for a pack's. `AgentCatalog`
    lists both, core's first, and stops start-up on a tool name two toolsets or the engine already use.

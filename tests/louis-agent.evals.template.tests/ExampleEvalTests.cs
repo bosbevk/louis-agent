@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Grading;
@@ -25,8 +26,12 @@ public class ExampleEvalTests
         var set = new TemplateEvalSet();
 
         Assert.That(set.Identity, Is.EqualTo("template"));
-        Assert.That(set.Evals.Select(e => e.Name), Is.EqualTo(new[] { "template-example" }));
+        Assert.That(set.Evals.Select(e => e.Name), Is.EqualTo(new[] { TemplateEvalName.Example.Wire() }));
     }
+
+    [Test]
+    public void ItsNameIsAMemberOfTheSetsOwnEnum_UnderTheNameTheGuideShows() =>
+        Assert.That(Enum.GetValues<TemplateEvalName>().Select(n => n.Wire()), Is.EqualTo(new[] { "template-example" }));
 
     [Test]
     public void ItsDatasetLoads_WithItsGrader_SoTheLoadersRulesAreShownWorking()
@@ -40,7 +45,7 @@ public class ExampleEvalTests
     [Test]
     public void ItHasANameAVersionAndAPortalTitleFromAMessageEnum()
     {
-        Assert.That((Eval.Name, Eval.Identity, Eval.Version), Is.EqualTo(("template-example", "template", 1)));
+        Assert.That((Eval.Name, Eval.Identity, Eval.Version), Is.EqualTo((TemplateEvalName.Example.Wire(), "template", 1)));
         Assert.That(Eval.Proves, Is.EqualTo(MessageText.Format(TemplateMessage.ExampleProves)).And.Not.Empty);
     }
 
