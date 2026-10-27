@@ -22,6 +22,14 @@ public class CrossBoundaryNamesTests
     }
 
     [Test]
+    public void EveryPackKind_IsTheNameOfThePackTheCatalogueBuildsForIt()
+    {
+        // ADR 0043: PackKind is the host's copy of each pack's name (it picks with PACKS, and an identity names its packs by text); the pack says its own. This project sees both.
+        foreach (var kind in Enum.GetValues<PackKind>())
+            Assert.That(Plugins.FromSettings(null, kind.Wire()).Packs.Select(p => p.Name), Is.EqualTo(new[] { kind.Wire() }), kind.ToString());
+    }
+
+    [Test]
     public void EveryPackAnIdentityNames_IsInTheCatalogue()
     {
         var catalog = Puls();

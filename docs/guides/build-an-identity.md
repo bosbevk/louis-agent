@@ -165,8 +165,9 @@ public enum AcmeRole
 ```
 
 Write a role out with `.Wire()`, read one in with `SettingChoice.TryParse`, and have a test check that each member is a file of the identity
-(`PulsRoleTests` is the model). The packs the identity names (`Packs => ["units"]`) stay text, because a pack is data to its identity; the composition root's
-`CrossBoundaryNamesTests` checks that each one exists. A mode (`acme/voice`) is still its file's name. Tests that only store or show a role use a sample
+(`PulsRoleTests` is the model). The packs the identity names are its own enum too (`public enum AcmePack { [WireName("units")] Units }`, `Packs => [AcmePack.Units.Wire()]`), never the pack's
+own enum, which the identity cannot reference; the composition root's `PackKind` is the host's copy, and its tests check that every `PackKind` is the name of the pack built for it
+and (`CrossBoundaryNamesTests`) that each pack an identity names exists. A mode (`acme/voice`) is still its file's name. Tests that only store or show a role use a sample
 (`SampleRole`); a test that opens a session on a real role uses your enum member. Add your enum's file to the list in `RepeatedNameTests`.
 
 ## 5. Register it in the composition root

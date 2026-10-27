@@ -272,7 +272,7 @@ public sealed class QuotesEval : IEval
     public string Proves => MessageText.Format(AcmeEvalMessage.QuotesProves);   // the portal's title: a message enum member (ADR 0009)
 
     public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions, CancellationToken cancellationToken) =>
-        ValueTask.FromResult<IReadOnlyList<EvalMode>>([new EvalMode(QuotesMode.Only.Wire(), "acme/voice", ["web"])]);
+        ValueTask.FromResult<IReadOnlyList<EvalMode>>([new EvalMode(QuotesMode.Only.Wire(), "acme/voice", [QuotesToolset.Web.Wire()])]);
 
     // Static, so the scenarios can load with them: the dataset checks its expected keys against these graders when it loads.
     private static readonly IReadOnlyList<IGrader> GraderList =
@@ -323,7 +323,8 @@ identity's enum; two sets may both list `puls-cook`, each in its own.
 ```csharp
 public enum QuotesEvalName { [WireName("quotes")] Quotes }
 public enum QuotesMode { [WireName("acme-only")] Only, [WireName("acme-fast")] Fast }
-// Name => QuotesEvalName.Quotes.Wire();   new EvalMode(QuotesMode.Only.Wire(), "acme/voice", ["web"])
+public enum QuotesToolset { Web }                 // the toolsets the set's evals ask for
+// Name => QuotesEvalName.Quotes.Wire();   new EvalMode(QuotesMode.Only.Wire(), "acme/voice", [QuotesToolset.Web.Wire()])
 ```
 
 A run's protocol, the store and the portal carry the text, so a wire name never changes without a migration: `.Wire()` out, `SettingChoice.TryParse` in.

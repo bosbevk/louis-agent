@@ -17,7 +17,7 @@ public sealed class PulsIdentity : IAgentIdentity
     public IFileProvider Prompts { get; } = new ManifestEmbeddedFileProvider(typeof(PulsIdentity).Assembly, "Prompts");
 
     /// <summary>The shops (CL15); F35 adds <c>recipes</c>, CL16 <c>cooking</c>, later <c>places</c>.</summary>
-    public IReadOnlyList<string> Packs => ["shops"];
+    public IReadOnlyList<string> Packs => [PulsPack.Shops.Wire()];
 }
 
 /// <summary>The name this identity is loaded by (<c>IDENTITIES=puls</c>) and that the evals prove (ADR 0043). It is written once, here; the ratchet bans the literal everywhere outside an enum, so the one definition is a member too.</summary>

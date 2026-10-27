@@ -32,7 +32,7 @@ public class PulsDatasetsTests
     public void TheRoutingScenariosAreTwelveQuestions() =>
         Assert.That(Load(PulsEvalName.Routing).Scenarios.Where(s => s.Split == DatasetSplit.Dev).Select(s => s.Id), Is.EquivalentTo(new[]
         {
-            "web", "files", "git", "numbers", "chat", "cook", "web-2", "files-2", "git-2", "numbers-2", "chat-2", "cook-2",
+            PulsTaskIds.Web, PulsTaskIds.Files, PulsTaskIds.Git, PulsTaskIds.Numbers, PulsTaskIds.Chat, PulsTaskIds.Cook, "web-2", "files-2", "git-2", "numbers-2", "chat-2", "cook-2",
         }));
 
     [Test]

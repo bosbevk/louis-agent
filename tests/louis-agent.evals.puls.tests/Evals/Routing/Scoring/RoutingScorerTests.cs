@@ -29,7 +29,7 @@ public class RoutingScorerTests
     {
         // F18 step 5.4: from the dataset's routes_to, no longer from the question's name.
         Assert.That(Dev.Route("cook-2"), Is.EqualTo(PulsEvalRole.Cook.Wire()));
-        foreach (string task in new[] { "web", "files-2", "git", "numbers", "chat-2" })
+        foreach (string task in new[] { PulsTaskIds.Web, "files-2", PulsTaskIds.Git, PulsTaskIds.Numbers, "chat-2" })
             Assert.That(Dev.Route(task), Is.Null, task);
     }
 
@@ -48,7 +48,7 @@ public class RoutingScorerTests
 
     [Test]
     public void AWebQuestionPulsAnsweredItself_IsRight() =>
-        Assert.That(RoutingScorer.Score(Dev.Route("web"), Turn(), delegating: true).RoutedRight, Is.True);
+        Assert.That(RoutingScorer.Score(Dev.Route(PulsTaskIds.Web), Turn(), delegating: true).RoutedRight, Is.True);
 
     [Test]
     public void AWebQuestionHandedAway_IsWrong() =>
