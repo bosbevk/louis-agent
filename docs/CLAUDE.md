@@ -270,8 +270,8 @@ decision's record (its context, and what it cost) in [docs/adr/](adr/README.md).
   Louis, 2026-10-27, on the manual endpoint's one-line chain: "no human will do that".
 - **Formatting** (Louis, 2026-10-27) — the layout rules live in the root `.editorconfig`: four spaces, a 120-character
   line, one file-scoped namespace line with the usings above it, each brace on its own line, no trailing spaces,
-  and an initializer (`new { … }`, `new Foo { … }`) with each property on its own line, never several on one line
-  (Louis, 2026-10-27).
+  and an initializer (`new { … }`, `new Foo { … }`) with two or more properties puts each on its own line, never
+  several on one line; one property stays on one line (Louis, 2026-10-27).
   A line that is long only because of a web address (an ADR's `<seealso href>`) may run past 120: an address can't be
   wrapped without breaking it (Louis, 2026-10-27; the exception Google's style guides make).
   **Code and comments change only by editing the file** (an editor, Rider, Claude Code's own edit tool), and layout
@@ -281,7 +281,8 @@ decision's record (its context, and what it cost) in [docs/adr/](adr/README.md).
   Rider applies them with **Reformat Code**, and Claude Code in Rider calls the same formatter through Rider's MCP
   server (`reformat_file`; Settings → Tools → MCP Server, with Claude Code auto-configured): it is the one that wraps
   lines to 120, which `dotnet format` never does. `dotnet format` runs after it and has the last word, since CI checks
-  with it. Where no Rider runs (a cloud session), wrap long lines by hand. Same scope as the
+  with it. Rider's formatter never wraps a comment (JetBrains issue RSRP-225809), so a `///` or `//` line over 120 is
+  wrapped by hand, as is every long line where no Rider runs (a cloud session). Same scope as the
   summaries: the files in a step's commit are formatted whole, untouched files keep their old layout, never a big
   reformat of its own. CI's *Formatting* step checks the C# files of the commits each push brings (merges left out).
 - **Namespace = folder path, dependencies one way, prompts in markdown, hosts stay thin** — `ArchitectureTests`

@@ -40,10 +40,12 @@ csharp_new_line_before_finally = true
 csharp_indent_switch_labels = true
 csharp_indent_case_contents = true
 
-# An initializer puts each property on its own line, never several on one (Louis, 2026-10-27). dotnet format splits an
-# initializer that already spans lines; Rider's Reformat Code (the resharper_ keys) also splits a one-line one.
+# An initializer with two or more properties puts each on its own line, never several on one (Louis, 2026-10-27); one
+# property stays on one line (`new { Check = check }`). dotnet format splits an initializer that already spans lines;
+# Rider's Reformat Code (the resharper_ keys) also splits a one-line one with more than one property.
 csharp_new_line_before_members_in_object_initializers = true
 csharp_new_line_before_members_in_anonymous_types = true
-resharper_wrap_object_and_collection_initializer_style = chop_always
+resharper_wrap_object_and_collection_initializer_style = chop_if_long
+resharper_max_initializer_elements_on_line = 1
 resharper_keep_existing_initializer_arrangement = false
-resharper_place_simple_initializer_on_single_line = false
+resharper_place_simple_initializer_on_single_line = true
