@@ -1,5 +1,4 @@
 using System.Text.Json;
-using LouisAgent.Api.Admin;
 using LouisAgent.Api.Admin.Replies;
 using LouisAgent.Api.Benchmarks.Runs;
 using LouisAgent.Api.Benchmarks.Store;
@@ -9,33 +8,42 @@ using LouisAgent.Testing;
 namespace LouisAgent.Api.Tests.Admin;
 
 /// <summary>
-/// The live run's row became a contract record: it writes the same bytes the anonymous row it replaces wrote, so the
-/// pages read it as before. The old row is written as Results.Json wrote it (the web defaults), the record with the
-/// admin options. The stored run's row is pinned by the stored run's golden and <c>AdminRowsTests</c>.
+/// Pins the live run's row as the pages read it: its names in their order, and the values that don't depend on the
+/// clock. The stored run's row is pinned by the stored run's golden and <c>AdminRowsTests</c>.
 /// </summary>
 public class RunRowRecordTests
 {
-    private static readonly JsonSerializerOptions Web = new(JsonSerializerDefaults.Web);
+    private const string Names =
+        "id,check,repeat,status,exit_code,started_at,ended_at,lines,stored,store_error,calibration_of,grader,last_line";
 
-    /// <summary>A live run, and a judge check, with and without what its recording kept.</summary>
-    private static IEnumerable<TestCaseData> LiveRuns()
+    /// <summary>A run that hasn't finished: no exit code, no end, nothing stored yet, and no judge check.</summary>
+    [Test]
+    public void ALiveRun_KeepsItsNames_AndSaysWhatItIs()
     {
-        yield return new TestCaseData(new BenchmarkRun("live_1", SampleEval.Beta, 2), null);
-        yield return new TestCaseData(new BenchmarkRun("live_2", SampleEval.Beta, 1),
-            new BenchmarkRecorder.Result(false, "the store said no"));
-        yield return new TestCaseData(
-            new BenchmarkRun("live_3", SampleEval.Beta, 1, calibration: new BenchmarkCalibration("run_1", "meal")),
-            new BenchmarkRecorder.Result(true, null));
+        var row = Json(LiveRunRow.Of(new BenchmarkRun("live_1", SampleEval.Beta, 2)));
+
+        Assert.That(string.Join(",", row.EnumerateObject().Select(p => p.Name)), Is.EqualTo(Names));
+        Assert.That(row.GetProperty("status").GetString(), Is.EqualTo("running"));
+        Assert.That(row.GetProperty("repeat").GetInt32(), Is.EqualTo(2));
+        Assert.That(row.GetProperty("stored").ValueKind, Is.EqualTo(JsonValueKind.Null));
+        Assert.That(row.GetProperty("calibration_of").ValueKind, Is.EqualTo(JsonValueKind.Null));
     }
 
-    /// <summary>A live run's record writes what the anonymous row wrote.</summary>
-    [TestCaseSource(nameof(LiveRuns))]
-    public void ALiveRunsRecord_WritesWhatTheOldRowWrote(BenchmarkRun run, BenchmarkRecorder.Result? stored)
+    /// <summary>A judge check names the run and the judge it checks, and what its recording kept.</summary>
+    [Test]
+    public void AJudgeCheck_NamesItsRunAndJudge()
     {
-        string old = JsonSerializer.Serialize(AdminRows.Row(run, stored), Web);
+        var run = new BenchmarkRun("live_3", SampleEval.Beta, 1,
+            calibration: new BenchmarkCalibration("run_1", "meal"));
 
-        string now = JsonSerializer.Serialize(LiveRunRow.Of(run, stored), AdminJson.SnakeCase);
+        var row = Json(LiveRunRow.Of(run, new BenchmarkRecorder.Result(false, "the store said no")));
 
-        Assert.That(now, Is.EqualTo(old));
+        Assert.That(row.GetProperty("calibration_of").GetString(), Is.EqualTo("run_1"));
+        Assert.That(row.GetProperty("grader").GetString(), Is.EqualTo("meal"));
+        Assert.That(row.GetProperty("stored").GetBoolean(), Is.False);
+        Assert.That(row.GetProperty("store_error").GetString(), Is.EqualTo("the store said no"));
     }
+
+    /// <summary>A row as the endpoints write it.</summary>
+    private static JsonElement Json(LiveRunRow row) => JsonSerializer.SerializeToElement(row, AdminJson.SnakeCase);
 }

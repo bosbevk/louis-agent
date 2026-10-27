@@ -1,14 +1,21 @@
 using System.Text.Json;
-using LouisAgent.Api.Admin;
+using LouisAgent.Api.Admin.Replies;
 using LouisAgent.Api.Benchmarks.Runs;
+using LouisAgent.Api.Contracts.Admin;
 
 namespace LouisAgent.Api.Tests.Benchmarks.Runs;
 
-// F18 step 6a.5b: a judge check is started like a re-score: the eval runner as a child process with an argument list (ADR 0004), `--calibrate {eval} {grader} --labels -`, and the label
-// lines on its stdin. It is the runner's one run at a time (the judge is shared), and its row says what it is, so the Benchmarks page can leave it alone. Written first: StartCalibration
-// did not exist.
+/// <summary>
+/// A judge check is started like a re-score (F18 step 6a.5b): the eval runner as a child process with an argument list
+/// (ADR 0004), and the label lines on its stdin. It is the runner's one run at a time, and its row says what it is,
+/// so the Benchmarks page can leave it alone.
+/// </summary>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0004-arguments-as-data.md">ADR 0004: arguments as data</seealso>
 public class BenchmarkCalibrationStartTests
 {
+    /// <summary>
+    /// A judge check's row names the run and the judge it checks and its last line; an ordinary run's names none.
+    /// </summary>
     [Test]
     public void TheRow_SaysWhatRunItChecksAndWhichJudge_AndItsLastLine()
     {
@@ -16,9 +23,9 @@ public class BenchmarkCalibrationStartTests
             calibration: new BenchmarkCalibration("76667d39dcdb", "meal-for-people"), input: "{}\n");
         run.Add("Agreement: 36 of 36");
 
-        var row = JsonDocument.Parse(JsonSerializer.Serialize(AdminRows.Row(run))).RootElement;
-        var ordinary = JsonDocument
-            .Parse(JsonSerializer.Serialize(AdminRows.Row(new BenchmarkRun("run123456789", "stub", 1)))).RootElement;
+        var row = JsonSerializer.SerializeToElement(LiveRunRow.Of(run), AdminJson.SnakeCase);
+        var ordinary = JsonSerializer.SerializeToElement(LiveRunRow.Of(new BenchmarkRun("run123456789", "stub", 1)),
+            AdminJson.SnakeCase);
 
         Assert.That(
             (row.GetProperty("calibration_of").GetString(), row.GetProperty("grader").GetString(),
