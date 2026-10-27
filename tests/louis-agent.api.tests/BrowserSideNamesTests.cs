@@ -1,7 +1,7 @@
 using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Web.Shared.Api;
-using CoreScriptLanguage = LouisAgent.Core.Skills.ScriptLanguage;
+using CoreScriptLanguage = LouisAgent.Core.Skills.Languages.ScriptLanguage;
 using WebScriptLanguage = LouisAgent.Web.Shared.Api.ScriptLanguage;
 
 namespace LouisAgent.Api.Tests;

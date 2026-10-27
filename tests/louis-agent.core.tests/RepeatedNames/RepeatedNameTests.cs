@@ -12,7 +12,7 @@ public class RepeatedNameTests
     private static readonly string[] EnumFiles =
     [
         "louis-agent.core/Agent/Toolsets/CoreToolset.cs",
-        "louis-agent.core/Skills/ScriptLanguage.cs",
+        "louis-agent.core/Skills/Languages/ScriptLanguage.cs",
         "packs/louis-agent.pack.shops/ShopsToolset.cs",
         "evals/louis-agent.evals.puls/Shared/PulsToolset.cs",
         "evals/louis-agent.evals.runner/Evals/Stub/StubToolset.cs",

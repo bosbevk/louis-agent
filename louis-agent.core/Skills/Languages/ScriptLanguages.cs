@@ -1,6 +1,6 @@
 using LouisAgent.Choices;
 
-namespace LouisAgent.Core.Skills;
+namespace LouisAgent.Core.Skills.Languages;
 
 public static class ScriptLanguages
 {

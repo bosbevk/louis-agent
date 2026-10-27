@@ -1,3 +1,4 @@
+using LouisAgent.Core.Skills.Languages;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Guardrails.Auth;
 using System.ComponentModel;

@@ -1,3 +1,4 @@
+using LouisAgent.Core.Skills.Languages;
 ﻿using LouisAgent.Core.Skills;
 
 namespace LouisAgent.Core.Tests.Skills;

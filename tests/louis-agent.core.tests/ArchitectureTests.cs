@@ -84,7 +84,9 @@ public partial class ArchitectureTests
     // Providers/ and Roles/ use the top, never each other; SkillFiles once used RoleCatalog while RoleCatalog read
     // SkillFileSource, a cycle the layers above can't see. Skills only: a factory at a seam's top (Tools/Shops) may
     // create its providers. The one exception is Messages/ (the split by area, F18): every folder of Skills/ may use it, as
-    // every folder of core may use core's Messages/, because its enums are the texts, not the code under test.
+    // every folder of core may use core's Messages/, because its enums are the texts, not the code under test. The other is Languages/ (F18 step 7.5.3c,
+    // Louis's pick): the script languages a fence can name, a leaf that uses nothing of core, so the top (the loader that parses a fence) and every folder may use it without
+    // a cycle.
     [Test]
     public void InsideSkills_TheTopUsesNothingBelow_AndItsFoldersOnlyTheTop()
     {
@@ -95,10 +97,10 @@ public partial class ArchitectureTests
             string file = Path.GetRelativePath(skills, path).Replace('\\', '/');
             string folder = Path.GetDirectoryName(file)!.Replace('\\', '/');
             foreach (string used in SkillsUsing().Matches(File.ReadAllText(path)).Select(u => u.Groups[1].Value).Distinct())
-                if (used != folder && used != "Messages") found.Add($"Skills/{file} uses Skills.{used}");
+                if (used != folder && used is not ("Messages" or "Languages")) found.Add($"Skills/{file} uses Skills.{used}");
         }
 
-        Assert.That(found, Is.Empty, "Skills/: the top uses nothing below it except Messages/; Providers/ and Roles/ use only the top and Messages/");
+        Assert.That(found, Is.Empty, "Skills/: the top uses nothing below it except Messages/ and Languages/; Providers/ and Roles/ use only the top, Messages/ and Languages/");
     }
 
     // FX19 (ADR 0004): a process starts from an argument list, never from one command-line string, so a value from the

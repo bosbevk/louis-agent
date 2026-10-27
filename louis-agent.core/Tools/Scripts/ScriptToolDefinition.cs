@@ -1,3 +1,4 @@
+using LouisAgent.Core.Skills.Languages;
 namespace LouisAgent.Core.Tools.Scripts;
 
 using System.Text.RegularExpressions;

@@ -1,4 +1,4 @@
-namespace LouisAgent.Core.Skills;
+namespace LouisAgent.Core.Skills.Languages;
 
 /// <summary>
 /// The language of a script a skill or an agent-built tool runs (ADR 0043: a name that repeats is an enum): the tag on a code fence, parsed once where the file
