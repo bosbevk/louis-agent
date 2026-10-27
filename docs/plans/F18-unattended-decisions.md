@@ -39,3 +39,26 @@ contracts project can't see.
 learn.microsoft.com/dotnet/csharp/programming-guide/classes-and-structs/extension-methods); Fowler, *Refactoring*
 2nd ed., *Replace Constructor with Factory Function*; Fowler, *PoEAA*, *Data Transfer Object* (the assembler).
 **Commit:** Part 1.1.
+
+### 2. A 201 on the admin wire can't take the wire's options (Part 2, notes and re-scores)
+
+**What came up.** A note and a re-score answer 201 with a Location. `TypedResults.Created(uri, value)` has no
+`JsonSerializerOptions` overload: it writes with the app's default options (camelCase), while the admin wire is
+snake_case (`AdminJson.SnakeCase`). For a note every name is one word, so the bytes happen to match; for a re-score
+(`exit_code`, `started_at`) they would not.
+
+1. **A small result of our own, `CreatedJson<T>` (picked).** It sets the status and the Location and writes the value
+   with the options it is given, and says what it produces for OpenAPI. Pattern: a custom `IResult`, Microsoft's way to
+   shape an answer the built-in ones don't (minimal APIs, *Responses*, "Customizing responses"). Changes: one class in
+   the API (`Endpoints/Answers/`). Costs: one more type to keep, and its OpenAPI metadata written by hand.
+2. **A JSON answer with status 201, the handler setting Location itself** (`TypedResults.Json(…, statusCode: 201)` and
+   an `HttpResponse` parameter). Changes: the handlers only. Costs: the declared answer says "JSON", not "created";
+   a handler writes a header as a side effect, and a no-HTTP test needs a fake response.
+3. **`[JsonPropertyName]` on the records the 201s send**, keeping `TypedResults.Created`. Changes: two records. Costs:
+   it undoes fix 2 of the review (the names live twice, once as an attribute and once as the wire's rule), on exactly
+   the records where it matters.
+
+**Why 1.** It keeps one options object per wire (ADR 0041) and lets the signature say what the route does (ADR 0045's
+point). Sources: learn.microsoft.com/aspnet/core/fundamentals/minimal-apis/responses (custom `IResult`,
+`IStatusCodeHttpResult`, `IValueHttpResult<T>`, `IEndpointMetadataProvider`); ADR 0041; ADR 0045. **Commit:** the
+notes file of the sweep.

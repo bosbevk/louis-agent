@@ -1,4 +1,6 @@
 using LouisAgent.Api.Admin;
+using LouisAgent.Api.Admin.Replies;
+using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Benchmarks.Calibrations.Store;
 using LouisAgent.Api.Benchmarks.Export;
 using LouisAgent.Api.Benchmarks.Reports;
@@ -13,7 +15,9 @@ using static LouisAgent.Api.Admin.AdminRows;
 namespace LouisAgent.Api.Endpoints;
 
 /// <summary>
-/// The portal's reads of a stored run, and its delete: the run with its conversations, turns, requests and notes, one turn's stream events, and the run as the protocol's own lines. They are in the same admin group as the rest, so the admin key covers them.
+/// The portal's reads of a stored run, and its delete: the run with its conversations, turns, requests and notes, one
+/// turn's stream events, and the run as the protocol's own lines. They are in the same admin group as the rest, so the
+/// admin key covers them.
 /// </summary>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0039-api-routes-under-v1.md">ADR 0039: the API routes live under /v1</seealso>
 internal static class StoredRunEndpoints
@@ -23,7 +27,8 @@ internal static class StoredRunEndpoints
         IHumanReviewStore? reviews = null,
         ICalibrationStore? calibrations = null)
     {
-        // A stored run with its conversations, their turns (without their events) and its requests: the explorer's levels.
+        // A stored run with its conversations, their turns (without their events) and its requests: the explorer's
+        // levels.
         admin.MapGet("/benchmarks/runs/{id}", (string id, CancellationToken cancellationToken) =>
             AdminEndpoints.FromStore(store, async s =>
             {
@@ -49,7 +54,8 @@ internal static class StoredRunEndpoints
                         toolsets = m.Toolsets,
                         role = m.Role,
                         llm = m.Llm,
-                        // The runner's rates for the repeats up to this one (F18 step 5a): null on a mode from before them, never 0.
+                        // The runner's rates for the repeats up to this one (F18 step 5a): null on a mode from
+                        // before them, never 0.
                         pass_at_k = m.Rates?.PassAtK,
                         pass_hat_k = m.Rates?.PassHatK,
                         k = m.Rates?.K,
@@ -57,13 +63,16 @@ internal static class StoredRunEndpoints
                         retried = m.Rates?.Retried,
                     }),
                     log = run.Log,
-                    // A person's notes on the run and on its conversations, in the order written; an empty list for a run with none.
-                    notes = notes.Select(NoteEndpoints.Row),
-                    // F18 step 5c.2: each mode's roll-up as the runner wrote it, priced from the ledger; null for a run from before it.
+                    // A person's notes on the run and on its conversations, in the order written; an empty list for
+                    // a run with none.
+                    notes = notes.Select(NoteRow.Of),
+                    // F18 step 5c.2: each mode's roll-up as the runner wrote it, priced from the ledger; null for a
+                    // run from before it.
                     summaries = SummaryRow.Of(run.Slices, run.Total, requests),
                     conversations = conversations.Select(c =>
                         ConversationRow(c, [.. latest.Where(g => g.Conversation == c.Key)])),
-                    // F18 step 6a.2: per judge with a human review, how often it agreed with the people, as counts (the API reads, it doesn't rate).
+                    // F18 step 6a.2: per judge with a human review, how often it agreed with the people, as counts
+                    // (the API reads, it doesn't rate).
                     agreement = ReviewEndpoints.HumanReviewsOf(run).Select(human => human[..^HumanReview.Suffix.Length])
                         .Order(StringComparer.Ordinal).Select(grader =>
                         {
@@ -101,7 +110,8 @@ internal static class StoredRunEndpoints
                     { events = events.Select(e => new { type = e.Type, data = e.Data, at = e.At }) });
                 }));
 
-        // A stored run as the protocol's own lines (F18 step 5.2): what a recorded run hands back to the harness as a transcript.
+        // A stored run as the protocol's own lines (F18 step 5.2): what a recorded run hands back to the harness as a
+        // transcript.
         admin.MapGet("/benchmarks/runs/{id}/protocol", (string id, CancellationToken cancellationToken) =>
             AdminEndpoints.FromStore(store, async s =>
                 await s.GetRunAsync(id, cancellationToken) is { } run

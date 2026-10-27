@@ -1144,6 +1144,11 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   `InfoJson.SnakeCase`, their wire's options; `RolesView` became `RolesReply.Of`. The price table keeps its own options
   and the rates their rates.json text. The info files have their folder, `Endpoints/Info/`. `AgentSessionsTests` held
   the roles test, so it is brought up whole (its summaries).
+- **Sweep: `NoteEndpoints`.** `NoteHandlers` holds the store and the clock; a new note answers `CreatedJson<NoteRow>`,
+  a 201 of our own that writes with the admin wire's options, since `TypedResults.Created` takes none (finding 2 of
+  the run's log). The note's request and row, and a conversation's key, are contract records. `StoredRunEndpoints`
+  read the old note row; it takes `NoteRow.Of` in one line here (the names are one word each, so its bytes don't
+  change) and is swept next.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)
