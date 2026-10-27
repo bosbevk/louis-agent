@@ -1,4 +1,5 @@
 using System.Text.Json;
+using LouisAgent.Choices;
 using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Messages;
 using LouisAgent.Evals.Trials;
@@ -64,7 +65,7 @@ public static class ProtocolTranscripts
             {
                 sessions[turn] = (element.GetProperty("session").GetString()!, element.GetProperty("question").GetString()!,
                     element.GetProperty("seconds").GetDouble(),
-                    element.TryGetProperty("failure", out var failure) ? FailureName.Parse(failure.GetString()) : null);
+                    element.TryGetProperty("failure", out var failure) ? SettingChoice.TryParse(failure.GetString(), out TrialFailure? f) ? f : null : null);
             }
         }
 

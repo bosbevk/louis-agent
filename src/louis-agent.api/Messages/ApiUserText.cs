@@ -185,6 +185,9 @@ public enum ApiUserText
     [Description("replay takes a run id's letters, digits, '-' and '_', not '{Value}'.")]
     RunBadReplay,
 
+    [Description("a stored run names a {Field} that is not known: '{Value}'.")]
+    StoredNameUnknown,
+
     [Description("Run {Run} is not a judge check, so there is no report to keep.")]
     CalibrationNotACheck,
 

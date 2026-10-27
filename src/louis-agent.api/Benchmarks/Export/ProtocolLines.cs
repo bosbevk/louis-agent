@@ -3,6 +3,7 @@ using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Unicode;
 using LouisAgent.Api.Benchmarks.Runs;
+using LouisAgent.Choices;
 using static LouisAgent.Api.Benchmarks.Store.BenchmarkDocuments;
 
 namespace LouisAgent.Api.Benchmarks.Export;
@@ -24,7 +25,7 @@ internal sealed class ProtocolLines(DateTimeOffset start)
         json.WriteString("eval", run.Eval);
         if (run.EvalVersion is { } version) json.WriteNumber("eval_version", version);
         if (run.Commit is { } commit) json.WriteString("commit", commit);
-        if (run.Split is { } split) json.WriteString("split", BenchmarkRunSplitName.Of(split));
+        if (run.Split is { } split) json.WriteString("split", SettingChoice.Wire(split));
         if (run.RescoreOf is { } rescoreOf) json.WriteString("rescore_of", rescoreOf);
         json.WriteStartArray("graders");
         foreach (var grader in run.Graders ?? [])
@@ -96,7 +97,7 @@ internal sealed class ProtocolLines(DateTimeOffset start)
         json.WriteEndArray();
         json.WriteNumber("seconds", turn.Seconds);
         Text(json, "error", turn.Error);
-        if (turn.Failure is { } failure) json.WriteString("failure", BenchmarkTurnFailureName.Of(failure));
+        if (turn.Failure is { } failure) json.WriteString("failure", SettingChoice.Wire(failure));
     });
 
     public void Conversation(Conversation conversation) => Emit("conversation", json =>

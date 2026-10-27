@@ -106,7 +106,7 @@ public static class BenchmarkProtocol
 
     /// <summary>The scenarios the run asked for (F18 step 5.4), by their snake-case name; absent is none, an unknown name an unreadable line.</summary>
     private static BenchmarkRunSplit? Split(JsonElement e) =>
-        Text(e, "split") is null ? null : Choice(e, "split", BenchmarkRunSplitName.Aliases);
+        Text(e, "split") is null ? null : Choice<BenchmarkRunSplit>(e, "split");
 
     /// <summary>One slice of a mode's roll-up (F18 step 5c), written after the mode's last mode_done.</summary>
     public sealed record SummaryReported(BenchmarkSlice Slice, DateTimeOffset? At = null) : Event;
@@ -136,12 +136,12 @@ public static class BenchmarkProtocol
         Text(e, name) is null ? null : Choice<BenchmarkOutcome>(e, name);
 
     /// <summary>A choice from the fixed set its enum names, parsed once where the line enters (ADR 0024); a name that isn't one is a line the protocol can't read.</summary>
-    private static T Choice<T>(JsonElement e, string name, IReadOnlyDictionary<string, T>? aliases = null) where T : struct, Enum =>
-        SettingChoice.TryParse(Text(e, name), out T? choice, aliases) && choice is { } value ? value : throw new MissingField();
+    private static T Choice<T>(JsonElement e, string name) where T : struct, Enum =>
+        SettingChoice.TryParse(Text(e, name), out T? choice) && choice is { } value ? value : throw new MissingField();
 
     /// <summary>The infrastructure failure that ended a turn (F18 step 5.1), by its snake-case name; absent is none, an unknown name an unreadable line.</summary>
     private static BenchmarkTurnFailure? Failure(JsonElement e) =>
-        Text(e, "failure") is null ? null : Choice(e, "failure", BenchmarkTurnFailureName.Aliases);
+        Text(e, "failure") is null ? null : Choice<BenchmarkTurnFailure>(e, "failure");
 
     private static TurnKey Turn(JsonElement e) => new(Required(e, "mode"), Int(e, "repeat"), Required(e, "task"), Int(e, "turn"));
 

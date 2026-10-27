@@ -7,6 +7,8 @@ using MongoDB.Driver;
 using static LouisAgent.Api.Benchmarks.Store.BenchmarkDocuments;
 using static LouisAgent.Api.Benchmarks.Runs.BenchmarkProtocol;
 using LouisAgent.Choices;
+using LouisAgent.Api.Messages;
+using LouisAgent.Core.Messages;
 
 namespace LouisAgent.Api.Benchmarks.Store;
 
@@ -200,7 +202,7 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
             ["mode"] = m.Mode, ["level"] = m.Level.ToString(), ["role"] = Nullable(m.Role), ["model"] = Nullable(m.Model),
         })),
         // Absent in a run stored before each; read as null: the scenarios the run asked for (F18 step 5.4), the run it re-scored (5b.2) and its roll-up (5c.2).
-        ["split"] = Nullable(run.Split is { } split ? BenchmarkRunSplitName.Of(split) : null),
+        ["split"] = Nullable(run.Split is { } split ? SettingChoice.Wire(split) : null),
         ["rescore_of"] = Nullable(run.RescoreOf), ["slices"] = SliceDocuments.ToBson(run.Slices),
     };
 
@@ -225,9 +227,9 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
         d.GetValue("eval_version", BsonNull.Value).IsBsonNull ? null : d["eval_version"].AsInt32,
         StringOf(d.GetValue("commit", BsonNull.Value)),
         d.GetValue("graders", BsonNull.Value).IsBsonNull ? null : d["graders"].AsBsonArray.Select(g => g.AsBsonDocument)
-            .Select(g => new Grader(g["name"].AsString, g["version"].AsInt32, Enum.Parse<BenchmarkGraderKind>(g["kind"].AsString, ignoreCase: true), StringOf(g.GetValue("question", BsonNull.Value)))).ToArray(),
+            .Select(g => new Grader(g["name"].AsString, g["version"].AsInt32, ChoiceOf<BenchmarkGraderKind>(g["kind"], "grader kind"), StringOf(g.GetValue("question", BsonNull.Value)))).ToArray(),
         d.GetValue("models", BsonNull.Value).IsBsonNull ? null : d["models"].AsBsonArray.Select(m => m.AsBsonDocument)
-            .Select(m => new ModelUse(m["mode"].AsString, Enum.Parse<BenchmarkModelLevel>(m["level"].AsString, ignoreCase: true), StringOf(m.GetValue("role", BsonNull.Value)), StringOf(m.GetValue("model", BsonNull.Value)))).ToArray(),
+            .Select(m => new ModelUse(m["mode"].AsString, ChoiceOf<BenchmarkModelLevel>(m["level"], "model level"), StringOf(m.GetValue("role", BsonNull.Value)), StringOf(m.GetValue("model", BsonNull.Value)))).ToArray(),
         SplitOf(d.GetValue("split", BsonNull.Value)),
         StringOf(d.GetValue("rescore_of", BsonNull.Value)), SliceDocuments.Of(d.GetValue("slices", BsonNull.Value)));
 
@@ -239,7 +241,7 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
 
     /// <summary>A run's kept split; a run stored before it was kept has none.</summary>
     private static BenchmarkRunSplit? SplitOf(BsonValue v) =>
-        v is { IsString: true } && SettingChoice.TryParse(v.AsString, out BenchmarkRunSplit? split, BenchmarkRunSplitName.Aliases) ? split : null;
+        v is { IsString: true } && SettingChoice.TryParse(v.AsString, out BenchmarkRunSplit? split) ? split : null;
 
     private static BsonDocument ToBson(string run, Conversation c) => new()
     {
@@ -269,7 +271,7 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
         ["session"] = t.Session, ["question"] = t.Question, ["answer"] = Nullable(t.Answer), ["role"] = Nullable(t.Role),
         ["continued"] = Nullable(t.Continued), ["puls_calls"] = t.PulsCalls, ["specialist_calls"] = t.SpecialistCalls,
         ["hosts"] = new BsonArray(t.Hosts), ["seconds"] = t.Seconds, ["error"] = Nullable(t.Error),
-        ["failure"] = Nullable(t.Failure is { } failure ? BenchmarkTurnFailureName.Of(failure) : null),
+        ["failure"] = Nullable(t.Failure is { } failure ? SettingChoice.Wire(failure) : null),
         ["tools"] = t.Tools is { } tools
             ? new BsonDocument
             {
@@ -289,7 +291,7 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
 
     /// <summary>A turn's kept failure; a turn recorded before it was kept has none.</summary>
     private static BenchmarkTurnFailure? FailureOf(BsonValue v) =>
-        v is { IsString: true } && SettingChoice.TryParse(v.AsString, out BenchmarkTurnFailure? failure, BenchmarkTurnFailureName.Aliases) ? failure : null;
+        v is { IsString: true } && SettingChoice.TryParse(v.AsString, out BenchmarkTurnFailure? failure) ? failure : null;
 
     /// <summary>A turn's kept tool counts; a turn recorded before they were kept has none (null, never 0 calls).</summary>
     private static BenchmarkTools.Summary? ToolsOf(BsonValue v) => v is BsonDocument t
@@ -330,6 +332,11 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
     private static BsonValue Nullable(double? value) => value is null ? BsonNull.Value : new BsonDouble(value.Value);
     private static BsonValue Nullable(long? value) => value is null ? BsonNull.Value : new BsonInt64(value.Value);
     private static BsonValue Nullable(decimal? value) => value is null ? BsonNull.Value : new BsonDecimal128(value.Value);
+
+    /// <summary>A stored name read back into its enum (ADR 0024: parsed once, never a number); one the build doesn't know is a document it can't read.</summary>
+    private static T ChoiceOf<T>(BsonValue value, string field) where T : struct, Enum =>
+        SettingChoice.TryParse(value.AsString, out T? choice) && choice is { } known ? known
+            : throw new InvalidDataException(MessageText.Format(ApiUserText.StoredNameUnknown, new { Field = field, Value = value.AsString }));
 
     private static string? StringOf(BsonValue value) => value.IsBsonNull ? null : value.AsString;
     private static long? LongOf(BsonValue value) => value.IsBsonNull ? null : value.ToInt64();

@@ -2,10 +2,10 @@ namespace LouisAgent.Core.Guardrails.Auth;
 
 using System.Security.Cryptography;
 using System.Text;
+using LouisAgent.Choices;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Guardrails.Messages;
 using LouisAgent.Core.Messages;
-using LouisAgent.Choices;
 
 /// <summary>
 /// The rule for a host that serves the agent's tools over the network (the API; the MCP server over HTTP), FX18: it

@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace LouisAgent.Api.Benchmarks.Runs;
 
 /// <summary>
@@ -7,6 +9,6 @@ namespace LouisAgent.Api.Benchmarks.Runs;
 public enum BenchmarkRunSplit
 {
     Dev,
-    HeldOut,
+    [JsonStringEnumMemberName("held_out")] HeldOut,
     All,
 }
