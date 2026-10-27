@@ -8,7 +8,7 @@ namespace LouisAgent.Api.Tests.Benchmarks.Runs;
 // run. An Anthropic judge with no key of its own gets the Anthropic key as the judge's key, under that name only. Written first: the start info copied everything.
 public class RunnerEnvironmentTests
 {
-    private static readonly BenchmarkCheck Stub = BenchmarkCheck.ForEval("stub", "Stub");
+    private static readonly BenchmarkCheck Stub = new BenchmarkCheck("stub", "Stub");
 
     /// <summary>The API's environment as the containers have it: the runner's settings among the API's secrets.</summary>
     private static readonly Dictionary<string, string> Api = new()
@@ -121,7 +121,7 @@ public class RunnerEnvironmentTests
         Environment.SetEnvironmentVariable("ANTHROPIC_API_KEY", "sk-ant-secret");
         try
         {
-            var runner = new BenchmarkRunner(new BenchmarkCatalog([BenchmarkCheck.ForEval("env", "Env")]), Path.GetTempPath(), "http://x/", StandInBuild.Dll);
+            var runner = new BenchmarkRunner(new BenchmarkCatalog([new BenchmarkCheck("env", "Env")]), Path.GetTempPath(), "http://x/", StandInBuild.Dll);
             var run = runner.Start("env", 1)!;
             var lines = new List<string>();
             await foreach (string line in runner.EventsAsync(run.Id)) lines.Add(line);

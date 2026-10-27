@@ -8,7 +8,7 @@ namespace LouisAgent.Api.Tests.Benchmarks.Runs;
 // NotImplementedException on the red run.
 public class BenchmarkRunOptionsTests
 {
-    private static readonly BenchmarkCheck Eval = BenchmarkCheck.ForEval("puls-cook", "Cook");
+    private static readonly BenchmarkCheck Eval = new BenchmarkCheck("puls-cook", "Cook");
 
     private static BenchmarkRunOptions Ok(string? web, string? replay)
     {

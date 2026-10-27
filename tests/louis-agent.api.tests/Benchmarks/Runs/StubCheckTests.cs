@@ -12,7 +12,7 @@ public class StubCheckTests
     /// <summary>The C# stub through the runner's own listing, the real runner, and the recorder.</summary>
     private static async Task<(BenchmarkRun Run, List<string> Lines)> RunEvalStub(InMemoryBenchmarkStore store, int repeat = 1)
     {
-        var catalog = new BenchmarkCatalog([BenchmarkCheck.ForEval("stub", "Stub")]);
+        var catalog = new BenchmarkCatalog([new BenchmarkCheck("stub", "Stub")]);
         var runner = new BenchmarkRunner(catalog, TestPaths.RepoRoot, "http://127.0.0.1:1/", RunnerBuild.Dll);
         var run = runner.Start("stub", repeat)!;
         var recording = new BenchmarkRecorder(store).RecordAsync(run);

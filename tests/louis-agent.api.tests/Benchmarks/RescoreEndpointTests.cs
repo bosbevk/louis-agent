@@ -39,7 +39,7 @@ public class RescoreEndpointTests
     {
         var store = new InMemoryBenchmarkStore();
         var recorder = new BenchmarkRecorder(store);
-        var catalog = new BenchmarkCatalog([BenchmarkCheck.ForEval("stub", "Stub")]);
+        var catalog = new BenchmarkCatalog([new BenchmarkCheck("stub", "Stub")]);
         var runner = new BenchmarkRunner(catalog, _workspace, "http://127.0.0.1:1/", RunnerBuild.Dll);
         var app = ApiTestHost.Build(adminKey: AdminKey, store: store, runner: runner, recorder: recorder, catalog: catalog);
         await app.StartAsync();

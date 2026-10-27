@@ -10,7 +10,7 @@ public class BenchmarkSettingsTests
     [Test]
     public void ARun_KeepsTheModelTheRolesAndTheEvalWithItsRunner()
     {
-        var check = BenchmarkCheck.ForEval("puls-cook", "Cook");
+        var check = new BenchmarkCheck("puls-cook", "Cook");
 
         var settings = BenchmarkSettings.Of(check, "anthropic", "claude-haiku-5-5", ["puls/voice-af", "puls-cook"], Runner);
 
@@ -50,12 +50,12 @@ public class BenchmarkSettingsTests
 
     [Test]
     public void EveryRole_IsOn_WhenNoneAreListed() =>
-        Assert.That(BenchmarkSettings.Of(BenchmarkCheck.ForEval("c", "C"), "anthropic", "m", [], Runner)["roles_enabled"], Is.EqualTo("(all)"));
+        Assert.That(BenchmarkSettings.Of(new BenchmarkCheck("c", "C"), "anthropic", "m", [], Runner)["roles_enabled"], Is.EqualTo("(all)"));
 
     [Test]
     public void AnEvalCheckRecordsItsEvalAndItsRunner()
     {
-        var settings = BenchmarkSettings.Of(BenchmarkCheck.ForEval("stub", "Stub"), "anthropic", "m", [], "/app/evals/x.dll");
+        var settings = BenchmarkSettings.Of(new BenchmarkCheck("stub", "Stub"), "anthropic", "m", [], "/app/evals/x.dll");
 
         Assert.That((settings["eval"], settings["eval_runner"]), Is.EqualTo(("stub", "/app/evals/x.dll")));
         Assert.That(settings.ContainsKey("script"), Is.False, "no script path any more (F18 step 7.4)");

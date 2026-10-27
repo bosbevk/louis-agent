@@ -41,5 +41,5 @@ public sealed class BenchmarkCatalog
 
     /// <summary>The listed evals as checks: the name is the id, what it proves is the title, and its manual is the path it listed.</summary>
     public static IReadOnlyList<BenchmarkCheck> Merge(IReadOnlyList<EvalLine> evals) =>
-        [.. evals.Select(eval => BenchmarkCheck.ForEval(eval.Name, eval.Proves, eval.Manual))];
+        [.. evals.Select(eval => new BenchmarkCheck(eval.Name, eval.Proves, eval.Manual))];
 }

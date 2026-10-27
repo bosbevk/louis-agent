@@ -14,14 +14,14 @@ public class BenchmarkCatalogTests
     [Test]
     public void ACatalog_OffersTheChecksItIsGiven()
     {
-        var check = BenchmarkCheck.ForEval("puls-cook", "Die kokkontrole");
+        var check = new BenchmarkCheck("puls-cook", "Die kokkontrole");
 
         Assert.That(new BenchmarkCatalog([check]).Checks, Is.EqualTo(new[] { check }));
     }
 
     [Test]
     public void AnEvalCheckHasTheManualItsEvalListed() =>
-        Assert.That(BenchmarkCheck.ForEval("stub", "Stub", "evals/louis-agent.evals.runner/Manuals/stub.md").ManualPath, Is.EqualTo("evals/louis-agent.evals.runner/Manuals/stub.md"));
+        Assert.That(new BenchmarkCheck("stub", "Stub", "evals/louis-agent.evals.runner/Manuals/stub.md").ManualPath, Is.EqualTo("evals/louis-agent.evals.runner/Manuals/stub.md"));
 
     [Test]
     public void TheCatalogue_KeepsTheManualPathTheRunnerListed()

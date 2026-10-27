@@ -15,7 +15,7 @@ public class BenchmarkManualTests
     [TestCase("puls-routing", "evals/louis-agent.evals.puls/Manuals/routing.md")]
     public void AnEvalsManual_IsReadFromBesideTheEval(string eval, string path)
     {
-        var check = BenchmarkCheck.ForEval(eval, "An eval", path);
+        var check = new BenchmarkCheck(eval, "An eval", path);
 
         Assert.That(check.ManualPath, Is.EqualTo(path));
         Assert.That(BenchmarkManuals.Read(RepoRoot, check), Does.StartWith("# "), path);
@@ -25,9 +25,9 @@ public class BenchmarkManualTests
     [Test]
     public void AnEvalWithoutAManual_HasNone()
     {
-        Assert.That(BenchmarkCheck.ForEval("ghost", "Ghost").ManualPath, Is.Null);
-        Assert.That(BenchmarkManuals.Read(RepoRoot, BenchmarkCheck.ForEval("ghost", "Ghost")), Is.Null);
-        Assert.That(BenchmarkManuals.Read(RepoRoot, BenchmarkCheck.ForEval("ghost", "Ghost", "evals/ghost/Manuals/ghost.md")), Is.Null, "a path that names no file");
+        Assert.That(new BenchmarkCheck("ghost", "Ghost").ManualPath, Is.Null);
+        Assert.That(BenchmarkManuals.Read(RepoRoot, new BenchmarkCheck("ghost", "Ghost")), Is.Null);
+        Assert.That(BenchmarkManuals.Read(RepoRoot, new BenchmarkCheck("ghost", "Ghost", "evals/ghost/Manuals/ghost.md")), Is.Null, "a path that names no file");
     }
 
     [TestCase("evals/../config/prices.json")]
@@ -37,7 +37,7 @@ public class BenchmarkManualTests
     [TestCase("evals/../docs/README.md")]
     public void AManualOutsideEvals_IsNeverRead(string path)
     {
-        var check = BenchmarkCheck.ForEval("escape", "Escape", path);
+        var check = new BenchmarkCheck("escape", "Escape", path);
 
         Assert.That(BenchmarkManuals.Read(RepoRoot, check), Is.Null, path);
     }

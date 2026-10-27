@@ -7,8 +7,4 @@ namespace LouisAgent.Api.Benchmarks.Runs;
 /// <param name="Id">The name in URLs: the eval's name.</param>
 /// <param name="Title">What the page calls it: what the eval proves.</param>
 /// <param name="ManualPath">Where its manual is (F18 step 7.1): the path the runner's listing gave, from the repository root with forward slashes, beside the eval; null for a check with none.</param>
-public sealed record BenchmarkCheck(string Id, string Title, string? ManualPath = null)
-{
-    /// <summary>An eval the runner lists (F18 step 4.3): its name is its id, and it brings the manual its listing named (7.1).</summary>
-    public static BenchmarkCheck ForEval(string name, string title, string? manual = null) => new(name, title, manual);
-}
+public sealed record BenchmarkCheck(string Id, string Title, string? ManualPath = null);

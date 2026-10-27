@@ -9,7 +9,7 @@ namespace LouisAgent.Api.Tests.Benchmarks.Runs;
 // did not exist.
 public class BenchmarkCalibrationStartTests
 {
-    private static readonly BenchmarkCheck Stub = BenchmarkCheck.ForEval("stub", "Stub");
+    private static readonly BenchmarkCheck Stub = new BenchmarkCheck("stub", "Stub");
 
     private static BenchmarkRunner Runner() =>
         new(new BenchmarkCatalog([Stub]), TestPaths.RepoRoot, "http://127.0.0.1:1/", RunnerBuild.Dll);

@@ -30,7 +30,7 @@ public class BenchmarkRunnerTests
     private BenchmarkRunner Runner(string pulsApi = "http://x/")
     {
         string[] behaviours = ["args", "echo", "run-id", "slow", "late", "fail"];
-        var catalog = new BenchmarkCatalog([.. behaviours.Select(id => BenchmarkCheck.ForEval(id, id))]);
+        var catalog = new BenchmarkCatalog([.. behaviours.Select(id => new BenchmarkCheck(id, id))]);
         return _runner = new BenchmarkRunner(catalog, _workspace, pulsApi, StandInBuild.Dll);
     }
 
@@ -134,7 +134,7 @@ public class BenchmarkRunnerTests
     public void AnEvalCheckStartsTheRunnerWithItsRunAndRepeat()
     {
         // The argument list and the environment, from the start info, so nothing has to run: dotnet, the runner, its run and repeat.
-        var eval = BenchmarkCheck.ForEval("stub", "Stub");
+        var eval = new BenchmarkCheck("stub", "Stub");
         var runner = new BenchmarkRunner(new BenchmarkCatalog([eval]), _workspace, "http://127.0.0.1:1/", "/app/evals/x.dll");
 
         var start = runner.StartInfoFor(eval, new BenchmarkRun("run_1", "stub", 2));
@@ -148,7 +148,7 @@ public class BenchmarkRunnerTests
     public void NoRunStartsAnInterpreter_OnlyTheEvalHost()
     {
         // F18 step 7.4: the API runs evals and nothing else, so no start names Python or sets its flags.
-        var eval = BenchmarkCheck.ForEval("stub", "Stub");
+        var eval = new BenchmarkCheck("stub", "Stub");
         var runner = new BenchmarkRunner(new BenchmarkCatalog([eval]), _workspace, "http://127.0.0.1:1/", "/app/evals/x.dll");
 
         var start = runner.StartInfoFor(eval, new BenchmarkRun("run_1", "stub", 1));

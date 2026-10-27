@@ -51,7 +51,7 @@ public class CalibrationEndpointTests
         }
         if (graded)
             await reviews.AddAsync(new HumanGrade(RunId, new BenchmarkProtocol.ConversationKey("puls-cook", 1, "cook-en"), "meal-for-people", HumanVerdict.Pass, "a meal", "Louis", T0));
-        var catalog = new BenchmarkCatalog([BenchmarkCheck.ForEval("puls-cook", "Cook")]);
+        var catalog = new BenchmarkCatalog([new BenchmarkCheck("puls-cook", "Cook")]);
         var runner = new BenchmarkRunner(catalog, TestPaths.RepoRoot, "http://127.0.0.1:1/", RunnerBuild.Dll);
         var app = ApiTestHost.Build(adminKey: AdminKey, store: store, reviews: reviews, catalog: catalog, runner: runner,
             calibrations: withCalibrations ? calibrations : null, calibrationRecorder: withCalibrations ? recorder : null);

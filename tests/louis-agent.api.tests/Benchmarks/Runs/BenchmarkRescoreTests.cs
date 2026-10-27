@@ -11,7 +11,7 @@ namespace LouisAgent.Api.Tests.Benchmarks.Runs;
 // Written first: BenchmarkRunner had no StartRescore and the protocol's first line no rescore_of.
 public class BenchmarkRescoreTests
 {
-    private static readonly BenchmarkCheck Stub = BenchmarkCheck.ForEval("stub", "Stub");
+    private static readonly BenchmarkCheck Stub = new BenchmarkCheck("stub", "Stub");
 
     private static BenchmarkRunner RealRunner() =>
         new(new BenchmarkCatalog([Stub]), TestPaths.RepoRoot, "http://127.0.0.1:1/", RunnerBuild.Dll);
@@ -98,7 +98,7 @@ public class BenchmarkRescoreTests
     [Test]
     public async Task StartRescore_ReturnsAtOnce_EvenWhenTheRunnerNeverReadsItsStdin()
     {
-        var runner = new BenchmarkRunner(new BenchmarkCatalog([BenchmarkCheck.ForEval("sleeper", "Sleeper")]), TestPaths.RepoRoot, "http://127.0.0.1:1/", StandInBuild.Dll);
+        var runner = new BenchmarkRunner(new BenchmarkCatalog([new BenchmarkCheck("sleeper", "Sleeper")]), TestPaths.RepoRoot, "http://127.0.0.1:1/", StandInBuild.Dll);
         string export = new('x', 20_000_000);
         var started = System.Diagnostics.Stopwatch.StartNew();
 
