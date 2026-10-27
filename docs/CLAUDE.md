@@ -262,9 +262,11 @@ decision's record (its context, and what it cost) in [docs/adr/](adr/README.md).
   patterns), or **guard clauses**, one `if (…) return …;` per case from the top (Fowler's *Replace Nested Conditional
   with Guard Clauses*). One plain `a ? x : y` stays. The pattern goes in the method's `<remarks>`. Same scope as the
   summaries: a file in a step's commit is fixed whole, untouched files wait.
-- **An endpoint is a named method** (Louis, 2026-10-27) — `MapGet`, `MapPost` and the rest point at a named static
-  method (`admin.MapGet("/benchmarks/{check}/manual", GetManual)`), never a lambda that holds the work; Microsoft's
-  minimal API guidance allows both, and the named one can be read, tested and summarised on its own. Inside it, the
+- **An endpoint is a named method** (Louis, 2026-10-27) — `MapGet`, `MapPost` and the rest point at a named method
+  (`admin.MapGet("/benchmarks/{check}/manual", handlers.GetManual)`), never a lambda that holds the work; Microsoft's
+  minimal API guidance allows both, and the named one can be read, tested and summarised on its own. An endpoint
+  file's methods live on one handler class that holds what they share (the catalogue, the runner, the store), as
+  `AdminHandlers` does (Fowler's *Introduce Parameter Object*; Louis, 2026-10-27). Inside it, the
   checks come first as **guard clauses**, each stopping early with its error, and the happy path last: never a chain
   of `is { } x && … is { } y ? … : …` that declares variables for a ternary. One condition tests one thing.
   Louis, 2026-10-27, on the manual endpoint's one-line chain: "no human will do that".
