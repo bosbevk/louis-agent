@@ -254,6 +254,12 @@ decision's record (its context, and what it cost) in [docs/adr/](adr/README.md).
   patterns), or **guard clauses**, one `if (…) return …;` per case from the top (Fowler's *Replace Nested Conditional
   with Guard Clauses*). One plain `a ? x : y` stays. The pattern goes in the method's `<remarks>`. Same scope as the
   summaries: a file in a step's commit is fixed whole, untouched files wait.
+- **An endpoint is a named method** (Louis, 2026-10-27) — `MapGet`, `MapPost` and the rest point at a named static
+  method (`admin.MapGet("/benchmarks/{check}/manual", GetManual)`), never a lambda that holds the work; Microsoft's
+  minimal API guidance allows both, and the named one can be read, tested and summarised on its own. Inside it, the
+  checks come first as **guard clauses**, each stopping early with its error, and the happy path last: never a chain
+  of `is { } x && … is { } y ? … : …` that declares variables for a ternary. One condition tests one thing.
+  Louis, 2026-10-27, on the manual endpoint's one-line chain: "no human will do that".
 - **Formatting** (Louis, 2026-10-27) — the layout rules live in the root `.editorconfig`: four spaces, a 120-character
   line, one file-scoped namespace line with the usings above it, each brace on its own line, no trailing spaces,
   and an initializer (`new { … }`, `new Foo { … }`) with each property on its own line, never several on one line
