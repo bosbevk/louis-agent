@@ -3,7 +3,7 @@ using LouisAgent.Api.Benchmarks.Runs;
 using LouisAgent.Api.Benchmarks.Store;
 using LouisAgent.Api.Contracts.Admin;
 
-namespace LouisAgent.Api.Admin;
+namespace LouisAgent.Api.Admin.Replies;
 
 /// <summary>
 /// Builds the run rows the admin pages read: a stored run from the store, and a live run from the runner.

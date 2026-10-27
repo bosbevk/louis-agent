@@ -1,5 +1,4 @@
 using LouisAgent.Choices;
-using LouisAgent.Api.Benchmarks.Calibrations;
 using LouisAgent.Api.Benchmarks.Reports;
 using LouisAgent.Api.Benchmarks.Runs;
 using LouisAgent.Api.Benchmarks.Store;
@@ -7,14 +6,21 @@ using LouisAgent.Api.Benchmarks.Store;
 namespace LouisAgent.Api.Admin;
 
 /// <summary>
-/// The JSON rows the admin endpoints send (F27, F31): a stored run, a conversation, a turn with what its tools did, a ledger request,
-/// and a live run. Each is an anonymous object with the portal's snake_case names, written by <c>Results.Json</c>. The standard records
-/// (F18 step 4.5b) ride on the run (its eval, version, commit and graders) and on each conversation (its grades and outcome), with
-/// their enums spelt as the protocol and the store spell them (<c>FixedRule</c>, <c>Pass</c>), as <c>models[].level</c> is, so one
-/// spelling runs from the runner to the portal. A run from before step 2a sends null for them, never <c>[]</c> or 0 (ADR 0007).
+/// The JSON rows the admin endpoints not yet swept still send (F27, F31): a stored run, a conversation, a turn with
+/// what its tools did, a ledger request, and a live run. Each is an anonymous object with the portal's snake_case
+/// names. The standard records (F18 step 4.5b) ride on the run (its eval, version, commit and graders) and on each
+/// conversation (its grades and outcome), with their enums spelt as the protocol and the store spell them
+/// (<c>FixedRule</c>, <c>Pass</c>), so one spelling runs from the runner to the portal. A run from before step 2a
+/// sends null for them, never <c>[]</c> or 0 (ADR 0007).
 /// </summary>
+/// <remarks>
+/// On its way out: the endpoint sweep turns each row into a contract record built by its <c>Of</c>
+/// (<c>Admin/Replies</c>), and a row goes from here when its last caller is swept.
+/// </remarks>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
 internal static class AdminRows
 {
+    /// <summary>A stored run, as the run page reads it; the list's record twin is <c>StoredRunRow</c>.</summary>
     public static object RunRow(BenchmarkDocuments.Run r) => new
     {
         id = r.Id,
@@ -34,15 +40,27 @@ internal static class AdminRows
                 requests = r.Total.Requests
             },
         store_error = r.StoreError,
-        models = r.Models?.Select(m => new { m.Mode, level = m.Level.Wire(), m.Role, m.Model }),
+        models = r.Models?.Select(m => new
+        {
+            m.Mode,
+            level = m.Level.Wire(),
+            m.Role,
+            m.Model
+        }),
         eval = r.Eval,
         eval_version = r.EvalVersion,
         commit = r.Commit,
         rescore_of = r.RescoreOf,
         graders = r.Graders?.Select(g => new
-        { name = g.Name, version = g.Version, kind = g.Kind.Wire(), question = g.Question }),
+        {
+            name = g.Name,
+            version = g.Version,
+            kind = g.Kind.Wire(),
+            question = g.Question
+        }),
     };
 
+    /// <summary>One conversation of a stored run, with its grades and the people's grades beside them.</summary>
     public static object ConversationRow(BenchmarkDocuments.Conversation c,
         IReadOnlyList<Benchmarks.Reviews.HumanGrade>? human = null) => new
         {
@@ -65,18 +83,26 @@ internal static class AdminRows
                 judge_prompt_hash = g.JudgePromptHash
             }),
             outcome = c.Outcome?.Wire(),
-            // People's grades of this conversation (F18 step 6a.2): each reviewer's latest, beside the grades above; empty when nobody has graded it.
+            // People's grades of this conversation (F18 step 6a.2): each reviewer's latest, beside the grades above;
+            // empty when nobody has graded it.
             human_grades = (human ?? []).Select(g => Endpoints.ReviewEndpoints.Row(g, latest: true)),
         };
 
-    /// <summary>A turn, with what its tools did, read from its stored events (step 11c's first half): every run has it.</summary>
+    /// <summary>
+    /// A turn, with what its tools did, read from its stored events (step 11c's first half): every run has it.
+    /// </summary>
     public static object TurnRow(BenchmarkDocuments.Turn t, BenchmarkTools.Summary tools) => new
     {
         tools = new
         {
             calls = tools.Calls,
             failed = tools.Failed,
-            reasons = tools.Reasons.Select(r => new { tool = r.Tool, reason = r.Reason, count = r.Count })
+            reasons = tools.Reasons.Select(r => new
+            {
+                tool = r.Tool,
+                reason = r.Reason,
+                count = r.Count
+            })
         },
         mode = t.Key.Mode,
         repeat = t.Key.Repeat,
@@ -94,11 +120,18 @@ internal static class AdminRows
         error = t.Error,
     };
 
+    /// <summary>One model request from the ledger: which turn asked, the model, its tokens, cost and time.</summary>
     public static object RequestRow(BenchmarkDocuments.Request r) => new
     {
         turn = r.Turn is null
             ? null
-            : new { mode = r.Turn.Mode, repeat = r.Turn.Repeat, task = r.Turn.Task, turn = r.Turn.Turn },
+            : new
+            {
+                mode = r.Turn.Mode,
+                repeat = r.Turn.Repeat,
+                task = r.Turn.Task,
+                turn = r.Turn.Turn
+            },
         at = r.At,
         purpose = r.Purpose,
         session = r.Session,
@@ -113,8 +146,8 @@ internal static class AdminRows
     };
 
     /// <summary>
-    /// A live run: the runner's view, and whether its recording kept everything once it is done. A judge check (F18 step 6a.5b) says which run and judge it checks, and its last line,
-    /// since its lines are not streamed to a page: the runner's refusal, when it refused, is the last.
+    /// A live run: the runner's view, and whether its recording kept everything once it is done. Its record twin is
+    /// <c>LiveRunRow</c>; this one stays for the re-score's 201 until that file is swept.
     /// </summary>
     public static object Row(BenchmarkRun run, BenchmarkRecorder.Result? stored = null) => new
     {
@@ -131,39 +164,5 @@ internal static class AdminRows
         calibration_of = run.Calibration?.Of,
         grader = run.Calibration?.Grader,
         last_line = run.Calibration is null ? null : run.Lines.LastOrDefault(l => !string.IsNullOrWhiteSpace(l)),
-    };
-
-    /// <summary>A judge check's report (F18 step 6a.5b), in the agreement card's shape: each class as the judge's pass, fail and unknown counts.</summary>
-    public static object CalibrationRow(CalibrationRecord c) => new
-    {
-        run = c.Run,
-        grader = c.Grader,
-        judge_model = c.JudgeModel,
-        at = c.At,
-        agreed = c.Agreed,
-        total = c.Total,
-        bar = c.Bar,
-        passes = c.Passes,
-        person_pass = new
-        {
-            judge_pass = c.PersonPass.JudgePass,
-            judge_fail = c.PersonPass.JudgeFail,
-            judge_unknown = c.PersonPass.JudgeUnknown
-        },
-        person_fail = new
-        {
-            judge_pass = c.PersonFail.JudgePass,
-            judge_fail = c.PersonFail.JudgeFail,
-            judge_unknown = c.PersonFail.JudgeUnknown
-        },
-        disagreements = c.Disagreements.Select(d => new
-        {
-            scenario = d.Scenario,
-            mode = d.Mode,
-            repeat = d.Repeat,
-            label = d.Label,
-            judge = d.Judge,
-            reason = d.Reason
-        }),
     };
 }

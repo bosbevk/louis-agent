@@ -1115,6 +1115,11 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   for the endpoint files not swept yet (stored runs, calibrations, re-scores), which still write them with the
   default options; each goes when its last caller is swept. One thing learned: `TypedResults.ServerSentEvents` over
   `SseItem<string>` answers `ServerSentEventsResult<string>`, not `…<SseItem<string>>`.
+- **Unattended run, Part 2 (the endpoint sweep): `CalibrationEndpoints`.** `CalibrationHandlers` holds the two
+  judge-check routes with guard clauses and declared answers; the report row is the contract's `CalibrationReportRow`
+  (built by `CalibrationReplies`), and `AdminRows.CalibrationRow` is gone. `CalibrationReplyJsonTests` pinned the
+  list's JSON first. The reply factories moved to `Admin/Replies/`, since a seventh file in `Admin/` would pass the
+  folder's limit.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

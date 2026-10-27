@@ -2,7 +2,7 @@ using LouisAgent.Api.Benchmarks.Reports;
 using LouisAgent.Api.Benchmarks.Runs;
 using LouisAgent.Api.Contracts.Admin;
 
-namespace LouisAgent.Api.Admin;
+namespace LouisAgent.Api.Admin.Replies;
 
 /// <summary>
 /// Builds the admin replies from the API's own types: each contract record gets its <c>Of</c> here, so a handler reads
