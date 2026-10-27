@@ -24,7 +24,7 @@
     {
         <p class="review-who muted">Grading as <strong>@Reviewer.Name</strong>. <button type="button" class="review-change-name link-button" @onclick="ChangeNameAsync">Not you?</button></p>
     }
-    <textarea class="review-note" placeholder="A note (optional)" maxlength="2000" @bind="_note"></textarea>
+    <textarea class="review-note" placeholder="A note (optional)" maxlength="@ReviewNote.MaxLength" @bind="_note"></textarea>
     <div class="review-buttons segmented" role="radiogroup" aria-label="Your grade">
         <button type="button" role="radio" class="review-pass @Pressed("pass")" aria-checked="@Checked("pass")" disabled="@(!HasName || _busy)" @onclick='() => GradeAsync("pass")'>Pass</button>
         <button type="button" role="radio" class="review-fail @Pressed("fail")" aria-checked="@Checked("fail")" disabled="@(!HasName || _busy)" @onclick='() => GradeAsync("fail")'>Fail</button>

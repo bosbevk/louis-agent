@@ -20,6 +20,10 @@ public static class AgreementText
         return $"You {you} {answers}. {did}";
     }
 
+    /// <summary>The 2x2 counts behind a bar, on hover (6a.3c, out of the panel's code-behind).</summary>
+    public static string Hover(string you, ClassAgreement c) =>
+        $"Of the {c.Total} answers you {you}: the judge passed {c.JudgePass}, failed {c.JudgeFail}, couldn't tell {c.JudgeUnknown}.";
+
     public static string Share(ClassAgreement c) => c.Total == 0
         ? "no labels"
         : $"{c.Percent}%" + (c.Few ? " · few labels" : "");

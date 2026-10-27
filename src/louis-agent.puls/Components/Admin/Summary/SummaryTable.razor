@@ -19,9 +19,9 @@
                         <td class="s-slice">@slice.Slice</td>
                         <td class="s-n num">@slice.N</td>
                         <td class="s-passed">@SummaryText.Passed(slice)</td>
-                        <td class="s-rate num">@Bar(slice, slice.PassRate, hat: false)@SummaryText.Rate(slice, slice.PassRate)</td>
-                        <td class="s-at-k num">@Bar(slice, slice.PassAtK, hat: false)@SummaryText.Rate(slice, slice.PassAtK)</td>
-                        <td class="s-hat-k num">@Bar(slice, slice.PassHatK, hat: true)@SummaryText.Rate(slice, slice.PassHatK)</td>
+                        <td class="s-rate num"><RateBar Rate="@(slice.TooFew ? null : slice.PassRate)" />@SummaryText.Rate(slice, slice.PassRate)</td>
+                        <td class="s-at-k num"><RateBar Rate="@(slice.TooFew ? null : slice.PassAtK)" />@SummaryText.Rate(slice, slice.PassAtK)</td>
+                        <td class="s-hat-k num"><RateBar Rate="@(slice.TooFew ? null : slice.PassHatK)" Hat="true" />@SummaryText.Rate(slice, slice.PassHatK)</td>
                         <td class="s-unknown num">@slice.Unknown</td>
                         <td class="s-infra num">@slice.Infrastructure</td>
                         <td class="s-cost-trial num">@SummaryText.Cost(slice.CostPerTrial, Currency)</td>

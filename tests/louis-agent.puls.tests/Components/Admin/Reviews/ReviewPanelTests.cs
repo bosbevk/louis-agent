@@ -56,6 +56,7 @@ public class ReviewPanelTests
         Assert.That(cut.Find(".review-answer").TextContent, Does.Contain("Bobotie vir ses"));
         Assert.That(new[] { ".review-pass", ".review-fail", ".review-unsure" }.Select(s => cut.Find(s).HasAttribute("disabled")), Is.EqualTo(new[] { false, false, false }));
         Assert.That(cut.Find(".review-note").TagName, Is.EqualTo("TEXTAREA"));
+        Assert.That(cut.Find(".review-note").GetAttribute("maxlength"), Is.EqualTo("2000"), "the limit the API holds a note to (6a.3c: ReviewNote.MaxLength)");
     }
 
     [Test]

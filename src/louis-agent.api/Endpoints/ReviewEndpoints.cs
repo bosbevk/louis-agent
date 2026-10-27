@@ -23,9 +23,6 @@ internal static class ReviewEndpoints
     /// <summary>The longest note and reviewer name a grade may carry (F18 step 6a.2b): a request cannot fill the store with one grade.</summary>
     internal const int MaxNoteLength = 2000, MaxReviewerLength = 100;
 
-    /// <summary>What a human review's name ends with (<c>meal-for-people.human</c>): the one spelling, which the other routes use (6a.5e).</summary>
-    internal const string HumanSuffix = ".human";
-
     public static void MapReviews(this RouteGroupBuilder admin, IBenchmarkStore? store, IHumanReviewStore? reviews)
     {
         admin.MapPut("/benchmarks/runs/{id}/reviews/{mode}/{repeat:int}/{task}/{grader}",
@@ -49,7 +46,7 @@ internal static class ReviewEndpoints
                 if ((await s.ConversationsAsync(id, cancellationToken)).All(c => c.Key != key))
                     return ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error", MessageText.Format(ReviewUserText.NoStoredConversation, new { Id = id, Mode = mode, Repeat = repeat, Task = task }));
 
-                var grade = new HumanGrade(id, key, grader[..^HumanSuffix.Length], verdict.Value, request.Note ?? "", request.Reviewer.Trim(), DateTimeOffset.UtcNow);
+                var grade = new HumanGrade(id, key, grader[..^HumanReview.Suffix.Length], verdict.Value, request.Note ?? "", request.Reviewer.Trim(), DateTimeOffset.UtcNow);
                 await r.AddAsync(grade, cancellationToken);
                 return Results.Json(Row(grade, latest: true));
             }));
@@ -66,8 +63,8 @@ internal static class ReviewEndpoints
         {
             if (await s.GetRunAsync(id, cancellationToken) is not { } run) return NoRun(id);
             var humans = HumanReviewsOf(run);
-            if (grader is null || !humans.Contains(grader + HumanSuffix))
-                return Bad(MessageText.Format(ReviewUserText.LabelsNeedAGrader, new { Graders = string.Join(", ", humans.Select(h => h[..^HumanSuffix.Length]).Order(StringComparer.Ordinal)) }));
+            if (grader is null || !humans.Contains(grader + HumanReview.Suffix))
+                return Bad(MessageText.Format(ReviewUserText.LabelsNeedAGrader, new { Graders = string.Join(", ", humans.Select(h => h[..^HumanReview.Suffix.Length]).Order(StringComparer.Ordinal)) }));
 
             var labels = await DecidedLabelsAsync(s, r, id, grader, cancellationToken);
             if (labels.Count == 0)
@@ -88,12 +85,12 @@ internal static class ReviewEndpoints
 
     /// <summary>The human reviews a run has, by name: the run's Human graders.</summary>
     internal static HashSet<string> HumanReviewsOf(Run run) =>
-        (run.Graders ?? []).Where(g => g.Kind == BenchmarkGraderKind.Human && g.Name.EndsWith(HumanSuffix, StringComparison.Ordinal)).Select(g => g.Name).ToHashSet();
+        (run.Graders ?? []).Where(g => g.Kind == BenchmarkGraderKind.Human && g.Name.EndsWith(HumanReview.Suffix, StringComparison.Ordinal)).Select(g => g.Name).ToHashSet();
 
     /// <summary>A grade as the portal reads it: the review's own name, the model grader it answers, and whether it is its reviewer's latest.</summary>
     internal static object Row(HumanGrade g, bool latest) => new
     {
-        mode = g.Conversation.Mode, repeat = g.Conversation.Repeat, task = g.Conversation.Task, grader = g.Grader + HumanSuffix, model_grader = g.Grader,
+        mode = g.Conversation.Mode, repeat = g.Conversation.Repeat, task = g.Conversation.Task, grader = g.Grader + HumanReview.Suffix, model_grader = g.Grader,
         verdict = g.Verdict.ToString().ToLowerInvariant(), note = g.Note, reviewer = g.Reviewer, at = g.At, latest,
     };
 

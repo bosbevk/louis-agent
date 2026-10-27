@@ -19,10 +19,6 @@ public partial class AgreementPanel
 
     private IReadOnlyList<JudgeAgreement> Judges => AgreementView.Of(Run);
 
-    /// <summary>The 2x2 counts behind a bar, on hover.</summary>
-    private static string Hover(string you, ClassAgreement c) =>
-        $"Of the {c.Total} answers you {you}: the judge passed {c.JudgePass}, failed {c.JudgeFail}, couldn't tell {c.JudgeUnknown}.";
-
     private async Task DownloadAsync(string grader)
     {
         _error = null;

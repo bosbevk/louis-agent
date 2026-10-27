@@ -11,11 +11,11 @@
                 {
                     <section class="category-card agreement-judge">
                         <h4><code>@judge.Grader</code></h4>
-                        <div class="agreement-class agreement-pass" title="@Hover("passed", judge.PersonPass)">
+                        <div class="agreement-class agreement-pass" title="@AgreementText.Hover("passed", judge.PersonPass)">
                             <p class="agreement-sentence">@AgreementText.Sentence(judge.PersonPass)</p>
                             <div class="agreement-bar"><span class="rate-track"><span class="rate-fill" style="width: @AgreementText.Width(judge.PersonPass)"></span></span><strong class="agreement-share">@AgreementText.Share(judge.PersonPass)</strong></div>
                         </div>
-                        <div class="agreement-class agreement-fail" title="@Hover("failed", judge.PersonFail)">
+                        <div class="agreement-class agreement-fail" title="@AgreementText.Hover("failed", judge.PersonFail)">
                             <p class="agreement-sentence">@AgreementText.Sentence(judge.PersonFail)</p>
                             <div class="agreement-bar"><span class="rate-track"><span class="rate-fill hat" style="width: @AgreementText.Width(judge.PersonFail)"></span></span><strong class="agreement-share">@AgreementText.Share(judge.PersonFail)</strong></div>
                         </div>

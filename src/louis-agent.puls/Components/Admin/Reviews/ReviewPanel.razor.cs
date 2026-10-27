@@ -29,7 +29,7 @@ public partial class ReviewPanel : IDisposable
 
     private string Judge => BlindReview.JudgeOf(Review.Name);
 
-    private string QuestionText => Review.Question ?? $"Is this answer good enough for {Judge}?";
+    private string QuestionText => ReviewText.Question(Review.Question, Judge);
 
     private bool HasName => Reviewer.Name is not null;
 
@@ -46,20 +46,9 @@ public partial class ReviewPanel : IDisposable
     /// <summary>aria-checked wants the words, and Blazor writes a bool as an empty attribute.</summary>
     private string Checked(string verdict) => PersonVerdict == verdict ? "true" : "false";
 
-    private string ResultText => PersonVerdict is { } person && JudgeGrade is { } judge ? BlindReview.Compare(person, judge.Outcome) switch
-    {
-        ReviewVerdictKind.Agreed => "You agreed with the judge.",
-        ReviewVerdictKind.Disagreed => "You disagreed with the judge.",
-        ReviewVerdictKind.YouWereUnsure => "You were unsure.",
-        _ => "The judge could not tell.",
-    } : "";
+    private string ResultText => ReviewText.Result(PersonVerdict, JudgeGrade?.Outcome);
 
-    private string JudgeText => JudgeGrade?.Outcome switch
-    {
-        GradeOutcome.Pass => "The judge said pass.",
-        GradeOutcome.Fail => "The judge said fail.",
-        _ => "The judge could not tell.",
-    };
+    private string JudgeText => ReviewText.Judge(JudgeGrade?.Outcome);
 
     protected override async Task OnInitializedAsync()
     {

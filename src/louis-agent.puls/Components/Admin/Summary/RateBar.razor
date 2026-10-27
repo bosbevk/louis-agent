@@ -1,0 +1,5 @@
+@* F18 step 6a.4, markup since 6a.3c (it was a RenderTreeBuilder in SummaryTable): a bar as wide as the rate behind the number; none when there is no rate (a slice too few for one). Orange (hat) for pass^k, green for the others, as the pass-rates list colours them. *@
+@if (Rate is { } rate)
+{
+    <span class="rate-track"><span class="@(Hat ? "rate-fill hat" : "rate-fill")" style="width: @SummaryText.BarWidth(rate)"></span></span>
+}
