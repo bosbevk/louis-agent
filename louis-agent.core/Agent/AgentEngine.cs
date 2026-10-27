@@ -1,4 +1,3 @@
-
 using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Core.Agent.Commands;
 using LouisAgent.Core.Agent.EngineTools;
@@ -17,6 +16,7 @@ using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
 
 namespace LouisAgent.Core.Agent;
+
 /// <summary>
 /// One agent: its tools, its skills and the model behind <see cref="IChatClient"/>, wired once (S, CL15: the engine is the
 /// facade). A turn runs on <see cref="TurnRunner"/> over the <see cref="ChatPipeline"/>, where
@@ -28,9 +28,7 @@ public class AgentEngine
     private static readonly ILogger Log = AgentLogging.For<AgentEngine>();
 
     private readonly SkillTools _skillTools;
-    private readonly PythonTools _python;
-    private readonly PowerShellTools _powerShell;
-    private readonly ToolRegistry _registry = new();
+    private readonly ToolRegistry _registry;
     private readonly ToolCallGuards _guards;
     private readonly TurnRunner _turns;
     private readonly UserCommands _commands;
@@ -96,6 +94,7 @@ public class AgentEngine
 
     private readonly AgentBuiltTools _agentBuiltTools;
 
+    /// <summary>Builds the agent's parts once and registers its tools; a model without tools gets none.</summary>
     /// <param name="toolsets">
     /// Objects whose public methods become the agent's tools (plus <see cref="ExecuteSkill"/>): a session's catalogue
     /// toolsets (<c>AgentEngineFactory</c>), or another agent's own tools, such as the orchestrator's. Null registers no
@@ -116,10 +115,11 @@ public class AgentEngine
     {
         SupportsTools = supportsTools;
         WorkspaceRoot = Path.GetFullPath(options.WorkspaceRoot);
-        _python = new PythonTools(WorkspaceRoot);
-        _powerShell = new PowerShellTools(WorkspaceRoot);
-        _skillTools = new SkillTools(skillProvider, options, WorkspaceRoot, _python, _powerShell);
-        _agentBuiltTools = new AgentBuiltTools(_registry, supportsTools, WorkspaceRoot, _python, _powerShell,
+        _registry = new ToolRegistry(supportsTools);
+        var python = new PythonTools(WorkspaceRoot);
+        var powerShell = new PowerShellTools(WorkspaceRoot);
+        _skillTools = new SkillTools(skillProvider, options, WorkspaceRoot, python, powerShell);
+        _agentBuiltTools = new AgentBuiltTools(_registry, supportsTools, WorkspaceRoot, python, powerShell,
             () => SkillsDirectory, () => ReservedToolNames);
         _commands = new UserCommands(_agentBuiltTools, _skillTools, () => Display);
 
@@ -140,32 +140,12 @@ public class AgentEngine
         OwnTools.Register(_registry, _skillTools, _agentBuiltTools, options, toolsets, selfExtension, clock);
     }
 
-    /// <summary>
-    /// Keeps the one tool named and drops every other, the clock and <see cref="ExecuteSkill"/> included (F30: a minion
-    /// gets one task and one tool, so its prompt lists exactly what it may call). Before the engine's first turn.
-    /// </summary>
-    public void KeepOnlyTool(string name)
-    {
-        foreach (var other in _registry.Live.Where(t => !string.Equals(t.Name, name, StringComparison.Ordinal))
-                     .ToList())
-            _registry.Remove(other);
-    }
+    /// <summary>Keeps the one tool named and drops every other, for a minion's one task (F30; see <see cref="ToolRegistry.KeepOnly"/>).</summary>
+    public void KeepOnlyTool(string name) => _registry.KeepOnly(name);
 
-    /// <summary>
-    /// Register a tool discovered from an external source (e.g., Rider MCP).
-    /// Currently logs the discovery; full invocation requires MCP protocol implementation.
-    /// Returns true if not already registered, false if duplicate.
-    /// </summary>
-    public bool RegisterDiscoveredTool(string name, string description)
-    {
-        if (!SupportsTools)
-        {
-            Log.Log(LogLevel.Warning, AgentLogMessage.McpCannotRegister, new { Name = name }, tag: "MCP");
-            return false;
-        }
-
-        return _registry.RegisterDiscovered(name, description);
-    }
+    /// <summary>Registers a tool discovered outside, e.g. in Rider's MCP; false when it's a duplicate or tools are off.</summary>
+    public bool RegisterDiscoveredTool(string name, string description) =>
+        _registry.RegisterDiscovered(name, description);
 
     /// <summary>A history seeded with the system prompt (and the no-tools notice when applicable).</summary>
     public List<ChatMessage> NewHistory() => _turns.NewHistory();

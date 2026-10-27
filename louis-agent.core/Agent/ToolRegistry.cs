@@ -1,4 +1,3 @@
-
 using LouisAgent.Core.Agent.Catalog;
 using System.Reflection;
 using LouisAgent.Core.Messages;
@@ -8,13 +7,15 @@ using Microsoft.Extensions.Logging;
 using LouisAgent.Core.Agent.Messages;
 
 namespace LouisAgent.Core.Agent;
+
 /// <summary>
 /// The agent's tools, kept in name order (ordinal), so the tool list, and with it the start of every request, is the
 /// same bytes from one run to the next (F4: the prompt cache is keyed by the exact prefix, and reflection's method order
 /// isn't guaranteed). A tool added later (an agent-built one) still changes the list, as any change must. Tool names are
-/// unique across all toolsets: a second tool with a name already in the list throws.
+/// unique across all toolsets: a second tool with a name already in the list throws. When the model takes no tools
+/// (<paramref name="supportsTools"/> false), it won't register tools discovered elsewhere either.
 /// </summary>
-internal sealed class ToolRegistry
+internal sealed class ToolRegistry(bool supportsTools = true)
 {
     private static readonly ILogger Log = AgentLogging.For<ToolRegistry>();
 
@@ -27,6 +28,7 @@ internal sealed class ToolRegistry
     /// </summary>
     internal List<AITool> Live { get; } = [];
 
+    /// <summary>How many tools there are.</summary>
     public int Count => Live.Count;
 
     /// <summary>Adds a tool at its place in name order; a name already in the list throws.</summary>
@@ -50,7 +52,18 @@ internal sealed class ToolRegistry
             Add(AgentCatalog.FunctionOf(method, _ => target));
     }
 
+    /// <summary>Takes a tool out of the list; false when it wasn't there.</summary>
     public bool Remove(AITool tool) => Live.Remove(tool);
+
+    /// <summary>
+    /// Keeps the one tool named and drops every other, the clock and <c>ExecuteSkill</c> included (F30: a minion gets one
+    /// task and one tool, so its prompt lists exactly what it may call). Before the engine's first turn.
+    /// </summary>
+    public void KeepOnly(string name)
+    {
+        foreach (var other in Live.Where(t => !string.Equals(t.Name, name, StringComparison.Ordinal)).ToList())
+            Remove(other);
+    }
 
     /// <summary>Whether a tool has this name; agent-built tools compare without case, as their files are named.</summary>
     public bool Contains(string name, StringComparison comparison = StringComparison.Ordinal) =>
@@ -59,10 +72,16 @@ internal sealed class ToolRegistry
     /// <summary>
     /// Register a tool discovered from an external source (e.g., Rider MCP).
     /// Currently logs the discovery; full invocation requires MCP protocol implementation.
-    /// Returns true if not already registered, false if duplicate.
+    /// Returns true if not already registered, false if duplicate or if the model takes no tools.
     /// </summary>
     public bool RegisterDiscovered(string name, string description)
     {
+        if (!supportsTools)
+        {
+            Log.Log(LogLevel.Warning, AgentLogMessage.McpCannotRegister, new { Name = name }, tag: "MCP");
+            return false;
+        }
+
         if (Contains(name))
         {
             Log.Log(LogLevel.Information, AgentLogMessage.McpToolAlreadyRegistered, new { Name = name }, tag: "MCP");
