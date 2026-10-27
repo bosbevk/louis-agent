@@ -29,8 +29,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- F18 step 4.1: the Python stub's protocol lines, saved from benchmarks/stub/run_check.py (the @ lines only). -->
-    <None Include="Fixtures\python-stub.txt" CopyToOutputDirectory="PreserveNewest" />
+    <!-- F18 step 4.1: the stub's expected protocol lines (the @ lines only), first saved from the Python stub, rewritten to the stub's own names in step 7.5.4. -->
+    <None Include="Fixtures\stub-run.txt" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>

@@ -107,9 +107,9 @@ public class BenchmarkTrendTests
     public async Task ARunOnAnotherModel_IsAnotherLine_AndAModeWithoutOneKeepsItsName()
     {
         await Run("a", "cook", hour: 1, repeat: 1, BenchmarkRunStatus.Done, cookCost: 0.04m, right: 3,
-            models: [new ModelUse(SampleMode.Beta, BenchmarkModelLevel.Agent, "puls-cook", "claude-haiku-5-5")]);
+            models: [new ModelUse(SampleMode.Beta, BenchmarkModelLevel.Agent, SampleRole.Alpha, "claude-haiku-5-5")]);
         await Run("b", "cook", hour: 2, repeat: 1, BenchmarkRunStatus.Done, cookCost: 0.05m, right: 3,
-            models: [new ModelUse(SampleMode.Beta, BenchmarkModelLevel.Agent, "puls-cook", "claude-sonnet-5-5")]);
+            models: [new ModelUse(SampleMode.Beta, BenchmarkModelLevel.Agent, SampleRole.Alpha, "claude-sonnet-5-5")]);
 
         var trend = await BenchmarkTrends.ComputeAsync(_store, "cook");
 
@@ -162,9 +162,9 @@ public class BenchmarkTrendTests
     {
         await _store.SaveRunAsync(new Run("a", "cook", 1, BenchmarkRunStatus.Done, T0));
         JsonElement S(string json) => JsonDocument.Parse(json).RootElement.Clone();
-        await _store.SaveConversationAsync("a", new Conversation(new ConversationKey(SampleMode.Beta, 1, "cook-af"), 1, "puls-cook",
+        await _store.SaveConversationAsync("a", new Conversation(new ConversationKey(SampleMode.Beta, 1, "cook-af"), 1, SampleRole.Alpha,
             S("""{"routed_right":true,"ingredients":5,"priced":0,"estimated":4,"unsourced":1,"priced_ratio":0.8}"""), 0, 10));
-        await _store.SaveConversationAsync("a", new Conversation(new ConversationKey(SampleMode.Beta, 1, "cook-recipe-only"), 2, "puls-cook",
+        await _store.SaveConversationAsync("a", new Conversation(new ConversationKey(SampleMode.Beta, 1, "cook-recipe-only"), 2, SampleRole.Alpha,
             S("""{"routed_right":true,"ingredients":5,"priced":0,"estimated":0,"no_shop_rows":5,"priced_ratio":1}"""), 0, 10));
 
         var point = (await BenchmarkTrends.ComputeAsync(_store, "cook")).Modes.Single().Points.Single();
@@ -180,16 +180,16 @@ public class BenchmarkTrendTests
         // first turn's search refused once of two calls.
         await _store.SaveRunAsync(new Run("a", "cook", 1, BenchmarkRunStatus.Done, T0));
         JsonElement S(string json) => JsonDocument.Parse(json).RootElement.Clone();
-        await _store.SaveConversationAsync("a", new Conversation(new ConversationKey(SampleMode.Beta, 1, "cook-af"), 1, "puls-cook",
+        await _store.SaveConversationAsync("a", new Conversation(new ConversationKey(SampleMode.Beta, 1, "cook-af"), 1, SampleRole.Alpha,
             S("""{"routed_right":true,"ingredients":5,"priced":4,"unsourced":0,"priced_ratio":0.8}"""), 0, 10));
-        await _store.SaveConversationAsync("a", new Conversation(new ConversationKey(SampleMode.Beta, 1, "cook-en"), 2, "puls-cook",
+        await _store.SaveConversationAsync("a", new Conversation(new ConversationKey(SampleMode.Beta, 1, "cook-en"), 2, SampleRole.Alpha,
             S("""{"routed_right":true,"ingredients":5,"priced":0,"unsourced":5,"priced_ratio":0}"""), 0, 10));
         StreamEvent E(string type, object data) => new(type, JsonSerializer.SerializeToElement(data), null);
         StreamEvent Use(string id) => E("content_block_start", new { content_block = new { type = "tool_use", id, name = "WebSearch", input = new { } } });
         StreamEvent Refused(string id) => E("content_block_start", new { content_block = new { type = "tool_result", tool_use_id = id, content = "Error: limit", is_error = true } });
-        await _store.SaveTurnAsync("a", new Turn(new TurnKey(SampleMode.Beta, 1, "cook-af", 1), "s1", "?", "!", "puls-cook", null, 1, 2,
+        await _store.SaveTurnAsync("a", new Turn(new TurnKey(SampleMode.Beta, 1, "cook-af", 1), "s1", "?", "!", SampleRole.Alpha, null, 1, 2,
             ["checkers.co.za", "food.com"], 10, null), [Use("u1"), Refused("u1"), Use("u2")]);
-        await _store.SaveTurnAsync("a", new Turn(new TurnKey(SampleMode.Beta, 1, "cook-en", 1), "s2", "?", "!", "puls-cook", null, 1, 0,
+        await _store.SaveTurnAsync("a", new Turn(new TurnKey(SampleMode.Beta, 1, "cook-en", 1), "s2", "?", "!", SampleRole.Alpha, null, 1, 0,
             ["checkers.co.za"], 20, null), []);
         Request R(string task, decimal cost, long input, long cached) =>
             new("a", new TurnKey(SampleMode.Beta, 1, task, 1), T0, "turn", "s", null, "m", input, 100, cached, 0, cost, 1000);

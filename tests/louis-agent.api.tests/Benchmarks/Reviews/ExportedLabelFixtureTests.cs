@@ -20,8 +20,8 @@ public class ExportedLabelFixtureTests
     // 6a.4f: a label carries every turn of its conversation, so the fixture pins a two-turn one.
     private static readonly Turn[] Turns =
     [
-        new(new BenchmarkProtocol.TurnKey(SampleMode.Beta, 1, "sample-dev", 1), "sess_1", "Hello", "Bobotie vir vier", "puls-cook", null, 1, 1, [], 1.0, null),
-        new(new BenchmarkProtocol.TurnKey(SampleMode.Beta, 1, "sample-dev", 2), "sess_1", "Make it six", "Bobotie vir ses", "puls-cook", null, 1, 1, [], 1.0, null),
+        new(new BenchmarkProtocol.TurnKey(SampleMode.Beta, 1, "sample-dev", 1), "sess_1", "Hello", "Bobotie vir vier", SampleRole.Alpha, null, 1, 1, [], 1.0, null),
+        new(new BenchmarkProtocol.TurnKey(SampleMode.Beta, 1, "sample-dev", 2), "sess_1", "Make it six", "Bobotie vir ses", SampleRole.Alpha, null, 1, 1, [], 1.0, null),
     ];
 
     private static string Written() => ReviewLabels.Content(Grade, Turns);

@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using LouisAgent.Core.Config;
 
 namespace LouisAgent.Core.Tests.Config;
@@ -96,20 +97,20 @@ public class AgentOptionsTests
 
     [Test]
     public void RolesEnabled_ReadsRolesEnabled() =>
-        Assert.That(With(("ROLES_ENABLED", "puls-cook,puls/voice-af")).RolesEnabled, Is.EqualTo(new[] { "puls-cook", "puls/voice-af" }));
+        Assert.That(With(("ROLES_ENABLED", SampleRole.Fill("<RoleAlpha>,puls/voice-af"))).RolesEnabled, Is.EqualTo(new[] { SampleRole.Alpha, "puls/voice-af" }));
 
     [Test]
     public void RolesEnabled_ReadsThePersonalitiesSetting_WhenItIsUnset() =>
-        Assert.That(With(("PERSONALITIES_ENABLED", "puls-cook")).RolesEnabled, Is.EqualTo(new[] { "puls-cook" }));
+        Assert.That(With(("PERSONALITIES_ENABLED", SampleRole.Alpha)).RolesEnabled, Is.EqualTo(new[] { SampleRole.Alpha }));
 
     [Test]
     public void RolesEnabled_ReadsTheNewOne_WhenBothAreSet() =>
-        Assert.That(With(("ROLES_ENABLED", "puls-cook"), ("PERSONALITIES_ENABLED", "puls/voice-af")).RolesEnabled, Is.EqualTo(new[] { "puls-cook" }));
+        Assert.That(With(("ROLES_ENABLED", SampleRole.Alpha), ("PERSONALITIES_ENABLED", "puls/voice-af")).RolesEnabled, Is.EqualTo(new[] { SampleRole.Alpha }));
 
     // Review of PR #60: ROLES_ENABLED= (empty: every role on) is set, not unset, so the old name never overrides it.
     [Test]
     public void AnEmptyRolesEnabled_TurnsEveryRoleOn_EvenWithTheOldNameSet() =>
-        Assert.That(With(("ROLES_ENABLED", ""), ("PERSONALITIES_ENABLED", "puls-cook")).RolesEnabled, Is.Empty);
+        Assert.That(With(("ROLES_ENABLED", ""), ("PERSONALITIES_ENABLED", SampleRole.Alpha)).RolesEnabled, Is.Empty);
 
     private static string Stderr(Action action)
     {
@@ -132,7 +133,7 @@ public class AgentOptionsTests
     // warning must also show when both are set, saying the old one is ignored.
     [Test, NonParallelizable]
     public void TheOldSetting_BesideTheNewOne_IsSaidToBeIgnored() =>
-        Assert.That(Stderr(() => With(("ROLES_ENABLED", "puls-cook"), ("PERSONALITIES_ENABLED", "puls/voice-af"))),
+        Assert.That(Stderr(() => With(("ROLES_ENABLED", SampleRole.Alpha), ("PERSONALITIES_ENABLED", "puls/voice-af"))),
             Does.Contain("[WARN]").And.Contain("PERSONALITIES_ENABLED").And.Contain("ignored"));
 
     [Test, NonParallelizable]
@@ -144,7 +145,7 @@ public class AgentOptionsTests
         try
         {
             LouisAgent.Core.Logging.AgentLogging.Configure(null);
-            With(("PERSONALITIES_ENABLED", "puls-cook"));
+            With(("PERSONALITIES_ENABLED", SampleRole.Alpha));
         }
         finally
         {

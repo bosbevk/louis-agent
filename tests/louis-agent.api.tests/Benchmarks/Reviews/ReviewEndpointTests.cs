@@ -41,7 +41,7 @@ public class ReviewEndpointTests
         {
             await store.SaveConversationAsync(RunId, new Conversation(new BenchmarkProtocol.ConversationKey(SampleMode.Beta, 1, task), 1, null,
                 JsonDocument.Parse("{}").RootElement.Clone(), 0, 1.0, [new Grade("meal-for-people", 1, outcome == BenchmarkOutcome.Pass ? 1 : 0, outcome, "the judge's reason")]));
-            await store.SaveTurnAsync(RunId, new Turn(new BenchmarkProtocol.TurnKey(SampleMode.Beta, 1, task, 1), "sess_1", "Vraag", answer, "puls-cook", null, 1, 1, [], 1.0, null), []);
+            await store.SaveTurnAsync(RunId, new Turn(new BenchmarkProtocol.TurnKey(SampleMode.Beta, 1, task, 1), "sess_1", "Vraag", answer, SampleRole.Alpha, null, 1, 1, [], 1.0, null), []);
         }
         var app = ApiTestHost.Build(adminKey: AdminKey, store: store, reviews: reviews);
         await app.StartAsync();

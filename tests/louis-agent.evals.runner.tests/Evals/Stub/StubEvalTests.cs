@@ -8,32 +8,32 @@ using LouisAgent.Evals.Runner.Evals.Stub;
 
 namespace LouisAgent.Evals.Runner.Tests.Evals.Stub;
 
-// The stub (F18 step 4.1), the C# port of benchmarks/stub/run_check.py: its protocol lines are the Python's, line for line, with
+// The stub (F18 step 4.1), the C# port of benchmarks/stub/run_check.py: its protocol lines are the stub's expected lines (first saved from the Python stub), line for line, with
 // the clock readings masked (t, and the seconds, which both write as measured time), the conversation's grades and outcome left
-// out (step 4.5a: the runner grades every trial, and the Python stub never did) and the header left out: the Python's first
+// out (step 4.5a: the runner grades every trial, and the expected lines never have them) and the header left out: the expected first
 // line is the version alone, and the runner's carries the eval, its graders and its models, which the store reads. Written first:
 // the stub threw NotImplementedException on the red run.
 public class StubEvalTests
 {
-    private static string[] PythonLines =>
-        File.ReadAllLines(Path.Combine(AppContext.BaseDirectory, "Fixtures", "python-stub.txt")).Where(l => l.StartsWith('@')).ToArray();
+    private static string[] ExpectedLines =>
+        File.ReadAllLines(Path.Combine(AppContext.BaseDirectory, "Fixtures", "stub-run.txt")).Where(l => l.StartsWith('@')).ToArray();
 
     [Test]
-    public async Task ARunIsThePythonStubsLineForLine()
+    public async Task ARunIsTheStubsExpectedLinesLineForLine()
     {
-        // The mode's roll-up (F18 step 5c) is the harness's, like the grades: the Python stub wrote none.
+        // The mode's roll-up (F18 step 5c) is the harness's, like the grades: the stub's expected lines have none.
         string[] mine = (await RunAsync(repeat: 1)).Skip(1).Where(line => !line.StartsWith("@{\"event\":\"summary\"", StringComparison.Ordinal)).ToArray();
-        string[] python = PythonLines.Skip(1).ToArray();
+        string[] expected = ExpectedLines.Skip(1).ToArray();
 
-        Assert.That(mine, Has.Length.EqualTo(python.Length));
-        for (int i = 0; i < python.Length; i++)
-            Assert.That(Canonical(mine[i]), Is.EqualTo(Canonical(python[i])), $"line {i + 2}");
+        Assert.That(mine, Has.Length.EqualTo(expected.Length));
+        for (int i = 0; i < expected.Length; i++)
+            Assert.That(Canonical(mine[i]), Is.EqualTo(Canonical(expected[i])), $"line {i + 2}");
     }
 
     [Test]
     public async Task EachRepeatOpensItsOwnSessions()
     {
-        // Two modes, two repeats, two conversations: eight sessions, the repeat in each id as the Python's are.
+        // Two modes, two repeats, two conversations: eight sessions, the repeat in each id as the expected lines have it.
         string[] lines = await RunAsync(repeat: 2);
 
         var sessions = lines.Select(Parse)
@@ -92,7 +92,7 @@ public class StubEvalTests
 
     private static JsonElement Parse(string line) => JsonDocument.Parse(line.TrimStart('@')).RootElement;
 
-    /// <summary>One line as its keys, in order, and its values: the clock readings masked, the grades and the pass rates (the harness adds them; the Python has none) left out, everything else compared as written.</summary>
+    /// <summary>One line as its keys, in order, and its values: the clock readings masked, the grades and the pass rates (the harness adds them; the expected lines have none) left out, everything else compared as written.</summary>
     private static string Canonical(string line) => Canonical(Parse(line), null);
 
     private static string Canonical(JsonElement element, string? name) => element.ValueKind switch

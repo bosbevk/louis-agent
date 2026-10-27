@@ -28,7 +28,7 @@ public class RoutingScorerTests
     public void TheExpectedRole_IsTheScenariosRoute_TheCookForAMealAndNobodyOtherwise()
     {
         // F18 step 5.4: from the dataset's routes_to, no longer from the question's name.
-        Assert.That(Dev.Route("cook-2"), Is.EqualTo("puls-cook"));
+        Assert.That(Dev.Route("cook-2"), Is.EqualTo(PulsEvalRole.Cook.Wire()));
         foreach (string task in new[] { "web", "files-2", "git", "numbers", "chat-2" })
             Assert.That(Dev.Route(task), Is.Null, task);
     }
@@ -36,7 +36,7 @@ public class RoutingScorerTests
     [Test]
     public void AMealHandedToTheCook_IsRight()
     {
-        var scores = RoutingScorer.Score(Dev.Route("cook"), Turn(role: "puls-cook", calls: [Start]), delegating: true);
+        var scores = RoutingScorer.Score(Dev.Route("cook"), Turn(role: PulsEvalRole.Cook.Wire(), calls: [Start]), delegating: true);
 
         Assert.That(scores.RoutedRight, Is.True);
         Assert.That(scores.Delegations, Is.EqualTo(1));
@@ -52,7 +52,7 @@ public class RoutingScorerTests
 
     [Test]
     public void AWebQuestionHandedAway_IsWrong() =>
-        Assert.That(RoutingScorer.Score(Dev.Route("web-2"), Turn(role: "puls-cook"), delegating: true).RoutedRight, Is.False);
+        Assert.That(RoutingScorer.Score(Dev.Route("web-2"), Turn(role: PulsEvalRole.Cook.Wire()), delegating: true).RoutedRight, Is.False);
 
     [Test]
     public void WithoutDelegation_AnsweringItselfIsAlwaysRight() =>
@@ -76,8 +76,8 @@ public class RoutingScorerTests
     public void Delegating_IsTheSpecialistsToolset_NotMinions()
     {
         // The Python's rule is "specialists" in the mode's toolsets (routing/run_check.py); a minions-only mode can't hand on.
-        Assert.That(PulsModes.CanDelegate(new EvalMode("minions-only", "puls-cook", [PulsToolset.Minions.Wire(), PulsToolset.Web.Wire()])), Is.False);
-        Assert.That(PulsModes.CanDelegate(new EvalMode("puls-as-built", "puls-cook", [PulsToolset.Specialists.Wire(), PulsToolset.Web.Wire()])), Is.True);
+        Assert.That(PulsModes.CanDelegate(new EvalMode("minions-only", PulsEvalRole.Cook.Wire(), [PulsToolset.Minions.Wire(), PulsToolset.Web.Wire()])), Is.False);
+        Assert.That(PulsModes.CanDelegate(new EvalMode("puls-as-built", PulsEvalRole.Cook.Wire(), [PulsToolset.Specialists.Wire(), PulsToolset.Web.Wire()])), Is.True);
     }
 
     [Test]

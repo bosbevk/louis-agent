@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Grading.Common;
 using LouisAgent.Evals.Trials;
@@ -177,25 +178,25 @@ public class CommonGradersTests
     [Test]
     public async Task RoutedTo_PassesWhenTheFirstTurnWentToTheRole()
     {
-        var grade = await GradeAsync(new RoutedToGrader(_ => "puls-cook"), Trial(Turn(1, [Call("puls-cook")]), Turn(2)));
+        var grade = await GradeAsync(new RoutedToGrader(_ => SampleRole.Alpha), Trial(Turn(1, [Call(SampleRole.Alpha)]), Turn(2)));
 
         Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Pass));
-        Assert.That(grade.Reason, Does.Contain("puls-cook"));
+        Assert.That(grade.Reason, Does.Contain(SampleRole.Alpha));
     }
 
     [Test]
     public async Task RoutedTo_FailsWhenItWentToAnotherRole()
     {
-        var grade = await GradeAsync(new RoutedToGrader(_ => "puls-tools"), Trial(Turn(1, [Call("puls-cook")])));
+        var grade = await GradeAsync(new RoutedToGrader(_ => SampleRole.Eta), Trial(Turn(1, [Call(SampleRole.Alpha)])));
 
         Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Fail));
-        Assert.That(grade.Reason, Does.Contain("puls-cook"));
+        Assert.That(grade.Reason, Does.Contain(SampleRole.Alpha));
     }
 
     [Test]
     public async Task RoutedTo_FailsWhenItAnsweredItself()
     {
-        var grade = await GradeAsync(new RoutedToGrader(_ => "puls-cook"), Trial(Turn(1, [Text("Hallo")])));
+        var grade = await GradeAsync(new RoutedToGrader(_ => SampleRole.Alpha), Trial(Turn(1, [Text("Hallo")])));
 
         Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Fail));
         Assert.That(grade.Reason, Does.Contain("answered itself"));
@@ -204,7 +205,7 @@ public class CommonGradersTests
     [Test]
     public async Task RoutedTo_IsUnknownWithoutAnyTurn()
     {
-        var grade = await GradeAsync(new RoutedToGrader(_ => "puls-cook"), Trial());
+        var grade = await GradeAsync(new RoutedToGrader(_ => SampleRole.Alpha), Trial());
 
         Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Unknown));
     }
@@ -213,9 +214,9 @@ public class CommonGradersTests
     public async Task RoutedTo_ExpectsTheRoleOfEachTrial()
     {
         // The eval says where each trial should go (Puls's routing expects a different role per question).
-        var grader = new RoutedToGrader(trial => trial.Scenario.Id == "bobotie" ? "puls-cook" : "puls-tools");
+        var grader = new RoutedToGrader(trial => trial.Scenario.Id == "bobotie" ? SampleRole.Alpha : SampleRole.Eta);
 
-        Assert.That((await GradeAsync(grader, Trial(Turn(1, [Call("puls-cook")])))).Outcome, Is.EqualTo(GradeOutcome.Pass));
+        Assert.That((await GradeAsync(grader, Trial(Turn(1, [Call(SampleRole.Alpha)])))).Outcome, Is.EqualTo(GradeOutcome.Pass));
     }
 
     [Test]
@@ -230,17 +231,17 @@ public class CommonGradersTests
     [Test]
     public async Task RoutedTo_FailsAHandOverWhenItsAnsweringItselfIsExpected()
     {
-        var grade = await GradeAsync(new RoutedToGrader(_ => null), Trial(Turn(1, [Call("puls-cook")])));
+        var grade = await GradeAsync(new RoutedToGrader(_ => null), Trial(Turn(1, [Call(SampleRole.Alpha)])));
 
         Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Fail));
-        Assert.That(grade.Reason, Does.Contain("puls-cook"));
+        Assert.That(grade.Reason, Does.Contain(SampleRole.Alpha));
     }
 
     [Test]
     public async Task RoutedTo_FailsAnErroredTurnEvenWhenTheRouteIsRight()
     {
         // As the Python check: not an error, and the expected role.
-        var grade = await GradeAsync(new RoutedToGrader(_ => "puls-cook"), Trial(Turn(1, [Call("puls-cook"), Error()])));
+        var grade = await GradeAsync(new RoutedToGrader(_ => SampleRole.Alpha), Trial(Turn(1, [Call(SampleRole.Alpha), Error()])));
 
         Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Fail));
         Assert.That(grade.Reason, Does.Contain("failed"));
@@ -249,7 +250,7 @@ public class CommonGradersTests
     [Test]
     public async Task RoutedTo_IsUnknownForAnInfrastructureFailure()
     {
-        var grade = await GradeAsync(new RoutedToGrader(_ => "puls-cook"), Trial(Turn(1, [Call("puls-cook")], failure: TrialFailure.Timeout)));
+        var grade = await GradeAsync(new RoutedToGrader(_ => SampleRole.Alpha), Trial(Turn(1, [Call(SampleRole.Alpha)], failure: TrialFailure.Timeout)));
 
         Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Unknown));
     }
@@ -258,7 +259,7 @@ public class CommonGradersTests
     public async Task RoutedTo_IgnoresASpecialistsCall()
     {
         // A specialist's own hand-over is not the turn's route: the agent answered itself.
-        var grade = await GradeAsync(new RoutedToGrader(_ => null), Trial(Turn(1, [SubCall("puls-cook")])));
+        var grade = await GradeAsync(new RoutedToGrader(_ => null), Trial(Turn(1, [SubCall(SampleRole.Alpha)])));
 
         Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Pass));
     }
@@ -266,7 +267,7 @@ public class CommonGradersTests
     [Test]
     public async Task RoutedTo_OnlyTheFirstTurnCounts()
     {
-        var grade = await GradeAsync(new RoutedToGrader(_ => "puls-cook"), Trial(Turn(1, [Text("Hallo")]), Turn(2, [Call("puls-cook")])));
+        var grade = await GradeAsync(new RoutedToGrader(_ => SampleRole.Alpha), Trial(Turn(1, [Text("Hallo")]), Turn(2, [Call(SampleRole.Alpha)])));
 
         Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Fail));
     }

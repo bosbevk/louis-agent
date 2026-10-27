@@ -25,7 +25,7 @@ public class EvalRunnerTests
     {
         var turn = new[]
         {
-            SessionEvent.From("message_start", Json("""{"type":"message_start","message":{"session_id":"sess_canned","role":"assistant","toolsets":["web"],"session_role":"puls-cook"}}""")),
+            SessionEvent.From("message_start", Json(SampleRole.Fill("""{"type":"message_start","message":{"session_id":"sess_canned","role":"assistant","toolsets":["web"],"session_role":"<RoleAlpha>"}}"""))),
             SessionEvent.From("content_block_delta", Json("""{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Hallo"}}""")),
         };
         var sink = new StringWriter();
@@ -39,7 +39,7 @@ public class EvalRunnerTests
             Is.EqualTo(new[] { "ProtocolStarted", "ModeStarted", "QuestionAsked", "SseEvent", "SseEvent", "TurnEnded", "ConversationEnded", "ModeEnded", "SummaryReported" }),
             "the mode's summary line (F18 step 5c), read since 5c.2");
         var first = (BenchmarkProtocol.ProtocolStarted)lines[0];
-        Assert.That((first.Eval, first.Commit, first.Models!.Single()), Is.EqualTo(("stub-cook", EvalBuild.Commit, new BenchmarkProtocol.ModelInfo("cook", BenchmarkModelLevel.Agent, "puls-cook", null))));
+        Assert.That((first.Eval, first.Commit, first.Models!.Single()), Is.EqualTo(("stub-cook", EvalBuild.Commit, new BenchmarkProtocol.ModelInfo("cook", BenchmarkModelLevel.Agent, SampleRole.Alpha, null))));
         Assert.That(lines.OfType<BenchmarkProtocol.TurnEnded>().Single().Answer, Is.EqualTo("Hallo"));
         Assert.That(lines.OfType<BenchmarkProtocol.ConversationEnded>().Single().Scores.GetProperty("routed_right").GetBoolean(), Is.True);
     }
@@ -92,7 +92,7 @@ public class EvalRunnerTests
         // F18 step 4.1: the runner writes what the eval says about each turn (who answered, the calls, the hosts), and the mode's
         // number of conversations and the conversation's errors.
         var turn = new[] { SessionEvent.From("content_block_delta", Json("""{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Hallo"}}""")) };
-        var facts = new TurnFacts("puls-cook", null, 1, 3, ["www.checkers.co.za"], null);
+        var facts = new TurnFacts(SampleRole.Alpha, null, 1, 3, ["www.checkers.co.za"], null);
         var sink = new StringWriter();
         var runner = new EvalRunner(new CannedSessionClient(turn), new ProtocolWriter(sink, new FixedClock(At)), new FixedClock(At),
             NullLogger<EvalRunner>.Instance);
@@ -102,7 +102,7 @@ public class EvalRunnerTests
         var lines = sink.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries)
             .Select(l => JsonDocument.Parse(l.TrimStart('@')).RootElement).ToList();
         var turnLine = lines.Single(e => e.GetProperty("event").GetString() == "turn");
-        Assert.That(turnLine.GetProperty("role").GetString(), Is.EqualTo("puls-cook"));
+        Assert.That(turnLine.GetProperty("role").GetString(), Is.EqualTo(SampleRole.Alpha));
         Assert.That(turnLine.GetProperty("puls_calls").GetInt32(), Is.EqualTo(1));
         Assert.That(turnLine.GetProperty("specialist_calls").GetInt32(), Is.EqualTo(3));
         Assert.That(turnLine.GetProperty("hosts").EnumerateArray().Select(h => h.GetString()), Is.EqualTo(new[] { "www.checkers.co.za" }));
@@ -267,7 +267,7 @@ public class EvalRunnerTests
         public string Proves => "A canned trial, to see the runner's lines.";
 
         public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions, CancellationToken cancellationToken) =>
-            ValueTask.FromResult<IReadOnlyList<EvalMode>>([new EvalMode("cook", "puls-cook", [SampleToolset.Alpha])]);
+            ValueTask.FromResult<IReadOnlyList<EvalMode>>([new EvalMode("cook", SampleRole.Alpha, [SampleToolset.Alpha])]);
 
         public IReadOnlyList<EvalScenario> Scenarios { get; } =
             [new EvalScenario("pannekoek", new EvalInput(null, "Africa/Johannesburg", ["Gee my resep"]), default, [], DatasetSplit.Dev)];

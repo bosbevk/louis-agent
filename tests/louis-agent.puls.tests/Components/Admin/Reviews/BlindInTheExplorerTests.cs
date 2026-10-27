@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using System.Text.Json;
 using LouisAgent.Puls.Admin.Reviews;
 using LouisAgent.Puls.Components.Admin;
@@ -13,7 +14,7 @@ public class BlindInTheExplorerTests
 {
     private const string JudgeReason = "feeds four with portions that add up";
 
-    private static readonly string Run = """
+    private static readonly string Run = SampleRole.Fill("""
         {"run":{"id":"run1","check":"puls-cook","repeat":1,
                 "graders":[{"name":"no-error","version":1,"kind":"FixedRule","question":null},{"name":"meal-for-people","version":1,"kind":"Model","question":null},
                            {"name":"meal-for-people.human","version":1,"kind":"Human","question":"Is this a meal for the people asked for?"}]},
@@ -23,10 +24,10 @@ public class BlindInTheExplorerTests
                       {"grader":"meal-for-people","version":1,"score":1,"outcome":"Pass","reason":"__REASON__"},
                       {"grader":"meal-for-people.human","version":1,"score":0,"outcome":"Pending","reason":"waits for a person"}],
             "human_grades":[]}],
-         "turns":[{"mode":"puls-cook","repeat":1,"task":"bobotie","turn":1,"session":"s","question":"Wat kan ek vanaand kook?","answer":"Bobotie vir vier.","role":"puls-cook","seconds":3.0,
+         "turns":[{"mode":"puls-cook","repeat":1,"task":"bobotie","turn":1,"session":"s","question":"Wat kan ek vanaand kook?","answer":"Bobotie vir vier.","role":"<RoleAlpha>","seconds":3.0,
                    "hosts":[],"error":null,"tools":{"calls":0,"failed":0,"reasons":[]}}],
          "requests":[]}
-        """.Replace("__REASON__", JudgeReason);
+        """).Replace("__REASON__", JudgeReason);
 
     private static IRenderedComponent<RunExplorer> Render(string? reviewer, string? openTask)
     {

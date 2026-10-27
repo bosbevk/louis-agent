@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using LouisAgent.Evals.Trials;
 using LouisAgent.SessionStream;
 using static LouisAgent.Evals.Tests.Trials.TrialBuilder;
@@ -69,7 +70,7 @@ public class EngineEventsTests
     [Test]
     public void ASpecialistsCallIsNotTheTurnsRoute()
     {
-        Assert.That(EngineEvents.RoutedRole(Turn(1, [SubCall("puls-cook")])), Is.Null);
+        Assert.That(EngineEvents.RoutedRole(Turn(1, [SubCall(SampleRole.Alpha)])), Is.Null);
     }
 
     [Test]
@@ -125,7 +126,7 @@ public class EngineEventsTests
     [Test]
     public void TheRoleIsTheFirstStartSubSessionsRole()
     {
-        Assert.That(EngineEvents.RoutedRole(Turn(1, [Call("puls-cook")])), Is.EqualTo("puls-cook"));
+        Assert.That(EngineEvents.RoutedRole(Turn(1, [Call(SampleRole.Alpha)])), Is.EqualTo(SampleRole.Alpha));
         Assert.That(EngineEvents.RoutedRole(Turn(1, [Text("Hallo")])), Is.Null);
     }
 

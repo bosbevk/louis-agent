@@ -1,3 +1,4 @@
+using LouisAgent.Identities.Puls;
 using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Agent.Catalog;
@@ -68,7 +69,7 @@ public class PulsSessionSnapshotTests
         var snapshot = new
         {
             Chat = View(factory.GetOrCreate([CoreToolset.Specialists.Wire(), CoreToolset.Web.Wire()], "puls/voice-af", RoleLevel.Agent)),
-            Cook = View(factory.GetOrCreate([CoreToolset.Web.Wire(), ShopsToolset.Shops.Wire()], "puls-cook", RoleLevel.Specialist)),
+            Cook = View(factory.GetOrCreate([CoreToolset.Web.Wire(), ShopsToolset.Shops.Wire()], PulsRole.Cook.Wire(), RoleLevel.Specialist)),
         };
         return JsonSerializer.Serialize(snapshot, Json)
             .Replace(JsonEncodedText.Encode(_skillsDir).ToString(), "<skills>")

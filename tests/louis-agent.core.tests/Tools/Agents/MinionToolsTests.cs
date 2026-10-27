@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using LouisAgent.Choices;
 using LouisAgent.Core.Hosting.SessionLlms;
 using LouisAgent.Core.Sessions.Replay;
@@ -20,7 +21,7 @@ namespace LouisAgent.Core.Tests.Tools.Agents;
 // single-step tasks for the local model, the cloud model coordinates). The peer is a stub: no network, no model.
 public class MinionToolsTests
 {
-    private const string Role = "puls-minion-web-price-lookup";
+    private const string Role = SampleRole.Zeta;
     private static readonly Dictionary<string, Uri> Self = new() { ["puls"] = new Uri("http://puls-agent.test/") };
     private static readonly Dictionary<string, IReadOnlyList<string>> Cascade = new() { ["*"] = ["ollama-puls", "instance"] };
 
@@ -42,7 +43,7 @@ public class MinionToolsTests
         if (request.Method == HttpMethod.Post && request.RequestUri!.AbsolutePath == "/v1/sessions")
         {
             creates.Add(JsonDocument.Parse(request.Content!.ReadAsStringAsync().Result));
-            return Json(HttpStatusCode.Created, """{"session_id":"sess_minion","role":"puls-minion-web-price-lookup"}""");
+            return Json(HttpStatusCode.Created, SampleRole.Fill("""{"session_id":"sess_minion","role":"<RoleZeta>"}"""));
         }
         return request.Method.Method switch
         {
@@ -86,7 +87,7 @@ public class MinionToolsTests
         Assert.That(body.GetProperty("task").GetString(), Is.EqualTo($"minion:{Role}"));
         Assert.That(body.TryGetProperty("toolsets", out _), Is.False, "the peer derives the toolset from the tool");
 
-        Assert.That(answer, Does.StartWith("shop: Checkers").And.Contain("[Minion puls-minion-web-price-lookup on ollama-puls with FetchUrl"));
+        Assert.That(answer, Does.StartWith("shop: Checkers").And.Contain(SampleRole.Fill("[Minion <RoleZeta> on ollama-puls with FetchUrl")));
         UsageRecord row = sink.Records.Single();
         Assert.That((row.Purpose, row.Model, row.Session, row.Turn, row.Parent), Is.EqualTo(("sub_session", $"minion:{Role}", "sess_cook", (int?)2, "sess_puls#1")));
         Assert.That(row.Cost, Is.EqualTo(new UsageCost("USD", 0m, null)), "the local model's cost, 0, is still a number: never unknown");
@@ -97,7 +98,7 @@ public class MinionToolsTests
     {
         // F18 step 4a: a minion that reads a page records into, or replays from, the trial of the chat it works for.
         var withReplay = new List<JsonDocument>();
-        using (SessionReplay.Use(new SessionReplay(WebReplayMode.Replay, "run_1:puls-cook:1/bobotie", Model: false)))
+        using (SessionReplay.Use(new SessionReplay(WebReplayMode.Replay, SampleMode.Fill("run_1:<ModeBeta>:1/bobotie"), Model: false)))
         using (CooksTurn())
             await Tools(Peer(withReplay)).StartMinion(Role, "FetchUrl", "https://shop.test/mince; beef mince 500 g; Stellenbosch");
         var without = new List<JsonDocument>();
@@ -106,7 +107,7 @@ public class MinionToolsTests
 
         var replay = withReplay.Single().RootElement.GetProperty("replay");
         Assert.That((replay.GetProperty("web").GetString(), replay.GetProperty("of").GetString(), replay.GetProperty("model").GetBoolean()),
-            Is.EqualTo(("replay", "run_1:puls-cook:1/bobotie", false)));
+            Is.EqualTo(("replay", SampleMode.Fill("run_1:<ModeBeta>:1/bobotie"), false)));
         Assert.That(without.Single().RootElement.TryGetProperty("replay", out var none) && none.ValueKind == JsonValueKind.Object, Is.False);
     }
 
@@ -121,7 +122,7 @@ public class MinionToolsTests
             Assert.That(await tools.StartMinion(Role, "ReadRenderedPage", "a page"), Does.StartWith("Error:").And.Contain("ReadRenderedPage").And.Contain("FetchUrl"),
                 "only one of its own: the parent's toolbox is the ceiling");
             Assert.That(await tools.StartMinion(Role, "ExecuteSkill", "a page"), Does.StartWith("Error:").And.Contain("never"));
-            Assert.That(await tools.StartMinion("puls-cook", "FetchUrl", "a page"), Does.StartWith("Error:").And.Contain("puls-cook"), "a specialist's role is no minion's");
+            Assert.That(await tools.StartMinion(SampleRole.Alpha, "FetchUrl", "a page"), Does.StartWith("Error:").And.Contain(SampleRole.Alpha), "a specialist's role is no minion's");
             Assert.That(await tools.StartMinion("puls-minion", "FetchUrl", "a page"), Does.StartWith("Error:"), "the base is no role");
         }
 

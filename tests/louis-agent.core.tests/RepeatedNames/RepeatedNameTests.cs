@@ -19,19 +19,28 @@ public class RepeatedNameTests
         "evals/louis-agent.evals.runner/Evals/Stub/StubToolset.cs",
         "src/louis-agent.web.shared/Api/AskedToolset.cs",
         "src/louis-agent.web.shared/Api/ScriptLanguage.cs",
+        "evals/louis-agent.evals.puls/Evals/Cook/CookMode.cs",
+        "evals/louis-agent.evals.puls/Shared/PulsEvalName.cs",
+        "evals/louis-agent.evals.puls/Shared/PulsEvalRole.cs",
+        "evals/louis-agent.evals.runner/Evals/Stub/StubMode.cs",
+        "evals/louis-agent.evals.runner/Evals/Stub/StubRole.cs",
+        "identities/louis-agent.identity.puls/PulsRole.cs",
+        "src/louis-agent.puls/Text/PulsWebRole.cs",
     ];
 
     /// <summary>A literal that is a name of something else, with the file (or the folder, ending in /) it is in, a text on its line, and why. Few on purpose (Louis, 2026-10-27: a dozen is too many).</summary>
     private static readonly (string File, string Line, string Reason)[] Exemptions =
     [
         ("src/louis-agent.puls/Components/Landing/", "", "the landing page's display content: a mock of a chat, with the toolsets it pretends to use"),
-        ("tests/louis-agent.evals.tests/Protocol/ProtocolWriterTests.cs", "writer.Mode(\"cook\", 1, [\"web\", \"shops\"]", "a mode's toolsets as the recorded fixture the writer's lines are compared with has them: recorded data stays as recorded"),
+        ("tests/louis-agent.evals.tests/Protocol/ProtocolWriterTests.cs", "", "the writer's lines are compared with the Python-recorded fixture, which holds these names: recorded data stays as recorded"),
+        ("tests/louis-agent.web.testing/SessionStreamFixture.cs", "CookRole", "the role of the recorded turn, named once: the goldens and the replay tests read it"),
+        ("tests/louis-agent.api.tests/Benchmarks/Reports/BenchmarkManualTests.cs", "", "each real eval beside its manual: the names the real runner offers"),
         ("identities/louis-agent.identity.puls/PulsIdentity.cs", "Packs =>", "a pack's name, not a toolset's: the packs set makes it an enum"),
         ("tests/louis-agent.identity.puls.tests/PulsIdentityTests.cs", "puls.Packs", "a pack's name, not a toolset's: the packs set makes it an enum"),
-        ("tests/louis-agent.evals.puls.tests/PulsDatasetsTests.cs", "\"numbers\"", "the routing tasks' ids, which the eval-names set makes an enum"),
-        ("tests/louis-agent.evals.puls.tests/Evals/Routing/RoutingEvalTests.cs", "\"numbers\"", "the routing tasks' ids, which the eval-names set makes an enum"),
-        ("tests/louis-agent.evals.puls.tests/Evals/Routing/Scoring/RoutingScorerTests.cs", "\"numbers\"", "the routing tasks' ids, which the eval-names set makes an enum"),
-        ("tests/louis-agent.evals.puls.tests/Evals/Routing/Scoring/RoutingScorerTests.cs", "Dev.Route(\"web\")", "a routing task's id, which the eval-names set makes an enum"),
+        ("tests/louis-agent.evals.puls.tests/PulsDatasetsTests.cs", "\"numbers\"", "the routing tasks' ids, which a later set (the task ids) makes an enum"),
+        ("tests/louis-agent.evals.puls.tests/Evals/Routing/RoutingEvalTests.cs", "\"numbers\"", "the routing tasks' ids, which a later set (the task ids) makes an enum"),
+        ("tests/louis-agent.evals.puls.tests/Evals/Routing/Scoring/RoutingScorerTests.cs", "\"numbers\"", "the routing tasks' ids, which a later set (the task ids) makes an enum"),
+        ("tests/louis-agent.evals.puls.tests/Evals/Routing/Scoring/RoutingScorerTests.cs", "Dev.Route(\"web\")", "a routing task's id, which a later set (the task ids) makes an enum"),
     ];
 
     private static IEnumerable<string> SourceFiles() => SourceTree.Files();

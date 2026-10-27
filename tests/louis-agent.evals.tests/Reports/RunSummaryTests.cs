@@ -176,7 +176,7 @@ public class RunSummaryTests
     public void TheScoreMeans_AreOfTheNumericKeys_WithTheirOwnN_AStringOrABooleanSkipped_AMissingKeyNotCounted()
     {
         var lines = Of(
-            T("a", TrialOutcome.Pass, scores: """{"priced_ratio":1,"routed_right":true,"role":"puls-cook","errors":0}"""),
+            T("a", TrialOutcome.Pass, scores: SampleRole.Fill("""{"priced_ratio":1,"routed_right":true,"role":"<RoleAlpha>","errors":0}""")),
             T("b", TrialOutcome.Pass, scores: """{"priced_ratio":0.5,"routed_right":false,"role":null}"""),
             T("c", TrialOutcome.Pass, scores: """{"errors":2}"""));
 

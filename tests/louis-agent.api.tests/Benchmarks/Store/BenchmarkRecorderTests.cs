@@ -45,11 +45,11 @@ public class BenchmarkRecorderTests
         At(new
         {
             @event = "turn", mode, repeat, task, turn, session = $"sess_{task}", question = $"{task}?", answer = "Hier is…",
-            role = "puls-cook", puls_calls = 1, specialist_calls = 6, hosts = new[] { "www.checkers.co.za" }, seconds = 30.5,
+            role = SampleRole.Alpha, puls_calls = 1, specialist_calls = 6, hosts = new[] { "www.checkers.co.za" }, seconds = 30.5,
         });
 
     private static string ConversationDone(string task, string mode = SampleMode.Beta, int repeat = 1) =>
-        At(new { @event = "conversation", mode, repeat, task, role = "puls-cook", scores = new { routed_right = true }, errors = 0, seconds = 30.5 });
+        At(new { @event = "conversation", mode, repeat, task, role = SampleRole.Alpha, scores = new { routed_right = true }, errors = 0, seconds = 30.5 });
 
     private static string ModeDone(string mode = SampleMode.Beta, int repeat = 1) => At(new { @event = "mode_done", mode, repeat });
 
@@ -68,7 +68,7 @@ public class BenchmarkRecorderTests
     {
         var recording = new BenchmarkRecorder(_store).RecordAsync(_run, new Dictionary<string, string> { ["model"] = "claude-haiku-5-5" });
         Add(Protocol(), "Puls cook check, 1 repeat", Mode(), Question("bobotie"), Sse("bobotie", "Hal"), Sse("bobotie", "lo"),
-            TurnDone("bobotie"), ConversationDone("bobotie"), "puls-cook bobotie role=puls-cook", ModeDone());
+            TurnDone("bobotie"), ConversationDone("bobotie"), SampleRole.Fill("<RoleAlpha> bobotie role=<RoleAlpha>"), ModeDone());
         _run.Complete(0);
 
         var result = await recording;
@@ -79,10 +79,10 @@ public class BenchmarkRecorderTests
         Assert.That(run.EndedAt, Is.Not.Null);
         Assert.That(run.Settings!["model"], Is.EqualTo("claude-haiku-5-5"));
         Assert.That(run.Modes!.Single() is { Name: SampleMode.Beta, Repeat: 1, Role: "puls/voice-af" });
-        Assert.That(run.Log, Is.EqualTo(new[] { "Puls cook check, 1 repeat", "puls-cook bobotie role=puls-cook" }), "the plain lines, not the events");
+        Assert.That(run.Log, Is.EqualTo(new[] { "Puls cook check, 1 repeat", SampleRole.Fill("<RoleAlpha> bobotie role=<RoleAlpha>") }), "the plain lines, not the events");
 
         var conversation = (await _store.ConversationsAsync(_run.Id)).Single();
-        Assert.That((conversation.Key, conversation.Order, conversation.Role), Is.EqualTo((new ConversationKey(SampleMode.Beta, 1, "bobotie"), 1, "puls-cook")));
+        Assert.That((conversation.Key, conversation.Order, conversation.Role), Is.EqualTo((new ConversationKey(SampleMode.Beta, 1, "bobotie"), 1, SampleRole.Alpha)));
         Assert.That(conversation.Scores.GetProperty("routed_right").GetBoolean(), Is.True);
 
         var key = new TurnKey(SampleMode.Beta, 1, "bobotie", 1);
@@ -200,7 +200,7 @@ public class BenchmarkRecorderTests
 
         await new BenchmarkRecorder(_store).RecordAsync(_run);
 
-        Assert.That((await _store.ConversationsAsync(_run.Id)).Single().Role, Is.EqualTo("puls-cook"));
+        Assert.That((await _store.ConversationsAsync(_run.Id)).Single().Role, Is.EqualTo(SampleRole.Alpha));
         Assert.That((await _store.GetRunAsync(_run.Id))!.Status, Is.EqualTo(BenchmarkRunStatus.Done));
     }
 

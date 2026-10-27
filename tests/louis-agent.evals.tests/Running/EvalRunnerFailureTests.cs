@@ -148,7 +148,7 @@ public class EvalRunnerFailureTests
         public string Proves => "A turn that fails for the infrastructure.";
 
         public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions, CancellationToken cancellationToken) =>
-            ValueTask.FromResult<IReadOnlyList<EvalMode>>([new EvalMode("cook", "puls-cook", [SampleToolset.Alpha])]);
+            ValueTask.FromResult<IReadOnlyList<EvalMode>>([new EvalMode("cook", SampleRole.Alpha, [SampleToolset.Alpha])]);
 
         public IReadOnlyList<EvalScenario> Scenarios { get; } = [new EvalScenario("pannekoek",
             new EvalInput(null, "Africa/Johannesburg", Enumerable.Range(1, messages).Select(n => $"Vraag {n}").ToList()), default, [], DatasetSplit.Dev)];

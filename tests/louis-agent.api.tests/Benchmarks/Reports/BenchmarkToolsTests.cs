@@ -61,7 +61,7 @@ public class BenchmarkToolsTests
     // the counts on the turn; a turn recorded before that is counted from its events once, and the counts written back.
 
     private static Turn ATurn(BenchmarkTools.Summary? tools = null) =>
-        new(new TurnKey(SampleMode.Beta, 1, "bobotie", 1), "s", "?", "!", "puls-cook", null, 1, 2, [], 10, null, tools);
+        new(new TurnKey(SampleMode.Beta, 1, "bobotie", 1), "s", "?", "!", SampleRole.Alpha, null, 1, 2, [], 10, null, tools);
 
     [Test]
     public async Task KeptCounts_AreUsedAsTheyAre()

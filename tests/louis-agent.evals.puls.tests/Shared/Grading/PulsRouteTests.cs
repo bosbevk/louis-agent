@@ -29,12 +29,12 @@ public class PulsRouteTests
 
     [Test]
     public async Task AMealGoesToTheCook_InAModeThatCanHandItOn() =>
-        Assert.That((await Grade(CookEvalMode, CookRoute, Turn(1, [Start("puls-cook"), Text("Resep.")]))).Outcome, Is.EqualTo(GradeOutcome.Pass));
+        Assert.That((await Grade(CookEvalMode, CookRoute, Turn(1, [Start(PulsEvalRole.Cook.Wire()), Text("Resep.")]))).Outcome, Is.EqualTo(GradeOutcome.Pass));
 
     [Test]
     public async Task AModeIsOnTheCookBecauseOfItsToolsets_NotItsName() =>
-        Assert.That((await Grade(new EvalMode("puls-cook-sonnet", "puls-cook", [PulsToolset.Specialists.Wire(), PulsToolset.Web.Wire()]), CookRoute,
-            Turn(1, [Start("puls-cook"), Text("Resep.")]))).Outcome, Is.EqualTo(GradeOutcome.Pass));
+        Assert.That((await Grade(new EvalMode("puls-cook-sonnet", PulsEvalRole.Cook.Wire(), [PulsToolset.Specialists.Wire(), PulsToolset.Web.Wire()]), CookRoute,
+            Turn(1, [Start(PulsEvalRole.Cook.Wire()), Text("Resep.")]))).Outcome, Is.EqualTo(GradeOutcome.Pass));
 
     [Test]
     public async Task PulsAnsweringAMealItselfIsWrong_WhereTheCookIsOn()
@@ -56,10 +56,10 @@ public class PulsRouteTests
     [Test]
     public async Task AWebQuestionHandedToTheCookIsWrong()
     {
-        var grade = await Grade(CookEvalMode, SelfRoute, Turn(1, [Start("puls-cook")]));
+        var grade = await Grade(CookEvalMode, SelfRoute, Turn(1, [Start(PulsEvalRole.Cook.Wire())]));
 
         Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Fail));
-        Assert.That(grade.Reason, Does.Contain("puls-cook"));
+        Assert.That(grade.Reason, Does.Contain(PulsEvalRole.Cook.Wire()));
     }
 
     [Test]

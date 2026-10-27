@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using LouisAgent.Choices;
 using LouisAgent.Core.Hosting.SessionLlms;
 using LouisAgent.Core.Agent.Toolsets;
@@ -193,9 +194,9 @@ public class AgentEngineFactoryTests
     [Test]
     public void TheEnabledList_IsReadFromTheEnvironment_TrimmedAndLowercase()
     {
-        var options = AgentOptions.FromEnvironment(name => name == "PERSONALITIES_ENABLED" ? " puls, Puls-Cook ,puls, " : null);
+        var options = AgentOptions.FromEnvironment(name => name == "PERSONALITIES_ENABLED" ? " puls, " + SampleRole.Alpha.ToUpperInvariant() + " ,puls, " : null);
 
-        Assert.That(options.RolesEnabled, Is.EqualTo(new[] { "puls", "puls-cook" }));
+        Assert.That(options.RolesEnabled, Is.EqualTo(new[] { "puls", SampleRole.Alpha }));
         Assert.That(AgentOptions.FromEnvironment(_ => null).RolesEnabled, Is.Empty);
     }
 

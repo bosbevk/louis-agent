@@ -65,7 +65,7 @@ public class CookEvalTests
     [Test]
     public void ItsScoresAreTheCookScorers_KeyForKey()
     {
-        var trial = Trial(CookEvalMode, "cook-af", """{"routes_to":"puls-cook","serves":4}""", null, Turn(1, [Start("puls-cook"), Fetch("https://www.checkers.co.za/x"), Text("Resep.")]));
+        var trial = Trial(CookEvalMode, "cook-af", """{"routes_to":"puls-cook","serves":4}""", null, Turn(1, [Start(PulsEvalRole.Cook.Wire()), Fetch("https://www.checkers.co.za/x"), Text("Resep.")]));
 
         var scores = Eval.ScoresOf(trial, []);
 
@@ -76,11 +76,11 @@ public class CookEvalTests
     [Test]
     public void ATurnsFacts_AreWhatTheTurnViewReads()
     {
-        var turn = Turn(1, [Start("puls-cook"), Fetch("https://www.checkers.co.za/x"), Error()]);
+        var turn = Turn(1, [Start(PulsEvalRole.Cook.Wire()), Fetch("https://www.checkers.co.za/x"), Error()]);
 
         var facts = Eval.TurnFactsOf(turn, CookEvalMode);
 
-        Assert.That(facts.Role, Is.EqualTo("puls-cook"));
+        Assert.That(facts.Role, Is.EqualTo(PulsEvalRole.Cook.Wire()));
         Assert.That((facts.AgentCalls, facts.SpecialistCalls), Is.EqualTo((2, 0)));
         Assert.That(facts.Hosts, Is.EqualTo(new[] { "checkers.co.za" }));
         Assert.That(facts.Error, Is.EqualTo("overloaded"));

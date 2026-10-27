@@ -61,7 +61,7 @@ public class RoutingEvalTests
     [Test]
     public void ItsScoresAreTheRoutingScorers_KeyForKey()
     {
-        var trial = Trial(CookEvalMode, "cook", """{"routes_to":"puls-cook"}""", null, Turn(1, [Start("puls-cook"), Text("Resep.")]));
+        var trial = Trial(CookEvalMode, "cook", """{"routes_to":"puls-cook"}""", null, Turn(1, [Start(PulsEvalRole.Cook.Wire()), Text("Resep.")]));
 
         var scores = Eval.ScoresOf(trial, []);
 
@@ -79,9 +79,9 @@ public class RoutingEvalTests
     [Test]
     public void ATurnsFacts_AreWhatTheTurnViewReads()
     {
-        var facts = Eval.TurnFactsOf(Turn(1, [Start("puls-cook"), Fetch("https://www.news24.com/a")]), CookEvalMode);
+        var facts = Eval.TurnFactsOf(Turn(1, [Start(PulsEvalRole.Cook.Wire()), Fetch("https://www.news24.com/a")]), CookEvalMode);
 
-        Assert.That((facts.Role, facts.AgentCalls, facts.SpecialistCalls, facts.Error), Is.EqualTo(("puls-cook", 2, 0, (string?)null)));
+        Assert.That((facts.Role, facts.AgentCalls, facts.SpecialistCalls, facts.Error), Is.EqualTo((PulsEvalRole.Cook.Wire(), 2, 0, (string?)null)));
         Assert.That(facts.Hosts, Is.EqualTo(new[] { "news24.com" }));
     }
 

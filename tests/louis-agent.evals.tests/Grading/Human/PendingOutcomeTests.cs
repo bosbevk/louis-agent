@@ -123,7 +123,7 @@ public class PendingOutcomeTests
         public int Version => 1;
         public string Proves => "A pending human grade.";
         public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions, CancellationToken cancellationToken) =>
-            ValueTask.FromResult<IReadOnlyList<EvalMode>>([new EvalMode("cook", "puls-cook", [SampleToolset.Alpha])]);
+            ValueTask.FromResult<IReadOnlyList<EvalMode>>([new EvalMode("cook", SampleRole.Alpha, [SampleToolset.Alpha])]);
         public IReadOnlyList<EvalScenario> Scenarios { get; } =
             [new EvalScenario("bobotie", new EvalInput(null, "Africa/Johannesburg", ["Gee my resep"]), default, [], DatasetSplit.Dev)];
         public IReadOnlyList<IGrader> Graders { get; } = graders;

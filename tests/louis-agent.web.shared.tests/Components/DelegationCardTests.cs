@@ -1,3 +1,5 @@
+using LouisAgent.Web.Testing;
+using LouisAgent.Testing;
 using LouisAgent.Web.Shared.Chats;
 using LouisAgent.Web.Shared.Components;
 using LouisAgent.Web.Shared.Text;
@@ -25,7 +27,7 @@ public class DelegationCardTests
         var cut = ctx.Render<DelegationCard>(p => p.Add(x => x.Delegation, delegation).Add(x => x.Block, block));
 
         Assert.That(cut.Find("details.delegation").ClassList, Does.Contain("done"));
-        Assert.That(cut.Find(".delegation-agent strong").TextContent, Is.EqualTo("puls-cook"), "the role, as the user thinks of it");
+        Assert.That(cut.Find(".delegation-agent strong").TextContent, Is.EqualTo(SessionStreamFixture.CookRole), "the role, as the user thinks of it");
         Snapshots.Match("louis-agent.web.shared.tests", "Components/DelegationCard.html", cut.Markup);
     }
 
@@ -52,7 +54,7 @@ public class DelegationCardTests
         var block = new Block
         {
             Kind = BlockKind.Tool, ToolUseId = "call_1", ToolName = "StartSubSession",
-            ToolInput = """{"agent":"puls","toolsets":["web"],"message":"Kook","role":"puls-cook"}""",
+            ToolInput = """{"agent":"puls","toolsets":["web"],"message":"Kook","role":"<RoleAlpha>"}""".Replace("<RoleAlpha>", SessionStreamFixture.CookRole),
             ToolResult = "Error: no peer named puls", ToolFailed = true,
         };
         using var ctx = new BunitContext();

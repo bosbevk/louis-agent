@@ -10,12 +10,12 @@ namespace LouisAgent.Api.Tests.Benchmarks.Calibrations;
 // says why, so a half-run never looks like a verdict. Written first: none of it existed.
 public class CalibrationRecorderTests
 {
-    private static readonly string Line = SampleMode.Fill("""
-        @{"event":"calibration","eval":"puls-cook","grader":"meal-for-people","judge_model":"qwen3:4b","agreed":2,"total":3,"bar":90,"passes":false,"person_pass":{"judge_pass":1,"judge_fail":0,"judge_unknown":0},"person_fail":{"judge_pass":1,"judge_fail":1,"judge_unknown":0},"disagreements":[{"scenario":"cook-en","mode":"<ModeBeta>","repeat":3,"run":"76667d39dcdb","label":"fail","judge":"pass","reason":"a meal"}]}
-        """);
+    private static readonly string Line = SampleEval.Fill(SampleMode.Fill("""
+        @{"event":"calibration","eval":"<EvalBeta>","grader":"meal-for-people","judge_model":"qwen3:4b","agreed":2,"total":3,"bar":90,"passes":false,"person_pass":{"judge_pass":1,"judge_fail":0,"judge_unknown":0},"person_fail":{"judge_pass":1,"judge_fail":1,"judge_unknown":0},"disagreements":[{"scenario":"cook-en","mode":"<ModeBeta>","repeat":3,"run":"76667d39dcdb","label":"fail","judge":"pass","reason":"a meal"}]}
+        """));
 
     private static BenchmarkRun Calibration(string id = "cal123456789") =>
-        new(id, "puls-cook", 1, calibration: new BenchmarkCalibration("76667d39dcdb", "meal-for-people"), input: "{}\n");
+        new(id, SampleEval.Beta, 1, calibration: new BenchmarkCalibration("76667d39dcdb", "meal-for-people"), input: "{}\n");
 
     [Test]
     public async Task ARunThatEndsWell_StoresTheReportItsLineCarries()

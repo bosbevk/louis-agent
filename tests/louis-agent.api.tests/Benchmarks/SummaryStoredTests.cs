@@ -44,7 +44,7 @@ public class SummaryStoredTests
     [
         At(new { @event = "protocol", t = 1700000000.5, version = 1, eval = SampleEval.Beta, eval_version = 7, commit = "abc", split = "dev", graders = Array.Empty<object>(), models = Array.Empty<object>() }),
         At(new { @event = "mode", t = 1700000001.0, mode = SampleMode.Beta, repeat = 1, toolsets = new[] { SampleToolset.Alpha }, role = (string?)null, llm = (string?)null, conversations = 0 }),
-        At(new { @event = "conversation", t = 1700000002.0, mode = SampleMode.Beta, repeat = 1, task = "a", role = "puls-cook", scores = new { }, errors = 0, seconds = 1.0, outcome = "Pass" }),
+        At(new { @event = "conversation", t = 1700000002.0, mode = SampleMode.Beta, repeat = 1, task = "a", role = SampleRole.Alpha, scores = new { }, errors = 0, seconds = 1.0, outcome = "Pass" }),
         At(new { @event = "mode_done", t = 1700000003.0, mode = SampleMode.Beta, repeat = 1, pass_at_k = 1.0, pass_hat_k = 1.0, k = 1, infrastructure = 0, retried = 0 }),
         SummaryLine(),
         SummaryLine(slice: "language:af", tooFew: true, passRate: null, tasks: ["a"]),

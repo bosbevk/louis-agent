@@ -13,6 +13,9 @@ namespace LouisAgent.Web.Testing;
 /// </summary>
 public static class SessionStreamFixture
 {
+    /// <summary>The role the recording's cook ran as (recorded data stays as recorded): the goldens and the tests that replay the turn read it, so they name it here, once.</summary>
+    public const string CookRole = "puls-cook";
+
     /// <summary>The question the recording answered.</summary>
     public const string Question = "Gee my 'n eenvoudige resep vir pannekoek vir twee mense, en wat dit by 'n winkel naby Stellenbosch kos.";
 

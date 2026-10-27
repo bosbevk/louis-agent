@@ -1,3 +1,5 @@
+using LouisAgent.Choices;
+using LouisAgent.Evals.Puls.Shared;
 using LouisAgent.SessionStream;
 using LouisAgent.Evals.Puls.Shared.Turns;
 
@@ -20,7 +22,7 @@ public class TurnViewTests
         var turn = TurnView.From(events);
 
         Assert.That(turn.Answer, Is.EqualTo("Hallo"));
-        Assert.That(turn.Role, Is.EqualTo("puls-cook"));
+        Assert.That(turn.Role, Is.EqualTo(PulsEvalRole.Cook.Wire()));
         Assert.That(turn.Calls.Single().Name, Is.EqualTo("StartSubSession"));
         Assert.That(turn.Results, Is.EqualTo(new[] { "Die resep." }));
     }
@@ -81,7 +83,7 @@ public class TurnViewTests
             SessionEvent.From("content_block_start", Json("""{"type":"content_block_start","index":1,"content_block":{"type":"tool_use","id":"t2","name":"StartSubSession","input":{"role":"puls-cook"}}}""")),
         };
 
-        Assert.That(TurnView.From(events).Role, Is.EqualTo("puls-cook"));
+        Assert.That(TurnView.From(events).Role, Is.EqualTo(PulsEvalRole.Cook.Wire()));
     }
 
     private static System.Text.Json.JsonElement Json(string text) => System.Text.Json.JsonDocument.Parse(text).RootElement.Clone();

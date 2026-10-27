@@ -106,7 +106,7 @@ public class PulsDatasetsTests
         var held = Load(PulsEvalName.Routing).Scenarios.Where(s => s.Split == DatasetSplit.HeldOut).ToList();
 
         Assert.That(held.Select(s => s.Id), Is.EquivalentTo(new[] { "web-3", "files-3", "git-3", "numbers-3", "chat-3", "cook-3" }));
-        Assert.That(held.Select(s => ExpectedRoute.Of(s)), Is.EquivalentTo(new string?[] { null, null, null, null, null, "puls-cook" }));
+        Assert.That(held.Select(s => ExpectedRoute.Of(s)), Is.EquivalentTo(new string?[] { null, null, null, null, null, PulsEvalRole.Cook.Wire() }));
     }
 
     [Test]
@@ -156,7 +156,7 @@ public class PulsDatasetsTests
     public void TheRoutingQuestionsExpectTheCookForAMealAndNobodyOtherwise()
     {
         foreach (EvalScenario scenario in Load(PulsEvalName.Routing).Scenarios)
-            Assert.That(ExpectedRoute.Of(scenario), scenario.Id.StartsWith("cook") ? Is.EqualTo("puls-cook") : Is.Null, scenario.Id);
+            Assert.That(ExpectedRoute.Of(scenario), scenario.Id.StartsWith("cook") ? Is.EqualTo(PulsEvalRole.Cook.Wire()) : Is.Null, scenario.Id);
     }
 
     private static string Normal(JsonElement element) => JsonSerializer.Serialize(element);

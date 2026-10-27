@@ -183,12 +183,12 @@ public class SessionStreamReaderTests
     {
         var events = await ReadAsync(
             "event: message_start\ndata: {\"type\":\"message_start\",\"message\":{\"session_id\":\"s\"," +
-            "\"toolsets\":[\"" + SampleToolset.Alpha + "\",\"" + SampleToolset.Beta + "\"],\"session_role\":\"puls-cook\"}}\n\n");
+            "\"toolsets\":[\"" + SampleToolset.Alpha + "\",\"" + SampleToolset.Beta + SampleRole.Fill("\"],\"session_role\":\"<RoleAlpha>\"}}\n\n"));
 
         var started = events.Single() as MessageStarted;
         Assert.That(started, Is.Not.Null);
         Assert.That(started!.Toolsets, Is.EqualTo(new[] { SampleToolset.Alpha, SampleToolset.Beta }));
-        Assert.That(started.Role, Is.EqualTo("puls-cook"));
+        Assert.That(started.Role, Is.EqualTo(SampleRole.Alpha));
     }
 
     [Test]
@@ -219,13 +219,13 @@ public class SessionStreamReaderTests
     [Test]
     public void FromMapsAnEventTheSameWayTheReaderDoes()
     {
-        using var document = JsonDocument.Parse("{\"type\":\"message_start\",\"message\":{\"toolsets\":[\"" + SampleToolset.Alpha + "\"],\"session_role\":\"puls-cook\"}}");
+        using var document = JsonDocument.Parse("{\"type\":\"message_start\",\"message\":{\"toolsets\":[\"" + SampleToolset.Alpha + SampleRole.Fill("\"],\"session_role\":\"<RoleAlpha>\"}}"));
 
         var started = SessionEvent.From("message_start", document.RootElement) as MessageStarted;
 
         Assert.That(started, Is.Not.Null);
         Assert.That(started!.Toolsets, Is.EqualTo(new[] { SampleToolset.Alpha }));
-        Assert.That(started.Role, Is.EqualTo("puls-cook"));
+        Assert.That(started.Role, Is.EqualTo(SampleRole.Alpha));
         Assert.That(SessionEvent.From("ping", document.RootElement), Is.InstanceOf<UnknownEvent>());
     }
 

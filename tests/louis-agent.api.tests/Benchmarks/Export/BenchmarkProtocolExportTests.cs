@@ -12,15 +12,15 @@ using static LouisAgent.Api.Benchmarks.Runs.BenchmarkProtocol;
 namespace LouisAgent.Api.Tests.Benchmarks.Export;
 
 // F18 step 5.2: a stored run as the protocol's own lines. A run recorded from protocol lines, exported and read back by
-// BenchmarkProtocol, is the same run: key for key, in the same order, times aside. The lines are the Python stub's (the runner's
-// fixture), so a recorded Python run and an exported one are held to the same reader.
+// BenchmarkProtocol, is the same run: key for key, in the same order, times aside. The lines are the stub's expected lines (the runner's
+// fixture), so a recorded run and an exported one are held to the same reader.
 public class BenchmarkProtocolExportTests
 {
     private const string Id = "run123456789";
     private const string AdminKey = "admin-secret";
 
     private static string[] StubLines() =>
-        File.ReadAllLines(Path.Combine(AppContext.BaseDirectory, "Fixtures", "python-stub.txt")).Where(l => l.StartsWith('@')).ToArray();
+        File.ReadAllLines(Path.Combine(AppContext.BaseDirectory, "Fixtures", "stub-run.txt")).Where(l => l.StartsWith('@')).ToArray();
 
     private static async Task<InMemoryBenchmarkStore> Recorded(IEnumerable<string> lines)
     {
@@ -113,12 +113,12 @@ public class BenchmarkProtocolExportTests
             At(new
             {
                 @event = "turn", t = 1700000003.0, mode = SampleMode.Beta, repeat = 1, task = "bobotie", turn = 1, session = "sess_1", question = "Maak bobotie",
-                answer = "Hé", role = "puls-cook", continued = (string?)null, puls_calls = 1, specialist_calls = 6, hosts = new[] { "www.checkers.co.za" },
+                answer = "Hé", role = SampleRole.Alpha, continued = (string?)null, puls_calls = 1, specialist_calls = 6, hosts = new[] { "www.checkers.co.za" },
                 seconds = 30.5, error = (string?)null,
             }),
             At(new
             {
-                @event = "conversation", t = 1700000004.0, mode = SampleMode.Beta, repeat = 1, task = "bobotie", role = "puls-cook", scores = new { routed_right = true },
+                @event = "conversation", t = 1700000004.0, mode = SampleMode.Beta, repeat = 1, task = "bobotie", role = SampleRole.Alpha, scores = new { routed_right = true },
                 errors = 0, seconds = 30.5, grades = new[] { new { grader = "cook-no-error", version = 1, score = 1.0, outcome = "Pass", reason = "no error" } },
                 outcome = "Pass",
             }),

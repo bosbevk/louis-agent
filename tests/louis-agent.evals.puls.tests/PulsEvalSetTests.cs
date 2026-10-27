@@ -39,7 +39,7 @@ public class PulsEvalSetTests
             | **Totaal** | | | **R69,99** |
             """;
         var trial = Trial(CookEvalMode, "cook", """{"routes_to":"puls-cook","town":"Malmesbury","serves":4,"budget":150,"shop":"checkers"}""", "Malmesbury, Wes-Kaap, Suid-Afrika",
-            Turn(1, [Start("puls-cook"), SpecialistCall("FindProducts", """{"shop":"checkers","area":"Malmesbury","query":"hoender"}"""), Text(answer)],
+            Turn(1, [Start(PulsEvalRole.Cook.Wire()), SpecialistCall("FindProducts", """{"shop":"checkers","area":"Malmesbury","query":"hoender"}"""), Text(answer)],
                 failure: LouisAgent.Evals.Trials.TrialFailure.Timeout));
 
         var grade = await grader.GradeAsync(trial, CancellationToken.None);

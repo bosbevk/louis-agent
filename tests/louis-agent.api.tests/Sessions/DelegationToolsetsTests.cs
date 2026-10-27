@@ -25,7 +25,7 @@ public class DelegationToolsetsTests
     private static Block Cook(string? footer = null) => new()
     {
         Kind = BlockKind.Tool, ToolName = Delegation.ToolName, ToolUseId = "toolu_1",
-        ToolInput = SampleToolset.Fill("""{"toolsets":["<Alpha>"],"message":"**Vir:** kok","role":"puls-cook"}"""),
+        ToolInput = SampleToolset.Fill(SampleRole.Fill("""{"toolsets":["<Alpha>"],"message":"**Vir:** kok","role":"<RoleAlpha>"}""")),
         ToolResult = footer is null ? null : "Die resep.\n\n" + footer,
     };
 
@@ -43,7 +43,7 @@ public class DelegationToolsetsTests
 
     [Test]
     public void TheCard_ShowsTheFootersToolsets_OnceItsDone() =>
-        Assert.That(Delegation.From(Cook(SampleToolset.Fill("[Sub-session sub-1 on puls (<Alpha>, <Beta>; puls-cook): 3 requests, 1 USD]")))!.Toolsets,
+        Assert.That(Delegation.From(Cook(SampleToolset.Fill(SampleRole.Fill("[Sub-session sub-1 on puls (<Alpha>, <Beta>; <RoleAlpha>): 3 requests, 1 USD]"))))!.Toolsets,
             Is.EqualTo(new[] { SampleToolset.Alpha, SampleToolset.Beta }));
 
     [Test]

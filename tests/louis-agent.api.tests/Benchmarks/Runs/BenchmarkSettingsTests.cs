@@ -13,13 +13,13 @@ public class BenchmarkSettingsTests
     {
         var check = new BenchmarkCheck(SampleEval.Beta, "Cook");
 
-        var settings = BenchmarkSettings.Of(check, "anthropic", "claude-haiku-5-5", ["puls/voice-af", "puls-cook"], Runner);
+        var settings = BenchmarkSettings.Of(check, "anthropic", "claude-haiku-5-5", ["puls/voice-af", SampleRole.Alpha], Runner);
 
         Assert.That(settings, Is.EquivalentTo(new Dictionary<string, string>
         {
             ["provider"] = "anthropic",
             ["model"] = "claude-haiku-5-5",
-            ["roles_enabled"] = "puls/voice-af,puls-cook",
+            ["roles_enabled"] = SampleRole.Fill("puls/voice-af,<RoleAlpha>"),
             ["eval"] = SampleEval.Beta,
             ["eval_runner"] = Runner,
         }));

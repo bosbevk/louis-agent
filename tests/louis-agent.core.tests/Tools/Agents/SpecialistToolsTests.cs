@@ -51,7 +51,7 @@ public class SpecialistToolsTests
         var handler = new StubHandler(request => request.Method.Method switch
         {
             "POST" when request.RequestUri!.AbsolutePath == "/v1/sessions" =>
-                Json(HttpStatusCode.Created, SampleToolset.Fill("""{"session_id":"sess_child","toolsets":["<Alpha>","<Beta>"],"role":"puls-cook"}""")),
+                Json(HttpStatusCode.Created, SampleToolset.Fill(SampleRole.Fill("""{"session_id":"sess_child","toolsets":["<Alpha>","<Beta>"],"role":"<RoleAlpha>"}"""))),
             "POST" => new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(AnswerStream, Encoding.UTF8, "text/event-stream") },
             _ => new HttpResponseMessage(HttpStatusCode.NotFound),
         });
@@ -59,9 +59,9 @@ public class SpecialistToolsTests
 
         string result;
         using (SubSessionRegistry.Use(registry))
-            result = await ToolsOn(handler).StartSubSession([CoreToolset.Web.Wire()], "Wat kook ek?", agent: "coder", role: "puls-cook");
+            result = await ToolsOn(handler).StartSubSession([CoreToolset.Web.Wire()], "Wat kook ek?", agent: "coder", role: SampleRole.Alpha);
 
-        Assert.That(result, Does.Contain(SampleToolset.Fill("[Sub-session sub-1 on coder (<Alpha>, <Beta>; puls-cook)")));
+        Assert.That(result, Does.Contain(SampleToolset.Fill(SampleRole.Fill("[Sub-session sub-1 on coder (<Alpha>, <Beta>; <RoleAlpha>)"))));
         Assert.That(registry.Open.Single().Toolsets, Is.EqualTo(new[] { SampleToolset.Alpha, SampleToolset.Beta }));
     }
 
@@ -158,13 +158,13 @@ public class SpecialistToolsTests
         // F18 step 4a: the child never works out a key of its own (its task is sub-session:{name}, and one run tag holds every scenario).
         var handler = Peer();
 
-        using (SessionReplay.Use(new SessionReplay(mode, "run_1:puls-cook:1/bobotie", Model: false)))
+        using (SessionReplay.Use(new SessionReplay(mode, SampleMode.Fill("run_1:<ModeBeta>:1/bobotie"), Model: false)))
             await ToolsOn(handler).StartSubSession([CoreToolset.Web.Wire()], "Maak 'n bobotie.", agent: "coder");
 
         using var create = JsonDocument.Parse(handler.Requests[0].Body!);
         var replay = create.RootElement.GetProperty("replay");
         Assert.That(replay.GetProperty("web").GetString(), Is.EqualTo(expected));
-        Assert.That(replay.GetProperty("of").GetString(), Is.EqualTo("run_1:puls-cook:1/bobotie"));
+        Assert.That(replay.GetProperty("of").GetString(), Is.EqualTo(SampleMode.Fill("run_1:<ModeBeta>:1/bobotie")));
         Assert.That(replay.GetProperty("model").GetBoolean(), Is.False);
     }
 
@@ -185,10 +185,10 @@ public class SpecialistToolsTests
         // F21: the specialist's role (its function) is the role its session opens with (CL14: the body says role).
         var handler = Peer();
 
-        await ToolsOn(handler).StartSubSession([CoreToolset.Web.Wire()], "What's new in .NET 10?", agent: "coder", role: "puls-researcher");
+        await ToolsOn(handler).StartSubSession([CoreToolset.Web.Wire()], "What's new in .NET 10?", agent: "coder", role: SampleRole.Beta);
 
         using var create = JsonDocument.Parse(handler.Requests[0].Body!);
-        Assert.That(create.RootElement.GetProperty("role").GetString(), Is.EqualTo("puls-researcher"));
+        Assert.That(create.RootElement.GetProperty("role").GetString(), Is.EqualTo(SampleRole.Beta));
     }
 
     [Test]

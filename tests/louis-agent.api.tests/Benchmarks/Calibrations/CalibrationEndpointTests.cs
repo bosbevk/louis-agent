@@ -48,7 +48,7 @@ public class CalibrationEndpointTests
             var key = new BenchmarkProtocol.ConversationKey(SampleMode.Beta, 1, task);
             await store.SaveConversationAsync(RunId, new Conversation(key, 1, null, JsonDocument.Parse("{}").RootElement.Clone(), 0, 1.0,
                 [new Grade("meal-for-people", 1, 1, BenchmarkOutcome.Pass, "the judge's reason")]));
-            await store.SaveTurnAsync(RunId, new Turn(new BenchmarkProtocol.TurnKey(SampleMode.Beta, 1, task, 1), "sess_1", "For four", answer, "puls-cook", null, 1, 1, [], 1.0, null), []);
+            await store.SaveTurnAsync(RunId, new Turn(new BenchmarkProtocol.TurnKey(SampleMode.Beta, 1, task, 1), "sess_1", "For four", answer, SampleRole.Alpha, null, 1, 1, [], 1.0, null), []);
         }
         if (graded)
             await reviews.AddAsync(new HumanGrade(RunId, new BenchmarkProtocol.ConversationKey(SampleMode.Beta, 1, "cook-en"), "meal-for-people", HumanVerdict.Pass, "a meal", "Louis", T0));

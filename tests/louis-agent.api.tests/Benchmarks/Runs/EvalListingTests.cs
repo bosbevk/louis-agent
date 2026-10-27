@@ -13,7 +13,7 @@ public class EvalListingTests
         var result = EvalListing.ForRunner(RunnerBuild.Dll).Read();
 
         Assert.That(result.Failure, Is.Null);
-        Assert.That(result.Evals.Select(e => e.Name), Is.EquivalentTo(new[] { "stub", "puls-cook", "puls-routing" }));
+        Assert.That(result.Evals.Select(e => e.Name).ToList(), Has.Count.EqualTo(3).And.Contain("stub"), "the stub and the two Puls evals; the Puls eval set's tests hold their names");
         var stub = result.Evals.Single(e => e.Name == "stub");
         Assert.That(stub.Identity, Is.Null);
         Assert.That(stub.Version, Is.EqualTo(1));

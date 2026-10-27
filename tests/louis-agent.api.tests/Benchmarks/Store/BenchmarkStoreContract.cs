@@ -38,11 +38,11 @@ public abstract class BenchmarkStoreContract
 
     private static JsonElement Json(string json) => JsonDocument.Parse(json).RootElement.Clone();
 
-    private static Conversation NewConversation(string task, int order, string? role = "puls-cook", string mode = SampleMode.Beta, int repeat = 1) =>
+    private static Conversation NewConversation(string task, int order, string? role = SampleRole.Alpha, string mode = SampleMode.Beta, int repeat = 1) =>
         new(new ConversationKey(mode, repeat, task), order, role, Json("""{"routed_right":true,"priced_ratio":0.75}"""), 0, 12.5);
 
     private static Turn NewTurn(string task, int n, string? answer = "Hier is…", string mode = SampleMode.Beta, int repeat = 1) =>
-        new(new TurnKey(mode, repeat, task, n), "sess_" + n, "Vraag " + n, answer, "puls-cook", null, 1, 7, ["www.checkers.co.za"], 41.3, null);
+        new(new TurnKey(mode, repeat, task, n), "sess_" + n, "Vraag " + n, answer, SampleRole.Alpha, null, 1, 7, ["www.checkers.co.za"], 41.3, null);
 
     private static StreamEvent Event(string type, string text) =>
         new(type, Json(JsonSerializer.Serialize(new { delta = new { text } })), T0.AddSeconds(text.Length));
@@ -80,7 +80,7 @@ public abstract class BenchmarkStoreContract
             Settings = new Dictionary<string, string> { ["model"] = "claude-haiku-5-5", ["commit"] = "45a98b3" },
             Modes = [new Mode(SampleMode.Beta, 1, [SampleToolset.Gamma, SampleToolset.Alpha], "puls/voice-af", null)],
             Total = new Total(0.4217m, "USD", 812_345, 61),
-            Log = ["puls-cook bobotie role=puls-cook", "done"],
+            Log = [SampleRole.Fill("<RoleAlpha> bobotie role=<RoleAlpha>"), "done"],
             StoreError = null,
         };
 
@@ -155,7 +155,7 @@ public abstract class BenchmarkStoreContract
             EvalVersion = 2,
             Commit = "abc123",
             Graders = [new Grader("priced-with-source", 1, BenchmarkGraderKind.FixedRule)],
-            Models = [new ModelUse("cook", BenchmarkModelLevel.Agent, "puls-cook", "claude-haiku-5-5")],
+            Models = [new ModelUse("cook", BenchmarkModelLevel.Agent, SampleRole.Alpha, "claude-haiku-5-5")],
         };
 
         await _store.SaveRunAsync(run);
@@ -225,13 +225,13 @@ public abstract class BenchmarkStoreContract
         string run = NewId();
         await _store.SaveConversationAsync(run, NewConversation("cottage-pie", 2));
         await _store.SaveConversationAsync(run, NewConversation("bobotie", 1, role: null));
-        await _store.SaveConversationAsync(run, NewConversation("bobotie", 1, role: "puls-cook"));
+        await _store.SaveConversationAsync(run, NewConversation("bobotie", 1, role: SampleRole.Alpha));
         await _store.SaveConversationAsync(NewId(), NewConversation("another-runs", 1));
 
         var read = await _store.ConversationsAsync(run);
 
         Assert.That(read.Select(c => c.Key.Task), Is.EqualTo(new[] { "bobotie", "cottage-pie" }));
-        Assert.That(read[0].Role, Is.EqualTo("puls-cook"));
+        Assert.That(read[0].Role, Is.EqualTo(SampleRole.Alpha));
         Assert.That(read[0].Scores.GetProperty("priced_ratio").GetDouble(), Is.EqualTo(0.75));
         Assert.That(read[0].Scores.GetProperty("routed_right").GetBoolean(), Is.True);
         Assert.That((read[0].Errors, read[0].Seconds), Is.EqualTo((0, 12.5)));
@@ -266,7 +266,7 @@ public abstract class BenchmarkStoreContract
 
         Assert.That(read.Select(t => t.Key.Turn), Is.EqualTo(new[] { 1, 2 }));
         var first = read[0];
-        Assert.That((first.Session, first.Question, first.Answer, first.Role, first.Continued), Is.EqualTo(("sess_1", "Vraag 1", "Hier is…", "puls-cook", (string?)null)));
+        Assert.That((first.Session, first.Question, first.Answer, first.Role, first.Continued), Is.EqualTo(("sess_1", "Vraag 1", "Hier is…", SampleRole.Alpha, (string?)null)));
         Assert.That((first.PulsCalls, first.SpecialistCalls, first.Seconds, first.Error), Is.EqualTo((1, 7, 41.3, (string?)null)));
         Assert.That(first.Hosts, Is.EqualTo(new[] { "www.checkers.co.za" }));
     }

@@ -78,7 +78,7 @@ public class ModelGraderInARunTests
         public string Proves => "A model grader in a run.";
 
         public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions, CancellationToken cancellationToken) =>
-            ValueTask.FromResult<IReadOnlyList<EvalMode>>([new EvalMode("cook", "puls-cook", [SampleToolset.Alpha])]);
+            ValueTask.FromResult<IReadOnlyList<EvalMode>>([new EvalMode("cook", SampleRole.Alpha, [SampleToolset.Alpha])]);
 
         public IReadOnlyList<EvalScenario> Scenarios { get; } =
             [new EvalScenario("bobotie", new EvalInput(null, "Africa/Johannesburg", ["Gee my 'n resep vir vier"]), default, [], DatasetSplit.Dev)];

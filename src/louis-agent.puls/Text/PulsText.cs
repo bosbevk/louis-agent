@@ -1,3 +1,5 @@
+using LouisAgent.Choices;
+using LouisAgent.Puls.Text;
 using LouisAgent.Web.Shared.Chats;
 using LouisAgent.Web.Shared.Text;
 using LouisAgent.Web.Shared;
@@ -15,7 +17,7 @@ public static class PulsText
         Result = "Resultaat",
         Processing = "BESIG",
         // F34, Louis: "it must actually say soek bestanddele en dan bou resep".
-        RolePhases = new Dictionary<string, RolePhases> { ["puls-cook"] = new("Soek bestanddele", "Bou resep") },
+        RolePhases = new Dictionary<string, RolePhases> { [PulsWebRole.Cook.Wire()] = new("Soek bestanddele", "Bou resep") },
         Stopped = "Gestop",
 
         DelegatedTo = "Oorgedra aan",

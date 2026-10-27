@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 using LouisAgent.Core.Hosting.Prompts;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
@@ -33,11 +34,11 @@ public class PulsPromptsTests
     public void PulsAndItsSpecialists_AreListed_WithPulsRegistered()
     {
         Assert.That(RoleCatalog.Available(RoleLevel.Agent), Is.EqualTo(Modes.Split(", ")));
-        Assert.That(RoleCatalog.Available(RoleLevel.Specialist), Is.EqualTo(new[] { "puls-analyst", "puls-cook", "puls-historian", "puls-reader", "puls-researcher" }));
-        Assert.That(RoleCatalog.Available(RoleLevel.Minion), Is.EqualTo(new[] { "puls-minion-web-price-lookup" }));
+        Assert.That(RoleCatalog.Available(RoleLevel.Specialist), Is.EqualTo(new[] { PulsRole.Analyst.Wire(), PulsRole.Cook.Wire(), PulsRole.Historian.Wire(), PulsRole.Reader.Wire(), PulsRole.Researcher.Wire() }));
+        Assert.That(RoleCatalog.Available(RoleLevel.Minion), Is.EqualTo(new[] { PulsRole.MinionWebPriceLookup.Wire() }));
         Assert.That(SkillLoader.Load(new AgentOptions(), [], "puls/voice-af").Documentation, Does.Contain("# Puls - Stem"));
-        Assert.That(SkillLoader.Load(new AgentOptions(), [], "puls-cook", RoleLevel.Specialist).Documentation, Does.Contain("No prices are looked up"));
-        Assert.That(RoleCatalog.ToolsetsOf("puls-cook", RoleLevel.Specialist), Is.Empty, "F18 step 5.7: the cook has no header now, it looks up no prices (the shops pack stays, off for the cook)");
+        Assert.That(SkillLoader.Load(new AgentOptions(), [], PulsRole.Cook.Wire(), RoleLevel.Specialist).Documentation, Does.Contain("No prices are looked up"));
+        Assert.That(RoleCatalog.ToolsetsOf(PulsRole.Cook.Wire(), RoleLevel.Specialist), Is.Empty, "F18 step 5.7: the cook has no header now, it looks up no prices (the shops pack stays, off for the cook)");
     }
 
     [TestCase("af", "# Puls - Stem")]
@@ -84,7 +85,7 @@ public class PulsPromptsTests
     [Test]
     public void AMinionsPrompt_IsThePrinciples_TheBase_ThenItsRole()
     {
-        string docs = SkillLoader.Load(new AgentOptions(), [], "puls-minion-web-price-lookup", RoleLevel.Minion).Documentation;
+        string docs = SkillLoader.Load(new AgentOptions(), [], PulsRole.MinionWebPriceLookup.Wire(), RoleLevel.Minion).Documentation;
 
         int principles = docs.IndexOf("# Principles", StringComparison.Ordinal);
         int @base = docs.IndexOf("You are a **minion**", StringComparison.Ordinal);
@@ -92,7 +93,7 @@ public class PulsPromptsTests
         Assert.That(principles, Is.GreaterThanOrEqualTo(0));
         Assert.That(@base, Is.GreaterThan(principles), "the base after the principles");
         Assert.That(role, Is.GreaterThan(@base), "the role after the base");
-        Assert.That(RoleCatalog.MinionBaseOf("puls-minion-web-price-lookup"), Is.EqualTo("puls-minion"));
+        Assert.That(RoleCatalog.MinionBaseOf(PulsRole.MinionWebPriceLookup.Wire()), Is.EqualTo("puls-minion"));
     }
 
     [Test]
@@ -102,8 +103,8 @@ public class PulsPromptsTests
         // The minion role stays, with its tests, for when a retailer says yes.
         string cook = Read("specialists/puls-cook.md");
 
-        Assert.That(cook, Does.Not.Contain("puls-minion-web-price-lookup").And.Not.Contain("## Minions"));
-        Assert.That(RoleCatalog.Available(RoleLevel.Minion), Is.EqualTo(new[] { "puls-minion-web-price-lookup" }));
+        Assert.That(cook, Does.Not.Contain(PulsRole.MinionWebPriceLookup.Wire()).And.Not.Contain("## Minions"));
+        Assert.That(RoleCatalog.Available(RoleLevel.Minion), Is.EqualTo(new[] { PulsRole.MinionWebPriceLookup.Wire() }));
     }
 
     [Test]
@@ -117,15 +118,15 @@ public class PulsPromptsTests
         Assert.That(reader, Does.Contain("Don't count by reading").And.Contain("needs the analyst"));
     }
 
-    [TestCase("puls-researcher")]
-    [TestCase("puls-reader")]
-    [TestCase("puls-historian")]
-    [TestCase("puls-analyst")]
-    [TestCase("puls-cook")]
-    public void EverySpecialist_IsToldWhatItsToolCallsCost_AndMatchesTheNotesTone(string role)
+    [TestCase(PulsRole.Researcher)]
+    [TestCase(PulsRole.Reader)]
+    [TestCase(PulsRole.Historian)]
+    [TestCase(PulsRole.Analyst)]
+    [TestCase(PulsRole.Cook)]
+    public void EverySpecialist_IsToldWhatItsToolCallsCost_AndMatchesTheNotesTone(PulsRole role)
     {
         // FX13: the reader that read 74 files never saw the router; the rule has to be in the role it runs with.
-        string text = Read($"specialists/{role}.md");
+        string text = Read($"specialists/{role.Wire()}.md");
 
         Assert.That(text, Does.Contain("Use the fewest tool calls that answer the task").And.Contain("paid for again"));
         Assert.That(text, Does.Contain("how the user sounds").And.Contain("keep your report's shape"));
@@ -384,7 +385,7 @@ public class PulsPromptsTests
         string router = Read("agent/puls/voice.md");
 
         string[] rows = router.Split('\n').Where(r => r.StartsWith('|')).ToArray();
-        Assert.That(rows.Single(r => r.Contains("The world:")), Does.Contain("you, with `web`").And.Not.Contain("puls-researcher"));
+        Assert.That(rows.Single(r => r.Contains("The world:")), Does.Contain("you, with `web`").And.Not.Contain(PulsRole.Researcher.Wire()));
         Assert.That(rows.Where(r => r.Contains("`puls-")), Has.Exactly(3).Items.And.All.Contains("`puls-cook`"), "the routing row and the two roles rows (cooking, shopping)");
         Assert.That(rows.Single(r => r.Contains("`puls-cook`") && r.Contains("`web`") && r.Contains("Cooking")), Is.Not.Null, "a meal goes to the cook with web");
         Assert.That(router, Does.Contain("never hand anything else to a specialist"));

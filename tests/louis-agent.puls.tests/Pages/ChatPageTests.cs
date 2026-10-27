@@ -1,3 +1,5 @@
+using LouisAgent.Web.Testing;
+using LouisAgent.Testing;
 using LouisAgent.Puls.Pages;
 using LouisAgent.Puls.Text;
 using LouisAgent.Web.Shared.Api;
@@ -72,7 +74,7 @@ public class ChatPageTests
 
         Assert.That(cut.FindAll(".turn"), Has.Count.EqualTo(1));
         Assert.That(cut.Find(".user-text").TextContent, Is.EqualTo(SessionStreamFixture.Question));
-        Assert.That(cut.Find(".delegation-agent strong").TextContent, Is.EqualTo("puls-cook"));
+        Assert.That(cut.Find(".delegation-agent strong").TextContent, Is.EqualTo(SessionStreamFixture.CookRole));
         Assert.That(cut.Find(".chat-usage").TextContent, Does.Contain("versoeke"));
         Assert.That(Calls(ctx), Is.EquivalentTo(StartUpCalls.Concat(TurnCalls)));
         Snapshots.Match("louis-agent.puls.tests", "Pages/ChatPage.turn.html", cut.Markup);

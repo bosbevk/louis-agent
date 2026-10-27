@@ -20,5 +20,6 @@ public class NameScanTests
     [TestCase("var run = ProcessRunner.Run(\"dotnet\", [\"test\"]);")]
     [TestCase("var value = element.GetProperty(\"web\");")]
     [TestCase("Assert.That(start.FileName, Is.EqualTo(\"dotnet\"));")]
+    [TestCase("Assert.That(Enum.GetValues<Mode>().Select(m => m.Wire()), Is.EqualTo(new[] { \"web\", \"shops\" }));")]
     public void ANameThatIsAnExecutableAKeyOrARoleFolder_IsSkipped(string line) => Assert.That(Hits(line), Is.EqualTo(0));
 }

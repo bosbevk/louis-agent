@@ -1,3 +1,4 @@
+using LouisAgent.Web.Testing;
 using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Testing;
@@ -15,10 +16,10 @@ public class DelegationTests
     [Test]
     public void AStart_StillRunning_ReadsTheCall()
     {
-        var delegation = Delegation.From(Call("StartSubSession", SampleToolset.Fill("""{"agent":"puls","toolsets":["<Alpha>"],"message":"Kook iets","role":"puls-cook"}""")))!;
+        var delegation = Delegation.From(Call("StartSubSession", SampleToolset.Fill(SampleRole.Fill("""{"agent":"puls","toolsets":["<Alpha>"],"message":"Kook iets","role":"<RoleAlpha>"}"""))))!;
 
         Assert.That(delegation.Agent, Is.EqualTo("puls"));
-        Assert.That(delegation.Role, Is.EqualTo("puls-cook"));
+        Assert.That(delegation.Role, Is.EqualTo(SampleRole.Alpha));
         Assert.That(delegation.Toolsets, Is.EqualTo(new[] { SampleToolset.Alpha }));
         Assert.That(delegation.Task, Is.EqualTo("Kook iets"));
         Assert.That(delegation.Answer, Is.Null);
@@ -29,8 +30,8 @@ public class DelegationTests
     [Test]
     public void AStart_ThatReturned_ReadsTheAnswerAndTheFooter()
     {
-        var block = Call("StartSubSession", SampleToolset.Fill("""{"agent":"","toolsets":["<Alpha>"],"message":"Kook iets","role":"puls-cook"}"""),
-            SampleToolset.Fill("Bobotie vir vier.\n\n[Sub-session sub-1 on puls (<Alpha>, <Beta>; puls-cook): 3 requests, $0.01. It stays open: ContinueSubSession]"));
+        var block = Call("StartSubSession", SampleToolset.Fill(SampleRole.Fill("""{"agent":"","toolsets":["<Alpha>"],"message":"Kook iets","role":"<RoleAlpha>"}""")),
+            SampleToolset.Fill(SampleRole.Fill("Bobotie vir vier.\n\n[Sub-session sub-1 on puls (<Alpha>, <Beta>; <RoleAlpha>): 3 requests, $0.01. It stays open: ContinueSubSession]")));
 
         var delegation = Delegation.From(block)!;
 
@@ -57,11 +58,11 @@ public class DelegationTests
     public void AContinue_LearnsItsRole_FromItsStreamsStart()
     {
         var block = Call("ContinueSubSession", """{"handle":"sub-1","message":"Meer"}""");
-        block.SubTurn = new Turn { Role = "puls-cook", Toolsets = [SampleToolset.Alpha, SampleToolset.Beta] };
+        block.SubTurn = new Turn { Role = SampleRole.Alpha, Toolsets = [SampleToolset.Alpha, SampleToolset.Beta] };
 
         var delegation = Delegation.From(block)!;
 
-        Assert.That(delegation.Role, Is.EqualTo("puls-cook"), "FX17");
+        Assert.That(delegation.Role, Is.EqualTo(SampleRole.Alpha), "FX17");
         Assert.That(delegation.Toolsets, Is.EqualTo(new[] { SampleToolset.Alpha, SampleToolset.Beta }));
     }
 
@@ -78,13 +79,13 @@ public class DelegationTests
     [Test]
     public void AMinion_ReadsItsRoleToolAndModel()
     {
-        var block = Call("StartMinion", """{"role":"puls-minion-web-price-lookup","tool":"WebSearch","task":"Prys van rys"}""",
-            "R24,99\n\n[Minion puls-minion-web-price-lookup on ollama-puls with WebSearch: 1 request, price unknown; handle sub-2: kept]");
+        var block = Call("StartMinion", SampleRole.Fill("""{"role":"<RoleZeta>","tool":"WebSearch","task":"Prys van rys"}"""),
+            SampleRole.Fill("R24,99\n\n[Minion <RoleZeta> on ollama-puls with WebSearch: 1 request, price unknown; handle sub-2: kept]"));
 
         var delegation = Delegation.From(block)!;
 
         Assert.That(delegation.Minion, Is.True);
-        Assert.That(delegation.Role, Is.EqualTo("puls-minion-web-price-lookup"));
+        Assert.That(delegation.Role, Is.EqualTo(SampleRole.Zeta));
         Assert.That(delegation.Toolsets, Is.EqualTo(new[] { "WebSearch" }));
         Assert.That(delegation.Llm, Is.EqualTo("ollama-puls"));
         Assert.That(delegation.Handle, Is.EqualTo("sub-2"));
@@ -119,7 +120,7 @@ public class DelegationTests
 
         var delegation = Delegation.From(block)!;
 
-        Assert.That(delegation.Role, Is.EqualTo("puls-cook"));
+        Assert.That(delegation.Role, Is.EqualTo(SessionStreamFixture.CookRole));
         Assert.That(delegation.Toolsets, Does.Contain(CoreToolset.Web.Wire()), "the recorded turn is Puls's own");
         Assert.That(delegation.Answer, Is.Not.Null.And.Not.Empty);
         Assert.That(delegation.UsageLine, Does.Contain("request"));

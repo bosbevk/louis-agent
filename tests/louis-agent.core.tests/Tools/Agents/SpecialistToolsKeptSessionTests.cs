@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Sessions.SubSessions;
@@ -33,14 +34,14 @@ public class SpecialistToolsKeptSessionTests
 
         string result;
         using (SubSessionRegistry.Use(registry))
-            result = await ToolsOn(handler).StartSubSession([CoreToolset.Web.Wire()], "Wat kan ek vanaand kook?", agent: "coder", role: "puls-cook");
+            result = await ToolsOn(handler).StartSubSession([CoreToolset.Web.Wire()], "Wat kan ek vanaand kook?", agent: "coder", role: SampleRole.Alpha);
 
         Assert.That(result, Does.StartWith("Fixed the null check; 14/14 tests pass."));
-        Assert.That(result, Does.Contain("[Sub-session sub-1 on coder (web; puls-cook): 3 requests, 10,200 tokens, 0.0123 USD")
+        Assert.That(result, Does.Contain(SampleRole.Fill("[Sub-session sub-1 on coder (web; <RoleAlpha>): 3 requests, 10,200 tokens, 0.0123 USD"))
             .And.Contain("ContinueSubSession(\"sub-1\""));
         Assert.That(Calls(handler), Is.EqualTo(new[] { "POST /v1/sessions", "POST /v1/sessions/sess_child/messages" }), "no DELETE");
         OpenSubSession open = registry.Open.Single();
-        Assert.That((open.Handle, open.SessionId, open.Agent, open.Role), Is.EqualTo(("sub-1", "sess_child", "coder", "puls-cook")));
+        Assert.That((open.Handle, open.SessionId, open.Agent, open.Role), Is.EqualTo(("sub-1", "sess_child", "coder", SampleRole.Alpha)));
         Assert.That(open.Toolsets, Is.EqualTo(new[] { CoreToolset.Web.Wire() }));
     }
 
@@ -90,12 +91,12 @@ public class SpecialistToolsKeptSessionTests
         using (SubSessionRegistry.Use(registry))
         using (UsageScope.Begin(session: "sess_parent", turn: 1))
         {
-            await tools.StartSubSession([CoreToolset.Web.Wire()], "Wat kan ek vanaand kook?", agent: "coder", role: "puls-cook");
+            await tools.StartSubSession([CoreToolset.Web.Wire()], "Wat kan ek vanaand kook?", agent: "coder", role: SampleRole.Alpha);
             result = await tools.ContinueSubSession("sub-1", "Maak dit vir ses mense.");
         }
 
         Assert.That(result, Does.StartWith("Fixed the null check; 14/14 tests pass."));
-        Assert.That(result, Does.Contain("[Sub-session sub-1 on coder (web; puls-cook): 3 requests").And.Contain("ContinueSubSession(\"sub-1\""));
+        Assert.That(result, Does.Contain(SampleRole.Fill("[Sub-session sub-1 on coder (web; <RoleAlpha>): 3 requests")).And.Contain("ContinueSubSession(\"sub-1\""));
         Assert.That(Calls(handler), Is.EqualTo(new[] { "POST /v1/sessions", "POST /v1/sessions/sess_child/messages", "POST /v1/sessions/sess_child/messages" }));
         using var followUp = JsonDocument.Parse(handler.Requests[2].Body!);
         Assert.That(followUp.RootElement.GetProperty("message").GetString(), Is.EqualTo("Maak dit vir ses mense."));
@@ -109,7 +110,7 @@ public class SpecialistToolsKeptSessionTests
         // CL20 step 5: a peer that knows /v1 says "role"; the old word "personality" is not read, so the kept sub-session keeps the role passed.
         var handler = new StubHandler(request => request.Method.Method switch
         {
-            "POST" when request.RequestUri!.AbsolutePath == "/v1/sessions" => Json(HttpStatusCode.Created, """{"session_id":"sess_child","personality":"puls-reader"}"""),
+            "POST" when request.RequestUri!.AbsolutePath == "/v1/sessions" => Json(HttpStatusCode.Created, SampleRole.Fill("""{"session_id":"sess_child","personality":"<RoleEpsilon>"}""")),
             "POST" => new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(AnswerStream, Encoding.UTF8, "text/event-stream") },
             "DELETE" => Json(HttpStatusCode.OK, """{"deleted":true}"""),
             _ => new HttpResponseMessage(HttpStatusCode.NotFound),
@@ -117,9 +118,9 @@ public class SpecialistToolsKeptSessionTests
         var registry = new SubSessionRegistry();
 
         using (SubSessionRegistry.Use(registry))
-            await ToolsOn(handler).StartSubSession([CoreToolset.Web.Wire()], "x", agent: "coder", role: "puls-cook");
+            await ToolsOn(handler).StartSubSession([CoreToolset.Web.Wire()], "x", agent: "coder", role: SampleRole.Alpha);
 
-        Assert.That(registry.Open.Single().Role, Is.EqualTo("puls-cook"));
+        Assert.That(registry.Open.Single().Role, Is.EqualTo(SampleRole.Alpha));
     }
 
     [Test]
@@ -132,13 +133,13 @@ public class SpecialistToolsKeptSessionTests
         string result;
         using (SubSessionRegistry.Use(registry))
         {
-            await tools.StartSubSession([CoreToolset.Web.Wire()], "x", agent: "coder", role: "puls-cook");
+            await tools.StartSubSession([CoreToolset.Web.Wire()], "x", agent: "coder", role: SampleRole.Alpha);
             int before = handler.Requests.Count;
             result = await tools.ContinueSubSession("sub-7", "y");
             Assert.That(handler.Requests, Has.Count.EqualTo(before));
         }
 
-        Assert.That(result, Does.StartWith("Error: no open sub-session 'sub-7'").And.Contain("sub-1 (coder: web; puls-cook)"));
+        Assert.That(result, Does.StartWith("Error: no open sub-session 'sub-7'").And.Contain(SampleRole.Fill("sub-1 (coder: web; <RoleAlpha>)")));
     }
 
     [Test]

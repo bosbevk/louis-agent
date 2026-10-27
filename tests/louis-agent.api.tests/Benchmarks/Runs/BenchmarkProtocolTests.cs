@@ -31,7 +31,7 @@ public class BenchmarkProtocolTests
     [Test]
     public void AConversation_CarriesItsGradesAndOutcome()
     {
-        var ended = (ConversationEnded)Parse("""@{"event":"conversation","mode":"cook","repeat":1,"task":"pannekoek","role":"puls-cook","scores":{},"seconds":3,"grades":[{"grader":"priced-with-source","version":1,"score":1,"outcome":"Pass","reason":"2 of 2 priced with a source"}],"outcome":"Pass"}""");
+        var ended = (ConversationEnded)Parse(SampleRole.Fill("""@{"event":"conversation","mode":"cook","repeat":1,"task":"pannekoek","role":"<RoleAlpha>","scores":{},"seconds":3,"grades":[{"grader":"priced-with-source","version":1,"score":1,"outcome":"Pass","reason":"2 of 2 priced with a source"}],"outcome":"Pass"}"""));
 
         Assert.That(ended.Outcome, Is.EqualTo(BenchmarkOutcome.Pass));
         Assert.That(ended.Grades!.Single(), Is.EqualTo(new GradeInfo("priced-with-source", 1, 1, BenchmarkOutcome.Pass, "2 of 2 priced with a source")));
@@ -43,7 +43,7 @@ public class BenchmarkProtocolTests
     [Test]
     public void AHumanReviewsEntryOnTheFirstLine_CarriesItsQuestion()
     {
-        var started = (ProtocolStarted)Parse("""@{"event":"protocol","version":1,"eval":"puls-cook","eval_version":9,"commit":"abc","graders":[{"name":"routed-to","version":1,"kind":"FixedRule"},{"name":"meal-for-people.human","version":1,"kind":"Human","question":"Is this a meal for the people asked for?"}],"models":[]}""");
+        var started = (ProtocolStarted)Parse(SampleEval.Fill("""@{"event":"protocol","version":1,"eval":"<EvalBeta>","eval_version":9,"commit":"abc","graders":[{"name":"routed-to","version":1,"kind":"FixedRule"},{"name":"meal-for-people.human","version":1,"kind":"Human","question":"Is this a meal for the people asked for?"}],"models":[]}"""));
 
         Assert.That(started.Graders![0].Question, Is.Null);
         Assert.That(started.Graders![1].Question, Is.EqualTo("Is this a meal for the people asked for?"));
@@ -52,7 +52,7 @@ public class BenchmarkProtocolTests
     [Test]
     public void APendingGrade_IsReadAsPending_NotLostAndNotUnknown()
     {
-        var ended = (ConversationEnded)Parse("""@{"event":"conversation","mode":"cook","repeat":1,"task":"pannekoek","role":"puls-cook","scores":{},"seconds":3,"grades":[{"grader":"meal-for-people.human","version":1,"score":0,"outcome":"Pending","reason":"waits for a person"}],"outcome":"Pass"}""");
+        var ended = (ConversationEnded)Parse(SampleRole.Fill("""@{"event":"conversation","mode":"cook","repeat":1,"task":"pannekoek","role":"<RoleAlpha>","scores":{},"seconds":3,"grades":[{"grader":"meal-for-people.human","version":1,"score":0,"outcome":"Pending","reason":"waits for a person"}],"outcome":"Pass"}"""));
 
         Assert.That(ended.Grades!.Single().Outcome, Is.EqualTo(BenchmarkOutcome.Pending));
         Assert.That(ended.Outcome, Is.EqualTo(BenchmarkOutcome.Pass), "the trial's outcome is the fixed rules'");
@@ -61,7 +61,7 @@ public class BenchmarkProtocolTests
     [Test]
     public void AModelGradersGrade_CarriesTheJudgeThatGaveIt()
     {
-        var ended = (ConversationEnded)Parse("""@{"event":"conversation","mode":"cook","repeat":1,"task":"pannekoek","role":"puls-cook","scores":{},"seconds":3,"grades":[{"grader":"meal-for-people","version":1,"score":1,"outcome":"Pass","reason":"feeds four","judge_model":"qwen3:8b","judge_prompt_hash":"abc123def456"},{"grader":"priced-with-source","version":1,"score":1,"outcome":"Pass","reason":"ok"}],"outcome":"Pass"}""");
+        var ended = (ConversationEnded)Parse(SampleRole.Fill("""@{"event":"conversation","mode":"cook","repeat":1,"task":"pannekoek","role":"<RoleAlpha>","scores":{},"seconds":3,"grades":[{"grader":"meal-for-people","version":1,"score":1,"outcome":"Pass","reason":"feeds four","judge_model":"qwen3:8b","judge_prompt_hash":"abc123def456"},{"grader":"priced-with-source","version":1,"score":1,"outcome":"Pass","reason":"ok"}],"outcome":"Pass"}"""));
 
         Assert.That(ended.Grades![0], Is.EqualTo(new GradeInfo("meal-for-people", 1, 1, BenchmarkOutcome.Pass, "feeds four", "qwen3:8b", "abc123def456")));
         Assert.That(ended.Grades[1].JudgeModel, Is.Null);
@@ -117,11 +117,11 @@ public class BenchmarkProtocolTests
     [Test]
     public void ATurn_CarriesItsSessionCallsHostsAndAnswer()
     {
-        var turn = (TurnEnded)Parse(SampleMode.Fill("""@{"event":"turn","mode":"<ModeBeta>","repeat":1,"task":"bobotie","turn":1,"session":"sess_abc","question":"Bobotie vir 4","answer":"Hier is…","role":"puls-cook","continued":null,"puls_calls":1,"specialist_calls":7,"hosts":["www.checkers.co.za"],"seconds":41.3,"error":null}"""));
+        var turn = (TurnEnded)Parse(SampleMode.Fill(SampleRole.Fill("""@{"event":"turn","mode":"<ModeBeta>","repeat":1,"task":"bobotie","turn":1,"session":"sess_abc","question":"Bobotie vir 4","answer":"Hier is…","role":"<RoleAlpha>","continued":null,"puls_calls":1,"specialist_calls":7,"hosts":["www.checkers.co.za"],"seconds":41.3,"error":null}""")));
 
         Assert.That(turn.Key, Is.EqualTo(new TurnKey(SampleMode.Beta, 1, "bobotie", 1)));
         Assert.That(turn.Session, Is.EqualTo("sess_abc"));
-        Assert.That((turn.Question, turn.Answer, turn.Role, turn.Continued), Is.EqualTo(("Bobotie vir 4", "Hier is…", "puls-cook", (string?)null)));
+        Assert.That((turn.Question, turn.Answer, turn.Role, turn.Continued), Is.EqualTo(("Bobotie vir 4", "Hier is…", SampleRole.Alpha, (string?)null)));
         Assert.That((turn.PulsCalls, turn.SpecialistCalls, turn.Seconds), Is.EqualTo((1, 7, 41.3)));
         Assert.That(turn.Hosts, Is.EqualTo(new[] { "www.checkers.co.za" }));
         Assert.That(turn.Error, Is.Null);
@@ -143,13 +143,13 @@ public class BenchmarkProtocolTests
     [TestCase("held_out", BenchmarkRunSplit.HeldOut)]
     [TestCase("all", BenchmarkRunSplit.All)]
     public void TheFirstLine_NamesTheSplitTheRunAskedFor(string wire, BenchmarkRunSplit expected) =>
-        Assert.That(((ProtocolStarted)Parse("""@{"event":"protocol","version":1,"eval":"puls-cook","split":"WIRE"}""".Replace("WIRE", wire))).Split, Is.EqualTo(expected));
+        Assert.That(((ProtocolStarted)Parse(SampleEval.Fill("""@{"event":"protocol","version":1,"eval":"<EvalBeta>","split":"WIRE"}""").Replace("WIRE", wire))).Split, Is.EqualTo(expected));
 
     [Test]
     public void AFirstLineWithNoSplit_HasNone_AndOneThatNamesNoSplitIsAnUnreadableLine()
     {
-        Assert.That(((ProtocolStarted)Parse("""@{"event":"protocol","version":1,"eval":"puls-cook"}""")).Split, Is.Null);
-        Assert.That(Parse("""@{"event":"protocol","version":1,"eval":"puls-cook","split":"some"}"""), Is.InstanceOf<LogLine>());
+        Assert.That(((ProtocolStarted)Parse(SampleEval.Fill("""@{"event":"protocol","version":1,"eval":"<EvalBeta>"}"""))).Split, Is.Null);
+        Assert.That(Parse(SampleEval.Fill("""@{"event":"protocol","version":1,"eval":"<EvalBeta>","split":"some"}""")), Is.InstanceOf<LogLine>());
     }
 
     [Test]
@@ -164,10 +164,10 @@ public class BenchmarkProtocolTests
     public void AConversation_KeepsTheChecksScoresAsTheyCame()
     {
         // The scores are the check's own document: the cook check's are not the routing check's.
-        var conversation = (ConversationEnded)Parse(SampleMode.Fill("""@{"event":"conversation","mode":"<ModeBeta>","repeat":1,"task":"bobotie","role":"puls-cook","scores":{"routed_right":true,"priced_ratio":0.75},"errors":0,"seconds":88.1}"""));
+        var conversation = (ConversationEnded)Parse(SampleMode.Fill(SampleRole.Fill("""@{"event":"conversation","mode":"<ModeBeta>","repeat":1,"task":"bobotie","role":"<RoleAlpha>","scores":{"routed_right":true,"priced_ratio":0.75},"errors":0,"seconds":88.1}""")));
 
         Assert.That(conversation.Key, Is.EqualTo(new ConversationKey(SampleMode.Beta, 1, "bobotie")));
-        Assert.That(conversation.Role, Is.EqualTo("puls-cook"));
+        Assert.That(conversation.Role, Is.EqualTo(SampleRole.Alpha));
         Assert.That(conversation.Scores.GetProperty("priced_ratio").GetDouble(), Is.EqualTo(0.75));
         Assert.That((conversation.Errors, conversation.Seconds), Is.EqualTo((0, 88.1)));
     }

@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using LouisAgent.Core.Hosting.Prompts;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
@@ -104,7 +105,7 @@ public class RoleCatalogTests
         // CL9 step 3: a product's routing holds its own rows, so neither pays for the other's in every request.
         string louis = RoleCatalog.ModeParts(SkillFileSource.ReadEmbedded("agent/louis-agent/voice.md")!).Routing;
 
-        Assert.That(louis, Does.Not.Contain("puls-cook").And.Not.Contain("**Vir:**").And.Not.Contain("cook"), "no cook, no Afrikaans briefing");
+        Assert.That(louis, Does.Not.Contain(SampleRole.Alpha).And.Not.Contain("**Vir:**").And.Not.Contain("cook"), "no cook, no Afrikaans briefing");
     }
 
     [TestCase("af", "# Testprod - Stem")]
