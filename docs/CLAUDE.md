@@ -39,8 +39,8 @@ The goal and the skill map are in [GOAL.md](GOAL.md).
     Fowler's refactorings and *Patterns of Enterprise Application Architecture*, Microsoft's .NET guidance), then put
     **three options** to Louis as rule 10 says, each naming its pattern in plain words, what it changes and what it
     costs, with the sources and the one you recommend for this goal. The pick is named in the commit, the
-    explanation and the summary of each class that carries it (*Every class and method has a summary*). A brief that
-    leaves a design choice open says so as a finding instead.
+    explanation and, in brackets at the end, the summary of each class that carries it (*Every class and method has
+    a summary*). A brief that leaves a design choice open says so as a finding instead.
 
 ## Steps, branches and commits
 
@@ -173,14 +173,20 @@ decision's record (its context, and what it cost) in [docs/adr/](adr/README.md).
   splitting it. `FileSizeTests` and `RazorHasNoCodeTests` hold it.
   Why: [ADR 0010](adr/0010-folders-by-concern.md), [ADR 0034](adr/0034-code-a-person-can-maintain.md).
 - **Every class and method has a summary** (Louis, 2026-10-27) — every class, record, interface and method, private
-  and test ones included, has a `/// <summary>` that says in plain words what it does; one that carries a pattern
-  names it there (`Strategy: …`, `Null Object: …`, rule 11). Existing code gets its summaries as a change touches it:
-  a step adds them to the classes and methods it changes, never as a big refactor of its own. **Write them like a
-  person, not a robot** (Louis, 2026-10-27): the way you'd tell a colleague what this is for, in one or two short
-  everyday sentences (rule 4). Say what it's for and anything surprising, not what the name or the signature already
-  says: `/// <summary>Chrome.</summary>` on `Kind => PageRendererKind.Chrome`, or "Gets the value", "True when X is
-  set and not blank" read as filler. Better: "Ready once we know where our Chrome runs (`BROWSER_URL`)." A member that
-  truly has nothing to add gets a short plain line, not a restated signature.
+  and test ones included, has a `/// <summary>`; one that carries a pattern names it, in brackets at the end (rule 11).
+  Existing code gets its summaries as a change touches it: a step adds them to the classes and methods it changes,
+  never as a big refactor of its own. **Write them like a person, not a robot** (Louis, 2026-10-27; rule 4):
+  1. Say what it does for you, the way you'd tell a colleague at your desk, in one or two short sentences.
+  2. Leave out what the code already shows: the types, null, "returns", "true when", every edge case.
+  3. The pattern goes last, in brackets; step and rule numbers belong in the commit and the feature doc, not here.
+
+  | Robot | Person |
+  |---|---|
+  | *Strategy: the headless Chrome we run. Ready with a valid `BROWSER_URL`; otherwise `Create` returns its Null Object, an unavailable renderer that says to set it.* | *Reads pages through our own headless Chrome. If we don't know where Chrome runs, you get a renderer that tells the model to set `BROWSER_URL`. (Strategy, with a Null Object.)* |
+  | *True when the browser address is set and is an absolute URL.* | *We can only use Chrome if we know where it runs.* |
+  | *Strategy: the setup of the renderer named, else the first ready one in Setups; null when the name is unknown or none is ready.* | *Uses the renderer you named. If you named none, it takes the first one that's set up.* |
+  | *Chrome.* | *This is the Chrome one.* |
+  | *Null Object: whichever settings are given, a setup's renderer is the unavailable one exactly when the setup is not ready.* (a test) | *If a renderer isn't set up you get the "not set up" one, and only then.* |
 - **Namespace = folder path, dependencies one way, prompts in markdown, hosts stay thin** — `ArchitectureTests`
   holds the first two ([Project layout](../louis-agent.core/CLAUDE.md#project-layout)).
   Why: [ADR 0010](adr/0010-folders-by-concern.md), [ADR 0011](adr/0011-prompts-are-content.md).
