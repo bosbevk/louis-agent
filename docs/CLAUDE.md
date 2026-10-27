@@ -255,7 +255,9 @@ decision's record (its context, and what it cost) in [docs/adr/](adr/README.md).
   with Guard Clauses*). One plain `a ? x : y` stays. The pattern goes in the method's `<remarks>`. Same scope as the
   summaries: a file in a step's commit is fixed whole, untouched files wait.
 - **Formatting** (Louis, 2026-10-27) — the layout rules live in the root `.editorconfig`: four spaces, a 120-character
-  line, one file-scoped namespace line with the usings above it, each brace on its own line, no trailing spaces.
+  line, one file-scoped namespace line with the usings above it, each brace on its own line, no trailing spaces,
+  and an initializer (`new { … }`, `new Foo { … }`) with each property on its own line, never several on one line
+  (Louis, 2026-10-27).
   A line that is long only because of a web address (an ADR's `<seealso href>`) may run past 120: an address can't be
   wrapped without breaking it (Louis, 2026-10-27; the exception Google's style guides make).
   **Code and comments change only by editing the file** (an editor, Rider, Claude Code's own edit tool), and layout
