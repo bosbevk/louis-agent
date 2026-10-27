@@ -19,9 +19,11 @@ public sealed record EvalListingResult(IReadOnlyList<EvalLine> Evals, string? Fa
 /// </summary>
 public sealed class EvalListing(string command, IReadOnlyList<string> arguments, TimeSpan timeout, string? requiredFile = null)
 {
+    internal const string DotNetHost = "dotnet";
+
     /// <summary>The runner's listing: <c>dotnet {runnerPath} --list</c>, and the runner's file must be there.</summary>
     public static EvalListing ForRunner(string runnerPath, TimeSpan? timeout = null) =>
-        new("dotnet", [runnerPath, "--list"], timeout ?? TimeSpan.FromSeconds(30), runnerPath);
+        new(DotNetHost, [runnerPath, "--list"], timeout ?? TimeSpan.FromSeconds(30), runnerPath);
 
     // The runner writes snake_case (EvalJson.SnakeCase in the runner): name, identity, version, proves. A missing or null required
     // field refuses the line, not a default filled in (the review's fix: a {} line is no eval).

@@ -43,7 +43,7 @@ public class EvalListingTests
     public void AFailingListingIsAWarningAndNoEvals()
     {
         // The runner refuses an unknown eval and exits 1: the same non-zero exit a listing would give.
-        var result = new EvalListing("dotnet", [RunnerBuild.Dll, "run", "nope"], TimeSpan.FromSeconds(30)).Read();
+        var result = new EvalListing(EvalListing.DotNetHost, [RunnerBuild.Dll, "run", "nope"], TimeSpan.FromSeconds(30)).Read();
 
         Assert.That(result.Evals, Is.Empty);
         Assert.That(result.Failure, Does.Contain("exited with 1"));

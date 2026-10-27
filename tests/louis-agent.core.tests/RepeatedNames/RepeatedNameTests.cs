@@ -22,12 +22,6 @@ public class RepeatedNameTests
 
     private static readonly string[] Roots = ["louis-agent.core", "louis-agent.choices", "louis-agent.session-stream", "identities", "packs", "src", "tools", "evals", "tests"];
 
-    /// <summary>What comes right before the literal when it is not a toolset: the executable a process starts, a key read from JSON or a dictionary.</summary>
-    private static readonly Regex NotAToolsetBefore = new(@"(ProcessStartInfo|Process\.Start|ProcessRunner\.Run|GetProperty|TryGetProperty)\($|[\w\)]\[$", RegexOptions.Compiled);
-
-    /// <summary>A line that names an executable (the dotnet host, python in its venv, the shell) or a role level's folder: what the literal on it is is not a toolset.</summary>
-    private static readonly Regex NotAToolsetLine = new(@"\.FileName\b|candidates\.|CommonCommands|ResolveShell|Folder\b|evalHost|_venvDirectory|\(""dotnet"", \[", RegexOptions.Compiled);
-
     /// <summary>A literal that is a name of something else, with the file (or the folder, ending in /) it is in, a text on its line, and why. Few on purpose (Louis, 2026-10-27: a dozen is too many).</summary>
     private static readonly (string File, string Line, string Reason)[] Exemptions =
     [
@@ -65,13 +59,7 @@ public class RepeatedNameTests
         {
             string rel = Relative(path);
             if (enumFiles.Contains(rel) || rel.StartsWith("tests/louis-agent.core.tests/RepeatedNames/")) continue;
-            string text = File.ReadAllText(path);
-            string[] lines = text.Split('\n');
-            foreach (var literal in StringLiterals.Regular(text).Where(l => names.Contains(l.Value)))
-            {
-                string line = lines[literal.Line - 1].Trim();
-                if (!NotAToolsetLine.IsMatch(line) && !NotAToolsetBefore.IsMatch(lines[literal.Line - 1][..literal.Column])) sites.Add(new Site(rel, literal.Line, literal.Value, line));
-            }
+            foreach (var hit in NameScan.Flagged(File.ReadAllText(path), names)) sites.Add(new Site(rel, hit.Line, hit.Value, hit.Text));
         }
         return sites;
     }
