@@ -61,8 +61,9 @@ Docs-only and configuration-only steps have no test to write first.
 3. Update the feature or fix doc with what the step learned; on the last step, follow *Finishing a feature* or
    *Finishing a fix* in their READMEs. The plan changes only under *Approved during the build*. New text goes in the
    doc of its type (*Rules that always apply*: one type per doc).
-4. Format the commit's C# files: `dotnet format louis-agent-solution.sln --include <its .cs files>`, or Rider's
-   **Reformat Code** on each (*Formatting*); CI fails a push whose commits' files aren't formatted.
+4. Format every C# file in the commit (*Formatting*): first Rider's own formatter on each, through Rider's MCP server
+   (`reformat_file`), which wraps long lines; then `dotnet format louis-agent-solution.sln --include <its .cs files>`,
+   which moves usings and is what CI checks, so it goes last. CI fails a push whose commits' files aren't formatted.
 5. Commit the step on its own, test and code together, then explain it (rules 4 and 6), showing the test failing
    before the code and passing after, and stop.
 
@@ -261,7 +262,10 @@ decision's record (its context, and what it cost) in [docs/adr/](adr/README.md).
   only through `dotnet format` or Rider's **Reformat Code**: never a home-made script (Python, sed, awk, PowerShell)
   that rewrites source files. Louis, 2026-10-27, after a script that added comments walked a sentence letter by letter
   and left 478 one-character comment lines in a test file.
-  Rider applies them with **Reformat Code**; `dotnet format` applies them from the command line. Same scope as the
+  Rider applies them with **Reformat Code**, and Claude Code in Rider calls the same formatter through Rider's MCP
+  server (`reformat_file`; Settings → Tools → MCP Server, with Claude Code auto-configured): it is the one that wraps
+  lines to 120, which `dotnet format` never does. `dotnet format` runs after it and has the last word, since CI checks
+  with it. Where no Rider runs (a cloud session), wrap long lines by hand. Same scope as the
   summaries: the files in a step's commit are formatted whole, untouched files keep their old layout, never a big
   reformat of its own. CI's *Formatting* step checks the C# files of the commits each push brings (merges left out).
 - **Namespace = folder path, dependencies one way, prompts in markdown, hosts stay thin** — `ArchitectureTests`
