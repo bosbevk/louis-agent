@@ -135,7 +135,7 @@ internal sealed class StoredRunHandlers(
         var people = reviews is null ? [] : await reviews.OfRunAsync(run.Id, cancellationToken);
         var latest = HumanGrades.Latest(people);
         var decided = HumanGrades.Decided(people);
-        var agreement = ReviewEndpoints.HumanReviewsOf(run)
+        var agreement = ReviewQueries.HumanReviewsOf(run)
             .Select(human => human[..^HumanReview.Suffix.Length])
             .Order(StringComparer.Ordinal)
             .Select(grader => AgreementRow.Of(grader, conversations, decided))

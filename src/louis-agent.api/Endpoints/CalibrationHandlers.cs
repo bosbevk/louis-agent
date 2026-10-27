@@ -50,7 +50,7 @@ internal sealed class CalibrationHandlers(
         try
         {
             if (await store.GetRunAsync(id, cancellationToken) is not { } run) return NoRun(id);
-            var humans = ReviewEndpoints.HumanReviewsOf(run);
+            var humans = ReviewQueries.HumanReviewsOf(run);
             if (!humans.Contains(grader + HumanReview.Suffix)) return NeedsAJudge(id, grader, humans);
             if (catalog.Checks.FirstOrDefault(k => k.Id == run.Check) is not { } check)
                 return Bad(MessageText.Format(ReviewUserText.CalibrationNeedsEval, new
@@ -59,7 +59,7 @@ internal sealed class CalibrationHandlers(
                     Check = run.Check
                 }));
 
-            var labels = await ReviewEndpoints.DecidedLabelsAsync(store, reviews, id, grader, cancellationToken);
+            var labels = await ReviewQueries.DecidedLabelsAsync(store, reviews, id, grader, cancellationToken);
             if (labels.Count == 0)
                 return ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error",
                     MessageText.Format(ReviewUserText.NoLabelsYet, new

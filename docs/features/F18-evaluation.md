@@ -1159,6 +1159,11 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
 - **Sweep: `RescoreEndpoints`.** `RescoreHandlers` holds the re-score route; its 201 is `CreatedJson<LiveRunRow>` with
   the admin options (finding 2), so `AdminRows`, whose last row this was, is gone. `RunRowRecordTests` now pins the
   live row's names and fixed values (its start is the clock's), and `BenchmarkCalibrationStartTests` reads the record.
+- **Sweep: `ReviewEndpoints`.** `ReviewHandlers` holds the three review routes; a new grade's checks are guard
+  clauses, where one `if` tested three things for the verdict. The reply rows are `HumanGradeRow` (shared with the
+  run's read) and `ReviewsReply`, the body `ReviewRequest`. The two helpers others used (`HumanReviewsOf`,
+  `DecidedLabelsAsync`) are review logic, not routing, so they moved to `Benchmarks/Reviews/ReviewQueries`. Two Puls
+  comments still name `ReviewEndpoints.MaxNoteLength`; Part 3 rebuilds those admin pages and fixes them there.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)
