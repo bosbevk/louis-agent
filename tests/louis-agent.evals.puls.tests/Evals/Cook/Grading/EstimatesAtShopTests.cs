@@ -26,7 +26,7 @@ public class EstimatesAtShopTests
     private static readonly SessionEvent ReadsRecipe = SpecialistCall("FetchUrl", """{"url":"https://marindakook.co.za/bobotie/"}""");
 
     private static Task<Grade> Grade(string expected, params SessionEvent[] events) =>
-        new EstimatesAtShop().GradeAsync(Trial(CookMode, "cook-x", expected, null, Turn(1, events)), CancellationToken.None).AsTask();
+        new EstimatesAtShop().GradeAsync(Trial(CookEvalMode, "cook-x", expected, null, Turn(1, events)), CancellationToken.None).AsTask();
 
     [Test]
     public void ItIsARequiredFixedRule_ThatReadsTheShopAndTheTownKeys()
@@ -98,7 +98,7 @@ public class EstimatesAtShopTests
     [Test]
     public async Task ItIsUnknown_ForAnInfrastructureFailure()
     {
-        var failed = Trial(CookMode, "cook-x", Pnp, null, Turn(1, [Text(Estimates + EstimatesLine + PnpBranch)], TrialFailure.Timeout));
+        var failed = Trial(CookEvalMode, "cook-x", Pnp, null, Turn(1, [Text(Estimates + EstimatesLine + PnpBranch)], TrialFailure.Timeout));
 
         Assert.That((await new EstimatesAtShop().GradeAsync(failed, CancellationToken.None)).Outcome, Is.EqualTo(GradeOutcome.Unknown));
     }

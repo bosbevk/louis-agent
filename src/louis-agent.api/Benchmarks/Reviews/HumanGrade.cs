@@ -26,6 +26,7 @@ public static class HumanVerdicts
     {
         HumanVerdict.Pass => "pass",
         HumanVerdict.Fail => "fail",
-        _ => "unsure",
+        HumanVerdict.Unsure => "unsure",
+        _ => throw new ArgumentOutOfRangeException(nameof(verdict), verdict, null),
     };
 }

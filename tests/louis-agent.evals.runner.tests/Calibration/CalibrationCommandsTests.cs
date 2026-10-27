@@ -20,7 +20,7 @@ public class CalibrationCommandsTests
         new("cook-en", new EvalInput(null, "Africa/Johannesburg", ["For two"]), JsonDocument.Parse("""{"serves":2}""").RootElement.Clone(), [], DatasetSplit.Dev);
 
     private static LabeledAnswer Answer(string text, bool pass, int repeat = 1, string grader = "meal-for-people") =>
-        new($"cook-en.{repeat}.json", grader, "cook-en", StubMode.Cook.Wire(), "8f7802b9a72e", repeat, [new LabelTurn("For two", text)], pass, "");
+        new($"cook-en.{repeat}.json", grader, "cook-en", StubMode.Delegating.Wire(), "8f7802b9a72e", repeat, [new LabelTurn("For two", text)], pass, "");
 
     private static string? NoCi(string name) => null;
 
@@ -117,18 +117,18 @@ public class CalibrationCommandsTests
             string[] stored =
             [
                 At(new { @event = "protocol", version = 1, eval = "fake", eval_version = 1, graders = Array.Empty<object>(), models = Array.Empty<object>() }),
-                At(new { @event = "mode", mode = StubMode.Cook.Wire(), repeat = 1, toolsets = new[] { StubToolset.Web.Wire() }, role = "r", llm = (string?)null }),
-                At(new { @event = "question", mode = StubMode.Cook.Wire(), repeat = 1, task = "cook-en", turn = 1, session = "s", text = "For two" }),
-                At(new { @event = "sse", mode = StubMode.Cook.Wire(), repeat = 1, task = "cook-en", turn = 1, type = "content_block_delta", data = new { type = "content_block_delta", index = 0, delta = new { type = "text_delta", text = "Bobotie" } } }),
-                At(new { @event = "turn", mode = StubMode.Cook.Wire(), repeat = 1, task = "cook-en", turn = 1, session = "s", question = "For two", answer = "Bobotie", seconds = 1.0 }),
-                At(new { @event = "conversation", mode = StubMode.Cook.Wire(), repeat = 1, task = "cook-en", scores = new { }, errors = 0, seconds = 1.0 }),
+                At(new { @event = "mode", mode = StubMode.Delegating.Wire(), repeat = 1, toolsets = new[] { StubToolset.Web.Wire() }, role = "r", llm = (string?)null }),
+                At(new { @event = "question", mode = StubMode.Delegating.Wire(), repeat = 1, task = "cook-en", turn = 1, session = "s", text = "For two" }),
+                At(new { @event = "sse", mode = StubMode.Delegating.Wire(), repeat = 1, task = "cook-en", turn = 1, type = "content_block_delta", data = new { type = "content_block_delta", index = 0, delta = new { type = "text_delta", text = "Bobotie" } } }),
+                At(new { @event = "turn", mode = StubMode.Delegating.Wire(), repeat = 1, task = "cook-en", turn = 1, session = "s", question = "For two", answer = "Bobotie", seconds = 1.0 }),
+                At(new { @event = "conversation", mode = StubMode.Delegating.Wire(), repeat = 1, task = "cook-en", scores = new { }, errors = 0, seconds = 1.0 }),
             ];
             var output = new StringWriter();
 
             int code = LabelSheetCommand.Run(new LabelSheetRequest("fake", "meal-for-people", "8f7802b9a72e", folder, 10), new FakeEval([]), stored, output);
 
             Assert.That(code, Is.Zero);
-            Assert.That(Directory.GetFiles(folder).Select(Path.GetFileName), Is.EqualTo(new[] { "meal-for-people.cook-en.puls-cook.8f7802b9a72e.1.json" }));
+            Assert.That(Directory.GetFiles(folder).Select(Path.GetFileName), Is.EqualTo(new[] { $"meal-for-people.cook-en.{StubMode.Delegating.Wire()}.8f7802b9a72e.1.json" }));
             Assert.That(output.ToString(), Does.Contain("1 label file").And.Contain(folder));
         }
         finally { if (Directory.Exists(folder)) Directory.Delete(folder, true); }

@@ -4,7 +4,7 @@ using System.Reflection.Metadata;
 using System.Reflection.Metadata.Ecma335;
 using System.Reflection.PortableExecutable;
 
-namespace LouisAgent.Core.Tests.RepeatedNames;
+namespace LouisAgent.Core.Tests.RepeatedNames.Scanning;
 
 /// <summary>
 /// Finds, in the compiled code of our own assemblies, every call of <c>ToString()</c> on a value of an enum we declare (F18 step 7.5.2: "out with .Wire()"). The compiler writes such a call as

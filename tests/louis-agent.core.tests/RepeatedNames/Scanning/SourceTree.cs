@@ -1,4 +1,4 @@
-namespace LouisAgent.Core.Tests.RepeatedNames;
+namespace LouisAgent.Core.Tests.RepeatedNames.Scanning;
 
 /// <summary>Where the repo's sources and built projects are, for the ratchets that read them (F18 step 7.5).</summary>
 public static class SourceTree

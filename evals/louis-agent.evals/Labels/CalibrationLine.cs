@@ -37,6 +37,7 @@ public sealed record CalibrationLine(string Event, string Eval, string Grader, s
         GradeOutcome.Pass => "pass",
         GradeOutcome.Fail => "fail",
         GradeOutcome.Unknown => "unknown",
-        _ => "pending",
+        GradeOutcome.Pending => "pending",
+        _ => throw new ArgumentOutOfRangeException(nameof(outcome), outcome, null),
     };
 }

@@ -12,14 +12,14 @@ It is the one eval the runner always lists, whatever `EVALS` says.
 
 | Mode | Tools (only as a label) |
 |---|---|
-| `puls-only` | `web` |
-| `puls-cook` | `specialists`, `web` |
+| `stub-direct` | `web` |
+| `stub-delegating` | `specialists`, `web` |
 
 ## The conversations
 
 | Conversation | Turns | What it shows |
 |---|---|---|
-| `bobotie` | 2 (with a follow-up) | thinking, text, and in `puls-cook` a hand-over to the cook with its own events |
+| `bobotie` | 2 (with a follow-up) | thinking, text, and in `stub-delegating` a hand-over to the cook with its own events |
 | `cottage-pie` | 1 | the same, one turn |
 
 ## The graders

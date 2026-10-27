@@ -42,7 +42,7 @@ public class StubEvalTests
             .Distinct()
             .ToList();
         Assert.That(sessions, Has.Count.EqualTo(8));
-        Assert.That(sessions, Does.Contain("sess_stub_puls-only_2_bobotie"));
+        Assert.That(sessions, Does.Contain("sess_stub_stub-direct_2_bobotie"));
     }
 
     [Test]
@@ -56,7 +56,7 @@ public class StubEvalTests
         await runner.RunAsync(new StubEval(), new EvalRun("portal-run-7", 1), CancellationToken.None);
 
         Assert.That(client.Tags, Has.Count.EqualTo(4));
-        Assert.That(client.Tags, Does.Contain("portal-run-7:puls-cook:1"));
+        Assert.That(client.Tags, Does.Contain("portal-run-7:stub-delegating:1"));
         Assert.That(client.Tags.All(tag => tag.StartsWith("portal-run-7:", StringComparison.Ordinal)), Is.True);
     }
 

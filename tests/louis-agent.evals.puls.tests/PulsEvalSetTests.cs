@@ -38,7 +38,7 @@ public class PulsEvalSetTests
             | Hoender | 1 kg | Hoender 1 kg | [R69,99](https://www.checkers.co.za/p/1) |
             | **Totaal** | | | **R69,99** |
             """;
-        var trial = Trial(CookMode, "cook", """{"routes_to":"puls-cook","town":"Malmesbury","serves":4,"budget":150,"shop":"checkers"}""", "Malmesbury, Wes-Kaap, Suid-Afrika",
+        var trial = Trial(CookEvalMode, "cook", """{"routes_to":"puls-cook","town":"Malmesbury","serves":4,"budget":150,"shop":"checkers"}""", "Malmesbury, Wes-Kaap, Suid-Afrika",
             Turn(1, [Start("puls-cook"), SpecialistCall("FindProducts", """{"shop":"checkers","area":"Malmesbury","query":"hoender"}"""), Text(answer)],
                 failure: LouisAgent.Evals.Trials.TrialFailure.Timeout));
 

@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Runner.Messages;
 
@@ -34,7 +35,7 @@ public static class StubStream
         if (cook)
         {
             string call = $"toolu_{task}_{turn}";
-            Block(new { type = "tool_use", id = call, name = "StartSubSession", input = new { agent = "puls", role = "puls-cook", task } });
+            Block(new { type = "tool_use", id = call, name = "StartSubSession", input = new { agent = "stub", role = StubRole.Specialist.Wire(), task } });
             var inner = new (string Event, object Data)[]
             {
                 ("content_block_start", new { type = "content_block_start", index = 0, content_block = new { type = "text", text = "" } }),
@@ -42,7 +43,7 @@ public static class StubStream
                 ("content_block_stop", new { type = "content_block_stop", index = 0 }),
             };
             foreach (var (name, data) in inner)
-                events.Add(("sub_session", new { tool_use_id = call, agent = "puls", @event = name, data }));
+                events.Add(("sub_session", new { tool_use_id = call, agent = "stub", @event = name, data }));
             Block(new { type = "tool_result", tool_use_id = call, content = cookReply, is_error = false });
         }
 

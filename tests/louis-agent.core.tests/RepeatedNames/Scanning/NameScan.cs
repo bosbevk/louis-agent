@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace LouisAgent.Core.Tests.RepeatedNames;
+namespace LouisAgent.Core.Tests.RepeatedNames.Scanning;
 
 /// <summary>
 /// The scan of the repeated-names ratchet on one source text (F18 step 7.5.3): the standalone string literals that are one of the wire names, minus the ones that are

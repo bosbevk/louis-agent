@@ -11,7 +11,7 @@ public static class CookSetup
     /// <summary>The modes: Puls with its own shop tools, and Puls with its cook (F34: the same toolsets the cook has).</summary>
     public static readonly IReadOnlyDictionary<string, IReadOnlyList<string>> Modes = new Dictionary<string, IReadOnlyList<string>>
     {
-        [PulsMode.Tools.Wire()] = [PulsToolset.Web.Wire(), PulsToolset.Shops.Wire()],
-        [PulsMode.Cook.Wire()] = [PulsToolset.Specialists.Wire(), PulsToolset.Web.Wire()],
+        [CookMode.Tools.Wire()] = [PulsToolset.Web.Wire(), PulsToolset.Shops.Wire()],
+        [CookMode.Cook.Wire()] = [PulsToolset.Specialists.Wire(), PulsToolset.Web.Wire()],
     };
 }

@@ -32,8 +32,8 @@ public class CookEvalTests
 
         Assert.That(modes.Select(m => (m.Name, m.Role, string.Join(",", m.Toolsets))), Is.EqualTo(new[]
         {
-            (PulsMode.Tools.Wire(), Role, "web,shops"),
-            (PulsMode.Cook.Wire(), Role, "specialists,web"),
+            (CookMode.Tools.Wire(), Role, "web,shops"),
+            (CookMode.Cook.Wire(), Role, "specialists,web"),
         }));
     }
 
@@ -65,7 +65,7 @@ public class CookEvalTests
     [Test]
     public void ItsScoresAreTheCookScorers_KeyForKey()
     {
-        var trial = Trial(CookMode, "cook-af", """{"routes_to":"puls-cook","serves":4}""", null, Turn(1, [Start("puls-cook"), Fetch("https://www.checkers.co.za/x"), Text("Resep.")]));
+        var trial = Trial(CookEvalMode, "cook-af", """{"routes_to":"puls-cook","serves":4}""", null, Turn(1, [Start("puls-cook"), Fetch("https://www.checkers.co.za/x"), Text("Resep.")]));
 
         var scores = Eval.ScoresOf(trial, []);
 
@@ -78,7 +78,7 @@ public class CookEvalTests
     {
         var turn = Turn(1, [Start("puls-cook"), Fetch("https://www.checkers.co.za/x"), Error()]);
 
-        var facts = Eval.TurnFactsOf(turn, CookMode);
+        var facts = Eval.TurnFactsOf(turn, CookEvalMode);
 
         Assert.That(facts.Role, Is.EqualTo("puls-cook"));
         Assert.That((facts.AgentCalls, facts.SpecialistCalls), Is.EqualTo((2, 0)));

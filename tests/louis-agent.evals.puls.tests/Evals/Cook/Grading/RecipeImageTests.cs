@@ -16,7 +16,7 @@ public class RecipeImageTests
     private static readonly SessionEvent Reads = SpecialistCall("FetchUrl", """{"url":"https://marindakook.co.za/bobotie/"}""");
 
     private static Task<Grade> Grade(string expected, params SessionEvent[] events) =>
-        new RecipeImage().GradeAsync(Trial(CookMode, "cook-x", expected, null, Turn(1, events)), CancellationToken.None).AsTask();
+        new RecipeImage().GradeAsync(Trial(CookEvalMode, "cook-x", expected, null, Turn(1, events)), CancellationToken.None).AsTask();
 
     [Test]
     public void ItIsARequiredFixedRule_ThatReadsTheRecipeImageKey()
@@ -65,7 +65,7 @@ public class RecipeImageTests
     [Test]
     public async Task ItIsUnknown_ForAnInfrastructureFailure()
     {
-        var failed = Trial(CookMode, "cook-x", Expected, null, Turn(1, [Reads, SpecialistResult(Page), Text(Shown)], TrialFailure.Timeout));
+        var failed = Trial(CookEvalMode, "cook-x", Expected, null, Turn(1, [Reads, SpecialistResult(Page), Text(Shown)], TrialFailure.Timeout));
 
         Assert.That((await new RecipeImage().GradeAsync(failed, CancellationToken.None)).Outcome, Is.EqualTo(GradeOutcome.Unknown));
     }

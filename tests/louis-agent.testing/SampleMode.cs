@@ -2,7 +2,7 @@ namespace LouisAgent.Testing;
 
 /// <summary>
 /// Neutral names for the modes of an eval run, for a test that stores, shows or parses a mode and does not need a real eval's mode to work (ADR 0043, F18 step 7.5.4).
-/// A test of an eval set's own behaviour uses that set's enum member (<c>PulsMode</c>), never one of these and never a string.
+/// A test of an eval set's own behaviour uses that set's enum member (<c>CookMode</c>), never one of these and never a string.
 /// </summary>
 public static class SampleMode
 {

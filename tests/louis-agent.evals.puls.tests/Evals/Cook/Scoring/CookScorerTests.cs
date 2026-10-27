@@ -241,16 +241,16 @@ public class CookScorerTests
         // The Python's rule: "specialists" in the mode's toolsets. A mode named for the cook with no cook is not on; a
         // differently named mode with the cook is.
         Assert.That(PulsModes.CanDelegate(new EvalMode("puls-cook-sonnet", "puls-cook", [PulsToolset.Specialists.Wire(), PulsToolset.Web.Wire()])), Is.True);
-        Assert.That(PulsModes.CanDelegate(new EvalMode(PulsMode.Cook.Wire(), "puls-cook", [PulsToolset.Web.Wire(), PulsToolset.Shops.Wire()])), Is.False);
-        Assert.That(PulsModes.CanDelegate(new EvalMode(PulsMode.Tools.Wire(), "puls-cook", [PulsToolset.Web.Wire(), PulsToolset.Shops.Wire()])), Is.False);
+        Assert.That(PulsModes.CanDelegate(new EvalMode(CookMode.Cook.Wire(), "puls-cook", [PulsToolset.Web.Wire(), PulsToolset.Shops.Wire()])), Is.False);
+        Assert.That(PulsModes.CanDelegate(new EvalMode(CookMode.Tools.Wire(), "puls-cook", [PulsToolset.Web.Wire(), PulsToolset.Shops.Wire()])), Is.False);
     }
 
     [Test]
     public void TheModes_ArePulsWithTheCooksToolsAndPulsWithItsCook() =>
         Assert.That(CookSetup.Modes, Is.EqualTo(new Dictionary<string, IReadOnlyList<string>>
         {
-            [PulsMode.Tools.Wire()] = [PulsToolset.Web.Wire(), PulsToolset.Shops.Wire()],
-            [PulsMode.Cook.Wire()] = [PulsToolset.Specialists.Wire(), PulsToolset.Web.Wire()],
+            [CookMode.Tools.Wire()] = [PulsToolset.Web.Wire(), PulsToolset.Shops.Wire()],
+            [CookMode.Cook.Wire()] = [PulsToolset.Specialists.Wire(), PulsToolset.Web.Wire()],
         }));
 
     private static TurnView Turn(string answer = "", ToolCall[]? calls = null, ToolCall[]? specialistCalls = null, string? role = null,

@@ -20,7 +20,7 @@ public class MealForPeopleGraderTests
         MealForPeopleGrader.Create(() => new ConfiguredJudge(new ChatConfiguration(client ?? Client), "qwen3:8b"));
 
     private static Trial Cook(string expected, int turns) =>
-        Trial(CookMode, "cook-x", expected, "Malmesbury", Enumerable.Range(1, turns).Select(n => Turn(n, [Text($"antwoord {n}")])).ToArray());
+        Trial(CookEvalMode, "cook-x", expected, "Malmesbury", Enumerable.Range(1, turns).Select(n => Turn(n, [Text($"antwoord {n}")])).ToArray());
 
     [Test]
     public void ItIsAModelGrader_ThatReadsServes_AndIsNotRequired()

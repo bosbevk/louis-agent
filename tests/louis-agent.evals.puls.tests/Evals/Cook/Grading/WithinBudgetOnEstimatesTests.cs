@@ -15,7 +15,7 @@ public class WithinBudgetOnEstimatesTests
     private const string AfrikaansEnd = "| **Totaal** | | | **± R112** |\n| **Per persoon** | | | **± R28** |\n";
 
     private static Task<Grade> Budget(string expected, string answer) =>
-        new WithinBudget().GradeAsync(Trial(CookMode, "cook-x", expected, null, Turn(1, [Text(answer)])), CancellationToken.None).AsTask();
+        new WithinBudget().GradeAsync(Trial(CookEvalMode, "cook-x", expected, null, Turn(1, [Text(answer)])), CancellationToken.None).AsTask();
 
     [TestCase(EnglishEnd)]
     [TestCase(AfrikaansEnd)]

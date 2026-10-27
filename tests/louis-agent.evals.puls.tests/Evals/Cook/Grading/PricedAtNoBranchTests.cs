@@ -21,7 +21,7 @@ public class PricedAtNoBranchTests
     private static readonly SessionEvent ReadsPnp = SpecialistCall("ReadRenderedPage", """{"url":"https://www.pnp.co.za/search/uie","maxChars":3000}""");
 
     private static Task<Grade> Grade(params SessionEvent[] events) =>
-        new EstimatesAtShop().GradeAsync(Trial(CookMode, "cook-no-branch", NoBranch, null, Turn(1, events)), CancellationToken.None).AsTask();
+        new EstimatesAtShop().GradeAsync(Trial(CookEvalMode, "cook-no-branch", NoBranch, null, Turn(1, events)), CancellationToken.None).AsTask();
 
     [Test]
     public async Task ItPasses_WhenNothingIsPricedTheEstimatesAreSaidAndTheMissingBranchIsSaid() =>

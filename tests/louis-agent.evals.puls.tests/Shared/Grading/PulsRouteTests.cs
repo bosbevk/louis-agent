@@ -29,7 +29,7 @@ public class PulsRouteTests
 
     [Test]
     public async Task AMealGoesToTheCook_InAModeThatCanHandItOn() =>
-        Assert.That((await Grade(CookMode, CookRoute, Turn(1, [Start("puls-cook"), Text("Resep.")]))).Outcome, Is.EqualTo(GradeOutcome.Pass));
+        Assert.That((await Grade(CookEvalMode, CookRoute, Turn(1, [Start("puls-cook"), Text("Resep.")]))).Outcome, Is.EqualTo(GradeOutcome.Pass));
 
     [Test]
     public async Task AModeIsOnTheCookBecauseOfItsToolsets_NotItsName() =>
@@ -39,7 +39,7 @@ public class PulsRouteTests
     [Test]
     public async Task PulsAnsweringAMealItselfIsWrong_WhereTheCookIsOn()
     {
-        var grade = await Grade(CookMode, CookRoute, Turn(1, [Text("Resep.")]));
+        var grade = await Grade(CookEvalMode, CookRoute, Turn(1, [Text("Resep.")]));
 
         Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Fail));
         Assert.That(grade.Reason, Does.Contain("answered itself"));
@@ -47,7 +47,7 @@ public class PulsRouteTests
 
     [Test]
     public async Task AModeThatCannotHandItOn_ExpectsPulsToAnswerItself() =>
-        Assert.That((await Grade(ToolsMode, CookRoute, Turn(1, [Text("Die koers is 10.5%.")]))).Outcome, Is.EqualTo(GradeOutcome.Pass));
+        Assert.That((await Grade(ToolsEvalMode, CookRoute, Turn(1, [Text("Die koers is 10.5%.")]))).Outcome, Is.EqualTo(GradeOutcome.Pass));
 
     [Test]
     public async Task TheBaselineIsRightToAnswerAMealItself() =>
@@ -56,7 +56,7 @@ public class PulsRouteTests
     [Test]
     public async Task AWebQuestionHandedToTheCookIsWrong()
     {
-        var grade = await Grade(CookMode, SelfRoute, Turn(1, [Start("puls-cook")]));
+        var grade = await Grade(CookEvalMode, SelfRoute, Turn(1, [Start("puls-cook")]));
 
         Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Fail));
         Assert.That(grade.Reason, Does.Contain("puls-cook"));
@@ -65,7 +65,7 @@ public class PulsRouteTests
     [Test]
     public async Task AnErroredTurnIsNeverRight_AndTheReasonSaysItFailed()
     {
-        var grade = await Grade(CookMode, SelfRoute, Turn(1, [Error()]));
+        var grade = await Grade(CookEvalMode, SelfRoute, Turn(1, [Error()]));
 
         Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Fail));
         Assert.That(grade.Reason, Does.Contain("failed"));
@@ -74,7 +74,7 @@ public class PulsRouteTests
     [Test]
     public async Task TheRouteIsTheFirstTurns_ALaterTurnsErrorIsNoReasonForItsMiss()
     {
-        var grade = await Grade(CookMode, CookRoute, Turn(1, [Text("Resep.")]), Turn(2, [Error()]));
+        var grade = await Grade(CookEvalMode, CookRoute, Turn(1, [Text("Resep.")]), Turn(2, [Error()]));
 
         Assert.That(grade.Reason, Does.Contain("answered itself").And.Not.Contain("error"));
     }

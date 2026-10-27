@@ -22,10 +22,10 @@ public class PricedAtRenderedShopTests
     private const string WoolworthsList = "| Ingredient | For the recipe | To buy | Woolworths |\n|---|---|---|---|\n| Uie | 2 | Uie 1 kg | [R52,00](https://www.woolworths.co.za/p/1) |\n";
 
     private static Task<Grade> Estimate(string expected, params SessionEvent[] events) =>
-        new EstimatesAtShop().GradeAsync(Trial(CookMode, "cook-x", expected, null, Turn(1, events)), CancellationToken.None).AsTask();
+        new EstimatesAtShop().GradeAsync(Trial(CookEvalMode, "cook-x", expected, null, Turn(1, events)), CancellationToken.None).AsTask();
 
     private static Task<Grade> Grade(string expected, params SessionEvent[] events) =>
-        new PricedAtRetailer().GradeAsync(Trial(CookMode, "cook-x", expected, null, Turn(1, events)), CancellationToken.None).AsTask();
+        new PricedAtRetailer().GradeAsync(Trial(CookEvalMode, "cook-x", expected, null, Turn(1, events)), CancellationToken.None).AsTask();
 
     [Test]
     public async Task PnP_Passes_WhenItsPageWasReadAndThePricesLinkToItsSite() =>

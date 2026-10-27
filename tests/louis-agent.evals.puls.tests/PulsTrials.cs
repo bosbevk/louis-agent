@@ -12,8 +12,8 @@ namespace LouisAgent.Evals.Puls.Tests;
 internal static class PulsTrials
 {
     public const string Role = "puls/voice-af";
-    public static readonly EvalMode CookMode = new(PulsMode.Cook.Wire(), Role, [PulsToolset.Specialists.Wire(), PulsToolset.Web.Wire()]);
-    public static readonly EvalMode ToolsMode = new(PulsMode.Tools.Wire(), Role, [PulsToolset.Web.Wire(), PulsToolset.Shops.Wire()]);
+    public static readonly EvalMode CookEvalMode = new(CookMode.Cook.Wire(), Role, [PulsToolset.Specialists.Wire(), PulsToolset.Web.Wire()]);
+    public static readonly EvalMode ToolsEvalMode = new(CookMode.Tools.Wire(), Role, [PulsToolset.Web.Wire(), PulsToolset.Shops.Wire()]);
 
     /// <summary>A trial of a scenario with the given <c>expected</c> JSON and place (none by default).</summary>
     public static Trial Trial(EvalMode mode, string task, string expected, string? place, params TurnTranscript[] turns) =>

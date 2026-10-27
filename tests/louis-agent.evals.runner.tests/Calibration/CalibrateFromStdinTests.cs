@@ -26,7 +26,7 @@ public class CalibrateFromStdinTests
     private static string Line(string answer, bool pass, int repeat = 1, string grader = "meal-for-people", string scenario = "cook-en", int turns = 1) =>
         JsonSerializer.Serialize(new
         {
-            grader, scenario, mode = StubMode.Cook.Wire(), run = "76667d39dcdb", repeat,
+            grader, scenario, mode = StubMode.Delegating.Wire(), run = "76667d39dcdb", repeat,
             turns = Enumerable.Range(1, turns).Select(n => new { question = n == 1 ? "For two" : "Make it four", answer = n == turns ? answer : "earlier" }).ToArray(),
             label = new { pass, note = "" },
         });
@@ -85,7 +85,7 @@ public class CalibrateFromStdinTests
         var disagreement = line.GetProperty("disagreements").EnumerateArray().Single();
         Assert.That((disagreement.GetProperty("scenario").GetString(), disagreement.GetProperty("mode").GetString(), disagreement.GetProperty("repeat").GetInt32(),
                 disagreement.GetProperty("run").GetString(), disagreement.GetProperty("label").GetString(), disagreement.GetProperty("judge").GetString(), disagreement.GetProperty("reason").GetString()),
-            Is.EqualTo(("cook-en", StubMode.Cook.Wire(), 3, "76667d39dcdb", "fail", "pass", "a meal")));
+            Is.EqualTo(("cook-en", StubMode.Delegating.Wire(), 3, "76667d39dcdb", "fail", "pass", "a meal")));
         Assert.That(lines.Count(l => l.StartsWith('@')), Is.EqualTo(1), "one line of data, after the human lines");
     }
 
@@ -127,7 +127,7 @@ public class CalibrateFromStdinTests
     }
 
     private static LabeledAnswer Dataset(string text, bool pass) =>
-        new("cook-en.1.json", "meal-for-people", "cook-en", StubMode.Cook.Wire(), "8f7802b9a72e", 1, [new LabelTurn("For two", text)], pass, "");
+        new("cook-en.1.json", "meal-for-people", "cook-en", StubMode.Delegating.Wire(), "8f7802b9a72e", 1, [new LabelTurn("For two", text)], pass, "");
 
     /// <summary>A model grader that says yes to "yes" and no to anything else, and keeps the last trial it saw.</summary>
     private sealed class FakeGrader : IGrader

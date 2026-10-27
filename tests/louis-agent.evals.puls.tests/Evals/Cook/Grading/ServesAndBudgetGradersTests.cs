@@ -13,7 +13,7 @@ public class ServesAndBudgetGradersTests
     private const string Checkers = "https://www.checkers.co.za/p/";
 
     private static Trial Asked(string expected, params string[] answers) =>
-        Trial(CookMode, "cook-x", expected, "Stellenbosch, Wes-Kaap, Suid-Afrika",
+        Trial(CookEvalMode, "cook-x", expected, "Stellenbosch, Wes-Kaap, Suid-Afrika",
             answers.Select((answer, i) => Turn(i + 1, [Text(answer)])).ToArray());
 
     private static Task<Grade> Serves(Trial trial) => new ServesAsAsked().GradeAsync(trial, CancellationToken.None).AsTask();
@@ -69,7 +69,7 @@ public class ServesAndBudgetGradersTests
     [Test]
     public async Task ServesIsUnknown_WhenThereIsNothingToRead()
     {
-        var erred = Trial(CookMode, "cook-x", """{"serves":4}""", null, Turn(1, [Error()]));
+        var erred = Trial(CookEvalMode, "cook-x", """{"serves":4}""", null, Turn(1, [Error()]));
         var blank = Asked("""{"serves":4}""", "");
         var missingTurn = Asked("""{"serves":[4,6]}""", "Vir 4 mense.");
 
@@ -81,7 +81,7 @@ public class ServesAndBudgetGradersTests
     public async Task ServesIsUnknown_ForAnInfrastructureFailure_EvenWhenTheAnswerNamesTheNumber()
     {
         // The turn has a good answer: without the infrastructure check this would pass, so the reason shows the check ran.
-        var failed = Trial(CookMode, "cook-x", """{"serves":4}""", null, Turn(1, [Text("Hier is bobotie vir 4 mense.")], TrialFailure.Timeout));
+        var failed = Trial(CookEvalMode, "cook-x", """{"serves":4}""", null, Turn(1, [Text("Hier is bobotie vir 4 mense.")], TrialFailure.Timeout));
 
         var grade = await Serves(failed);
 
@@ -151,7 +151,7 @@ public class ServesAndBudgetGradersTests
         Assert.That((await Budget(Asked("{}", "Totaal: R999,00"))).Outcome, Is.EqualTo(GradeOutcome.Pass));
 
         // A turn that failed but whose answer is within the budget: without the infrastructure check this would pass.
-        var failed = await Budget(Trial(CookMode, "cook-x", """{"budget":150}""", null, Turn(1, [Text("Totaal: R100,00")], TrialFailure.Transport)));
+        var failed = await Budget(Trial(CookEvalMode, "cook-x", """{"budget":150}""", null, Turn(1, [Text("Totaal: R100,00")], TrialFailure.Transport)));
 
         Assert.That(failed.Outcome, Is.EqualTo(GradeOutcome.Unknown));
         Assert.That(failed.Reason, Does.Contain("infrastructure"));

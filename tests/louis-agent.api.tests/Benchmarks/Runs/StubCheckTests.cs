@@ -42,15 +42,15 @@ public class StubCheckTests
         var (run, _) = await RunEvalStub(store, repeat: 2);
 
         var stored = await store.GetRunAsync(run.Id);
-        Assert.That(stored!.Modes!.Select(m => (m.Name, m.Repeat)), Is.EqualTo(new[] { ("puls-only", 1), ("puls-only", 2), ("puls-cook", 1), ("puls-cook", 2) }), "the runner takes a mode's repeats together");
+        Assert.That(stored!.Modes!.Select(m => (m.Name, m.Repeat)), Is.EqualTo(new[] { ("stub-direct", 1), ("stub-direct", 2), ("stub-delegating", 1), ("stub-delegating", 2) }), "the runner takes a mode's repeats together");
         var conversations = await store.ConversationsAsync(run.Id);
         Assert.That(conversations.Count, Is.EqualTo(8), "two modes × two conversations × two repeats");
         Assert.That(conversations.All(c => c.Scores.TryGetProperty("routed_right", out _)), Is.True, "every conversation scored");
 
-        var bobotie = new ConversationKey("puls-cook", 1, "bobotie");
+        var bobotie = new ConversationKey("stub-delegating", 1, "bobotie");
         var turns = await store.TurnsAsync(run.Id, bobotie);
         Assert.That(turns.Select(t => t.Key.Turn), Is.EqualTo(new[] { 1, 2 }), "a follow-up, as the cook check has");
-        Assert.That(turns[0].Role, Is.EqualTo("puls-cook"));
+        Assert.That(turns[0].Role, Is.EqualTo("stub-specialist"));
         var events = await store.TurnEventsAsync(run.Id, turns[0].Key);
         Assert.That(events.Select(e => e.Type), Does.Contain("sub_session"), "the specialist's events, for the replay");
         Assert.That(stored.Log, Is.Not.Empty, "its plain lines");

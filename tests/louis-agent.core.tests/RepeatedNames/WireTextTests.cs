@@ -1,3 +1,4 @@
+using LouisAgent.Core.Tests.RepeatedNames.Scanning;
 using System.Text.RegularExpressions;
 
 namespace LouisAgent.Core.Tests.RepeatedNames;

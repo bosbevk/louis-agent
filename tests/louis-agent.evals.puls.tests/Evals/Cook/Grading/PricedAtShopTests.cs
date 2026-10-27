@@ -24,10 +24,10 @@ public class PricedAtShopTests
     private const string EstimatesLine = "*Pryse is skattings, nie by 'n winkel nagegaan nie.*";
 
     private static Task<Grade> Estimate(string expected, params SessionEvent[] events) =>
-        new EstimatesAtShop().GradeAsync(Trial(CookMode, "cook-x", expected, null, Turn(1, events)), CancellationToken.None).AsTask();
+        new EstimatesAtShop().GradeAsync(Trial(CookEvalMode, "cook-x", expected, null, Turn(1, events)), CancellationToken.None).AsTask();
 
     private static Task<Grade> Grade(string expected, params SessionEvent[] events) =>
-        new PricedAtRetailer().GradeAsync(Trial(CookMode, "cook-x", expected, null, Turn(1, events)), CancellationToken.None).AsTask();
+        new PricedAtRetailer().GradeAsync(Trial(CookEvalMode, "cook-x", expected, null, Turn(1, events)), CancellationToken.None).AsTask();
 
     [Test]
     public void ItIsARequiredFixedRule_ThatReadsTheShopAndTheTownKeys()
@@ -141,8 +141,8 @@ public class PricedAtShopTests
     public async Task ItIsUnknown_ForAnInfrastructureFailure_AndForATurnThatErred()
     {
         // The failed turn is a whole, right answer (the tool ran for the town, the prices link to the shop): without the infrastructure check it would pass.
-        var failed = Trial(CookMode, "cook-x", Checkers, null, Turn(1, [FindsInMalmesbury, Text(CheckersList)], TrialFailure.Timeout));
-        var erred = Trial(CookMode, "cook-x", Checkers, null, Turn(1, [Error()]));
+        var failed = Trial(CookEvalMode, "cook-x", Checkers, null, Turn(1, [FindsInMalmesbury, Text(CheckersList)], TrialFailure.Timeout));
+        var erred = Trial(CookEvalMode, "cook-x", Checkers, null, Turn(1, [Error()]));
 
         var failedGrade = await new PricedAtRetailer().GradeAsync(failed, CancellationToken.None);
 

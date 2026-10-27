@@ -19,7 +19,7 @@ namespace LouisAgent.Evals.Runner.Evals.Stub;
 public sealed class StubEval : IEval
 {
     /// <summary>The role the Python stub's modes name (its label only: the turns' roles come from the facts).</summary>
-    public const string Role = "puls/voice-af";
+    public static readonly string Role = StubRole.Voice.Wire();
 
     /// <summary>The host the cook's canned answer reads (the Python stub's hosts).</summary>
     private const string CheckersHost = "www.checkers.co.za";
@@ -33,8 +33,8 @@ public sealed class StubEval : IEval
     public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions, CancellationToken cancellationToken) =>
         ValueTask.FromResult<IReadOnlyList<EvalMode>>(
         [
-            new EvalMode(StubMode.Only.Wire(), Role, [StubToolset.Web.Wire()]),
-            new EvalMode(StubMode.Cook.Wire(), Role, [StubToolset.Specialists.Wire(), StubToolset.Web.Wire()]),
+            new EvalMode(StubMode.Direct.Wire(), Role, [StubToolset.Web.Wire()]),
+            new EvalMode(StubMode.Delegating.Wire(), Role, [StubToolset.Specialists.Wire(), StubToolset.Web.Wire()]),
         ]);
 
     public IReadOnlyList<EvalScenario> Scenarios { get; } =
@@ -57,7 +57,7 @@ public sealed class StubEval : IEval
     {
         bool cook = mode.Toolsets.Contains(StubToolset.Specialists.Wire(), StringComparer.Ordinal);
         return new TurnFacts(
-            Role: cook ? "puls-cook" : null,
+            Role: cook ? StubRole.Specialist.Wire() : null,
             Continued: cook && turn.Turn > 1 ? "sub-1" : null,
             AgentCalls: cook ? 1 : 0,
             SpecialistCalls: cook ? 3 : 0,

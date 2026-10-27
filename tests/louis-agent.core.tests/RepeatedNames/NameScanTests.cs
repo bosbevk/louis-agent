@@ -1,3 +1,4 @@
+using LouisAgent.Core.Tests.RepeatedNames.Scanning;
 namespace LouisAgent.Core.Tests.RepeatedNames;
 
 // F18 step 7.5.3c (Louis's review of 7.5.3): what the ratchet skips, it skips by the code before the literal, never by a word elsewhere on the line.

@@ -1,4 +1,4 @@
-namespace LouisAgent.Core.Tests.RepeatedNames;
+namespace LouisAgent.Core.Tests.RepeatedNames.Scanning;
 
 /// <summary>
 /// A small C# lexer for the repeated-names ratchet (F18 step 7.5.3): the standalone regular string literals of a source text, each with its line.
