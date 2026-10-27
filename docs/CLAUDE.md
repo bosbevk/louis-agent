@@ -39,8 +39,8 @@ The goal and the skill map are in [GOAL.md](GOAL.md).
     Fowler's refactorings and *Patterns of Enterprise Application Architecture*, Microsoft's .NET guidance), then put
     **three options** to Louis as rule 10 says, each naming its pattern in plain words, what it changes and what it
     costs, with the sources and the one you recommend for this goal. The pick is named in the commit, the
-    explanation and, in brackets at the end, the summary of each class that carries it (*Every class and method has
-    a summary*). A brief that leaves a design choice open says so as a finding instead.
+    explanation and the `<remarks>` of each class that carries it, with why it was chosen (*Every class and
+    method has a summary*). A brief that leaves a design choice open says so as a finding instead.
 
 ## Steps, branches and commits
 
@@ -172,21 +172,45 @@ decision's record (its context, and what it cost) in [docs/adr/](adr/README.md).
   class (other than a code-behind, or one the `[GeneratedRegex]` generator requires), `#region`, or a `Helpers`/`Utils`/`Manager` grab-bag hides the size instead of
   splitting it. `FileSizeTests` and `RazorHasNoCodeTests` hold it.
   Why: [ADR 0010](adr/0010-folders-by-concern.md), [ADR 0034](adr/0034-code-a-person-can-maintain.md).
-- **Every class and method has a summary** (Louis, 2026-10-27) — every class, record, interface and method, private
-  and test ones included, has a `/// <summary>`; one that carries a pattern names it, in brackets at the end (rule 11).
-  Existing code gets its summaries as a change touches it: a step adds them to the classes and methods it changes,
-  never as a big refactor of its own. **Write them like a person, not a robot** (Louis, 2026-10-27; rule 4):
+- **Every class and method has a summary** (Louis, 2026-10-27) — private and test ones included. Existing code gets
+  them as a change touches it: a step adds them to the classes and methods it changes, never as a big refactor of its
+  own. A class (record, interface) has up to three parts, a method its `<summary>` (and a `<remarks>` when it carries
+  a pattern of its own):
+  - `<summary>`: what it does, written like a person (below).
+  - `<remarks>`: when it carries a pattern, which one and **why it was chosen here**: the problem it solves for this
+    class, and what we'd lose without it (rule 11).
+  - `<seealso>`: one per ADR that shaped this class (not every ADR that applies), linked on GitHub, as
+    `ADR 0024: choices are enums`.
+
+  **Write them like a person, not a robot** (Louis, 2026-10-27; rule 4):
   1. Say what it does for you, the way you'd tell a colleague at your desk, in one or two short sentences.
   2. Leave out what the code already shows: the types, null, "returns", "true when", every edge case.
-  3. The pattern goes last, in brackets; step and rule numbers belong in the commit and the feature doc, not here.
+  3. Step numbers belong in the commit and the feature doc; the pattern and the ADRs have their own parts.
 
   | Robot | Person |
   |---|---|
-  | *Strategy: the headless Chrome we run. Ready with a valid `BROWSER_URL`; otherwise `Create` returns its Null Object, an unavailable renderer that says to set it.* | *Reads pages through our own headless Chrome. If we don't know where Chrome runs, you get a renderer that tells the model to set `BROWSER_URL`. (Strategy, with a Null Object.)* |
   | *True when the browser address is set and is an absolute URL.* | *We can only use Chrome if we know where it runs.* |
   | *Strategy: the setup of the renderer named, else the first ready one in Setups; null when the name is unknown or none is ready.* | *Uses the renderer you named. If you named none, it takes the first one that's set up.* |
   | *Chrome.* | *This is the Chrome one.* |
   | *Null Object: whichever settings are given, a setup's renderer is the unavailable one exactly when the setup is not ready.* (a test) | *If a renderer isn't set up you get the "not set up" one, and only then.* |
+
+  A whole class, `ChromeSetup`:
+
+  ```csharp
+  /// <summary>
+  /// Reads pages through our own headless Chrome. If we don't know where Chrome runs, you get a renderer that tells
+  /// the model to set BROWSER_URL.
+  /// </summary>
+  /// <remarks>
+  /// Strategy, with a Null Object. Each renderer knows for itself whether it's set up and how to build itself, so
+  /// "is it ready?" and "build it" can't drift apart, and a new renderer is one new class instead of another case in
+  /// two switches. When Chrome isn't set up it hands back a renderer that explains what's missing, so nothing has to
+  /// check for null and the model still gets a useful answer.
+  /// </remarks>
+  /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
+  /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0038-the-browser-says-what-it-is.md">ADR 0038: the browser says what it is</seealso>
+  internal sealed class ChromeSetup : IPageRendererSetup
+  ```
 - **Namespace = folder path, dependencies one way, prompts in markdown, hosts stay thin** — `ArchitectureTests`
   holds the first two ([Project layout](../louis-agent.core/CLAUDE.md#project-layout)).
   Why: [ADR 0010](adr/0010-folders-by-concern.md), [ADR 0011](adr/0011-prompts-are-content.md).
