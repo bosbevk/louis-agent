@@ -11,7 +11,8 @@ indent_style = space
 insert_final_newline = true
 trim_trailing_whitespace = true
 
-# C# and Razor: four spaces, and a line of at most 120 characters (the docs' width), which Rider wraps to.
+# C# and Razor: four spaces, and a line of at most 120 characters (the docs' width), which Rider wraps to. A line
+# that is long only because of a web address (an ADR link) may run over: an address can't be wrapped.
 [*.{cs,razor}]
 indent_size = 4
 max_line_length = 120

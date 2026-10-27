@@ -249,6 +249,8 @@ decision's record (its context, and what it cost) in [docs/adr/](adr/README.md).
   ```
 - **Formatting** (Louis, 2026-10-27) — the layout rules live in the root `.editorconfig`: four spaces, a 120-character
   line, one file-scoped namespace line with the usings above it, each brace on its own line, no trailing spaces.
+  A line that is long only because of a web address (an ADR's `<seealso href>`) may run past 120: an address can't be
+  wrapped without breaking it (Louis, 2026-10-27; the exception Google's style guides make).
   Rider applies them with **Reformat Code**; `dotnet format` applies them from the command line. Same scope as the
   summaries: the files in a step's commit are formatted whole, untouched files keep their old layout, never a big
   reformat of its own. CI's *Formatting* step checks the C# files of the commits each push brings (merges left out).
