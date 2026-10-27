@@ -20,4 +20,18 @@ public class PulsRoleTests
             Assert.That(identity.Prompts.GetFileInfo($"{folder}/{role.Wire()}.md").Exists, Is.True, role.ToString());
         }
     }
+
+    // The other way round: a role file with no member is a role the code cannot name, so a typo in a test or a request goes unnoticed. The minions' base (puls-minion) frames every minion and is no role.
+    [Test]
+    public void EachRoleFileOfTheIdentity_IsAMember()
+    {
+        var identity = new PulsIdentity();
+        var members = Enum.GetValues<PulsRole>().Select(r => r.Wire()).ToHashSet();
+        var files = new[] { RoleCatalog.SpecialistsFolder, RoleCatalog.MinionsFolder }
+            .SelectMany(folder => identity.Prompts.GetDirectoryContents(folder).Select(f => f.Name))
+            .Where(name => name.EndsWith(".md", StringComparison.Ordinal)).Select(name => name[..^3])
+            .Where(name => !RoleCatalog.IsMinionBase(name));
+
+        Assert.That(files.Where(name => !members.Contains(name)), Is.Empty, "a role file no PulsRole member names");
+    }
 }
