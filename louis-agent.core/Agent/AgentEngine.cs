@@ -18,10 +18,11 @@ using Microsoft.Extensions.Logging;
 namespace LouisAgent.Core.Agent;
 
 /// <summary>
-/// One agent: its tools, its skills and the model behind <see cref="IChatClient"/>, wired once (S, CL15: the engine is the
-/// facade). A turn runs on <see cref="TurnRunner"/> over the <see cref="ChatPipeline"/>, where
+/// One agent: its tools, its skills and the model behind <see cref="IChatClient"/>, wired once (S, CL15: the engine is
+/// the facade). A turn runs on <see cref="TurnRunner"/> over the <see cref="ChatPipeline"/>, where
 /// <see cref="FunctionInvokingChatClient"/> runs the tool-call loop until the model produces a final answer; what the
-/// user types as a command is <see cref="UserCommands"/>'. Provider specifics live entirely behind <see cref="IChatClient"/>.
+/// user types as a command is <see cref="UserCommands"/>'. Provider specifics live entirely behind
+/// <see cref="IChatClient"/>.
 /// </summary>
 public class AgentEngine
 {
@@ -46,8 +47,8 @@ public class AgentEngine
     public bool RecordsUsage { get; }
 
     /// <summary>
-    /// The currency usage lines and /usage show costs in (F14), set by <c>AgentHost.Build</c>; null shows them as charged.
-    /// Hosts give it to their <see cref="UsageSession"/>s.
+    /// The currency usage lines and /usage show costs in (F14), set by <c>AgentHost.Build</c>; null shows them as
+    /// charged. Hosts give it to their <see cref="UsageSession"/>s.
     /// </summary>
     public DisplayCurrency? Display { get; set; }
 
@@ -59,21 +60,28 @@ public class AgentEngine
     /// <summary>The currently loaded skills (refreshed by <see cref="ReloadSkills"/>).</summary>
     public IReadOnlyCollection<MarkdownSkillLoader.SkillDef> Skills => _skillTools.Skills;
 
-    /// <summary>Raised after agent-built tools are added or removed, so hosts that publish <see cref="Tools"/> can resync.</summary>
+    /// <summary>
+    /// Raised after agent-built tools are added or removed, so hosts that publish <see cref="Tools"/> can resync.
+    /// </summary>
     public event Action? ToolsChanged
     {
         add => _agentBuiltTools.ToolsChanged += value;
         remove => _agentBuiltTools.ToolsChanged -= value;
     }
 
-    /// <summary>The skills folder; <see cref="CreateSkillFile"/> writes into its agent/functions/; null disables skill authoring.</summary>
+    /// <summary>
+    /// The skills folder; <see cref="CreateSkillFile"/> writes into its agent/functions/; null disables skill
+    /// authoring.
+    /// </summary>
     public string? SkillsDirectory
     {
         get => _skillTools.SkillsDirectory;
         init => _skillTools.SkillsDirectory = value;
     }
 
-    /// <summary>Reasoning effort for each turn (the model's thinking is streamed to hosts); null disables thinking.</summary>
+    /// <summary>
+    /// Reasoning effort for each turn (the model's thinking is streamed to hosts); null disables thinking.
+    /// </summary>
     public ReasoningEffort? Thinking { get; init; }
 
     /// <summary>Rebuilds the skill set from disk for <see cref="ReloadSkills"/>; null disables reloading.</summary>
@@ -97,15 +105,20 @@ public class AgentEngine
     /// <summary>Builds the agent's parts once and registers its tools; a model without tools gets none.</summary>
     /// <param name="toolsets">
     /// Objects whose public methods become the agent's tools (plus <see cref="ExecuteSkill"/>): a session's catalogue
-    /// toolsets (<c>AgentEngineFactory</c>), or another agent's own tools, such as the orchestrator's. Null registers no
-    /// tool object, only <see cref="ExecuteSkill"/> and the self-extension tools.
+    /// toolsets (<c>AgentEngineFactory</c>), or another agent's own tools, such as the orchestrator's. Null registers
+    /// no tool object, only <see cref="ExecuteSkill"/> and the self-extension tools.
     /// </param>
     /// <param name="usageSink">Where one usage record per model request goes; null records nothing.</param>
-    /// <param name="usageMapper">The provider's usage mapping (<c>LlmClientFactory.CreateUsageMapper</c>); null uses the standard one.</param>
-    /// <param name="concurrentToolCalls">Run a round's tool calls at once (F34); only for toolsets that allow it.</param>
+    /// <param name="usageMapper">
+    /// The provider's usage mapping (<c>LlmClientFactory.CreateUsageMapper</c>); null uses the standard one.
+    /// </param>
+    /// <param name="concurrentToolCalls">
+    /// Run a round's tool calls at once (F34); only for toolsets that allow it.
+    /// </param>
     /// <param name="selfExtension">
     /// On a toolsets engine, also register the self-extension tools (CreateSkillFile, ReloadSkills, CreateTool,
-    /// ListAgentTools): the <c>skills</c> toolset. Ignored when <paramref name="toolsets"/> is null, which always registers them.
+    /// ListAgentTools): the <c>skills</c> toolset. Ignored when <paramref name="toolsets"/> is null, which always
+    /// registers them.
     /// </param>
     public AgentEngine(ISkillProvider skillProvider, IChatClient chatClient, AgentOptions options,
         bool supportsTools = true,
@@ -140,52 +153,78 @@ public class AgentEngine
         OwnTools.Register(_registry, _skillTools, _agentBuiltTools, options, toolsets, selfExtension, clock);
     }
 
-    /// <summary>Keeps the one tool named and drops every other, for a minion's one task (F30; see <see cref="ToolRegistry.KeepOnly"/>).</summary>
+    /// <summary>
+    /// Keeps the one tool named and drops every other, for a minion's one task (F30; see
+    /// <see cref="ToolRegistry.KeepOnly"/>).
+    /// </summary>
     public void KeepOnlyTool(string name) => _registry.KeepOnly(name);
 
-    /// <summary>Registers a tool discovered outside, e.g. in Rider's MCP; false when it's a duplicate or tools are off.</summary>
+    /// <summary>
+    /// Registers a tool discovered outside, e.g. in Rider's MCP; false when it's a duplicate or tools are off.
+    /// </summary>
     public bool RegisterDiscoveredTool(string name, string description) =>
         _registry.RegisterDiscovered(name, description);
 
     /// <summary>A history seeded with the system prompt (and the no-tools notice when applicable).</summary>
     public List<ChatMessage> NewHistory() => _turns.NewHistory();
 
-    /// <summary>One prompt, the reply whole (<see cref="TurnRunner.ProcessAsync"/>): the turn, tool calls included, lands in <paramref name="history"/>.</summary>
+    /// <summary>
+    /// One prompt, the reply whole (<see cref="TurnRunner.ProcessAsync"/>): the turn, tool calls included, lands in
+    /// <paramref name="history"/>.
+    /// </summary>
     public Task<string> ProcessPromptAsync(List<ChatMessage> history, string userInput,
         CancellationToken cancellationToken = default) =>
         _turns.ProcessAsync(history, userInput, cancellationToken);
 
-    /// <summary>One prompt, the reply streamed (<see cref="TurnRunner.StreamAsync"/>): text, each tool call and its outcome as they happen.</summary>
+    /// <summary>
+    /// One prompt, the reply streamed (<see cref="TurnRunner.StreamAsync"/>): text, each tool call and its outcome as
+    /// they happen.
+    /// </summary>
     public IAsyncEnumerable<ChatResponseUpdate> StreamPromptAsync(List<ChatMessage> history, string userInput,
         CancellationToken cancellationToken = default) =>
         _turns.StreamAsync(history, userInput, cancellationToken);
 
-    /// <summary>Runs a loaded skill (the <c>ExecuteSkill</c> tool; see <see cref="SkillTools.ExecuteSkill"/>).</summary>
+    /// <summary>
+    /// Runs a loaded skill (the <c>ExecuteSkill</c> tool; see <see cref="SkillTools.ExecuteSkill"/>).
+    /// </summary>
     public string ExecuteSkill(string skillName, string jsonArgs = "{}") =>
         _skillTools.ExecuteSkill(skillName, jsonArgs);
 
-    /// <summary>Saves and loads a skills file (the <c>CreateSkillFile</c> tool; see <see cref="SkillTools.CreateSkillFile"/>).</summary>
+    /// <summary>
+    /// Saves and loads a skills file (the <c>CreateSkillFile</c> tool; see <see cref="SkillTools.CreateSkillFile"/>).
+    /// </summary>
     public string CreateSkillFile(string name, string markdown, bool overwrite = false) =>
         _skillTools.CreateSkillFile(name, markdown, overwrite);
 
-    /// <summary>Re-reads the skills from disk (the <c>ReloadSkills</c> tool; see <see cref="SkillTools.ReloadSkills"/>).</summary>
+    /// <summary>
+    /// Re-reads the skills from disk (the <c>ReloadSkills</c> tool; see <see cref="SkillTools.ReloadSkills"/>).
+    /// </summary>
     public string ReloadSkills() => _skillTools.ReloadSkills();
 
-    /// <summary>Builds an agent tool (the <c>CreateTool</c> tool; see <see cref="AgentBuiltTools.CreateTool"/>).</summary>
+    /// <summary>
+    /// Builds an agent tool (the <c>CreateTool</c> tool; see <see cref="AgentBuiltTools.CreateTool"/>).
+    /// </summary>
     public string CreateTool(string definition, bool overwrite = false) =>
         _agentBuiltTools.CreateTool(definition, overwrite);
 
-    /// <summary>The agent-built tools (the <c>ListAgentTools</c> tool; see <see cref="AgentBuiltTools.ListAgentTools"/>).</summary>
+    /// <summary>
+    /// The agent-built tools (the <c>ListAgentTools</c> tool; see <see cref="AgentBuiltTools.ListAgentTools"/>).
+    /// </summary>
     public string ListAgentTools() => _agentBuiltTools.ListAgentTools();
 
-    /// <summary>Loads approved tools from <see cref="ToolsDirectory"/>. Called once by the host after construction.</summary>
+    /// <summary>
+    /// Loads approved tools from <see cref="ToolsDirectory"/>. Called once by the host after construction.
+    /// </summary>
     public int LoadApprovedTools() => _agentBuiltTools.LoadApprovedTools();
 
     /// <summary>
-    /// Handles commands typed by the user (never exposed to the model): /tools, /approve &lt;Name&gt;, /reject &lt;Name&gt;,
-    /// /usage (<see cref="UserCommands"/>). Returns the reply, or null when the input is not one of these commands.
+    /// Handles commands typed by the user (never exposed to the model): /tools, /approve &lt;Name&gt;,
+    /// /reject &lt;Name&gt;, /usage (<see cref="UserCommands"/>). Returns the reply, or null when the input is not one
+    /// of these commands.
     /// </summary>
-    /// <param name="sessionUsage">The session's usage records so far, for /usage (F3); null when the host doesn't track usage.</param>
+    /// <param name="sessionUsage">
+    /// The session's usage records so far, for /usage (F3); null when the host doesn't track usage.
+    /// </param>
     public string? HandleUserCommand(string input, IReadOnlyList<UsageRecord>? sessionUsage = null) =>
         _commands.Handle(input, sessionUsage);
 

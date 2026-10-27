@@ -6,18 +6,21 @@ using LouisAgent.Evals.Grading.Outcomes;
 namespace LouisAgent.Evals.Protocol;
 
 /// <summary>
-/// The fields of a <c>conversation</c> line (F18 step 4.5a): the eval's scores, every grade with who judged it, and how the
-/// trial came out. The writer wraps them in the line's event and time.
+/// The fields of a <c>conversation</c> line (F18 step 4.5a): the eval's scores, every grade with who judged it, and how
+/// the trial came out. The writer wraps them in the line's event and time.
 /// </summary>
 /// <remarks>
-/// A field writer per kind of line, the way <see cref="RunBeginLine"/> and <see cref="SummaryLineFields"/> already work in
-/// this folder. The conversation line is the longest one, with its list of grades, so it gets its own class and the writer
-/// keeps only the flow. Without it the writer passes two hundred lines and one class holds every line of the protocol.
+/// A field writer per kind of line, the way <see cref="RunBeginLine"/> and <see cref="SummaryLineFields"/> already work
+/// in this folder. The conversation line is the longest one, with its list of grades, so it gets its own class and the
+/// writer keeps only the flow. Without it the writer passes two hundred lines and one class holds every line of the
+/// protocol.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0010-folders-by-concern.md">ADR 0010: folders by concern</seealso>
 internal static class ConversationLineFields
 {
-    /// <summary>Writes the conversation's fields in the order the Python harness wrote them. A field that is absent is left out.</summary>
+    /// <summary>
+    /// Writes the conversation's fields in the order the Python harness wrote them. A field that is absent is left out.
+    /// </summary>
     public static void Write(Utf8JsonWriter json, string mode, int repeat, string task, string? role,
         JsonElement scores,
         double seconds, IReadOnlyList<Grade>? grades, TrialOutcome? outcome, int? errors)
@@ -34,7 +37,9 @@ internal static class ConversationLineFields
         if (outcome is not null) json.WriteString("outcome", outcome.Value.Wire());
     }
 
-    /// <summary>The grades, each with its grader, score and reason, and the judge's model and prompt when a model graded it.</summary>
+    /// <summary>
+    /// The grades, each with its grader, score and reason, and the judge's model and prompt when a model graded it.
+    /// </summary>
     private static void WriteGrades(Utf8JsonWriter json, IReadOnlyList<Grade> grades)
     {
         json.WriteStartArray("grades");

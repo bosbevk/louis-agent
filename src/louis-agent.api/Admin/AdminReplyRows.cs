@@ -16,7 +16,9 @@ internal sealed record CheckRow(string Id, string Title, bool Manual)
     public static CheckRow Of(BenchmarkCheck check, bool hasManual) => new(check.Id, check.Title, hasManual);
 }
 
-/// <summary>Whether the store is there, and why not when it was asked and didn't answer: what the page's banner shows.</summary>
+/// <summary>
+/// Whether the store is there, and why not when it was asked and didn't answer: what the page's banner shows.
+/// </summary>
 /// <remarks>
 /// Replace Constructor with Factory Function (Fowler). "Configured" is a fact about the store being present, so
 /// <c>Of</c> takes the store and the error and works it out, and the two can't disagree.
@@ -37,14 +39,19 @@ internal sealed record BenchmarkListReply(
     StoreRow Store,
     IReadOnlyList<object> Runs)
 {
-    /// <summary>The first read: every check with its manual flag, the store's state, and the runs as the page shows them.</summary>
+    /// <summary>
+    /// The first read: every check with its manual flag, the store's state, and the runs as the page shows them.
+    /// </summary>
     public static BenchmarkListReply Of(BenchmarkCatalog catalog, string workspaceRoot, StoreRow store,
         IReadOnlyList<object> runs) =>
         new([.. catalog.Checks.Select(c => CheckRow.Of(c, BenchmarkManuals.Has(workspaceRoot, c)))], store, runs);
 }
 
 /// <summary>A check's manual: which check, its title and the markdown beside its script.</summary>
-/// <remarks>Replace Constructor with Factory Function (Fowler): the title comes from the check, so <c>Of</c> takes the check and the text.</remarks>
+/// <remarks>
+/// Replace Constructor with Factory Function (Fowler): the title comes from the check, so <c>Of</c> takes the check and
+/// the text.
+/// </remarks>
 internal sealed record ManualReply(string Check, string Title, string Markdown)
 {
     /// <summary>The reply for a check and its manual's text.</summary>
@@ -52,7 +59,10 @@ internal sealed record ManualReply(string Check, string Title, string Markdown)
 }
 
 /// <summary>One point of the overall trend: a run in a mode, with the nine rings' numbers.</summary>
-/// <remarks>Replace Constructor with Factory Function (Fowler): built from the trend's own point, so <c>Of</c> is the one place that copies its numbers across.</remarks>
+/// <remarks>
+/// Replace Constructor with Factory Function (Fowler): built from the trend's own point, so <c>Of</c> is the one place
+/// that copies its numbers across.
+/// </remarks>
 internal sealed record TrendPointRow(
     string Run,
     DateTimeOffset At,
@@ -86,7 +96,10 @@ internal sealed record TrendLineRow(string Name, IReadOnlyList<TrendPointRow> Po
 }
 
 /// <summary>A check's trend as the endpoint sends it: its name, a chart per category, and the overall lines.</summary>
-/// <remarks>Replace Constructor with Factory Function (Fowler): built from the trend and the categories' rows, so <c>Of</c> is the one place that knows how they fit together.</remarks>
+/// <remarks>
+/// Replace Constructor with Factory Function (Fowler): built from the trend and the categories' rows, so <c>Of</c> is
+/// the one place that knows how they fit together.
+/// </remarks>
 internal sealed record TrendReply(
     string Check,
     IReadOnlyList<CategoryTrendRow> Categories,

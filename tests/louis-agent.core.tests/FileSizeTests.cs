@@ -16,7 +16,10 @@ public class FileSizeTests
         "evals"
     ];
 
-    /// <summary>Repo-relative, forward slashes, generated from the tree on 2026-10-20; remove a file's line in the commit that splits it.</summary>
+    /// <summary>
+    /// Repo-relative, forward slashes, generated from the tree on 2026-10-20; remove a file's line in the commit that
+    /// splits it.
+    /// </summary>
     private static readonly HashSet<string> Oversized =
     [
         "louis-agent.core/Agent/EngineTools/AgentBuiltTools.cs",

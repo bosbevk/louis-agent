@@ -2,9 +2,12 @@ using LouisAgent.Core.Tests.RepeatedNames.Scanning;
 
 namespace LouisAgent.Core.Tests.RepeatedNames;
 
-// F18 step 7.5.3c (Louis's review of 7.5.3): what the ratchet skips, it skips by the code before the literal, never by a word elsewhere on the line.
-// A comment after the literal, a comment before it, or an identifier that merely ends in `Folder` must not hide a name.
-/// <summary>Feeds the repeated-names scan a few lines of C# and checks which names it flags and which it lets through.</summary>
+// F18 step 7.5.3c (Louis's review of 7.5.3): what the ratchet skips, it skips by the code before the literal, never by
+// a word elsewhere on the line. A comment after the literal, a comment before it, or an identifier that merely ends in
+// `Folder` must not hide a name.
+/// <summary>
+/// Feeds the repeated-names scan a few lines of C# and checks which names it flags and which it lets through.
+/// </summary>
 public class NameScanTests
 {
     private static readonly HashSet<string> Names = ["shops", "dotnet", "specialists", "web"];
@@ -20,7 +23,9 @@ public class NameScanTests
     public void ANameWithAWordElsewhereOnTheLine_IsStillFlagged(string line) =>
         Assert.That(Hits(line), Is.GreaterThan(0));
 
-    /// <summary>An executable, a key read from JSON and a role folder are not toolsets, so they are let through.</summary>
+    /// <summary>
+    /// An executable, a key read from JSON and a role folder are not toolsets, so they are let through.
+    /// </summary>
     [TestCase("public const string SpecialistsFolder = \"specialists\";")]
     [TestCase("string evalHost = \"dotnet\")")]
     [TestCase("var run = ProcessRunner.Run(\"dotnet\", [\"test\"]);")]
@@ -51,7 +56,8 @@ public class NameScanTests
     public void AFlaggedName_IsFlaggedWhereverTheLineBreaks(string source) =>
         Assert.That(Hits(source), Is.GreaterThan(0));
 
-    // F18 step 7.5.4f: an enum file is scanned like any other file, and only the lines inside an enum's braces are skipped (that is where a name is written once).
+    // F18 step 7.5.4f: an enum file is scanned like any other file, and only the lines inside an enum's braces are
+    // skipped (that is where a name is written once).
     private const string EnumAndClass = """
                                         public enum Mode
                                         {
@@ -65,13 +71,18 @@ public class NameScanTests
                                         }
                                         """;
 
-    /// <summary>Inside an enum a name is written once, so it is skipped there and flagged anywhere else in the file.</summary>
+    /// <summary>
+    /// Inside an enum a name is written once, so it is skipped there and flagged anywhere else in the file.
+    /// </summary>
     [Test]
     public void ANameInAnEnumsBody_IsSkipped_AndTheSameNameInAClassInTheSameFileIsFlagged()
     {
         var hits = NameScan.Flagged(EnumAndClass, Names);
 
-        Assert.That(hits.Select(h => (h.Line, h.Value)), Is.EqualTo(new[] { (9, "web") }));
+        Assert.That(hits.Select(h => (h.Line, h.Value)), Is.EqualTo(new[]
+        {
+            (9, "web")
+        }));
     }
 
     /// <summary>A class is skipped only when it is asked for by name.</summary>
@@ -90,9 +101,15 @@ public class NameScanTests
                               }
                               """;
 
-        Assert.That(NameScan.Flagged(source, Names).Select(h => h.Line), Is.EqualTo(new[] { 3, 8 }),
+        Assert.That(NameScan.Flagged(source, Names).Select(h => h.Line), Is.EqualTo(new[]
+            {
+                3, 8
+            }),
             "no class is skipped unless it is listed");
         Assert.That(NameScan.Flagged(source, Names, skippedClasses: ["Ids"]).Select(h => h.Line),
-            Is.EqualTo(new[] { 8 }));
+            Is.EqualTo(new[]
+            {
+                8
+            }));
     }
 }

@@ -4,14 +4,23 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace LouisAgent.Core.Tests.RepeatedNames;
 
-// F18 step 7.5.3, ADR 0043: a name that repeats is an enum. This ratchet reads the wire names out of the enums of the toolsets and the script languages (the files listed below) and fails on any of
-// them written as a plain string literal anywhere else in the sources and tests, so a typo cannot compile and a rename is a rename. It scans standalone regular literals only: a name inside a raw, verbatim
-// or interpolated string is wire data (an expected JSON, a message) and stays text. Two things are not a toolset or a language and are skipped by what they are: an executable's name (`git`, `dotnet`, `python`)
-// and a key read from JSON or a dictionary (`GetProperty("web")`). Anything else is listed in Exemptions with its reason; if that list passes a dozen, the scan is too eager and gets narrowed instead.
-/// <summary>Fails when a name that is an enum member is typed as a plain string anywhere else in the sources.</summary>
+// F18 step 7.5.3, ADR 0043: a name that repeats is an enum. This ratchet reads the wire names out of the enums of the
+// toolsets and the script languages (the files listed below) and fails on any of them written as a plain string
+// literal anywhere else in the sources and tests, so a typo cannot compile and a rename is a rename. It scans
+// standalone regular literals only: a name inside a raw, verbatim or interpolated string is wire data (an expected
+// JSON, a message) and stays text. Two things are not a toolset or a language and are skipped by what they are: an
+// executable's name (`git`, `dotnet`, `python`) and a key read from JSON or a dictionary (`GetProperty("web")`).
+// Anything else is listed in Exemptions with its reason; if that list passes a dozen, the scan is too eager and gets
+// narrowed instead.
+/// <summary>
+/// Fails when a name that is an enum member is typed as a plain string anywhere else in the sources.
+/// </summary>
 public class RepeatedNameTests
 {
-    /// <summary>The enums whose wire names the scan guards (each the owner of its names); added to as each set of names becomes an enum.</summary>
+    /// <summary>
+    /// The enums whose wire names the scan guards (each the owner of its names); added to as each set of names becomes
+    /// an enum.
+    /// </summary>
     private static readonly string[] EnumFiles =
     [
         "louis-agent.core/Agent/Toolsets/CoreToolset.cs",
@@ -38,8 +47,10 @@ public class RepeatedNameTests
     ];
 
     /// <summary>
-    /// The files that hold a dataset's ids as test constants (ADR 0043: an id is data, not an enum), each with the one class whose body is skipped. Named here, so a new file of the kind is a
-    /// decision in this list and not a file name that hides what is typed in it; the ids themselves are checked against the dataset by the tests of the project that owns them.
+    /// The files that hold a dataset's ids as test constants (ADR 0043: an id is data, not an enum), each with the one
+    /// class whose body is skipped. Named here, so a new file of the kind is a decision in this list and not a file
+    /// name that hides what is typed in it; the ids themselves are checked against the dataset by the tests of the
+    /// project that owns them.
     /// </summary>
     private static readonly (string File, string Class)[] IdsFiles =
     [
@@ -47,7 +58,10 @@ public class RepeatedNameTests
         ("tests/louis-agent.evals.puls.tests/PulsCookScenarioIds.cs", "PulsCookScenarioIds"),
     ];
 
-    /// <summary>A literal that is a name of something else, with the file (or the folder, ending in /) it is in, a text on its line, and why. Few on purpose (Louis, 2026-10-27: a dozen is too many).</summary>
+    /// <summary>
+    /// A literal that is a name of something else, with the file (or the folder, ending in /) it is in, a text on its
+    /// line, and why. Few on purpose (Louis, 2026-10-27: a dozen is too many).
+    /// </summary>
     private static readonly (string File, string Line, string Reason)[] Exemptions =
     [
         ("src/louis-agent.puls/Components/Landing/", "",
@@ -68,13 +82,18 @@ public class RepeatedNameTests
     /// <summary>A file's path from the repo's root, with forward slashes.</summary>
     private static string Relative(string path) => SourceTree.Relative(path);
 
-    /// <summary>The wire names an enum file declares: a member's <c>[WireName]</c> (or .NET's <c>[JsonStringEnumMemberName]</c> under it), or its name in lower case.</summary>
+    /// <summary>
+    /// The wire names an enum file declares: a member's <c>[WireName]</c> (or .NET's <c>[JsonStringEnumMemberName]</c>
+    /// under it), or its name in lower case.
+    /// </summary>
     private static IEnumerable<string> WireNames(string file) =>
         CSharpSyntaxTree.ParseText(File.ReadAllText(Path.Combine(TestPaths.RepoRoot, file))).GetRoot()
             .DescendantNodes().OfType<EnumMemberDeclarationSyntax>()
             .Select(member => WireNameOf(member) ?? member.Identifier.ValueText.ToLowerInvariant());
 
-    /// <summary>The text in a member's <c>[WireName]</c> (or <c>[JsonStringEnumMemberName]</c>), or null when it has neither.</summary>
+    /// <summary>
+    /// The text in a member's <c>[WireName]</c> (or <c>[JsonStringEnumMemberName]</c>), or null when it has neither.
+    /// </summary>
     private static string? WireNameOf(EnumMemberDeclarationSyntax member) =>
         member.AttributeLists.SelectMany(list => list.Attributes)
             .Where(attribute => attribute.Name.ToString() is "WireName" or "JsonStringEnumMemberName")
@@ -94,7 +113,8 @@ public class RepeatedNameTests
         foreach (string path in SourceFiles())
         {
             string rel = Relative(path);
-            // An enum file is scanned like any other: only an enum's own body is skipped. The same holds for the one class of an ids file.
+            // An enum file is scanned like any other: only an enum's own body is skipped. The same holds for the one
+            // class of an ids file.
             if (rel.StartsWith("tests/louis-agent.core.tests/RepeatedNames/")) continue;
             var idsClasses = IdsFiles.Where(ids => ids.File == rel).Select(ids => ids.Class).ToList();
             // A razor file is markup around C#, so it can't be parsed as C#: it has its own scan.

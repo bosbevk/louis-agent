@@ -3,10 +3,14 @@ using LouisAgent.Api.Admin;
 
 namespace LouisAgent.Api.Tests.Admin;
 
-/// <summary>Pins the names the admin replies are written with: snake_case from the C# names, nothing else changed.</summary>
+/// <summary>
+/// Pins the names the admin replies are written with: snake_case from the C# names, nothing else changed.
+/// </summary>
 public class AdminJsonTests
 {
-    /// <summary>A record's names come out as the portal reads them, including the ones with a single capital at the end.</summary>
+    /// <summary>
+    /// A record's names come out as the portal reads them, including the ones with a single capital at the end.
+    /// </summary>
     [Test]
     public void TheNames_AreWrittenInSnakeCase()
     {

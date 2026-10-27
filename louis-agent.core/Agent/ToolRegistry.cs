@@ -10,10 +10,10 @@ namespace LouisAgent.Core.Agent;
 
 /// <summary>
 /// The agent's tools, kept in name order (ordinal), so the tool list, and with it the start of every request, is the
-/// same bytes from one run to the next (F4: the prompt cache is keyed by the exact prefix, and reflection's method order
-/// isn't guaranteed). A tool added later (an agent-built one) still changes the list, as any change must. Tool names are
-/// unique across all toolsets: a second tool with a name already in the list throws. When the model takes no tools
-/// (<paramref name="supportsTools"/> false), it won't register tools discovered elsewhere either.
+/// same bytes from one run to the next (F4: the prompt cache is keyed by the exact prefix, and reflection's method
+/// order isn't guaranteed). A tool added later (an agent-built one) still changes the list, as any change must. Tool
+/// names are unique across all toolsets: a second tool with a name already in the list throws. When the model takes no
+/// tools (<paramref name="supportsTools"/> false), it won't register tools discovered elsewhere either.
 /// </summary>
 internal sealed class ToolRegistry(bool supportsTools = true)
 {
@@ -37,14 +37,17 @@ internal sealed class ToolRegistry(bool supportsTools = true)
         int at = Live.BinarySearch(tool, ByName);
         if (at >= 0)
             throw new InvalidOperationException(MessageText.Format(AgentErrorMessage.DuplicateToolName,
-                new { tool.Name }));
+                new
+                {
+                    tool.Name
+                }));
         Live.Insert(~at, tool);
     }
 
     /// <summary>
     /// Adds every public instance method the object declares as a tool, named and described by the method, by the one
-    /// rule the catalogue states (<see cref="AgentCatalog.ToolMethodsOfType"/>, <see cref="AgentCatalog.FunctionOf"/>), so
-    /// what the engine registers is what the convertibility test checks (CL15).
+    /// rule the catalogue states (<see cref="AgentCatalog.ToolMethodsOfType"/>, <see cref="AgentCatalog.FunctionOf"/>),
+    /// so what the engine registers is what the convertibility test checks (CL15).
     /// </summary>
     public void AddPublicMethods(object target)
     {
@@ -56,8 +59,8 @@ internal sealed class ToolRegistry(bool supportsTools = true)
     public bool Remove(AITool tool) => Live.Remove(tool);
 
     /// <summary>
-    /// Keeps the one tool named and drops every other, the clock and <c>ExecuteSkill</c> included (F30: a minion gets one
-    /// task and one tool, so its prompt lists exactly what it may call). Before the engine's first turn.
+    /// Keeps the one tool named and drops every other, the clock and <c>ExecuteSkill</c> included (F30: a minion gets
+    /// one task and one tool, so its prompt lists exactly what it may call). Before the engine's first turn.
     /// </summary>
     public void KeepOnly(string name)
     {
@@ -65,7 +68,9 @@ internal sealed class ToolRegistry(bool supportsTools = true)
             Remove(other);
     }
 
-    /// <summary>Whether a tool has this name; agent-built tools compare without case, as their files are named.</summary>
+    /// <summary>
+    /// Whether a tool has this name; agent-built tools compare without case, as their files are named.
+    /// </summary>
     public bool Contains(string name, StringComparison comparison = StringComparison.Ordinal) =>
         Live.Any(t => t.Name.Equals(name, comparison));
 
@@ -78,19 +83,29 @@ internal sealed class ToolRegistry(bool supportsTools = true)
     {
         if (!supportsTools)
         {
-            Log.Log(LogLevel.Warning, AgentLogMessage.McpCannotRegister, new { Name = name }, tag: "MCP");
+            Log.Log(LogLevel.Warning, AgentLogMessage.McpCannotRegister, new
+            {
+                Name = name
+            }, tag: "MCP");
             return false;
         }
 
         if (Contains(name))
         {
-            Log.Log(LogLevel.Information, AgentLogMessage.McpToolAlreadyRegistered, new { Name = name }, tag: "MCP");
+            Log.Log(LogLevel.Information, AgentLogMessage.McpToolAlreadyRegistered, new
+            {
+                Name = name
+            }, tag: "MCP");
             return false;
         }
 
         // Log discovered tool for informational purposes
         // Full MCP tool invocation would require a complete MCP protocol client
-        Log.Log(LogLevel.Information, AgentLogMessage.McpToolDiscovered, new { Name = name, Description = description },
+        Log.Log(LogLevel.Information, AgentLogMessage.McpToolDiscovered, new
+        {
+            Name = name,
+            Description = description
+        },
             tag: "MCP");
         return true;
     }

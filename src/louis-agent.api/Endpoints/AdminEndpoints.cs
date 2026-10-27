@@ -10,12 +10,17 @@ using LouisAgent.Core.Messages;
 namespace LouisAgent.Api.Endpoints;
 
 /// <summary>
-/// The admin portal's routes: the checks, starting a run, and reading what it recorded. Everything is behind the admin key: with none configured every call is a 403 that says what to set, with one a call has to present it. Without a store no run starts.
+/// The admin portal's routes: the checks, starting a run, and reading what it recorded. Everything is behind the admin
+/// key: with none configured every call is a 403 that says what to set, with one a call has to present it. Without a
+/// store no run starts.
 /// </summary>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0039-api-routes-under-v1.md">ADR 0039: the API routes live under /v1</seealso>
 internal static class AdminEndpoints
 {
-    /// <summary>Adds the admin portal's routes, all behind the admin key. The clock is for the notes' times, and a test can fix it.</summary>
+    /// <summary>
+    /// Adds the admin portal's routes, all behind the admin key. The clock is for the notes' times, and a test can fix
+    /// it.
+    /// </summary>
     public static void MapAdmin(this IEndpointRouteBuilder routes, BenchmarkCatalog catalog, BenchmarkRunner runner,
         string? adminKey,
         IBenchmarkStore? store, BenchmarkRecorder? recorder,
@@ -66,5 +71,8 @@ internal static class AdminEndpoints
         });
 }
 
-/// <summary>What starts a run: how many repeats, and for an eval how it handles the web. Either record it (or turn it off), or replay an earlier run's answers, not both.</summary>
+/// <summary>
+/// What starts a run: how many repeats, and for an eval how it handles the web. Either record it (or turn it off), or
+/// replay an earlier run's answers, not both.
+/// </summary>
 internal sealed record StartRunRequest(int? Repeat, string? Web = null, string? Replay = null);

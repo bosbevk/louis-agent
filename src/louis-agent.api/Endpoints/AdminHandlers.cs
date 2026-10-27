@@ -12,10 +12,14 @@ using static LouisAgent.Api.Admin.AdminRows;
 namespace LouisAgent.Api.Endpoints;
 
 /// <summary>
-/// The admin portal's own routes as named methods: the checks, a check's manual and trend, and starting and following a run. Each one stops early with its error and leaves the happy path for last.
+/// The admin portal's own routes as named methods: the checks, a check's manual and trend, and starting and following
+/// a run. Each one stops early with its error and leaves the happy path for last.
 /// </summary>
 /// <remarks>
-/// Introduce Parameter Object (Fowler), with the object also owning the behaviour. The routes share the catalogue, the runner, the store and the recorder, which `MapAdmin` is given as parameters and which aren't services. Holding them here lets each route be a named method that `MapGet` points straight at, where a lambda would have to close over them. Without it the routes stay lambdas, or every one takes seven arguments.
+/// Introduce Parameter Object (Fowler), with the object also owning the behaviour. The routes share the catalogue, the
+/// runner, the store and the recorder, which `MapAdmin` is given as parameters and which aren't services. Holding them
+/// here lets each route be a named method that `MapGet` points straight at, where a lambda would have to close over
+/// them. Without it the routes stay lambdas, or every one takes seven arguments.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
 internal sealed class AdminHandlers(
@@ -33,7 +37,10 @@ internal sealed class AdminHandlers(
     /// <summary>How many runs the Benchmarks page lists.</summary>
     private const int ListedRuns = 50;
 
-    /// <summary>Lets a call through only with the admin key: a 403 that says what to set when none is configured, a 401 when it's wrong.</summary>
+    /// <summary>
+    /// Lets a call through only with the admin key: a 403 that says what to set when none is configured, a 401 when
+    /// it's wrong.
+    /// </summary>
     public async ValueTask<object?> Gate(EndpointFilterInvocationContext context, EndpointFilterDelegate next)
     {
         var access = AdminGate.Check(adminKey, AdminGate.Presented(context.HttpContext.Request));
@@ -46,7 +53,9 @@ internal sealed class AdminHandlers(
         return await next(context);
     }
 
-    /// <summary>The page's first read: the checks, whether the store is there (the page's banner), and the stored runs.</summary>
+    /// <summary>
+    /// The page's first read: the checks, whether the store is there (the page's banner), and the stored runs.
+    /// </summary>
     public async Task<IResult> GetList(CancellationToken cancellationToken)
     {
         if (store is null) return ListOf([], null);
@@ -61,7 +70,9 @@ internal sealed class AdminHandlers(
         }
     }
 
-    /// <summary>A check's manual: the markdown beside its script, found from the catalogue, never from the request.</summary>
+    /// <summary>
+    /// A check's manual: the markdown beside its script, found from the catalogue, never from the request.
+    /// </summary>
     public IResult GetManual(string check)
     {
         if (catalog.Checks.FirstOrDefault(c => c.Id == check) is not { } known) return NoManual(check);
@@ -69,19 +80,24 @@ internal sealed class AdminHandlers(
         return Results.Json(ManualReply.Of(known, markdown), AdminJson.SnakeCase);
     }
 
-    /// <summary>A check's trend over its finished runs: per mode, the explorer's nine rings as lines over the runs, and the same per category.</summary>
+    /// <summary>
+    /// A check's trend over its finished runs: per mode, the explorer's nine rings as lines over the runs, and the same
+    /// per category.
+    /// </summary>
     public Task<IResult> GetTrend(string check, CancellationToken cancellationToken) =>
         AdminEndpoints.FromStore(store, async s =>
         {
             var trend = await BenchmarkTrends.ComputeAsync(s, check, cancellationToken: cancellationToken);
-            // F18 step 5c.4: the same trend per category, a chart of lines each, in the shape the overall trend's modes are.
+            // F18 step 5c.4: the same trend per category, a chart of lines each, in the shape the overall trend's modes
+            // are.
             var categories = CategoryTrendRow.Of(
                 await CategoryTrends.ComputeAsync(s, check, cancellationToken: cancellationToken));
             return Results.Json(TrendReply.Of(trend, categories), AdminJson.SnakeCase);
         });
 
     /// <summary>
-    /// Starts a run from the page: 202 with the run, recorded as it goes; 503 without a store (a paid run whose results vanish is the worst outcome); 409 while one runs.
+    /// Starts a run from the page: 202 with the run, recorded as it goes; 503 without a store (a paid run whose results
+    /// vanish is the worst outcome); 409 while one runs.
     /// </summary>
     public IResult StartRun(string check, StartRunRequest? request)
     {
@@ -94,7 +110,8 @@ internal sealed class AdminHandlers(
                         Checks = string.Join(", ", catalog.Checks.Select(c => c.Id))
                     }));
 
-        // The web (F18 step 5.5), checked before anything that costs: a request that can't be what a run does is a 400 on its own.
+        // The web (F18 step 5.5), checked before anything that costs: a request that can't be what a run does is a 400
+        // on its own.
         var (options, refusal) = BenchmarkRunOptions.Parse(request?.Web, request?.Replay);
         if (refusal is not null)
             return ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error", refusal);
@@ -148,7 +165,10 @@ internal sealed class AdminHandlers(
                 runner.Current!.Check
             }));
 
-    /// <summary>Streams a run's lines to the page as they come, then one last "done" with whether the recording kept everything.</summary>
+    /// <summary>
+    /// Streams a run's lines to the page as they come, then one last "done" with whether the recording kept
+    /// everything.
+    /// </summary>
     private async IAsyncEnumerable<SseItem<string>> Events(BenchmarkRun run,
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
@@ -158,7 +178,10 @@ internal sealed class AdminHandlers(
         yield return new SseItem<string>(JsonSerializer.Serialize(Row(run, stored)), "done");
     }
 
-    /// <summary>Waits, up to a limit, for the run's recording to finish and says whether it kept everything. It says no if the recording failed, took too long or never started.</summary>
+    /// <summary>
+    /// Waits, up to a limit, for the run's recording to finish and says whether it kept everything. It says no if the
+    /// recording failed, took too long or never started.
+    /// </summary>
     private async Task<BenchmarkRecorder.Result> StoredAsync(string id, CancellationToken cancellationToken)
     {
         if (recorder?.RecordingOf(id) is not { } recording) return new BenchmarkRecorder.Result(false, null);

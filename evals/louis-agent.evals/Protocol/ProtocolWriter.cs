@@ -12,9 +12,10 @@ using LouisAgent.Evals.Reports;
 namespace LouisAgent.Evals.Protocol;
 
 /// <summary>
-/// The line protocol the eval writes to stdout (F31's version 1): <c>@</c> and one JSON object per event, with the event's
-/// name, the time <c>t</c> in seconds from the clock, and the event's fields in the order the Python harness wrote them.
-/// ASCII only: every other character is escaped, so any console can show the line and JSON reads it back as it was.
+/// The line protocol the eval writes to stdout (F31's version 1): <c>@</c> and one JSON object per event, with the
+/// event's name, the time <c>t</c> in seconds from the clock, and the event's fields in the order the Python harness
+/// wrote them. ASCII only: every other character is escaped, so any console can show the line and JSON reads it back as
+/// it was.
 /// </summary>
 public sealed class ProtocolWriter(TextWriter stdout, TimeProvider clock)
 {
@@ -27,8 +28,8 @@ public sealed class ProtocolWriter(TextWriter stdout, TimeProvider clock)
     };
 
     /// <summary>
-    /// The old first line, the version alone. Kept only for the parity test against the Python's first line; a run writes
-    /// <see cref="Begin"/>, which carries the eval.
+    /// The old first line, the version alone. Kept only for the parity test against the Python's first line; a run
+    /// writes <see cref="Begin"/>, which carries the eval.
     /// </summary>
     public void Started() => Emit("protocol", json => json.WriteNumber("version", Version));
 
@@ -56,7 +57,9 @@ public sealed class ProtocolWriter(TextWriter stdout, TimeProvider clock)
             json.WriteString("text", text);
         });
 
-    /// <summary>One event of a turn's stream, as the session sent it: its type and its JSON, written as the JSON it is.</summary>
+    /// <summary>
+    /// One event of a turn's stream, as the session sent it: its type and its JSON, written as the JSON it is.
+    /// </summary>
     public void Sse(string mode, int repeat, string task, int turn, string type, JsonElement data) =>
         Emit("sse", json =>
         {
@@ -66,7 +69,10 @@ public sealed class ProtocolWriter(TextWriter stdout, TimeProvider clock)
             data.WriteTo(json);
         });
 
-    /// <summary>A turn; <paramref name="failure"/> is the infrastructure failure that ended it (F18 step 5.1), left out when it ended on its own.</summary>
+    /// <summary>
+    /// A turn; <paramref name="failure"/> is the infrastructure failure that ended it (F18 step 5.1), left out when it
+    /// ended on its own.
+    /// </summary>
     public void Turn(string mode, int repeat, string task, int turn, string session, string question, string? answer,
         string? role,
         double seconds, TurnFacts? facts = null, TrialFailure? failure = null) =>
@@ -90,14 +96,20 @@ public sealed class ProtocolWriter(TextWriter stdout, TimeProvider clock)
             json => ConversationLineFields.Write(json, mode, repeat, task, role, scores, seconds, grades, outcome,
                 errors));
 
-    /// <summary>The run's first line (F18 step 2a): the eval, its version, the commit, the scenarios it asked for (its split, step 5.4), its graders and the model each mode ran on.</summary>
+    /// <summary>
+    /// The run's first line (F18 step 2a): the eval, its version, the commit, the scenarios it asked for (its split,
+    /// step 5.4), its graders and the model each mode ran on.
+    /// </summary>
     public void Begin(string eval, int evalVersion, string commit, IReadOnlyList<IGrader> graders,
         IReadOnlyList<ModelUse> models,
         SplitSelection split = SplitSelection.Dev, string? rescoreOf = null, DatasetManifest? dataset = null) =>
         Emit("protocol",
             json => RunBeginLine.Write(json, eval, evalVersion, commit, graders, models, split, rescoreOf, dataset));
 
-    /// <summary>A line of a stored run, written as it was (F18 step 5b): a re-score keeps the questions, events and turns it grades again.</summary>
+    /// <summary>
+    /// A line of a stored run, written as it was (F18 step 5b): a re-score keeps the questions, events and turns it
+    /// grades again.
+    /// </summary>
     public void Copy(string line)
     {
         stdout.Write(line);
@@ -106,8 +118,9 @@ public sealed class ProtocolWriter(TextWriter stdout, TimeProvider clock)
     }
 
     /// <summary>
-    /// A mode's repeat is done (F18 step 5a). With <paramref name="rates"/> the line also carries the mode's pass@k and pass^k over the repeats so far (left
-    /// out when null: no trial counted, never 0), the <paramref name="k"/> they are over, and how many trials were left out for the infrastructure or run twice.
+    /// A mode's repeat is done (F18 step 5a). With <paramref name="rates"/> the line also carries the mode's pass@k and
+    /// pass^k over the repeats so far (left out when null: no trial counted, never 0), the <paramref name="k"/> they
+    /// are over, and how many trials were left out for the infrastructure or run twice.
     /// </summary>
     public void ModeDone(string mode, int repeat, PassShare? rates = null, int? k = null, int? infrastructure = null,
         int? retried = null) =>
@@ -125,7 +138,10 @@ public sealed class ProtocolWriter(TextWriter stdout, TimeProvider clock)
     /// <summary>One slice of a mode's roll-up (F18 step 5c), written after the mode's last <c>mode_done</c>.</summary>
     public void Summary(SummaryLine line) => Emit("summary", json => SummaryLineFields.Write(json, line));
 
-    /// <summary>What the eval says about the turn, in the Python's order: the continuation, the calls, the hosts (the error follows the seconds).</summary>
+    /// <summary>
+    /// What the eval says about the turn, in the Python's order: the continuation, the calls, the hosts (the error
+    /// follows the seconds).
+    /// </summary>
     private static void WriteFacts(Utf8JsonWriter json, TurnFacts facts)
     {
         WriteText(json, "continued", facts.Continued);

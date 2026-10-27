@@ -39,7 +39,9 @@ public class AdminReplyJsonTests
         Assert.That(json.RootElement.GetProperty("runs").GetRawText(), Is.EqualTo("[]"));
     }
 
-    /// <summary>Without a store the page's banner reads "not configured", and the reply still carries every part.</summary>
+    /// <summary>
+    /// Without a store the page's banner reads "not configured", and the reply still carries every part.
+    /// </summary>
     [Test]
     public async Task TheListReply_WithoutAStore_SaysNotConfigured()
     {
@@ -69,7 +71,9 @@ public class AdminReplyJsonTests
         Assert.That(json.RootElement.GetProperty("markdown").GetString(), Does.StartWith("# "));
     }
 
-    /// <summary>The trend sends the check, a chart per category, and the overall lines with every point's numbers.</summary>
+    /// <summary>
+    /// The trend sends the check, a chart per category, and the overall lines with every point's numbers.
+    /// </summary>
     [Test]
     public async Task TheTrendReply_NamesEveryPointNumber()
     {

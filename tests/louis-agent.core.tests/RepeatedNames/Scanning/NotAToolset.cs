@@ -37,7 +37,9 @@ public static class NotAToolset
         IsTheFirstArgumentOfAProgramOrKeyCall(literal) || IsAnIndex(literal) || IsTheValueOfAProgramOrFolder(literal) ||
         FollowsAProgramNameInItsStatement(literal);
 
-    /// <summary>It is what a call is given first: <c>Process.Start("git")</c>, <c>element.GetProperty("web")</c>.</summary>
+    /// <summary>
+    /// It is what a call is given first: <c>Process.Start("git")</c>, <c>element.GetProperty("web")</c>.
+    /// </summary>
     private static bool IsTheFirstArgumentOfAProgramOrKeyCall(LiteralExpressionSyntax literal)
     {
         if (literal.Parent is not ArgumentSyntax { Parent: ArgumentListSyntax { Parent: { } call } list } argument ||
@@ -76,10 +78,14 @@ public static class NotAToolset
         _ => false,
     };
 
-    /// <summary>It comes after something in its own statement that makes it a program: a list of commands, a file name, the wire names of an enum.</summary>
+    /// <summary>
+    /// It comes after something in its own statement that makes it a program: a list of commands, a file name, the
+    /// wire names of an enum.
+    /// </summary>
     private static bool FollowsAProgramNameInItsStatement(LiteralExpressionSyntax literal)
     {
-        // The statement, or the field or property, that holds the string: what is said before it in there counts, wherever the line breaks.
+        // The statement, or the field or property, that holds the string: what is said before it in there counts,
+        // wherever the line breaks.
         var statement = literal.Ancestors().FirstOrDefault(node => node is StatementSyntax or MemberDeclarationSyntax);
         if (statement is null) return false;
 
@@ -89,7 +95,9 @@ public static class NotAToolset
                before.Any(item => IsTheWireNamesOfAnEnum(item.AsNode()));
     }
 
-    /// <summary>It is the <c>Enum.GetValues&lt;T&gt;().Select(x =&gt; x.Wire())</c> a test compares with the names it lists.</summary>
+    /// <summary>
+    /// It is the <c>Enum.GetValues&lt;T&gt;().Select(x =&gt; x.Wire())</c> a test compares with the names it lists.
+    /// </summary>
     private static bool IsTheWireNamesOfAnEnum(SyntaxNode? node) =>
         node is InvocationExpressionSyntax
         {
@@ -121,7 +129,9 @@ public static class NotAToolset
         keys.Arguments.FirstOrDefault()?.Expression is LiteralExpressionSyntax { Token.ValueText: var key } &&
         key == text;
 
-    /// <summary>The name an assignment sets: <c>host</c> in <c>host = ...</c> and in <c>options.host = ...</c>.</summary>
+    /// <summary>
+    /// The name an assignment sets: <c>host</c> in <c>host = ...</c> and in <c>options.host = ...</c>.
+    /// </summary>
     private static string NameOf(ExpressionSyntax left) => left switch
     {
         IdentifierNameSyntax name => name.Identifier.Text,
