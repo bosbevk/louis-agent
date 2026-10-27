@@ -1,4 +1,5 @@
 using LouisAgent.Choices;
+using LouisAgent.Identities.Puls;
 using LouisAgent.Evals.Puls.Shared;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Puls.Evals.Cook;
@@ -15,9 +16,14 @@ public class PulsEvalSetTests
     {
         var set = new PulsEvalSet();
 
-        Assert.That(set.Identity, Is.EqualTo("puls"));
+        Assert.That(set.Identity, Is.EqualTo(PulsEvalIdentity.Puls.Wire()));
         Assert.That(set.Evals.Select(e => e.Name), Is.EqualTo(new[] { PulsEvalName.Cook.Wire(), PulsEvalName.Routing.Wire() }));
     }
+
+    [Test]
+    public void TheSetsIdentity_IsTheNameThePulsIdentityGoesBy() =>
+        // ADR 0043: the set keeps its own copy of the name (it never references an identity); this project's tests see both and hold the copy to the original.
+        Assert.That(new PulsEvalSet().Identity, Is.EqualTo(new PulsIdentity().Name));
 
     [TestCase("cook-no-error")]
     [TestCase("routed-to")]

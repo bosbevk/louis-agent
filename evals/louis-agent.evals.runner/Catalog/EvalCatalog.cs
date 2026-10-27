@@ -9,9 +9,17 @@ namespace LouisAgent.Evals.Runner.Catalog;
 /// and a refusal stops the start: a name twice, no graders, or no required fixed-rule grader (Louis, 2026-10-20: no eval runs
 /// without a check that needs no model).
 /// </summary>
-public sealed class EvalCatalog(IEnumerable<IEvalSet> sets, IEval stub)
+public sealed class EvalCatalog
 {
-    private readonly IReadOnlyList<IEval> _evals = Check(sets.SelectMany(set => set.Evals).Append(stub).ToList());
+    // An eval belongs to exactly one set, and the set says whose it is (F18 step 7.5.4d); the stub belongs to none.
+    private readonly IReadOnlyList<(IEval Eval, string? Identity)> _entries;
+    private readonly IReadOnlyList<IEval> _evals;
+
+    public EvalCatalog(IEnumerable<IEvalSet> sets, IEval stub)
+    {
+        _entries = sets.SelectMany(set => set.Evals.Select(eval => (eval, (string?)set.Identity))).Append((stub, (string?)null)).ToList();
+        _evals = Check(_entries.Select(entry => entry.Eval).ToList());
+    }
 
     public IReadOnlyList<IEval> Evals => _evals;
 
@@ -24,7 +32,7 @@ public sealed class EvalCatalog(IEnumerable<IEvalSet> sets, IEval stub)
 
     /// <summary>One line per eval, in the catalogue's order: what the API's catalogue reads (F18 step 4.3).</summary>
     public IReadOnlyList<ListedEval> Listing() =>
-        _evals.Select(eval => new ListedEval(eval.Name, eval.Identity, eval.Version, eval.Proves, eval.Manual)).ToList();
+        _entries.Select(entry => new ListedEval(entry.Eval.Name, entry.Identity, entry.Eval.Version, entry.Eval.Proves, entry.Eval.Manual)).ToList();
 
     private static IReadOnlyList<IEval> Check(IReadOnlyList<IEval> evals)
     {

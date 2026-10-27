@@ -25,7 +25,6 @@ public sealed class RoutingEval : IEval
 
     public string Name => PulsEvalName.Routing.Wire();
     public string? Manual => "evals/louis-agent.evals.puls/Manuals/routing.md";
-    public string? Identity => "puls";
     public int Version => 2;
     public string Proves => MessageText.Format(PulsEvalMessage.RoutingProves);
 

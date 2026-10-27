@@ -10,7 +10,6 @@ namespace LouisAgent.Evals.Tests.Trials;
 internal sealed class GradedEval(params IGrader[] graders) : IEval
 {
     public string Name => "stub-cook";
-    public string? Identity => null;
     public int Version => 1;
     public string Proves => "The grading step.";
 

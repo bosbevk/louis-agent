@@ -262,7 +262,6 @@ public class EvalRunnerTests
         public IReadOnlyList<Grade> GradesScored { get; private set; } = [];
 
         public string Name => "stub-cook";
-        public string? Identity => null;
         public int Version => 1;
         public string Proves => "A canned trial, to see the runner's lines.";
 

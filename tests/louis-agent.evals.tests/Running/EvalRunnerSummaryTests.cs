@@ -146,7 +146,6 @@ public class EvalRunnerSummaryTests
         private static readonly Dictionary<string, string[]> Categories = new() { ["a"] = ["language:af"], ["b"] = ["language:af", "shop:pnp"], ["c"] = ["shop:pnp"] };
 
         public string Name => "summary-cook";
-        public string? Identity => null;
         public int Version => 1;
         public string Proves => "A canned run, to roll up.";
 

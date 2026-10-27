@@ -38,7 +38,6 @@ public sealed class CookEval : IEval
 
     public string Name => PulsEvalName.Cook.Wire();
     public string? Manual => "evals/louis-agent.evals.puls/Manuals/cook.md";
-    public string? Identity => "puls";
     public int Version => 9;
     public string Proves => MessageText.Format(PulsEvalMessage.CookProves);
 

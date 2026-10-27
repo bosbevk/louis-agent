@@ -15,7 +15,7 @@ public class RenderPolicyTests
     {
         "www.pnp.co.za" => new[] { IPAddress.Parse("196.22.142.10") },
         "intranet.example" => [IPAddress.Parse("10.0.0.5")],
-        "puls" => [IPAddress.Parse("172.23.0.2")],
+        "internal-host" => [IPAddress.Parse("172.23.0.2")],
         "puls-mongo" => [IPAddress.Parse("172.23.0.3")],
         "split.example" => [IPAddress.Parse("196.22.142.10"), IPAddress.Parse("192.168.1.1")],
         _ => [],
@@ -36,7 +36,7 @@ public class RenderPolicyTests
         Assert.That(await RenderPolicy.DecideAsync(new Uri(url), type, Resolve), Is.EqualTo(RenderVerdict.Skip));
 
     [TestCase("http://intranet.example/admin", ResourceType.Document)]
-    [TestCase("http://puls:8080/sessions", ResourceType.Xhr)]
+    [TestCase("http://internal-host:8080/sessions", ResourceType.Xhr)]
     [TestCase("mongodb://puls-mongo:27017/", ResourceType.Other)]
     [TestCase("http://puls-mongo:27017/", ResourceType.Fetch)]
     [TestCase("http://127.0.0.1:5070/admin/benchmarks", ResourceType.Xhr)]

@@ -119,7 +119,6 @@ public class PendingOutcomeTests
         }
 
         public string Name => name;
-        public string? Identity => null;
         public int Version => 1;
         public string Proves => "A pending human grade.";
         public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions, CancellationToken cancellationToken) =>

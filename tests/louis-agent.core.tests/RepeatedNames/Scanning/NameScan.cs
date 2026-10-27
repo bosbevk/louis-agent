@@ -15,7 +15,7 @@ public static class NameScan
 
     /// <summary>The code before the literal, when it makes the literal an executable (the dotnet host, python in its venv, the shell) or a role level's folder.</summary>
     private static readonly Regex NotAToolsetCode = new(
-        @"\.FileName\b|candidates\.|CommonCommands|ResolveShell|_venvDirectory|\b(evalHost|DotNetHost)\s*=\s*$|\b(Specialists|Minions)Folder\s*=\s*$|Enum\.GetValues<\w+>\(\)\.Select\(\w+ => \w+\.Wire\(\)\)", RegexOptions.Compiled);
+        @"\.FileName\b|candidates\.|CommonCommands|ResolveShell|_venvDirectory|\b(evalHost|DotNetHost)\s*=\s*$|\b(Specialists|Minions)Folder\s*=\s*$|Enum\.GetValues<\w+>\(\)\.Select\(\w+ => \w+\.Wire\(\)\)|@\*|\[""EVALS""\]\s*=\s*$|Has\.None\.(StartsWith|Contains)\($|Does\.Not\.Contain\($", RegexOptions.Compiled);
 
     private static readonly Regex BlockComment = new(@"/\*.*?\*/", RegexOptions.Compiled);
 

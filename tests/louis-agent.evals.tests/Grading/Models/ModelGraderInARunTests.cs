@@ -73,7 +73,6 @@ public class ModelGraderInARunTests
     private sealed class ModelEval(IGrader grader) : IEval
     {
         public string Name => "model-eval";
-        public string? Identity => null;
         public int Version => 1;
         public string Proves => "A model grader in a run.";
 

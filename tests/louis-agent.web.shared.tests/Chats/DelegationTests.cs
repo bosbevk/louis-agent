@@ -16,9 +16,9 @@ public class DelegationTests
     [Test]
     public void AStart_StillRunning_ReadsTheCall()
     {
-        var delegation = Delegation.From(Call("StartSubSession", SampleToolset.Fill(SampleRole.Fill("""{"agent":"puls","toolsets":["<Alpha>"],"message":"Kook iets","role":"<RoleAlpha>"}"""))))!;
+        var delegation = Delegation.From(Call("StartSubSession", SampleToolset.Fill(SampleRole.Fill(SampleIdentity.Fill("""{"agent":"<IdentityAlpha>","toolsets":["<Alpha>"],"message":"Kook iets","role":"<RoleAlpha>"}""")))))!;
 
-        Assert.That(delegation.Agent, Is.EqualTo("puls"));
+        Assert.That(delegation.Agent, Is.EqualTo(SampleIdentity.Alpha));
         Assert.That(delegation.Role, Is.EqualTo(SampleRole.Alpha));
         Assert.That(delegation.Toolsets, Is.EqualTo(new[] { SampleToolset.Alpha }));
         Assert.That(delegation.Task, Is.EqualTo("Kook iets"));
@@ -31,13 +31,13 @@ public class DelegationTests
     public void AStart_ThatReturned_ReadsTheAnswerAndTheFooter()
     {
         var block = Call("StartSubSession", SampleToolset.Fill(SampleRole.Fill("""{"agent":"","toolsets":["<Alpha>"],"message":"Kook iets","role":"<RoleAlpha>"}""")),
-            SampleToolset.Fill(SampleRole.Fill("Bobotie vir vier.\n\n[Sub-session sub-1 on puls (<Alpha>, <Beta>; <RoleAlpha>): 3 requests, $0.01. It stays open: ContinueSubSession]")));
+            SampleToolset.Fill(SampleRole.Fill(SampleIdentity.Fill("Bobotie vir vier.\n\n[Sub-session sub-1 on <IdentityAlpha> (<Alpha>, <Beta>; <RoleAlpha>): 3 requests, $0.01. It stays open: ContinueSubSession]"))));
 
         var delegation = Delegation.From(block)!;
 
         Assert.That(delegation.Answer, Is.EqualTo("Bobotie vir vier."));
         Assert.That(delegation.UsageLine, Is.EqualTo("3 requests, $0.01"));
-        Assert.That(delegation.ResultAgent, Is.EqualTo("puls"), "the peer actually used, since the call named none");
+        Assert.That(delegation.ResultAgent, Is.EqualTo(SampleIdentity.Alpha), "the peer actually used, since the call named none");
         Assert.That(delegation.Handle, Is.EqualTo("sub-1"));
         Assert.That(delegation.Toolsets, Is.EqualTo(new[] { SampleToolset.Alpha, SampleToolset.Beta }), "F34: what the specialist loaded wins over what was sent");
         Assert.That(delegation.Failed, Is.False);
@@ -69,10 +69,10 @@ public class DelegationTests
     [Test]
     public void AFailedCall_IsFailed_WithTheErrorAsItsAnswer()
     {
-        var delegation = Delegation.From(Call("StartSubSession", """{"agent":"puls","toolsets":["web"],"message":"Kook"}""", "Error: no peer named puls"))!;
+        var delegation = Delegation.From(Call("StartSubSession", SampleIdentity.Fill("""{"agent":"<IdentityAlpha>","toolsets":["web"],"message":"Kook"}"""), SampleIdentity.Fill("Error: no peer named <IdentityAlpha>")))!;
 
         Assert.That(delegation.Failed, Is.True);
-        Assert.That(delegation.Answer, Is.EqualTo("Error: no peer named puls"));
+        Assert.That(delegation.Answer, Is.EqualTo(SampleIdentity.Fill("Error: no peer named <IdentityAlpha>")));
         Assert.That(delegation.UsageLine, Is.Null);
     }
 

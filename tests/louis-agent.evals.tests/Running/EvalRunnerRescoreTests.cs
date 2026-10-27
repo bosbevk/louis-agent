@@ -241,7 +241,6 @@ public class EvalRunnerRescoreTests
         DatasetManifest? dataset = null) : IEval
     {
         public string Name => "rescore-cook";
-        public string? Identity => null;
         public int Version => version;
         public string Proves => "A canned trial, to re-score.";
         public DatasetManifest? Dataset => dataset;

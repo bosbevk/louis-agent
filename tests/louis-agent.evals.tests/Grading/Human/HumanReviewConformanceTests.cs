@@ -78,7 +78,6 @@ public class HumanReviewConformanceTests
     private sealed class Eval(IReadOnlyList<IGrader> graders) : IEval
     {
         public string Name => "reviewed-eval";
-        public string? Identity => null;
         public int Version => 1;
         public string Proves => "A review beside its judge.";
         public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions, CancellationToken cancellationToken) => throw new NotSupportedException();

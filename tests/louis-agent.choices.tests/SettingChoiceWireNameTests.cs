@@ -51,7 +51,7 @@ public class SettingChoiceWireNameTests
 
     [TestCase("1")]
     [TestCase("puls_only")]
-    [TestCase("puls")]
+    [TestCase("pulse")]
     public void ANumberOrAnythingElse_IsUnknown(string text) => Assert.That(SettingChoice.TryParse(text, out Mode? _), Is.False);
 
     [Test]

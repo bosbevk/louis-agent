@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using System.Text.Json;
 using LouisAgent.SessionStream;
 
@@ -22,5 +23,5 @@ internal static class StreamEvents
 
     /// <summary>An event of the sub-session a delegation call opened, as the API wraps it (F5).</summary>
     public static SessionEvent InSubSession(string callId, SessionEvent inner) =>
-        new SubSessionStreamed(Json(new { type = "sub_session", tool_use_id = callId, agent = "puls", @event = inner.Type, data = inner.Data }), callId, inner);
+        new SubSessionStreamed(Json(new { type = "sub_session", tool_use_id = callId, agent = SampleIdentity.Alpha, @event = inner.Type, data = inner.Data }), callId, inner);
 }

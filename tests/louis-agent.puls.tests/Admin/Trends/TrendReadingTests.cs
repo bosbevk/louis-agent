@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using System.Globalization;
 using LouisAgent.Puls.Admin.Trends;
 
@@ -48,11 +49,11 @@ public class TrendReadingTests
     {
         var points = new[] { Sample(0, 0.5), Sample(1, 0.75), Sample(2, 0.25) };
 
-        var up = TrendReading.Value("puls", "#3987e5", points, "run_2", Percent);
+        var up = TrendReading.Value(SampleMode.Alpha, "#3987e5", points, "run_2", Percent);
         Assert.That((up.Text, up.Change, up.Up), Is.EqualTo(("75%", "▲ +25%", true)));
-        var down = TrendReading.Value("puls", "#3987e5", points, "run_3", Percent);
+        var down = TrendReading.Value(SampleMode.Alpha, "#3987e5", points, "run_3", Percent);
         Assert.That((down.Text, down.Change, down.Up), Is.EqualTo(("25%", "▼ −50%", false)));
-        Assert.That(down.Name, Is.EqualTo("puls"));
+        Assert.That(down.Name, Is.EqualTo(SampleMode.Alpha));
         Assert.That(down.Color, Is.EqualTo("#3987e5"));
     }
 
@@ -61,8 +62,8 @@ public class TrendReadingTests
     {
         var points = new[] { Sample(0, 0.5), Sample(1, 0.5) };
 
-        Assert.That(TrendReading.Value("puls", "#fff", points, "run_1", Percent).Change, Is.Null, "nothing before it");
-        Assert.That(TrendReading.Value("puls", "#fff", points, "run_2", Percent).Change, Is.Null, "no change is no arrow");
+        Assert.That(TrendReading.Value(SampleMode.Alpha, "#fff", points, "run_1", Percent).Change, Is.Null, "nothing before it");
+        Assert.That(TrendReading.Value(SampleMode.Alpha, "#fff", points, "run_2", Percent).Change, Is.Null, "no change is no arrow");
     }
 
     [Test]
@@ -70,8 +71,8 @@ public class TrendReadingTests
     {
         var points = new[] { Sample(0, 0.5), Sample(1, null), Sample(2, 0.75) };
 
-        Assert.That(TrendReading.Value("puls", "#fff", points, "run_2", Percent).Text, Is.EqualTo("–"), "nobody measured run_2");
-        Assert.That(TrendReading.Value("puls", "#fff", points, "run_3", Percent).Change, Is.EqualTo("▲ +25%"), "against run_1, the run before that has a value");
-        Assert.That(TrendReading.Value("puls", "#fff", [], "run_1", Percent).Text, Is.EqualTo("–"), "a mode with no points");
+        Assert.That(TrendReading.Value(SampleMode.Alpha, "#fff", points, "run_2", Percent).Text, Is.EqualTo("–"), "nobody measured run_2");
+        Assert.That(TrendReading.Value(SampleMode.Alpha, "#fff", points, "run_3", Percent).Change, Is.EqualTo("▲ +25%"), "against run_1, the run before that has a value");
+        Assert.That(TrendReading.Value(SampleMode.Alpha, "#fff", [], "run_1", Percent).Text, Is.EqualTo("–"), "a mode with no points");
     }
 }

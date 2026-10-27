@@ -70,7 +70,6 @@ public class HumanReviewAppliesTests
     private sealed class OneEval(IReadOnlyList<IGrader> graders) : IEval
     {
         public string Name => "applies-eval";
-        public string? Identity => null;
         public int Version => 1;
         public string Proves => "A review that applies only where its judge does.";
         public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions, CancellationToken cancellationToken) => ValueTask.FromResult<IReadOnlyList<EvalMode>>([Mode]);

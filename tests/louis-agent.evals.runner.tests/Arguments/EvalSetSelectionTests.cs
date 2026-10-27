@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 using LouisAgent.Evals.Runner;
 using LouisAgent.Evals.Runner.Arguments;
 using LouisAgent.Evals.Runner.Catalog;
@@ -21,5 +22,5 @@ public class EvalSetSelectionTests
     [Test]
     public void RefusesAnUnknownSetNamingTheSupportedOnes() =>
         Assert.That(() => EvalSetSelection.Parse("pulss"),
-            Throws.InstanceOf<RunnerException>().With.Message.Contains("'pulss'").And.Message.Contains("puls"));
+            Throws.InstanceOf<RunnerException>().With.Message.Contains("'pulss'").And.Message.Contains(EvalSetKind.Puls.Wire()));
 }

@@ -143,7 +143,6 @@ public class EvalRunnerFailureTests
     private sealed class TwoTurnEval(int messages) : IEval
     {
         public string Name => "stub-failures";
-        public string? Identity => null;
         public int Version => 1;
         public string Proves => "A turn that fails for the infrastructure.";
 

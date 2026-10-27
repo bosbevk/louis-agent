@@ -25,7 +25,7 @@ public class ExampleEvalTests
     {
         var set = new TemplateEvalSet();
 
-        Assert.That(set.Identity, Is.EqualTo("template"));
+        Assert.That(set.Identity, Is.EqualTo(TemplateIdentity.Template.Wire()));
         Assert.That(set.Evals.Select(e => e.Name), Is.EqualTo(new[] { TemplateEvalName.Example.Wire() }));
     }
 
@@ -45,7 +45,7 @@ public class ExampleEvalTests
     [Test]
     public void ItHasANameAVersionAndAPortalTitleFromAMessageEnum()
     {
-        Assert.That((Eval.Name, Eval.Identity, Eval.Version), Is.EqualTo((TemplateEvalName.Example.Wire(), "template", 1)));
+        Assert.That((Eval.Name, Eval.Version), Is.EqualTo((TemplateEvalName.Example.Wire(), 1)));
         Assert.That(Eval.Proves, Is.EqualTo(MessageText.Format(TemplateMessage.ExampleProves)).And.Not.Empty);
     }
 

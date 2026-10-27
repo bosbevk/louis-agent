@@ -20,7 +20,7 @@ public class BenchmarkToolsTests
     private static StreamEvent Result(string id, bool error, string content) =>
         E("content_block_start", new { type = "content_block_start", content_block = new { type = "tool_result", tool_use_id = id, content, is_error = error } });
 
-    private static StreamEvent Inner(StreamEvent e) => E("sub_session", new { tool_use_id = "outer", agent = "puls", @event = e.Type, data = e.Data });
+    private static StreamEvent Inner(StreamEvent e) => E("sub_session", new { tool_use_id = "outer", agent = SampleIdentity.Alpha, @event = e.Type, data = e.Data });
 
     private const string Limit = "Error: Tavily's limit was reached (This request exceeds your plan's set usage limit.): the plan's searches.\nTry later.";
 

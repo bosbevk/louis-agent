@@ -194,9 +194,9 @@ public class AgentEngineFactoryTests
     [Test]
     public void TheEnabledList_IsReadFromTheEnvironment_TrimmedAndLowercase()
     {
-        var options = AgentOptions.FromEnvironment(name => name == "PERSONALITIES_ENABLED" ? " puls, " + SampleRole.Alpha.ToUpperInvariant() + " ,puls, " : null);
+        var options = AgentOptions.FromEnvironment(name => name == "PERSONALITIES_ENABLED" ? " " + SampleRole.Beta + ", " + SampleRole.Alpha.ToUpperInvariant() + " ," + SampleRole.Beta + ", " : null);
 
-        Assert.That(options.RolesEnabled, Is.EqualTo(new[] { "puls", SampleRole.Alpha }));
+        Assert.That(options.RolesEnabled, Is.EqualTo(new[] { SampleRole.Beta, SampleRole.Alpha }));
         Assert.That(AgentOptions.FromEnvironment(_ => null).RolesEnabled, Is.Empty);
     }
 

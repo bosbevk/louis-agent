@@ -222,7 +222,6 @@ public class EvalConformanceCheckTests
     private sealed class FakeEval(string name, int version, IReadOnlyList<IGrader> graders, IReadOnlyList<EvalScenario> scenarios) : IEval
     {
         public string Name { get; } = name;
-        public string? Identity => "puls";
         public int Version { get; } = version;
         public string Proves => "A fake eval, for the conformance check.";
         public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(LouisAgent.Evals.Api.ISessionClient sessions, CancellationToken cancellationToken) =>

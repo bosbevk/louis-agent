@@ -167,7 +167,6 @@ public class EvalRunnerPassRatesTests
     private sealed class OneScenarioEval : IEval
     {
         public string Name => "stub-rates";
-        public string? Identity => null;
         public int Version => 1;
         public string Proves => "pass@k and pass^k.";
 

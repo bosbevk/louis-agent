@@ -27,6 +27,10 @@ public class RepeatedNameTests
         "identities/louis-agent.identity.puls/PulsRole.cs",
         "src/louis-agent.puls/Text/PulsWebRole.cs",
         "evals/louis-agent.evals.template/Evals/Example/TemplateEvalName.cs",
+        "evals/louis-agent.evals.puls/PulsEvalSet.cs",
+        "evals/louis-agent.evals.template/TemplateEvalSet.cs",
+        "identities/louis-agent.identity.puls/PulsIdentity.cs",
+        "src/louis-agent.composition/IdentityKind.cs",
     ];
 
     /// <summary>A literal that is a name of something else, with the file (or the folder, ending in /) it is in, a text on its line, and why. Few on purpose (Louis, 2026-10-27: a dozen is too many).</summary>
@@ -36,7 +40,7 @@ public class RepeatedNameTests
         ("tests/louis-agent.evals.tests/Protocol/ProtocolWriterTests.cs", "", "the writer's lines are compared with the Python-recorded fixture, which holds these names: recorded data stays as recorded"),
         ("tests/louis-agent.web.testing/SessionStreamFixture.cs", "CookRole", "the role of the recorded turn, named once: the goldens and the replay tests read it"),
         ("tests/louis-agent.api.tests/Benchmarks/Reports/BenchmarkManualTests.cs", "", "each real eval beside its manual: the names the real runner offers"),
-        ("identities/louis-agent.identity.puls/PulsIdentity.cs", "Packs =>", "a pack's name, not a toolset's: the packs set makes it an enum"),
+        ("tests/louis-agent.api.tests/Sessions/StreamGoldenTests.cs", "call_sub", "the sub-session event is written into the recorded stream golden, which holds the peer's name: recorded data stays as recorded"),
         ("tests/louis-agent.identity.puls.tests/PulsIdentityTests.cs", "puls.Packs", "a pack's name, not a toolset's: the packs set makes it an enum"),
         ("tests/louis-agent.evals.puls.tests/PulsDatasetsTests.cs", "\"numbers\"", "the routing tasks' ids, which a later set (the task ids) makes an enum"),
         ("tests/louis-agent.evals.puls.tests/Evals/Routing/RoutingEvalTests.cs", "\"numbers\"", "the routing tasks' ids, which a later set (the task ids) makes an enum"),

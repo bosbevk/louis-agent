@@ -127,12 +127,12 @@ public class TurnStreamTests
     {
         var turn = Apply(
             ("content_block_start", SampleRole.Fill("""{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"call_1","name":"StartSubSession","input":{"toolsets":["web"],"message":"Kook","role":"<RoleAlpha>"}}}""")),
-            ("sub_session", SampleToolset.Fill(SampleRole.Fill("""{"type":"sub_session","tool_use_id":"call_1","agent":"puls","event":"message_start","data":{"type":"message_start","message":{"session_id":"sub","role":"assistant","toolsets":["<Alpha>","<Beta>"],"session_role":"<RoleAlpha>"}}}"""))),
-            ("sub_session", """{"type":"sub_session","tool_use_id":"call_1","agent":"puls","event":"content_block_start","data":{"type":"content_block_start","index":0,"content_block":{"type":"text","text":""}}}"""),
-            ("sub_session", """{"type":"sub_session","tool_use_id":"call_1","agent":"puls","event":"content_block_delta","data":{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Bobotie"}}}"""));
+            ("sub_session", SampleToolset.Fill(SampleRole.Fill(SampleIdentity.Fill("""{"type":"sub_session","tool_use_id":"call_1","agent":"<IdentityAlpha>","event":"message_start","data":{"type":"message_start","message":{"session_id":"sub","role":"assistant","toolsets":["<Alpha>","<Beta>"],"session_role":"<RoleAlpha>"}}}""")))),
+            ("sub_session", SampleIdentity.Fill("""{"type":"sub_session","tool_use_id":"call_1","agent":"<IdentityAlpha>","event":"content_block_start","data":{"type":"content_block_start","index":0,"content_block":{"type":"text","text":""}}}""")),
+            ("sub_session", SampleIdentity.Fill("""{"type":"sub_session","tool_use_id":"call_1","agent":"<IdentityAlpha>","event":"content_block_delta","data":{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Bobotie"}}}""")));
 
         var call = turn.Blocks.Single();
-        Assert.That(call.SubAgent, Is.EqualTo("puls"));
+        Assert.That(call.SubAgent, Is.EqualTo(SampleIdentity.Alpha));
         Assert.That(call.SubTurn, Is.Not.Null);
         Assert.That(call.SubTurn!.Toolsets, Is.EqualTo(new[] { SampleToolset.Alpha, SampleToolset.Beta }));
         Assert.That(call.SubTurn.Role, Is.EqualTo(SampleRole.Alpha));

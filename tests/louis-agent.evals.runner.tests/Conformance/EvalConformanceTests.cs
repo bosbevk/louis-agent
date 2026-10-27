@@ -56,7 +56,6 @@ public class EvalConformanceTests
     private sealed class FakeEval : IEval
     {
         public string Name => "fake";
-        public string? Identity => "fake";
         public int Version => 1;
         public string Proves => "A fake eval, to test the conformance check on a set that isn't Puls's.";
 

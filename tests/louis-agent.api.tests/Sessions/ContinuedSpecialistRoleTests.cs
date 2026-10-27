@@ -39,7 +39,7 @@ public class ContinuedSpecialistRoleTests
             ],
         };
         var inner = JsonDocument.Parse(SampleRole.Fill("""{"type":"message_start","message":{"session_id":"sess_2","role":"assistant","toolsets":["web","shops"],"session_role":"<RoleAlpha>"}}""")).RootElement;
-        var outer = JsonSerializer.SerializeToElement(new { type = "sub_session", tool_use_id = "toolu_9", agent = "puls", @event = "message_start", data = inner });
+        var outer = JsonSerializer.SerializeToElement(new { type = "sub_session", tool_use_id = "toolu_9", agent = SampleIdentity.Alpha, @event = "message_start", data = inner });
         TurnStream.Apply(turn, SessionEvent.From("sub_session", outer));
         return turn;
     }

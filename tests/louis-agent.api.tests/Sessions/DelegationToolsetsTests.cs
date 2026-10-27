@@ -34,7 +34,7 @@ public class DelegationToolsetsTests
     {
         var turn = new Turn { Blocks = [Cook()] };
         var inner = JsonDocument.Parse(SampleToolset.Fill("""{"type":"message_start","message":{"session_id":"sess_2","role":"assistant","toolsets":["<Alpha>","<Beta>"]}}""")).RootElement;
-        var outer = JsonSerializer.SerializeToElement(new { type = "sub_session", tool_use_id = "toolu_1", agent = "puls", @event = "message_start", data = inner });
+        var outer = JsonSerializer.SerializeToElement(new { type = "sub_session", tool_use_id = "toolu_1", agent = SampleIdentity.Alpha, @event = "message_start", data = inner });
 
         TurnStream.Apply(turn, SessionEvent.From("sub_session", outer));
 

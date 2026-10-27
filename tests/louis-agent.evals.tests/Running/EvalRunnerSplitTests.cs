@@ -76,7 +76,6 @@ public class EvalRunnerSplitTests
     private sealed class TwoSplitsEval : IEval
     {
         public string Name => "stub-splits";
-        public string? Identity => null;
         public int Version => 1;
         public string Proves => "A dev and a held-out scenario.";
 

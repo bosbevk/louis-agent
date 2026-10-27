@@ -152,7 +152,6 @@ public class CalibrateFromStdinTests
     {
         public FakeGrader Grader { get; } = new();
         public string Name => "fake";
-        public string? Identity => null;
         public int Version => 1;
         public string Proves => "A fake eval for the calibration from stdin.";
         public IReadOnlyList<LabeledAnswer> Labels => labels;

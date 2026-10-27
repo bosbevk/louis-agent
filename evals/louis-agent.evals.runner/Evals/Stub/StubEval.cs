@@ -26,7 +26,6 @@ public sealed class StubEval : IEval
 
     public string Name => "stub";
     public string? Manual => "evals/louis-agent.evals.runner/Manuals/stub.md";
-    public string? Identity => null;
     public int Version => 1;
     public string Proves => MessageText.Format(RunnerMessage.StubProves);
 

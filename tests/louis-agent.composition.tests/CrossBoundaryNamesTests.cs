@@ -11,7 +11,15 @@ namespace LouisAgent.Composition.Tests;
 // The composition root is the one place that sees every identity and pack, so it checks that each such name is one the catalogue knows, and a typo fails here and not when a chat opens.
 public class CrossBoundaryNamesTests
 {
-    private static AgentCatalog Puls() => Plugins.FromSettings("puls", null);
+    private static AgentCatalog Puls() => Plugins.FromSettings(IdentityKind.Puls.Wire(), null);
+
+    [Test]
+    public void EveryIdentityKind_IsTheNameOfTheIdentityTheCatalogueBuildsForIt()
+    {
+        // ADR 0043: IdentityKind is the host's copy of each identity's name (it picks with IDENTITIES); the identity says its own. This project sees both.
+        foreach (var kind in Enum.GetValues<IdentityKind>())
+            Assert.That(Plugins.FromSettings(kind.Wire(), null).Identities.Select(i => i.Name), Is.EqualTo(new[] { kind.Wire() }), kind.ToString());
+    }
 
     [Test]
     public void EveryPackAnIdentityNames_IsInTheCatalogue()

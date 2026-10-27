@@ -27,7 +27,7 @@ public class BenchmarkCatalogTests
     [Test]
     public void TheCatalogue_KeepsTheManualPathTheRunnerListed()
     {
-        var merged = BenchmarkCatalog.Merge([new EvalLine(SampleEval.Beta, 9, "A meal", "puls", "evals/louis-agent.evals.puls/Manuals/cook.md"), new EvalLine("quiet", 1, "No manual")]);
+        var merged = BenchmarkCatalog.Merge([new EvalLine(SampleEval.Beta, 9, "A meal", SampleIdentity.Alpha, "evals/louis-agent.evals.puls/Manuals/cook.md"), new EvalLine("quiet", 1, "No manual")]);
 
         Assert.That(merged.Select(c => c.ManualPath), Is.EqualTo(new string?[] { "evals/louis-agent.evals.puls/Manuals/cook.md", null }));
     }
@@ -35,7 +35,7 @@ public class BenchmarkCatalogTests
     [Test]
     public void EachListedEval_IsACheck_WithItsProvesAsItsTitle()
     {
-        var merged = BenchmarkCatalog.Merge([new EvalLine("stub", 1, "A canned run", "puls"), new EvalLine(SampleEval.Beta, 9, "A meal", "puls")]);
+        var merged = BenchmarkCatalog.Merge([new EvalLine("stub", 1, "A canned run", SampleIdentity.Alpha), new EvalLine(SampleEval.Beta, 9, "A meal", SampleIdentity.Alpha)]);
 
         Assert.That(merged.Select(c => (c.Id, c.Title)), Is.EqualTo(new[] { ("stub", "A canned run"), (SampleEval.Beta, "A meal") }));
     }

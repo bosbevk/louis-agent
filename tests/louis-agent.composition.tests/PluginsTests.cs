@@ -17,11 +17,11 @@ public class PluginsTests
     [Test]
     public void Identities_LoadsTheNamedOnes_AndUnsetNone()
     {
-        AgentCatalog puls = Plugins.FromSettings("puls", null);
-        Assert.That(puls.Identities.Select(i => i.Name), Is.EqualTo(new[] { "puls" }));
+        AgentCatalog puls = Plugins.FromSettings(IdentityKind.Puls.Wire(), null);
+        Assert.That(puls.Identities.Select(i => i.Name), Is.EqualTo(new[] { IdentityKind.Puls.Wire() }));
         Assert.That(puls.Packs.Select(p => p.Name), Is.EqualTo(new[] { ShopsToolset.Shops.Wire() }), "Puls names the shops pack (step 4)");
 
-        Assert.That(Plugins.FromSettings("puls, PULS", null).Identities, Has.Count.EqualTo(1), "a name twice, any case, is one identity");
+        Assert.That(Plugins.FromSettings($"{IdentityKind.Puls.Wire()}, PULS", null).Identities, Has.Count.EqualTo(1), "a name twice, any case, is one identity");
         Assert.That(Plugins.FromSettings(null, null).Identities, Is.Empty);
         Assert.That(Plugins.FromSettings("", "").Identities, Is.Empty);
     }
@@ -30,7 +30,7 @@ public class PluginsTests
     public void AnUnknownIdentity_OrPack_IsRefused_NamingTheSupportedOnes()
     {
         var identity = Assert.Throws<AgentCatalogException>(() => Plugins.FromSettings("nope", null))!;
-        Assert.That(identity.Message, Does.Contain("nope").And.Contain("IDENTITIES").And.Contain("puls"));
+        Assert.That(identity.Message, Does.Contain("nope").And.Contain("IDENTITIES").And.Contain(IdentityKind.Puls.Wire()));
 
         var pack = Assert.Throws<AgentCatalogException>(() => Plugins.FromSettings(null, "nope"))!;
         Assert.That(pack.Message, Does.Contain("nope").And.Contain("PACKS"));
@@ -89,7 +89,7 @@ public class PluginsTests
             File.WriteAllText(Path.Combine(root, "config", ".env"), "IDENTITIES=puls\n");
             Environment.CurrentDirectory = root;
 
-            Assert.That(Plugins.FromEnvironment().Identities.Select(i => i.Name), Is.EqualTo(new[] { "puls" }));
+            Assert.That(Plugins.FromEnvironment().Identities.Select(i => i.Name), Is.EqualTo(new[] { IdentityKind.Puls.Wire() }));
         }
         finally
         {

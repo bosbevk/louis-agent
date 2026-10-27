@@ -22,7 +22,7 @@ public class RoutingEvalTests
     [Test]
     public void ItIsPulsRoutingEval_UnderTheNameItsDatasetCarries()
     {
-        Assert.That((Eval.Name, Eval.Identity, Eval.Version), Is.EqualTo((PulsEvalName.Routing.Wire(), "puls", 2)));
+        Assert.That((Eval.Name, Eval.Version), Is.EqualTo((PulsEvalName.Routing.Wire(), 2)));
         Assert.That(Eval.Proves, Is.EqualTo(MessageText.Format(PulsEvalMessage.RoutingProves)), "the portal's title is a message enum member (ADR 0009)");
     }
 

@@ -14,9 +14,6 @@ public interface IEval
     /// <summary>The eval's name, as the runner's verb names it ("cook").</summary>
     string Name { get; }
 
-    /// <summary>The identity the eval proves ("acme"); null for an eval that proves none.</summary>
-    string? Identity { get; }
-
     /// <summary>Bumped by any change to a scenario, a mode or a grader.</summary>
     int Version { get; }
 

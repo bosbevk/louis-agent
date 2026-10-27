@@ -215,7 +215,7 @@ public partial class ArchitectureTests
 
     private static readonly (string Label, Regex Pattern)[] ProductWords =
     [
-        ("puls", new Regex(@"\bpuls\b", RegexOptions.IgnoreCase)),
+        ("Puls", new Regex(@"\bpuls\b", RegexOptions.IgnoreCase)),
         ("South Africa", new Regex(@"South Africa")),
         ("Afrikaans briefing label", new Regex(@"Vir hoeveel|Wil hê|stemming")),
     ];

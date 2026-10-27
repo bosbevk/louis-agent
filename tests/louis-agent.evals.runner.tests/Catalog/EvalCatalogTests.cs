@@ -1,4 +1,5 @@
 using System.Text.Json;
+using LouisAgent.Testing;
 using LouisAgent.Evals.Api;
 using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Grading;
@@ -119,16 +120,24 @@ public class EvalCatalogTests
             Throws.InstanceOf<RunnerException>().With.Message.Contains("'empty'").And.Message.Contains("no messages"));
     }
 
-    private sealed class FakeSet(IEval eval) : IEvalSet
+    [Test]
+    public void AnEvalIsListedUnderItsSetsIdentity_AndTheStubUnderNone()
     {
-        public string Identity => "puls";
+        // The eval belongs to exactly one set, so the set says whose it is (F18 step 7.5.4d); an eval no longer says it itself.
+        var catalog = new EvalCatalog([new FakeSet(new FakeEval("cook"), SampleIdentity.Alpha)], Stub);
+
+        Assert.That(catalog.Listing().Select(l => (l.Name, l.Identity)), Is.EqualTo(new (string, string?)[] { ("cook", SampleIdentity.Alpha), ("stub", null) }));
+    }
+
+    private sealed class FakeSet(IEval eval, string identity = SampleIdentity.Alpha) : IEvalSet
+    {
+        public string Identity { get; } = identity;
         public IReadOnlyList<IEval> Evals { get; } = [eval];
     }
 
     private sealed class FakeEval(string name, IReadOnlyList<IGrader>? graders = null, IReadOnlyList<EvalScenario>? scenarios = null) : IEval
     {
         public string Name { get; } = name;
-        public string? Identity => "puls";
         public int Version => 1;
         public string Proves => "A fake eval, to test the catalogue.";
         public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions, CancellationToken cancellationToken) => throw new NotImplementedException();

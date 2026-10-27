@@ -22,7 +22,7 @@ namespace LouisAgent.Core.Tests.Tools.Agents;
 public class MinionToolsTests
 {
     private const string Role = SampleRole.Zeta;
-    private static readonly Dictionary<string, Uri> Self = new() { ["puls"] = new Uri("http://puls-agent.test/") };
+    private static readonly Dictionary<string, Uri> Self = new() { [SampleIdentity.Alpha] = new Uri("http://puls-agent.test/") };
     private static readonly Dictionary<string, IReadOnlyList<string>> Cascade = new() { ["*"] = ["ollama-puls", "instance"] };
 
     private const string Stream = """

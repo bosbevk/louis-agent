@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using LouisAgent.Identities.Puls;
 using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Toolsets;
@@ -47,7 +48,7 @@ public class PulsSessionSnapshotTests
         var options = new AgentOptions
         {
             WorkspaceRoot = _skillsDir, SkillsDirectory = _skillsDir, RatesUrl = null,
-            AgentPeers = new Dictionary<string, Uri> { ["puls"] = new("http://puls-agent.test/") },
+            AgentPeers = new Dictionary<string, Uri> { [SampleIdentity.Alpha] = new("http://puls-agent.test/") },
             BrowserUrl = "http://browser.test:9222",
         };
         // CL15 step 4: the shops are the pack Puls names, with its own settings; the catalogue is what IDENTITIES=puls builds.

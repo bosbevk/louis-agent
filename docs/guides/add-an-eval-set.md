@@ -268,7 +268,6 @@ today:
 public sealed class QuotesEval : IEval
 {
     public string Name => QuotesEvalName.Quotes.Wire();   // MCP-safe; also the portal's check id; a member of the set's own enum
-    public string? Identity => "acme";
     public int Version => 1;                              // bumped by any change to a scenario, a mode or a grader
     public string Proves => MessageText.Format(AcmeEvalMessage.QuotesProves);   // the portal's title: a message enum member (ADR 0009)
 
@@ -339,10 +338,16 @@ The set is the class the runner asks for, as `PulsEvalSet` is:
 ```csharp
 public sealed class AcmeEvalSet : IEvalSet
 {
-    public string Identity => "acme";
+    public string Identity => AcmeEvalIdentity.Acme.Wire();   // the identity this set proves; an enum of the set's own
     public IReadOnlyList<IEval> Evals { get; } = [new QuotesEval()];
 }
+
+public enum AcmeEvalIdentity { [WireName("acme")] Acme }
 ```
+
+**The set says whose its evals are; an eval does not** (F18 step 7.5.4d). An eval belongs to exactly one set, so `IEval` has no identity of its own: the runner's catalogue lists each eval
+under its set's `Identity` (and the stub under none), and the name is written once per project. The set keeps its own copy of the identity's name (a set never references an identity),
+so add a test in the set's tests project that holds the copy to the original: `Assert.That(new AcmeEvalSet().Identity, Is.EqualTo(new AcmeIdentity().Name))` (see `PulsEvalSetTests`; the tests project may reference the identity).
 
 ## 6. Register it in the runner
 

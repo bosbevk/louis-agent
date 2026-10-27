@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using LouisAgent.Api.Benchmarks.Runs;
 
 namespace LouisAgent.Api.Tests.Benchmarks.Runs;
@@ -18,7 +19,8 @@ public class EvalListingTests
         Assert.That(stub.Identity, Is.Null);
         Assert.That(stub.Version, Is.EqualTo(1));
         Assert.That(stub.Proves, Is.Not.Empty);
-        Assert.That(result.Evals.Where(e => e.Name != "stub").Select(e => e.Identity).Distinct(), Is.EqualTo(new[] { "puls" }));
+        // The Puls evals are listed under their set's identity (its name is held by the eval set's tests, which see the identity); here only that all of them have the one.
+        Assert.That(result.Evals.Where(e => e.Name != "stub").Select(e => e.Identity).Distinct().ToList(), Has.Count.EqualTo(1).And.None.Null);
     }
 
     [Test]
@@ -75,10 +77,10 @@ public class EvalListingTests
     [Test]
     public void AListedEvalLineIsRead()
     {
-        var result = EvalListing.Parse("""{"name":"stub","identity":"puls","version":2,"proves":"A canned run"}""");
+        var result = EvalListing.Parse(SampleIdentity.Fill("""{"name":"stub","identity":"<IdentityAlpha>","version":2,"proves":"A canned run"}"""));
 
         Assert.That(result.Failure, Is.Null);
-        Assert.That(result.Evals.Single(), Is.EqualTo(new EvalLine("stub", 2, "A canned run", "puls")));
+        Assert.That(result.Evals.Single(), Is.EqualTo(new EvalLine("stub", 2, "A canned run", SampleIdentity.Alpha)));
     }
 
     [Test]

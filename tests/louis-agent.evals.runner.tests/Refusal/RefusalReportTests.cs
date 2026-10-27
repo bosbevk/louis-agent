@@ -59,7 +59,6 @@ public class RefusalReportTests
     private sealed class BrokenEval : IEval
     {
         public string Name => "broken";
-        public string? Identity => "broken";
         public int Version => 1;
         public string Proves => "A dataset that doesn't load.";
 

@@ -24,7 +24,6 @@ public sealed class ExampleEval : IEval
     public string Name => TemplateEvalName.Example.Wire();
 
     // The identity the eval proves; null for an eval that proves none (section 4).
-    public string? Identity => "template";
 
     // Bumped by any change to a scenario, a mode or a grader (section 4).
     public int Version => 1;
