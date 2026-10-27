@@ -12,8 +12,6 @@ namespace LouisAgent.Puls.Components.Admin.Reviews;
 /// </summary>
 public partial class ReviewPanel : IDisposable
 {
-    private const string HumanSuffix = ".human";
-
     [Inject] private AgentApi Api { get; set; } = null!;
     [Inject] private ReviewerState Reviewer { get; set; } = null!;
 
@@ -29,7 +27,7 @@ public partial class ReviewPanel : IDisposable
     private string? _error;
     private bool _busy;
 
-    private string Judge => Review.Name.EndsWith(HumanSuffix, StringComparison.Ordinal) ? Review.Name[..^HumanSuffix.Length] : Review.Name;
+    private string Judge => BlindReview.JudgeOf(Review.Name);
 
     private string QuestionText => Review.Question ?? $"Is this answer good enough for {Judge}?";
 
@@ -40,8 +38,7 @@ public partial class ReviewPanel : IDisposable
     private GradeRow? JudgeGrade => Grades.Grades?.FirstOrDefault(g => g.Grader == Judge);
 
     /// <summary>What this reviewer said: just now, else their latest grade stored before.</summary>
-    private string? PersonVerdict => _verdict ?? Grades.Human.Where(h => h.ModelGrader == Judge && string.Equals(h.Reviewer, Reviewer.Name, StringComparison.OrdinalIgnoreCase))
-        .OrderByDescending(h => h.At).Select(h => h.Verdict).FirstOrDefault();
+    private string? PersonVerdict => _verdict ?? BlindReview.OwnGrades(Grades, Judge, Reviewer.Name).OrderByDescending(h => h.At).Select(h => h.Verdict).FirstOrDefault();
 
     /// <summary>The segmented group's lit class on the button of the verdict this reviewer gave.</summary>
     private string Pressed(string verdict) => PersonVerdict == verdict ? "active" : "";

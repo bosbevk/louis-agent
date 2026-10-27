@@ -1,0 +1,14 @@
+@* F18 step 6a.3b: the explorer's ring, out of RunExplorer. A ring of Parts in their colours, each arc sweeping in after the one before, with Centre in its middle (the total: it pops). An empty
+   track when every part is 0, the total still in its middle, so a run without costs still reads as a graph. The arcs' maths is RingArcs. *@
+<div class="donut-wrap">
+    <svg class="donut" viewBox="0 0 42 42" role="img" aria-label="@string.Join(", ", Titles)">
+        <circle class="donut-track" cx="21" cy="21" r="@ChartNumbers.Format(RingArcs.Radius)" />
+        @foreach (var arc in RingArcs.Of(Parts))
+        {
+            <circle class="donut-arc" cx="21" cy="21" r="@ChartNumbers.Format(RingArcs.Radius)" style="--i: @arc.Index; --len: @ChartNumbers.Format(arc.Length); stroke: @Colours[arc.Index]; stroke-dashoffset: @ChartNumbers.Format(arc.Offset)">
+                <title>@Titles[arc.Index]</title>
+            </circle>
+        }
+    </svg>
+    <span class="donut-centre"><strong data-count="@Centre">@Centre</strong><small>@Unit</small></span>
+</div>

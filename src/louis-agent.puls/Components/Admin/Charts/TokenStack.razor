@@ -1,0 +1,7 @@
+@* F18 step 6a.3b: the four token kinds stacked, in the palette's fixed order, with a 2px surface gap; widths against Top so siblings compare. Out of RunExplorer. *@
+<span class="xstack" title="@string.Join(" · ", TokenKinds.Titles(Parts))">
+    @for (int i = 0; i < TokenKinds.Names.Count; i++)
+    {
+        if (Parts[i] > 0) { <span class="xseg" style="--i: @i; width: @ChartNumbers.Percent(Parts[i], Math.Max(1, Top))%; background: @ChartPalette.Series(i)"></span> }
+    }
+</span>

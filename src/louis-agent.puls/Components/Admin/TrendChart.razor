@@ -21,7 +21,7 @@ else
         {
             <div class="chart-head">@if (ShowTitle) { <strong>Trend</strong> }<span class="muted">@_runs.Count runs</span>
                 <span class="trend-shown muted">reading run <a href="admin/benchmarks/@Reading.Shown.Run"><code>@Reading.Shown.Run</code></a> · @Reading.Shown.At.ToLocalTime().ToString("yyyy-MM-dd HH:mm")<span class="trend-hint"> · hover a point to read that run in its panel, click it to open the run</span></span>
-                <span class="legend">@foreach (var (s, i) in _series.Select((s, i) => (s, i))) { <span><span class="sw" style="background: @Series(i)"></span>@(Labels?.GetValueOrDefault(s.Name) ?? s.Name)</span> }</span></div>
+                <span class="legend">@foreach (var (s, i) in _series.Select((s, i) => (s, i))) { <span><span class="sw" style="background: @ChartPalette.Series(i)"></span>@(Labels?.GetValueOrDefault(s.Name) ?? s.Name)</span> }</span></div>
         }
         @if (Small)
         {
@@ -67,8 +67,6 @@ else
 
     private bool Shows(string topic) => Panels is null || Panels.Contains(topic);
     private const double W = 600, H = 150, Pad = 8;
-    private static readonly string[] Palette = ["#3987e5", "#d95926", "#199e70", "#c98500", "#d55181", "#008300"];
-    private static string Series(int i) => Palette[i % Palette.Length];
 
     private sealed record Point(string Run, DateTimeOffset At, decimal? Cost, double? Score, double? Tokens, double? SecondsPerTurn,
         double? CacheShare, double? Sourced, double? ToolsFailed, decimal? CostPerAnswer, double? Sites, double? PassAtK = null, double? PassHatK = null);
@@ -101,7 +99,7 @@ else
 
     /// <summary>Each mode's value at the run the panel reads, with its change since the run before.</summary>
     private List<TrendValue> Values(string topic, Func<Point, double?> value, Func<double, string> label) =>
-        _series.Select((s, i) => TrendReading.Value(s.Name, Series(i), s.Points.Select(p => new TrendSample(p.Run, p.At, value(p))), Reading.ShownIn(topic, _hover).Run, label)).ToList();
+        _series.Select((s, i) => TrendReading.Value(s.Name, ChartPalette.Series(i), s.Points.Select(p => new TrendSample(p.Run, p.At, value(p))), Reading.ShownIn(topic, _hover).Run, label)).ToList();
 
     /// <summary>One panel: a line per mode of <paramref name="value"/> over the runs; its head reads the shown run per mode with its change; its title explains it on hover.</summary>
     private RenderFragment Panel(string topic, string title, Func<Point, double?> value, Func<double, string> label, double? fixedTop = null) => __builder =>
@@ -123,14 +121,14 @@ else
                     var known = s.Points.Where(p => value(p) is not null).OrderBy(p => p.At).ToList();
                     if (known.Count > 1)
                     {
-                        <path class="trend-line" clip-path="url(#@clip)" style="--i: @i; stroke: @Series(i)"
+                        <path class="trend-line" clip-path="url(#@clip)" style="--i: @i; stroke: @ChartPalette.Series(i)"
                               d="@string.Join(" ", known.Select((p, k) => $"{(k == 0 ? "M" : "L")}{F(X(p.Run))},{F(Y(value(p)!.Value))}"))" />
                     }
                     @foreach (var p in known)
                     {
                         <a class="trend-run" href="admin/benchmarks/@p.Run" @onmouseenter="() => _hover = (topic, p.Run)">
                             @* A zero-length line with a round cap: a circle at any width, where a stretched circle would be an oval. *@
-                            <line class="trend-point @(p.Run == Highlight ? "here" : "") @(_hover is { } hp && hp.Topic == topic && hp.Run == p.Run ? "hovered" : "")" x1="@F(X(p.Run))" y1="@F(Y(value(p)!.Value))" x2="@F(X(p.Run))" y2="@F(Y(value(p)!.Value))" style="--i: @i; stroke: @Series(i)">
+                            <line class="trend-point @(p.Run == Highlight ? "here" : "") @(_hover is { } hp && hp.Topic == topic && hp.Run == p.Run ? "hovered" : "")" x1="@F(X(p.Run))" y1="@F(Y(value(p)!.Value))" x2="@F(X(p.Run))" y2="@F(Y(value(p)!.Value))" style="--i: @i; stroke: @ChartPalette.Series(i)">
                                 <title>@s.Name · @p.At.ToLocalTime().ToString("yyyy-MM-dd HH:mm") · @label(value(p)!.Value)</title>
                             </line>
                         </a>
