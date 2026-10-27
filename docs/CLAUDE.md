@@ -175,7 +175,12 @@ decision's record (its context, and what it cost) in [docs/adr/](adr/README.md).
 - **Every class and method has a summary** (Louis, 2026-10-27) — every class, record, interface and method, private
   and test ones included, has a `/// <summary>` that says in plain words what it does; one that carries a pattern
   names it there (`Strategy: …`, `Null Object: …`, rule 11). Existing code gets its summaries as a change touches it:
-  a step adds them to the classes and methods it changes, never as a big refactor of its own.
+  a step adds them to the classes and methods it changes, never as a big refactor of its own. **Write them like a
+  person, not a robot** (Louis, 2026-10-27): the way you'd tell a colleague what this is for, in one or two short
+  everyday sentences (rule 4). Say what it's for and anything surprising, not what the name or the signature already
+  says: `/// <summary>Chrome.</summary>` on `Kind => PageRendererKind.Chrome`, or "Gets the value", "True when X is
+  set and not blank" read as filler. Better: "Ready once we know where our Chrome runs (`BROWSER_URL`)." A member that
+  truly has nothing to add gets a short plain line, not a restated signature.
 - **Namespace = folder path, dependencies one way, prompts in markdown, hosts stay thin** — `ArchitectureTests`
   holds the first two ([Project layout](../louis-agent.core/CLAUDE.md#project-layout)).
   Why: [ADR 0010](adr/0010-folders-by-concern.md), [ADR 0011](adr/0011-prompts-are-content.md).
