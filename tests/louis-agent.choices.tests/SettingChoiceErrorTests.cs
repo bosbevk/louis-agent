@@ -1,4 +1,5 @@
 using System.Reflection;
+using LouisAgent.Choices.Messages;
 
 namespace LouisAgent.Choices.Tests;
 

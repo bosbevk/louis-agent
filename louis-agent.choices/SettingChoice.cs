@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.Text.Json.Serialization;
+using LouisAgent.Choices.Messages;
 
 namespace LouisAgent.Choices;
 

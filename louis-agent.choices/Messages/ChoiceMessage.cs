@@ -1,6 +1,6 @@
 using System.ComponentModel;
 
-namespace LouisAgent.Choices;
+namespace LouisAgent.Choices.Messages;
 
 /// <summary>
 /// This project's own texts (ADR 0009: a text is a member of a message enum, its <c>[Description]</c> a template with named holes). Its own, since it references nothing and so cannot use core's

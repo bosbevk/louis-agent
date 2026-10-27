@@ -1,7 +1,7 @@
 using System.ComponentModel;
 using System.Reflection;
 
-namespace LouisAgent.Choices;
+namespace LouisAgent.Choices.Messages;
 
 /// <summary>Fills a <see cref="ChoiceMessage"/>'s named holes (<c>{Enum}</c>, <c>{Value}</c>): the one-purpose stand-in for core's <c>MessageText</c>, which this project cannot reach.</summary>
 internal static class ChoiceText
