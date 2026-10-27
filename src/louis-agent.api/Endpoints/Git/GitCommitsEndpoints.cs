@@ -1,4 +1,4 @@
-using LouisAgent.Api.Endpoints.Git.Requests;
+using LouisAgent.Api.Contracts.Git.Requests;
 using LouisAgent.Api.Endpoints.Routing;
 using LouisAgent.Api.Messages;
 using LouisAgent.Core.Agent;
@@ -9,8 +9,8 @@ using static LouisAgent.Api.Endpoints.Git.Output.GitOutputParser;
 namespace LouisAgent.Api.Endpoints.Git;
 
 /// <summary>
-/// Creates a commit, reads the commit log across all branches and one commit's diff. git runs without a shell, and a diff of
-/// a secret file is never returned.
+/// Creates a commit, reads the commit log across all branches and one commit's diff. git runs without a shell, and a
+/// diff of a secret file is never returned.
 /// </summary>
 internal static class GitCommitsEndpoints
 {

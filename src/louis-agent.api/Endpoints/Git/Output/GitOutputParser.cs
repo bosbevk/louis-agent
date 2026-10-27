@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.RegularExpressions;
+using LouisAgent.Api.Contracts.Git.Output;
 using LouisAgent.Api.Messages;
 using LouisAgent.Core.Guardrails.Workspace;
 using LouisAgent.Core.Messages;
@@ -15,7 +16,9 @@ internal static partial class GitOutputParser
     // hash, short hash, author, author date, subject, refs, parents
     internal const string CommitFormat = "%H%x1f%h%x1f%an%x1f%aI%x1f%s%x1f%D%x1f%P";
 
-    /// <summary>Parses `git status --porcelain=v1 -z`: "XY path", with renames followed by their original path.</summary>
+    /// <summary>
+    /// Parses `git status --porcelain=v1 -z`: "XY path", with renames followed by their original path.
+    /// </summary>
     internal static List<GitFileStatus> ParseStatus(string output)
     {
         var files = new List<GitFileStatus>();
@@ -26,6 +29,7 @@ internal static partial class GitOutputParser
             if (entry.Length < 4) continue;
             char index = entry[0], workTree = entry[1];
             string path = entry[3..];
+            // A rename or a copy is followed by the path it came from, which is its own entry.
             string? oldPath = index is 'R' or 'C' && i + 1 < entries.Length ? entries[++i] : null;
             files.Add(new GitFileStatus(path, oldPath, index.ToString(), workTree.ToString()));
         }
@@ -33,14 +37,20 @@ internal static partial class GitOutputParser
         return files;
     }
 
+    /// <summary>Reads the log written with <see cref="CommitFormat"/>, one commit per record.</summary>
     internal static List<GitCommitInfo> ParseCommits(string output) =>
         output.Split(Record).Select(r => r.Trim('\n', '\r')).Where(r => r.Length > 0).Select(ParseCommit).ToList();
 
+    /// <summary>Reads one commit's fields: its refs without a bare HEAD, and its parents.</summary>
     internal static GitCommitInfo ParseCommit(string record)
     {
         string[] f = record.Split(Field);
         string Get(int i) => i < f.Length ? f[i].Trim() : "";
-        var refs = Get(5).Split(", ", StringSplitOptions.RemoveEmptyEntries).Select(r => r.Replace("HEAD -> ", "")).Where(r => r != "HEAD").ToList();
+        var refs = Get(5)
+            .Split(", ", StringSplitOptions.RemoveEmptyEntries)
+            .Select(r => r.Replace("HEAD -> ", ""))
+            .Where(r => r != "HEAD")
+            .ToList();
         var parents = Get(6).Split(' ', StringSplitOptions.RemoveEmptyEntries).ToList();
         return new GitCommitInfo(Get(0), Get(1), Get(2), Get(3), Get(4), refs, parents);
     }
@@ -60,16 +70,19 @@ internal static partial class GitOutputParser
 
             // Keep the "diff --git" line so the file is still listed, but none of its content.
             int end = section.IndexOf('\n');
-            result.Append(end < 0 ? section + "\n" : section[..(end + 1)]).Append(MessageText.Format(ApiUserText.SecretDiffBinary));
+            result.Append(end < 0 ? section + "\n" : section[..(end + 1)])
+                .Append(MessageText.Format(ApiUserText.SecretDiffBinary));
         }
 
         string text = result.ToString();
         return text.Length > MaxDiffChars ? (text[..MaxDiffChars], true) : (text, false);
     }
 
+    /// <summary>A patch's "diff --git" line, with the file's new path.</summary>
     [GeneratedRegex("^diff --git a/.+? b/(.+)$", RegexOptions.Multiline)]
     private static partial Regex DiffHeader();
 
+    /// <summary>A commit's sha, short or whole.</summary>
     [GeneratedRegex("^[0-9a-fA-F]{7,40}$")]
     internal static partial Regex CommitHash();
 }

@@ -1,5 +1,6 @@
+using LouisAgent.Api.Contracts.Git.Output;
+using LouisAgent.Api.Contracts.Git.Requests;
 using LouisAgent.Api.Endpoints.Git.Output;
-using LouisAgent.Api.Endpoints.Git.Requests;
 using LouisAgent.Api.Messages;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Messages;
@@ -9,8 +10,9 @@ using static LouisAgent.Api.Endpoints.Git.Output.GitOutputParser;
 namespace LouisAgent.Api.Endpoints.Git;
 
 /// <summary>
-/// The Branches tab: every branch with how far it is ahead of the checked-out branch, a branch's diff, merging a branch into
-/// the checked-out one, and deleting a merged branch. Branch names are only accepted if they exist. Nothing here pushes.
+/// The Branches tab: every branch with how far it is ahead of the checked-out branch, a branch's diff, merging a
+/// branch into the checked-out one, and deleting a merged branch. Branch names are only accepted if they exist.
+/// Nothing here pushes.
 /// </summary>
 internal static class GitBranchesEndpoints
 {

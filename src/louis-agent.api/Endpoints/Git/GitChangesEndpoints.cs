@@ -1,4 +1,4 @@
-using LouisAgent.Api.Endpoints.Git.Requests;
+using LouisAgent.Api.Contracts.Git.Requests;
 using LouisAgent.Api.Messages;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Guardrails.Workspace;
@@ -48,8 +48,8 @@ internal static class GitChangesEndpoints
         routes.MapPost("/git/unstage", async (GitPathsRequest request, AgentEngine engine, WorkspaceBoundary workspace) =>
             await OnPathsAsync(request, engine, workspace, paths => RunAsync(engine, ["restore", "--staged", "--", .. paths])));
 
-        // Throws away working-tree changes: tracked files go back to their staged/committed content, untracked files are
-        // deleted. Staged changes are kept (unstage first to drop those too). The web app asks for confirmation.
+        // Throws away working-tree changes: tracked files go back to their staged/committed content, untracked files
+        // are deleted. Staged changes are kept (unstage first to drop those too). The web app asks for confirmation.
         routes.MapPost("/git/discard", async (GitPathsRequest request, AgentEngine engine, WorkspaceBoundary workspace) =>
             await OnPathsAsync(request, engine, workspace, async paths =>
             {
@@ -75,7 +75,9 @@ internal static class GitChangesEndpoints
         return result.ExitCode == 0 ? await StatusResultAsync(engine) : GitError(result);
     }
 
-    /// <summary>Current branch and changed files; also the reply to every change, so the web app refreshes in one call.</summary>
+    /// <summary>
+    /// Current branch and changed files; also the reply to every change, so the web app refreshes in one call.
+    /// </summary>
     internal static async Task<IResult> StatusResultAsync(AgentEngine engine, string? committed = null, string? created = null)
     {
         var status = await RunAsync(engine, ["status", "--porcelain=v1", "-z", "--untracked-files=all"]);

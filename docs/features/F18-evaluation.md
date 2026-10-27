@@ -1120,6 +1120,10 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   (built by `CalibrationReplies`), and `AdminRows.CalibrationRow` is gone. `CalibrationReplyJsonTests` pinned the
   list's JSON first. The reply factories moved to `Admin/Replies/`, since a seventh file in `Admin/` would pass the
   folder's limit.
+- **Sweep: the git records move first.** The git records (`GitBranchInfo`, `GitCommitInfo`, `GitFileStatus` and the
+  three request bodies) are shared by the three git endpoint files, so they move to the contract (`Contracts/Git/`) in a
+  commit of their own; it touches the three endpoint files only in their `using` lines, and each is brought up whole in
+  its own commit straight after. `GitReplyJsonTests` (integration, over a `TempGitRepo`) pins the names first.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)
