@@ -1139,6 +1139,11 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
 - **Sweep: the git folder by tab.** With a handler class per file, `Endpoints/Git/` held nine files, so each tab has
   its folder (`Branches/`, `Changes/`, `Commits/`) and `GitProcess` and `Output/` stay shared. `ApiMap` took the new
   `using` lines, so it is brought up whole: its `/v1` fallback is a named method (`UnknownRoute`).
+- **Sweep: `InfoEndpoints`.** `InfoHandlers` holds the host and the eight info routes; the replies (`HealthReply`,
+  `ModelReply`, `RolesReply`, `LlmProfilesReply`, `ToolsetsReply`, `DisplayReply`) are written with
+  `InfoJson.SnakeCase`, their wire's options; `RolesView` became `RolesReply.Of`. The price table keeps its own options
+  and the rates their rates.json text. The info files have their folder, `Endpoints/Info/`. `AgentSessionsTests` held
+  the roles test, so it is brought up whole (its summaries).
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

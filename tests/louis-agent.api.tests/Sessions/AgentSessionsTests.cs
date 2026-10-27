@@ -1,6 +1,8 @@
 using LouisAgent.Identities.Puls;
 using LouisAgent.Choices;
+using LouisAgent.Api.Contracts.Info;
 using LouisAgent.Api.Endpoints;
+using LouisAgent.Api.Endpoints.Info;
 using LouisAgent.Api.Sessions;
 using LouisAgent.Api.Sessions.Requests;
 using LouisAgent.Core.Hosting.SessionLlms;
@@ -15,27 +17,47 @@ using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Api.Tests.Sessions;
 
-// F5 step 6 (F5-S1): a session chooses its toolsets when it opens, and keeps them; sessions with different lists don't
-// share tools. No model, network or web host: the sessions are built on a factory with a client that is never called.
+/// <summary>
+/// A session picks its toolsets when it opens and keeps them, and sessions with different lists don't share tools.
+/// No model, network or web host: the sessions run on a factory whose client is never called.
+/// </summary>
 public class AgentSessionsTests
 {
+    /// <summary>
+    /// The repo's root folder, so the sessions find the real skills.
+    /// </summary>
     private static string RepoRoot { get; } =
         Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, "..", "..", "..", "..", ".."));
 
-    // CL15 step 4: the catalogue the Puls stack runs with, Puls and the shops pack it names; with no SHOP_CATALOGUES the
-    // shops toolset is known but unavailable, so the cook's optional `shops?` is skipped, as on an instance without it.
+    /// <summary>
+    /// What the Puls stack runs with: Puls and the shops pack it names. Without SHOP_CATALOGUES the shops toolset is
+    /// known but off, so the cook's optional `shops?` is skipped, as on an instance without it.
+    /// </summary>
     private static AgentCatalog PulsCatalog() =>
         new([new LouisAgent.Identities.Puls.PulsIdentity()],
             [new LouisAgent.Packs.Shops.ShopsPack(new LouisAgent.Packs.Shops.ShopsOptions())]);
 
+    /// <summary>
+    /// Fresh sessions on the repo's skills and the Puls catalogue, with a model that's never called.
+    /// </summary>
     private static AgentSessions Sessions(IReadOnlyList<SessionLlm>? llms = null) => new(new AgentEngineFactory(
         new NoModel(),
         new AgentOptions
-        { WorkspaceRoot = RepoRoot, SkillsDirectory = Path.Combine(RepoRoot, "Skills"), RatesUrl = null },
+        {
+            WorkspaceRoot = RepoRoot,
+            SkillsDirectory = Path.Combine(RepoRoot, "Skills"),
+            RatesUrl = null
+        },
         sessionLlms: llms, catalog: PulsCatalog()));
 
+    /// <summary>
+    /// The names of the tools a session's model can call.
+    /// </summary>
     private static string[] Names(AgentSession session) => session.Engine.Tools.Select(t => t.Name).ToArray();
 
+    /// <summary>
+    /// A session that asks for files gets the file tools and none of git's.
+    /// </summary>
     [Test]
     public void ASessionWithFiles_HasNoGitTools()
     {
@@ -45,6 +67,9 @@ public class AgentSessionsTests
         Assert.That(Names(session), Does.Contain("ReadWorkspaceFile").And.Not.Contain("GetStatus"));
     }
 
+    /// <summary>
+    /// Naming no toolsets gives you the default, which is just the skills.
+    /// </summary>
     [Test]
     public void NoToolsets_GivesTheDefault_SkillsOnly()
     {
@@ -54,12 +79,19 @@ public class AgentSessionsTests
         Assert.That(Names(session), Does.Contain("CreateTool").And.Not.Contain("ReadWorkspaceFile"));
     }
 
+    /// <summary>
+    /// An empty list really means none: only the two tools every session has.
+    /// </summary>
     [Test]
     public void AnEmptyList_GivesNoToolsets()
     {
         Assert.That(Names(Sessions().Create([])), Is.EquivalentTo(new[] { "ExecuteSkill", "GetToday" }));
     }
 
+    /// <summary>
+    /// Sessions with different toolsets get different engines; two with the same list share one engine but each keeps
+    /// its own history.
+    /// </summary>
     [Test]
     public void TwoSessionsWithDifferentLists_DontShareTools_TwoWithTheSameShareAnEngine()
     {
@@ -75,6 +107,9 @@ public class AgentSessionsTests
         Assert.That(filesAgain.History, Is.Not.SameAs(files.History), "but each session its own history");
     }
 
+    /// <summary>
+    /// A toolset we don't know is refused, and the refusal lists the ones we do.
+    /// </summary>
     [Test]
     public void AnUnknownToolset_IsRefused_WithTheValidNames()
     {
@@ -83,22 +118,30 @@ public class AgentSessionsTests
                 .Contain(CoreToolset.Files.Wire()));
     }
 
+    /// <summary>
+    /// An optional toolset this instance doesn't have is quietly left out, and the session lists only what it loaded.
+    /// </summary>
     [Test]
     public void AnOptionalToolset_ThisInstanceLacks_IsLeftOut_AndTheSessionSaysWhatItLoaded()
     {
-        // F33 step 4: Puls hands the cook `web` and `shops?`; here SHOP_CATALOGUES isn't set, so the cook gets web alone.
+        // F33 step 4: Puls hands the cook `web` and `shops?`; here SHOP_CATALOGUES isn't set, so the cook gets web
+        // alone.
         var session = Sessions().Create([CoreToolset.Web.Wire(), "shops?"], depth: 1);
 
         Assert.That(session.Toolsets, Is.EqualTo(new[] { CoreToolset.Web.Wire() }));
         Assert.That(Names(session), Does.Contain("WebSearch").And.Not.Contain("FindProducts"));
     }
 
+    /// <summary>
+    /// The cook looks up no prices, so it gets only the web, even on an instance where the shops are set up.
+    /// </summary>
     [Test]
     public void TheCook_LoadsNoShops_EvenWhereTheInstanceHasThem()
     {
-        // F18 step 5.7 (Louis, 2026-10-25): the cook looks up no prices, so its `shops?` header is gone (F33 step 4 had it always load the shops); the pack
-        // stays, off for the cook, until a retailer gives access. Here SHOP_CATALOGUES is set, on the shops pack this instance loads (CL15), with the browser
-        // the pack reaches through core: the cook still gets `web` only.
+        // F18 step 5.7 (Louis, 2026-10-25): the cook looks up no prices, so its `shops?` header is gone (F33 step 4
+        // had it always load the shops); the pack stays, off for the cook, until a retailer gives access. Here
+        // SHOP_CATALOGUES is set, on the shops pack this instance loads (CL15), with the browser the pack reaches
+        // through core: the cook still gets `web` only.
         var sessions = new AgentSessions(new AgentEngineFactory(new NoModel(), new AgentOptions
         {
             WorkspaceRoot = RepoRoot,
@@ -118,16 +161,25 @@ public class AgentSessionsTests
         Assert.That(Names(cook), Does.Contain("WebSearch").And.Not.Contain("FindProducts"));
     }
 
+    /// <summary>
+    /// Where there are no shops, the cook still opens, with the web.
+    /// </summary>
     [Test]
     public void TheCook_WithoutShopsOnThisInstance_StillCooks_WithTheWeb() =>
         Assert.That(Sessions().Create([CoreToolset.Web.Wire()], depth: 1, role: PulsRole.Cook.Wire()).Toolsets,
             Is.EqualTo(new[] { CoreToolset.Web.Wire() }));
 
+    /// <summary>
+    /// Marking specialists as optional doesn't sneak delegation into a sub-session.
+    /// </summary>
     [Test]
     public void AnOptionalMark_DoesntGetPastTheDelegationRules() =>
         Assert.That(() => Sessions().Create(["specialists?"], depth: 1),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("delegates"));
 
+    /// <summary>
+    /// A sub-session can't delegate further, the tree stops at the minion, and the old "agents" name is refused.
+    /// </summary>
     [Test]
     public void ASubSession_CantLoadSpecialists_AndDepthStopsAtTheMinion()
     {
@@ -143,6 +195,9 @@ public class AgentSessionsTests
             Throws.TypeOf<ToolsetException>().With.Message.Contain(CoreToolset.Specialists.Wire()));
     }
 
+    /// <summary>
+    /// You can look a session up by its id until it's removed.
+    /// </summary>
     [Test]
     public void ASession_IsFoundById_UntilRemoved()
     {
@@ -157,24 +212,40 @@ public class AgentSessionsTests
     /// <summary>The sessions never prompt a model in these tests.</summary>
     private sealed class NoModel : IChatClient
     {
+        /// <summary>
+        /// Never asked: these tests open sessions, they don't talk to a model.
+        /// </summary>
         public Task<ChatResponse> GetResponseAsync(IEnumerable<ChatMessage> messages, ChatOptions? options = null,
             CancellationToken cancellationToken = default) => throw new NotSupportedException();
 
+        /// <summary>
+        /// Never asked either, streaming or not.
+        /// </summary>
         public IAsyncEnumerable<ChatResponseUpdate> GetStreamingResponseAsync(IEnumerable<ChatMessage> messages,
             ChatOptions? options = null, CancellationToken cancellationToken = default) =>
             throw new NotSupportedException();
 
+        /// <summary>
+        /// Offers no extra services.
+        /// </summary>
         public object? GetService(Type serviceType, object? serviceKey = null) => null;
 
+        /// <summary>
+        /// Holds nothing, so there's nothing to let go of.
+        /// </summary>
         public void Dispose()
         {
         }
     }
 
+    /// <summary>
+    /// Only a top-level session gets the routing instructions; a sub-session keeps just its toolsets' guides.
+    /// </summary>
     [Test]
     public void ASubSession_HasNoRouter_ATopLevelOneHas()
     {
-        // F21: default.md picks toolsets and delegates; a sub-session's toolsets were chosen for it and it can't delegate.
+        // F21: default.md picks toolsets and delegates; a sub-session's toolsets were chosen for it and it can't
+        // delegate.
         var sessions = Sessions();
 
         var top = sessions.Create([CoreToolset.Files.Wire()]);
@@ -185,6 +256,9 @@ public class AgentSessionsTests
         Assert.That(sub.Engine.SkillDocumentation, Does.Contain("# Files Skills"), "its toolsets' guides stay");
     }
 
+    /// <summary>
+    /// A role we don't know is refused.
+    /// </summary>
     [Test]
     public void AnUnknownRole_IsRefused()
     {
@@ -192,6 +266,9 @@ public class AgentSessionsTests
             Sessions().Create([CoreToolset.Files.Wire()], role: "nobody-here"));
     }
 
+    /// <summary>
+    /// A role opens only at its own level: the cook as a specialist, Puls's voice at the top.
+    /// </summary>
     [Test]
     public void ARole_OpensOnlyAtItsOwnLevel()
     {
@@ -207,6 +284,9 @@ public class AgentSessionsTests
             Is.EqualTo(PulsRole.Cook.Wire()));
     }
 
+    /// <summary>
+    /// A session that names no role gets the default voice.
+    /// </summary>
     [Test]
     public void NoRole_IsTheDefault()
     {
@@ -216,6 +296,9 @@ public class AgentSessionsTests
         Assert.That(session.Engine.SkillDocumentation, Does.Contain("Louis's Minion"));
     }
 
+    /// <summary>
+    /// A session remembers its attachments by name, whatever the case, keeps the newest, and cuts a huge one short.
+    /// </summary>
     [Test]
     public void ASession_RemembersItsAttachments_ByName_Capped()
     {
@@ -230,6 +313,9 @@ public class AgentSessionsTests
         Assert.That(session.Attachments["groot.txt"], Has.Length.EqualTo(AgentSession.MaxAttachmentChars));
     }
 
+    /// <summary>
+    /// The user's place carries their location only when they shared it, and their time zone whenever it's sent.
+    /// </summary>
     [Test]
     public void ThePlace_HasTheLocationWhenShared_AndTheTimeZoneAlways()
     {
@@ -246,6 +332,9 @@ public class AgentSessionsTests
         Assert.That(session.Place!.Location, Is.EqualTo("Pretoria"));
     }
 
+    /// <summary>
+    /// A session keeps the replay it was opened with for all its turns, and one opened without has none.
+    /// </summary>
     [Test]
     public void ASessionKeepsTheReplayItWasOpenedWith()
     {
@@ -258,9 +347,14 @@ public class AgentSessionsTests
         Assert.That(Sessions().Create([CoreToolset.Files.Wire()]).Replay, Is.Null);
     }
 
-    // CL14 step 1: what the API returns for a session says "role", the word callers see from CL14 on.
+    /// <summary>
+    /// Writes a view as the JSON the API would send, so a test can check the words callers see.
+    /// </summary>
     private static string Json(object view) => System.Text.Json.JsonSerializer.Serialize(view);
 
+    /// <summary>
+    /// What the API sends for a session says "role", never the old "personality".
+    /// </summary>
     [Test]
     public void TheSessionJson_SaysRole_NotPersonality()
     {
@@ -272,6 +366,9 @@ public class AgentSessionsTests
             Does.Contain("\"role\":\"puls-cook\"").And.Not.Contain("personality"));
     }
 
+    /// <summary>
+    /// A specialist the chat keeps open shows up in the session's JSON with its role.
+    /// </summary>
     [Test]
     public async Task ASubSessionTheChatKeeps_IsListedWithItsRole()
     {
@@ -282,21 +379,32 @@ public class AgentSessionsTests
             Does.Contain("\"role\":\"puls-cook\"").And.Not.Contain("personality"));
     }
 
+    /// <summary>
+    /// The roles list names the default and groups the roles by level.
+    /// </summary>
     [Test]
     public void TheRolesBody_HasTheDefaultAndTheRolesPerLevel()
     {
         // The roles body, served at GET /v1/roles (CL14's word; the /personalities alias went with CL20, ADR 0039).
         var engines = new AgentEngineFactory(new NoModel(),
             new AgentOptions
-            { WorkspaceRoot = RepoRoot, SkillsDirectory = Path.Combine(RepoRoot, "Skills"), RatesUrl = null });
+            {
+                WorkspaceRoot = RepoRoot,
+                SkillsDirectory = Path.Combine(RepoRoot, "Skills"),
+                RatesUrl = null
+            });
 
-        string roles = Json(LouisAgent.Api.Endpoints.RolesView.Of(engines));
+        string roles = System.Text.Json.JsonSerializer.Serialize(RolesReply.Of(engines), InfoJson.SnakeCase);
 
         Assert.That(roles,
             Does.Contain("\"default\":\"louis-agent/voice\"").And.Contain("\"specialists\":[").And
                 .Contain(PulsRole.Cook.Wire()));
     }
 
+    /// <summary>
+    /// A cook sub-session the chat keeps open; closing it writes its id into the list you pass, so a test can see it
+    /// was closed.
+    /// </summary>
     private static LouisAgent.Core.Sessions.SubSessions.OpenSubSession Kept(string sessionId, List<string> closed) =>
         new(new Uri("http://puls-agent/"), sessionId, "puls-agent", [CoreToolset.Web.Wire()], PulsRole.Cook.Wire(),
             () =>
@@ -305,6 +413,9 @@ public class AgentSessionsTests
                 return Task.CompletedTask;
             });
 
+    /// <summary>
+    /// Deleting a chat closes the specialists it kept open on the peer too.
+    /// </summary>
     [Test]
     public async Task RemovingASession_ClosesTheSubSessionsItKept()
     {
@@ -321,6 +432,9 @@ public class AgentSessionsTests
         Assert.That(session.SubSessions.Open, Is.Empty);
     }
 
+    /// <summary>
+    /// A session left idle too long is dropped, and its specialists are closed with it.
+    /// </summary>
     [Test]
     public async Task AnIdleSession_IsDropped_WithItsSubSessions()
     {
@@ -336,10 +450,14 @@ public class AgentSessionsTests
         Assert.That(closed, Is.EqualTo(new[] { "sess_cook" }));
     }
 
+    /// <summary>
+    /// A sub-session gets a role only when its parent names one; without, it has just the default voice.
+    /// </summary>
     [Test]
     public void ASubSessionWithoutARole_GetsNone_AndAGivenOneIsKept()
     {
-        // CL10: a role is named by the parent, never derived from the toolsets; with none, the default mode's voice only.
+        // CL10: a role is named by the parent, never derived from the toolsets; with none, the default mode's voice
+        // only.
         var sessions = Sessions();
 
         var unnamed = sessions.Create([CoreToolset.Web.Wire()], depth: 1);
@@ -352,6 +470,9 @@ public class AgentSessionsTests
             "a top-level session that names none gets the default voice");
     }
 
+    /// <summary>
+    /// A session can run on another model by naming its profile, and gets its own engine for it.
+    /// </summary>
     [Test]
     public void ASessionNamingAnLlmProfile_KeepsIt_AndOneWithout_HasNone()
     {
@@ -366,6 +487,9 @@ public class AgentSessionsTests
         Assert.That(local.Engine, Is.Not.SameAs(own.Engine), "one engine per model");
     }
 
+    /// <summary>
+    /// A model profile we don't have is refused, and the refusal names the ones we do.
+    /// </summary>
     [Test]
     public void AnUnknownLlmProfile_IsRefused_NamingTheOnesThereAre()
     {
@@ -375,8 +499,14 @@ public class AgentSessionsTests
         Assert.That(ex!.Message, Does.Contain("gpt-9").And.Contain("ollama-puls"));
     }
 
+    /// <summary>
+    /// The usage tags a sub-session carries to say which session sent it.
+    /// </summary>
     private static UsageTags ParentOf(AgentSession parent) => new(null, null, null, $"{parent.Id}#1");
 
+    /// <summary>
+    /// A minion opens under its specialist with just one of that specialist's tools and its own guide.
+    /// </summary>
     [Test]
     public void AMinion_OpensAtDepthTwo_WithOneToolItsParentHas()
     {
@@ -396,6 +526,10 @@ public class AgentSessionsTests
         Assert.That(cook.Tool, Is.Null, "a specialist has toolsets, not one tool");
     }
 
+    /// <summary>
+    /// A minion can never do more than the specialist that sent it: only the parent's own tools, and never one that
+    /// delegates or extends the agent.
+    /// </summary>
     [Test]
     public void AMinion_GetsOnlyAToolItsParentHas_AndOneThatIsEverHandedDown()
     {
@@ -420,6 +554,9 @@ public class AgentSessionsTests
             Throws.TypeOf<ToolsetException>().With.Message.Contain("never handed"));
     }
 
+    /// <summary>
+    /// A minion needs a parent we can find, a minion's role and its one tool, and it can't go any deeper.
+    /// </summary>
     [Test]
     public void AMinion_NeedsAParentItCanFind_AMinionRole_AndATool_AndNothingDeeper()
     {
@@ -458,6 +595,9 @@ public class AgentSessionsTests
             Throws.TypeOf<ToolsetException>().With.Message.Contain("between 0 and 2"), "a minion never delegates");
     }
 
+    /// <summary>
+    /// A minion works out its toolset from the tool it's handed, and only a specialist can send minions.
+    /// </summary>
     [Test]
     public void AMinionSession_DerivesItsToolsetFromItsTool_AndMinionsAreForSpecialistsOnly()
     {
