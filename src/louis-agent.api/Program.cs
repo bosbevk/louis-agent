@@ -82,7 +82,8 @@ if (benchmarkStore is not null)
 _ = Task.Run(benchmarks.Warm);
 api.MapAdmin(benchmarks, new BenchmarkRunner(benchmarks, host.Engine.WorkspaceRoot, admin.BenchmarkApiUrl, evalRunner: admin.EvalRunner), admin.AdminKey, benchmarkStore, recorder,
     check => BenchmarkSettings.Of(check, host.Llm.Provider, host.Llm.Model, host.Agent.RolesEnabled, admin.EvalRunner,
-        WebSearchProviderFactory.Resolve(host.Agent), PageRendererFactory.Resolve(host.Agent)), host.Engine.WorkspaceRoot, reviewStore,
+        WebSearchProviderFactory.Resolve(host.Agent), PageRendererFactory.Resolve(host.Agent),
+        WebSearchProviderFactory.IsReady(host.Agent), PageRendererFactory.IsReady(host.Agent)), host.Engine.WorkspaceRoot, reviewStore,
     calibrationStore, calibrationRecorder);
 
 app.Run();

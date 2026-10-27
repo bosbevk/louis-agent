@@ -41,6 +41,26 @@ public class PageRendererFactoryTests
         Assert.That(PageRendererFactory.Resolve(options), Is.EqualTo(expected));
     }
 
+    /// <summary>
+    /// F18 step 7a.1 follow-up: <c>IsReady</c> says whether the renderer the options select can work. Named and set up is ready; named without its setting is not; unset is the
+    /// fallback's answer, and nothing set is not ready; an unknown name is not. And <c>Create</c> hands back the Null Object (the unavailable renderer) exactly when it is not ready.
+    /// </summary>
+    [TestCase("chrome", Browser, null, true)]
+    [TestCase("chrome", null, "tvly-key", false)]
+    [TestCase("tavily", null, "tvly-key", true)]
+    [TestCase("tavily", Browser, null, false)]
+    [TestCase(null, Browser, null, true)]
+    [TestCase(null, null, "tvly-key", true)]
+    [TestCase(null, null, null, false)]
+    [TestCase("playwright", Browser, "tvly-key", false)]
+    public void IsReady_SaysWhetherTheSelectedRendererCanWork_AndCreateAgrees(string? renderer, string? browserUrl, string? tavilyKey, bool expected)
+    {
+        var options = new AgentOptions { PageRenderer = renderer, BrowserUrl = browserUrl, TavilyApiKey = tavilyKey };
+
+        Assert.That(PageRendererFactory.IsReady(options), Is.EqualTo(expected));
+        Assert.That(PageRendererFactory.Create(options) is UnavailablePageRenderer, Is.EqualTo(!expected));
+    }
+
     [TestCase(null)]
     [TestCase("chrome")]
     public async Task TheBrowserGiven_IsTheOneTheChromeRendererReadsThrough(string? renderer)

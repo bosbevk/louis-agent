@@ -10,11 +10,14 @@ namespace LouisAgent.Api.Benchmarks.Runs;
 /// </summary>
 public static class BenchmarkSettings
 {
+    /// <summary>What a run ran with: the instance's provider and model, the roles it allows, the eval and its runner, and (F18 step 7a.1) the search engine and page renderer, each with whether its settings were there.</summary>
     /// <param name="searchProvider">The engine the instance searches with (<c>WebSearchProviderFactory.Resolve</c>, so unset is what it falls back to); null when its name is unknown.</param>
     /// <param name="pageRenderer">The renderer it reads pages with (<c>PageRendererFactory.Resolve</c>); null when none is set up, and the run then records no renderer.</param>
+    /// <param name="searchProviderReady">Whether the engine's settings were there (<c>WebSearchProviderFactory.IsReady</c>); recorded only when an engine is.</param>
+    /// <param name="pageRendererReady">Whether the renderer's settings were there (<c>PageRendererFactory.IsReady</c>); recorded only when a renderer is.</param>
     /// <param name="evalRunner">The runner's path the API starts an eval check from. Required, so a caller can't leave it out.</param>
     public static IReadOnlyDictionary<string, string> Of(BenchmarkCheck check, string provider, string model, IReadOnlyList<string> roles, string evalRunner,
-        WebSearchProviderKind? searchProvider, PageRendererKind? pageRenderer)
+        WebSearchProviderKind? searchProvider, PageRendererKind? pageRenderer, bool searchProviderReady, bool pageRendererReady)
     {
         var settings = new Dictionary<string, string>
         {
@@ -26,8 +29,17 @@ public static class BenchmarkSettings
         settings["eval"] = check.Id;
         settings["eval_runner"] = evalRunner;
         // What the instance resolved to, so a run on SearXNG and one on Tavily can be told apart (F18 step 7a.1); a renderer that is none leaves its key out.
-        if (searchProvider is { } search) settings["web_search_provider"] = search.Wire();
-        if (pageRenderer is { } renderer) settings["page_renderer"] = renderer.Wire();
+        // Beside each name, whether its settings were there: a named tool without them was an Unavailable one (Null Object), and the run says so.
+        if (searchProvider is { } search)
+        {
+            settings["web_search_provider"] = search.Wire();
+            settings["web_search_provider_ready"] = searchProviderReady ? "true" : "false";
+        }
+        if (pageRenderer is { } renderer)
+        {
+            settings["page_renderer"] = renderer.Wire();
+            settings["page_renderer_ready"] = pageRendererReady ? "true" : "false";
+        }
         return settings;
     }
 

@@ -28,6 +28,9 @@ public static class PageRendererFactory
     /// </summary>
     public static PageRendererKind? Resolve(AgentOptions options) => Pick(options)?.Kind;
 
+    /// <summary>Whether the renderer <paramref name="options"/> select can work: its settings are there. False for an unknown name or when nothing is set.</summary>
+    public static bool IsReady(AgentOptions options) => Pick(options)?.IsReady(options) ?? false;
+
     /// <summary>Strategy: the setup of the renderer named, else the first ready one in <see cref="Setups"/>; null when the name is unknown or none is ready.</summary>
     private static IPageRendererSetup? Pick(AgentOptions options)
     {

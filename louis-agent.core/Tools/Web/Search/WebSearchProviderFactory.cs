@@ -33,6 +33,9 @@ public static class WebSearchProviderFactory
     /// </summary>
     public static WebSearchProviderKind? Resolve(AgentOptions options) => Pick(options)?.Kind;
 
+    /// <summary>Whether the engine <paramref name="options"/> select can work: its settings are there. False for an unknown name.</summary>
+    public static bool IsReady(AgentOptions options) => Pick(options)?.IsReady(options) ?? false;
+
     /// <summary>Strategy: the setup of the engine named, else the first ready one in <see cref="Setups"/> (DuckDuckGo, last, is always ready); null when the name is unknown.</summary>
     private static ISearchProviderSetup? Pick(AgentOptions options)
     {
