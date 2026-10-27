@@ -4,7 +4,7 @@ namespace LouisAgent.Core.Tests;
 
 // F18 step 7 (the plan, line 33): the repo is C#. Python lives in the images because skills run it (their `Execution:` fences), and the agent writes some under Skills/, but no `.py` file
 // is tracked anywhere else: the harness's Python checks, their tests and CI's Python step are gone, and this keeps them gone. Read from git, not the folder, so an ignored scratch file is
-// not a failure and a tracked one never hides. If git can't be run the test fails and says why: a rule that passes quietly when it can't look is no rule.
+// not a failure and a tracked one never hides. If git can't be found, it asks through Outside.Tool: skipped on a developer's machine, a failure where INTEGRATION_REQUIRED is set (CI), so the rule never passes quietly there.
 [Category("Integration")]
 public class NoPythonTests
 {
@@ -34,7 +34,7 @@ public class NoPythonTests
         }
         catch (System.ComponentModel.Win32Exception ex)
         {
-            Assert.Fail($"git isn't available here ({ex.Message}), so no file could be checked: install git, or this test cannot say the repo is free of Python.");
+            Outside.Tool(false, $"git isn't available here ({ex.Message}), so no file could be checked");
             return [];
         }
     }
