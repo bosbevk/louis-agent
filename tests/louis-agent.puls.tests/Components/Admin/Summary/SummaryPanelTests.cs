@@ -16,13 +16,13 @@ public class SummaryPanelTests
 {
     private static JsonElement Json(string text) => JsonDocument.Parse(text).RootElement.Clone();
 
-    private static readonly string Run = SampleEval.Fill(SampleMode.Fill("""
+    private static readonly string Run = SampleEval.Fill(SampleMode.Fill(SampleScenario.Fill("""
         {"run":{"id":"run123456789","check":"<EvalBeta>"},"summaries":[
-          {"mode":"<ModeBeta>","slice":"overall","n":8,"passed":6,"failed":1,"unknown":1,"infrastructure":0,"tasks":["cook-af","cook-en"],"too_few":false,"pass_rate":0.75,"pass_at_k":1,"pass_hat_k":0.5,"cost_per_trial":0.01,"cost_per_pass":0.0133},
-          {"mode":"<ModeBeta>","slice":"language:af","n":3,"passed":2,"failed":1,"unknown":0,"infrastructure":0,"tasks":["cook-af"],"too_few":true,"pass_rate":null,"pass_at_k":null,"pass_hat_k":null,"cost_per_trial":null,"cost_per_pass":0.2},
+          {"mode":"<ModeBeta>","slice":"overall","n":8,"passed":6,"failed":1,"unknown":1,"infrastructure":0,"tasks":["<ScenarioAlpha>","<ScenarioBeta>"],"too_few":false,"pass_rate":0.75,"pass_at_k":1,"pass_hat_k":0.5,"cost_per_trial":0.01,"cost_per_pass":0.0133},
+          {"mode":"<ModeBeta>","slice":"language:af","n":3,"passed":2,"failed":1,"unknown":0,"infrastructure":0,"tasks":["<ScenarioAlpha>"],"too_few":true,"pass_rate":null,"pass_at_k":null,"pass_hat_k":null,"cost_per_trial":null,"cost_per_pass":0.2},
           {"mode":"<ModeBeta>","slice":"budget","n":2,"passed":0,"failed":2,"unknown":0,"infrastructure":0,"tasks":["cook-malmesbury"],"too_few":true,"pass_rate":null,"pass_at_k":null,"pass_hat_k":null,"cost_per_trial":0},
-          {"mode":"<ModeGamma>","slice":"overall","n":8,"passed":2,"failed":5,"unknown":0,"infrastructure":1,"tasks":["cook-af"],"too_few":false,"pass_rate":0.2857,"pass_at_k":0.25,"pass_hat_k":0.25,"cost_per_trial":0.02}]}
-        """));
+          {"mode":"<ModeGamma>","slice":"overall","n":8,"passed":2,"failed":5,"unknown":0,"infrastructure":1,"tasks":["<ScenarioAlpha>"],"too_few":false,"pass_rate":0.2857,"pass_at_k":0.25,"pass_hat_k":0.25,"cost_per_trial":0.02}]}
+        """)));
 
     private static (IRenderedComponent<SummaryPanel> Cut, StubHandler Handler) Render(string run)
     {
@@ -100,8 +100,8 @@ public class SummaryPanelTests
         var links = cut.FindAll(".summary-mode")[0].QuerySelectorAll(".summary-row")[0].QuerySelectorAll("a.s-task");
         Assert.That(links.Select(a => (a.TextContent, a.GetAttribute("href"))), Is.EqualTo(new[]
         {
-            ("cook-af", "admin/benchmarks/run123456789?task=cook-af"),
-            ("cook-en", "admin/benchmarks/run123456789?task=cook-en"),
+            (SampleScenario.Alpha, SampleScenario.Fill("admin/benchmarks/run123456789?task=<ScenarioAlpha>")),
+            (SampleScenario.Beta, SampleScenario.Fill("admin/benchmarks/run123456789?task=<ScenarioBeta>")),
         }));
     }
 

@@ -20,10 +20,10 @@ namespace LouisAgent.Evals.Runner.Tests.Calibration;
 public class CalibrateFromStdinTests
 {
     private static readonly EvalScenario Scenario =
-        new("cook-en", new EvalInput(null, "Africa/Johannesburg", ["For two", "Make it four"]), JsonDocument.Parse("""{"serves":2}""").RootElement.Clone(), [], DatasetSplit.Dev);
+        new(SampleScenario.Beta, new EvalInput(null, "Africa/Johannesburg", ["For two", "Make it four"]), JsonDocument.Parse("""{"serves":2}""").RootElement.Clone(), [], DatasetSplit.Dev);
 
     /// <summary>A label file's text as the API writes it: one line, snake_case.</summary>
-    private static string Line(string answer, bool pass, int repeat = 1, string grader = "meal-for-people", string scenario = "cook-en", int turns = 1) =>
+    private static string Line(string answer, bool pass, int repeat = 1, string grader = "meal-for-people", string scenario = SampleScenario.Beta, int turns = 1) =>
         JsonSerializer.Serialize(new
         {
             grader, scenario, mode = StubMode.Delegating.Wire(), run = "76667d39dcdb", repeat,
@@ -85,7 +85,7 @@ public class CalibrateFromStdinTests
         var disagreement = line.GetProperty("disagreements").EnumerateArray().Single();
         Assert.That((disagreement.GetProperty("scenario").GetString(), disagreement.GetProperty("mode").GetString(), disagreement.GetProperty("repeat").GetInt32(),
                 disagreement.GetProperty("run").GetString(), disagreement.GetProperty("label").GetString(), disagreement.GetProperty("judge").GetString(), disagreement.GetProperty("reason").GetString()),
-            Is.EqualTo(("cook-en", StubMode.Delegating.Wire(), 3, "76667d39dcdb", "fail", "pass", "a meal")));
+            Is.EqualTo((SampleScenario.Beta, StubMode.Delegating.Wire(), 3, "76667d39dcdb", "fail", "pass", "a meal")));
         Assert.That(lines.Count(l => l.StartsWith('@')), Is.EqualTo(1), "one line of data, after the human lines");
     }
 
@@ -127,7 +127,7 @@ public class CalibrateFromStdinTests
     }
 
     private static LabeledAnswer Dataset(string text, bool pass) =>
-        new("cook-en.1.json", "meal-for-people", "cook-en", StubMode.Delegating.Wire(), "8f7802b9a72e", 1, [new LabelTurn("For two", text)], pass, "");
+        new(SampleScenario.Fill("<ScenarioBeta>.1.json"), "meal-for-people", SampleScenario.Beta, StubMode.Delegating.Wire(), "8f7802b9a72e", 1, [new LabelTurn("For two", text)], pass, "");
 
     /// <summary>A model grader that says yes to "yes" and no to anything else, and keeps the last trial it saw.</summary>
     private sealed class FakeGrader : IGrader

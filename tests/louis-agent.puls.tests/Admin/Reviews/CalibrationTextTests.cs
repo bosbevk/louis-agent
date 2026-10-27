@@ -34,7 +34,7 @@ public class CalibrationTextTests
     public void ADisagreement_SaysWhichConversation_AndWhoSaidWhat()
     {
         Assert.That(CalibrationText.Where(new CalibrationDisagreementView("cook-shops", SampleMode.Beta, 2, "fail", "pass", "a dish")), Is.EqualTo($"cook-shops · {SampleMode.Beta} · repeat 2: you said fail, the judge said pass."));
-        Assert.That(CalibrationText.Where(new CalibrationDisagreementView("cook-af", SampleMode.Gamma, 1, "pass", "unknown", "too little")), Is.EqualTo($"cook-af · {SampleMode.Gamma} · repeat 1: you said pass, the judge couldn't tell."));
+        Assert.That(CalibrationText.Where(new CalibrationDisagreementView(SampleScenario.Alpha, SampleMode.Gamma, 1, "pass", "unknown", "too little")), Is.EqualTo(SampleScenario.Fill($"<ScenarioAlpha> · {SampleMode.Gamma} · repeat 1: you said pass, the judge couldn't tell.")));
     }
 
     [Test]

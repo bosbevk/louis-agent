@@ -29,7 +29,7 @@ public class BenchmarkTrendTests
         int order = 0;
         for (int r = 1; r <= repeat; r++)
             foreach (string mode in new[] { SampleMode.Alpha, SampleMode.Beta })
-                foreach (string task in new[] { "cook-af", "control-web" })
+                foreach (string task in new[] { SampleScenario.Alpha, "control-web" })
                 {
                     await _store.SaveConversationAsync(id, new Conversation(new ConversationKey(mode, r, task), ++order, null, Scores(order <= right), 0, 1));
                     decimal? cost = mode == SampleMode.Beta ? cookCost : 0.01m;
@@ -47,7 +47,7 @@ public class BenchmarkTrendTests
         await _store.SaveRunAsync(new Run("held", SampleEval.Beta, 1, BenchmarkRunStatus.Done, T0.AddHours(2), Split: BenchmarkRunSplit.HeldOut));
         await _store.SaveRunAsync(new Run("all", SampleEval.Beta, 1, BenchmarkRunStatus.Done, T0.AddHours(3), Split: BenchmarkRunSplit.All));
         foreach (string id in new[] { "dev", "old", "held", "all" })
-            await _store.SaveConversationAsync(id, new Conversation(new ConversationKey(SampleMode.Beta, 1, "cook-af"), 1, null, Scores(true), 0, 1));
+            await _store.SaveConversationAsync(id, new Conversation(new ConversationKey(SampleMode.Beta, 1, SampleScenario.Alpha), 1, null, Scores(true), 0, 1));
 
         var trend = await BenchmarkTrends.ComputeAsync(_store, SampleEval.Beta);
 
@@ -63,7 +63,7 @@ public class BenchmarkTrendTests
         await _store.SaveRunAsync(new Run("again", SampleEval.Beta, 1, BenchmarkRunStatus.Done, T0.AddHours(1),
             Settings: new Dictionary<string, string> { ["replay_of"] = "live" }));
         foreach (string id in new[] { "live", "again" })
-            await _store.SaveConversationAsync(id, new Conversation(new ConversationKey(SampleMode.Beta, 1, "cook-af"), 1, null, Scores(true), 0, 1));
+            await _store.SaveConversationAsync(id, new Conversation(new ConversationKey(SampleMode.Beta, 1, SampleScenario.Alpha), 1, null, Scores(true), 0, 1));
 
         var trend = await BenchmarkTrends.ComputeAsync(_store, SampleEval.Beta);
 
@@ -75,10 +75,10 @@ public class BenchmarkTrendTests
     {
         // F18 step 5b: a trend point means "the agent was measured here". A re-score grades transcripts recorded on another day, so it adds no point.
         await _store.SaveRunAsync(new Run("live", SampleEval.Beta, 1, BenchmarkRunStatus.Done, T0));
-        await _store.SaveConversationAsync("live", new Conversation(new ConversationKey(SampleMode.Beta, 1, "cook-af"), 1, null, Scores(true), 0, 1));
+        await _store.SaveConversationAsync("live", new Conversation(new ConversationKey(SampleMode.Beta, 1, SampleScenario.Alpha), 1, null, Scores(true), 0, 1));
         var before = (await BenchmarkTrends.ComputeAsync(_store, SampleEval.Beta)).Modes.Single().Points.Single();
         await _store.SaveRunAsync(new Run("graded-again", SampleEval.Beta, 1, BenchmarkRunStatus.Done, T0.AddDays(3), Total: new Total(0m, "USD", 0, 0), RescoreOf: "live"));
-        await _store.SaveConversationAsync("graded-again", new Conversation(new ConversationKey(SampleMode.Beta, 1, "cook-af"), 1, null, Scores(false), 0, 1));
+        await _store.SaveConversationAsync("graded-again", new Conversation(new ConversationKey(SampleMode.Beta, 1, SampleScenario.Alpha), 1, null, Scores(false), 0, 1));
 
         var points = (await BenchmarkTrends.ComputeAsync(_store, SampleEval.Beta)).Modes.Single().Points;
 
@@ -162,7 +162,7 @@ public class BenchmarkTrendTests
     {
         await _store.SaveRunAsync(new Run("a", "cook", 1, BenchmarkRunStatus.Done, T0));
         JsonElement S(string json) => JsonDocument.Parse(json).RootElement.Clone();
-        await _store.SaveConversationAsync("a", new Conversation(new ConversationKey(SampleMode.Beta, 1, "cook-af"), 1, SampleRole.Alpha,
+        await _store.SaveConversationAsync("a", new Conversation(new ConversationKey(SampleMode.Beta, 1, SampleScenario.Alpha), 1, SampleRole.Alpha,
             S("""{"routed_right":true,"ingredients":5,"priced":0,"estimated":4,"unsourced":1,"priced_ratio":0.8}"""), 0, 10));
         await _store.SaveConversationAsync("a", new Conversation(new ConversationKey(SampleMode.Beta, 1, "cook-recipe-only"), 2, SampleRole.Alpha,
             S("""{"routed_right":true,"ingredients":5,"priced":0,"estimated":0,"no_shop_rows":5,"priced_ratio":1}"""), 0, 10));
@@ -180,20 +180,20 @@ public class BenchmarkTrendTests
         // first turn's search refused once of two calls.
         await _store.SaveRunAsync(new Run("a", "cook", 1, BenchmarkRunStatus.Done, T0));
         JsonElement S(string json) => JsonDocument.Parse(json).RootElement.Clone();
-        await _store.SaveConversationAsync("a", new Conversation(new ConversationKey(SampleMode.Beta, 1, "cook-af"), 1, SampleRole.Alpha,
+        await _store.SaveConversationAsync("a", new Conversation(new ConversationKey(SampleMode.Beta, 1, SampleScenario.Alpha), 1, SampleRole.Alpha,
             S("""{"routed_right":true,"ingredients":5,"priced":4,"unsourced":0,"priced_ratio":0.8}"""), 0, 10));
-        await _store.SaveConversationAsync("a", new Conversation(new ConversationKey(SampleMode.Beta, 1, "cook-en"), 2, SampleRole.Alpha,
+        await _store.SaveConversationAsync("a", new Conversation(new ConversationKey(SampleMode.Beta, 1, SampleScenario.Beta), 2, SampleRole.Alpha,
             S("""{"routed_right":true,"ingredients":5,"priced":0,"unsourced":5,"priced_ratio":0}"""), 0, 10));
         StreamEvent E(string type, object data) => new(type, JsonSerializer.SerializeToElement(data), null);
         StreamEvent Use(string id) => E("content_block_start", new { content_block = new { type = "tool_use", id, name = "WebSearch", input = new { } } });
         StreamEvent Refused(string id) => E("content_block_start", new { content_block = new { type = "tool_result", tool_use_id = id, content = "Error: limit", is_error = true } });
-        await _store.SaveTurnAsync("a", new Turn(new TurnKey(SampleMode.Beta, 1, "cook-af", 1), "s1", "?", "!", SampleRole.Alpha, null, 1, 2,
+        await _store.SaveTurnAsync("a", new Turn(new TurnKey(SampleMode.Beta, 1, SampleScenario.Alpha, 1), "s1", "?", "!", SampleRole.Alpha, null, 1, 2,
             ["checkers.co.za", "food.com"], 10, null), [Use("u1"), Refused("u1"), Use("u2")]);
-        await _store.SaveTurnAsync("a", new Turn(new TurnKey(SampleMode.Beta, 1, "cook-en", 1), "s2", "?", "!", SampleRole.Alpha, null, 1, 0,
+        await _store.SaveTurnAsync("a", new Turn(new TurnKey(SampleMode.Beta, 1, SampleScenario.Beta, 1), "s2", "?", "!", SampleRole.Alpha, null, 1, 0,
             ["checkers.co.za"], 20, null), []);
         Request R(string task, decimal cost, long input, long cached) =>
             new("a", new TurnKey(SampleMode.Beta, 1, task, 1), T0, "turn", "s", null, "m", input, 100, cached, 0, cost, 1000);
-        await _store.AddRequestsAsync("a", [R("cook-af", 0.06m, 200, 700), R("cook-en", 0.02m, 100, 0)]);
+        await _store.AddRequestsAsync("a", [R(SampleScenario.Alpha, 0.06m, 200, 700), R(SampleScenario.Beta, 0.02m, 100, 0)]);
 
         var point = (await BenchmarkTrends.ComputeAsync(_store, "cook")).Modes.Single().Points.Single();
 
@@ -202,7 +202,7 @@ public class BenchmarkTrendTests
         Assert.That(point.CacheShare, Is.EqualTo(0.7).Within(1e-9), "700 of the 1,000 input tokens from the cache");
         Assert.That(point.Sourced, Is.EqualTo(0.4), "4 of 10 ingredients priced with a source");
         Assert.That(point.ToolsFailed, Is.EqualTo(0.5), "one of two tool calls refused");
-        Assert.That(point.CostPerAnswer, Is.EqualTo(0.06m), "one real answer, cook-af's cost");
+        Assert.That(point.CostPerAnswer, Is.EqualTo(0.06m), SampleScenario.Fill("one real answer, <ScenarioAlpha>'s cost"));
         Assert.That(point.Sites, Is.EqualTo(2));
     }
 

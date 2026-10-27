@@ -41,7 +41,7 @@ public class CookEvalTests
     public void ItsScenariosAreTheCookDatasets()
     {
         Assert.That(Eval.Scenarios.Where(s => s.Split == DatasetSplit.Dev).Select(s => s.Id), Is.EquivalentTo(
-            new[] { "cook-af", "cook-en", "cook-shops", "cook-malmesbury", "cook-no-branch", "cook-recipe-only", "cook-asks-first", "control-web" }));
+            new[] { PulsCookScenarioIds.CookAf, PulsCookScenarioIds.CookEn, "cook-shops", "cook-malmesbury", "cook-no-branch", "cook-recipe-only", "cook-asks-first", "control-web" }));
         Assert.That(Eval.Scenarios.Where(s => s.Split == DatasetSplit.HeldOut).Select(s => s.Id), Is.EquivalentTo(
             new[] { "cook-paarl", "cook-worcester-budget", "cook-follow-up" }));
         Assert.That(Eval.Scenarios.Single(s => s.Id == "cook-malmesbury").Input.Place, Is.EqualTo("Malmesbury, Wes-Kaap, Suid-Afrika"));
@@ -65,7 +65,7 @@ public class CookEvalTests
     [Test]
     public void ItsScoresAreTheCookScorers_KeyForKey()
     {
-        var trial = Trial(CookEvalMode, "cook-af", """{"routes_to":"puls-cook","serves":4}""", null, Turn(1, [Start(PulsEvalRole.Cook.Wire()), Fetch("https://www.checkers.co.za/x"), Text("Resep.")]));
+        var trial = Trial(CookEvalMode, PulsCookScenarioIds.CookAf, """{"routes_to":"puls-cook","serves":4}""", null, Turn(1, [Start(PulsEvalRole.Cook.Wire()), Fetch("https://www.checkers.co.za/x"), Text("Resep.")]));
 
         var scores = Eval.ScoresOf(trial, []);
 

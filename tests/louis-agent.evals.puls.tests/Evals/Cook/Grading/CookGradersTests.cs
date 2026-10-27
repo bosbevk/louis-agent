@@ -18,7 +18,7 @@ public class CookGradersTests
     [Test]
     public async Task NoError_FailsOnAnErroredTurn()
     {
-        var trial = Trial(Cook, "cook-af", [Start(), Error("overloaded")]);
+        var trial = Trial(Cook, PulsCookScenarioIds.CookAf, [Start(), Error("overloaded")]);
 
         var grade = await new CookNoError().GradeAsync(trial, CancellationToken.None);
 
@@ -28,7 +28,7 @@ public class CookGradersTests
     [Test]
     public async Task NoError_PassesWhenNoTurnFailed()
     {
-        var trial = Trial(Cook, "cook-af", [Start(), Text("Resep.")]);
+        var trial = Trial(Cook, PulsCookScenarioIds.CookAf, [Start(), Text("Resep.")]);
 
         Assert.That((await new CookNoError().GradeAsync(trial, CancellationToken.None)).Outcome, Is.EqualTo(GradeOutcome.Pass));
     }
@@ -38,7 +38,7 @@ public class CookGradersTests
     {
         // The follow-up timed out: whether it would have errored is unknown, so the conversation is not a pass. A check of the first turn only
         // would call this one a pass (a mutation of step 5.3 that no test noticed).
-        var trial = Trial(Cook, "cook-af", [Start(), Text("Hier is dit vir ses.")]);
+        var trial = Trial(Cook, PulsCookScenarioIds.CookAf, [Start(), Text("Hier is dit vir ses.")]);
         trial = trial with { Transcript = new Transcript([trial.Transcript.Turns[0], trial.Transcript.Turns[1] with { Failure = TrialFailure.Timeout }]) };
 
         Assert.That((await new CookNoError().GradeAsync(trial, CancellationToken.None)).Outcome, Is.EqualTo(GradeOutcome.Unknown));

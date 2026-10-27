@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using System.Text.Json;
 using LouisAgent.Puls.Admin.Reviews;
 using LouisAgent.Puls.Components.Admin;
@@ -14,11 +15,11 @@ public class RunExplorerOpenTaskTests
 
     private static string ConversationJson(int repeat, string task) => $$"""{"mode":"puls-cook","repeat":{{repeat}},"task":"{{task}}","role":null,"scores":{},"errors":0}""";
 
-    private static string Run(int repeats) => $$"""
+    private static string Run(int repeats) => SampleScenario.Fill($$"""
         {"run":{"id":"run123456789","check":"puls-cook","repeat":{{repeats}}},"modes":[{{string.Join(",", Enumerable.Range(1, repeats).Select(ModeJson))}}],
-         "conversations":[{{string.Join(",", Enumerable.Range(1, repeats).SelectMany(r => new[] { "cook-af", "cook-en" }.Select(t => ConversationJson(r, t))))}}],
+         "conversations":[{{string.Join(",", Enumerable.Range(1, repeats).SelectMany(r => new[] { "<ScenarioAlpha>", "<ScenarioBeta>" }.Select(t => ConversationJson(r, t))))}}],
          "turns":[],"requests":[]}
-        """;
+        """);
 
     private static IRenderedComponent<RunExplorer> Render(string? openTask, int repeats = 1)
     {
@@ -31,18 +32,18 @@ public class RunExplorerOpenTaskTests
 
     [Test]
     public void ATaskToOpen_OpensItsConversation_AtOnce() =>
-        Assert.That(Render("cook-en").Find(".crumb.here").TextContent, Is.EqualTo("cook-en"));
+        Assert.That(Render(SampleScenario.Beta).Find(".crumb.here").TextContent, Is.EqualTo(SampleScenario.Beta));
 
     // Louis, 2026-10-26 ("this page changes when clicking there", the repeat buttons): a change of repeat kept the page at the run overview whatever was open. It keeps the conversation
     // you are in when the other repeat has it too, and falls back to the overview only when it doesn't.
     [Test]
     public void ChangingTheRepeat_KeepsTheOpenConversation()
     {
-        var cut = Render("cook-en", repeats: 2);
+        var cut = Render(SampleScenario.Beta, repeats: 2);
 
         cut.FindAll(".segmented button").First(b => b.TextContent == "2").Click();
 
-        Assert.That(cut.Find(".crumb.here").TextContent, Is.EqualTo("cook-en"));
+        Assert.That(cut.Find(".crumb.here").TextContent, Is.EqualTo(SampleScenario.Beta));
         Assert.That(cut.Find(".segmented button.active").TextContent, Is.EqualTo("2"));
     }
 

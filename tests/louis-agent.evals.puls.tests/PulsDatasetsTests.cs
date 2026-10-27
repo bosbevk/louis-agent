@@ -16,7 +16,7 @@ namespace LouisAgent.Evals.Puls.Tests;
 // Puls's own graders; scenarios compare as sets, since the loader orders them by file name. Written first: the folders didn't exist yet, so every load failed.
 public class PulsDatasetsTests
 {
-    private static IReadOnlyList<IGrader> GradersOf(PulsEvalName dataset) => dataset == PulsEvalName.Cook ? new CookEval().Graders : new RoutingEval().Graders;
+    internal static IReadOnlyList<IGrader> GradersOf(PulsEvalName dataset) => dataset == PulsEvalName.Cook ? new CookEval().Graders : new RoutingEval().Graders;
 
     [TestCase(PulsEvalName.Cook, 6)]
     [TestCase(PulsEvalName.Routing, 3)]
@@ -50,8 +50,8 @@ public class PulsDatasetsTests
     {
         var expected = new Dictionary<string, string[]>
         {
-            ["cook-af"] = ["language:af", "budget", "follow-up"],
-            ["cook-en"] = ["language:en", "follow-up"],
+            [PulsCookScenarioIds.CookAf] = ["language:af", "budget", "follow-up"],
+            [PulsCookScenarioIds.CookEn] = ["language:en", "follow-up"],
             ["cook-shops"] = ["language:af", "shops:two"],
             ["cook-malmesbury"] = ["language:af", "budget"],
             ["cook-no-branch"] = ["language:af", "shop:no-branch"],
@@ -70,8 +70,8 @@ public class PulsDatasetsTests
         var expected = new Dictionary<string, string>
         {
             ["control-web"] = """{"routes_to":null}""",
-            ["cook-af"] = """{"routes_to":"puls-cook","town":"Stellenbosch","serves":[4,6],"budget":250,"shop":"pnp","recipe_image":true}""",
-            ["cook-en"] = """{"routes_to":"puls-cook","town":"Pretoria","serves":2,"shop":"pnp","recipe_image":true}""",
+            [PulsCookScenarioIds.CookAf] = """{"routes_to":"puls-cook","town":"Stellenbosch","serves":[4,6],"budget":250,"shop":"pnp","recipe_image":true}""",
+            [PulsCookScenarioIds.CookEn] = """{"routes_to":"puls-cook","town":"Pretoria","serves":2,"shop":"pnp","recipe_image":true}""",
             ["cook-malmesbury"] = """{"routes_to":"puls-cook","town":"Malmesbury","serves":4,"budget":150,"shop":"pnp","recipe_image":true}""",
             ["cook-no-branch"] = """{"routes_to":"puls-cook","town":"Prince Albert","serves":2,"shop":"no-branch","recipe_image":true}""",
             ["cook-recipe-only"] = """{"routes_to":"puls-cook","town":"Stellenbosch","serves":4,"shop":"any","recipe_image":true}""",
@@ -168,6 +168,6 @@ public class PulsDatasetsTests
             Assert.That(scenario.Categories, Is.EqualTo(new[] { "kind:" + scenario.Id.Split('-')[0] }), scenario.Id);
     }
 
-    private static Dataset Load(PulsEvalName name) =>
+    internal static Dataset Load(PulsEvalName name) =>
         DatasetLoader.Load(EvalFiles.DatasetOf(name == PulsEvalName.Cook ? typeof(CookEval) : typeof(RoutingEval)), GradersOf(name));
 }

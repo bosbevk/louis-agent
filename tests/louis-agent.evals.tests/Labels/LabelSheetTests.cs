@@ -41,7 +41,7 @@ public class LabelSheetTests
 
     private static readonly IReadOnlyList<EvalScenario> Scenarios =
     [
-        Scenario("cook-af", """{"serves":4}"""), Scenario("cook-en", """{"serves":2}"""), Scenario("cook-shops", """{"serves":4}"""), Scenario("control-web", """{"routes_to":"puls"}"""),
+        Scenario(SampleScenario.Alpha, """{"serves":4}"""), Scenario(SampleScenario.Beta, """{"serves":2}"""), Scenario("cook-shops", """{"serves":4}"""), Scenario("control-web", """{"routes_to":"puls"}"""),
     ];
 
     private static string TempFolder() => Path.Combine(Path.GetTempPath(), "labels-" + Guid.NewGuid().ToString("N"));
@@ -55,12 +55,12 @@ public class LabelSheetTests
         string folder = TempFolder();
         try
         {
-            var names = LabelSheet.Write(Scenarios, "meal-for-people", ["serves"], "8f7802b9a72e", Stored(["cook-af"], [SampleMode.Beta], 1), folder, count: 10);
+            var names = LabelSheet.Write(Scenarios, "meal-for-people", ["serves"], "8f7802b9a72e", Stored([SampleScenario.Alpha], [SampleMode.Beta], 1), folder, count: 10);
 
-            Assert.That(names, Is.EqualTo(new[] { $"meal-for-people.cook-af.{SampleMode.Beta}.8f7802b9a72e.1.json" }));
+            Assert.That(names, Is.EqualTo(new[] { SampleScenario.Fill($"meal-for-people.<ScenarioAlpha>.{SampleMode.Beta}.8f7802b9a72e.1.json") }));
             var file = Written(folder).Single();
-            Assert.That((file.Scenario, file.Mode, file.Run, file.Repeat, file.Turn, file.Answer), Is.EqualTo(("cook-af", SampleMode.Beta, "8f7802b9a72e", 1, 1, $"answer of cook-af/{SampleMode.Beta}/1")));
-            Assert.That(file.Turns, Is.EqualTo(new[] { new LabelTurn("q", $"answer of cook-af/{SampleMode.Beta}/1") }), "6a.4f: every turn, question and answer");
+            Assert.That((file.Scenario, file.Mode, file.Run, file.Repeat, file.Turn, file.Answer), Is.EqualTo((SampleScenario.Alpha, SampleMode.Beta, "8f7802b9a72e", 1, 1, SampleScenario.Fill($"answer of <ScenarioAlpha>/{SampleMode.Beta}/1"))));
+            Assert.That(file.Turns, Is.EqualTo(new[] { new LabelTurn("q", SampleScenario.Fill($"answer of <ScenarioAlpha>/{SampleMode.Beta}/1")) }), "6a.4f: every turn, question and answer");
             Assert.That(file.Label, Is.Null, "the person's part");
             Assert.That(file.Grader, Is.EqualTo("meal-for-people"), "the grader it is a label for");
         }
@@ -73,9 +73,9 @@ public class LabelSheetTests
         string folder = TempFolder();
         try
         {
-            LabelSheet.Write(Scenarios, "meal-for-people", ["serves"], "run", Stored(["cook-af", "control-web"], [SampleMode.Beta], 1), folder, count: 10);
+            LabelSheet.Write(Scenarios, "meal-for-people", ["serves"], "run", Stored([SampleScenario.Alpha, "control-web"], [SampleMode.Beta], 1), folder, count: 10);
 
-            Assert.That(Written(folder).Select(f => f.Scenario), Is.EqualTo(new[] { "cook-af" }), "the control question sets no serves: no meal to label");
+            Assert.That(Written(folder).Select(f => f.Scenario), Is.EqualTo(new[] { SampleScenario.Alpha }), "the control question sets no serves: no meal to label");
         }
         finally { Directory.Delete(folder, true); }
     }
@@ -86,11 +86,11 @@ public class LabelSheetTests
         string folder = TempFolder();
         try
         {
-            var names = LabelSheet.Write(Scenarios, "meal-for-people", ["serves"], "run", Stored(["cook-af", "cook-en", "cook-shops"], [SampleMode.Gamma, SampleMode.Beta], 3), folder, count: 4);
+            var names = LabelSheet.Write(Scenarios, "meal-for-people", ["serves"], "run", Stored([SampleScenario.Alpha, SampleScenario.Beta, "cook-shops"], [SampleMode.Gamma, SampleMode.Beta], 3), folder, count: 4);
 
             var files = Written(folder);
             Assert.That(names, Has.Count.EqualTo(4));
-            Assert.That(files.Select(f => f.Scenario).Distinct(), Is.EquivalentTo(new[] { "cook-af", "cook-en", "cook-shops" }), "all three before a second of any");
+            Assert.That(files.Select(f => f.Scenario).Distinct(), Is.EquivalentTo(new[] { SampleScenario.Alpha, SampleScenario.Beta, "cook-shops" }), "all three before a second of any");
             Assert.That(files.GroupBy(f => f.Scenario).Max(g => g.Count()), Is.EqualTo(2));
             Assert.That(files.Select(f => (f.Scenario, f.Mode, f.Repeat)).Distinct().Count(), Is.EqualTo(4), "no conversation twice");
         }
@@ -103,7 +103,7 @@ public class LabelSheetTests
         string one = TempFolder(), two = TempFolder();
         try
         {
-            var stored = Stored(["cook-af", "cook-en", "cook-shops"], [SampleMode.Gamma, SampleMode.Beta], 3);
+            var stored = Stored([SampleScenario.Alpha, SampleScenario.Beta, "cook-shops"], [SampleMode.Gamma, SampleMode.Beta], 3);
 
             var first = LabelSheet.Write(Scenarios, "meal-for-people", ["serves"], "run", stored, one, count: 5);
             var second = LabelSheet.Write(Scenarios, "meal-for-people", ["serves"], "run", stored, two, count: 5);
@@ -121,15 +121,15 @@ public class LabelSheetTests
         string folder = TempFolder();
         try
         {
-            var stored = Stored(["cook-af", "cook-en"], [SampleMode.Beta], 3);
+            var stored = Stored([SampleScenario.Alpha, SampleScenario.Beta], [SampleMode.Beta], 3);
             LabelSheet.Write(Scenarios, "meal-for-people", ["serves"], "run", stored, folder, count: 2);
-            string labelled = Path.Combine(folder, $"meal-for-people.cook-af.{SampleMode.Beta}.run.1.json");
+            string labelled = Path.Combine(folder, SampleScenario.Fill($"meal-for-people.<ScenarioAlpha>.{SampleMode.Beta}.run.1.json"));
             File.WriteAllText(labelled, File.ReadAllText(labelled).Replace("\"label\": null", "\"label\": { \"meal\": true, \"note\": \"mine\" }"));
 
             var second = LabelSheet.Write(Scenarios, "meal-for-people", ["serves"], "run", stored, folder, count: 2);
 
             Assert.That(File.ReadAllText(labelled), Does.Contain("mine"), "the person's label is still there");
-            Assert.That(second, Is.EqualTo(new[] { $"meal-for-people.cook-af.{SampleMode.Beta}.run.2.json", $"meal-for-people.cook-en.{SampleMode.Beta}.run.2.json" }), "two new files, from the next repeat");
+            Assert.That(second, Is.EqualTo(new[] { SampleScenario.Fill($"meal-for-people.<ScenarioAlpha>.{SampleMode.Beta}.run.2.json"), SampleScenario.Fill($"meal-for-people.<ScenarioBeta>.{SampleMode.Beta}.run.2.json") }), "two new files, from the next repeat");
             Assert.That(Directory.GetFiles(folder), Has.Length.EqualTo(4));
         }
         finally { Directory.Delete(folder, true); }
@@ -143,13 +143,13 @@ public class LabelSheetTests
         string folder = TempFolder();
         try
         {
-            var stored = Stored(["cook-af"], [SampleMode.Beta], 1);
+            var stored = Stored([SampleScenario.Alpha], [SampleMode.Beta], 1);
 
             var first = LabelSheet.Write(Scenarios, "meal-for-people", ["serves"], "run", stored, folder, count: 10);
             var second = LabelSheet.Write(Scenarios, "another-judge", ["serves"], "run", stored, folder, count: 10);
 
-            Assert.That(first, Is.EqualTo(new[] { $"meal-for-people.cook-af.{SampleMode.Beta}.run.1.json" }));
-            Assert.That(second, Is.EqualTo(new[] { $"another-judge.cook-af.{SampleMode.Beta}.run.1.json" }), "not skipped for the first grader's file");
+            Assert.That(first, Is.EqualTo(new[] { SampleScenario.Fill($"meal-for-people.<ScenarioAlpha>.{SampleMode.Beta}.run.1.json") }));
+            Assert.That(second, Is.EqualTo(new[] { SampleScenario.Fill($"another-judge.<ScenarioAlpha>.{SampleMode.Beta}.run.1.json") }), "not skipped for the first grader's file");
             Assert.That(Written(folder).Select(f => f.Grader), Is.EquivalentTo(new[] { "meal-for-people", "another-judge" }));
         }
         finally { Directory.Delete(folder, true); }

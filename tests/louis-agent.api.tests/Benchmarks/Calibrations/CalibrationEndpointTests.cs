@@ -43,7 +43,7 @@ public class CalibrationEndpointTests
                       new Grader("meal-for-people.human", 1, BenchmarkGraderKind.Human)]));
         await store.SaveRunAsync(new Run("gone1234567", "gone-check", 1, BenchmarkRunStatus.Done, T0, T0.AddMinutes(5), 0,
             Graders: [new Grader("meal-for-people", 1, BenchmarkGraderKind.Model), new Grader("meal-for-people.human", 1, BenchmarkGraderKind.Human)]));
-        foreach (var (task, answer) in new[] { ("cook-en", "Bobotie for four"), ("cook-af", "Net 'n sousie") })
+        foreach (var (task, answer) in new[] { (SampleScenario.Beta, "Bobotie for four"), (SampleScenario.Alpha, "Net 'n sousie") })
         {
             var key = new BenchmarkProtocol.ConversationKey(SampleMode.Beta, 1, task);
             await store.SaveConversationAsync(RunId, new Conversation(key, 1, null, JsonDocument.Parse("{}").RootElement.Clone(), 0, 1.0,
@@ -51,7 +51,7 @@ public class CalibrationEndpointTests
             await store.SaveTurnAsync(RunId, new Turn(new BenchmarkProtocol.TurnKey(SampleMode.Beta, 1, task, 1), "sess_1", "For four", answer, SampleRole.Alpha, null, 1, 1, [], 1.0, null), []);
         }
         if (graded)
-            await reviews.AddAsync(new HumanGrade(RunId, new BenchmarkProtocol.ConversationKey(SampleMode.Beta, 1, "cook-en"), "meal-for-people", HumanVerdict.Pass, "a meal", "Louis", T0));
+            await reviews.AddAsync(new HumanGrade(RunId, new BenchmarkProtocol.ConversationKey(SampleMode.Beta, 1, SampleScenario.Beta), "meal-for-people", HumanVerdict.Pass, "a meal", "Louis", T0));
         var catalog = new BenchmarkCatalog([new BenchmarkCheck(SampleEval.Beta, "Cook")]);
         var runner = new BenchmarkRunner(catalog, TestPaths.RepoRoot, "http://127.0.0.1:1/", RunnerBuild.Dll);
         var app = ApiTestHost.Build(adminKey: AdminKey, store: store, reviews: reviews, catalog: catalog, runner: runner,
@@ -81,7 +81,7 @@ public class CalibrationEndpointTests
         Assert.That((row.GetProperty("check").GetString(), row.GetProperty("calibration_of").GetString(), row.GetProperty("grader").GetString()), Is.EqualTo((SampleEval.Beta, RunId, "meal-for-people")));
         string id = row.GetProperty("id").GetString()!;
         Assert.That(host.Runner.Current!.Id, Is.EqualTo(id), "the runner's one run at a time");
-        Assert.That(host.Runner.Current.Input, Does.Contain("\"grader\":\"meal-for-people\"").And.Contain("\"scenario\":\"cook-en\"").And.Not.Contain("cook-af"),
+        Assert.That(host.Runner.Current.Input, Does.Contain("\"grader\":\"meal-for-people\"").And.Contain(SampleScenario.Fill("\"scenario\":\"<ScenarioBeta>\"")).And.Not.Contain(SampleScenario.Alpha),
             "one label line per decided grade, as the zip would hold them");
         Assert.That(host.Runner.Current.Input!.TrimEnd('\n'), Does.Not.Contain("\n"), "one line per label");
 

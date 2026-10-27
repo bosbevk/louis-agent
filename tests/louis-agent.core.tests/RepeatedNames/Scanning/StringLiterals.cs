@@ -6,7 +6,7 @@ namespace LouisAgent.Core.Tests.RepeatedNames.Scanning;
 /// </summary>
 public static class StringLiterals
 {
-    public sealed record Literal(string Value, int Line, int Column);
+    public sealed record Literal(string Value, int Line, int Column, int Index);
 
     public static IReadOnlyList<Literal> Regular(string text)
     {
@@ -26,7 +26,7 @@ public static class StringLiterals
             {
                 int j = i + 1;
                 while (j < n && text[j] != '"') j += text[j] == '\\' ? 2 : 1;
-                found.Add(new Literal(text[(i + 1)..Math.Min(j, n)], line, i - text.LastIndexOf('\n', i) - 1));
+                found.Add(new Literal(text[(i + 1)..Math.Min(j, n)], line, i - text.LastIndexOf('\n', i) - 1, i));
                 i = j + 1;
             }
             else if (c == '\'') { int j = i + 1; while (j < n && text[j] != '\'') j += text[j] == '\\' ? 2 : 1; i = j + 1; }

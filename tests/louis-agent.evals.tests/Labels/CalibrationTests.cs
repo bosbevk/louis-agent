@@ -19,8 +19,8 @@ public class CalibrationTests
 
     private static readonly IReadOnlyList<EvalScenario> Scenarios =
     [
-        Scenario("cook-af", """{"serves":[4,6]}""", "Vir vier mense", "Maak dit vir ses"),
-        Scenario("cook-en", """{"serves":2}""", "For two"),
+        Scenario(SampleScenario.Alpha, """{"serves":[4,6]}""", "Vir vier mense", "Maak dit vir ses"),
+        Scenario(SampleScenario.Beta, """{"serves":2}""", "For two"),
     ];
 
     /// <summary>A label of <paramref name="text"/> as the answer of turn <paramref name="turn"/>; the turns before it answered "earlier n" (6a.4f: a label carries the whole conversation).</summary>
@@ -53,12 +53,12 @@ public class CalibrationTests
 
     /// <summary>The labels of a judge's answers: <paramref name="pass"/> labels the person passed, <paramref name="fail"/> labels they failed, each as the judge is to see it.</summary>
     private static List<LabeledAnswer> Labels(int pass, int fail, string passText = "yes", string failText = "no") =>
-        [.. Enumerable.Range(1, pass).Select(i => Answer("cook-en", passText, pass: true, repeat: i)), .. Enumerable.Range(1, fail).Select(i => Answer("cook-en", failText, pass: false, repeat: 100 + i))];
+        [.. Enumerable.Range(1, pass).Select(i => Answer(SampleScenario.Beta, passText, pass: true, repeat: i)), .. Enumerable.Range(1, fail).Select(i => Answer(SampleScenario.Beta, failText, pass: false, repeat: 100 + i))];
 
     [Test]
     public async Task ItCountsHowOftenTheJudgeAgreesWithThePerson()
     {
-        var labels = new[] { Answer("cook-en", "yes", pass: true), Answer("cook-en", "no", pass: false, repeat: 2), Answer("cook-en", "yes", pass: false, repeat: 3) };
+        var labels = new[] { Answer(SampleScenario.Beta, "yes", pass: true), Answer(SampleScenario.Beta, "no", pass: false, repeat: 2), Answer(SampleScenario.Beta, "yes", pass: false, repeat: 3) };
 
         var report = await Calibration.RunAsync(new WordGrader(), Scenarios, labels, CancellationToken.None);
 
@@ -70,7 +70,7 @@ public class CalibrationTests
     [Test]
     public async Task ACantTell_IsNotAgreement_ItIsListedAsOne()
     {
-        var report = await Calibration.RunAsync(new WordGrader(), Scenarios, [Answer("cook-en", "hmm", pass: true)], CancellationToken.None);
+        var report = await Calibration.RunAsync(new WordGrader(), Scenarios, [Answer(SampleScenario.Beta, "hmm", pass: true)], CancellationToken.None);
 
         Assert.That((report.Agreed, report.Total), Is.EqualTo((0, 1)));
         Assert.That(report.Disagreements.Single().Verdict, Is.EqualTo(GradeOutcome.Unknown));
@@ -81,10 +81,10 @@ public class CalibrationTests
     {
         var grader = new WordGrader();
 
-        await Calibration.RunAsync(grader, Scenarios, [Answer("cook-af", "yes", pass: true, turn: 2)], CancellationToken.None);
+        await Calibration.RunAsync(grader, Scenarios, [Answer(SampleScenario.Alpha, "yes", pass: true, turn: 2)], CancellationToken.None);
 
         var trial = grader.Asked.Single();
-        Assert.That(trial.Scenario.Id, Is.EqualTo("cook-af"));
+        Assert.That(trial.Scenario.Id, Is.EqualTo(SampleScenario.Alpha));
         Assert.That(trial.Transcript.Turns.Select(t => t.Turn), Is.EqualTo(new[] { 1, 2 }));
         Assert.That(trial.Transcript.Turns.Select(t => t.Question), Is.EqualTo(new[] { "question 1", "question 2" }), "the questions as the label recorded them");
         Assert.That(EngineEvents.AnswerOf(trial.Transcript.Turns[0]), Is.EqualTo("earlier 1"), "6a.4f: the judge sees what a follow-up relies on");
@@ -95,7 +95,7 @@ public class CalibrationTests
     [Test]
     public async Task TheReport_ReadsAsAgreementThenEachClassThenTheResultThenEachDisagreement()
     {
-        var labels = new[] { Answer("cook-en", "yes", pass: true), Answer("cook-en", "yes", pass: false, repeat: 2) };
+        var labels = new[] { Answer(SampleScenario.Beta, "yes", pass: true), Answer(SampleScenario.Beta, "yes", pass: false, repeat: 2) };
 
         var lines = (await Calibration.RunAsync(new WordGrader(), Scenarios, labels, CancellationToken.None)).Lines();
 
@@ -103,7 +103,7 @@ public class CalibrationTests
         Assert.That(lines[1], Is.EqualTo("Labelled pass: judge pass 1, fail 0, can't tell 0 (1 of 1, 100%), few labels"));
         Assert.That(lines[2], Is.EqualTo("Labelled fail: judge pass 1, fail 0, can't tell 0 (0 of 1, 0%), few labels"));
         Assert.That(lines[3], Does.StartWith("Result: not enough").And.Contain("labelled fail"));
-        Assert.That(lines[4], Does.Contain("cook-en").And.Contain("run 8f7802b9a72e").And.Contain("repeat 2").And.Contain("label: fail").And.Contain("judge: pass").And.Contain("it passes"));
+        Assert.That(lines[4], Does.Contain(SampleScenario.Beta).And.Contain("run 8f7802b9a72e").And.Contain("repeat 2").And.Contain("label: fail").And.Contain("judge: pass").And.Contain("it passes"));
         Assert.That(lines, Has.Count.EqualTo(5));
     }
 
@@ -122,8 +122,8 @@ public class CalibrationTests
     public async Task TheBarIsNinetyPercentInEachClass_AndAClassOfFourNeedsAllFour()
     {
         var ok = await Calibration.RunAsync(new WordGrader(), Scenarios, Labels(pass: 14, fail: 4), CancellationToken.None);
-        var oneMissed = await Calibration.RunAsync(new WordGrader(), Scenarios, [.. Labels(pass: 14, fail: 3), Answer("cook-en", "yes", pass: false, repeat: 200)], CancellationToken.None);
-        var tenOfEleven = await Calibration.RunAsync(new WordGrader(), Scenarios, [.. Labels(pass: 10, fail: 4), Answer("cook-en", "no", pass: true, repeat: 300)], CancellationToken.None);
+        var oneMissed = await Calibration.RunAsync(new WordGrader(), Scenarios, [.. Labels(pass: 14, fail: 3), Answer(SampleScenario.Beta, "yes", pass: false, repeat: 200)], CancellationToken.None);
+        var tenOfEleven = await Calibration.RunAsync(new WordGrader(), Scenarios, [.. Labels(pass: 10, fail: 4), Answer(SampleScenario.Beta, "no", pass: true, repeat: 300)], CancellationToken.None);
 
         Assert.That(ok.Passes, Is.True);
         Assert.That(oneMissed.Passes, Is.False, "3 of 4 is 75%");
@@ -133,7 +133,7 @@ public class CalibrationTests
     [Test]
     public async Task ACantTell_CountsAgainstItsClass()
     {
-        var report = await Calibration.RunAsync(new WordGrader(), Scenarios, [.. Labels(pass: 9, fail: 0), Answer("cook-en", "hmm", pass: true, repeat: 500)], CancellationToken.None);
+        var report = await Calibration.RunAsync(new WordGrader(), Scenarios, [.. Labels(pass: 9, fail: 0), Answer(SampleScenario.Beta, "hmm", pass: true, repeat: 500)], CancellationToken.None);
 
         Assert.That(report.Lines()[1], Is.EqualTo("Labelled pass: judge pass 9, fail 0, can't tell 1 (9 of 10, 90%)"), "ten labels are no longer few");
     }

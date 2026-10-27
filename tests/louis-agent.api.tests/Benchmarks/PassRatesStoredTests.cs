@@ -112,7 +112,7 @@ public class PassRatesStoredTests
     public async Task ATrendPoint_CarriesTheRatesOfItsRunsLastRepeatOfTheMode()
     {
         var store = await Recorded(EvalRun);
-        await store.SaveConversationAsync(Id, new Conversation(new ConversationKey(SampleMode.Beta, 1, "cook-af"), 1, null, JsonDocument.Parse("{}").RootElement.Clone(), 0, 1));
+        await store.SaveConversationAsync(Id, new Conversation(new ConversationKey(SampleMode.Beta, 1, SampleScenario.Alpha), 1, null, JsonDocument.Parse("{}").RootElement.Clone(), 0, 1));
 
         var point = (await BenchmarkTrends.ComputeAsync(store, SampleEval.Beta)).Modes.Single().Points.Single();
 
@@ -124,7 +124,7 @@ public class PassRatesStoredTests
     {
         var store = new InMemoryBenchmarkStore();
         await store.SaveRunAsync(new Run("old", SampleEval.Beta, 1, BenchmarkRunStatus.Done, T0, Modes: [new Mode(SampleMode.Beta, 1, [SampleToolset.Alpha], null, null)]));
-        await store.SaveConversationAsync("old", new Conversation(new ConversationKey(SampleMode.Beta, 1, "cook-af"), 1, null, JsonDocument.Parse("{}").RootElement.Clone(), 0, 1));
+        await store.SaveConversationAsync("old", new Conversation(new ConversationKey(SampleMode.Beta, 1, SampleScenario.Alpha), 1, null, JsonDocument.Parse("{}").RootElement.Clone(), 0, 1));
 
         var point = (await BenchmarkTrends.ComputeAsync(store, SampleEval.Beta)).Modes.Single().Points.Single();
 

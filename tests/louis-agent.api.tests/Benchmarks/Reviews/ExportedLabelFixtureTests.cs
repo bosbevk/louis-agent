@@ -54,8 +54,8 @@ public class ExportedLabelFixtureTests
     [Test]
     public void TheFileNameIsGraderScenarioModeRunRepeat_ThatTheHarnessUsesForItsOwnSheets()
     {
-        var key = new BenchmarkProtocol.ConversationKey(SampleMode.Gamma, 2, "cook-af");
+        var key = new BenchmarkProtocol.ConversationKey(SampleMode.Gamma, 2, SampleScenario.Alpha);
 
-        Assert.That(ReviewLabels.FileName("meal-for-people", key, "8f7802b9a72e"), Is.EqualTo($"meal-for-people.cook-af.{SampleMode.Gamma}.8f7802b9a72e.2.json"));
+        Assert.That(ReviewLabels.FileName("meal-for-people", key, "8f7802b9a72e"), Is.EqualTo(SampleScenario.Fill($"meal-for-people.<ScenarioAlpha>.{SampleMode.Gamma}.8f7802b9a72e.2.json")));
     }
 }

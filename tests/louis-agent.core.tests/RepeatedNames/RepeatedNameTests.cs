@@ -35,6 +35,16 @@ public class RepeatedNameTests
         "src/louis-agent.composition/PackKind.cs",
     ];
 
+    /// <summary>
+    /// The files that hold a dataset's ids as test constants (ADR 0043: an id is data, not an enum), each with the one class whose body is skipped. Named here, so a new file of the kind is a
+    /// decision in this list and not a file name that hides what is typed in it; the ids themselves are checked against the dataset by the tests of the project that owns them.
+    /// </summary>
+    private static readonly (string File, string Class)[] IdsFiles =
+    [
+        ("tests/louis-agent.evals.puls.tests/PulsTaskIds.cs", "PulsTaskIds"),
+        ("tests/louis-agent.evals.puls.tests/PulsCookScenarioIds.cs", "PulsCookScenarioIds"),
+    ];
+
     /// <summary>A literal that is a name of something else, with the file (or the folder, ending in /) it is in, a text on its line, and why. Few on purpose (Louis, 2026-10-27: a dozen is too many).</summary>
     private static readonly (string File, string Line, string Reason)[] Exemptions =
     [
@@ -59,14 +69,14 @@ public class RepeatedNameTests
     private static List<Site> Sites()
     {
         var names = EnumFiles.SelectMany(WireNames).ToHashSet(StringComparer.Ordinal);
-        var enumFiles = EnumFiles.ToHashSet();
         var sites = new List<Site>();
         foreach (string path in SourceFiles())
         {
             string rel = Relative(path);
-            // A task-ids file is where a dataset's ids are written once as test constants (ADR 0043: an id is data, not an enum), as an enum file is where a name is.
-            if (enumFiles.Contains(rel) || rel.EndsWith("TaskIds.cs", StringComparison.Ordinal) || rel.StartsWith("tests/louis-agent.core.tests/RepeatedNames/")) continue;
-            foreach (var hit in NameScan.Flagged(File.ReadAllText(path), names)) sites.Add(new Site(rel, hit.Line, hit.Value, hit.Text));
+            // An enum file is scanned like any other: only an enum's own body is skipped (DeclarationBodies). The same holds for the one class of an ids file.
+            if (rel.StartsWith("tests/louis-agent.core.tests/RepeatedNames/")) continue;
+            var idsClasses = IdsFiles.Where(ids => ids.File == rel).Select(ids => ids.Class).ToList();
+            foreach (var hit in NameScan.Flagged(File.ReadAllText(path), names, idsClasses)) sites.Add(new Site(rel, hit.Line, hit.Value, hit.Text));
         }
         return sites;
     }

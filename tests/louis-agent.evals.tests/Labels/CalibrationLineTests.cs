@@ -13,9 +13,9 @@ public class CalibrationLineTests
         new($"{scenario}.{repeat}.json", "meal-for-people", scenario, SampleMode.Beta, "76667d39dcdb", repeat, [new LabelTurn("q", "a")], pass, "");
 
     private static readonly CalibrationReport Report = new(Agreed: 3, Total: 4,
-        [new Disagreement(Label("cook-af", pass: false, repeat: 2), GradeOutcome.Unknown, "too little to decide")],
-        [new JudgedAnswer(Label("cook-en", true), GradeOutcome.Pass), new JudgedAnswer(Label("cook-af", true), GradeOutcome.Pass),
-         new JudgedAnswer(Label("cook-shops", false), GradeOutcome.Fail), new JudgedAnswer(Label("cook-af", false, repeat: 2), GradeOutcome.Unknown)]);
+        [new Disagreement(Label(SampleScenario.Alpha, pass: false, repeat: 2), GradeOutcome.Unknown, "too little to decide")],
+        [new JudgedAnswer(Label(SampleScenario.Beta, true), GradeOutcome.Pass), new JudgedAnswer(Label(SampleScenario.Alpha, true), GradeOutcome.Pass),
+         new JudgedAnswer(Label("cook-shops", false), GradeOutcome.Fail), new JudgedAnswer(Label(SampleScenario.Alpha, false, repeat: 2), GradeOutcome.Unknown)]);
 
     [Test]
     public void TheLine_CarriesTheReport_InTheAgreementCardsShape()
@@ -32,7 +32,7 @@ public class CalibrationLineTests
         Assert.That(line.GetProperty("person_fail").GetProperty("judge_unknown").GetInt32(), Is.EqualTo(1));
         var d = line.GetProperty("disagreements").EnumerateArray().Single();
         Assert.That((d.GetProperty("scenario").GetString(), d.GetProperty("repeat").GetInt32(), d.GetProperty("label").GetString(), d.GetProperty("judge").GetString(), d.GetProperty("reason").GetString()),
-            Is.EqualTo(("cook-af", 2, "fail", "unknown", "too little to decide")));
+            Is.EqualTo((SampleScenario.Alpha, 2, "fail", "unknown", "too little to decide")));
     }
 
     [Test]

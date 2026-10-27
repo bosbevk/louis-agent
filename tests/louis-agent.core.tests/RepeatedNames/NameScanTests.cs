@@ -22,4 +22,45 @@ public class NameScanTests
     [TestCase("Assert.That(start.FileName, Is.EqualTo(\"dotnet\"));")]
     [TestCase("Assert.That(Enum.GetValues<Mode>().Select(m => m.Wire()), Is.EqualTo(new[] { \"web\", \"shops\" }));")]
     public void ANameThatIsAnExecutableAKeyOrARoleFolder_IsSkipped(string line) => Assert.That(Hits(line), Is.EqualTo(0));
+
+    // F18 step 7.5.4f: an enum file is scanned like any other file, and only the lines inside an enum's braces are skipped (that is where a name is written once).
+    private const string EnumAndClass = """
+        public enum Mode
+        {
+            [WireName("web")] Web,
+            [WireName("shops")] Shops,
+        }
+
+        public class Identity
+        {
+            public string Name => "web";
+        }
+        """;
+
+    [Test]
+    public void ANameInAnEnumsBody_IsSkipped_AndTheSameNameInAClassInTheSameFileIsFlagged()
+    {
+        var hits = NameScan.Flagged(EnumAndClass, Names);
+
+        Assert.That(hits.Select(h => (h.Line, h.Value)), Is.EqualTo(new[] { (9, "web") }));
+    }
+
+    [Test]
+    public void OnlyTheBodyOfAListedClass_IsSkipped()
+    {
+        const string source = """
+            public static class Ids
+            {
+                public const string Web = "web";
+            }
+
+            public class Other
+            {
+                public string Name => "web";
+            }
+            """;
+
+        Assert.That(NameScan.Flagged(source, Names).Select(h => h.Line), Is.EqualTo(new[] { 3, 8 }), "no class is skipped unless it is listed");
+        Assert.That(NameScan.Flagged(source, Names, skippedClasses: ["Ids"]).Select(h => h.Line), Is.EqualTo(new[] { 8 }));
+    }
 }

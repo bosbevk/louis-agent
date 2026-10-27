@@ -49,10 +49,10 @@ public class LabelLoadingTests
     [Test]
     public void ALabelNotGivenYet_IsRefusedWithItsFilesName()
     {
-        using var folder = Folder().Write("labels/done.json", Label()).Write("labels/cook-af.puls-cook.8f7802b9a72e.1.json", Label(label: "null"));
+        using var folder = Folder().Write("labels/done.json", Label()).Write(SampleScenario.Fill("labels/<ScenarioAlpha>.puls-cook.8f7802b9a72e.1.json"), Label(label: "null"));
 
         Assert.That(() => DatasetLoader.Load(folder.Root, Graders),
-            Throws.TypeOf<InvalidDataException>().With.Message.Contains("cook-af.puls-cook.8f7802b9a72e.1.json").And.Message.Contains("no label"));
+            Throws.TypeOf<InvalidDataException>().With.Message.Contains(SampleScenario.Fill("<ScenarioAlpha>.puls-cook.8f7802b9a72e.1.json")).And.Message.Contains("no label"));
     }
 
     [Test]

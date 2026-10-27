@@ -19,8 +19,8 @@ public class CookReviewScopeTests
 
     [TestCase("control-web", false)]
     [TestCase("cook-asks-first", false)]
-    [TestCase("cook-en", true)]
-    [TestCase("cook-af", true)]
+    [TestCase(PulsCookScenarioIds.CookEn, true)]
+    [TestCase(PulsCookScenarioIds.CookAf, true)]
     public void TheReviewAppliesWhereTheMealJudgeHasAMealToJudge(string scenario, bool applies) =>
         Assert.That(Applies(scenario), Is.EqualTo(applies));
 }

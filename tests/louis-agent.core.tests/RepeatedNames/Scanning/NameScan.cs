@@ -19,11 +19,12 @@ public static class NameScan
 
     private static readonly Regex BlockComment = new(@"/\*.*?\*/", RegexOptions.Compiled);
 
-    public static IReadOnlyList<Hit> Flagged(string text, ISet<string> names)
+    public static IReadOnlyList<Hit> Flagged(string text, ISet<string> names, IReadOnlyCollection<string>? skippedClasses = null)
     {
         string[] lines = text.Split('\n');
         var hits = new List<Hit>();
-        foreach (var literal in StringLiterals.Regular(text).Where(l => names.Contains(l.Value)))
+        var bodies = DeclarationBodies.Spans(text, skippedClasses);
+        foreach (var literal in StringLiterals.Regular(text).Where(l => names.Contains(l.Value) && !DeclarationBodies.Contains(bodies, l.Index)))
         {
             string line = lines[literal.Line - 1];
             string before = BlockComment.Replace(line[..literal.Column], "");

@@ -24,7 +24,7 @@ public class CookScorerTests
             calls: [Start], role: PulsEvalRole.Cook.Wire(),
             specialistCalls: [Fetch("https://www.checkers.co.za/p/1"), Fetch("https://www.pnp.co.za/p/2"), Fetch("https://www.bbc.co.uk/food")]);
 
-        var scores = CookScorer.Score(Dev.Cook("cook-af"), [first], cookOn: true);
+        var scores = CookScorer.Score(Dev.Cook(PulsCookScenarioIds.CookAf), [first], cookOn: true);
 
         Assert.That(scores.Role, Is.EqualTo(PulsEvalRole.Cook.Wire()));
         Assert.That(scores.RoutedRight, Is.True);
@@ -71,7 +71,7 @@ public class CookScorerTests
     public void TheScoresDocumentKeys_AreThePythonsKeys()
     {
         // A renamed property would rename the key in the scores document: this holds the Python's 27 names and the estimated count (F18, FX24).
-        var element = System.Text.Json.JsonSerializer.SerializeToElement<object>(CookScorer.Score(Dev.Cook("cook-af"), [Turn()], cookOn: false), EvalScores.Json);
+        var element = System.Text.Json.JsonSerializer.SerializeToElement<object>(CookScorer.Score(Dev.Cook(PulsCookScenarioIds.CookAf), [Turn()], cookOn: false), EvalScores.Json);
         Assert.That(element.EnumerateObject().Select(p => p.Name), Is.EquivalentTo(new[] { "role", "routed_right", "answered_itself", "hosts", "local_hosts", "shop_hosts", "sources_local", "priced_at_shops", "shop_tool_calls", "deal_tool_calls", "deals_named", "untooled_shops", "no_catalogue_line", "store_for_area", "store_default", "ingredients", "priced", "unsourced", "per_kg", "estimated", "images", "no_shop_rows", "wrong_store", "priced_ratio", "rand_amounts", "unconfirmed_marks", "errors", "follow_up", "follow_up_handle" }));
     }
 
@@ -154,8 +154,8 @@ public class CookScorerTests
         // FX24 (Louis, 2026-10-26: "i need to see here recipe-image"): the portal's row says whether the answer showed a photo of the dish.
         string shown = "![Bobotie](https://marindakook.co.za/wp-content/bobotie.jpg)\n\n![](https://x.co.za/wp-content/plugins/share/facebook.png)\n\nDien 4";
 
-        Assert.That(CookScorer.Score(Dev.Cook("cook-af"), [Turn(shown, calls: [Start], role: PulsEvalRole.Cook.Wire())], cookOn: true).Images, Is.EqualTo(1));
-        Assert.That(CookScorer.Score(Dev.Cook("cook-af"), [Turn("Dien 4", calls: [Start], role: PulsEvalRole.Cook.Wire())], cookOn: true).Images, Is.EqualTo(0));
+        Assert.That(CookScorer.Score(Dev.Cook(PulsCookScenarioIds.CookAf), [Turn(shown, calls: [Start], role: PulsEvalRole.Cook.Wire())], cookOn: true).Images, Is.EqualTo(1));
+        Assert.That(CookScorer.Score(Dev.Cook(PulsCookScenarioIds.CookAf), [Turn("Dien 4", calls: [Start], role: PulsEvalRole.Cook.Wire())], cookOn: true).Images, Is.EqualTo(0));
     }
 
     [Test]
@@ -183,7 +183,7 @@ public class CookScorerTests
     [Test]
     public void AnsweredByPulsItself_IsRoutedWrongWhenTheCookWasOn()
     {
-        var scores = CookScorer.Score(Dev.Cook("cook-en"), [Turn("A recipe.")], cookOn: true);
+        var scores = CookScorer.Score(Dev.Cook(PulsCookScenarioIds.CookEn), [Turn("A recipe.")], cookOn: true);
 
         Assert.That(scores.RoutedRight, Is.False);
         Assert.That(scores.AnsweredItself, Is.True);
@@ -192,7 +192,7 @@ public class CookScorerTests
     [Test]
     public void WithoutTheCook_PulsCookingItselfIsRight_AndItsOwnReadsCount()
     {
-        var scores = CookScorer.Score(Dev.Cook("cook-af"), [Turn("R50", calls: [Fetch("https://www.checkers.co.za/p/1")])], cookOn: false);
+        var scores = CookScorer.Score(Dev.Cook(PulsCookScenarioIds.CookAf), [Turn("R50", calls: [Fetch("https://www.checkers.co.za/p/1")])], cookOn: false);
 
         Assert.That(scores.RoutedRight, Is.True);
         Assert.That(scores.ShopHosts, Is.EqualTo(new[] { "checkers.co.za" }));
@@ -201,7 +201,7 @@ public class CookScorerTests
     [Test]
     public void Continued_IsTheSameCook()
     {
-        var scores = CookScorer.Score(Dev.Cook("cook-af"), [Turn(calls: [Start], role: PulsEvalRole.Cook.Wire()), Turn(continued: "sub-1")], cookOn: true);
+        var scores = CookScorer.Score(Dev.Cook(PulsCookScenarioIds.CookAf), [Turn(calls: [Start], role: PulsEvalRole.Cook.Wire()), Turn(continued: "sub-1")], cookOn: true);
 
         Assert.That((scores.FollowUp, scores.FollowUpHandle), Is.EqualTo(("continued", "sub-1")));
     }
@@ -209,7 +209,7 @@ public class CookScorerTests
     [Test]
     public void ANewCook_IsNotContinued()
     {
-        var scores = CookScorer.Score(Dev.Cook("cook-af"), [Turn(calls: [Start], role: PulsEvalRole.Cook.Wire()), Turn(calls: [Start], role: PulsEvalRole.Cook.Wire())], cookOn: true);
+        var scores = CookScorer.Score(Dev.Cook(PulsCookScenarioIds.CookAf), [Turn(calls: [Start], role: PulsEvalRole.Cook.Wire()), Turn(calls: [Start], role: PulsEvalRole.Cook.Wire())], cookOn: true);
 
         Assert.That(scores.FollowUp, Is.EqualTo("new sub-session"));
     }

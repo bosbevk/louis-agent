@@ -57,7 +57,7 @@ public abstract class HumanReviewStoreContract
     {
         string run = NewRun();
         var one = Grade(run, 3, reviewer: "Anna");
-        var two = Grade(run, 1, key: new(SampleMode.Gamma, 2, "cook-af"));
+        var two = Grade(run, 1, key: new(SampleMode.Gamma, 2, SampleScenario.Alpha));
         var three = Grade(run, 2, HumanVerdict.Unsure);
 
         foreach (var grade in new[] { one, two, three }) await _store.AddAsync(grade);

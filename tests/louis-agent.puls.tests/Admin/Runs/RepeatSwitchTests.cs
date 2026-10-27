@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using LouisAgent.Puls.Admin.Runs;
 
 namespace LouisAgent.Puls.Tests.Admin.Runs;
@@ -6,26 +7,26 @@ namespace LouisAgent.Puls.Tests.Admin.Runs;
 // Written first: the rule was in RunExplorer's @code. The conversations are the new repeat's, across the modes, as a task and its turn numbers.
 public class RepeatSwitchTests
 {
-    private static readonly (string Task, IEnumerable<int> Turns)[] Repeat = [("cook-af", [1, 2]), ("cook-en", [1])];
+    private static readonly (string Task, IEnumerable<int> Turns)[] Repeat = [(SampleScenario.Alpha, [1, 2]), (SampleScenario.Beta, [1])];
 
     [Test]
     public void TheOpenConversation_StaysOpen_WhenTheNewRepeatHasIt()
     {
-        Assert.That(RepeatSwitch.LevelAfter(2, "cook-af", null, Repeat), Is.EqualTo(2));
-        Assert.That(RepeatSwitch.LevelAfter(3, "cook-af", 2, Repeat), Is.EqualTo(3));
+        Assert.That(RepeatSwitch.LevelAfter(2, SampleScenario.Alpha, null, Repeat), Is.EqualTo(2));
+        Assert.That(RepeatSwitch.LevelAfter(3, SampleScenario.Alpha, 2, Repeat), Is.EqualTo(3));
     }
 
     [Test]
     public void ARequest_GoesUpToItsTurn_BecauseTheNewRepeatHasOtherRequests()
     {
-        Assert.That(RepeatSwitch.LevelAfter(4, "cook-af", 1, Repeat), Is.EqualTo(3));
+        Assert.That(RepeatSwitch.LevelAfter(4, SampleScenario.Alpha, 1, Repeat), Is.EqualTo(3));
     }
 
     [Test]
     public void ATaskOrTurnTheNewRepeatLacks_GoesBackToTheOverview()
     {
         Assert.That(RepeatSwitch.LevelAfter(2, "cook-nl", null, Repeat), Is.Zero, "no such conversation");
-        Assert.That(RepeatSwitch.LevelAfter(3, "cook-en", 2, Repeat), Is.Zero, "the conversation has no turn 2");
+        Assert.That(RepeatSwitch.LevelAfter(3, SampleScenario.Beta, 2, Repeat), Is.Zero, "the conversation has no turn 2");
     }
 
     [Test]
