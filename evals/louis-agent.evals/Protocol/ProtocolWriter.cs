@@ -32,6 +32,7 @@ public sealed class ProtocolWriter(TextWriter stdout, TimeProvider clock)
     /// </summary>
     public void Started() => Emit("protocol", json => json.WriteNumber("version", Version));
 
+    /// <summary>A mode's repeat starts: its toolsets, role and model, and how many conversations it will run.</summary>
     public void Mode(string mode, int repeat, IReadOnlyList<string> toolsets, string? role, string? llm,
         int? conversations = null) =>
         Emit("mode", json =>
@@ -46,6 +47,7 @@ public sealed class ProtocolWriter(TextWriter stdout, TimeProvider clock)
             if (conversations is not null) json.WriteNumber("conversations", conversations.Value);
         });
 
+    /// <summary>The question put to the session on a turn.</summary>
     public void Question(string mode, int repeat, string task, int turn, string session, string text) =>
         Emit("question", json =>
         {
@@ -84,41 +86,9 @@ public sealed class ProtocolWriter(TextWriter stdout, TimeProvider clock)
     /// <summary>A conversation's result: the eval's scores, written as the JSON they are.</summary>
     public void Conversation(string mode, int repeat, string task, string? role, JsonElement scores, double seconds,
         IReadOnlyList<Grade>? grades = null, TrialOutcome? outcome = null, int? errors = null) =>
-        Emit("conversation", json =>
-        {
-            json.WriteString("mode", mode);
-            json.WriteNumber("repeat", repeat);
-            json.WriteString("task", task);
-            WriteText(json, "role", role);
-            json.WritePropertyName("scores");
-            scores.WriteTo(json);
-            if (errors is not null) json.WriteNumber("errors", errors.Value);
-            json.WriteNumber("seconds", seconds);
-            if (grades is not null)
-            {
-                json.WriteStartArray("grades");
-                foreach (var grade in grades)
-                {
-                    json.WriteStartObject();
-                    json.WriteString("grader", grade.Grader);
-                    json.WriteNumber("version", grade.Version);
-                    json.WriteNumber("score", grade.Score);
-                    json.WriteString("outcome", grade.Outcome.Wire());
-                    json.WriteString("reason", grade.Reason);
-                    if (grade.Judge is { } judge)
-                    {
-                        json.WriteString("judge_model", judge.Model);
-                        json.WriteString("judge_prompt_hash", judge.PromptHash);
-                    }
-
-                    json.WriteEndObject();
-                }
-
-                json.WriteEndArray();
-            }
-
-            if (outcome is not null) json.WriteString("outcome", outcome.Value.Wire());
-        });
+        Emit("conversation",
+            json => ConversationLineFields.Write(json, mode, repeat, task, role, scores, seconds, grades, outcome,
+                errors));
 
     /// <summary>The run's first line (F18 step 2a): the eval, its version, the commit, the scenarios it asked for (its split, step 5.4), its graders and the model each mode ran on.</summary>
     public void Begin(string eval, int evalVersion, string commit, IReadOnlyList<IGrader> graders,
@@ -166,6 +136,7 @@ public sealed class ProtocolWriter(TextWriter stdout, TimeProvider clock)
         json.WriteEndArray();
     }
 
+    /// <summary>The four fields that say which turn of which trial a line is about.</summary>
     private static void WriteTurnKey(Utf8JsonWriter json, string mode, int repeat, string task, int turn)
     {
         json.WriteString("mode", mode);
@@ -174,12 +145,14 @@ public sealed class ProtocolWriter(TextWriter stdout, TimeProvider clock)
         json.WriteNumber("turn", turn);
     }
 
-    private static void WriteText(Utf8JsonWriter json, string name, string? value)
+    /// <summary>A text field, written as <c>null</c> when there is none, so the line always has the field.</summary>
+    internal static void WriteText(Utf8JsonWriter json, string name, string? value)
     {
         if (value is null) json.WriteNull(name);
         else json.WriteString(name, value);
     }
 
+    /// <summary>Writes one line: <c>@</c>, then the event's name, the time and the fields as JSON, all ASCII.</summary>
     private void Emit(string name, Action<Utf8JsonWriter> fields)
     {
         using var buffer = new MemoryStream();
