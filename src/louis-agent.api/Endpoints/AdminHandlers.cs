@@ -66,7 +66,7 @@ internal sealed class AdminHandlers(
     {
         if (catalog.Checks.FirstOrDefault(c => c.Id == check) is not { } known) return NoManual(check);
         if (BenchmarkManuals.Read(workspaceRoot, known) is not { } markdown) return NoManual(check);
-        return Results.Json(ManualReply.Of(known, markdown));
+        return Results.Json(ManualReply.Of(known, markdown), AdminJson.SnakeCase);
     }
 
     /// <summary>A check's trend over its finished runs: per mode, the explorer's nine rings as lines over the runs, and the same per category.</summary>
@@ -77,7 +77,7 @@ internal sealed class AdminHandlers(
             // F18 step 5c.4: the same trend per category, a chart of lines each, in the shape the overall trend's modes are.
             var categories = CategoryTrendRow.Of(
                 await CategoryTrends.ComputeAsync(s, check, cancellationToken: cancellationToken));
-            return Results.Json(TrendReply.Of(trend, categories));
+            return Results.Json(TrendReply.Of(trend, categories), AdminJson.SnakeCase);
         });
 
     /// <summary>
@@ -125,7 +125,7 @@ internal sealed class AdminHandlers(
     /// <summary>The list reply for these runs, with the store's state beside them.</summary>
     private IResult ListOf(IReadOnlyList<BenchmarkDocuments.Run> runs, string? error) =>
         Results.Json(BenchmarkListReply.Of(catalog, workspaceRoot, StoreRow.Of(store is not null, error),
-            [.. runs.Select(RunRow)]));
+            [.. runs.Select(RunRow)]), AdminJson.SnakeCase);
 
     /// <summary>The 404 for a check with no manual.</summary>
     private static IResult NoManual(string check) =>

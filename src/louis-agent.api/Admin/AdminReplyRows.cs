@@ -1,4 +1,3 @@
-using System.Text.Json.Serialization;
 using LouisAgent.Api.Benchmarks.Reports;
 using LouisAgent.Api.Benchmarks.Runs;
 
@@ -11,10 +10,7 @@ namespace LouisAgent.Api.Admin;
 /// built inside a lambda. Without it every endpoint would spell out the property names again.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
-internal sealed record CheckRow(
-    [property: JsonPropertyName("id")] string Id,
-    [property: JsonPropertyName("title")] string Title,
-    [property: JsonPropertyName("manual")] bool Manual)
+internal sealed record CheckRow(string Id, string Title, bool Manual)
 {
     /// <summary>The row for a check, saying whether it has a manual.</summary>
     public static CheckRow Of(BenchmarkCheck check, bool hasManual) => new(check.Id, check.Title, hasManual);
@@ -25,10 +21,7 @@ internal sealed record CheckRow(
 /// Replace Constructor with Factory Function (Fowler). "Configured" is a fact about the store being present, so
 /// <c>Of</c> takes the store and the error and works it out, and the two can't disagree.
 /// </remarks>
-internal sealed record StoreRow(
-    [property: JsonPropertyName("configured")]
-    bool Configured,
-    [property: JsonPropertyName("error")] string? Error)
+internal sealed record StoreRow(bool Configured, string? Error)
 {
     /// <summary>The banner for a store that may be missing, with the reason it didn't answer if it didn't.</summary>
     public static StoreRow Of(bool configured, string? error) => new(configured, error);
@@ -40,9 +33,9 @@ internal sealed record StoreRow(
 /// list of runs, so <c>Of</c> does that gathering in one place and the endpoint stays a few lines.
 /// </remarks>
 internal sealed record BenchmarkListReply(
-    [property: JsonPropertyName("checks")] IReadOnlyList<CheckRow> Checks,
-    [property: JsonPropertyName("store")] StoreRow Store,
-    [property: JsonPropertyName("runs")] IReadOnlyList<object> Runs)
+    IReadOnlyList<CheckRow> Checks,
+    StoreRow Store,
+    IReadOnlyList<object> Runs)
 {
     /// <summary>The first read: every check with its manual flag, the store's state, and the runs as the page shows them.</summary>
     public static BenchmarkListReply Of(BenchmarkCatalog catalog, string workspaceRoot, StoreRow store,
@@ -52,42 +45,30 @@ internal sealed record BenchmarkListReply(
 
 /// <summary>A check's manual: which check, its title and the markdown beside its script.</summary>
 /// <remarks>Replace Constructor with Factory Function (Fowler): the title comes from the check, so <c>Of</c> takes the check and the text.</remarks>
-internal sealed record ManualReply(
-    [property: JsonPropertyName("check")] string Check,
-    [property: JsonPropertyName("title")] string Title,
-    [property: JsonPropertyName("markdown")]
-    string Markdown)
+internal sealed record ManualReply(string Check, string Title, string Markdown)
 {
     /// <summary>The reply for a check and its manual's text.</summary>
     public static ManualReply Of(BenchmarkCheck check, string markdown) => new(check.Id, check.Title, markdown);
 }
 
 /// <summary>One point of the overall trend: a run in a mode, with the nine rings' numbers.</summary>
-/// <remarks>Replace Constructor with Factory Function (Fowler): built from the trend's own point, so <c>Of</c> carries the snake_case mapping once.</remarks>
+/// <remarks>Replace Constructor with Factory Function (Fowler): built from the trend's own point, so <c>Of</c> is the one place that copies its numbers across.</remarks>
 internal sealed record TrendPointRow(
-    [property: JsonPropertyName("run")] string Run,
-    [property: JsonPropertyName("at")] DateTimeOffset At,
-    [property: JsonPropertyName("cost")] decimal? Cost,
-    [property: JsonPropertyName("score")] double? Score,
-    [property: JsonPropertyName("conversations")]
+    string Run,
+    DateTimeOffset At,
+    decimal? Cost,
+    double? Score,
     int Conversations,
-    [property: JsonPropertyName("tokens")] long? Tokens,
-    [property: JsonPropertyName("seconds_per_turn")]
+    long? Tokens,
     double? SecondsPerTurn,
-    [property: JsonPropertyName("cache_share")]
     double? CacheShare,
-    [property: JsonPropertyName("sourced")]
     double? Sourced,
-    [property: JsonPropertyName("tools_failed")]
     double? ToolsFailed,
-    [property: JsonPropertyName("cost_per_answer")]
     decimal? CostPerAnswer,
-    [property: JsonPropertyName("sites")] int? Sites,
-    [property: JsonPropertyName("pass_at_k")]
+    int? Sites,
     double? PassAtK,
-    [property: JsonPropertyName("pass_hat_k")]
     double? PassHatK,
-    [property: JsonPropertyName("k")] int? K)
+    int? K)
 {
     /// <summary>The row for one point of the trend.</summary>
     public static TrendPointRow Of(BenchmarkTrends.Point p) => new(p.Run, p.At, p.Cost, p.Score, p.Conversations,
@@ -97,9 +78,7 @@ internal sealed record TrendPointRow(
 
 /// <summary>One line of the overall trend: a mode and its points.</summary>
 /// <remarks>Replace Constructor with Factory Function (Fowler): built from the trend's series.</remarks>
-internal sealed record TrendLineRow(
-    [property: JsonPropertyName("name")] string Name,
-    [property: JsonPropertyName("points")] IReadOnlyList<TrendPointRow> Points)
+internal sealed record TrendLineRow(string Name, IReadOnlyList<TrendPointRow> Points)
 {
     /// <summary>The row for one line of the trend.</summary>
     public static TrendLineRow Of(BenchmarkTrends.Series line) =>
@@ -109,10 +88,9 @@ internal sealed record TrendLineRow(
 /// <summary>A check's trend as the endpoint sends it: its name, a chart per category, and the overall lines.</summary>
 /// <remarks>Replace Constructor with Factory Function (Fowler): built from the trend and the categories' rows, so <c>Of</c> is the one place that knows how they fit together.</remarks>
 internal sealed record TrendReply(
-    [property: JsonPropertyName("check")] string Check,
-    [property: JsonPropertyName("categories")]
+    string Check,
     IReadOnlyList<CategoryTrendRow> Categories,
-    [property: JsonPropertyName("modes")] IReadOnlyList<TrendLineRow> Modes)
+    IReadOnlyList<TrendLineRow> Modes)
 {
     /// <summary>The reply for a check's overall trend and its categories' charts.</summary>
     public static TrendReply Of(BenchmarkTrends.Trend trend, IReadOnlyList<CategoryTrendRow> categories) =>
