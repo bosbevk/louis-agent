@@ -217,7 +217,10 @@ decision's record (its context, and what it cost) in [docs/adr/](adr/README.md).
   **Inside a method, explain the steps** (Louis, 2026-10-27): a step a reader can't follow at a glance (building a
   request, a `try` that hides a failure path, a trick such as `using var _`, a rule the code enforces) gets one plain
   `//` line above it: what it does and why, written like a person. Obvious lines (`_busy = true;`) stay bare, so the
-  comments never drown the code. The same commit-files scope applies. From `NotesPanel.AddAsync`:
+  comments never drown the code. **Steps that belong together sit together, with one blank line between groups**,
+  like paragraphs: each group does one job (set up the data, start the host, hand it back) and carries its comment
+  line on top when it needs one; a test's arrange, act and assert are three groups. The same commit-files scope
+  applies. From `NotesPanel.AddAsync`:
 
   ```csharp
   // Post it to this run's notes. The run id is escaped because it goes into the web address.
@@ -227,6 +230,20 @@ decision's record (its context, and what it cost) in [docs/adr/](adr/README.md).
   // Saved: empty the box, and tell the run page to fetch the notes again (we never add it to the list ourselves).
   _text = "";
   State.Written();
+  ```
+
+  And grouped, from a test's `StartAsync`:
+
+  ```csharp
+  // A store that already holds one finished run.
+  var store = new InMemoryBenchmarkStore();
+  await store.SaveRunAsync(new Run(RunId, SampleEval.Beta, 1, BenchmarkRunStatus.Done, T0, T0.AddMinutes(5), 0));
+
+  // The API with the admin key, that store, and a clock that never moves.
+  var app = ApiTestHost.Build(adminKey: AdminKey, store: store, time: new FixedClock(Now));
+  await app.StartAsync();
+
+  return new Host(app, app.GetTestClient(), store);
   ```
 - **Namespace = folder path, dependencies one way, prompts in markdown, hosts stay thin** — `ArchitectureTests`
   holds the first two ([Project layout](../louis-agent.core/CLAUDE.md#project-layout)).
