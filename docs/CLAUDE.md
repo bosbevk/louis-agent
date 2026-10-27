@@ -142,8 +142,10 @@ decision's record (its context, and what it cost) in [docs/adr/](adr/README.md).
   Why: [ADR 0009](adr/0009-message-text-as-enum-templates.md).
 - **Choices are enums, not strings** — a value that names one of a fixed set (a provider, a renderer, a freshness, a
   mode) is an enum, parsed once where it enters with `Config/SettingChoice` (case ignored, aliases, never a number);
-  code switches on the enum, and the "supported" list comes from it. Text stays text only up to that point.
-  Why: [ADR 0024](adr/0024-choices-are-enums.md).
+  code switches on the enum, and the "supported" list comes from it. Text stays text only up to that point. A name that
+  repeats (a toolset, a role, a mode) is an enum too, even in an open set: each pluggable project (pack, identity, eval
+  set) keeps its own copy, the rest share one; wire names stay as they are (Louis, 2026-10-27).
+  Why: [ADR 0024](adr/0024-choices-are-enums.md), [ADR 0043](adr/0043-repeated-names-are-enums.md).
 - **Records for values, classes for things** — a request, an answer, a key or a line of a file is a record; what owns a
   lock, a client or a file, or changes over time, is a class; a record holds no resource; both are sealed by default.
   Why: [ADR 0040](adr/0040-records-for-values-classes-for-things.md).

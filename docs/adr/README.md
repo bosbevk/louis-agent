@@ -48,6 +48,7 @@ afterwards from the docs that hold them (each ADR links its sources), with the d
 | [0040](0040-records-for-values-classes-for-things.md) | Records for values, classes for things: a record holds no resource, both are sealed by default, and a closed set is an abstract record | Accepted |
 | [0041](0041-json-through-records-by-hand-only-for-bytes.md) | JSON goes through records and one options object per wire; the writable DOM only for a shape decided at run time, the read-only DOM for input we don't own, the writer only when the bytes are the contract | Accepted |
 | [0042](0042-the-web-shows-the-live-results.md) | The web shows the live results: a page renders what it last fetched, fetches again after any write it makes, and never keeps a count the API keeps | Accepted |
+| [0043](0043-repeated-names-are-enums.md) | Repeated names are enums, one per pluggable project: a name written in more than one place (a toolset, a role, a mode) is an enum even in an open set; a pack, an identity or an eval set keeps its own copy and never references another's, the rest share one; wire names stay text, carried as `[WireName]` and parsed once by `SettingChoice` |
 
 ## When to write one
 

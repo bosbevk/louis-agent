@@ -1,11 +1,15 @@
+using System.Reflection;
+
 namespace LouisAgent.Core.Config;
 
 /// <summary>
 /// A setting's choice as its enum (F32 step 1b; ADR 0024: choices are enums, not strings). The one parser for a value
-/// that names one of a fixed set (a provider, a renderer, a freshness): its name with the case ignored, or an alias,
-/// read once where the setting enters; code then switches on the enum. Never a number: <see cref="Enum.TryParse{T}(string, bool, out T)"/>
-/// takes "1", which names nothing anyone wrote. The names a "supported" message lists come from the enum itself, so
-/// they can't drift from what the code accepts.
+/// that names one of a fixed set (a provider, a renderer, a freshness): its name with the case ignored, its wire name
+/// (F18 step 7.5.0, ADR 0043) or an alias, read once where the setting enters; code then switches on the enum. Never a number:
+/// <see cref="Enum.TryParse{T}(string, bool, out T)"/> takes "1", which names nothing anyone wrote. The names a "supported"
+/// message lists come from the enum itself, so they can't drift from what the code accepts. A member that travels as text
+/// other than its name (<c>fast-mode</c> for <c>FastMode</c>) says so with <see cref="WireNameAttribute"/>, and
+/// <see cref="Wire{T}"/> writes it back.
 /// </summary>
 public static class SettingChoice
 {
@@ -19,8 +23,8 @@ public static class SettingChoice
         string text = value?.Trim() ?? "";
         if (text.Length == 0) return true;
 
-        foreach (var member in Enum.GetValues<T>())
-            if (string.Equals(member.ToString(), text, StringComparison.OrdinalIgnoreCase))
+        foreach (var (member, wire) in Table<T>.Members)
+            if (string.Equals(member.ToString(), text, StringComparison.OrdinalIgnoreCase) || string.Equals(wire, text, StringComparison.OrdinalIgnoreCase))
             {
                 choice = member;
                 return true;
@@ -35,7 +39,16 @@ public static class SettingChoice
         return false;
     }
 
-    /// <summary>The enum's names in lower case, in the order it declares them: what a "supported" message lists.</summary>
-    public static IReadOnlyList<string> Names<T>() where T : struct, Enum =>
-        Enum.GetNames<T>().Select(n => n.ToLowerInvariant()).ToArray();
+    /// <summary>The text a member travels as (F18 step 7.5.0): its <see cref="WireNameAttribute"/>, else its own name in lower case.</summary>
+    public static string Wire<T>(T member) where T : struct, Enum => Table<T>.Members.First(m => EqualityComparer<T>.Default.Equals(m.Member, member)).Wire;
+
+    /// <summary>The enum's wire names, in the order it declares them: what a "supported" message lists.</summary>
+    public static IReadOnlyList<string> Names<T>() where T : struct, Enum => [.. Table<T>.Members.Select(m => m.Wire)];
+
+    /// <summary>One enum's members with the text each travels as, read once per enum type.</summary>
+    private static class Table<T> where T : struct, Enum
+    {
+        public static readonly IReadOnlyList<(T Member, string Wire)> Members =
+            [.. Enum.GetValues<T>().Select(member => (member, typeof(T).GetField(member.ToString())!.GetCustomAttribute<WireNameAttribute>()?.Name ?? member.ToString().ToLowerInvariant()))];
+    }
 }
