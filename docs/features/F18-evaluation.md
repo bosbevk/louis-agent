@@ -1156,6 +1156,9 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   golden file (`StoredRunReply.json`, written from the old code with `LOUIS_UPDATE_GOLDEN=1`), and the new code writes
   it byte for byte. `StoredRunHandlersTests` and `CreatedJsonTests` were written after their code, so neither was seen
   failing first.
+- **Sweep: `RescoreEndpoints`.** `RescoreHandlers` holds the re-score route; its 201 is `CreatedJson<LiveRunRow>` with
+  the admin options (finding 2), so `AdminRows`, whose last row this was, is gone. `RunRowRecordTests` now pins the
+  live row's names and fixed values (its start is the clock's), and `BenchmarkCalibrationStartTests` reads the record.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)
