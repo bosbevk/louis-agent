@@ -17,9 +17,12 @@ public sealed record ClassAgreement(int JudgePass, int JudgeFail, int JudgeUnkno
 
     public bool Few => Total < FewLabels;
 
+    /// <summary>The share the judge agreed, in whole percent; 0 for a class with no labels. The one place the maths lives (6a.5e).</summary>
+    public int Percent => Total == 0 ? 0 : (int)Math.Round(100.0 * Agreed / Total, MidpointRounding.AwayFromZero);
+
     public string Text => Total == 0
         ? "no labels"
-        : $"{Agreed} of {Total} ({(int)Math.Round(100.0 * Agreed / Total, MidpointRounding.AwayFromZero)}%)" + (Few ? ", few labels" : "");
+        : $"{Agreed} of {Total} ({Percent}%)" + (Few ? ", few labels" : "");
 }
 
 /// <summary>A judge and how often it agreed with the people, class by class.</summary>

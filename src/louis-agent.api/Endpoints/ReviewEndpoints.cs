@@ -23,7 +23,8 @@ internal static class ReviewEndpoints
     /// <summary>The longest note and reviewer name a grade may carry (F18 step 6a.2b): a request cannot fill the store with one grade.</summary>
     internal const int MaxNoteLength = 2000, MaxReviewerLength = 100;
 
-    private const string HumanSuffix = ".human";
+    /// <summary>What a human review's name ends with (<c>meal-for-people.human</c>): the one spelling, which the other routes use (6a.5e).</summary>
+    internal const string HumanSuffix = ".human";
 
     public static void MapReviews(this RouteGroupBuilder admin, IBenchmarkStore? store, IHumanReviewStore? reviews)
     {

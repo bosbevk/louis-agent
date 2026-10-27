@@ -36,4 +36,12 @@ public class AgreementTextTests
         Assert.That(AgreementText.Share(Passed(3, 0, 0)), Is.EqualTo("100% · few labels"));
         Assert.That(AgreementText.Share(Passed(0, 0, 0)), Is.EqualTo("no labels"));
     }
+
+    // 6a.5e (the review's nit): the bar's width is the share, in one place for both cards; an empty bar for a class nobody has graded.
+    [Test]
+    public void TheBarsWidth_IsTheShare_AndEmptyForNoLabels()
+    {
+        Assert.That(AgreementText.Width(Passed(13, 1, 0)), Is.EqualTo("93%"));
+        Assert.That(AgreementText.Width(Passed(0, 0, 0)), Is.EqualTo("0%"));
+    }
 }

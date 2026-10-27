@@ -9,8 +9,11 @@ namespace LouisAgent.Puls.Components.Admin.Reviews;
 /// The judge check of one judge of a run (F18 step 6a.5c): the reports the API kept, newest first, and the button that starts a new one. A check is the runner's one run at a time, so
 /// the card follows it through <c>runs/current</c> until it ends, then fetches the reports again: the page shows the live store (ADR 0042).
 /// </summary>
-public partial class CalibrationCard
+public partial class CalibrationCard : IDisposable
 {
+    /// <summary>Cancelled when the card goes (6a.5e): a check left behind is still the API's run, but nothing here keeps looking at it.</summary>
+    private readonly CancellationTokenSource _gone = new();
+
     [Inject] private AgentApi Api { get; set; } = null!;
 
     [Parameter, EditorRequired] public string RunId { get; set; } = "";
@@ -67,16 +70,21 @@ public partial class CalibrationCard
             // The check runs in the API's runner; its row says when it has ended, and its last line why, when it failed (its lines are not streamed here).
             while (Text(row, "status") == "running" && Text(row, "id") == id)
             {
-                await Task.Delay(Poll);
+                await Task.Delay(Poll, _gone.Token);
                 row = await Api.GetAsync<JsonElement>("v1/admin/benchmarks/runs/current");
+                if (_gone.IsCancellationRequested) return;
             }
-            if (Text(row, "status") == "failed") _error = $"The check ended without a report. The runner's last line: {Text(row, "last_line")}";
+            if (Text(row, "status") == "failed") _error = CalibrationText.Failed(Text(row, "last_line"));
             await LoadAsync();
-            if (_error is null && _reports.Count == before) _error = "The check ended, but no report was kept: the API's log says why.";
+            if (_error is null && _reports.Count == before) _error = CalibrationText.NoReportKept;
         }
         catch (AgentApiException ex)
         {
             _error = ex.Message;
+        }
+        catch (OperationCanceledException)
+        {
+            // The card went while the check ran: nothing to show.
         }
         finally
         {
@@ -89,6 +97,9 @@ public partial class CalibrationCard
     /// <summary>The check's time as the page shows times: the viewer's clock.</summary>
     private static string When(CalibrationReportView r) => r.At.ToLocalTime().ToString("yyyy-MM-dd HH:mm");
 
-    /// <summary>The bar's width: the share the judge agreed, an empty bar for a class with no labels.</summary>
-    private static string Width(ClassAgreement c) => c.Total == 0 ? "0%" : $"{(int)Math.Round(100.0 * c.Agreed / c.Total, MidpointRounding.AwayFromZero)}%";
+    public void Dispose()
+    {
+        _gone.Cancel();
+        _gone.Dispose();
+    }
 }

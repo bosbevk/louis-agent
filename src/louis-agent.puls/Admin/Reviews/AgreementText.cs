@@ -22,5 +22,8 @@ public static class AgreementText
 
     public static string Share(ClassAgreement c) => c.Total == 0
         ? "no labels"
-        : $"{(int)Math.Round(100.0 * c.Agreed / c.Total, MidpointRounding.AwayFromZero)}%" + (c.Few ? " · few labels" : "");
+        : $"{c.Percent}%" + (c.Few ? " · few labels" : "");
+
+    /// <summary>The bar's width: the share the judge agreed, an empty bar for a class with no labels (6a.5e: one copy for both cards).</summary>
+    public static string Width(ClassAgreement c) => $"{c.Percent}%";
 }

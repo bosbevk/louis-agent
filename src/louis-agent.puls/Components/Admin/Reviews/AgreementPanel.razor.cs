@@ -19,9 +19,6 @@ public partial class AgreementPanel
 
     private IReadOnlyList<JudgeAgreement> Judges => AgreementView.Of(Run);
 
-    /// <summary>The bar's width: the share the judge agreed, an empty bar for a class with no labels.</summary>
-    private static string Width(ClassAgreement c) => c.Total == 0 ? "0%" : $"{(int)Math.Round(100.0 * c.Agreed / c.Total, MidpointRounding.AwayFromZero)}%";
-
     /// <summary>The 2x2 counts behind a bar, on hover.</summary>
     private static string Hover(string you, ClassAgreement c) =>
         $"Of the {c.Total} answers you {you}: the judge passed {c.JudgePass}, failed {c.JudgeFail}, couldn't tell {c.JudgeUnknown}.";

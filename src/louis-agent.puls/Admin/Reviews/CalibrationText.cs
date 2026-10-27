@@ -22,6 +22,12 @@ public static class CalibrationText
 
     public static string Earlier(CalibrationReportView r, string when) => $"{when} · {Judge(r)} · {r.Agreed} of {r.Total} · {(r.Passes ? "pass" : "not yet")}";
 
+    /// <summary>A check whose run failed: the runner's last line is the reason (6a.5e: the card's words live here).</summary>
+    public static string Failed(string? lastLine) => $"The check ended without a report. The runner's last line: {lastLine}";
+
+    /// <summary>A check whose run ended well but left no report in the store.</summary>
+    public const string NoReportKept = "The check ended, but no report was kept: the API's log says why.";
+
     /// <summary>The judge model the runner was told, or that it was told none: then every answer was "can't tell".</summary>
     public static string Judge(CalibrationReportView r) => r.JudgeModel ?? "no judge model set";
 

@@ -1,5 +1,6 @@
 @* F18 step 6a.5c (Louis: "we needed a gui for calibration in admin"): in a judge's agreement card, the check of the judge against the answers you graded. The button asks the API to
    run it (the eval runner, with today's prompt), the card follows the run to its end, fetches the reports again (ADR 0042) and shows the latest in plain sentences, the earlier ones folded. *@
+@implements IDisposable
 <div class="calibration">
     <div class="calibration-head">
         <button type="button" class="header-button calibration-check" disabled="@(!HasLabels || _running)" @onclick="CheckAsync"
@@ -22,11 +23,11 @@
             <p class="calibration-verdict @(latest.Passes ? "pass" : "short")">@CalibrationText.Verdict(latest)</p>
             <div class="agreement-class calibration-pass">
                 <p class="agreement-sentence">@AgreementText.Sentence(latest.PersonPass)</p>
-                <div class="agreement-bar"><span class="rate-track"><span class="rate-fill" style="width: @Width(latest.PersonPass)"></span></span><strong class="agreement-share">@AgreementText.Share(latest.PersonPass)</strong></div>
+                <div class="agreement-bar"><span class="rate-track"><span class="rate-fill" style="width: @AgreementText.Width(latest.PersonPass)"></span></span><strong class="agreement-share">@AgreementText.Share(latest.PersonPass)</strong></div>
             </div>
             <div class="agreement-class calibration-fail">
                 <p class="agreement-sentence">@AgreementText.Sentence(latest.PersonFail)</p>
-                <div class="agreement-bar"><span class="rate-track"><span class="rate-fill hat" style="width: @Width(latest.PersonFail)"></span></span><strong class="agreement-share">@AgreementText.Share(latest.PersonFail)</strong></div>
+                <div class="agreement-bar"><span class="rate-track"><span class="rate-fill hat" style="width: @AgreementText.Width(latest.PersonFail)"></span></span><strong class="agreement-share">@AgreementText.Share(latest.PersonFail)</strong></div>
             </div>
             @if (latest.Disagreements.Count > 0)
             {

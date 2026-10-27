@@ -19,8 +19,6 @@ namespace LouisAgent.Api.Endpoints;
 /// </summary>
 internal static class CalibrationEndpoints
 {
-    private const string HumanSuffix = ".human";
-
     public static void MapCalibrations(this RouteGroupBuilder admin, BenchmarkCatalog catalog, BenchmarkRunner runner, IBenchmarkStore? store, IHumanReviewStore? reviews,
         ICalibrationStore? calibrations, CalibrationRecorder? recorder)
     {
@@ -30,8 +28,8 @@ internal static class CalibrationEndpoints
                 if (recorder is null) return NoStore();
                 if (await s.GetRunAsync(id, cancellationToken) is not { } run) return NoRun(id);
                 var humans = ReviewEndpoints.HumanReviewsOf(run);
-                if (!humans.Contains(grader + HumanSuffix))
-                    return Bad(MessageText.Format(ReviewUserText.CalibrationNeedsAJudge, new { Grader = grader, Id = id, Graders = string.Join(", ", humans.Select(h => h[..^HumanSuffix.Length]).Order(StringComparer.Ordinal)) }));
+                if (!humans.Contains(grader + ReviewEndpoints.HumanSuffix))
+                    return Bad(MessageText.Format(ReviewUserText.CalibrationNeedsAJudge, new { Grader = grader, Id = id, Graders = string.Join(", ", humans.Select(h => h[..^ReviewEndpoints.HumanSuffix.Length]).Order(StringComparer.Ordinal)) }));
                 if (catalog.Checks.FirstOrDefault(k => k.Id == run.Check) is not { Kind: BenchmarkCheckKind.Eval } check)
                     return Bad(MessageText.Format(ReviewUserText.CalibrationNeedsEval, new { Id = id, Check = run.Check }));
                 var labels = await ReviewEndpoints.DecidedLabelsAsync(s, r, id, grader, cancellationToken);

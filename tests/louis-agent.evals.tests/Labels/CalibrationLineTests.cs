@@ -43,4 +43,14 @@ public class CalibrationLineTests
         Assert.That((pass.Total, pass.Agreed, pass.Clears, pass.Few), Is.EqualTo((2, 2, true, true)));
         Assert.That((fail.Total, fail.Agreed, fail.Clears, fail.Few), Is.EqualTo((2, 1, false, true)));
     }
+
+    // 6a.5e (the review's nit): the bar is at least 90% of a class, in whole numbers: 9 of 10 clears, 8 of 10 does not, 18 of 20 clears, and no labels clears nothing.
+    [Test]
+    public void AClassAtExactlyTheBar_Clears()
+    {
+        Assert.That(new ClassReport(true, 10, 9, 9, 1, 0).Clears, Is.True);
+        Assert.That(new ClassReport(true, 10, 8, 8, 2, 0).Clears, Is.False);
+        Assert.That(new ClassReport(false, 20, 18, 2, 18, 0).Clears, Is.True);
+        Assert.That(new ClassReport(false, 0, 0, 0, 0, 0).Clears, Is.False);
+    }
 }

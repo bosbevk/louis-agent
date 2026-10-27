@@ -42,4 +42,22 @@ public class CalibrationTextTests
         Assert.That(CalibrationText.Earlier(Report(8), "2026-10-26 15:00"), Is.EqualTo("2026-10-26 15:00 · qwen3:4b · 35 of 36 · not yet"));
         Assert.That(CalibrationText.Earlier(Report(9, judge: null), "2026-10-26 15:00"), Is.EqualTo("2026-10-26 15:00 · no judge model set · 36 of 36 · pass"));
     }
+
+    // 6a.5e (the review's nit): the bar is "at least 90%", so a class at exactly 90% clears and is not listed as short.
+    [Test]
+    public void AClassAtExactlyTheBar_Clears_AndIsNotListedAsShort()
+    {
+        var atTheBar = new CalibrationReportView("meal-for-people", "qwen3:4b", At, 9, 11, 90, false,
+            new ClassAgreement(9, 1, 0, PersonPassed: true), new ClassAgreement(1, 0, 0, PersonPassed: false), []);
+
+        Assert.That(CalibrationText.Verdict(atTheBar), Is.EqualTo("Not yet: of the 1 answer you failed, it agreed on 0, under 90%."));
+    }
+
+    // 6a.5e: the card's two error sentences live here, with the other words.
+    [Test]
+    public void TheErrors_ReadAsSentences()
+    {
+        Assert.That(CalibrationText.Failed("Eval 'x' has no grader 'y'."), Is.EqualTo("The check ended without a report. The runner's last line: Eval 'x' has no grader 'y'."));
+        Assert.That(CalibrationText.NoReportKept, Does.Contain("no report was kept"));
+    }
 }

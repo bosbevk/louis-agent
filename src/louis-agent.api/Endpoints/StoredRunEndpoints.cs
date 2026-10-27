@@ -50,7 +50,7 @@ internal static class StoredRunEndpoints
                 summaries = SummaryRow.Of(run.Slices, run.Total, requests),
                 conversations = conversations.Select(c => ConversationRow(c, [.. latest.Where(g => g.Conversation == c.Key)])),
                 // F18 step 6a.2: per judge with a human review, how often it agreed with the people, as counts (the API reads, it doesn't rate).
-                agreement = ReviewEndpoints.HumanReviewsOf(run).Select(human => human[..^".human".Length]).Order(StringComparer.Ordinal).Select(grader =>
+                agreement = ReviewEndpoints.HumanReviewsOf(run).Select(human => human[..^ReviewEndpoints.HumanSuffix.Length]).Order(StringComparer.Ordinal).Select(grader =>
                 {
                     var t = ReviewAgreement.Of(conversations, decided, grader);
                     return new

@@ -108,4 +108,30 @@ public class CalibrationCardTests
 
         cut.WaitForAssertion(() => Assert.That(cut.Find(".review-error").TextContent, Does.Contain("has no grader 'x'")));
     }
+
+    // 6a.5e (the review's nit): a card that is left while a check runs stops following it; the API's run goes on without a listener.
+    [Test]
+    public async Task LeavingThePage_StopsTheFollowing()
+    {
+        var ctx = new BunitContext();
+        ctx.JSInterop.Mode = JSRuntimeMode.Loose;
+        var handler = new StubHandler(request => request.RequestUri!.AbsolutePath switch
+        {
+            var p when p.EndsWith("/runs/current") => Json(Started),
+            var p when request.Method == HttpMethod.Post && p.EndsWith("/calibrations/meal-for-people") => Json(Started),
+            _ => Json(None),
+        });
+        ctx.Services.AddSingleton(new AgentApi(new HttpClient(handler) { BaseAddress = new Uri("http://localhost/") }, new ChatSettings()));
+        var cut = ctx.Render<CalibrationCard>(p => p.Add(x => x.RunId, "run1").Add(x => x.Grader, "meal-for-people").Add(x => x.HasLabels, true).Add(x => x.Poll, TimeSpan.FromMilliseconds(10)));
+        cut.WaitForAssertion(() => Assert.That(cut.FindAll(".calibration-check"), Has.Count.EqualTo(1)));
+        cut.Find(".calibration-check").Click();
+        await Task.Delay(300);
+        Assert.That(handler.Requests.Count(r => r.Url.EndsWith("/runs/current")), Is.GreaterThan(3), "the card keeps looking while the check runs");
+
+        ctx.Dispose();
+        int atLeaving = handler.Requests.Count;
+        await Task.Delay(150);
+
+        Assert.That(handler.Requests.Count, Is.LessThanOrEqualTo(atLeaving + 1), "at most the one look that was in flight");
+    }
 }
