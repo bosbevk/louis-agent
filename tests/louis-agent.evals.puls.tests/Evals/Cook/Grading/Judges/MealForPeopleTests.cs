@@ -10,7 +10,7 @@ namespace LouisAgent.Evals.Puls.Tests.Evals.Cook.Grading.Judges;
 // model, and reads a JSON verdict (meal: true, false or null, and a reason) through a record. A reply it can't read is no verdict, never a pass. Written first: MealForPeople did not exist.
 public class MealForPeopleTests
 {
-    private static readonly CookAsk Ask = new(people: 4, budget: 150m, town: "Malmesbury");
+    private static readonly CookAsk Ask = new(people: 4, town: "Malmesbury");
     private const string Answer = "Bobotie vir vier: 'n hoofgereg met 500 g maalvleis, rys en 'n eier-melk-bedekking.";
 
     private static async Task<(BooleanMetric Metric, ScriptedJudge Client)> JudgeAsync(string reply, CookAsk? ask = null)
@@ -29,7 +29,7 @@ public class MealForPeopleTests
         var sent = client.Sent.Single();
         Assert.That(sent.Select(m => m.Role), Is.EqualTo(new[] { ChatRole.System, ChatRole.User }));
         Assert.That(sent[0].Text, Is.EqualTo("THE PROMPT"));
-        Assert.That(sent[1].Text, Does.Contain("People: 4").And.Not.Contain("Budget").And.Contain("Town: Malmesbury").And.Contain(Answer), "6a.4g: the budget is not the judge's to see");
+        Assert.That(sent[1].Text, Does.Contain("People: 4").And.Not.Contain("Budget").And.Contain("Town: Malmesbury").And.Contain(Answer), "6a.4f: the budget is not the judge's to see");
     }
 
     // 6a.4f (Louis: the judge failed a follow-up turn that swapped the meat and gave the list, since the recipe was in the turn before): the judge is sent the earlier turns too, question
@@ -103,7 +103,7 @@ public class MealForPeopleTests
     [Test]
     public async Task AskedWithNoPeople_ItStillSendsWhatIsKnown()
     {
-        var (_, client) = await JudgeAsync("""{"meal": null, "reason": "r"}""", new CookAsk(people: null, budget: null, town: null));
+        var (_, client) = await JudgeAsync("""{"meal": null, "reason": "r"}""", new CookAsk(people: null, town: null));
 
         Assert.That(client.Sent.Single()[1].Text, Does.Contain("People: not said").And.Not.Contain("Budget").And.Contain("Town: not said"));
     }

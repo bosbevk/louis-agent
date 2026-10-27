@@ -31,6 +31,14 @@ public class MealForPeopleGraderTests
         Assert.That(grader.ExpectedKeys, Is.EquivalentTo(new[] { "serves" }));
     }
 
+    // 6a.3d: what the judge is sent changed in 6a.4f (the conversation so far, no budget), and the prompt's hash doesn't cover the user message, so the version says it: 2. An old grade
+    // of version 1 was made on the last answer alone, with the budget in view.
+    [Test]
+    public void WhatTheJudgeIsSentChangedIn6a4f_SoItIsVersion2()
+    {
+        Assert.That(Grader().Version, Is.EqualTo(2));
+    }
+
     [Test]
     public async Task ItJudgesTheAnswerForThePeopleAskedAndSaysWhatJudged()
     {
@@ -41,7 +49,7 @@ public class MealForPeopleGraderTests
         Assert.That((grade.Outcome, grade.Reason), Is.EqualTo((GradeOutcome.Pass, "feeds four")));
         Assert.That(grade.Judge, Is.EqualTo(new GradeJudge("qwen3:8b", MealForPeoplePrompt.Hash)));
         string user = client.Sent.Single()[1].Text;
-        // 6a.4g: the judge is not told the budget. It must never judge it, and a small model judged it anyway when told; another grader checks the cost.
+        // 6a.4f: the judge is not told the budget. It must never judge it, and a small model judged it anyway when told; another grader checks the cost.
         Assert.That(user, Does.Contain("People: 4").And.Not.Contain("Budget").And.Contain("Town: Malmesbury").And.Contain("antwoord 1"));
     }
 

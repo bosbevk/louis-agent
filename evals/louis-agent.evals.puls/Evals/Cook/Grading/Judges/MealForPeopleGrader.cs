@@ -16,12 +16,15 @@ namespace LouisAgent.Evals.Puls.Evals.Cook.Grading.Judges;
 /// </summary>
 public sealed class MealForPeopleGrader : IGrader
 {
+    /// <summary>Version 2 (6a.3d): what the judge is sent changed in 6a.4f (the conversation so far, no budget), which the prompt's hash doesn't cover.</summary>
+    private const int JudgeVersion = 2;
+
     private readonly EvaluatorGrader _inner;
 
     private MealForPeopleGrader(EvaluatorGrader inner) => _inner = inner;
 
     public static MealForPeopleGrader Create(Func<ConfiguredJudge?> judge) =>
-        new(new EvaluatorGrader(new MealForPeople(MealForPeoplePrompt.Text), judge, MealForPeople.MetricName, 1, MealForPeoplePrompt.Hash,
+        new(new EvaluatorGrader(new MealForPeople(MealForPeoplePrompt.Text), judge, MealForPeople.MetricName, JudgeVersion, MealForPeoplePrompt.Hash,
             new HashSet<string> { "serves" }, trial => [CookAsk.Of(trial)]));
 
     public string Name => _inner.Name;
